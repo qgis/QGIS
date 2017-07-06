@@ -38,17 +38,17 @@ from qgis.core import (QgsProcessingParameterDefinition,
                        QgsProcessingOutputVectorLayer,
                        QgsProcessingOutputRasterLayer,
                        QgsProcessingParameterRasterOutput,
-                       QgsProcessingParameterFeatureSink)
+                       QgsProcessingParameterFeatureSink,
+                       QgsProcessingParameterVectorOutput)
 from qgis.PyQt import uic
-from qgis.PyQt.QtCore import QCoreApplication
+from qgis.PyQt.QtCore import QCoreApplication, Qt
 from qgis.PyQt.QtWidgets import (QWidget, QHBoxLayout, QToolButton,
                                  QLabel, QCheckBox)
 from qgis.PyQt.QtGui import QIcon
 
 from processing.gui.DestinationSelectionPanel import DestinationSelectionPanel
 from processing.gui.wrappers import WidgetWrapperFactory
-from processing.core.parameters import ParameterVector, ParameterExtent, ParameterPoint
-from processing.core.outputs import OutputTable
+
 
 pluginPath = os.path.split(os.path.dirname(__file__))[0]
 WIDGET, BASE = uic.loadUiType(
@@ -118,9 +118,10 @@ class ParametersPanel(BASE, WIDGET):
                         button = QToolButton()
                         icon = QIcon(os.path.join(pluginPath, 'images', 'iterate.png'))
                         button.setIcon(icon)
-                        button.setToolTip(self.tr('Iterate over this layer'))
+                        button.setToolTip(self.tr('Iterate over this layer, creating a separate output for every feature in the layer'))
                         button.setCheckable(True)
                         layout.addWidget(button)
+                        layout.setAlignment(button, Qt.AlignTop)
                         self.iterateButtons[param.name()] = button
                         button.toggled.connect(self.buttonToggled)
                         widget = QWidget()
@@ -157,7 +158,7 @@ class ParametersPanel(BASE, WIDGET):
             widget = DestinationSelectionPanel(output, self.alg)
             self.layoutMain.insertWidget(self.layoutMain.count() - 1, label)
             self.layoutMain.insertWidget(self.layoutMain.count() - 1, widget)
-            if isinstance(output, (QgsProcessingParameterRasterOutput, QgsProcessingParameterFeatureSink, OutputTable)):
+            if isinstance(output, (QgsProcessingParameterRasterOutput, QgsProcessingParameterFeatureSink, QgsProcessingParameterVectorOutput)):
                 check = QCheckBox()
                 check.setText(self.tr('Open output file after running algorithm'))
                 check.setChecked(True)

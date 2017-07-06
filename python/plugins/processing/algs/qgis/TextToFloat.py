@@ -28,6 +28,7 @@ __revision__ = '$Format:%H$'
 from qgis.PyQt.QtCore import QVariant
 from qgis.core import (QgsApplication,
                        QgsField,
+                       QgsFeatureSink,
                        QgsProcessingUtils)
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 from processing.core.parameters import ParameterVector
@@ -39,12 +40,6 @@ class TextToFloat(QgisAlgorithm):
     INPUT = 'INPUT'
     FIELD = 'FIELD'
     OUTPUT = 'OUTPUT'
-
-    def icon(self):
-        return QgsApplication.getThemeIcon("/providerQgis.svg")
-
-    def svgIconPath(self):
-        return QgsApplication.iconPath("providerQgis.svg")
 
     def group(self):
         return self.tr('Vector table tools')
@@ -76,7 +71,7 @@ class TextToFloat(QgisAlgorithm):
 
         features = QgsProcessingUtils.getFeatures(layer, context)
 
-        total = 100.0 / QgsProcessingUtils.featureCount(layer, context)
+        total = 100.0 / layer.featureCount() if layer.featureCount() else 0
         for current, f in enumerate(features):
             value = f[idx]
             try:
@@ -87,7 +82,7 @@ class TextToFloat(QgisAlgorithm):
             except:
                 f[idx] = None
 
-            writer.addFeature(f)
+            writer.addFeature(f, QgsFeatureSink.FastInsert)
             feedback.setProgress(int(current * total))
 
         del writer

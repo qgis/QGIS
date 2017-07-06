@@ -50,6 +50,8 @@ class QgsLayerItem;
 class QgsDataItem;
 class QgsBrowserTreeFilterProxyModel;
 
+SIP_NO_FILE
+
 /**
  * Hack to show wrapped text without spaces
  */
@@ -195,6 +197,9 @@ class QgsDockBrowserTreeView : public QgsBrowserTreeView
     void dragMoveEvent( QDragMoveEvent *e ) override;
     //! Overrides drag stop event
     void dropEvent( QDropEvent *e ) override;
+
+  private:
+    void setAction( QDropEvent *e );
 };
 
 /**
@@ -212,6 +217,8 @@ class QgsBrowserTreeFilterProxyModel : public QSortFilterProxyModel
     explicit QgsBrowserTreeFilterProxyModel( QObject *parent );
     //! Set the browser model
     void setBrowserModel( QgsBrowserModel *model );
+    //! Get the browser model
+    QgsBrowserModel *browserModel( ) { return mModel; }
     //! Set the filter syntax
     void setFilterSyntax( const QString &syntax );
     //! Set the filter

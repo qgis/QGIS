@@ -26,10 +26,11 @@ __copyright__ = '(C) 2010, Michael Minn'
 __revision__ = '$Format:%H$'
 
 from qgis.core import (QgsApplication,
+                       QgsFeatureSink,
                        QgsProcessingUtils,
                        QgsProcessingParameterFeatureSource,
                        QgsProcessingParameterFeatureSink,
-                       QgsProcessingParameterTableField,
+                       QgsProcessingParameterField,
                        QgsProcessingOutputVectorLayer)
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 
@@ -39,12 +40,6 @@ class DeleteColumn(QgisAlgorithm):
     INPUT = 'INPUT'
     COLUMNS = 'COLUMN'
     OUTPUT = 'OUTPUT'
-
-    def icon(self):
-        return QgsApplication.getThemeIcon("/providerQgis.svg")
-
-    def svgIconPath(self):
-        return QgsApplication.iconPath("providerQgis.svg")
 
     def tags(self):
         return self.tr('drop,delete,remove,fields,columns,attributes').split(',')
@@ -56,9 +51,9 @@ class DeleteColumn(QgisAlgorithm):
         super().__init__()
 
         self.addParameter(QgsProcessingParameterFeatureSource(self.INPUT, self.tr('Input layer')))
-        self.addParameter(QgsProcessingParameterTableField(self.COLUMNS,
-                                                           self.tr('Fields to delete'),
-                                                           None, self.INPUT, QgsProcessingParameterTableField.Any, True))
+        self.addParameter(QgsProcessingParameterField(self.COLUMNS,
+                                                      self.tr('Fields to drop'),
+                                                      None, self.INPUT, QgsProcessingParameterField.Any, True))
 
         self.addParameter(QgsProcessingParameterFeatureSink(self.OUTPUT, self.tr('Output layer')))
         self.addOutput(QgsProcessingOutputVectorLayer(self.OUTPUT, self.tr("Output layer")))
@@ -67,7 +62,7 @@ class DeleteColumn(QgisAlgorithm):
         return 'deletecolumn'
 
     def displayName(self):
-        return self.tr('Delete column')
+        return self.tr('Drop field(s)')
 
     def processAlgorithm(self, parameters, context, feedback):
         source = self.parameterAsSource(parameters, self.INPUT, context)
@@ -91,7 +86,7 @@ class DeleteColumn(QgisAlgorithm):
                                                fields, source.wkbType(), source.sourceCrs())
 
         features = source.getFeatures()
-        total = 100.0 / source.featureCount()
+        total = 100.0 / source.featureCount() if source.featureCount() else 0
 
         for current, f in enumerate(features):
             if feedback.isCanceled():
@@ -101,7 +96,7 @@ class DeleteColumn(QgisAlgorithm):
             for index in field_indices:
                 del attributes[index]
             f.setAttributes(attributes)
-            sink.addFeature(f)
+            sink.addFeature(f, QgsFeatureSink.FastInsert)
 
             feedback.setProgress(int(current * total))
 

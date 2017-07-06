@@ -19,6 +19,8 @@
 #include "qgseditorwidgetfactory.h"
 #include "qgis_gui.h"
 
+SIP_NO_FILE
+
 /**
  * \ingroup gui
  * \class QgsUniqueValueWidgetFactory

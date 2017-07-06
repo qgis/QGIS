@@ -40,7 +40,7 @@ email                : sherman at mrcc.com
 #include "qgssettings.h"
 #include "qgsmapcanvasannotationitem.h"
 #include "qgsapplication.h"
-#include "qgscsexception.h"
+#include "qgsexception.h"
 #include "qgsdatumtransformdialog.h"
 #include "qgsfeatureiterator.h"
 #include "qgslogger.h"
@@ -189,6 +189,8 @@ QgsMapCanvas::QgsMapCanvas( QWidget *parent )
 
   connect( &mAutoRefreshTimer, &QTimer::timeout, this, &QgsMapCanvas::autoRefreshTriggered );
 
+  connect( this, &QgsMapCanvas::extentsChanged, this, &QgsMapCanvas::updateCanvasItemPositions );
+
   setInteractive( false );
 
   refresh();
@@ -283,10 +285,10 @@ void QgsMapCanvas::setCurrentLayer( QgsMapLayer *layer )
   emit currentLayerChanged( layer );
 }
 
-double QgsMapCanvas::scale()
+double QgsMapCanvas::scale() const
 {
   return mapSettings().scale();
-} // scale
+}
 
 bool QgsMapCanvas::isDrawing()
 {
@@ -796,9 +798,6 @@ void QgsMapCanvas::setExtent( const QgsRectangle &r, bool magnified )
   // update controls' enabled state
   emit zoomLastStatusChanged( mLastExtentIndex > 0 );
   emit zoomNextStatusChanged( mLastExtentIndex < mLastExtent.size() - 1 );
-  // notify canvas items of change
-  updateCanvasItemPositions();
-
 } // setExtent
 
 void QgsMapCanvas::setCenter( const QgsPointXY &center )
@@ -837,10 +836,6 @@ void QgsMapCanvas::setRotation( double degrees )
   mSettings.setRotation( degrees );
   emit rotationChanged( degrees );
   emit extentsChanged(); // visible extent changes with rotation
-
-  // notify canvas items of change (needed?)
-  updateCanvasItemPositions();
-
 } // setRotation
 
 
@@ -878,8 +873,6 @@ void QgsMapCanvas::zoomToPreviousExtent()
     // update controls' enabled state
     emit zoomLastStatusChanged( mLastExtentIndex > 0 );
     emit zoomNextStatusChanged( mLastExtentIndex < mLastExtent.size() - 1 );
-    // notify canvas items of change
-    updateCanvasItemPositions();
   }
 
 } // zoomToPreviousExtent
@@ -896,8 +889,6 @@ void QgsMapCanvas::zoomToNextExtent()
     // update controls' enabled state
     emit zoomLastStatusChanged( mLastExtentIndex > 0 );
     emit zoomNextStatusChanged( mLastExtentIndex < mLastExtent.size() - 1 );
-    // notify canvas items of change
-    updateCanvasItemPositions();
   }
 }// zoomToNextExtent
 
@@ -919,10 +910,17 @@ void QgsMapCanvas::zoomToSelected( QgsVectorLayer *layer )
     layer = qobject_cast<QgsVectorLayer *>( mCurrentLayer );
   }
 
-  if ( !layer || layer->selectedFeatureCount() == 0 )
+  if ( !layer || !layer->isSpatial() || layer->selectedFeatureCount() == 0 )
     return;
 
-  QgsRectangle rect = mapSettings().layerExtentToOutputExtent( layer, layer->boundingBoxOfSelected() );
+  QgsRectangle rect = layer->boundingBoxOfSelected();
+  if ( rect.isNull() )
+  {
+    emit messageEmitted( tr( "Cannot zoom to selected feature(s)" ), tr( "No extent could be determined." ), QgsMessageBar::WARNING );
+    return;
+  }
+
+  rect = mapSettings().layerExtentToOutputExtent( layer, rect );
   zoomToFeatureExtent( rect );
 } // zoomToSelected
 
@@ -1035,20 +1033,20 @@ void QgsMapCanvas::panToSelected( QgsVectorLayer *layer )
     layer = qobject_cast<QgsVectorLayer *>( mCurrentLayer );
   }
 
-  if ( !layer || layer->selectedFeatureCount() == 0 )
+  if ( !layer || !layer->isSpatial() || layer->selectedFeatureCount() == 0 )
     return;
 
-  QgsRectangle rect = mapSettings().layerExtentToOutputExtent( layer, layer->boundingBoxOfSelected() );
-  if ( !rect.isNull() )
+  QgsRectangle rect = layer->boundingBoxOfSelected();
+  if ( rect.isNull() )
   {
-    setCenter( rect.center() );
-    refresh();
+    emit messageEmitted( tr( "Cannot pan to selected feature(s)" ), tr( "No extent could be determined." ), QgsMessageBar::WARNING );
+    return;
   }
-  else
-  {
-    emit messageEmitted( tr( "Cannot pan to selected feature(s)" ), tr( "Geometry is NULL" ), QgsMessageBar::WARNING );
-  }
-} // panToSelected
+
+  rect = mapSettings().layerExtentToOutputExtent( layer, rect );
+  setCenter( rect.center() );
+  refresh();
+}
 
 void QgsMapCanvas::keyPressEvent( QKeyEvent *e )
 {
@@ -1342,9 +1340,6 @@ void QgsMapCanvas::resizeEvent( QResizeEvent *e )
   mScene->setSceneRect( QRectF( 0, 0, lastSize.width(), lastSize.height() ) );
 
   moveCanvasContents( true );
-
-  // notify canvas items of change
-  updateCanvasItemPositions();
 
   updateScale();
 
@@ -1911,7 +1906,7 @@ void QgsMapCanvas::writeProject( QDomDocument &doc )
     QgsDebugMsg( "Unable to find qgis element in project file" );
     return;
   }
-  QDomNode qgisNode = nl.item( 0 );  // there should only be one, so zeroth element ok
+  QDomNode qgisNode = nl.item( 0 );  // there should only be one, so zeroth element OK
 
   QDomElement mapcanvasNode = doc.createElement( QStringLiteral( "mapcanvas" ) );
   mapcanvasNode.setAttribute( QStringLiteral( "name" ), objectName() );

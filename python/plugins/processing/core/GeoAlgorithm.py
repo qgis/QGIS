@@ -113,7 +113,7 @@ class GeoAlgorithm(QgsProcessingAlgorithm):
         if feedback is None:
             feedback = QgsProcessingFeedback()
         if context is None:
-            context = dataobjects.createContext()
+            context = dataobjects.createContext(feedback)
 
         self.model = model
         try:
@@ -180,7 +180,7 @@ class GeoAlgorithm(QgsProcessingAlgorithm):
                     writer = out.getVectorWriter(layer.fields(), layer.wkbType(), layer.crs(), context)
                     features = QgsProcessingUtils.getFeatures(layer, context)
                     for feature in features:
-                        writer.addFeature(feature)
+                        writer.addFeature(feature, QgsFeatureSink.FastInsert)
             elif isinstance(out, OutputRaster):
                 if out.compatible is not None:
                     layer = QgsProcessingUtils.mapLayerFromString(out.compatible, context)
@@ -264,26 +264,6 @@ class GeoAlgorithm(QgsProcessingAlgorithm):
         except:
             pass
 
-    def checkInputCRS(self, context=None):
-        """It checks that all input layers use the same CRS. If so,
-        returns True. False otherwise.
-        """
-        if context is None:
-            context = dataobjects.createContext()
-        crsList = []
-        for param in self.parameterDefinitions():
-            if isinstance(param, (ParameterRaster, ParameterVector, ParameterMultipleInput)):
-                if param.value:
-                    if isinstance(param, ParameterMultipleInput):
-                        layers = param.value.split(';')
-                    else:
-                        layers = [param.value]
-                    for item in layers:
-                        crs = QgsProcessingUtils.mapLayerFromString(item, context).crs()
-                        if crs not in crsList:
-                            crsList.append(crs)
-        return len(crsList) < 2
-
     def addOutput(self, output):
         # TODO: check that name does not exist
         if isinstance(output, Output):
@@ -321,23 +301,6 @@ class GeoAlgorithm(QgsProcessingAlgorithm):
                 return out.value
         return None
 
-    def getAsCommand(self):
-        """Returns the command that would run this same algorithm from
-        the console.
-
-        Should return None if the algorithm cannot be run from the
-        console.
-        """
-
-        s = 'processing.run("' + self.id() + '",'
-        for param in self.parameterDefinitions():
-            s += param.getValueAsCommandLineParameter() + ','
-        for out in self.outputs:
-            if not out.flags() & QgsProcessingParameterDefinition.FlagHidden:
-                s += out.getValueAsCommandLineParameter() + ','
-        s = s[:-1] + ')'
-        return s
-
     def tr(self, string, context=''):
         if context == '':
             context = self.__class__.__name__
@@ -364,35 +327,17 @@ def executeAlgorithm(alg, parameters, context=None, feedback=None, model=None):
     if feedback is None:
         feedback = QgsProcessingFeedback()
     if context is None:
-        context = dataobjects.createContext()
+        context = dataobjects.createContext(feedback)
 
     #self.model = model
-    if True:
-        #self.setOutputCRS()
-        #self.resolveOutputs()
-        #self.evaluateParameterValues()
-        #self.runPreExecutionScript(feedback)
-        result = alg.run(parameters, context, feedback)
-        #self.processAlgorithm(parameters, context, feedback)
-        feedback.setProgress(100)
-        return result
-        #self.convertUnsupportedFormats(context, feedback)
-        #self.runPostExecutionScript(feedback)
-    #except GeoAlgorithmExecutionException as gaee:
-        #lines = [self.tr('Error while executing algorithm')]
-     #   lines  = []
-      #  lines.append(traceback.format_exc())
-        #QgsMessageLog.logMessage(gaee.msg, self.tr('Processing'), QgsMessageLog.CRITICAL)
-        #raise GeoAlgorithmExecutionException(gaee.msg, lines, gaee)
-    #except Exception as e:
-        # If something goes wrong and is not caught in the
-        # algorithm, we catch it here and wrap it
-        #lines = [self.tr('Uncaught error while executing algorithm')]
-     #   lines = []
-      #  lines.append(traceback.format_exc())
-        #QgsMessageLog.logMessage('\n'.join(lines), self.tr('Processing'), QgsMessageLog.CRITICAL)
-        #raise GeoAlgorithmExecutionException(str(e) + self.tr('\nSee log for more details'), lines, e)
 
-    def helpUrl(self):
-        return QgsHelp.helpUrl("processing_algs/{}/{}".format(
-            self.provider().id(), self.id())).toString()
+    #self.setOutputCRS()
+    #self.resolveOutputs()
+    #self.evaluateParameterValues()
+    #self.runPreExecutionScript(feedback)
+    result, ok = alg.run(parameters, context, feedback)
+    #self.processAlgorithm(parameters, context, feedback)
+    feedback.setProgress(100)
+    return result, ok
+    #self.convertUnsupportedFormats(context, feedback)
+    #self.runPostExecutionScript(feedback)

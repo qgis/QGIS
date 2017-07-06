@@ -18,13 +18,17 @@
 #ifndef QGSGEOMETRYFACTORY_H
 #define QGSGEOMETRYFACTORY_H
 
+#define SIP_NO_FILE
+
 #include "qgis_core.h"
 #include <QString>
+#include <memory>
 
 class QgsAbstractGeometry;
 class QgsLineString;
 class QgsConstWkbPtr;
 class QgsRectangle;
+class QgsGeometryCollection;
 
 //compatibility with old classes
 #include "qgspointxy.h"
@@ -69,6 +73,12 @@ class CORE_EXPORT QgsGeometryFactory
     static QgsAbstractGeometry *fromRect( const QgsRectangle &rect );
     //! Return empty geometry from wkb type
     static QgsAbstractGeometry *geomFromWkbType( QgsWkbTypes::Type t );
+
+    /**
+     * Returns a new geometry collection matching a specified WKB \a type. For instance, if
+     * type is PolygonM the returned geometry will be a QgsMultiPolygonV2 with M values.
+     */
+    static std::unique_ptr< QgsGeometryCollection > createCollectionOfType( QgsWkbTypes::Type type );
 
   private:
     static QgsLineString *linestringFromPolyline( const QgsPolyline &polyline );

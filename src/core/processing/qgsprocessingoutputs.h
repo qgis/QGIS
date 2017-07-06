@@ -49,6 +49,12 @@ class CORE_EXPORT QgsProcessingOutputDefinition
       sipType = sipType_QgsProcessingOutputRasterLayer;
     else if ( sipCpp->type() == "outputHtml" )
       sipType = sipType_QgsProcessingOutputHtml;
+    else if ( sipCpp->type() == "outputNumber" )
+      sipType = sipType_QgsProcessingOutputNumber;
+    else if ( sipCpp->type() == "outputString" )
+      sipType = sipType_QgsProcessingOutputString;
+    else if ( sipCpp->type() == "outputFolder" )
+      sipType = sipType_QgsProcessingOutputFolder;
     SIP_END
 #endif
 
@@ -175,6 +181,60 @@ class CORE_EXPORT QgsProcessingOutputHtml : public QgsProcessingOutputDefinition
     QgsProcessingOutputHtml( const QString &name, const QString &description = QString() );
 
     QString type() const override { return QStringLiteral( "outputHtml" ); }
+};
+
+/**
+ * \class QgsProcessingOutputNumber
+ * \ingroup core
+ * A numeric output for processing algorithms.
+  * \since QGIS 3.0
+ */
+class CORE_EXPORT QgsProcessingOutputNumber : public QgsProcessingOutputDefinition
+{
+  public:
+
+    /**
+     * Constructor for QgsProcessingOutputNumber.
+     */
+    QgsProcessingOutputNumber( const QString &name, const QString &description = QString() );
+
+    QString type() const override { return QStringLiteral( "outputNumber" ); }
+};
+
+/**
+ * \class QgsProcessingOutputString
+ * \ingroup core
+ * A string output for processing algorithms.
+  * \since QGIS 3.0
+ */
+class CORE_EXPORT QgsProcessingOutputString : public QgsProcessingOutputDefinition
+{
+  public:
+
+    /**
+     * Constructor for QgsProcessingOutputString.
+     */
+    QgsProcessingOutputString( const QString &name, const QString &description = QString() );
+
+    QString type() const override { return QStringLiteral( "outputString" ); }
+};
+
+/**
+ * \class QgsProcessingOutputFolder
+ * \ingroup core
+ * A folder output for processing algorithms.
+  * \since QGIS 3.0
+ */
+class CORE_EXPORT QgsProcessingOutputFolder : public QgsProcessingOutputDefinition
+{
+  public:
+
+    /**
+     * Constructor for QgsProcessingOutputFolder.
+     */
+    QgsProcessingOutputFolder( const QString &name, const QString &description = QString() );
+
+    QString type() const override { return QStringLiteral( "outputFolder" ); }
 };
 
 #endif // QGSPROCESSINGOUTPUTS_H

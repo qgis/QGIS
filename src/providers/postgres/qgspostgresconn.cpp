@@ -84,7 +84,7 @@ QString QgsPostgresResult::PQgetvalue( int row, int col )
 {
   Q_ASSERT( mRes );
   return PQgetisnull( row, col )
-         ? QString::null
+         ? QString()
          : QString::fromUtf8( ::PQgetvalue( mRes, row, col ) );
 }
 
@@ -340,7 +340,7 @@ void QgsPostgresConn::unref()
   {
     QMap<QString, QgsPostgresConn *> &connections = mReadOnly ? sConnectionsRO : sConnectionsRW;
 
-    QString key = connections.key( this, QString::null );
+    QString key = connections.key( this, QString() );
 
     Q_ASSERT( !key.isNull() );
     connections.remove( key );
@@ -724,7 +724,7 @@ bool QgsPostgresConn::getTableInfo( bool searchGeometryColumnsOnly, bool searchP
       layerProperty.srids = QList<int>() << INT_MIN;
       layerProperty.schemaName = schema;
       layerProperty.tableName = table;
-      layerProperty.geometryColName = QString::null;
+      layerProperty.geometryColName = QString();
       layerProperty.geometryColType = SctNone;
       layerProperty.relKind = relkind;
       layerProperty.isView = isView;
@@ -844,7 +844,7 @@ QString QgsPostgresConn::postgisVersion()
   {
     QgsMessageLog::logMessage( tr( "No PostGIS support in the database." ), tr( "PostGIS" ) );
     mGotPostgisVersion = true;
-    return QString::null;
+    return QString();
   }
 
   mPostgisVersionInfo = result.PQgetvalue( 0, 0 );
@@ -858,7 +858,7 @@ QString QgsPostgresConn::postgisVersion()
   if ( postgisVersionParts.size() < 2 )
   {
     QgsMessageLog::logMessage( tr( "Could not parse postgis version string '%1'" ).arg( mPostgisVersionInfo ), tr( "PostGIS" ) );
-    return QString::null;
+    return QString();
   }
 
   mPostgisVersionMajor = postgisVersionParts[0].toInt();
@@ -1613,7 +1613,7 @@ QString QgsPostgresConn::postgisTypeFilter( QString geomCol, QgsWkbTypes::Type w
     case QgsWkbTypes::NullGeometry:
       return QStringLiteral( "geometrytype(%1) IS NULL" ).arg( geomCol );
     default: //unknown geometry
-      return QString::null;
+      return QString();
   }
 }
 
@@ -1680,7 +1680,7 @@ QString QgsPostgresConn::displayStringForGeomType( QgsPostgresGeometryColumnType
   }
 
   Q_ASSERT( !"unexpected geometry column type" );
-  return QString::null;
+  return QString();
 }
 
 QgsWkbTypes::Type QgsPostgresConn::wkbTypeFromGeomType( QgsWkbTypes::GeometryType geomType )

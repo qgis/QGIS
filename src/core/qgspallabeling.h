@@ -334,7 +334,7 @@ class CORE_EXPORT QgsPalLayerSettings
       ShadowRadius = 70,
       ShadowRadiusUnits = 71,
       ShadowTransparency = 72, //!< Shadow transparency (deprecated)
-      ShadowOpacity = 94, //!< Shadow opacity
+      ShadowOpacity = 95, //!< Shadow opacity
       ShadowScale = 73,
       ShadowColor = 74,
       ShadowBlendMode = 75,
@@ -354,7 +354,7 @@ class CORE_EXPORT QgsPalLayerSettings
       Hali = 11, //!< Horizontal alignment for data defined label position (Left, Center, Right)
       Vali = 12, //!< Vertical alignment for data defined label position (Bottom, Base, Half, Cap, Top)
       Rotation = 14, //!< Label rotation (deprecated, for old project compatibility only)
-      LabelRotation = 96, //!< Label rotation (deprecated, for old project compatibility only)
+      LabelRotation = 96, //!< Label rotation
       RepeatDistance = 84,
       RepeatDistanceUnit = 86,
       Priority = 87,
@@ -362,8 +362,10 @@ class CORE_EXPORT QgsPalLayerSettings
 
       // rendering
       ScaleVisibility = 23,
-      MinScale = 16,
-      MaxScale = 17,
+      MinScale = 16, //!< Min scale (deprecated, for old project compatibility only)
+      MinimumScale = 97, //!< Minimum map scale (ie most "zoomed out")
+      MaxScale = 17, //!< Max scale (deprecated, for old project compatibility only)
+      MaximumScale = 98, //!< Maximum map scale (ie most "zoomed in")
       FontLimitPixel = 24,
       FontMinPixel = 25,
       FontMaxPixel = 26,
@@ -478,8 +480,22 @@ class CORE_EXPORT QgsPalLayerSettings
     //-- rendering
 
     bool scaleVisibility;
-    int scaleMin;
-    int scaleMax;
+
+    /**
+     * The maximum map scale (i.e. most "zoomed in" scale) at which the labels will be visible.
+     * The scale value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
+     * A scale of 0 indicates no maximum scale visibility.
+     * \see minimumScale
+    */
+    double maximumScale;
+
+    /**
+     * The minimum map scale (i.e. most "zoomed out" scale) at which the labels will be visible.
+     * The scale value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
+     * A scale of 0 indicates no minimum scale visibility.
+     * \see maximumScale
+    */
+    double minimumScale;
 
     bool fontLimitPixelSize; // true is label should be limited by fontMinPixelSize/fontMaxPixelSize
     int fontMinPixelSize; // minimum pixel size for showing rendered map unit labels (1 - 1000)
@@ -526,7 +542,7 @@ class CORE_EXPORT QgsPalLayerSettings
      */
     void registerFeature( QgsFeature &f, QgsRenderContext &context,
                           QgsLabelFeature **labelFeature SIP_PYARGREMOVE = nullptr,
-                          QgsGeometry *obstacleGeometry SIP_PYARGREMOVE = nullptr );
+                          QgsGeometry obstacleGeometry SIP_PYARGREMOVE = QgsGeometry() );
 
     /** Read settings from a DOM element
      * \since QGIS 2.12
@@ -644,7 +660,7 @@ class CORE_EXPORT QgsPalLayerSettings
 
     /** Registers a feature as an obstacle only (no label rendered)
      */
-    void registerObstacleFeature( QgsFeature &f, QgsRenderContext &context, QgsLabelFeature **obstacleFeature, QgsGeometry *obstacleGeometry = nullptr );
+    void registerObstacleFeature( QgsFeature &f, QgsRenderContext &context, QgsLabelFeature **obstacleFeature, const QgsGeometry &obstacleGeometry = QgsGeometry() );
 
     QMap<Property, QVariant> dataDefinedValues;
 
@@ -734,7 +750,7 @@ class CORE_EXPORT QgsPalLabeling
      * \returns prepared geometry
      * \since QGIS 2.9
      */
-    static QgsGeometry prepareGeometry( const QgsGeometry &geometry, QgsRenderContext &context, const QgsCoordinateTransform &ct, QgsGeometry *clipGeometry = nullptr ) SIP_FACTORY;
+    static QgsGeometry prepareGeometry( const QgsGeometry &geometry, QgsRenderContext &context, const QgsCoordinateTransform &ct, const QgsGeometry &clipGeometry = QgsGeometry() ) SIP_FACTORY;
 
     /** Checks whether a geometry requires preparation before registration with PAL
      * \param geometry geometry to prepare
@@ -744,7 +760,7 @@ class CORE_EXPORT QgsPalLabeling
      * \returns true if geometry requires preparation
      * \since QGIS 2.9
      */
-    static bool geometryRequiresPreparation( const QgsGeometry &geometry, QgsRenderContext &context, const QgsCoordinateTransform &ct, QgsGeometry *clipGeometry = nullptr );
+    static bool geometryRequiresPreparation( const QgsGeometry &geometry, QgsRenderContext &context, const QgsCoordinateTransform &ct, const QgsGeometry &clipGeometry = QgsGeometry() );
 
     /** Splits a text string to a list of separate lines, using a specified wrap character.
      * The text string will be split on either newline characters or the wrap character.
@@ -764,7 +780,7 @@ class CORE_EXPORT QgsPalLabeling
      */
     static QStringList splitToGraphemes( const QString &text );
 
-  protected:
+  private:
     //! Update temporary QgsPalLayerSettings with any data defined text style values
     static void dataDefinedTextStyle( QgsPalLayerSettings &tmpLyr,
                                       const QMap< QgsPalLayerSettings::Property, QVariant > &ddValues );
@@ -795,7 +811,7 @@ class CORE_EXPORT QgsPalLabeling
      * \returns true if geometry exceeds minimum size
      * \since QGIS 2.9
      */
-    static bool checkMinimumSizeMM( const QgsRenderContext &context, const QgsGeometry *geom, double minSize );
+    static bool checkMinimumSizeMM( const QgsRenderContext &context, const QgsGeometry &geom, double minSize );
 
     friend class QgsPalLayerSettings;
 };

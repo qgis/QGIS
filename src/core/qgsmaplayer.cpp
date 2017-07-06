@@ -16,7 +16,6 @@
  ***************************************************************************/
 
 
-#include <QDateTime>
 #include <QDir>
 #include <QDomDocument>
 #include <QDomElement>
@@ -56,7 +55,6 @@ QgsMapLayer::QgsMapLayer( QgsMapLayer::LayerType type,
   : mValid( false ) // assume the layer is invalid
   , mDataSource( source )
   , mLayerOrigName( lyrname ) // store the original name
-  , mID( QLatin1String( "" ) )
   , mLayerType( type )
   , mBlendMode( QPainter::CompositionMode_SourceOver ) // Default to normal blending
   , mLegend( nullptr )
@@ -65,12 +63,13 @@ QgsMapLayer::QgsMapLayer( QgsMapLayer::LayerType type,
   // Set the display name = internal name
   mLayerName = capitalizeLayerName( mLayerOrigName );
 
-  mShortName = QLatin1String( "" );
   //mShortName.replace( QRegExp( "[\\W]" ), "_" );
 
   // Generate the unique ID of this layer
-  QDateTime dt = QDateTime::currentDateTime();
-  mID = lyrname + dt.toString( QStringLiteral( "yyyyMMddhhmmsszzz" ) );
+  QString uuid = QUuid::createUuid().toString();
+  // trim { } from uuid
+  mID = lyrname + '_' + uuid.mid( 1, uuid.length() - 2 );
+
   // Tidy the ID up to avoid characters that may cause problems
   // elsewhere (e.g in some parts of XML). Replaces every non-word
   // character (word characters are the alphabet, numbers and
@@ -106,8 +105,8 @@ void QgsMapLayer::clone( QgsMapLayer *layer ) const
   layer->setName( name() );
   layer->setShortName( shortName() );
   layer->setExtent( extent() );
-  layer->setMinimumScale( minimumScale() );
   layer->setMaximumScale( maximumScale() );
+  layer->setMinimumScale( minimumScale() );
   layer->setScaleBasedVisibility( hasScaleBasedVisibility() );
   layer->setTitle( title() );
   layer->setAbstract( abstract() );
@@ -460,8 +459,17 @@ bool QgsMapLayer::readLayerXml( const QDomElement &layerElement, const QgsReadWr
 
   // use scale dependent visibility flag
   setScaleBasedVisibility( layerElement.attribute( QStringLiteral( "hasScaleBasedVisibilityFlag" ) ).toInt() == 1 );
-  setMinimumScale( layerElement.attribute( QStringLiteral( "minimumScale" ) ).toDouble() );
-  setMaximumScale( layerElement.attribute( QStringLiteral( "maximumScale" ) ).toDouble() );
+  if ( layerElement.hasAttribute( QStringLiteral( "minimumScale" ) ) )
+  {
+    // older element, when scales were reversed
+    setMaximumScale( layerElement.attribute( QStringLiteral( "minimumScale" ) ).toDouble() );
+    setMinimumScale( layerElement.attribute( QStringLiteral( "maximumScale" ) ).toDouble() );
+  }
+  else
+  {
+    setMaximumScale( layerElement.attribute( QStringLiteral( "maxScale" ) ).toDouble() );
+    setMinimumScale( layerElement.attribute( QStringLiteral( "minScale" ) ).toDouble() );
+  }
 
   setAutoRefreshInterval( layerElement.attribute( QStringLiteral( "autoRefreshTime" ), 0 ).toInt() );
   setAutoRefreshEnabled( layerElement.attribute( QStringLiteral( "autoRefreshEnabled" ), QStringLiteral( "0" ) ).toInt() );
@@ -564,8 +572,8 @@ bool QgsMapLayer::writeLayerXml( QDomElement &layerElement, QDomDocument &docume
 {
   // use scale dependent visibility flag
   layerElement.setAttribute( QStringLiteral( "hasScaleBasedVisibilityFlag" ), hasScaleBasedVisibility() ? 1 : 0 );
-  layerElement.setAttribute( QStringLiteral( "minimumScale" ), QString::number( minimumScale() ) );
-  layerElement.setAttribute( QStringLiteral( "maximumScale" ), QString::number( maximumScale() ) );
+  layerElement.setAttribute( QStringLiteral( "maxScale" ), QString::number( maximumScale() ) );
+  layerElement.setAttribute( QStringLiteral( "minScale" ), QString::number( minimumScale() ) );
 
   if ( !mExtent.isNull() )
   {
@@ -922,18 +930,18 @@ const QgsLayerMetadata &QgsMapLayer::metadata() const
   return mMetadata;
 }
 
-void QgsMapLayer::setMinimumScale( double scale )
+void QgsMapLayer::setMaximumScale( double scale )
 {
   mMinScale = scale;
 }
 
-double QgsMapLayer::minimumScale() const
+double QgsMapLayer::maximumScale() const
 {
   return mMinScale;
 }
 
 
-void QgsMapLayer::setMaximumScale( double scale )
+void QgsMapLayer::setMinimumScale( double scale )
 {
   mMaxScale = scale;
 }
@@ -943,7 +951,7 @@ void QgsMapLayer::setScaleBasedVisibility( const bool enabled )
   mScaleBasedVisibility = enabled;
 }
 
-double QgsMapLayer::maximumScale() const
+double QgsMapLayer::minimumScale() const
 {
   return mMaxScale;
 }
@@ -1191,8 +1199,17 @@ bool QgsMapLayer::importNamedStyle( QDomDocument &myDocument, QString &myErrorMe
 
   // use scale dependent visibility flag
   setScaleBasedVisibility( myRoot.attribute( QStringLiteral( "hasScaleBasedVisibilityFlag" ) ).toInt() == 1 );
-  setMinimumScale( myRoot.attribute( QStringLiteral( "minimumScale" ) ).toDouble() );
-  setMaximumScale( myRoot.attribute( QStringLiteral( "maximumScale" ) ).toDouble() );
+  if ( myRoot.hasAttribute( QStringLiteral( "minimumScale" ) ) )
+  {
+    //older scale element, when min/max were reversed
+    setMaximumScale( myRoot.attribute( QStringLiteral( "minimumScale" ) ).toDouble() );
+    setMinimumScale( myRoot.attribute( QStringLiteral( "maximumScale" ) ).toDouble() );
+  }
+  else
+  {
+    setMaximumScale( myRoot.attribute( QStringLiteral( "maxScale" ) ).toDouble() );
+    setMinimumScale( myRoot.attribute( QStringLiteral( "minScale" ) ).toDouble() );
+  }
 
   return readSymbology( myRoot, myErrorMessage, QgsReadWriteContext() ); // TODO: support relative paths in QML?
 }
@@ -1208,8 +1225,8 @@ void QgsMapLayer::exportNamedStyle( QDomDocument &doc, QString &errorMsg ) const
   myDocument.appendChild( myRootNode );
 
   myRootNode.setAttribute( QStringLiteral( "hasScaleBasedVisibilityFlag" ), hasScaleBasedVisibility() ? 1 : 0 );
-  myRootNode.setAttribute( QStringLiteral( "minimumScale" ), QString::number( minimumScale() ) );
-  myRootNode.setAttribute( QStringLiteral( "maximumScale" ), QString::number( maximumScale() ) );
+  myRootNode.setAttribute( QStringLiteral( "maxScale" ), QString::number( maximumScale() ) );
+  myRootNode.setAttribute( QStringLiteral( "mincale" ), QString::number( minimumScale() ) );
 
   if ( !writeSymbology( myRootNode, myDocument, errorMsg, QgsReadWriteContext() ) )  // TODO: support relative paths in QML?
   {

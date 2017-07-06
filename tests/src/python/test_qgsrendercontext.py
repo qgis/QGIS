@@ -112,7 +112,7 @@ class TestQgsRenderContext(unittest.TestCase):
         self.assertAlmostEqual(sf, 1.0, places=5)
 
         # minimum scale greater than the renderer scale, so should be limited to minScale
-        c.minScale = 1 / 150000000.0
+        c.minScale = 150000000.0
         sf = r.convertToPainterUnits(1, QgsUnitTypes.RenderMapUnits, c)
         self.assertAlmostEqual(sf, 3.89250455, places=5)
         # only conversion from mapunits should be affected
@@ -127,7 +127,7 @@ class TestQgsRenderContext(unittest.TestCase):
         c.minScale = 0
 
         # maximum scale less than the renderer scale, so should be limited to maxScale
-        c.maxScale = 1 / 350000000.0
+        c.maxScale = 350000000.0
         sf = r.convertToPainterUnits(1, QgsUnitTypes.RenderMapUnits, c)
         self.assertAlmostEqual(sf, 0.5, places=5)
         # only conversion from mapunits should be affected
@@ -251,7 +251,7 @@ class TestQgsRenderContext(unittest.TestCase):
         c.maxSizeMMEnabled = False
 
         # test with minimum scale set
-        c.minScale = 1 / 150000000.0
+        c.minScale = 150000000.0
         size = r.convertToMapUnits(2, QgsUnitTypes.RenderMapUnits, c)
         self.assertAlmostEqual(size, 15.57001821, places=5)
         # only conversion from mapunits should be affected
@@ -266,7 +266,7 @@ class TestQgsRenderContext(unittest.TestCase):
         c.minScale = 0
 
         # test with maximum scale set
-        c.maxScale = 1 / 1550000000.0
+        c.maxScale = 1550000000.0
         size = r.convertToMapUnits(2, QgsUnitTypes.RenderMapUnits, c)
         self.assertAlmostEqual(size, 1.50677595625, places=5)
         # only conversion from mapunits should be affected
@@ -305,7 +305,7 @@ class TestQgsRenderContext(unittest.TestCase):
         self.assertAlmostEqual(sf, 1.0, places=5)
 
         # minimum scale greater than the renderer scale, so should be limited to minScale
-        c.minScale = 1 / 150000000.0
+        c.minScale = 150000000.0
         sf = r.convertToPainterUnits(1, QgsUnitTypes.RenderMapUnits, c)
         self.assertAlmostEqual(sf, 3.8925045, places=5)
         # only conversion from mapunits should be affected
@@ -320,7 +320,7 @@ class TestQgsRenderContext(unittest.TestCase):
         c.minScale = 0
 
         # maximum scale less than the renderer scale, so should be limited to maxScale
-        c.maxScale = 1 / 350000000.0
+        c.maxScale = 350000000.0
         sf = r.convertToPainterUnits(1, QgsUnitTypes.RenderMapUnits, c)
         self.assertAlmostEqual(sf, 0.5, places=5)
         # only conversion from mapunits should be affected

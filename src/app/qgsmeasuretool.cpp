@@ -21,7 +21,7 @@
 #include "qgsvectorlayer.h"
 #include "qgssnappingutils.h"
 #include "qgstolerance.h"
-#include "qgscsexception.h"
+#include "qgsexception.h"
 #include "qgsmeasuredialog.h"
 #include "qgsmeasuretool.h"
 #include "qgscursors.h"

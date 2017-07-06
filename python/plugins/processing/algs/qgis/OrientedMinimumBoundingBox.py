@@ -28,6 +28,7 @@ __revision__ = '$Format:%H$'
 from qgis.PyQt.QtCore import QVariant
 from qgis.core import (QgsField,
                        QgsFields,
+                       QgsFeatureSink,
                        QgsGeometry,
                        QgsFeature,
                        QgsWkbTypes,
@@ -48,12 +49,6 @@ class OrientedMinimumBoundingBox(QgisAlgorithm):
     BY_FEATURE = 'BY_FEATURE'
 
     OUTPUT = 'OUTPUT'
-
-    def icon(self):
-        return QgsApplication.getThemeIcon("/providerQgis.svg")
-
-    def svgIconPath(self):
-        return QgsApplication.iconPath("providerQgis.svg")
 
     def group(self):
         return self.tr('Vector general tools')
@@ -102,7 +97,7 @@ class OrientedMinimumBoundingBox(QgisAlgorithm):
     def layerOmmb(self, layer, context, writer, feedback):
         req = QgsFeatureRequest().setSubsetOfAttributes([])
         features = QgsProcessingUtils.getFeatures(layer, context, req)
-        total = 100.0 / QgsProcessingUtils.featureCount(layer, context)
+        total = 100.0 / layer.featureCount() if layer.featureCount() else 0
         newgeometry = QgsGeometry()
         first = True
         for current, inFeat in enumerate(features):
@@ -124,11 +119,11 @@ class OrientedMinimumBoundingBox(QgisAlgorithm):
                                    angle,
                                    width,
                                    height])
-            writer.addFeature(outFeat)
+            writer.addFeature(outFeat, QgsFeatureSink.FastInsert)
 
     def featureOmbb(self, layer, context, writer, feedback):
         features = QgsProcessingUtils.getFeatures(layer, context)
-        total = 100.0 / QgsProcessingUtils.featureCount(layer, context)
+        total = 100.0 / layer.featureCount() if layer.featureCount() else 0
         outFeat = QgsFeature()
         for current, inFeat in enumerate(features):
             geometry, area, angle, width, height = inFeat.geometry().orientedMinimumBoundingBox()
@@ -141,7 +136,7 @@ class OrientedMinimumBoundingBox(QgisAlgorithm):
                               width,
                               height])
                 outFeat.setAttributes(attrs)
-                writer.addFeature(outFeat)
+                writer.addFeature(outFeat, QgsFeatureSink.FastInsert)
             else:
                 feedback.pushInfo(self.tr("Can't calculate an OMBB for feature {0}.").format(inFeat.id()))
             feedback.setProgress(int(current * total))

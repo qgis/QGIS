@@ -77,13 +77,13 @@ label{  background-color: #FFFFCC;
 <DIV CLASS="header" ID="header">
 <H1>QGIS</H1>
 <H2>Building QGIS from source - step by step</H2>
-<H3>Sunday April 30, 2017</H3>
+<H3>Tuesday June 27, 2017</H3>
 </DIV>
 
 <DIV CLASS="body" ID="body">
 <P>
-Last Updated: Sunday April 30, 2017
-Last Change : Sunday April 30, 2017
+Last Updated: Tuesday June 27, 2017
+Last Change : Tuesday June 27, 2017
 </P>
 <DIV CLASS="toc">
 
@@ -312,23 +312,23 @@ sudo apt-get update
 </TR>
 <TR>
 <TD>stretch</TD>
-<TD><CODE>apt-get install bison ca-certificates cmake dh-python doxygen flex gdal-bin git graphviz grass-dev libexpat1-dev libfcgi-dev libgdal-dev libgeos-dev libgsl-dev libpq-dev libproj-dev libqca-qt5-2-dev libqca-qt5-2-plugins libqt5opengl5-dev libqt5scintilla2-dev libqt5sql5-sqlite libqt5svg5-dev libqt5webkit5-dev libqt5xmlpatterns5-dev libqwt-qt5-dev libspatialindex-dev libspatialite-dev libsqlite3-dev libsqlite3-mod-spatialite lighttpd locales ninja-build pkg-config poppler-utils pyqt5-dev pyqt5-dev-tools pyqt5.qsci-dev python3-all-dev python3-dev python3-future python3-gdal python3-mock python3-nose2 python3-psycopg2 python3-pyqt5 python3-pyqt5.qsci python3-pyqt5.qtsql python3-pyqt5.qtsvg python3-sip python3-sip-dev python3-termcolor python3-yaml qt5keychain-dev qtbase5-dev qtpositioning5-dev qtscript5-dev qttools5-dev qttools5-dev-tools spawn-fcgi txt2tags xauth xfonts-100dpi xfonts-75dpi xfonts-base xfonts-scalable xvfb cmake-curses-gui</CODE></TD>
+<TD><CODE>apt-get install bison ca-certificates cmake dh-python doxygen flex gdal-bin git graphviz grass-dev libexpat1-dev libfcgi-dev libgdal-dev libgeos-dev libgsl-dev libpq-dev libproj-dev libqca-qt5-2-dev libqca-qt5-2-plugins libqt5opengl5-dev libqt5scintilla2-dev libqt5sql5-sqlite libqt5svg5-dev libqt5webkit5-dev libqt5xmlpatterns5-dev libqwt-qt5-dev libspatialindex-dev libspatialite-dev libsqlite3-dev libsqlite3-mod-spatialite lighttpd locales ninja-build pkg-config poppler-utils pyqt5-dev pyqt5-dev-tools pyqt5.qsci-dev python3-all-dev python3-dev python3-future python3-gdal python3-mock python3-nose2 python3-psycopg2 python3-pyqt5 python3-pyqt5.qsci python3-pyqt5.qtsql python3-pyqt5.qtsvg python3-sip python3-sip-dev python3-termcolor python3-yaml qt5keychain-dev qtbase5-dev qtpositioning5-dev qtscript5-dev qttools5-dev qttools5-dev-tools spawn-fcgi txt2tags xauth xfonts-100dpi xfonts-75dpi xfonts-base xfonts-scalable xvfb cmake-curses-gui expect</CODE></TD>
 </TR>
 <TR>
 <TD>xenial</TD>
-<TD><CODE>apt-get install bison ca-certificates cmake dh-python doxygen flex gdal-bin git graphviz grass-dev libexpat1-dev libfcgi-dev libgdal-dev libgeos-dev libgsl-dev libpq-dev libproj-dev libqca-qt5-2-dev libqca-qt5-2-plugins libqt5opengl5-dev libqt5scintilla2-dev libqt5sql5-sqlite libqt5svg5-dev libqt5webkit5-dev libqt5xmlpatterns5-dev libqwt-qt5-dev libspatialindex-dev libspatialite-dev libsqlite3-dev libsqlite3-mod-spatialite lighttpd locales ninja-build pkg-config poppler-utils pyqt5-dev pyqt5-dev-tools pyqt5.qsci-dev python3-all-dev python3-dev python3-future python3-gdal python3-mock python3-nose2 python3-psycopg2 python3-pyqt5 python3-pyqt5.qsci python3-pyqt5.qtsql python3-pyqt5.qtsvg python3-sip python3-sip-dev python3-termcolor python3-yaml qt5keychain-dev qtbase5-dev qtpositioning5-dev qtscript5-dev qttools5-dev qttools5-dev-tools spawn-fcgi txt2tags xauth xfonts-100dpi xfonts-75dpi xfonts-base xfonts-scalable xvfb cmake-curses-gui</CODE></TD>
+<TD><CODE>apt-get install bison ca-certificates cmake dh-python doxygen flex gdal-bin git graphviz grass-dev libexpat1-dev libfcgi-dev libgdal-dev libgeos-dev libgsl-dev libpq-dev libproj-dev libqca-qt5-2-dev libqca-qt5-2-plugins libqt5opengl5-dev libqt5scintilla2-dev libqt5sql5-sqlite libqt5svg5-dev libqt5webkit5-dev libqt5xmlpatterns5-dev libqwt-qt5-dev libspatialindex-dev libspatialite-dev libsqlite3-dev libsqlite3-mod-spatialite lighttpd locales ninja-build pkg-config poppler-utils pyqt5-dev pyqt5-dev-tools pyqt5.qsci-dev python3-all-dev python3-dev python3-future python3-gdal python3-mock python3-nose2 python3-psycopg2 python3-pyqt5 python3-pyqt5.qsci python3-pyqt5.qtsql python3-pyqt5.qtsvg python3-sip python3-sip-dev python3-termcolor python3-yaml qt5keychain-dev qtbase5-dev qtpositioning5-dev qtscript5-dev qttools5-dev qttools5-dev-tools spawn-fcgi txt2tags xauth xfonts-100dpi xfonts-75dpi xfonts-base xfonts-scalable xvfb cmake-curses-gui expect</CODE></TD>
 </TR>
 <TR>
 <TD>yakkety</TD>
-<TD><CODE>apt-get install bison ca-certificates cmake dh-python doxygen flex gdal-bin git graphviz grass-dev libexpat1-dev libfcgi-dev libgdal-dev libgeos-dev libgsl-dev libpq-dev libproj-dev libqca-qt5-2-dev libqca-qt5-2-plugins libqt5opengl5-dev libqt5scintilla2-dev libqt5sql5-sqlite libqt5svg5-dev libqt5webkit5-dev libqt5xmlpatterns5-dev libqwt-qt5-dev libspatialindex-dev libspatialite-dev libsqlite3-dev libsqlite3-mod-spatialite lighttpd locales ninja-build pkg-config poppler-utils pyqt5-dev pyqt5-dev-tools pyqt5.qsci-dev python3-all-dev python3-dev python3-future python3-gdal python3-mock python3-nose2 python3-psycopg2 python3-pyqt5 python3-pyqt5.qsci python3-pyqt5.qtsql python3-pyqt5.qtsvg python3-sip python3-sip-dev python3-termcolor python3-yaml qt5keychain-dev qtbase5-dev qtpositioning5-dev qtscript5-dev qttools5-dev qttools5-dev-tools spawn-fcgi txt2tags xauth xfonts-100dpi xfonts-75dpi xfonts-base xfonts-scalable xvfb cmake-curses-gui</CODE></TD>
+<TD><CODE>apt-get install bison ca-certificates cmake dh-python doxygen flex gdal-bin git graphviz grass-dev libexpat1-dev libfcgi-dev libgdal-dev libgeos-dev libgsl-dev libpq-dev libproj-dev libqca-qt5-2-dev libqca-qt5-2-plugins libqt5opengl5-dev libqt5scintilla2-dev libqt5sql5-sqlite libqt5svg5-dev libqt5webkit5-dev libqt5xmlpatterns5-dev libqwt-qt5-dev libspatialindex-dev libspatialite-dev libsqlite3-dev libsqlite3-mod-spatialite lighttpd locales ninja-build pkg-config poppler-utils pyqt5-dev pyqt5-dev-tools pyqt5.qsci-dev python3-all-dev python3-dev python3-future python3-gdal python3-mock python3-nose2 python3-psycopg2 python3-pyqt5 python3-pyqt5.qsci python3-pyqt5.qtsql python3-pyqt5.qtsvg python3-sip python3-sip-dev python3-termcolor python3-yaml qt5keychain-dev qtbase5-dev qtpositioning5-dev qtscript5-dev qttools5-dev qttools5-dev-tools spawn-fcgi txt2tags xauth xfonts-100dpi xfonts-75dpi xfonts-base xfonts-scalable xvfb cmake-curses-gui expect</CODE></TD>
 </TR>
 <TR>
 <TD>zesty</TD>
-<TD><CODE>apt-get install bison ca-certificates cmake dh-python doxygen flex gdal-bin git graphviz grass-dev libexpat1-dev libfcgi-dev libgdal-dev libgeos-dev libgsl-dev libpq-dev libproj-dev libqca-qt5-2-dev libqca-qt5-2-plugins libqt5opengl5-dev libqt5scintilla2-dev libqt5sql5-sqlite libqt5svg5-dev libqt5webkit5-dev libqt5xmlpatterns5-dev libqwt-qt5-dev libspatialindex-dev libspatialite-dev libsqlite3-dev libsqlite3-mod-spatialite lighttpd locales ninja-build pkg-config poppler-utils pyqt5-dev pyqt5-dev-tools pyqt5.qsci-dev python3-all-dev python3-dev python3-future python3-gdal python3-mock python3-nose2 python3-psycopg2 python3-pyqt5 python3-pyqt5.qsci python3-pyqt5.qtsql python3-pyqt5.qtsvg python3-sip python3-sip-dev python3-termcolor python3-yaml qt5keychain-dev qtbase5-dev qtpositioning5-dev qtscript5-dev qttools5-dev qttools5-dev-tools spawn-fcgi txt2tags xauth xfonts-100dpi xfonts-75dpi xfonts-base xfonts-scalable xvfb cmake-curses-gui</CODE></TD>
+<TD><CODE>apt-get install bison ca-certificates cmake dh-python doxygen flex gdal-bin git graphviz grass-dev libexpat1-dev libfcgi-dev libgdal-dev libgeos-dev libgsl-dev libpq-dev libproj-dev libqca-qt5-2-dev libqca-qt5-2-plugins libqt5opengl5-dev libqt5scintilla2-dev libqt5sql5-sqlite libqt5svg5-dev libqt5webkit5-dev libqt5xmlpatterns5-dev libqwt-qt5-dev libspatialindex-dev libspatialite-dev libsqlite3-dev libsqlite3-mod-spatialite lighttpd locales ninja-build pkg-config poppler-utils pyqt5-dev pyqt5-dev-tools pyqt5.qsci-dev python3-all-dev python3-dev python3-future python3-gdal python3-mock python3-nose2 python3-psycopg2 python3-pyqt5 python3-pyqt5.qsci python3-pyqt5.qtsql python3-pyqt5.qtsvg python3-sip python3-sip-dev python3-termcolor python3-yaml qt5keychain-dev qtbase5-dev qtpositioning5-dev qtscript5-dev qttools5-dev qttools5-dev-tools spawn-fcgi txt2tags xauth xfonts-100dpi xfonts-75dpi xfonts-base xfonts-scalable xvfb cmake-curses-gui expect</CODE></TD>
 </TR>
 <TR>
 <TD>sid</TD>
-<TD><CODE>apt-get install bison ca-certificates cmake dh-python doxygen flex gdal-bin git graphviz grass-dev libexpat1-dev libfcgi-dev libgdal-dev libgeos-dev libgsl-dev libosgearth-dev libpq-dev libproj-dev libqca-qt5-2-dev libqca-qt5-2-plugins libqt5opengl5-dev libqt5scintilla2-dev libqt5sql5-sqlite libqt5svg5-dev libqt5webkit5-dev libqt5xmlpatterns5-dev libqwt-qt5-dev libspatialindex-dev libspatialite-dev libsqlite3-dev libsqlite3-mod-spatialite lighttpd locales ninja-build pkg-config poppler-utils pyqt5-dev pyqt5-dev-tools pyqt5.qsci-dev python3-all-dev python3-dev python3-future python3-gdal python3-mock python3-nose2 python3-psycopg2 python3-pyqt5 python3-pyqt5.qsci python3-pyqt5.qtsql python3-pyqt5.qtsvg python3-sip python3-sip-dev python3-termcolor python3-yaml qt5keychain-dev qtbase5-dev qtpositioning5-dev qtscript5-dev qttools5-dev qttools5-dev-tools spawn-fcgi txt2tags xauth xfonts-100dpi xfonts-75dpi xfonts-base xfonts-scalable xvfb cmake-curses-gui</CODE></TD>
+<TD><CODE>apt-get install bison ca-certificates cmake dh-python doxygen flex gdal-bin git graphviz grass-dev libexpat1-dev libfcgi-dev libgdal-dev libgeos-dev libgsl-dev libosgearth-dev libpq-dev libproj-dev libqca-qt5-2-dev libqca-qt5-2-plugins libqt5opengl5-dev libqt5scintilla2-dev libqt5sql5-sqlite libqt5svg5-dev libqt5webkit5-dev libqt5xmlpatterns5-dev libqwt-qt5-dev libspatialindex-dev libspatialite-dev libsqlite3-dev libsqlite3-mod-spatialite lighttpd locales ninja-build pkg-config poppler-utils pyqt5-dev pyqt5-dev-tools pyqt5.qsci-dev python3-all-dev python3-dev python3-future python3-gdal python3-mock python3-nose2 python3-psycopg2 python3-pyqt5 python3-pyqt5.qsci python3-pyqt5.qtsql python3-pyqt5.qtsvg python3-sip python3-sip-dev python3-termcolor python3-yaml qt5keychain-dev qtbase5-dev qtpositioning5-dev qtscript5-dev qttools5-dev qttools5-dev-tools spawn-fcgi txt2tags xauth xfonts-100dpi xfonts-75dpi xfonts-base xfonts-scalable xvfb cmake-curses-gui expect</CODE></TD>
 </TR>
 </TABLE>
 
@@ -596,7 +596,8 @@ qscintilla-qt5-devel python3-qscintilla-devel python3-qscintilla-qt5
 clang flex bison geos-devel gdal-devel sqlite-devel libspatialite-devel
 qt5-qtsvg-devel qt5-qtxmlpatterns-devel spatialindex-devel expat-devel proj-devel
 qwt-qt5-devel gsl-devel postgresql-devel cmake python3-future gdal-python3
-python3-psycopg2 python3-PyYAML qca-qt5-ossl
+python3-psycopg2 python3-PyYAML python3-pygments python3-jinja2 python3-OSWLib
+qca-qt5-ossl
 </PRE></div>
 
 <P>
@@ -620,7 +621,7 @@ cmake ..
 </PRE></div>
 
 <P>
-If everything went ok you can finally start to compile. (As usual append a -jX
+If everything went OK you can finally start to compile. (As usual append a -jX
 where X is the number of available cores option to make to speed up your build
 process)
 </P>
@@ -643,6 +644,23 @@ Or install to your system
 
 <div class="code"><PRE>
 make install
+</PRE></div>
+
+<H3>3.9.2. Suggested system tweaks</H3>
+
+<P>
+By default Fedora disables debugging calls from Qt applications. This prevents
+the useful debug output which is normally printed when running the unit tests.
+</P>
+<P>
+To enable debug prints for the current user, execute:
+</P>
+
+<div class="code"><PRE>
+cat &gt; ~/.config/QtProject/qtlogging.ini &lt;&lt; EOL
+[Rules]
+default.debug=true
+EOL
 </PRE></div>
 
 <A NAME="toc13"></A>

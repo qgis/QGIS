@@ -12,7 +12,6 @@ pushd ${DIR} > /dev/null
 
 code=0
 while read -r sipfile; do
-  if ! grep -Fxq "$sipfile" python/auto_sip.blacklist; then
     header=$(sed -E 's/(.*)\.sip/src\/\1.h/' <<< $sipfile)
     if [ ! -f $header ]; then
       echo "*** Missing header: $header for sipfile $sipfile"
@@ -23,12 +22,11 @@ while read -r sipfile; do
         code=1
       fi
     fi
-  fi
 done < <(
-sed -n -r 's/^%Include (.*\.sip)/core\/\1/p' python/core/core.sip
-sed -n -r 's/^%Include (.*\.sip)/gui\/\1/p' python/gui/gui.sip
-sed -n -r 's/^%Include (.*\.sip)/analysis\/\1/p' python/analysis/analysis.sip
-sed -n -r 's/^%Include (.*\.sip)/server\/\1/p' python/server/server.sip
+sed -n -r 's/^%Include (.*\.sip)/core\/\1/p' python/core/core_auto.sip
+sed -n -r 's/^%Include (.*\.sip)/gui\/\1/p' python/gui/gui_auto.sip
+sed -n -r 's/^%Include (.*\.sip)/analysis\/\1/p' python/analysis/analysis_auto.sip
+sed -n -r 's/^%Include (.*\.sip)/server\/\1/p' python/server/server_auto.sip
   )
 
 

@@ -29,6 +29,7 @@ __revision__ = '$Format:%H$'
 from qgis.PyQt.QtCore import QVariant
 from qgis.core import (QgsField,
                        QgsGeometry,
+                       QgsFeatureSink,
                        QgsDistanceArea,
                        QgsFeature,
                        QgsFeatureRequest,
@@ -61,12 +62,6 @@ class HubDistancePoints(QgisAlgorithm):
              'Kilometers',
              'Layer units'
              ]
-
-    def icon(self):
-        return QgsApplication.getThemeIcon("/providerQgis.svg")
-
-    def svgIconPath(self):
-        return QgsApplication.iconPath("providerQgis.svg")
 
     def group(self):
         return self.tr('Vector analysis tools')
@@ -122,7 +117,7 @@ class HubDistancePoints(QgisAlgorithm):
 
         # Scan source points, find nearest hub, and write to output file
         features = QgsProcessingUtils.getFeatures(layerPoints, context)
-        total = 100.0 / QgsProcessingUtils.featureCount(layerPoints, context)
+        total = 100.0 / layerPoints.featureCount() if layerPoints.featureCount() else 0
         for current, f in enumerate(features):
             src = f.geometry().boundingBox().center()
 
@@ -151,7 +146,7 @@ class HubDistancePoints(QgisAlgorithm):
 
             feat.setGeometry(QgsGeometry.fromPoint(src))
 
-            writer.addFeature(feat)
+            writer.addFeature(feat, QgsFeatureSink.FastInsert)
             feedback.setProgress(int(current * total))
 
         del writer

@@ -35,7 +35,7 @@ QgsVectorLayerEditUtils::QgsVectorLayerEditUtils( QgsVectorLayer *layer )
 
 bool QgsVectorLayerEditUtils::insertVertex( double x, double y, QgsFeatureId atFeatureId, int beforeVertex )
 {
-  if ( !L->hasGeometryType() )
+  if ( !L->isSpatial() )
     return false;
 
   QgsFeature f;
@@ -52,7 +52,7 @@ bool QgsVectorLayerEditUtils::insertVertex( double x, double y, QgsFeatureId atF
 
 bool QgsVectorLayerEditUtils::insertVertex( const QgsPoint &point, QgsFeatureId atFeatureId, int beforeVertex )
 {
-  if ( !L->hasGeometryType() )
+  if ( !L->isSpatial() )
     return false;
 
   QgsFeature f;
@@ -75,7 +75,7 @@ bool QgsVectorLayerEditUtils::moveVertex( double x, double y, QgsFeatureId atFea
 
 bool QgsVectorLayerEditUtils::moveVertex( const QgsPoint &p, QgsFeatureId atFeatureId, int atVertex )
 {
-  if ( !L->hasGeometryType() )
+  if ( !L->isSpatial() )
     return false;
 
   QgsFeature f;
@@ -93,7 +93,7 @@ bool QgsVectorLayerEditUtils::moveVertex( const QgsPoint &p, QgsFeatureId atFeat
 
 QgsVectorLayer::EditResult QgsVectorLayerEditUtils::deleteVertex( QgsFeatureId featureId, int vertex )
 {
-  if ( !L->hasGeometryType() )
+  if ( !L->isSpatial() )
     return QgsVectorLayer::InvalidLayer;
 
   QgsFeature f;
@@ -123,7 +123,7 @@ int QgsVectorLayerEditUtils::addRing( const QList<QgsPointXY> &ring, const QgsFe
 
 int QgsVectorLayerEditUtils::addRing( QgsCurve *ring, const QgsFeatureIds &targetFeatureIds, QgsFeatureId *modifiedFeatureId )
 {
-  if ( !L->hasGeometryType() )
+  if ( !L->isSpatial() )
   {
     delete ring;
     return 5;
@@ -182,7 +182,7 @@ int QgsVectorLayerEditUtils::addPart( const QList<QgsPointXY> &points, QgsFeatur
 
 int QgsVectorLayerEditUtils::addPart( const QgsPointSequence &points, QgsFeatureId featureId )
 {
-  if ( !L->hasGeometryType() )
+  if ( !L->isSpatial() )
     return 6;
 
   QgsGeometry geometry;
@@ -217,7 +217,7 @@ int QgsVectorLayerEditUtils::addPart( const QgsPointSequence &points, QgsFeature
 
 int QgsVectorLayerEditUtils::addPart( QgsCurve *ring, QgsFeatureId featureId )
 {
-  if ( !L->hasGeometryType() )
+  if ( !L->isSpatial() )
     return 6;
 
   QgsGeometry geometry;
@@ -253,7 +253,7 @@ int QgsVectorLayerEditUtils::addPart( QgsCurve *ring, QgsFeatureId featureId )
 
 int QgsVectorLayerEditUtils::translateFeature( QgsFeatureId featureId, double dx, double dy )
 {
-  if ( !L->hasGeometryType() )
+  if ( !L->isSpatial() )
     return 1;
 
   QgsFeature f;
@@ -273,7 +273,7 @@ int QgsVectorLayerEditUtils::translateFeature( QgsFeatureId featureId, double dx
 
 int QgsVectorLayerEditUtils::splitFeatures( const QList<QgsPointXY> &splitLine, bool topologicalEditing )
 {
-  if ( !L->hasGeometryType() )
+  if ( !L->isSpatial() )
     return 4;
 
   QgsFeatureList newFeatures; //store all the newly created features
@@ -384,7 +384,7 @@ int QgsVectorLayerEditUtils::splitFeatures( const QList<QgsPointXY> &splitLine, 
 
 int QgsVectorLayerEditUtils::splitParts( const QList<QgsPointXY> &splitLine, bool topologicalEditing )
 {
-  if ( !L->hasGeometryType() )
+  if ( !L->isSpatial() )
     return 4;
 
   double xMin, yMin, xMax, yMax;
@@ -520,7 +520,7 @@ int QgsVectorLayerEditUtils::splitParts( const QList<QgsPointXY> &splitLine, boo
 
 int QgsVectorLayerEditUtils::addTopologicalPoints( const QgsGeometry &geom )
 {
-  if ( !L->hasGeometryType() )
+  if ( !L->isSpatial() )
     return 1;
 
   if ( geom.isNull() )
@@ -628,7 +628,7 @@ int QgsVectorLayerEditUtils::addTopologicalPoints( const QgsGeometry &geom )
 
 int QgsVectorLayerEditUtils::addTopologicalPoints( const QgsPointXY &p )
 {
-  if ( !L->hasGeometryType() )
+  if ( !L->isSpatial() )
     return 1;
 
   double segmentSearchEpsilon = L->crs().isGeographic() ? 1e-12 : 1e-8;

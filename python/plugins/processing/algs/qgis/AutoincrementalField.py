@@ -28,6 +28,7 @@ __revision__ = '$Format:%H$'
 from qgis.PyQt.QtCore import QVariant
 from qgis.core import (QgsField,
                        QgsFeature,
+                       QgsFeatureSink,
                        QgsApplication,
                        QgsProcessingUtils,
                        QgsProcessingParameterFeatureSource,
@@ -50,12 +51,6 @@ class AutoincrementalField(QgisAlgorithm):
         self.addParameter(QgsProcessingParameterFeatureSink(self.OUTPUT, self.tr('Incremented')))
         self.addOutput(QgsProcessingOutputVectorLayer(self.OUTPUT, self.tr('Incremented')))
 
-    def icon(self):
-        return QgsApplication.getThemeIcon("/providerQgis.svg")
-
-    def svgIconPath(self):
-        return QgsApplication.iconPath("providerQgis.svg")
-
     def group(self):
         return self.tr('Vector table tools')
 
@@ -74,7 +69,7 @@ class AutoincrementalField(QgisAlgorithm):
                                                fields, source.wkbType(), source.sourceCrs())
 
         features = source.getFeatures()
-        total = 100.0 / source.featureCount()
+        total = 100.0 / source.featureCount() if source.featureCount() else 0
         for current, input_feature in enumerate(features):
             if feedback.isCanceled():
                 break
@@ -84,7 +79,7 @@ class AutoincrementalField(QgisAlgorithm):
             attributes.append(current)
             output_feature.setAttributes(attributes)
 
-            sink.addFeature(output_feature)
+            sink.addFeature(output_feature, QgsFeatureSink.FastInsert)
             feedback.setProgress(int(current * total))
 
         return {self.OUTPUT: dest_id}

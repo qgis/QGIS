@@ -264,3 +264,39 @@ QgsAbstractGeometry *QgsGeometryFactory::geomFromWkbType( QgsWkbTypes::Type t )
       return nullptr;
   }
 }
+
+std::unique_ptr<QgsGeometryCollection> QgsGeometryFactory::createCollectionOfType( QgsWkbTypes::Type t )
+{
+  QgsWkbTypes::Type type = QgsWkbTypes::flatType( QgsWkbTypes::multiType( t ) );
+  std::unique_ptr< QgsGeometryCollection > collect;
+  switch ( type )
+  {
+    case QgsWkbTypes::MultiPoint:
+      collect.reset( new QgsMultiPointV2() );
+      break;
+    case QgsWkbTypes::MultiLineString:
+      collect.reset( new QgsMultiLineString() );
+      break;
+    case QgsWkbTypes::MultiCurve:
+      collect.reset( new QgsMultiCurve() );
+      break;
+    case QgsWkbTypes::MultiPolygon:
+      collect.reset( new QgsMultiPolygonV2() );
+      break;
+    case QgsWkbTypes::MultiSurface:
+      collect.reset( new QgsMultiSurface() );
+      break;
+    case QgsWkbTypes::GeometryCollection:
+      collect.reset( new QgsGeometryCollection() );
+      break;
+    default:
+      // should not be possible
+      return nullptr;
+  }
+  if ( QgsWkbTypes::hasM( t ) )
+    collect->addMValue();
+  if ( QgsWkbTypes::hasZ( t ) )
+    collect->addZValue();
+
+  return collect;
+}

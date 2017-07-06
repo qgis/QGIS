@@ -135,12 +135,12 @@ class OfflineTestBase(object):
         # goes offline
         ol = QgsOfflineEditing()
         online_layer = list(self.registry.mapLayers().values())[0]
-        self.assertTrue(online_layer.hasGeometryType())
+        self.assertTrue(online_layer.isSpatial())
         # Check we have features
         self.assertEqual(len([f for f in online_layer.getFeatures()]), len(TEST_FEATURES))
         self.assertTrue(ol.convertToOfflineProject(self.temp_path, 'offlineDbFile.sqlite', [online_layer.id()]))
         offline_layer = list(self.registry.mapLayers().values())[0]
-        self.assertTrue(offline_layer.hasGeometryType())
+        self.assertTrue(offline_layer.isSpatial())
         self.assertTrue(offline_layer.isValid())
         self.assertTrue(offline_layer.name().find('(offline)') > -1)
         self.assertEqual(len([f for f in offline_layer.getFeatures()]), len(TEST_FEATURES))

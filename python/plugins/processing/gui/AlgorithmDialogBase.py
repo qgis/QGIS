@@ -28,6 +28,7 @@ __revision__ = '$Format:%H$'
 
 import os
 import webbrowser
+import html
 
 from qgis.PyQt import uic
 from qgis.PyQt.QtCore import Qt, QCoreApplication, QByteArray, QUrl
@@ -37,7 +38,7 @@ from qgis.utils import iface
 from qgis.core import (QgsProject,
                        QgsProcessingFeedback,
                        QgsSettings)
-
+from qgis.gui import QgsHelp
 
 from processing.core.ProcessingConfig import ProcessingConfig
 
@@ -95,10 +96,6 @@ class AlgorithmDialogBase(BASE, WIDGET):
         handleLayout.addStretch()
         splitterHandle.setLayout(handleLayout)
 
-        self.feedback = AlgorithmDialogFeedback(self)
-        self.feedback.progressChanged.connect(self.setPercentage)
-        self.buttonCancel.clicked.connect(self.feedback.cancel)
-
         self.settings = QgsSettings()
         self.splitter.restoreState(self.settings.value("/Processing/dialogBaseSplitter", QByteArray()))
         self.restoreGeometry(self.settings.value("/Processing/dialogBase", QByteArray()))
@@ -111,6 +108,9 @@ class AlgorithmDialogBase(BASE, WIDGET):
 
         self.setWindowTitle(self.alg.displayName())
 
+        self.buttonBox.rejected.connect(self.reject)
+        self.buttonBox.accepted.connect(self.accept)
+
         # Rename OK button to Run
         self.btnRun = self.buttonBox.button(QDialogButtonBox.Ok)
         self.btnRun.setText(self.tr('Run'))
@@ -118,6 +118,7 @@ class AlgorithmDialogBase(BASE, WIDGET):
         self.buttonCancel.setEnabled(False)
 
         self.btnClose = self.buttonBox.button(QDialogButtonBox.Close)
+
         self.buttonBox.helpRequested.connect(self.openHelp)
 
         self.btnCollapse.clicked.connect(self.toggleCollapsed)
@@ -146,6 +147,12 @@ class AlgorithmDialogBase(BASE, WIDGET):
 
         self.showDebug = ProcessingConfig.getSetting(
             ProcessingConfig.SHOW_DEBUG_IN_DIALOG)
+
+    def createFeedback(self):
+        feedback = AlgorithmDialogFeedback(self)
+        feedback.progressChanged.connect(self.setPercentage)
+        self.buttonCancel.clicked.connect(feedback.cancel)
+        return feedback
 
     def formatHelp(self, alg):
         text = alg.shortHelpString()
@@ -180,26 +187,28 @@ class AlgorithmDialogBase(BASE, WIDGET):
         self.btnRun.setEnabled(True)
         self.btnClose.setEnabled(True)
 
-    def setInfo(self, msg, error=False):
+    def setInfo(self, msg, error=False, escape_html=True):
         if error:
-            self.txtLog.append('<span style="color:red"><br>%s<br></span>' % msg)
+            self.txtLog.append('<span style="color:red">{}</span><br />'.format(msg, quote=False))
+        elif escape_html:
+            self.txtLog.append(html.escape(msg))
         else:
             self.txtLog.append(msg)
         QCoreApplication.processEvents()
 
     def setCommand(self, cmd):
         if self.showDebug:
-            self.setInfo('<code>%s<code>' % cmd)
+            self.txtLog.append('<code>{}<code>'.format(html.escape(cmd, quote=False)))
         QCoreApplication.processEvents()
 
     def setDebugInfo(self, msg):
         if self.showDebug:
-            self.setInfo('<span style="color:blue">%s</span>' % msg)
+            self.txtLog.append('<span style="color:blue">{}</span>'.format(html.escape(msg, quote=False)))
         QCoreApplication.processEvents()
 
     def setConsoleInfo(self, msg):
         if self.showDebug:
-            self.setCommand('<span style="color:darkgray">%s</span>' % msg)
+            self.txtLog.append('<code><span style="color:darkgray">{}</span></code>'.format(html.escape(msg, quote=False)))
         QCoreApplication.processEvents()
 
     def setPercentage(self, value):
@@ -223,7 +232,7 @@ class AlgorithmDialogBase(BASE, WIDGET):
         self._saveGeometry()
         super(AlgorithmDialogBase, self).reject()
 
-    def finish(self, context):
+    def finish(self, context, feedback):
         pass
 
     def toggleCollapsed(self):
@@ -246,6 +255,10 @@ class AlgorithmDialogBase(BASE, WIDGET):
 
     def openHelp(self):
         algHelp = self.alg.helpUrl()
+        if not algHelp:
+            algHelp = QgsHelp.helpUrl("processing_algs/{}/{}".format(
+                self.alg.provider().id(), self.alg.id())).toString()
+
         if algHelp not in [None, ""]:
             webbrowser.open(algHelp)
 

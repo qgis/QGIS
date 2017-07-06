@@ -27,6 +27,7 @@
 #include <QDomDocument>
 
 #include "qgis_server.h"
+#include "qgis_sip.h"
 #include "qgswmsconfigparser.h"
 
 class QgsServerProjectParser;
@@ -40,11 +41,9 @@ class SERVER_EXPORT QgsConfigCache : public QObject
     static QgsConfigCache *instance();
 
     QgsServerProjectParser *serverConfiguration( const QString &filePath );
-    QgsWmsConfigParser *wmsConfiguration(
-      const QString &filePath
-      , const QgsAccessControl *accessControl
-      , const QMap<QString, QString> &parameterMap = ( QMap< QString, QString >() )
-    );
+    QgsWmsConfigParser *wmsConfiguration( const QString &filePath,
+                                          const QgsAccessControl *accessControl,
+                                          const QMap<QString, QString> &parameterMap = QMap< QString, QString >() );
 
     void removeEntry( const QString &path );
 
@@ -57,7 +56,7 @@ class SERVER_EXPORT QgsConfigCache : public QObject
     const QgsProject *project( const QString &path );
 
   private:
-    QgsConfigCache();
+    QgsConfigCache() SIP_FORCE;
 
     //! Check for configuration file updates (remove entry from cache if file changes)
     QFileSystemWatcher mFileSystemWatcher;

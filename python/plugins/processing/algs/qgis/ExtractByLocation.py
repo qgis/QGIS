@@ -26,6 +26,7 @@ __copyright__ = '(C) 2012, Victor Olaya'
 __revision__ = '$Format:%H$'
 
 from qgis.core import (QgsFeatureRequest,
+                       QgsFeatureSink,
                        QgsApplication,
                        QgsProcessingUtils)
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
@@ -43,12 +44,6 @@ class ExtractByLocation(QgisAlgorithm):
     PREDICATE = 'PREDICATE'
     PRECISION = 'PRECISION'
     OUTPUT = 'OUTPUT'
-
-    def icon(self):
-        return QgsApplication.getThemeIcon("/providerQgis.svg")
-
-    def svgIconPath(self):
-        return QgsApplication.iconPath("providerQgis.svg")
 
     def tags(self):
         return self.tr('extract,filter,location,intersects,contains,within').split(',')
@@ -107,7 +102,7 @@ class ExtractByLocation(QgisAlgorithm):
 
         selectedSet = []
         features = QgsProcessingUtils.getFeatures(selectLayer, context)
-        total = 100.0 / QgsProcessingUtils.featureCount(selectLayer, context)
+        total = 100.0 / selectLayer.featureCount() if selectLayer.featureCount() else 0
         for current, f in enumerate(features):
             geom = vector.snapToPrecision(f.geometry(), precision)
             bbox = geom.boundingBox()
@@ -136,9 +131,9 @@ class ExtractByLocation(QgisAlgorithm):
             selectedSet = selectedSet + disjoinSet
 
         features = QgsProcessingUtils.getFeatures(layer, context)
-        total = 100.0 / QgsProcessingUtils.featureCount(layer, context)
+        total = 100.0 / layer.featureCount() if layer.featureCount() else 0
         for current, f in enumerate(features):
             if f.id() in selectedSet:
-                writer.addFeature(f)
+                writer.addFeature(f, QgsFeatureSink.FastInsert)
             feedback.setProgress(int(current * total))
         del writer

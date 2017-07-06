@@ -26,6 +26,7 @@ __copyright__ = '(C) 2016, Nyall Dawson'
 __revision__ = '$Format:%H$'
 
 from qgis.core import (QgsApplication,
+                       QgsFeatureSink,
                        QgsProcessingUtils)
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
@@ -40,12 +41,6 @@ class ExtendLines(QgisAlgorithm):
     OUTPUT_LAYER = 'OUTPUT_LAYER'
     START_DISTANCE = 'START_DISTANCE'
     END_DISTANCE = 'END_DISTANCE'
-
-    def icon(self):
-        return QgsApplication.getThemeIcon("/providerQgis.svg")
-
-    def svgIconPath(self):
-        return QgsApplication.iconPath("providerQgis.svg")
 
     def group(self):
         return self.tr('Vector geometry tools')
@@ -77,7 +72,7 @@ class ExtendLines(QgisAlgorithm):
         end_distance = self.getParameterValue(self.END_DISTANCE)
 
         features = QgsProcessingUtils.getFeatures(layer, context)
-        total = 100.0 / QgsProcessingUtils.featureCount(layer, context)
+        total = 100.0 / layer.featureCount() if layer.featureCount() else 0
 
         for current, input_feature in enumerate(features):
             output_feature = input_feature
@@ -90,7 +85,7 @@ class ExtendLines(QgisAlgorithm):
 
                 output_feature.setGeometry(output_geometry)
 
-            writer.addFeature(output_feature)
+            writer.addFeature(output_feature, QgsFeatureSink.FastInsert)
             feedback.setProgress(int(current * total))
 
         del writer

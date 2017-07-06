@@ -137,9 +137,10 @@ Destination project
     void setInvalidGeometryCheck( const QgsFeatureRequest::InvalidGeometryCheck &check );
 %Docstring
  Sets the behavior used for checking invalid geometries in input layers.
+ Settings this to anything but QgsFeatureRequest.GeometryNoCheck will also
+ reset the invalidGeometryCallback() to a default implementation.
 .. seealso:: invalidGeometryCheck()
 %End
-
 
     void setInvalidGeometryCallback( SIP_PYCALLABLE / AllowNone / );
 %Docstring
@@ -163,6 +164,28 @@ Destination project
 %End
 
 
+    void setTransformErrorCallback( SIP_PYCALLABLE / AllowNone / );
+%Docstring
+ Sets a callback function to use when encountering a transform error when iterating
+ features. This function will be
+ called using the feature which encountered the transform error as a parameter.
+.. versionadded:: 3.0
+.. seealso:: transformErrorCallback()
+%End
+%MethodCode
+    Py_BEGIN_ALLOW_THREADS
+
+    sipCpp->setTransformErrorCallback( [a0]( const QgsFeature &arg )
+    {
+      SIP_BLOCK_THREADS
+      Py_XDECREF( sipCallMethod( NULL, a0, "D", &arg, sipType_QgsFeature, NULL ) );
+      SIP_UNBLOCK_THREADS
+    } );
+
+    Py_END_ALLOW_THREADS
+%End
+
+
     QString defaultEncoding() const;
 %Docstring
  Returns the default encoding to use for newly created files.
@@ -176,13 +199,26 @@ Destination project
 .. seealso:: defaultEncoding()
 %End
 
+    QgsProcessingFeedback *feedback();
+%Docstring
+ Returns the associated feedback object.
+.. seealso:: setFeedback()
+ :rtype: QgsProcessingFeedback
+%End
+
+    void setFeedback( QgsProcessingFeedback *feedback );
+%Docstring
+ Sets an associated ``feedback`` object. This allows context related functions
+ to report feedback and errors to users and processing logs. While ideally this feedback
+ object should outlive the context, only a weak pointer to ``feedback`` is stored
+ and no errors will occur if feedback is deleted before the context.
+ Ownership of ``feedback`` is not transferred.
+.. seealso:: setFeedback()
+%End
+
   private:
     QgsProcessingContext( const QgsProcessingContext &other );
 };
-
-
-
-
 
 QFlags<QgsProcessingContext::Flag> operator|(QgsProcessingContext::Flag f1, QFlags<QgsProcessingContext::Flag> f2);
 

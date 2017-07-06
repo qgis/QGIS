@@ -169,7 +169,7 @@ namespace QgsWms
         if ( layer->type() == QgsMapLayer::VectorLayer )
         {
           QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer );
-          if ( vlayer->hasGeometryType() )
+          if ( vlayer->isSpatial() )
           {
             QString currentStyle = vlayer->styleManager()->currentStyle();
             Q_FOREACH ( QString styleName, vlayer->styleManager()->styles() )

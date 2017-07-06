@@ -28,6 +28,7 @@ __revision__ = '$Format:%H$'
 
 from qgis.core import (QgsFeature,
                        QgsGeometry,
+                       QgsFeatureSink,
                        QgsWkbTypes,
                        QgsApplication,
                        QgsProcessingUtils)
@@ -41,12 +42,6 @@ class Explode(QgisAlgorithm):
 
     INPUT = 'INPUT'
     OUTPUT = 'OUTPUT'
-
-    def icon(self):
-        return QgsApplication.getThemeIcon("/providerQgis.svg")
-
-    def svgIconPath(self):
-        return QgsApplication.iconPath("providerQgis.svg")
 
     def group(self):
         return self.tr('Vector geometry tools')
@@ -71,7 +66,7 @@ class Explode(QgisAlgorithm):
         writer = output.getVectorWriter(fields, QgsWkbTypes.LineString, vlayer.crs(), context)
         outFeat = QgsFeature()
         features = QgsProcessingUtils.getFeatures(vlayer, context)
-        total = 100.0 / QgsProcessingUtils.featureCount(vlayer, context)
+        total = 100.0 / vlayer.featureCount() if vlayer.featureCount() else 0
         for current, feature in enumerate(features):
             feedback.setProgress(int(current * total))
             inGeom = feature.geometry()
@@ -80,7 +75,7 @@ class Explode(QgisAlgorithm):
             outFeat.setAttributes(atMap)
             for segment in segments:
                 outFeat.setGeometry(segment)
-                writer.addFeature(outFeat)
+                writer.addFeature(outFeat, QgsFeatureSink.FastInsert)
         del writer
 
     def extractAsSingleSegments(self, geom):

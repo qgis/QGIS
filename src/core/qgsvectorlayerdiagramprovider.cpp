@@ -159,7 +159,7 @@ bool QgsVectorLayerDiagramProvider::prepare( const QgsRenderContext &context, QS
 }
 
 
-void QgsVectorLayerDiagramProvider::registerFeature( QgsFeature &feature, QgsRenderContext &context, QgsGeometry *obstacleGeometry )
+void QgsVectorLayerDiagramProvider::registerFeature( QgsFeature &feature, QgsRenderContext &context, const QgsGeometry &obstacleGeometry )
 {
   QgsLabelFeature *label = registerDiagram( feature, context, obstacleGeometry );
   if ( label )
@@ -167,7 +167,7 @@ void QgsVectorLayerDiagramProvider::registerFeature( QgsFeature &feature, QgsRen
 }
 
 
-QgsLabelFeature *QgsVectorLayerDiagramProvider::registerDiagram( QgsFeature &feat, QgsRenderContext &context, QgsGeometry *obstacleGeometry )
+QgsLabelFeature *QgsVectorLayerDiagramProvider::registerDiagram( QgsFeature &feat, QgsRenderContext &context, const QgsGeometry &obstacleGeometry )
 {
   const QgsMapSettings &mapSettings = mEngine->mapSettings();
 
@@ -177,14 +177,14 @@ QgsLabelFeature *QgsVectorLayerDiagramProvider::registerDiagram( QgsFeature &fea
     QList<QgsDiagramSettings> settingList = dr->diagramSettings();
     if ( !settingList.isEmpty() && settingList.at( 0 ).scaleBasedVisibility )
     {
-      double minScale = settingList.at( 0 ).minScaleDenominator;
-      if ( minScale > 0 && context.rendererScale() < minScale )
+      double maxScale = settingList.at( 0 ).maximumScale;
+      if ( maxScale > 0 && context.rendererScale() < maxScale )
       {
         return nullptr;
       }
 
-      double maxScale = settingList.at( 0 ).maxScaleDenominator;
-      if ( maxScale > 0 && context.rendererScale() > maxScale )
+      double minScale = settingList.at( 0 ).minimumScale;
+      if ( minScale > 0 && context.rendererScale() > minScale )
       {
         return nullptr;
       }
@@ -209,9 +209,9 @@ QgsLabelFeature *QgsVectorLayerDiagramProvider::registerDiagram( QgsFeature &fea
 
   GEOSGeometry *geomCopy = nullptr;
   std::unique_ptr<QgsGeometry> scopedPreparedGeom;
-  if ( QgsPalLabeling::geometryRequiresPreparation( geom, context, mSettings.coordinateTransform(), &extentGeom ) )
+  if ( QgsPalLabeling::geometryRequiresPreparation( geom, context, mSettings.coordinateTransform(), extentGeom ) )
   {
-    scopedPreparedGeom.reset( new QgsGeometry( QgsPalLabeling::prepareGeometry( geom, context, mSettings.coordinateTransform(), &extentGeom ) ) );
+    scopedPreparedGeom.reset( new QgsGeometry( QgsPalLabeling::prepareGeometry( geom, context, mSettings.coordinateTransform(), extentGeom ) ) );
     QgsGeometry *preparedGeom = scopedPreparedGeom.get();
     if ( preparedGeom->isNull() )
       return nullptr;
@@ -227,14 +227,14 @@ QgsLabelFeature *QgsVectorLayerDiagramProvider::registerDiagram( QgsFeature &fea
 
   GEOSGeometry *geosObstacleGeomClone = nullptr;
   std::unique_ptr<QgsGeometry> scopedObstacleGeom;
-  if ( isObstacle && obstacleGeometry && QgsPalLabeling::geometryRequiresPreparation( *obstacleGeometry, context, mSettings.coordinateTransform(), &extentGeom ) )
+  if ( isObstacle && obstacleGeometry && QgsPalLabeling::geometryRequiresPreparation( obstacleGeometry, context, mSettings.coordinateTransform(), extentGeom ) )
   {
-    QgsGeometry preparedObstacleGeom = QgsPalLabeling::prepareGeometry( *obstacleGeometry, context, mSettings.coordinateTransform(), &extentGeom );
+    QgsGeometry preparedObstacleGeom = QgsPalLabeling::prepareGeometry( obstacleGeometry, context, mSettings.coordinateTransform(), extentGeom );
     geosObstacleGeomClone = preparedObstacleGeom.exportToGeos();
   }
-  else if ( mSettings.isObstacle() && obstacleGeometry )
+  else if ( mSettings.isObstacle() && !obstacleGeometry.isNull() )
   {
-    geosObstacleGeomClone = obstacleGeometry->exportToGeos();
+    geosObstacleGeomClone = obstacleGeometry.exportToGeos();
   }
 
   double diagramWidth = 0;

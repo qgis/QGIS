@@ -31,7 +31,7 @@ import random
 
 from qgis.PyQt.QtGui import QIcon
 from qgis.PyQt.QtCore import QVariant
-from qgis.core import (QgsGeometry, QgsRectangle, QgsFeature, QgsFields, QgsWkbTypes,
+from qgis.core import (QgsGeometry, QgsFeatureSink, QgsRectangle, QgsFeature, QgsFields, QgsWkbTypes,
                        QgsField, QgsSpatialIndex, QgsPointXY,
                        QgsCoordinateReferenceSystem,
                        QgsMessageLog,
@@ -102,7 +102,7 @@ class RandomPointsExtent(QgisAlgorithm):
         nPoints = 0
         nIterations = 0
         maxIterations = pointCount * 200
-        total = 100.0 / pointCount
+        total = 100.0 / pointCount if pointCount else 1
 
         index = QgsSpatialIndex()
         points = dict()
@@ -122,7 +122,7 @@ class RandomPointsExtent(QgisAlgorithm):
                 f.setFields(fields)
                 f.setAttribute('id', nPoints)
                 f.setGeometry(geom)
-                writer.addFeature(f)
+                writer.addFeature(f, QgsFeatureSink.FastInsert)
                 index.insertFeature(f)
                 points[nPoints] = pnt
                 nPoints += 1

@@ -688,9 +688,6 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     //! Returns point, line or polygon
     QgsWkbTypes::GeometryType geometryType() const;
 
-    //! Returns true if this is a geometry layer and false in case of NoGeometry (table only) or UnknownGeometry
-    bool hasGeometryType() const;
-
     //! Returns the WKBType or WKBUnknown in case of error
     QgsWkbTypes::Type wkbType() const override;
 
@@ -698,6 +695,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     QString providerType() const;
 
     QgsCoordinateReferenceSystem sourceCrs() const override;
+    QString sourceName() const override;
 
     /** Reads vector layer specific state from project file Dom node.
      * \note Called by QgsMapLayer::readXml().
@@ -900,7 +898,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
       return getFeatures( QgsFeatureRequest( rectangle ) );
     }
 
-    bool addFeature( QgsFeature &feature ) override;
+    bool addFeature( QgsFeature &feature, QgsFeatureSink::Flags flags = 0 ) override;
 
     /** Updates an existing feature. This method needs to query the datasource
         on every call. Consider using changeAttributeValue() or
@@ -1064,6 +1062,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     //! Returns true if the provider is in editing mode
     virtual bool isEditable() const override;
 
+    //! Returns true if this is a geometry layer and false in case of NoGeometry (table only) or UnknownGeometry
     virtual bool isSpatial() const override;
 
     //! Returns true if the provider has been modified since the last commit
@@ -1222,7 +1221,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      */
     bool deleteAttributes( QList<int> attrs );
 
-    bool addFeatures( QgsFeatureList &features ) override;
+    bool addFeatures( QgsFeatureList &features, QgsFeatureSink::Flags flags = 0 ) override;
 
     //! Delete a feature from the layer (but does not commit it)
     bool deleteFeature( QgsFeatureId fid );

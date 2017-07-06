@@ -77,7 +77,6 @@
 #include <QFileDialog>
 #include <QFileInfo>
 #include <QIcon>
-#include <QImageWriter>
 #include <QLabel>
 #include <QMatrix>
 #include <QMenuBar>
@@ -1975,7 +1974,7 @@ void QgsComposer::exportCompositionAsImage( QgsComposer::OutputMode mode )
   QgsAtlasComposition *atlasMap = &mComposition->atlasComposition();
   if ( mode == QgsComposer::Single )
   {
-    QString outputFileName = QString::null;
+    QString outputFileName = QString();
 
     if ( atlasMap->enabled() && mComposition->atlasMode() == QgsComposition::PreviewAtlas )
     {
@@ -2136,33 +2135,7 @@ void QgsComposer::exportCompositionAsImage( QgsComposer::OutputMode mode )
     QFileDialog dlg( this, tr( "Export atlas to directory" ) );
     dlg.setFileMode( QFileDialog::Directory );
     dlg.setOption( QFileDialog::ShowDirsOnly, true );
-    dlg.setOption( QFileDialog::DontUseNativeDialog, true );
     dlg.setDirectory( lastUsedDir );
-
-    //
-    // Build an augmented FileDialog with a combo box to select the output format
-    QComboBox *box = new QComboBox();
-    QHBoxLayout *hlayout = new QHBoxLayout();
-    QWidget *widget = new QWidget();
-
-    QList<QByteArray> formats = QImageWriter::supportedImageFormats();
-    int selectedFormat = 0;
-    for ( int i = 0; i < formats.size(); ++i )
-    {
-      QString format = QString( formats.at( i ) );
-      if ( format == lastUsedFormat )
-      {
-        selectedFormat = i;
-      }
-      box->addItem( format );
-    }
-    box->setCurrentIndex( selectedFormat );
-
-    hlayout->setMargin( 0 );
-    hlayout->addWidget( new QLabel( tr( "Image format: " ) ) );
-    hlayout->addWidget( box );
-    widget->setLayout( hlayout );
-    dlg.layout()->addWidget( widget );
 
     if ( !dlg.exec() )
     {
@@ -2174,7 +2147,7 @@ void QgsComposer::exportCompositionAsImage( QgsComposer::OutputMode mode )
       return;
     }
     QString dir = s.at( 0 );
-    QString format = box->currentText();
+    QString format = atlasMap->fileFormat();
     QString fileExt = '.' + format;
 
     if ( dir.isEmpty() )

@@ -29,6 +29,7 @@ import plotly as plt
 import plotly.graph_objs as go
 
 from qgis.core import (QgsApplication,
+                       QgsFeatureSink,
                        QgsProcessingUtils)
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 from processing.core.parameters import ParameterVector
@@ -44,12 +45,6 @@ class VectorLayerHistogram(QgisAlgorithm):
     OUTPUT = 'OUTPUT'
     FIELD = 'FIELD'
     BINS = 'BINS'
-
-    def icon(self):
-        return QgsApplication.getThemeIcon("/providerQgis.svg")
-
-    def svgIconPath(self):
-        return QgsApplication.iconPath("providerQgis.svg")
 
     def group(self):
         return self.tr('Graphics')

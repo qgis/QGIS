@@ -29,6 +29,7 @@ import plotly as plt
 import plotly.graph_objs as go
 
 from qgis.core import (QgsApplication,
+                       QgsFeatureSink,
                        QgsProcessingUtils)
 from processing.core.parameters import ParameterTable
 from processing.core.parameters import ParameterTableField
@@ -45,12 +46,6 @@ class BoxPlot(QgisAlgorithm):
     NAME_FIELD = 'NAME_FIELD'
     VALUE_FIELD = 'VALUE_FIELD'
     MSD = 'MSD'
-
-    def icon(self):
-        return QgsApplication.getThemeIcon("/providerQgis.svg")
-
-    def svgIconPath(self):
-        return QgsApplication.iconPath("providerQgis.svg")
 
     def group(self):
         return self.tr('Graphics')

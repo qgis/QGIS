@@ -32,6 +32,7 @@
 #include "qgspropertycollection.h"
 
 
+class QgsDataDefinedSizeLegend;
 class QgsDiagram;
 class QgsDiagramRenderer;
 class QgsFeature;
@@ -376,8 +377,6 @@ class CORE_EXPORT QgsDiagramSettings
       , scaleByArea( true )
       , rotationOffset( 270 ) //top
       , scaleBasedVisibility( false )
-      , minScaleDenominator( -1 )
-      , maxScaleDenominator( -1 )
       , minimumSize( 0.0 )
     {}
     bool enabled;
@@ -426,9 +425,22 @@ class CORE_EXPORT QgsDiagramSettings
     double rotationOffset;
 
     bool scaleBasedVisibility;
-    //scale range (-1 if no lower / upper bound )
-    double minScaleDenominator;
-    double maxScaleDenominator;
+
+    /**
+     * The maximum map scale (i.e. most "zoomed in" scale) at which the diagrams will be visible.
+     * The scale value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
+     * A scale of 0 indicates no maximum scale visibility.
+     * \see minimumScale
+    */
+    double maximumScale = 0;
+
+    /**
+     * The minimum map scale (i.e. most "zoomed out" scale) at which the diagrams will be visible.
+     * The scale value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
+     * A scale of 0 indicates no minimum scale visibility.
+     * \see maximumScale
+    */
+    double minimumScale = 0;
 
     //! Scale diagrams smaller than mMinimumSize to mMinimumSize
     double minimumSize;
@@ -473,6 +485,18 @@ class CORE_EXPORT QgsDiagramInterpolationSettings
 
 class CORE_EXPORT QgsDiagramRenderer
 {
+
+#ifdef SIP_RUN
+    SIP_CONVERT_TO_SUBCLASS_CODE
+    if ( sipCpp->rendererName() == QStringLiteral( "SingleCategory" ) )
+      sipType = sipType_QgsSingleCategoryDiagramRenderer;
+    else if ( sipCpp->rendererName() == QStringLiteral( "LinearlyInterpolated" ) )
+      sipType = sipType_QgsLinearlyInterpolatedDiagramRenderer;
+    else
+      sipType = NULL;
+    SIP_END
+#endif
+
   public:
 
     QgsDiagramRenderer();
@@ -542,38 +566,6 @@ class CORE_EXPORT QgsDiagramRenderer
      */
     void setAttributeLegend( bool enabled ) { mShowAttributeLegend = enabled; }
 
-    /** Returns true if renderer will show legend items for diagram sizes.
-     * \since QGIS 2.16
-     * \see setSizeLegend()
-     * \see attributeLegend()
-     * \see sizeLegendSymbol()
-     */
-    bool sizeLegend() const { return mShowSizeLegend; }
-
-    /** Sets whether the renderer will show legend items for diagram sizes.
-     * \param enabled set to true to show diagram size legend
-     * \since QGIS 2.16
-     * \see sizeLegend()
-     * \see setAttributeLegend()
-     * \see setSizeLegendSymbol()
-     */
-    void setSizeLegend( bool enabled ) { mShowSizeLegend = enabled; }
-
-    /** Returns the marker symbol used for rendering the diagram size legend.
-     * \since QGIS 2.16
-     * \see setSizeLegendSymbol()
-     * \see sizeLegend()
-     */
-    QgsMarkerSymbol *sizeLegendSymbol() const { return mSizeLegendSymbol.get(); }
-
-    /** Sets the marker symbol used for rendering the diagram size legend.
-     * \param symbol marker symbol, ownership is transferred to the renderer.
-     * \since QGIS 2.16
-     * \see sizeLegendSymbol()
-     * \see setSizeLegend()
-     */
-    void setSizeLegendSymbol( QgsMarkerSymbol *symbol SIP_TRANSFER ) { mSizeLegendSymbol.reset( symbol ); }
-
   protected:
     QgsDiagramRenderer( const QgsDiagramRenderer &other );
     QgsDiagramRenderer &operator=( const QgsDiagramRenderer &other );
@@ -613,12 +605,6 @@ class CORE_EXPORT QgsDiagramRenderer
 
     //! Whether to show an attribute legend for the diagrams
     bool mShowAttributeLegend;
-
-    //! Whether to show a size legend for the diagrams
-    bool mShowSizeLegend;
-
-    //! Marker symbol to use in size legends
-    std::unique_ptr< QgsMarkerSymbol > mSizeLegendSymbol;
 };
 
 /** \ingroup core
@@ -660,6 +646,7 @@ class CORE_EXPORT QgsLinearlyInterpolatedDiagramRenderer : public QgsDiagramRend
 {
   public:
     QgsLinearlyInterpolatedDiagramRenderer();
+    ~QgsLinearlyInterpolatedDiagramRenderer();
 
     QgsLinearlyInterpolatedDiagramRenderer *clone() const override SIP_FACTORY;
 
@@ -711,14 +698,32 @@ class CORE_EXPORT QgsLinearlyInterpolatedDiagramRenderer : public QgsDiagramRend
 
     QList< QgsLayerTreeModelLegendNode * > legendItems( QgsLayerTreeLayer *nodeLayer ) const override SIP_FACTORY;
 
+    /**
+     * Configures appearance of legend. Takes ownership of the passed settings objects.
+     * \since QGIS 3.0
+     */
+    void setDataDefinedSizeLegend( QgsDataDefinedSizeLegend *settings SIP_TRANSFER );
+
+    /**
+     * Returns configuration of appearance of legend. Will return null if no configuration has been set.
+     * \since QGIS 3.0
+     */
+    QgsDataDefinedSizeLegend *dataDefinedSizeLegend() const;
+
   protected:
     bool diagramSettings( const QgsFeature &feature, const QgsRenderContext &c, QgsDiagramSettings &s ) const override;
 
     QSizeF diagramSize( const QgsFeature &, const QgsRenderContext &c ) const override;
 
+    //! Copy constructor
+    QgsLinearlyInterpolatedDiagramRenderer( const QgsLinearlyInterpolatedDiagramRenderer &other );
+
   private:
     QgsDiagramSettings mSettings;
     QgsDiagramInterpolationSettings mInterpolationSettings;
+
+    //! Stores more settings about how legend for varying size of symbols should be rendered
+    QgsDataDefinedSizeLegend *mDataDefinedSizeLegend = nullptr;
 };
 
 #endif // QGSDIAGRAMRENDERERV2_H

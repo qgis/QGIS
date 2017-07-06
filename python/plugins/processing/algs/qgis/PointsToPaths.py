@@ -32,6 +32,7 @@ from datetime import datetime
 from qgis.PyQt.QtCore import QVariant
 from qgis.core import (QgsApplication,
                        QgsFeature,
+                       QgsFeatureSink,
                        QgsFields,
                        QgsField,
                        QgsGeometry,
@@ -57,12 +58,6 @@ class PointsToPaths(QgisAlgorithm):
     #GAP_PERIOD = 'GAP_PERIOD'
     OUTPUT_LINES = 'OUTPUT_LINES'
     OUTPUT_TEXT = 'OUTPUT_TEXT'
-
-    def icon(self):
-        return QgsApplication.getThemeIcon("/providerQgis.svg")
-
-    def svgIconPath(self):
-        return QgsApplication.iconPath("providerQgis.svg")
 
     def group(self):
         return self.tr('Vector creation tools')
@@ -106,7 +101,7 @@ class PointsToPaths(QgisAlgorithm):
 
         points = dict()
         features = QgsProcessingUtils.getFeatures(layer, context)
-        total = 100.0 / QgsProcessingUtils.featureCount(layer, context)
+        total = 100.0 / layer.featureCount() if layer.featureCount() else 0
         for current, f in enumerate(features):
             point = f.geometry().asPoint()
             group = f[groupField]
@@ -125,7 +120,7 @@ class PointsToPaths(QgisAlgorithm):
         da = QgsDistanceArea()
 
         current = 0
-        total = 100.0 / len(points)
+        total = 100.0 / len(points) if points else 1
         for group, vertices in list(points.items()):
             vertices.sort()
             f = QgsFeature()
@@ -159,7 +154,7 @@ class PointsToPaths(QgisAlgorithm):
                     i += 1
 
             f.setGeometry(QgsGeometry.fromPolyline(line))
-            writer.addFeature(f)
+            writer.addFeature(f, QgsFeatureSink.FastInsert)
             current += 1
             feedback.setProgress(int(current * total))
 

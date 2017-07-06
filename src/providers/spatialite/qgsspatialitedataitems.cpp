@@ -75,6 +75,7 @@ QgsSLConnectionItem::QgsSLConnectionItem( QgsDataItem *parent, QString name, QSt
 {
   mDbPath = QgsSpatiaLiteConnection::connectionPath( name );
   mToolTip = mDbPath;
+  mCapabilities |= Collapse;
 }
 
 static QgsLayerItem::LayerType _layerTypeFromDb( const QString &dbType )
@@ -204,22 +205,23 @@ bool QgsSLConnectionItem::handleDrop( const QMimeData *data, Qt::DropAction )
   QgsMimeDataUtils::UriList lst = QgsMimeDataUtils::decodeUriList( data );
   Q_FOREACH ( const QgsMimeDataUtils::Uri &u, lst )
   {
-    if ( u.layerType != QLatin1String( "vector" ) )
+    // open the source layer
+    bool owner;
+    QString error;
+    QgsVectorLayer *srcLayer = u.vectorLayer( owner, error );
+    if ( !srcLayer )
     {
-      importResults.append( tr( "%1: Not a vector layer!" ).arg( u.name ) );
-      hasError = true; // only vectors can be imported
+      importResults.append( tr( "%1: %2" ).arg( u.name ).arg( error ) );
+      hasError = true;
       continue;
     }
-
-    // open the source layer
-    QgsVectorLayer *srcLayer = new QgsVectorLayer( u.uri, u.name, u.providerKey );
 
     if ( srcLayer->isValid() )
     {
       destUri.setDataSource( QString(), u.name, srcLayer->geometryType() != QgsWkbTypes::NullGeometry ? QStringLiteral( "geom" ) : QString() );
       QgsDebugMsg( "URI " + destUri.uri() );
 
-      std::unique_ptr< QgsVectorLayerExporterTask > exportTask( QgsVectorLayerExporterTask::withLayerOwnership( srcLayer, destUri.uri(), QStringLiteral( "spatialite" ), srcLayer->crs() ) );
+      std::unique_ptr< QgsVectorLayerExporterTask > exportTask( new QgsVectorLayerExporterTask( srcLayer, destUri.uri(), QStringLiteral( "spatialite" ), srcLayer->crs(), nullptr, owner ) );
 
       // when export is successful:
       connect( exportTask.get(), &QgsVectorLayerExporterTask::exportComplete, this, [ = ]()

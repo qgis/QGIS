@@ -258,9 +258,11 @@ Return the actual extent derived from requested extent that takes takes output i
 Return the distance in geographical coordinates that equals to one pixel in the map
  :rtype: float
 %End
+
     double scale() const;
 %Docstring
-Return the calculated scale of the map
+ Returns the calculated map scale.
+ The scale value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
  :rtype: float
 %End
 

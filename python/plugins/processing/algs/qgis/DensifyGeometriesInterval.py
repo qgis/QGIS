@@ -31,13 +31,13 @@ from math import sqrt
 
 from qgis.core import (QgsWkbTypes,
                        QgsApplication,
-                       QgsProcessingUtils)
-
+                       QgsFeatureSink,
+                       QgsProcessingParameterFeatureSource,
+                       QgsProcessingParameterNumber,
+                       QgsProcessingParameterFeatureSink,
+                       QgsProcessingOutputVectorLayer,
+                       QgsProcessingParameterDefinition)
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
-from processing.core.parameters import ParameterVector
-from processing.core.parameters import ParameterNumber
-from processing.core.outputs import OutputVector
-from processing.tools import dataobjects
 
 
 class DensifyGeometriesInterval(QgisAlgorithm):
@@ -46,24 +46,20 @@ class DensifyGeometriesInterval(QgisAlgorithm):
     INTERVAL = 'INTERVAL'
     OUTPUT = 'OUTPUT'
 
-    def icon(self):
-        return QgsApplication.getThemeIcon("/providerQgis.svg")
-
-    def svgIconPath(self):
-        return QgsApplication.iconPath("providerQgis.svg")
-
     def group(self):
         return self.tr('Vector geometry tools')
 
     def __init__(self):
         super().__init__()
-        self.addParameter(ParameterVector(self.INPUT,
-                                          self.tr('Input layer'),
-                                          [dataobjects.TYPE_VECTOR_POLYGON, dataobjects.TYPE_VECTOR_LINE]))
-        self.addParameter(ParameterNumber(self.INTERVAL,
-                                          self.tr('Interval between vertices to add'), 0.0, 10000000.0, 1.0))
 
-        self.addOutput(OutputVector(self.OUTPUT, self.tr('Densified')))
+        self.addParameter(QgsProcessingParameterFeatureSource(self.INPUT,
+                                                              self.tr('Input layer'), [QgsProcessingParameterDefinition.TypeVectorPolygon, QgsProcessingParameterDefinition.TypeVectorLine]))
+        self.addParameter(QgsProcessingParameterNumber(self.INTERVAL,
+                                                       self.tr('Interval between vertices to add'), QgsProcessingParameterNumber.Double,
+                                                       1, False, 0, 10000000))
+
+        self.addParameter(QgsProcessingParameterFeatureSink(self.OUTPUT, self.tr('Densified')))
+        self.addOutput(QgsProcessingOutputVectorLayer(self.OUTPUT, self.tr('Densified')))
 
     def name(self):
         return 'densifygeometriesgivenaninterval'
@@ -72,23 +68,24 @@ class DensifyGeometriesInterval(QgisAlgorithm):
         return self.tr('Densify geometries given an interval')
 
     def processAlgorithm(self, parameters, context, feedback):
-        layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT), context)
-        interval = self.getParameterValue(self.INTERVAL)
+        source = self.parameterAsSource(parameters, self.INPUT, context)
+        interval = self.parameterAsDouble(parameters, self.INTERVAL, context)
 
-        isPolygon = layer.geometryType() == QgsWkbTypes.PolygonGeometry
+        (sink, dest_id) = self.parameterAsSink(parameters, self.OUTPUT, context,
+                                               source.fields(), source.wkbType(), source.sourceCrs())
 
-        writer = self.getOutputFromName(
-            self.OUTPUT).getVectorWriter(layer.fields(), layer.wkbType(), layer.crs(), context)
-
-        features = QgsProcessingUtils.getFeatures(layer, context)
-        total = 100.0 / QgsProcessingUtils.featureCount(layer, context)
+        features = source.getFeatures()
+        total = 100.0 / source.featureCount() if source.featureCount() else 0
         for current, f in enumerate(features):
+            if feedback.isCanceled():
+                break
+
             feature = f
             if feature.hasGeometry():
-                new_geometry = feature.geometry().densifyByCount(float(interval))
+                new_geometry = feature.geometry().densifyByDistance(float(interval))
                 feature.setGeometry(new_geometry)
-            writer.addFeature(feature)
+            sink.addFeature(feature, QgsFeatureSink.FastInsert)
 
             feedback.setProgress(int(current * total))
 
-        del writer
+        return {self.OUTPUT: dest_id}

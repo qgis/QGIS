@@ -27,6 +27,7 @@ __revision__ = '$Format:%H$'
 
 from qgis.core import (QgsWkbTypes,
                        QgsExpression,
+                       QgsFeatureSink,
                        QgsExpressionContext,
                        QgsExpressionContextUtils,
                        QgsGeometry,
@@ -47,12 +48,6 @@ class GeometryByExpression(QgisAlgorithm):
     WITH_Z = 'WITH_Z'
     WITH_M = 'WITH_M'
     EXPRESSION = 'EXPRESSION'
-
-    def icon(self):
-        return QgsApplication.getThemeIcon("/providerQgis.svg")
-
-    def svgIconPath(self):
-        return QgsApplication.iconPath("providerQgis.svg")
 
     def group(self):
         return self.tr('Vector geometry tools')
@@ -115,7 +110,7 @@ class GeometryByExpression(QgisAlgorithm):
                 self.tr('Evaluation error: {0}').format(expression.evalErrorString()))
 
         features = QgsProcessingUtils.getFeatures(layer, context)
-        total = 100.0 / QgsProcessingUtils.featureCount(layer, context)
+        total = 100.0 / layer.featureCount() if layer.featureCount() else 0
         for current, input_feature in enumerate(features):
             output_feature = input_feature
 
@@ -133,7 +128,7 @@ class GeometryByExpression(QgisAlgorithm):
                         self.tr('{} is not a geometry').format(value))
                 output_feature.setGeometry(value)
 
-            writer.addFeature(output_feature)
+            writer.addFeature(output_feature, QgsFeatureSink.FastInsert)
             feedback.setProgress(int(current * total))
 
         del writer

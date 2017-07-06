@@ -222,6 +222,42 @@ void QgsRectangle::combineExtentWith( double x, double y )
   }
 }
 
+QgsRectangle QgsRectangle::operator-( const QgsVector v ) const
+{
+  double xmin = mXmin - v.x();
+  double xmax = mXmax - v.x();
+  double ymin = mYmin - v.y();
+  double ymax = mYmax - v.y();
+  return QgsRectangle( xmin, ymin, xmax, ymax );
+}
+
+QgsRectangle QgsRectangle::operator+( const QgsVector v ) const
+{
+  double xmin = mXmin + v.x();
+  double xmax = mXmax + v.x();
+  double ymin = mYmin + v.y();
+  double ymax = mYmax + v.y();
+  return QgsRectangle( xmin, ymin, xmax, ymax );
+}
+
+QgsRectangle &QgsRectangle::operator-=( const QgsVector v )
+{
+  mXmin -= v.x();
+  mXmax -= v.x();
+  mYmin -= v.y();
+  mYmax -= v.y();
+  return *this;
+}
+
+QgsRectangle &QgsRectangle::operator+=( const QgsVector v )
+{
+  mXmin += v.x();
+  mXmax += v.x();
+  mYmin += v.y();
+  mYmax += v.y();
+  return *this;
+}
+
 bool QgsRectangle::isEmpty() const
 {
   return mXmax <= mXmin || mYmax <= mYmin;
@@ -340,18 +376,6 @@ QgsRectangle &QgsRectangle::operator=( const QgsRectangle &r )
   }
 
   return *this;
-}
-
-void QgsRectangle::unionRect( const QgsRectangle &r )
-{
-  if ( r.xMinimum() < xMinimum() )
-    setXMinimum( r.xMinimum() );
-  if ( r.xMaximum() > xMaximum() )
-    setXMaximum( r.xMaximum() );
-  if ( r.yMinimum() < yMinimum() )
-    setYMinimum( r.yMinimum() );
-  if ( r.yMaximum() > yMaximum() )
-    setYMaximum( r.yMaximum() );
 }
 
 bool QgsRectangle::isFinite() const

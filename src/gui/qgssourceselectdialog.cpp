@@ -27,7 +27,7 @@
 #include "qgslogger.h"
 #include "qgsmapcanvas.h"
 #include "qgsmanageconnectionsdialog.h"
-#include "qgscsexception.h"
+#include "qgsexception.h"
 #include "qgssettings.h"
 
 #include <QItemDelegate>

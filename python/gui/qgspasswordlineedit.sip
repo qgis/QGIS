@@ -1,32 +1,59 @@
-/** \class QgsPasswordLineEdit
- * \ingroup gui
- * QLineEdit subclass with built in support for showing/hiding
- * entered password.
- * @note added in QGIS 3.0
- **/
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgspasswordlineedit.h                                        *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
 class QgsPasswordLineEdit : QLineEdit
 {
-%TypeHeaderCode
-#include <qgspasswordlineedit.h>
+%Docstring
+ QLineEdit subclass with built in support for showing/hiding
+ entered password.
+.. versionadded:: 3.0
+*
 %End
 
+%TypeHeaderCode
+#include "qgspasswordlineedit.h"
+%End
   public:
 
-    /** Constructor for QgsPasswordLineEdit.
-     * @param parent parent widget
-     */
-    QgsPasswordLineEdit( QWidget *parent = 0 );
+    QgsPasswordLineEdit( QWidget *parent = 0, bool passwordVisible = false );
+%Docstring
+ Constructor for QgsPasswordLineEdit.
+ \param parent parent widget
+ \param passwordVisible Initial state of the password's visibility
+%End
 
-    /** Define if a lock icon shall be shown on the left of the widget
-     * @param visible set to false to hide the lock icon
-     */
     void setShowLockIcon( bool visible );
+%Docstring
+ Define if a lock icon shall be shown on the left of the widget
+ \param visible set to false to hide the lock icon
+%End
 
-    /** Returns if a lock icon shall be shown on the left of the widget
-     */
     bool showLockIcon() const;
+%Docstring
+ Returns if a lock icon shall be shown on the left of the widget
+ :rtype: bool
+%End
 
-    /** Set state of the password's visibility
-     */
     void setPasswordVisibility( bool visible );
+%Docstring
+ Set state of the password's visibility
+%End
+
 };
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgspasswordlineedit.h                                        *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

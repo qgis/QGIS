@@ -14,6 +14,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+#include <algorithm>
 #include <stdexcept>
 #include <QtAlgorithms>
 
@@ -37,6 +38,7 @@ QgsAtlasComposition::QgsAtlasComposition( QgsComposition *composition )
   , mHideCoverage( false )
   , mFilenamePattern( QStringLiteral( "'output_'||@atlas_featurenumber" ) )
   , mSingleFile( false )
+  , mFileFormat( QStringLiteral( "png" ) )
   , mSortFeatures( false )
   , mSortAscending( true )
   , mCurrentFeatureNo( 0 )
@@ -436,9 +438,32 @@ bool QgsAtlasComposition::prepareForFeature( const int featureI, const bool upda
 void QgsAtlasComposition::computeExtent( QgsComposerMap *map )
 {
   // QgsGeometry::boundingBox is expressed in the geometry"s native CRS
-  // We have to transform the grometry to the destination CRS and ask for the bounding box
+  // We have to transform the geometry to the destination CRS and ask for the bounding box
   // Note: we cannot directly take the transformation of the bounding box, since transformations are not linear
-  mTransformedFeatureBounds = currentGeometry( map->crs() ).boundingBox();
+  QgsGeometry g = currentGeometry( map->crs() );
+  // Rotating the geometry, so the bounding box is correct wrt map rotation
+  if ( map->mapRotation() != 0.0 )
+  {
+    QgsPointXY prevCenter = g.boundingBox().center();
+    g.rotate( map->mapRotation(), g.boundingBox().center() );
+    // Rotation center will be still the bounding box center of an unrotated geometry.
+    // Which means, if the center of bbox moves after rotation, the viewport will
+    // also be offset, and part of the geometry will fall out of bounds.
+    // Here we compensate for that roughly: by extending the rotated bounds
+    // so that its center is the same as the original.
+    QgsRectangle bounds = g.boundingBox();
+    double dx = std::max( std::abs( prevCenter.x() - bounds.xMinimum() ),
+                          std::abs( prevCenter.x() - bounds.xMaximum() ) );
+    double dy = std::max( std::abs( prevCenter.y() - bounds.yMinimum() ),
+                          std::abs( prevCenter.y() - bounds.yMaximum() ) );
+    QgsPointXY center = g.boundingBox().center();
+    mTransformedFeatureBounds = QgsRectangle( center.x() - dx, center.y() - dy,
+                                center.x() + dx, center.y() + dy );
+  }
+  else
+  {
+    mTransformedFeatureBounds = g.boundingBox();
+  }
 }
 
 void QgsAtlasComposition::prepareMap( QgsComposerMap *map )
@@ -612,6 +637,8 @@ void QgsAtlasComposition::writeXml( QDomElement &elem, QDomDocument &doc ) const
     atlasElem.setAttribute( QStringLiteral( "featureFilter" ), mFeatureFilter );
   }
 
+  atlasElem.setAttribute( QStringLiteral( "fileFormat" ), mFileFormat );
+
   elem.appendChild( atlasElem );
 }
 
@@ -664,6 +691,8 @@ void QgsAtlasComposition::readXml( const QDomElement &atlasElem, const QDomDocum
   }
 
   mHideCoverage = atlasElem.attribute( QStringLiteral( "hideCoverage" ), QStringLiteral( "false" ) ) == QLatin1String( "true" );
+
+  mFileFormat = atlasElem.attribute( QStringLiteral( "fileFormat" ), QStringLiteral( "png" ) );
 
   emit parameterChanged();
 }

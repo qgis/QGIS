@@ -30,7 +30,27 @@ import AlgorithmsTestBase
 import nose2
 import shutil
 
+from qgis.core import (QgsProcessingAlgorithm,
+                       QgsProcessingFeedback)
 from qgis.testing import start_app, unittest
+from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
+from processing.tools.dataobjects import createContext
+
+
+class TestAlg(QgsProcessingAlgorithm):
+
+    def __init__(self):
+        super().__init__()
+
+    def name(self):
+        return 'testalg'
+
+    def displayName(self):
+        return 'testalg'
+
+    def processAlgorithm(self, parameters, context, feedback):
+        raise GeoAlgorithmExecutionException('Exception while processing')
+        return {}
 
 
 class TestQgisAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsTest):
@@ -51,6 +71,17 @@ class TestQgisAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsTest):
 
     def test_definition_file(self):
         return 'qgis_algorithm_tests.yaml'
+
+    def testProcessingException(self):
+        """
+        Test that Python exception is caught when running an alg
+        """
+
+        alg = TestAlg()
+        context = createContext()
+        feedback = QgsProcessingFeedback()
+        results, ok = alg.run({}, context, feedback)
+        self.assertFalse(ok)
 
 
 if __name__ == '__main__':

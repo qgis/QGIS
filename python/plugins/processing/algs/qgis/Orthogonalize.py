@@ -26,6 +26,7 @@ __copyright__ = '(C) 2016, Nyall Dawson'
 __revision__ = '$Format:%H$'
 
 from qgis.core import (QgsApplication,
+                       QgsFeatureSink,
                        QgsProcessingUtils,
                        QgsProcessingParameterDefinition)
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
@@ -42,12 +43,6 @@ class Orthogonalize(QgisAlgorithm):
     MAX_ITERATIONS = 'MAX_ITERATIONS'
     DISTANCE_THRESHOLD = 'DISTANCE_THRESHOLD'
     ANGLE_TOLERANCE = 'ANGLE_TOLERANCE'
-
-    def icon(self):
-        return QgsApplication.getThemeIcon("/providerQgis.svg")
-
-    def svgIconPath(self):
-        return QgsApplication.iconPath("providerQgis.svg")
 
     def tags(self):
         return self.tr('rectangle,perpendicular,right,angles,square,quadrilateralise').split(',')
@@ -86,7 +81,7 @@ class Orthogonalize(QgisAlgorithm):
             self.OUTPUT_LAYER).getVectorWriter(layer.fields(), layer.wkbType(), layer.crs(), context)
 
         features = QgsProcessingUtils.getFeatures(layer, context)
-        total = 100.0 / QgsProcessingUtils.featureCount(layer, context)
+        total = 100.0 / layer.featureCount() if layer.featureCount() else 0
 
         for current, input_feature in enumerate(features):
             output_feature = input_feature
@@ -99,7 +94,7 @@ class Orthogonalize(QgisAlgorithm):
 
                 output_feature.setGeometry(output_geometry)
 
-            writer.addFeature(output_feature)
+            writer.addFeature(output_feature, QgsFeatureSink.FastInsert)
             feedback.setProgress(int(current * total))
 
         del writer

@@ -52,7 +52,7 @@ class CORE_EXPORT QgsRuleBasedLabeling : public QgsAbstractVectorLayerLabeling
     {
       public:
         //! takes ownership of settings
-        Rule( QgsPalLayerSettings *settings SIP_TRANSFER, int scaleMinDenom = 0, int scaleMaxDenom = 0, const QString &filterExp = QString(), const QString &description = QString(), bool elseRule = false );
+        Rule( QgsPalLayerSettings *settings SIP_TRANSFER, int maximumScale = 0, int minimumScale = 0, const QString &filterExp = QString(), const QString &description = QString(), bool elseRule = false );
         ~Rule();
 
         //! Rules cannot be copied.
@@ -78,27 +78,27 @@ class CORE_EXPORT QgsRuleBasedLabeling : public QgsAbstractVectorLayerLabeling
          *
          * \returns True if scale based labeling is active
          */
-        bool dependsOnScale() const { return mScaleMinDenom != 0 || mScaleMaxDenom != 0; }
+        bool dependsOnScale() const { return mMinimumScale != 0 || mMaximumScale != 0; }
 
         /**
-         * The minimum scale at which this label rule should be applied
-         *
-         * E.g. Denominator 1000 is a scale of 1:1000, where a rule with minimum denominator
-         * of 900 will not be applied while a rule with 2000 will be applied.
-         *
-         * \returns The minimum scale denominator
+         * Returns the maximum map scale (i.e. most "zoomed in" scale) at which the label rule will be active.
+         * The scale value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
+         * A scale of 0 indicates no maximum scale visibility.
+         * \see minimumScale()
+         * \see setMaximumScale()
+         * \since QGIS 3.0
          */
-        int scaleMinDenom() const { return mScaleMinDenom; }
+        double maximumScale() const { return mMaximumScale; }
 
         /**
-         * The maximum scale denominator at which this label rule should be applied
-         *
-         * E.g. Denominator 1000 is a scale of 1:1000, where a rule with maximum denominator
-         * of 900 will be applied while a rule with 2000 will not be applied.
-         *
-         * \returns The maximum scale denominator
+         * Returns the minimum map scale (i.e. most "zoomed out" scale) at which the label rule will be active.
+         * The scale value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
+         * A scale of 0 indicates no minimum scale visibility.
+         * \see maximumScale()
+         * \see setMinimumScale()
+         * \since QGIS 3.0
          */
-        int scaleMaxDenom() const { return mScaleMaxDenom; }
+        double minimumScale() const { return mMinimumScale; }
 
         /**
          * A filter that will check if this rule applies
@@ -134,20 +134,22 @@ class CORE_EXPORT QgsRuleBasedLabeling : public QgsAbstractVectorLayerLabeling
         void setSettings( QgsPalLayerSettings *settings SIP_TRANSFER );
 
         /**
-         * Set the minimum denominator for which this rule shall apply.
-         * E.g. 1000 if it shall be evaluated between 1:1000 and 1:100'000
-         * Set to 0 to disable the minimum check
-         * \param scaleMinDenom The minimum scale denominator for this rule
+         * Sets the minimum map \a scale (i.e. most "zoomed out" scale) at which the label rule will be active.
+         * The \a scale value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
+         * A \a scale of 0 indicates no minimum scale visibility.
+         * \see minimumScale()
+         * \see setMaximumScale()
          */
-        void setScaleMinDenom( int scaleMinDenom ) { mScaleMinDenom = scaleMinDenom; }
+        void setMinimumScale( double scale ) { mMinimumScale = scale; }
 
         /**
-         * Set the maximum denominator for which this rule shall apply.
-         * E.g. 100'000 if it shall be evaluated between 1:1000 and 1:100'000
-         * Set to 0 to disable the maximum check
-         * \param scaleMaxDenom maximum scale denominator for this rule
+         * Sets the maximum map \a scale (i.e. most "zoomed in" scale) at which the rule will be active.
+         * The \a scale value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
+         * A \a scale of 0 indicates no maximum scale visibility.
+         * \see maximumScale()
+         * \see setMinimumScale()
          */
-        void setScaleMaxDenom( int scaleMaxDenom ) { mScaleMaxDenom = scaleMaxDenom; }
+        void setMaximumScale( double scale ) { mMaximumScale = scale; }
 
         /**
          * Set the expression used to check if a given feature shall be rendered with this rule
@@ -260,7 +262,7 @@ class CORE_EXPORT QgsRuleBasedLabeling : public QgsAbstractVectorLayerLabeling
 
         //! register individual features
         //! \note not available in Python bindings
-        RegisterResult registerFeature( QgsFeature &feature, QgsRenderContext &context, RuleToProviderMap &subProviders, QgsGeometry *obstacleGeometry = nullptr ) SIP_SKIP;
+        RegisterResult registerFeature( QgsFeature &feature, QgsRenderContext &context, RuleToProviderMap &subProviders, const QgsGeometry &obstacleGeometry = QgsGeometry() ) SIP_SKIP;
 
         /**
          * Returns true if this rule or any of its children requires advanced composition effects
@@ -283,8 +285,9 @@ class CORE_EXPORT QgsRuleBasedLabeling : public QgsAbstractVectorLayerLabeling
         bool isFilterOK( QgsFeature &f, QgsRenderContext &context ) const;
 
         /**
-         * Check if this rule applies for a given scale
-         * \param scale The scale to check. If set to 0, it will always return true.
+         * Check if this rule applies for a given \a scale.
+         * The \a scale value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
+         * If set to 0, it will always return true.
          *
          * \returns If the rule will be evaluated at this scale
          */
@@ -303,7 +306,8 @@ class CORE_EXPORT QgsRuleBasedLabeling : public QgsAbstractVectorLayerLabeling
       private:
         Rule *mParent; // parent rule (NULL only for root rule)
         QgsPalLayerSettings *mSettings = nullptr;
-        int mScaleMinDenom, mScaleMaxDenom;
+        double mMaximumScale = 0;
+        double mMinimumScale = 0;
         QString mFilterExp, mDescription;
         bool mElseRule;
         RuleList mChildren;
@@ -360,7 +364,7 @@ class CORE_EXPORT QgsRuleBasedLabelProvider : public QgsVectorLayerLabelProvider
 
     virtual bool prepare( const QgsRenderContext &context, QSet<QString> &attributeNames ) override;
 
-    virtual void registerFeature( QgsFeature &feature, QgsRenderContext &context, QgsGeometry *obstacleGeometry = nullptr ) override;
+    virtual void registerFeature( QgsFeature &feature, QgsRenderContext &context, const QgsGeometry &obstacleGeometry = QgsGeometry() ) override;
 
     //! create a label provider
     virtual QgsVectorLayerLabelProvider *createProvider( QgsVectorLayer *layer, const QString &providerId, bool withFeatureLoop, const QgsPalLayerSettings *settings );

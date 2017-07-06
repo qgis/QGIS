@@ -21,6 +21,7 @@
 #include "qgslogger.h"
 #include "qgsmessagelog.h"
 #include "qgssettings.h"
+#include "qgsexception.h"
 
 #include <QElapsedTimer>
 #include <QObject>
@@ -53,6 +54,21 @@ QgsPostgresFeatureIterator::QgsPostgresFeatureIterator( QgsPostgresFeatureSource
     return;
   }
 
+  if ( mRequest.destinationCrs().isValid() && mRequest.destinationCrs() != mSource->mCrs )
+  {
+    mTransform = QgsCoordinateTransform( mSource->mCrs, mRequest.destinationCrs() );
+  }
+  try
+  {
+    mFilterRect = filterRectToSourceCrs( mTransform );
+  }
+  catch ( QgsCsException & )
+  {
+    // can't reproject mFilterRect
+    mClosed = true;
+    return;
+  }
+
   mCursorName = mConn->uniqueCursorName();
   QString whereClause;
 
@@ -61,7 +77,7 @@ QgsPostgresFeatureIterator::QgsPostgresFeatureIterator( QgsPostgresFeatureSource
   bool useFallbackWhereClause = false;
   QString fallbackWhereClause;
 
-  if ( !request.filterRect().isNull() && !mSource->mGeometryColumn.isNull() )
+  if ( !mFilterRect.isNull() && !mSource->mGeometryColumn.isNull() )
   {
     whereClause = whereClauseRect();
   }
@@ -297,6 +313,7 @@ bool QgsPostgresFeatureIterator::fetchFeature( QgsFeature &feature )
 
   feature.setValid( true );
   feature.setFields( mSource->mFields ); // allow name-based attribute lookups
+  geometryToDestinationCrs( feature, mTransform );
 
   return true;
 }
@@ -401,7 +418,7 @@ bool QgsPostgresFeatureIterator::close()
 
 QString QgsPostgresFeatureIterator::whereClauseRect()
 {
-  QgsRectangle rect = mRequest.filterRect();
+  QgsRectangle rect = mFilterRect;
   if ( mSource->mSpatialColType == SctGeography )
   {
     rect = QgsRectangle( -180.0, -90.0, 180.0, 90.0 ).intersect( &rect );
@@ -823,6 +840,7 @@ QgsPostgresFeatureSource::QgsPostgresFeatureSource( const QgsPostgresProvider *p
   , mPrimaryKeyType( p->mPrimaryKeyType )
   , mPrimaryKeyAttrs( p->mPrimaryKeyAttrs )
   , mQuery( p->mQuery )
+  , mCrs( p->crs() )
   , mShared( p->mShared )
 {
   if ( mSqlWhereClause.startsWith( QLatin1String( " WHERE " ) ) )

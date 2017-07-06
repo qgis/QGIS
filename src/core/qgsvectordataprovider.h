@@ -56,6 +56,7 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider, public QgsFeat
     Q_OBJECT
 
     friend class QgsTransaction;
+    friend class QgsVectorLayerEditBuffer;
 
   public:
 
@@ -160,6 +161,7 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider, public QgsFeat
 
     QgsCoordinateReferenceSystem sourceCrs() const override;
     QgsRectangle sourceExtent() const override;
+    QString sourceName() const override { return QString(); }
 
     /**
      * Return a short comment for the data that this provider is
@@ -223,7 +225,7 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider, public QgsFeat
      */
     virtual void enumValues( int index, QStringList &enumList SIP_OUT ) const { Q_UNUSED( index ); enumList.clear(); }
 
-    virtual bool addFeatures( QgsFeatureList &flist SIP_INOUT ) override;
+    virtual bool addFeatures( QgsFeatureList &flist SIP_INOUT, QgsFeatureSink::Flags flags = 0 ) override;
 
     /**
      * Deletes one or more features from the provider. This requires the DeleteFeatures capability.
@@ -551,7 +553,7 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider, public QgsFeat
      * Converts the geometry to the provider type if possible / necessary
      * \returns the converted geometry or nullptr if no conversion was necessary or possible
      */
-    QgsGeometry *convertToProviderType( const QgsGeometry &geom ) const SIP_FACTORY;
+    QgsGeometry convertToProviderType( const QgsGeometry &geom ) const;
 
     /**
      * Set the list of native types supported by this provider.

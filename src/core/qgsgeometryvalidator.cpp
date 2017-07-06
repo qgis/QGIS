@@ -18,16 +18,14 @@ email                : jef at norbit dot de
 #include "qgsgeometry.h"
 #include "qgslogger.h"
 
-QgsGeometryValidator::QgsGeometryValidator( const QgsGeometry *g, QList<QgsGeometry::Error> *errors, QgsGeometry::ValidationMethod method )
+QgsGeometryValidator::QgsGeometryValidator( const QgsGeometry &geometry, QList<QgsGeometry::Error> *errors, QgsGeometry::ValidationMethod method )
   : QThread()
+  , mGeometry( geometry )
   , mErrors( errors )
   , mStop( false )
   , mErrorCount( 0 )
   , mMethod( method )
 {
-  Q_ASSERT( g );
-  if ( g )
-    mG = *g;
 }
 
 QgsGeometryValidator::~QgsGeometryValidator()
@@ -220,7 +218,7 @@ void QgsGeometryValidator::run()
     case QgsGeometry::ValidatorGeos:
     {
       char *r = nullptr;
-      GEOSGeometry *g0 = mG.exportToGeos();
+      GEOSGeometry *g0 = mGeometry.exportToGeos();
       GEOSContextHandle_t handle = QgsGeometry::getGEOSHandler();
       if ( !g0 )
       {
@@ -266,26 +264,26 @@ void QgsGeometryValidator::run()
     {
       QgsDebugMsg( "validation thread started." );
 
-      QgsWkbTypes::Type flatType = QgsWkbTypes::flatType( mG.wkbType() );
+      QgsWkbTypes::Type flatType = QgsWkbTypes::flatType( mGeometry.wkbType() );
       //if ( flatType == QgsWkbTypes::Point || flatType == QgsWkbTypes::MultiPoint )
       //    break;
       if ( flatType == QgsWkbTypes::LineString )
       {
-        validatePolyline( 0, mG.asPolyline() );
+        validatePolyline( 0, mGeometry.asPolyline() );
       }
       else if ( flatType == QgsWkbTypes::MultiLineString )
       {
-        QgsMultiPolyline mp = mG.asMultiPolyline();
+        QgsMultiPolyline mp = mGeometry.asMultiPolyline();
         for ( int i = 0; !mStop && i < mp.size(); i++ )
           validatePolyline( i, mp[i] );
       }
       else if ( flatType == QgsWkbTypes::Polygon )
       {
-        validatePolygon( 0, mG.asPolygon() );
+        validatePolygon( 0, mGeometry.asPolygon() );
       }
       else if ( flatType == QgsWkbTypes::MultiPolygon )
       {
-        QgsMultiPolygon mp = mG.asMultiPolygon();
+        QgsMultiPolygon mp = mGeometry.asMultiPolygon();
         for ( int i = 0; !mStop && i < mp.size(); i++ )
         {
           validatePolygon( i, mp[i] );
@@ -326,7 +324,7 @@ void QgsGeometryValidator::run()
       else if ( flatType == QgsWkbTypes::Unknown )
       {
         QgsDebugMsg( QObject::tr( "Unknown geometry type" ) );
-        emit errorFound( QgsGeometry::Error( QObject::tr( "Unknown geometry type %1" ).arg( mG.wkbType() ) ) );
+        emit errorFound( QgsGeometry::Error( QObject::tr( "Unknown geometry type %1" ).arg( mGeometry.wkbType() ) ) );
         mErrorCount++;
       }
 
@@ -357,9 +355,9 @@ void QgsGeometryValidator::addError( const QgsGeometry::Error &e )
     *mErrors << e;
 }
 
-void QgsGeometryValidator::validateGeometry( const QgsGeometry *g, QList<QgsGeometry::Error> &errors, QgsGeometry::ValidationMethod method )
+void QgsGeometryValidator::validateGeometry( const QgsGeometry &geometry, QList<QgsGeometry::Error> &errors, QgsGeometry::ValidationMethod method )
 {
-  QgsGeometryValidator *gv = new QgsGeometryValidator( g, &errors, method );
+  QgsGeometryValidator *gv = new QgsGeometryValidator( geometry, &errors, method );
   connect( gv, &QgsGeometryValidator::errorFound, gv, &QgsGeometryValidator::addError );
   gv->run();
   gv->wait();

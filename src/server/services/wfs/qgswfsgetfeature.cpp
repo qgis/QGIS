@@ -1064,12 +1064,12 @@ namespace QgsWfs
         if ( geometryName == QLatin1String( "EXTENT" ) )
         {
           QgsGeometry bbox = QgsGeometry::fromRect( geom.boundingBox() );
-          gmlElem = QgsOgcUtils::geometryToGML( &bbox, doc, prec );
+          gmlElem = QgsOgcUtils::geometryToGML( bbox, doc, prec );
         }
         else if ( geometryName == QLatin1String( "CENTROID" ) )
         {
           QgsGeometry centroid = geom.centroid();
-          gmlElem = QgsOgcUtils::geometryToGML( &centroid, doc, prec );
+          gmlElem = QgsOgcUtils::geometryToGML( centroid, doc, prec );
         }
         else
         {
@@ -1146,12 +1146,12 @@ namespace QgsWfs
         if ( geometryName == QLatin1String( "EXTENT" ) )
         {
           QgsGeometry bbox = QgsGeometry::fromRect( geom.boundingBox() );
-          gmlElem = QgsOgcUtils::geometryToGML( &bbox, doc, QStringLiteral( "GML3" ), prec );
+          gmlElem = QgsOgcUtils::geometryToGML( bbox, doc, QStringLiteral( "GML3" ), prec );
         }
         else if ( geometryName == QLatin1String( "CENTROID" ) )
         {
           QgsGeometry centroid = geom.centroid();
-          gmlElem = QgsOgcUtils::geometryToGML( &centroid, doc, QStringLiteral( "GML3" ), prec );
+          gmlElem = QgsOgcUtils::geometryToGML( centroid, doc, QStringLiteral( "GML3" ), prec );
         }
         else
         {

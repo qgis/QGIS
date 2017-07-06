@@ -30,6 +30,7 @@ import os
 from qgis.PyQt.QtGui import QIcon
 
 from qgis.core import (QgsFeatureRequest, QgsFeature, QgsGeometry,
+                       QgsFeatureSink,
                        QgsWkbTypes, QgsFields,
                        QgsProcessingUtils)
 
@@ -114,7 +115,7 @@ class LinesIntersection(QgisAlgorithm):
 
         outFeat = QgsFeature()
         features = QgsProcessingUtils.getFeatures(layerA, context)
-        total = 100.0 / QgsProcessingUtils.featureCount(layerA, context)
+        total = 100.0 / layerA.featureCount() if layerA.featureCount() else 0
         hasIntersections = False
 
         for current, inFeatA in enumerate(features):
@@ -154,7 +155,7 @@ class LinesIntersection(QgisAlgorithm):
                                 outFeat.setGeometry(tempGeom.fromPoint(j))
                                 attrsA.extend(attrsB)
                                 outFeat.setAttributes(attrsA)
-                                writer.addFeature(outFeat)
+                                writer.addFeature(outFeat, QgsFeatureSink.FastInsert)
 
             feedback.setProgress(int(current * total))
 

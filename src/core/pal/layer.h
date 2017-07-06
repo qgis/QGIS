@@ -30,6 +30,9 @@
 #ifndef PAL_LAYER_H_
 #define PAL_LAYER_H_
 
+#define SIP_NO_FILE
+
+
 #include "qgis_core.h"
 #include "pal.h" // for LineArrangementFlags enum
 #include "rtree.hpp"

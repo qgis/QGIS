@@ -29,7 +29,7 @@ class QgsOracleNewConnection : public QDialog, private Ui::QgsOracleNewConnectio
     Q_OBJECT
   public:
     //! Constructor
-    QgsOracleNewConnection( QWidget *parent = 0, const QString &connName = QString::null, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags );
+    QgsOracleNewConnection( QWidget *parent = 0, const QString &connName = QString(), Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags );
     //! Destructor
     ~QgsOracleNewConnection();
 

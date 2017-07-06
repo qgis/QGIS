@@ -29,7 +29,7 @@
 #include "qgslayertree.h"
 #include "qgsmaplayerstylemanager.h"
 
-#include "qgscsexception.h"
+#include "qgsexception.h"
 
 namespace QgsWms
 {
@@ -338,8 +338,8 @@ namespace QgsWms
           //min/max scale denominatorScaleBasedVisibility
           if ( l->hasScaleBasedVisibility() )
           {
-            QString minScaleString = QString::number( l->minimumScale() );
-            QString maxScaleString = QString::number( l->maximumScale() );
+            QString minScaleString = QString::number( l->maximumScale() );
+            QString maxScaleString = QString::number( l->minimumScale() );
             QDomElement minScaleElem = doc.createElement( QStringLiteral( "sld:MinScaleDenominator" ) );
             QDomText minScaleText = doc.createTextNode( minScaleString );
             minScaleElem.appendChild( minScaleText );

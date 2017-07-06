@@ -28,6 +28,7 @@ __revision__ = '$Format:%H$'
 from qgis.PyQt.QtCore import QVariant
 from qgis.core import (QgsField,
                        QgsFeature,
+                       QgsFeatureSink,
                        QgsApplication,
                        QgsProcessingUtils)
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
@@ -41,12 +42,6 @@ class EquivalentNumField(QgisAlgorithm):
     INPUT = 'INPUT'
     OUTPUT = 'OUTPUT'
     FIELD = 'FIELD'
-
-    def icon(self):
-        return QgsApplication.getThemeIcon("/providerQgis.svg")
-
-    def svgIconPath(self):
-        return QgsApplication.iconPath("providerQgis.svg")
 
     def group(self):
         return self.tr('Vector table tools')
@@ -77,7 +72,7 @@ class EquivalentNumField(QgisAlgorithm):
         classes = {}
 
         features = QgsProcessingUtils.getFeatures(vlayer, context)
-        total = 100.0 / QgsProcessingUtils.featureCount(vlayer, context)
+        total = 100.0 / vlayer.featureCount() if vlayer.featureCount() else 0
         for current, feature in enumerate(features):
             feedback.setProgress(int(current * total))
             inGeom = feature.geometry()
@@ -90,6 +85,6 @@ class EquivalentNumField(QgisAlgorithm):
 
             atMap.append(classes[clazz])
             outFeat.setAttributes(atMap)
-            writer.addFeature(outFeat)
+            writer.addFeature(outFeat, QgsFeatureSink.FastInsert)
 
         del writer

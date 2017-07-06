@@ -726,7 +726,7 @@ void QgsAttributeForm::updateConstraints( QgsEditorWidgetWrapper *eww )
     Q_FOREACH ( QgsEditorWidgetWrapper *depsEww, deps )
       depsEww->updateConstraint( ft, constraintOrigin );
 
-    // sync ok button status
+    // sync OK button status
     synchronizeEnabledState();
 
     mExpressionContext.setFeature( ft );
@@ -1012,7 +1012,7 @@ void QgsAttributeForm::synchronizeEnabledState()
     isEditable = isEditable & validConstraint;
   }
 
-  // change ok button status
+  // change OK button status
   QPushButton *okButton = mButtonBox->button( QDialogButtonBox::Ok );
   if ( okButton )
     okButton->setEnabled( isEditable );
@@ -1569,7 +1569,7 @@ QgsAttributeForm::WidgetInfo QgsAttributeForm::createWidgetFromDef( const QgsAtt
       rww->setShowLinkButton( relDef->showLinkButton() );
       rww->setShowUnlinkButton( relDef->showUnlinkButton() );
       mWidgets.append( rww );
-      newWidgetInfo.labelText = QString::null;
+      newWidgetInfo.labelText = QString();
       newWidgetInfo.labelOnTop = true;
       break;
     }
@@ -1674,7 +1674,7 @@ QgsAttributeForm::WidgetInfo QgsAttributeForm::createWidgetFromDef( const QgsAtt
       gbLayout->addWidget( spacer, ++row, 0 );
       gbLayout->setRowStretch( row, 1 );
 
-      newWidgetInfo.labelText = QString::null;
+      newWidgetInfo.labelText = QString();
       newWidgetInfo.labelOnTop = true;
       break;
     }

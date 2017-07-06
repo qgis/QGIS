@@ -22,6 +22,7 @@
 QgsBrowserTreeView::QgsBrowserTreeView( QWidget *parent )
   : QTreeView( parent )
   , mSettingsSection( QStringLiteral( "browser" ) )
+  , mBrowserModel( nullptr )
 {
 }
 
@@ -31,6 +32,11 @@ void QgsBrowserTreeView::setModel( QAbstractItemModel *model )
   QTreeView::setModel( model );
 
   restoreState();
+}
+
+void QgsBrowserTreeView::setBrowserModel( QgsBrowserModel *model )
+{
+  mBrowserModel = model;
 }
 
 void QgsBrowserTreeView::showEvent( QShowEvent *e )
@@ -72,7 +78,25 @@ void QgsBrowserTreeView::restoreState()
     {
       QModelIndex expandIndex = QgsBrowserModel::findPath( model(), path, Qt::MatchStartsWith );
       if ( expandIndex.isValid() )
-        expandIndexSet.insert( expandIndex );
+      {
+        QModelIndex modelIndex = browserModel()->findPath( path, Qt::MatchExactly );
+        if ( modelIndex.isValid() )
+        {
+          QgsDataItem *ptr = browserModel()->dataItem( modelIndex );
+          if ( ptr && ( ptr->capabilities2() & QgsDataItem::Capability::Collapse ) )
+          {
+            QgsDebugMsgLevel( "do not expand index for path " + path, 4 );
+            QModelIndex parentIndex = model()->parent( expandIndex );
+            // Still we need to store the parent in order to expand it
+            if ( parentIndex.isValid() )
+              expandIndexSet.insert( parentIndex );
+          }
+          else
+          {
+            expandIndexSet.insert( expandIndex );
+          }
+        }
+      }
       else
       {
         QgsDebugMsgLevel( "index for path " + path + " not found", 4 );
@@ -83,12 +107,10 @@ void QgsBrowserTreeView::restoreState()
       expandTree( expandIndex );
     }
   }
-  else
-  {
-    // expand root favorites item
-    QModelIndex index = QgsBrowserModel::findPath( model(), QStringLiteral( "favorites:" ) );
-    expand( index );
-  }
+
+  // expand root favorites item
+  QModelIndex index = QgsBrowserModel::findPath( model(), QStringLiteral( "favorites:" ) );
+  expand( index );
 }
 
 void QgsBrowserTreeView::expandTree( const QModelIndex &index )

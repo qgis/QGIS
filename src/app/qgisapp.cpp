@@ -536,7 +536,7 @@ void QgisApp::activeLayerChanged( QgsMapLayer *layer )
  */
 void QgisApp::validateCrs( QgsCoordinateReferenceSystem &srs )
 {
-  static QString sAuthId = QString::null;
+  static QString sAuthId = QString();
   QgsSettings mySettings;
   QString myDefaultProjectionOption = mySettings.value( QStringLiteral( "Projections/defaultBehavior" ), "prompt" ).toString();
   if ( myDefaultProjectionOption == QLatin1String( "prompt" ) )
@@ -962,7 +962,7 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
   QString caption = tr( "QGIS - %1 ('%2')" ).arg( Qgis::QGIS_VERSION, Qgis::QGIS_RELEASE_NAME );
   setWindowTitle( caption );
 
-  QgsMessageLog::logMessage( tr( "QGIS starting..." ), QString::null, QgsMessageLog::INFO );
+  QgsMessageLog::logMessage( tr( "QGIS starting..." ), QString(), QgsMessageLog::INFO );
 
   // set QGIS specific srs validation
   connect( this, &QgisApp::customCrsValidation,
@@ -1081,9 +1081,9 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
 
   mSplash->showMessage( tr( "QGIS Ready!" ), Qt::AlignHCenter | Qt::AlignBottom );
 
-  QgsMessageLog::logMessage( QgsApplication::showSettings(), QString::null, QgsMessageLog::INFO );
+  QgsMessageLog::logMessage( QgsApplication::showSettings(), QString(), QgsMessageLog::INFO );
 
-  QgsMessageLog::logMessage( tr( "QGIS Ready!" ), QString::null, QgsMessageLog::INFO );
+  QgsMessageLog::logMessage( tr( "QGIS Ready!" ), QString(), QgsMessageLog::INFO );
 
   mMapTipsVisible = false;
   // This turns on the map tip if they where active in the last session
@@ -3383,7 +3383,7 @@ void QgisApp::addUserInputWidget( QWidget *widget )
 
 void QgisApp::initLayerTreeView()
 {
-  mLayerTreeView->setWhatsThis( tr( "Map legend that displays all the layers currently on the map canvas. Click on the check box to turn a layer on or off. Double click on a layer in the legend to customize its appearance and set other properties." ) );
+  mLayerTreeView->setWhatsThis( tr( "Map legend that displays all the layers currently on the map canvas. Click on the checkbox to turn a layer on or off. Double click on a layer in the legend to customize its appearance and set other properties." ) );
 
   mLayerTreeDock = new QgsDockWidget( tr( "Layers Panel" ), this );
   mLayerTreeDock->setObjectName( QStringLiteral( "Layers" ) );
@@ -3622,7 +3622,7 @@ void QgisApp::updateRecentProjectPaths()
   {
     QAction *action = mRecentProjectsMenu->addAction( QStringLiteral( "%1 (%2)" ).arg( recentProject.title != recentProject.path ? recentProject.title : QFileInfo( recentProject.path ).baseName(),
                       QDir::toNativeSeparators( recentProject.path ) ) );
-    action->setEnabled( QFile::exists( ( recentProject.path ) ) );
+    //action->setEnabled( QFile::exists( ( recentProject.path ) ) );
     action->setData( recentProject.path );
   }
 
@@ -5208,7 +5208,7 @@ bool QgisApp::addProject( const QString &projectFile )
   // does the project have any macros?
   if ( mPythonUtils && mPythonUtils->isEnabled() )
   {
-    if ( !QgsProject::instance()->readEntry( QStringLiteral( "Macros" ), QStringLiteral( "/pythonCode" ), QString::null ).isEmpty() )
+    if ( !QgsProject::instance()->readEntry( QStringLiteral( "Macros" ), QStringLiteral( "/pythonCode" ), QString() ).isEmpty() )
     {
       int enableMacros = settings.value( QStringLiteral( "qgis/enableMacros" ), 1 ).toInt();
       // 0 = never, 1 = ask, 2 = just for this session, 3 = always
@@ -5408,7 +5408,7 @@ void QgisApp::dxfExport()
     settings.setLayerStyleOverrides( QgsProject::instance()->mapThemeCollection()->mapThemeStyleOverrides( d.mapTheme() ) );
     dxfExport.setMapSettings( settings );
     dxfExport.addLayers( d.layers() );
-    dxfExport.setSymbologyScaleDenominator( d.symbologyScale() );
+    dxfExport.setSymbologyScale( d.symbologyScale() );
     dxfExport.setSymbologyExport( d.symbologyMode() );
     dxfExport.setLayerTitleAsName( d.layerTitleAsName() );
     dxfExport.setDestinationCrs( d.crs() );
@@ -6724,8 +6724,10 @@ class QgisAppFieldValueConverter : public QgsVectorFileWriter::FieldValueConvert
 
     virtual QVariant convert( int idx, const QVariant &value ) override;
 
+    QgisAppFieldValueConverter *clone() const override;
+
   private:
-    QgsVectorLayer *mLayer = nullptr;
+    QPointer< QgsVectorLayer > mLayer;
     QgsAttributeList mAttributesAsDisplayedValues;
 };
 
@@ -6737,6 +6739,9 @@ QgisAppFieldValueConverter::QgisAppFieldValueConverter( QgsVectorLayer *vl, cons
 
 QgsField QgisAppFieldValueConverter::fieldDefinition( const QgsField &field )
 {
+  if ( !mLayer )
+    return field;
+
   int idx = mLayer->fields().indexFromName( field.name() );
   if ( mAttributesAsDisplayedValues.contains( idx ) )
   {
@@ -6747,13 +6752,18 @@ QgsField QgisAppFieldValueConverter::fieldDefinition( const QgsField &field )
 
 QVariant QgisAppFieldValueConverter::convert( int idx, const QVariant &value )
 {
-  if ( !mAttributesAsDisplayedValues.contains( idx ) )
+  if ( !mLayer || !mAttributesAsDisplayedValues.contains( idx ) )
   {
     return value;
   }
   const QgsEditorWidgetSetup setup = QgsGui::editorWidgetRegistry()->findBest( mLayer, mLayer->fields().field( idx ).name() );
   QgsFieldFormatter *fieldFormatter = QgsApplication::fieldFormatterRegistry()->fieldFormatter( setup.type() );
   return fieldFormatter->representValue( mLayer, idx, setup.config(), QVariant(), value );
+}
+
+QgisAppFieldValueConverter *QgisAppFieldValueConverter::clone() const
+{
+  return new QgisAppFieldValueConverter( *this );
 }
 
 ///@endcond
@@ -6778,7 +6788,7 @@ void QgisApp::saveAsVectorFileGeneral( QgsVectorLayer *vlayer, bool symbologyOpt
 
   QgsVectorLayerSaveAsDialog *dialog = new QgsVectorLayerSaveAsDialog( vlayer, options, this );
 
-  dialog->setCanvasExtent( mMapCanvas->mapSettings().visibleExtent(), mMapCanvas->mapSettings().destinationCrs() );
+  dialog->setMapCanvas( mMapCanvas );
   dialog->setIncludeZ( QgsWkbTypes::hasZ( vlayer->wkbType() ) );
 
   if ( dialog->exec() == QDialog::Accepted )
@@ -6837,7 +6847,7 @@ void QgisApp::saveAsVectorFileGeneral( QgsVectorLayer *vlayer, bool symbologyOpt
     options.layerOptions = dialog->layerOptions();
     options.skipAttributeCreation = dialog->selectedAttributes().isEmpty();
     options.symbologyExport = static_cast< QgsVectorFileWriter::SymbologyExport >( dialog->symbologyExport() );
-    options.symbologyScale = dialog->scaleDenominator();
+    options.symbologyScale = dialog->scale();
     if ( dialog->hasFilterExtent() )
       options.filterExtent = filterExtent;
     options.overrideGeometryType = autoGeometryType ? QgsWkbTypes::Unknown : forcedGeometryType;
@@ -8736,8 +8746,7 @@ void QgisApp::saveLastMousePosition( const QgsPointXY &p )
 
 void QgisApp::showScale( double scale )
 {
-  // Why has MapCanvas the scale inverted?
-  mScaleWidget->setScale( 1.0 / scale );
+  mScaleWidget->setScale( scale );
 
   // Not sure if the lines below do anything meaningful /Homann
   if ( mScaleWidget->width() > mScaleWidget->minimumWidth() )
@@ -8981,8 +8990,8 @@ void QgisApp::setLayerScaleVisibility()
   if ( layer )
   {
     dlg->setScaleVisiblity( layer->hasScaleBasedVisibility() );
-    dlg->setMinimumScale( 1.0 / layer->maximumScale() );
-    dlg->setMaximumScale( 1.0 / layer->minimumScale() );
+    dlg->setMinimumScale( layer->minimumScale() );
+    dlg->setMaximumScale( layer->maximumScale() );
   }
   if ( dlg->exec() )
   {
@@ -8990,8 +8999,8 @@ void QgisApp::setLayerScaleVisibility()
     Q_FOREACH ( QgsMapLayer *layer, layers )
     {
       layer->setScaleBasedVisibility( dlg->hasScaleVisibility() );
-      layer->setMinimumScale( 1.0 / dlg->maximumScale() );
-      layer->setMaximumScale( 1.0 / dlg->minimumScale() );
+      layer->setMaximumScale( dlg->maximumScale() );
+      layer->setMinimumScale( dlg->minimumScale() );
     }
     freezeCanvases( false );
     refreshMapCanvas();
@@ -9013,13 +9022,13 @@ void QgisApp::zoomToLayerScale()
   if ( layer && layer->hasScaleBasedVisibility() )
   {
     const double scale = mMapCanvas->scale();
-    if ( scale > layer->maximumScale() )
+    if ( scale > layer->minimumScale() && layer->minimumScale() > 0 )
     {
-      mMapCanvas->zoomScale( layer->maximumScale() * Qgis::SCALE_PRECISION );
+      mMapCanvas->zoomScale( layer->minimumScale() * Qgis::SCALE_PRECISION );
     }
-    else if ( scale <= layer->minimumScale() )
+    else if ( scale <= layer->maximumScale() && layer->maximumScale() > 0 )
     {
-      mMapCanvas->zoomScale( layer->minimumScale() );
+      mMapCanvas->zoomScale( layer->maximumScale() );
     }
   }
 }
@@ -9329,7 +9338,7 @@ void QgisApp::loadPythonSupport()
     // init python runner
     QgsPythonRunner::setInstance( new QgsPythonRunnerImpl( mPythonUtils ) );
 
-    QgsMessageLog::logMessage( tr( "Python support ENABLED :-) " ), QString::null, QgsMessageLog::INFO );
+    QgsMessageLog::logMessage( tr( "Python support ENABLED :-) " ), QString(), QgsMessageLog::INFO );
   }
 #endif
 }
@@ -11889,7 +11898,7 @@ void QgisApp::projectChanged( const QDomDocument &doc )
   if ( !fi.exists() )
     return;
 
-  static QString sPrevProjectDir = QString::null;
+  static QString sPrevProjectDir = QString();
 
   if ( sPrevProjectDir == fi.canonicalPath() )
     return;
@@ -12169,7 +12178,7 @@ void QgisApp::namAuthenticationRequired( QNetworkReply *inReply, QAuthenticator 
       QMutexLocker lock( QgsCredentials::instance()->mutex() );
       QgsCredentials::instance()->put(
         QStringLiteral( "%1 at %2" ).arg( auth->realm(), reply->url().host() ),
-        username, QString::null );
+        username, QString() );
     }
   }
 
@@ -12221,7 +12230,7 @@ void QgisApp::namProxyAuthenticationRequired( const QNetworkProxy &proxy, QAuthe
       QMutexLocker lock( QgsCredentials::instance()->mutex() );
       QgsCredentials::instance()->put(
         QStringLiteral( "proxy %1:%2 [%3]" ).arg( proxy.hostName() ).arg( proxy.port() ).arg( auth->realm() ),
-        username, QString::null );
+        username, QString() );
     }
   }
 

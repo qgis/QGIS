@@ -30,7 +30,7 @@ import os
 
 from qgis.PyQt.QtGui import QIcon
 
-from qgis.core import QgsFeatureRequest, QgsFeature, QgsGeometry, QgsPointXY, QgsWkbTypes, QgsProcessingUtils
+from qgis.core import QgsFeatureRequest, QgsFeatureSink, QgsFeature, QgsGeometry, QgsPointXY, QgsWkbTypes, QgsProcessingUtils
 
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
@@ -91,7 +91,7 @@ class VoronoiPolygons(QgisAlgorithm):
         ptNdx = -1
 
         features = QgsProcessingUtils.getFeatures(layer, context)
-        total = 100.0 / QgsProcessingUtils.featureCount(layer, context)
+        total = 100.0 / layer.featureCount() if layer.featureCount() else 0
         for current, inFeat in enumerate(features):
             geom = inFeat.geometry()
             point = geom.asPoint()
@@ -130,7 +130,7 @@ class VoronoiPolygons(QgisAlgorithm):
             geom = QgsGeometry(geom.convexHull())
             outFeat.setGeometry(geom)
             outFeat.setAttributes(inFeat.attributes())
-            writer.addFeature(outFeat)
+            writer.addFeature(outFeat, QgsFeatureSink.FastInsert)
 
             current += 1
             feedback.setProgress(int(current * total))

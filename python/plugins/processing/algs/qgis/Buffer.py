@@ -38,7 +38,7 @@ def buffering(feedback, context, writer, distance, field, useField, layer, disso
 
     current = 0
     features = QgsProcessingUtils.getFeatures(layer, context)
-    total = 100.0 / QgsProcessingUtils.featureCount(layer, context)
+    total = 100.0 / layer.featureCount() if layer.featureCount() else 0
 
     # With dissolve
     if dissolve:
@@ -60,7 +60,7 @@ def buffering(feedback, context, writer, distance, field, useField, layer, disso
         final_geometry = QgsGeometry.unaryUnion(buffered_geometries)
         outFeat.setGeometry(final_geometry)
         outFeat.setAttributes(attrs)
-        writer.addFeature(outFeat)
+        writer.addFeature(outFeat, QgsFeatureSink.FastInsert)
     else:
         # Without dissolve
         for inFeat in features:
@@ -74,7 +74,7 @@ def buffering(feedback, context, writer, distance, field, useField, layer, disso
             outGeom = inGeom.buffer(float(value), segments, endCapStyle, joinStyle, mitreLimit)
             outFeat.setGeometry(outGeom)
             outFeat.setAttributes(attrs)
-            writer.addFeature(outFeat)
+            writer.addFeature(outFeat, QgsFeatureSink.FastInsert)
             current += 1
             feedback.setProgress(int(current * total))
 

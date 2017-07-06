@@ -27,7 +27,7 @@
 #include "qgsmessagelog.h"
 #include "qgsnetworkaccessmanager.h"
 #include "qgsunittypes.h"
-#include "qgscsexception.h"
+#include "qgsexception.h"
 #include "qgsapplication.h"
 
 // %%% copied from qgswmsprovider.cpp
@@ -132,7 +132,7 @@ bool QgsWmsSettings::parseUri( const QString &uriString )
       QStringList kv = param.split( '=' );
       if ( kv.size() == 1 )
       {
-        mTileDimensionValues.insert( kv[0], QString::null );
+        mTileDimensionValues.insert( kv[0], QString() );
       }
       else if ( kv.size() == 2 )
       {
@@ -750,9 +750,9 @@ void QgsWmsCapabilities::parseLayer( QDomElement const &e, QgsWmsLayerProperty &
 // TODO: Delete this stanza completely, depending on success of "Inherit things into the sublayer" below.
 #if 0
   // enforce WMS non-inheritance rules
-  layerProperty.name =        QString::null;
-  layerProperty.title =       QString::null;
-  layerProperty.abstract =    QString::null;
+  layerProperty.name =        QString();
+  layerProperty.title =       QString();
+  layerProperty.abstract =    QString();
   layerProperty.keywordList.clear();
 #endif
 
@@ -1996,7 +1996,7 @@ void QgsWmsCapabilitiesDownload::capabilitiesReplyFinished()
   {
     if ( mCapabilitiesReply->error() == QNetworkReply::NoError )
     {
-      QgsDebugMsg( "reply ok" );
+      QgsDebugMsg( "reply OK" );
       QVariant redirect = mCapabilitiesReply->attribute( QNetworkRequest::RedirectionTargetAttribute );
       if ( !redirect.isNull() )
       {

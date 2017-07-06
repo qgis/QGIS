@@ -31,6 +31,7 @@ import math
 from qgis.core import (QgsApplication,
                        QgsWkbTypes,
                        QgsFeature,
+                       QgsFeatureSink,
                        QgsGeometry,
                        QgsPointXY,
                        QgsMessageLog,
@@ -54,12 +55,6 @@ class RectanglesOvalsDiamondsVariable(QgisAlgorithm):
     ROTATION = 'ROTATION'
     SEGMENTS = 'SEGMENTS'
     OUTPUT_LAYER = 'OUTPUT_LAYER'
-
-    def icon(self):
-        return QgsApplication.getThemeIcon("/providerQgis.svg")
-
-    def svgIconPath(self):
-        return QgsApplication.iconPath("providerQgis.svg")
 
     def group(self):
         return self.tr('Vector geometry tools')
@@ -152,7 +147,7 @@ class RectanglesOvalsDiamondsVariable(QgisAlgorithm):
 
                 ft.setGeometry(QgsGeometry.fromPolygon(polygon))
                 ft.setAttributes(feat.attributes())
-                writer.addFeature(ft)
+                writer.addFeature(ft, QgsFeatureSink.FastInsert)
         else:
             for current, feat in enumerate(features):
                 w = feat[width]
@@ -175,7 +170,7 @@ class RectanglesOvalsDiamondsVariable(QgisAlgorithm):
 
                 ft.setGeometry(QgsGeometry.fromPolygon(polygon))
                 ft.setAttributes(feat.attributes())
-                writer.addFeature(ft)
+                writer.addFeature(ft, QgsFeatureSink.FastInsert)
 
     def diamonds(self, writer, features, width, height, rotation):
         ft = QgsFeature()
@@ -205,7 +200,7 @@ class RectanglesOvalsDiamondsVariable(QgisAlgorithm):
 
                 ft.setGeometry(QgsGeometry.fromPolygon(polygon))
                 ft.setAttributes(feat.attributes())
-                writer.addFeature(ft)
+                writer.addFeature(ft, QgsFeatureSink.FastInsert)
         else:
             for current, feat in enumerate(features):
                 w = feat[width]
@@ -228,7 +223,7 @@ class RectanglesOvalsDiamondsVariable(QgisAlgorithm):
 
                 ft.setGeometry(QgsGeometry.fromPolygon(polygon))
                 ft.setAttributes(feat.attributes())
-                writer.addFeature(ft)
+                writer.addFeature(ft, QgsFeatureSink.FastInsert)
 
     def ovals(self, writer, features, width, height, rotation, segments):
         ft = QgsFeature()
@@ -260,7 +255,7 @@ class RectanglesOvalsDiamondsVariable(QgisAlgorithm):
 
                 ft.setGeometry(QgsGeometry.fromPolygon(polygon))
                 ft.setAttributes(feat.attributes())
-                writer.addFeature(ft)
+                writer.addFeature(ft, QgsFeatureSink.FastInsert)
         else:
             for current, feat in enumerate(features):
                 w = feat[width]
@@ -285,4 +280,4 @@ class RectanglesOvalsDiamondsVariable(QgisAlgorithm):
 
                 ft.setGeometry(QgsGeometry.fromPolygon(polygon))
                 ft.setAttributes(feat.attributes())
-                writer.addFeature(ft)
+                writer.addFeature(ft, QgsFeatureSink.FastInsert)

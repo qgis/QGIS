@@ -29,6 +29,7 @@ from qgis.analysis import (QgsGeometrySnapper,
                            QgsInternalGeometrySnapper)
 from qgis.core import (QgsApplication,
                        QgsFeature,
+                       QgsFeatureSink,
                        QgsProcessingUtils)
 
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
@@ -43,12 +44,6 @@ class SnapGeometriesToLayer(QgisAlgorithm):
     TOLERANCE = 'TOLERANCE'
     OUTPUT = 'OUTPUT'
     BEHAVIOR = 'BEHAVIOR'
-
-    def icon(self):
-        return QgsApplication.getThemeIcon("/providerQgis.svg")
-
-    def svgIconPath(self):
-        return QgsApplication.iconPath("providerQgis.svg")
 
     def group(self):
         return self.tr('Vector geometry tools')
@@ -89,14 +84,14 @@ class SnapGeometriesToLayer(QgisAlgorithm):
 
         self.processed = 0
         self.feedback = feedback
-        self.total = 100.0 / QgsProcessingUtils.featureCount(layer, context)
+        self.total = 100.0 / layer.featureCount() if layer.featureCount() else 0
 
         if self.getParameterValue(self.INPUT) != self.getParameterValue(self.REFERENCE_LAYER):
             snapper = QgsGeometrySnapper(reference_layer)
             snapper.featureSnapped.connect(self.featureSnapped)
             snapped_features = snapper.snapFeatures(features, tolerance, mode)
             for f in snapped_features:
-                writer.addFeature(QgsFeature(f))
+                writer.addFeature(f, QgsFeatureSink.FastInsert)
         else:
             # snapping internally
             snapper = QgsInternalGeometrySnapper(tolerance, mode)
@@ -104,7 +99,7 @@ class SnapGeometriesToLayer(QgisAlgorithm):
             for f in features:
                 out_feature = f
                 out_feature.setGeometry(snapper.snapFeature(f))
-                writer.addFeature(out_feature)
+                writer.addFeature(out_feature, QgsFeatureSink.FastInsert)
                 processed += 1
                 feedback.setProgress(processed * self.total)
 

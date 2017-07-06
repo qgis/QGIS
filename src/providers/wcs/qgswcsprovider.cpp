@@ -30,7 +30,7 @@
 #include "qgsnetworkaccessmanager.h"
 #include "qgsnetworkreplyparser.h"
 #include "qgsmessagelog.h"
-#include "qgscsexception.h"
+#include "qgsexception.h"
 
 #include <QNetworkRequest>
 #include <QNetworkReply>
@@ -63,7 +63,7 @@ static QString DEFAULT_LATLON_CRS = QStringLiteral( "CRS:84" );
 QgsWcsProvider::QgsWcsProvider( const QString &uri )
   : QgsRasterDataProvider( uri )
   , QgsGdalProviderBase()
-  , mHttpUri( QString::null )
+  , mHttpUri( QString() )
   , mCoverageSummary()
   , mWidth( 0 )
   , mHeight( 0 )
@@ -367,7 +367,7 @@ QgsWcsProvider::QgsWcsProvider( const QString &uri )
   }
 
   mValid = true;
-  QgsDebugMsg( "Constructed ok, provider valid." );
+  QgsDebugMsg( "Constructed OK, provider valid." );
 }
 
 bool QgsWcsProvider::parseUri( const QString &uriString )

@@ -56,12 +56,6 @@ class ExecuteSQL(QgisAlgorithm):
     INPUT_GEOMETRY_CRS = 'INPUT_GEOMETRY_CRS'
     OUTPUT_LAYER = 'OUTPUT_LAYER'
 
-    def icon(self):
-        return QgsApplication.getThemeIcon("/providerQgis.svg")
-
-    def svgIconPath(self):
-        return QgsApplication.iconPath("providerQgis.svg")
-
     def group(self):
         return self.tr('Vector general tools')
 
@@ -151,12 +145,12 @@ class ExecuteSQL(QgisAlgorithm):
                                                                            vLayer.crs(), context)
 
         features = QgsProcessingUtils.getFeatures(vLayer, context)
-        total = 100.0 / QgsProcessingUtils.featureCount(vLayer, context)
+        total = 100.0 / vLayer.featureCount() if vLayer.featureCount() else 0
         outFeat = QgsFeature()
         for current, inFeat in enumerate(features):
             outFeat.setAttributes(inFeat.attributes())
             if geometry_type != 1:
                 outFeat.setGeometry(inFeat.geometry())
-            writer.addFeature(outFeat)
+            writer.addFeature(outFeat, QgsFeatureSink.FastInsert)
             feedback.setProgress(int(current * total))
         del writer

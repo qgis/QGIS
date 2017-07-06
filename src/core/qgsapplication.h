@@ -39,9 +39,8 @@ class QgsPluginLayerRegistry;
 class QgsMessageLog;
 class QgsProcessingRegistry;
 class QgsAnnotationRegistry;
+class QgsPageSizeRegistry;
 
-
-SIP_FEATURE( ANDROID )
 
 /** \ingroup core
  * Extends QApplication to provide access to QGIS specific resources such
@@ -549,6 +548,12 @@ class CORE_EXPORT QgsApplication : public QApplication
     static QgsProcessingRegistry *processingRegistry();
 
     /**
+     * Returns the application's page size registry, used for managing layout page sizes.
+     * \since QGIS 3.0
+     */
+    static QgsPageSizeRegistry *pageSizeRegistry();
+
+    /**
      * Returns the application's annotation registry, used for managing annotation types.
      * \since QGIS 3.0
      * \note not available in Python bindings
@@ -697,6 +702,7 @@ class CORE_EXPORT QgsApplication : public QApplication
       QgsPaintEffectRegistry *mPaintEffectRegistry = nullptr;
       QgsPluginLayerRegistry *mPluginLayerRegistry = nullptr;
       QgsProcessingRegistry *mProcessingRegistry = nullptr;
+      QgsPageSizeRegistry *mPageSizeRegistry = nullptr;
       QgsRasterRendererRegistry *mRasterRendererRegistry = nullptr;
       QgsRendererRegistry *mRendererRegistry = nullptr;
       QgsRuntimeProfiler *mProfiler = nullptr;

@@ -18,7 +18,7 @@
 #include "qgsgpsmarker.h"
 #include "qgscoordinatetransform.h"
 #include "qgsmapcanvas.h"
-#include "qgscsexception.h"
+#include "qgsexception.h"
 
 QgsGpsMarker::QgsGpsMarker( QgsMapCanvas *mapCanvas )
   : QgsMapCanvasItem( mapCanvas )

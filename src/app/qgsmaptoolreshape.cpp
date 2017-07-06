@@ -16,6 +16,7 @@
 #include "qgsmaptoolreshape.h"
 #include "qgsfeatureiterator.h"
 #include "qgsgeometry.h"
+#include "qgslinestring.h"
 #include "qgsmapcanvas.h"
 #include "qgsproject.h"
 #include "qgsvectorlayer.h"
@@ -84,6 +85,10 @@ void QgsMapToolReshape::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
       bbox.combineExtentWith( points().at( i ).x(), points().at( i ).y() );
     }
 
+    QgsLineString reshapeLineString( points() );
+    if ( QgsWkbTypes::hasZ( vlayer->wkbType() ) )
+      reshapeLineString.addZValue( defaultZValue() );
+
     //query all the features that intersect bounding box of capture line
     QgsFeatureIterator fit = vlayer->getFeatures( QgsFeatureRequest().setFilterRect( bbox ).setSubsetOfAttributes( QgsAttributeList() ) );
     QgsFeature f;
@@ -99,7 +104,7 @@ void QgsMapToolReshape::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
       QgsGeometry geom = f.geometry();
       if ( !geom.isNull() )
       {
-        reshapeReturn = geom.reshapeGeometry( points() );
+        reshapeReturn = geom.reshapeGeometry( reshapeLineString );
         if ( reshapeReturn == 0 )
         {
           //avoid intersections on polygon layers

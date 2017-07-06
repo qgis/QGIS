@@ -280,13 +280,20 @@ QgsDockBrowserTreeView::QgsDockBrowserTreeView( QWidget *parent ) : QgsBrowserTr
 
 }
 
-void QgsDockBrowserTreeView::dragEnterEvent( QDragEnterEvent *e )
+void QgsDockBrowserTreeView::setAction( QDropEvent *e )
 {
   // if this mime data come from layer tree, the proposed action will be MoveAction
   // but for browser we really need CopyAction
   if ( e->mimeData()->hasFormat( QStringLiteral( "application/qgis.layertreemodeldata" ) ) &&
        e->mimeData()->hasFormat( QStringLiteral( "application/x-vnd.qgis.qgis.uri" ) ) )
+  {
     e->setDropAction( Qt::CopyAction );
+  }
+}
+
+void QgsDockBrowserTreeView::dragEnterEvent( QDragEnterEvent *e )
+{
+  setAction( e );
 
   // accept drag enter so that our widget will not get ignored
   // and drag events will not get passed to QgisApp
@@ -303,13 +310,10 @@ void QgsDockBrowserTreeView::dragMoveEvent( QDragMoveEvent *e )
         return;
       }*/
 
-  // if this mime data come from layer tree, the proposed action will be MoveAction
-  // but for browser we really need CopyAction
-  if ( e->mimeData()->hasFormat( QStringLiteral( "application/qgis.layertreemodeldata" ) ) &&
-       e->mimeData()->hasFormat( QStringLiteral( "application/x-vnd.qgis.qgis.uri" ) ) )
-    e->setDropAction( Qt::CopyAction );
-
+  setAction( e );
   QTreeView::dragMoveEvent( e );
+  // reset action because QTreeView::dragMoveEvent() accepts proposed action
+  setAction( e );
 
   if ( !e->mimeData()->hasFormat( QStringLiteral( "application/x-vnd.qgis.qgis.uri" ) ) )
   {
@@ -320,15 +324,11 @@ void QgsDockBrowserTreeView::dragMoveEvent( QDragMoveEvent *e )
 
 void QgsDockBrowserTreeView::dropEvent( QDropEvent *e )
 {
-  // if this mime data come from layer tree, the proposed action will be MoveAction
-  // but for browser we really need CopyAction
-  if ( e->mimeData()->hasFormat( QStringLiteral( "application/qgis.layertreemodeldata" ) ) &&
-       e->mimeData()->hasFormat( QStringLiteral( "application/x-vnd.qgis.qgis.uri" ) ) )
-    e->setDropAction( Qt::CopyAction );
-
+  setAction( e );
   QTreeView::dropEvent( e );
+  // reset action because QTreeView::dropEvent() accepts proposed action
+  setAction( e );
 }
-
 
 //
 // QgsBrowserTreeFilterProxyModel

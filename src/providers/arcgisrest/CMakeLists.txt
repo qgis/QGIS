@@ -26,12 +26,14 @@ SET (AFS_SRCS
   qgsafsprovider.cpp
   qgsafsproviderextern.cpp
   qgsafssourceselect.cpp
+  qgsafsshareddata.cpp
 )
 SET (AFS_MOC_HDRS
   qgsarcgisrestutils.h
   qgsafsdataitems.h
   qgsafsprovider.h
   qgsafssourceselect.h
+  qgsafsshareddata.h
 )
 
 QT5_WRAP_CPP (AFS_MOC_SRCS ${AFS_MOC_HDRS})

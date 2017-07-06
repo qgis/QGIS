@@ -23,10 +23,12 @@
 #include "qgseditorwidgetfactory.h"
 #include "qgseditorwidgetregistry.h"
 #include "qgssettings.h"
+#include "qgsmapcanvas.h"
 #include "qgsgui.h"
 #include <QMessageBox>
 #include <QFileDialog>
 #include <QTextCodec>
+#include <QSpinBox>
 
 static const int COLUMN_IDX_NAME = 0;
 static const int COLUMN_IDX_TYPE = 1;
@@ -61,7 +63,7 @@ QgsVectorLayerSaveAsDialog::QgsVectorLayerSaveAsDialog( QgsVectorLayer *layer, i
     mSymbologyExportLabel->hide();
     mSymbologyExportComboBox->hide();
     mScaleLabel->hide();
-    mScaleSpinBox->hide();
+    mScaleWidget->hide();
   }
 
   mSelectedOnly->setEnabled( layer && layer->selectedFeatureCount() != 0 );
@@ -345,7 +347,7 @@ void QgsVectorLayerSaveAsDialog::on_mFormatComboBox_currentIndexChanged( int idx
   bool fieldsAsDisplayedValues = false;
 
   const QString sFormat( format() );
-  if ( sFormat == QLatin1String( "DXF" ) )
+  if ( sFormat == QLatin1String( "DXF" ) || sFormat == QLatin1String( "DGN" ) )
   {
     mAttributesSelection->setEnabled( false );
     selectAllFields = false;
@@ -684,24 +686,27 @@ QStringList QgsVectorLayerSaveAsDialog::datasourceOptions() const
       {
         case QgsVectorFileWriter::Int:
         {
+          QgsVectorFileWriter::IntOption *opt = dynamic_cast<QgsVectorFileWriter::IntOption *>( *it );
           QSpinBox *sb = mDatasourceOptionsGroupBox->findChild<QSpinBox *>( it.key() );
-          if ( sb )
+          if ( opt && sb && sb->value() != opt->defaultValue )
             options << QStringLiteral( "%1=%2" ).arg( it.key() ).arg( sb->value() );
           break;
         }
 
         case QgsVectorFileWriter::Set:
         {
+          QgsVectorFileWriter::SetOption *opt = dynamic_cast<QgsVectorFileWriter::SetOption *>( *it );
           QComboBox *cb = mDatasourceOptionsGroupBox->findChild<QComboBox *>( it.key() );
-          if ( cb && !cb->currentData().isNull() )
+          if ( opt && cb && cb->itemData( cb->currentIndex() ) != opt->defaultValue )
             options << QStringLiteral( "%1=%2" ).arg( it.key(), cb->currentText() );
           break;
         }
 
         case QgsVectorFileWriter::String:
         {
+          QgsVectorFileWriter::StringOption *opt = dynamic_cast<QgsVectorFileWriter::StringOption *>( *it );
           QLineEdit *le = mDatasourceOptionsGroupBox->findChild<QLineEdit *>( it.key() );
-          if ( le )
+          if ( opt && le && le->text() != opt->defaultValue )
             options << QStringLiteral( "%1=%2" ).arg( it.key(), le->text() );
           break;
         }
@@ -736,24 +741,26 @@ QStringList QgsVectorLayerSaveAsDialog::layerOptions() const
       {
         case QgsVectorFileWriter::Int:
         {
+          QgsVectorFileWriter::IntOption *opt = dynamic_cast<QgsVectorFileWriter::IntOption *>( *it );
           QSpinBox *sb = mLayerOptionsGroupBox->findChild<QSpinBox *>( it.key() );
-          if ( sb )
-            options << QStringLiteral( "%1=%2" ).arg( it.key() ).arg( sb->value() );
-          break;
+          if ( opt && sb && sb->value() != opt->defaultValue )
+            break;
         }
 
         case QgsVectorFileWriter::Set:
         {
+          QgsVectorFileWriter::SetOption *opt = dynamic_cast<QgsVectorFileWriter::SetOption *>( *it );
           QComboBox *cb = mLayerOptionsGroupBox->findChild<QComboBox *>( it.key() );
-          if ( cb && !cb->currentData().isNull() )
+          if ( opt && cb && cb->itemData( cb->currentIndex() ) != opt->defaultValue )
             options << QStringLiteral( "%1=%2" ).arg( it.key(), cb->currentText() );
           break;
         }
 
         case QgsVectorFileWriter::String:
         {
+          QgsVectorFileWriter::StringOption *opt = dynamic_cast<QgsVectorFileWriter::StringOption *>( *it );
           QLineEdit *le = mLayerOptionsGroupBox->findChild<QLineEdit *>( it.key() );
-          if ( le && !le->text().isEmpty() )
+          if ( opt && le && le->text() != opt->defaultValue )
             options << QStringLiteral( "%1=%2" ).arg( it.key(), le->text() );
           break;
         }
@@ -814,14 +821,17 @@ int QgsVectorLayerSaveAsDialog::symbologyExport() const
   return mSymbologyExportComboBox->currentData().toInt();
 }
 
-double QgsVectorLayerSaveAsDialog::scaleDenominator() const
+double QgsVectorLayerSaveAsDialog::scale() const
 {
-  return mScaleSpinBox->value();
+  return mScaleWidget->scale();
 }
 
-void QgsVectorLayerSaveAsDialog::setCanvasExtent( const QgsRectangle &canvasExtent, const QgsCoordinateReferenceSystem &canvasCrs )
+void QgsVectorLayerSaveAsDialog::setMapCanvas( QgsMapCanvas *canvas )
 {
-  mExtentGroupBox->setCurrentExtent( canvasExtent, canvasCrs );
+  mMapCanvas = canvas;
+  mScaleWidget->setMapCanvas( canvas );
+  mScaleWidget->setShowCurrentScaleButton( true );
+  mExtentGroupBox->setCurrentExtent( canvas->mapSettings().visibleExtent(), canvas->mapSettings().destinationCrs() );
 }
 
 bool QgsVectorLayerSaveAsDialog::hasFilterExtent() const
@@ -889,7 +899,7 @@ void QgsVectorLayerSaveAsDialog::on_mSymbologyExportComboBox_currentIndexChanged
   {
     scaleEnabled = false;
   }
-  mScaleSpinBox->setEnabled( scaleEnabled );
+  mScaleWidget->setEnabled( scaleEnabled );
   mScaleLabel->setEnabled( scaleEnabled );
 }
 

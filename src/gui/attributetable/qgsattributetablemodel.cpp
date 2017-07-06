@@ -56,7 +56,7 @@ QgsAttributeTableModel::QgsAttributeTableModel( QgsVectorLayerCache *layerCache,
 
   mFeat.setId( std::numeric_limits<int>::min() );
 
-  if ( !layer()->hasGeometryType() )
+  if ( !layer()->isSpatial() )
     mFeatureRequest.setFlags( QgsFeatureRequest::NoGeometry );
 
   loadAttributes();
@@ -303,7 +303,8 @@ void QgsAttributeTableModel::attributeValueChanged( QgsFeatureId fid, int idx, c
   // No filter request: skip all possibly heavy checks
   if ( mFeatureRequest.filterType() == QgsFeatureRequest::FilterNone )
   {
-    setData( index( idToRow( fid ), fieldCol( idx ) ), value, Qt::EditRole );
+    if ( loadFeatureAtId( fid ) )
+      setData( index( idToRow( fid ), fieldCol( idx ) ), value, Qt::EditRole );
   }
   else
   {
@@ -866,7 +867,7 @@ QString QgsAttributeTableModel::sortCacheExpression() const
 void QgsAttributeTableModel::setRequest( const QgsFeatureRequest &request )
 {
   mFeatureRequest = request;
-  if ( layer() && !layer()->hasGeometryType() )
+  if ( layer() && !layer()->isSpatial() )
     mFeatureRequest.setFlags( mFeatureRequest.flags() | QgsFeatureRequest::NoGeometry );
 }
 

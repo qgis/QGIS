@@ -36,6 +36,7 @@ from qgis.core import (QgsWkbTypes,
                        QgsSymbol,
                        QgsSingleSymbolRenderer,
                        QgsCoordinateReferenceSystem,
+                       QgsVectorLayerCache,
                        QgsReadWriteContext,
                        QgsProject,
                        QgsUnitTypes,
@@ -54,6 +55,9 @@ from qgis.core import (QgsWkbTypes,
                        QgsTextFormat,
                        QgsVectorLayerSelectedFeatureSource,
                        NULL)
+from qgis.gui import (QgsAttributeTableModel,
+                      QgsGui
+                      )
 from qgis.testing import start_app, unittest
 from featuresourcetestbase import FeatureSourceTestCase
 from utilities import unitTestDataPath
@@ -209,6 +213,7 @@ class TestQgsVectorLayer(unittest.TestCase, FeatureSourceTestCase):
     @classmethod
     def setUpClass(cls):
         """Run before all tests"""
+        QgsGui.editorWidgetRegistry().initEditors()
         # Create test layer for FeatureSourceTestCase
         cls.source = cls.getSource()
 
@@ -1321,6 +1326,65 @@ class TestQgsVectorLayer(unittest.TestCase, FeatureSourceTestCase):
         self.assertEqual(layer.maximumValue(3), 321)
         self.assertEqual(set(layer.uniqueValues(3)), set([111, 321]))
 
+    def test_valid_join_when_opening_project(self):
+        join_field = "id"
+        fid = 4
+        attr_idx = 4
+        join_attr_idx = 1
+        new_value = 33.0
+
+        # read project and get layers
+        myPath = os.path.join(unitTestDataPath(), 'joins.qgs')
+        rc = QgsProject.instance().read(myPath)
+
+        layer = QgsProject.instance().mapLayersByName("polys_with_id")[0]
+        join_layer = QgsProject.instance().mapLayersByName("polys_overlapping_with_id")[0]
+
+        # create an attribute table for the main_layer and the
+        # joined layer
+        cache = QgsVectorLayerCache(layer, 100)
+        am = QgsAttributeTableModel(cache)
+        am.loadLayer()
+
+        join_cache = QgsVectorLayerCache(join_layer, 100)
+        join_am = QgsAttributeTableModel(join_cache)
+        join_am.loadLayer()
+
+        # check feature value of a joined field from the attribute model
+        model_index = am.idToIndex(fid)
+        feature_model = am.feature(model_index)
+
+        join_model_index = join_am.idToIndex(fid)
+        join_feature_model = join_am.feature(join_model_index)
+
+        self.assertEqual(feature_model.attribute(attr_idx), join_feature_model.attribute(join_attr_idx))
+
+        # change attribute value for a feature of the joined layer
+        join_layer.startEditing()
+        join_layer.changeAttributeValue(fid, join_attr_idx, new_value)
+        join_layer.commitChanges()
+
+        # check the feature previously modified
+        join_model_index = join_am.idToIndex(fid)
+        join_feature_model = join_am.feature(join_model_index)
+        self.assertEqual(join_feature_model.attribute(join_attr_idx), new_value)
+
+        # recreate a new cache and model to simulate the opening of
+        # a new attribute table
+        cache = QgsVectorLayerCache(layer, 100)
+        am = QgsAttributeTableModel(cache)
+        am.loadLayer()
+
+        # test that the model is up to date with the joined layer
+        model_index = am.idToIndex(fid)
+        feature_model = am.feature(model_index)
+        self.assertEqual(feature_model.attribute(attr_idx), new_value)
+
+        # restore value
+        join_layer.startEditing()
+        join_layer.changeAttributeValue(fid, join_attr_idx, 7.0)
+        join_layer.commitChanges()
+
     def testUniqueValue(self):
         """ test retrieving unique values """
         layer = createLayerWithFivePoints()
@@ -2177,8 +2241,8 @@ class TestQgsVectorLayer(unittest.TestCase, FeatureSourceTestCase):
         layer.styleManager().addStyle('style1', style1)
         layer.setName('MyName')
         layer.setShortName('MyShortName')
-        layer.setMinimumScale(0.5)
-        layer.setMaximumScale(1.5)
+        layer.setMaximumScale(0.5)
+        layer.setMinimumScale(1.5)
         layer.setScaleBasedVisibility(True)
         layer.setTitle('MyTitle')
         layer.setAbstract('MyAbstract')
@@ -2249,7 +2313,6 @@ class TestQgsVectorLayer(unittest.TestCase, FeatureSourceTestCase):
 
         diag_renderer = QgsSingleCategoryDiagramRenderer()
         diag_renderer.setAttributeLegend(False)  # true by default
-        diag_renderer.setSizeLegend(True)  # false by default
         layer.setDiagramRenderer(diag_renderer)
 
         diag_settings = QgsDiagramLayerSettings()
@@ -2363,6 +2426,32 @@ class TestQgsVectorLayer(unittest.TestCase, FeatureSourceTestCase):
         del layer
         ids = set([f.id() for f in source.getFeatures()])
         self.assertEqual(ids, {f1.id(), f3.id(), f5.id()})
+
+    def testFeatureRequestWithReprojectionAndVirtualFields(self):
+        layer = self.getSource()
+        field = QgsField('virtual', QVariant.Double)
+        layer.addExpressionField('$x', field)
+        virtual_values = [f['virtual'] for f in layer.getFeatures()]
+        self.assertAlmostEqual(virtual_values[0], -71.123, 2)
+        self.assertEqual(virtual_values[1], NULL)
+        self.assertAlmostEqual(virtual_values[2], -70.332, 2)
+        self.assertAlmostEqual(virtual_values[3], -68.2, 2)
+        self.assertAlmostEqual(virtual_values[4], -65.32, 2)
+
+        # repeat, with reprojection on request
+        request = QgsFeatureRequest().setDestinationCrs(QgsCoordinateReferenceSystem('epsg:3785'))
+        features = [f for f in layer.getFeatures(request)]
+        # virtual field value should not change, even though geometry has
+        self.assertAlmostEqual(features[0]['virtual'], -71.123, 2)
+        self.assertAlmostEqual(features[0].geometry().geometry().x(), -7917376, -5)
+        self.assertEqual(features[1]['virtual'], NULL)
+        self.assertFalse(features[1].hasGeometry())
+        self.assertAlmostEqual(features[2]['virtual'], -70.332, 2)
+        self.assertAlmostEqual(features[2].geometry().geometry().x(), -7829322, -5)
+        self.assertAlmostEqual(features[3]['virtual'], -68.2, 2)
+        self.assertAlmostEqual(features[3].geometry().geometry().x(), -7591989, -5)
+        self.assertAlmostEqual(features[4]['virtual'], -65.32, 2)
+        self.assertAlmostEqual(features[4].geometry().geometry().x(), -7271389, -5)
 
 
 class TestQgsVectorLayerSourceAddedFeaturesInBuffer(unittest.TestCase, FeatureSourceTestCase):

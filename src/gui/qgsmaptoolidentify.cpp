@@ -40,7 +40,7 @@
 #include "qgsgeometrycollection.h"
 #include "qgscurve.h"
 #include "qgscoordinateutils.h"
-#include "qgscsexception.h"
+#include "qgsexception.h"
 #include "qgssettings.h"
 
 #include <QMouseEvent>
@@ -199,7 +199,7 @@ bool QgsMapToolIdentify::identifyLayer( QList<IdentifyResult> *results, QgsMapLa
 
 bool QgsMapToolIdentify::identifyVectorLayer( QList<IdentifyResult> *results, QgsVectorLayer *layer, const QgsPointXY &point )
 {
-  if ( !layer || !layer->hasGeometryType() )
+  if ( !layer || !layer->isSpatial() )
     return false;
 
   if ( !layer->isInScaleRange( mCanvas->mapSettings().scale() ) )
@@ -326,6 +326,18 @@ void QgsMapToolIdentify::closestVertexAttributes( const QgsAbstractGeometry &geo
   }
 }
 
+void QgsMapToolIdentify::closestPointAttributes( const QgsAbstractGeometry &geometry, QgsMapLayer *layer, const QgsPointXY &layerPoint, QMap< QString, QString > &derivedAttributes )
+{
+  Q_UNUSED( layer );
+  // measure
+  if ( QgsWkbTypes::hasM( geometry.wkbType() ) )
+  {
+    QgsPoint closestPoint = QgsGeometryUtils::closestPoint( geometry, QgsPoint( layerPoint.x(), layerPoint.y() ) );
+    QString str = QLocale::system().toString( closestPoint.m(), 'g', 10 );
+    derivedAttributes.insert( QStringLiteral( "Closest point M" ), str );
+  }
+}
+
 QString QgsMapToolIdentify::formatCoordinate( const QgsPointXY &canvasPoint ) const
 {
   return QgsCoordinateUtils::formatCoordinateForProject( canvasPoint, mCanvas->mapSettings().destinationCrs(),
@@ -392,6 +404,7 @@ QMap< QString, QString > QgsMapToolIdentify::featureDerivedAttributes( QgsFeatur
 
       //add details of closest vertex to identify point
       closestVertexAttributes( *curve, vId, layer, derivedAttributes );
+      closestPointAttributes( *curve, layer, layerPoint, derivedAttributes );
 
       // Add the start and end points in as derived attributes
       QgsPointXY pnt = mCanvas->mapSettings().layerToMapCoordinates( layer, QgsPointXY( curve->startPoint().x(), curve->startPoint().y() ) );

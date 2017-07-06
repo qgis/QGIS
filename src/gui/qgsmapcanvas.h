@@ -172,8 +172,11 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     //! \since QGIS 2.4
     int mapUpdateInterval() const;
 
-    //! Get the last reported scale of the canvas
-    double scale();
+    /**
+     * Returns the last reported scale of the canvas.
+     * The \a scale value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
+     */
+    double scale() const;
 
     //! Returns the mapUnitsPerPixel (map units per pixel) for the canvas
     double mapUnitsPerPixel() const;
@@ -239,7 +242,7 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
      *
      * This is called from destructor of map tools to make sure
      * that this map tool won't be used any more.
-     * You don't have to call it manualy, QgsMapTool takes care of it.
+     * You don't have to call it manually, QgsMapTool takes care of it.
      */
     void unsetMapTool( QgsMapTool *mapTool );
 
@@ -365,7 +368,10 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     //! set wheel zoom factor (should be greater than 1)
     void setWheelFactor( double factor );
 
-    //! Zoom to a specific scale
+    /**
+     * Zooms the canvas to a specific \a scale.
+     * The scale value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
+     */
     void zoomScale( double scale );
 
     //! Zoom with the factor supplied. Factor > 1 zooms out, interval (0,1) zooms in
@@ -710,9 +716,6 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     //! called when panning is in action, reset indicates end of panning
     void moveCanvasContents( bool reset = false );
 
-    //! called on resize or changed extent to notify canvas items to change their rectangle
-    void updateCanvasItemPositions();
-
     /// implementation struct
     class CanvasProperties;
 
@@ -728,6 +731,10 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
 #endif
     //! Make sure the datum transform store is properly populated
     void updateDatumTransformEntries();
+
+  protected slots:
+    //! called on resize or changed extent to notify canvas items to change their rectangle
+    void updateCanvasItemPositions();
 
   private slots:
 

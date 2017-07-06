@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>418</width>
-    <height>429</height>
+    <width>411</width>
+    <height>427</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -172,6 +172,9 @@
          <height>0</height>
         </size>
        </property>
+       <property name="focusPolicy">
+        <enum>Qt::StrongFocus</enum>
+       </property>
       </widget>
      </item>
     </layout>
@@ -179,7 +182,7 @@
    <item row="10" column="0">
     <widget class="QLabel" name="label_6">
      <property name="text">
-      <string>Offset X,Y</string>
+      <string>Offset</string>
      </property>
     </widget>
    </item>
@@ -288,6 +291,13 @@
    <item row="10" column="1" colspan="3">
     <layout class="QGridLayout" name="gridLayout_2">
      <item row="0" column="0">
+      <widget class="QLabel" name="label_4">
+       <property name="text">
+        <string>x</string>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="1">
       <widget class="QgsDoubleSpinBox" name="spinOffsetX">
        <property name="sizePolicy">
         <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
@@ -309,10 +319,21 @@
        </property>
       </widget>
      </item>
-     <item row="0" column="1" rowspan="2">
-      <widget class="QgsUnitSelectionWidget" name="mOffsetUnitWidget" native="true"/>
+     <item row="0" column="2" rowspan="2">
+      <widget class="QgsUnitSelectionWidget" name="mOffsetUnitWidget" native="true">
+       <property name="focusPolicy">
+        <enum>Qt::StrongFocus</enum>
+       </property>
+      </widget>
      </item>
      <item row="1" column="0">
+      <widget class="QLabel" name="label_5">
+       <property name="text">
+        <string>y</string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="1">
       <widget class="QgsDoubleSpinBox" name="spinOffsetY">
        <property name="sizePolicy">
         <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
@@ -387,6 +408,7 @@
     </spacer>
    </item>
   </layout>
+  <zorder>btnColorRamp</zorder>
   <zorder>label</zorder>
   <zorder>label_6</zorder>
   <zorder>label_2</zorder>
@@ -404,6 +426,12 @@
  </widget>
  <customwidgets>
   <customwidget>
+   <class>QgsColorButton</class>
+   <extends>QToolButton</extends>
+   <header>qgscolorbutton.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
    <class>QgsPropertyOverrideButton</class>
    <extends>QToolButton</extends>
    <header>qgspropertyoverridebutton.h</header>
@@ -420,12 +448,6 @@
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>QgsColorButton</class>
-   <extends>QToolButton</extends>
-   <header>qgscolorbutton.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
    <class>QgsColorRampButton</class>
    <extends>QToolButton</extends>
    <header>qgscolorrampbutton.h</header>
@@ -434,15 +456,26 @@
  </customwidgets>
  <tabstops>
   <tabstop>radioTwoColor</tabstop>
+  <tabstop>btnChangeColor</tabstop>
+  <tabstop>mStartColorDDBtn</tabstop>
+  <tabstop>btnChangeColor2</tabstop>
+  <tabstop>mEndColorDDBtn</tabstop>
   <tabstop>radioColorRamp</tabstop>
   <tabstop>btnColorRamp</tabstop>
   <tabstop>mRadioUseWholeShape</tabstop>
+  <tabstop>mShadeWholeShapeDDBtn</tabstop>
   <tabstop>mRadioUseMaxDistance</tabstop>
   <tabstop>mSpinMaxDistance</tabstop>
+  <tabstop>mDistanceUnitWidget</tabstop>
+  <tabstop>mShadeDistanceDDBtn</tabstop>
   <tabstop>mIgnoreRingsCheckBox</tabstop>
+  <tabstop>mIgnoreRingsDDBtn</tabstop>
   <tabstop>mBlurSlider</tabstop>
   <tabstop>mSpinBlurRadius</tabstop>
+  <tabstop>mBlurRadiusDDBtn</tabstop>
   <tabstop>spinOffsetX</tabstop>
+  <tabstop>mOffsetUnitWidget</tabstop>
+  <tabstop>spinOffsetY</tabstop>
  </tabstops>
  <resources/>
  <connections>

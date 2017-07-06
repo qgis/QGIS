@@ -25,7 +25,7 @@
 #include "qgsmaplayerlistutils.h"
 #include "qgsproject.h"
 #include "qgsxmlutils.h"
-#include "qgscsexception.h"
+#include "qgsexception.h"
 #include "qgsgeometry.h"
 
 Q_GUI_EXPORT extern int qt_defaultDpiX();
@@ -50,8 +50,7 @@ QgsMapSettings::QgsMapSettings()
   , mMapUnitsPerPixel( 1 )
   , mScale( 1 )
 {
-  // set default map units - we use WGS 84 thus use degrees
-  mScaleCalculator.setMapUnits( QgsUnitTypes::DistanceDegrees );
+  mScaleCalculator.setMapUnits( QgsUnitTypes::DistanceUnknownUnit );
 
   updateDerived();
 }
@@ -537,7 +536,7 @@ QgsRectangle QgsMapSettings::fullExtent() const
       QgsRectangle extent = layerExtentToOutputExtent( lyr, lyr->extent() );
 
       QgsDebugMsg( "Output extent: " + extent.toString() );
-      fullExtent.unionRect( extent );
+      fullExtent.combineExtentWith( extent );
     }
   }
 

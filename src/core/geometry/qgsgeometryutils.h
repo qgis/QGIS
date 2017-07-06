@@ -44,6 +44,13 @@ class CORE_EXPORT QgsGeometryUtils
      */
     static QgsPoint closestVertex( const QgsAbstractGeometry &geom, const QgsPoint &pt, QgsVertexId &id SIP_OUT );
 
+    /**
+     * Returns the nearest point on a segment of a \a geometry
+     * for the specified \a point. The z and m values will be linearly interpolated between
+     * the two neighbouring vertices.
+     */
+    static QgsPoint closestPoint( const QgsAbstractGeometry &geometry, const QgsPoint &point );
+
     /** Returns the distance along a geometry from its first vertex to the specified vertex.
      * \param geom geometry
      * \param id vertex id to find distance to

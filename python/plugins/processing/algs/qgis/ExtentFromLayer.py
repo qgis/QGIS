@@ -31,6 +31,7 @@ from qgis.PyQt.QtGui import QIcon
 from qgis.PyQt.QtCore import QVariant
 
 from qgis.core import (QgsField,
+                       QgsFeatureSink,
                        QgsPointXY,
                        QgsGeometry,
                        QgsFeature,
@@ -139,11 +140,11 @@ class ExtentFromLayer(QgisAlgorithm):
             width,
         ]
         feat.setAttributes(attrs)
-        sink.addFeature(feat)
+        sink.addFeature(feat, QgsFeatureSink.FastInsert)
 
     def featureExtent(self, source, context, sink, feedback):
         features = source.getFeatures()
-        total = 100.0 / source.featureCount()
+        total = 100.0 / source.featureCount() if source.featureCount() else 0
         feat = QgsFeature()
         for current, f in enumerate(features):
             if feedback.isCanceled():
@@ -179,5 +180,5 @@ class ExtentFromLayer(QgisAlgorithm):
             ]
             feat.setAttributes(attrs)
 
-            sink.addFeature(feat)
+            sink.addFeature(feat, QgsFeatureSink.FastInsert)
             feedback.setProgress(int(current * total))

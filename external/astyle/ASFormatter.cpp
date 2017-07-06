@@ -5291,7 +5291,7 @@ void ASFormatter::convertTabToSpaces()
 }
 
 /**
-* is it ok to break this block?
+* is it OK to break this block?
 */
 bool ASFormatter::isOkToBreakBlock(BraceType braceType) const
 {

@@ -13,6 +13,8 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsrendererwidget.h"
+
+#include "qgsdatadefinedsizelegendwidget.h"
 #include "qgssymbol.h"
 #include "qgsvectorlayer.h"
 #include "qgscolordialog.h"
@@ -249,9 +251,7 @@ void QgsRendererWidget::changeSymbolAngle()
 
 void QgsRendererWidget::showSymbolLevelsDialog( QgsFeatureRenderer *r )
 {
-  QgsLegendSymbolList symbols = r->legendSymbolItems();
-
-  QgsSymbolLevelsDialog dlg( symbols, r->usingSymbolLevels(), this );
+  QgsSymbolLevelsDialog dlg( r->legendSymbolItems(), r->usingSymbolLevels(), this );
 
   if ( dlg.exec() )
   {
@@ -274,6 +274,21 @@ void QgsRendererWidget::applyChanges()
 {
   apply();
 }
+
+QgsDataDefinedSizeLegendWidget *QgsRendererWidget::createDataDefinedSizeLegendWidget( const QgsMarkerSymbol *symbol, const QgsDataDefinedSizeLegend *ddsLegend )
+{
+  QgsProperty ddSize = symbol->dataDefinedSize();
+  if ( !ddSize || !ddSize.isActive() )
+  {
+    QMessageBox::warning( this, tr( "Data-defined size legend" ), tr( "Data-defined size is not enabled!" ) );
+    return nullptr;
+  }
+
+  QgsDataDefinedSizeLegendWidget *panel = new QgsDataDefinedSizeLegendWidget( ddsLegend, ddSize, symbol->clone(), mContext.mapCanvas() );
+  connect( panel, &QgsPanelWidget::widgetChanged, this, &QgsPanelWidget::widgetChanged );
+  return panel;
+}
+
 
 //
 // QgsDataDefinedValueDialog

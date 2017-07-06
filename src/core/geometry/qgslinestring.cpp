@@ -40,6 +40,43 @@ QgsLineString::QgsLineString(): QgsCurve()
   mWkbType = QgsWkbTypes::LineString;
 }
 
+QgsLineString::QgsLineString( const QVector<QgsPoint> &points )
+{
+  if ( points.isEmpty() )
+  {
+    mWkbType = QgsWkbTypes::LineString;
+    return;
+  }
+  QgsWkbTypes::Type ptType = points.at( 0 ).wkbType();
+  mWkbType = QgsWkbTypes::zmType( QgsWkbTypes::LineString, QgsWkbTypes::hasZ( ptType ), QgsWkbTypes::hasM( ptType ) );
+  mX.resize( points.count() );
+  mY.resize( points.count() );
+  double *x = mX.data();
+  double *y = mY.data();
+  double *z = nullptr;
+  double *m = nullptr;
+  if ( QgsWkbTypes::hasZ( mWkbType ) )
+  {
+    mZ.resize( points.count() );
+    z = mZ.data();
+  }
+  if ( QgsWkbTypes::hasM( mWkbType ) )
+  {
+    mM.resize( points.count() );
+    m = mM.data();
+  }
+
+  Q_FOREACH ( const QgsPoint &pt, points )
+  {
+    *x++ = pt.x();
+    *y++ = pt.y();
+    if ( z )
+      *z++ = pt.z();
+    if ( m )
+      *m++ = pt.m();
+  }
+}
+
 QgsLineString::QgsLineString( const QVector<double> &x, const QVector<double> &y, const QVector<double> &z, const QVector<double> &m )
 {
   mWkbType = QgsWkbTypes::LineString;
@@ -343,8 +380,8 @@ QgsPoint QgsLineString::pointN( int i ) const
 
   double x = mX.at( i );
   double y = mY.at( i );
-  double z = 0;
-  double m = 0;
+  double z = std::numeric_limits<double>::quiet_NaN();
+  double m = std::numeric_limits<double>::quiet_NaN();
 
   bool hasZ = is3D();
   if ( hasZ )
@@ -404,7 +441,7 @@ double QgsLineString::zAt( int index ) const
   if ( index >= 0 && index < mZ.size() )
     return mZ.at( index );
   else
-    return 0.0;
+    return std::numeric_limits<double>::quiet_NaN();
 }
 
 double QgsLineString::mAt( int index ) const
@@ -412,7 +449,7 @@ double QgsLineString::mAt( int index ) const
   if ( index >= 0 && index < mM.size() )
     return mM.at( index );
   else
-    return 0.0;
+    return std::numeric_limits<double>::quiet_NaN();
 }
 
 void QgsLineString::setXAt( int index, double x )
@@ -555,8 +592,8 @@ void QgsLineString::append( const QgsLineString *line )
     }
     else
     {
-      // if append line does not have z coordinates, fill with 0 to match number of points in final line
-      mZ.insert( mZ.count(), mX.size() - mZ.size(), 0 );
+      // if append line does not have z coordinates, fill with NaN to match number of points in final line
+      mZ.insert( mZ.count(), mX.size() - mZ.size(), std::numeric_limits<double>::quiet_NaN() );
     }
   }
 
@@ -568,8 +605,8 @@ void QgsLineString::append( const QgsLineString *line )
     }
     else
     {
-      // if append line does not have m values, fill with 0 to match number of points in final line
-      mM.insert( mM.count(), mX.size() - mM.size(), 0 );
+      // if append line does not have m values, fill with NaN to match number of points in final line
+      mM.insert( mM.count(), mX.size() - mM.size(), std::numeric_limits<double>::quiet_NaN() );
     }
   }
 
@@ -1091,7 +1128,7 @@ bool QgsLineString::convertTo( QgsWkbTypes::Type type )
   {
     //special handling required for conversion to LineString25D
     dropMValue();
-    addZValue();
+    addZValue( std::numeric_limits<double>::quiet_NaN() );
     mWkbType = QgsWkbTypes::LineString25D;
     return true;
   }

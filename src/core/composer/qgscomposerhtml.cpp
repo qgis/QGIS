@@ -408,7 +408,7 @@ double QgsComposerHtml::findNearbyPageBreak( double yPos )
   std::sort( candidates.begin(), candidates.end(), candidateSort );
   //first candidate is now the largest row with smallest number of changes
 
-  //ok, now take the mid point of the best candidate position
+  //OK, now take the mid point of the best candidate position
   //we do this so that the spacing between text lines is likely to be split in half
   //otherwise the html will be broken immediately above a line of text, which
   //looks a little messy

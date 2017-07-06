@@ -19,6 +19,7 @@ email                : hugo dot mercier at oslandia dot com
 #include "qgsmessagelog.h"
 #include "qgsgeometry.h"
 #include "qgsvirtuallayerblob.h"
+#include "qgsexception.h"
 
 #include <stdexcept>
 
@@ -42,6 +43,21 @@ QgsVirtualLayerFeatureIterator::QgsVirtualLayerFeatureIterator( QgsVirtualLayerF
     return;
   }
 
+  if ( mRequest.destinationCrs().isValid() && mRequest.destinationCrs() != mSource->mCrs )
+  {
+    mTransform = QgsCoordinateTransform( mSource->mCrs, mRequest.destinationCrs() );
+  }
+  try
+  {
+    mFilterRect = filterRectToSourceCrs( mTransform );
+  }
+  catch ( QgsCsException & )
+  {
+    // can't reproject mFilterRect
+    mClosed = true;
+    return;
+  }
+
   try
   {
     QString tableName = mSource->mTableName;
@@ -56,11 +72,10 @@ QgsVirtualLayerFeatureIterator::QgsVirtualLayerFeatureIterator( QgsVirtualLayerF
     if ( !mSource->mDefinition.uid().isNull() )
     {
       // filters are only available when a column with unique id exists
-      if ( mSource->mDefinition.hasDefinedGeometry() && !request.filterRect().isNull() )
+      if ( mSource->mDefinition.hasDefinedGeometry() && !mFilterRect.isNull() )
       {
         bool do_exact = request.flags() & QgsFeatureRequest::ExactIntersect;
-        QgsRectangle rect( request.filterRect() );
-        QString mbr = QStringLiteral( "%1,%2,%3,%4" ).arg( rect.xMinimum() ).arg( rect.yMinimum() ).arg( rect.xMaximum() ).arg( rect.yMaximum() );
+        QString mbr = QStringLiteral( "%1,%2,%3,%4" ).arg( mFilterRect.xMinimum() ).arg( mFilterRect.yMinimum() ).arg( mFilterRect.xMaximum() ).arg( mFilterRect.yMaximum() );
         wheres << quotedColumn( mSource->mDefinition.geometryField() ) + " is not null";
         wheres <<  QStringLiteral( "%1Intersects(%2,BuildMbr(%3))" )
                .arg( do_exact ? "" : "Mbr",
@@ -261,6 +276,7 @@ bool QgsVirtualLayerFeatureIterator::fetchFeature( QgsFeature &feature )
   }
 
   feature.setValid( true );
+  geometryToDestinationCrs( feature, mTransform );
   return true;
 }
 
@@ -271,6 +287,7 @@ QgsVirtualLayerFeatureSource::QgsVirtualLayerFeatureSource( const QgsVirtualLaye
   , mSqlite( p->mSqlite.get() )
   , mTableName( p->mTableName )
   , mSubset( p->mSubset )
+  , mCrs( p->crs() )
 {
 }
 

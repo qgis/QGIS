@@ -33,7 +33,8 @@ from qgis.analysis import QgsAspectFilter
 from qgis.core import (QgsProcessingParameterRasterLayer,
                        QgsProcessingParameterNumber,
                        QgsProcessingParameterRasterOutput,
-                       QgsProcessingOutputRasterLayer)
+                       QgsProcessingOutputRasterLayer,
+                       QgsFeatureSink)
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 from processing.core.parameters import ParameterRaster
 from processing.core.parameters import ParameterNumber
@@ -83,6 +84,6 @@ class Aspect(QgisAlgorithm):
 
         aspect = QgsAspectFilter(inputFile, outputFile, outputFormat)
         aspect.setZFactor(zFactor)
-        aspect.processRaster(None)
+        aspect.processRaster(feedback)
 
         return {self.OUTPUT_LAYER: outputFile}

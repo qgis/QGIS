@@ -34,7 +34,8 @@ import uuid
 import math
 
 from qgis.PyQt.QtCore import QDir
-from qgis.core import QgsApplication
+from qgis.core import (QgsApplication,
+                       QgsProcessingUtils)
 
 numExported = 1
 
@@ -63,27 +64,8 @@ def isMac():
     return sys.platform == 'darwin'
 
 
-_tempFolderSuffix = uuid.uuid4().hex
-
-
-def tempFolder():
-    tempDir = os.path.join(str(QDir.tempPath()), 'processing' + _tempFolderSuffix)
-    if not QDir(tempDir).exists():
-        QDir().mkpath(tempDir)
-
-    return str(os.path.abspath(tempDir))
-
-
-def setTempOutput(out, alg):
-    if hasattr(out, 'directory'):
-        out.value = getTempDirInTempFolder()
-    else:
-        ext = out.getDefaultFileExtension(alg)
-        out.value = getTempFilenameInTempFolder(out.name + '.' + ext)
-
-
 def getTempFilename(ext=None):
-    tmpPath = tempFolder()
+    tmpPath = QgsProcessingUtils.tempFolder()
     t = time.time()
     m = math.floor(t)
     uid = '{:8x}{:05x}'.format(m, int((t - m) * 1000000))
@@ -94,24 +76,11 @@ def getTempFilename(ext=None):
     return filename
 
 
-def getTempFilenameInTempFolder(basename):
-    """Returns a temporary filename for a given file, putting it into
-    a temp folder but not changing its basename.
-    """
-
-    path = tempFolder()
-    path = os.path.join(path, uuid.uuid4().hex)
-    mkdir(path)
-    basename = removeInvalidChars(basename)
-    filename = os.path.join(path, basename)
-    return filename
-
-
 def getTempDirInTempFolder():
     """Returns a temporary directory, putting it into a temp folder.
     """
 
-    path = tempFolder()
+    path = QgsProcessingUtils.tempFolder()
     path = os.path.join(path, uuid.uuid4().hex)
     mkdir(path)
     return path

@@ -373,8 +373,22 @@ Opacity, from 0 (transparent) to 1.0 (opaque)
 %End
 
     bool scaleBasedVisibility;
-    double minScaleDenominator;
-    double maxScaleDenominator;
+
+    double maximumScale;
+%Docstring
+ The maximum map scale (i.e. most "zoomed in" scale) at which the diagrams will be visible.
+ The scale value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
+ A scale of 0 indicates no maximum scale visibility.
+.. seealso:: minimumScale
+%End
+
+    double minimumScale;
+%Docstring
+ The minimum map scale (i.e. most "zoomed out" scale) at which the diagrams will be visible.
+ The scale value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
+ A scale of 0 indicates no minimum scale visibility.
+.. seealso:: maximumScale
+%End
 
     double minimumSize;
 %Docstring
@@ -436,6 +450,15 @@ class QgsDiagramRenderer
 
 %TypeHeaderCode
 #include "qgsdiagramrenderer.h"
+%End
+
+%ConvertToSubClassCode
+    if ( sipCpp->rendererName() == QStringLiteral( "SingleCategory" ) )
+      sipType = sipType_QgsSingleCategoryDiagramRenderer;
+    else if ( sipCpp->rendererName() == QStringLiteral( "LinearlyInterpolated" ) )
+      sipType = sipType_QgsLinearlyInterpolatedDiagramRenderer;
+    else
+      sipType = NULL;
 %End
   public:
 
@@ -533,44 +556,6 @@ Returns list with all diagram settings in the renderer
 .. seealso:: setSizeLegend()
 %End
 
-    bool sizeLegend() const;
-%Docstring
- Returns true if renderer will show legend items for diagram sizes.
-.. versionadded:: 2.16
-.. seealso:: setSizeLegend()
-.. seealso:: attributeLegend()
-.. seealso:: sizeLegendSymbol()
- :rtype: bool
-%End
-
-    void setSizeLegend( bool enabled );
-%Docstring
- Sets whether the renderer will show legend items for diagram sizes.
- \param enabled set to true to show diagram size legend
-.. versionadded:: 2.16
-.. seealso:: sizeLegend()
-.. seealso:: setAttributeLegend()
-.. seealso:: setSizeLegendSymbol()
-%End
-
-    QgsMarkerSymbol *sizeLegendSymbol() const;
-%Docstring
- Returns the marker symbol used for rendering the diagram size legend.
-.. versionadded:: 2.16
-.. seealso:: setSizeLegendSymbol()
-.. seealso:: sizeLegend()
- :rtype: QgsMarkerSymbol
-%End
-
-    void setSizeLegendSymbol( QgsMarkerSymbol *symbol /Transfer/ );
-%Docstring
- Sets the marker symbol used for rendering the diagram size legend.
- \param symbol marker symbol, ownership is transferred to the renderer.
-.. versionadded:: 2.16
-.. seealso:: sizeLegendSymbol()
-.. seealso:: setSizeLegend()
-%End
-
   protected:
     QgsDiagramRenderer( const QgsDiagramRenderer &other );
 
@@ -612,8 +597,6 @@ Returns the paint device dpi (or -1 in case of error
  Writes internal QgsDiagramRenderer diagram state to a DOM element.
 .. seealso:: _readXml()
 %End
-
-
 
 
 };
@@ -667,6 +650,7 @@ class QgsLinearlyInterpolatedDiagramRenderer : QgsDiagramRenderer
 %End
   public:
     QgsLinearlyInterpolatedDiagramRenderer();
+    ~QgsLinearlyInterpolatedDiagramRenderer();
 
     virtual QgsLinearlyInterpolatedDiagramRenderer *clone() const /Factory/;
 
@@ -746,12 +730,30 @@ Returns list with all diagram settings in the renderer
     virtual QList< QgsLayerTreeModelLegendNode * > legendItems( QgsLayerTreeLayer *nodeLayer ) const /Factory/;
 
 
+    void setDataDefinedSizeLegend( QgsDataDefinedSizeLegend *settings /Transfer/ );
+%Docstring
+ Configures appearance of legend. Takes ownership of the passed settings objects.
+.. versionadded:: 3.0
+%End
+
+    QgsDataDefinedSizeLegend *dataDefinedSizeLegend() const;
+%Docstring
+ Returns configuration of appearance of legend. Will return null if no configuration has been set.
+.. versionadded:: 3.0
+ :rtype: QgsDataDefinedSizeLegend
+%End
+
   protected:
     virtual bool diagramSettings( const QgsFeature &feature, const QgsRenderContext &c, QgsDiagramSettings &s ) const;
 
 
     virtual QSizeF diagramSize( const QgsFeature &, const QgsRenderContext &c ) const;
 
+
+    QgsLinearlyInterpolatedDiagramRenderer( const QgsLinearlyInterpolatedDiagramRenderer &other );
+%Docstring
+Copy constructor
+%End
 
 };
 

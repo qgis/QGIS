@@ -248,7 +248,9 @@ class QgsPalLayerSettings
       // rendering
       ScaleVisibility,
       MinScale,
+      MinimumScale,
       MaxScale,
+      MaximumScale,
       FontLimitPixel,
       FontMinPixel,
       FontMaxPixel,
@@ -362,8 +364,22 @@ Label rotation, in degrees clockwise
 
 
     bool scaleVisibility;
-    int scaleMin;
-    int scaleMax;
+
+    double maximumScale;
+%Docstring
+ The maximum map scale (i.e. most "zoomed in" scale) at which the labels will be visible.
+ The scale value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
+ A scale of 0 indicates no maximum scale visibility.
+.. seealso:: minimumScale
+%End
+
+    double minimumScale;
+%Docstring
+ The minimum map scale (i.e. most "zoomed out" scale) at which the labels will be visible.
+ The scale value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
+ A scale of 0 indicates no minimum scale visibility.
+.. seealso:: maximumScale
+%End
 
     bool fontLimitPixelSize; // true is label should be limited by fontMinPixelSize/fontMaxPixelSize
     int fontMinPixelSize; // minimum pixel size for showing rendered map unit labels (1 - 1000)
@@ -399,7 +415,7 @@ Z-Index of label, where labels with a higher z-index are rendered on top of labe
 
     void calculateLabelSize( const QFontMetricsF *fm, QString text, double &labelX, double &labelY, QgsFeature *f = 0, QgsRenderContext *context = 0 );
 
-    void registerFeature( QgsFeature &f, QgsRenderContext &context );
+    void registerFeature( QgsFeature &f, QgsRenderContext &context  );
 
 %Docstring
  Register a feature for labeling.
@@ -537,7 +553,7 @@ class QgsPalLabeling
 %End
 
 
-    static QgsGeometry prepareGeometry( const QgsGeometry &geometry, QgsRenderContext &context, const QgsCoordinateTransform &ct, QgsGeometry *clipGeometry = 0 ) /Factory/;
+    static QgsGeometry prepareGeometry( const QgsGeometry &geometry, QgsRenderContext &context, const QgsCoordinateTransform &ct, const QgsGeometry &clipGeometry = QgsGeometry() ) /Factory/;
 %Docstring
  Prepares a geometry for registration with PAL. Handles reprojection, rotation, clipping, etc.
  \param geometry geometry to prepare
@@ -549,7 +565,7 @@ class QgsPalLabeling
  :rtype: QgsGeometry
 %End
 
-    static bool geometryRequiresPreparation( const QgsGeometry &geometry, QgsRenderContext &context, const QgsCoordinateTransform &ct, QgsGeometry *clipGeometry = 0 );
+    static bool geometryRequiresPreparation( const QgsGeometry &geometry, QgsRenderContext &context, const QgsCoordinateTransform &ct, const QgsGeometry &clipGeometry = QgsGeometry() );
 %Docstring
  Checks whether a geometry requires preparation before registration with PAL
  \param geometry geometry to prepare
@@ -581,49 +597,6 @@ class QgsPalLabeling
  :return: list of graphemes
 .. versionadded:: 2.10
  :rtype: list of str
-%End
-
-  protected:
-    static void dataDefinedTextStyle( QgsPalLayerSettings &tmpLyr,
-                                      const QMap< QgsPalLayerSettings::Property, QVariant > &ddValues );
-%Docstring
-Update temporary QgsPalLayerSettings with any data defined text style values
-%End
-
-    static void dataDefinedTextFormatting( QgsPalLayerSettings &tmpLyr,
-                                           const QMap< QgsPalLayerSettings::Property, QVariant > &ddValues );
-%Docstring
-Update temporary QgsPalLayerSettings with any data defined text formatting values
-%End
-
-    static void dataDefinedTextBuffer( QgsPalLayerSettings &tmpLyr,
-                                       const QMap< QgsPalLayerSettings::Property, QVariant > &ddValues );
-%Docstring
-Update temporary QgsPalLayerSettings with any data defined text buffer values
-%End
-
-    static void dataDefinedShapeBackground( QgsPalLayerSettings &tmpLyr,
-                                            const QMap< QgsPalLayerSettings::Property, QVariant > &ddValues );
-%Docstring
-Update temporary QgsPalLayerSettings with any data defined shape background values
-%End
-
-    static void dataDefinedDropShadow( QgsPalLayerSettings &tmpLyr,
-                                       const QMap< QgsPalLayerSettings::Property, QVariant > &ddValues );
-%Docstring
-Update temporary QgsPalLayerSettings with any data defined drop shadow values
-%End
-
-
-    static bool checkMinimumSizeMM( const QgsRenderContext &context, const QgsGeometry *geom, double minSize );
-%Docstring
- Checks whether a geometry exceeds the minimum required size for a geometry to be labeled.
- \param context render context
- \param geom geometry
- \param minSize minimum size for geometry
- :return: true if geometry exceeds minimum size
-.. versionadded:: 2.9
- :rtype: bool
 %End
 
 };

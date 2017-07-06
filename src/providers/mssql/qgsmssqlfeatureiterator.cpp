@@ -20,6 +20,7 @@
 #include "qgsmssqlprovider.h"
 #include "qgslogger.h"
 #include "qgssettings.h"
+#include "qgsexception.h"
 
 #include <QObject>
 #include <QTextStream>
@@ -32,6 +33,21 @@ QgsMssqlFeatureIterator::QgsMssqlFeatureIterator( QgsMssqlFeatureSource *source,
   mClosed = false;
 
   mParser.IsGeography = mSource->mIsGeography;
+
+  if ( mRequest.destinationCrs().isValid() && mRequest.destinationCrs() != mSource->mCrs )
+  {
+    mTransform = QgsCoordinateTransform( mSource->mCrs, mRequest.destinationCrs() );
+  }
+  try
+  {
+    mFilterRect = filterRectToSourceCrs( mTransform );
+  }
+  catch ( QgsCsException & )
+  {
+    // can't reproject mFilterRect
+    mClosed = true;
+    return;
+  }
 
   BuildStatement( request );
 
@@ -108,7 +124,7 @@ void QgsMssqlFeatureIterator::BuildStatement( const QgsFeatureRequest &request )
 
   bool filterAdded = false;
   // set spatial filter
-  if ( !request.filterRect().isNull() && mSource->isSpatial() && !request.filterRect().isEmpty() )
+  if ( !mFilterRect.isNull() && mSource->isSpatial() && !mFilterRect.isEmpty() )
   {
     // polygons should be CCW for SqlGeography
     QString r;
@@ -116,11 +132,11 @@ void QgsMssqlFeatureIterator::BuildStatement( const QgsFeatureRequest &request )
 
     foo.setRealNumberPrecision( 8 );
     foo.setRealNumberNotation( QTextStream::FixedNotation );
-    foo <<  qgsDoubleToString( request.filterRect().xMinimum() ) << ' ' <<  qgsDoubleToString( request.filterRect().yMinimum() ) << ", "
-        <<  qgsDoubleToString( request.filterRect().xMaximum() ) << ' ' << qgsDoubleToString( request.filterRect().yMinimum() ) << ", "
-        <<  qgsDoubleToString( request.filterRect().xMaximum() ) << ' ' <<  qgsDoubleToString( request.filterRect().yMaximum() ) << ", "
-        <<  qgsDoubleToString( request.filterRect().xMinimum() ) << ' ' <<  qgsDoubleToString( request.filterRect().yMaximum() ) << ", "
-        <<  qgsDoubleToString( request.filterRect().xMinimum() ) << ' ' <<  qgsDoubleToString( request.filterRect().yMinimum() );
+    foo <<  qgsDoubleToString( mFilterRect.xMinimum() ) << ' ' <<  qgsDoubleToString( mFilterRect.yMinimum() ) << ", "
+        <<  qgsDoubleToString( mFilterRect.xMaximum() ) << ' ' << qgsDoubleToString( mFilterRect.yMinimum() ) << ", "
+        <<  qgsDoubleToString( mFilterRect.xMaximum() ) << ' ' <<  qgsDoubleToString( mFilterRect.yMaximum() ) << ", "
+        <<  qgsDoubleToString( mFilterRect.xMinimum() ) << ' ' <<  qgsDoubleToString( mFilterRect.yMaximum() ) << ", "
+        <<  qgsDoubleToString( mFilterRect.xMinimum() ) << ' ' <<  qgsDoubleToString( mFilterRect.yMinimum() );
 
     mStatement += QStringLiteral( " where [%1].STIsValid() = 1 AND [%1].STIntersects([%2]::STGeomFromText('POLYGON((%3))',%4)) = 1" ).arg(
                     mSource->mGeometryColName, mSource->mGeometryColType, r, QString::number( mSource->mSRId ) );
@@ -324,6 +340,7 @@ bool QgsMssqlFeatureIterator::fetchFeature( QgsFeature &feature )
     }
 
     feature.setValid( true );
+    geometryToDestinationCrs( feature, mTransform );
     return true;
   }
   return false;
@@ -453,6 +470,7 @@ QgsMssqlFeatureSource::QgsMssqlFeatureSource( const QgsMssqlProvider *p )
   , mDatabaseName( p->mDatabaseName )
   , mHost( p->mHost )
   , mSqlWhereClause( p->mSqlWhereClause )
+  , mCrs( p->crs() )
 {}
 
 QgsFeatureIterator QgsMssqlFeatureSource::getFeatures( const QgsFeatureRequest &request )

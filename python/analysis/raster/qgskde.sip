@@ -1,104 +1,140 @@
-/**
- * \class QgsKernelDensityEstimation
- * \ingroup analysis
- * Performs Kernel Density Estimation ("heatmap") calculations on a vector layer.
- * @note added in QGIS 3.0
- */
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/analysis/raster/qgskde.h                                         *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+
 class QgsKernelDensityEstimation
 {
-%TypeHeaderCode
-#include <qgskde.h>
+%Docstring
+ Performs Kernel Density Estimation ("heatmap") calculations on a vector layer.
+.. versionadded:: 3.0
 %End
 
+%TypeHeaderCode
+#include "qgskde.h"
+%End
   public:
 
-    //! Kernel shape type
     enum KernelShape
     {
-      KernelQuartic, //!< Quartic kernel
-      KernelTriangular, //!< Triangular kernel
-      KernelUniform, //!< Uniform (flat) kernel
-      KernelTriweight, //!< Triweight kernel
-      KernelEpanechnikov, //!< Epanechnikov kernel
+      KernelQuartic,
+      KernelTriangular,
+      KernelUniform,
+      KernelTriweight,
+      KernelEpanechnikov,
     };
 
-    //! Output values type
     enum OutputValues
     {
-      OutputRaw, //!< Output the raw KDE values
-      OutputScaled, //!< Output mathematically correct scaled values
+      OutputRaw,
+      OutputScaled,
     };
 
-    //! Result of operation
     enum Result
     {
-      Success, //!< Operation completed successfully
-      DriverError, //!< Could not open the driver for the specified format
-      InvalidParameters, //!< Input parameters were not valid
-      FileCreationError, //!< Error creating output file
-      RasterIoError, //!< Error writing to raster
+      Success,
+      DriverError,
+      InvalidParameters,
+      FileCreationError,
+      RasterIoError,
     };
 
-    //! KDE parameters
     struct Parameters
     {
-      //! Vector point layer
       QgsVectorLayer *vectorLayer;
+%Docstring
+Vector point layer
+%End
 
-      //! Fixed radius, in map units
       double radius;
+%Docstring
+Fixed radius, in map units
+%End
 
-      //! Field for radius, or empty if using a fixed radius
       QString radiusField;
+%Docstring
+Field for radius, or empty if using a fixed radius
+%End
 
-      //! Field name for weighting field, or empty if not using weights
       QString weightField;
+%Docstring
+Field name for weighting field, or empty if not using weights
+%End
 
-      //! Size of pixel in output file
       double pixelSize;
+%Docstring
+Size of pixel in output file
+%End
 
-      //! Kernel shape
       QgsKernelDensityEstimation::KernelShape shape;
+%Docstring
+Kernel shape
+%End
 
-      //! Decay ratio (Triangular kernels only)
       double decayRatio;
+%Docstring
+Decay ratio (Triangular kernels only)
+%End
 
-      //! Type of output value
       QgsKernelDensityEstimation::OutputValues outputValues;
+%Docstring
+Type of output value
+%End
     };
 
-    /**
-     * Constructor for QgsKernelDensityEstimation. Requires a Parameters object specifying the options to use
-     * to generate the surface. The output path and file format are also required.
-     */
     QgsKernelDensityEstimation( const Parameters &parameters, const QString &outputFile, const QString &outputFormat );
+%Docstring
+ Constructor for QgsKernelDensityEstimation. Requires a Parameters object specifying the options to use
+ to generate the surface. The output path and file format are also required.
+%End
 
-    /**
-     * Runs the KDE calculation across the whole layer at once. Either call this method, or manually
-     * call run(), addFeature() and finalise() separately.
-     */
     Result run();
+%Docstring
+ Runs the KDE calculation across the whole layer at once. Either call this method, or manually
+ call run(), addFeature() and finalise() separately.
+ :rtype: Result
+%End
 
-    /**
-     * Prepares the output file for writing and setups up the surface calculation. This must be called
-     * before adding features via addFeature().
-     * @see addFeature()
-     * @see finalise()
-     */
     Result prepare();
+%Docstring
+ Prepares the output file for writing and setups up the surface calculation. This must be called
+ before adding features via addFeature().
+.. seealso:: addFeature()
+.. seealso:: finalise()
+ :rtype: Result
+%End
 
-    /**
-     * Adds a single feature to the KDE surface. prepare() must be called before adding features.
-     * @see prepare()
-     * @see finalise()
-     */
     Result addFeature( const QgsFeature &feature );
+%Docstring
+ Adds a single feature to the KDE surface. prepare() must be called before adding features.
+.. seealso:: prepare()
+.. seealso:: finalise()
+ :rtype: Result
+%End
 
-    /**
-     * Finalises the output file. Must be called after adding all features via addFeature().
-     * @see prepare()
-     * @see addFeature()
-     */
     Result finalise();
+%Docstring
+ Finalises the output file. Must be called after adding all features via addFeature().
+.. seealso:: prepare()
+.. seealso:: addFeature()
+ :rtype: Result
+%End
 
 };
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/analysis/raster/qgskde.h                                         *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

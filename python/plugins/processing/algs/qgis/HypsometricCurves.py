@@ -32,6 +32,7 @@ import numpy
 from osgeo import gdal, ogr, osr
 
 from qgis.core import (QgsRectangle,
+                       QgsFeatureSink,
                        QgsGeometry,
                        QgsApplication,
                        QgsProcessingUtils)
@@ -53,12 +54,6 @@ class HypsometricCurves(QgisAlgorithm):
     STEP = 'STEP'
     USE_PERCENTAGE = 'USE_PERCENTAGE'
     OUTPUT_DIRECTORY = 'OUTPUT_DIRECTORY'
-
-    def icon(self):
-        return QgsApplication.getThemeIcon("/providerQgis.svg")
-
-    def svgIconPath(self):
-        return QgsApplication.iconPath("providerQgis.svg")
 
     def group(self):
         return self.tr('Raster tools')
@@ -114,7 +109,7 @@ class HypsometricCurves(QgisAlgorithm):
         memRasterDriver = gdal.GetDriverByName('MEM')
 
         features = QgsProcessingUtils.getFeatures(layer, context)
-        total = 100.0 / QgsProcessingUtils.featureCount(layer, context)
+        total = 100.0 / layer.featureCount() if layer.featureCount() else 0
 
         for current, f in enumerate(features):
             geom = f.geometry()

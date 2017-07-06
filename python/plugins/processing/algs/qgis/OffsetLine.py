@@ -29,6 +29,7 @@ import os
 
 from qgis.core import (QgsApplication,
                        QgsWkbTypes,
+                       QgsFeatureSink,
                        QgsProcessingUtils)
 
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
@@ -48,12 +49,6 @@ class OffsetLine(QgisAlgorithm):
     SEGMENTS = 'SEGMENTS'
     JOIN_STYLE = 'JOIN_STYLE'
     MITRE_LIMIT = 'MITRE_LIMIT'
-
-    def icon(self):
-        return QgsApplication.getThemeIcon("/providerQgis.svg")
-
-    def svgIconPath(self):
-        return QgsApplication.iconPath("providerQgis.svg")
 
     def group(self):
         return self.tr('Vector geometry tools')
@@ -96,7 +91,7 @@ class OffsetLine(QgisAlgorithm):
         miter_limit = self.getParameterValue(self.MITRE_LIMIT)
 
         features = QgsProcessingUtils.getFeatures(layer, context)
-        total = 100.0 / QgsProcessingUtils.featureCount(layer, context)
+        total = 100.0 / layer.featureCount() if layer.featureCount() else 0
 
         for current, input_feature in enumerate(features):
             output_feature = input_feature
@@ -109,7 +104,7 @@ class OffsetLine(QgisAlgorithm):
 
                 output_feature.setGeometry(output_geometry)
 
-            writer.addFeature(output_feature)
+            writer.addFeature(output_feature, QgsFeatureSink.FastInsert)
             feedback.setProgress(int(current * total))
 
         del writer

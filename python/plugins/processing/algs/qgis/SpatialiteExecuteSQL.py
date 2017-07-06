@@ -26,14 +26,14 @@ __copyright__ = '(C) 2016, Mathieu Pellerin'
 
 __revision__ = '$Format:%H$'
 
+from qgis.core import (QgsDataSourceUri,
+                       QgsApplication,
+                       QgsProcessingParameterVectorLayer,
+                       QgsProcessingParameterString)
+
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
-from processing.core.parameters import ParameterVector
-from processing.core.parameters import ParameterString
 from processing.tools import spatialite
-
-from qgis.core import (QgsApplication,
-                       QgsDataSourceUri)
 
 
 class SpatialiteExecuteSQL(QgisAlgorithm):
@@ -41,19 +41,13 @@ class SpatialiteExecuteSQL(QgisAlgorithm):
     DATABASE = 'DATABASE'
     SQL = 'SQL'
 
-    def icon(self):
-        return QgsApplication.getThemeIcon("/providerQgis.svg")
-
-    def svgIconPath(self):
-        return QgsApplication.iconPath("providerQgis.svg")
-
     def group(self):
         return self.tr('Database')
 
     def __init__(self):
         super().__init__()
-        self.addParameter(ParameterVector(self.DATABASE, self.tr('File Database'), False, False))
-        self.addParameter(ParameterString(self.SQL, self.tr('SQL query'), '', True))
+        self.addParameter(QgsProcessingParameterVectorLayer(self.DATABASE, self.tr('File Database'), False, False))
+        self.addParameter(QgsProcessingParameterString(self.SQL, self.tr('SQL query'), '', True))
 
     def name(self):
         return 'spatialiteexecutesql'
@@ -62,16 +56,19 @@ class SpatialiteExecuteSQL(QgisAlgorithm):
         return self.tr('Spatialite execute SQL')
 
     def processAlgorithm(self, parameters, context, feedback):
-        database = self.getParameterValue(self.DATABASE)
-        uri = QgsDataSourceUri(database)
+        database = self.parameterAsVectorLayer(parameters, self.DATABASE, context)
+        databaseuri = database.dataProvider().dataSourceUri()
+        uri = QgsDataSourceUri(databaseuri)
         if uri.database() is '':
-            if '|layerid' in database:
-                database = database[:database.find('|layerid')]
-            uri = QgsDataSourceUri('dbname=\'%s\'' % (database))
-        self.db = spatialite.GeoDB(uri)
-        sql = self.getParameterValue(self.SQL).replace('\n', ' ')
+            if '|layerid' in databaseuri:
+                databaseuri = databaseuri[:databaseuri.find('|layerid')]
+            uri = QgsDataSourceUri('dbname=\'%s\'' % (databaseuri))
+        db = spatialite.GeoDB(uri)
+        sql = self.parameterAsString(parameters, self.SQL, context).replace('\n', ' ')
         try:
-            self.db._exec_sql_and_commit(str(sql))
+            db._exec_sql_and_commit(str(sql))
         except spatialite.DbError as e:
             raise GeoAlgorithmExecutionException(
                 self.tr('Error executing SQL:\n{0}').format(str(e)))
+
+        return {}

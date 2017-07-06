@@ -31,6 +31,7 @@ from osgeo import gdal
 from qgis.PyQt.QtCore import QVariant
 from qgis.core import (QgsApplication,
                        QgsFeature,
+                       QgsFeatureSink,
                        QgsFields,
                        QgsField,
                        QgsGeometry,
@@ -50,12 +51,6 @@ class PointsFromLines(QgisAlgorithm):
     RASTER_BAND = 'RASTER_BAND'
     INPUT_VECTOR = 'INPUT_VECTOR'
     OUTPUT_LAYER = 'OUTPUT_LAYER'
-
-    def icon(self):
-        return QgsApplication.getThemeIcon("/providerQgis.svg")
-
-    def svgIconPath(self):
-        return QgsApplication.iconPath("providerQgis.svg")
 
     def group(self):
         return self.tr('Vector analysis tools')
@@ -99,7 +94,7 @@ class PointsFromLines(QgisAlgorithm):
         self.pointId = 0
 
         features = QgsProcessingUtils.getFeatures(layer, context)
-        total = 100.0 / QgsProcessingUtils.featureCount(layer, context)
+        total = 100.0 / layer.featureCount() if layer.featureCount() else 0
         for current, f in enumerate(features):
             geom = f.geometry()
             if geom.isMultipart():
@@ -199,4 +194,4 @@ class PointsFromLines(QgisAlgorithm):
         self.fid += 1
         self.pointId += 1
 
-        writer.addFeature(feature)
+        writer.addFeature(feature, QgsFeatureSink.FastInsert)

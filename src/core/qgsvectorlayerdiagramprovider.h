@@ -16,6 +16,8 @@
 #ifndef QGSVECTORLAYERDIAGRAMPROVIDER_H
 #define QGSVECTORLAYERDIAGRAMPROVIDER_H
 
+#define SIP_NO_FILE
+
 #include "qgis_core.h"
 #include "qgslabelingengine.h"
 #include "qgslabelfeature.h"
@@ -91,13 +93,13 @@ class CORE_EXPORT QgsVectorLayerDiagramProvider : public QgsAbstractLabelProvide
      * the feature's original geometry will be used as an obstacle for labels. Ownership of obstacleGeometry
      * is transferred.
      */
-    virtual void registerFeature( QgsFeature &feature, QgsRenderContext &context, QgsGeometry *obstacleGeometry = nullptr );
+    virtual void registerFeature( QgsFeature &feature, QgsRenderContext &context, const QgsGeometry &obstacleGeometry = QgsGeometry() );
 
   protected:
     //! initialization method - called from constructors
     void init();
     //! helper method to register one diagram feautre
-    QgsLabelFeature *registerDiagram( QgsFeature &feat, QgsRenderContext &context, QgsGeometry *obstacleGeometry = nullptr );
+    QgsLabelFeature *registerDiagram( QgsFeature &feat, QgsRenderContext &context, const QgsGeometry &obstacleGeometry = QgsGeometry() );
 
   protected:
 

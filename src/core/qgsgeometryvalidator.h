@@ -33,14 +33,14 @@ class CORE_EXPORT QgsGeometryValidator : public QThread
     /**
      * Constructor for QgsGeometryValidator.
      */
-    QgsGeometryValidator( const QgsGeometry *g, QList<QgsGeometry::Error> *errors = nullptr, QgsGeometry::ValidationMethod method = QgsGeometry::ValidatorQgisInternal );
+    QgsGeometryValidator( const QgsGeometry &geoemtry, QList<QgsGeometry::Error> *errors = nullptr, QgsGeometry::ValidationMethod method = QgsGeometry::ValidatorQgisInternal );
     ~QgsGeometryValidator();
 
     void run() override;
     void stop();
 
     //! Validate geometry and produce a list of geometry errors
-    static void validateGeometry( const QgsGeometry *g, QList<QgsGeometry::Error> &errors SIP_OUT, QgsGeometry::ValidationMethod method = QgsGeometry::ValidatorQgisInternal );
+    static void validateGeometry( const QgsGeometry &geometry, QList<QgsGeometry::Error> &errors SIP_OUT, QgsGeometry::ValidationMethod method = QgsGeometry::ValidatorQgisInternal );
 
   signals:
     void errorFound( const QgsGeometry::Error & );
@@ -57,7 +57,7 @@ class CORE_EXPORT QgsGeometryValidator : public QThread
     bool ringInRing( const QgsPolyline &inside, const QgsPolyline &outside );
     bool pointInRing( const QgsPolyline &ring, const QgsPointXY &p );
 
-    QgsGeometry mG;
+    QgsGeometry mGeometry;
     QList<QgsGeometry::Error> *mErrors;
     bool mStop;
     int mErrorCount;

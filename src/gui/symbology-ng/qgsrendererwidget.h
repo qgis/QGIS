@@ -23,6 +23,8 @@
 #include "qgssymbolwidgetcontext.h"
 #include "qgssymbollayer.h"
 
+class QgsDataDefinedSizeLegend;
+class QgsDataDefinedSizeLegendWidget;
 class QgsVectorLayer;
 class QgsStyle;
 class QgsFeatureRenderer;
@@ -37,7 +39,7 @@ WORKFLOW:
 - find out which widget to use
 - instantiate it and set in stacked widget
 - on any change of renderer type, create some default (dummy?) version and change the stacked widget
-- when clicked ok/apply, get the renderer from active widget and clone it for the layer
+- when clicked OK/Apply, get the renderer from active widget and clone it for the layer
 */
 class GUI_EXPORT QgsRendererWidget : public QgsPanelWidget
 {
@@ -98,6 +100,11 @@ class GUI_EXPORT QgsRendererWidget : public QgsPanelWidget
     virtual QList<QgsSymbol *> selectedSymbols() { return QList<QgsSymbol *>(); }
     virtual void refreshSymbolView() {}
 
+    //! Creates widget to setup data-defined size legend.
+    //! Returns newly created panel - may be null if it could not be opened. Ownership is transferred to the caller.
+    //! \since QGIS 3.0
+    QgsDataDefinedSizeLegendWidget *createDataDefinedSizeLegendWidget( const QgsMarkerSymbol *symbol, const QgsDataDefinedSizeLegend *ddsLegend ) SIP_FACTORY;
+
   protected slots:
     void  contextMenuViewCategories( QPoint p );
     //! Change color of selected symbols
@@ -122,7 +129,7 @@ class GUI_EXPORT QgsRendererWidget : public QgsPanelWidget
      * This will be called whenever the renderer is set on a layer.
      * This can be overwritten in subclasses.
      */
-    virtual void apply();
+    virtual void apply() SIP_FORCE;
 
 
 };
@@ -139,11 +146,13 @@ class QgsFields;
 #include "ui_widget_set_dd_value.h"
 #include "qgis_gui.h"
 
+
 /** \ingroup gui
 Utility classes for "en masse" size definition
 */
-class GUI_EXPORT QgsDataDefinedValueDialog : public QDialog, public Ui::QgsDataDefinedValueDialog, private QgsExpressionContextGenerator
+class GUI_EXPORT QgsDataDefinedValueDialog : public QDialog, public Ui::QgsDataDefinedValueBaseDialog, private QgsExpressionContextGenerator
 {
+
     Q_OBJECT
 
   public:
@@ -186,11 +195,11 @@ class GUI_EXPORT QgsDataDefinedValueDialog : public QDialog, public Ui::QgsDataD
     void init( int propertyKey ); // needed in children ctor to call virtual
 
   private:
-    QgsProperty symbolDataDefined() const;
+    QgsProperty symbolDataDefined() const SIP_FORCE;
 
-    virtual QgsProperty symbolDataDefined( const QgsSymbol * ) const = 0;
-    virtual double value( const QgsSymbol * ) const = 0;
-    virtual void setDataDefined( QgsSymbol *symbol, const QgsProperty &dd ) = 0;
+    virtual QgsProperty symbolDataDefined( const QgsSymbol * ) const = 0 SIP_FORCE;
+    virtual double value( const QgsSymbol * ) const = 0 SIP_FORCE;
+    virtual void setDataDefined( QgsSymbol *symbol, const QgsProperty &dd ) = 0 SIP_FORCE;
 
     QList<QgsSymbol *> mSymbolList;
     QgsVectorLayer *mLayer = nullptr;

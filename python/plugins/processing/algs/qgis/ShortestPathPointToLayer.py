@@ -31,7 +31,7 @@ from collections import OrderedDict
 from qgis.PyQt.QtCore import QVariant
 from qgis.PyQt.QtGui import QIcon
 
-from qgis.core import (QgsWkbTypes, QgsUnitTypes, QgsFeature, QgsGeometry, QgsPointXY, QgsFields, QgsField, QgsFeatureRequest,
+from qgis.core import (QgsWkbTypes, QgsUnitTypes, QgsFeatureSink, QgsFeature, QgsGeometry, QgsPointXY, QgsFields, QgsField, QgsFeatureRequest,
                        QgsMessageLog,
                        QgsProcessingParameterDefinition,
                        QgsProcessingUtils)
@@ -229,7 +229,7 @@ class ShortestPathPointToLayer(QgisAlgorithm):
         tree, cost = QgsGraphAnalyzer.dijkstra(graph, idxStart, 0)
         route = []
 
-        total = 100.0 / count
+        total = 100.0 / count if count else 1
         for i in range(1, count + 1):
             idxEnd = graph.findVertex(snappedPoints[i])
 
@@ -254,7 +254,7 @@ class ShortestPathPointToLayer(QgisAlgorithm):
             feat['start'] = startPoint.toString()
             feat['end'] = points[i].toString()
             feat['cost'] = cost / multiplier
-            writer.addFeature(feat)
+            writer.addFeature(feat, QgsFeatureSink.FastInsert)
 
             route[:] = []
 

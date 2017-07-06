@@ -17,24 +17,27 @@
 
 #include "qgsfeaturestore.h"
 
-bool QgsFeatureSink::addFeature( QgsFeature &feature )
+bool QgsFeatureSink::addFeature( QgsFeature &feature, QgsFeatureSink::Flags flags )
 {
   QgsFeatureList features;
   features << feature;
-  bool result = addFeatures( features );
+  bool result = addFeatures( features, flags );
 
-  // need to update the passed feature reference to the updated copy from the features list
-  feature = features.at( 0 );
+  if ( !( flags & FastInsert ) )
+  {
+    // need to update the passed feature reference to the updated copy from the features list
+    feature = features.at( 0 );
+  }
   return result;
 }
 
-bool QgsFeatureSink::addFeatures( QgsFeatureIterator &iterator )
+bool QgsFeatureSink::addFeatures( QgsFeatureIterator &iterator, QgsFeatureSink::Flags flags )
 {
   QgsFeature f;
   bool result = true;
   while ( iterator.nextFeature( f ) )
   {
-    result = result && addFeature( f );
+    result = result && addFeature( f, flags );
   }
   return result;
 }

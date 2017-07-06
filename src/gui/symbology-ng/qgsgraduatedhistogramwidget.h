@@ -79,6 +79,8 @@ class GUI_EXPORT QgsGraduatedHistogramWidget : public QgsHistogramWidget
 
 };
 
+
+#ifndef SIP_RUN
 //
 // NOTE:
 // For private use by QgsGraduatedHistogramWidget only,
@@ -106,5 +108,6 @@ class GUI_EXPORT QgsGraduatedHistogramEventFilter: public QObject
     double posToValue( QPointF point ) const;
 };
 ///@endcond
+#endif
 
 #endif //QGSGRADUATEDHISTOGRAMWIDGET_H

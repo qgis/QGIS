@@ -249,7 +249,7 @@ void QgsGml::calculateExtentFromFeatures()
       }
       else
       {
-        mExtent.unionRect( currentGeometry.boundingBox() );
+        mExtent.combineExtentWith( currentGeometry.boundingBox() );
       }
     }
   }

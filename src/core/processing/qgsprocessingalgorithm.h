@@ -49,6 +49,7 @@ class CORE_EXPORT QgsProcessingAlgorithm
       FlagHideFromModeler = 1 << 2, //!< Algorithm should be hidden from the modeler
       FlagSupportsBatch = 1 << 3,  //!< Algorithm supports batch mode
       FlagCanCancel = 1 << 4, //!< Algorithm can be canceled
+      FlagRequiresMatchingCrs = 1 << 5, //!< Algorithm requires that all input layers have matching coordinate reference systems
       FlagDeprecated = FlagHideFromToolbox | FlagHideFromModeler, //!< Algorithm is deprecated
     };
     Q_DECLARE_FLAGS( Flags, Flag )
@@ -222,11 +223,13 @@ class CORE_EXPORT QgsProcessingAlgorithm
      *
      * Algorithm progress should be reported using the supplied \a feedback object.
      *
+     * If specified, \a ok will be set to true if algorithm was successfully run.
+     *
      * \returns A map of algorithm outputs. These may be output layer references, or calculated
      * values such as statistical calculations.
      */
     QVariantMap run( const QVariantMap &parameters,
-                     QgsProcessingContext &context, QgsProcessingFeedback *feedback ) const;
+                     QgsProcessingContext &context, QgsProcessingFeedback *feedback, bool *ok SIP_OUT = nullptr ) const;
 
     /**
      * If an algorithm subclass implements a custom parameters widget, a copy of this widget
@@ -243,6 +246,28 @@ class CORE_EXPORT QgsProcessingAlgorithm
     QgsExpressionContext createExpressionContext( const QVariantMap &parameters,
         QgsProcessingContext &context ) const;
 
+    /**
+     * Checks whether the coordinate reference systems for the specified set of \a parameters
+     * are valid for the algorithm. For instance, the base implementation performs
+     * checks to ensure that all input CRS are equal
+     * Returns true if \a parameters have passed the CRS check.
+     */
+    virtual bool validateInputCrs( const QVariantMap &parameters,
+                                   QgsProcessingContext &context ) const;
+
+    /**
+     * Returns a Python command string which can be executed to run the algorithm
+     * using the specified \a parameters.
+     *
+     * Algorithms which cannot be run from a Python command should return an empty
+     * string.
+     */
+    virtual QString asPythonCommand( const QVariantMap &parameters, QgsProcessingContext &context ) const;
+
+    /**
+     * Associates this algorithm with its provider. No transfer of ownership is involved.
+     */
+    void setProvider( QgsProcessingProvider *provider );
 
   protected:
 
@@ -253,6 +278,12 @@ class CORE_EXPORT QgsProcessingAlgorithm
      * \see addOutput()
      */
     bool addParameter( QgsProcessingParameterDefinition *parameterDefinition SIP_TRANSFER );
+
+    /**
+     * Removes the parameter with matching \a name from the algorithm, and deletes any existing
+     * definition.
+     */
+    void removeParameter( const QString &name );
 
     /**
      * Adds an output \a definition to the algorithm. Ownership of the definition is transferred to the algorithm.
@@ -276,7 +307,7 @@ class CORE_EXPORT QgsProcessingAlgorithm
      * values such as statistical calculations.
      */
     virtual QVariantMap processAlgorithm( const QVariantMap &parameters,
-                                          QgsProcessingContext &context, QgsProcessingFeedback *feedback ) const = 0;
+                                          QgsProcessingContext &context, QgsProcessingFeedback *feedback ) const = 0 SIP_VIRTUALERRORHANDLER( processing_exception_handler );
 
     /**
      * Evaluates the parameter with matching \a name to a static string value.
@@ -327,9 +358,8 @@ class CORE_EXPORT QgsProcessingAlgorithm
      *
      * This function creates a new object and the caller takes responsibility for deleting the returned object.
      */
-    QgsFeatureSink *parameterAsSink( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context,
-                                     const QgsFields &fields, QgsWkbTypes::Type geometryType, const QgsCoordinateReferenceSystem &crs,
-                                     QString &destinationIdentifier SIP_OUT ) const SIP_FACTORY;
+    QgsFeatureSink *parameterAsSink( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context, QString &destinationIdentifier SIP_OUT,
+                                     const QgsFields &fields, QgsWkbTypes::Type geometryType = QgsWkbTypes::NoGeometry, const QgsCoordinateReferenceSystem &crs = QgsCoordinateReferenceSystem() ) const SIP_FACTORY;
 
     /**
      * Evaluates the parameter with matching \a definition to a feature source.
@@ -339,7 +369,7 @@ class CORE_EXPORT QgsProcessingAlgorithm
      *
      * This function creates a new object and the caller takes responsibility for deleting the returned object.
      */
-    QgsFeatureSource *parameterAsSource( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context ) const SIP_FACTORY;
+    QgsProcessingFeatureSource *parameterAsSource( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context ) const SIP_FACTORY;
 
     /**
      * Evaluates the parameter with matching \a name to a map layer.
@@ -419,21 +449,16 @@ class CORE_EXPORT QgsProcessingAlgorithm
      */
     QStringList parameterAsFields( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context ) const;
 
-
   private:
 
     QgsProcessingProvider *mProvider = nullptr;
     QgsProcessingParameterDefinitions mParameters;
     QgsProcessingOutputDefinitions mOutputs;
 
-    /**
-     * Associates this algorithm with its provider. No transfer of ownership is involved.
-     */
-    void setProvider( QgsProcessingProvider *provider );
-
     // friend class to access setProvider() - we do not want this public!
     friend class QgsProcessingProvider;
     friend class TestQgsProcessing;
+    friend class QgsProcessingModelAlgorithm;
 
 #ifdef SIP_RUN
     QgsProcessingAlgorithm( const QgsProcessingAlgorithm &other );

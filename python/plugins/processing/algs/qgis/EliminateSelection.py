@@ -32,6 +32,7 @@ from qgis.PyQt.QtGui import QIcon
 
 from qgis.core import (QgsFeatureRequest,
                        QgsFeature,
+                       QgsFeatureSink,
                        QgsGeometry,
                        QgsMessageLog,
                        QgsProcessingUtils)
@@ -101,7 +102,7 @@ class EliminateSelection(QgisAlgorithm):
                 featToEliminate.append(aFeat)
             else:
                 # write the others to output
-                writer.addFeature(aFeat)
+                writer.addFeature(aFeat, QgsFeatureSink.FastInsert)
 
         # Delete all features to eliminate in processLayer
         processLayer = output.layer
@@ -207,4 +208,4 @@ class EliminateSelection(QgisAlgorithm):
             raise GeoAlgorithmExecutionException(self.tr('Could not commit changes'))
 
         for feature in featNotEliminated:
-            writer.addFeature(feature)
+            writer.addFeature(feature, QgsFeatureSink.FastInsert)

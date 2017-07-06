@@ -50,10 +50,8 @@ from qgis.utils import iface
 
 from processing.core.ProcessingConfig import ProcessingConfig
 from processing.algs.gdal.GdalUtils import GdalUtils
-from processing.tools.system import (getTempFilenameInTempFolder,
-                                     getTempFilename,
-                                     removeInvalidChars,
-                                     isWindows)
+from processing.tools.system import (getTempFilename,
+                                     removeInvalidChars)
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 
 ALL_TYPES = [-1]
@@ -67,23 +65,18 @@ TYPE_FILE = 4
 TYPE_TABLE = 5
 
 
-def createContext():
+def createContext(feedback=None):
     """
     Creates a default processing context
     """
     context = QgsProcessingContext()
     context.setProject(QgsProject.instance())
+    context.setFeedback(feedback)
 
     invalid_features_method = ProcessingConfig.getSetting(ProcessingConfig.FILTER_INVALID_GEOMETRIES)
     if invalid_features_method is None:
         invalid_features_method = QgsFeatureRequest.GeometryAbortOnInvalid
     context.setInvalidGeometryCheck(invalid_features_method)
-
-    def raise_error(f):
-        raise GeoAlgorithmExecutionException(QCoreApplication.translate("FeatureIterator",
-                                                                        'Features with invalid geometries found. Please fix these geometries or specify the "Ignore invalid input features" flag'))
-
-    context.setInvalidGeometryCallback(raise_error)
 
     settings = QgsSettings()
     context.setDefaultEncoding(settings.value("/Processing/encoding", "System"))
@@ -193,7 +186,7 @@ def exportVectorLayer(layer, supported=None):
     if basename:
         if not basename.endswith("shp"):
             basename = os.path.splitext(basename)[0] + ".shp"
-        output = getTempFilenameInTempFolder(basename)
+        output = QgsProcessingUtils.generateTempFilename(basename)
     else:
         output = getTempFilename("shp")
     useSelection = False # TODO ProcessingConfig.getSetting(ProcessingConfig.USE_SELECTED)
@@ -203,7 +196,7 @@ def exportVectorLayer(layer, supported=None):
                                      layer.wkbType(), layer.crs())
         selection = layer.selectedFeatures()
         for feat in selection:
-            writer.addFeature(feat)
+            writer.addFeature(feat, QgsFeatureSink.FastInsert)
         del writer
         return output
     else:
@@ -214,7 +207,7 @@ def exportVectorLayer(layer, supported=None):
                 layer.crs()
             )
             for feat in layer.getFeatures():
-                writer.addFeature(feat)
+                writer.addFeature(feat, QgsFeatureSink.FastInsert)
             del writer
             return output
         else:
@@ -266,7 +259,7 @@ def exportTable(table):
                                      table.fields(), QgsWkbTypes.NullGeometry,
                                      QgsCoordinateReferenceSystem('4326'))
         for feat in table.getFeatures():
-            writer.addFeature(feat)
+            writer.addFeature(feat, QgsFeatureSink.FastInsert)
         del writer
         return output + '.dbf'
     else:

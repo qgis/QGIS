@@ -30,6 +30,7 @@ import random
 
 from qgis.PyQt.QtCore import QVariant
 from qgis.core import (QgsApplication,
+                       QgsFeatureSink,
                        QgsFields,
                        QgsField,
                        QgsGeometry,
@@ -55,12 +56,6 @@ class RandomPointsAlongLines(QgisAlgorithm):
     POINT_NUMBER = 'POINT_NUMBER'
     MIN_DISTANCE = 'MIN_DISTANCE'
     OUTPUT = 'OUTPUT'
-
-    def icon(self):
-        return QgsApplication.getThemeIcon("/providerQgis.svg")
-
-    def svgIconPath(self):
-        return QgsApplication.iconPath("providerQgis.svg")
 
     def group(self):
         return self.tr('Vector creation tools')
@@ -94,7 +89,7 @@ class RandomPointsAlongLines(QgisAlgorithm):
         nIterations = 0
         maxIterations = pointCount * 200
         featureCount = layer.featureCount()
-        total = 100.0 / pointCount
+        total = 100.0 / pointCount if pointCount else 1
 
         index = QgsSpatialIndex()
         points = dict()
@@ -142,7 +137,7 @@ class RandomPointsAlongLines(QgisAlgorithm):
                     f.setFields(fields)
                     f.setAttribute('id', nPoints)
                     f.setGeometry(geom)
-                    writer.addFeature(f)
+                    writer.addFeature(f, QgsFeatureSink.FastInsert)
                     index.insertFeature(f)
                     points[nPoints] = pnt
                     nPoints += 1

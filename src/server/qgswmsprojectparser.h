@@ -22,6 +22,7 @@
 #include "qgsserverprojectparser.h"
 #include "qgis_server.h"
 
+
 class QgsAccessControl;
 
 class QTextDocument;
@@ -32,10 +33,7 @@ class QgsLayerTree;
 class SERVER_EXPORT QgsWmsProjectParser : public QgsWmsConfigParser
 {
   public:
-    QgsWmsProjectParser(
-      const QString &filePath
-      , const QgsAccessControl *accessControl
-    );
+    QgsWmsProjectParser( const QString &filePath, const QgsAccessControl *accessControl );
     virtual ~QgsWmsProjectParser();
 
     /** Adds layer and style specific capabilities elements to the parent node. This includes the individual layers and styles, their description, native CRS, bounding boxes, etc.
@@ -67,14 +65,14 @@ class SERVER_EXPORT QgsWmsProjectParser : public QgsWmsConfigParser
     void inspireCapabilities( QDomElement &parentElement, QDomDocument &doc ) const override;
 
     //printing
-    QgsComposition *initComposition( const QString &composerTemplate, const QgsMapSettings &mapSettings, QList< QgsComposerMap * > &mapList, QList< QgsComposerLegend * > &legendList, QList< QgsComposerLabel * > &labelList, QList<const QgsComposerHtml *> &htmlFrameList ) const override;
+    QgsComposition *initComposition( const QString &composerTemplate, const QgsMapSettings &mapSettings, QList< QgsComposerMap * > &mapList, QList< QgsComposerLegend * > &legendList, QList< QgsComposerLabel * > &labelList, QList<const QgsComposerHtml *> &htmlFrameList ) const override SIP_SKIP;
     void printCapabilities( QDomElement &parentElement, QDomDocument &doc ) const override;
 
     //todo: fixme
     void setScaleDenominator( double ) override {}
     void addExternalGMLData( const QString &, QDomDocument * ) override {}
 
-    QList< QPair< QString, QgsDatumTransformStore::Entry > > layerCoordinateTransforms() const override;
+    QList< QPair< QString, QgsDatumTransformStore::Entry > > layerCoordinateTransforms() const override SIP_SKIP;
 
     //! Fills a layer and a style list. The two list have the same number of entries and the style and the layer at a position belong together (similar to the HTTP parameters 'Layers' and 'Styles'. Returns 0 in case of success
     int layersAndStyles( QStringList &layers, QStringList &styles ) const override;

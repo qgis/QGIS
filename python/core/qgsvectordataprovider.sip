@@ -128,6 +128,7 @@ Bitmask of all provider's editing capabilities
 
     virtual QgsRectangle sourceExtent() const;
 
+    virtual QString sourceName() const;
 
     virtual QString dataComment() const;
 %Docstring
@@ -197,7 +198,7 @@ Bitmask of all provider's editing capabilities
  \param enumList reference to the list to fill
 %End
 
-    virtual bool addFeatures( QgsFeatureList &flist /In,Out/ );
+    virtual bool addFeatures( QgsFeatureList &flist /In,Out/, QgsFeatureSink::Flags flags = 0 );
 
     virtual bool deleteFeatures( const QgsFeatureIds &id );
 %Docstring
@@ -556,7 +557,7 @@ Returns a list of available encodings
 .. versionadded:: 3.0
 %End
 
-    QgsGeometry *convertToProviderType( const QgsGeometry &geom ) const /Factory/;
+    QgsGeometry convertToProviderType( const QgsGeometry &geom ) const;
 %Docstring
  Converts the geometry to the provider type if possible / necessary
  :return: the converted geometry or None if no conversion was necessary or possible

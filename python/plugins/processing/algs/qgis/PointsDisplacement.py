@@ -30,6 +30,7 @@ import math
 from qgis.core import (QgsApplication,
                        QgsFeatureRequest,
                        QgsFeature,
+                       QgsFeatureSink,
                        QgsGeometry,
                        QgsPointXY,
                        QgsProcessingUtils)
@@ -47,12 +48,6 @@ class PointsDisplacement(QgisAlgorithm):
     DISTANCE = 'DISTANCE'
     HORIZONTAL = 'HORIZONTAL'
     OUTPUT_LAYER = 'OUTPUT_LAYER'
-
-    def icon(self):
-        return QgsApplication.getThemeIcon("/providerQgis.svg")
-
-    def svgIconPath(self):
-        return QgsApplication.iconPath("providerQgis.svg")
 
     def group(self):
         return self.tr('Vector geometry tools')
@@ -85,7 +80,7 @@ class PointsDisplacement(QgisAlgorithm):
 
         features = QgsProcessingUtils.getFeatures(layer, context)
 
-        total = 100.0 / QgsProcessingUtils.featureCount(layer, context)
+        total = 100.0 / layer.featureCount() if layer.featureCount() else 0
 
         duplicates = dict()
         for current, f in enumerate(features):
@@ -98,7 +93,7 @@ class PointsDisplacement(QgisAlgorithm):
             feedback.setProgress(int(current * total))
 
         current = 0
-        total = 100.0 / len(duplicates)
+        total = 100.0 / len(duplicates) if duplicates else 1
         feedback.setProgress(0)
 
         fullPerimeter = 2 * math.pi
@@ -107,7 +102,7 @@ class PointsDisplacement(QgisAlgorithm):
             count = len(fids)
             if count == 1:
                 f = next(layer.getFeatures(QgsFeatureRequest().setFilterFid(fids[0])))
-                writer.addFeature(f)
+                writer.addFeature(f, QgsFeatureSink.FastInsert)
             else:
                 angleStep = fullPerimeter / count
                 if count == 2 and horizontal:
@@ -129,7 +124,7 @@ class PointsDisplacement(QgisAlgorithm):
                     out_feature.setGeometry(QgsGeometry.fromPoint(new_point))
                     out_feature.setAttributes(f.attributes())
 
-                    writer.addFeature(out_feature)
+                    writer.addFeature(out_feature, QgsFeatureSink.FastInsert)
                     currentAngle += angleStep
 
             current += 1

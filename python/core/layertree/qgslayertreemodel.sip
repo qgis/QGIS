@@ -211,12 +211,22 @@ Return at what number of legend nodes the layer node should be collapsed. -1 mea
  :rtype: int
 %End
 
-    void setLegendFilterByScale( double scaleDenominator );
+    void setLegendFilterByScale( double scale );
 %Docstring
+ Force only display of legend nodes which are valid for a given ``scale``.
+ The ``scale`` value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
+ Setting ``scale`` <= 0 will disable the functionality.
 .. versionadded:: 2.6
+.. seealso:: legendFilterByScale()
 %End
+
     double legendFilterByScale() const;
 %Docstring
+ Returns the scale which restricts the legend nodes which are visible.
+ The  scale value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
+ A scale <= 0 indicates that no scale filtering is being performed.
+.. versionadded:: 2.6
+.. seealso:: setLegendFilterByScale()
  :rtype: float
 %End
 

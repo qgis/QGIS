@@ -30,6 +30,7 @@ import codecs
 
 from qgis.core import (QgsApplication,
                        QgsGeometry,
+                       QgsFeatureSink,
                        QgsRectangle,
                        QgsCoordinateReferenceSystem,
                        QgsCoordinateTransform,
@@ -50,12 +51,6 @@ class FindProjection(QgisAlgorithm):
     TARGET_AREA = 'TARGET_AREA'
     TARGET_AREA_CRS = 'TARGET_AREA_CRS'
     OUTPUT_HTML_FILE = 'OUTPUT_HTML_FILE'
-
-    def icon(self):
-        return QgsApplication.getThemeIcon("/providerQgis.svg")
-
-    def svgIconPath(self):
-        return QgsApplication.iconPath("providerQgis.svg")
 
     def tags(self):
         return self.tr('crs,srs,coordinate,reference,system,guess,estimate,finder,determine').split(',')

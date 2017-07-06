@@ -34,6 +34,7 @@ from processing.tools import dataobjects
 
 from qgis.core import (QgsWkbTypes,
                        QgsFeature,
+                       QgsFeatureSink,
                        QgsGeometry,
                        QgsField,
                        QgsApplication,
@@ -46,12 +47,6 @@ class ExtractSpecificNodes(QgisAlgorithm):
     INPUT_LAYER = 'INPUT_LAYER'
     OUTPUT_LAYER = 'OUTPUT_LAYER'
     NODES = 'NODES'
-
-    def icon(self):
-        return QgsApplication.getThemeIcon("/providerQgis.svg")
-
-    def svgIconPath(self):
-        return QgsApplication.iconPath("providerQgis.svg")
 
     def group(self):
         return self.tr('Vector geometry tools')
@@ -92,13 +87,13 @@ class ExtractSpecificNodes(QgisAlgorithm):
                     self.tr('\'{}\' is not a valid node index').format(node))
 
         features = QgsProcessingUtils.getFeatures(layer, context)
-        total = 100.0 / QgsProcessingUtils.featureCount(layer, context)
+        total = 100.0 / layer.featureCount() if layer.featureCount() else 0
 
         for current, f in enumerate(features):
 
             input_geometry = f.geometry()
             if not input_geometry:
-                writer.addFeature(f)
+                writer.addFeature(f, QgsFeatureSink.FastInsert)
             else:
                 total_nodes = input_geometry.geometry().nCoordinates()
 
@@ -125,7 +120,7 @@ class ExtractSpecificNodes(QgisAlgorithm):
                     point = input_geometry.vertexAt(node_index)
                     output_feature.setGeometry(QgsGeometry.fromPoint(point))
 
-                    writer.addFeature(output_feature)
+                    writer.addFeature(output_feature, QgsFeatureSink.FastInsert)
 
             feedback.setProgress(int(current * total))
 

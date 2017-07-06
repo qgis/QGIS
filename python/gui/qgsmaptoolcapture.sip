@@ -1,155 +1,149 @@
-/***************************************************************************
-    qgsmaptoolcapture.h  -  map tool for capturing points, lines, polygons
-    ---------------------
-    begin                : January 2006
-    copyright            : (C) 2006 by Martin Dobias
-    email                : wonder.sk at gmail dot com
- ***************************************************************************
- *                                                                         *
- *   This program is free software; you can redistribute it and/or modify  *
- *   it under the terms of the GNU General Public License as published by  *
- *   the Free Software Foundation; either version 2 of the License, or     *
- *   (at your option) any later version.                                   *
- *                                                                         *
- ***************************************************************************/
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgsmaptoolcapture.h                                          *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
 
-class QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
+
+
+
+
+
+class QgsMapToolCapture : QgsMapToolAdvancedDigitizing
 {
+
 %TypeHeaderCode
 #include "qgsmaptoolcapture.h"
 %End
   public:
-    //! constructor
     QgsMapToolCapture( QgsMapCanvas *canvas, QgsAdvancedDigitizingDockWidget *cadDockWidget, CaptureMode mode = CaptureNone );
+%Docstring
+constructor
+%End
 
-    //! destructor
     virtual ~QgsMapToolCapture();
 
-    //! active the tool
     virtual void activate();
-
-    //! deactive the tool
     virtual void deactivate();
 
-    /** Adds a whole curve (e.g. circularstring) to the captured geometry. Curve must be in map CRS*/
     int addCurve( QgsCurve *c );
+%Docstring
+Adds a whole curve (e.g. circularstring) to the captured geometry. Curve must be in map CRS
+ :rtype: int
+%End
 
-    /**
-     * Get the capture curve
-     *
-     * @return Capture curve
-     */
     const QgsCompoundCurve *captureCurve() const;
+%Docstring
+ Get the capture curve
 
+ :return: Capture curve
+ :rtype: QgsCompoundCurve
+%End
 
-    /**
-     * Update the rubberband according to mouse position
-     *
-     * @param e The mouse event
-     */
     virtual void cadCanvasMoveEvent( QgsMapMouseEvent *e );
 
-    /**
-     * Intercept key events like Esc or Del to delete the last point
-     * @param e key event
-     */
     virtual void keyPressEvent( QKeyEvent *e );
+%Docstring
+ Intercept key events like Esc or Del to delete the last point
+ \param e key event
+%End
 
-    /**
-     * Clean a temporary rubberband
-     */
+    virtual bool eventFilter( QObject *obj, QEvent *e );
+
     void deleteTempRubberBand();
-
-  private slots:
-    void validationFinished();
-    void currentLayerChanged( QgsMapLayer *layer );
-    void addError( QgsGeometry::Error );
-
+%Docstring
+ Clean a temporary rubberband
+%End
 
   protected:
 
-    /** Converts a map point to layer coordinates
-     *  @param mapPoint the point in map coordinates
-     *  @param[in,out] layerPoint the point in layer coordinates
-     *  @return
-     *   0 in case of success
-     *   1 if the current layer is null or not a vector layer
-     *   2 if the transformation failed
-     */
     int nextPoint( const QgsPoint &mapPoint, QgsPoint &layerPoint );
+%Docstring
+ :rtype: int
+%End
 
-    /** Converts a point to map coordinates and layer coordinates
-     * @param p the input point
-     * @param[in,out] layerPoint the point in layer coordinates
-     * @param[in,out] mapPoint the point in map coordinates
-     * @return
-     *  0 in case of success
-     *  1 if the current layer is null or not a vector layer
-     *  2 if the transformation failed
-     */
     int nextPoint( QPoint p, QgsPoint &layerPoint, QgsPoint &mapPoint );
+%Docstring
+ :rtype: int
+%End
 
-    /** Fetches the original point from the source layer if it has the same
-     * CRS as the current layer.
-     * @return 0 in case of success, 1 if not applicable (CRS mismatch), 2 in case of failure
-     * @note added in 2.14
-     */
     int fetchLayerPoint( const QgsPointLocator::Match &match, QgsPoint &layerPoint );
+%Docstring
+ :rtype: int
+%End
 
-    /** Adds a point to the rubber band (in map coordinates) and to the capture list (in layer coordinates)
-     * @return 0 in case of success, 1 if current layer is not a vector layer, 2 if coordinate transformation failed
-     */
     int addVertex( const QgsPointXY &point );
+%Docstring
+ :rtype: int
+%End
 
-    /** Variant to supply more information in the case of snapping
-     * @param mapPoint The vertex to add in map coordinates
-     * @param match Data about the snapping match. Can be an invalid match, if point not snapped.
-     * @note added in 2.14
-     */
     int addVertex( const QgsPointXY &mapPoint, const QgsPointLocator::Match &match );
+%Docstring
+ Variant to supply more information in the case of snapping
+ \param mapPoint The vertex to add in map coordinates
+ \param match Data about the snapping match. Can be an invalid match, if point not snapped.
+.. versionadded:: 2.14
+ :rtype: int
+%End
 
-    /** Removes the last vertex from mRubberBand and mCaptureList*/
     void undo();
+%Docstring
+Removes the last vertex from mRubberBand and mCaptureList
+%End
 
-    /**
-     * Start capturing
-     */
     void startCapturing();
+%Docstring
+ Start capturing
+%End
 
-    /**
-     * Are we currently capturing?
-     *
-     * @return Is the tool in capture mode?
-     */
     bool isCapturing() const;
+%Docstring
+ Are we currently capturing?
 
-    /**
-     * Stop capturing
-     */
+ :return: Is the tool in capture mode?
+ :rtype: bool
+%End
+
     void stopCapturing();
+%Docstring
+ Stop capturing
+%End
 
-    /**
-     * Number of points digitized
-     *
-     * @return Number of points
-     */
     int size();
+%Docstring
+ Number of points digitized
 
-    /**
-     * List of digitized points
-     * @return List of points
-     */
+ :return: Number of points
+ :rtype: int
+%End
+
     QList<QgsPointXY> points();
+%Docstring
+ List of digitized points
+ :return: List of points
+ :rtype: list of QgsPointXY
+%End
 
-    /**
-     * Set the points on which to work
-     *
-     * @param pointList A list of points
-     */
     void setPoints( const QList<QgsPointXY> &pointList );
+%Docstring
+ Set the points on which to work
 
-    /**
-     * Close an open polygon
-     */
+ \param pointList A list of points
+%End
+
     void closePolygon();
+%Docstring
+ Close an open polygon
+%End
+
 };
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgsmaptoolcapture.h                                          *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

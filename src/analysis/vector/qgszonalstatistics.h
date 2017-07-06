@@ -20,9 +20,12 @@
 
 #include <QString>
 #include <QMap>
+
 #include <limits>
 #include <cfloat>
+
 #include "qgis_analysis.h"
+#include "qgsfeedback.h"
 
 class QgsGeometry;
 class QgsVectorLayer;
@@ -52,7 +55,8 @@ class ANALYSIS_EXPORT QgsZonalStatistics
       Minority = 256, //!< Minority of pixel values
       Majority = 512, //!< Majority of pixel values
       Variety = 1024, //!< Variety (count of distinct) pixel values
-      All = Count | Sum | Mean | Median | StDev | Max | Min | Range | Minority | Majority | Variety
+      Variance = 2048, //!< Variance of pixel values
+      All = Count | Sum | Mean | Median | StDev | Max | Min | Range | Minority | Majority | Variety | Variance
     };
     Q_DECLARE_FLAGS( Statistics, Statistic )
 
@@ -67,7 +71,7 @@ class ANALYSIS_EXPORT QgsZonalStatistics
 
     /** Starts the calculation
       \returns 0 in case of success*/
-    int calculateStatistics( QProgressDialog *p );
+    int calculateStatistics( QgsFeedback *feedback );
 
   private:
     QgsZonalStatistics() = default;

@@ -29,12 +29,15 @@ __revision__ = '$Format:%H$'
 import random
 
 from qgis.core import (QgsApplication,
-                       QgsProcessingUtils)
+                       QgsFeatureSink,
+                       QgsProcessingUtils,
+                       QgsProcessingParameterFeatureSource,
+                       QgsProcessingParameterEnum,
+                       QgsProcessingParameterNumber,
+                       QgsProcessingParameterFeatureSink,
+                       QgsProcessingOutputVectorLayer)
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
-from processing.core.parameters import ParameterSelection
-from processing.core.parameters import ParameterVector
-from processing.core.parameters import ParameterNumber
 from processing.core.outputs import OutputVector
 
 
@@ -45,12 +48,6 @@ class RandomExtract(QgisAlgorithm):
     METHOD = 'METHOD'
     NUMBER = 'NUMBER'
 
-    def icon(self):
-        return QgsApplication.getThemeIcon("/providerQgis.svg")
-
-    def svgIconPath(self):
-        return QgsApplication.iconPath("providerQgis.svg")
-
     def group(self):
         return self.tr('Vector selection tools')
 
@@ -59,14 +56,18 @@ class RandomExtract(QgisAlgorithm):
         self.methods = [self.tr('Number of selected features'),
                         self.tr('Percentage of selected features')]
 
-        self.addParameter(ParameterVector(self.INPUT,
-                                          self.tr('Input layer')))
-        self.addParameter(ParameterSelection(self.METHOD,
-                                             self.tr('Method'), self.methods, 0))
-        self.addParameter(ParameterNumber(self.NUMBER,
-                                          self.tr('Number/percentage of selected features'), 0, None, 10))
+        self.addParameter(QgsProcessingParameterFeatureSource(self.INPUT,
+                                                              self.tr('Input layer')))
 
-        self.addOutput(OutputVector(self.OUTPUT, self.tr('Extracted (random)')))
+        self.addParameter(QgsProcessingParameterEnum(self.METHOD,
+                                                     self.tr('Method'), self.methods, False, 0))
+
+        self.addParameter(QgsProcessingParameterNumber(self.NUMBER,
+                                                       self.tr('Number/percentage of selected features'), QgsProcessingParameterNumber.Integer,
+                                                       10, False, 0.0, 999999999999.0))
+
+        self.addParameter(QgsProcessingParameterFeatureSink(self.OUTPUT, self.tr('Extracted (random)')))
+        self.addOutput(QgsProcessingOutputVectorLayer(self.OUTPUT, self.tr('Extracted (random)')))
 
     def name(self):
         return 'randomextract'
@@ -75,13 +76,12 @@ class RandomExtract(QgisAlgorithm):
         return self.tr('Random extract')
 
     def processAlgorithm(self, parameters, context, feedback):
-        filename = self.getParameterValue(self.INPUT)
-        layer = QgsProcessingUtils.mapLayerFromString(filename, context)
-        method = self.getParameterValue(self.METHOD)
+        source = self.parameterAsSource(parameters, self.INPUT, context)
+        method = self.parameterAsEnum(parameters, self.METHOD, context)
 
-        features = QgsProcessingUtils.getFeatures(layer, context)
-        featureCount = QgsProcessingUtils.featureCount(layer, context)
-        value = int(self.getParameterValue(self.NUMBER))
+        features = source.getFeatures()
+        featureCount = source.featureCount()
+        value = self.parameterAsInt(parameters, self.NUMBER, context)
 
         if method == 0:
             if value > featureCount:
@@ -97,12 +97,14 @@ class RandomExtract(QgisAlgorithm):
 
         selran = random.sample(list(range(featureCount)), value)
 
-        writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(layer.fields(), layer.wkbType(),
-                                                                     layer.crs(), context)
+        (sink, dest_id) = self.parameterAsSink(parameters, self.OUTPUT, context,
+                                               source.fields(), source.wkbType(), source.sourceCrs())
 
-        total = 100.0 / featureCount
+        total = 100.0 / featureCount if featureCount else 1
         for i, feat in enumerate(features):
+            if feedback.isCanceled():
+                break
             if i in selran:
-                writer.addFeature(feat)
+                sink.addFeature(feat, QgsFeatureSink.FastInsert)
             feedback.setProgress(int(i * total))
-        del writer
+        return {self.OUTPUT: dest_id}

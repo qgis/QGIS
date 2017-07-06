@@ -10,6 +10,8 @@
 
 
 
+
+
 class QgsZonalStatistics
 {
 %Docstring
@@ -34,6 +36,7 @@ class QgsZonalStatistics
       Minority,
       Majority,
       Variety,
+      Variance,
       All
     };
     typedef QFlags<QgsZonalStatistics::Statistic> Statistics;
@@ -48,7 +51,7 @@ class QgsZonalStatistics
  Constructor for QgsZonalStatistics.
 %End
 
-    int calculateStatistics( QProgressDialog *p );
+    int calculateStatistics( QgsFeedback *feedback );
 %Docstring
  Starts the calculation
 :return: 0 in case of success*

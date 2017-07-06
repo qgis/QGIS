@@ -141,9 +141,10 @@ Constructor
  :rtype: int
 %End
 
-    double scale();
+    double scale() const;
 %Docstring
-Get the last reported scale of the canvas
+ Returns the last reported scale of the canvas.
+ The ``scale`` value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
  :rtype: float
 %End
 
@@ -244,7 +245,7 @@ Pan to the selected features of current (vector) layer keeping same extent.
 
  This is called from destructor of map tools to make sure
  that this map tool won't be used any more.
- You don't have to call it manualy, QgsMapTool takes care of it.
+ You don't have to call it manually, QgsMapTool takes care of it.
 %End
 
     QgsMapTool *mapTool();
@@ -405,7 +406,8 @@ set wheel zoom factor (should be greater than 1)
 
     void zoomScale( double scale );
 %Docstring
-Zoom to a specific scale
+ Zooms the canvas to a specific ``scale``.
+ The scale value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
 %End
 
     void zoomByFactor( double scaleFactor, const QgsPointXY *center = 0 );
@@ -849,16 +851,17 @@ Overridden drag enter event
 called when panning is in action, reset indicates end of panning
 %End
 
-    void updateCanvasItemPositions();
-%Docstring
-called on resize or changed extent to notify canvas items to change their rectangle
-%End
-
 
 
     void updateDatumTransformEntries();
 %Docstring
 Make sure the datum transform store is properly populated
+%End
+
+  protected slots:
+    void updateCanvasItemPositions();
+%Docstring
+called on resize or changed extent to notify canvas items to change their rectangle
 %End
 
 }; // class QgsMapCanvas

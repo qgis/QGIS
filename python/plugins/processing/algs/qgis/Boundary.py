@@ -29,6 +29,7 @@ import os
 
 from qgis.core import (QgsGeometry,
                        QgsWkbTypes,
+                       QgsFeatureSink,
                        QgsProcessingUtils,
                        QgsProcessingParameterDefinition,
                        QgsProcessingParameterFeatureSource,
@@ -86,7 +87,7 @@ class Boundary(QgisAlgorithm):
                                                source.fields(), output_wkb, source.sourceCrs())
 
         features = source.getFeatures()
-        total = 100.0 / source.featureCount()
+        total = 100.0 / source.featureCount() if source.featureCount() else 0
 
         for current, input_feature in enumerate(features):
             if feedback.isCanceled():
@@ -101,7 +102,7 @@ class Boundary(QgisAlgorithm):
 
                 output_feature.setGeometry(output_geometry)
 
-            sink.addFeature(output_feature)
+            sink.addFeature(output_feature, QgsFeatureSink.FastInsert)
             feedback.setProgress(int(current * total))
 
         return {self.OUTPUT_LAYER: dest_id}

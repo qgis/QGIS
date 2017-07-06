@@ -41,7 +41,7 @@ QgsMssqlConnectionItem::QgsMssqlConnectionItem( QgsDataItem *parent, QString nam
   , mAllowGeometrylessTables( true )
   , mColumnTypeThread( nullptr )
 {
-  mCapabilities |= Fast;
+  mCapabilities |= Fast | Collapse;
   mIconName = QStringLiteral( "mIconConnect.png" );
 }
 
@@ -71,7 +71,7 @@ void QgsMssqlConnectionItem::readConnectionSettings()
   mUseEstimatedMetadata = settings.value( key + "/estimatedMetadata", false ).toBool();
   mAllowGeometrylessTables = settings.value( key + "/allowGeometrylessTables", true ).toBool();
 
-  mConnInfo =  "dbname='" + mDatabase + "' host=" + mHost + " user='" + mUsername + "' password='" + mPassword + '\'';
+  mConnInfo =  "dbname='" + mDatabase + "' host='" + mHost + "' user='" + mUsername + "' password='" + mPassword + '\'';
   if ( !mService.isEmpty() )
     mConnInfo += " service='" + mService + '\'';
   if ( mUseEstimatedMetadata )
@@ -480,13 +480,13 @@ QgsMssqlLayerItem *QgsMssqlLayerItem::createClone()
 
 QString QgsMssqlLayerItem::createUri()
 {
-  QString pkColName = !mLayerProperty.pkCols.isEmpty() ? mLayerProperty.pkCols.at( 0 ) : QString::null;
+  QString pkColName = !mLayerProperty.pkCols.isEmpty() ? mLayerProperty.pkCols.at( 0 ) : QString();
   QgsMssqlConnectionItem *connItem = qobject_cast<QgsMssqlConnectionItem *>( parent() ? parent()->parent() : nullptr );
 
   if ( !connItem )
   {
     QgsDebugMsg( "connection item not found." );
-    return QString::null;
+    return QString();
   }
 
   QgsDataSourceUri uri = QgsDataSourceUri( connItem->connInfo() );
@@ -542,24 +542,19 @@ QgsMssqlLayerItem *QgsMssqlSchemaItem::addLayer( const QgsMssqlLayerProperty &la
   QString tip = tr( "%1 as %2 in %3" ).arg( layerProperty.geometryColName, QgsWkbTypes::displayString( wkbType ), layerProperty.srid );
 
   QgsLayerItem::LayerType layerType;
-  switch ( wkbType )
+  QgsWkbTypes::Type flatType = QgsWkbTypes::flatType( wkbType );
+  switch ( flatType )
   {
     case QgsWkbTypes::Point:
-    case QgsWkbTypes::Point25D:
     case QgsWkbTypes::MultiPoint:
-    case QgsWkbTypes::MultiPoint25D:
       layerType = QgsLayerItem::Point;
       break;
     case QgsWkbTypes::LineString:
-    case QgsWkbTypes::LineString25D:
     case QgsWkbTypes::MultiLineString:
-    case QgsWkbTypes::MultiLineString25D:
       layerType = QgsLayerItem::Line;
       break;
     case QgsWkbTypes::Polygon:
-    case QgsWkbTypes::Polygon25D:
     case QgsWkbTypes::MultiPolygon:
-    case QgsWkbTypes::MultiPolygon25D:
       layerType = QgsLayerItem::Polygon;
       break;
     default:

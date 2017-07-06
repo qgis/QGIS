@@ -159,6 +159,8 @@ class ANALYSIS_EXPORT QgsInternalGeometrySnapper
     QgsGeometryMap mProcessedGeometries;
 };
 
+#ifndef SIP_RUN
+
 ///@cond PRIVATE
 class QgsSnapIndex
 {
@@ -248,5 +250,7 @@ class QgsSnapIndex
 };
 
 ///@endcond
+
+#endif
 
 #endif // QGS_GEOMETRY_SNAPPER_H

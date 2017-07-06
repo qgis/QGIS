@@ -31,6 +31,7 @@ from qgis.PyQt.QtGui import QIcon
 
 from qgis.core import (QgsFeatureRequest,
                        QgsFeature,
+                       QgsFeatureSink,
                        QgsGeometry,
                        QgsWkbTypes,
                        QgsMessageLog,
@@ -90,7 +91,7 @@ class Intersection(QgisAlgorithm):
         outFeat = QgsFeature()
         index = QgsProcessingUtils.createSpatialIndex(vlayerB, context)
         selectionA = QgsProcessingUtils.getFeatures(vlayerA, context)
-        total = 100.0 / QgsProcessingUtils.featureCount(vlayerA, context)
+        total = 100.0 / vlayerA.featureCount() if vlayerA.featureCount() else 0
         for current, inFeatA in enumerate(selectionA):
             feedback.setProgress(int(current * total))
             geom = inFeatA.geometry()
@@ -127,7 +128,7 @@ class Intersection(QgisAlgorithm):
                             attrs.extend(atMapA)
                             attrs.extend(atMapB)
                             outFeat.setAttributes(attrs)
-                            writer.addFeature(outFeat)
+                            writer.addFeature(outFeat, QgsFeatureSink.FastInsert)
                     except:
                         raise GeoAlgorithmExecutionException(
                             self.tr('Feature geometry error: One or more '

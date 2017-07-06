@@ -46,11 +46,11 @@
 ***************************************************************************
 """
 
+from qgis.core import QgsProcessingModelAlgorithm
 from qgis.PyQt.QtCore import Qt, QPointF
 from qgis.PyQt.QtWidgets import QGraphicsPathItem, QGraphicsItem
 from qgis.PyQt.QtGui import QPen, QPainterPath, QPolygonF, QPainter
 from processing.modeler.ModelerGraphicItem import ModelerGraphicItem
-from processing.modeler.ModelerAlgorithm import Algorithm
 
 
 class ModelerArrowItem(QGraphicsPathItem):
@@ -70,12 +70,24 @@ class ModelerArrowItem(QGraphicsPathItem):
                          Qt.RoundCap, Qt.RoundJoin))
         self.setZValue(0)
 
+    def setPenStyle(self, style):
+        pen = self.pen()
+        pen.setStyle(style)
+        self.setPen(pen)
+        self.update()
+
     def updatePath(self):
         self.endPoints = []
         controlPoints = []
         endPt = self.endItem.getLinkPointForParameter(self.endIndex)
-        startPt = self.startItem.getLinkPointForOutput(self.startIndex)
-        if isinstance(self.startItem.element, Algorithm):
+        if isinstance(self.startItem.element, QgsProcessingModelAlgorithm.ModelParameter):
+            startPt = self.startItem.getLinkPointForParameter(self.startIndex)
+        else:
+            startPt = self.startItem.getLinkPointForOutput(self.startIndex)
+        if isinstance(self.endItem.element, QgsProcessingModelAlgorithm.ModelParameter):
+            endPt = self.endItem.getLinkPointForParameter(self.startIndex)
+
+        if isinstance(self.startItem.element, QgsProcessingModelAlgorithm.ChildAlgorithm):
             if self.startIndex != -1:
                 controlPoints.append(self.startItem.pos() + startPt)
                 controlPoints.append(self.startItem.pos() + startPt +
@@ -119,4 +131,6 @@ class ModelerArrowItem(QGraphicsPathItem):
 
         for point in self.endPoints:
             painter.drawEllipse(point.x(), point.y(), 6, 6)
-        painter.strokePath(self.shape(), painter.pen())
+
+        painter.setBrush(Qt.NoBrush)
+        painter.drawPath(self.path())

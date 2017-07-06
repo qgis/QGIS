@@ -8,7 +8,7 @@ from builtins import range
 #
 # CSW Client
 # ---------------------------------------------------------
-# QGIS Catalogue Service client.
+# QGIS Catalog Service client.
 #
 # Copyright (C) 2010 NextGIS (http://nextgis.org),
 #                    Alexander Bruy (alexander.bruy@gmail.com),
@@ -47,7 +47,7 @@ from qgis.core import (QgsApplication, QgsCoordinateReferenceSystem,
                        QgsProviderRegistry, QgsSettings)
 from qgis.gui import QgsRubberBand
 
-from owslib.csw import CatalogueServiceWeb
+from owslib.csw import CatalogueServiceWeb # spellok
 from owslib.fes import BBox, PropertyIsLike
 from owslib.ows import ExceptionReport
 
@@ -297,7 +297,7 @@ class MetaSearchDialog(QDialog, BASE_CLASS):
         """add new service"""
 
         conn_new = NewConnectionDialog()
-        conn_new.setWindowTitle(self.tr('New Catalogue service'))
+        conn_new.setWindowTitle(self.tr('New Catalog service'))
         if conn_new.exec_() == QDialog.Accepted:  # add to service list
             self.populate_connection_list()
         self.textMetadata.clear()
@@ -310,7 +310,7 @@ class MetaSearchDialog(QDialog, BASE_CLASS):
         url = self.settings.value('/MetaSearch/%s/url' % current_text)
 
         conn_edit = NewConnectionDialog(current_text)
-        conn_edit.setWindowTitle(self.tr('Edit Catalogue service'))
+        conn_edit.setWindowTitle(self.tr('Edit Catalog service'))
         conn_edit.leName.setText(current_text)
         conn_edit.leURL.setText(url)
         conn_edit.leUsername.setText(self.settings.value('/MetaSearch/%s/username' % current_text))
@@ -447,7 +447,7 @@ class MetaSearchDialog(QDialog, BASE_CLASS):
         self.settings.setValue('/MetaSearch/returnRecords',
                                self.spnRecords.cleanText())
 
-        # set current catalogue
+        # set current catalog
         current_text = self.cmbConnectionsSearch.currentText()
         key = '/MetaSearch/%s' % current_text
         self.catalog_url = self.settings.value('%s/url' % key)
@@ -821,7 +821,7 @@ class MetaSearchDialog(QDialog, BASE_CLASS):
 
         try:
             QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
-            cat = CatalogueServiceWeb(self.catalog_url, timeout=self.timeout,
+            cat = CatalogueServiceWeb(self.catalog_url, timeout=self.timeout, # spellok
                                       username=self.catalog_username,
                                       password=self.catalog_password)
             cat.getrecordbyid(
@@ -899,12 +899,12 @@ class MetaSearchDialog(QDialog, BASE_CLASS):
         self.rubber_band.reset()
 
     def _get_csw(self):
-        """convenience function to init owslib.csw.CatalogueServiceWeb"""
+        """convenience function to init owslib.csw.CatalogueServiceWeb""" # spellok
 
         # connect to the server
         try:
             QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
-            self.catalog = CatalogueServiceWeb(self.catalog_url,
+            self.catalog = CatalogueServiceWeb(self.catalog_url, # spellok
                                                timeout=self.timeout,
                                                username=self.catalog_username,
                                                password=self.catalog_password)

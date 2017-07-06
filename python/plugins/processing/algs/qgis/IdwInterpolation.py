@@ -42,8 +42,7 @@ from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecution
 from processing.core.parameters import (Parameter,
                                         ParameterNumber,
                                         ParameterExtent,
-                                        _splitParameterOptions,
-                                        _createDescriptiveName)
+                                        _splitParameterOptions)
 from processing.core.outputs import OutputRaster
 
 pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
@@ -105,7 +104,7 @@ class IdwInterpolation(QgisAlgorithm):
             @classmethod
             def fromScriptCode(self, line):
                 isOptional, name, definition = _splitParameterOptions(line)
-                descName = _createDescriptiveName(name)
+                descName = QgsProcessingParameters.descriptionFromName(name)
                 parent = definition.lower().strip()[len('interpolation data') + 1:]
                 return ParameterInterpolationData(name, descName, parent)
 

@@ -18,11 +18,13 @@
 #include "qgsprocessingutils.h"
 #include "qgsproject.h"
 #include "qgssettings.h"
-#include "qgscsexception.h"
+#include "qgsexception.h"
 #include "qgsprocessingcontext.h"
 #include "qgsvectorlayerexporter.h"
 #include "qgsvectorfilewriter.h"
 #include "qgsmemoryproviderutils.h"
+#include "qgsprocessingparameters.h"
+#include "qgsprocessingalgorithm.h"
 
 QList<QgsRasterLayer *> QgsProcessingUtils::compatibleRasterLayers( QgsProject *project, bool sort )
 {
@@ -228,7 +230,7 @@ QString QgsProcessingUtils::normalizeLayerSource( const QString &source )
 
 void parseDestinationString( QString &destination, QString &providerKey, QString &uri, QString &format, QMap<QString, QVariant> &options )
 {
-  QRegularExpression splitRx( "^(.*?):(.*)$" );
+  QRegularExpression splitRx( "^(.{3,}):(.*)$" );
   QRegularExpressionMatch match = splitRx.match( destination );
   if ( match.hasMatch() )
   {
@@ -365,6 +367,100 @@ QgsRectangle QgsProcessingUtils::combineLayerExtents( const QList<QgsMapLayer *>
   return extent;
 }
 
+QVariant QgsProcessingUtils::generateIteratingDestination( const QVariant &input, const QVariant &id, QgsProcessingContext &context )
+{
+  if ( !input.isValid() )
+    return QStringLiteral( "memory:%1" ).arg( id.toString() );
+
+  if ( input.canConvert<QgsProcessingOutputLayerDefinition>() )
+  {
+    QgsProcessingOutputLayerDefinition fromVar = qvariant_cast<QgsProcessingOutputLayerDefinition>( input );
+    QVariant newSink = generateIteratingDestination( fromVar.sink, id, context );
+    fromVar.sink = QgsProperty::fromValue( newSink );
+    return fromVar;
+  }
+  else if ( input.canConvert<QgsProperty>() )
+  {
+    QString res = input.value< QgsProperty>().valueAsString( context.expressionContext() );
+    return generateIteratingDestination( res, id, context );
+  }
+  else
+  {
+    QString res = input.toString();
+    if ( res.startsWith( QStringLiteral( "memory:" ) ) )
+    {
+      return res + '_' + id.toString();
+    }
+    else
+    {
+      // assume a filename type output for now
+      // TODO - uris?
+      int lastIndex = res.lastIndexOf( '.' );
+      return res.left( lastIndex ) + '_' + id.toString() + res.mid( lastIndex );
+    }
+  }
+}
+
+QString QgsProcessingUtils::tempFolder()
+{
+  static QString sFolder;
+  static QMutex sMutex;
+  sMutex.lock();
+  if ( sFolder.isEmpty() )
+  {
+    QString subPath = QUuid::createUuid().toString().remove( '-' ).remove( '{' ).remove( '}' );
+    sFolder = QDir::tempPath() + QStringLiteral( "/processing_" ) + subPath;
+    if ( !QDir( sFolder ).exists() )
+      QDir().mkpath( sFolder );
+  }
+  sMutex.unlock();
+  return sFolder;
+}
+
+QString QgsProcessingUtils::generateTempFilename( const QString &basename )
+{
+  QString subPath = QUuid::createUuid().toString().remove( '-' ).remove( '{' ).remove( '}' );
+  QString path = tempFolder() + '/' + subPath;
+  if ( !QDir( path ).exists() ) //make sure the directory exists - it shouldn't, but lets be safe...
+  {
+    QDir tmpDir;
+    tmpDir.mkdir( path );
+  }
+  return path + '/' + basename;
+}
+
+QString QgsProcessingUtils::formatHelpMapAsHtml( const QVariantMap &map, const QgsProcessingAlgorithm *algorithm )
+{
+  auto getText = [map]( const QString & key )->QString
+  {
+    if ( map.contains( key ) )
+      return map.value( key ).toString();
+    return QString();
+  };
+
+  QString s = QObject::tr( "<html><body><h2>Algorithm description</h2>\n " );
+  s += QStringLiteral( "<p>" ) + getText( QStringLiteral( "ALG_DESC" ) ) + QStringLiteral( "</p>\n" );
+  s +=  QObject::tr( "<h2>Input parameters</h2>\n" );
+
+  Q_FOREACH ( const QgsProcessingParameterDefinition *def, algorithm->parameterDefinitions() )
+  {
+    s += QStringLiteral( "<h3>" ) + def->description() + QStringLiteral( "</h3>\n" );
+    s += QStringLiteral( "<p>" ) + getText( def->name() ) + QStringLiteral( "</p>\n" );
+  }
+  s += QObject::tr( "<h2>Outputs</h2>\n" );
+  Q_FOREACH ( const QgsProcessingOutputDefinition *def, algorithm->outputDefinitions() )
+  {
+    s += QStringLiteral( "<h3>" ) + def->description() + QStringLiteral( "</h3>\n" );
+    s += QStringLiteral( "<p>" ) + getText( def->name() ) + QStringLiteral( "</p>\n" );
+  }
+  s += "<br>";
+  s += QObject::tr( "<p align=\"right\">Algorithm author: %1</p>" ).arg( getText( QStringLiteral( "ALG_CREATOR" ) ) );
+  s += QObject::tr( "<p align=\"right\">Help author: %1</p>" ).arg( getText( QStringLiteral( "ALG_HELP_CREATOR" ) ) );
+  s += QObject::tr( "<p align=\"right\">Algorithm version: %1</p>" ).arg( getText( QStringLiteral( "ALG_VERSION" ) ) );
+  s += QStringLiteral( "</body></html>" );
+  return s;
+}
+
 
 //
 // QgsProcessingFeatureSource
@@ -375,6 +471,7 @@ QgsProcessingFeatureSource::QgsProcessingFeatureSource( QgsFeatureSource *origin
   , mOwnsSource( ownsOriginalSource )
   , mInvalidGeometryCheck( context.invalidGeometryCheck() )
   , mInvalidGeometryCallback( context.invalidGeometryCallback() )
+  , mTransformErrorCallback( context.transformErrorCallback() )
 {}
 
 QgsProcessingFeatureSource::~QgsProcessingFeatureSource()
@@ -383,11 +480,28 @@ QgsProcessingFeatureSource::~QgsProcessingFeatureSource()
     delete mSource;
 }
 
+QgsFeatureIterator QgsProcessingFeatureSource::getFeatures( const QgsFeatureRequest &request, Flags flags ) const
+{
+  QgsFeatureRequest req( request );
+  req.setTransformErrorCallback( mTransformErrorCallback );
+
+  if ( flags & FlagSkipGeometryValidityChecks )
+    req.setInvalidGeometryCheck( QgsFeatureRequest::GeometryNoCheck );
+  else
+  {
+    req.setInvalidGeometryCheck( mInvalidGeometryCheck );
+    req.setInvalidGeometryCallback( mInvalidGeometryCallback );
+  }
+
+  return mSource->getFeatures( req );
+}
+
 QgsFeatureIterator QgsProcessingFeatureSource::getFeatures( const QgsFeatureRequest &request ) const
 {
   QgsFeatureRequest req( request );
   req.setInvalidGeometryCheck( mInvalidGeometryCheck );
   req.setInvalidGeometryCallback( mInvalidGeometryCallback );
+  req.setTransformErrorCallback( mTransformErrorCallback );
   return mSource->getFeatures( req );
 }
 
@@ -411,11 +525,8 @@ long QgsProcessingFeatureSource::featureCount() const
   return mSource->featureCount();
 }
 
+QString QgsProcessingFeatureSource::sourceName() const
+{
+  return mSource->sourceName();
 
-
-
-
-
-
-
-
+}

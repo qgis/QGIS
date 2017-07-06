@@ -24,6 +24,8 @@
 #include "qgsexpressioncontext.h"
 #include "qgsfeaturerequest.h"
 #include "qgsmaplayerlistutils.h"
+#include "qgsexception.h"
+#include "qgsprocessingfeedback.h"
 
 /**
  * \class QgsProcessingContext
@@ -49,7 +51,15 @@ class CORE_EXPORT QgsProcessingContext
     /**
      * Constructor for QgsProcessingContext.
      */
-    QgsProcessingContext() = default;
+    QgsProcessingContext()
+    {
+      auto callback = [ = ]( const QgsFeature & feature )
+      {
+        if ( mFeedback )
+          mFeedback->reportError( QObject::tr( "Encountered a transform error when reprojecting feature with id %1." ).arg( feature.id() ) );
+      };
+      mTransformErrorCallback = callback;
+    }
 
     //! QgsProcessingContext cannot be copied
     QgsProcessingContext( const QgsProcessingContext &other ) = delete;
@@ -167,10 +177,41 @@ class CORE_EXPORT QgsProcessingContext
 
     /**
      * Sets the behavior used for checking invalid geometries in input layers.
+     * Settings this to anything but QgsFeatureRequest::GeometryNoCheck will also
+     * reset the invalidGeometryCallback() to a default implementation.
      * \see invalidGeometryCheck()
      */
-    void setInvalidGeometryCheck( const QgsFeatureRequest::InvalidGeometryCheck &check ) { mInvalidGeometryCheck = check; }
+    void setInvalidGeometryCheck( const QgsFeatureRequest::InvalidGeometryCheck &check )
+    {
+      mInvalidGeometryCheck = check;
 
+      switch ( mInvalidGeometryCheck )
+      {
+        case  QgsFeatureRequest::GeometryAbortOnInvalid:
+        {
+          auto callback = []( const QgsFeature & feature )
+          {
+            throw QgsProcessingException( QObject::tr( "Feature (%1) has invalid geometry. Please fix the geometry or change the Processing setting to the \"Ignore invalid input features\" option." ).arg( feature.id() ) );
+          };
+          mInvalidGeometryCallback = callback;
+          break;
+        }
+
+        case QgsFeatureRequest::GeometrySkipInvalid:
+        {
+          auto callback = [ = ]( const QgsFeature & feature )
+          {
+            if ( mFeedback )
+              mFeedback->reportError( QObject::tr( "Feature (%1) has invalid geometry and has been skipped. Please fix the geometry or change the Processing setting to the \"Ignore invalid input features\" option." ).arg( feature.id() ) );
+          };
+          mInvalidGeometryCallback = callback;
+          break;
+        }
+
+        default:
+          break;
+      }
+    }
 
     /**
      * Sets a callback function to use when encountering an invalid geometry and
@@ -207,6 +248,41 @@ class CORE_EXPORT QgsProcessingContext
     SIP_SKIP std::function< void( const QgsFeature & ) > invalidGeometryCallback() const { return mInvalidGeometryCallback; }
 
     /**
+     * Sets a callback function to use when encountering a transform error when iterating
+     * features. This function will be
+     * called using the feature which encountered the transform error as a parameter.
+     * \since QGIS 3.0
+     * \see transformErrorCallback()
+     */
+#ifndef SIP_RUN
+    void setTransformErrorCallback( std::function< void( const QgsFeature & ) > callback ) { mTransformErrorCallback = callback; }
+#else
+    void setTransformErrorCallback( SIP_PYCALLABLE / AllowNone / );
+    % MethodCode
+    Py_BEGIN_ALLOW_THREADS
+
+    sipCpp->setTransformErrorCallback( [a0]( const QgsFeature &arg )
+    {
+      SIP_BLOCK_THREADS
+      Py_XDECREF( sipCallMethod( NULL, a0, "D", &arg, sipType_QgsFeature, NULL ) );
+      SIP_UNBLOCK_THREADS
+    } );
+
+    Py_END_ALLOW_THREADS
+    % End
+#endif
+
+    /**
+     * Returns the callback function to use when encountering a transform error when iterating
+     * features.
+     * \since QGIS 3.0
+     * \note not available in Python bindings
+     * \see setTransformErrorCallback()
+     * \see destinationCrs()
+     */
+    std::function< void( const QgsFeature & ) > transformErrorCallback() const { return mTransformErrorCallback; } SIP_SKIP
+
+    /**
      * Returns the default encoding to use for newly created files.
      * \see setDefaultEncoding()
      */
@@ -218,6 +294,22 @@ class CORE_EXPORT QgsProcessingContext
      */
     void setDefaultEncoding( const QString &encoding ) { mDefaultEncoding = encoding; }
 
+    /**
+     * Returns the associated feedback object.
+     * \see setFeedback()
+     */
+    QgsProcessingFeedback *feedback() { return mFeedback; }
+
+    /**
+     * Sets an associated \a feedback object. This allows context related functions
+     * to report feedback and errors to users and processing logs. While ideally this feedback
+     * object should outlive the context, only a weak pointer to \a feedback is stored
+     * and no errors will occur if feedback is deleted before the context.
+     * Ownership of \a feedback is not transferred.
+     * \see setFeedback()
+     */
+    void setFeedback( QgsProcessingFeedback *feedback ) { mFeedback = feedback; }
+
   private:
 
     QgsProcessingContext::Flags mFlags = 0;
@@ -228,17 +320,16 @@ class CORE_EXPORT QgsProcessingContext
     QgsExpressionContext mExpressionContext;
     QgsFeatureRequest::InvalidGeometryCheck mInvalidGeometryCheck = QgsFeatureRequest::GeometryNoCheck;
     std::function< void( const QgsFeature & ) > mInvalidGeometryCallback;
+    std::function< void( const QgsFeature & ) > mTransformErrorCallback;
     QString mDefaultEncoding;
     QMap< QString, LayerDetails > mLayersToLoadOnCompletion;
+
+    QPointer< QgsProcessingFeedback > mFeedback;
 
 #ifdef SIP_RUN
     QgsProcessingContext( const QgsProcessingContext &other );
 #endif
 };
-
-
-
-
 
 Q_DECLARE_OPERATORS_FOR_FLAGS( QgsProcessingContext::Flags )
 

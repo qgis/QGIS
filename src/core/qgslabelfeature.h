@@ -1,6 +1,8 @@
 #ifndef QGSLABELFEATURE_H
 #define QGSLABELFEATURE_H
 
+#define SIP_NO_FILE
+
 #include "qgis_core.h"
 #include "qgspallabeling.h"
 #include "geos_c.h"

@@ -27,7 +27,7 @@ __revision__ = '$Format:%H$'
 
 import os
 
-from qgis.core import QgsWkbTypes, QgsField, NULL, QgsProcessingUtils
+from qgis.core import QgsWkbTypes, QgsField, NULL, QgsFeatureSink, QgsProcessingUtils
 
 from qgis.PyQt.QtCore import QVariant
 from qgis.PyQt.QtGui import QIcon
@@ -82,7 +82,7 @@ class PoleOfInaccessibility(QgisAlgorithm):
             self.OUTPUT_LAYER).getVectorWriter(fields, QgsWkbTypes.Point, layer.crs(), context)
 
         features = QgsProcessingUtils.getFeatures(layer, context)
-        total = 100.0 / QgsProcessingUtils.featureCount(layer, context)
+        total = 100.0 / layer.featureCount() if layer.featureCount() else 0
 
         for current, input_feature in enumerate(features):
             output_feature = input_feature
@@ -102,7 +102,7 @@ class PoleOfInaccessibility(QgisAlgorithm):
                 attrs.append(NULL)
                 output_feature.setAttributes(attrs)
 
-            writer.addFeature(output_feature)
+            writer.addFeature(output_feature, QgsFeatureSink.FastInsert)
             feedback.setProgress(int(current * total))
 
         del writer

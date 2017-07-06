@@ -816,14 +816,12 @@ int QgsGeometry::splitGeometry( const QList<QgsPointXY> &splitLine, QList<QgsGeo
   return result;
 }
 
-int QgsGeometry::reshapeGeometry( const QList<QgsPointXY> &reshapeWithLine )
+int QgsGeometry::reshapeGeometry( const QgsLineString &reshapeLineString )
 {
   if ( !d->geometry )
   {
     return 0;
   }
-
-  QgsLineString reshapeLineString( reshapeWithLine );
 
   QgsGeos geos( d->geometry );
   int errorCode = 0;
@@ -838,16 +836,16 @@ int QgsGeometry::reshapeGeometry( const QList<QgsPointXY> &reshapeWithLine )
   return errorCode;
 }
 
-int QgsGeometry::makeDifference( const QgsGeometry *other )
+int QgsGeometry::makeDifferenceInPlace( const QgsGeometry &other )
 {
-  if ( !d->geometry || !other->d->geometry )
+  if ( !d->geometry || !other.d->geometry )
   {
     return 0;
   }
 
   QgsGeos geos( d->geometry );
 
-  QgsAbstractGeometry *diffGeom = geos.intersection( *( other->geometry() ) );
+  QgsAbstractGeometry *diffGeom = geos.intersection( *other.geometry() );
   if ( !diffGeom )
   {
     return 1;
@@ -1657,6 +1655,30 @@ QgsGeometry QgsGeometry::delaunayTriangulation( double tolerance, bool edgesOnly
   return geos.delaunayTriangulation( tolerance, edgesOnly );
 }
 
+QgsGeometry QgsGeometry::subdivide( int maxNodes ) const
+{
+  if ( !d->geometry )
+  {
+    return QgsGeometry();
+  }
+
+  const QgsAbstractGeometry *geom = d->geometry;
+  std::unique_ptr< QgsAbstractGeometry > segmentizedCopy;
+  if ( QgsWkbTypes::isCurvedType( d->geometry->wkbType() ) )
+  {
+    segmentizedCopy.reset( d->geometry->segmentize() );
+    geom = segmentizedCopy.get();
+  }
+
+  QgsGeos geos( geom );
+  QgsAbstractGeometry *result = geos.subdivide( maxNodes );
+  if ( !result )
+  {
+    return QgsGeometry();
+  }
+  return QgsGeometry( result );
+}
+
 QgsGeometry QgsGeometry::interpolate( double distance ) const
 {
   if ( !d->geometry )
@@ -1966,7 +1988,7 @@ QgsGeometry QgsGeometry::makeValid()
 
 void QgsGeometry::validateGeometry( QList<QgsGeometry::Error> &errors, ValidationMethod method )
 {
-  QgsGeometryValidator::validateGeometry( this, errors, method );
+  QgsGeometryValidator::validateGeometry( *this, errors, method );
 }
 
 bool QgsGeometry::isGeosValid() const
@@ -2091,17 +2113,17 @@ void QgsGeometry::mapToPixel( const QgsMapToPixel &mtp )
   }
 }
 
-#if 0
-void QgsGeometry::clip( const QgsRectangle &rect )
+QgsGeometry QgsGeometry::clipped( const QgsRectangle &rectangle )
 {
-  if ( d->geometry )
+  if ( !d->geometry || rectangle.isNull() || rectangle.isEmpty() )
   {
-    detach();
-    d->geometry->clip( rect );
-    removeWkbGeos();
+    return QgsGeometry();
   }
+
+  QgsGeos geos( d->geometry );
+  QgsAbstractGeometry *resultGeom = geos.clip( rectangle );
+  return QgsGeometry( resultGeom );
 }
-#endif
 
 void QgsGeometry::draw( QPainter &p ) const
 {

@@ -59,7 +59,7 @@ Read rectangle from GML3 Envelope
  :rtype: QgsRectangle
 %End
 
-    static QDomElement geometryToGML( const QgsGeometry *geometry, QDomDocument &doc,
+    static QDomElement geometryToGML( const QgsGeometry &geometry, QDomDocument &doc,
                                       QgsOgcUtils::GMLVersion gmlVersion,
                                       const QString &srsName,
                                       bool invertAxisOrientation,
@@ -72,14 +72,14 @@ Read rectangle from GML3 Envelope
  :rtype: QDomElement
 %End
 
-    static QDomElement geometryToGML( const QgsGeometry *geometry, QDomDocument &doc, const QString &format, int precision = 17 );
+    static QDomElement geometryToGML( const QgsGeometry &geometry, QDomDocument &doc, const QString &format, int precision = 17 );
 %Docstring
  Exports the geometry to GML2 or GML3
 :return: QDomElement
  :rtype: QDomElement
 %End
 
-    static QDomElement geometryToGML( const QgsGeometry *geometry, QDomDocument &doc, int precision = 17 );
+    static QDomElement geometryToGML( const QgsGeometry &geometry, QDomDocument &doc, int precision = 17 );
 %Docstring
  Exports the geometry to GML2
 :return: QDomElement

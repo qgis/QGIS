@@ -205,9 +205,9 @@ class QgsPropertyTransformer
     virtual bool loadVariant( const QVariant &transformer );
 %Docstring
  Loads this transformer from a QVariantMap, wrapped in a QVariant.
- You can use QgsXmlUtils.writeVariant to save it to an XML document.
+ You can use QgsXmlUtils.readVariant to read it from an XML document.
 
-.. seealso:: loadVariant()
+.. seealso:: toVariant()
  :rtype: bool
 %End
 
@@ -216,7 +216,7 @@ class QgsPropertyTransformer
  Saves this transformer to a QVariantMap, wrapped in a QVariant.
  You can use QgsXmlUtils.writeVariant to save it to an XML document.
 
-.. seealso:: toVariant()
+.. seealso:: loadVariant()
  :rtype: QVariant
 %End
 

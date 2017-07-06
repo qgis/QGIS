@@ -30,7 +30,7 @@ QgsTextAnnotation *QgsTextAnnotation::clone() const
 {
   std::unique_ptr< QgsTextAnnotation > c( new QgsTextAnnotation() );
   copyCommonProperties( c.get() );
-  c->setDocument( mDocument ? mDocument->clone() : nullptr );
+  c->setDocument( mDocument.get() );
   return c.release();
 }
 

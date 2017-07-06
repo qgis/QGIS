@@ -28,14 +28,17 @@ __copyright__ = '(C) 2012, Victor Olaya'
 __revision__ = '$Format:%H$'
 
 import sys
-
+from copy import deepcopy
 from qgis.PyQt.QtCore import QCoreApplication
 from qgis.core import (QgsFeature,
                        QgsVectorFileWriter,
                        QgsProcessingFeedback,
                        QgsSettings,
                        QgsProcessingUtils,
-                       QgsMessageLog)
+                       QgsMessageLog,
+                       QgsProperty,
+                       QgsProcessingParameters,
+                       QgsProcessingOutputLayerDefinition)
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from processing.gui.Postprocessing import handleAlgorithmResults
 from processing.tools import dataobjects
@@ -53,11 +56,11 @@ def execute(alg, parameters, context=None, feedback=None):
     if feedback is None:
         feedback = QgsProcessingFeedback()
     if context is None:
-        context = dataobjects.createContext()
+        context = dataobjects.createContext(feedback)
 
     try:
-        results = alg.run(parameters, context, feedback)
-        return True, results
+        results, ok = alg.run(parameters, context, feedback)
+        return ok, results
     except GeoAlgorithmExecutionException as e:
         QgsMessageLog.logMessage(str(sys.exc_info()[0]), 'Processing', QgsMessageLog.CRITICAL)
         if feedback is not None:
@@ -69,41 +72,49 @@ def executeIterating(alg, parameters, paramToIter, context, feedback):
     # Generate all single-feature layers
     settings = QgsSettings()
     systemEncoding = settings.value('/UI/encoding', 'System')
-    layerfile = parameters[paramToIter]
-    layer = QgsProcessingUtils.mapLayerFromString(layerfile, context, False)
-    feat = QgsFeature()
-    filelist = []
-    outputs = {}
-    features = QgsProcessingUtils.getFeatures(layer, context)
-    for feat in features:
-        output = getTempFilename('shp')
-        filelist.append(output)
-        writer = QgsVectorFileWriter(output, systemEncoding,
-                                     layer.fields(), layer.wkbType(), layer.crs())
-        writer.addFeature(feat)
-        del writer
 
-    # store output values to use them later as basenames for all outputs
-    for out in alg.outputs:
-        outputs[out.name] = out.value
+    parameter_definition = alg.parameterDefinition(paramToIter)
+    if not parameter_definition:
+        return False
 
-    # now run all the algorithms
-    for i, f in enumerate(filelist):
-        parameters[paramToIter] = f
-        for out in alg.outputs:
-            filename = outputs[out.name]
-            if filename:
-                filename = filename[:filename.rfind('.')] + '_' + str(i) \
-                    + filename[filename.rfind('.'):]
-            out.value = filename
-        feedback.setProgressText(tr('Executing iteration {0}/{1}...').format(i, len(filelist)))
-        feedback.setProgress(i * 100 / len(filelist))
-        ret, results = execute(alg, parameters, None, feedback)
-        if ret:
-            handleAlgorithmResults(alg, context, None, False)
-        else:
+    iter_source = QgsProcessingParameters.parameterAsSource(parameter_definition, parameters, context)
+    sink_list = []
+    if iter_source.featureCount() == 0:
+        return False
+
+    total = 100.0 / iter_source.featureCount()
+    for current, feat in enumerate(iter_source.getFeatures()):
+        if feedback.isCanceled():
             return False
 
+        sink, sink_id = QgsProcessingUtils.createFeatureSink('memory:', context, iter_source.fields(), iter_source.wkbType(), iter_source.sourceCrs())
+        sink_list.append(sink_id)
+        sink.addFeature(feat, QgsFeatureSink.FastInsert)
+        del sink
+
+        feedback.setProgress(int(current * total))
+
+    # store output values to use them later as basenames for all outputs
+    outputs = {}
+    for out in alg.destinationParameterDefinitions():
+        outputs[out.name()] = parameters[out.name()]
+
+    # now run all the algorithms
+    for i, f in enumerate(sink_list):
+        if feedback.isCanceled():
+            return False
+
+        parameters[paramToIter] = f
+        for out in alg.destinationParameterDefinitions():
+            o = outputs[out.name()]
+            parameters[out.name()] = QgsProcessingUtils.generateIteratingDestination(o, i, context)
+        feedback.setProgressText(tr('Executing iteration {0}/{1}...').format(i, len(sink_list)))
+        feedback.setProgress(i * 100 / len(sink_list))
+        ret, results = execute(alg, parameters, context, feedback)
+        if not ret:
+            return False
+
+    handleAlgorithmResults(alg, context, feedback, False)
     return True
 
 

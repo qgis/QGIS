@@ -58,7 +58,7 @@ int QgsVectorLayerCache::cacheSize()
 
 void QgsVectorLayerCache::setCacheGeometry( bool cacheGeometry )
 {
-  bool shouldCacheGeometry = cacheGeometry && mLayer->hasGeometryType();
+  bool shouldCacheGeometry = cacheGeometry && mLayer->isSpatial();
   bool mustInvalidate = shouldCacheGeometry && !mCacheGeometry; // going from no geometry -> geometry, so have to clear existing cache entries
   mCacheGeometry = shouldCacheGeometry;
   if ( cacheGeometry )
@@ -175,6 +175,26 @@ bool QgsVectorLayerCache::removeCachedFeature( QgsFeatureId fid )
 QgsVectorLayer *QgsVectorLayerCache::layer()
 {
   return mLayer;
+}
+
+QgsCoordinateReferenceSystem QgsVectorLayerCache::sourceCrs() const
+{
+  return mLayer->crs();
+}
+
+QgsWkbTypes::Type QgsVectorLayerCache::wkbType() const
+{
+  return mLayer->wkbType();
+}
+
+QgsFields QgsVectorLayerCache::fields() const
+{
+  return mLayer->fields();
+}
+
+long QgsVectorLayerCache::featureCount() const
+{
+  return mLayer->featureCount();
 }
 
 void QgsVectorLayerCache::requestCompleted( const QgsFeatureRequest &featureRequest, const QgsFeatureIds &fids )
@@ -357,7 +377,7 @@ QgsFeatureIterator QgsVectorLayerCache::getFeatures( const QgsFeatureRequest &fe
     QgsFeatureRequest myRequest = QgsFeatureRequest( featureRequest );
 
     // Make sure if we cache the geometry, it gets fetched
-    if ( mCacheGeometry && mLayer->hasGeometryType() )
+    if ( mCacheGeometry && mLayer->isSpatial() )
       myRequest.setFlags( featureRequest.flags() & ~QgsFeatureRequest::NoGeometry );
 
     // Make sure, all the cached attributes are requested as well

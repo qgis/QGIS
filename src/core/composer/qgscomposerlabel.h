@@ -33,7 +33,7 @@ class CORE_EXPORT QgsComposerLabel: public QgsComposerItem
 {
     Q_OBJECT
   public:
-    QgsComposerLabel( QgsComposition *composition );
+    QgsComposerLabel( QgsComposition *composition SIP_TRANSFERTHIS );
     ~QgsComposerLabel();
 
     //! Return correct graphics item type.

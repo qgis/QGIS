@@ -283,19 +283,19 @@ QString QgsNewVectorLayerDialog::runAndCreateLayer( QWidget *parent, QString *pE
         QgsCoordinateReferenceSystem srs = geomDialog.crs();
         if ( !createEmptyDataSource( fileName, fileformat, enc, geometrytype, attributes, srs ) )
         {
-          return QString::null;
+          return QString();
         }
       }
       else
       {
         QgsDebugMsg( "geometry type not recognised" );
-        return QString::null;
+        return QString();
       }
     }
     else
     {
       QgsDebugMsg( "Resolving newEmptyDataSource(...) failed" );
-      return QString::null;
+      return QString();
     }
   }
 

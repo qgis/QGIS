@@ -28,6 +28,7 @@ __revision__ = '$Format:%H$'
 import os
 
 from qgis.core import (QgsApplication,
+                       QgsFeatureSink,
                        QgsProcessingUtils)
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
@@ -43,12 +44,6 @@ class Translate(QgisAlgorithm):
     OUTPUT_LAYER = 'OUTPUT_LAYER'
     DELTA_X = 'DELTA_X'
     DELTA_Y = 'DELTA_Y'
-
-    def icon(self):
-        return QgsApplication.getThemeIcon("/providerQgis.svg")
-
-    def svgIconPath(self):
-        return QgsApplication.iconPath("providerQgis.svg")
 
     def group(self):
         return self.tr('Vector geometry tools')
@@ -80,7 +75,7 @@ class Translate(QgisAlgorithm):
         delta_y = self.getParameterValue(self.DELTA_Y)
 
         features = QgsProcessingUtils.getFeatures(layer, context)
-        total = 100.0 / QgsProcessingUtils.featureCount(layer, context)
+        total = 100.0 / layer.featureCount() if layer.featureCount() else 0
 
         for current, input_feature in enumerate(features):
             output_feature = input_feature
@@ -94,7 +89,7 @@ class Translate(QgisAlgorithm):
 
                 output_feature.setGeometry(output_geometry)
 
-            writer.addFeature(output_feature)
+            writer.addFeature(output_feature, QgsFeatureSink.FastInsert)
             feedback.setProgress(int(current * total))
 
         del writer

@@ -161,6 +161,34 @@ class CORE_EXPORT QgsProcessingUtils
      */
     static QgsRectangle combineLayerExtents( const QList< QgsMapLayer *> layers, const QgsCoordinateReferenceSystem &crs = QgsCoordinateReferenceSystem() );
 
+    /**
+     * Converts an \a input parameter value for use in source iterating mode, where one individual sink
+     * is created per input feature.
+     * The \a id parameter represents the unique ID for this output, which is embedded into the resulting
+     * parameter value.
+     */
+    static QVariant generateIteratingDestination( const QVariant &input, const QVariant &id, QgsProcessingContext &context );
+
+    /**
+     * Returns a session specific processing temporary folder for use in processing algorithms.
+     * \see generateTempFileName()
+     */
+    static QString tempFolder();
+
+    /**
+     * Returns a temporary filename for a given file, putting it into
+     * a temporary folder (creating that folder in the process),
+     * but not changing the \a basename.
+     * \see tempFolder()
+     */
+    static QString generateTempFilename( const QString &basename );
+
+    /**
+     * Returns a HTML formatted version of the help text encoded in a variant \a map for
+     * a specified \a algorithm.
+     */
+    static QString formatHelpMapAsHtml( const QVariantMap &map, const QgsProcessingAlgorithm *algorithm );
+
   private:
 
     static bool canUseLayer( const QgsRasterLayer *layer );
@@ -191,19 +219,23 @@ class CORE_EXPORT QgsProcessingUtils
 
 };
 
-#ifndef SIP_RUN
-
 /**
  * \class QgsProcessingFeatureSource
  * \ingroup core
  * QgsFeatureSource subclass which proxies methods to an underlying QgsFeatureSource, modifying
  * results according to the settings in a QgsProcessingContext.
- * \note not available in Python bindings
  * \since QGIS 3.0
  */
-class QgsProcessingFeatureSource : public QgsFeatureSource
+class CORE_EXPORT QgsProcessingFeatureSource : public QgsFeatureSource
 {
   public:
+
+    //! Flags controlling how QgsProcessingFeatureSource fetches features
+    enum Flag
+    {
+      FlagSkipGeometryValidityChecks = 1 << 1, //!< Invalid geometry checks should always be skipped. This flag can be useful for algorithms which always require invalid geometries, regardless of any user settings (e.g. "repair geometry" type algorithms).
+    };
+    Q_DECLARE_FLAGS( Flags, Flag )
 
     /**
      * Constructor for QgsProcessingFeatureSource, accepting an original feature source \a originalSource
@@ -216,11 +248,19 @@ class QgsProcessingFeatureSource : public QgsFeatureSource
 
     ~QgsProcessingFeatureSource();
 
-    virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest &request = QgsFeatureRequest() ) const override;
-    virtual QgsCoordinateReferenceSystem sourceCrs() const override;
-    virtual QgsFields fields() const override;
-    virtual QgsWkbTypes::Type wkbType() const override;
-    virtual long featureCount() const override;
+    /**
+     * Returns an iterator for the features in the source, respecting the supplied feature \a flags.
+     * An optional \a request can be used to optimise the returned
+     * iterator, eg by restricting the returned attributes or geometry.
+     */
+    QgsFeatureIterator getFeatures( const QgsFeatureRequest &request, Flags flags ) const;
+
+    QgsFeatureIterator getFeatures( const QgsFeatureRequest &request = QgsFeatureRequest() ) const override;
+    QgsCoordinateReferenceSystem sourceCrs() const override;
+    QgsFields fields() const override;
+    QgsWkbTypes::Type wkbType() const override;
+    long featureCount() const override;
+    QString sourceName() const override;
 
   private:
 
@@ -228,10 +268,9 @@ class QgsProcessingFeatureSource : public QgsFeatureSource
     bool mOwnsSource = false;
     QgsFeatureRequest::InvalidGeometryCheck mInvalidGeometryCheck = QgsFeatureRequest::GeometryNoCheck;
     std::function< void( const QgsFeature & ) > mInvalidGeometryCallback;
+    std::function< void( const QgsFeature & ) > mTransformErrorCallback;
 
 };
-
-#endif
 
 #endif // QGSPROCESSINGUTILS_H
 

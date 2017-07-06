@@ -29,6 +29,7 @@ __revision__ = '$Format:%H$'
 import os
 
 from qgis.core import (QgsFeature,
+                       QgsFeatureSink,
                        QgsApplication,
                        QgsProcessingUtils)
 
@@ -49,12 +50,6 @@ class JoinAttributes(QgisAlgorithm):
     INPUT_LAYER_2 = 'INPUT_LAYER_2'
     TABLE_FIELD = 'TABLE_FIELD'
     TABLE_FIELD_2 = 'TABLE_FIELD_2'
-
-    def icon(self):
-        return QgsApplication.getThemeIcon("/providerQgis.svg")
-
-    def svgIconPath(self):
-        return QgsApplication.iconPath("providerQgis.svg")
 
     def group(self):
         return self.tr('Vector general tools')
@@ -97,7 +92,7 @@ class JoinAttributes(QgisAlgorithm):
         # Cache attributes of Layer 2
         cache = {}
         features = QgsProcessingUtils.getFeatures(layer2, context)
-        total = 100.0 / QgsProcessingUtils.featureCount(layer2, context)
+        total = 100.0 / layer2.featureCount() if layer2.featureCount() else 0
         for current, feat in enumerate(features):
             attrs = feat.attributes()
             joinValue2 = str(attrs[joinField2Index])
@@ -108,13 +103,13 @@ class JoinAttributes(QgisAlgorithm):
         # Create output vector layer with additional attribute
         outFeat = QgsFeature()
         features = QgsProcessingUtils.getFeatures(layer, context)
-        total = 100.0 / QgsProcessingUtils.featureCount(layer, context)
+        total = 100.0 / layer.featureCount() if layer.featureCount() else 0
         for current, feat in enumerate(features):
             outFeat.setGeometry(feat.geometry())
             attrs = feat.attributes()
             joinValue1 = str(attrs[joinField1Index])
             attrs.extend(cache.get(joinValue1, []))
             outFeat.setAttributes(attrs)
-            writer.addFeature(outFeat)
+            writer.addFeature(outFeat, QgsFeatureSink.FastInsert)
             feedback.setProgress(int(current * total))
         del writer

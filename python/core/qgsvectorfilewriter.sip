@@ -179,6 +179,12 @@ Constructor
  :return: possibly modified value.
  :rtype: QVariant
 %End
+
+        virtual QgsVectorFileWriter::FieldValueConverter *clone() const /Factory/;
+%Docstring
+ Creates a clone of the FieldValueConverter.
+ :rtype: QgsVectorFileWriter.FieldValueConverter
+%End
     };
 
     enum EditionCapability
@@ -409,7 +415,10 @@ Set to true to include z dimension in output. This option is only valid if overr
 
         QgsVectorFileWriter::FieldValueConverter *fieldValueConverter;
 %Docstring
-Field value converter
+ Field value converter.
+
+ Ownership is not transferred and callers must ensure that the lifetime of fieldValueConverter
+ exceeds the lifetime of the QgsVectorFileWriter object.
 %End
 
         QgsFeedback *feedback;
@@ -513,14 +522,15 @@ Retrieves error message
  :rtype: str
 %End
 
-    virtual bool addFeature( QgsFeature &feature );
+    virtual bool addFeature( QgsFeature &feature, QgsFeatureSink::Flags flags = 0 );
 
-    virtual bool addFeatures( QgsFeatureList &features );
+    virtual bool addFeatures( QgsFeatureList &features, QgsFeatureSink::Flags flags = 0 );
 
 
-    bool addFeature( QgsFeature &feature, QgsFeatureRenderer *renderer, QgsUnitTypes::DistanceUnit outputUnit = QgsUnitTypes::DistanceMeters );
+    bool addFeatureWithStyle( QgsFeature &feature, QgsFeatureRenderer *renderer, QgsUnitTypes::DistanceUnit outputUnit = QgsUnitTypes::DistanceMeters );
 %Docstring
-Add feature to the currently opened data source
+ Adds a ``feature`` to the currently opened data source, using the style from a specified ``renderer``.
+.. versionadded:: 3.0
  :rtype: bool
 %End
 
@@ -544,11 +554,22 @@ Close opened shapefile for writing
 %End
     void setSymbologyExport( QgsVectorFileWriter::SymbologyExport symExport );
 
-    double symbologyScaleDenominator() const;
+    double symbologyScale() const;
 %Docstring
+ Returns the reference scale for output.
+ The  scale value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
+.. versionadded:: 3.0
+.. seealso:: setSymbologyScale()
  :rtype: float
 %End
-    void setSymbologyScaleDenominator( double d );
+
+    void setSymbologyScale( double scale );
+%Docstring
+ Set reference ``scale`` for output.
+ The ``scale`` value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
+.. versionadded:: 3.0
+.. seealso:: symbologyScale()
+%End
 
     static bool driverMetadata( const QString &driverName, MetaData &driverMetadata );
 %Docstring

@@ -160,7 +160,7 @@ class QgsPalettedRendererModel : public QAbstractItemModel
     QMimeData *mimeData( const QModelIndexList &indexes ) const override;
     bool dropMimeData( const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent ) override;
 
-    void addEntry( const QColor &color );
+    QModelIndex addEntry( const QColor &color );
 
   public slots:
 

@@ -43,9 +43,6 @@ typedef QMap<QString, QString> QgsStringMap SIP_SKIP;
 typedef QList<QgsSymbol *> QgsSymbolList;
 typedef QMap<QString, QgsSymbol * > QgsSymbolMap SIP_SKIP;
 
-typedef QList< QPair<QString, QPixmap> > QgsLegendSymbologyList;
-typedef QList< QPair<QString, QgsSymbol *> > QgsLegendSymbolList;
-
 #include "qgslegendsymbolitem.h"
 
 
@@ -281,9 +278,6 @@ class CORE_EXPORT QgsFeatureRenderer
       ( void ) props; // warning avoidance
     }
 
-    //! return a list of symbology items for the legend
-    virtual QgsLegendSymbologyList legendSymbologyItems( QSize iconSize );
-
     //! items of symbology items in legend should be checkable
     //! \since QGIS 2.5
     virtual bool legendSymbolItemsCheckable() const;
@@ -303,14 +297,9 @@ class CORE_EXPORT QgsFeatureRenderer
      */
     virtual void setLegendSymbolItem( const QString &key, QgsSymbol *symbol SIP_TRANSFER );
 
-    //! return a list of item text / symbol
-    //! \note not available in Python bindings
-    virtual QgsLegendSymbolList legendSymbolItems( double scaleDenominator = -1, const QString &rule = "" ) SIP_SKIP;
-
-    //! Return a list of symbology items for the legend. Better choice than legendSymbolItems().
-    //! Default fallback implementation just uses legendSymbolItems() implementation
+    //! Returns a list of symbology items for the legend
     //! \since QGIS 2.6
-    virtual QgsLegendSymbolListV2 legendSymbolItemsV2() const;
+    virtual QgsLegendSymbolList legendSymbolItems() const;
 
     //! If supported by the renderer, return classification attribute for the use in legend
     //! \since QGIS 2.6

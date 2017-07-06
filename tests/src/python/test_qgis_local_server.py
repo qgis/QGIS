@@ -121,7 +121,7 @@ class TestQgisLocalServer(unittest.TestCase):
         chk.setControlName('expected_' + test_name)
         # chk.setMapRenderer(None)
         res = chk.compareImages(test_name, 0, img_path)
-        if QGIS_TEST_REPORT and not res:  # don't report ok checks
+        if QGIS_TEST_REPORT and not res:  # don't report OK checks
             TESTREPORTS[test_name] = chk.report()
         msg = '\nRender check failed for "{0}"'.format(test_name)
         assert res, msg

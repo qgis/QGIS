@@ -421,7 +421,7 @@ void QgsNodeTool::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
     Q_FOREACH ( QgsMapLayer *layer, canvas()->layers() )
     {
       QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer );
-      if ( !vlayer || !vlayer->isEditable() )
+      if ( !vlayer || !vlayer->isEditable() || !vlayer->isSpatial() )
         continue;
 
       QgsRectangle layerRect = toLayerCoordinates( vlayer, map_rect );
@@ -626,8 +626,13 @@ QgsPointLocator::Match QgsNodeTool::snapToEditableLayer( QgsMapMouseEvent *e )
   {
     OneFeatureFilter filterLast( mLastSnap->layer(), mLastSnap->featureId() );
     QgsPointLocator::Match lastMatch = snapUtils->snapToMap( mapPoint, &filterLast );
-    if ( lastMatch.isValid() && lastMatch.distance() <= m.distance() )
+    // but skip the the previously used feature if it would only snap to segment, while now we have snap to vertex
+    // so that if there is a point on a line, it gets priority (as is usual with combined vertex+segment snapping)
+    bool matchHasVertexLastHasEdge = m.hasVertex() && lastMatch.hasEdge();
+    if ( lastMatch.isValid() && lastMatch.distance() <= m.distance() && !matchHasVertexLastHasEdge )
+    {
       m = lastMatch;
+    }
   }
 
   snapUtils->setConfig( oldConfig );
@@ -1390,7 +1395,11 @@ void QgsNodeTool::moveVertex( const QgsPointXY &mapPoint, const QgsPointLocator:
     if ( addingAtEndpoint && vid.vertex != 0 )  // appending?
       vid.vertex++;
 
-    if ( !geomTmp->insertVertex( vid, QgsPoint( layerPoint ) ) )
+    QgsPoint pt( layerPoint );
+    if ( QgsWkbTypes::hasZ( dragLayer->wkbType() ) )
+      pt.addZValue( defaultZValue() );
+
+    if ( !geomTmp->insertVertex( vid, pt ) )
     {
       QgsDebugMsg( "append vertex failed!" );
       return;
@@ -1819,7 +1828,7 @@ void QgsNodeTool::GeometryValidation::start( QgsGeometry &geom, QgsNodeTool *t, 
   if ( settings.value( QStringLiteral( "qgis/digitizing/validate_geometries" ), 1 ).toInt() == 2 )
     method = QgsGeometry::ValidatorGeos;
 
-  validator = new QgsGeometryValidator( &geom, nullptr, method );
+  validator = new QgsGeometryValidator( geom, nullptr, method );
   connect( validator, &QgsGeometryValidator::errorFound, tool, &QgsNodeTool::validationErrorFound );
   connect( validator, &QThread::finished, tool, &QgsNodeTool::validationFinished );
   validator->start();

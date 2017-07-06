@@ -23,6 +23,7 @@
 
 #include "qgsstyle.h"
 #include "qgis_gui.h"
+#include "qgis_sip.h"
 
 /** \ingroup gui
  * \brief a dialog for setting properties of a newly saved style.
@@ -38,7 +39,7 @@ class GUI_EXPORT QgsStyleSaveDialog: public QDialog, private Ui::QgsStyleSaveDia
      * \param parent parent widget
      * \param type the QgsStyle entity type being saved
      */
-    QgsStyleSaveDialog( QWidget *parent = nullptr, QgsStyle::StyleEntity type = QgsStyle::SymbolEntity );
+    QgsStyleSaveDialog( QWidget *parent SIP_TRANSFERTHIS = nullptr, QgsStyle::StyleEntity type = QgsStyle::SymbolEntity );
 
     //! returns the text value of the name element
     QString name() const;

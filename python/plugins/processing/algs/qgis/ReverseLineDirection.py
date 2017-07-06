@@ -28,6 +28,7 @@ __revision__ = '$Format:%H$'
 from qgis.core import (QgsApplication,
                        QgsGeometry,
                        QgsFeature,
+                       QgsFeatureSink,
                        QgsProcessingUtils)
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
@@ -40,12 +41,6 @@ class ReverseLineDirection(QgisAlgorithm):
 
     INPUT_LAYER = 'INPUT_LAYER'
     OUTPUT_LAYER = 'OUTPUT_LAYER'
-
-    def icon(self):
-        return QgsApplication.getThemeIcon("/providerQgis.svg")
-
-    def svgIconPath(self):
-        return QgsApplication.iconPath("providerQgis.svg")
 
     def group(self):
         return self.tr('Vector geometry tools')
@@ -71,7 +66,7 @@ class ReverseLineDirection(QgisAlgorithm):
         outFeat = QgsFeature()
 
         features = QgsProcessingUtils.getFeatures(layer, context)
-        total = 100.0 / QgsProcessingUtils.featureCount(layer, context)
+        total = 100.0 / layer.featureCount() if layer.featureCount() else 0
         for current, inFeat in enumerate(features):
             inGeom = inFeat.geometry()
             attrs = inFeat.attributes()
@@ -86,7 +81,7 @@ class ReverseLineDirection(QgisAlgorithm):
 
             outFeat.setGeometry(outGeom)
             outFeat.setAttributes(attrs)
-            writer.addFeature(outFeat)
+            writer.addFeature(outFeat, QgsFeatureSink.FastInsert)
             feedback.setProgress(int(current * total))
 
         del writer

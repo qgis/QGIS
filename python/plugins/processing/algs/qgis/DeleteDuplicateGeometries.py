@@ -27,6 +27,7 @@ __revision__ = '$Format:%H$'
 
 from qgis.core import (QgsFeatureRequest,
                        QgsApplication,
+                       QgsFeatureSink,
                        QgsProcessingUtils)
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 from processing.core.parameters import ParameterVector
@@ -37,12 +38,6 @@ class DeleteDuplicateGeometries(QgisAlgorithm):
 
     INPUT = 'INPUT'
     OUTPUT = 'OUTPUT'
-
-    def icon(self):
-        return QgsApplication.getThemeIcon("/providerQgis.svg")
-
-    def svgIconPath(self):
-        return QgsApplication.iconPath("providerQgis.svg")
 
     def group(self):
         return self.tr('Vector general tools')
@@ -68,7 +63,7 @@ class DeleteDuplicateGeometries(QgisAlgorithm):
 
         features = QgsProcessingUtils.getFeatures(layer, context)
 
-        total = 100.0 / QgsProcessingUtils.featureCount(layer, context)
+        total = 100.0 / layer.featureCount() if layer.featureCount() else 0
         geoms = dict()
         for current, f in enumerate(features):
             geoms[f.id()] = f.geometry()
@@ -83,10 +78,10 @@ class DeleteDuplicateGeometries(QgisAlgorithm):
                 if g.isGeosEqual(cleaned[j]):
                     del cleaned[j]
 
-        total = 100.0 / len(cleaned)
+        total = 100.0 / len(cleaned) if cleaned else 1
         request = QgsFeatureRequest().setFilterFids(list(cleaned.keys()))
         for current, f in enumerate(layer.getFeatures(request)):
-            writer.addFeature(f)
+            writer.addFeature(f, QgsFeatureSink.FastInsert)
             feedback.setProgress(int(current * total))
 
         del writer

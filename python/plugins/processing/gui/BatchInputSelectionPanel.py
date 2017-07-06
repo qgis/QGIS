@@ -36,14 +36,15 @@ from qgis.PyQt.QtGui import QCursor
 from qgis.core import (QgsMapLayer,
                        QgsSettings,
                        QgsProject,
-                       QgsProcessingUtils)
+                       QgsProcessingUtils,
+                       QgsProcessingParameterMultipleLayers,
+                       QgsProcessingParameterRasterLayer,
+                       QgsProcessingParameterDefinition,
+                       QgsProcessingParameterVectorLayer,
+                       QgsProcessingParameterFeatureSource)
 
 from processing.gui.MultipleInputDialog import MultipleInputDialog
 
-from processing.core.parameters import ParameterMultipleInput
-from processing.core.parameters import ParameterRaster
-from processing.core.parameters import ParameterVector
-from processing.core.parameters import ParameterTable
 from processing.gui.ParameterGuiUtils import getFileFilter
 from processing.tools import dataobjects
 
@@ -84,7 +85,7 @@ class BatchInputSelectionPanel(QWidget):
     def showPopupMenu(self):
         popupmenu = QMenu()
 
-        if not (isinstance(self.param, ParameterMultipleInput) and
+        if not (isinstance(self.param, QgsProcessingParameterMultipleLayers) and
                 self.param.datatype == dataobjects.TYPE_FILE):
             selectLayerAction = QAction(
                 self.tr('Select from open layers'), self.pushButton)
@@ -99,19 +100,22 @@ class BatchInputSelectionPanel(QWidget):
         popupmenu.exec_(QCursor.pos())
 
     def showLayerSelectionDialog(self):
-        if (isinstance(self.param, ParameterRaster) or
-                (isinstance(self.param, ParameterMultipleInput) and
-                 self.param.datatype == dataobjects.TYPE_RASTER)):
+        layers = []
+        if (isinstance(self.param, QgsProcessingParameterRasterLayer) or
+                (isinstance(self.param, QgsProcessingParameterMultipleLayers) and
+                 self.param.layerType() == QgsProcessingParameterDefinition.TypeRaster)):
             layers = QgsProcessingUtils.compatibleRasterLayers(QgsProject.instance())
-        elif isinstance(self.param, ParameterTable):
+        elif isinstance(self.param, QgsProcessingParameterVectorLayer):
             layers = QgsProcessingUtils.compatibleVectorLayers(QgsProject.instance())
         else:
-            if isinstance(self.param, ParameterVector):
-                datatype = self.param.datatype
-            else:
-                datatype = [self.param.datatype]
-            if datatype != dataobjects.TYPE_VECTOR_ANY:
-                layers = QgsProcessingUtils.compatibleVectorLayers(QgsProject.instance(), [datatype])
+            datatypes = [QgsProcessingParameterDefinition.TypeVectorAny]
+            if isinstance(self.param, QgsProcessingParameterFeatureSource):
+                datatypes = self.param.dataTypes()
+            elif isinstance(self.param, QgsProcessingParameterMultipleLayers):
+                datatypes = [self.param.layerType()]
+
+            if QgsProcessingParameterDefinition.TypeVectorAny not in datatypes:
+                layers = QgsProcessingUtils.compatibleVectorLayers(QgsProject.instance(), datatypes)
             else:
                 layers = QgsProcessingUtils.compatibleVectorLayers(QgsProject.instance())
 
@@ -120,17 +124,17 @@ class BatchInputSelectionPanel(QWidget):
         if dlg.selectedoptions is not None:
             selected = dlg.selectedoptions
             if len(selected) == 1:
-                self.setValue(layers[selected[0]])
+                self.setValue(layers[selected[0]].id())
             else:
-                if isinstance(self.param, ParameterMultipleInput):
-                    self.text.setText(';'.join(layers[idx].name() for idx in selected))
+                if isinstance(self.param, QgsProcessingParameterMultipleLayers):
+                    self.text.setText(';'.join(layers[idx].id() for idx in selected))
                 else:
                     rowdif = len(selected) - (self._table().rowCount() - self.row)
                     for i in range(rowdif):
                         self._panel().addRow()
                     for i, layeridx in enumerate(selected):
                         self._table().cellWidget(i + self.row,
-                                                 self.col).setValue(layers[layeridx])
+                                                 self.col).setValue(layers[layeridx].id())
 
     def showFileSelectionDialog(self):
         settings = QgsSettings()
@@ -156,7 +160,7 @@ class BatchInputSelectionPanel(QWidget):
                 self.text.setText(files[0])
                 self.textEditingFinished()
             else:
-                if isinstance(self.param, ParameterMultipleInput):
+                if isinstance(self.param, QgsProcessingParameterMultipleLayers):
                     self.text.setText(';'.join(str(f) for f in files))
                 else:
                     rowdif = len(files) - (self._table().rowCount() - self.row)

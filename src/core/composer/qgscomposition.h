@@ -489,10 +489,9 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene, public QgsExpressionCo
      * \param addUndoCommands insert AddItem commands if true (e.g. for copy/paste)
      * \param pos item position. Optional, take position from xml if 0
      * \param pasteInPlace whether the position should be kept but mapped to the page origin. (the page is the page under to the mouse cursor)
-     * \note parameters mapsToRestore, addUndoCommands pos and pasteInPlace not available in Python bindings
      */
     void addItemsFromXml( const QDomElement &elem, const QDomDocument &doc,
-                          bool addUndoCommands = false, QPointF *pos = nullptr, bool pasteInPlace = false ) SIP_SKIP;
+                          bool addUndoCommands = false, QPointF *pos = nullptr, bool pasteInPlace = false );
 
     //! Adds item to z list. Usually called from constructor of QgsComposerItem
     void addItemToZList( QgsComposerItem *item );
@@ -597,9 +596,8 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene, public QgsExpressionCo
     //! Removes multi frame (but does not delete it)
     void removeMultiFrame( QgsComposerMultiFrame *multiFrame );
 
-    /** Adds an arrow item to the graphics scene and advises composer to create a widget for it (through signal)
-      \note not available in Python bindings*/
-    void addComposerArrow( QgsComposerArrow *arrow ) SIP_SKIP;
+    //! Adds an arrow item to the graphics scene and advises composer to create a widget for it (through signal)
+    void addComposerArrow( QgsComposerArrow *arrow );
     //! Adds label to the graphics scene and advises composer to create a widget for it (through signal)
     void addComposerLabel( QgsComposerLabel *label );
     //! Adds map to the graphics scene and advises composer to create a widget for it (through signal)
@@ -617,9 +615,9 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene, public QgsExpressionCo
     //! Adds a composer polyline and advises composer to create a widget for it (through signal)
     void addComposerPolyline( QgsComposerPolyline *polyline );
     //! Adds composer html frame and advises composer to create a widget for it (through signal)
-    void addComposerHtmlFrame( QgsComposerHtml *html, QgsComposerFrame *frame );
+    void addComposerHtmlFrame( QgsComposerHtml *html SIP_TRANSFER, QgsComposerFrame *frame SIP_TRANSFER );
     //! Adds composer tablev2 frame and advises composer to create a widget for it (through signal)
-    void addComposerTableFrame( QgsComposerAttributeTableV2 *table, QgsComposerFrame *frame );
+    void addComposerTableFrame( QgsComposerAttributeTableV2 *table SIP_TRANSFER, QgsComposerFrame *frame SIP_TRANSFER );
 
     //! Remove item from the graphics scene. Additionally to QGraphicsScene::removeItem, this function considers undo/redo command
     void removeComposerItem( QgsComposerItem *item, const bool createCommand = true, const bool removeGroupItems = true );
@@ -863,7 +861,7 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene, public QgsExpressionCo
      * \since QGIS 3.0
      * \see setDataDefinedProperties()
      */
-    const QgsPropertyCollection &dataDefinedProperties() const { return mDataDefinedProperties; }
+    const QgsPropertyCollection &dataDefinedProperties() const { return mDataDefinedProperties; } SIP_SKIP
 
     /** Sets the composition's property collection, used for data defined overrides.
      * \param collection property collection. Existing properties will be replaced.
@@ -1057,7 +1055,7 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene, public QgsExpressionCo
     friend class TestQgsComposition;
 };
 
-template<class T> void QgsComposition::composerItems( QList<T *> &itemList )
+template<class T> void QgsComposition::composerItems( QList<T *> &itemList ) SIP_SKIP
 {
   itemList.clear();
   QList<QGraphicsItem *> graphicsItemList = items();
@@ -1072,7 +1070,7 @@ template<class T> void QgsComposition::composerItems( QList<T *> &itemList )
   }
 }
 
-template<class T> void QgsComposition::composerItemsOnPage( QList<T *> &itemList, const int pageNumber ) const
+template<class T> void QgsComposition::composerItemsOnPage( QList<T *> &itemList, const int pageNumber ) const SIP_SKIP
 {
   itemList.clear();
   QList<QGraphicsItem *> graphicsItemList = items();

@@ -729,10 +729,15 @@ void QgsSpatiaLiteProvider::loadFieldsAbstractInterface( gaiaVectorLayerPtr lyr 
   int ret = sqlite3_get_table( mSqliteHandle, sql.toUtf8().constData(), &results, &rows, &columns, &errMsg );
   if ( ret == SQLITE_OK )
   {
+    int realFieldIndex = 0;
     for ( int i = 1; i <= rows; i++ )
     {
       QString name = QString::fromUtf8( results[( i * columns ) + 1] );
-      insertDefaultValue( i - 1, QString::fromUtf8( results[( i * columns ) + 4] ) );
+
+      if ( name.toLower() == mGeometryColumn )
+        continue;
+
+      insertDefaultValue( realFieldIndex, QString::fromUtf8( results[( i * columns ) + 4] ) );
 
       QString pk = results[( i * columns ) + 5];
       QString type = results[( i * columns ) + 2];
@@ -762,6 +767,7 @@ void QgsSpatiaLiteProvider::loadFieldsAbstractInterface( gaiaVectorLayerPtr lyr 
       else
         mPrimaryKey.clear();
       mPrimaryKeyAttrs << i - 1;
+      realFieldIndex += 1;
     }
   }
 
@@ -797,7 +803,7 @@ QString QgsSpatiaLiteProvider::spatialiteVersion()
   if ( ret != SQLITE_OK || rows != 1 )
   {
     QgsMessageLog::logMessage( tr( "Retrieval of spatialite version failed" ), tr( "SpatiaLite" ) );
-    return QString::null;
+    return QString();
   }
 
   mSpatialiteVersionInfo = QString::fromUtf8( results[( 1 * columns ) + 0] );
@@ -812,7 +818,7 @@ QString QgsSpatiaLiteProvider::spatialiteVersion()
   if ( spatialiteVersionParts.size() < 2 )
   {
     QgsMessageLog::logMessage( tr( "Could not parse spatialite version string '%1'" ).arg( mSpatialiteVersionInfo ), tr( "SpatiaLite" ) );
-    return QString::null;
+    return QString();
   }
 
   mSpatialiteVersionMajor = spatialiteVersionParts[0].toInt();
@@ -3823,7 +3829,7 @@ static void deleteWkbBlob( void *wkbBlob )
   delete[]( char * )wkbBlob;
 }
 
-bool QgsSpatiaLiteProvider::addFeatures( QgsFeatureList &flist )
+bool QgsSpatiaLiteProvider::addFeatures( QgsFeatureList &flist, Flags flags )
 {
   sqlite3_stmt *stmt = nullptr;
   char *errMsg = nullptr;
@@ -3972,7 +3978,10 @@ bool QgsSpatiaLiteProvider::addFeatures( QgsFeatureList &flist )
         if ( ret == SQLITE_DONE || ret == SQLITE_ROW )
         {
           // update feature id
-          feature->setId( sqlite3_last_insert_rowid( mSqliteHandle ) );
+          if ( !( flags & QgsFeatureSink::FastInsert ) )
+          {
+            feature->setId( sqlite3_last_insert_rowid( mSqliteHandle ) );
+          }
           mNumberFeatures++;
         }
         else

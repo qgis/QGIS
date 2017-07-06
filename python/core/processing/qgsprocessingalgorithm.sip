@@ -29,6 +29,7 @@ class QgsProcessingAlgorithm
       FlagHideFromModeler,
       FlagSupportsBatch,
       FlagCanCancel,
+      FlagRequiresMatchingCrs,
       FlagDeprecated,
     };
     typedef QFlags<QgsProcessingAlgorithm::Flag> Flags;
@@ -214,13 +215,15 @@ class QgsProcessingAlgorithm
 %End
 
     QVariantMap run( const QVariantMap &parameters,
-                     QgsProcessingContext &context, QgsProcessingFeedback *feedback ) const;
+                     QgsProcessingContext &context, QgsProcessingFeedback *feedback, bool *ok /Out/ = 0 ) const;
 %Docstring
  Executes the algorithm using the specified ``parameters``.
 
  The ``context`` argument specifies the context in which the algorithm is being run.
 
  Algorithm progress should be reported using the supplied ``feedback`` object.
+
+ If specified, ``ok`` will be set to true if algorithm was successfully run.
 
  :return: A map of algorithm outputs. These may be output layer references, or calculated
  values such as statistical calculations.
@@ -244,6 +247,30 @@ class QgsProcessingAlgorithm
  :rtype: QgsExpressionContext
 %End
 
+    virtual bool validateInputCrs( const QVariantMap &parameters,
+                                   QgsProcessingContext &context ) const;
+%Docstring
+ Checks whether the coordinate reference systems for the specified set of ``parameters``
+ are valid for the algorithm. For instance, the base implementation performs
+ checks to ensure that all input CRS are equal
+ Returns true if ``parameters`` have passed the CRS check.
+ :rtype: bool
+%End
+
+    virtual QString asPythonCommand( const QVariantMap &parameters, QgsProcessingContext &context ) const;
+%Docstring
+ Returns a Python command string which can be executed to run the algorithm
+ using the specified ``parameters``.
+
+ Algorithms which cannot be run from a Python command should return an empty
+ string.
+ :rtype: str
+%End
+
+    void setProvider( QgsProcessingProvider *provider );
+%Docstring
+ Associates this algorithm with its provider. No transfer of ownership is involved.
+%End
 
   protected:
 
@@ -256,6 +283,12 @@ class QgsProcessingAlgorithm
  :rtype: bool
 %End
 
+    void removeParameter( const QString &name );
+%Docstring
+ Removes the parameter with matching ``name`` from the algorithm, and deletes any existing
+ definition.
+%End
+
     bool addOutput( QgsProcessingOutputDefinition *outputDefinition /Transfer/ );
 %Docstring
  Adds an output ``definition`` to the algorithm. Ownership of the definition is transferred to the algorithm.
@@ -266,7 +299,7 @@ class QgsProcessingAlgorithm
 %End
 
     virtual QVariantMap processAlgorithm( const QVariantMap &parameters,
-                                          QgsProcessingContext &context, QgsProcessingFeedback *feedback ) const = 0;
+                                          QgsProcessingContext &context, QgsProcessingFeedback *feedback ) const = 0 /VirtualErrorHandler=processing_exception_handler/;
 %Docstring
  Runs the algorithm using the specified ``parameters``. Algorithms should implement
  their custom processing logic here.
@@ -324,9 +357,8 @@ class QgsProcessingAlgorithm
  :rtype: bool
 %End
 
-    QgsFeatureSink *parameterAsSink( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context,
-                                     const QgsFields &fields, QgsWkbTypes::Type geometryType, const QgsCoordinateReferenceSystem &crs,
-                                     QString &destinationIdentifier /Out/ ) const /Factory/;
+    QgsFeatureSink *parameterAsSink( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context, QString &destinationIdentifier /Out/,
+                                     const QgsFields &fields, QgsWkbTypes::Type geometryType = QgsWkbTypes::NoGeometry, const QgsCoordinateReferenceSystem &crs = QgsCoordinateReferenceSystem() ) const /Factory/;
 %Docstring
  Evaluates the parameter with matching ``name`` to a feature sink.
 
@@ -343,7 +375,7 @@ class QgsProcessingAlgorithm
  :rtype: QgsFeatureSink
 %End
 
-    QgsFeatureSource *parameterAsSource( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context ) const /Factory/;
+    QgsProcessingFeatureSource *parameterAsSource( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context ) const /Factory/;
 %Docstring
  Evaluates the parameter with matching ``definition`` to a feature source.
 
@@ -351,7 +383,7 @@ class QgsProcessingAlgorithm
  sources and stored temporarily in the ``context``.
 
  This function creates a new object and the caller takes responsibility for deleting the returned object.
- :rtype: QgsFeatureSource
+ :rtype: QgsProcessingFeatureSource
 %End
 
     QgsMapLayer *parameterAsLayer( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context ) const;
@@ -444,7 +476,6 @@ class QgsProcessingAlgorithm
  Evaluates the parameter with matching ``name`` to a list of fields.
  :rtype: list of str
 %End
-
 
   private:
     QgsProcessingAlgorithm( const QgsProcessingAlgorithm &other );

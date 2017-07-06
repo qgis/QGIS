@@ -14,6 +14,8 @@
  *                                                                         *
  ***************************************************************************/
 
+#include <QComboBox>
+#include <QImageWriter>
 #include <QMessageBox>
 
 #include "qgsatlascompositionwidget.h"
@@ -46,6 +48,13 @@ QgsAtlasCompositionWidget::QgsAtlasCompositionWidget( QWidget *parent, QgsCompos
   connect( &mComposition->atlasComposition(), &QgsAtlasComposition::parameterChanged, this, &QgsAtlasCompositionWidget::updateGuiElements );
 
   mPageNameWidget->registerExpressionContextGenerator( mComposition );
+
+  QList<QByteArray> formats = QImageWriter::supportedImageFormats();
+  for ( int i = 0; i < formats.size(); ++i )
+  {
+    mAtlasFileFormat->addItem( QString( formats.at( i ) ) );
+  }
+  connect( mAtlasFileFormat, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, [ = ]( int ) { changeFileFormat(); } );
 
   updateGuiElements();
 }
@@ -325,6 +334,11 @@ void QgsAtlasCompositionWidget::on_mAtlasSortFeatureDirectionButton_clicked()
   updateAtlasFeatures();
 }
 
+void QgsAtlasCompositionWidget::changeFileFormat()
+{
+  QgsAtlasComposition *atlasMap = &mComposition->atlasComposition();
+  atlasMap->setFileFormat( mAtlasFileFormat->currentText() );
+}
 void QgsAtlasCompositionWidget::updateGuiElements()
 {
   blockAllSignals( true );
@@ -358,6 +372,8 @@ void QgsAtlasCompositionWidget::updateGuiElements()
   mAtlasFeatureFilterCheckBox->setCheckState( atlasMap->filterFeatures() ? Qt::Checked : Qt::Unchecked );
   mAtlasFeatureFilterEdit->setEnabled( atlasMap->filterFeatures() );
   mAtlasFeatureFilterButton->setEnabled( atlasMap->filterFeatures() );
+
+  mAtlasFileFormat->setCurrentIndex( mAtlasFileFormat->findText( atlasMap->fileFormat() ) );
 
   blockAllSignals( false );
 }

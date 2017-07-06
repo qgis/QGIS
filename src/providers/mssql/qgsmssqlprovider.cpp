@@ -352,15 +352,15 @@ void QgsMssqlProvider::loadMetadata()
 
   QSqlQuery query = QSqlQuery( mDatabase );
   query.setForwardOnly( true );
-  if ( !query.exec( QStringLiteral( "select f_geometry_column, coord_dimension, srid, geometry_type from geometry_columns where f_table_schema = '%1' and f_table_name = '%2'" ).arg( mSchemaName, mTableName ) ) )
+  if ( !query.exec( QStringLiteral( "select f_geometry_column, srid, geometry_type from geometry_columns where f_table_schema = '%1' and f_table_name = '%2'" ).arg( mSchemaName, mTableName ) ) )
   {
     QgsDebugMsg( query.lastError().text() );
   }
   if ( query.isActive() && query.next() )
   {
     mGeometryColName = query.value( 0 ).toString();
-    mSRId = query.value( 2 ).toInt();
-    mWkbType = getWkbType( query.value( 3 ).toString(), query.value( 1 ).toInt() );
+    mSRId = query.value( 1 ).toInt();
+    mWkbType = getWkbType( query.value( 2 ).toString() );
   }
 }
 
@@ -377,7 +377,7 @@ void QgsMssqlProvider::loadFields()
   // Get computed columns which need to be ignored on insert or update.
   if ( !query.exec( QStringLiteral( "SELECT name FROM sys.columns WHERE is_computed = 1 AND object_id = OBJECT_ID('[%1].[%2]')" ).arg( mSchemaName, mTableName ) ) )
   {
-    QgsDebugMsg( query.lastError().text( ) );
+    pushError( query.lastError().text( ) );
     return;
   }
 
@@ -391,7 +391,7 @@ void QgsMssqlProvider::loadFields()
 
   if ( !query.exec( QStringLiteral( "exec sp_columns @table_name = N'%1', @table_owner = '%2'" ).arg( mTableName, mSchemaName ) ) )
   {
-    QgsDebugMsg( query.lastError().text( ) );
+    pushError( query.lastError().text( ) );
     return;
   }
   if ( query.isActive() )
@@ -418,11 +418,16 @@ void QgsMssqlProvider::loadFields()
         }
         if ( sqlType == QVariant::String )
         {
+          int length = query.value( 7 ).toInt();
+          if ( sqlTypeName.startsWith( "n" ) )
+          {
+            length = length / 2;
+          }
           mAttributeFields.append(
             QgsField(
               query.value( 3 ).toString(), sqlType,
               sqlTypeName,
-              query.value( 7 ).toInt() ) );
+              length ) );
         }
         else if ( sqlType == QVariant::Double )
         {
@@ -572,7 +577,7 @@ QVariant QgsMssqlProvider::minimumValue( int index ) const
     return query.value( 0 );
   }
 
-  return QVariant( QString::null );
+  return QVariant( QString() );
 }
 
 // Returns the maximum value of an attribute
@@ -603,7 +608,7 @@ QVariant QgsMssqlProvider::maximumValue( int index ) const
     return query.value( 0 );
   }
 
-  return QVariant( QString::null );
+  return QVariant( QString() );
 }
 
 // Returns the list of unique values of an attribute
@@ -818,7 +823,7 @@ bool QgsMssqlProvider::isValid() const
   return mValid;
 }
 
-bool QgsMssqlProvider::addFeatures( QgsFeatureList &flist )
+bool QgsMssqlProvider::addFeatures( QgsFeatureList &flist, Flags flags )
 {
   for ( QgsFeatureList::iterator it = flist.begin(); it != flist.end(); ++it )
   {
@@ -883,10 +888,10 @@ bool QgsMssqlProvider::addFeatures( QgsFeatureList &flist )
       if ( mGeometryColType == QLatin1String( "geometry" ) )
       {
         if ( mUseWkb )
-          values += QStringLiteral( "geometry::STGeomFromWKB(%1,%2).MakeValid()" ).arg(
+          values += QStringLiteral( "geometry::STGeomFromWKB(%1,%2)" ).arg(
                       QStringLiteral( "?" ), QString::number( mSRId ) );
         else
-          values += QStringLiteral( "geometry::STGeomFromText(%1,%2).MakeValid()" ).arg(
+          values += QStringLiteral( "geometry::STGeomFromText(%1,%2)" ).arg(
                       QStringLiteral( "?" ), QString::number( mSRId ) );
       }
       else
@@ -995,7 +1000,12 @@ bool QgsMssqlProvider::addFeatures( QgsFeatureList &flist )
       {
         QString wkt;
         if ( !geom.isNull() )
+        {
+          // Z and M on the end of a WKT string isn't valid for
+          // SQL Server so we have to remove it first.
           wkt = geom.exportToWkt();
+          wkt.replace( QRegExp( "[mzMZ]+\\s*\\(" ), "(" );
+        }
         query.addBindValue( wkt );
       }
     }
@@ -1012,30 +1022,33 @@ bool QgsMssqlProvider::addFeatures( QgsFeatureList &flist )
     }
 
 
-    statement = QStringLiteral( "SELECT IDENT_CURRENT('%1.%2')" ).arg( mSchemaName, mTableName );
-
-    if ( !query.exec( statement ) )
+    if ( !( flags & QgsFeatureSink::FastInsert ) )
     {
-      QString msg = query.lastError().text();
-      QgsDebugMsg( msg );
-      if ( !mSkipFailures )
-      {
-        pushError( msg );
-        return false;
-      }
-    }
+      statement = QStringLiteral( "SELECT IDENT_CURRENT('%1.%2')" ).arg( mSchemaName, mTableName );
 
-    if ( !query.next() )
-    {
-      QString msg = query.lastError().text();
-      QgsDebugMsg( msg );
-      if ( !mSkipFailures )
+      if ( !query.exec( statement ) )
       {
-        pushError( msg );
-        return false;
+        QString msg = query.lastError().text();
+        QgsDebugMsg( msg );
+        if ( !mSkipFailures )
+        {
+          pushError( msg );
+          return false;
+        }
       }
+
+      if ( !query.next() )
+      {
+        QString msg = query.lastError().text();
+        QgsDebugMsg( msg );
+        if ( !mSkipFailures )
+        {
+          pushError( msg );
+          return false;
+        }
+      }
+      it->setId( query.value( 0 ).toLongLong() );
     }
-    it->setId( query.value( 0 ).toLongLong() );
   }
 
   return true;
@@ -1312,7 +1325,7 @@ bool QgsMssqlProvider::changeGeometryValues( const QgsGeometryMap &geometry_map 
 
     if ( !query.prepare( statement ) )
     {
-      QgsDebugMsg( query.lastError().text() );
+      pushError( query.lastError().text() );
       return false;
     }
 
@@ -1325,12 +1338,15 @@ bool QgsMssqlProvider::changeGeometryValues( const QgsGeometryMap &geometry_map 
     else
     {
       QString wkt = it->exportToWkt();
+      // Z and M on the end of a WKT string isn't valid for
+      // SQL Server so we have to remove it first.
+      wkt.replace( QRegExp( "[mzMZ]+\\s*\\(" ), "(" );
       query.addBindValue( wkt );
     }
 
     if ( !query.exec() )
     {
-      QgsDebugMsg( query.lastError().text() );
+      pushError( query.lastError().text() );
       return false;
     }
   }
@@ -1364,7 +1380,7 @@ bool QgsMssqlProvider::deleteFeatures( const QgsFeatureIds &id )
 
   if ( !query.exec( statement ) )
   {
-    QgsDebugMsg( query.lastError().text() );
+    pushError( query.lastError().text() );
     return false;
   }
 
@@ -1421,7 +1437,7 @@ bool QgsMssqlProvider::createSpatialIndex()
 
   if ( !query.exec( statement ) )
   {
-    QgsDebugMsg( query.lastError().text() );
+    pushError( query.lastError().text() );
     return false;
   }
 
@@ -1440,7 +1456,7 @@ bool QgsMssqlProvider::createAttributeIndex( int field )
 
   if ( field < 0 || field >= mAttributeFields.size() )
   {
-    QgsDebugMsg( "createAttributeIndex invalid index" );
+    pushError( "createAttributeIndex invalid index" );
     return false;
   }
 
@@ -1449,7 +1465,7 @@ bool QgsMssqlProvider::createAttributeIndex( int field )
 
   if ( !query.exec( statement ) )
   {
-    QgsDebugMsg( query.lastError().text() );
+    pushError( query.lastError().text() );
     return false;
   }
 
@@ -1647,42 +1663,9 @@ void QgsMssqlProvider::mssqlWkbTypeAndDimension( QgsWkbTypes::Type wkbType, QStr
     dim = 0;
 }
 
-QgsWkbTypes::Type QgsMssqlProvider::getWkbType( const QString &geometryType, int dim )
+QgsWkbTypes::Type QgsMssqlProvider::getWkbType( const QString &geometryType )
 {
-  if ( dim == 3 )
-  {
-    if ( geometryType == QLatin1String( "POINT" ) )
-      return QgsWkbTypes::Point25D;
-    if ( geometryType == QLatin1String( "LINESTRING" ) )
-      return QgsWkbTypes::LineString25D;
-    if ( geometryType == QLatin1String( "POLYGON" ) )
-      return QgsWkbTypes::Polygon25D;
-    if ( geometryType == QLatin1String( "MULTIPOINT" ) )
-      return QgsWkbTypes::MultiPoint25D;
-    if ( geometryType == QLatin1String( "MULTILINESTRING" ) )
-      return QgsWkbTypes::MultiLineString25D;
-    if ( geometryType == QLatin1String( "MULTIPOLYGON" ) )
-      return QgsWkbTypes::MultiPolygon25D;
-    else
-      return QgsWkbTypes::Unknown;
-  }
-  else
-  {
-    if ( geometryType == QLatin1String( "POINT" ) )
-      return QgsWkbTypes::Point;
-    if ( geometryType == QLatin1String( "LINESTRING" ) )
-      return QgsWkbTypes::LineString;
-    if ( geometryType == QLatin1String( "POLYGON" ) )
-      return QgsWkbTypes::Polygon;
-    if ( geometryType == QLatin1String( "MULTIPOINT" ) )
-      return QgsWkbTypes::MultiPoint;
-    if ( geometryType == QLatin1String( "MULTILINESTRING" ) )
-      return QgsWkbTypes::MultiLineString;
-    if ( geometryType == QLatin1String( "MULTIPOLYGON" ) )
-      return QgsWkbTypes::MultiPolygon;
-    else
-      return QgsWkbTypes::Unknown;
-  }
+  return QgsWkbTypes::parseType( geometryType );
 }
 
 

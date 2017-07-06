@@ -39,7 +39,7 @@ import email
 
 from io import StringIO
 from qgis.server import QgsServer, QgsServerRequest, QgsBufferServerRequest, QgsBufferServerResponse
-from qgis.core import QgsRenderChecker, QgsApplication
+from qgis.core import QgsRenderChecker, QgsApplication, QgsFontUtils
 from qgis.testing import unittest
 from qgis.PyQt.QtCore import QSize
 from utilities import unitTestDataPath
@@ -66,7 +66,7 @@ class QgsServerTestBase(unittest.TestCase):
         response_lines = response.splitlines()
         expected_lines = expected.splitlines()
         line_no = 1
-        self.assertEqual(len(expected_lines), len(response_lines), "Expected and response have different number of lines!")
+        self.assertEqual(len(expected_lines), len(response_lines), "Expected and response have different number of lines!\n{}".format(msg))
         for expected_line in expected_lines:
             expected_line = expected_line.strip()
             response_line = response_lines[line_no - 1].strip()
@@ -94,6 +94,9 @@ class QgsServerTestBase(unittest.TestCase):
 
     def setUp(self):
         """Create the server instance"""
+        self.fontFamily = QgsFontUtils.standardTestFontFamily()
+        QgsFontUtils.loadStandardTestFonts(['All'])
+
         self.testdata_path = unitTestDataPath('qgis_server') + '/'
 
         d = unitTestDataPath('qgis_server_accesscontrol') + '/'

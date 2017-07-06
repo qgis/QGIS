@@ -37,9 +37,10 @@
  * \since QGIS 3.0
  * \see QgsDoubleRange
  * \see QgsIntRange
- * \note not available in Python bindings
+ * \note not available in Python bindings (but class provided for template-based inheritance)
  */
-template <class T> class QgsRange SIP_SKIP
+template <typename T>
+class QgsRange
 {
   public:
 
@@ -211,22 +212,29 @@ typedef QgsRange< int > QgsIntRange;
  *
  * \since QGIS 3.0
  * \see QgsDateRange
- * \note not available in Python bindings
+ * \note not available in Python bindings (but class provided for template-based inheritance)
  */
-template <class T> class QgsTemporalRange SIP_SKIP
+template <typename T>
+class QgsTemporalRange
 {
   public:
 
     /**
      * Constructor for QgsTemporalRange. The \a begin and \a end are specified,
      * and optionally whether or not these bounds are included in the range.
+     * \note in Python \a begin and \a end must be provided.
      */
+#ifndef SIP_RUN
     QgsTemporalRange( const T &begin = T(), const T &end = T(), bool includeBeginning = true, bool includeEnd = true )
       : mLower( begin )
       , mUpper( end )
       , mIncludeLower( includeBeginning )
       , mIncludeUpper( includeEnd )
     {}
+#else
+    QgsTemporalRange( const T &begin, const T &end, bool includeBeginning = true, bool includeEnd = true );
+    // default constructor as default value for templates is not handled in SIP
+#endif
 
     /**
      * Returns the beginning of the range.

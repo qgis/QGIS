@@ -120,16 +120,15 @@ QgsPointDisplacementRendererWidget::QgsPointDisplacementRendererWidget( QgsVecto
   mPlacementComboBox->setCurrentIndex( mPlacementComboBox->findData( mRenderer->placement() ) );
 
   //scale dependent labeling
-  mMaxScaleDenominatorEdit->setText( QString::number( mRenderer->maxLabelScaleDenominator() ) );
-  mMaxScaleDenominatorEdit->setValidator( new QDoubleValidator( mMaxScaleDenominatorEdit ) );
-  if ( mRenderer->maxLabelScaleDenominator() > 0 )
+  mMinLabelScaleWidget->setScale( qMax( mRenderer->minimumLabelScale(), 0.0 ) );
+  if ( mRenderer->minimumLabelScale() > 0 )
   {
     mScaleDependentLabelsCheckBox->setCheckState( Qt::Checked );
   }
   else
   {
     mScaleDependentLabelsCheckBox->setCheckState( Qt::Unchecked );
-    mMaxScaleDenominatorEdit->setEnabled( false );
+    mMinLabelScaleWidget->setEnabled( false );
   }
 
 
@@ -146,6 +145,8 @@ QgsPointDisplacementRendererWidget::QgsPointDisplacementRendererWidget( QgsVecto
       on_mRendererComboBox_currentIndexChanged( rendererIndex );
     }
   }
+
+  connect( mMinLabelScaleWidget, &QgsScaleWidget::scaleChanged, this, &QgsPointDisplacementRendererWidget::minLabelScaleChanged );
 
   updateCenterIcon();
 }
@@ -165,6 +166,11 @@ void QgsPointDisplacementRendererWidget::setContext( const QgsSymbolWidgetContex
   QgsRendererWidget::setContext( context );
   if ( mDistanceUnitWidget )
     mDistanceUnitWidget->setMapCanvas( context.mapCanvas() );
+  if ( mMinLabelScaleWidget )
+  {
+    mMinLabelScaleWidget->setMapCanvas( context.mapCanvas() );
+    mMinLabelScaleWidget->setShowCurrentScaleButton( true );
+  }
 }
 
 void QgsPointDisplacementRendererWidget::on_mLabelFieldComboBox_currentIndexChanged( const QString &text )
@@ -313,29 +319,24 @@ void QgsPointDisplacementRendererWidget::on_mScaleDependentLabelsCheckBox_stateC
 {
   if ( state == Qt::Unchecked )
   {
-    mMaxScaleDenominatorEdit->setText( QStringLiteral( "-1" ) );
-    mMaxScaleDenominatorEdit->setEnabled( false );
+    mMinLabelScaleWidget->setScale( 0 );
+    mMinLabelScaleWidget->setEnabled( false );
   }
   else
   {
-    mMaxScaleDenominatorEdit->setEnabled( true );
+    mMinLabelScaleWidget->setEnabled( true );
   }
 }
 
-void QgsPointDisplacementRendererWidget::on_mMaxScaleDenominatorEdit_textChanged( const QString &text )
+void QgsPointDisplacementRendererWidget::minLabelScaleChanged( double scale )
 {
   if ( !mRenderer )
   {
     return;
   }
 
-  bool ok;
-  double scaleDenominator = text.toDouble( &ok );
-  if ( ok )
-  {
-    mRenderer->setMaxLabelScaleDenominator( scaleDenominator );
-    emit widgetChanged();
-  }
+  mRenderer->setMinimumLabelScale( scale );
+  emit widgetChanged();
 }
 
 void QgsPointDisplacementRendererWidget::blockAllSignals( bool block )
@@ -348,7 +349,7 @@ void QgsPointDisplacementRendererWidget::blockAllSignals( bool block )
   mLabelColorButton->blockSignals( block );
   mCircleModificationSpinBox->blockSignals( block );
   mScaleDependentLabelsCheckBox->blockSignals( block );
-  mMaxScaleDenominatorEdit->blockSignals( block );
+  mMinLabelScaleWidget->blockSignals( block );
   mCenterSymbolPushButton->blockSignals( block );
   mDistanceSpinBox->blockSignals( block );
   mDistanceUnitWidget->blockSignals( block );

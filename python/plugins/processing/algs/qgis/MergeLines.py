@@ -27,7 +27,7 @@ __revision__ = '$Format:%H$'
 
 import os
 
-from qgis.core import QgsFeature, QgsProcessingUtils
+from qgis.core import QgsFeature, QgsFeatureSink, QgsProcessingUtils
 
 from qgis.PyQt.QtGui import QIcon
 
@@ -73,7 +73,7 @@ class MergeLines(QgisAlgorithm):
             self.OUTPUT_LAYER).getVectorWriter(layer.fields(), layer.wkbType(), layer.crs(), context)
 
         features = QgsProcessingUtils.getFeatures(layer, context)
-        total = 100.0 / QgsProcessingUtils.featureCount(layer, context)
+        total = 100.0 / layer.featureCount() if layer.featureCount() else 0
 
         for current, inFeat in enumerate(features):
             outFeat = QgsFeature()
@@ -89,7 +89,7 @@ class MergeLines(QgisAlgorithm):
 
                 outFeat.setGeometry(outGeom)
 
-            writer.addFeature(outFeat)
+            writer.addFeature(outFeat, QgsFeatureSink.FastInsert)
             feedback.setProgress(int(current * total))
 
         del writer

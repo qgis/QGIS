@@ -26,42 +26,45 @@ __copyright__ = '(C) 2015, Nyall Dawson'
 __revision__ = '$Format:%H$'
 
 from qgis.core import (QgsApplication,
-                       QgsProcessingUtils)
+                       QgsFeatureSink,
+                       QgsProcessingUtils,
+                       QgsProcessingParameterFeatureSource,
+                       QgsProcessingParameterFeatureSink,
+                       QgsProcessingParameterNumber,
+                       QgsProcessingOutputVectorLayer)
+
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
-from processing.core.parameters import ParameterVector, ParameterNumber
-from processing.core.outputs import OutputVector
 from processing.tools import dataobjects
 
 
 class Smooth(QgisAlgorithm):
 
-    INPUT_LAYER = 'INPUT_LAYER'
-    OUTPUT_LAYER = 'OUTPUT_LAYER'
+    INPUT = 'INPUT'
+    OUTPUT = 'OUTPUT'
     ITERATIONS = 'ITERATIONS'
     MAX_ANGLE = 'MAX_ANGLE'
     OFFSET = 'OFFSET'
-
-    def icon(self):
-        return QgsApplication.getThemeIcon("/providerQgis.svg")
-
-    def svgIconPath(self):
-        return QgsApplication.iconPath("providerQgis.svg")
 
     def group(self):
         return self.tr('Vector geometry tools')
 
     def __init__(self):
         super().__init__()
-        self.addParameter(ParameterVector(self.INPUT_LAYER,
-                                          self.tr('Input layer'), [dataobjects.TYPE_VECTOR_POLYGON, dataobjects.TYPE_VECTOR_LINE]))
-        self.addParameter(ParameterNumber(self.ITERATIONS,
-                                          self.tr('Iterations'), default=1, minValue=1, maxValue=10))
-        self.addParameter(ParameterNumber(self.OFFSET,
-                                          self.tr('Offset'), default=0.25, minValue=0.0, maxValue=0.5))
-        self.addParameter(ParameterNumber(self.MAX_ANGLE,
-                                          self.tr('Maximum node angle to smooth'), default=180.0, minValue=0.0, maxValue=180.0))
-        self.addOutput(OutputVector(self.OUTPUT_LAYER, self.tr('Smoothed')))
+        self.addParameter(QgsProcessingParameterFeatureSource(self.INPUT,
+                                                              self.tr('Input layer'), [dataobjects.TYPE_VECTOR_POLYGON, dataobjects.TYPE_VECTOR_LINE]))
+        self.addParameter(QgsProcessingParameterNumber(self.ITERATIONS,
+                                                       self.tr('Iterations'),
+                                                       defaultValue=1, minValue=1, maxValue=10))
+        self.addParameter(QgsProcessingParameterNumber(self.OFFSET,
+                                                       self.tr('Offset'), QgsProcessingParameterNumber.Double,
+                                                       defaultValue=0.25, minValue=0.0, maxValue=0.5))
+        self.addParameter(QgsProcessingParameterNumber(self.MAX_ANGLE,
+                                                       self.tr('Maximum node angle to smooth'), QgsProcessingParameterNumber.Double,
+                                                       defaultValue=180.0, minValue=0.0, maxValue=180.0))
+
+        self.addParameter(QgsProcessingParameterFeatureSink(self.OUTPUT, self.tr('Smoothed')))
+        self.addOutput(QgsProcessingOutputVectorLayer(self.OUTPUT, self.tr('Smoothed')))
 
     def name(self):
         return 'smoothgeometry'
@@ -70,18 +73,20 @@ class Smooth(QgisAlgorithm):
         return self.tr('Smooth geometry')
 
     def processAlgorithm(self, parameters, context, feedback):
-        layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT_LAYER), context)
-        iterations = self.getParameterValue(self.ITERATIONS)
-        offset = self.getParameterValue(self.OFFSET)
-        max_angle = self.getParameterValue(self.MAX_ANGLE)
+        source = self.parameterAsSource(parameters, self.INPUT, context)
+        iterations = self.parameterAsInt(parameters, self.ITERATIONS, context)
+        offset = self.parameterAsDouble(parameters, self.OFFSET, context)
+        max_angle = self.parameterAsDouble(parameters, self.MAX_ANGLE, context)
 
-        writer = self.getOutputFromName(
-            self.OUTPUT_LAYER).getVectorWriter(layer.fields(), layer.wkbType(), layer.crs(), context)
+        (sink, dest_id) = self.parameterAsSink(parameters, self.OUTPUT, context,
+                                               source.fields(), source.wkbType(), source.sourceCrs())
 
-        features = QgsProcessingUtils.getFeatures(layer, context)
-        total = 100.0 / QgsProcessingUtils.featureCount(layer, context)
+        features = source.getFeatures()
+        total = 100.0 / source.featureCount() if source.featureCount() else 0
 
         for current, input_feature in enumerate(features):
+            if feedback.isCanceled():
+                break
             output_feature = input_feature
             if input_feature.geometry():
                 output_geometry = input_feature.geometry().smooth(iterations, offset, -1, max_angle)
@@ -91,7 +96,7 @@ class Smooth(QgisAlgorithm):
 
                 output_feature.setGeometry(output_geometry)
 
-            writer.addFeature(output_feature)
+            sink.addFeature(output_feature, QgsFeatureSink.FastInsert)
             feedback.setProgress(int(current * total))
 
-        del writer
+        return {self.OUTPUT: dest_id}

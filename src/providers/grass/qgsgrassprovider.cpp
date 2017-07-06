@@ -1269,7 +1269,7 @@ void QgsGrassProvider::onFeatureAdded( QgsFeatureId fid )
       // TODO: redo of deleted new features - save new cats somewhere,
       // resetting fid probably is not possible because it is stored in undo commands and used in buffer maps
 
-      // It may be that user manualy entered cat value
+      // It may be that user manually entered cat value
       QgsFeatureMap &addedFeatures = mEditBuffer->mAddedFeatures;
       QgsFeature &feature = addedFeatures[fid];
       int catIndex = feature.fields().indexFromName( mLayer->keyColumnName() );

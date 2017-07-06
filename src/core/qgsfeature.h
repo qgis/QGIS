@@ -46,7 +46,7 @@ class QgsRectangle;
 // feature id class (currently 64 bit)
 
 // 64 bit feature ids
-typedef qint64 QgsFeatureId;
+typedef qint64 QgsFeatureId SIP_SKIP;
 #define FID_IS_NEW(fid)     (fid<0)
 #define FID_TO_NUMBER(fid)  static_cast<qint64>(fid)
 #define FID_TO_STRING(fid)  QString::number( fid )

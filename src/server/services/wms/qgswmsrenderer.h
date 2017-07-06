@@ -46,6 +46,9 @@ class QgsVectorLayer;
 class QgsSymbol;
 class QgsSymbol;
 class QgsAccessControl;
+class QgsDxfExport;
+class QgsLayerTreeModel;
+class QgsLayerTree;
 
 class QColor;
 class QFile;
@@ -87,20 +90,23 @@ namespace QgsWms
       of the image object*/
       QImage *getLegendGraphics();
 
-      typedef QSet<QgsSymbol *> SymbolSet;
+      typedef QSet<QString> SymbolSet;
       typedef QHash<QgsVectorLayer *, SymbolSet> HitTest;
 
       /** Returns the map as an image (or a null pointer in case of error). The caller takes ownership
       of the image object). If an instance to existing hit test structure is passed, instead of rendering
       it will fill the structure with symbols that would be used for rendering */
       QImage *getMap( HitTest *hitTest = nullptr );
-      QImage *getMapOld( HitTest *hitTest = nullptr );
 
       /** Identical to getMap( HitTest* hitTest ) and updates the map settings actually used.
         \since QGIS 3.0 */
       QImage *getMap( QgsMapSettings &mapSettings, HitTest *hitTest = nullptr );
-      QImage *getMapOld( QgsMapSettings &mapSettings, HitTest *hitTest = nullptr );
 
+      /** Returns the map as DXF data
+       \param options: extracted from the FORMAT_OPTIONS parameter
+       \returns the map as DXF data
+       \since QGIS 3.0*/
+      QgsDxfExport getDxf( const QMap<QString, QString> &options );
 
       /** Returns printed page as binary
         \param formatString out: format of the print output (e.g. pdf, svg, png, ...)
@@ -167,6 +173,12 @@ namespace QgsWms
       // Check layer read permissions
       void checkLayerReadPermissions( QgsMapLayer *layer ) const;
 
+      // Build a layer tree model for legend
+      QgsLayerTreeModel *buildLegendTreeModel( const QList<QgsMapLayer *> &layers, double scaleDenominator, QgsLayerTree &rootGroup );
+
+      // Returns default dots per mm
+      qreal dotsPerMm() const;
+
       /** Initializes WMS layers and configures rendering.
        * \param layersList out: list with WMS layer names
        * \param stylesList out: list with WMS style names
@@ -211,7 +223,8 @@ namespace QgsWms
                                        QgsRenderContext &renderContext,
                                        const QString &version,
                                        const QString &infoFormat,
-                                       QgsRectangle *featureBBox = nullptr ) const;
+                                       QgsRectangle *featureBBox = nullptr,
+                                       QgsGeometry *filterGeom = nullptr ) const;
       //! Appends feature info xml for the layer to the layer element of the dom document
       bool featureInfoFromRasterLayer( QgsRasterLayer *layer,
                                        const QgsMapSettings &mapSettings,
@@ -229,10 +242,6 @@ namespace QgsWms
       void runHitTest( const QgsMapSettings &mapSettings, HitTest &hitTest ) const;
       //! Record which symbols within one layer would be rendered with the given renderer context
       void runHitTestLayer( QgsVectorLayer *vl, SymbolSet &usedSymbols, QgsRenderContext &context ) const;
-
-      //! Read legend parameter from the request or from the first print composer in the project
-      void legendParameters( double &boxSpace, double &layerSpace, double &layerTitleSpace,
-                             double &symbolSpace, double &iconLabelSpace, double &symbolWidth, double &symbolHeight, QFont &layerFont, QFont &itemFont, QColor &layerFontColor, QColor &itemFontColor );
 
       /** Apply filter (subset) strings from the request to the layers. Example: '&FILTER=<layer1>:"AND property > 100",<layer2>:"AND bla = 'hallo!'" '
        * \param layerList list of layer IDs to filter
@@ -306,10 +315,6 @@ namespace QgsWms
       const QgsServerRequest::Parameters &mParameters;
 
       bool mOwnsConfigParser; //delete config parser after request (e.g. sent SLD)
-
-      // specify if layer or rule item labels should be drawn in the legend graphic with GetLegendGraphics
-      bool mDrawLegendLayerLabel;
-      bool mDrawLegendItemLabel;
 
       //! Map containing the WMS parameters
       QgsWmsConfigParser    *mConfigParser = nullptr;

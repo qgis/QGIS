@@ -477,9 +477,3 @@ QgsGeometry QgsMapToolOffsetCurve::convertToSingleLine( const QgsGeometry &geom,
   }
   return QgsGeometry();
 }
-
-QgsGeometry *QgsMapToolOffsetCurve::convertToMultiLine( QgsGeometry *geom )
-{
-  Q_UNUSED( geom );
-  return nullptr;
-}

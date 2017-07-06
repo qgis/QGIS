@@ -30,6 +30,7 @@ from qgis.core import (QgsApplication,
                        QgsFields,
                        QgsField,
                        QgsFeature,
+                       QgsFeatureSink,
                        QgsGeometry,
                        QgsWkbTypes,
                        QgsFeatureRequest,
@@ -48,12 +49,6 @@ class Polygonize(QgisAlgorithm):
     OUTPUT = 'OUTPUT'
     FIELDS = 'FIELDS'
     GEOMETRY = 'GEOMETRY'
-
-    def icon(self):
-        return QgsApplication.getThemeIcon("/providerQgis.svg")
-
-    def svgIconPath(self):
-        return QgsApplication.iconPath("providerQgis.svg")
 
     def tags(self):
         return self.tr('create,lines,polygons,convert').split(',')
@@ -120,6 +115,6 @@ class Polygonize(QgisAlgorithm):
             if self.getParameterValue(self.GEOMETRY):
                 outFeat.setAttributes([None] * fieldsCount + [geom.geometry().area(),
                                                               geom.geometry().perimeter()])
-            writer.addFeature(outFeat)
+            writer.addFeature(outFeat, QgsFeatureSink.FastInsert)
             feedback.setProgress(50 + int(current * total))
         del writer

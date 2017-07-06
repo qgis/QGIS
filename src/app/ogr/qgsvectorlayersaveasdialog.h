@@ -63,10 +63,17 @@ class APP_EXPORT QgsVectorLayerSaveAsDialog : public QDialog, private Ui::QgsVec
         1: Feature symbology
         2: Symbol level symbology*/
     int symbologyExport() const;
-    double scaleDenominator() const;
 
-    //! setup canvas extent - for the use in extent group box
-    void setCanvasExtent( const QgsRectangle &canvasExtent, const QgsCoordinateReferenceSystem &canvasCrs );
+    /**
+     * Returns the specified map scale.
+     * The scale value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
+     */
+    double scale() const;
+
+    /**
+     * Sets a map \a canvas to associate with the dialog.
+     */
+    void setMapCanvas( QgsMapCanvas *canvas );
 
     bool hasFilterExtent() const;
     QgsRectangle filterExtent() const;
@@ -130,6 +137,7 @@ class APP_EXPORT QgsVectorLayerSaveAsDialog : public QDialog, private Ui::QgsVec
     QgsRectangle mLayerExtent;
     QgsCoordinateReferenceSystem mLayerCrs;
     QgsVectorLayer *mLayer = nullptr;
+    QgsMapCanvas *mMapCanvas = nullptr;
     bool mAttributeTableItemChangedSlotEnabled;
     bool mReplaceRawFieldValuesStateChangedSlotEnabled;
     QgsVectorFileWriter::ActionOnExistingFile mActionOnExistingFile;

@@ -6,14 +6,14 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>450</width>
+    <width>341</width>
     <height>312</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Form</string>
   </property>
-  <layout class="QGridLayout" name="gridLayout" columnstretch="0,1,0">
+  <layout class="QGridLayout" name="gridLayout" columnstretch="0,0,0,0">
    <item row="0" column="0">
     <widget class="QLabel" name="label_3">
      <property name="text">
@@ -21,7 +21,7 @@
      </property>
     </widget>
    </item>
-   <item row="0" column="1">
+   <item row="0" column="2">
     <layout class="QHBoxLayout" name="horizontalLayout_3">
      <item>
       <widget class="QgsDoubleSpinBox" name="spinSize">
@@ -63,7 +63,7 @@
      </item>
     </layout>
    </item>
-   <item row="0" column="2">
+   <item row="0" column="3">
     <widget class="QgsPropertyOverrideButton" name="mSizeDDBtn">
      <property name="text">
       <string>…</string>
@@ -77,7 +77,7 @@
      </property>
     </widget>
    </item>
-   <item row="1" column="1">
+   <item row="1" column="2">
     <widget class="QgsDoubleSpinBox" name="spinAngle">
      <property name="wrapping">
       <bool>true</bool>
@@ -99,78 +99,85 @@
      </property>
     </widget>
    </item>
-   <item row="1" column="2">
+   <item row="1" column="3">
     <widget class="QgsPropertyOverrideButton" name="mAngleDDBtn">
      <property name="text">
       <string>…</string>
      </property>
     </widget>
    </item>
-   <item row="2" column="0">
+   <item row="2" column="0" rowspan="2">
     <widget class="QLabel" name="label_5">
      <property name="text">
-      <string>Offset X,Y</string>
+      <string>Offset</string>
      </property>
     </widget>
    </item>
-   <item row="2" column="1" rowspan="2">
-    <layout class="QHBoxLayout" name="horizontalLayout">
-     <item>
-      <layout class="QVBoxLayout" name="verticalLayout">
-       <item>
-        <widget class="QgsDoubleSpinBox" name="spinOffsetY">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-           <horstretch>1</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
-         <property name="decimals">
-          <number>6</number>
-         </property>
-         <property name="minimum">
-          <double>-99999999.989999994635582</double>
-         </property>
-         <property name="maximum">
-          <double>99999999.989999994635582</double>
-         </property>
-         <property name="singleStep">
-          <double>0.200000000000000</double>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QgsDoubleSpinBox" name="spinOffsetX">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-           <horstretch>1</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
-         <property name="decimals">
-          <number>6</number>
-         </property>
-         <property name="minimum">
-          <double>-99999999.989999994635582</double>
-         </property>
-         <property name="maximum">
-          <double>99999999.989999994635582</double>
-         </property>
-         <property name="singleStep">
-          <double>0.200000000000000</double>
-         </property>
-        </widget>
-       </item>
-      </layout>
-     </item>
-     <item>
-      <widget class="QgsUnitSelectionWidget" name="mOffsetUnitWidget" native="true">
-       <property name="minimumSize">
-        <size>
-         <width>0</width>
-         <height>0</height>
-        </size>
+   <item row="2" column="2">
+    <layout class="QGridLayout" name="gridLayout_2">
+     <property name="margin">
+      <number>0</number>
+     </property>
+     <item row="1" column="0">
+      <widget class="QLabel" name="label_2">
+       <property name="text">
+        <string>y</string>
        </property>
+      </widget>
+     </item>
+     <item row="1" column="1">
+      <widget class="QgsDoubleSpinBox" name="spinOffsetY">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+         <horstretch>1</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="decimals">
+        <number>6</number>
+       </property>
+       <property name="minimum">
+        <double>-99999999.989999994635582</double>
+       </property>
+       <property name="maximum">
+        <double>99999999.989999994635582</double>
+       </property>
+       <property name="singleStep">
+        <double>0.200000000000000</double>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="0">
+      <widget class="QLabel" name="label">
+       <property name="text">
+        <string>x</string>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="1">
+      <widget class="QgsDoubleSpinBox" name="spinOffsetX">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+         <horstretch>1</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="decimals">
+        <number>6</number>
+       </property>
+       <property name="minimum">
+        <double>-99999999.989999994635582</double>
+       </property>
+       <property name="maximum">
+        <double>99999999.989999994635582</double>
+       </property>
+       <property name="singleStep">
+        <double>0.200000000000000</double>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="2" rowspan="2">
+      <widget class="QgsUnitSelectionWidget" name="mOffsetUnitWidget" native="true">
        <property name="focusPolicy">
         <enum>Qt::StrongFocus</enum>
        </property>
@@ -178,21 +185,24 @@
      </item>
     </layout>
    </item>
-   <item row="3" column="2">
+   <item row="2" column="3">
     <widget class="QgsPropertyOverrideButton" name="mOffsetDDBtn">
      <property name="text">
       <string>…</string>
      </property>
     </widget>
    </item>
-   <item row="4" column="0">
+   <item row="5" column="0" rowspan="2">
     <widget class="QLabel" name="mAnchorPointLabel">
      <property name="text">
       <string>Anchor point</string>
      </property>
+     <property name="wordWrap">
+      <bool>true</bool>
+     </property>
     </widget>
    </item>
-   <item row="4" column="1">
+   <item row="6" column="2">
     <widget class="QComboBox" name="mHorizontalAnchorComboBox">
      <item>
       <property name="text">
@@ -211,14 +221,14 @@
      </item>
     </widget>
    </item>
-   <item row="4" column="2">
+   <item row="6" column="3">
     <widget class="QgsPropertyOverrideButton" name="mHorizontalAnchorDDBtn">
      <property name="text">
       <string>…</string>
      </property>
     </widget>
    </item>
-   <item row="5" column="1">
+   <item row="5" column="2">
     <widget class="QComboBox" name="mVerticalAnchorComboBox">
      <item>
       <property name="text">
@@ -237,14 +247,14 @@
      </item>
     </widget>
    </item>
-   <item row="5" column="2">
+   <item row="5" column="3">
     <widget class="QgsPropertyOverrideButton" name="mVerticalAnchorDDBtn">
      <property name="text">
       <string>…</string>
      </property>
     </widget>
    </item>
-   <item row="6" column="0" colspan="2">
+   <item row="8" column="0" colspan="3">
     <widget class="QListWidget" name="lstNames">
      <property name="sizePolicy">
       <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
@@ -287,7 +297,7 @@
      </property>
     </widget>
    </item>
-   <item row="6" column="2">
+   <item row="8" column="3">
     <widget class="QgsPropertyOverrideButton" name="mNameDDBtn">
      <property name="text">
       <string>…</string>
@@ -298,14 +308,14 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>QgsPropertyOverrideButton</class>
-   <extends>QToolButton</extends>
-   <header>qgspropertyoverridebutton.h</header>
-  </customwidget>
-  <customwidget>
    <class>QgsDoubleSpinBox</class>
    <extends>QDoubleSpinBox</extends>
    <header>qgsdoublespinbox.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsPropertyOverrideButton</class>
+   <extends>QToolButton</extends>
+   <header>qgspropertyoverridebutton.h</header>
   </customwidget>
   <customwidget>
    <class>QgsUnitSelectionWidget</class>
@@ -317,13 +327,19 @@
  <tabstops>
   <tabstop>spinSize</tabstop>
   <tabstop>mSizeUnitWidget</tabstop>
+  <tabstop>mSizeDDBtn</tabstop>
   <tabstop>spinAngle</tabstop>
+  <tabstop>mAngleDDBtn</tabstop>
   <tabstop>spinOffsetX</tabstop>
   <tabstop>spinOffsetY</tabstop>
   <tabstop>mOffsetUnitWidget</tabstop>
-  <tabstop>mHorizontalAnchorComboBox</tabstop>
+  <tabstop>mOffsetDDBtn</tabstop>
   <tabstop>mVerticalAnchorComboBox</tabstop>
+  <tabstop>mVerticalAnchorDDBtn</tabstop>
+  <tabstop>mHorizontalAnchorComboBox</tabstop>
+  <tabstop>mHorizontalAnchorDDBtn</tabstop>
   <tabstop>lstNames</tabstop>
+  <tabstop>mNameDDBtn</tabstop>
  </tabstops>
  <resources/>
  <connections/>

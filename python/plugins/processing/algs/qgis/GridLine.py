@@ -33,6 +33,7 @@ from qgis.PyQt.QtCore import QVariant
 from qgis.core import (QgsRectangle,
                        QgsCoordinateReferenceSystem,
                        QgsField,
+                       QgsFeatureSink,
                        QgsFeature,
                        QgsGeometry,
                        QgsPoint,
@@ -162,7 +163,7 @@ class GridLine(QgisAlgorithm):
                                 y,
                                 id,
                                 y])
-            writer.addFeature(feat)
+            writer.addFeature(feat, QgsFeatureSink.FastInsert)
             y = y - vSpace[count % 2]
             id += 1
             count += 1
@@ -189,7 +190,7 @@ class GridLine(QgisAlgorithm):
                                 bbox.yMinimum(),
                                 id,
                                 x])
-            writer.addFeature(feat)
+            writer.addFeature(feat, QgsFeatureSink.FastInsert)
             x = x + hSpace[count % 2]
             id += 1
             count += 1

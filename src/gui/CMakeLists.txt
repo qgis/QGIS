@@ -18,6 +18,7 @@ SET(QGIS_GUI_SRCS
   symbology-ng/qgscategorizedsymbolrendererwidget.cpp
   symbology-ng/qgscptcitycolorrampdialog.cpp
   symbology-ng/qgsdashspacedialog.cpp
+  symbology-ng/qgsdatadefinedsizelegendwidget.cpp
   symbology-ng/qgsellipsesymbollayerwidget.cpp
   symbology-ng/qgsgraduatedhistogramwidget.cpp
   symbology-ng/qgsgraduatedsymbolrendererwidget.cpp
@@ -493,6 +494,7 @@ SET(QGIS_GUI_MOC_HDRS
   symbology-ng/qgscategorizedsymbolrendererwidget.h
   symbology-ng/qgscptcitycolorrampdialog.h
   symbology-ng/qgsdashspacedialog.h
+  symbology-ng/qgsdatadefinedsizelegendwidget.h
   symbology-ng/qgsellipsesymbollayerwidget.h
   symbology-ng/qgsgraduatedhistogramwidget.h
   symbology-ng/qgsgraduatedsymbolrendererwidget.h
@@ -619,6 +621,7 @@ SET(QGIS_GUI_MOC_HDRS
   locator/qgslocatorfilter.h
   locator/qgslocatorwidget.h
 )
+SET_PROPERTY(GLOBAL PROPERTY QGIS_GUI_MOC_HDRS ${QGIS_GUI_MOC_HDRS})
 
 QT5_WRAP_CPP(QGIS_GUI_MOC_SRCS ${QGIS_GUI_MOC_HDRS})
 
@@ -639,6 +642,7 @@ SET(QGIS_GUI_HDRS
   qgsdetaileditemdata.h
   qgsexpressionbuilderdialog.h
   qgsfiledropedit.h
+  qgsgeometryrubberband.h
   qgsgui.h
   qgsguiutils.h
   qgshelp.h
@@ -711,6 +715,8 @@ SET(QGIS_GUI_HDRS
 
   symbology-ng/qgssymbolwidgetcontext.h
 )
+SET_PROPERTY(GLOBAL PROPERTY QGIS_GUI_HDRS ${QGIS_GUI_HDRS})
+
 
 SET(QGIS_GUI_UI_HDRS
   ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsauthauthoritieseditor.h
@@ -745,7 +751,7 @@ SET(QGIS_GUI_UI_HDRS
   ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsquerybuilderbase.h
   ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgssqlcomposerdialogbase.h
   ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgssublayersdialogbase.h
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgstablewidgetbase.h
+  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgstablewidgetuibase.h
 )
 
 IF(ENABLE_MODELTEST)

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 ###############################################################################
 #
-# MetaSearch Catalogue Client
+# MetaSearch Catalog Client
 #
 # Copyright (C) 2014 Tom Kralidis (tomkralidis@gmail.com)
 #

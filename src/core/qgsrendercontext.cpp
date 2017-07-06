@@ -304,7 +304,7 @@ double QgsRenderContext::convertToMapUnits( double size, QgsUnitTypes::RenderUni
       }
       if ( !qgsDoubleNear( scale.minScale, 0.0 ) )
       {
-        minSizeMU = qMax( minSizeMU, size * ( scale.minScale * mRendererScale ) );
+        minSizeMU = qMax( minSizeMU, size * ( mRendererScale / scale.minScale ) );
       }
       size = qMax( size, minSizeMU );
 
@@ -315,7 +315,7 @@ double QgsRenderContext::convertToMapUnits( double size, QgsUnitTypes::RenderUni
       }
       if ( !qgsDoubleNear( scale.maxScale, 0.0 ) )
       {
-        maxSizeMU = qMin( maxSizeMU, size * ( scale.maxScale * mRendererScale ) );
+        maxSizeMU = qMin( maxSizeMU, size * ( mRendererScale / scale.maxScale ) );
       }
       size = qMin( size, maxSizeMU );
 

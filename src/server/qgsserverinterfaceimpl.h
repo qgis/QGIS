@@ -19,6 +19,9 @@
 #ifndef QGSSERVERINTERFACEIMPL_H
 #define QGSSERVERINTERFACEIMPL_H
 
+#define SIP_NO_FILE
+
+
 #include "qgsserverinterface.h"
 #include "qgscapabilitiescache.h"
 

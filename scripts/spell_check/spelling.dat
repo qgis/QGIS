@@ -460,7 +460,7 @@ analagous:analogous
 analitic:analytic
 analogeous:analogous
 analysator:analyzer
-analysies:analyses
+analysies:analyzes
 anarchim:anarchism
 anarchistm:anarchism
 anbd:and
@@ -1137,6 +1137,7 @@ casues:causes
 casuing:causing
 casulaties:casualties
 casulaty:casualty
+catalogue:catalog
 catagories:categories
 catagorized:categorized
 catagory:category
@@ -1233,6 +1234,8 @@ chcek:check
 chceked:checked
 chceking:checking
 chceks:checks
+check-box:checkbox
+check box:checkbox
 checkk:check
 checksuming:checksumming
 cheif:chief
@@ -1297,6 +1300,7 @@ clinicaly:clinically
 clipoing:clipping
 closeing:closing
 cmoputer:computer
+cna:can
 Coca Cola:Coca-Cola
 coctail:cocktail
 codespel:codespell
@@ -1748,6 +1752,7 @@ convinient:convenient
 conviniently:conveniently
 coodinate:coordinate
 coodinates:coordinates
+coordiante:coordinate
 coordiantion:coordination
 coorperation:corporation
 coorperations:corporations
@@ -3195,6 +3200,7 @@ greatful:grateful
 greatfully:gratefully
 greif:grief
 gridles:griddles
+grometry:geometry
 gropu:group
 gruop:group
 grwo:grow
@@ -3293,6 +3299,7 @@ heathy:healthy
 Heidelburg:Heidelberg
 heigh:height
 heigher:higher
+heighest:highest
 heigt:height
 heigth:height
 heirachies:hierarchies
@@ -4240,6 +4247,7 @@ manisfestations:manifestations
 mannor:manner
 mannual:manual
 mannually:manually
+manualy:manually
 manoeuverability:maneuverability
 manoeuvering:maneuvering
 manoeuvre:maneuver
@@ -6736,6 +6744,7 @@ syles:styles
 sylog:syslog
 symbo:symbol
 symboll:symbol
+symobl:symbol
 symetric:symmetric
 symetrical:symmetrical
 symetrically:symmetrically

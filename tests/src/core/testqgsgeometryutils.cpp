@@ -55,6 +55,7 @@ class TestQgsGeometryUtils: public QObject
     void testGradient();
     void testCoefficients();
     void testPerpendicularSegment();
+    void testClosestPoint();
 };
 
 
@@ -547,9 +548,9 @@ void TestQgsGeometryUtils::testMidPoint()
 {
   QgsPoint p1( 4, 6 );
   QCOMPARE( QgsGeometryUtils::midpoint( p1, QgsPoint( 2, 2 ) ), QgsPoint( 3, 4 ) );
-  QCOMPARE( QgsGeometryUtils::midpoint( p1, QgsPoint( QgsWkbTypes::PointZ, 2, 2, 2 ) ), QgsPoint( QgsWkbTypes::PointZ, 3, 4, 1 ) );
-  QCOMPARE( QgsGeometryUtils::midpoint( p1, QgsPoint( QgsWkbTypes::PointM, 2, 2, 0, 2 ) ), QgsPoint( QgsWkbTypes::PointM, 3, 4, 0, 1 ) );
-  QCOMPARE( QgsGeometryUtils::midpoint( p1, QgsPoint( QgsWkbTypes::PointZM, 2, 2, 2, 2 ) ), QgsPoint( QgsWkbTypes::PointZM, 3, 4, 1, 1 ) );
+  QCOMPARE( QgsGeometryUtils::midpoint( QgsPoint( 4, 6, 0 ), QgsPoint( QgsWkbTypes::PointZ, 2, 2, 2 ) ), QgsPoint( QgsWkbTypes::PointZ, 3, 4, 1 ) );
+  QCOMPARE( QgsGeometryUtils::midpoint( QgsPoint( QgsWkbTypes::PointM, 4, 6, 0, 0 ), QgsPoint( QgsWkbTypes::PointM, 2, 2, 0, 2 ) ), QgsPoint( QgsWkbTypes::PointM, 3, 4, 0, 1 ) );
+  QCOMPARE( QgsGeometryUtils::midpoint( QgsPoint( QgsWkbTypes::PointZM, 4, 6, 0, 0 ), QgsPoint( QgsWkbTypes::PointZM, 2, 2, 2, 2 ) ), QgsPoint( QgsWkbTypes::PointZM, 3, 4, 1, 1 ) );
 }
 
 void TestQgsGeometryUtils::testGradient()
@@ -631,6 +632,42 @@ void TestQgsGeometryUtils::testPerpendicularSegment()
   line.addVertex( QgsPoint( 3, 8 ) );
   QCOMPARE( line.pointN( 0 ), line_r.pointN( 0 ) );
   QCOMPARE( line.pointN( 1 ), line_r.pointN( 1 ) );
+}
+
+void TestQgsGeometryUtils::testClosestPoint()
+{
+  QgsLineString linestringZ( QVector<QgsPoint>()
+                             << QgsPoint( 1, 1, 1 )
+                             << QgsPoint( 1, 3, 2 ) );
+
+  QgsPoint pt1 = QgsGeometryUtils::closestPoint( linestringZ, QgsPoint( 1, 0 ) );
+  QGSCOMPARENEAR( pt1.z(), 1, 0.0001 );
+  QVERIFY( qIsNaN( pt1.m() ) );
+
+  QgsLineString linestringM( QVector<QgsPoint>()
+                             << QgsPoint( 1, 1, std::numeric_limits<double>::quiet_NaN(), 1 )
+                             << QgsPoint( 1, 3, std::numeric_limits<double>::quiet_NaN(), 2 ) );
+
+  QgsPoint pt2 = QgsGeometryUtils::closestPoint( linestringM, QgsPoint( 1, 4 ) );
+  QVERIFY( qIsNaN( pt2.z() ) );
+  QGSCOMPARENEAR( pt2.m(), 2, 0.0001 );
+
+  QgsLineString linestringZM( QVector<QgsPoint>()
+                              << QgsPoint( 1, 1, 1, 1 )
+                              << QgsPoint( 1, 3, 2, 2 ) );
+
+  QgsPoint pt3 = QgsGeometryUtils::closestPoint( linestringZM, QgsPoint( 2, 2 ) );
+  QGSCOMPARENEAR( pt3.z(), 1.5, 0.0001 );
+  QGSCOMPARENEAR( pt3.m(), 1.5, 0.0001 );
+
+  QgsLineString linestringDuplicatedPoint( QVector<QgsPoint>()
+      << QgsPoint( 1, 1, 1, 1 )
+      << QgsPoint( 1, 1, 1, 1 )
+      << QgsPoint( 1, 3, 2, 2 ) );
+
+  QgsPoint pt4 = QgsGeometryUtils::closestPoint( linestringDuplicatedPoint, QgsPoint( 1, 0 ) );
+  QGSCOMPARENEAR( pt4.z(), 1, 0.0001 );
+  QGSCOMPARENEAR( pt4.m(), 1, 0.0001 );
 }
 
 QGSTEST_MAIN( TestQgsGeometryUtils )

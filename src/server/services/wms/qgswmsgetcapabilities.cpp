@@ -36,7 +36,7 @@
 #include "qgslayertree.h"
 #include "qgsmaplayerstylemanager.h"
 
-#include "qgscsexception.h"
+#include "qgsexception.h"
 #include "qgsexpressionnodeimpl.h"
 
 
@@ -195,7 +195,7 @@ namespace QgsWms
     doc.appendChild( wmsCapabilitiesElement );
 
     //INSERT Service
-    wmsCapabilitiesElement.appendChild( getServiceElement( doc, project, version ) );
+    wmsCapabilitiesElement.appendChild( getServiceElement( doc, project, version, request ) );
 
     //wms:Capability element
     QDomElement capabilityElement = getCapabilityElement( doc, project, version, request, projectSettings );
@@ -222,7 +222,8 @@ namespace QgsWms
     return doc;
   }
 
-  QDomElement getServiceElement( QDomDocument &doc, const QgsProject *project, const QString &version )
+  QDomElement getServiceElement( QDomDocument &doc, const QgsProject *project, const QString &version,
+                                 const QgsServerRequest &request )
   {
     bool sia2045 = QgsServerProjectUtils::wmsInfoFormatSia2045( *project );
 
@@ -283,14 +284,15 @@ namespace QgsWms
     }
 
     QString onlineResource = QgsServerProjectUtils::owsServiceOnlineResource( *project );
-    if ( !onlineResource.isEmpty() )
+    if ( onlineResource.isEmpty() )
     {
-      QDomElement onlineResourceElem = doc.createElement( QStringLiteral( "OnlineResource" ) );
-      onlineResourceElem.setAttribute( QStringLiteral( "xmlns:xlink" ), QStringLiteral( "http://www.w3.org/1999/xlink" ) );
-      onlineResourceElem.setAttribute( QStringLiteral( "xlink:type" ), QStringLiteral( "simple" ) );
-      onlineResourceElem.setAttribute( QStringLiteral( "xlink:href" ), onlineResource );
-      serviceElem.appendChild( onlineResourceElem );
+      onlineResource = serviceUrl( request, project ).toString();
     }
+    QDomElement onlineResourceElem = doc.createElement( QStringLiteral( "OnlineResource" ) );
+    onlineResourceElem.setAttribute( QStringLiteral( "xmlns:xlink" ), QStringLiteral( "http://www.w3.org/1999/xlink" ) );
+    onlineResourceElem.setAttribute( QStringLiteral( "xlink:type" ), QStringLiteral( "simple" ) );
+    onlineResourceElem.setAttribute( QStringLiteral( "xlink:href" ), onlineResource );
+    serviceElem.appendChild( onlineResourceElem );
 
     QString contactPerson = QgsServerProjectUtils::owsServiceContactPerson( *project );
     QString contactOrganization = QgsServerProjectUtils::owsServiceContactOrganization( *project );
@@ -1002,19 +1004,19 @@ namespace QgsWms
               double SCALE_TO_SCALEHINT = OGC_PX_M * sqrt( 2.0 );
 
               QDomElement scaleHintElem = doc.createElement( QStringLiteral( "ScaleHint" ) );
-              scaleHintElem.setAttribute( QStringLiteral( "min" ), QString::number( l->minimumScale() * SCALE_TO_SCALEHINT ) );
-              scaleHintElem.setAttribute( QStringLiteral( "max" ), QString::number( l->maximumScale() * SCALE_TO_SCALEHINT ) );
+              scaleHintElem.setAttribute( QStringLiteral( "min" ), QString::number( l->maximumScale() * SCALE_TO_SCALEHINT ) );
+              scaleHintElem.setAttribute( QStringLiteral( "max" ), QString::number( l->minimumScale() * SCALE_TO_SCALEHINT ) );
               layerElem.appendChild( scaleHintElem );
             }
             else
             {
-              QString minScaleString = QString::number( l->minimumScale() );
+              QString minScaleString = QString::number( l->maximumScale() );
               QDomElement minScaleElem = doc.createElement( QStringLiteral( "MinScaleDenominator" ) );
               QDomText minScaleText = doc.createTextNode( minScaleString );
               minScaleElem.appendChild( minScaleText );
               layerElem.appendChild( minScaleElem );
 
-              QString maxScaleString = QString::number( l->maximumScale() );
+              QString maxScaleString = QString::number( l->minimumScale() );
               QDomElement maxScaleElem = doc.createElement( QStringLiteral( "MaxScaleDenominator" ) );
               QDomText maxScaleText = doc.createTextNode( maxScaleString );
               maxScaleElem.appendChild( maxScaleText );

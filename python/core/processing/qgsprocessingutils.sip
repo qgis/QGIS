@@ -126,8 +126,93 @@ class QgsProcessingUtils
  :rtype: QgsRectangle
 %End
 
+    static QVariant generateIteratingDestination( const QVariant &input, const QVariant &id, QgsProcessingContext &context );
+%Docstring
+ Converts an ``input`` parameter value for use in source iterating mode, where one individual sink
+ is created per input feature.
+ The ``id`` parameter represents the unique ID for this output, which is embedded into the resulting
+ parameter value.
+ :rtype: QVariant
+%End
+
+    static QString tempFolder();
+%Docstring
+ Returns a session specific processing temporary folder for use in processing algorithms.
+.. seealso:: generateTempFileName()
+ :rtype: str
+%End
+
+    static QString generateTempFilename( const QString &basename );
+%Docstring
+ Returns a temporary filename for a given file, putting it into
+ a temporary folder (creating that folder in the process),
+ but not changing the ``basename``.
+.. seealso:: tempFolder()
+ :rtype: str
+%End
+
+    static QString formatHelpMapAsHtml( const QVariantMap &map, const QgsProcessingAlgorithm *algorithm );
+%Docstring
+ Returns a HTML formatted version of the help text encoded in a variant ``map`` for
+ a specified ``algorithm``.
+ :rtype: str
+%End
+
 };
 
+class QgsProcessingFeatureSource : QgsFeatureSource
+{
+%Docstring
+ QgsFeatureSource subclass which proxies methods to an underlying QgsFeatureSource, modifying
+ results according to the settings in a QgsProcessingContext.
+.. versionadded:: 3.0
+%End
+
+%TypeHeaderCode
+#include "qgsprocessingutils.h"
+%End
+  public:
+
+    enum Flag
+    {
+      FlagSkipGeometryValidityChecks,
+    };
+    typedef QFlags<QgsProcessingFeatureSource::Flag> Flags;
+
+
+    QgsProcessingFeatureSource( QgsFeatureSource *originalSource, const QgsProcessingContext &context, bool ownsOriginalSource = false );
+%Docstring
+ Constructor for QgsProcessingFeatureSource, accepting an original feature source ``originalSource``
+ and processing ``context``.
+ Ownership of ``originalSource`` is dictated by ``ownsOriginalSource``. If ``ownsOriginalSource`` is false,
+ ownership is not transferred, and callers must ensure that ``originalSource`` exists for the lifetime of this object.
+ If ``ownsOriginalSource`` is true, then this object will take ownership of ``originalSource``.
+%End
+
+    ~QgsProcessingFeatureSource();
+
+    QgsFeatureIterator getFeatures( const QgsFeatureRequest &request, Flags flags ) const;
+%Docstring
+ Returns an iterator for the features in the source, respecting the supplied feature ``flags``.
+ An optional ``request`` can be used to optimise the returned
+ iterator, eg by restricting the returned attributes or geometry.
+ :rtype: QgsFeatureIterator
+%End
+
+    virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest &request = QgsFeatureRequest() ) const;
+
+    virtual QgsCoordinateReferenceSystem sourceCrs() const;
+
+    virtual QgsFields fields() const;
+
+    virtual QgsWkbTypes::Type wkbType() const;
+
+    virtual long featureCount() const;
+
+    virtual QString sourceName() const;
+
+
+};
 
 
 

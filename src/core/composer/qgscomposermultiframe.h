@@ -31,6 +31,15 @@ class QDomElement;
 class QRectF;
 class QPainter;
 
+
+#ifdef SIP_RUN
+% ModuleHeaderCode
+#include <qgscomposerhtml.h>
+#include <qgscomposertablev2.h>
+#include <qgscomposerattributetablev2.h>
+% End
+#endif
+
 /**
  * \ingroup core
  * \class QgsComposerMultiFrame

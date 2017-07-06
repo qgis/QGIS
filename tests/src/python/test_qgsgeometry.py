@@ -348,7 +348,7 @@ class TestQgsGeometry(unittest.TestCase):
 
         Interestingly we could replicate the issue in PostGIS too:
          - doing straight simplify returned no feature
-         - transforming to UTM49, then simplify with e.g. 200 threshold is ok
+         - transforming to UTM49, then simplify with e.g. 200 threshold is OK
          - as above with 500 threshold drops the feature
 
          pgsql2shp -f /tmp/dissolve500.shp gis 'select *,
@@ -1409,7 +1409,7 @@ class TestQgsGeometry(unittest.TestCase):
         # test adding a part with Z values
         point = QgsGeometry.fromPoint(points[0])
         point.geometry().addZValue(4.0)
-        self.assertEqual(point.addPointsV2([QgsPoint(QgsWkbTypes.PointZ, points[1][0], points[1][1], 3.0)]), 0)
+        self.assertEqual(point.addPointsV2([QgsPoint(points[1][0], points[1][1], 3.0, wkbType=QgsWkbTypes.PointZ)]), 0)
         expwkt = "MultiPointZ ((0 0 4), (1 0 3))"
         wkt = point.exportToWkt()
         assert compareWkt(expwkt, wkt), "Expected:\n%s\nGot:\n%s\n" % (expwkt, wkt)
@@ -1438,7 +1438,7 @@ class TestQgsGeometry(unittest.TestCase):
         # test adding a part with Z values
         polyline = QgsGeometry.fromPolyline(points[0])
         polyline.geometry().addZValue(4.0)
-        points2 = [QgsPoint(QgsWkbTypes.PointZ, p[0], p[1], 3.0) for p in points[1]]
+        points2 = [QgsPoint(p[0], p[1], 3.0, wkbType=QgsWkbTypes.PointZ) for p in points[1]]
         self.assertEqual(polyline.addPointsV2(points2), 0)
         expwkt = "MultiLineStringZ ((0 0 4, 1 0 4, 1 1 4, 2 1 4, 2 0 4),(3 0 3, 3 1 3, 5 1 3, 5 0 3, 6 0 3))"
         wkt = polyline.exportToWkt()
@@ -1482,7 +1482,7 @@ class TestQgsGeometry(unittest.TestCase):
         # test adding a part with Z values
         polygon = QgsGeometry.fromPolygon(points[0])
         polygon.geometry().addZValue(4.0)
-        points2 = [QgsPoint(QgsWkbTypes.PointZ, pi[0], pi[1], 3.0) for pi in points[1][0]]
+        points2 = [QgsPoint(pi[0], pi[1], 3.0, wkbType=QgsWkbTypes.PointZ) for pi in points[1][0]]
         self.assertEqual(polygon.addPointsV2(points2), 0)
         expwkt = "MultiPolygonZ (((0 0 4, 1 0 4, 1 1 4, 2 1 4, 2 2 4, 0 2 4, 0 0 4)),((4 0 3, 5 0 3, 5 2 3, 3 2 3, 3 1 3, 4 1 3, 4 0 3)))"
         wkt = polygon.exportToWkt()
@@ -1706,13 +1706,13 @@ class TestQgsGeometry(unittest.TestCase):
     def testReshape(self):
         """ Test geometry reshaping """
         g = QgsGeometry.fromWkt('Polygon ((0 0, 1 0, 1 1, 0 1, 0 0))')
-        g.reshapeGeometry([QgsPointXY(0, 1.5), QgsPointXY(1.5, 0)])
+        g.reshapeGeometry(QgsLineString([QgsPoint(0, 1.5), QgsPoint(1.5, 0)]))
         expWkt = 'Polygon ((0.5 1, 0 1, 0 0, 1 0, 1 0.5, 0.5 1))'
         wkt = g.exportToWkt()
         assert compareWkt(expWkt, wkt), "testReshape failed: mismatch Expected:\n%s\nGot:\n%s\n" % (expWkt, wkt)
 
         # Test reshape a geometry involving the first/last vertex (https://issues.qgis.org/issues/14443)
-        g.reshapeGeometry([QgsPointXY(0.5, 1), QgsPointXY(0, 0.5)])
+        g.reshapeGeometry(QgsLineString([QgsPoint(0.5, 1), QgsPoint(0, 0.5)]))
 
         expWkt = 'Polygon ((0 0.5, 0 0, 1 0, 1 0.5, 0.5 1, 0 0.5))'
         wkt = g.exportToWkt()
@@ -1721,24 +1721,24 @@ class TestQgsGeometry(unittest.TestCase):
         # Test reshape a line from first/last vertex
         g = QgsGeometry.fromWkt('LineString (0 0, 5 0, 5 1)')
         # extend start
-        self.assertEqual(g.reshapeGeometry([QgsPointXY(0, 0), QgsPointXY(-1, 0)]), 0)
+        self.assertEqual(g.reshapeGeometry(QgsLineString([QgsPoint(0, 0), QgsPoint(-1, 0)])), 0)
         expWkt = 'LineString (-1 0, 0 0, 5 0, 5 1)'
         wkt = g.exportToWkt()
         assert compareWkt(expWkt, wkt), "testReshape failed: mismatch Expected:\n%s\nGot:\n%s\n" % (expWkt, wkt)
         # extend end
-        self.assertEqual(g.reshapeGeometry([QgsPointXY(5, 1), QgsPointXY(10, 1), QgsPointXY(10, 2)]), 0)
+        self.assertEqual(g.reshapeGeometry(QgsLineString([QgsPoint(5, 1), QgsPoint(10, 1), QgsPoint(10, 2)])), 0)
         expWkt = 'LineString (-1 0, 0 0, 5 0, 5 1, 10 1, 10 2)'
         wkt = g.exportToWkt()
         assert compareWkt(expWkt, wkt), "testReshape failed: mismatch Expected:\n%s\nGot:\n%s\n" % (expWkt, wkt)
         # test with reversed lines
         g = QgsGeometry.fromWkt('LineString (0 0, 5 0, 5 1)')
         # extend start
-        self.assertEqual(g.reshapeGeometry([QgsPointXY(-1, 0), QgsPointXY(0, 0)]), 0)
+        self.assertEqual(g.reshapeGeometry(QgsLineString([QgsPoint(-1, 0), QgsPoint(0, 0)])), 0)
         expWkt = 'LineString (-1 0, 0 0, 5 0, 5 1)'
         wkt = g.exportToWkt()
         assert compareWkt(expWkt, wkt), "testReshape failed: mismatch Expected:\n%s\nGot:\n%s\n" % (expWkt, wkt)
         # extend end
-        self.assertEqual(g.reshapeGeometry([QgsPointXY(10, 2), QgsPointXY(10, 1), QgsPointXY(5, 1)]), 0)
+        self.assertEqual(g.reshapeGeometry(QgsLineString([QgsPoint(10, 2), QgsPoint(10, 1), QgsPoint(5, 1)])), 0)
         expWkt = 'LineString (-1 0, 0 0, 5 0, 5 1, 10 1, 10 2)'
         wkt = g.exportToWkt()
         assert compareWkt(expWkt, wkt), "testReshape failed: mismatch Expected:\n%s\nGot:\n%s\n" % (expWkt, wkt)
@@ -4128,6 +4128,100 @@ class TestQgsGeometry(unittest.TestCase):
         # tolerance
         self.assertFalse(QgsGeometry.compare(lp, lp2))
         self.assertTrue(QgsGeometry.compare(lp, lp2, 1e-6))
+
+    def testPoint(self):
+        point = QgsPoint(1, 2)
+        self.assertEqual(point.wkbType(), QgsWkbTypes.Point)
+        self.assertEqual(point.x(), 1)
+        self.assertEqual(point.y(), 2)
+
+        point = QgsPoint(1, 2, wkbType=QgsWkbTypes.Point)
+        self.assertEqual(point.wkbType(), QgsWkbTypes.Point)
+        self.assertEqual(point.x(), 1)
+        self.assertEqual(point.y(), 2)
+
+        point_z = QgsPoint(1, 2, 3)
+        self.assertEqual(point_z.wkbType(), QgsWkbTypes.PointZ)
+        self.assertEqual(point_z.x(), 1)
+        self.assertEqual(point_z.y(), 2)
+        self.assertEqual(point_z.z(), 3)
+
+        point_z = QgsPoint(1, 2, 3, 4, wkbType=QgsWkbTypes.PointZ)
+        self.assertEqual(point_z.wkbType(), QgsWkbTypes.PointZ)
+        self.assertEqual(point_z.x(), 1)
+        self.assertEqual(point_z.y(), 2)
+        self.assertEqual(point_z.z(), 3)
+
+        point_m = QgsPoint(1, 2, m=3)
+        self.assertEqual(point_m.wkbType(), QgsWkbTypes.PointM)
+        self.assertEqual(point_m.x(), 1)
+        self.assertEqual(point_m.y(), 2)
+        self.assertEqual(point_m.m(), 3)
+
+        point_zm = QgsPoint(1, 2, 3, 4)
+        self.assertEqual(point_zm.wkbType(), QgsWkbTypes.PointZM)
+        self.assertEqual(point_zm.x(), 1)
+        self.assertEqual(point_zm.y(), 2)
+        self.assertEqual(point_zm.z(), 3)
+        self.assertEqual(point_zm.m(), 4)
+
+    def testSubdivide(self):
+        tests = [["LINESTRING (1 1,1 9,9 9,9 1)", 8, "MULTILINESTRING ((1 1,1 9,9 9,9 1))"],
+                 ["Point (1 1)", 8, "MultiPoint ((1 1))"],
+                 ["GeometryCollection ()", 8, "GeometryCollection ()"],
+                 ["LINESTRING (1 1,1 2,1 3,1 4,1 5,1 6,1 7,1 8,1 9)", 8, "MultiLineString ((1 1, 1 2, 1 3, 1 4, 1 5),(1 5, 1 6, 1 7, 1 8, 1 9))"],
+                 ["LINESTRING(0 0, 100 100, 150 150)", 8, 'MultiLineString ((0 0, 100 100, 150 150))'],
+                 ['POLYGON((132 10,119 23,85 35,68 29,66 28,49 42,32 56,22 64,32 110,40 119,36 150,57 158,75 171,92 182,114 184,132 186,146 178,176 184,179 162,184 141,190 122,190 100,185 79,186 56,186 52,178 34,168 18,147 13,132 10))',
+                  10, None],
+                 ["LINESTRING (1 1,1 2,1 3,1 4,1 5,1 6,1 7,1 8,1 9)", 1,
+                  "MultiLineString ((1 1, 1 2, 1 3, 1 4, 1 5),(1 5, 1 6, 1 7, 1 8, 1 9))"],
+                 ["LINESTRING (1 1,1 2,1 3,1 4,1 5,1 6,1 7,1 8,1 9)", 16,
+                  "MultiLineString ((1 1, 1 2, 1 3, 1 4, 1 5, 1 6, 1 7, 1 8, 1 9))"],
+                 ["POLYGON ((0 0, 0 200, 200 200, 200 0, 0 0),(60 180, 20 180, 20 140, 60 140, 60 180),(180 60, 140 60, 140 20, 180 20, 180 60))", 8, "MultiPolygon (((0 0, 0 100, 100 100, 100 0, 0 0)),((100 0, 100 50, 140 50, 140 20, 150 20, 150 0, 100 0)),((150 0, 150 20, 180 20, 180 50, 200 50, 200 0, 150 0)),((100 50, 100 100, 150 100, 150 60, 140 60, 140 50, 100 50)),((150 60, 150 100, 200 100, 200 50, 180 50, 180 60, 150 60)),((0 100, 0 150, 20 150, 20 140, 50 140, 50 100, 0 100)),((50 100, 50 140, 60 140, 60 150, 100 150, 100 100, 50 100)),((0 150, 0 200, 50 200, 50 180, 20 180, 20 150, 0 150)),((50 180, 50 200, 100 200, 100 150, 60 150, 60 180, 50 180)),((100 100, 100 200, 200 200, 200 100, 100 100)))"],
+                 ["POLYGON((132 10,119 23,85 35,68 29,66 28,49 42,32 56,22 64,32 110,40 119,36 150, 57 158,75 171,92 182,114 184,132 186,146 178,176 184,179 162,184 141,190 122,190 100,185 79,186 56,186 52,178 34,168 18,147 13,132 10))", 10, None]
+                 ]
+        for t in tests:
+            input = QgsGeometry.fromWkt(t[0])
+            o = input.subdivide(t[1])
+            # make sure area is unchanged
+            self.assertAlmostEqual(input.area(), o.area(), 5)
+            max_points = 999999
+            for p in range(o.geometry().numGeometries()):
+                part = o.geometry().geometryN(p)
+                self.assertLessEqual(part.nCoordinates(), max(t[1], 8))
+
+            if t[2]:
+                exp = t[2]
+                result = o.exportToWkt()
+                self.assertTrue(compareWkt(result, exp, 0.00001),
+                                "clipped: mismatch Expected:\n{}\nGot:\n{}\n".format(exp, result))
+
+    def testClipped(self):
+        tests = [["LINESTRING (1 1,1 9,9 9,9 1)", QgsRectangle(0, 0, 10, 10), "LINESTRING (1 1,1 9,9 9,9 1)"],
+                 ["LINESTRING (-1 -9,-1 11,9 11)", QgsRectangle(0, 0, 10, 10), "GEOMETRYCOLLECTION ()"],
+                 ["LINESTRING (-1 5,5 5,9 9)", QgsRectangle(0, 0, 10, 10), "LINESTRING (0 5,5 5,9 9)"],
+                 ["LINESTRING (5 5,8 5,12 5)", QgsRectangle(0, 0, 10, 10), "LINESTRING (5 5,8 5,10 5)"],
+                 ["LINESTRING (5 -1,5 5,1 2,-3 2,1 6)", QgsRectangle(0, 0, 10, 10), "MULTILINESTRING ((5 0,5 5,1 2,0 2),(0 5,1 6))"],
+                 ["LINESTRING (0 3,0 5,0 7)", QgsRectangle(0, 0, 10, 10), "GEOMETRYCOLLECTION ()"],
+                 ["LINESTRING (0 3,0 5,-1 7)", QgsRectangle(0, 0, 10, 10), "GEOMETRYCOLLECTION ()"],
+                 ["LINESTRING (0 3,0 5,2 7)", QgsRectangle(0, 0, 10, 10), "LINESTRING (0 5,2 7)"],
+                 ["LINESTRING (2 1,0 0,1 2)", QgsRectangle(0, 0, 10, 10), "LINESTRING (2 1,0 0,1 2)"],
+                 ["LINESTRING (3 3,0 3,0 5,2 7)", QgsRectangle(0, 0, 10, 10), "MULTILINESTRING ((3 3,0 3),(0 5,2 7))"],
+                 ["LINESTRING (5 5,10 5,20 5)", QgsRectangle(0, 0, 10, 10), "LINESTRING (5 5,10 5)"],
+                 ["LINESTRING (3 3,0 6,3 9)", QgsRectangle(0, 0, 10, 10), "LINESTRING (3 3,0 6,3 9)"],
+                 ["POLYGON ((5 5,5 6,6 6,6 5,5 5))", QgsRectangle(0, 0, 10, 10), "POLYGON ((5 5,5 6,6 6,6 5,5 5))"],
+                 ["POLYGON ((15 15,15 16,16 16,16 15,15 15))", QgsRectangle(0, 0, 10, 10), "GEOMETRYCOLLECTION ()"],
+                 ["POLYGON ((-1 -1,-1 11,11 11,11 -1,-1 -1))", QgsRectangle(0, 0, 10, 10), "Polygon ((0 0, 0 10, 10 10, 10 0, 0 0))"],
+                 ["POLYGON ((-1 -1,-1 5,5 5,5 -1,-1 -1))", QgsRectangle(0, 0, 10, 10), "Polygon ((0 0, 0 5, 5 5, 5 0, 0 0))"],
+                 ["POLYGON ((-2 -2,-2 5,5 5,5 -2,-2 -2), (3 3,4 4,4 2,3 3))", QgsRectangle(0, 0, 10, 10), "Polygon ((0 0, 0 5, 5 5, 5 0, 0 0),(3 3, 4 4, 4 2, 3 3))"]
+                 ]
+        for t in tests:
+            input = QgsGeometry.fromWkt(t[0])
+            o = input.clipped(t[1])
+            exp = t[2]
+            result = o.exportToWkt()
+            self.assertTrue(compareWkt(result, exp, 0.00001),
+                            "clipped: mismatch Expected:\n{}\nGot:\n{}\n".format(exp, result))
 
 
 if __name__ == '__main__':

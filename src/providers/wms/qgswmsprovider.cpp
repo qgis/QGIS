@@ -44,7 +44,7 @@
 #include "qgsgml.h"
 #include "qgsgmlschema.h"
 #include "qgswmscapabilities.h"
-#include "qgscsexception.h"
+#include "qgsexception.h"
 #include "qgssettings.h"
 
 #include <QNetworkRequest>
@@ -226,7 +226,7 @@ QString QgsWmsProvider::getTileUrl() const
        ( !mCaps.mCapabilities.capability.request.getTile.allowedEncodings.isEmpty() &&
          !mCaps.mCapabilities.capability.request.getTile.allowedEncodings.contains( QStringLiteral( "KVP" ) ) ) )
   {
-    return QString::null;
+    return QString();
   }
   else
   {
@@ -4164,7 +4164,7 @@ QgsWmsLegendDownloadHandler::finished()
   // or ::errored() should have been called before ::finished
   Q_ASSERT( mReply->error() == QNetworkReply::NoError );
 
-  QgsDebugMsg( "reply ok" );
+  QgsDebugMsg( "reply OK" );
   QVariant redirect = mReply->attribute( QNetworkRequest::RedirectionTargetAttribute );
   if ( !redirect.isNull() )
   {

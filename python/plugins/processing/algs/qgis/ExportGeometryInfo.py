@@ -30,7 +30,7 @@ import os
 from qgis.PyQt.QtGui import QIcon
 from qgis.PyQt.QtCore import QVariant
 
-from qgis.core import QgsProject, QgsCoordinateTransform, QgsFeature, QgsField, QgsWkbTypes, QgsProcessingUtils
+from qgis.core import QgsProject, QgsCoordinateTransform, QgsFeature, QgsField, QgsWkbTypes, QgsFeatureSink, QgsProcessingUtils
 from qgis.utils import iface
 
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
@@ -133,7 +133,7 @@ class ExportGeometryInfo(QgisAlgorithm):
         outFeat.setFields(fields)
 
         features = QgsProcessingUtils.getFeatures(layer, context)
-        total = 100.0 / QgsProcessingUtils.featureCount(layer, context)
+        total = 100.0 / layer.featureCount() if layer.featureCount() else 0
         for current, f in enumerate(features):
             inGeom = f.geometry()
 
@@ -155,7 +155,7 @@ class ExportGeometryInfo(QgisAlgorithm):
                 attrs.append(inGeom.geometry().m())
 
             outFeat.setAttributes(attrs)
-            writer.addFeature(outFeat)
+            writer.addFeature(outFeat, QgsFeatureSink.FastInsert)
 
             feedback.setProgress(int(current * total))
 

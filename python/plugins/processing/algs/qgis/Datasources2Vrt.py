@@ -48,12 +48,6 @@ class Datasources2Vrt(QgisAlgorithm):
     VRT_FILE = 'VRT_FILE'
     VRT_STRING = 'VRT_STRING'
 
-    def icon(self):
-        return QgsApplication.getThemeIcon("/providerQgis.svg")
-
-    def svgIconPath(self):
-        return QgsApplication.iconPath("providerQgis.svg")
-
     def group(self):
         return self.tr('Vector general tools')
 
@@ -110,7 +104,7 @@ class Datasources2Vrt(QgisAlgorithm):
         if union:
             vrt += '<OGRVRTUnionLayer name="UnionedLayer">'
 
-        total = 100.0 / len(dataSources)
+        total = 100.0 / len(dataSources) if dataSources else 1
         for current, inFile in enumerate(dataSources):
             feedback.setProgress(int(current * total))
 

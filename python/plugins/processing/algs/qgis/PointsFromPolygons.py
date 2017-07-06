@@ -32,6 +32,7 @@ from qgis.core import (QgsApplication,
                        QgsFields,
                        QgsField,
                        QgsFeature,
+                       QgsFeatureSink,
                        QgsGeometry,
                        QgsWkbTypes,
                        QgsPointXY,
@@ -50,12 +51,6 @@ class PointsFromPolygons(QgisAlgorithm):
     RASTER_BAND = 'RASTER_BAND'
     INPUT_VECTOR = 'INPUT_VECTOR'
     OUTPUT_LAYER = 'OUTPUT_LAYER'
-
-    def icon(self):
-        return QgsApplication.getThemeIcon("/providerQgis.svg")
-
-    def svgIconPath(self):
-        return QgsApplication.iconPath("providerQgis.svg")
 
     def group(self):
         return self.tr('Vector analysis tools')
@@ -99,7 +94,7 @@ class PointsFromPolygons(QgisAlgorithm):
         pointId = 0
 
         features = QgsProcessingUtils.getFeatures(layer, context)
-        total = 100.0 / QgsProcessingUtils.featureCount(layer, context)
+        total = 100.0 / layer.featureCount() if layer.featureCount() else 0
         for current, f in enumerate(features):
             geom = f.geometry()
             bbox = geom.boundingBox()
@@ -132,7 +127,7 @@ class PointsFromPolygons(QgisAlgorithm):
                         fid += 1
                         pointId += 1
 
-                        writer.addFeature(outFeature)
+                        writer.addFeature(outFeature, QgsFeatureSink.FastInsert)
 
             pointId = 0
             polyId += 1

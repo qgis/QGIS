@@ -29,6 +29,7 @@ __revision__ = '$Format:%H$'
 from qgis.core import (QgsApplication,
                        QgsFeatureRequest,
                        QgsFeature,
+                       QgsFeatureSink,
                        QgsGeometry,
                        QgsSpatialIndex,
                        QgsWkbTypes,
@@ -47,12 +48,6 @@ class SplitWithLines(QgisAlgorithm):
     INPUT_B = 'INPUT_B'
 
     OUTPUT = 'OUTPUT'
-
-    def icon(self):
-        return QgsApplication.getThemeIcon("/providerQgis.svg")
-
-    def svgIconPath(self):
-        return QgsApplication.iconPath("providerQgis.svg")
 
     def group(self):
         return self.tr('Vector overlay tools')
@@ -98,7 +93,7 @@ class SplitWithLines(QgisAlgorithm):
         if QgsProcessingUtils.featureCount(layerA, context) == 0:
             total = 100
         else:
-            total = 100.0 / QgsProcessingUtils.featureCount(layerA, context)
+            total = 100.0 / layerA.featureCount() if layerA.featureCount() else 0
 
         for current, inFeatA in enumerate(features):
             inGeom = inFeatA.geometry()
@@ -199,7 +194,7 @@ class SplitWithLines(QgisAlgorithm):
 
             if len(parts) > 0:
                 outFeat.setGeometry(QgsGeometry.collectGeometry(parts))
-                writer.addFeature(outFeat)
+                writer.addFeature(outFeat, QgsFeatureSink.FastInsert)
 
             feedback.setProgress(int(current * total))
         del writer

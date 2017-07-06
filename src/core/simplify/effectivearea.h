@@ -26,6 +26,8 @@
 #include "qgscurve.h"
 #include "qgspoint.h"
 
+#define SIP_NO_FILE
+
 #ifndef _EFFECTIVEAREA_H
 #define _EFFECTIVEAREA_H 1
 

@@ -21,7 +21,7 @@
 #include "qgswcsgetcapabilities.h"
 
 #include "qgsproject.h"
-#include "qgscsexception.h"
+#include "qgsexception.h"
 #include "qgsrasterlayer.h"
 #include "qgsmapserviceexception.h"
 #include "qgscoordinatereferencesystem.h"

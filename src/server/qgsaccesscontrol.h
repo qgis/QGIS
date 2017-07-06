@@ -23,6 +23,9 @@
 
 #include <QMultiMap>
 #include "qgis_server.h"
+#include "qgis_sip.h"
+
+SIP_IF_MODULE( HAVE_SERVER_PYTHON_PLUGINS )
 
 class QgsAccessControlPlugin;
 
@@ -35,6 +38,10 @@ class QgsAccessControlPlugin;
  **/
 class SERVER_EXPORT QgsAccessControl : public QgsFeatureFilterProvider
 {
+#ifdef SIP_RUN
+#include "qgsaccesscontrolfilter.h"
+#endif
+
   public:
     //! Constructor
     QgsAccessControl()

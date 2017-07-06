@@ -215,7 +215,11 @@ class CORE_EXPORT QgsMapSettings
     QPolygonF visiblePolygon() const;
     //! Return the distance in geographical coordinates that equals to one pixel in the map
     double mapUnitsPerPixel() const;
-    //! Return the calculated scale of the map
+
+    /**
+     * Returns the calculated map scale.
+     * The scale value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
+     */
     double scale() const;
 
     /** Sets the expression context. This context is used for all expression evaluation

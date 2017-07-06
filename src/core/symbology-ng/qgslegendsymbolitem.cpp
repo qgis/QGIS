@@ -15,6 +15,7 @@
 
 #include "qgslegendsymbolitem.h"
 
+#include "qgsdatadefinedsizelegend.h"
 #include "qgssymbol.h"
 
 QgsLegendSymbolItem::QgsLegendSymbolItem()
@@ -50,6 +51,7 @@ QgsLegendSymbolItem::QgsLegendSymbolItem( const QgsLegendSymbolItem &other )
 QgsLegendSymbolItem::~QgsLegendSymbolItem()
 {
   delete mSymbol;
+  delete mDataDefinedSizeLegendSettings;
 }
 
 QgsLegendSymbolItem &QgsLegendSymbolItem::operator=( const QgsLegendSymbolItem &other )
@@ -61,6 +63,8 @@ QgsLegendSymbolItem &QgsLegendSymbolItem::operator=( const QgsLegendSymbolItem &
   mLabel = other.mLabel;
   mKey = other.mKey;
   mCheckable = other.mCheckable;
+  delete mDataDefinedSizeLegendSettings;
+  mDataDefinedSizeLegendSettings = other.mDataDefinedSizeLegendSettings ? new QgsDataDefinedSizeLegend( *other.mDataDefinedSizeLegendSettings ) : nullptr;
   mOriginalSymbolPointer = other.mOriginalSymbolPointer;
   mScaleMinDenom = other.mScaleMinDenom;
   mScaleMaxDenom = other.mScaleMaxDenom;
@@ -88,4 +92,15 @@ void QgsLegendSymbolItem::setSymbol( QgsSymbol *s )
   delete mSymbol;
   mSymbol = s ? s->clone() : nullptr;
   mOriginalSymbolPointer = s;
+}
+
+void QgsLegendSymbolItem::setDataDefinedSizeLegendSettings( QgsDataDefinedSizeLegend *settings )
+{
+  delete mDataDefinedSizeLegendSettings;
+  mDataDefinedSizeLegendSettings = settings;
+}
+
+QgsDataDefinedSizeLegend *QgsLegendSymbolItem::dataDefinedSizeLegendSettings() const
+{
+  return mDataDefinedSizeLegendSettings;
 }

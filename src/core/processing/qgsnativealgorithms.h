@@ -18,6 +18,8 @@
 #ifndef QGSNATIVEALGORITHMS_H
 #define QGSNATIVEALGORITHMS_H
 
+#define SIP_NO_FILE
+
 #include "qgis_core.h"
 #include "qgis.h"
 #include "qgsprocessingalgorithm.h"
@@ -67,6 +69,29 @@ class QgsCentroidAlgorithm : public QgsProcessingAlgorithm
 };
 
 /**
+ * Native transform algorithm.
+ */
+class QgsTransformAlgorithm : public QgsProcessingAlgorithm
+{
+
+  public:
+
+    QgsTransformAlgorithm();
+
+    QString name() const override { return QStringLiteral( "reprojectlayer" ); }
+    QString displayName() const override { return QObject::tr( "Reproject layer" ); }
+    virtual QStringList tags() const override { return QObject::tr( "transform,reproject,crs,srs,warp" ).split( ',' ); }
+    QString group() const override { return QObject::tr( "Vector general tools" ); }
+    QString shortHelpString() const override;
+
+  protected:
+
+    virtual QVariantMap processAlgorithm( const QVariantMap &parameters,
+                                          QgsProcessingContext &context, QgsProcessingFeedback *feedback ) const override;
+
+};
+
+/**
  * Native buffer algorithm.
  */
 class QgsBufferAlgorithm : public QgsProcessingAlgorithm
@@ -79,6 +104,160 @@ class QgsBufferAlgorithm : public QgsProcessingAlgorithm
     QString name() const override { return QStringLiteral( "buffer" ); }
     QString displayName() const override { return QObject::tr( "Buffer" ); }
     virtual QStringList tags() const override { return QObject::tr( "buffer,grow" ).split( ',' ); }
+    QString group() const override { return QObject::tr( "Vector geometry tools" ); }
+    QString shortHelpString() const override;
+
+  protected:
+
+    virtual QVariantMap processAlgorithm( const QVariantMap &parameters,
+                                          QgsProcessingContext &context, QgsProcessingFeedback *feedback ) const override;
+
+};
+
+/**
+ * Native dissolve algorithm.
+ */
+class QgsDissolveAlgorithm : public QgsProcessingAlgorithm
+{
+
+  public:
+
+    QgsDissolveAlgorithm();
+
+    QString name() const override { return QStringLiteral( "dissolve" ); }
+    QString displayName() const override { return QObject::tr( "Dissolve" ); }
+    virtual QStringList tags() const override { return QObject::tr( "dissolve,union,combine,collect" ).split( ',' ); }
+    QString group() const override { return QObject::tr( "Vector geometry tools" ); }
+    QString shortHelpString() const override;
+
+  protected:
+
+    virtual QVariantMap processAlgorithm( const QVariantMap &parameters,
+                                          QgsProcessingContext &context, QgsProcessingFeedback *feedback ) const override;
+
+};
+
+/**
+ * Native extract by attribute algorithm.
+ */
+class QgsExtractByAttributeAlgorithm : public QgsProcessingAlgorithm
+{
+
+  public:
+
+    enum Operation
+    {
+      Equals,
+      NotEquals,
+      GreaterThan,
+      GreaterThanEqualTo,
+      LessThan,
+      LessThanEqualTo,
+      BeginsWith,
+      Contains,
+      IsNull,
+      IsNotNull,
+      DoesNotContain,
+    };
+
+    QgsExtractByAttributeAlgorithm();
+
+    QString name() const override { return QStringLiteral( "extractbyattribute" ); }
+    QString displayName() const override { return QObject::tr( "Extract by attribute" ); }
+    virtual QStringList tags() const override { return QObject::tr( "extract,filter,attribute,value,contains,null,field" ).split( ',' ); }
+    QString group() const override { return QObject::tr( "Vector selection tools" ); }
+    QString shortHelpString() const override;
+
+  protected:
+
+    virtual QVariantMap processAlgorithm( const QVariantMap &parameters,
+                                          QgsProcessingContext &context, QgsProcessingFeedback *feedback ) const override;
+
+};
+
+/**
+ * Native extract by expression algorithm.
+ */
+class QgsExtractByExpressionAlgorithm : public QgsProcessingAlgorithm
+{
+
+  public:
+
+    QgsExtractByExpressionAlgorithm();
+
+    QString name() const override { return QStringLiteral( "extractbyexpression" ); }
+    QString displayName() const override { return QObject::tr( "Extract by expression" ); }
+    virtual QStringList tags() const override { return QObject::tr( "extract,filter,expression,field" ).split( ',' ); }
+    QString group() const override { return QObject::tr( "Vector selection tools" ); }
+    QString shortHelpString() const override;
+
+  protected:
+
+    virtual QVariantMap processAlgorithm( const QVariantMap &parameters,
+                                          QgsProcessingContext &context, QgsProcessingFeedback *feedback ) const override;
+
+};
+
+/**
+ * Native clip algorithm.
+ */
+class QgsClipAlgorithm : public QgsProcessingAlgorithm
+{
+
+  public:
+
+    QgsClipAlgorithm();
+
+    QString name() const override { return QStringLiteral( "clip" ); }
+    QString displayName() const override { return QObject::tr( "Clip" ); }
+    virtual QStringList tags() const override { return QObject::tr( "clip,intersect,intersection,mask" ).split( ',' ); }
+    QString group() const override { return QObject::tr( "Vector overlay tools" ); }
+    QString shortHelpString() const override;
+
+  protected:
+
+    virtual QVariantMap processAlgorithm( const QVariantMap &parameters,
+                                          QgsProcessingContext &context, QgsProcessingFeedback *feedback ) const override;
+
+};
+
+
+/**
+ * Native subdivide algorithm.
+ */
+class QgsSubdivideAlgorithm : public QgsProcessingAlgorithm
+{
+
+  public:
+
+    QgsSubdivideAlgorithm();
+
+    QString name() const override { return QStringLiteral( "subdivide" ); }
+    QString displayName() const override { return QObject::tr( "Subdivide" ); }
+    virtual QStringList tags() const override { return QObject::tr( "subdivide,segmentize,split,tesselate" ).split( ',' ); }
+    QString group() const override { return QObject::tr( "Vector geometry tools" ); }
+    QString shortHelpString() const override;
+
+  protected:
+
+    virtual QVariantMap processAlgorithm( const QVariantMap &parameters,
+                                          QgsProcessingContext &context, QgsProcessingFeedback *feedback ) const override;
+
+};
+
+/**
+ * Native multipart to singlepart algorithm.
+ */
+class QgsMultipartToSinglepartAlgorithm : public QgsProcessingAlgorithm
+{
+
+  public:
+
+    QgsMultipartToSinglepartAlgorithm();
+
+    QString name() const override { return QStringLiteral( "multiparttosingleparts" ); }
+    QString displayName() const override { return QObject::tr( "Multipart to singleparts" ); }
+    virtual QStringList tags() const override { return QObject::tr( "multi,single,multiple,split,dump" ).split( ',' ); }
     QString group() const override { return QObject::tr( "Vector geometry tools" ); }
     QString shortHelpString() const override;
 

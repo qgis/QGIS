@@ -37,7 +37,7 @@
 #include "qgsmapthemecollection.h"
 #include "qgsmapthemes.h"
 #include "qgsguiutils.h"
-#include "qgscsexception.h"
+#include "qgsexception.h"
 
 #include <QMessageBox>
 
@@ -596,13 +596,13 @@ void QgsComposerMapWidget::updateGuiElements()
 
   mMapRotationSpinBox->setValue( mComposerMap->mapRotation( QgsComposerObject::OriginalValue ) );
 
-  // follow preset check box
+  // follow preset checkbox
   mFollowVisibilityPresetCheckBox->setCheckState(
     mComposerMap->followVisibilityPreset() ? Qt::Checked : Qt::Unchecked );
   int presetModelIndex = mFollowVisibilityPresetCombo->findText( mComposerMap->followVisibilityPresetName() );
   mFollowVisibilityPresetCombo->setCurrentIndex( presetModelIndex != -1 ? presetModelIndex : 0 ); // 0 == none
 
-  //keep layer list check box
+  //keep layer list checkbox
   if ( mComposerMap->keepLayerSet() )
   {
     mKeepLayerListCheckBox->setCheckState( Qt::Checked );
@@ -1185,7 +1185,7 @@ void QgsComposerMapWidget::on_mGridListWidget_itemChanged( QListWidgetItem *item
   grid->setName( item->text() );
   if ( item->isSelected() )
   {
-    //update check box title if item is current item
+    //update checkbox title if item is current item
     mDrawGridCheckBox->setText( QString( tr( "Draw \"%1\" grid" ) ).arg( grid->name() ) );
   }
 }
@@ -1397,7 +1397,7 @@ void QgsComposerMapWidget::on_mOverviewListWidget_itemChanged( QListWidgetItem *
   overview->setName( item->text() );
   if ( item->isSelected() )
   {
-    //update check box title if item is current item
+    //update checkbox title if item is current item
     mOverviewCheckBox->setTitle( QString( tr( "Draw \"%1\" overview" ) ).arg( overview->name() ) );
   }
 }

@@ -43,6 +43,14 @@ class CORE_EXPORT QgsLineString: public QgsCurve
     QgsLineString();
 
     /**
+     * Construct a linestring from a vector of points.
+     * Z and M type will be set based on the type of the first point
+     * in the vector.
+     * \since QGIS 3.0
+     */
+    QgsLineString( const QVector<QgsPoint> &points );
+
+    /**
      * Construct a linestring from arrays of coordinates. If the z or m
      * arrays are non-empty then the resultant linestring will have
      * z and m types accordingly.
@@ -75,7 +83,7 @@ class CORE_EXPORT QgsLineString: public QgsCurve
 
     /** Returns the z-coordinate of the specified node in the line string.
      * \param index index of node, where the first node in the line is 0
-     * \returns z-coordinate of node, or 0.0 if index is out of bounds or the line
+     * \returns z-coordinate of node, or ``nan`` if index is out of bounds or the line
      * does not have a z dimension
      * \see setZAt()
      */
@@ -83,7 +91,7 @@ class CORE_EXPORT QgsLineString: public QgsCurve
 
     /** Returns the m value of the specified node in the line string.
      * \param index index of node, where the first node in the line is 0
-     * \returns m value of node, or 0.0 if index is out of bounds or the line
+     * \returns m value of node, or ``nan`` if index is out of bounds or the line
      * does not have m values
      * \see setMAt()
      */

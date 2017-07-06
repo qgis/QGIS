@@ -265,7 +265,7 @@ QgsSnappingConfig::IndividualLayerSettings QgsSnappingConfig::individualLayerSet
 
 void QgsSnappingConfig::setIndividualLayerSettings( QgsVectorLayer *vl, const IndividualLayerSettings &individualLayerSettings )
 {
-  if ( !vl || !vl->hasGeometryType() || mIndividualLayerSettings.value( vl ) == individualLayerSettings )
+  if ( !vl || !vl->isSpatial() || mIndividualLayerSettings.value( vl ) == individualLayerSettings )
   {
     return;
   }
@@ -382,7 +382,7 @@ bool QgsSnappingConfig::addLayers( const QList<QgsMapLayer *> &layers )
   Q_FOREACH ( QgsMapLayer *ml, layers )
   {
     QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( ml );
-    if ( vl && vl->hasGeometryType() )
+    if ( vl && vl->isSpatial() )
     {
       mIndividualLayerSettings.insert( vl, IndividualLayerSettings( enabled, type, tolerance, units ) );
       changed = true;
@@ -449,7 +449,7 @@ void QgsSnappingConfig::readLegacySettings()
   for ( ; layerIt != layerIdList.constEnd(); ++layerIt, ++tolIt, ++tolUnitIt, ++snapIt, ++enabledIt )
   {
     QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( mProject->mapLayer( *layerIt ) );
-    if ( !vlayer || !vlayer->hasGeometryType() )
+    if ( !vlayer || !vlayer->isSpatial() )
       continue;
 
     SnappingType t( *snapIt == QLatin1String( "to_vertex" ) ? Vertex :

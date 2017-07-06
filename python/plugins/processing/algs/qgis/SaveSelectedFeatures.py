@@ -25,35 +25,29 @@ __copyright__ = '(C) 2012, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
-from qgis.core import (QgsApplication,
-                       QgsProcessingUtils)
+from qgis.core import (QgsFeatureSink,
+                       QgsProcessingUtils,
+                       QgsProcessingParameterVectorLayer,
+                       QgsProcessingParameterFeatureSink,
+                       QgsProcessingOutputVectorLayer)
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
-from processing.core.parameters import ParameterVector
-from processing.core.outputs import OutputVector
 
 
 class SaveSelectedFeatures(QgisAlgorithm):
 
-    OUTPUT_LAYER = 'OUTPUT_LAYER'
-    INPUT_LAYER = 'INPUT_LAYER'
-
-    def icon(self):
-        return QgsApplication.getThemeIcon("/providerQgis.svg")
-
-    def svgIconPath(self):
-        return QgsApplication.iconPath("providerQgis.svg")
+    OUTPUT = 'OUTPUT'
+    INPUT = 'INPUT'
 
     def group(self):
         return self.tr('Vector general tools')
 
     def __init__(self):
         super().__init__()
-        self.addParameter(ParameterVector(self.INPUT_LAYER,
-                                          self.tr('Input layer')))
 
-        self.addOutput(OutputVector(self.OUTPUT_LAYER,
-                                    self.tr('Selection')))
+        self.addParameter(QgsProcessingParameterVectorLayer(self.INPUT, self.tr('Input layer')))
+        self.addParameter(QgsProcessingParameterFeatureSink(self.OUTPUT, self.tr('Selection')))
+        self.addOutput(QgsProcessingOutputVectorLayer(self.OUTPUT, self.tr("Selection")))
 
     def name(self):
         return 'saveselectedfeatures'
@@ -62,20 +56,20 @@ class SaveSelectedFeatures(QgisAlgorithm):
         return self.tr('Save selected features')
 
     def processAlgorithm(self, parameters, context, feedback):
-        inputFilename = self.getParameterValue(self.INPUT_LAYER)
-        output = self.getOutputFromName(self.OUTPUT_LAYER)
+        vectorLayer = self.parameterAsVectorLayer(parameters, self.INPUT, context)
 
-        vectorLayer = QgsProcessingUtils.mapLayerFromString(inputFilename, context)
-
-        writer = output.getVectorWriter(vectorLayer.fields(), vectorLayer.wkbType(), vectorLayer.crs(), context)
+        (sink, dest_id) = self.parameterAsSink(parameters, self.OUTPUT, context,
+                                               vectorLayer.fields(), vectorLayer.wkbType(), vectorLayer.sourceCrs())
 
         features = vectorLayer.getSelectedFeatures()
         count = int(vectorLayer.selectedFeatureCount())
-        if count == 0:
-            raise GeoAlgorithmExecutionException(self.tr('There are no selected features in the input layer.'))
 
-        total = 100.0 / count
+        total = 100.0 / count if count else 1
         for current, feat in enumerate(features):
-            writer.addFeature(feat)
+            if feedback.isCanceled():
+                break
+
+            sink.addFeature(feat, QgsFeatureSink.FastInsert)
             feedback.setProgress(int(current * total))
-        del writer
+
+        return {self.OUTPUT: dest_id}

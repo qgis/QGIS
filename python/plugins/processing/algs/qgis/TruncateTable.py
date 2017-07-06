@@ -26,6 +26,7 @@ __copyright__ = '(C) 2017, Nyall Dawson'
 __revision__ = '$Format:%H$'
 
 from qgis.core import (QgsApplication,
+                       QgsFeatureSink,
                        QgsProcessingUtils)
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 from processing.core.parameters import ParameterTable
@@ -37,12 +38,6 @@ class TruncateTable(QgisAlgorithm):
 
     INPUT = 'INPUT'
     OUTPUT = 'OUTPUT'
-
-    def icon(self):
-        return QgsApplication.getThemeIcon("/providerQgis.svg")
-
-    def svgIconPath(self):
-        return QgsApplication.iconPath("providerQgis.svg")
 
     def tags(self):
         return self.tr('empty,delete,layer,clear,features').split(',')

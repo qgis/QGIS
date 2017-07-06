@@ -16,7 +16,7 @@
 #include "qgsmaptooladdfeature.h"
 #include "qgsapplication.h"
 #include "qgsattributedialog.h"
-#include "qgscsexception.h"
+#include "qgsexception.h"
 #include "qgscurvepolygon.h"
 #include "qgsfields.h"
 #include "qgsgeometry.h"

@@ -691,7 +691,7 @@ class QgsWmsCapabilities
     void parseKeywords( const QDomNode &e, QStringList &keywords );
     void parseTheme( const QDomElement &e, QgsWmtsTheme &t );
 
-    QString nodeAttribute( const QDomElement &e, const QString &name, const QString &defValue = QString::null );
+    QString nodeAttribute( const QDomElement &e, const QString &name, const QString &defValue = QString() );
 
     /**
      * In case no bounding box is present in WMTS capabilities, try to estimate it from tile matrix sets.

@@ -91,6 +91,35 @@ class TestQgsAttributeTableModel(unittest.TestCase):
 
         self.assertEqual(self.am.columnCount(), 1)
 
+    def testEdit(self):
+        fid = 2
+        field_idx = 1
+        new_value = 333
+
+        # get the same feature from model and layer
+        feature = self.layer.getFeature(fid)
+        model_index = self.am.idToIndex(fid)
+        feature_model = self.am.feature(model_index)
+
+        # check that feature from layer and model are sync
+        self.assertEqual(feature.attribute(field_idx), feature_model.attribute(field_idx))
+
+        # change attribute value for a feature and commit
+        self.layer.startEditing()
+        self.layer.changeAttributeValue(fid, field_idx, new_value)
+        self.layer.commitChanges()
+
+        # check the feature in layer is good
+        feature = self.layer.getFeature(fid)
+        self.assertEqual(feature.attribute(field_idx), new_value)
+
+        # get the same feature from model and layer
+        model_index = self.am.idToIndex(fid)
+        feature_model = self.am.feature(model_index)
+
+        # check that index from layer and model are sync
+        self.assertEqual(feature.attribute(field_idx), feature_model.attribute(field_idx))
+
 
 if __name__ == '__main__':
     unittest.main()

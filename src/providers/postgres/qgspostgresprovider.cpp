@@ -1548,7 +1548,7 @@ QVariant QgsPostgresProvider::minimumValue( int index ) const
   }
   catch ( PGFieldNotFound )
   {
-    return QVariant( QString::null );
+    return QVariant( QString() );
   }
 }
 
@@ -1771,7 +1771,7 @@ QVariant QgsPostgresProvider::maximumValue( int index ) const
   }
   catch ( PGFieldNotFound )
   {
-    return QVariant( QString::null );
+    return QVariant( QString() );
   }
 }
 
@@ -1832,7 +1832,7 @@ bool QgsPostgresProvider::skipConstraintCheck( int fieldIndex, QgsFieldConstrain
 QString QgsPostgresProvider::paramValue( const QString &fieldValue, const QString &defaultValue ) const
 {
   if ( fieldValue.isNull() )
-    return QString::null;
+    return QString();
 
   if ( fieldValue == defaultValue && !defaultValue.isNull() )
   {
@@ -1935,7 +1935,7 @@ QString QgsPostgresProvider::geomParam( int offset ) const
   return geometry;
 }
 
-bool QgsPostgresProvider::addFeatures( QgsFeatureList &flist )
+bool QgsPostgresProvider::addFeatures( QgsFeatureList &flist, Flags flags )
 {
   if ( flist.isEmpty() )
     return true;
@@ -2084,15 +2084,18 @@ bool QgsPostgresProvider::addFeatures( QgsFeatureList &flist )
 
     insert += values + ')';
 
-    if ( mPrimaryKeyType == PktFidMap || mPrimaryKeyType == PktInt || mPrimaryKeyType == PktUint64 )
+    if ( !( flags & QgsFeatureSink::FastInsert ) )
     {
-      insert += QLatin1String( " RETURNING " );
-
-      QString delim;
-      Q_FOREACH ( int idx, mPrimaryKeyAttrs )
+      if ( mPrimaryKeyType == PktFidMap || mPrimaryKeyType == PktInt || mPrimaryKeyType == PktUint64 )
       {
-        insert += delim + quotedIdentifier( mAttributeFields.at( idx ).name() );
-        delim = ',';
+        insert += QLatin1String( " RETURNING " );
+
+        QString delim;
+        Q_FOREACH ( int idx, mPrimaryKeyAttrs )
+        {
+          insert += delim + quotedIdentifier( mAttributeFields.at( idx ).name() );
+          delim = ',';
+        }
       }
     }
 
@@ -2141,7 +2144,7 @@ bool QgsPostgresProvider::addFeatures( QgsFeatureList &flist )
 
       QgsPostgresResult result( conn->PQexecPrepared( QStringLiteral( "addfeatures" ), params ) );
 
-      if ( result.PQresultStatus() == PGRES_TUPLES_OK )
+      if ( !( flags & QgsFeatureSink::FastInsert ) && result.PQresultStatus() == PGRES_TUPLES_OK )
       {
         for ( int i = 0; i < mPrimaryKeyAttrs.size(); ++i )
         {
@@ -2153,40 +2156,43 @@ bool QgsPostgresProvider::addFeatures( QgsFeatureList &flist )
       else if ( result.PQresultStatus() != PGRES_COMMAND_OK )
         throw PGException( result );
 
-      if ( mPrimaryKeyType == PktOid )
+      if ( !( flags & QgsFeatureSink::FastInsert ) && mPrimaryKeyType == PktOid )
       {
         features->setId( result.PQoidValue() );
         QgsDebugMsgLevel( QString( "new fid=%1" ).arg( features->id() ), 4 );
       }
     }
 
-    // update feature ids
-    if ( mPrimaryKeyType == PktInt || mPrimaryKeyType == PktFidMap || mPrimaryKeyType == PktUint64 )
+    if ( !( flags & QgsFeatureSink::FastInsert ) )
     {
-      for ( QgsFeatureList::iterator features = flist.begin(); features != flist.end(); ++features )
+      // update feature ids
+      if ( mPrimaryKeyType == PktInt || mPrimaryKeyType == PktFidMap || mPrimaryKeyType == PktUint64 )
       {
-        QgsAttributes attrs = features->attributes();
+        for ( QgsFeatureList::iterator features = flist.begin(); features != flist.end(); ++features )
+        {
+          QgsAttributes attrs = features->attributes();
 
-        if ( mPrimaryKeyType == PktUint64 )
-        {
-          features->setId( STRING_TO_FID( attrs.at( mPrimaryKeyAttrs.at( 0 ) ) ) );
-        }
-        else if ( mPrimaryKeyType == PktInt )
-        {
-          features->setId( PKINT2FID( STRING_TO_FID( attrs.at( mPrimaryKeyAttrs.at( 0 ) ) ) ) );
-        }
-        else
-        {
-          QVariantList primaryKeyVals;
-
-          Q_FOREACH ( int idx, mPrimaryKeyAttrs )
+          if ( mPrimaryKeyType == PktUint64 )
           {
-            primaryKeyVals << attrs.at( idx );
+            features->setId( STRING_TO_FID( attrs.at( mPrimaryKeyAttrs.at( 0 ) ) ) );
           }
+          else if ( mPrimaryKeyType == PktInt )
+          {
+            features->setId( PKINT2FID( STRING_TO_FID( attrs.at( mPrimaryKeyAttrs.at( 0 ) ) ) ) );
+          }
+          else
+          {
+            QVariantList primaryKeyVals;
 
-          features->setId( mShared->lookupFid( primaryKeyVals ) );
+            Q_FOREACH ( int idx, mPrimaryKeyAttrs )
+            {
+              primaryKeyVals << attrs.at( idx );
+            }
+
+            features->setId( mShared->lookupFid( primaryKeyVals ) );
+          }
+          QgsDebugMsgLevel( QString( "new fid=%1" ).arg( features->id() ), 4 );
         }
-        QgsDebugMsgLevel( QString( "new fid=%1" ).arg( features->id() ), 4 );
       }
     }
 
@@ -2627,14 +2633,14 @@ void QgsPostgresProvider::appendGeomParam( const QgsGeometry &geom, QStringList 
 {
   if ( geom.isNull() )
   {
-    params << QString::null;
+    params << QString();
     return;
   }
 
   QString param;
 
-  std::unique_ptr<QgsGeometry> convertedGeom( convertToProviderType( geom ) );
-  QByteArray wkb( convertedGeom ? convertedGeom->exportToWkb() : geom.exportToWkb() );
+  QgsGeometry convertedGeom( convertToProviderType( geom ) );
+  QByteArray wkb( convertedGeom ? convertedGeom.exportToWkb() : geom.exportToWkb() );
   const unsigned char *buf = reinterpret_cast< const unsigned char * >( wkb.constData() );
   int wkbSize = wkb.length();
 
@@ -4014,14 +4020,14 @@ static QString getNextString( const QString &txt, int &i, const QString &sep )
     if ( !stringRe.exactMatch( cur ) )
     {
       QgsLogger::warning( "Cannot find end of double quoted string: " + txt );
-      return QString::null;
+      return QString();
     }
     i += stringRe.cap( 1 ).length() + 2;
     jumpSpace( txt, i );
     if ( !txt.midRef( i ).startsWith( sep ) && i < txt.length() )
     {
       QgsLogger::warning( "Cannot find separator: " + txt.mid( i ) );
-      return QString::null;
+      return QString();
     }
     i += sep.length();
     return stringRe.cap( 1 ).replace( QLatin1String( "\\\"" ), QLatin1String( "\"" ) ).replace( QLatin1String( "\\\\" ), QLatin1String( "\\" ) );

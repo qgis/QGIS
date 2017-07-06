@@ -375,9 +375,9 @@ void QgsTextFormatWidget::initWidget()
           << mScaleBasedVisibilityChkBx
           << mScaleBasedVisibilityDDBtn
           << mScaleBasedVisibilityMaxDDBtn
-          << mScaleBasedVisibilityMaxSpnBx
+          << mMaxScaleWidget
           << mScaleBasedVisibilityMinDDBtn
-          << mScaleBasedVisibilityMinSpnBx
+          << mMinScaleWidget
           << mShadowBlendCmbBx
           << mShadowBlendDDBtn
           << mShadowColorBtn
@@ -482,7 +482,7 @@ void QgsTextFormatWidget::initWidget()
   if ( mMapCanvas )
   {
     lblFontPreview->setMapUnits( mMapCanvas->mapSettings().mapUnits() );
-    mPreviewScaleComboBox->setScale( 1.0 / mMapCanvas->mapSettings().scale() );
+    mPreviewScaleComboBox->setScale( mMapCanvas->mapSettings().scale() );
   }
 }
 
@@ -554,6 +554,10 @@ void QgsTextFormatWidget::connectValueChanged( const QList<QWidget *> &widgets, 
     else if ( QgsOpacityWidget *w = qobject_cast< QgsOpacityWidget *>( widget ) )
     {
       connect( w, SIGNAL( opacityChanged( double ) ), this,  slot );
+    }
+    else if ( QgsScaleWidget *w = qobject_cast< QgsScaleWidget *>( widget ) )
+    {
+      connect( w, SIGNAL( scaleChanged( double ) ), this,  slot );
     }
     else if ( QgsUnitSelectionWidget *w = qobject_cast<QgsUnitSelectionWidget *>( widget ) )
     {

@@ -29,6 +29,7 @@ from qgis.PyQt.QtCore import QVariant
 from qgis.core import (QgsApplication,
                        QgsField,
                        QgsFeatureRequest,
+                       QgsFeatureSink,
                        QgsFeature,
                        QgsGeometry,
                        QgsProcessingUtils)
@@ -47,12 +48,6 @@ class PointsInPolygonUnique(QgisAlgorithm):
     OUTPUT = 'OUTPUT'
     FIELD = 'FIELD'
     CLASSFIELD = 'CLASSFIELD'
-
-    def icon(self):
-        return QgsApplication.getThemeIcon("/providerQgis.svg")
-
-    def svgIconPath(self):
-        return QgsApplication.iconPath("providerQgis.svg")
 
     def group(self):
         return self.tr('Vector analysis tools')
@@ -98,7 +93,7 @@ class PointsInPolygonUnique(QgisAlgorithm):
         geom = QgsGeometry()
 
         features = QgsProcessingUtils.getFeatures(polyLayer, context)
-        total = 100.0 / QgsProcessingUtils.featureCount(polyLayer, context)
+        total = 100.0 / polyLayer.featureCount() if polyLayer.featureCount() else 0
         for current, ftPoly in enumerate(features):
             geom = ftPoly.geometry()
             engine = QgsGeometry.createGeometryEngine(geom.geometry())
@@ -125,7 +120,7 @@ class PointsInPolygonUnique(QgisAlgorithm):
             else:
                 attrs[idxCount] = len(classes)
             outFeat.setAttributes(attrs)
-            writer.addFeature(outFeat)
+            writer.addFeature(outFeat, QgsFeatureSink.FastInsert)
 
             feedback.setProgress(int(current * total))
 

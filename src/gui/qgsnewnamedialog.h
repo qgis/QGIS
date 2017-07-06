@@ -43,10 +43,10 @@ class GUI_EXPORT QgsNewNameDialog : public QgsDialog
      * \param parent
      * \param flags
      */
-    QgsNewNameDialog( const QString &source = QString::null, const QString &initial = QString::null,
+    QgsNewNameDialog( const QString &source = QString(), const QString &initial = QString(),
                       const QStringList &extensions = QStringList(), const QStringList &existing = QStringList(),
                       const QRegExp &regexp = QRegExp(), Qt::CaseSensitivity cs = Qt::CaseSensitive,
-                      QWidget *parent = nullptr, Qt::WindowFlags flags = QgsGuiUtils::ModalDialogFlags );
+                      QWidget *parent SIP_TRANSFERTHIS = nullptr, Qt::WindowFlags flags = QgsGuiUtils::ModalDialogFlags );
 
     /** Sets the hint string for the dialog (the text shown above the name
      * input box).

@@ -30,6 +30,7 @@ class QgsLegendSymbolItem
 .. versionadded:: 2.8
 %End
     ~QgsLegendSymbolItem();
+
     QgsLegendSymbolItem( const QgsLegendSymbolItem &other );
 
     QgsSymbol *symbol() const;
@@ -94,10 +95,26 @@ Identation level that tells how deep the item is in a hierarchy of items. For fl
 Set symbol of the item. Takes ownership of symbol.
 %End
 
+    void setDataDefinedSizeLegendSettings( QgsDataDefinedSizeLegend *settings /Transfer/ );
+%Docstring
+ Sets extra information about data-defined size. If set, this item should be converted to QgsDataDefinedSizeLegendNode
+ rather than QgsSymbolLegendNode instance as usual. Passing null removes any data-defined size legend settings.
+
+ Takes ownership of the settings object.
+.. versionadded:: 3.0
+%End
+
+    QgsDataDefinedSizeLegend *dataDefinedSizeLegendSettings() const;
+%Docstring
+ Returns extra information for data-defined size legend rendering. Normally it returns null.
+.. versionadded:: 3.0
+ :rtype: QgsDataDefinedSizeLegend
+%End
+
 };
 
 
-typedef QList< QgsLegendSymbolItem > QgsLegendSymbolListV2;
+typedef QList< QgsLegendSymbolItem > QgsLegendSymbolList;
 
 /************************************************************************
  * This file has been generated automatically from                      *

@@ -27,6 +27,7 @@ __copyright__ = '(C) 2012, Victor Olaya'
 __revision__ = '$Format:%H$'
 
 from qgis.core import (QgsApplication,
+                       QgsFeatureSink,
                        QgsStatisticalSummary,
                        QgsProcessingUtils)
 from processing.core.outputs import OutputTable
@@ -41,12 +42,6 @@ class StatisticsByCategories(QgisAlgorithm):
     VALUES_FIELD_NAME = 'VALUES_FIELD_NAME'
     CATEGORIES_FIELD_NAME = 'CATEGORIES_FIELD_NAME'
     OUTPUT = 'OUTPUT'
-
-    def icon(self):
-        return QgsApplication.getThemeIcon("/providerQgis.svg")
-
-    def svgIconPath(self):
-        return QgsApplication.iconPath("providerQgis.svg")
 
     def group(self):
         return self.tr('Vector table tools')
@@ -80,7 +75,7 @@ class StatisticsByCategories(QgisAlgorithm):
         categoriesField = layer.fields().lookupField(categoriesFieldName)
 
         features = QgsProcessingUtils.getFeatures(layer, context)
-        total = 100.0 / QgsProcessingUtils.featureCount(layer, context)
+        total = 100.0 / layer.featureCount() if layer.featureCount() else 0
         values = {}
         for current, feat in enumerate(features):
             feedback.setProgress(int(current * total))

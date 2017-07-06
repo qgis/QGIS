@@ -29,6 +29,7 @@ __revision__ = '$Format:%H$'
 from qgis.core import (QgsFeatureRequest,
                        QgsFeature,
                        QgsGeometry,
+                       QgsFeatureSink,
                        QgsWkbTypes,
                        QgsApplication,
                        QgsProcessingUtils)
@@ -50,12 +51,6 @@ class ConcaveHull(QgisAlgorithm):
     HOLES = 'HOLES'
     NO_MULTIGEOMETRY = 'NO_MULTIGEOMETRY'
     OUTPUT = 'OUTPUT'
-
-    def icon(self):
-        return QgsApplication.getThemeIcon("/providerQgis.svg")
-
-    def svgIconPath(self):
-        return QgsApplication.iconPath("providerQgis.svg")
 
     def group(self):
         return self.tr('Vector geometry tools')
@@ -152,7 +147,7 @@ class ConcaveHull(QgisAlgorithm):
                     while deleted:
                         deleted = single_geom.deleteRing(1)
                 single_feature.setGeometry(single_geom)
-                writer.addFeature(single_feature)
+                writer.addFeature(single_feature, QgsFeatureSink.FastInsert)
         else:
             # Multipart geometries are allowed
             if not holes:
@@ -160,5 +155,5 @@ class ConcaveHull(QgisAlgorithm):
                 deleted = True
                 while deleted:
                     deleted = geom.deleteRing(1)
-            writer.addFeature(feat)
+            writer.addFeature(feat, QgsFeatureSink.FastInsert)
         del writer

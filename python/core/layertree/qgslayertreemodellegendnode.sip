@@ -31,7 +31,7 @@ class QgsLayerTreeModelLegendNode : QObject
 
     enum LegendNodeRoles
     {
-      RuleKeyRole
+      RuleKeyRole,
       ParentRuleKeyRole
     };
 
@@ -149,6 +149,12 @@ Emitted on internal data change so the layer tree model can forward the signal t
     explicit QgsLayerTreeModelLegendNode( QgsLayerTreeLayer *nodeL, QObject *parent /TransferThis/ = 0 );
 %Docstring
 Construct the node with pointer to its parent layer node
+%End
+
+    QgsRenderContext *createTemporaryRenderContext() const /Factory/;
+%Docstring
+Returns a temporary context or null if legendMapViewData are not valid
+ :rtype: QgsRenderContext
 %End
 
   protected:
@@ -368,6 +374,31 @@ class QgsWmsLegendNode : QgsLayerTreeModelLegendNode
     virtual QSizeF drawSymbol( const QgsLegendSettings &settings, ItemContext *ctx, double itemHeight ) const;
 
     virtual void invalidateMapBasedData();
+
+};
+
+
+class QgsDataDefinedSizeLegendNode : QgsLayerTreeModelLegendNode
+{
+%Docstring
+ Produces legend node with a marker symbol
+.. versionadded:: 3.0
+%End
+
+%TypeHeaderCode
+#include "qgslayertreemodellegendnode.h"
+%End
+  public:
+    QgsDataDefinedSizeLegendNode( QgsLayerTreeLayer *nodeLayer, const QgsDataDefinedSizeLegend &settings, QObject *parent /TransferThis/ = 0 );
+%Docstring
+Construct the node using QgsDataDefinedSizeLegend as definition of the node's appearance
+%End
+    ~QgsDataDefinedSizeLegendNode();
+
+    virtual QVariant data( int role ) const;
+
+    virtual ItemMetrics draw( const QgsLegendSettings &settings, ItemContext *ctx );
+
 
 };
 

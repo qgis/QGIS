@@ -22,6 +22,7 @@
 #include "qgsmessagelog.h"
 #include "qgsgeometry.h"
 #include "qgssettings.h"
+#include "qgsexception.h"
 
 #include <QObject>
 
@@ -35,6 +36,21 @@ QgsOracleFeatureIterator::QgsOracleFeatureIterator( QgsOracleFeatureSource *sour
   if ( !mConnection )
   {
     close();
+    return;
+  }
+
+  if ( mRequest.destinationCrs().isValid() && mRequest.destinationCrs() != mSource->mCrs )
+  {
+    mTransform = QgsCoordinateTransform( mSource->mCrs, mRequest.destinationCrs() );
+  }
+  try
+  {
+    mFilterRect = filterRectToSourceCrs( mTransform );
+  }
+  catch ( QgsCsException & )
+  {
+    // can't reproject mFilterRect
+    mClosed = true;
     return;
   }
 
@@ -74,12 +90,11 @@ QgsOracleFeatureIterator::QgsOracleFeatureIterator( QgsOracleFeatureSource *sour
       mFetchGeometry = true;
     }
 
-    if ( !mRequest.filterRect().isNull() )
+    if ( !mFilterRect.isNull() )
     {
       // sdo_filter requires spatial index
       if ( mSource->mHasSpatialIndex )
       {
-        QgsRectangle rect( mRequest.filterRect() );
         QString bbox = QStringLiteral( "mdsys.sdo_geometry(2003,?,NULL,"
                                        "mdsys.sdo_elem_info_array(1,1003,3),"
                                        "mdsys.sdo_ordinate_array(?,?,?,?)"
@@ -88,7 +103,7 @@ QgsOracleFeatureIterator::QgsOracleFeatureIterator( QgsOracleFeatureSource *sour
         whereClause = QStringLiteral( "sdo_filter(%1,%2)='TRUE'" )
                       .arg( QgsOracleProvider::quotedIdentifier( mSource->mGeometryColumn ) ).arg( bbox );
 
-        args << ( mSource->mSrid < 1 ? QVariant( QVariant::Int ) : mSource->mSrid ) << rect.xMinimum() << rect.yMinimum() << rect.xMaximum() << rect.yMaximum();
+        args << ( mSource->mSrid < 1 ? QVariant( QVariant::Int ) : mSource->mSrid ) << mFilterRect.xMinimum() << mFilterRect.yMinimum() << mFilterRect.xMaximum() << mFilterRect.yMaximum();
 
         if ( ( mRequest.flags() & QgsFeatureRequest::ExactIntersect ) != 0 )
         {
@@ -98,7 +113,7 @@ QgsOracleFeatureIterator::QgsOracleFeatureIterator( QgsOracleFeatureSource *sour
             whereClause += QString( " AND sdo_relate(%1,%2,'mask=ANYINTERACT')='TRUE'" )
                            .arg( QgsOracleProvider::quotedIdentifier( mSource->mGeometryColumn ) )
                            .arg( bbox );
-            args << ( mSource->mSrid < 1 ? QVariant( QVariant::Int ) : mSource->mSrid ) << rect.xMinimum() << rect.yMinimum() << rect.xMaximum() << rect.yMaximum();
+            args << ( mSource->mSrid < 1 ? QVariant( QVariant::Int ) : mSource->mSrid ) << mFilterRect.xMinimum() << mFilterRect.yMinimum() << mFilterRect.xMaximum() << mFilterRect.yMaximum();
           }
           else
           {
@@ -114,7 +129,7 @@ QgsOracleFeatureIterator::QgsOracleFeatureIterator( QgsOracleFeatureSource *sour
       }
     }
   }
-  else if ( !mRequest.filterRect().isNull() )
+  else if ( !mFilterRect.isNull() )
   {
     QgsDebugMsg( "filterRect without geometry ignored" );
   }
@@ -277,7 +292,7 @@ bool QgsOracleFeatureIterator::fetchFeature( QgsFeature &feature )
         feature.clearGeometry();
       }
 
-      if ( !mRequest.filterRect().isNull() )
+      if ( !mFilterRect.isNull() )
       {
         if ( !feature.hasGeometry() )
         {
@@ -291,7 +306,7 @@ bool QgsOracleFeatureIterator::fetchFeature( QgsFeature &feature )
           if ( !mSource->mHasSpatialIndex )
           {
             // only intersect with bbox
-            if ( !feature.geometry().boundingBox().intersects( mRequest.filterRect() ) )
+            if ( !feature.geometry().boundingBox().intersects( mFilterRect ) )
             {
               // skip feature that don't intersect with our rectangle
               QgsDebugMsg( "no bbox intersect" );
@@ -302,7 +317,7 @@ bool QgsOracleFeatureIterator::fetchFeature( QgsFeature &feature )
         else if ( !mConnection->hasSpatial() || !mSource->mHasSpatialIndex )
         {
           // couldn't use sdo_relate earlier
-          if ( !feature.geometry().intersects( mRequest.filterRect() ) )
+          if ( !feature.geometry().intersects( mFilterRect ) )
           {
             // skip feature that don't intersect with our rectangle
             QgsDebugMsg( "no exact intersect" );
@@ -394,6 +409,8 @@ bool QgsOracleFeatureIterator::fetchFeature( QgsFeature &feature )
 
     feature.setValid( true );
     feature.setFields( mSource->mFields ); // allow name-based attribute lookups
+
+    geometryToDestinationCrs( feature, mTransform );
 
     return true;
   }
@@ -511,6 +528,7 @@ QgsOracleFeatureSource::QgsOracleFeatureSource( const QgsOracleProvider *p )
   , mPrimaryKeyType( p->mPrimaryKeyType )
   , mPrimaryKeyAttrs( p->mPrimaryKeyAttrs )
   , mQuery( p->mQuery )
+  , mCrs( p->crs() )
   , mShared( p->mShared )
 {
 }

@@ -46,13 +46,13 @@ class ANALYSIS_EXPORT DualEdgeTriangulation: public Triangulation
     //! Adds a line (e.g. a break-, structure- or an isoline) to the triangulation. The class takes ownership of the line object and its points
     void addLine( Line3D *line SIP_TRANSFER, bool breakline ) override;
     //! Adds a point to the triangulation and returns the number of this point in case of success or -100 in case of failure
-    int addPoint( QgsPoint *p ) override;
+    int addPoint( QgsPoint *p SIP_TRANSFER ) override;
     //! Performs a consistency check, remove this later
     virtual void performConsistencyTest() override;
     //! Calculates the normal at a point on the surface
-    virtual bool calcNormal( double x, double y, Vector3D *result ) override;
+    virtual bool calcNormal( double x, double y, Vector3D *result SIP_OUT ) override;
     //! Calculates x-, y and z-value of the point on the surface
-    virtual bool calcPoint( double x, double y, QgsPoint *result ) override;
+    virtual bool calcPoint( double x, double y, QgsPoint *result SIP_OUT ) override;
     //! Draws the points, edges and the forced lines
     //virtual void draw(QPainter* p, double xlowleft, double ylowleft, double xupright, double yupright, double width, double height) const;
     //! Returns a pointer to the point with number i
@@ -60,8 +60,7 @@ class ANALYSIS_EXPORT DualEdgeTriangulation: public Triangulation
     //! Returns the number of the point opposite to the triangle points p1, p2 (which have to be on a halfedge)
     int getOppositePoint( int p1, int p2 ) override;
     //! Finds out, in which triangle the point with coordinates x and y is and assigns the numbers of the vertices to 'n1', 'n2' and 'n3' and the vertices to 'p1', 'p2' and 'p3'
-    //! \note not available in Python bindings
-    virtual bool getTriangle( double x, double y, QgsPoint *p1, int *n1, QgsPoint *p2, int *n2, QgsPoint *p3, int *n3 ) override SIP_SKIP;
+    virtual bool getTriangle( double x, double y, QgsPoint *p1 SIP_OUT, int *n1 SIP_OUT, QgsPoint *p2 SIP_OUT, int *n2 SIP_OUT, QgsPoint *p3 SIP_OUT, int *n3 SIP_OUT ) SIP_PYNAME( getTriangleVertices ) override;
     //! Finds out, in which triangle the point with coordinates x and y is and assigns addresses to the points at the vertices to 'p1', 'p2' and 'p3
     virtual bool getTriangle( double x, double y, QgsPoint *p1 SIP_OUT, QgsPoint *p2 SIP_OUT, QgsPoint *p3 SIP_OUT ) override;
     //! Returns a pointer to a value list with the information of the triangles surrounding (counterclockwise) a point. Four integer values describe a triangle, the first three are the number of the half edges of the triangle and the fourth is -10, if the third (and most counterclockwise) edge is a breakline, and -20 otherwise. The value list has to be deleted by the code which called the method
@@ -134,7 +133,7 @@ class ANALYSIS_EXPORT DualEdgeTriangulation: public Triangulation
     QColor mBreakEdgeColor;
     //! Pointer to the decorator using this triangulation. It it is used directly, mDecorator equals this
     Triangulation *mDecorator = nullptr;
-    //! Inserts an edge and makes sure, everything is ok with the storage of the edge. The number of the HalfEdge is returned
+    //! Inserts an edge and makes sure, everything is OK with the storage of the edge. The number of the HalfEdge is returned
     unsigned int insertEdge( int dual, int next, int point, bool mbreak, bool forced );
     //! Inserts a forced segment between the points with the numbers p1 and p2 into the triangulation and returns the number of a HalfEdge belonging to this forced edge or -100 in case of failure
     int insertForcedSegment( int p1, int p2, bool breakline );
@@ -177,6 +176,8 @@ class ANALYSIS_EXPORT DualEdgeTriangulation: public Triangulation
     //! Function needed for the ruppert algorithm. Tests, if point is in the circle through both endpoints of edge and the endpoint of edge->dual->next->point. If so, the function calls itself recursively for edge->next and edge->next->next. Stops, if it finds a forced edge or a convex hull edge
     void evaluateInfluenceRegion( QgsPoint *point, int edge, QSet<int> &set );
 };
+
+#ifndef SIP_RUN
 
 inline DualEdgeTriangulation::DualEdgeTriangulation()
   : xMax( 0 )
@@ -244,6 +245,7 @@ inline bool DualEdgeTriangulation::halfEdgeBBoxTest( int edge, double xlowleft, 
          );
 }
 
+#endif
 #endif
 
 

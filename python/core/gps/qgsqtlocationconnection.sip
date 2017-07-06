@@ -1,41 +1,75 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/gps/qgsqtlocationconnection.h                               *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+
 %Feature MOBILITY_LOCATION
 
 %If (MOBILITY_LOCATION)
-/**
- * \class QgsQtLocationConnection
- * \note may not be available in Python bindings on all platforms
-*/
+
 class QgsQtLocationConnection: QgsGPSConnection
 {
+%Docstring
+.. note::
+
+   may not be available in Python bindings on all platforms
+%End
+
 %TypeHeaderCode
-#include <qgsqtlocationconnection.h>
+#include "qgsqtlocationconnection.h"
 %End
   public:
     QgsQtLocationConnection();
     ~QgsQtLocationConnection();
 
   protected slots:
-    /** Needed to make QtLocation detected*/
     void broadcastConnectionAvailable();
+%Docstring
+Needed to make QtLocation detected
+%End
 
-    /** Parse available data source content*/
     void parseData();
+%Docstring
+Parse available data source content
+%End
 
-    /** Called when the position updated.
-      * @note not available in python binding
-      */
-    // void positionUpdated( const QGeoPositionInfo &info );
 
 %If (!ANDROID)
-    /** Called when the number of satellites in view is updated.
-      * @note not available in python bindings on android
-      */
-    void satellitesInViewUpdated( const QList<QGeoSatelliteInfo> &satellites );
 
-    /** Called when the number of satellites in use is updated.
-      * @note not available in python bindings on android
-      */
+    void satellitesInViewUpdated( const QList<QGeoSatelliteInfo> &satellites );
+%Docstring
+ Called when the number of satellites in view is updated.
+.. note::
+
+   not available in Python bindings on android
+%End
+
     void satellitesInUseUpdated( const QList<QGeoSatelliteInfo> &satellites );
+%Docstring
+ Called when the number of satellites in use is updated.
+.. note::
+
+   not available in Python bindings on android
 %End
+
+%End
+
 };
-%End
+
+%End // MOBILITY_LOCATION
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/gps/qgsqtlocationconnection.h                               *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

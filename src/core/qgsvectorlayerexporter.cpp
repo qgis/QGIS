@@ -25,7 +25,7 @@
 #include "qgsvectorlayerexporter.h"
 #include "qgsproviderregistry.h"
 #include "qgsdatasourceuri.h"
-#include "qgscsexception.h"
+#include "qgsexception.h"
 #include "qgsvectordataprovider.h"
 #include "qgsvectorlayer.h"
 
@@ -142,18 +142,18 @@ QString QgsVectorLayerExporter::errorMessage() const
   return mErrorMessage;
 }
 
-bool QgsVectorLayerExporter::addFeatures( QgsFeatureList &features )
+bool QgsVectorLayerExporter::addFeatures( QgsFeatureList &features, Flags flags )
 {
   QgsFeatureList::iterator fIt = features.begin();
   bool result = true;
   for ( ; fIt != features.end(); ++fIt )
   {
-    result = result && addFeature( *fIt );
+    result = result && addFeature( *fIt, flags );
   }
   return result;
 }
 
-bool QgsVectorLayerExporter::addFeature( QgsFeature &feat )
+bool QgsVectorLayerExporter::addFeature( QgsFeature &feat, Flags )
 {
   QgsAttributes attrs = feat.attributes();
 
@@ -190,7 +190,7 @@ bool QgsVectorLayerExporter::flushBuffer()
   if ( mFeatureBuffer.count() <= 0 )
     return true;
 
-  if ( !mProvider->addFeatures( mFeatureBuffer ) )
+  if ( !mProvider->addFeatures( mFeatureBuffer, QgsFeatureSink::FastInsert ) )
   {
     QStringList errors = mProvider->errors();
     mProvider->clearErrors();
@@ -456,9 +456,10 @@ QgsVectorLayerExporter::exportLayer( QgsVectorLayer *layer,
 // QgsVectorLayerExporterTask
 //
 
-QgsVectorLayerExporterTask::QgsVectorLayerExporterTask( QgsVectorLayer *layer, const QString &uri, const QString &providerKey, const QgsCoordinateReferenceSystem &destinationCrs, QMap<QString, QVariant> *options )
+QgsVectorLayerExporterTask::QgsVectorLayerExporterTask( QgsVectorLayer *layer, const QString &uri, const QString &providerKey, const QgsCoordinateReferenceSystem &destinationCrs, QMap<QString, QVariant> *options, bool ownsLayer )
   : QgsTask( tr( "Exporting %1" ).arg( layer->name() ), QgsTask::CanCancel )
   , mLayer( layer )
+  , mOwnsLayer( ownsLayer )
   , mDestUri( uri )
   , mDestProviderKey( providerKey )
   , mDestCrs( destinationCrs )
@@ -494,14 +495,15 @@ bool QgsVectorLayerExporterTask::run()
              mLayer.data(), mDestUri, mDestProviderKey, mDestCrs, false, &mErrorMessage,
              &mOptions, mOwnedFeedback.get() );
 
-  if ( mOwnsLayer )
-    delete mLayer;
-
   return mError == QgsVectorLayerExporter::NoError;
 }
 
 void QgsVectorLayerExporterTask::finished( bool result )
 {
+  // QgsMapLayer has QTimer member, which must not be destroyed from another thread
+  if ( mOwnsLayer )
+    delete mLayer;
+
   if ( result )
     emit exportComplete();
   else

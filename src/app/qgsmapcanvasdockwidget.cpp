@@ -14,7 +14,7 @@
  ***************************************************************************/
 #include "qgsmapcanvasdockwidget.h"
 #include "qgsmapcanvas.h"
-#include "qgscsexception.h"
+#include "qgsexception.h"
 #include "qgsprojectionselectiondialog.h"
 #include "qgsscalecombobox.h"
 #include "qgsdoublespinbox.h"
@@ -133,7 +133,7 @@ QgsMapCanvasDockWidget::QgsMapCanvasDockWidget( const QString &name, QWidget *pa
     if ( !mBlockScaleUpdate )
     {
       mBlockScaleUpdate = true;
-      mMapCanvas->zoomScale( 1.0 / scale );
+      mMapCanvas->zoomScale( scale );
       mBlockScaleUpdate = false;
     }
   } );
@@ -142,7 +142,7 @@ QgsMapCanvasDockWidget::QgsMapCanvasDockWidget( const QString &name, QWidget *pa
     if ( !mBlockScaleUpdate )
     {
       mBlockScaleUpdate = true;
-      mScaleCombo->setScale( 1.0 / scale );
+      mScaleCombo->setScale( scale );
       mBlockScaleUpdate = false;
     }
   } );

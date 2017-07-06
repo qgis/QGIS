@@ -25,6 +25,26 @@ start_app()
 
 class TestQgsMapLayer(unittest.TestCase):
 
+    def testUniqueId(self):
+        """
+        Test that layers created quickly with same name get a unique ID
+        """
+
+        # make 1000 layers quickly
+        layers = []
+        for i in range(1000):
+            layer = QgsVectorLayer(
+                'Point?crs=epsg:4326&field=name:string(20)',
+                'test',
+                'memory')
+            layers.append(layer)
+
+        # make sure all ids are unique
+        ids = set()
+        for l in layers:
+            self.assertFalse(l.id() in ids)
+            ids.add(l.id())
+
     def copyLayerViaXmlReadWrite(self, source, dest):
         # write to xml
         doc = QDomDocument("testdoc")

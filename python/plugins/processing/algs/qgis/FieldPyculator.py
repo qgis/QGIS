@@ -31,6 +31,7 @@ import sys
 from qgis.PyQt.QtCore import QVariant
 from qgis.core import (QgsFeature,
                        QgsField,
+                       QgsFeatureSink,
                        QgsApplication,
                        QgsProcessingUtils)
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
@@ -55,12 +56,6 @@ class FieldsPyculator(QgisAlgorithm):
     RESULT_VAR_NAME = 'value'
 
     TYPES = [QVariant.Int, QVariant.Double, QVariant.String]
-
-    def icon(self):
-        return QgsApplication.getThemeIcon("/providerQgis.svg")
-
-    def svgIconPath(self):
-        return QgsApplication.iconPath("providerQgis.svg")
 
     def group(self):
         return self.tr('Vector table tools')
@@ -144,7 +139,7 @@ class FieldsPyculator(QgisAlgorithm):
 
         # Run
         features = QgsProcessingUtils.getFeatures(layer, context)
-        total = 100.0 / QgsProcessingUtils.featureCount(layer, context)
+        total = 100.0 / layer.featureCount() if layer.featureCount() else 0
         for current, feat in enumerate(features):
             feedback.setProgress(int(current * total))
             attrs = feat.attributes()
@@ -180,7 +175,7 @@ class FieldsPyculator(QgisAlgorithm):
             outFeat.setGeometry(feat.geometry())
             attrs.append(new_ns[self.RESULT_VAR_NAME])
             outFeat.setAttributes(attrs)
-            writer.addFeature(outFeat)
+            writer.addFeature(outFeat, QgsFeatureSink.FastInsert)
 
         del writer
 

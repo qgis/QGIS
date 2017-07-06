@@ -22,8 +22,8 @@
 #include "qgsrasterlayer.h"
 #include "qgsrasterprojector.h"
 #include "qgsrendercontext.h"
-#include "qgscsexception.h"
 #include "qgsproject.h"
+#include "qgsexception.h"
 
 QgsRasterLayerRenderer::QgsRasterLayerRenderer( QgsRasterLayer *layer, QgsRenderContext &rendererContext )
   : QgsMapLayerRenderer( layer->id() )

@@ -10,13 +10,12 @@ PyQgsDBManagerGpkg
 
 # temporary during processing refactoring
 ProcessingParametersTest
-ProcessingModelerTest
 ProcessingGdalAlgorithmsTest
 
-# layout tests are run on separate build
-qgis_indentation
+# code layout tests are run on separate build
 qgis_spelling
 qgis_sipify
+qgis_sip_include
 qgis_sip_uptodate
 
 # flacky

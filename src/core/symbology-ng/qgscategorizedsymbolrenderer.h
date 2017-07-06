@@ -24,6 +24,7 @@
 
 #include <QHash>
 
+class QgsDataDefinedSizeLegend;
 class QgsVectorLayer;
 
 /** \ingroup core
@@ -78,6 +79,7 @@ class CORE_EXPORT QgsCategorizedSymbolRenderer : public QgsFeatureRenderer
   public:
 
     QgsCategorizedSymbolRenderer( const QString &attrName = QString(), const QgsCategoryList &categories = QgsCategoryList() );
+    ~QgsCategorizedSymbolRenderer();
 
     virtual QgsSymbol *symbolForFeature( QgsFeature &feature, QgsRenderContext &context ) override;
     virtual QgsSymbol *originalSymbolForFeature( QgsFeature &feature, QgsRenderContext &context ) override;
@@ -131,9 +133,7 @@ class CORE_EXPORT QgsCategorizedSymbolRenderer : public QgsFeatureRenderer
     static QgsFeatureRenderer *create( QDomElement &element, const QgsReadWriteContext &context ) SIP_FACTORY;
 
     virtual QDomElement save( QDomDocument &doc, const QgsReadWriteContext &context ) override;
-    virtual QgsLegendSymbologyList legendSymbologyItems( QSize iconSize ) override;
-    virtual QgsLegendSymbolList legendSymbolItems( double scaleDenominator = -1, const QString &rule = QString() ) override SIP_SKIP;
-    QgsLegendSymbolListV2 legendSymbolItemsV2() const override;
+    QgsLegendSymbolList legendSymbolItems() const override;
     virtual QSet< QString > legendKeysForFeature( QgsFeature &feature, QgsRenderContext &context ) override;
 
     /** Returns the renderer's source symbol, which is the base symbol used for the each categories' symbol before applying
@@ -181,12 +181,33 @@ class CORE_EXPORT QgsCategorizedSymbolRenderer : public QgsFeatureRenderer
     //! \returns a new renderer if the conversion was possible, otherwise 0.
     static QgsCategorizedSymbolRenderer *convertFromRenderer( const QgsFeatureRenderer *renderer ) SIP_FACTORY;
 
+    /**
+     * Configures appearance of legend when renderer is configured to use data-defined size for marker symbols.
+     * This allows to configure for what values (symbol sizes) should be shown in the legend, whether to display
+     * different symbol sizes collapsed in one legend node or separated across multiple legend nodes etc.
+     *
+     * When renderer does not use data-defined size or does not use marker symbols, these settings will be ignored.
+     * Takes ownership of the passed settings objects. Null pointer is a valid input that disables data-defined
+     * size legend.
+     * \since QGIS 3.0
+     */
+    void setDataDefinedSizeLegend( QgsDataDefinedSizeLegend *settings SIP_TRANSFER );
+
+    /**
+     * Returns configuration of appearance of legend when using data-defined size for marker symbols.
+     * Will return null if the functionality is disabled.
+     * \since QGIS 3.0
+     */
+    QgsDataDefinedSizeLegend *dataDefinedSizeLegend() const;
+
   protected:
     QString mAttrName;
     QgsCategoryList mCategories;
     std::unique_ptr<QgsSymbol> mSourceSymbol;
     std::unique_ptr<QgsColorRamp> mSourceColorRamp;
     std::unique_ptr<QgsExpression> mExpression;
+
+    std::unique_ptr<QgsDataDefinedSizeLegend> mDataDefinedSizeLegend;
 
     //! attribute index (derived from attribute name in startRender)
     int mAttrNum;
@@ -210,6 +231,8 @@ class CORE_EXPORT QgsCategorizedSymbolRenderer : public QgsFeatureRenderer
     //! Returns calculated classification value for a feature
     QVariant valueForFeature( QgsFeature &feature, QgsRenderContext &context ) const;
 
+    //! Returns list of legend symbol items from individual categories
+    QgsLegendSymbolList baseLegendSymbolItems() const;
 };
 
 #endif // QGSCATEGORIZEDSYMBOLRENDERERV2_H

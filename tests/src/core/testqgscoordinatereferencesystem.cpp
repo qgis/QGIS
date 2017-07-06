@@ -390,7 +390,7 @@ void TestQgsCoordinateReferenceSystem::createFromESRIWkt()
     CPLSetConfigOption( "GDAL_FIX_ESRI_WKT", configOld );
     if ( myFiles[i] != QLatin1String( "" ) )
     {
-      // use ogr to open file, make sure CRS is ok
+      // use ogr to open file, make sure CRS is OK
       // this probably could be in another test, but leaving it here since it deals with CRS
       QString fileStr = QStringLiteral( TEST_DATA_DIR ) + '/' + myFiles[i];
       QgsDebugMsg( QString( "i=%1 file=%2" ).arg( i ).arg( fileStr ) );

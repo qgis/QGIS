@@ -231,6 +231,15 @@ class TestQgsSymbolLayerCreateSld(unittest.TestCase):
         self.assertStrokeWidth(root, 2, 1)
         self.assertStaticDisplacement(root, 5, 10)
 
+    def testSimpleLineHairline(self):
+        symbol = QgsSimpleLineSymbolLayer(QColor("black"), 0)
+        dom, root = self.symbolToSld(symbol)
+
+        # print ("Simple line px: \n" + dom.toString())
+
+        # Hairline is turned into 0.5px
+        self.assertStrokeWidth(root, 1, 0.5)
+
     def testSimpleLineUnitDefault(self):
         symbol = QgsSimpleLineSymbolLayer(QColor("black"), 1)
         symbol.setCustomDashVector([10, 10])
@@ -417,8 +426,8 @@ class TestQgsSymbolLayerCreateSld(unittest.TestCase):
         layer = QgsVectorLayer("Point", "addfeat", "memory")
         mFilePath = QDir.toNativeSeparators('%s/symbol_layer/%s.qml' % (unitTestDataPath(), "singleSymbol"))
         layer.loadNamedStyle(mFilePath)
-        layer.setMinimumScale(1000)
-        layer.setMaximumScale(500000)
+        layer.setMaximumScale(1000)
+        layer.setMinimumScale(500000)
         layer.setScaleBasedVisibility(True)
 
         dom, root = self.layerToSld(layer)
@@ -442,8 +451,8 @@ class TestQgsSymbolLayerCreateSld(unittest.TestCase):
         layer = QgsVectorLayer("Polygon", "addfeat", "memory")
         mFilePath = QDir.toNativeSeparators('%s/symbol_layer/%s.qml' % (unitTestDataPath(), "categorized"))
         layer.loadNamedStyle(mFilePath)
-        layer.setMinimumScale(1000)
-        layer.setMaximumScale(500000)
+        layer.setMaximumScale(1000)
+        layer.setMinimumScale(500000)
         layer.setScaleBasedVisibility(True)
 
         dom, root = self.layerToSld(layer)
@@ -484,8 +493,8 @@ class TestQgsSymbolLayerCreateSld(unittest.TestCase):
 
         mFilePath = QDir.toNativeSeparators('%s/symbol_layer/%s.qml' % (unitTestDataPath(), "ruleBased"))
         status = layer.loadNamedStyle(mFilePath)  # NOQA
-        layer.setMinimumScale(5000)
-        layer.setMaximumScale(50000000)
+        layer.setMaximumScale(5000)
+        layer.setMinimumScale(50000000)
         layer.setScaleBasedVisibility(True)
 
         dom, root = self.layerToSld(layer)
@@ -494,6 +503,48 @@ class TestQgsSymbolLayerCreateSld(unittest.TestCase):
         ruleCount = root.elementsByTagName('se:Rule').size()  # NOQA
         self.assertScaleDenominator(root, '5000', '40000000', 0)
         self.assertScaleDenominator(root, '5000', '50000000', 1)
+
+    def testCategorizedFunctionConflict(self):
+        layer = QgsVectorLayer("Point", "addfeat", "memory")
+
+        mFilePath = QDir.toNativeSeparators('%s/symbol_layer/%s.qml' % (unitTestDataPath(), "categorizedFunctionConflict"))
+        status = layer.loadNamedStyle(mFilePath)  # NOQA
+
+        dom, root = self.layerToSld(layer)
+        # print("Rule based, with root scale deps:" + dom.toString())
+
+        ruleCount = root.elementsByTagName('se:Rule').size()  # NOQA
+        self.assertEqual(7, ruleCount)
+        self.assertRuleRangeFilter(root, 0, 'Area', '0', True, '500', True)
+        self.assertRuleRangeFilter(root, 1, 'Area', '500', False, '1000', True)
+        self.assertRuleRangeFilter(root, 2, 'Area', '1000', False, '5000', True)
+        self.assertRuleRangeFilter(root, 3, 'Area', '5000', False, '10000', True)
+        self.assertRuleRangeFilter(root, 4, 'Area', '10000', False, '50000', True)
+        self.assertRuleRangeFilter(root, 5, 'Area', '50000', False, '100000', True)
+        self.assertRuleRangeFilter(root, 6, 'Area', '100000', False, '200000', True)
+
+    def assertRuleRangeFilter(self, root, index, attributeName, min, includeMin, max, includeMax):
+        rule = root.elementsByTagName('se:Rule').item(index).toElement()
+        filter = rule.elementsByTagName("Filter").item(0).firstChild()
+        self.assertEqual("ogc:And", filter.nodeName())
+
+        gt = filter.firstChild()
+        expectedGtName = "ogc:PropertyIsGreaterThanOrEqualTo" if includeMin else "ogc:PropertyIsGreaterThan"
+        self.assertEquals(expectedGtName, gt.nodeName())
+        gtProperty = gt.firstChild()
+        self.assertEquals("ogc:PropertyName", gtProperty.nodeName())
+        self.assertEquals(attributeName, gtProperty.toElement().text())
+        gtValue = gt.childNodes().item(1)
+        self.assertEquals(min, gtValue.toElement().text())
+
+        lt = filter.childNodes().item(1)
+        expectedLtName = "ogc:PropertyIsLessThanOrEqualTo" if includeMax else "ogc:PropertyIsLessThan"
+        self.assertEquals(expectedLtName, lt.nodeName())
+        ltProperty = lt.firstChild()
+        self.assertEquals("ogc:PropertyName", ltProperty.nodeName())
+        self.assertEquals(attributeName, ltProperty.toElement().text())
+        ltValue = lt.childNodes().item(1)
+        self.assertEquals(max, ltValue.toElement().text())
 
     def assertScaleDenominator(self, root, expectedMinScale, expectedMaxScale, index=0):
         rule = root.elementsByTagName('se:Rule').item(index).toElement()

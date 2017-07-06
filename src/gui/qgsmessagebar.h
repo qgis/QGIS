@@ -63,7 +63,7 @@ class GUI_EXPORT QgsMessageBar: public QFrame
      *
      * \param item Item to display
      */
-    void pushItem( QgsMessageBarItem *item );
+    void pushItem( QgsMessageBarItem *item SIP_TRANSFER );
 
     /** Display a widget as a message on the bar after hiding the currently visible one
      *  and putting it in a stack.
@@ -88,7 +88,7 @@ class GUI_EXPORT QgsMessageBar: public QFrame
     static QgsMessageBarItem *createMessage( QWidget *widget, QWidget *parent = nullptr ) SIP_FACTORY;
 
     //! convenience method for pushing a message to the bar
-    void pushMessage( const QString &text, MessageLevel level = INFO, int duration = 5 ) { return pushMessage( QString::null, text, level, duration ); }
+    void pushMessage( const QString &text, MessageLevel level = INFO, int duration = 5 ) { return pushMessage( QString(), text, level, duration ); }
     //! convenience method for pushing a message with title to the bar
     void pushMessage( const QString &title, const QString &text, MessageLevel level = INFO, int duration = 5 );
 

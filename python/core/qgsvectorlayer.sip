@@ -679,12 +679,6 @@ Returns point, line or polygon
  :rtype: QgsWkbTypes.GeometryType
 %End
 
-    bool hasGeometryType() const;
-%Docstring
-Returns true if this is a geometry layer and false in case of NoGeometry (table only) or UnknownGeometry
- :rtype: bool
-%End
-
     virtual QgsWkbTypes::Type wkbType() const;
 
 %Docstring
@@ -699,6 +693,8 @@ Return the provider type for this layer
 %End
 
     virtual QgsCoordinateReferenceSystem sourceCrs() const;
+
+    virtual QString sourceName() const;
 
 
     virtual bool readXml( const QDomNode &layer_node, const QgsReadWriteContext &context );
@@ -928,7 +924,7 @@ Return the provider type for this layer
  :rtype: QgsFeatureIterator
 %End
 
-    virtual bool addFeature( QgsFeature &feature );
+    virtual bool addFeature( QgsFeature &feature, QgsFeatureSink::Flags flags = 0 );
 
 
     bool updateFeature( QgsFeature &f );
@@ -1082,6 +1078,10 @@ Returns true if the provider is in editing mode
 %End
 
     virtual bool isSpatial() const;
+%Docstring
+Returns true if this is a geometry layer and false in case of NoGeometry (table only) or UnknownGeometry
+ :rtype: bool
+%End
 
     virtual bool isModified() const;
 %Docstring
@@ -1281,7 +1281,7 @@ Delete an attribute field (but does not commit it)
  :rtype: bool
 %End
 
-    virtual bool addFeatures( QgsFeatureList &features );
+    virtual bool addFeatures( QgsFeatureList &features, QgsFeatureSink::Flags flags = 0 );
 
 
     bool deleteFeature( QgsFeatureId fid );

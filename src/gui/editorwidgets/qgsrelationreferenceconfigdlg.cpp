@@ -92,7 +92,7 @@ void QgsRelationReferenceConfigDlg::relationChanged( int idx )
   if ( mReferencedLayer )
   {
     mExpressionWidget->setField( mReferencedLayer->displayExpression() );
-    mCbxMapIdentification->setEnabled( mReferencedLayer->hasGeometryType() );
+    mCbxMapIdentification->setEnabled( mReferencedLayer->isSpatial() );
   }
 
   loadFields();

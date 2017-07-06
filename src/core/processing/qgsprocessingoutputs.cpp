@@ -45,6 +45,17 @@ QgsProcessingOutputRasterLayer::QgsProcessingOutputRasterLayer( const QString &n
 
 QgsProcessingOutputHtml::QgsProcessingOutputHtml( const QString &name, const QString &description )
   : QgsProcessingOutputDefinition( name, description )
-{
+{}
 
+QgsProcessingOutputNumber::QgsProcessingOutputNumber( const QString &name, const QString &description )
+  : QgsProcessingOutputDefinition( name, description )
+{}
+
+QgsProcessingOutputString::QgsProcessingOutputString( const QString &name, const QString &description )
+  : QgsProcessingOutputDefinition( name, description )
+{}
+
+QgsProcessingOutputFolder::QgsProcessingOutputFolder( const QString &name, const QString &description )
+  : QgsProcessingOutputDefinition( name, description )
+{
 }

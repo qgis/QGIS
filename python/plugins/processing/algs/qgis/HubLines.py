@@ -27,6 +27,7 @@ __copyright__ = '(C) 2010, Michael Minn'
 __revision__ = '$Format:%H$'
 
 from qgis.core import (QgsFeature,
+                       QgsFeatureSink,
                        QgsGeometry,
                        QgsPointXY,
                        QgsWkbTypes,
@@ -47,12 +48,6 @@ class HubLines(QgisAlgorithm):
     SPOKES = 'SPOKES'
     SPOKE_FIELD = 'SPOKE_FIELD'
     OUTPUT = 'OUTPUT'
-
-    def icon(self):
-        return QgsApplication.getThemeIcon("/providerQgis.svg")
-
-    def svgIconPath(self):
-        return QgsApplication.iconPath("providerQgis.svg")
 
     def group(self):
         return self.tr('Vector analysis tools')
@@ -92,7 +87,7 @@ class HubLines(QgisAlgorithm):
 
         spokes = QgsProcessingUtils.getFeatures(layerSpoke, context)
         hubs = QgsProcessingUtils.getFeatures(layerHub, context)
-        total = 100.0 / QgsProcessingUtils.featureCount(layerSpoke, context)
+        total = 100.0 / layerSpoke.featureCount() if layerSpoke.featureCount() else 0
 
         for current, spokepoint in enumerate(spokes):
             p = spokepoint.geometry().boundingBox().center()
@@ -111,7 +106,7 @@ class HubLines(QgisAlgorithm):
                     f.setAttributes(spokepoint.attributes())
                     f.setGeometry(QgsGeometry.fromPolyline(
                         [QgsPointXY(spokeX, spokeY), QgsPointXY(hubX, hubY)]))
-                    writer.addFeature(f)
+                    writer.addFeature(f, QgsFeatureSink.FastInsert)
 
                     break
 

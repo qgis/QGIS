@@ -27,6 +27,7 @@ __revision__ = '$Format:%H$'
 
 from qgis.core import (QgsGeometry,
                        QgsFeature,
+                       QgsFeatureSink,
                        QgsPointXY,
                        QgsWkbTypes,
                        QgsApplication,
@@ -44,12 +45,6 @@ class Gridify(QgisAlgorithm):
     HSPACING = 'HSPACING'
     VSPACING = 'VSPACING'
     OUTPUT = 'OUTPUT'
-
-    def icon(self):
-        return QgsApplication.getThemeIcon("/providerQgis.svg")
-
-    def svgIconPath(self):
-        return QgsApplication.iconPath("providerQgis.svg")
 
     def group(self):
         return self.tr('Vector general tools')
@@ -84,7 +79,7 @@ class Gridify(QgisAlgorithm):
                                                                      context)
 
         features = QgsProcessingUtils.getFeatures(layer, context)
-        total = 100.0 / QgsProcessingUtils.featureCount(layer, context)
+        total = 100.0 / layer.featureCount() if layer.featureCount() else 0
 
         for current, f in enumerate(features):
             geom = f.geometry()
@@ -148,7 +143,7 @@ class Gridify(QgisAlgorithm):
                 feat = QgsFeature()
                 feat.setGeometry(newGeom)
                 feat.setAttributes(f.attributes())
-                writer.addFeature(feat)
+                writer.addFeature(feat, QgsFeatureSink.FastInsert)
 
             feedback.setProgress(int(current * total))
 

@@ -93,6 +93,40 @@ QgsPoint QgsGeometryUtils::closestVertex( const QgsAbstractGeometry &geom, const
   return minDistPoint;
 }
 
+QgsPoint QgsGeometryUtils::closestPoint( const QgsAbstractGeometry &geometry, const QgsPoint &point )
+{
+  QgsPoint closestPoint;
+  QgsVertexId vertexAfter;
+  bool leftOf;
+  geometry.closestSegment( point, closestPoint, vertexAfter, &leftOf, DEFAULT_SEGMENT_EPSILON );
+  if ( vertexAfter.isValid() )
+  {
+    QgsPoint pointAfter = geometry.vertexAt( vertexAfter );
+    if ( vertexAfter.vertex > 0 )
+    {
+      QgsVertexId vertexBefore = vertexAfter;
+      vertexBefore.vertex--;
+      QgsPoint pointBefore = geometry.vertexAt( vertexBefore );
+      double length = pointBefore.distance( pointAfter );
+      double distance = pointBefore.distance( closestPoint );
+
+      if ( qgsDoubleNear( distance, 0.0 ) )
+        closestPoint = pointBefore;
+      else if ( qgsDoubleNear( distance, length ) )
+        closestPoint = pointAfter;
+      else
+      {
+        if ( QgsWkbTypes::hasZ( geometry.wkbType() ) && length )
+          closestPoint.addZValue( pointBefore.z() + ( pointAfter.z() - pointBefore.z() ) * distance / length );
+        if ( QgsWkbTypes::hasM( geometry.wkbType() ) )
+          closestPoint.addMValue( pointBefore.m() + ( pointAfter.m() - pointBefore.m() ) * distance / length );
+      }
+    }
+  }
+
+  return closestPoint;
+}
+
 double QgsGeometryUtils::distanceToVertex( const QgsAbstractGeometry &geom, QgsVertexId id )
 {
   double currentDist = 0;
@@ -957,8 +991,8 @@ QgsPoint QgsGeometryUtils::midpoint( const QgsPoint &pt1, const QgsPoint &pt2 )
 
   double x = ( pt1.x() + pt2.x() ) / 2.0;
   double y = ( pt1.y() + pt2.y() ) / 2.0;
-  double z = 0.0;
-  double m = 0.0;
+  double z = std::numeric_limits<double>::quiet_NaN();
+  double m = std::numeric_limits<double>::quiet_NaN();
 
   if ( pt1.is3D() || pt2.is3D() )
   {

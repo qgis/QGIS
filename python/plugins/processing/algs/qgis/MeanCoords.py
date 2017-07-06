@@ -31,7 +31,7 @@ import os
 from qgis.PyQt.QtGui import QIcon
 from qgis.PyQt.QtCore import QVariant
 
-from qgis.core import QgsField, QgsFeature, QgsGeometry, QgsPointXY, QgsWkbTypes, QgsProcessingUtils, QgsFields
+from qgis.core import QgsField, QgsFeature, QgsGeometry, QgsPointXY, QgsWkbTypes, QgsProcessingUtils, QgsFeatureSink, QgsFields
 
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
@@ -102,7 +102,7 @@ class MeanCoords(QgisAlgorithm):
         writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(fieldList, QgsWkbTypes.Point, layer.crs(), context)
 
         features = QgsProcessingUtils.getFeatures(layer, context)
-        total = 100.0 / QgsProcessingUtils.featureCount(layer, context)
+        total = 100.0 / layer.featureCount() if layer.featureCount() else 0
         means = {}
         for current, feat in enumerate(features):
             feedback.setProgress(int(current * total))
@@ -134,7 +134,7 @@ class MeanCoords(QgisAlgorithm):
             means[clazz] = (cx, cy, totalweight)
 
         current = 0
-        total = 100.0 / len(means)
+        total = 100.0 / len(means) if means else 1
         for (clazz, values) in list(means.items()):
             outFeat = QgsFeature()
             cx = values[0] / values[2]
@@ -143,7 +143,7 @@ class MeanCoords(QgisAlgorithm):
 
             outFeat.setGeometry(QgsGeometry.fromPoint(meanPoint))
             outFeat.setAttributes([cx, cy, clazz])
-            writer.addFeature(outFeat)
+            writer.addFeature(outFeat, QgsFeatureSink.FastInsert)
             current += 1
             feedback.setProgress(int(current * total))
 

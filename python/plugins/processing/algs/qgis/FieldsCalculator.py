@@ -30,6 +30,7 @@ from qgis.core import (QgsExpression,
                        QgsExpressionContext,
                        QgsExpressionContextUtils,
                        QgsFeature,
+                       QgsFeatureSink,
                        QgsField,
                        QgsDistanceArea,
                        QgsProject,
@@ -59,12 +60,6 @@ class FieldsCalculator(QgisAlgorithm):
     OUTPUT_LAYER = 'OUTPUT_LAYER'
 
     TYPES = [QVariant.Double, QVariant.Int, QVariant.String, QVariant.Date]
-
-    def icon(self):
-        return QgsApplication.getThemeIcon("/providerQgis.svg")
-
-    def svgIconPath(self):
-        return QgsApplication.iconPath("providerQgis.svg")
 
     def group(self):
         return self.tr('Vector table tools')
@@ -137,7 +132,7 @@ class FieldsCalculator(QgisAlgorithm):
         calculationSuccess = True
 
         features = QgsProcessingUtils.getFeatures(layer, context)
-        total = 100.0 / QgsProcessingUtils.featureCount(layer, context)
+        total = 100.0 / layer.featureCount() if layer.featureCount() else 0
 
         rownum = 1
         for current, f in enumerate(features):
@@ -154,7 +149,7 @@ class FieldsCalculator(QgisAlgorithm):
                 for fld in f.fields():
                     outFeature[fld.name()] = f[fld.name()]
                 outFeature[fieldName] = value
-                writer.addFeature(outFeature)
+                writer.addFeature(outFeature, QgsFeatureSink.FastInsert)
 
             feedback.setProgress(int(current * total))
         del writer

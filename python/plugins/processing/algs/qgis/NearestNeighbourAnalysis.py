@@ -98,7 +98,7 @@ class NearestNeighbourAnalysis(QgisAlgorithm):
 
         features = QgsProcessingUtils.getFeatures(layer, context)
         count = QgsProcessingUtils.featureCount(layer, context)
-        total = 100.0 / count
+        total = 100.0 / count if count else 1
         for current, feat in enumerate(features):
             neighbourID = spatialIndex.nearestNeighbor(
                 feat.geometry().asPoint(), 2)[1]

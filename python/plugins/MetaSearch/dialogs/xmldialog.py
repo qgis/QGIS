@@ -3,7 +3,7 @@
 #
 # CSW Client
 # ---------------------------------------------------------
-# QGIS Catalogue Service client.
+# QGIS Catalog Service client.
 #
 # Copyright (C) 2014 Tom Kralidis (tomkralidis@gmail.com)
 #

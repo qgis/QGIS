@@ -10,8 +10,6 @@
 
 
 
-%Feature ANDROID
-
 
 class QgsApplication : QApplication
 {
@@ -675,6 +673,13 @@ Returns path to the build output directory. Valid only when running from build d
  algorithms, and various parameters and outputs.
 .. versionadded:: 3.0
  :rtype: QgsProcessingRegistry
+%End
+
+    static QgsPageSizeRegistry *pageSizeRegistry();
+%Docstring
+ Returns the application's page size registry, used for managing layout page sizes.
+.. versionadded:: 3.0
+ :rtype: QgsPageSizeRegistry
 %End
 
 

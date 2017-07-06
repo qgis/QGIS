@@ -27,25 +27,20 @@ __revision__ = '$Format:%H$'
 
 from qgis.core import (QgsFeatureRequest,
                        QgsWkbTypes,
+                       QgsFeatureSink,
                        QgsCoordinateReferenceSystem,
                        QgsApplication,
-                       QgsProcessingUtils)
+                       QgsProcessingParameterDefinition,
+                       QgsProcessingParameterFeatureSource,
+                       QgsProcessingParameterFeatureSink,
+                       QgsProcessingOutputVectorLayer)
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
-from processing.core.parameters import ParameterVector
-from processing.core.outputs import OutputVector
-from processing.tools import dataobjects
 
 
 class DropGeometry(QgisAlgorithm):
 
     INPUT_LAYER = 'INPUT_LAYER'
     OUTPUT_TABLE = 'OUTPUT_TABLE'
-
-    def icon(self):
-        return QgsApplication.getThemeIcon("/providerQgis.svg")
-
-    def svgIconPath(self):
-        return QgsApplication.iconPath("providerQgis.svg")
 
     def tags(self):
         return self.tr('remove,drop,delete,geometry,objects').split(',')
@@ -55,11 +50,10 @@ class DropGeometry(QgisAlgorithm):
 
     def __init__(self):
         super().__init__()
-        self.addParameter(ParameterVector(self.INPUT_LAYER,
-                                          self.tr('Input layer'), [dataobjects.TYPE_VECTOR_POINT,
-                                                                   dataobjects.TYPE_VECTOR_LINE,
-                                                                   dataobjects.TYPE_VECTOR_POLYGON]))
-        self.addOutput(OutputVector(self.OUTPUT_TABLE, self.tr('Dropped geometry')))
+
+        self.addParameter(QgsProcessingParameterFeatureSource(self.INPUT_LAYER, self.tr('Input layer'), [QgsProcessingParameterDefinition.TypeVectorPoint, QgsProcessingParameterDefinition.TypeVectorLine, QgsProcessingParameterDefinition.TypeVectorPolygon]))
+        self.addParameter(QgsProcessingParameterFeatureSink(self.OUTPUT_TABLE, self.tr('Dropped geometry')))
+        self.addOutput(QgsProcessingOutputVectorLayer(self.OUTPUT_TABLE, self.tr("Dropped geometry")))
 
     def name(self):
         return 'dropgeometries'
@@ -68,17 +62,20 @@ class DropGeometry(QgisAlgorithm):
         return self.tr('Drop geometries')
 
     def processAlgorithm(self, parameters, context, feedback):
-        layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT_LAYER), context)
-        writer = self.getOutputFromName(
-            self.OUTPUT_TABLE).getVectorWriter(layer.fields(), QgsWkbTypes.NoGeometry, QgsCoordinateReferenceSystem(),
-                                               context)
+        source = self.parameterAsSource(parameters, self.INPUT_LAYER, context)
+        (sink, dest_id) = self.parameterAsSink(parameters, self.OUTPUT_TABLE, context,
+                                               source.fields(), QgsWkbTypes.NoGeometry, QgsCoordinateReferenceSystem())
 
         request = QgsFeatureRequest().setFlags(QgsFeatureRequest.NoGeometry)
-        features = QgsProcessingUtils.getFeatures(layer, context, request)
-        total = 100.0 / QgsProcessingUtils.featureCount(layer, context)
+        features = source.getFeatures(request)
+        total = 100.0 / source.featureCount() if source.featureCount() else 0
 
         for current, input_feature in enumerate(features):
-            writer.addFeature(input_feature)
+            if feedback.isCanceled():
+                break
+
+            input_feature.clearGeometry()
+            sink.addFeature(input_feature, QgsFeatureSink.FastInsert)
             feedback.setProgress(int(current * total))
 
-        del writer
+        return {self.OUTPUT_TABLE: dest_id}

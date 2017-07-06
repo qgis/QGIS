@@ -2,30 +2,31 @@
 
 tests:
 
-#  - name: Centroid # Human readable identifier
-#    algorithm: qgis:polygoncentroids # Algorithm name
-#    params: # A list of parameters (only 1 here)
-#      - type: vector    # Param is a vector layer
-#        name: polys.gml # file name
-#    results: # A map of results (only one here)
-#      OUTPUT_LAYER:
-#        type: vector   # Expected result is a vector layer
-#        name: expected/polys_centroid.gml # The relative filepath from the processing testdata directory
-#        compare:
-#          geometry:
-#            precision: 7
-#
-#  - name: Delete Holes
-#    algorithm: qgis:deleteholes
-#    params:
-#    - name: polys.gml
-#      type: vector
-#    results:
-#      OUTPUT:
-#        name: expected/polys_deleteholes.gml
-#        type: vector
-#
-  - algorithm: qgis:clip
+  - name: Centroid # Human readable identifier
+    algorithm: native:centroids # Algorithm name
+    params: # A list of parameters
+      INPUT:
+        type: vector    # Param is a vector layer
+        name: polys.gml # file name
+    results: # A map of results (only one here)
+      OUTPUT_LAYER:
+        type: vector   # Expected result is a vector layer
+        name: expected/polys_centroid.gml # The relative filepath from the processing testdata directory
+        compare:
+          geometry:
+            precision: 7
+
+  - name: Delete Holes
+    algorithm: qgis:deleteholes
+    params:
+    - name: polys.gml
+      type: vector
+    results:
+      OUTPUT:
+        name: expected/polys_deleteholes.gml
+        type: vector
+
+  - algorithm: native:clip
     name: Clip lines by polygons
     params:
       INPUT:
@@ -39,7 +40,7 @@ tests:
         name: expected/clip_lines_by_polygon.gml
         type: vector
 
-  - algorithm: qgis:clip
+  - algorithm: native:clip
     name: Clip lines by multipolygon
     params:
       INPUT:
@@ -53,7 +54,7 @@ tests:
         name: expected/clip_lines_by_multipolygon.gml
         type: vector
 
-  - algorithm: qgis:clip
+  - algorithm: native:clip
     name: Clip polygons by multipolygons
     params:
       INPUT:
@@ -67,7 +68,7 @@ tests:
         name: expected/clip_polys_by_multipolygon.gml
         type: vector
 
-  - algorithm: qgis:clip
+  - algorithm: native:clip
     name: Clip multipolygons by polygons
     params:
       INPUT:
@@ -81,7 +82,7 @@ tests:
         name: expected/clip_multipolygons_by_polygons.gml
         type: vector
 
-  - algorithm: qgis:clip
+  - algorithm: native:clip
     name: Clip points by polygons
     params:
       INPUT:
@@ -95,7 +96,7 @@ tests:
         name: expected/clip_points_by_polygons.gml
         type: vector
 
-  - algorithm: qgis:clip
+  - algorithm: native:clip
     name: Clip points by multipolygons
     params:
       INPUT:
@@ -128,18 +129,18 @@ tests:
 #        name: expected/intersection_collection_fallback.shp
 #        type: vector
 #
-#  - name: Densify geometries
-#    algorithm: qgis:densifygeometries
-#    params:
-#      INPUT:
-#        name: multipolys.gml
-#        type: vector
-#      VERTICES: 4
-#    results:
-#      OUTPUT:
-#        name: expected/multipolys_densify.gml
-#        type: vector
-#
+  - name: Densify geometries
+    algorithm: qgis:densifygeometries
+    params:
+      INPUT:
+        name: multipolys.gml
+        type: vector
+      VERTICES: 4
+    results:
+      OUTPUT:
+        name: expected/multipolys_densify.gml
+        type: vector
+
 #  - name: Polygons to Lines
 #    algorithm: qgis:polygonstolines
 #    params:
@@ -153,58 +154,56 @@ tests:
 #          fields:
 #            fid: skip
 #
-#  - algorithm: qgis:basicstatisticsforfields
-#    name: Basic statistics for numeric fields
-#    params:
-#    - name: multipolys.gml
-#      type: vector
-#    - 'Bfloatval'
-#    results:
-#      OUTPUT_HTML_FILE:
-#        name: basic_statistics_numeric_float.html
-#        type: regex
-#        rules:
-#          - 'Analyzed layer: multipolys.gml'
-#          - 'Analyzed field: Bfloatval'
-#          - 'Count: 3'
-#          - 'Unique values: 3'
-#          - 'Minimum value: -0.123'
-#          - 'Maximum value: 0.123'
-#          - 'Range: 0.246'
-#          - 'Sum: 0.0'
-#          - 'Mean value: 0.0'
-#          - 'Median value: 0.0'
-#          - 'Standard deviation: 0.100429079454'
-#          - 'Coefficient of Variation: 0'
-#          - 'Minority \(rarest occurring value\): -0.123'
-#          - 'Majority \(most frequently occurring value\): -0.123'
-#          - 'First quartile: -0.0615'
-#          - 'Third quartile: 0.0615'
-#          - 'NULL \(missing\) values: 1'
-#          - 'Interquartile Range \(IQR\): 0.123'
-#
-#  - algorithm: qgis:basicstatisticsforfields
-#    name: Basic statistics for text fields
-#    params:
-#    - name: multipolys.gml
-#      type: vector
-#    - 'Bname'
-#    results:
-#      OUTPUT_HTML_FILE:
-#        name: expected/basic_statistics_string.html
-#        type: regex
-#        rules:
-#          - 'Analyzed layer: multipolys.gml'
-#          - 'Analyzed field: Bname'
-#          - 'Count: 4'
-#          - 'Unique values: 2'
-#          - 'Minimum value: Test'
-#          - 'Maximum value: Test'
-#          - 'Minimum length: 0'
-#          - 'Maximum length: 4'
-#          - 'Mean length: 3.0'
-#          - 'NULL \(missing\) values: 1'
-#
+  - algorithm: qgis:basicstatisticsforfields
+    name: Basic statistics for numeric fields
+    params:
+    - name: multipolys.gml
+      type: vector
+    - 'Bfloatval'
+    results:
+      OUTPUT_HTML_FILE:
+        name: basic_statistics_numeric_float.html
+        type: regex
+        rules:
+          - 'Analyzed field: Bfloatval'
+          - 'Count: 3'
+          - 'Unique values: 3'
+          - 'Minimum value: -0.123'
+          - 'Maximum value: 0.123'
+          - 'Range: 0.246'
+          - 'Sum: 0.0'
+          - 'Mean value: 0.0'
+          - 'Median value: 0.0'
+          - 'Standard deviation: 0.100429079454'
+          - 'Coefficient of Variation: 0'
+          - 'Minority \(rarest occurring value\): -0.123'
+          - 'Majority \(most frequently occurring value\): -0.123'
+          - 'First quartile: -0.0615'
+          - 'Third quartile: 0.0615'
+          - 'NULL \(missing\) values: 1'
+          - 'Interquartile Range \(IQR\): 0.123'
+
+  - algorithm: qgis:basicstatisticsforfields
+    name: Basic statistics for text fields
+    params:
+    - name: multipolys.gml
+      type: vector
+    - 'Bname'
+    results:
+      OUTPUT_HTML_FILE:
+        name: expected/basic_statistics_string.html
+        type: regex
+        rules:
+          - 'Analyzed field: Bname'
+          - 'Count: 4'
+          - 'Unique values: 2'
+          - 'Minimum value: Test'
+          - 'Maximum value: Test'
+          - 'Minimum length: 0'
+          - 'Maximum length: 4'
+          - 'Mean length: 3.0'
+          - 'NULL \(missing\) values: 1'
+
 #  # Split lines with lines considers two cases
 #  # case 1: two different layers
 #  - algorithm: qgis:splitlineswithlines
@@ -391,17 +390,17 @@ tests:
 #        name: expected/merge_lines.gml
 #        type: vector
 #
-#  - algorithm: qgis:multiparttosingleparts
-#    name: Multiparts to singleparts
-#    params:
-#      INPUT:
-#        name: multilines.gml
-#        type: vector
-#    results:
-#      OUTPUT:
-#        name: expected/multi_to_single.gml
-#        type: vector
-#
+  - algorithm: native:multiparttosingleparts
+    name: Multiparts to singleparts
+    params:
+      INPUT:
+        name: multilines.gml
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/multi_to_single.gml
+        type: vector
+
   - algorithm: qgis:boundingboxes
     name: Bounding boxes for lines
     params:
@@ -729,90 +728,90 @@ tests:
 #          geometry:
 #            precision: 7
 #
-#  - algorithm: qgis:centroids
-#    name: Centroid (lines)
-#    params:
-#      INPUT_LAYER:
-#        name: lines.gml
-#        type: vector
-#    results:
-#      OUTPUT_LAYER:
-#        name: expected/centroid_lines.gml
-#        type: vector
-#        compare:
-#          geometry:
-#            precision: 7
-#
-#  - algorithm: qgis:centroids
-#    name: Centroid (multilines)
-#    params:
-#      INPUT_LAYER:
-#        name: multilines.gml
-#        type: vector
-#    results:
-#      OUTPUT_LAYER:
-#        name: expected/centroid_multilines.gml
-#        type: vector
-#        compare:
-#          geometry:
-#            precision: 7
-#
-#  - algorithm: qgis:centroids
-#    name: Centroid (multipoints)
-#    params:
-#      INPUT_LAYER:
-#        name: multipoints.gml
-#        type: vector
-#    results:
-#      OUTPUT_LAYER:
-#        name: expected/centroid_multipoint.gml
-#        type: vector
-#        compare:
-#          geometry:
-#            precision: 7
-#
-#  - algorithm: qgis:centroids
-#    name: Centroid (multipolygons)
-#    params:
-#      INPUT_LAYER:
-#        name: multipolys.gml
-#        type: vector
-#    results:
-#      OUTPUT_LAYER:
-#        name: expected/centroid_multipolys.gml
-#        type: vector
-#        compare:
-#          geometry:
-#            precision: 7
-#
-#  - algorithm: qgis:centroids
-#    name: Centroid (points)
-#    params:
-#      INPUT_LAYER:
-#        name: points.gml
-#        type: vector
-#    results:
-#      OUTPUT_LAYER:
-#        name: expected/centroid_points.gml
-#        type: vector
-#        compare:
-#          geometry:
-#            precision: 7
-#
-#  - algorithm: qgis:centroids
-#    name: Centroid (polygons)
-#    params:
-#      INPUT_LAYER:
-#        name: polys.gml
-#        type: vector
-#    results:
-#      OUTPUT_LAYER:
-#        name: expected/centroid_polys.gml
-#        type: vector
-#        compare:
-#          geometry:
-#            precision: 7
-#
+  - algorithm: native:centroids
+    name: Centroid (lines)
+    params:
+      INPUT:
+        name: lines.gml
+        type: vector
+    results:
+      OUTPUT_LAYER:
+        name: expected/centroid_lines.gml
+        type: vector
+        compare:
+          geometry:
+            precision: 7
+
+  - algorithm: native:centroids
+    name: Centroid (multilines)
+    params:
+      INPUT:
+        name: multilines.gml
+        type: vector
+    results:
+      OUTPUT_LAYER:
+        name: expected/centroid_multilines.gml
+        type: vector
+        compare:
+          geometry:
+            precision: 7
+
+  - algorithm: native:centroids
+    name: Centroid (multipoints)
+    params:
+      INPUT:
+        name: multipoints.gml
+        type: vector
+    results:
+      OUTPUT_LAYER:
+        name: expected/centroid_multipoint.gml
+        type: vector
+        compare:
+          geometry:
+            precision: 7
+
+  - algorithm: native:centroids
+    name: Centroid (multipolygons)
+    params:
+      INPUT:
+        name: multipolys.gml
+        type: vector
+    results:
+      OUTPUT_LAYER:
+        name: expected/centroid_multipolys.gml
+        type: vector
+        compare:
+          geometry:
+            precision: 7
+
+  - algorithm: native:centroids
+    name: Centroid (points)
+    params:
+      INPUT:
+        name: points.gml
+        type: vector
+    results:
+      OUTPUT_LAYER:
+        name: expected/centroid_points.gml
+        type: vector
+        compare:
+          geometry:
+            precision: 7
+
+  - algorithm: native:centroids
+    name: Centroid (polygons)
+    params:
+      INPUT:
+        name: polys.gml
+        type: vector
+    results:
+      OUTPUT_LAYER:
+        name: expected/centroid_polys.gml
+        type: vector
+        compare:
+          geometry:
+            precision: 7
+
 #  - algorithm: qgis:translategeometry
 #    name: Lines translated
 #    params:
@@ -923,91 +922,91 @@ tests:
 #      OUTPUT:
 #        name: expected/extract_nodes_lines.gml
 #        type: vector
-#
-#  - algorithm: qgis:simplifygeometries
-#    name: Simplify (lines)
-#    params:
-#      INPUT:
-#        name: lines.gml
-#        type: vector
-#      TOLERANCE: 1.0
-#    results:
-#      OUTPUT:
-#        name: expected/simplify_lines.gml
-#        type: vector
-#
-#  - algorithm: qgis:simplifygeometries
-#    name: Simplify (multilines)
-#    params:
-#      INPUT:
-#        name: multilines.gml
-#        type: vector
-#      TOLERANCE: 1.0
-#    results:
-#      OUTPUT:
-#        name: expected/simplify_multilines.gml
-#        type: vector
-#
-#  - algorithm: qgis:simplifygeometries
-#    name: Simplify (visval)
-#    params:
-#      INPUT:
-#        name: simplify_lines.gml
-#        type: vector
-#      METHOD: '2'
-#      TOLERANCE: 1.0
-#    results:
-#      OUTPUT:
-#        name: expected/simplify_vis_lines.gml
-#        type: vector
-#        compare:
-#          geometry:
-#            precision: 7
-#
-#  - algorithm: qgis:simplifygeometries
-#    name: Simplify (grid)
-#    params:
-#      INPUT:
-#        name: simplify_lines.gml
-#        type: vector
-#      METHOD: '1'
-#      TOLERANCE: 5.0
-#    results:
-#      OUTPUT:
-#        name: expected/simplify_grid_lines.gml
-#        type: vector
-#        compare:
-#          geometry:
-#            precision: 7
-#
-#  - algorithm: qgis:smoothgeometry
-#    name: Smooth (lines)
-#    params:
-#      INPUT_LAYER:
-#        name: lines.gml
-#        type: vector
-#      ITERATIONS: 1
-#      MAX_ANGLE: 180.0
-#      OFFSET: 0.25
-#    results:
-#      OUTPUT_LAYER:
-#        name: expected/smoothed_lines.gml
-#        type: vector
-#
-#  - algorithm: qgis:smoothgeometry
-#    name: Smooth (lines, with max angle)
-#    params:
-#      INPUT_LAYER:
-#        name: lines.gml
-#        type: vector
-#      ITERATIONS: 1
-#      MAX_ANGLE: 60.0
-#      OFFSET: 0.25
-#    results:
-#      OUTPUT_LAYER:
-#        name: expected/smoothed_lines_max_angle.gml
-#        type: vector
-#
+
+  - algorithm: qgis:simplifygeometries
+    name: Simplify (lines)
+    params:
+      INPUT:
+        name: lines.gml
+        type: vector
+      TOLERANCE: 1.0
+    results:
+      OUTPUT:
+        name: expected/simplify_lines.gml
+        type: vector
+
+  - algorithm: qgis:simplifygeometries
+    name: Simplify (multilines)
+    params:
+      INPUT:
+        name: multilines.gml
+        type: vector
+      TOLERANCE: 1.0
+    results:
+      OUTPUT:
+        name: expected/simplify_multilines.gml
+        type: vector
+
+  - algorithm: qgis:simplifygeometries
+    name: Simplify (visval)
+    params:
+      INPUT:
+        name: simplify_lines.gml
+        type: vector
+      METHOD: '2'
+      TOLERANCE: 1.0
+    results:
+      OUTPUT:
+        name: expected/simplify_vis_lines.gml
+        type: vector
+        compare:
+          geometry:
+            precision: 7
+
+  - algorithm: qgis:simplifygeometries
+    name: Simplify (grid)
+    params:
+      INPUT:
+        name: simplify_lines.gml
+        type: vector
+      METHOD: '1'
+      TOLERANCE: 5.0
+    results:
+      OUTPUT:
+        name: expected/simplify_grid_lines.gml
+        type: vector
+        compare:
+          geometry:
+            precision: 7
+
+  - algorithm: qgis:smoothgeometry
+    name: Smooth (lines)
+    params:
+      INPUT:
+        name: lines.gml
+        type: vector
+      ITERATIONS: 1
+      MAX_ANGLE: 180.0
+      OFFSET: 0.25
+    results:
+      OUTPUT:
+        name: expected/smoothed_lines.gml
+        type: vector
+
+  - algorithm: qgis:smoothgeometry
+    name: Smooth (lines, with max angle)
+    params:
+      INPUT:
+        name: lines.gml
+        type: vector
+      ITERATIONS: 1
+      MAX_ANGLE: 60.0
+      OFFSET: 0.25
+    results:
+      OUTPUT:
+        name: expected/smoothed_lines_max_angle.gml
+        type: vector
+
 #  - algorithm: qgis:exportaddgeometrycolumns
 #    name: Add Geometry PointZ
 #    params:
@@ -1260,18 +1259,18 @@ tests:
 #        name: expected/remove_null_polys.gml
 #        type: vector
 #
-#  - algorithm: qgis:extractbyexpression
-#    name: Extract by Expression
-#    params:
-#      EXPRESSION: left( "Name",1)='A'
-#      INPUT:
-#        name: polys.gml
-#        type: vector
-#    results:
-#      OUTPUT:
-#        name: expected/extract_expression.gml
-#        type: vector
-#
+  - algorithm: native:extractbyexpression
+    name: Extract by Expression
+    params:
+      EXPRESSION: left( "Name",1)='A'
+      INPUT:
+        name: polys.gml
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/extract_expression.gml
+        type: vector
+
 #  - algorithm: qgis:extendlines
 #    name: Extend lines
 #    params:
@@ -1486,97 +1485,97 @@ tests:
 #          geometry:
 #            precision: 7
 #
-#  - algorithm: qgis:extractbyattribute
-#    name: Extract by attribute (is null)
-#    params:
-#      FIELD: intval
-#      INPUT:
-#        name: polys.gml
-#        type: vector
-#      OPERATOR: '8'
-#    results:
-#      OUTPUT:
-#        name: expected/extract_by_attribute_null.gml
-#        type: vector
-#
-#  - algorithm: qgis:extractbyattribute
-#    name: Extract by attribute (is not null)
-#    params:
-#      FIELD: intval
-#      INPUT:
-#        name: polys.gml
-#        type: vector
-#      OPERATOR: '9'
-#    results:
-#      OUTPUT:
-#        name: expected/extract_by_attribute_not_null.gml
-#        type: vector
-#
-#  - algorithm: qgis:extractbyattribute
-#    name: Extract by attribute (starts with)
-#    params:
-#      FIELD: name
-#      INPUT:
-#        name: polys.gml
-#        type: vector
-#      OPERATOR: '6'
-#      VALUE: A
-#    results:
-#      OUTPUT:
-#        name: expected/extract_by_attribute_startswith.gml
-#        type: vector
-#
-#  - algorithm: qgis:extractbyattribute
-#    name: Extract by attribute (contains)
-#    params:
-#      FIELD: name
-#      INPUT:
-#        name: polys.gml
-#        type: vector
-#      OPERATOR: '7'
-#      VALUE: aaa
-#    results:
-#      OUTPUT:
-#        name: expected/extract_by_attribute_contains.gml
-#        type: vector
-#
-#  - algorithm: qgis:extractbyattribute
-#    name: Extract by attribute (does not contain)
-#    params:
-#      FIELD: name
-#      INPUT:
-#        name: polys.gml
-#        type: vector
-#      OPERATOR: '10'
-#      VALUE: a
-#    results:
-#      OUTPUT:
-#        name: expected/extract_by_attribute_does_not_contain.gml
-#        type: vector
-#
-#  - algorithm: qgis:extractbyattribute
-#    name: Extract by attribute (greater)
-#    params:
-#      FIELD: floatval
-#      INPUT:
-#        name: polys.gml
-#        type: vector
-#      OPERATOR: '2'
-#      VALUE: '1'
-#    results:
-#      OUTPUT:
-#        name: expected/extract_by_attribute_greater.gml
-#        type: vector
-#
-#  - algorithm: qgis:createattributeindex
-#    name: Create Attribute Index (only tests for python errors, does not check result)
-#    params:
-#      FIELD: fid
-#      INPUT:
-#        name: lines.gml
-#        type: vector
-#    results: {}
-#
+  - algorithm: native:extractbyattribute
+    name: Extract by attribute (is null)
+    params:
+      FIELD: intval
+      INPUT:
+        name: polys.gml
+        type: vector
+      OPERATOR: '8'
+    results:
+      OUTPUT:
+        name: expected/extract_by_attribute_null.gml
+        type: vector
+
+  - algorithm: native:extractbyattribute
+    name: Extract by attribute (is not null)
+    params:
+      FIELD: intval
+      INPUT:
+        name: polys.gml
+        type: vector
+      OPERATOR: '9'
+    results:
+      OUTPUT:
+        name: expected/extract_by_attribute_not_null.gml
+        type: vector
+
+  - algorithm: native:extractbyattribute
+    name: Extract by attribute (starts with)
+    params:
+      FIELD: name
+      INPUT:
+        name: polys.gml
+        type: vector
+      OPERATOR: '6'
+      VALUE: A
+    results:
+      OUTPUT:
+        name: expected/extract_by_attribute_startswith.gml
+        type: vector
+
+  - algorithm: native:extractbyattribute
+    name: Extract by attribute (contains)
+    params:
+      FIELD: name
+      INPUT:
+        name: polys.gml
+        type: vector
+      OPERATOR: '7'
+      VALUE: aaa
+    results:
+      OUTPUT:
+        name: expected/extract_by_attribute_contains.gml
+        type: vector
+
+  - algorithm: native:extractbyattribute
+    name: Extract by attribute (does not contain)
+    params:
+      FIELD: name
+      INPUT:
+        name: polys.gml
+        type: vector
+      OPERATOR: '10'
+      VALUE: a
+    results:
+      OUTPUT:
+        name: expected/extract_by_attribute_does_not_contain.gml
+        type: vector
+
+  - algorithm: native:extractbyattribute
+    name: Extract by attribute (greater)
+    params:
+      FIELD: floatval
+      INPUT:
+        name: polys.gml
+        type: vector
+      OPERATOR: '2'
+      VALUE: '1'
+    results:
+      OUTPUT:
+        name: expected/extract_by_attribute_greater.gml
+        type: vector
+
+  - algorithm: qgis:createattributeindex
+    name: Create Attribute Index (only tests for python errors, does not check result)
+    params:
+      FIELD: fid
+      INPUT:
+        name: lines.gml
+        type: vector
+    results: {}
+
   - algorithm: qgis:deletecolumn
     name: Delete columns (multiple)
     params:
@@ -1601,22 +1600,22 @@ tests:
         name: expected/delete_column.gml
         type: vector
 
-#  - algorithm: qgis:createpointslayerfromtable
-#    name: Create points from table
-#    params:
-#      INPUT:
-#        name: create_points.gml
-#        type: table
-#      MFIELD: mcoord
-#      TARGET_CRS: EPSG:4326
-#      XFIELD: xcoord
-#      YFIELD: ycoord
-#      ZFIELD: zcoord
-#    results:
-#      OUTPUT:
-#        name: expected/create_points.gml
-#        type: vector
-#
+  - algorithm: qgis:createpointslayerfromtable
+    name: Create points from table
+    params:
+      INPUT:
+        name: create_points.gml
+        type: table
+      MFIELD: mcoord
+      TARGET_CRS: EPSG:4326
+      XFIELD: xcoord
+      YFIELD: ycoord
+      ZFIELD: zcoord
+    results:
+      OUTPUT:
+        name: expected/create_points.gml
+        type: vector
+
 #  - algorithm: qgis:splitwithlines
 #    name: Split lines with lines (new alg)
 #    params:
@@ -1667,18 +1666,18 @@ tests:
 #        compare:
 #          geometry:
 #            precision: 7
-#
-#  - algorithm: qgis:dropgeometries
-#    name: Drop geometries
-#    params:
-#      INPUT_LAYER:
-#        name: polys.gml
-#        type: vector
-#    results:
-#      OUTPUT_TABLE:
-#        name: expected/dropped_geometry.csv
-#        type: vector
-#
+
+  - algorithm: qgis:dropgeometries
+    name: Drop geometries
+    params:
+      INPUT_LAYER:
+        name: polys.gml
+        type: vector
+    results:
+      OUTPUT_TABLE:
+        name: expected/dropped_geometry.csv
+        type: vector
+
 #  - algorithm: qgis:creategridlines
 #    name: Create grid (lines)
 #    params:
@@ -1694,54 +1693,54 @@ tests:
 #          geometry:
 #            precision: 7
 #
-#  - algorithm: qgis:creategridpolygon
-#    name: Create grid (rectangles)
-#    params:
-#      CRS: EPSG:4326
-#      EXTENT: -1,11.2,-4,6.5
-#      HSPACING: 5.0
-#      TYPE: '0'
-#      VSPACING: 3.0
-#    results:
-#      OUTPUT:
-#        name: expected/grid_rectangles.gml
-#        type: vector
-#        compare:
-#          geometry:
-#            precision: 7
-#
-#  - algorithm: qgis:creategridpolygon
-#    name: Create grid (diamond)
-#    params:
-#      CRS: EPSG:4326
-#      EXTENT: -1,11.2,-4,6.5
-#      HSPACING: 5.0
-#      TYPE: '1'
-#      VSPACING: 3.0
-#    results:
-#      OUTPUT:
-#        name: expected/grid_diamond.gml
-#        type: vector
-#        compare:
-#          geometry:
-#            precision: 7
-#
-#  - algorithm: qgis:creategridpolygon
-#    name: Create grid (hexagon)
-#    params:
-#      CRS: EPSG:4326
-#      EXTENT: -1,11.2,-4,6.5
-#      HSPACING: 5.0
-#      TYPE: '2'
-#      VSPACING: 5.0
-#    results:
-#      OUTPUT:
-#        name: expected/grid_hexagon.gml
-#        type: vector
-#        compare:
-#          geometry:
-#            precision: 7
-#
+  - algorithm: qgis:creategridpolygon
+    name: Create grid (rectangles)
+    params:
+      CRS: EPSG:4326
+      EXTENT: -1,11.2,-4,6.5
+      HSPACING: 5.0
+      TYPE: '0'
+      VSPACING: 3.0
+    results:
+      OUTPUT:
+        name: expected/grid_rectangles.gml
+        type: vector
+        compare:
+          geometry:
+            precision: 7
+
+  - algorithm: qgis:creategridpolygon
+    name: Create grid (diamond)
+    params:
+      CRS: EPSG:4326
+      EXTENT: -1,11.2,-4,6.5
+      HSPACING: 5.0
+      TYPE: '1'
+      VSPACING: 3.0
+    results:
+      OUTPUT:
+        name: expected/grid_diamond.gml
+        type: vector
+        compare:
+          geometry:
+            precision: 7
+
+  - algorithm: qgis:creategridpolygon
+    name: Create grid (hexagon)
+    params:
+      CRS: EPSG:4326
+      EXTENT: -1,11.2,-4,6.5
+      HSPACING: 5.0
+      TYPE: '2'
+      VSPACING: 5.0
+    results:
+      OUTPUT:
+        name: expected/grid_hexagon.gml
+        type: vector
+        compare:
+          geometry:
+            precision: 7
+
 #  - algorithm: qgis:creategridlines
 #    name: Create grid (lines with overlay)
 #    params:
@@ -1756,144 +1755,141 @@ tests:
 #        name: expected/grid_lines_overlay.gml
 #        type: vector
 #
-#  - algorithm: qgis:creategridpolygon
-#    name: Create grid (rectangle with overlay)
-#    params:
-#      CRS: EPSG:4326
-#      EXTENT: -1,11.2,-4,6.5
-#      HOVERLAY: 2.0
-#      HSPACING: 5.0
-#      TYPE: '0'
-#      VOVERLAY: 1.0
-#      VSPACING: 3.0
-#    results:
-#      OUTPUT:
-#        name: expected/grid_rectangle_overlay.gml
-#        type: vector
-#        compare:
-#          geometry:
-#            precision: 7
-#
-#  - algorithm: qgis:creategridpolygon
-#    name: Create grid (diamond with overlay)
-#    params:
-#      CRS: EPSG:4326
-#      EXTENT: -1,11.2,-4,6.5
-#      HOVERLAY: 2.0
-#      HSPACING: 5.0
-#      TYPE: '1'
-#      VOVERLAY: 1.0
-#      VSPACING: 3.0
-#    results:
-#      OUTPUT:
-#        name: expected/grid_diamond_overlay.gml
-#        type: vector
-#        compare:
-#          geometry:
-#            precision: 7
-#
-#  - algorithm: qgis:creategridpolygon
-#    name: Create grid (hexagon with overlay)
-#    params:
-#      CRS: EPSG:4326
-#      EXTENT: -1,11.2,-4,6.5
-#      HOVERLAY: 2.0
-#      HSPACING: 5.0
-#      TYPE: '2'
-#      VOVERLAY: 1.0
-#      VSPACING: 5.0
-#    results:
-#      OUTPUT:
-#        name: expected/grid_hexagon_overlay.gml
-#        type: vector
-#        compare:
-#          geometry:
-#            precision: 7
-#
-#  - algorithm: qgis:deleteholes
-#    name: Delete holes (no min)
-#    params:
-#      INPUT:
-#        name: custom/remove_holes.gml
-#        type: vector
-#      MIN_AREA: 0.0
-#    results:
-#      OUTPUT:
-#        name: expected/removed_holes.gml
-#        type: vector
-#
-#  - algorithm: qgis:deleteholes
-#    name: Delete holes (with min)
-#    params:
-#      INPUT:
-#        name: custom/remove_holes.gml
-#        type: vector
-#      MIN_AREA: 5.0
-#    results:
-#      OUTPUT:
-#        name: expected/removed_holes_min_area.gml
-#        type: vector
-#
-#  - algorithm: qgis:basicstatisticsforfields
-#    name: Basic stats datetime
-#    params:
-#      FIELD_NAME: date_time
-#      INPUT_LAYER:
-#        name: custom/datetimes.tab
-#        type: table
-#    results:
-#      OUTPUT_HTML_FILE:
-#        name: expected/basic_statistics_datetime.html
-#        type: regex
-#        rules:
-#          - 'Analyzed layer: custom/datetimes.tab'
-#          - 'Analyzed field: date_time'
-#          - 'Count: 4'
-#          - 'Unique values: 3'
-#          - 'Minimum value: 2014-11-30T14:30:02'
-#          - 'Maximum value: 2016-11-30T14:29:22'
-#          - 'NULL \(missing\) values: 1'
-#
-#  - algorithm: qgis:basicstatisticsforfields
-#    name: Basic stats date
-#    params:
-#      FIELD_NAME: date
-#      INPUT_LAYER:
-#        name: custom/datetimes.tab
-#        type: table
-#    results:
-#      OUTPUT_HTML_FILE:
-#        name: expected/basic_statistics_date.html
-#        type: regex
-#        rules:
-#          - 'Analyzed layer: custom/datetimes.tab'
-#          - 'Analyzed field: date'
-#          - 'Count: 4'
-#          - 'Unique values: 3'
-#          - 'Minimum value: 2014-11-30T00:00:00'
-#          - 'Maximum value: 2016-11-30T00:00:00'
-#          - 'NULL \(missing\) values: 1'
-#
-#  - algorithm: qgis:basicstatisticsforfields
-#    name: Basic stats time
-#    params:
-#      FIELD_NAME: time
-#      INPUT_LAYER:
-#        name: custom/datetimes.tab
-#        type: table
-#    results:
-#      OUTPUT_HTML_FILE:
-#        name: expected/basic_statistics_time.html
-#        type: regex
-#        rules:
-#          - 'Analyzed layer: custom/datetimes.tab'
-#          - 'Analyzed field: time'
-#          - 'Count: 4'
-#          - 'Unique values: 3'
-#          - 'Minimum value: 03:29:40'
-#          - 'Maximum value: 15:29:22'
-#          - 'NULL \(missing\) values: 1'
-#
+  - algorithm: qgis:creategridpolygon
+    name: Create grid (rectangle with overlay)
+    params:
+      CRS: EPSG:4326
+      EXTENT: -1,11.2,-4,6.5
+      HOVERLAY: 2.0
+      HSPACING: 5.0
+      TYPE: '0'
+      VOVERLAY: 1.0
+      VSPACING: 3.0
+    results:
+      OUTPUT:
+        name: expected/grid_rectangle_overlay.gml
+        type: vector
+        compare:
+          geometry:
+            precision: 7
+
+  - algorithm: qgis:creategridpolygon
+    name: Create grid (diamond with overlay)
+    params:
+      CRS: EPSG:4326
+      EXTENT: -1,11.2,-4,6.5
+      HOVERLAY: 2.0
+      HSPACING: 5.0
+      TYPE: '1'
+      VOVERLAY: 1.0
+      VSPACING: 3.0
+    results:
+      OUTPUT:
+        name: expected/grid_diamond_overlay.gml
+        type: vector
+        compare:
+          geometry:
+            precision: 7
+
+  - algorithm: qgis:creategridpolygon
+    name: Create grid (hexagon with overlay)
+    params:
+      CRS: EPSG:4326
+      EXTENT: -1,11.2,-4,6.5
+      HOVERLAY: 2.0
+      HSPACING: 5.0
+      TYPE: '2'
+      VOVERLAY: 1.0
+      VSPACING: 5.0
+    results:
+      OUTPUT:
+        name: expected/grid_hexagon_overlay.gml
+        type: vector
+        compare:
+          geometry:
+            precision: 7
+
+  - algorithm: qgis:deleteholes
+    name: Delete holes (no min)
+    params:
+      INPUT:
+        name: custom/remove_holes.gml
+        type: vector
+      MIN_AREA: 0.0
+    results:
+      OUTPUT:
+        name: expected/removed_holes.gml
+        type: vector
+
+  - algorithm: qgis:deleteholes
+    name: Delete holes (with min)
+    params:
+      INPUT:
+        name: custom/remove_holes.gml
+        type: vector
+      MIN_AREA: 5.0
+    results:
+      OUTPUT:
+        name: expected/removed_holes_min_area.gml
+        type: vector
+
+  - algorithm: qgis:basicstatisticsforfields
+    name: Basic stats datetime
+    params:
+      FIELD_NAME: date_time
+      INPUT_LAYER:
+        name: custom/datetimes.tab
+        type: table
+    results:
+      OUTPUT_HTML_FILE:
+        name: expected/basic_statistics_datetime.html
+        type: regex
+        rules:
+          - 'Analyzed field: date_time'
+          - 'Count: 4'
+          - 'Unique values: 3'
+          - 'Minimum value: 2014-11-30T14:30:02'
+          - 'Maximum value: 2016-11-30T14:29:22'
+          - 'NULL \(missing\) values: 1'
+
+  - algorithm: qgis:basicstatisticsforfields
+    name: Basic stats date
+    params:
+      FIELD_NAME: date
+      INPUT_LAYER:
+        name: custom/datetimes.tab
+        type: table
+    results:
+      OUTPUT_HTML_FILE:
+        name: expected/basic_statistics_date.html
+        type: regex
+        rules:
+          - 'Analyzed field: date'
+          - 'Count: 4'
+          - 'Unique values: 3'
+          - 'Minimum value: 2014-11-30T00:00:00'
+          - 'Maximum value: 2016-11-30T00:00:00'
+          - 'NULL \(missing\) values: 1'
+
+  - algorithm: qgis:basicstatisticsforfields
+    name: Basic stats time
+    params:
+      FIELD_NAME: time
+      INPUT_LAYER:
+        name: custom/datetimes.tab
+        type: table
+    results:
+      OUTPUT_HTML_FILE:
+        name: expected/basic_statistics_time.html
+        type: regex
+        rules:
+          - 'Analyzed field: time'
+          - 'Count: 4'
+          - 'Unique values: 3'
+          - 'Minimum value: 03:29:40'
+          - 'Maximum value: 15:29:22'
+          - 'NULL \(missing\) values: 1'
+
 #  - algorithm: qgis:rastercalculator
 #    name: Raster Calculator with cellsize
 #    params:
@@ -1966,23 +1962,23 @@ tests:
 #        compare:
 #          geometry:
 #            precision: 7
-#
-#
-#  - algorithm: qgis:reprojectlayer
-#    name: reproject vector layer
-#    params:
-#      INPUT:
-#        name: points.gml
-#        type: vector
-#      TARGET_CRS: EPSG:3857
-#    results:
-#      OUTPUT:
-#        name: expected/reprojected.gml
-#        type: vector
-#        compare:
-#          geometry:
-#            precision: 7
-#
+
+
+  - algorithm: native:reprojectlayer
+    name: reproject vector layer
+    params:
+      INPUT:
+        name: points.gml
+        type: vector
+      TARGET_CRS: EPSG:3857
+    results:
+      OUTPUT:
+        name: expected/reprojected.gml
+        type: vector
+        compare:
+          geometry:
+            precision: 7
+
 #  - algorithm: qgis:variabledistancebuffer
 #    name: variable buffer on points
 #    params:
@@ -2138,20 +2134,20 @@ tests:
 #  #      name: expected/servicearea_bounds.gml
 #  #      type: vector
 #
-#  - algorithm: qgis:createattributeindex
-#    name: Create attribute index
-#    params:
-#      FIELD: id
-#      INPUT:
-#        name: custom/points.shp
-#        type: vector
-#        in_place: true
-#    results:
-#      INPUT:
-#        name: expected/create_attr_index_points.shp
-#        type: vector
-#        in_place_result: true
-#
+  - algorithm: qgis:createattributeindex
+    name: Create attribute index
+    params:
+      FIELD: id
+      INPUT:
+        name: custom/points.shp
+        type: vector
+        in_place: true
+    results:
+      INPUT:
+        name: expected/create_attr_index_points.shp
+        type: vector
+        in_place_result: true
+
 #  - algorithm: qgis:createspatialindex
 #    name: Create spatial index
 #    params:
@@ -2280,18 +2276,18 @@ tests:
 #      OUTPUT_LAYER:
 #        name: expected/zonal_statistics.gml
 #        type: vector
-#
-#  - algorithm: qgis:fixgeometries
-#    name: Fix geometries
-#    params:
-#      INPUT:
-#        name: invalidgeometries.gml
-#        type: vector
-#    results:
-#      OUTPUT:
-#        name: expected/valid.gml
-#        type: vector
-#
+
+  - algorithm: qgis:fixgeometries
+    name: Fix geometries
+    params:
+      INPUT:
+        name: invalidgeometries.gml
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/valid.gml
+        type: vector
+
 #  - algorithm: qgis:polygonize
 #    name: Polygonize
 #    params:
@@ -2380,23 +2376,23 @@ tests:
 #        name: expected/topocolor_polys_min_dist.gml
 #        type: vector
 #
-#  - algorithm: qgis:regularpoints
-#    name: Regular point with standard extent
-#    params:
-#      EXTENT: -0.9182432432432436,10.208108108108108,-3.1266891891891904,5.480067567567567
-#      INSET: 0.0
-#      IS_SPACING: false
-#      RANDOMIZE: false
-#      SPACING: 100
-#      CRS: EPSG:4326
-#    results:
-#      OUTPUT:
-#        name: expected/regular_points.gml
-#        type: vector
-#        compare:
-#          geometry:
-#            precision: 5
-#
+  - algorithm: qgis:regularpoints
+    name: Regular point with standard extent
+    params:
+      EXTENT: -0.9182432432432436,10.208108108108108,-3.1266891891891904,5.480067567567567
+      INSET: 0.0
+      IS_SPACING: false
+      RANDOMIZE: false
+      SPACING: 100
+      CRS: EPSG:4326
+    results:
+      OUTPUT:
+        name: expected/regular_points.gml
+        type: vector
+        compare:
+          geometry:
+            precision: 5
+
 #  - algorithm: qgis:rectanglesovalsdiamondsvariable
 #    name: Rectangular buffer shape
 #    params:
@@ -2547,45 +2543,53 @@ tests:
 #      MIN_DISTANCE: 0.0
 #      POINT_NUMBER: 5
 #    results: {}
-#
-#  - algorithm: script:selectbyattribute
-#    name: Select by attribute
-#    params:
-#      INPUT_LAYER:
-#        name: points.gml
-#        type: vector
-#    results:
-#      OUTPUT_LAYER:
-#        name: expected/selected_points.gml
-#        type: vector
-#
-#  - algorithm: script:selectbyexpression
-#    name: Select by expression
-#    params:
-#      INPUT_LAYER:
-#        name: points.gml
-#        type: vector
-#    results:
-#      OUTPUT_LAYER:
-#        name: expected/select_by_expression.gml
-#        type: vector
-#
-#  - algorithm: qgis:randomextract
-#    name: Random extract by number
-#    params:
-#      INPUT:
-#        name: custom/points_weighted.gml
-#        type: vector
-#      METHOD: '0'
-#      NUMBER: 4
-#    results: {}
-#
-#  - algorithm: qgis:randomextract
-#    name: Random extract by percentage
-#    params:
-#      INPUT:
-#        name: custom/points_weighted.gml
-#        type: vector
-#      METHOD: '1'
-#      NUMBER: 50
-#    results: {}
+
+  - algorithm: script:selectbyattribute
+    name: Select by attribute
+    params:
+      INPUT_LAYER:
+        name: points.gml
+        type: vector
+    results:
+      OUTPUT_LAYER:
+        name: expected/selected_points.gml
+        type: vector
+
+  - algorithm: script:selectbyexpression
+    name: Select by expression
+    params:
+      INPUT_LAYER:
+        name: points.gml
+        type: vector
+    results:
+      OUTPUT_LAYER:
+        name: expected/select_by_expression.gml
+        type: vector
+
+  - algorithm: qgis:randomextract
+    name: Random extract by number
+    params:
+      INPUT:
+        name: custom/points_weighted.gml
+        type: vector
+      METHOD: 0
+      NUMBER: 4
+    results:
+      OUTPUT:
+        type: vector
+        name: points_weighted.gml
+        compare: false
+
+  - algorithm: qgis:randomextract
+    name: Random extract by percentage
+    params:
+      INPUT:
+        name: custom/points_weighted.gml
+        type: vector
+      METHOD: 1
+      NUMBER: 50
+    results:
+      OUTPUT:
+        type: vector
+        name: points_weighted.gml
+        compare: false

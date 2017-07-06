@@ -18,6 +18,8 @@
 
 #include "qgscategorizedsymbolrenderer.h"
 
+#include "qgsdatadefinedsizelegend.h"
+#include "qgsdatadefinedsizelegendwidget.h"
 #include "qgssymbol.h"
 #include "qgssymbollayerutils.h"
 #include "qgscolorramp.h"
@@ -464,6 +466,12 @@ QgsCategorizedSymbolRendererWidget::QgsCategorizedSymbolRendererWidget( QgsVecto
   advMenu->addAction( tr( "Match to saved symbols" ), this, SLOT( matchToSymbolsFromLibrary() ) );
   advMenu->addAction( tr( "Match to symbols from file..." ), this, SLOT( matchToSymbolsFromXml() ) );
   advMenu->addAction( tr( "Symbol levels..." ), this, SLOT( showSymbolLevels() ) );
+  if ( mCategorizedSymbol->type() == QgsSymbol::Marker )
+  {
+    QAction *actionDdsLegend = advMenu->addAction( tr( "Data-defined size legend..." ) );
+    // only from Qt 5.6 there is convenience addAction() with new style connection
+    connect( actionDdsLegend, &QAction::triggered, this, &QgsCategorizedSymbolRendererWidget::dataDefinedSizeLegend );
+  }
 
   btnAdvanced->setMenu( advMenu );
 
@@ -1033,4 +1041,19 @@ QgsExpressionContext QgsCategorizedSymbolRendererWidget::createExpressionContext
   }
 
   return expContext;
+}
+
+void QgsCategorizedSymbolRendererWidget::dataDefinedSizeLegend()
+{
+  QgsMarkerSymbol *s = static_cast<QgsMarkerSymbol *>( mCategorizedSymbol ); // this should be only enabled for marker symbols
+  QgsDataDefinedSizeLegendWidget *panel = createDataDefinedSizeLegendWidget( s, mRenderer->dataDefinedSizeLegend() );
+  if ( panel )
+  {
+    connect( panel, &QgsPanelWidget::widgetChanged, [ = ]
+    {
+      mRenderer->setDataDefinedSizeLegend( panel->dataDefinedSizeLegend() );
+      emit widgetChanged();
+    } );
+    openPanel( panel );  // takes ownership of the panel
+  }
 }

@@ -101,7 +101,7 @@ class QgsMssqlProvider : public QgsVectorDataProvider
 
     virtual bool isSaveAndLoadStyleToDatabaseSupported() const override { return true; }
 
-    virtual bool addFeatures( QgsFeatureList &flist ) override;
+    virtual bool addFeatures( QgsFeatureList &flist, QgsFeatureSink::Flags flags = 0 ) override;
 
     virtual bool deleteFeatures( const QgsFeatureIds &id ) override;
 
@@ -213,7 +213,7 @@ class QgsMssqlProvider : public QgsVectorDataProvider
     }
 
     static void mssqlWkbTypeAndDimension( QgsWkbTypes::Type wkbType, QString &geometryType, int &dim );
-    static QgsWkbTypes::Type getWkbType( const QString &wkbType, int dim );
+    static QgsWkbTypes::Type getWkbType( const QString &wkbType );
 
     friend class QgsMssqlFeatureSource;
 

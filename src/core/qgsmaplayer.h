@@ -679,8 +679,8 @@ class CORE_EXPORT QgsMapLayer : public QObject
      */
     QgsMapLayerStyleManager *styleManager() const;
 
-    /** Tests whether the layer should be visible at the specified scale.
-     * \param scale scale denominator to test
+    /** Tests whether the layer should be visible at the specified \a scale.
+     *  The \a scale value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
      * \returns true if the layer is visible at the given scale.
      * \since QGIS 2.16
      * \see minimumScale()
@@ -689,9 +689,11 @@ class CORE_EXPORT QgsMapLayer : public QObject
      */
     bool isInScaleRange( double scale ) const;
 
-    /** Returns the minimum scale denominator at which the layer is visible.
-     * Scale based visibility is only used if hasScaleBasedVisibility is true.
-     * \returns minimum scale denominator at which the layer will render
+    /**
+     * Returns the minimum map scale (i.e. most "zoomed out" scale) at which the layer will be visible.
+     * The scale value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
+     * A scale of 0 indicates no minimum scale visibility.
+     * \note Scale based visibility is only used if setScaleBasedVisibility() is set to true.
      * \see setMinimumScale()
      * \see maximumScale()
      * \see hasScaleBasedVisibility()
@@ -699,9 +701,11 @@ class CORE_EXPORT QgsMapLayer : public QObject
      */
     double minimumScale() const;
 
-    /** Returns the maximum scale denominator at which the layer is visible.
-     * Scale based visibility is only used if hasScaleBasedVisibility is true.
-     * \returns minimum scale denominator at which the layer will render
+    /**
+     * Returns the maximum map scale (i.e. most "zoomed in" scale) at which the layer will be visible.
+     * The scale value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
+     * A scale of 0 indicates no maximum scale visibility.
+     * \note Scale based visibility is only used if setScaleBasedVisibility() is set to true.
      * \see setMaximumScale()
      * \see minimumScale()
      * \see hasScaleBasedVisibility()
@@ -792,21 +796,25 @@ class CORE_EXPORT QgsMapLayer : public QObject
 
   public slots:
 
-    /** Sets the minimum scale denominator at which the layer will be visible.
-     * Scale based visibility is only used if setScaleBasedVisibility is set to true.
-     * \param scale minimum scale denominator at which the layer should render
-     * \see minimumScale
-     * \see setMaximumScale
-     * \see setScaleBasedVisibility
+    /**
+     * Sets the minimum map \a scale (i.e. most "zoomed out" scale) at which the layer will be visible.
+     * The \a scale value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
+     * A \a scale of 0 indicates no minimum scale visibility.
+     * \note Scale based visibility is only used if setScaleBasedVisibility() is set to true.
+     * \see minimumScale()
+     * \see setMaximumScale()
+     * \see setScaleBasedVisibility()
      */
     void setMinimumScale( double scale );
 
-    /** Sets the maximum scale denominator at which the layer will be visible.
-     * Scale based visibility is only used if setScaleBasedVisibility is set to true.
-     * \param scale maximum scale denominator at which the layer should render
-     * \see maximumScale
-     * \see setMinimumScale
-     * \see setScaleBasedVisibility
+    /**
+     * Sets the maximum map \a scale (i.e. most "zoomed in" scale) at which the layer will be visible.
+     * The \a scale value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
+     * A \a scale of 0 indicates no maximum scale visibility.
+     * \note Scale based visibility is only used if setScaleBasedVisibility() is set to true.
+     * \see maximumScale()
+     * \see setMinimumScale()
+     * \see setScaleBasedVisibility()
      */
     void setMaximumScale( double scale );
 

@@ -30,7 +30,8 @@ class QgsRasterLayer;
 class QgsVectorLayer;
 class QgsFeatureSink;
 class QgsFeatureSource;
-
+class QgsProcessingFeatureSource;
+class QgsProcessingOutputDefinition;
 
 /**
  * \class QgsProcessingFeatureSourceDefinition
@@ -128,6 +129,11 @@ class CORE_EXPORT QgsProcessingOutputLayerDefinition
     QgsProject *destinationProject;
 
     /**
+     * Name to use for sink if it's to be loaded into a destination project.
+     */
+    QString destinationName;
+
+    /**
      * Map of optional sink/layer creation options, which
      * are passed to the underlying provider when creating new layers. Known options also
      * include 'fileEncoding', which is used to specify a file encoding to use for created
@@ -198,18 +204,22 @@ class CORE_EXPORT QgsProcessingParameterDefinition
       sipType = sipType_QgsProcessingParameterString;
     else if ( sipCpp->type() == "expression" )
       sipType = sipType_QgsProcessingParameterExpression;
-    else if ( sipCpp->type() == "table" )
-      sipType = sipType_QgsProcessingParameterTable;
+    else if ( sipCpp->type() == "vector" )
+      sipType = sipType_QgsProcessingParameterVectorLayer;
     else if ( sipCpp->type() == "field" )
-      sipType = sipType_QgsProcessingParameterTableField;
+      sipType = sipType_QgsProcessingParameterField;
     else if ( sipCpp->type() == "source" )
       sipType = sipType_QgsProcessingParameterFeatureSource;
     else if ( sipCpp->type() == "sink" )
       sipType = sipType_QgsProcessingParameterFeatureSink;
+    else if ( sipCpp->type() == "vectorOut" )
+      sipType = sipType_QgsProcessingParameterVectorOutput;
     else if ( sipCpp->type() == "rasterOut" )
       sipType = sipType_QgsProcessingParameterRasterOutput;
     else if ( sipCpp->type() == "fileOut" )
       sipType = sipType_QgsProcessingParameterFileOutput;
+    else if ( sipCpp->type() == "folderOut" )
+      sipType = sipType_QgsProcessingParameterFolderOutput;
     SIP_END
 #endif
 
@@ -234,7 +244,7 @@ class CORE_EXPORT QgsProcessingParameterDefinition
       TypeVectorPolygon = 2, //!< Vector polygon layers
       TypeRaster = 3, //!< Raster layers
       TypeFile = 4, //!< Files
-      TypeTable = 5, //!< Tables (i.e. vector layers with or without geometry)
+      TypeTable = 5, //!< Tables (i.e. vector layers with or without geometry). When used for a sink this indicates the sink has no geometry.
     };
 
     /**
@@ -319,6 +329,61 @@ class CORE_EXPORT QgsProcessingParameterDefinition
      */
     virtual bool checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context = nullptr ) const;
 
+    /**
+     * Returns a string version of the parameter input \a value, which is suitable for use as an input
+     * parameter value when running an algorithm directly from a Python command.
+     * The returned value must be correctly escaped - e.g. string values must be wrapped in ' 's.
+     */
+    virtual QString valueAsPythonString( const QVariant &value, QgsProcessingContext &context ) const;
+
+    /**
+     * Returns the parameter definition encoded in a string which can be used within a
+     * Python processing script.
+     */
+    virtual QString asScriptCode() const;
+
+    /**
+     * Saves this parameter to a QVariantMap. Subclasses should ensure that they call the base class
+     * method and then extend the result with additional properties.
+     * \see fromVariantMap()
+     */
+    virtual QVariantMap toVariantMap() const;
+
+    /**
+     * Restores this parameter to a QVariantMap. Subclasses should ensure that they call the base class
+     * method.
+     * \see toVariantMap()
+     */
+    virtual bool fromVariantMap( const QVariantMap &map );
+
+    /**
+     * Returns the parameter's freeform metadata. This is mostly used by parameter widget wrappers
+     * in order to customise their appearance and behavior.
+     * \see setMetadata()
+     * \note not available in Python bindings.
+     */
+    SIP_SKIP QVariantMap metadata() const { return mMetadata; }
+
+    /**
+     * Returns the parameter's freeform metadata. This is mostly used by parameter widget wrappers
+     * in order to customise their appearance and behavior.
+     * \see setMetadata()
+     */
+    QVariantMap &metadata() { return mMetadata; }
+
+    /**
+     * Sets the parameter's freeform \a metadata. This is mostly used by parameter widget wrappers
+     * in order to customise their appearance and behavior.
+     * \see metadata()
+     */
+    void setMetadata( const QVariantMap &metadata ) { mMetadata = metadata; }
+
+    /**
+     * Returns a list of other parameter names on which this parameter is dependent (e.g.
+     * field parameters which depend on a parent layer parameter).
+     */
+    virtual QStringList dependsOnOtherParameters() const { return QStringList(); }
+
   protected:
 
     //! Parameter name
@@ -332,6 +397,9 @@ class CORE_EXPORT QgsProcessingParameterDefinition
 
     //! Parameter flags
     Flags mFlags;
+
+    //! Freeform metadata for parameter. Mostly used by widget wrappers to customise their appearance and behavior.
+    QVariantMap mMetadata;
 
 };
 
@@ -429,7 +497,7 @@ class CORE_EXPORT QgsProcessingParameters
      *
      * This function creates a new object and the caller takes responsibility for deleting the returned object.
      */
-    static QgsFeatureSource *parameterAsSource( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, QgsProcessingContext &context ) SIP_FACTORY;
+    static QgsProcessingFeatureSource *parameterAsSource( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, QgsProcessingContext &context ) SIP_FACTORY;
 
     /**
      * Evaluates the parameter with matching \a definition to a map layer.
@@ -509,6 +577,28 @@ class CORE_EXPORT QgsProcessingParameters
      */
     static QStringList parameterAsFields( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, QgsProcessingContext &context );
 
+    /**
+     * Creates a new QgsProcessingParameterDefinition using the configuration from a
+     * supplied variant \a map.
+     * The caller takes responsibility for deleting the returned object.
+     */
+    static QgsProcessingParameterDefinition *parameterFromVariantMap( const QVariantMap &map ) SIP_FACTORY;
+
+    /**
+     * Creates an autogenerated parameter description from a parameter \a name.
+     */
+    static QString descriptionFromName( const QString &name );
+
+    /**
+     * Creates a new QgsProcessingParameterDefinition using the configuration from a
+     * supplied script \a code string.
+     * The caller takes responsibility for deleting the returned object.
+     */
+    static QgsProcessingParameterDefinition *parameterFromScriptCode( const QString &code ) SIP_FACTORY;
+
+  private:
+
+    static bool parseScriptCodeParameterOptions( const QString &code, bool &isOptional, QString &name, QString &type, QString &definition );
 };
 
 
@@ -530,6 +620,13 @@ class CORE_EXPORT QgsProcessingParameterBoolean : public QgsProcessingParameterD
                                    bool optional = false );
 
     QString type() const override { return QStringLiteral( "boolean" ); }
+    QString valueAsPythonString( const QVariant &value, QgsProcessingContext &context ) const override;
+    QString asScriptCode() const override;
+
+    /**
+     * Creates a new parameter using the definition from a script code.
+     */
+    static QgsProcessingParameterBoolean *fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition ) SIP_FACTORY;
 };
 
 /**
@@ -550,6 +647,13 @@ class CORE_EXPORT QgsProcessingParameterCrs : public QgsProcessingParameterDefin
 
     QString type() const override { return QStringLiteral( "crs" ); }
     bool checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context = nullptr ) const override;
+    QString valueAsPythonString( const QVariant &value, QgsProcessingContext &context ) const override;
+
+    /**
+     * Creates a new parameter using the definition from a script code.
+     */
+    static QgsProcessingParameterCrs *fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition ) SIP_FACTORY;
+
 };
 
 /**
@@ -570,6 +674,13 @@ class CORE_EXPORT QgsProcessingParameterMapLayer : public QgsProcessingParameter
 
     QString type() const override { return QStringLiteral( "layer" ); }
     bool checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context = nullptr ) const override;
+    QString valueAsPythonString( const QVariant &value, QgsProcessingContext &context ) const override;
+
+    /**
+     * Creates a new parameter using the definition from a script code.
+     */
+    static QgsProcessingParameterMapLayer *fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition ) SIP_FACTORY;
+
 };
 
 /**
@@ -590,6 +701,12 @@ class CORE_EXPORT QgsProcessingParameterExtent : public QgsProcessingParameterDe
 
     QString type() const override { return QStringLiteral( "extent" ); }
     bool checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context = nullptr ) const override;
+    QString valueAsPythonString( const QVariant &value, QgsProcessingContext &context ) const override;
+
+    /**
+     * Creates a new parameter using the definition from a script code.
+     */
+    static QgsProcessingParameterExtent *fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition ) SIP_FACTORY;
 
 };
 
@@ -612,6 +729,11 @@ class CORE_EXPORT QgsProcessingParameterPoint : public QgsProcessingParameterDef
 
     QString type() const override { return QStringLiteral( "point" ); }
     bool checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context = nullptr ) const override;
+
+    /**
+     * Creates a new parameter using the definition from a script code.
+     */
+    static QgsProcessingParameterPoint *fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition ) SIP_FACTORY;
 
 };
 
@@ -640,6 +762,7 @@ class CORE_EXPORT QgsProcessingParameterFile : public QgsProcessingParameterDefi
 
     QString type() const override { return QStringLiteral( "file" ); }
     bool checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context = nullptr ) const override;
+    QString asScriptCode() const override;
 
     /**
      * Returns the parameter behavior (e.g. File or Folder).
@@ -664,6 +787,14 @@ class CORE_EXPORT QgsProcessingParameterFile : public QgsProcessingParameterDefi
      * \see extension()
      */
     void setExtension( const QString &extension ) { mExtension = extension; }
+
+    QVariantMap toVariantMap() const override;
+    bool fromVariantMap( const QVariantMap &map ) override;
+
+    /**
+     * Creates a new parameter using the definition from a script code.
+     */
+    static QgsProcessingParameterFile *fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition, Behavior behavior = File ) SIP_FACTORY;
 
   private:
 
@@ -691,6 +822,7 @@ class CORE_EXPORT QgsProcessingParameterMatrix : public QgsProcessingParameterDe
 
     QString type() const override { return QStringLiteral( "matrix" ); }
     bool checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context = nullptr ) const override;
+    QString valueAsPythonString( const QVariant &value, QgsProcessingContext &context ) const override;
 
     /**
      * Returns a list of column headers (if set).
@@ -734,6 +866,14 @@ class CORE_EXPORT QgsProcessingParameterMatrix : public QgsProcessingParameterDe
      */
     void setHasFixedNumberRows( bool hasFixedNumberRows );
 
+    QVariantMap toVariantMap() const override;
+    bool fromVariantMap( const QVariantMap &map ) override;
+
+    /**
+     * Creates a new parameter using the definition from a script code.
+     */
+    static QgsProcessingParameterMatrix *fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition ) SIP_FACTORY;
+
   private:
 
     QStringList mHeaders;
@@ -761,6 +901,8 @@ class CORE_EXPORT QgsProcessingParameterMultipleLayers : public QgsProcessingPar
 
     QString type() const override { return QStringLiteral( "multilayer" ); }
     bool checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context = nullptr ) const override;
+    QString valueAsPythonString( const QVariant &value, QgsProcessingContext &context ) const override;
+    QString asScriptCode() const override;
 
     /**
      * Returns the layer type for layers acceptable by the parameter.
@@ -787,6 +929,14 @@ class CORE_EXPORT QgsProcessingParameterMultipleLayers : public QgsProcessingPar
      * \see minimumNumberInputs()
      */
     void setMinimumNumberInputs( int minimum );
+
+    QVariantMap toVariantMap() const override;
+    bool fromVariantMap( const QVariantMap &map ) override;
+
+    /**
+     * Creates a new parameter using the definition from a script code.
+     */
+    static QgsProcessingParameterMultipleLayers *fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition ) SIP_FACTORY;
 
   private:
 
@@ -825,6 +975,7 @@ class CORE_EXPORT QgsProcessingParameterNumber : public QgsProcessingParameterDe
 
     QString type() const override { return QStringLiteral( "number" ); }
     bool checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context = nullptr ) const override;
+    QString valueAsPythonString( const QVariant &value, QgsProcessingContext &context ) const override;
 
     /**
      * Returns the minimum value acceptable by the parameter.
@@ -862,6 +1013,14 @@ class CORE_EXPORT QgsProcessingParameterNumber : public QgsProcessingParameterDe
      */
     void setDataType( const Type &type );
 
+    QVariantMap toVariantMap() const override;
+    bool fromVariantMap( const QVariantMap &map ) override;
+
+    /**
+     * Creates a new parameter using the definition from a script code.
+     */
+    static QgsProcessingParameterNumber *fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition ) SIP_FACTORY;
+
   private:
 
     double mMin = -DBL_MAX;
@@ -889,6 +1048,7 @@ class CORE_EXPORT QgsProcessingParameterRange : public QgsProcessingParameterDef
 
     QString type() const override { return QStringLiteral( "range" ); }
     bool checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context = nullptr ) const override;
+    QString valueAsPythonString( const QVariant &value, QgsProcessingContext &context ) const override;
 
     /**
      * Returns the acceptable data type for the range.
@@ -901,6 +1061,14 @@ class CORE_EXPORT QgsProcessingParameterRange : public QgsProcessingParameterDef
      * \see dataType()
      */
     void setDataType( const QgsProcessingParameterNumber::Type &dataType );
+
+    QVariantMap toVariantMap() const override;
+    bool fromVariantMap( const QVariantMap &map ) override;
+
+    /**
+     * Creates a new parameter using the definition from a script code.
+     */
+    static QgsProcessingParameterRange *fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition ) SIP_FACTORY;
 
   private:
 
@@ -925,6 +1093,12 @@ class CORE_EXPORT QgsProcessingParameterRasterLayer : public QgsProcessingParame
 
     QString type() const override { return QStringLiteral( "raster" ); }
     bool checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context = nullptr ) const override;
+    QString valueAsPythonString( const QVariant &value, QgsProcessingContext &context ) const override;
+
+    /**
+     * Creates a new parameter using the definition from a script code.
+     */
+    static QgsProcessingParameterRasterLayer *fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition ) SIP_FACTORY;
 
 };
 
@@ -948,6 +1122,8 @@ class CORE_EXPORT QgsProcessingParameterEnum : public QgsProcessingParameterDefi
 
     QString type() const override { return QStringLiteral( "enum" ); }
     bool checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context = nullptr ) const override;
+    QString valueAsPythonString( const QVariant &value, QgsProcessingContext &context ) const override;
+    QString asScriptCode() const override;
 
     /**
      * Returns the list of acceptable options for the parameter.
@@ -972,6 +1148,14 @@ class CORE_EXPORT QgsProcessingParameterEnum : public QgsProcessingParameterDefi
      * \see allowMultiple()
      */
     void setAllowMultiple( bool allowMultiple );
+
+    QVariantMap toVariantMap() const override;
+    bool fromVariantMap( const QVariantMap &map ) override;
+
+    /**
+     * Creates a new parameter using the definition from a script code.
+     */
+    static QgsProcessingParameterEnum *fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition ) SIP_FACTORY;
 
   private:
 
@@ -998,6 +1182,8 @@ class CORE_EXPORT QgsProcessingParameterString : public QgsProcessingParameterDe
                                   bool optional = false );
 
     QString type() const override { return QStringLiteral( "string" ); }
+    QString valueAsPythonString( const QVariant &value, QgsProcessingContext &context ) const override;
+    QString asScriptCode() const override;
 
     /**
      * Returns true if the parameter allows multiline strings.
@@ -1010,6 +1196,14 @@ class CORE_EXPORT QgsProcessingParameterString : public QgsProcessingParameterDe
      * \see multiLine()
      */
     void setMultiLine( bool multiLine );
+
+    QVariantMap toVariantMap() const override;
+    bool fromVariantMap( const QVariantMap &map ) override;
+
+    /**
+     * Creates a new parameter using the definition from a script code.
+     */
+    static QgsProcessingParameterString *fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition ) SIP_FACTORY;
 
   private:
 
@@ -1035,6 +1229,8 @@ class CORE_EXPORT QgsProcessingParameterExpression : public QgsProcessingParamet
                                       bool optional = false );
 
     QString type() const override { return QStringLiteral( "expression" ); }
+    QString valueAsPythonString( const QVariant &value, QgsProcessingContext &context ) const override;
+    QStringList dependsOnOtherParameters() const override;
 
     /**
      * Returns the name of the parent layer parameter, or an empty string if this is not set.
@@ -1048,6 +1244,14 @@ class CORE_EXPORT QgsProcessingParameterExpression : public QgsProcessingParamet
      */
     void setParentLayerParameter( const QString &parentLayerParameter );
 
+    QVariantMap toVariantMap() const override;
+    bool fromVariantMap( const QVariantMap &map ) override;
+
+    /**
+     * Creates a new parameter using the definition from a script code.
+     */
+    static QgsProcessingParameterExpression *fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition ) SIP_FACTORY;
+
   private:
 
     QString mParentLayerParameter;
@@ -1055,32 +1259,40 @@ class CORE_EXPORT QgsProcessingParameterExpression : public QgsProcessingParamet
 };
 
 /**
- * \class QgsProcessingParameterTable
+ * \class QgsProcessingParameterVectorLayer
  * \ingroup core
- * A table (i.e. vector layers with or without geometry) parameter for processing algorithms.
+ * A vector layer (with or without geometry) parameter for processing algorithms. Consider using
+ * the more versatile QgsProcessingParameterFeatureSource wherever possible.
   * \since QGIS 3.0
  */
-class CORE_EXPORT QgsProcessingParameterTable : public QgsProcessingParameterDefinition
+class CORE_EXPORT QgsProcessingParameterVectorLayer : public QgsProcessingParameterDefinition
 {
   public:
 
     /**
-     * Constructor for QgsProcessingParameterTable.
+     * Constructor for QgsProcessingParameterVectorLayer.
      */
-    QgsProcessingParameterTable( const QString &name, const QString &description = QString(), const QVariant &defaultValue = QVariant(),
-                                 bool optional = false );
+    QgsProcessingParameterVectorLayer( const QString &name, const QString &description = QString(), const QVariant &defaultValue = QVariant(),
+                                       bool optional = false );
 
-    QString type() const override { return QStringLiteral( "table" ); }
+    QString type() const override { return QStringLiteral( "vector" ); }
+    bool checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context = nullptr ) const override;
+    QString valueAsPythonString( const QVariant &value, QgsProcessingContext &context ) const override;
+
+    /**
+     * Creates a new parameter using the definition from a script code.
+     */
+    static QgsProcessingParameterVectorLayer *fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition ) SIP_FACTORY;
 
 };
 
 /**
- * \class QgsProcessingParameterTableField
+ * \class QgsProcessingParameterField
  * \ingroup core
- * A table field parameter for processing algorithms.
+ * A vector layer or feature source field parameter for processing algorithms.
   * \since QGIS 3.0
  */
-class CORE_EXPORT QgsProcessingParameterTableField : public QgsProcessingParameterDefinition
+class CORE_EXPORT QgsProcessingParameterField : public QgsProcessingParameterDefinition
 {
   public:
 
@@ -1094,16 +1306,19 @@ class CORE_EXPORT QgsProcessingParameterTableField : public QgsProcessingParamet
     };
 
     /**
-     * Constructor for QgsProcessingParameterTableField.
+     * Constructor for QgsProcessingParameterField.
      */
-    QgsProcessingParameterTableField( const QString &name, const QString &description = QString(), const QVariant &defaultValue = QVariant(),
-                                      const QString &parentLayerParameterName = QString(),
-                                      DataType type = Any,
-                                      bool allowMultiple = false,
-                                      bool optional = false );
+    QgsProcessingParameterField( const QString &name, const QString &description = QString(), const QVariant &defaultValue = QVariant(),
+                                 const QString &parentLayerParameterName = QString(),
+                                 DataType type = Any,
+                                 bool allowMultiple = false,
+                                 bool optional = false );
 
     QString type() const override { return QStringLiteral( "field" ); }
     bool checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context = nullptr ) const override;
+    QString valueAsPythonString( const QVariant &value, QgsProcessingContext &context ) const override;
+    QString asScriptCode() const override;
+    QStringList dependsOnOtherParameters() const override;
 
     /**
      * Returns the name of the parent layer parameter, or an empty string if this is not set.
@@ -1141,6 +1356,14 @@ class CORE_EXPORT QgsProcessingParameterTableField : public QgsProcessingParamet
      */
     void setAllowMultiple( bool allowMultiple );
 
+    QVariantMap toVariantMap() const override;
+    bool fromVariantMap( const QVariantMap &map ) override;
+
+    /**
+     * Creates a new parameter using the definition from a script code.
+     */
+    static QgsProcessingParameterField *fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition ) SIP_FACTORY;
+
   private:
 
     QString mParentLayerParameter;
@@ -1168,6 +1391,8 @@ class CORE_EXPORT QgsProcessingParameterFeatureSource : public QgsProcessingPara
 
     QString type() const override { return QStringLiteral( "source" ); }
     bool checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context = nullptr ) const override;
+    QString valueAsPythonString( const QVariant &value, QgsProcessingContext &context ) const override;
+    QString asScriptCode() const override;
 
     /**
      * Returns the geometry types for sources acceptable by the parameter.
@@ -1181,9 +1406,77 @@ class CORE_EXPORT QgsProcessingParameterFeatureSource : public QgsProcessingPara
      */
     void setDataTypes( const QList< int > &types );
 
+    QVariantMap toVariantMap() const override;
+    bool fromVariantMap( const QVariantMap &map ) override;
+
+    /**
+     * Creates a new parameter using the definition from a script code.
+     */
+    static QgsProcessingParameterFeatureSource *fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition ) SIP_FACTORY;
+
   private:
 
     QList< int > mDataTypes = QList< int >() << QgsProcessingParameterDefinition::TypeVectorAny;
+
+};
+
+/**
+ * \class QgsProcessingDestinationParameter
+ * \ingroup core
+ * Base class for all parameter definitions which represent file or layer destinations, e.g. parameters
+ * which are used for the destination for layers output by an algorithm.
+  * \since QGIS 3.0
+ */
+class CORE_EXPORT QgsProcessingDestinationParameter : public QgsProcessingParameterDefinition
+{
+  public:
+
+    /**
+     * Constructor for QgsProcessingDestinationParameter.
+     */
+    QgsProcessingDestinationParameter( const QString &name, const QString &description = QString(), const QVariant &defaultValue = QVariant(),
+                                       bool optional = false );
+
+    bool isDestination() const override { return true; }
+    QVariantMap toVariantMap() const override;
+    bool fromVariantMap( const QVariantMap &map ) override;
+
+    /**
+     * Returns a new QgsProcessingOutputDefinition corresponding to the definition of the destination
+     * parameter.
+     */
+    virtual QgsProcessingOutputDefinition *toOutputDefinition() const = 0 SIP_FACTORY;
+
+    /**
+     * Returns true if the destination parameter supports non filed-based outputs,
+     * such as memory layers or direct database outputs.
+     * \see setSupportsNonFileBasedOutputs()
+     */
+    bool supportsNonFileBasedOutputs() const { return mSupportsNonFileBasedOutputs; }
+
+    /**
+     * Sets whether the destination parameter supports non filed-based outputs,
+     * such as memory layers or direct database outputs.
+     * \see supportsNonFileBasedOutputs()
+     */
+    void setSupportsNonFileBasedOutputs( bool supportsNonFileBasedOutputs ) { mSupportsNonFileBasedOutputs = supportsNonFileBasedOutputs; }
+
+    /**
+     * Returns the default file extension for destination file paths
+     * associated with this parameter.
+     */
+    virtual QString defaultFileExtension() const = 0;
+
+    /**
+     * Generates a temporary destination value for this parameter. The returned
+     * value will be a file path or QGIS data provider URI suitable for
+     * temporary storage of created layers and files.
+     */
+    virtual QString generateTemporaryDestination() const;
+
+  private:
+
+    bool mSupportsNonFileBasedOutputs = true;
 
 };
 
@@ -1196,7 +1489,7 @@ class CORE_EXPORT QgsProcessingParameterFeatureSource : public QgsProcessingPara
  * A parameter which represents the destination feature sink for features created by an algorithm.
   * \since QGIS 3.0
  */
-class CORE_EXPORT QgsProcessingParameterFeatureSink : public QgsProcessingParameterDefinition
+class CORE_EXPORT QgsProcessingParameterFeatureSink : public QgsProcessingDestinationParameter
 {
   public:
 
@@ -1207,8 +1500,11 @@ class CORE_EXPORT QgsProcessingParameterFeatureSink : public QgsProcessingParame
                                        bool optional = false );
 
     QString type() const override { return QStringLiteral( "sink" ); }
-    bool isDestination() const override { return true; }
     bool checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context = nullptr ) const override;
+    QString valueAsPythonString( const QVariant &value, QgsProcessingContext &context ) const override;
+    QString asScriptCode() const override;
+    QgsProcessingOutputDefinition *toOutputDefinition() const override SIP_FACTORY;
+    QString defaultFileExtension() const override;
 
     /**
      * Returns the layer type for sinks associated with the parameter.
@@ -1228,6 +1524,72 @@ class CORE_EXPORT QgsProcessingParameterFeatureSink : public QgsProcessingParame
      */
     void setDataType( QgsProcessingParameterDefinition::LayerType type );
 
+    QVariantMap toVariantMap() const override;
+    bool fromVariantMap( const QVariantMap &map ) override;
+    QString generateTemporaryDestination() const override;
+
+    /**
+     * Creates a new parameter using the definition from a script code.
+     */
+    static QgsProcessingParameterFeatureSink *fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition ) SIP_FACTORY;
+
+  private:
+
+    QgsProcessingParameterDefinition::LayerType mDataType = QgsProcessingParameterDefinition::TypeVectorAny;
+};
+
+
+/**
+ * \class QgsProcessingParameterVectorOutput
+ * \ingroup core
+ * A vector layer output parameter. Consider using the more flexible QgsProcessingParameterFeatureSink wherever
+ * possible.
+  * \since QGIS 3.0
+ */
+class CORE_EXPORT QgsProcessingParameterVectorOutput : public QgsProcessingDestinationParameter
+{
+  public:
+
+    /**
+     * Constructor for QgsProcessingParameterVectorOutput.
+     */
+    QgsProcessingParameterVectorOutput( const QString &name, const QString &description = QString(), QgsProcessingParameterDefinition::LayerType type = QgsProcessingParameterDefinition::TypeVectorAny, const QVariant &defaultValue = QVariant(),
+                                        bool optional = false );
+
+    QString type() const override { return QStringLiteral( "vectorOut" ); }
+    bool checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context = nullptr ) const override;
+    QString valueAsPythonString( const QVariant &value, QgsProcessingContext &context ) const override;
+    QString asScriptCode() const override;
+    QgsProcessingOutputDefinition *toOutputDefinition() const override SIP_FACTORY;
+    QString defaultFileExtension() const override;
+
+    /**
+     * Returns the layer type for layers associated with the parameter.
+     * \see setDataType()
+     */
+    QgsProcessingParameterDefinition::LayerType dataType() const;
+
+    /**
+     * Returns true if the layer is likely to include geometries. In cases were presence of geometry
+     * cannot be reliably determined in advance, this method will default to returning true.
+     */
+    bool hasGeometry() const;
+
+    /**
+     * Sets the layer \a type for the layers associated with the parameter.
+     * \see dataType()
+     */
+    void setDataType( QgsProcessingParameterDefinition::LayerType type );
+
+    QVariantMap toVariantMap() const override;
+    bool fromVariantMap( const QVariantMap &map ) override;
+
+    /**
+     * Creates a new parameter using the definition from a script code.
+     */
+    static QgsProcessingParameterVectorOutput *fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition ) SIP_FACTORY;
+
+
   private:
 
     QgsProcessingParameterDefinition::LayerType mDataType = QgsProcessingParameterDefinition::TypeVectorAny;
@@ -1239,7 +1601,7 @@ class CORE_EXPORT QgsProcessingParameterFeatureSink : public QgsProcessingParame
  * A raster layer output parameter.
   * \since QGIS 3.0
  */
-class CORE_EXPORT QgsProcessingParameterRasterOutput : public QgsProcessingParameterDefinition
+class CORE_EXPORT QgsProcessingParameterRasterOutput : public QgsProcessingDestinationParameter
 {
   public:
 
@@ -1251,8 +1613,15 @@ class CORE_EXPORT QgsProcessingParameterRasterOutput : public QgsProcessingParam
                                         bool optional = false );
 
     QString type() const override { return QStringLiteral( "rasterOut" ); }
-    bool isDestination() const override { return true; }
     bool checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context = nullptr ) const override;
+    QString valueAsPythonString( const QVariant &value, QgsProcessingContext &context ) const override;
+    QgsProcessingOutputDefinition *toOutputDefinition() const override SIP_FACTORY;
+    QString defaultFileExtension() const override;
+
+    /**
+     * Creates a new parameter using the definition from a script code.
+     */
+    static QgsProcessingParameterRasterOutput *fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition ) SIP_FACTORY;
 };
 
 /**
@@ -1261,7 +1630,7 @@ class CORE_EXPORT QgsProcessingParameterRasterOutput : public QgsProcessingParam
  * A generic file based output parameter.
   * \since QGIS 3.0
  */
-class CORE_EXPORT QgsProcessingParameterFileOutput : public QgsProcessingParameterDefinition
+class CORE_EXPORT QgsProcessingParameterFileOutput : public QgsProcessingDestinationParameter
 {
   public:
 
@@ -1274,8 +1643,10 @@ class CORE_EXPORT QgsProcessingParameterFileOutput : public QgsProcessingParamet
                                       bool optional = false );
 
     QString type() const override { return QStringLiteral( "fileOut" ); }
-    bool isDestination() const override { return true; }
     bool checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context = nullptr ) const override;
+    QString valueAsPythonString( const QVariant &value, QgsProcessingContext &context ) const override;
+    QgsProcessingOutputDefinition *toOutputDefinition() const override SIP_FACTORY;
+    QString defaultFileExtension() const override;
 
     /**
      * Returns the file filter string for files compatible with this output.
@@ -1289,9 +1660,47 @@ class CORE_EXPORT QgsProcessingParameterFileOutput : public QgsProcessingParamet
      */
     void setFileFilter( const QString &filter );
 
+    QVariantMap toVariantMap() const override;
+    bool fromVariantMap( const QVariantMap &map ) override;
+
+    /**
+     * Creates a new parameter using the definition from a script code.
+     */
+    static QgsProcessingParameterFileOutput *fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition ) SIP_FACTORY;
+
+
   private:
 
     QString mFileFilter;
+};
+
+/**
+ * \class QgsProcessingParameterFolderOutput
+ * \ingroup core
+ * A folder output parameter.
+  * \since QGIS 3.0
+ */
+class CORE_EXPORT QgsProcessingParameterFolderOutput : public QgsProcessingDestinationParameter
+{
+  public:
+
+    /**
+     * Constructor for QgsProcessingParameterFolderOutput.
+     */
+    QgsProcessingParameterFolderOutput( const QString &name, const QString &description = QString(),
+                                        const QVariant &defaultValue = QVariant(),
+                                        bool optional = false );
+
+    QString type() const override { return QStringLiteral( "folderOut" ); }
+    bool checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context = nullptr ) const override;
+    QgsProcessingOutputDefinition *toOutputDefinition() const override SIP_FACTORY;
+    QString defaultFileExtension() const override;
+
+    /**
+     * Creates a new parameter using the definition from a script code.
+     */
+    static QgsProcessingParameterFolderOutput *fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition ) SIP_FACTORY;
+
 };
 
 #endif // QGSPROCESSINGPARAMETERS_H

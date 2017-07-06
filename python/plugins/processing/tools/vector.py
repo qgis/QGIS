@@ -228,14 +228,12 @@ def simpleMeasure(geom, method=0, ellips=None, crs=None):
     return (attr1, attr2)
 
 
-def combineVectorFields(layerA, layerB):
+def combineFields(fieldsA, fieldsB):
     """Create single field map from two input field maps.
     """
     fields = []
-    fieldsA = layerA.fields()
     fields.extend(fieldsA)
     namesA = [str(f.name()).lower() for f in fieldsA]
-    fieldsB = layerB.fields()
     for field in fieldsB:
         name = str(field.name()).lower()
         if name in namesA:

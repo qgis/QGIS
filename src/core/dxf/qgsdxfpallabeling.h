@@ -18,6 +18,8 @@
 #ifndef QGSDXFPALLABELING_H
 #define QGSDXFPALLABELING_H
 
+#define SIP_NO_FILE
+
 #include "qgsvectorlayerlabelprovider.h"
 #include "qgsrulebasedlabeling.h"
 

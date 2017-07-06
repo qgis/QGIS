@@ -31,13 +31,15 @@ from qgis.PyQt.QtGui import QIcon
 
 from qgis.core import (QgsMapToPixelSimplifier,
                        QgsMessageLog,
-                       QgsProcessingUtils)
+                       QgsFeatureSink,
+                       QgsProcessingUtils,
+                       QgsProcessingParameterFeatureSource,
+                       QgsProcessingParameterFeatureSink,
+                       QgsProcessingParameterEnum,
+                       QgsProcessingParameterNumber,
+                       QgsProcessingOutputVectorLayer)
 
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
-from processing.core.parameters import ParameterVector
-from processing.core.parameters import ParameterNumber
-from processing.core.parameters import ParameterSelection
-from processing.core.outputs import OutputVector
 from processing.tools import dataobjects
 
 pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
@@ -58,20 +60,21 @@ class SimplifyGeometries(QgisAlgorithm):
 
     def __init__(self):
         super().__init__()
-        self.addParameter(ParameterVector(self.INPUT,
-                                          self.tr('Input layer'),
-                                          [dataobjects.TYPE_VECTOR_POLYGON, dataobjects.TYPE_VECTOR_LINE]))
+        self.addParameter(QgsProcessingParameterFeatureSource(self.INPUT,
+                                                              self.tr('Input layer'),
+                                                              [dataobjects.TYPE_VECTOR_POLYGON, dataobjects.TYPE_VECTOR_LINE]))
         self.methods = [self.tr('Distance (Douglas-Peucker)'),
                         'Snap to grid',
                         'Area (Visvalingam)']
-        self.addParameter(ParameterSelection(
+        self.addParameter(QgsProcessingParameterEnum(
             self.METHOD,
             self.tr('Simplification method'),
-            self.methods, default=0))
-        self.addParameter(ParameterNumber(self.TOLERANCE,
-                                          self.tr('Tolerance'), 0.0, 10000000.0, 1.0))
+            self.methods, defaultValue=0))
+        self.addParameter(QgsProcessingParameterNumber(self.TOLERANCE,
+                                                       self.tr('Tolerance'), minValue=0.0, maxValue=10000000.0, defaultValue=1.0))
 
-        self.addOutput(OutputVector(self.OUTPUT, self.tr('Simplified')))
+        self.addParameter(QgsProcessingParameterFeatureSink(self.OUTPUT, self.tr('Simplified')))
+        self.addOutput(QgsProcessingOutputVectorLayer(self.OUTPUT, self.tr('Simplified')))
 
     def name(self):
         return 'simplifygeometries'
@@ -80,23 +83,25 @@ class SimplifyGeometries(QgisAlgorithm):
         return self.tr('Simplify geometries')
 
     def processAlgorithm(self, parameters, context, feedback):
-        layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT), context)
-        tolerance = self.getParameterValue(self.TOLERANCE)
-        method = self.getParameterValue(self.METHOD)
+        source = self.parameterAsSource(parameters, self.INPUT, context)
+        tolerance = self.parameterAsDouble(parameters, self.TOLERANCE, context)
+        method = self.parameterAsEnum(parameters, self.METHOD, context)
 
         pointsBefore = 0
         pointsAfter = 0
 
-        writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(layer.fields(), layer.wkbType(),
-                                                                     layer.crs(), context)
+        (sink, dest_id) = self.parameterAsSink(parameters, self.OUTPUT, context,
+                                               source.fields(), source.wkbType(), source.sourceCrs())
 
-        features = QgsProcessingUtils.getFeatures(layer, context)
-        total = 100.0 / QgsProcessingUtils.featureCount(layer, context)
+        features = source.getFeatures()
+        total = 100.0 / source.featureCount() if source.featureCount() else 0
 
         if method != 0:
             simplifier = QgsMapToPixelSimplifier(QgsMapToPixelSimplifier.SimplifyGeometry, tolerance, method)
 
         for current, input_feature in enumerate(features):
+            if feedback.isCanceled():
+                break
             out_feature = input_feature
             if input_feature.geometry():
                 input_geometry = input_feature.geometry()
@@ -109,10 +114,11 @@ class SimplifyGeometries(QgisAlgorithm):
 
                 pointsAfter += output_geometry.geometry().nCoordinates()
                 out_feature.setGeometry(output_geometry)
-            writer.addFeature(out_feature)
-            feedback.setProgress(int(current * total))
 
-        del writer
+            sink.addFeature(out_feature, QgsFeatureSink.FastInsert)
+            feedback.setProgress(int(current * total))
 
         QgsMessageLog.logMessage(self.tr('Simplify: Input geometries have been simplified from {0} to {1} points').format(pointsBefore, pointsAfter),
                                  self.tr('Processing'), QgsMessageLog.INFO)
+
+        return {self.OUTPUT: dest_id}

@@ -35,6 +35,7 @@ QgsDb2ConnectionItem::QgsDb2ConnectionItem( QgsDataItem *parent, const QString n
   : QgsDataCollectionItem( parent, name, path )
 {
   mIconName = QStringLiteral( "mIconConnect.png" );
+  mCapabilities |= Collapse;
   populate();
 }
 
@@ -477,7 +478,7 @@ QString QgsDb2LayerItem::createUri()
   if ( !connItem )
   {
     QgsDebugMsg( "connection item not found." );
-    return QString::null;
+    return QString();
   }
   QgsDebugMsg( "connInfo: '" + connItem->connInfo() + "'" );
   QgsDataSourceUri uri = QgsDataSourceUri( connItem->connInfo() );
