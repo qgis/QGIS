@@ -17,6 +17,12 @@ class QgsFontButton : QToolButton
  The button will open a detailed text format settings dialog when clicked. An attached drop down
  menu allows for copying and pasting text styles, picking colors for the text, and for dropping
  colors from other color widgets.
+
+ The button can be used in two different modes(). The default behavior is to include
+ all settings used for configuring QgsTextFormat/QgsTextRenderer classes. A cut down
+ mode (without settings for color) is also available when the resultant font is
+ used only in a QFont object.
+
 .. versionadded:: 3.0
 %End
 
@@ -24,6 +30,13 @@ class QgsFontButton : QToolButton
 #include "qgsfontbutton.h"
 %End
   public:
+
+
+    enum Mode
+    {
+      ModeTextRenderer,
+      ModeQFont,
+    };
 
     QgsFontButton( QWidget *parent /TransferThis/ = 0, const QString &dialogTitle = QString() );
 %Docstring
@@ -33,6 +46,22 @@ class QgsFontButton : QToolButton
 %End
 
     virtual QSize sizeHint() const;
+
+    QgsFontButton::Mode mode() const;
+%Docstring
+ Returns the current button mode.
+.. seealso:: setMode()
+ :rtype: QgsFontButton.Mode
+%End
+
+    void setMode( const QgsFontButton::Mode &mode );
+%Docstring
+ Sets the current button ``mode``. This can be used to toggle between
+ the full capabilities of the button (for configuring QgsTextFormat/QgsTextRenderer objects)
+ and a cut-back version for configuring QFont object properties (i.e. with
+ no color settings or the other advanced options QgsTextFormat allows).
+.. seealso:: mode()
+%End
 
     void setDialogTitle( const QString &title );
 %Docstring
@@ -64,22 +93,41 @@ class QgsFontButton : QToolButton
     QgsTextFormat textFormat() const;
 %Docstring
  Returns the current text formatting set by the widget.
+ This is only used when mode() is ModeTextRenderer.
 .. seealso:: setTextFormat()
  :rtype: QgsTextFormat
 %End
+
+    QFont currentFont() const;
+%Docstring
+ Returns the current QFont set by the widget.
+ This is only used when mode() is ModeQFont.
+.. seealso:: setCurrentFont()
+ :rtype: QFont
+%End
+
 
   public slots:
 
     void setTextFormat( const QgsTextFormat &format );
 %Docstring
  Sets the current text ``format`` to show in the widget.
+ This is only used when mode() is ModeTextRenderer.
 .. seealso:: textFormat()
+%End
+
+    void setCurrentFont( const QFont &font );
+%Docstring
+ Sets the current text ``font`` to show in the widget.
+ This is only used when mode() is ModeQFont.
+.. seealso:: currentFont()
 %End
 
     void setColor( const QColor &color );
 %Docstring
  Sets the current ``color`` for the text. Will emit a changed signal if the color is different
  to the previous text color.
+ This is only used when mode() is ModeTextRenderer.
 %End
 
     void copyFormat();
@@ -98,6 +146,7 @@ class QgsFontButton : QToolButton
     void copyColor();
 %Docstring
  Copies the current text color to the clipboard.
+ This is only used when mode() is ModeTextRenderer.
 .. seealso:: pasteColor()
 %End
 
@@ -105,6 +154,7 @@ class QgsFontButton : QToolButton
 %Docstring
  Pastes a color from the clipboard to the text format. If clipboard does not contain a valid
  color or string representation of a color, then no change is applied.
+ This is only used when mode() is ModeTextRenderer.
 .. seealso:: copyColor()
 %End
 

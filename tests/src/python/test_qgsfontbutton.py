@@ -17,7 +17,7 @@ import qgis  # NOQA
 from qgis.core import QgsTextFormat
 from qgis.gui import QgsFontButton, QgsMapCanvas
 from qgis.testing import start_app, unittest
-from qgis.PyQt.QtGui import QColor
+from qgis.PyQt.QtGui import QColor, QFont
 from qgis.PyQt.QtTest import QSignalSpy
 from utilities import getTestFont
 
@@ -56,6 +56,23 @@ class TestQgsFontButton(unittest.TestCase):
         self.assertEqual(r.size(), 5)
         self.assertEqual(r.color(), QColor(255, 0, 0))
         self.assertEqual(r.opacity(), 0.5)
+
+    def testSetGetFont(self):
+        button = QgsFontButton()
+        button.setMode(QgsFontButton.ModeQFont)
+        self.assertEqual(button.mode(), QgsFontButton.ModeQFont)
+
+        s = getTestFont()
+        s.setPointSize(16)
+
+        signal_spy = QSignalSpy(button.changed)
+        button.setCurrentFont(s)
+        self.assertEqual(len(signal_spy), 1)
+
+        r = button.currentFont()
+        self.assertEqual(r.family(), 'QGIS Vera Sans')
+        self.assertEqual(r.styleName(), 'Roman')
+        self.assertEqual(r.pointSize(), 16)
 
     def testSetColor(self):
         button = QgsFontButton()
