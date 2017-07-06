@@ -36,7 +36,7 @@ void QgsGeometryLineIntersectionCheck::collectErrors( QList<QgsGeometryCheckErro
       QgsGeometryCheckerUtils::LayerFeatures checkFeatures( mContext->featurePools, featureIds.keys(), line->boundingBox(), {QgsWkbTypes::LineGeometry} );
       for ( const QgsGeometryCheckerUtils::LayerFeature &checkFeature : checkFeatures )
       {
-        if ( checkFeature.feature().id() == layerFeature.feature().id() )
+        if ( checkFeature == layerFeature )
         {
           // Skip current feature
           continue;
