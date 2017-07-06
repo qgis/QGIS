@@ -232,14 +232,22 @@ class CORE_EXPORT QgsLayoutItemRegistry : public QObject
     };
 
     /**
-     * Creates a registry and populates it with standard item types.
+     * Creates a new empty item registry.
      *
      * QgsLayoutItemRegistry is not usually directly created, but rather accessed through
      * QgsApplication::layoutItemRegistry().
+     *
+     * \see populate()
     */
     QgsLayoutItemRegistry( QObject *parent = nullptr );
 
     ~QgsLayoutItemRegistry();
+
+    /**
+     * Populates the registry with standard item types. If called on a non-empty registry
+     * then this will have no effect and will return false.
+     */
+    bool populate();
 
     //! QgsLayoutItemRegistry cannot be copied.
     QgsLayoutItemRegistry( const QgsLayoutItemRegistry &rh ) = delete;

@@ -110,13 +110,22 @@ class QgsLayoutItemRegistry : QObject
 
     QgsLayoutItemRegistry( QObject *parent = 0 );
 %Docstring
- Creates a registry and populates it with standard item types.
+ Creates a new empty item registry.
 
  QgsLayoutItemRegistry is not usually directly created, but rather accessed through
  QgsApplication.layoutItemRegistry().
+
+.. seealso:: populate()
 %End
 
     ~QgsLayoutItemRegistry();
+
+    bool populate();
+%Docstring
+ Populates the registry with standard item types. If called on a non-empty registry
+ then this will have no effect and will return false.
+ :rtype: bool
+%End
 
 
     QgsLayoutItemAbstractMetadata *itemMetadata( int type ) const;

@@ -20,6 +20,17 @@
 QgsLayoutItemRegistry::QgsLayoutItemRegistry( QObject *parent )
   : QObject( parent )
 {
+}
+
+QgsLayoutItemRegistry::~QgsLayoutItemRegistry()
+{
+  qDeleteAll( mMetadata );
+}
+
+bool QgsLayoutItemRegistry::populate()
+{
+  if ( !mMetadata.isEmpty() )
+    return false;
 
   // add temporary item to register
   auto createTemporaryItem = []( QgsLayout * layout, const QVariantMap & )->QgsLayoutItem*
@@ -28,11 +39,7 @@ QgsLayoutItemRegistry::QgsLayoutItemRegistry( QObject *parent )
   };
 
   addLayoutItemType( new QgsLayoutItemMetadata( 101, QStringLiteral( "temp type" ), QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddLabel.svg" ) ), createTemporaryItem ) );
-}
-
-QgsLayoutItemRegistry::~QgsLayoutItemRegistry()
-{
-  qDeleteAll( mMetadata );
+  return true;
 }
 
 QgsLayoutItemAbstractMetadata *QgsLayoutItemRegistry::itemMetadata( int type ) const

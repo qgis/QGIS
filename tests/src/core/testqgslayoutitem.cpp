@@ -159,6 +159,13 @@ void TestQgsLayoutItem::registry()
   QCOMPARE( props.size(), 1 );
   registry.resolvePaths( 2, props, QgsPathResolver(), true );
   QVERIFY( props.isEmpty() );
+
+  //test populate
+  QgsLayoutItemRegistry reg2;
+  QVERIFY( reg2.itemTypes().isEmpty() );
+  QVERIFY( reg2.populate() );
+  QVERIFY( !reg2.itemTypes().isEmpty() );
+  QVERIFY( !reg2.populate() );
 }
 
 bool TestQgsLayoutItem::renderCheck( QString testName, QImage &image, int mismatchCount )
