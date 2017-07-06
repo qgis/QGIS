@@ -861,7 +861,15 @@ void QgsRelationReferenceWidget::filterChanged()
     if ( cb->currentIndex() != 0 )
     {
       const QString fieldName = cb->property( "Field" ).toString();
-      filters << QgsExpression::createFieldEqualityExpression( fieldName, cb->currentText() );
+
+      if ( cb->currentText() == nullValue.toString() )
+      {
+        filters << QStringLiteral( "\"%1\" IS NULL" ).arg( fieldName );
+      }
+      else
+      {
+        filters << QgsExpression::createFieldEqualityExpression( fieldName, cb->currentText() );
+      }
       attrs << mReferencedLayer->fields().lookupField( fieldName );
     }
   }
