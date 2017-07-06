@@ -151,6 +151,10 @@ Emitted when a current layer is changed
     virtual void keyPressEvent( QKeyEvent *event );
 
 
+    virtual void dropEvent( QDropEvent *event );
+
+
+
   protected slots:
 
     void modelRowsInserted( const QModelIndex &index, int start, int end );
