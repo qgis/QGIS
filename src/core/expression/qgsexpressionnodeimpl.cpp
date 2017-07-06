@@ -842,31 +842,7 @@ QVariant QgsExpressionNodeFunction::evalNode( QgsExpression *parent, const QgsEx
   QString name = QgsExpression::QgsExpression::Functions()[mFnIndex]->name();
   QgsExpressionFunction *fd = context && context->hasFunction( name ) ? context->function( name ) : QgsExpression::QgsExpression::Functions()[mFnIndex];
 
-  // evaluate arguments
-  QVariantList argValues;
-  if ( mArgs )
-  {
-    Q_FOREACH ( QgsExpressionNode *n, mArgs->list() )
-    {
-      QVariant v;
-      if ( fd->lazyEval() )
-      {
-        // Pass in the node for the function to eval as it needs.
-        v = QVariant::fromValue( n );
-      }
-      else
-      {
-        v = n->eval( parent, context );
-        ENSURE_NO_EVAL_ERROR;
-        if ( QgsExpressionUtils::isNull( v ) && !fd->handlesNull() )
-          return QVariant(); // all "normal" functions return NULL, when any QgsExpressionFunction::Parameter is NULL (so coalesce is abnormal)
-      }
-      argValues.append( v );
-    }
-  }
-
-  // run the function
-  QVariant res = fd->func( argValues, context, parent );
+  QVariant res = fd->run( mArgs, context, parent );
   ENSURE_NO_EVAL_ERROR;
 
   // everything went fine

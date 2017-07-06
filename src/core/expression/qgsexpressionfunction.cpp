@@ -47,6 +47,34 @@ const QString QgsExpressionFunction::helpText() const
   return mHelpText.isEmpty() ? QgsExpression::helpText( mName ) : mHelpText;
 }
 
+QVariant QgsExpressionFunction::run( QgsExpressionNode::NodeList *args, const QgsExpressionContext *context, QgsExpression *parent )
+{
+  // evaluate arguments
+  QVariantList argValues;
+  if ( args )
+  {
+    Q_FOREACH ( QgsExpressionNode *n, args->list() )
+    {
+      QVariant v;
+      if ( lazyEval() )
+      {
+        // Pass in the node for the function to eval as it needs.
+        v = QVariant::fromValue( n );
+      }
+      else
+      {
+        v = n->eval( parent, context );
+        ENSURE_NO_EVAL_ERROR;
+        if ( QgsExpressionUtils::isNull( v ) && !handlesNull() )
+          return QVariant(); // all "normal" functions return NULL, when any QgsExpressionFunction::Parameter is NULL (so coalesce is abnormal)
+      }
+      argValues.append( v );
+    }
+  }
+
+  return func( argValues, context, parent );
+}
+
 bool QgsExpressionFunction::usesGeometry( const QgsExpressionNodeFunction *node ) const
 {
   Q_UNUSED( node )
@@ -4202,6 +4230,7 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
 
     sFunctions
         << new QgsStaticExpressionFunction( QStringLiteral( "env" ), 1, fcnEnvVar, QStringLiteral( "General" ), QString() )
+        << new QgsSetVariableExpressionFunction()
         << new QgsStaticExpressionFunction( QStringLiteral( "attribute" ), 2, fcnAttribute, QStringLiteral( "Record" ), QString(), false, QSet<QString>() << QgsFeatureRequest::ALL_ATTRIBUTES )
 
         // functions for arrays
@@ -4245,4 +4274,93 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
     }
   }
   return sFunctions;
+}
+
+QgsSetVariableExpressionFunction::QgsSetVariableExpressionFunction()
+  : QgsExpressionFunction( "set_variable", 3, QCoreApplication::tr( "General" ), "help text TODODOODO" )
+{
+
+}
+
+bool QgsSetVariableExpressionFunction::isStatic( const QgsExpressionNodeFunction *node, QgsExpression *parent, const QgsExpressionContext *context ) const
+{
+  bool isStatic = false;
+
+  QgsExpressionNode::NodeList *args = node->args();
+
+  if ( args->count() < 3 )
+    return false;
+
+  if ( args->at( 0 )->isStatic( parent, context ) && args->at( 1 )->isStatic( parent, context ) )
+  {
+    QVariant name = args->at( 0 )->eval( parent, context );
+    QVariant value = args->at( 1 )->eval( parent, context );
+
+    QgsExpressionContextScope *scope = new QgsExpressionContextScope();
+    scope->setVariable( name.toString(), value );
+
+    QgsExpressionContext *updatedContext = const_cast<QgsExpressionContext *>( context );
+    updatedContext->appendScope( scope );
+
+    if ( args->at( 3 )->isStatic( parent, updatedContext ) )
+      isStatic = true;
+    updatedContext->popScope();
+  }
+
+  return false;
+}
+
+QVariant QgsSetVariableExpressionFunction::run( QgsExpressionNode::NodeList *args, const QgsExpressionContext *context, QgsExpression *parent )
+{
+  QVariant result;
+
+  if ( args->count() < 3 )
+    // error
+    return result;
+
+  QVariant name = args->at( 0 )->eval( parent, context );
+  QVariant value = args->at( 1 )->eval( parent, context );
+
+  QgsExpressionContextScope *scope = new QgsExpressionContextScope();
+  scope->setVariable( name.toString(), value );
+
+  QgsExpressionContext *updatedContext = const_cast<QgsExpressionContext *>( context );
+  updatedContext->appendScope( scope );
+  result = args->at( 2 )->eval( parent, updatedContext );
+  delete updatedContext->popScope();
+
+  return result;
+}
+
+QVariant QgsSetVariableExpressionFunction::func( const QVariantList &values, const QgsExpressionContext *context, QgsExpression *parent )
+{
+  // This is a dummy function, all the real handling is in run
+  Q_UNUSED( values )
+  Q_UNUSED( context )
+  Q_UNUSED( parent )
+
+  Q_ASSERT( false );
+  return QVariant();
+}
+
+bool QgsSetVariableExpressionFunction::prepare( const QgsExpressionNodeFunction *node, QgsExpression *parent, const QgsExpressionContext *context ) const
+{
+  QgsExpressionNode::NodeList *args = node->args();
+
+  if ( args->count() < 3 )
+    // error
+    return false;
+
+  QVariant name = args->at( 0 )->prepare( parent, context );
+  QVariant value = args->at( 1 )->prepare( parent, context );
+
+  QgsExpressionContextScope *scope = new QgsExpressionContextScope();
+  scope->setVariable( name.toString(), value );
+
+  QgsExpressionContext *updatedContext = const_cast<QgsExpressionContext *>( context );
+  updatedContext->appendScope( scope );
+  args->at( 2 )->prepare( parent, updatedContext );
+  delete updatedContext->popScope();
+
+  return true;
 }
