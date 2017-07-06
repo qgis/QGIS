@@ -1695,7 +1695,7 @@ Added Simon splash screen
 Fixed command line loading bug to eliminate bogus warning for vector layers
 Modified splashscreen.cpp to allow specification of x,y for text drawing on
    the splash image
-Imperfectly fixed problem where postgis attributes aren't displayed if the
+Imperfectly fixed problem where PostGIS attributes aren't displayed if the
    primary key is not of type int4 (bug 1042706).
 Added Latvian translation file (untranslated at present)
 
@@ -2540,7 +2540,7 @@ Added QgsRasterLayer::filterLayer which gets called near the end of each of
 
 2004-03-06 [didge] 0.1.0devel6
 Changed configure stuff to write DEFINES in config.h.
-   Postgresql stuff needs testing as I commented the compileflags in src/Makefile.am
+   PostgreSQL stuff needs testing as I commented the compileflags in src/Makefile.am
 Infos will be posted on the devel mailinglist
 
 2004-03-04 [ts] 0.1.0devel5

@@ -642,7 +642,7 @@ void QgsGeometryUtils::segmentizeArc( const QgsPoint &p1, const QgsPoint &p2, co
   QgsPoint circlePoint2 = p2;
   QgsPoint circlePoint3 = clockwise ? p1 : p3 ;
 
-  //adapted code from postgis
+  //adapted code from PostGIS
   double radius = 0;
   double centerX = 0;
   double centerY = 0;

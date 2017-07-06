@@ -278,7 +278,7 @@ QgsSpatialQueryDialog::TypeVerifyCreateSubset QgsSpatialQueryDialog::verifyCreat
     fieldFID = QStringLiteral( "FID" );
     return VerifyOk;
   }
-  // Database Postgis and SpatiaLite
+  // Database PostGIS and SpatiaLite
   if ( providerType  == QLatin1String( "POSTGRES" ) || providerType  == QLatin1String( "SPATIALITE" ) )
   {
     fieldFID = mLayerTarget->dataProvider()->fields().at( 0 ).name();
