@@ -1068,6 +1068,20 @@ class CORE_EXPORT QgsTextFormat
      */
     QDomElement writeXml( QDomDocument &doc, const QgsReadWriteContext &context ) const;
 
+    /**
+     * Returns new mime data representing the text format settings.
+     * Caller takes responsibility for deleting the returned object.
+     * \see fromMimeData()
+     */
+    QMimeData *toMimeData() const SIP_FACTORY;
+
+    /**
+     * Attempts to parse the provided mime \a data as a QgsTextFormat.
+     * If data can be parsed as a text format, \a ok will be set to true.
+     * \see toMimeData()
+     */
+    static QgsTextFormat fromMimeData( const QMimeData *data, bool *ok SIP_OUT = nullptr );
+
     /** Returns true if any component of the font format requires advanced effects
      * such as blend modes, which require output in raster formats to be fully respected.
      */
