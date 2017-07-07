@@ -115,7 +115,7 @@ class QgsLayoutDesignerDialog: public QMainWindow, private Ui::QgsLayoutDesigner
 
   private slots:
 
-    void itemTypeAdded( int type, const QString &name );
+    void itemTypeAdded( int type );
 
   private:
 

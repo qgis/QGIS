@@ -115,15 +115,10 @@ void TestQgsLayoutItem::registry()
   QVERIFY( !registry.itemMetadata( -1 ) );
   QVERIFY( registry.itemTypes().isEmpty() );
   QVERIFY( !registry.createItem( 1, nullptr ) );
-  QVERIFY( !registry.createItemWidget( 1 ) );
 
   auto create = []( QgsLayout * layout, const QVariantMap & )->QgsLayoutItem*
   {
     return new TestItem( layout );
-  };
-  auto createWidget = []()->QWidget*
-  {
-    return new QWidget();
   };
   auto resolve = []( QVariantMap & props, const QgsPathResolver &, bool )
   {
@@ -132,7 +127,7 @@ void TestQgsLayoutItem::registry()
 
   QSignalSpy spyTypeAdded( &registry, &QgsLayoutItemRegistry::typeAdded );
 
-  QgsLayoutItemMetadata *metadata = new QgsLayoutItemMetadata( 2, QStringLiteral( "my type" ), QIcon(), create, resolve, createWidget );
+  QgsLayoutItemMetadata *metadata = new QgsLayoutItemMetadata( 2, QStringLiteral( "my type" ), QIcon(), create, resolve );
   QVERIFY( registry.addLayoutItemType( metadata ) );
   QCOMPARE( spyTypeAdded.count(), 1 );
   QCOMPARE( spyTypeAdded.value( 0 ).at( 0 ).toInt(), 2 );
@@ -150,9 +145,6 @@ void TestQgsLayoutItem::registry()
   QVERIFY( item );
   QVERIFY( dynamic_cast< TestItem *>( item ) );
   delete item;
-  QWidget *config = registry.createItemWidget( 2 );
-  QVERIFY( config );
-  delete config;
   QVariantMap props;
   props.insert( QStringLiteral( "a" ), 5 );
   registry.resolvePaths( 1, props, QgsPathResolver(), true );

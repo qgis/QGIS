@@ -20,8 +20,10 @@
 #include "qgslayoutviewmouseevent.h"
 #include "qgslayoutitem.h"
 #include "qgslayoutviewrubberband.h"
-#include "qgslayoutitemregistryguiutils.h"
+#include "qgslayoutitemregistry.h"
+#include "qgslayoutitemguiregistry.h"
 #include "qgstestutils.h"
+#include "qgsgui.h"
 #include <QtTest/QSignalSpy>
 
 class TestQgsLayoutView: public QObject
@@ -35,7 +37,7 @@ class TestQgsLayoutView: public QObject
     void basic();
     void tool();
     void events();
-    void registryUtils();
+    void guiRegistry();
     void rubberBand();
 
   private:
@@ -246,12 +248,22 @@ QString mReport;
 
 bool renderCheck( QString testName, QImage &image, int mismatchCount );
 
-void TestQgsLayoutView::registryUtils()
+void TestQgsLayoutView::guiRegistry()
 {
+  // test QgsLayoutItemGuiRegistry
+  QgsLayoutItemGuiRegistry registry;
+
+  // empty registry
+  QVERIFY( !registry.itemMetadata( -1 ) );
+  QVERIFY( registry.itemTypes().isEmpty() );
+  QVERIFY( !registry.createItemWidget( 1 ) );
+
+  QSignalSpy spyTypeAdded( &registry, &QgsLayoutItemGuiRegistry::typeAdded );
+
   // add a dummy item to registry
-  auto create = []( QgsLayout * layout, const QVariantMap & )->QgsLayoutItem*
+  auto createWidget = []()->QWidget*
   {
-    return new TestItem( layout );
+    return new QWidget();
   };
 
   auto createRubberBand = []( QgsLayoutView * view )->QgsLayoutViewRubberBand *
@@ -259,25 +271,38 @@ void TestQgsLayoutView::registryUtils()
     return new QgsLayoutViewRectangularRubberBand( view );
   };
 
-  QgsLayoutItemMetadata *metadata = new QgsLayoutItemMetadata( 2, QStringLiteral( "my type" ), QIcon(), create );
-  metadata->setRubberBandCreationFunction( createRubberBand );
-  QVERIFY( QgsApplication::layoutItemRegistry()->addLayoutItemType( metadata ) );
+  QgsLayoutItemGuiMetadata *metadata = new QgsLayoutItemGuiMetadata( 2, QIcon(), createWidget, createRubberBand );
+  QVERIFY( registry.addLayoutItemGuiMetadata( metadata ) );
+  QCOMPARE( spyTypeAdded.count(), 1 );
+  QCOMPARE( spyTypeAdded.value( 0 ).at( 0 ).toInt(), 2 );
+  // duplicate type id
+  QVERIFY( !registry.addLayoutItemGuiMetadata( metadata ) );
+  QCOMPARE( spyTypeAdded.count(), 1 );
+
+  //retrieve metadata
+  QVERIFY( !registry.itemMetadata( -1 ) );
+  QVERIFY( registry.itemMetadata( 2 ) );
+  QCOMPARE( registry.itemTypes().count(), 1 );
+  QCOMPARE( registry.itemTypes().value( 0 ), 2 );
+
+  QWidget *widget = registry.createItemWidget( 2 );
+  QVERIFY( widget );
+  delete widget;
 
   QgsLayoutView *view = new QgsLayoutView();
   //should use metadata's method
-  QgsLayoutViewRubberBand *band = QgsApplication::layoutItemRegistry()->createItemRubberBand( 2, view );
+  QgsLayoutViewRubberBand *band = registry.createItemRubberBand( 2, view );
   QVERIFY( band );
   QVERIFY( dynamic_cast< QgsLayoutViewRectangularRubberBand * >( band ) );
   QCOMPARE( band->view(), view );
   delete band;
 
-  //manually register a prototype
-  QgsLayoutItemRegistryGuiUtils::setItemRubberBandPrototype( 2, new QgsLayoutViewEllipticalRubberBand() );
-  band = QgsApplication::layoutItemRegistry()->createItemRubberBand( 2, view );
-  QVERIFY( band );
-  QVERIFY( dynamic_cast< QgsLayoutViewEllipticalRubberBand * >( band ) );
-  QCOMPARE( band->view(), view );
-
+  //test populate
+  QgsLayoutItemGuiRegistry reg2;
+  QVERIFY( reg2.itemTypes().isEmpty() );
+  QVERIFY( reg2.populate() );
+  QVERIFY( !reg2.itemTypes().isEmpty() );
+  QVERIFY( !reg2.populate() );
 }
 
 void TestQgsLayoutView::rubberBand()

@@ -29,12 +29,15 @@
 class QgsLayout;
 class QgsLayoutView;
 class QgsLayoutItem;
-class QgsLayoutViewRubberBand;
 
 /**
  * \ingroup core
  * \brief Stores metadata about one layout item class.
- * \note In C++ you can use QgsSymbolLayerMetadata convenience class.
+ *
+ * A companion class, QgsLayoutItemAbstractGuiMetadata, handles the
+ * GUI behavior of QgsLayoutItems.
+ *
+ * \note In C++ you can use QgsLayoutItemMetadata convenience class.
  * \since QGIS 3.0
  */
 class CORE_EXPORT QgsLayoutItemAbstractMetadata
@@ -73,19 +76,6 @@ class CORE_EXPORT QgsLayoutItemAbstractMetadata
     virtual QgsLayoutItem *createItem( QgsLayout *layout, const QVariantMap &properties ) = 0 SIP_FACTORY;
 
     /**
-     * Creates a configuration widget for layout items of this type. Can return nullptr if no configuration GUI is required.
-     */
-    virtual QWidget *createItemWidget() SIP_FACTORY { return nullptr; }
-
-    /**
-     * Creates a rubber band for use when creating layout items of this type. Can return nullptr if no rubber band
-     * should be created.
-     * \note not available in Python bindings. Python item subclasses must use QgsLayoutItemRegistryGuiUtils
-     * to override the default rubber band creation function.
-     */
-    virtual QgsLayoutViewRubberBand *createRubberBand( QgsLayoutView *view ) SIP_SKIP { Q_UNUSED( view ); return nullptr; }
-
-    /**
      * Resolve paths in the item's \a properties (if there are any paths).
      * When \a saving is true, paths are converted from absolute to relative,
      * when \a saving is false, paths are converted from relative to absolute.
@@ -108,12 +98,6 @@ class CORE_EXPORT QgsLayoutItemAbstractMetadata
 //! Layout item creation function
 typedef std::function<QgsLayoutItem *( QgsLayout *, const QVariantMap & )> QgsLayoutItemCreateFunc SIP_SKIP;
 
-//! Layout item configuration widget creation function
-typedef std::function<QWidget *()> QgsLayoutItemWidgetFunc SIP_SKIP;
-
-//! Layout rubber band creation function
-typedef std::function<QgsLayoutViewRubberBand *( QgsLayoutView * )> QgsLayoutItemRubberBandFunc SIP_SKIP;
-
 //! Layout item path resolver function
 typedef std::function<void( QVariantMap &, const QgsPathResolver &, bool )> QgsLayoutItemPathResolverFunc SIP_SKIP;
 
@@ -131,17 +115,14 @@ class CORE_EXPORT QgsLayoutItemMetadata : public QgsLayoutItemAbstractMetadata
 
     /**
      * Constructor for QgsLayoutItemMetadata with the specified class \a type
-     * and \a visibleName, and function pointers for the various item and
-     * configuration widget creation functions.
+     * and \a visibleName, and function pointers for the various item creation functions.
      */
     QgsLayoutItemMetadata( int type, const QString &visibleName, const QIcon &icon,
                            QgsLayoutItemCreateFunc pfCreate,
-                           QgsLayoutItemPathResolverFunc pfPathResolver = nullptr,
-                           QgsLayoutItemWidgetFunc pfWidget = nullptr )
+                           QgsLayoutItemPathResolverFunc pfPathResolver = nullptr )
       : QgsLayoutItemAbstractMetadata( type, visibleName )
       , mIcon( icon )
       , mCreateFunc( pfCreate )
-      , mWidgetFunc( pfWidget )
       , mPathResolverFunc( pfPathResolver )
     {}
 
@@ -151,38 +132,12 @@ class CORE_EXPORT QgsLayoutItemMetadata : public QgsLayoutItemAbstractMetadata
     QgsLayoutItemCreateFunc createFunction() const { return mCreateFunc; }
 
     /**
-     * Returns the classes' configuration widget creation function.
-     * \see setWidgetFunction()
-     */
-    QgsLayoutItemWidgetFunc widgetFunction() const { return mWidgetFunc; }
-
-    /**
      * Returns the classes' path resolver function.
      */
     QgsLayoutItemPathResolverFunc pathResolverFunction() const { return mPathResolverFunc; }
 
-    /**
-     * Sets the classes' configuration widget creation \a function.
-     * \see widgetFunction()
-     */
-    void setWidgetFunction( QgsLayoutItemWidgetFunc function ) { mWidgetFunc = function; }
-
-    /**
-     * Returns the classes' rubber band creation function.
-     * \see setRubberBandCreationFunction()
-     */
-    QgsLayoutItemRubberBandFunc rubberBandCreationFunction() const { return mRubberBandFunc; }
-
-    /**
-     * Sets the classes' rubber band creation \a function.
-     * \see rubberBandCreationFunction()
-     */
-    void setRubberBandCreationFunction( QgsLayoutItemRubberBandFunc function ) { mRubberBandFunc = function; }
-
     QIcon icon() const override { return mIcon.isNull() ? QgsLayoutItemAbstractMetadata::icon() : mIcon; }
     QgsLayoutItem *createItem( QgsLayout *layout, const QVariantMap &properties ) override { return mCreateFunc ? mCreateFunc( layout, properties ) : nullptr; }
-    QWidget *createItemWidget() override { return mWidgetFunc ? mWidgetFunc() : nullptr; }
-    QgsLayoutViewRubberBand *createRubberBand( QgsLayoutView *view ) override { return mRubberBandFunc ? mRubberBandFunc( view ) : nullptr; }
 
     void resolvePaths( QVariantMap &properties, const QgsPathResolver &pathResolver, bool saving ) override
     {
@@ -193,8 +148,6 @@ class CORE_EXPORT QgsLayoutItemMetadata : public QgsLayoutItemAbstractMetadata
   protected:
     QIcon mIcon;
     QgsLayoutItemCreateFunc mCreateFunc = nullptr;
-    QgsLayoutItemWidgetFunc mWidgetFunc = nullptr;
-    QgsLayoutItemRubberBandFunc mRubberBandFunc = nullptr;
     QgsLayoutItemPathResolverFunc mPathResolverFunc = nullptr;
 
 };
@@ -210,6 +163,9 @@ class CORE_EXPORT QgsLayoutItemMetadata : public QgsLayoutItemAbstractMetadata
  *
  * QgsLayoutItemRegistry is not usually directly created, but rather accessed through
  * QgsApplication::layoutItemRegistry().
+ *
+ * A companion class, QgsLayoutItemGuiRegistry, handles the GUI behavior
+ * of layout items.
  *
  * \since QGIS 3.0
  */
@@ -251,7 +207,7 @@ class CORE_EXPORT QgsLayoutItemRegistry : public QObject
 
     //! QgsLayoutItemRegistry cannot be copied.
     QgsLayoutItemRegistry( const QgsLayoutItemRegistry &rh ) = delete;
-    //! QgsLayoutItemRegistryQgsLayoutItemRegistry cannot be copied.
+    //! QgsLayoutItemRegistry cannot be copied.
     QgsLayoutItemRegistry &operator=( const QgsLayoutItemRegistry &rh ) = delete;
 
     /**
@@ -269,17 +225,6 @@ class CORE_EXPORT QgsLayoutItemRegistry : public QObject
      * Creates a new instance of a layout item given the item \a type, target \a layout and \a properties.
      */
     QgsLayoutItem *createItem( int type, QgsLayout *layout, const QVariantMap &properties = QVariantMap() ) const SIP_FACTORY;
-
-    /**
-     * Creates a new instance of a layout item configuration widget for the specified item \a type.
-     */
-    QWidget *createItemWidget( int type ) const SIP_FACTORY;
-
-    /**
-     * Creates a new rubber band item for the specified item \a type and destination \a view.
-     * \note not available from Python bindings
-     */
-    QgsLayoutViewRubberBand *createItemRubberBand( int type, QgsLayoutView *view ) const SIP_SKIP;
 
     /**
      * Resolve paths in properties of a particular symbol layer.
@@ -307,10 +252,6 @@ class CORE_EXPORT QgsLayoutItemRegistry : public QObject
 #endif
 
     QMap<int, QgsLayoutItemAbstractMetadata *> mMetadata;
-
-    QMap<int, QgsLayoutItemRubberBandFunc > mRubberBandFunctions;
-
-    friend class QgsLayoutItemRegistryGuiUtils;
 
 };
 

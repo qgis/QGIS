@@ -26,6 +26,8 @@
 #include "qgslayoutviewtoolpan.h"
 #include "qgslayoutviewtoolzoom.h"
 #include "qgslayoutviewtoolselect.h"
+#include "qgsgui.h"
+#include "qgslayoutitemguiregistry.h"
 
 QgsAppLayoutDesignerInterface::QgsAppLayoutDesignerInterface( QgsLayoutDesignerDialog *dialog )
   : QgsLayoutDesignerInterface( dialog )
@@ -89,14 +91,12 @@ QgsLayoutDesignerDialog::QgsLayoutDesignerDialog( QWidget *parent, Qt::WindowFla
   connect( mActionClose, &QAction::triggered, this, &QWidget::close );
 
   // populate with initial items...
-  QMap< int, QString> types = QgsApplication::layoutItemRegistry()->itemTypes();
-  QMap< int, QString>::const_iterator typeIt = types.constBegin();
-  for ( ; typeIt != types.constEnd(); ++typeIt )
+  Q_FOREACH ( int type,  QgsGui::layoutItemGuiRegistry()->itemTypes() )
   {
-    itemTypeAdded( typeIt.key(), typeIt.value() );
+    itemTypeAdded( type );
   }
   //..and listen out for new item types
-  connect( QgsApplication::layoutItemRegistry(), &QgsLayoutItemRegistry::typeAdded, this, &QgsLayoutDesignerDialog::itemTypeAdded );
+  connect( QgsGui::layoutItemGuiRegistry(), &QgsLayoutItemGuiRegistry::typeAdded, this, &QgsLayoutDesignerDialog::itemTypeAdded );
 
   mAddItemTool = new QgsLayoutViewToolAddItem( mView );
   mPanTool = new QgsLayoutViewToolPan( mView );
@@ -192,14 +192,15 @@ void QgsLayoutDesignerDialog::closeEvent( QCloseEvent * )
   saveWindowState();
 }
 
-void QgsLayoutDesignerDialog::itemTypeAdded( int type, const QString &name )
+void QgsLayoutDesignerDialog::itemTypeAdded( int type )
 {
+  QString name = QgsApplication::layoutItemRegistry()->itemMetadata( type )->visibleName();
   // update UI for new item type
   QAction *action = new QAction( tr( "Add %1" ).arg( name ), this );
   action->setToolTip( tr( "Adds a new %1 to the layout" ).arg( name ) );
   action->setCheckable( true );
   action->setData( type );
-  action->setIcon( QgsApplication::layoutItemRegistry()->itemMetadata( type )->icon() );
+  action->setIcon( QgsGui::layoutItemGuiRegistry()->itemMetadata( type )->creationIcon() );
   mToolsActionGroup->addAction( action );
   mItemMenu->addAction( action );
   mToolsToolbar->addAction( action );

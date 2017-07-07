@@ -65,25 +65,6 @@ QgsLayoutItem *QgsLayoutItemRegistry::createItem( int type, QgsLayout *layout, c
   return mMetadata[type]->createItem( layout, properties );
 }
 
-QWidget *QgsLayoutItemRegistry::createItemWidget( int type ) const
-{
-  if ( !mMetadata.contains( type ) )
-    return nullptr;
-
-  return mMetadata[type]->createItemWidget();
-}
-
-QgsLayoutViewRubberBand *QgsLayoutItemRegistry::createItemRubberBand( int type, QgsLayoutView *view ) const
-{
-  if ( mRubberBandFunctions.contains( type ) )
-    return mRubberBandFunctions.value( type )( view );
-
-  if ( !mMetadata.contains( type ) )
-    return nullptr;
-
-  return mMetadata[type]->createRubberBand( view );
-}
-
 void QgsLayoutItemRegistry::resolvePaths( int type, QVariantMap &properties, const QgsPathResolver &pathResolver, bool saving ) const
 {
   if ( !mMetadata.contains( type ) )

@@ -56,6 +56,12 @@ class QgsGui
  :rtype: QgsMapLayerActionRegistry
 %End
 
+    static QgsLayoutItemGuiRegistry *layoutItemGuiRegistry();
+%Docstring
+ Returns the global layout item GUI registry, used for registering the GUI behavior of layout items.
+ :rtype: QgsLayoutItemGuiRegistry
+%End
+
     ~QgsGui();
 
   private:

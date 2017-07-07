@@ -26,6 +26,7 @@ class QgsShortcutsManager;
 class QgsLayerTreeEmbeddedWidgetRegistry;
 class QgsMapLayerActionRegistry;
 class QgsNative;
+class QgsLayoutItemGuiRegistry;
 
 /**
  * \ingroup gui
@@ -75,6 +76,11 @@ class GUI_EXPORT QgsGui
      */
     static QgsMapLayerActionRegistry *mapLayerActionRegistry();
 
+    /**
+     * Returns the global layout item GUI registry, used for registering the GUI behavior of layout items.
+     */
+    static QgsLayoutItemGuiRegistry *layoutItemGuiRegistry();
+
     ~QgsGui();
 
   private:
@@ -86,6 +92,7 @@ class GUI_EXPORT QgsGui
     QgsShortcutsManager *mShortcutsManager = nullptr;
     QgsLayerTreeEmbeddedWidgetRegistry *mLayerTreeEmbeddedWidgetRegistry = nullptr;
     QgsMapLayerActionRegistry *mMapLayerActionRegistry = nullptr;
+    QgsLayoutItemGuiRegistry *mLayoutItemGuiRegistry = nullptr;
 
 #ifdef SIP_RUN
     QgsGui( const QgsGui &other );

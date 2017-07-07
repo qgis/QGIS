@@ -42,7 +42,6 @@
 %Include editorwidgets/core/qgseditorwidgetautoconf.sip
 %Include layertree/qgslayertreeembeddedconfigwidget.sip
 %Include layertree/qgslayertreeembeddedwidgetregistry.sip
-%Include layout/qgslayoutitemregistryguiutils.sip
 %Include layout/qgslayoutviewmouseevent.sip
 %Include layout/qgslayoutviewrubberband.sip
 %Include locator/qgslocatorcontext.sip
@@ -278,6 +277,7 @@
 %Include layertree/qgslayertreeview.sip
 %Include layertree/qgslayertreeviewdefaultactions.sip
 %Include layout/qgslayoutdesignerinterface.sip
+%Include layout/qgslayoutitemguiregistry.sip
 %Include layout/qgslayoutview.sip
 %Include layout/qgslayoutviewtool.sip
 %Include layout/qgslayoutviewtooladditem.sip

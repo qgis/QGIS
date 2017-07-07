@@ -22,6 +22,8 @@
 #include "qgslayoutviewmouseevent.h"
 #include "qgslogger.h"
 #include "qgslayoutviewrubberband.h"
+#include "qgsgui.h"
+#include "qgslayoutitemguiregistry.h"
 #include <QGraphicsRectItem>
 #include <QPen>
 #include <QBrush>
@@ -49,7 +51,7 @@ void QgsLayoutViewToolAddItem::layoutPressEvent( QgsLayoutViewMouseEvent *event 
 
   mDrawing = true;
   mMousePressStartPos = event->pos();
-  mRubberBand.reset( QgsApplication::layoutItemRegistry()->createItemRubberBand( mItemType, view() ) );
+  mRubberBand.reset( QgsGui::layoutItemGuiRegistry()->createItemRubberBand( mItemType, view() ) );
   if ( mRubberBand )
   {
     mRubberBand->start( event->layoutPoint(), event->modifiers() );
