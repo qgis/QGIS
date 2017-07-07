@@ -464,10 +464,11 @@ return index of the function in Functions array
  Returns the help text for a specified function.
  \param name function name
 .. seealso:: variableHelpText()
+.. seealso:: formatVariableHelp()
  :rtype: str
 %End
 
-    static QString variableHelpText( const QString &variableName, bool showValue = true, const QVariant &value = QVariant() );
+    static QString variableHelpText( const QString &variableName );
 %Docstring
  Returns the help text for a specified variable.
  \param variableName name of variable
@@ -475,6 +476,18 @@ return index of the function in Functions array
  \param value current value of variable to show in help text
 .. seealso:: helpText()
 .. versionadded:: 2.12
+ :rtype: str
+%End
+
+    static QString formatVariableHelp( const QString &description, bool showValue = true, const QVariant &value = QVariant() );
+%Docstring
+ Returns formatted help text for a variable.
+ \param description translated description of variable
+ \param showValue set to true to include current value of variable in help text
+ \param value current value of variable to show in help text
+.. seealso:: helpText()
+.. seealso:: variableHelpText()
+.. versionadded:: 3.0
  :rtype: str
 %End
 
