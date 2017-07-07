@@ -68,14 +68,17 @@ QgsColorButton::QgsColorButton( QWidget *parent, const QString &cdt, QgsColorSch
   setPopupMode( QToolButton::MenuButtonPopup );
 }
 
-QSize QgsColorButton::sizeHint() const
+QSize QgsColorButton::minimumSizeHint() const
 {
   //make sure height of button looks good under different platforms
+  QSize size;
 #ifdef Q_OS_WIN
-  return QSize( 120, 22 );
+  size = QSize( 120, 22 );
 #else
-  return QSize( 120, 28 );
+  size = QSize( 120, 28 );
 #endif
+  int textHeight = fontMetrics().height() * 1.1;
+  return QSize( size.width(), qMax( size.height(), textHeight ) );
 }
 
 const QPixmap &QgsColorButton::transparentBackground()
