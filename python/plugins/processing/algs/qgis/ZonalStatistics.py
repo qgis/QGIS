@@ -89,6 +89,12 @@ class ZonalStatistics(GeoAlgorithm):
         geoTransform = rasterDS.GetGeoTransform()
         rasterBand = rasterDS.GetRasterBand(bandNumber)
         noData = rasterBand.GetNoDataValue()
+        scale = rasterBand.GetScale()
+        if scale is None:
+            scale = 1.0
+        offset = rasterBand.GetOffset()
+        if offset is None:
+            offset = 0.0
 
         cellXSize = abs(geoTransform[1])
         cellYSize = abs(geoTransform[5])
@@ -118,7 +124,7 @@ class ZonalStatistics(GeoAlgorithm):
 
             srcOffset = (startColumn, startRow, width, height)
             srcArray = rasterBand.ReadAsArray(*srcOffset)
-            srcArray = srcArray * rasterBand.GetScale() + rasterBand.GetOffset()
+            srcArray = srcArray * scale + offset
 
             newGeoTransform = (
                 geoTransform[0] + srcOffset[0] * geoTransform[1],
@@ -192,7 +198,7 @@ class ZonalStatistics(GeoAlgorithm):
 
                 srcOffset = (startColumn, startRow, width, height)
                 srcArray = rasterBand.ReadAsArray(*srcOffset)
-                srcArray = srcArray * rasterBand.GetScale() + rasterBand.GetOffset()
+                srcArray = srcArray * scale + offset
 
                 newGeoTransform = (
                     geoTransform[0] + srcOffset[0] * geoTransform[1],
@@ -219,10 +225,11 @@ class ZonalStatistics(GeoAlgorithm):
             gdal.RasterizeLayer(rasterizedDS, [1], memLayer, burn_values=[1])
             rasterizedArray = rasterizedDS.ReadAsArray()
 
-            srcArray = numpy.nan_to_num(srcArray)
             masked = numpy.ma.MaskedArray(srcArray,
-                                          mask=numpy.logical_or(srcArray == noData,
-                                                                numpy.logical_not(rasterizedArray)))
+                                          mask=numpy.logical_or.reduce((
+                                              srcArray == noData,
+                                              numpy.logical_not(rasterizedArray),
+                                              numpy.isnan(srcArray))))
 
             outFeat.setGeometry(geom)
 
