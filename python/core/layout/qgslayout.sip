@@ -26,6 +26,19 @@ class QgsLayout : QGraphicsScene
 
     QgsLayout();
 
+    QString name() const;
+%Docstring
+ Returns the layout's name.
+.. seealso:: setName()
+ :rtype: str
+%End
+
+    void setName( const QString &name );
+%Docstring
+ Sets the layout's name.
+.. seealso:: name()
+%End
+
     void setUnits( QgsUnitTypes::LayoutUnit units );
 %Docstring
  Sets the native measurement ``units`` for the layout. These also form the default unit

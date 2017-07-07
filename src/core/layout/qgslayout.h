@@ -41,6 +41,18 @@ class CORE_EXPORT QgsLayout : public QGraphicsScene
     QgsLayout();
 
     /**
+     * Returns the layout's name.
+     * \see setName()
+     */
+    QString name() const { return mName; }
+
+    /**
+     * Sets the layout's name.
+     * \see name()
+     */
+    void setName( const QString &name ) { mName = name; }
+
+    /**
      * Sets the native measurement \a units for the layout. These also form the default unit
      * for measurements for the layout.
      * \see units()
@@ -116,6 +128,8 @@ class CORE_EXPORT QgsLayout : public QGraphicsScene
     SIP_SKIP const QgsLayoutContext &context() const { return mContext; }
 
   private:
+
+    QString mName;
 
     QgsUnitTypes::LayoutUnit mUnits = QgsUnitTypes::LayoutMillimeters;
     QgsLayoutContext mContext;

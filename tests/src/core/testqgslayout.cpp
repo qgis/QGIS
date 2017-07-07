@@ -29,6 +29,7 @@ class TestQgsLayout: public QObject
     void cleanup();// will be called after every testfunction.
     void creation(); //test creation of QgsLayout
     void units();
+    void name();
 
   private:
     QString mReport;
@@ -115,6 +116,14 @@ void TestQgsLayout::units()
   QCOMPARE( pointResult.units(), QgsUnitTypes::LayoutInches );
   QCOMPARE( pointResult.x(), 1.0 );
   QCOMPARE( pointResult.y(), 2.0 );
+}
+
+void TestQgsLayout::name()
+{
+  QgsLayout layout;
+  QString layoutName = "test name";
+  layout.setName( layoutName );
+  QCOMPARE( layout.name(), layoutName );
 }
 
 
