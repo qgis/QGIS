@@ -455,6 +455,14 @@ class QgsStaticExpressionFunction : public QgsExpressionFunction
     bool mIsStatic = false;
 };
 
+/**
+ * Handles the ``with_variable(name, value, node)`` expression function.
+ * It temporarily appends a new scope to the expression context for all nested
+ * nodes.
+ *
+ * \note Not available in Python bindings
+ * \since QGIS 3.0
+ */
 class QgsWithVariableExpressionFunction : public QgsExpressionFunction
 {
   public:
