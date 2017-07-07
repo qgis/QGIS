@@ -21,3 +21,33 @@ QgsLayout::QgsLayout()
 {
 
 }
+
+double QgsLayout::convertToLayoutUnits( const QgsLayoutMeasurement &measurement ) const
+{
+  return mContext.measurementConverter().convert( measurement, mUnits ).length();
+}
+
+QSizeF QgsLayout::convertToLayoutUnits( const QgsLayoutSize &size ) const
+{
+  return mContext.measurementConverter().convert( size, mUnits ).toQSizeF();
+}
+
+QPointF QgsLayout::convertToLayoutUnits( const QgsLayoutPoint &point ) const
+{
+  return mContext.measurementConverter().convert( point, mUnits ).toQPointF();
+}
+
+QgsLayoutMeasurement QgsLayout::convertFromLayoutUnits( const double length, const QgsUnitTypes::LayoutUnit unit ) const
+{
+  return mContext.measurementConverter().convert( QgsLayoutMeasurement( length, mUnits ), unit );
+}
+
+QgsLayoutSize QgsLayout::convertFromLayoutUnits( const QSizeF &size, const QgsUnitTypes::LayoutUnit unit ) const
+{
+  return mContext.measurementConverter().convert( QgsLayoutSize( size.width(), size.height(), mUnits ), unit );
+}
+
+QgsLayoutPoint QgsLayout::convertFromLayoutUnits( const QPointF &point, const QgsUnitTypes::LayoutUnit unit ) const
+{
+  return mContext.measurementConverter().convert( QgsLayoutPoint( point.x(), point.y(), mUnits ), unit );
+}
