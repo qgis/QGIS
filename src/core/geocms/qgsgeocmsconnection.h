@@ -29,7 +29,7 @@
 
 struct LayerStruct
 {
-  QString uuid;
+  QUuid uuid;
   QString name;
   QString typeName;
   QString title;
@@ -43,7 +43,7 @@ struct LayerStruct
  * Base class for all GeoCMS connection.
  * Parent/children hierarchy is not based on QObject.
 */
-class CORE_EXPORT QgsGeoCMSConnection : public QObject
+class CORE_EXPORT QgsGeoCmsConnection : public QObject
 {
     Q_OBJECT
 
@@ -54,10 +54,10 @@ class CORE_EXPORT QgsGeoCMSConnection : public QObject
      * \param geoCMSName GeoCMS name eg: geonode, qgiscloud, etc
      * \param connName connection name
      */
-    QgsGeoCMSConnection( const QString &geoCMSName, const QString &connName );
+    QgsGeoCmsConnection( const QString &geoCMSName, const QString &connName );
 
     //! Destructor
-    ~QgsGeoCMSConnection();
+    ~QgsGeoCmsConnection();
 
     //! Returns the list of connections for the specified GeoCMS
     static QStringList connectionList( const QString &geoCMSName );

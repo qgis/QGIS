@@ -4573,8 +4573,6 @@ void QgisApp::askUserForOGRSublayers( QgsVectorLayer *layer )
 
 void QgisApp::addGeonodeLayer()
 {
-  QgsDebugMsg( "about to addGeonodeLayer" );
-
   QgsGeoNodeSourceSelect *geonodes = new QgsGeoNodeSourceSelect( this, 0, true );
   if ( !geonodes )
   {

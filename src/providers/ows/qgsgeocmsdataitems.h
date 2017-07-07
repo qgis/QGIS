@@ -26,7 +26,7 @@ class QgsGeoCMSConnectionItem : public QgsDataCollectionItem
 {
     Q_OBJECT
   public:
-    QgsGeoCMSConnectionItem( QgsDataItem *parent, QString name, QString path, QgsGeoCMSConnection *conn );
+    QgsGeoCMSConnectionItem( QgsDataItem *parent, QString name, QString path, QgsGeoCmsConnection *conn );
     QVector<QgsDataItem *> createChildren() override;
     virtual QList<QAction *> actions() override;
 
@@ -36,19 +36,19 @@ class QgsGeoCMSConnectionItem : public QgsDataCollectionItem
     void editConnection();
     void deleteConnection()
     {
-      QgsGeoCMSConnection::deleteConnection( mParent->name(), mConnection->mConnName );
+      QgsGeoCmsConnection::deleteConnection( mParent->name(), mConnection->mConnName );
       mParent->refresh();
     };
 
     QString mUri;
-    QgsGeoCMSConnection *mConnection = nullptr;
+    QgsGeoCmsConnection *mConnection = nullptr;
 };
 
 class QgsGeoCMSServiceItem : public QgsDataCollectionItem
 {
     Q_OBJECT
   public:
-    QgsGeoCMSServiceItem( QgsDataItem *parent, QgsGeoCMSConnection *conn, QString serviceName, QString path );
+    QgsGeoCMSServiceItem( QgsDataItem *parent, QgsGeoCmsConnection *conn, QString serviceName, QString path );
     QVector<QgsDataItem *> createChildren() override;
 
   private:
@@ -56,7 +56,7 @@ class QgsGeoCMSServiceItem : public QgsDataCollectionItem
     QString mName;
     QString mServiceName;
     QString mUri;
-    QgsGeoCMSConnection *mConnection = nullptr;
+    QgsGeoCmsConnection *mConnection = nullptr;
 };
 
 class QgsGeoCMSRootItem : public QgsDataCollectionItem

@@ -28,7 +28,7 @@
 #include <QDomDocument>
 
 
-QgsGeoCMSConnection::QgsGeoCMSConnection( const QString &geoCMSName, const QString &connName )
+QgsGeoCmsConnection::QgsGeoCmsConnection( const QString &geoCMSName, const QString &connName )
   : mGeoCMSName( geoCMSName )
   , mConnName( connName )
 {
@@ -61,37 +61,37 @@ QgsGeoCMSConnection::QgsGeoCMSConnection( const QString &geoCMSName, const QStri
   QgsDebugMsg( QString( "encodedUri: '%1'." ).arg( QString( mUri.encodedUri() ) ) );
 }
 
-QgsGeoCMSConnection::~QgsGeoCMSConnection()
+QgsGeoCmsConnection::~QgsGeoCmsConnection()
 {
 
 }
 
-QgsDataSourceUri QgsGeoCMSConnection::uri()
+QgsDataSourceUri QgsGeoCmsConnection::uri()
 {
   return mUri;
 }
 
-QStringList QgsGeoCMSConnection::connectionList( const QString &geoCMSName )
+QStringList QgsGeoCmsConnection::connectionList( const QString &geoCMSName )
 {
   QgsSettings settings;
   settings.beginGroup( "qgis/connections-" + geoCMSName.toLower() );
   return settings.childGroups();
 }
 
-void QgsGeoCMSConnection::deleteConnection( const QString &geoCMSName, const QString &name )
+void QgsGeoCmsConnection::deleteConnection( const QString &geoCMSName, const QString &name )
 {
   QgsSettings settings;
   settings.remove( "qgis/connections-" + geoCMSName.toLower() + '/' + name );
   settings.remove( "qgis/" + geoCMSName + '/' + name );
 }
 
-QString QgsGeoCMSConnection::selectedConnection( const QString &geoCMSName )
+QString QgsGeoCmsConnection::selectedConnection( const QString &geoCMSName )
 {
   QgsSettings settings;
   return settings.value( "qgis/connections-" + geoCMSName.toLower() + "/selected" ).toString();
 }
 
-void QgsGeoCMSConnection::setSelectedConnection( const QString &geoCMSName, const QString &name )
+void QgsGeoCmsConnection::setSelectedConnection( const QString &geoCMSName, const QString &name )
 {
   QgsSettings settings;
   settings.setValue( "qgis/connections-" + geoCMSName.toLower() + "/selected", name );

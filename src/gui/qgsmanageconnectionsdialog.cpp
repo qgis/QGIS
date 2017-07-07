@@ -1152,7 +1152,7 @@ void QgsManageConnectionsDialog::loadGeonodeConnections( const QDomDocument &doc
   if ( root.tagName() != QLatin1String( "qgsGeoNodeConnections" ) )
   {
     QMessageBox::information( this, tr( "Loading connections" ),
-                              tr( "The file is not an GeoNode connections exchange file." ) );
+                              tr( "The file is not a GeoNode connections exchange file." ) );
     return;
   }
 

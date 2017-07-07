@@ -199,7 +199,7 @@ void QgsGeoNodeSourceSelect::connectToGeonodeConnection()
   {
     Q_FOREACH ( const LayerStruct &layer, layers )
     {
-      QString uuid = layer.uuid;
+      QUuid uuid = layer.uuid;
 
       QString layerName = layer.name;
 

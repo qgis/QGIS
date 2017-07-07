@@ -32,7 +32,7 @@
 /*!
  * \brief   GeoNode Connections management
  */
-class CORE_EXPORT QgsGeoNodeConnection : public QgsGeoCMSConnection
+class CORE_EXPORT QgsGeoNodeConnection : public QgsGeoCmsConnection
 {
     Q_OBJECT
 

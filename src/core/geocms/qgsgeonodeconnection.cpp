@@ -34,7 +34,7 @@ const QString QgsGeoNodeConnection::pathGeoNodeConnection = "qgis/connections-ge
 const QString QgsGeoNodeConnection::pathGeoNodeConnectionDetails = "qgis/GeoNode";
 
 QgsGeoNodeConnection::QgsGeoNodeConnection( const QString &connName )
-  : QgsGeoCMSConnection( QStringLiteral( "GeoNode" ), connName )
+  : QgsGeoCmsConnection( QStringLiteral( "GeoNode" ), connName )
 {
   QgsDebugMsg( "theConnName = " + connName );
   QgsDebugMsg( QString( "encodedUri: '%1'." ).arg( QString( mUri.encodedUri() ) ) );
@@ -47,22 +47,22 @@ QgsGeoNodeConnection::~QgsGeoNodeConnection()
 
 QStringList QgsGeoNodeConnection::connectionList()
 {
-  return QgsGeoCMSConnection::connectionList( QStringLiteral( "GeoNode" ) );
+  return QgsGeoCmsConnection::connectionList( QStringLiteral( "GeoNode" ) );
 }
 
 void QgsGeoNodeConnection::deleteConnection( const QString &name )
 {
-  return QgsGeoCMSConnection::deleteConnection( QStringLiteral( "GeoNode" ), name );
+  return QgsGeoCmsConnection::deleteConnection( QStringLiteral( "GeoNode" ), name );
 }
 
 QString QgsGeoNodeConnection::selectedConnection()
 {
-  return QgsGeoCMSConnection::selectedConnection( QStringLiteral( "GeoNode" ) );
+  return QgsGeoCmsConnection::selectedConnection( QStringLiteral( "GeoNode" ) );
 }
 
 void QgsGeoNodeConnection::setSelectedConnection( const QString &name )
 {
-  return QgsGeoCMSConnection::setSelectedConnection( QStringLiteral( "GeoNode" ), name );
+  return QgsGeoCmsConnection::setSelectedConnection( QStringLiteral( "GeoNode" ), name );
 }
 
 QList<LayerStruct> QgsGeoNodeConnection::getLayers()

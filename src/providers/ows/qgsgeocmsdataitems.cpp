@@ -23,7 +23,7 @@
 
 typedef QList<QgsDataItemProvider *> dataItemProviders_t();
 
-QgsGeoCMSConnectionItem::QgsGeoCMSConnectionItem( QgsDataItem *parent, QString name, QString path, QgsGeoCMSConnection *conn )
+QgsGeoCMSConnectionItem::QgsGeoCMSConnectionItem( QgsDataItem *parent, QString name, QString path, QgsGeoCmsConnection *conn )
   : QgsDataCollectionItem( parent, name, path )
   , mGeoCMSName( parent->name() )
   , mUri( conn->uri().uri() )
@@ -85,7 +85,7 @@ void QgsGeoCMSConnectionItem::editConnection()
   }
 }
 
-QgsGeoCMSServiceItem::QgsGeoCMSServiceItem( QgsDataItem *parent, QgsGeoCMSConnection *conn, QString serviceName, QString path )
+QgsGeoCMSServiceItem::QgsGeoCMSServiceItem( QgsDataItem *parent, QgsGeoCmsConnection *conn, QString serviceName, QString path )
   : QgsDataCollectionItem( parent, serviceName, path )
   , mName( conn->mConnName )
   , mServiceName( serviceName )
@@ -231,7 +231,7 @@ QVector<QgsDataItem *> QgsGeoCMSRootItem::createChildren()
 {
   QVector<QgsDataItem *> connections;
 
-  Q_FOREACH ( const QString &connName, QgsGeoCMSConnection::connectionList( mName ) )
+  Q_FOREACH ( const QString &connName, QgsGeoCmsConnection::connectionList( mName ) )
   {
     QgsGeoNodeConnection *connection = nullptr;
     if ( mName == QString( "GeoNode" ) )
