@@ -672,7 +672,6 @@ SET(QGIS_CORE_MOC_HDRS
   gps/qgsgpsdconnection.h
 
   layout/qgslayout.h
-  layout/qgslayoutcontext.h
   layout/qgslayoutitem.h
   layout/qgslayoutitemregistry.h
   layout/qgslayoutobject.h
@@ -918,7 +917,7 @@ SET(QGIS_CORE_HDRS
   composer/qgscomposertexttable.h
   composer/qgspaperitem.h
 
-  layout/qgslayout.h
+  layout/qgslayoutcontext.h
   layout/qgslayoutmeasurement.h
   layout/qgslayoutmeasurementconverter.h
   layout/qgspagesizeregistry.h

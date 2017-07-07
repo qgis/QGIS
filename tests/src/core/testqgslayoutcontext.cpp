@@ -35,6 +35,7 @@ class TestQgsLayoutContext: public QObject
     void flags(); //test QgsLayout flags
     void feature();
     void layer();
+    void dpi();
 
   private:
     QString mReport;
@@ -124,6 +125,14 @@ void TestQgsLayoutContext::layer()
   QVERIFY( !context.layer() );
 
   delete layer;
+}
+
+void TestQgsLayoutContext::dpi()
+{
+  QgsLayoutContext context;
+  context.setDpi( 600 );
+  QCOMPARE( context.dpi(), 600.0 );
+  QCOMPARE( context.measurementConverter().dpi(), 600.0 );
 }
 
 QGSTEST_MAIN( TestQgsLayoutContext )

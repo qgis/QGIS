@@ -97,6 +97,28 @@ class QgsLayoutContext
 .. seealso:: layer()
 %End
 
+    void setDpi( double dpi );
+%Docstring
+ Sets the ``dpi`` for outputting the layout. This also sets the
+ corresponding DPI for the context's measurementConverter().
+.. seealso:: dpi()
+%End
+
+    double dpi() const;
+%Docstring
+ Returns the ``dpi`` for outputting the layout.
+.. seealso:: setDpi()
+ :rtype: float
+%End
+
+
+    QgsLayoutMeasurementConverter &measurementConverter();
+%Docstring
+ Returns the layout measurement converter to be used in the layout. This converter is used
+ for translating between other measurement units and the layout's native unit.
+ :rtype: QgsLayoutMeasurementConverter
+%End
+
 };
 
 

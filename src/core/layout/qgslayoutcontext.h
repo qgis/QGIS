@@ -19,6 +19,7 @@
 #include "qgis_core.h"
 #include "qgsfeature.h"
 #include "qgsvectorlayer.h"
+#include "qgslayoutmeasurementconverter.h"
 #include <QtGlobal>
 
 class QgsFeature;
@@ -108,12 +109,39 @@ class CORE_EXPORT QgsLayoutContext
      */
     void setLayer( QgsVectorLayer *layer );
 
+    /**
+     * Sets the \a dpi for outputting the layout. This also sets the
+     * corresponding DPI for the context's measurementConverter().
+     * \see dpi()
+     */
+    void setDpi( double dpi );
+
+    /**
+     * Returns the \a dpi for outputting the layout.
+     * \see setDpi()
+     */
+    double dpi() const;
+
+    /**
+     * Returns the layout measurement converter to be used in the layout. This converter is used
+     * for translating between other measurement units and the layout's native unit.
+     */
+    SIP_SKIP const QgsLayoutMeasurementConverter &measurementConverter() const { return mMeasurementConverter; }
+
+    /**
+     * Returns the layout measurement converter to be used in the layout. This converter is used
+     * for translating between other measurement units and the layout's native unit.
+     */
+    QgsLayoutMeasurementConverter &measurementConverter() { return mMeasurementConverter; }
+
   private:
 
     Flags mFlags = 0;
 
     QgsFeature mFeature;
     QPointer< QgsVectorLayer > mLayer;
+
+    QgsLayoutMeasurementConverter mMeasurementConverter;
 
 };
 
