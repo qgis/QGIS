@@ -25,6 +25,8 @@
 
 class QgsLayout;
 class QgsLayoutViewTool;
+class QgsLayoutViewToolTemporaryKeyPan;
+class QgsLayoutViewToolTemporaryKeyZoom;
 
 /**
  * \ingroup gui
@@ -121,6 +123,11 @@ class GUI_EXPORT QgsLayoutView: public QGraphicsView
     void wheelZoom( QWheelEvent *event );
 
     QPointer< QgsLayoutViewTool > mTool;
+
+    QgsLayoutViewToolTemporaryKeyPan *mSpacePanTool = nullptr;
+    QgsLayoutViewToolTemporaryKeyZoom *mSpaceZoomTool = nullptr;
+
+    QPoint mMouseCurrentXY;
 
     friend class TestQgsLayoutView;
 

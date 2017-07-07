@@ -1,37 +1,37 @@
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
- * src/gui/layout/qgslayoutviewtoolpan.h                                *
+ * src/gui/layout/qgslayoutviewtooltemporarykeyzoom.h                   *
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/
 
 
 
-class QgsLayoutViewToolPan : QgsLayoutViewTool
+class QgsLayoutViewToolTemporaryKeyZoom : QgsLayoutViewToolZoom
 {
 %Docstring
- Layout view tool for panning the layout.
+ Layout view tool for temporarily zooming a layout while a key is depressed.
 .. versionadded:: 3.0
 %End
 
 %TypeHeaderCode
-#include "qgslayoutviewtoolpan.h"
+#include "qgslayoutviewtooltemporarykeyzoom.h"
 %End
   public:
 
-    QgsLayoutViewToolPan( QgsLayoutView *view /TransferThis/ );
+    QgsLayoutViewToolTemporaryKeyZoom( QgsLayoutView *view /TransferThis/ );
 %Docstring
- Constructor for QgsLayoutViewToolPan.
+ Constructor for QgsLayoutViewToolTemporaryKeyZoom.
 %End
-
-    virtual void layoutPressEvent( QgsLayoutViewMouseEvent *event );
-
-    virtual void layoutMoveEvent( QgsLayoutViewMouseEvent *event );
 
     virtual void layoutReleaseEvent( QgsLayoutViewMouseEvent *event );
 
-    virtual void deactivate();
+    virtual void keyPressEvent( QKeyEvent *event );
+
+    virtual void keyReleaseEvent( QKeyEvent *event );
+
+    virtual void activate();
 
 
 };
@@ -39,7 +39,7 @@ class QgsLayoutViewToolPan : QgsLayoutViewTool
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
- * src/gui/layout/qgslayoutviewtoolpan.h                                *
+ * src/gui/layout/qgslayoutviewtooltemporarykeyzoom.h                   *
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/

@@ -20,7 +20,7 @@ class QgsLayoutViewToolSelect : QgsLayoutViewTool
 %End
   public:
 
-    QgsLayoutViewToolSelect( QgsLayoutView *view );
+    QgsLayoutViewToolSelect( QgsLayoutView *view /TransferThis/ );
 %Docstring
  Constructor for QgsLayoutViewToolSelect.
 %End

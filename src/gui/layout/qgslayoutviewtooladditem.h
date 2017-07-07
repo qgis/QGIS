@@ -34,7 +34,7 @@ class GUI_EXPORT QgsLayoutViewToolAddItem : public QgsLayoutViewTool
 
   public:
 
-    QgsLayoutViewToolAddItem( QgsLayoutView *view );
+    QgsLayoutViewToolAddItem( QgsLayoutView *view SIP_TRANSFERTHIS );
 
     /**
      * Returns the item type for items created by the tool.

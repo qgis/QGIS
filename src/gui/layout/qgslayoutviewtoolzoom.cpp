@@ -110,6 +110,7 @@ void QgsLayoutViewToolZoom::keyPressEvent( QKeyEvent *event )
     QCursor zoomCursor = QCursor( zoomQPixmap, 7, 7 );
     view()->viewport()->setCursor( zoomCursor );
   }
+  event->ignore();
 }
 
 void QgsLayoutViewToolZoom::keyReleaseEvent( QKeyEvent *event )
@@ -121,6 +122,7 @@ void QgsLayoutViewToolZoom::keyReleaseEvent( QKeyEvent *event )
     QCursor zoomCursor = QCursor( zoomQPixmap, 7, 7 );
     view()->viewport()->setCursor( zoomCursor );
   }
+  event->ignore();
 }
 
 void QgsLayoutViewToolZoom::deactivate()

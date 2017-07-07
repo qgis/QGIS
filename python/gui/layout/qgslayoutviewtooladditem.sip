@@ -20,7 +20,7 @@ class QgsLayoutViewToolAddItem : QgsLayoutViewTool
 %End
   public:
 
-    QgsLayoutViewToolAddItem( QgsLayoutView *view );
+    QgsLayoutViewToolAddItem( QgsLayoutView *view /TransferThis/ );
 
     int itemType() const;
 %Docstring

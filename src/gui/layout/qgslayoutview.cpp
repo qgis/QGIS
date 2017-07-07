@@ -19,6 +19,8 @@
 #include "qgslayout.h"
 #include "qgslayoutviewtool.h"
 #include "qgslayoutviewmouseevent.h"
+#include "qgslayoutviewtooltemporarykeypan.h"
+#include "qgslayoutviewtooltemporarykeyzoom.h"
 #include "qgssettings.h"
 #include "qgsrectangle.h"
 #include <memory>
@@ -32,6 +34,9 @@ QgsLayoutView::QgsLayoutView( QWidget *parent )
   setResizeAnchor( QGraphicsView::AnchorViewCenter );
   setMouseTracking( true );
   viewport()->setMouseTracking( true );
+
+  mSpacePanTool = new QgsLayoutViewToolTemporaryKeyPan( this );
+  mSpaceZoomTool = new QgsLayoutViewToolTemporaryKeyZoom( this );
 }
 
 QgsLayout *QgsLayoutView::currentLayout()
@@ -62,9 +67,10 @@ void QgsLayoutView::setTool( QgsLayoutViewTool *tool )
     mTool->deactivate();
   }
 
-  // set new tool and activate it
+  // activate new tool before setting it - gives tools a chance
+  // to respond to whatever the current tool is
+  tool->activate();
   mTool = tool;
-  mTool->activate();
 
   emit toolSet( mTool );
 }
@@ -115,6 +121,8 @@ void QgsLayoutView::mouseReleaseEvent( QMouseEvent *event )
 
 void QgsLayoutView::mouseMoveEvent( QMouseEvent *event )
 {
+  mMouseCurrentXY = event->pos();
+
   if ( mTool )
   {
     std::unique_ptr<QgsLayoutViewMouseEvent> me( new QgsLayoutViewMouseEvent( this, event ) );
@@ -161,7 +169,22 @@ void QgsLayoutView::keyPressEvent( QKeyEvent *event )
   }
 
   if ( !mTool || !event->isAccepted() )
-    QGraphicsView::keyPressEvent( event );
+  {
+    if ( event->key() == Qt::Key_Space && ! event->isAutoRepeat() )
+    {
+      if ( !( event->modifiers() & Qt::ControlModifier ) )
+      {
+        // Pan layout with space bar
+        setTool( mSpacePanTool );
+      }
+      else
+      {
+        //ctrl+space pressed, so switch to temporary keyboard based zoom tool
+        setTool( mSpaceZoomTool );
+      }
+      event->accept();
+    }
+  }
 }
 
 void QgsLayoutView::keyReleaseEvent( QKeyEvent *event )

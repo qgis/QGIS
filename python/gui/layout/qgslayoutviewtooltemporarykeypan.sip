@@ -1,37 +1,35 @@
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
- * src/gui/layout/qgslayoutviewtoolpan.h                                *
+ * src/gui/layout/qgslayoutviewtooltemporarykeypan.h                    *
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/
 
 
 
-class QgsLayoutViewToolPan : QgsLayoutViewTool
+class QgsLayoutViewToolTemporaryKeyPan : QgsLayoutViewTool
 {
 %Docstring
- Layout view tool for panning the layout.
+ Layout view tool for temporarily panning a layout while a key is depressed.
 .. versionadded:: 3.0
 %End
 
 %TypeHeaderCode
-#include "qgslayoutviewtoolpan.h"
+#include "qgslayoutviewtooltemporarykeypan.h"
 %End
   public:
 
-    QgsLayoutViewToolPan( QgsLayoutView *view /TransferThis/ );
+    QgsLayoutViewToolTemporaryKeyPan( QgsLayoutView *view /TransferThis/ );
 %Docstring
- Constructor for QgsLayoutViewToolPan.
+ Constructor for QgsLayoutViewToolTemporaryKeyPan.
 %End
-
-    virtual void layoutPressEvent( QgsLayoutViewMouseEvent *event );
 
     virtual void layoutMoveEvent( QgsLayoutViewMouseEvent *event );
 
-    virtual void layoutReleaseEvent( QgsLayoutViewMouseEvent *event );
+    virtual void keyReleaseEvent( QKeyEvent *event );
 
-    virtual void deactivate();
+    virtual void activate();
 
 
 };
@@ -39,7 +37,7 @@ class QgsLayoutViewToolPan : QgsLayoutViewTool
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
- * src/gui/layout/qgslayoutviewtoolpan.h                                *
+ * src/gui/layout/qgslayoutviewtooltemporarykeypan.h                    *
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/

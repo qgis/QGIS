@@ -283,6 +283,8 @@
 %Include layout/qgslayoutviewtooladditem.sip
 %Include layout/qgslayoutviewtoolpan.sip
 %Include layout/qgslayoutviewtoolselect.sip
+%Include layout/qgslayoutviewtooltemporarykeypan.sip
+%Include layout/qgslayoutviewtooltemporarykeyzoom.sip
 %Include layout/qgslayoutviewtoolzoom.sip
 %Include locator/qgslocator.sip
 %Include locator/qgslocatorfilter.sip

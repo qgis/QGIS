@@ -1,6 +1,6 @@
 /***************************************************************************
-                             qgslayoutviewtoolpan.h
-                             ----------------------
+                             qgslayoutviewtooltemporarykeypan.h
+                             ----------------------------------
     Date                 : July 2017
     Copyright            : (C) 2017 Nyall Dawson
     Email                : nyall dot dawson at gmail dot com
@@ -13,8 +13,8 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef QGSLAYOUTVIEWTOOLPAN_H
-#define QGSLAYOUTVIEWTOOLPAN_H
+#ifndef QGSLAYOUTVIEWTOOLTEMPORARYKEYPAN_H
+#define QGSLAYOUTVIEWTOOLTEMPORARYKEYPAN_H
 
 #include "qgis.h"
 #include "qgis_gui.h"
@@ -22,10 +22,10 @@
 
 /**
  * \ingroup gui
- * Layout view tool for panning the layout.
+ * Layout view tool for temporarily panning a layout while a key is depressed.
  * \since QGIS 3.0
  */
-class GUI_EXPORT QgsLayoutViewToolPan : public QgsLayoutViewTool
+class GUI_EXPORT QgsLayoutViewToolTemporaryKeyPan : public QgsLayoutViewTool
 {
 
     Q_OBJECT
@@ -33,20 +33,19 @@ class GUI_EXPORT QgsLayoutViewToolPan : public QgsLayoutViewTool
   public:
 
     /**
-     * Constructor for QgsLayoutViewToolPan.
+     * Constructor for QgsLayoutViewToolTemporaryKeyPan.
      */
-    QgsLayoutViewToolPan( QgsLayoutView *view SIP_TRANSFERTHIS );
+    QgsLayoutViewToolTemporaryKeyPan( QgsLayoutView *view SIP_TRANSFERTHIS );
 
-    void layoutPressEvent( QgsLayoutViewMouseEvent *event ) override;
     void layoutMoveEvent( QgsLayoutViewMouseEvent *event ) override;
-    void layoutReleaseEvent( QgsLayoutViewMouseEvent *event ) override;
-    void deactivate() override;
+    void keyReleaseEvent( QKeyEvent *event ) override;
+    void activate() override;
 
   private:
 
-    bool mIsPanning = false;
     QPoint mLastMousePos;
+    QPointer< QgsLayoutViewTool > mPreviousViewTool;
 
 };
 
-#endif // QGSLAYOUTVIEWTOOLPAN_H
+#endif // QGSLAYOUTVIEWTOOLTEMPORARYKEYPAN_H

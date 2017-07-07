@@ -37,7 +37,7 @@ class GUI_EXPORT QgsLayoutViewToolZoom : public QgsLayoutViewTool
     /**
      * Constructor for QgsLayoutViewToolZoom.
      */
-    QgsLayoutViewToolZoom( QgsLayoutView *view );
+    QgsLayoutViewToolZoom( QgsLayoutView *view SIP_TRANSFERTHIS );
 
     void layoutPressEvent( QgsLayoutViewMouseEvent *event ) override;
     void layoutMoveEvent( QgsLayoutViewMouseEvent *event ) override;
@@ -46,12 +46,15 @@ class GUI_EXPORT QgsLayoutViewToolZoom : public QgsLayoutViewTool
     void keyReleaseEvent( QKeyEvent *event ) override;
     void deactivate() override;
 
+  protected:
+
+    //! Will be true will marquee zoom operation is in progress
+    bool mMarqueeZoom = false;
+
   private:
 
     //! Start position for mouse press
     QPoint mMousePressStartPos;
-
-    bool mMarqueeZoom = false;
 
     QPointF mRubberBandStartPos;
 

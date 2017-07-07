@@ -112,6 +112,8 @@ QgsLayoutDesignerDialog::QgsLayoutDesignerDialog( QWidget *parent, Qt::WindowFla
   mToolsActionGroup->addAction( mActionSelectMoveItem );
   connect( mActionSelectMoveItem, &QAction::triggered, mSelectTool, [ = ] { mView->setTool( mSelectTool ); } );
 
+  mView->setTool( mSelectTool );
+  mView->setFocus();
 
   restoreWindowState();
 }

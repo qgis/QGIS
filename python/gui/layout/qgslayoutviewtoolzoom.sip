@@ -20,7 +20,7 @@ class QgsLayoutViewToolZoom : QgsLayoutViewTool
 %End
   public:
 
-    QgsLayoutViewToolZoom( QgsLayoutView *view );
+    QgsLayoutViewToolZoom( QgsLayoutView *view /TransferThis/ );
 %Docstring
  Constructor for QgsLayoutViewToolZoom.
 %End
@@ -36,6 +36,9 @@ class QgsLayoutViewToolZoom : QgsLayoutViewTool
     virtual void keyReleaseEvent( QKeyEvent *event );
 
     virtual void deactivate();
+
+
+  protected:
 
 
 };

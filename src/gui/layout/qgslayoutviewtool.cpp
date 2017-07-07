@@ -15,6 +15,7 @@
 
 #include "qgslayoutviewtool.h"
 #include "qgslayoutview.h"
+#include "qgslayoutviewmouseevent.h"
 
 QgsLayoutViewTool::QgsLayoutViewTool( QgsLayoutView *view, const QString &name )
   : QObject( view )
@@ -51,39 +52,39 @@ QgsLayoutViewTool::~QgsLayoutViewTool()
   mView->unsetTool( this );
 }
 
-void QgsLayoutViewTool::layoutMoveEvent( QgsLayoutViewMouseEvent * )
+void QgsLayoutViewTool::layoutMoveEvent( QgsLayoutViewMouseEvent *event )
 {
-
+  event->ignore();
 }
 
-void QgsLayoutViewTool::layoutDoubleClickEvent( QgsLayoutViewMouseEvent * )
+void QgsLayoutViewTool::layoutDoubleClickEvent( QgsLayoutViewMouseEvent *event )
 {
-
+  event->ignore();
 }
 
-void QgsLayoutViewTool::layoutPressEvent( QgsLayoutViewMouseEvent * )
+void QgsLayoutViewTool::layoutPressEvent( QgsLayoutViewMouseEvent *event )
 {
-
+  event->ignore();
 }
 
-void QgsLayoutViewTool::layoutReleaseEvent( QgsLayoutViewMouseEvent * )
+void QgsLayoutViewTool::layoutReleaseEvent( QgsLayoutViewMouseEvent *event )
 {
-
+  event->ignore();
 }
 
-void QgsLayoutViewTool::wheelEvent( QWheelEvent * )
+void QgsLayoutViewTool::wheelEvent( QWheelEvent *event )
 {
-
+  event->ignore();
 }
 
-void QgsLayoutViewTool::keyPressEvent( QKeyEvent * )
+void QgsLayoutViewTool::keyPressEvent( QKeyEvent *event )
 {
-
+  event->ignore();
 }
 
-void QgsLayoutViewTool::keyReleaseEvent( QKeyEvent * )
+void QgsLayoutViewTool::keyReleaseEvent( QKeyEvent *event )
 {
-
+  event->ignore();
 }
 
 void QgsLayoutViewTool::setAction( QAction *action )
