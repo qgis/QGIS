@@ -4313,7 +4313,7 @@ bool QgsWithVariableExpressionFunction::isStatic( const QgsExpressionNodeFunctio
     QgsExpressionContext *updatedContext = const_cast<QgsExpressionContext *>( context );
     updatedContext->appendScope( scope );
 
-    if ( args->at( 3 )->isStatic( parent, updatedContext ) )
+    if ( args->at( 2 )->isStatic( parent, updatedContext ) )
       isStatic = true;
     updatedContext->popScope();
   }
@@ -4336,9 +4336,13 @@ QVariant QgsWithVariableExpressionFunction::run( QgsExpressionNode::NodeList *ar
   scope->setVariable( name.toString(), value );
 
   QgsExpressionContext *updatedContext = const_cast<QgsExpressionContext *>( context );
+  if ( !context )
+    updatedContext = new QgsExpressionContext();
   updatedContext->appendScope( scope );
   result = args->at( 2 )->eval( parent, updatedContext );
   delete updatedContext->popScope();
+  if ( !context )
+    delete updatedContext;
 
   return result;
 }
