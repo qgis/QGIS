@@ -455,10 +455,10 @@ class QgsStaticExpressionFunction : public QgsExpressionFunction
     bool mIsStatic = false;
 };
 
-class QgsSetVariableExpressionFunction : public QgsExpressionFunction
+class QgsWithVariableExpressionFunction : public QgsExpressionFunction
 {
   public:
-    QgsSetVariableExpressionFunction();
+    QgsWithVariableExpressionFunction();
 
     bool isStatic( const QgsExpressionNodeFunction *node, QgsExpression *parent, const QgsExpressionContext *context ) const override;
 

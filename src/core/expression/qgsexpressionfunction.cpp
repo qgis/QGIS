@@ -4230,7 +4230,7 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
 
     sFunctions
         << new QgsStaticExpressionFunction( QStringLiteral( "env" ), 1, fcnEnvVar, QStringLiteral( "General" ), QString() )
-        << new QgsSetVariableExpressionFunction()
+        << new QgsWithVariableExpressionFunction()
         << new QgsStaticExpressionFunction( QStringLiteral( "attribute" ), 2, fcnAttribute, QStringLiteral( "Record" ), QString(), false, QSet<QString>() << QgsFeatureRequest::ALL_ATTRIBUTES )
 
         // functions for arrays
@@ -4276,13 +4276,13 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
   return sFunctions;
 }
 
-QgsSetVariableExpressionFunction::QgsSetVariableExpressionFunction()
-  : QgsExpressionFunction( "set_variable", 3, QCoreApplication::tr( "General" ), "help text TODODOODO" )
+QgsWithVariableExpressionFunction::QgsWithVariableExpressionFunction()
+  : QgsExpressionFunction( QStringLiteral("with_variable"), 3, QCoreApplication::tr( "General" ) )
 {
 
 }
 
-bool QgsSetVariableExpressionFunction::isStatic( const QgsExpressionNodeFunction *node, QgsExpression *parent, const QgsExpressionContext *context ) const
+bool QgsWithVariableExpressionFunction::isStatic( const QgsExpressionNodeFunction *node, QgsExpression *parent, const QgsExpressionContext *context ) const
 {
   bool isStatic = false;
 
@@ -4310,7 +4310,7 @@ bool QgsSetVariableExpressionFunction::isStatic( const QgsExpressionNodeFunction
   return false;
 }
 
-QVariant QgsSetVariableExpressionFunction::run( QgsExpressionNode::NodeList *args, const QgsExpressionContext *context, QgsExpression *parent )
+QVariant QgsWithVariableExpressionFunction::run( QgsExpressionNode::NodeList *args, const QgsExpressionContext *context, QgsExpression *parent )
 {
   QVariant result;
 
@@ -4332,7 +4332,7 @@ QVariant QgsSetVariableExpressionFunction::run( QgsExpressionNode::NodeList *arg
   return result;
 }
 
-QVariant QgsSetVariableExpressionFunction::func( const QVariantList &values, const QgsExpressionContext *context, QgsExpression *parent )
+QVariant QgsWithVariableExpressionFunction::func( const QVariantList &values, const QgsExpressionContext *context, QgsExpression *parent )
 {
   // This is a dummy function, all the real handling is in run
   Q_UNUSED( values )
@@ -4343,7 +4343,7 @@ QVariant QgsSetVariableExpressionFunction::func( const QVariantList &values, con
   return QVariant();
 }
 
-bool QgsSetVariableExpressionFunction::prepare( const QgsExpressionNodeFunction *node, QgsExpression *parent, const QgsExpressionContext *context ) const
+bool QgsWithVariableExpressionFunction::prepare( const QgsExpressionNodeFunction *node, QgsExpression *parent, const QgsExpressionContext *context ) const
 {
   QgsExpressionNode::NodeList *args = node->args();
 
