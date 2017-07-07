@@ -76,7 +76,7 @@ class GUI_EXPORT QgsColorButton : public QToolButton
      */
     QgsColorButton( QWidget *parent SIP_TRANSFERTHIS = nullptr, const QString &cdt = "", QgsColorSchemeRegistry *registry = nullptr );
 
-    virtual QSize sizeHint() const override;
+    virtual QSize minimumSizeHint() const override;
 
     /** Return the currently selected color.
      * \returns currently selected color

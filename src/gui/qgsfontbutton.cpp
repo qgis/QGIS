@@ -51,11 +51,9 @@ QgsFontButton::QgsFontButton( QWidget *parent, const QString &dialogTitle )
 QSize QgsFontButton::minimumSizeHint() const
 {
   //make sure height of button looks good under different platforms
-#ifdef Q_OS_WIN
-  return QToolButton::minimumSizeHint();
-#else
-  return QSize( 120, 28 );
-#endif
+  QSize size = QToolButton::minimumSizeHint();
+  int fontHeight = fontMetrics().height() * 1.4;
+  return QSize( size.width(), qMax( size.height(), fontHeight ) );
 }
 
 void QgsFontButton::showSettingsDialog()

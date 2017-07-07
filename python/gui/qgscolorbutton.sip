@@ -44,7 +44,7 @@ class QgsColorButton : QToolButton
  the button will use the global color scheme registry instead
 %End
 
-    virtual QSize sizeHint() const;
+    virtual QSize minimumSizeHint() const;
 
     QColor color() const;
 %Docstring
