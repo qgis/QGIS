@@ -30,6 +30,7 @@ class TestQgsLayoutObject: public QObject
     void cleanup();// will be called after every testfunction.
     void creation(); //test creation of QgsLayoutObject
     void layout(); //test fetching layout from QgsLayoutObject
+    void customProperties();
 
   private:
     QgsLayout *mLayout = nullptr;
@@ -80,6 +81,35 @@ void TestQgsLayoutObject::layout()
   QCOMPARE( object->layout(), mLayout );
   delete object;
 }
+
+void TestQgsLayoutObject::customProperties()
+{
+  QgsLayoutObject *object = new QgsLayoutObject( mLayout );
+
+  QCOMPARE( object->customProperty( "noprop", "defaultval" ).toString(), QString( "defaultval" ) );
+  QVERIFY( object->customProperties().isEmpty() );
+  object->setCustomProperty( QStringLiteral( "testprop" ), "testval" );
+  QCOMPARE( object->customProperty( "testprop", "defaultval" ).toString(), QString( "testval" ) );
+  QCOMPARE( object->customProperties().length(), 1 );
+  QCOMPARE( object->customProperties().at( 0 ), QString( "testprop" ) );
+
+  //test no crash
+  object->removeCustomProperty( QStringLiteral( "badprop" ) );
+
+  object->removeCustomProperty( QStringLiteral( "testprop" ) );
+  QVERIFY( object->customProperties().isEmpty() );
+  QCOMPARE( object->customProperty( "noprop", "defaultval" ).toString(), QString( "defaultval" ) );
+
+  object->setCustomProperty( QStringLiteral( "testprop1" ), "testval1" );
+  object->setCustomProperty( QStringLiteral( "testprop2" ), "testval2" );
+  QStringList keys = object->customProperties();
+  QCOMPARE( keys.length(), 2 );
+  QVERIFY( keys.contains( "testprop1" ) );
+  QVERIFY( keys.contains( "testprop2" ) );
+
+  delete object;
+}
+
 
 QGSTEST_MAIN( TestQgsLayoutObject )
 #include "testqgslayoutobject.moc"
