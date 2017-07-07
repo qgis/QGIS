@@ -877,12 +877,20 @@ QDomElement QgsGeometryUtils::pointsToGML2( const QgsPointSequence &points, QDom
 {
   QDomElement elemCoordinates = doc.createElementNS( ns, QStringLiteral( "coordinates" ) );
 
+  // coordinate separator
+  QString cs = ",";
+  // tupel separator
+  QString ts = " ";
+
+  elemCoordinates.setAttribute( "cs", cs );
+  elemCoordinates.setAttribute( "ts", ts );
+
   QString strCoordinates;
 
   Q_FOREACH ( const QgsPoint &p, points )
-    strCoordinates += qgsDoubleToString( p.x(), precision ) + ',' + qgsDoubleToString( p.y(), precision ) + ' ';
+    strCoordinates += qgsDoubleToString( p.x(), precision ) + cs + qgsDoubleToString( p.y(), precision ) + ts;
 
-  if ( strCoordinates.endsWith( ' ' ) )
+  if ( strCoordinates.endsWith( ts ) )
     strCoordinates.chop( 1 ); // Remove trailing space
 
   elemCoordinates.appendChild( doc.createTextNode( strCoordinates ) );
