@@ -71,4 +71,6 @@ def getFileFilter(param):
         for i in range(len(exts)):
             exts[i] = tr('{0} files (*.{1})', 'ParameterVector').format(exts[i].upper(), exts[i].lower())
         return ';;'.join(exts)
+    elif param.type() == 'fileOut':
+        return param.fileFilter()
     return ''
