@@ -378,6 +378,7 @@
 %Include gps/qgsgpsdetector.sip
 %Include gps/qgsnmeaconnection.sip
 %Include gps/qgsgpsdconnection.sip
+%Include layout/qgslayoutcontext.sip
 %Include layout/qgslayoutitem.sip
 %Include layout/qgslayoutitemregistry.sip
 %Include layout/qgslayoutobject.sip

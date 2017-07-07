@@ -350,6 +350,7 @@ SET(QGIS_CORE_SRCS
   dxf/qgsdxfpallabeling.cpp
 
   layout/qgslayout.cpp
+  layout/qgslayoutcontext.cpp
   layout/qgslayoutitem.cpp
   layout/qgslayoutitemregistry.cpp
   layout/qgslayoutmeasurement.cpp
@@ -671,6 +672,7 @@ SET(QGIS_CORE_MOC_HDRS
   gps/qgsgpsdconnection.h
 
   layout/qgslayout.h
+  layout/qgslayoutcontext.h
   layout/qgslayoutitem.h
   layout/qgslayoutitemregistry.h
   layout/qgslayoutobject.h

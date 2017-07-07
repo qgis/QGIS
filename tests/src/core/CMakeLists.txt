@@ -127,6 +127,7 @@ SET(TESTS
  testqgslabelingengine.cpp
  testqgslayertree.cpp
  testqgslayout.cpp
+ testqgslayoutcontext.cpp
  testqgslayoutitem.cpp
  testqgslayoutobject.cpp
  testqgslayoutunits.cpp
