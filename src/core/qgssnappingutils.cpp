@@ -164,21 +164,21 @@ static QgsPointLocator::Match _findClosestSegmentIntersection( const QgsPointXY 
 }
 
 
-static void _replaceIfBetter( QgsPointLocator::Match &mBest, const QgsPointLocator::Match &mNew, double maxDistance )
+static void _replaceIfBetter( QgsPointLocator::Match &bestMatch, const QgsPointLocator::Match &candidateMatch, double maxDistance )
 {
-  // is other match relevant?
-  if ( !mNew.isValid() || mNew.distance() > maxDistance )
+  // is candidate match relevant?
+  if ( !candidateMatch.isValid() || candidateMatch.distance() > maxDistance )
     return;
 
-  // is other match actually better?
-  if ( mBest.isValid() && mBest.type() == mNew.type() && mBest.distance() - 10e-6 < mNew.distance() )
+  // is candidate match actually better?
+  if ( bestMatch.isValid() && bestMatch.type() == candidateMatch.type() && bestMatch.distance() - 10e-6 < candidateMatch.distance() )
     return;
 
-  // prefer vertex matches to edge matches (even if they are closer)
-  if ( mBest.type() == QgsPointLocator::Vertex && mNew.type() == QgsPointLocator::Edge )
+  // prefer vertex matches over edge matches (even if they are closer)
+  if ( bestMatch.type() == QgsPointLocator::Vertex && candidateMatch.type() == QgsPointLocator::Edge )
     return;
 
-  mBest = mNew; // the other match is better!
+  bestMatch = candidateMatch; // the other match is better!
 }
 
 
