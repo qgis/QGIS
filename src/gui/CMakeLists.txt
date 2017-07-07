@@ -168,6 +168,7 @@ SET(QGIS_GUI_SRCS
   layout/qgslayoutviewtoolselect.cpp
   layout/qgslayoutviewtooltemporarykeypan.cpp
   layout/qgslayoutviewtooltemporarykeyzoom.cpp
+  layout/qgslayoutviewtooltemporarymousepan.cpp
   layout/qgslayoutviewtoolzoom.cpp
 
   locator/qgslocator.cpp
@@ -639,6 +640,7 @@ SET(QGIS_GUI_MOC_HDRS
   layout/qgslayoutviewtoolselect.h
   layout/qgslayoutviewtooltemporarykeypan.h
   layout/qgslayoutviewtooltemporarykeyzoom.h
+  layout/qgslayoutviewtooltemporarymousepan.h
   layout/qgslayoutviewtoolzoom.h
 
   locator/qgslocator.h

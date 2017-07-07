@@ -285,6 +285,7 @@
 %Include layout/qgslayoutviewtoolselect.sip
 %Include layout/qgslayoutviewtooltemporarykeypan.sip
 %Include layout/qgslayoutviewtooltemporarykeyzoom.sip
+%Include layout/qgslayoutviewtooltemporarymousepan.sip
 %Include layout/qgslayoutviewtoolzoom.sip
 %Include locator/qgslocator.sip
 %Include locator/qgslocatorfilter.sip

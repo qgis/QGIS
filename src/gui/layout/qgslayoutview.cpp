@@ -21,6 +21,7 @@
 #include "qgslayoutviewmouseevent.h"
 #include "qgslayoutviewtooltemporarykeypan.h"
 #include "qgslayoutviewtooltemporarykeyzoom.h"
+#include "qgslayoutviewtooltemporarymousepan.h"
 #include "qgssettings.h"
 #include "qgsrectangle.h"
 #include <memory>
@@ -36,6 +37,7 @@ QgsLayoutView::QgsLayoutView( QWidget *parent )
   viewport()->setMouseTracking( true );
 
   mSpacePanTool = new QgsLayoutViewToolTemporaryKeyPan( this );
+  mMidMouseButtonPanTool = new QgsLayoutViewToolTemporaryMousePan( this );
   mSpaceZoomTool = new QgsLayoutViewToolTemporaryKeyZoom( this );
 }
 
@@ -103,7 +105,22 @@ void QgsLayoutView::mousePressEvent( QMouseEvent *event )
   }
 
   if ( !mTool || !event->isAccepted() )
+  {
+    if ( event->button() == Qt::MidButton )
+    {
+      // Pan layout with middle mouse button
+      setTool( mMidMouseButtonPanTool );
+      event->accept();
+    }
+    else
+    {
+      QGraphicsView::mousePressEvent( event );
+    }
+  }
+  else
+  {
     QGraphicsView::mousePressEvent( event );
+  }
 }
 
 void QgsLayoutView::mouseReleaseEvent( QMouseEvent *event )
