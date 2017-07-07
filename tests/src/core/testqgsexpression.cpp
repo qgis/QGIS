@@ -1123,6 +1123,18 @@ class TestQgsExpression: public QObject
       // not like
       QTest::newRow( "'a' not like 'a%'" ) << QStringLiteral( "'a' not like 'a%'" ) << false << QVariant( 0 );
       QTest::newRow( "'a' not  like 'a%'" ) << QStringLiteral( "'a' not  like 'a%'" ) << false << QVariant( 0 );
+
+      // with_variable
+      QTest::newRow( "with_variable('five', 5, @five * 2)" ) << QStringLiteral( "with_variable('five', 5, @five * 2)" ) << false << QVariant( 10 );
+      QTest::newRow( "with_variable('nothing', NULL, COALESCE(@nothing, 'something'))" ) << QStringLiteral( "with_variable('nothing', NULL, COALESCE(@nothing, 'something'))" ) << false << QVariant( "something" );
+
+      // array_first, array_last
+      QTest::newRow( "array_first(array('a', 'b', 'c'))" ) << QStringLiteral( "array_first(array('a', 'b', 'c'))" ) << false << QVariant( "a" );
+      QTest::newRow( "array_first(array())" ) << QStringLiteral( "array_first(array())" ) << false << QVariant();
+      QTest::newRow( "array_last(array('a', 'b', 'c'))" ) << QStringLiteral( "array_last(array('a', 'b', 'c'))" ) << false << QVariant( "c" );
+      QTest::newRow( "array_last(array())" ) << QStringLiteral( "array_last(array())" ) << false << QVariant();
+
+      //
     }
 
     void run_evaluation_test( QgsExpression &exp, bool evalError, QVariant &expected )
@@ -1314,6 +1326,9 @@ class TestQgsExpression: public QObject
       QTest::newRow( "get_feature no match2" ) << "get_feature('test','col2','no match!')" << false << -1;
       //no matching layer
       QTest::newRow( "get_feature no match layer" ) << "get_feature('not a layer!','col1',10)" << false << -1;
+
+      // get_feature_by_id
+      QTest::newRow( "get_feature_by_id" ) << "get_feature_by_id('test', 1)" << true << 1;
     }
 
     void eval_get_feature()
