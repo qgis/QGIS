@@ -47,7 +47,9 @@ from .BasicStatistics import BasicStatisticsForField
 from .Boundary import Boundary
 from .BoundingBox import BoundingBox
 from .CheckValidity import CheckValidity
+from .ConcaveHull import ConcaveHull
 from .CreateAttributeIndex import CreateAttributeIndex
+from .Delaunay import Delaunay
 from .DeleteColumn import DeleteColumn
 from .DeleteHoles import DeleteHoles
 from .DensifyGeometries import DensifyGeometries
@@ -69,9 +71,11 @@ from .SelectByAttribute import SelectByAttribute
 from .SelectByExpression import SelectByExpression
 from .SimplifyGeometries import SimplifyGeometries
 from .Smooth import Smooth
+from .SnapGeometries import SnapGeometriesToLayer
 from .SpatialiteExecuteSQL import SpatialiteExecuteSQL
 from .SymmetricalDifference import SymmetricalDifference
 from .VectorSplit import VectorSplit
+from .VoronoiPolygons import VoronoiPolygons
 from .ZonalStatistics import ZonalStatistics
 
 # from .ExtractByLocation import ExtractByLocation
@@ -85,8 +89,6 @@ from .ZonalStatistics import ZonalStatistics
 # from .PointDistance import PointDistance
 # from .UniqueValues import UniqueValues
 # from .ExportGeometryInfo import ExportGeometryInfo
-# from .Delaunay import Delaunay
-# from .VoronoiPolygons import VoronoiPolygons
 # from .LinesToPolygons import LinesToPolygons
 # from .PolygonsToLines import PolygonsToLines
 # from .SinglePartsToMultiparts import SinglePartsToMultiparts
@@ -109,7 +111,6 @@ from .ZonalStatistics import ZonalStatistics
 # from .HubDistanceLines import HubDistanceLines
 # from .HubLines import HubLines
 # from .GeometryConvert import GeometryConvert
-# from .ConcaveHull import ConcaveHull
 # from .RasterLayerStatistics import RasterLayerStatistics
 # from .StatisticsByCategories import StatisticsByCategories
 # from .EquivalentNumField import EquivalentNumField
@@ -156,7 +157,6 @@ from .ZonalStatistics import ZonalStatistics
 # from .ExtendLines import ExtendLines
 # from .ExtractSpecificNodes import ExtractSpecificNodes
 # from .GeometryByExpression import GeometryByExpression
-# from .SnapGeometries import SnapGeometriesToLayer
 # from .PoleOfInaccessibility import PoleOfInaccessibility
 # from .RasterCalculator import RasterCalculator
 # from .Heatmap import Heatmap
@@ -190,7 +190,6 @@ class QGISAlgorithmProvider(QgsProcessingProvider):
         #         NearestNeighbourAnalysis(), MeanCoords(),
         #         LinesIntersection(), UniqueValues(), PointDistance(),
         #         ExportGeometryInfo(),
-        #         Delaunay(), VoronoiPolygons(),
         #         , SinglePartsToMultiparts(),
         #         PolygonsToLines(), LinesToPolygons(), ExtractNodes(),
         #         ConvexHull(), FixedDistanceBuffer(),
@@ -207,7 +206,7 @@ class QGISAlgorithmProvider(QgsProcessingProvider):
         #          JoinAttributes(),
         #         Explode(), FieldsPyculator(),
         #         EquivalentNumField(),
-        #         StatisticsByCategories(), ConcaveHull(),
+        #         StatisticsByCategories(),
         #         RasterLayerStatistics(), PointsDisplacement(),
         #         PointsFromPolygons(),
         #         PointsFromLines(), RandomPointsExtent(),
@@ -230,7 +229,7 @@ class QGISAlgorithmProvider(QgsProcessingProvider):
         #         IdwInterpolation(), TinInterpolation(),
         #         RemoveNullGeometry(),
         #         ExtendLines(), ExtractSpecificNodes(),
-        #         GeometryByExpression(), SnapGeometriesToLayer(),
+        #         GeometryByExpression(),
         #         PoleOfInaccessibility(),
         #
         #         RasterCalculator(), Heatmap(), Orthogonalize(),
@@ -247,7 +246,9 @@ class QGISAlgorithmProvider(QgsProcessingProvider):
                 Boundary(),
                 BoundingBox(),
                 CheckValidity(),
+                ConcaveHull(),
                 CreateAttributeIndex(),
+                Delaunay(),
                 DeleteColumn(),
                 DeleteHoles(),
                 DensifyGeometries(),
@@ -269,9 +270,11 @@ class QGISAlgorithmProvider(QgsProcessingProvider):
                 SelectByExpression(),
                 SimplifyGeometries(),
                 Smooth(),
+                SnapGeometriesToLayer(),
                 SpatialiteExecuteSQL(),
                 SymmetricalDifference(),
                 VectorSplit(),
+                VoronoiPolygons(),
                 ZonalStatistics()
                 ]
 

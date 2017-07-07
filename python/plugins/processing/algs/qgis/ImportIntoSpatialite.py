@@ -28,8 +28,6 @@ __revision__ = '$Format:%H$'
 from qgis.core import (QgsDataSourceUri,
                        QgsFeatureSink,
                        QgsVectorLayerExporter,
-                       QgsApplication,
-                       QgsProcessingUtils,
                        QgsProcessingParameterFeatureSource,
                        QgsProcessingParameterVectorLayer,
                        QgsProcessingParameterField,

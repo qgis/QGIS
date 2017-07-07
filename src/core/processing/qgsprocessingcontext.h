@@ -67,6 +67,22 @@ class CORE_EXPORT QgsProcessingContext
     QgsProcessingContext &operator=( const QgsProcessingContext &other ) = delete;
 
     /**
+     * Copies all settings which are safe for use across different threads from
+     * \a other to this context.
+     */
+    void copyThreadSafeSettings( const QgsProcessingContext &other )
+    {
+      mFlags = other.mFlags;
+      mProject = other.mProject;
+      mExpressionContext = other.mExpressionContext;
+      mInvalidGeometryCallback = other.mInvalidGeometryCallback;
+      mInvalidGeometryCheck = other.mInvalidGeometryCheck;
+      mTransformErrorCallback = other.mTransformErrorCallback;
+      mDefaultEncoding = other.mDefaultEncoding;
+      mFeedback = other.mFeedback;
+    }
+
+    /**
      * Returns any flags set in the context.
      * \see setFlags()
      */
@@ -161,13 +177,6 @@ class CORE_EXPORT QgsProcessingContext
     {
       mLayersToLoadOnCompletion.insert( layer, details );
     }
-
-    /**
-     * Returns a map of output values stored in the context. These are grouped with the map keys
-     * matching the algorithm name for multi-algorithm models.
-     * \note not available in Python bindings
-     */
-    SIP_SKIP QMap<QString, QVariantMap> &outputMap() { return mOutputMap; }
 
     /**
      * Returns the behavior used for checking invalid geometries in input layers.
@@ -310,13 +319,60 @@ class CORE_EXPORT QgsProcessingContext
      */
     void setFeedback( QgsProcessingFeedback *feedback ) { mFeedback = feedback; }
 
+    /**
+     * Returns the thread in which the context lives.
+     * \see pushToThread()
+     */
+    QThread *thread() { return tempLayerStore.thread(); }
+
+    /**
+     * Pushes the thread affinity for the context (including all layers contained in the temporaryLayerStore()) into
+     * another \a thread. This method is only safe to call when the current thread matches the existing thread
+     * affinity for the context (see thread()).
+     * \see thread()
+     */
+    void pushToThread( QThread *thread )
+    {
+      Q_ASSERT_X( QThread::currentThread() == QgsProcessingContext::thread(), "QgsProcessingContext::pushToThread", "Cannot push context to another thread unless the current thread matches the existing context thread affinity" );
+      tempLayerStore.moveToThread( thread );
+    }
+
+    /**
+     * Takes the results from another \a context and merges them with the results currently
+     * stored in this context. This includes settings like any layers loaded in the temporaryLayerStore()
+     * and layersToLoadOnCompletion().
+     * This is only safe to call when both this context and the other \a context share the same
+     * thread() affinity, and that thread is the current thread.
+     */
+    void takeResultsFrom( QgsProcessingContext &context )
+    {
+      QMap< QString, LayerDetails > loadOnCompletion = context.layersToLoadOnCompletion();
+      QMap< QString, LayerDetails >::const_iterator llIt = loadOnCompletion.constBegin();
+      for ( ; llIt != loadOnCompletion.constEnd(); ++llIt )
+      {
+        mLayersToLoadOnCompletion.insert( llIt.key(), llIt.value() );
+      }
+      context.setLayersToLoadOnCompletion( QMap< QString, LayerDetails >() );
+      tempLayerStore.transferLayersFromStore( context.temporaryLayerStore() );
+    }
+
+    /**
+     * Takes the result map layer with matching \a id from the context and
+     * transfers ownership of it back to the caller. This method can be used
+     * to remove temporary layers which are not required for further processing
+     * from a context.
+     */
+    QgsMapLayer *takeResultLayer( const QString &id ) SIP_TRANSFERBACK
+    {
+      return tempLayerStore.takeMapLayer( tempLayerStore.mapLayer( id ) );
+    }
+
   private:
 
     QgsProcessingContext::Flags mFlags = 0;
     QPointer< QgsProject > mProject;
     //! Temporary project owned by the context, used for storing temporarily loaded map layers
     QgsMapLayerStore tempLayerStore;
-    QMap< QString, QVariantMap > mOutputMap;
     QgsExpressionContext mExpressionContext;
     QgsFeatureRequest::InvalidGeometryCheck mInvalidGeometryCheck = QgsFeatureRequest::GeometryNoCheck;
     std::function< void( const QgsFeature & ) > mInvalidGeometryCallback;

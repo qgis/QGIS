@@ -22,12 +22,12 @@
 #include "qgis.h"
 #include "qgsprocessingparameters.h"
 #include "qgsprocessingoutputs.h"
+#include "qgsprocessingcontext.h"
 #include <QString>
 #include <QVariant>
 #include <QIcon>
 
 class QgsProcessingProvider;
-class QgsProcessingContext;
 class QgsProcessingFeedback;
 class QgsFeatureSink;
 
@@ -61,10 +61,16 @@ class CORE_EXPORT QgsProcessingAlgorithm
 
     virtual ~QgsProcessingAlgorithm();
 
-    //! Algorithms cannot be copied
+
+    //! Algorithms cannot be copied - clone() should be used instead
     QgsProcessingAlgorithm( const QgsProcessingAlgorithm &other ) = delete;
-    //! Algorithms cannot be copied
+    //! Algorithms cannot be copied- clone() should be used instead
     QgsProcessingAlgorithm &operator=( const QgsProcessingAlgorithm &other ) = delete;
+
+    /**
+     * Creates a copy of the algorithm, ready for execution.
+     */
+    virtual QgsProcessingAlgorithm *create() const = 0 SIP_FACTORY;
 
     /**
      * Returns the algorithm name, used for identifying the algorithm. This string
@@ -217,7 +223,9 @@ class CORE_EXPORT QgsProcessingAlgorithm
     bool hasHtmlOutputs() const;
 
     /**
-     * Executes the algorithm using the specified \a parameters.
+     * Executes the algorithm using the specified \a parameters. This method internally
+     * creates a copy of the algorithm before running it, so it is safe to call
+     * on algorithms directly retrieved from QgsProcessingRegistry and QgsProcessingProvider.
      *
      * The \a context argument specifies the context in which the algorithm is being run.
      *
@@ -227,9 +235,47 @@ class CORE_EXPORT QgsProcessingAlgorithm
      *
      * \returns A map of algorithm outputs. These may be output layer references, or calculated
      * values such as statistical calculations.
+     *
+     * \note this method can only be called from the main thread. Use prepare(), runPrepared() and postProcess()
+     * if you need to run algorithms from a background thread, or use the QgsProcessingAlgRunnerTask class.
      */
     QVariantMap run( const QVariantMap &parameters,
                      QgsProcessingContext &context, QgsProcessingFeedback *feedback, bool *ok SIP_OUT = nullptr ) const;
+
+    /**
+     * Prepares the algorithm for execution. This must be run in the main thread, and allows the algorithm
+     * to pre-evaluate input parameters in a thread-safe manner. This must be called before
+     * calling runPrepared() (which is safe to do in any thread).
+     * \see runPrepared()
+     * \see postProcess()
+     * \note This method modifies the algorithm instance, so it is not safe to call
+     * on algorithms directly retrieved from QgsProcessingRegistry and QgsProcessingProvider. Instead, a copy
+     * of the algorithm should be created with clone() and prepare()/runPrepared() called on the copy.
+     */
+    bool prepare( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback );
+
+    /**
+     * Runs the algorithm, which has been prepared by an earlier call to prepare().
+     * This method is safe to call from any thread. Returns true if the algorithm was successfully executed.
+     * After runPrepared() has finished, the postProcess() method should be called from the main thread
+     * to allow the algorithm to perform any required cleanup tasks and return its final result.
+     * \see prepare()
+     * \see postProcess()
+     * \note This method modifies the algorithm instance, so it is not safe to call
+     * on algorithms directly retrieved from QgsProcessingRegistry and QgsProcessingProvider. Instead, a copy
+     * of the algorithm should be created with clone() and prepare()/runPrepared() called on the copy.
+     */
+    QVariantMap runPrepared( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback );
+
+    /**
+     * Should be called in the main thread following the completion of runPrepared(). This method
+     * allows the algorithm to perform any required cleanup tasks. The returned variant map
+     * includes the results evaluated by the algorithm.
+     * \note This method modifies the algorithm instance, so it is not safe to call
+     * on algorithms directly retrieved from QgsProcessingRegistry and QgsProcessingProvider. Instead, a copy
+     * of the algorithm should be created with clone() and prepare()/runPrepared() called on the copy.
+     */
+    QVariantMap postProcess( QgsProcessingContext &context, QgsProcessingFeedback *feedback );
 
     /**
      * If an algorithm subclass implements a custom parameters widget, a copy of this widget
@@ -294,20 +340,97 @@ class CORE_EXPORT QgsProcessingAlgorithm
     bool addOutput( QgsProcessingOutputDefinition *outputDefinition SIP_TRANSFER );
 
     /**
+     * Prepares the algorithm to run using the specified \a parameters. Algorithms should implement
+     * their logic for evaluating parameter values here. The evaluated parameter results should
+     * be stored in member variables ready for a call to processAlgorithm().
+     *
+     * The \a context argument specifies the context in which the algorithm is being run.
+     *
+     * prepareAlgorithm should be used to handle any thread-sensitive preparation which is required
+     * by the algorithm. It will always be called from the same thread that \a context has thread
+     * affinity with. While this will generally be the main thread, it is not guaranteed. For instance,
+     * algorithms which are run as a step in a larger model or as a subcomponent of a script-based algorithm
+     * will call prepareAlgorithm from the same thread as that model/script it being executed in.
+     *
+     * Note that the processAlgorithm step uses a temporary context with affinity for the thread in
+     * which the algorithm is executed, making it safe for processAlgorithm implementations to load
+     * sources and sinks without issue. Implementing prepareAlgorithm is only required if special
+     * thread safe handling is required by the algorithm.
+     *
+     * Algorithm preparation progress should be reported using the supplied \a feedback object. Additionally,
+     * well-behaved algorithms should periodically check \a feedback to determine whether the
+     * algorithm should be canceled and exited early.
+     *
+     * If the preparation was successful algorithms must return true. If a false value is returned
+     * this indicates that the preparation could not be completed, and the algorithm execution
+     * will be canceled.
+     *
+     * \returns true if preparation was successful.
+     * \see processAlgorithm()
+     * \see postProcessAlgorithm()
+     */
+    virtual bool prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) SIP_VIRTUALERRORHANDLER( processing_exception_handler );
+
+    /**
      * Runs the algorithm using the specified \a parameters. Algorithms should implement
      * their custom processing logic here.
      *
-     * The \a context argument specifies the context in which the algorithm is being run.
+     * The \a context argument gives a temporary context with thread affinity matching the thread
+     * in which the algorithm is being run. This is a cut-back copy of the context passed to
+     * the prepareAlgorithm() and postProcessAlgorithm() steps, but it is generally safe
+     * for most algorithms to utilize this context for loading layers and creating sinks.
+     * Any loaded layers or sinks created within this temporary context will be transferred
+     * back to the main execution context upon successful completion of the processAlgorithm()
+     * step.
      *
      * Algorithm progress should be reported using the supplied \a feedback object. Additionally,
      * well-behaved algorithms should periodically check \a feedback to determine whether the
      * algorithm should be canceled and exited early.
      *
+     * This method will not be called if the prepareAlgorithm() step failed (returned false).
+     *
+     * c++ implementations of processAlgorithm can throw the QgsProcessingException exception
+     * to indicate that a fatal error occurred within the execution. Python based subclasses
+     * should raise GeoAlgorithmExecutionException for the same purpose.
+     *
      * \returns A map of algorithm outputs. These may be output layer references, or calculated
-     * values such as statistical calculations.
+     * values such as statistical calculations. Unless the algorithm subclass overrides
+     * the postProcessAlgorithm() step this returned map will be used as the output for the
+     * algorithm.
+     *
+     * \see prepareAlgorithm()
+     * \see postProcessAlgorithm()
      */
-    virtual QVariantMap processAlgorithm( const QVariantMap &parameters,
-                                          QgsProcessingContext &context, QgsProcessingFeedback *feedback ) const = 0 SIP_VIRTUALERRORHANDLER( processing_exception_handler );
+    virtual QVariantMap processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) = 0 SIP_VIRTUALERRORHANDLER( processing_exception_handler );
+
+    /**
+     * Allows the algorithm to perform any required cleanup tasks. The returned variant map
+     * includes the results evaluated by the algorithm. These may be output layer references, or calculated
+     * values such as statistical calculations.
+     *
+     * The \a context argument specifies the context in which the algorithm was run.
+     *
+     * Postprocess progress should be reported using the supplied \a feedback object. Additionally,
+     * well-behaved algorithms should periodically check \a feedback to determine whether the
+     * post processing should be canceled and exited early.
+     *
+     * postProcessAlgorithm should be used to handle any thread-sensitive cleanup which is required
+     * by the algorithm. It will always be called from the same thread that \a context has thread
+     * affinity with. While this will generally be the main thread, it is not guaranteed. For instance,
+     * algorithms which are run as a step in a larger model or as a subcomponent of a script-based algorithm
+     * will call postProcessAlgorithm from the same thread as that model/script it being executed in.
+     *
+     * postProcessAlgorithm will not be called if the prepareAlgorithm() step failed (returned false),
+     * or if an exception was raised by the processAlgorithm() step.
+     *
+     * \returns A map of algorithm outputs. These may be output layer references, or calculated
+     * values such as statistical calculations. Implementations which return a non-empty
+     * map will override any results returned by processAlgorithm().
+     *
+     * \see prepareAlgorithm()
+     * \see processAlgorithm()
+     */
+    virtual QVariantMap postProcessAlgorithm( QgsProcessingContext &context, QgsProcessingFeedback *feedback ) SIP_VIRTUALERRORHANDLER( processing_exception_handler );
 
     /**
      * Evaluates the parameter with matching \a name to a static string value.
@@ -454,6 +577,10 @@ class CORE_EXPORT QgsProcessingAlgorithm
     QgsProcessingProvider *mProvider = nullptr;
     QgsProcessingParameterDefinitions mParameters;
     QgsProcessingOutputDefinitions mOutputs;
+    bool mHasPrepared = false;
+    bool mHasExecuted = false;
+    bool mHasPostProcessed = false;
+    std::unique_ptr< QgsProcessingContext > mLocalContext;
 
     // friend class to access setProvider() - we do not want this public!
     friend class QgsProcessingProvider;

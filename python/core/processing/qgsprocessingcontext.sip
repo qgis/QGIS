@@ -38,6 +38,12 @@ class QgsProcessingContext
 %End
 
 
+    void copyThreadSafeSettings( const QgsProcessingContext &other );
+%Docstring
+ Copies all settings which are safe for use across different threads from
+ ``other`` to this context.
+%End
+
     QgsProcessingContext::Flags flags() const;
 %Docstring
  Returns any flags set in the context.
@@ -126,7 +132,6 @@ Destination project
 .. seealso:: layersToLoadOnCompletion()
 %End
 
-
     QgsFeatureRequest::InvalidGeometryCheck invalidGeometryCheck() const;
 %Docstring
  Returns the behavior used for checking invalid geometries in input layers.
@@ -214,6 +219,39 @@ Destination project
  and no errors will occur if feedback is deleted before the context.
  Ownership of ``feedback`` is not transferred.
 .. seealso:: setFeedback()
+%End
+
+    QThread *thread();
+%Docstring
+ Returns the thread in which the context lives.
+.. seealso:: pushToThread()
+ :rtype: QThread
+%End
+
+    void pushToThread( QThread *thread );
+%Docstring
+ Pushes the thread affinity for the context (including all layers contained in the temporaryLayerStore()) into
+ another ``thread``. This method is only safe to call when the current thread matches the existing thread
+ affinity for the context (see thread()).
+.. seealso:: thread()
+%End
+
+    void takeResultsFrom( QgsProcessingContext &context );
+%Docstring
+ Takes the results from another ``context`` and merges them with the results currently
+ stored in this context. This includes settings like any layers loaded in the temporaryLayerStore()
+ and layersToLoadOnCompletion().
+ This is only safe to call when both this context and the other ``context`` share the same
+ thread() affinity, and that thread is the current thread.
+%End
+
+    QgsMapLayer *takeResultLayer( const QString &id ) /TransferBack/;
+%Docstring
+ Takes the result map layer with matching ``id`` from the context and
+ transfers ownership of it back to the caller. This method can be used
+ to remove temporary layers which are not required for further processing
+ from a context.
+ :rtype: QgsMapLayer
 %End
 
   private:

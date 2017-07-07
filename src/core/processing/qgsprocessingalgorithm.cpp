@@ -260,6 +260,16 @@ bool QgsProcessingAlgorithm::addOutput( QgsProcessingOutputDefinition *definitio
   return true;
 }
 
+bool QgsProcessingAlgorithm::prepareAlgorithm( const QVariantMap &, QgsProcessingContext &, QgsProcessingFeedback * )
+{
+  return true;
+}
+
+QVariantMap QgsProcessingAlgorithm::postProcessAlgorithm( QgsProcessingContext &, QgsProcessingFeedback * )
+{
+  return QVariantMap();
+}
+
 const QgsProcessingParameterDefinition *QgsProcessingAlgorithm::parameterDefinition( const QString &name ) const
 {
   Q_FOREACH ( const QgsProcessingParameterDefinition *def, mParameters )
@@ -316,22 +326,136 @@ bool QgsProcessingAlgorithm::hasHtmlOutputs() const
 
 QVariantMap QgsProcessingAlgorithm::run( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback, bool *ok ) const
 {
+  std::unique_ptr< QgsProcessingAlgorithm > alg( create() );
   if ( ok )
     *ok = false;
 
-  QVariantMap results;
+  bool res = alg->prepare( parameters, context, feedback );
+  if ( !res )
+    return QVariantMap();
+
+  QVariantMap runRes;
   try
   {
-    results = processAlgorithm( parameters, context, feedback );
-    if ( ok )
-      *ok = true;
+    runRes = alg->runPrepared( parameters, context, feedback );
   }
   catch ( QgsProcessingException &e )
   {
     QgsMessageLog::logMessage( e.what(), QObject::tr( "Processing" ), QgsMessageLog::CRITICAL );
     feedback->reportError( e.what() );
+    return QVariantMap();
   }
-  return results;
+
+  if ( ok )
+    *ok = true;
+
+  QVariantMap ppRes = alg->postProcess( context, feedback );
+  if ( !ppRes.isEmpty() )
+    return ppRes;
+  else
+    return runRes;
+}
+
+bool QgsProcessingAlgorithm::prepare( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
+{
+  Q_ASSERT_X( QThread::currentThread() == context.temporaryLayerStore()->thread(), "QgsProcessingAlgorithm::prepare", "prepare() must be called from the same thread as context was created in" );
+  Q_ASSERT_X( !mHasPrepared, "QgsProcessingAlgorithm::prepare", "prepare() has already been called for the algorithm instance" );
+  try
+  {
+    mHasPrepared = prepareAlgorithm( parameters, context, feedback );
+    return mHasPrepared;
+  }
+  catch ( QgsProcessingException &e )
+  {
+    QgsMessageLog::logMessage( e.what(), QObject::tr( "Processing" ), QgsMessageLog::CRITICAL );
+    feedback->reportError( e.what() );
+    return false;
+  }
+}
+
+QVariantMap QgsProcessingAlgorithm::runPrepared( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
+{
+  Q_ASSERT_X( mHasPrepared, "QgsProcessingAlgorithm::runPrepared", QString( "prepare() was not called for the algorithm instance %1" ).arg( name() ).toLatin1() );
+  Q_ASSERT_X( !mHasExecuted, "QgsProcessingAlgorithm::runPrepared", "runPrepared() was already called for this algorithm instance" );
+
+  // Hey kids, let's all be thread safe! It's the fun thing to do!
+  //
+  // First, let's see if we're going to run into issues.
+  QgsProcessingContext *runContext = nullptr;
+  if ( context.thread() == QThread::currentThread() )
+  {
+    // OH. No issues. Seems you're running everything in the same thread, so go about your business. Sorry about
+    // the intrusion, we're just making sure everything's nice and safe here. We like to keep a clean and tidy neighbourhood,
+    // you know, for the kids and dogs and all.
+    runContext = &context;
+  }
+  else
+  {
+    // HA! I knew things looked a bit suspicious - seems you're running this algorithm in a different thread
+    // from that which the passed context has an affinity for. That's fine and all, but we need to make sure
+    // we proceed safely...
+
+    // So first we create a temporary local context with affinity for the current thread
+    mLocalContext.reset( new QgsProcessingContext() );
+    // copy across everything we can safely do from the passed context
+    mLocalContext->copyThreadSafeSettings( context );
+    // and we'll run the actual algorithm processing using the local thread safe context
+    runContext = mLocalContext.get();
+  }
+
+  try
+  {
+    QVariantMap runResults = processAlgorithm( parameters, *runContext, feedback );
+
+    mHasExecuted = true;
+    if ( mLocalContext )
+    {
+      // ok, time to clean things up. We need to push the temporary context back into
+      // the thread that the passed context is associated with (we can only push from the
+      // current thread, so we HAVE to do this here)
+      mLocalContext->pushToThread( context.thread() );
+    }
+    return runResults;
+  }
+  catch ( QgsProcessingException & )
+  {
+    if ( mLocalContext )
+    {
+      // see above!
+      mLocalContext->pushToThread( context.thread() );
+    }
+    //rethrow
+    throw;
+  }
+}
+
+QVariantMap QgsProcessingAlgorithm::postProcess( QgsProcessingContext &context, QgsProcessingFeedback *feedback )
+{
+  Q_ASSERT_X( QThread::currentThread() == context.temporaryLayerStore()->thread(), "QgsProcessingAlgorithm::postProcess", "postProcess() must be called from the same thread the context was created in" );
+  Q_ASSERT_X( mHasExecuted, "QgsProcessingAlgorithm::postProcess", QString( "algorithm instance %1 was not executed" ).arg( name() ).toLatin1() );
+  Q_ASSERT_X( !mHasPostProcessed, "QgsProcessingAlgorithm::postProcess", "postProcess() was already called for this algorithm instance" );
+
+  if ( mLocalContext )
+  {
+    // algorithm was processed using a temporary thread safe context. So now we need
+    // to take the results from that temporary context, and smash them into the passed
+    // context
+    context.takeResultsFrom( *mLocalContext );
+    // now get lost, we don't need you anymore
+    mLocalContext.reset();
+  }
+
+  mHasPostProcessed = true;
+  try
+  {
+    return postProcessAlgorithm( context, feedback );
+  }
+  catch ( QgsProcessingException &e )
+  {
+    QgsMessageLog::logMessage( e.what(), QObject::tr( "Processing" ), QgsMessageLog::CRITICAL );
+    feedback->reportError( e.what() );
+    return QVariantMap();
+  }
 }
 
 QString QgsProcessingAlgorithm::parameterAsString( const QVariantMap &parameters, const QString &name, const QgsProcessingContext &context ) const

@@ -53,11 +53,11 @@ class ANALYSIS_EXPORT QgsGeometrySnapper : public QObject
     };
 
     /**
-     * Constructor for QgsGeometrySnapper. A reference layer which contains geometries to snap to must be
+     * Constructor for QgsGeometrySnapper. A reference feature source which contains geometries to snap to must be
      * set. It is assumed that all geometries snapped using this object will have the
-     * same CRS as the reference layer (ie, no reprojection is performed).
+     * same CRS as the reference source (ie, no reprojection is performed).
      */
-    QgsGeometrySnapper( QgsVectorLayer *referenceLayer );
+    QgsGeometrySnapper( QgsFeatureSource *referenceSource );
 
     /**
      * Snaps a geometry to the reference layer and returns the result. The geometry must be in the same
@@ -99,7 +99,7 @@ class ANALYSIS_EXPORT QgsGeometrySnapper : public QObject
 
     enum PointFlag { SnappedToRefNode, SnappedToRefSegment, Unsnapped };
 
-    QgsVectorLayer *mReferenceLayer = nullptr;
+    QgsFeatureSource *mReferenceSource = nullptr;
     QgsFeatureList mInputFeatures;
 
     QgsSpatialIndex mIndex;

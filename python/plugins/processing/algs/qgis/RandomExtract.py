@@ -28,9 +28,7 @@ __revision__ = '$Format:%H$'
 
 import random
 
-from qgis.core import (QgsApplication,
-                       QgsFeatureSink,
-                       QgsProcessingUtils,
+from qgis.core import (QgsFeatureSink,
                        QgsProcessingParameterFeatureSource,
                        QgsProcessingParameterEnum,
                        QgsProcessingParameterNumber,
@@ -38,7 +36,6 @@ from qgis.core import (QgsApplication,
                        QgsProcessingOutputVectorLayer)
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
-from processing.core.outputs import OutputVector
 
 
 class RandomExtract(QgisAlgorithm):

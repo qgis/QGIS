@@ -42,10 +42,10 @@ class DummyAlgorithm : public QgsProcessingAlgorithm
 
     QString name() const override { return mName; }
     QString displayName() const override { return mName; }
-    virtual QVariantMap processAlgorithm( const QVariantMap &,
-                                          QgsProcessingContext &, QgsProcessingFeedback * ) const override { return QVariantMap(); }
+    QVariantMap processAlgorithm( const QVariantMap &, QgsProcessingContext &, QgsProcessingFeedback * ) override { return QVariantMap(); }
 
     virtual Flags flags() const override { return mFlags; }
+    DummyAlgorithm *create() const override { return new DummyAlgorithm( name() ); }
 
     QString mName;
 
@@ -581,6 +581,19 @@ void TestQgsProcessing::context()
   context.setInvalidGeometryCheck( QgsFeatureRequest::GeometrySkipInvalid );
   QCOMPARE( context.invalidGeometryCheck(), QgsFeatureRequest::GeometrySkipInvalid );
 
+  QgsVectorLayer *vector = new QgsVectorLayer( "Polygon", "vector", "memory" );
+  context.temporaryLayerStore()->addMapLayer( vector );
+  QCOMPARE( context.temporaryLayerStore()->mapLayer( vector->id() ), vector );
+
+  QgsProcessingContext context2;
+  context2.copyThreadSafeSettings( context );
+  QCOMPARE( context2.defaultEncoding(), context.defaultEncoding() );
+  QCOMPARE( context2.invalidGeometryCheck(), context.invalidGeometryCheck() );
+  QCOMPARE( context2.flags(), context.flags() );
+  QCOMPARE( context2.project(), context.project() );
+  // layers from temporaryLayerStore must not be copied by copyThreadSafeSettings
+  QVERIFY( context2.temporaryLayerStore()->mapLayers().isEmpty() );
+
   // layers to load on completion
   QgsVectorLayer *v1 = new QgsVectorLayer( "Polygon", "V1", "memory" );
   QgsVectorLayer *v2 = new QgsVectorLayer( "Polygon", "V2", "memory" );
@@ -597,6 +610,11 @@ void TestQgsProcessing::context()
   QCOMPARE( context.layersToLoadOnCompletion().values().at( 0 ).name, QStringLiteral( "v1" ) );
   QCOMPARE( context.layersToLoadOnCompletion().keys().at( 1 ), v2->id() );
   QCOMPARE( context.layersToLoadOnCompletion().values().at( 1 ).name, QStringLiteral( "v2" ) );
+
+  // ensure that copyThreadSafeSettings doesn't copy layersToLoadOnCompletion()
+  context2.copyThreadSafeSettings( context );
+  QVERIFY( context2.layersToLoadOnCompletion().isEmpty() );
+
   layers.clear();
   layers.insert( v2->id(), QgsProcessingContext::LayerDetails( QStringLiteral( "v2" ), &p ) );
   context.setLayersToLoadOnCompletion( layers );
@@ -607,8 +625,33 @@ void TestQgsProcessing::context()
   QCOMPARE( context.layersToLoadOnCompletion().count(), 2 );
   QCOMPARE( context.layersToLoadOnCompletion().keys().at( 0 ), v1->id() );
   QCOMPARE( context.layersToLoadOnCompletion().keys().at( 1 ), v2->id() );
+
+  context.temporaryLayerStore()->addMapLayer( v1 );
+  context.temporaryLayerStore()->addMapLayer( v2 );
+
+  // test takeResultsFrom
+  context2.takeResultsFrom( context );
+  QVERIFY( context.temporaryLayerStore()->mapLayers().isEmpty() );
+  QVERIFY( context.layersToLoadOnCompletion().isEmpty() );
+  // should now be in context2
+  QCOMPARE( context2.temporaryLayerStore()->mapLayer( v1->id() ), v1 );
+  QCOMPARE( context2.temporaryLayerStore()->mapLayer( v2->id() ), v2 );
+  QCOMPARE( context2.layersToLoadOnCompletion().count(), 2 );
+  QCOMPARE( context2.layersToLoadOnCompletion().keys().at( 0 ), v1->id() );
+  QCOMPARE( context2.layersToLoadOnCompletion().keys().at( 1 ), v2->id() );
+
+  // take result layer
+  QgsMapLayer *result = context2.takeResultLayer( v1->id() );
+  QCOMPARE( result, v1 );
+  QString id = v1->id();
   delete v1;
+  QVERIFY( !context2.temporaryLayerStore()->mapLayer( id ) );
+  QVERIFY( !context2.takeResultLayer( v1->id() ) );
+  result = context2.takeResultLayer( v2->id() );
+  QCOMPARE( result, v2 );
+  id = v2->id();
   delete v2;
+  QVERIFY( !context2.temporaryLayerStore()->mapLayer( id ) );
 }
 
 void TestQgsProcessing::mapLayers()
@@ -902,6 +945,10 @@ void TestQgsProcessing::features()
   ids = getIds( source->getFeatures() );
   QVERIFY( !encountered );
 
+  // equality operator
+  QVERIFY( QgsProcessingFeatureSourceDefinition( layer->id(), true ) == QgsProcessingFeatureSourceDefinition( layer->id(), true ) );
+  QVERIFY( QgsProcessingFeatureSourceDefinition( layer->id(), true ) != QgsProcessingFeatureSourceDefinition( "b", true ) );
+  QVERIFY( QgsProcessingFeatureSourceDefinition( layer->id(), true ) != QgsProcessingFeatureSourceDefinition( layer->id(), false ) );
 }
 
 void TestQgsProcessing::uniqueValues()
@@ -4608,7 +4655,7 @@ void TestQgsProcessing::modelerAlgorithm()
   QMap<QString, QgsProcessingModelAlgorithm::ModelOutput> alg7c1outputs;
   QgsProcessingModelAlgorithm::ModelOutput alg7c1out1( QStringLiteral( "my_output" ) );
   alg7c1out1.setChildId( "cx1" );
-  alg7c1out1.setChildOutputName( "OUTPUT_LAYER" );
+  alg7c1out1.setChildOutputName( "OUTPUT" );
   alg7c1out1.setDescription( QStringLiteral( "my output" ) );
   alg7c1outputs.insert( QStringLiteral( "my_output" ), alg7c1out1 );
   alg7c1.setModelOutputs( alg7c1outputs );
@@ -4628,7 +4675,7 @@ void TestQgsProcessing::modelerAlgorithm()
   QMap<QString, QgsProcessingModelAlgorithm::ModelOutput> alg7c2outputs;
   QgsProcessingModelAlgorithm::ModelOutput alg7c2out1( QStringLiteral( "my_output2" ) );
   alg7c2out1.setChildId( "cx2" );
-  alg7c2out1.setChildOutputName( "OUTPUT_LAYER" );
+  alg7c2out1.setChildOutputName( "OUTPUT" );
   alg7c2out1.setDescription( QStringLiteral( "my output2" ) );
   alg7c2outputs.insert( QStringLiteral( "my_output2" ), alg7c2out1 );
   alg7c2.setModelOutputs( alg7c2outputs );
@@ -4698,7 +4745,7 @@ void TestQgsProcessing::modelExecution()
   alg2c1.addParameterSources( "DISSOLVE", QgsProcessingModelAlgorithm::ChildParameterSources() << QgsProcessingModelAlgorithm::ChildParameterSource::fromStaticValue( false ) );
   QMap<QString, QgsProcessingModelAlgorithm::ModelOutput> outputs1;
   QgsProcessingModelAlgorithm::ModelOutput out1( "MODEL_OUT_LAYER" );
-  out1.setChildOutputName( "OUTPUT_LAYER" );
+  out1.setChildOutputName( "OUTPUT" );
   outputs1.insert( QStringLiteral( "MODEL_OUT_LAYER" ), out1 );
   alg2c1.setModelOutputs( outputs1 );
   model2.addChildAlgorithm( alg2c1 );
@@ -4718,29 +4765,29 @@ void TestQgsProcessing::modelExecution()
   QCOMPARE( params.value( "END_CAP_STYLE" ).toInt(), 1 );
   QCOMPARE( params.value( "JOIN_STYLE" ).toInt(), 2 );
   QCOMPARE( params.value( "INPUT" ).toString(), QStringLiteral( "my_layer_id" ) );
-  QCOMPARE( params.value( "OUTPUT_LAYER" ).toString(), QStringLiteral( "dest.shp" ) );
+  QCOMPARE( params.value( "OUTPUT" ).toString(), QStringLiteral( "dest.shp" ) );
   QCOMPARE( params.count(), 7 );
 
   QVariantMap results;
-  results.insert( "OUTPUT_LAYER", QStringLiteral( "dest.shp" ) );
+  results.insert( "OUTPUT", QStringLiteral( "dest.shp" ) );
   childResults.insert( "cx1", results );
 
   // a child who uses an output from another alg as a parameter value
   QgsProcessingModelAlgorithm::ChildAlgorithm alg2c2;
   alg2c2.setChildId( "cx2" );
   alg2c2.setAlgorithmId( "native:centroids" );
-  alg2c2.addParameterSources( "INPUT", QgsProcessingModelAlgorithm::ChildParameterSources() << QgsProcessingModelAlgorithm::ChildParameterSource::fromChildOutput( "cx1", "OUTPUT_LAYER" ) );
+  alg2c2.addParameterSources( "INPUT", QgsProcessingModelAlgorithm::ChildParameterSources() << QgsProcessingModelAlgorithm::ChildParameterSource::fromChildOutput( "cx1", "OUTPUT" ) );
   model2.addChildAlgorithm( alg2c2 );
   params = model2.parametersForChildAlgorithm( model2.childAlgorithm( "cx2" ), modelInputs, childResults );
   QCOMPARE( params.value( "INPUT" ).toString(), QStringLiteral( "dest.shp" ) );
-  QCOMPARE( params.value( "OUTPUT_LAYER" ).toString(), QStringLiteral( "memory:" ) );
+  QCOMPARE( params.value( "OUTPUT" ).toString(), QStringLiteral( "memory:" ) );
   QCOMPARE( params.count(), 2 );
 
   // a child with an optional output
   QgsProcessingModelAlgorithm::ChildAlgorithm alg2c3;
   alg2c3.setChildId( "cx3" );
   alg2c3.setAlgorithmId( "native:extractbyexpression" );
-  alg2c3.addParameterSources( "INPUT", QgsProcessingModelAlgorithm::ChildParameterSources() << QgsProcessingModelAlgorithm::ChildParameterSource::fromChildOutput( "cx1", "OUTPUT_LAYER" ) );
+  alg2c3.addParameterSources( "INPUT", QgsProcessingModelAlgorithm::ChildParameterSources() << QgsProcessingModelAlgorithm::ChildParameterSource::fromChildOutput( "cx1", "OUTPUT" ) );
   alg2c3.addParameterSources( "EXPRESSION", QgsProcessingModelAlgorithm::ChildParameterSources() << QgsProcessingModelAlgorithm::ChildParameterSource::fromStaticValue( "true" ) );
   alg2c3.addParameterSources( "OUTPUT", QgsProcessingModelAlgorithm::ChildParameterSources() << QgsProcessingModelAlgorithm::ChildParameterSource::fromModelParameter( "MY_OUT" ) );
   alg2c3.setDependencies( QStringList() << "cx2" );
@@ -4768,9 +4815,9 @@ void TestQgsProcessing::modelExecution()
                               "##my_out=output outputVector\n"
                               "results={}\n"
                               "outputs['cx1']=processing.run('native:buffer', {'DISSOLVE':false,'DISTANCE':parameters['DIST'],'END_CAP_STYLE':1,'INPUT':parameters['SOURCE_LAYER'],'JOIN_STYLE':2,'SEGMENTS':16}, context=context, feedback=feedback)\n"
-                              "results['MODEL_OUT_LAYER']=outputs['cx1']['OUTPUT_LAYER']\n"
-                              "outputs['cx2']=processing.run('native:centroids', {'INPUT':outputs['cx1']['OUTPUT_LAYER']}, context=context, feedback=feedback)\n"
-                              "outputs['cx3']=processing.run('native:extractbyexpression', {'EXPRESSION':true,'INPUT':outputs['cx1']['OUTPUT_LAYER'],'OUTPUT':parameters['MY_OUT']}, context=context, feedback=feedback)\n"
+                              "results['MODEL_OUT_LAYER']=outputs['cx1']['OUTPUT']\n"
+                              "outputs['cx2']=processing.run('native:centroids', {'INPUT':outputs['cx1']['OUTPUT']}, context=context, feedback=feedback)\n"
+                              "outputs['cx3']=processing.run('native:extractbyexpression', {'EXPRESSION':true,'INPUT':outputs['cx1']['OUTPUT'],'OUTPUT':parameters['MY_OUT']}, context=context, feedback=feedback)\n"
                               "results['MY_OUT']=outputs['cx3']['OUTPUT']\n"
                               "return results" ).split( '\n' );
   QCOMPARE( actualParts, expectedParts );

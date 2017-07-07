@@ -588,6 +588,8 @@ Copies are protected to avoid slicing
 
     virtual QString asPythonCommand( const QVariantMap &parameters, QgsProcessingContext &context ) const;
 
+    virtual QgsProcessingModelAlgorithm *create() const /Factory/;
+
 
     void setName( const QString &name );
 %Docstring
@@ -833,8 +835,8 @@ Copies are protected to avoid slicing
 
   protected:
 
-     virtual QVariantMap processAlgorithm( const QVariantMap &parameters,
-                                  QgsProcessingContext &context, QgsProcessingFeedback *feedback ) const;
+    virtual QVariantMap processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback );
+
 
 };
 

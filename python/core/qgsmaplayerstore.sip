@@ -208,6 +208,13 @@ class QgsMapLayerStore : QObject
 .. seealso:: removeMapLayers()
 %End
 
+    void transferLayersFromStore( QgsMapLayerStore *other );
+%Docstring
+ Transfers all the map layers contained within another map layer store and adds
+ them to this store.
+ Note that ``other`` and this store must have the same thread affinity.
+%End
+
   signals:
 
     void layersWillBeRemoved( const QStringList &layerIds );

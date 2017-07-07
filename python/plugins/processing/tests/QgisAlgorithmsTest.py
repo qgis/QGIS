@@ -48,6 +48,9 @@ class TestAlg(QgsProcessingAlgorithm):
     def displayName(self):
         return 'testalg'
 
+    def create(self):
+        return TestAlg()
+
     def processAlgorithm(self, parameters, context, feedback):
         raise GeoAlgorithmExecutionException('Exception while processing')
         return {}
@@ -61,6 +64,8 @@ class TestQgisAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsTest):
         from processing.core.Processing import Processing
         Processing.initialize()
         cls.cleanup_paths = []
+        cls.in_place_layers = {}
+        cls.vector_layer_params = {}
 
     @classmethod
     def tearDownClass(cls):

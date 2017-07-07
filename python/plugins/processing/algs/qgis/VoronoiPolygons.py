@@ -30,14 +30,21 @@ import os
 
 from qgis.PyQt.QtGui import QIcon
 
-from qgis.core import QgsFeatureRequest, QgsFeatureSink, QgsFeature, QgsGeometry, QgsPointXY, QgsWkbTypes, QgsProcessingUtils
+from qgis.core import (QgsFeatureRequest,
+                       QgsFeatureSink,
+                       QgsFeature,
+                       QgsGeometry,
+                       QgsPointXY,
+                       QgsWkbTypes,
+                       QgsProcessingUtils,
+                       QgsProcessingParameterFeatureSource,
+                       QgsProcessingParameterDefinition,
+                       QgsProcessingParameterFeatureSink,
+                       QgsProcessingOutputVectorLayer,
+                       QgsProcessingParameterNumber)
 
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
-from processing.core.parameters import ParameterVector
-from processing.core.parameters import ParameterNumber
-from processing.core.outputs import OutputVector
-from processing.tools import dataobjects
 
 from . import voronoi
 
@@ -58,12 +65,13 @@ class VoronoiPolygons(QgisAlgorithm):
 
     def __init__(self):
         super().__init__()
-        self.addParameter(ParameterVector(self.INPUT,
-                                          self.tr('Input layer'), [dataobjects.TYPE_VECTOR_POINT]))
-        self.addParameter(ParameterNumber(self.BUFFER,
-                                          self.tr('Buffer region'), 0.0, 100.0, 0.0))
 
-        self.addOutput(OutputVector(self.OUTPUT, self.tr('Voronoi polygons'), datatype=[dataobjects.TYPE_VECTOR_POLYGON]))
+        self.addParameter(QgsProcessingParameterFeatureSource(self.INPUT, self.tr('Input layer'), [QgsProcessingParameterDefinition.TypeVectorPoint]))
+        self.addParameter(QgsProcessingParameterNumber(self.BUFFER, self.tr('Buffer region'), type=QgsProcessingParameterNumber.Double,
+                                                       minValue=0.0, maxValue=9999999999, defaultValue=0.0))
+
+        self.addParameter(QgsProcessingParameterFeatureSink(self.OUTPUT, self.tr('Voronoi polygons'), type=QgsProcessingParameterDefinition.TypeVectorPolygon))
+        self.addOutput(QgsProcessingOutputVectorLayer(self.OUTPUT, self.tr("Voronoi polygons"), type=QgsProcessingParameterDefinition.TypeVectorPolygon))
 
     def name(self):
         return 'voronoipolygons'
@@ -72,15 +80,13 @@ class VoronoiPolygons(QgisAlgorithm):
         return self.tr('Voronoi polygons')
 
     def processAlgorithm(self, parameters, context, feedback):
-        layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT), context)
-
-        buf = self.getParameterValue(self.BUFFER)
-
-        writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(layer.fields(), QgsWkbTypes.Polygon,
-                                                                     layer.crs(), context)
+        source = self.parameterAsSource(parameters, self.INPUT, context)
+        buf = self.parameterAsDouble(parameters, self.BUFFER, context)
+        (sink, dest_id) = self.parameterAsSink(parameters, self.OUTPUT, context,
+                                               source.fields(), QgsWkbTypes.Polygon, source.sourceCrs())
 
         outFeat = QgsFeature()
-        extent = layer.extent()
+        extent = source.sourceExtent()
         extraX = extent.height() * (buf / 100.0)
         extraY = extent.width() * (buf / 100.0)
         height = extent.height()
@@ -90,9 +96,11 @@ class VoronoiPolygons(QgisAlgorithm):
         ptDict = {}
         ptNdx = -1
 
-        features = QgsProcessingUtils.getFeatures(layer, context)
-        total = 100.0 / layer.featureCount() if layer.featureCount() else 0
+        features = source.getFeatures()
+        total = 100.0 / source.featureCount() if source.featureCount() else 0
         for current, inFeat in enumerate(features):
+            if feedback.isCanceled():
+                break
             geom = inFeat.geometry()
             point = geom.asPoint()
             x = point.x() - extent.xMinimum()
@@ -122,20 +130,23 @@ class VoronoiPolygons(QgisAlgorithm):
         total = 100.0 / len(c.polygons)
 
         for (site, edges) in list(c.polygons.items()):
+            if feedback.isCanceled():
+                break
+
             request = QgsFeatureRequest().setFilterFid(ptDict[ids[site]])
-            inFeat = next(layer.getFeatures(request))
+            inFeat = next(source.getFeatures(request))
             lines = self.clip_voronoi(edges, c, width, height, extent, extraX, extraY)
 
             geom = QgsGeometry.fromMultiPoint(lines)
             geom = QgsGeometry(geom.convexHull())
             outFeat.setGeometry(geom)
             outFeat.setAttributes(inFeat.attributes())
-            writer.addFeature(outFeat, QgsFeatureSink.FastInsert)
+            sink.addFeature(outFeat, QgsFeatureSink.FastInsert)
 
             current += 1
             feedback.setProgress(int(current * total))
 
-        del writer
+        return {self.OUTPUT: dest_id}
 
     def clip_voronoi(self, edges, c, width, height, extent, exX, exY):
         """Clip voronoi function based on code written for Inkscape.

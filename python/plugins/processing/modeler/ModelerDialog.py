@@ -237,9 +237,10 @@ class ModelerDialog(BASE, WIDGET):
         self.mActionRun.triggered.connect(self.runModel)
 
         if model is not None:
-            self.model = model
-            self.textGroup.setText(model.group())
-            self.textName.setText(model.displayName())
+            self.model = model.create()
+            self.model.setSourceFilePath(model.sourceFilePath())
+            self.textGroup.setText(self.model.group())
+            self.textName.setText(self.model.displayName())
             self.repaintModel()
 
         else:
@@ -440,7 +441,7 @@ class ModelerDialog(BASE, WIDGET):
             return
         self.model.setName(str(self.textName.text()))
         self.model.setGroup(str(self.textGroup.text()))
-        if self.model.sourceFilePath() is not None and not saveAs:
+        if self.model.sourceFilePath() and not saveAs:
             filename = self.model.sourceFilePath()
         else:
             filename, filter = QFileDialog.getSaveFileName(self,

@@ -472,7 +472,7 @@ bool QgsProcessingModelAlgorithm::childOutputIsRequired( const QString &childId,
   return false;
 }
 
-QVariantMap QgsProcessingModelAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) const
+QVariantMap QgsProcessingModelAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
   QSet< QString > toExecute;
   QMap< QString, ChildAlgorithm >::const_iterator childIt = mChildAlgorithms.constBegin();
@@ -524,7 +524,9 @@ QVariantMap QgsProcessingModelAlgorithm::processAlgorithm( const QVariantMap &pa
       childTime.start();
 
       bool ok = false;
-      QVariantMap results = child.algorithm()->run( childParams, context, feedback, &ok );
+      std::unique_ptr< QgsProcessingAlgorithm > childAlg( child.algorithm()->create() );
+      QVariantMap results = childAlg->run( childParams, context, feedback, &ok );
+      childAlg.reset( nullptr );
       if ( !ok )
       {
         QString error = QObject::tr( "Error encountered while running %1" ).arg( child.description() );
@@ -548,7 +550,8 @@ QVariantMap QgsProcessingModelAlgorithm::processAlgorithm( const QVariantMap &pa
   }
   feedback->pushDebugInfo( QObject::tr( "Model processed OK. Executed %1 algorithms total in %2 s." ).arg( executed.count() ).arg( totalTime.elapsed() / 1000.0 ) );
 
-  return finalResults;
+  mResults = finalResults;
+  return mResults;
 }
 
 QString QgsProcessingModelAlgorithm::sourceFilePath() const
@@ -1101,6 +1104,13 @@ QString QgsProcessingModelAlgorithm::asPythonCommand( const QVariantMap &paramet
   return QgsProcessingAlgorithm::asPythonCommand( parameters, context );
 }
 
+QgsProcessingModelAlgorithm *QgsProcessingModelAlgorithm::create() const
+{
+  QgsProcessingModelAlgorithm *alg = new QgsProcessingModelAlgorithm();
+  alg->loadVariant( toVariant() );
+  alg->setProvider( provider() );
+  return alg;
+}
 
 bool QgsProcessingModelAlgorithm::ChildParameterSource::operator==( const QgsProcessingModelAlgorithm::ChildParameterSource &other ) const
 {

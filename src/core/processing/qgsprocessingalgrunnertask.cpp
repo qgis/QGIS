@@ -22,13 +22,20 @@
 #include "qgsprocessingutils.h"
 #include "qgsvectorlayer.h"
 
-QgsProcessingAlgRunnerTask::QgsProcessingAlgRunnerTask( const QgsProcessingAlgorithm *algorithm, const QVariantMap &parameters, QgsProcessingContext &context )
+QgsProcessingAlgRunnerTask::QgsProcessingAlgRunnerTask( const QgsProcessingAlgorithm *algorithm, const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
   : QgsTask( tr( "Running %1" ).arg( algorithm->name() ), QgsTask::CanCancel )
-  , mAlgorithm( algorithm )
   , mParameters( parameters )
   , mContext( context )
+  , mFeedback( feedback )
+  , mAlgorithm( algorithm->create() )
 {
-  mFeedback.reset( new QgsProcessingFeedback() );
+  if ( !mFeedback )
+  {
+    mOwnedFeedback.reset( new QgsProcessingFeedback() );
+    mFeedback = mOwnedFeedback.get();
+  }
+  if ( !mAlgorithm->prepare( mParameters, context, mFeedback ) )
+    cancel();
 }
 
 void QgsProcessingAlgRunnerTask::cancel()
@@ -38,28 +45,29 @@ void QgsProcessingAlgRunnerTask::cancel()
 
 bool QgsProcessingAlgRunnerTask::run()
 {
-  connect( mFeedback.get(), &QgsFeedback::progressChanged, this, &QgsProcessingAlgRunnerTask::setProgress );
+  connect( mFeedback, &QgsFeedback::progressChanged, this, &QgsProcessingAlgRunnerTask::setProgress );
   bool ok = false;
   try
   {
-    mResults = mAlgorithm->run( mParameters, mContext, mFeedback.get(), &ok );
+    mResults = mAlgorithm->runPrepared( mParameters, mContext, mFeedback );
+    ok = true;
   }
-  catch ( QgsProcessingException & )
+  catch ( QgsProcessingException &e )
   {
+    QgsMessageLog::logMessage( e.what(), QObject::tr( "Processing" ), QgsMessageLog::CRITICAL );
+    mFeedback->reportError( e.what() );
     return false;
   }
-  return !mFeedback->isCanceled();
+  return ok && !mFeedback->isCanceled();
 }
 
 void QgsProcessingAlgRunnerTask::finished( bool result )
 {
   Q_UNUSED( result );
-  if ( !mResults.isEmpty() )
+  QVariantMap ppResults;
+  if ( result )
   {
-    QgsMapLayer *layer = QgsProcessingUtils::mapLayerFromString( mResults.value( "OUTPUT_LAYER" ).toString(), mContext );
-    if ( layer )
-    {
-      mContext.project()->addMapLayer( mContext.temporaryLayerStore()->takeMapLayer( layer ) );
-    }
+    ppResults = mAlgorithm->postProcess( mContext, mFeedback );
   }
+  emit executed( result, !ppResults.isEmpty() ? ppResults : mResults );
 }

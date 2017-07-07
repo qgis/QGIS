@@ -47,9 +47,9 @@ pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
 class Aspect(QgisAlgorithm):
 
-    INPUT_LAYER = 'INPUT_LAYER'
+    INPUT = 'INPUT'
     Z_FACTOR = 'Z_FACTOR'
-    OUTPUT_LAYER = 'OUTPUT_LAYER'
+    OUTPUT = 'OUTPUT'
 
     def icon(self):
         return QIcon(os.path.join(pluginPath, 'images', 'dem.png'))
@@ -60,13 +60,13 @@ class Aspect(QgisAlgorithm):
     def __init__(self):
         super().__init__()
 
-        self.addParameter(QgsProcessingParameterRasterLayer(self.INPUT_LAYER,
+        self.addParameter(QgsProcessingParameterRasterLayer(self.INPUT,
                                                             self.tr('Elevation layer')))
         self.addParameter(QgsProcessingParameterNumber(self.Z_FACTOR,
                                                        self.tr('Z factor'), QgsProcessingParameterNumber.Double,
                                                        1, False, 1, 999999.99))
-        self.addParameter(QgsProcessingParameterRasterOutput(self.OUTPUT_LAYER, self.tr('Aspect')))
-        self.addOutput(QgsProcessingOutputRasterLayer(self.OUTPUT_LAYER, self.tr('Aspect')))
+        self.addParameter(QgsProcessingParameterRasterOutput(self.OUTPUT, self.tr('Aspect')))
+        self.addOutput(QgsProcessingOutputRasterLayer(self.OUTPUT, self.tr('Aspect')))
 
     def name(self):
         return 'aspect'
@@ -75,10 +75,10 @@ class Aspect(QgisAlgorithm):
         return self.tr('Aspect')
 
     def processAlgorithm(self, parameters, context, feedback):
-        inputFile = exportRasterLayer(self.parameterAsRasterLayer(parameters, self.INPUT_LAYER, context))
+        inputFile = exportRasterLayer(self.parameterAsRasterLayer(parameters, self.INPUT, context))
         zFactor = self.parameterAsDouble(parameters, self.Z_FACTOR, context)
 
-        outputFile = self.parameterAsRasterOutputLayer(parameters, self.OUTPUT_LAYER, context)
+        outputFile = self.parameterAsRasterOutputLayer(parameters, self.OUTPUT, context)
 
         outputFormat = raster.formatShortNameFromFileName(outputFile)
 
@@ -86,4 +86,4 @@ class Aspect(QgisAlgorithm):
         aspect.setZFactor(zFactor)
         aspect.processRaster(feedback)
 
-        return {self.OUTPUT_LAYER: outputFile}
+        return {self.OUTPUT: outputFile}

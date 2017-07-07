@@ -31,7 +31,7 @@ import webbrowser
 import html
 
 from qgis.PyQt import uic
-from qgis.PyQt.QtCore import Qt, QCoreApplication, QByteArray, QUrl
+from qgis.PyQt.QtCore import pyqtSignal, Qt, QCoreApplication, QByteArray, QUrl
 from qgis.PyQt.QtWidgets import QApplication, QDialogButtonBox, QVBoxLayout, QToolButton
 
 from qgis.utils import iface
@@ -52,27 +52,34 @@ class AlgorithmDialogFeedback(QgsProcessingFeedback):
     Directs algorithm feedback to an algorithm dialog
     """
 
+    error = pyqtSignal(str)
+    progress_text = pyqtSignal(str)
+    info = pyqtSignal(str)
+    command_info = pyqtSignal(str)
+    debug_info = pyqtSignal(str)
+    console_info = pyqtSignal(str)
+
     def __init__(self, dialog):
         QgsProcessingFeedback.__init__(self)
         self.dialog = dialog
 
     def reportError(self, msg):
-        self.dialog.error(msg)
+        self.error.emit(msg)
 
     def setProgressText(self, text):
-        self.dialog.setText(text)
+        self.progress_text.emit(text)
 
     def pushInfo(self, msg):
-        self.dialog.setInfo(msg)
+        self.info.emit(msg)
 
     def pushCommandInfo(self, msg):
-        self.dialog.setCommand(msg)
+        self.command_info.emit(msg)
 
     def pushDebugInfo(self, msg):
-        self.dialog.setDebugInfo(msg)
+        self.debug_info.emit(msg)
 
     def pushConsoleInfo(self, msg):
-        self.dialog.setConsoleInfo(msg)
+        self.console_info.emit(msg)
 
 
 class AlgorithmDialogBase(BASE, WIDGET):
@@ -151,6 +158,13 @@ class AlgorithmDialogBase(BASE, WIDGET):
     def createFeedback(self):
         feedback = AlgorithmDialogFeedback(self)
         feedback.progressChanged.connect(self.setPercentage)
+        feedback.error.connect(self.error)
+        feedback.progress_text.connect(self.setText)
+        feedback.info.connect(self.setInfo)
+        feedback.command_info.connect(self.setCommand)
+        feedback.debug_info.connect(self.setDebugInfo)
+        feedback.console_info.connect(self.setConsoleInfo)
+
         self.buttonCancel.clicked.connect(feedback.cancel)
         return feedback
 
@@ -174,13 +188,11 @@ class AlgorithmDialogBase(BASE, WIDGET):
         QgsProject.instance().layersWillBeRemoved.connect(self.mainWidget.layerRegistryChanged)
 
     def error(self, msg):
-        QApplication.restoreOverrideCursor()
         self.setInfo(msg, True)
         self.resetGUI()
         self.tabWidget.setCurrentIndex(1)
 
     def resetGUI(self):
-        QApplication.restoreOverrideCursor()
         self.lblProgress.setText('')
         self.progressBar.setMaximum(100)
         self.progressBar.setValue(0)
@@ -194,33 +206,27 @@ class AlgorithmDialogBase(BASE, WIDGET):
             self.txtLog.append(html.escape(msg))
         else:
             self.txtLog.append(msg)
-        QCoreApplication.processEvents()
 
     def setCommand(self, cmd):
         if self.showDebug:
             self.txtLog.append('<code>{}<code>'.format(html.escape(cmd, quote=False)))
-        QCoreApplication.processEvents()
 
     def setDebugInfo(self, msg):
         if self.showDebug:
             self.txtLog.append('<span style="color:blue">{}</span>'.format(html.escape(msg, quote=False)))
-        QCoreApplication.processEvents()
 
     def setConsoleInfo(self, msg):
         if self.showDebug:
             self.txtLog.append('<code><span style="color:darkgray">{}</span></code>'.format(html.escape(msg, quote=False)))
-        QCoreApplication.processEvents()
 
     def setPercentage(self, value):
         if self.progressBar.maximum() == 0:
             self.progressBar.setMaximum(100)
         self.progressBar.setValue(value)
-        QCoreApplication.processEvents()
 
     def setText(self, text):
         self.lblProgress.setText(text)
         self.setInfo(text, False)
-        QCoreApplication.processEvents()
 
     def getParamValues(self):
         return {}

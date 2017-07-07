@@ -28,10 +28,8 @@ __revision__ = '$Format:%H$'
 from qgis.core import (QgsApplication,
                        QgsWkbTypes,
                        QgsPoint,
-                       QgsCoordinateReferenceSystem,
                        QgsFeatureRequest,
                        QgsGeometry,
-                       QgsProcessingUtils,
                        QgsProcessingParameterDefinition,
                        QgsProcessingParameterFeatureSink,
                        QgsProcessingParameterFeatureSource,
@@ -39,11 +37,6 @@ from qgis.core import (QgsApplication,
                        QgsProcessingOutputVectorLayer,
                        QgsProcessingParameterField)
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
-from processing.core.parameters import ParameterTable
-from processing.core.parameters import ParameterTableField
-from processing.core.parameters import ParameterCrs
-from processing.core.outputs import OutputVector
-from processing.tools import dataobjects
 
 
 class PointsLayerFromTable(QgisAlgorithm):
