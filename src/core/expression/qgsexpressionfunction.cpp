@@ -3319,23 +3319,19 @@ static QVariant fcnGetFeatureById( const QVariantList &values, const QgsExpressi
 {
   QVariant result;
   QgsVectorLayer *vl = QgsExpressionUtils::getVectorLayer( values.at( 0 ), parent );
-  if ( !vl )
-    return result;
-
-  QgsFeatureId fid = QgsExpressionUtils::getIntValue( values.at( 1 ), parent );
-
-  QgsFeatureRequest req;
-  req.setFilterFid( fid );
-  req.setLimit( 1 );
-  if ( !parent->needsGeometry() )
+  if ( vl )
   {
-    req.setFlags( QgsFeatureRequest::NoGeometry );
-  }
-  QgsFeatureIterator fIt = vl->getFeatures( req );
+    QgsFeatureId fid = QgsExpressionUtils::getIntValue( values.at( 1 ), parent );
 
-  QgsFeature fet;
-  if ( fIt.nextFeature( fet ) )
-    result = QVariant::fromValue( fet );
+    QgsFeatureRequest req;
+    req.setFilterFid( fid );
+    req.setLimit( 1 );
+    QgsFeatureIterator fIt = vl->getFeatures( req );
+
+    QgsFeature fet;
+    if ( fIt.nextFeature( fet ) )
+      result = QVariant::fromValue( fet );
+  }
 
   return result;
 }
@@ -3378,18 +3374,7 @@ static QVariant fcnGetFeature( const QVariantList &values, const QgsExpressionCo
 
 static QVariant fcnGetLayerProperty( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent )
 {
-  QString layerIdOrName = QgsExpressionUtils::getStringValue( values.at( 0 ), parent );
-
-  //try to find a matching layer by name
-  QgsMapLayer *layer = QgsProject::instance()->mapLayer( layerIdOrName ); //search by id first
-  if ( !layer )
-  {
-    QList<QgsMapLayer *> layersByName = QgsProject::instance()->mapLayersByName( layerIdOrName );
-    if ( !layersByName.isEmpty() )
-    {
-      layer = layersByName.at( 0 );
-    }
-  }
+  QgsMapLayer *layer = QgsExpressionUtils::getMapLayer( values.at( 0 ), parent );
 
   if ( !layer )
     return QVariant();
@@ -4303,7 +4288,7 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
 }
 
 QgsWithVariableExpressionFunction::QgsWithVariableExpressionFunction()
-  : QgsExpressionFunction( QStringLiteral("with_variable"), 3, QCoreApplication::tr( "General" ) )
+  : QgsExpressionFunction( QStringLiteral( "with_variable" ), 3, QCoreApplication::tr( "General" ) )
 {
 
 }
