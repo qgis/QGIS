@@ -48,6 +48,16 @@ QgsFontButton::QgsFontButton( QWidget *parent, const QString &dialogTitle )
   setPopupMode( QToolButton::MenuButtonPopup );
 }
 
+QSize QgsFontButton::minimumSizeHint() const
+{
+  //make sure height of button looks good under different platforms
+#ifdef Q_OS_WIN
+  return QToolButton::minimumSizeHint();
+#else
+  return QSize( 120, 28 );
+#endif
+}
+
 void QgsFontButton::showSettingsDialog()
 {
   switch ( mMode )
