@@ -4769,14 +4769,14 @@ void TestQgsProcessing::modelExecution()
   QCOMPARE( params.count(), 7 );
 
   QVariantMap results;
-  results.insert( "OUTPUT_LAYER", QStringLiteral( "dest.shp" ) );
+  results.insert( "OUTPUT", QStringLiteral( "dest.shp" ) );
   childResults.insert( "cx1", results );
 
   // a child who uses an output from another alg as a parameter value
   QgsProcessingModelAlgorithm::ChildAlgorithm alg2c2;
   alg2c2.setChildId( "cx2" );
   alg2c2.setAlgorithmId( "native:centroids" );
-  alg2c2.addParameterSources( "INPUT", QgsProcessingModelAlgorithm::ChildParameterSources() << QgsProcessingModelAlgorithm::ChildParameterSource::fromChildOutput( "cx1", "OUTPUT_LAYER" ) );
+  alg2c2.addParameterSources( "INPUT", QgsProcessingModelAlgorithm::ChildParameterSources() << QgsProcessingModelAlgorithm::ChildParameterSource::fromChildOutput( "cx1", "OUTPUT" ) );
   model2.addChildAlgorithm( alg2c2 );
   params = model2.parametersForChildAlgorithm( model2.childAlgorithm( "cx2" ), modelInputs, childResults );
   QCOMPARE( params.value( "INPUT" ).toString(), QStringLiteral( "dest.shp" ) );
@@ -4787,7 +4787,7 @@ void TestQgsProcessing::modelExecution()
   QgsProcessingModelAlgorithm::ChildAlgorithm alg2c3;
   alg2c3.setChildId( "cx3" );
   alg2c3.setAlgorithmId( "native:extractbyexpression" );
-  alg2c3.addParameterSources( "INPUT", QgsProcessingModelAlgorithm::ChildParameterSources() << QgsProcessingModelAlgorithm::ChildParameterSource::fromChildOutput( "cx1", "OUTPUT_LAYER" ) );
+  alg2c3.addParameterSources( "INPUT", QgsProcessingModelAlgorithm::ChildParameterSources() << QgsProcessingModelAlgorithm::ChildParameterSource::fromChildOutput( "cx1", "OUTPUT" ) );
   alg2c3.addParameterSources( "EXPRESSION", QgsProcessingModelAlgorithm::ChildParameterSources() << QgsProcessingModelAlgorithm::ChildParameterSource::fromStaticValue( "true" ) );
   alg2c3.addParameterSources( "OUTPUT", QgsProcessingModelAlgorithm::ChildParameterSources() << QgsProcessingModelAlgorithm::ChildParameterSource::fromModelParameter( "MY_OUT" ) );
   alg2c3.setDependencies( QStringList() << "cx2" );
@@ -4817,7 +4817,7 @@ void TestQgsProcessing::modelExecution()
                               "outputs['cx1']=processing.run('native:buffer', {'DISSOLVE':false,'DISTANCE':parameters['DIST'],'END_CAP_STYLE':1,'INPUT':parameters['SOURCE_LAYER'],'JOIN_STYLE':2,'SEGMENTS':16}, context=context, feedback=feedback)\n"
                               "results['MODEL_OUT_LAYER']=outputs['cx1']['OUTPUT']\n"
                               "outputs['cx2']=processing.run('native:centroids', {'INPUT':outputs['cx1']['OUTPUT']}, context=context, feedback=feedback)\n"
-                              "outputs['cx3']=processing.run('native:extractbyexpression', {'EXPRESSION':true,'INPUT':outputs['cx1']['OUTPUT_LAYER'],'OUTPUT':parameters['MY_OUT']}, context=context, feedback=feedback)\n"
+                              "outputs['cx3']=processing.run('native:extractbyexpression', {'EXPRESSION':true,'INPUT':outputs['cx1']['OUTPUT'],'OUTPUT':parameters['MY_OUT']}, context=context, feedback=feedback)\n"
                               "results['MY_OUT']=outputs['cx3']['OUTPUT']\n"
                               "return results" ).split( '\n' );
   QCOMPARE( actualParts, expectedParts );
