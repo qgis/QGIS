@@ -33,14 +33,12 @@
 #include "qgsmapserviceexception.h"
 #include "qgsnetworkaccessmanager.h"
 #include "qgsserverlogger.h"
-#include "qgseditorwidgetregistry.h"
 #include "qgsserverrequest.h"
 #include "qgsbufferserverresponse.h"
 #include "qgsbufferserverrequest.h"
 #include "qgsfilterresponsedecorator.h"
 #include "qgsservice.h"
 #include "qgsserverprojectutils.h"
-#include "qgsgui.h"
 
 #include <QDomDocument>
 #include <QNetworkDiskCache>
@@ -272,8 +270,6 @@ bool QgsServer::init( )
 #ifdef ENABLE_MS_TESTS
   QgsFontUtils::loadStandardTestFonts( QStringList() << QStringLiteral( "Roman" ) << QStringLiteral( "Bold" ) );
 #endif
-
-  QgsGui::editorWidgetRegistry()->initEditors();
 
   sServerInterface = new QgsServerInterfaceImpl( sCapabilitiesCache, &sServiceRegistry, &sSettings );
 
