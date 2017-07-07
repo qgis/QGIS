@@ -856,6 +856,37 @@ class QgsExpressionContextUtils
 .. seealso:: compositionScope()
 %End
 
+    static QgsExpressionContextScope *layoutScope( const QgsLayout *layout ) /Factory/;
+%Docstring
+ Creates a new scope which contains variables and functions relating to a QgsLayout ``layout``.
+ For instance, number of pages and page sizes.
+.. versionadded:: 3.0
+ :rtype: QgsExpressionContextScope
+%End
+
+    static void setLayoutVariable( QgsLayout *layout, const QString &name, const QVariant &value );
+%Docstring
+ Sets a layout context variable. This variable will be contained within scopes retrieved via
+ layoutScope().
+ \param layout target layout
+ \param name variable name
+ \param value variable value
+.. seealso:: setLayoutVariables()
+.. seealso:: layoutScope()
+.. versionadded:: 3.0
+%End
+
+    static void setLayoutVariables( QgsLayout *layout, const QVariantMap &variables );
+%Docstring
+ Sets all layout context variables. Existing layout variables will be removed and replaced
+ with the variables specified.
+ \param layout target layout
+ \param variables new set of layer variables
+.. seealso:: setLayoutVariable()
+.. seealso:: layoutScope()
+.. versionadded:: 3.0
+%End
+
     static QgsExpressionContextScope *atlasScope( const QgsAtlasComposition *atlas ) /Factory/;
 %Docstring
  Creates a new scope which contains variables and functions relating to a QgsAtlasComposition.

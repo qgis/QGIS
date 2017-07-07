@@ -16,10 +16,14 @@
 
 #include "qgslayout.h"
 
-QgsLayout::QgsLayout()
+QgsLayout::QgsLayout( QgsProject *project )
   : QGraphicsScene()
-{
+  , mProject( project )
+{}
 
+QgsProject *QgsLayout::project() const
+{
+  return mProject;
 }
 
 double QgsLayout::convertToLayoutUnits( const QgsLayoutMeasurement &measurement ) const
@@ -50,4 +54,42 @@ QgsLayoutSize QgsLayout::convertFromLayoutUnits( const QSizeF &size, const QgsUn
 QgsLayoutPoint QgsLayout::convertFromLayoutUnits( const QPointF &point, const QgsUnitTypes::LayoutUnit unit ) const
 {
   return mContext.measurementConverter().convert( QgsLayoutPoint( point.x(), point.y(), mUnits ), unit );
+}
+
+QgsExpressionContext QgsLayout::createExpressionContext() const
+{
+  QgsExpressionContext context = QgsExpressionContext();
+  context.appendScope( QgsExpressionContextUtils::globalScope() );
+  context.appendScope( QgsExpressionContextUtils::projectScope( mProject ) );
+  context.appendScope( QgsExpressionContextUtils::layoutScope( this ) );
+#if 0 //TODO
+  if ( mAtlasComposition.enabled() )
+  {
+    context.appendScope( QgsExpressionContextUtils::atlasScope( &mAtlasComposition ) );
+  }
+#endif
+  return context;
+}
+
+void QgsLayout::setCustomProperty( const QString &key, const QVariant &value )
+{
+  mCustomProperties.setValue( key, value );
+
+  if ( key.startsWith( QLatin1String( "variable" ) ) )
+    emit variablesChanged();
+}
+
+QVariant QgsLayout::customProperty( const QString &key, const QVariant &defaultValue ) const
+{
+  return mCustomProperties.value( key, defaultValue );
+}
+
+void QgsLayout::removeCustomProperty( const QString &key )
+{
+  mCustomProperties.remove( key );
+}
+
+QStringList QgsLayout::customProperties() const
+{
+  return mCustomProperties.keys();
 }

@@ -23,6 +23,7 @@
 #include "qgslayoutitemregistry.h"
 #include "qgslayoutitemguiregistry.h"
 #include "qgstestutils.h"
+#include "qgsproject.h"
 #include "qgsgui.h"
 #include <QtTest/QSignalSpy>
 
@@ -63,7 +64,8 @@ void TestQgsLayoutView::cleanup()
 
 void TestQgsLayoutView::basic()
 {
-  QgsLayout *layout = new QgsLayout();
+  QgsProject p;
+  QgsLayout *layout = new QgsLayout( &p );
   QgsLayoutView *view = new QgsLayoutView();
 
   QSignalSpy spyLayoutChanged( view, &QgsLayoutView::layoutSet );
@@ -180,8 +182,9 @@ class LoggingTool : public QgsLayoutViewTool
 
 void TestQgsLayoutView::events()
 {
+  QgsProject p;
   QgsLayoutView *view = new QgsLayoutView();
-  QgsLayout *layout = new QgsLayout();
+  QgsLayout *layout = new QgsLayout( &p );
   view->setCurrentLayout( layout );
   layout->setSceneRect( 0, 0, 1000, 1000 );
   view->setHorizontalScrollBarPolicy( Qt::ScrollBarAlwaysOff );

@@ -110,3 +110,15 @@ QStringList QgsLayoutObject::customProperties() const
 {
   return mCustomProperties.keys();
 }
+
+QgsExpressionContext QgsLayoutObject::createExpressionContext() const
+{
+  if ( mLayout )
+  {
+    return mLayout->createExpressionContext();
+  }
+  else
+  {
+    return QgsExpressionContext() << QgsExpressionContextUtils::globalScope();
+  }
+}

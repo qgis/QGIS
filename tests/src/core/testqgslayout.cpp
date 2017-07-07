@@ -17,6 +17,7 @@
 
 #include "qgslayout.h"
 #include "qgstest.h"
+#include "qgsproject.h"
 
 class TestQgsLayout: public QObject
 {
@@ -30,6 +31,9 @@ class TestQgsLayout: public QObject
     void creation(); //test creation of QgsLayout
     void units();
     void name();
+    void customProperties();
+    void variablesEdited();
+    void scope();
 
   private:
     QString mReport;
@@ -65,14 +69,17 @@ void TestQgsLayout::cleanup()
 
 void TestQgsLayout::creation()
 {
-  QgsLayout *layout = new QgsLayout();
+  QgsProject p;
+  QgsLayout *layout = new QgsLayout( &p );
   QVERIFY( layout );
+  QCOMPARE( layout->project(), &p );
   delete layout;
 }
 
 void TestQgsLayout::units()
 {
-  QgsLayout layout;
+  QgsProject p;
+  QgsLayout layout( &p );
   layout.setUnits( QgsUnitTypes::LayoutCentimeters );
   QCOMPARE( layout.units(), QgsUnitTypes::LayoutCentimeters );
   QCOMPARE( layout.convertToLayoutUnits( QgsLayoutMeasurement( 10.0, QgsUnitTypes::LayoutMillimeters ) ), 1.0 );
@@ -120,10 +127,90 @@ void TestQgsLayout::units()
 
 void TestQgsLayout::name()
 {
-  QgsLayout layout;
+  QgsProject p;
+  QgsLayout layout( &p );
   QString layoutName = "test name";
   layout.setName( layoutName );
   QCOMPARE( layout.name(), layoutName );
+}
+
+void TestQgsLayout::customProperties()
+{
+  QgsProject p;
+  QgsLayout *layout = new QgsLayout( &p );
+
+  QCOMPARE( layout->customProperty( "noprop", "defaultval" ).toString(), QString( "defaultval" ) );
+  QVERIFY( layout->customProperties().isEmpty() );
+  layout->setCustomProperty( QStringLiteral( "testprop" ), "testval" );
+  QCOMPARE( layout->customProperty( "testprop", "defaultval" ).toString(), QString( "testval" ) );
+  QCOMPARE( layout->customProperties().length(), 1 );
+  QCOMPARE( layout->customProperties().at( 0 ), QString( "testprop" ) );
+
+  //test no crash
+  layout->removeCustomProperty( QStringLiteral( "badprop" ) );
+
+  layout->removeCustomProperty( QStringLiteral( "testprop" ) );
+  QVERIFY( layout->customProperties().isEmpty() );
+  QCOMPARE( layout->customProperty( "noprop", "defaultval" ).toString(), QString( "defaultval" ) );
+
+  layout->setCustomProperty( QStringLiteral( "testprop1" ), "testval1" );
+  layout->setCustomProperty( QStringLiteral( "testprop2" ), "testval2" );
+  QStringList keys = layout->customProperties();
+  QCOMPARE( keys.length(), 2 );
+  QVERIFY( keys.contains( "testprop1" ) );
+  QVERIFY( keys.contains( "testprop2" ) );
+
+  delete layout;
+}
+
+void TestQgsLayout::variablesEdited()
+{
+  QgsProject p;
+  QgsLayout l( &p );
+  QSignalSpy spyVariablesChanged( &l, &QgsLayout::variablesChanged );
+
+  l.setCustomProperty( QStringLiteral( "not a variable" ), "1" );
+  QVERIFY( spyVariablesChanged.count() == 0 );
+  l.setCustomProperty( QStringLiteral( "variableNames" ), "1" );
+  QVERIFY( spyVariablesChanged.count() == 1 );
+  l.setCustomProperty( QStringLiteral( "variableValues" ), "1" );
+  QVERIFY( spyVariablesChanged.count() == 2 );
+}
+
+void TestQgsLayout::scope()
+{
+  QgsProject p;
+  QgsLayout l( &p );
+
+  // no crash
+  std::unique_ptr< QgsExpressionContextScope > scope( QgsExpressionContextUtils::layoutScope( nullptr ) );
+  l.setName( "test" );
+  scope.reset( QgsExpressionContextUtils::layoutScope( &l ) );
+  QCOMPARE( scope->variable( "layout_name" ).toString(), QStringLiteral( "test" ) );
+
+  QgsExpressionContextUtils::setLayoutVariable( &l, "new_var", 5 );
+  QgsExpressionContextUtils::setLayoutVariable( &l, "new_var2", 15 );
+  scope.reset( QgsExpressionContextUtils::layoutScope( &l ) );
+  QCOMPARE( scope->variable( "layout_name" ).toString(), QStringLiteral( "test" ) );
+  QCOMPARE( scope->variable( "new_var" ).toInt(), 5 );
+  QCOMPARE( scope->variable( "new_var2" ).toInt(), 15 );
+
+  QVariantMap newVars;
+  newVars.insert( "new_var3", 17 );
+  QgsExpressionContextUtils::setLayoutVariables( &l, newVars );
+  scope.reset( QgsExpressionContextUtils::layoutScope( &l ) );
+  QCOMPARE( scope->variable( "layout_name" ).toString(), QStringLiteral( "test" ) );
+  QVERIFY( !scope->hasVariable( "new_var" ) );
+  QVERIFY( !scope->hasVariable( "new_var2" ) );
+  QCOMPARE( scope->variable( "new_var3" ).toInt(), 17 );
+
+  p.setTitle( "my title" );
+  QgsExpressionContext c = l.createExpressionContext();
+  // should contain project variables
+  QCOMPARE( c.variable( "project_title" ).toString(), QStringLiteral( "my title" ) );
+  // and layout variables
+  QCOMPARE( c.variable( "new_var3" ).toInt(), 17 );
+
 }
 
 

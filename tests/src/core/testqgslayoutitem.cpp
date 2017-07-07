@@ -20,6 +20,7 @@
 #include "qgslayout.h"
 #include "qgsmultirenderchecker.h"
 #include "qgstest.h"
+#include "qgsproject.h"
 #include <QObject>
 #include <QPainter>
 #include <QImage>
@@ -62,7 +63,6 @@ class TestQgsLayoutItem: public QObject
         }
     };
 
-    QgsLayout *mLayout = nullptr;
     QString mReport;
 
     bool renderCheck( QString testName, QImage &image, int mismatchCount );
@@ -71,14 +71,11 @@ class TestQgsLayoutItem: public QObject
 
 void TestQgsLayoutItem::initTestCase()
 {
-  mLayout = new QgsLayout();
   mReport = "<h1>Layout Item Tests</h1>\n";
 }
 
 void TestQgsLayoutItem::cleanupTestCase()
 {
-  delete mLayout;
-
   QString myReportFile = QDir::tempPath() + QDir::separator() + "qgistest.html";
   QFile myFile( myReportFile );
   if ( myFile.open( QIODevice::WriteOnly | QIODevice::Append ) )
@@ -101,9 +98,12 @@ void TestQgsLayoutItem::cleanup()
 
 void TestQgsLayoutItem::creation()
 {
-  TestItem *item = new TestItem( mLayout );
+  QgsProject p;
+  QgsLayout *layout = new QgsLayout( &p );
+  TestItem *item = new TestItem( layout );
   QVERIFY( item );
   delete item;
+  delete layout;
 }
 
 void TestQgsLayoutItem::registry()

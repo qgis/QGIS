@@ -7,7 +7,7 @@
  ************************************************************************/
 
 
-class QgsLayout : QGraphicsScene
+class QgsLayout : QGraphicsScene, QgsExpressionContextGenerator
 {
 %Docstring
  Base class for layouts, which can contain items such as maps, labels, scalebars, etc.
@@ -24,7 +24,17 @@ class QgsLayout : QGraphicsScene
       ZMapTool,
     };
 
-    QgsLayout();
+    QgsLayout( QgsProject *project );
+%Docstring
+ Construct a new layout linked to the specified ``project``.
+%End
+
+    QgsProject *project() const;
+%Docstring
+ The project associated with the layout. Used to get access to layers, map themes,
+ relations and various other bits. It is never null.
+ :rtype: QgsProject
+%End
 
     QString name() const;
 %Docstring
@@ -116,6 +126,61 @@ class QgsLayout : QGraphicsScene
  :rtype: QgsLayoutContext
 %End
 
+
+    virtual QgsExpressionContext createExpressionContext() const;
+
+%Docstring
+ Creates an expression context relating to the layout's current state. The context includes
+ scopes for global, project, layout and layout context properties.
+ :rtype: QgsExpressionContext
+%End
+
+    void setCustomProperty( const QString &key, const QVariant &value );
+%Docstring
+ Set a custom property for the layout.
+ \param key property key. If a property with the same key already exists it will be overwritten.
+ \param value property value
+.. seealso:: customProperty()
+.. seealso:: removeCustomProperty()
+.. seealso:: customProperties()
+%End
+
+    QVariant customProperty( const QString &key, const QVariant &defaultValue = QVariant() ) const;
+%Docstring
+ Read a custom property from the layout.
+ \param key property key
+ \param defaultValue default value to return if property with matching key does not exist
+ :return: value of matching property
+.. seealso:: setCustomProperty()
+.. seealso:: removeCustomProperty()
+.. seealso:: customProperties()
+ :rtype: QVariant
+%End
+
+    void removeCustomProperty( const QString &key );
+%Docstring
+ Remove a custom property from the layout.
+ \param key property key
+.. seealso:: setCustomProperty()
+.. seealso:: customProperty()
+.. seealso:: customProperties()
+%End
+
+    QStringList customProperties() const;
+%Docstring
+ Return list of keys stored in custom properties for the layout.
+.. seealso:: setCustomProperty()
+.. seealso:: customProperty()
+.. seealso:: removeCustomProperty()
+ :rtype: list of str
+%End
+
+  signals:
+
+    void variablesChanged();
+%Docstring
+ Emitted whenever the expression variables stored in the layout have been changed.
+%End
 
 };
 

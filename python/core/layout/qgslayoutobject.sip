@@ -9,7 +9,7 @@
 
 
 
-class QgsLayoutObject: QObject
+class QgsLayoutObject: QObject, QgsExpressionContextGenerator
 {
 %Docstring
  A base class for objects which belong to a layout.
@@ -149,6 +149,14 @@ class QgsLayoutObject: QObject
 .. seealso:: customProperty()
 .. seealso:: removeCustomProperty()
  :rtype: list of str
+%End
+
+    virtual QgsExpressionContext createExpressionContext() const;
+
+%Docstring
+ Creates an expression context relating to the objects' current state. The context includes
+ scopes for global, project and layout properties.
+ :rtype: QgsExpressionContext
 %End
 
   protected:

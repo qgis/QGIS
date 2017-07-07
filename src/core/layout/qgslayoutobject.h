@@ -21,6 +21,7 @@
 #include "qgis_sip.h"
 #include "qgspropertycollection.h"
 #include "qgsobjectcustomproperties.h"
+#include "qgsexpressioncontextgenerator.h"
 #include <QObject>
 #include <QDomNode>
 #include <QMap>
@@ -33,7 +34,7 @@ class QPainter;
  * A base class for objects which belong to a layout.
  * \since QGIS 3.0
  */
-class CORE_EXPORT QgsLayoutObject: public QObject
+class CORE_EXPORT QgsLayoutObject: public QObject, public QgsExpressionContextGenerator
 {
     Q_OBJECT
   public:
@@ -171,6 +172,12 @@ class CORE_EXPORT QgsLayoutObject: public QObject
      * \see removeCustomProperty()
      */
     QStringList customProperties() const;
+
+    /**
+     * Creates an expression context relating to the objects' current state. The context includes
+     * scopes for global, project and layout properties.
+     */
+    QgsExpressionContext createExpressionContext() const override;
 
   protected:
 

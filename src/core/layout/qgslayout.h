@@ -19,6 +19,7 @@
 #include "qgis_core.h"
 #include <QGraphicsScene>
 #include "qgslayoutcontext.h"
+#include "qgsexpressioncontextgenerator.h"
 
 /**
  * \ingroup core
@@ -26,7 +27,7 @@
  * \brief Base class for layouts, which can contain items such as maps, labels, scalebars, etc.
  * \since QGIS 3.0
  */
-class CORE_EXPORT QgsLayout : public QGraphicsScene
+class CORE_EXPORT QgsLayout : public QGraphicsScene, public QgsExpressionContextGenerator
 {
     Q_OBJECT
 
@@ -38,7 +39,17 @@ class CORE_EXPORT QgsLayout : public QGraphicsScene
       ZMapTool = 10000, //!< Z-Value for temporary map tool items
     };
 
-    QgsLayout();
+    /**
+     * Construct a new layout linked to the specified \a project.
+     */
+    QgsLayout( QgsProject *project );
+
+    /**
+     * The project associated with the layout. Used to get access to layers, map themes,
+     * relations and various other bits. It is never null.
+     *
+     */
+    QgsProject *project() const;
 
     /**
      * Returns the layout's name.
@@ -127,9 +138,64 @@ class CORE_EXPORT QgsLayout : public QGraphicsScene
      */
     SIP_SKIP const QgsLayoutContext &context() const { return mContext; }
 
+    /**
+     * Creates an expression context relating to the layout's current state. The context includes
+     * scopes for global, project, layout and layout context properties.
+     */
+    QgsExpressionContext createExpressionContext() const override;
+
+    /**
+     * Set a custom property for the layout.
+     * \param key property key. If a property with the same key already exists it will be overwritten.
+     * \param value property value
+     * \see customProperty()
+     * \see removeCustomProperty()
+     * \see customProperties()
+     */
+    void setCustomProperty( const QString &key, const QVariant &value );
+
+    /**
+     * Read a custom property from the layout.
+     * \param key property key
+     * \param defaultValue default value to return if property with matching key does not exist
+     * \returns value of matching property
+     * \see setCustomProperty()
+     * \see removeCustomProperty()
+     * \see customProperties()
+     */
+    QVariant customProperty( const QString &key, const QVariant &defaultValue = QVariant() ) const;
+
+    /**
+     * Remove a custom property from the layout.
+     * \param key property key
+     * \see setCustomProperty()
+     * \see customProperty()
+     * \see customProperties()
+     */
+    void removeCustomProperty( const QString &key );
+
+    /**
+     * Return list of keys stored in custom properties for the layout.
+     * \see setCustomProperty()
+     * \see customProperty()
+     * \see removeCustomProperty()
+     */
+    QStringList customProperties() const;
+
+  signals:
+
+    /**
+     * Emitted whenever the expression variables stored in the layout have been changed.
+     */
+    void variablesChanged();
+
   private:
 
+    QgsProject *mProject = nullptr;
+
     QString mName;
+
+    QgsObjectCustomProperties mCustomProperties;
 
     QgsUnitTypes::LayoutUnit mUnits = QgsUnitTypes::LayoutMillimeters;
     QgsLayoutContext mContext;
