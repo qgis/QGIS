@@ -276,7 +276,7 @@ class DestinationSelectionPanel(BASE, WIDGET):
             return None
 
         if isinstance(self.parameter, QgsProcessingParameterFolderOutput):
-            return key
+            return self.leText.text()
 
         value = QgsProcessingOutputLayerDefinition(key)
         value.createOptions = {'fileEncoding': self.encoding}
