@@ -3553,7 +3553,7 @@ QPointF QgsSymbolLayerUtils::pointOnLineWithDistance( QPointF startPoint, QPoint
 
 QStringList QgsSymbolLayerUtils::listSvgFiles()
 {
-  // copied from QgsMarkerCatalogue - TODO: unify
+  // copied from QgsMarkerCatalogue - TODO: unify  //#spellok
   QStringList list;
   QStringList svgPaths = QgsApplication::svgPaths();
 

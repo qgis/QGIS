@@ -14,7 +14,7 @@ class QgsFontButton : QToolButton
 %Docstring
  A button for customising QgsTextFormat settings.
 
- The button will open a detailed text format settings dialog when clicked. An attached drop down
+ The button will open a detailed text format settings dialog when clicked. An attached drop-down
  menu allows for copying and pasting text styles, picking colors for the text, and for dropping
  colors from other color widgets.
 
