@@ -41,7 +41,7 @@ from qgis.core import (QgsDataSourceUri,
                        QgsProcessingParameterFeatureSink,
                        QgsProcessingOutputLayerDefinition,
                        QgsProcessingParameterDefinition,
-                       QgsProcessingParameterFolderOutput)
+                       QgsProcessingParameterFolderDestination)
 from processing.core.ProcessingConfig import ProcessingConfig
 from processing.tools.dataobjects import createContext
 from processing.gui.PostgisTableSelector import PostgisTableSelector
@@ -79,7 +79,7 @@ class DestinationSelectionPanel(BASE, WIDGET):
                     and alg.provider().supportsNonFileBasedOutput():
                 # use memory layers for temporary files if supported
                 self.leText.setPlaceholderText(self.SAVE_TO_TEMP_LAYER)
-            elif not isinstance(self.parameter, QgsProcessingParameterFolderOutput):
+            elif not isinstance(self.parameter, QgsProcessingParameterFolderDestination):
                 self.leText.setPlaceholderText(self.SAVE_TO_TEMP_FILE)
 
         self.btnSelect.clicked.connect(self.selectOutput)
@@ -94,7 +94,7 @@ class DestinationSelectionPanel(BASE, WIDGET):
         self.use_temporary = False
 
     def selectOutput(self):
-        if isinstance(self.parameter, QgsProcessingParameterFolderOutput):
+        if isinstance(self.parameter, QgsProcessingParameterFolderDestination):
             self.selectDirectory()
         else:
             popupMenu = QMenu()
@@ -275,7 +275,7 @@ class DestinationSelectionPanel(BASE, WIDGET):
         if not key and self.parameter.flags() & QgsProcessingParameterDefinition.FlagOptional:
             return None
 
-        if isinstance(self.parameter, QgsProcessingParameterFolderOutput):
+        if isinstance(self.parameter, QgsProcessingParameterFolderDestination):
             return self.leText.text()
 
         value = QgsProcessingOutputLayerDefinition(key)

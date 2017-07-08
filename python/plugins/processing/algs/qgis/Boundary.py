@@ -30,6 +30,7 @@ import os
 from qgis.core import (QgsGeometry,
                        QgsWkbTypes,
                        QgsFeatureSink,
+                       QgsProcessing,
                        QgsProcessingUtils,
                        QgsProcessingParameterDefinition,
                        QgsProcessingParameterFeatureSource,
@@ -54,7 +55,7 @@ class Boundary(QgisAlgorithm):
 
     def __init__(self):
         super().__init__()
-        self.addParameter(QgsProcessingParameterFeatureSource(self.INPUT_LAYER, self.tr('Input layer'), [QgsProcessingParameterDefinition.TypeVectorLine, QgsProcessingParameterDefinition.TypeVectorPolygon]))
+        self.addParameter(QgsProcessingParameterFeatureSource(self.INPUT_LAYER, self.tr('Input layer'), [QgsProcessing.TypeVectorLine, QgsProcessing.TypeVectorPolygon]))
         self.addParameter(QgsProcessingParameterFeatureSink(self.OUTPUT_LAYER, self.tr('Boundary')))
         self.addOutput(QgsProcessingOutputVectorLayer(self.OUTPUT_LAYER, self.tr("Boundaries")))
 

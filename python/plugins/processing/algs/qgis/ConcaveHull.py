@@ -32,6 +32,7 @@ from qgis.core import (QgsFeatureRequest,
                        QgsFeatureSink,
                        QgsWkbTypes,
                        QgsApplication,
+                       QgsProcessing,
                        QgsProcessingUtils,
                        QgsProcessingParameterFeatureSource,
                        QgsProcessingParameterVectorLayer,
@@ -60,7 +61,7 @@ class ConcaveHull(QgisAlgorithm):
     def __init__(self):
         super().__init__()
 
-        self.addParameter(QgsProcessingParameterFeatureSource(self.INPUT, self.tr('Input point layer'), [QgsProcessingParameterDefinition.TypeVectorPoint]))
+        self.addParameter(QgsProcessingParameterFeatureSource(self.INPUT, self.tr('Input point layer'), [QgsProcessing.TypeVectorPoint]))
         self.addParameter(QgsProcessingParameterNumber(self.ALPHA,
                                                        self.tr('Threshold (0-1, where 1 is equivalent with Convex Hull)'),
                                                        minValue=0, maxValue=1, defaultValue=0.3, type=QgsProcessingParameterNumber.Double))
@@ -70,8 +71,8 @@ class ConcaveHull(QgisAlgorithm):
         self.addParameter(QgsProcessingParameterBoolean(self.NO_MULTIGEOMETRY,
                                                         self.tr('Split multipart geometry into singleparts geometries'), defaultValue=False))
 
-        self.addParameter(QgsProcessingParameterFeatureSink(self.OUTPUT, self.tr('Concave hull'), type=QgsProcessingParameterDefinition.TypeVectorPolygon))
-        self.addOutput(QgsProcessingOutputVectorLayer(self.OUTPUT, self.tr("Concave hull"), type=QgsProcessingParameterDefinition.TypeVectorPolygon))
+        self.addParameter(QgsProcessingParameterFeatureSink(self.OUTPUT, self.tr('Concave hull'), type=QgsProcessing.TypeVectorPolygon))
+        self.addOutput(QgsProcessingOutputVectorLayer(self.OUTPUT, self.tr("Concave hull"), type=QgsProcessing.TypeVectorPolygon))
 
     def name(self):
         return 'concavehull'

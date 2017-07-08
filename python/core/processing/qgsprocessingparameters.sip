@@ -181,14 +181,14 @@ class QgsProcessingParameterDefinition
       sipType = sipType_QgsProcessingParameterFeatureSource;
     else if ( sipCpp->type() == QgsProcessingParameterFeatureSink::typeName() )
       sipType = sipType_QgsProcessingParameterFeatureSink;
-    else if ( sipCpp->type() == QgsProcessingParameterVectorOutput::typeName() )
-      sipType = sipType_QgsProcessingParameterVectorOutput;
-    else if ( sipCpp->type() == QgsProcessingParameterRasterOutput::typeName() )
-      sipType = sipType_QgsProcessingParameterRasterOutput;
-    else if ( sipCpp->type() == QgsProcessingParameterFileOutput::typeName() )
-      sipType = sipType_QgsProcessingParameterFileOutput;
-    else if ( sipCpp->type() == QgsProcessingParameterFolderOutput::typeName() )
-      sipType = sipType_QgsProcessingParameterFolderOutput;
+    else if ( sipCpp->type() == QgsProcessingParameterVectorDestination::typeName() )
+      sipType = sipType_QgsProcessingParameterVectorDestination;
+    else if ( sipCpp->type() == QgsProcessingParameterRasterDestination::typeName() )
+      sipType = sipType_QgsProcessingParameterRasterDestination;
+    else if ( sipCpp->type() == QgsProcessingParameterFileDestination::typeName() )
+      sipType = sipType_QgsProcessingParameterFileDestination;
+    else if ( sipCpp->type() == QgsProcessingParameterFolderDestination::typeName() )
+      sipType = sipType_QgsProcessingParameterFolderDestination;
 %End
   public:
 
@@ -200,18 +200,6 @@ class QgsProcessingParameterDefinition
     };
     typedef QFlags<QgsProcessingParameterDefinition::Flag> Flags;
 
-
-    enum LayerType
-    {
-      TypeAny,
-      TypeVectorAny,
-      TypeVectorPoint,
-      TypeVectorLine,
-      TypeVectorPolygon,
-      TypeRaster,
-      TypeFile,
-      TypeTable,
-    };
 
     QgsProcessingParameterDefinition( const QString &name, const QString &description = QString(), const QVariant &defaultValue = QVariant(),
                                       bool optional = false );
@@ -472,6 +460,22 @@ class QgsProcessingParameters
  :rtype: QgsProcessingFeatureSource
 %End
 
+    static QString parameterAsCompatibleSourceLayerPath( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters,
+        QgsProcessingContext &context, const QStringList &compatibleFormats, const QString &preferredFormat = QString( "shp" ), QgsProcessingFeedback *feedback = 0 );
+%Docstring
+ Evaluates the parameter with matching ``definition`` to a source vector layer file path of compatible format.
+
+ If the parameter is evaluated to an existing layer, and that layer is not of the format listed in the
+ ``compatibleFormats`` argument, then the layer will first be exported to a compatible format
+ in a temporary location. The function will then return the path to that temporary file.
+
+ ``compatibleFormats`` should consist entirely of lowercase file extensions, e.g. 'shp'.
+
+ The ``preferredFormat`` argument is used to specify to desired file extension to use when a temporary
+ layer export is required. This defaults to shapefiles, because shapefiles are the future (don't believe the geopackage hype!).
+ :rtype: str
+%End
+
     static QgsMapLayer *parameterAsLayer( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, QgsProcessingContext &context );
 %Docstring
  Evaluates the parameter with matching ``definition`` to a map layer.
@@ -492,9 +496,9 @@ class QgsProcessingParameters
  :rtype: QgsRasterLayer
 %End
 
-    static QString parameterAsRasterOutputLayer( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, QgsProcessingContext &context );
+    static QString parameterAsOutputLayer( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, QgsProcessingContext &context );
 %Docstring
- Evaluates the parameter with matching ``definition`` to a raster output layer destination.
+ Evaluates the parameter with matching ``definition`` to a output layer destination.
  :rtype: str
 %End
 
@@ -947,7 +951,7 @@ class QgsProcessingParameterMultipleLayers : QgsProcessingParameterDefinition
 %End
   public:
 
-    QgsProcessingParameterMultipleLayers( const QString &name, const QString &description = QString(), QgsProcessingParameterDefinition::LayerType layerType = QgsProcessingParameterDefinition::TypeVectorAny,
+    QgsProcessingParameterMultipleLayers( const QString &name, const QString &description = QString(), QgsProcessing::LayerType layerType = QgsProcessing::TypeVectorAny,
                                           const QVariant &defaultValue = QVariant(),
                                           bool optional = false );
 %Docstring
@@ -967,14 +971,14 @@ class QgsProcessingParameterMultipleLayers : QgsProcessingParameterDefinition
     virtual QString asScriptCode() const;
 
 
-    QgsProcessingParameterDefinition::LayerType layerType() const;
+    QgsProcessing::LayerType layerType() const;
 %Docstring
  Returns the layer type for layers acceptable by the parameter.
 .. seealso:: setLayerType()
- :rtype: QgsProcessingParameterDefinition.LayerType
+ :rtype: QgsProcessing.LayerType
 %End
 
-    void setLayerType( QgsProcessingParameterDefinition::LayerType type );
+    void setLayerType( QgsProcessing::LayerType type );
 %Docstring
  Sets the layer ``type`` for layers acceptable by the parameter.
 .. seealso:: layerType()
@@ -1649,7 +1653,7 @@ class QgsProcessingParameterFeatureSink : QgsProcessingDestinationParameter
 %End
   public:
 
-    QgsProcessingParameterFeatureSink( const QString &name, const QString &description = QString(), QgsProcessingParameterDefinition::LayerType type = QgsProcessingParameterDefinition::TypeVectorAny, const QVariant &defaultValue = QVariant(),
+    QgsProcessingParameterFeatureSink( const QString &name, const QString &description = QString(), QgsProcessing::LayerType type = QgsProcessing::TypeVectorAny, const QVariant &defaultValue = QVariant(),
                                        bool optional = false );
 %Docstring
  Constructor for QgsProcessingParameterFeatureSink.
@@ -1672,11 +1676,11 @@ class QgsProcessingParameterFeatureSink : QgsProcessingDestinationParameter
     virtual QString defaultFileExtension() const;
 
 
-    QgsProcessingParameterDefinition::LayerType dataType() const;
+    QgsProcessing::LayerType dataType() const;
 %Docstring
  Returns the layer type for sinks associated with the parameter.
 .. seealso:: setDataType()
- :rtype: QgsProcessingParameterDefinition.LayerType
+ :rtype: QgsProcessing.LayerType
 %End
 
     bool hasGeometry() const;
@@ -1686,7 +1690,7 @@ class QgsProcessingParameterFeatureSink : QgsProcessingDestinationParameter
  :rtype: bool
 %End
 
-    void setDataType( QgsProcessingParameterDefinition::LayerType type );
+    void setDataType( QgsProcessing::LayerType type );
 %Docstring
  Sets the layer ``type`` for the sinks associated with the parameter.
 .. seealso:: dataType()
@@ -1708,10 +1712,15 @@ class QgsProcessingParameterFeatureSink : QgsProcessingDestinationParameter
 };
 
 
-class QgsProcessingParameterVectorOutput : QgsProcessingDestinationParameter
+class QgsProcessingParameterVectorDestination : QgsProcessingDestinationParameter
 {
 %Docstring
- A vector layer output parameter. Consider using the more flexible QgsProcessingParameterFeatureSink wherever
+ A vector layer destination parameter, for specifying the destination path for a vector layer
+ created by the algorithm.
+
+.. note::
+
+   Consider using the more flexible QgsProcessingParameterFeatureSink wherever
  possible.
 .. versionadded:: 3.0
 %End
@@ -1721,10 +1730,10 @@ class QgsProcessingParameterVectorOutput : QgsProcessingDestinationParameter
 %End
   public:
 
-    QgsProcessingParameterVectorOutput( const QString &name, const QString &description = QString(), QgsProcessingParameterDefinition::LayerType type = QgsProcessingParameterDefinition::TypeVectorAny, const QVariant &defaultValue = QVariant(),
-                                        bool optional = false );
+    QgsProcessingParameterVectorDestination( const QString &name, const QString &description = QString(), QgsProcessing::LayerType type = QgsProcessing::TypeVectorAny, const QVariant &defaultValue = QVariant(),
+        bool optional = false );
 %Docstring
- Constructor for QgsProcessingParameterVectorOutput.
+ Constructor for QgsProcessingParameterVectorDestination.
 %End
 
     static QString typeName();
@@ -1744,23 +1753,23 @@ class QgsProcessingParameterVectorOutput : QgsProcessingDestinationParameter
     virtual QString defaultFileExtension() const;
 
 
-    QgsProcessingParameterDefinition::LayerType dataType() const;
+    QgsProcessing::LayerType dataType() const;
 %Docstring
- Returns the layer type for layers associated with the parameter.
+ Returns the layer type for this created vector layer.
 .. seealso:: setDataType()
- :rtype: QgsProcessingParameterDefinition.LayerType
+ :rtype: QgsProcessing.LayerType
 %End
 
     bool hasGeometry() const;
 %Docstring
- Returns true if the layer is likely to include geometries. In cases were presence of geometry
+ Returns true if the created layer is likely to include geometries. In cases were presence of geometry
  cannot be reliably determined in advance, this method will default to returning true.
  :rtype: bool
 %End
 
-    void setDataType( QgsProcessingParameterDefinition::LayerType type );
+    void setDataType( QgsProcessing::LayerType type );
 %Docstring
- Sets the layer ``type`` for the layers associated with the parameter.
+ Sets the layer ``type`` for the created vector layer.
 .. seealso:: dataType()
 %End
 
@@ -1769,19 +1778,20 @@ class QgsProcessingParameterVectorOutput : QgsProcessingDestinationParameter
     virtual bool fromVariantMap( const QVariantMap &map );
 
 
-    static QgsProcessingParameterVectorOutput *fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition ) /Factory/;
+    static QgsProcessingParameterVectorDestination *fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition ) /Factory/;
 %Docstring
  Creates a new parameter using the definition from a script code.
- :rtype: QgsProcessingParameterVectorOutput
+ :rtype: QgsProcessingParameterVectorDestination
 %End
 
 
 };
 
-class QgsProcessingParameterRasterOutput : QgsProcessingDestinationParameter
+class QgsProcessingParameterRasterDestination : QgsProcessingDestinationParameter
 {
 %Docstring
- A raster layer output parameter.
+ A raster layer destination parameter, for specifying the destination path for a raster layer
+ created by the algorithm.
 .. versionadded:: 3.0
 %End
 
@@ -1790,11 +1800,11 @@ class QgsProcessingParameterRasterOutput : QgsProcessingDestinationParameter
 %End
   public:
 
-    QgsProcessingParameterRasterOutput( const QString &name, const QString &description = QString(),
-                                        const QVariant &defaultValue = QVariant(),
-                                        bool optional = false );
+    QgsProcessingParameterRasterDestination( const QString &name, const QString &description = QString(),
+        const QVariant &defaultValue = QVariant(),
+        bool optional = false );
 %Docstring
- Constructor for QgsProcessingParameterRasterOutput.
+ Constructor for QgsProcessingParameterRasterDestination.
 %End
 
     static QString typeName();
@@ -1812,17 +1822,18 @@ class QgsProcessingParameterRasterOutput : QgsProcessingDestinationParameter
     virtual QString defaultFileExtension() const;
 
 
-    static QgsProcessingParameterRasterOutput *fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition ) /Factory/;
+    static QgsProcessingParameterRasterDestination *fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition ) /Factory/;
 %Docstring
  Creates a new parameter using the definition from a script code.
- :rtype: QgsProcessingParameterRasterOutput
+ :rtype: QgsProcessingParameterRasterDestination
 %End
 };
 
-class QgsProcessingParameterFileOutput : QgsProcessingDestinationParameter
+class QgsProcessingParameterFileDestination : QgsProcessingDestinationParameter
 {
 %Docstring
- A generic file based output parameter.
+ A generic file based destination parameter, for specifying the destination path for a file (non-map layer)
+ created by the algorithm.
 .. versionadded:: 3.0
 %End
 
@@ -1831,12 +1842,12 @@ class QgsProcessingParameterFileOutput : QgsProcessingDestinationParameter
 %End
   public:
 
-    QgsProcessingParameterFileOutput( const QString &name, const QString &description = QString(),
-                                      const QString &fileFilter = QString(),
-                                      const QVariant &defaultValue = QVariant(),
-                                      bool optional = false );
+    QgsProcessingParameterFileDestination( const QString &name, const QString &description = QString(),
+                                           const QString &fileFilter = QString(),
+                                           const QVariant &defaultValue = QVariant(),
+                                           bool optional = false );
 %Docstring
- Constructor for QgsProcessingParameterFileOutput.
+ Constructor for QgsProcessingParameterFileDestination.
 %End
 
     static QString typeName();
@@ -1856,14 +1867,14 @@ class QgsProcessingParameterFileOutput : QgsProcessingDestinationParameter
 
     QString fileFilter() const;
 %Docstring
- Returns the file filter string for files compatible with this output.
+ Returns the file filter string for file destinations compatible with this parameter.
 .. seealso:: setFileFilter()
  :rtype: str
 %End
 
     void setFileFilter( const QString &filter );
 %Docstring
- Sets the file ``filter`` string for files compatible with this output.
+ Sets the file ``filter`` string for file destinations compatible with this parameter.
 .. seealso:: fileFilter()
 %End
 
@@ -1872,18 +1883,20 @@ class QgsProcessingParameterFileOutput : QgsProcessingDestinationParameter
     virtual bool fromVariantMap( const QVariantMap &map );
 
 
-    static QgsProcessingParameterFileOutput *fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition ) /Factory/;
+    static QgsProcessingParameterFileDestination *fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition ) /Factory/;
 %Docstring
  Creates a new parameter using the definition from a script code.
- :rtype: QgsProcessingParameterFileOutput
+ :rtype: QgsProcessingParameterFileDestination
 %End
 
 
 };
 
-class QgsProcessingParameterFolderOutput : QgsProcessingDestinationParameter
+class QgsProcessingParameterFolderDestination : QgsProcessingDestinationParameter
 {
 %Docstring
+ A folder destination parameter, for specifying the destination path for a folder created
+ by the algorithm or used for creating new files within the algorithm.
  A folder output parameter.
 .. versionadded:: 3.0
 %End
@@ -1893,11 +1906,11 @@ class QgsProcessingParameterFolderOutput : QgsProcessingDestinationParameter
 %End
   public:
 
-    QgsProcessingParameterFolderOutput( const QString &name, const QString &description = QString(),
-                                        const QVariant &defaultValue = QVariant(),
-                                        bool optional = false );
+    QgsProcessingParameterFolderDestination( const QString &name, const QString &description = QString(),
+        const QVariant &defaultValue = QVariant(),
+        bool optional = false );
 %Docstring
- Constructor for QgsProcessingParameterFolderOutput.
+ Constructor for QgsProcessingParameterFolderDestination.
 %End
 
     static QString typeName();
@@ -1913,10 +1926,10 @@ class QgsProcessingParameterFolderOutput : QgsProcessingDestinationParameter
     virtual QString defaultFileExtension() const;
 
 
-    static QgsProcessingParameterFolderOutput *fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition ) /Factory/;
+    static QgsProcessingParameterFolderDestination *fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition ) /Factory/;
 %Docstring
  Creates a new parameter using the definition from a script code.
- :rtype: QgsProcessingParameterFolderOutput
+ :rtype: QgsProcessingParameterFolderDestination
 %End
 
 };

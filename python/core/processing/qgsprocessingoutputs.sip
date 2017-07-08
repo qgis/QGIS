@@ -106,7 +106,7 @@ class QgsProcessingOutputVectorLayer : QgsProcessingOutputDefinition
 %End
   public:
 
-    QgsProcessingOutputVectorLayer( const QString &name, const QString &description = QString(), QgsProcessingParameterDefinition::LayerType type = QgsProcessingParameterDefinition::TypeVectorAny );
+    QgsProcessingOutputVectorLayer( const QString &name, const QString &description = QString(), QgsProcessing::LayerType type = QgsProcessing::TypeVectorAny );
 %Docstring
  Constructor for QgsProcessingOutputVectorLayer.
 %End
@@ -118,14 +118,14 @@ class QgsProcessingOutputVectorLayer : QgsProcessingOutputDefinition
 %End
     virtual QString type() const;
 
-    QgsProcessingParameterDefinition::LayerType dataType() const;
+    QgsProcessing::LayerType dataType() const;
 %Docstring
  Returns the layer type for the output layer.
 .. seealso:: setDataType()
- :rtype: QgsProcessingParameterDefinition.LayerType
+ :rtype: QgsProcessing.LayerType
 %End
 
-    void setDataType( QgsProcessingParameterDefinition::LayerType type );
+    void setDataType( QgsProcessing::LayerType type );
 %Docstring
  Sets the layer ``type`` for the output layer.
 .. seealso:: dataType()

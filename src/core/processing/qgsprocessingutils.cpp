@@ -461,6 +461,42 @@ QString QgsProcessingUtils::formatHelpMapAsHtml( const QVariantMap &map, const Q
   return s;
 }
 
+QString QgsProcessingUtils::convertToCompatibleFormat( const QgsVectorLayer *vl, bool selectedFeaturesOnly, const QString &baseName, const QStringList &compatibleFormats, const QString &preferredFormat, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
+{
+  bool requiresTranslation = selectedFeaturesOnly;
+  if ( !selectedFeaturesOnly )
+  {
+    QFileInfo fi( vl->source() );
+    requiresTranslation = !compatibleFormats.contains( fi.suffix(), Qt::CaseInsensitive );
+  }
+
+  if ( requiresTranslation )
+  {
+    QString temp = QgsProcessingUtils::generateTempFilename( baseName + '.' + preferredFormat );
+
+    QgsVectorFileWriter writer( temp, context.defaultEncoding(),
+                                vl->fields(), vl->wkbType(), vl->crs(), QgsVectorFileWriter::driverForExtension( preferredFormat ) );
+    QgsFeature f;
+    QgsFeatureIterator it;
+    if ( selectedFeaturesOnly )
+      it = vl->getSelectedFeatures();
+    else
+      it = vl->getFeatures();
+
+    while ( it.nextFeature( f ) )
+    {
+      if ( feedback->isCanceled() )
+        return QString();
+      writer.addFeature( f, QgsFeatureSink::FastInsert );
+    }
+    return temp;
+  }
+  else
+  {
+    return vl->source();
+  }
+}
+
 
 //
 // QgsProcessingFeatureSource

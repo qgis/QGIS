@@ -503,6 +503,11 @@ QgsProcessingFeatureSource *QgsProcessingAlgorithm::parameterAsSource( const QVa
   return QgsProcessingParameters::parameterAsSource( parameterDefinition( name ), parameters, context );
 }
 
+QString QgsProcessingAlgorithm::parameterAsCompatibleSourceLayerPath( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context, const QStringList &compatibleFormats, const QString &preferredFormat, QgsProcessingFeedback *feedback )
+{
+  return QgsProcessingParameters::parameterAsCompatibleSourceLayerPath( parameterDefinition( name ), parameters, context, compatibleFormats, preferredFormat, feedback );
+}
+
 QgsMapLayer *QgsProcessingAlgorithm::parameterAsLayer( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context ) const
 {
   return QgsProcessingParameters::parameterAsLayer( parameterDefinition( name ), parameters, context );
@@ -513,9 +518,9 @@ QgsRasterLayer *QgsProcessingAlgorithm::parameterAsRasterLayer( const QVariantMa
   return QgsProcessingParameters::parameterAsRasterLayer( parameterDefinition( name ), parameters, context );
 }
 
-QString QgsProcessingAlgorithm::parameterAsRasterOutputLayer( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context ) const
+QString QgsProcessingAlgorithm::parameterAsOutputLayer( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context ) const
 {
-  return QgsProcessingParameters::parameterAsRasterOutputLayer( parameterDefinition( name ), parameters, context );
+  return QgsProcessingParameters::parameterAsOutputLayer( parameterDefinition( name ), parameters, context );
 }
 
 QString QgsProcessingAlgorithm::parameterAsFileOutput( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context ) const

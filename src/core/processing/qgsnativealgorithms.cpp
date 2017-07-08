@@ -74,8 +74,8 @@ void QgsNativeAlgorithms::loadAlgorithms()
 QgsCentroidAlgorithm::QgsCentroidAlgorithm()
 {
   addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "INPUT" ), QObject::tr( "Input layer" ) ) );
-  addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "OUTPUT" ), QObject::tr( "Centroids" ), QgsProcessingParameterDefinition::TypeVectorPoint ) );
-  addOutput( new QgsProcessingOutputVectorLayer( QStringLiteral( "OUTPUT" ), QObject::tr( "Centroids" ), QgsProcessingParameterDefinition::TypeVectorPoint ) );
+  addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "OUTPUT" ), QObject::tr( "Centroids" ), QgsProcessing::TypeVectorPoint ) );
+  addOutput( new QgsProcessingOutputVectorLayer( QStringLiteral( "OUTPUT" ), QObject::tr( "Centroids" ), QgsProcessing::TypeVectorPoint ) );
 }
 
 QString QgsCentroidAlgorithm::shortHelpString() const
@@ -151,8 +151,8 @@ QgsBufferAlgorithm::QgsBufferAlgorithm()
   addParameter( new QgsProcessingParameterNumber( QStringLiteral( "MITRE_LIMIT" ), QObject::tr( "Miter limit" ), QgsProcessingParameterNumber::Double, 2, false, 1 ) );
 
   addParameter( new QgsProcessingParameterBoolean( QStringLiteral( "DISSOLVE" ), QObject::tr( "Dissolve result" ), false ) );
-  addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "OUTPUT" ), QObject::tr( "Buffered" ), QgsProcessingParameterDefinition::TypeVectorPolygon ) );
-  addOutput( new QgsProcessingOutputVectorLayer( QStringLiteral( "OUTPUT" ), QObject::tr( "Buffered" ), QgsProcessingParameterDefinition::TypeVectorPoint ) );
+  addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "OUTPUT" ), QObject::tr( "Buffered" ), QgsProcessing::TypeVectorPolygon ) );
+  addOutput( new QgsProcessingOutputVectorLayer( QStringLiteral( "OUTPUT" ), QObject::tr( "Buffered" ), QgsProcessing::TypeVectorPoint ) );
 }
 
 QString QgsBufferAlgorithm::shortHelpString() const
@@ -415,7 +415,7 @@ QVariantMap QgsDissolveAlgorithm::processAlgorithm( const QVariantMap &parameter
 QgsClipAlgorithm::QgsClipAlgorithm()
 {
   addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "INPUT" ), QObject::tr( "Input layer" ) ) );
-  addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "OVERLAY" ), QObject::tr( "Clip layer" ), QList< int >() << QgsProcessingParameterDefinition::TypeVectorPolygon ) );
+  addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "OVERLAY" ), QObject::tr( "Clip layer" ), QList< int >() << QgsProcessing::TypeVectorPolygon ) );
 
   addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "OUTPUT" ), QObject::tr( "Clipped" ) ) );
   addOutput( new QgsProcessingOutputVectorLayer( QStringLiteral( "OUTPUT" ), QObject::tr( "Clipped" ) ) );
@@ -799,7 +799,7 @@ QgsExtractByExpressionAlgorithm::QgsExtractByExpressionAlgorithm()
   addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "OUTPUT" ), QObject::tr( "Matching features" ) ) );
   addOutput( new QgsProcessingOutputVectorLayer( QStringLiteral( "OUTPUT" ),  QObject::tr( "Matching (expression)" ) ) );
   addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "FAIL_OUTPUT" ),  QObject::tr( "Non-matching" ),
-                QgsProcessingParameterDefinition::TypeVectorAny, QVariant(), true ) );
+                QgsProcessing::TypeVectorAny, QVariant(), true ) );
   addOutput( new QgsProcessingOutputVectorLayer( QStringLiteral( "FAIL_OUTPUT" ),  QObject::tr( "Non-matching (expression)" ) ) );
 }
 
@@ -930,7 +930,7 @@ QgsExtractByAttributeAlgorithm::QgsExtractByAttributeAlgorithm()
   addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "OUTPUT" ), QObject::tr( "Extracted (attribute)" ) ) );
   addOutput( new QgsProcessingOutputVectorLayer( QStringLiteral( "OUTPUT" ),  QObject::tr( "Matching (attribute)" ) ) );
   addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "FAIL_OUTPUT" ),  QObject::tr( "Extracted (non-matching)" ),
-                QgsProcessingParameterDefinition::TypeVectorAny, QVariant(), true ) );
+                QgsProcessing::TypeVectorAny, QVariant(), true ) );
   addOutput( new QgsProcessingOutputVectorLayer( QStringLiteral( "FAIL_OUTPUT" ),  QObject::tr( "Non-matching (attribute)" ) ) );
 }
 
@@ -1035,8 +1035,7 @@ QVariantMap QgsExtractByAttributeAlgorithm::processAlgorithm( const QVariantMap 
   QgsExpression expression( expr );
   if ( expression.hasParserError() )
   {
-    // raise GeoAlgorithmExecutionException(expression.parserErrorString())
-    return QVariantMap();
+    throw QgsProcessingException( expression.parserErrorString() );
   }
 
   QgsExpressionContext expressionContext = createExpressionContext( parameters, context );
