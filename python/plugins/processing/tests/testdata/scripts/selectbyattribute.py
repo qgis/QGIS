@@ -4,7 +4,7 @@
 #inputs
 
 ##INPUT_LAYER=vector
-##OUTPUT_LAYER=vectorOut
+##OUTPUT_LAYER=vectorDestination
 
 #outputs
 

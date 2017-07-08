@@ -32,7 +32,7 @@ from qgis.core import (QgsProcessingUtils,
                        QgsFeatureSink,
                        QgsProcessingParameterFeatureSource,
                        QgsProcessingParameterField,
-                       QgsProcessingParameterFolderOutput,
+                       QgsProcessingParameterFolderDestination,
                        QgsProcessingOutputFolder,
                        QgsExpression,
                        QgsFeatureRequest)
@@ -61,8 +61,8 @@ class VectorSplit(QgisAlgorithm):
         self.addParameter(QgsProcessingParameterField(self.FIELD,
                                                       self.tr('Unique ID field'), None, self.INPUT))
 
-        self.addParameter(QgsProcessingParameterFolderOutput(self.OUTPUT,
-                                                             self.tr('Output directory')))
+        self.addParameter(QgsProcessingParameterFolderDestination(self.OUTPUT,
+                                                                  self.tr('Output directory')))
 
         self.addOutput(QgsProcessingOutputFolder(self.OUTPUT, self.tr('Output directory')))
 

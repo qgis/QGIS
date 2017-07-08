@@ -32,7 +32,7 @@ from qgis.PyQt.QtGui import QIcon
 from qgis.analysis import QgsAspectFilter
 from qgis.core import (QgsProcessingParameterRasterLayer,
                        QgsProcessingParameterNumber,
-                       QgsProcessingParameterRasterOutput,
+                       QgsProcessingParameterRasterDestination,
                        QgsProcessingOutputRasterLayer,
                        QgsFeatureSink)
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
@@ -65,7 +65,7 @@ class Aspect(QgisAlgorithm):
         self.addParameter(QgsProcessingParameterNumber(self.Z_FACTOR,
                                                        self.tr('Z factor'), QgsProcessingParameterNumber.Double,
                                                        1, False, 1, 999999.99))
-        self.addParameter(QgsProcessingParameterRasterOutput(self.OUTPUT, self.tr('Aspect')))
+        self.addParameter(QgsProcessingParameterRasterDestination(self.OUTPUT, self.tr('Aspect')))
         self.addOutput(QgsProcessingOutputRasterLayer(self.OUTPUT, self.tr('Aspect')))
 
     def name(self):

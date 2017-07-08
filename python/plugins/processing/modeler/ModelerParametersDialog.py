@@ -38,9 +38,9 @@ from qgis.core import (QgsProcessingParameterDefinition,
                        QgsProcessingParameterExtent,
                        QgsProcessingModelAlgorithm,
                        QgsProcessingParameterFeatureSink,
-                       QgsProcessingParameterRasterOutput,
-                       QgsProcessingParameterFileOutput,
-                       QgsProcessingParameterFolderOutput,
+                       QgsProcessingParameterRasterDestination,
+                       QgsProcessingParameterFileDestination,
+                       QgsProcessingParameterFolderDestination,
                        QgsProcessingOutputDefinition)
 
 from qgis.gui import (QgsMessageBar,
@@ -150,8 +150,8 @@ class ModelerParametersDialog(QDialog):
         for dest in self._alg.destinationParameterDefinitions():
             if dest.flags() & QgsProcessingParameterDefinition.FlagHidden:
                 continue
-            if isinstance(dest, (QgsProcessingParameterRasterOutput, QgsProcessingParameterFeatureSink,
-                                 QgsProcessingParameterFileOutput, QgsProcessingParameterFolderOutput)):
+            if isinstance(dest, (QgsProcessingParameterRasterDestination, QgsProcessingParameterFeatureSink,
+                                 QgsProcessingParameterFileDestination, QgsProcessingParameterFolderDestination)):
                 label = QLabel(dest.description())
                 item = QLineEdit()
                 if hasattr(item, 'setPlaceholderText'):
