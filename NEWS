@@ -511,7 +511,7 @@ key new features.
       normal map view as well as in print composer.
 - HTML support has been added map composer label item to give you even
       more control over your final maps. HTML labels support full css styles
-      sheets, html, and even javascript if you are that way inclined.
+      sheets, html, and even JavaScript if you are that way inclined.
 - The labeling system has been totally overhauled - it now includes many
       new features such as drop shadows, 'highway shields', many more data bound
       options, and various performance enhancements. We are slowly doing away

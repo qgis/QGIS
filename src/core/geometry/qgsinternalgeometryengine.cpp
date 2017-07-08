@@ -95,7 +95,7 @@ QgsGeometry QgsInternalGeometryEngine::extrude( double x, double y ) const
 
 
 // polylabel implementation
-// ported from the original Javascript implementation developed by Vladimir Agafonkin
+// ported from the original JavaScript implementation developed by Vladimir Agafonkin
 // originally licensed under the ISC License
 
 /// @cond PRIVATE
