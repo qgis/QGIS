@@ -71,6 +71,8 @@ QgsAttributeTypeDialog::QgsAttributeTypeDialog( QgsVectorLayer *vl, int fieldIdx
     isFieldEditableCheckBox->setEnabled( false );
   }
 
+  mExpressionWidget->registerExpressionContextGenerator( this );
+
   connect( mExpressionWidget, &QgsExpressionLineEdit::expressionChanged, this, &QgsAttributeTypeDialog::defaultExpressionChanged );
   connect( mUniqueCheckBox, &QCheckBox::toggled, this, [ = ]( bool checked )
   {
@@ -291,6 +293,18 @@ QString QgsAttributeTypeDialog::defaultValueExpression() const
 void QgsAttributeTypeDialog::setDefaultValueExpression( const QString &expression )
 {
   mExpressionWidget->setExpression( expression );
+}
+
+QgsExpressionContext QgsAttributeTypeDialog::createExpressionContext() const
+{
+  QgsExpressionContext context;
+  context
+      << QgsExpressionContextUtils::globalScope()
+      << QgsExpressionContextUtils::projectScope( QgsProject::instance() )
+      << QgsExpressionContextUtils::layerScope( mLayer )
+      << QgsExpressionContextUtils::mapToolCaptureScope( QList<QgsPointLocator::Match>() );
+
+  return context;
 }
 
 QString QgsAttributeTypeDialog::constraintExpression() const

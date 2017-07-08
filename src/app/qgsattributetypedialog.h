@@ -26,7 +26,7 @@
 
 class QDialog;
 
-class APP_EXPORT QgsAttributeTypeDialog: public QDialog, private Ui::QgsAttributeTypeDialog
+class APP_EXPORT QgsAttributeTypeDialog: public QDialog, private Ui::QgsAttributeTypeDialog, QgsExpressionContextGenerator
 {
     Q_OBJECT
 
@@ -162,6 +162,8 @@ class APP_EXPORT QgsAttributeTypeDialog: public QDialog, private Ui::QgsAttribut
      * Sets the expression used for the field's default value
      */
     void setDefaultValueExpression( const QString &expression );
+
+    QgsExpressionContext createExpressionContext() const override;
 
   private slots:
 

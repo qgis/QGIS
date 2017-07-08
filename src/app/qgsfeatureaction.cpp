@@ -161,7 +161,7 @@ bool QgsFeatureAction::editFeature( bool showModal )
   return true;
 }
 
-bool QgsFeatureAction::addFeature( const QgsAttributeMap &defaultAttributes, bool showModal )
+bool QgsFeatureAction::addFeature( const QgsAttributeMap &defaultAttributes, bool showModal, QgsExpressionContextScope *scope SIP_TRANSFER )
 {
   if ( !mLayer || !mLayer->isEditable() )
     return false;
@@ -188,6 +188,9 @@ bool QgsFeatureAction::addFeature( const QgsAttributeMap &defaultAttributes, boo
   // create new feature template - this will initialize the attributes to valid values, handling default
   // values and field constraints
   QgsExpressionContext context = mLayer->createExpressionContext();
+  if ( scope )
+    context.appendScope( scope );
+
   QgsFeature newFeature = QgsVectorLayerUtils::createFeature( mLayer, mFeature->geometry(), initialAttributeValues,
                           &context );
   *mFeature = newFeature;

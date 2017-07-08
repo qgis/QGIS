@@ -673,6 +673,19 @@ void QgsExpression::initVariableHelp()
   sVariableHelpTexts.insert( QStringLiteral( "grid_number" ), QCoreApplication::translate( "variable_help", "Current grid annotation value." ) );
   sVariableHelpTexts.insert( QStringLiteral( "grid_axis" ), QCoreApplication::translate( "variable_help", "Current grid annotation axis (e.g., 'x' for longitude, 'y' for latitude)." ) );
 
+  // map tool capture variables
+  sVariableHelpTexts.insert( QStringLiteral( "snapping_results" ), QCoreApplication::translate( "variable_help",
+                             "<p>An array with an item for each snapped point.</p>"
+                             "<p>Each item is a map with the following keys:</p>"
+                             "<dl>"
+                             "<dt>valid</dt><dd>Boolean that indicates if the snapping result is valid</dd>"
+                             "<dt>layer</dt><dd>The layer on which the snapped feature is</dd>"
+                             "<dt>feature_id</dt><dd>The feature id of the snapped feature</dd>"
+                             "<dt>vertex_index</dt><dd>The index of the snapped vertex</dd>"
+                             "<dt>distance</dt><dd>The distance between the mouse cursor and the snapped point at the time of snapping</dd>"
+                             "</dl>" ) );
+
+
   //symbol variables
   sVariableHelpTexts.insert( QStringLiteral( "geometry_part_count" ), QCoreApplication::translate( "variable_help", "Number of parts in rendered feature's geometry." ) );
   sVariableHelpTexts.insert( QStringLiteral( "geometry_part_num" ), QCoreApplication::translate( "variable_help", "Current geometry part number for feature being rendered." ) );
