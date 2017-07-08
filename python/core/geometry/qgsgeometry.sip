@@ -336,7 +336,7 @@ Returns true if WKB of the geometry is of WKBMulti* type
 
     double sqrDistToVertexAt( QgsPointXY &point /In/, int atVertex ) const;
 %Docstring
-  Returns the squared cartesian distance between the given point
+  Returns the squared Cartesian distance between the given point
   to the given vertex index (vertex at the given position number,
   ring and item (first number is index 0))
  :rtype: float
@@ -363,7 +363,7 @@ Returns true if WKB of the geometry is of WKBMulti* type
  Searches for the closest vertex in this geometry to the given point.
  \param point Specifiest the point for search
  \param atVertex Receives index of the closest vertex
- :return: The squared cartesian distance is also returned in sqrDist, negative number on error
+ :return: The squared Cartesian distance is also returned in sqrDist, negative number on error
  :rtype: float
 %End
 
@@ -376,7 +376,7 @@ Returns true if WKB of the geometry is of WKBMulti* type
  before the closest segment is always afterVertex - 1
  \param leftOf Out: Returns if the point lies on the left of right side of the segment ( < 0 means left, > 0 means right )
  \param epsilon epsilon for segment snapping
- :return: The squared cartesian distance is also returned in sqrDist, negative number on error
+ :return: The squared Cartesian distance is also returned in sqrDist, negative number on error
  :rtype: float
 %End
 

@@ -270,9 +270,9 @@ class CORE_EXPORT QgsExpression
     /** Sets the geometry calculator used for distance and area calculations in expressions.
      * (used by $length, $area and $perimeter functions only). By default, no geometry
      * calculator is set and all distance and area calculations are performed using simple
-     * cartesian methods (ie no ellipsoidal calculations).
+     * Cartesian methods (ie no ellipsoidal calculations).
      * \param calc geometry calculator. Ownership is not transferred. Set to a nullptr to force
-     * cartesian calculations.
+     * Cartesian calculations.
      * \see geomCalculator()
      */
     void setGeomCalculator( const QgsDistanceArea *calc );
