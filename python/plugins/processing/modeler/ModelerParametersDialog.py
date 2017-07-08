@@ -28,7 +28,10 @@ __revision__ = '$Format:%H$'
 
 import webbrowser
 
-from qgis.PyQt.QtCore import Qt, QUrl, QMetaObject
+from qgis.PyQt.QtCore import (Qt,
+                              QUrl,
+                              QMetaObject,
+                              QByteArray)
 from qgis.PyQt.QtWidgets import (QDialog, QDialogButtonBox, QLabel, QLineEdit,
                                  QFrame, QPushButton, QSizePolicy, QVBoxLayout,
                                  QHBoxLayout, QWidget)
@@ -41,7 +44,8 @@ from qgis.core import (QgsProcessingParameterDefinition,
                        QgsProcessingParameterRasterDestination,
                        QgsProcessingParameterFileDestination,
                        QgsProcessingParameterFolderDestination,
-                       QgsProcessingOutputDefinition)
+                       QgsProcessingOutputDefinition,
+                       QgsSettings)
 
 from qgis.gui import (QgsMessageBar,
                       QgsScrollArea,
@@ -70,6 +74,13 @@ class ModelerParametersDialog(QDialog):
         self.childId = algName
         self.setupUi()
         self.params = None
+        settings = QgsSettings()
+        self.restoreGeometry(settings.value("/Processing/modelParametersDialogGeometry", QByteArray()))
+
+    def closeEvent(self, event):
+        settings = QgsSettings()
+        settings.setValue("/Processing/modelParametersDialogGeometry", self.saveGeometry())
+        super(ModelerParametersDialog, self).closeEvent(event)
 
     def setupUi(self):
         self.labels = {}

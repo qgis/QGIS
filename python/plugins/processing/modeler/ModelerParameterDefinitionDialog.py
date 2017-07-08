@@ -29,7 +29,8 @@ __revision__ = '$Format:%H$'
 import math
 
 from qgis.gui import QgsExpressionLineEdit, QgsProjectionSelectionWidget
-from qgis.core import (QgsCoordinateReferenceSystem,
+from qgis.core import (QgsSettings,
+                       QgsCoordinateReferenceSystem,
                        QgsProcessingParameterDefinition,
                        QgsProcessingParameterBoolean,
                        QgsProcessingParameterCrs,
@@ -48,7 +49,8 @@ from qgis.core import (QgsCoordinateReferenceSystem,
                        QgsProcessingParameterVectorLayer,
                        QgsProcessingParameterField,
                        QgsProcessingParameterFeatureSource)
-from qgis.PyQt.QtCore import Qt
+from qgis.PyQt.QtCore import (Qt,
+                              QByteArray)
 from qgis.PyQt.QtWidgets import (QDialog,
                                  QVBoxLayout,
                                  QLabel,
@@ -98,6 +100,13 @@ class ModelerParameterDefinitionDialog(QDialog):
         QDialog.__init__(self)
         self.setModal(True)
         self.setupUi()
+        settings = QgsSettings()
+        self.restoreGeometry(settings.value("/Processing/modelParametersDefinitionDialogGeometry", QByteArray()))
+
+    def closeEvent(self, event):
+        settings = QgsSettings()
+        settings.setValue("/Processing/modelParametersDefinitionDialogGeometry", self.saveGeometry())
+        super(ModelerParameterDefinitionDialog, self).closeEvent(event)
 
     def setupUi(self):
         self.setWindowTitle(self.tr('Parameter definition'))
