@@ -816,6 +816,7 @@ int main( int argc, char *argv[] )
   }
 
   QgsUserProfile *profile = QgsUserProfileManager::getProfile( configLocalStorageLocation, roamingConfig, configName );
+  profile->initSettings();
   QString profileFolder = profile->folder();
   QString rootProfileFolder = profile->parentFolder();
 
