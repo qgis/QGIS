@@ -217,7 +217,7 @@ class ModelerDialog(BASE, WIDGET):
         ctrlEquals.activated.connect(self.zoomIn)
 
         try:
-            iconSize = int(settings.value("iconsize", 24))
+            iconSize = int(settings.value("IconSize", 24))
         except:
             iconSize = 24
         self.mToolbar.setIconSize(QSize(iconSize, iconSize))
