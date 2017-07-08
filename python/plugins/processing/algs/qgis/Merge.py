@@ -33,6 +33,7 @@ from qgis.core import (QgsFields,
                        QgsField,
                        QgsFeatureRequest,
                        QgsFeatureSink,
+                       QgsProcessing,
                        QgsProcessingUtils,
                        QgsProcessingParameterMultipleLayers,
                        QgsProcessingParameterDefinition,
@@ -63,7 +64,7 @@ class Merge(QgisAlgorithm):
         super().__init__()
         self.addParameter(QgsProcessingParameterMultipleLayers(self.LAYERS,
                                                                self.tr('Layers to merge'),
-                                                               QgsProcessingParameterDefinition.TypeVectorAny))
+                                                               QgsProcessing.TypeVectorAny))
 
         self.addParameter(QgsProcessingParameterFeatureSink(self.OUTPUT, self.tr('Merged')))
         self.addOutput(QgsProcessingOutputVectorLayer(self.OUTPUT, self.tr('Merged')))

@@ -30,6 +30,7 @@ import os
 from qgis.core import (QgsGeometry,
                        QgsWkbTypes,
                        QgsFeatureSink,
+                       QgsProcessing,
                        QgsProcessingUtils,
                        QgsProcessingParameterFeatureSource,
                        QgsProcessingParameterFeatureSink,
@@ -63,7 +64,7 @@ class BoundingBox(QgisAlgorithm):
         super().__init__()
 
         self.addParameter(QgsProcessingParameterFeatureSource(self.INPUT_LAYER, self.tr('Input layer')))
-        self.addParameter(QgsProcessingParameterFeatureSink(self.OUTPUT_LAYER, self.tr('Bounds'), QgsProcessingParameterDefinition.TypeVectorPolygon))
+        self.addParameter(QgsProcessingParameterFeatureSink(self.OUTPUT_LAYER, self.tr('Bounds'), QgsProcessing.TypeVectorPolygon))
         self.addOutput(QgsProcessingOutputVectorLayer(self.OUTPUT_LAYER, self.tr("Bounds")))
 
     def name(self):

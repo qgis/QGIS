@@ -922,6 +922,7 @@ SET(QGIS_CORE_HDRS
   metadata/qgslayermetadatavalidator.h
 
   processing/qgsnativealgorithms.h
+  processing/qgsprocessing.h
   processing/qgsprocessingalgorithm.h
   processing/qgsprocessingcontext.h
   processing/qgsprocessingmodelalgorithm.h

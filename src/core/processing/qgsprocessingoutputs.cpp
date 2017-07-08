@@ -24,17 +24,17 @@ QgsProcessingOutputDefinition::QgsProcessingOutputDefinition( const QString &nam
 
 }
 
-QgsProcessingOutputVectorLayer::QgsProcessingOutputVectorLayer( const QString &name, const QString &description, QgsProcessingParameterDefinition::LayerType type )
+QgsProcessingOutputVectorLayer::QgsProcessingOutputVectorLayer( const QString &name, const QString &description, QgsProcessing::LayerType type )
   : QgsProcessingOutputDefinition( name, description )
   , mDataType( type )
 {}
 
-QgsProcessingParameterDefinition::LayerType QgsProcessingOutputVectorLayer::dataType() const
+QgsProcessing::LayerType QgsProcessingOutputVectorLayer::dataType() const
 {
   return mDataType;
 }
 
-void QgsProcessingOutputVectorLayer::setDataType( QgsProcessingParameterDefinition::LayerType type )
+void QgsProcessingOutputVectorLayer::setDataType( QgsProcessing::LayerType type )
 {
   mDataType = type;
 }

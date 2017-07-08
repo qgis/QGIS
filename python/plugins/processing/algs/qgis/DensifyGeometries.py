@@ -31,6 +31,7 @@ import os
 from qgis.core import (QgsWkbTypes,
                        QgsFeatureSink,
                        QgsApplication,
+                       QgsProcessing,
                        QgsProcessingParameterFeatureSource,
                        QgsProcessingParameterNumber,
                        QgsProcessingParameterFeatureSink,
@@ -55,7 +56,7 @@ class DensifyGeometries(QgisAlgorithm):
         super().__init__()
 
         self.addParameter(QgsProcessingParameterFeatureSource(self.INPUT,
-                                                              self.tr('Input layer'), [QgsProcessingParameterDefinition.TypeVectorPolygon, QgsProcessingParameterDefinition.TypeVectorLine]))
+                                                              self.tr('Input layer'), [QgsProcessing.TypeVectorPolygon, QgsProcessing.TypeVectorLine]))
         self.addParameter(QgsProcessingParameterNumber(self.VERTICES,
                                                        self.tr('Vertices to add'), QgsProcessingParameterNumber.Integer,
                                                        1, False, 1, 10000000))

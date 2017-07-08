@@ -201,18 +201,6 @@ class QgsProcessingParameterDefinition
     typedef QFlags<QgsProcessingParameterDefinition::Flag> Flags;
 
 
-    enum LayerType
-    {
-      TypeAny,
-      TypeVectorAny,
-      TypeVectorPoint,
-      TypeVectorLine,
-      TypeVectorPolygon,
-      TypeRaster,
-      TypeFile,
-      TypeTable,
-    };
-
     QgsProcessingParameterDefinition( const QString &name, const QString &description = QString(), const QVariant &defaultValue = QVariant(),
                                       bool optional = false );
 %Docstring
@@ -963,7 +951,7 @@ class QgsProcessingParameterMultipleLayers : QgsProcessingParameterDefinition
 %End
   public:
 
-    QgsProcessingParameterMultipleLayers( const QString &name, const QString &description = QString(), QgsProcessingParameterDefinition::LayerType layerType = QgsProcessingParameterDefinition::TypeVectorAny,
+    QgsProcessingParameterMultipleLayers( const QString &name, const QString &description = QString(), QgsProcessing::LayerType layerType = QgsProcessing::TypeVectorAny,
                                           const QVariant &defaultValue = QVariant(),
                                           bool optional = false );
 %Docstring
@@ -983,14 +971,14 @@ class QgsProcessingParameterMultipleLayers : QgsProcessingParameterDefinition
     virtual QString asScriptCode() const;
 
 
-    QgsProcessingParameterDefinition::LayerType layerType() const;
+    QgsProcessing::LayerType layerType() const;
 %Docstring
  Returns the layer type for layers acceptable by the parameter.
 .. seealso:: setLayerType()
- :rtype: QgsProcessingParameterDefinition.LayerType
+ :rtype: QgsProcessing.LayerType
 %End
 
-    void setLayerType( QgsProcessingParameterDefinition::LayerType type );
+    void setLayerType( QgsProcessing::LayerType type );
 %Docstring
  Sets the layer ``type`` for layers acceptable by the parameter.
 .. seealso:: layerType()
@@ -1665,7 +1653,7 @@ class QgsProcessingParameterFeatureSink : QgsProcessingDestinationParameter
 %End
   public:
 
-    QgsProcessingParameterFeatureSink( const QString &name, const QString &description = QString(), QgsProcessingParameterDefinition::LayerType type = QgsProcessingParameterDefinition::TypeVectorAny, const QVariant &defaultValue = QVariant(),
+    QgsProcessingParameterFeatureSink( const QString &name, const QString &description = QString(), QgsProcessing::LayerType type = QgsProcessing::TypeVectorAny, const QVariant &defaultValue = QVariant(),
                                        bool optional = false );
 %Docstring
  Constructor for QgsProcessingParameterFeatureSink.
@@ -1688,11 +1676,11 @@ class QgsProcessingParameterFeatureSink : QgsProcessingDestinationParameter
     virtual QString defaultFileExtension() const;
 
 
-    QgsProcessingParameterDefinition::LayerType dataType() const;
+    QgsProcessing::LayerType dataType() const;
 %Docstring
  Returns the layer type for sinks associated with the parameter.
 .. seealso:: setDataType()
- :rtype: QgsProcessingParameterDefinition.LayerType
+ :rtype: QgsProcessing.LayerType
 %End
 
     bool hasGeometry() const;
@@ -1702,7 +1690,7 @@ class QgsProcessingParameterFeatureSink : QgsProcessingDestinationParameter
  :rtype: bool
 %End
 
-    void setDataType( QgsProcessingParameterDefinition::LayerType type );
+    void setDataType( QgsProcessing::LayerType type );
 %Docstring
  Sets the layer ``type`` for the sinks associated with the parameter.
 .. seealso:: dataType()
@@ -1737,7 +1725,7 @@ class QgsProcessingParameterVectorOutput : QgsProcessingDestinationParameter
 %End
   public:
 
-    QgsProcessingParameterVectorOutput( const QString &name, const QString &description = QString(), QgsProcessingParameterDefinition::LayerType type = QgsProcessingParameterDefinition::TypeVectorAny, const QVariant &defaultValue = QVariant(),
+    QgsProcessingParameterVectorOutput( const QString &name, const QString &description = QString(), QgsProcessing::LayerType type = QgsProcessing::TypeVectorAny, const QVariant &defaultValue = QVariant(),
                                         bool optional = false );
 %Docstring
  Constructor for QgsProcessingParameterVectorOutput.
@@ -1760,11 +1748,11 @@ class QgsProcessingParameterVectorOutput : QgsProcessingDestinationParameter
     virtual QString defaultFileExtension() const;
 
 
-    QgsProcessingParameterDefinition::LayerType dataType() const;
+    QgsProcessing::LayerType dataType() const;
 %Docstring
  Returns the layer type for layers associated with the parameter.
 .. seealso:: setDataType()
- :rtype: QgsProcessingParameterDefinition.LayerType
+ :rtype: QgsProcessing.LayerType
 %End
 
     bool hasGeometry() const;
@@ -1774,7 +1762,7 @@ class QgsProcessingParameterVectorOutput : QgsProcessingDestinationParameter
  :rtype: bool
 %End
 
-    void setDataType( QgsProcessingParameterDefinition::LayerType type );
+    void setDataType( QgsProcessing::LayerType type );
 %Docstring
  Sets the layer ``type`` for the layers associated with the parameter.
 .. seealso:: dataType()

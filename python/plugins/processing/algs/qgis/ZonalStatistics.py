@@ -32,6 +32,7 @@ from qgis.PyQt.QtGui import QIcon
 
 from qgis.analysis import QgsZonalStatistics
 from qgis.core import (QgsFeatureSink,
+                       QgsProcessing,
                        QgsProcessingUtils,
                        QgsProcessingParameterDefinition,
                        QgsProcessingParameterVectorLayer,
@@ -83,7 +84,7 @@ class ZonalStatistics(QgisAlgorithm):
                                                        minValue=1, maxValue=999, defaultValue=1))
         self.addParameter(QgsProcessingParameterVectorLayer(self.INPUT_VECTOR,
                                                             self.tr('Vector layer containing zones'),
-                                                            [QgsProcessingParameterDefinition.TypeVectorPolygon]))
+                                                            [QgsProcessing.TypeVectorPolygon]))
         self.addParameter(QgsProcessingParameterString(self.COLUMN_PREFIX,
                                                        self.tr('Output column prefix'), '_'))
         keys = list(self.STATS.keys())
@@ -93,7 +94,7 @@ class ZonalStatistics(QgisAlgorithm):
                                                      allowMultiple=True, defaultValue=[0, 1, 2]))
         self.addOutput(QgsProcessingOutputVectorLayer(self.INPUT_VECTOR,
                                                       self.tr('Zonal statistics'),
-                                                      QgsProcessingParameterDefinition.TypeVectorPolygon))
+                                                      QgsProcessing.TypeVectorPolygon))
 
         self.bandNumber = None
         self.columnPrefix = None
