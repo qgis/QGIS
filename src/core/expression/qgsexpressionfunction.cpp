@@ -3325,7 +3325,6 @@ static QVariant fcnGetFeatureById( const QVariantList &values, const QgsExpressi
 
     QgsFeatureRequest req;
     req.setFilterFid( fid );
-    req.setLimit( 1 );
     QgsFeatureIterator fIt = vl->getFeatures( req );
 
     QgsFeature fet;
