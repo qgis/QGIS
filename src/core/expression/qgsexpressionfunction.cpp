@@ -1278,7 +1278,7 @@ static QVariant fcnNumSelected( const QVariantList &values, const QgsExpressionC
     layer = QgsExpressionUtils::getVectorLayer( values.at( 0 ), parent );
   else
   {
-    parent->setEvalErrorString( QObject::tr( "Function `num_selected` requires no more than one QgsExpressionFunction::Parameter. %1 given." ).arg( values.length() ) );
+    parent->setEvalErrorString( QObject::tr( "Function `num_selected` requires no more than one parameter. %1 given." ).arg( values.length() ) );
     return QVariant();
   }
 
