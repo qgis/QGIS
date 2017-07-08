@@ -4315,7 +4315,7 @@ bool QgsWithVariableExpressionFunction::isStatic( const QgsExpressionNodeFunctio
 
     if ( args->at( 2 )->isStatic( parent, updatedContext ) )
       isStatic = true;
-    updatedContext->popScope();
+    delete updatedContext->popScope();
   }
 
   return false;
