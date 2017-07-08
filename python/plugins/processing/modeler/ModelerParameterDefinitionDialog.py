@@ -64,18 +64,18 @@ from qgis.PyQt.QtWidgets import (QDialog,
 class ModelerParameterDefinitionDialog(QDialog):
 
     PARAMETER_NUMBER = 'Number'
-    PARAMETER_RASTER = 'Raster layer'
-    PARAMETER_TABLE = 'Table'
-    PARAMETER_VECTOR = 'Vector layer'
+    PARAMETER_RASTER = 'Raster Layer'
+    PARAMETER_TABLE = 'Vector Layer'
+    PARAMETER_VECTOR = 'Feature Source'
     PARAMETER_STRING = 'String'
     PARAMETER_EXPRESSION = 'Expression'
     PARAMETER_BOOLEAN = 'Boolean'
-    PARAMETER_TABLE_FIELD = 'Table field'
+    PARAMETER_TABLE_FIELD = 'Layer Field'
     PARAMETER_EXTENT = 'Extent'
     PARAMETER_FILE = 'File'
     PARAMETER_POINT = 'Point'
     PARAMETER_CRS = 'CRS'
-    PARAMETER_MULTIPLE = 'Multiple input'
+    PARAMETER_MULTIPLE = 'Multiple Input'
 
     paramTypes = [
         PARAMETER_BOOLEAN,
