@@ -1976,7 +1976,19 @@ OGRFeatureH QgsVectorFileWriter::createFeature( QgsFeature& feature )
     QVariant attrValue = feature.attribute( fldIdx );
 
     if ( !attrValue.isValid() || attrValue.isNull() )
+    {
+// Starting with GDAL 2.2, there are 2 concepts: unset fields and null fields
+// whereas previously there was only unset fields. For a GeoJSON output,
+// leaving a field unset will cause it to not appear at all in the output
+// feature.
+// When all features of a layer have a field unset, this would cause the
+// field to not be present at all in the output, and thus on reading to
+// have disappeared. #16812
+#ifdef OGRNullMarker
+      OGR_F_SetFieldNull( poFeature, ogrField );
+#endif
       continue;
+    }
 
     if ( mFieldValueConverter )
     {

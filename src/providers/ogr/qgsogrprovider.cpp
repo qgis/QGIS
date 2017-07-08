@@ -1272,7 +1272,18 @@ bool QgsOgrProvider::addFeature( QgsFeature& f )
     QVariant attrVal = attrs.at( qgisAttId );
     if ( attrVal.isNull() || ( type != OFTString && attrVal.toString().isEmpty() ) )
     {
+// Starting with GDAL 2.2, there are 2 concepts: unset fields and null fields
+// whereas previously there was only unset fields. For a GeoJSON output,
+// leaving a field unset will cause it to not appear at all in the output
+// feature.
+// When all features of a layer have a field unset, this would cause the
+// field to not be present at all in the output, and thus on reading to
+// have disappeared. #16812
+#ifdef OGRNullMarker
+      OGR_F_SetFieldNull( feature, ogrAttId );
+#else
       OGR_F_UnsetField( feature, ogrAttId );
+#endif
     }
     else
     {
@@ -1683,7 +1694,18 @@ bool QgsOgrProvider::changeAttributeValues( const QgsChangedAttributesMap &attr_
 
       if ( it2->isNull() || ( type != OFTString && it2->toString().isEmpty() ) )
       {
+// Starting with GDAL 2.2, there are 2 concepts: unset fields and null fields
+// whereas previously there was only unset fields. For a GeoJSON output,
+// leaving a field unset will cause it to not appear at all in the output
+// feature.
+// When all features of a layer have a field unset, this would cause the
+// field to not be present at all in the output, and thus on reading to
+// have disappeared. #16812
+#ifdef OGRNullMarker
+        OGR_F_SetFieldNull( of, f );
+#else
         OGR_F_UnsetField( of, f );
+#endif
       }
       else
       {

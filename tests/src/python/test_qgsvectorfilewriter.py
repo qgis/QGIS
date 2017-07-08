@@ -675,10 +675,17 @@ class TestQgsVectorFileWriter(unittest.TestCase):
         self.assertIsNotNone(lyr)
         f = lyr.GetNextFeature()
         self.assertEqual(f['firstfield'], 3)
-        self.assertFalse(f.IsFieldSet('secondfield'))
+        if hasattr(f, "IsFieldSetAndNotNull"):
+            # GDAL >= 2.2
+            self.assertFalse(f.IsFieldSetAndNotNull('secondfield'))
+        else:
+            self.assertFalse(f.IsFieldSet('secondfield'))
         f = lyr.GetNextFeature()
         self.assertEqual(f['firstfield'], 4)
-        self.assertFalse(f.IsFieldSet('secondfield'))
+        if hasattr(f, "IsFieldSetAndNotNull"):
+            self.assertFalse(f.IsFieldSetAndNotNull('secondfield'))
+        else:
+            self.assertFalse(f.IsFieldSet('secondfield'))
         f = lyr.GetNextFeature()
         self.assertEqual(f['firstfield'], 5)
         self.assertEqual(f['secondfield'], -1)
