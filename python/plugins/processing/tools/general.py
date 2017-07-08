@@ -38,8 +38,8 @@ except ImportError:
 from qgis.core import (QgsApplication,
                        QgsProcessingAlgorithm,
                        QgsProcessingParameterFeatureSink,
-                       QgsProcessingParameterVectorOutput,
-                       QgsProcessingParameterRasterOutput,
+                       QgsProcessingParameterVectorDestination,
+                       QgsProcessingParameterRasterDestination,
                        QgsProcessingOutputLayerDefinition,
                        QgsProject)
 from processing.core.Processing import Processing
@@ -96,7 +96,7 @@ def runAndLoadResults(algOrName, parameters, feedback=None, context=None):
         if not param.name() in parameters:
             continue
 
-        if isinstance(param, (QgsProcessingParameterFeatureSink, QgsProcessingParameterVectorOutput, QgsProcessingParameterRasterOutput)):
+        if isinstance(param, (QgsProcessingParameterFeatureSink, QgsProcessingParameterVectorDestination, QgsProcessingParameterRasterDestination)):
             p = parameters[param.name()]
             if not isinstance(p, QgsProcessingOutputLayerDefinition):
                 parameters[param.name()] = QgsProcessingOutputLayerDefinition(p, QgsProject.instance())

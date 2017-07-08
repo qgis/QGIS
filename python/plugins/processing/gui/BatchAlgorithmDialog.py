@@ -34,7 +34,7 @@ from qgis.PyQt.QtGui import QCursor
 from qgis.PyQt.QtCore import Qt
 
 from qgis.core import (QgsProcessingParameterDefinition,
-                       QgsProcessingParameterRasterOutput,
+                       QgsProcessingParameterRasterDestination,
                        QgsProcessingParameterFeatureSink,
                        QgsProcessingOutputLayerDefinition,
                        QgsProcessingOutputHtml,
@@ -104,7 +104,7 @@ class BatchAlgorithmDialog(AlgorithmDialogBase):
                 widget = self.mainWidget.tblParameters.cellWidget(row, col)
                 text = widget.getValue()
                 if param.checkValueIsAcceptable(text, context):
-                    if isinstance(out, (QgsProcessingParameterRasterOutput,
+                    if isinstance(out, (QgsProcessingParameterRasterDestination,
                                         QgsProcessingParameterFeatureSink)):
                         # load rasters and sinks on completion
                         parameters[out.name()] = QgsProcessingOutputLayerDefinition(text, context.project())

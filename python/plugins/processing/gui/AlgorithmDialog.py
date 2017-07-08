@@ -42,10 +42,10 @@ from qgis.core import (QgsProject,
                        QgsProcessingOutputVectorLayer,
                        QgsProcessingAlgRunnerTask,
                        QgsProcessingOutputHtml,
-                       QgsProcessingParameterVectorOutput,
+                       QgsProcessingParameterVectorDestination,
                        QgsProcessingOutputLayerDefinition,
                        QgsProcessingParameterFeatureSink,
-                       QgsProcessingParameterRasterOutput,
+                       QgsProcessingParameterRasterDestination,
                        QgsProcessingAlgorithm)
 from qgis.gui import QgsMessageBar
 from qgis.utils import iface
@@ -119,7 +119,7 @@ class AlgorithmDialog(AlgorithmDialogBase):
             else:
                 dest_project = None
                 if not param.flags() & QgsProcessingParameterDefinition.FlagHidden and \
-                        isinstance(param, (QgsProcessingParameterRasterOutput, QgsProcessingParameterFeatureSink, QgsProcessingParameterVectorOutput)):
+                        isinstance(param, (QgsProcessingParameterRasterDestination, QgsProcessingParameterFeatureSink, QgsProcessingParameterVectorDestination)):
                     if self.mainWidget.checkBoxes[param.name()].isChecked():
                         dest_project = QgsProject.instance()
 

@@ -3576,7 +3576,7 @@ void TestQgsProcessing::parameterVectorOut()
   context.setProject( &p );
 
   // not optional!
-  std::unique_ptr< QgsProcessingParameterVectorOutput > def( new QgsProcessingParameterVectorOutput( "non_optional", QString(), QgsProcessing::TypeVectorAny, QString(), false ) );
+  std::unique_ptr< QgsProcessingParameterVectorDestination > def( new QgsProcessingParameterVectorDestination( "non_optional", QString(), QgsProcessing::TypeVectorAny, QString(), false ) );
   QVERIFY( !def->checkValueIsAcceptable( false ) );
   QVERIFY( !def->checkValueIsAcceptable( true ) );
   QVERIFY( !def->checkValueIsAcceptable( 5 ) );
@@ -3600,19 +3600,19 @@ void TestQgsProcessing::parameterVectorOut()
   QVERIFY( def->generateTemporaryDestination().startsWith( QgsProcessingUtils::tempFolder() ) );
 
   QVariantMap map = def->toVariantMap();
-  QgsProcessingParameterVectorOutput fromMap( "x" );
+  QgsProcessingParameterVectorDestination fromMap( "x" );
   QVERIFY( fromMap.fromVariantMap( map ) );
   QCOMPARE( fromMap.name(), def->name() );
   QCOMPARE( fromMap.description(), def->description() );
   QCOMPARE( fromMap.flags(), def->flags() );
   QCOMPARE( fromMap.defaultValue(), def->defaultValue() );
   QCOMPARE( fromMap.dataType(), def->dataType() );
-  def.reset( dynamic_cast< QgsProcessingParameterVectorOutput *>( QgsProcessingParameters::parameterFromVariantMap( map ) ) );
-  QVERIFY( dynamic_cast< QgsProcessingParameterVectorOutput *>( def.get() ) );
+  def.reset( dynamic_cast< QgsProcessingParameterVectorDestination *>( QgsProcessingParameters::parameterFromVariantMap( map ) ) );
+  QVERIFY( dynamic_cast< QgsProcessingParameterVectorDestination *>( def.get() ) );
 
   QString code = def->asScriptCode();
   QCOMPARE( code, QStringLiteral( "##non_optional=vectorOut" ) );
-  std::unique_ptr< QgsProcessingParameterVectorOutput > fromCode( dynamic_cast< QgsProcessingParameterVectorOutput * >( QgsProcessingParameters::parameterFromScriptCode( code ) ) );
+  std::unique_ptr< QgsProcessingParameterVectorDestination > fromCode( dynamic_cast< QgsProcessingParameterVectorDestination * >( QgsProcessingParameters::parameterFromScriptCode( code ) ) );
   QVERIFY( fromCode.get() );
   QCOMPARE( fromCode->name(), def->name() );
   QCOMPARE( fromCode->description(), QStringLiteral( "non optional" ) );
@@ -3623,21 +3623,21 @@ void TestQgsProcessing::parameterVectorOut()
   def->setDataType( QgsProcessing::TypeVectorPoint );
   code = def->asScriptCode();
   QCOMPARE( code, QStringLiteral( "##non_optional=vectorOut point" ) );
-  fromCode.reset( dynamic_cast< QgsProcessingParameterVectorOutput * >( QgsProcessingParameters::parameterFromScriptCode( code ) ) );
+  fromCode.reset( dynamic_cast< QgsProcessingParameterVectorDestination * >( QgsProcessingParameters::parameterFromScriptCode( code ) ) );
   QCOMPARE( fromCode->dataType(), def->dataType() );
   def->setDataType( QgsProcessing::TypeVectorLine );
   code = def->asScriptCode();
   QCOMPARE( code, QStringLiteral( "##non_optional=vectorOut line" ) );
-  fromCode.reset( dynamic_cast< QgsProcessingParameterVectorOutput * >( QgsProcessingParameters::parameterFromScriptCode( code ) ) );
+  fromCode.reset( dynamic_cast< QgsProcessingParameterVectorDestination * >( QgsProcessingParameters::parameterFromScriptCode( code ) ) );
   QCOMPARE( fromCode->dataType(), def->dataType() );
   def->setDataType( QgsProcessing::TypeVectorPolygon );
   code = def->asScriptCode();
   QCOMPARE( code, QStringLiteral( "##non_optional=vectorOut polygon" ) );
-  fromCode.reset( dynamic_cast< QgsProcessingParameterVectorOutput * >( QgsProcessingParameters::parameterFromScriptCode( code ) ) );
+  fromCode.reset( dynamic_cast< QgsProcessingParameterVectorDestination * >( QgsProcessingParameters::parameterFromScriptCode( code ) ) );
   QCOMPARE( fromCode->dataType(), def->dataType() );
 
   // optional
-  def.reset( new QgsProcessingParameterVectorOutput( "optional", QString(), QgsProcessing::TypeVectorAny, QString(), true ) );
+  def.reset( new QgsProcessingParameterVectorDestination( "optional", QString(), QgsProcessing::TypeVectorAny, QString(), true ) );
   QVERIFY( !def->checkValueIsAcceptable( false ) );
   QVERIFY( !def->checkValueIsAcceptable( true ) );
   QVERIFY( !def->checkValueIsAcceptable( 5 ) );
@@ -3649,7 +3649,7 @@ void TestQgsProcessing::parameterVectorOut()
 
   code = def->asScriptCode();
   QCOMPARE( code, QStringLiteral( "##optional=optional vectorOut" ) );
-  fromCode.reset( dynamic_cast< QgsProcessingParameterVectorOutput * >( QgsProcessingParameters::parameterFromScriptCode( code ) ) );
+  fromCode.reset( dynamic_cast< QgsProcessingParameterVectorDestination * >( QgsProcessingParameters::parameterFromScriptCode( code ) ) );
   QCOMPARE( fromCode->name(), def->name() );
   QCOMPARE( fromCode->description(), QStringLiteral( "optional" ) );
   QCOMPARE( fromCode->flags(), def->flags() );
@@ -3657,14 +3657,14 @@ void TestQgsProcessing::parameterVectorOut()
   QCOMPARE( fromCode->dataType(), def->dataType() );
 
   // test hasGeometry
-  QVERIFY( QgsProcessingParameterVectorOutput( "test", QString(), QgsProcessing::TypeAny ).hasGeometry() );
-  QVERIFY( QgsProcessingParameterVectorOutput( "test", QString(), QgsProcessing::TypeVectorAny ).hasGeometry() );
-  QVERIFY( QgsProcessingParameterVectorOutput( "test", QString(), QgsProcessing::TypeVectorPoint ).hasGeometry() );
-  QVERIFY( QgsProcessingParameterVectorOutput( "test", QString(), QgsProcessing::TypeVectorLine ).hasGeometry() );
-  QVERIFY( QgsProcessingParameterVectorOutput( "test", QString(), QgsProcessing::TypeVectorPolygon ).hasGeometry() );
-  QVERIFY( !QgsProcessingParameterVectorOutput( "test", QString(), QgsProcessing::TypeRaster ).hasGeometry() );
-  QVERIFY( !QgsProcessingParameterVectorOutput( "test", QString(), QgsProcessing::TypeFile ).hasGeometry() );
-  QVERIFY( QgsProcessingParameterVectorOutput( "test", QString(), QgsProcessing::TypeTable ).hasGeometry() );
+  QVERIFY( QgsProcessingParameterVectorDestination( "test", QString(), QgsProcessing::TypeAny ).hasGeometry() );
+  QVERIFY( QgsProcessingParameterVectorDestination( "test", QString(), QgsProcessing::TypeVectorAny ).hasGeometry() );
+  QVERIFY( QgsProcessingParameterVectorDestination( "test", QString(), QgsProcessing::TypeVectorPoint ).hasGeometry() );
+  QVERIFY( QgsProcessingParameterVectorDestination( "test", QString(), QgsProcessing::TypeVectorLine ).hasGeometry() );
+  QVERIFY( QgsProcessingParameterVectorDestination( "test", QString(), QgsProcessing::TypeVectorPolygon ).hasGeometry() );
+  QVERIFY( !QgsProcessingParameterVectorDestination( "test", QString(), QgsProcessing::TypeRaster ).hasGeometry() );
+  QVERIFY( !QgsProcessingParameterVectorDestination( "test", QString(), QgsProcessing::TypeFile ).hasGeometry() );
+  QVERIFY( QgsProcessingParameterVectorDestination( "test", QString(), QgsProcessing::TypeTable ).hasGeometry() );
 
 }
 
@@ -3677,7 +3677,7 @@ void TestQgsProcessing::parameterRasterOut()
   context.setProject( &p );
 
   // not optional!
-  std::unique_ptr< QgsProcessingParameterRasterOutput > def( new QgsProcessingParameterRasterOutput( "non_optional", QString(), QVariant(), false ) );
+  std::unique_ptr< QgsProcessingParameterRasterDestination > def( new QgsProcessingParameterRasterDestination( "non_optional", QString(), QVariant(), false ) );
   QVERIFY( !def->checkValueIsAcceptable( false ) );
   QVERIFY( !def->checkValueIsAcceptable( true ) );
   QVERIFY( !def->checkValueIsAcceptable( 5 ) );
@@ -3707,19 +3707,19 @@ void TestQgsProcessing::parameterRasterOut()
   QCOMPARE( def->valueAsPythonString( QVariant::fromValue( QgsProperty::fromExpression( "\"a\"=1" ) ), context ), QStringLiteral( "QgsProperty.fromExpression('\"a\"=1')" ) );
 
   QVariantMap map = def->toVariantMap();
-  QgsProcessingParameterRasterOutput fromMap( "x" );
+  QgsProcessingParameterRasterDestination fromMap( "x" );
   QVERIFY( fromMap.fromVariantMap( map ) );
   QCOMPARE( fromMap.name(), def->name() );
   QCOMPARE( fromMap.description(), def->description() );
   QCOMPARE( fromMap.flags(), def->flags() );
   QCOMPARE( fromMap.defaultValue(), def->defaultValue() );
   QCOMPARE( fromMap.supportsNonFileBasedOutputs(), def->supportsNonFileBasedOutputs() );
-  def.reset( dynamic_cast< QgsProcessingParameterRasterOutput *>( QgsProcessingParameters::parameterFromVariantMap( map ) ) );
-  QVERIFY( dynamic_cast< QgsProcessingParameterRasterOutput *>( def.get() ) );
+  def.reset( dynamic_cast< QgsProcessingParameterRasterDestination *>( QgsProcessingParameters::parameterFromVariantMap( map ) ) );
+  QVERIFY( dynamic_cast< QgsProcessingParameterRasterDestination *>( def.get() ) );
 
   QString code = def->asScriptCode();
   QCOMPARE( code, QStringLiteral( "##non_optional=rasterOut" ) );
-  std::unique_ptr< QgsProcessingParameterRasterOutput > fromCode( dynamic_cast< QgsProcessingParameterRasterOutput * >( QgsProcessingParameters::parameterFromScriptCode( code ) ) );
+  std::unique_ptr< QgsProcessingParameterRasterDestination > fromCode( dynamic_cast< QgsProcessingParameterRasterDestination * >( QgsProcessingParameters::parameterFromScriptCode( code ) ) );
   QVERIFY( fromCode.get() );
   QCOMPARE( fromCode->name(), def->name() );
   QCOMPARE( fromCode->description(), QStringLiteral( "non optional" ) );
@@ -3727,7 +3727,7 @@ void TestQgsProcessing::parameterRasterOut()
   QCOMPARE( fromCode->defaultValue(), def->defaultValue() );
 
   // optional
-  def.reset( new QgsProcessingParameterRasterOutput( "optional", QString(), QString( "default.tif" ), true ) );
+  def.reset( new QgsProcessingParameterRasterDestination( "optional", QString(), QString( "default.tif" ), true ) );
   QVERIFY( !def->checkValueIsAcceptable( false ) );
   QVERIFY( !def->checkValueIsAcceptable( true ) );
   QVERIFY( !def->checkValueIsAcceptable( 5 ) );
@@ -3742,7 +3742,7 @@ void TestQgsProcessing::parameterRasterOut()
 
   code = def->asScriptCode();
   QCOMPARE( code, QStringLiteral( "##optional=optional rasterOut default.tif" ) );
-  fromCode.reset( dynamic_cast< QgsProcessingParameterRasterOutput * >( QgsProcessingParameters::parameterFromScriptCode( code ) ) );
+  fromCode.reset( dynamic_cast< QgsProcessingParameterRasterDestination * >( QgsProcessingParameters::parameterFromScriptCode( code ) ) );
   QVERIFY( fromCode.get() );
   QCOMPARE( fromCode->name(), def->name() );
   QCOMPARE( fromCode->description(), QStringLiteral( "optional" ) );
@@ -3750,7 +3750,7 @@ void TestQgsProcessing::parameterRasterOut()
   QCOMPARE( fromCode->defaultValue(), def->defaultValue() );
 
   // test layers to load on completion
-  def.reset( new QgsProcessingParameterRasterOutput( "x", QStringLiteral( "desc" ), QStringLiteral( "default.tif" ), true ) );
+  def.reset( new QgsProcessingParameterRasterDestination( "x", QStringLiteral( "desc" ), QStringLiteral( "default.tif" ), true ) );
   QgsProcessingOutputLayerDefinition fs = QgsProcessingOutputLayerDefinition( QStringLiteral( "test.tif" ) );
   fs.destinationProject = &p;
   params.insert( QStringLiteral( "x" ), QVariant::fromValue( fs ) );
@@ -3782,7 +3782,7 @@ void TestQgsProcessing::parameterFileOut()
   context.setProject( &p );
 
   // not optional!
-  std::unique_ptr< QgsProcessingParameterFileOutput > def( new QgsProcessingParameterFileOutput( "non_optional", QString(), QStringLiteral( "BMP files (*.bmp)" ), QVariant(), false ) );
+  std::unique_ptr< QgsProcessingParameterFileDestination > def( new QgsProcessingParameterFileDestination( "non_optional", QString(), QStringLiteral( "BMP files (*.bmp)" ), QVariant(), false ) );
   QCOMPARE( def->fileFilter(), QStringLiteral( "BMP files (*.bmp)" ) );
   QCOMPARE( def->defaultFileExtension(), QStringLiteral( "bmp" ) );
   QVERIFY( def->generateTemporaryDestination().endsWith( QStringLiteral( ".bmp" ) ) );
@@ -3824,7 +3824,7 @@ void TestQgsProcessing::parameterFileOut()
   QCOMPARE( def->valueAsPythonString( QVariant::fromValue( QgsProperty::fromExpression( "\"a\"=1" ) ), context ), QStringLiteral( "QgsProperty.fromExpression('\"a\"=1')" ) );
 
   QVariantMap map = def->toVariantMap();
-  QgsProcessingParameterFileOutput fromMap( "x" );
+  QgsProcessingParameterFileDestination fromMap( "x" );
   QVERIFY( fromMap.fromVariantMap( map ) );
   QCOMPARE( fromMap.name(), def->name() );
   QCOMPARE( fromMap.description(), def->description() );
@@ -3832,12 +3832,12 @@ void TestQgsProcessing::parameterFileOut()
   QCOMPARE( fromMap.defaultValue(), def->defaultValue() );
   QCOMPARE( fromMap.fileFilter(), def->fileFilter() );
   QCOMPARE( fromMap.supportsNonFileBasedOutputs(), def->supportsNonFileBasedOutputs() );
-  def.reset( dynamic_cast< QgsProcessingParameterFileOutput *>( QgsProcessingParameters::parameterFromVariantMap( map ) ) );
-  QVERIFY( dynamic_cast< QgsProcessingParameterFileOutput *>( def.get() ) );
+  def.reset( dynamic_cast< QgsProcessingParameterFileDestination *>( QgsProcessingParameters::parameterFromVariantMap( map ) ) );
+  QVERIFY( dynamic_cast< QgsProcessingParameterFileDestination *>( def.get() ) );
 
   QString code = def->asScriptCode();
   QCOMPARE( code, QStringLiteral( "##non_optional=fileOut" ) );
-  std::unique_ptr< QgsProcessingParameterFileOutput > fromCode( dynamic_cast< QgsProcessingParameterFileOutput * >( QgsProcessingParameters::parameterFromScriptCode( code ) ) );
+  std::unique_ptr< QgsProcessingParameterFileDestination > fromCode( dynamic_cast< QgsProcessingParameterFileDestination * >( QgsProcessingParameters::parameterFromScriptCode( code ) ) );
   QVERIFY( fromCode.get() );
   QCOMPARE( fromCode->name(), def->name() );
   QCOMPARE( fromCode->description(), QStringLiteral( "non optional" ) );
@@ -3845,7 +3845,7 @@ void TestQgsProcessing::parameterFileOut()
   QCOMPARE( fromCode->defaultValue(), def->defaultValue() );
 
   // optional
-  def.reset( new QgsProcessingParameterFileOutput( "optional", QString(), QString(), QString( "default.txt" ), true ) );
+  def.reset( new QgsProcessingParameterFileDestination( "optional", QString(), QString(), QString( "default.txt" ), true ) );
   QVERIFY( !def->checkValueIsAcceptable( false ) );
   QVERIFY( !def->checkValueIsAcceptable( true ) );
   QVERIFY( !def->checkValueIsAcceptable( 5 ) );
@@ -3860,7 +3860,7 @@ void TestQgsProcessing::parameterFileOut()
 
   code = def->asScriptCode();
   QCOMPARE( code, QStringLiteral( "##optional=optional fileOut default.txt" ) );
-  fromCode.reset( dynamic_cast< QgsProcessingParameterFileOutput * >( QgsProcessingParameters::parameterFromScriptCode( code ) ) );
+  fromCode.reset( dynamic_cast< QgsProcessingParameterFileDestination * >( QgsProcessingParameters::parameterFromScriptCode( code ) ) );
   QVERIFY( fromCode.get() );
   QCOMPARE( fromCode->name(), def->name() );
   QCOMPARE( fromCode->description(), QStringLiteral( "optional" ) );
@@ -3876,7 +3876,7 @@ void TestQgsProcessing::parameterFolderOut()
   context.setProject( &p );
 
   // not optional!
-  std::unique_ptr< QgsProcessingParameterFolderOutput > def( new QgsProcessingParameterFolderOutput( "non_optional", QString(), QVariant(), false ) );
+  std::unique_ptr< QgsProcessingParameterFolderDestination > def( new QgsProcessingParameterFolderDestination( "non_optional", QString(), QVariant(), false ) );
 
   QVERIFY( !def->checkValueIsAcceptable( false ) );
   QVERIFY( !def->checkValueIsAcceptable( true ) );
@@ -3897,19 +3897,19 @@ void TestQgsProcessing::parameterFolderOut()
   QCOMPARE( def->valueAsPythonString( QVariant::fromValue( QgsProperty::fromExpression( "\"a\"=1" ) ), context ), QStringLiteral( "QgsProperty.fromExpression('\"a\"=1')" ) );
 
   QVariantMap map = def->toVariantMap();
-  QgsProcessingParameterFolderOutput fromMap( "x" );
+  QgsProcessingParameterFolderDestination fromMap( "x" );
   QVERIFY( fromMap.fromVariantMap( map ) );
   QCOMPARE( fromMap.name(), def->name() );
   QCOMPARE( fromMap.description(), def->description() );
   QCOMPARE( fromMap.flags(), def->flags() );
   QCOMPARE( fromMap.defaultValue(), def->defaultValue() );
   QCOMPARE( fromMap.supportsNonFileBasedOutputs(), def->supportsNonFileBasedOutputs() );
-  def.reset( dynamic_cast< QgsProcessingParameterFolderOutput *>( QgsProcessingParameters::parameterFromVariantMap( map ) ) );
-  QVERIFY( dynamic_cast< QgsProcessingParameterFolderOutput *>( def.get() ) );
+  def.reset( dynamic_cast< QgsProcessingParameterFolderDestination *>( QgsProcessingParameters::parameterFromVariantMap( map ) ) );
+  QVERIFY( dynamic_cast< QgsProcessingParameterFolderDestination *>( def.get() ) );
 
   QString code = def->asScriptCode();
   QCOMPARE( code, QStringLiteral( "##non_optional=folderOut" ) );
-  std::unique_ptr< QgsProcessingParameterFolderOutput > fromCode( dynamic_cast< QgsProcessingParameterFolderOutput * >( QgsProcessingParameters::parameterFromScriptCode( code ) ) );
+  std::unique_ptr< QgsProcessingParameterFolderDestination > fromCode( dynamic_cast< QgsProcessingParameterFolderDestination * >( QgsProcessingParameters::parameterFromScriptCode( code ) ) );
   QVERIFY( fromCode.get() );
   QCOMPARE( fromCode->name(), def->name() );
   QCOMPARE( fromCode->description(), QStringLiteral( "non optional" ) );
@@ -3917,7 +3917,7 @@ void TestQgsProcessing::parameterFolderOut()
   QCOMPARE( fromCode->defaultValue(), def->defaultValue() );
 
   // optional
-  def.reset( new QgsProcessingParameterFolderOutput( "optional", QString(), QString( "c:/junk" ), true ) );
+  def.reset( new QgsProcessingParameterFolderDestination( "optional", QString(), QString( "c:/junk" ), true ) );
   QVERIFY( !def->checkValueIsAcceptable( false ) );
   QVERIFY( !def->checkValueIsAcceptable( true ) );
   QVERIFY( !def->checkValueIsAcceptable( 5 ) );
@@ -3931,7 +3931,7 @@ void TestQgsProcessing::parameterFolderOut()
 
   code = def->asScriptCode();
   QCOMPARE( code, QStringLiteral( "##optional=optional folderOut c:/junk" ) );
-  fromCode.reset( dynamic_cast< QgsProcessingParameterFolderOutput * >( QgsProcessingParameters::parameterFromScriptCode( code ) ) );
+  fromCode.reset( dynamic_cast< QgsProcessingParameterFolderDestination * >( QgsProcessingParameters::parameterFromScriptCode( code ) ) );
   QVERIFY( fromCode.get() );
   QCOMPARE( fromCode->name(), def->name() );
   QCOMPARE( fromCode->description(), QStringLiteral( "optional" ) );
