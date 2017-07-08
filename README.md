@@ -42,7 +42,7 @@ modified.
  * PostgreSQL/PostGIS
  * GRASS
  * GeoPackage
- * Spatialite
+ * SpatiaLite
  * [Other OGR supported formats](http://www.gdal.org/ogr_formats.html)
  * MSSQL
  * Oracle

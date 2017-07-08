@@ -689,7 +689,7 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     //! Overridden key release event
     void keyReleaseEvent( QKeyEvent *e ) override;
 
-    //! Overridden mouse double click event
+    //! Overridden mouse double-click event
     void mouseDoubleClickEvent( QMouseEvent *e ) override;
 
     //! Overridden mouse move event

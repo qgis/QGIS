@@ -80,7 +80,7 @@ class DlgSqlLayerWindow(QWidget, Ui_Dialog):
         self.dbplugin = dbplugin
         self.db = db
         self.filter = ""
-        self.allowMultiColumnPk = isinstance(db, PGDatabase)  # at the moment only PostgreSQL allows a primary key to span multiple columns, spatialite doesn't
+        self.allowMultiColumnPk = isinstance(db, PGDatabase)  # at the moment only PostgreSQL allows a primary key to span multiple columns, SpatiaLite doesn't
         self.aliasSubQuery = isinstance(db, PGDatabase)  # only PostgreSQL requires subqueries to be aliases
         self.setupUi(self)
         self.setWindowTitle(

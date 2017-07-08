@@ -61,7 +61,7 @@ QgsColorButton::QgsColorButton( QWidget *parent, const QString &cdt, QgsColorSch
   setMinimumSize( QSize( 24, 16 ) );
   connect( this, &QAbstractButton::clicked, this, &QgsColorButton::buttonClicked );
 
-  //setup dropdown menu
+  //setup drop-down menu
   mMenu = new QMenu( this );
   connect( mMenu, &QMenu::aboutToShow, this, &QgsColorButton::prepareMenu );
   setMenu( mMenu );
@@ -600,7 +600,7 @@ void QgsColorButton::setButtonBackground( const QColor &color )
   {
     if ( !mIconSize.isValid() )
     {
-      //calculate size of push button part of widget (ie, without the menu dropdown button part)
+      //calculate size of push button part of widget (ie, without the menu drop-down button part)
       QStyleOptionToolButton opt;
       initStyleOption( &opt );
       QRect buttonSize = QApplication::style()->subControlRect( QStyle::CC_ToolButton, &opt, QStyle::SC_ToolButton,

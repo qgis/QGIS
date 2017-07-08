@@ -2263,10 +2263,10 @@ void TerminalDisplay::mouseDoubleClickEvent(QMouseEvent* ev)
 
   QPoint pos(charColumn,charLine);
 
-  // pass on double click as two clicks.
+  // pass on double-click as two clicks.
   if (!_mouseMarks && !(ev->modifiers() & Qt::ShiftModifier))
   {
-    // Send just _ONE_ click event, since the first click of the double click
+    // Send just _ONE_ click event, since the first click of the double-click
     // was already sent by the click handler
     emit mouseSignal( 0,
                       pos.x()+1,

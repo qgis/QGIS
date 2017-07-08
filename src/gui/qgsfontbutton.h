@@ -28,7 +28,7 @@ class QgsMapCanvas;
  * \class QgsFontButton
  * A button for customising QgsTextFormat settings.
  *
- * The button will open a detailed text format settings dialog when clicked. An attached drop down
+ * The button will open a detailed text format settings dialog when clicked. An attached drop-down
  * menu allows for copying and pasting text styles, picking colors for the text, and for dropping
  * colors from other color widgets.
  *
@@ -207,7 +207,7 @@ class GUI_EXPORT QgsFontButton : public QToolButton
 
     void showSettingsDialog();
 
-    /** Creates the drop down menu entries
+    /** Creates the drop-down menu entries
      */
     void prepareMenu();
 
@@ -259,7 +259,7 @@ class GUI_EXPORT QgsFontButton : public QToolButton
     bool colorFromMimeData( const QMimeData *mimeData, QColor &resultColor, bool &hasAlpha );
 
     /**
-     * Create a \a color icon for display in the drop down menu.
+     * Create a \a color icon for display in the drop-down menu.
      */
     QPixmap createColorIcon( const QColor &color ) const;
 

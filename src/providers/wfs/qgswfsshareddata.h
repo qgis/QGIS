@@ -22,7 +22,7 @@
 #include "qgsogcutils.h"
 
 /** This class holds data, and logic, shared between QgsWFSProvider, QgsWFSFeatureIterator
- *  and QgsWFSFeatureDownloader. It manages the on-disk cache, as a Spatialite
+ *  and QgsWFSFeatureDownloader. It manages the on-disk cache, as a SpatiaLite
  *  database.
  *
  *  The structure of the table in the database is the following one :
@@ -39,7 +39,7 @@
  *  iterator.
  *
  *  The reason for not storing directly the geometry is that we may potentially
- *  store in the future non-linear geometries that aren't handled by Spatialite.
+ *  store in the future non-linear geometries that aren't handled by SpatiaLite.
  *
  *  It contains also methods used in WFS-T context to update the cache content,
  *  from the changes initiated by the user.

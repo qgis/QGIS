@@ -275,7 +275,7 @@ void QgsExpressionBuilderWidget::on_expressionTree_doubleClicked( const QModelIn
   if ( !item )
     return;
 
-  // Don't handle the double click it we are on a header node.
+  // Don't handle the double-click if we are on a header node.
   if ( item->getItemType() == QgsExpressionItem::Header )
     return;
 

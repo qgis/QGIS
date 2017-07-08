@@ -2626,7 +2626,7 @@ static QVariant fcnAzimuth( const QVariantList &values, const QgsExpressionConte
     return QVariant();
   }
 
-  // Code from postgis
+  // Code from PostGIS
   if ( pt1->x() == pt2->x() )
   {
     if ( pt1->y() < pt2->y() )

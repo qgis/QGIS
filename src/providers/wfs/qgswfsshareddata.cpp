@@ -195,7 +195,7 @@ bool QgsWFSSharedData::computeFilter( QString &errorMsg )
 }
 
 // We have an issue with GDAL 1.10 and older that is using spatialite_init() which is
-// incompatible with how the QGIS spatialite provider works.
+// incompatible with how the QGIS SpatiaLite provider works.
 // The symptom of the issue is the error message
 // 'Unable to Initialize SpatiaLite Metadata: no such function: InitSpatialMetadata'
 // So in that case we must use only QGIS functions to avoid the conflict
@@ -248,7 +248,7 @@ bool QgsWFSSharedData::createCache()
   bool useReservedNames = cacheFields.lookupField( QStringLiteral( "ogc_fid" ) ) >= 0;
   if ( !useReservedNames )
   {
-    // Creating a spatialite database can be quite slow on some file systems
+    // Creating a SpatiaLite database can be quite slow on some file systems
     // so we create a GDAL in-memory file, and then copy it on
     // the file system.
     QString vsimemFilename;
@@ -304,7 +304,7 @@ bool QgsWFSSharedData::createCache()
     QMutexLocker mutexDBnameCreationHolder( &sMutexDBnameCreation );
     if ( sCachedDBTemplate.size() == 0 )
     {
-      // Create a template Spatialite DB
+      // Create a template SpatiaLite DB
       QTemporaryFile tempFile;
       tempFile.open();
       tempFile.setAutoRemove( false );
@@ -315,7 +315,7 @@ bool QgsWFSSharedData::createCache()
       bool created = false;
       if ( loaded )
       {
-        QgsDebugMsg( "spatialite provider loaded" );
+        QgsDebugMsg( "SpatiaLite provider loaded" );
 
         typedef bool ( *createDbProc )( const QString &, QString & );
         createDbProc createDbPtr = ( createDbProc ) cast_to_fptr( myLib->resolve( "createDb" ) );
@@ -340,7 +340,7 @@ bool QgsWFSSharedData::createCache()
       QFile::remove( tempFile.fileName() );
     }
 
-    // Copy the in-memory template Spatialite DB into the target DB
+    // Copy the in-memory template SpatiaLite DB into the target DB
     QFile dbFile( mCacheDbname );
     if ( !dbFile.open( QIODevice::WriteOnly | QIODevice::Truncate ) )
     {

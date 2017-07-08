@@ -28,7 +28,7 @@ To add a layer:
 <a name="filter">
 <h4>Filtering a Layer</h4>
 </a>
-To filter a layer before adding it to the map, double click on its name or use <label>Build query</label> button. This will open the Query Builder, allowing you to build up a SQL statement to use in filtering the records.
+To filter a layer before adding it to the map, double-click on its name or use <label>Build query</label> button. This will open the Query Builder, allowing you to build up a SQL statement to use in filtering the records.
 
 <a name="search">
 <h4>Options</h4>

@@ -1,6 +1,6 @@
 /***************************************************************************
                          qgsnewspatialitelayerdialog.cpp
-        Creates a new Spatialite layer. This dialog borrows heavily from
+        Creates a new SpatiaLite layer. This dialog borrows heavily from
         qgsnewvectorlayerdialog.cpp
                              -------------------
     begin                : 2010-03-18
@@ -189,7 +189,7 @@ void QgsNewSpatialiteLayerDialog::on_mRemoveAttributeButton_clicked()
 
 void QgsNewSpatialiteLayerDialog::on_pbnFindSRID_clicked()
 {
-  // first get list of supported SRID from the selected Spatialite database
+  // first get list of supported SRID from the selected SpatiaLite database
   // to build filter for projection selector
   sqlite3 *db = nullptr;
   bool status = true;
@@ -278,7 +278,7 @@ bool QgsNewSpatialiteLayerDialog::createDb()
     bool loaded = myLib->load();
     if ( loaded )
     {
-      QgsDebugMsg( "spatialite provider loaded" );
+      QgsDebugMsg( "SpatiaLite provider loaded" );
 
       typedef bool ( *createDbProc )( const QString &, QString & );
       createDbProc createDbPtr = ( createDbProc ) cast_to_fptr( myLib->resolve( "createDb" ) );
