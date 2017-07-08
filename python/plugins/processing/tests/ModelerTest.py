@@ -28,15 +28,12 @@ __revision__ = '$Format:%H$'
 from qgis.testing import start_app, unittest
 
 from qgis.core import (QgsProcessingModelAlgorithm,
+                       QgsProcessingModelParameter,
                        QgsProcessingParameterString,
                        QgsProcessingParameterNumber,
                        QgsProcessingParameterField,
                        QgsProcessingParameterFile)
 from processing.modeler.ModelerParametersDialog import (ModelerParametersDialog)
-from processing.core.parameters import (ParameterFile,
-                                        ParameterNumber,
-                                        ParameterString,
-                                        ParameterTableField)
 start_app()
 
 
@@ -47,19 +44,19 @@ class ModelerTest(unittest.TestCase):
 
         m = QgsProcessingModelAlgorithm()
 
-        string_param_1 = QgsProcessingModelAlgorithm.ModelParameter('string')
+        string_param_1 = QgsProcessingModelParameter('string')
         m.addModelParameter(QgsProcessingParameterString('string'), string_param_1)
 
-        string_param_2 = QgsProcessingModelAlgorithm.ModelParameter('string2')
+        string_param_2 = QgsProcessingModelParameter('string2')
         m.addModelParameter(QgsProcessingParameterString('string2'), string_param_2)
 
-        num_param = QgsProcessingModelAlgorithm.ModelParameter('number')
+        num_param = QgsProcessingModelParameter('number')
         m.addModelParameter(QgsProcessingParameterNumber('number'), num_param)
 
-        table_field_param = QgsProcessingModelAlgorithm.ModelParameter('field')
+        table_field_param = QgsProcessingModelParameter('field')
         m.addModelParameter(QgsProcessingParameterField('field'), table_field_param)
 
-        file_param = QgsProcessingModelAlgorithm.ModelParameter('file')
+        file_param = QgsProcessingModelParameter('file')
         m.addModelParameter(QgsProcessingParameterFile('file'), file_param)
 
         dlg = ModelerParametersDialog(m, m)

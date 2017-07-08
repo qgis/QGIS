@@ -46,7 +46,9 @@
 ***************************************************************************
 """
 
-from qgis.core import QgsProcessingModelAlgorithm
+from qgis.core import (QgsProcessingModelAlgorithm,
+                       QgsProcessingModelChildAlgorithm,
+                       QgsProcessingModelParameter)
 from qgis.PyQt.QtCore import Qt, QPointF
 from qgis.PyQt.QtWidgets import QGraphicsPathItem, QGraphicsItem
 from qgis.PyQt.QtGui import QPen, QPainterPath, QPolygonF, QPainter
@@ -80,14 +82,14 @@ class ModelerArrowItem(QGraphicsPathItem):
         self.endPoints = []
         controlPoints = []
         endPt = self.endItem.getLinkPointForParameter(self.endIndex)
-        if isinstance(self.startItem.element, QgsProcessingModelAlgorithm.ModelParameter):
+        if isinstance(self.startItem.element, QgsProcessingModelParameter):
             startPt = self.startItem.getLinkPointForParameter(self.startIndex)
         else:
             startPt = self.startItem.getLinkPointForOutput(self.startIndex)
-        if isinstance(self.endItem.element, QgsProcessingModelAlgorithm.ModelParameter):
+        if isinstance(self.endItem.element, QgsProcessingModelParameter):
             endPt = self.endItem.getLinkPointForParameter(self.startIndex)
 
-        if isinstance(self.startItem.element, QgsProcessingModelAlgorithm.ChildAlgorithm):
+        if isinstance(self.startItem.element, QgsProcessingModelChildAlgorithm):
             if self.startIndex != -1:
                 controlPoints.append(self.startItem.pos() + startPt)
                 controlPoints.append(self.startItem.pos() + startPt +

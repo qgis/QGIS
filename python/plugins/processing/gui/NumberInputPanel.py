@@ -36,7 +36,7 @@ from qgis.PyQt.QtWidgets import QDialog
 from qgis.core import (QgsExpression,
                        QgsProcessingParameterNumber,
                        QgsProcessingOutputNumber,
-                       QgsProcessingModelAlgorithm)
+                       QgsProcessingModelChildParameterSource)
 from qgis.gui import QgsExpressionBuilderDialog
 from processing.tools.dataobjects import createExpressionContext, createContext
 
@@ -92,26 +92,26 @@ class ModellerNumberInputPanel(BASE, WIDGET):
         for param in self.modelParametersDialog.model.parameterDefinitions():
             if isinstance(param, QgsProcessingParameterNumber):
                 if "@" + param.name() == value.strip():
-                    return QgsProcessingModelAlgorithm.ChildParameterSource.fromModelParameter(param.name())
+                    return QgsProcessingModelChildParameterSource.fromModelParameter(param.name())
 
         for alg in list(self.modelParametersDialog.model.childAlgorithms().values()):
             for out in alg.algorithm().outputDefinitions():
                 if isinstance(out, QgsProcessingOutputNumber) and "@%s_%s" % (alg.childId(), out.name()) == value.strip():
-                    return QgsProcessingModelAlgorithm.ChildParameterSource.fromChildOutput(alg.childId(), out.outputName())
+                    return QgsProcessingModelChildParameterSource.fromChildOutput(alg.childId(), out.outputName())
 
         try:
             return float(value.strip())
         except:
-            return QgsProcessingModelAlgorithm.ChildParameterSource.fromExpression(self.leText.text())
+            return QgsProcessingModelChildParameterSource.fromExpression(self.leText.text())
 
     def setValue(self, value):
-        if isinstance(value, QgsProcessingModelAlgorithm.ChildParameterSource):
-            if value.source() == QgsProcessingModelAlgorithm.ChildParameterSource.ModelParameter:
+        if isinstance(value, QgsProcessingModelChildParameterSource):
+            if value.source() == QgsProcessingModelChildParameterSource.ModelParameter:
                 self.leText.setText('@' + value.parameterName())
-            elif value.source() == QgsProcessingModelAlgorithm.ChildParameterSource.ChildOutput:
+            elif value.source() == QgsProcessingModelChildParameterSource.ChildOutput:
                 name = "%s_%s" % (value.outputChildId(), value.outputName())
                 self.leText.setText(name)
-            elif value.source() == QgsProcessingModelAlgorithm.ChildParameterSource.Expression:
+            elif value.source() == QgsProcessingModelChildParameterSource.Expression:
                 self.leText.setText(value.expression())
             else:
                 self.leText.setText(str(value.staticValue()))

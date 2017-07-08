@@ -40,6 +40,9 @@ from qgis.core import (QgsProcessingParameterDefinition,
                        QgsProcessingParameterPoint,
                        QgsProcessingParameterExtent,
                        QgsProcessingModelAlgorithm,
+                       QgsProcessingModelOutput,
+                       QgsProcessingModelChildAlgorithm,
+                       QgsProcessingModelChildParameterSource,
                        QgsProcessingParameterFeatureSink,
                        QgsProcessingParameterRasterDestination,
                        QgsProcessingParameterFileDestination,
@@ -244,12 +247,12 @@ class ModelerParametersDialog(QDialog):
                                                    [o.typeName() for o in outTypes if issubclass(o, QgsProcessingOutputDefinition)], dataTypes)
 
     def resolveValueDescription(self, value):
-        if isinstance(value, QgsProcessingModelAlgorithm.ChildParameterSource):
-            if value.source() == QgsProcessingModelAlgorithm.ChildParameterSource.StaticValue:
+        if isinstance(value, QgsProcessingModelChildParameterSource):
+            if value.source() == QgsProcessingModelChildParameterSource.StaticValue:
                 return value.staticValue()
-            elif value.source() == QgsProcessingModelAlgorithm.ChildParameterSource.ModelParameter:
+            elif value.source() == QgsProcessingModelChildParameterSource.ModelParameter:
                 return self.model.parameterDefinition(value.parameterName()).description()
-            elif value.source() == QgsProcessingModelAlgorithm.ChildParameterSource.ChildOutput:
+            elif value.source() == QgsProcessingModelChildParameterSource.ChildOutput:
                 alg = self.model.childAlgorithm(value.outputChildId())
                 return self.tr("'{0}' from algorithm '{1}'").format(
                     alg.algorithm().outputDefinition(value.outputName()).description(), alg.description())
@@ -273,7 +276,7 @@ class ModelerParametersDialog(QDialog):
                 if value is None:
                     value = param.defaultValue()
 
-                if isinstance(value, QgsProcessingModelAlgorithm.ChildParameterSource) and value.source() == QgsProcessingModelAlgorithm.ChildParameterSource.StaticValue:
+                if isinstance(value, QgsProcessingModelChildParameterSource) and value.source() == QgsProcessingModelChildParameterSource.StaticValue:
                     value = value.staticValue()
 
                 self.wrappers[param.name()].setValue(value)
@@ -290,7 +293,7 @@ class ModelerParametersDialog(QDialog):
             self.dependenciesPanel.setSelectedItems(selected)
 
     def createAlgorithm(self):
-        alg = QgsProcessingModelAlgorithm.ChildAlgorithm(self._alg.id())
+        alg = QgsProcessingModelChildAlgorithm(self._alg.id())
         if not self.childId:
             alg.generateChildId(self.model)
         else:
@@ -301,7 +304,7 @@ class ModelerParametersDialog(QDialog):
                 continue
             val = self.wrappers[param.name()].value()
             if (isinstance(val,
-                           QgsProcessingModelAlgorithm.ChildParameterSource) and val.source() == QgsProcessingModelAlgorithm.ChildParameterSource.StaticValue and not param.checkValueIsAcceptable(
+                           QgsProcessingModelChildParameterSource) and val.source() == QgsProcessingModelChildParameterSource.StaticValue and not param.checkValueIsAcceptable(
                     val.staticValue())) \
                     or (val is None and not param.flags() & QgsProcessingParameterDefinition.FlagOptional):
                 self.bar.pushMessage("Error", "Wrong or missing value for parameter '%s'" % param.description(),
@@ -309,19 +312,19 @@ class ModelerParametersDialog(QDialog):
                 return None
             if val is None:
                 continue
-            elif isinstance(val, QgsProcessingModelAlgorithm.ChildParameterSource):
+            elif isinstance(val, QgsProcessingModelChildParameterSource):
                 alg.addParameterSources(param.name(), [val])
             elif isinstance(val, list):
                 alg.addParameterSources(param.name(), val)
             else:
-                alg.addParameterSources(param.name(), [QgsProcessingModelAlgorithm.ChildParameterSource.fromStaticValue(val)])
+                alg.addParameterSources(param.name(), [QgsProcessingModelChildParameterSource.fromStaticValue(val)])
 
         outputs = {}
         for dest in self._alg.destinationParameterDefinitions():
             if not dest.flags() & QgsProcessingParameterDefinition.FlagHidden:
                 name = str(self.valueItems[dest.name()].text())
                 if name.strip() != '' and name != ModelerParametersDialog.ENTER_NAME:
-                    output = QgsProcessingModelAlgorithm.ModelOutput(name, name)
+                    output = QgsProcessingModelOutput(name, name)
                     output.setChildId(alg.childId())
                     output.setChildOutputName(dest.name())
                     outputs[name] = output

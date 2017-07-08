@@ -43,6 +43,7 @@ from qgis.core import (QgsApplication,
                        QgsMessageLog,
                        QgsProcessingUtils,
                        QgsProcessingModelAlgorithm,
+                       QgsProcessingModelParameter,
                        QgsXmlUtils)
 from qgis.gui import QgsMessageBar
 from processing.gui.HelpEditionDialog import HelpEditionDialog
@@ -513,7 +514,7 @@ class ModelerDialog(BASE, WIDGET):
                     pos = self.getPositionForParameterItem()
                 if isinstance(pos, QPoint):
                     pos = QPointF(pos)
-                component = QgsProcessingModelAlgorithm.ModelParameter(dlg.param.name())
+                component = QgsProcessingModelParameter(dlg.param.name())
                 component.setDescription(dlg.param.name())
                 component.setPosition(pos)
                 self.model.addModelParameter(dlg.param, component)
