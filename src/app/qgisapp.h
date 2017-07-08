@@ -868,6 +868,8 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 #endif
 
   private slots:
+    void newProfile();
+
     void onTaskCompleteShowNotify( long taskId, int status );
 
     void onTransactionGroupsChanged();

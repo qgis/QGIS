@@ -2312,6 +2312,15 @@ void QgisApp::refreshProfileMenu()
       userProfileManager()->loadUserProfile( profile );
     } );
   }
+  mConfigMenu->addSeparator();
+  QAction *openProfileFolderAction = mConfigMenu->addAction( tr( "Open profile folder" ) );
+  connect( openProfileFolderAction, &QAction::triggered, this, [this]()
+  {
+    QDesktopServices::openUrl( QUrl::fromLocalFile( userProfileManager()->userProfile()->folder() ) );
+  } );
+
+  QAction *newProfileAction = mConfigMenu->addAction( tr( "New profile" ) );
+  connect( newProfileAction, &QAction::triggered, this, &QgisApp::newProfile );
 }
 
 void QgisApp::createProfileMenu()
@@ -11778,6 +11787,16 @@ void QgisApp::keyPressEvent( QKeyEvent *e )
   {
     e->ignore();
   }
+}
+
+void QgisApp::newProfile()
+{
+  QString text = QInputDialog::getText( this, tr( "New profile name" ), tr( "New profile name" ) );
+  if ( text.isEmpty() )
+    return;
+
+  userProfileManager()->createUserProfile( text );
+  userProfileManager()->loadUserProfile( text );
 }
 
 void QgisApp::onTaskCompleteShowNotify( long taskId, int status )

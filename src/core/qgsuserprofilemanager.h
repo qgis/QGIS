@@ -38,7 +38,7 @@ class CORE_EXPORT QgsUserProfileManager : public QObject
     /**
      * Set the root profile location for the profile manager. All profiles are loaded from this
      * location.
-     * @param rootProfileLocation Path to the top level profile folder which contains folders for each profile. 
+     * @param rootProfileLocation Path to the top level profile folder which contains folders for each profile.
      */
     void setRootLocation( QString rootProfileLocation );
 
@@ -90,7 +90,7 @@ class CORE_EXPORT QgsUserProfileManager : public QObject
      * @param name
      * @return A QgsError which report if there was any error creating the user profile.
      */
-    QgsError createUserProfile( const QString name );
+    QgsError createUserProfile( const QString &name );
 
     /**
      * Deletes a profile from the root profiles folder.
@@ -114,6 +114,12 @@ class CORE_EXPORT QgsUserProfileManager : public QObject
      * @param profile The name of the active profile
      */
     void setActiveUserProfile( const QString &profile );
+
+    /**
+     * Starts a new instance of QGIS for the given profile.
+     * @param name The profile to start QGIS with.
+     */
+    void loadUserProfile( const QString &name );
 
     /**
      * Starts a new instance of QGIS for the given profile.

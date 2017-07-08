@@ -69,9 +69,12 @@ QgsUserProfile *QgsUserProfileManager::profileForName( const QString name ) cons
   return new QgsUserProfile( profilePath );
 }
 
-QgsError QgsUserProfileManager::createUserProfile( const QString name )
+QgsError QgsUserProfileManager::createUserProfile( const QString &name )
 {
   QgsError error;
+
+  // TODO Replace with safe folder name
+
   QDir folder( mRootProfilePath + QDir::separator() + name );
   if ( !folder.exists() )
   {
@@ -132,4 +135,10 @@ void QgsUserProfileManager::setActiveUserProfile( const QString &profile )
   {
     mUserProfile = profileForName( profile );
   }
+}
+
+void QgsUserProfileManager::loadUserProfile( const QString &name )
+{
+  QgsUserProfile *profile = profileForName( name );
+  loadUserProfile( profile );
 }
