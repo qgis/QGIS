@@ -29,7 +29,7 @@ __revision__ = '$Format:%H$'
 from qgis.PyQt.QtCore import QPointF, Qt
 from qgis.PyQt.QtWidgets import QGraphicsItem, QGraphicsScene
 from qgis.core import (QgsProcessingParameterDefinition,
-                       QgsProcessingModelAlgorithm,
+                       QgsProcessingModelChildParameterSource,
                        QgsExpression)
 from processing.modeler.ModelerGraphicItem import ModelerGraphicItem
 from processing.modeler.ModelerArrowItem import ModelerArrowItem
@@ -69,17 +69,17 @@ class ModelerScene(QGraphicsScene):
         if isinstance(value, list):
             for v in value:
                 items.extend(self.getItemsFromParamValue(v, child_id, context))
-        elif isinstance(value, QgsProcessingModelAlgorithm.ChildParameterSource):
-            if value.source() == QgsProcessingModelAlgorithm.ChildParameterSource.ModelParameter:
+        elif isinstance(value, QgsProcessingModelChildParameterSource):
+            if value.source() == QgsProcessingModelChildParameterSource.ModelParameter:
                 items.append((self.paramItems[value.parameterName()], 0))
-            elif value.source() == QgsProcessingModelAlgorithm.ChildParameterSource.ChildOutput:
+            elif value.source() == QgsProcessingModelChildParameterSource.ChildOutput:
                 outputs = self.model.childAlgorithm(value.outputChildId()).algorithm().outputDefinitions()
                 for i, out in enumerate(outputs):
                     if out.name() == value.outputName():
                         break
                 if value.outputChildId() in self.algItems:
                     items.append((self.algItems[value.outputChildId()], i))
-            elif value.source() == QgsProcessingModelAlgorithm.ChildParameterSource.Expression:
+            elif value.source() == QgsProcessingModelChildParameterSource.Expression:
                 variables = self.model.variablesForChildAlgorithm(child_id, context)
                 exp = QgsExpression(value.expression())
                 for v in exp.referencedVariables():

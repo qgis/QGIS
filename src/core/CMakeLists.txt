@@ -96,12 +96,17 @@ SET(QGIS_CORE_SRCS
   processing/qgsnativealgorithms.cpp
   processing/qgsprocessingalgorithm.cpp
   processing/qgsprocessingalgrunnertask.cpp
-  processing/qgsprocessingmodelalgorithm.cpp
   processing/qgsprocessingoutputs.cpp
   processing/qgsprocessingparameters.cpp
   processing/qgsprocessingprovider.cpp
   processing/qgsprocessingregistry.cpp
   processing/qgsprocessingutils.cpp
+  processing/models/qgsprocessingmodelalgorithm.cpp
+  processing/models/qgsprocessingmodelchildalgorithm.cpp
+  processing/models/qgsprocessingmodelchildparametersource.cpp
+  processing/models/qgsprocessingmodelcomponent.cpp
+  processing/models/qgsprocessingmodelparameter.cpp
+  processing/models/qgsprocessingmodeloutput.cpp
 
   providers/memory/qgsmemoryfeatureiterator.cpp
   providers/memory/qgsmemoryprovider.cpp
@@ -925,10 +930,15 @@ SET(QGIS_CORE_HDRS
   processing/qgsprocessing.h
   processing/qgsprocessingalgorithm.h
   processing/qgsprocessingcontext.h
-  processing/qgsprocessingmodelalgorithm.h
   processing/qgsprocessingoutputs.h
   processing/qgsprocessingparameters.h
   processing/qgsprocessingutils.h
+  processing/models/qgsprocessingmodelalgorithm.h
+  processing/models/qgsprocessingmodelchildalgorithm.h
+  processing/models/qgsprocessingmodelchildparametersource.h
+  processing/models/qgsprocessingmodelcomponent.h
+  processing/models/qgsprocessingmodeloutput.h
+  processing/models/qgsprocessingmodelparameter.h
 
   providers/memory/qgsmemoryfeatureiterator.h
   providers/memory/qgsmemoryproviderutils.h
@@ -1073,6 +1083,7 @@ INCLUDE_DIRECTORIES(
   metadata
   pal
   processing
+  processing/models
   providers
   providers/memory
   raster

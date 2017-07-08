@@ -905,7 +905,7 @@ QgsProcessingParameterDefinition *QgsProcessingParameters::parameterFromScriptCo
     return QgsProcessingParameterRasterDestination::fromScriptCode( name, description, isOptional, definition );
   else if ( type == QStringLiteral( "filedestination" ) )
     return QgsProcessingParameterFileDestination::fromScriptCode( name, description, isOptional, definition );
-  else if ( type == QStringLiteral( "folderDestination" ) )
+  else if ( type == QStringLiteral( "folderdestination" ) )
     return QgsProcessingParameterFolderDestination::fromScriptCode( name, description, isOptional, definition );
 
   return nullptr;
@@ -3039,7 +3039,7 @@ QString QgsProcessingParameterVectorDestination::asScriptCode() const
   QString code = QStringLiteral( "##%1=" ).arg( mName );
   if ( mFlags & FlagOptional )
     code += QStringLiteral( "optional " );
-  code += QStringLiteral( "vectorOut " );
+  code += QStringLiteral( "vectorDestination " );
 
   switch ( mDataType )
   {
