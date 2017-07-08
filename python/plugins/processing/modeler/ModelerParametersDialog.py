@@ -251,11 +251,14 @@ class ModelerParametersDialog(QDialog):
             for param in alg.algorithm().parameterDefinitions():
                 if param.isDestination() or param.flags() & QgsProcessingParameterDefinition.FlagHidden:
                     continue
+                value = None
                 if param.name() in alg.parameterSources():
                     value = alg.parameterSources()[param.name()]
                     if isinstance(value, list) and len(value) == 1:
                         value = value[0]
-                else:
+                    elif isinstance(value, list) and len(value) == 0:
+                        value = None
+                if value is None:
                     value = param.defaultValue()
 
                 if isinstance(value, QgsProcessingModelAlgorithm.ChildParameterSource) and value.source() == QgsProcessingModelAlgorithm.ChildParameterSource.StaticValue:

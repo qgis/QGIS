@@ -177,7 +177,10 @@ class WidgetWrapper(QObject):
         if combobox is None:
             combobox = self.widget
         if isinstance(value, list):
-            value = value[0]
+            if value:
+                value = value[0]
+            else:
+                value = None
         values = [combobox.itemData(i) for i in range(combobox.count())]
         try:
             idx = values.index(value)
