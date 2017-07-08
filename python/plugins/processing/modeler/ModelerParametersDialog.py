@@ -44,7 +44,8 @@ from qgis.core import (QgsProcessingParameterDefinition,
                        QgsProcessingOutputDefinition)
 
 from qgis.gui import (QgsMessageBar,
-                      QgsScrollArea)
+                      QgsScrollArea,
+                      QgsFilterLineEdit)
 
 from processing.gui.wrappers import WidgetWrapperFactory
 from processing.gui.wrappers import InvalidParameterValue
@@ -153,7 +154,7 @@ class ModelerParametersDialog(QDialog):
             if isinstance(dest, (QgsProcessingParameterRasterDestination, QgsProcessingParameterFeatureSink,
                                  QgsProcessingParameterFileDestination, QgsProcessingParameterFolderDestination)):
                 label = QLabel(dest.description())
-                item = QLineEdit()
+                item = QgsFilterLineEdit()
                 if hasattr(item, 'setPlaceholderText'):
                     item.setPlaceholderText(ModelerParametersDialog.ENTER_NAME)
                 self.verticalLayout.addWidget(label)
