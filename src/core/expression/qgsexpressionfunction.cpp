@@ -4302,20 +4302,17 @@ bool QgsWithVariableExpressionFunction::isStatic( const QgsExpressionNodeFunctio
   if ( args->count() < 3 )
     return false;
 
+  // We only need to check if the node evaluation is static, if both - name and value - are static.
   if ( args->at( 0 )->isStatic( parent, context ) && args->at( 1 )->isStatic( parent, context ) )
   {
     QVariant name = args->at( 0 )->eval( parent, context );
     QVariant value = args->at( 1 )->eval( parent, context );
 
-    QgsExpressionContextScope *scope = new QgsExpressionContextScope();
-    scope->setVariable( name.toString(), value );
-
-    QgsExpressionContext *updatedContext = const_cast<QgsExpressionContext *>( context );
-    updatedContext->appendScope( scope );
-
-    if ( args->at( 2 )->isStatic( parent, updatedContext ) )
+    // Temporarily append a new scope to provide the variable
+    appendTemporaryVariable( context, name.toString(), value );
+    if ( args->at( 2 )->isStatic( parent, context ) )
       isStatic = true;
-    delete updatedContext->popScope();
+    popTemporaryVariable( context );
   }
 
   return false;
@@ -4332,15 +4329,13 @@ QVariant QgsWithVariableExpressionFunction::run( QgsExpressionNode::NodeList *ar
   QVariant name = args->at( 0 )->eval( parent, context );
   QVariant value = args->at( 1 )->eval( parent, context );
 
-  QgsExpressionContextScope *scope = new QgsExpressionContextScope();
-  scope->setVariable( name.toString(), value );
-
   QgsExpressionContext *updatedContext = const_cast<QgsExpressionContext *>( context );
   if ( !context )
     updatedContext = new QgsExpressionContext();
-  updatedContext->appendScope( scope );
+
+  appendTemporaryVariable( updatedContext, name.toString(), value );
   result = args->at( 2 )->eval( parent, updatedContext );
-  delete updatedContext->popScope();
+  popTemporaryVariable( updatedContext );
   if ( !context )
     delete updatedContext;
 
@@ -4369,13 +4364,24 @@ bool QgsWithVariableExpressionFunction::prepare( const QgsExpressionNodeFunction
   QVariant name = args->at( 0 )->prepare( parent, context );
   QVariant value = args->at( 1 )->prepare( parent, context );
 
+  appendTemporaryVariable( context, name.toString(), value );
+  args->at( 2 )->prepare( parent, context );
+  popTemporaryVariable( context );
+
+  return true;
+}
+
+void QgsWithVariableExpressionFunction::popTemporaryVariable( const QgsExpressionContext *context ) const
+{
+  QgsExpressionContext *updatedContext = const_cast<QgsExpressionContext *>( context );
+  delete updatedContext->popScope();
+}
+
+void QgsWithVariableExpressionFunction::appendTemporaryVariable( const QgsExpressionContext *context, const QString &name, const QVariant &value ) const
+{
   QgsExpressionContextScope *scope = new QgsExpressionContextScope();
-  scope->setVariable( name.toString(), value );
+  scope->setVariable( name, value );
 
   QgsExpressionContext *updatedContext = const_cast<QgsExpressionContext *>( context );
   updatedContext->appendScope( scope );
-  args->at( 2 )->prepare( parent, updatedContext );
-  delete updatedContext->popScope();
-
-  return true;
 }

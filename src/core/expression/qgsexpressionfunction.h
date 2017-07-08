@@ -29,6 +29,7 @@
 class QgsExpressionNodeFunction;
 class QgsExpression;
 class QgsExpressionContext;
+class QgsExpressionContextScope;
 
 /** \ingroup core
   * A abstract base class for defining QgsExpression functions.
@@ -475,6 +476,18 @@ class QgsWithVariableExpressionFunction : public QgsExpressionFunction
     QVariant func( const QVariantList &values, const QgsExpressionContext *context, QgsExpression *parent ) override;
 
     bool prepare( const QgsExpressionNodeFunction *node, QgsExpression *parent, const QgsExpressionContext *context ) const override;
+
+  private:
+
+    /**
+     * Append a scope with a single variable definition (``name``=``value``)
+     */
+    void appendTemporaryVariable( const QgsExpressionContext *context, const QString &name, const QVariant &value ) const;
+
+    /**
+     * Pop the temporary scope again
+     */
+    void popTemporaryVariable( const QgsExpressionContext *context ) const;
 };
 
 #endif
