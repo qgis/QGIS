@@ -117,6 +117,8 @@ Set the current value to the value defined by the clear value.
 
     virtual void changeEvent( QEvent *event );
     virtual void paintEvent( QPaintEvent *event );
+    virtual void wheelEvent( QWheelEvent *event );
+
 
 };
 
