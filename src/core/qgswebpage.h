@@ -243,9 +243,9 @@ class CORE_EXPORT QgsWebPage : public QWebPage
     virtual void javaScriptConsoleMessage( const QString &message, int lineNumber, const QString & ) override
     {
       if ( mIdentifier.isEmpty() )
-        QgsMessageLog::logMessage( tr( "Line %1: %2" ).arg( lineNumber ).arg( message ), tr( "Javascript" ) );
+        QgsMessageLog::logMessage( tr( "Line %1: %2" ).arg( lineNumber ).arg( message ), tr( "JavaScript" ) );
       else
-        QgsMessageLog::logMessage( tr( "%1 (line %2): %3" ).arg( mIdentifier ).arg( lineNumber ).arg( message ), tr( "Javascript" ) );
+        QgsMessageLog::logMessage( tr( "%1 (line %2): %3" ).arg( mIdentifier ).arg( lineNumber ).arg( message ), tr( "JavaScript" ) );
     }
 
   private:

@@ -210,7 +210,7 @@ void QgsComposerHtml::loadHtml( const bool useCache, const QgsExpressionContext 
   if ( !mAtlasFeatureJSON.isEmpty() )
   {
     mWebPage->mainFrame()->evaluateJavaScript( QStringLiteral( "if ( typeof setFeature === \"function\" ) { setFeature(%1); }" ).arg( mAtlasFeatureJSON ) );
-    //needs an extra process events here to give javascript a chance to execute
+    //needs an extra process events here to give JavaScript a chance to execute
     qApp->processEvents();
   }
 

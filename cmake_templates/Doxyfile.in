@@ -1506,7 +1506,7 @@ MATHJAX_RELPATH        = http://cdn.mathjax.org/mathjax/latest
 
 MATHJAX_EXTENSIONS     =
 
-# The MATHJAX_CODEFILE tag can be used to specify a file with javascript pieces
+# The MATHJAX_CODEFILE tag can be used to specify a file with JavaScript pieces
 # of code that will be used on startup of the MathJax code. See the MathJax site
 # (see: http://docs.mathjax.org/en/latest/output.html) for more details. For an
 # example see the documentation.
@@ -1515,11 +1515,11 @@ MATHJAX_EXTENSIONS     =
 MATHJAX_CODEFILE       =
 
 # When the SEARCHENGINE tag is enabled doxygen will generate a search box for
-# the HTML output. The underlying search engine uses javascript and DHTML and
+# the HTML output. The underlying search engine uses JavaScript and DHTML and
 # should work on any modern browser. Note that when using HTML help
 # (GENERATE_HTMLHELP), Qt help (GENERATE_QHP), or docsets (GENERATE_DOCSET)
 # there is already a search function so this one should typically be disabled.
-# For large projects the javascript based search engine can be slow, then
+# For large projects the JavaScript based search engine can be slow, then
 # enabling SERVER_BASED_SEARCH may provide a better solution. It is possible to
 # search using the keyboard; to jump to the search box use <access key> + S
 # (what the <access key> is depends on the OS and browser, but it is typically
