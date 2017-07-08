@@ -356,7 +356,7 @@ double QgsDistanceArea::measureLineProjected( const QgsPointXY &p1, double dista
     p2 = computeSpheroidProject( p1, distance, azimuth );
     result = p1.distance( p2 );
   }
-  else // cartesian coordinates
+  else // Cartesian coordinates
   {
     result = distance; // Avoid rounding errors when using meters [return as sent]
     if ( sourceCrs().mapUnits() != QgsUnitTypes::DistanceMeters )

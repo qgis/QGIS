@@ -129,7 +129,7 @@ class CORE_EXPORT QgsVectorFieldSymbolLayer: public QgsMarkerSymbolLayer
     int mXIndex;
     int mYIndex;
 
-    //Converts length/angle to cartesian x/y
+    //Converts length/angle to Cartesian x/y
     void convertPolarToCartesian( double length, double angle, double &x, double &y ) const;
 };
 

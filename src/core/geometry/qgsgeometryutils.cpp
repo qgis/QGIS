@@ -455,7 +455,7 @@ void QgsGeometryUtils::circleCenterRadius( const QgsPoint &pt1, const QgsPoint &
     return;
   }
 
-  // Using cartesian circumcenter eguations from page https://en.wikipedia.org/wiki/Circumscribed_circle
+  // Using Cartesian circumcenter eguations from page https://en.wikipedia.org/wiki/Circumscribed_circle
   dx21 = pt2.x() - pt1.x();
   dy21 = pt2.y() - pt1.y();
   dx31 = pt3.x() - pt1.x();

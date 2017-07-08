@@ -19,7 +19,7 @@ class QgsDistanceArea
 
  If a valid ellipsoid() has been set for the QgsDistanceArea, all calculations will be
  performed using ellipsoidal algorithms (e.g. using Vincenty's formulas). If no
- ellipsoid has been set, all calculations will be performed using cartesian
+ ellipsoid has been set, all calculations will be performed using Cartesian
  formulas only. The behavior can be determined by calling willUseEllipsoid().
 
  In order to perform accurate calculations, the source coordinate reference system

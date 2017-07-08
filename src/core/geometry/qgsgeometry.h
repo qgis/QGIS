@@ -348,7 +348,7 @@ class CORE_EXPORT QgsGeometry
     QgsPointXY vertexAt( int atVertex ) const;
 
     /**
-     *  Returns the squared cartesian distance between the given point
+     *  Returns the squared Cartesian distance between the given point
      *  to the given vertex index (vertex at the given position number,
      *  ring and item (first number is index 0))
      */
@@ -370,7 +370,7 @@ class CORE_EXPORT QgsGeometry
      * Searches for the closest vertex in this geometry to the given point.
      * \param point Specifiest the point for search
      * \param atVertex Receives index of the closest vertex
-     * \returns The squared cartesian distance is also returned in sqrDist, negative number on error
+     * \returns The squared Cartesian distance is also returned in sqrDist, negative number on error
      */
     double closestVertexWithContext( const QgsPointXY &point, int &atVertex SIP_OUT ) const;
 
@@ -382,7 +382,7 @@ class CORE_EXPORT QgsGeometry
      * before the closest segment is always afterVertex - 1
      * \param leftOf Out: Returns if the point lies on the left of right side of the segment ( < 0 means left, > 0 means right )
      * \param epsilon epsilon for segment snapping
-     * \returns The squared cartesian distance is also returned in sqrDist, negative number on error
+     * \returns The squared Cartesian distance is also returned in sqrDist, negative number on error
      */
 #ifndef SIP_RUN
     double closestSegmentWithContext( const QgsPointXY &point, QgsPointXY &minDistPoint, int &afterVertex, double *leftOf = nullptr, double epsilon = DEFAULT_SEGMENT_EPSILON ) const;
