@@ -874,7 +874,7 @@ QgsProcessingModelAlgorithm::ChildParameterSources QgsProcessingModelAlgorithm::
           bool ok = !sourceDef->dataTypes().isEmpty();
           Q_FOREACH ( int type, sourceDef->dataTypes() )
           {
-            if ( dataTypes.contains( type ) || type == QgsProcessingParameterDefinition::TypeAny )
+            if ( dataTypes.contains( type ) || type == QgsProcessing::TypeAny )
             {
               ok = true;
               break;
@@ -914,7 +914,7 @@ QgsProcessingModelAlgorithm::ChildParameterSources QgsProcessingModelAlgorithm::
           if ( out->type() == QgsProcessingOutputVectorLayer::typeName() )
           {
             const QgsProcessingOutputVectorLayer *vectorOut = static_cast< const QgsProcessingOutputVectorLayer *>( out );
-            if ( !( dataTypes.contains( vectorOut->dataType() ) || vectorOut->dataType() == QgsProcessingParameterDefinition::TypeAny ) )
+            if ( !( dataTypes.contains( vectorOut->dataType() ) || vectorOut->dataType() == QgsProcessing::TypeAny ) )
             {
               continue;
             }

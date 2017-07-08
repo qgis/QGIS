@@ -45,6 +45,7 @@ from qgis.core import (
     QgsSettings,
     QgsProject,
     QgsMapLayer,
+    QgsProcessing,
     QgsProcessingUtils,
     QgsProcessingParameterDefinition,
     QgsProcessingParameterBoolean,
@@ -517,20 +518,20 @@ class FixedTableWidgetWrapper(WidgetWrapper):
 class MultipleInputWidgetWrapper(WidgetWrapper):
 
     def _getOptions(self):
-        if self.param.layerType() == QgsProcessingParameterDefinition.TypeVectorAny:
+        if self.param.layerType() == QgsProcessing.TypeVectorAny:
             options = self.dialog.getAvailableValuesOfType(QgsProcessingParameterFeatureSource, QgsProcessingOutputVectorLayer)
-        elif self.param.layerType() == QgsProcessingParameterDefinition.TypeVectorPoint:
+        elif self.param.layerType() == QgsProcessing.TypeVectorPoint:
             options = self.dialog.getAvailableValuesOfType(QgsProcessingParameterFeatureSource, QgsProcessingOutputVectorLayer,
-                                                           [QgsProcessingParameterDefinition.TypeVectorPoint, QgsProcessingParameterDefinition.TypeVectorAny])
-        elif self.param.layerType() == QgsProcessingParameterDefinition.TypeVectorLine:
+                                                           [QgsProcessing.TypeVectorPoint, QgsProcessing.TypeVectorAny])
+        elif self.param.layerType() == QgsProcessing.TypeVectorLine:
             options = self.dialog.getAvailableValuesOfType(QgsProcessingParameterFeatureSource, QgsProcessingOutputVectorLayer,
-                                                           [QgsProcessingParameterDefinition.TypeVectorLine, QgsProcessingParameterDefinition.TypeVectorAny])
-        elif self.param.layerType() == QgsProcessingParameterDefinition.TypeVectorPolygon:
+                                                           [QgsProcessing.TypeVectorLine, QgsProcessing.TypeVectorAny])
+        elif self.param.layerType() == QgsProcessing.TypeVectorPolygon:
             options = self.dialog.getAvailableValuesOfType(QgsProcessingParameterFeatureSource, QgsProcessingOutputVectorLayer,
-                                                           [QgsProcessingParameterDefinition.TypeVectorPolygon, QgsProcessingParameterDefinition.TypeVectorAny])
-        elif self.param.layerType() == QgsProcessingParameterDefinition.TypeRaster:
+                                                           [QgsProcessing.TypeVectorPolygon, QgsProcessing.TypeVectorAny])
+        elif self.param.layerType() == QgsProcessing.TypeRaster:
             options = self.dialog.getAvailableValuesOfType(QgsProcessingParameterRasterLayer, QgsProcessingOutputRasterLayer)
-        elif self.param.layerType() == QgsProcessingParameterDefinition.TypeTable:
+        elif self.param.layerType() == QgsProcessing.TypeTable:
             options = self.dialog.getAvailableValuesOfType(QgsProcessingParameterVectorLayer, OutputTable)
         else:
             options = self.dialog.getAvailableValuesOfType(QgsProcessingParameterFile, OutputFile)
@@ -539,12 +540,12 @@ class MultipleInputWidgetWrapper(WidgetWrapper):
 
     def createWidget(self):
         if self.dialogType == DIALOG_STANDARD:
-            if self.param.layerType() == QgsProcessingParameterDefinition.TypeFile:
+            if self.param.layerType() == QgsProcessing.TypeFile:
                 return MultipleInputPanel(datatype=dataobjects.TYPE_FILE)
             else:
-                if self.param.layerType() == QgsProcessingParameterDefinition.TypeRaster:
+                if self.param.layerType() == QgsProcessing.TypeRaster:
                     options = QgsProcessingUtils.compatibleRasterLayers(QgsProject.instance(), False)
-                elif self.param.layerType() in (QgsProcessingParameterDefinition.TypeVectorAny, QgsProcessingParameterDefinition.TypeTable):
+                elif self.param.layerType() in (QgsProcessing.TypeVectorAny, QgsProcessing.TypeTable):
                     options = QgsProcessingUtils.compatibleVectorLayers(QgsProject.instance(), [], False)
                 else:
                     options = QgsProcessingUtils.compatibleVectorLayers(QgsProject.instance(), [self.param.layerType()], False)
@@ -559,10 +560,10 @@ class MultipleInputWidgetWrapper(WidgetWrapper):
             return MultipleInputPanel(options)
 
     def refresh(self):
-        if self.param.layerType() != QgsProcessingParameterDefinition.TypeFile:
-            if self.param.layerType() == QgsProcessingParameterDefinition.TypeRaster:
+        if self.param.layerType() != QgsProcessing.TypeFile:
+            if self.param.layerType() == QgsProcessing.TypeRaster:
                 options = QgsProcessingUtils.compatibleRasterLayers(QgsProject.instance(), False)
-            elif self.param.layerType() in (QgsProcessingParameterDefinition.TypeVectorAny, QgsProcessingParameterDefinition.TypeTable):
+            elif self.param.layerType() in (QgsProcessing.TypeVectorAny, QgsProcessing.TypeTable):
                 options = QgsProcessingUtils.compatibleVectorLayers(QgsProject.instance(), [], False)
             else:
                 options = QgsProcessingUtils.compatibleVectorLayers(QgsProject.instance(), [self.param.layerType()], False)
@@ -584,12 +585,12 @@ class MultipleInputWidgetWrapper(WidgetWrapper):
 
     def value(self):
         if self.dialogType == DIALOG_STANDARD:
-            if self.param.layerType() == QgsProcessingParameterDefinition.TypeFile:
+            if self.param.layerType() == QgsProcessing.TypeFile:
                 return self.param.setValue(self.widget.selectedoptions)
             else:
-                if self.param.layerType() == QgsProcessingParameterDefinition.TypeRaster:
+                if self.param.layerType() == QgsProcessing.TypeRaster:
                     options = QgsProcessingUtils.compatibleRasterLayers(QgsProject.instance(), False)
-                elif self.param.layerType() in (QgsProcessingParameterDefinition.TypeVectorAny, QgsProcessingParameterDefinition.TypeTable):
+                elif self.param.layerType() in (QgsProcessing.TypeVectorAny, QgsProcessing.TypeTable):
                     options = QgsProcessingUtils.compatibleVectorLayers(QgsProject.instance(), [], False)
                 else:
                     options = QgsProcessingUtils.compatibleVectorLayers(QgsProject.instance(), [self.param.layerType()], False)
@@ -599,7 +600,7 @@ class MultipleInputWidgetWrapper(WidgetWrapper):
         else:
             options = self._getOptions()
             values = [options[i] for i in self.widget.selectedoptions]
-            if len(values) == 0 and not self.param.flags() & QgsProcessingParameterDefinition.FlagOptional:
+            if len(values) == 0 and not self.param.flags() & QgsProcessing.FlagOptional:
                 raise InvalidParameterValue()
             return values
 
@@ -784,13 +785,13 @@ class VectorWidgetWrapper(WidgetWrapper):
             widget.setLayout(vl)
 
             filters = QgsMapLayerProxyModel.Filters()
-            if QgsProcessingParameterDefinition.TypeVectorAny in self.param.dataTypes() or len(self.param.dataTypes()) == 0:
+            if QgsProcessing.TypeVectorAny in self.param.dataTypes() or len(self.param.dataTypes()) == 0:
                 filters = QgsMapLayerProxyModel.HasGeometry
-            if QgsProcessingParameterDefinition.TypeVectorPoint in self.param.dataTypes():
+            if QgsProcessing.TypeVectorPoint in self.param.dataTypes():
                 filters |= QgsMapLayerProxyModel.PointLayer
-            if QgsProcessingParameterDefinition.TypeVectorLine in self.param.dataTypes():
+            if QgsProcessing.TypeVectorLine in self.param.dataTypes():
                 filters |= QgsMapLayerProxyModel.LineLayer
-            if QgsProcessingParameterDefinition.TypeVectorPolygon in self.param.dataTypes():
+            if QgsProcessing.TypeVectorPolygon in self.param.dataTypes():
                 filters |= QgsMapLayerProxyModel.PolygonLayer
 
             try:

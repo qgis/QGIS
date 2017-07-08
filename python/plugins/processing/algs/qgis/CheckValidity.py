@@ -39,6 +39,7 @@ from qgis.core import (QgsSettings,
                        QgsWkbTypes,
                        QgsProcessingUtils,
                        QgsFields,
+                       QgsProcessing,
                        QgsProcessingFeatureSource,
                        QgsProcessingParameterFeatureSource,
                        QgsProcessingParameterEnum,
@@ -81,15 +82,15 @@ class CheckValidity(QgisAlgorithm):
         self.addParameter(QgsProcessingParameterEnum(self.METHOD,
                                                      self.tr('Method'), self.methods))
 
-        self.addParameter(QgsProcessingParameterFeatureSink(self.VALID_OUTPUT, self.tr('Valid output'), QgsProcessingParameterDefinition.TypeVectorAny, '', True))
+        self.addParameter(QgsProcessingParameterFeatureSink(self.VALID_OUTPUT, self.tr('Valid output'), QgsProcessing.TypeVectorAny, '', True))
         self.addOutput(QgsProcessingOutputVectorLayer(self.VALID_OUTPUT, self.tr('Valid output')))
         self.addOutput(QgsProcessingOutputNumber(self.VALID_COUNT, self.tr('Count of valid features')))
 
-        self.addParameter(QgsProcessingParameterFeatureSink(self.INVALID_OUTPUT, self.tr('Invalid output'), QgsProcessingParameterDefinition.TypeVectorAny, '', True))
+        self.addParameter(QgsProcessingParameterFeatureSink(self.INVALID_OUTPUT, self.tr('Invalid output'), QgsProcessing.TypeVectorAny, '', True))
         self.addOutput(QgsProcessingOutputVectorLayer(self.INVALID_OUTPUT, self.tr('Invalid output')))
         self.addOutput(QgsProcessingOutputNumber(self.INVALID_COUNT, self.tr('Count of invalid features')))
 
-        self.addParameter(QgsProcessingParameterFeatureSink(self.ERROR_OUTPUT, self.tr('Error output'), QgsProcessingParameterDefinition.TypeVectorAny, '', True))
+        self.addParameter(QgsProcessingParameterFeatureSink(self.ERROR_OUTPUT, self.tr('Error output'), QgsProcessing.TypeVectorAny, '', True))
         self.addOutput(QgsProcessingOutputVectorLayer(self.ERROR_OUTPUT, self.tr('Error output')))
         self.addOutput(QgsProcessingOutputNumber(self.ERROR_COUNT, self.tr('Count of errors')))
 

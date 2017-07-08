@@ -36,6 +36,7 @@ from qgis.core import (QgsField,
                        QgsGeometry,
                        QgsFeature,
                        QgsWkbTypes,
+                       QgsProcessing,
                        QgsProcessingUtils,
                        QgsProcessingParameterFeatureSource,
                        QgsProcessingParameterFeatureSink,
@@ -77,7 +78,7 @@ class ExtentFromLayer(QgisAlgorithm):
                                                         self.tr('Calculate extent for each feature separately'), False))
 
         self.addParameter(QgsProcessingParameterFeatureSink(self.OUTPUT, self.tr('Extent')))
-        self.addOutput(QgsProcessingOutputVectorLayer(self.OUTPUT, self.tr("Extent"), QgsProcessingParameterDefinition.TypeVectorPolygon))
+        self.addOutput(QgsProcessingOutputVectorLayer(self.OUTPUT, self.tr("Extent"), QgsProcessing.TypeVectorPolygon))
 
     def name(self):
         return 'polygonfromlayerextent'

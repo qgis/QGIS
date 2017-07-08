@@ -32,6 +32,7 @@ from math import sqrt
 from qgis.core import (QgsWkbTypes,
                        QgsApplication,
                        QgsFeatureSink,
+                       QgsProcessing,
                        QgsProcessingParameterFeatureSource,
                        QgsProcessingParameterNumber,
                        QgsProcessingParameterFeatureSink,
@@ -53,7 +54,7 @@ class DensifyGeometriesInterval(QgisAlgorithm):
         super().__init__()
 
         self.addParameter(QgsProcessingParameterFeatureSource(self.INPUT,
-                                                              self.tr('Input layer'), [QgsProcessingParameterDefinition.TypeVectorPolygon, QgsProcessingParameterDefinition.TypeVectorLine]))
+                                                              self.tr('Input layer'), [QgsProcessing.TypeVectorPolygon, QgsProcessing.TypeVectorLine]))
         self.addParameter(QgsProcessingParameterNumber(self.INTERVAL,
                                                        self.tr('Interval between vertices to add'), QgsProcessingParameterNumber.Double,
                                                        1, False, 0, 10000000))

@@ -26,6 +26,7 @@ __revision__ = '$Format:%H$'
 
 from qgis.core import (QgsApplication,
                        QgsFeatureSink,
+                       QgsProcessing,
                        QgsProcessingUtils,
                        QgsProcessingParameterFeatureSource,
                        QgsProcessingParameterNumber,
@@ -50,13 +51,13 @@ class DeleteHoles(QgisAlgorithm):
     def __init__(self):
         super().__init__()
         self.addParameter(QgsProcessingParameterFeatureSource(self.INPUT,
-                                                              self.tr('Input layer'), [QgsProcessingParameterDefinition.TypeVectorPolygon]))
+                                                              self.tr('Input layer'), [QgsProcessing.TypeVectorPolygon]))
         self.addParameter(QgsProcessingParameterNumber(self.MIN_AREA,
                                                        self.tr('Remove holes with area less than'), QgsProcessingParameterNumber.Double,
                                                        0, True, 0.0, 10000000.0))
 
-        self.addParameter(QgsProcessingParameterFeatureSink(self.OUTPUT, self.tr('Cleaned'), QgsProcessingParameterDefinition.TypeVectorPolygon))
-        self.addOutput(QgsProcessingOutputVectorLayer(self.OUTPUT, self.tr('Cleaned'), QgsProcessingParameterDefinition.TypeVectorPolygon))
+        self.addParameter(QgsProcessingParameterFeatureSink(self.OUTPUT, self.tr('Cleaned'), QgsProcessing.TypeVectorPolygon))
+        self.addOutput(QgsProcessingOutputVectorLayer(self.OUTPUT, self.tr('Cleaned'), QgsProcessing.TypeVectorPolygon))
 
     def name(self):
         return 'deleteholes'

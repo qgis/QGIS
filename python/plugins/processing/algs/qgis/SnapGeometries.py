@@ -28,6 +28,7 @@ __revision__ = '$Format:%H$'
 from qgis.analysis import (QgsGeometrySnapper,
                            QgsInternalGeometrySnapper)
 from qgis.core import (QgsFeatureSink,
+                       QgsProcessing,
                        QgsProcessingParameterDefinition,
                        QgsProcessingParameterFeatureSource,
                        QgsProcessingParameterFeatureSink,
@@ -52,11 +53,11 @@ class SnapGeometriesToLayer(QgisAlgorithm):
     def __init__(self):
         super().__init__()
 
-        self.addParameter(QgsProcessingParameterFeatureSource(self.INPUT, self.tr('Input layer'), [QgsProcessingParameterDefinition.TypeVectorPoint, QgsProcessingParameterDefinition.TypeVectorLine, QgsProcessingParameterDefinition.TypeVectorPolygon]))
+        self.addParameter(QgsProcessingParameterFeatureSource(self.INPUT, self.tr('Input layer'), [QgsProcessing.TypeVectorPoint, QgsProcessing.TypeVectorLine, QgsProcessing.TypeVectorPolygon]))
         self.addParameter(QgsProcessingParameterFeatureSource(self.REFERENCE_LAYER, self.tr('Reference layer'),
-                                                              [QgsProcessingParameterDefinition.TypeVectorPoint,
-                                                               QgsProcessingParameterDefinition.TypeVectorLine,
-                                                               QgsProcessingParameterDefinition.TypeVectorPolygon]))
+                                                              [QgsProcessing.TypeVectorPoint,
+                                                               QgsProcessing.TypeVectorLine,
+                                                               QgsProcessing.TypeVectorPolygon]))
 
         self.addParameter(QgsProcessingParameterNumber(self.TOLERANCE, self.tr('Tolerance (layer units)'), type=QgsProcessingParameterNumber.Double,
                                                        minValue=0.00000001, maxValue=9999999999, defaultValue=10.0))

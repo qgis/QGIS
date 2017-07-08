@@ -38,6 +38,7 @@ from qgis.core import (QgsField,
                        QgsGeometry,
                        QgsPointXY,
                        QgsWkbTypes,
+                       QgsProcessing,
                        QgsProcessingUtils,
                        QgsFields,
                        QgsProcessingParameterFeatureSource,
@@ -67,9 +68,9 @@ class Delaunay(QgisAlgorithm):
     def __init__(self):
         super().__init__()
 
-        self.addParameter(QgsProcessingParameterFeatureSource(self.INPUT, self.tr('Input layer'), [QgsProcessingParameterDefinition.TypeVectorPoint]))
-        self.addParameter(QgsProcessingParameterFeatureSink(self.OUTPUT, self.tr('Delaunay triangulation'), type=QgsProcessingParameterDefinition.TypeVectorPolygon))
-        self.addOutput(QgsProcessingOutputVectorLayer(self.OUTPUT, self.tr("Delaunay triangulation"), type=QgsProcessingParameterDefinition.TypeVectorPolygon))
+        self.addParameter(QgsProcessingParameterFeatureSource(self.INPUT, self.tr('Input layer'), [QgsProcessing.TypeVectorPoint]))
+        self.addParameter(QgsProcessingParameterFeatureSink(self.OUTPUT, self.tr('Delaunay triangulation'), type=QgsProcessing.TypeVectorPolygon))
+        self.addOutput(QgsProcessingOutputVectorLayer(self.OUTPUT, self.tr("Delaunay triangulation"), type=QgsProcessing.TypeVectorPolygon))
 
     def name(self):
         return 'delaunaytriangulation'

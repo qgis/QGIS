@@ -30,6 +30,7 @@ from qgis.core import (QgsApplication,
                        QgsPoint,
                        QgsFeatureRequest,
                        QgsGeometry,
+                       QgsProcessing,
                        QgsProcessingParameterDefinition,
                        QgsProcessingParameterFeatureSink,
                        QgsProcessingParameterFeatureSource,
@@ -64,7 +65,7 @@ class PointsLayerFromTable(QgisAlgorithm):
     def __init__(self):
         super().__init__()
 
-        self.addParameter(QgsProcessingParameterFeatureSource(self.INPUT, self.tr('Input layer'), types=[QgsProcessingParameterField.TypeTable]))
+        self.addParameter(QgsProcessingParameterFeatureSource(self.INPUT, self.tr('Input layer'), types=[QgsProcessing.TypeTable]))
 
         self.addParameter(QgsProcessingParameterField(self.XFIELD,
                                                       self.tr('X field'), parentLayerParameterName=self.INPUT, type=QgsProcessingParameterField.Any))
@@ -77,8 +78,8 @@ class PointsLayerFromTable(QgisAlgorithm):
         self.addParameter(QgsProcessingParameterCrs(self.TARGET_CRS,
                                                     self.tr('Target CRS'), defaultValue='EPSG:4326'))
 
-        self.addParameter(QgsProcessingParameterFeatureSink(self.OUTPUT, self.tr('Points from table'), type=QgsProcessingParameterDefinition.TypeVectorPoint))
-        self.addOutput(QgsProcessingOutputVectorLayer(self.OUTPUT, self.tr('Points from table'), type=QgsProcessingParameterDefinition.TypeVectorPoint))
+        self.addParameter(QgsProcessingParameterFeatureSink(self.OUTPUT, self.tr('Points from table'), type=QgsProcessing.TypeVectorPoint))
+        self.addOutput(QgsProcessingOutputVectorLayer(self.OUTPUT, self.tr('Points from table'), type=QgsProcessing.TypeVectorPoint))
 
     def name(self):
         return 'createpointslayerfromtable'

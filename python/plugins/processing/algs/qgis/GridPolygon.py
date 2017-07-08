@@ -38,6 +38,7 @@ from qgis.core import (QgsRectangle,
                        QgsGeometry,
                        QgsPointXY,
                        QgsWkbTypes,
+                       QgsProcessing,
                        QgsProcessingParameterEnum,
                        QgsProcessingParameterExtent,
                        QgsProcessingParameterNumber,
@@ -100,7 +101,7 @@ class GridPolygon(QgisAlgorithm):
         self.addParameter(QgsProcessingParameterCrs(self.CRS, 'Grid CRS', 'ProjectCrs'))
 
         self.addParameter(QgsProcessingParameterFeatureSink(self.OUTPUT, self.tr('Grid')))
-        self.addOutput(QgsProcessingOutputVectorLayer(self.OUTPUT, self.tr('Grid'), QgsProcessingParameterDefinition.TypeVectorPolygon))
+        self.addOutput(QgsProcessingOutputVectorLayer(self.OUTPUT, self.tr('Grid'), QgsProcessing.TypeVectorPolygon))
 
     def name(self):
         return 'creategridpolygon'
