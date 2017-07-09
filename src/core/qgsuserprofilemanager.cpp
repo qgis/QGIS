@@ -18,6 +18,7 @@ QPair<QgsUserProfile *, QString> QgsUserProfileManager::getProfile( const QStrin
   {
     QStandardPaths::StandardLocation location = roamingConfig ? QStandardPaths::AppDataLocation : QStandardPaths::AppLocalDataLocation;
     QString rootFolder = QStandardPaths::standardLocations( location ).at( 0 );
+    rootFolder = rootFolder + QDir::separator() + "profiles";
     manager.setRootLocation( rootFolder );
   }
   else
@@ -26,21 +27,20 @@ QPair<QgsUserProfile *, QString> QgsUserProfileManager::getProfile( const QStrin
   }
 
   QString profileName = defaultProfile.isEmpty() ? manager.defaultProfileName() : defaultProfile;
+
   if ( createNew )
   {
     manager.createUserProfile( profileName );
   }
-  QgsUserProfile *profile = manager.profileForName( profileName );
-  QStringList parts = manager.rootLocation().split( QDir::separator() );
-  parts.removeLast();
-  QString basePath = parts.join( QDir::separator() );
 
-  return qMakePair( profile, basePath );
+  QgsUserProfile *profile = manager.profileForName( profileName );
+
+  return qMakePair( profile, manager.rootLocation() );
 }
 
 void QgsUserProfileManager::setRootLocation( QString rootProfileLocation )
 {
-  mRootProfilePath = rootProfileLocation + QDir::separator() + "profiles";
+  mRootProfilePath = rootProfileLocation;
   mSettings = new QSettings( settingsFile(), QSettings::IniFormat );
 }
 
@@ -139,7 +139,14 @@ void QgsUserProfileManager::loadUserProfile( const QgsUserProfile *profile )
 {
   QString path = QDir::toNativeSeparators( QCoreApplication::applicationFilePath() );
   QStringList arguments;
+  arguments << QCoreApplication::arguments();
+  // The first is the path to the application
+  // on Windows this might not be case so we need to handle that
+  // http://doc.qt.io/qt-5/qcoreapplication.html#arguments
+  arguments.removeFirst();
+
   arguments << "--profile" << profile->name();
+  QgsDebugMsg( QString( "Starting instance from %1 with %2" ).arg( path ).arg( arguments.join( " " ) ) );
   QProcess::startDetached( path, arguments, QDir::toNativeSeparators( QCoreApplication::applicationDirPath() ) );
 }
 

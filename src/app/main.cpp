@@ -126,7 +126,6 @@ void usage( const QString &appName )
       << QStringLiteral( "\t[--nocustomization]\tdon't apply GUI customization\n" )
       << QStringLiteral( "\t[--customizationfile path]\tuse the given ini file as GUI customization\n" )
       << QStringLiteral( "\t[--globalsettingsfile path]\tuse the given ini file as Global Settings (defaults)\n" )
-      << QStringLiteral( "\t[--configpath path]\tuse the given path for all user configuration. This is the same as --profiles-root-location.\n" )
       << QStringLiteral( "\t[--authdbdirectory path] use the given directory for authentication database\n" )
       << QStringLiteral( "\t[--code path]\trun the given python file on load\n" )
       << QStringLiteral( "\t[--defaultui]\tstart by resetting user ui settings to default\n" )
@@ -136,9 +135,9 @@ void usage( const QString &appName )
       << QStringLiteral( "\t[--dxf-scale-denom scale]\tscale for dxf output\n" )
       << QStringLiteral( "\t[--dxf-encoding encoding]\tencoding to use for dxf output\n" )
       << QStringLiteral( "\t[--dxf-preset maptheme]\tmap theme to use for dxf output\n" )
-      << QStringLiteral( "\t[--profiles-local-storage]\tstore user profile folders in local machine folder only. Roaming folders by default.\n" )
+      << QStringLiteral( "\t[--profiles-no-roaming]\tstore user profile folders in local machine folder only. Roaming folders by default.\n" )
       << QStringLiteral( "\t[--profile name]\tload a named profile from the users profiles folder.\n" )
-      << QStringLiteral( "\t[--profiles-root-location path]\tpath to store user profile folders.\n" )
+      << QStringLiteral( "\t[--profiles-path path]\tpath to store user profile folders.\n" )
       << QStringLiteral( "\t[--help]\t\tthis text\n" )
       << QStringLiteral( "\t[--]\t\ttreat all following arguments as FILEs\n\n" )
       << QStringLiteral( "  FILE:\n" )
@@ -496,7 +495,7 @@ int main( int argc, char *argv[] )
   // save the image to disk and then exit
   QString mySnapshotFileName = QLatin1String( "" );
   QString configLocalStorageLocation = QLatin1String( "" );
-  QString configName;
+  QString profileName;
   int mySnapshotWidth = 800;
   int mySnapshotHeight = 600;
 
@@ -579,7 +578,7 @@ int main( int argc, char *argv[] )
       {
         myRestorePlugins = false;
       }
-      else if ( arg == QLatin1String( "--profiles-local-storage" ) || arg == QLatin1String( "-P" ) )
+      else if ( arg == QLatin1String( "--profiles-no-roaming" ) || arg == QLatin1String( "-P" ) )
       {
         roamingConfig = false;
       }
@@ -589,9 +588,9 @@ int main( int argc, char *argv[] )
       }
       else if ( i + 1 < argc && ( arg == QLatin1String( "--profile" ) ) )
       {
-        configName = args[++i];
+        profileName = args[++i];
       }
-      else if ( i + 1 < argc && ( arg == QLatin1String( "--profiles-root-location" ) || arg == QLatin1String( "-s" ) ) )
+      else if ( i + 1 < argc && ( arg == QLatin1String( "--profiles-path" ) || arg == QLatin1String( "-s" ) ) )
       {
         configLocalStorageLocation = QDir::toNativeSeparators( QFileInfo( args[++i] ).absoluteFilePath() );
       }
@@ -618,10 +617,6 @@ int main( int argc, char *argv[] )
       else if ( i + 1 < argc && ( arg == QLatin1String( "--extent" ) || arg == QLatin1String( "-e" ) ) )
       {
         myInitialExtent = args[++i];
-      }
-      else if ( i + 1 < argc && ( arg == QLatin1String( "--configpath" ) || arg == QLatin1String( "-c" ) ) )
-      {
-        configpath = QDir::toNativeSeparators( QDir( args[++i] ).absolutePath() );
       }
       else if ( i + 1 < argc && ( arg == QLatin1String( "--authdbdirectory" ) || arg == QLatin1String( "-a" ) ) )
       {
@@ -802,21 +797,8 @@ int main( int argc, char *argv[] )
     configLocalStorageLocation =  getenv( "QGIS_CUSTOM_CONFIG_PATH" ) ;
   }
 
-  if ( !configpath.isEmpty() )
-  {
-    configLocalStorageLocation =  configpath;
-  }
-
-  if ( ( getenv( "QGIS_CUSTOM_CONFIG_PATH" ) || !configpath.isEmpty() ) && configName.isEmpty() )
-  {
-    QDir dir( configLocalStorageLocation );
-    configName = dir.dirName();
-    dir.cdUp();
-    configLocalStorageLocation = dir.path();
-  }
-
-  QPair<QgsUserProfile *, QString> profileDetails = QgsUserProfileManager::getProfile( configLocalStorageLocation, roamingConfig, configName, true );
-  QgsUserProfile *profile = profileDetails.first;
+  QPair<QgsUserProfile*, QString> profileDetails = QgsUserProfileManager::getProfile( configLocalStorageLocation, roamingConfig, profileName, true );
+  QgsUserProfile* profile = profileDetails.first;
   profile->initSettings();
 
   QString rootProfileFolder = profileDetails.second;

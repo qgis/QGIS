@@ -37,7 +37,7 @@ class CORE_EXPORT QgsUserProfileManager : public QObject
 
     /**
      * Set the root profile location for the profile manager. All profiles are loaded from this
-     * location.
+     * location. Will also contain a profiles.ini for holding profile settings.
      * @param rootProfileLocation Path to the top level profile folder which contains folders for each profile.
      */
     void setRootLocation( QString rootProfileLocation );
