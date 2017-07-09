@@ -85,6 +85,16 @@ class QgsProcessingRegistry : QObject
  Finds an algorithm by its ID. If no matching algorithm is found, a None
  is returned.
 .. seealso:: algorithms()
+.. seealso:: createAlgorithmById()
+ :rtype: QgsProcessingAlgorithm
+%End
+
+    QgsProcessingAlgorithm *createAlgorithmById( const QString &id ) const /Factory/;
+%Docstring
+ Creates a new instance of an algorithm by its ID. If no matching algorithm is found, a None
+ is returned. Callers take responsibility for deleting the returned object.`
+.. seealso:: algorithms()
+.. seealso:: algorithmById()
  :rtype: QgsProcessingAlgorithm
 %End
 

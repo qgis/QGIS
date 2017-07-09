@@ -827,6 +827,17 @@ void TestQgsProcessing::algorithm()
   QVERIFY( !r.algorithmById( "p1:alg3" ) );
   QVERIFY( !r.algorithmById( "px:alg1" ) );
 
+  // createAlgorithmById
+  QVERIFY( !r.createAlgorithmById( "p1:alg3" ) );
+  std::unique_ptr< QgsProcessingAlgorithm > creation( r.createAlgorithmById( "p1:alg1" ) );
+  QVERIFY( creation.get() );
+  QCOMPARE( creation->provider()->id(), QStringLiteral( "p1" ) );
+  QCOMPARE( creation->id(), QStringLiteral( "p1:alg1" ) );
+  creation.reset( r.createAlgorithmById( "p1:alg2" ) );
+  QVERIFY( creation.get() );
+  QCOMPARE( creation->provider()->id(), QStringLiteral( "p1" ) );
+  QCOMPARE( creation->id(), QStringLiteral( "p1:alg2" ) );
+
   //test that loading a provider triggers an algorithm refresh
   DummyProvider *p2 = new DummyProvider( "p2" );
   QVERIFY( p2->algorithms().isEmpty() );
