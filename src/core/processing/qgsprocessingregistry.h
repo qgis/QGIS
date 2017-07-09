@@ -96,8 +96,17 @@ class CORE_EXPORT QgsProcessingRegistry : public QObject
      * Finds an algorithm by its ID. If no matching algorithm is found, a nullptr
      * is returned.
      * \see algorithms()
+     * \see createAlgorithmById()
      */
     const QgsProcessingAlgorithm *algorithmById( const QString &id ) const;
+
+    /**
+     * Creates a new instance of an algorithm by its ID. If no matching algorithm is found, a nullptr
+     * is returned. Callers take responsibility for deleting the returned object.`
+     * \see algorithms()
+     * \see algorithmById()
+     */
+    QgsProcessingAlgorithm *createAlgorithmById( const QString &id ) const SIP_FACTORY;
 
   signals:
 
