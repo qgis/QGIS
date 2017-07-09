@@ -4314,7 +4314,7 @@ bool QgsWithVariableExpressionFunction::isStatic( const QgsExpressionNodeFunctio
     popTemporaryVariable( context );
   }
 
-  return false;
+  return isStatic;
 }
 
 QVariant QgsWithVariableExpressionFunction::run( QgsExpressionNode::NodeList *args, const QgsExpressionContext *context, QgsExpression *parent )
