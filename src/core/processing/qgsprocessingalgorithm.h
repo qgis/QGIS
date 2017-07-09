@@ -62,10 +62,9 @@ class CORE_EXPORT QgsProcessingAlgorithm
 
     virtual ~QgsProcessingAlgorithm();
 
-
-    //! Algorithms cannot be copied - clone() should be used instead
+    //! Algorithms cannot be copied - create() should be used instead
     QgsProcessingAlgorithm( const QgsProcessingAlgorithm &other ) = delete;
-    //! Algorithms cannot be copied- clone() should be used instead
+    //! Algorithms cannot be copied- create() should be used instead
     QgsProcessingAlgorithm &operator=( const QgsProcessingAlgorithm &other ) = delete;
 
     /**

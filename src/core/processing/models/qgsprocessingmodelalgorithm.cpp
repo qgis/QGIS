@@ -1031,7 +1031,7 @@ QSet<QString> QgsProcessingModelAlgorithm::dependentChildAlgorithms( const QStri
 
 void QgsProcessingModelAlgorithm::dependsOnChildAlgorithmsRecursive( const QString &childId, QSet< QString > &depends ) const
 {
-  QgsProcessingModelChildAlgorithm alg = mChildAlgorithms.value( childId );
+  const QgsProcessingModelChildAlgorithm &alg = mChildAlgorithms.value( childId );
 
   // add direct dependencies
   Q_FOREACH ( const QString &c, alg.dependencies() )
