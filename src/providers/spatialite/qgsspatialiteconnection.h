@@ -23,7 +23,13 @@ extern "C"
 #include <sqlite3.h>
 #include <spatialite/gaiageo.h>
 #include <spatialite.h>
+#ifdef RASTERLITE2_VERSION_GE_1_1_0
+#include <rasterlite2.h>
+#endif
 }
+
+#include "qgsspatialiteutils.h"
+
 
 class QgsSpatiaLiteConnection : public QObject
 {
@@ -34,8 +40,42 @@ class QgsSpatiaLiteConnection : public QObject
 
     QString path() { return mPath; }
 
+    /** Return List of all stored Connection-Namess in QgsSettings
+     * - 'SpatiaLite/connections'
+     * \note
+     *  - use connectionPath to retrieve Absolute Path of the Connection
+     * \returns name of connection
+     * \see connectionPath
+     * \since QGIS 1.8
+     */
     static QStringList connectionList();
+
+    /** Delete the given Connection in QgsSettings
+     * \param name of connection as retuned from connectionList
+     * \see connectionList
+     * \since QGIS 1.8
+     */
     static void deleteConnection( const QString &name );
+
+    /** Remove the Connection Strings from the QgsSettings
+     * - when the file no longer exists
+     * \note
+     *  - uses connectionPath to retrieve Absolute Path of the Connection
+     *  - uses deleteConnection to delete the connection
+     * \returns amount of removed files
+     * \see connectionPath
+     * \see deleteConnection
+     * \since QGIS 3.0
+     */
+    static int deleteInvalidConnections( );
+
+    /** Return the absolute Path of the given Connection
+     * - when the file no longer exists
+     * \param name of connection as retuned from connectionList
+     * \returns path of Database file
+     * \see connectionList
+     * \since QGIS 1.8
+     */
     static QString connectionPath( const QString &name );
 
     typedef struct TableEntry
@@ -49,7 +89,6 @@ class QgsSpatiaLiteConnection : public QObject
       QString column;
       QString type;
     } TableEntry;
-
     enum Error
     {
       NoError,
@@ -58,38 +97,37 @@ class QgsSpatiaLiteConnection : public QObject
       FailedToCheckMetadata,
       FailedToGetTables,
     };
-
     enum DbLayoutVersion
     {
       LayoutUnknown,
       LayoutLegacy,
       LayoutCurrent,
     };
-
+    // TODO: Remove after replacing with SpatialiteDbInfo
     Error fetchTables( bool loadGeometrylessTables );
-
     //! Return list of tables. fetchTables() function has to be called before
     QList<TableEntry> tables() { return mTables; }
-
     //! Return additional error message (if an error occurred before)
     QString errorMessage() { return mErrorMsg; }
-
+    // TODO: Remove after replacing with SpatialiteDbInfo
     //! Updates the Internal Statistics
     bool updateStatistics();
-
   protected:
     // SpatiaLite DB open / close
+    // TODO: Remove after replacing with SpatialiteDbInfo
     sqlite3 *openSpatiaLiteDb( const QString &path );
+    // TODO: Remove after replacing with SpatialiteDbInfo
     void closeSpatiaLiteDb( sqlite3 *handle );
-
+    // TODO: Remove after replacing with SpatialiteDbInfo
     //! Checks if geometry_columns and spatial_ref_sys exist and have expected layout
     int checkHasMetadataTables( sqlite3 *handle );
+    // TODO: Remove after replacing with SpatialiteDbInfo
 
     /** Inserts information about the spatial tables into mTables
       \returns true if querying of tables was successful, false on error */
     bool getTableInfo( sqlite3 *handle, bool loadGeometrylessTables );
-
 #ifdef SPATIALITE_VERSION_GE_4_0_0
+    // TODO: Remove after replacing with SpatialiteDbInfo
     // only if libspatialite version is >= 4.0.0
 
     /**
@@ -103,31 +141,27 @@ class QgsSpatiaLiteConnection : public QObject
      */
     bool getTableInfoAbstractInterface( sqlite3 *handle, bool loadGeometrylessTables );
 #endif
-
     //! Cleaning well-formatted SQL strings
     QString quotedValue( QString value ) const;
-
+    // TODO: Remove after replacing with SpatialiteDbInfo
     //! Checks if geometry_columns_auth table exists
     bool checkGeometryColumnsAuth( sqlite3 *handle );
-
+    // TODO: Remove after replacing with SpatialiteDbInfo
     //! Checks if views_geometry_columns table exists
     bool checkViewsGeometryColumns( sqlite3 *handle );
-
+    // TODO: Remove after replacing with SpatialiteDbInfo
     //! Checks if virts_geometry_columns table exists
     bool checkVirtsGeometryColumns( sqlite3 *handle );
-
+    // TODO: Remove after replacing with SpatialiteDbInfo
     //! Checks if this layer has been declared HIDDEN
     bool isDeclaredHidden( sqlite3 *handle, const QString &table, const QString &geom );
-
+    // TODO: Remove after replacing with SpatialiteDbInfo
     //! Checks if this layer is a RasterLite-1 datasource
     bool isRasterlite1Datasource( sqlite3 *handle, const char *table );
-
     QString mErrorMsg;
     QString mPath; // full path to the database
-
     QList<TableEntry> mTables;
 };
-
 class QgsSqliteHandle
 {
     //
@@ -141,34 +175,48 @@ class QgsSqliteHandle
       , mIsValid( true )
     {
     }
-
     sqlite3 *handle()
     {
       return sqlite_handle;
     }
-
     QString dbPath() const
     {
       return mDbPath;
     }
-
     bool isValid() const
     {
       return mIsValid;
     }
-
     void invalidate()
     {
       mIsValid = false;
     }
-
     //
     // libsqlite3 wrapper
     //
+    void initRasterlite2();
     void sqliteClose();
+    SpatialiteDbInfo *getSpatialiteDbInfo() const { return mSpatialiteDbInfo; }
+    void setSpatialiteDbInfo( SpatialiteDbInfo *spatialiteDbInfo )  { mSpatialiteDbInfo = spatialiteDbInfo; }
 
-    static QgsSqliteHandle *openDb( const QString &dbPath, bool shared = true );
+    /** Open Spatialite Database
+     * - at this point we are 'sniffing' the Capabilities of the opened Database
+     * \note
+     *  - when only a specific table or table with geometry are being looked for
+     *  -> format: 'table_name(geometry_name)' or only 'table_name', with all of its geometries
+     *  - otherwise all tables with geometries
+     * \param sDatabaseFileName Database Filename
+     * \param shared share this connection with others [default]
+     * \param sLayerName when used will load the Layer-Information of that Layer only
+     * \param bLoadLayers Load all Layer-Information or only 'sniff' [default] the Database the Database
+     * \returns SpatialiteDbInfo with collected results
+     * \see QgsSLConnect
+     * \since QGIS 3.0
+     */
+    static QgsSqliteHandle *openDb( const QString &dbPath, bool shared = true, QString sLayerName = QString::null, bool bLoadLayers = true );
+#if 0
     static bool checkMetadata( sqlite3 *handle );
+#endif
     static void closeDb( QgsSqliteHandle *&handle );
 
     /**
@@ -177,15 +225,13 @@ class QgsSqliteHandle
      */
     static void closeAll();
     //static void closeDb( QMap < QString, QgsSqliteHandle * >&handlesRO, QgsSqliteHandle * &handle );
-
   private:
     int ref;
     sqlite3 *sqlite_handle = nullptr;
     QString mDbPath;
     bool mIsValid;
-
+    SpatialiteDbInfo *mSpatialiteDbInfo = nullptr;
+    void *rl2PrivateData = nullptr;  // pointer to RL2 Private Data
     static QMap < QString, QgsSqliteHandle * > sHandles;
 };
-
-
 #endif // QGSSPATIALITECONNECTION_H
