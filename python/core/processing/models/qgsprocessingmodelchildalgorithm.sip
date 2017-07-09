@@ -29,6 +29,8 @@ class QgsProcessingModelChildAlgorithm : QgsProcessingModelComponent
  should be set to a QgsProcessingAlgorithm algorithm ID.
 %End
 
+    QgsProcessingModelChildAlgorithm( const QgsProcessingModelChildAlgorithm &other );
+
     QString childId() const;
 %Docstring
  Returns the child algorithm's unique ID string, used the identify

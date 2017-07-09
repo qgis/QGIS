@@ -23,6 +23,7 @@
 #include "qgsprocessingmodelcomponent.h"
 #include "qgsprocessingmodelchildparametersource.h"
 #include "qgsprocessingmodeloutput.h"
+#include <memory>
 
 class QgsProcessingModelAlgorithm;
 class QgsProcessingAlgorithm;
@@ -43,6 +44,9 @@ class CORE_EXPORT QgsProcessingModelChildAlgorithm : public QgsProcessingModelCo
      * should be set to a QgsProcessingAlgorithm algorithm ID.
      */
     QgsProcessingModelChildAlgorithm( const QString &algorithmId = QString() );
+
+    QgsProcessingModelChildAlgorithm( const QgsProcessingModelChildAlgorithm &other );
+    QgsProcessingModelChildAlgorithm &operator=( const QgsProcessingModelChildAlgorithm &other );
 
     /**
      * Returns the child algorithm's unique ID string, used the identify
@@ -81,7 +85,7 @@ class CORE_EXPORT QgsProcessingModelChildAlgorithm : public QgsProcessingModelCo
      * \see algorithm()
      * \see algorithmId()
      */
-    void setAlgorithmId( const QString &algorithmId ) { mAlgorithmId = algorithmId; }
+    void setAlgorithmId( const QString &algorithmId );
 
     /**
      * Returns the underlying child algorithm, or a nullptr
@@ -231,6 +235,7 @@ class CORE_EXPORT QgsProcessingModelChildAlgorithm : public QgsProcessingModelCo
     QString mId;
 
     QString mAlgorithmId;
+    std::unique_ptr< QgsProcessingAlgorithm > mAlgorithm;
 
     //! A map of parameter sources. Keys are algorithm parameter names.
     QMap< QString, QgsProcessingModelChildParameterSources > mParams;
@@ -247,6 +252,7 @@ class CORE_EXPORT QgsProcessingModelChildAlgorithm : public QgsProcessingModelCo
     bool mParametersCollapsed = true;
     //! Whether list of outputs should be collapsed in the graphical modeller
     bool mOutputsCollapsed = true;
+
 };
 
 ///@endcond

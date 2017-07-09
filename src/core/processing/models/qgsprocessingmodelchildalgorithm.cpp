@@ -23,14 +23,40 @@
 ///@cond NOT_STABLE
 
 QgsProcessingModelChildAlgorithm::QgsProcessingModelChildAlgorithm( const QString &algorithmId )
-  : mAlgorithmId( algorithmId )
 {
+  setAlgorithmId( algorithmId );
+}
 
+QgsProcessingModelChildAlgorithm::QgsProcessingModelChildAlgorithm( const QgsProcessingModelChildAlgorithm &other )
+  : QgsProcessingModelComponent( other )
+  , mId( other.mId )
+  , mParams( other.mParams )
+  , mModelOutputs( other.mModelOutputs )
+  , mActive( other.mActive )
+  , mDependencies( other.mDependencies )
+  , mParametersCollapsed( other.mParametersCollapsed )
+  , mOutputsCollapsed( other.mOutputsCollapsed )
+{
+  setAlgorithmId( other.algorithmId() );
+}
+
+QgsProcessingModelChildAlgorithm &QgsProcessingModelChildAlgorithm::operator=( const QgsProcessingModelChildAlgorithm &other )
+{
+  QgsProcessingModelComponent::operator =( other );
+  mId = other.mId;
+  setAlgorithmId( other.algorithmId() );
+  mParams = other.mParams;
+  mModelOutputs = other.mModelOutputs;
+  mActive = other.mActive;
+  mDependencies = other.mDependencies;
+  mParametersCollapsed = other.mParametersCollapsed;
+  mOutputsCollapsed = other.mOutputsCollapsed;
+  return *this;
 }
 
 const QgsProcessingAlgorithm *QgsProcessingModelChildAlgorithm::algorithm() const
 {
-  return QgsApplication::processingRegistry()->algorithmById( mAlgorithmId );
+  return mAlgorithm.get();
 }
 
 void QgsProcessingModelChildAlgorithm::setModelOutputs( const QMap<QString, QgsProcessingModelOutput> &modelOutputs )
@@ -86,7 +112,7 @@ bool QgsProcessingModelChildAlgorithm::loadVariant( const QVariant &child )
   QVariantMap map = child.toMap();
 
   mId = map.value( QStringLiteral( "id" ) ).toString();
-  mAlgorithmId = map.value( QStringLiteral( "alg_id" ) ).toString();
+  setAlgorithmId( map.value( QStringLiteral( "alg_id" ) ).toString() );
   mActive = map.value( QStringLiteral( "active" ) ).toBool();
   mDependencies = map.value( QStringLiteral( "dependencies" ) ).toStringList();
   mParametersCollapsed = map.value( QStringLiteral( "parameters_collapsed" ) ).toBool();
@@ -176,6 +202,16 @@ void QgsProcessingModelChildAlgorithm::generateChildId( const QgsProcessingModel
     i++;
   }
   mId = id;
+}
+
+void QgsProcessingModelChildAlgorithm::setAlgorithmId( const QString &algorithmId )
+{
+  mAlgorithmId = algorithmId;
+  mAlgorithm.reset( QgsApplication::processingRegistry()->createAlgorithmById( mAlgorithmId ) );
+  if ( mAlgorithm )
+  {
+    mAlgorithm->init( QVariantMap() );
+  }
 }
 
 ///@endcond
