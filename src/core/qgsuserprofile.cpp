@@ -17,13 +17,14 @@ const QString QgsUserProfile::folder() const
   return mProfileFolder;
 }
 
-const QString QgsUserProfile::parentFolder() const
+QgsError QgsUserProfile::validate() const
 {
-  /// This is a bit gross maybe do soemthing better.
-  QDir dir( mProfileFolder );
-  dir.cdUp();
-  dir.cdUp();
-  return dir.path();
+  QgsError error;
+  if ( !QDir( mProfileFolder ).exists() )
+  {
+    error.append( QObject::tr( "Profile folder doesn't exist" ) );
+  }
+  return error;
 }
 
 const QString QgsUserProfile::name() const

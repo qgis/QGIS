@@ -2,6 +2,7 @@
 #define QGSUSERPROFILE_H
 
 #include "qgis_core.h"
+#include "qgserror.h"
 #include <QIcon>
 
 /** \ingroup core
@@ -32,10 +33,10 @@ class CORE_EXPORT QgsUserProfile
     const QString folder() const;
 
     /**
-     * The parent folder for the profile folder.
-     * @return
+     * Check of the profile is in a valid state.
+     * @return Any errors the profile has.
      */
-    const QString parentFolder() const;
+    QgsError validate() const;
 
     /**
      * The name for the user profile.

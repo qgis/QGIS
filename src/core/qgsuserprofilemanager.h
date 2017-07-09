@@ -33,7 +33,7 @@ class CORE_EXPORT QgsUserProfileManager : public QObject
      * @param defaultProfile The profile name to find. Empty profile name will return "default" for the name.
      * @return The QgsUserProfile for the given profile name.
      */
-    static QgsUserProfile *getProfile( const QString &rootLocation = QString(), bool roamingConfig = true, const QString &defaultProfile = "default" );
+    static QPair<QgsUserProfile *, QString> getProfile( const QString &rootLocation = QString(), bool roamingConfig = true, const QString &defaultProfile = "default", bool createNew = true );
 
     /**
      * Set the root profile location for the profile manager. All profiles are loaded from this
@@ -59,6 +59,12 @@ class CORE_EXPORT QgsUserProfileManager : public QObject
      * @return
      */
     QStringList allProfiles() const;
+
+    /**
+     * Check if a profile exists.
+     * @return False if the profile can't be found.
+     */
+    bool profileExists( const QString &name ) const;
 
     /**
      * Returns the name of the default profile that has been set in .default.

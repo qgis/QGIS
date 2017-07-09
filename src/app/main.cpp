@@ -815,10 +815,17 @@ int main( int argc, char *argv[] )
     configLocalStorageLocation = dir.path();
   }
 
-  QgsUserProfile *profile = QgsUserProfileManager::getProfile( configLocalStorageLocation, roamingConfig, configName );
+  QPair<QgsUserProfile *, QString> profileDetails = QgsUserProfileManager::getProfile( configLocalStorageLocation, roamingConfig, configName, true );
+  QgsUserProfile *profile = profileDetails.first;
   profile->initSettings();
+
+  QString rootProfileFolder = profileDetails.second;
   QString profileFolder = profile->folder();
-  QString rootProfileFolder = profile->parentFolder();
+
+  QgsDebugMsg( "User profile details:" );
+  QgsDebugMsg( QString( "\\t - %1" ).arg( profile->name() ) );
+  QgsDebugMsg( QString( "\\t - %1" ).arg( profileFolder ) );
+  QgsDebugMsg( QString( "\\t - %1" ).arg( rootProfileFolder ) );
 
   QgsApplication myApp( argc, argv, myUseGuiFlag, profileFolder );
 

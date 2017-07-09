@@ -1,6 +1,7 @@
 #include "qgsuserprofilemanager.h"
 #include "qgsuserprofile.h"
 #include "qgsapplication.h"
+#include "qgslogger.h"
 
 #include <QFile>
 #include <QDir>
@@ -9,7 +10,7 @@
 #include <QStandardPaths>
 
 
-QgsUserProfile *QgsUserProfileManager::getProfile( const QString &rootLocation, bool roamingConfig, const QString &defaultProfile )
+QPair<QgsUserProfile *, QString> QgsUserProfileManager::getProfile( const QString &rootLocation, bool roamingConfig, const QString &defaultProfile, bool createNew )
 {
   QgsUserProfileManager manager;
 
@@ -25,8 +26,16 @@ QgsUserProfile *QgsUserProfileManager::getProfile( const QString &rootLocation, 
   }
 
   QString profileName = defaultProfile.isEmpty() ? manager.defaultProfileName() : defaultProfile;
+  if ( createNew )
+  {
+    manager.createUserProfile( profileName );
+  }
   QgsUserProfile *profile = manager.profileForName( profileName );
-  return profile;
+  QStringList parts = manager.rootLocation().split( QDir::separator() );
+  parts.removeLast();
+  QString basePath = parts.join( QDir::separator() );
+
+  return qMakePair( profile, basePath );
 }
 
 void QgsUserProfileManager::setRootLocation( QString rootProfileLocation )
@@ -61,6 +70,11 @@ void QgsUserProfileManager::setDefaultFromActive()
 QStringList QgsUserProfileManager::allProfiles() const
 {
   return QDir( mRootProfilePath ).entryList( QDir::Dirs | QDir::NoDotAndDotDot );
+}
+
+bool QgsUserProfileManager::profileExists( const QString &name ) const
+{
+  return allProfiles().contains( name );
 }
 
 QgsUserProfile *QgsUserProfileManager::profileForName( const QString name ) const

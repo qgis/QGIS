@@ -133,7 +133,8 @@ void QgsApplication::init( QString profileFolder )
     {
       // This will normally get here for custom scripts that use QgsApplication.
       // This doesn't get this hit for QGIS Desktop because we setup the profile via main
-      QgsUserProfile *profile = QgsUserProfileManager::getProfile();
+      QPair<QgsUserProfile *, QString> profileDetails = QgsUserProfileManager::getProfile();
+      QgsUserProfile *profile = profileDetails.first;
       profileFolder = profile->folder();
       profile->initSettings();
       delete profile;
