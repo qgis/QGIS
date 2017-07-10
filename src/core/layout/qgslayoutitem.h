@@ -19,6 +19,8 @@
 
 #include "qgis_core.h"
 #include "qgslayoutobject.h"
+#include "qgslayoutsize.h"
+#include "qgslayoutpoint.h"
 #include <QGraphicsRectItem>
 
 class QgsLayout;
@@ -37,10 +39,24 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
 
   public:
 
+    //! Fixed position reference point
+    enum ReferencePoint
+    {
+      UpperLeft, //!< Upper left corner of item
+      UpperMiddle, //!< Upper center of item
+      UpperRight, //!< Upper right corner of item
+      MiddleLeft, //!< Middle left of item
+      Middle, //!< Center of item
+      MiddleRight, //!< Middle right of item
+      LowerLeft, //!< Lower left corner of item
+      LowerMiddle, //!< Lower center of item
+      LowerRight, //!< Lower right corner of item
+    };
+
     /**
      * Constructor for QgsLayoutItem, with the specified parent \a layout.
      */
-    QgsLayoutItem( QgsLayout *layout );
+    explicit QgsLayoutItem( QgsLayout *layout );
 
     /**
      * Handles preparing a paint surface for the layout item and painting the item's
@@ -48,6 +64,68 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
      * the pure virtual method QgsLayoutItem::draw.
      */
     void paint( QPainter *painter, const QStyleOptionGraphicsItem *itemStyle, QWidget *pWidget ) override;
+
+    /**
+     * Sets the reference \a point for positioning of the layout item. This point is also
+     * fixed during resizing of the item, and any size changes will be performed
+     * so that the position of the reference point within the layout remains unchanged.
+     * \see referencePoint()
+     */
+    void setReferencePoint( const ReferencePoint &point );
+
+    /**
+     * Returns the reference point for positioning of the layout item. This point is also
+     * fixed during resizing of the item, and any size changes will be performed
+     * so that the position of the reference point within the layout remains unchanged.
+     * \see setReferencePoint()
+     */
+    ReferencePoint referencePoint() const { return mReferencePoint; }
+
+    /**
+     * Returns the fixed size of the item, if applicable, or an empty size if item can be freely
+     * resized.
+     * \see setFixedSize()
+     * \see minimumSize()
+    */
+    QgsLayoutSize fixedSize() const { return mFixedSize; }
+
+    /**
+     * Returns the minimum allowed size of the item, if applicable, or an empty size if item can be freely
+     * resized.
+     * \see setMinimumSize()
+     * \see fixedSize()
+    */
+    virtual QgsLayoutSize minimumSize() const { return mMinimumSize; }
+
+    /**
+     * Attempts to resize the item to a specified target \a size. Note that the final size of the
+     * item may not match the specified target size, as items with a fixed or minimum
+     * size will place restrictions on the allowed item size. Data defined item size overrides
+     * will also override the specified target size.
+     * \see minimumSize()
+     * \see fixedSize()
+     * \see attemptMove()
+    */
+    virtual void attemptResize( const QgsLayoutSize &size );
+
+    /**
+     * Attempts to move the item to a specified \a point. This method respects the item's
+     * reference point, in that the item will be moved so that its current reference
+     * point is placed at the specified target point.
+     * Note that the final position of the item may not match the specified target position,
+     * as data defined item position may override the specified value.
+     * \see attemptResize()
+     * \see referencePoint()
+    */
+    virtual void attemptMove( const QgsLayoutPoint &point );
+
+  public slots:
+
+    /**
+     * Refreshes the item, causing a recalculation of any property overrides and
+     * recalculation of its position and size.
+     */
+    void refresh() override;
 
   protected:
 
@@ -62,12 +140,62 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
      */
     virtual void draw( QPainter *painter, const QStyleOptionGraphicsItem *itemStyle, QWidget *pWidget ) = 0;
 
+    /**
+     * Sets a fixed \a size for the layout item, which prevents it from being freely
+     * resized. Set an empty size if item can be freely resized.
+     * \see fixedSize()
+     * \see setMinimumSize()
+    */
+    virtual void setFixedSize( const QgsLayoutSize &size );
+
+    /**
+     * Sets the minimum allowed \a size for the layout item. Set an empty size if item can be freely
+     * resized.
+     * \see minimumSize()
+     * \see setFixedSize()
+    */
+    virtual void setMinimumSize( const QgsLayoutSize &size );
+
+    /**
+     * Refreshes an item's size by rechecking it against any possible item fixed
+     * or minimum sizes.
+     * \see setFixedSize()
+     * \see setMinimumSize()
+     * \see refreshItemPosition()
+     */
+    void refreshItemSize();
+
+    /**
+     * Refreshes an item's position by rechecking it against any possible overrides
+     * such as data defined positioning.
+     * \see refreshItemSize()
+    */
+    void refreshItemPosition();
+
+    /**
+     * Adjusts the specified \a point at which the reference position of the item
+     * sits and returns the top left corner of the item.
+     */
+    QPointF adjustPointForReferencePosition( const QPointF &point, const QSizeF &size ) const;
+
   private:
+
+    ReferencePoint mReferencePoint = UpperLeft;
+    QgsLayoutSize mFixedSize;
+    QgsLayoutSize mMinimumSize;
+
+    QgsLayoutSize mItemSize;
+    QgsLayoutPoint mItemPosition;
+
+    void initConnectionsToLayout();
 
     //! Prepares a painter by setting rendering flags
     void preparePainter( QPainter *painter );
     bool shouldDrawAntialiased() const;
     bool shouldDrawDebugRect() const;
+
+    QSizeF applyMinimumSize( const QSizeF &targetSize );
+    QSizeF applyFixedSize( const QSizeF &targetSize );
 
     friend class TestQgsLayoutItem;
 };

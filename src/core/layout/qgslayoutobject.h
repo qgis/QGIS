@@ -103,7 +103,7 @@ class CORE_EXPORT QgsLayoutObject: public QObject, public QgsExpressionContextGe
      * classes which are derived from QgsLayoutObject (such as QgsLayoutItem)
      * may transfer their ownership to a layout upon construction.
      */
-    QgsLayoutObject( QgsLayout *layout );
+    explicit QgsLayoutObject( QgsLayout *layout );
 
     /**
      * Returns the layout the object is attached to.
@@ -178,6 +178,13 @@ class CORE_EXPORT QgsLayoutObject: public QObject, public QgsExpressionContextGe
      * scopes for global, project and layout properties.
      */
     QgsExpressionContext createExpressionContext() const override;
+
+  public slots:
+
+    /**
+     * Refreshes the object, causing a recalculation of any property overrides.
+     */
+    virtual void refresh() {}
 
   protected:
 

@@ -78,7 +78,7 @@ class QgsLayoutObject: QObject, QgsExpressionContextGenerator
  :rtype: QgsPropertiesDefinition
 %End
 
-    QgsLayoutObject( QgsLayout *layout );
+    explicit QgsLayoutObject( QgsLayout *layout );
 %Docstring
  Constructor for QgsLayoutObject, with the specified parent ``layout``.
 .. note::
@@ -157,6 +157,13 @@ class QgsLayoutObject: QObject, QgsExpressionContextGenerator
  Creates an expression context relating to the objects' current state. The context includes
  scopes for global, project and layout properties.
  :rtype: QgsExpressionContext
+%End
+
+  public slots:
+
+    virtual void refresh();
+%Docstring
+ Refreshes the object, causing a recalculation of any property overrides.
 %End
 
   protected:
