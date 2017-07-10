@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>QgsPendindChangesBase</class>
+ <widget class="QWidget" name="QgsPendindChangesBase">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>441</width>
+    <height>479</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Form</string>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout">
+   <property name="spacing">
+    <number>3</number>
+   </property>
+   <property name="leftMargin">
+    <number>0</number>
+   </property>
+   <property name="topMargin">
+    <number>0</number>
+   </property>
+   <property name="rightMargin">
+    <number>0</number>
+   </property>
+   <property name="bottomMargin">
+    <number>0</number>
+   </property>
+   <item>
+    <widget class="QToolBar" name="mActionsToolbar">
+     <property name="iconSize">
+      <size>
+       <width>16</width>
+       <height>16</height>
+      </size>
+     </property>
+     <property name="floatable">
+      <bool>false</bool>
+     </property>
+     <addaction name="mActionSave"/>
+     <addaction name="separator"/>
+     <addaction name="mActionReport"/>
+     <addaction name="mActionDiff"/>
+     <addaction name="separator"/>
+     <addaction name="separator"/>
+    </widget>
+   </item>
+   <item>
+    <widget class="QTreeView" name="mPendingTree"/>
+   </item>
+  </layout>
+  <action name="mActionSave">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionFileSave.svg</normaloff>:/images/themes/default/mActionFileSave.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Save</string>
+   </property>
+  </action>
+  <action name="mActionReport">
+   <property name="text">
+    <string>Report</string>
+   </property>
+  </action>
+  <action name="mActionDiff">
+   <property name="text">
+    <string>Diff Feature</string>
+   </property>
+  </action>
+ </widget>
+ <resources>
+  <include location="../../images/images.qrc"/>
+ </resources>
+ <connections/>
+</ui>

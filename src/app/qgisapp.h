@@ -73,6 +73,7 @@ class QgsMapTip;
 class QgsMapTool;
 class QgsMapToolAdvancedDigitizing;
 class QgsMapToolIdentifyAction;
+class QgsPendingChangesWidget;
 class QgsPluginLayer;
 class QgsPluginLayer;
 class QgsPluginManager;
@@ -1940,6 +1941,9 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
     QgsUndoWidget *mUndoWidget = nullptr;
     QgsDockWidget *mUndoDock = nullptr;
+
+    QgsDockWidget *mPendingChangesDock = nullptr;
+    QgsPendingChangesWidget *mPendingChangesWidget = nullptr;
 
     QgsBrowserDockWidget *mBrowserWidget = nullptr;
     QgsBrowserDockWidget *mBrowserWidget2 = nullptr;
