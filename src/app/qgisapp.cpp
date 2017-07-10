@@ -2308,6 +2308,7 @@ void QgisApp::refreshProfileMenu()
   {
     profile = userProfileManager()->profileForName( name );
     QAction *action = mConfigMenu->addAction( profile->icon(), profile->alias() );
+    action->setToolTip( profile->folder() );
     connect( action, &QAction::triggered, this, [this, profile]()
     {
       userProfileManager()->loadUserProfile( profile );
