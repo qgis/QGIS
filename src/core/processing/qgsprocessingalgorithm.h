@@ -322,7 +322,15 @@ class CORE_EXPORT QgsProcessingAlgorithm
      *
      * This method should return a 'pristine' instance of the algorithm class.
      */
-    virtual QgsProcessingAlgorithm *createInstance() const = 0 SIP_FACTORY;
+    virtual QgsProcessingAlgorithm *createInstance() const = 0;
+#ifdef SIP_RUN
+    SIP_VIRTUAL_CATCHER_CODE
+    PyObject *resObj = sipCallMethod( 0, sipMethod, "" );
+    sipIsErr = !resObj || sipParseResult( 0, sipMethod, resObj, "H2", sipType_QgsProcessingAlgorithm, &sipRes ) < 0;
+    if ( !sipIsErr )
+      sipTransferTo( resObj, Py_None );
+    SIP_END
+#endif
 
     /**
      * Adds a parameter \a definition to the algorithm. Ownership of the definition is transferred to the algorithm.
