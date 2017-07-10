@@ -310,6 +310,10 @@ while ($LINE_IDX < $LINE_COUNT){
         $LINE = "%ConvertToSubClassCode$1";
         # do not go next, let run the "do not process SIP code"
     }
+    if ($LINE =~ m/^\s*SIP_VIRTUAL_CATCHER_CODE(.*)$/){
+        $LINE = "%VirtualCatcherCode$1";
+        # do not go next, let run the "do not process SIP code"
+    }
 
     if ($LINE =~ m/^\s*SIP_END(.*)$/){
         write_output("SEN", "%End$1\n");

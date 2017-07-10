@@ -331,12 +331,18 @@ class QgsProcessingAlgorithm
 
   protected:
 
-    virtual QgsProcessingAlgorithm *createInstance() const = 0 /Factory/;
+    virtual QgsProcessingAlgorithm *createInstance() const = 0;
 %Docstring
  Creates a new instance of the algorithm class.
 
  This method should return a 'pristine' instance of the algorithm class.
  :rtype: QgsProcessingAlgorithm
+%End
+%VirtualCatcherCode
+    PyObject *resObj = sipCallMethod( 0, sipMethod, "" );
+    sipIsErr = !resObj || sipParseResult( 0, sipMethod, resObj, "H2", sipType_QgsProcessingAlgorithm, &sipRes ) < 0;
+    if ( !sipIsErr )
+      sipTransferTo( resObj, Py_None );
 %End
 
     bool addParameter( QgsProcessingParameterDefinition *parameterDefinition /Transfer/ );
