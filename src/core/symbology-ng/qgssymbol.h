@@ -388,6 +388,10 @@ class CORE_EXPORT QgsSymbol
     QgsSymbol( const QgsSymbol & );
 #endif
 
+    //! True if render has already been started - guards against multiple calls to
+    //! startRender() (usually a result of not cloning a shared symbol instance before rendering).
+    bool mStarted = false;
+
     //! Initialized in startRender, destroyed in stopRender
     std::unique_ptr< QgsSymbolRenderContext > mSymbolRenderContext;
 
