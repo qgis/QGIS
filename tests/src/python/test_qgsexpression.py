@@ -195,5 +195,39 @@ class TestQgsExpressionCustomFunctions(unittest.TestCase):
         e.setExpression('1')
         self.assertTrue(e.isValid())
 
+    def testCreateFieldEqualityExpression(self):
+        e = QgsExpression()
+
+        # test when value is null
+        field = "myfield"
+        value = None
+        res = '"myfield" IS NULL'
+        self.assertEqual(e.createFieldEqualityExpression(field, value), res)
+
+        # test when value is null and field name has a quote
+        field = "my'field"
+        value = None
+        res = '"my\'field" IS NULL'
+        self.assertEqual(e.createFieldEqualityExpression(field, value), res)
+
+        # test when field name has a quote and value is an int
+        field = "my'field"
+        value = 5
+        res = '"my\'field" = 5'
+        self.assertEqual(e.createFieldEqualityExpression(field, value), res)
+
+        # test when field name has a quote and value is a string
+        field = "my'field"
+        value = '5'
+        res = '"my\'field" = \'5\''
+        self.assertEqual(e.createFieldEqualityExpression(field, value), res)
+
+        # test when field name has a quote and value is a boolean
+        field = "my'field"
+        value = True
+        res = '"my\'field" = TRUE'
+        self.assertEqual(e.createFieldEqualityExpression(field, value), res)
+
+
 if __name__ == "__main__":
     unittest.main()
