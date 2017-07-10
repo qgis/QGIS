@@ -405,11 +405,6 @@ void QgsCategorizedSymbolRenderer::startRender( QgsRenderContext &context, const
   {
     cat.symbol()->startRender( context, fields );
   }
-
-  Q_FOREACH ( QgsSymbol *sym, mSymbolHash.values() )
-  {
-    sym->startRender( context, fields );
-  }
 }
 
 void QgsCategorizedSymbolRenderer::stopRender( QgsRenderContext &context )
@@ -418,12 +413,6 @@ void QgsCategorizedSymbolRenderer::stopRender( QgsRenderContext &context )
   {
     cat.symbol()->stopRender( context );
   }
-
-  Q_FOREACH ( QgsSymbol *sym, mSymbolHash.values() )
-  {
-    sym->stopRender( context );
-  }
-
   mExpression.reset();
 }
 
