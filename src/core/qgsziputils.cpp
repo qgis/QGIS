@@ -115,13 +115,7 @@ bool QgsZipUtils::unzip( const QString &zipFilename, const QString &dir, QString
 
 bool QgsZipUtils::zip( const QString &zipFilename, const QStringList &files )
 {
-  if ( QFileInfo::exists( zipFilename ) )
-  {
-    QString err = QObject::tr( "Error zip file yet exist: '%1'" ).arg( zipFilename );
-    QgsMessageLog::logMessage( err, QStringLiteral( "QgsZipUtils" ) );
-    return false;
-  }
-  else if ( zipFilename.isEmpty() )
+  if ( zipFilename.isEmpty() )
   {
     QString err = QObject::tr( "Error zip filename is empty" );
     QgsMessageLog::logMessage( err, QStringLiteral( "QgsZipUtils" ) );

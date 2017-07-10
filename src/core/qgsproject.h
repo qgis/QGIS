@@ -40,6 +40,7 @@
 #include "qgsprojectproperty.h"
 #include "qgsmaplayer.h"
 #include "qgsmaplayerstore.h"
+#include "qgsarchive.h"
 
 class QFileInfo;
 class QDomDocument;
@@ -575,6 +576,22 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      */
     QMap<QString, QgsMapLayer *> mapLayers() const;
 
+    /**
+     * Unzip a project
+     * \param filename The project filename to unzip
+     * \returns true if unzip is well performed, false otherwise
+     * \since QGIS 3.0
+     */
+    bool unzip( const QString &filename );
+
+    /**
+     * Zip the project
+     * \param filename The zip filename
+     * \returns true if zip is well performed, false otherwise
+     * \since QGIS 3.0
+     */
+    bool zip( const QString &filename );
+
 #ifndef SIP_RUN
 
     /** Returns a list of registered map layers with a specified layer type.
@@ -1047,6 +1064,8 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     std::unique_ptr<QgsLabelingEngineSettings> mLabelingEngineSettings;
 
     QVariantMap mCustomVariables;
+
+    std::unique_ptr<QgsArchive> mArchive;
 
     QFile mFile;                 // current physical project file
     mutable QgsProjectPropertyKey mProperties;  // property hierarchy, TODO: this shouldn't be mutable

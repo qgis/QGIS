@@ -305,6 +305,7 @@ SET(QGIS_CORE_SRCS
   qgsxmlutils.cpp
   qgssettings.cpp
   qgsstacktrace.cpp
+  qgsarchive.cpp
   qgsziputils.cpp
 
   composer/qgsaddremoveitemcommand.cpp
@@ -893,6 +894,7 @@ SET(QGIS_CORE_HDRS
   qgsvirtuallayerdefinitionutils.h
   qgsmapthemecollection.h
   qgsxmlutils.h
+  qgsarchive.h
   qgsziputils.h
   qgsvector.h
   qgslocalec.h

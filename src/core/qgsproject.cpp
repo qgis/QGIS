@@ -332,6 +332,7 @@ QgsProject::QgsProject( QObject *parent )
   , mLayoutManager( new QgsLayoutManager( this ) )
   , mRootGroup( new QgsLayerTree )
   , mLabelingEngineSettings( new QgsLabelingEngineSettings )
+  , mArchive( new QgsArchive() )
   , mAutoTransaction( false )
   , mEvaluateDefaultValues( false )
   , mDirty( false )
@@ -2062,6 +2063,81 @@ QgsMapLayer *QgsProject::mapLayer( const QString &layerId ) const
 QList<QgsMapLayer *> QgsProject::mapLayersByName( const QString &layerName ) const
 {
   return mLayerStore->mapLayersByName( layerName );
+}
+
+bool QgsProject::unzip( const QString &filename )
+{
+  clearError();
+  std::unique_ptr<QgsArchive> archive( new QgsArchive() );
+
+  // unzip the archive
+  if ( !archive->unzip( filename ) )
+  {
+    setError( tr( "Unable to unzip file '%1'" ).arg( filename ) );
+    return false;
+  }
+
+  // test if zip provides a .qgs file
+  if ( archive->projectFile().isEmpty() )
+  {
+    setError( tr( "Zip archive does not provide a project file" ) );
+    return false;
+  }
+
+  // read the project file
+  if ( ! read( archive->projectFile() ) )
+  {
+    setError( tr( "Cannot read unzipped qgs project file" ) );
+    return false;
+  }
+
+  // keep the archive
+  mArchive.reset( archive.release() );
+
+  return true;
+}
+
+bool QgsProject::zip( const QString &filename )
+{
+  clearError();
+
+  // save the current project in a temporary .qgs file
+  QgsArchive archive;
+  const QString baseName = QFileInfo( filename ).baseName();
+  const QString qgsFileName = QString( "%1.qgs" ).arg( baseName );
+  QFile qgsFile( QDir( archive.dir() ).filePath( qgsFileName ) );
+
+  bool writeOk;
+  if ( qgsFile.open( QIODevice::WriteOnly ) )
+  {
+    const QString originalFilename = mFile.fileName();
+    mFile.setFileName( qgsFile.fileName() );
+
+    writeOk = write();
+
+    mFile.setFileName( originalFilename );
+    qgsFile.close();
+  }
+
+  // stop here with an error message
+  if ( ! writeOk )
+  {
+    setError( tr( "Unable to write temporary qgs file" ) );
+    return false;
+  }
+
+  // create the archive
+  archive.addFile( qgsFile.fileName() );
+
+  // zip
+  QString errMsg;
+  if ( !archive.zip( filename ) )
+  {
+    setError( tr( "Unable to perform zip" ) );
+    return false;
+  }
+
+  return true;
 }
 
 QList<QgsMapLayer *> QgsProject::addMapLayers(
