@@ -31,7 +31,8 @@ QPair<QgsUserProfile *, QString> QgsUserProfileManager::getProfile( const QStrin
   }
   else
   {
-    manager.setRootLocation( rootLocation );
+    QString rootFolder = rootLocation + QDir::separator() + "profiles";
+    manager.setRootLocation( rootFolder );
   }
 
   QString profileName = defaultProfile.isEmpty() ? manager.defaultProfileName() : defaultProfile;
