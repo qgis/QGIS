@@ -49,6 +49,8 @@ class CORE_EXPORT QgsArchive
 
     void addFile( const QString &filename );
 
+    void setFileName( const QString &filename );
+
     QString filename() const;
 
     QString projectFile() const;

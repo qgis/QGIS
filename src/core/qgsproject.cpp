@@ -425,6 +425,8 @@ void QgsProject::setFileName( const QString &name )
   if ( newHomePath != oldHomePath )
     emit homePathChanged();
 
+  mArchive->clear();
+
   setDirty( true );
 }
 
@@ -762,6 +764,9 @@ bool QgsProject::read( const QString &filename )
 bool QgsProject::read()
 {
   clearError();
+
+  if ( ! mUnzipping )
+    mArchive->clear();
 
   std::unique_ptr<QDomDocument> doc( new QDomDocument( QStringLiteral( "qgis" ) ) );
 
@@ -2085,16 +2090,27 @@ bool QgsProject::unzip( const QString &filename )
   }
 
   // read the project file
+  mUnzipping = true;
   if ( ! read( archive->projectFile() ) )
   {
+    mUnzipping = false;
     setError( tr( "Cannot read unzipped qgs project file" ) );
     return false;
   }
 
   // keep the archive
+  mUnzipping = false;
   mArchive.reset( archive.release() );
 
   return true;
+}
+
+bool QgsProject::zip()
+{
+  if ( unzipped() )
+    return zip( mArchive->filename() );
+
+  return false;
 }
 
 bool QgsProject::zip( const QString &filename )
@@ -2102,10 +2118,10 @@ bool QgsProject::zip( const QString &filename )
   clearError();
 
   // save the current project in a temporary .qgs file
-  QgsArchive archive;
+  std::unique_ptr<QgsArchive> archive( new QgsArchive() );
   const QString baseName = QFileInfo( filename ).baseName();
   const QString qgsFileName = QString( "%1.qgs" ).arg( baseName );
-  QFile qgsFile( QDir( archive.dir() ).filePath( qgsFileName ) );
+  QFile qgsFile( QDir( archive->dir() ).filePath( qgsFileName ) );
 
   bool writeOk;
   if ( qgsFile.open( QIODevice::WriteOnly ) )
@@ -2127,17 +2143,36 @@ bool QgsProject::zip( const QString &filename )
   }
 
   // create the archive
-  archive.addFile( qgsFile.fileName() );
+  archive->addFile( qgsFile.fileName() );
 
   // zip
   QString errMsg;
-  if ( !archive.zip( filename ) )
+  if ( !archive->zip( filename ) )
   {
     setError( tr( "Unable to perform zip" ) );
     return false;
   }
 
+  // keep the archive
+  mArchive.reset( archive.release() );
+
   return true;
+}
+
+bool QgsProject::unzipped() const
+{
+  return !mArchive->filename().isEmpty();
+}
+
+QString QgsProject::zipFileName() const
+{
+  return mArchive->filename();
+}
+
+void QgsProject::setZipFileName( const QString &filename )
+{
+  mArchive.reset( new QgsArchive() );
+  mArchive->setFileName( filename );
 }
 
 QList<QgsMapLayer *> QgsProject::addMapLayers(

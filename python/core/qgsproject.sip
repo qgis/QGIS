@@ -630,6 +630,23 @@ Returns the number of registered layers.
  :rtype: bool
 %End
 
+    bool zip();
+%Docstring
+ :rtype: bool
+%End
+
+    QString zipFileName() const;
+%Docstring
+ :rtype: str
+%End
+
+    void setZipFileName( const QString &filename );
+
+    bool unzipped() const;
+%Docstring
+ :rtype: bool
+%End
+
 
     QList<QgsMapLayer *> addMapLayers( const QList<QgsMapLayer *> &mapLayers /Transfer/,
                                        bool addToLegend = true);

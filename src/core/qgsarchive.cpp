@@ -95,6 +95,11 @@ QString QgsArchive::filename() const
   return mFilename;
 }
 
+void QgsArchive::setFileName( const QString &filename )
+{
+  mFilename = filename;
+}
+
 QString QgsArchive::projectFile() const
 {
   Q_FOREACH ( const QString &file, mFiles )

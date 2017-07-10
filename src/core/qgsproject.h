@@ -592,6 +592,14 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      */
     bool zip( const QString &filename );
 
+    bool zip();
+
+    QString zipFileName() const;
+
+    void setZipFileName( const QString &filename );
+
+    bool unzipped() const;
+
 #ifndef SIP_RUN
 
     /** Returns a list of registered map layers with a specified layer type.
@@ -1066,6 +1074,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     QVariantMap mCustomVariables;
 
     std::unique_ptr<QgsArchive> mArchive;
+    bool mUnzipping;
 
     QFile mFile;                 // current physical project file
     mutable QgsProjectPropertyKey mProperties;  // property hierarchy, TODO: this shouldn't be mutable

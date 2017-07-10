@@ -5235,10 +5235,12 @@ void QgisApp::fileOpen()
     // Retrieve last used project dir from persistent settings
     QgsSettings settings;
     QString lastUsedDir = settings.value( QStringLiteral( "UI/lastProjectDir" ), QDir::homePath() ).toString();
+    const QString qgs_ext = tr( "QGIS files" ) + " (*.qgs *.QGS)";
+    const QString zip_ext = tr( "QGZ files" ) + " (*.qgz)";
     QString fullPath = QFileDialog::getOpenFileName( this,
                        tr( "Choose a QGIS project file to open" ),
                        lastUsedDir,
-                       tr( "QGIS files" ) + " (*.qgs *.QGS)" );
+                       qgs_ext + ";;" + zip_ext );
     if ( fullPath.isNull() )
     {
       return;
@@ -5271,6 +5273,8 @@ void QgisApp::enableProjectMacros()
   */
 bool QgisApp::addProject( const QString &projectFile )
 {
+  bool zip = ( QFileInfo( projectFile ).suffix() == "qgz" ) ? true : false;
+
   // close the previous opened project if any
   closeProject();
 
@@ -5283,7 +5287,17 @@ bool QgisApp::addProject( const QString &projectFile )
   bool autoSetupOnFirstLayer = mLayerTreeCanvasBridge->autoSetupOnFirstLayer();
   mLayerTreeCanvasBridge->setAutoSetupOnFirstLayer( false );
 
-  if ( !QgsProject::instance()->read( projectFile ) )
+  bool readOk = false;
+  if ( zip )
+  {
+    readOk = QgsProject::instance()->unzip( projectFile );
+  }
+  else
+  {
+    readOk = QgsProject::instance()->read( projectFile );
+  }
+
+  if ( !readOk && !zip )
   {
     QString backupFile = projectFile + "~";
     QString loadBackupPrompt;
@@ -5417,34 +5431,47 @@ bool QgisApp::fileSave()
   // that the project file name is reset to null in fileNew()
   QFileInfo fullPath;
 
-  if ( QgsProject::instance()->fileName().isNull() )
+  if ( QgsProject::instance()->fileName().isNull() && QgsProject::instance()->zipFileName().isNull() )
   {
     // Retrieve last used project dir from persistent settings
     QgsSettings settings;
     QString lastUsedDir = settings.value( QStringLiteral( "UI/lastProjectDir" ), QDir::homePath() ).toString();
 
+    const QString qgs_ext = tr( "QGIS files" ) + " (*.qgs)";
+    const QString zip_ext = tr( "QGZ files" ) + " (*.qgz)";
+    QString filter;
     QString path = QFileDialog::getSaveFileName(
                      this,
                      tr( "Choose a QGIS project file" ),
                      lastUsedDir + '/' + QgsProject::instance()->title(),
-                     tr( "QGIS files" ) + " (*.qgs *.QGS)" );
+                     qgs_ext + ";;" + zip_ext, &filter );
     if ( path.isEmpty() )
       return false;
 
     fullPath.setFile( path );
 
     // make sure we have the .qgs extension in the file name
-    if ( "qgs" != fullPath.suffix().toLower() )
+    if ( filter == zip_ext )
     {
-      fullPath.setFile( fullPath.filePath() + ".qgs" );
+      if ( "qgz" != fullPath.suffix().toLower() )
+        fullPath.setFile( fullPath.filePath() + ".qgz" );
+
+      QgsProject::instance()->setZipFileName( fullPath.filePath() );
     }
+    else
+    {
+      if ( "qgs" != fullPath.suffix().toLower() )
+        fullPath.setFile( fullPath.filePath() + ".qgs" );
 
-
-    QgsProject::instance()->setFileName( fullPath.filePath() );
+      QgsProject::instance()->setFileName( fullPath.filePath() );
+    }
   }
   else
   {
     QFileInfo fi( QgsProject::instance()->fileName() );
+    if ( QgsProject::instance()->unzipped() )
+      fi.setFile( QgsProject::instance()->zipFileName() );
+
     fullPath = fi.absoluteFilePath();
     if ( fi.exists() && !mProjectLastModified.isNull() && mProjectLastModified != fi.lastModified() )
     {
@@ -5468,20 +5495,34 @@ bool QgisApp::fileSave()
     }
   }
 
-  if ( QgsProject::instance()->write() )
+  bool writeOk = false;
+  QString writtenFileName;
+
+  if ( QgsProject::instance()->unzipped() )
+  {
+    writeOk = QgsProject::instance()->zip();
+    writtenFileName = QgsProject::instance()->zipFileName();
+  }
+  else
+  {
+    writeOk = QgsProject::instance()->write();
+    writtenFileName = QgsProject::instance()->fileName();
+  }
+
+  if ( writeOk )
   {
     setTitleBarText_( *this ); // update title bar
-    mStatusBar->showMessage( tr( "Saved project to: %1" ).arg( QDir::toNativeSeparators( QgsProject::instance()->fileName() ) ), 5000 );
+    mStatusBar->showMessage( tr( "Saved project to: %1" ).arg( QDir::toNativeSeparators( writtenFileName ) ), 5000 );
 
     saveRecentProjectPath( fullPath.filePath() );
 
-    QFileInfo fi( QgsProject::instance()->fileName() );
+    QFileInfo fi( writtenFileName );
     mProjectLastModified = fi.lastModified();
   }
   else
   {
     QMessageBox::critical( this,
-                           tr( "Unable to save project %1" ).arg( QDir::toNativeSeparators( QgsProject::instance()->fileName() ) ),
+                           tr( "Unable to save project %1" ).arg( QDir::toNativeSeparators( writtenFileName ) ),
                            QgsProject::instance()->error() );
     return false;
   }
@@ -5501,10 +5542,13 @@ void QgisApp::fileSaveAs()
   QgsSettings settings;
   QString lastUsedDir = settings.value( QStringLiteral( "UI/lastProjectDir" ), QDir::homePath() ).toString();
 
+  const QString qgs_ext = tr( "QGIS files" ) + " (*.qgs *.QGS)";
+  const QString zip_ext = tr( "QGZ files" ) + " (*.qgz)";
+  QString filter;
   QString path = QFileDialog::getSaveFileName( this,
                  tr( "Choose a file name to save the QGIS project file as" ),
                  lastUsedDir + '/' + QgsProject::instance()->title(),
-                 tr( "QGIS files" ) + " (*.qgs *.QGS)" );
+                 qgs_ext + ";;" + zip_ext, &filter );
   if ( path.isEmpty() )
     return;
 
@@ -5512,18 +5556,27 @@ void QgisApp::fileSaveAs()
 
   settings.setValue( QStringLiteral( "UI/lastProjectDir" ), fullPath.path() );
 
-  // make sure the .qgs extension is included in the path name. if not, add it...
-  if ( "qgs" != fullPath.suffix().toLower() )
+  bool writeOk = false;
+  if ( filter == zip_ext )
   {
-    fullPath.setFile( fullPath.filePath() + ".qgs" );
+    if ( "qgz" != fullPath.suffix().toLower() )
+      fullPath.setFile( fullPath.filePath() + ".qgz" );
+
+    writeOk = QgsProject::instance()->zip( fullPath.filePath() );
+  }
+  else // .qgs
+  {
+    if ( "qgs" != fullPath.suffix().toLower() )
+      fullPath.setFile( fullPath.filePath() + ".qgs" );
+
+    QgsProject::instance()->setFileName( fullPath.filePath() );
+    writeOk = QgsProject::instance()->write();
   }
 
-  QgsProject::instance()->setFileName( fullPath.filePath() );
-
-  if ( QgsProject::instance()->write() )
+  if ( writeOk )
   {
     setTitleBarText_( *this ); // update title bar
-    mStatusBar->showMessage( tr( "Saved project to: %1" ).arg( QDir::toNativeSeparators( QgsProject::instance()->fileName() ) ), 5000 );
+    mStatusBar->showMessage( tr( "Saved project to: %1" ).arg( QDir::toNativeSeparators( fullPath.filePath() ) ), 5000 );
     // add this to the list of recently used project files
     saveRecentProjectPath( fullPath.filePath() );
     mProjectLastModified = fullPath.lastModified();
