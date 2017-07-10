@@ -125,6 +125,11 @@ class QgsLayoutItem : QgsLayoutObject, QGraphicsRectItem
  :rtype: QgsLayoutSize
 %End
 
+    double itemRotation() const;
+%Docstring
+ :rtype: float
+%End
+
   public slots:
 
     virtual void refresh();
@@ -140,6 +145,20 @@ class QgsLayoutItem : QgsLayoutObject, QGraphicsRectItem
  and redrawing the item with this new value. If ``property`` is set to
  QgsLayoutObject.AllProperties then all data defined properties for the item will be
  refreshed.
+%End
+
+    virtual void setItemRotation( const double rotation );
+%Docstring
+ Sets the layout item's ``rotation``, in degrees clockwise. This rotation occurs around the center of the item.
+.. seealso:: itemRotation()
+.. seealso:: rotateItem()
+%End
+
+    virtual void rotateItem( const double angle, const QPointF &transformOrigin );
+%Docstring
+ Rotates the item by a specified ``angle`` in degrees clockwise around a specified reference point.
+.. seealso:: setItemRotation()
+.. seealso:: itemRotation()
 %End
 
   protected:
@@ -188,10 +207,24 @@ class QgsLayoutItem : QgsLayoutObject, QGraphicsRectItem
 .. seealso:: refreshItemSize()
 %End
 
-    QPointF adjustPointForReferencePosition( const QPointF &point, const QSizeF &size ) const;
+    void refreshItemRotation();
 %Docstring
- Adjusts the specified ``point`` at which the reference position of the item
- sits and returns the top left corner of the item.
+ Refreshes an item's rotation by rechecking it against any possible overrides
+ such as data defined rotation.
+.. seealso:: refreshItemSize()
+.. seealso:: refreshItemPosition()
+%End
+
+    QPointF adjustPointForReferencePosition( const QPointF &point, const QSizeF &size, const ReferencePoint &reference ) const;
+%Docstring
+ Adjusts the specified ``point`` at which a ``reference`` position of the item
+ sits and returns the top left corner of the item, if reference point where placed at the specified position.
+ :rtype: QPointF
+%End
+
+    QPointF positionAtReferencePoint( const ReferencePoint &reference ) const;
+%Docstring
+ Returns the current position (in layout units) of a ``reference`` point for the item.
  :rtype: QPointF
 %End
 

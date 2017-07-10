@@ -138,6 +138,13 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
      */
     QgsLayoutSize sizeWithUnits() const { return mItemSize; }
 
+    /**
+     * Returns the current rotation for the item, in degrees clockwise.
+     * \see setItemRotation()
+     */
+    //TODO
+    double itemRotation() const;
+
   public slots:
 
     /**
@@ -153,6 +160,20 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
      * refreshed.
     */
     virtual void refreshDataDefinedProperty( const QgsLayoutObject::DataDefinedProperty property = QgsLayoutObject::AllProperties );
+
+    /**
+     * Sets the layout item's \a rotation, in degrees clockwise. This rotation occurs around the center of the item.
+     * \see itemRotation()
+     * \see rotateItem()
+    */
+    virtual void setItemRotation( const double rotation );
+
+    /**
+     * Rotates the item by a specified \a angle in degrees clockwise around a specified reference point.
+     * \see setItemRotation()
+     * \see itemRotation()
+    */
+    virtual void rotateItem( const double angle, const QPointF &transformOrigin );
 
   protected:
 
@@ -200,10 +221,23 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
     void refreshItemPosition();
 
     /**
-     * Adjusts the specified \a point at which the reference position of the item
-     * sits and returns the top left corner of the item.
+     * Refreshes an item's rotation by rechecking it against any possible overrides
+     * such as data defined rotation.
+     * \see refreshItemSize()
+     * \see refreshItemPosition()
      */
-    QPointF adjustPointForReferencePosition( const QPointF &point, const QSizeF &size ) const;
+    void refreshItemRotation();
+
+    /**
+     * Adjusts the specified \a point at which a \a reference position of the item
+     * sits and returns the top left corner of the item, if reference point where placed at the specified position.
+     */
+    QPointF adjustPointForReferencePosition( const QPointF &point, const QSizeF &size, const ReferencePoint &reference ) const;
+
+    /**
+     * Returns the current position (in layout units) of a \a reference point for the item.
+    */
+    QPointF positionAtReferencePoint( const ReferencePoint &reference ) const;
 
   private:
 
@@ -213,6 +247,7 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
 
     QgsLayoutSize mItemSize;
     QgsLayoutPoint mItemPosition;
+    double mItemRotation = 0.0;
 
     void initConnectionsToLayout();
 
@@ -225,6 +260,10 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
     QSizeF applyFixedSize( const QSizeF &targetSize );
     QgsLayoutPoint applyDataDefinedPosition( const QgsLayoutPoint &position );
     QgsLayoutSize applyDataDefinedSize( const QgsLayoutSize &size );
+    double applyDataDefinedRotation( const double rotation );
+    void updateStoredItemPosition();
+    QPointF itemPositionAtReferencePoint( const ReferencePoint reference, const QSizeF &size ) const;
+    void setScenePos( const QPointF &destinationPos );
 
     friend class TestQgsLayoutItem;
 };

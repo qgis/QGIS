@@ -44,7 +44,9 @@ class TestQgsLayoutItem: public QObject
     void draw();
     void resize();
     void referencePoint();
+    void itemPositionReferencePoint();
     void adjustPointForReference();
+    void positionAtReferencePoint();
     void fixedSize();
     void minSize();
     void move();
@@ -53,6 +55,7 @@ class TestQgsLayoutItem: public QObject
     void dataDefinedPosition();
     void dataDefinedSize();
     void combinedDataDefinedPositionAndSize();
+    void rotation();
 
   private:
 
@@ -372,14 +375,14 @@ void TestQgsLayoutItem::dataDefinedPosition()
   item->refreshDataDefinedProperty( QgsLayoutObject::PositionX );
   QCOMPARE( item->positionWithUnits().x(), 11.0 );
   QCOMPARE( item->positionWithUnits().units(), QgsUnitTypes::LayoutCentimeters );
-  QCOMPARE( item->pos().x(), 110.0 ); //mm
+  QCOMPARE( item->scenePos().x(), 110.0 ); //mm
 
   //position y
   item->dataDefinedProperties().setProperty( QgsLayoutObject::PositionY, QgsProperty::fromExpression( QStringLiteral( "2+3" ) ) );
   item->refreshDataDefinedProperty( QgsLayoutObject::PositionY );
   QCOMPARE( item->positionWithUnits().y(), 5.0 );
   QCOMPARE( item->positionWithUnits().units(), QgsUnitTypes::LayoutCentimeters );
-  QCOMPARE( item->pos().y(), 50.0 ); //mm
+  QCOMPARE( item->scenePos().y(), 50.0 ); //mm
 
   //refreshPosition should also respect data defined positioning
   item->setPos( 0, 0 );
@@ -389,16 +392,16 @@ void TestQgsLayoutItem::dataDefinedPosition()
   QCOMPARE( item->positionWithUnits().x(), 12.0 );
   QCOMPARE( item->positionWithUnits().y(), 6.0 );
   QCOMPARE( item->positionWithUnits().units(), QgsUnitTypes::LayoutCentimeters );
-  QCOMPARE( item->pos().x(), 120.0 ); //mm
-  QCOMPARE( item->pos().y(), 60.0 ); //mm
+  QCOMPARE( item->scenePos().x(), 120.0 ); //mm
+  QCOMPARE( item->scenePos().y(), 60.0 ); //mm
 
   //also check that data defined position overrides when attempting to move
   item->attemptMove( QgsLayoutPoint( 6.0, 1.50, QgsUnitTypes::LayoutCentimeters ) );
   QCOMPARE( item->positionWithUnits().x(), 12.0 );
   QCOMPARE( item->positionWithUnits().y(), 6.0 );
   QCOMPARE( item->positionWithUnits().units(), QgsUnitTypes::LayoutCentimeters );
-  QCOMPARE( item->pos().x(), 120.0 ); //mm
-  QCOMPARE( item->pos().y(), 60.0 ); //mm
+  QCOMPARE( item->scenePos().x(), 120.0 ); //mm
+  QCOMPARE( item->scenePos().y(), 60.0 ); //mm
   //restriction only for x position
   item->dataDefinedProperties().setProperty( QgsLayoutObject::PositionX, QgsProperty::fromExpression( QStringLiteral( "4+8" ) ) );
   item->dataDefinedProperties().setProperty( QgsLayoutObject::PositionY, QgsProperty() );
@@ -406,8 +409,8 @@ void TestQgsLayoutItem::dataDefinedPosition()
   QCOMPARE( item->positionWithUnits().x(), 12.0 );
   QCOMPARE( item->positionWithUnits().y(), 1.5 );
   QCOMPARE( item->positionWithUnits().units(), QgsUnitTypes::LayoutCentimeters );
-  QCOMPARE( item->pos().x(), 120.0 ); //mm
-  QCOMPARE( item->pos().y(), 15.0 ); //mm
+  QCOMPARE( item->scenePos().x(), 120.0 ); //mm
+  QCOMPARE( item->scenePos().y(), 15.0 ); //mm
   //restriction only for y position
   item->dataDefinedProperties().setProperty( QgsLayoutObject::PositionX, QgsProperty() );
   item->dataDefinedProperties().setProperty( QgsLayoutObject::PositionY, QgsProperty::fromExpression( QStringLiteral( "2+4" ) ) );
@@ -415,8 +418,8 @@ void TestQgsLayoutItem::dataDefinedPosition()
   QCOMPARE( item->positionWithUnits().x(), 7.0 );
   QCOMPARE( item->positionWithUnits().y(), 6.0 );
   QCOMPARE( item->positionWithUnits().units(), QgsUnitTypes::LayoutCentimeters );
-  QCOMPARE( item->pos().x(), 70.0 ); //mm
-  QCOMPARE( item->pos().y(), 60.0 ); //mm
+  QCOMPARE( item->scenePos().x(), 70.0 ); //mm
+  QCOMPARE( item->scenePos().y(), 60.0 ); //mm
 
   //check change of units should apply to data defined position
   item->dataDefinedProperties().setProperty( QgsLayoutObject::PositionX, QgsProperty::fromExpression( QStringLiteral( "4+8" ) ) );
@@ -427,8 +430,8 @@ void TestQgsLayoutItem::dataDefinedPosition()
   QCOMPARE( item->positionWithUnits().x(), 12.0 ); //mm
   QCOMPARE( item->positionWithUnits().y(), 6.0 ); //mm
   QCOMPARE( item->positionWithUnits().units(), QgsUnitTypes::LayoutMillimeters );
-  QCOMPARE( item->pos().x(), 12.0 ); //mm
-  QCOMPARE( item->pos().y(), 6.0 ); //mm
+  QCOMPARE( item->scenePos().x(), 12.0 ); //mm
+  QCOMPARE( item->scenePos().y(), 6.0 ); //mm
 
   //test that data defined position applies to item's reference point
   item->attemptMove( QgsLayoutPoint( 12.0, 6.0, QgsUnitTypes::LayoutCentimeters ) );
@@ -436,8 +439,8 @@ void TestQgsLayoutItem::dataDefinedPosition()
   QCOMPARE( item->positionWithUnits().x(), 12.0 ); //cm
   QCOMPARE( item->positionWithUnits().y(), 6.0 ); //cm
   QCOMPARE( item->positionWithUnits().units(), QgsUnitTypes::LayoutCentimeters );
-  QCOMPARE( item->pos().x(), 100.0 ); //mm
-  QCOMPARE( item->pos().y(), 20.0 ); //mm
+  QCOMPARE( item->scenePos().x(), 100.0 ); //mm
+  QCOMPARE( item->scenePos().y(), 20.0 ); //mm
 
   //also check setting data defined position AFTER setting reference point
   item->setPos( 0, 0 );
@@ -447,8 +450,8 @@ void TestQgsLayoutItem::dataDefinedPosition()
   QCOMPARE( item->positionWithUnits().x(), 16.0 ); //cm
   QCOMPARE( item->positionWithUnits().y(), 8.0 ); //cm
   QCOMPARE( item->positionWithUnits().units(), QgsUnitTypes::LayoutCentimeters );
-  QCOMPARE( item->pos().x(), 140.0 ); //mm
-  QCOMPARE( item->pos().y(), 40.0 ); //mm
+  QCOMPARE( item->scenePos().x(), 140.0 ); //mm
+  QCOMPARE( item->scenePos().y(), 40.0 ); //mm
 
   delete item;
 }
@@ -536,8 +539,8 @@ void TestQgsLayoutItem::dataDefinedSize()
   item->dataDefinedProperties().setProperty( QgsLayoutObject::ItemHeight, QgsProperty::fromExpression( QStringLiteral( "6" ) ) );
   item->setReferencePoint( QgsLayoutItem::LowerRight );
   item->refreshItemSize();
-  QCOMPARE( item->pos().x(), 25.0 ); //mm
-  QCOMPARE( item->pos().y(), 9.0 ); //mm
+  QCOMPARE( item->scenePos().x(), 25.0 ); //mm
+  QCOMPARE( item->scenePos().y(), 9.0 ); //mm
 
   //test that data defined size applied after setting item's reference point respects reference
   item->dataDefinedProperties().setProperty( QgsLayoutObject::ItemWidth, QgsProperty() );
@@ -549,8 +552,8 @@ void TestQgsLayoutItem::dataDefinedSize()
   item->dataDefinedProperties().setProperty( QgsLayoutObject::ItemWidth, QgsProperty::fromExpression( QStringLiteral( "7" ) ) );
   item->dataDefinedProperties().setProperty( QgsLayoutObject::ItemHeight, QgsProperty::fromExpression( QStringLiteral( "9" ) ) );
   item->refreshItemSize();
-  QCOMPARE( item->pos().x(), 23.0 ); //mm
-  QCOMPARE( item->pos().y(), 6.0 ); //mm
+  QCOMPARE( item->scenePos().x(), 23.0 ); //mm
+  QCOMPARE( item->scenePos().y(), 6.0 ); //mm
 
   delete item;
 }
@@ -578,8 +581,8 @@ void TestQgsLayoutItem::combinedDataDefinedPositionAndSize()
   QCOMPARE( item->sizeWithUnits().width(), 13.0 );
   QCOMPARE( item->sizeWithUnits().height(), 6.0 );
   QCOMPARE( item->sizeWithUnits().units(), QgsUnitTypes::LayoutCentimeters );
-  QCOMPARE( item->pos().x(), 110.0 ); //mm
-  QCOMPARE( item->pos().y(), 50.0 ); //mm
+  QCOMPARE( item->scenePos().x(), 110.0 ); //mm
+  QCOMPARE( item->scenePos().y(), 50.0 ); //mm
   QCOMPARE( item->rect().width(), 130.0 ); //mm
   QCOMPARE( item->rect().height(), 60.0 ); //mm
 
@@ -596,8 +599,8 @@ void TestQgsLayoutItem::combinedDataDefinedPositionAndSize()
   QCOMPARE( item->sizeWithUnits().width(), 10.0 );
   QCOMPARE( item->sizeWithUnits().height(), 4.0 );
   QCOMPARE( item->sizeWithUnits().units(), QgsUnitTypes::LayoutCentimeters );
-  QCOMPARE( item->pos().x(), 70.0 ); //mm
-  QCOMPARE( item->pos().y(), 40.0 ); //mm
+  QCOMPARE( item->scenePos().x(), 70.0 ); //mm
+  QCOMPARE( item->scenePos().y(), 40.0 ); //mm
   QCOMPARE( item->rect().width(), 100.0 ); //mm
   QCOMPARE( item->rect().height(), 40.0 ); //mm
 
@@ -619,8 +622,8 @@ void TestQgsLayoutItem::resize()
   item->attemptResize( QgsLayoutSize( 100.0, 200.0, QgsUnitTypes::LayoutMillimeters ) );
   QCOMPARE( item->rect().width(), 100.0 );
   QCOMPARE( item->rect().height(), 200.0 );
-  QCOMPARE( item->pos().x(), 27.0 ); //item should not move
-  QCOMPARE( item->pos().y(), 29.0 );
+  QCOMPARE( item->scenePos().x(), 27.0 ); //item should not move
+  QCOMPARE( item->scenePos().y(), 29.0 );
 
   //test conversion of units
   l.setUnits( QgsUnitTypes::LayoutCentimeters );
@@ -713,40 +716,40 @@ void TestQgsLayoutItem::referencePoint()
   item->attemptResize( QgsLayoutSize( 2, 4 ) );
   item->setReferencePoint( QgsLayoutItem::UpperLeft );
   item->attemptMove( QgsLayoutPoint( 1, 2 ) );
-  QCOMPARE( item->pos().x(), 1.0 );
-  QCOMPARE( item->pos().y(), 2.0 );
+  QCOMPARE( item->scenePos().x(), 1.0 );
+  QCOMPARE( item->scenePos().y(), 2.0 );
   item->setReferencePoint( QgsLayoutItem::UpperMiddle );
   item->attemptMove( QgsLayoutPoint( 1, 2 ) );
-  QCOMPARE( item->pos().x(), 0.0 );
-  QCOMPARE( item->pos().y(), 2.0 );
+  QCOMPARE( item->scenePos().x(), 0.0 );
+  QCOMPARE( item->scenePos().y(), 2.0 );
   item->setReferencePoint( QgsLayoutItem::UpperRight );
   item->attemptMove( QgsLayoutPoint( 1, 2 ) );
-  QCOMPARE( item->pos().x(), -1.0 );
-  QCOMPARE( item->pos().y(), 2.0 );
+  QCOMPARE( item->scenePos().x(), -1.0 );
+  QCOMPARE( item->scenePos().y(), 2.0 );
   item->setReferencePoint( QgsLayoutItem::MiddleLeft );
   item->attemptMove( QgsLayoutPoint( 1, 2 ) );
-  QCOMPARE( item->pos().x(), 1.0 );
-  QCOMPARE( item->pos().y(), 0.0 );
+  QCOMPARE( item->scenePos().x(), 1.0 );
+  QCOMPARE( item->scenePos().y(), 0.0 );
   item->setReferencePoint( QgsLayoutItem::Middle );
   item->attemptMove( QgsLayoutPoint( 1, 2 ) );
-  QCOMPARE( item->pos().x(), 0.0 );
-  QCOMPARE( item->pos().y(), 0.0 );
+  QCOMPARE( item->scenePos().x(), 0.0 );
+  QCOMPARE( item->scenePos().y(), 0.0 );
   item->setReferencePoint( QgsLayoutItem::MiddleRight );
   item->attemptMove( QgsLayoutPoint( 1, 2 ) );
-  QCOMPARE( item->pos().x(), -1.0 );
-  QCOMPARE( item->pos().y(), 0.0 );
+  QCOMPARE( item->scenePos().x(), -1.0 );
+  QCOMPARE( item->scenePos().y(), 0.0 );
   item->setReferencePoint( QgsLayoutItem::LowerLeft );
   item->attemptMove( QgsLayoutPoint( 1, 2 ) );
-  QCOMPARE( item->pos().x(), 1.0 );
-  QCOMPARE( item->pos().y(), -2.0 );
+  QCOMPARE( item->scenePos().x(), 1.0 );
+  QCOMPARE( item->scenePos().y(), -2.0 );
   item->setReferencePoint( QgsLayoutItem::LowerMiddle );
   item->attemptMove( QgsLayoutPoint( 1, 2 ) );
-  QCOMPARE( item->pos().x(), 0.0 );
-  QCOMPARE( item->pos().y(), -2.0 );
+  QCOMPARE( item->scenePos().x(), 0.0 );
+  QCOMPARE( item->scenePos().y(), -2.0 );
   item->setReferencePoint( QgsLayoutItem::LowerRight );
   item->attemptMove( QgsLayoutPoint( 1, 2 ) );
-  QCOMPARE( item->pos().x(), -1.0 );
-  QCOMPARE( item->pos().y(), -2.0 );
+  QCOMPARE( item->scenePos().x(), -1.0 );
+  QCOMPARE( item->scenePos().y(), -2.0 );
 
   delete item;
   item = new TestItem( &l );
@@ -756,40 +759,77 @@ void TestQgsLayoutItem::referencePoint()
   item->setReferencePoint( QgsLayoutItem::UpperLeft );
   item->attemptMove( QgsLayoutPoint( 1, 2 ) );
   item->attemptResize( QgsLayoutSize( 4, 6 ) );
-  QCOMPARE( item->pos().x(), 1.0 );
-  QCOMPARE( item->pos().y(), 2.0 );
+  QCOMPARE( item->scenePos().x(), 1.0 );
+  QCOMPARE( item->scenePos().y(), 2.0 );
   item->setReferencePoint( QgsLayoutItem::UpperMiddle );
   item->attemptResize( QgsLayoutSize( 6, 4 ) );
-  QCOMPARE( item->pos().x(), 0.0 );
-  QCOMPARE( item->pos().y(), 2.0 );
+  QCOMPARE( item->scenePos().x(), 0.0 );
+  QCOMPARE( item->scenePos().y(), 2.0 );
   item->setReferencePoint( QgsLayoutItem::UpperRight );
   item->attemptResize( QgsLayoutSize( 4, 6 ) );
-  QCOMPARE( item->pos().x(), 2.0 );
-  QCOMPARE( item->pos().y(), 2.0 );
+  QCOMPARE( item->scenePos().x(), 2.0 );
+  QCOMPARE( item->scenePos().y(), 2.0 );
   item->setReferencePoint( QgsLayoutItem::MiddleLeft );
   item->attemptResize( QgsLayoutSize( 6, 4 ) );
-  QCOMPARE( item->pos().x(), 2.0 );
-  QCOMPARE( item->pos().y(), 3.0 );
+  QCOMPARE( item->scenePos().x(), 2.0 );
+  QCOMPARE( item->scenePos().y(), 3.0 );
   item->setReferencePoint( QgsLayoutItem::Middle );
   item->attemptResize( QgsLayoutSize( 4, 6 ) );
-  QCOMPARE( item->pos().x(), 3.0 );
-  QCOMPARE( item->pos().y(), 2.0 );
+  QCOMPARE( item->scenePos().x(), 3.0 );
+  QCOMPARE( item->scenePos().y(), 2.0 );
   item->setReferencePoint( QgsLayoutItem::MiddleRight );
   item->attemptResize( QgsLayoutSize( 6, 4 ) );
-  QCOMPARE( item->pos().x(), 1.0 );
-  QCOMPARE( item->pos().y(), 3.0 );
+  QCOMPARE( item->scenePos().x(), 1.0 );
+  QCOMPARE( item->scenePos().y(), 3.0 );
   item->setReferencePoint( QgsLayoutItem::LowerLeft );
   item->attemptResize( QgsLayoutSize( 4, 6 ) );
-  QCOMPARE( item->pos().x(), 1.0 );
-  QCOMPARE( item->pos().y(), 1.0 );
+  QCOMPARE( item->scenePos().x(), 1.0 );
+  QCOMPARE( item->scenePos().y(), 1.0 );
   item->setReferencePoint( QgsLayoutItem::LowerMiddle );
   item->attemptResize( QgsLayoutSize( 6, 4 ) );
-  QCOMPARE( item->pos().x(), 0.0 );
-  QCOMPARE( item->pos().y(), 3.0 );
+  QCOMPARE( item->scenePos().x(), 0.0 );
+  QCOMPARE( item->scenePos().y(), 3.0 );
   item->setReferencePoint( QgsLayoutItem::LowerRight );
   item->attemptResize( QgsLayoutSize( 4, 6 ) );
-  QCOMPARE( item->pos().x(), 2.0 );
-  QCOMPARE( item->pos().y(), 1.0 );
+  QCOMPARE( item->scenePos().x(), 2.0 );
+  QCOMPARE( item->scenePos().y(), 1.0 );
+}
+
+void TestQgsLayoutItem::itemPositionReferencePoint()
+{
+  QgsProject p;
+  QgsLayout l( &p );
+
+  TestItem *item = new TestItem( &l );
+  QPointF result = item->itemPositionAtReferencePoint( QgsLayoutItem::UpperLeft, QSizeF( 2, 4 ) );
+  QCOMPARE( result.x(), 0.0 );
+  QCOMPARE( result.y(), 0.0 );
+  result = item->itemPositionAtReferencePoint( QgsLayoutItem::UpperMiddle, QSizeF( 2, 4 ) );
+  QCOMPARE( result.x(), 1.0 );
+  QCOMPARE( result.y(), 0.0 );
+  result = item->itemPositionAtReferencePoint( QgsLayoutItem::UpperRight, QSizeF( 2, 4 ) );
+  QCOMPARE( result.x(), 2.0 );
+  QCOMPARE( result.y(), 0.0 );
+  result = item->itemPositionAtReferencePoint( QgsLayoutItem::MiddleLeft, QSizeF( 2, 4 ) );
+  QCOMPARE( result.x(), 0.0 );
+  QCOMPARE( result.y(), 2.0 );
+  result = item->itemPositionAtReferencePoint( QgsLayoutItem::Middle, QSizeF( 2, 4 ) );
+  QCOMPARE( result.x(), 1.0 );
+  QCOMPARE( result.y(), 2.0 );
+  result = item->itemPositionAtReferencePoint( QgsLayoutItem::MiddleRight, QSizeF( 2, 4 ) );
+  QCOMPARE( result.x(), 2.0 );
+  QCOMPARE( result.y(), 2.0 );
+  result = item->itemPositionAtReferencePoint( QgsLayoutItem::LowerLeft, QSizeF( 2, 4 ) );
+  QCOMPARE( result.x(), 0.0 );
+  QCOMPARE( result.y(), 4.0 );
+  result = item->itemPositionAtReferencePoint( QgsLayoutItem::LowerMiddle, QSizeF( 2, 4 ) );
+  QCOMPARE( result.x(), 1.0 );
+  QCOMPARE( result.y(), 4.0 );
+  result = item->itemPositionAtReferencePoint( QgsLayoutItem::LowerRight, QSizeF( 2, 4 ) );
+  QCOMPARE( result.x(), 2.0 );
+  QCOMPARE( result.y(), 4.0 );
+
+  delete item;
 }
 
 void TestQgsLayoutItem::adjustPointForReference()
@@ -798,42 +838,102 @@ void TestQgsLayoutItem::adjustPointForReference()
   QgsLayout l( &p );
 
   TestItem *item = new TestItem( &l );
-  item->setReferencePoint( QgsLayoutItem::UpperLeft );
-  QPointF result = item->adjustPointForReferencePosition( QPointF( 5, 7 ), QSizeF( 2, 4 ) );
+  QPointF result = item->adjustPointForReferencePosition( QPointF( 5, 7 ), QSizeF( 2, 4 ), QgsLayoutItem::UpperLeft );
   QCOMPARE( result.x(), 5.0 );
   QCOMPARE( result.y(), 7.0 );
-  item->setReferencePoint( QgsLayoutItem::UpperMiddle );
-  result = item->adjustPointForReferencePosition( QPointF( 5, 7 ), QSizeF( 2, 4 ) );
+  result = item->adjustPointForReferencePosition( QPointF( 5, 7 ), QSizeF( 2, 4 ), QgsLayoutItem::UpperMiddle );
   QCOMPARE( result.x(), 4.0 );
   QCOMPARE( result.y(), 7.0 );
-  item->setReferencePoint( QgsLayoutItem::UpperRight );
-  result = item->adjustPointForReferencePosition( QPointF( 5, 7 ), QSizeF( 2, 4 ) );
+  result = item->adjustPointForReferencePosition( QPointF( 5, 7 ), QSizeF( 2, 4 ), QgsLayoutItem::UpperRight );
   QCOMPARE( result.x(), 3.0 );
   QCOMPARE( result.y(), 7.0 );
-  item->setReferencePoint( QgsLayoutItem::MiddleLeft );
-  result = item->adjustPointForReferencePosition( QPointF( 5, 7 ), QSizeF( 2, 4 ) );
+  result = item->adjustPointForReferencePosition( QPointF( 5, 7 ), QSizeF( 2, 4 ), QgsLayoutItem::MiddleLeft );
   QCOMPARE( result.x(), 5.0 );
   QCOMPARE( result.y(), 5.0 );
-  item->setReferencePoint( QgsLayoutItem::Middle );
-  result = item->adjustPointForReferencePosition( QPointF( 5, 7 ), QSizeF( 2, 4 ) );
+  result = item->adjustPointForReferencePosition( QPointF( 5, 7 ), QSizeF( 2, 4 ), QgsLayoutItem::Middle );
   QCOMPARE( result.x(), 4.0 );
   QCOMPARE( result.y(), 5.0 );
-  item->setReferencePoint( QgsLayoutItem::MiddleRight );
-  result = item->adjustPointForReferencePosition( QPointF( 5, 7 ), QSizeF( 2, 4 ) );
+  result = item->adjustPointForReferencePosition( QPointF( 5, 7 ), QSizeF( 2, 4 ), QgsLayoutItem::MiddleRight );
   QCOMPARE( result.x(), 3.0 );
   QCOMPARE( result.y(), 5.0 );
-  item->setReferencePoint( QgsLayoutItem::LowerLeft );
-  result = item->adjustPointForReferencePosition( QPointF( 5, 7 ), QSizeF( 2, 4 ) );
+  result = item->adjustPointForReferencePosition( QPointF( 5, 7 ), QSizeF( 2, 4 ), QgsLayoutItem::LowerLeft );
   QCOMPARE( result.x(), 5.0 );
   QCOMPARE( result.y(), 3.0 );
-  item->setReferencePoint( QgsLayoutItem::LowerMiddle );
-  result = item->adjustPointForReferencePosition( QPointF( 5, 7 ), QSizeF( 2, 4 ) );
+  result = item->adjustPointForReferencePosition( QPointF( 5, 7 ), QSizeF( 2, 4 ), QgsLayoutItem::LowerMiddle );
   QCOMPARE( result.x(), 4.0 );
   QCOMPARE( result.y(), 3.0 );
-  item->setReferencePoint( QgsLayoutItem::LowerRight );
-  result = item->adjustPointForReferencePosition( QPointF( 5, 7 ), QSizeF( 2, 4 ) );
+  result = item->adjustPointForReferencePosition( QPointF( 5, 7 ), QSizeF( 2, 4 ), QgsLayoutItem::LowerRight );
   QCOMPARE( result.x(), 3.0 );
   QCOMPARE( result.y(), 3.0 );
+}
+
+void TestQgsLayoutItem::positionAtReferencePoint()
+{
+  QgsProject p;
+  QgsLayout l( &p );
+
+  TestItem *item = new TestItem( &l );
+  item->setPos( 8.0, 6.0 );
+  item->setRect( 0.0, 0.0, 4.0, 6.0 );
+  QPointF result = item->positionAtReferencePoint( QgsLayoutItem::UpperLeft );
+  QCOMPARE( result.x(), 8.0 );
+  QCOMPARE( result.y(), 6.0 );
+  result = item->positionAtReferencePoint( QgsLayoutItem::UpperMiddle );
+  QCOMPARE( result.x(), 10.0 );
+  QCOMPARE( result.y(), 6.0 );
+  result = item->positionAtReferencePoint( QgsLayoutItem::UpperRight );
+  QCOMPARE( result.x(), 12.0 );
+  QCOMPARE( result.y(), 6.0 );
+  result = item->positionAtReferencePoint( QgsLayoutItem::MiddleLeft );
+  QCOMPARE( result.x(), 8.0 );
+  QCOMPARE( result.y(), 9.0 );
+  result = item->positionAtReferencePoint( QgsLayoutItem::Middle );
+  QCOMPARE( result.x(), 10.0 );
+  QCOMPARE( result.y(), 9.0 );
+  result = item->positionAtReferencePoint( QgsLayoutItem::MiddleRight );
+  QCOMPARE( result.x(), 12.0 );
+  QCOMPARE( result.y(), 9.0 );
+  result = item->positionAtReferencePoint( QgsLayoutItem::LowerLeft );
+  QCOMPARE( result.x(), 8.0 );
+  QCOMPARE( result.y(), 12.0 );
+  result = item->positionAtReferencePoint( QgsLayoutItem::LowerMiddle );
+  QCOMPARE( result.x(), 10.0 );
+  QCOMPARE( result.y(), 12.0 );
+  result = item->positionAtReferencePoint( QgsLayoutItem::LowerRight );
+  QCOMPARE( result.x(), 12.0 );
+  QCOMPARE( result.y(), 12.0 );
+
+  //test with a rotated item
+  item->setItemRotation( 90 );
+  result = item->positionAtReferencePoint( QgsLayoutItem::UpperLeft );
+  QCOMPARE( result.x(), 13.0 );
+  QCOMPARE( result.y(), 7.0 );
+  result = item->positionAtReferencePoint( QgsLayoutItem::UpperMiddle );
+  QCOMPARE( result.x(), 13.0 );
+  QCOMPARE( result.y(), 9.0 );
+  result = item->positionAtReferencePoint( QgsLayoutItem::UpperRight );
+  QCOMPARE( result.x(), 13.0 );
+  QCOMPARE( result.y(), 11.0 );
+  result = item->positionAtReferencePoint( QgsLayoutItem::MiddleLeft );
+  QCOMPARE( result.x(), 10.0 );
+  QCOMPARE( result.y(), 7.0 );
+  result = item->positionAtReferencePoint( QgsLayoutItem::Middle );
+  QCOMPARE( result.x(), 10.0 );
+  QCOMPARE( result.y(), 9.0 );
+  result = item->positionAtReferencePoint( QgsLayoutItem::MiddleRight );
+  QCOMPARE( result.x(), 10.0 );
+  QCOMPARE( result.y(), 11.0 );
+  result = item->positionAtReferencePoint( QgsLayoutItem::LowerLeft );
+  QCOMPARE( result.x(), 7.0 );
+  QCOMPARE( result.y(), 7.0 );
+  result = item->positionAtReferencePoint( QgsLayoutItem::LowerMiddle );
+  QCOMPARE( result.x(), 7.0 );
+  QCOMPARE( result.y(), 9.0 );
+  result = item->positionAtReferencePoint( QgsLayoutItem::LowerRight );
+  QCOMPARE( result.x(), 7.0 );
+  QCOMPARE( result.y(), 11.0 );
+
+  delete item;
 }
 
 void TestQgsLayoutItem::fixedSize()
@@ -915,15 +1015,15 @@ void TestQgsLayoutItem::move()
   item->attemptMove( QgsLayoutPoint( 60.0, 15.0, QgsUnitTypes::LayoutMillimeters ) );
   QCOMPARE( item->rect().width(), 55.0 ); //size should not change
   QCOMPARE( item->rect().height(), 45.0 );
-  QCOMPARE( item->pos().x(), 60.0 );
-  QCOMPARE( item->pos().y(), 15.0 );
+  QCOMPARE( item->scenePos().x(), 60.0 );
+  QCOMPARE( item->scenePos().y(), 15.0 );
 
   //test conversion of units
   l.setUnits( QgsUnitTypes::LayoutCentimeters );
   item->setPos( 100, 200 );
   item->attemptMove( QgsLayoutPoint( 0.30, 0.45, QgsUnitTypes::LayoutMeters ) );
-  QCOMPARE( item->pos().x(), 30.0 );
-  QCOMPARE( item->pos().y(), 45.0 );
+  QCOMPARE( item->scenePos().x(), 30.0 );
+  QCOMPARE( item->scenePos().y(), 45.0 );
 
   //test pixel -> page conversion
   l.setUnits( QgsUnitTypes::LayoutInches );
@@ -931,13 +1031,13 @@ void TestQgsLayoutItem::move()
   item->refresh();
   item->setPos( 1, 2 );
   item->attemptMove( QgsLayoutPoint( 140, 280, QgsUnitTypes::LayoutPixels ) );
-  QCOMPARE( item->pos().x(), 1.4 );
-  QCOMPARE( item->pos().y(), 2.8 );
+  QCOMPARE( item->scenePos().x(), 1.4 );
+  QCOMPARE( item->scenePos().y(), 2.8 );
   //changing the dpi should move the item
   l.context().setDpi( 200.0 );
   item->refresh();
-  QCOMPARE( item->pos().x(), 0.7 );
-  QCOMPARE( item->pos().y(), 1.4 );
+  QCOMPARE( item->scenePos().x(), 0.7 );
+  QCOMPARE( item->scenePos().y(), 1.4 );
 
   //test page -> pixel conversion
   l.setUnits( QgsUnitTypes::LayoutPixels );
@@ -945,18 +1045,111 @@ void TestQgsLayoutItem::move()
   item->refresh();
   item->setPos( 2, 2 );
   item->attemptMove( QgsLayoutPoint( 1, 3, QgsUnitTypes::LayoutInches ) );
-  QCOMPARE( item->pos().x(), 100.0 );
-  QCOMPARE( item->pos().y(), 300.0 );
+  QCOMPARE( item->scenePos().x(), 100.0 );
+  QCOMPARE( item->scenePos().y(), 300.0 );
   //changing dpi results in item move
   l.context().setDpi( 200.0 );
   item->refresh();
-  QCOMPARE( item->pos().x(), 200.0 );
-  QCOMPARE( item->pos().y(), 600.0 );
+  QCOMPARE( item->scenePos().x(), 200.0 );
+  QCOMPARE( item->scenePos().y(), 600.0 );
 
   l.setUnits( QgsUnitTypes::LayoutMillimeters );
 
   //TODO - reference points
 }
+
+void TestQgsLayoutItem::rotation()
+{
+  QgsProject proj;
+  QgsLayout l( &proj );
+
+  TestItem *item = new TestItem( &l );
+  l.setUnits( QgsUnitTypes::LayoutMillimeters );
+  item->setPos( 6.0, 10.0 );
+  item->setRect( 0.0, 0.0, 10.0, 8.0 );
+  item->setPen( Qt::NoPen );
+  QRectF bounds = item->sceneBoundingRect();
+  QCOMPARE( bounds.left(), 6.0 );
+  QCOMPARE( bounds.right(), 16.0 );
+  QCOMPARE( bounds.top(), 10.0 );
+  QCOMPARE( bounds.bottom(), 18.0 );
+
+  item->setItemRotation( 90.0 );
+  QCOMPARE( item->itemRotation(), 90.0 );
+  QCOMPARE( item->rotation(), 90.0 );
+  bounds = item->sceneBoundingRect();
+  QCOMPARE( bounds.left(), 7.0 );
+  QCOMPARE( bounds.right(), 15.0 );
+  QCOMPARE( bounds.top(), 9.0 );
+  QCOMPARE( bounds.bottom(), 19.0 );
+
+  //check that negative angles are preserved as negative
+  item->setItemRotation( -90.0 );
+  QCOMPARE( item->itemRotation(), -90.0 );
+  QCOMPARE( item->rotation(), -90.0 );
+  bounds = item->sceneBoundingRect();
+  QCOMPARE( bounds.width(), 8.0 );
+  QCOMPARE( bounds.height(), 10.0 );
+
+  //check that rotating changes stored item position for reference point
+  item->setItemRotation( 0.0 );
+  item->attemptMove( QgsLayoutPoint( 5.0, 8.0 ) );
+  item->attemptResize( QgsLayoutSize( 10.0, 6.0 ) );
+  item->setItemRotation( 90.0 );
+  QCOMPARE( item->positionWithUnits().x(), 13.0 );
+  QCOMPARE( item->positionWithUnits().y(), 6.0 );
+
+  //setting item position (for reference point) respects rotation
+  item->attemptMove( QgsLayoutPoint( 10.0, 8.0 ) );
+  QCOMPARE( item->scenePos().x(), 10.0 );
+  QCOMPARE( item->scenePos().y(), 8.0 );
+  QRectF p = item->sceneBoundingRect();
+  qDebug() << p.left();
+  QCOMPARE( item->sceneBoundingRect().left(), 4.0 );
+  QCOMPARE( item->sceneBoundingRect().right(), 10.0 );
+  QCOMPARE( item->sceneBoundingRect().top(), 8.0 );
+  QCOMPARE( item->sceneBoundingRect().bottom(), 18.0 );
+
+  //TODO also changing size?
+
+
+  //data defined rotation
+  item->setItemRotation( 0.0 );
+  item->attemptMove( QgsLayoutPoint( 5.0, 8.0 ) );
+  item->attemptResize( QgsLayoutSize( 10.0, 6.0 ) );
+  item->dataDefinedProperties().setProperty( QgsLayoutObject::ItemRotation, QgsProperty::fromExpression( QStringLiteral( "90" ) ) );
+  item->refreshDataDefinedProperty( QgsLayoutObject::ItemRotation );
+  QCOMPARE( item->itemRotation(), 90.0 );
+  //also check when refreshing all properties
+  item->dataDefinedProperties().setProperty( QgsLayoutObject::ItemRotation, QgsProperty::fromExpression( QStringLiteral( "45" ) ) );
+  item->refreshDataDefinedProperty( QgsLayoutObject::AllProperties );
+  QCOMPARE( item->itemRotation(), 45.0 );
+
+  delete item;
+
+  //render check
+  item = new TestItem( &l );
+  item->setItemRotation( 0.0 );
+  item->setPos( 100, 150 );
+  item->setRect( 0, 0, 200, 100 );
+  l.addItem( item );
+  item->setItemRotation( 45 );
+  l.setSceneRect( 0, 0, 400, 400 );
+  l.context().setFlag( QgsLayoutContext::FlagDebug, true );
+  QImage image( l.sceneRect().size().toSize(), QImage::Format_ARGB32 );
+  image.fill( 0 );
+  QPainter painter( &image );
+  l.render( &painter );
+  painter.end();
+
+  bool result = renderCheck( "layoutitem_rotation", image, 0 );
+  delete item;
+  QVERIFY( result );
+}
+
+//TODO rotation tests:
+//restoring item from xml respects rotation/position
+//rotate item around layout point
 
 QGSTEST_MAIN( TestQgsLayoutItem )
 #include "testqgslayoutitem.moc"
