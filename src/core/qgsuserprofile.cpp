@@ -70,19 +70,24 @@ const QString QgsUserProfile::alias() const
   return profileAlias;
 }
 
-bool QgsUserProfile::setAlias( const QString &alias )
+QgsError QgsUserProfile::setAlias( const QString &alias )
 {
+  QgsError error;
   QFile qgisPrivateDbFile( qgisDB() );
 
   if ( !qgisPrivateDbFile.exists() )
   {
-    return false;
+    error.append( QObject::tr( "qgis.db doesn't exist in the uers profile folder" ) );
+    return error;
   }
 
-  QSqlDatabase db = QSqlDatabase::addDatabase( "QSQLITE" );
+  QSqlDatabase db = QSqlDatabase::addDatabase( "QSQLITE", "userprofile" );
   db.setDatabaseName( qgisDB() );
   if ( !db.open() )
-    return false;
+  {
+    error.append( QObject::tr( "Unable to open qgis.db for update." ) );
+    return error;
+  }
 
   QSqlQuery query;
   QString sql = "INSERT OR REPLACE INTO tbl_config_variables VALUES ('ALIAS', :alias);";
@@ -90,7 +95,7 @@ bool QgsUserProfile::setAlias( const QString &alias )
   query.bindValue( ":alias", alias );
   query.exec();
   db.close();
-  return true;
+  return error;
 }
 
 const QIcon QgsUserProfile::icon() const

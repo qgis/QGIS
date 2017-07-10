@@ -30,18 +30,27 @@ class CORE_EXPORT QgsUserProfileManager : public QObject
     /**
      * User profile manager used to manage user profiles for the instance of QGIS.
      */
-    QgsUserProfileManager();
+    QgsUserProfileManager( const QString &rootLocation = QString() );
 
     /**
-     * Return the profile from the given root profile location. If no name is given it returns a profile called "default".
-     * @param rootLocation The root location to search for the profile. If empty will use Qt to find the standard install location.
+     * Resolves the profiles folder for the given path. All paths will have \\profiles appended to the path
+     * Checks QGIS_CUSTOM_CONFIG_PATH first.
+     * @param basePath The base path to resolve the path from.  If empty will use QtStandardPaths to find OS
+     * app data location.
+     * @return The root path to store user profiles.
+     */
+    static QString resolveProfilesFolder( const QString  &basePath = QString() );
+
+    /**
+     * Return the profile from the given root profile location.
+     * If no name is given it returns a profile called "default".
+     * By default will create the profile folder if not found.
+     * By default will init the user settings.
      * @param defaultProfile The profile name to find. Empty profile name will return "default" for the name.
      * @param createNew Create the profile folder if it doesn't exist.
-     * @return The QPair<QgsUserProfile, QString> (profile, root path) for the given profile name.
+     * @return The user profile
      */
-    static QPair<QgsUserProfile *, QString> getProfile( const QString &rootLocation = QString(),
-        const QString &defaultProfile = "default",
-        bool createNew = true );
+    QgsUserProfile *getProfile( const QString &defaultProfile = "default", bool createNew = true, bool initSettings = true );
 
     /**
      * Set the root profile location for the profile manager. All profiles are loaded from this

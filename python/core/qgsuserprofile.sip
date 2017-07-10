@@ -66,12 +66,12 @@ class QgsUserProfile
  :rtype: str
 %End
 
-    bool setAlias( const QString &alias );
+    QgsError setAlias( const QString &alias );
 %Docstring
  Set the alias of the profile.  The alias is a user friendly name.
  @param alias A user friendly name for the profile.
  @return True of setting the alias was successful.
- :rtype: bool
+ :rtype: QgsError
 %End
 
     const QIcon icon() const;

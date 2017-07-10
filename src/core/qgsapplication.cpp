@@ -125,20 +125,13 @@ void QgsApplication::init( QString profileFolder )
 {
   if ( profileFolder.isEmpty() )
   {
-    if ( getenv( "QGIS_CUSTOM_CONFIG_PATH" ) )
-    {
-      profileFolder = getenv( "QGIS_CUSTOM_CONFIG_PATH" );
-    }
-    else
-    {
-      // This will normally get here for custom scripts that use QgsApplication.
-      // This doesn't get this hit for QGIS Desktop because we setup the profile via main
-      QPair<QgsUserProfile *, QString> profileDetails = QgsUserProfileManager::getProfile();
-      QgsUserProfile *profile = profileDetails.first;
-      profileFolder = profile->folder();
-      profile->initSettings();
-      delete profile;
-    }
+    // This will normally get here for custom scripts that use QgsApplication.
+    // This doesn't get this hit for QGIS Desktop because we setup the profile via main
+    QString rootProfileFolder = QgsUserProfileManager::resolveProfilesFolder();
+    QgsUserProfileManager manager( rootProfileFolder );
+    QgsUserProfile *profile = manager.getProfile();
+    profileFolder = profile->folder();
+    delete profile;
   }
 
   qRegisterMetaType<QgsGeometry::Error>( "QgsGeometry::Error" );

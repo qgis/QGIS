@@ -61,7 +61,7 @@ class CORE_EXPORT QgsUserProfile
      * @param alias A user friendly name for the profile.
      * @return True of setting the alias was successful.
      */
-    bool setAlias( const QString &alias );
+    QgsError setAlias( const QString &alias );
 
     /**
      * The icon for the user profile.

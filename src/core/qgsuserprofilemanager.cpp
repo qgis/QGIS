@@ -10,41 +10,53 @@
 #include <QStandardPaths>
 
 
-QgsUserProfileManager::QgsUserProfileManager()
+QgsUserProfileManager::QgsUserProfileManager( const QString &rootLocation )
   : mWatcher( new QFileSystemWatcher() )
 {
+  setRootLocation( rootLocation );
   connect( mWatcher, &QFileSystemWatcher::directoryChanged, this, [this]
   {
     emit profilesChanged();
   } );
 }
 
-QPair<QgsUserProfile *, QString> QgsUserProfileManager::getProfile( const QString &rootLocation, const QString &defaultProfile, bool createNew )
+QString QgsUserProfileManager::resolveProfilesFolder( const QString &basePath )
 {
-  QgsUserProfileManager manager;
+  if ( getenv( "QGIS_CUSTOM_CONFIG_PATH" ) )
+  {
+    QString rootFolder = getenv( "QGIS_CUSTOM_CONFIG_PATH" );
+    rootFolder = rootFolder + QDir::separator() + "profiles";
+    return rootFolder;
+  }
 
-  if ( rootLocation.isEmpty() )
+  if ( basePath.isEmpty() )
   {
     QString rootFolder = QStandardPaths::standardLocations( QStandardPaths::AppDataLocation ).at( 0 );
     rootFolder = rootFolder + QDir::separator() + "profiles";
-    manager.setRootLocation( rootFolder );
+    return rootFolder;
   }
   else
   {
-    QString rootFolder = rootLocation + QDir::separator() + "profiles";
-    manager.setRootLocation( rootFolder );
+    QString rootFolder = basePath + QDir::separator() + "profiles";
+    return rootFolder;
   }
 
-  QString profileName = defaultProfile.isEmpty() ? manager.defaultProfileName() : defaultProfile;
+}
 
-  if ( createNew )
+QgsUserProfile *QgsUserProfileManager::getProfile( const QString &defaultProfile, bool createNew, bool initSettings )
+{
+  QString profileName = defaultProfile.isEmpty() ? defaultProfileName() : defaultProfile;
+
+  if ( createNew && !profileExists( defaultProfile ) )
   {
-    manager.createUserProfile( profileName );
+    createUserProfile( profileName );
   }
 
-  QgsUserProfile *profile = manager.profileForName( profileName );
+  QgsUserProfile *profile = profileForName( profileName );
+  if ( initSettings )
+    profile->initSettings();
 
-  return qMakePair( profile, manager.rootLocation() );
+  return profile;
 }
 
 void QgsUserProfileManager::setRootLocation( QString rootProfileLocation )

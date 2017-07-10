@@ -786,16 +786,9 @@ int main( int argc, char *argv[] )
   QCoreApplication::setApplicationName( QgsApplication::QGIS_APPLICATION_NAME );
   QCoreApplication::setAttribute( Qt::AA_DontShowIconsInMenus, false );
 
-  if ( getenv( "QGIS_CUSTOM_CONFIG_PATH" ) )
-  {
-    configLocalStorageLocation =  getenv( "QGIS_CUSTOM_CONFIG_PATH" ) ;
-  }
-
-  QPair<QgsUserProfile *, QString> profileDetails = QgsUserProfileManager::getProfile( configLocalStorageLocation, profileName, true );
-  QgsUserProfile *profile = profileDetails.first;
-  profile->initSettings();
-
-  QString rootProfileFolder = profileDetails.second;
+  QString rootProfileFolder = QgsUserProfileManager::resolveProfilesFolder( configLocalStorageLocation );
+  QgsUserProfileManager manager( rootProfileFolder );
+  QgsUserProfile *profile = manager.getProfile( profileName, true );
   QString profileFolder = profile->folder();
 
   QgsDebugMsg( "User profile details:" );
