@@ -226,7 +226,7 @@
             </property>
             <property name="icon">
              <iconset resource="../../../../images/images.qrc">
-              <normaloff>:/images/themes/default/mActionDraw.svg</normaloff>:/images/themes/default/mActionDraw.svg</iconset>
+              <normaloff>:/images/themes/default/mActionUndo.svg</normaloff>:/images/themes/default/mActionUndo.svg</iconset>
             </property>
             <property name="iconSize">
              <size>
@@ -363,7 +363,7 @@
             </property>
             <property name="icon">
              <iconset resource="../../../../images/images.qrc">
-              <normaloff>:/images/themes/default/mActionDraw.svg</normaloff>:/images/themes/default/mActionDraw.svg</iconset>
+              <normaloff>:/images/themes/default/mActionUndo.svg</normaloff>:/images/themes/default/mActionUndo.svg</iconset>
             </property>
             <property name="iconSize">
              <size>
@@ -479,7 +479,7 @@
             </property>
             <property name="icon">
              <iconset resource="../../../../images/images.qrc">
-              <normaloff>:/images/themes/default/mActionDraw.svg</normaloff>:/images/themes/default/mActionDraw.svg</iconset>
+              <normaloff>:/images/themes/default/mActionUndo.svg</normaloff>:/images/themes/default/mActionUndo.svg</iconset>
             </property>
             <property name="iconSize">
              <size>
@@ -678,7 +678,7 @@
             </property>
             <property name="icon">
              <iconset resource="../../../../images/images.qrc">
-              <normaloff>:/images/themes/default/mActionDraw.svg</normaloff>:/images/themes/default/mActionDraw.svg</iconset>
+              <normaloff>:/images/themes/default/mActionUndo.svg</normaloff>:/images/themes/default/mActionUndo.svg</iconset>
             </property>
             <property name="iconSize">
              <size>
@@ -743,7 +743,7 @@ Base Path (i.e. keep only filename from attribute)</string>
             </property>
             <property name="icon">
              <iconset resource="../../../../images/images.qrc">
-              <normaloff>:/images/themes/default/mActionDraw.svg</normaloff>:/images/themes/default/mActionDraw.svg</iconset>
+              <normaloff>:/images/themes/default/mActionUndo.svg</normaloff>:/images/themes/default/mActionUndo.svg</iconset>
             </property>
             <property name="iconSize">
              <size>
@@ -807,7 +807,7 @@ Base Path (i.e. keep only filename from attribute)</string>
             </property>
             <property name="icon">
              <iconset resource="../../../../images/images.qrc">
-              <normaloff>:/images/themes/default/mActionDraw.svg</normaloff>:/images/themes/default/mActionDraw.svg</iconset>
+              <normaloff>:/images/themes/default/mActionUndo.svg</normaloff>:/images/themes/default/mActionUndo.svg</iconset>
             </property>
             <property name="iconSize">
              <size>
