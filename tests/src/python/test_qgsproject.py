@@ -28,7 +28,7 @@ from qgis.gui import (QgsLayerTreeMapCanvasBridge,
                       QgsMapCanvas)
 
 from qgis.PyQt.QtTest import QSignalSpy
-from qgis.PyQt.QtCore import QT_VERSION_STR
+from qgis.PyQt.QtCore import QT_VERSION_STR, QTemporaryFile
 import sip
 
 from qgis.testing import start_app, unittest
@@ -683,6 +683,48 @@ class TestQgsProject(unittest.TestCase):
         # destroy project
         p = None
         self.assertTrue(l1.isValid())
+
+    def test_zip_new_project(self):
+        tmpFile = QTemporaryFile()
+        tmpFile.open()
+        tmpFile.close()
+
+        # zip with existing file
+        project = QgsProject()
+        self.assertTrue(project.zip(tmpFile.fileName()))
+
+        # zip with non existing file
+        os.remove(tmpFile.fileName())
+
+        project = QgsProject()
+        self.assertTrue(project.zip(tmpFile.fileName()))
+        self.assertTrue(os.path.isfile(tmpFile.fileName()))
+
+    def test_zip_invalid_path(self):
+        project = QgsProject()
+        self.assertFalse(project.zip("/fake/test.zip"))
+        self.assertFalse(project.zip(""))
+
+    def test_zip_unzip(self):
+        tmpFile = QTemporaryFile()
+        tmpFile.open()
+        tmpFile.close()
+
+        project = QgsProject()
+
+        l0 = QgsVectorLayer(os.path.join(TEST_DATA_DIR, "points.shp"), "points", "ogr")
+        l1 = QgsVectorLayer(os.path.join(TEST_DATA_DIR, "lines.shp"), "lines", "ogr")
+        project.addMapLayers([l0, l1])
+
+        self.assertTrue(project.zip(tmpFile.fileName()))
+
+        project2 = QgsProject()
+        self.assertTrue(project2.unzip(tmpFile.fileName()))
+        layers = project2.mapLayers()
+
+        self.assertEqual(len(layers.keys()), 2)
+        self.assertTrue(layers[l0.id()].isValid(), True)
+        self.assertTrue(layers[l1.id()].isValid(), True)
 
 
 if __name__ == '__main__':
