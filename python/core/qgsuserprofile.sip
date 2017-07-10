@@ -39,11 +39,11 @@ class QgsUserProfile
  :rtype: str
 %End
 
-    const QString parentFolder() const;
+    QgsError validate() const;
 %Docstring
- The parent folder for the profile folder.
- @return
- :rtype: str
+ Check of the profile is in a valid state.
+ @return Any errors the profile has.
+ :rtype: QgsError
 %End
 
     const QString name() const;

@@ -29,21 +29,28 @@ class QgsUserProfileManager : QObject
 %End
   public:
 
-    static QgsUserProfile *getProfile( const QString &rootLocation = QString(), bool roamingConfig = true, const QString &defaultProfile = "default" );
+    QgsUserProfileManager();
 %Docstring
- getProfile
- @param rootLocation
- @param roamingConfig
- @param defaultProfile
- @return
- :rtype: QgsUserProfile
+ User profile manager used to manage user profiles for the instance of QGIS.
+%End
+
+    static QPair<QgsUserProfile *, QString> getProfile( const QString &rootLocation = QString(),
+        const QString &defaultProfile = "default",
+        bool createNew = true );
+%Docstring
+ Return the profile from the given root profile location. If no name is given it returns a profile called "default".
+ @param rootLocation The root location to search for the profile. If empty will use Qt to find the standard install location.
+ @param defaultProfile The profile name to find. Empty profile name will return "default" for the name.
+ @param createNew Create the profile folder if it doesn't exist.
+ @return The QPair<QgsUserProfile, QString> (profile, root path) for the given profile name.
+ :rtype: QPair<QgsUserProfile *, str>
 %End
 
     void setRootLocation( QString rootProfileLocation );
 %Docstring
  Set the root profile location for the profile manager. All profiles are loaded from this
- location.
- @param rootprofileFolder
+ location. Will also contain a profiles.ini for holding profile settings.
+ @param rootProfileLocation Path to the top level profile folder which contains folders for each profile.
 %End
 
     QString rootLocation();
@@ -65,6 +72,13 @@ class QgsUserProfileManager : QObject
  A list of all found profile names.
  @return
  :rtype: list of str
+%End
+
+    bool profileExists( const QString &name ) const;
+%Docstring
+ Check if a profile exists.
+ @return False if the profile can't be found.
+ :rtype: bool
 %End
 
     QString defaultProfileName() const;
@@ -94,7 +108,7 @@ class QgsUserProfileManager : QObject
  :rtype: QgsUserProfile
 %End
 
-    QgsError createUserProfile( const QString name );
+    QgsError createUserProfile( const QString &name );
 %Docstring
  Create a user profile given by the name
  @param name
@@ -129,10 +143,23 @@ class QgsUserProfileManager : QObject
  @param profile The name of the active profile
 %End
 
+    void loadUserProfile( const QString &name );
+%Docstring
+ Starts a new instance of QGIS for the given profile.
+ @param name The profile to start QGIS with.
+%End
+
     void loadUserProfile( const QgsUserProfile *profile );
 %Docstring
  Starts a new instance of QGIS for the given profile.
  @param profile The profile to start QGIS with.
+%End
+
+  signals:
+
+    void profilesChanged( );
+%Docstring
+ Emitted when the list of profiles is changed.
 %End
 
 };
