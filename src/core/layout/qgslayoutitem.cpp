@@ -57,7 +57,16 @@ void QgsLayoutItem::paint( QPainter *painter, const QStyleOptionGraphicsItem *it
 
 void QgsLayoutItem::setReferencePoint( const QgsLayoutItem::ReferencePoint &point )
 {
+  if ( point == mReferencePoint )
+  {
+    return;
+  }
+
   mReferencePoint = point;
+
+  //also need to adjust stored position
+  QPointF positionReferencePointLayoutUnits = adjustPointForReferencePosition( pos(), QSizeF( -rect().width(), -rect().height() ) );
+  mItemPosition = mLayout->convertFromLayoutUnits( positionReferencePointLayoutUnits, mItemPosition.units() );
 }
 
 void QgsLayoutItem::attemptResize( const QgsLayoutSize &size )
@@ -82,6 +91,7 @@ void QgsLayoutItem::attemptResize( const QgsLayoutSize &size )
   mItemSize = actualSizeTargetUnits;
 
   setRect( 0, 0, actualSizeLayoutUnits.width(), actualSizeLayoutUnits.height() );
+  refreshItemPosition();
 }
 
 void QgsLayoutItem::attemptMove( const QgsLayoutPoint &point )
@@ -97,6 +107,11 @@ void QgsLayoutItem::attemptMove( const QgsLayoutPoint &point )
   //TODO - apply data defined position here
   targetPointLayoutUnits = adjustPointForReferencePosition( targetPointLayoutUnits, rect().size() );
   QPointF actualPointLayoutUnits = targetPointLayoutUnits;
+
+  if ( actualPointLayoutUnits == pos() )
+  {
+    return;
+  }
 
   QgsLayoutPoint actualPointTargetUnits = mLayout->convertFromLayoutUnits( actualPointLayoutUnits, point.units() );
   mItemPosition = actualPointTargetUnits;

@@ -119,6 +119,15 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
     */
     virtual void attemptMove( const QgsLayoutPoint &point );
 
+    /**
+     * Returns the item's current position, including units. The position returned
+     * is the position of the item's reference point, which may not necessarily be the top
+     * left corner of the item.
+     * \see attemptMove()
+     * \see referencePoint()
+    */
+    QgsLayoutPoint positionWithUnits() const { return mItemPosition; }
+
   public slots:
 
     /**

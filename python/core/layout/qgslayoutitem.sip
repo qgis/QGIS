@@ -104,6 +104,16 @@ class QgsLayoutItem : QgsLayoutObject, QGraphicsRectItem
 .. seealso:: referencePoint()
 %End
 
+    QgsLayoutPoint positionWithUnits() const;
+%Docstring
+ Returns the item's current position, including units. The position returned
+ is the position of the item's reference point, which may not necessarily be the top
+ left corner of the item.
+.. seealso:: attemptMove()
+.. seealso:: referencePoint()
+ :rtype: QgsLayoutPoint
+%End
+
   public slots:
 
     virtual void refresh();
