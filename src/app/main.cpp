@@ -135,7 +135,6 @@ void usage( const QString &appName )
       << QStringLiteral( "\t[--dxf-scale-denom scale]\tscale for dxf output\n" )
       << QStringLiteral( "\t[--dxf-encoding encoding]\tencoding to use for dxf output\n" )
       << QStringLiteral( "\t[--dxf-preset maptheme]\tmap theme to use for dxf output\n" )
-      << QStringLiteral( "\t[--profiles-no-roaming]\tstore user profile folders in local machine folder only. Roaming folders by default.\n" )
       << QStringLiteral( "\t[--profile name]\tload a named profile from the users profiles folder.\n" )
       << QStringLiteral( "\t[--profiles-path path]\tpath to store user profile folders.\n" )
       << QStringLiteral( "\t[--help]\t\tthis text\n" )
@@ -533,7 +532,6 @@ int main( int argc, char *argv[] )
   // user settings (~/.qgis) and it will be used for QgsSettings INI file
   QString configpath;
   QString authdbdirectory;
-  bool roamingConfig = true;
 
   QString pythonfile;
 
@@ -577,10 +575,6 @@ int main( int argc, char *argv[] )
       else if ( arg == QLatin1String( "--noplugins" ) || arg == QLatin1String( "-P" ) )
       {
         myRestorePlugins = false;
-      }
-      else if ( arg == QLatin1String( "--profiles-no-roaming" ) || arg == QLatin1String( "-P" ) )
-      {
-        roamingConfig = false;
       }
       else if ( arg == QLatin1String( "--nocustomization" ) || arg == QLatin1String( "-C" ) )
       {
@@ -797,8 +791,8 @@ int main( int argc, char *argv[] )
     configLocalStorageLocation =  getenv( "QGIS_CUSTOM_CONFIG_PATH" ) ;
   }
 
-  QPair<QgsUserProfile*, QString> profileDetails = QgsUserProfileManager::getProfile( configLocalStorageLocation, roamingConfig, profileName, true );
-  QgsUserProfile* profile = profileDetails.first;
+  QPair<QgsUserProfile *, QString> profileDetails = QgsUserProfileManager::getProfile( configLocalStorageLocation, profileName, true );
+  QgsUserProfile *profile = profileDetails.first;
   profile->initSettings();
 
   QString rootProfileFolder = profileDetails.second;

@@ -19,14 +19,13 @@ QgsUserProfileManager::QgsUserProfileManager()
   } );
 }
 
-QPair<QgsUserProfile *, QString> QgsUserProfileManager::getProfile( const QString &rootLocation, bool roamingConfig, const QString &defaultProfile, bool createNew )
+QPair<QgsUserProfile *, QString> QgsUserProfileManager::getProfile( const QString &rootLocation, const QString &defaultProfile, bool createNew )
 {
   QgsUserProfileManager manager;
 
   if ( rootLocation.isEmpty() )
   {
-    QStandardPaths::StandardLocation location = roamingConfig ? QStandardPaths::AppDataLocation : QStandardPaths::AppLocalDataLocation;
-    QString rootFolder = QStandardPaths::standardLocations( location ).at( 0 );
+    QString rootFolder = QStandardPaths::standardLocations( QStandardPaths::AppDataLocation ).at( 0 );
     rootFolder = rootFolder + QDir::separator() + "profiles";
     manager.setRootLocation( rootFolder );
   }
