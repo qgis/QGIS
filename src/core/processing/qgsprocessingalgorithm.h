@@ -77,9 +77,15 @@ class CORE_EXPORT QgsProcessingAlgorithm
      * This method returns a new, preinitialized copy of the algorithm, ready for
      * executing.
      *
+     * The \a configuration argument allows passing of a map of configuration settings
+     * to the algorithm, allowing it to dynamically adjust its initialized parameters
+     * and outputs according to this configuration. This is generally used only for
+     * algorithms in a model, allowing them to adjust their behavior at run time
+     * according to some user configuration.
+     *
      * \see initAlgorithm()
      */
-    QgsProcessingAlgorithm *create() const SIP_FACTORY;
+    QgsProcessingAlgorithm *create( const QVariantMap &configuration = QVariantMap() ) const SIP_FACTORY;
 
     /**
      * Returns the algorithm name, used for identifying the algorithm. This string

@@ -47,12 +47,18 @@ class QgsProcessingAlgorithm
     virtual ~QgsProcessingAlgorithm();
 
 
-    QgsProcessingAlgorithm *create() const /Factory/;
+    QgsProcessingAlgorithm *create( const QVariantMap &configuration = QVariantMap() ) const /Factory/;
 %Docstring
  Creates a copy of the algorithm, ready for execution.
 
  This method returns a new, preinitialized copy of the algorithm, ready for
  executing.
+
+ The ``configuration`` argument allows passing of a map of configuration settings
+ to the algorithm, allowing it to dynamically adjust its initialized parameters
+ and outputs according to this configuration. This is generally used only for
+ algorithms in a model, allowing them to adjust their behavior at run time
+ according to some user configuration.
 
 .. seealso:: initAlgorithm()
  :rtype: QgsProcessingAlgorithm

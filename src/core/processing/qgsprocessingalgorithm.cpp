@@ -33,11 +33,11 @@ QgsProcessingAlgorithm::~QgsProcessingAlgorithm()
   qDeleteAll( mOutputs );
 }
 
-QgsProcessingAlgorithm *QgsProcessingAlgorithm::create() const
+QgsProcessingAlgorithm *QgsProcessingAlgorithm::create( const QVariantMap &configuration ) const
 {
   std::unique_ptr< QgsProcessingAlgorithm > creation( createInstance() );
   creation->setProvider( provider() );
-  creation->initAlgorithm();
+  creation->initAlgorithm( configuration );
   return creation.release();
 }
 
