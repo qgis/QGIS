@@ -45,6 +45,7 @@ class QgsMemoryFeatureSource : public QgsAbstractFeatureSource
     QString mSubsetString;
     QgsExpressionContext mExpressionContext;
     QgsCoordinateReferenceSystem mCrs;
+    bool mIsSpatial;
 
     friend class QgsMemoryFeatureIterator;
 };

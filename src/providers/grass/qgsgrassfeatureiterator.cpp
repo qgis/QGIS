@@ -81,7 +81,14 @@ QgsGrassFeatureIterator::QgsGrassFeatureIterator( QgsGrassFeatureSource *source,
 
   if ( !request.filterRect().isNull() )
   {
-    setSelectionRect( request.filterRect(), request.flags() & QgsFeatureRequest::ExactIntersect );
+    if ( QgsWkbTypes::geometryType( mSource->mQgisType ) == QgsWkbTypes::NullGeometry )
+    {
+      close();
+    }
+    else
+    {
+      setSelectionRect( request.filterRect(), request.flags() & QgsFeatureRequest::ExactIntersect );
+    }
   }
   else
   {

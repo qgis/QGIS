@@ -77,9 +77,17 @@ QgsPostgresFeatureIterator::QgsPostgresFeatureIterator( QgsPostgresFeatureSource
   bool useFallbackWhereClause = false;
   QString fallbackWhereClause;
 
-  if ( !mFilterRect.isNull() && !mSource->mGeometryColumn.isNull() )
+  if ( !mFilterRect.isNull() )
   {
-    whereClause = whereClauseRect();
+    if ( !mSource->mGeometryColumn.isNull() )
+    {
+      whereClause = whereClauseRect();
+    }
+    else
+    {
+      mClosed = true;
+      return;
+    }
   }
 
   if ( !mSource->mSqlWhereClause.isEmpty() )

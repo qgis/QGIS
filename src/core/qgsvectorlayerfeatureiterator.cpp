@@ -42,6 +42,8 @@ QgsVectorLayerFeatureSource::QgsVectorLayerFeatureSource( const QgsVectorLayer *
   mExpressionFieldBuffer = new QgsExpressionFieldBuffer( *layer->mExpressionFieldBuffer );
   mCrs = layer->crs();
 
+  mIsSpatial = layer->isSpatial();
+
   mHasEditBuffer = layer->editBuffer();
   if ( mHasEditBuffer )
   {
@@ -126,6 +128,11 @@ QgsVectorLayerFeatureIterator::QgsVectorLayerFeatureIterator( QgsVectorLayerFeat
   }
   if ( !mFilterRect.isNull() )
   {
+    if ( !mSource->mIsSpatial )
+    {
+      mClosed = true;
+      return;
+    }
     // update request to be the unprojected filter rect
     mRequest.setFilterRect( mFilterRect );
   }

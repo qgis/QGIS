@@ -62,8 +62,13 @@ QgsSpatiaLiteFeatureIterator::QgsSpatiaLiteFeatureIterator( QgsSpatiaLiteFeature
   //by the provider (e.g., utilising QGIS expression filters)
   bool limitAtProvider = ( mRequest.limit() >= 0 );
 
-  if ( !mFilterRect.isNull() && !mSource->mGeometryColumn.isNull() )
+  if ( !mFilterRect.isNull() )
   {
+    if ( mSource->mGeometryColumn.isNull() )
+    {
+      mClosed = true;
+      return;
+    }
     // some kind of MBR spatial filtering is required
     whereClause = whereClauseRect();
     if ( ! whereClause.isEmpty() )

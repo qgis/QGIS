@@ -53,6 +53,11 @@ QgsAfsFeatureIterator::QgsAfsFeatureIterator( QgsAfsFeatureSource *source, bool 
     mClosed = true;
     return;
   }
+  if ( !mFilterRect.isNull() && !mSource->sharedData()->isSpatial() )
+  {
+    mClosed = true;
+    return;
+  }
 }
 
 QgsAfsFeatureIterator::~QgsAfsFeatureIterator()

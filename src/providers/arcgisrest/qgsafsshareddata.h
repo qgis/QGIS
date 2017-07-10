@@ -36,6 +36,8 @@ class QgsAfsSharedData : public QObject
 
     bool getFeature( QgsFeatureId id, QgsFeature &f, bool fetchGeometry, const QList<int> &fetchAttributes, const QgsRectangle &filterRect = QgsRectangle() );
 
+    bool isSpatial();
+
   private:
     friend class QgsAfsProvider;
     QgsDataSourceUri mDataSource;
