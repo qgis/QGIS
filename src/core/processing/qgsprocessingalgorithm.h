@@ -33,6 +33,13 @@ class QgsFeatureSink;
 class QgsProcessingFeedback;
 
 
+#ifdef SIP_RUN
+% ModuleHeaderCode
+#include <qgsprocessingmodelalgorithm.h>
+% End
+#endif
+
+
 /**
  * \class QgsProcessingAlgorithm
  * \ingroup core
@@ -41,6 +48,16 @@ class QgsProcessingFeedback;
  */
 class CORE_EXPORT QgsProcessingAlgorithm
 {
+
+#ifdef SIP_RUN
+    SIP_CONVERT_TO_SUBCLASS_CODE
+    if ( dynamic_cast< QgsProcessingModelAlgorithm * >( sipCpp ) != NULL )
+      sipType = sipType_QgsProcessingModelAlgorithm;
+    else
+      sipType = sipType_QgsProcessingAlgorithm;
+    SIP_END
+#endif
+
   public:
 
     //! Flags indicating how and when an algorithm operates and should be exposed to users
