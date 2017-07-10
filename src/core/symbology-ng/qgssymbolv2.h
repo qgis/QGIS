@@ -335,6 +335,9 @@ class CORE_EXPORT QgsSymbolV2
     const QgsVectorLayer* mLayer; //current vectorlayer
 
   private:
+    //! True if render has already been started - guards against multiple calls to
+    //! startRender() (usually a result of not cloning a shared symbol instance before rendering).
+    bool mStarted;
     //! Initialized in startRender, destroyed in stopRender
     QgsSymbolV2RenderContext* mSymbolRenderContext;
 
