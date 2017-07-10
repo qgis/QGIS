@@ -55,6 +55,8 @@ class RasterCalculator(QgisAlgorithm):
 
     def __init__(self):
         super().__init__()
+
+    def initAlgorithm(self, config=None):
         self.addParameter(ParameterMultipleInput(self.LAYERS,
                                                  self.tr('Input layers'),
                                                  datatype=dataobjects.TYPE_RASTER,

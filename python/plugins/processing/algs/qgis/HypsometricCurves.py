@@ -60,6 +60,8 @@ class HypsometricCurves(QgisAlgorithm):
 
     def __init__(self):
         super().__init__()
+
+    def initAlgorithm(self, config=None):
         self.addParameter(ParameterRaster(self.INPUT_DEM,
                                           self.tr('DEM to analyze')))
         self.addParameter(ParameterVector(self.BOUNDARY_LAYER,

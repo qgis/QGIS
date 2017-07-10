@@ -66,6 +66,8 @@ class FieldsCalculator(QgisAlgorithm):
 
     def __init__(self):
         super().__init__()
+
+    def initAlgorithm(self, config=None):
         self.type_names = [self.tr('Float'),
                            self.tr('Integer'),
                            self.tr('String'),

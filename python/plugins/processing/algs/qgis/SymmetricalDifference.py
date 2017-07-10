@@ -62,6 +62,7 @@ class SymmetricalDifference(QgisAlgorithm):
     def __init__(self):
         super().__init__()
 
+    def initAlgorithm(self, config=None):
         self.addParameter(QgsProcessingParameterFeatureSource(self.INPUT,
                                                               self.tr('Input layer')))
         self.addParameter(QgsProcessingParameterFeatureSource(self.OVERLAY,

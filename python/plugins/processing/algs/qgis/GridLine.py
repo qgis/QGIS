@@ -71,6 +71,8 @@ class GridLine(QgisAlgorithm):
 
     def __init__(self):
         super().__init__()
+
+    def initAlgorithm(self, config=None):
         self.addParameter(ParameterExtent(self.EXTENT,
                                           self.tr('Grid extent'), optional=False))
         self.addParameter(ParameterNumber(self.HSPACING,

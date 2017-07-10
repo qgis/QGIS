@@ -55,6 +55,8 @@ class OrientedMinimumBoundingBox(QgisAlgorithm):
 
     def __init__(self):
         super().__init__()
+
+    def initAlgorithm(self, config=None):
         self.addParameter(ParameterVector(self.INPUT_LAYER,
                                           self.tr('Input layer')))
         self.addParameter(ParameterBoolean(self.BY_FEATURE,

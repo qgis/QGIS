@@ -37,6 +37,7 @@ QgsProcessingAlgorithm *QgsProcessingAlgorithm::create() const
 {
   std::unique_ptr< QgsProcessingAlgorithm > creation( createInstance() );
   creation->setProvider( provider() );
+  creation->initAlgorithm();
   return creation.release();
 }
 

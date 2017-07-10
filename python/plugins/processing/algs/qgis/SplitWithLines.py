@@ -54,6 +54,8 @@ class SplitWithLines(QgisAlgorithm):
 
     def __init__(self):
         super().__init__()
+
+    def initAlgorithm(self, config=None):
         self.addParameter(ParameterVector(self.INPUT_A,
                                           self.tr('Input layer, single geometries only'), [dataobjects.TYPE_VECTOR_POLYGON,
                                                                                            dataobjects.TYPE_VECTOR_LINE]))

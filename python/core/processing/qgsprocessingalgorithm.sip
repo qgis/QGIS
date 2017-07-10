@@ -38,6 +38,10 @@ class QgsProcessingAlgorithm
     QgsProcessingAlgorithm();
 %Docstring
  Constructor for QgsProcessingAlgorithm.
+
+ initAlgorithm() should be called after creating an algorithm to ensure it can correctly configure
+ its parameterDefinitions() and outputDefinitions(). Alternatively, calling create() will return
+ a pre-initialized copy of the algorithm.
 %End
 
     virtual ~QgsProcessingAlgorithm();
@@ -46,6 +50,11 @@ class QgsProcessingAlgorithm
     QgsProcessingAlgorithm *create() const /Factory/;
 %Docstring
  Creates a copy of the algorithm, ready for execution.
+
+ This method returns a new, preinitialized copy of the algorithm, ready for
+ executing.
+
+.. seealso:: initAlgorithm()
  :rtype: QgsProcessingAlgorithm
 %End
 
@@ -345,11 +354,35 @@ class QgsProcessingAlgorithm
       sipTransferTo( resObj, Py_None );
 %End
 
+    virtual void initAlgorithm( const QVariantMap &configuration = QVariantMap() ) = 0;
+%Docstring
+ Initializes the algorithm using the specified ``configuration``.
+
+ This should be called directly after creating algorithms and before retrieving
+ any parameterDefinitions() or outputDefinitions().
+
+ Subclasses should use their implementations to add all required input parameter and output
+ definitions (which can be dynamically adjusted according to ``configuration``).
+
+ Dynamic configuration can be used by algorithms which alter their behavior
+ when used inside processing models. For instance, a "feature router" type
+ algorithm which sends input features to one of any number of outputs sinks
+ based on some preconfigured filter parameters can use the init method to
+ create these outputs based on the specified ``configuration``.
+
+.. seealso:: addParameter()
+.. seealso:: addOutput()
+%End
+
     bool addParameter( QgsProcessingParameterDefinition *parameterDefinition /Transfer/ );
 %Docstring
  Adds a parameter ``definition`` to the algorithm. Ownership of the definition is transferred to the algorithm.
  Returns true if parameter could be successfully added, or false if the parameter could not be added (e.g.
  as a result of a duplicate name).
+
+ This should usually be called from a subclass' initAlgorithm() implementation.
+
+.. seealso:: initAlgorithm()
 .. seealso:: addOutput()
  :rtype: bool
 %End
@@ -365,7 +398,11 @@ class QgsProcessingAlgorithm
  Adds an output ``definition`` to the algorithm. Ownership of the definition is transferred to the algorithm.
  Returns true if the output could be successfully added, or false if the output could not be added (e.g.
  as a result of a duplicate name).
+
+ This should usually be called from a subclass' initAlgorithm() implementation.
+
 .. seealso:: addParameter()
+.. seealso:: initAlgorithm()
  :rtype: bool
 %End
 

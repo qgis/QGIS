@@ -76,6 +76,8 @@ class GridPolygon(QgisAlgorithm):
 
     def __init__(self):
         super().__init__()
+
+    def initAlgorithm(self, config=None):
         self.types = [self.tr('Rectangle (polygon)'),
                       self.tr('Diamond (polygon)'),
                       self.tr('Hexagon (polygon)')]

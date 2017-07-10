@@ -62,6 +62,8 @@ class FieldsPyculator(QgisAlgorithm):
 
     def __init__(self):
         super().__init__()
+
+    def initAlgorithm(self, config=None):
         self.type_names = [self.tr('Integer'),
                            self.tr('Float'),
                            self.tr('String')]

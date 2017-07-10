@@ -52,6 +52,8 @@ class BoxPlot(QgisAlgorithm):
 
     def __init__(self):
         super().__init__()
+
+    def initAlgorithm(self, config=None):
         self.addParameter(ParameterTable(self.INPUT, self.tr('Input table')))
         self.addParameter(ParameterTableField(self.NAME_FIELD,
                                               self.tr('Category name field'),

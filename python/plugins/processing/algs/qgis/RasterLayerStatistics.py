@@ -56,6 +56,8 @@ class RasterLayerStatistics(QgisAlgorithm):
 
     def __init__(self):
         super().__init__()
+
+    def initAlgorithm(self, config=None):
         self.addParameter(ParameterRaster(self.INPUT, self.tr('Input layer')))
 
         self.addOutput(OutputHTML(self.OUTPUT_HTML_FILE, self.tr('Statistics')))

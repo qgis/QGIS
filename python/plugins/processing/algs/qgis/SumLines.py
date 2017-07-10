@@ -56,6 +56,8 @@ class SumLines(QgisAlgorithm):
 
     def __init__(self):
         super().__init__()
+
+    def initAlgorithm(self, config=None):
         self.addParameter(ParameterVector(self.LINES,
                                           self.tr('Lines'), [dataobjects.TYPE_VECTOR_LINE]))
         self.addParameter(ParameterVector(self.POLYGONS,

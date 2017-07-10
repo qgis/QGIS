@@ -115,5 +115,5 @@ def createBaseHelpFiles(folder):
 
 
 def createAlgorithmHelp(algName, folder):
-    alg = QgsApplication.processingRegistry().algorithmById(algName)
+    alg = QgsApplication.processingRegistry().createAlgorithmById(algName)
     baseHelpForAlgorithm(alg, folder)

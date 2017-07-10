@@ -60,6 +60,8 @@ class FindProjection(QgisAlgorithm):
 
     def __init__(self):
         super().__init__()
+
+    def initAlgorithm(self, config=None):
         self.addParameter(ParameterVector(self.INPUT_LAYER,
                                           self.tr('Input layer')))
         extent_parameter = ParameterExtent(self.TARGET_AREA,

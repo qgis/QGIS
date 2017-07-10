@@ -72,7 +72,7 @@ class AlgorithmLocatorFilter(QgsLocatorFilter):
                 self.resultFetched.emit(result)
 
     def triggerResult(self, result):
-        alg = QgsApplication.processingRegistry().algorithmById(result.userData)
+        alg = QgsApplication.processingRegistry().createAlgorithmById(result.userData)
         if alg:
             ok, message = alg.canExecute()
             if not ok:

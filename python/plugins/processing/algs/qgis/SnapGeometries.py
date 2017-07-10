@@ -53,6 +53,7 @@ class SnapGeometriesToLayer(QgisAlgorithm):
     def __init__(self):
         super().__init__()
 
+    def initAlgorithm(self, config=None):
         self.addParameter(QgsProcessingParameterFeatureSource(self.INPUT, self.tr('Input layer'), [QgsProcessing.TypeVectorPoint, QgsProcessing.TypeVectorLine, QgsProcessing.TypeVectorPolygon]))
         self.addParameter(QgsProcessingParameterFeatureSource(self.REFERENCE_LAYER, self.tr('Reference layer'),
                                                               [QgsProcessing.TypeVectorPoint,

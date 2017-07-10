@@ -64,6 +64,8 @@ class PointDistance(QgisAlgorithm):
 
     def __init__(self):
         super().__init__()
+
+    def initAlgorithm(self, config=None):
         self.mat_types = [self.tr('Linear (N*k x 3) distance matrix'),
                           self.tr('Standard (N x T) distance matrix'),
                           self.tr('Summary distance matrix (mean, std. dev., min, max)')]

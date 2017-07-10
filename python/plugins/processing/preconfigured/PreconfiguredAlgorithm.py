@@ -59,7 +59,7 @@ class PreconfiguredAlgorithm(GeoAlgorithm):
 
     def execute(self, parameters, context=None, feedback=None, model=None):
         new_parameters = deepcopy(parameters)
-        self.alg = QgsApplication.processingRegistry().algorithmById(self.description["algname"])
+        self.alg = QgsApplication.processingRegistry().createAlgorithmById(self.description["algname"])
         for name, value in list(self.description["parameters"].items()):
             new_parameters[name] = value
         for name, value in list(self.description["outputs"].items()):

@@ -64,6 +64,8 @@ class PointsToPaths(QgisAlgorithm):
 
     def __init__(self):
         super().__init__()
+
+    def initAlgorithm(self, config=None):
         self.addParameter(ParameterVector(self.VECTOR,
                                           self.tr('Input point layer'), [dataobjects.TYPE_VECTOR_POINT]))
         self.addParameter(ParameterTableField(self.GROUP_FIELD,

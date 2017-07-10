@@ -68,6 +68,8 @@ class HubDistanceLines(QgisAlgorithm):
 
     def __init__(self):
         super().__init__()
+
+    def initAlgorithm(self, config=None):
         self.units = [self.tr('Meters'),
                       self.tr('Feet'),
                       self.tr('Miles'),

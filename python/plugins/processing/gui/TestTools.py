@@ -137,7 +137,7 @@ def createTest(text):
 
     tokens = list(parseParameters(text[len('processing.run('):-1]))
     cmdname = tokens[0]
-    alg = QgsApplication.processingRegistry().algorithmById(cmdname)
+    alg = QgsApplication.processingRegistry().createAlgorithmById(cmdname)
 
     definition['name'] = 'Test ({})'.format(cmdname)
     definition['algorithm'] = cmdname

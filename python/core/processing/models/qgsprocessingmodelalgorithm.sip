@@ -27,6 +27,9 @@ class QgsProcessingModelAlgorithm : QgsProcessingAlgorithm
  Constructor for QgsProcessingModelAlgorithm.
 %End
 
+    virtual void initAlgorithm( const QVariantMap &configuration = QVariantMap() );  //#spellok
+
+
     virtual QString name() const;
 
     virtual QString displayName() const;
@@ -45,8 +48,6 @@ class QgsProcessingModelAlgorithm : QgsProcessingAlgorithm
     virtual bool canExecute( QString *errorMessage /Out/ = 0 ) const;
 
     virtual QString asPythonCommand( const QVariantMap &parameters, QgsProcessingContext &context ) const;
-
-    virtual QgsProcessingModelAlgorithm *createInstance() const /Factory/;
 
 
     void setName( const QString &name );
@@ -363,6 +364,9 @@ Translated description of variable
 %End
 
   protected:
+
+    virtual QgsProcessingAlgorithm *createInstance() const /Factory/;
+
 
     virtual QVariantMap processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback );
 

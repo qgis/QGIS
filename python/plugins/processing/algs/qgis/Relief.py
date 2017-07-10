@@ -62,6 +62,7 @@ class Relief(QgisAlgorithm):
     def __init__(self):
         super().__init__()
 
+    def initAlgorithm(self, config=None):
         class ParameterReliefColors(Parameter):
             default_metadata = {
                 'widget_wrapper': 'processing.algs.qgis.ui.ReliefColorsWidget.ReliefColorsWidgetWrapper'

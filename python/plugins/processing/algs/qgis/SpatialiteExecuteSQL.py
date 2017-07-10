@@ -46,6 +46,8 @@ class SpatialiteExecuteSQL(QgisAlgorithm):
 
     def __init__(self):
         super().__init__()
+
+    def initAlgorithm(self, config=None):
         self.addParameter(QgsProcessingParameterVectorLayer(self.DATABASE, self.tr('File Database'), False, False))
         self.addParameter(QgsProcessingParameterString(self.SQL, self.tr('SQL query'), '', True))
 

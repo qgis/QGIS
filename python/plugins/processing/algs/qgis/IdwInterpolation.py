@@ -68,6 +68,7 @@ class IdwInterpolation(QgisAlgorithm):
     def __init__(self):
         super().__init__()
 
+    def initAlgorithm(self, config=None):
         class ParameterInterpolationData(Parameter):
             default_metadata = {
                 'widget_wrapper': 'processing.algs.qgis.ui.InterpolationDataWidget.InterpolationDataWidgetWrapper'
