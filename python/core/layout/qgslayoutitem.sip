@@ -91,6 +91,7 @@ class QgsLayoutItem : QgsLayoutObject, QGraphicsRectItem
 .. seealso:: minimumSize()
 .. seealso:: fixedSize()
 .. seealso:: attemptMove()
+.. seealso:: sizeWithUnits()
 %End
 
     virtual void attemptMove( const QgsLayoutPoint &point );
@@ -102,6 +103,7 @@ class QgsLayoutItem : QgsLayoutObject, QGraphicsRectItem
  as data defined item position may override the specified value.
 .. seealso:: attemptResize()
 .. seealso:: referencePoint()
+.. seealso:: positionWithUnits()
 %End
 
     QgsLayoutPoint positionWithUnits() const;
@@ -111,7 +113,16 @@ class QgsLayoutItem : QgsLayoutObject, QGraphicsRectItem
  left corner of the item.
 .. seealso:: attemptMove()
 .. seealso:: referencePoint()
+.. seealso:: sizeWithUnits()
  :rtype: QgsLayoutPoint
+%End
+
+    QgsLayoutSize sizeWithUnits() const;
+%Docstring
+ Returns the item's current size, including units.
+.. seealso:: attemptResize()
+.. seealso:: positionWithUnits()
+ :rtype: QgsLayoutSize
 %End
 
   public slots:
@@ -121,6 +132,14 @@ class QgsLayoutItem : QgsLayoutObject, QGraphicsRectItem
 %Docstring
  Refreshes the item, causing a recalculation of any property overrides and
  recalculation of its position and size.
+%End
+
+    virtual void refreshDataDefinedProperty( const QgsLayoutObject::DataDefinedProperty property = QgsLayoutObject::AllProperties );
+%Docstring
+ Refreshes a data defined ``property`` for the item by reevaluating the property's value
+ and redrawing the item with this new value. If ``property`` is set to
+ QgsLayoutObject.AllProperties then all data defined properties for the item will be
+ refreshed.
 %End
 
   protected:

@@ -67,6 +67,7 @@ void QgsLayoutItem::setReferencePoint( const QgsLayoutItem::ReferencePoint &poin
   //also need to adjust stored position
   QPointF positionReferencePointLayoutUnits = adjustPointForReferencePosition( pos(), QSizeF( -rect().width(), -rect().height() ) );
   mItemPosition = mLayout->convertFromLayoutUnits( positionReferencePointLayoutUnits, mItemPosition.units() );
+  refreshItemPosition();
 }
 
 void QgsLayoutItem::attemptResize( const QgsLayoutSize &size )
@@ -78,7 +79,8 @@ void QgsLayoutItem::attemptResize( const QgsLayoutSize &size )
     return;
   }
 
-  QSizeF targetSizeLayoutUnits = mLayout->convertToLayoutUnits( size );
+  QgsLayoutSize evaluatedSize = applyDataDefinedSize( size );
+  QSizeF targetSizeLayoutUnits = mLayout->convertToLayoutUnits( evaluatedSize );
   QSizeF actualSizeLayoutUnits = applyMinimumSize( targetSizeLayoutUnits );
   actualSizeLayoutUnits = applyFixedSize( actualSizeLayoutUnits );
 
@@ -103,27 +105,71 @@ void QgsLayoutItem::attemptMove( const QgsLayoutPoint &point )
     return;
   }
 
-  QPointF targetPointLayoutUnits = mLayout->convertToLayoutUnits( point );
-  //TODO - apply data defined position here
-  targetPointLayoutUnits = adjustPointForReferencePosition( targetPointLayoutUnits, rect().size() );
-  QPointF actualPointLayoutUnits = targetPointLayoutUnits;
-
-  if ( actualPointLayoutUnits == pos() )
+  QgsLayoutPoint evaluatedPoint = applyDataDefinedPosition( point );
+  QPointF evaluatedPointLayoutUnits = mLayout->convertToLayoutUnits( evaluatedPoint );
+  QPointF topLeftPointLayoutUnits = adjustPointForReferencePosition( evaluatedPointLayoutUnits, rect().size() );
+  if ( topLeftPointLayoutUnits == pos() && point.units() == mItemPosition.units() )
   {
+    //TODO - add test for second condition
     return;
   }
 
-  QgsLayoutPoint actualPointTargetUnits = mLayout->convertFromLayoutUnits( actualPointLayoutUnits, point.units() );
-  mItemPosition = actualPointTargetUnits;
+  QgsLayoutPoint referencePointTargetUnits = mLayout->convertFromLayoutUnits( evaluatedPointLayoutUnits, point.units() );
+  mItemPosition = referencePointTargetUnits;
 
-  setPos( targetPointLayoutUnits );
+  setPos( topLeftPointLayoutUnits );
 }
+
+QgsLayoutPoint QgsLayoutItem::applyDataDefinedPosition( const QgsLayoutPoint &position )
+{
+  if ( !mLayout )
+  {
+    return position;
+  }
+
+  QgsExpressionContext context = createExpressionContext();
+  double evaluatedX = mDataDefinedProperties.valueAsDouble( QgsLayoutObject::PositionX, context, position.x() );
+  double evaluatedY = mDataDefinedProperties.valueAsDouble( QgsLayoutObject::PositionY, context, position.y() );
+  return QgsLayoutPoint( evaluatedX, evaluatedY, position.units() );
+}
+
+QgsLayoutSize QgsLayoutItem::applyDataDefinedSize( const QgsLayoutSize &size )
+{
+  if ( !mLayout )
+  {
+    return size;
+  }
+
+  QgsExpressionContext context = createExpressionContext();
+  double evaluatedWidth = mDataDefinedProperties.valueAsDouble( QgsLayoutObject::ItemWidth, context, size.width() );
+  double evaluatedHeight = mDataDefinedProperties.valueAsDouble( QgsLayoutObject::ItemHeight, context, size.height() );
+  return QgsLayoutSize( evaluatedWidth, evaluatedHeight, size.units() );
+}
+
+void QgsLayoutItem::refreshDataDefinedProperty( const QgsLayoutObject::DataDefinedProperty property )
+{
+  //update data defined properties and update item to match
+
+  //evaluate width and height first, since they may affect position if non-top-left reference point set
+  if ( property == QgsLayoutObject::ItemWidth || property == QgsLayoutObject::ItemHeight ||
+       property == QgsLayoutObject::AllProperties )
+  {
+    refreshItemSize();
+  }
+  if ( property == QgsLayoutObject::PositionX || property == QgsLayoutObject::PositionY ||
+       property == QgsLayoutObject::AllProperties )
+  {
+    refreshItemPosition();
+  }
+}
+
 
 void QgsLayoutItem::refresh()
 {
   QgsLayoutObject::refresh();
   refreshItemSize();
-  refreshItemPosition();
+
+  refreshDataDefinedProperty();
 }
 
 void QgsLayoutItem::drawDebugRect( QPainter *painter )

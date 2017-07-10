@@ -105,6 +105,7 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
      * \see minimumSize()
      * \see fixedSize()
      * \see attemptMove()
+     * \see sizeWithUnits()
     */
     virtual void attemptResize( const QgsLayoutSize &size );
 
@@ -116,6 +117,7 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
      * as data defined item position may override the specified value.
      * \see attemptResize()
      * \see referencePoint()
+     * \see positionWithUnits()
     */
     virtual void attemptMove( const QgsLayoutPoint &point );
 
@@ -125,8 +127,16 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
      * left corner of the item.
      * \see attemptMove()
      * \see referencePoint()
+     * \see sizeWithUnits()
     */
     QgsLayoutPoint positionWithUnits() const { return mItemPosition; }
+
+    /**
+     * Returns the item's current size, including units.
+     * \see attemptResize()
+     * \see positionWithUnits()
+     */
+    QgsLayoutSize sizeWithUnits() const { return mItemSize; }
 
   public slots:
 
@@ -135,6 +145,14 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
      * recalculation of its position and size.
      */
     void refresh() override;
+
+    /**
+     * Refreshes a data defined \a property for the item by reevaluating the property's value
+     * and redrawing the item with this new value. If \a property is set to
+     * QgsLayoutObject::AllProperties then all data defined properties for the item will be
+     * refreshed.
+    */
+    virtual void refreshDataDefinedProperty( const QgsLayoutObject::DataDefinedProperty property = QgsLayoutObject::AllProperties );
 
   protected:
 
@@ -205,6 +223,8 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
 
     QSizeF applyMinimumSize( const QSizeF &targetSize );
     QSizeF applyFixedSize( const QSizeF &targetSize );
+    QgsLayoutPoint applyDataDefinedPosition( const QgsLayoutPoint &position );
+    QgsLayoutSize applyDataDefinedSize( const QgsLayoutSize &size );
 
     friend class TestQgsLayoutItem;
 };
