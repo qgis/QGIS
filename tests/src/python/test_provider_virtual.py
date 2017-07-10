@@ -181,7 +181,7 @@ class TestQgsVirtualLayerProvider(unittest.TestCase, ProviderTestCase):
         # the same, without specifying the geometry column name
         l2 = QgsVectorLayer("?layer_ref=%s&query=%s&uid=OBJECTID" % (l1.id(), query), "vtab", "virtual", False)
         self.assertEqual(l2.isValid(), True)
-        self.assertEqual(l2.dataProvider().wkbType(), 3)
+        self.assertEqual(l2.dataProvider().wkbType(), 6)
         ref_sum2 = sum(f.attributes()[0] for f in l2.getFeatures())
         ref_sum3 = sum(f.id() for f in l2.getFeatures())
         # check we have the same rows
@@ -204,7 +204,7 @@ class TestQgsVirtualLayerProvider(unittest.TestCase, ProviderTestCase):
         # with two geometry columns, but no geometry column specified (will take the first)
         l2 = QgsVectorLayer("?layer_ref=%s&query=%s&uid=OBJECTID" % (l1.id(), query), "vtab", "virtual", False)
         self.assertEqual(l2.isValid(), True)
-        self.assertEqual(l2.dataProvider().wkbType(), 3)
+        self.assertEqual(l2.dataProvider().wkbType(), 6)
         ref_sum2 = sum(f.attributes()[0] for f in l2.getFeatures())
         ref_sum3 = sum(f.id() for f in l2.getFeatures())
         # check we have the same rows
@@ -343,7 +343,7 @@ class TestQgsVirtualLayerProvider(unittest.TestCase, ProviderTestCase):
 
         l2 = QgsVectorLayer(tmp, "tt", "virtual", False)
         self.assertEqual(l2.isValid(), True)
-        self.assertEqual(l2.dataProvider().wkbType(), 3)
+        self.assertEqual(l2.dataProvider().wkbType(), 6)
         self.assertEqual(l2.dataProvider().featureCount(), 4)
 
     def test_reopen2(self):
@@ -448,7 +448,7 @@ class TestQgsVirtualLayerProvider(unittest.TestCase, ProviderTestCase):
         l4 = QgsVectorLayer("?query=%s&uid=ObjectId" % query, "tt", "virtual")
         self.assertEqual(l4.isValid(), True)
 
-        self.assertEqual(l4.dataProvider().wkbType(), 3)
+        self.assertEqual(l4.dataProvider().wkbType(), 6)
         self.assertEqual(l4.dataProvider().crs().postgisSrid(), 4326)
 
         n = 0
