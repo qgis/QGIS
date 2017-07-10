@@ -356,6 +356,7 @@ SET(QGIS_CORE_SRCS
   layout/qgslayoutmeasurement.cpp
   layout/qgslayoutmeasurementconverter.cpp
   layout/qgslayoutobject.cpp
+  layout/qgslayoututils.cpp
   layout/qgspagesizeregistry.cpp
   layout/qgslayoutpoint.cpp
   layout/qgslayoutsize.cpp
@@ -923,6 +924,7 @@ SET(QGIS_CORE_HDRS
   layout/qgspagesizeregistry.h
   layout/qgslayoutpoint.h
   layout/qgslayoutsize.h
+  layout/qgslayoututils.h
 
   metadata/qgslayermetadata.h
   metadata/qgslayermetadatavalidator.h

@@ -153,12 +153,13 @@
 %Include composer/qgscomposermultiframecommand.sip
 %Include composer/qgscomposertexttable.sip
 %Include composer/qgspaperitem.sip
-%Include layout/qgslayout.sip
+%Include layout/qgslayoutcontext.sip
 %Include layout/qgslayoutmeasurement.sip
 %Include layout/qgslayoutmeasurementconverter.sip
 %Include layout/qgspagesizeregistry.sip
 %Include layout/qgslayoutpoint.sip
 %Include layout/qgslayoutsize.sip
+%Include layout/qgslayoututils.sip
 %Include metadata/qgslayermetadata.sip
 %Include metadata/qgslayermetadatavalidator.sip
 %Include processing/qgsprocessing.sip
@@ -378,7 +379,7 @@
 %Include gps/qgsgpsdetector.sip
 %Include gps/qgsnmeaconnection.sip
 %Include gps/qgsgpsdconnection.sip
-%Include layout/qgslayoutcontext.sip
+%Include layout/qgslayout.sip
 %Include layout/qgslayoutitem.sip
 %Include layout/qgslayoutitemregistry.sip
 %Include layout/qgslayoutobject.sip

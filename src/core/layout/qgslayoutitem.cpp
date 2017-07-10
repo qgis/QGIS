@@ -16,6 +16,7 @@
 
 #include "qgslayoutitem.h"
 #include "qgslayout.h"
+#include "qgslayoututils.h"
 #include <QPainter>
 
 QgsLayoutItem::QgsLayoutItem( QgsLayout *layout )

@@ -131,6 +131,7 @@ SET(TESTS
  testqgslayoutitem.cpp
  testqgslayoutobject.cpp
  testqgslayoutunits.cpp
+ testqgslayoututils.cpp
  testqgslegendrenderer.cpp
  testqgscentroidfillsymbol.cpp
  testqgslinefillsymbol.cpp
