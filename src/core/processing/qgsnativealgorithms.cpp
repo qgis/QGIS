@@ -87,53 +87,18 @@ QgsCentroidAlgorithm *QgsCentroidAlgorithm::createInstance() const
   return new QgsCentroidAlgorithm();
 }
 
-QVariantMap QgsCentroidAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
+bool QgsCentroidAlgorithm::processFeature( QgsFeature &feature, QgsProcessingFeedback *feedback )
 {
-  std::unique_ptr< QgsFeatureSource > source( parameterAsSource( parameters, QStringLiteral( "INPUT" ), context ) );
-  if ( !source )
-    return QVariantMap();
-
-  QString dest;
-  std::unique_ptr< QgsFeatureSink > sink( parameterAsSink( parameters, QStringLiteral( "OUTPUT" ), context, dest, source->fields(), QgsWkbTypes::Point, source->sourceCrs() ) );
-  if ( !sink )
-    return QVariantMap();
-
-  long count = source->featureCount();
-  if ( count <= 0 )
-    return QVariantMap();
-
-  QgsFeature f;
-  QgsFeatureIterator it = source->getFeatures();
-
-  double step = 100.0 / count;
-  int current = 0;
-  while ( it.nextFeature( f ) )
+  if ( feature.hasGeometry() )
   {
-    if ( feedback->isCanceled() )
+    feature.setGeometry( feature.geometry().centroid() );
+    if ( !feature.geometry() )
     {
-      break;
+      feedback->pushInfo( QObject::tr( "Error calculating centroid for feature %1" ).arg( feature.id() ) );
     }
-
-    QgsFeature out = f;
-    if ( out.hasGeometry() )
-    {
-      out.setGeometry( f.geometry().centroid() );
-      if ( !out.geometry() )
-      {
-        QgsMessageLog::logMessage( QObject::tr( "Error calculating centroid for feature %1" ).arg( f.id() ), QObject::tr( "Processing" ), QgsMessageLog::WARNING );
-      }
-    }
-    sink->addFeature( out, QgsFeatureSink::FastInsert );
-
-    feedback->setProgress( current * step );
-    current++;
   }
-
-  QVariantMap outputs;
-  outputs.insert( QStringLiteral( "OUTPUT" ), dest );
-  return outputs;
+  return true;
 }
-
 //
 // QgsBufferAlgorithm
 //

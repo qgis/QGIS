@@ -48,7 +48,7 @@ class QgsNativeAlgorithms: public QgsProcessingProvider
 /**
  * Native centroid algorithm.
  */
-class QgsCentroidAlgorithm : public QgsProcessingAlgorithm
+class QgsCentroidAlgorithm : public QgsProcessingFeatureBasedAlgorithm
 {
 
   public:
@@ -57,16 +57,18 @@ class QgsCentroidAlgorithm : public QgsProcessingAlgorithm
     void initAlgorithm( const QVariantMap &configuration = QVariantMap() ) override;
     QString name() const override { return QStringLiteral( "centroids" ); }
     QString displayName() const override { return QObject::tr( "Centroids" ); }
-    virtual QStringList tags() const override { return QObject::tr( "centroid,center,average,point,middle" ).split( ',' ); }
+    QStringList tags() const override { return QObject::tr( "centroid,center,average,point,middle" ).split( ',' ); }
     QString group() const override { return QObject::tr( "Vector geometry tools" ); }
     QString shortHelpString() const override;
     QgsCentroidAlgorithm *createInstance() const override SIP_FACTORY;
 
   protected:
 
-    virtual QVariantMap processAlgorithm( const QVariantMap &parameters,
-                                          QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
+    QString outputName() const override { return QObject::tr( "Centroids" ); }
+    QgsProcessing::LayerType outputLayerType() const override { return QgsProcessing::TypeVectorPoint; }
+    QgsWkbTypes::Type outputWkbType( QgsWkbTypes::Type inputWkbType ) const override { Q_UNUSED( inputWkbType ); return QgsWkbTypes::Point; }
 
+    bool processFeature( QgsFeature &feature, QgsProcessingFeedback *feedback ) override;
 };
 
 /**
