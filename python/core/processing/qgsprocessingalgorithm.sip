@@ -11,6 +11,11 @@
 
 
 
+%ModuleHeaderCode
+#include <qgsprocessingmodelalgorithm.h>
+%End
+
+
 class QgsProcessingAlgorithm
 {
 %Docstring
@@ -20,6 +25,13 @@ class QgsProcessingAlgorithm
 
 %TypeHeaderCode
 #include "qgsprocessingalgorithm.h"
+%End
+
+%ConvertToSubClassCode
+    if ( dynamic_cast< QgsProcessingModelAlgorithm * >( sipCpp ) != NULL )
+      sipType = sipType_QgsProcessingModelAlgorithm;
+    else
+      sipType = sipType_QgsProcessingAlgorithm;
 %End
   public:
 
