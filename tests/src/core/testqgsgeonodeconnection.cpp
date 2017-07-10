@@ -48,12 +48,7 @@ class TestQgsGeoNodeConnection: public QObject
 
     // Check if we can create geonode connection from database.
     void testCreation();
-    void testGetLayersOldGeoNode();
-    void testGetLayersQGISServer();
-    void testGetLayersGeoServer();
-    void testGetMaps();
-    void testGetWMSUrl();
-    void testGetGeoNodeUrl();
+
   private:
     QString mGeoNodeConnectionName;
     QString mGeoNodeConnectionURL;
@@ -124,119 +119,6 @@ void TestQgsGeoNodeConnection::testCreation()
 
   // Verify if the new connection is created properly
   QVERIFY( newConnectionList.contains( mGeoNodeConnectionName ) );
-}
-
-// Test retrieving layers for old GeoNode (v2.6), only GeoServer backend available
-void TestQgsGeoNodeConnection::testGetLayersOldGeoNode()
-{
-  if ( mSkipRemoteTest )
-  {
-    QSKIP( "Skip remote test for faster testing" );
-  }
-
-  QgsGeoNodeConnection geonodeConnection( mDemoGeoNodeName );
-
-  QList<LayerStruct> layers = geonodeConnection.getLayers();
-
-  QVERIFY( layers.count() > 0 );
-  // Example how to access it
-  LayerStruct layer1 = layers[0];
-  QVERIFY( !layer1.typeName.contains( "%3A" ) ); // Check if there is not geonode prefix
-  QVERIFY( layer1.wmsURL.length() > 0 );
-  QVERIFY( layer1.wfsURL.length() > 0 );
-}
-
-// Test retrieving layers for QGIS Server Backend
-void TestQgsGeoNodeConnection::testGetLayersQGISServer()
-{
-  if ( mSkipRemoteTest )
-  {
-    QSKIP( "Skip remote test for faster testing" );
-  }
-
-  QgsGeoNodeConnection geonodeConnection( mKartozaGeoNodeQGISServerName );
-
-  QList<LayerStruct> layers = geonodeConnection.getLayers();
-
-  QVERIFY( layers.count() > 0 );
-  // Example how to access it
-  LayerStruct layer1 = layers[0];
-  QVERIFY( !layer1.name.contains( "geonode%3A" ) ); // Check if there is not geonode prefix
-  QVERIFY( layer1.xyzURL.length() > 0 );
-}
-
-// Test retrieving layers for GeoNode v2.7 with GeoServer backend
-void TestQgsGeoNodeConnection::testGetLayersGeoServer()
-{
-  if ( mSkipRemoteTest )
-  {
-    QSKIP( "Skip remote test for faster testing" );
-  }
-
-  QgsGeoNodeConnection geonodeConnection( mKartozaGeoNodeGeoServerName );
-
-  QList<LayerStruct> layers = geonodeConnection.getLayers();
-
-  QVERIFY( layers.count() > 0 );
-  // Example how to access it
-  LayerStruct layer1 = layers[0];
-  QVERIFY( !layer1.name.contains( "geonode%3A" ) ); // Check if there is not geonode prefix
-  QVERIFY( layer1.wmsURL.length() > 0 );
-  QVERIFY( layer1.wfsURL.length() > 0 );
-  QVERIFY( layer1.xyzURL.length() > 0 );
-}
-
-// Test retrieving maps
-void TestQgsGeoNodeConnection::testGetMaps()
-{
-  if ( mSkipRemoteTest )
-  {
-    QSKIP( "Skip remote test for faster testing" );
-  }
-  QgsGeoNodeConnection geonodeConnection( mDemoGeoNodeName );
-
-  QVariantList layers = geonodeConnection.getMaps();
-
-  QVERIFY( layers.count() > 0 );
-  // Example how to access it
-  QVariantMap layer1 = layers[0].toMap();  // Need to convert to map
-  QList<QString> keys = layer1.keys();
-  QVERIFY( keys.indexOf( "title" ) != -1 ); // Check if title is in the keys
-}
-
-// Test retrieving WMS Url
-void TestQgsGeoNodeConnection::testGetWMSUrl()
-{
-  if ( mSkipRemoteTest )
-  {
-    QSKIP( "Skip remote test for faster testing" );
-  }
-  QgsGeoNodeConnection geonodeConnection( mKartozaGeoNodeGeoServerName );
-
-  QStringList WMSUrls = geonodeConnection.serviceUrl( QString( "WMS" ) );
-  QVERIFY( WMSUrls.count() > 0 );
-}
-
-// Test retrieving WMS Url
-void TestQgsGeoNodeConnection::testGetGeoNodeUrl()
-{
-  QSKIP( "The method no longer used." );
-
-  QgsGeoNodeConnection geonodeConnection( mDemoGeoNodeName );
-
-  QString WMSUrl = geonodeConnection.serviceUrl( QStringLiteral( "WMS" ) )[0];
-  qDebug() << WMSUrl;
-  QVERIFY( WMSUrl == "http://demo.geonode.org/geoserver/geonode/wms" );
-
-  QString WFSUrl = geonodeConnection.serviceUrl( QStringLiteral( "WFS" ) )[0];
-  qDebug() << WFSUrl;
-  QVERIFY( WFSUrl == "http://demo.geonode.org/geoserver/geonode/wfs" );
-
-  QgsGeoNodeConnection kartozaGeoNodeConnection( mKartozaGeoNodeQGISServerName );
-
-  QString XYZUrl = kartozaGeoNodeConnection.serviceUrl( QStringLiteral( "XYZ" ) )[0];
-  qDebug() << XYZUrl;
-  QVERIFY( XYZUrl == "http://geonode.kartoza.com/qgis-server/tiles/LAYERNAME/{z}/{x}/{y}.png" );
 }
 
 QGSTEST_MAIN( TestQgsGeoNodeConnection )

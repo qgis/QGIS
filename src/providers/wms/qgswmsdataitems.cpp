@@ -29,6 +29,7 @@
 #include "qgsxyzconnectiondialog.h"
 #endif
 #include "qgsgeonodeconnection.h"
+#include "qgsgeonoderequest.h"
 #include "qgssettings.h"
 
 #include <QInputDialog>
@@ -580,7 +581,11 @@ QVector<QgsDataItem *> QgsWmsDataItemProvider::createDataItems( const QString &p
     if ( QgsGeoNodeConnection::connectionList().contains( connectionName ) )
     {
       QgsGeoNodeConnection connection( connectionName );
-      QStringList encodedUris( connection.serviceUrl( QStringLiteral( "WMS" ) ) );
+
+      QString url = connection.uri().param( "url" );
+      QgsGeoNodeRequest geonodeRequest( url, true );
+
+      QStringList encodedUris( geonodeRequest.serviceUrls( QStringLiteral( "WMS" ) ) );
 
       if ( !encodedUris.isEmpty() )
       {
@@ -622,7 +627,11 @@ QVector<QgsDataItem *> QgsXyzTileDataItemProvider::createDataItems( const QStrin
     if ( QgsGeoNodeConnection::connectionList().contains( connectionName ) )
     {
       QgsGeoNodeConnection connection( connectionName );
-      QgsStringMap urlData( connection.serviceUrlData( QStringLiteral( "XYZ" ) ) );
+
+      QString url = connection.uri().param( "url" );
+      QgsGeoNodeRequest geonodeRequest( url, true );
+
+      QgsStringMap urlData( geonodeRequest.serviceUrlData( QStringLiteral( "XYZ" ) ) );
 
       if ( !urlData.isEmpty() )
       {

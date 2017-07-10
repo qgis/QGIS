@@ -460,8 +460,8 @@ SET(QGIS_CORE_SRCS
   fieldformatter/qgsvaluerelationfieldformatter.cpp
 
   geocms/qgsgeocmsconnection.cpp
-
   geocms/qgsgeonodeconnection.cpp
+  geocms/qgsgeonoderequest.cpp
 
   ${CMAKE_CURRENT_BINARY_DIR}/qgscontexthelp_texts.cpp
   ${CMAKE_CURRENT_BINARY_DIR}/qgsexpression_texts.cpp
@@ -710,6 +710,7 @@ SET(QGIS_CORE_MOC_HDRS
 
   geocms/qgsgeocmsconnection.h
   geocms/qgsgeonodeconnection.h
+  geocms/qgsgeonoderequest.h
 )
 
 IF (NOT WITH_QTWEBKIT)
@@ -1084,8 +1085,8 @@ SET(QGIS_CORE_HDRS
   fieldformatter/qgsvaluerelationfieldformatter.h
 
   geocms/qgsgeocmsconnection.h
-
   geocms/qgsgeonodeconnection.h
+  geocms/qgsgeonoderequest.h
 
   metadata/qgslayermetadata.h
   metadata/qgslayermetadatavalidator.h

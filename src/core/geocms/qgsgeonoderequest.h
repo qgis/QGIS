@@ -1,0 +1,100 @@
+/***************************************************************************
+    qgsgeonoderequest.h
+    ---------------------
+    begin                : Jul 2017
+    copyright            : (C) 2017 by Muhammad Yarjuna Rohmat, Ismail Sunni
+    email                : rohmat at kartoza dot com, ismail at kartoza dot com
+ ***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ ***************************************************************************/
+#ifndef QGSGEONODEREQUEST_H
+#define QGSGEONODEREQUEST_H
+
+#include "qgis.h"
+#include "qgis_core.h"
+#include <qnetworkreply.h>
+
+
+#include <QObject>
+#include <QUuid>
+
+struct LayerStruct
+{
+  QUuid uuid;
+  QString name;
+  QString typeName;
+  QString title;
+  QString wmsURL;
+  QString wfsURL;
+  QString xyzURL;
+};
+
+class CORE_EXPORT QgsGeoNodeRequest : public QObject
+{
+    Q_OBJECT
+  public:
+    explicit QgsGeoNodeRequest( bool forceRefresh, QObject *parent = nullptr );
+    QgsGeoNodeRequest( const QString &baseUrl, /*const QgsWmsAuthorization &auth,*/ bool forceRefresh, QObject *parent = nullptr );
+    virtual ~QgsGeoNodeRequest();
+
+    bool getLayers();
+
+    QList<LayerStruct> parseLayers( QByteArray layerResponse );
+
+    // Obtain list of unique URL in the geonode
+    QStringList serviceUrls( QString serviceType );
+
+    // Obtain map of layer name and url for a service type
+    QgsStringMap serviceUrlData( QString serviceType );
+
+    QString lastError() const { return mError; }
+
+    QByteArray response() const { return mHttpGeoNodeResponse; }
+
+    QNetworkReply *reply() const { return mGeoNodeReply; }
+
+    //! Abort network request immediately
+    void abort();
+
+  signals:
+    //! \brief emit a signal to be caught by qgisapp and display a msg on status bar
+    void statusChanged( QString const   &statusQString );
+
+    //! \brief emit a signal once the request is finished
+    void requestFinished();
+
+  protected slots:
+    void replyFinished();
+    void replyProgress( qint64, qint64 );
+
+  protected:
+    //! URL part of URI (httpuri)
+    QString mBaseUrl;
+
+//  QgsWmsAuthorization mAuth;
+
+    //! The reply to the geonode request
+    QNetworkReply *mGeoNodeReply = nullptr;
+
+    //! The error message associated with the last error.
+    QString mError;
+
+    //! The mime type of the message
+    QString mErrorFormat;
+
+    //! Response
+    QByteArray mHttpGeoNodeResponse;
+
+    bool mIsAborted;
+    bool mForceRefresh;
+
+//  QList<LayerStruct> mLayers;
+
+};
+
+#endif // QGSGEONODEREQUEST_H

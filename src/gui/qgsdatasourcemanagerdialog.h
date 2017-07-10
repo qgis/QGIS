@@ -114,7 +114,7 @@ class GUI_EXPORT QgsDataSourceManagerDialog : public QgsOptionsDialogBase, priva
     void providerDialogsRefreshRequested();
 
   private:
-    //! Add dialog manually
+    //! Add a provider dialog manually
     QDialog *addDialog( QDialog *dialog, QString const key, QString const name, QString const icon, QString title = QString() );
     // Return the dialog from the provider
     QgsAbstractDataSourceWidget *providerDialog( const QString providerKey, const QString providerName, const QString icon, QString title = QString() );

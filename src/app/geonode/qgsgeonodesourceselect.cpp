@@ -15,13 +15,17 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsgeonodesourceselect.h"
-#include "qgsgeonodeconnection.h"
-#include "qgsgeonodenewconnection.h"
-#include "qgsmanageconnectionsdialog.h"
 #include "qgslogger.h"
 #include "qgsmessagelog.h"
 #include "qgsproviderregistry.h"
+
+#include "qgsgeonodeconnection.h"
+#include "qgsgeonoderequest.h"
+
+#include "qgsgeonodesourceselect.h"
+
+#include "qgsgeonodenewconnection.h"
+#include "qgsmanageconnectionsdialog.h"
 
 #include <QDomDocument>
 #include <QListWidgetItem>
@@ -188,7 +192,25 @@ void QgsGeoNodeSourceSelect::connectToGeonodeConnection()
   QApplication::setOverrideCursor( Qt::BusyCursor );
   QgsGeoNodeConnection connection( cmbConnections->currentText() );
 
-  QList<LayerStruct> layers = connection.getLayers();
+  QString url = connection.uri().param( "url" );
+  QgsGeoNodeRequest geonodeRequest( url, true );
+
+  QApplication::setOverrideCursor( Qt::WaitCursor );
+  bool success = geonodeRequest.getLayers();
+  QApplication::restoreOverrideCursor();
+
+  if ( success )
+  {
+    QgsMessageLog::logMessage( QStringLiteral( "Success" ), tr( "GeoNode" ) );
+  }
+  else
+  {
+    QgsMessageLog::logMessage( QStringLiteral( "Failed" ), tr( "GeoNode" ) );
+  }
+
+  QByteArray ba = geonodeRequest.response();
+
+  QList<LayerStruct> layers = geonodeRequest.parseLayers( ba );
 
   if ( mModel )
   {

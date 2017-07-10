@@ -22,21 +22,11 @@
 #include "qgsdatasourceuri.h"
 #include "qgsmaplayer.h"
 #include "qgsproject.h"
+#include "qgsgeonoderequest.h"
 
 #include <QString>
 #include <QMultiMap>
 #include <QNetworkReply>
-
-struct LayerStruct
-{
-  QUuid uuid;
-  QString name;
-  QString typeName;
-  QString title;
-  QString wmsURL;
-  QString wfsURL;
-  QString xyzURL;
-};
 
 
 /** \ingroup core
@@ -70,19 +60,6 @@ class CORE_EXPORT QgsGeoCmsConnection : public QObject
 
     //! Marks the specified connection for the specified GeoCMS as selected
     static void setSelectedConnection( const QString &geoCMSName, const QString &name );
-
-    //! Return list of available layers
-    virtual QList<LayerStruct> getLayers() = 0;
-    virtual QList<LayerStruct> getLayers( QString serviceType ) = 0;
-
-    //! Return list of available layers
-    virtual QVariantList getMaps() = 0;
-
-    //! Return available service urls
-    //! Return WMS / WFS url for the layer / map / resource ID
-    virtual QStringList serviceUrl( QString &resourceID, QString serviceType ) = 0;
-    virtual QStringList serviceUrl( QString serviceType ) = 0;
-    virtual QgsStringMap serviceUrlData( QString serviceType ) = 0;
 
     //! The GeoCMS name
     QString mGeoCMSName;

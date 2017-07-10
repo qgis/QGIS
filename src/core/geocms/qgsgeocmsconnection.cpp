@@ -32,7 +32,7 @@ QgsGeoCmsConnection::QgsGeoCmsConnection( const QString &geoCMSName, const QStri
   : mGeoCMSName( geoCMSName )
   , mConnName( connName )
 {
-  QgsDebugMsg( "theConnName = " + connName );
+  QgsDebugMsg( "Connection name = " + connName );
 
   QgsSettings settings;
 

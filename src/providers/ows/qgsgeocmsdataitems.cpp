@@ -36,9 +36,12 @@ QVector<QgsDataItem *> QgsGeoCMSConnectionItem::createChildren()
 {
   QVector<QgsDataItem *> services;
 
-  QStringList wmsUrl = mConnection->serviceUrl( QStringLiteral( "WMS" ) );
-  QStringList wfsUrl = mConnection->serviceUrl( QStringLiteral( "WFS" ) );
-  QStringList xyzUrl = mConnection->serviceUrl( QStringLiteral( "XYZ" ) );
+  QString url = mConnection->uri().param( "url" );
+  QgsGeoNodeRequest geonodeRequest( url, true );
+
+  QStringList wmsUrl = geonodeRequest.serviceUrls( QStringLiteral( "WMS" ) );
+  QStringList wfsUrl = geonodeRequest.serviceUrls( QStringLiteral( "WFS" ) );
+  QStringList xyzUrl = geonodeRequest.serviceUrls( QStringLiteral( "XYZ" ) );
 
   if ( !wmsUrl.isEmpty() )
   {
@@ -154,7 +157,7 @@ QVector<QgsDataItem *> QgsGeoCMSServiceItem::createChildren()
       continue;
     }
 
-    if ( mServiceName == QString( "XYZ" ) )
+    if ( mServiceName == QStringLiteral( "XYZ" ) )
     {
       QgsDebugMsg( "Add new item : " + mServiceName );
       return items;

@@ -24,8 +24,6 @@
 #include "qgsproject.h"
 #include "qgsgeocmsconnection.h"
 
-#include <QString>
-#include <QMultiMap>
 #include <QNetworkReply>
 
 
@@ -54,21 +52,6 @@ class CORE_EXPORT QgsGeoNodeConnection : public QgsGeoCmsConnection
 
     //! Set selected connection
     static void setSelectedConnection( const QString &name );
-
-    //! Return list of available layers
-    virtual QList<LayerStruct> getLayers();
-    virtual QList<LayerStruct> getLayers( QString serviceType );
-
-    //! Return list of available layers
-    virtual QVariantList getMaps();
-
-    //! Return WMS / WFS url for the layer / map / resource ID
-    virtual QStringList serviceUrl( QString &resourceID, QString serviceType );
-
-    //! Return WMS / WFS url for the geonode
-    virtual QStringList serviceUrl( QString serviceType );
-
-    virtual QgsStringMap serviceUrlData( QString serviceType );
 
     // Path in QSetting
     static const QString pathGeoNodeConnection;// = "qgis/connections-geonode/";
