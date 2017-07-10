@@ -65,6 +65,8 @@ class ConvexHull(QgisAlgorithm):
 
     def __init__(self):
         super().__init__()
+
+    def initAlgorithm(self, config=None):
         self.methods = [self.tr('Create single minimum convex hull'),
                         self.tr('Create convex hulls based on field')]
 

@@ -60,6 +60,7 @@ class Aspect(QgisAlgorithm):
     def __init__(self):
         super().__init__()
 
+    def initAlgorithm(self, config=None):
         self.addParameter(QgsProcessingParameterRasterLayer(self.INPUT,
                                                             self.tr('Elevation layer')))
         self.addParameter(QgsProcessingParameterNumber(self.Z_FACTOR,

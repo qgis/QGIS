@@ -53,6 +53,8 @@ class Datasources2Vrt(QgisAlgorithm):
 
     def __init__(self):
         super().__init__()
+
+    def initAlgorithm(self, config=None):
         self.addParameter(ParameterMultipleInput(self.DATASOURCES,
                                                  self.tr('Input datasources'),
                                                  dataobjects.TYPE_TABLE))

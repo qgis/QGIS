@@ -60,6 +60,7 @@ class AddTableField(QgisAlgorithm):
                            self.tr('Float'),
                            self.tr('String')]
 
+    def initAlgorithm(self, config=None):
         self.addParameter(QgsProcessingParameterFeatureSource(self.INPUT_LAYER,
                                                               self.tr('Input layer')))
         self.addParameter(QgsProcessingParameterString(self.FIELD_NAME,

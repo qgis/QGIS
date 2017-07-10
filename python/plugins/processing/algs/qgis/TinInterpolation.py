@@ -72,6 +72,8 @@ class TinInterpolation(QgisAlgorithm):
 
     def __init__(self):
         super().__init__()
+
+    def initAlgorithm(self, config=None):
         self.METHODS = [self.tr('Linear'),
                         self.tr('Clough-Toucher (cubic)')
                         ]

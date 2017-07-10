@@ -73,6 +73,7 @@ class ExtentFromLayer(QgisAlgorithm):
     def __init__(self):
         super().__init__()
 
+    def initAlgorithm(self, config=None):
         self.addParameter(QgsProcessingParameterFeatureSource(self.INPUT_LAYER, self.tr('Input layer')))
         self.addParameter(QgsProcessingParameterBoolean(self.BY_FEATURE,
                                                         self.tr('Calculate extent for each feature separately'), False))

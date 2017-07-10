@@ -44,6 +44,7 @@ class PostGISExecuteSQL(QgisAlgorithm):
     def __init__(self):
         super().__init__()
 
+    def initAlgorithm(self, config=None):
         db_param = QgsProcessingParameterString(
             self.DATABASE,
             self.tr('Database (connection name)'))

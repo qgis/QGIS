@@ -62,6 +62,8 @@ class Merge(QgisAlgorithm):
 
     def __init__(self):
         super().__init__()
+
+    def initAlgorithm(self, config=None):
         self.addParameter(QgsProcessingParameterMultipleLayers(self.LAYERS,
                                                                self.tr('Layers to merge'),
                                                                QgsProcessing.TypeVectorAny))

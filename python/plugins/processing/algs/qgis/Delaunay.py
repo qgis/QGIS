@@ -68,6 +68,7 @@ class Delaunay(QgisAlgorithm):
     def __init__(self):
         super().__init__()
 
+    def initAlgorithm(self, config=None):
         self.addParameter(QgsProcessingParameterFeatureSource(self.INPUT, self.tr('Input layer'), [QgsProcessing.TypeVectorPoint]))
         self.addParameter(QgsProcessingParameterFeatureSink(self.OUTPUT, self.tr('Delaunay triangulation'), type=QgsProcessing.TypeVectorPolygon))
         self.addOutput(QgsProcessingOutputVectorLayer(self.OUTPUT, self.tr("Delaunay triangulation"), type=QgsProcessing.TypeVectorPolygon))

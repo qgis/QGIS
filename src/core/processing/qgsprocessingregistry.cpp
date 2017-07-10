@@ -105,7 +105,6 @@ QgsProcessingAlgorithm *QgsProcessingRegistry::createAlgorithmById( const QStrin
     return nullptr;
 
   std::unique_ptr< QgsProcessingAlgorithm > creation( alg->create() );
-  creation->setProvider( alg->provider() );
   return creation.release();
 }
 

@@ -32,6 +32,10 @@ QgsProcessingModelAlgorithm::QgsProcessingModelAlgorithm( const QString &name, c
   , mModelGroup( group )
 {}
 
+void QgsProcessingModelAlgorithm::initAlgorithm( const QVariantMap & )
+{
+}
+
 QString QgsProcessingModelAlgorithm::name() const
 {
   return mModelName;

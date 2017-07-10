@@ -67,6 +67,7 @@ class VoronoiPolygons(QgisAlgorithm):
     def __init__(self):
         super().__init__()
 
+    def initAlgorithm(self, config=None):
         self.addParameter(QgsProcessingParameterFeatureSource(self.INPUT, self.tr('Input layer'), [QgsProcessing.TypeVectorPoint]))
         self.addParameter(QgsProcessingParameterNumber(self.BUFFER, self.tr('Buffer region'), type=QgsProcessingParameterNumber.Double,
                                                        minValue=0.0, maxValue=9999999999, defaultValue=0.0))

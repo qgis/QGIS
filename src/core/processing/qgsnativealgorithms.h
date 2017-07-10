@@ -53,8 +53,8 @@ class QgsCentroidAlgorithm : public QgsProcessingAlgorithm
 
   public:
 
-    QgsCentroidAlgorithm();
-
+    QgsCentroidAlgorithm() = default;
+    void initAlgorithm( const QVariantMap &configuration = QVariantMap() ) override;
     QString name() const override { return QStringLiteral( "centroids" ); }
     QString displayName() const override { return QObject::tr( "Centroids" ); }
     virtual QStringList tags() const override { return QObject::tr( "centroid,center,average,point,middle" ).split( ',' ); }
@@ -77,8 +77,8 @@ class QgsTransformAlgorithm : public QgsProcessingAlgorithm
 
   public:
 
-    QgsTransformAlgorithm();
-
+    QgsTransformAlgorithm() = default;
+    void initAlgorithm( const QVariantMap &configuration = QVariantMap() ) override;
     QString name() const override { return QStringLiteral( "reprojectlayer" ); }
     QString displayName() const override { return QObject::tr( "Reproject layer" ); }
     virtual QStringList tags() const override { return QObject::tr( "transform,reproject,crs,srs,warp" ).split( ',' ); }
@@ -101,7 +101,8 @@ class QgsBufferAlgorithm : public QgsProcessingAlgorithm
 
   public:
 
-    QgsBufferAlgorithm();
+    QgsBufferAlgorithm() = default;
+    void initAlgorithm( const QVariantMap &configuration = QVariantMap() ) override;
 
     QString name() const override { return QStringLiteral( "buffer" ); }
     QString displayName() const override { return QObject::tr( "Buffer" ); }
@@ -125,8 +126,8 @@ class QgsDissolveAlgorithm : public QgsProcessingAlgorithm
 
   public:
 
-    QgsDissolveAlgorithm();
-
+    QgsDissolveAlgorithm() = default;
+    void initAlgorithm( const QVariantMap &configuration = QVariantMap() ) override;
     QString name() const override { return QStringLiteral( "dissolve" ); }
     QString displayName() const override { return QObject::tr( "Dissolve" ); }
     virtual QStringList tags() const override { return QObject::tr( "dissolve,union,combine,collect" ).split( ',' ); }
@@ -164,8 +165,8 @@ class QgsExtractByAttributeAlgorithm : public QgsProcessingAlgorithm
       DoesNotContain,
     };
 
-    QgsExtractByAttributeAlgorithm();
-
+    QgsExtractByAttributeAlgorithm() = default;
+    void initAlgorithm( const QVariantMap &configuration = QVariantMap() ) override;
     QString name() const override { return QStringLiteral( "extractbyattribute" ); }
     QString displayName() const override { return QObject::tr( "Extract by attribute" ); }
     virtual QStringList tags() const override { return QObject::tr( "extract,filter,attribute,value,contains,null,field" ).split( ',' ); }
@@ -188,8 +189,8 @@ class QgsExtractByExpressionAlgorithm : public QgsProcessingAlgorithm
 
   public:
 
-    QgsExtractByExpressionAlgorithm();
-
+    QgsExtractByExpressionAlgorithm() = default;
+    void initAlgorithm( const QVariantMap &configuration = QVariantMap() ) override;
     QString name() const override { return QStringLiteral( "extractbyexpression" ); }
     QString displayName() const override { return QObject::tr( "Extract by expression" ); }
     virtual QStringList tags() const override { return QObject::tr( "extract,filter,expression,field" ).split( ',' ); }
@@ -212,8 +213,8 @@ class QgsClipAlgorithm : public QgsProcessingAlgorithm
 
   public:
 
-    QgsClipAlgorithm();
-
+    QgsClipAlgorithm() = default;
+    void initAlgorithm( const QVariantMap &configuration = QVariantMap() ) override;
     QString name() const override { return QStringLiteral( "clip" ); }
     QString displayName() const override { return QObject::tr( "Clip" ); }
     virtual QStringList tags() const override { return QObject::tr( "clip,intersect,intersection,mask" ).split( ',' ); }
@@ -237,8 +238,8 @@ class QgsSubdivideAlgorithm : public QgsProcessingAlgorithm
 
   public:
 
-    QgsSubdivideAlgorithm();
-
+    QgsSubdivideAlgorithm() = default;
+    void initAlgorithm( const QVariantMap &configuration = QVariantMap() ) override;
     QString name() const override { return QStringLiteral( "subdivide" ); }
     QString displayName() const override { return QObject::tr( "Subdivide" ); }
     virtual QStringList tags() const override { return QObject::tr( "subdivide,segmentize,split,tesselate" ).split( ',' ); }
@@ -261,8 +262,8 @@ class QgsMultipartToSinglepartAlgorithm : public QgsProcessingAlgorithm
 
   public:
 
-    QgsMultipartToSinglepartAlgorithm();
-
+    QgsMultipartToSinglepartAlgorithm() = default;
+    void initAlgorithm( const QVariantMap &configuration = QVariantMap() ) override;
     QString name() const override { return QStringLiteral( "multiparttosingleparts" ); }
     QString displayName() const override { return QObject::tr( "Multipart to singleparts" ); }
     virtual QStringList tags() const override { return QObject::tr( "multi,single,multiple,split,dump" ).split( ',' ); }

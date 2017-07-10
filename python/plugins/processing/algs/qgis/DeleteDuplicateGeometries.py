@@ -44,6 +44,8 @@ class DeleteDuplicateGeometries(QgisAlgorithm):
 
     def __init__(self):
         super().__init__()
+
+    def initAlgorithm(self, config=None):
         self.addParameter(ParameterVector(self.INPUT,
                                           self.tr('Input layer')))
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Cleaned')))

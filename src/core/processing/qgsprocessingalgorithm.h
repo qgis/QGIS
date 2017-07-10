@@ -57,6 +57,10 @@ class CORE_EXPORT QgsProcessingAlgorithm
 
     /**
      * Constructor for QgsProcessingAlgorithm.
+     *
+     * initAlgorithm() should be called after creating an algorithm to ensure it can correctly configure
+     * its parameterDefinitions() and outputDefinitions(). Alternatively, calling create() will return
+     * a pre-initialized copy of the algorithm.
      */
     QgsProcessingAlgorithm() = default;
 
@@ -69,6 +73,11 @@ class CORE_EXPORT QgsProcessingAlgorithm
 
     /**
      * Creates a copy of the algorithm, ready for execution.
+     *
+     * This method returns a new, preinitialized copy of the algorithm, ready for
+     * executing.
+     *
+     * \see initAlgorithm()
      */
     QgsProcessingAlgorithm *create() const SIP_FACTORY;
 
@@ -333,9 +342,33 @@ class CORE_EXPORT QgsProcessingAlgorithm
 #endif
 
     /**
+     * Initializes the algorithm using the specified \a configuration.
+     *
+     * This should be called directly after creating algorithms and before retrieving
+     * any parameterDefinitions() or outputDefinitions().
+     *
+     * Subclasses should use their implementations to add all required input parameter and output
+     * definitions (which can be dynamically adjusted according to \a configuration).
+     *
+     * Dynamic configuration can be used by algorithms which alter their behavior
+     * when used inside processing models. For instance, a "feature router" type
+     * algorithm which sends input features to one of any number of outputs sinks
+     * based on some preconfigured filter parameters can use the init method to
+     * create these outputs based on the specified \a configuration.
+     *
+     * \see addParameter()
+     * \see addOutput()
+     */
+    virtual void initAlgorithm( const QVariantMap &configuration = QVariantMap() ) = 0;
+
+    /**
      * Adds a parameter \a definition to the algorithm. Ownership of the definition is transferred to the algorithm.
      * Returns true if parameter could be successfully added, or false if the parameter could not be added (e.g.
      * as a result of a duplicate name).
+     *
+     * This should usually be called from a subclass' initAlgorithm() implementation.
+     *
+     * \see initAlgorithm()
      * \see addOutput()
      */
     bool addParameter( QgsProcessingParameterDefinition *parameterDefinition SIP_TRANSFER );
@@ -350,7 +383,11 @@ class CORE_EXPORT QgsProcessingAlgorithm
      * Adds an output \a definition to the algorithm. Ownership of the definition is transferred to the algorithm.
      * Returns true if the output could be successfully added, or false if the output could not be added (e.g.
      * as a result of a duplicate name).
+     *
+     * This should usually be called from a subclass' initAlgorithm() implementation.
+     *
      * \see addParameter()
+     * \see initAlgorithm()
      */
     bool addOutput( QgsProcessingOutputDefinition *outputDefinition SIP_TRANSFER );
 

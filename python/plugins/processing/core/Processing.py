@@ -130,7 +130,7 @@ class Processing(object):
         if isinstance(algOrName, QgsProcessingAlgorithm):
             alg = algOrName
         else:
-            alg = QgsApplication.processingRegistry().algorithmById(algOrName)
+            alg = QgsApplication.processingRegistry().createAlgorithmById(algOrName)
 
         if feedback is None:
             feedback = MessageBarProgress(alg.displayName() if alg else Processing.tr('Processing'))
