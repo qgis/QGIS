@@ -24,7 +24,9 @@
 #include "qgslayoutviewtooltemporarymousepan.h"
 #include "qgssettings.h"
 #include "qgsrectangle.h"
+#include "qgsapplication.h"
 #include <memory>
+#include <QDesktopWidget>
 
 #define MIN_VIEW_SCALE 0.05
 #define MAX_VIEW_SCALE 1000.0
@@ -93,6 +95,38 @@ void QgsLayoutView::scaleSafe( double scale )
   scale *= currentScale;
   scale = qBound( MIN_VIEW_SCALE, scale, MAX_VIEW_SCALE );
   setTransform( QTransform::fromScale( scale, scale ) );
+}
+
+void QgsLayoutView::setZoomLevel( double level )
+{
+  double dpi = QgsApplication::desktop()->logicalDpiX();
+  //monitor dpi is not always correct - so make sure the value is sane
+  if ( ( dpi < 60 ) || ( dpi > 1200 ) )
+    dpi = 72;
+
+  //desired pixel width for 1mm on screen
+  double scale = qBound( MIN_VIEW_SCALE, level * dpi / 25.4, MAX_VIEW_SCALE );
+  setTransform( QTransform::fromScale( scale, scale ) );
+}
+
+void QgsLayoutView::zoomFull()
+{
+  fitInView( scene()->sceneRect(), Qt::KeepAspectRatio );
+}
+
+void QgsLayoutView::zoomIn()
+{
+  scaleSafe( 2 );
+}
+
+void QgsLayoutView::zoomOut()
+{
+  scaleSafe( 0.5 );
+}
+
+void QgsLayoutView::zoomActual()
+{
+  setZoomLevel( 1.0 );
 }
 
 void QgsLayoutView::mousePressEvent( QMouseEvent *event )

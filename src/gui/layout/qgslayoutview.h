@@ -94,6 +94,45 @@ class GUI_EXPORT QgsLayoutView: public QGraphicsView
      */
     void scaleSafe( double scale );
 
+    /**
+     * Sets the zoom \a level for the view, where a zoom level of 1.0 corresponds to 100%.
+     */
+    void setZoomLevel( double level );
+
+  public slots:
+
+    /**
+     * Zooms the view to the full extent of the layout.
+     * \see zoomIn()
+     * \see zoomOut()
+     * \see zoomActual()
+     */
+    void zoomFull();
+
+    /**
+     * Zooms in to the view by a preset amount.
+     * \see zoomFull()
+     * \see zoomOut()
+     * \see zoomActual()
+     */
+    void zoomIn();
+
+    /**
+     * Zooms out of the view by a preset amount.
+     * \see zoomFull()
+     * \see zoomIn()
+     * \see zoomActual()
+     */
+    void zoomOut();
+
+    /**
+     * Zooms to the actual size of the layout.
+     * \see zoomFull()
+     * \see zoomIn()
+     * \see zoomOut()
+     */
+    void zoomActual();
+
   signals:
 
     /**

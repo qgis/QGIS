@@ -73,6 +73,45 @@ class QgsLayoutView: QGraphicsView
  of the scale applied. The ``scale`` parameter specifies the zoom factor to scale the view by.
 %End
 
+    void setZoomLevel( double level );
+%Docstring
+ Sets the zoom ``level`` for the view, where a zoom level of 1.0 corresponds to 100%.
+%End
+
+  public slots:
+
+    void zoomFull();
+%Docstring
+ Zooms the view to the full extent of the layout.
+.. seealso:: zoomIn()
+.. seealso:: zoomOut()
+.. seealso:: zoomActual()
+%End
+
+    void zoomIn();
+%Docstring
+ Zooms in to the view by a preset amount.
+.. seealso:: zoomFull()
+.. seealso:: zoomOut()
+.. seealso:: zoomActual()
+%End
+
+    void zoomOut();
+%Docstring
+ Zooms out of the view by a preset amount.
+.. seealso:: zoomFull()
+.. seealso:: zoomIn()
+.. seealso:: zoomActual()
+%End
+
+    void zoomActual();
+%Docstring
+ Zooms to the actual size of the layout.
+.. seealso:: zoomFull()
+.. seealso:: zoomIn()
+.. seealso:: zoomOut()
+%End
+
   signals:
 
     void layoutSet( QgsLayout *layout );

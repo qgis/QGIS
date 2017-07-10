@@ -28,6 +28,7 @@
 #include "qgslayoutviewtoolselect.h"
 #include "qgsgui.h"
 #include "qgslayoutitemguiregistry.h"
+#include <QShortcut>
 
 QgsAppLayoutDesignerInterface::QgsAppLayoutDesignerInterface( QgsLayoutDesignerDialog *dialog )
   : QgsLayoutDesignerInterface( dialog )
@@ -111,6 +112,15 @@ QgsLayoutDesignerDialog::QgsLayoutDesignerDialog( QWidget *parent, Qt::WindowFla
   mSelectTool->setAction( mActionSelectMoveItem );
   mToolsActionGroup->addAction( mActionSelectMoveItem );
   connect( mActionSelectMoveItem, &QAction::triggered, mSelectTool, [ = ] { mView->setTool( mSelectTool ); } );
+
+  //Ctrl+= should also trigger zoom in
+  QShortcut *ctrlEquals = new QShortcut( QKeySequence( QStringLiteral( "Ctrl+=" ) ), this );
+  connect( ctrlEquals, &QShortcut::activated, mActionZoomIn, &QAction::trigger );
+
+  connect( mActionZoomIn, &QAction::triggered, mView, &QgsLayoutView::zoomIn );
+  connect( mActionZoomOut, &QAction::triggered, mView, &QgsLayoutView::zoomOut );
+  connect( mActionZoomAll, &QAction::triggered, mView, &QgsLayoutView::zoomFull );
+  connect( mActionZoomActual, &QAction::triggered, mView, &QgsLayoutView::zoomActual );
 
   mView->setTool( mSelectTool );
   mView->setFocus();
