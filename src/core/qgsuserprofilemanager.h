@@ -2,6 +2,7 @@
 #define QGSUSERprofileMANAGER_H
 
 #include <QSettings>
+#include <QFileSystemWatcher>
 
 
 #include "qgis_core.h"
@@ -25,6 +26,7 @@ class CORE_EXPORT QgsUserProfileManager : public QObject
     Q_OBJECT
 
   public:
+    QgsUserProfileManager();
 
     /**
      * Return the profile from the given root profile location. If no name is given it returns a profile called "default".
@@ -133,7 +135,16 @@ class CORE_EXPORT QgsUserProfileManager : public QObject
      */
     void loadUserProfile( const QgsUserProfile *profile );
 
+  signals:
+
+    /**
+     * Emitted when the list of profiles is changed.
+     */
+    void profilesChanged( );
+
   private:
+    QFileSystemWatcher *mWatcher = nullptr;
+
     QString mRootProfilePath;
 
     QgsUserProfile *mUserProfile = nullptr;

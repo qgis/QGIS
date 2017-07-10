@@ -10,6 +10,15 @@
 #include <QStandardPaths>
 
 
+QgsUserProfileManager::QgsUserProfileManager()
+  : mWatcher( new QFileSystemWatcher() )
+{
+  connect( mWatcher, &QFileSystemWatcher::directoryChanged, this, [this]
+  {
+    emit profilesChanged();
+  } );
+}
+
 QPair<QgsUserProfile *, QString> QgsUserProfileManager::getProfile( const QString &rootLocation, bool roamingConfig, const QString &defaultProfile, bool createNew )
 {
   QgsUserProfileManager manager;
@@ -41,6 +50,16 @@ QPair<QgsUserProfile *, QString> QgsUserProfileManager::getProfile( const QStrin
 void QgsUserProfileManager::setRootLocation( QString rootProfileLocation )
 {
   mRootProfilePath = rootProfileLocation;
+
+  if ( !mWatcher->directories().isEmpty() )
+  {
+    mWatcher->removePaths( mWatcher->directories() );
+  }
+
+  if ( QDir( mRootProfilePath ).exists() )
+  {
+    mWatcher->addPath( mRootProfilePath );
+  }
   mSettings = new QSettings( settingsFile(), QSettings::IniFormat );
 }
 
@@ -108,6 +127,11 @@ QgsError QgsUserProfileManager::createUserProfile( const QString &name )
     masterFile.copy( qgisPrivateDbFile.fileName() );
   }
 
+  if ( error.isEmpty() )
+  {
+    emit profilesChanged();
+  }
+
   return error;
 }
 
@@ -121,6 +145,10 @@ QgsError QgsUserProfileManager::deleteProfile( const QString name )
   if ( !deleted )
   {
     error.append( ( tr( "Unable to fully delete user profile folder" ) ) );
+  }
+  else
+  {
+    emit profilesChanged();
   }
   return error;
 }
