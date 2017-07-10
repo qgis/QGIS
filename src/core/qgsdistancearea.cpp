@@ -897,6 +897,14 @@ double QgsDistanceArea::computePolygonArea( const QList<QgsPoint>& points ) cons
   double Qbar1, Qbar2;
   double area;
 
+  /* GRASS comment: threshold for dy, should be between 1e-4 and 1e-7
+   * QGIS note: while the grass comment states that thres should be between 1e-4->1e-7,
+   * a value of 1e-7 caused TestQgsDistanceArea::regression14675() to regress
+   * The maximum threshold possible which permits regression14675() to pass
+   * was found to be ~0.7e-7.
+  */
+  const double thresh = 0.7e-7;
+
   QgsDebugMsgLevel( "Ellipsoid: " + mEllipsoid, 3 );
   if (( ! mEllipsoidalMode ) || ( mEllipsoid == GEO_NONE ) )
   {
@@ -927,11 +935,28 @@ double QgsDistanceArea::computePolygonArea( const QList<QgsPoint>& points ) cons
         x1 += m_TwoPI;
 
     dx = x2 - x1;
-    area += dx * ( m_Qp - getQ( y2 ) );
-
     dy = y2 - y1;
-    if ( !qgsDoubleNear( dy, 0.0 ) )
-      area += dx * getQ( y2 ) - ( dx / dy ) * ( Qbar2 - Qbar1 );
+    if ( qAbs( dy ) > thresh )
+    {
+      /* account for different latitudes y1, y2 */
+      area += dx * ( m_Qp - ( Qbar2 - Qbar1 ) / dy );
+    }
+    else
+    {
+      /* latitudes y1, y2 are (nearly) identical */
+
+      /* if y2 becomes similar to y1, i.e. y2 -> y1
+       * Qbar2 - Qbar1 -> 0 and dy -> 0
+       * (Qbar2 - Qbar1) / dy -> ?
+       * (Qbar2 - Qbar1) / dy should approach Q((y1 + y2) / 2)
+       * Metz 2017
+       */
+      area += dx * ( m_Qp - getQ( y2 ) );
+
+      /* original:
+       * area += dx * getQ( y2 ) - ( dx / dy ) * ( Qbar2 - Qbar1 );
+       */
+    }
   }
   if (( area *= m_AE ) < 0.0 )
     area = -area;
