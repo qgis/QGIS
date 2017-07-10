@@ -84,7 +84,7 @@ QString QgsCentroidAlgorithm::shortHelpString() const
                       "The attributes associated to each point in the output layer are the same ones associated to the original features." );
 }
 
-QgsCentroidAlgorithm *QgsCentroidAlgorithm::create() const
+QgsCentroidAlgorithm *QgsCentroidAlgorithm::createInstance() const
 {
   return new QgsCentroidAlgorithm();
 }
@@ -164,7 +164,7 @@ QString QgsBufferAlgorithm::shortHelpString() const
                       "The mitre limit parameter is only applicable for mitre join styles, and controls the maximum distance from the offset curve to use when creating a mitred join." );
 }
 
-QgsBufferAlgorithm *QgsBufferAlgorithm::create() const
+QgsBufferAlgorithm *QgsBufferAlgorithm::createInstance() const
 {
   return new QgsBufferAlgorithm();
 }
@@ -273,7 +273,7 @@ QString QgsDissolveAlgorithm::shortHelpString() const
                       "In case the input is a polygon layer, common boundaries of adjacent polygons being dissolved will get erased." );
 }
 
-QgsDissolveAlgorithm *QgsDissolveAlgorithm::create() const
+QgsDissolveAlgorithm *QgsDissolveAlgorithm::createInstance() const
 {
   return new QgsDissolveAlgorithm();
 }
@@ -430,7 +430,7 @@ QString QgsClipAlgorithm::shortHelpString() const
                       "be manually updated." );
 }
 
-QgsClipAlgorithm *QgsClipAlgorithm::create() const
+QgsClipAlgorithm *QgsClipAlgorithm::createInstance() const
 {
   return new QgsClipAlgorithm();
 }
@@ -583,7 +583,7 @@ QString QgsTransformAlgorithm::shortHelpString() const
                       "Attributes are not modified by this algorithm." );
 }
 
-QgsTransformAlgorithm *QgsTransformAlgorithm::create() const
+QgsTransformAlgorithm *QgsTransformAlgorithm::createInstance() const
 {
   return new QgsTransformAlgorithm();
 }
@@ -652,7 +652,7 @@ QString QgsSubdivideAlgorithm::shortHelpString() const
                       "Curved geometries will be segmentized before subdivision." );
 }
 
-QgsSubdivideAlgorithm *QgsSubdivideAlgorithm::create() const
+QgsSubdivideAlgorithm *QgsSubdivideAlgorithm::createInstance() const
 {
   return new QgsSubdivideAlgorithm();
 }
@@ -723,7 +723,7 @@ QString QgsMultipartToSinglepartAlgorithm::shortHelpString() const
                       "contain, and the same attributes are used for each of them." );
 }
 
-QgsMultipartToSinglepartAlgorithm *QgsMultipartToSinglepartAlgorithm::create() const
+QgsMultipartToSinglepartAlgorithm *QgsMultipartToSinglepartAlgorithm::createInstance() const
 {
   return new QgsMultipartToSinglepartAlgorithm();
 }
@@ -810,7 +810,7 @@ QString QgsExtractByExpressionAlgorithm::shortHelpString() const
                       "For more information about expressions see the <a href =\"{qgisdocs}/user_manual/working_with_vector/expression.html\">user manual</a>" );
 }
 
-QgsExtractByExpressionAlgorithm *QgsExtractByExpressionAlgorithm::create() const
+QgsExtractByExpressionAlgorithm *QgsExtractByExpressionAlgorithm::createInstance() const
 {
   return new QgsExtractByExpressionAlgorithm();
 }
@@ -941,7 +941,7 @@ QString QgsExtractByAttributeAlgorithm::shortHelpString() const
                       "of an attribute from the input layer." );
 }
 
-QgsExtractByAttributeAlgorithm *QgsExtractByAttributeAlgorithm::create() const
+QgsExtractByAttributeAlgorithm *QgsExtractByAttributeAlgorithm::createInstance() const
 {
   return new QgsExtractByAttributeAlgorithm();
 }

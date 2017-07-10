@@ -48,5 +48,5 @@ class QgisAlgorithm(QgsProcessingAlgorithm):
             context = self.__class__.__name__
         return string, QCoreApplication.translate(context, string)
 
-    def create(self):
+    def createInstance(self):
         return type(self)()

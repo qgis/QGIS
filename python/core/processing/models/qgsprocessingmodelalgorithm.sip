@@ -46,7 +46,7 @@ class QgsProcessingModelAlgorithm : QgsProcessingAlgorithm
 
     virtual QString asPythonCommand( const QVariantMap &parameters, QgsProcessingContext &context ) const;
 
-    virtual QgsProcessingModelAlgorithm *create() const /Factory/;
+    virtual QgsProcessingModelAlgorithm *createInstance() const /Factory/;
 
 
     void setName( const QString &name );

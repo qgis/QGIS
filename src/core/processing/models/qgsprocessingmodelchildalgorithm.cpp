@@ -208,10 +208,6 @@ void QgsProcessingModelChildAlgorithm::setAlgorithmId( const QString &algorithmI
 {
   mAlgorithmId = algorithmId;
   mAlgorithm.reset( QgsApplication::processingRegistry()->createAlgorithmById( mAlgorithmId ) );
-  if ( mAlgorithm )
-  {
-    mAlgorithm->init( QVariantMap() );
-  }
 }
 
 ///@endcond
