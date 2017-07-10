@@ -66,6 +66,8 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
 
     //! Prepares a painter by setting rendering flags
     void preparePainter( QPainter *painter );
+    bool shouldDrawAntialiased() const;
+    bool shouldDrawDebugRect() const;
 
     friend class TestQgsLayoutItem;
 };

@@ -36,7 +36,14 @@ void QgsLayoutItem::paint( QPainter *painter, const QStyleOptionGraphicsItem *it
   painter->save();
   preparePainter( painter );
 
-  draw( painter, itemStyle, pWidget );
+  if ( shouldDrawDebugRect() )
+  {
+    drawDebugRect( painter );
+  }
+  else
+  {
+    draw( painter, itemStyle, pWidget );
+  }
 
   painter->restore();
 }
@@ -62,4 +69,20 @@ void QgsLayoutItem::preparePainter( QPainter *painter )
   {
     return;
   }
+
+  painter->setRenderHint( QPainter::Antialiasing, shouldDrawAntialiased() );
+}
+
+bool QgsLayoutItem::shouldDrawAntialiased() const
+{
+  if ( !mLayout )
+  {
+    return true;
+  }
+  return mLayout->context().testFlag( QgsLayoutContext::FlagAntialiasing ) && !mLayout->context().testFlag( QgsLayoutContext::FlagDebug );
+}
+
+bool QgsLayoutItem::shouldDrawDebugRect() const
+{
+  return mLayout && mLayout->context().testFlag( QgsLayoutContext::FlagDebug );
 }
