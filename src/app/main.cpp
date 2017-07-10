@@ -792,9 +792,9 @@ int main( int argc, char *argv[] )
   QString profileFolder = profile->folder();
 
   QgsDebugMsg( "User profile details:" );
-  QgsDebugMsg( QString( "\\t - %1" ).arg( profile->name() ) );
-  QgsDebugMsg( QString( "\\t - %1" ).arg( profileFolder ) );
-  QgsDebugMsg( QString( "\\t - %1" ).arg( rootProfileFolder ) );
+  QgsDebugMsg( QString( "\t - %1" ).arg( profile->name() ) );
+  QgsDebugMsg( QString( "\t - %1" ).arg( profileFolder ) );
+  QgsDebugMsg( QString( "\t - %1" ).arg( rootProfileFolder ) );
 
   QgsApplication myApp( argc, argv, myUseGuiFlag, profileFolder );
 
