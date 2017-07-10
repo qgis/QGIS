@@ -88,6 +88,30 @@ class CORE_EXPORT QgsProcessingModelChildAlgorithm : public QgsProcessingModelCo
     void setAlgorithmId( const QString &algorithmId );
 
     /**
+     * Returns the child algorithm's configuration map.
+     *
+     * This map specifies configuration settings which are passed
+     * to the algorithm, allowing it to dynamically adjust its initialized parameters
+     * and outputs according to this configuration. This allows child algorithms in the model
+     * to adjust their behavior at run time according to some user configuration.
+     *
+     * \see setConfiguration()
+     */
+    QVariantMap configuration() const;
+
+    /**
+     * Sets the child algorithm's \a configuration map.
+     *
+     * This map specifies configuration settings which are passed
+     * to the algorithm, allowing it to dynamically adjust its initialized parameters
+     * and outputs according to this configuration. This allows child algorithms in the model
+     * to adjust their behavior at run time according to some user configuration.
+     *
+     * \see configuration()
+     */
+    void setConfiguration( const QVariantMap &configuration );
+
+    /**
      * Returns the underlying child algorithm, or a nullptr
      * if a matching algorithm is not available.
      * \see algorithmId()
@@ -236,6 +260,8 @@ class CORE_EXPORT QgsProcessingModelChildAlgorithm : public QgsProcessingModelCo
 
     QString mAlgorithmId;
     std::unique_ptr< QgsProcessingAlgorithm > mAlgorithm;
+
+    QVariantMap mConfiguration;
 
     //! A map of parameter sources. Keys are algorithm parameter names.
     QMap< QString, QgsProcessingModelChildParameterSources > mParams;

@@ -89,10 +89,17 @@ class QgsProcessingRegistry : QObject
  :rtype: QgsProcessingAlgorithm
 %End
 
-    QgsProcessingAlgorithm *createAlgorithmById( const QString &id ) const /Factory/;
+    QgsProcessingAlgorithm *createAlgorithmById( const QString &id, const QVariantMap &configuration = QVariantMap() ) const /Factory/;
 %Docstring
  Creates a new instance of an algorithm by its ID. If no matching algorithm is found, a None
- is returned. Callers take responsibility for deleting the returned object.`
+ is returned. Callers take responsibility for deleting the returned object.
+
+ The ``configuration`` argument allows passing of a map of configuration settings
+ to the algorithm, allowing it to dynamically adjust its initialized parameters
+ and outputs according to this configuration. This is generally used only for
+ algorithms in a model, allowing them to adjust their behavior at run time
+ according to some user configuration.
+
 .. seealso:: algorithms()
 .. seealso:: algorithmById()
  :rtype: QgsProcessingAlgorithm

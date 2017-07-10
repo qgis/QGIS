@@ -4284,6 +4284,11 @@ void TestQgsProcessing::modelerAlgorithm()
   child.setAlgorithmId( QStringLiteral( "native:centroids" ) );
   QVERIFY( child.algorithm() );
   QCOMPARE( child.algorithm()->id(), QStringLiteral( "native:centroids" ) );
+  QVariantMap myConfig;
+  myConfig.insert( QStringLiteral( "some_key" ), 11 );
+  child.setConfiguration( myConfig );
+  QCOMPARE( child.configuration(), myConfig );
+
   child.setDescription( QStringLiteral( "desc" ) );
   QCOMPARE( child.description(), QStringLiteral( "desc" ) );
   QVERIFY( child.isActive() );
@@ -4593,6 +4598,7 @@ void TestQgsProcessing::modelerAlgorithm()
   QgsProcessingModelChildAlgorithm alg5c1;
   alg5c1.setChildId( "cx1" );
   alg5c1.setAlgorithmId( "buffer" );
+  alg5c1.setConfiguration( myConfig );
   alg5c1.addParameterSources( "x", QgsProcessingModelChildParameterSources() << QgsProcessingModelChildParameterSource::fromModelParameter( "p1" ) );
   alg5c1.addParameterSources( "y", QgsProcessingModelChildParameterSources() << QgsProcessingModelChildParameterSource::fromChildOutput( "cx2", "out3" ) );
   alg5c1.addParameterSources( "z", QgsProcessingModelChildParameterSources() << QgsProcessingModelChildParameterSource::fromStaticValue( 5 ) );
@@ -4639,6 +4645,7 @@ void TestQgsProcessing::modelerAlgorithm()
   QgsProcessingModelChildAlgorithm alg6c1 = alg6.childAlgorithm( "cx1" );
   QCOMPARE( alg6c1.childId(), QStringLiteral( "cx1" ) );
   QCOMPARE( alg6c1.algorithmId(), QStringLiteral( "buffer" ) );
+  QCOMPARE( alg6c1.configuration(), myConfig );
   QVERIFY( alg6c1.isActive() );
   QVERIFY( alg6c1.outputsCollapsed() );
   QVERIFY( alg6c1.parametersCollapsed() );

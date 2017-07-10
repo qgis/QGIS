@@ -72,6 +72,31 @@ class QgsProcessingModelChildAlgorithm : QgsProcessingModelComponent
 .. seealso:: algorithmId()
 %End
 
+    QVariantMap configuration() const;
+%Docstring
+ Returns the child algorithm's configuration map.
+
+ This map specifies configuration settings which are passed
+ to the algorithm, allowing it to dynamically adjust its initialized parameters
+ and outputs according to this configuration. This allows child algorithms in the model
+ to adjust their behavior at run time according to some user configuration.
+
+.. seealso:: setConfiguration()
+ :rtype: QVariantMap
+%End
+
+    void setConfiguration( const QVariantMap &configuration );
+%Docstring
+ Sets the child algorithm's ``configuration`` map.
+
+ This map specifies configuration settings which are passed
+ to the algorithm, allowing it to dynamically adjust its initialized parameters
+ and outputs according to this configuration. This allows child algorithms in the model
+ to adjust their behavior at run time according to some user configuration.
+
+.. seealso:: configuration()
+%End
+
     const QgsProcessingAlgorithm *algorithm() const;
 %Docstring
  Returns the underlying child algorithm, or a None
