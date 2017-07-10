@@ -139,6 +139,18 @@ class GUI_EXPORT QgsEditorWidgetWrapper : public QgsWidgetWrapper
     void updateConstraint( const QgsFeature &featureContext, QgsFieldConstraints::ConstraintOrigin constraintOrigin = QgsFieldConstraints::ConstraintOriginNotSet );
 
     /**
+     * Update constraint on a feature coming from a specific layer.
+     * \param layer The vector layer where the feature is defined
+     * \param index The index of the field to check
+     * \param feature The feature to use to evaluate the constraint
+     * \param constraintOrigin Optional origin for constraints to check. This
+     * can be used to limit the constraints tested to only provider or layer
+     * based constraints.
+     * \since QGIS 3.0
+     */
+    void updateConstraint( const QgsVectorLayer *layer, int index, const QgsFeature &feature, QgsFieldConstraints::ConstraintOrigin constraintOrigin = QgsFieldConstraints::ConstraintOriginNotSet );
+
+    /**
      * Get the current constraint status.
      * \returns true if the constraint is valid or if there's no constraint,
      * false otherwise

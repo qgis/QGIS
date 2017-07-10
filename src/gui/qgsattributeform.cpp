@@ -720,17 +720,15 @@ void QgsAttributeForm::updateConstraints( QgsEditorWidgetWrapper *eww )
     // to test, but they are unlikely to have any control over provider-side constraints
     // 2. the provider has already accepted the value, so presumably it doesn't violate the constraint
     // and there's no point rechecking!
-    QgsFieldConstraints::ConstraintOrigin constraintOrigin = mLayer->isEditable() ? QgsFieldConstraints::ConstraintOriginNotSet
-        : QgsFieldConstraints::ConstraintOriginLayer;
 
     // update eww constraint
-    eww->updateConstraint( ft, constraintOrigin );
+    updateConstraint( ft, eww );
 
     // update eww dependencies constraint
     QList<QgsEditorWidgetWrapper *> deps = constraintDependencies( eww );
 
     Q_FOREACH ( QgsEditorWidgetWrapper *depsEww, deps )
-      depsEww->updateConstraint( ft, constraintOrigin );
+      updateConstraint( ft, depsEww );
 
     // sync OK button status
     synchronizeEnabledState();
@@ -743,6 +741,26 @@ void QgsAttributeForm::updateConstraints( QgsEditorWidgetWrapper *eww )
       info->apply( &mExpressionContext );
     }
   }
+}
+
+void QgsAttributeForm::updateConstraint( const QgsFeature &ft, QgsEditorWidgetWrapper *eww )
+{
+  QgsFieldConstraints::ConstraintOrigin constraintOrigin = mLayer->isEditable() ? QgsFieldConstraints::ConstraintOriginNotSet : QgsFieldConstraints::ConstraintOriginLayer;
+
+  if ( eww->layer()->fields().fieldOrigin( QgsFields::OriginJoin ) )
+  {
+    int srcFieldIdx;
+    const QgsVectorLayerJoinInfo *info = eww->layer()->joinBuffer()->joinForFieldIndex( eww->fieldIdx(), eww->layer()->fields(), srcFieldIdx );
+
+    if ( info && info->joinLayer() && mJoinedFeatures.contains( info ) && info->isDynamicFormEnabled() )
+    {
+      eww->updateConstraint( info->joinLayer(), srcFieldIdx, mJoinedFeatures[info], constraintOrigin );
+      return;
+    }
+  }
+
+  // default constraint update
+  eww->updateConstraint( ft, constraintOrigin );
 }
 
 bool QgsAttributeForm::currentFormFeature( QgsFeature &feature )
@@ -765,7 +783,7 @@ bool QgsAttributeForm::currentFormFeature( QgsFeature &feature )
       QVariant srcVar = eww->value();
       // need to check dstVar.isNull() != srcVar.isNull()
       // otherwise if dstVar=NULL and scrVar=0, then dstVar = srcVar
-      if ( ( dstVar != srcVar || dstVar.isNull() != srcVar.isNull() ) && srcVar.isValid() && !mLayer->editFormConfig().readOnly( eww->fieldIdx() ) )
+      if ( ( dstVar != srcVar || dstVar.isNull() != srcVar.isNull() ) && srcVar.isValid() )
         dst[eww->fieldIdx()] = srcVar;
     }
     else
@@ -1953,6 +1971,9 @@ void QgsAttributeForm::updateJoinedFields( const QgsEditorWidgetWrapper &eww )
       continue;
 
     QgsFeature joinFeature = mLayer->joinBuffer()->joinedFeatureOf( info, formFeature );
+
+    if ( joinFeature.isValid() )
+      mJoinedFeatures[info] = joinFeature;
 
     QStringList *subsetFields = info->joinFieldNamesSubset();
     if ( subsetFields )
