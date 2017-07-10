@@ -70,7 +70,7 @@ class CORE_EXPORT QgsProcessingAlgorithm
     /**
      * Creates a copy of the algorithm, ready for execution.
      */
-    virtual QgsProcessingAlgorithm *create() const = 0 SIP_FACTORY;
+    QgsProcessingAlgorithm *create() const SIP_FACTORY;
 
     /**
      * Returns the algorithm name, used for identifying the algorithm. This string
@@ -316,6 +316,13 @@ class CORE_EXPORT QgsProcessingAlgorithm
     void setProvider( QgsProcessingProvider *provider );
 
   protected:
+
+    /**
+     * Creates a new instance of the algorithm class.
+     *
+     * This method should return a 'pristine' instance of the algorithm class.
+     */
+    virtual QgsProcessingAlgorithm *createInstance() const = 0 SIP_FACTORY;
 
     /**
      * Adds a parameter \a definition to the algorithm. Ownership of the definition is transferred to the algorithm.

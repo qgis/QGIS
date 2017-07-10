@@ -43,8 +43,7 @@ class QgsProcessingAlgorithm
     virtual ~QgsProcessingAlgorithm();
 
 
-
-    virtual QgsProcessingAlgorithm *create() const = 0 /Factory/;
+    QgsProcessingAlgorithm *create() const /Factory/;
 %Docstring
  Creates a copy of the algorithm, ready for execution.
  :rtype: QgsProcessingAlgorithm
@@ -331,6 +330,14 @@ class QgsProcessingAlgorithm
 %End
 
   protected:
+
+    virtual QgsProcessingAlgorithm *createInstance() const = 0 /Factory/;
+%Docstring
+ Creates a new instance of the algorithm class.
+
+ This method should return a 'pristine' instance of the algorithm class.
+ :rtype: QgsProcessingAlgorithm
+%End
 
     bool addParameter( QgsProcessingParameterDefinition *parameterDefinition /Transfer/ );
 %Docstring

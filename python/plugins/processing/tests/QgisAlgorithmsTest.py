@@ -48,7 +48,7 @@ class TestAlg(QgsProcessingAlgorithm):
     def displayName(self):
         return 'testalg'
 
-    def create(self):
+    def createInstance(self):
         return TestAlg()
 
     def processAlgorithm(self, parameters, context, feedback):

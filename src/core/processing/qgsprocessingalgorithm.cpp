@@ -33,6 +33,13 @@ QgsProcessingAlgorithm::~QgsProcessingAlgorithm()
   qDeleteAll( mOutputs );
 }
 
+QgsProcessingAlgorithm *QgsProcessingAlgorithm::create() const
+{
+  std::unique_ptr< QgsProcessingAlgorithm > creation( createInstance() );
+  creation->setProvider( provider() );
+  return creation.release();
+}
+
 QString QgsProcessingAlgorithm::id() const
 {
   if ( mProvider )

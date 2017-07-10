@@ -52,7 +52,7 @@ class CORE_EXPORT QgsProcessingModelAlgorithm : public QgsProcessingAlgorithm
 
     bool canExecute( QString *errorMessage SIP_OUT = nullptr ) const override;
     QString asPythonCommand( const QVariantMap &parameters, QgsProcessingContext &context ) const override;
-    QgsProcessingModelAlgorithm *create() const override SIP_FACTORY;
+    QgsProcessingAlgorithm *createInstance() const override SIP_FACTORY;
 
     /**
      * Sets the model \a name.

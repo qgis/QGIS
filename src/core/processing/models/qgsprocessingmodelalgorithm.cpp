@@ -1100,7 +1100,7 @@ QString QgsProcessingModelAlgorithm::asPythonCommand( const QVariantMap &paramet
   return QgsProcessingAlgorithm::asPythonCommand( parameters, context );
 }
 
-QgsProcessingModelAlgorithm *QgsProcessingModelAlgorithm::create() const
+QgsProcessingAlgorithm *QgsProcessingModelAlgorithm::createInstance() const
 {
   QgsProcessingModelAlgorithm *alg = new QgsProcessingModelAlgorithm();
   alg->loadVariant( toVariant() );

@@ -45,7 +45,7 @@ class DummyAlgorithm : public QgsProcessingAlgorithm
     QVariantMap processAlgorithm( const QVariantMap &, QgsProcessingContext &, QgsProcessingFeedback * ) override { return QVariantMap(); }
 
     virtual Flags flags() const override { return mFlags; }
-    DummyAlgorithm *create() const override { return new DummyAlgorithm( name() ); }
+    DummyAlgorithm *createInstance() const override { return new DummyAlgorithm( name() ); }
 
     QString mName;
 
@@ -334,6 +334,7 @@ class TestQgsProcessing: public QObject
     void modelAcceptableValues();
     void tempUtils();
     void convertCompatible();
+    void create();
 
   private:
 
@@ -5124,6 +5125,17 @@ void TestQgsProcessing::convertCompatible()
   QVERIFY( out != layer->source() );
   QVERIFY( out.endsWith( ".shp" ) );
   QVERIFY( out.startsWith( QgsProcessingUtils::tempFolder() ) );
+}
+
+void TestQgsProcessing::create()
+{
+  DummyAlgorithm alg( QStringLiteral( "test" ) );
+  DummyProvider p( QStringLiteral( "test_provider" ) );
+  alg.setProvider( &p );
+
+  std::unique_ptr< QgsProcessingAlgorithm > newInstance( alg.create() );
+  QVERIFY( newInstance.get() );
+  QCOMPARE( newInstance->provider(), &p );
 }
 
 QGSTEST_MAIN( TestQgsProcessing )
