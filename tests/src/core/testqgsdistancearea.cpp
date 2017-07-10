@@ -45,6 +45,7 @@ class TestQgsDistanceArea: public QObject
     void measureAreaAndUnits();
     void emptyPolygon();
     void regression14675();
+    void regression16820();
 
 };
 
@@ -368,6 +369,16 @@ void TestQgsDistanceArea::regression14675()
   QgsGeometry geom( QgsGeometryFactory::geomFromWkt( "Polygon ((917593.5791854317067191 6833700.00807378999888897, 917596.43389983859378844 6833700.67099479306489229, 917599.53056440979707986 6833700.78673478215932846, 917593.5791854317067191 6833700.00807378999888897))" ) );
   //lots of tolerance here - the formulas get quite unstable with small areas due to division by very small floats
   QGSCOMPARENEAR( calc.measureArea( &geom ), 0.83301, 0.02 );
+}
+
+void TestQgsDistanceArea::regression16820()
+{
+  QgsDistanceArea calc;
+  calc.setEllipsoid( "WGS84" );
+  calc.setSourceCrs( QgsCoordinateReferenceSystem( "EPSG:32634" ) );
+  QgsGeometry geom( QgsGeometryFactory::geomFromWkt( "Polygon ((110250.54038314701756462 5084495.57398066483438015, 110243.46975068224128336 5084507.17200060561299324, 110251.23908144699817058 5084506.68309532757848501, 110251.2394439501222223 5084506.68307251576334238, 110250.54048078990308568 5084495.57553235255181789, 110250.54038314701756462 5084495.57398066483438015))" ) );
+  //lots of tolerance here - the formulas get quite unstable with small areas due to division by very small floats
+  QGSCOMPARENEAR( calc.measureArea( &geom ), 43.183369, 0.2 );
 }
 
 QTEST_MAIN( TestQgsDistanceArea )
