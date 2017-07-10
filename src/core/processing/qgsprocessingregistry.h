@@ -102,11 +102,18 @@ class CORE_EXPORT QgsProcessingRegistry : public QObject
 
     /**
      * Creates a new instance of an algorithm by its ID. If no matching algorithm is found, a nullptr
-     * is returned. Callers take responsibility for deleting the returned object.`
+     * is returned. Callers take responsibility for deleting the returned object.
+     *
+     * The \a configuration argument allows passing of a map of configuration settings
+     * to the algorithm, allowing it to dynamically adjust its initialized parameters
+     * and outputs according to this configuration. This is generally used only for
+     * algorithms in a model, allowing them to adjust their behavior at run time
+     * according to some user configuration.
+     *
      * \see algorithms()
      * \see algorithmById()
      */
-    QgsProcessingAlgorithm *createAlgorithmById( const QString &id ) const SIP_FACTORY;
+    QgsProcessingAlgorithm *createAlgorithmById( const QString &id, const QVariantMap &configuration = QVariantMap() ) const SIP_FACTORY;
 
   signals:
 
