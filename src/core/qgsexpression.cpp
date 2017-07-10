@@ -5324,6 +5324,18 @@ QVariant QgsExpression::StaticFunction::func( const QVariantList &values, const 
   Q_NOWARN_DEPRECATED_POP
 }
 
+QString QgsExpression::createFieldEqualityExpression( const QString &fieldName, const QVariant &value )
+{
+  QString expr;
+
+  if ( value.isNull() )
+    expr = QString( "%1 IS NULL" ).arg( quotedColumnRef( fieldName ) );
+  else
+    expr = QString( "%1 = %2" ).arg( quotedColumnRef( fieldName ), quotedValue( value ) );
+
+  return expr;
+}
+
 const QgsExpression::Node* QgsExpression::rootNode() const
 {
   return d->mRootNode;
