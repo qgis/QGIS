@@ -25,6 +25,7 @@
 #include "qgsmessagelog.h"
 #include "qgssettings.h"
 #include "qgsexception.h"
+#include "qgswkbtypes.h"
 
 #include <QTextCodec>
 #include <QFile>
@@ -334,7 +335,15 @@ bool QgsOgrFeatureIterator::readFeature( OGRFeatureH fet, QgsFeature &feature ) 
 
     if ( geom )
     {
-      feature.setGeometry( QgsOgrUtils::ogrGeometryToQgsGeometry( geom ) );
+      QgsGeometry g = QgsOgrUtils::ogrGeometryToQgsGeometry( geom );
+
+      // Insure that multipart datasets return multipart geometry
+      if ( QgsWkbTypes::isMultiType( mSource->mWkbType ) && !g.isMultipart() )
+      {
+        g.convertToMultiType();
+      }
+
+      feature.setGeometry( g );
     }
     else
       feature.clearGeometry();
@@ -390,6 +399,7 @@ QgsOgrFeatureSource::QgsOgrFeatureSource( const QgsOgrProvider *p )
   , mOgrGeometryTypeFilter( QgsOgrProvider::ogrWkbSingleFlatten( p->mOgrGeometryTypeFilter ) )
   , mDriverName( p->ogrDriverName )
   , mCrs( p->crs() )
+  , mWkbType( p->wkbType() )
 {
   for ( int i = ( p->mFirstFieldIsFid ) ? 1 : 0; i < mFields.size(); i++ )
     mFieldsWithoutFid.append( mFields.at( i ) );
