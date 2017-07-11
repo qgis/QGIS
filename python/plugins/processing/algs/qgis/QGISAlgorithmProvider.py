@@ -54,6 +54,7 @@ from .DeleteColumn import DeleteColumn
 from .DeleteHoles import DeleteHoles
 from .DensifyGeometries import DensifyGeometries
 from .DensifyGeometriesInterval import DensifyGeometriesInterval
+from .Difference import Difference
 from .DropGeometry import DropGeometry
 from .ExtentFromLayer import ExtentFromLayer
 from .FixGeometry import FixGeometry
@@ -96,7 +97,6 @@ from .ZonalStatistics import ZonalStatistics
 # from .ConvexHull import ConvexHull
 # from .FixedDistanceBuffer import FixedDistanceBuffer
 # from .VariableDistanceBuffer import VariableDistanceBuffer
-# from .Difference import Difference
 # from .Intersection import Intersection
 # from .RandomSelection import RandomSelection
 # from .RandomSelectionWithinSubsets import RandomSelectionWithinSubsets
@@ -193,7 +193,7 @@ class QGISAlgorithmProvider(QgsProcessingProvider):
         #         , SinglePartsToMultiparts(),
         #         PolygonsToLines(), LinesToPolygons(), ExtractNodes(),
         #         ConvexHull(), FixedDistanceBuffer(),
-        #         VariableDistanceBuffer(), Difference(),
+        #         VariableDistanceBuffer(),
         #         Intersection(), Union(),
         #         RandomSelection(), RandomSelectionWithinSubsets(),
         #         SelectByLocation(),
@@ -253,6 +253,7 @@ class QGISAlgorithmProvider(QgsProcessingProvider):
                 DeleteHoles(),
                 DensifyGeometries(),
                 DensifyGeometriesInterval(),
+                Difference(),
                 DropGeometry(),
                 ExtentFromLayer(),
                 FixGeometry(),
