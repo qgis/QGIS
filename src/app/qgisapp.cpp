@@ -5273,7 +5273,7 @@ void QgisApp::enableProjectMacros()
   */
 bool QgisApp::addProject( const QString &projectFile )
 {
-  bool zip = ( QFileInfo( projectFile ).suffix() == "qgz" ) ? true : false;
+  bool zip = ( QFileInfo( projectFile ).suffix() == "qgz" );
 
   // close the previous opened project if any
   closeProject();
