@@ -226,7 +226,7 @@ QString QgsProcessingAlgorithm::asPythonCommand( const QVariantMap &parameters, 
   return s;
 }
 
-bool QgsProcessingAlgorithm::addParameter( QgsProcessingParameterDefinition *definition )
+bool QgsProcessingAlgorithm::addParameter( QgsProcessingParameterDefinition *definition, bool createOutput )
 {
   if ( !definition )
     return false;
@@ -242,7 +242,11 @@ bool QgsProcessingAlgorithm::addParameter( QgsProcessingParameterDefinition *def
   }
 
   mParameters << definition;
-  return true;
+
+  if ( createOutput )
+    return createAutoOutputForParameter( definition );
+  else
+    return true;
 }
 
 void QgsProcessingAlgorithm::removeParameter( const QString &name )
@@ -579,6 +583,28 @@ QList<double> QgsProcessingAlgorithm::parameterAsRange( const QVariantMap &param
 QStringList QgsProcessingAlgorithm::parameterAsFields( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context ) const
 {
   return QgsProcessingParameters::parameterAsFields( parameterDefinition( name ), parameters, context );
+}
+
+bool QgsProcessingAlgorithm::createAutoOutputForParameter( QgsProcessingParameterDefinition *parameter )
+{
+  if ( !parameter->isDestination() )
+    return true; // nothing created, but nothing went wrong - so return true
+
+  QgsProcessingDestinationParameter *dest = static_cast< QgsProcessingDestinationParameter * >( parameter );
+  QgsProcessingOutputDefinition *output( dest->toOutputDefinition() );
+  if ( !output )
+    return true; // nothing created - but nothing went wrong - so return true
+
+  if ( !addOutput( output ) )
+  {
+    // couldn't add output - probably a duplicate name
+    delete output;
+    return false;
+  }
+  else
+  {
+    return true;
+  }
 }
 
 
