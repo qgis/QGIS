@@ -684,6 +684,9 @@ class TestQgsProject(unittest.TestCase):
         p = None
         self.assertTrue(l1.isValid())
 
+    def test_transactionsGroup(self):
+        # Test member existence.
+        QgsProject.instance().transactionGroup("provider-key", "database-connection-string")
 
 if __name__ == '__main__':
     unittest.main()
