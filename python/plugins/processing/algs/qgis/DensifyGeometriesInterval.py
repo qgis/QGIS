@@ -27,17 +27,11 @@ __copyright__ = '(C) 2012, Anita Graser'
 
 __revision__ = '$Format:%H$'
 
-from math import sqrt
-
-from qgis.core import (QgsWkbTypes,
-                       QgsApplication,
-                       QgsFeatureSink,
+from qgis.core import (QgsFeatureSink,
                        QgsProcessing,
                        QgsProcessingParameterFeatureSource,
                        QgsProcessingParameterNumber,
-                       QgsProcessingParameterFeatureSink,
-                       QgsProcessingOutputVectorLayer,
-                       QgsProcessingParameterDefinition)
+                       QgsProcessingParameterFeatureSink)
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 
 
@@ -61,7 +55,6 @@ class DensifyGeometriesInterval(QgisAlgorithm):
                                                        1, False, 0, 10000000))
 
         self.addParameter(QgsProcessingParameterFeatureSink(self.OUTPUT, self.tr('Densified')))
-        self.addOutput(QgsProcessingOutputVectorLayer(self.OUTPUT, self.tr('Densified')))
 
     def name(self):
         return 'densifygeometriesgivenaninterval'

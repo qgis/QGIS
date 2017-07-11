@@ -37,15 +37,12 @@ from qgis.core import (QgsSettings,
                        QgsFeatureRequest,
                        QgsFeatureSink,
                        QgsWkbTypes,
-                       QgsProcessingUtils,
                        QgsFields,
                        QgsProcessing,
                        QgsProcessingFeatureSource,
                        QgsProcessingParameterFeatureSource,
                        QgsProcessingParameterEnum,
                        QgsProcessingParameterFeatureSink,
-                       QgsProcessingOutputVectorLayer,
-                       QgsProcessingParameterDefinition,
                        QgsProcessingOutputNumber
                        )
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
@@ -85,15 +82,12 @@ class CheckValidity(QgisAlgorithm):
                                                      self.tr('Method'), self.methods))
 
         self.addParameter(QgsProcessingParameterFeatureSink(self.VALID_OUTPUT, self.tr('Valid output'), QgsProcessing.TypeVectorAny, '', True))
-        self.addOutput(QgsProcessingOutputVectorLayer(self.VALID_OUTPUT, self.tr('Valid output')))
         self.addOutput(QgsProcessingOutputNumber(self.VALID_COUNT, self.tr('Count of valid features')))
 
         self.addParameter(QgsProcessingParameterFeatureSink(self.INVALID_OUTPUT, self.tr('Invalid output'), QgsProcessing.TypeVectorAny, '', True))
-        self.addOutput(QgsProcessingOutputVectorLayer(self.INVALID_OUTPUT, self.tr('Invalid output')))
         self.addOutput(QgsProcessingOutputNumber(self.INVALID_COUNT, self.tr('Count of invalid features')))
 
         self.addParameter(QgsProcessingParameterFeatureSink(self.ERROR_OUTPUT, self.tr('Error output'), QgsProcessing.TypeVectorAny, '', True))
-        self.addOutput(QgsProcessingOutputVectorLayer(self.ERROR_OUTPUT, self.tr('Error output')))
         self.addOutput(QgsProcessingOutputNumber(self.ERROR_COUNT, self.tr('Count of errors')))
 
     def name(self):

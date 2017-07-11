@@ -37,19 +37,12 @@ from qgis.core import (QgsField,
                        QgsFeature,
                        QgsWkbTypes,
                        QgsProcessing,
-                       QgsProcessingUtils,
                        QgsProcessingParameterFeatureSource,
                        QgsProcessingParameterFeatureSink,
-                       QgsProcessingOutputVectorLayer,
                        QgsProcessingParameterBoolean,
-                       QgsProcessingParameterDefinition,
                        QgsFields)
 
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
-from processing.core.parameters import ParameterVector
-from processing.core.parameters import ParameterBoolean
-from processing.core.outputs import OutputVector
-from processing.tools import dataobjects
 
 pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
@@ -78,8 +71,7 @@ class ExtentFromLayer(QgisAlgorithm):
         self.addParameter(QgsProcessingParameterBoolean(self.BY_FEATURE,
                                                         self.tr('Calculate extent for each feature separately'), False))
 
-        self.addParameter(QgsProcessingParameterFeatureSink(self.OUTPUT, self.tr('Extent')))
-        self.addOutput(QgsProcessingOutputVectorLayer(self.OUTPUT, self.tr("Extent"), QgsProcessing.TypeVectorPolygon))
+        self.addParameter(QgsProcessingParameterFeatureSink(self.OUTPUT, self.tr('Extent'), type=QgsProcessing.TypeVectorPolygon))
 
     def name(self):
         return 'polygonfromlayerextent'

@@ -32,16 +32,19 @@ from math import sqrt
 
 from qgis.PyQt.QtGui import QIcon
 from qgis.PyQt.QtCore import QVariant
-from qgis.core import (QgsRectangle, QgsFields, QgsFeatureSink, QgsField, QgsFeature, QgsWkbTypes,
-                       QgsGeometry, QgsPointXY, QgsCoordinateReferenceSystem,
+from qgis.core import (QgsFields,
+                       QgsFeatureSink,
+                       QgsField,
+                       QgsFeature,
+                       QgsWkbTypes,
+                       QgsGeometry,
+                       QgsPointXY,
                        QgsProcessing,
                        QgsProcessingParameterExtent,
                        QgsProcessingParameterNumber,
                        QgsProcessingParameterBoolean,
                        QgsProcessingParameterCrs,
-                       QgsProcessingParameterFeatureSink,
-                       QgsProcessingParameterDefinition,
-                       QgsProcessingOutputVectorLayer)
+                       QgsProcessingParameterFeatureSink)
 
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 
@@ -82,7 +85,6 @@ class RegularPoints(QgisAlgorithm):
                                                     self.tr('Output layer CRS'), 'ProjectCrs'))
 
         self.addParameter(QgsProcessingParameterFeatureSink(self.OUTPUT, self.tr('Regular points'), QgsProcessing.TypeVectorPoint))
-        self.addOutput(QgsProcessingOutputVectorLayer(self.OUTPUT, self.tr('Regular points'), QgsProcessing.TypeVectorPoint))
 
     def name(self):
         return 'regularpoints'

@@ -28,15 +28,11 @@ __revision__ = '$Format:%H$'
 
 import os
 
-from qgis.core import (QgsWkbTypes,
-                       QgsFeatureSink,
-                       QgsApplication,
+from qgis.core import (QgsFeatureSink,
                        QgsProcessing,
                        QgsProcessingParameterFeatureSource,
                        QgsProcessingParameterNumber,
-                       QgsProcessingParameterFeatureSink,
-                       QgsProcessingOutputVectorLayer,
-                       QgsProcessingParameterDefinition)
+                       QgsProcessingParameterFeatureSink)
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 
 
@@ -63,7 +59,6 @@ class DensifyGeometries(QgisAlgorithm):
                                                        1, False, 1, 10000000))
 
         self.addParameter(QgsProcessingParameterFeatureSink(self.OUTPUT, self.tr('Densified')))
-        self.addOutput(QgsProcessingOutputVectorLayer(self.OUTPUT, self.tr('Densified')))
 
     def name(self):
         return 'densifygeometries'
