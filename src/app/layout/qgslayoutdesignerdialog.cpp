@@ -211,6 +211,17 @@ QgsLayoutDesignerDialog::QgsLayoutDesignerDialog( QWidget *parent, Qt::WindowFla
   connect( mHorizontalRuler, &QgsLayoutRuler::cursorPosChanged, this, &QgsLayoutDesignerDialog::updateStatusCursorPos );
   connect( mVerticalRuler, &QgsLayoutRuler::cursorPosChanged, this, &QgsLayoutDesignerDialog::updateStatusCursorPos );
 
+  // Panel and toolbar submenus
+  QMenu *toolbarMenu = new QMenu( tr( "&Toolbars" ), this );
+  toolbarMenu->setObjectName( QStringLiteral( "mToolbarMenu" ) );
+  mMenuView->addSeparator();
+  mMenuView->addMenu( toolbarMenu );
+
+  // toolBar already exists, add other widgets as they are created
+  toolbarMenu->addAction( mLayoutToolbar->toggleViewAction() );
+  toolbarMenu->addAction( mNavigationToolbar->toggleViewAction() );
+  toolbarMenu->addAction( mToolsToolbar->toggleViewAction() );
+
   restoreWindowState();
 }
 
