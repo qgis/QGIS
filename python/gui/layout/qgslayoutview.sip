@@ -78,6 +78,18 @@ class QgsLayoutView: QGraphicsView
  Sets the zoom ``level`` for the view, where a zoom level of 1.0 corresponds to 100%.
 %End
 
+    void setHorizontalRuler( QgsLayoutRuler *ruler );
+%Docstring
+ Sets a horizontal ``ruler`` to synchronize with the view state.
+.. seealso:: setVerticalRuler()
+%End
+
+    void setVerticalRuler( QgsLayoutRuler *ruler );
+%Docstring
+ Sets a vertical ``ruler`` to synchronize with the view state.
+.. seealso:: setHorizontalRuler()
+%End
+
   public slots:
 
     void zoomFull();
@@ -121,6 +133,14 @@ class QgsLayoutView: QGraphicsView
 %End
 
     void emitZoomLevelChanged();
+
+    void updateRulers();
+%Docstring
+ Updates associated rulers after view extent or zoom has changed.
+ This should be called after calling any of the QGraphicsView
+ base class methods which alter the view's zoom level or extent,
+ i.e. QGraphicsView.fitInView().
+%End
 
   signals:
 

@@ -28,6 +28,7 @@ class QgsLayoutViewTool;
 class QgsLayoutViewToolTemporaryKeyPan;
 class QgsLayoutViewToolTemporaryKeyZoom;
 class QgsLayoutViewToolTemporaryMousePan;
+class QgsLayoutRuler;
 
 /**
  * \ingroup gui
@@ -99,6 +100,18 @@ class GUI_EXPORT QgsLayoutView: public QGraphicsView
      */
     void setZoomLevel( double level );
 
+    /**
+     * Sets a horizontal \a ruler to synchronize with the view state.
+     * \see setVerticalRuler()
+     */
+    void setHorizontalRuler( QgsLayoutRuler *ruler );
+
+    /**
+     * Sets a vertical \a ruler to synchronize with the view state.
+     * \see setHorizontalRuler()
+     */
+    void setVerticalRuler( QgsLayoutRuler *ruler );
+
   public slots:
 
     /**
@@ -152,6 +165,14 @@ class GUI_EXPORT QgsLayoutView: public QGraphicsView
     // methods also adds noise to the API.
     void emitZoomLevelChanged();
 
+    /**
+     * Updates associated rulers after view extent or zoom has changed.
+     * This should be called after calling any of the QGraphicsView
+     * base class methods which alter the view's zoom level or extent,
+     * i.e. QGraphicsView::fitInView().
+     */
+    void updateRulers();
+
   signals:
 
     /**
@@ -189,6 +210,8 @@ class GUI_EXPORT QgsLayoutView: public QGraphicsView
     void keyReleaseEvent( QKeyEvent *event ) override;
     void resizeEvent( QResizeEvent *event ) override;
 
+  private slots:
+
   private:
 
     //! Zoom layout from a mouse wheel event
@@ -201,6 +224,9 @@ class GUI_EXPORT QgsLayoutView: public QGraphicsView
     QgsLayoutViewToolTemporaryKeyZoom *mSpaceZoomTool = nullptr;
 
     QPoint mMouseCurrentXY;
+
+    QgsLayoutRuler *mHorizontalRuler = nullptr;
+    QgsLayoutRuler *mVerticalRuler = nullptr;
 
     friend class TestQgsLayoutView;
 

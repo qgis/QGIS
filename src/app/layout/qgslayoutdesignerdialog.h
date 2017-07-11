@@ -26,6 +26,7 @@ class QgsLayoutViewToolAddItem;
 class QgsLayoutViewToolPan;
 class QgsLayoutViewToolZoom;
 class QgsLayoutViewToolSelect;
+class QgsLayoutRuler;
 class QComboBox;
 class QSlider;
 class QLabel;
@@ -133,6 +134,9 @@ class QgsLayoutDesignerDialog: public QMainWindow, private Ui::QgsLayoutDesigner
     QActionGroup *mToolsActionGroup = nullptr;
 
     QgsLayoutView *mView = nullptr;
+    QgsLayoutRuler *mHorizontalRuler = nullptr;
+    QgsLayoutRuler *mVerticalRuler = nullptr;
+    QWidget *mRulerLayoutFix = nullptr;
 
     //! Combobox in status bar which shows/adjusts current zoom level
     QComboBox *mStatusZoomCombo = nullptr;

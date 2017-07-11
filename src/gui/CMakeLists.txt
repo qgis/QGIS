@@ -159,6 +159,7 @@ SET(QGIS_GUI_SRCS
   layertree/qgslayertreeviewdefaultactions.cpp
 
   layout/qgslayoutitemguiregistry.cpp
+  layout/qgslayoutruler.cpp
   layout/qgslayoutview.cpp
   layout/qgslayoutviewmouseevent.cpp
   layout/qgslayoutviewrubberband.cpp
@@ -634,6 +635,7 @@ SET(QGIS_GUI_MOC_HDRS
 
   layout/qgslayoutdesignerinterface.h
   layout/qgslayoutitemguiregistry.h
+  layout/qgslayoutruler.h
   layout/qgslayoutview.h
   layout/qgslayoutviewtool.h
   layout/qgslayoutviewtooladditem.h

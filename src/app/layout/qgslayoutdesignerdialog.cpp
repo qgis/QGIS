@@ -28,6 +28,7 @@
 #include "qgslayoutviewtoolselect.h"
 #include "qgsgui.h"
 #include "qgslayoutitemguiregistry.h"
+#include "qgslayoutruler.h"
 #include <QShortcut>
 #include <QComboBox>
 #include <QLineEdit>
@@ -88,11 +89,22 @@ QgsLayoutDesignerDialog::QgsLayoutDesignerDialog( QWidget *parent, Qt::WindowFla
   centralWidget()->layout()->setSpacing( 0 );
   centralWidget()->layout()->setMargin( 0 );
   centralWidget()->layout()->setContentsMargins( 0, 0, 0, 0 );
+
+  mHorizontalRuler = new QgsLayoutRuler( nullptr, Qt::Horizontal );
+  mVerticalRuler = new QgsLayoutRuler( nullptr, Qt::Vertical );
+  mRulerLayoutFix = new QWidget();
+  mRulerLayoutFix->setAttribute( Qt::WA_NoMousePropagation );
+  mRulerLayoutFix->setBackgroundRole( QPalette::Window );
+  mRulerLayoutFix->setFixedSize( mVerticalRuler->rulerSize(), mHorizontalRuler->rulerSize() );
+  viewLayout->addWidget( mRulerLayoutFix, 0, 0 );
+  viewLayout->addWidget( mHorizontalRuler, 0, 1 );
+  viewLayout->addWidget( mVerticalRuler, 1, 0 );
+
   mView = new QgsLayoutView();
   //mView->setMapCanvas( mQgis->mapCanvas() );
   mView->setContentsMargins( 0, 0, 0, 0 );
-  //mView->setHorizontalRuler( mHorizontalRuler );
-  //mView->setVerticalRuler( mVerticalRuler );
+  mView->setHorizontalRuler( mHorizontalRuler );
+  mView->setVerticalRuler( mVerticalRuler );
   viewLayout->addWidget( mView, 1, 1 );
   //view does not accept focus via tab
   mView->setFocusPolicy( Qt::ClickFocus );
@@ -186,6 +198,9 @@ QgsLayoutDesignerDialog::QgsLayoutDesignerDialog( QWidget *parent, Qt::WindowFla
   mView->setFocus();
   connect( mView, &QgsLayoutView::zoomLevelChanged, this, &QgsLayoutDesignerDialog::updateStatusZoom );
   connect( mView, &QgsLayoutView::cursorPosChanged, this, &QgsLayoutDesignerDialog::updateStatusCursorPos );
+  //also listen out for position updates from the horizontal/vertical rulers
+  connect( mHorizontalRuler, &QgsLayoutRuler::cursorPosChanged, this, &QgsLayoutDesignerDialog::updateStatusCursorPos );
+  connect( mVerticalRuler, &QgsLayoutRuler::cursorPosChanged, this, &QgsLayoutDesignerDialog::updateStatusCursorPos );
 
   restoreWindowState();
 }

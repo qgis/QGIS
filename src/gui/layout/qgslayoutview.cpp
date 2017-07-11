@@ -22,6 +22,7 @@
 #include "qgslayoutviewtooltemporarykeypan.h"
 #include "qgslayoutviewtooltemporarykeyzoom.h"
 #include "qgslayoutviewtooltemporarymousepan.h"
+#include "qgslayoutruler.h"
 #include "qgssettings.h"
 #include "qgsrectangle.h"
 #include "qgsapplication.h"
@@ -96,6 +97,7 @@ void QgsLayoutView::scaleSafe( double scale )
   scale = qBound( MIN_VIEW_SCALE, scale, MAX_VIEW_SCALE );
   setTransform( QTransform::fromScale( scale, scale ) );
   emit zoomLevelChanged();
+  updateRulers();
 }
 
 void QgsLayoutView::setZoomLevel( double level )
@@ -109,6 +111,21 @@ void QgsLayoutView::setZoomLevel( double level )
   double scale = qBound( MIN_VIEW_SCALE, level * dpi / 25.4, MAX_VIEW_SCALE );
   setTransform( QTransform::fromScale( scale, scale ) );
   emit zoomLevelChanged();
+  updateRulers();
+}
+
+void QgsLayoutView::setHorizontalRuler( QgsLayoutRuler *ruler )
+{
+  mHorizontalRuler = ruler;
+  ruler->setLayoutView( this );
+  updateRulers();
+}
+
+void QgsLayoutView::setVerticalRuler( QgsLayoutRuler *ruler )
+{
+  mVerticalRuler = ruler;
+  ruler->setLayoutView( this );
+  updateRulers();
 }
 
 void QgsLayoutView::zoomFull()
@@ -136,6 +153,7 @@ void QgsLayoutView::zoomWidth()
 
   fitInView( targetRect, Qt::KeepAspectRatio );
   emit zoomLevelChanged();
+  updateRulers();
 }
 
 void QgsLayoutView::zoomIn()
@@ -287,6 +305,18 @@ void QgsLayoutView::resizeEvent( QResizeEvent *event )
   emit zoomLevelChanged();
 }
 
+void QgsLayoutView::updateRulers()
+{
+  if ( mHorizontalRuler )
+  {
+    mHorizontalRuler->setSceneTransform( viewportTransform() );
+  }
+  if ( mVerticalRuler )
+  {
+    mVerticalRuler->setSceneTransform( viewportTransform() );
+  }
+}
+
 void QgsLayoutView::wheelZoom( QWheelEvent *event )
 {
   //get mouse wheel zoom behavior settings
@@ -328,11 +358,4 @@ void QgsLayoutView::wheelZoom( QWheelEvent *event )
   {
     scaleSafe( 1 / zoomFactor );
   }
-
-  //update layout for new zoom
-  emit zoomLevelChanged();
-#if 0 // TODO
-  updateRulers();
-#endif
-  update();
 }
