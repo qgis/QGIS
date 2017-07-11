@@ -29,16 +29,19 @@ import os
 
 from qgis.PyQt.QtGui import QIcon
 
-from qgis.core import (QgsFeatureRequest,
-                       QgsFeature,
+from qgis.core import (QgsFeature,
                        QgsFeatureSink,
                        QgsGeometry,
+                       QgsFeatureRequest,
+                       NULL,
                        QgsWkbTypes,
                        QgsMessageLog,
-                       QgsProcessingUtils)
+                       QgsProcessingUtils,
+                       QgsProcessingParameterFeatureSource,
+                       QgsProcessingParameterFeatureSink,
+                       QgsProcessingOutputVectorLayer,
+                       QgsSpatialIndex)
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
-from processing.core.parameters import ParameterVector
-from processing.core.outputs import OutputVector
 
 pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
@@ -47,7 +50,6 @@ class Difference(QgisAlgorithm):
 
     INPUT = 'INPUT'
     OVERLAY = 'OVERLAY'
-    IGNORE_INVALID = 'IGNORE_INVALID'
     OUTPUT = 'OUTPUT'
 
     def icon(self):
@@ -60,11 +62,13 @@ class Difference(QgisAlgorithm):
         super().__init__()
 
     def initAlgorithm(self, config=None):
-        self.addParameter(ParameterVector(Difference.INPUT,
-                                          self.tr('Input layer')))
-        self.addParameter(ParameterVector(Difference.OVERLAY,
-                                          self.tr('Difference layer')))
-        self.addOutput(OutputVector(Difference.OUTPUT, self.tr('Difference')))
+        self.addParameter(QgsProcessingParameterFeatureSource(self.INPUT,
+                                                              self.tr('Input layer')))
+        self.addParameter(QgsProcessingParameterFeatureSource(self.OVERLAY,
+                                                              self.tr('Difference layer')))
+
+        self.addParameter(QgsProcessingParameterFeatureSink(self.OUTPUT, self.tr('Difference')))
+        self.addOutput(QgsProcessingOutputVectorLayer(self.OUTPUT, self.tr('Difference')))
 
     def name(self):
         return 'difference'
@@ -73,37 +77,47 @@ class Difference(QgisAlgorithm):
         return self.tr('Difference')
 
     def processAlgorithm(self, parameters, context, feedback):
-        layerA = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(Difference.INPUT), context)
-        layerB = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(Difference.OVERLAY), context)
+        sourceA = self.parameterAsSource(parameters, self.INPUT, context)
+        sourceB = self.parameterAsSource(parameters, self.OVERLAY, context)
 
-        geomType = QgsWkbTypes.multiType(layerA.wkbType())
-        writer = self.getOutputFromName(
-            Difference.OUTPUT).getVectorWriter(layerA.fields(), geomType, layerA.crs(), context)
+        geomType = QgsWkbTypes.multiType(sourceA.wkbType())
 
+        (sink, dest_id) = self.parameterAsSink(parameters, self.OUTPUT, context,
+                                               sourceA.fields(), geomType, sourceA.sourceCrs())
+
+        featB = QgsFeature()
         outFeat = QgsFeature()
-        index = QgsProcessingUtils.createSpatialIndex(layerB, context)
-        selectionA = QgsProcessingUtils.getFeatures(layerA, context)
-        total = 100.0 / layerA.featureCount() if layerA.featureCount() else 0
-        for current, inFeatA in enumerate(selectionA):
-            geom = inFeatA.geometry()
-            diff_geom = QgsGeometry(geom)
-            attrs = inFeatA.attributes()
-            intersections = index.intersects(geom.boundingBox())
 
-            request = QgsFeatureRequest().setFilterFids(intersections).setSubsetOfAttributes([])
-            for inFeatB in layerB.getFeatures(request):
-                tmpGeom = inFeatB.geometry()
-                if diff_geom.intersects(tmpGeom):
-                    diff_geom = QgsGeometry(diff_geom.difference(tmpGeom))
+        indexB = QgsSpatialIndex(sourceB.getFeatures(QgsFeatureRequest().setSubsetOfAttributes([]).setDestinationCrs(sourceA.sourceCrs())))
 
-            try:
-                outFeat.setGeometry(diff_geom)
+        total = 100.0 / (sourceA.featureCount() * sourceB.featureCount()) if sourceA.featureCount() and sourceB.featureCount() else 1
+        count = 0
+
+        for featA in sourceA.getFeatures():
+            if feedback.isCanceled():
+                break
+
+            if featA.hasGeometry():
+                geom = featA.geometry()
+                diffGeom = QgsGeometry(geom)
+                attrs = featA.attributes()
+                intersects = indexB.intersects(geom.boundingBox())
+                request = QgsFeatureRequest().setFilterFids(intersects).setSubsetOfAttributes([])
+                request.setDestinationCrs(sourceA.sourceCrs())
+                for featB in sourceB.getFeatures(request):
+                    if feedback.isCanceled():
+                        break
+                    tmpGeom = featB.geometry()
+                    if diffGeom.intersects(tmpGeom):
+                        diffGeom = QgsGeometry(diffGeom.difference(tmpGeom))
+
+                outFeat.setGeometry(diffGeom)
                 outFeat.setAttributes(attrs)
-                writer.addFeature(outFeat, QgsFeatureSink.FastInsert)
-            except:
-                QgsMessageLog.logMessage(self.tr('Feature geometry error: One or more output features ignored due to invalid geometry.'), self.tr('Processing'), QgsMessageLog.WARNING)
-                continue
+                sink.addFeature(outFeat, QgsFeatureSink.FastInsert)
+            else:
+                sink.addFeature(featA, QgsFeatureSink.FastInsert)
 
-            feedback.setProgress(int(current * total))
+            count += 1
+            feedback.setProgress(int(count * total))
 
-        del writer
+        return {self.OUTPUT: dest_id}
