@@ -127,6 +127,7 @@
 %Include qgsvirtuallayerdefinitionutils.sip
 %Include qgsmapthemecollection.sip
 %Include qgsxmlutils.sip
+%Include qgsarchive.sip
 %Include qgsziputils.sip
 %Include qgsvector.sip
 %Include auth/qgsauthcertutils.sip

@@ -2071,6 +2071,11 @@ QList<QgsMapLayer *> QgsProject::mapLayersByName( const QString &layerName ) con
   return mLayerStore->mapLayersByName( layerName );
 }
 
+bool QgsProject::unzip()
+{
+  return unzip( mArchive->filename() );
+}
+
 bool QgsProject::unzip( const QString &filename )
 {
   clearError();

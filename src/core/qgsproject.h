@@ -578,11 +578,18 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
 
     /**
      * Unzip a project
-     * \param filename The project filename to unzip
+     * \param filename The zip file to unzip
      * \returns true if unzip is well performed, false otherwise
      * \since QGIS 3.0
      */
     bool unzip( const QString &filename );
+
+    /**
+     * Unzip a project with the current zip filename
+     * \returns true if unzip is well performed, false otherwise
+     * \since QGIS 3.0
+     */
+    bool unzip();
 
     /**
      * Zip the project
@@ -592,12 +599,29 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      */
     bool zip( const QString &filename );
 
+    /**
+     * Zip the project with the current zip filename
+     * \returns true if zip is well performed, false otherwise
+     * \since QGIS 3.0
+     */
     bool zip();
 
+    /**
+     * Returns the current zip filename or an empty string if none.
+     * \since QGIS 3.0
+     */
     QString zipFileName() const;
 
+    /**
+     * Sets the current zip filename.
+     * \param filename The zip filename
+     * \since QGIS 3.0
+     */
     void setZipFileName( const QString &filename );
 
+    /**
+     * Returns true if the project comes from a zip archive, false otherwise.
+     */
     bool unzipped() const;
 
 #ifndef SIP_RUN

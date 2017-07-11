@@ -25,8 +25,22 @@ QgsArchive::QgsArchive()
 {
 }
 
-QgsArchive::~QgsArchive()
+QgsArchive::QgsArchive( const QgsArchive &other )
+  :  mDir( new QTemporaryDir() )
+  , mFiles( other.mFiles )
+  , mFilename( other.mFilename )
 {
+}
+
+QgsArchive &QgsArchive::operator=( const QgsArchive &other )
+{
+  if ( this != &other )
+  {
+    mFilename = other.mFilename;
+    mFiles = other.mFiles;
+  }
+
+  return *this;
 }
 
 QString QgsArchive::dir() const
@@ -39,6 +53,14 @@ void QgsArchive::clear()
   mDir.reset( new QTemporaryDir() );
   mFilename.clear();
   mFiles.clear();
+}
+
+bool QgsArchive::zip()
+{
+  if ( mFilename.isEmpty() )
+    return false;
+  else
+    return zip( mFilename );
 }
 
 bool QgsArchive::zip( const QString &filename )
@@ -73,6 +95,14 @@ bool QgsArchive::zip( const QString &filename )
   mFilename = filename;
 
   return true;
+}
+
+bool QgsArchive::unzip()
+{
+  if ( mFilename.isEmpty() )
+    return false;
+  else
+    return unzip( mFilename );
 }
 
 bool QgsArchive::unzip( const QString &filename )

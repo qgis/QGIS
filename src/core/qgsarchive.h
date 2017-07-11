@@ -36,30 +36,94 @@ class CORE_EXPORT QgsArchive
   public:
 
     /**
-     * Constructor for QgsArchive
+     * Constructor
      */
     QgsArchive();
-    ~QgsArchive();
 
+    /**
+     * Copy constructor
+     */
+    QgsArchive( const QgsArchive &other );
+
+    QgsArchive &operator=( const QgsArchive &other );
+
+    /**
+     * Destructor
+     */
+    ~QgsArchive() = default;
+
+    /**
+     * Zip the content of this archive
+     * \param zipFilename The name of the zip to generate
+     * \returns false if something goes wrong, true otherwise
+     */
     bool zip( const QString &zipFilename );
 
+    /**
+     * Zip the content of this archive. THe current filename is used.
+     * \returns false if something goes wrong, true otherwise
+     */
+    bool zip();
+
+    /**
+     * Clear the current content of this archive and unzip. If a project file
+     * is found in the content, then this archive may be considered as a valid
+     * one. Files are unzipped in the temporary directory.
+     * \param zipFilename The zip file to unzip
+     * \returns true if a project file has been found, false otherwise
+     */
     bool unzip( const QString &zipFilename );
 
+    /**
+     * Clear the current content of this archive and unzip. If a project file
+     * is found in the content, then this archive may be considered as a valid
+     * one. Files are unzipped in the temporary directory. The current filename
+     * is used.
+     * \returns true if a project file has been found, false otherwise
+     */
+    bool unzip();
+
+    /**
+     * Clear the current content of this archive and create a new temporary
+     * directory.
+     */
     void clear();
 
+    /**
+     * Add a new file to this archive. During a zip action, this file will be
+     * part of the resulting zipped file.
+     * \param filename A file to add when zipping this archive
+     */
     void addFile( const QString &filename );
 
+    /**
+     * Set the filename to use when zipping/unzipping this archive.
+     * \param filename The zip filename
+     */
     void setFileName( const QString &filename );
 
+    /**
+     * Returns the current zip filename.
+     */
     QString filename() const;
 
+    /**
+     * Returns the current .qgs project file or an empty string if there's none
+     */
     QString projectFile() const;
 
+    /**
+     * Returns the list of files within this archive
+     */
     QStringList files() const;
 
+    /**
+     * Returns the current temporary directory.
+     */
     QString dir() const;
 
   private:
+#ifndef SIP_RUN
     // used when unzip is performed
     std::unique_ptr<QTemporaryDir> mDir;
 
@@ -68,6 +132,7 @@ class CORE_EXPORT QgsArchive
 
     // zip filename
     QString mFilename;
+#endif
 };
 
 #endif
