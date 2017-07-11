@@ -81,6 +81,41 @@ class CORE_EXPORT QgsVectorLayerJoinInfo
      */
     void setDynamicFormEnabled( bool enabled ) { mDynamicForm = enabled; }
 
+    /** Returns whether joined fields may be edited through the form of
+     *  the target layer.
+     * \since QGIS 3.0
+     */
+    bool isEditable() const { return mEditable; }
+
+    /** Sets whether the form of the target layer allows to edit joined fields.
+     * \since QGIS 3.0
+     */
+    void setEditable( bool enabled );
+
+    /** Returns whether a feature created on the target layer has to impact
+     *  the joined layer by creating a new feature if necessary.
+     * \since QGIS 3.0
+     */
+    bool isUpsertOnEdit() const { return mUpsertOnEdit; }
+
+    /** Sets whether a feature created on the target layer has to impact
+     *  the joined layer by creating a new feature if necessary.
+     * \since QGIS 3.0
+     */
+    void setUpsertOnEdit( bool enabled ) { mUpsertOnEdit = enabled; }
+
+    /** Returns whether a feature deleted on the target layer has to impact the
+     *  joined layer by deleting the corresponding joined feature.
+     * \since QGIS 3.0
+     */
+    bool isDeleteCascade() const { return mDeleteCascade; }
+
+    /** Sets whether a feature deleted on the target layer has to impact the
+     *  joined layer by deleting the corresponding joined feature.
+     * \since QGIS 3.0
+     */
+    void setDeleteCascade( bool enabled ) { mDeleteCascade = enabled; }
+
     /** Returns the prefixed name of the field.
      * \param field the field
      * \returns the prefixed name of the field
@@ -134,6 +169,12 @@ class CORE_EXPORT QgsVectorLayerJoinInfo
     bool cacheDirty = true;
 
     bool mDynamicForm = false;
+
+    bool mEditable;
+
+    bool mUpsertOnEdit;
+
+    bool mDeleteCascade;
 
     //! Cache for joined attributes to provide fast lookup (size is 0 if no memory caching)
     QHash< QString, QgsAttributes> cachedAttributes;

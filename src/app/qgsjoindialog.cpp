@@ -76,6 +76,10 @@ void QgsJoinDialog::setJoinInfo( const QgsVectorLayerJoinInfo &joinInfo )
   mTargetFieldComboBox->setField( joinInfo.targetFieldName() );
   mCacheInMemoryCheckBox->setChecked( joinInfo.isUsingMemoryCache() );
   mDynamicFormCheckBox->setChecked( joinInfo.isDynamicFormEnabled() );
+  mEditableJoinLayer->setChecked( joinInfo.isEditable() );
+  mUpsertOnEditCheckBox->setChecked( joinInfo.isUpsertOnEdit() );
+  mDeleteCascadeCheckBox->setChecked( joinInfo.isDeleteCascade() );
+
   if ( joinInfo.prefix().isNull() )
   {
     mUseCustomPrefix->setChecked( false );
@@ -114,6 +118,13 @@ QgsVectorLayerJoinInfo QgsJoinDialog::joinInfo() const
   info.setTargetFieldName( mTargetFieldComboBox->currentField() );
   info.setUsingMemoryCache( mCacheInMemoryCheckBox->isChecked() );
   info.setDynamicFormEnabled( mDynamicFormCheckBox->isChecked() );
+
+  info.setEditable( mEditableJoinLayer->isChecked() );
+  if ( info.isEditable() )
+  {
+    info.setUpsertOnEdit( mUpsertOnEditCheckBox->isChecked() );
+    info.setDeleteCascade( mDeleteCascadeCheckBox->isChecked() );
+  }
 
   if ( mUseCustomPrefix->isChecked() )
     info.setPrefix( mCustomPrefix->text() );

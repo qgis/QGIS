@@ -33,3 +33,14 @@ QString QgsVectorLayerJoinInfo::prefixedFieldName( const QgsField &f ) const
 
   return name;
 }
+
+void QgsVectorLayerJoinInfo::setEditable( bool enabled )
+{
+  mEditable = enabled;
+
+  if ( ! mEditable )
+  {
+    setDeleteCascade( false );
+    setUpsertOnEdit( false );
+  }
+}
