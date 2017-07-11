@@ -1,0 +1,72 @@
+- Derive your algorithms from the new base class QgsProcessingAlgorithm (or a subclass of QgsProcessingAlgorithm), not GeoAlgorithm
+
+- Ensure that your algorithm (or algorithm's parent class) implements the new pure virtual createInstance(self, config) call to return a new instance of the algorithm class. Note that this should not return a copy of the algorithm, but instead a newly constructed instance of the class. If you use a base class in your plugin for all algorithms, you can usually shortcut the createInstance implementation by placing:
+ 
+    def createInstance(self, config={}):
+        return type(self)()
+
+  inside your algorithm base class.
+
+- Input parameters and available outputs must be declared in an implementation of the new pure virtual method initAlgorithm(self, config={})
+
+- The input parameters and outputs classes have been replaced with new c++ versions, which must be used when calling addParameter and addOuput.    
+Map parameters from old classes to new classes
+   - ParameterNumber -> QgsProcessingParameterNumber
+       - constructor arguments in different order
+	   - type specified explicitly, not via min/max/default type
+   - ParameterBoolean -> QgsProcessingParameterBoolean
+   - ParameterCrs -> QgsProcessingParameterCrs
+
+- Use featuresources and sinks wherever possible
+
+Update outputs
+
+- OutputVector -> 
+
+- processAlgorithm has a new signature....
+
+Update retrieval of parameters
+
+- Extent parameters now returned as QgsRectangle. In 2.x extent parameters were returned as a delimited string, leaving the algorithm
+responsible for parsing the string and validating it. In 3.0 this is automatically handled and a QgsRectangle returned, ready for use.
+
+- Crs parameters now returned as QgsCoordinateReferenceSystem objects. In 2.x crs parameters were returned as a string, leaving the algorithm
+responsible for interpreting this string and working out how to convert it to a suitable CRS object. In 3.0 this is automatically handled
+and a QgsCoordinateReferenceSystem object is returned, ready for use. If you require a string version of the CRS, use the
+QgsCoordinateReferenceSystem methods like authid() to obtain a string representation of the CRS in the desired format.
+
+
+Use parameterAsSink instead of getOutputFromName
+
+- Since processing algorithms can now be run in the background, it's important to implement support for cancelation in your
+algorithms. Whenever looping (or before/after calling lengthy operations) listen out for user cancelation via the provided
+feedback object. E.g.
+
+   if feedback.isCanceled():
+       break
+
+- Give feedback via the feedback object, not directly to QgsMessageLog. E.g.
+
+   feedback.pushInfo('Feature {} was missing geometry, skipping'.format(f.id())
+   feedback.reportError('Input layer CRS is not valid, cannot reproject')
+
+- Use geoprocessingexception only for FATAL errors which force a model to terminate. Algorithms should handle common cases
+such as having no features in an input layer without throwing exceptions (instead, an empty layer should be output). This
+allows more flexibility for users creating models. They may have created models which "route" features to different algorithms
+based on some criteria, and it can be a valid case that no features satisfy this criteria. If your algorithm throws an
+exception upon encountering an empty layer, it prevents it being used in these flexible models. Instead, use the feedback
+object to pushInfo or reportError so that the lack of features is brought to user's attention (and logged) without breaking
+the model execution.
+
+- Outputs are good! Declare as many outputs as useful from your algorithm. E.g. most algorithms should have at least a
+FEATURE_COUNT number output which records the number of features processed by the algorithm. Other algorithms might want
+to create numeric outputs for values like INTERSECTING_FEATURE_COUNT, NON_INTERSECTING_FEATURE_COUNT, etc. The more
+outputs like this available from an algorithm aids in user debugging (they are recorded in the log, so users can get
+a clear picture of what's happening at each step in their models), and also adds more power to models (as these outputs
+can be used in expressions or custom python code in later steps in a model.
+
+Return a dict with output values
+
+Dont’ use tablewriter - use a sink instead
+
+
