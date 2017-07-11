@@ -17,6 +17,7 @@ class QgsSourceSelect : QDialog
  This class must provide common functionality and the interface for all
  source select dialogs used by data providers to configure data sources
  and add layers.
+.. versionadded:: 3.0
 %End
 
 %TypeHeaderCode

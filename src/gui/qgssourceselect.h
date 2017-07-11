@@ -31,6 +31,7 @@
  * This class must provide common functionality and the interface for all
  * source select dialogs used by data providers to configure data sources
  * and add layers.
+ * \since QGIS 3.0
  */
 class GUI_EXPORT QgsSourceSelect : public QDialog
 {
