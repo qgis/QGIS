@@ -445,12 +445,6 @@ void QgsCategorizedSymbolRendererV2::startRender( QgsRenderContext& context, con
       mTempSymbols[ cat.symbol()] = tempSymbol;
     }
   }
-
-  Q_FOREACH ( QgsSymbolV2 *symbol, mSymbolHash.values() )
-  {
-    symbol->startRender( context, &fields );
-  }
-
   return;
 }
 
@@ -459,11 +453,6 @@ void QgsCategorizedSymbolRendererV2::stopRender( QgsRenderContext& context )
   Q_FOREACH ( const QgsRendererCategoryV2& cat, mCategories )
   {
     cat.symbol()->stopRender( context );
-  }
-
-  Q_FOREACH ( QgsSymbolV2 *symbol, mSymbolHash.values() )
-  {
-    symbol->stopRender( context );
   }
 
   // cleanup mTempSymbols

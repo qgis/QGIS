@@ -89,9 +89,9 @@ QgsSymbolV2::QgsSymbolV2( SymbolType type, const QgsSymbolLayerV2List& layers )
     , mRenderHints( 0 )
     , mClipFeaturesToExtent( true )
     , mLayer( nullptr )
+    , mStarted( false )
     , mSymbolRenderContext( nullptr )
 {
-
   // check they're all correct symbol layers
   for ( int i = 0; i < mLayers.count(); i++ )
   {
@@ -444,6 +444,9 @@ bool QgsSymbolV2::changeSymbolLayer( int index, QgsSymbolLayerV2* layer )
 
 void QgsSymbolV2::startRender( QgsRenderContext& context, const QgsFields* fields )
 {
+  Q_ASSERT_X( !mStarted, "startRender", "Rendering has already been started for this symbol instance!" );
+
+  mStarted = true;
   delete mSymbolRenderContext;
   mSymbolRenderContext = new QgsSymbolV2RenderContext( context, outputUnit(), mAlpha, false, mRenderHints, nullptr, fields, mapUnitScale() );
 
@@ -459,6 +462,9 @@ void QgsSymbolV2::startRender( QgsRenderContext& context, const QgsFields* field
 
 void QgsSymbolV2::stopRender( QgsRenderContext& context )
 {
+  Q_ASSERT_X( mStarted, "startRender", "startRender was not called for this symbol instance!" );
+  mStarted = false;
+
   Q_UNUSED( context )
   if ( mSymbolRenderContext )
   {
