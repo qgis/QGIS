@@ -203,6 +203,9 @@ void QgsLayoutView::mouseMoveEvent( QMouseEvent *event )
 {
   mMouseCurrentXY = event->pos();
 
+  //update cursor position in status bar
+  emit cursorPosChanged( mapToScene( mMouseCurrentXY ) );
+
   if ( mTool )
   {
     std::unique_ptr<QgsLayoutViewMouseEvent> me( new QgsLayoutViewMouseEvent( this, event ) );

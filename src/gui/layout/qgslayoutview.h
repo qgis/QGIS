@@ -172,6 +172,13 @@ class GUI_EXPORT QgsLayoutView: public QGraphicsView
      */
     void zoomLevelChanged();
 
+    /**
+     * Is emitted when the mouse cursor coordinates change within the view.
+     * The \a layoutPoint argument indicates the cursor position within
+     * the layout coordinate system.
+     */
+    void cursorPosChanged( QPointF layoutPoint );
+
   protected:
     void mousePressEvent( QMouseEvent *event ) override;
     void mouseReleaseEvent( QMouseEvent *event ) override;

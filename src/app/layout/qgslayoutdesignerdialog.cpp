@@ -33,6 +33,8 @@
 #include <QLineEdit>
 #include <QDesktopWidget>
 #include <QSlider>
+#include <QLabel>
+
 
 //add some nice zoom levels for zoom comboboxes
 QList<double> QgsLayoutDesignerDialog::sStatusZoomLevelsList { 0.125, 0.25, 0.5, 1.0, 2.0, 4.0, 8.0};
@@ -131,6 +133,19 @@ QgsLayoutDesignerDialog::QgsLayoutDesignerDialog( QWidget *parent, Qt::WindowFla
   connect( mActionZoomAll, &QAction::triggered, mView, &QgsLayoutView::zoomFull );
   connect( mActionZoomActual, &QAction::triggered, mView, &QgsLayoutView::zoomActual );
 
+  //create status bar labels
+  mStatusCursorXLabel = new QLabel( mStatusBar );
+  mStatusCursorXLabel->setMinimumWidth( 100 );
+  mStatusCursorYLabel = new QLabel( mStatusBar );
+  mStatusCursorYLabel->setMinimumWidth( 100 );
+  mStatusCursorPageLabel = new QLabel( mStatusBar );
+  mStatusCursorPageLabel->setMinimumWidth( 100 );
+
+  mStatusBar->addPermanentWidget( mStatusCursorXLabel );
+  mStatusBar->addPermanentWidget( mStatusCursorXLabel );
+  mStatusBar->addPermanentWidget( mStatusCursorYLabel );
+  mStatusBar->addPermanentWidget( mStatusCursorPageLabel );
+
   mStatusZoomCombo = new QComboBox();
   mStatusZoomCombo->setEditable( true );
   mStatusZoomCombo->setInsertPolicy( QComboBox::NoInsert );
@@ -163,9 +178,13 @@ QgsLayoutDesignerDialog::QgsLayoutDesignerDialog( QWidget *parent, Qt::WindowFla
   mStatusBar->addPermanentWidget( mStatusZoomCombo );
   mStatusBar->addPermanentWidget( mStatusZoomSlider );
 
+  //hide borders from child items in status bar under Windows
+  mStatusBar->setStyleSheet( QStringLiteral( "QStatusBar::item {border: none;}" ) );
+
   mView->setTool( mSelectTool );
   mView->setFocus();
   connect( mView, &QgsLayoutView::zoomLevelChanged, this, &QgsLayoutDesignerDialog::updateStatusZoom );
+  connect( mView, &QgsLayoutView::cursorPosChanged, this, &QgsLayoutDesignerDialog::updateStatusCursorPos );
 
   restoreWindowState();
 }
@@ -308,6 +327,26 @@ void QgsLayoutDesignerDialog::updateStatusZoom()
 
   whileBlocking( mStatusZoomCombo )->lineEdit()->setText( tr( "%1%" ).arg( zoomLevel, 0, 'f', 1 ) );
   whileBlocking( mStatusZoomSlider )->setValue( zoomLevel );
+}
+
+void QgsLayoutDesignerDialog::updateStatusCursorPos( QPointF position )
+{
+  if ( !mView->currentLayout() )
+  {
+    return;
+  }
+
+  //convert cursor position to position on current page
+#if 0 // TODO
+  QPointF pagePosition = mView->currentLayout()->positionOnPage( cursorPosition );
+  int currentPage = mView->currentLayout()->pageNumberForPoint( cursorPosition );
+#endif
+  QPointF pagePosition = position;
+  int currentPage = 1;
+
+  mStatusCursorXLabel->setText( QString( tr( "x: %1 mm" ) ).arg( pagePosition.x() ) );
+  mStatusCursorYLabel->setText( QString( tr( "y: %1 mm" ) ).arg( pagePosition.y() ) );
+  mStatusCursorPageLabel->setText( QString( tr( "page: %1" ) ).arg( currentPage ) );
 }
 
 QgsLayoutView *QgsLayoutDesignerDialog::view()

@@ -28,6 +28,7 @@ class QgsLayoutViewToolZoom;
 class QgsLayoutViewToolSelect;
 class QComboBox;
 class QSlider;
+class QLabel;
 
 class QgsAppLayoutDesignerInterface : public QgsLayoutDesignerInterface
 {
@@ -120,6 +121,9 @@ class QgsLayoutDesignerDialog: public QMainWindow, private Ui::QgsLayoutDesigner
     //! Updates zoom level in status bar
     void updateStatusZoom();
 
+    //! Updates cursor position in status bar
+    void updateStatusCursorPos( QPointF position );
+
   private:
 
     QgsAppLayoutDesignerInterface *mInterface = nullptr;
@@ -133,6 +137,11 @@ class QgsLayoutDesignerDialog: public QMainWindow, private Ui::QgsLayoutDesigner
     //! Combobox in status bar which shows/adjusts current zoom level
     QComboBox *mStatusZoomCombo = nullptr;
     QSlider *mStatusZoomSlider = nullptr;
+
+    //! Labels in status bar which shows current mouse position
+    QLabel *mStatusCursorXLabel = nullptr;
+    QLabel *mStatusCursorYLabel = nullptr;
+    QLabel *mStatusCursorPageLabel = nullptr;
 
     static QList<double> sStatusZoomLevelsList;
 
