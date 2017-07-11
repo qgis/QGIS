@@ -103,6 +103,50 @@ Returns whether values from the joined layer should be cached in memory to speed
 .. versionadded:: 3.0
 %End
 
+    bool isEditable() const;
+%Docstring
+ Returns whether joined fields may be edited through the form of
+  the target layer.
+.. versionadded:: 3.0
+ :rtype: bool
+%End
+
+    void setEditable( bool enabled );
+%Docstring
+ Sets whether the form of the target layer allows to edit joined fields.
+.. versionadded:: 3.0
+%End
+
+    bool isUpsertOnEdit() const;
+%Docstring
+ Returns whether a feature created on the target layer has to impact
+  the joined layer by creating a new feature if necessary.
+.. versionadded:: 3.0
+ :rtype: bool
+%End
+
+    void setUpsertOnEdit( bool enabled );
+%Docstring
+ Sets whether a feature created on the target layer has to impact
+  the joined layer by creating a new feature if necessary.
+.. versionadded:: 3.0
+%End
+
+    bool isDeleteCascade() const;
+%Docstring
+ Returns whether a feature deleted on the target layer has to impact the
+  joined layer by deleting the corresponding joined feature.
+.. versionadded:: 3.0
+ :rtype: bool
+%End
+
+    void setDeleteCascade( bool enabled );
+%Docstring
+ Sets whether a feature deleted on the target layer has to impact the
+  joined layer by deleting the corresponding joined feature.
+.. versionadded:: 3.0
+%End
+
     QString prefixedFieldName( const QgsField &field ) const;
 %Docstring
  Returns the prefixed name of the field.
@@ -128,6 +172,9 @@ Returns whether values from the joined layer should be cached in memory to speed
 %End
 
   protected:
+
+
+
 
 
 
