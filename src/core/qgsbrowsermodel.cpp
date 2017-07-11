@@ -139,6 +139,8 @@ void QgsBrowserModel::addRootItems()
     QgsDataItem *item = pr->createDataItem( QLatin1String( "" ), nullptr );  // empty path -> top level
     if ( item )
     {
+      // Forward the signal from the root items to the model (and then to the app)
+      connect( item, &QgsDataItem::connectionsChanged, this, &QgsBrowserModel::connectionsChanged );
       QgsDebugMsgLevel( "Add new top level item : " + item->name(), 4 );
       connectItem( item );
       providerMap.insertMulti( capabilities, item );
@@ -411,6 +413,7 @@ void QgsBrowserModel::itemStateChanged( QgsDataItem *item, QgsDataItem::State ol
   QgsDebugMsgLevel( QString( "item %1 state changed %2 -> %3" ).arg( item->path() ).arg( oldState ).arg( item->state() ), 4 );
   emit stateChanged( idx, oldState );
 }
+
 void QgsBrowserModel::connectItem( QgsDataItem *item )
 {
   connect( item, &QgsDataItem::beginInsertItems,
@@ -425,6 +428,11 @@ void QgsBrowserModel::connectItem( QgsDataItem *item )
            this, &QgsBrowserModel::itemDataChanged );
   connect( item, &QgsDataItem::stateChanged,
            this, &QgsBrowserModel::itemStateChanged );
+
+  // if it's a collection item, also forwards connectionsChanged
+  QgsDataCollectionItem *collectionItem = dynamic_cast<QgsDataCollectionItem *>( item );
+  if ( collectionItem )
+    connect( collectionItem, &QgsDataCollectionItem::connectionsChanged, this, &QgsBrowserModel::connectionsChanged );
 }
 
 QStringList QgsBrowserModel::mimeTypes() const

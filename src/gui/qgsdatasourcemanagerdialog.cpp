@@ -171,7 +171,7 @@ void QgsDataSourceManagerDialog::setPreviousPage()
 void QgsDataSourceManagerDialog::refresh()
 {
   mBrowserWidget->refresh( );
-  emit dlg_refresh();
+  emit providerDialogsRefreshRequested();
 }
 
 void QgsDataSourceManagerDialog::rasterLayerAdded( const QString &uri, const QString &baseName, const QString &providerKey )
@@ -221,7 +221,7 @@ void QgsDataSourceManagerDialog::addDbProviderDialog( const QString providerKey,
     connect( dlg, SIGNAL( progressMessage( QString ) ),
              this, SIGNAL( showStatusMessage( QString ) ) );
     connect( dlg, SIGNAL( connectionsChanged( ) ), this, SIGNAL( connectionsChanged( ) ) );
-    connect( this,  SIGNAL( dlg_refresh( ) ), dlg, SLOT( refresh( ) ) );
+    connect( this,  SIGNAL( providerDialogsRefreshRequested( ) ), dlg, SLOT( refresh( ) ) );
   }
 }
 
@@ -234,6 +234,6 @@ void QgsDataSourceManagerDialog::addRasterProviderDialog( const QString provider
     connect( dlg, SIGNAL( addRasterLayer( QString const &, QString const &, QString const & ) ),
              this, SIGNAL( addRasterLayer( QString const &, QString const &, QString const & ) ) );
     connect( dlg, SIGNAL( connectionsChanged( ) ), this, SIGNAL( connectionsChanged( ) ) );
-    connect( this,  SIGNAL( dlg_refresh( ) ), dlg, SLOT( refresh( ) ) );
+    connect( this,  SIGNAL( providerDialogsRefreshRequested( ) ), dlg, SLOT( refresh( ) ) );
   }
 }

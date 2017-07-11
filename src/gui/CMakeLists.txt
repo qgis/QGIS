@@ -346,6 +346,7 @@ SET(QGIS_GUI_SRCS
   qgsvertexmarker.cpp
   qgsfiledownloader.cpp
   qgsdatasourcemanagerdialog.cpp
+  qgssourceselect.cpp
 )
 
 SET(QGIS_GUI_MOC_HDRS
@@ -502,6 +503,7 @@ SET(QGIS_GUI_MOC_HDRS
   ogr/qgsopenvectorlayerdialog.h
   ogr/qgsnewogrconnection.h
   ogr/qgsvectorlayersaveasdialog.h
+  qgssourceselect.h
 
   raster/qgsmultibandcolorrendererwidget.h
   raster/qgspalettedrendererwidget.h
@@ -710,6 +712,7 @@ SET(QGIS_GUI_HDRS
   ogr/qgsnewogrconnection.h
   ogr/qgsvectorlayersaveasdialog.h
 
+  qgssourceselect.h
 
   attributetable/qgsfeaturemodel.h
 

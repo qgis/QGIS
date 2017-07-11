@@ -55,14 +55,13 @@
 #include <QNetworkReply>
 
 QgsWMSSourceSelect::QgsWMSSourceSelect( QWidget *parent, Qt::WindowFlags fl, QgsProviderRegistry::WidgetMode widgetMode )
-  : QDialog( parent, fl )
-  , mWidgetMode( widgetMode )
+  : QgsSourceSelect( parent, fl, widgetMode )
   , mDefaultCRS( GEO_EPSG_CRS_AUTHID )
   , mCurrentTileset( nullptr )
 {
   setupUi( this );
 
-  if ( mWidgetMode != QgsProviderRegistry::WidgetMode::None )
+  if ( QgsSourceSelect::widgetMode() != QgsProviderRegistry::WidgetMode::None )
   {
     // For some obscure reason hiding does not work!
     // buttonBox->button( QDialogButtonBox::Close )->hide();
@@ -81,7 +80,7 @@ QgsWMSSourceSelect::QgsWMSSourceSelect( QWidget *parent, Qt::WindowFlags fl, Qgs
 
   mImageFormatGroup = new QButtonGroup;
 
-  if ( mWidgetMode != QgsProviderRegistry::WidgetMode::Manager )
+  if ( QgsSourceSelect::widgetMode( ) != QgsProviderRegistry::WidgetMode::Manager )
   {
     buttonBox->addButton( mAddButton, QDialogButtonBox::ActionRole );
     connect( mAddButton, &QAbstractButton::clicked, this, &QgsWMSSourceSelect::addClicked );
@@ -156,6 +155,13 @@ QgsWMSSourceSelect::~QgsWMSSourceSelect()
   settings.setValue( QStringLiteral( "Windows/WMSSourceSelect/geometry" ), saveGeometry() );
 }
 
+void QgsWMSSourceSelect::refresh( )
+{
+  // Reload WMS connections and update the GUI
+  QgsDebugMsg( "Refreshing WMS connections ..." );
+  populateConnectionList( );
+}
+
 
 void QgsWMSSourceSelect::populateConnectionList()
 {
@@ -164,6 +170,7 @@ void QgsWMSSourceSelect::populateConnectionList()
 
   setConnectionListPosition();
 }
+
 void QgsWMSSourceSelect::on_btnNew_clicked()
 {
   QgsNewHttpConnection *nc = new QgsNewHttpConnection( this );

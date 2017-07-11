@@ -92,7 +92,7 @@ class GUI_EXPORT QgsBrowserDockWidget : public QgsDockWidget, private Ui::QgsBro
     //! Toggle fast scan
     void toggleFastScan();
 
-    //! Selection hass changed
+    //! Selection has changed
     void selectionChanged( const QItemSelection &selected, const QItemSelection &deselected );
     //! Splitter has been moved
     void splitterMoved();

@@ -23,6 +23,7 @@
 #include "qgshelp.h"
 #include "qgsproviderregistry.h"
 #include "qgswmsprovider.h"
+#include "qgssourceselect.h"
 
 #include <QStringList>
 #include <QPushButton>
@@ -42,7 +43,7 @@ class QgsWmsCapabilities;
  * The user can then connect and add
  * layers from the WMS server to the map canvas.
  */
-class QgsWMSSourceSelect : public QDialog, private Ui::QgsWMSSourceSelectBase
+class QgsWMSSourceSelect : public QgsSourceSelect, private Ui::QgsWMSSourceSelectBase
 {
     Q_OBJECT
 
@@ -53,6 +54,9 @@ class QgsWMSSourceSelect : public QDialog, private Ui::QgsWMSSourceSelectBase
     ~QgsWMSSourceSelect();
 
   public slots:
+
+    //! Triggered when the provider's connections need to be refreshed
+    void refresh( ) override;
 
     //! Opens the create connection dialog to build a new connection
     void on_btnNew_clicked();
@@ -107,9 +111,6 @@ class QgsWMSSourceSelect : public QDialog, private Ui::QgsWMSSourceSelectBase
 
     //! Add a few example servers to the list.
     void addDefaultServers();
-
-    //! Embedded mode, without 'Close'
-    QgsProviderRegistry::WidgetMode mWidgetMode = QgsProviderRegistry::WidgetMode::None;
 
     //! Selected CRS
     QString mCRS;

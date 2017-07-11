@@ -105,7 +105,7 @@ Toggle fast scan
 
     void selectionChanged( const QItemSelection &selected, const QItemSelection &deselected );
 %Docstring
-Selection hass changed
+Selection has changed
 %End
     void splitterMoved();
 %Docstring

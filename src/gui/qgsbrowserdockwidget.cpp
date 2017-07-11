@@ -129,6 +129,11 @@ void QgsBrowserDockWidget::showEvent( QShowEvent *e )
     connect( mBrowserView->selectionModel(), &QItemSelectionModel::selectionChanged,
              this, &QgsBrowserDockWidget::selectionChanged );
 
+    // Forward the model changed signals to the widget
+    connect( mModel, &QgsBrowserModel::connectionsChanged,
+             this, &QgsBrowserDockWidget::connectionsChanged );
+
+
     // objectName used by settingsSection() is not yet set in constructor
     QgsSettings settings;
     mPropertiesWidgetEnabled = settings.value( settingsSection() + "/propertiesWidgetEnabled", false ).toBool();

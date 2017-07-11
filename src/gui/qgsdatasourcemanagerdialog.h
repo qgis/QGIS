@@ -106,8 +106,9 @@ class GUI_EXPORT QgsDataSourceManagerDialog : public QgsOptionsDialogBase, priva
     void updateProjectHome();
     //! Connections changed
     void connectionsChanged( );
-    // internal signal
-    void dlg_refresh( );
+    //! One or more provider connections have changed and the
+    //! dialogs should be refreshed
+    void providerDialogsRefreshRequested( );
 
   private:
     //! Return the dialog from the provider

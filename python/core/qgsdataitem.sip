@@ -304,6 +304,11 @@ Remove children recursively and set as not populated. This is used when refreshi
 
     virtual void refresh();
 
+    virtual void refreshConnections();
+%Docstring
+Refresh connections: update GUI and emit signal
+%End
+
     virtual void childrenCreated();
 
   signals:
@@ -313,6 +318,10 @@ Remove children recursively and set as not populated. This is used when refreshi
     void endRemoveItems();
     void dataChanged( QgsDataItem *item );
     void stateChanged( QgsDataItem *item, QgsDataItem::State oldState );
+    void connectionsChanged( );
+%Docstring
+Emitted when the provider's connections of the child items have changed
+%End
 
   protected slots:
 
