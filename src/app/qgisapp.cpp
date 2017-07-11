@@ -652,7 +652,7 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
   QgsRuntimeProfiler *profiler = QgsApplication::profiler();
 
   startProfile( QStringLiteral( "User profile manager" ) );
-  mUserProfileManager = new QgsUserProfileManager();
+  mUserProfileManager = new QgsUserProfileManager( "", this );
   mUserProfileManager->setRootLocation( rootProfileLocation );
   mUserProfileManager->setActiveUserProfile( activeProfile );
   connect( mUserProfileManager, &QgsUserProfileManager::profilesChanged, this, &QgisApp::refreshProfileMenu );
@@ -2295,7 +2295,7 @@ void QgisApp::createMenus()
   actionWhatsThis->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionWhatsThis.svg" ) ) );
   mHelpMenu->insertAction( before, actionWhatsThis );
 
-  this->createProfileMenu();
+  createProfileMenu();
 }
 
 void QgisApp::refreshProfileMenu()
@@ -2309,9 +2309,10 @@ void QgisApp::refreshProfileMenu()
     profile = userProfileManager()->profileForName( name );
     QAction *action = mConfigMenu->addAction( profile->icon(), profile->alias() );
     action->setToolTip( profile->folder() );
-    connect( action, &QAction::triggered, this, [this, profile]()
+    delete profile;
+    connect( action, &QAction::triggered, this, [this, name]()
     {
-      userProfileManager()->loadUserProfile( profile );
+      userProfileManager()->loadUserProfile( name );
     } );
   }
   mConfigMenu->addSeparator();
@@ -2336,7 +2337,7 @@ void QgisApp::createProfileMenu()
   menuBar()->setCornerWidget( mConfigMenuBar );
   mConfigMenuBar->show();
 
-  this->refreshProfileMenu();
+  refreshProfileMenu();
 }
 
 void QgisApp::createToolBars()

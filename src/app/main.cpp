@@ -492,8 +492,8 @@ int main( int argc, char *argv[] )
 
   // This behavior is used to load the app, snapshot the map,
   // save the image to disk and then exit
-  QString mySnapshotFileName = QLatin1String( "" );
-  QString configLocalStorageLocation = QLatin1String( "" );
+  QString mySnapshotFileName = "";
+  QString configLocalStorageLocation =  "";
   QString profileName;
   int mySnapshotWidth = 800;
   int mySnapshotHeight = 600;
@@ -780,7 +780,6 @@ int main( int argc, char *argv[] )
     QgsCustomization::instance()->setEnabled( false );
   }
 
-  // Set up the QSettings environment must be done after qapp is created
   QCoreApplication::setOrganizationName( QgsApplication::QGIS_ORGANIZATION_NAME );
   QCoreApplication::setOrganizationDomain( QgsApplication::QGIS_ORGANIZATION_DOMAIN );
   QCoreApplication::setApplicationName( QgsApplication::QGIS_APPLICATION_NAME );
@@ -790,9 +789,11 @@ int main( int argc, char *argv[] )
   QgsUserProfileManager manager( rootProfileFolder );
   QgsUserProfile *profile = manager.getProfile( profileName, true );
   QString profileFolder = profile->folder();
+  profileName = profile->name();
+  delete profile;
 
   QgsDebugMsg( "User profile details:" );
-  QgsDebugMsg( QString( "\t - %1" ).arg( profile->name() ) );
+  QgsDebugMsg( QString( "\t - %1" ).arg( profileName ) );
   QgsDebugMsg( QString( "\t - %1" ).arg( profileFolder ) );
   QgsDebugMsg( QString( "\t - %1" ).arg( rootProfileFolder ) );
 
@@ -1130,7 +1131,7 @@ int main( int argc, char *argv[] )
   // this should be done in QgsApplication::init() but it doesn't know the settings dir.
   QgsApplication::setMaxThreads( mySettings.value( QStringLiteral( "qgis/max_threads" ), -1 ).toInt() );
 
-  QgisApp *qgis = new QgisApp( mypSplash, myRestorePlugins, mySkipVersionCheck, rootProfileFolder, profile->name() ); // "QgisApp" used to find canonical instance
+  QgisApp *qgis = new QgisApp( mypSplash, myRestorePlugins, mySkipVersionCheck, rootProfileFolder, profileName ); // "QgisApp" used to find canonical instance
   qgis->setObjectName( QStringLiteral( "QgisApp" ) );
 
   myApp.connect(
@@ -1328,7 +1329,6 @@ int main( int argc, char *argv[] )
 #endif
 
   int retval = myApp.exec();
-  delete profile;
   delete qgis;
   return retval;
 }

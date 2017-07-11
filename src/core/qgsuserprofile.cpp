@@ -7,7 +7,7 @@
 #include <QSqlDatabase>
 #include <QSqlQuery>
 
-QgsUserProfile::QgsUserProfile( QString folder )
+QgsUserProfile::QgsUserProfile( const QString &folder )
 {
   mProfileFolder = folder;
 }

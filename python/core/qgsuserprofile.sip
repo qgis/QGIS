@@ -25,31 +25,28 @@ class QgsUserProfile
 %End
   public:
 
-    QgsUserProfile( QString folder );
+    QgsUserProfile( const QString &folder );
 %Docstring
  Reference to a existing user profile folder.
  Profile folder should be created using QgsProfileManager.
- @param folder An existing profile folder as the base of the user profile.
+ \param folder An existing profile folder as the base of the user profile.
 %End
 
     const QString folder() const;
 %Docstring
  The base folder for the user profile.
- @return
  :rtype: str
 %End
 
     QgsError validate() const;
 %Docstring
  Check of the profile is in a valid state.
- @return Any errors the profile has.
  :rtype: QgsError
 %End
 
     const QString name() const;
 %Docstring
  The name for the user profile.
- @return
  :rtype: str
 %End
 
@@ -60,24 +57,23 @@ class QgsUserProfile
 
     const QString alias() const;
 %Docstring
- Return the alias for the user profile. Reads the alias from .profile
- in the profile folder.
- @return If no alais is set name() is returned.
+ Return the alias for the user profile.
+ :return: If no alais is set name() is returned.
  :rtype: str
 %End
 
     QgsError setAlias( const QString &alias );
 %Docstring
  Set the alias of the profile.  The alias is a user friendly name.
- @param alias A user friendly name for the profile.
- @return True of setting the alias was successful.
+ \param alias A user friendly name for the profile.
+ :return: True of setting the alias was successful.
  :rtype: QgsError
 %End
 
     const QIcon icon() const;
 %Docstring
  The icon for the user profile.
- @return
+ :return: A QIcon for the users
  :rtype: QIcon
 %End
 

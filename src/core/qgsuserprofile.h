@@ -22,25 +22,22 @@ class CORE_EXPORT QgsUserProfile
     /**
      * Reference to a existing user profile folder.
      * Profile folder should be created using QgsProfileManager.
-     * @param folder An existing profile folder as the base of the user profile.
+     * \param folder An existing profile folder as the base of the user profile.
      */
-    QgsUserProfile( QString folder );
+    QgsUserProfile( const QString &folder );
 
     /**
      * The base folder for the user profile.
-     * @return
      */
     const QString folder() const;
 
     /**
      * Check of the profile is in a valid state.
-     * @return Any errors the profile has.
      */
     QgsError validate() const;
 
     /**
      * The name for the user profile.
-     * @return
      */
     const QString name() const;
 
@@ -50,22 +47,21 @@ class CORE_EXPORT QgsUserProfile
     void initSettings() const;
 
     /**
-     * Return the alias for the user profile. Reads the alias from .profile
-     * in the profile folder.
-     * @return If no alais is set name() is returned.
+     * Return the alias for the user profile.
+     * \return If no alais is set name() is returned.
      */
     const QString alias() const;
 
     /**
      * Set the alias of the profile.  The alias is a user friendly name.
-     * @param alias A user friendly name for the profile.
-     * @return True of setting the alias was successful.
+     * \param alias A user friendly name for the profile.
+     * \return True of setting the alias was successful.
      */
     QgsError setAlias( const QString &alias );
 
     /**
      * The icon for the user profile.
-     * @return
+     * \return A QIcon for the users
      */
     const QIcon icon() const;
 

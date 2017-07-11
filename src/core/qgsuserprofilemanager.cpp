@@ -10,11 +10,12 @@
 #include <QStandardPaths>
 
 
-QgsUserProfileManager::QgsUserProfileManager( const QString &rootLocation )
-  : mWatcher( new QFileSystemWatcher() )
+QgsUserProfileManager::QgsUserProfileManager( const QString &rootLocation, QObject *parent )
+  : QObject( parent )
 {
+  mWatcher.reset( new QFileSystemWatcher() );
   setRootLocation( rootLocation );
-  connect( mWatcher, &QFileSystemWatcher::directoryChanged, this, [this]
+  connect( mWatcher.get(), &QFileSystemWatcher::directoryChanged, this, [this]
   {
     emit profilesChanged();
   } );
@@ -31,7 +32,7 @@ QString QgsUserProfileManager::resolveProfilesFolder( const QString &basePath )
 
   if ( basePath.isEmpty() )
   {
-    QString rootFolder = QStandardPaths::standardLocations( QStandardPaths::AppDataLocation ).at( 0 );
+    QString rootFolder = QStandardPaths::standardLocations( QStandardPaths::AppDataLocation ).value( 0 );
     rootFolder = rootFolder + QDir::separator() + "profiles";
     return rootFolder;
   }
@@ -172,10 +173,10 @@ QString QgsUserProfileManager::settingsFile()
 
 QgsUserProfile *QgsUserProfileManager::userProfile()
 {
-  return mUserProfile;
+  return mUserProfile.get();
 }
 
-void QgsUserProfileManager::loadUserProfile( const QgsUserProfile *profile )
+void QgsUserProfileManager::loadUserProfile( const QString &name )
 {
   QString path = QDir::toNativeSeparators( QCoreApplication::applicationFilePath() );
   QStringList arguments;
@@ -185,21 +186,15 @@ void QgsUserProfileManager::loadUserProfile( const QgsUserProfile *profile )
   // http://doc.qt.io/qt-5/qcoreapplication.html#arguments
   arguments.removeFirst();
 
-  arguments << "--profile" << profile->name();
+  arguments << "--profile" << name;
   QgsDebugMsg( QString( "Starting instance from %1 with %2" ).arg( path ).arg( arguments.join( " " ) ) );
   QProcess::startDetached( path, arguments, QDir::toNativeSeparators( QCoreApplication::applicationDirPath() ) );
 }
 
 void QgsUserProfileManager::setActiveUserProfile( const QString &profile )
 {
-  if ( ! mUserProfile )
+  if ( ! mUserProfile.get() )
   {
-    mUserProfile = profileForName( profile );
+    mUserProfile.reset( profileForName( profile ) );
   }
-}
-
-void QgsUserProfileManager::loadUserProfile( const QString &name )
-{
-  QgsUserProfile *profile = profileForName( name );
-  loadUserProfile( profile );
 }
