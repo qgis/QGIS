@@ -702,8 +702,28 @@ class TestQgsProject(unittest.TestCase):
 
     def test_zip_invalid_path(self):
         project = QgsProject()
+        self.assertFalse(project.zip())
         self.assertFalse(project.zip("/fake/test.zip"))
         self.assertFalse(project.zip(""))
+
+    def test_zip_filename(self):
+        tmpFile = QTemporaryFile()
+        tmpFile.open()
+        tmpFile.close()
+        os.remove(tmpFile.fileName())
+
+        project = QgsProject()
+        self.assertFalse(project.zip())
+
+        project.setZipFileName(tmpFile.fileName())
+        self.assertTrue(project.zip())
+        self.assertTrue(os.path.isfile(tmpFile.fileName()))
+
+    def test_unzip_invalid_path(self):
+        project = QgsProject()
+        self.assertFalse(project.unzip())
+        self.assertFalse(project.unzip(""))
+        self.assertFalse(project.unzip("/fake/test.zip"))
 
     def test_zip_unzip(self):
         tmpFile = QTemporaryFile()
@@ -719,7 +739,11 @@ class TestQgsProject(unittest.TestCase):
         self.assertTrue(project.zip(tmpFile.fileName()))
 
         project2 = QgsProject()
+        self.assertFalse(project2.unzipped())
+        self.assertTrue(project2.zipFileName() == "")
         self.assertTrue(project2.unzip(tmpFile.fileName()))
+        self.assertTrue(project2.unzipped())
+        self.assertTrue(project2.zipFileName() == tmpFile.fileName())
         layers = project2.mapLayers()
 
         self.assertEqual(len(layers.keys()), 2)
