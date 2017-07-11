@@ -29,7 +29,6 @@ from qgis.core import (QgsVectorDataProvider,
                        QgsFields,
                        QgsProcessingParameterVectorLayer,
                        QgsProcessingParameterField,
-                       QgsProcessingParameterDefinition,
                        QgsProcessingOutputVectorLayer)
 
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm

@@ -25,10 +25,8 @@ __copyright__ = '(C) 2010, Michael Minn'
 
 __revision__ = '$Format:%H$'
 
-from qgis.core import (QgsApplication)
 from qgis.PyQt.QtCore import QVariant
 from qgis.core import (QgsExpression,
-                       QgsProcessingUtils,
                        QgsProcessingParameterVectorLayer,
                        QgsProcessingParameterField,
                        QgsProcessingParameterEnum,

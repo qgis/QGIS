@@ -26,13 +26,13 @@ __copyright__ = '(C) 2015, Nyall Dawson'
 __revision__ = '$Format:%H$'
 
 from qgis.core import (QgsFeatureSink,
+                       QgsProcessing,
                        QgsProcessingParameterFeatureSource,
                        QgsProcessingParameterFeatureSink,
                        QgsProcessingParameterNumber)
 
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
-from processing.tools import dataobjects
 
 
 class Smooth(QgisAlgorithm):
@@ -51,7 +51,7 @@ class Smooth(QgisAlgorithm):
 
     def initAlgorithm(self, config=None):
         self.addParameter(QgsProcessingParameterFeatureSource(self.INPUT,
-                                                              self.tr('Input layer'), [dataobjects.TYPE_VECTOR_POLYGON, dataobjects.TYPE_VECTOR_LINE]))
+                                                              self.tr('Input layer'), [QgsProcessing.TypeVectorPolygon, QgsProcessing.TypeVectorLine]))
         self.addParameter(QgsProcessingParameterNumber(self.ITERATIONS,
                                                        self.tr('Iterations'),
                                                        defaultValue=1, minValue=1, maxValue=10))

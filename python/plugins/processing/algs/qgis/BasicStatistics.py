@@ -32,11 +32,9 @@ from qgis.PyQt.QtCore import QVariant
 from qgis.PyQt.QtGui import QIcon
 
 from qgis.core import (QgsStatisticalSummary,
-                       QgsFeatureSink,
                        QgsStringStatisticalSummary,
                        QgsDateTimeStatisticalSummary,
                        QgsFeatureRequest,
-                       QgsProcessingUtils,
                        QgsProcessingParameterFeatureSource,
                        QgsProcessingParameterField,
                        QgsProcessingParameterFileDestination,
