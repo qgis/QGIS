@@ -99,8 +99,13 @@
    </widget>
    <widget class="QMenu" name="mMenuView">
     <property name="title">
-     <string>View</string>
+     <string>&amp;View</string>
     </property>
+    <widget class="QMenu" name="mToolbarMenu">
+     <property name="title">
+      <string>&amp;Toolbars</string>
+     </property>
+    </widget>
     <addaction name="mActionZoomIn"/>
     <addaction name="mActionZoomOut"/>
     <addaction name="mActionZoomActual"/>
@@ -108,6 +113,9 @@
     <addaction name="mActionZoomToWidth"/>
     <addaction name="separator"/>
     <addaction name="mActionShowRulers"/>
+    <addaction name="separator"/>
+    <addaction name="mToolbarMenu"/>
+    <addaction name="mActionToggleFullScreen"/>
    </widget>
    <addaction name="mLayoutMenu"/>
    <addaction name="mMenuView"/>
@@ -267,6 +275,20 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+R</string>
+   </property>
+  </action>
+  <action name="mActionToggleFullScreen">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Toggle Full Scr&amp;een</string>
+   </property>
+   <property name="toolTip">
+    <string>Toggle full screen mode</string>
+   </property>
+   <property name="shortcut">
+    <string>F11</string>
    </property>
   </action>
  </widget>

@@ -130,6 +130,8 @@ class QgsLayoutDesignerDialog: public QMainWindow, private Ui::QgsLayoutDesigner
     //! Updates cursor position in status bar
     void updateStatusCursorPos( QPointF position );
 
+    void toggleFullScreen( bool enabled );
+
   private:
 
     QgsAppLayoutDesignerInterface *mInterface = nullptr;

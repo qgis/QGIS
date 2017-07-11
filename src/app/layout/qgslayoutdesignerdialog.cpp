@@ -212,15 +212,11 @@ QgsLayoutDesignerDialog::QgsLayoutDesignerDialog( QWidget *parent, Qt::WindowFla
   connect( mVerticalRuler, &QgsLayoutRuler::cursorPosChanged, this, &QgsLayoutDesignerDialog::updateStatusCursorPos );
 
   // Panel and toolbar submenus
-  QMenu *toolbarMenu = new QMenu( tr( "&Toolbars" ), this );
-  toolbarMenu->setObjectName( QStringLiteral( "mToolbarMenu" ) );
-  mMenuView->addSeparator();
-  mMenuView->addMenu( toolbarMenu );
+  mToolbarMenu->addAction( mLayoutToolbar->toggleViewAction() );
+  mToolbarMenu->addAction( mNavigationToolbar->toggleViewAction() );
+  mToolbarMenu->addAction( mToolsToolbar->toggleViewAction() );
 
-  // toolBar already exists, add other widgets as they are created
-  toolbarMenu->addAction( mLayoutToolbar->toggleViewAction() );
-  toolbarMenu->addAction( mNavigationToolbar->toggleViewAction() );
-  toolbarMenu->addAction( mToolsToolbar->toggleViewAction() );
+  connect( mActionToggleFullScreen, &QAction::toggled, this, &QgsLayoutDesignerDialog::toggleFullScreen );
 
   restoreWindowState();
 }
@@ -394,6 +390,18 @@ void QgsLayoutDesignerDialog::updateStatusCursorPos( QPointF position )
   mStatusCursorXLabel->setText( QString( tr( "x: %1 mm" ) ).arg( pagePosition.x() ) );
   mStatusCursorYLabel->setText( QString( tr( "y: %1 mm" ) ).arg( pagePosition.y() ) );
   mStatusCursorPageLabel->setText( QString( tr( "page: %1" ) ).arg( currentPage ) );
+}
+
+void QgsLayoutDesignerDialog::toggleFullScreen( bool enabled )
+{
+  if ( enabled )
+  {
+    showFullScreen();
+  }
+  else
+  {
+    showNormal();
+  }
 }
 
 QgsLayoutView *QgsLayoutDesignerDialog::view()
