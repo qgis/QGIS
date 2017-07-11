@@ -27,6 +27,7 @@ class QgsLayoutViewToolPan;
 class QgsLayoutViewToolZoom;
 class QgsLayoutViewToolSelect;
 class QComboBox;
+class QSlider;
 
 class QgsAppLayoutDesignerInterface : public QgsLayoutDesignerInterface
 {
@@ -114,6 +115,7 @@ class QgsLayoutDesignerDialog: public QMainWindow, private Ui::QgsLayoutDesigner
     void itemTypeAdded( int type );
     void statusZoomCombo_currentIndexChanged( int index );
     void statusZoomCombo_zoomEntered();
+    void sliderZoomChanged( int value );
 
     //! Updates zoom level in status bar
     void updateStatusZoom();
@@ -130,6 +132,7 @@ class QgsLayoutDesignerDialog: public QMainWindow, private Ui::QgsLayoutDesigner
 
     //! Combobox in status bar which shows/adjusts current zoom level
     QComboBox *mStatusZoomCombo = nullptr;
+    QSlider *mStatusZoomSlider = nullptr;
 
     static QList<double> sStatusZoomLevelsList;
 

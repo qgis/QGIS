@@ -32,6 +32,7 @@
 #include <QComboBox>
 #include <QLineEdit>
 #include <QDesktopWidget>
+#include <QSlider>
 
 //add some nice zoom levels for zoom comboboxes
 QList<double> QgsLayoutDesignerDialog::sStatusZoomLevelsList { 0.125, 0.25, 0.5, 1.0, 2.0, 4.0, 8.0};
@@ -149,7 +150,18 @@ QgsLayoutDesignerDialog::QgsLayoutDesignerDialog( QWidget *parent, Qt::WindowFla
   connect( mStatusZoomCombo, static_cast<void ( QComboBox::* )( int )>( &QComboBox::activated ), this, &QgsLayoutDesignerDialog::statusZoomCombo_currentIndexChanged );
   connect( mStatusZoomCombo->lineEdit(), &QLineEdit::returnPressed, this, &QgsLayoutDesignerDialog::statusZoomCombo_zoomEntered );
 
+  mStatusZoomSlider = new QSlider();
+  mStatusZoomSlider->setFixedWidth( mStatusZoomCombo->width() );
+  mStatusZoomSlider->setOrientation( Qt::Horizontal );
+  mStatusZoomSlider->setMinimum( 20 );
+  mStatusZoomSlider->setMaximum( 800 );
+  connect( mStatusZoomSlider, &QSlider::valueChanged, this, &QgsLayoutDesignerDialog::sliderZoomChanged );
+
+  mStatusZoomCombo->setToolTip( tr( "Zoom level" ) );
+  mStatusZoomSlider->setToolTip( tr( "Zoom level" ) );
+
   mStatusBar->addPermanentWidget( mStatusZoomCombo );
+  mStatusBar->addPermanentWidget( mStatusZoomSlider );
 
   mView->setTool( mSelectTool );
   mView->setFocus();
@@ -277,6 +289,11 @@ void QgsLayoutDesignerDialog::statusZoomCombo_zoomEntered()
   mView->setZoomLevel( zoom.toDouble() / 100 );
 }
 
+void QgsLayoutDesignerDialog::sliderZoomChanged( int value )
+{
+  mView->setZoomLevel( value / 100.0 );
+}
+
 void QgsLayoutDesignerDialog::updateStatusZoom()
 {
   double dpi = QgsApplication::desktop()->logicalDpiX();
@@ -290,6 +307,7 @@ void QgsLayoutDesignerDialog::updateStatusZoom()
   double zoomLevel = mView->transform().m11() * 100 / scale100;
 
   whileBlocking( mStatusZoomCombo )->lineEdit()->setText( tr( "%1%" ).arg( zoomLevel, 0, 'f', 1 ) );
+  whileBlocking( mStatusZoomSlider )->setValue( zoomLevel );
 }
 
 QgsLayoutView *QgsLayoutDesignerDialog::view()
