@@ -5235,12 +5235,10 @@ void QgisApp::fileOpen()
     // Retrieve last used project dir from persistent settings
     QgsSettings settings;
     QString lastUsedDir = settings.value( QStringLiteral( "UI/lastProjectDir" ), QDir::homePath() ).toString();
-    const QString qgs_ext = tr( "QGIS files" ) + " (*.qgs *.QGS)";
-    const QString zip_ext = tr( "QGZ files" ) + " (*.qgz)";
     QString fullPath = QFileDialog::getOpenFileName( this,
                        tr( "Choose a QGIS project file to open" ),
                        lastUsedDir,
-                       qgs_ext + ";;" + zip_ext );
+                       tr( "QGIS files" ) + " (*.qgs *.qgz *.QGS)" );
     if ( fullPath.isNull() )
     {
       return;
