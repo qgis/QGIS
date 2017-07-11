@@ -132,6 +132,7 @@ QgsLayoutDesignerDialog::QgsLayoutDesignerDialog( QWidget *parent, Qt::WindowFla
   connect( mActionZoomOut, &QAction::triggered, mView, &QgsLayoutView::zoomOut );
   connect( mActionZoomAll, &QAction::triggered, mView, &QgsLayoutView::zoomFull );
   connect( mActionZoomActual, &QAction::triggered, mView, &QgsLayoutView::zoomActual );
+  connect( mActionZoomToWidth, &QAction::triggered, mView, &QgsLayoutView::zoomWidth );
 
   //create status bar labels
   mStatusCursorXLabel = new QLabel( mStatusBar );

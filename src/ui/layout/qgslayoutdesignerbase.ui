@@ -105,6 +105,7 @@
     <addaction name="mActionZoomOut"/>
     <addaction name="mActionZoomActual"/>
     <addaction name="mActionZoomAll"/>
+    <addaction name="mActionZoomToWidth"/>
    </widget>
    <addaction name="mLayoutMenu"/>
    <addaction name="mMenuView"/>
@@ -245,6 +246,11 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+1</string>
+   </property>
+  </action>
+  <action name="mActionZoomToWidth">
+   <property name="text">
+    <string>Zoom to Width</string>
    </property>
   </action>
  </widget>
