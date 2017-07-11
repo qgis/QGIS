@@ -40,7 +40,7 @@ from qgis.core import (QgsField,
                        QgsWkbTypes,
                        QgsProcessing,
                        QgsFields,
-                       QgsProcessingParameterFeatureSource
+                       QgsProcessingParameterFeatureSource,
                        QgsProcessingParameterFeatureSink)
 
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
