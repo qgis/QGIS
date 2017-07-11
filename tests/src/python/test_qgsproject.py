@@ -750,6 +750,9 @@ class TestQgsProject(unittest.TestCase):
         self.assertTrue(layers[l0.id()].isValid(), True)
         self.assertTrue(layers[l1.id()].isValid(), True)
 
+        project2.clear()
+        self.assertFalse(project2.unzipped())
+
 
 if __name__ == '__main__':
     unittest.main()

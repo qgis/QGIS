@@ -494,6 +494,13 @@ void QgsProject::clear()
   mRootGroup->clear();
 
   mLabelingEngineSettings->clear();
+
+  // unzip action use read() method to read the embedded qgs project file.
+  // And read() clear everything in a first step. But we don't want to reset
+  // the current archive while unzipping...
+  if ( !mUnzipping )
+    mArchive->clear();
+
   emit labelingEngineSettingsChanged();
 
   // reset some default project properties
@@ -764,9 +771,6 @@ bool QgsProject::read( const QString &filename )
 bool QgsProject::read()
 {
   clearError();
-
-  if ( ! mUnzipping )
-    mArchive->clear();
 
   std::unique_ptr<QDomDocument> doc( new QDomDocument( QStringLiteral( "qgis" ) ) );
 
