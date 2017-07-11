@@ -32,13 +32,13 @@ from qgis.PyQt.QtGui import QIcon
 from qgis.core import (QgsMapToPixelSimplifier,
                        QgsMessageLog,
                        QgsFeatureSink,
+                       QgsProcessing,
                        QgsProcessingParameterFeatureSource,
                        QgsProcessingParameterFeatureSink,
                        QgsProcessingParameterEnum,
                        QgsProcessingParameterNumber)
 
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
-from processing.tools import dataobjects
 
 pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
@@ -62,7 +62,7 @@ class SimplifyGeometries(QgisAlgorithm):
     def initAlgorithm(self, config=None):
         self.addParameter(QgsProcessingParameterFeatureSource(self.INPUT,
                                                               self.tr('Input layer'),
-                                                              [dataobjects.TYPE_VECTOR_POLYGON, dataobjects.TYPE_VECTOR_LINE]))
+                                                              [QgsProcessing.TypeVectorPolygon, QgsProcessing.TypeVectorLine]))
         self.methods = [self.tr('Distance (Douglas-Peucker)'),
                         'Snap to grid',
                         'Area (Visvalingam)']

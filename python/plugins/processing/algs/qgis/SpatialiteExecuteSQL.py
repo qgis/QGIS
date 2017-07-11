@@ -27,7 +27,6 @@ __copyright__ = '(C) 2016, Mathieu Pellerin'
 __revision__ = '$Format:%H$'
 
 from qgis.core import (QgsDataSourceUri,
-                       QgsApplication,
                        QgsProcessingParameterVectorLayer,
                        QgsProcessingParameterString)
 
