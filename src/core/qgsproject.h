@@ -1073,6 +1073,8 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
 
     QVariantMap mCustomVariables;
 
+    QString mPathResolverBaseName;
+
     std::unique_ptr<QgsArchive> mArchive;
     bool mUnzipping;
 

@@ -1650,7 +1650,8 @@ void QgsProject::dumpProperties() const
 QgsPathResolver QgsProject::pathResolver() const
 {
   bool absolutePaths = readBoolEntry( QStringLiteral( "Paths" ), QStringLiteral( "/Absolute" ), false );
-  return QgsPathResolver( absolutePaths ? QString() : fileName() );
+  QString baseName = mPathResolverBaseName.isEmpty() ? fileName() : mPathResolverBaseName;
+  return QgsPathResolver( absolutePaths ? QString() : baseName );
 }
 
 QString QgsProject::readPath( const QString &src ) const
@@ -2091,8 +2092,10 @@ bool QgsProject::unzip( const QString &filename )
 
   // read the project file
   mUnzipping = true;
+  mPathResolverBaseName = filename;
   if ( ! read( archive->projectFile() ) )
   {
+    mPathResolverBaseName = QString();
     mUnzipping = false;
     setError( tr( "Cannot read unzipped qgs project file" ) );
     return false;
@@ -2100,6 +2103,7 @@ bool QgsProject::unzip( const QString &filename )
 
   // keep the archive
   mUnzipping = false;
+  mPathResolverBaseName = QString();
   mArchive.reset( archive.release() );
 
   return true;
@@ -2129,7 +2133,9 @@ bool QgsProject::zip( const QString &filename )
     const QString originalFilename = mFile.fileName();
     mFile.setFileName( qgsFile.fileName() );
 
+    mPathResolverBaseName = filename;
     writeOk = write();
+    mPathResolverBaseName = QString();
 
     mFile.setFileName( originalFilename );
     qgsFile.close();
