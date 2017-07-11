@@ -55,6 +55,11 @@ class QgsLayoutDesignerInterface: QObject
  Closes the layout designer.
 %End
 
+    virtual void zoomFull() = 0;
+%Docstring
+ Zooms to full extent of layout.
+%End
+
 };
 
 /************************************************************************

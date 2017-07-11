@@ -29,6 +29,12 @@
 #include "qgsgui.h"
 #include "qgslayoutitemguiregistry.h"
 #include <QShortcut>
+#include <QComboBox>
+#include <QLineEdit>
+#include <QDesktopWidget>
+
+//add some nice zoom levels for zoom comboboxes
+QList<double> QgsLayoutDesignerDialog::sStatusZoomLevelsList { 0.125, 0.25, 0.5, 1.0, 2.0, 4.0, 8.0};
 
 QgsAppLayoutDesignerInterface::QgsAppLayoutDesignerInterface( QgsLayoutDesignerDialog *dialog )
   : QgsLayoutDesignerInterface( dialog )
@@ -48,6 +54,11 @@ QgsLayoutView *QgsAppLayoutDesignerInterface::view()
 void QgsAppLayoutDesignerInterface::close()
 {
   mDesigner->close();
+}
+
+void QgsAppLayoutDesignerInterface::zoomFull()
+{
+  mDesigner->zoomFull();
 }
 
 
@@ -122,8 +133,28 @@ QgsLayoutDesignerDialog::QgsLayoutDesignerDialog( QWidget *parent, Qt::WindowFla
   connect( mActionZoomAll, &QAction::triggered, mView, &QgsLayoutView::zoomFull );
   connect( mActionZoomActual, &QAction::triggered, mView, &QgsLayoutView::zoomActual );
 
+  mStatusZoomCombo = new QComboBox();
+  mStatusZoomCombo->setEditable( true );
+  mStatusZoomCombo->setInsertPolicy( QComboBox::NoInsert );
+  mStatusZoomCombo->setCompleter( nullptr );
+  mStatusZoomCombo->setMinimumWidth( 100 );
+  //zoom combo box accepts decimals in the range 1-9999, with an optional decimal point and "%" sign
+  QRegularExpression zoomRx( "\\s*\\d{1,4}(\\.\\d?)?\\s*%?" );
+  QValidator *zoomValidator = new QRegularExpressionValidator( zoomRx, mStatusZoomCombo );
+  mStatusZoomCombo->lineEdit()->setValidator( zoomValidator );
+
+  Q_FOREACH ( double level, sStatusZoomLevelsList )
+  {
+    mStatusZoomCombo->insertItem( 0, tr( "%1%" ).arg( level * 100.0, 0, 'f', 1 ) );
+  }
+  connect( mStatusZoomCombo, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsLayoutDesignerDialog::statusZoomCombo_currentIndexChanged );
+  connect( mStatusZoomCombo->lineEdit(), &QLineEdit::returnPressed, this, &QgsLayoutDesignerDialog::statusZoomCombo_zoomEntered );
+
+  mStatusBar->addPermanentWidget( mStatusZoomCombo );
+
   mView->setTool( mSelectTool );
   mView->setFocus();
+  connect( mView, &QgsLayoutView::zoomLevelChanged, this, &QgsLayoutDesignerDialog::updateStatusZoom );
 
   restoreWindowState();
 }
@@ -218,6 +249,44 @@ void QgsLayoutDesignerDialog::itemTypeAdded( int type )
   {
     activateNewItemCreationTool( type );
   } );
+}
+
+void QgsLayoutDesignerDialog::statusZoomCombo_currentIndexChanged( int index )
+{
+  double selectedZoom = sStatusZoomLevelsList.at( sStatusZoomLevelsList.count() - index - 1 );
+  if ( mView )
+  {
+    mView->setZoomLevel( selectedZoom );
+    //update zoom combobox text for correct format (one decimal place, trailing % sign)
+    whileBlocking( mStatusZoomCombo )->lineEdit()->setText( tr( "%1%" ).arg( selectedZoom * 100.0, 0, 'f', 1 ) );
+  }
+}
+
+void QgsLayoutDesignerDialog::statusZoomCombo_zoomEntered()
+{
+  if ( !mView )
+  {
+    return;
+  }
+
+  //need to remove spaces and "%" characters from input text
+  QString zoom = mStatusZoomCombo->currentText().remove( QChar( '%' ) ).trimmed();
+  mView->setZoomLevel( zoom.toDouble() / 100 );
+}
+
+void QgsLayoutDesignerDialog::updateStatusZoom()
+{
+  double dpi = QgsApplication::desktop()->logicalDpiX();
+  //monitor dpi is not always correct - so make sure the value is sane
+  if ( ( dpi < 60 ) || ( dpi > 1200 ) )
+    dpi = 72;
+
+  //pixel width for 1mm on screen
+  double scale100 = dpi / 25.4;
+  //current zoomLevel
+  double zoomLevel = mView->transform().m11() * 100 / scale100;
+
+  whileBlocking( mStatusZoomCombo )->lineEdit()->setText( tr( "%1%" ).arg( zoomLevel, 0, 'f', 1 ) );
 }
 
 QgsLayoutView *QgsLayoutDesignerDialog::view()

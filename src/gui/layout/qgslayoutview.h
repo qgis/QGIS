@@ -133,6 +133,17 @@ class GUI_EXPORT QgsLayoutView: public QGraphicsView
      */
     void zoomActual();
 
+    /**
+     * Emits the zoomLevelChanged() signal. This should be called after
+     * calling any of the QGraphicsView base class methods which alter
+     * the view's zoom level, i.e. QGraphicsView::fitInView().
+     */
+    // NOTE - I realize these emitXXX methods are gross, but there's no clean
+    // alternative here. We can't override the non-virtual Qt QGraphicsView
+    // methods, and adding our own renamed methods which call the base class
+    // methods also adds noise to the API.
+    void emitZoomLevelChanged();
+
   signals:
 
     /**
@@ -148,6 +159,11 @@ class GUI_EXPORT QgsLayoutView: public QGraphicsView
      */
     void toolSet( QgsLayoutViewTool *tool );
 
+    /**
+     * Is emitted whenever the zoom level of the view is changed.
+     */
+    void zoomLevelChanged();
+
   protected:
     void mousePressEvent( QMouseEvent *event ) override;
     void mouseReleaseEvent( QMouseEvent *event ) override;
@@ -156,6 +172,7 @@ class GUI_EXPORT QgsLayoutView: public QGraphicsView
     void wheelEvent( QWheelEvent *event ) override;
     void keyPressEvent( QKeyEvent *event ) override;
     void keyReleaseEvent( QKeyEvent *event ) override;
+    void resizeEvent( QResizeEvent *event ) override;
 
   private:
 

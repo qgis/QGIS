@@ -54,6 +54,7 @@ void QgsLayoutViewToolZoom::layoutPressEvent( QgsLayoutViewMouseEvent *event )
 
     //zoom view to fit desired bounds
     view()->fitInView( boundsRect, Qt::KeepAspectRatio );
+    view()->emitZoomLevelChanged();
   }
   else
   {
@@ -99,6 +100,7 @@ void QgsLayoutViewToolZoom::layoutReleaseEvent( QgsLayoutViewMouseEvent *event )
 
   //zoom view to fit desired bounds
   view()->fitInView( newBoundsRect, Qt::KeepAspectRatio );
+  view()->emitZoomLevelChanged();
 }
 
 void QgsLayoutViewToolZoom::keyPressEvent( QKeyEvent *event )

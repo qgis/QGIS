@@ -68,6 +68,11 @@ class GUI_EXPORT QgsLayoutDesignerInterface: public QObject
      */
     virtual void close() = 0;
 
+    /**
+     * Zooms to full extent of layout.
+     */
+    virtual void zoomFull() = 0;
+
 };
 
 #endif // QGSLAYOUTDESIGNERINTERFACE_H

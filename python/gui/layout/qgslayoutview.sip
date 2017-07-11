@@ -112,6 +112,8 @@ class QgsLayoutView: QGraphicsView
 .. seealso:: zoomOut()
 %End
 
+    void emitZoomLevelChanged();
+
   signals:
 
     void layoutSet( QgsLayout *layout );
@@ -125,6 +127,11 @@ class QgsLayoutView: QGraphicsView
 %Docstring
  Emitted when the current ``tool`` is changed.
 .. seealso:: setTool()
+%End
+
+    void zoomLevelChanged();
+%Docstring
+ Is emitted whenever the zoom level of the view is changed.
 %End
 
   protected:
@@ -141,6 +148,8 @@ class QgsLayoutView: QGraphicsView
     virtual void keyPressEvent( QKeyEvent *event );
 
     virtual void keyReleaseEvent( QKeyEvent *event );
+
+    virtual void resizeEvent( QResizeEvent *event );
 
 
 };

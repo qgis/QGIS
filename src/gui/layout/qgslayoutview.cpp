@@ -107,6 +107,7 @@ void QgsLayoutView::setZoomLevel( double level )
   //desired pixel width for 1mm on screen
   double scale = qBound( MIN_VIEW_SCALE, level * dpi / 25.4, MAX_VIEW_SCALE );
   setTransform( QTransform::fromScale( scale, scale ) );
+  emit zoomLevelChanged();
 }
 
 void QgsLayoutView::zoomFull()
@@ -127,6 +128,11 @@ void QgsLayoutView::zoomOut()
 void QgsLayoutView::zoomActual()
 {
   setZoomLevel( 1.0 );
+}
+
+void QgsLayoutView::emitZoomLevelChanged()
+{
+  emit zoomLevelChanged();
 }
 
 void QgsLayoutView::mousePressEvent( QMouseEvent *event )
@@ -249,6 +255,12 @@ void QgsLayoutView::keyReleaseEvent( QKeyEvent *event )
     QGraphicsView::keyReleaseEvent( event );
 }
 
+void QgsLayoutView::resizeEvent( QResizeEvent *event )
+{
+  QGraphicsView::resizeEvent( event );
+  emit zoomLevelChanged();
+}
+
 void QgsLayoutView::wheelZoom( QWheelEvent *event )
 {
   //get mouse wheel zoom behavior settings
@@ -292,8 +304,8 @@ void QgsLayoutView::wheelZoom( QWheelEvent *event )
   }
 
   //update layout for new zoom
-#if 0 // TODO
   emit zoomLevelChanged();
+#if 0 // TODO
   updateRulers();
 #endif
   update();

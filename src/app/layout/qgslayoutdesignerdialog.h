@@ -26,6 +26,7 @@ class QgsLayoutViewToolAddItem;
 class QgsLayoutViewToolPan;
 class QgsLayoutViewToolZoom;
 class QgsLayoutViewToolSelect;
+class QComboBox;
 
 class QgsAppLayoutDesignerInterface : public QgsLayoutDesignerInterface
 {
@@ -39,6 +40,7 @@ class QgsAppLayoutDesignerInterface : public QgsLayoutDesignerInterface
   public slots:
 
     void close() override;
+    void zoomFull() override;
 
   private:
 
@@ -116,6 +118,11 @@ class QgsLayoutDesignerDialog: public QMainWindow, private Ui::QgsLayoutDesigner
   private slots:
 
     void itemTypeAdded( int type );
+    void statusZoomCombo_currentIndexChanged( int index );
+    void statusZoomCombo_zoomEntered();
+
+    //! Updates zoom level in status bar
+    void updateStatusZoom();
 
   private:
 
@@ -126,6 +133,11 @@ class QgsLayoutDesignerDialog: public QMainWindow, private Ui::QgsLayoutDesigner
     QActionGroup *mToolsActionGroup = nullptr;
 
     QgsLayoutView *mView = nullptr;
+
+    //! Combobox in status bar which shows/adjusts current zoom level
+    QComboBox *mStatusZoomCombo = nullptr;
+
+    static QList<double> sStatusZoomLevelsList;
 
     QgsLayoutViewToolAddItem *mAddItemTool = nullptr;
     QgsLayoutViewToolPan *mPanTool = nullptr;
