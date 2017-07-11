@@ -8,8 +8,6 @@
 ##value_field=field input
 ##N_unique_values=sink
 
-#outputs
-##N_unique_values=output outputVector
 
 from qgis.PyQt.QtCore import QVariant
 from qgis.core import QgsFeature, QgsField, QgsProcessingUtils

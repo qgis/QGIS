@@ -35,7 +35,7 @@ from qgis.core import (QgsFeature,
                        QgsFeatureRequest,
                        QgsWkbTypes,
                        QgsProcessingParameterFeatureSource,
-                       QgsProcessingParameterFeatureSink
+                       QgsProcessingParameterFeatureSink,
                        QgsSpatialIndex)
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 

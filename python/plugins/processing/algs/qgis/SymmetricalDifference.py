@@ -37,7 +37,7 @@ from qgis.core import (QgsFeature,
                        QgsWkbTypes,
                        QgsMessageLog,
                        QgsProcessingParameterFeatureSource,
-                       QgsProcessingParameterFeatureSink
+                       QgsProcessingParameterFeatureSink,
                        QgsSpatialIndex)
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 from processing.tools import vector
