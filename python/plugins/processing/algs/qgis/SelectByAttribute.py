@@ -69,6 +69,8 @@ class SelectByAttribute(QgisAlgorithm):
 
     def __init__(self):
         super().__init__()
+
+    def initAlgorithm(self, config=None):
         self.i18n_operators = ['=',
                                '!=',
                                '>',

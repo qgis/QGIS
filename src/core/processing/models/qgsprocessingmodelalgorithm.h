@@ -42,6 +42,8 @@ class CORE_EXPORT QgsProcessingModelAlgorithm : public QgsProcessingAlgorithm
      */
     QgsProcessingModelAlgorithm( const QString &name = QString(), const QString &group = QString() );
 
+    void initAlgorithm( const QVariantMap &configuration = QVariantMap() ) override;  //#spellok
+
     QString name() const override;
     QString displayName() const override;
     QString group() const override;
@@ -52,7 +54,6 @@ class CORE_EXPORT QgsProcessingModelAlgorithm : public QgsProcessingAlgorithm
 
     bool canExecute( QString *errorMessage SIP_OUT = nullptr ) const override;
     QString asPythonCommand( const QVariantMap &parameters, QgsProcessingContext &context ) const override;
-    QgsProcessingModelAlgorithm *create() const override SIP_FACTORY;
 
     /**
      * Sets the model \a name.
@@ -350,6 +351,8 @@ class CORE_EXPORT QgsProcessingModelAlgorithm : public QgsProcessingAlgorithm
         const QVariantMap &results = QVariantMap() ) const SIP_FACTORY;
 
   protected:
+
+    QgsProcessingAlgorithm *createInstance() const override SIP_FACTORY;
 
     QVariantMap processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
 

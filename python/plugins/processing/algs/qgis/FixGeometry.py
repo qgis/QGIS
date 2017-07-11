@@ -52,6 +52,8 @@ class FixGeometry(QgisAlgorithm):
 
     def __init__(self):
         super().__init__()
+
+    def initAlgorithm(self, config=None):
         self.addParameter(QgsProcessingParameterFeatureSource(self.INPUT, self.tr('Input layer'), [QgsProcessing.TypeVectorLine, QgsProcessing.TypeVectorPolygon]))
         self.addParameter(QgsProcessingParameterFeatureSink(self.OUTPUT, self.tr('Fixed geometries')))
         self.addOutput(QgsProcessingOutputVectorLayer(self.OUTPUT, self.tr("Fixed geometries")))

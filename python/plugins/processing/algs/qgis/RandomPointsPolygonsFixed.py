@@ -61,6 +61,8 @@ class RandomPointsPolygonsFixed(QgisAlgorithm):
 
     def __init__(self):
         super().__init__()
+
+    def initAlgorithm(self, config=None):
         self.strategies = [self.tr('Points count'),
                            self.tr('Points density')]
 

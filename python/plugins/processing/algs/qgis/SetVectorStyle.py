@@ -47,6 +47,8 @@ class SetVectorStyle(QgisAlgorithm):
 
     def __init__(self):
         super().__init__()
+
+    def initAlgorithm(self, config=None):
         self.addParameter(ParameterVector(self.INPUT,
                                           self.tr('Vector layer')))
         self.addParameter(ParameterFile(self.STYLE,

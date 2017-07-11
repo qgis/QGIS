@@ -29,6 +29,8 @@ class QgsProcessingModelChildAlgorithm : QgsProcessingModelComponent
  should be set to a QgsProcessingAlgorithm algorithm ID.
 %End
 
+    QgsProcessingModelChildAlgorithm( const QgsProcessingModelChildAlgorithm &other );
+
     QString childId() const;
 %Docstring
  Returns the child algorithm's unique ID string, used the identify
@@ -68,6 +70,31 @@ class QgsProcessingModelChildAlgorithm : QgsProcessingModelComponent
  should be set to an existing QgsProcessingAlgorithm algorithm ID.
 .. seealso:: algorithm()
 .. seealso:: algorithmId()
+%End
+
+    QVariantMap configuration() const;
+%Docstring
+ Returns the child algorithm's configuration map.
+
+ This map specifies configuration settings which are passed
+ to the algorithm, allowing it to dynamically adjust its initialized parameters
+ and outputs according to this configuration. This allows child algorithms in the model
+ to adjust their behavior at run time according to some user configuration.
+
+.. seealso:: setConfiguration()
+ :rtype: QVariantMap
+%End
+
+    void setConfiguration( const QVariantMap &configuration );
+%Docstring
+ Sets the child algorithm's ``configuration`` map.
+
+ This map specifies configuration settings which are passed
+ to the algorithm, allowing it to dynamically adjust its initialized parameters
+ and outputs according to this configuration. This allows child algorithms in the model
+ to adjust their behavior at run time according to some user configuration.
+
+.. seealso:: configuration()
 %End
 
     const QgsProcessingAlgorithm *algorithm() const;

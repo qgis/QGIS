@@ -79,8 +79,11 @@ class ScriptAlgorithm(QgsProcessingAlgorithm):
         self.cleaned_script = None
         self.results = {}
 
-    def create(self):
+    def createInstance(self):
         return ScriptAlgorithm(self.descriptionFile)
+
+    def initAlgorithm(self, config=None):
+        pass
 
     def icon(self):
         return self._icon

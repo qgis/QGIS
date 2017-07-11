@@ -55,6 +55,8 @@ class RandomExtractWithinSubsets(QgisAlgorithm):
 
     def __init__(self):
         super().__init__()
+
+    def initAlgorithm(self, config=None):
         self.methods = [self.tr('Number of selected features'),
                         self.tr('Percentage of selected features')]
 

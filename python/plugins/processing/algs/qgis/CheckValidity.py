@@ -73,6 +73,8 @@ class CheckValidity(QgisAlgorithm):
 
     def __init__(self):
         super().__init__()
+
+    def initAlgorithm(self, config=None):
         self.methods = [self.tr('The one selected in digitizing settings'),
                         'QGIS',
                         'GEOS']

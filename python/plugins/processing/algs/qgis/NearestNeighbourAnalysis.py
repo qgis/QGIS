@@ -62,6 +62,8 @@ class NearestNeighbourAnalysis(QgisAlgorithm):
 
     def __init__(self):
         super().__init__()
+
+    def initAlgorithm(self, config=None):
         self.addParameter(ParameterVector(self.POINTS,
                                           self.tr('Points'), [dataobjects.TYPE_VECTOR_POINT]))
 

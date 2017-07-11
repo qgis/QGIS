@@ -11,6 +11,11 @@
 
 
 
+%ModuleHeaderCode
+#include <qgsprocessingmodelalgorithm.h>
+%End
+
+
 class QgsProcessingAlgorithm
 {
 %Docstring
@@ -20,6 +25,13 @@ class QgsProcessingAlgorithm
 
 %TypeHeaderCode
 #include "qgsprocessingalgorithm.h"
+%End
+
+%ConvertToSubClassCode
+    if ( dynamic_cast< QgsProcessingModelAlgorithm * >( sipCpp ) != NULL )
+      sipType = sipType_QgsProcessingModelAlgorithm;
+    else
+      sipType = sipType_QgsProcessingAlgorithm;
 %End
   public:
 
@@ -38,15 +50,29 @@ class QgsProcessingAlgorithm
     QgsProcessingAlgorithm();
 %Docstring
  Constructor for QgsProcessingAlgorithm.
+
+ initAlgorithm() should be called after creating an algorithm to ensure it can correctly configure
+ its parameterDefinitions() and outputDefinitions(). Alternatively, calling create() will return
+ a pre-initialized copy of the algorithm.
 %End
 
     virtual ~QgsProcessingAlgorithm();
 
 
-
-    virtual QgsProcessingAlgorithm *create() const = 0 /Factory/;
+    QgsProcessingAlgorithm *create( const QVariantMap &configuration = QVariantMap() ) const /Factory/;
 %Docstring
  Creates a copy of the algorithm, ready for execution.
+
+ This method returns a new, preinitialized copy of the algorithm, ready for
+ executing.
+
+ The ``configuration`` argument allows passing of a map of configuration settings
+ to the algorithm, allowing it to dynamically adjust its initialized parameters
+ and outputs according to this configuration. This is generally used only for
+ algorithms in a model, allowing them to adjust their behavior at run time
+ according to some user configuration.
+
+.. seealso:: initAlgorithm()
  :rtype: QgsProcessingAlgorithm
 %End
 
@@ -332,11 +358,49 @@ class QgsProcessingAlgorithm
 
   protected:
 
+    virtual QgsProcessingAlgorithm *createInstance() const = 0;
+%Docstring
+ Creates a new instance of the algorithm class.
+
+ This method should return a 'pristine' instance of the algorithm class.
+ :rtype: QgsProcessingAlgorithm
+%End
+%VirtualCatcherCode
+    PyObject *resObj = sipCallMethod( 0, sipMethod, "" );
+    sipIsErr = !resObj || sipParseResult( 0, sipMethod, resObj, "H2", sipType_QgsProcessingAlgorithm, &sipRes ) < 0;
+    if ( !sipIsErr )
+      sipTransferTo( resObj, Py_None );
+%End
+
+    virtual void initAlgorithm( const QVariantMap &configuration = QVariantMap() ) = 0;
+%Docstring
+ Initializes the algorithm using the specified ``configuration``.
+
+ This should be called directly after creating algorithms and before retrieving
+ any parameterDefinitions() or outputDefinitions().
+
+ Subclasses should use their implementations to add all required input parameter and output
+ definitions (which can be dynamically adjusted according to ``configuration``).
+
+ Dynamic configuration can be used by algorithms which alter their behavior
+ when used inside processing models. For instance, a "feature router" type
+ algorithm which sends input features to one of any number of outputs sinks
+ based on some preconfigured filter parameters can use the init method to
+ create these outputs based on the specified ``configuration``.
+
+.. seealso:: addParameter()
+.. seealso:: addOutput()
+%End
+
     bool addParameter( QgsProcessingParameterDefinition *parameterDefinition /Transfer/ );
 %Docstring
  Adds a parameter ``definition`` to the algorithm. Ownership of the definition is transferred to the algorithm.
  Returns true if parameter could be successfully added, or false if the parameter could not be added (e.g.
  as a result of a duplicate name).
+
+ This should usually be called from a subclass' initAlgorithm() implementation.
+
+.. seealso:: initAlgorithm()
 .. seealso:: addOutput()
  :rtype: bool
 %End
@@ -352,7 +416,11 @@ class QgsProcessingAlgorithm
  Adds an output ``definition`` to the algorithm. Ownership of the definition is transferred to the algorithm.
  Returns true if the output could be successfully added, or false if the output could not be added (e.g.
  as a result of a duplicate name).
+
+ This should usually be called from a subclass' initAlgorithm() implementation.
+
 .. seealso:: addParameter()
+.. seealso:: initAlgorithm()
  :rtype: bool
 %End
 

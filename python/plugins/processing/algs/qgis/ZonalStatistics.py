@@ -63,6 +63,8 @@ class ZonalStatistics(QgisAlgorithm):
 
     def __init__(self):
         super().__init__()
+
+    def initAlgorithm(self, config=None):
         self.STATS = OrderedDict([(self.tr('Count'), QgsZonalStatistics.Count),
                                   (self.tr('Sum'), QgsZonalStatistics.Sum),
                                   (self.tr('Mean'), QgsZonalStatistics.Mean),

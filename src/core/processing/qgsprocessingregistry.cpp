@@ -98,3 +98,13 @@ const QgsProcessingAlgorithm *QgsProcessingRegistry::algorithmById( const QStrin
   return nullptr;
 }
 
+QgsProcessingAlgorithm *QgsProcessingRegistry::createAlgorithmById( const QString &id, const QVariantMap &configuration ) const
+{
+  const QgsProcessingAlgorithm *alg = algorithmById( id );
+  if ( !alg )
+    return nullptr;
+
+  std::unique_ptr< QgsProcessingAlgorithm > creation( alg->create( configuration ) );
+  return creation.release();
+}
+

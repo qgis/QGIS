@@ -114,7 +114,7 @@ class ModelerDialog(BASE, WIDGET):
                 if text in ModelerParameterDefinitionDialog.paramTypes:
                     self.addInputOfType(text, event.pos())
                 else:
-                    alg = QgsApplication.processingRegistry().algorithmById(text)
+                    alg = QgsApplication.processingRegistry().createAlgorithmById(text)
                     if alg is not None:
                         self._addAlgorithm(alg, event.pos())
                 event.accept()
@@ -549,7 +549,7 @@ class ModelerDialog(BASE, WIDGET):
     def addAlgorithm(self):
         item = self.algorithmTree.currentItem()
         if isinstance(item, TreeAlgorithmItem):
-            alg = QgsApplication.processingRegistry().algorithmById(item.alg.id())
+            alg = QgsApplication.processingRegistry().createAlgorithmById(item.alg.id())
             self._addAlgorithm(alg)
 
     def _addAlgorithm(self, alg, pos=None):

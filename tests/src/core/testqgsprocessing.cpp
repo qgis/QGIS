@@ -40,12 +40,13 @@ class DummyAlgorithm : public QgsProcessingAlgorithm
 
     DummyAlgorithm( const QString &name ) : mName( name ) { mFlags = QgsProcessingAlgorithm::flags(); }
 
+    void initAlgorithm( const QVariantMap & = QVariantMap() ) override {}
     QString name() const override { return mName; }
     QString displayName() const override { return mName; }
     QVariantMap processAlgorithm( const QVariantMap &, QgsProcessingContext &, QgsProcessingFeedback * ) override { return QVariantMap(); }
 
     virtual Flags flags() const override { return mFlags; }
-    DummyAlgorithm *create() const override { return new DummyAlgorithm( name() ); }
+    DummyAlgorithm *createInstance() const override { return new DummyAlgorithm( name() ); }
 
     QString mName;
 
@@ -334,6 +335,7 @@ class TestQgsProcessing: public QObject
     void modelAcceptableValues();
     void tempUtils();
     void convertCompatible();
+    void create();
 
   private:
 
@@ -826,6 +828,17 @@ void TestQgsProcessing::algorithm()
   QCOMPARE( r.algorithmById( "p1:alg2" ), p->algorithm( "alg2" ) );
   QVERIFY( !r.algorithmById( "p1:alg3" ) );
   QVERIFY( !r.algorithmById( "px:alg1" ) );
+
+  // createAlgorithmById
+  QVERIFY( !r.createAlgorithmById( "p1:alg3" ) );
+  std::unique_ptr< QgsProcessingAlgorithm > creation( r.createAlgorithmById( "p1:alg1" ) );
+  QVERIFY( creation.get() );
+  QCOMPARE( creation->provider()->id(), QStringLiteral( "p1" ) );
+  QCOMPARE( creation->id(), QStringLiteral( "p1:alg1" ) );
+  creation.reset( r.createAlgorithmById( "p1:alg2" ) );
+  QVERIFY( creation.get() );
+  QCOMPARE( creation->provider()->id(), QStringLiteral( "p1" ) );
+  QCOMPARE( creation->id(), QStringLiteral( "p1:alg2" ) );
 
   //test that loading a provider triggers an algorithm refresh
   DummyProvider *p2 = new DummyProvider( "p2" );
@@ -4271,6 +4284,11 @@ void TestQgsProcessing::modelerAlgorithm()
   child.setAlgorithmId( QStringLiteral( "native:centroids" ) );
   QVERIFY( child.algorithm() );
   QCOMPARE( child.algorithm()->id(), QStringLiteral( "native:centroids" ) );
+  QVariantMap myConfig;
+  myConfig.insert( QStringLiteral( "some_key" ), 11 );
+  child.setConfiguration( myConfig );
+  QCOMPARE( child.configuration(), myConfig );
+
   child.setDescription( QStringLiteral( "desc" ) );
   QCOMPARE( child.description(), QStringLiteral( "desc" ) );
   QVERIFY( child.isActive() );
@@ -4580,6 +4598,7 @@ void TestQgsProcessing::modelerAlgorithm()
   QgsProcessingModelChildAlgorithm alg5c1;
   alg5c1.setChildId( "cx1" );
   alg5c1.setAlgorithmId( "buffer" );
+  alg5c1.setConfiguration( myConfig );
   alg5c1.addParameterSources( "x", QgsProcessingModelChildParameterSources() << QgsProcessingModelChildParameterSource::fromModelParameter( "p1" ) );
   alg5c1.addParameterSources( "y", QgsProcessingModelChildParameterSources() << QgsProcessingModelChildParameterSource::fromChildOutput( "cx2", "out3" ) );
   alg5c1.addParameterSources( "z", QgsProcessingModelChildParameterSources() << QgsProcessingModelChildParameterSource::fromStaticValue( 5 ) );
@@ -4626,6 +4645,7 @@ void TestQgsProcessing::modelerAlgorithm()
   QgsProcessingModelChildAlgorithm alg6c1 = alg6.childAlgorithm( "cx1" );
   QCOMPARE( alg6c1.childId(), QStringLiteral( "cx1" ) );
   QCOMPARE( alg6c1.algorithmId(), QStringLiteral( "buffer" ) );
+  QCOMPARE( alg6c1.configuration(), myConfig );
   QVERIFY( alg6c1.isActive() );
   QVERIFY( alg6c1.outputsCollapsed() );
   QVERIFY( alg6c1.parametersCollapsed() );
@@ -5113,6 +5133,17 @@ void TestQgsProcessing::convertCompatible()
   QVERIFY( out != layer->source() );
   QVERIFY( out.endsWith( ".shp" ) );
   QVERIFY( out.startsWith( QgsProcessingUtils::tempFolder() ) );
+}
+
+void TestQgsProcessing::create()
+{
+  DummyAlgorithm alg( QStringLiteral( "test" ) );
+  DummyProvider p( QStringLiteral( "test_provider" ) );
+  alg.setProvider( &p );
+
+  std::unique_ptr< QgsProcessingAlgorithm > newInstance( alg.create() );
+  QVERIFY( newInstance.get() );
+  QCOMPARE( newInstance->provider(), &p );
 }
 
 QGSTEST_MAIN( TestQgsProcessing )

@@ -50,7 +50,7 @@ from processing.gui.Postprocessing import handleAlgorithmResults
 def algorithmOptions(id):
     """Prints all algorithm options with their values.
     """
-    alg = QgsApplication.processingRegistry().algorithmById(id)
+    alg = QgsApplication.processingRegistry().createAlgorithmById(id)
     if alg is not None:
         opts = ''
         for param in alg.parameterDefinitions():
@@ -67,7 +67,7 @@ def algorithmHelp(id):
     """Prints algorithm parameters with their types. Also
     provides information about options if any.
     """
-    alg = QgsApplication.processingRegistry().algorithmById(id)
+    alg = QgsApplication.processingRegistry().createAlgorithmById(id)
     if alg is not None:
         print(str(alg))
         algorithmOptions(id)
@@ -89,7 +89,7 @@ def runAndLoadResults(algOrName, parameters, feedback=None, context=None):
     if isinstance(algOrName, QgsProcessingAlgorithm):
         alg = algOrName
     else:
-        alg = QgsApplication.processingRegistry().algorithmById(algOrName)
+        alg = QgsApplication.processingRegistry().createAlgorithmById(algOrName)
 
     # output destination parameters to point to current project
     for param in alg.parameterDefinitions():

@@ -66,6 +66,8 @@ class RegularPoints(QgisAlgorithm):
 
     def __init__(self):
         super().__init__()
+
+    def initAlgorithm(self, config=None):
         self.addParameter(QgsProcessingParameterExtent(self.EXTENT,
                                                        self.tr('Input extent'), optional=False))
         self.addParameter(QgsProcessingParameterNumber(self.SPACING,

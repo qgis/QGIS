@@ -179,5 +179,9 @@
  */
 #define SIP_ABSTRACT
 
+/*
+ * Virtual catcher code
+ */
+#define SIP_VIRTUAL_CATCHER_CODE(code)
 
 #endif // QGIS_SIP_H

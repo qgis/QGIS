@@ -58,6 +58,8 @@ class Difference(QgisAlgorithm):
 
     def __init__(self):
         super().__init__()
+
+    def initAlgorithm(self, config=None):
         self.addParameter(ParameterVector(Difference.INPUT,
                                           self.tr('Input layer')))
         self.addParameter(ParameterVector(Difference.OVERLAY,

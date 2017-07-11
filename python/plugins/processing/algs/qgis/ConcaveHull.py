@@ -61,6 +61,7 @@ class ConcaveHull(QgisAlgorithm):
     def __init__(self):
         super().__init__()
 
+    def initAlgorithm(self, config=None):
         self.addParameter(QgsProcessingParameterFeatureSource(self.INPUT, self.tr('Input point layer'), [QgsProcessing.TypeVectorPoint]))
         self.addParameter(QgsProcessingParameterNumber(self.ALPHA,
                                                        self.tr('Threshold (0-1, where 1 is equivalent with Convex Hull)'),

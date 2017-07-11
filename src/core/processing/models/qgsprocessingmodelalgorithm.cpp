@@ -32,6 +32,10 @@ QgsProcessingModelAlgorithm::QgsProcessingModelAlgorithm( const QString &name, c
   , mModelGroup( group )
 {}
 
+void QgsProcessingModelAlgorithm::initAlgorithm( const QVariantMap & )
+{
+}
+
 QString QgsProcessingModelAlgorithm::name() const
 {
   return mModelName;
@@ -255,7 +259,7 @@ QVariantMap QgsProcessingModelAlgorithm::processAlgorithm( const QVariantMap &pa
       childTime.start();
 
       bool ok = false;
-      std::unique_ptr< QgsProcessingAlgorithm > childAlg( child.algorithm()->create() );
+      std::unique_ptr< QgsProcessingAlgorithm > childAlg( child.algorithm()->create( child.configuration() ) );
       QVariantMap results = childAlg->run( childParams, context, feedback, &ok );
       childAlg.reset( nullptr );
       if ( !ok )
@@ -1031,7 +1035,7 @@ QSet<QString> QgsProcessingModelAlgorithm::dependentChildAlgorithms( const QStri
 
 void QgsProcessingModelAlgorithm::dependsOnChildAlgorithmsRecursive( const QString &childId, QSet< QString > &depends ) const
 {
-  QgsProcessingModelChildAlgorithm alg = mChildAlgorithms.value( childId );
+  const QgsProcessingModelChildAlgorithm &alg = mChildAlgorithms.value( childId );
 
   // add direct dependencies
   Q_FOREACH ( const QString &c, alg.dependencies() )
@@ -1100,7 +1104,7 @@ QString QgsProcessingModelAlgorithm::asPythonCommand( const QVariantMap &paramet
   return QgsProcessingAlgorithm::asPythonCommand( parameters, context );
 }
 
-QgsProcessingModelAlgorithm *QgsProcessingModelAlgorithm::create() const
+QgsProcessingAlgorithm *QgsProcessingModelAlgorithm::createInstance() const
 {
   QgsProcessingModelAlgorithm *alg = new QgsProcessingModelAlgorithm();
   alg->loadVariant( toVariant() );

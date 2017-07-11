@@ -42,14 +42,10 @@ class DeleteHoles(QgisAlgorithm):
     MIN_AREA = 'MIN_AREA'
     OUTPUT = 'OUTPUT'
 
-    def tags(self):
-        return self.tr('remove,delete,drop,holes,rings,fill').split(',')
-
-    def group(self):
-        return self.tr('Vector geometry tools')
-
     def __init__(self):
         super().__init__()
+
+    def initAlgorithm(self, config=None):
         self.addParameter(QgsProcessingParameterFeatureSource(self.INPUT,
                                                               self.tr('Input layer'), [QgsProcessing.TypeVectorPolygon]))
         self.addParameter(QgsProcessingParameterNumber(self.MIN_AREA,
@@ -58,6 +54,12 @@ class DeleteHoles(QgisAlgorithm):
 
         self.addParameter(QgsProcessingParameterFeatureSink(self.OUTPUT, self.tr('Cleaned'), QgsProcessing.TypeVectorPolygon))
         self.addOutput(QgsProcessingOutputVectorLayer(self.OUTPUT, self.tr('Cleaned'), QgsProcessing.TypeVectorPolygon))
+
+    def tags(self):
+        return self.tr('remove,delete,drop,holes,rings,fill').split(',')
+
+    def group(self):
+        return self.tr('Vector geometry tools')
 
     def name(self):
         return 'deleteholes'

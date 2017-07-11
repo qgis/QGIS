@@ -33,6 +33,13 @@ class QgsFeatureSink;
 class QgsProcessingFeedback;
 
 
+#ifdef SIP_RUN
+% ModuleHeaderCode
+#include <qgsprocessingmodelalgorithm.h>
+% End
+#endif
+
+
 /**
  * \class QgsProcessingAlgorithm
  * \ingroup core
@@ -41,6 +48,16 @@ class QgsProcessingFeedback;
  */
 class CORE_EXPORT QgsProcessingAlgorithm
 {
+
+#ifdef SIP_RUN
+    SIP_CONVERT_TO_SUBCLASS_CODE
+    if ( dynamic_cast< QgsProcessingModelAlgorithm * >( sipCpp ) != NULL )
+      sipType = sipType_QgsProcessingModelAlgorithm;
+    else
+      sipType = sipType_QgsProcessingAlgorithm;
+    SIP_END
+#endif
+
   public:
 
     //! Flags indicating how and when an algorithm operates and should be exposed to users
@@ -57,21 +74,35 @@ class CORE_EXPORT QgsProcessingAlgorithm
 
     /**
      * Constructor for QgsProcessingAlgorithm.
+     *
+     * initAlgorithm() should be called after creating an algorithm to ensure it can correctly configure
+     * its parameterDefinitions() and outputDefinitions(). Alternatively, calling create() will return
+     * a pre-initialized copy of the algorithm.
      */
     QgsProcessingAlgorithm() = default;
 
     virtual ~QgsProcessingAlgorithm();
 
-
-    //! Algorithms cannot be copied - clone() should be used instead
+    //! Algorithms cannot be copied - create() should be used instead
     QgsProcessingAlgorithm( const QgsProcessingAlgorithm &other ) = delete;
-    //! Algorithms cannot be copied- clone() should be used instead
+    //! Algorithms cannot be copied- create() should be used instead
     QgsProcessingAlgorithm &operator=( const QgsProcessingAlgorithm &other ) = delete;
 
     /**
      * Creates a copy of the algorithm, ready for execution.
+     *
+     * This method returns a new, preinitialized copy of the algorithm, ready for
+     * executing.
+     *
+     * The \a configuration argument allows passing of a map of configuration settings
+     * to the algorithm, allowing it to dynamically adjust its initialized parameters
+     * and outputs according to this configuration. This is generally used only for
+     * algorithms in a model, allowing them to adjust their behavior at run time
+     * according to some user configuration.
+     *
+     * \see initAlgorithm()
      */
-    virtual QgsProcessingAlgorithm *create() const = 0 SIP_FACTORY;
+    QgsProcessingAlgorithm *create( const QVariantMap &configuration = QVariantMap() ) const SIP_FACTORY;
 
     /**
      * Returns the algorithm name, used for identifying the algorithm. This string
@@ -319,9 +350,48 @@ class CORE_EXPORT QgsProcessingAlgorithm
   protected:
 
     /**
+     * Creates a new instance of the algorithm class.
+     *
+     * This method should return a 'pristine' instance of the algorithm class.
+     */
+    virtual QgsProcessingAlgorithm *createInstance() const = 0;
+#ifdef SIP_RUN
+    SIP_VIRTUAL_CATCHER_CODE
+    PyObject *resObj = sipCallMethod( 0, sipMethod, "" );
+    sipIsErr = !resObj || sipParseResult( 0, sipMethod, resObj, "H2", sipType_QgsProcessingAlgorithm, &sipRes ) < 0;
+    if ( !sipIsErr )
+      sipTransferTo( resObj, Py_None );
+    SIP_END
+#endif
+
+    /**
+     * Initializes the algorithm using the specified \a configuration.
+     *
+     * This should be called directly after creating algorithms and before retrieving
+     * any parameterDefinitions() or outputDefinitions().
+     *
+     * Subclasses should use their implementations to add all required input parameter and output
+     * definitions (which can be dynamically adjusted according to \a configuration).
+     *
+     * Dynamic configuration can be used by algorithms which alter their behavior
+     * when used inside processing models. For instance, a "feature router" type
+     * algorithm which sends input features to one of any number of outputs sinks
+     * based on some preconfigured filter parameters can use the init method to
+     * create these outputs based on the specified \a configuration.
+     *
+     * \see addParameter()
+     * \see addOutput()
+     */
+    virtual void initAlgorithm( const QVariantMap &configuration = QVariantMap() ) = 0;
+
+    /**
      * Adds a parameter \a definition to the algorithm. Ownership of the definition is transferred to the algorithm.
      * Returns true if parameter could be successfully added, or false if the parameter could not be added (e.g.
      * as a result of a duplicate name).
+     *
+     * This should usually be called from a subclass' initAlgorithm() implementation.
+     *
+     * \see initAlgorithm()
      * \see addOutput()
      */
     bool addParameter( QgsProcessingParameterDefinition *parameterDefinition SIP_TRANSFER );
@@ -336,7 +406,11 @@ class CORE_EXPORT QgsProcessingAlgorithm
      * Adds an output \a definition to the algorithm. Ownership of the definition is transferred to the algorithm.
      * Returns true if the output could be successfully added, or false if the output could not be added (e.g.
      * as a result of a duplicate name).
+     *
+     * This should usually be called from a subclass' initAlgorithm() implementation.
+     *
      * \see addParameter()
+     * \see initAlgorithm()
      */
     bool addOutput( QgsProcessingOutputDefinition *outputDefinition SIP_TRANSFER );
 
