@@ -43,7 +43,7 @@ class QgsLayoutViewTool : QObject
 
     virtual void layoutDoubleClickEvent( QgsLayoutViewMouseEvent *event );
 %Docstring
- Mouse double click event for overriding. Default implementation does nothing.
+ Mouse double-click event for overriding. Default implementation does nothing.
 %End
 
     virtual void layoutPressEvent( QgsLayoutViewMouseEvent *event );

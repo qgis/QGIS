@@ -66,7 +66,7 @@ class GUI_EXPORT QgsLayoutViewTool : public QObject
     virtual void layoutMoveEvent( QgsLayoutViewMouseEvent *event );
 
     /**
-     * Mouse double click event for overriding. Default implementation does nothing.
+     * Mouse double-click event for overriding. Default implementation does nothing.
      */
     virtual void layoutDoubleClickEvent( QgsLayoutViewMouseEvent *event );
 
