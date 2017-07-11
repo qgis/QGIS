@@ -95,6 +95,7 @@ void QgsLayoutView::scaleSafe( double scale )
   scale *= currentScale;
   scale = qBound( MIN_VIEW_SCALE, scale, MAX_VIEW_SCALE );
   setTransform( QTransform::fromScale( scale, scale ) );
+  emit zoomLevelChanged();
 }
 
 void QgsLayoutView::setZoomLevel( double level )
@@ -113,6 +114,28 @@ void QgsLayoutView::setZoomLevel( double level )
 void QgsLayoutView::zoomFull()
 {
   fitInView( scene()->sceneRect(), Qt::KeepAspectRatio );
+  emit zoomLevelChanged();
+}
+
+void QgsLayoutView::zoomWidth()
+{
+  //get current visible part of scene
+  QRect viewportRect( 0, 0, viewport()->width(), viewport()->height() );
+  QRectF visibleRect = mapToScene( viewportRect ).boundingRect();
+
+  double verticalCenter = ( visibleRect.top() + visibleRect.bottom() ) / 2.0;
+  // expand out visible rect to include left/right edges of scene
+  // centered on current visible vertical center
+  // note that we can't have a 0 height rect - fitInView doesn't handle that
+  // so we just set a very small height instead.
+  const double tinyHeight = 0.01;
+  QRectF targetRect( scene()->sceneRect().left(),
+                     verticalCenter - tinyHeight,
+                     scene()->sceneRect().width(),
+                     tinyHeight * 2 );
+
+  fitInView( targetRect, Qt::KeepAspectRatio );
+  emit zoomLevelChanged();
 }
 
 void QgsLayoutView::zoomIn()

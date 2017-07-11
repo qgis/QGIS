@@ -35,6 +35,8 @@
 
 //add some nice zoom levels for zoom comboboxes
 QList<double> QgsLayoutDesignerDialog::sStatusZoomLevelsList { 0.125, 0.25, 0.5, 1.0, 2.0, 4.0, 8.0};
+#define FIT_LAYOUT -101
+#define FIT_LAYOUT_WIDTH -102
 
 QgsAppLayoutDesignerInterface::QgsAppLayoutDesignerInterface( QgsLayoutDesignerDialog *dialog )
   : QgsLayoutDesignerInterface( dialog )
@@ -54,11 +56,6 @@ QgsLayoutView *QgsAppLayoutDesignerInterface::view()
 void QgsAppLayoutDesignerInterface::close()
 {
   mDesigner->close();
-}
-
-void QgsAppLayoutDesignerInterface::zoomFull()
-{
-  mDesigner->zoomFull();
 }
 
 
@@ -145,9 +142,11 @@ QgsLayoutDesignerDialog::QgsLayoutDesignerDialog( QWidget *parent, Qt::WindowFla
 
   Q_FOREACH ( double level, sStatusZoomLevelsList )
   {
-    mStatusZoomCombo->insertItem( 0, tr( "%1%" ).arg( level * 100.0, 0, 'f', 1 ) );
+    mStatusZoomCombo->insertItem( 0, tr( "%1%" ).arg( level * 100.0, 0, 'f', 1 ), level );
   }
-  connect( mStatusZoomCombo, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsLayoutDesignerDialog::statusZoomCombo_currentIndexChanged );
+  mStatusZoomCombo->insertItem( 0, tr( "Fit Layout" ), FIT_LAYOUT );
+  mStatusZoomCombo->insertItem( 0, tr( "Fit Layout Width" ), FIT_LAYOUT_WIDTH );
+  connect( mStatusZoomCombo, static_cast<void ( QComboBox::* )( int )>( &QComboBox::activated ), this, &QgsLayoutDesignerDialog::statusZoomCombo_currentIndexChanged );
   connect( mStatusZoomCombo->lineEdit(), &QLineEdit::returnPressed, this, &QgsLayoutDesignerDialog::statusZoomCombo_zoomEntered );
 
   mStatusBar->addPermanentWidget( mStatusZoomCombo );
@@ -192,7 +191,7 @@ void QgsLayoutDesignerDialog::open()
 {
   show();
   activate();
-  zoomFull(); // zoomFull() does not work properly until we have called show()
+  mView->zoomFull(); // zoomFull() does not work properly until we have called show()
 
 #if 0 // TODO
 
@@ -217,14 +216,6 @@ void QgsLayoutDesignerDialog::activate()
     on_mActionZoomAll_triggered();
   }
 #endif
-}
-
-void QgsLayoutDesignerDialog::zoomFull()
-{
-  if ( mView )
-  {
-    mView->fitInView( mLayout->sceneRect(), Qt::KeepAspectRatio );
-  }
 }
 
 void QgsLayoutDesignerDialog::closeEvent( QCloseEvent * )
@@ -253,12 +244,24 @@ void QgsLayoutDesignerDialog::itemTypeAdded( int type )
 
 void QgsLayoutDesignerDialog::statusZoomCombo_currentIndexChanged( int index )
 {
-  double selectedZoom = sStatusZoomLevelsList.at( sStatusZoomLevelsList.count() - index - 1 );
-  if ( mView )
+  QVariant data = mStatusZoomCombo->itemData( index );
+  if ( data.toInt() == FIT_LAYOUT )
   {
-    mView->setZoomLevel( selectedZoom );
-    //update zoom combobox text for correct format (one decimal place, trailing % sign)
-    whileBlocking( mStatusZoomCombo )->lineEdit()->setText( tr( "%1%" ).arg( selectedZoom * 100.0, 0, 'f', 1 ) );
+    mView->zoomFull();
+  }
+  else if ( data.toInt() == FIT_LAYOUT_WIDTH )
+  {
+    mView->zoomWidth();
+  }
+  else
+  {
+    double selectedZoom = data.toDouble();
+    if ( mView )
+    {
+      mView->setZoomLevel( selectedZoom );
+      //update zoom combobox text for correct format (one decimal place, trailing % sign)
+      whileBlocking( mStatusZoomCombo )->lineEdit()->setText( tr( "%1%" ).arg( selectedZoom * 100.0, 0, 'f', 1 ) );
+    }
   }
 }
 

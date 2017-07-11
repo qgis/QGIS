@@ -110,6 +110,14 @@ class GUI_EXPORT QgsLayoutView: public QGraphicsView
     void zoomFull();
 
     /**
+     * Zooms the view to the full width of the layout.
+     * \see zoomIn()
+     * \see zoomOut()
+     * \see zoomActual()
+     */
+    void zoomWidth();
+
+    /**
      * Zooms in to the view by a preset amount.
      * \see zoomFull()
      * \see zoomOut()

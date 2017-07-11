@@ -40,7 +40,6 @@ class QgsAppLayoutDesignerInterface : public QgsLayoutDesignerInterface
   public slots:
 
     void close() override;
-    void zoomFull() override;
 
   private:
 
@@ -98,11 +97,6 @@ class QgsLayoutDesignerDialog: public QMainWindow, private Ui::QgsLayoutDesigner
      * Raise, unminimize and activate this window.
      */
     void activate();
-
-    /**
-     * Zooms to show full layout.
-     */
-    void zoomFull();
 
   signals:
 

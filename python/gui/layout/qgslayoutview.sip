@@ -88,6 +88,14 @@ class QgsLayoutView: QGraphicsView
 .. seealso:: zoomActual()
 %End
 
+    void zoomWidth();
+%Docstring
+ Zooms the view to the full width of the layout.
+.. seealso:: zoomIn()
+.. seealso:: zoomOut()
+.. seealso:: zoomActual()
+%End
+
     void zoomIn();
 %Docstring
  Zooms in to the view by a preset amount.
