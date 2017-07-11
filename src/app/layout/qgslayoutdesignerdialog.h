@@ -101,6 +101,11 @@ class QgsLayoutDesignerDialog: public QMainWindow, private Ui::QgsLayoutDesigner
      */
     void activate();
 
+    /**
+     * Toggles whether or not the rulers should be \a visible.
+     */
+    void showRulers( bool visible );
+
   signals:
 
     /**

@@ -100,6 +100,15 @@ QgsLayoutDesignerDialog::QgsLayoutDesignerDialog( QWidget *parent, Qt::WindowFla
   viewLayout->addWidget( mHorizontalRuler, 0, 1 );
   viewLayout->addWidget( mVerticalRuler, 1, 0 );
 
+  //initial state of rulers
+  bool showRulers = settings.value( QStringLiteral( "LayoutDesigner/showRulers" ), true ).toBool();
+  mActionShowRulers->setChecked( showRulers );
+  mHorizontalRuler->setVisible( showRulers );
+  mVerticalRuler->setVisible( showRulers );
+  mRulerLayoutFix->setVisible( showRulers );
+  mActionShowRulers->blockSignals( false );
+  connect( mActionShowRulers, &QAction::triggered, this, &QgsLayoutDesignerDialog::showRulers );
+
   mView = new QgsLayoutView();
   //mView->setMapCanvas( mQgis->mapCanvas() );
   mView->setContentsMargins( 0, 0, 0, 0 );
@@ -263,6 +272,17 @@ void QgsLayoutDesignerDialog::activate()
     on_mActionZoomAll_triggered();
   }
 #endif
+}
+
+void QgsLayoutDesignerDialog::showRulers( bool visible )
+{
+  //show or hide rulers
+  mHorizontalRuler->setVisible( visible );
+  mVerticalRuler->setVisible( visible );
+  mRulerLayoutFix->setVisible( visible );
+
+  QgsSettings settings;
+  settings.setValue( QStringLiteral( "LayoutDesigner/showRulers" ), visible );
 }
 
 void QgsLayoutDesignerDialog::closeEvent( QCloseEvent * )

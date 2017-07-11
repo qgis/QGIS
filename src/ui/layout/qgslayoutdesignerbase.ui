@@ -106,6 +106,8 @@
     <addaction name="mActionZoomActual"/>
     <addaction name="mActionZoomAll"/>
     <addaction name="mActionZoomToWidth"/>
+    <addaction name="separator"/>
+    <addaction name="mActionShowRulers"/>
    </widget>
    <addaction name="mLayoutMenu"/>
    <addaction name="mMenuView"/>
@@ -251,6 +253,20 @@
   <action name="mActionZoomToWidth">
    <property name="text">
     <string>Zoom to Width</string>
+   </property>
+  </action>
+  <action name="mActionShowRulers">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Show Ru&amp;lers</string>
+   </property>
+   <property name="toolTip">
+    <string>Show rulers</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+R</string>
    </property>
   </action>
  </widget>
