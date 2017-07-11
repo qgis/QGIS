@@ -144,8 +144,26 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
     bool hasDbTopologySupport() const { return getSpatialiteDbInfo()->hasDbTopologySupport(); }
     //! Is the used Spatialite 4.5.0 or greater
     bool isDbVersion45() const { return getSpatialiteDbInfo()-> isDbVersion45(); }
-    //! Layers-Counter [not all of which may be valid and contained in mDbLayers]
+
+    /** Loaded Layers-Counter
+     * - contained in mDbLayers
+     * \note
+     * - only when GetSpatialiteDbInfoWrapper is called with LoadLayers=true
+     * -- will all the Layers be loaded
+     * \see GetSpatialiteDbInfo
+     * \since QGIS 3.0
+     */
     int dbLayersCount() const { return getSpatialiteDbInfo()->dbLayersCount(); }
+
+    /** Amount of Vector-Layers found
+     * - SpatialTables, SpatialViews and virtualShapes [from the vector_layers View]
+     * \note
+     * - this amount may differ from dbLayersCount()
+     * -- which only returns the amount of Loaded-Vector-Layers
+     * \see dbLayersCount()
+     * \since QGIS 3.0
+     */
+    int dbVectorLayersCount() const { return getSpatialiteDbInfo()->dbVectorLayersCount(); }
     //! Flag indicating if the layer data source has ReadOnly restrictions
     bool isDbReadOnly() const { return getSpatialiteDbInfo()->isDbReadOnly(); }
     //! Is the read Database supported by QgsSpatiaLiteProvider
@@ -247,6 +265,15 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
     //! Map of field index to default value [for Topology, the Topology-Layers]
     QMap<int, QVariant> getDefaultValues() const { return getDbLayer()->getDefaultValues(); }
 
+    /** Connection info (DB-path) without table and geometry
+     * - this will be called from the SpatialiteDbLayer::dbConnectionInfo()
+     * \note
+     *  - to call for Database and Table/Geometry portion use: SpatialiteDbLayer::dbConnectionInfo()
+    * \returns uri with Database only
+    * \since QGIS 3.0
+    */
+    QString dbConnectionInfo() const { return getSpatialiteDbInfo()->dbConnectionInfo(); }
+
     /** Connection info (DB-path) with table and geometry
      * \note
      *  - to call for Database portion only, use: SpatialiteDbInfo::dbConnectionInfo()
@@ -254,7 +281,7 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
     * \returns uri with Database and Table/Geometry Information
     * \since QGIS 3.0
     */
-    QString dbConnectionInfo() const { return getDbLayer()->dbConnectionInfo(); }
+    QString layerConnectionInfo() const { return getDbLayer()->layerConnectionInfo(); }
     //! Is the Layer valid
     bool isLayerValid() const { if ( getDbLayer() ) return getDbLayer()->isLayerValid(); else return false;}
 

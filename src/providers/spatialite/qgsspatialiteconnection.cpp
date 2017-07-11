@@ -771,7 +771,7 @@ QgsSqliteHandle *QgsSqliteHandle::openDb( const QString &dbPath, bool shared,  Q
   QgsSqliteHandle *handle = new QgsSqliteHandle( sqlite_handle, dbPath, shared );
   if ( spatialiteDbInfo->attachQSqliteHandle( handle ) )
   {
-    qDebug() << QString( "QgsSqliteHandle::openDb(%1,%2,%3) -z- Layers[%4] dbPath[%5] " ).arg( handle->ref ).arg( shared ).arg( spatialiteDbInfo->isDbReadOnly() ).arg( spatialiteDbInfo->dbLayersCount() ).arg( dbPath );
+    qDebug() << QString( "QgsSqliteHandle::openDb(%1,%2,%3) -z- Layers-Loaded[%4] Layers-Found[%5] dbPath[%6] " ).arg( handle->ref ).arg( shared ).arg( spatialiteDbInfo->isDbReadOnly() ).arg( spatialiteDbInfo->dbLayersCount() ).arg( spatialiteDbInfo->dbVectorLayersCount() ).arg( dbPath );
   }
   if ( shared )
     sHandles.insert( dbPath, handle );

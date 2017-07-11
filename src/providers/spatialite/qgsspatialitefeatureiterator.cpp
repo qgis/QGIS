@@ -32,7 +32,7 @@ QgsSpatiaLiteFeatureIterator::QgsSpatiaLiteFeatureIterator( QgsSpatiaLiteFeature
   , mExpressionCompiled( false )
 {
   mHandle = mSource->getQSqliteHandle();
-  mFetchGeometry = !mSource->getGeometryColumn().isNull() && !( mRequest.flags() & QgsFeatureRequest::NoGeometry );
+  mFetchGeometry = !mSource->getGeometryColumn() .isNull() && !( mRequest.flags() & QgsFeatureRequest::NoGeometry );
   mHasPrimaryKey = !mSource->getPrimaryKey().isEmpty();
   mRowNumber = 0;
   // qDebug() << QString( "QgsSpatiaLiteFeatureIterator::QgsSpatiaLiteFeatureIterator(%1) GeomType[%2]" ).arg( mSource->getLayerName() ).arg( mSource->getGeomTypeString() );
@@ -60,7 +60,7 @@ QgsSpatiaLiteFeatureIterator::QgsSpatiaLiteFeatureIterator( QgsSpatiaLiteFeature
   //by the provider (e.g., utilising QGIS expression filters)
   bool limitAtProvider = ( mRequest.limit() >= 0 );
 
-  if ( !mFilterRect.isNull() && !mSource->mGeometryColumn.isNull() )
+  if ( !mFilterRect.isNull() && !mSource->getGeometryColumn() .isNull() )
   {
     // some kind of MBR spatial filtering is required
     whereClause = whereClauseRect();
@@ -194,7 +194,7 @@ QgsSpatiaLiteFeatureIterator::QgsSpatiaLiteFeatureIterator( QgsSpatiaLiteFeature
     QSet<int> attributeIndexes;
     Q_FOREACH ( const QString &attr, mRequest.orderBy().usedAttributes() )
     {
-      attributeIndexes << mSource->mFields.lookupField( attr );
+      attributeIndexes << mSource->getAttributeFields().lookupField( attr ); // mSource->mFields.lookupField( attr );
     }
     attributeIndexes += mRequest.subsetOfAttributes().toSet();
     mRequest.setSubsetOfAttributes( attributeIndexes.toList() );
@@ -396,12 +396,12 @@ QString QgsSpatiaLiteFeatureIterator::whereClauseRect()
   if ( mRequest.flags() & QgsFeatureRequest::ExactIntersect )
   {
     // we are requested to evaluate a true INTERSECT relationship
-    whereClause += QStringLiteral( "Intersects(%1, BuildMbr(%2)) AND " ).arg( QgsSpatiaLiteProvider::quotedIdentifier( mSource->mGeometryColumn ), mbr( mFilterRect ) );
+    whereClause += QStringLiteral( "Intersects(%1, BuildMbr(%2)) AND " ).arg( QgsSpatiaLiteProvider::quotedIdentifier( mSource->getGeometryColumn() ), mbr( mFilterRect ) );
   }
   if ( mSource->mVShapeBased )
   {
     // handling a VirtualShape layer
-    whereClause += QStringLiteral( "MbrIntersects(%1, BuildMbr(%2))" ).arg( QgsSpatiaLiteProvider::quotedIdentifier( mSource->mGeometryColumn ), mbr( mFilterRect ) );
+    whereClause += QStringLiteral( "MbrIntersects(%1, BuildMbr(%2))" ).arg( QgsSpatiaLiteProvider::quotedIdentifier( mSource->getGeometryColumn() ), mbr( mFilterRect ) );
   }
   else if ( mFilterRect.isFinite() )
   {
@@ -430,7 +430,7 @@ QString QgsSpatiaLiteFeatureIterator::whereClauseRect()
     else
     {
       // using simple MBR filtering
-      whereClause += QStringLiteral( "MbrIntersects(%1, BuildMbr(%2))" ).arg( QgsSpatiaLiteProvider::quotedIdentifier( mSource->mGeometryColumn ), mbr( mFilterRect ) );
+      whereClause += QStringLiteral( "MbrIntersects(%1, BuildMbr(%2))" ).arg( QgsSpatiaLiteProvider::quotedIdentifier( mSource->getGeometryColumn() ), mbr( mFilterRect ) );
     }
   }
   else

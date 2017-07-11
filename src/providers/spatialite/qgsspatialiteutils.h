@@ -30,9 +30,17 @@
 class SpatialiteDbLayer;
 class QgsSqliteHandle;
 
-/** Structure to contain everything needed for a Spatialite/Rasterlite2 connection
- * \returns point with all needed Capabilities data
- * \since QGIS 3.0
+/** Class to contain all information needed for a Spatialite/Rasterlite2 connection
+  * - it will 'sniff' all Tables, retaining minimal information for each Table/Layer found
+  * - upond demand, a list of SpatialiteDbLayer classes will be collected
+  *  -> thus only called once for each connection
+  * \note
+  *  - The result of this class will be contained in the QgsSqliteHandle class
+  *  -> so that the Information must only be called once for each connection
+  *  --> When shared, the QgsSqliteHandle class will used the same connection of each Layer in the same Database
+  * \see QgsSqliteHandle
+  * \see SpatialiteDbLayer
+  * \since QGIS 3.0
  */
 class SpatialiteDbInfo : public QObject
 {
@@ -70,7 +78,7 @@ class SpatialiteDbInfo : public QObject
       * Spatialite-Database Structure
       *  - based on result of CheckSpatialMetaData
       *  -> on the Database being read
-      * @note 'Spatialite45'
+      * \note 'Spatialite45'
       *  - is not returned by CheckSpatialMetaData
       * \since QGIS 3.0
       */
@@ -107,7 +115,8 @@ class SpatialiteDbInfo : public QObject
       RasterStyle = 9,
       GeoPackageVector = 10, // Ogr
       GeoPackageRaster = 11, // Gdal
-      MBTiles = 12 // Gdal
+      MBTilesTable = 12, // Gdal
+      MBTilesView = 13 // Gdal
     };
     SpatialiteDbInfo( QString sDatabaseFilename, sqlite3 *sqlite_handle )
       : mDatabaseFileName( sDatabaseFilename )
@@ -126,6 +135,8 @@ class SpatialiteDbInfo : public QObject
       , mHasGdalRasterLite1Driver( false )
       , mHasRasterLite2Tables( -1 )
       , mHasTopologyTables( -1 )
+      , mHasMBTilesTables( -1 )
+      , mHasGeoPackageTables( -1 )
       , mHasGcp( false )
       , mHasTopology( false )
       , mIsVersion45( false )
@@ -143,11 +154,11 @@ class SpatialiteDbInfo : public QObject
     QgsSqliteHandle *getQSqliteHandle() const { return mQSqliteHandle; }
 
     /** Connection info (DB-path) without table and geometry
-     * - this will be called from the SpatialiteDbLayer::dbConnectionInfo()
+     * - this will be called from the SpatialiteDbLayer::layerConnectionInfo()
      * \note
      *  - to call for Database and Table/Geometry portion use: SpatialiteDbLayer::dbConnectionInfo()
-    * \returns uri with Database and Table/Geometry Information
-     * \see SpatialiteDbLayer::dbConnectionInfo()
+    * \returns uri with Database only
+     * \see SpatialiteDbLayer::layerConnectionInfo()
     * \since QGIS 3.0
     */
     QString dbConnectionInfo() const
@@ -191,19 +202,61 @@ class SpatialiteDbInfo : public QObject
     int dbSpatialiteVersionMinor() const { return mSpatialiteVersionMinor; }
     //! The revision Spatialite Version being used
     int dbSpatialiteVersionRevision() const { return mSpatialiteVersionRevision; }
-    //! Does the read Database contain SpatialTables [ 0=none, otherwise amount]
+
+    /** Amount of SpatialTables  found in the Database
+     * - from the vector_layers View
+     * \note
+     * - this does not reflect the amount of SpatialTables that have been loaded
+     * \since QGIS 3.0
+     */
     int dbSpatialTablesCount() const { return mHasSpatialTables; }
-    //! Does the read Database contain SpatialViews views [ 0=none, otherwise amount]
+
+    /** Amount of SpatialViews  found in the Database
+     * - from the vector_layers View
+     * \note
+     * - this does not reflect the amount of SpatialViews that have been loaded
+     * \since QGIS 3.0
+     */
     int dbSpatialViewsCount() const { return mHasSpatialViews; }
-    //! Does the read Database contain VirtualShapes tables [0=none, otherwise amount]
+
+    /** Amount of VirtualShapes found in the Database
+     * - from the vector_layers View
+     * \note
+     * - this does not reflect the amount of VirtualShapes that have been loaded
+     * \since QGIS 3.0
+     */
     int dbVirtualShapesCount() const { return mHasVirtualShapes; }
-    //! Does the read Database contain RasterLite1 coverages [-1=no rasterlit1 logic found, otherwise amount (0 being empty)]
+
+    /** Amount of RasterLite1-Rasters found in the Database
+     * - only the count of valid Layers are returned
+     * \note
+     * - the Gdal-RasterLite1-Driver is needed to determine this
+     * - this does not reflect the amount of RasterLite1-Rasters that have been loaded
+     * \since QGIS 3.0
+     */
     int dbRasterLite1TablesCount() const { return mHasRasterLite1Tables; }
-    //! Is the Gdal-RasterLite1-Driver available ?
+
+    /** Is the Gdal-RasterLite1-Driver available ?
+     * \note
+     * - RasterLite1-Rasters can only be rendered when the Driver is available
+     * \since QGIS 3.0
+     */
     bool hasDbGdalRasterLite1Driver() const { return mHasGdalRasterLite1Driver; }
-    //! Does the read Database contain RasterLite2 coverages [-1=no raster_coverages table, otherwise amount (0 being empty)]
+
+    /** Amount of RasterLite2-Coverages found in the Database
+     * - from the raster_coverages table Table [-1 if Table not found]
+     * \note
+     * - this does not reflect the amount of RasterLite2-Coverages that have been loaded
+     * \since QGIS 3.0
+     */
     int dbRasterLite2TablesCount() const { return mHasRasterLite2Tables; }
-    //! Does the read Database contain Topology tables [-1=no topologies table, otherwise amount (0 being empty)]
+
+    /** Amount of Topologies found in the Database
+     * - from the topologies table Table [-1 if Table not found]
+     * \note
+     * - this does not reflect the amount of Topologies that have been loaded
+     * \since QGIS 3.0
+     */
     int dbTopologyTablesCount() const { return mHasTopologyTables; }
     //! Is the used Spatialite compiled with Spatialite-Gcp support
     bool hasDbGcpSupport() const { return mHasGcp; }
@@ -211,13 +264,40 @@ class SpatialiteDbInfo : public QObject
     bool hasDbTopologySupport() const { return mHasTopology; }
     //! Is the used Spatialite 4.5.0 or greater
     bool isDbVersion45() const { return mIsVersion45; }
-    //! Layers-Counter [contained in mDbLayers]
+
+    /** Loaded Layers-Counter
+     * - contained in mDbLayers
+     * -- all deatails of the Layer are known
+     * \note
+     * - only when GetSpatialiteDbInfoWrapper is called with LoadLayers=true
+     * -- will all the Layers be loaded
+     * \see GetSpatialiteDbInfo
+     * \since QGIS 3.0
+     */
     int dbLayersCount() const { return mLayersCount; }
+
+    /** Amount of Vector-Layers found
+     * - SpatialTables, SpatialViews and virtualShapes [from the vector_layers View]
+     * -- contains: Layer-Name as 'table_name(geometry_name)', Geometry-Type (with dimension) and Srid
+     * \note
+     * - this amount may differ from dbLayersCount()
+     * -- which only returns the amount of Loaded-Vector-Layers
+     * \see dbLayersCount()
+     * \since QGIS 3.0
+     */
+    int dbVectorLayersCount() const { return mVectorLayers.size(); }
     //! Flag indicating if the layer data source has ReadOnly restrictions
     bool isDbReadOnly() const { return mReadOnly; }
     //! Load all Layer-Information [default] or only 'sniff' the Database
     bool getDbLoadLayers() const { return mLoadLayers; }
-    //! Is the read Database supported by QgsSpatiaLiteProvider
+
+    /** Is the read Database supported by QgsSpatiaLiteProvider or
+     * - only supported by the QgsOgrProvider or QgsGdalProvider
+     * \note
+     *  - QgsOgrProvider: GeoPackage-Vector
+     *  - QgsGdalProvider: GeoPackage-Raster, MbTiles, RasterLite1
+     * \since QGIS 3.0
+     */
     bool isDbValid() const { return mIsValid; }
     //! Map of tables and views that are contained in the VectorLayers
     QMap<QString, QString> getDbVectorLayers() const { return mVectorLayers; }
@@ -406,6 +486,10 @@ class SpatialiteDbInfo : public QObject
     int mHasRasterLite2Tables;
     //! Does the read Database contain Topology tables [-1=no topologies table, otherwise amount (0 being empty)]
     int mHasTopologyTables;
+    //! Does the read Database contain MbTiles-Tables [ 0=none, otherwise 3=View-based MbTiles, else 2]
+    int mHasMBTilesTables;
+    //! Does the read Database contain GPKG-Tables [ 0=none,  if 'gpkg_contents'  exists GeoPackage Revision 10]
+    int mHasGeoPackageTables;
     //! Is the used Spatialite compiled with Spatialite-Gcp support
     bool mHasGcp;
     //! Is the used Spatialite compiled with Topology (and thus RtTopo) support
@@ -450,6 +534,10 @@ class SpatialiteDbInfo : public QObject
     QMap<QString, QString> mRasterLite1Layers;
     //! List of Topologies contained in the 'topologies' TABLE
     QStringList mTopologyNames;
+    //! Map of tables and views that are contained in the MBTiles [LayerName,LayerType]
+    QMap<QString, QString> mMBTilesLayers;
+    //! Map of tables and views that are contained in the GeoPackage [LayerName,LayerType]
+    QMap<QString, QString> mGeoPackageLayers;
 
     /** Map of Connection-String of mDbLayers
      * - contains Layer-Name and DataSourceUri
@@ -478,6 +566,70 @@ class SpatialiteDbInfo : public QObject
      * \since QGIS 3.0
      */
     bool GetDbLayersInfo( QString sLayerName = QString::null );
+
+    /** Determine if valid SpatialTable/Views and VirtualShapes Layers exist
+     * - called only when mHasVectorLayers > 0 during GetSpatialiteDbInfo
+     * \note
+     * - results are stored in mVectorLayers
+     * \returns true if the the count of valid-layers > 0
+     * \see GetSpatialiteDbInfo
+     * \since QGIS 3.0
+     */
+    bool readVectorLayers();
+
+    /** Retrieve RasterLite2 Layers-Information of spatialite connection
+     * - used to fill list in  SpatialiteDbInfo
+     * \note
+     * - results are stored in mVectorLayers
+     * - there is no direct RasterLite2 support needed during this function
+     * \param dbConnectionInfo SpatialiteDbInfo
+     * \param  sLayerName Name of the Layer to search for format: 'table_name(geometry_name)'
+     * \returns true or false
+     * \see GetDbLayersInfo
+     * \since QGIS 3.0
+     */
+    bool readRL2Layers();
+
+    /** Determine if valid RasterLite1 Layers exist
+     * - called only when mHasRasterLite1Tables > 0 during GetSpatialiteDbInfo
+     * \note
+     * - results are stored in mRasterLite1Layers
+     * - checking is done if the Gdal-Driver for RasterLite1 can be used
+     * \returns true if the the count of valid-layers > 0
+     * \see GetSpatialiteDbInfo
+     * \since QGIS 3.0
+     */
+    bool readRL1Layers();
+
+    /** Determine if valid Topology Layers exist
+     * - called only when mHasTopologyTables > 0 during GetSpatialiteDbInfo
+     * \note
+     * - results are stored in mTopologyLayers
+     * \returns true if the the count of valid-layers > 0
+     * \see GetSpatialiteDbInfo
+     * \since QGIS 3.0
+     */
+    bool readTopologyLayers();
+
+    /** Determine if valid MbTiles Layers exist
+     * - called only when mHasMBTilesTables > 0 during GetSpatialiteDbInfo
+     * \note
+     * - results are stored in mMBTilesLayers
+     * \returns true if the the count of valid-layers > 0
+     * \see GetSpatialiteDbInfo
+     * \since QGIS 3.0
+     */
+    bool readMBTilesLayers();
+
+    /** Determine if valid GeoPackage Layers exist
+     * - called only when mHasGeoPackageTables > 0 during GetSpatialiteDbInfo
+     * \note
+     * - results are stored in mMBTilesLayers
+     * \returns true if the the count of valid-layers > 0
+     * \see GetSpatialiteDbInfo
+     * \since QGIS 3.0
+     */
+    bool readGeoPackageLayers();
 
     /** Retrieve RasterLite2 Layers-Information of spatialite connection
      * - used to fill list in  SpatialiteDbInfo
@@ -513,6 +665,28 @@ class SpatialiteDbInfo : public QObject
      */
     bool GetRL1LayersInfo( QString sLayerName = QString::null );
 
+    /** Retrieve MBTiles Layers-Information of spatialite connection
+     * - used to fill list in  SpatialiteDbInfo
+     * \note
+     * \param dbConnectionInfo SpatialiteDbInfo
+     * \param  sLayerName Name of the Layer to search for format: 'name'
+     * \returns true or false
+     * \see GetDbLayersInfo
+     * \since QGIS 3.0
+     */
+    bool GetMBTilesLayersInfo( QString sLayerName = QString::null );
+
+    /** Retrieve GeoPackage Layers-Information of spatialite connection
+     * - used to fill list in  SpatialiteDbInfo
+     * \note
+     * \param dbConnectionInfo SpatialiteDbInfo
+     * \param  sLayerName Name of the Layer to search for format: 'table_name(geometry_name)'
+     * \returns true or false
+     * \see GetDbLayersInfo
+     * \since QGIS 3.0
+     */
+    bool GetGeoPackageLayersInfo( QString sLayerName = QString::null );
+
     /** Retrieve and store Non-Spatial tables, views and all triggers
      * - used to fill list in  SpatialiteDbInfo
      * \note
@@ -520,7 +694,7 @@ class SpatialiteDbInfo : public QObject
      * \see GetDbLayersInfo
      * \since QGIS 3.0
      */
-    bool GetNonSpatialTables( );
+    bool readNonSpatialTables( );
 
     /** Sanity checks on tables
      * -
@@ -615,7 +789,7 @@ class SpatialiteDbLayer : public QObject
      * \see SpatialiteDbInfo::dbConnectionInfo()
     * \since QGIS 3.0
     */
-    QString dbConnectionInfo() const
+    QString layerConnectionInfo() const
     {
       if ( mLayerType == SpatialiteDbInfo::RasterLite1 )
       {
@@ -718,6 +892,21 @@ class SpatialiteDbLayer : public QObject
      */
     QgsRectangle getLayerExtent( bool bUpdate = false, bool bUpdateStatistics = false );
 
+    /** Set the Rectangle that contains the extent (bounding box) of the layer
+     *  - will also set the EWKT
+     * \note
+     *  The Srid must be set beforhand for the correct result
+     * \see mLayerExtent
+     * \see mLayerExtentEWKT
+     * \since QGIS 3.0
+     */
+    QString setLayerExtent( QgsRectangle layerExtent )
+    {
+      mLayerExtent = layerExtent;
+      mLayerExtentEWKT = QString( "'SRID=%1;%2'" ).arg( getSrid() ).arg( mLayerExtent.asWktPolygon() );
+      return mLayerExtentEWKT;
+    }
+
     /** Rectangle that contains the extent (bounding box) of the layer, with Srid
      * \note
      * \since QGIS 3.0
@@ -761,7 +950,6 @@ class SpatialiteDbLayer : public QObject
     QString getLayerQuery() const { return mQuery; }
     //! A possible Query from QgsDataSourceUri
     void setLayerQuery( QString sQuery ) { mQuery = sQuery; }
-    //! Is the read Database supported by QgsSpatiaLiteProvider
     //! Name of the primary key column in the table
     QString getPrimaryKey() const { return mPrimaryKey; }
     //! List of primary key columns in the table
