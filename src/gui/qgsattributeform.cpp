@@ -747,15 +747,23 @@ void QgsAttributeForm::updateConstraint( const QgsFeature &ft, QgsEditorWidgetWr
 {
   QgsFieldConstraints::ConstraintOrigin constraintOrigin = mLayer->isEditable() ? QgsFieldConstraints::ConstraintOriginNotSet : QgsFieldConstraints::ConstraintOriginLayer;
 
-  if ( eww->layer()->fields().fieldOrigin( QgsFields::OriginJoin ) )
+  if ( eww->layer()->fields().fieldOrigin( eww->fieldIdx() ) == QgsFields::OriginJoin )
   {
     int srcFieldIdx;
     const QgsVectorLayerJoinInfo *info = eww->layer()->joinBuffer()->joinForFieldIndex( eww->fieldIdx(), eww->layer()->fields(), srcFieldIdx );
 
-    if ( info && info->joinLayer() && mJoinedFeatures.contains( info ) && info->isDynamicFormEnabled() )
+    if ( info && info->joinLayer() && info->isDynamicFormEnabled() )
     {
-      eww->updateConstraint( info->joinLayer(), srcFieldIdx, mJoinedFeatures[info], constraintOrigin );
-      return;
+      if ( mJoinedFeatures.contains( info ) )
+      {
+        eww->updateConstraint( info->joinLayer(), srcFieldIdx, mJoinedFeatures[info], constraintOrigin );
+        return;
+      }
+      else // if we are here, it means there's not joined field for this feature
+      {
+        eww->updateConstraint( QgsFeature() );
+        return;
+      }
     }
   }
 
@@ -1972,8 +1980,7 @@ void QgsAttributeForm::updateJoinedFields( const QgsEditorWidgetWrapper &eww )
 
     QgsFeature joinFeature = mLayer->joinBuffer()->joinedFeatureOf( info, formFeature );
 
-    if ( joinFeature.isValid() )
-      mJoinedFeatures[info] = joinFeature;
+    mJoinedFeatures[info] = joinFeature;
 
     QStringList *subsetFields = info->joinFieldNamesSubset();
     if ( subsetFields )
