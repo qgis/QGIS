@@ -83,15 +83,8 @@ class Ogr2OgrPointsOnLines(GdalAlgorithm):
         return self.tr('Vector geoprocessing')
 
     def getConsoleCommands(self, parameters, context, feedback):
-        inLayer = self.parameterAsVectorLayer(parameters, self.INPUT_LAYER, context)
-        if inLayer is None or inLayer.dataProvider().name() == 'ogr':
-            ogrLayer = self.parameterAsCompatibleSourceLayerPath(parameters, self.INPUT_LAYER, context, QgsVectorFileWriter.supportedFormatExtensions(), feedback=feedback)
-            if inLayer is None:
-                inLayer = ogrLayer
-        else:
-            ogrLayer = ogrConnectionString(inLayer, context)[1:-1]
+        ogrLayer, layername = self.getOgrCompatibleSource(self.INPUT_LAYER, parameters, context, feedback)
 
-        layername = "'" + ogrLayerName(inLayer) + "'"
         distance = str(self.parameterAsDouble(parameters, self.DISTANCE, context))
         geometry = str(self.parameterAsString(parameters, self.GEOMETRY, context))
 

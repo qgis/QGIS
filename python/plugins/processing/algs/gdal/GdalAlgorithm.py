@@ -39,6 +39,8 @@ from qgis.core import (QgsApplication,
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.algs.gdal.GdalAlgorithmDialog import GdalAlgorithmDialog
 from processing.algs.gdal.GdalUtils import GdalUtils
+from processing.tools.vector import ogrConnectionString, ogrLayerName
+
 from processing.tools import dataobjects
 
 pluginPath = os.path.normpath(os.path.join(
@@ -65,23 +67,36 @@ class GdalAlgorithm(QgsProcessingAlgorithm):
     def getConsoleCommands(self, parameters, context, feedback):
         return None
 
+    def getOgrCompatibleSource(self, parameter_name, parameters, context, feedback):
+        """
+        Interprets a parameter as an OGR compatible source and layer name
+        """
+        input_layer = self.parameterAsVectorLayer(parameters, parameter_name, context)
+        ogr_data_path = None
+        ogr_layer_name = None
+        if input_layer is None:
+            # parameter is not a vector layer - try to convert to a source compatible with OGR
+            # and extract selection if required
+            ogr_data_path = self.parameterAsCompatibleSourceLayerPath(parameters, parameter_name, context,
+                                                                      QgsVectorFileWriter.supportedFormatExtensions(),
+                                                                      feedback=feedback)
+            ogr_layer_name = ogrLayerName(ogr_data_path)
+        elif input_layer.dataProvider().name() == 'ogr':
+            # parameter is a vector layer, with OGR data provider
+            # so extract selection if required
+            ogr_data_path = self.parameterAsCompatibleSourceLayerPath(parameters, parameter_name, context,
+                                                                      QgsVectorFileWriter.supportedFormatExtensions(),
+                                                                      feedback=feedback)
+            ogr_layer_name = ogrLayerName(input_layer.dataProvider().dataSourceUri())
+        else:
+            # vector layer, but not OGR - get OGR compatible path
+            # TODO - handle "selected features only" mode!!
+            ogr_data_path = ogrConnectionString(input_layer.dataProvider().dataSourceUri(), context)[1:-1]
+            ogr_layer_name = ogrLayerName(input_layer.dataProvider().dataSourceUri())
+        return ogr_data_path, ogr_layer_name
+
     def processAlgorithm(self, parameters, context, feedback):
         commands = self.getConsoleCommands(parameters, context, feedback)
-        #layers = QgsProcessingUtils.compatibleVectorLayers(QgsProject.instance())
-        #supported = QgsVectorFileWriter.supportedFormatExtensions()
-        #for i, c in enumerate(commands):
-        #    for layer in layers:
-        #        if layer.source() in c:
-        #            exported = dataobjects.exportVectorLayer(layer, supported)
-        #            exportedFileName = os.path.splitext(os.path.split(exported)[1])[0]
-        #            c = c.replace(layer.source(), exported)
-        #            if os.path.isfile(layer.source()):
-        #                fileName = os.path.splitext(os.path.split(layer.source())[1])[0]
-        #                c = re.sub('[\s]{}[\s]'.format(fileName), ' ' + exportedFileName + ' ', c)
-        #                c = re.sub('[\s]{}'.format(fileName), ' ' + exportedFileName, c)
-        #                c = re.sub('["\']{}["\']'.format(fileName), "'" + exportedFileName + "'", c)
-
-        #    commands[i] = c
         GdalUtils.runGdal(commands, feedback)
 
         # auto generate outputs
