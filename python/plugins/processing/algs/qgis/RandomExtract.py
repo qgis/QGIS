@@ -32,8 +32,7 @@ from qgis.core import (QgsFeatureSink,
                        QgsProcessingParameterFeatureSource,
                        QgsProcessingParameterEnum,
                        QgsProcessingParameterNumber,
-                       QgsProcessingParameterFeatureSink,
-                       QgsProcessingOutputVectorLayer)
+                       QgsProcessingParameterFeatureSink)
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 
@@ -66,7 +65,6 @@ class RandomExtract(QgisAlgorithm):
                                                        10, False, 0.0, 999999999999.0))
 
         self.addParameter(QgsProcessingParameterFeatureSink(self.OUTPUT, self.tr('Extracted (random)')))
-        self.addOutput(QgsProcessingOutputVectorLayer(self.OUTPUT, self.tr('Extracted (random)')))
 
     def name(self):
         return 'randomextract'

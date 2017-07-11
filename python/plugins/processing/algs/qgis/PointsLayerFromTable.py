@@ -31,11 +31,9 @@ from qgis.core import (QgsApplication,
                        QgsFeatureRequest,
                        QgsGeometry,
                        QgsProcessing,
-                       QgsProcessingParameterDefinition,
                        QgsProcessingParameterFeatureSink,
                        QgsProcessingParameterFeatureSource,
                        QgsProcessingParameterCrs,
-                       QgsProcessingOutputVectorLayer,
                        QgsProcessingParameterField)
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 
@@ -80,7 +78,6 @@ class PointsLayerFromTable(QgisAlgorithm):
                                                     self.tr('Target CRS'), defaultValue='EPSG:4326'))
 
         self.addParameter(QgsProcessingParameterFeatureSink(self.OUTPUT, self.tr('Points from table'), type=QgsProcessing.TypeVectorPoint))
-        self.addOutput(QgsProcessingOutputVectorLayer(self.OUTPUT, self.tr('Points from table'), type=QgsProcessing.TypeVectorPoint))
 
     def name(self):
         return 'createpointslayerfromtable'

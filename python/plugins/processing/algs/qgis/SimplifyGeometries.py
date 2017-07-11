@@ -32,12 +32,10 @@ from qgis.PyQt.QtGui import QIcon
 from qgis.core import (QgsMapToPixelSimplifier,
                        QgsMessageLog,
                        QgsFeatureSink,
-                       QgsProcessingUtils,
                        QgsProcessingParameterFeatureSource,
                        QgsProcessingParameterFeatureSink,
                        QgsProcessingParameterEnum,
-                       QgsProcessingParameterNumber,
-                       QgsProcessingOutputVectorLayer)
+                       QgsProcessingParameterNumber)
 
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 from processing.tools import dataobjects
@@ -76,7 +74,6 @@ class SimplifyGeometries(QgisAlgorithm):
                                                        self.tr('Tolerance'), minValue=0.0, maxValue=10000000.0, defaultValue=1.0))
 
         self.addParameter(QgsProcessingParameterFeatureSink(self.OUTPUT, self.tr('Simplified')))
-        self.addOutput(QgsProcessingOutputVectorLayer(self.OUTPUT, self.tr('Simplified')))
 
     def name(self):
         return 'simplifygeometries'

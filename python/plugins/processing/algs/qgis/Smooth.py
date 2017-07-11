@@ -25,13 +25,10 @@ __copyright__ = '(C) 2015, Nyall Dawson'
 
 __revision__ = '$Format:%H$'
 
-from qgis.core import (QgsApplication,
-                       QgsFeatureSink,
-                       QgsProcessingUtils,
+from qgis.core import (QgsFeatureSink,
                        QgsProcessingParameterFeatureSource,
                        QgsProcessingParameterFeatureSink,
-                       QgsProcessingParameterNumber,
-                       QgsProcessingOutputVectorLayer)
+                       QgsProcessingParameterNumber)
 
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
@@ -66,7 +63,6 @@ class Smooth(QgisAlgorithm):
                                                        defaultValue=180.0, minValue=0.0, maxValue=180.0))
 
         self.addParameter(QgsProcessingParameterFeatureSink(self.OUTPUT, self.tr('Smoothed')))
-        self.addOutput(QgsProcessingOutputVectorLayer(self.OUTPUT, self.tr('Smoothed')))
 
     def name(self):
         return 'smoothgeometry'

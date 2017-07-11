@@ -67,7 +67,6 @@ class Aspect(QgisAlgorithm):
                                                        self.tr('Z factor'), QgsProcessingParameterNumber.Double,
                                                        1, False, 1, 999999.99))
         self.addParameter(QgsProcessingParameterRasterDestination(self.OUTPUT, self.tr('Aspect')))
-        self.addOutput(QgsProcessingOutputRasterLayer(self.OUTPUT, self.tr('Aspect')))
 
     def name(self):
         return 'aspect'
