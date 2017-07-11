@@ -631,8 +631,8 @@ QgsExpressionContextScope* QgsExpressionContextUtils::projectScope()
 
   //add other known project variables
   scope->addVariable( QgsExpressionContextScope::StaticVariable( "project_title", project->title(), true ) );
-  scope->addVariable( QgsExpressionContextScope::StaticVariable( "project_path", project->fileInfo().filePath(), true ) );
-  scope->addVariable( QgsExpressionContextScope::StaticVariable( "project_folder", project->fileInfo().dir().path(), true ) );
+  scope->addVariable( QgsExpressionContextScope::StaticVariable( "project_path", QDir::toNativeSeparators( project->fileInfo().filePath() ), true ) );
+  scope->addVariable( QgsExpressionContextScope::StaticVariable( "project_folder", QDir::toNativeSeparators( project->fileInfo().dir().path() ), true ) );
   scope->addVariable( QgsExpressionContextScope::StaticVariable( "project_filename", project->fileInfo().fileName(), true ) );
 
   scope->addFunction( "project_color", new GetNamedProjectColor() );
