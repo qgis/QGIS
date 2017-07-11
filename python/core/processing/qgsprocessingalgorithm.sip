@@ -392,13 +392,20 @@ class QgsProcessingAlgorithm
 .. seealso:: addOutput()
 %End
 
-    bool addParameter( QgsProcessingParameterDefinition *parameterDefinition /Transfer/ );
+    bool addParameter( QgsProcessingParameterDefinition *parameterDefinition /Transfer/, bool createOutput = true );
 %Docstring
  Adds a parameter ``definition`` to the algorithm. Ownership of the definition is transferred to the algorithm.
  Returns true if parameter could be successfully added, or false if the parameter could not be added (e.g.
  as a result of a duplicate name).
 
  This should usually be called from a subclass' initAlgorithm() implementation.
+
+ If the ``createOutput`` argument is true, then a corresponding output definition will also be created
+ (and added to the algorithm) where appropriate. E.g. when adding a QgsProcessingParameterVectorDestination
+ and ``createOutput`` is true, then a QgsProcessingOutputVectorLayer output will be created and
+ added to the algorithm. There is no need to call addOutput() to manually add a corresponding output
+ for this vector. If ``createOutput`` is false then this automatic output creation will not
+ occur.
 
 .. seealso:: initAlgorithm()
 .. seealso:: addOutput()
@@ -418,6 +425,9 @@ class QgsProcessingAlgorithm
  as a result of a duplicate name).
 
  This should usually be called from a subclass' initAlgorithm() implementation.
+
+ Note that in some cases output creation can be automatically performed when calling addParameter().
+ See the notes in addParameter() for a description of when this occurs.
 
 .. seealso:: addParameter()
 .. seealso:: initAlgorithm()

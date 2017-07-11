@@ -391,10 +391,17 @@ class CORE_EXPORT QgsProcessingAlgorithm
      *
      * This should usually be called from a subclass' initAlgorithm() implementation.
      *
+     * If the \a createOutput argument is true, then a corresponding output definition will also be created
+     * (and added to the algorithm) where appropriate. E.g. when adding a QgsProcessingParameterVectorDestination
+     * and \a createOutput is true, then a QgsProcessingOutputVectorLayer output will be created and
+     * added to the algorithm. There is no need to call addOutput() to manually add a corresponding output
+     * for this vector. If \a createOutput is false then this automatic output creation will not
+     * occur.
+     *
      * \see initAlgorithm()
      * \see addOutput()
      */
-    bool addParameter( QgsProcessingParameterDefinition *parameterDefinition SIP_TRANSFER );
+    bool addParameter( QgsProcessingParameterDefinition *parameterDefinition SIP_TRANSFER, bool createOutput = true );
 
     /**
      * Removes the parameter with matching \a name from the algorithm, and deletes any existing
@@ -408,6 +415,9 @@ class CORE_EXPORT QgsProcessingAlgorithm
      * as a result of a duplicate name).
      *
      * This should usually be called from a subclass' initAlgorithm() implementation.
+     *
+     * Note that in some cases output creation can be automatically performed when calling addParameter().
+     * See the notes in addParameter() for a description of when this occurs.
      *
      * \see addParameter()
      * \see initAlgorithm()
@@ -672,7 +682,8 @@ class CORE_EXPORT QgsProcessingAlgorithm
     bool mHasPostProcessed = false;
     std::unique_ptr< QgsProcessingContext > mLocalContext;
 
-    // friend class to access setProvider() - we do not want this public!
+    bool createAutoOutputForParameter( QgsProcessingParameterDefinition *parameter );
+
     friend class QgsProcessingProvider;
     friend class TestQgsProcessing;
     friend class QgsProcessingModelAlgorithm;
