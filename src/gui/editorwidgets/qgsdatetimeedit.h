@@ -38,6 +38,20 @@ class GUI_EXPORT QgsDateTimeEdit : public QDateTimeEdit
     void setAllowNull( bool allowNull );
     bool allowNull() const {return mAllowNull;}
 
+    /** Set the lowest Date that can be displayed with the Qt::ISODate format
+     *  - uses QDateTimeEdit::setMinimumDateTime (since Qt 4.4)
+     * \note
+     *  - QDate and QDateTime does not support minus years for the Qt::ISODate format
+     *  -> returns empty (toString) or invalid (fromString) values
+     *  - QDateTimeEdit::setMinimumDateTime does not support dates < '0100-01-01'
+     *  -> it is not for us to wonder why [defined in qdatetimeparser_p.h]
+    * \since QGIS 3.0
+    */
+    void setMinimumEditDateTime()
+    {
+      setMinimumDateTime( QDateTime::fromString( "0100-01-01", Qt::ISODate ) );
+    }
+
     /**
      * \brief setDateTime set the date time in the widget and handles null date times.
      * \note since QDateTimeEdit::setDateTime() is not virtual, setDateTime must be called for QgsDateTimeEdit.
