@@ -113,11 +113,3 @@ def runAndLoadResults(algOrName, parameters, feedback=None, context=None):
                 parameters[param.name()] = p
 
     return Processing.runAlgorithm(alg, parameters=parameters, onFinish=handleAlgorithmResults, feedback=feedback, context=context)
-
-
-def version():
-    pluginPath = os.path.split(os.path.dirname(__file__))[0]
-    cfg = configparser.ConfigParser()
-    cfg.read(os.path.join(pluginPath, 'metadata.txt'))
-    ver = cfg.get('general', 'version').split('.')
-    return 10000 * int(ver[0]) + 100 * int(ver[1]) + int(ver[2])
