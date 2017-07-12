@@ -21,11 +21,6 @@
 %Include qgsbrowserdockwidget.sip
 %Include qgsvertexmarker.sip
 %Include qgsfiledownloader.sip
-%Include qgsdatasourcemanagerdialog.sip
-%Include ogr/qgsopenvectorlayerdialog.sip
-%Include ogr/qgsogrhelperfunctions.sip
-%Include ogr/qgsnewogrconnection.sip
-%Include ogr/qgsvectorlayersaveasdialog.sip
 %Include attributetable/qgsfeaturemodel.sip
 %Include auth/qgsauthauthoritieseditor.sip
 %Include auth/qgsauthcertificateinfo.sip
