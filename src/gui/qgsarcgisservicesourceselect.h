@@ -29,6 +29,7 @@ class QgsOwsConnection;
 
 /** \ingroup gui
  * Generic class listing layers available from a remote service.
+ * \since QGIS 3.0
  */
 class GUI_EXPORT QgsArcGisServiceSourceSelect : public QDialog, protected Ui::QgsArcGisServiceSourceSelectBase
 {

@@ -14,6 +14,7 @@ class QgsArcGisServiceSourceSelect : QDialog, protected Ui::QgsArcGisServiceSour
 {
 %Docstring
  Generic class listing layers available from a remote service.
+.. versionadded:: 3.0
 %End
 
 %TypeHeaderCode
