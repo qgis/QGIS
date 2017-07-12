@@ -27,10 +27,8 @@ __revision__ = '$Format:%H$'
 
 from qgis.core import (QgsVectorDataProvider,
                        QgsFields,
-                       QgsApplication,
                        QgsProcessingParameterVectorLayer,
                        QgsProcessingParameterField,
-                       QgsProcessingParameterDefinition,
                        QgsProcessingOutputVectorLayer)
 
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm

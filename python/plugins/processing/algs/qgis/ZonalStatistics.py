@@ -31,10 +31,7 @@ from collections import OrderedDict
 from qgis.PyQt.QtGui import QIcon
 
 from qgis.analysis import QgsZonalStatistics
-from qgis.core import (QgsFeatureSink,
-                       QgsProcessing,
-                       QgsProcessingUtils,
-                       QgsProcessingParameterDefinition,
+from qgis.core import (QgsProcessing,
                        QgsProcessingParameterVectorLayer,
                        QgsProcessingParameterRasterLayer,
                        QgsProcessingParameterString,

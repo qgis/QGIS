@@ -27,8 +27,7 @@ __revision__ = '$Format:%H$'
 
 from qgis.core import (QgsFeatureSink,
                        QgsProcessingParameterVectorLayer,
-                       QgsProcessingParameterFeatureSink,
-                       QgsProcessingOutputVectorLayer)
+                       QgsProcessingParameterFeatureSink)
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 
 
@@ -46,7 +45,6 @@ class SaveSelectedFeatures(QgisAlgorithm):
     def initAlgorithm(self, config=None):
         self.addParameter(QgsProcessingParameterVectorLayer(self.INPUT, self.tr('Input layer')))
         self.addParameter(QgsProcessingParameterFeatureSink(self.OUTPUT, self.tr('Selection')))
-        self.addOutput(QgsProcessingOutputVectorLayer(self.OUTPUT, self.tr("Selection")))
 
     def name(self):
         return 'saveselectedfeatures'

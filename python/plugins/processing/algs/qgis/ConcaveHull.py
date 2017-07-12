@@ -26,21 +26,14 @@ __copyright__ = '(C) 2014, Piotr Pociask'
 
 __revision__ = '$Format:%H$'
 
-from qgis.core import (QgsFeatureRequest,
-                       QgsFeature,
-                       QgsGeometry,
+from qgis.core import (QgsFeature,
                        QgsFeatureSink,
                        QgsWkbTypes,
-                       QgsApplication,
                        QgsProcessing,
-                       QgsProcessingUtils,
                        QgsProcessingParameterFeatureSource,
-                       QgsProcessingParameterVectorLayer,
-                       QgsProcessingParameterDefinition,
                        QgsProcessingParameterNumber,
                        QgsProcessingParameterBoolean,
-                       QgsProcessingParameterFeatureSink,
-                       QgsProcessingOutputVectorLayer)
+                       QgsProcessingParameterFeatureSink)
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 import processing
@@ -73,7 +66,6 @@ class ConcaveHull(QgisAlgorithm):
                                                         self.tr('Split multipart geometry into singleparts geometries'), defaultValue=False))
 
         self.addParameter(QgsProcessingParameterFeatureSink(self.OUTPUT, self.tr('Concave hull'), type=QgsProcessing.TypeVectorPolygon))
-        self.addOutput(QgsProcessingOutputVectorLayer(self.OUTPUT, self.tr("Concave hull"), type=QgsProcessing.TypeVectorPolygon))
 
     def name(self):
         return 'concavehull'

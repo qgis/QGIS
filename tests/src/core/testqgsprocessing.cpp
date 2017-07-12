@@ -101,10 +101,10 @@ class DummyAlgorithm : public QgsProcessingAlgorithm
       //destination styleparameters
       QVERIFY( destinationParameterDefinitions().isEmpty() );
       QgsProcessingParameterFeatureSink *p5 = new QgsProcessingParameterFeatureSink( "p5" );
-      QVERIFY( addParameter( p5 ) );
+      QVERIFY( addParameter( p5, false ) );
       QCOMPARE( destinationParameterDefinitions(), QgsProcessingParameterDefinitions() << p5 );
       QgsProcessingParameterFeatureSink *p6 = new QgsProcessingParameterFeatureSink( "p6" );
-      QVERIFY( addParameter( p6 ) );
+      QVERIFY( addParameter( p6, false ) );
       QCOMPARE( destinationParameterDefinitions(), QgsProcessingParameterDefinitions() << p5 << p6 );
 
       // remove parameter
@@ -113,6 +113,21 @@ class DummyAlgorithm : public QgsProcessingAlgorithm
       QCOMPARE( destinationParameterDefinitions(), QgsProcessingParameterDefinitions() << p5 );
       removeParameter( "p5" );
       QVERIFY( destinationParameterDefinitions().isEmpty() );
+
+      // try with auto output creation
+      QgsProcessingParameterVectorDestination *p7 = new QgsProcessingParameterVectorDestination( "p7", "my output" );
+      QVERIFY( addParameter( p7 ) );
+      QCOMPARE( destinationParameterDefinitions(), QgsProcessingParameterDefinitions() << p7 );
+      QVERIFY( outputDefinition( "p7" ) );
+      QCOMPARE( outputDefinition( "p7" )->name(), QStringLiteral( "p7" ) );
+      QCOMPARE( outputDefinition( "p7" )->type(), QStringLiteral( "outputVector" ) );
+      QCOMPARE( outputDefinition( "p7" )->description(), QStringLiteral( "my output" ) );
+
+      // duplicate output name
+      QVERIFY( addOutput( new QgsProcessingOutputVectorLayer( "p8" ) ) );
+      QgsProcessingParameterVectorDestination *p8 = new QgsProcessingParameterVectorDestination( "p8" );
+      // this should fail - it would result in a duplicate output name
+      QVERIFY( !addParameter( p8 ) );
     }
 
     void runOutputChecks()

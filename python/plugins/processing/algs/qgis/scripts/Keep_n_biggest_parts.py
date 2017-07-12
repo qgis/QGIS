@@ -7,9 +7,6 @@ from builtins import range
 ##To_keep=number 1
 ##Biggest parts=sink polygon
 
-#outputs
-
-##Biggest parts=output outputVector
 
 from qgis.core import QgsGeometry, QgsWkbTypes, QgsProcessingUtils
 from operator import itemgetter

@@ -33,13 +33,9 @@ from qgis.core import (QgsFeature,
                        QgsFeatureSink,
                        QgsGeometry,
                        QgsFeatureRequest,
-                       NULL,
                        QgsWkbTypes,
-                       QgsMessageLog,
-                       QgsProcessingUtils,
                        QgsProcessingParameterFeatureSource,
                        QgsProcessingParameterFeatureSink,
-                       QgsProcessingOutputVectorLayer,
                        QgsSpatialIndex)
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 
@@ -68,7 +64,6 @@ class Difference(QgisAlgorithm):
                                                               self.tr('Difference layer')))
 
         self.addParameter(QgsProcessingParameterFeatureSink(self.OUTPUT, self.tr('Difference')))
-        self.addOutput(QgsProcessingOutputVectorLayer(self.OUTPUT, self.tr('Difference')))
 
     def name(self):
         return 'difference'
