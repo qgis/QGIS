@@ -674,17 +674,18 @@ double QgsDistanceArea::computePolygonArea( const QList<QgsPointXY> &points ) co
     return 0;
   }
 
+  // IMPORTANT
+  // don't change anything here without reporting the changes to upstream (GRASS)
+  // let's all be good opensource citizens and share the improvements!
+
   double x1, y1, x2, y2, dx, dy;
   double Qbar1, Qbar2;
   double area;
 
   /* GRASS comment: threshold for dy, should be between 1e-4 and 1e-7
-   * QGIS note: while the grass comment states that thres should be between 1e-4->1e-7,
-   * a value of 1e-7 caused TestQgsDistanceArea::regression14675() to regress
-   * The maximum threshold possible which permits regression14675() to pass
-   * was found to be ~0.7e-7.
+   * See relevant discussion at https://trac.osgeo.org/grass/ticket/3369
   */
-  const double thresh = 0.7e-7;
+  const double thresh = 1e-6;
 
   QgsDebugMsgLevel( "Ellipsoid: " + mEllipsoid, 3 );
   if ( !willUseEllipsoid() )
@@ -732,7 +733,7 @@ double QgsDistanceArea::computePolygonArea( const QList<QgsPointXY> &points ) co
        * (Qbar2 - Qbar1) / dy should approach Q((y1 + y2) / 2)
        * Metz 2017
        */
-      area += dx * ( m_Qp - getQ( y2 ) );
+      area += dx * ( m_Qp - getQ( ( y1 + y2 ) / 2.0 ) );
 
       /* original:
        * area += dx * getQ( y2 ) - ( dx / dy ) * ( Qbar2 - Qbar1 );
