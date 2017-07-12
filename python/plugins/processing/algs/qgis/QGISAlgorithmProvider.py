@@ -75,6 +75,7 @@ from .Smooth import Smooth
 from .SnapGeometries import SnapGeometriesToLayer
 from .SpatialiteExecuteSQL import SpatialiteExecuteSQL
 from .SymmetricalDifference import SymmetricalDifference
+from .Union import Union
 from .VectorSplit import VectorSplit
 from .VoronoiPolygons import VoronoiPolygons
 from .ZonalStatistics import ZonalStatistics
@@ -101,7 +102,6 @@ from .ZonalStatistics import ZonalStatistics
 # from .RandomSelection import RandomSelection
 # from .RandomSelectionWithinSubsets import RandomSelectionWithinSubsets
 # from .SelectByLocation import SelectByLocation
-# from .Union import Union
 # from .SpatialJoin import SpatialJoin
 # from .DeleteDuplicateGeometries import DeleteDuplicateGeometries
 # from .TextToFloat import TextToFloat
@@ -194,7 +194,7 @@ class QGISAlgorithmProvider(QgsProcessingProvider):
         #         PolygonsToLines(), LinesToPolygons(), ExtractNodes(),
         #         ConvexHull(), FixedDistanceBuffer(),
         #         VariableDistanceBuffer(),
-        #         Intersection(), Union(),
+        #         Intersection(),
         #         RandomSelection(), RandomSelectionWithinSubsets(),
         #         SelectByLocation(),
         #         ExtractByLocation(),
@@ -274,6 +274,7 @@ class QGISAlgorithmProvider(QgsProcessingProvider):
                 SnapGeometriesToLayer(),
                 SpatialiteExecuteSQL(),
                 SymmetricalDifference(),
+                Union(),
                 VectorSplit(),
                 VoronoiPolygons(),
                 ZonalStatistics()
