@@ -250,6 +250,9 @@ class ProcessingToolbox(BASE, WIDGET):
                 dlg = BatchAlgorithmDialog(alg)
                 dlg.show()
                 dlg.exec_()
+                # have to manually delete the dialog - otherwise it's owned by the
+                # iface mainWindow and never deleted
+                del dlg
 
     def executeAlgorithm(self):
         item = self.algorithmTree.currentItem()
@@ -288,6 +291,9 @@ class ProcessingToolbox(BASE, WIDGET):
                         ProcessingConfig.SHOW_RECENT_ALGORITHMS)
                     if showRecent:
                         self.addRecentAlgorithms(True)
+                # have to manually delete the dialog - otherwise it's owned by the
+                # iface mainWindow and never deleted
+                del dlg
             else:
                 feedback = MessageBarProgress()
                 context = dataobjects.createContext(feedback)
