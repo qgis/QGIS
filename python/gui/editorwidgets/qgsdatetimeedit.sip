@@ -30,6 +30,18 @@ Determines if the widget allows setting null date/time.
  :rtype: bool
 %End
 
+    void setMinimumEditDateTime();
+%Docstring
+ Set the lowest Date that can be displayed with the Qt.ISODate format
+  - uses QDateTimeEdit.setMinimumDateTime (since Qt 4.4)
+ \note
+  - QDate and QDateTime does not support minus years for the Qt.ISODate format
+  -> returns empty (toString) or invalid (fromString) values
+  - QDateTimeEdit.setMinimumDateTime does not support dates < '0100-01-01'
+  -> it is not for us to wonder why [defined in qdatetimeparser_p.h]
+.. versionadded:: 3.0
+%End
+
     void setDateTime( const QDateTime &dateTime );
 %Docstring
  setDateTime set the date time in the widget and handles null date times.

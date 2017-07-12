@@ -52,6 +52,7 @@ QgsDateTimeEdit::QgsDateTimeEdit( QWidget *parent )
 
   // init with current time so mIsNull is properly initialized
   QDateTimeEdit::setDateTime( QDateTime::currentDateTime() );
+  setMinimumEditDateTime();
 }
 
 void QgsDateTimeEdit::setAllowNull( bool allowNull )
