@@ -27,12 +27,7 @@ extern "C"
 #include <grass/version.h>
 #include <grass/gis.h>
 #include <grass/dbmi.h>
-
-#if GRASS_VERSION_MAJOR < 7
-#include <grass/Vect.h>
-#else
 #include <grass/vector.h>
-#endif
 }
 
 #include <QByteArray>
@@ -379,12 +374,8 @@ int main( int argc, char **argv )
     G_message( "Merging lines" );
     Vect_merge_lines( map, GV_BOUNDARY, nullptr, nullptr );
     G_message( "Removing bridges" );
-#if GRASS_VERSION_MAJOR < 7
-    Vect_remove_bridges( map, nullptr );
-#else
     int linesRemoved, bridgesRemoved;
     Vect_remove_bridges( map, nullptr, &linesRemoved, &bridgesRemoved );
-#endif
     G_message( "Attaching islands" );
     Vect_build_partial( map, GV_BUILD_ATTACH_ISLES );
 

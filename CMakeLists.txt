@@ -38,19 +38,16 @@ SET (WITH_CORE TRUE CACHE BOOL "Determines whether QGIS core should be built.")
 MARK_AS_ADVANCED(WITH_CORE)
 
 IF(WITH_CORE)
-  # try to configure and build GRASS plugin by default
-  FOREACH (GRASS_SEARCH_VERSION 6 7)
-    # For GRASS 6 are used cached variables without version suffix so that existing caches don't have to be reconfigured.
-    # Cached variables: WITH_GRASS, WITH_GRASS7, GRASS_PREFIX, GRASS_PREFIX7, GRASS_INCLUDE_DIR, GRASS_INCLUDE_DIR7
+  # Only GRASS 7 is currently supported but we keep dual version support in cmake for possible future switch to GRASS 8.
+  # Try to configure and build GRASS plugin by default
+  FOREACH (GRASS_SEARCH_VERSION 7)
+    # Legacy note:
+    # For GRASS 6 there were used cached variables without version suffix so that existing caches didn't have to be reconfigured.
+    # Cached variables were: WITH_GRASS, WITH_GRASS7, GRASS_PREFIX, GRASS_PREFIX7, GRASS_INCLUDE_DIR, GRASS_INCLUDE_DIR7
     # Everywhere else each variable has version major appended.
-    # Normal variables: GRASS_FOUND6, GRASS_FOUND7, GRASS_MAJOR_VERSION6, GRASS_MAJOR_VERSION7, etc.
+    # Normal variables were: GRASS_FOUND6, GRASS_FOUND7, GRASS_MAJOR_VERSION6, GRASS_MAJOR_VERSION7, etc.
     # In addition there is also GRASS_FOUND, which is TRUE if at least one version of GRASS was found
-    IF (GRASS_SEARCH_VERSION EQUAL 6)
-      SET (GRASS_CACHE_VERSION "")
-    ELSE (GRASS_SEARCH_VERSION EQUAL 6)
-      SET (GRASS_CACHE_VERSION ${GRASS_SEARCH_VERSION})
-    ENDIF (GRASS_SEARCH_VERSION EQUAL 6)
-
+    SET (GRASS_CACHE_VERSION ${GRASS_SEARCH_VERSION})
     SET (WITH_GRASS${GRASS_CACHE_VERSION} TRUE CACHE BOOL "Determines whether GRASS ${GRASS_SEARCH_VERSION} plugin should be built")
     IF (WITH_GRASS${GRASS_CACHE_VERSION})
       FIND_PACKAGE(GRASS ${GRASS_SEARCH_VERSION})

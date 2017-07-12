@@ -38,12 +38,7 @@ extern "C"
 #include <grass/gprojects.h>
 #include <grass/gis.h>
 #include <grass/dbmi.h>
-#if GRASS_VERSION_MAJOR < 7
-#include <grass/Vect.h>
-#else
 #include <grass/vector.h>
-#define BOUND_BOX bound_box
-#endif
 }
 
 QgsGrassVectorMap::QgsGrassVectorMap( const QgsGrassObject &grassObject )
@@ -187,12 +182,7 @@ bool QgsGrassVectorMap::openMap()
   {
     G_TRY
     {
-#if defined(GRASS_VERSION_MAJOR) && defined(GRASS_VERSION_MINOR) && \
-    ( ( GRASS_VERSION_MAJOR == 6 && GRASS_VERSION_MINOR >= 4 ) || GRASS_VERSION_MAJOR > 6 )
       Vect_build( mMap );
-#else
-      Vect_build( mMap, stderr );
-#endif
     }
     G_CATCH( QgsGrass::Exception & e )
     {
@@ -323,14 +313,8 @@ bool QgsGrassVectorMap::closeEdit( bool newMap )
   // Mapset must be set before Vect_close()
   QgsGrass::setMapset( mGrassObject.gisdbase(), mGrassObject.location(), mGrassObject.mapset() );
 
-#if defined(GRASS_VERSION_MAJOR) && defined(GRASS_VERSION_MINOR) && \
-    ( ( GRASS_VERSION_MAJOR == 6 && GRASS_VERSION_MINOR >= 4 ) || GRASS_VERSION_MAJOR > 6 )
   Vect_build_partial( mMap, GV_BUILD_NONE );
   Vect_build( mMap );
-#else
-  Vect_build_partial( mMap, GV_BUILD_NONE, NULL );
-  Vect_build( mMap, stderr );
-#endif
 
   // TODO?
 #if 0

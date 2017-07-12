@@ -1628,7 +1628,6 @@ bool TestQgsGrassProvider::compare( QString uri, QgsVectorLayer *expectedLayer, 
   // We cannot test attribute table changes with independent layer in GRASS 6, which is using
   // DBF files, which are written when driver is closed (map layer keeps driver open during editing)
   bool independentOk = true;
-#if GRASS_VERSION_MAJOR >= 7
   // Open an independent layer which does not share data with edited one
   // build topology
   G_TRY
@@ -1644,11 +1643,9 @@ bool TestQgsGrassProvider::compare( QString uri, QgsVectorLayer *expectedLayer, 
       throw QgsGrass::Exception( "Cannot open map " + mapObject.name() );
     }
 
-#if ( GRASS_VERSION_MAJOR == 6 && GRASS_VERSION_MINOR >= 4 ) || GRASS_VERSION_MAJOR > 6
+
     Vect_build( map );
-#else
-    Vect_build( map, stderr );
-#endif
+
     //Vect_set_release_support( map );
     Vect_close( map );
     QgsGrass::vectDestroyMapStruct( map );
@@ -1684,7 +1681,6 @@ bool TestQgsGrassProvider::compare( QString uri, QgsVectorLayer *expectedLayer, 
   {
     reportRow( QStringLiteral( "comparison with independent layer failed" ) );
   }
-#endif // GRASS_VERSION_MAJOR >= 7
 
   return sharedOk && independentOk;
 }
