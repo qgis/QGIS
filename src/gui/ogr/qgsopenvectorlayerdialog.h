@@ -23,12 +23,16 @@
 #include <QDialog>
 #include "qgshelp.h"
 #include "qgsproviderregistry.h"
+#include "qgis_gui.h"
+
+#define SIP_NO_FILE
 
 /**
  *  Class for a  dialog to select the type and source for ogr vectors, supports
  *  file, database, directory and protocol sources.
+ *  \note not available in Python bindings
  */
-class QgsOpenVectorLayerDialog : public QDialog, private Ui::QgsOpenVectorLayerDialogBase
+class GUI_EXPORT QgsOpenVectorLayerDialog : public QDialog, private Ui::QgsOpenVectorLayerDialogBase
 {
     Q_OBJECT
 

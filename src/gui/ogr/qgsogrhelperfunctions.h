@@ -17,9 +17,18 @@
  ***************************************************************************/
 
 #include <QString>
+#include "qgis_gui.h"
 
-/* Create database uri from connection parameters */
-QString createDatabaseURI( const QString &connectionType, const QString &host, const QString &database, QString port, const QString &user, const QString &password );
+#define SIP_NO_FILE
 
-/* Create protocol uri from connection parameters */
-QString createProtocolURI( const QString &type, const QString &url );
+/** CreateDatabaseURI
+ * \brief Create database uri from connection parameters
+ * \note not available in python bindings
+ */
+QString GUI_EXPORT createDatabaseURI( const QString &connectionType, const QString &host, const QString &database, QString port, const QString &user, const QString &password );
+
+/** CreateProtocolURI
+ * \brief Create protocol uri from connection parameters
+ * \note not available in python bindings
+ */
+QString GUI_EXPORT createProtocolURI( const QString &type, const QString &url );
