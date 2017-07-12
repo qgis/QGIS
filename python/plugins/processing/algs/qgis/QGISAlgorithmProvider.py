@@ -59,6 +59,7 @@ from .DropGeometry import DropGeometry
 from .ExtentFromLayer import ExtentFromLayer
 from .FixGeometry import FixGeometry
 from .GridPolygon import GridPolygon
+from .Heatmap import Heatmap
 from .ImportIntoPostGIS import ImportIntoPostGIS
 from .ImportIntoSpatialite import ImportIntoSpatialite
 from .Intersection import Intersection
@@ -159,7 +160,6 @@ from .ZonalStatistics import ZonalStatistics
 # from .GeometryByExpression import GeometryByExpression
 # from .PoleOfInaccessibility import PoleOfInaccessibility
 # from .RasterCalculator import RasterCalculator
-# from .Heatmap import Heatmap
 # from .Orthogonalize import Orthogonalize
 # from .ShortestPathPointToPoint import ShortestPathPointToPoint
 # from .ShortestPathPointToLayer import ShortestPathPointToLayer
@@ -277,7 +277,8 @@ class QGISAlgorithmProvider(QgsProcessingProvider):
                 Union(),
                 VectorSplit(),
                 VoronoiPolygons(),
-                ZonalStatistics()
+                ZonalStatistics(),
+                Heatmap()
                 ]
 
         if hasPlotly:
