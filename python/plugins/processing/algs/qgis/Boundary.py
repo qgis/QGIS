@@ -93,10 +93,10 @@ class Boundary(QgisAlgorithm):
             if input_geometry:
                 output_geometry = QgsGeometry(input_geometry.geometry().boundary())
                 if not output_geometry:
-                    raise GeoAlgorithmExecutionException(
-                        self.tr('Error calculating boundary'))
-
-                output_feature.setGeometry(output_geometry)
+                    feedback.reportError(self.tr('No boundary for feature {} (possibly a closed linestring?)').format(input_feature.id()))
+                    output_feature.clearGeometry()
+                else:
+                    output_feature.setGeometry(output_geometry)
 
             sink.addFeature(output_feature, QgsFeatureSink.FastInsert)
             feedback.setProgress(int(current * total))
