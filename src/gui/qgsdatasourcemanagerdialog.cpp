@@ -23,7 +23,7 @@
 #include "qgssettings.h"
 #include "qgsproviderregistry.h"
 #include "qgsopenvectorlayerdialog.h"
-#include "qgssourceselectdialog.h"
+#include "qgsarcgisservicesourceselect.h"
 #include "qgsmapcanvas.h"
 
 
@@ -121,9 +121,9 @@ QgsDataSourceManagerDialog::QgsDataSourceManagerDialog( QgsMapCanvas *mapCanvas,
 
   addRasterProviderDialog( QStringLiteral( "arcgismapserver" ), tr( "ArcGIS Map Server" ), QStringLiteral( "/mActionAddAmsLayer.svg" ) );
 
-  QgsSourceSelectDialog *afss = dynamic_cast<QgsSourceSelectDialog *>( providerDialog( QStringLiteral( "arcgisfeatureserver" ),
-                                tr( "ArcGIS Feature Server" ),
-                                QStringLiteral( "/mActionAddAfsLayer.svg" ) ) );
+  QgsArcGisServiceSourceSelect *afss = dynamic_cast<QgsArcGisServiceSourceSelect *>( providerDialog( QStringLiteral( "arcgisfeatureserver" ),
+                                       tr( "ArcGIS Feature Server" ),
+                                       QStringLiteral( "/mActionAddAfsLayer.svg" ) ) );
   if ( afss && mMapCanvas )
   {
     afss->setCurrentExtentAndCrs( mMapCanvas->extent(), mMapCanvas->mapSettings().destinationCrs() );

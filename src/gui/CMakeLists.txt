@@ -302,7 +302,7 @@ SET(QGIS_GUI_SRCS
   qgsoptionsdialogbase.cpp
   qgsorderbydialog.cpp
   qgsowssourceselect.cpp
-  qgssourceselectdialog.cpp
+  qgsarcgisservicesourceselect.cpp
   qgspanelwidget.cpp
   qgspanelwidgetstack.cpp
   qgspasswordlineedit.cpp
@@ -458,7 +458,7 @@ SET(QGIS_GUI_MOC_HDRS
   qgsoptionswidgetfactory.h
   qgsorderbydialog.h
   qgsowssourceselect.h
-  qgssourceselectdialog.h
+  qgsarcgisservicesourceselect.h
   qgspanelwidget.h
   qgspanelwidgetstack.h
   qgspasswordlineedit.h
@@ -499,11 +499,11 @@ SET(QGIS_GUI_MOC_HDRS
   qgsvariableeditorwidget.h
   qgsfiledownloader.h
   qgsdatasourcemanagerdialog.h
+  qgssourceselect.h
 
   ogr/qgsopenvectorlayerdialog.h
   ogr/qgsnewogrconnection.h
   ogr/qgsvectorlayersaveasdialog.h
-  qgssourceselect.h
 
   raster/qgsmultibandcolorrendererwidget.h
   raster/qgspalettedrendererwidget.h
@@ -706,13 +706,12 @@ SET(QGIS_GUI_HDRS
   qgsvertexmarker.h
   qgsfiledownloader.h
   qgsdatasourcemanagerdialog.h
+  qgssourceselect.h
 
   ogr/qgsopenvectorlayerdialog.h
   ogr/qgsogrhelperfunctions.h
   ogr/qgsnewogrconnection.h
   ogr/qgsvectorlayersaveasdialog.h
-
-  qgssourceselect.h
 
   attributetable/qgsfeaturemodel.h
 
@@ -801,6 +800,7 @@ SET(QGIS_GUI_UI_HDRS
   ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsmessagelogviewer.h
   ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsmessageviewer.h
   ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsowssourceselectbase.h
+  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsarcgisservicesourceselectbase.h
   ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsprojectionselectorbase.h
   ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsquerybuilderbase.h
   ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgssqlcomposerdialogbase.h

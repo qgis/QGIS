@@ -1,5 +1,5 @@
 /***************************************************************************
-    qgssourceselectdialog.h
+    qgsarcgisservicesourceselect.h
     ---------------------
     begin                : Nov 26, 2015
     copyright            : (C) 2015 by Sandro Mani
@@ -13,10 +13,10 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef QGSSOURCESELECTDIALOG_H
-#define QGSSOURCESELECTDIALOG_H
+#ifndef QGSARCGISSERVICESOURCESELECTDIALOG_H
+#define QGSARCGISSERVICESOURCESELECTDIALOG_H
 
-#include "ui_qgssourceselectdialogbase.h"
+#include "ui_qgsarcgisservicesourceselectbase.h"
 #include "qgsrectangle.h"
 #include "qgscoordinatereferencesystem.h"
 
@@ -30,7 +30,7 @@ class QgsOwsConnection;
 /** \ingroup gui
  * Generic class listing layers available from a remote service.
  */
-class GUI_EXPORT QgsSourceSelectDialog : public QDialog, protected Ui::QgsSourceSelectBase
+class GUI_EXPORT QgsArcGisServiceSourceSelect : public QDialog, protected Ui::QgsArcGisServiceSourceSelectBase
 {
     Q_OBJECT
 
@@ -39,9 +39,9 @@ class GUI_EXPORT QgsSourceSelectDialog : public QDialog, protected Ui::QgsSource
     enum ServiceType { MapService, FeatureService };
 
     //! Constructor
-    QgsSourceSelectDialog( const QString &serviceName, ServiceType serviceType, QWidget *parent, Qt::WindowFlags fl );
+    QgsArcGisServiceSourceSelect( const QString &serviceName, ServiceType serviceType, QWidget *parent, Qt::WindowFlags fl );
 
-    ~QgsSourceSelectDialog();
+    ~QgsArcGisServiceSourceSelect();
     //! Sets the current extent and CRS. Used to select an appropriate CRS and possibly to retrieve data only in the current extent
     void setCurrentExtentAndCrs( const QgsRectangle &canvasExtent, const QgsCoordinateReferenceSystem &canvasCrs );
 
@@ -108,4 +108,4 @@ class GUI_EXPORT QgsSourceSelectDialog : public QDialog, protected Ui::QgsSource
 };
 
 
-#endif // QGSSOURCESELECTDIALOG_H
+#endif // QGSARCGISSERVICESOURCESELECTDIALOG_H

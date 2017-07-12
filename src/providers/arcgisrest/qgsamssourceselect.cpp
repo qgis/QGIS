@@ -26,7 +26,7 @@
 
 
 QgsAmsSourceSelect::QgsAmsSourceSelect( QWidget *parent, Qt::WindowFlags fl, QgsProviderRegistry::WidgetMode widgetMode )
-  : QgsSourceSelectDialog( QStringLiteral( "ArcGisMapServer" ), QgsSourceSelectDialog::MapService, parent, fl )
+  : QgsArcGisServiceSourceSelect( QStringLiteral( "ArcGisMapServer" ), QgsArcGisServiceSourceSelect::MapService, parent, fl )
 {
   if ( widgetMode == QgsProviderRegistry::WidgetMode::Embedded || widgetMode == QgsProviderRegistry::WidgetMode::Manager )
   {

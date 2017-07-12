@@ -158,7 +158,7 @@
 %Include qgsoptionswidgetfactory.sip
 %Include qgsorderbydialog.sip
 %Include qgsowssourceselect.sip
-%Include qgssourceselectdialog.sip
+%Include qgsarcgisservicesourceselect.sip
 %Include qgspanelwidget.sip
 %Include qgspanelwidgetstack.sip
 %Include qgspasswordlineedit.sip
