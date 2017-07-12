@@ -288,6 +288,9 @@ Q_GUI_EXPORT extern int qt_defaultDpiX();
 #include "qgsgui.h"
 #include "qgsdatasourcemanagerdialog.h"
 
+#include "pendingchanges/qgspendingchangeswidget.h"
+#include "pendingchanges/qgspendingchangesmodel.h"
+
 #include "qgssublayersdialog.h"
 #include "ogr/qgsopenvectorlayerdialog.h"
 #include "ogr/qgsvectorlayersaveasdialog.h"
@@ -771,6 +774,18 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
   mUndoDock->setObjectName( QStringLiteral( "undo/redo dock" ) );
   endProfile();
 
+  startProfile( QStringLiteral( "Pending changes dock" ) );
+  mPendingChangesDock = new QgsDockWidget( tr( "Pending Changes" ), this );
+  mPendingChangesWidget = new QgsPendingChangesWidget( mPendingChangesDock );
+  mPendingChangesWidget->setModel( new QgsPendingChangesModel( QgsProject::instance() ) );
+  mPendingChangesWidget->setObjectName( QStringLiteral( "PendingChanges" ) );
+  mPendingChangesDock->setWidget( mPendingChangesWidget );
+  mPendingChangesDock->setObjectName( QStringLiteral( "pending changes dock" ) );
+  connect( mActionPendingChanges, &QAction::triggered, mPendingChangesDock, [this] {
+      mPendingChangesDock->show();
+  });
+  endProfile();
+
   // Advanced Digitizing dock
   startProfile( QStringLiteral( "Advanced digitize panel" ) );
   mAdvancedDigitizingDockWidget = new QgsAdvancedDigitizingDockWidget( mMapCanvas, this );
@@ -844,6 +859,9 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
 
   addDockWidget( Qt::LeftDockWidgetArea, mUndoDock );
   mUndoDock->hide();
+
+  addDockWidget( Qt::LeftDockWidgetArea, mPendingChangesDock );
+  mPendingChangesDock->hide();
 
   startProfile( QStringLiteral( "Layer Style dock" ) );
   mMapStylingDock = new QgsDockWidget( this );
@@ -1276,6 +1294,8 @@ QgisApp::QgisApp()
   , mPythonUtils( nullptr )
   , mUndoWidget( nullptr )
   , mUndoDock( nullptr )
+  , mPendingChangesDock( nullptr )
+  , mPendingChangesWidget( nullptr )
   , mBrowserWidget( nullptr )
   , mBrowserWidget2( nullptr )
   , mAdvancedDigitizingDockWidget( nullptr )

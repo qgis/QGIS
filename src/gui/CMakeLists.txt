@@ -162,6 +162,9 @@ SET(QGIS_GUI_SRCS
   locator/qgslocatorfilter.cpp
   locator/qgslocatorwidget.cpp
 
+  pendingchanges/qgspendingchangeswidget.cpp
+  pendingchanges/qgspendingchangesmodel.cpp
+
   qgisinterface.cpp
   qgsactionmenu.cpp
   qgsadvanceddigitizingcanvasitem.cpp
@@ -624,6 +627,9 @@ SET(QGIS_GUI_MOC_HDRS
   locator/qgslocator.h
   locator/qgslocatorfilter.h
   locator/qgslocatorwidget.h
+
+  pendingchanges/qgspendingchangeswidget.h
+  pendingchanges/qgspendingchangesmodel.h
 )
 SET_PROPERTY(GLOBAL PROPERTY QGIS_GUI_MOC_HDRS ${QGIS_GUI_MOC_HDRS})
 

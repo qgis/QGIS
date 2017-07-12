@@ -17,7 +17,7 @@
      <x>0</x>
      <y>0</y>
      <width>1018</width>
-     <height>21</height>
+     <height>25</height>
     </rect>
    </property>
    <property name="toolTip">
@@ -272,6 +272,7 @@
      <addaction name="mActionPasteAsNewVector"/>
      <addaction name="mActionPasteAsNewMemoryVector"/>
     </widget>
+    <addaction name="mActionPendingChanges"/>
     <addaction name="mActionUndo"/>
     <addaction name="mActionRedo"/>
     <addaction name="separator"/>
@@ -2668,6 +2669,14 @@ Acts on currently active editable layer</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+L</string>
+   </property>
+  </action>
+  <action name="mActionPendingChanges">
+   <property name="text">
+    <string>Pending Changes</string>
+   </property>
+   <property name="toolTip">
+    <string>Show pending changes for all layers.</string>
    </property>
   </action>
  </widget>
