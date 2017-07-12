@@ -384,6 +384,7 @@ void myMessageOutput( QtMsgType type, const char *msg )
       dumpBacktrace( 256 );
       abort();                    // deliberately dump core
 #endif
+      break; // silence warnings
     }
 
 #if QT_VERSION >= 0x050500
