@@ -19,20 +19,18 @@
 
 #include <QList>
 #include <QDialog>
+#include "ui_qgsdatasourcemanagerdialog.h"
 #include "qgsoptionsdialogbase.h"
 #include "qgsguiutils.h"
 #include "qgsmimedatautils.h"
 #include "qgshelp.h"
 #include "qgis_gui.h"
 
+#define SIP_NO_FILE
+
 class QgsBrowserDockWidget;
 class QgsRasterLayer;
 class QgsMapCanvas;
-
-namespace Ui
-{
-  class QgsDataSourceManagerDialog;
-}
 
 /** \ingroup gui
  * The QgsDataSourceManagerDialog class embeds the browser panel and all
@@ -42,7 +40,7 @@ namespace Ui
  * \since QGIS 3.0
  * @note not available in Python bindings
  */
-class GUI_EXPORT QgsDataSourceManagerDialog : public QgsOptionsDialogBase
+class GUI_EXPORT QgsDataSourceManagerDialog : public QgsOptionsDialogBase, private Ui::QgsDataSourceManagerDialog
 {
     Q_OBJECT
 

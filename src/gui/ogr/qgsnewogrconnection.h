@@ -17,15 +17,21 @@
 
 #ifndef QGSNEWOGRCONNECTION_H
 #define QGSNEWOGRCONNECTION_H
+
+#define SIP_NO_FILE
+
 #include "ui_qgsnewogrconnectionbase.h"
 #include "qgsguiutils.h"
 #include "qgscontexthelp.h"
+#include "qgis_gui.h"
+
 
 /** \class QgsNewOgrConnection
  * \brief Dialog to allow the user to define, test and save connection
  * information for OGR databases
+ * \note not available in python bindings
  */
-class QgsNewOgrConnection : public QDialog, private Ui::QgsNewOgrConnectionBase
+class GUI_EXPORT QgsNewOgrConnection : public QDialog, private Ui::QgsNewOgrConnectionBase
 {
     Q_OBJECT
 
