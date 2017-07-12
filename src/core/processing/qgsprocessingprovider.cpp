@@ -65,6 +65,10 @@ bool QgsProcessingProvider::addAlgorithm( QgsProcessingAlgorithm *algorithm )
   if ( mAlgorithms.contains( algorithm->name() ) )
     return false;
 
+  // init the algorithm - this allows direct querying of the algorithm's parameters
+  // and outputs from the provider's copy
+  algorithm->initAlgorithm( QVariantMap() );
+
   algorithm->setProvider( this );
   mAlgorithms.insert( algorithm->name(), algorithm );
   return true;
