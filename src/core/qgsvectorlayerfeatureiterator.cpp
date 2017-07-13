@@ -79,6 +79,9 @@ QgsVectorLayerFeatureSource::QgsVectorLayerFeatureSource( const QgsVectorLayer *
     }
 #endif
   }
+
+  std::unique_ptr< QgsExpressionContextScope > layerScope( QgsExpressionContextUtils::layerScope( layer ) );
+  mLayerScope = *layerScope;
 }
 
 QgsVectorLayerFeatureSource::~QgsVectorLayerFeatureSource()
@@ -644,7 +647,7 @@ void QgsVectorLayerFeatureIterator::prepareFields()
   mExpressionContext.reset( new QgsExpressionContext() );
   mExpressionContext->appendScope( QgsExpressionContextUtils::globalScope() );
   mExpressionContext->appendScope( QgsExpressionContextUtils::projectScope( QgsProject::instance() ) );
-  mExpressionContext->setFields( mSource->mFields );
+  mExpressionContext->appendScope( new QgsExpressionContextScope( mSource->mLayerScope ) );
 
   mFieldsToPrepare = ( mRequest.flags() & QgsFeatureRequest::SubsetOfAttributes ) ? mRequest.subsetOfAttributes() : mSource->mFields.allAttributesList();
 

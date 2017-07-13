@@ -1829,6 +1829,27 @@ class TestQgsVectorLayer(unittest.TestCase, FeatureSourceTestCase):
         self.assertTrue(ok)
         self.assertEqual(val, 'this is a test')
 
+    def testAggregateInVirtualField(self):
+        """
+        Test aggregates in a virtual field
+        """
+        layer = QgsVectorLayer("Point?field=fldint:integer", "layer", "memory")
+        pr = layer.dataProvider()
+
+        int_values = [4, 2, 3, 2, 5, None, 8]
+        features = []
+        for i in int_values:
+            f = QgsFeature()
+            f.setFields(layer.fields())
+            f.setAttributes([i])
+            features.append(f)
+        assert pr.addFeatures(features)
+
+        field = QgsField('virtual', QVariant.Double)
+        layer.addExpressionField('sum(fldint*2)', field)
+        vals = [f['virtual'] for f in layer.getFeatures()]
+        self.assertEqual(vals, [48, 48, 48, 48, 48, 48, 48])
+
     def onLayerOpacityChanged(self, tr):
         self.opacityTest = tr
 
