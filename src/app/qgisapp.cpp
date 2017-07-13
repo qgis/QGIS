@@ -5435,21 +5435,21 @@ bool QgisApp::fileSave()
     QgsSettings settings;
     QString lastUsedDir = settings.value( QStringLiteral( "UI/lastProjectDir" ), QDir::homePath() ).toString();
 
-    const QString qgs_ext = tr( "QGIS files" ) + " (*.qgs)";
-    const QString zip_ext = tr( "QGZ files" ) + " (*.qgz)";
+    const QString qgsExt = tr( "QGIS files" ) + " (*.qgs)";
+    const QString zipExt = tr( "QGZ files" ) + " (*.qgz)";
     QString filter;
     QString path = QFileDialog::getSaveFileName(
                      this,
                      tr( "Choose a QGIS project file" ),
                      lastUsedDir + '/' + QgsProject::instance()->title(),
-                     qgs_ext + ";;" + zip_ext, &filter );
+                     qgsExt + ";;" + zipExt, &filter );
     if ( path.isEmpty() )
       return false;
 
     fullPath.setFile( path );
 
     // make sure we have the .qgs extension in the file name
-    if ( filter == zip_ext )
+    if ( filter == zipExt )
     {
       if ( "qgz" != fullPath.suffix().toLower() )
         fullPath.setFile( fullPath.filePath() + ".qgz" );
@@ -5540,13 +5540,13 @@ void QgisApp::fileSaveAs()
   QgsSettings settings;
   QString lastUsedDir = settings.value( QStringLiteral( "UI/lastProjectDir" ), QDir::homePath() ).toString();
 
-  const QString qgs_ext = tr( "QGIS files" ) + " (*.qgs *.QGS)";
-  const QString zip_ext = tr( "QGZ files" ) + " (*.qgz)";
+  const QString qgsExt = tr( "QGIS files" ) + " (*.qgs *.QGS)";
+  const QString zipExt = tr( "QGZ files" ) + " (*.qgz)";
   QString filter;
   QString path = QFileDialog::getSaveFileName( this,
                  tr( "Choose a file name to save the QGIS project file as" ),
                  lastUsedDir + '/' + QgsProject::instance()->title(),
-                 qgs_ext + ";;" + zip_ext, &filter );
+                 qgsExt + ";;" + zipExt, &filter );
   if ( path.isEmpty() )
     return;
 
@@ -5555,7 +5555,7 @@ void QgisApp::fileSaveAs()
   settings.setValue( QStringLiteral( "UI/lastProjectDir" ), fullPath.path() );
 
   bool writeOk = false;
-  if ( filter == zip_ext )
+  if ( filter == zipExt )
   {
     if ( "qgz" != fullPath.suffix().toLower() )
       fullPath.setFile( fullPath.filePath() + ".qgz" );
