@@ -37,9 +37,9 @@ from qgis.core import (QgsFeature,
                        QgsProcessingUtils,
                        QgsMessageLog,
                        QgsProperty,
+                       QgsProcessingException,
                        QgsProcessingParameters,
                        QgsProcessingOutputLayerDefinition)
-from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from processing.gui.Postprocessing import handleAlgorithmResults
 from processing.tools import dataobjects
 from processing.tools.system import getTempFilename
@@ -61,7 +61,7 @@ def execute(alg, parameters, context=None, feedback=None):
     try:
         results, ok = alg.run(parameters, context, feedback)
         return ok, results
-    except GeoAlgorithmExecutionException as e:
+    except QgsProcessingException as e:
         QgsMessageLog.logMessage(str(sys.exc_info()[0]), 'Processing', QgsMessageLog.CRITICAL)
         if feedback is not None:
             feedback.reportError(e.msg)

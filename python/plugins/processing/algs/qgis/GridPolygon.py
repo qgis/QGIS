@@ -37,6 +37,7 @@ from qgis.core import (QgsField,
                        QgsPointXY,
                        QgsWkbTypes,
                        QgsProcessing,
+                       QgsProcessingException,
                        QgsProcessingParameterEnum,
                        QgsProcessingParameterExtent,
                        QgsProcessingParameterNumber,
@@ -45,7 +46,6 @@ from qgis.core import (QgsField,
                        QgsFields)
 
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
-from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 
 pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
@@ -122,19 +122,19 @@ class GridPolygon(QgisAlgorithm):
         originY = bbox.yMaximum()
 
         if hSpacing <= 0 or vSpacing <= 0:
-            raise GeoAlgorithmExecutionException(
+            raise QgsProcessingException(
                 self.tr('Invalid grid spacing: {0}/{1}').format(hSpacing, vSpacing))
 
         if width < hSpacing:
-            raise GeoAlgorithmExecutionException(
+            raise QgsProcessingException(
                 self.tr('Horizontal spacing is too small for the covered area'))
 
         if hSpacing <= hOverlay or vSpacing <= vOverlay:
-            raise GeoAlgorithmExecutionException(
+            raise QgsProcessingException(
                 self.tr('Invalid overlay: {0}/{1}').format(hOverlay, vOverlay))
 
         if height < vSpacing:
-            raise GeoAlgorithmExecutionException(
+            raise QgsProcessingException(
                 self.tr('Vertical spacing is too small for the covered area'))
 
         fields = QgsFields()
@@ -264,7 +264,7 @@ class GridPolygon(QgisAlgorithm):
 
         hOverlay = hSpacing - hOverlay
         if hOverlay < 0:
-            raise GeoAlgorithmExecutionException(
+            raise QgsProcessingException(
                 self.tr('To preserve symmetry, hspacing is fixed relative to vspacing\n \
                         hspacing is fixed at: {0} and hoverlay is fixed at: {1}\n \
                         hoverlay cannot be negative. Increase hoverlay.').format(hSpacing, hOverlay)

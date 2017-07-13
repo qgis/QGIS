@@ -37,12 +37,12 @@ from qgis.core import (QgsFeatureRequest,
                        QgsPointXY,
                        QgsWkbTypes,
                        QgsProcessing,
+                       QgsProcessingException,
                        QgsProcessingParameterFeatureSource,
                        QgsProcessingParameterFeatureSink,
                        QgsProcessingParameterNumber)
 
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
-from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 
 from . import voronoi
 
@@ -109,7 +109,7 @@ class VoronoiPolygons(QgisAlgorithm):
             feedback.setProgress(int(current * total))
 
         if len(pts) < 3:
-            raise GeoAlgorithmExecutionException(
+            raise QgsProcessingException(
                 self.tr('Input file should contain at least 3 points. Choose '
                         'another file and try again.'))
 
@@ -122,7 +122,7 @@ class VoronoiPolygons(QgisAlgorithm):
 
         current = 0
         if len(c.polygons) == 0:
-            raise GeoAlgorithmExecutionException(
+            raise QgsProcessingException(
                 self.tr('There were no polygons created.'))
 
         total = 100.0 / len(c.polygons)

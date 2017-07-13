@@ -28,6 +28,7 @@ __revision__ = '$Format:%H$'
 from qgis.core import (QgsVectorLayerExporter,
                        QgsSettings,
                        QgsFeatureSink,
+                       QgsProcessingException,
                        QgsProcessingParameterFeatureSource,
                        QgsProcessingParameterString,
                        QgsProcessingParameterField,
@@ -35,7 +36,6 @@ from qgis.core import (QgsVectorLayerExporter,
                        QgsWkbTypes)
 
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
-from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from processing.tools import postgis
 
 
@@ -167,7 +167,7 @@ class ImportIntoPostGIS(QgisAlgorithm):
                                           source.wkbType(), source.sourceCrs(), overwrite, options)
 
         if exporter.errorCode() != QgsVectorLayerExporter.NoError:
-            raise GeoAlgorithmExecutionException(
+            raise QgsProcessingException(
                 self.tr('Error importing to PostGIS\n{0}').format(exporter.errorMessage()))
 
         features = source.getFeatures()
@@ -183,7 +183,7 @@ class ImportIntoPostGIS(QgisAlgorithm):
 
         exporter.flushBuffer()
         if exporter.errorCode() != QgsVectorLayerExporter.NoError:
-            raise GeoAlgorithmExecutionException(
+            raise QgsProcessingException(
                 self.tr('Error importing to PostGIS\n{0}').format(exporter.errorMessage()))
 
         if geomColumn and createIndex:

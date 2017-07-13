@@ -31,9 +31,9 @@ import nose2
 import shutil
 
 from qgis.core import (QgsProcessingAlgorithm,
-                       QgsProcessingFeedback)
+                       QgsProcessingFeedback,
+                       QgsProcessingException)
 from qgis.testing import start_app, unittest
-from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from processing.tools.dataobjects import createContext
 
 
@@ -55,7 +55,7 @@ class TestAlg(QgsProcessingAlgorithm):
         return TestAlg()
 
     def processAlgorithm(self, parameters, context, feedback):
-        raise GeoAlgorithmExecutionException('Exception while processing')
+        raise QgsProcessingException('Exception while processing')
         return {}
 
 

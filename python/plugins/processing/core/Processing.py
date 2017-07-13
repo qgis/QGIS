@@ -41,6 +41,7 @@ from qgis.core import (QgsMessageLog,
                        QgsMapLayer,
                        QgsProcessingProvider,
                        QgsProcessingAlgorithm,
+                       QgsProcessingException,
                        QgsProcessingParameterDefinition,
                        QgsProcessingOutputVectorLayer,
                        QgsProcessingOutputRasterLayer)
@@ -54,7 +55,6 @@ from processing.gui.RenderingStyles import RenderingStyles
 from processing.gui.Postprocessing import handleAlgorithmResults
 from processing.gui.AlgorithmExecutor import execute
 from processing.tools import dataobjects
-from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 
 from processing.algs.qgis.QGISAlgorithmProvider import QGISAlgorithmProvider  # NOQA
 #from processing.algs.grass7.Grass7AlgorithmProvider import Grass7AlgorithmProvider  # NOQA
@@ -140,7 +140,7 @@ class Processing(object):
             print('Error: Algorithm not found\n')
             msg = Processing.tr('Error: Algorithm {0} not found\n').format(algOrName)
             feedback.reportError(msg)
-            raise GeoAlgorithmExecutionException(msg)
+            raise QgsProcessingException(msg)
 
         # check for any mandatory parameters which were not specified
         for param in alg.parameterDefinitions():
@@ -150,7 +150,7 @@ class Processing(object):
                     msg = Processing.tr('Error: Missing parameter value for parameter {0}.').format(param.name())
                     print('Error: Missing parameter value for parameter %s.' % param.name())
                     feedback.reportError(msg)
-                    raise GeoAlgorithmExecutionException(msg)
+                    raise QgsProcessingException(msg)
 
         if context is None:
             context = dataobjects.createContext(feedback)
@@ -161,7 +161,7 @@ class Processing(object):
             print('Unable to execute algorithm\n' + str(msg))
             msg = Processing.tr('Unable to execute algorithm\n{0}').format(msg)
             feedback.reportError(msg)
-            raise GeoAlgorithmExecutionException(msg)
+            raise QgsProcessingException(msg)
 
         if not alg.validateInputCrs(parameters, context):
             print('Warning: Not all input layers use the same CRS.\n' +
@@ -188,7 +188,7 @@ class Processing(object):
         else:
             msg = Processing.tr("There were errors executing the algorithm.")
             feedback.reportError(msg)
-            raise GeoAlgorithmExecutionException(msg)
+            raise QgsProcessingException(msg)
 
         if isinstance(feedback, MessageBarProgress):
             feedback.close()

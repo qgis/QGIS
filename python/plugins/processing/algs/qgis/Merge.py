@@ -34,12 +34,12 @@ from qgis.core import (QgsFields,
                        QgsFeatureRequest,
                        QgsFeatureSink,
                        QgsProcessing,
+                       QgsProcessingException,
                        QgsProcessingParameterMultipleLayers,
                        QgsProcessingParameterFeatureSink,
                        QgsMapLayer)
 
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
-from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 
 pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
@@ -78,12 +78,12 @@ class Merge(QgisAlgorithm):
         totalFeatureCount = 0
         for layer in input_layers:
             if layer.type() != QgsMapLayer.VectorLayer:
-                raise GeoAlgorithmExecutionException(
+                raise QgsProcessingException(
                     self.tr('All layers must be vector layers!'))
 
             if (len(layers) > 0):
                 if (layer.wkbType() != layers[0].wkbType()):
-                    raise GeoAlgorithmExecutionException(
+                    raise QgsProcessingException(
                         self.tr('All layers must have same geometry type!'))
 
             layers.append(layer)
@@ -95,7 +95,7 @@ class Merge(QgisAlgorithm):
                     if (dfield.name().upper() == sfield.name().upper()):
                         found = dfield
                         if (dfield.type() != sfield.type()):
-                            raise GeoAlgorithmExecutionException(
+                            raise QgsProcessingException(
                                 self.tr('{} field in layer {} has different '
                                         'data type than in other layers.'.format(sfield.name(), layerSource)))
 
@@ -142,7 +142,7 @@ class Merge(QgisAlgorithm):
                     for sindex, sfield in enumerate(layer.fields()):
                         if (sfield.name().upper() == dfield.name().upper()):
                             if (sfield.type() != dfield.type()):
-                                raise GeoAlgorithmExecutionException(
+                                raise QgsProcessingException(
                                     self.tr('Attribute type mismatch'))
                             dattribute = sattributes[sindex]
                             break

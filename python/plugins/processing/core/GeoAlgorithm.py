@@ -40,12 +40,12 @@ from qgis.core import (QgsProcessingFeedback,
                        QgsProcessingAlgorithm,
                        QgsProject,
                        QgsProcessingUtils,
+                       QgsProcessingException,
                        QgsProcessingParameterDefinition,
                        QgsMessageLog)
 from qgis.gui import QgsHelp
 
 from processing.core.ProcessingConfig import ProcessingConfig
-from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from processing.core.parameters import ParameterRaster, ParameterVector, ParameterMultipleInput, ParameterTable, Parameter
 from processing.core.outputs import OutputVector, OutputRaster, OutputTable, OutputHTML, Output
 from processing.algs.gdal.GdalUtils import GdalUtils
@@ -76,7 +76,7 @@ class GeoAlgorithm(QgsProcessingAlgorithm):
         """Here goes the algorithm itself.
 
         There is no return value from this method.
-        A GeoAlgorithmExecutionException should be raised in case
+        A QgsProcessingException should be raised in case
         something goes wrong.
         :param parameters:
         :param context:
@@ -105,7 +105,7 @@ class GeoAlgorithm(QgsProcessingAlgorithm):
         it should be called using this method, since it performs
         some additional operations.
 
-        Raises a GeoAlgorithmExecutionException in case anything goes
+        Raises a QgsProcessingException in case anything goes
         wrong.
         :param parameters:
         """
@@ -124,18 +124,18 @@ class GeoAlgorithm(QgsProcessingAlgorithm):
             feedback.setProgress(100)
             self.convertUnsupportedFormats(context, feedback)
             self.runPostExecutionScript(feedback)
-        except GeoAlgorithmExecutionException as gaee:
+        except QgsProcessingException as gaee:
             lines = [self.tr('Error while executing algorithm')]
             lines.append(traceback.format_exc())
             QgsMessageLog.logMessage(gaee.msg, self.tr('Processing'), QgsMessageLog.CRITICAL)
-            raise GeoAlgorithmExecutionException(gaee.msg, lines, gaee)
+            raise QgsProcessingException(gaee.msg, lines, gaee)
         except Exception as e:
             # If something goes wrong and is not caught in the
             # algorithm, we catch it here and wrap it
             lines = [self.tr('Uncaught error while executing algorithm')]
             lines.append(traceback.format_exc())
             QgsMessageLog.logMessage('\n'.join(lines), self.tr('Processing'), QgsMessageLog.CRITICAL)
-            raise GeoAlgorithmExecutionException(str(e) + self.tr('\nSee log for more details'), lines, e)
+            raise QgsProcessingException(str(e) + self.tr('\nSee log for more details'), lines, e)
 
     def runPostExecutionScript(self, feedback):
         scriptFile = ProcessingConfig.getSetting(
@@ -235,7 +235,7 @@ class GeoAlgorithm(QgsProcessingAlgorithm):
             for out in self.outputs:
                 out.resolveValue(self)
         except ValueError as e:
-            raise GeoAlgorithmExecutionException(str(e))
+            raise QgsProcessingException(str(e))
 
     def setOutputCRS(self):
         context = dataobjects.createContext()
@@ -319,7 +319,7 @@ def executeAlgorithm(alg, parameters, context=None, feedback=None, model=None):
     it should be called using this method, since it performs
     some additional operations.
 
-    Raises a GeoAlgorithmExecutionException in case anything goes
+    Raises a QgsProcessingException in case anything goes
     wrong.
     :param parameters:
     """

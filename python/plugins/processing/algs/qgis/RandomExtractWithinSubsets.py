@@ -29,6 +29,7 @@ __revision__ = '$Format:%H$'
 import random
 
 from qgis.core import (QgsFeatureSink,
+                       QgsProcessingException,
                        QgsProcessingParameterFeatureSource,
                        QgsProcessingParameterEnum,
                        QgsProcessingParameterField,
@@ -36,7 +37,6 @@ from qgis.core import (QgsFeatureSink,
                        QgsProcessingParameterFeatureSink)
 from collections import defaultdict
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
-from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 
 
 class RandomExtractWithinSubsets(QgisAlgorithm):
@@ -92,12 +92,12 @@ class RandomExtractWithinSubsets(QgisAlgorithm):
         value = self.parameterAsInt(parameters, self.NUMBER, context)
         if method == 0:
             if value > featureCount:
-                raise GeoAlgorithmExecutionException(
+                raise QgsProcessingException(
                     self.tr('Selected number is greater that feature count. '
                             'Choose lesser value and try again.'))
         else:
             if value > 100:
-                raise GeoAlgorithmExecutionException(
+                raise QgsProcessingException(
                     self.tr("Percentage can't be greater than 100. Set "
                             "correct value and try again."))
             value = value / 100.0

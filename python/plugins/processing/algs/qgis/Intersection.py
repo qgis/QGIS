@@ -34,12 +34,12 @@ from qgis.core import (QgsFeatureRequest,
                        QgsFeatureSink,
                        QgsGeometry,
                        QgsWkbTypes,
+                       QgsProcessingException,
                        QgsProcessingParameterFeatureSource,
                        QgsProcessingParameterFeatureSink,
                        QgsSpatialIndex,
                        QgsProcessingUtils)
 
-from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 from processing.tools import vector
 
@@ -132,7 +132,7 @@ class Intersection(QgisAlgorithm):
                             int_sym = geom.symDifference(tmpGeom)
                             int_geom = QgsGeometry(int_com.difference(int_sym))
                     if int_geom.isEmpty() or not int_geom.isGeosValid():
-                        raise GeoAlgorithmExecutionException(
+                        raise QgsProcessingException(
                             self.tr('GEOS geoprocessing error: One or '
                                     'more input features have invalid '
                                     'geometry.'))
@@ -145,7 +145,7 @@ class Intersection(QgisAlgorithm):
                             outFeat.setAttributes(attrs)
                             sink.addFeature(outFeat, QgsFeatureSink.FastInsert)
                     except:
-                        raise GeoAlgorithmExecutionException(
+                        raise QgsProcessingException(
                             self.tr('Feature geometry error: One or more '
                                     'output features ignored due to invalid '
                                     'geometry.'))

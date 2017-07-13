@@ -26,18 +26,19 @@ __copyright__ = '(C) 2014, Piotr Pociask'
 
 __revision__ = '$Format:%H$'
 
+from math import sqrt
+
 from qgis.core import (QgsFeature,
                        QgsFeatureSink,
                        QgsWkbTypes,
                        QgsProcessing,
+                       QgsProcessingException,
                        QgsProcessingParameterFeatureSource,
                        QgsProcessingParameterNumber,
                        QgsProcessingParameterBoolean,
                        QgsProcessingParameterFeatureSink)
-from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
-from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 import processing
-from math import sqrt
+from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 
 
 class ConcaveHull(QgisAlgorithm):
@@ -89,7 +90,7 @@ class ConcaveHull(QgisAlgorithm):
         features = delaunay_layer.getFeatures()
         count = delaunay_layer.featureCount()
         if count == 0:
-            raise GeoAlgorithmExecutionException(self.tr('No Delaunay triangles created.'))
+            raise QgsProcessingException(self.tr('No Delaunay triangles created.'))
 
         counter = 50. / count
         lengths = []
