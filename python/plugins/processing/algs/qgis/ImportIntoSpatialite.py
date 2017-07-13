@@ -28,6 +28,7 @@ __revision__ = '$Format:%H$'
 from qgis.core import (QgsDataSourceUri,
                        QgsFeatureSink,
                        QgsVectorLayerExporter,
+                       QgsProcessingException,
                        QgsProcessingParameterFeatureSource,
                        QgsProcessingParameterVectorLayer,
                        QgsProcessingParameterField,
@@ -36,7 +37,6 @@ from qgis.core import (QgsDataSourceUri,
                        QgsWkbTypes)
 
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
-from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from processing.tools import spatialite
 
 
@@ -137,7 +137,7 @@ class ImportIntoSpatialite(QgisAlgorithm):
                                           source.wkbType(), source.sourceCrs(), overwrite, options)
 
         if exporter.errorCode() != QgsVectorLayerExporter.NoError:
-            raise GeoAlgorithmExecutionException(
+            raise QgsProcessingException(
                 self.tr('Error importing to Spatialite\n{0}').format(exporter.errorMessage()))
 
         features = source.getFeatures()
@@ -153,7 +153,7 @@ class ImportIntoSpatialite(QgisAlgorithm):
 
         exporter.flushBuffer()
         if exporter.errorCode() != QgsVectorLayerExporter.NoError:
-            raise GeoAlgorithmExecutionException(
+            raise QgsProcessingException(
                 self.tr('Error importing to Spatialite\n{0}').format(exporter.errorMessage()))
 
         if geomColumn and createIndex:

@@ -27,11 +27,11 @@ __copyright__ = '(C) 2016, Mathieu Pellerin'
 __revision__ = '$Format:%H$'
 
 from qgis.core import (QgsDataSourceUri,
+                       QgsProcessingException,
                        QgsProcessingParameterVectorLayer,
                        QgsProcessingParameterString)
 
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
-from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from processing.tools import spatialite
 
 
@@ -69,7 +69,7 @@ class SpatialiteExecuteSQL(QgisAlgorithm):
         try:
             db._exec_sql_and_commit(str(sql))
         except spatialite.DbError as e:
-            raise GeoAlgorithmExecutionException(
+            raise QgsProcessingException(
                 self.tr('Error executing SQL:\n{0}').format(str(e)))
 
         return {}

@@ -27,12 +27,12 @@ __revision__ = '$Format:%H$'
 
 from qgis.core import (QgsFeatureSink,
                        QgsProcessing,
+                       QgsProcessingException,
                        QgsProcessingParameterFeatureSource,
                        QgsProcessingParameterFeatureSink,
                        QgsProcessingParameterNumber)
 
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
-from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 
 
 class Smooth(QgisAlgorithm):
@@ -89,7 +89,7 @@ class Smooth(QgisAlgorithm):
             if input_feature.geometry():
                 output_geometry = input_feature.geometry().smooth(iterations, offset, -1, max_angle)
                 if not output_geometry:
-                    raise GeoAlgorithmExecutionException(
+                    raise QgsProcessingException(
                         self.tr('Error smoothing geometry'))
 
                 output_feature.setGeometry(output_geometry)

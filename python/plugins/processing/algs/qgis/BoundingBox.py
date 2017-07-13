@@ -31,6 +31,7 @@ from qgis.core import (QgsGeometry,
                        QgsWkbTypes,
                        QgsFeatureSink,
                        QgsProcessing,
+                       QgsProcessingException,
                        QgsProcessingParameterFeatureSource,
                        QgsProcessingParameterFeatureSink)
 
@@ -38,7 +39,6 @@ from qgis.core import (QgsGeometry,
 from qgis.PyQt.QtGui import QIcon
 
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
-from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 
 pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
@@ -84,7 +84,7 @@ class BoundingBox(QgisAlgorithm):
             if input_geometry:
                 output_geometry = QgsGeometry.fromRect(input_geometry.boundingBox())
                 if not output_geometry:
-                    raise GeoAlgorithmExecutionException(
+                    raise QgsProcessingException(
                         self.tr('Error calculating bounding box'))
 
                 output_feature.setGeometry(output_geometry)
