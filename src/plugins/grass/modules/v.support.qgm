@@ -10,8 +10,8 @@
 	<option key="map_date" />
 	<option key="scale" />
 	<option key="zone" />
-	<option key="thresh" version_max="6"/>
-	<option key="threshold" version_min="7"/>
+
+	<option key="threshold"/>
 	<option key="comment" />
 	<option key="cmdhist" />
 </qgisgrassmodule>

@@ -1235,11 +1235,7 @@ void QgsGrassNewMapset::createMapset()
     QString error;
     G_TRY
     {
-#if GRASS_VERSION_MAJOR < 7
-      ret = G_make_location( location.toUtf8().data(), &mCellHead, mProjInfo, mProjUnits, stdout );
-#else
       ret = G_make_location( location.toUtf8().data(), &mCellHead, mProjInfo, mProjUnits );
-#endif
     }
     G_CATCH( QgsGrass::Exception & e )
     {

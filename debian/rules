@@ -85,11 +85,6 @@ ifeq ($(GRASSVER),7)
 		-DWITH_GRASS=TRUE \
 		-DWITH_GRASS7=TRUE \
 		-DGRASS_PREFIX7=/usr/lib/$(GRASS)
-else
-	CMAKE_OPTS += \
-		-DWITH_GRASS=TRUE \
-		-DWITH_GRASS6=TRUE \
-		-DGRASS_PREFIX=/usr/lib/$(GRASS)
 endif
 
 ifneq (,$(filter parallel=%,$(DEB_BUILD_OPTIONS)))

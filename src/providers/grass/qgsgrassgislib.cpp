@@ -65,17 +65,9 @@ extern "C"
 }
 #endif
 
-#if !defined(GRASS_VERSION_MAJOR) || \
-    !defined(GRASS_VERSION_MINOR) || \
-    GRASS_VERSION_MAJOR<6 || \
-    (GRASS_VERSION_MAJOR == 6 && GRASS_VERSION_MINOR <= 2)
-#define G__setenv(name,value) G__setenv( ( char * ) (name), (char *) (value) )
-#endif
-
 #ifdef Q_OS_WIN
 #include <windows.h>
 #endif
-
 
 QgsGrassGisLib *QgsGrassGisLib::_instance = 0;
 
@@ -205,10 +197,6 @@ int GRASS_LIB_EXPORT QgsGrassGisLib::G__gisinit( const char *version, const char
   G_setenv( "OVERWRITE", "1" );  // avoid checking if map exists
 
   G_suppress_masking();
-
-#if GRASS_VERSION_MAJOR<6 || (GRASS_VERSION_MAJOR == 6 && GRASS_VERSION_MINOR <= 4)
-  G__init_null_patterns();
-#endif
 
   // Read projection if set
   //mCrs.createFromOgcWmsCrs( "EPSG:900913" );

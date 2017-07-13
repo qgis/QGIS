@@ -32,13 +32,8 @@ extern "C"
 #undef M_PI_4 //avoid redefinition warning
 #endif
 #include <grass/gprojects.h>
-
-#if GRASS_VERSION_MAJOR < 7
-#include <grass/Vect.h>
-#else
 #include <grass/vector.h>
 #include <grass/raster.h>
-#endif
 }
 
 QgsGrassVectorLayer::QgsGrassVectorLayer( QObject *parent )

@@ -537,15 +537,7 @@ void QgsGrassModule::run()
         if ( ret == QMessageBox::Cancel )
           return;
 
-#if GRASS_VERSION_MAJOR < 7
-        // r.mapcalc does not use standard parser (does not accept --o) in GRASS 6
-        if ( mXName != "r.mapcalc" )
-        {
-          arguments.append( "--o" );
-        }
-#else
         arguments.append( QStringLiteral( "--o" ) );
-#endif
       }
     }
 

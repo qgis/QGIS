@@ -37,14 +37,6 @@
 #include "qgsgrassmoduleparam.h"
 #include "qgsgrassplugin.h"
 
-extern "C"
-{
-#if GRASS_VERSION_MAJOR < 7
-#else
-#define G_adjust_Cell_head(cellhd,row_flag,col_flag) (G_adjust_Cell_head(cellhd,row_flag,col_flag),0)
-#endif
-}
-
 /******************* QgsGrassModuleOptions *******************/
 
 QgsGrassModuleOptions::QgsGrassModuleOptions(
