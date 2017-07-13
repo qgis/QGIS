@@ -33,12 +33,12 @@ from qgis.PyQt.QtGui import QIcon
 from qgis.core import (QgsFeatureRequest,
                        QgsProcessing,
                        QgsProcessingException,
-                       QgsProcessingUtils,
                        QgsProcessingParameterVectorLayer,
                        QgsProcessingParameterNumber,
                        QgsProcessingParameterField,
                        QgsProcessingParameterEnum,
-                       QgsProcessingParameterDefinition)
+                       QgsProcessingParameterDefinition,
+                       QgsProcessingParameterRasterDestination)
 
 from qgis.analysis import QgsKernelDensityEstimation
 
@@ -164,6 +164,8 @@ class Heatmap(QgisAlgorithm):
         output_scaling.setFlags(output_scaling.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
         self.addParameter(output_scaling)
 
+        self.addParameter(QgsProcessingParameterRasterDestination(self.OUTPUT_LAYER, self.tr('Heatmap')))
+
     def processAlgorithm(self, parameters, context, feedback):
         layer = self.parameterAsVectorLayer(parameters, self.INPUT_LAYER, context)
 
@@ -172,8 +174,8 @@ class Heatmap(QgisAlgorithm):
         pixel_size = self.parameterAsDouble(parameters, self.PIXEL_SIZE, context)
         decay = self.parameterAsDouble(parameters, self.DECAY, context)
         output_values = self.parameterAsEnum(parameters, self.OUTPUT_VALUE, context)
-        output = self.parameterAsOutputLayer(parameters, self.OUTPUT_LAYER, context)
-        output_format = raster.formatShortNameFromFileName(output)
+        outputFile = self.parameterAsOutputLayer(parameters, self.OUTPUT_LAYER, context)
+        output_format = raster.formatShortNameFromFileName(outputFile)
         weight_field = self.parameterAsString(parameters, self.WEIGHT_FIELD, context)
         radius_field = self.parameterAsString(parameters, self.RADIUS_FIELD, context)
 
@@ -196,7 +198,7 @@ class Heatmap(QgisAlgorithm):
         kde_params.decayRatio = decay
         kde_params.outputValues = output_values
 
-        kde = QgsKernelDensityEstimation(kde_params, output, output_format)
+        kde = QgsKernelDensityEstimation(kde_params, outputFile, output_format)
 
         if kde.prepare() != QgsKernelDensityEstimation.Success:
             raise QgsProcessingException(
@@ -204,7 +206,7 @@ class Heatmap(QgisAlgorithm):
 
         request = QgsFeatureRequest()
         request.setSubsetOfAttributes(attrs)
-        features = QgsProcessingUtils.getFeatures(layer, context, request)
+        features = layer.getFeatures(request)
         total = 100.0 / layer.featureCount() if layer.featureCount() else 0
         for current, f in enumerate(features):
             if feedback.isCanceled():
@@ -219,4 +221,4 @@ class Heatmap(QgisAlgorithm):
             raise QgsProcessingException(
                 self.tr('Could not save destination layer'))
 
-        return {self.OUTPUT_LAYER: output}
+        return {self.OUTPUT_LAYER: outputFile}
