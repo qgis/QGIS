@@ -46,6 +46,9 @@
 QgsDistanceArea::QgsDistanceArea()
 {
   // init with default settings
+  mSemiMajor = -1.0;
+  mSemiMinor = -1.0;
+  mInvFlattening = -1.0;
   setSourceCrs( QgsCoordinateReferenceSystem::fromSrsId( GEOCRS_ID ) ); // WGS 84
   setEllipsoid( GEO_NONE );
 }
@@ -363,6 +366,19 @@ double QgsDistanceArea::measureLineProjected( const QgsPointXY &p1, double dista
     }
     p2 = p1.project( distance, azimuth );
   }
+  QgsDebugMsgLevel( QString( "Converted distance of %1 %2 to %3 distance %4 %5, using azimuth[%6] from point[%7] to point[%8] sourceCrs[%9] mEllipsoid[%10] isGeographic[%11] [%12]" )
+                    .arg( QString::number( distance, 'f', 7 ) )
+                    .arg( QgsUnitTypes::toString( QgsUnitTypes::DistanceMeters ) )
+                    .arg( QString::number( result, 'f', 7 ) )
+                    .arg( ( ( mCoordTransform.sourceCrs().isGeographic() ) == 1 ? QString( "Geographic" ) : QString( "Cartesian" ) ) )
+                    .arg( QgsUnitTypes::toString( sourceCrs().mapUnits() ) )
+                    .arg( azimuth )
+                    .arg( p1.wellKnownText() )
+                    .arg( p2.wellKnownText() )
+                    .arg( sourceCrs().description() )
+                    .arg( mEllipsoid )
+                    .arg( sourceCrs().isGeographic() )
+                    .arg( QString( "SemiMajor[%1] SemiMinor[%2] InvFlattening[%3] " ).arg( QString::number( mSemiMajor, 'f', 7 ) ).arg( QString::number( mSemiMinor, 'f', 7 ) ).arg( QString::number( mInvFlattening, 'f', 7 ) ) ), 4 );
   if ( projectedPoint )
   {
     *projectedPoint = QgsPointXY( p2 );
@@ -384,6 +400,13 @@ QgsPointXY QgsDistanceArea::computeSpheroidProject(
   double a = mSemiMajor;
   double b = mSemiMinor;
   double f = 1 / mInvFlattening;
+  if ( ( ( a < 0 ) && ( b < 0 ) ) ||
+       ( ( p1.x() < -180.0 ) || ( p1.x() > 180.0 ) || ( p1.y() < -85.05115 ) || ( p1.y() > 85.05115 ) ) )
+  {
+    // latitudes outside these bounds cause the calculations to become unstable and can return invalid results
+    return QgsPoint( 0, 0 );
+
+  }
   double radians_lat = DEG2RAD( p1.y() );
   double radians_long = DEG2RAD( p1.x() );
   double b2 = POW2( b ); // spheroid_mu2

@@ -181,6 +181,7 @@ class TestQgsUnitTypes(unittest.TestCase):
     def testEncodeDecodeRenderUnits(self):
         """Test encoding and decoding render units"""
         units = [QgsUnitTypes.RenderMillimeters,
+                 QgsUnitTypes.RenderMetersInMapUnits,
                  QgsUnitTypes.RenderMapUnits,
                  QgsUnitTypes.RenderPixels,
                  QgsUnitTypes.RenderPercentage,
@@ -204,6 +205,8 @@ class TestQgsUnitTypes(unittest.TestCase):
         self.assertEqual(res, QgsUnitTypes.RenderPixels)
 
         # check some aliases - used in data defined labeling
+        res, ok = QgsUnitTypes.decodeRenderUnit('Meters')
+        assert ok
         res, ok = QgsUnitTypes.decodeRenderUnit('MapUnits')
         assert ok
         self.assertEqual(res, QgsUnitTypes.RenderMapUnits)

@@ -170,6 +170,10 @@ void QgsUnitSelectionWidget::setUnits( const QgsUnitTypes::RenderUnitList &units
   {
     mUnitCombo->addItem( tr( "Pixels" ), QgsUnitTypes::RenderPixels );
   }
+  if ( units.contains( QgsUnitTypes::RenderMetersInMapUnits ) )
+  {
+    mUnitCombo->addItem( tr( "Meters in Map unit" ), QgsUnitTypes::RenderMetersInMapUnits );
+  }
   if ( units.contains( QgsUnitTypes::RenderMapUnits ) )
   {
     mUnitCombo->addItem( tr( "Map unit" ), QgsUnitTypes::RenderMapUnits );
