@@ -213,7 +213,7 @@ class Heatmap(QgisAlgorithm):
                 break
 
             if kde.addFeature(f) != QgsKernelDensityEstimation.Success:
-                feedback.reportError(self.tr('Error adding feature with ID {} to heatmap').format(f.id()), self.tr('Processing'), QgsMessageLog.CRITICAL)
+                feedback.reportError(self.tr('Error adding feature with ID {} to heatmap').format(f.id()))
 
             feedback.setProgress(int(current * total))
 
