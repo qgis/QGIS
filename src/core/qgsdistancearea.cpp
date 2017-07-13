@@ -403,6 +403,7 @@ QgsPointXY QgsDistanceArea::computeSpheroidProject(
   if ( ( ( a < 0 ) && ( b < 0 ) ) ||
        ( ( p1.x() < -180.0 ) || ( p1.x() > 180.0 ) || ( p1.y() < -85.05115 ) || ( p1.y() > 85.05115 ) ) )
   {
+    // latitudes outside these bounds cause the calculations to become unstable and can return invalid results
     return QgsPoint( 0, 0 );
 
   }
