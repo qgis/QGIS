@@ -35,7 +35,7 @@ import struct
 import numpy
 from osgeo import gdal
 
-from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
+from qgis.core import QgsProcessingException
 
 
 RASTER_EXTENSION_MAP = None
@@ -96,7 +96,7 @@ def scanraster(layer, feedback):
         elif bandtype == 'Float64':
             values = struct.unpack('d' * band.XSize, scanline)
         else:
-            raise GeoAlgorithmExecutionException('Raster format not supported')
+            raise QgsProcessingException('Raster format not supported')
         for value in values:
             if value == nodata:
                 value = None

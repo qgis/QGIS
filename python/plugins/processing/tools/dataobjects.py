@@ -52,7 +52,6 @@ from processing.core.ProcessingConfig import ProcessingConfig
 from processing.algs.gdal.GdalUtils import GdalUtils
 from processing.tools.system import (getTempFilename,
                                      removeInvalidChars)
-from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 
 ALL_TYPES = [-1]
 
