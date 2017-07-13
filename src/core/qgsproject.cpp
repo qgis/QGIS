@@ -2137,7 +2137,7 @@ bool QgsProject::zip( const QString &filename )
   QFile qgsFile( QDir( archive->dir() ).filePath( qgsFileName ) );
 
   bool writeOk;
-  if ( qgsFile.open( QIODevice::WriteOnly ) )
+  if ( qgsFile.open( QIODevice::WriteOnly | QIODevice::Truncate ) )
   {
     const QString originalFilename = mFile.fileName();
     mFile.setFileName( qgsFile.fileName() );
