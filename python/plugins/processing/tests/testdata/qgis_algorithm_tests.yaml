@@ -2591,3 +2591,19 @@ tests:
         type: vector
         name: points_weighted.gml
         compare: false
+
+  - algorithm: qgis:heatmapkerneldensityestimation
+    name: Heatmap (Kernel density estimation)
+    params:
+      DECAY: 0.0
+      INPUT_LAYER:
+        name: points.gml
+        type: vector
+      KERNEL: '0'
+      OUTPUT_VALUE: '0'
+      PIXEL_SIZE: 0.1
+      RADIUS: 0.5
+    results:
+      OUTPUT_LAYER:
+        hash: a594d4fa994b81641bfadde54447dc548fa6e23f630c6a4c383487c5
+        type: rasterhash
