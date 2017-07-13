@@ -49,7 +49,6 @@ QgsDateTimeEdit::QgsDateTimeEdit( QWidget *parent )
                   qMax( msz.height(), mClearButton->sizeHint().height() + frameWidth() * 2 + 2 ) );
 
   connect( this, &QDateTimeEdit::dateTimeChanged, this, &QgsDateTimeEdit::changed );
-
   // init with current time so mIsNull is properly initialized
   QDateTimeEdit::setDateTime( QDateTime::currentDateTime() );
   setMinimumEditDateTime();

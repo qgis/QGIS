@@ -51,7 +51,6 @@ class GUI_EXPORT QgsDateTimeEditWrapper : public QgsEditorWidgetWrapper
     QDateTimeEdit *mQDateTimeEdit = nullptr;
     QgsDateTimeEdit *mQgsDateTimeEdit = nullptr;
 
-
     // QgsEditorWidgetWrapper interface
   public:
     QVariant value() const override;
@@ -59,7 +58,6 @@ class GUI_EXPORT QgsDateTimeEditWrapper : public QgsEditorWidgetWrapper
     void initWidget( QWidget *editor ) override;
     bool valid() const override;
     virtual void showIndeterminateState() override;
-
   public slots:
     void setValue( const QVariant &value ) override;
     void setEnabled( bool enabled ) override;

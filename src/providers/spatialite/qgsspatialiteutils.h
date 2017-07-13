@@ -1160,7 +1160,7 @@ class SpatialiteDbLayer : public QObject
   * Class to CREATE and read specific Spatialite Gcp-Databases
   *  - mainly intended for use with the Georeferencer
   *  -> but designed to be used elsewere
-  * @note 'PROJECTNAME.gcp.db'
+  * \note 'PROJECTNAME.gcp.db'
   *  Will be a Database that will contain TABLEs for each raster in a directory
   * \since QGIS 3.0
   */
