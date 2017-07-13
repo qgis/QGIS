@@ -115,20 +115,20 @@ tests:
 #  # check this behavior.
 #  # This test should stay in place because for shapefiles there should always
 #  # be a polygon result created since it does not support geometry collections.
-#  - name: Intersection (Collection Fallback)
-#    algorithm: qgis:intersection
-#    params:
-#      INPUT:
-#        name: multipolys.gml
-#        type: vector
-#      INPUT2:
-#        name: polys.gml
-#        type: vector
-#    results:
-#      OUTPUT:
-#        name: expected/intersection_collection_fallback.shp
-#        type: vector
-#
+  - algorithm: qgis:intersection
+    name: Intersects multipolygons with polygons
+    params:
+      INPUT:
+        name: multipolys.gml
+        type: vector
+      OVERLAY:
+        name: polys.gml
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/intersection_collection_fallback.shp
+        type: vector
+
   - name: Densify geometries
     algorithm: qgis:densifygeometries
     params:
