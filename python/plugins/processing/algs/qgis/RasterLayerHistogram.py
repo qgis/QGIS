@@ -48,6 +48,8 @@ class RasterLayerHistogram(QgisAlgorithm):
 
     def __init__(self):
         super().__init__()
+
+    def initAlgorithm(self, config=None):
         self.addParameter(ParameterRaster(self.INPUT,
                                           self.tr('Input layer')))
         self.addParameter(ParameterNumber(self.BINS,

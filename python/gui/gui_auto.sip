@@ -110,6 +110,7 @@
 %Include qgsfilterlineedit.sip
 %Include qgsfloatingwidget.sip
 %Include qgsfocuswatcher.sip
+%Include qgsfontbutton.sip
 %Include qgsformannotation.sip
 %Include qgsgradientcolorrampdialog.sip
 %Include qgsgradientstopeditor.sip
@@ -273,6 +274,7 @@
 %Include layertree/qgslayertreemapcanvasbridge.sip
 %Include layertree/qgslayertreeview.sip
 %Include layertree/qgslayertreeviewdefaultactions.sip
+%Include layout/qgslayoutdesignerinterface.sip
 %Include locator/qgslocator.sip
 %Include locator/qgslocatorfilter.sip
 %Include locator/qgslocatorwidget.sip

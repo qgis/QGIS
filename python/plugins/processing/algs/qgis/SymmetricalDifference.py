@@ -36,10 +36,8 @@ from qgis.core import (QgsFeature,
                        NULL,
                        QgsWkbTypes,
                        QgsMessageLog,
-                       QgsProcessingUtils,
                        QgsProcessingParameterFeatureSource,
                        QgsProcessingParameterFeatureSink,
-                       QgsProcessingOutputVectorLayer,
                        QgsSpatialIndex)
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 from processing.tools import vector
@@ -62,13 +60,13 @@ class SymmetricalDifference(QgisAlgorithm):
     def __init__(self):
         super().__init__()
 
+    def initAlgorithm(self, config=None):
         self.addParameter(QgsProcessingParameterFeatureSource(self.INPUT,
                                                               self.tr('Input layer')))
         self.addParameter(QgsProcessingParameterFeatureSource(self.OVERLAY,
                                                               self.tr('Difference layer')))
 
         self.addParameter(QgsProcessingParameterFeatureSink(self.OUTPUT, self.tr('Symmetrical difference')))
-        self.addOutput(QgsProcessingOutputVectorLayer(self.OUTPUT, self.tr('Symmetrical difference')))
 
     def name(self):
         return 'symmetricaldifference'

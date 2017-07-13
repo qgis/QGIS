@@ -642,7 +642,7 @@ void QgsGeometryUtils::segmentizeArc( const QgsPoint &p1, const QgsPoint &p2, co
   QgsPoint circlePoint2 = p2;
   QgsPoint circlePoint3 = clockwise ? p1 : p3 ;
 
-  //adapted code from postgis
+  //adapted code from PostGIS
   double radius = 0;
   double centerX = 0;
   double centerY = 0;
@@ -877,12 +877,20 @@ QDomElement QgsGeometryUtils::pointsToGML2( const QgsPointSequence &points, QDom
 {
   QDomElement elemCoordinates = doc.createElementNS( ns, QStringLiteral( "coordinates" ) );
 
+  // coordinate separator
+  QString cs = ",";
+  // tupel separator
+  QString ts = " ";
+
+  elemCoordinates.setAttribute( "cs", cs );
+  elemCoordinates.setAttribute( "ts", ts );
+
   QString strCoordinates;
 
   Q_FOREACH ( const QgsPoint &p, points )
-    strCoordinates += qgsDoubleToString( p.x(), precision ) + ',' + qgsDoubleToString( p.y(), precision ) + ' ';
+    strCoordinates += qgsDoubleToString( p.x(), precision ) + cs + qgsDoubleToString( p.y(), precision ) + ts;
 
-  if ( strCoordinates.endsWith( ' ' ) )
+  if ( strCoordinates.endsWith( ts ) )
     strCoordinates.chop( 1 ); // Remove trailing space
 
   elemCoordinates.appendChild( doc.createTextNode( strCoordinates ) );

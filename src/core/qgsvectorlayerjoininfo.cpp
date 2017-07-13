@@ -1,10 +1,9 @@
 /***************************************************************************
-                          qgsogrhelperfunctions.h
-    helper functions to create ogr uris for database and protocol drivers
-                             -------------------
-    begin                : Mon Jan 2 2009
-    copyright            : (C) 2009 by Godofredo Contreras Nava
-    email                : frdcn at hotmail.com
+                          qgsvectorlayerjoininfo.cpp
+                          --------------------------
+    begin                : Jun 29, 2017
+    copyright            : (C) 2017 by Paul Blottiere
+    email                : paul.blottiere@oslandia.com
  ***************************************************************************/
 
 /***************************************************************************
@@ -16,10 +15,21 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QString>
+#include "qgsvectorlayerjoininfo.h"
 
-/* Create database uri from connection parameters */
-QString createDatabaseURI( const QString &connectionType, const QString &host, const QString &database, QString port, const QString &user, const QString &password );
+QString QgsVectorLayerJoinInfo::prefixedFieldName( const QgsField &f ) const
+{
+  QString name;
 
-/* Create protocol uri from connection parameters */
-QString createProtocolURI( const QString &type, const QString &url );
+  if ( joinLayer() )
+  {
+    if ( prefix().isNull() )
+      name = joinLayer()->name() + '_';
+    else
+      name = prefix();
+
+    name += f.name();
+  }
+
+  return name;
+}

@@ -30,10 +30,9 @@ import shutil
 from qgis.PyQt.QtWidgets import QFileDialog, QMessageBox
 from qgis.PyQt.QtCore import QFileInfo
 
-from qgis.core import QgsApplication, QgsSettings
+from qgis.core import QgsApplication, QgsSettings, QgsProcessingModelAlgorithm
 
 from processing.gui.ToolboxAction import ToolboxAction
-from processing.modeler.ModelerAlgorithm import ModelerAlgorithm
 from processing.modeler.WrongModelException import WrongModelException
 from processing.modeler.ModelerUtils import ModelerUtils
 
@@ -59,7 +58,7 @@ class AddModelFromFileAction(ToolboxAction):
             settings.setValue('Processing/lastModelsDir',
                               QFileInfo(filename).absoluteDir().absolutePath())
 
-            alg = ModelerAlgorithm()
+            alg = QgsProcessingModelAlgorithm()
             if not alg.fromFile(filename):
                 QMessageBox.warning(
                     self.toolbox,

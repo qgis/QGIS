@@ -36,14 +36,9 @@ from qgis.PyQt.QtWidgets import QDialog
 from qgis.core import (QgsExpression,
                        QgsProcessingParameterNumber,
                        QgsProcessingOutputNumber,
-                       QgsProcessingOutputVectorLayer,
-                       QgsProcessingOutputRasterLayer,
-                       QgsProcessingParameterFeatureSource,
-                       QgsProcessingModelAlgorithm,
-                       QgsProcessingParameterRasterLayer)
+                       QgsProcessingModelChildParameterSource)
 from qgis.gui import QgsExpressionBuilderDialog
-from processing.modeler.ModelerAlgorithm import ValueFromInput, ValueFromOutput, CompoundValue
-from processing.tools.dataobjects import createExpressionContext
+from processing.tools.dataobjects import createExpressionContext, createContext
 
 pluginPath = os.path.split(os.path.dirname(__file__))[0]
 NUMBER_WIDGET, NUMBER_BASE = uic.loadUiType(
@@ -77,47 +72,14 @@ class ModellerNumberInputPanel(BASE, WIDGET):
 
     def showExpressionsBuilder(self):
         context = createExpressionContext()
-        dlg = QgsExpressionBuilderDialog(None, str(self.leText.text()), self, 'generic', context)
+        processing_context = createContext()
+        scope = self.modelParametersDialog.model.createExpressionContextScopeForChildAlgorithm(self.modelParametersDialog.childId, processing_context)
+        context.appendScope(scope)
 
-        context.popScope()
-        values = self.modelParametersDialog.getAvailableValuesOfType(QgsProcessingParameterNumber, QgsProcessingOutputNumber)
-        variables = {}
-        for value in values:
-            if isinstance(value, QgsProcessingModelAlgorithm.ChildParameterSource):
-                if value.source() == QgsProcessingModelAlgorithm.ChildParameterSource.ModelParameter:
-                    name = value.parameterName()
-                    element = self.modelParametersDialog.model.parameterDefinition(name)
-                    desc = element.description()
-                elif value.source() == QgsProcessingModelAlgorithm.ChildParameterSource.ChildOutput:
-                    name = "%s_%s" % (value.outputChildId(), value.outputName())
-                    alg = self.modelParametersDialog.model.childAlgorithm(value.outputChildId())
-                    out = alg.algorithm().outputDefinition(value.outputName())
-                    desc = self.tr("Output '{0}' from algorithm '{1}'").format(out.description(), alg.description())
-            variables[name] = desc
-        values = self.modelParametersDialog.getAvailableValuesOfType([QgsProcessingParameterFeatureSource, QgsProcessingParameterRasterLayer],
-                                                                     [QgsProcessingOutputVectorLayer, QgsProcessingOutputRasterLayer])
-        for value in values:
-            if isinstance(value, QgsProcessingModelAlgorithm.ChildParameterSource):
-                if value.source() == QgsProcessingModelAlgorithm.ChildParameterSource.ModelParameter:
-                    name = value.parameterName()
-                    element = self.modelParametersDialog.model.parameterDefinition(name)
-                    desc = element.description()
-                elif value.source() == QgsProcessingModelAlgorithm.ChildParameterSource.ChildOutput:
-                    name = "%s_%s" % (value.outputChildId(), value.outputName())
-                    alg = self.modelParametersDialog.model.childAlgorithm(value.outputChildId())
-                    out = alg.algorithm().outputDefinition(value.outputName())
-                    desc = self.tr("Output '{0}' from algorithm '{1}'").format(out.description(), alg.description())
-            variables['%s_minx' % name] = self.tr("Minimum X of {0}").format(desc)
-            variables['%s_miny' % name] = self.tr("Minimum Y of {0}").format(desc)
-            variables['%s_maxx' % name] = self.tr("Maximum X of {0}").format(desc)
-            variables['%s_maxy' % name] = self.tr("Maximum Y of {0}").format(desc)
-            if isinstance(element, (QgsProcessingParameterRasterLayer, QgsProcessingOutputRasterLayer)):
-                variables['%s_min' % name] = self.tr("Minimum value of {0}").format(desc)
-                variables['%s_max' % name] = self.tr("Maximum value of {0}").format(desc)
-                variables['%s_avg' % name] = self.tr("Mean value of {0}").format(desc)
-                variables['%s_stddev' % name] = self.tr("Standard deviation of {0}").format(desc)
-        for variable, desc in variables.items():
-            dlg.expressionBuilder().registerItem("Modeler", variable, "@" + variable, desc, highlightedItem=True)
+        highlighted = scope.variableNames()
+        context.setHighlightedVariables(highlighted)
+
+        dlg = QgsExpressionBuilderDialog(None, str(self.leText.text()), self, 'generic', context)
 
         dlg.setWindowTitle(self.tr('Expression based input'))
         if dlg.exec_() == QDialog.Accepted:
@@ -127,38 +89,30 @@ class ModellerNumberInputPanel(BASE, WIDGET):
 
     def getValue(self):
         value = self.leText.text()
-        values = []
-        #for param in self.modelParametersDialog.model.parameterDefinitions():
-        #    if isinstance(param, QgsProcessingParameterNumber):
-        #        if "@" + param.name() in value:
-        #            values.append(ValueFromInput(param.name()))
-        #for alg in list(self.modelParametersDialog.model.algs.values()):
-        #    for out in alg.algorithm.outputDefinitions():
-        #        if isinstance(out, QgsProcessingOutputNumber) and "@%s_%s" % (alg.modeler_name, out.name) in value:
-        #            values.append(ValueFromOutput(alg.modeler_name, out.name()))
-
         for param in self.modelParametersDialog.model.parameterDefinitions():
             if isinstance(param, QgsProcessingParameterNumber):
-                if "@" + param.name() == value:
-                    return QgsProcessingModelAlgorithm.ChildParameterSource.fromModelParameter(param.name())
+                if "@" + param.name() == value.strip():
+                    return QgsProcessingModelChildParameterSource.fromModelParameter(param.name())
 
         for alg in list(self.modelParametersDialog.model.childAlgorithms().values()):
             for out in alg.algorithm().outputDefinitions():
-                if isinstance(out, QgsProcessingOutputNumber) and "@%s_%s" % (alg.childId(), out.name()) == value:
-                    return QgsProcessingModelAlgorithm.ChildParameterSource.fromChildOutput(alg.childId(), out.outputName())
+                if isinstance(out, QgsProcessingOutputNumber) and "@%s_%s" % (alg.childId(), out.name()) == value.strip():
+                    return QgsProcessingModelChildParameterSource.fromChildOutput(alg.childId(), out.outputName())
 
-        if values:
-            return CompoundValue(values, value)
-        else:
-            return value
+        try:
+            return float(value.strip())
+        except:
+            return QgsProcessingModelChildParameterSource.fromExpression(self.leText.text())
 
     def setValue(self, value):
-        if isinstance(value, QgsProcessingModelAlgorithm.ChildParameterSource):
-            if value.source() == QgsProcessingModelAlgorithm.ChildParameterSource.ModelParameter:
+        if isinstance(value, QgsProcessingModelChildParameterSource):
+            if value.source() == QgsProcessingModelChildParameterSource.ModelParameter:
                 self.leText.setText('@' + value.parameterName())
-            elif value.source() == QgsProcessingModelAlgorithm.ChildParameterSource.ChildOutput:
+            elif value.source() == QgsProcessingModelChildParameterSource.ChildOutput:
                 name = "%s_%s" % (value.outputChildId(), value.outputName())
                 self.leText.setText(name)
+            elif value.source() == QgsProcessingModelChildParameterSource.Expression:
+                self.leText.setText(value.expression())
             else:
                 self.leText.setText(str(value.staticValue()))
         else:

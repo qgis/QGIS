@@ -383,6 +383,9 @@ bool QgsSymbol::changeSymbolLayer( int index, QgsSymbolLayer *layer )
 
 void QgsSymbol::startRender( QgsRenderContext &context, const QgsFields &fields )
 {
+  Q_ASSERT_X( !mStarted, "startRender", "Rendering has already been started for this symbol instance!" );
+  mStarted = true;
+
   mSymbolRenderContext.reset( new QgsSymbolRenderContext( context, outputUnit(), mOpacity, false, mRenderHints, nullptr, fields, mapUnitScale() ) );
 
   QgsSymbolRenderContext symbolContext( context, outputUnit(), mOpacity, false, mRenderHints, nullptr, fields, mapUnitScale() );
@@ -402,6 +405,9 @@ void QgsSymbol::startRender( QgsRenderContext &context, const QgsFields &fields 
 
 void QgsSymbol::stopRender( QgsRenderContext &context )
 {
+  Q_ASSERT_X( mStarted, "startRender", "startRender was not called for this symbol instance!" );
+  mStarted = false;
+
   Q_UNUSED( context )
   if ( mSymbolRenderContext )
   {

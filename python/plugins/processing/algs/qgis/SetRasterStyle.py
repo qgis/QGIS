@@ -50,6 +50,8 @@ class SetRasterStyle(QgisAlgorithm):
 
     def __init__(self):
         super().__init__()
+
+    def initAlgorithm(self, config=None):
         self.addParameter(ParameterRaster(self.INPUT,
                                           self.tr('Raster layer')))
         self.addParameter(ParameterFile(self.STYLE,

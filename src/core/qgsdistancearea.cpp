@@ -697,9 +697,18 @@ double QgsDistanceArea::computePolygonArea( const QList<QgsPointXY> &points ) co
     return 0;
   }
 
+  // IMPORTANT
+  // don't change anything here without reporting the changes to upstream (GRASS)
+  // let's all be good opensource citizens and share the improvements!
+
   double x1, y1, x2, y2, dx, dy;
   double Qbar1, Qbar2;
   double area;
+
+  /* GRASS comment: threshold for dy, should be between 1e-4 and 1e-7
+   * See relevant discussion at https://trac.osgeo.org/grass/ticket/3369
+  */
+  const double thresh = 1e-6;
 
   QgsDebugMsgLevel( "Ellipsoid: " + mEllipsoid, 3 );
   if ( !willUseEllipsoid() )
@@ -731,11 +740,28 @@ double QgsDistanceArea::computePolygonArea( const QList<QgsPointXY> &points ) co
         x1 += m_TwoPI;
 
     dx = x2 - x1;
-    area += dx * ( m_Qp - getQ( y2 ) );
-
     dy = y2 - y1;
-    if ( !qgsDoubleNear( dy, 0.0 ) )
-      area += dx * getQ( y2 ) - ( dx / dy ) * ( Qbar2 - Qbar1 );
+    if ( qAbs( dy ) > thresh )
+    {
+      /* account for different latitudes y1, y2 */
+      area += dx * ( m_Qp - ( Qbar2 - Qbar1 ) / dy );
+    }
+    else
+    {
+      /* latitudes y1, y2 are (nearly) identical */
+
+      /* if y2 becomes similar to y1, i.e. y2 -> y1
+       * Qbar2 - Qbar1 -> 0 and dy -> 0
+       * (Qbar2 - Qbar1) / dy -> ?
+       * (Qbar2 - Qbar1) / dy should approach Q((y1 + y2) / 2)
+       * Metz 2017
+       */
+      area += dx * ( m_Qp - getQ( ( y1 + y2 ) / 2.0 ) );
+
+      /* original:
+       * area += dx * getQ( y2 ) - ( dx / dy ) * ( Qbar2 - Qbar1 );
+       */
+    }
   }
   if ( ( area *= m_AE ) < 0.0 )
     area = -area;

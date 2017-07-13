@@ -162,6 +162,12 @@ SET(QGIS_GUI_SRCS
   locator/qgslocatorfilter.cpp
   locator/qgslocatorwidget.cpp
 
+  ogr/qgsopenvectorlayerdialog.cpp
+  ogr/qgsogrhelperfunctions.cpp
+  ogr/qgsnewogrconnection.cpp
+  ogr/qgsopenvectorlayerdialog.cpp
+  ogr/qgsvectorlayersaveasdialog.cpp
+
   qgisinterface.cpp
   qgsactionmenu.cpp
   qgsadvanceddigitizingcanvasitem.cpp
@@ -227,6 +233,7 @@ SET(QGIS_GUI_SRCS
   qgsfilterlineedit.cpp
   qgsfloatingwidget.cpp
   qgsfocuswatcher.cpp
+  qgsfontbutton.cpp
   qgsformannotation.cpp
   qgsgeometryrubberband.cpp
   qgsgradientcolorrampdialog.cpp
@@ -324,6 +331,7 @@ SET(QGIS_GUI_SRCS
   qgsvariableeditorwidget.cpp
   qgsvertexmarker.cpp
   qgsfiledownloader.cpp
+  qgsdatasourcemanagerdialog.cpp
 )
 
 SET(QGIS_GUI_MOC_HDRS
@@ -387,6 +395,7 @@ SET(QGIS_GUI_MOC_HDRS
   qgsfilterlineedit.h
   qgsfloatingwidget.h
   qgsfocuswatcher.h
+  qgsfontbutton.h
   qgsformannotation.h
   qgsgradientcolorrampdialog.h
   qgsgradientstopeditor.h
@@ -474,6 +483,11 @@ SET(QGIS_GUI_MOC_HDRS
   qgsuserinputdockwidget.h
   qgsvariableeditorwidget.h
   qgsfiledownloader.h
+  qgsdatasourcemanagerdialog.h
+
+  ogr/qgsopenvectorlayerdialog.h
+  ogr/qgsnewogrconnection.h
+  ogr/qgsvectorlayersaveasdialog.h
 
   raster/qgsmultibandcolorrendererwidget.h
   raster/qgspalettedrendererwidget.h
@@ -617,6 +631,8 @@ SET(QGIS_GUI_MOC_HDRS
   layertree/qgslayertreeview.h
   layertree/qgslayertreeviewdefaultactions.h
 
+  layout/qgslayoutdesignerinterface.h
+
   locator/qgslocator.h
   locator/qgslocatorfilter.h
   locator/qgslocatorwidget.h
@@ -662,6 +678,13 @@ SET(QGIS_GUI_HDRS
   qgsbrowserdockwidget_p.h
   qgsvertexmarker.h
   qgsfiledownloader.h
+  qgsdatasourcemanagerdialog.h
+
+  ogr/qgsopenvectorlayerdialog.h
+  ogr/qgsogrhelperfunctions.h
+  ogr/qgsnewogrconnection.h
+  ogr/qgsvectorlayersaveasdialog.h
+
 
   attributetable/qgsfeaturemodel.h
 
@@ -752,6 +775,7 @@ SET(QGIS_GUI_UI_HDRS
   ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgssqlcomposerdialogbase.h
   ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgssublayersdialogbase.h
   ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgstablewidgetuibase.h
+  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsopenvectorlayerdialogbase.h
 )
 
 IF(ENABLE_MODELTEST)
@@ -769,7 +793,9 @@ INCLUDE_DIRECTORIES(
   ${CMAKE_SOURCE_DIR}/src/gui/editorwidgets
   ${CMAKE_SOURCE_DIR}/src/gui/editorwidgets/core
   ${CMAKE_SOURCE_DIR}/src/gui/layertree
+  ${CMAKE_SOURCE_DIR}/src/gui/layout
   ${CMAKE_SOURCE_DIR}/src/gui/effects
+  ${CMAKE_SOURCE_DIR}/src/gui/ogr
   ${CMAKE_SOURCE_DIR}/src/core
   ${CMAKE_SOURCE_DIR}/src/core/annotations
   ${CMAKE_SOURCE_DIR}/src/core/auth
@@ -777,6 +803,7 @@ INCLUDE_DIRECTORIES(
   ${CMAKE_SOURCE_DIR}/src/core/fieldformatter
   ${CMAKE_SOURCE_DIR}/src/core/geometry
   ${CMAKE_SOURCE_DIR}/src/core/layertree
+  ${CMAKE_SOURCE_DIR}/src/core/layout
   ${CMAKE_SOURCE_DIR}/src/core/locator
   ${CMAKE_SOURCE_DIR}/src/core/metadata
   ${CMAKE_SOURCE_DIR}/src/core/providers/memory

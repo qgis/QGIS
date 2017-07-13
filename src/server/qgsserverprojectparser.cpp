@@ -27,13 +27,11 @@
 #include "qgsrasterlayer.h"
 #include "qgsreadwritecontext.h"
 #include "qgsvectorlayerjoinbuffer.h"
-#include "qgseditorwidgetregistry.h"
 #include "qgslayertreegroup.h"
 #include "qgslayertreelayer.h"
 #include "qgslayertree.h"
 #include "qgslogger.h"
 #include "qgseditorwidgetsetup.h"
-#include "qgsgui.h"
 #include "qgsexpressionnodeimpl.h"
 #include "qgsserverprojectutils.h"
 
@@ -299,12 +297,6 @@ QgsMapLayer *QgsServerProjectParser::createLayerFromElement( const QDomElement &
 
   if ( layer )
   {
-    if ( layer->type() == QgsMapLayer::VectorLayer )
-    {
-      // see QgsEditorWidgetRegistry::mapLayerAdded()
-      QObject::connect( layer, SIGNAL( readCustomSymbology( const QDomElement &, QString & ) ), QgsGui::editorWidgetRegistry(), SLOT( readSymbology( const QDomElement &, QString & ) ) );
-    }
-
     QgsReadWriteContext context;
     context.setPathResolver( QgsProject::instance()->pathResolver() );
 

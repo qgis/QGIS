@@ -58,6 +58,8 @@ IF(WITH_CORE)
     ENDIF (WITH_GRASS${GRASS_CACHE_VERSION})
   ENDFOREACH (GRASS_SEARCH_VERSION)
 
+  SET (WITH_GUI TRUE CACHE BOOL "Determines whether QGIS GUI library (and everything built on top of it) should be built")
+
   SET (WITH_DESKTOP TRUE CACHE BOOL "Determines whether QGIS desktop should be built")
 
   # server disabled default because it needs FastCGI (which is optional dependency)
@@ -73,6 +75,16 @@ IF(WITH_CORE)
 
   # Custom widgets
   SET (WITH_CUSTOM_WIDGETS FALSE CACHE BOOL "Determines whether QGIS custom widgets for Qt Designer should be built")
+
+  IF (NOT WITH_GUI)
+    SET (HAVE_GUI FALSE)    # used in qgsconfig.h
+    # force value of some options
+    SET(WITH_DESKTOP FALSE)
+    SET(WITH_CUSTOM_WIDGETS FALSE)
+    SET(WITH_SERVER FALSE)  # for some reason server also uses GUI library
+  ELSE ()
+    SET (HAVE_GUI TRUE)     # used in qgsconfig.h
+  ENDIF()
 
   # try to configure and build POSTGRESQL support
   SET (WITH_POSTGRESQL TRUE CACHE BOOL "Determines whether POSTGRESQL support should be built")
@@ -103,9 +115,11 @@ IF(WITH_CORE)
     SET (WITH_STAGED_PLUGINS TRUE CACHE BOOL "Stage-install core Python plugins to run from build directory? (utilities and console are always staged)")
     SET (WITH_PY_COMPILE FALSE CACHE BOOL "Determines whether Python modules in staged or installed locations are byte-compiled")
     # concatenate QScintilla2 API files
-    SET (WITH_QSCIAPI TRUE CACHE BOOL "Whether to generate PyQGIS QScintilla2 API file. (For devs) run 'make qsci-pap-src' in between QGIS build and install to regenerate .pap file in source tree for console auto-completion.")
-    # keep casual users from updating their source tree via WITH_QSCIAPI
-    MARK_AS_ADVANCED (WITH_QSCIAPI)
+    IF (WITH_GUI)
+      SET (WITH_QSCIAPI TRUE CACHE BOOL "Whether to generate PyQGIS QScintilla2 API file. (For devs) run 'make qsci-pap-src' in between QGIS build and install to regenerate .pap file in source tree for console auto-completion.")
+      # keep casual users from updating their source tree via WITH_QSCIAPI
+      MARK_AS_ADVANCED (WITH_QSCIAPI)
+    ENDIF (WITH_GUI)
     ADD_DEFINITIONS(-DWITH_BINDINGS)
   ENDIF (WITH_BINDINGS)
 
@@ -196,7 +210,9 @@ IF(WITH_CORE)
   FIND_PACKAGE(GDAL)
   FIND_PACKAGE(Expat REQUIRED)
   FIND_PACKAGE(Spatialindex REQUIRED)
-  FIND_PACKAGE(Qwt REQUIRED)
+  IF (WITH_GUI)
+    FIND_PACKAGE(Qwt REQUIRED)
+  ENDIF (WITH_GUI)
 
   IF (WITH_INTERNAL_QEXTSERIALPORT)
     SET(QEXTSERIALPORT_INCLUDE_DIR ${CMAKE_SOURCE_DIR}/src/core/gps/qextserialport)
@@ -274,7 +290,9 @@ IF(WITH_CORE)
   ENDIF (WITH_QTMOBILITY)
 
   # search for QScintilla2 (C++ lib)
-  FIND_PACKAGE(QScintilla REQUIRED)
+  IF (WITH_GUI)
+    FIND_PACKAGE(QScintilla REQUIRED)
+  ENDIF (WITH_GUI)
 
   # Password helper
   FIND_PACKAGE(QtKeychain REQUIRED)

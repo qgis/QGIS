@@ -61,6 +61,8 @@ class ExecuteSQL(QgisAlgorithm):
 
     def __init__(self):
         super().__init__()
+
+    def initAlgorithm(self, config=None):
         self.addParameter(ParameterMultipleInput(name=self.INPUT_DATASOURCES,
                                                  description=self.tr('Additional input datasources (called input1, .., inputN in the query)'),
                                                  optional=True))

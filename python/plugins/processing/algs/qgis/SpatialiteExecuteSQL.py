@@ -27,7 +27,6 @@ __copyright__ = '(C) 2016, Mathieu Pellerin'
 __revision__ = '$Format:%H$'
 
 from qgis.core import (QgsDataSourceUri,
-                       QgsApplication,
                        QgsProcessingParameterVectorLayer,
                        QgsProcessingParameterString)
 
@@ -46,6 +45,8 @@ class SpatialiteExecuteSQL(QgisAlgorithm):
 
     def __init__(self):
         super().__init__()
+
+    def initAlgorithm(self, config=None):
         self.addParameter(QgsProcessingParameterVectorLayer(self.DATABASE, self.tr('File Database'), False, False))
         self.addParameter(QgsProcessingParameterString(self.SQL, self.tr('SQL query'), '', True))
 
@@ -53,7 +54,7 @@ class SpatialiteExecuteSQL(QgisAlgorithm):
         return 'spatialiteexecutesql'
 
     def displayName(self):
-        return self.tr('Spatialite execute SQL')
+        return self.tr('SpatiaLite execute SQL')
 
     def processAlgorithm(self, parameters, context, feedback):
         database = self.parameterAsVectorLayer(parameters, self.DATABASE, context)

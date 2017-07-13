@@ -26,8 +26,7 @@ __copyright__ = '(C) 2012, Victor Olaya, Carterix Geomatics'
 
 __revision__ = '$Format:%H$'
 
-from qgis.core import (QgsApplication,
-                       QgsProcessingParameterString)
+from qgis.core import (QgsProcessingParameterString)
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from processing.tools import postgis
@@ -44,6 +43,7 @@ class PostGISExecuteSQL(QgisAlgorithm):
     def __init__(self):
         super().__init__()
 
+    def initAlgorithm(self, config=None):
         db_param = QgsProcessingParameterString(
             self.DATABASE,
             self.tr('Database (connection name)'))

@@ -25,10 +25,8 @@ __copyright__ = '(C) 2010, Michael Minn'
 
 __revision__ = '$Format:%H$'
 
-from qgis.core import (QgsApplication)
 from qgis.PyQt.QtCore import QVariant
 from qgis.core import (QgsExpression,
-                       QgsProcessingUtils,
                        QgsProcessingParameterVectorLayer,
                        QgsProcessingParameterField,
                        QgsProcessingParameterEnum,
@@ -69,6 +67,8 @@ class SelectByAttribute(QgisAlgorithm):
 
     def __init__(self):
         super().__init__()
+
+    def initAlgorithm(self, config=None):
         self.i18n_operators = ['=',
                                '!=',
                                '>',

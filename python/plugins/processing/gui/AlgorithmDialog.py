@@ -34,16 +34,18 @@ from qgis.PyQt.QtWidgets import QMessageBox, QApplication, QPushButton, QWidget,
 from qgis.PyQt.QtGui import QCursor, QColor, QPalette
 
 from qgis.core import (QgsProject,
+                       QgsApplication,
                        QgsProcessingUtils,
                        QgsMessageLog,
                        QgsProcessingParameterDefinition,
                        QgsProcessingOutputRasterLayer,
                        QgsProcessingOutputVectorLayer,
+                       QgsProcessingAlgRunnerTask,
                        QgsProcessingOutputHtml,
-                       QgsProcessingParameterVectorOutput,
+                       QgsProcessingParameterVectorDestination,
                        QgsProcessingOutputLayerDefinition,
                        QgsProcessingParameterFeatureSink,
-                       QgsProcessingParameterRasterOutput,
+                       QgsProcessingParameterRasterDestination,
                        QgsProcessingAlgorithm)
 from qgis.gui import QgsMessageBar
 from qgis.utils import iface
@@ -117,7 +119,7 @@ class AlgorithmDialog(AlgorithmDialogBase):
             else:
                 dest_project = None
                 if not param.flags() & QgsProcessingParameterDefinition.FlagHidden and \
-                        isinstance(param, (QgsProcessingParameterRasterOutput, QgsProcessingParameterFeatureSink, QgsProcessingParameterVectorOutput)):
+                        isinstance(param, (QgsProcessingParameterRasterDestination, QgsProcessingParameterFeatureSink, QgsProcessingParameterVectorDestination)):
                     if self.mainWidget.checkBoxes[param.name()].isChecked():
                         dest_project = QgsProject.instance()
 
@@ -218,8 +220,6 @@ class AlgorithmDialog(AlgorithmDialogBase):
             except:
                 pass
 
-            QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
-
             self.setInfo(
                 self.tr('<b>Algorithm \'{0}\' starting...</b>').format(self.alg.displayName()), escape_html=False)
 
@@ -237,25 +237,30 @@ class AlgorithmDialog(AlgorithmDialogBase):
                     self.finish(parameters, context, feedback)
                 else:
                     self.buttonCancel.setEnabled(False)
-                    QApplication.restoreOverrideCursor()
                     self.resetGUI()
             else:
                 command = self.alg.asPythonCommand(parameters, context)
                 if command:
                     ProcessingLog.addToLog(command)
                 self.buttonCancel.setEnabled(self.alg.flags() & QgsProcessingAlgorithm.FlagCanCancel)
-                result, ok = executeAlgorithm(self.alg, parameters, context, feedback)
-                if ok:
-                    feedback.pushInfo(self.tr('Execution completed in {0:0.2f} seconds'.format(time.time() - start_time)))
-                    feedback.pushInfo(self.tr('Results:'))
-                    feedback.pushCommandInfo(pformat(result))
-                else:
-                    feedback.reportError(
-                        self.tr('Execution failed after {0:0.2f} seconds'.format(time.time() - start_time)))
-                feedback.pushInfo('')
 
-                self.buttonCancel.setEnabled(False)
-                self.finish(result, context, feedback)
+                def on_complete(ok, results):
+                    if ok:
+                        feedback.pushInfo(self.tr('Execution completed in {0:0.2f} seconds'.format(time.time() - start_time)))
+                        feedback.pushInfo(self.tr('Results:'))
+                        feedback.pushCommandInfo(pformat(results))
+                    else:
+                        feedback.reportError(
+                            self.tr('Execution failed after {0:0.2f} seconds'.format(time.time() - start_time)))
+                    feedback.pushInfo('')
+
+                    self.buttonCancel.setEnabled(False)
+                    self.finish(results, context, feedback)
+
+                task = QgsProcessingAlgRunnerTask(self.alg, parameters, context, feedback)
+                task.executed.connect(on_complete)
+                QgsApplication.taskManager().addTask(task)
+
         except AlgorithmDialogBase.InvalidParameterValue as e:
             try:
                 self.buttonBox.accepted.connect(lambda e=e:
@@ -286,7 +291,6 @@ class AlgorithmDialog(AlgorithmDialogBase):
 
         self.executed = True
         self.setInfo(self.tr('Algorithm \'{0}\' finished').format(self.alg.displayName()), escape_html=False)
-        QApplication.restoreOverrideCursor()
 
         if not keepOpen:
             self.close()

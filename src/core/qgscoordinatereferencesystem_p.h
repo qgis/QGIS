@@ -105,7 +105,7 @@ class QgsCoordinateReferenceSystemPrivate : public QSharedData
     //! The map units for the CRS
     QgsUnitTypes::DistanceUnit mMapUnits;
 
-    //! If available, the Postgis spatial_ref_sys identifier for this CRS (defaults to 0)
+    //! If available, the PostGIS spatial_ref_sys identifier for this CRS (defaults to 0)
     long mSRID;
 
     //! If available the authority identifier for this CRS

@@ -27,9 +27,7 @@ __revision__ = '$Format:%H$'
 
 from qgis.core import (QgsVectorLayerExporter,
                        QgsSettings,
-                       QgsApplication,
                        QgsFeatureSink,
-                       QgsProcessingUtils,
                        QgsProcessingParameterFeatureSource,
                        QgsProcessingParameterString,
                        QgsProcessingParameterField,
@@ -38,10 +36,6 @@ from qgis.core import (QgsVectorLayerExporter,
 
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
-from processing.core.parameters import ParameterBoolean
-from processing.core.parameters import ParameterVector
-from processing.core.parameters import ParameterString
-from processing.core.parameters import ParameterTableField
 from processing.tools import postgis
 
 
@@ -65,6 +59,8 @@ class ImportIntoPostGIS(QgisAlgorithm):
 
     def __init__(self):
         super().__init__()
+
+    def initAlgorithm(self, config=None):
         self.addParameter(QgsProcessingParameterFeatureSource(self.INPUT,
                                                               self.tr('Layer to import')))
 

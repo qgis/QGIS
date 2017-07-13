@@ -1,5 +1,5 @@
 /***************************************************************************
-  qgsvirtuallayerblob.h : Functions to manipulate Spatialite geometry blobs
+  qgsvirtuallayerblob.h : Functions to manipulate SpatiaLite geometry blobs
 begin                : Nov 2015
 copyright            : (C) 2015 Hugo Mercier, Oslandia
 email                : hugo dot mercier at oslandia dot com
@@ -52,20 +52,20 @@ struct SpatialiteBlobHeader
 };
 
 //!
-//! Convert a QgsGeometry into a Spatialite geometry BLOB
+//! Convert a QgsGeometry into a SpatiaLite geometry BLOB
 //! The blob will be allocated and must be handled by the caller
 void qgsGeometryToSpatialiteBlob( const QgsGeometry &geom, int32_t srid, char *&blob, int &size );
 
 //!
-//! Return the bounding box of a spatialite geometry blob
+//! Return the bounding box of a SpatiaLite geometry blob
 QgsRectangle spatialiteBlobBbox( const char *blob, size_t size );
 
 //!
-//! Convert a Spatialite geometry BLOB to a QgsGeometry
+//! Convert a SpatiaLite geometry BLOB to a QgsGeometry
 QgsGeometry spatialiteBlobToQgsGeometry( const char *blob, size_t size );
 
 //!
-//! Get geometry type and srid from a spatialite geometry blob
+//! Get geometry type and srid from a SpatiaLite geometry blob
 QPair<QgsWkbTypes::Type, long> spatialiteBlobGeometryType( const char *blob, size_t size );
 
 #endif

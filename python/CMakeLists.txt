@@ -64,7 +64,9 @@ MACRO(PY_2TO3 TARGET_NAME RESOURCE_PATHS)
 ENDMACRO(PY_2TO3)
 
 ADD_SUBDIRECTORY(plugins)
-ADD_SUBDIRECTORY(qsci_apis)
+IF (WITH_GUI)
+  ADD_SUBDIRECTORY(qsci_apis)
+ENDIF ()
 ADD_SUBDIRECTORY(console)
 ADD_SUBDIRECTORY(PyQt)
 ADD_SUBDIRECTORY(pyplugin_installer)
@@ -87,11 +89,17 @@ INCLUDE_DIRECTORIES(SYSTEM
   ${GEOS_INCLUDE_DIR}
   ${QWT_INCLUDE_DIR}
   ${QEXTSERIALPORT_INCLUDE_DIR}
-  ${QSCINTILLA_INCLUDE_DIR}
   ${QCA_INCLUDE_DIR}
   ${QTKEYCHAIN_INCLUDE_DIR}
   ${SQLITE3_INCLUDE_DIR}
 )
+
+IF (WITH_GUI)
+  INCLUDE_DIRECTORIES(SYSTEM
+    ${QSCINTILLA_INCLUDE_DIR}
+  )
+ENDIF ()
+
 INCLUDE_DIRECTORIES(
   ${CMAKE_SOURCE_DIR}/src/core
   ${CMAKE_SOURCE_DIR}/src/core/annotations
@@ -109,29 +117,37 @@ INCLUDE_DIRECTORIES(
   ${CMAKE_SOURCE_DIR}/src/core/layout
   ${CMAKE_SOURCE_DIR}/src/core/metadata
   ${CMAKE_SOURCE_DIR}/src/core/processing
+  ${CMAKE_SOURCE_DIR}/src/core/processing/models
   ${CMAKE_SOURCE_DIR}/src/core/providers
   ${CMAKE_SOURCE_DIR}/src/core/providers/memory
   ${CMAKE_SOURCE_DIR}/src/core/raster
   ${CMAKE_SOURCE_DIR}/src/core/scalebar
   ${CMAKE_SOURCE_DIR}/src/core/symbology-ng
-  ${CMAKE_SOURCE_DIR}/src/gui
-  ${CMAKE_SOURCE_DIR}/src/gui/symbology-ng
-  ${CMAKE_SOURCE_DIR}/src/gui/raster
-  ${CMAKE_SOURCE_DIR}/src/gui/attributetable
-  ${CMAKE_SOURCE_DIR}/src/gui/auth
-  ${CMAKE_SOURCE_DIR}/src/gui/editorwidgets
-  ${CMAKE_SOURCE_DIR}/src/gui/editorwidgets/core
-  ${CMAKE_SOURCE_DIR}/src/gui/effects
-  ${CMAKE_SOURCE_DIR}/src/gui/layertree
-  ${CMAKE_SOURCE_DIR}/src/gui/locator
   ${CMAKE_SOURCE_DIR}/src/plugins
 
   ${CMAKE_BINARY_DIR}  # qgsconfig.h, qgsversion.h
   ${CMAKE_BINARY_DIR}/src/core
-  ${CMAKE_BINARY_DIR}/src/gui
   ${CMAKE_BINARY_DIR}/src/ui
   ${CMAKE_BINARY_DIR}/src/analysis
 )
+
+IF (WITH_GUI)
+  INCLUDE_DIRECTORIES(
+    ${CMAKE_SOURCE_DIR}/src/gui
+    ${CMAKE_SOURCE_DIR}/src/gui/symbology-ng
+    ${CMAKE_SOURCE_DIR}/src/gui/raster
+    ${CMAKE_SOURCE_DIR}/src/gui/attributetable
+    ${CMAKE_SOURCE_DIR}/src/gui/auth
+    ${CMAKE_SOURCE_DIR}/src/gui/editorwidgets
+    ${CMAKE_SOURCE_DIR}/src/gui/editorwidgets/core
+    ${CMAKE_SOURCE_DIR}/src/gui/effects
+    ${CMAKE_SOURCE_DIR}/src/gui/layertree
+    ${CMAKE_SOURCE_DIR}/src/gui/layout
+    ${CMAKE_SOURCE_DIR}/src/gui/locator
+
+    ${CMAKE_BINARY_DIR}/src/gui
+  )
+ENDIF ()
 
 IF(NOT ENABLE_TESTS)
   SET(SIP_DISABLE_FEATURES ${SIP_DISABLE_FEATURES} TESTS)
@@ -158,26 +174,31 @@ GENERATE_SIP_PYTHON_MODULE_CODE(qgis._core core/core.sip cpp_files)
 BUILD_SIP_PYTHON_MODULE(qgis._core core/core.sip ${cpp_files} "" qgis_core)
 SET(SIP_CORE_CPP_FILES ${cpp_files})
 
-# gui module
-FILE(GLOB_RECURSE sip_files_gui gui/*.sip)
-SET(SIP_EXTRA_FILES_DEPEND ${sip_files_core} ${sip_files_gui})
-SET(SIP_EXTRA_OPTIONS ${PYQT_SIP_FLAGS} -o -a ${CMAKE_BINARY_DIR}/python/qgis.gui.api)
-IF(QSCI_SIP_DIR)
-  SET(SIP_EXTRA_OPTIONS ${SIP_EXTRA_OPTIONS} -I ${QSCI_SIP_DIR})
-ELSE(QSCI_SIP_DIR)
-  MESSAGE(STATUS "Qsci sip file not found - disabling bindings for derived classes")
-  SET(SIP_DISABLE_FEATURES ${SIP_DISABLE_FEATURES} HAVE_QSCI_SIP)
-ENDIF(QSCI_SIP_DIR)
-
 IF(UNIX AND NOT SIP_VERSION_NUM LESS 265984)
   SET(SIP_EXTRA_OPTIONS -P ${SIP_EXTRA_OPTIONS})
   ADD_DEFINITIONS(-Dprotected=public)
 ENDIF(UNIX AND NOT SIP_VERSION_NUM LESS 265984)
 
-GENERATE_SIP_PYTHON_MODULE_CODE(qgis._gui gui/gui.sip cpp_files)
-BUILD_SIP_PYTHON_MODULE(qgis._gui gui/gui.sip ${cpp_files} "" qgis_core qgis_gui)
+SET(PY_MODULES core analysis)
 
-SET(PY_MODULES core gui analysis)
+# gui module
+IF (WITH_GUI)
+  SET(PY_MODULES ${PY_MODULES} gui)
+
+  FILE(GLOB_RECURSE sip_files_gui gui/*.sip)
+  SET(SIP_EXTRA_FILES_DEPEND ${sip_files_core} ${sip_files_gui})
+  SET(SIP_EXTRA_OPTIONS ${PYQT_SIP_FLAGS} -o -a ${CMAKE_BINARY_DIR}/python/qgis.gui.api)
+
+  IF(QSCI_SIP_DIR)
+    SET(SIP_EXTRA_OPTIONS ${SIP_EXTRA_OPTIONS} -I ${QSCI_SIP_DIR})
+  ELSE(QSCI_SIP_DIR)
+    MESSAGE(STATUS "Qsci sip file not found - disabling bindings for derived classes")
+    SET(SIP_DISABLE_FEATURES ${SIP_DISABLE_FEATURES} HAVE_QSCI_SIP)
+  ENDIF(QSCI_SIP_DIR)
+
+  GENERATE_SIP_PYTHON_MODULE_CODE(qgis._gui gui/gui.sip cpp_files)
+  BUILD_SIP_PYTHON_MODULE(qgis._gui gui/gui.sip ${cpp_files} "" qgis_core qgis_gui)
+ENDIF (WITH_GUI)
 
 # server module
 IF (WITH_SERVER AND WITH_SERVER_PLUGINS)

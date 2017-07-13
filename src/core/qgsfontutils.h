@@ -21,6 +21,9 @@
 #include <QDomElement>
 
 #include "qgis_core.h"
+#include "qgis_sip.h"
+
+class QMimeData;
 
 /** \ingroup core
  * \class QgsFontUtils
@@ -120,6 +123,22 @@ class CORE_EXPORT QgsFontUtils
      */
     static bool setFromXmlChildNode( QFont &font, const QDomElement &element, const QString &childNode );
 
+    /**
+     * Returns new mime data representing the specified \a font settings.
+     * Caller takes responsibility for deleting the returned object.
+     * \see fromMimeData()
+     * \since QGIS 3.0
+     */
+    static QMimeData *toMimeData( const QFont &font ) SIP_FACTORY;
+
+    /**
+     * Attempts to parse the provided mime \a data as a QFont.
+     * If data can be parsed as a QFont, \a ok will be set to true.
+     * \see toMimeData()
+     * \since QGIS 3.0
+     */
+    static QFont fromMimeData( const QMimeData *data, bool *ok SIP_OUT = nullptr );
+
     /** Returns the localized named style of a font, if such a translation is available.
      * \param namedStyle a named style, i.e. "Bold", "Italic", etc
      * \returns The localized named style
@@ -146,6 +165,20 @@ class CORE_EXPORT QgsFontUtils
      * \since QGIS 2.16
      */
     static QString asCSS( const QFont &font, double pointToPixelMultiplier = 1.0 );
+
+    /**
+     * Adds a font \a family to the list of recently used font families.
+     * \since QGIS 3.0
+     * \see recentFontFamilies()
+     */
+    static void addRecentFontFamily( const QString &family );
+
+    /**
+     * Returns a list of recently used font families.
+     * \see addRecentFontFamily()
+     * \since QGIS 3.0
+     */
+    static QStringList recentFontFamilies();
 };
 
 #endif // QGSFONTUTILS_H

@@ -32,12 +32,15 @@
 #include "qgspostgresprovider.h"
 #include "qgspostgresconn.h"
 #include "qgspostgresconnpool.h"
-#include "qgspgsourceselect.h"
 #include "qgspostgresdataitems.h"
 #include "qgspostgresfeatureiterator.h"
 #include "qgspostgrestransaction.h"
 #include "qgslogger.h"
 #include "qgsfeedback.h"
+
+#ifdef HAVE_GUI
+#include "qgspgsourceselect.h"
+#endif
 
 const QString POSTGRES_KEY = QStringLiteral( "postgres" );
 const QString POSTGRES_DESCRIPTION = QStringLiteral( "PostgreSQL/PostGIS data provider" );
@@ -192,7 +195,7 @@ QgsPostgresProvider::QgsPostgresProvider( QString const &uri )
     return;
   }
 
-  // Set the postgresql message level so that we don't get the
+  // Set the PostgreSQL message level so that we don't get the
   // 'there is no transaction in progress' warning.
 #ifndef QGISDEBUG
   mConnectionRO->PQexecNR( "set client_min_messages to error" );
@@ -351,7 +354,7 @@ QgsFeatureIterator QgsPostgresProvider::getFeatures( const QgsFeatureRequest &re
 {
   if ( !mValid )
   {
-    QgsMessageLog::logMessage( tr( "Read attempt on an invalid postgresql data source" ), tr( "PostGIS" ) );
+    QgsMessageLog::logMessage( tr( "Read attempt on an invalid PostgreSQL data source" ), tr( "PostGIS" ) );
     return QgsFeatureIterator();
   }
 
@@ -1714,7 +1717,7 @@ bool QgsPostgresProvider::parseDomainCheckConstraint( QStringList &enumValues, c
 
       //we assume that the constraint is of the following form:
       //(VALUE = ANY (ARRAY['a'::text, 'b'::text, 'c'::text, 'd'::text]))
-      //normally, postgresql creates that if the contstraint has been specified as 'VALUE in ('a', 'b', 'c', 'd')
+      //normally, PostgreSQL creates that if the contstraint has been specified as 'VALUE in ('a', 'b', 'c', 'd')
 
       int anyPos = checkDefinition.indexOf( QRegExp( "VALUE\\s*=\\s*ANY\\s*\\(\\s*ARRAY\\s*\\[" ) );
       int arrayPosition = checkDefinition.lastIndexOf( QLatin1String( "ARRAY[" ) );
@@ -3124,7 +3127,7 @@ QgsRectangle QgsPostgresProvider::extent() const
             {
               ext = result.PQgetvalue( 0, 0 );
 
-              // fix for what might be a postgis bug: when the extent crosses the
+              // fix for what might be a PostGIS bug: when the extent crosses the
               // dateline extent() returns -180 to 180 (which appears right), but
               // estimated_extent() returns eastern bound of data (>-180) and
               // 180 degrees.
@@ -4262,10 +4265,12 @@ QGISEXTERN bool isProvider()
   return true;
 }
 
+#ifdef HAVE_GUI
 QGISEXTERN QgsPgSourceSelect *selectWidget( QWidget *parent, Qt::WindowFlags fl, QgsProviderRegistry::WidgetMode widgetMode )
 {
   return new QgsPgSourceSelect( parent, fl, widgetMode );
 }
+#endif
 
 QGISEXTERN int dataCapabilities()
 {

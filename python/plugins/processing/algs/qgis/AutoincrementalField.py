@@ -27,13 +27,9 @@ __revision__ = '$Format:%H$'
 
 from qgis.PyQt.QtCore import QVariant
 from qgis.core import (QgsField,
-                       QgsFeature,
                        QgsFeatureSink,
-                       QgsApplication,
-                       QgsProcessingUtils,
                        QgsProcessingParameterFeatureSource,
-                       QgsProcessingParameterFeatureSink,
-                       QgsProcessingOutputVectorLayer)
+                       QgsProcessingParameterFeatureSink)
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 
 
@@ -45,11 +41,11 @@ class AutoincrementalField(QgisAlgorithm):
     def __init__(self):
         super().__init__()
 
+    def initAlgorithm(self, config=None):
         self.addParameter(QgsProcessingParameterFeatureSource(self.INPUT,
                                                               self.tr('Input layer')))
 
         self.addParameter(QgsProcessingParameterFeatureSink(self.OUTPUT, self.tr('Incremented')))
-        self.addOutput(QgsProcessingOutputVectorLayer(self.OUTPUT, self.tr('Incremented')))
 
     def group(self):
         return self.tr('Vector table tools')

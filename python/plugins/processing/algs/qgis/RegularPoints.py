@@ -32,15 +32,19 @@ from math import sqrt
 
 from qgis.PyQt.QtGui import QIcon
 from qgis.PyQt.QtCore import QVariant
-from qgis.core import (QgsRectangle, QgsFields, QgsFeatureSink, QgsField, QgsFeature, QgsWkbTypes,
-                       QgsGeometry, QgsPointXY, QgsCoordinateReferenceSystem,
+from qgis.core import (QgsFields,
+                       QgsFeatureSink,
+                       QgsField,
+                       QgsFeature,
+                       QgsWkbTypes,
+                       QgsGeometry,
+                       QgsPointXY,
+                       QgsProcessing,
                        QgsProcessingParameterExtent,
                        QgsProcessingParameterNumber,
                        QgsProcessingParameterBoolean,
                        QgsProcessingParameterCrs,
-                       QgsProcessingParameterFeatureSink,
-                       QgsProcessingParameterDefinition,
-                       QgsProcessingOutputVectorLayer)
+                       QgsProcessingParameterFeatureSink)
 
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 
@@ -65,6 +69,8 @@ class RegularPoints(QgisAlgorithm):
 
     def __init__(self):
         super().__init__()
+
+    def initAlgorithm(self, config=None):
         self.addParameter(QgsProcessingParameterExtent(self.EXTENT,
                                                        self.tr('Input extent'), optional=False))
         self.addParameter(QgsProcessingParameterNumber(self.SPACING,
@@ -78,8 +84,7 @@ class RegularPoints(QgisAlgorithm):
         self.addParameter(QgsProcessingParameterCrs(self.CRS,
                                                     self.tr('Output layer CRS'), 'ProjectCrs'))
 
-        self.addParameter(QgsProcessingParameterFeatureSink(self.OUTPUT, self.tr('Regular points'), QgsProcessingParameterDefinition.TypeVectorPoint))
-        self.addOutput(QgsProcessingOutputVectorLayer(self.OUTPUT, self.tr('Regular points'), QgsProcessingParameterDefinition.TypeVectorPoint))
+        self.addParameter(QgsProcessingParameterFeatureSink(self.OUTPUT, self.tr('Regular points'), QgsProcessing.TypeVectorPoint))
 
     def name(self):
         return 'regularpoints'

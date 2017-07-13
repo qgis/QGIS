@@ -43,17 +43,17 @@ class CORE_EXPORT QgsProcessingOutputDefinition
 
 #ifdef SIP_RUN
     SIP_CONVERT_TO_SUBCLASS_CODE
-    if ( sipCpp->type() == "outputVector" )
+    if ( sipCpp->type() == QgsProcessingOutputVectorLayer::typeName() )
       sipType = sipType_QgsProcessingOutputVectorLayer;
-    else if ( sipCpp->type() == "outputRaster" )
+    else if ( sipCpp->type() == QgsProcessingOutputRasterLayer::typeName() )
       sipType = sipType_QgsProcessingOutputRasterLayer;
-    else if ( sipCpp->type() == "outputHtml" )
+    else if ( sipCpp->type() == QgsProcessingOutputHtml::typeName() )
       sipType = sipType_QgsProcessingOutputHtml;
-    else if ( sipCpp->type() == "outputNumber" )
+    else if ( sipCpp->type() == QgsProcessingOutputNumber::typeName() )
       sipType = sipType_QgsProcessingOutputNumber;
-    else if ( sipCpp->type() == "outputString" )
+    else if ( sipCpp->type() == QgsProcessingOutputString::typeName() )
       sipType = sipType_QgsProcessingOutputString;
-    else if ( sipCpp->type() == "outputFolder" )
+    else if ( sipCpp->type() == QgsProcessingOutputFolder::typeName() )
       sipType = sipType_QgsProcessingOutputFolder;
     SIP_END
 #endif
@@ -126,25 +126,29 @@ class CORE_EXPORT QgsProcessingOutputVectorLayer : public QgsProcessingOutputDef
     /**
      * Constructor for QgsProcessingOutputVectorLayer.
      */
-    QgsProcessingOutputVectorLayer( const QString &name, const QString &description = QString(), QgsProcessingParameterDefinition::LayerType type = QgsProcessingParameterDefinition::TypeVectorAny );
+    QgsProcessingOutputVectorLayer( const QString &name, const QString &description = QString(), QgsProcessing::LayerType type = QgsProcessing::TypeVectorAny );
 
-    QString type() const override { return QStringLiteral( "outputVector" ); }
+    /**
+     * Returns the type name for the output class.
+     */
+    static QString typeName() { return QStringLiteral( "outputVector" ); }
+    QString type() const override { return typeName(); }
 
     /**
      * Returns the layer type for the output layer.
      * \see setDataType()
      */
-    QgsProcessingParameterDefinition::LayerType dataType() const;
+    QgsProcessing::LayerType dataType() const;
 
     /**
      * Sets the layer \a type for the output layer.
      * \see dataType()
      */
-    void setDataType( QgsProcessingParameterDefinition::LayerType type );
+    void setDataType( QgsProcessing::LayerType type );
 
   private:
 
-    QgsProcessingParameterDefinition::LayerType mDataType = QgsProcessingParameterDefinition::TypeVectorAny;
+    QgsProcessing::LayerType mDataType = QgsProcessing::TypeVectorAny;
 };
 
 /**
@@ -162,7 +166,13 @@ class CORE_EXPORT QgsProcessingOutputRasterLayer : public QgsProcessingOutputDef
      */
     QgsProcessingOutputRasterLayer( const QString &name, const QString &description = QString() );
 
-    QString type() const override { return QStringLiteral( "outputRaster" ); }
+    /**
+     * Returns the type name for the output class.
+     */
+    static QString typeName() { return QStringLiteral( "outputRaster" ); }
+    QString type() const override { return typeName(); }
+
+
 };
 
 /**
@@ -180,7 +190,12 @@ class CORE_EXPORT QgsProcessingOutputHtml : public QgsProcessingOutputDefinition
      */
     QgsProcessingOutputHtml( const QString &name, const QString &description = QString() );
 
-    QString type() const override { return QStringLiteral( "outputHtml" ); }
+    /**
+     * Returns the type name for the output class.
+     */
+    static QString typeName() { return QStringLiteral( "outputHtml" ); }
+    QString type() const override { return typeName(); }
+
 };
 
 /**
@@ -198,7 +213,11 @@ class CORE_EXPORT QgsProcessingOutputNumber : public QgsProcessingOutputDefiniti
      */
     QgsProcessingOutputNumber( const QString &name, const QString &description = QString() );
 
-    QString type() const override { return QStringLiteral( "outputNumber" ); }
+    /**
+     * Returns the type name for the output class.
+     */
+    static QString typeName() { return QStringLiteral( "outputNumber" ); }
+    QString type() const override { return typeName(); }
 };
 
 /**
@@ -216,7 +235,12 @@ class CORE_EXPORT QgsProcessingOutputString : public QgsProcessingOutputDefiniti
      */
     QgsProcessingOutputString( const QString &name, const QString &description = QString() );
 
-    QString type() const override { return QStringLiteral( "outputString" ); }
+    /**
+     * Returns the type name for the output class.
+     */
+    static QString typeName() { return QStringLiteral( "outputString" ); }
+    QString type() const override { return typeName(); }
+
 };
 
 /**
@@ -232,9 +256,15 @@ class CORE_EXPORT QgsProcessingOutputFolder : public QgsProcessingOutputDefiniti
     /**
      * Constructor for QgsProcessingOutputFolder.
      */
+
     QgsProcessingOutputFolder( const QString &name, const QString &description = QString() );
 
-    QString type() const override { return QStringLiteral( "outputFolder" ); }
+    /**
+     * Returns the type name for the output class.
+     */
+    static QString typeName() { return QStringLiteral( "outputFolder" ); }
+    QString type() const override { return typeName(); }
+
 };
 
 #endif // QGSPROCESSINGOUTPUTS_H

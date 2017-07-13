@@ -11,6 +11,11 @@
 
 
 
+%ModuleHeaderCode
+#include <qgsprocessingmodelalgorithm.h>
+%End
+
+
 class QgsProcessingAlgorithm
 {
 %Docstring
@@ -20,6 +25,13 @@ class QgsProcessingAlgorithm
 
 %TypeHeaderCode
 #include "qgsprocessingalgorithm.h"
+%End
+
+%ConvertToSubClassCode
+    if ( dynamic_cast< QgsProcessingModelAlgorithm * >( sipCpp ) != NULL )
+      sipType = sipType_QgsProcessingModelAlgorithm;
+    else
+      sipType = sipType_QgsProcessingAlgorithm;
 %End
   public:
 
@@ -38,10 +50,31 @@ class QgsProcessingAlgorithm
     QgsProcessingAlgorithm();
 %Docstring
  Constructor for QgsProcessingAlgorithm.
+
+ initAlgorithm() should be called after creating an algorithm to ensure it can correctly configure
+ its parameterDefinitions() and outputDefinitions(). Alternatively, calling create() will return
+ a pre-initialized copy of the algorithm.
 %End
 
     virtual ~QgsProcessingAlgorithm();
 
+
+    QgsProcessingAlgorithm *create( const QVariantMap &configuration = QVariantMap() ) const /Factory/;
+%Docstring
+ Creates a copy of the algorithm, ready for execution.
+
+ This method returns a new, preinitialized copy of the algorithm, ready for
+ executing.
+
+ The ``configuration`` argument allows passing of a map of configuration settings
+ to the algorithm, allowing it to dynamically adjust its initialized parameters
+ and outputs according to this configuration. This is generally used only for
+ algorithms in a model, allowing them to adjust their behavior at run time
+ according to some user configuration.
+
+.. seealso:: initAlgorithm()
+ :rtype: QgsProcessingAlgorithm
+%End
 
     virtual QString name() const = 0;
 %Docstring
@@ -217,7 +250,9 @@ class QgsProcessingAlgorithm
     QVariantMap run( const QVariantMap &parameters,
                      QgsProcessingContext &context, QgsProcessingFeedback *feedback, bool *ok /Out/ = 0 ) const;
 %Docstring
- Executes the algorithm using the specified ``parameters``.
+ Executes the algorithm using the specified ``parameters``. This method internally
+ creates a copy of the algorithm before running it, so it is safe to call
+ on algorithms directly retrieved from QgsProcessingRegistry and QgsProcessingProvider.
 
  The ``context`` argument specifies the context in which the algorithm is being run.
 
@@ -227,6 +262,55 @@ class QgsProcessingAlgorithm
 
  :return: A map of algorithm outputs. These may be output layer references, or calculated
  values such as statistical calculations.
+
+.. note::
+
+   this method can only be called from the main thread. Use prepare(), runPrepared() and postProcess()
+ if you need to run algorithms from a background thread, or use the QgsProcessingAlgRunnerTask class.
+ :rtype: QVariantMap
+%End
+
+    bool prepare( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback );
+%Docstring
+ Prepares the algorithm for execution. This must be run in the main thread, and allows the algorithm
+ to pre-evaluate input parameters in a thread-safe manner. This must be called before
+ calling runPrepared() (which is safe to do in any thread).
+.. seealso:: runPrepared()
+.. seealso:: postProcess()
+.. note::
+
+   This method modifies the algorithm instance, so it is not safe to call
+ on algorithms directly retrieved from QgsProcessingRegistry and QgsProcessingProvider. Instead, a copy
+ of the algorithm should be created with clone() and prepare()/runPrepared() called on the copy.
+ :rtype: bool
+%End
+
+    QVariantMap runPrepared( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback );
+%Docstring
+ Runs the algorithm, which has been prepared by an earlier call to prepare().
+ This method is safe to call from any thread. Returns true if the algorithm was successfully executed.
+ After runPrepared() has finished, the postProcess() method should be called from the main thread
+ to allow the algorithm to perform any required cleanup tasks and return its final result.
+.. seealso:: prepare()
+.. seealso:: postProcess()
+.. note::
+
+   This method modifies the algorithm instance, so it is not safe to call
+ on algorithms directly retrieved from QgsProcessingRegistry and QgsProcessingProvider. Instead, a copy
+ of the algorithm should be created with clone() and prepare()/runPrepared() called on the copy.
+ :rtype: QVariantMap
+%End
+
+    QVariantMap postProcess( QgsProcessingContext &context, QgsProcessingFeedback *feedback );
+%Docstring
+ Should be called in the main thread following the completion of runPrepared(). This method
+ allows the algorithm to perform any required cleanup tasks. The returned variant map
+ includes the results evaluated by the algorithm.
+.. note::
+
+   This method modifies the algorithm instance, so it is not safe to call
+ on algorithms directly retrieved from QgsProcessingRegistry and QgsProcessingProvider. Instead, a copy
+ of the algorithm should be created with clone() and prepare()/runPrepared() called on the copy.
  :rtype: QVariantMap
 %End
 
@@ -274,11 +358,56 @@ class QgsProcessingAlgorithm
 
   protected:
 
-    bool addParameter( QgsProcessingParameterDefinition *parameterDefinition /Transfer/ );
+    virtual QgsProcessingAlgorithm *createInstance() const = 0;
+%Docstring
+ Creates a new instance of the algorithm class.
+
+ This method should return a 'pristine' instance of the algorithm class.
+ :rtype: QgsProcessingAlgorithm
+%End
+%VirtualCatcherCode
+    PyObject *resObj = sipCallMethod( 0, sipMethod, "" );
+    sipIsErr = !resObj || sipParseResult( 0, sipMethod, resObj, "H2", sipType_QgsProcessingAlgorithm, &sipRes ) < 0;
+    if ( !sipIsErr )
+      sipTransferTo( resObj, Py_None );
+%End
+
+    virtual void initAlgorithm( const QVariantMap &configuration = QVariantMap() ) = 0;
+%Docstring
+ Initializes the algorithm using the specified ``configuration``.
+
+ This should be called directly after creating algorithms and before retrieving
+ any parameterDefinitions() or outputDefinitions().
+
+ Subclasses should use their implementations to add all required input parameter and output
+ definitions (which can be dynamically adjusted according to ``configuration``).
+
+ Dynamic configuration can be used by algorithms which alter their behavior
+ when used inside processing models. For instance, a "feature router" type
+ algorithm which sends input features to one of any number of outputs sinks
+ based on some preconfigured filter parameters can use the init method to
+ create these outputs based on the specified ``configuration``.
+
+.. seealso:: addParameter()
+.. seealso:: addOutput()
+%End
+
+    bool addParameter( QgsProcessingParameterDefinition *parameterDefinition /Transfer/, bool createOutput = true );
 %Docstring
  Adds a parameter ``definition`` to the algorithm. Ownership of the definition is transferred to the algorithm.
  Returns true if parameter could be successfully added, or false if the parameter could not be added (e.g.
  as a result of a duplicate name).
+
+ This should usually be called from a subclass' initAlgorithm() implementation.
+
+ If the ``createOutput`` argument is true, then a corresponding output definition will also be created
+ (and added to the algorithm) where appropriate. E.g. when adding a QgsProcessingParameterVectorDestination
+ and ``createOutput`` is true, then a QgsProcessingOutputVectorLayer output will be created and
+ added to the algorithm. There is no need to call addOutput() to manually add a corresponding output
+ for this vector. If ``createOutput`` is false then this automatic output creation will not
+ occur.
+
+.. seealso:: initAlgorithm()
 .. seealso:: addOutput()
  :rtype: bool
 %End
@@ -294,24 +423,110 @@ class QgsProcessingAlgorithm
  Adds an output ``definition`` to the algorithm. Ownership of the definition is transferred to the algorithm.
  Returns true if the output could be successfully added, or false if the output could not be added (e.g.
  as a result of a duplicate name).
+
+ This should usually be called from a subclass' initAlgorithm() implementation.
+
+ Note that in some cases output creation can be automatically performed when calling addParameter().
+ See the notes in addParameter() for a description of when this occurs.
+
 .. seealso:: addParameter()
+.. seealso:: initAlgorithm()
  :rtype: bool
 %End
 
-    virtual QVariantMap processAlgorithm( const QVariantMap &parameters,
-                                          QgsProcessingContext &context, QgsProcessingFeedback *feedback ) const = 0 /VirtualErrorHandler=processing_exception_handler/;
+    virtual bool prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) /VirtualErrorHandler=processing_exception_handler/;
+%Docstring
+ Prepares the algorithm to run using the specified ``parameters``. Algorithms should implement
+ their logic for evaluating parameter values here. The evaluated parameter results should
+ be stored in member variables ready for a call to processAlgorithm().
+
+ The ``context`` argument specifies the context in which the algorithm is being run.
+
+ prepareAlgorithm should be used to handle any thread-sensitive preparation which is required
+ by the algorithm. It will always be called from the same thread that ``context`` has thread
+ affinity with. While this will generally be the main thread, it is not guaranteed. For instance,
+ algorithms which are run as a step in a larger model or as a subcomponent of a script-based algorithm
+ will call prepareAlgorithm from the same thread as that model/script it being executed in.
+
+ Note that the processAlgorithm step uses a temporary context with affinity for the thread in
+ which the algorithm is executed, making it safe for processAlgorithm implementations to load
+ sources and sinks without issue. Implementing prepareAlgorithm is only required if special
+ thread safe handling is required by the algorithm.
+
+ Algorithm preparation progress should be reported using the supplied ``feedback`` object. Additionally,
+ well-behaved algorithms should periodically check ``feedback`` to determine whether the
+ algorithm should be canceled and exited early.
+
+ If the preparation was successful algorithms must return true. If a false value is returned
+ this indicates that the preparation could not be completed, and the algorithm execution
+ will be canceled.
+
+ :return: true if preparation was successful.
+.. seealso:: processAlgorithm()
+.. seealso:: postProcessAlgorithm()
+ :rtype: bool
+%End
+
+    virtual QVariantMap processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) = 0 /VirtualErrorHandler=processing_exception_handler/;
 %Docstring
  Runs the algorithm using the specified ``parameters``. Algorithms should implement
  their custom processing logic here.
 
- The ``context`` argument specifies the context in which the algorithm is being run.
+ The ``context`` argument gives a temporary context with thread affinity matching the thread
+ in which the algorithm is being run. This is a cut-back copy of the context passed to
+ the prepareAlgorithm() and postProcessAlgorithm() steps, but it is generally safe
+ for most algorithms to utilize this context for loading layers and creating sinks.
+ Any loaded layers or sinks created within this temporary context will be transferred
+ back to the main execution context upon successful completion of the processAlgorithm()
+ step.
 
  Algorithm progress should be reported using the supplied ``feedback`` object. Additionally,
  well-behaved algorithms should periodically check ``feedback`` to determine whether the
  algorithm should be canceled and exited early.
 
+ This method will not be called if the prepareAlgorithm() step failed (returned false).
+
+ c++ implementations of processAlgorithm can throw the QgsProcessingException exception
+ to indicate that a fatal error occurred within the execution. Python based subclasses
+ should raise GeoAlgorithmExecutionException for the same purpose.
+
  :return: A map of algorithm outputs. These may be output layer references, or calculated
+ values such as statistical calculations. Unless the algorithm subclass overrides
+ the postProcessAlgorithm() step this returned map will be used as the output for the
+ algorithm.
+
+.. seealso:: prepareAlgorithm()
+.. seealso:: postProcessAlgorithm()
+ :rtype: QVariantMap
+%End
+
+    virtual QVariantMap postProcessAlgorithm( QgsProcessingContext &context, QgsProcessingFeedback *feedback ) /VirtualErrorHandler=processing_exception_handler/;
+%Docstring
+ Allows the algorithm to perform any required cleanup tasks. The returned variant map
+ includes the results evaluated by the algorithm. These may be output layer references, or calculated
  values such as statistical calculations.
+
+ The ``context`` argument specifies the context in which the algorithm was run.
+
+ Postprocess progress should be reported using the supplied ``feedback`` object. Additionally,
+ well-behaved algorithms should periodically check ``feedback`` to determine whether the
+ post processing should be canceled and exited early.
+
+ postProcessAlgorithm should be used to handle any thread-sensitive cleanup which is required
+ by the algorithm. It will always be called from the same thread that ``context`` has thread
+ affinity with. While this will generally be the main thread, it is not guaranteed. For instance,
+ algorithms which are run as a step in a larger model or as a subcomponent of a script-based algorithm
+ will call postProcessAlgorithm from the same thread as that model/script it being executed in.
+
+ postProcessAlgorithm will not be called if the prepareAlgorithm() step failed (returned false),
+ or if an exception was raised by the processAlgorithm() step.
+
+ :return: A map of algorithm outputs. These may be output layer references, or calculated
+ values such as statistical calculations. Implementations which return a non-empty
+ map will override any results returned by processAlgorithm().
+
+.. seealso:: prepareAlgorithm()
+.. seealso:: processAlgorithm()
  :rtype: QVariantMap
 %End
 
@@ -377,13 +592,29 @@ class QgsProcessingAlgorithm
 
     QgsProcessingFeatureSource *parameterAsSource( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context ) const /Factory/;
 %Docstring
- Evaluates the parameter with matching ``definition`` to a feature source.
+ Evaluates the parameter with matching ``name`` to a feature source.
 
  Sources will either be taken from ``context``'s active project, or loaded from external
  sources and stored temporarily in the ``context``.
 
  This function creates a new object and the caller takes responsibility for deleting the returned object.
  :rtype: QgsProcessingFeatureSource
+%End
+
+    QString parameterAsCompatibleSourceLayerPath( const QVariantMap &parameters, const QString &name,
+        QgsProcessingContext &context, const QStringList &compatibleFormats, const QString &preferredFormat = QString( "shp" ), QgsProcessingFeedback *feedback = 0 );
+%Docstring
+ Evaluates the parameter with matching ``name`` to a source vector layer file path of compatible format.
+
+ If the parameter is evaluated to an existing layer, and that layer is not of the format listed in the
+ ``compatibleFormats`` argument, then the layer will first be exported to a compatible format
+ in a temporary location. The function will then return the path to that temporary file.
+
+ ``compatibleFormats`` should consist entirely of lowercase file extensions, e.g. 'shp'.
+
+ The ``preferredFormat`` argument is used to specify to desired file extension to use when a temporary
+ layer export is required.
+ :rtype: str
 %End
 
     QgsMapLayer *parameterAsLayer( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context ) const;
@@ -406,9 +637,9 @@ class QgsProcessingAlgorithm
  :rtype: QgsRasterLayer
 %End
 
-    QString parameterAsRasterOutputLayer( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context ) const;
+    QString parameterAsOutputLayer( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context ) const;
 %Docstring
- Evaluates the parameter with matching ``name`` to a raster output layer destination.
+ Evaluates the parameter with matching ``name`` to a output layer destination.
  :rtype: str
 %End
 

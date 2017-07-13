@@ -32,14 +32,12 @@ from qgis.PyQt.QtCore import QVariant
 from qgis.PyQt.QtGui import QIcon
 
 from qgis.core import (QgsStatisticalSummary,
-                       QgsFeatureSink,
                        QgsStringStatisticalSummary,
                        QgsDateTimeStatisticalSummary,
                        QgsFeatureRequest,
-                       QgsProcessingUtils,
                        QgsProcessingParameterFeatureSource,
                        QgsProcessingParameterField,
-                       QgsProcessingParameterFileOutput,
+                       QgsProcessingParameterFileDestination,
                        QgsProcessingOutputHtml,
                        QgsProcessingOutputNumber)
 
@@ -88,6 +86,7 @@ class BasicStatisticsForField(QgisAlgorithm):
     def __init__(self):
         super().__init__()
 
+    def initAlgorithm(self, config=None):
         self.addParameter(QgsProcessingParameterFeatureSource(self.INPUT_LAYER,
                                                               self.tr('Input layer')))
 
@@ -95,7 +94,7 @@ class BasicStatisticsForField(QgisAlgorithm):
                                                       self.tr('Field to calculate statistics on'),
                                                       None, self.INPUT_LAYER, QgsProcessingParameterField.Any))
 
-        self.addParameter(QgsProcessingParameterFileOutput(self.OUTPUT_HTML_FILE, self.tr('Statistics'), self.tr('HTML files (*.html)'), None, True))
+        self.addParameter(QgsProcessingParameterFileDestination(self.OUTPUT_HTML_FILE, self.tr('Statistics'), self.tr('HTML files (*.html)'), None, True))
         self.addOutput(QgsProcessingOutputHtml(self.OUTPUT_HTML_FILE, self.tr('Statistics')))
 
         self.addOutput(QgsProcessingOutputNumber(self.COUNT, self.tr('Count')))

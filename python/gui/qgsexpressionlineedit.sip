@@ -18,7 +18,7 @@ class QgsExpressionLineEdit : QWidget
  This widget is designed for use in contexts where no layer fields are available for
  use in an expression. In contexts where the expression is directly associated with
  a layer and fields can be used, then QgsFieldExpressionWidget is a more appropriate
- choice as it gives users direct access to select fields from a drop down list.
+ choice as it gives users direct access to select fields from a drop-down list.
 
  QgsExpressionLineEdit also supports a multiline editor mode which is useful where
  more space is available for the widget, but where QgsExpressionBuilderWidget

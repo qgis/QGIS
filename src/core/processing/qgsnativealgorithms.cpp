@@ -69,13 +69,10 @@ void QgsNativeAlgorithms::loadAlgorithms()
   addAlgorithm( new QgsTransformAlgorithm() );
 }
 
-
-
-QgsCentroidAlgorithm::QgsCentroidAlgorithm()
+void QgsCentroidAlgorithm::initAlgorithm( const QVariantMap & )
 {
   addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "INPUT" ), QObject::tr( "Input layer" ) ) );
-  addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "OUTPUT_LAYER" ), QObject::tr( "Centroids" ), QgsProcessingParameterDefinition::TypeVectorPoint ) );
-  addOutput( new QgsProcessingOutputVectorLayer( QStringLiteral( "OUTPUT_LAYER" ), QObject::tr( "Centroids" ), QgsProcessingParameterDefinition::TypeVectorPoint ) );
+  addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "OUTPUT" ), QObject::tr( "Centroids" ), QgsProcessing::TypeVectorPoint ) );
 }
 
 QString QgsCentroidAlgorithm::shortHelpString() const
@@ -84,14 +81,19 @@ QString QgsCentroidAlgorithm::shortHelpString() const
                       "The attributes associated to each point in the output layer are the same ones associated to the original features." );
 }
 
-QVariantMap QgsCentroidAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) const
+QgsCentroidAlgorithm *QgsCentroidAlgorithm::createInstance() const
+{
+  return new QgsCentroidAlgorithm();
+}
+
+QVariantMap QgsCentroidAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
   std::unique_ptr< QgsFeatureSource > source( parameterAsSource( parameters, QStringLiteral( "INPUT" ), context ) );
   if ( !source )
     return QVariantMap();
 
   QString dest;
-  std::unique_ptr< QgsFeatureSink > sink( parameterAsSink( parameters, QStringLiteral( "OUTPUT_LAYER" ), context, dest, source->fields(), QgsWkbTypes::Point, source->sourceCrs() ) );
+  std::unique_ptr< QgsFeatureSink > sink( parameterAsSink( parameters, QStringLiteral( "OUTPUT" ), context, dest, source->fields(), QgsWkbTypes::Point, source->sourceCrs() ) );
   if ( !sink )
     return QVariantMap();
 
@@ -127,7 +129,7 @@ QVariantMap QgsCentroidAlgorithm::processAlgorithm( const QVariantMap &parameter
   }
 
   QVariantMap outputs;
-  outputs.insert( QStringLiteral( "OUTPUT_LAYER" ), dest );
+  outputs.insert( QStringLiteral( "OUTPUT" ), dest );
   return outputs;
 }
 
@@ -135,7 +137,7 @@ QVariantMap QgsCentroidAlgorithm::processAlgorithm( const QVariantMap &parameter
 // QgsBufferAlgorithm
 //
 
-QgsBufferAlgorithm::QgsBufferAlgorithm()
+void QgsBufferAlgorithm::initAlgorithm( const QVariantMap & )
 {
   addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "INPUT" ), QObject::tr( "Input layer" ) ) );
   addParameter( new QgsProcessingParameterNumber( QStringLiteral( "DISTANCE" ), QObject::tr( "Distance" ), QgsProcessingParameterNumber::Double, 10 ) );
@@ -146,8 +148,7 @@ QgsBufferAlgorithm::QgsBufferAlgorithm()
   addParameter( new QgsProcessingParameterNumber( QStringLiteral( "MITRE_LIMIT" ), QObject::tr( "Miter limit" ), QgsProcessingParameterNumber::Double, 2, false, 1 ) );
 
   addParameter( new QgsProcessingParameterBoolean( QStringLiteral( "DISSOLVE" ), QObject::tr( "Dissolve result" ), false ) );
-  addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "OUTPUT_LAYER" ), QObject::tr( "Buffered" ), QgsProcessingParameterDefinition::TypeVectorPolygon ) );
-  addOutput( new QgsProcessingOutputVectorLayer( QStringLiteral( "OUTPUT_LAYER" ), QObject::tr( "Buffered" ), QgsProcessingParameterDefinition::TypeVectorPoint ) );
+  addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "OUTPUT" ), QObject::tr( "Buffered" ), QgsProcessing::TypeVectorPolygon ) );
 }
 
 QString QgsBufferAlgorithm::shortHelpString() const
@@ -159,14 +160,19 @@ QString QgsBufferAlgorithm::shortHelpString() const
                       "The mitre limit parameter is only applicable for mitre join styles, and controls the maximum distance from the offset curve to use when creating a mitred join." );
 }
 
-QVariantMap QgsBufferAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) const
+QgsBufferAlgorithm *QgsBufferAlgorithm::createInstance() const
+{
+  return new QgsBufferAlgorithm();
+}
+
+QVariantMap QgsBufferAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
   std::unique_ptr< QgsFeatureSource > source( parameterAsSource( parameters, QStringLiteral( "INPUT" ), context ) );
   if ( !source )
     return QVariantMap();
 
   QString dest;
-  std::unique_ptr< QgsFeatureSink > sink( parameterAsSink( parameters, QStringLiteral( "OUTPUT_LAYER" ), context, dest, source->fields(), QgsWkbTypes::Polygon, source->sourceCrs() ) );
+  std::unique_ptr< QgsFeatureSink > sink( parameterAsSink( parameters, QStringLiteral( "OUTPUT" ), context, dest, source->fields(), QgsWkbTypes::Polygon, source->sourceCrs() ) );
   if ( !sink )
     return QVariantMap();
 
@@ -239,19 +245,18 @@ QVariantMap QgsBufferAlgorithm::processAlgorithm( const QVariantMap &parameters,
   }
 
   QVariantMap outputs;
-  outputs.insert( QStringLiteral( "OUTPUT_LAYER" ), dest );
+  outputs.insert( QStringLiteral( "OUTPUT" ), dest );
   return outputs;
 }
 
 
-QgsDissolveAlgorithm::QgsDissolveAlgorithm()
+void QgsDissolveAlgorithm::initAlgorithm( const QVariantMap & )
 {
   addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "INPUT" ), QObject::tr( "Input layer" ) ) );
   addParameter( new QgsProcessingParameterField( QStringLiteral( "FIELD" ), QObject::tr( "Unique ID fields" ), QVariant(),
                 QStringLiteral( "INPUT" ), QgsProcessingParameterField::Any, true, true ) );
 
   addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "OUTPUT" ), QObject::tr( "Dissolved" ) ) );
-  addOutput( new QgsProcessingOutputVectorLayer( QStringLiteral( "OUTPUT" ), QObject::tr( "Dissolved" ) ) );
 }
 
 QString QgsDissolveAlgorithm::shortHelpString() const
@@ -259,11 +264,16 @@ QString QgsDissolveAlgorithm::shortHelpString() const
   return QObject::tr( "This algorithm takes a polygon or line vector layer and combines their geometries into new geometries. One or more attributes can "
                       "be specified to dissolve only geometries belonging to the same class (having the same value for the specified attributes), alternatively "
                       "all geometries can be dissolved.\n\n"
-                      "If the geometries to be dissolved are spatially separated from each other the output will be multi geometries. "
+                      "All output geometries will be converted to multi geometries. "
                       "In case the input is a polygon layer, common boundaries of adjacent polygons being dissolved will get erased." );
 }
 
-QVariantMap QgsDissolveAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) const
+QgsDissolveAlgorithm *QgsDissolveAlgorithm::createInstance() const
+{
+  return new QgsDissolveAlgorithm();
+}
+
+QVariantMap QgsDissolveAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
   std::unique_ptr< QgsFeatureSource > source( parameterAsSource( parameters, QStringLiteral( "INPUT" ), context ) );
   if ( !source )
@@ -347,26 +357,27 @@ QVariantMap QgsDissolveAlgorithm::processAlgorithm( const QVariantMap &parameter
         break;
       }
 
+      QVariantList indexAttributes;
+      Q_FOREACH ( int index, fieldIndexes )
+      {
+        indexAttributes << f.attribute( index );
+      }
+
+      if ( !attributeHash.contains( indexAttributes ) )
+      {
+        // keep attributes of first feature
+        attributeHash.insert( indexAttributes, f.attributes() );
+      }
+
       if ( f.hasGeometry() && f.geometry() )
       {
-        QVariantList indexAttributes;
-        Q_FOREACH ( int index, fieldIndexes )
-        {
-          indexAttributes << f.attribute( index );
-        }
-
-        if ( !attributeHash.contains( indexAttributes ) )
-        {
-          // keep attributes of first feature
-          attributeHash.insert( indexAttributes, f.attributes() );
-        }
         geometryHash[ indexAttributes ].append( f.geometry() );
       }
     }
 
     int numberFeatures = attributeHash.count();
-    QHash< QVariant, QList< QgsGeometry > >::const_iterator geomIt = geometryHash.constBegin();
-    for ( ; geomIt != geometryHash.constEnd(); ++geomIt )
+    QHash< QVariant, QgsAttributes >::const_iterator attrIt = attributeHash.constBegin();
+    for ( ; attrIt != attributeHash.constEnd(); ++attrIt )
     {
       if ( feedback->isCanceled() )
       {
@@ -374,8 +385,16 @@ QVariantMap QgsDissolveAlgorithm::processAlgorithm( const QVariantMap &parameter
       }
 
       QgsFeature outputFeature;
-      outputFeature.setGeometry( QgsGeometry::unaryUnion( geomIt.value() ) );
-      outputFeature.setAttributes( attributeHash.value( geomIt.key() ) );
+      if ( geometryHash.contains( attrIt.key() ) )
+      {
+        QgsGeometry geom = QgsGeometry::unaryUnion( geometryHash.value( attrIt.key() ) );
+        if ( !geom.isMultipart() )
+        {
+          geom.convertToMultiType();
+        }
+        outputFeature.setGeometry( geom );
+      }
+      outputFeature.setAttributes( attrIt.value() );
       sink->addFeature( outputFeature, QgsFeatureSink::FastInsert );
 
       feedback->setProgress( current * 100.0 / numberFeatures );
@@ -388,13 +407,12 @@ QVariantMap QgsDissolveAlgorithm::processAlgorithm( const QVariantMap &parameter
   return outputs;
 }
 
-QgsClipAlgorithm::QgsClipAlgorithm()
+void QgsClipAlgorithm::initAlgorithm( const QVariantMap & )
 {
   addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "INPUT" ), QObject::tr( "Input layer" ) ) );
-  addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "OVERLAY" ), QObject::tr( "Clip layer" ), QList< int >() << QgsProcessingParameterDefinition::TypeVectorPolygon ) );
+  addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "OVERLAY" ), QObject::tr( "Clip layer" ), QList< int >() << QgsProcessing::TypeVectorPolygon ) );
 
   addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "OUTPUT" ), QObject::tr( "Clipped" ) ) );
-  addOutput( new QgsProcessingOutputVectorLayer( QStringLiteral( "OUTPUT" ), QObject::tr( "Clipped" ) ) );
 }
 
 QString QgsClipAlgorithm::shortHelpString() const
@@ -406,7 +424,12 @@ QString QgsClipAlgorithm::shortHelpString() const
                       "be manually updated." );
 }
 
-QVariantMap QgsClipAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) const
+QgsClipAlgorithm *QgsClipAlgorithm::createInstance() const
+{
+  return new QgsClipAlgorithm();
+}
+
+QVariantMap QgsClipAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
   std::unique_ptr< QgsFeatureSource > featureSource( parameterAsSource( parameters, QStringLiteral( "INPUT" ), context ) );
   if ( !featureSource )
@@ -539,12 +562,11 @@ QVariantMap QgsClipAlgorithm::processAlgorithm( const QVariantMap &parameters, Q
 }
 
 
-QgsTransformAlgorithm::QgsTransformAlgorithm()
+void QgsTransformAlgorithm::initAlgorithm( const QVariantMap & )
 {
   addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "INPUT" ), QObject::tr( "Input layer" ) ) );
   addParameter( new QgsProcessingParameterCrs( QStringLiteral( "TARGET_CRS" ), QObject::tr( "Target CRS" ), QStringLiteral( "EPSG:4326" ) ) );
   addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "OUTPUT" ), QObject::tr( "Reprojected" ) ) );
-  addOutput( new QgsProcessingOutputVectorLayer( QStringLiteral( "OUTPUT" ), QObject::tr( "Reprojected" ) ) );
 }
 
 QString QgsTransformAlgorithm::shortHelpString() const
@@ -554,7 +576,12 @@ QString QgsTransformAlgorithm::shortHelpString() const
                       "Attributes are not modified by this algorithm." );
 }
 
-QVariantMap QgsTransformAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) const
+QgsTransformAlgorithm *QgsTransformAlgorithm::createInstance() const
+{
+  return new QgsTransformAlgorithm();
+}
+
+QVariantMap QgsTransformAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
   std::unique_ptr< QgsFeatureSource > source( parameterAsSource( parameters, QStringLiteral( "INPUT" ), context ) );
   if ( !source )
@@ -598,14 +625,13 @@ QVariantMap QgsTransformAlgorithm::processAlgorithm( const QVariantMap &paramete
 }
 
 
-QgsSubdivideAlgorithm::QgsSubdivideAlgorithm()
+void QgsSubdivideAlgorithm::initAlgorithm( const QVariantMap & )
 {
   addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "INPUT" ), QObject::tr( "Input layer" ) ) );
   addParameter( new QgsProcessingParameterNumber( QStringLiteral( "MAX_NODES" ), QObject::tr( "Maximum nodes in parts" ), QgsProcessingParameterNumber::Integer,
                 256, false, 8, 100000 ) );
 
   addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "OUTPUT" ), QObject::tr( "Subdivided" ) ) );
-  addOutput( new QgsProcessingOutputVectorLayer( QStringLiteral( "OUTPUT" ), QObject::tr( "Subdivided" ) ) );
 }
 
 QString QgsSubdivideAlgorithm::shortHelpString() const
@@ -618,7 +644,12 @@ QString QgsSubdivideAlgorithm::shortHelpString() const
                       "Curved geometries will be segmentized before subdivision." );
 }
 
-QVariantMap QgsSubdivideAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) const
+QgsSubdivideAlgorithm *QgsSubdivideAlgorithm::createInstance() const
+{
+  return new QgsSubdivideAlgorithm();
+}
+
+QVariantMap QgsSubdivideAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
   std::unique_ptr< QgsFeatureSource > source( parameterAsSource( parameters, QStringLiteral( "INPUT" ), context ) );
   if ( !source )
@@ -668,13 +699,11 @@ QVariantMap QgsSubdivideAlgorithm::processAlgorithm( const QVariantMap &paramete
 }
 
 
-
-QgsMultipartToSinglepartAlgorithm::QgsMultipartToSinglepartAlgorithm()
+void QgsMultipartToSinglepartAlgorithm::initAlgorithm( const QVariantMap & )
 {
   addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "INPUT" ), QObject::tr( "Input layer" ) ) );
 
   addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "OUTPUT" ), QObject::tr( "Single parts" ) ) );
-  addOutput( new QgsProcessingOutputVectorLayer( QStringLiteral( "OUTPUT" ), QObject::tr( "Single parts" ) ) );
 }
 
 QString QgsMultipartToSinglepartAlgorithm::shortHelpString() const
@@ -684,7 +713,12 @@ QString QgsMultipartToSinglepartAlgorithm::shortHelpString() const
                       "contain, and the same attributes are used for each of them." );
 }
 
-QVariantMap QgsMultipartToSinglepartAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) const
+QgsMultipartToSinglepartAlgorithm *QgsMultipartToSinglepartAlgorithm::createInstance() const
+{
+  return new QgsMultipartToSinglepartAlgorithm();
+}
+
+QVariantMap QgsMultipartToSinglepartAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
   std::unique_ptr< QgsFeatureSource > source( parameterAsSource( parameters, QStringLiteral( "INPUT" ), context ) );
   if ( !source )
@@ -747,16 +781,14 @@ QVariantMap QgsMultipartToSinglepartAlgorithm::processAlgorithm( const QVariantM
 }
 
 
-QgsExtractByExpressionAlgorithm::QgsExtractByExpressionAlgorithm()
+void QgsExtractByExpressionAlgorithm::initAlgorithm( const QVariantMap & )
 {
   addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "INPUT" ), QObject::tr( "Input layer" ) ) );
   addParameter( new QgsProcessingParameterExpression( QStringLiteral( "EXPRESSION" ), QObject::tr( "Expression" ), QVariant(), QStringLiteral( "INPUT" ) ) );
 
   addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "OUTPUT" ), QObject::tr( "Matching features" ) ) );
-  addOutput( new QgsProcessingOutputVectorLayer( QStringLiteral( "OUTPUT" ),  QObject::tr( "Matching (expression)" ) ) );
   addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "FAIL_OUTPUT" ),  QObject::tr( "Non-matching" ),
-                QgsProcessingParameterDefinition::TypeVectorAny, QVariant(), true ) );
-  addOutput( new QgsProcessingOutputVectorLayer( QStringLiteral( "FAIL_OUTPUT" ),  QObject::tr( "Non-matching (expression)" ) ) );
+                QgsProcessing::TypeVectorAny, QVariant(), true ) );
 }
 
 QString QgsExtractByExpressionAlgorithm::shortHelpString() const
@@ -766,7 +798,12 @@ QString QgsExtractByExpressionAlgorithm::shortHelpString() const
                       "For more information about expressions see the <a href =\"{qgisdocs}/user_manual/working_with_vector/expression.html\">user manual</a>" );
 }
 
-QVariantMap QgsExtractByExpressionAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) const
+QgsExtractByExpressionAlgorithm *QgsExtractByExpressionAlgorithm::createInstance() const
+{
+  return new QgsExtractByExpressionAlgorithm();
+}
+
+QVariantMap QgsExtractByExpressionAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
   std::unique_ptr< QgsFeatureSource > source( parameterAsSource( parameters, QStringLiteral( "INPUT" ), context ) );
   if ( !source )
@@ -860,7 +897,7 @@ QVariantMap QgsExtractByExpressionAlgorithm::processAlgorithm( const QVariantMap
 }
 
 
-QgsExtractByAttributeAlgorithm::QgsExtractByAttributeAlgorithm()
+void QgsExtractByAttributeAlgorithm::initAlgorithm( const QVariantMap & )
 {
   addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "INPUT" ), QObject::tr( "Input layer" ) ) );
   addParameter( new QgsProcessingParameterField( QStringLiteral( "FIELD" ), QObject::tr( "Selection attribute" ), QVariant(), QStringLiteral( "INPUT" ) ) );
@@ -879,10 +916,8 @@ QgsExtractByAttributeAlgorithm::QgsExtractByAttributeAlgorithm()
   addParameter( new QgsProcessingParameterString( QStringLiteral( "VALUE" ), QObject::tr( "Value" ), QVariant(), false, true ) );
 
   addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "OUTPUT" ), QObject::tr( "Extracted (attribute)" ) ) );
-  addOutput( new QgsProcessingOutputVectorLayer( QStringLiteral( "OUTPUT" ),  QObject::tr( "Matching (attribute)" ) ) );
   addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "FAIL_OUTPUT" ),  QObject::tr( "Extracted (non-matching)" ),
-                QgsProcessingParameterDefinition::TypeVectorAny, QVariant(), true ) );
-  addOutput( new QgsProcessingOutputVectorLayer( QStringLiteral( "FAIL_OUTPUT" ),  QObject::tr( "Non-matching (attribute)" ) ) );
+                QgsProcessing::TypeVectorAny, QVariant(), true ) );
 }
 
 QString QgsExtractByAttributeAlgorithm::shortHelpString() const
@@ -892,7 +927,12 @@ QString QgsExtractByAttributeAlgorithm::shortHelpString() const
                       "of an attribute from the input layer." );
 }
 
-QVariantMap QgsExtractByAttributeAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) const
+QgsExtractByAttributeAlgorithm *QgsExtractByAttributeAlgorithm::createInstance() const
+{
+  return new QgsExtractByAttributeAlgorithm();
+}
+
+QVariantMap QgsExtractByAttributeAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
   std::unique_ptr< QgsFeatureSource > source( parameterAsSource( parameters, QStringLiteral( "INPUT" ), context ) );
   if ( !source )

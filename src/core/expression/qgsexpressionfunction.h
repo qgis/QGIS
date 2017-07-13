@@ -24,10 +24,12 @@
 
 #include "qgis.h"
 #include "qgis_core.h"
+#include "qgsexpressionnode.h"
 
 class QgsExpressionNodeFunction;
 class QgsExpression;
 class QgsExpressionContext;
+class QgsExpressionContextScope;
 
 /** \ingroup core
   * A abstract base class for defining QgsExpression functions.
@@ -273,6 +275,8 @@ class CORE_EXPORT QgsExpressionFunction
      */
     virtual QVariant func( const QVariantList &values, const QgsExpressionContext *context, QgsExpression *parent ) = 0;
 
+    virtual QVariant run( QgsExpressionNode::NodeList *args, const QgsExpressionContext *context, QgsExpression *parent );
+
     bool operator==( const QgsExpressionFunction &other ) const;
 
     virtual bool handlesNull() const;
@@ -451,6 +455,41 @@ class QgsStaticExpressionFunction : public QgsExpressionFunction
     QSet<QString> mReferencedColumns;
     bool mIsStatic = false;
 };
+
+/**
+ * Handles the ``with_variable(name, value, node)`` expression function.
+ * It temporarily appends a new scope to the expression context for all nested
+ * nodes.
+ *
+ * \note Not available in Python bindings
+ * \since QGIS 3.0
+ */
+class QgsWithVariableExpressionFunction : public QgsExpressionFunction
+{
+  public:
+    QgsWithVariableExpressionFunction();
+
+    bool isStatic( const QgsExpressionNodeFunction *node, QgsExpression *parent, const QgsExpressionContext *context ) const override;
+
+    QVariant run( QgsExpressionNode::NodeList *args, const QgsExpressionContext *context, QgsExpression *parent ) override;
+
+    QVariant func( const QVariantList &values, const QgsExpressionContext *context, QgsExpression *parent ) override;
+
+    bool prepare( const QgsExpressionNodeFunction *node, QgsExpression *parent, const QgsExpressionContext *context ) const override;
+
+  private:
+
+    /**
+     * Append a scope with a single variable definition (``name``=``value``)
+     */
+    void appendTemporaryVariable( const QgsExpressionContext *context, const QString &name, const QVariant &value ) const;
+
+    /**
+     * Pop the temporary scope again
+     */
+    void popTemporaryVariable( const QgsExpressionContext *context ) const;
+};
+
 #endif
 
 #endif // QGSEXPRESSIONFUNCTION_H

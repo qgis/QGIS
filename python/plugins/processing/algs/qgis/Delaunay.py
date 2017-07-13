@@ -38,14 +38,13 @@ from qgis.core import (QgsField,
                        QgsGeometry,
                        QgsPointXY,
                        QgsWkbTypes,
-                       QgsProcessingUtils,
-                       QgsFields)
+                       QgsProcessing,
+                       QgsFields,
+                       QgsProcessingParameterFeatureSource,
+                       QgsProcessingParameterFeatureSink)
 
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
-from processing.core.parameters import ParameterVector
-from processing.core.outputs import OutputVector
-from processing.tools import dataobjects
 
 from . import voronoi
 
@@ -65,12 +64,10 @@ class Delaunay(QgisAlgorithm):
 
     def __init__(self):
         super().__init__()
-        self.addParameter(ParameterVector(self.INPUT,
-                                          self.tr('Input layer'), [dataobjects.TYPE_VECTOR_POINT]))
 
-        self.addOutput(OutputVector(self.OUTPUT,
-                                    self.tr('Delaunay triangulation'),
-                                    datatype=[dataobjects.TYPE_VECTOR_POLYGON]))
+    def initAlgorithm(self, config=None):
+        self.addParameter(QgsProcessingParameterFeatureSource(self.INPUT, self.tr('Input layer'), [QgsProcessing.TypeVectorPoint]))
+        self.addParameter(QgsProcessingParameterFeatureSink(self.OUTPUT, self.tr('Delaunay triangulation'), type=QgsProcessing.TypeVectorPolygon))
 
     def name(self):
         return 'delaunaytriangulation'
@@ -79,22 +76,26 @@ class Delaunay(QgisAlgorithm):
         return self.tr('Delaunay triangulation')
 
     def processAlgorithm(self, parameters, context, feedback):
-        layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT), context)
+        source = self.parameterAsSource(parameters, self.INPUT, context)
 
         fields = QgsFields()
         fields.append(QgsField('POINTA', QVariant.Double, '', 24, 15))
         fields.append(QgsField('POINTB', QVariant.Double, '', 24, 15))
         fields.append(QgsField('POINTC', QVariant.Double, '', 24, 15))
 
-        writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(fields, QgsWkbTypes.Polygon, layer.crs(), context)
+        (sink, dest_id) = self.parameterAsSink(parameters, self.OUTPUT, context,
+                                               fields, QgsWkbTypes.Polygon, source.sourceCrs())
 
         pts = []
         ptDict = {}
         ptNdx = -1
         c = voronoi.Context()
-        features = QgsProcessingUtils.getFeatures(layer, context)
-        total = 100.0 / layer.featureCount() if layer.featureCount() else 0
+        features = source.getFeatures()
+        total = 100.0 / source.featureCount() if source.featureCount() else 0
         for current, inFeat in enumerate(features):
+            if feedback.isCanceled():
+                break
+
             geom = QgsGeometry(inFeat.geometry())
             if geom.isNull():
                 continue
@@ -125,6 +126,9 @@ class Delaunay(QgisAlgorithm):
 
         total = 100.0 / len(triangles) if triangles else 1
         for current, triangle in enumerate(triangles):
+            if feedback.isCanceled():
+                break
+
             indices = list(triangle)
             indices.append(indices[0])
             polygon = []
@@ -133,7 +137,7 @@ class Delaunay(QgisAlgorithm):
             for index in indices:
                 fid, n = ptDict[ids[index]]
                 request = QgsFeatureRequest().setFilterFid(fid)
-                inFeat = next(layer.getFeatures(request))
+                inFeat = next(source.getFeatures(request))
                 geom = QgsGeometry(inFeat.geometry())
                 if geom.isMultipart():
                     point = QgsPointXY(geom.asMultiPoint()[n])
@@ -146,7 +150,7 @@ class Delaunay(QgisAlgorithm):
             feat.setAttributes(attrs)
             geometry = QgsGeometry().fromPolygon([polygon])
             feat.setGeometry(geometry)
-            writer.addFeature(feat, QgsFeatureSink.FastInsert)
+            sink.addFeature(feat, QgsFeatureSink.FastInsert)
             feedback.setProgress(int(current * total))
 
-        del writer
+        return {self.OUTPUT: dest_id}

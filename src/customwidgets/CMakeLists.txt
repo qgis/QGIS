@@ -25,6 +25,7 @@ SET (QGIS_CUSTOMWIDGETS_SRCS
   qgsfieldexpressionwidgetplugin.cpp
   qgsfilewidgetplugin.cpp
   qgsfilterlineeditplugin.cpp
+  qgsfontbuttonplugin.cpp
   qgsmaplayercomboboxplugin.cpp
   qgsopacitywidgetplugin.cpp
   qgspasswordlineeditplugin.cpp
@@ -54,6 +55,7 @@ SET (QGIS_CUSTOMWIDGETS_MOC_HDRS
   qgsfieldexpressionwidgetplugin.h
   qgsfilewidgetplugin.h
   qgsfilterlineeditplugin.h
+  qgsfontbuttonplugin.h
   qgsmaplayercomboboxplugin.h
   qgsopacitywidgetplugin.h
   qgspasswordlineeditplugin.h
@@ -74,31 +76,6 @@ ELSE(MSVC)
   SET_SOURCE_FILES_PROPERTIES(${QGIS_CUSTOMWIDGETS_MOC_SRCS} PROPERTIES COMPILE_FLAGS "-Wno-deprecated-declarations" )
 ENDIF(MSVC)
 
-SET(QGIS_CUSTOMWIDGETS_HDRS
-  qgiscustomwidgets.h
-  qgscollapsiblegroupboxplugin.h
-  qgscolorbuttonplugin.h
-  qgsdatetimeeditplugin.h
-  qgsdockwidgetplugin.h
-  qgsdoublespinboxplugin.h
-  qgsexpressionbuilderwidgetplugin.h
-  qgsextentgroupboxplugin.h
-  qgsexternalresourcewidgetplugin.h
-  qgsfieldcomboboxplugin.h
-  qgsfieldexpressionwidgetplugin.h
-  qgsfilewidgetplugin.h
-  qgsfilterlineeditplugin.h
-  qgsmaplayercomboboxplugin.h
-  qgsopacitywidgetplugin.h
-  qgsprojectionselectionwidgetplugin.h
-  qgspropertyoverridebuttonplugin.h
-  qgsrasterbandcomboboxplugin.h
-  qgsrelationeditorwidgetplugin.h
-  qgsrelationreferencewidgetplugin.h
-  qgsscalerangewidgetplugin.h
-  qgsscalewidgetplugin.h
-  qgsspinboxplugin.h
-)
 
 # left commented as there is no UI file yet
 # SET(QGIS_CUSTOMWIDGETS_UI_HDRS
@@ -138,7 +115,7 @@ QT5_WRAP_CPP(QGIS_CUSTOMWIDGETS_MOC_SRCS ${QGIS_CUSTOMWIDGETS_MOC_HDRS})
 SET(IMAGE_RCCS ../../images/images.qrc)
 QT5_ADD_RESOURCES(IMAGE_RCC_SRCS ${IMAGE_RCCS})
 
-ADD_LIBRARY(qgis_customwidgets SHARED ${QGIS_CUSTOMWIDGETS_SRCS} ${QGIS_CUSTOMWIDGETS_MOC_SRCS} ${QGIS_CUSTOMWIDGETS_HDRS} ${IMAGE_RCC_SRCS})
+ADD_LIBRARY(qgis_customwidgets SHARED ${QGIS_CUSTOMWIDGETS_SRCS} ${QGIS_CUSTOMWIDGETS_MOC_SRCS} ${QGIS_CUSTOMWIDGETS_MOC_HDRS} ${IMAGE_RCC_SRCS})
 
 SET_TARGET_PROPERTIES(qgis_customwidgets PROPERTIES
   VERSION ${COMPLETE_VERSION}
@@ -156,7 +133,7 @@ GENERATE_EXPORT_HEADER(
    EXPORT_FILE_NAME qgis_customwidgets.h
 )
 
-SET(QGIS_CUSTOMWIDGETS_HDRS ${QGIS_CUSTOMWIDGETS_HDRS} ${CMAKE_CURRENT_BINARY_DIR}/qgis_customwidgets.h)
+SET(QGIS_CUSTOMWIDGETS_INSTALL_HDRS ${QGIS_CUSTOMWIDGETS_MOC_HDRS} ${CMAKE_CURRENT_BINARY_DIR}/qgis_customwidgets.h)
 
 # install
 INSTALL(TARGETS qgis_customwidgets
@@ -165,4 +142,4 @@ INSTALL(TARGETS qgis_customwidgets
 )
 
 # TODO: apple
-INSTALL(FILES ${QGIS_CUSTOMWIDGETS_HDRS} DESTINATION ${QGIS_INCLUDE_DIR})
+INSTALL(FILES ${QGIS_CUSTOMWIDGETS_INSTALL_HDRS} DESTINATION ${QGIS_INCLUDE_DIR})

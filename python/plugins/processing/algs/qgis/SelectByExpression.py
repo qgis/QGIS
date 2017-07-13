@@ -46,6 +46,8 @@ class SelectByExpression(QgisAlgorithm):
 
     def __init__(self):
         super().__init__()
+
+    def initAlgorithm(self, config=None):
         self.methods = [self.tr('creating new selection'),
                         self.tr('adding to current selection'),
                         self.tr('removing from current selection'),

@@ -84,6 +84,20 @@ class CORE_EXPORT QgsVectorLayerJoinBuffer : public QObject
     //! \since QGIS 2.6
     static QVector<int> joinSubsetIndices( QgsVectorLayer *joinLayer, const QStringList &joinFieldsSubset );
 
+    /** Returns joins where the field of a target layer is considered as an id.
+     * \param field the field of a target layer
+     * \returns a list of vector joins
+     * \since QGIS3.0
+     */
+    QList<const QgsVectorLayerJoinInfo *> joinsWhereFieldIsId( const QgsField &field ) const;
+
+    /** Returns the joined feature corresponding to the feature.
+     * \param info the vector join information
+     * \param feature the feature of the target layer
+     * \since QGIS 3.0
+     */
+    QgsFeature joinedFeatureOf( const QgsVectorLayerJoinInfo *info, const QgsFeature &feature ) const;
+
     //! Create a copy of the join buffer
     //! \since QGIS 2.6
     QgsVectorLayerJoinBuffer *clone() const SIP_FACTORY;

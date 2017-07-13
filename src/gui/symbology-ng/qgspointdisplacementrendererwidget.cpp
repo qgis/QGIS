@@ -50,6 +50,7 @@ QgsPointDisplacementRendererWidget::QgsPointDisplacementRendererWidget( QgsVecto
   setupUi( this );
   this->layout()->setContentsMargins( 0, 0, 0, 0 );
 
+  mLabelFontButton->setMode( QgsFontButton::ModeQFont );
   mDistanceUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderMetersInMapUnits << QgsUnitTypes::RenderMapUnits << QgsUnitTypes::RenderPixels
                                  << QgsUnitTypes::RenderPoints << QgsUnitTypes::RenderInches );
 
@@ -111,6 +112,7 @@ QgsPointDisplacementRendererWidget::QgsPointDisplacementRendererWidget( QgsVecto
   mCircleWidthSpinBox->setValue( mRenderer->circleWidth() );
   mCircleColorButton->setColor( mRenderer->circleColor() );
   mLabelColorButton->setColor( mRenderer->labelColor() );
+  mLabelFontButton->setCurrentFont( mRenderer->labelFont() );
   mCircleModificationSpinBox->setClearValue( 0.0 );
   mCircleModificationSpinBox->setValue( mRenderer->circleRadiusAddition() );
   mDistanceSpinBox->setValue( mRenderer->tolerance() );
@@ -147,6 +149,7 @@ QgsPointDisplacementRendererWidget::QgsPointDisplacementRendererWidget( QgsVecto
   }
 
   connect( mMinLabelScaleWidget, &QgsScaleWidget::scaleChanged, this, &QgsPointDisplacementRendererWidget::minLabelScaleChanged );
+  connect( mLabelFontButton, &QgsFontButton::changed, this, &QgsPointDisplacementRendererWidget::labelFontChanged );
 
   updateCenterIcon();
 }
@@ -238,20 +241,15 @@ void QgsPointDisplacementRendererWidget::on_mRendererSettingsButton_clicked()
   }
 }
 
-void QgsPointDisplacementRendererWidget::on_mLabelFontButton_clicked()
+void QgsPointDisplacementRendererWidget::labelFontChanged()
 {
   if ( !mRenderer )
   {
     return;
   }
 
-  bool ok;
-  QFont newFont = QgsGuiUtils::getFont( ok, mRenderer->labelFont(), tr( "Label Font" ) );
-  if ( ok )
-  {
-    mRenderer->setLabelFont( newFont );
-    emit widgetChanged();
-  }
+  mRenderer->setLabelFont( mLabelFontButton->currentFont() );
+  emit widgetChanged();
 }
 
 void QgsPointDisplacementRendererWidget::on_mCircleWidthSpinBox_valueChanged( double d )

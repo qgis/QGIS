@@ -61,6 +61,9 @@ class QgsFeatureStore;
 class QgsGeometry;
 class QgsLayerTreeMapCanvasBridge;
 class QgsLayerTreeView;
+class QgsLayout;
+class QgsLayoutDesignerDialog;
+class QgsLayoutDesignerInterface;
 class QgsMapCanvas;
 class QgsMapCanvasDockWidget;
 class QgsMapLayer;
@@ -318,6 +321,11 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     //! Returns the print composers
     QSet<QgsComposer *> printComposers() const {return mPrintComposers;}
 
+    /**
+     * Returns the active layout designers.
+     */
+    QSet<QgsLayoutDesignerDialog *> layoutDesigners() const { return mLayoutDesignerDialogs; }
+
     /** Get a unique title from user for new and duplicate composers
      * \param acceptEmpty whether to accept empty titles (one will be generated)
      * \param currentTitle base name for initial title choice
@@ -331,6 +339,12 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
      * Opens a composer window for an existing \a composition.
      */
     QgsComposer *openComposer( QgsComposition *composition );
+
+    /**
+     * Opens a layout designer dialog for an existing \a layout.
+     * If a designer already exists for this layout then it will be activated.
+     */
+    QgsLayoutDesignerDialog *openLayoutDesignerDialog( QgsLayout *layout );
 
     //! Deletes a composer and removes entry from Set
     void deleteComposer( QgsComposer *c );
@@ -1122,7 +1136,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     void newVectorLayer();
     //! Create a new memory layer
     void newMemoryLayer();
-    //! Create a new empty spatialite layer
+    //! Create a new empty SpatiaLite layer
     void newSpatialiteLayer();
     //! Create a new empty GeoPackage layer
     void newGeoPackageLayer();
@@ -1522,6 +1536,30 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
      */
     void composerClosed( QgsComposerInterface *composer );
 
+    /**
+     * This signal is emitted when a new layout \a designer has been opened.
+     * \since QGIS 3.0
+     * \see layoutDesignerWillBeClosed()
+     */
+    void layoutDesignerOpened( QgsLayoutDesignerInterface *designer );
+
+    /**
+     * This signal is emitted before a layout \a designer is going to be closed
+     * and deleted.
+     * \since QGIS 3.0
+     * \see layoutDesignerClosed()
+     * \see layoutDesignerOpened()
+     */
+    void layoutDesignerWillBeClosed( QgsLayoutDesignerInterface *designer );
+
+    /**
+     * This signal is emitted after a layout designer window is closed.
+     * \since QGIS 3.0
+     * \see layoutDesignerWillBeClosed()
+     * \see layoutDesignerOpened()
+     */
+    void layoutDesignerClosed();
+
     //! This signal is emitted when QGIS' initialization is complete
     void initializationCompleted();
 
@@ -1856,6 +1894,10 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
     //! Print composers of this project, accessible by id string
     QSet<QgsComposer *> mPrintComposers;
+
+    //! Print composers of this project, accessible by id string
+    QSet<QgsLayoutDesignerDialog *> mLayoutDesignerDialogs;
+
     //! QGIS-internal vector feature clipboard
     QgsClipboard *mInternalClipboard = nullptr;
     //! Flag to indicate how the project properties dialog was summoned

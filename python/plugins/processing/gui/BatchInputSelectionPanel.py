@@ -36,6 +36,7 @@ from qgis.PyQt.QtGui import QCursor
 from qgis.core import (QgsMapLayer,
                        QgsSettings,
                        QgsProject,
+                       QgsProcessing,
                        QgsProcessingUtils,
                        QgsProcessingParameterMultipleLayers,
                        QgsProcessingParameterRasterLayer,
@@ -103,18 +104,18 @@ class BatchInputSelectionPanel(QWidget):
         layers = []
         if (isinstance(self.param, QgsProcessingParameterRasterLayer) or
                 (isinstance(self.param, QgsProcessingParameterMultipleLayers) and
-                 self.param.layerType() == QgsProcessingParameterDefinition.TypeRaster)):
+                 self.param.layerType() == QgsProcessing.TypeRaster)):
             layers = QgsProcessingUtils.compatibleRasterLayers(QgsProject.instance())
         elif isinstance(self.param, QgsProcessingParameterVectorLayer):
             layers = QgsProcessingUtils.compatibleVectorLayers(QgsProject.instance())
         else:
-            datatypes = [QgsProcessingParameterDefinition.TypeVectorAny]
+            datatypes = [QgsProcessing.TypeVectorAny]
             if isinstance(self.param, QgsProcessingParameterFeatureSource):
                 datatypes = self.param.dataTypes()
             elif isinstance(self.param, QgsProcessingParameterMultipleLayers):
                 datatypes = [self.param.layerType()]
 
-            if QgsProcessingParameterDefinition.TypeVectorAny not in datatypes:
+            if QgsProcessing.TypeVectorAny not in datatypes:
                 layers = QgsProcessingUtils.compatibleVectorLayers(QgsProject.instance(), datatypes)
             else:
                 layers = QgsProcessingUtils.compatibleVectorLayers(QgsProject.instance())

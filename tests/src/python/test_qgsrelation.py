@@ -19,9 +19,12 @@ from qgis.core import (QgsVectorLayer,
                        QgsRelation,
                        QgsGeometry,
                        QgsPointXY,
+                       QgsAttributeEditorElement,
                        QgsProject
                        )
+from utilities import unitTestDataPath
 from qgis.testing import start_app, unittest
+import os
 
 start_app()
 
@@ -38,7 +41,11 @@ def createReferencingLayer():
     f2.setFields(layer.pendingFields())
     f2.setAttributes(["test2", 123])
     f2.setGeometry(QgsGeometry.fromPoint(QgsPointXY(101, 201)))
-    assert pr.addFeatures([f1, f2])
+    f3 = QgsFeature()
+    f3.setFields(layer.pendingFields())
+    f3.setAttributes(["foobar'bar", 124])
+    f3.setGeometry(QgsGeometry.fromPoint(QgsPointXY(101, 201)))
+    assert pr.addFeatures([f1, f2, f3])
     return layer
 
 
@@ -57,7 +64,7 @@ def createReferencedLayer():
     f2.setGeometry(QgsGeometry.fromPoint(QgsPointXY(2, 2)))
     f3 = QgsFeature()
     f3.setFields(layer.pendingFields())
-    f3.setAttributes(["foobar", 789, 554])
+    f3.setAttributes(["foobar'bar", 789, 554])
     f3.setGeometry(QgsGeometry.fromPoint(QgsPointXY(2, 3)))
     assert pr.addFeatures([f1, f2, f3])
     return layer
@@ -112,6 +119,20 @@ class TestQgsRelation(unittest.TestCase):
         it = rel.getRelatedFeatures(feat)
         assert [a.attributes() for a in it] == [['test1', 123], ['test2', 123]]
 
+    def test_getRelatedFeaturesWithQuote(self):
+        rel = QgsRelation()
+
+        rel.setId('rel1')
+        rel.setName('Relation Number One')
+        rel.setReferencingLayer(self.referencingLayer.id())
+        rel.setReferencedLayer(self.referencedLayer.id())
+        rel.addFieldPair('fldtxt', 'x')
+
+        feat = self.referencedLayer.getFeature(3)
+
+        it = rel.getRelatedFeatures(feat)
+        assert next(it).attributes() == ["foobar'bar", 124]
+
     def test_getReferencedFeature(self):
         rel = QgsRelation()
         rel.setId('rel1')
@@ -137,6 +158,36 @@ class TestQgsRelation(unittest.TestCase):
         rel.addFieldPair('foreignkey', 'y')
 
         assert (rel.fieldPairs() == {'foreignkey': 'y'})
+
+    def testValidRelationAfterChangingStyle(self):
+        # load project
+        myPath = os.path.join(unitTestDataPath(), 'relations.qgs')
+        QgsProject.instance().read(myPath)
+
+        # get referenced layer
+        relations = QgsProject.instance().relationManager().relations()
+        relation = relations[list(relations.keys())[0]]
+        referencedLayer = relation.referencedLayer()
+
+        # check that the relation is valid
+        valid = False
+        for tab in referencedLayer.editFormConfig().tabs():
+            for t in tab.children():
+                if (t.type() == QgsAttributeEditorElement.AeTypeRelation):
+                    valid = t.relation().isValid()
+        self.assertTrue(valid)
+
+        # update style
+        referencedLayer.styleManager().setCurrentStyle("custom")
+
+        # check that the relation is still valid
+        referencedLayer = relation.referencedLayer()
+        valid = False
+        for tab in referencedLayer.editFormConfig().tabs():
+            for t in tab.children():
+                if (t.type() == QgsAttributeEditorElement.AeTypeRelation):
+                    valid = t.relation().isValid()
+        self.assertTrue(valid)
 
 
 if __name__ == '__main__':

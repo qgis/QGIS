@@ -25,13 +25,10 @@ __copyright__ = '(C) 2010, Michael Minn'
 
 __revision__ = '$Format:%H$'
 
-from qgis.core import (QgsApplication,
-                       QgsFeatureSink,
-                       QgsProcessingUtils,
+from qgis.core import (QgsFeatureSink,
                        QgsProcessingParameterFeatureSource,
                        QgsProcessingParameterFeatureSink,
-                       QgsProcessingParameterField,
-                       QgsProcessingOutputVectorLayer)
+                       QgsProcessingParameterField)
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 
 
@@ -50,13 +47,13 @@ class DeleteColumn(QgisAlgorithm):
     def __init__(self):
         super().__init__()
 
+    def initAlgorithm(self, config=None):
         self.addParameter(QgsProcessingParameterFeatureSource(self.INPUT, self.tr('Input layer')))
         self.addParameter(QgsProcessingParameterField(self.COLUMNS,
                                                       self.tr('Fields to drop'),
                                                       None, self.INPUT, QgsProcessingParameterField.Any, True))
 
         self.addParameter(QgsProcessingParameterFeatureSink(self.OUTPUT, self.tr('Output layer')))
-        self.addOutput(QgsProcessingOutputVectorLayer(self.OUTPUT, self.tr("Output layer")))
 
     def name(self):
         return 'deletecolumn'

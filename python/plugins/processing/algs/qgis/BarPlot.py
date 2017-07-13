@@ -34,7 +34,7 @@ from qgis.core import (QgsApplication,
                        QgsProcessingUtils,
                        QgsProcessingParameterFeatureSource,
                        QgsProcessingParameterField,
-                       QgsProcessingParameterFileOutput,
+                       QgsProcessingParameterFileDestination,
                        QgsProcessingOutputHtml)
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 from processing.tools import vector
@@ -53,6 +53,7 @@ class BarPlot(QgisAlgorithm):
     def __init__(self):
         super().__init__()
 
+    def initAlgorithm(self, config=None):
         self.addParameter(QgsProcessingParameterFeatureSource(self.INPUT,
                                                               self.tr('Input layer')))
         self.addParameter(QgsProcessingParameterField(self.NAME_FIELD,
@@ -62,7 +63,7 @@ class BarPlot(QgisAlgorithm):
                                                       self.tr('Value field'),
                                                       None, self.INPUT, QgsProcessingParameterField.Numeric))
 
-        self.addParameter(QgsProcessingParameterFileOutput(self.OUTPUT, self.tr('Added'), self.tr('HTML files (*.html)')))
+        self.addParameter(QgsProcessingParameterFileDestination(self.OUTPUT, self.tr('Added'), self.tr('HTML files (*.html)')))
 
         self.addOutput(QgsProcessingOutputHtml(self.OUTPUT, self.tr('Bar plot')))
 

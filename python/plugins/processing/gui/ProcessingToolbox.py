@@ -238,22 +238,29 @@ class ProcessingToolbox(BASE, WIDGET):
     def editRenderingStyles(self):
         item = self.algorithmTree.currentItem()
         if isinstance(item, TreeAlgorithmItem):
-            alg = QgsApplication.processingRegistry().algorithmById(item.alg.id())
+            alg = QgsApplication.processingRegistry().createAlgorithmById(item.alg.id())
             dlg = EditRenderingStylesDialog(alg)
             dlg.exec_()
 
     def executeAlgorithmAsBatchProcess(self):
         item = self.algorithmTree.currentItem()
         if isinstance(item, TreeAlgorithmItem):
-            alg = QgsApplication.processingRegistry().algorithmById(item.alg.id())
-            dlg = BatchAlgorithmDialog(alg)
-            dlg.show()
-            dlg.exec_()
+            alg = QgsApplication.processingRegistry().createAlgorithmById(item.alg.id())
+            if alg:
+                dlg = BatchAlgorithmDialog(alg)
+                dlg.show()
+                dlg.exec_()
+                # have to manually delete the dialog - otherwise it's owned by the
+                # iface mainWindow and never deleted
+                del dlg
 
     def executeAlgorithm(self):
         item = self.algorithmTree.currentItem()
         if isinstance(item, TreeAlgorithmItem):
-            alg = QgsApplication.processingRegistry().algorithmById(item.alg.id())
+            alg = QgsApplication.processingRegistry().createAlgorithmById(item.alg.id())
+            if not alg:
+                return
+
             ok, message = alg.canExecute()
             if not ok:
                 dlg = MessageDialog()
@@ -284,6 +291,9 @@ class ProcessingToolbox(BASE, WIDGET):
                         ProcessingConfig.SHOW_RECENT_ALGORITHMS)
                     if showRecent:
                         self.addRecentAlgorithms(True)
+                # have to manually delete the dialog - otherwise it's owned by the
+                # iface mainWindow and never deleted
+                del dlg
             else:
                 feedback = MessageBarProgress()
                 context = dataobjects.createContext(feedback)
@@ -317,7 +327,7 @@ class ProcessingToolbox(BASE, WIDGET):
                 recentItem = QTreeWidgetItem()
                 recentItem.setText(0, self.tr('Recently used algorithms'))
                 for algname in recent:
-                    alg = QgsApplication.processingRegistry().algorithmById(algname)
+                    alg = QgsApplication.processingRegistry().createAlgorithmById(algname)
                     if alg is not None:
                         algItem = TreeAlgorithmItem(alg)
                         recentItem.addChild(algItem)

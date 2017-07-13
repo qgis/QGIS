@@ -33,7 +33,7 @@ import re
 
 from qgis.core import (QgsMapLayer,
                        QgsSettings,
-                       QgsProcessingParameterFolderOutput,
+                       QgsProcessingParameterFolderDestination,
                        QgsProcessingParameterRasterLayer,
                        QgsProcessingParameterFeatureSource,
                        QgsProcessingParameterVectorLayer,
@@ -73,7 +73,7 @@ class BatchOutputSelectionPanel(QWidget):
         self.setLayout(self.horizontalLayout)
 
     def showSelectionDialog(self):
-        if isinstance(self.output, QgsProcessingParameterFolderOutput):
+        if isinstance(self.output, QgsProcessingParameterFolderDestination):
             self.selectDirectory()
             return
 

@@ -30,6 +30,7 @@ email                : sherman at mrcc.com
 #include "qgsgeometry.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgsvectorlayerexporter.h"
+#include "qgswkbtypes.h"
 #include "qgis.h"
 
 
@@ -1175,7 +1176,12 @@ size_t QgsOgrProvider::layerCount() const
  */
 QgsWkbTypes::Type QgsOgrProvider::wkbType() const
 {
-  return static_cast<QgsWkbTypes::Type>( mOGRGeomType );
+  QgsWkbTypes::Type wkb = static_cast<QgsWkbTypes::Type>( mOGRGeomType );
+  if ( ogrDriverName == QLatin1String( "ESRI Shapefile" ) && ( wkb == QgsWkbTypes::LineString || wkb == QgsWkbTypes::Polygon ) )
+  {
+    wkb = QgsWkbTypes::multiType( wkb );
+  }
+  return wkb;
 }
 
 /**
@@ -1289,7 +1295,18 @@ bool QgsOgrProvider::addFeaturePrivate( QgsFeature &f, Flags flags )
     QVariant attrVal = attrs.at( qgisAttId );
     if ( attrVal.isNull() || ( type != OFTString && attrVal.toString().isEmpty() ) )
     {
+// Starting with GDAL 2.2, there are 2 concepts: unset fields and null fields
+// whereas previously there was only unset fields. For a GeoJSON output,
+// leaving a field unset will cause it to not appear at all in the output
+// feature.
+// When all features of a layer have a field unset, this would cause the
+// field to not be present at all in the output, and thus on reading to
+// have disappeared. #16812
+#ifdef OGRNullMarker
+      OGR_F_SetFieldNull( feature, ogrAttId );
+#else
       OGR_F_UnsetField( feature, ogrAttId );
+#endif
     }
     else
     {
@@ -1684,7 +1701,18 @@ bool QgsOgrProvider::changeAttributeValues( const QgsChangedAttributesMap &attr_
 
       if ( it2->isNull() || ( type != OFTString && it2->toString().isEmpty() ) )
       {
+// Starting with GDAL 2.2, there are 2 concepts: unset fields and null fields
+// whereas previously there was only unset fields. For a GeoJSON output,
+// leaving a field unset will cause it to not appear at all in the output
+// feature.
+// When all features of a layer have a field unset, this would cause the
+// field to not be present at all in the output, and thus on reading to
+// have disappeared. #16812
+#ifdef OGRNullMarker
+        OGR_F_SetFieldNull( of, f );
+#else
         OGR_F_UnsetField( of, f );
+#endif
       }
       else
       {
@@ -3822,7 +3850,7 @@ QGISEXTERN bool saveStyle( const QString &uri, const QString &qmlStyle, const QS
   if ( !hLayer )
   {
     // if not create it
-    // Note: we use the same schema as in the spatialite and postgre providers
+    // Note: we use the same schema as in the SpatiaLite and postgre providers
     //for cross interoperability
 
     char **options = nullptr;

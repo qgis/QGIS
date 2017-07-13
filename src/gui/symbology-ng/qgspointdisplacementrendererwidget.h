@@ -50,7 +50,7 @@ class GUI_EXPORT QgsPointDisplacementRendererWidget: public QgsRendererWidget, p
     void on_mLabelFieldComboBox_currentIndexChanged( const QString &text );
     void on_mRendererComboBox_currentIndexChanged( int index );
     void on_mPlacementComboBox_currentIndexChanged( int index );
-    void on_mLabelFontButton_clicked();
+    void labelFontChanged();
     void on_mCircleWidthSpinBox_valueChanged( double d );
     void on_mCircleColorButton_colorChanged( const QColor &newColor );
     void on_mDistanceSpinBox_valueChanged( double d );

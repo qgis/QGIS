@@ -457,7 +457,7 @@ QString QgsPostgresFeatureIterator::whereClauseRect()
 
   if ( mRequest.flags() & QgsFeatureRequest::ExactIntersect )
   {
-    QString curveToLineFn; // in postgis < 1.5 the st_curvetoline function does not exist
+    QString curveToLineFn; // in PostGIS < 1.5 the st_curvetoline function does not exist
     if ( mConn->majorVersion() >= 2 || ( mConn->majorVersion() == 1 && mConn->minorVersion() >= 5 ) )
       curveToLineFn = QStringLiteral( "st_curvetoline" ); // st_ prefix is always used
     whereClause += QStringLiteral( " AND %1(%2(%3%4),%5)" )
@@ -534,7 +534,7 @@ bool QgsPostgresFeatureIterator::declareCursor( const QString &whereClause, long
 
       // Simplify again with st_simplify after first simplification ?
       bool postSimplification;
-      postSimplification = false; // default to false. Set to true only for postgis >= 2.2 when using st_removerepeatedpoints
+      postSimplification = false; // default to false. Set to true only for PostGIS >= 2.2 when using st_removerepeatedpoints
 
       if ( mRequest.simplifyMethod().methodType() == QgsSimplifyMethod::OptimizeForRendering )
       {

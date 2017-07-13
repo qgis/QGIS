@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Grid properties</string>
+   <string>Layout Extents Properties</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <property name="sizeConstraint">
@@ -29,13 +29,6 @@
       <bool>false</bool>
      </property>
      <layout class="QGridLayout" name="gridLayout">
-      <item row="1" column="1">
-       <widget class="QPushButton" name="mButtonFontStyle">
-        <property name="text">
-         <string>Font...</string>
-        </property>
-       </widget>
-      </item>
       <item row="1" column="0">
        <widget class="QCheckBox" name="mCheckBoxLabelExtents">
         <property name="text">
@@ -104,6 +97,19 @@
         </property>
        </spacer>
       </item>
+      <item row="1" column="1">
+       <widget class="QgsFontButton" name="mButtonFontStyle">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="text">
+         <string>Font</string>
+        </property>
+       </widget>
+      </item>
      </layout>
     </widget>
    </item>
@@ -119,6 +125,13 @@
    </item>
   </layout>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>QgsFontButton</class>
+   <extends>QToolButton</extends>
+   <header>qgsfontbutton.h</header>
+  </customwidget>
+ </customwidgets>
  <tabstops>
   <tabstop>grpEnable</tabstop>
   <tabstop>mSymbolButton</tabstop>

@@ -303,7 +303,7 @@
           </sizepolicy>
          </property>
          <property name="currentIndex">
-          <number>0</number>
+          <number>9</number>
          </property>
          <widget class="QWidget" name="mOptsPage_Information">
           <layout class="QVBoxLayout" name="verticalLayout_5">
@@ -379,8 +379,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>639</width>
-                <height>592</height>
+                <width>653</width>
+                <height>542</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_13">
@@ -831,7 +831,7 @@ border-radius: 2px;</string>
                 <x>0</x>
                 <y>0</y>
                 <width>653</width>
-                <height>536</height>
+                <height>542</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_9">
@@ -1069,7 +1069,7 @@ border-radius: 2px;</string>
                 <x>0</x>
                 <y>0</y>
                 <width>653</width>
-                <height>536</height>
+                <height>542</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_18">
@@ -1170,7 +1170,7 @@ border-radius: 2px;</string>
                 <x>0</x>
                 <y>0</y>
                 <width>653</width>
-                <height>536</height>
+                <height>542</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_20">
@@ -1229,8 +1229,8 @@ border-radius: 2px;</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>671</width>
-                <height>522</height>
+                <width>653</width>
+                <height>542</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_32">
@@ -1249,7 +1249,7 @@ border-radius: 2px;</string>
                <item>
                 <widget class="QgsCollapsibleGroupBox" name="mScaleVisibilityGroupBox">
                  <property name="title">
-                  <string>Scale dependent visibility</string>
+                  <string>Scale dependen&amp;t visibility</string>
                  </property>
                  <property name="checkable">
                   <bool>true</bool>
@@ -1268,7 +1268,7 @@ border-radius: 2px;</string>
                <item>
                 <widget class="QGroupBox" name="mSimplifyDrawingGroupBox">
                  <property name="title">
-                  <string>Simplify geometry</string>
+                  <string>Simplify &amp;geometry</string>
                  </property>
                  <property name="checkable">
                   <bool>true</bool>
@@ -1590,7 +1590,7 @@ border-radius: 2px;</string>
                 <x>0</x>
                 <y>0</y>
                 <width>653</width>
-                <height>536</height>
+                <height>542</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_21">
@@ -1656,7 +1656,7 @@ border-radius: 2px;</string>
                 <x>0</x>
                 <y>0</y>
                 <width>653</width>
-                <height>536</height>
+                <height>542</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_23">
@@ -1675,7 +1675,7 @@ border-radius: 2px;</string>
                <item>
                 <widget class="QTreeWidget" name="mJoinTreeWidget">
                  <property name="columnCount">
-                  <number>6</number>
+                  <number>7</number>
                  </property>
                  <column>
                   <property name="text">
@@ -1695,6 +1695,11 @@ border-radius: 2px;</string>
                  <column>
                   <property name="text">
                    <string>Memory cache</string>
+                  </property>
+                 </column>
+                 <column>
+                  <property name="text">
+                   <string>Dynamic form</string>
                   </property>
                  </column>
                  <column>

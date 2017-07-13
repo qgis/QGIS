@@ -275,7 +275,7 @@ void QgsExpressionBuilderWidget::on_expressionTree_doubleClicked( const QModelIn
   if ( !item )
     return;
 
-  // Don't handle the double click it we are on a header node.
+  // Don't handle the double-click if we are on a header node.
   if ( item->getItemType() == QgsExpressionItem::Header )
     return;
 
@@ -587,7 +587,7 @@ void QgsExpressionBuilderWidget::loadExpressionContext()
   Q_FOREACH ( const QString &variable, variableNames )
   {
     registerItem( QStringLiteral( "Variables" ), variable, " @" + variable + ' ',
-                  QgsExpression::variableHelpText( variable, true, mExpressionContext.variable( variable ) ),
+                  QgsExpression::formatVariableHelp( mExpressionContext.description( variable ), true, mExpressionContext.variable( variable ) ),
                   QgsExpressionItem::ExpressionNode,
                   mExpressionContext.isHighlightedVariable( variable ) );
   }

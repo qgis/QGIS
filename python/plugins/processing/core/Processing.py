@@ -38,9 +38,12 @@ from qgis.PyQt.QtGui import QCursor
 from qgis.utils import iface
 from qgis.core import (QgsMessageLog,
                        QgsApplication,
+                       QgsMapLayer,
                        QgsProcessingProvider,
                        QgsProcessingAlgorithm,
-                       QgsProcessingParameterDefinition)
+                       QgsProcessingParameterDefinition,
+                       QgsProcessingOutputVectorLayer,
+                       QgsProcessingOutputRasterLayer)
 
 import processing
 from processing.script.ScriptUtils import ScriptUtils
@@ -127,7 +130,7 @@ class Processing(object):
         if isinstance(algOrName, QgsProcessingAlgorithm):
             alg = algOrName
         else:
-            alg = QgsApplication.processingRegistry().algorithmById(algOrName)
+            alg = QgsApplication.processingRegistry().createAlgorithmById(algOrName)
 
         if feedback is None:
             feedback = MessageBarProgress(alg.displayName() if alg else Processing.tr('Processing'))
@@ -173,6 +176,15 @@ class Processing(object):
 
             if onFinish is not None:
                 onFinish(alg, context, feedback)
+            else:
+                # auto convert layer references in results to map layers
+                for out in alg.outputDefinitions():
+                    if isinstance(out, (QgsProcessingOutputVectorLayer, QgsProcessingOutputRasterLayer)):
+                        result = results[out.name()]
+                        if not isinstance(result, QgsMapLayer):
+                            layer = context.takeResultLayer(result) # transfer layer ownership out of context
+                            if layer:
+                                results[out.name()] = layer # replace layer string ref with actual layer (+ownership)
         else:
             msg = Processing.tr("There were errors executing the algorithm.")
             feedback.reportError(msg)

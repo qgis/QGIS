@@ -27,16 +27,12 @@ __revision__ = '$Format:%H$'
 
 from qgis.PyQt.QtCore import QVariant
 from qgis.core import (QgsField,
-                       QgsFeature,
                        QgsFeatureSink,
-                       QgsApplication,
-                       QgsProcessingUtils,
                        QgsProcessingParameterFeatureSource,
                        QgsProcessingParameterString,
                        QgsProcessingParameterNumber,
                        QgsProcessingParameterEnum,
-                       QgsProcessingParameterFeatureSink,
-                       QgsProcessingOutputVectorLayer)
+                       QgsProcessingParameterFeatureSink)
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 
 
@@ -60,6 +56,7 @@ class AddTableField(QgisAlgorithm):
                            self.tr('Float'),
                            self.tr('String')]
 
+    def initAlgorithm(self, config=None):
         self.addParameter(QgsProcessingParameterFeatureSource(self.INPUT_LAYER,
                                                               self.tr('Input layer')))
         self.addParameter(QgsProcessingParameterString(self.FIELD_NAME,
@@ -72,7 +69,6 @@ class AddTableField(QgisAlgorithm):
         self.addParameter(QgsProcessingParameterNumber(self.FIELD_PRECISION,
                                                        self.tr('Field precision'), QgsProcessingParameterNumber.Integer, 0, False, 0, 10))
         self.addParameter(QgsProcessingParameterFeatureSink(self.OUTPUT_LAYER, self.tr('Added')))
-        self.addOutput(QgsProcessingOutputVectorLayer(self.OUTPUT_LAYER, self.tr('Added')))
 
     def name(self):
         return 'addfieldtoattributestable'

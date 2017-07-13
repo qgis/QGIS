@@ -29,18 +29,16 @@ from qgis.core import (QgsFeatureRequest,
                        QgsWkbTypes,
                        QgsFeatureSink,
                        QgsCoordinateReferenceSystem,
-                       QgsApplication,
-                       QgsProcessingParameterDefinition,
+                       QgsProcessing,
                        QgsProcessingParameterFeatureSource,
-                       QgsProcessingParameterFeatureSink,
-                       QgsProcessingOutputVectorLayer)
+                       QgsProcessingParameterFeatureSink)
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 
 
 class DropGeometry(QgisAlgorithm):
 
-    INPUT_LAYER = 'INPUT_LAYER'
-    OUTPUT_TABLE = 'OUTPUT_TABLE'
+    INPUT = 'INPUT'
+    OUTPUT = 'OUTPUT'
 
     def tags(self):
         return self.tr('remove,drop,delete,geometry,objects').split(',')
@@ -51,9 +49,9 @@ class DropGeometry(QgisAlgorithm):
     def __init__(self):
         super().__init__()
 
-        self.addParameter(QgsProcessingParameterFeatureSource(self.INPUT_LAYER, self.tr('Input layer'), [QgsProcessingParameterDefinition.TypeVectorPoint, QgsProcessingParameterDefinition.TypeVectorLine, QgsProcessingParameterDefinition.TypeVectorPolygon]))
-        self.addParameter(QgsProcessingParameterFeatureSink(self.OUTPUT_TABLE, self.tr('Dropped geometry')))
-        self.addOutput(QgsProcessingOutputVectorLayer(self.OUTPUT_TABLE, self.tr("Dropped geometry")))
+    def initAlgorithm(self, config=None):
+        self.addParameter(QgsProcessingParameterFeatureSource(self.INPUT, self.tr('Input layer'), [QgsProcessing.TypeVectorPoint, QgsProcessing.TypeVectorLine, QgsProcessing.TypeVectorPolygon]))
+        self.addParameter(QgsProcessingParameterFeatureSink(self.OUTPUT, self.tr('Dropped geometry')))
 
     def name(self):
         return 'dropgeometries'
@@ -62,8 +60,8 @@ class DropGeometry(QgisAlgorithm):
         return self.tr('Drop geometries')
 
     def processAlgorithm(self, parameters, context, feedback):
-        source = self.parameterAsSource(parameters, self.INPUT_LAYER, context)
-        (sink, dest_id) = self.parameterAsSink(parameters, self.OUTPUT_TABLE, context,
+        source = self.parameterAsSource(parameters, self.INPUT, context)
+        (sink, dest_id) = self.parameterAsSink(parameters, self.OUTPUT, context,
                                                source.fields(), QgsWkbTypes.NoGeometry, QgsCoordinateReferenceSystem())
 
         request = QgsFeatureRequest().setFlags(QgsFeatureRequest.NoGeometry)
@@ -78,4 +76,4 @@ class DropGeometry(QgisAlgorithm):
             sink.addFeature(input_feature, QgsFeatureSink.FastInsert)
             feedback.setProgress(int(current * total))
 
-        return {self.OUTPUT_TABLE: dest_id}
+        return {self.OUTPUT: dest_id}

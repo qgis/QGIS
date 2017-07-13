@@ -47,6 +47,34 @@ const QString QgsExpressionFunction::helpText() const
   return mHelpText.isEmpty() ? QgsExpression::helpText( mName ) : mHelpText;
 }
 
+QVariant QgsExpressionFunction::run( QgsExpressionNode::NodeList *args, const QgsExpressionContext *context, QgsExpression *parent )
+{
+  // evaluate arguments
+  QVariantList argValues;
+  if ( args )
+  {
+    Q_FOREACH ( QgsExpressionNode *n, args->list() )
+    {
+      QVariant v;
+      if ( lazyEval() )
+      {
+        // Pass in the node for the function to eval as it needs.
+        v = QVariant::fromValue( n );
+      }
+      else
+      {
+        v = n->eval( parent, context );
+        ENSURE_NO_EVAL_ERROR;
+        if ( QgsExpressionUtils::isNull( v ) && !handlesNull() )
+          return QVariant(); // all "normal" functions return NULL, when any QgsExpressionFunction::Parameter is NULL (so coalesce is abnormal)
+      }
+      argValues.append( v );
+    }
+  }
+
+  return func( argValues, context, parent );
+}
+
 bool QgsExpressionFunction::usesGeometry( const QgsExpressionNodeFunction *node ) const
 {
   Q_UNUSED( node )
@@ -1278,7 +1306,7 @@ static QVariant fcnNumSelected( const QVariantList &values, const QgsExpressionC
     layer = QgsExpressionUtils::getVectorLayer( values.at( 0 ), parent );
   else
   {
-    parent->setEvalErrorString( QObject::tr( "Function `num_selected` requires no more than one QgsExpressionFunction::Parameter. %1 given." ).arg( values.length() ) );
+    parent->setEvalErrorString( QObject::tr( "Function `num_selected` requires no more than one parameter. %1 given." ).arg( values.length() ) );
     return QVariant();
   }
 
@@ -2598,7 +2626,7 @@ static QVariant fcnAzimuth( const QVariantList &values, const QgsExpressionConte
     return QVariant();
   }
 
-  // Code from postgis
+  // Code from PostGIS
   if ( pt1->x() == pt2->x() )
   {
     if ( pt1->y() < pt2->y() )
@@ -3287,6 +3315,26 @@ static QVariant fcnTransformGeometry( const QVariantList &values, const QgsExpre
 }
 
 
+static QVariant fcnGetFeatureById( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent )
+{
+  QVariant result;
+  QgsVectorLayer *vl = QgsExpressionUtils::getVectorLayer( values.at( 0 ), parent );
+  if ( vl )
+  {
+    QgsFeatureId fid = QgsExpressionUtils::getIntValue( values.at( 1 ), parent );
+
+    QgsFeatureRequest req;
+    req.setFilterFid( fid );
+    QgsFeatureIterator fIt = vl->getFeatures( req );
+
+    QgsFeature fet;
+    if ( fIt.nextFeature( fet ) )
+      result = QVariant::fromValue( fet );
+  }
+
+  return result;
+}
+
 static QVariant fcnGetFeature( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent )
 {
   //arguments: 1. layer id / name, 2. key attribute, 3. eq value
@@ -3325,18 +3373,7 @@ static QVariant fcnGetFeature( const QVariantList &values, const QgsExpressionCo
 
 static QVariant fcnGetLayerProperty( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent )
 {
-  QString layerIdOrName = QgsExpressionUtils::getStringValue( values.at( 0 ), parent );
-
-  //try to find a matching layer by name
-  QgsMapLayer *layer = QgsProject::instance()->mapLayer( layerIdOrName ); //search by id first
-  if ( !layer )
-  {
-    QList<QgsMapLayer *> layersByName = QgsProject::instance()->mapLayersByName( layerIdOrName );
-    if ( !layersByName.isEmpty() )
-    {
-      layer = layersByName.at( 0 );
-    }
-  }
+  QgsMapLayer *layer = QgsExpressionUtils::getMapLayer( values.at( 0 ), parent );
 
   if ( !layer )
     return QVariant();
@@ -3499,6 +3536,18 @@ static QVariant fcnArrayGet( const QVariantList &values, const QgsExpressionCont
   const qlonglong pos = QgsExpressionUtils::getIntValue( values.at( 1 ), parent );
   if ( pos < 0 || pos >= list.length() ) return QVariant();
   return list.at( pos );
+}
+
+static QVariant fcnArrayFirst( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent )
+{
+  const QVariantList list = QgsExpressionUtils::getListValue( values.at( 0 ), parent );
+  return list.value( 0 );
+}
+
+static QVariant fcnArrayLast( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent )
+{
+  const QVariantList list = QgsExpressionUtils::getListValue( values.at( 0 ), parent );
+  return list.value( list.size() - 1 );
 }
 
 static QVariant convertToSameType( const QVariant &value, QVariant::Type type )
@@ -4104,7 +4153,8 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
     sFunctions << uuidFunc;
 
     sFunctions
-        << new QgsStaticExpressionFunction( QStringLiteral( "get_feature" ), 3, fcnGetFeature, QStringLiteral( "Record" ), QString(), false, QSet<QString>(), false, QStringList() << QStringLiteral( "QgsExpressionUtils::getFeature" ) );
+        << new QgsStaticExpressionFunction( QStringLiteral( "get_feature" ), 3, fcnGetFeature, QStringLiteral( "Record" ), QString(), false, QSet<QString>(), false, QStringList() << QStringLiteral( "QgsExpressionUtils::getFeature" ) )
+        << new QgsStaticExpressionFunction( QStringLiteral( "get_feature_by_id" ), 2, fcnGetFeatureById, QStringLiteral( "Record" ), QString(), false, QSet<QString>(), false );
 
     QgsStaticExpressionFunction *isSelectedFunc = new QgsStaticExpressionFunction(
       QStringLiteral( "is_selected" ),
@@ -4190,6 +4240,7 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
 
     sFunctions
         << new QgsStaticExpressionFunction( QStringLiteral( "env" ), 1, fcnEnvVar, QStringLiteral( "General" ), QString() )
+        << new QgsWithVariableExpressionFunction()
         << new QgsStaticExpressionFunction( QStringLiteral( "attribute" ), 2, fcnAttribute, QStringLiteral( "Record" ), QString(), false, QSet<QString>() << QgsFeatureRequest::ALL_ATTRIBUTES )
 
         // functions for arrays
@@ -4198,6 +4249,8 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
         << new QgsStaticExpressionFunction( QStringLiteral( "array_contains" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "array" ) ) << QgsExpressionFunction::Parameter( QStringLiteral( "value" ) ), fcnArrayContains, QStringLiteral( "Arrays" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "array_find" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "array" ) ) << QgsExpressionFunction::Parameter( QStringLiteral( "value" ) ), fcnArrayFind, QStringLiteral( "Arrays" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "array_get" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "array" ) ) << QgsExpressionFunction::Parameter( QStringLiteral( "pos" ) ), fcnArrayGet, QStringLiteral( "Arrays" ) )
+        << new QgsStaticExpressionFunction( QStringLiteral( "array_first" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "array" ) ), fcnArrayFirst, QStringLiteral( "Arrays" ) )
+        << new QgsStaticExpressionFunction( QStringLiteral( "array_last" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "array" ) ), fcnArrayLast, QStringLiteral( "Arrays" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "array_append" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "array" ) ) << QgsExpressionFunction::Parameter( QStringLiteral( "value" ) ), fcnArrayAppend, QStringLiteral( "Arrays" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "array_prepend" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "array" ) ) << QgsExpressionFunction::Parameter( QStringLiteral( "value" ) ), fcnArrayPrepend, QStringLiteral( "Arrays" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "array_insert" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "array" ) ) << QgsExpressionFunction::Parameter( QStringLiteral( "pos" ) ) << QgsExpressionFunction::Parameter( QStringLiteral( "value" ) ), fcnArrayInsert, QStringLiteral( "Arrays" ) )
@@ -4231,4 +4284,103 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
     }
   }
   return sFunctions;
+}
+
+QgsWithVariableExpressionFunction::QgsWithVariableExpressionFunction()
+  : QgsExpressionFunction( QStringLiteral( "with_variable" ), 3, QCoreApplication::tr( "General" ) )
+{
+
+}
+
+bool QgsWithVariableExpressionFunction::isStatic( const QgsExpressionNodeFunction *node, QgsExpression *parent, const QgsExpressionContext *context ) const
+{
+  bool isStatic = false;
+
+  QgsExpressionNode::NodeList *args = node->args();
+
+  if ( args->count() < 3 )
+    return false;
+
+  // We only need to check if the node evaluation is static, if both - name and value - are static.
+  if ( args->at( 0 )->isStatic( parent, context ) && args->at( 1 )->isStatic( parent, context ) )
+  {
+    QVariant name = args->at( 0 )->eval( parent, context );
+    QVariant value = args->at( 1 )->eval( parent, context );
+
+    // Temporarily append a new scope to provide the variable
+    appendTemporaryVariable( context, name.toString(), value );
+    if ( args->at( 2 )->isStatic( parent, context ) )
+      isStatic = true;
+    popTemporaryVariable( context );
+  }
+
+  return isStatic;
+}
+
+QVariant QgsWithVariableExpressionFunction::run( QgsExpressionNode::NodeList *args, const QgsExpressionContext *context, QgsExpression *parent )
+{
+  QVariant result;
+
+  if ( args->count() < 3 )
+    // error
+    return result;
+
+  QVariant name = args->at( 0 )->eval( parent, context );
+  QVariant value = args->at( 1 )->eval( parent, context );
+
+  QgsExpressionContext *updatedContext = const_cast<QgsExpressionContext *>( context );
+  if ( !context )
+    updatedContext = new QgsExpressionContext();
+
+  appendTemporaryVariable( updatedContext, name.toString(), value );
+  result = args->at( 2 )->eval( parent, updatedContext );
+  popTemporaryVariable( updatedContext );
+  if ( !context )
+    delete updatedContext;
+
+  return result;
+}
+
+QVariant QgsWithVariableExpressionFunction::func( const QVariantList &values, const QgsExpressionContext *context, QgsExpression *parent )
+{
+  // This is a dummy function, all the real handling is in run
+  Q_UNUSED( values )
+  Q_UNUSED( context )
+  Q_UNUSED( parent )
+
+  Q_ASSERT( false );
+  return QVariant();
+}
+
+bool QgsWithVariableExpressionFunction::prepare( const QgsExpressionNodeFunction *node, QgsExpression *parent, const QgsExpressionContext *context ) const
+{
+  QgsExpressionNode::NodeList *args = node->args();
+
+  if ( args->count() < 3 )
+    // error
+    return false;
+
+  QVariant name = args->at( 0 )->prepare( parent, context );
+  QVariant value = args->at( 1 )->prepare( parent, context );
+
+  appendTemporaryVariable( context, name.toString(), value );
+  args->at( 2 )->prepare( parent, context );
+  popTemporaryVariable( context );
+
+  return true;
+}
+
+void QgsWithVariableExpressionFunction::popTemporaryVariable( const QgsExpressionContext *context ) const
+{
+  QgsExpressionContext *updatedContext = const_cast<QgsExpressionContext *>( context );
+  delete updatedContext->popScope();
+}
+
+void QgsWithVariableExpressionFunction::appendTemporaryVariable( const QgsExpressionContext *context, const QString &name, const QVariant &value ) const
+{
+  QgsExpressionContextScope *scope = new QgsExpressionContextScope();
+  scope->setVariable( name, value );
+
+  QgsExpressionContext *updatedContext = const_cast<QgsExpressionContext *>( context );
+  updatedContext->appendScope( scope );
 }

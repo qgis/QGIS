@@ -408,3 +408,12 @@ void QgsLayerTreeView::keyPressEvent( QKeyEvent *event )
   QTreeView::keyPressEvent( event );
   layerTreeModel()->setFlags( oldFlags );
 }
+
+void QgsLayerTreeView::dropEvent( QDropEvent *event )
+{
+  if ( event->keyboardModifiers() & Qt::AltModifier )
+  {
+    event->accept();
+  }
+  QTreeView::dropEvent( event );
+}

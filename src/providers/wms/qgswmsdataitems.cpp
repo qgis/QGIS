@@ -20,11 +20,14 @@
 #include "qgsdatasourceuri.h"
 #include "qgswmscapabilities.h"
 #include "qgswmsconnection.h"
+#include "qgsxyzconnection.h"
+
+#ifdef HAVE_GUI
 #include "qgswmssourceselect.h"
 #include "qgsnewhttpconnection.h"
 #include "qgstilescalewidget.h"
-#include "qgsxyzconnection.h"
 #include "qgsxyzconnectiondialog.h"
+#endif
 
 #include <QInputDialog>
 
@@ -215,6 +218,7 @@ bool QgsWMSConnectionItem::equal( const QgsDataItem *other )
   return ( mPath == o->mPath && mName == o->mName );
 }
 
+#ifdef HAVE_GUI
 QList<QAction *> QgsWMSConnectionItem::actions()
 {
   QList<QAction *> lst;
@@ -247,6 +251,7 @@ void QgsWMSConnectionItem::deleteConnection()
   // the parent should be updated
   mParent->refresh();
 }
+#endif
 
 
 // ---------------------------------------------------------------------------
@@ -397,6 +402,7 @@ QVector<QgsDataItem *> QgsWMSRootItem::createChildren()
   return connections;
 }
 
+#ifdef HAVE_GUI
 QList<QAction *> QgsWMSRootItem::actions()
 {
   QList<QAction *> lst;
@@ -430,10 +436,12 @@ void QgsWMSRootItem::newConnection()
     refresh();
   }
 }
+#endif
 
 
 // ---------------------------------------------------------------------------
 
+#ifdef HAVE_GUI
 QGISEXTERN void registerGui( QMainWindow *mainWindow )
 {
   QgsTileScaleWidget::showTileScale( mainWindow );
@@ -443,7 +451,7 @@ QGISEXTERN QgsWMSSourceSelect *selectWidget( QWidget *parent, Qt::WindowFlags fl
 {
   return new QgsWMSSourceSelect( parent, fl, widgetMode );
 }
-
+#endif
 
 QgsDataItem *QgsWmsDataItemProvider::createDataItem( const QString &path, QgsDataItem *parentItem )
 {
@@ -497,6 +505,7 @@ QVector<QgsDataItem *> QgsXyzTileRootItem::createChildren()
   return connections;
 }
 
+#ifdef HAVE_GUI
 QList<QAction *> QgsXyzTileRootItem::actions()
 {
   QAction *actionNew = new QAction( tr( "New Connection..." ), this );
@@ -514,6 +523,7 @@ void QgsXyzTileRootItem::newConnection()
 
   refresh();
 }
+#endif
 
 
 // ---------------------------------------------------------------------------
@@ -525,6 +535,7 @@ QgsXyzLayerItem::QgsXyzLayerItem( QgsDataItem *parent, QString name, QString pat
   setState( Populated );
 }
 
+#ifdef HAVE_GUI
 QList<QAction *> QgsXyzLayerItem::actions()
 {
   QList<QAction *> lst = QgsLayerItem::actions();
@@ -559,3 +570,4 @@ void QgsXyzLayerItem::deleteConnection()
 
   mParent->refresh();
 }
+#endif

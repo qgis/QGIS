@@ -28,8 +28,6 @@ __revision__ = '$Format:%H$'
 from qgis.core import (QgsDataSourceUri,
                        QgsFeatureSink,
                        QgsVectorLayerExporter,
-                       QgsApplication,
-                       QgsProcessingUtils,
                        QgsProcessingParameterFeatureSource,
                        QgsProcessingParameterVectorLayer,
                        QgsProcessingParameterField,
@@ -61,6 +59,8 @@ class ImportIntoSpatialite(QgisAlgorithm):
 
     def __init__(self):
         super().__init__()
+
+    def initAlgorithm(self, config=None):
         self.addParameter(QgsProcessingParameterFeatureSource(self.INPUT, self.tr('Layer to import')))
         self.addParameter(QgsProcessingParameterVectorLayer(self.DATABASE, self.tr('File database'), False, False))
         self.addParameter(QgsProcessingParameterString(self.TABLENAME, self.tr('Table to import to (leave blank to use layer name)'), optional=True))

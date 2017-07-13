@@ -459,13 +459,11 @@ QgsSnapIndex::SnapItem *QgsSnapIndex::getSnapItem( const QgsPoint &pos, double t
 // QgsGeometrySnapper
 //
 
-QgsGeometrySnapper::QgsGeometrySnapper( QgsVectorLayer *referenceLayer )
-  : mReferenceLayer( referenceLayer )
+QgsGeometrySnapper::QgsGeometrySnapper( QgsFeatureSource *referenceSource )
+  : mReferenceSource( referenceSource )
 {
   // Build spatial index
-  QgsFeatureRequest req;
-  req.setSubsetOfAttributes( QgsAttributeList() );
-  mIndex = QgsSpatialIndex( mReferenceLayer->getFeatures( req ) );
+  mIndex = QgsSpatialIndex( *mReferenceSource );
 }
 
 QgsFeatureList QgsGeometrySnapper::snapFeatures( const QgsFeatureList &features, double snapTolerance, SnapMode mode )
@@ -479,9 +477,8 @@ void QgsGeometrySnapper::processFeature( QgsFeature &feature, double snapToleran
 {
   if ( !feature.geometry().isNull() )
     feature.setGeometry( snapGeometry( feature.geometry(), snapTolerance, mode ) );
+  emit featureSnapped();
 }
-
-
 
 QgsGeometry QgsGeometrySnapper::snapGeometry( const QgsGeometry &geometry, double snapTolerance, SnapMode mode ) const
 {
@@ -496,7 +493,7 @@ QgsGeometry QgsGeometrySnapper::snapGeometry( const QgsGeometry &geometry, doubl
   QgsFeatureRequest refFeatureRequest = QgsFeatureRequest().setFilterFids( refFeatureIds ).setSubsetOfAttributes( QgsAttributeList() );
   mReferenceLayerMutex.lock();
   QgsFeature refFeature;
-  QgsFeatureIterator refFeatureIt = mReferenceLayer->getFeatures( refFeatureRequest );
+  QgsFeatureIterator refFeatureIt = mReferenceSource->getFeatures( refFeatureRequest );
 
   while ( refFeatureIt.nextFeature( refFeature ) )
   {

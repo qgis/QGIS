@@ -188,6 +188,11 @@ bool QgsExpressionContextScope::isStatic( const QString &name ) const
   return hasVariable( name ) ? mVariables.value( name ).isStatic : false;
 }
 
+QString QgsExpressionContextScope::description( const QString &name ) const
+{
+  return hasVariable( name ) ? mVariables.value( name ).description : QString();
+}
+
 bool QgsExpressionContextScope::hasFunction( const QString &name ) const
 {
   return mFunctions.contains( name );
@@ -402,6 +407,12 @@ bool QgsExpressionContext::isReadOnly( const QString &name ) const
       return true;
   }
   return false;
+}
+
+QString QgsExpressionContext::description( const QString &name ) const
+{
+  const QgsExpressionContextScope *scope = activeScopeForVariable( name );
+  return ( scope && !scope->description( name ).isEmpty() ) ? scope->description( name ) : QgsExpression::variableHelpText( name );
 }
 
 bool QgsExpressionContext::hasFunction( const QString &name ) const
@@ -897,6 +908,30 @@ QgsExpressionContextScope *QgsExpressionContextUtils::mapSettingsScope( const Qg
   scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "map_units" ), QgsUnitTypes::toString( mapSettings.mapUnits() ), true ) );
 
   scope->addFunction( QStringLiteral( "is_layer_visible" ), new GetLayerVisibility( mapSettings.layers() ) );
+
+  return scope;
+}
+
+QgsExpressionContextScope *QgsExpressionContextUtils::mapToolCaptureScope( const QList<QgsPointLocator::Match> &matches )
+{
+  QgsExpressionContextScope *scope = new QgsExpressionContextScope( QObject::tr( "Map Tool Capture" ) );
+
+  QVariantList matchList;
+
+  for ( const QgsPointLocator::Match &match : matches )
+  {
+    QVariantMap matchMap;
+
+    matchMap.insert( QStringLiteral( "valid" ), match.isValid() );
+    matchMap.insert( QStringLiteral( "layer" ), QVariant::fromValue<QgsWeakMapLayerPointer>( QgsWeakMapLayerPointer( match.layer() ) ) );
+    matchMap.insert( QStringLiteral( "feature_id" ), match.featureId() );
+    matchMap.insert( QStringLiteral( "vertex_index" ), match.vertexIndex() );
+    matchMap.insert( QStringLiteral( "distance" ), match.distance() );
+
+    matchList.append( matchMap );
+  }
+
+  scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "snapping_results" ), matchList ) );
 
   return scope;
 }

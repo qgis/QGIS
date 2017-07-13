@@ -168,25 +168,8 @@ QString QgsRelation::getRelatedFeaturesFilter( const QgsFeature &feature ) const
 
   Q_FOREACH ( const QgsRelation::FieldPair &fieldPair, mFieldPairs )
   {
-    int referencingIdx = referencingLayer()->fields().indexFromName( fieldPair.referencingField() );
-    QgsField referencingField = referencingLayer()->fields().at( referencingIdx );
-
     QVariant val( feature.attribute( fieldPair.referencedField() ) );
-
-    if ( val.isNull() )
-    {
-      conditions << QStringLiteral( "\"%1\" IS NULL" ).arg( fieldPair.referencingField() );
-    }
-    else if ( referencingField.type() == QVariant::String )
-    {
-      // Use quotes
-      conditions << QStringLiteral( "\"%1\" = '%2'" ).arg( fieldPair.referencingField(), val.toString() );
-    }
-    else
-    {
-      // No quotes
-      conditions << QStringLiteral( "\"%1\" = %2" ).arg( fieldPair.referencingField(), val.toString() );
-    }
+    conditions << QgsExpression::createFieldEqualityExpression( fieldPair.referencingField(), val );
   }
 
   return conditions.join( QStringLiteral( " AND " ) );
@@ -198,21 +181,8 @@ QgsFeatureRequest QgsRelation::getReferencedFeatureRequest( const QgsAttributes 
 
   Q_FOREACH ( const QgsRelation::FieldPair &fieldPair, mFieldPairs )
   {
-    int referencedIdx = referencedLayer()->fields().indexFromName( fieldPair.referencedField() );
     int referencingIdx = referencingLayer()->fields().indexFromName( fieldPair.referencingField() );
-
-    QgsField referencedField = referencedLayer()->fields().at( referencedIdx );
-
-    if ( referencedField.type() == QVariant::String )
-    {
-      // Use quotes
-      conditions << QStringLiteral( "\"%1\" = '%2'" ).arg( fieldPair.referencedField(), attributes.at( referencingIdx ).toString() );
-    }
-    else
-    {
-      // No quotes
-      conditions << QStringLiteral( "\"%1\" = %2" ).arg( fieldPair.referencedField(), attributes.at( referencingIdx ).toString() );
-    }
+    conditions << QgsExpression::createFieldEqualityExpression( fieldPair.referencedField(), attributes.at( referencingIdx ) );
   }
 
   QgsFeatureRequest myRequest;

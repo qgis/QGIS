@@ -868,14 +868,7 @@ void QgsRelationReferenceWidget::filterChanged()
       }
       else
       {
-        if ( mReferencedLayer->fields().field( fieldName ).type() == QVariant::String )
-        {
-          filters << QStringLiteral( "\"%1\" = '%2'" ).arg( fieldName, cb->currentText() );
-        }
-        else
-        {
-          filters << QStringLiteral( "\"%1\" = %2" ).arg( fieldName, cb->currentText() );
-        }
+        filters << QgsExpression::createFieldEqualityExpression( fieldName, cb->currentText() );
       }
       attrs << mReferencedLayer->fields().lookupField( fieldName );
     }

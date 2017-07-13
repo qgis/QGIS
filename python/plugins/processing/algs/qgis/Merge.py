@@ -33,18 +33,13 @@ from qgis.core import (QgsFields,
                        QgsField,
                        QgsFeatureRequest,
                        QgsFeatureSink,
-                       QgsProcessingUtils,
+                       QgsProcessing,
                        QgsProcessingParameterMultipleLayers,
-                       QgsProcessingParameterDefinition,
                        QgsProcessingParameterFeatureSink,
-                       QgsProcessingOutputVectorLayer,
                        QgsMapLayer)
 
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
-from processing.core.parameters import ParameterMultipleInput
-from processing.core.outputs import OutputVector
-from processing.tools import dataobjects
 
 pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
@@ -61,12 +56,13 @@ class Merge(QgisAlgorithm):
 
     def __init__(self):
         super().__init__()
+
+    def initAlgorithm(self, config=None):
         self.addParameter(QgsProcessingParameterMultipleLayers(self.LAYERS,
                                                                self.tr('Layers to merge'),
-                                                               QgsProcessingParameterDefinition.TypeVectorAny))
+                                                               QgsProcessing.TypeVectorAny))
 
         self.addParameter(QgsProcessingParameterFeatureSink(self.OUTPUT, self.tr('Merged')))
-        self.addOutput(QgsProcessingOutputVectorLayer(self.OUTPUT, self.tr('Merged')))
 
     def name(self):
         return 'mergevectorlayers'

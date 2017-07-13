@@ -18,8 +18,11 @@
 #include "qgis.h"
 #include "qgsafsdataitems.h"
 #include "qgsafsprovider.h"
-#include "qgsafssourceselect.h"
 #include "qgsowsconnection.h"
+
+#ifdef HAVE_GUI
+#include "qgsafssourceselect.h"
+#endif
 
 const QString AFS_KEY = QStringLiteral( "arcgisfeatureserver" );
 const QString AFS_DESCRIPTION = QStringLiteral( "ArcGIS Feature Server data provider" );
@@ -45,10 +48,12 @@ QGISEXTERN bool isProvider()
   return true;
 }
 
+#ifdef HAVE_GUI
 QGISEXTERN QgsAfsSourceSelect *selectWidget( QWidget *parent, Qt::WindowFlags fl, QgsProviderRegistry::WidgetMode widgetMode )
 {
   return new QgsAfsSourceSelect( parent, fl, widgetMode );
 }
+#endif
 
 QGISEXTERN int dataCapabilities()
 {

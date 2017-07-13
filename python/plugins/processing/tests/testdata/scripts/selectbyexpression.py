@@ -4,11 +4,7 @@
 #inputs
 
 ##INPUT_LAYER=vector
-##OUTPUT_LAYER=vectorOut
-
-#outputs
-
-##OUTPUT_LAYER=output outputVector
+##OUTPUT_LAYER=vectorDestination
 
 
 import processing

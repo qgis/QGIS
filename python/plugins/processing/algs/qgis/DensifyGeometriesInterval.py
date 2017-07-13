@@ -27,16 +27,11 @@ __copyright__ = '(C) 2012, Anita Graser'
 
 __revision__ = '$Format:%H$'
 
-from math import sqrt
-
-from qgis.core import (QgsWkbTypes,
-                       QgsApplication,
-                       QgsFeatureSink,
+from qgis.core import (QgsFeatureSink,
+                       QgsProcessing,
                        QgsProcessingParameterFeatureSource,
                        QgsProcessingParameterNumber,
-                       QgsProcessingParameterFeatureSink,
-                       QgsProcessingOutputVectorLayer,
-                       QgsProcessingParameterDefinition)
+                       QgsProcessingParameterFeatureSink)
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 
 
@@ -52,14 +47,14 @@ class DensifyGeometriesInterval(QgisAlgorithm):
     def __init__(self):
         super().__init__()
 
+    def initAlgorithm(self, config=None):
         self.addParameter(QgsProcessingParameterFeatureSource(self.INPUT,
-                                                              self.tr('Input layer'), [QgsProcessingParameterDefinition.TypeVectorPolygon, QgsProcessingParameterDefinition.TypeVectorLine]))
+                                                              self.tr('Input layer'), [QgsProcessing.TypeVectorPolygon, QgsProcessing.TypeVectorLine]))
         self.addParameter(QgsProcessingParameterNumber(self.INTERVAL,
                                                        self.tr('Interval between vertices to add'), QgsProcessingParameterNumber.Double,
                                                        1, False, 0, 10000000))
 
         self.addParameter(QgsProcessingParameterFeatureSink(self.OUTPUT, self.tr('Densified')))
-        self.addOutput(QgsProcessingOutputVectorLayer(self.OUTPUT, self.tr('Densified')))
 
     def name(self):
         return 'densifygeometriesgivenaninterval'

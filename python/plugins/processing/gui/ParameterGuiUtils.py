@@ -26,10 +26,10 @@ __copyright__ = '(C) 2017, Nyall Dawson'
 
 __revision__ = '$Format:%H$'
 
-from qgis.core import (
-    QgsProcessingParameterDefinition,
-    QgsProcessingFeatureSourceDefinition,
-    QgsVectorFileWriter)
+from qgis.core import (QgsProcessing,
+                       QgsProcessingParameterDefinition,
+                       QgsProcessingFeatureSourceDefinition,
+                       QgsVectorFileWriter)
 from qgis.PyQt.QtCore import QCoreApplication
 from processing.tools import dataobjects
 
@@ -47,19 +47,19 @@ def getFileFilter(param):
     :return:
     """
     if param.type() == 'multilayer':
-        if param.layerType() == QgsProcessingParameterDefinition.TypeRaster:
+        if param.layerType() == QgsProcessing.TypeRaster:
             exts = dataobjects.getSupportedOutputRasterLayerExtensions()
-        elif param.layerType() == QgsProcessingParameterDefinition.TypeFile:
+        elif param.layerType() == QgsProcessing.TypeFile:
             return tr('All files (*.*)', 'QgsProcessingParameterMultipleLayers')
         else:
             exts = QgsVectorFileWriter.supportedFormatExtensions()
         for i in range(len(exts)):
             exts[i] = tr('{0} files (*.{1})', 'QgsProcessingParameterMultipleLayers').format(exts[i].upper(), exts[i].lower())
         return ';;'.join(exts)
-    elif param.type() in ('raster', 'rasterOut'):
+    elif param.type() in ('raster', 'rasterDestination'):
         exts = dataobjects.getSupportedOutputRasterLayerExtensions()
         for i in range(len(exts)):
-            exts[i] = tr('{0} files (*.{1})', 'QgsProcessingParameterRasterOutput').format(exts[i].upper(), exts[i].lower())
+            exts[i] = tr('{0} files (*.{1})', 'QgsProcessingParameterRasterDestination').format(exts[i].upper(), exts[i].lower())
         return ';;'.join(exts)
     elif param.type() == 'table':
         exts = ['csv', 'dbf']
@@ -71,4 +71,6 @@ def getFileFilter(param):
         for i in range(len(exts)):
             exts[i] = tr('{0} files (*.{1})', 'ParameterVector').format(exts[i].upper(), exts[i].lower())
         return ';;'.join(exts)
+    elif param.type() == 'fileOut':
+        return param.fileFilter()
     return ''

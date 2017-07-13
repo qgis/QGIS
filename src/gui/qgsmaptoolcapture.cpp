@@ -222,6 +222,7 @@ bool QgsMapToolCapture::tracingAddVertex( const QgsPointXY &point )
 
       mRubberBand->addPoint( point );
       mCaptureCurve.addVertex( layerPoint );
+      mSnappingMatches.append( QgsPointLocator::Match() );
     }
     return res;
   }
@@ -251,6 +252,7 @@ bool QgsMapToolCapture::tracingAddVertex( const QgsPointXY &point )
       continue; // avoid duplicate vertices if there are any
     mRubberBand->addPoint( points[i], i == points.count() - 1 );
     mCaptureCurve.addVertex( layerPoints[i - 1] );
+    mSnappingMatches.append( QgsPointLocator::Match() );
   }
 
   tracer->reportError( QgsTracer::ErrNone, true ); // clear messagebar if there was any error
@@ -433,6 +435,7 @@ int QgsMapToolCapture::addVertex( const QgsPointXY &point, const QgsPointLocator
     // ordinary digitizing
     mRubberBand->addPoint( point );
     mCaptureCurve.addVertex( layerPoint );
+    mSnappingMatches.append( match );
   }
 
   if ( mCaptureMode == CaptureLine )
@@ -493,8 +496,15 @@ int QgsMapToolCapture::addCurve( QgsCurve *c )
     c->transform( ct, QgsCoordinateTransform::ReverseTransform );
   }
   mCaptureCurve.addCurve( c );
+  for ( int i = 0; i < c->length(); ++i )
+    mSnappingMatches.append( QgsPointLocator::Match() );
 
   return 0;
+}
+
+QList<QgsPointLocator::Match> QgsMapToolCapture::snappingMatches() const
+{
+  return mSnappingMatches;
 }
 
 
@@ -531,6 +541,7 @@ void QgsMapToolCapture::undo()
     vertexToRemove.ring = 0;
     vertexToRemove.vertex = size() - 1;
     mCaptureCurve.deleteVertex( vertexToRemove );
+    mSnappingMatches.removeAt( vertexToRemove.vertex );
 
     validateGeometry();
   }
@@ -599,6 +610,7 @@ void QgsMapToolCapture::stopCapturing()
 
   mCapturing = false;
   mCaptureCurve.clear();
+  mSnappingMatches.clear();
   if ( currentVectorLayer() )
     currentVectorLayer()->triggerRepaint();
 }
@@ -717,6 +729,9 @@ void QgsMapToolCapture::setPoints( const QList<QgsPointXY> &pointList )
   QgsLineString *line = new QgsLineString( pointList );
   mCaptureCurve.clear();
   mCaptureCurve.addCurve( line );
+  mSnappingMatches.clear();
+  for ( int i = 0; i < line->length(); ++i )
+    mSnappingMatches.append( QgsPointLocator::Match() );
 }
 
 #ifdef Q_OS_WIN

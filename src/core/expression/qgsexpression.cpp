@@ -673,6 +673,19 @@ void QgsExpression::initVariableHelp()
   sVariableHelpTexts.insert( QStringLiteral( "grid_number" ), QCoreApplication::translate( "variable_help", "Current grid annotation value." ) );
   sVariableHelpTexts.insert( QStringLiteral( "grid_axis" ), QCoreApplication::translate( "variable_help", "Current grid annotation axis (e.g., 'x' for longitude, 'y' for latitude)." ) );
 
+  // map tool capture variables
+  sVariableHelpTexts.insert( QStringLiteral( "snapping_results" ), QCoreApplication::translate( "variable_help",
+                             "<p>An array with an item for each snapped point.</p>"
+                             "<p>Each item is a map with the following keys:</p>"
+                             "<dl>"
+                             "<dt>valid</dt><dd>Boolean that indicates if the snapping result is valid</dd>"
+                             "<dt>layer</dt><dd>The layer on which the snapped feature is</dd>"
+                             "<dt>feature_id</dt><dd>The feature id of the snapped feature</dd>"
+                             "<dt>vertex_index</dt><dd>The index of the snapped vertex</dd>"
+                             "<dt>distance</dt><dd>The distance between the mouse cursor and the snapped point at the time of snapping</dd>"
+                             "</dl>" ) );
+
+
   //symbol variables
   sVariableHelpTexts.insert( QStringLiteral( "geometry_part_count" ), QCoreApplication::translate( "variable_help", "Number of parts in rendered feature's geometry." ) );
   sVariableHelpTexts.insert( QStringLiteral( "geometry_part_num" ), QCoreApplication::translate( "variable_help", "Current geometry part number for feature being rendered." ) );
@@ -690,10 +703,15 @@ void QgsExpression::initVariableHelp()
   sVariableHelpTexts.insert( QStringLiteral( "algorithm_id" ), QCoreApplication::translate( "algorithm_id", "Unique ID for algorithm." ) );
 }
 
-QString QgsExpression::variableHelpText( const QString &variableName, bool showValue, const QVariant &value )
+QString QgsExpression::variableHelpText( const QString &variableName )
 {
   QgsExpression::initVariableHelp();
-  QString text = sVariableHelpTexts.contains( variableName ) ? QStringLiteral( "<p>%1</p>" ).arg( sVariableHelpTexts.value( variableName ) ) : QString();
+  return sVariableHelpTexts.value( variableName, QString() );
+}
+
+QString QgsExpression::formatVariableHelp( const QString &description, bool showValue, const QVariant &value )
+{
+  QString text = !description.isEmpty() ? QStringLiteral( "<p>%1</p>" ).arg( description ) : QString();
   if ( showValue )
   {
     QString valueString;
@@ -834,6 +852,18 @@ QString QgsExpression::formatPreviewString( const QVariant &value )
   {
     return value.toString();
   }
+}
+
+QString QgsExpression::createFieldEqualityExpression( const QString &fieldName, const QVariant &value )
+{
+  QString expr;
+
+  if ( value.isNull() )
+    expr = QStringLiteral( "%1 IS NULL" ).arg( quotedColumnRef( fieldName ) );
+  else
+    expr = QStringLiteral( "%1 = %2" ).arg( quotedColumnRef( fieldName ), quotedValue( value ) );
+
+  return expr;
 }
 
 const QgsExpressionNode *QgsExpression::rootNode() const

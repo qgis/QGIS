@@ -209,7 +209,7 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
      * \param field The field to change
      * \param value The new value
      */
-    void changeAttribute( const QString &field, const QVariant &value );
+    void changeAttribute( const QString &field, const QVariant &value, const QString &hintText = QString() );
 
     /**
      * Update all editors to correspond to a different feature.
@@ -272,6 +272,8 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
     void cleanPython();
 
     void initPython();
+
+    void updateJoinedFields( const QgsEditorWidgetWrapper &eww );
 
     struct WidgetInfo
     {

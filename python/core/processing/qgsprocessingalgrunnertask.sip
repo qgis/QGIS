@@ -24,13 +24,23 @@ class QgsProcessingAlgRunnerTask : QgsTask
 
     QgsProcessingAlgRunnerTask( const QgsProcessingAlgorithm *algorithm,
                                 const QVariantMap &parameters,
-                                QgsProcessingContext &context );
+                                QgsProcessingContext &context,
+                                QgsProcessingFeedback *feedback = 0 );
 %Docstring
  Constructor for QgsProcessingAlgRunnerTask. Takes an ``algorithm``, algorithm ``parameters``
  and processing ``context``.
 %End
 
     virtual void cancel();
+
+  signals:
+
+    void executed( bool successful, const QVariantMap &results );
+%Docstring
+ Emitted when the algorithm has finished execution. If the algorithm completed
+ execution without errors then ``successful`` will be true. The ``results`` argument
+ contains the results reported by the algorithm.
+%End
 
   protected:
 

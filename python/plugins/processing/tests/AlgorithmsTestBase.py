@@ -77,8 +77,6 @@ def processingTestDataPath():
 
 class AlgorithmsTest(object):
 
-    in_place_layers = {}
-
     def test_algorithms(self):
         """
         This is the main test function. All others will be executed based on the definitions in testdata/algorithm_tests.yaml
@@ -96,6 +94,7 @@ class AlgorithmsTest(object):
         :param name: The identifier name used in the test output heading
         :param defs: A python dict containing a test algorithm definition
         """
+        self.vector_layer_params = {}
         QgsProject.instance().removeAllMapLayers()
 
         params = self.load_params(defs['params'])
@@ -103,8 +102,9 @@ class AlgorithmsTest(object):
         if defs['algorithm'].startswith('script:'):
             filePath = os.path.join(processingTestDataPath(), 'scripts', '{}.py'.format(defs['algorithm'][len('script:'):]))
             alg = ScriptAlgorithm(filePath)
+            alg.initAlgorithm()
         else:
-            alg = QgsApplication.processingRegistry().algorithmById(defs['algorithm'])
+            alg = QgsApplication.processingRegistry().createAlgorithmById(defs['algorithm'])
 
         parameters = {}
         if isinstance(params, list):
@@ -138,7 +138,7 @@ class AlgorithmsTest(object):
                 pass
         else:
             results, ok = alg.run(parameters, context, feedback)
-            self.assertTrue(ok, parameters)
+            self.assertTrue(ok, 'params: {}, results: {}'.format(parameters, results))
             self.check_results(results, context, defs['params'], defs['results'])
 
     def load_params(self, params):
@@ -216,9 +216,13 @@ class AlgorithmsTest(object):
             self.in_place_layers[id] = filepath
 
         if param['type'] in ('vector', 'table'):
-            lyr = QgsVectorLayer(filepath, param['name'], 'ogr')
+            if filepath in self.vector_layer_params:
+                return self.vector_layer_params[filepath]
+
+            lyr = QgsVectorLayer(filepath, param['name'], 'ogr', False)
+            self.vector_layer_params[filepath] = lyr
         elif param['type'] == 'raster':
-            lyr = QgsRasterLayer(filepath, param['name'], 'gdal')
+            lyr = QgsRasterLayer(filepath, param['name'], 'gdal', False)
 
         self.assertTrue(lyr.isValid(), 'Could not load layer "{}" from param {}'.format(filepath, param))
         QgsProject.instance().addMapLayer(lyr)
@@ -252,6 +256,7 @@ class AlgorithmsTest(object):
                 expected_lyr = self.load_layer(id, expected_result)
                 if 'in_place_result' in expected_result:
                     result_lyr = QgsProcessingUtils.mapLayerFromString(self.in_place_layers[id], context)
+                    self.assertTrue(result_lyr, self.in_place_layers[id])
                 else:
                     try:
                         results[id]
@@ -259,10 +264,10 @@ class AlgorithmsTest(object):
                         raise KeyError('Expected result {} does not exist in {}'.format(str(e), list(results.keys())))
 
                     if isinstance(results[id], QgsMapLayer):
-                        assert False
                         result_lyr = results[id]
                     else:
                         result_lyr = QgsProcessingUtils.mapLayerFromString(results[id], context)
+                    self.assertTrue(result_lyr, results[id])
 
                 compare = expected_result.get('compare', {})
 

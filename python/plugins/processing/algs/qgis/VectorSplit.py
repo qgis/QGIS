@@ -28,21 +28,16 @@ __revision__ = '$Format:%H$'
 
 import os
 
-from qgis.PyQt.QtGui import QIcon
 from qgis.core import (QgsProcessingUtils,
                        QgsFeatureSink,
                        QgsProcessingParameterFeatureSource,
                        QgsProcessingParameterField,
-                       QgsProcessingParameterFolderOutput,
+                       QgsProcessingParameterFolderDestination,
                        QgsProcessingOutputFolder,
                        QgsExpression,
                        QgsFeatureRequest)
 
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
-from processing.core.parameters import ParameterVector
-from processing.core.parameters import ParameterTableField
-from processing.core.outputs import OutputDirectory
-from processing.tools import vector
 from processing.tools.system import mkdir
 
 pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
@@ -60,14 +55,15 @@ class VectorSplit(QgisAlgorithm):
     def __init__(self):
         super().__init__()
 
+    def initAlgorithm(self, config=None):
         self.addParameter(QgsProcessingParameterFeatureSource(self.INPUT,
                                                               self.tr('Input layer')))
 
         self.addParameter(QgsProcessingParameterField(self.FIELD,
                                                       self.tr('Unique ID field'), None, self.INPUT))
 
-        self.addParameter(QgsProcessingParameterFolderOutput(self.OUTPUT,
-                                                             self.tr('Output directory')))
+        self.addParameter(QgsProcessingParameterFolderDestination(self.OUTPUT,
+                                                                  self.tr('Output directory')))
 
         self.addOutput(QgsProcessingOutputFolder(self.OUTPUT, self.tr('Output directory')))
 

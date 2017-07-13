@@ -62,6 +62,28 @@ void QgsDoubleSpinBox::changeEvent( QEvent *event )
   mLineEdit->setShowClearButton( shouldShowClearForValue( value() ) );
 }
 
+void QgsDoubleSpinBox::wheelEvent( QWheelEvent *event )
+{
+  double step = singleStep();
+  if ( event->modifiers() & Qt::ControlModifier )
+  {
+    // ctrl modifier results in finer increments - 10% of usual step
+    double newStep = step / 10;
+    // but don't ever use an increment smaller than would be visible in the widget
+    // i.e. if showing 2 decimals, smallest increment will be 0.01
+    newStep = qMax( newStep, pow( 10.0, 0.0 - decimals() ) );
+
+    setSingleStep( newStep );
+
+    // clear control modifier before handing off event - Qt uses it for unwanted purposes
+    // (*increasing* step size, whereas QGIS UX convention is that control modifier
+    // results in finer changes!)
+    event->setModifiers( event->modifiers() & ~Qt::ControlModifier );
+  }
+  QDoubleSpinBox::wheelEvent( event );
+  setSingleStep( step );
+}
+
 void QgsDoubleSpinBox::paintEvent( QPaintEvent *event )
 {
   mLineEdit->setShowClearButton( shouldShowClearForValue( value() ) );

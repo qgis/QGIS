@@ -333,26 +333,26 @@ class QgsExpressionUtils
       return nullptr;
     }
 
-    static QgsVectorLayer *getVectorLayer( const QVariant &value, QgsExpression * )
+    static QgsMapLayer *getMapLayer( const QVariant &value, QgsExpression * )
     {
+      // First check if we already received a layer pointer
       QgsMapLayer *ml = value.value< QgsWeakMapLayerPointer >().data();
-      QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( ml );
-      if ( !vl )
-      {
-        QString layerString = value.toString();
-        vl = qobject_cast<QgsVectorLayer *>( QgsProject::instance()->mapLayer( layerString ) ); //search by id first
+      QgsProject *project = QgsProject::instance();
 
-        if ( !vl )
-        {
-          QList<QgsMapLayer *> layersByName = QgsProject::instance()->mapLayersByName( layerString );
-          if ( !layersByName.isEmpty() )
-          {
-            vl = qobject_cast<QgsVectorLayer *>( layersByName.at( 0 ) );
-          }
-        }
-      }
+      // No pointer yet, maybe it's a layer id?
+      if ( !ml )
+        ml = project->mapLayer( value.toString() );
 
-      return vl;
+      // Still nothing? Check for layer name
+      if ( !ml )
+        ml = project->mapLayersByName( value.toString() ).value( 0 );
+
+      return ml;
+    }
+
+    static QgsVectorLayer *getVectorLayer( const QVariant &value, QgsExpression *e )
+    {
+      return qobject_cast<QgsVectorLayer *>( getMapLayer( value, e ) );
     }
 
 

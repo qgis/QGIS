@@ -88,7 +88,6 @@ class QgsComposerMapGridWidget: public QgsComposerItemBaseWidget, private Ui::Qg
     void on_mAnnotationFormatComboBox_currentIndexChanged( int index );
     void on_mCoordinatePrecisionSpinBox_valueChanged( int value );
     void on_mDistanceToMapFrameSpinBox_valueChanged( double d );
-    void on_mAnnotationFontButton_clicked();
     void on_mAnnotationFontColorButton_colorChanged( const QColor &color );
 
   protected:
@@ -109,6 +108,7 @@ class QgsComposerMapGridWidget: public QgsComposerItemBaseWidget, private Ui::Qg
     void cleanUpGridLineStyleSelector( QgsPanelWidget *container );
     void updateGridMarkerStyleFromWidget();
     void cleanUpGridMarkerStyleSelector( QgsPanelWidget *container );
+    void annotationFontChanged();
 
   private:
     QgsComposerMap *mComposerMap = nullptr;

@@ -424,6 +424,7 @@ class CORE_EXPORT QgsExpression
     /** Returns the help text for a specified function.
      * \param name function name
      * \see variableHelpText()
+     * \see formatVariableHelp()
      */
     static QString helpText( QString name );
 
@@ -434,7 +435,18 @@ class CORE_EXPORT QgsExpression
      * \see helpText()
      * \since QGIS 2.12
      */
-    static QString variableHelpText( const QString &variableName, bool showValue = true, const QVariant &value = QVariant() );
+    static QString variableHelpText( const QString &variableName );
+
+    /**
+     * Returns formatted help text for a variable.
+     * \param description translated description of variable
+     * \param showValue set to true to include current value of variable in help text
+     * \param value current value of variable to show in help text
+     * \see helpText()
+     * \see variableHelpText()
+     * \since QGIS 3.0
+     */
+    static QString formatVariableHelp( const QString &description, bool showValue = true, const QVariant &value = QVariant() );
 
     /** Returns the translated name for a function group.
      * \param group untranslated group name
@@ -448,6 +460,15 @@ class CORE_EXPORT QgsExpression
      * \since QGIS 2.14
      */
     static QString formatPreviewString( const QVariant &value );
+
+    /** Create an expression allowing to evaluate if a field is equal to a
+     *  value. The value may be null.
+     * \param fieldName the name of the field
+     * \param value the value of the field
+     * \returns the expression to evaluate field equality
+     * \since QGIS 3.0
+     */
+    static QString createFieldEqualityExpression( const QString &fieldName, const QVariant &value );
 
   private:
     void initGeomCalculator();

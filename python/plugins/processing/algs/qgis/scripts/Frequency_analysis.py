@@ -6,8 +6,6 @@
 ##Fields=field multiple Input
 ##Frequency=sink table
 
-#outputs
-##Frequency=output outputVector
 
 from processing.tools.vector import TableWriter
 from collections import defaultdict

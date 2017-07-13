@@ -147,7 +147,7 @@ class QgsAttributeEditorContainer : QgsAttributeEditorElement
 
     virtual ~QgsAttributeEditorContainer();
 
-    virtual void addChildElement( QgsAttributeEditorElement *element );
+    virtual void addChildElement( QgsAttributeEditorElement *element /Transfer/ );
 %Docstring
  Add a child element to this container. This may be another container, a field or a relation.
 

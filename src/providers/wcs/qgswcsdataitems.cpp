@@ -17,9 +17,12 @@
 #include "qgswcsprovider.h"
 #include "qgslogger.h"
 #include "qgsdatasourceuri.h"
-#include "qgswcssourceselect.h"
 #include "qgsowsconnection.h"
+
+#ifdef HAVE_GUI
+#include "qgswcssourceselect.h"
 #include "qgsnewhttpconnection.h"
+#endif
 
 #include <QFileInfo>
 #include <QSettings>
@@ -82,6 +85,7 @@ bool QgsWCSConnectionItem::equal( const QgsDataItem *other )
   return ( mPath == o->mPath && mName == o->mName );
 }
 
+#ifdef HAVE_GUI
 QList<QAction *> QgsWCSConnectionItem::actions()
 {
   QList<QAction *> lst;
@@ -114,6 +118,7 @@ void QgsWCSConnectionItem::deleteConnection()
   // the parent should be updated
   mParent->refresh();
 }
+#endif
 
 
 // ---------------------------------------------------------------------------
@@ -240,6 +245,7 @@ QVector<QgsDataItem *>QgsWCSRootItem::createChildren()
   return connections;
 }
 
+#ifdef HAVE_GUI
 QList<QAction *> QgsWCSRootItem::actions()
 {
   QList<QAction *> lst;
@@ -273,6 +279,7 @@ void QgsWCSRootItem::newConnection()
     refresh();
   }
 }
+#endif
 
 // ---------------------------------------------------------------------------
 
@@ -304,8 +311,9 @@ QGISEXTERN QgsDataItem *dataItem( QString path, QgsDataItem *parentItem )
   return nullptr;
 }
 
+#ifdef HAVE_GUI
 QGISEXTERN QgsWCSSourceSelect *selectWidget( QWidget *parent, Qt::WindowFlags fl, QgsProviderRegistry::WidgetMode widgetMode )
 {
   return new QgsWCSSourceSelect( parent, fl, widgetMode );
 }
-
+#endif

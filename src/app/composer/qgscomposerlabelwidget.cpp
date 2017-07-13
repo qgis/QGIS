@@ -31,6 +31,8 @@ QgsComposerLabelWidget::QgsComposerLabelWidget( QgsComposerLabel *label ): QgsCo
   setupUi( this );
   setPanelTitle( tr( "Label properties" ) );
 
+  mFontButton->setMode( QgsFontButton::ModeQFont );
+
   //add widget for general composer item properties
   QgsComposerItemWidget *itemPropertiesWidget = new QgsComposerItemWidget( this, label );
   mainLayout->addWidget( itemPropertiesWidget );
@@ -46,6 +48,8 @@ QgsComposerLabelWidget::QgsComposerLabelWidget( QgsComposerLabel *label ): QgsCo
     setGuiElementValues();
     connect( mComposerLabel, &QgsComposerObject::itemChanged, this, &QgsComposerLabelWidget::setGuiElementValues );
   }
+
+  connect( mFontButton, &QgsFontButton::changed, this, &QgsComposerLabelWidget::fontChanged );
 }
 
 void QgsComposerLabelWidget::on_mHtmlCheckBox_stateChanged( int state )
@@ -80,19 +84,15 @@ void QgsComposerLabelWidget::on_mTextEdit_textChanged()
   }
 }
 
-void QgsComposerLabelWidget::on_mFontButton_clicked()
+void QgsComposerLabelWidget::fontChanged()
 {
   if ( mComposerLabel )
   {
-    bool ok;
-    QFont newFont = QgsGuiUtils::getFont( ok, mComposerLabel->font() );
-    if ( ok )
-    {
-      mComposerLabel->beginCommand( tr( "Label font changed" ) );
-      mComposerLabel->setFont( newFont );
-      mComposerLabel->update();
-      mComposerLabel->endCommand();
-    }
+    QFont newFont = mFontButton->currentFont();
+    mComposerLabel->beginCommand( tr( "Label font changed" ) );
+    mComposerLabel->setFont( newFont );
+    mComposerLabel->update();
+    mComposerLabel->endCommand();
   }
 }
 
@@ -243,8 +243,7 @@ void QgsComposerLabelWidget::setGuiElementValues()
   mCenterRadioButton->setChecked( mComposerLabel->hAlign() == Qt::AlignHCenter );
   mRightRadioButton->setChecked( mComposerLabel->hAlign() == Qt::AlignRight );
   mFontColorButton->setColor( mComposerLabel->fontColor() );
-
-
+  mFontButton->setCurrentFont( mComposerLabel->font() );
   mVerticalAlignementLabel->setDisabled( mComposerLabel->htmlState() );
   mTopRadioButton->setDisabled( mComposerLabel->htmlState() );
   mMiddleRadioButton->setDisabled( mComposerLabel->htmlState() );
@@ -266,4 +265,5 @@ void QgsComposerLabelWidget::blockAllSignals( bool block )
   mCenterRadioButton->blockSignals( block );
   mRightRadioButton->blockSignals( block );
   mFontColorButton->blockSignals( block );
+  mFontButton->blockSignals( block );
 }

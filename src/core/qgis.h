@@ -385,6 +385,8 @@ typedef unsigned long long qgssize;
 
 #if defined(__clang__)
 #define FALLTHROUGH //[[clang::fallthrough]]
+#elif defined(__GNUC__)
+#define FALLTHROUGH [[gnu::fallthrough]];
 #else
 #define FALLTHROUGH
 #endif

@@ -343,27 +343,6 @@ class ParameterNumber(Parameter):
                 variables['@%s_max' % name] = stats.maximumValue
         return variables
 
-    def evaluateForModeler(self, value, model):
-        if isinstance(value, numbers.Number):
-            return value
-        variables = {}
-        for param in model.parameters:
-            if isinstance(param, ParameterNumber):
-                variables["@" + param.name()] = param.value
-            if isinstance(param, (ParameterRaster, ParameterVector)):
-                variables.update(self._layerVariables(param))
-
-        for alg in list(model.algs.values()):
-            for out in alg.algorithm.outputs:
-                if isinstance(out, OutputNumber):
-                    variables["@%s_%s" % (alg.name(), out.name)] = out.value
-                if isinstance(out, (OutputRaster, OutputVector)):
-                    variables.update(self._layerVariables(out, alg))
-        for k, v in list(variables.items()):
-            value = value.replace(k, str(v))
-
-        return value
-
 
 class ParameterRange(Parameter):
 

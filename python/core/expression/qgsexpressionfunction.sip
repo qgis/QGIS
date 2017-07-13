@@ -249,6 +249,11 @@ The help text for the function.
  :rtype: QVariant
 %End
 
+    virtual QVariant run( QgsExpressionNode::NodeList *args, const QgsExpressionContext *context, QgsExpression *parent );
+%Docstring
+ :rtype: QVariant
+%End
+
     bool operator==( const QgsExpressionFunction &other ) const;
 
     virtual bool handlesNull() const;

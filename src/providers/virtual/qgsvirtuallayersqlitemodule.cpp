@@ -724,7 +724,7 @@ void qgisFunctionWrapper( sqlite3_context *ctxt, int nArgs, sqlite3_value **args
   // convert from sqlite3 value to QVariant and then call the qgis expression function
   // the 3 basic sqlite3 types (int, float, text) are converted to their QVariant equivalent
   // Expression::Interval is handled specifically
-  // geometries are converted between spatialite and QgsGeometry
+  // geometries are converted between SpatiaLite and QgsGeometry
   // other data types (datetime mainly) are represented as BLOBs thanks to QVariant serializing functions
 
   QgsExpressionFunction *foo = reinterpret_cast<QgsExpressionFunction *>( sqlite3_user_data( ctxt ) );
@@ -753,7 +753,7 @@ void qgisFunctionWrapper( sqlite3_context *ctxt, int nArgs, sqlite3_value **args
       {
         int n = sqlite3_value_bytes( args[i] );
         const char *blob = reinterpret_cast<const char *>( sqlite3_value_blob( args[i] ) );
-        // spatialite blobs start with a 0 byte
+        // SpatiaLite blobs start with a 0 byte
         if ( n > 0 && blob[0] == 0 )
         {
           QgsGeometry geom = spatialiteBlobToQgsGeometry( blob, n );
@@ -875,7 +875,7 @@ void registerQgisFunctions( sqlite3 *db )
       int r = sqlite3_create_function( db, name.toUtf8().constData(), foo->params(), SQLITE_UTF8, foo, qgisFunctionWrapper, nullptr, nullptr );
       if ( r != SQLITE_OK )
       {
-        // is it because a function of the same name already exist (in Spatialite for instance ?)
+        // is it because a function of the same name already exist (in SpatiaLite for instance ?)
         // we then try to recreate it with a prefix
         name = "qgis_" + name;
         sqlite3_create_function( db, name.toUtf8().constData(), foo->params(), SQLITE_UTF8, foo, qgisFunctionWrapper, nullptr, nullptr );

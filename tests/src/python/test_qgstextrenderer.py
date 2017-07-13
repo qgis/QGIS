@@ -324,6 +324,16 @@ class PyQgsTextRenderer(unittest.TestCase):
         t.readXml(parent, QgsReadWriteContext())
         self.checkTextFormat(t)
 
+    def testFormatToFromMimeData(self):
+        """Test converting format to and from mime data"""
+        s = self.createFormatSettings()
+        md = s.toMimeData()
+        from_mime, ok = QgsTextFormat.fromMimeData(None)
+        self.assertFalse(ok)
+        from_mime, ok = QgsTextFormat.fromMimeData(md)
+        self.assertTrue(ok)
+        self.checkTextFormat(from_mime)
+
     def containsAdvancedEffects(self):
         t = QgsTextFormat()
         self.assertFalse(t.containsAdvancedEffects())

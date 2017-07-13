@@ -19,6 +19,7 @@ INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}
   ${CMAKE_SOURCE_DIR}/src/core/layertree
   ${CMAKE_SOURCE_DIR}/src/core/metadata
   ${CMAKE_SOURCE_DIR}/src/core/processing
+  ${CMAKE_SOURCE_DIR}/src/core/processing/models
   ${CMAKE_SOURCE_DIR}/src/core/raster
   ${CMAKE_SOURCE_DIR}/src/core/scalebar
   ${CMAKE_SOURCE_DIR}/src/core/symbology-ng
@@ -125,6 +126,9 @@ SET(TESTS
  testqgsjsonutils.cpp
  testqgslabelingengine.cpp
  testqgslayertree.cpp
+ testqgslayout.cpp
+ testqgslayoutitem.cpp
+ testqgslayoutobject.cpp
  testqgslayoutunits.cpp
  testqgslegendrenderer.cpp
  testqgscentroidfillsymbol.cpp

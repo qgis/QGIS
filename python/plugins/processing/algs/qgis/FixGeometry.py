@@ -30,10 +30,9 @@ from qgis.core import (QgsWkbTypes,
                        QgsFeatureRequest,
                        QgsProcessingFeatureSource,
                        QgsGeometry,
-                       QgsProcessingParameterDefinition,
+                       QgsProcessing,
                        QgsProcessingParameterFeatureSource,
-                       QgsProcessingParameterFeatureSink,
-                       QgsProcessingOutputVectorLayer)
+                       QgsProcessingParameterFeatureSink)
 
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 
@@ -51,9 +50,10 @@ class FixGeometry(QgisAlgorithm):
 
     def __init__(self):
         super().__init__()
-        self.addParameter(QgsProcessingParameterFeatureSource(self.INPUT, self.tr('Input layer'), [QgsProcessingParameterDefinition.TypeVectorLine, QgsProcessingParameterDefinition.TypeVectorPolygon]))
+
+    def initAlgorithm(self, config=None):
+        self.addParameter(QgsProcessingParameterFeatureSource(self.INPUT, self.tr('Input layer'), [QgsProcessing.TypeVectorLine, QgsProcessing.TypeVectorPolygon]))
         self.addParameter(QgsProcessingParameterFeatureSink(self.OUTPUT, self.tr('Fixed geometries')))
-        self.addOutput(QgsProcessingOutputVectorLayer(self.OUTPUT, self.tr("Fixed geometries")))
 
     def name(self):
         return 'fixgeometries'

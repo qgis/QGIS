@@ -58,7 +58,7 @@ QgsWFSSourceSelect::QgsWFSSourceSelect( QWidget *parent, Qt::WindowFlags fl, Qgs
 
   if ( mWidgetMode != QgsProviderRegistry::WidgetMode::None )
   {
-    // For some osbscure reson hiding does not work!
+    // For some obscure reason hiding does not work!
     // buttonBox->button( QDialogButtonBox::Close )->hide();
     buttonBox->removeButton( buttonBox->button( QDialogButtonBox::Close ) );
     mHoldDialogOpen->setHidden( true );
@@ -755,7 +755,7 @@ void QgsWFSSourceSelect::on_btnLoad_clicked()
 
 void QgsWFSSourceSelect::treeWidgetItemDoubleClicked( const QModelIndex &index )
 {
-  QgsDebugMsg( "double click called" );
+  QgsDebugMsg( "double-click called" );
   buildQuery( index );
 }
 

@@ -33,6 +33,8 @@
 #include "qgssettings.h"
 #include "qgsscrollarea.h"
 #include "qgsgui.h"
+#include "qgsvectorlayerjoinbuffer.h"
+#include "qgsvectorlayerutils.h"
 
 #include <QDir>
 #include <QTextStream>
@@ -221,7 +223,7 @@ void QgsAttributeForm::setMode( QgsAttributeForm::Mode mode )
   emit modeChanged( mMode );
 }
 
-void QgsAttributeForm::changeAttribute( const QString &field, const QVariant &value )
+void QgsAttributeForm::changeAttribute( const QString &field, const QVariant &value, const QString &hintText )
 {
   Q_FOREACH ( QgsWidgetWrapper *ww, mWidgets )
   {
@@ -229,6 +231,7 @@ void QgsAttributeForm::changeAttribute( const QString &field, const QVariant &va
     if ( eww && eww->field().name() == field )
     {
       eww->setValue( value );
+      eww->setHint( hintText );
     }
   }
 }
@@ -659,6 +662,9 @@ void QgsAttributeForm::onAttributeChanged( const QVariant &value )
       {
         emit attributeChanged( eww->field().name(), value );
       }
+
+      updateJoinedFields( *eww );
+
       break;
     }
     case MultiEditMode:
@@ -1928,5 +1934,60 @@ void QgsAttributeForm::ContainerInformation::apply( QgsExpressionContext *expres
     }
 
     isVisible = newVisibility;
+  }
+}
+
+void QgsAttributeForm::updateJoinedFields( const QgsEditorWidgetWrapper &eww )
+{
+  QgsFeature formFeature;
+  QgsField field = eww.layer()->fields().field( eww.fieldIdx() );
+  QList<const QgsVectorLayerJoinInfo *> infos = eww.layer()->joinBuffer()->joinsWhereFieldIsId( field );
+
+  if ( infos.count() == 0 || !currentFormFeature( formFeature ) )
+    return;
+
+  const QString hint = tr( "No feature joined" );
+  Q_FOREACH ( const QgsVectorLayerJoinInfo *info, infos )
+  {
+    if ( !info->isDynamicFormEnabled() )
+      continue;
+
+    QgsFeature joinFeature = mLayer->joinBuffer()->joinedFeatureOf( info, formFeature );
+
+    QStringList *subsetFields = info->joinFieldNamesSubset();
+    if ( subsetFields )
+    {
+      Q_FOREACH ( const QString &field, *subsetFields )
+      {
+        QString prefixedName = info->prefixedFieldName( field );
+        QVariant val;
+        QString hintText = hint;
+
+        if ( joinFeature.isValid() )
+        {
+          val = joinFeature.attribute( field );
+          hintText.clear();
+        }
+
+        changeAttribute( prefixedName, val, hintText );
+      }
+    }
+    else
+    {
+      Q_FOREACH ( const QgsField &field, joinFeature.fields() )
+      {
+        QString prefixedName = info->prefixedFieldName( field );
+        QVariant val;
+        QString hintText = hint;
+
+        if ( joinFeature.isValid() )
+        {
+          val = joinFeature.attribute( field.name() );
+          hintText.clear();
+        }
+
+        changeAttribute( prefixedName, val, hintText );
+      }
+    }
   }
 }

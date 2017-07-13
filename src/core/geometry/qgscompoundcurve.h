@@ -74,7 +74,7 @@ class CORE_EXPORT QgsCompoundCurve: public QgsCurve
      */
     const QgsCurve *curveAt( int i ) const;
 
-    /** Adds a curve to the geometr (takes ownership)
+    /** Adds a curve to the geometry (takes ownership)
      */
     void addCurve( QgsCurve *c SIP_TRANSFER );
 

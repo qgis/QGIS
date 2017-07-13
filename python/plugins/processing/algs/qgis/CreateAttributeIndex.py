@@ -27,10 +27,8 @@ __revision__ = '$Format:%H$'
 
 from qgis.core import (QgsVectorDataProvider,
                        QgsFields,
-                       QgsApplication,
                        QgsProcessingParameterVectorLayer,
                        QgsProcessingParameterField,
-                       QgsProcessingParameterDefinition,
                        QgsProcessingOutputVectorLayer)
 
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
@@ -47,6 +45,8 @@ class CreateAttributeIndex(QgisAlgorithm):
 
     def __init__(self):
         super().__init__()
+
+    def initAlgorithm(self, config=None):
         self.addParameter(QgsProcessingParameterVectorLayer(self.INPUT,
                                                             self.tr('Input Layer')))
         self.addParameter(QgsProcessingParameterField(self.FIELD,

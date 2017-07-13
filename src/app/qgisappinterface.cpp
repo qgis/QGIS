@@ -37,6 +37,7 @@
 #include "qgsmapcanvas.h"
 #include "qgsproject.h"
 #include "qgslayertreeview.h"
+#include "qgslayoutdesignerdialog.h"
 #include "qgsshortcutsmanager.h"
 #include "qgsattributedialog.h"
 #include "qgsfields.h"
@@ -61,6 +62,11 @@ QgisAppInterface::QgisAppInterface( QgisApp *_qgis )
   connect( qgis, &QgisApp::composerOpened, this, &QgisAppInterface::composerOpened );
   connect( qgis, &QgisApp::composerWillBeClosed, this, &QgisAppInterface::composerWillBeClosed );
   connect( qgis, &QgisApp::composerClosed, this, &QgisAppInterface::composerClosed );
+
+  connect( qgis, &QgisApp::layoutDesignerOpened, this, &QgisAppInterface::layoutDesignerOpened );
+  connect( qgis, &QgisApp::layoutDesignerWillBeClosed, this, &QgisAppInterface::layoutDesignerWillBeClosed );
+  connect( qgis, &QgisApp::layoutDesignerClosed, this, &QgisAppInterface::layoutDesignerClosed );
+
   connect( qgis, &QgisApp::initializationCompleted,
            this, &QgisInterface::initializationCompleted );
   connect( qgis, &QgisApp::newProject,
@@ -419,6 +425,38 @@ void QgisAppInterface::closeComposer( QgsComposition *composition )
       }
     }
   }
+}
+
+QList<QgsLayoutDesignerInterface *> QgisAppInterface::openLayoutDesigners()
+{
+  QList<QgsLayoutDesignerInterface *> designerInterfaceList;
+  if ( qgis )
+  {
+    const QSet<QgsLayoutDesignerDialog *> designerList = qgis->layoutDesigners();
+    QSet<QgsLayoutDesignerDialog *>::const_iterator it = designerList.constBegin();
+    for ( ; it != designerList.constEnd(); ++it )
+    {
+      if ( *it )
+      {
+        QgsLayoutDesignerInterface *v = ( *it )->iface();
+        if ( v )
+        {
+          designerInterfaceList << v;
+        }
+      }
+    }
+  }
+  return designerInterfaceList;
+}
+
+QgsLayoutDesignerInterface *QgisAppInterface::openLayoutDesigner( QgsLayout *layout )
+{
+  QgsLayoutDesignerDialog *designer = qgis->openLayoutDesignerDialog( layout );
+  if ( designer )
+  {
+    return designer->iface();
+  }
+  return nullptr;
 }
 
 void QgisAppInterface::showOptionsDialog( QWidget *parent, const QString &currentPage )

@@ -30,26 +30,22 @@ import math
 
 from qgis.PyQt.QtGui import QIcon
 from qgis.PyQt.QtCore import QVariant
-from qgis.core import (QgsRectangle,
-                       QgsCoordinateReferenceSystem,
-                       QgsField,
+from qgis.core import (QgsField,
                        QgsFeatureSink,
                        QgsFeature,
                        QgsGeometry,
                        QgsPointXY,
                        QgsWkbTypes,
+                       QgsProcessing,
                        QgsProcessingParameterEnum,
                        QgsProcessingParameterExtent,
                        QgsProcessingParameterNumber,
                        QgsProcessingParameterCrs,
                        QgsProcessingParameterFeatureSink,
-                       QgsProcessingOutputVectorLayer,
-                       QgsProcessingParameterDefinition,
                        QgsFields)
 
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
-from processing.tools import dataobjects
 
 pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
@@ -75,6 +71,8 @@ class GridPolygon(QgisAlgorithm):
 
     def __init__(self):
         super().__init__()
+
+    def initAlgorithm(self, config=None):
         self.types = [self.tr('Rectangle (polygon)'),
                       self.tr('Diamond (polygon)'),
                       self.tr('Hexagon (polygon)')]
@@ -99,8 +97,7 @@ class GridPolygon(QgisAlgorithm):
 
         self.addParameter(QgsProcessingParameterCrs(self.CRS, 'Grid CRS', 'ProjectCrs'))
 
-        self.addParameter(QgsProcessingParameterFeatureSink(self.OUTPUT, self.tr('Grid')))
-        self.addOutput(QgsProcessingOutputVectorLayer(self.OUTPUT, self.tr('Grid'), QgsProcessingParameterDefinition.TypeVectorPolygon))
+        self.addParameter(QgsProcessingParameterFeatureSink(self.OUTPUT, self.tr('Grid'), type=QgsProcessing.TypeVectorPolygon))
 
     def name(self):
         return 'creategridpolygon'

@@ -188,6 +188,7 @@ Q_GUI_EXPORT extern int qt_defaultDpiX();
 #include "qgslayertreeutils.h"
 #include "qgslayertreeview.h"
 #include "qgslayertreeviewdefaultactions.h"
+#include "qgslayoutdesignerdialog.h"
 #include "qgslayoutmanager.h"
 #include "qgslocatorwidget.h"
 #include "qgslocator.h"
@@ -2104,6 +2105,10 @@ void QgisApp::setAppStyleSheet( const QString &stylesheet )
   {
     c->setStyleSheet( stylesheet );
   }
+  Q_FOREACH ( QgsLayoutDesignerDialog *d, mLayoutDesignerDialogs )
+  {
+    d->setStyleSheet( stylesheet );
+  }
 }
 
 int QgisApp::messageTimeout()
@@ -2763,6 +2768,10 @@ void QgisApp::setIconSizes( int size )
   {
     c->setIconSizes( size );
   }
+  Q_FOREACH ( QgsLayoutDesignerDialog *d, mLayoutDesignerDialogs )
+  {
+    d->setIconSizes( size );
+  }
 }
 
 void QgisApp::setTheme( const QString &themeName )
@@ -3383,7 +3392,7 @@ void QgisApp::addUserInputWidget( QWidget *widget )
 
 void QgisApp::initLayerTreeView()
 {
-  mLayerTreeView->setWhatsThis( tr( "Map legend that displays all the layers currently on the map canvas. Click on the checkbox to turn a layer on or off. Double click on a layer in the legend to customize its appearance and set other properties." ) );
+  mLayerTreeView->setWhatsThis( tr( "Map legend that displays all the layers currently on the map canvas. Click on the checkbox to turn a layer on or off. Double-click on a layer in the legend to customize its appearance and set other properties." ) );
 
   mLayerTreeDock = new QgsDockWidget( tr( "Layers Panel" ), this );
   mLayerTreeDock->setObjectName( QStringLiteral( "Layers" ) );
@@ -7165,6 +7174,40 @@ QgsComposer *QgisApp::openComposer( QgsComposition *composition )
   connect( newComposerObject, &QgsComposer::atlasPreviewFeatureChanged, this, &QgisApp::refreshMapCanvas );
 
   return newComposerObject;
+}
+
+QgsLayoutDesignerDialog *QgisApp::openLayoutDesignerDialog( QgsLayout *layout )
+{
+  // maybe a designer already open for this layout
+  Q_FOREACH ( QgsLayoutDesignerDialog *designer, mLayoutDesignerDialogs )
+  {
+    if ( designer->currentLayout() == layout )
+    {
+      designer->show();
+      designer->activate();
+      designer->raise();
+      return designer;
+    }
+  }
+
+  //nope, so make a new one
+  QgsLayoutDesignerDialog *newDesigner = new QgsLayoutDesignerDialog( this );
+  newDesigner->setCurrentLayout( layout );
+  connect( newDesigner, &QgsLayoutDesignerDialog::aboutToClose, this, [this, newDesigner]
+  {
+    emit layoutDesignerWillBeClosed( newDesigner->iface() );
+    mLayoutDesignerDialogs.remove( newDesigner );
+    emit layoutDesignerClosed();
+  } );
+
+  //add it to the map of existing print designers
+  mLayoutDesignerDialogs.insert( newDesigner );
+
+  newDesigner->open();
+  emit layoutDesignerOpened( newDesigner->iface() );
+  //connect( newDesigner, &QgsLayoutDesignerDialog::atlasPreviewFeatureChanged, this, &QgisApp::refreshMapCanvas );
+
+  return newDesigner;
 }
 
 void QgisApp::deleteComposer( QgsComposer *c )

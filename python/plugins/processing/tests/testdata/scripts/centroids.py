@@ -6,10 +6,6 @@
 ##INPUT_LAYER=source
 ##OUTPUT_LAYER=sink point
 
-#outputs
-
-##OUTPUT_LAYER=output outputVector
-
 from qgis.core import QgsWkbTypes, QgsProcessingUtils
 
 fields = INPUT_LAYER.fields()

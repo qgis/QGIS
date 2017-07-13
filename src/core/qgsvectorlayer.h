@@ -81,10 +81,10 @@ typedef QSet<int> QgsAttributeIds;
  * The QgsVectorLayer is instantiated by specifying the name of a data provider,
  * such as postgres or wfs, and url defining the specific data set to connect to.
  * The vector layer constructor in turn instantiates a QgsVectorDataProvider subclass
- * corresponding to the provider type, and passes it the url.  The data provider
+ * corresponding to the provider type, and passes it the url. The data provider
  * connects to the data source.
  *
- * The QgsVectorLayer provides a common interface to the different data types.  It also
+ * The QgsVectorLayer provides a common interface to the different data types. It also
  * manages editing transactions.
  *
  *  Sample usage of the QgsVectorLayer class:
@@ -101,8 +101,8 @@ typedef QSet<int> QgsAttributeIds;
  * \subsection memory Memory data providerType (memory)
  *
  * The memory data provider is used to construct in memory data, for example scratch
- * data or data generated from spatial operations such as contouring.  There is no
- * inherent persistent storage of the data.  The data source uri is constructed.  The
+ * data or data generated from spatial operations such as contouring. There is no
+ * inherent persistent storage of the data. The data source uri is constructed. The
  * url specifies the geometry type ("point", "linestring", "polygon",
  * "multipoint","multilinestring","multipolygon"), optionally followed by url parameters
  * as follows:
@@ -115,35 +115,35 @@ typedef QSet<int> QgsAttributeIds;
  *   Specifies that the layer will be constructed with a spatial index
  *
  * - field=name:type(length,precision)
- *   Defines an attribute of the layer.  Multiple field parameters can be added
- *   to the data provider definition.  type is one of "integer", "double", "string".
+ *   Defines an attribute of the layer. Multiple field parameters can be added
+ *   to the data provider definition. type is one of "integer", "double", "string".
  *
  * An example url is "Point?crs=epsg:4326&field=id:integer&field=name:string(20)&index=yes"
  *
  * \subsection ogr OGR data provider (ogr)
  *
  * Accesses data using the OGR drivers (http://www.gdal.org/ogr/ogr_formats.html). The url
- * is the OGR connection string.  A wide variety of data formats can be accessed using this
+ * is the OGR connection string. A wide variety of data formats can be accessed using this
  * driver, including file based formats used by many GIS systems, database formats, and
- * web services.  Some of these formats are also supported by custom data providers listed
+ * web services. Some of these formats are also supported by custom data providers listed
  * below.
  *
- * \subsection spatialite Spatialite data provider (spatialite)
+ * \subsection spatialite SpatiaLite data provider (spatialite)
  *
- * Access data in a spatialite database. The url defines the connection parameters, table,
- * geometry column, and other attributes.  The url can be constructed using the
+ * Access data in a SpatiaLite database. The url defines the connection parameters, table,
+ * geometry column, and other attributes. The url can be constructed using the
  * QgsDataSourceUri class.
  *
- * \subsection postgres Postgresql data provider (postgres)
+ * \subsection postgres PostgreSQL data provider (postgres)
  *
- * Connects to a postgresql database.  The url defines the connection parameters, table,
- * geometry column, and other attributes.  The url can be constructed using the
+ * Connects to a PostgreSQL database. The url defines the connection parameters, table,
+ * geometry column, and other attributes. The url can be constructed using the
  * QgsDataSourceUri class.
  *
  * \subsection mssql Microsoft SQL server data provider (mssql)
  *
- * Connects to a Microsoft SQL server database.  The url defines the connection parameters, table,
- * geometry column, and other attributes.  The url can be constructed using the
+ * Connects to a Microsoft SQL server database. The url defines the connection parameters, table,
+ * geometry column, and other attributes. The url can be constructed using the
  * QgsDataSourceUri class.
  *
  * \subsection wfs WFS (web feature service) data provider (wfs)
@@ -1925,9 +1925,6 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
 
     //! Goes through all features and finds a free id (e.g. to give it temporarily to a not-committed feature)
     QgsFeatureId findFreeId();
-
-    //! Add joined attributes to a feature
-    //void addJoinedAttributes( QgsFeature& f, bool all = false );
 
     //! Read labeling from SLD
     void readSldLabeling( const QDomNode &node );

@@ -65,6 +65,8 @@ class EliminateSelection(QgisAlgorithm):
 
     def __init__(self):
         super().__init__()
+
+    def initAlgorithm(self, config=None):
         self.modes = [self.tr('Largest area'),
                       self.tr('Smallest Area'),
                       self.tr('Largest common boundary')]

@@ -24,14 +24,11 @@ __copyright__ = '(C) 2015, Etienne Trimaille'
 
 __revision__ = '$Format:%H$'
 
-from qgis.core import (QgsApplication,
-                       QgsFeatureSink,
-                       QgsProcessingUtils,
+from qgis.core import (QgsFeatureSink,
+                       QgsProcessing,
                        QgsProcessingParameterFeatureSource,
                        QgsProcessingParameterNumber,
-                       QgsProcessingParameterFeatureSink,
-                       QgsProcessingOutputVectorLayer,
-                       QgsProcessingParameterDefinition)
+                       QgsProcessingParameterFeatureSink)
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 
 
@@ -41,22 +38,23 @@ class DeleteHoles(QgisAlgorithm):
     MIN_AREA = 'MIN_AREA'
     OUTPUT = 'OUTPUT'
 
+    def __init__(self):
+        super().__init__()
+
+    def initAlgorithm(self, config=None):
+        self.addParameter(QgsProcessingParameterFeatureSource(self.INPUT,
+                                                              self.tr('Input layer'), [QgsProcessing.TypeVectorPolygon]))
+        self.addParameter(QgsProcessingParameterNumber(self.MIN_AREA,
+                                                       self.tr('Remove holes with area less than'), QgsProcessingParameterNumber.Double,
+                                                       0, True, 0.0, 10000000.0))
+
+        self.addParameter(QgsProcessingParameterFeatureSink(self.OUTPUT, self.tr('Cleaned'), QgsProcessing.TypeVectorPolygon))
+
     def tags(self):
         return self.tr('remove,delete,drop,holes,rings,fill').split(',')
 
     def group(self):
         return self.tr('Vector geometry tools')
-
-    def __init__(self):
-        super().__init__()
-        self.addParameter(QgsProcessingParameterFeatureSource(self.INPUT,
-                                                              self.tr('Input layer'), [QgsProcessingParameterDefinition.TypeVectorPolygon]))
-        self.addParameter(QgsProcessingParameterNumber(self.MIN_AREA,
-                                                       self.tr('Remove holes with area less than'), QgsProcessingParameterNumber.Double,
-                                                       0, True, 0.0, 10000000.0))
-
-        self.addParameter(QgsProcessingParameterFeatureSink(self.OUTPUT, self.tr('Cleaned'), QgsProcessingParameterDefinition.TypeVectorPolygon))
-        self.addOutput(QgsProcessingOutputVectorLayer(self.OUTPUT, self.tr('Cleaned'), QgsProcessingParameterDefinition.TypeVectorPolygon))
 
     def name(self):
         return 'deleteholes'

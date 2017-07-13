@@ -43,12 +43,12 @@ from qgis.core import (QgsApplication,
                        QgsMessageLog,
                        QgsProcessingUtils,
                        QgsProcessingModelAlgorithm,
+                       QgsProcessingModelParameter,
                        QgsXmlUtils)
 from qgis.gui import QgsMessageBar
 from processing.gui.HelpEditionDialog import HelpEditionDialog
 from processing.gui.AlgorithmDialog import AlgorithmDialog
 from processing.modeler.ModelerParameterDefinitionDialog import ModelerParameterDefinitionDialog
-from processing.modeler.ModelerAlgorithm import ModelerAlgorithm
 from processing.modeler.ModelerParametersDialog import ModelerParametersDialog
 from processing.modeler.ModelerUtils import ModelerUtils
 from processing.modeler.ModelerScene import ModelerScene
@@ -114,7 +114,7 @@ class ModelerDialog(BASE, WIDGET):
                 if text in ModelerParameterDefinitionDialog.paramTypes:
                     self.addInputOfType(text, event.pos())
                 else:
-                    alg = QgsApplication.processingRegistry().algorithmById(text)
+                    alg = QgsApplication.processingRegistry().createAlgorithmById(text)
                     if alg is not None:
                         self._addAlgorithm(alg, event.pos())
                 event.accept()
@@ -218,7 +218,7 @@ class ModelerDialog(BASE, WIDGET):
         ctrlEquals.activated.connect(self.zoomIn)
 
         try:
-            iconSize = int(settings.value("iconsize", 24))
+            iconSize = int(settings.value("IconSize", 24))
         except:
             iconSize = 24
         self.mToolbar.setIconSize(QSize(iconSize, iconSize))
@@ -237,13 +237,14 @@ class ModelerDialog(BASE, WIDGET):
         self.mActionRun.triggered.connect(self.runModel)
 
         if model is not None:
-            self.model = model
-            self.textGroup.setText(model.group())
-            self.textName.setText(model.displayName())
+            self.model = model.create()
+            self.model.setSourceFilePath(model.sourceFilePath())
+            self.textGroup.setText(self.model.group())
+            self.textName.setText(self.model.displayName())
             self.repaintModel()
 
         else:
-            self.model = ModelerAlgorithm()
+            self.model = QgsProcessingModelAlgorithm()
             self.model.setProvider(QgsApplication.processingRegistry().providerById('model'))
 
         self.fillInputsTree()
@@ -290,6 +291,9 @@ class ModelerDialog(BASE, WIDGET):
 
         dlg = AlgorithmDialog(self.model)
         dlg.exec_()
+        # have to manually delete the dialog - otherwise it's owned by the
+        # iface mainWindow and never deleted
+        del dlg
 
     def save(self):
         self.saveModel(False)
@@ -440,7 +444,7 @@ class ModelerDialog(BASE, WIDGET):
             return
         self.model.setName(str(self.textName.text()))
         self.model.setGroup(str(self.textGroup.text()))
-        if self.model.sourceFilePath() is not None and not saveAs:
+        if self.model.sourceFilePath() and not saveAs:
             filename = self.model.sourceFilePath()
         else:
             filename, filter = QFileDialog.getSaveFileName(self,
@@ -474,7 +478,7 @@ class ModelerDialog(BASE, WIDGET):
                                                                 ModelerUtils.modelsFolders()[0],
                                                                 self.tr('Processing models (*.model3 *.MODEL3)'))
         if filename:
-            alg = ModelerAlgorithm()
+            alg = QgsProcessingModelAlgorithm()
             if alg.fromFile(filename):
                 self.model = alg
                 self.model.setProvider(QgsApplication.processingRegistry().providerById('model'))
@@ -513,7 +517,7 @@ class ModelerDialog(BASE, WIDGET):
                     pos = self.getPositionForParameterItem()
                 if isinstance(pos, QPoint):
                     pos = QPointF(pos)
-                component = QgsProcessingModelAlgorithm.ModelParameter(dlg.param.name())
+                component = QgsProcessingModelParameter(dlg.param.name())
                 component.setDescription(dlg.param.name())
                 component.setPosition(pos)
                 self.model.addModelParameter(dlg.param, component)
@@ -548,7 +552,7 @@ class ModelerDialog(BASE, WIDGET):
     def addAlgorithm(self):
         item = self.algorithmTree.currentItem()
         if isinstance(item, TreeAlgorithmItem):
-            alg = QgsApplication.processingRegistry().algorithmById(item.alg.id())
+            alg = QgsApplication.processingRegistry().createAlgorithmById(item.alg.id())
             self._addAlgorithm(alg)
 
     def _addAlgorithm(self, alg, pos=None):

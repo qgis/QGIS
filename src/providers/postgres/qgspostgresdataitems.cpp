@@ -16,14 +16,18 @@
 
 #include "qgspostgresconn.h"
 #include "qgspostgresconnpool.h"
-#include "qgspgnewconnection.h"
 #include "qgscolumntypethread.h"
 #include "qgslogger.h"
 #include "qgsdatasourceuri.h"
 #include "qgsapplication.h"
 #include "qgsmessageoutput.h"
-#include "qgsnewnamedialog.h"
 #include "qgsvectorlayer.h"
+
+#ifdef HAVE_GUI
+#include "qgspgnewconnection.h"
+#include "qgsnewnamedialog.h"
+#include "qgspgsourceselect.h"
+#endif
 
 #include <QMessageBox>
 #include <QInputDialog>
@@ -91,6 +95,7 @@ bool QgsPGConnectionItem::equal( const QgsDataItem *other )
   return ( mPath == o->mPath && mName == o->mName );
 }
 
+#ifdef HAVE_GUI
 QList<QAction *> QgsPGConnectionItem::actions()
 {
   QList<QAction *> lst;
@@ -152,17 +157,6 @@ void QgsPGConnectionItem::refreshConnection()
   refresh();
 }
 
-void QgsPGConnectionItem::refreshSchema( const QString &schema )
-{
-  Q_FOREACH ( QgsDataItem *child, mChildren )
-  {
-    if ( child->name() == schema || schema.isEmpty() )
-    {
-      child->refresh();
-    }
-  }
-}
-
 void QgsPGConnectionItem::createSchema()
 {
   QString schemaName = QInputDialog::getText( nullptr, tr( "Create Schema" ), tr( "Schema name:" ) );
@@ -191,6 +185,18 @@ void QgsPGConnectionItem::createSchema()
 
   conn->unref();
   refresh();
+}
+#endif
+
+void QgsPGConnectionItem::refreshSchema( const QString &schema )
+{
+  Q_FOREACH ( QgsDataItem *child, mChildren )
+  {
+    if ( child->name() == schema || schema.isEmpty() )
+    {
+      child->refresh();
+    }
+  }
 }
 
 bool QgsPGConnectionItem::handleDrop( const QMimeData *data, Qt::DropAction )
@@ -291,6 +297,7 @@ QString QgsPGLayerItem::comments() const
   return mLayerProperty.tableComment;
 }
 
+#ifdef HAVE_GUI
 QList<QAction *> QgsPGLayerItem::actions()
 {
   QList<QAction *> lst;
@@ -428,6 +435,7 @@ void QgsPGLayerItem::truncateTable()
   conn->unref();
   QMessageBox::information( nullptr, tr( "Truncate Table" ), tr( "Table truncated successfully." ) );
 }
+#endif
 
 QString QgsPGLayerItem::createUri()
 {
@@ -515,6 +523,7 @@ QVector<QgsDataItem *> QgsPGSchemaItem::createChildren()
   return items;
 }
 
+#ifdef HAVE_GUI
 QList<QAction *> QgsPGSchemaItem::actions()
 {
   QList<QAction *> lst;
@@ -640,6 +649,7 @@ void QgsPGSchemaItem::renameSchema()
   if ( mParent )
     mParent->refresh();
 }
+#endif
 
 QgsPGLayerItem *QgsPGSchemaItem::createLayer( QgsPostgresLayerProperty layerProperty )
 {
@@ -709,6 +719,7 @@ QVector<QgsDataItem *> QgsPGRootItem::createChildren()
   return connections;
 }
 
+#ifdef HAVE_GUI
 QList<QAction *> QgsPGRootItem::actions()
 {
   QList<QAction *> lst;
@@ -740,6 +751,7 @@ void QgsPGRootItem::newConnection()
     refresh();
   }
 }
+#endif
 
 QMainWindow *QgsPGRootItem::sMainWindow = nullptr;
 

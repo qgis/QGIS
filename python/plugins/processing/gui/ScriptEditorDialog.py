@@ -68,7 +68,7 @@ class ScriptEditorDialog(BASE, WIDGET):
         self.restoreState(settings.value("/Processing/stateScriptEditor", QByteArray()))
         self.restoreGeometry(settings.value("/Processing/geometryScriptEditor", QByteArray()))
 
-        iconSize = int(settings.value("iconsize", 24))
+        iconSize = int(settings.value("IconSize", 24))
         self.toolBar.setIconSize(QSize(iconSize, iconSize))
 
         self.actionOpenScript.setIcon(
@@ -278,6 +278,10 @@ class ScriptEditorDialog(BASE, WIDGET):
 
         dlg.show()
         dlg.exec_()
+
+        # have to manually delete the dialog - otherwise it's owned by the
+        # iface mainWindow and never deleted
+        del dlg
 
         if canvas.mapTool() != prevMapTool:
             try:

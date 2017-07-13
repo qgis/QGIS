@@ -53,18 +53,19 @@ class QgsCentroidAlgorithm : public QgsProcessingAlgorithm
 
   public:
 
-    QgsCentroidAlgorithm();
-
+    QgsCentroidAlgorithm() = default;
+    void initAlgorithm( const QVariantMap &configuration = QVariantMap() ) override;
     QString name() const override { return QStringLiteral( "centroids" ); }
     QString displayName() const override { return QObject::tr( "Centroids" ); }
     virtual QStringList tags() const override { return QObject::tr( "centroid,center,average,point,middle" ).split( ',' ); }
     QString group() const override { return QObject::tr( "Vector geometry tools" ); }
     QString shortHelpString() const override;
+    QgsCentroidAlgorithm *createInstance() const override SIP_FACTORY;
 
   protected:
 
     virtual QVariantMap processAlgorithm( const QVariantMap &parameters,
-                                          QgsProcessingContext &context, QgsProcessingFeedback *feedback ) const override;
+                                          QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
 
 };
 
@@ -76,18 +77,19 @@ class QgsTransformAlgorithm : public QgsProcessingAlgorithm
 
   public:
 
-    QgsTransformAlgorithm();
-
+    QgsTransformAlgorithm() = default;
+    void initAlgorithm( const QVariantMap &configuration = QVariantMap() ) override;
     QString name() const override { return QStringLiteral( "reprojectlayer" ); }
     QString displayName() const override { return QObject::tr( "Reproject layer" ); }
     virtual QStringList tags() const override { return QObject::tr( "transform,reproject,crs,srs,warp" ).split( ',' ); }
     QString group() const override { return QObject::tr( "Vector general tools" ); }
     QString shortHelpString() const override;
+    QgsTransformAlgorithm *createInstance() const override SIP_FACTORY;
 
   protected:
 
     virtual QVariantMap processAlgorithm( const QVariantMap &parameters,
-                                          QgsProcessingContext &context, QgsProcessingFeedback *feedback ) const override;
+                                          QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
 
 };
 
@@ -99,18 +101,20 @@ class QgsBufferAlgorithm : public QgsProcessingAlgorithm
 
   public:
 
-    QgsBufferAlgorithm();
+    QgsBufferAlgorithm() = default;
+    void initAlgorithm( const QVariantMap &configuration = QVariantMap() ) override;
 
     QString name() const override { return QStringLiteral( "buffer" ); }
     QString displayName() const override { return QObject::tr( "Buffer" ); }
     virtual QStringList tags() const override { return QObject::tr( "buffer,grow" ).split( ',' ); }
     QString group() const override { return QObject::tr( "Vector geometry tools" ); }
     QString shortHelpString() const override;
+    QgsBufferAlgorithm *createInstance() const override SIP_FACTORY;
 
   protected:
 
     virtual QVariantMap processAlgorithm( const QVariantMap &parameters,
-                                          QgsProcessingContext &context, QgsProcessingFeedback *feedback ) const override;
+                                          QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
 
 };
 
@@ -122,18 +126,19 @@ class QgsDissolveAlgorithm : public QgsProcessingAlgorithm
 
   public:
 
-    QgsDissolveAlgorithm();
-
+    QgsDissolveAlgorithm() = default;
+    void initAlgorithm( const QVariantMap &configuration = QVariantMap() ) override;
     QString name() const override { return QStringLiteral( "dissolve" ); }
     QString displayName() const override { return QObject::tr( "Dissolve" ); }
     virtual QStringList tags() const override { return QObject::tr( "dissolve,union,combine,collect" ).split( ',' ); }
     QString group() const override { return QObject::tr( "Vector geometry tools" ); }
     QString shortHelpString() const override;
+    QgsDissolveAlgorithm *createInstance() const override SIP_FACTORY;
 
   protected:
 
     virtual QVariantMap processAlgorithm( const QVariantMap &parameters,
-                                          QgsProcessingContext &context, QgsProcessingFeedback *feedback ) const override;
+                                          QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
 
 };
 
@@ -160,18 +165,19 @@ class QgsExtractByAttributeAlgorithm : public QgsProcessingAlgorithm
       DoesNotContain,
     };
 
-    QgsExtractByAttributeAlgorithm();
-
+    QgsExtractByAttributeAlgorithm() = default;
+    void initAlgorithm( const QVariantMap &configuration = QVariantMap() ) override;
     QString name() const override { return QStringLiteral( "extractbyattribute" ); }
     QString displayName() const override { return QObject::tr( "Extract by attribute" ); }
     virtual QStringList tags() const override { return QObject::tr( "extract,filter,attribute,value,contains,null,field" ).split( ',' ); }
     QString group() const override { return QObject::tr( "Vector selection tools" ); }
     QString shortHelpString() const override;
+    QgsExtractByAttributeAlgorithm *createInstance() const override SIP_FACTORY;
 
   protected:
 
     virtual QVariantMap processAlgorithm( const QVariantMap &parameters,
-                                          QgsProcessingContext &context, QgsProcessingFeedback *feedback ) const override;
+                                          QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
 
 };
 
@@ -183,18 +189,19 @@ class QgsExtractByExpressionAlgorithm : public QgsProcessingAlgorithm
 
   public:
 
-    QgsExtractByExpressionAlgorithm();
-
+    QgsExtractByExpressionAlgorithm() = default;
+    void initAlgorithm( const QVariantMap &configuration = QVariantMap() ) override;
     QString name() const override { return QStringLiteral( "extractbyexpression" ); }
     QString displayName() const override { return QObject::tr( "Extract by expression" ); }
     virtual QStringList tags() const override { return QObject::tr( "extract,filter,expression,field" ).split( ',' ); }
     QString group() const override { return QObject::tr( "Vector selection tools" ); }
     QString shortHelpString() const override;
+    QgsExtractByExpressionAlgorithm *createInstance() const override SIP_FACTORY;
 
   protected:
 
     virtual QVariantMap processAlgorithm( const QVariantMap &parameters,
-                                          QgsProcessingContext &context, QgsProcessingFeedback *feedback ) const override;
+                                          QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
 
 };
 
@@ -206,18 +213,19 @@ class QgsClipAlgorithm : public QgsProcessingAlgorithm
 
   public:
 
-    QgsClipAlgorithm();
-
+    QgsClipAlgorithm() = default;
+    void initAlgorithm( const QVariantMap &configuration = QVariantMap() ) override;
     QString name() const override { return QStringLiteral( "clip" ); }
     QString displayName() const override { return QObject::tr( "Clip" ); }
     virtual QStringList tags() const override { return QObject::tr( "clip,intersect,intersection,mask" ).split( ',' ); }
     QString group() const override { return QObject::tr( "Vector overlay tools" ); }
     QString shortHelpString() const override;
+    QgsClipAlgorithm *createInstance() const override SIP_FACTORY;
 
   protected:
 
     virtual QVariantMap processAlgorithm( const QVariantMap &parameters,
-                                          QgsProcessingContext &context, QgsProcessingFeedback *feedback ) const override;
+                                          QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
 
 };
 
@@ -230,18 +238,19 @@ class QgsSubdivideAlgorithm : public QgsProcessingAlgorithm
 
   public:
 
-    QgsSubdivideAlgorithm();
-
+    QgsSubdivideAlgorithm() = default;
+    void initAlgorithm( const QVariantMap &configuration = QVariantMap() ) override;
     QString name() const override { return QStringLiteral( "subdivide" ); }
     QString displayName() const override { return QObject::tr( "Subdivide" ); }
     virtual QStringList tags() const override { return QObject::tr( "subdivide,segmentize,split,tesselate" ).split( ',' ); }
     QString group() const override { return QObject::tr( "Vector geometry tools" ); }
     QString shortHelpString() const override;
+    QgsSubdivideAlgorithm *createInstance() const override SIP_FACTORY;
 
   protected:
 
     virtual QVariantMap processAlgorithm( const QVariantMap &parameters,
-                                          QgsProcessingContext &context, QgsProcessingFeedback *feedback ) const override;
+                                          QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
 
 };
 
@@ -253,18 +262,19 @@ class QgsMultipartToSinglepartAlgorithm : public QgsProcessingAlgorithm
 
   public:
 
-    QgsMultipartToSinglepartAlgorithm();
-
+    QgsMultipartToSinglepartAlgorithm() = default;
+    void initAlgorithm( const QVariantMap &configuration = QVariantMap() ) override;
     QString name() const override { return QStringLiteral( "multiparttosingleparts" ); }
     QString displayName() const override { return QObject::tr( "Multipart to singleparts" ); }
     virtual QStringList tags() const override { return QObject::tr( "multi,single,multiple,split,dump" ).split( ',' ); }
     QString group() const override { return QObject::tr( "Vector geometry tools" ); }
     QString shortHelpString() const override;
+    QgsMultipartToSinglepartAlgorithm *createInstance() const override SIP_FACTORY;
 
   protected:
 
     virtual QVariantMap processAlgorithm( const QVariantMap &parameters,
-                                          QgsProcessingContext &context, QgsProcessingFeedback *feedback ) const override;
+                                          QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
 
 };
 

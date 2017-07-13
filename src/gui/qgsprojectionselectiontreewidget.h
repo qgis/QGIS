@@ -256,7 +256,7 @@ class GUI_EXPORT QgsProjectionSelectionTreeWidget : public QWidget, private Ui::
     //! get list of authorities
     QStringList authorities();
 
-    //! Apply projection on double click
+    //! Apply projection on double-click
     void on_lstCoordinateSystems_itemDoubleClicked( QTreeWidgetItem *current, int column );
     void on_lstRecent_itemDoubleClicked( QTreeWidgetItem *current, int column );
     void on_lstCoordinateSystems_currentItemChanged( QTreeWidgetItem *current, QTreeWidgetItem *prev );

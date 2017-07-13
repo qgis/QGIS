@@ -34,13 +34,13 @@ from qgis.core import (QgsFeatureRequest,
                        QgsFeatureSink,
                        QgsGeometry,
                        QgsWkbTypes,
-                       QgsMessageLog,
+                       QgsProcessingParameterFeatureSource,
+                       QgsProcessingParameterFeatureSink,
+                       QgsSpatialIndex,
                        QgsProcessingUtils)
 
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
-from processing.core.parameters import ParameterVector
-from processing.core.outputs import OutputVector
 from processing.tools import vector
 
 pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
@@ -58,7 +58,7 @@ for key, value in list(wkbTypeGroups.items()):
 class Intersection(QgisAlgorithm):
 
     INPUT = 'INPUT'
-    INPUT2 = 'INPUT2'
+    OVERLAY = 'OVERLAY'
     OUTPUT = 'OUTPUT'
 
     def icon(self):
@@ -69,11 +69,14 @@ class Intersection(QgisAlgorithm):
 
     def __init__(self):
         super().__init__()
-        self.addParameter(ParameterVector(self.INPUT,
-                                          self.tr('Input layer')))
-        self.addParameter(ParameterVector(self.INPUT2,
-                                          self.tr('Intersect layer')))
-        self.addOutput(OutputVector(self.OUTPUT, self.tr('Intersection')))
+
+    def initAlgorithm(self, config=None):
+        self.addParameter(QgsProcessingParameterFeatureSource(self.INPUT,
+                                                              self.tr('Input layer')))
+        self.addParameter(QgsProcessingParameterFeatureSource(self.OVERLAY,
+                                                              self.tr('Intersection layer')))
+
+        self.addParameter(QgsProcessingParameterFeatureSink(self.OUTPUT, self.tr('Intersection')))
 
     def name(self):
         return 'intersection'
@@ -82,22 +85,31 @@ class Intersection(QgisAlgorithm):
         return self.tr('Intersection')
 
     def processAlgorithm(self, parameters, context, feedback):
-        vlayerA = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT), context)
-        vlayerB = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT2), context)
+        sourceA = self.parameterAsSource(parameters, self.INPUT, context)
+        sourceB = self.parameterAsSource(parameters, self.OVERLAY, context)
 
-        geomType = QgsWkbTypes.multiType(vlayerA.wkbType())
-        fields = vector.combineVectorFields(vlayerA, vlayerB)
-        writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(fields, geomType, vlayerA.crs(), context)
+        geomType = QgsWkbTypes.multiType(sourceA.wkbType())
+        fields = vector.combineFields(sourceA.fields(), sourceB.fields())
+
+        (sink, dest_id) = self.parameterAsSink(parameters, self.OUTPUT, context,
+                                               fields, geomType, sourceA.sourceCrs())
+
         outFeat = QgsFeature()
-        index = QgsProcessingUtils.createSpatialIndex(vlayerB, context)
-        selectionA = QgsProcessingUtils.getFeatures(vlayerA, context)
-        total = 100.0 / vlayerA.featureCount() if vlayerA.featureCount() else 0
-        for current, inFeatA in enumerate(selectionA):
-            feedback.setProgress(int(current * total))
-            geom = inFeatA.geometry()
-            atMapA = inFeatA.attributes()
-            intersects = index.intersects(geom.boundingBox())
+        indexB = QgsSpatialIndex(sourceB.getFeatures(QgsFeatureRequest().setSubsetOfAttributes([]).setDestinationCrs(sourceA.sourceCrs())))
+
+        total = 100.0 / sourceA.featureCount() if sourceA.featureCount() else 1
+        count = 0
+
+        for featA in sourceA.getFeatures():
+            if feedback.isCanceled():
+                break
+
+            geom = featA.geometry()
+            atMapA = featA.attributes()
+            intersects = indexB.intersects(geom.boundingBox())
+
             request = QgsFeatureRequest().setFilterFids(intersects)
+            request.setDestinationCrs(sourceA.sourceCrs())
 
             engine = None
             if len(intersects) > 0:
@@ -105,10 +117,13 @@ class Intersection(QgisAlgorithm):
                 engine = QgsGeometry.createGeometryEngine(geom.geometry())
                 engine.prepareGeometry()
 
-            for inFeatB in vlayerB.getFeatures(request):
-                tmpGeom = inFeatB.geometry()
+            for featB in sourceB.getFeatures(request):
+                if feedback.isCanceled():
+                    break
+
+                tmpGeom = featB.geometry()
                 if engine.intersects(tmpGeom.geometry()):
-                    atMapB = inFeatB.attributes()
+                    atMapB = featB.attributes()
                     int_geom = QgsGeometry(geom.intersection(tmpGeom))
                     if int_geom.wkbType() == QgsWkbTypes.Unknown or QgsWkbTypes.flatType(int_geom.geometry().wkbType()) == QgsWkbTypes.GeometryCollection:
                         int_com = geom.combine(tmpGeom)
@@ -128,11 +143,14 @@ class Intersection(QgisAlgorithm):
                             attrs.extend(atMapA)
                             attrs.extend(atMapB)
                             outFeat.setAttributes(attrs)
-                            writer.addFeature(outFeat, QgsFeatureSink.FastInsert)
+                            sink.addFeature(outFeat, QgsFeatureSink.FastInsert)
                     except:
                         raise GeoAlgorithmExecutionException(
                             self.tr('Feature geometry error: One or more '
                                     'output features ignored due to invalid '
                                     'geometry.'))
 
-        del writer
+            count += 1
+            feedback.setProgress(int(count * total))
+
+        return {self.OUTPUT: dest_id}

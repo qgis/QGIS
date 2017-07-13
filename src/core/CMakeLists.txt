@@ -96,12 +96,17 @@ SET(QGIS_CORE_SRCS
   processing/qgsnativealgorithms.cpp
   processing/qgsprocessingalgorithm.cpp
   processing/qgsprocessingalgrunnertask.cpp
-  processing/qgsprocessingmodelalgorithm.cpp
   processing/qgsprocessingoutputs.cpp
   processing/qgsprocessingparameters.cpp
   processing/qgsprocessingprovider.cpp
   processing/qgsprocessingregistry.cpp
   processing/qgsprocessingutils.cpp
+  processing/models/qgsprocessingmodelalgorithm.cpp
+  processing/models/qgsprocessingmodelchildalgorithm.cpp
+  processing/models/qgsprocessingmodelchildparametersource.cpp
+  processing/models/qgsprocessingmodelcomponent.cpp
+  processing/models/qgsprocessingmodelparameter.cpp
+  processing/models/qgsprocessingmodeloutput.cpp
 
   providers/memory/qgsmemoryfeatureiterator.cpp
   providers/memory/qgsmemoryprovider.cpp
@@ -286,6 +291,7 @@ SET(QGIS_CORE_SRCS
   qgsvectorlayerfeatureiterator.cpp
   qgsvectorlayerexporter.cpp
   qgsvectorlayerjoinbuffer.cpp
+  qgsvectorlayerjoininfo.cpp
   qgsvectorlayerlabeling.cpp
   qgsvectorlayerlabelprovider.cpp
   qgsvectorlayerrenderer.cpp
@@ -343,8 +349,12 @@ SET(QGIS_CORE_SRCS
   dxf/qgsdxfpaintengine.cpp
   dxf/qgsdxfpallabeling.cpp
 
+  layout/qgslayout.cpp
+  layout/qgslayoutitem.cpp
+  layout/qgslayoutitemregistry.cpp
   layout/qgslayoutmeasurement.cpp
   layout/qgslayoutmeasurementconverter.cpp
+  layout/qgslayoutobject.cpp
   layout/qgspagesizeregistry.cpp
   layout/qgslayoutpoint.cpp
   layout/qgslayoutsize.cpp
@@ -660,6 +670,11 @@ SET(QGIS_CORE_MOC_HDRS
   gps/qgsnmeaconnection.h
   gps/qgsgpsdconnection.h
 
+  layout/qgslayout.h
+  layout/qgslayoutitem.h
+  layout/qgslayoutitemregistry.h
+  layout/qgslayoutobject.h
+
   symbology-ng/qgscptcityarchive.h
   symbology-ng/qgssvgcache.h
   symbology-ng/qgsstyle.h
@@ -901,6 +916,7 @@ SET(QGIS_CORE_HDRS
   composer/qgscomposertexttable.h
   composer/qgspaperitem.h
 
+  layout/qgslayout.h
   layout/qgslayoutmeasurement.h
   layout/qgslayoutmeasurementconverter.h
   layout/qgspagesizeregistry.h
@@ -911,12 +927,18 @@ SET(QGIS_CORE_HDRS
   metadata/qgslayermetadatavalidator.h
 
   processing/qgsnativealgorithms.h
+  processing/qgsprocessing.h
   processing/qgsprocessingalgorithm.h
   processing/qgsprocessingcontext.h
-  processing/qgsprocessingmodelalgorithm.h
   processing/qgsprocessingoutputs.h
   processing/qgsprocessingparameters.h
   processing/qgsprocessingutils.h
+  processing/models/qgsprocessingmodelalgorithm.h
+  processing/models/qgsprocessingmodelchildalgorithm.h
+  processing/models/qgsprocessingmodelchildparametersource.h
+  processing/models/qgsprocessingmodelcomponent.h
+  processing/models/qgsprocessingmodeloutput.h
+  processing/models/qgsprocessingmodelparameter.h
 
   providers/memory/qgsmemoryfeatureiterator.h
   providers/memory/qgsmemoryproviderutils.h
@@ -1061,6 +1083,7 @@ INCLUDE_DIRECTORIES(
   metadata
   pal
   processing
+  processing/models
   providers
   providers/memory
   raster

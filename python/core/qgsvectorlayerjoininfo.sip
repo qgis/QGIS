@@ -84,6 +84,30 @@ Returns whether values from the joined layer should be cached in memory to speed
  :rtype: bool
 %End
 
+    bool isDynamicFormEnabled() const;
+%Docstring
+ Returns whether the form has to be dynamically updated with joined fields
+  when  a feature is being created in the target layer.
+.. versionadded:: 3.0
+ :rtype: bool
+%End
+
+    void setDynamicFormEnabled( bool enabled );
+%Docstring
+ Sets whether the form has to be dynamically updated with joined fields
+  when a feature is being created in the target layer.
+.. versionadded:: 3.0
+%End
+
+    QString prefixedFieldName( const QgsField &field ) const;
+%Docstring
+ Returns the prefixed name of the field.
+ \param field the field
+ :return: the prefixed name of the field
+.. versionadded:: 3.0
+ :rtype: str
+%End
+
     bool operator==( const QgsVectorLayerJoinInfo &other ) const;
 
     void setJoinFieldNamesSubset( QStringList *fieldNamesSubset /Transfer/ );
@@ -100,6 +124,7 @@ Returns whether values from the joined layer should be cached in memory to speed
 %End
 
   protected:
+
 
 
 
