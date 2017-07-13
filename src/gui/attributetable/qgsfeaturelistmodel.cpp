@@ -75,10 +75,6 @@ QVariant QgsFeatureListModel::data( const QModelIndex &index, int role ) const
     {
       return QgsApplication::nullRepresentation();
     }
-    else if ( role == QgsAttributeTableModel::FeatureIdRole )
-    {
-      return QVariant( QVariant::Int );
-    }
     else
     {
       return QVariant( QVariant::Invalid );
