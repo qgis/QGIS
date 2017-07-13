@@ -2110,17 +2110,18 @@ bool QgsProject::unzip( const QString &filename )
     return false;
   }
 
-  // keep the archive
+  // keep the archive and remove the temporary .qgs file
   mUnzipping = false;
   mPathResolverBaseName = QString();
   mArchive.reset( archive.release() );
+  mArchive->clearProjectFile();
 
   return true;
 }
 
 bool QgsProject::zip()
 {
-  if ( unzipped() )
+  if ( !mArchive->filename().isEmpty() )
     return zip( mArchive->filename() );
 
   return false;
@@ -2167,9 +2168,6 @@ bool QgsProject::zip( const QString &filename )
     setError( tr( "Unable to perform zip" ) );
     return false;
   }
-
-  // keep the archive
-  mArchive.reset( archive.release() );
 
   return true;
 }

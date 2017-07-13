@@ -136,6 +136,13 @@ class QgsProjectArchive : QgsArchive
  Returns the current .qgs project file or an empty string if there's none
  :rtype: str
 %End
+
+    bool clearProjectFile();
+%Docstring
+ Remove the current .qgs project file from the temporary directory.
+ :return: true if the file is well removed, false otherwise
+ :rtype: bool
+%End
 };
 
 /************************************************************************

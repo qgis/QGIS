@@ -152,3 +152,17 @@ bool QgsProjectArchive::unzip( const QString &filename )
   else
     return false;
 }
+
+bool QgsProjectArchive::clearProjectFile()
+{
+  bool rc = false;
+  QString file = projectFile();
+
+  if ( !file.isEmpty() && QFile::exists( file ) )
+    rc = QFile::remove( file );
+
+  if ( rc )
+    mFiles.removeOne( file );
+
+  return rc;
+}

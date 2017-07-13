@@ -147,6 +147,12 @@ class  CORE_EXPORT QgsProjectArchive : public QgsArchive
      * Returns the current .qgs project file or an empty string if there's none
      */
     QString projectFile() const;
+
+    /**
+     * Remove the current .qgs project file from the temporary directory.
+     * \returns true if the file is well removed, false otherwise
+     */
+    bool clearProjectFile();
 };
 
 #endif
