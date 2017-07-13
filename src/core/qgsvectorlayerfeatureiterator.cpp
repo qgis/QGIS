@@ -617,6 +617,15 @@ void QgsVectorLayerFeatureIterator::prepareExpression( int fieldIdx )
   exp->setAreaUnits( QgsProject::instance()->areaUnits() );
 
   exp->prepare( mExpressionContext.get() );
+  Q_FOREACH ( const QString &col, exp->referencedColumns() )
+  {
+    if ( mSource->fields().lookupField( col ) == fieldIdx )
+    {
+      // circular reference - expression depends on column itself
+      delete exp;
+      return;
+    }
+  }
   mExpressionFieldInfo.insert( fieldIdx, exp );
 
   Q_FOREACH ( const QString &col, exp->referencedColumns() )

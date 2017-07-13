@@ -1609,6 +1609,11 @@ class TestQgsVectorLayer(unittest.TestCase, FeatureSourceTestCase):
 
         self.assertEqual(layer.pendingFields().count(), cnt)
 
+        # expression field which references itself
+        idx = layer.addExpressionField('sum(test2)', QgsField('test2', QVariant.LongLong))
+        fet = next(layer.getFeatures())
+        self.assertEqual(fet['test2'], NULL)
+
     def test_ExpressionFieldEllipsoidLengthCalculation(self):
         #create a temporary layer
         temp_layer = QgsVectorLayer("LineString?crs=epsg:3111&field=pk:int", "vl", "memory")
