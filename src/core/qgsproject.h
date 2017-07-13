@@ -1099,7 +1099,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
 
     QString mPathResolverBaseName;
 
-    std::unique_ptr<QgsArchive> mArchive;
+    std::unique_ptr<QgsProjectArchive> mArchive;
     bool mUnzipping;
 
     QFile mFile;                 // current physical project file

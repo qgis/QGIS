@@ -52,13 +52,12 @@ class QgsArchive
  :rtype: bool
 %End
 
-    bool unzip( const QString &zipFilename );
+    virtual bool unzip( const QString &zipFilename );
 %Docstring
- Clear the current content of this archive and unzip. If a project file
- is found in the content, then this archive may be considered as a valid
- one. Files are unzipped in the temporary directory.
+ Clear the current content of this archive and unzip. Files are unzipped
+ in the temporary directory.
  \param zipFilename The zip file to unzip
- :return: true if a project file has been found, false otherwise
+ :return: true if unzip action is a success, false otherwise
  :rtype: bool
 %End
 
@@ -97,12 +96,6 @@ class QgsArchive
  :rtype: str
 %End
 
-    QString projectFile() const;
-%Docstring
- Returns the current .qgs project file or an empty string if there's none
- :rtype: str
-%End
-
     QStringList files() const;
 %Docstring
  Returns the list of files within this archive
@@ -115,6 +108,34 @@ class QgsArchive
  :rtype: str
 %End
 
+  protected:
+
+};
+
+class QgsProjectArchive : QgsArchive
+{
+
+%TypeHeaderCode
+#include "qgsarchive.h"
+%End
+  public:
+
+    virtual bool unzip( const QString &zipFilename );
+
+%Docstring
+ Clear the current content of this archive and unzip. If a project file
+ is found in the content, then this archive may be considered as a valid
+ one. Files are unzipped in the temporary directory.
+ \param zipFilename The zip file to unzip
+ :return: true if a project file has been found, false otherwise
+ :rtype: bool
+%End
+
+    QString projectFile() const;
+%Docstring
+ Returns the current .qgs project file or an empty string if there's none
+ :rtype: str
+%End
 };
 
 /************************************************************************

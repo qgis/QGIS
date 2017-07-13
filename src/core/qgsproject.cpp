@@ -332,7 +332,7 @@ QgsProject::QgsProject( QObject *parent )
   , mLayoutManager( new QgsLayoutManager( this ) )
   , mRootGroup( new QgsLayerTree )
   , mLabelingEngineSettings( new QgsLabelingEngineSettings )
-  , mArchive( new QgsArchive() )
+  , mArchive( new QgsProjectArchive() )
   , mAutoTransaction( false )
   , mEvaluateDefaultValues( false )
   , mDirty( false )
@@ -2083,7 +2083,7 @@ bool QgsProject::unzip()
 bool QgsProject::unzip( const QString &filename )
 {
   clearError();
-  std::unique_ptr<QgsArchive> archive( new QgsArchive() );
+  std::unique_ptr<QgsProjectArchive> archive( new QgsProjectArchive() );
 
   // unzip the archive
   if ( !archive->unzip( filename ) )
@@ -2131,7 +2131,7 @@ bool QgsProject::zip( const QString &filename )
   clearError();
 
   // save the current project in a temporary .qgs file
-  std::unique_ptr<QgsArchive> archive( new QgsArchive() );
+  std::unique_ptr<QgsProjectArchive> archive( new QgsProjectArchive() );
   const QString baseName = QFileInfo( filename ).baseName();
   const QString qgsFileName = QString( "%1.qgs" ).arg( baseName );
   QFile qgsFile( QDir( archive->dir() ).filePath( qgsFileName ) );
@@ -2186,7 +2186,7 @@ QString QgsProject::zipFileName() const
 
 void QgsProject::setZipFileName( const QString &filename )
 {
-  mArchive.reset( new QgsArchive() );
+  mArchive.reset( new QgsProjectArchive() );
   mArchive->setFileName( filename );
 }
 

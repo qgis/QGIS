@@ -19,6 +19,7 @@
 #include "qgsarchive.h"
 #include "qgsziputils.h"
 #include "qgsmessagelog.h"
+#include <iostream>
 
 QgsArchive::QgsArchive()
   : mDir( new QTemporaryDir() )
@@ -26,8 +27,8 @@ QgsArchive::QgsArchive()
 }
 
 QgsArchive::QgsArchive( const QgsArchive &other )
-  :  mDir( new QTemporaryDir() )
-  , mFiles( other.mFiles )
+  : mFiles( other.mFiles )
+  ,  mDir( new QTemporaryDir() )
   , mFilename( other.mFilename )
 {
 }
@@ -108,11 +109,8 @@ bool QgsArchive::unzip()
 bool QgsArchive::unzip( const QString &filename )
 {
   clear();
-
-  QgsZipUtils::unzip( filename, mDir->path(), mFiles );
   mFilename = filename;
-
-  return ! projectFile().isEmpty();
+  return QgsZipUtils::unzip( filename, mDir->path(), mFiles );
 }
 
 void QgsArchive::addFile( const QString &file )
@@ -130,7 +128,12 @@ void QgsArchive::setFileName( const QString &filename )
   mFilename = filename;
 }
 
-QString QgsArchive::projectFile() const
+QStringList QgsArchive::files() const
+{
+  return mFiles;
+}
+
+QString QgsProjectArchive::projectFile() const
 {
   Q_FOREACH ( const QString &file, mFiles )
   {
@@ -142,7 +145,10 @@ QString QgsArchive::projectFile() const
   return QString();
 }
 
-QStringList QgsArchive::files() const
+bool QgsProjectArchive::unzip( const QString &filename )
 {
-  return mFiles;
+  if ( QgsArchive::unzip( filename ) )
+    return ! projectFile().isEmpty();
+  else
+    return false;
 }

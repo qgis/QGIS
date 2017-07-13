@@ -66,13 +66,12 @@ class CORE_EXPORT QgsArchive
     bool zip();
 
     /**
-     * Clear the current content of this archive and unzip. If a project file
-     * is found in the content, then this archive may be considered as a valid
-     * one. Files are unzipped in the temporary directory.
+     * Clear the current content of this archive and unzip. Files are unzipped
+     * in the temporary directory.
      * \param zipFilename The zip file to unzip
-     * \returns true if a project file has been found, false otherwise
+     * \returns true if unzip action is a success, false otherwise
      */
-    bool unzip( const QString &zipFilename );
+    virtual bool unzip( const QString &zipFilename );
 
     /**
      * Clear the current content of this archive and unzip. If a project file
@@ -108,11 +107,6 @@ class CORE_EXPORT QgsArchive
     QString filename() const;
 
     /**
-     * Returns the current .qgs project file or an empty string if there's none
-     */
-    QString projectFile() const;
-
-    /**
      * Returns the list of files within this archive
      */
     QStringList files() const;
@@ -122,17 +116,37 @@ class CORE_EXPORT QgsArchive
      */
     QString dir() const;
 
+  protected:
+    // content of the archive
+    QStringList mFiles;
+
   private:
 #ifndef SIP_RUN
     // used when unzip is performed
     std::unique_ptr<QTemporaryDir> mDir;
 
-    // content of the archive
-    QStringList mFiles;
-
     // zip filename
     QString mFilename;
 #endif
+};
+
+class  CORE_EXPORT QgsProjectArchive : public QgsArchive
+{
+  public:
+
+    /**
+     * Clear the current content of this archive and unzip. If a project file
+     * is found in the content, then this archive may be considered as a valid
+     * one. Files are unzipped in the temporary directory.
+     * \param zipFilename The zip file to unzip
+     * \returns true if a project file has been found, false otherwise
+     */
+    bool unzip( const QString &zipFilename ) override;
+
+    /**
+     * Returns the current .qgs project file or an empty string if there's none
+     */
+    QString projectFile() const;
 };
 
 #endif
