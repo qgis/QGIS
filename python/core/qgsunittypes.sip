@@ -73,13 +73,13 @@ class QgsUnitTypes
     enum RenderUnit
     {
       RenderMillimeters,
-      RenderMetersInMapUnits,
       RenderMapUnits,
       RenderPixels,
       RenderPercentage,
       RenderPoints,
       RenderInches,
       RenderUnknownUnit,
+      RenderMetersInMapUnits,
     };
 
     enum LayoutUnit

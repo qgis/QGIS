@@ -396,8 +396,8 @@ double QgsRenderContext::convertMetersToMapUnits( double meters ) const
       QgsPointXY pointCenter = mExtent.center();
       // The Extent is in the sourceCrs(), when different from destinationCrs()
       // - the point must be transformed, since DistanceArea uses the destinationCrs()
-      // Note: the default QgsCoordinateTransform() : authid() will return an expty String
-      if ( mCoordTransform.sourceCrs().authid() != mCoordTransform.destinationCrs().authid() )
+      // Note: the default QgsCoordinateTransform() : authid() will return an empty String
+      if ( !mCoordTransform.isShortCircuited() )
       {
         pointCenter = mCoordTransform.transform( pointCenter );
       }

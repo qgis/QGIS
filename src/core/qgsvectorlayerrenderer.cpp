@@ -35,7 +35,6 @@
 #include "qgsexception.h"
 #include "qgslogger.h"
 #include "qgssettings.h"
-#include "qgsproject.h"
 
 #include <QPicture>
 

@@ -95,13 +95,13 @@ class CORE_EXPORT QgsUnitTypes
     enum RenderUnit
     {
       RenderMillimeters = 0, //!< Millimeters
-      RenderMetersInMapUnits, //!< Meters value as Map units
       RenderMapUnits, //!< Map units
       RenderPixels, //!< Pixels
       RenderPercentage, //!< Percentage of another measurement (e.g., canvas size, feature size)
       RenderPoints, //! points (e.g., for font sizes)
       RenderInches, //! Inches
       RenderUnknownUnit, //!< Mixed or unknown units
+      RenderMetersInMapUnits, //!< Meters value as Map units
     };
 
     //! Layout measurement units
