@@ -61,6 +61,7 @@ from .FixGeometry import FixGeometry
 from .GridPolygon import GridPolygon
 from .ImportIntoPostGIS import ImportIntoPostGIS
 from .ImportIntoSpatialite import ImportIntoSpatialite
+from .Intersection import Intersection
 from .Merge import Merge
 from .PointsLayerFromTable import PointsLayerFromTable
 from .PostGISExecuteSQL import PostGISExecuteSQL
@@ -98,7 +99,6 @@ from .ZonalStatistics import ZonalStatistics
 # from .ConvexHull import ConvexHull
 # from .FixedDistanceBuffer import FixedDistanceBuffer
 # from .VariableDistanceBuffer import VariableDistanceBuffer
-# from .Intersection import Intersection
 # from .RandomSelection import RandomSelection
 # from .RandomSelectionWithinSubsets import RandomSelectionWithinSubsets
 # from .SelectByLocation import SelectByLocation
@@ -194,7 +194,6 @@ class QGISAlgorithmProvider(QgsProcessingProvider):
         #         PolygonsToLines(), LinesToPolygons(), ExtractNodes(),
         #         ConvexHull(), FixedDistanceBuffer(),
         #         VariableDistanceBuffer(),
-        #         Intersection(),
         #         RandomSelection(), RandomSelectionWithinSubsets(),
         #         SelectByLocation(),
         #         ExtractByLocation(),
@@ -260,6 +259,7 @@ class QGISAlgorithmProvider(QgsProcessingProvider):
                 GridPolygon(),
                 ImportIntoPostGIS(),
                 ImportIntoSpatialite(),
+                Intersection(),
                 Merge(),
                 PointsLayerFromTable(),
                 PostGISExecuteSQL(),
