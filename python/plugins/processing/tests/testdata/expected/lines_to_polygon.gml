@@ -21,4 +21,8 @@
       <ogr:geometryProperty><gml:Polygon srsName="EPSG:4326"><gml:outerBoundaryIs><gml:LinearRing><gml:coordinates>2,0 2,2 3,2 3,3 2,0</gml:coordinates></gml:LinearRing></gml:outerBoundaryIs></gml:Polygon></ogr:geometryProperty>
     </ogr:lines_to_polygon>
   </gml:featureMember>
+  <gml:featureMember>
+    <ogr:lines_to_polygon fid="lines.6">
+    </ogr:lines_to_polygon>
+  </gml:featureMember>
 </ogr:FeatureCollection>

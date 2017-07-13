@@ -29,11 +29,16 @@ import os
 
 from qgis.PyQt.QtGui import QIcon
 
-from qgis.core import QgsFeature, QgsGeometry, QgsWkbTypes, QgsFeatureSink, QgsProcessingUtils
+from qgis.core import (QgsFeature,
+                       QgsGeometry,
+                       QgsWkbTypes,
+                       QgsFeatureSink,
+                       QgsProcessing,
+                       QgsProcessingParameterFeatureSource,
+                       QgsProcessingParameterFeatureSink,
+                       QgsProcessingUtils)
 
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
-from processing.core.parameters import ParameterVector
-from processing.core.outputs import OutputVector
 from processing.tools import dataobjects, vector
 
 pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
@@ -57,10 +62,13 @@ class LinesToPolygons(QgisAlgorithm):
         super().__init__()
 
     def initAlgorithm(self, config=None):
-        self.addParameter(ParameterVector(self.INPUT,
-                                          self.tr('Input layer'),
-                                          [dataobjects.TYPE_VECTOR_LINE]))
-        self.addOutput(OutputVector(self.OUTPUT, self.tr('Polygons from lines'), datatype=[dataobjects.TYPE_VECTOR_POLYGON]))
+        self.addParameter(QgsProcessingParameterFeatureSource(self.INPUT,
+                                                              self.tr('Input layer'),
+                                                              [QgsProcessing.TypeVectorLine]))
+
+        self.addParameter(QgsProcessingParameterFeatureSink(self.OUTPUT,
+                                                            self.tr('Lines to polygons'),
+                                                            QgsProcessing.TypeVectorPolygon))
 
     def name(self):
         return 'linestopolygons'
@@ -69,31 +77,45 @@ class LinesToPolygons(QgisAlgorithm):
         return self.tr('Lines to polygons')
 
     def processAlgorithm(self, parameters, context, feedback):
-        layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT), context)
+        source = self.parameterAsSource(parameters, self.INPUT, context)
 
-        writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(layer.fields(), QgsWkbTypes.Polygon,
-                                                                     layer.crs(), context)
+        if QgsWkbTypes.isMultiType(source.wkbType()):
+            geomType = QgsWkbTypes.MultiPolygon
+        else:
+            geomType = QgsWkbTypes.Polygon
+
+        (sink, dest_id) = self.parameterAsSink(parameters, self.OUTPUT, context,
+                                               source.fields(), geomType, source.sourceCrs())
 
         outFeat = QgsFeature()
-        features = QgsProcessingUtils.getFeatures(layer, context)
-        total = 100.0 / layer.featureCount() if layer.featureCount() else 0
-        for current, f in enumerate(features):
-            outGeomList = []
-            if f.geometry().isMultipart():
-                outGeomList = f.geometry().asMultiPolyline()
+
+        total = 100.0 / source.featureCount() if source.featureCount() else 0
+        count = 0
+
+        for feat in source.getFeatures():
+            if feedback.isCanceled():
+                break
+
+            if feat.hasGeometry():
+                outGeomList = []
+                if feat.geometry().isMultipart():
+                    outGeomList = feat.geometry().asMultiPolyline()
+                else:
+                    outGeomList.append(feat.geometry().asPolyline())
+
+                polyGeom = self.removeBadLines(outGeomList)
+                if len(polyGeom) != 0:
+                    outFeat.setGeometry(QgsGeometry.fromPolygon(polyGeom))
+                    attrs = feat.attributes()
+                    outFeat.setAttributes(attrs)
+                    sink.addFeature(outFeat, QgsFeatureSink.FastInsert)
             else:
-                outGeomList.append(f.geometry().asPolyline())
+                sink.addFeature(feat, QgsFeatureSink.FastInsert)
 
-            polyGeom = self.removeBadLines(outGeomList)
-            if len(polyGeom) != 0:
-                outFeat.setGeometry(QgsGeometry.fromPolygon(polyGeom))
-                attrs = f.attributes()
-                outFeat.setAttributes(attrs)
-                writer.addFeature(outFeat, QgsFeatureSink.FastInsert)
+            count += 1
+            feedback.setProgress(int(count * total))
 
-            feedback.setProgress(int(current * total))
-
-        del writer
+        return {self.OUTPUT: dest_id}
 
     def removeBadLines(self, lines):
         geom = []
