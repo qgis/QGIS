@@ -25,6 +25,7 @@
 #include "qgsmemoryproviderutils.h"
 #include "qgsprocessingparameters.h"
 #include "qgsprocessingalgorithm.h"
+#include "qgsvectorlayerfeatureiterator.h"
 
 QList<QgsRasterLayer *> QgsProcessingUtils::compatibleRasterLayers( QgsProject *project, bool sort )
 {
@@ -205,6 +206,60 @@ QgsMapLayer *QgsProcessingUtils::mapLayerFromString( const QString &string, QgsP
   else
   {
     return nullptr;
+  }
+}
+
+QgsProcessingFeatureSource *QgsProcessingUtils::variantToSource( const QVariant &value, QgsProcessingContext &context, const QVariant &fallbackValue )
+{
+  QVariant val = value;
+  bool selectedFeaturesOnly = false;
+  if ( val.canConvert<QgsProcessingFeatureSourceDefinition>() )
+  {
+    // input is a QgsProcessingFeatureSourceDefinition - get extra properties from it
+    QgsProcessingFeatureSourceDefinition fromVar = qvariant_cast<QgsProcessingFeatureSourceDefinition>( val );
+    selectedFeaturesOnly = fromVar.selectedFeaturesOnly;
+    val = fromVar.source;
+  }
+
+  if ( QgsVectorLayer *layer = qobject_cast< QgsVectorLayer * >( qvariant_cast<QObject *>( val ) ) )
+  {
+    return new QgsProcessingFeatureSource( layer, context );
+  }
+
+  QString layerRef;
+  if ( val.canConvert<QgsProperty>() )
+  {
+    layerRef = val.value< QgsProperty >().valueAsString( context.expressionContext(), fallbackValue.toString() );
+  }
+  else if ( !val.isValid() || val.toString().isEmpty() )
+  {
+    // fall back to default
+    if ( QgsVectorLayer *layer = qobject_cast< QgsVectorLayer * >( qvariant_cast<QObject *>( fallbackValue ) ) )
+    {
+      return new QgsProcessingFeatureSource( layer, context );
+    }
+
+    layerRef = fallbackValue.toString();
+  }
+  else
+  {
+    layerRef = val.toString();
+  }
+
+  if ( layerRef.isEmpty() )
+    return nullptr;
+
+  QgsVectorLayer *vl = qobject_cast< QgsVectorLayer *>( QgsProcessingUtils::mapLayerFromString( layerRef, context ) );
+  if ( !vl )
+    return nullptr;
+
+  if ( selectedFeaturesOnly )
+  {
+    return new QgsProcessingFeatureSource( new QgsVectorLayerSelectedFeatureSource( vl ), context, true );
+  }
+  else
+  {
+    return new QgsProcessingFeatureSource( vl, context );
   }
 }
 
