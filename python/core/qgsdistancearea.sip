@@ -290,6 +290,9 @@ Constructor
    code (and documentation) taken from rttopo project
  https://git.osgeo.org/gogs/rttopo/librttopo
  - spheroid_project.spheroid_project(...)
+ -  Valid bounds checking for degrees (latitude=+- 85.05115) is based values used for
+ -> 'WGS84 Web Mercator (Auxiliary Sphere)' calculations
+ --> latitudes outside these bounds cause the calculations to become unstable and can return invalid results
 .. versionadded:: 3.0
  \param p1 - location of first geographic (latitude/longitude) point as degrees.
  \param distance - distance in meters.

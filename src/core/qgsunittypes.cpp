@@ -1696,6 +1696,8 @@ QString QgsUnitTypes::encodeUnit( RenderUnit unit )
   {
     case RenderMillimeters:
       return QStringLiteral( "MM" );
+    case RenderMetersInMapUnits:
+      return QStringLiteral( "RenderMetersInMapUnits" );
     case RenderMapUnits:
       return QStringLiteral( "MapUnit" );
     case RenderPixels:
@@ -1721,6 +1723,10 @@ QgsUnitTypes::RenderUnit QgsUnitTypes::decodeRenderUnit( const QString &string, 
 
   if ( normalized == encodeUnit( RenderMillimeters ).toLower() )
     return RenderMillimeters;
+  if ( normalized == encodeUnit( RenderMetersInMapUnits ).toLower() )
+    return RenderMetersInMapUnits;
+  if ( normalized == QLatin1String( "meters" ) )
+    return RenderMetersInMapUnits;
   if ( normalized == encodeUnit( RenderMapUnits ).toLower() )
     return RenderMapUnits;
   if ( normalized == QLatin1String( "mapunits" ) )
@@ -1751,6 +1757,9 @@ QString QgsUnitTypes::toString( QgsUnitTypes::RenderUnit unit )
   {
     case RenderMillimeters:
       return QObject::tr( "millimeters", "render" );
+
+    case RenderMetersInMapUnits:
+      return QObject::tr( "meters (in map units)", "render" );
 
     case RenderMapUnits:
       return QObject::tr( "map units", "render" );
