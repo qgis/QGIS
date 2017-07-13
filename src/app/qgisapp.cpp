@@ -5451,14 +5451,14 @@ bool QgisApp::fileSave()
     // make sure we have the .qgs extension in the file name
     if ( filter == zipExt )
     {
-      if ( "qgz" != fullPath.suffix().toLower() )
+      if ( fullPath.suffix().compare( QLatin1String( "qgz" ), Qt::CaseInsensitive ) != 0 )
         fullPath.setFile( fullPath.filePath() + ".qgz" );
 
       QgsProject::instance()->setZipFileName( fullPath.filePath() );
     }
     else
     {
-      if ( "qgs" != fullPath.suffix().toLower() )
+      if ( fullPath.suffix().compare( QLatin1String( "qgs" ), Qt::CaseInsensitive ) != 0 )
         fullPath.setFile( fullPath.filePath() + ".qgs" );
 
       QgsProject::instance()->setFileName( fullPath.filePath() );
@@ -5557,14 +5557,14 @@ void QgisApp::fileSaveAs()
   bool writeOk = false;
   if ( filter == zipExt )
   {
-    if ( "qgz" != fullPath.suffix().toLower() )
+    if ( fullPath.suffix().compare( QLatin1String( "qgz" ), Qt::CaseInsensitive ) != 0 )
       fullPath.setFile( fullPath.filePath() + ".qgz" );
 
     writeOk = QgsProject::instance()->zip( fullPath.filePath() );
   }
   else // .qgs
   {
-    if ( "qgs" != fullPath.suffix().toLower() )
+    if ( fullPath.suffix().compare( QLatin1String( "qgs" ), Qt::CaseInsensitive ) != 0 )
       fullPath.setFile( fullPath.filePath() + ".qgs" );
 
     QgsProject::instance()->setFileName( fullPath.filePath() );

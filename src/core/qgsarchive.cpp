@@ -135,7 +135,7 @@ QString QgsArchive::projectFile() const
   Q_FOREACH ( const QString &file, mFiles )
   {
     QFileInfo fileInfo( file );
-    if ( "qgs" == fileInfo.suffix().toLower() )
+    if ( fileInfo.suffix().compare( QLatin1String( "qgs" ), Qt::CaseInsensitive ) == 0 )
       return file;
   }
 
