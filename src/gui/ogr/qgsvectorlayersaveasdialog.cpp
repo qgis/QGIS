@@ -744,7 +744,8 @@ QStringList QgsVectorLayerSaveAsDialog::layerOptions() const
           QgsVectorFileWriter::IntOption *opt = dynamic_cast<QgsVectorFileWriter::IntOption *>( *it );
           QSpinBox *sb = mLayerOptionsGroupBox->findChild<QSpinBox *>( it.key() );
           if ( opt && sb && sb->value() != opt->defaultValue )
-            break;
+            options << QStringLiteral( "%1=%2" ).arg( it.key() ).arg( sb->value() );
+          break;
         }
 
         case QgsVectorFileWriter::Set:
