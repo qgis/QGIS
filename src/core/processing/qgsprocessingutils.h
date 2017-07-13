@@ -282,6 +282,9 @@ class CORE_EXPORT QgsProcessingFeatureSource : public QgsFeatureSource
     QgsWkbTypes::Type wkbType() const override;
     long featureCount() const override;
     QString sourceName() const override;
+    QSet<QVariant> uniqueValues( int fieldIndex, int limit = -1 ) const override;
+    QVariant minimumValue( int fieldIndex ) const override;
+    QVariant maximumValue( int fieldIndex ) const override;
 
   private:
 

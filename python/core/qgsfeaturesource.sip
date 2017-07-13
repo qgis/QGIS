@@ -81,7 +81,29 @@ class QgsFeatureSource
  If specified, the ``limit`` option can be used to limit the number of returned values.
  The base class implementation uses a non-optimised approach of looping through
  all features in the source.
+.. seealso:: minimumValue()
+.. seealso:: maximumValue()
  :rtype: set of QVariant
+%End
+
+    virtual QVariant minimumValue( int fieldIndex ) const;
+%Docstring
+ Returns the minimum value for an attribute column or an invalid variant in case of error.
+ The base class implementation uses a non-optimised approach of looping through
+ all features in the source.
+.. seealso:: maximumValue()
+.. seealso:: uniqueValues()
+ :rtype: QVariant
+%End
+
+    virtual QVariant maximumValue( int fieldIndex ) const;
+%Docstring
+ Returns the maximum value for an attribute column or an invalid variant in case of error.
+ The base class implementation uses a non-optimised approach of looping through
+ all features in the source.
+.. seealso:: minimumValue()
+.. seealso:: uniqueValues()
+ :rtype: QVariant
 %End
 
     virtual QgsRectangle sourceExtent() const;

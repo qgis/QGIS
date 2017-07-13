@@ -1452,7 +1452,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * \see maximumValue()
      * \see uniqueValues()
      */
-    QVariant minimumValue( int index ) const;
+    QVariant minimumValue( int index ) const override;
 
     /** Returns the maximum value for an attribute column or an invalid variant in case of error.
      * Note that in some circumstances when unsaved changes are present for the layer then the
@@ -1461,7 +1461,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * \see minimumValue()
      * \see uniqueValues()
      */
-    QVariant maximumValue( int index ) const;
+    QVariant maximumValue( int index ) const override;
 
     /** Calculates an aggregated value from the layer's features.
      * \param aggregate aggregate to calculate

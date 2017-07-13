@@ -635,3 +635,15 @@ class FeatureSourceTestCase(object):
 
             assert f.hasGeometry(), 'Expected geometry, got none'
             self.assertTrue(f.isValid())
+
+    def testUniqueValues(self):
+        self.assertEqual(set(self.source.uniqueValues(1)), set([-200, 100, 200, 300, 400]))
+        assert set(['Apple', 'Honey', 'Orange', 'Pear', NULL]) == set(self.source.uniqueValues(2)), 'Got {}'.format(set(self.source.uniqueValues(2)))
+
+    def testMinimumValue(self):
+        self.assertEqual(self.source.minimumValue(1), -200)
+        self.assertEqual(self.source.minimumValue(2), 'Apple')
+
+    def testMaximumValue(self):
+        self.assertEqual(self.source.maximumValue(1), 400)
+        self.assertEqual(self.source.maximumValue(2), 'Pear')

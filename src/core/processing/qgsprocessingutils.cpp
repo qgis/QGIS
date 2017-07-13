@@ -566,3 +566,18 @@ QString QgsProcessingFeatureSource::sourceName() const
   return mSource->sourceName();
 
 }
+
+QSet<QVariant> QgsProcessingFeatureSource::uniqueValues( int fieldIndex, int limit ) const
+{
+  return mSource->uniqueValues( fieldIndex, limit );
+}
+
+QVariant QgsProcessingFeatureSource::minimumValue( int fieldIndex ) const
+{
+  return mSource->minimumValue( fieldIndex );
+}
+
+QVariant QgsProcessingFeatureSource::maximumValue( int fieldIndex ) const
+{
+  return mSource->maximumValue( fieldIndex );
+}

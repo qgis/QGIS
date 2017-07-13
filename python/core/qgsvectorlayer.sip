@@ -1537,7 +1537,8 @@ Assembles mUpdatedFields considering provider fields, joined fields and added fi
  :rtype: list of str
 %End
 
-    QVariant minimumValue( int index ) const;
+    virtual QVariant minimumValue( int index ) const;
+
 %Docstring
  Returns the minimum value for an attribute column or an invalid variant in case of error.
  Note that in some circumstances when unsaved changes are present for the layer then the
@@ -1548,7 +1549,8 @@ Assembles mUpdatedFields considering provider fields, joined fields and added fi
  :rtype: QVariant
 %End
 
-    QVariant maximumValue( int index ) const;
+    virtual QVariant maximumValue( int index ) const;
+
 %Docstring
  Returns the maximum value for an attribute column or an invalid variant in case of error.
  Note that in some circumstances when unsaved changes are present for the layer then the

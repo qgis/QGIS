@@ -232,6 +232,12 @@ class QgsProcessingFeatureSource : QgsFeatureSource
 
     virtual QString sourceName() const;
 
+    virtual QSet<QVariant> uniqueValues( int fieldIndex, int limit = -1 ) const;
+
+    virtual QVariant minimumValue( int fieldIndex ) const;
+
+    virtual QVariant maximumValue( int fieldIndex ) const;
+
 
 };
 
