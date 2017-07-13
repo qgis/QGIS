@@ -33,7 +33,7 @@ from qgis.PyQt.QtGui import QIcon
 from qgis.core import (QgsFeatureRequest,
                        QgsProcessing,
                        QgsProcessingException,
-                       QgsProcessingParameterVectorLayer,
+                       QgsProcessingParameterFeatureSource,
                        QgsProcessingParameterNumber,
                        QgsProcessingParameterField,
                        QgsProcessingParameterEnum,
@@ -88,9 +88,9 @@ class Heatmap(QgisAlgorithm):
         self.OUTPUT_VALUES = OrderedDict([(self.tr('Raw'), QgsKernelDensityEstimation.OutputRaw),
                                           (self.tr('Scaled'), QgsKernelDensityEstimation.OutputScaled)])
 
-        self.addParameter(QgsProcessingParameterVectorLayer(self.INPUT_LAYER,
-                                                            self.tr('Point layer'),
-                                                            [QgsProcessing.TypeVectorPoint]))
+        self.addParameter(QgsProcessingParameterFeatureSource(self.INPUT_LAYER,
+                                                              self.tr('Point layer'),
+                                                              [QgsProcessing.TypeVectorPoint]))
 
         self.addParameter(QgsProcessingParameterNumber(self.RADIUS,
                                                        self.tr('Radius (layer units)'),
@@ -167,7 +167,7 @@ class Heatmap(QgisAlgorithm):
         self.addParameter(QgsProcessingParameterRasterDestination(self.OUTPUT_LAYER, self.tr('Heatmap')))
 
     def processAlgorithm(self, parameters, context, feedback):
-        layer = self.parameterAsVectorLayer(parameters, self.INPUT_LAYER, context)
+        source = self.parameterAsSource(parameters, self.INPUT_LAYER, context)
 
         radius = self.parameterAsDouble(parameters, self.RADIUS, context)
         kernel_shape = self.parameterAsEnum(parameters, self.KERNEL, context)
@@ -182,17 +182,17 @@ class Heatmap(QgisAlgorithm):
         attrs = []
 
         kde_params = QgsKernelDensityEstimation.Parameters()
-        kde_params.vectorLayer = layer
+        kde_params.source = source
         kde_params.radius = radius
         kde_params.pixelSize = pixel_size
         # radius field
         if radius_field:
             kde_params.radiusField = radius_field
-            attrs.append(layer.fields().lookupField(radius_field))
+            attrs.append(source.fields().lookupField(radius_field))
         # weight field
         if weight_field:
             kde_params.weightField = weight_field
-            attrs.append(layer.fields().lookupField(weight_field))
+            attrs.append(source.fields().lookupField(weight_field))
 
         kde_params.shape = kernel_shape
         kde_params.decayRatio = decay
@@ -206,8 +206,8 @@ class Heatmap(QgisAlgorithm):
 
         request = QgsFeatureRequest()
         request.setSubsetOfAttributes(attrs)
-        features = layer.getFeatures(request)
-        total = 100.0 / layer.featureCount() if layer.featureCount() else 0
+        features = source.getFeatures(request)
+        total = 100.0 / source.featureCount() if source.featureCount() else 0
         for current, f in enumerate(features):
             if feedback.isCanceled():
                 break
