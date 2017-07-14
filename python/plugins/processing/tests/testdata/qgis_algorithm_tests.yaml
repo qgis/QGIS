@@ -1044,18 +1044,18 @@ tests:
         hash: 762865ee485a6736d188402aa10e6fd38a812a9e45a7dd2d4885a63a
         type: rasterhash
 
-#  - algorithm: qgis:slope
-#    name: Slope from QGIS analysis library
-#    params:
-#      INPUT_LAYER:
-#        name: dem.tif
-#        type: raster
-#      Z_FACTOR: 1.0
-#    results:
-#      OUTPUT_LAYER:
-#        hash: 151ea76a21b286c16567eb6b4b692925a84145b65561a0017effb1a1
-#        type: rasterhash
-#
+  - algorithm: qgis:slope
+    name: Slope from QGIS analysis library
+    params:
+      INPUT_LAYER:
+        name: dem.tif
+        type: raster
+      Z_FACTOR: 1.0
+    results:
+      OUTPUT_LAYER:
+        hash: 151ea76a21b286c16567eb6b4b692925a84145b65561a0017effb1a1
+        type: rasterhash
+
 #  - algorithm: qgis:ruggednessindex
 #    name: Ruggedness index from QGIS analysis library
 #    params:

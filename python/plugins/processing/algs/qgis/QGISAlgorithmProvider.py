@@ -76,6 +76,7 @@ from .SaveSelectedFeatures import SaveSelectedFeatures
 from .SelectByAttribute import SelectByAttribute
 from .SelectByExpression import SelectByExpression
 from .SimplifyGeometries import SimplifyGeometries
+from .Slope import Slope
 from .Smooth import Smooth
 from .SnapGeometries import SnapGeometriesToLayer
 from .SpatialiteExecuteSQL import SpatialiteExecuteSQL
@@ -146,7 +147,6 @@ from .ZonalStatistics import ZonalStatistics
 # from .Translate import Translate
 # from .SingleSidedBuffer import SingleSidedBuffer
 # from .PointsAlongGeometry import PointsAlongGeometry
-# from .Slope import Slope
 # from .Ruggedness import Ruggedness
 # from .Hillshade import Hillshade
 # from .Relief import Relief
@@ -270,6 +270,7 @@ class QGISAlgorithmProvider(QgsProcessingProvider):
                 SelectByAttribute(),
                 SelectByExpression(),
                 SimplifyGeometries(),
+                Slope(),
                 Smooth(),
                 SnapGeometriesToLayer(),
                 SpatialiteExecuteSQL(),
