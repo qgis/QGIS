@@ -18,6 +18,9 @@
 #include "qgslayout.h"
 #include "qgstest.h"
 #include "qgslayoututils.h"
+#include "qgstestutils.h"
+#include "qgsproject.h"
+#include "qgslayoutitemmap.h"
 
 class TestQgsLayoutUtils: public QObject
 {
@@ -29,6 +32,8 @@ class TestQgsLayoutUtils: public QObject
     void init();// will be called before each testfunction is executed.
     void cleanup();// will be called after every testfunction.
     void normalizedAngle(); //test normalised angle function
+    void createRenderContextFromLayout();
+    void createRenderContextFromMap();
 
   private:
     QString mReport;
@@ -111,6 +116,117 @@ void TestQgsLayoutUtils::normalizedAngle()
   }
 }
 
+
+void TestQgsLayoutUtils::createRenderContextFromLayout()
+{
+  QImage testImage = QImage( 250, 250, QImage::Format_RGB32 );
+  testImage.setDotsPerMeterX( 150 / 25.4 * 1000 );
+  testImage.setDotsPerMeterY( 150 / 25.4 * 1000 );
+  QPainter p( &testImage );
+
+  // no composition
+  QgsRenderContext rc = QgsLayoutUtils::createRenderContextForLayout( nullptr, &p );
+  QGSCOMPARENEAR( rc.scaleFactor(), 150 / 25.4, 0.001 );
+  QCOMPARE( rc.painter(), &p );
+
+  // no composition, no painter
+  rc = QgsLayoutUtils::createRenderContextForLayout( nullptr, nullptr );
+  QGSCOMPARENEAR( rc.scaleFactor(), 88 / 25.4, 0.001 );
+  QVERIFY( !rc.painter() );
+
+  //create composition with no reference map
+  QgsRectangle extent( 2000, 2800, 2500, 2900 );
+  QgsProject project;
+  QgsLayout l( &project );
+  rc = QgsLayoutUtils::createRenderContextForLayout( &l, &p );
+  QGSCOMPARENEAR( rc.scaleFactor(), 150 / 25.4, 0.001 );
+  QCOMPARE( rc.painter(), &p );
+
+  // layout, no map, no painter
+  rc = QgsLayoutUtils::createRenderContextForLayout( &l, nullptr );
+  QGSCOMPARENEAR( rc.scaleFactor(), 88 / 25.4, 0.001 );
+  QVERIFY( !rc.painter() );
+
+  // add a reference map
+  QgsLayoutItemMap *map = new QgsLayoutItemMap( &l );
+#if 0 // TODO
+  map->setNewExtent( extent );
+  map->setSceneRect( QRectF( 30, 60, 200, 100 ) );
+  composition->addComposerMap( map );
+#endif
+  l.setReferenceMap( map );
+
+  rc = QgsLayoutUtils::createRenderContextForLayout( &l, &p );
+  QGSCOMPARENEAR( rc.scaleFactor(), 150 / 25.4, 0.001 );
+  QGSCOMPARENEAR( rc.rendererScale(), map->scale(), 1000000 );
+  QCOMPARE( rc.painter(), &p );
+
+  // layout, reference map, no painter
+  rc = QgsLayoutUtils::createRenderContextForLayout( &l, nullptr );
+  QGSCOMPARENEAR( rc.scaleFactor(), 88 / 25.4, 0.001 );
+  QGSCOMPARENEAR( rc.rendererScale(), map->scale(), 1000000 );
+  QVERIFY( !rc.painter() );
+
+  p.end();
+}
+
+void TestQgsLayoutUtils::createRenderContextFromMap()
+{
+  QImage testImage = QImage( 250, 250, QImage::Format_RGB32 );
+  testImage.setDotsPerMeterX( 150 / 25.4 * 1000 );
+  testImage.setDotsPerMeterY( 150 / 25.4 * 1000 );
+  QPainter p( &testImage );
+
+  // no map
+  QgsRenderContext rc = QgsLayoutUtils::createRenderContextForMap( nullptr, &p );
+  QGSCOMPARENEAR( rc.scaleFactor(), 150 / 25.4, 0.001 );
+  QCOMPARE( rc.painter(), &p );
+
+  // no map, no painter
+  rc = QgsLayoutUtils::createRenderContextForMap( nullptr, nullptr );
+  QGSCOMPARENEAR( rc.scaleFactor(), 88 / 25.4, 0.001 );
+  QVERIFY( !rc.painter() );
+
+  //create composition with no reference map
+  QgsRectangle extent( 2000, 2800, 2500, 2900 );
+  QgsProject project;
+  QgsLayout l( &project );
+
+#if 0 // TODO
+  // add a map
+  QgsLayoutItemMap *map = new QgsLayoutItemMap( &l );
+
+  map->setNewExtent( extent );
+  map->setSceneRect( QRectF( 30, 60, 200, 100 ) );
+  l.addComposerMap( map );
+#endif
+
+#if 0 //TODO
+  rc = QgsLayoutUtils::createRenderContextForMap( map, &p );
+  QGSCOMPARENEAR( rc.scaleFactor(), 150 / 25.4, 0.001 );
+  QGSCOMPARENEAR( rc.rendererScale(), map->scale(), 1000000 );
+  QCOMPARE( rc.painter(), &p );
+
+  // map, no painter
+  rc = QgsLayoutUtils::createRenderContextForMap( map, nullptr );
+  QGSCOMPARENEAR( rc.scaleFactor(), 88 / 25.4, 0.001 );
+  QGSCOMPARENEAR( rc.rendererScale(), map->scale(), 1000000 );
+  QVERIFY( !rc.painter() );
+
+  // secondary map
+  QgsLayoutItemMap *map2 = new QgsLayoutItemMap( &l );
+
+  map2->setNewExtent( extent );
+  map2->setSceneRect( QRectF( 30, 60, 100, 50 ) );
+  composition->addComposerMap( map2 );
+
+  rc = QgsLayoutUtils::createRenderContextForMap( map2, &p );
+  QGSCOMPARENEAR( rc.scaleFactor(), 150 / 25.4, 0.001 );
+  QGSCOMPARENEAR( rc.rendererScale(), map2->scale(), 1000000 );
+  QVERIFY( rc.painter() );
+#endif
+  p.end();
+}
 
 QGSTEST_MAIN( TestQgsLayoutUtils )
 #include "testqgslayoututils.moc"

@@ -19,6 +19,11 @@
 
 #include "qgis_core.h"
 
+class QgsRenderContext;
+class QgsLayout;
+class QgsLayoutItemMap;
+class QPainter;
+
 /**
  * \ingroup core
  * Utilities for layouts.
@@ -34,6 +39,23 @@ class CORE_EXPORT QgsLayoutUtils
      * angles are converted to positive angles in the range [0, 360).
      */
     static double normalizedAngle( const double angle, const bool allowNegative = false );
+
+    /**
+     * Creates a render context suitable for the specified layout \a map and \a painter destination.
+     * This method returns a new QgsRenderContext which matches the scale and settings of the
+     * target map. If the \a dpi argument is not specified then the dpi will be taken from the destinatation
+     * painter device.
+     * \see createRenderContextForLayout()
+     */
+    static QgsRenderContext createRenderContextForMap( QgsLayoutItemMap *map, QPainter *painter, double dpi = -1 );
+
+    /**
+     * Creates a render context suitable for the specified \a layout and \a painter destination.
+     * This method returns a new QgsRenderContext which matches the scale and settings from the layout's
+     * QgsLayout::referenceMap().
+     * \see createRenderContextForMap()
+     */
+    static QgsRenderContext createRenderContextForLayout( QgsLayout *layout, QPainter *painter );
 
 };
 

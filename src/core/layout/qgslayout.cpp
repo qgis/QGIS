@@ -93,3 +93,13 @@ QStringList QgsLayout::customProperties() const
 {
   return mCustomProperties.keys();
 }
+
+QgsLayoutItemMap *QgsLayout::referenceMap() const
+{
+  return nullptr;
+}
+
+void QgsLayout::setReferenceMap( QgsLayoutItemMap *map )
+{
+  Q_UNUSED( map );
+}

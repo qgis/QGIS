@@ -18,6 +18,7 @@
 #include "qgslayout.h"
 #include "qgstest.h"
 #include "qgsproject.h"
+#include "qgslayoutitemmap.h"
 
 class TestQgsLayout: public QObject
 {
@@ -34,6 +35,7 @@ class TestQgsLayout: public QObject
     void customProperties();
     void variablesEdited();
     void scope();
+    void referenceMap();
 
   private:
     QString mReport;
@@ -210,6 +212,37 @@ void TestQgsLayout::scope()
   QCOMPARE( c.variable( "project_title" ).toString(), QStringLiteral( "my title" ) );
   // and layout variables
   QCOMPARE( c.variable( "new_var3" ).toInt(), 17 );
+
+}
+
+void TestQgsLayout::referenceMap()
+{
+  QgsRectangle extent( 2000, 2800, 2500, 2900 );
+  QgsProject p;
+  QgsLayout l( &p );
+
+  // no maps
+  QVERIFY( !l.referenceMap() );
+#if 0
+
+  QgsLayoutItemMap *map = new QgsLayoutItemMap( &l );
+  map->setNewExtent( extent );
+  map->setSceneRect( QRectF( 30, 60, 200, 100 ) );
+  l.addComposerMap( map );
+  QCOMPARE( l.referenceMap(), map );
+#endif
+#if 0 // TODO
+
+  // add a larger map
+  QgsLayoutItemMap *map2 = new QgsLayoutItemMap( &l );
+  map2->setNewExtent( extent );
+  map2->setSceneRect( QRectF( 30, 60, 250, 150 ) );
+  l.addComposerMap( map2 );
+  QCOMPARE( l.referenceMap(), map2 );
+  // explicitly set reference map
+  l.setReferenceMap( map );
+  QCOMPARE( l.referenceMap(), map );
+#endif
 
 }
 

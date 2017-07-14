@@ -21,6 +21,8 @@
 #include "qgslayoutcontext.h"
 #include "qgsexpressioncontextgenerator.h"
 
+class QgsLayoutItemMap;
+
 /**
  * \ingroup core
  * \class QgsLayout
@@ -181,6 +183,25 @@ class CORE_EXPORT QgsLayout : public QGraphicsScene, public QgsExpressionContext
      * \see removeCustomProperty()
      */
     QStringList customProperties() const;
+
+    /**
+     * Returns the map item which will be used to generate corresponding world files when the
+     * layout is exported. If no map was explicitly set via setReferenceMap(), the largest
+     * map in the layout will be returned (or nullptr if there are no maps in the layout).
+     * \see setReferenceMap()
+     * \see generateWorldFile()
+     */
+    //TODO
+    QgsLayoutItemMap *referenceMap() const;
+
+    /**
+     * Sets the \a map item which will be used to generate corresponding world files when the
+     * layout is exported.
+     * \see referenceMap()
+     * \see setGenerateWorldFile()
+     */
+    //TODO
+    void setReferenceMap( QgsLayoutItemMap *map );
 
   signals:
 

@@ -7,6 +7,7 @@
  ************************************************************************/
 
 
+
 class QgsLayout : QGraphicsScene, QgsExpressionContextGenerator
 {
 %Docstring
@@ -174,6 +175,13 @@ class QgsLayout : QGraphicsScene, QgsExpressionContextGenerator
 .. seealso:: removeCustomProperty()
  :rtype: list of str
 %End
+
+    QgsLayoutItemMap *referenceMap() const;
+%Docstring
+ :rtype: QgsLayoutItemMap
+%End
+
+    void setReferenceMap( QgsLayoutItemMap *map );
 
   signals:
 
