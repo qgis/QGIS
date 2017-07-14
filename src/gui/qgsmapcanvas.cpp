@@ -639,10 +639,7 @@ void QgsMapCanvas::rendererJobFinished()
 void QgsMapCanvas::previewJobFinished()
 {
   QgsMapRendererQImageJob *job = qobject_cast<QgsMapRendererQImageJob *>( sender() );
-  if ( !job )
-  {
-    return;
-  }
+  Q_ASSERT( job );
 
   if ( mMap )
   {
@@ -2166,8 +2163,8 @@ void QgsMapCanvas::startPreviewJobs()
 
 void QgsMapCanvas::stopPreviewJobs()
 {
-  QList< QgsMapRendererQImageJob * >::iterator it = mPreviewJobs.begin();
-  for ( ; it != mPreviewJobs.end(); ++it )
+  QList< QgsMapRendererQImageJob * >::const_iterator it = mPreviewJobs.constBegin();
+  for ( ; it != mPreviewJobs.constEnd(); ++it )
   {
     if ( *it )
     {
