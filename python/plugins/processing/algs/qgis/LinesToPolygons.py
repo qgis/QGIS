@@ -31,6 +31,10 @@ from qgis.PyQt.QtGui import QIcon
 
 from qgis.core import (QgsFeature,
                        QgsGeometry,
+                       QgsGeometryCollection,
+                       QgsPolygonV2,
+                       QgsMultiPolygonV2,
+                       QgsMultiSurface,
                        QgsWkbTypes,
                        QgsFeatureSink,
                        QgsProcessing,
@@ -79,10 +83,7 @@ class LinesToPolygons(QgisAlgorithm):
     def processAlgorithm(self, parameters, context, feedback):
         source = self.parameterAsSource(parameters, self.INPUT, context)
 
-        if QgsWkbTypes.isMultiType(source.wkbType()):
-            geomType = QgsWkbTypes.MultiPolygon
-        else:
-            geomType = QgsWkbTypes.Polygon
+        geomType = self.convertWkbToPolygons(source.wkbType())
 
         (sink, dest_id) = self.parameterAsSink(parameters, self.OUTPUT, context,
                                                source.fields(), geomType, source.sourceCrs())
@@ -97,18 +98,12 @@ class LinesToPolygons(QgisAlgorithm):
                 break
 
             if feat.hasGeometry():
-                outGeomList = []
-                if feat.geometry().isMultipart():
-                    outGeomList = feat.geometry().asMultiPolyline()
-                else:
-                    outGeomList.append(feat.geometry().asPolyline())
-
-                polyGeom = self.removeBadLines(outGeomList)
-                if len(polyGeom) != 0:
-                    outFeat.setGeometry(QgsGeometry.fromPolygon(polyGeom))
-                    attrs = feat.attributes()
-                    outFeat.setAttributes(attrs)
-                    sink.addFeature(outFeat, QgsFeatureSink.FastInsert)
+                outFeat.setGeometry(QgsGeometry(self.convertToPolygons(feat.geometry())))
+                attrs = feat.attributes()
+                outFeat.setAttributes(attrs)
+                sink.addFeature(outFeat, QgsFeatureSink.FastInsert)
+                if outFeat.geometry().isEmpty():
+                    feedback.reportError(self.tr("One or more line ignored due to geometry not having a minimum of three vertices."))
             else:
                 sink.addFeature(feat, QgsFeatureSink.FastInsert)
 
@@ -117,13 +112,44 @@ class LinesToPolygons(QgisAlgorithm):
 
         return {self.OUTPUT: dest_id}
 
-    def removeBadLines(self, lines):
-        geom = []
-        if len(lines) == 1:
-            if len(lines[0]) > 2:
-                geom = lines
-            else:
-                geom = []
+    def convertWkbToPolygons(self, wkb):
+        multi_wkb = None
+        if QgsWkbTypes.singleType(QgsWkbTypes.flatType(wkb)) == QgsWkbTypes.LineString:
+            multi_wkb = QgsWkbTypes.MultiPolygon
+        elif QgsWkbTypes.singleType(QgsWkbTypes.flatType(wkb)) == QgsWkbTypes.CompoundCurve:
+            multi_wkb = QgsWkbTypes.MultiSurface
+        if QgsWkbTypes.hasM(wkb):
+            multi_wkb = QgsWkbTypes.addM(multi_wkb)
+        if QgsWkbTypes.hasZ(wkb):
+            multi_wkb = QgsWkbTypes.addZ(multi_wkb)
+
+        return multi_wkb
+
+    def convertToPolygons(self, geometry):
+        surfaces = self.getSurfaces(geometry.geometry())
+        output_wkb = self.convertWkbToPolygons(geometry.wkbType())
+        out_geom = None
+        if QgsWkbTypes.flatType(output_wkb) == QgsWkbTypes.MultiPolygon:
+            out_geom = QgsMultiPolygonV2()
         else:
-            geom = [elem for elem in lines if len(elem) > 2]
-        return geom
+            out_geom = QgsMultiSurface()
+
+        for surface in surfaces:
+            out_geom.addGeometry(surface)
+
+        return out_geom
+
+    def getSurfaces(self, geometry):
+        surfaces = []
+        if isinstance(geometry, QgsGeometryCollection):
+            # collection
+            for i in range(geometry.numGeometries()):
+                surfaces.extend(self.getSurfaces(geometry.geometryN(i)))
+        else:
+            # not collection
+            if geometry.vertexCount() > 2:
+                surface = QgsPolygonV2()
+                surface.setExteriorRing(geometry.clone())
+                surfaces.append(surface)
+
+        return surfaces

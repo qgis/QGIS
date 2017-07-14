@@ -10,15 +10,31 @@
       <gml:coord><gml:X>11</gml:X><gml:Y>5</gml:Y></gml:coord>
     </gml:Box>
   </gml:boundedBy>
-                                                                                                                                                               
+
   <gml:featureMember>
     <ogr:lines_to_polygon fid="lines.0">
-      <ogr:geometryProperty><gml:Polygon srsName="EPSG:4326"><gml:outerBoundaryIs><gml:LinearRing><gml:coordinates>6,2 9,2 9,3 11,5 6,2</gml:coordinates></gml:LinearRing></gml:outerBoundaryIs></gml:Polygon></ogr:geometryProperty>
+      <ogr:geometryProperty><gml:MultiPolygon srsName="EPSG:4326"><gml:polygonMember><gml:Polygon><gml:outerBoundaryIs><gml:LinearRing><gml:coordinates>6,2 9,2 9,3 11,5 6,2</gml:coordinates></gml:LinearRing></gml:outerBoundaryIs></gml:Polygon></gml:polygonMember></gml:MultiPolygon></ogr:geometryProperty>
+    </ogr:lines_to_polygon>
+  </gml:featureMember>
+  <gml:featureMember>
+    <ogr:lines_to_polygon fid="lines.1">
     </ogr:lines_to_polygon>
   </gml:featureMember>
   <gml:featureMember>
     <ogr:lines_to_polygon fid="lines.2">
-      <ogr:geometryProperty><gml:Polygon srsName="EPSG:4326"><gml:outerBoundaryIs><gml:LinearRing><gml:coordinates>2,0 2,2 3,2 3,3 2,0</gml:coordinates></gml:LinearRing></gml:outerBoundaryIs></gml:Polygon></ogr:geometryProperty>
+      <ogr:geometryProperty><gml:MultiPolygon srsName="EPSG:4326"><gml:polygonMember><gml:Polygon><gml:outerBoundaryIs><gml:LinearRing><gml:coordinates>2,0 2,2 3,2 3,3 2,0</gml:coordinates></gml:LinearRing></gml:outerBoundaryIs></gml:Polygon></gml:polygonMember></gml:MultiPolygon></ogr:geometryProperty>
+    </ogr:lines_to_polygon>
+  </gml:featureMember>
+  <gml:featureMember>
+    <ogr:lines_to_polygon fid="lines.3">
+    </ogr:lines_to_polygon>
+  </gml:featureMember>
+  <gml:featureMember>
+    <ogr:lines_to_polygon fid="lines.4">
+    </ogr:lines_to_polygon>
+  </gml:featureMember>
+  <gml:featureMember>
+    <ogr:lines_to_polygon fid="lines.5">
     </ogr:lines_to_polygon>
   </gml:featureMember>
   <gml:featureMember>

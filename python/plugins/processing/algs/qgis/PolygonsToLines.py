@@ -31,6 +31,9 @@ from qgis.PyQt.QtGui import QIcon
 
 from qgis.core import (QgsFeature,
                        QgsGeometry,
+                       QgsGeometryCollection,
+                       QgsMultiLineString,
+                       QgsMultiCurve,
                        QgsWkbTypes,
                        QgsFeatureSink,
                        QgsProcessing,
@@ -79,7 +82,7 @@ class PolygonsToLines(QgisAlgorithm):
     def processAlgorithm(self, parameters, context, feedback):
         source = self.parameterAsSource(parameters, self.INPUT, context)
 
-        geomType = QgsWkbTypes.MultiLineString
+        geomType = self.convertWkbToLines(source.wkbType())
 
         (sink, dest_id) = self.parameterAsSink(parameters, self.OUTPUT, context,
                                                source.fields(), geomType, source.sourceCrs())
@@ -94,8 +97,7 @@ class PolygonsToLines(QgisAlgorithm):
                 break
 
             if feat.hasGeometry():
-                lines = QgsGeometry(feat.geometry().geometry().boundary()).asMultiPolyline()
-                outFeat.setGeometry(QgsGeometry.fromMultiPolyline(lines))
+                outFeat.setGeometry(QgsGeometry(self.convertToLines(feat.geometry())))
                 attrs = feat.attributes()
                 outFeat.setAttributes(attrs)
                 sink.addFeature(outFeat, QgsFeatureSink.FastInsert)
@@ -106,3 +108,44 @@ class PolygonsToLines(QgisAlgorithm):
             feedback.setProgress(int(count * total))
 
         return {self.OUTPUT: dest_id}
+
+    def convertWkbToLines(self, wkb):
+        multi_wkb = None
+        if QgsWkbTypes.singleType(QgsWkbTypes.flatType(wkb)) == QgsWkbTypes.Polygon:
+            multi_wkb = QgsWkbTypes.MultiLineString
+        elif QgsWkbTypes.singleType(QgsWkbTypes.flatType(wkb)) == QgsWkbTypes.CurvePolygon:
+            multi_wkb = QgsWkbTypes.MultiCurve
+        if QgsWkbTypes.hasM(wkb):
+            multi_wkb = QgsWkbTypes.addM(multi_wkb)
+        if QgsWkbTypes.hasZ(wkb):
+            multi_wkb = QgsWkbTypes.addZ(multi_wkb)
+
+        return multi_wkb
+
+    def convertToLines(self, geometry):
+        rings = self.getRings(geometry.geometry())
+        output_wkb = self.convertWkbToLines(geometry.wkbType())
+        out_geom = None
+        if QgsWkbTypes.flatType(output_wkb) == QgsWkbTypes.MultiLineString:
+            out_geom = QgsMultiLineString()
+        else:
+            out_geom = QgsMultiCurve()
+
+        for ring in rings:
+            out_geom.addGeometry(ring)
+
+        return out_geom
+
+    def getRings(self, geometry):
+        rings = []
+        if isinstance(geometry, QgsGeometryCollection):
+            # collection
+            for i in range(geometry.numGeometries()):
+                rings.extend(self.getRings(geometry.geometryN(i)))
+        else:
+            # not collection
+            rings.append(geometry.exteriorRing().clone())
+            for i in range(geometry.numInteriorRings()):
+                rings.append(geometry.interiorRing(i).clone())
+
+        return rings
