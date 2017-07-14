@@ -1,10 +1,10 @@
 QGIS
 Building QGIS from source - step by step
-Saturday July 08, 2017
+Friday July 14, 2017
 
 
-Last Updated: Saturday July 08, 2017
-Last Change : Tuesday July 04, 2017
+Last Updated: Friday July 14, 2017
+Last Change : Friday July 14, 2017
 
 
   1. Introduction
@@ -1246,9 +1246,9 @@ http://www.kyngchaos.com/software/frameworks
 Once downloaded, open and install the frameworks.
 
 William provides an additional installer package for PostgreSQL (for PostGIS
-support). QGIS just needs the libpq client library, so unless you want to
+support).  QGIS just needs the libpq client library, so unless you want to
 setup the full Postgres + PostGIS server, all you need is the client-only
-package. It's available here:
+package.  It's available here:
 
 http://www.kyngchaos.com/software/postgres
 

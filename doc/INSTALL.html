@@ -77,13 +77,13 @@ label{  background-color: #FFFFCC;
 <DIV CLASS="header" ID="header">
 <H1>QGIS</H1>
 <H2>Building QGIS from source - step by step</H2>
-<H3>Tuesday June 27, 2017</H3>
+<H3>Friday July 14, 2017</H3>
 </DIV>
 
 <DIV CLASS="body" ID="body">
 <P>
-Last Updated: Tuesday June 27, 2017
-Last Change : Tuesday June 27, 2017
+Last Updated: Friday July 14, 2017
+Last Change : Friday July 14, 2017
 </P>
 <DIV CLASS="toc">
 
@@ -433,7 +433,7 @@ After the 'g' generation is complete, press 'q' to exit the ccmake
 interactive dialog.
 </P>
 <P>
-/!\ <B>Warning:</B> Make sure that your build directory is completely empty when you 
+/!\ <B>Warning:</B> Make sure that your build directory is completely empty when you
 enter the command. Do never try to "re-use" an existing <B>Qt4</B> build directory.
 If you want to use `ccmake` or other interactive tools, run the command in
 the empty build directory once before starting to use the interactive tools.
@@ -590,14 +590,7 @@ new subdirectory called `build` or `build-qt5` in it.
 <H3>3.9.1. Install build dependencies</H3>
 
 <div class="code"><PRE>
-dnf install qt5-qtwebkit-devel qt5-qtlocation-devel qt5-qttools-static
-qt5-qtscript-devel qca-qt5-devel python3-qt5-devel python3-qscintilla-qt5-devel 
-qscintilla-qt5-devel python3-qscintilla-devel python3-qscintilla-qt5
-clang flex bison geos-devel gdal-devel sqlite-devel libspatialite-devel
-qt5-qtsvg-devel qt5-qtxmlpatterns-devel spatialindex-devel expat-devel proj-devel
-qwt-qt5-devel gsl-devel postgresql-devel cmake python3-future gdal-python3
-python3-psycopg2 python3-PyYAML python3-pygments python3-jinja2 python3-OSWLib
-qca-qt5-ossl
+dnf install qt5-qtwebkit-devel qt5-qtlocation-devel qt5-qttools-static qt5-qtscript-devel qca-qt5-devel python3-qt5-devel python3-qscintilla-qt5-devel qscintilla-qt5-devel python3-qscintilla-devel python3-qscintilla-qt5 clang flex bison geos-devel gdal-devel sqlite-devel libspatialite-devel qt5-qtsvg-devel qt5-qtxmlpatterns-devel spatialindex-devel expat-devel proj-devel qwt-qt5-devel gsl-devel postgresql-devel cmake python3-future gdal-python3 python3-psycopg2 python3-PyYAML python3-pygments python3-jinja2 python3-OSWLib qca-qt5-ossl
 </PRE></div>
 
 <P>
@@ -1734,7 +1727,7 @@ osgEarth), try bypassing ccache.
 
 <P>
 Download William Kyngesburye's excellent GDAL Complete package that includes
-PROJ, GEOS, GDAL, SQLite3, Spatialite, and image libraries, as frameworks.
+PROJ, GEOS, GDAL, SQLite3, SpatiaLite, and image libraries, as frameworks.
 There are also GSL and FreeType frameworks.
 </P>
 <P>
@@ -1745,9 +1738,9 @@ Once downloaded, open and install the frameworks.
 </P>
 <P>
 William provides an additional installer package for PostgreSQL (for PostGIS
-support). QGIS just needs the libpq client library, so unless you want to
+support).  QGIS just needs the libpq client library, so unless you want to
 setup the full Postgres + PostGIS server, all you need is the client-only
-package. It's available here:
+package.  It's available here:
 </P>
 <P>
 <A HREF="http://www.kyngchaos.com/software/postgres">http://www.kyngchaos.com/software/postgres</A>
