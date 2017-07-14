@@ -79,6 +79,20 @@ class QgsProcessingUtils
  :rtype: QgsMapLayer
 %End
 
+    static QgsProcessingFeatureSource *variantToSource( const QVariant &value, QgsProcessingContext &context, const QVariant &fallbackValue = QVariant() ) /Factory/;
+%Docstring
+ Converts a variant ``value`` to a new feature source.
+
+ Sources will either be taken from ``context``'s active project, or loaded from external
+ sources and stored temporarily in the ``context``.
+
+ The optional ``fallbackValue`` can be used to specify a "default" value which is used
+ if ``value`` cannot be successfully converted to a source.
+
+ This function creates a new object and the caller takes responsibility for deleting the returned object.
+ :rtype: QgsProcessingFeatureSource
+%End
+
     static QString normalizeLayerSource( const QString &source );
 %Docstring
  Normalizes a layer ``source`` string for safe comparison across different
@@ -231,6 +245,12 @@ class QgsProcessingFeatureSource : QgsFeatureSource
     virtual long featureCount() const;
 
     virtual QString sourceName() const;
+
+    virtual QSet<QVariant> uniqueValues( int fieldIndex, int limit = -1 ) const;
+
+    virtual QVariant minimumValue( int fieldIndex ) const;
+
+    virtual QVariant maximumValue( int fieldIndex ) const;
 
 
 };

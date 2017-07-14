@@ -49,9 +49,9 @@ class QgsKernelDensityEstimation
 
     struct Parameters
     {
-      QgsVectorLayer *vectorLayer;
+      QgsFeatureSource *source;
 %Docstring
-Vector point layer
+Point feature source
 %End
 
       double radius;
