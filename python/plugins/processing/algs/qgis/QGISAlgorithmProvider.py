@@ -60,6 +60,7 @@ from .ExtentFromLayer import ExtentFromLayer
 from .FixGeometry import FixGeometry
 from .GridPolygon import GridPolygon
 from .Heatmap import Heatmap
+from .Hillshade import Hillshade
 from .ImportIntoPostGIS import ImportIntoPostGIS
 from .ImportIntoSpatialite import ImportIntoSpatialite
 from .Intersection import Intersection
@@ -148,7 +149,6 @@ from .ZonalStatistics import ZonalStatistics
 # from .Translate import Translate
 # from .SingleSidedBuffer import SingleSidedBuffer
 # from .PointsAlongGeometry import PointsAlongGeometry
-# from .Hillshade import Hillshade
 # from .Relief import Relief
 # from .IdwInterpolation import IdwInterpolation
 # from .TinInterpolation import TinInterpolation
@@ -254,6 +254,7 @@ class QGISAlgorithmProvider(QgsProcessingProvider):
                 FixGeometry(),
                 GridPolygon(),
                 Heatmap(),
+                Hillshade(),
                 ImportIntoPostGIS(),
                 ImportIntoSpatialite(),
                 Intersection(),

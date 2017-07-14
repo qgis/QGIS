@@ -1068,20 +1068,20 @@ tests:
         hash: ff630246e8dc19c7217d81261c6b64f965c17fa04d3e41d7979c1f1e
         type: rasterhash
 
-#  - algorithm: qgis:hillshade
-#    name: Hillshade from QGIS analysis library
-#    params:
-#      AZIMUTH: 300.0
-#      INPUT_LAYER:
-#        name: dem.tif
-#        type: raster
-#      V_ANGLE: 40.0
-#      Z_FACTOR: 1.0
-#    results:
-#      OUTPUT_LAYER:
-#        hash: 58365b3715b925d6286e7f082ebd9c2a20f09fa1c922176d3f238002
-#        type: rasterhash
-#
+  - algorithm: qgis:hillshade
+    name: Hillshade from QGIS analysis library
+    params:
+      AZIMUTH: 300.0
+      INPUT_LAYER:
+        name: dem.tif
+        type: raster
+      V_ANGLE: 40.0
+      Z_FACTOR: 1.0
+    results:
+      OUTPUT_LAYER:
+        hash: 58365b3715b925d6286e7f082ebd9c2a20f09fa1c922176d3f238002
+        type: rasterhash
+
 #  - algorithm: qgis:relief
 #    name: Relief (automatic colors generation)
 #    params:
