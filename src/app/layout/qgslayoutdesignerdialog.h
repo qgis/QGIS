@@ -21,6 +21,15 @@
 #include "qgslayoutdesignerinterface.h"
 
 class QgsLayoutDesignerDialog;
+class QgsLayoutView;
+class QgsLayoutViewToolAddItem;
+class QgsLayoutViewToolPan;
+class QgsLayoutViewToolZoom;
+class QgsLayoutViewToolSelect;
+class QgsLayoutRuler;
+class QComboBox;
+class QSlider;
+class QLabel;
 
 class QgsAppLayoutDesignerInterface : public QgsLayoutDesignerInterface
 {
@@ -29,6 +38,7 @@ class QgsAppLayoutDesignerInterface : public QgsLayoutDesignerInterface
   public:
     QgsAppLayoutDesignerInterface( QgsLayoutDesignerDialog *dialog );
     QgsLayout *layout() override;
+    QgsLayoutView *view() override;
 
   public slots:
 
@@ -63,6 +73,11 @@ class QgsLayoutDesignerDialog: public QMainWindow, private Ui::QgsLayoutDesigner
     QgsLayout *currentLayout();
 
     /**
+     * Returns the layout view utilized by the designer.
+     */
+    QgsLayoutView *view();
+
+    /**
      * Sets the current \a layout to edit in the designer.
      * \see currentLayout()
      */
@@ -72,6 +87,7 @@ class QgsLayoutDesignerDialog: public QMainWindow, private Ui::QgsLayoutDesigner
      * Sets the icon \a size for the dialog.
      */
     void setIconSizes( int size );
+
 
   public slots:
 
@@ -84,6 +100,11 @@ class QgsLayoutDesignerDialog: public QMainWindow, private Ui::QgsLayoutDesigner
      * Raise, unminimize and activate this window.
      */
     void activate();
+
+    /**
+     * Toggles whether or not the rulers should be \a visible.
+     */
+    void showRulers( bool visible );
 
   signals:
 
@@ -98,7 +119,18 @@ class QgsLayoutDesignerDialog: public QMainWindow, private Ui::QgsLayoutDesigner
 
   private slots:
 
-    void itemTypeAdded( int type, const QString &name );
+    void itemTypeAdded( int type );
+    void statusZoomCombo_currentIndexChanged( int index );
+    void statusZoomCombo_zoomEntered();
+    void sliderZoomChanged( int value );
+
+    //! Updates zoom level in status bar
+    void updateStatusZoom();
+
+    //! Updates cursor position in status bar
+    void updateStatusCursorPos( QPointF position );
+
+    void toggleFullScreen( bool enabled );
 
   private:
 
@@ -108,6 +140,26 @@ class QgsLayoutDesignerDialog: public QMainWindow, private Ui::QgsLayoutDesigner
 
     QActionGroup *mToolsActionGroup = nullptr;
 
+    QgsLayoutView *mView = nullptr;
+    QgsLayoutRuler *mHorizontalRuler = nullptr;
+    QgsLayoutRuler *mVerticalRuler = nullptr;
+    QWidget *mRulerLayoutFix = nullptr;
+
+    //! Combobox in status bar which shows/adjusts current zoom level
+    QComboBox *mStatusZoomCombo = nullptr;
+    QSlider *mStatusZoomSlider = nullptr;
+
+    //! Labels in status bar which shows current mouse position
+    QLabel *mStatusCursorXLabel = nullptr;
+    QLabel *mStatusCursorYLabel = nullptr;
+    QLabel *mStatusCursorPageLabel = nullptr;
+
+    static QList<double> sStatusZoomLevelsList;
+
+    QgsLayoutViewToolAddItem *mAddItemTool = nullptr;
+    QgsLayoutViewToolPan *mPanTool = nullptr;
+    QgsLayoutViewToolZoom *mZoomTool = nullptr;
+    QgsLayoutViewToolSelect *mSelectTool = nullptr;
 
     //! Save window state
     void saveWindowState();

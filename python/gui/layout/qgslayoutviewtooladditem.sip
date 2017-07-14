@@ -1,66 +1,55 @@
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
- * src/gui/layout/qgslayoutdesignerinterface.h                          *
+ * src/gui/layout/qgslayoutviewtooladditem.h                            *
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/
 
 
 
-
-class QgsLayoutDesignerInterface: QObject
+class QgsLayoutViewToolAddItem : QgsLayoutViewTool
 {
 %Docstring
- A common interface for layout designer dialogs and widgets.
-
- Provides a common interface and stable API for layout designer dialogs and widgets.
- This interface can be used by plugins and scripts to interact with
- open layout designer dialogs.
-
+ Layout view tool for adding items to a layout.
 .. versionadded:: 3.0
 %End
 
 %TypeHeaderCode
-#include "qgslayoutdesignerinterface.h"
+#include "qgslayoutviewtooladditem.h"
 %End
   public:
 
-    QgsLayoutDesignerInterface( QObject *parent /TransferThis/ = 0 );
+    QgsLayoutViewToolAddItem( QgsLayoutView *view /TransferThis/ );
+
+    int itemType() const;
 %Docstring
- Constructor for QgsLayoutDesignerInterface.
+ Returns the item type for items created by the tool.
+.. seealso:: setItemType()
+ :rtype: int
 %End
 
-    virtual ~QgsLayoutDesignerInterface();
-
-    virtual QgsLayout *layout() = 0;
+    void setItemType( int type );
 %Docstring
- Returns the layout displayed in the designer.
-.. seealso:: view()
- :rtype: QgsLayout
+ Sets the item ``type`` for items created by the tool.
+.. seealso:: itemType()
 %End
 
+    virtual void layoutPressEvent( QgsLayoutViewMouseEvent *event );
 
-    virtual QgsLayoutView *view() = 0;
-%Docstring
- Returns the layout view utilized by the designer.
-.. seealso:: layout()
- :rtype: QgsLayoutView
-%End
+    virtual void layoutMoveEvent( QgsLayoutViewMouseEvent *event );
 
-  public slots:
+    virtual void layoutReleaseEvent( QgsLayoutViewMouseEvent *event );
 
-    virtual void close() = 0;
-%Docstring
- Closes the layout designer.
-%End
+    virtual void deactivate();
+
 
 };
 
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
- * src/gui/layout/qgslayoutdesignerinterface.h                          *
+ * src/gui/layout/qgslayoutviewtooladditem.h                            *
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/

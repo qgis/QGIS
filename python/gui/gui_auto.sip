@@ -42,6 +42,8 @@
 %Include editorwidgets/core/qgseditorwidgetautoconf.sip
 %Include layertree/qgslayertreeembeddedconfigwidget.sip
 %Include layertree/qgslayertreeembeddedwidgetregistry.sip
+%Include layout/qgslayoutviewmouseevent.sip
+%Include layout/qgslayoutviewrubberband.sip
 %Include locator/qgslocatorcontext.sip
 %Include raster/qgsrasterrendererwidget.sip
 %Include symbology-ng/qgssymbolwidgetcontext.sip
@@ -275,6 +277,17 @@
 %Include layertree/qgslayertreeview.sip
 %Include layertree/qgslayertreeviewdefaultactions.sip
 %Include layout/qgslayoutdesignerinterface.sip
+%Include layout/qgslayoutitemguiregistry.sip
+%Include layout/qgslayoutruler.sip
+%Include layout/qgslayoutview.sip
+%Include layout/qgslayoutviewtool.sip
+%Include layout/qgslayoutviewtooladditem.sip
+%Include layout/qgslayoutviewtoolpan.sip
+%Include layout/qgslayoutviewtoolselect.sip
+%Include layout/qgslayoutviewtooltemporarykeypan.sip
+%Include layout/qgslayoutviewtooltemporarykeyzoom.sip
+%Include layout/qgslayoutviewtooltemporarymousepan.sip
+%Include layout/qgslayoutviewtoolzoom.sip
 %Include locator/qgslocator.sip
 %Include locator/qgslocatorfilter.sip
 %Include locator/qgslocatorwidget.sip

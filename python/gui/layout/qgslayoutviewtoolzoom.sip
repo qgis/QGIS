@@ -1,40 +1,52 @@
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
- * src/core/layout/qgslayout.h                                          *
+ * src/gui/layout/qgslayoutviewtoolzoom.h                               *
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/
 
 
-class QgsLayout : QGraphicsScene
+
+class QgsLayoutViewToolZoom : QgsLayoutViewTool
 {
 %Docstring
- Base class for layouts, which can contain items such as maps, labels, scalebars, etc.
+ Layout view tool for zooming into and out of the layout.
 .. versionadded:: 3.0
 %End
 
 %TypeHeaderCode
-#include "qgslayout.h"
+#include "qgslayoutviewtoolzoom.h"
 %End
   public:
 
-    enum ZValues
-    {
-      ZMapTool,
-    };
+    QgsLayoutViewToolZoom( QgsLayoutView *view /TransferThis/ );
+%Docstring
+ Constructor for QgsLayoutViewToolZoom.
+%End
 
-    QgsLayout();
+    virtual void layoutPressEvent( QgsLayoutViewMouseEvent *event );
+
+    virtual void layoutMoveEvent( QgsLayoutViewMouseEvent *event );
+
+    virtual void layoutReleaseEvent( QgsLayoutViewMouseEvent *event );
+
+    virtual void keyPressEvent( QKeyEvent *event );
+
+    virtual void keyReleaseEvent( QKeyEvent *event );
+
+    virtual void deactivate();
+
+
+  protected:
+
 
 };
-
-
-
 
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
- * src/core/layout/qgslayout.h                                          *
+ * src/gui/layout/qgslayoutviewtoolzoom.h                               *
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/

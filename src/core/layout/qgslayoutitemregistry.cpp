@@ -15,16 +15,31 @@
  ***************************************************************************/
 
 #include "qgslayoutitemregistry.h"
+#include <QPainter>
 
 QgsLayoutItemRegistry::QgsLayoutItemRegistry( QObject *parent )
   : QObject( parent )
 {
-
 }
 
 QgsLayoutItemRegistry::~QgsLayoutItemRegistry()
 {
   qDeleteAll( mMetadata );
+}
+
+bool QgsLayoutItemRegistry::populate()
+{
+  if ( !mMetadata.isEmpty() )
+    return false;
+
+  // add temporary item to register
+  auto createTemporaryItem = []( QgsLayout * layout, const QVariantMap & )->QgsLayoutItem*
+  {
+    return new TestLayoutItem( layout );
+  };
+
+  addLayoutItemType( new QgsLayoutItemMetadata( 101, QStringLiteral( "temp type" ), QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddLabel.svg" ) ), createTemporaryItem ) );
+  return true;
 }
 
 QgsLayoutItemAbstractMetadata *QgsLayoutItemRegistry::itemMetadata( int type ) const
@@ -50,14 +65,6 @@ QgsLayoutItem *QgsLayoutItemRegistry::createItem( int type, QgsLayout *layout, c
   return mMetadata[type]->createItem( layout, properties );
 }
 
-QWidget *QgsLayoutItemRegistry::createItemWidget( int type ) const
-{
-  if ( !mMetadata.contains( type ) )
-    return nullptr;
-
-  return mMetadata[type]->createItemWidget();
-}
-
 void QgsLayoutItemRegistry::resolvePaths( int type, QVariantMap &properties, const QgsPathResolver &pathResolver, bool saving ) const
 {
   if ( !mMetadata.contains( type ) )
@@ -77,3 +84,26 @@ QMap<int, QString> QgsLayoutItemRegistry::itemTypes() const
   }
   return types;
 }
+
+///@cond TEMPORARY
+TestLayoutItem::TestLayoutItem( QgsLayout *layout )
+  : QgsLayoutItem( layout )
+{
+  int h = static_cast< int >( 360.0 * qrand() / ( RAND_MAX + 1.0 ) );
+  int s = ( qrand() % ( 200 - 100 + 1 ) ) + 100;
+  int v = ( qrand() % ( 130 - 255 + 1 ) ) + 130;
+  mColor = QColor::fromHsv( h, s, v );
+}
+
+void TestLayoutItem::draw( QPainter *painter, const QStyleOptionGraphicsItem *itemStyle, QWidget *pWidget )
+{
+  Q_UNUSED( itemStyle );
+  Q_UNUSED( pWidget );
+  painter->save();
+  painter->setRenderHint( QPainter::Antialiasing, false );
+  painter->setPen( Qt::NoPen );
+  painter->setBrush( mColor );
+  painter->drawRect( rect() );
+  painter->restore();
+}
+///@endcond

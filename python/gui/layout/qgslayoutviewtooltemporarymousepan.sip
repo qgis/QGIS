@@ -1,40 +1,43 @@
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
- * src/core/layout/qgslayout.h                                          *
+ * src/gui/layout/qgslayoutviewtooltemporarymousepan.h                  *
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/
 
 
-class QgsLayout : QGraphicsScene
+
+class QgsLayoutViewToolTemporaryMousePan : QgsLayoutViewTool
 {
 %Docstring
- Base class for layouts, which can contain items such as maps, labels, scalebars, etc.
+ Layout view tool for temporarily panning a layout while a mouse button is depressed.
 .. versionadded:: 3.0
 %End
 
 %TypeHeaderCode
-#include "qgslayout.h"
+#include "qgslayoutviewtooltemporarymousepan.h"
 %End
   public:
 
-    enum ZValues
-    {
-      ZMapTool,
-    };
+    QgsLayoutViewToolTemporaryMousePan( QgsLayoutView *view /TransferThis/ );
+%Docstring
+ Constructor for QgsLayoutViewToolTemporaryMousePan.
+%End
 
-    QgsLayout();
+    virtual void layoutMoveEvent( QgsLayoutViewMouseEvent *event );
+
+    virtual void layoutReleaseEvent( QgsLayoutViewMouseEvent *event );
+
+    virtual void activate();
+
 
 };
-
-
-
 
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
- * src/core/layout/qgslayout.h                                          *
+ * src/gui/layout/qgslayoutviewtooltemporarymousepan.h                  *
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/

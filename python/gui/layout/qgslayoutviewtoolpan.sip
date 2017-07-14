@@ -1,40 +1,45 @@
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
- * src/core/layout/qgslayout.h                                          *
+ * src/gui/layout/qgslayoutviewtoolpan.h                                *
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/
 
 
-class QgsLayout : QGraphicsScene
+
+class QgsLayoutViewToolPan : QgsLayoutViewTool
 {
 %Docstring
- Base class for layouts, which can contain items such as maps, labels, scalebars, etc.
+ Layout view tool for panning the layout.
 .. versionadded:: 3.0
 %End
 
 %TypeHeaderCode
-#include "qgslayout.h"
+#include "qgslayoutviewtoolpan.h"
 %End
   public:
 
-    enum ZValues
-    {
-      ZMapTool,
-    };
+    QgsLayoutViewToolPan( QgsLayoutView *view /TransferThis/ );
+%Docstring
+ Constructor for QgsLayoutViewToolPan.
+%End
 
-    QgsLayout();
+    virtual void layoutPressEvent( QgsLayoutViewMouseEvent *event );
+
+    virtual void layoutMoveEvent( QgsLayoutViewMouseEvent *event );
+
+    virtual void layoutReleaseEvent( QgsLayoutViewMouseEvent *event );
+
+    virtual void deactivate();
+
 
 };
-
-
-
 
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
- * src/core/layout/qgslayout.h                                          *
+ * src/gui/layout/qgslayoutviewtoolpan.h                                *
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/

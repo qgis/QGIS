@@ -1,40 +1,43 @@
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
- * src/core/layout/qgslayout.h                                          *
+ * src/gui/layout/qgslayoutviewtooltemporarykeypan.h                    *
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/
 
 
-class QgsLayout : QGraphicsScene
+
+class QgsLayoutViewToolTemporaryKeyPan : QgsLayoutViewTool
 {
 %Docstring
- Base class for layouts, which can contain items such as maps, labels, scalebars, etc.
+ Layout view tool for temporarily panning a layout while a key is depressed.
 .. versionadded:: 3.0
 %End
 
 %TypeHeaderCode
-#include "qgslayout.h"
+#include "qgslayoutviewtooltemporarykeypan.h"
 %End
   public:
 
-    enum ZValues
-    {
-      ZMapTool,
-    };
+    QgsLayoutViewToolTemporaryKeyPan( QgsLayoutView *view /TransferThis/ );
+%Docstring
+ Constructor for QgsLayoutViewToolTemporaryKeyPan.
+%End
 
-    QgsLayout();
+    virtual void layoutMoveEvent( QgsLayoutViewMouseEvent *event );
+
+    virtual void keyReleaseEvent( QKeyEvent *event );
+
+    virtual void activate();
+
 
 };
-
-
-
 
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
- * src/core/layout/qgslayout.h                                          *
+ * src/gui/layout/qgslayoutviewtooltemporarykeypan.h                    *
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/
