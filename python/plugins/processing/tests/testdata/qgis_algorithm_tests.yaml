@@ -1056,18 +1056,18 @@ tests:
         hash: 151ea76a21b286c16567eb6b4b692925a84145b65561a0017effb1a1
         type: rasterhash
 
-#  - algorithm: qgis:ruggednessindex
-#    name: Ruggedness index from QGIS analysis library
-#    params:
-#      INPUT_LAYER:
-#        name: dem.tif
-#        type: raster
-#      Z_FACTOR: 1.0
-#    results:
-#      OUTPUT_LAYER:
-#        hash: ff630246e8dc19c7217d81261c6b64f965c17fa04d3e41d7979c1f1e
-#        type: rasterhash
-#
+  - algorithm: qgis:ruggednessindex
+    name: Ruggedness index from QGIS analysis library
+    params:
+      INPUT_LAYER:
+        name: dem.tif
+        type: raster
+      Z_FACTOR: 1.0
+    results:
+      OUTPUT_LAYER:
+        hash: ff630246e8dc19c7217d81261c6b64f965c17fa04d3e41d7979c1f1e
+        type: rasterhash
+
 #  - algorithm: qgis:hillshade
 #    name: Hillshade from QGIS analysis library
 #    params:

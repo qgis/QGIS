@@ -72,6 +72,7 @@ from .PostGISExecuteSQL import PostGISExecuteSQL
 from .RandomExtract import RandomExtract
 from .RandomExtractWithinSubsets import RandomExtractWithinSubsets
 from .RegularPoints import RegularPoints
+from .Ruggedness import Ruggedness
 from .SaveSelectedFeatures import SaveSelectedFeatures
 from .SelectByAttribute import SelectByAttribute
 from .SelectByExpression import SelectByExpression
@@ -147,7 +148,6 @@ from .ZonalStatistics import ZonalStatistics
 # from .Translate import Translate
 # from .SingleSidedBuffer import SingleSidedBuffer
 # from .PointsAlongGeometry import PointsAlongGeometry
-# from .Ruggedness import Ruggedness
 # from .Hillshade import Hillshade
 # from .Relief import Relief
 # from .IdwInterpolation import IdwInterpolation
@@ -266,6 +266,7 @@ class QGISAlgorithmProvider(QgsProcessingProvider):
                 RandomExtract(),
                 RandomExtractWithinSubsets(),
                 RegularPoints(),
+                Ruggedness(),
                 SaveSelectedFeatures(),
                 SelectByAttribute(),
                 SelectByExpression(),
