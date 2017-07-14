@@ -381,6 +381,7 @@
 %Include gps/qgsgpsdconnection.sip
 %Include layout/qgslayout.sip
 %Include layout/qgslayoutitem.sip
+%Include layout/qgslayoutitemmap.sip
 %Include layout/qgslayoutitemregistry.sip
 %Include layout/qgslayoutobject.sip
 %Include symbology-ng/qgscptcityarchive.sip
