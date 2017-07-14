@@ -86,7 +86,8 @@ void QgsLayoutViewToolAddItem::layoutReleaseEvent( QgsLayoutViewMouseEvent *even
   Q_UNUSED( clickOnly );
 
   QgsLayoutItem *item = QgsApplication::layoutItemRegistry()->createItem( mItemType, layout() );
-  item->setRect( rect );
+  item->attemptResize( QgsLayoutSize( rect.width(), rect.height(), QgsUnitTypes::LayoutMillimeters ) );
+  item->attemptMove( QgsLayoutPoint( rect.left(), rect.top(), QgsUnitTypes::LayoutMillimeters ) );
   layout()->addItem( item );
 }
 

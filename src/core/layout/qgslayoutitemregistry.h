@@ -29,6 +29,7 @@
 class QgsLayout;
 class QgsLayoutView;
 class QgsLayoutItem;
+class QgsFillSymbol;
 
 /**
  * \ingroup core
@@ -271,7 +272,9 @@ class TestLayoutItem : public QgsLayoutItem
 
   private:
     QColor mColor;
+    QgsFillSymbol *mShapeStyleSymbol = nullptr;
 };
+
 
 ///@endcond
 #endif

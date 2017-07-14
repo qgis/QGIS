@@ -252,6 +252,9 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
     QgsLayoutPoint mItemPosition;
     double mItemRotation = 0.0;
 
+    QImage mItemCachedImage;
+    double mItemCacheDpi = -1;
+
     void initConnectionsToLayout();
 
     //! Prepares a painter by setting rendering flags

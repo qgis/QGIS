@@ -20,6 +20,8 @@
 #include <QPainter>
 #include <QStyleOptionGraphicsItem>
 
+#define CACHE_SIZE_LIMIT 5000
+
 QgsLayoutItem::QgsLayoutItem( QgsLayout *layout )
   : QgsLayoutObject( layout )
   , QGraphicsRectItem( 0 )
@@ -44,23 +46,89 @@ void QgsLayoutItem::paint( QPainter *painter, const QStyleOptionGraphicsItem *it
   }
 
   //TODO - remember to disable saving/restoring on graphics view!!
-  painter->save();
-  preparePainter( painter );
 
   if ( shouldDrawDebugRect() )
   {
     drawDebugRect( painter );
+    return;
+  }
+
+  double destinationDpi = itemStyle->matrix.m11() * 25.4;
+  bool useImageCache = true;
+
+  if ( useImageCache )
+  {
+    double widthInPixels = boundingRect().width() * itemStyle->matrix.m11();
+    double heightInPixels = boundingRect().height() * itemStyle->matrix.m11();
+
+    // limit size of image for better performance
+    double scale = 1.0;
+    if ( widthInPixels > CACHE_SIZE_LIMIT || heightInPixels > CACHE_SIZE_LIMIT )
+    {
+      if ( widthInPixels > heightInPixels )
+      {
+        scale = widthInPixels / CACHE_SIZE_LIMIT;
+        widthInPixels = CACHE_SIZE_LIMIT;
+        heightInPixels /= scale;
+      }
+      else
+      {
+        scale = heightInPixels / CACHE_SIZE_LIMIT;
+        heightInPixels = CACHE_SIZE_LIMIT;
+        widthInPixels /= scale;
+      }
+      destinationDpi = destinationDpi / scale;
+    }
+
+    if ( !mItemCachedImage.isNull() && qgsDoubleNear( mItemCacheDpi, destinationDpi ) )
+    {
+      // can reuse last cached image
+      QgsRenderContext context = QgsLayoutUtils::createRenderContextForMap( nullptr, painter, destinationDpi );
+      painter->save();
+      preparePainter( painter );
+      double cacheScale = destinationDpi / mItemCacheDpi;
+      painter->scale( cacheScale / context.scaleFactor(), cacheScale / context.scaleFactor() );
+      painter->drawImage( boundingRect().x() * context.scaleFactor() / cacheScale,
+                          boundingRect().y() * context.scaleFactor() / cacheScale, mItemCachedImage );
+      painter->restore();
+      return;
+    }
+    else
+    {
+      mItemCacheDpi = destinationDpi;
+
+      mItemCachedImage = QImage( widthInPixels, heightInPixels, QImage::Format_ARGB32 );
+      mItemCachedImage.fill( Qt::transparent );
+      mItemCachedImage.setDotsPerMeterX( 1000 * destinationDpi * 25.4 );
+      mItemCachedImage.setDotsPerMeterY( 1000 * destinationDpi * 25.4 );
+      QPainter p( &mItemCachedImage );
+
+      preparePainter( &p );
+      QgsRenderContext context = QgsLayoutUtils::createRenderContextForMap( nullptr, &p, destinationDpi );
+      // painter is already scaled to dots
+      // need to translate so that item origin is at 0,0 in painter coordinates (not bounding rect origin)
+      p.translate( -boundingRect().x() * context.scaleFactor(), -boundingRect().y() * context.scaleFactor() );
+      draw( context, itemStyle );
+      p.end();
+
+      painter->save();
+      // scale painter from mm to dots
+      painter->scale( 1.0 / context.scaleFactor(), 1.0 / context.scaleFactor() );
+      painter->drawImage( boundingRect().x() * context.scaleFactor(),
+                          boundingRect().y() * context.scaleFactor(), mItemCachedImage );
+      painter->restore();
+    }
   }
   else
   {
-    double destinationDpi = itemStyle->matrix.m11() * 25.4;
+    // no caching or flattening
+    painter->save();
     QgsRenderContext context = QgsLayoutUtils::createRenderContextForMap( nullptr, painter, destinationDpi );
     // scale painter from mm to dots
     painter->scale( 1.0 / context.scaleFactor(), 1.0 / context.scaleFactor() );
     draw( context, itemStyle );
+    painter->restore();
   }
-
-  painter->restore();
 }
 
 void QgsLayoutItem::setReferencePoint( const QgsLayoutItem::ReferencePoint &point )

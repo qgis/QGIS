@@ -95,6 +95,16 @@ TestLayoutItem::TestLayoutItem( QgsLayout *layout )
   int s = ( qrand() % ( 200 - 100 + 1 ) ) + 100;
   int v = ( qrand() % ( 130 - 255 + 1 ) ) + 130;
   mColor = QColor::fromHsv( h, s, v );
+
+  QgsStringMap properties;
+  properties.insert( QStringLiteral( "color" ), mColor.name() );
+  properties.insert( QStringLiteral( "style" ), QStringLiteral( "solid" ) );
+  properties.insert( QStringLiteral( "style_border" ), QStringLiteral( "solid" ) );
+  properties.insert( QStringLiteral( "color_border" ), QStringLiteral( "black" ) );
+  properties.insert( QStringLiteral( "width_border" ), QStringLiteral( "0.3" ) );
+  properties.insert( QStringLiteral( "joinstyle" ), QStringLiteral( "miter" ) );
+  mShapeStyleSymbol = QgsFillSymbol::createSimple( properties );
+
 }
 
 void TestLayoutItem::draw( QgsRenderContext &context, const QStyleOptionGraphicsItem *itemStyle )
@@ -114,9 +124,15 @@ void TestLayoutItem::draw( QgsRenderContext &context, const QStyleOptionGraphics
   painter->setBrush( mColor );
 
   double scale = context.convertToPainterUnits( 1, QgsUnitTypes::RenderMillimeters );
-  QRectF r = QRectF( rect().left() * scale, rect().top() * scale,
-                     rect().width() * scale, rect().height() * scale );
-  painter->drawRect( r );
+
+  QPolygonF shapePolygon = QPolygonF( QRectF( 0, 0, rect().width() * scale, rect().height() * scale ) );
+  QList<QPolygonF> rings; //empty list
+
+  mShapeStyleSymbol->startRender( context );
+  mShapeStyleSymbol->renderPolygon( shapePolygon, &rings, nullptr, context );
+  mShapeStyleSymbol->stopRender( context );
+
+// painter->drawRect( r );
   painter->restore();
   stack.end( context );
 }
