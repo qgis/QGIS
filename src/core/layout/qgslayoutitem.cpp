@@ -33,7 +33,7 @@ QgsLayoutItem::QgsLayoutItem( QgsLayout *layout )
   initConnectionsToLayout();
 }
 
-void QgsLayoutItem::paint( QPainter *painter, const QStyleOptionGraphicsItem *itemStyle, QWidget *pWidget )
+void QgsLayoutItem::paint( QPainter *painter, const QStyleOptionGraphicsItem *itemStyle, QWidget * )
 {
   if ( !painter || !painter->device() )
   {
@@ -50,7 +50,8 @@ void QgsLayoutItem::paint( QPainter *painter, const QStyleOptionGraphicsItem *it
   }
   else
   {
-    draw( painter, itemStyle, pWidget );
+    QgsRenderContext context = QgsLayoutUtils::createRenderContextForLayout( mLayout, painter );
+    draw( context, itemStyle );
   }
 
   painter->restore();

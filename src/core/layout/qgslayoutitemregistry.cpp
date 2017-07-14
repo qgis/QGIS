@@ -95,10 +95,11 @@ TestLayoutItem::TestLayoutItem( QgsLayout *layout )
   mColor = QColor::fromHsv( h, s, v );
 }
 
-void TestLayoutItem::draw( QPainter *painter, const QStyleOptionGraphicsItem *itemStyle, QWidget *pWidget )
+void TestLayoutItem::draw( QgsRenderContext &context, const QStyleOptionGraphicsItem *itemStyle )
 {
   Q_UNUSED( itemStyle );
-  Q_UNUSED( pWidget );
+  QPainter *painter = context.painter();
+
   painter->save();
   painter->setRenderHint( QPainter::Antialiasing, false );
   painter->setPen( Qt::NoPen );

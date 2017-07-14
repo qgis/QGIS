@@ -69,10 +69,11 @@ class TestQgsLayoutItem: public QObject
 
         //implement pure virtual methods
         int type() const { return QgsLayoutItemRegistry::LayoutItem + 101; }
-        void draw( QPainter *painter, const QStyleOptionGraphicsItem *itemStyle, QWidget *pWidget )
+
+      protected:
+        void draw( QgsRenderContext &context, const QStyleOptionGraphicsItem * = nullptr ) override
         {
-          Q_UNUSED( itemStyle );
-          Q_UNUSED( pWidget );
+          QPainter *painter = context.painter();
           painter->save();
           painter->setRenderHint( QPainter::Antialiasing, false );
           painter->setPen( Qt::NoPen );

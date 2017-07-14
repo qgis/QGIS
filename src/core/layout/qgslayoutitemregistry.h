@@ -267,7 +267,7 @@ class TestLayoutItem : public QgsLayoutItem
 
     //implement pure virtual methods
     int type() const { return QgsLayoutItemRegistry::LayoutItem + 102; }
-    void draw( QPainter *painter, const QStyleOptionGraphicsItem *itemStyle, QWidget *pWidget );
+    void draw( QgsRenderContext &context, const QStyleOptionGraphicsItem *itemStyle = nullptr );
 
   private:
     QColor mColor;

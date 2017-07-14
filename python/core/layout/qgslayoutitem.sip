@@ -170,9 +170,9 @@ class QgsLayoutItem : QgsLayoutObject, QGraphicsRectItem
  @param painter destination QPainter
 %End
 
-    virtual void draw( QPainter *painter, const QStyleOptionGraphicsItem *itemStyle, QWidget *pWidget ) = 0;
+    virtual void draw( QgsRenderContext &context, const QStyleOptionGraphicsItem *itemStyle = 0 ) = 0;
 %Docstring
- Draws the item's contents on a specified ``painter``.
+ Draws the item's contents using the specified render ``context``.
 %End
 
     virtual void setFixedSize( const QgsLayoutSize &size );

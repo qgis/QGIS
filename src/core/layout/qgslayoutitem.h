@@ -21,6 +21,7 @@
 #include "qgslayoutobject.h"
 #include "qgslayoutsize.h"
 #include "qgslayoutpoint.h"
+#include "qgsrendercontext.h"
 #include <QGraphicsRectItem>
 
 class QgsLayout;
@@ -184,9 +185,9 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
     virtual void drawDebugRect( QPainter *painter );
 
     /**
-     * Draws the item's contents on a specified \a painter.
+     * Draws the item's contents using the specified render \a context.
      */
-    virtual void draw( QPainter *painter, const QStyleOptionGraphicsItem *itemStyle, QWidget *pWidget ) = 0;
+    virtual void draw( QgsRenderContext &context, const QStyleOptionGraphicsItem *itemStyle = nullptr ) = 0;
 
     /**
      * Sets a fixed \a size for the layout item, which prevents it from being freely
