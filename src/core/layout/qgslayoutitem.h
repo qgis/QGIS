@@ -186,6 +186,8 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
 
     /**
      * Draws the item's contents using the specified render \a context.
+     * Note that the context's painter has been scaled so that painter units are pixels.
+     * Use the QgsRenderContext methods to convert from millimeters or other units to the painter's units.
      */
     virtual void draw( QgsRenderContext &context, const QStyleOptionGraphicsItem *itemStyle = nullptr ) = 0;
 

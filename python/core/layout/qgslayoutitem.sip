@@ -173,6 +173,8 @@ class QgsLayoutItem : QgsLayoutObject, QGraphicsRectItem
     virtual void draw( QgsRenderContext &context, const QStyleOptionGraphicsItem *itemStyle = 0 ) = 0;
 %Docstring
  Draws the item's contents using the specified render ``context``.
+ Note that the context's painter has been scaled so that painter units are pixels.
+ Use the QgsRenderContext methods to convert from millimeters or other units to the painter's units.
 %End
 
     virtual void setFixedSize( const QgsLayoutSize &size );

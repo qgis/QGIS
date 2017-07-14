@@ -15,6 +15,8 @@
  ***************************************************************************/
 
 #include "qgslayoutitemregistry.h"
+#include "qgsgloweffect.h"
+#include "qgseffectstack.h"
 #include <QPainter>
 
 QgsLayoutItemRegistry::QgsLayoutItemRegistry( QObject *parent )
@@ -98,13 +100,24 @@ TestLayoutItem::TestLayoutItem( QgsLayout *layout )
 void TestLayoutItem::draw( QgsRenderContext &context, const QStyleOptionGraphicsItem *itemStyle )
 {
   Q_UNUSED( itemStyle );
+
+  QgsEffectStack stack;
+  stack.appendEffect( new QgsDrawSourceEffect() );
+  stack.appendEffect( new QgsInnerGlowEffect() );
+  stack.begin( context );
+
   QPainter *painter = context.painter();
 
   painter->save();
   painter->setRenderHint( QPainter::Antialiasing, false );
   painter->setPen( Qt::NoPen );
   painter->setBrush( mColor );
-  painter->drawRect( rect() );
+
+  double scale = context.convertToPainterUnits( 1, QgsUnitTypes::RenderMillimeters );
+  QRectF r = QRectF( rect().left() * scale, rect().top() * scale,
+                     rect().width() * scale, rect().height() * scale );
+  painter->drawRect( r );
   painter->restore();
+  stack.end( context );
 }
 ///@endcond

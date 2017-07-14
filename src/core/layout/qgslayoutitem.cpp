@@ -18,11 +18,14 @@
 #include "qgslayout.h"
 #include "qgslayoututils.h"
 #include <QPainter>
+#include <QStyleOptionGraphicsItem>
 
 QgsLayoutItem::QgsLayoutItem( QgsLayout *layout )
   : QgsLayoutObject( layout )
   , QGraphicsRectItem( 0 )
 {
+  // needed to access current view transform during paint operations
+  setFlags( flags() | QGraphicsItem::ItemUsesExtendedStyleOption );
   setCacheMode( QGraphicsItem::DeviceCoordinateCache );
 
   //record initial position
@@ -50,7 +53,10 @@ void QgsLayoutItem::paint( QPainter *painter, const QStyleOptionGraphicsItem *it
   }
   else
   {
-    QgsRenderContext context = QgsLayoutUtils::createRenderContextForLayout( mLayout, painter );
+    double destinationDpi = itemStyle->matrix.m11() * 25.4;
+    QgsRenderContext context = QgsLayoutUtils::createRenderContextForMap( nullptr, painter, destinationDpi );
+    // scale painter from mm to dots
+    painter->scale( 1.0 / context.scaleFactor(), 1.0 / context.scaleFactor() );
     draw( context, itemStyle );
   }
 
