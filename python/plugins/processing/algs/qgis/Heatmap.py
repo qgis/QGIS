@@ -50,7 +50,7 @@ pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
 class Heatmap(QgisAlgorithm):
 
-    INPUT_LAYER = 'INPUT_LAYER'
+    INPUT = 'INPUT'
     RADIUS = 'RADIUS'
     RADIUS_FIELD = 'RADIUS_FIELD'
     WEIGHT_FIELD = 'WEIGHT_FIELD'
@@ -58,7 +58,7 @@ class Heatmap(QgisAlgorithm):
     KERNEL = 'KERNEL'
     DECAY = 'DECAY'
     OUTPUT_VALUE = 'OUTPUT_VALUE'
-    OUTPUT_LAYER = 'OUTPUT_LAYER'
+    OUTPUT = 'OUTPUT'
 
     def icon(self):
         return QIcon(os.path.join(pluginPath, 'images', 'heatmap.png'))
@@ -88,7 +88,7 @@ class Heatmap(QgisAlgorithm):
         self.OUTPUT_VALUES = OrderedDict([(self.tr('Raw'), QgsKernelDensityEstimation.OutputRaw),
                                           (self.tr('Scaled'), QgsKernelDensityEstimation.OutputScaled)])
 
-        self.addParameter(QgsProcessingParameterFeatureSource(self.INPUT_LAYER,
+        self.addParameter(QgsProcessingParameterFeatureSource(self.INPUT,
                                                               self.tr('Point layer'),
                                                               [QgsProcessing.TypeVectorPoint]))
 
@@ -100,7 +100,7 @@ class Heatmap(QgisAlgorithm):
         radius_field_param = QgsProcessingParameterField(self.RADIUS_FIELD,
                                                          self.tr('Radius from field'),
                                                          None,
-                                                         self.INPUT_LAYER,
+                                                         self.INPUT,
                                                          QgsProcessingParameterField.Numeric,
                                                          optional=True
                                                          )
@@ -118,7 +118,7 @@ class Heatmap(QgisAlgorithm):
 
         pixel_size_param = ParameterHeatmapPixelSize(self.PIXEL_SIZE,
                                                      self.tr('Output raster size'),
-                                                     parent_layer=self.INPUT_LAYER,
+                                                     parent_layer=self.INPUT,
                                                      radius_param=self.RADIUS,
                                                      radius_field_param=self.RADIUS_FIELD,
                                                      minValue=0.0,
@@ -132,7 +132,7 @@ class Heatmap(QgisAlgorithm):
         weight_field_param = QgsProcessingParameterField(self.WEIGHT_FIELD,
                                                          self.tr('Weight from field'),
                                                          None,
-                                                         self.INPUT_LAYER,
+                                                         self.INPUT,
                                                          QgsProcessingParameterField.Numeric,
                                                          optional=True
                                                          )
@@ -164,17 +164,17 @@ class Heatmap(QgisAlgorithm):
         output_scaling.setFlags(output_scaling.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
         self.addParameter(output_scaling)
 
-        self.addParameter(QgsProcessingParameterRasterDestination(self.OUTPUT_LAYER, self.tr('Heatmap')))
+        self.addParameter(QgsProcessingParameterRasterDestination(self.OUTPUT, self.tr('Heatmap')))
 
     def processAlgorithm(self, parameters, context, feedback):
-        source = self.parameterAsSource(parameters, self.INPUT_LAYER, context)
+        source = self.parameterAsSource(parameters, self.INPUT, context)
 
         radius = self.parameterAsDouble(parameters, self.RADIUS, context)
         kernel_shape = self.parameterAsEnum(parameters, self.KERNEL, context)
         pixel_size = self.parameterAsDouble(parameters, self.PIXEL_SIZE, context)
         decay = self.parameterAsDouble(parameters, self.DECAY, context)
         output_values = self.parameterAsEnum(parameters, self.OUTPUT_VALUE, context)
-        outputFile = self.parameterAsOutputLayer(parameters, self.OUTPUT_LAYER, context)
+        outputFile = self.parameterAsOutputLayer(parameters, self.OUTPUT, context)
         output_format = raster.formatShortNameFromFileName(outputFile)
         weight_field = self.parameterAsString(parameters, self.WEIGHT_FIELD, context)
         radius_field = self.parameterAsString(parameters, self.RADIUS_FIELD, context)
@@ -221,4 +221,4 @@ class Heatmap(QgisAlgorithm):
             raise QgsProcessingException(
                 self.tr('Could not save destination layer'))
 
-        return {self.OUTPUT_LAYER: outputFile}
+        return {self.OUTPUT: outputFile}
