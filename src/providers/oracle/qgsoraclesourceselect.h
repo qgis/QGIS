@@ -24,6 +24,7 @@
 #include "qgshelp.h"
 #include "qgsoracleconnpool.h"
 #include "qgsproviderregistry.h"
+#include "qgssourceselect.h"
 
 #include <QMap>
 #include <QPair>
@@ -81,13 +82,13 @@ class QgsOracleSourceSelectDelegate : public QItemDelegate
  * for Oracle databases. The user can then connect and add
  * tables from the database to the map canvas.
  */
-class QgsOracleSourceSelect : public QDialog, private Ui::QgsDbSourceSelectBase
+class QgsOracleSourceSelect : public QgsSourceSelect, private Ui::QgsDbSourceSelectBase
 {
     Q_OBJECT
 
   public:
     //! Constructor
-    QgsOracleSourceSelect( QWidget *parent = 0, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::None );
+    QgsOracleSourceSelect( QWidget *parent = nullptr, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::None );
     //! Destructor
     ~QgsOracleSourceSelect();
     //! Populate the connection list combo box
@@ -97,7 +98,6 @@ class QgsOracleSourceSelect : public QDialog, private Ui::QgsDbSourceSelectBase
 
   signals:
     void addDatabaseLayers( QStringList const &layerPathList, QString const &providerKey );
-    void connectionsChanged();
     void progress( int, int );
     void progressMessage( QString );
 
@@ -142,9 +142,6 @@ class QgsOracleSourceSelect : public QDialog, private Ui::QgsDbSourceSelectBase
   private:
     typedef QPair<QString, QString> geomPair;
     typedef QList<geomPair> geomCol;
-
-    //! Embedded mode, without 'Close'
-    QgsProviderRegistry::WidgetMode mWidgetMode = QgsProviderRegistry::WidgetMode::None;
 
     //! try to load list of tables from local cache
     void loadTableFromCache();

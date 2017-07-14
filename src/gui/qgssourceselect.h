@@ -27,7 +27,7 @@
 #include <QDialog>
 
 /** \ingroup gui
- * \brief  Abstract base Dialog to create connections and add layers
+ * \brief  Abstract base Data Source Widget to create connections and add layers
  * This class must provide common functionality and the interface for all
  * source select dialogs used by data providers to configure data sources
  * and add layers.
@@ -42,8 +42,8 @@ class GUI_EXPORT QgsSourceSelect : public QDialog
     //! Constructor
     QgsSourceSelect( QWidget *parent SIP_TRANSFERTHIS = nullptr, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::None );
 
-    //! Destructor
-    ~QgsSourceSelect( );
+    //! Pure Virtual Destructor
+    virtual ~QgsSourceSelect( ) = 0;
 
     //! Return the widget mode
     QgsProviderRegistry::WidgetMode widgetMode( ) { return mWidgetMode; }
@@ -51,7 +51,8 @@ class GUI_EXPORT QgsSourceSelect : public QDialog
   public slots:
 
     //! Triggered when the provider's connections need to be refreshed
-    virtual void refresh( ) = 0;
+    //! The default implementation does nothing
+    virtual void refresh( ) {}
 
   signals:
 

@@ -10,11 +10,11 @@
 
 
 
-class QgsArcGisServiceSourceSelect : QDialog, protected Ui::QgsArcGisServiceSourceSelectBase
+
+class QgsArcGisServiceSourceSelect : QgsSourceSelect, protected Ui::QgsArcGisServiceSourceSelectBase
 {
 %Docstring
- Generic class listing layers available from a remote service.
-.. versionadded:: 3.0
+ Base class for listing ArcGis layers available from a remote service.
 %End
 
 %TypeHeaderCode
@@ -23,7 +23,7 @@ class QgsArcGisServiceSourceSelect : QDialog, protected Ui::QgsArcGisServiceSour
   public:
     enum ServiceType { MapService, FeatureService };
 
-    QgsArcGisServiceSourceSelect( const QString &serviceName, ServiceType serviceType, QWidget *parent, Qt::WindowFlags fl );
+    QgsArcGisServiceSourceSelect( const QString &serviceName, ServiceType serviceType, QWidget *parent, Qt::WindowFlags fl, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::None );
 %Docstring
 Constructor
 %End
@@ -38,10 +38,6 @@ Sets the current extent and CRS. Used to select an appropriate CRS and possibly 
     void addLayer( QString uri, QString typeName );
 %Docstring
 Emitted when a layer is added from the dialog
-%End
-    void connectionsChanged();
-%Docstring
-Emitted when the connections for the service were changed
 %End
 
   protected:
@@ -73,6 +69,14 @@ Updates the UI for the list of available image encodings from the specified list
 %Docstring
 Returns the selected image encoding.
  :rtype: str
+%End
+
+  public slots:
+
+    virtual void refresh( );
+
+%Docstring
+Triggered when the provider's connections need to be refreshed
 %End
 
 };

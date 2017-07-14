@@ -49,14 +49,13 @@ enum
 };
 
 QgsWFSSourceSelect::QgsWFSSourceSelect( QWidget *parent, Qt::WindowFlags fl, QgsProviderRegistry::WidgetMode widgetMode )
-  : QDialog( parent, fl )
+  : QgsSourceSelect( parent, fl, widgetMode )
   , mCapabilities( nullptr )
   , mSQLComposerDialog( nullptr )
-  , mWidgetMode( widgetMode )
 {
   setupUi( this );
 
-  if ( mWidgetMode != QgsProviderRegistry::WidgetMode::None )
+  if ( QgsSourceSelect::widgetMode( ) != QgsProviderRegistry::WidgetMode::None )
   {
     // For some obscure reason hiding does not work!
     // buttonBox->button( QDialogButtonBox::Close )->hide();
@@ -204,6 +203,11 @@ QString QgsWFSSourceSelect::getPreferredCrs( const QSet<QString> &crsSet ) const
 
   //third: first entry in set
   return *( crsSet.constBegin() );
+}
+
+void QgsWFSSourceSelect::refresh()
+{
+  populateConnectionList();
 }
 
 void QgsWFSSourceSelect::capabilitiesReplyFinished()
@@ -404,7 +408,7 @@ void QgsWFSSourceSelect::addLayer()
     emit addWfsLayer( mUri, layerName );
   }
 
-  if ( !mHoldDialogOpen->isChecked() && mWidgetMode == QgsProviderRegistry::WidgetMode::None )
+  if ( ! mHoldDialogOpen->isChecked() && QgsSourceSelect::widgetMode( ) == QgsProviderRegistry::WidgetMode::None )
   {
     accept();
   }

@@ -13,7 +13,7 @@
 class QgsSourceSelect : QDialog
 {
 %Docstring
-  Abstract base Dialog to create connections and add layers
+  Abstract base Data Source Widget to create connections and add layers
  This class must provide common functionality and the interface for all
  source select dialogs used by data providers to configure data sources
  and add layers.
@@ -30,9 +30,9 @@ class QgsSourceSelect : QDialog
 Constructor
 %End
 
-    ~QgsSourceSelect( );
+    virtual ~QgsSourceSelect( ) = 0;
 %Docstring
-Destructor
+Pure Virtual Destructor
 %End
 
     QgsProviderRegistry::WidgetMode widgetMode( );
@@ -43,9 +43,9 @@ Return the widget mode
 
   public slots:
 
-    virtual void refresh( ) = 0;
+    virtual void refresh( );
 %Docstring
-Triggered when the provider's connections need to be refreshed
+The default implementation does nothing
 %End
 
   signals:

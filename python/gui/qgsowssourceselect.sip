@@ -11,16 +11,16 @@
 
 
 
-class QgsOWSSourceSelect : QDialog, protected Ui::QgsOWSSourceSelectBase
+class QgsOWSSourceSelect : QgsSourceSelect, protected Ui::QgsOWSSourceSelectBase
 {
 %Docstring
-  Dialog to create connections and add layers from WMS, WFS, WCS etc.
+  Dialog to create connections and add layers WCS etc.
 
  This dialog allows the user to define and save connection information
  for WMS servers, etc.
 
  The user can then connect and add
- layers from the WMS server to the map canvas.
+ layers from the WCS server to the map canvas.
 %End
 
 %TypeHeaderCode
@@ -41,6 +41,12 @@ Constructor
     ~QgsOWSSourceSelect();
 
   public slots:
+
+    virtual void refresh( );
+
+%Docstring
+Triggered when the provider's connections need to be refreshed
+%End
 
     void on_mNewButton_clicked();
 %Docstring
@@ -110,7 +116,6 @@ Add some default wms servers to the list
     void addRasterLayer( const QString &rasterLayerPath,
                          const QString &baseName,
                          const QString &providerKey );
-    void connectionsChanged();
 
   protected:
 
@@ -196,8 +201,6 @@ Set the server connection combo box to that stored in the config file.
 %Docstring
 Add a few example servers to the list.
 %End
-
-
 
 
     virtual void populateLayerList();

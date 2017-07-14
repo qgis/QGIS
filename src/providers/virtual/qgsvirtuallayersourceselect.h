@@ -24,18 +24,23 @@ email                : hugo dot mercier at oslandia dot com
 #include "qgsguiutils.h"
 #include <qgsvirtuallayerdefinition.h>
 #include "qgsproviderregistry.h"
+#include "qgssourceselect.h"
 
 class QgsVectorLayer;
 class QMainWindow;
 class QgsEmbeddedLayerSelectDialog;
 class QgsLayerTreeView;
 
-class QgsVirtualLayerSourceSelect : public QDialog, private Ui::QgsVirtualLayerSourceSelectBase
+class QgsVirtualLayerSourceSelect : public QgsSourceSelect, private Ui::QgsVirtualLayerSourceSelectBase
 {
     Q_OBJECT
 
   public:
-    QgsVirtualLayerSourceSelect( QWidget *parent, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::None );
+    QgsVirtualLayerSourceSelect( QWidget *parent = nullptr, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::None );
+
+  public slots:
+    //! Triggered when the provider's connections need to be refreshed
+    void refresh( ) override;
 
   private slots:
     void on_buttonBox_accepted();
@@ -59,7 +64,6 @@ class QgsVirtualLayerSourceSelect : public QDialog, private Ui::QgsVirtualLayerS
     long mSrid;
     QStringList mProviderList;
     QgsEmbeddedLayerSelectDialog *mEmbeddedSelectionDialog = nullptr;
-    QgsProviderRegistry::WidgetMode mWidgetMode = QgsProviderRegistry::WidgetMode::None;
     void addEmbeddedLayer( const QString &name, const QString &provider, const QString &encoding, const QString &source );
     QgsLayerTreeView *mTreeView  = nullptr;
 };

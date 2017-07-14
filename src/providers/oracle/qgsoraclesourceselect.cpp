@@ -167,14 +167,13 @@ void QgsOracleSourceSelectDelegate::setModelData( QWidget *editor, QAbstractItem
 }
 
 QgsOracleSourceSelect::QgsOracleSourceSelect( QWidget *parent, Qt::WindowFlags fl, QgsProviderRegistry::WidgetMode widgetMode )
-  : QDialog( parent, fl )
-  , mWidgetMode( widgetMode )
+  : QgsSourceSelect( parent, fl, widgetMode )
   , mColumnTypeThread( 0 )
   , mIsConnected( false )
 {
   setupUi( this );
 
-  if ( mWidgetMode != QgsProviderRegistry::WidgetMode::None )
+  if ( QgsSourceSelect::widgetMode( ) == QgsProviderRegistry::WidgetMode::Embedded )
   {
     buttonBox->removeButton( buttonBox->button( QDialogButtonBox::Close ) );
     mHoldDialogOpen->hide();

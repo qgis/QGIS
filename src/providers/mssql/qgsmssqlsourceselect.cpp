@@ -119,8 +119,7 @@ void QgsMssqlSourceSelectDelegate::setModelData( QWidget *editor, QAbstractItemM
 }
 
 QgsMssqlSourceSelect::QgsMssqlSourceSelect( QWidget *parent, Qt::WindowFlags fl, QgsProviderRegistry::WidgetMode widgetMode )
-  : QDialog( parent, fl )
-  , mWidgetMode( widgetMode )
+  : QgsSourceSelect( parent, fl, widgetMode )
   , mColumnTypeThread( nullptr )
   , mUseEstimatedMetadata( false )
 {
@@ -128,7 +127,7 @@ QgsMssqlSourceSelect::QgsMssqlSourceSelect( QWidget *parent, Qt::WindowFlags fl,
 
   setWindowTitle( tr( "Add MSSQL Table(s)" ) );
 
-  if ( mWidgetMode != QgsProviderRegistry::WidgetMode::None )
+  if ( QgsSourceSelect::widgetMode( ) != QgsProviderRegistry::WidgetMode::None )
   {
     buttonBox->removeButton( buttonBox->button( QDialogButtonBox::Close ) );
     mHoldDialogOpen->hide();
@@ -141,7 +140,7 @@ QgsMssqlSourceSelect::QgsMssqlSourceSelect( QWidget *parent, Qt::WindowFlags fl,
   mBuildQueryButton->setToolTip( tr( "Set Filter" ) );
   mBuildQueryButton->setDisabled( true );
 
-  if ( mWidgetMode != QgsProviderRegistry::WidgetMode::Manager )
+  if ( QgsSourceSelect::widgetMode( ) != QgsProviderRegistry::WidgetMode::Manager )
   {
     buttonBox->addButton( mAddButton, QDialogButtonBox::ActionRole );
     connect( mAddButton, &QAbstractButton::clicked, this, &QgsMssqlSourceSelect::addTables );
@@ -655,6 +654,11 @@ QStringList QgsMssqlSourceSelect::selectedTables()
 QString QgsMssqlSourceSelect::connectionInfo()
 {
   return mConnInfo;
+}
+
+void QgsMssqlSourceSelect::refresh()
+{
+  populateConnectionList();
 }
 
 void QgsMssqlSourceSelect::setSql( const QModelIndex &index )

@@ -75,7 +75,7 @@ void QgsAmsRootItem::newConnection()
 
   if ( nc.exec() )
   {
-    refresh();
+    refreshConnections();
   }
 }
 #endif
@@ -158,14 +158,14 @@ void QgsAmsConnectionItem::editConnection()
 
   if ( nc.exec() )
   {
-    mParent->refresh();
+    mParent->refreshConnections();
   }
 }
 
 void QgsAmsConnectionItem::deleteConnection()
 {
   QgsOwsConnection::deleteConnection( QStringLiteral( "arcgismapserver" ), mName );
-  mParent->refresh();
+  mParent->refreshConnections();
 }
 #endif
 

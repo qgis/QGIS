@@ -38,14 +38,13 @@ email                : hugo dot mercier at oslandia dot com
 #include <QTextStream>
 
 QgsVirtualLayerSourceSelect::QgsVirtualLayerSourceSelect( QWidget *parent, Qt::WindowFlags fl, QgsProviderRegistry::WidgetMode widgetMode )
-  : QDialog( parent, fl )
+  : QgsSourceSelect( parent, fl, widgetMode )
   , mSrid( 0 )
-  , mWidgetMode( widgetMode )
   , mTreeView( nullptr )
 {
   setupUi( this );
 
-  if ( mWidgetMode !=  QgsProviderRegistry::WidgetMode::None )
+  if ( QgsSourceSelect::widgetMode( ) !=  QgsProviderRegistry::WidgetMode::None )
   {
     buttonBox->removeButton( buttonBox->button( QDialogButtonBox::Cancel ) );
     buttonBox->button( QDialogButtonBox::Ok )->setText( tr( "Add" ) );
@@ -93,6 +92,12 @@ QgsVirtualLayerSourceSelect::QgsVirtualLayerSourceSelect( QWidget *parent, Qt::W
     connect( mTreeView->model(), &QAbstractItemModel::rowsRemoved, this, &QgsVirtualLayerSourceSelect::updateLayersList );
     connect( mTreeView->model(), &QAbstractItemModel::dataChanged, this, &QgsVirtualLayerSourceSelect::updateLayersList );
   }
+}
+
+void QgsVirtualLayerSourceSelect::refresh()
+{
+  // TODO: check that this really works
+  updateLayersList();
 }
 
 void QgsVirtualLayerSourceSelect::onLayerComboChanged( int idx )
@@ -375,7 +380,7 @@ void QgsVirtualLayerSourceSelect::on_buttonBox_accepted()
   {
     emit addVectorLayer( def.toString(), layerName, QStringLiteral( "virtual" ) );
   }
-  if ( mWidgetMode == QgsProviderRegistry::WidgetMode::None )
+  if ( QgsSourceSelect::widgetMode( ) == QgsProviderRegistry::WidgetMode::None )
   {
     accept( );
   }

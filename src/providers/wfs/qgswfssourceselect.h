@@ -22,6 +22,7 @@
 #include "qgscontexthelp.h"
 #include "qgswfscapabilities.h"
 #include "qgsproviderregistry.h"
+#include "qgssourceselect.h"
 
 #include <QItemDelegate>
 #include <QStandardItemModel>
@@ -42,18 +43,17 @@ class QgsWFSItemDelegate : public QItemDelegate
 
 };
 
-class QgsWFSSourceSelect: public QDialog, private Ui::QgsWFSSourceSelectBase
+class QgsWFSSourceSelect: public QgsSourceSelect, private Ui::QgsWFSSourceSelectBase
 {
     Q_OBJECT
 
   public:
 
-    QgsWFSSourceSelect( QWidget *parent, Qt::WindowFlags fl, QgsProviderRegistry::WidgetMode widgetMode );
+    QgsWFSSourceSelect( QWidget *parent = nullptr, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::None );
     ~QgsWFSSourceSelect();
 
   signals:
     void addWfsLayer( const QString &uri, const QString &layerName );
-    void connectionsChanged();
 
   private:
     QgsWFSSourceSelect(); //default constructor is forbidden
@@ -73,8 +73,6 @@ class QgsWFSSourceSelect: public QDialog, private Ui::QgsWFSSourceSelectBase
     QgsWfsCapabilities::Capabilities mCaps;
     QModelIndex mSQLIndex;
     QgsSQLComposerDialog *mSQLComposerDialog = nullptr;
-    //! Embedded mode, without 'Close'
-    QgsProviderRegistry::WidgetMode mWidgetMode = QgsProviderRegistry::WidgetMode::None;
 
     /** Returns the best suited CRS from a set of authority ids
        1. project CRS if contained in the set
@@ -82,6 +80,11 @@ class QgsWFSSourceSelect: public QDialog, private Ui::QgsWFSSourceSelectBase
        3. the first entry in the set else
     \returns the authority id of the crs or an empty string in case of error*/
     QString getPreferredCrs( const QSet<QString> &crsSet ) const;
+
+  public slots:
+
+    //! Triggered when the provider's connections need to be refreshed
+    void refresh( ) override;
 
   private slots:
     void addEntryToServerList();

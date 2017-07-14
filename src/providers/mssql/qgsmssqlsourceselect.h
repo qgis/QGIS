@@ -23,6 +23,7 @@
 #include "qgsmssqltablemodel.h"
 #include "qgshelp.h"
 #include "qgsproviderregistry.h"
+#include "qgssourceselect.h"
 
 #include <QMap>
 #include <QPair>
@@ -57,7 +58,7 @@ class QgsMssqlSourceSelectDelegate : public QItemDelegate
  * for MSSQL databases. The user can then connect and add
  * tables from the database to the map canvas.
  */
-class QgsMssqlSourceSelect : public QDialog, private Ui::QgsDbSourceSelectBase
+class QgsMssqlSourceSelect : public QgsSourceSelect, private Ui::QgsDbSourceSelectBase
 {
     Q_OBJECT
 
@@ -79,12 +80,15 @@ class QgsMssqlSourceSelect : public QDialog, private Ui::QgsDbSourceSelectBase
 
   signals:
     void addDatabaseLayers( QStringList const &layerPathList, QString const &providerKey );
-    void connectionsChanged();
     void addGeometryColumn( const QgsMssqlLayerProperty & );
     void progress( int, int );
     void progressMessage( QString );
 
   public slots:
+
+    //! Triggered when the provider's connections need to be refreshed
+    void refresh( ) override;
+
     //! Determines the tables the user selected and closes the dialog
     void addTables();
     void buildQuery();
@@ -122,12 +126,10 @@ class QgsMssqlSourceSelect : public QDialog, private Ui::QgsDbSourceSelectBase
 
     void columnThreadFinished();
 
+
   private:
     typedef QPair<QString, QString> geomPair;
     typedef QList<geomPair> geomCol;
-
-    //! Embedded mode, without 'Close'
-    QgsProviderRegistry::WidgetMode mWidgetMode = QgsProviderRegistry::WidgetMode::None;
 
     // queue another query for the thread
     void addSearchGeometryColumn( const QString &connectionName, const QgsMssqlLayerProperty &layerProperty, bool estimateMetadata );

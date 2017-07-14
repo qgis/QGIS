@@ -37,9 +37,9 @@
 #include <QRadioButton>
 #include <QImageReader>
 
-/** \ingroup gui
+/**
  * Item delegate with tweaked sizeHint.
- * @note not available in Python bindings */
+ */
 class QgsSourceSelectItemDelegate : public QItemDelegate
 {
   public:
@@ -49,12 +49,12 @@ class QgsSourceSelectItemDelegate : public QItemDelegate
 };
 
 
-QgsArcGisServiceSourceSelect::QgsArcGisServiceSourceSelect( const QString &serviceName, ServiceType serviceType, QWidget *parent, Qt::WindowFlags fl )
-  : QDialog( parent, fl ),
-    mServiceName( serviceName ),
-    mServiceType( serviceType ),
-    mBuildQueryButton( 0 ),
-    mImageEncodingGroup( 0 )
+QgsArcGisServiceSourceSelect::QgsArcGisServiceSourceSelect( const QString &serviceName, ServiceType serviceType, QWidget *parent, Qt::WindowFlags fl, QgsProviderRegistry::WidgetMode widgetMode ):
+  QgsSourceSelect( parent, fl, widgetMode ),
+  mServiceName( serviceName ),
+  mServiceType( serviceType ),
+  mBuildQueryButton( 0 ),
+  mImageEncodingGroup( 0 )
 {
   setupUi( this );
   setWindowTitle( QStringLiteral( "Add %1 Layer from a Server" ).arg( mServiceName ) );
@@ -219,6 +219,11 @@ QString QgsArcGisServiceSourceSelect::getPreferredCrs( const QSet<QString> &crsS
 
   //third: first entry in set
   return *( crsSet.constBegin() );
+}
+
+void QgsArcGisServiceSourceSelect::refresh()
+{
+  populateConnectionList();
 }
 
 void QgsArcGisServiceSourceSelect::addEntryToServerList()

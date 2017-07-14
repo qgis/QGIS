@@ -16,10 +16,21 @@
 #ifndef QGSARCGISSERVICESOURCESELECTDIALOG_H
 #define QGSARCGISSERVICESOURCESELECTDIALOG_H
 
+/// @cond PRIVATE
+
+//
+//  W A R N I N G
+//  -------------
+//
+// This file is not part of the QGIS API.  It exists purely as an
+// implementation detail.  This header file may change from version to
+// version without notice, or even be removed.
+//
+
 #include "ui_qgsarcgisservicesourceselectbase.h"
 #include "qgsrectangle.h"
 #include "qgscoordinatereferencesystem.h"
-
+#include "qgssourceselect.h"
 #include "qgis_gui.h"
 
 class QStandardItemModel;
@@ -27,11 +38,10 @@ class QSortFilterProxyModel;
 class QgsProjectionSelectionDialog;
 class QgsOwsConnection;
 
-/** \ingroup gui
- * Generic class listing layers available from a remote service.
- * \since QGIS 3.0
+/**
+ * Base class for listing ArcGis layers available from a remote service.
  */
-class GUI_EXPORT QgsArcGisServiceSourceSelect : public QDialog, protected Ui::QgsArcGisServiceSourceSelectBase
+class GUI_EXPORT QgsArcGisServiceSourceSelect : public QgsSourceSelect, protected Ui::QgsArcGisServiceSourceSelectBase
 {
     Q_OBJECT
 
@@ -40,7 +50,7 @@ class GUI_EXPORT QgsArcGisServiceSourceSelect : public QDialog, protected Ui::Qg
     enum ServiceType { MapService, FeatureService };
 
     //! Constructor
-    QgsArcGisServiceSourceSelect( const QString &serviceName, ServiceType serviceType, QWidget *parent, Qt::WindowFlags fl );
+    QgsArcGisServiceSourceSelect( const QString &serviceName, ServiceType serviceType, QWidget *parent, Qt::WindowFlags fl, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::None );
 
     ~QgsArcGisServiceSourceSelect();
     //! Sets the current extent and CRS. Used to select an appropriate CRS and possibly to retrieve data only in the current extent
@@ -49,8 +59,6 @@ class GUI_EXPORT QgsArcGisServiceSourceSelect : public QDialog, protected Ui::Qg
   signals:
     //! Emitted when a layer is added from the dialog
     void addLayer( QString uri, QString typeName );
-    //! Emitted when the connections for the service were changed
-    void connectionsChanged();
 
   protected:
     QString mServiceName;
@@ -91,6 +99,11 @@ class GUI_EXPORT QgsArcGisServiceSourceSelect : public QDialog, protected Ui::Qg
        3. the first entry in the set else
     \returns the authority id of the crs or an empty string in case of error*/
     QString getPreferredCrs( const QSet<QString> &crsSet ) const;
+
+  public slots:
+
+    //! Triggered when the provider's connections need to be refreshed
+    void refresh( ) override;
 
   private slots:
     void addEntryToServerList();
