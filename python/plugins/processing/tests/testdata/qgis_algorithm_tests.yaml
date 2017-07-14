@@ -141,19 +141,19 @@ tests:
         name: expected/multipolys_densify.gml
         type: vector
 
-#  - name: Polygons to Lines
-#    algorithm: qgis:polygonstolines
-#    params:
-#    - name: multipolys.gml
-#      type: vector
-#    results:
-#      OUTPUT:
-#        name: expected/polys_to_lines.gml
-#        type: vector
-#        compare:
-#          fields:
-#            fid: skip
-#
+  - name: Polygons to Lines
+    algorithm: qgis:polygonstolines
+    params:
+    - name: multipolys.gml
+      type: vector
+    results:
+      OUTPUT:
+        name: expected/polys_to_lines.gml
+        type: vector
+        compare:
+          fields:
+            fid: skip
+
   - algorithm: qgis:basicstatisticsforfields
     name: Basic statistics for numeric fields
     params:
@@ -2023,17 +2023,17 @@ tests:
 #        name: expected/add_unique_field.gml
 #        type: vector
 #
-#  - algorithm: qgis:linestopolygons
-#    name: convert lines to polygon
-#    params:
-#      INPUT:
-#        name: lines.gml
-#        type: vector
-#    results:
-#      OUTPUT:
-#        name: expected/lines_to_polygon.gml
-#        type: vector
-#
+  - algorithm: qgis:linestopolygons
+    name: convert lines to polygon
+    params:
+      INPUT:
+        name: lines.gml
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/lines_to_polygon.gml
+        type: vector
+
 #  - algorithm: qgis:joinattributestable
 #    name: join the attribute table by common field
 #    params:

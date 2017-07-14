@@ -63,8 +63,10 @@ from .Heatmap import Heatmap
 from .ImportIntoPostGIS import ImportIntoPostGIS
 from .ImportIntoSpatialite import ImportIntoSpatialite
 from .Intersection import Intersection
+from .LinesToPolygons import LinesToPolygons
 from .Merge import Merge
 from .PointsLayerFromTable import PointsLayerFromTable
+from .PolygonsToLines import PolygonsToLines
 from .PostGISExecuteSQL import PostGISExecuteSQL
 from .RandomExtract import RandomExtract
 from .RandomExtractWithinSubsets import RandomExtractWithinSubsets
@@ -93,8 +95,6 @@ from .ZonalStatistics import ZonalStatistics
 # from .PointDistance import PointDistance
 # from .UniqueValues import UniqueValues
 # from .ExportGeometryInfo import ExportGeometryInfo
-# from .LinesToPolygons import LinesToPolygons
-# from .PolygonsToLines import PolygonsToLines
 # from .SinglePartsToMultiparts import SinglePartsToMultiparts
 # from .ExtractNodes import ExtractNodes
 # from .ConvexHull import ConvexHull
@@ -190,8 +190,8 @@ class QGISAlgorithmProvider(QgsProcessingProvider):
         #         NearestNeighbourAnalysis(), MeanCoords(),
         #         LinesIntersection(), UniqueValues(), PointDistance(),
         #         ExportGeometryInfo(),
-        #         , SinglePartsToMultiparts(),
-        #         PolygonsToLines(), LinesToPolygons(), ExtractNodes(),
+        #         SinglePartsToMultiparts(),
+        #         ExtractNodes(),
         #         ConvexHull(), FixedDistanceBuffer(),
         #         VariableDistanceBuffer(),
         #         RandomSelection(), RandomSelectionWithinSubsets(),
@@ -260,8 +260,10 @@ class QGISAlgorithmProvider(QgsProcessingProvider):
                 ImportIntoPostGIS(),
                 ImportIntoSpatialite(),
                 Intersection(),
+                LinesToPolygons(),
                 Merge(),
                 PointsLayerFromTable(),
+                PolygonsToLines(),
                 PostGISExecuteSQL(),
                 RandomExtract(),
                 RandomExtractWithinSubsets(),

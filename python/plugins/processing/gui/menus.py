@@ -48,7 +48,7 @@ defaultMenuEntries.update({'qgis:convexhull': geoprocessingToolsMenu,
                            'qgis:intersection': geoprocessingToolsMenu,
                            'qgis:union': geoprocessingToolsMenu,
                            'qgis:symmetricaldifference': geoprocessingToolsMenu,
-                           'qgis:clip': geoprocessingToolsMenu,
+                           'native:clip': geoprocessingToolsMenu,
                            'qgis:difference': geoprocessingToolsMenu,
                            'qgis:dissolve': geoprocessingToolsMenu,
                            'qgis:eliminateselectedpolygons': geoprocessingToolsMenu})
