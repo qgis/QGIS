@@ -13,7 +13,7 @@
 
     - ParameterField has been replaced with QgsProcessingParameterField.
       - When constructing, QgsProcessingParameterField uses QgsProcessingParameterField.DataType to specify valid data types. The parent layer for the field should be indicated by passing the parent layer parameter name as the parentLayerParameterName argument in the constructor.
-      - Retrieving field parameter values should be done with self.parameterAsString( parameters, PARAM_NAME, context) for single field values or self.parameterAsFields(parameters, PARAM_NAME, context) if allowMultiple was set to True when the parameter was constructed. parameterAsFields will return a list of all select field names, or an empty list if no fields were selected.
+      - Retrieving field parameter values should be done with self.parameterAsString( parameters, PARAM_NAME, context) for single field values or self.parameterAsFields(parameters, PARAM_NAME, context) if allowMultiple was set to True when the parameter was constructed. parameterAsFields will return a list of all selected field names, or an empty list if no fields were selected.
     
 Map parameters from old classes to new classes
    - ParameterNumber -> QgsProcessingParameterNumber
