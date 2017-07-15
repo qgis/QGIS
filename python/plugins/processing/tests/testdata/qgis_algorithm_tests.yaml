@@ -1047,24 +1047,24 @@ tests:
   - algorithm: qgis:slope
     name: Slope from QGIS analysis library
     params:
-      INPUT_LAYER:
+      INPUT:
         name: dem.tif
         type: raster
       Z_FACTOR: 1.0
     results:
-      OUTPUT_LAYER:
+      OUTPUT:
         hash: 151ea76a21b286c16567eb6b4b692925a84145b65561a0017effb1a1
         type: rasterhash
 
   - algorithm: qgis:ruggednessindex
     name: Ruggedness index from QGIS analysis library
     params:
-      INPUT_LAYER:
+      INPUT:
         name: dem.tif
         type: raster
       Z_FACTOR: 1.0
     results:
-      OUTPUT_LAYER:
+      OUTPUT:
         hash: ff630246e8dc19c7217d81261c6b64f965c17fa04d3e41d7979c1f1e
         type: rasterhash
 
@@ -1072,13 +1072,13 @@ tests:
     name: Hillshade from QGIS analysis library
     params:
       AZIMUTH: 300.0
-      INPUT_LAYER:
+      INPUT:
         name: dem.tif
         type: raster
       V_ANGLE: 40.0
       Z_FACTOR: 1.0
     results:
-      OUTPUT_LAYER:
+      OUTPUT:
         hash: 58365b3715b925d6286e7f082ebd9c2a20f09fa1c922176d3f238002
         type: rasterhash
 
@@ -2596,7 +2596,7 @@ tests:
     name: Heatmap (Kernel density estimation)
     params:
       DECAY: 0.0
-      INPUT_LAYER:
+      INPUT:
         name: points.gml
         type: vector
       KERNEL: '0'
@@ -2604,6 +2604,6 @@ tests:
       PIXEL_SIZE: 0.1
       RADIUS: 0.5
     results:
-      OUTPUT_LAYER:
+      OUTPUT:
         hash: a594d4fa994b81641bfadde54447dc548fa6e23f630c6a4c383487c5
         type: rasterhash
