@@ -37,6 +37,7 @@ from qgis.core import (QgsApplication,
                        QgsField,
                        QgsGeometry,
                        QgsDistanceArea,
+                       QgsProject,
                        QgsWkbTypes,
                        QgsProcessingUtils)
 
@@ -120,6 +121,8 @@ class PointsToPaths(QgisAlgorithm):
         feedback.setProgress(0)
 
         da = QgsDistanceArea()
+        da.setSourceCrs(layer.sourceCrs())
+        da.setEllipsoid(QgsProject.instance().ellipsoid())
 
         current = 0
         total = 100.0 / len(points) if points else 1

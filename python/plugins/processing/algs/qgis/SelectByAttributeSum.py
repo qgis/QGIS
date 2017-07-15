@@ -83,7 +83,7 @@ class SelectByAttributeSum(QgisAlgorithm):
         geom = ft.geometry()
         attrSum = ft[fieldName]
 
-        idx = QgsSpatialIndex(layer.getFeatures(QgsFeatureRequest.setSubsetOfAttributes([])))
+        idx = QgsSpatialIndex(layer.getFeatures(QgsFeatureRequest.setSubsetOfAttributes([])), feedback)
         req = QgsFeatureRequest()
         completed = False
         while not completed:

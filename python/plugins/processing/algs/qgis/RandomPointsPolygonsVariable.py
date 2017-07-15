@@ -33,6 +33,7 @@ from qgis.PyQt.QtCore import QVariant
 from qgis.core import (QgsFields, QgsFeatureSink, QgsField, QgsFeature, QgsPointXY, QgsWkbTypes,
                        QgsGeometry, QgsSpatialIndex, QgsDistanceArea,
                        QgsMessageLog,
+                       QgsProject,
                        QgsProcessingUtils)
 
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
@@ -95,6 +96,8 @@ class RandomPointsPolygonsVariable(QgisAlgorithm):
         writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(fields, QgsWkbTypes.Point, layer.crs(), context)
 
         da = QgsDistanceArea()
+        da.setSourceCrs(layer.sourceCrs())
+        da.setEllipsoid(QgsProject.instance().ellipsoid())
 
         features = QgsProcessingUtils.getFeatures(layer, context)
         for current, f in enumerate(features):

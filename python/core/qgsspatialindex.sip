@@ -28,18 +28,27 @@ class QgsSpatialIndex
 Constructor - creates R-tree
 %End
 
-    explicit QgsSpatialIndex( const QgsFeatureIterator &fi );
+    explicit QgsSpatialIndex( const QgsFeatureIterator &fi, QgsFeedback *feedback = 0 );
 %Docstring
  Constructor - creates R-tree and bulk loads it with features from the iterator.
  This is much faster approach than creating an empty index and then inserting features one by one.
 
+ The optional ``feedback`` object can be used to allow cancelation of bulk feature loading. Ownership
+ of ``feedback`` is not transferred, and callers must take care that the lifetime of feedback exceeds
+ that of the spatial index construction.
+
 .. versionadded:: 2.8
 %End
 
-    explicit QgsSpatialIndex( const QgsFeatureSource &source );
+    explicit QgsSpatialIndex( const QgsFeatureSource &source, QgsFeedback *feedback = 0 );
 %Docstring
  Constructor - creates R-tree and bulk loads it with features from the source.
  This is much faster approach than creating an empty index and then inserting features one by one.
+
+ The optional ``feedback`` object can be used to allow cancelation of bulk feature loading. Ownership
+ of ``feedback`` is not transferred, and callers must take care that the lifetime of feedback exceeds
+ that of the spatial index construction.
+
 
 .. versionadded:: 3.0
 %End

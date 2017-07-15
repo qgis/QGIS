@@ -97,8 +97,8 @@ class Union(QgisAlgorithm):
         featB = QgsFeature()
         outFeat = QgsFeature()
 
-        indexA = QgsSpatialIndex(sourceA)
-        indexB = QgsSpatialIndex(sourceB.getFeatures(QgsFeatureRequest().setSubsetOfAttributes([]).setDestinationCrs(sourceA.sourceCrs())))
+        indexA = QgsSpatialIndex(sourceA, feedback)
+        indexB = QgsSpatialIndex(sourceB.getFeatures(QgsFeatureRequest().setSubsetOfAttributes([]).setDestinationCrs(sourceA.sourceCrs())), feedback)
 
         total = 100.0 / (sourceA.featureCount() * sourceB.featureCount()) if sourceA.featureCount() and sourceB.featureCount() else 1
         count = 0
