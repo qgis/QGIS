@@ -22,6 +22,7 @@
 #include <QStandardItemModel>
 #include <QSortFilterProxyModel>
 #include "ui_qgsgeonodesourceselectbase.h"
+#include "qgis_gui.h"
 
 class QgsGeonodeItemDelegate : public QItemDelegate
 {
@@ -31,7 +32,7 @@ class QgsGeonodeItemDelegate : public QItemDelegate
     explicit QgsGeonodeItemDelegate( QObject *parent = nullptr ) : QItemDelegate( parent ) { }
 };
 
-class QgsGeoNodeSourceSelect: public QDialog, private Ui::QgsGeonodeSourceSelectBase
+class GUI_EXPORT QgsGeoNodeSourceSelect: public QDialog, private Ui::QgsGeonodeSourceSelectBase
 {
     Q_OBJECT
 

@@ -289,12 +289,12 @@ Q_GUI_EXPORT extern int qt_defaultDpiX();
 #include "qgsnewnamedialog.h"
 #include "qgsgui.h"
 #include "qgsdatasourcemanagerdialog.h"
-#include "qgsgeonodesourceselect.h"
 
 #include "qgsuserprofilemanager.h"
 #include "qgsuserprofile.h"
 
 #include "qgssublayersdialog.h"
+#include "geonode/qgsgeonodesourceselect.h"
 #include "ogr/qgsvectorlayersaveasdialog.h"
 
 #include "qgsosmdownloaddialog.h"

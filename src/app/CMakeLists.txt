@@ -179,9 +179,6 @@ SET(QGIS_APP_SRCS
   pluginmanager/qgspluginsortfilterproxymodel.cpp
   pluginmanager/qgspluginitemdelegate.cpp
 
-  geonode/qgsgeonodesourceselect.cpp
-  geonode/qgsgeonodenewconnection.cpp
-
   qgsnewspatialitelayerdialog.cpp
 
   qgssettingstree.cpp
@@ -359,9 +356,6 @@ SET (QGIS_APP_MOC_HDRS
   pluginmanager/qgspluginsortfilterproxymodel.h
   pluginmanager/qgspluginitemdelegate.h
 
-  geonode/qgsgeonodesourceselect.h
-  geonode/qgsgeonodenewconnection.h
-
   qgsnewspatialitelayerdialog.h
 
   qgssettingstree.h
@@ -516,6 +510,7 @@ INCLUDE_DIRECTORIES(
   ${CMAKE_SOURCE_DIR}/src/gui/symbology
   ${CMAKE_SOURCE_DIR}/src/gui/attributetable
   ${CMAKE_SOURCE_DIR}/src/gui/auth
+  ${CMAKE_SOURCE_DIR}/src/gui/geonode
   ${CMAKE_SOURCE_DIR}/src/gui/ogr
   ${CMAKE_SOURCE_DIR}/src/gui/raster
   ${CMAKE_SOURCE_DIR}/src/gui/editorwidgets
@@ -551,7 +546,6 @@ INCLUDE_DIRECTORIES(
   ../core/composer
   ../core/dxf
   ../core/geometry
-  ../core/geocms
   ../core/layout
   ../core/metadata
   ../core/layertree
@@ -563,6 +557,7 @@ INCLUDE_DIRECTORIES(
   ../gui/symbology
   ../gui/attributetable
   ../gui/auth
+  ../gui/geonode
   ../gui/ogr
   ../gui/raster
   ../gui/editorwidgets
@@ -575,7 +570,6 @@ INCLUDE_DIRECTORIES(
   openstreetmap
   dwg
   dwg/libdxfrw
-  geonode
   ${CMAKE_SOURCE_DIR}/src/native
   ${CMAKE_BINARY_DIR}/src/native
 )

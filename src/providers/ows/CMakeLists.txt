@@ -11,7 +11,7 @@ SET(OWS_MOC_HDRS
 )
 
 INCLUDE_DIRECTORIES (
-  ${CMAKE_SOURCE_DIR}/src/app/geonode
+  ${CMAKE_SOURCE_DIR}/src/gui/geonode
   ${CMAKE_SOURCE_DIR}/src/core
   ${CMAKE_SOURCE_DIR}/src/core/expression
   ${CMAKE_SOURCE_DIR}/src/core/geometry
