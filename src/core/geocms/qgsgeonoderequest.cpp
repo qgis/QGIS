@@ -313,12 +313,12 @@ QList<LayerStruct> QgsGeoNodeRequest::parseLayers( QByteArray layerResponse )
 
 QStringList QgsGeoNodeRequest::serviceUrls( QString serviceType )
 {
-  QStringList *urls = new QStringList;
+  QStringList urls;
   bool success = getLayers();
 
   if ( !success )
   {
-    return *urls;
+    return urls;
   }
 
   QList<LayerStruct> layers = parseLayers( this->response() );
@@ -347,24 +347,24 @@ QStringList QgsGeoNodeRequest::serviceUrls( QString serviceType )
     {
       url.prepend( "http://" );
     }
-    if ( !urls->contains( url ) && url.length() > 0 )
+    if ( !urls.contains( url ) && url.length() > 0 )
     {
-      urls->append( url );
+      urls.append( url );
     }
   }
 
-  return *urls;
+  return urls;
 }
 
 
 QgsStringMap QgsGeoNodeRequest::serviceUrlData( QString serviceType )
 {
-  QgsStringMap *urls = new QgsStringMap;
+  QgsStringMap urls;
   bool success = getLayers();
 
   if ( !success )
   {
-    return *urls;
+    return urls;
   }
   QList<LayerStruct> layers = parseLayers( this->response() );
 
@@ -395,11 +395,11 @@ QgsStringMap QgsGeoNodeRequest::serviceUrlData( QString serviceType )
       // Change this to https (?)
       url.prepend( "http://" );
     }
-    if ( !urls->contains( url ) && url.length() > 0 )
+    if ( !urls.contains( url ) && url.length() > 0 )
     {
-      urls->insert( layerName, url );
+      urls.insert( layerName, url );
     }
   }
 
-  return *urls;
+  return urls;
 }
