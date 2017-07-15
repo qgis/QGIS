@@ -61,13 +61,15 @@ feedback object. E.g.
    feedback.pushInfo('Feature {} was missing geometry, skipping'.format(f.id())
    feedback.reportError('Input layer CRS is not valid, cannot reproject')
 
-- Use geoprocessingexception only for FATAL errors which force a model to terminate. Algorithms should handle common cases
+- Use exceptions only for FATAL errors which force a model to terminate. Algorithms should handle common cases
 such as having no features in an input layer without throwing exceptions (instead, an empty layer should be output). This
 allows more flexibility for users creating models. They may have created models which "route" features to different algorithms
 based on some criteria, and it can be a valid case that no features satisfy this criteria. If your algorithm throws an
 exception upon encountering an empty layer, it prevents it being used in these flexible models. Instead, use the feedback
 object to pushInfo or reportError so that the lack of features is brought to user's attention (and logged) without breaking
 the model execution.
+
+- But if you MUST throw exceptions, use QgsProcessingException instead of the removed GeoAlgorithmExecutionException.
 
 - Outputs are good! Declare as many outputs as useful from your algorithm. E.g. most algorithms should have at least a
 FEATURE_COUNT number output which records the number of features processed by the algorithm. Other algorithms might want
