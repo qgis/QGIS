@@ -60,6 +60,7 @@ from .ExtentFromLayer import ExtentFromLayer
 from .FixGeometry import FixGeometry
 from .GridPolygon import GridPolygon
 from .Heatmap import Heatmap
+from .Hillshade import Hillshade
 from .ImportIntoPostGIS import ImportIntoPostGIS
 from .ImportIntoSpatialite import ImportIntoSpatialite
 from .Intersection import Intersection
@@ -72,10 +73,12 @@ from .PostGISExecuteSQL import PostGISExecuteSQL
 from .RandomExtract import RandomExtract
 from .RandomExtractWithinSubsets import RandomExtractWithinSubsets
 from .RegularPoints import RegularPoints
+from .Ruggedness import Ruggedness
 from .SaveSelectedFeatures import SaveSelectedFeatures
 from .SelectByAttribute import SelectByAttribute
 from .SelectByExpression import SelectByExpression
 from .SimplifyGeometries import SimplifyGeometries
+from .Slope import Slope
 from .Smooth import Smooth
 from .SnapGeometries import SnapGeometriesToLayer
 from .SpatialiteExecuteSQL import SpatialiteExecuteSQL
@@ -146,9 +149,6 @@ from .ZonalStatistics import ZonalStatistics
 # from .Translate import Translate
 # from .SingleSidedBuffer import SingleSidedBuffer
 # from .PointsAlongGeometry import PointsAlongGeometry
-# from .Slope import Slope
-# from .Ruggedness import Ruggedness
-# from .Hillshade import Hillshade
 # from .Relief import Relief
 # from .IdwInterpolation import IdwInterpolation
 # from .TinInterpolation import TinInterpolation
@@ -254,6 +254,7 @@ class QGISAlgorithmProvider(QgsProcessingProvider):
                 FixGeometry(),
                 GridPolygon(),
                 Heatmap(),
+                Hillshade(),
                 ImportIntoPostGIS(),
                 ImportIntoSpatialite(),
                 Intersection(),
@@ -266,10 +267,12 @@ class QGISAlgorithmProvider(QgsProcessingProvider):
                 RandomExtract(),
                 RandomExtractWithinSubsets(),
                 RegularPoints(),
+                Ruggedness(),
                 SaveSelectedFeatures(),
                 SelectByAttribute(),
                 SelectByExpression(),
                 SimplifyGeometries(),
+                Slope(),
                 Smooth(),
                 SnapGeometriesToLayer(),
                 SpatialiteExecuteSQL(),
