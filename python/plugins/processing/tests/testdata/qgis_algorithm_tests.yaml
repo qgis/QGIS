@@ -1144,22 +1144,22 @@ tests:
 #      OUTPUT:
 #        name: expected/line_intersection.gml
 #        type: vector
-#
-#  - algorithm: qgis:sumlinelengths
-#    name: Sum line lengths
-#    params:
-#      COUNT_FIELD: line_count
-#      LEN_FIELD: line_len
-#      LINES:
-#        name: lines.gml
-#        type: vector
-#      POLYGONS:
-#        name: polys.gml
-#        type: vector
-#    results:
-#      OUTPUT:
-#        name: expected/sum_line_length.gml
-#        type: vector
+
+  - algorithm: qgis:sumlinelengths
+    name: Sum line lengths
+    params:
+      COUNT_FIELD: line_count
+      LEN_FIELD: line_len
+      LINES:
+        name: lines.gml
+        type: vector
+      POLYGONS:
+        name: polys.gml
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/sum_line_length.gml
+        type: vector
 
   - algorithm: qgis:delaunaytriangulation
     name: Delaunay triangulation (multipoint data)

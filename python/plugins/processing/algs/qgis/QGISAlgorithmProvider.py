@@ -79,6 +79,7 @@ from .SimplifyGeometries import SimplifyGeometries
 from .Smooth import Smooth
 from .SnapGeometries import SnapGeometriesToLayer
 from .SpatialiteExecuteSQL import SpatialiteExecuteSQL
+from .SumLines import SumLines
 from .SymmetricalDifference import SymmetricalDifference
 from .Union import Union
 from .VectorSplit import VectorSplit
@@ -86,7 +87,6 @@ from .VoronoiPolygons import VoronoiPolygons
 from .ZonalStatistics import ZonalStatistics
 
 # from .ExtractByLocation import ExtractByLocation
-# from .SumLines import SumLines
 # from .NearestNeighbourAnalysis import NearestNeighbourAnalysis
 # from .LinesIntersection import LinesIntersection
 # from .MeanCoords import MeanCoords
@@ -183,8 +183,7 @@ class QGISAlgorithmProvider(QgsProcessingProvider):
         self.externalAlgs = []
 
     def getAlgs(self):
-        # algs = [SumLines(),
-        #         NearestNeighbourAnalysis(), MeanCoords(),
+        # algs = [NearestNeighbourAnalysis(), MeanCoords(),
         #         LinesIntersection(), UniqueValues(), PointDistance(),
         #         ExportGeometryInfo(),
         #         SinglePartsToMultiparts(),
@@ -274,6 +273,7 @@ class QGISAlgorithmProvider(QgsProcessingProvider):
                 Smooth(),
                 SnapGeometriesToLayer(),
                 SpatialiteExecuteSQL(),
+                SumLines(),
                 SymmetricalDifference(),
                 Union(),
                 VectorSplit(),

@@ -28,14 +28,20 @@ __revision__ = '$Format:%H$'
 import os
 
 from qgis.PyQt.QtGui import QIcon
-
-from qgis.core import QgsFeature, QgsFeatureSink, QgsGeometry, QgsFeatureRequest, QgsDistanceArea, QgsProcessingUtils
+from qgis.PyQt.QtCore import QVariant
+from qgis.core import (QgsFeature,
+                       QgsFeatureSink,
+                       QgsField,
+                       QgsGeometry,
+                       QgsFeatureRequest,
+                       QgsDistanceArea,
+                       QgsProcessing,
+                       QgsProcessingParameterString,
+                       QgsProcessingParameterFeatureSource,
+                       QgsProcessingParameterFeatureSink,
+                       QgsSpatialIndex)
 
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
-from processing.core.parameters import ParameterVector
-from processing.core.parameters import ParameterString
-from processing.core.outputs import OutputVector
-from processing.tools import dataobjects, vector
 
 pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
@@ -58,16 +64,16 @@ class SumLines(QgisAlgorithm):
         super().__init__()
 
     def initAlgorithm(self, config=None):
-        self.addParameter(ParameterVector(self.LINES,
-                                          self.tr('Lines'), [dataobjects.TYPE_VECTOR_LINE]))
-        self.addParameter(ParameterVector(self.POLYGONS,
-                                          self.tr('Polygons'), [dataobjects.TYPE_VECTOR_POLYGON]))
-        self.addParameter(ParameterString(self.LEN_FIELD,
-                                          self.tr('Lines length field name', 'LENGTH')))
-        self.addParameter(ParameterString(self.COUNT_FIELD,
-                                          self.tr('Lines count field name', 'COUNT')))
+        self.addParameter(QgsProcessingParameterFeatureSource(self.LINES,
+                                                              self.tr('Lines'), [QgsProcessing.TypeVectorLine]))
+        self.addParameter(QgsProcessingParameterFeatureSource(self.POLYGONS,
+                                                              self.tr('Polygons'), [QgsProcessing.TypeVectorPolygon]))
+        self.addParameter(QgsProcessingParameterString(self.LEN_FIELD,
+                                                       self.tr('Lines length field name'), defaultValue='LENGTH'))
+        self.addParameter(QgsProcessingParameterString(self.COUNT_FIELD,
+                                                       self.tr('Lines count field name'), defaultValue='COUNT'))
 
-        self.addOutput(OutputVector(self.OUTPUT, self.tr('Line length'), datatype=[dataobjects.TYPE_VECTOR_POLYGON]))
+        self.addParameter(QgsProcessingParameterFeatureSink(self.OUTPUT, self.tr('Line length'), QgsProcessing.TypeVectorPolygon))
 
     def name(self):
         return 'sumlinelengths'
@@ -76,66 +82,73 @@ class SumLines(QgisAlgorithm):
         return self.tr('Sum line lengths')
 
     def processAlgorithm(self, parameters, context, feedback):
-        lineLayer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.LINES), context)
-        polyLayer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.POLYGONS), context)
-        lengthFieldName = self.getParameterValue(self.LEN_FIELD)
-        countFieldName = self.getParameterValue(self.COUNT_FIELD)
+        line_source = self.parameterAsSource(parameters, self.LINES, context)
+        poly_source = self.parameterAsSource(parameters, self.POLYGONS, context)
 
-        (idxLength, fieldList) = vector.findOrCreateField(polyLayer,
-                                                          polyLayer.fields(), lengthFieldName)
-        (idxCount, fieldList) = vector.findOrCreateField(polyLayer, fieldList,
-                                                         countFieldName)
+        length_field_name = self.parameterAsString(parameters, self.LEN_FIELD, context)
+        count_field_name = self.parameterAsString(parameters, self.COUNT_FIELD, context)
 
-        writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(fieldList, polyLayer.wkbType(),
-                                                                     polyLayer.crs(), context)
+        fields = poly_source.fields()
+        if fields.lookupField(length_field_name) < 0:
+            fields.append(QgsField(length_field_name, QVariant.Double))
+        length_field_index = fields.lookupField(length_field_name)
+        if fields.lookupField(count_field_name) < 0:
+            fields.append(QgsField(count_field_name, QVariant.Int))
+        count_field_index = fields.lookupField(count_field_name)
 
-        spatialIndex = QgsProcessingUtils.createSpatialIndex(lineLayer, context)
+        (sink, dest_id) = self.parameterAsSink(parameters, self.OUTPUT, context,
+                                               fields, poly_source.wkbType(), poly_source.sourceCrs())
 
-        ftLine = QgsFeature()
-        ftPoly = QgsFeature()
-        outFeat = QgsFeature()
-        inGeom = QgsGeometry()
-        outGeom = QgsGeometry()
+        spatialIndex = QgsSpatialIndex(line_source.getFeatures(
+            QgsFeatureRequest().setSubsetOfAttributes([]).setDestinationCrs(poly_source.sourceCrs())))
+
         distArea = QgsDistanceArea()
 
-        features = QgsProcessingUtils.getFeatures(polyLayer, context)
-        total = 100.0 / polyLayer.featureCount() if polyLayer.featureCount() else 0
-        hasIntersections = False
-        for current, ftPoly in enumerate(features):
-            inGeom = ftPoly.geometry()
-            attrs = ftPoly.attributes()
+        features = poly_source.getFeatures()
+        total = 100.0 / poly_source.featureCount() if poly_source.featureCount() else 0
+        for current, poly_feature in enumerate(features):
+            if feedback.isCanceled():
+                break
+
+            output_feature = QgsFeature()
             count = 0
             length = 0
-            hasIntersections = False
-            lines = spatialIndex.intersects(inGeom.boundingBox())
-            engine = None
-            if len(lines) > 0:
-                hasIntersections = True
-                # use prepared geometries for faster intersection tests
-                engine = QgsGeometry.createGeometryEngine(inGeom.geometry())
-                engine.prepareGeometry()
+            if poly_feature.hasGeometry():
+                poly_geom = poly_feature.geometry()
+                has_intersections = False
+                lines = spatialIndex.intersects(poly_geom.boundingBox())
+                engine = None
+                if len(lines) > 0:
+                    has_intersections = True
+                    # use prepared geometries for faster intersection tests
+                    engine = QgsGeometry.createGeometryEngine(poly_geom.geometry())
+                    engine.prepareGeometry()
 
-            if hasIntersections:
-                request = QgsFeatureRequest().setFilterFids(lines).setSubsetOfAttributes([])
-                for ftLine in lineLayer.getFeatures(request):
-                    tmpGeom = ftLine.geometry()
-                    if engine.intersects(tmpGeom.geometry()):
-                        outGeom = inGeom.intersection(tmpGeom)
-                        length += distArea.measureLength(outGeom)
-                        count += 1
+                if has_intersections:
+                    request = QgsFeatureRequest().setFilterFids(lines).setSubsetOfAttributes([]).setDestinationCrs(poly_source.sourceCrs())
+                    for line_feature in line_source.getFeatures(request):
+                        if feedback.isCanceled():
+                            break
 
-            outFeat.setGeometry(inGeom)
-            if idxLength == len(attrs):
+                        if engine.intersects(line_feature.geometry().geometry()):
+                            outGeom = poly_geom.intersection(line_feature.geometry())
+                            length += distArea.measureLength(outGeom)
+                            count += 1
+
+                output_feature.setGeometry(poly_geom)
+
+            attrs = poly_feature.attributes()
+            if length_field_index == len(attrs):
                 attrs.append(length)
             else:
-                attrs[idxLength] = length
-            if idxCount == len(attrs):
+                attrs[length_field_index] = length
+            if count_field_index == len(attrs):
                 attrs.append(count)
             else:
-                attrs[idxCount] = count
-            outFeat.setAttributes(attrs)
-            writer.addFeature(outFeat, QgsFeatureSink.FastInsert)
+                attrs[count_field_index] = count
+            output_feature.setAttributes(attrs)
+            sink.addFeature(output_feature, QgsFeatureSink.FastInsert)
 
             feedback.setProgress(int(current * total))
 
-        del writer
+        return {self.OUTPUT: dest_id}
