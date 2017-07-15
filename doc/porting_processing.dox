@@ -32,6 +32,9 @@ Map parameters from old classes to new classes
 
 Update outputs
 
+ - OutputNumber has been replaced with QgsProcessingOutputNumber. QgsProcessingOutputNumber is a drop-in replacement for OutputNumber.
+ - OutputString has been replaced with QgsProcessingOutputString. QgsProcessingOutputString is a drop-in replacement for OutputString.
+ 
 - OutputVector -> 
 
 - processAlgorithm has a new signature....
