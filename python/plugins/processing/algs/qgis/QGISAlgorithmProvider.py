@@ -65,6 +65,7 @@ from .ImportIntoSpatialite import ImportIntoSpatialite
 from .Intersection import Intersection
 from .LinesToPolygons import LinesToPolygons
 from .Merge import Merge
+from .PointsInPolygon import PointsInPolygon
 from .PointsLayerFromTable import PointsLayerFromTable
 from .PolygonsToLines import PolygonsToLines
 from .PostGISExecuteSQL import PostGISExecuteSQL
@@ -85,9 +86,6 @@ from .VoronoiPolygons import VoronoiPolygons
 from .ZonalStatistics import ZonalStatistics
 
 # from .ExtractByLocation import ExtractByLocation
-# from .PointsInPolygon import PointsInPolygon
-# from .PointsInPolygonUnique import PointsInPolygonUnique
-# from .PointsInPolygonWeighted import PointsInPolygonWeighted
 # from .SumLines import SumLines
 # from .NearestNeighbourAnalysis import NearestNeighbourAnalysis
 # from .LinesIntersection import LinesIntersection
@@ -185,8 +183,7 @@ class QGISAlgorithmProvider(QgsProcessingProvider):
         self.externalAlgs = []
 
     def getAlgs(self):
-        # algs = [SumLines(), PointsInPolygon(),
-        #         PointsInPolygonWeighted(), PointsInPolygonUnique(),
+        # algs = [SumLines(),
         #         NearestNeighbourAnalysis(), MeanCoords(),
         #         LinesIntersection(), UniqueValues(), PointDistance(),
         #         ExportGeometryInfo(),
@@ -257,11 +254,13 @@ class QGISAlgorithmProvider(QgsProcessingProvider):
                 ExtentFromLayer(),
                 FixGeometry(),
                 GridPolygon(),
+                Heatmap(),
                 ImportIntoPostGIS(),
                 ImportIntoSpatialite(),
                 Intersection(),
                 LinesToPolygons(),
                 Merge(),
+                PointsInPolygon(),
                 PointsLayerFromTable(),
                 PolygonsToLines(),
                 PostGISExecuteSQL(),
@@ -279,8 +278,7 @@ class QGISAlgorithmProvider(QgsProcessingProvider):
                 Union(),
                 VectorSplit(),
                 VoronoiPolygons(),
-                ZonalStatistics(),
-                Heatmap()
+                ZonalStatistics()
                 ]
 
         if hasPlotly:
