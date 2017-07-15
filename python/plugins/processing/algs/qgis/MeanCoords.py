@@ -31,21 +31,28 @@ import os
 from qgis.PyQt.QtGui import QIcon
 from qgis.PyQt.QtCore import QVariant
 
-from qgis.core import QgsField, QgsFeature, QgsGeometry, QgsPointXY, QgsWkbTypes, QgsProcessingUtils, QgsFeatureSink, QgsFields
+from qgis.core import (QgsField,
+                       QgsFeature,
+                       QgsGeometry,
+                       QgsPointXY,
+                       QgsWkbTypes,
+                       QgsFeatureRequest,
+                       QgsFeatureSink,
+                       QgsFields,
+                       QgsProcessing,
+                       QgsProcessingParameterFeatureSink,
+                       QgsProcessingParameterField,
+                       QgsProcessingParameterFeatureSource)
 
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
-from processing.core.parameters import ParameterTableField
-from processing.core.parameters import ParameterVector
-from processing.core.outputs import OutputVector
 from processing.tools import dataobjects, vector
 
 pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
 
 class MeanCoords(QgisAlgorithm):
-
-    POINTS = 'POINTS'
+    INPUT = 'INPUT'
     WEIGHT = 'WEIGHT'
     OUTPUT = 'OUTPUT'
     UID = 'UID'
@@ -61,19 +68,19 @@ class MeanCoords(QgisAlgorithm):
         super().__init__()
 
     def initAlgorithm(self, config=None):
-        self.addParameter(ParameterVector(self.POINTS,
-                                          self.tr('Input layer')))
-        self.addParameter(ParameterTableField(self.WEIGHT,
-                                              self.tr('Weight field'),
-                                              MeanCoords.POINTS,
-                                              ParameterTableField.DATA_TYPE_NUMBER,
-                                              optional=True))
-        self.addParameter(ParameterTableField(self.UID,
-                                              self.tr('Unique ID field'),
-                                              MeanCoords.POINTS,
-                                              optional=True))
+        self.addParameter(QgsProcessingParameterFeatureSource(self.INPUT,
+                                                              self.tr('Input layer')))
+        self.addParameter(QgsProcessingParameterField(self.WEIGHT, self.tr('Weight field'),
+                                                      parentLayerParameterName=MeanCoords.INPUT,
+                                                      type=QgsProcessingParameterField.Numeric,
+                                                      optional=True))
+        self.addParameter(QgsProcessingParameterField(self.UID,
+                                                      self.tr('Unique ID field'),
+                                                      parentLayerParameterName=MeanCoords.INPUT,
+                                                      optional=True))
 
-        self.addOutput(OutputVector(MeanCoords.OUTPUT, self.tr('Mean coordinates'), datatype=[dataobjects.TYPE_VECTOR_POINT]))
+        self.addParameter(QgsProcessingParameterFeatureSink(MeanCoords.OUTPUT, self.tr('Mean coordinates'),
+                                                            QgsProcessing.TypeVectorPoint))
 
     def name(self):
         return 'meancoordinates'
@@ -82,46 +89,58 @@ class MeanCoords(QgisAlgorithm):
         return self.tr('Mean coordinate(s)')
 
     def processAlgorithm(self, parameters, context, feedback):
-        layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.POINTS), context)
-        weightField = self.getParameterValue(self.WEIGHT)
-        uniqueField = self.getParameterValue(self.UID)
+        source = self.parameterAsSource(parameters, self.INPUT, context)
 
-        if weightField is None:
-            weightIndex = -1
+        weight_field = self.parameterAsString(parameters, self.WEIGHT, context)
+        unique_field = self.parameterAsString(parameters, self.UID, context)
+
+        attributes = []
+        if not weight_field:
+            weight_index = -1
         else:
-            weightIndex = layer.fields().lookupField(weightField)
+            weight_index = source.fields().lookupField(weight_field)
+        if weight_index >= 0:
+            attributes.append(weight_index)
 
-        if uniqueField is None:
-            uniqueIndex = -1
+        if not unique_field:
+            unique_index = -1
         else:
-            uniqueIndex = layer.fields().lookupField(uniqueField)
+            unique_index = source.fields().lookupField(unique_field)
+        if unique_index >= 0:
+            attributes.append(unique_index)
 
-        fieldList = QgsFields()
-        fieldList.append(QgsField('MEAN_X', QVariant.Double, '', 24, 15))
-        fieldList.append(QgsField('MEAN_Y', QVariant.Double, '', 24, 15))
-        fieldList.append(QgsField('UID', QVariant.String, '', 255))
+        field_list = QgsFields()
+        field_list.append(QgsField('MEAN_X', QVariant.Double, '', 24, 15))
+        field_list.append(QgsField('MEAN_Y', QVariant.Double, '', 24, 15))
+        if unique_index >= 0:
+            field_list.append(QgsField('UID', QVariant.String, '', 255))
 
-        writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(fieldList, QgsWkbTypes.Point, layer.crs(), context)
+        (sink, dest_id) = self.parameterAsSink(parameters, self.OUTPUT, context,
+                                               field_list, QgsWkbTypes.Point, source.sourceCrs())
 
-        features = QgsProcessingUtils.getFeatures(layer, context)
-        total = 100.0 / layer.featureCount() if layer.featureCount() else 0
+        features = source.getFeatures(QgsFeatureRequest().setSubsetOfAttributes(attributes))
+        total = 100.0 / source.featureCount() if source.featureCount() else 0
         means = {}
         for current, feat in enumerate(features):
+            if feedback.isCanceled():
+                break
+
             feedback.setProgress(int(current * total))
-            if uniqueIndex == -1:
+            if unique_index == -1:
                 clazz = "Single class"
             else:
-                clazz = str(feat.attributes()[uniqueIndex]).strip()
-            if weightIndex == -1:
+                clazz = str(feat.attributes()[unique_index]).strip()
+            if weight_index == -1:
                 weight = 1.00
             else:
                 try:
-                    weight = float(feat.attributes()[weightIndex])
+                    weight = float(feat.attributes()[weight_index])
                 except:
                     weight = 1.00
 
             if weight < 0:
-                raise GeoAlgorithmExecutionException(self.tr('Negative weight value found. Please fix your data and try again.'))
+                raise GeoAlgorithmExecutionException(
+                    self.tr('Negative weight value found. Please fix your data and try again.'))
 
             if clazz not in means:
                 means[clazz] = (0, 0, 0)
@@ -138,15 +157,21 @@ class MeanCoords(QgisAlgorithm):
         current = 0
         total = 100.0 / len(means) if means else 1
         for (clazz, values) in list(means.items()):
+            if feedback.isCanceled():
+                break
+
             outFeat = QgsFeature()
             cx = values[0] / values[2]
             cy = values[1] / values[2]
             meanPoint = QgsPointXY(cx, cy)
 
             outFeat.setGeometry(QgsGeometry.fromPoint(meanPoint))
-            outFeat.setAttributes([cx, cy, clazz])
-            writer.addFeature(outFeat, QgsFeatureSink.FastInsert)
+            attributes = [cx, cy]
+            if unique_index >= 0:
+                attributes.append(clazz)
+            outFeat.setAttributes(attributes)
+            sink.addFeature(outFeat, QgsFeatureSink.FastInsert)
             current += 1
             feedback.setProgress(int(current * total))
 
-        del writer
+        return {self.OUTPUT: dest_id}

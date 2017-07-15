@@ -66,6 +66,7 @@ from .ImportIntoSpatialite import ImportIntoSpatialite
 from .Intersection import Intersection
 from .LinesIntersection import LinesIntersection
 from .LinesToPolygons import LinesToPolygons
+from .MeanCoords import MeanCoords
 from .Merge import Merge
 from .NearestNeighbourAnalysis import NearestNeighbourAnalysis
 from .PointsInPolygon import PointsInPolygon
@@ -92,7 +93,6 @@ from .VoronoiPolygons import VoronoiPolygons
 from .ZonalStatistics import ZonalStatistics
 
 # from .ExtractByLocation import ExtractByLocation
-# from .MeanCoords import MeanCoords
 # from .PointDistance import PointDistance
 # from .UniqueValues import UniqueValues
 # from .ExportGeometryInfo import ExportGeometryInfo
@@ -183,7 +183,7 @@ class QGISAlgorithmProvider(QgsProcessingProvider):
         self.externalAlgs = []
 
     def getAlgs(self):
-        # algs = [MeanCoords(),
+        # algs = [
         #         UniqueValues(), PointDistance(),
         #         ExportGeometryInfo(),
         #         SinglePartsToMultiparts(),
@@ -260,6 +260,7 @@ class QGISAlgorithmProvider(QgsProcessingProvider):
                 Intersection(),
                 LinesIntersection(),
                 LinesToPolygons(),
+                MeanCoords(),
                 Merge(),
                 NearestNeighbourAnalysis(),
                 PointsInPolygon(),
