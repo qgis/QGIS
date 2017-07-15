@@ -48,7 +48,6 @@ pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
 
 class PointsInPolygon(QgisAlgorithm):
-
     POLYGONS = 'POLYGONS'
     POINTS = 'POINTS'
     OUTPUT = 'OUTPUT'
@@ -71,12 +70,15 @@ class PointsInPolygon(QgisAlgorithm):
         self.addParameter(QgsProcessingParameterFeatureSource(self.POINTS,
                                                               self.tr('Points'), [QgsProcessing.TypeVectorPoint]))
         self.addParameter(QgsProcessingParameterField(self.WEIGHT,
-                                                      self.tr('Weight field'), parentLayerParameterName=self.POINTS, optional=True))
+                                                      self.tr('Weight field'), parentLayerParameterName=self.POINTS,
+                                                      optional=True))
         self.addParameter(QgsProcessingParameterField(self.CLASSFIELD,
-                                              self.tr('Class field'), parentLayerParameterName=self.POINTS, optional=True))
+                                                      self.tr('Class field'), parentLayerParameterName=self.POINTS,
+                                                      optional=True))
         self.addParameter(QgsProcessingParameterString(self.FIELD,
                                                        self.tr('Count field name'), defaultValue='NUMPOINTS'))
-        self.addParameter(QgsProcessingParameterFeatureSink(self.OUTPUT, self.tr('Count'), QgsProcessing.TypeVectorPolygon))
+        self.addParameter(
+            QgsProcessingParameterFeatureSink(self.OUTPUT, self.tr('Count'), QgsProcessing.TypeVectorPolygon))
 
     def name(self):
         return 'countpointsinpolygon'
@@ -108,7 +110,8 @@ class PointsInPolygon(QgisAlgorithm):
         (sink, dest_id) = self.parameterAsSink(parameters, self.OUTPUT, context,
                                                fields, poly_source.wkbType(), poly_source.sourceCrs())
 
-        spatialIndex = QgsSpatialIndex(point_source.getFeatures(QgsFeatureRequest().setSubsetOfAttributes([]).setDestinationCrs(poly_source.sourceCrs())))
+        spatialIndex = QgsSpatialIndex(point_source.getFeatures(
+            QgsFeatureRequest().setSubsetOfAttributes([]).setDestinationCrs(poly_source.sourceCrs())))
 
         point_attribute_indices = []
         if weight_field_index >= 0:
@@ -119,6 +122,9 @@ class PointsInPolygon(QgisAlgorithm):
         features = poly_source.getFeatures()
         total = 100.0 / poly_source.featureCount() if poly_source.featureCount() else 0
         for current, polygon_feature in enumerate(features):
+            if feedback.isCanceled():
+                break
+
             count = 0
             output_feature = QgsFeature()
             if polygon_feature.hasGeometry():
@@ -134,6 +140,9 @@ class PointsInPolygon(QgisAlgorithm):
                     request = QgsFeatureRequest().setFilterFids(points).setDestinationCrs(poly_source.sourceCrs())
                     request.setSubsetOfAttributes(point_attribute_indices)
                     for point_feature in point_source.getFeatures(request):
+                        if feedback.isCanceled():
+                            break
+
                         if engine.contains(point_feature.geometry().geometry()):
                             if weight_field_index >= 0:
                                 weight = point_feature.attributes()[weight_field_index]
