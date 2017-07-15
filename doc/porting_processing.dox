@@ -15,11 +15,17 @@
       - When constructing, QgsProcessingParameterField uses QgsProcessingParameterField.DataType to specify valid data types. The parent layer for the field should be indicated by passing the parent layer parameter name as the parentLayerParameterName argument in the constructor.
       - Retrieving field parameter values should be done with self.parameterAsString( parameters, PARAM_NAME, context) for single field values or self.parameterAsFields(parameters, PARAM_NAME, context) if allowMultiple was set to True when the parameter was constructed. parameterAsFields will return a list of all selected field names, or an empty list if no fields were selected.
     
+    - ParameterSelection has been replaced with QgsProcessingParameterEnum.
+      - Retrieving the parameter value should be done with self.parameterAsEnum( parameters, PARAM_NAME, context). This will return an integer corresponding to the index of the value selected. If allowMultiple was set to True when the parameter was constructed then self.parameterAsEnums(parameters, PARAM_NAME, context) should be used instead. This will return a list of selected indexes, or an empty list if no options were selected.
+      
+    - ParameterNumber has been replaced with QgsProcessingParameterNumber.
+      - Be careful when constructing QgsProcessingParameterNumber - the arguments are in a different order to ParameterNumber.
+      - When constructing a QgsProcessingParameterNumber the number type (integer or double) must be specified explicitly via the type argument.
+       - Retrieving the parameter value should be done with self.parameterAsInt( parameters, PARAM_NAME, context) for integer parameters or self.parameterAsDouble(parameters, PARAM_NAME, context) for double value parameters.
+      
+   
 Map parameters from old classes to new classes
-   - ParameterNumber -> QgsProcessingParameterNumber
-       - constructor arguments in different order
-	   - type specified explicitly, not via min/max/default type
-   - ParameterBoolean -> QgsProcessingParameterBoolean
+ 	 - ParameterBoolean -> QgsProcessingParameterBoolean
    - ParameterCrs -> QgsProcessingParameterCrs
 
 - Use featuresources and sinks wherever possible
