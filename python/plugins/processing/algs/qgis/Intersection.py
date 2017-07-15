@@ -95,7 +95,7 @@ class Intersection(QgisAlgorithm):
                                                fields, geomType, sourceA.sourceCrs())
 
         outFeat = QgsFeature()
-        indexB = QgsSpatialIndex(sourceB.getFeatures(QgsFeatureRequest().setSubsetOfAttributes([]).setDestinationCrs(sourceA.sourceCrs())))
+        indexB = QgsSpatialIndex(sourceB.getFeatures(QgsFeatureRequest().setSubsetOfAttributes([]).setDestinationCrs(sourceA.sourceCrs())), feedback)
 
         total = 100.0 / sourceA.featureCount() if sourceA.featureCount() else 1
         count = 0

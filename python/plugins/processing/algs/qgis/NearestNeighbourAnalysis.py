@@ -94,7 +94,7 @@ class NearestNeighbourAnalysis(QgisAlgorithm):
         source = self.parameterAsSource(parameters, self.INPUT, context)
         output_file = self.parameterAsFileOutput(parameters, self.OUTPUT_HTML_FILE, context)
 
-        spatialIndex = QgsSpatialIndex(source)
+        spatialIndex = QgsSpatialIndex(source, feedback)
 
         distance = QgsDistanceArea()
         distance.setSourceCrs(source.sourceCrs())

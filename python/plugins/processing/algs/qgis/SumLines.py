@@ -101,7 +101,7 @@ class SumLines(QgisAlgorithm):
                                                fields, poly_source.wkbType(), poly_source.sourceCrs())
 
         spatialIndex = QgsSpatialIndex(line_source.getFeatures(
-            QgsFeatureRequest().setSubsetOfAttributes([]).setDestinationCrs(poly_source.sourceCrs())))
+            QgsFeatureRequest().setSubsetOfAttributes([]).setDestinationCrs(poly_source.sourceCrs())), feedback)
 
         distArea = QgsDistanceArea()
         distArea.setSourceCrs(poly_source.sourceCrs())

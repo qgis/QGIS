@@ -111,7 +111,7 @@ class PointsInPolygon(QgisAlgorithm):
                                                fields, poly_source.wkbType(), poly_source.sourceCrs())
 
         spatialIndex = QgsSpatialIndex(point_source.getFeatures(
-            QgsFeatureRequest().setSubsetOfAttributes([]).setDestinationCrs(poly_source.sourceCrs())))
+            QgsFeatureRequest().setSubsetOfAttributes([]).setDestinationCrs(poly_source.sourceCrs())), feedback)
 
         point_attribute_indices = []
         if weight_field_index >= 0:

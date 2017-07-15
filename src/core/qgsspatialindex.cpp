@@ -21,6 +21,7 @@
 #include "qgsrectangle.h"
 #include "qgslogger.h"
 #include "qgsfeaturesource.h"
+#include "qgsfeedback.h"
 
 #include "SpatialIndex.h"
 
@@ -92,9 +93,10 @@ class QgsFeatureIteratorDataStream : public IDataStream
 {
   public:
     //! constructor - needs to load all data to a vector for later access when bulk loading
-    explicit QgsFeatureIteratorDataStream( const QgsFeatureIterator &fi )
+    explicit QgsFeatureIteratorDataStream( const QgsFeatureIterator &fi, QgsFeedback *feedback = nullptr )
       : mFi( fi )
       , mNextData( nullptr )
+      , mFeedback( feedback )
     {
       readNextEntry();
     }
@@ -107,6 +109,9 @@ class QgsFeatureIteratorDataStream : public IDataStream
     //! returns a pointer to the next entry in the stream or 0 at the end of the stream.
     IData *getNext() override
     {
+      if ( mFeedback && mFeedback->isCanceled() )
+        return nullptr;
+
       RTree::Data *ret = mNextData;
       mNextData = nullptr;
       readNextEntry();
@@ -141,6 +146,7 @@ class QgsFeatureIteratorDataStream : public IDataStream
   private:
     QgsFeatureIterator mFi;
     RTree::Data *mNextData = nullptr;
+    QgsFeedback *mFeedback = nullptr;
 };
 
 
@@ -157,9 +163,9 @@ class QgsSpatialIndexData : public QSharedData
       initTree();
     }
 
-    explicit QgsSpatialIndexData( const QgsFeatureIterator &fi )
+    explicit QgsSpatialIndexData( const QgsFeatureIterator &fi, QgsFeedback *feedback = nullptr )
     {
-      QgsFeatureIteratorDataStream fids( fi );
+      QgsFeatureIteratorDataStream fids( fi, feedback );
       initTree( &fids );
     }
 
@@ -224,14 +230,14 @@ QgsSpatialIndex::QgsSpatialIndex()
   d = new QgsSpatialIndexData;
 }
 
-QgsSpatialIndex::QgsSpatialIndex( const QgsFeatureIterator &fi )
+QgsSpatialIndex::QgsSpatialIndex( const QgsFeatureIterator &fi, QgsFeedback *feedback )
 {
-  d = new QgsSpatialIndexData( fi );
+  d = new QgsSpatialIndexData( fi, feedback );
 }
 
-QgsSpatialIndex::QgsSpatialIndex( const QgsFeatureSource &source )
+QgsSpatialIndex::QgsSpatialIndex( const QgsFeatureSource &source, QgsFeedback *feedback )
 {
-  d = new QgsSpatialIndexData( source.getFeatures( QgsFeatureRequest().setSubsetOfAttributes( QgsAttributeList() ) ) );
+  d = new QgsSpatialIndexData( source.getFeatures( QgsFeatureRequest().setSubsetOfAttributes( QgsAttributeList() ) ), feedback );
 }
 
 QgsSpatialIndex::QgsSpatialIndex( const QgsSpatialIndex &other ) //NOLINT
