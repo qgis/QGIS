@@ -54,6 +54,7 @@ class PointsInPolygon(QgisAlgorithm):
     OUTPUT = 'OUTPUT'
     FIELD = 'FIELD'
     WEIGHT = 'WEIGHT'
+    CLASSFIELD = 'CLASSFIELD'
 
     def icon(self):
         return QIcon(os.path.join(pluginPath, 'images', 'ftools', 'sum_points.png'))
@@ -71,6 +72,8 @@ class PointsInPolygon(QgisAlgorithm):
                                                               self.tr('Points'), [QgsProcessing.TypeVectorPoint]))
         self.addParameter(QgsProcessingParameterField(self.WEIGHT,
                                                       self.tr('Weight field'), parentLayerParameterName=self.POINTS, optional=True))
+        self.addParameter(QgsProcessingParameterField(self.CLASSFIELD,
+                                              self.tr('Class field'), parentLayerParameterName=self.POINTS, optional=True))
         self.addParameter(QgsProcessingParameterString(self.FIELD,
                                                        self.tr('Count field name'), defaultValue='NUMPOINTS'))
         self.addParameter(QgsProcessingParameterFeatureSink(self.OUTPUT, self.tr('Count'), QgsProcessing.TypeVectorPolygon))
@@ -90,6 +93,11 @@ class PointsInPolygon(QgisAlgorithm):
         if weight_field:
             weight_field_index = point_source.fields().lookupField(weight_field)
 
+        class_field = self.parameterAsString(parameters, self.CLASSFIELD, context)
+        class_field_index = -1
+        if class_field:
+            class_field_index = point_source.fields().lookupField(class_field)
+
         field_name = self.parameterAsString(parameters, self.FIELD, context)
 
         fields = poly_source.fields()
@@ -102,6 +110,12 @@ class PointsInPolygon(QgisAlgorithm):
 
         spatialIndex = QgsSpatialIndex(point_source.getFeatures(QgsFeatureRequest().setSubsetOfAttributes([]).setDestinationCrs(poly_source.sourceCrs())))
 
+        point_attribute_indices = []
+        if weight_field_index >= 0:
+            point_attribute_indices.append(weight_field_index)
+        if class_field_index >= 0:
+            point_attribute_indices.append(class_field_index)
+
         features = poly_source.getFeatures()
         total = 100.0 / poly_source.featureCount() if poly_source.featureCount() else 0
         for current, polygon_feature in enumerate(features):
@@ -113,13 +127,12 @@ class PointsInPolygon(QgisAlgorithm):
                 engine.prepareGeometry()
 
                 count = 0
+                classes = set()
+
                 points = spatialIndex.intersects(geom.boundingBox())
                 if len(points) > 0:
                     request = QgsFeatureRequest().setFilterFids(points).setDestinationCrs(poly_source.sourceCrs())
-                    if weight_field_index >= 0:
-                        request.setSubsetOfAttributes([weight_field_index])
-                    else:
-                        request.setSubsetOfAttributes([])
+                    request.setSubsetOfAttributes(point_attribute_indices)
                     for point_feature in point_source.getFeatures(request):
                         if engine.contains(point_feature.geometry().geometry()):
                             if weight_field_index >= 0:
@@ -129,6 +142,10 @@ class PointsInPolygon(QgisAlgorithm):
                                 except:
                                     # Ignore fields with non-numeric values
                                     pass
+                            elif class_field_index >= 0:
+                                point_class = point_feature.attributes()[class_field_index]
+                                if point_class not in classes:
+                                    classes.add(point_class)
                             else:
                                 count += 1
 
@@ -136,10 +153,14 @@ class PointsInPolygon(QgisAlgorithm):
 
             attrs = polygon_feature.attributes()
 
-            if field_index == len(attrs):
-                attrs.append(count)
+            if class_field_index >= 0:
+                score = len(classes)
             else:
-                attrs[field_index] = count
+                score = count
+            if field_index == len(attrs):
+                attrs.append(score)
+            else:
+                attrs[field_index] = score
             output_feature.setAttributes(attrs)
             sink.addFeature(output_feature, QgsFeatureSink.FastInsert)
 

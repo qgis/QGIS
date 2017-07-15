@@ -86,7 +86,6 @@ from .VoronoiPolygons import VoronoiPolygons
 from .ZonalStatistics import ZonalStatistics
 
 # from .ExtractByLocation import ExtractByLocation
-# from .PointsInPolygonUnique import PointsInPolygonUnique
 # from .SumLines import SumLines
 # from .NearestNeighbourAnalysis import NearestNeighbourAnalysis
 # from .LinesIntersection import LinesIntersection
@@ -185,7 +184,6 @@ class QGISAlgorithmProvider(QgsProcessingProvider):
 
     def getAlgs(self):
         # algs = [SumLines(),
-        #         PointsInPolygonUnique(),
         #         NearestNeighbourAnalysis(), MeanCoords(),
         #         LinesIntersection(), UniqueValues(), PointDistance(),
         #         ExportGeometryInfo(),

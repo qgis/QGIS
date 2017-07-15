@@ -77,12 +77,9 @@ qgis:countpointsinpolygon: >
 
   An optional weight field can be used to assign weights to each point. If set, the count generated will be the sum of the weight field for each point contained by the polygon.
 
-qgis:countuniquepointsinpolygon: >
-  This algorithm takes a points layer and a polygon layer and counts the number of points from the first one in each polygon of the second one.
+  Alternatively, a unique class field can be specified. If set, points are classified based on the selected attribute, and if several points with the same attribute value are within the polygon, only one of them is counted. The final count of the point in a polygon is, therefore, the count of different classes that are found in it.
 
-  Points are classified based on an attribute, and if several points with the same attribute value are within the extent of the polygon, only one of them is counted. The final count of point in a polygon is, therefore, the count of different classes that are found in it.
-
-  A new polygons layer is generated, with the exact same content as the input polygons layer, but containing an additional field with the points count corresponding to each polygon.
+  Both the weight field and unique class field cannot be specified. If they are, the weight field will take precedence and the unique class field will be ignored.
 
 qgis:createattributeindex: >
   Creates an index to speed up queries made against a field in a table. Support for index creation is dependent on the layer's data provider and the field type.
