@@ -33,7 +33,7 @@ import math
 
 from qgis.PyQt.QtGui import QIcon
 
-from qgis.core import QgsFeatureRequest, QgsDistanceArea, QgsFeatureSink, QgsProcessingUtils
+from qgis.core import QgsFeatureRequest, QgsProject, QgsDistanceArea, QgsFeatureSink, QgsProcessingUtils
 
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 from processing.core.parameters import ParameterNumber
@@ -134,6 +134,8 @@ class PointDistance(QgisAlgorithm):
         outIdx = targetLayer.fields().lookupField(targetField)
 
         distArea = QgsDistanceArea()
+        distArea.setSourceCrs(inLayer.crs())
+        distArea.setEllipsoid(QgsProject.instance().ellipsoid())
 
         features = QgsProcessingUtils.getFeatures(inLayer, context)
         total = 100.0 / inLayer.featureCount() if inLayer.featureCount() else 0
@@ -172,6 +174,8 @@ class PointDistance(QgisAlgorithm):
         inIdx = inLayer.fields().lookupField(inField)
 
         distArea = QgsDistanceArea()
+        distArea.setSourceCrs(inLayer.sourceCrs())
+        distArea.setEllipsoid(QgsProject.instance().ellipsoid())
 
         first = True
         features = QgsProcessingUtils.getFeatures(inLayer, context)

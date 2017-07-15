@@ -35,6 +35,7 @@ from qgis.core import (QgsFeature,
                        QgsGeometry,
                        QgsFeatureRequest,
                        QgsDistanceArea,
+                       QgsProject,
                        QgsProcessing,
                        QgsProcessingParameterString,
                        QgsProcessingParameterFeatureSource,
@@ -103,6 +104,8 @@ class SumLines(QgisAlgorithm):
             QgsFeatureRequest().setSubsetOfAttributes([]).setDestinationCrs(poly_source.sourceCrs())))
 
         distArea = QgsDistanceArea()
+        distArea.setSourceCrs(poly_source.sourceCrs())
+        distArea.setEllipsoid(QgsProject.instance().ellipsoid())
 
         features = poly_source.getFeatures()
         total = 100.0 / poly_source.featureCount() if poly_source.featureCount() else 0
