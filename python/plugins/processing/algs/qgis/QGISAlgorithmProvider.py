@@ -64,6 +64,7 @@ from .Hillshade import Hillshade
 from .ImportIntoPostGIS import ImportIntoPostGIS
 from .ImportIntoSpatialite import ImportIntoSpatialite
 from .Intersection import Intersection
+from .LinesIntersection import LinesIntersection
 from .LinesToPolygons import LinesToPolygons
 from .Merge import Merge
 from .NearestNeighbourAnalysis import NearestNeighbourAnalysis
@@ -91,7 +92,6 @@ from .VoronoiPolygons import VoronoiPolygons
 from .ZonalStatistics import ZonalStatistics
 
 # from .ExtractByLocation import ExtractByLocation
-# from .LinesIntersection import LinesIntersection
 # from .MeanCoords import MeanCoords
 # from .PointDistance import PointDistance
 # from .UniqueValues import UniqueValues
@@ -184,7 +184,7 @@ class QGISAlgorithmProvider(QgsProcessingProvider):
 
     def getAlgs(self):
         # algs = [MeanCoords(),
-        #         LinesIntersection(), UniqueValues(), PointDistance(),
+        #         UniqueValues(), PointDistance(),
         #         ExportGeometryInfo(),
         #         SinglePartsToMultiparts(),
         #         ExtractNodes(),
@@ -258,6 +258,7 @@ class QGISAlgorithmProvider(QgsProcessingProvider):
                 ImportIntoPostGIS(),
                 ImportIntoSpatialite(),
                 Intersection(),
+                LinesIntersection(),
                 LinesToPolygons(),
                 Merge(),
                 NearestNeighbourAnalysis(),
