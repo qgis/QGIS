@@ -69,6 +69,7 @@ from .LinesToPolygons import LinesToPolygons
 from .MeanCoords import MeanCoords
 from .Merge import Merge
 from .NearestNeighbourAnalysis import NearestNeighbourAnalysis
+from .PointDistance import PointDistance
 from .PointsInPolygon import PointsInPolygon
 from .PointsLayerFromTable import PointsLayerFromTable
 from .PolygonsToLines import PolygonsToLines
@@ -93,7 +94,6 @@ from .VoronoiPolygons import VoronoiPolygons
 from .ZonalStatistics import ZonalStatistics
 
 # from .ExtractByLocation import ExtractByLocation
-# from .PointDistance import PointDistance
 # from .UniqueValues import UniqueValues
 # from .ExportGeometryInfo import ExportGeometryInfo
 # from .SinglePartsToMultiparts import SinglePartsToMultiparts
@@ -184,7 +184,7 @@ class QGISAlgorithmProvider(QgsProcessingProvider):
 
     def getAlgs(self):
         # algs = [
-        #         UniqueValues(), PointDistance(),
+        #         UniqueValues(),
         #         ExportGeometryInfo(),
         #         SinglePartsToMultiparts(),
         #         ExtractNodes(),
@@ -263,6 +263,7 @@ class QGISAlgorithmProvider(QgsProcessingProvider):
                 MeanCoords(),
                 Merge(),
                 NearestNeighbourAnalysis(),
+                PointDistance(),
                 PointsInPolygon(),
                 PointsLayerFromTable(),
                 PolygonsToLines(),

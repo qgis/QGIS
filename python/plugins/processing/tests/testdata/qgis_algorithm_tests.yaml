@@ -2171,21 +2171,25 @@ tests:
 #        name: expected/truncated.shp
 #        type: vector
 #        in_place_result: true
-#
-#  - algorithm: qgis:distancematrix
-#    name: Distance matrix (only tests for TableWriter, does not check result)
-#    params:
-#      INPUT_FIELD: fid
-#      INPUT_LAYER:
-#        name: points.gml
-#        type: vector
-#      MATRIX_TYPE: '0'
-#      NEAREST_POINTS: 0
-#      TARGET_FIELD: fid
-#      TARGET_LAYER:
-#        name: points.gml
-#        type: vector
-#    results: {}
+
+  - algorithm: qgis:distancematrix
+    name: Distance matrix (only tests for run, does not check result as rows are in random order)
+    params:
+      INPUT_FIELD: fid
+      INPUT:
+        name: points.gml
+        type: vector
+      MATRIX_TYPE: '0'
+      NEAREST_POINTS: 0
+      TARGET_FIELD: fid
+      TARGET:
+        name: points.gml
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/count_unique_points.gml
+        type: vector
+        compare: false
 
   - algorithm: qgis:countpointsinpolygon
     name: standard count unique points in polygon
