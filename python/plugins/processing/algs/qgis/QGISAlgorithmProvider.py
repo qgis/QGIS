@@ -87,7 +87,6 @@ from .ZonalStatistics import ZonalStatistics
 
 # from .ExtractByLocation import ExtractByLocation
 # from .PointsInPolygonUnique import PointsInPolygonUnique
-# from .PointsInPolygonWeighted import PointsInPolygonWeighted
 # from .SumLines import SumLines
 # from .NearestNeighbourAnalysis import NearestNeighbourAnalysis
 # from .LinesIntersection import LinesIntersection
@@ -186,7 +185,7 @@ class QGISAlgorithmProvider(QgsProcessingProvider):
 
     def getAlgs(self):
         # algs = [SumLines(),
-        #         PointsInPolygonWeighted(), PointsInPolygonUnique(),
+        #         PointsInPolygonUnique(),
         #         NearestNeighbourAnalysis(), MeanCoords(),
         #         LinesIntersection(), UniqueValues(), PointDistance(),
         #         ExportGeometryInfo(),

@@ -39,6 +39,7 @@ from qgis.core import (QgsGeometry,
                        QgsProcessingParameterFeatureSink,
                        QgsProcessingParameterFeatureSource,
                        QgsProcessingParameterString,
+                       QgsProcessingParameterField,
                        QgsSpatialIndex)
 
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
@@ -52,6 +53,7 @@ class PointsInPolygon(QgisAlgorithm):
     POINTS = 'POINTS'
     OUTPUT = 'OUTPUT'
     FIELD = 'FIELD'
+    WEIGHT = 'WEIGHT'
 
     def icon(self):
         return QIcon(os.path.join(pluginPath, 'images', 'ftools', 'sum_points.png'))
@@ -67,6 +69,8 @@ class PointsInPolygon(QgisAlgorithm):
                                                               self.tr('Polygons'), [QgsProcessing.TypeVectorPolygon]))
         self.addParameter(QgsProcessingParameterFeatureSource(self.POINTS,
                                                               self.tr('Points'), [QgsProcessing.TypeVectorPoint]))
+        self.addParameter(QgsProcessingParameterField(self.WEIGHT,
+                                                      self.tr('Weight field'), parentLayerParameterName=self.POINTS, optional=True))
         self.addParameter(QgsProcessingParameterString(self.FIELD,
                                                        self.tr('Count field name'), defaultValue='NUMPOINTS'))
         self.addParameter(QgsProcessingParameterFeatureSink(self.OUTPUT, self.tr('Count'), QgsProcessing.TypeVectorPolygon))
@@ -80,6 +84,12 @@ class PointsInPolygon(QgisAlgorithm):
     def processAlgorithm(self, parameters, context, feedback):
         poly_source = self.parameterAsSource(parameters, self.POLYGONS, context)
         point_source = self.parameterAsSource(parameters, self.POINTS, context)
+
+        weight_field = self.parameterAsString(parameters, self.WEIGHT, context)
+        weight_field_index = -1
+        if weight_field:
+            weight_field_index = point_source.fields().lookupField(weight_field)
+
         field_name = self.parameterAsString(parameters, self.FIELD, context)
 
         fields = poly_source.fields()
@@ -105,10 +115,22 @@ class PointsInPolygon(QgisAlgorithm):
                 count = 0
                 points = spatialIndex.intersects(geom.boundingBox())
                 if len(points) > 0:
-                    request = QgsFeatureRequest().setFilterFids(points).setSubsetOfAttributes([]).setDestinationCrs(poly_source.sourceCrs())
+                    request = QgsFeatureRequest().setFilterFids(points).setDestinationCrs(poly_source.sourceCrs())
+                    if weight_field_index >= 0:
+                        request.setSubsetOfAttributes([weight_field_index])
+                    else:
+                        request.setSubsetOfAttributes([])
                     for point_feature in point_source.getFeatures(request):
                         if engine.contains(point_feature.geometry().geometry()):
-                            count += 1
+                            if weight_field_index >= 0:
+                                weight = point_feature.attributes()[weight_field_index]
+                                try:
+                                    count += float(weight)
+                                except:
+                                    # Ignore fields with non-numeric values
+                                    pass
+                            else:
+                                count += 1
 
                 output_feature.setGeometry(geom)
 

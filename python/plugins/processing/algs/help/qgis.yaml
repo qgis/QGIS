@@ -75,12 +75,7 @@ qgis:countpointsinpolygon: >
 
   A new polygons layer is generated, with the exact same content as the input polygons layer, but containing an additional field with the points count corresponding to each polygon.
 
-qgis:countpointsinpolygonweighted: >
-  This algorithm takes a points layer and a polygon layer and counts the number of points from the first one in each polygon of the second one.
-
-  An attribute is used in the points layer to assign weights to each point.
-
-  A new polygons layer is generated, with the exact same content as the input polygons layer, but containing an additional field with the points count corresponding to each polygon.
+  An optional weight field can be used to assign weights to each point. If set, the count generated will be the sum of the weight field for each point contained by the polygon.
 
 qgis:countuniquepointsinpolygon: >
   This algorithm takes a points layer and a polygon layer and counts the number of points from the first one in each polygon of the second one.
