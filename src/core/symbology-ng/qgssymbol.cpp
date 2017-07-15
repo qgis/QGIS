@@ -527,6 +527,10 @@ QImage QgsSymbol::bigSymbolPreviewImage( QgsExpressionContext *expressionContext
   }
 
   QgsRenderContext context = QgsRenderContext::fromQPainter( &p );
+  // TODO: replace this hack with something better
+  QgsUnitTypes::RenderUnit save_outputUnit = outputUnit();
+  // Preview and Icons should not use MapUnits and others that cannot (often) be seen.
+  setOutputUnit( QgsUnitTypes::RenderMillimeters );
   if ( expressionContext )
     context.setExpressionContext( *expressionContext );
 
@@ -550,6 +554,8 @@ QImage QgsSymbol::bigSymbolPreviewImage( QgsExpressionContext *expressionContext
   }
 
   stopRender( context );
+  // Restore original value
+  setOutputUnit( save_outputUnit );
   return preview;
 }
 
