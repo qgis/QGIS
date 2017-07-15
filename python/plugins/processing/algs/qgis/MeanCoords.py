@@ -42,11 +42,11 @@ from qgis.core import (QgsField,
                        QgsProcessing,
                        QgsProcessingParameterFeatureSink,
                        QgsProcessingParameterField,
-                       QgsProcessingParameterFeatureSource)
+                       QgsProcessingParameterFeatureSource,
+                       QgsProcessingException)
 
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
-from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
-from processing.tools import dataobjects, vector
+from processing.tools import vector
 
 pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
@@ -139,7 +139,7 @@ class MeanCoords(QgisAlgorithm):
                     weight = 1.00
 
             if weight < 0:
-                raise GeoAlgorithmExecutionException(
+                raise QgsProcessingException(
                     self.tr('Negative weight value found. Please fix your data and try again.'))
 
             if clazz not in means:
