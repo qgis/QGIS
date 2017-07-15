@@ -241,6 +241,19 @@ tests:
 #          geometry:
 #            precision: 7
 #
+
+  - algorithm: qgis:listuniquevalues
+    name: Unique values
+    params:
+      INPUT:
+        name: points.gml
+        type: vector
+      FIELD_NAME: id2
+    results:
+      OUTPUT:
+        name: expected/unique_values.gml
+        type: vector
+
   - algorithm: qgis:addautoincrementalfield
     name: Add autoincremental field
     params:

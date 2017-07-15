@@ -89,12 +89,12 @@ from .SpatialiteExecuteSQL import SpatialiteExecuteSQL
 from .SumLines import SumLines
 from .SymmetricalDifference import SymmetricalDifference
 from .Union import Union
+from .UniqueValues import UniqueValues
 from .VectorSplit import VectorSplit
 from .VoronoiPolygons import VoronoiPolygons
 from .ZonalStatistics import ZonalStatistics
 
 # from .ExtractByLocation import ExtractByLocation
-# from .UniqueValues import UniqueValues
 # from .ExportGeometryInfo import ExportGeometryInfo
 # from .SinglePartsToMultiparts import SinglePartsToMultiparts
 # from .ExtractNodes import ExtractNodes
@@ -184,7 +184,7 @@ class QGISAlgorithmProvider(QgsProcessingProvider):
 
     def getAlgs(self):
         # algs = [
-        #         UniqueValues(),
+        #
         #         ExportGeometryInfo(),
         #         SinglePartsToMultiparts(),
         #         ExtractNodes(),
@@ -283,6 +283,7 @@ class QGISAlgorithmProvider(QgsProcessingProvider):
                 SumLines(),
                 SymmetricalDifference(),
                 Union(),
+                UniqueValues(),
                 VectorSplit(),
                 VoronoiPolygons(),
                 ZonalStatistics()
