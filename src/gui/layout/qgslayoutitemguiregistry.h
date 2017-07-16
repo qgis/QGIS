@@ -94,7 +94,7 @@ typedef std::function<QgsLayoutViewRubberBand *( QgsLayoutView * )> QgsLayoutIte
  * \since QGIS 3.0
  * \note not available in Python bindings
  */
-class CORE_EXPORT QgsLayoutItemGuiMetadata : public QgsLayoutItemAbstractGuiMetadata
+class GUI_EXPORT QgsLayoutItemGuiMetadata : public QgsLayoutItemAbstractGuiMetadata
 {
   public:
 
@@ -162,7 +162,7 @@ class CORE_EXPORT QgsLayoutItemGuiMetadata : public QgsLayoutItemAbstractGuiMeta
  *
  * \since QGIS 3.0
  */
-class CORE_EXPORT QgsLayoutItemGuiRegistry : public QObject
+class GUI_EXPORT QgsLayoutItemGuiRegistry : public QObject
 {
     Q_OBJECT
 
