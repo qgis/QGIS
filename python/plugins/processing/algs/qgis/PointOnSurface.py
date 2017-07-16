@@ -82,6 +82,9 @@ class PointOnSurface(QgisAlgorithm):
             input_geometry = input_feature.geometry()
             if input_geometry:
                 output_geometry = input_geometry.pointOnSurface()
+                if not output_geometry:
+                    raise QgsProcessingException(self.tr('Error calculating point on surface. Check the message log for GEOS errors.'))
+
                 output_feature.setGeometry(output_geometry)
 
             sink.addFeature(output_feature, QgsFeatureSink.FastInsert)
