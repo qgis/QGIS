@@ -27,24 +27,22 @@ __revision__ = '$Format:%H$'
 
 import os
 
-from qgis.core import (QgsApplication,
-                       QgsWkbTypes,
-                       QgsFeatureSink,
-                       QgsProcessingUtils)
+from qgis.core import (QgsFeatureSink,
+                       QgsProcessing,
+                       QgsProcessingException,
+                       QgsProcessingParameterFeatureSource,
+                       QgsProcessingParameterNumber,
+                       QgsProcessingParameterEnum,
+                       QgsProcessingParameterFeatureSink)
 
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
-from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
-from processing.core.parameters import ParameterVector, ParameterSelection, ParameterNumber
-from processing.core.outputs import OutputVector
-from processing.tools import dataobjects
 
 pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
 
 class OffsetLine(QgisAlgorithm):
-
-    INPUT_LAYER = 'INPUT_LAYER'
-    OUTPUT_LAYER = 'OUTPUT_LAYER'
+    INPUT = 'INPUT'
+    OUTPUT = 'OUTPUT'
     DISTANCE = 'DISTANCE'
     SEGMENTS = 'SEGMENTS'
     JOIN_STYLE = 'JOIN_STYLE'
@@ -57,23 +55,29 @@ class OffsetLine(QgisAlgorithm):
         super().__init__()
 
     def initAlgorithm(self, config=None):
-        self.addParameter(ParameterVector(self.INPUT_LAYER,
-                                          self.tr('Input layer'), [dataobjects.TYPE_VECTOR_LINE]))
-        self.addParameter(ParameterNumber(self.DISTANCE,
-                                          self.tr('Distance'), default=10.0))
-        self.addParameter(ParameterNumber(self.SEGMENTS,
-                                          self.tr('Segments'), 1, default=8))
+        self.addParameter(QgsProcessingParameterFeatureSource(self.INPUT, self.tr('Input layer'),
+                                                              [QgsProcessing.TypeVectorLine]))
+        self.addParameter(QgsProcessingParameterNumber(self.DISTANCE,
+                                                       self.tr('Distance'),
+                                                       type=QgsProcessingParameterNumber.Double,
+                                                       defaultValue=10.0))
+        self.addParameter(QgsProcessingParameterNumber(self.SEGMENTS,
+                                                       self.tr('Segments'),
+                                                       type=QgsProcessingParameterNumber.Integer,
+                                                       minValue=1, defaultValue=8))
         self.join_styles = [self.tr('Round'),
                             'Mitre',
                             'Bevel']
-        self.addParameter(ParameterSelection(
+        self.addParameter(QgsProcessingParameterEnum(
             self.JOIN_STYLE,
             self.tr('Join style'),
-            self.join_styles))
-        self.addParameter(ParameterNumber(self.MITRE_LIMIT,
-                                          self.tr('Mitre limit'), 1, default=2))
+            options=self.join_styles))
+        self.addParameter(QgsProcessingParameterNumber(self.MITRE_LIMIT,
+                                                       self.tr('Mitre limit'), type=QgsProcessingParameterNumber.Double,
+                                                       minValue=1, defaultValue=2))
 
-        self.addOutput(OutputVector(self.OUTPUT_LAYER, self.tr('Offset'), datatype=[dataobjects.TYPE_VECTOR_LINE]))
+        self.addParameter(
+            QgsProcessingParameterFeatureSink(self.OUTPUT, self.tr('Offset'), QgsProcessing.TypeVectorLine))
 
     def name(self):
         return 'offsetline'
@@ -82,31 +86,33 @@ class OffsetLine(QgisAlgorithm):
         return self.tr('Offset line')
 
     def processAlgorithm(self, parameters, context, feedback):
-        layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT_LAYER), context)
+        source = self.parameterAsSource(parameters, self.INPUT, context)
+        (sink, dest_id) = self.parameterAsSink(parameters, self.OUTPUT, context,
+                                               source.fields(), source.wkbType(), source.sourceCrs())
 
-        writer = self.getOutputFromName(
-            self.OUTPUT_LAYER).getVectorWriter(layer.fields(), QgsWkbTypes.LineString, layer.crs(), context)
+        distance = self.parameterAsDouble(parameters, self.DISTANCE, context)
+        segments = self.parameterAsInt(parameters, self.SEGMENTS, context)
+        join_style = self.parameterAsEnum(parameters, self.JOIN_STYLE, context) + 1
+        miter_limit = self.parameterAsDouble(parameters, self.MITRE_LIMIT, context)
 
-        distance = self.getParameterValue(self.DISTANCE)
-        segments = int(self.getParameterValue(self.SEGMENTS))
-        join_style = self.getParameterValue(self.JOIN_STYLE) + 1
-        miter_limit = self.getParameterValue(self.MITRE_LIMIT)
-
-        features = QgsProcessingUtils.getFeatures(layer, context)
-        total = 100.0 / layer.featureCount() if layer.featureCount() else 0
+        features = source.getFeatures()
+        total = 100.0 / source.featureCount() if source.featureCount() else 0
 
         for current, input_feature in enumerate(features):
+            if feedback.isCanceled():
+                break
+
             output_feature = input_feature
             input_geometry = input_feature.geometry()
             if input_geometry:
                 output_geometry = input_geometry.offsetCurve(distance, segments, join_style, miter_limit)
                 if not output_geometry:
-                    raise GeoAlgorithmExecutionException(
+                    raise QgsProcessingException(
                         self.tr('Error calculating line offset'))
 
                 output_feature.setGeometry(output_geometry)
 
-            writer.addFeature(output_feature, QgsFeatureSink.FastInsert)
+            sink.addFeature(output_feature, QgsFeatureSink.FastInsert)
             feedback.setProgress(int(current * total))
 
-        del writer
+        return {self.OUTPUT: dest_id}

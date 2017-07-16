@@ -70,10 +70,13 @@ from .LinesToPolygons import LinesToPolygons
 from .MeanCoords import MeanCoords
 from .Merge import Merge
 from .NearestNeighbourAnalysis import NearestNeighbourAnalysis
+from .OffsetLine import OffsetLine
+from .Orthogonalize import Orthogonalize
 from .PointDistance import PointDistance
 from .PointOnSurface import PointOnSurface
 from .PointsInPolygon import PointsInPolygon
 from .PointsLayerFromTable import PointsLayerFromTable
+from .PoleOfInaccessibility import PoleOfInaccessibility
 from .PolygonsToLines import PolygonsToLines
 from .PostGISExecuteSQL import PostGISExecuteSQL
 from .RandomExtract import RandomExtract
@@ -145,7 +148,6 @@ from .ZonalStatistics import ZonalStatistics
 # from .RectanglesOvalsDiamondsVariable import RectanglesOvalsDiamondsVariable
 # from .RectanglesOvalsDiamondsFixed import RectanglesOvalsDiamondsFixed
 # from .MergeLines import MergeLines
-# from .OffsetLine import OffsetLine
 # from .Translate import Translate
 # from .SingleSidedBuffer import SingleSidedBuffer
 # from .PointsAlongGeometry import PointsAlongGeometry
@@ -156,9 +158,7 @@ from .ZonalStatistics import ZonalStatistics
 # from .ExtendLines import ExtendLines
 # from .ExtractSpecificNodes import ExtractSpecificNodes
 # from .GeometryByExpression import GeometryByExpression
-# from .PoleOfInaccessibility import PoleOfInaccessibility
 # from .RasterCalculator import RasterCalculator
-# from .Orthogonalize import Orthogonalize
 # from .ShortestPathPointToPoint import ShortestPathPointToPoint
 # from .ShortestPathPointToLayer import ShortestPathPointToLayer
 # from .ShortestPathLayerToPoint import ShortestPathLayerToPoint
@@ -215,17 +215,14 @@ class QGISAlgorithmProvider(QgsProcessingProvider):
         #         ReverseLineDirection(), SpatialIndex(), DefineProjection(),
         #         RectanglesOvalsDiamondsVariable(),
         #         RectanglesOvalsDiamondsFixed(), MergeLines(),
-        #         OffsetLine(), Translate(),
+        #          Translate(),
         #         SingleSidedBuffer(), PointsAlongGeometry(),
-        #          Slope(), Ruggedness(), Hillshade(),
         #         Relief(),
         #         IdwInterpolation(), TinInterpolation(),
         #         RemoveNullGeometry(),
         #         ExtendLines(), ExtractSpecificNodes(),
         #         GeometryByExpression(),
-        #         PoleOfInaccessibility(),
-        #
-        #         RasterCalculator(), Heatmap(), Orthogonalize(),
+        #         RasterCalculator(),
         #         ShortestPathPointToPoint(), ShortestPathPointToLayer(),
         #         ShortestPathLayerToPoint(), ServiceAreaFromPoint(),
         #         ServiceAreaFromLayer(), TruncateTable(), Polygonize(),
@@ -262,10 +259,13 @@ class QGISAlgorithmProvider(QgsProcessingProvider):
                 MeanCoords(),
                 Merge(),
                 NearestNeighbourAnalysis(),
+                OffsetLine(),
+                Orthogonalize(),
                 PointDistance(),
                 PointOnSurface(),
                 PointsInPolygon(),
                 PointsLayerFromTable(),
+                PoleOfInaccessibility(),
                 PolygonsToLines(),
                 PostGISExecuteSQL(),
                 RandomExtract(),
