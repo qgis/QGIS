@@ -5451,6 +5451,13 @@ void TestQgsGeometry::poleOfInaccessibility()
   point = curved.poleOfInaccessibility( 0.01 ).asPoint();
   QGSCOMPARENEAR( point.x(), -0.4324, 0.0001 );
   QGSCOMPARENEAR( point.y(), -0.2434, 0.0001 );
+
+  // multipolygon
+  QgsGeometry multiPoly = QgsGeometry::fromWkt( QStringLiteral( "MultiPolygon (((0 0, 10 0, 10 10, 0 10, 0 0)),((30 30, 50 30, 50 60, 30 60, 30 30)))" ) );
+  point = multiPoly.poleOfInaccessibility( 0.01, &distance ).asPoint();
+  QGSCOMPARENEAR( point.x(), 40, 0.0001 );
+  QGSCOMPARENEAR( point.y(), 45, 0.0001 );
+  QGSCOMPARENEAR( distance, 10.0, 0.00001 );
 }
 
 void TestQgsGeometry::makeValid()
