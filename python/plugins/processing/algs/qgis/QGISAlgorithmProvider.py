@@ -71,6 +71,7 @@ from .MeanCoords import MeanCoords
 from .Merge import Merge
 from .NearestNeighbourAnalysis import NearestNeighbourAnalysis
 from .PointDistance import PointDistance
+from .PointOnSurface import PointOnSurface
 from .PointsInPolygon import PointsInPolygon
 from .PointsLayerFromTable import PointsLayerFromTable
 from .PolygonsToLines import PolygonsToLines
@@ -144,7 +145,6 @@ from .ZonalStatistics import ZonalStatistics
 # from .RectanglesOvalsDiamondsVariable import RectanglesOvalsDiamondsVariable
 # from .RectanglesOvalsDiamondsFixed import RectanglesOvalsDiamondsFixed
 # from .MergeLines import MergeLines
-# from .PointOnSurface import PointOnSurface
 # from .OffsetLine import OffsetLine
 # from .Translate import Translate
 # from .SingleSidedBuffer import SingleSidedBuffer
@@ -215,7 +215,6 @@ class QGISAlgorithmProvider(QgsProcessingProvider):
         #         ReverseLineDirection(), SpatialIndex(), DefineProjection(),
         #         RectanglesOvalsDiamondsVariable(),
         #         RectanglesOvalsDiamondsFixed(), MergeLines(),
-        #         PointOnSurface(),
         #         OffsetLine(), Translate(),
         #         SingleSidedBuffer(), PointsAlongGeometry(),
         #          Slope(), Ruggedness(), Hillshade(),
@@ -264,6 +263,7 @@ class QGISAlgorithmProvider(QgsProcessingProvider):
                 Merge(),
                 NearestNeighbourAnalysis(),
                 PointDistance(),
+                PointOnSurface(),
                 PointsInPolygon(),
                 PointsLayerFromTable(),
                 PolygonsToLines(),

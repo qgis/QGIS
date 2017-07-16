@@ -27,14 +27,15 @@ __revision__ = '$Format:%H$'
 
 import os
 
-from qgis.core import QgsWkbTypes, QgsFeatureSink, QgsProcessingUtils
+from qgis.core import (QgsWkbTypes,
+                       QgsFeatureSink,
+                       QgsProcessing,
+                       QgsProcessingParameterFeatureSource,
+                       QgsProcessingParameterFeatureSink)
 
 from qgis.PyQt.QtGui import QIcon
 
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
-from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
-from processing.core.parameters import ParameterVector
-from processing.core.outputs import OutputVector
 from processing.tools import dataobjects
 
 pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
@@ -55,9 +56,9 @@ class PointOnSurface(QgisAlgorithm):
         super().__init__()
 
     def initAlgorithm(self, config=None):
-        self.addParameter(ParameterVector(self.INPUT_LAYER,
-                                          self.tr('Input layer')))
-        self.addOutput(OutputVector(self.OUTPUT_LAYER, self.tr('Point'), datatype=[dataobjects.TYPE_VECTOR_POINT]))
+        self.addParameter(QgsProcessingParameterFeatureSource(self.INPUT_LAYER,
+                                                              self.tr('Input layer')))
+        self.addParameter(QgsProcessingParameterFeatureSink(self.OUTPUT_LAYER, self.tr('Point'), QgsProcessing.TypeVectorPoint))
 
     def name(self):
         return 'pointonsurface'
@@ -66,26 +67,24 @@ class PointOnSurface(QgisAlgorithm):
         return self.tr('Point on surface')
 
     def processAlgorithm(self, parameters, context, feedback):
-        layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT_LAYER), context)
+        source = self.parameterAsSource(parameters, self.INPUT_LAYER, context)
 
-        writer = self.getOutputFromName(
-            self.OUTPUT_LAYER).getVectorWriter(layer.fields(), QgsWkbTypes.Point, layer.crs(), context)
+        (sink, dest_id) = self.parameterAsSink(parameters, self.OUTPUT_LAYER, context, source.fields(), QgsWkbTypes.Point, source.sourceCrs())
 
-        features = QgsProcessingUtils.getFeatures(layer, context)
-        total = 100.0 / layer.featureCount() if layer.featureCount() else 0
+        features = source.getFeatures()
+        total = 100.0 / source.featureCount() if source.featureCount() else 0
 
         for current, input_feature in enumerate(features):
+            if feedback.isCanceled():
+                break
+
             output_feature = input_feature
             input_geometry = input_feature.geometry()
             if input_geometry:
                 output_geometry = input_geometry.pointOnSurface()
-                if not output_geometry:
-                    raise GeoAlgorithmExecutionException(
-                        self.tr('Error calculating point on surface'))
-
                 output_feature.setGeometry(output_geometry)
 
-            writer.addFeature(output_feature, QgsFeatureSink.FastInsert)
+            sink.addFeature(output_feature, QgsFeatureSink.FastInsert)
             feedback.setProgress(int(current * total))
 
-        del writer
+        return {self.OUTPUT_LAYER: dest_id}
