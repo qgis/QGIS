@@ -82,6 +82,7 @@ from .PostGISExecuteSQL import PostGISExecuteSQL
 from .RandomExtract import RandomExtract
 from .RandomExtractWithinSubsets import RandomExtractWithinSubsets
 from .RegularPoints import RegularPoints
+from .ReverseLineDirection import ReverseLineDirection
 from .Ruggedness import Ruggedness
 from .SaveSelectedFeatures import SaveSelectedFeatures
 from .SelectByAttribute import SelectByAttribute
@@ -142,7 +143,6 @@ from .ZonalStatistics import ZonalStatistics
 # from .FieldsMapper import FieldsMapper
 # from .Datasources2Vrt import Datasources2Vrt
 # from .OrientedMinimumBoundingBox import OrientedMinimumBoundingBox
-# from .ReverseLineDirection import ReverseLineDirection
 # from .SpatialIndex import SpatialIndex
 # from .DefineProjection import DefineProjection
 # from .RectanglesOvalsDiamondsVariable import RectanglesOvalsDiamondsVariable
@@ -212,7 +212,7 @@ class QGISAlgorithmProvider(QgsProcessingProvider):
         #         SplitWithLines(), CreateConstantRaster(),
         #         FieldsMapper(), SelectByAttributeSum(), Datasources2Vrt(),
         #         OrientedMinimumBoundingBox(),
-        #         ReverseLineDirection(), SpatialIndex(), DefineProjection(),
+        #         SpatialIndex(), DefineProjection(),
         #         RectanglesOvalsDiamondsVariable(),
         #         RectanglesOvalsDiamondsFixed(), MergeLines(),
         #          Translate(),
@@ -271,6 +271,7 @@ class QGISAlgorithmProvider(QgsProcessingProvider):
                 RandomExtract(),
                 RandomExtractWithinSubsets(),
                 RegularPoints(),
+                ReverseLineDirection(),
                 Ruggedness(),
                 SaveSelectedFeatures(),
                 SelectByAttribute(),

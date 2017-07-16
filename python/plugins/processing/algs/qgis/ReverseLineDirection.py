@@ -25,22 +25,20 @@ __copyright__ = '(C) 2015, Nyall Dawson'
 
 __revision__ = '$Format:%H$'
 
-from qgis.core import (QgsApplication,
-                       QgsGeometry,
+from qgis.core import (QgsGeometry,
                        QgsFeature,
                        QgsFeatureSink,
-                       QgsProcessingUtils)
+                       QgsProcessingException,
+                       QgsProcessing,
+                       QgsProcessingParameterFeatureSource,
+                       QgsProcessingParameterFeatureSink)
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
-from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
-from processing.core.parameters import ParameterVector
-from processing.core.outputs import OutputVector
-from processing.tools import dataobjects
 
 
 class ReverseLineDirection(QgisAlgorithm):
 
-    INPUT_LAYER = 'INPUT_LAYER'
-    OUTPUT_LAYER = 'OUTPUT_LAYER'
+    INPUT = 'INPUT'
+    OUTPUT = 'OUTPUT'
 
     def group(self):
         return self.tr('Vector geometry tools')
@@ -49,9 +47,10 @@ class ReverseLineDirection(QgisAlgorithm):
         super().__init__()
 
     def initAlgorithm(self, config=None):
-        self.addParameter(ParameterVector(self.INPUT_LAYER,
-                                          self.tr('Input layer'), [dataobjects.TYPE_VECTOR_LINE]))
-        self.addOutput(OutputVector(self.OUTPUT_LAYER, self.tr('Reversed'), datatype=[dataobjects.TYPE_VECTOR_LINE]))
+        self.addParameter(QgsProcessingParameterFeatureSource(self.INPUT, self.tr('Input layer'),
+                                                              [QgsProcessing.TypeVectorLine]))
+        self.addParameter(
+            QgsProcessingParameterFeatureSink(self.OUTPUT, self.tr('Reversed'), QgsProcessing.TypeVectorLine))
 
     def name(self):
         return 'reverselinedirection'
@@ -60,30 +59,28 @@ class ReverseLineDirection(QgisAlgorithm):
         return self.tr('Reverse line direction')
 
     def processAlgorithm(self, parameters, context, feedback):
-        layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT_LAYER), context)
+        source = self.parameterAsSource(parameters, self.INPUT, context)
 
-        writer = self.getOutputFromName(
-            self.OUTPUT_LAYER).getVectorWriter(layer.fields(), layer.wkbType(), layer.crs(), context)
+        (sink, dest_id) = self.parameterAsSink(parameters, self.OUTPUT, context,
+                                               source.fields(), source.wkbType(), source.sourceCrs())
 
-        outFeat = QgsFeature()
-
-        features = QgsProcessingUtils.getFeatures(layer, context)
-        total = 100.0 / layer.featureCount() if layer.featureCount() else 0
+        features = source.getFeatures()
+        total = 100.0 / source.featureCount() if source.featureCount() else 0
         for current, inFeat in enumerate(features):
-            inGeom = inFeat.geometry()
-            attrs = inFeat.attributes()
+            if feedback.isCanceled():
+                break
 
-            outGeom = None
-            if not inGeom.isNull():
+            outFeat = inFeat
+            if inFeat.geometry():
+                inGeom = inFeat.geometry()
                 reversedLine = inGeom.geometry().reversed()
                 if not reversedLine:
-                    raise GeoAlgorithmExecutionException(
+                    raise QgsProcessingException(
                         self.tr('Error reversing line'))
                 outGeom = QgsGeometry(reversedLine)
 
-            outFeat.setGeometry(outGeom)
-            outFeat.setAttributes(attrs)
-            writer.addFeature(outFeat, QgsFeatureSink.FastInsert)
+                outFeat.setGeometry(outGeom)
+            sink.addFeature(outFeat, QgsFeatureSink.FastInsert)
             feedback.setProgress(int(current * total))
 
-        del writer
+        return {self.OUTPUT: dest_id}

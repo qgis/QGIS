@@ -555,6 +555,20 @@ tests:
         name: expected/point_on_line.gml
         type: vector
 
+  - algorithm: qgis:reverselinedirection
+    name: Reverse line direction
+    params:
+      INPUT:
+        name: lines.gml
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/lines_reversed.gml
+        type: vector
+        compare:
+          geometry:
+            precision: 7
+
   - algorithm: qgis:offsetline
     name: Offset line positive
     params:
