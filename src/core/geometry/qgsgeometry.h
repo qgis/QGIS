@@ -672,6 +672,12 @@ class CORE_EXPORT QgsGeometry
 
     /**
      * Returns the center of mass of a geometry.
+     *
+     * If the input is a NULL geometry, the output will also be a NULL geometry.
+     *
+     * If an error was encountered while creating the result, more information can be retrieved
+     * by calling `error()` on the returned geometry.
+     *
      * \note for line based geometries, the center point of the line is returned,
      * and for point based geometries, the point itself is returned
      * \see pointOnSurface()
@@ -683,6 +689,12 @@ class CORE_EXPORT QgsGeometry
      * Returns a point guaranteed to lie on the surface of a geometry. While the centroid()
      * of a geometry may be located outside of the geometry itself (e.g., for concave shapes),
      * the point on surface will always be inside the geometry.
+     *
+     * If the input is a NULL geometry, the output will also be a NULL geometry.
+     *
+     * If an error was encountered while creating the result, more information can be retrieved
+     * by calling `error()` on the returned geometry.
+     *
      * \see centroid()
      * \see poleOfInaccessibility()
      */
@@ -702,7 +714,14 @@ class CORE_EXPORT QgsGeometry
      */
     QgsGeometry poleOfInaccessibility( double precision, double *distanceToBoundary SIP_OUT = nullptr ) const;
 
-    //! Returns the smallest convex polygon that contains all the points in the geometry.
+    /**
+     * Returns the smallest convex polygon that contains all the points in the geometry.
+     *
+     * If the input is a NULL geometry, the output will also be a NULL geometry.
+     *
+     * If an error was encountered while creating the result, more information can be retrieved
+     * by calling `error()` on the returned geometry.
+     */
     QgsGeometry convexHull() const;
 
     /**
@@ -745,13 +764,24 @@ class CORE_EXPORT QgsGeometry
      *
      * Curved geometries will be segmentized before subdivision.
      *
+     * If the input is a NULL geometry, the output will also be a NULL geometry.
+     *
+     * If an error was encountered while creating the result, more information can be retrieved
+     * by calling `error()` on the returned geometry.
+     *
      * \since QGIS 3.0
      */
     QgsGeometry subdivide( int maxNodes = 256 ) const;
 
     /**
-     * Return interpolated point on line at distance
-     * \since QGIS 1.9
+     * Return interpolated point on line at distance.
+     *
+     * If the input is a NULL geometry, the output will also be a NULL geometry.
+     *
+     * If an error was encountered while creating the result, more information can be retrieved
+     * by calling `error()` on the returned geometry.
+     *
+     * \since QGIS 2.0
      * \see lineLocatePoint()
      */
     QgsGeometry interpolate( double distance ) const;
@@ -778,7 +808,14 @@ class CORE_EXPORT QgsGeometry
      */
     double interpolateAngle( double distance ) const;
 
-    //! Returns a geometry representing the points shared by this geometry and other.
+    /**
+     * Returns a geometry representing the points shared by this geometry and other.
+     *
+     * If the input is a NULL geometry, the output will also be a NULL geometry.
+     *
+     * If an error was encountered while creating the result, more information can be retrieved
+     * by calling `error()` on the returned geometry.
+     */
     QgsGeometry intersection( const QgsGeometry &geometry ) const;
 
     /**
@@ -790,13 +827,21 @@ class CORE_EXPORT QgsGeometry
      */
     QgsGeometry clipped( const QgsRectangle &rectangle );
 
-    /** Returns a geometry representing all the points in this geometry and other (a
+    /**
+     * Returns a geometry representing all the points in this geometry and other (a
      * union geometry operation).
+     *
+     * If the input is a NULL geometry, the output will also be a NULL geometry.
+     *
+     * If an error was encountered while creating the result, more information can be retrieved
+     * by calling `error()` on the returned geometry.
+     *
      * \note this operation is not called union since its a reserved word in C++.
      */
     QgsGeometry combine( const QgsGeometry &geometry ) const;
 
-    /** Merges any connected lines in a LineString/MultiLineString geometry and
+    /**
+     * Merges any connected lines in a LineString/MultiLineString geometry and
      * converts them to single line strings.
      * \returns a LineString or MultiLineString geometry, with any connected lines
      * joined. An empty geometry will be returned if the input geometry was not a
@@ -805,10 +850,24 @@ class CORE_EXPORT QgsGeometry
      */
     QgsGeometry mergeLines() const;
 
-    //! Returns a geometry representing the points making up this geometry that do not make up other.
+    /**
+     * Returns a geometry representing the points making up this geometry that do not make up other.
+     *
+     * If the input is a NULL geometry, the output will also be a NULL geometry.
+     *
+     * If an error was encountered while creating the result, more information can be retrieved
+     * by calling `error()` on the returned geometry.
+     */
     QgsGeometry difference( const QgsGeometry &geometry ) const;
 
-    //! Returns a geometry representing the points making up this geometry that do not make up other.
+    /**
+     * Returns a geometry representing the points making up this geometry that do not make up other.
+     *
+     * If the input is a NULL geometry, the output will also be a NULL geometry.
+     *
+     * If an error was encountered while creating the result, more information can be retrieved
+     * by calling `error()` on the returned geometry.
+     */
     QgsGeometry symDifference( const QgsGeometry &geometry ) const;
 
     //! Returns an extruded version of this geometry.
@@ -1046,6 +1105,14 @@ class CORE_EXPORT QgsGeometry
      * \see vertexIdFromVertexNr
      */
     int vertexNrFromVertexId( QgsVertexId i ) const;
+
+    /**
+     * Returns an error string referring to an error that was produced
+     * when this geometry was created.
+     *
+     * \since QGIS 3.0
+     */
+    QString error() const;
 
     /** Return GEOS context handle
      * \since QGIS 2.6

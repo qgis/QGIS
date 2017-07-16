@@ -51,6 +51,7 @@ struct QgsGeometryPrivate
   ~QgsGeometryPrivate() { delete geometry; }
   QAtomicInt ref;
   QgsAbstractGeometry *geometry = nullptr;
+  QString error;
 };
 
 QgsGeometry::QgsGeometry(): d( new QgsGeometryPrivate() )
@@ -1586,10 +1587,13 @@ QgsGeometry QgsGeometry::centroid() const
 
   QgsGeos geos( d->geometry );
   QgsPoint centroid;
-  bool ok = geos.centroid( centroid );
+  QString error;
+  bool ok = geos.centroid( centroid, &error );
   if ( !ok )
   {
-    return QgsGeometry();
+    QgsGeometry geom;
+    geom.d->error = error;
+    return geom;
   }
   return QgsGeometry( centroid.clone() );
 }
@@ -1602,13 +1606,17 @@ QgsGeometry QgsGeometry::pointOnSurface() const
   }
 
   QgsGeos geos( d->geometry );
-  QgsPoint pt;
-  bool ok = geos.pointOnSurface( pt );
+  std::unique_ptr<QgsPoint>pt( new QgsPoint() );
+
+  QString error;
+  bool ok = geos.pointOnSurface( *pt.get(), &error );
   if ( !ok )
   {
-    return QgsGeometry();
+    QgsGeometry geom;
+    geom.d->error = error;
+    return geom;
   }
-  return QgsGeometry( pt.clone() );
+  return QgsGeometry( pt.release() );
 }
 
 QgsGeometry QgsGeometry::poleOfInaccessibility( double precision, double *distanceToBoundary ) const
@@ -1625,10 +1633,13 @@ QgsGeometry QgsGeometry::convexHull() const
     return QgsGeometry();
   }
   QgsGeos geos( d->geometry );
-  QgsAbstractGeometry *cHull = geos.convexHull();
+  QString error;
+  QgsAbstractGeometry *cHull = geos.convexHull( &error );
   if ( !cHull )
   {
-    return QgsGeometry();
+    QgsGeometry geom;
+    geom.d->error = error;
+    return geom;
   }
   return QgsGeometry( cHull );
 }
@@ -1670,11 +1681,14 @@ QgsGeometry QgsGeometry::subdivide( int maxNodes ) const
     geom = segmentizedCopy.get();
   }
 
+  QString error;
   QgsGeos geos( geom );
-  QgsAbstractGeometry *result = geos.subdivide( maxNodes );
+  QgsAbstractGeometry *result = geos.subdivide( maxNodes, &error );
   if ( !result )
   {
-    return QgsGeometry();
+    QgsGeometry geom;
+    geom.d->error = error;
+    return geom;
   }
   return QgsGeometry( result );
 }
@@ -1691,10 +1705,13 @@ QgsGeometry QgsGeometry::interpolate( double distance ) const
     line = QgsGeometry( d->geometry->boundary() );
 
   QgsGeos geos( line.geometry() );
-  QgsAbstractGeometry *result = geos.interpolate( distance );
+  QString error;
+  QgsAbstractGeometry *result = geos.interpolate( distance, &error );
   if ( !result )
   {
-    return QgsGeometry();
+    QgsGeometry geom;
+    geom.d->error = error;
+    return geom;
   }
   return QgsGeometry( result );
 }
@@ -1780,7 +1797,16 @@ QgsGeometry QgsGeometry::intersection( const QgsGeometry &geometry ) const
 
   QgsGeos geos( d->geometry );
 
-  QgsAbstractGeometry *resultGeom = geos.intersection( *( geometry.d->geometry ) );
+  QString error;
+  QgsAbstractGeometry *resultGeom = geos.intersection( *( geometry.d->geometry ), &error );
+
+  if ( !resultGeom )
+  {
+    QgsGeometry geom;
+    geom.d->error = error;
+    return geom;
+  }
+
   return QgsGeometry( resultGeom );
 }
 
@@ -1792,11 +1818,14 @@ QgsGeometry QgsGeometry::combine( const QgsGeometry &geometry ) const
   }
 
   QgsGeos geos( d->geometry );
+  QString error;
 
-  QgsAbstractGeometry *resultGeom = geos.combine( *( geometry.d->geometry ) );
+  QgsAbstractGeometry *resultGeom = geos.combine( *( geometry.d->geometry ), &error );
   if ( !resultGeom )
   {
-    return QgsGeometry();
+    QgsGeometry geom;
+    geom.d->error = error;
+    return geom;
   }
   return QgsGeometry( resultGeom );
 }
@@ -1827,10 +1856,13 @@ QgsGeometry QgsGeometry::difference( const QgsGeometry &geometry ) const
 
   QgsGeos geos( d->geometry );
 
-  QgsAbstractGeometry *resultGeom = geos.difference( *( geometry.d->geometry ) );
+  QString error;
+  QgsAbstractGeometry *resultGeom = geos.difference( *( geometry.d->geometry ), &error );
   if ( !resultGeom )
   {
-    return QgsGeometry();
+    QgsGeometry geom;
+    geom.d->error = error;
+    return geom;
   }
   return QgsGeometry( resultGeom );
 }
@@ -1844,10 +1876,14 @@ QgsGeometry QgsGeometry::symDifference( const QgsGeometry &geometry ) const
 
   QgsGeos geos( d->geometry );
 
-  QgsAbstractGeometry *resultGeom = geos.symDifference( *( geometry.d->geometry ) );
+  QString error;
+
+  QgsAbstractGeometry *resultGeom = geos.symDifference( *( geometry.d->geometry ), &error );
   if ( !resultGeom )
   {
-    return QgsGeometry();
+    QgsGeometry geom;
+    geom.d->error = error;
+    return geom;
   }
   return QgsGeometry( resultGeom );
 }
@@ -2273,6 +2309,11 @@ int QgsGeometry::vertexNrFromVertexId( QgsVertexId id ) const
     }
   }
   return -1;
+}
+
+QString QgsGeometry::error() const
+{
+  return d->error;
 }
 
 void QgsGeometry::convertPointList( const QList<QgsPointXY> &input, QgsPointSequence &output )
