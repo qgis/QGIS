@@ -788,8 +788,10 @@ void QgsExtractByExpressionAlgorithm::initAlgorithm( const QVariantMap & )
   addParameter( new QgsProcessingParameterExpression( QStringLiteral( "EXPRESSION" ), QObject::tr( "Expression" ), QVariant(), QStringLiteral( "INPUT" ) ) );
 
   addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "OUTPUT" ), QObject::tr( "Matching features" ) ) );
-  addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "FAIL_OUTPUT" ),  QObject::tr( "Non-matching" ),
-                QgsProcessing::TypeVectorAny, QVariant(), true ) );
+  QgsProcessingParameterFeatureSink *failOutput = new QgsProcessingParameterFeatureSink( QStringLiteral( "FAIL_OUTPUT" ),  QObject::tr( "Non-matching" ),
+      QgsProcessing::TypeVectorAny, QVariant(), true );
+  failOutput->setCreateByDefault( false );
+  addParameter( failOutput );
 }
 
 QString QgsExtractByExpressionAlgorithm::shortHelpString() const
@@ -917,8 +919,10 @@ void QgsExtractByAttributeAlgorithm::initAlgorithm( const QVariantMap & )
   addParameter( new QgsProcessingParameterString( QStringLiteral( "VALUE" ), QObject::tr( "Value" ), QVariant(), false, true ) );
 
   addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "OUTPUT" ), QObject::tr( "Extracted (attribute)" ) ) );
-  addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "FAIL_OUTPUT" ),  QObject::tr( "Extracted (non-matching)" ),
-                QgsProcessing::TypeVectorAny, QVariant(), true ) );
+  QgsProcessingParameterFeatureSink *failOutput = new QgsProcessingParameterFeatureSink( QStringLiteral( "FAIL_OUTPUT" ),  QObject::tr( "Extracted (non-matching)" ),
+      QgsProcessing::TypeVectorAny, QVariant(), true );
+  failOutput->setCreateByDefault( false );
+  addParameter( failOutput );
 }
 
 QString QgsExtractByAttributeAlgorithm::shortHelpString() const
@@ -1101,8 +1105,10 @@ void QgsRemoveNullGeometryAlgorithm::initAlgorithm( const QVariantMap & )
 
   addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "OUTPUT" ), QObject::tr( "Non null geometries" ),
                 QgsProcessing::TypeVectorAny, QVariant(), true ) );
-  addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "NULL_OUTPUT" ),  QObject::tr( "Null geometries" ),
-                QgsProcessing::TypeVectorAny, QVariant(), true ) );
+  QgsProcessingParameterFeatureSink *nullOutput = new QgsProcessingParameterFeatureSink( QStringLiteral( "NULL_OUTPUT" ),  QObject::tr( "Null geometries" ),
+      QgsProcessing::TypeTable, QVariant(), true );
+  nullOutput->setCreateByDefault( false );
+  addParameter( nullOutput );
 }
 
 QString QgsRemoveNullGeometryAlgorithm::shortHelpString() const

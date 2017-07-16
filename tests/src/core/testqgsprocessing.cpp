@@ -3573,6 +3573,8 @@ void TestQgsProcessing::parameterFeatureSink()
   QVERIFY( def->checkValueIsAcceptable( "" ) );
   QVERIFY( def->checkValueIsAcceptable( QVariant() ) );
   QVERIFY( def->checkValueIsAcceptable( QgsProcessingOutputLayerDefinition( "layer1231123" ) ) );
+  def->setCreateByDefault( false );
+  QVERIFY( !def->createByDefault() );
 
   code = def->asScriptCode();
   QCOMPARE( code, QStringLiteral( "##optional=optional sink" ) );
@@ -3582,6 +3584,7 @@ void TestQgsProcessing::parameterFeatureSink()
   QCOMPARE( fromCode->flags(), def->flags() );
   QCOMPARE( fromCode->defaultValue(), def->defaultValue() );
   QCOMPARE( fromCode->dataType(), def->dataType() );
+  QVERIFY( !def->createByDefault() );
 
   // test hasGeometry
   QVERIFY( QgsProcessingParameterFeatureSink( "test", QString(), QgsProcessing::TypeAny ).hasGeometry() );

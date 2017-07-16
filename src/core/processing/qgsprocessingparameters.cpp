@@ -2917,6 +2917,7 @@ QVariantMap QgsProcessingDestinationParameter::toVariantMap() const
 {
   QVariantMap map = QgsProcessingParameterDefinition::toVariantMap();
   map.insert( QStringLiteral( "supports_non_file_outputs" ), mSupportsNonFileBasedOutputs );
+  map.insert( QStringLiteral( "create_by_default" ), mCreateByDefault );
   return map;
 }
 
@@ -2924,12 +2925,23 @@ bool QgsProcessingDestinationParameter::fromVariantMap( const QVariantMap &map )
 {
   QgsProcessingParameterDefinition::fromVariantMap( map );
   mSupportsNonFileBasedOutputs = map.value( QStringLiteral( "supports_non_file_outputs" ) ).toBool();
+  mCreateByDefault = map.value( QStringLiteral( "create_by_default" ), QStringLiteral( "1" ) ).toBool();
   return true;
 }
 
 QString QgsProcessingDestinationParameter::generateTemporaryDestination() const
 {
   return QgsProcessingUtils::generateTempFilename( name() + '.' + defaultFileExtension() );
+}
+
+bool QgsProcessingDestinationParameter::createByDefault() const
+{
+  return mCreateByDefault;
+}
+
+void QgsProcessingDestinationParameter::setCreateByDefault( bool createByDefault )
+{
+  mCreateByDefault = createByDefault;
 }
 
 QgsProcessingParameterVectorDestination::QgsProcessingParameterVectorDestination( const QString &name, const QString &description, QgsProcessing::LayerType type, const QVariant &defaultValue, bool optional )
