@@ -70,15 +70,19 @@ from .LinesToPolygons import LinesToPolygons
 from .MeanCoords import MeanCoords
 from .Merge import Merge
 from .NearestNeighbourAnalysis import NearestNeighbourAnalysis
+from .OffsetLine import OffsetLine
+from .Orthogonalize import Orthogonalize
 from .PointDistance import PointDistance
 from .PointOnSurface import PointOnSurface
 from .PointsInPolygon import PointsInPolygon
 from .PointsLayerFromTable import PointsLayerFromTable
+from .PoleOfInaccessibility import PoleOfInaccessibility
 from .PolygonsToLines import PolygonsToLines
 from .PostGISExecuteSQL import PostGISExecuteSQL
 from .RandomExtract import RandomExtract
 from .RandomExtractWithinSubsets import RandomExtractWithinSubsets
 from .RegularPoints import RegularPoints
+from .ReverseLineDirection import ReverseLineDirection
 from .Ruggedness import Ruggedness
 from .SaveSelectedFeatures import SaveSelectedFeatures
 from .SelectByAttribute import SelectByAttribute
@@ -139,13 +143,11 @@ from .ZonalStatistics import ZonalStatistics
 # from .FieldsMapper import FieldsMapper
 # from .Datasources2Vrt import Datasources2Vrt
 # from .OrientedMinimumBoundingBox import OrientedMinimumBoundingBox
-# from .ReverseLineDirection import ReverseLineDirection
 # from .SpatialIndex import SpatialIndex
 # from .DefineProjection import DefineProjection
 # from .RectanglesOvalsDiamondsVariable import RectanglesOvalsDiamondsVariable
 # from .RectanglesOvalsDiamondsFixed import RectanglesOvalsDiamondsFixed
 # from .MergeLines import MergeLines
-# from .OffsetLine import OffsetLine
 # from .Translate import Translate
 # from .SingleSidedBuffer import SingleSidedBuffer
 # from .PointsAlongGeometry import PointsAlongGeometry
@@ -155,9 +157,7 @@ from .ZonalStatistics import ZonalStatistics
 # from .ExtendLines import ExtendLines
 # from .ExtractSpecificNodes import ExtractSpecificNodes
 # from .GeometryByExpression import GeometryByExpression
-# from .PoleOfInaccessibility import PoleOfInaccessibility
 # from .RasterCalculator import RasterCalculator
-# from .Orthogonalize import Orthogonalize
 # from .ShortestPathPointToPoint import ShortestPathPointToPoint
 # from .ShortestPathPointToLayer import ShortestPathPointToLayer
 # from .ShortestPathLayerToPoint import ShortestPathLayerToPoint
@@ -211,19 +211,16 @@ class QGISAlgorithmProvider(QgsProcessingProvider):
         #         SplitWithLines(), CreateConstantRaster(),
         #         FieldsMapper(), SelectByAttributeSum(), Datasources2Vrt(),
         #         OrientedMinimumBoundingBox(),
-        #         ReverseLineDirection(), SpatialIndex(), DefineProjection(),
+        #         SpatialIndex(), DefineProjection(),
         #         RectanglesOvalsDiamondsVariable(),
         #         RectanglesOvalsDiamondsFixed(), MergeLines(),
-        #         OffsetLine(), Translate(),
+        #          Translate(),
         #         SingleSidedBuffer(), PointsAlongGeometry(),
-        #          Slope(), Ruggedness(), Hillshade(),
         #         Relief(),
         #         IdwInterpolation(), TinInterpolation(),
         #         ExtendLines(), ExtractSpecificNodes(),
         #         GeometryByExpression(),
-        #         PoleOfInaccessibility(),
-        #
-        #         RasterCalculator(), Heatmap(), Orthogonalize(),
+        #         RasterCalculator(),
         #         ShortestPathPointToPoint(), ShortestPathPointToLayer(),
         #         ShortestPathLayerToPoint(), ServiceAreaFromPoint(),
         #         ServiceAreaFromLayer(), TruncateTable(), Polygonize(),
@@ -260,15 +257,19 @@ class QGISAlgorithmProvider(QgsProcessingProvider):
                 MeanCoords(),
                 Merge(),
                 NearestNeighbourAnalysis(),
+                OffsetLine(),
+                Orthogonalize(),
                 PointDistance(),
                 PointOnSurface(),
                 PointsInPolygon(),
                 PointsLayerFromTable(),
+                PoleOfInaccessibility(),
                 PolygonsToLines(),
                 PostGISExecuteSQL(),
                 RandomExtract(),
                 RandomExtractWithinSubsets(),
                 RegularPoints(),
+                ReverseLineDirection(),
                 Ruggedness(),
                 SaveSelectedFeatures(),
                 SelectByAttribute(),
