@@ -31,10 +31,24 @@ from collections import OrderedDict
 from qgis.PyQt.QtCore import QVariant
 from qgis.PyQt.QtGui import QIcon
 
-from qgis.core import (QgsWkbTypes, QgsUnitTypes, QgsFeatureSink, QgsFeature, QgsGeometry, QgsPointXY, QgsFields, QgsField, QgsFeatureRequest,
+from qgis.core import (QgsWkbTypes,
+                       QgsUnitTypes,
+                       QgsFeature,
+                       QgsFeatureSink,
+                       QgsGeometry,
+                       QgsFields,
+                       QgsField,
                        QgsMessageLog,
-                       QgsProcessingParameterDefinition,
-                       QgsProcessingUtils)
+                       QgsProcessing,
+                       QgsProcessingParameterEnum,
+                       QgsProcessingParameterPoint,
+                       QgsProcessingParameterField,
+                       QgsProcessingParameterNumber,
+                       QgsProcessingParameterString,
+                       QgsProcessingParameterFeatureSource,
+                       QgsProcessingParameterFeatureSink,
+                       QgsProcessingParameterVectorLayer,
+                       QgsProcessingParameterDefinition)
 from qgis.analysis import (QgsVectorLayerDirector,
                            QgsNetworkDistanceStrategy,
                            QgsNetworkSpeedStrategy,
@@ -44,22 +58,13 @@ from qgis.analysis import (QgsVectorLayerDirector,
 from qgis.utils import iface
 
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
-from processing.core.parameters import (ParameterVector,
-                                        ParameterPoint,
-                                        ParameterNumber,
-                                        ParameterString,
-                                        ParameterTableField,
-                                        ParameterSelection
-                                        )
-from processing.core.outputs import OutputVector
-from processing.tools import dataobjects
 
 pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
 
 class ShortestPathPointToLayer(QgisAlgorithm):
 
-    INPUT_VECTOR = 'INPUT_VECTOR'
+    INPUT = 'INPUT'
     START_POINT = 'START_POINT'
     END_POINTS = 'END_POINTS'
     STRATEGY = 'STRATEGY'
@@ -71,7 +76,7 @@ class ShortestPathPointToLayer(QgisAlgorithm):
     SPEED_FIELD = 'SPEED_FIELD'
     DEFAULT_SPEED = 'DEFAULT_SPEED'
     TOLERANCE = 'TOLERANCE'
-    OUTPUT_LAYER = 'OUTPUT_LAYER'
+    OUTPUT = 'OUTPUT'
 
     def icon(self):
         return QIcon(os.path.join(pluginPath, 'images', 'networkanalysis.svg'))
@@ -92,58 +97,59 @@ class ShortestPathPointToLayer(QgisAlgorithm):
                            self.tr('Fastest')
                            ]
 
-        self.addParameter(ParameterVector(self.INPUT_VECTOR,
-                                          self.tr('Vector layer representing network'),
-                                          [dataobjects.TYPE_VECTOR_LINE]))
-        self.addParameter(ParameterPoint(self.START_POINT,
-                                         self.tr('Start point')))
-        self.addParameter(ParameterVector(self.END_POINTS,
-                                          self.tr('Vector layer with end points'),
-                                          [dataobjects.TYPE_VECTOR_POINT]))
-        self.addParameter(ParameterSelection(self.STRATEGY,
-                                             self.tr('Path type to calculate'),
-                                             self.STRATEGIES,
-                                             default=0))
+        self.addParameter(QgsProcessingParameterVectorLayer(self.INPUT,
+                                                            self.tr('Vector layer representing network'),
+                                                            [QgsProcessing.TypeVectorLine]))
+        self.addParameter(QgsProcessingParameterPoint(self.START_POINT,
+                                                      self.tr('Start point')))
+        self.addParameter(QgsProcessingParameterFeatureSource(self.END_POINTS,
+                                                              self.tr('Vector layer with end points'),
+                                                              [QgsProcessing.TypeVectorPoint]))
+        self.addParameter(QgsProcessingParameterEnum(self.STRATEGY,
+                                                     self.tr('Path type to calculate'),
+                                                     self.STRATEGIES,
+                                                     defaultValue=0))
 
         params = []
-        params.append(ParameterTableField(self.DIRECTION_FIELD,
-                                          self.tr('Direction field'),
-                                          self.INPUT_VECTOR,
-                                          optional=True))
-        params.append(ParameterString(self.VALUE_FORWARD,
-                                      self.tr('Value for forward direction'),
-                                      '',
-                                      optional=True))
-        params.append(ParameterString(self.VALUE_BACKWARD,
-                                      self.tr('Value for backward direction'),
-                                      '',
-                                      optional=True))
-        params.append(ParameterString(self.VALUE_BOTH,
-                                      self.tr('Value for both directions'),
-                                      '',
-                                      optional=True))
-        params.append(ParameterSelection(self.DEFAULT_DIRECTION,
-                                         self.tr('Default direction'),
-                                         list(self.DIRECTIONS.keys()),
-                                         default=2))
-        params.append(ParameterTableField(self.SPEED_FIELD,
-                                          self.tr('Speed field'),
-                                          self.INPUT_VECTOR,
-                                          optional=True))
-        params.append(ParameterNumber(self.DEFAULT_SPEED,
-                                      self.tr('Default speed (km/h)'),
-                                      0.0, 99999999.999999, 5.0))
-        params.append(ParameterNumber(self.TOLERANCE,
-                                      self.tr('Topology tolerance'),
-                                      0.0, 99999999.999999, 0.0))
+        params.append(QgsProcessingParameterField(self.DIRECTION_FIELD,
+                                                  self.tr('Direction field'),
+                                                  None,
+                                                  self.INPUT,
+                                                  optional=True))
+        params.append(QgsProcessingParameterString(self.VALUE_FORWARD,
+                                                   self.tr('Value for forward direction'),
+                                                   optional=True))
+        params.append(QgsProcessingParameterString(self.VALUE_BACKWARD,
+                                                   self.tr('Value for backward direction'),
+                                                   optional=True))
+        params.append(QgsProcessingParameterString(self.VALUE_BOTH,
+                                                   self.tr('Value for both directions'),
+                                                   optional=True))
+        params.append(QgsProcessingParameterEnum(self.DEFAULT_DIRECTION,
+                                                 self.tr('Default direction'),
+                                                 list(self.DIRECTIONS.keys()),
+                                                 defaultValue=2))
+        params.append(QgsProcessingParameterField(self.SPEED_FIELD,
+                                                  self.tr('Speed field'),
+                                                  None,
+                                                  self.INPUT,
+                                                  optional=True))
+        params.append(QgsProcessingParameterNumber(self.DEFAULT_SPEED,
+                                                   self.tr('Default speed (km/h)'),
+                                                   QgsProcessingParameterNumber.Double,
+                                                   5.0, False, 0, 99999999.99))
+        params.append(QgsProcessingParameterNumber(self.TOLERANCE,
+                                                   self.tr('Topology tolerance'),
+                                                   QgsProcessingParameterNumber.Double,
+                                                   0.0, False, 0, 99999999.99))
 
         for p in params:
             p.setFlags(p.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
             self.addParameter(p)
 
-        self.addOutput(OutputVector(self.OUTPUT_LAYER,
-                                    self.tr('Shortest path'),
-                                    datatype=[dataobjects.TYPE_VECTOR_LINE]))
+        self.addParameter(QgsProcessingParameterFeatureSink(self.OUTPUT,
+                                                            self.tr('Shortest path'),
+                                                            QgsProcessing.TypeVectorLine))
 
     def name(self):
         return 'shortestpathpointtolayer'
@@ -152,21 +158,19 @@ class ShortestPathPointToLayer(QgisAlgorithm):
         return self.tr('Shortest path (point to layer)')
 
     def processAlgorithm(self, parameters, context, feedback):
-        layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT_VECTOR), context)
-        startPoint = self.getParameterValue(self.START_POINT)
-        endPoints = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.END_POINTS), context)
-        strategy = self.getParameterValue(self.STRATEGY)
+        layer = self.parameterAsVectorLayer(parameters, self.INPUT, context)
+        startPoint = self.parameterAsPoint(parameters, self.START_POINT, context)
+        endPoints = self.parameterAsSource(parameters, self.END_POINTS, context)
+        strategy = self.parameterAsEnum(parameters, self.STRATEGY, context)
 
-        directionFieldName = self.getParameterValue(self.DIRECTION_FIELD)
-        forwardValue = self.getParameterValue(self.VALUE_FORWARD)
-        backwardValue = self.getParameterValue(self.VALUE_BACKWARD)
-        bothValue = self.getParameterValue(self.VALUE_BOTH)
-        defaultDirection = self.getParameterValue(self.DEFAULT_DIRECTION)
-        bothValue = self.getParameterValue(self.VALUE_BOTH)
-        defaultDirection = self.getParameterValue(self.DEFAULT_DIRECTION)
-        speedFieldName = self.getParameterValue(self.SPEED_FIELD)
-        defaultSpeed = self.getParameterValue(self.DEFAULT_SPEED)
-        tolerance = self.getParameterValue(self.TOLERANCE)
+        directionFieldName = self.parameterAsString(parameters, self.DIRECTION_FIELD, context)
+        forwardValue = self.parameterAsString(parameters, self.VALUE_FORWARD, context)
+        backwardValue = self.parameterAsString(parameters, self.VALUE_BACKWARD, context)
+        bothValue = self.parameterAsString(parameters, self.VALUE_BOTH, context)
+        defaultDirection = self.parameterAsEnum(parameters, self.DEFAULT_DIRECTION, context)
+        speedFieldName = self.parameterAsString(parameters, self.SPEED_FIELD, context)
+        defaultSpeed = self.parameterAsDouble(parameters, self.DEFAULT_SPEED, context)
+        tolerance = self.parameterAsDouble(parameters, self.TOLERANCE, context)
 
         fields = QgsFields()
         fields.append(QgsField('start', QVariant.String, '', 254, 0))
@@ -176,17 +180,14 @@ class ShortestPathPointToLayer(QgisAlgorithm):
         feat = QgsFeature()
         feat.setFields(fields)
 
-        writer = self.getOutputFromName(
-            self.OUTPUT_LAYER).getVectorWriter(fields, QgsWkbTypes.LineString, layer.crs(), context)
-
-        tmp = startPoint.split(',')
-        startPoint = QgsPointXY(float(tmp[0]), float(tmp[1]))
+        (sink, dest_id) = self.parameterAsSink(parameters, self.OUTPUT, context,
+                                               fields, QgsWkbTypes.LineString, layer.crs())
 
         directionField = -1
-        if directionFieldName is not None:
+        if directionFieldName:
             directionField = layer.fields().lookupField(directionFieldName)
         speedField = -1
-        if speedFieldName is not None:
+        if speedFieldName:
             speedField = layer.fields().lookupField(speedFieldName)
 
         director = QgsVectorLayerDirector(layer,
@@ -214,12 +215,16 @@ class ShortestPathPointToLayer(QgisAlgorithm):
         feedback.pushInfo(self.tr('Loading end points...'))
         request = QgsFeatureRequest()
         request.setFlags(request.flags() ^ QgsFeatureRequest.SubsetOfAttributes)
-        features = QgsProcessingUtils.getFeatures(endPoints, context, request)
-        count = QgsProcessingUtils.featureCount(endPoints, context)
+        features = source.getFeatures(request)
+        total = 100.0 / source.featureCount() if source.featureCount() else 0
 
         points = [startPoint]
-        for f in features:
+        for current, f in enumerate(features):
+            if feedback.isCanceled():
+                break
+
             points.append(f.geometry().asPoint())
+            feedback.setProgress(int(current * total))
 
         feedback.pushInfo(self.tr('Building graph...'))
         snappedPoints = director.makeGraph(builder, points)
@@ -231,7 +236,7 @@ class ShortestPathPointToLayer(QgisAlgorithm):
         tree, cost = QgsGraphAnalyzer.dijkstra(graph, idxStart, 0)
         route = []
 
-        total = 100.0 / count if count else 1
+        total = 100.0 / source.featureCount() if source.featureCount() else 1
         for i in range(1, count + 1):
             idxEnd = graph.findVertex(snappedPoints[i])
 
@@ -256,10 +261,10 @@ class ShortestPathPointToLayer(QgisAlgorithm):
             feat['start'] = startPoint.toString()
             feat['end'] = points[i].toString()
             feat['cost'] = cost / multiplier
-            writer.addFeature(feat, QgsFeatureSink.FastInsert)
+            sink.addFeature(feat, QgsFeatureSink.FastInsert)
 
             route[:] = []
 
             feedback.setProgress(int(i * total))
 
-        del writer
+        return {self.OUTPUT: dest_id}
