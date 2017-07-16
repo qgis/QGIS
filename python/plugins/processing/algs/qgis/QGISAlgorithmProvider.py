@@ -57,6 +57,7 @@ from .DensifyGeometriesInterval import DensifyGeometriesInterval
 from .Difference import Difference
 from .DropGeometry import DropGeometry
 from .ExtentFromLayer import ExtentFromLayer
+from .ExtractNodes import ExtractNodes
 from .FixGeometry import FixGeometry
 from .GridPolygon import GridPolygon
 from .Heatmap import Heatmap
@@ -97,7 +98,6 @@ from .ZonalStatistics import ZonalStatistics
 # from .ExtractByLocation import ExtractByLocation
 # from .ExportGeometryInfo import ExportGeometryInfo
 # from .SinglePartsToMultiparts import SinglePartsToMultiparts
-# from .ExtractNodes import ExtractNodes
 # from .ConvexHull import ConvexHull
 # from .FixedDistanceBuffer import FixedDistanceBuffer
 # from .VariableDistanceBuffer import VariableDistanceBuffer
@@ -187,7 +187,6 @@ class QGISAlgorithmProvider(QgsProcessingProvider):
         #
         #         ExportGeometryInfo(),
         #         SinglePartsToMultiparts(),
-        #         ExtractNodes(),
         #         ConvexHull(), FixedDistanceBuffer(),
         #         VariableDistanceBuffer(),
         #         RandomSelection(), RandomSelectionWithinSubsets(),
@@ -251,6 +250,7 @@ class QGISAlgorithmProvider(QgsProcessingProvider):
                 Difference(),
                 DropGeometry(),
                 ExtentFromLayer(),
+                ExtractNodes(),
                 FixGeometry(),
                 GridPolygon(),
                 Heatmap(),
