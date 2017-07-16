@@ -57,6 +57,7 @@ from .DensifyGeometriesInterval import DensifyGeometriesInterval
 from .Difference import Difference
 from .DropGeometry import DropGeometry
 from .ExtentFromLayer import ExtentFromLayer
+from .ExtractNodes import ExtractNodes
 from .FixGeometry import FixGeometry
 from .GridPolygon import GridPolygon
 from .Heatmap import Heatmap
@@ -66,8 +67,10 @@ from .ImportIntoSpatialite import ImportIntoSpatialite
 from .Intersection import Intersection
 from .LinesIntersection import LinesIntersection
 from .LinesToPolygons import LinesToPolygons
+from .MeanCoords import MeanCoords
 from .Merge import Merge
 from .NearestNeighbourAnalysis import NearestNeighbourAnalysis
+from .PointDistance import PointDistance
 from .PointsInPolygon import PointsInPolygon
 from .PointsLayerFromTable import PointsLayerFromTable
 from .PolygonsToLines import PolygonsToLines
@@ -87,17 +90,14 @@ from .SpatialiteExecuteSQL import SpatialiteExecuteSQL
 from .SumLines import SumLines
 from .SymmetricalDifference import SymmetricalDifference
 from .Union import Union
+from .UniqueValues import UniqueValues
 from .VectorSplit import VectorSplit
 from .VoronoiPolygons import VoronoiPolygons
 from .ZonalStatistics import ZonalStatistics
 
 # from .ExtractByLocation import ExtractByLocation
-# from .MeanCoords import MeanCoords
-# from .PointDistance import PointDistance
-# from .UniqueValues import UniqueValues
 # from .ExportGeometryInfo import ExportGeometryInfo
 # from .SinglePartsToMultiparts import SinglePartsToMultiparts
-# from .ExtractNodes import ExtractNodes
 # from .ConvexHull import ConvexHull
 # from .FixedDistanceBuffer import FixedDistanceBuffer
 # from .VariableDistanceBuffer import VariableDistanceBuffer
@@ -183,11 +183,10 @@ class QGISAlgorithmProvider(QgsProcessingProvider):
         self.externalAlgs = []
 
     def getAlgs(self):
-        # algs = [MeanCoords(),
-        #         UniqueValues(), PointDistance(),
+        # algs = [
+        #
         #         ExportGeometryInfo(),
         #         SinglePartsToMultiparts(),
-        #         ExtractNodes(),
         #         ConvexHull(), FixedDistanceBuffer(),
         #         VariableDistanceBuffer(),
         #         RandomSelection(), RandomSelectionWithinSubsets(),
@@ -251,6 +250,7 @@ class QGISAlgorithmProvider(QgsProcessingProvider):
                 Difference(),
                 DropGeometry(),
                 ExtentFromLayer(),
+                ExtractNodes(),
                 FixGeometry(),
                 GridPolygon(),
                 Heatmap(),
@@ -260,8 +260,10 @@ class QGISAlgorithmProvider(QgsProcessingProvider):
                 Intersection(),
                 LinesIntersection(),
                 LinesToPolygons(),
+                MeanCoords(),
                 Merge(),
                 NearestNeighbourAnalysis(),
+                PointDistance(),
                 PointsInPolygon(),
                 PointsLayerFromTable(),
                 PolygonsToLines(),
@@ -281,6 +283,7 @@ class QGISAlgorithmProvider(QgsProcessingProvider):
                 SumLines(),
                 SymmetricalDifference(),
                 Union(),
+                UniqueValues(),
                 VectorSplit(),
                 VoronoiPolygons(),
                 ZonalStatistics()
