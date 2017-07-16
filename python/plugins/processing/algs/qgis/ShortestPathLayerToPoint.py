@@ -237,6 +237,9 @@ class ShortestPathLayerToPoint(QgisAlgorithm):
 
         total = 100.0 / source.featureCount() if source.featureCount() else 1
         for i in range(1, count + 1):
+            if feedback.isCanceled():
+                break
+
             idxStart = graph.findVertex(snappedPoints[i])
             tree, cost = QgsGraphAnalyzer.dijkstra(graph, idxStart, 0)
 

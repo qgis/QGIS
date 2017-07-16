@@ -238,6 +238,9 @@ class ShortestPathPointToLayer(QgisAlgorithm):
 
         total = 100.0 / source.featureCount() if source.featureCount() else 1
         for i in range(1, count + 1):
+            if feedback.isCanceled():
+                break
+
             idxEnd = graph.findVertex(snappedPoints[i])
 
             if tree[idxEnd] == -1:
