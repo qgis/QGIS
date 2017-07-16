@@ -149,10 +149,12 @@ class ServiceAreaFromPoint(QgisAlgorithm):
 
         self.addParameter(QgsProcessingParameterFeatureSink(self.OUTPUT_POINTS,
                                                             self.tr('Service area (boundary nodes)'),
-                                                            QgsProcessing.TypeVectorPoint))
+                                                            QgsProcessing.TypeVectorPoint,
+                                                            optional=True))
         self.addParameter(QgsProcessingParameterFeatureSink(self.OUTPUT_POLYGON,
                                                             self.tr('Service area (convex hull)'),
-                                                            QgsProcessing.TypeVectorPolygon))
+                                                            QgsProcessing.TypeVectorPolygon,
+                                                            optional=True))
 
     def name(self):
         return 'serviceareafrompoint'
@@ -238,37 +240,40 @@ class ServiceAreaFromPoint(QgisAlgorithm):
         (sinkPoints, pointsId) = self.parameterAsSink(parameters, self.OUTPUT_POINTS, context,
                                                       fields, QgsWkbTypes.MultiPoint, layer.crs())
 
-        feat.setGeometry(geomUpper)
-        feat['type'] = 'upper'
-        feat['start'] = startPoint.toString()
-        sinkPoints.addFeature(feat, QgsFeatureSink.FastInsert)
-
-        feat.setGeometry(geomLower)
-        feat['type'] = 'lower'
-        feat['start'] = startPoint.toString()
-        sinkPoints.addFeature(feat, QgsFeatureSink.FastInsert)
-
-        upperBoundary.append(startPoint)
-        lowerBoundary.append(startPoint)
-        geomUpper = QgsGeometry.fromMultiPoint(upperBoundary)
-        geomLower = QgsGeometry.fromMultiPoint(lowerBoundary)
-
-        (sinkPoygon, polygonId) = self.parameterAsSink(parameters, self.OUTPUT_POLYGON, context,
-                                                       fields, QgsWkbTypes.Polygon, layer.crs())
-        geom = geomUpper.convexHull()
-        feat.setGeometry(geom)
-        feat['type'] = 'upper'
-        feat['start'] = startPoint.toString()
-        sinkPoygon.addFeature(feat, QgsFeatureSink.FastInsert)
-
-        geom = geomLower.convexHull()
-        feat.setGeometry(geom)
-        feat['type'] = 'lower'
-        feat['start'] = startPoint.toString()
-        sinkPoygon.addFeature(feat, QgsFeatureSink.FastInsert)
-
+        (sinkPolygon, polygonId) = self.parameterAsSink(parameters, self.OUTPUT_POLYGON, context,
+                                                        fields, QgsWkbTypes.Polygon, layer.crs())
         results = {}
-        results[self.OUTPUT_POINTS] = pointsId
-        results[self.OUTPUT_POLYGON] = polygonId
+        if sinkPoints:
+            feat.setGeometry(geomUpper)
+            feat['type'] = 'upper'
+            feat['start'] = startPoint.toString()
+            sinkPoints.addFeature(feat, QgsFeatureSink.FastInsert)
+
+            feat.setGeometry(geomLower)
+            feat['type'] = 'lower'
+            feat['start'] = startPoint.toString()
+            sinkPoints.addFeature(feat, QgsFeatureSink.FastInsert)
+
+            upperBoundary.append(startPoint)
+            lowerBoundary.append(startPoint)
+            geomUpper = QgsGeometry.fromMultiPoint(upperBoundary)
+            geomLower = QgsGeometry.fromMultiPoint(lowerBoundary)
+
+            results[self.OUTPUT_POINTS] = pointsId
+
+        if sinkPolygon:
+            geom = geomUpper.convexHull()
+            feat.setGeometry(geom)
+            feat['type'] = 'upper'
+            feat['start'] = startPoint.toString()
+            sinkPolygon.addFeature(feat, QgsFeatureSink.FastInsert)
+
+            geom = geomLower.convexHull()
+            feat.setGeometry(geom)
+            feat['type'] = 'lower'
+            feat['start'] = startPoint.toString()
+            sinkPolygon.addFeature(feat, QgsFeatureSink.FastInsert)
+
+            results[self.OUTPUT_POLYGON] = polygonId
 
         return results
