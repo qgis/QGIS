@@ -70,7 +70,7 @@ class ANALYSIS_EXPORT QgsGraphDirector : public QObject
     virtual void makeGraph( QgsGraphBuilderInterface *builder,
                             const QVector< QgsPointXY > &additionalPoints,
                             QVector< QgsPointXY > &snappedPoints SIP_OUT,
-                            QgsFeedback *feedback ) const
+                            QgsFeedback *feedback = nullptr ) const
     {
       Q_UNUSED( builder );
       Q_UNUSED( additionalPoints );
