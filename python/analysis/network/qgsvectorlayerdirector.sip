@@ -29,7 +29,7 @@ class QgsVectorLayerDirector : QgsGraphDirector
       DirectionBoth,
     };
 
-    QgsVectorLayerDirector( QgsVectorLayer *myLayer,
+    QgsVectorLayerDirector( QgsFeatureSource *source,
                             int directionFieldId,
                             const QString &directDirectionValue,
                             const QString &reverseDirectionValue,
@@ -38,7 +38,7 @@ class QgsVectorLayerDirector : QgsGraphDirector
                           );
 %Docstring
  Default constructor
- \param myLayer source vector layer
+ \param source feature source representing network
  \param directionFieldId field containing direction value
  \param directDirectionValue value for direct one-way road
  \param reverseDirectionValue value for reversed one-way road

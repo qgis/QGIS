@@ -361,8 +361,6 @@ Data Providers        {#qgis_api_break_3_0_DataProviders}
       - mAttrPalIndexName: overwrite palAttributeIndexNames()
 
 
-
-
 Qgis        {#qgis_api_break_3_0_Qgis}
 ----
 
@@ -1116,7 +1114,7 @@ version instead.
 - QgsExpression::Node::referencedColumns() returns QSet<QString> instead of QStringList
 - `QgsExpression::Node` was renamed to `QgsExpressionNode`
 - `QgsExpression::Function` was renamed to `QgsExpressionFunction`
-- variableHelpText() no longer returns a formatted HTML string. It now just returns the plain text help string. Use formatVariableHelp() 
+- variableHelpText() no longer returns a formatted HTML string. It now just returns the plain text help string. Use formatVariableHelp()
 to obtain the formatted version.
 
 
@@ -2511,6 +2509,11 @@ QgsRendererAbstractMetadata   {#qgis_api_break_3_0_QgsRendererAbstractMetadata}
 ---------------------------
 
 - createRenderer() now expects a reference to QgsReadWriteContext as the second argument
+
+QgsVectorLayerDirector   {#qgis_api_break_3_0_QgsVectorLayerDirector}
+----------------------
+
+- QgsVectorLayerDirector() constructor now expects a reference to QgsFeatureSource as the first argument
 
 
 Processing        {#qgis_api_break_3_0_Processing}
