@@ -1636,6 +1636,21 @@ class QgsProcessingDestinationParameter : QgsProcessingParameterDefinition
  :rtype: str
 %End
 
+    bool createByDefault() const;
+%Docstring
+ Returns true if the destination should be created by default. For optional parameters,
+ a return value of false indicates that the destination should not be created by default.
+.. seealso:: setCreateByDefault()
+ :rtype: bool
+%End
+
+    void setCreateByDefault( bool createByDefault );
+%Docstring
+ Sets whether the destination should be created by default. For optional parameters,
+ a value of false indicates that the destination should not be created by default.
+.. seealso:: createByDefault()
+%End
+
 };
 
 

@@ -296,7 +296,7 @@ class CORE_EXPORT QgsProcessingModelAlgorithm : public QgsProcessingAlgorithm
      * sources to those with compatible data types for the parameter/outputs.
      */
     QList< QgsProcessingModelChildParameterSource > availableSourcesForChild( const QString &childId, const QStringList &parameterTypes = QStringList(),
-        const QStringList &outputTypes = QStringList(), const QList< int > dataTypes = QList< int >() ) const;
+        const QStringList &outputTypes = QStringList(), const QList< int > &dataTypes = QList< int >() ) const;
 
     /**
      * Definition of a expression context variable available during model execution.

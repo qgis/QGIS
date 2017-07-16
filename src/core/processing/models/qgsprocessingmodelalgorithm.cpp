@@ -566,7 +566,7 @@ QgsExpressionContextScope *QgsProcessingModelAlgorithm::createExpressionContextS
   return scope.release();
 }
 
-QgsProcessingModelChildParameterSources QgsProcessingModelAlgorithm::availableSourcesForChild( const QString &childId, const QStringList &parameterTypes, const QStringList &outputTypes, const QList<int> dataTypes ) const
+QgsProcessingModelChildParameterSources QgsProcessingModelAlgorithm::availableSourcesForChild( const QString &childId, const QStringList &parameterTypes, const QStringList &outputTypes, const QList<int> &dataTypes ) const
 {
   QgsProcessingModelChildParameterSources sources;
 

@@ -72,7 +72,7 @@ class DestinationSelectionPanel(BASE, WIDGET):
         self.use_temporary = True
 
         if hasattr(self.leText, 'setPlaceholderText'):
-            if parameter.flags() & QgsProcessingParameterDefinition.FlagOptional and parameter.defaultValue() is None:
+            if parameter.flags() & QgsProcessingParameterDefinition.FlagOptional and not parameter.createByDefault():
                 self.leText.setPlaceholderText(self.SKIP_OUTPUT)
                 self.use_temporary = False
             elif isinstance(self.parameter, QgsProcessingParameterFeatureSink) \
