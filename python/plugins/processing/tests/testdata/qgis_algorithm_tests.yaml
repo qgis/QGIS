@@ -1258,17 +1258,17 @@ tests:
 #      #TRIANULATION_FILE:
 #      #  name: expected/triangulation.gml
 #      #  type: vector
-#
-#  - algorithm: qgis:removenullgeometries
-#    name: Remove null geometries
-#    params:
-#      INPUT_LAYER:
-#        name: polys.gml
-#        type: vector
-#    results:
-#      OUTPUT_LAYER:
-#        name: expected/remove_null_polys.gml
-#        type: vector
+
+  - algorithm: native:removenullgeometries
+    name: Remove null geometries
+    params:
+      INPUT:
+        name: polys.gml
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/remove_null_polys.gml
+        type: vector
 #
   - algorithm: native:extractbyexpression
     name: Extract by Expression

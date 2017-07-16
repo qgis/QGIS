@@ -152,7 +152,6 @@ from .ZonalStatistics import ZonalStatistics
 # from .Relief import Relief
 # from .IdwInterpolation import IdwInterpolation
 # from .TinInterpolation import TinInterpolation
-# from .RemoveNullGeometry import RemoveNullGeometry
 # from .ExtendLines import ExtendLines
 # from .ExtractSpecificNodes import ExtractSpecificNodes
 # from .GeometryByExpression import GeometryByExpression
@@ -221,7 +220,6 @@ class QGISAlgorithmProvider(QgsProcessingProvider):
         #          Slope(), Ruggedness(), Hillshade(),
         #         Relief(),
         #         IdwInterpolation(), TinInterpolation(),
-        #         RemoveNullGeometry(),
         #         ExtendLines(), ExtractSpecificNodes(),
         #         GeometryByExpression(),
         #         PoleOfInaccessibility(),

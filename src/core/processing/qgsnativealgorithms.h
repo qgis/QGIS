@@ -278,6 +278,31 @@ class QgsMultipartToSinglepartAlgorithm : public QgsProcessingAlgorithm
 
 };
 
+
+/**
+ * Remove null geometry algorithm.
+ */
+class QgsRemoveNullGeometryAlgorithm : public QgsProcessingAlgorithm
+{
+
+  public:
+
+    QgsRemoveNullGeometryAlgorithm() = default;
+    void initAlgorithm( const QVariantMap &configuration = QVariantMap() ) override;
+    QString name() const override { return QStringLiteral( "removenullgeometries" ); }
+    QString displayName() const override { return QObject::tr( "Remove null geometries" ); }
+    virtual QStringList tags() const override { return QObject::tr( "remove,drop,delete,empty,geometry" ).split( ',' ); }
+    QString group() const override { return QObject::tr( "Vector selection tools" ); }
+    QString shortHelpString() const override;
+    QgsRemoveNullGeometryAlgorithm *createInstance() const override SIP_FACTORY;
+
+  protected:
+
+    virtual QVariantMap processAlgorithm( const QVariantMap &parameters,
+                                          QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
+
+};
+
 ///@endcond PRIVATE
 
 #endif // QGSNATIVEALGORITHMS_H

@@ -67,6 +67,7 @@ void QgsNativeAlgorithms::loadAlgorithms()
   addAlgorithm( new QgsMultipartToSinglepartAlgorithm() );
   addAlgorithm( new QgsSubdivideAlgorithm() );
   addAlgorithm( new QgsTransformAlgorithm() );
+  addAlgorithm( new QgsRemoveNullGeometryAlgorithm() );
 }
 
 void QgsCentroidAlgorithm::initAlgorithm( const QVariantMap & )
@@ -1092,5 +1093,79 @@ QVariantMap QgsExtractByAttributeAlgorithm::processAlgorithm( const QVariantMap 
     outputs.insert( QStringLiteral( "FAIL_OUTPUT" ), nonMatchingSinkId );
   return outputs;
 }
+
+
+void QgsRemoveNullGeometryAlgorithm::initAlgorithm( const QVariantMap & )
+{
+  addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "INPUT" ), QObject::tr( "Input layer" ) ) );
+
+  addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "OUTPUT" ), QObject::tr( "Non null geometries" ),
+                QgsProcessing::TypeVectorAny, QVariant(), true ) );
+  addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "NULL_OUTPUT" ),  QObject::tr( "Null geometries" ),
+                QgsProcessing::TypeVectorAny, QVariant(), true ) );
+}
+
+QString QgsRemoveNullGeometryAlgorithm::shortHelpString() const
+{
+  return QObject::tr( "This algorithm removes any features which do not have a geometry from a vector layer. "
+                      "All other features will be copied unchanged.\n\n"
+                      "Optionally, the features with null geometries can be saved to a separate output." );
+}
+
+QgsRemoveNullGeometryAlgorithm *QgsRemoveNullGeometryAlgorithm::createInstance() const
+{
+  return new QgsRemoveNullGeometryAlgorithm();
+}
+
+QVariantMap QgsRemoveNullGeometryAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
+{
+  std::unique_ptr< QgsFeatureSource > source( parameterAsSource( parameters, QStringLiteral( "INPUT" ), context ) );
+  if ( !source )
+    return QVariantMap();
+
+  QString nonNullSinkId;
+  std::unique_ptr< QgsFeatureSink > nonNullSink( parameterAsSink( parameters, QStringLiteral( "OUTPUT" ), context, nonNullSinkId, source->fields(),
+      source->wkbType(), source->sourceCrs() ) );
+
+  QString nullSinkId;
+  std::unique_ptr< QgsFeatureSink > nullSink( parameterAsSink( parameters, QStringLiteral( "NULL_OUTPUT" ), context, nullSinkId, source->fields() ) );
+
+  long count = source->featureCount();
+  if ( count <= 0 )
+    return QVariantMap();
+
+  double step = 100.0 / count;
+  int current = 0;
+
+  QgsFeature f;
+  QgsFeatureIterator it = source->getFeatures();
+  while ( it.nextFeature( f ) )
+  {
+    if ( feedback->isCanceled() )
+    {
+      break;
+    }
+
+    if ( f.hasGeometry() && nonNullSink )
+    {
+      nonNullSink->addFeature( f, QgsFeatureSink::FastInsert );
+    }
+    else if ( !f.hasGeometry() && nullSink )
+    {
+      nullSink->addFeature( f, QgsFeatureSink::FastInsert );
+    }
+
+    feedback->setProgress( current * step );
+    current++;
+  }
+
+  QVariantMap outputs;
+  if ( nonNullSink )
+    outputs.insert( QStringLiteral( "OUTPUT" ), nonNullSinkId );
+  if ( nullSink )
+    outputs.insert( QStringLiteral( "NULL_OUTPUT" ), nullSinkId );
+  return outputs;
+}
+
 
 ///@endcond
