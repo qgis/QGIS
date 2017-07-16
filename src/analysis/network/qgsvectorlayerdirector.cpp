@@ -27,7 +27,7 @@
 #include "qgspoint.h"
 #include "qgsgeometry.h"
 #include "qgsdistancearea.h"
-#include 'qgswkbtypes.h"
+#include "qgswkbtypes.h"
 
 #include <QString>
 #include <QtAlgorithms>
@@ -124,7 +124,7 @@ QString QgsVectorLayerDirector::name() const
 }
 
 void QgsVectorLayerDirector::makeGraph( QgsGraphBuilderInterface *builder, const QVector< QgsPointXY > &additionalPoints,
-                                        QVector< QgsPointXY > &snappedPoints ) const
+                                        QVector< QgsPointXY > &snappedPoints, QgsFeedback *feedback ) const
 {
   int featureCount = ( int ) mSource->featureCount() * 2;
   int step = 0;
@@ -158,6 +158,11 @@ void QgsVectorLayerDirector::makeGraph( QgsGraphBuilderInterface *builder, const
   QgsFeature feature;
   while ( fit.nextFeature( feature ) )
   {
+    if ( feedback && feedback->isCanceled() )
+    {
+      return;
+    }
+
     QgsMultiPolyline mpl;
     if ( QgsWkbTypes::flatType( feature.geometry().geometry()->wkbType() ) == QgsWkbTypes::MultiLineString )
       mpl = feature.geometry().asMultiPolyline();
@@ -207,7 +212,11 @@ void QgsVectorLayerDirector::makeGraph( QgsGraphBuilderInterface *builder, const
         isFirstPoint = false;
       }
     }
-    emit buildProgress( ++step, featureCount );
+    if ( feedback )
+    {
+      feedback->setProgress( 100.0 * static_cast< double >( ++step ) / featureCount );
+    }
+
   }
   // end: tie points to graph
 
@@ -274,6 +283,11 @@ void QgsVectorLayerDirector::makeGraph( QgsGraphBuilderInterface *builder, const
   fit = mSource->getFeatures( QgsFeatureRequest().setSubsetOfAttributes( la ) );
   while ( fit.nextFeature( feature ) )
   {
+    if ( feedback && feedback->isCanceled() )
+    {
+      return;
+    }
+
     Direction directionType = mDefaultDirection;
 
     // What direction have feature?
@@ -382,6 +396,10 @@ void QgsVectorLayerDirector::makeGraph( QgsGraphBuilderInterface *builder, const
         isFirstPoint = false;
       } // for (it = pl.begin(); it != pl.end(); ++it)
     }
-    emit buildProgress( ++step, featureCount );
+    if ( feedback )
+    {
+      feedback->setProgress( 100.0 * static_cast< double >( ++step ) / featureCount );
+    }
+
   } // while( mSource->nextFeature(feature) )
 } // makeGraph( QgsGraphBuilderInterface *builder, const QVector< QgsPointXY >& additionalPoints, QVector< QgsPointXY >& tiedPoint )

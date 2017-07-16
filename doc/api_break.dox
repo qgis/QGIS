@@ -2510,11 +2510,18 @@ QgsRendererAbstractMetadata   {#qgis_api_break_3_0_QgsRendererAbstractMetadata}
 
 - createRenderer() now expects a reference to QgsReadWriteContext as the second argument
 
+QgsGraphDirector   {#qgis_api_break_3_0_QgsGraphDirector}
+----------------
+
+- makeGraph() now uses QgsFeedback for progress reporting and cancelation
+- buildProgress() signal was removed
+- buildMessage() signal was removed
+
 QgsVectorLayerDirector   {#qgis_api_break_3_0_QgsVectorLayerDirector}
 ----------------------
 
 - QgsVectorLayerDirector() constructor now expects a reference to QgsFeatureSource as the first argument
-
+- makeGraph() now uses QgsFeedback for progress reporting and cancelation
 
 Processing        {#qgis_api_break_3_0_Processing}
 ----------

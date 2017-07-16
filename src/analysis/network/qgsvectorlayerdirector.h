@@ -74,7 +74,8 @@ class ANALYSIS_EXPORT QgsVectorLayerDirector : public QgsGraphDirector
      */
     void makeGraph( QgsGraphBuilderInterface *builder,
                     const QVector< QgsPointXY > &additionalPoints,
-                    QVector< QgsPointXY> &snappedPoints SIP_OUT ) const override;
+                    QVector< QgsPointXY> &snappedPoints SIP_OUT,
+                    QgsFeedback *feedback ) const override;
 
     QString name() const override;
 

@@ -31,29 +31,21 @@ class QgsGraphDirector : QObject
     else
       sipType = NULL;
 %End
-  signals:
-    void buildProgress( int, int ) const;
-%Docstring
-Emitted to report graph building progress
-%End
-    void buildMessage( const QString & ) const;
-%Docstring
-Emitted to report information about graph building
-%End
-
   public:
 
     virtual ~QgsGraphDirector();
 
     virtual void makeGraph( QgsGraphBuilderInterface *builder,
                             const QVector< QgsPointXY > &additionalPoints,
-                            QVector< QgsPointXY > &snappedPoints /Out/ ) const;
+                            QVector< QgsPointXY > &snappedPoints /Out/,
+                            QgsFeedback *feedback ) const;
 %Docstring
  Make a graph using QgsGraphBuilder
 
  \param builder the graph builder
  \param additionalPoints list of points that should be snapped to the graph
  \param snappedPoints list of snapped points
+ \param feedback feedback object for reporting progress
 .. note::
 
    if snappedPoints[i] == QgsPointXY(0.0,0.0) then snapping failed.
