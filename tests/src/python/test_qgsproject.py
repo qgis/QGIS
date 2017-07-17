@@ -28,7 +28,7 @@ from qgis.gui import (QgsLayerTreeMapCanvasBridge,
                       QgsMapCanvas)
 
 from qgis.PyQt.QtTest import QSignalSpy
-from qgis.PyQt.QtCore import QT_VERSION_STR, QTemporaryFile
+from qgis.PyQt.QtCore import QT_VERSION_STR, QTemporaryFile, QTemporaryDir
 import sip
 
 from qgis.testing import start_app, unittest
@@ -685,50 +685,48 @@ class TestQgsProject(unittest.TestCase):
         self.assertTrue(l1.isValid())
 
     def test_zip_new_project(self):
-        tmpFile = QTemporaryFile()
-        tmpFile.open()
-        tmpFile.close()
+        tmpDir = QTemporaryDir()
+        tmpFile = "{}/project.qgz".format(tmpDir.path())
 
         # zip with existing file
+        open(tmpFile, 'a').close()
+
         project = QgsProject()
-        self.assertTrue(project.zip(tmpFile.fileName()))
+        self.assertTrue(project.write(tmpFile))
 
         # zip with non existing file
-        os.remove(tmpFile.fileName())
+        os.remove(tmpFile)
 
         project = QgsProject()
-        self.assertTrue(project.zip(tmpFile.fileName()))
-        self.assertTrue(os.path.isfile(tmpFile.fileName()))
+        self.assertTrue(project.write(tmpFile))
+        self.assertTrue(os.path.isfile(tmpFile))
 
     def test_zip_invalid_path(self):
         project = QgsProject()
-        self.assertFalse(project.zip())
-        self.assertFalse(project.zip("/fake/test.zip"))
-        self.assertFalse(project.zip(""))
+        self.assertFalse(project.write())
+        self.assertFalse(project.write(""))
+        self.assertFalse(project.write("/fake/test.zip"))
 
     def test_zip_filename(self):
-        tmpFile = QTemporaryFile()
-        tmpFile.open()
-        tmpFile.close()
-        os.remove(tmpFile.fileName())
+        tmpDir = QTemporaryDir()
+        tmpFile = "{}/project.qgz".format(tmpDir.path())
 
         project = QgsProject()
-        self.assertFalse(project.zip())
+        self.assertFalse(project.write())
 
-        project.setZipFileName(tmpFile.fileName())
-        self.assertTrue(project.zip())
-        self.assertTrue(os.path.isfile(tmpFile.fileName()))
+        project.setFileName(tmpFile)
+        self.assertTrue(project.write())
+        self.assertTrue(os.path.isfile(tmpFile))
 
     def test_unzip_invalid_path(self):
         project = QgsProject()
-        self.assertFalse(project.unzip())
-        self.assertFalse(project.unzip(""))
-        self.assertFalse(project.unzip("/fake/test.zip"))
+        self.assertFalse(project.read())
+        self.assertFalse(project.read(""))
+        self.assertFalse(project.read("/fake/test.zip"))
 
     def test_zip_unzip(self):
-        tmpFile = QTemporaryFile()
-        tmpFile.open()
-        tmpFile.close()
+        tmpDir = QTemporaryDir()
+        tmpFile = "{}/project.qgz".format(tmpDir.path())
 
         project = QgsProject()
 
@@ -736,14 +734,14 @@ class TestQgsProject(unittest.TestCase):
         l1 = QgsVectorLayer(os.path.join(TEST_DATA_DIR, "lines.shp"), "lines", "ogr")
         project.addMapLayers([l0, l1])
 
-        self.assertTrue(project.zip(tmpFile.fileName()))
+        self.assertTrue(project.write(tmpFile))
 
         project2 = QgsProject()
-        self.assertFalse(project2.unzipped())
-        self.assertTrue(project2.zipFileName() == "")
-        self.assertTrue(project2.unzip(tmpFile.fileName()))
-        self.assertTrue(project2.unzipped())
-        self.assertTrue(project2.zipFileName() == tmpFile.fileName())
+        self.assertFalse(project2.isZipped())
+        self.assertTrue(project2.fileName() == "")
+        self.assertTrue(project2.read(tmpFile))
+        self.assertTrue(project2.isZipped())
+        self.assertTrue(project2.fileName() == tmpFile)
         layers = project2.mapLayers()
 
         self.assertEqual(len(layers.keys()), 2)
@@ -751,7 +749,7 @@ class TestQgsProject(unittest.TestCase):
         self.assertTrue(layers[l1.id()].isValid(), True)
 
         project2.clear()
-        self.assertFalse(project2.unzipped())
+        self.assertFalse(project2.isZipped())
 
 
 if __name__ == '__main__':
