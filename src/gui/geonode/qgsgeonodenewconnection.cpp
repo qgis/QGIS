@@ -16,18 +16,14 @@
  ***************************************************************************/
 
 #include <QMessageBox>
-#include <QInputDialog>
 #include <QUrl>
-#include <QNetworkReply>
-#include <QNetworkRequest>
 
 #include "qgsgeonodenewconnection.h"
 #include "qgsauthmanager.h"
-#include "qgscontexthelp.h"
 #include "qgsdatasourceuri.h"
 #include "qgsgeonodeconnection.h"
 #include "qgssettings.h"
-#include "qgsnetworkaccessmanager.h"
+#include "qgsgeonoderequest.h"
 
 QgsGeoNodeNewConnection::QgsGeoNodeNewConnection( QWidget *parent, const QString &connName, Qt::WindowFlags fl )
   : QDialog( parent, fl )
@@ -248,13 +244,12 @@ void QgsGeoNodeNewConnection::okButtonBehavior( const QString &text )
 void QgsGeoNodeNewConnection::testConnection()
 {
   QApplication::setOverrideCursor( Qt::BusyCursor );
-  QString endpoint( "/api/layers/" );
-  QNetworkReply *layersReply = request( endpoint );
-  endpoint = "/api/maps";
-  QNetworkReply *mapsReply = request( endpoint );
+  QString url = txtUrl->text();
+  QgsGeoNodeRequest geonodeRequest( url, true );
+  bool success = geonodeRequest.getLayers();
   QApplication::restoreOverrideCursor();
 
-  if ( layersReply->error() == QNetworkReply::NoError && mapsReply->error() == QNetworkReply::NoError )
+  if ( success )
   {
     QMessageBox::information( this,
                               tr( "Test connection" ),
@@ -266,28 +261,4 @@ void QgsGeoNodeNewConnection::testConnection()
                               tr( "Test connection" ),
                               tr( "\nConnection failed, \n\nplease check whether %1 is a valid geonode instance.\n\n" ).arg( txtUrl->text() ) );
   }
-}
-
-QNetworkReply *QgsGeoNodeNewConnection::request( QString &endPoint )
-{
-  QString url = txtUrl->text() + endPoint;
-  if ( !url.contains( QLatin1String( "://" ) ) )
-  {
-    url.prepend( "http://" );
-  }
-
-  QUrl layerUrl( url );
-  layerUrl.setScheme( "http" );
-  QgsNetworkAccessManager *networkManager = QgsNetworkAccessManager::instance();
-
-  QNetworkRequest request( layerUrl );
-  request.setHeader( QNetworkRequest::ContentTypeHeader, "application/json" );
-
-  QNetworkReply *reply = networkManager->get( request );
-  while ( !reply->isFinished() )
-  {
-    qApp->processEvents();
-  }
-
-  return reply;
 }

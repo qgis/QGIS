@@ -42,6 +42,8 @@ class CORE_EXPORT QgsGeoNodeRequest : public QObject
     QgsGeoNodeRequest( const QString &baseUrl, /*const QgsWmsAuthorization &auth,*/ bool forceRefresh, QObject *parent = nullptr );
     virtual ~QgsGeoNodeRequest();
 
+    bool request( QString endPoint );
+
     bool getLayers();
 
     QList<LayerStruct> parseLayers( QByteArray layerResponse );
@@ -92,8 +94,6 @@ class CORE_EXPORT QgsGeoNodeRequest : public QObject
 
     bool mIsAborted;
     bool mForceRefresh;
-
-//  QList<LayerStruct> mLayers;
 
 };
 

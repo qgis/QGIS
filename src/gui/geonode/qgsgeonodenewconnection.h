@@ -19,13 +19,9 @@
 #define QGSGEONODENEWCONNECTION_H
 
 #include "ui_qgsnewgeonodeconnectionbase.h"
-#include "qgsgui.h"
 #include "qgsguiutils.h"
 #include "qgis_gui.h"
-#include "qgshelp.h"
 #include "qgsauthconfigselect.h"
-
-#include <QNetworkReply>
 
 class GUI_EXPORT QgsGeoNodeNewConnection : public QDialog, private Ui::QgsNewGeoNodeConnectionBase
 {
@@ -34,8 +30,6 @@ class GUI_EXPORT QgsGeoNodeNewConnection : public QDialog, private Ui::QgsNewGeo
   public:
     //! Constructor
     QgsGeoNodeNewConnection( QWidget *parent = nullptr, const QString &connName = QString::null, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags );
-
-    QNetworkReply *request( QString &endPoint );
 
   public slots:
     void accept() override;

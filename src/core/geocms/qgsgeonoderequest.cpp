@@ -61,34 +61,7 @@ void QgsGeoNodeRequest::abort()
 
 bool QgsGeoNodeRequest::getLayers()
 {
-  abort();
-  mIsAborted = false;
-  QgsMessageLog::logMessage( mBaseUrl, tr( "GeoNode" ) );
-  QString url = mBaseUrl + QStringLiteral( "/api/layers/" );
-  QgsMessageLog::logMessage( url, tr( "GeoNode" ) );
-  QString protocol = url.split( "://" )[0];
-  QUrl layerUrl( url );
-  layerUrl.setScheme( protocol );
-
-  mError.clear();
-
-  QNetworkRequest request( url );
-  // Add authentication check here
-
-  request.setAttribute( QNetworkRequest::CacheLoadControlAttribute, mForceRefresh ? QNetworkRequest::AlwaysNetwork : QNetworkRequest::PreferCache );
-  request.setAttribute( QNetworkRequest::CacheSaveControlAttribute, true );
-
-  mGeoNodeReply = QgsNetworkAccessManager::instance()->get( request );
-
-  connect( mGeoNodeReply, &QNetworkReply::finished, this, &QgsGeoNodeRequest::replyFinished, Qt::DirectConnection );
-  connect( mGeoNodeReply, &QNetworkReply::downloadProgress, this, &QgsGeoNodeRequest::replyProgress, Qt::DirectConnection );
-
-  QEventLoop loop;
-  connect( this, &QgsGeoNodeRequest::requestFinished, &loop, &QEventLoop::quit );
-
-  loop.exec( QEventLoop::ExcludeUserInputEvents );
-
-  return mError.isEmpty();
+  return request( QStringLiteral( "/api/layers/" ) );
 }
 
 void QgsGeoNodeRequest::replyProgress( qint64 bytesReceived, qint64 bytesTotal )
@@ -402,4 +375,37 @@ QgsStringMap QgsGeoNodeRequest::serviceUrlData( QString serviceType )
   }
 
   return urls;
+}
+
+
+bool QgsGeoNodeRequest::request( QString endPoint )
+{
+  abort();
+  mIsAborted = false;
+  QgsMessageLog::logMessage( mBaseUrl, tr( "GeoNode" ) );
+  QString url = mBaseUrl + endPoint;
+  QgsMessageLog::logMessage( url, tr( "GeoNode" ) );
+  QString protocol = url.split( "://" )[0];
+  QUrl layerUrl( url );
+  layerUrl.setScheme( protocol );
+
+  mError.clear();
+
+  QNetworkRequest request( url );
+  // Add authentication check here
+
+  request.setAttribute( QNetworkRequest::CacheLoadControlAttribute, mForceRefresh ? QNetworkRequest::AlwaysNetwork : QNetworkRequest::PreferCache );
+  request.setAttribute( QNetworkRequest::CacheSaveControlAttribute, true );
+
+  mGeoNodeReply = QgsNetworkAccessManager::instance()->get( request );
+
+  connect( mGeoNodeReply, &QNetworkReply::finished, this, &QgsGeoNodeRequest::replyFinished, Qt::DirectConnection );
+  connect( mGeoNodeReply, &QNetworkReply::downloadProgress, this, &QgsGeoNodeRequest::replyProgress, Qt::DirectConnection );
+
+  QEventLoop loop;
+  connect( this, &QgsGeoNodeRequest::requestFinished, &loop, &QEventLoop::quit );
+
+  loop.exec( QEventLoop::ExcludeUserInputEvents );
+
+  return mError.isEmpty();
 }

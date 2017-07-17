@@ -31,7 +31,6 @@
 #include <QListWidgetItem>
 #include <QMessageBox>
 #include <QFileDialog>
-#include <QPainter>
 
 enum
 {
