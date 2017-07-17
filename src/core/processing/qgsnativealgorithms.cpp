@@ -153,13 +153,11 @@ QVariantMap QgsBufferAlgorithm::processAlgorithm( const QVariantMap &parameters,
   const QgsProcessingParameterDefinition *distanceParamDef = parameterDefinition( QStringLiteral( "DISTANCE" ) );
 
   long count = source->featureCount();
-  if ( count <= 0 )
-    return QVariantMap();
 
   QgsFeature f;
   QgsFeatureIterator it = source->getFeatures();
 
-  double step = 100.0 / count;
+  double step = count > 0 ? 100.0 / count : 1;
   int current = 0;
 
   QList< QgsGeometry > bufferedGeometriesForDissolve;
@@ -254,13 +252,11 @@ QVariantMap QgsDissolveAlgorithm::processAlgorithm( const QVariantMap &parameter
   QStringList fields = parameterAsFields( parameters, QStringLiteral( "FIELD" ), context );
 
   long count = source->featureCount();
-  if ( count <= 0 )
-    return QVariantMap();
 
   QgsFeature f;
   QgsFeatureIterator it = source->getFeatures();
 
-  double step = 100.0 / count;
+  double step = count > 0 ? 100.0 / count : 1;
   int current = 0;
 
   if ( fields.isEmpty() )
@@ -421,8 +417,11 @@ QVariantMap QgsClipAlgorithm::processAlgorithm( const QVariantMap &parameters, Q
       clipGeoms << f.geometry();
   }
 
+  QVariantMap outputs;
+  outputs.insert( QStringLiteral( "OUTPUT" ), dest );
+
   if ( clipGeoms.isEmpty() )
-    return QVariantMap();
+    return outputs;
 
   // are we clipping against a single feature? if so, we can show finer progress reports
   bool singleClipFeature = false;
@@ -522,8 +521,6 @@ QVariantMap QgsClipAlgorithm::processAlgorithm( const QVariantMap &parameters, Q
     }
   }
 
-  QVariantMap outputs;
-  outputs.insert( QStringLiteral( "OUTPUT" ), dest );
   return outputs;
 }
 
@@ -655,13 +652,11 @@ QVariantMap QgsMultipartToSinglepartAlgorithm::processAlgorithm( const QVariantM
     return QVariantMap();
 
   long count = source->featureCount();
-  if ( count <= 0 )
-    return QVariantMap();
 
   QgsFeature f;
   QgsFeatureIterator it = source->getFeatures();
 
-  double step = 100.0 / count;
+  double step = count > 0 ? 100.0 / count : 1;
   int current = 0;
   while ( it.nextFeature( f ) )
   {
@@ -754,10 +749,8 @@ QVariantMap QgsExtractByExpressionAlgorithm::processAlgorithm( const QVariantMap
   QgsExpressionContext expressionContext = createExpressionContext( parameters, context );
 
   long count = source->featureCount();
-  if ( count <= 0 )
-    return QVariantMap();
 
-  double step = 100.0 / count;
+  double step = count > 0 ? 100.0 / count : 1;
   int current = 0;
 
   if ( !nonMatchingSink )
@@ -953,10 +946,8 @@ QVariantMap QgsExtractByAttributeAlgorithm::processAlgorithm( const QVariantMap 
   QgsExpressionContext expressionContext = createExpressionContext( parameters, context );
 
   long count = source->featureCount();
-  if ( count <= 0 )
-    return QVariantMap();
 
-  double step = 100.0 / count;
+  double step = count > 0 ? 100.0 / count : 1;
   int current = 0;
 
   if ( !nonMatchingSink )
@@ -1058,10 +1049,8 @@ QVariantMap QgsRemoveNullGeometryAlgorithm::processAlgorithm( const QVariantMap 
   std::unique_ptr< QgsFeatureSink > nullSink( parameterAsSink( parameters, QStringLiteral( "NULL_OUTPUT" ), context, nullSinkId, source->fields() ) );
 
   long count = source->featureCount();
-  if ( count <= 0 )
-    return QVariantMap();
 
-  double step = 100.0 / count;
+  double step = count > 0 ? 100.0 / count : 1;
   int current = 0;
 
   QgsFeature f;

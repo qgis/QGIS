@@ -642,13 +642,11 @@ QVariantMap QgsProcessingFeatureBasedAlgorithm::processAlgorithm( const QVariant
     return QVariantMap();
 
   long count = mSource->featureCount();
-  if ( count <= 0 )
-    return QVariantMap();
 
   QgsFeature f;
   QgsFeatureIterator it = mSource->getFeatures();
 
-  double step = 100.0 / count;
+  double step = count > 0 ? 100.0 / count : 1;
   int current = 0;
   while ( it.nextFeature( f ) )
   {
