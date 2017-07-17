@@ -25,6 +25,11 @@
 
 #include <iostream>
 
+bool QgsZipUtils::isZipFile( const QString &filename )
+{
+  return QFileInfo( filename ).suffix().compare( QLatin1String( "qgz" ), Qt::CaseInsensitive ) == 0;
+}
+
 bool QgsZipUtils::unzip( const QString &zipFilename, const QString &dir, QStringList &files )
 {
   files.clear();

@@ -29,17 +29,13 @@ QgsArchive::QgsArchive()
 QgsArchive::QgsArchive( const QgsArchive &other )
   : mFiles( other.mFiles )
   ,  mDir( new QTemporaryDir() )
-  , mFilename( other.mFilename )
 {
 }
 
 QgsArchive &QgsArchive::operator=( const QgsArchive &other )
 {
   if ( this != &other )
-  {
-    mFilename = other.mFilename;
     mFiles = other.mFiles;
-  }
 
   return *this;
 }
@@ -52,16 +48,7 @@ QString QgsArchive::dir() const
 void QgsArchive::clear()
 {
   mDir.reset( new QTemporaryDir() );
-  mFilename.clear();
   mFiles.clear();
-}
-
-bool QgsArchive::zip()
-{
-  if ( mFilename.isEmpty() )
-    return false;
-  else
-    return zip( mFilename );
 }
 
 bool QgsArchive::zip( const QString &filename )
@@ -93,39 +80,19 @@ bool QgsArchive::zip( const QString &filename )
 
   // keep the zip filename
   tmpFile.setAutoRemove( false );
-  mFilename = filename;
 
   return true;
-}
-
-bool QgsArchive::unzip()
-{
-  if ( mFilename.isEmpty() )
-    return false;
-  else
-    return unzip( mFilename );
 }
 
 bool QgsArchive::unzip( const QString &filename )
 {
   clear();
-  mFilename = filename;
   return QgsZipUtils::unzip( filename, mDir->path(), mFiles );
 }
 
 void QgsArchive::addFile( const QString &file )
 {
   mFiles.append( file );
-}
-
-QString QgsArchive::filename() const
-{
-  return mFilename;
-}
-
-void QgsArchive::setFileName( const QString &filename )
-{
-  mFilename = filename;
 }
 
 QStringList QgsArchive::files() const

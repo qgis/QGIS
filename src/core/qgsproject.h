@@ -577,52 +577,9 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     QMap<QString, QgsMapLayer *> mapLayers() const;
 
     /**
-     * Unzip a project
-     * \param filename The zip file to unzip
-     * \returns true if unzip is well performed, false otherwise
-     * \since QGIS 3.0
-     */
-    bool unzip( const QString &filename );
-
-    /**
-     * Unzip a project with the current zip filename
-     * \returns true if unzip is well performed, false otherwise
-     * \since QGIS 3.0
-     */
-    bool unzip();
-
-    /**
-     * Zip the project
-     * \param filename The zip filename
-     * \returns true if zip is well performed, false otherwise
-     * \since QGIS 3.0
-     */
-    bool zip( const QString &filename );
-
-    /**
-     * Zip the project with the current zip filename
-     * \returns true if zip is well performed, false otherwise
-     * \since QGIS 3.0
-     */
-    bool zip();
-
-    /**
-     * Returns the current zip filename or an empty string if none.
-     * \since QGIS 3.0
-     */
-    QString zipFileName() const;
-
-    /**
-     * Sets the current zip filename.
-     * \param filename The zip filename
-     * \since QGIS 3.0
-     */
-    void setZipFileName( const QString &filename );
-
-    /**
      * Returns true if the project comes from a zip archive, false otherwise.
      */
-    bool unzipped() const;
+    bool isZipped() const;
 
 #ifndef SIP_RUN
 
@@ -1065,6 +1022,18 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     //! \note not available in Python bindings
     void loadEmbeddedNodes( QgsLayerTreeGroup *group ) SIP_SKIP;
 
+    //! Read .qgs file
+    bool readProjectFile( const QString &filename );
+
+    //! Write .qgs file
+    bool writeProjectFile( const QString &filename );
+
+    //! Unzip .qgz file then read embedded .qgs file
+    bool unzip( const QString &filename );
+
+    //! Zip project
+    bool zip( const QString &filename );
+
     std::unique_ptr< QgsMapLayerStore > mLayerStore;
 
     QString mErrorMessage;
@@ -1097,10 +1066,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
 
     QVariantMap mCustomVariables;
 
-    QString mPathResolverBaseName;
-
     std::unique_ptr<QgsProjectArchive> mArchive;
-    bool mUnzipping;
 
     QFile mFile;                 // current physical project file
     mutable QgsProjectPropertyKey mProperties;  // property hierarchy, TODO: this shouldn't be mutable

@@ -60,27 +60,12 @@ class CORE_EXPORT QgsArchive
     bool zip( const QString &zipFilename );
 
     /**
-     * Zip the content of this archive. THe current filename is used.
-     * \returns false if something goes wrong, true otherwise
-     */
-    bool zip();
-
-    /**
      * Clear the current content of this archive and unzip. Files are unzipped
      * in the temporary directory.
      * \param zipFilename The zip file to unzip
      * \returns true if unzip action is a success, false otherwise
      */
     virtual bool unzip( const QString &zipFilename );
-
-    /**
-     * Clear the current content of this archive and unzip. If a project file
-     * is found in the content, then this archive may be considered as a valid
-     * one. Files are unzipped in the temporary directory. The current filename
-     * is used.
-     * \returns true if a project file has been found, false otherwise
-     */
-    bool unzip();
 
     /**
      * Clear the current content of this archive and create a new temporary
@@ -94,17 +79,6 @@ class CORE_EXPORT QgsArchive
      * \param filename A file to add when zipping this archive
      */
     void addFile( const QString &filename );
-
-    /**
-     * Set the filename to use when zipping/unzipping this archive.
-     * \param filename The zip filename
-     */
-    void setFileName( const QString &filename );
-
-    /**
-     * Returns the current zip filename.
-     */
-    QString filename() const;
 
     /**
      * Returns the list of files within this archive
@@ -124,9 +98,6 @@ class CORE_EXPORT QgsArchive
 #ifndef SIP_RUN
     // used when unzip is performed
     std::unique_ptr<QTemporaryDir> mDir;
-
-    // zip filename
-    QString mFilename;
 #endif
 };
 
