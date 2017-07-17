@@ -21,8 +21,9 @@
 #include "ui_qgsmapsavedialog.h"
 
 #include "qgisapp.h"
-#include "qgsrectangle.h"
 #include "qgsmapcanvas.h"
+#include "qgsmapdecoration.h"
+#include "qgsrectangle.h"
 
 #include <QDialog>
 #include <QSize>
@@ -45,7 +46,10 @@ class APP_EXPORT QgsMapSaveDialog: public QDialog, private Ui::QgsMapSaveDialog
 
     /** Constructor for QgsMapSaveDialog
      */
-    QgsMapSaveDialog( QWidget *parent = nullptr, QgsMapCanvas *mapCanvas = nullptr, const QString &activeDecorations = QString(), DialogType type = Image );
+    QgsMapSaveDialog( QWidget *parent = nullptr, QgsMapCanvas *mapCanvas = nullptr,
+                      QList< QgsDecorationItem * > decorations = QList< QgsDecorationItem * >(),
+                      QList< QgsAnnotation *> annotations = QList< QgsAnnotation * >(),
+                      DialogType type = Image );
 
     //! returns extent rectangle
     QgsRectangle extent() const;
@@ -73,6 +77,8 @@ class APP_EXPORT QgsMapSaveDialog: public QDialog, private Ui::QgsMapSaveDialog
 
   private:
 
+    void accepted();
+
     void updateDpi( int dpi );
     void updateOutputWidth( int width );
     void updateOutputHeight( int height );
@@ -82,6 +88,9 @@ class APP_EXPORT QgsMapSaveDialog: public QDialog, private Ui::QgsMapSaveDialog
 
     DialogType mDialogType;
     QgsMapCanvas *mMapCanvas;
+    QList< QgsMapDecoration * > mDecorations;
+    QList< QgsAnnotation *> mAnnotations;
+
     QgsRectangle mExtent;
     int mDpi;
     QSize mSize;

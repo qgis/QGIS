@@ -31,7 +31,8 @@ class QgsMapRendererTask : QgsTask
 
     QgsMapRendererTask( const QgsMapSettings &ms,
                         const QString &fileName,
-                        const QString &fileFormat = QString( "PNG" ) );
+                        const QString &fileFormat = QString( "PNG" ),
+                        const bool forceRaster = false );
 %Docstring
  Constructor for QgsMapRendererTask to render a map to an image file.
 %End
