@@ -46,21 +46,21 @@ QVector<QgsDataItem *> QgsGeoCMSConnectionItem::createChildren()
   if ( !wmsUrl.isEmpty() )
   {
     QString path = mPath + "/wms";
-    QgsDataItem *service = new QgsGeoCMSServiceItem( this, mConnection, QString( "WMS" ), path );
+    QgsDataItem *service = new QgsGeoCMSServiceItem( this, mConnection, QStringLiteral( "WMS" ), path );
     services.append( service );
   }
 
   if ( !wfsUrl.isEmpty() )
   {
     QString path = mPath + "/wfs";
-    QgsDataItem *service = new QgsGeoCMSServiceItem( this, mConnection, QString( "WFS" ), path );
+    QgsDataItem *service = new QgsGeoCMSServiceItem( this, mConnection, QStringLiteral( "WFS" ), path );
     services.append( service );
   }
 
   if ( !xyzUrl.isEmpty() )
   {
     QString path = mPath + "/xyz";
-    QgsDataItem *service = new QgsGeoCMSServiceItem( this, mConnection, QString( "XYZ" ), path );
+    QgsDataItem *service = new QgsGeoCMSServiceItem( this, mConnection, QStringLiteral( "XYZ" ), path );
     services.append( service );
   }
 
@@ -94,7 +94,7 @@ QgsGeoCMSServiceItem::QgsGeoCMSServiceItem( QgsDataItem *parent, QgsGeoCmsConnec
   , mServiceName( serviceName )
   , mConnection( conn )
 {
-  if ( serviceName == "WMS" || serviceName == "XYZ" )
+  if ( serviceName == QStringLiteral( "WMS" ) || serviceName == QStringLiteral( "XYZ" ) )
   {
     mIconName = QStringLiteral( "mIconWms.svg" );
   }
