@@ -803,10 +803,10 @@ void QgsDualView::setFeatureSelectionManager( QgsIFeatureSelectionManager* featu
 
 void QgsDualView::setAttributeTableConfig( const QgsAttributeTableConfig& config )
 {
+  mConfig = config;
   mLayer->setAttributeTableConfig( config );
   mFilterModel->setAttributeTableConfig( config );
   mTableView->setAttributeTableConfig( config );
-  mConfig = config;
 }
 
 void QgsDualView::setSortExpression( const QString& sortExpression, Qt::SortOrder sortOrder )
