@@ -612,55 +612,7 @@ Returns the number of registered layers.
  :rtype: QMap<str, QgsMapLayer *>
 %End
 
-    bool unzip( const QString &filename );
-%Docstring
- Unzip a project
- \param filename The zip file to unzip
- :return: true if unzip is well performed, false otherwise
-.. versionadded:: 3.0
- :rtype: bool
-%End
-
-    bool unzip();
-%Docstring
- Unzip a project with the current zip filename
- :return: true if unzip is well performed, false otherwise
-.. versionadded:: 3.0
- :rtype: bool
-%End
-
-    bool zip( const QString &filename );
-%Docstring
- Zip the project
- \param filename The zip filename
- :return: true if zip is well performed, false otherwise
-.. versionadded:: 3.0
- :rtype: bool
-%End
-
-    bool zip();
-%Docstring
- Zip the project with the current zip filename
- :return: true if zip is well performed, false otherwise
-.. versionadded:: 3.0
- :rtype: bool
-%End
-
-    QString zipFileName() const;
-%Docstring
- Returns the current zip filename or an empty string if none.
-.. versionadded:: 3.0
- :rtype: str
-%End
-
-    void setZipFileName( const QString &filename );
-%Docstring
- Sets the current zip filename.
- \param filename The zip filename
-.. versionadded:: 3.0
-%End
-
-    bool unzipped() const;
+    bool isZipped() const;
 %Docstring
  Returns true if the project comes from a zip archive, false otherwise.
  :rtype: bool

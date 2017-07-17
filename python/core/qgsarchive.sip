@@ -45,29 +45,12 @@ class QgsArchive
  :rtype: bool
 %End
 
-    bool zip();
-%Docstring
- Zip the content of this archive. THe current filename is used.
- :return: false if something goes wrong, true otherwise
- :rtype: bool
-%End
-
     virtual bool unzip( const QString &zipFilename );
 %Docstring
  Clear the current content of this archive and unzip. Files are unzipped
  in the temporary directory.
  \param zipFilename The zip file to unzip
  :return: true if unzip action is a success, false otherwise
- :rtype: bool
-%End
-
-    bool unzip();
-%Docstring
- Clear the current content of this archive and unzip. If a project file
- is found in the content, then this archive may be considered as a valid
- one. Files are unzipped in the temporary directory. The current filename
- is used.
- :return: true if a project file has been found, false otherwise
  :rtype: bool
 %End
 
@@ -82,18 +65,6 @@ class QgsArchive
  Add a new file to this archive. During a zip action, this file will be
  part of the resulting zipped file.
  \param filename A file to add when zipping this archive
-%End
-
-    void setFileName( const QString &filename );
-%Docstring
- Set the filename to use when zipping/unzipping this archive.
- \param filename The zip filename
-%End
-
-    QString filename() const;
-%Docstring
- Returns the current zip filename.
- :rtype: str
 %End
 
     QStringList files() const;

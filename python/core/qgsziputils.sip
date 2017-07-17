@@ -15,6 +15,15 @@
 namespace QgsZipUtils
 {
 
+  bool isZipFile( const QString &filename );
+%Docstring
+ Returns true if the file name is a zipped file ( i.e with a '.qgz'
+  extension, false otherwise.
+ \param filename The name of the file
+ :return: true if the file is zipped, false otherwise
+ :rtype: bool
+%End
+
   bool unzip( const QString &zip, const QString &dir, QStringList &files /Out/ );
 %Docstring
  Unzip a zip file in an output directory. An error is returned if the zip
