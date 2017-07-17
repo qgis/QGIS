@@ -45,7 +45,7 @@ from qgis.core import (QgsWkbTypes,
                        QgsProcessingParameterNumber,
                        QgsProcessingParameterString,
                        QgsProcessingParameterFeatureSink,
-                       QgsProcessingParameterVectorLayer,
+                       QgsProcessingParameterFeatureSource,
                        QgsProcessingParameterDefinition)
 from qgis.analysis import (QgsVectorLayerDirector,
                            QgsNetworkDistanceStrategy,
@@ -96,9 +96,9 @@ class ServiceAreaFromPoint(QgisAlgorithm):
                            self.tr('Fastest')
                            ]
 
-        self.addParameter(QgsProcessingParameterVectorLayer(self.INPUT,
-                                                            self.tr('Vector layer representing network'),
-                                                            [QgsProcessing.TypeVectorLine]))
+        self.addParameter(QgsProcessingParameterFeatureSource(self.INPUT,
+                                                              self.tr('Vector layer representing network'),
+                                                              [QgsProcessing.TypeVectorLine]))
         self.addParameter(QgsProcessingParameterPoint(self.START_POINT,
                                                       self.tr('Start point')))
         self.addParameter(QgsProcessingParameterEnum(self.STRATEGY,
@@ -163,7 +163,7 @@ class ServiceAreaFromPoint(QgisAlgorithm):
         return self.tr('Service area (from point)')
 
     def processAlgorithm(self, parameters, context, feedback):
-        layer = self.parameterAsVectorLayer(parameters, self.INPUT, context)
+        network = self.parameterAsSource(parameters, self.INPUT, context)
         startPoint = self.parameterAsPoint(parameters, self.START_POINT, context)
         strategy = self.parameterAsEnum(parameters, self.STRATEGY, context)
         travelCost = self.parameterAsDouble(parameters, self.TRAVEL_COST, context)
@@ -179,12 +179,12 @@ class ServiceAreaFromPoint(QgisAlgorithm):
 
         directionField = -1
         if directionFieldName:
-            directionField = layer.fields().lookupField(directionFieldName)
+            directionField = network.fields().lookupField(directionFieldName)
         speedField = -1
         if speedFieldName:
-            speedField = layer.fields().lookupField(speedFieldName)
+            speedField = network.fields().lookupField(speedFieldName)
 
-        director = QgsVectorLayerDirector(layer,
+        director = QgsVectorLayerDirector(network,
                                           directionField,
                                           forwardValue,
                                           backwardValue,
@@ -205,7 +205,7 @@ class ServiceAreaFromPoint(QgisAlgorithm):
                                   True,
                                   tolerance)
         feedback.pushInfo(self.tr('Building graph...'))
-        snappedPoints = director.makeGraph(builder, [startPoint])
+        snappedPoints = director.makeGraph(builder, [startPoint], feedback)
 
         feedback.pushInfo(self.tr('Calculating service area...'))
         graph = builder.graph()
@@ -238,10 +238,10 @@ class ServiceAreaFromPoint(QgisAlgorithm):
         geomLower = QgsGeometry.fromMultiPoint(lowerBoundary)
 
         (sinkPoints, pointsId) = self.parameterAsSink(parameters, self.OUTPUT_POINTS, context,
-                                                      fields, QgsWkbTypes.MultiPoint, layer.crs())
+                                                      fields, QgsWkbTypes.MultiPoint, network.sourceCrs())
 
         (sinkPolygon, polygonId) = self.parameterAsSink(parameters, self.OUTPUT_POLYGON, context,
-                                                        fields, QgsWkbTypes.Polygon, layer.crs())
+                                                        fields, QgsWkbTypes.Polygon, network.sourceCrs())
         results = {}
         if sinkPoints:
             feat.setGeometry(geomUpper)

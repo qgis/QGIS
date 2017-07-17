@@ -47,7 +47,6 @@ from qgis.core import (QgsWkbTypes,
                        QgsProcessingParameterString,
                        QgsProcessingParameterFeatureSource,
                        QgsProcessingParameterFeatureSink,
-                       QgsProcessingParameterVectorLayer,
                        QgsProcessingParameterDefinition)
 from qgis.analysis import (QgsVectorLayerDirector,
                            QgsNetworkDistanceStrategy,
@@ -97,9 +96,9 @@ class ShortestPathLayerToPoint(QgisAlgorithm):
                            self.tr('Fastest')
                            ]
 
-        self.addParameter(QgsProcessingParameterVectorLayer(self.INPUT,
-                                                            self.tr('Vector layer representing network'),
-                                                            [QgsProcessing.TypeVectorLine]))
+        self.addParameter(QgsProcessingParameterFeatureSource(self.INPUT,
+                                                              self.tr('Vector layer representing network'),
+                                                              [QgsProcessing.TypeVectorLine]))
         self.addParameter(QgsProcessingParameterFeatureSource(self.START_POINTS,
                                                               self.tr('Vector layer with start points'),
                                                               [QgsProcessing.TypeVectorPoint]))
@@ -158,7 +157,7 @@ class ShortestPathLayerToPoint(QgisAlgorithm):
         return self.tr('Shortest path (layer to point)')
 
     def processAlgorithm(self, parameters, context, feedback):
-        layer = self.parameterAsVectorLayer(parameters, self.INPUT, context)
+        network = self.parameterAsSource(parameters, self.INPUT, context)
         startPoints = self.parameterAsSource(parameters, self.START_POINTS, context)
         endPoint = self.parameterAsPoint(parameters, self.END_POINT, context)
         strategy = self.parameterAsEnum(parameters, self.STRATEGY, context)
@@ -181,16 +180,16 @@ class ShortestPathLayerToPoint(QgisAlgorithm):
         feat.setFields(fields)
 
         (sink, dest_id) = self.parameterAsSink(parameters, self.OUTPUT, context,
-                                               fields, QgsWkbTypes.LineString, layer.crs())
+                                               fields, QgsWkbTypes.LineString, network.sourceCrs())
 
         directionField = -1
         if directionFieldName:
-            directionField = layer.fields().lookupField(directionFieldName)
+            directionField = network.fields().lookupField(directionFieldName)
         speedField = -1
         if speedFieldName:
-            speedField = layer.fields().lookupField(speedFieldName)
+            speedField = network.fields().lookupField(speedFieldName)
 
-        director = QgsVectorLayerDirector(layer,
+        director = QgsVectorLayerDirector(network,
                                           directionField,
                                           forwardValue,
                                           backwardValue,
@@ -215,9 +214,9 @@ class ShortestPathLayerToPoint(QgisAlgorithm):
         feedback.pushInfo(self.tr('Loading start points...'))
         request = QgsFeatureRequest()
         request.setFlags(request.flags() ^ QgsFeatureRequest.SubsetOfAttributes)
-        request.setDestinationCrs(layer.crs())
-        features = source.getFeatures(request)
-        total = 100.0 / source.featureCount() if source.featureCount() else 0
+        request.setDestinationCrs(network.sourceCrs())
+        features = startPoints.getFeatures(request)
+        total = 100.0 / startPoints.featureCount() if startPoints.featureCount() else 0
 
         points = [endPoint]
         for current, f in enumerate(features):
@@ -228,7 +227,7 @@ class ShortestPathLayerToPoint(QgisAlgorithm):
             feedback.setProgress(int(current * total))
 
         feedback.pushInfo(self.tr('Building graph...'))
-        snappedPoints = director.makeGraph(builder, points)
+        snappedPoints = director.makeGraph(builder, points, feedback)
 
         feedback.pushInfo(self.tr('Calculating shortest paths...'))
         graph = builder.graph()
@@ -236,7 +235,8 @@ class ShortestPathLayerToPoint(QgisAlgorithm):
         idxEnd = graph.findVertex(snappedPoints[0])
         route = []
 
-        total = 100.0 / source.featureCount() if source.featureCount() else 1
+        nPoints = len(snappedPoints)
+        total = 100.0 / nPoints if nPoints else 1
         for i in range(1, count + 1):
             if feedback.isCanceled():
                 break

@@ -46,7 +46,6 @@ from qgis.core import (QgsWkbTypes,
                        QgsProcessingParameterString,
                        QgsProcessingParameterFeatureSource,
                        QgsProcessingParameterFeatureSink,
-                       QgsProcessingParameterVectorLayer,
                        QgsProcessingParameterDefinition)
 from qgis.analysis import (QgsVectorLayerDirector,
                            QgsNetworkDistanceStrategy,
@@ -97,9 +96,9 @@ class ServiceAreaFromLayer(QgisAlgorithm):
                            self.tr('Fastest')
                            ]
 
-        self.addParameter(QgsProcessingParameterVectorLayer(self.INPUT,
-                                                            self.tr('Vector layer representing network'),
-                                                            [QgsProcessing.TypeVectorLine]))
+        self.addParameter(QgsProcessingParameterFeatureSource(self.INPUT,
+                                                              self.tr('Vector layer representing network'),
+                                                              [QgsProcessing.TypeVectorLine]))
         self.addParameter(QgsProcessingParameterFeatureSource(self.START_POINTS,
                                                               self.tr('Vector layer with start points'),
                                                               [QgsProcessing.TypeVectorPoint]))
@@ -165,7 +164,7 @@ class ServiceAreaFromLayer(QgisAlgorithm):
         return self.tr('Service area (from layer)')
 
     def processAlgorithm(self, parameters, context, feedback):
-        layer = self.parameterAsVectorLayer(parameters, self.INPUT, context)
+        network = self.parameterAsSource(parameters, self.INPUT, context)
         startPoints = self.parameterAsSource(parameters, self.START_POINTS, context)
         strategy = self.parameterAsEnum(parameters, self.STRATEGY, context)
         travelCost = self.parameterAsDouble(parameters, self.TRAVEL_COST, context)
@@ -188,12 +187,12 @@ class ServiceAreaFromLayer(QgisAlgorithm):
 
         directionField = -1
         if directionFieldName:
-            directionField = layer.fields().lookupField(directionFieldName)
+            directionField = network.fields().lookupField(directionFieldName)
         speedField = -1
         if speedFieldName:
-            speedField = layer.fields().lookupField(speedFieldName)
+            speedField = network.fields().lookupField(speedFieldName)
 
-        director = QgsVectorLayerDirector(layer,
+        director = QgsVectorLayerDirector(network,
                                           directionField,
                                           forwardValue,
                                           backwardValue,
@@ -217,9 +216,9 @@ class ServiceAreaFromLayer(QgisAlgorithm):
         feedback.pushInfo(self.tr('Loading start points...'))
         request = QgsFeatureRequest()
         request.setFlags(request.flags() ^ QgsFeatureRequest.SubsetOfAttributes)
-        request.setDestinationCrs(layer.crs())
-        features = source.getFeatures(request)
-        total = 100.0 / source.featureCount() if source.featureCount() else 0
+        request.setDestinationCrs(network.sourceCrs())
+        features = startPoints.getFeatures(request)
+        total = 100.0 / startPoints.featureCount() if startPoints.featureCount() else 0
 
         points = []
         for current, f in enumerate(features):
@@ -230,17 +229,17 @@ class ServiceAreaFromLayer(QgisAlgorithm):
             feedback.setProgress(int(current * total))
 
         feedback.pushInfo(self.tr('Building graph...'))
-        snappedPoints = director.makeGraph(builder, points)
+        snappedPoints = director.makeGraph(builder, points, feedback)
 
         feedback.pushInfo(self.tr('Calculating service areas...'))
         graph = builder.graph()
 
         results = {}
         (sinkPoints, pointsId) = self.parameterAsSink(parameters, self.OUTPUT_POINTS, context,
-                                                      fields, QgsWkbTypes.MultiPoint, layer.crs())
+                                                      fields, QgsWkbTypes.MultiPoint, network.sourceCrs())
 
         (sinkPolygon, polygonId) = self.parameterAsSink(parameters, self.OUTPUT_POLYGON, context,
-                                                        fields, QgsWkbTypes.Polygon, layer.crs())
+                                                        fields, QgsWkbTypes.Polygon, network.sourceCrs())
 
         if sinkPoints:
             results[self.OUTPUT_POINTS] = pointsId
