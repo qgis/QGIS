@@ -19,12 +19,7 @@
 #define SIP_NO_FILE
 
 #include "qgis_core.h"
-#include "qgsdatasourceuri.h"
-#include "qgsmaplayer.h"
-#include "qgsproject.h"
 #include "qgsgeocmsconnection.h"
-
-#include <QNetworkReply>
 
 
 /*!
