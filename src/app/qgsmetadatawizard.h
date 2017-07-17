@@ -32,6 +32,10 @@ class APP_EXPORT QgsMetadataWizard : public QDialog, private Ui::QgsMetadataWiza
 
     void addLink();
     void removeLink();
+    void fillComboBox();
+    void setPropertiesFromLayer();
+    void saveMetadata( QgsLayerMetadata &layerMetadata );
+    bool checkMetadata();
 
   private:
     void cancelClicked();

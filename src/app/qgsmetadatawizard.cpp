@@ -21,8 +21,11 @@
 #include <QComboBox>
 #include <QString>
 
+//#include "qgsmetadatalinkdelegate.h"
 #include "qgsmetadatawizard.h"
 #include "qgslogger.h"
+#include "qgslayermetadatavalidator.h"
+#include "qgisapp.h"
 
 QgsMetadataWizard::QgsMetadataWizard( QWidget *parent, QgsMapLayer *layer )
   : QDialog( parent ), mLayer( layer )
@@ -31,6 +34,7 @@ QgsMetadataWizard::QgsMetadataWizard( QWidget *parent, QgsMapLayer *layer )
   mMetadata = layer->metadata();
 
   tabWidget->setCurrentIndex( 0 );
+//  tabWidget->setItemDelegate(new TableDelegate());
   backButton->setEnabled( false );
   nextButton->setEnabled( true );
 
@@ -41,13 +45,10 @@ QgsMetadataWizard::QgsMetadataWizard( QWidget *parent, QgsMapLayer *layer )
   connect( finishButton, &QPushButton::clicked, this, &QgsMetadataWizard::finishedClicked );
   connect( btnAddLink, &QPushButton::clicked, this, &QgsMetadataWizard::addLink );
   connect( btnRemoveLink, &QPushButton::clicked, this, &QgsMetadataWizard::removeLink );
+  connect( btnCheckMetadata, &QPushButton::clicked, this, &QgsMetadataWizard::checkMetadata );
 
-
-  // Set all properties
-  layerLabel->setText( mLayer->name() );
-  lineEditTitle->setText( mLayer->name() );
-  textEditAbstract->setText( mLayer->abstract() );
-  textEditKeywords->setText( mLayer->keywordList() );
+  fillComboBox();
+  setPropertiesFromLayer();
 }
 
 QgsMetadataWizard::~QgsMetadataWizard()
@@ -77,17 +78,31 @@ void QgsMetadataWizard::nextClicked()
 
 void QgsMetadataWizard::finishedClicked()
 {
+  // OLD API (to remove later)
   mLayer->setName( lineEditTitle->text() );
-  mMetadata.setTitle( lineEditTitle->text() );
-
   mLayer->setAbstract( textEditAbstract->toPlainText() );
-  mMetadata.setAbstract( lineEditTitle->text() );
-
   mLayer->setKeywordList( textEditKeywords->toPlainText() );
 
-  // Layer metadata properties
+  // New Metadata API
+  saveMetadata( mMetadata );
+
+  // Save layer metadata properties
   mLayer->setMetadata( mMetadata );
+
+  QgsNativeMetadataValidator validator;
+  QList<QgsMetadataValidator::ValidationResult> validationResults;
+  bool results = validator.validate( mMetadata, validationResults );
+
   hide();
+
+  if ( results )
+  {
+    QgisApp::instance()->messageBar()->pushInfo( tr( "Save metadata" ), tr( "Saving metadata successfull into the project" ) );
+  }
+  else
+  {
+    QgisApp::instance()->messageBar()->pushWarning( tr( "Save metadata" ), tr( "Saving metadata successfull but some fields were missing" ) );
+  }
 }
 
 void QgsMetadataWizard::updatePanel()
@@ -117,7 +132,7 @@ void QgsMetadataWizard::addLink()
   QTableWidgetItem *pCell;
 
   // Name
-  pCell = new QTableWidgetItem( QString( "undefined" ) );
+  pCell = new QTableWidgetItem( QString( "undefined %1" ).arg( row ) );
   tabLinks->setItem( row, 0, pCell );
 
   // Type
@@ -138,6 +153,7 @@ void QgsMetadataWizard::addLink()
   tabLinks->setItem( row, 3, pCell );
 
   // Format
+  // It is strongly suggested to use GDAL/OGR format values. QgsLayerMetadata documentation
   pCell = new QTableWidgetItem();
   tabLinks->setItem( row, 4, pCell );
 
@@ -158,11 +174,158 @@ void QgsMetadataWizard::addLink()
 void QgsMetadataWizard::removeLink()
 {
   QItemSelectionModel *selectionModel = tabLinks->selectionModel();
-  QModelIndexList selectedRows = selectionModel->selectedIndexes();
-  QgsDebugMsg( QString( "Remove: %1 " ).arg( QString::number( selectedRows.count() ) ) );
+  QModelIndexList selectedRows = selectionModel->selectedRows();
+  QgsDebugMsg( QString( "Remove: %1 " ).arg( selectedRows.count() ) );
 
   for ( int i = 0 ; i < selectedRows.size() ; i++ )
   {
     tabLinks->model()->removeRow( selectedRows[i].row() );
   }
+}
+
+void QgsMetadataWizard::fillComboBox()
+{
+  // Set default values in type combobox
+  // It is advised to use the ISO 19115 MD_ScopeCode values. E.g. 'dataset' or 'series'.
+  // http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml
+  comboType->setEditable( true );
+  QStringList types;
+  types << "" << "attribute" << "attributeType" << "dataset" << "nonGeographicDataset" << "series" << "document";
+  comboType->addItems( types );
+
+  // Set default values in language combobox
+  // It is advised to use the ISO 639.2 or ISO 3166 specifications, e.g. 'ENG' or 'SPA',
+  comboLanguage->setEditable( true );
+  types.clear();
+  types << "" << "ENG" << "SPA" << "IND" << "FRE";
+  comboLanguage->addItems( types );
+}
+
+void QgsMetadataWizard::setPropertiesFromLayer()
+{
+  // Set all properties USING THE OLD API
+  layerLabel->setText( mLayer->name() );
+  lineEditTitle->setText( mLayer->name() );
+  textEditAbstract->setText( mLayer->abstract() );
+  textEditKeywords->setText( mLayer->keywordList() );
+
+  // Set all properties USING THE NEW API
+  // It will overwrite existing settings
+
+  // Title
+  if ( ! mMetadata.title().isEmpty() )
+  {
+    lineEditTitle->setText( mMetadata.title() );
+  }
+
+  // Type
+  if ( ! mMetadata.type().isEmpty() )
+  {
+    if ( comboType->findText( mMetadata.type() ) == -1 )
+    {
+      comboType->addItem( mMetadata.type() );
+    }
+    comboType->setCurrentIndex( comboType->findText( mMetadata.type() ) );
+  }
+
+  // Language
+  if ( ! mMetadata.language().isEmpty() )
+  {
+    if ( comboLanguage->findText( mMetadata.language() ) == -1 )
+    {
+      comboLanguage->addItem( mMetadata.language() );
+    }
+    comboLanguage->setCurrentIndex( comboLanguage->findText( mMetadata.language() ) );
+  }
+
+  // Links
+  tabLinks->setRowCount( 0 );
+  for ( QgsLayerMetadata::Link link : mMetadata.links() )
+  {
+    addLink();
+    int currentRow = tabLinks->rowCount() - 1;
+    tabLinks->item( currentRow, 0 )->setText( link.name );
+    if ( ! link.type.isEmpty() )
+    {
+      QComboBox *combo = dynamic_cast<QComboBox *>( tabLinks->cellWidget( currentRow, 1 ) );
+      if ( combo->findText( link.type ) == -1 )
+      {
+        combo->addItem( link.type );
+      }
+      combo->setCurrentIndex( combo->findText( link.type ) );
+    }
+    tabLinks->item( currentRow, 2 )->setText( link.description );
+    tabLinks->item( currentRow, 3 )->setText( link.url );
+    tabLinks->item( currentRow, 4 )->setText( link.format );
+    if ( ! link.mimeType.isEmpty() )
+    {
+      QComboBox *combo = dynamic_cast<QComboBox *>( tabLinks->cellWidget( currentRow, 5 ) );
+      if ( combo->findText( link.mimeType ) == -1 )
+      {
+        combo->addItem( link.mimeType );
+      }
+      combo->setCurrentIndex( combo->findText( link.mimeType ) );
+    }
+    tabLinks->item( currentRow, 6 )->setText( link.size );
+  }
+}
+
+void QgsMetadataWizard::saveMetadata( QgsLayerMetadata &layerMetadata )
+{
+  layerMetadata.setTitle( lineEditTitle->text() );
+  layerMetadata.setType( comboType->currentText() );
+  layerMetadata.setLanguage( comboLanguage->currentText() );
+  layerMetadata.setAbstract( textEditAbstract->toPlainText() );
+
+  // Links
+  QList<QgsLayerMetadata::Link> links;
+  for ( int i = 0 ; i < tabLinks->rowCount() ; i++ )
+  {
+    struct QgsLayerMetadata::Link link = QgsLayerMetadata::Link();
+    link.name = tabLinks->item( i, 0 )->text();
+    link.type = dynamic_cast<QComboBox *>( tabLinks->cellWidget( i, 1 ) )->currentText();
+    link.description = tabLinks->item( i, 2 )->text();
+    link.url = tabLinks->item( i, 3 )->text();
+    link.format = tabLinks->item( i, 4 )->text();
+    link.mimeType = dynamic_cast<QComboBox *>( tabLinks->cellWidget( i, 5 ) )->currentText();
+    link.size = tabLinks->item( i, 6 )->text();
+    links.append( link );
+  }
+  layerMetadata.setLinks( links );
+}
+
+bool QgsMetadataWizard::checkMetadata()
+{
+  QgsLayerMetadata metadata = QgsLayerMetadata();
+  saveMetadata( metadata );
+  QgsNativeMetadataValidator validator;
+  QList<QgsMetadataValidator::ValidationResult> validationResults;
+  bool results = validator.validate( metadata, validationResults );
+
+  QString errors;
+  if ( results == false )
+  {
+    errors = QStringLiteral();
+    for ( QgsMetadataValidator::ValidationResult result : validationResults )
+    {
+      errors += QLatin1String( "<b>" ) % result.section;
+      if ( ! result.identifier.isNull() )
+      {
+        errors += QLatin1String( " " ) % QVariant( result.identifier.toInt() + 1 ).toString();
+      }
+      errors += QLatin1String( "</b>: " ) % result.note % QLatin1String( "<br />" );
+    }
+  }
+  else
+  {
+    errors = QStringLiteral( "Ok, it seems valid." );
+  }
+
+  QString myStyle = QgsApplication::reportStyleSheet();
+  myStyle.append( QStringLiteral( "body { margin: 10px; }\n " ) );
+  resultsCheckMetadata->clear();
+  resultsCheckMetadata->document()->setDefaultStyleSheet( myStyle );
+  resultsCheckMetadata->setHtml( errors );
+
+  return results;
 }
