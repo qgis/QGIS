@@ -10,6 +10,8 @@
 
 
 
+
+
 class QgsExtentGroupBox : QgsCollapsibleGroupBox
 {
 %Docstring
@@ -34,6 +36,7 @@ class QgsExtentGroupBox : QgsCollapsibleGroupBox
       CurrentExtent,
       UserExtent,
       ProjectLayerExtent,
+      DrawOnCanvas,
     };
 
     explicit QgsExtentGroupBox( QWidget *parent /TransferThis/ = 0 );
@@ -124,6 +127,13 @@ class QgsExtentGroupBox : QgsCollapsibleGroupBox
  :rtype: str
 %End
 
+    void setMapCanvas( QgsMapCanvas *canvas );
+%Docstring
+ Sets the map canvas to enable dragging of extent on a canvas.
+ \param canvas the map canvas
+.. versionadded:: 3.0
+%End
+
   public slots:
 
     void setOutputExtentFromOriginal();
@@ -144,6 +154,12 @@ class QgsExtentGroupBox : QgsCollapsibleGroupBox
     void setOutputExtentFromLayer( const QgsMapLayer *layer );
 %Docstring
  Sets the output extent to match a ``layer``'s extent (may be transformed to output CRS).
+.. versionadded:: 3.0
+%End
+
+    void setOutputExtentFromDrawOnCanvas();
+%Docstring
+ Sets the output extent by dragging on the canvas.
 .. versionadded:: 3.0
 %End
 

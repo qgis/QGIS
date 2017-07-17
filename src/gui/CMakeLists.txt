@@ -283,6 +283,7 @@ SET(QGIS_GUI_SRCS
   qgsmaptoolcapture.cpp
   qgsmaptooledit.cpp
   qgsmaptoolemitpoint.cpp
+  qgsmaptoolextent.cpp
   qgsmaptoolidentify.cpp
   qgsmaptoolidentifyfeature.cpp
   qgsmaptoolpan.cpp
@@ -437,6 +438,7 @@ SET(QGIS_GUI_MOC_HDRS
   qgsmaptoolcapture.h
   qgsmaptooledit.h
   qgsmaptoolemitpoint.h
+  qgsmaptoolextent.h
   qgsmaptoolidentify.h
   qgsmaptoolidentifyfeature.h
   qgsmaptoolpan.h

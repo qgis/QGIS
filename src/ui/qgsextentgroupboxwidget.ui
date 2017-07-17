@@ -155,6 +155,19 @@
         </property>
        </widget>
       </item>
+      <item row="1" column="4">
+       <widget class="QPushButton" name="mButtonDrawOnCanvas">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="text">
+         <string>Draw on canvas</string>
+        </property>
+       </widget>
+      </item>
      </layout>
     </widget>
    </item>

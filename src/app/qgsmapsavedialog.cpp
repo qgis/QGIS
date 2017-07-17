@@ -59,6 +59,7 @@ QgsMapSaveDialog::QgsMapSaveDialog( QWidget *parent, QgsMapCanvas *mapCanvas, QL
   mExtentGroupBox->setOutputCrs( ms.destinationCrs() );
   mExtentGroupBox->setCurrentExtent( mExtent, ms.destinationCrs() );
   mExtentGroupBox->setOutputExtentFromCurrent();
+  mExtentGroupBox->setMapCanvas( mapCanvas );
 
   mScaleWidget->setScale( ms.scale() );
   mScaleWidget->setMapCanvas( mMapCanvas );
