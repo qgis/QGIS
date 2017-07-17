@@ -47,7 +47,7 @@ QgsGeoNodeSourceSelect::QgsGeoNodeSourceSelect( QWidget *parent, Qt::WindowFlags
 
   if ( embeddedMode != QgsProviderRegistry::WidgetMode::None )
   {
-    // For some obscure reason hiding does not work!
+    // For some obscure reasons hiding does not work!
     // buttonBox->button( QDialogButtonBox::Close )->hide();
     buttonBox->removeButton( buttonBox->button( QDialogButtonBox::Close ) );
   }

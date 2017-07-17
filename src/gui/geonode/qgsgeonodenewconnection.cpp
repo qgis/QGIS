@@ -164,7 +164,7 @@ void QgsGeoNodeNewConnection::accept()
        QMessageBox::information(
          this,
          tr( "Invalid URL" ),
-         tr( "Your URL doesn't contain protocol (e.g. http or https). Please add the protocol." ) ) == QMessageBox::Ok )
+         tr( "Your URL doesn't contains protocol (e.g. http or https). Please add the protocol." ) ) == QMessageBox::Ok )
   {
     return;
   }

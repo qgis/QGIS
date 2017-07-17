@@ -14,21 +14,7 @@
  ***************************************************************************/
 
 #include "qgsgeonodeconnection.h"
-#include "qgssettings.h"
 #include "qgslogger.h"
-#include "qgsnetworkaccessmanager.h"
-#include "qgsgeocmsconnection.h"
-#include "qgsexception.h"
-
-#include <QMultiMap>
-#include <QNetworkRequest>
-#include <QNetworkReply>
-#include <QByteArray>
-#include <QJsonDocument>
-#include <QDebug>
-#include <QUrl>
-#include <QDomDocument>
-
 
 const QString QgsGeoNodeConnection::pathGeoNodeConnection = "qgis/connections-geonode";
 const QString QgsGeoNodeConnection::pathGeoNodeConnectionDetails = "qgis/GeoNode";

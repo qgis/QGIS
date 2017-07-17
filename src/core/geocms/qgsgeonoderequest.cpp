@@ -198,16 +198,16 @@ QList<LayerStruct> QgsGeoNodeRequest::parseLayers( QByteArray layerResponse )
 
   if ( majorVersion == 2 && minorVersion == 6 )
   {
-    for ( int i = 0; i < layerList.count(); i++ )
+    Q_FOREACH ( QVariant layer, layerList )
     {
       LayerStruct layerStruct;
-      QVariantMap layer = layerList[i].toMap();
+      QVariantMap layerMap = layer.toMap();
       // Find WMS and WFS. XYZ is not available
       // Trick to get layer's typename from distribution_url or detail_url
-      QString layerTypeName  = layer["detail_url"].toString().split( "/" ).last();
+      QString layerTypeName  = layerMap["detail_url"].toString().split( "/" ).last();
       if ( layerTypeName.length() == 0 )
       {
-        layerTypeName = layer["distribution_url"].toString().split( "/" ).last();
+        layerTypeName = layerMap["distribution_url"].toString().split( "/" ).last();
       }
       // On this step, layerTypeName is in WORKSPACE%3ALAYERNAME or WORKSPACE:LAYERNAME format
       if ( layerTypeName.contains( "%3A" ) )
@@ -221,8 +221,8 @@ QList<LayerStruct> QgsGeoNodeRequest::parseLayers( QByteArray layerResponse )
 
       layerStruct.name = layerName;
       layerStruct.typeName = layerTypeName;
-      layerStruct.uuid = layer["uuid"].toString();
-      layerStruct.title = layer["title"].toString();;
+      layerStruct.uuid = layerMap["uuid"].toString();
+      layerStruct.title = layerMap["title"].toString();;
 
       // WMS url : BASE_URI/geoserver/WORKSPACE/wms
       layerStruct.wmsURL = mBaseUrl + "/geoserver/" + layerWorkspace + "/wms";
@@ -237,46 +237,46 @@ QList<LayerStruct> QgsGeoNodeRequest::parseLayers( QByteArray layerResponse )
   // Geonode version 2.7 or newer
   else if ( ( majorVersion == 2 && minorVersion >= 7 ) || ( majorVersion >= 3 ) )
   {
-    for ( int i = 0; i < layerList.count(); i++ )
+    Q_FOREACH ( QVariant layer, layerList )
     {
       LayerStruct layerStruct;
-      QVariantMap layer = layerList[i].toMap();
+      QVariantMap layerMap = layer.toMap();
       // Find WMS, WFS, and XYZ link
-      QVariantList layerLinks = layer["links"].toList();
+      QVariantList layerLinks = layerMap["links"].toList();
       layerStruct.wmsURL = QStringLiteral( "" );
       layerStruct.wfsURL = QStringLiteral( "" );
       layerStruct.xyzURL = QStringLiteral( "" );
-      for ( int j = 0; j < layerLinks.count(); j++ )
+      Q_FOREACH ( QVariant link, layerLinks )
       {
-        QVariantMap link = layerLinks[j].toMap();
-        if ( link.contains( "link_type" ) )
+        QVariantMap linkMap = link.toMap();
+        if ( linkMap.contains( "link_type" ) )
         {
-          if ( link["link_type"] == "OGC:WMS" )
+          if ( linkMap["link_type"] == "OGC:WMS" )
           {
-            layerStruct.wmsURL = link["url"].toString();
+            layerStruct.wmsURL = linkMap["url"].toString();
           }
-          if ( link["link_type"] == "OGC:WFS" )
+          if ( linkMap["link_type"] == "OGC:WFS" )
           {
-            layerStruct.wfsURL = link["url"].toString();
+            layerStruct.wfsURL = linkMap["url"].toString();
           }
-          if ( link["link_type"] == "image" )
+          if ( linkMap["link_type"] == "image" )
           {
-            if ( link.contains( "name" ) && link["name"] == "Tiles" )
+            if ( linkMap.contains( "name" ) && linkMap["name"] == "Tiles" )
             {
-              layerStruct.xyzURL = link["url"].toString();
+              layerStruct.xyzURL = linkMap["url"].toString();
             }
           }
         }
       }
-      if ( layer["typename"].toString().length() == 0 )
+      if ( layerMap["typename"].toString().length() == 0 )
       {
-        QStringList splitURL = layer["detail_url"].toString().split( "/" );
+        QStringList splitURL = layerMap["detail_url"].toString().split( "/" );
         layerStruct.typeName = splitURL[ splitURL.length() - 1];
       }
-      layerStruct.uuid = layer["uuid"].toString();
-      layerStruct.name = layer["name"].toString();
-      layerStruct.typeName = layer["typename"].toString();
-      layerStruct.title = layer["title"].toString();
+      layerStruct.uuid = layerMap["uuid"].toString();
+      layerStruct.name = layerMap["name"].toString();
+      layerStruct.typeName = layerMap["typename"].toString();
+      layerStruct.title = layerMap["title"].toString();
       layers.append( layerStruct );
     }
   }
@@ -296,20 +296,20 @@ QStringList QgsGeoNodeRequest::serviceUrls( QString serviceType )
 
   QList<LayerStruct> layers = parseLayers( this->response() );
 
-  for ( int i = 0; i < layers.count(); i++ )
+  Q_FOREACH ( LayerStruct layer, layers )
   {
     QString url;
     if ( serviceType.toLower() == "wms" )
     {
-      url = layers[i].wmsURL;
+      url = layer.wmsURL;
     }
     else if ( serviceType.toLower() == "wfs" )
     {
-      url = layers[i].wfsURL;
+      url = layer.wfsURL;
     }
     else if ( serviceType.toLower() == "xyz" )
     {
-      url = layers[i].xyzURL;
+      url = layer.xyzURL;
     }
     else
     {
@@ -341,28 +341,28 @@ QgsStringMap QgsGeoNodeRequest::serviceUrlData( QString serviceType )
   }
   QList<LayerStruct> layers = parseLayers( this->response() );
 
-  for ( int i = 0; i < layers.count(); i++ )
+  Q_FOREACH ( LayerStruct layer, layers )
   {
     QString url;
 
     if ( serviceType.toLower() == "wms" )
     {
-      url = layers[i].wmsURL;
+      url = layer.wmsURL;
     }
     else if ( serviceType.toLower() == "wfs" )
     {
-      url = layers[i].wfsURL;
+      url = layer.wfsURL;
     }
     else if ( serviceType.toLower() == "xyz" )
     {
-      url = layers[i].xyzURL;
+      url = layer.xyzURL;
     }
     else
     {
       url = "";
     }
 
-    QString layerName = layers[i].name;
+    QString layerName = layer.name;
     if ( !url.contains( QLatin1String( "://" ) ) && url.length() > 0 )
     {
       // Change this to https (?)
