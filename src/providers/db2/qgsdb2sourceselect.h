@@ -111,6 +111,8 @@ class QgsDb2SourceSelect : public QDialog, private Ui::QgsDbSourceSelectBase
     void addDatabaseLayers( QStringList const &layerPathList, QString const &providerKey );
     void connectionsChanged();
     void addGeometryColumn( QgsDb2LayerProperty );
+    void progress( int, int );
+    void progressMessage( QString );
 
   public slots:
     //! Determines the tables the user selected and closes the dialog

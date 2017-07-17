@@ -61,10 +61,7 @@ void QgsClipboard::replaceWithCopyOf( QgsVectorLayer *src )
   mFeatureFields = src->fields();
   mFeatureClipboard = src->selectedFeatures();
   mCRS = src->crs();
-  layerDestroyed();
   mSrcLayer = src;
-  connect( mSrcLayer, &QObject::destroyed, this, &QgsClipboard::layerDestroyed );
-
   QgsDebugMsg( "replaced QGis clipboard." );
 
   setSystemClipboard();
@@ -78,17 +75,10 @@ void QgsClipboard::replaceWithCopyOf( QgsFeatureStore &featureStore )
   mFeatureFields = featureStore.fields();
   mFeatureClipboard = featureStore.features();
   mCRS = featureStore.crs();
-  disconnect( mSrcLayer, &QObject::destroyed, this, &QgsClipboard::layerDestroyed );
   mSrcLayer = nullptr;
   setSystemClipboard();
   mUseSystemClipboard = false;
   emit changed();
-}
-
-void QgsClipboard::layerDestroyed()
-{
-  disconnect( mSrcLayer, &QObject::destroyed, this, &QgsClipboard::layerDestroyed );
-  mSrcLayer = nullptr;
 }
 
 QString QgsClipboard::generateClipboardText() const

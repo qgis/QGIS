@@ -97,6 +97,8 @@ class QgsSpatiaLiteSourceSelect: public QDialog, private Ui::QgsDbSourceSelectBa
   signals:
     void connectionsChanged();
     void addDatabaseLayers( QStringList const &paths, QString const &providerKey );
+    void progress( int, int );
+    void progressMessage( QString );
 
   private:
     enum Columns

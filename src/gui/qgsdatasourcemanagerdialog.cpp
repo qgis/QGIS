@@ -168,12 +168,12 @@ void QgsDataSourceManagerDialog::setPreviousPage()
 
 void QgsDataSourceManagerDialog::rasterLayerAdded( const QString &uri, const QString &baseName, const QString &providerKey )
 {
-  emit( addRasterLayer( uri, baseName, providerKey ) );
+  emit addRasterLayer( uri, baseName, providerKey );
 }
 
 void QgsDataSourceManagerDialog::vectorLayerAdded( const QString &vectorLayerPath, const QString &baseName, const QString &providerKey )
 {
-  emit( addVectorLayer( vectorLayerPath, baseName, providerKey ) );
+  emit addVectorLayer( vectorLayerPath, baseName, providerKey );
 }
 
 void QgsDataSourceManagerDialog::vectorLayersAdded( const QStringList &layerQStringList, const QString &enc, const QString &dataSourceType )

@@ -805,7 +805,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
      */
     bool addVectorLayers( const QStringList &layerQStringList, const QString &enc, const QString &dataSourceType );
 
-    /** Overloaded vesion of the private addRasterLayer()
+    /** Overloaded version of the private addRasterLayer()
       Method that takes a list of file names instead of prompting
       user with a dialog.
       \returns true if successfully added layer(s)

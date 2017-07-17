@@ -79,7 +79,7 @@ class GUI_EXPORT QgsDataSourceManagerDialog : public QgsOptionsDialogBase, priva
     //! Emitted when a raster layer was selected for addition: for signal forwarding to QgisApp
     void addRasterLayer( QString const &uri, QString const &baseName, QString const &providerKey );
     //! Emitted when the user wants to select a raster layer: for signal forwarding to QgisApp
-    void addRasterLayer( );
+    void addRasterLayer();
     //! Emitted when a vector layer was selected for addition: for signal forwarding to QgisApp
     void addVectorLayer( const QString &vectorLayerPath, const QString &baseName, const QString &providerKey );
     //! Replace the selected layer by a vector layer defined by uri, layer name, data source uri

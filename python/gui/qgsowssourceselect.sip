@@ -106,8 +106,6 @@ Stores the selected datasource whenerver it is changed
 Add some default wms servers to the list
 %End
 
-    void on_mDialogButtonBox_helpRequested();
-
   signals:
     void addRasterLayer( const QString &rasterLayerPath,
                          const QString &baseName,
