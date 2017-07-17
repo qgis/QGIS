@@ -87,6 +87,11 @@ from .Ruggedness import Ruggedness
 from .SaveSelectedFeatures import SaveSelectedFeatures
 from .SelectByAttribute import SelectByAttribute
 from .SelectByExpression import SelectByExpression
+from .ServiceAreaFromLayer import ServiceAreaFromLayer
+from .ServiceAreaFromPoint import ServiceAreaFromPoint
+from .ShortestPathLayerToPoint import ShortestPathLayerToPoint
+from .ShortestPathPointToLayer import ShortestPathPointToLayer
+from .ShortestPathPointToPoint import ShortestPathPointToPoint
 from .SimplifyGeometries import SimplifyGeometries
 from .Slope import Slope
 from .Smooth import Smooth
@@ -158,11 +163,6 @@ from .ZonalStatistics import ZonalStatistics
 # from .ExtractSpecificNodes import ExtractSpecificNodes
 # from .GeometryByExpression import GeometryByExpression
 # from .RasterCalculator import RasterCalculator
-# from .ShortestPathPointToPoint import ShortestPathPointToPoint
-# from .ShortestPathPointToLayer import ShortestPathPointToLayer
-# from .ShortestPathLayerToPoint import ShortestPathLayerToPoint
-# from .ServiceAreaFromPoint import ServiceAreaFromPoint
-# from .ServiceAreaFromLayer import ServiceAreaFromLayer
 # from .TruncateTable import TruncateTable
 # from .Polygonize import Polygonize
 # from .ExecuteSQL import ExecuteSQL
@@ -274,6 +274,11 @@ class QGISAlgorithmProvider(QgsProcessingProvider):
                 SaveSelectedFeatures(),
                 SelectByAttribute(),
                 SelectByExpression(),
+                ServiceAreaFromLayer(),
+                ServiceAreaFromPoint(),
+                ShortestPathLayerToPoint(),
+                ShortestPathPointToLayer(),
+                ShortestPathPointToPoint(),
                 SimplifyGeometries(),
                 Slope(),
                 Smooth(),
