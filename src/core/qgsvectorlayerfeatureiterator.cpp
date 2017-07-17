@@ -79,6 +79,9 @@ QgsVectorLayerFeatureSource::QgsVectorLayerFeatureSource( const QgsVectorLayer *
     }
 #endif
   }
+
+  std::unique_ptr< QgsExpressionContextScope > layerScope( QgsExpressionContextUtils::layerScope( layer ) );
+  mLayerScope = *layerScope;
 }
 
 QgsVectorLayerFeatureSource::~QgsVectorLayerFeatureSource()
@@ -614,6 +617,15 @@ void QgsVectorLayerFeatureIterator::prepareExpression( int fieldIdx )
   exp->setAreaUnits( QgsProject::instance()->areaUnits() );
 
   exp->prepare( mExpressionContext.get() );
+  Q_FOREACH ( const QString &col, exp->referencedColumns() )
+  {
+    if ( mSource->fields().lookupField( col ) == fieldIdx )
+    {
+      // circular reference - expression depends on column itself
+      delete exp;
+      return;
+    }
+  }
   mExpressionFieldInfo.insert( fieldIdx, exp );
 
   Q_FOREACH ( const QString &col, exp->referencedColumns() )
@@ -644,7 +656,7 @@ void QgsVectorLayerFeatureIterator::prepareFields()
   mExpressionContext.reset( new QgsExpressionContext() );
   mExpressionContext->appendScope( QgsExpressionContextUtils::globalScope() );
   mExpressionContext->appendScope( QgsExpressionContextUtils::projectScope( QgsProject::instance() ) );
-  mExpressionContext->setFields( mSource->mFields );
+  mExpressionContext->appendScope( new QgsExpressionContextScope( mSource->mLayerScope ) );
 
   mFieldsToPrepare = ( mRequest.flags() & QgsFeatureRequest::SubsetOfAttributes ) ? mRequest.subsetOfAttributes() : mSource->mFields.allAttributesList();
 

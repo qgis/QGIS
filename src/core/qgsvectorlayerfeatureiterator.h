@@ -84,6 +84,8 @@ class CORE_EXPORT QgsVectorLayerFeatureSource : public QgsAbstractFeatureSource
 
     QgsFields mFields;
 
+    QgsExpressionContextScope mLayerScope;
+
     bool mHasEditBuffer;
 
     // A deep-copy is only performed, if the original maps change
