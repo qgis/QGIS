@@ -27,19 +27,14 @@ __revision__ = '$Format:%H$'
 
 from qgis.PyQt.QtCore import QVariant
 from qgis.core import (QgsField,
-                       QgsFeatureSink,
-                       QgsProcessingParameterFeatureSource,
                        QgsProcessingParameterString,
                        QgsProcessingParameterNumber,
-                       QgsProcessingParameterEnum,
-                       QgsProcessingParameterFeatureSink)
-from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
+                       QgsProcessingParameterEnum)
+from processing.algs.qgis.QgisAlgorithm import QgisFeatureBasedAlgorithm
 
 
-class AddTableField(QgisAlgorithm):
+class AddTableField(QgisFeatureBasedAlgorithm):
 
-    OUTPUT_LAYER = 'OUTPUT_LAYER'
-    INPUT_LAYER = 'INPUT_LAYER'
     FIELD_NAME = 'FIELD_NAME'
     FIELD_TYPE = 'FIELD_TYPE'
     FIELD_LENGTH = 'FIELD_LENGTH'
@@ -55,10 +50,9 @@ class AddTableField(QgisAlgorithm):
         self.type_names = [self.tr('Integer'),
                            self.tr('Float'),
                            self.tr('String')]
+        self.field = None
 
-    def initAlgorithm(self, config=None):
-        self.addParameter(QgsProcessingParameterFeatureSource(self.INPUT_LAYER,
-                                                              self.tr('Input layer')))
+    def initParameters(self, config=None):
         self.addParameter(QgsProcessingParameterString(self.FIELD_NAME,
                                                        self.tr('Field name')))
         self.addParameter(QgsProcessingParameterEnum(self.FIELD_TYPE,
@@ -68,7 +62,6 @@ class AddTableField(QgisAlgorithm):
                                                        10, False, 1, 255))
         self.addParameter(QgsProcessingParameterNumber(self.FIELD_PRECISION,
                                                        self.tr('Field precision'), QgsProcessingParameterNumber.Integer, 0, False, 0, 10))
-        self.addParameter(QgsProcessingParameterFeatureSink(self.OUTPUT_LAYER, self.tr('Added')))
 
     def name(self):
         return 'addfieldtoattributestable'
@@ -76,33 +69,25 @@ class AddTableField(QgisAlgorithm):
     def displayName(self):
         return self.tr('Add field to attributes table')
 
-    def processAlgorithm(self, parameters, context, feedback):
-        source = self.parameterAsSource(parameters, self.INPUT_LAYER, context)
+    def outputName(self):
+        return self.tr('Added')
 
-        fieldType = self.parameterAsEnum(parameters, self.FIELD_TYPE, context)
-        fieldName = self.parameterAsString(parameters, self.FIELD_NAME, context)
-        fieldLength = self.parameterAsInt(parameters, self.FIELD_LENGTH, context)
-        fieldPrecision = self.parameterAsInt(parameters, self.FIELD_PRECISION, context)
+    def prepareAlgorithm(self, parameters, context, feedback):
+        field_type = self.parameterAsEnum(parameters, self.FIELD_TYPE, context)
+        field_name = self.parameterAsString(parameters, self.FIELD_NAME, context)
+        field_length = self.parameterAsInt(parameters, self.FIELD_LENGTH, context)
+        field_precision = self.parameterAsInt(parameters, self.FIELD_PRECISION, context)
 
-        fields = source.fields()
-        fields.append(QgsField(fieldName, self.TYPES[fieldType], '',
-                               fieldLength, fieldPrecision))
-        (sink, dest_id) = self.parameterAsSink(parameters, self.OUTPUT_LAYER, context,
-                                               fields, source.wkbType(), source.sourceCrs())
+        self.field = QgsField(field_name, self.TYPES[field_type], '',
+                              field_length, field_precision)
+        return True
 
-        features = source.getFeatures()
-        total = 100.0 / source.featureCount() if source.featureCount() else 0
+    def outputFields(self, inputFields):
+        inputFields.append(self.field)
+        return inputFields
 
-        for current, input_feature in enumerate(features):
-            if feedback.isCanceled():
-                break
-
-            output_feature = input_feature
-            attributes = input_feature.attributes()
-            attributes.append(None)
-            output_feature.setAttributes(attributes)
-
-            sink.addFeature(output_feature, QgsFeatureSink.FastInsert)
-            feedback.setProgress(int(current * total))
-
-        return {self.OUTPUT_LAYER: dest_id}
+    def processFeature(self, feature, feedback):
+        attributes = feature.attributes()
+        attributes.append(None)
+        feature.setAttributes(attributes)
+        return True

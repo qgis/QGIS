@@ -74,13 +74,12 @@ class QgsCentroidAlgorithm : public QgsProcessingFeatureBasedAlgorithm
 /**
  * Native transform algorithm.
  */
-class QgsTransformAlgorithm : public QgsProcessingAlgorithm
+class QgsTransformAlgorithm : public QgsProcessingFeatureBasedAlgorithm
 {
 
   public:
 
     QgsTransformAlgorithm() = default;
-    void initAlgorithm( const QVariantMap &configuration = QVariantMap() ) override;
     QString name() const override { return QStringLiteral( "reprojectlayer" ); }
     QString displayName() const override { return QObject::tr( "Reproject layer" ); }
     virtual QStringList tags() const override { return QObject::tr( "transform,reproject,crs,srs,warp" ).split( ',' ); }
@@ -90,8 +89,18 @@ class QgsTransformAlgorithm : public QgsProcessingAlgorithm
 
   protected:
 
-    virtual QVariantMap processAlgorithm( const QVariantMap &parameters,
-                                          QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
+    void initParameters( const QVariantMap &configuration = QVariantMap() ) override;
+    QgsCoordinateReferenceSystem outputCrs( const QgsCoordinateReferenceSystem & ) const override { return mDestCrs; }
+    QString outputName() const override { return QObject::tr( "Reprojected" ); }
+
+    bool prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
+    bool processFeature( QgsFeature &feature, QgsProcessingFeedback *feedback ) override;
+
+  private:
+
+    bool mCreatedTransform = false;
+    QgsCoordinateReferenceSystem mDestCrs;
+    QgsCoordinateTransform mTransform;
 
 };
 
@@ -235,13 +244,13 @@ class QgsClipAlgorithm : public QgsProcessingAlgorithm
 /**
  * Native subdivide algorithm.
  */
-class QgsSubdivideAlgorithm : public QgsProcessingAlgorithm
+class QgsSubdivideAlgorithm : public QgsProcessingFeatureBasedAlgorithm
 {
 
   public:
 
     QgsSubdivideAlgorithm() = default;
-    void initAlgorithm( const QVariantMap &configuration = QVariantMap() ) override;
+    void initParameters( const QVariantMap &configuration = QVariantMap() ) override;
     QString name() const override { return QStringLiteral( "subdivide" ); }
     QString displayName() const override { return QObject::tr( "Subdivide" ); }
     virtual QStringList tags() const override { return QObject::tr( "subdivide,segmentize,split,tesselate" ).split( ',' ); }
@@ -250,9 +259,16 @@ class QgsSubdivideAlgorithm : public QgsProcessingAlgorithm
     QgsSubdivideAlgorithm *createInstance() const override SIP_FACTORY;
 
   protected:
+    QString outputName() const override { return QObject::tr( "Subdivided" ); }
 
-    virtual QVariantMap processAlgorithm( const QVariantMap &parameters,
-                                          QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
+    QgsWkbTypes::Type outputWkbType( QgsWkbTypes::Type inputWkbType ) const override;
+    bool processFeature( QgsFeature &feature, QgsProcessingFeedback *feedback ) override;
+
+    bool prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
+
+  private:
+
+    int mMaxNodes = -1;
 
 };
 

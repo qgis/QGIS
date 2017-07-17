@@ -798,6 +798,20 @@ class QgsProcessingFeatureBasedAlgorithm : QgsProcessingAlgorithm
  :rtype: QgsCoordinateReferenceSystem
 %End
 
+    virtual void initParameters( const QVariantMap &configuration = QVariantMap() );
+%Docstring
+ Initializes any extra parameters added by the algorithm subclass. There is no need
+ to declare the input source or output sink, as these are automatically created by
+ QgsProcessingFeatureBasedAlgorithm.
+%End
+
+    QgsCoordinateReferenceSystem sourceCrs() const;
+%Docstring
+ Returns the source's coordinate reference system. This will only return a valid CRS when
+ called from a subclasses' processFeature() implementation.
+ :rtype: QgsCoordinateReferenceSystem
+%End
+
     virtual bool processFeature( QgsFeature &feature, QgsProcessingFeedback *feedback ) = 0;
 %Docstring
  Processes an individual input ``feature`` from the source. Algorithms should implement their

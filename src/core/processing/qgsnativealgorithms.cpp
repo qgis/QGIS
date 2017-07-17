@@ -528,11 +528,9 @@ QVariantMap QgsClipAlgorithm::processAlgorithm( const QVariantMap &parameters, Q
 }
 
 
-void QgsTransformAlgorithm::initAlgorithm( const QVariantMap & )
+void QgsTransformAlgorithm::initParameters( const QVariantMap & )
 {
-  addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "INPUT" ), QObject::tr( "Input layer" ) ) );
   addParameter( new QgsProcessingParameterCrs( QStringLiteral( "TARGET_CRS" ), QObject::tr( "Target CRS" ), QStringLiteral( "EPSG:4326" ) ) );
-  addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "OUTPUT" ), QObject::tr( "Reprojected" ) ) );
 }
 
 QString QgsTransformAlgorithm::shortHelpString() const
@@ -547,57 +545,40 @@ QgsTransformAlgorithm *QgsTransformAlgorithm::createInstance() const
   return new QgsTransformAlgorithm();
 }
 
-QVariantMap QgsTransformAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
+bool QgsTransformAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback * )
 {
-  std::unique_ptr< QgsFeatureSource > source( parameterAsSource( parameters, QStringLiteral( "INPUT" ), context ) );
-  if ( !source )
-    return QVariantMap();
+  mDestCrs = parameterAsCrs( parameters, QStringLiteral( "TARGET_CRS" ), context );
+  return true;
+}
 
-  QgsCoordinateReferenceSystem targetCrs = parameterAsCrs( parameters, QStringLiteral( "TARGET_CRS" ), context );
-
-  QString dest;
-  std::unique_ptr< QgsFeatureSink > sink( parameterAsSink( parameters, QStringLiteral( "OUTPUT" ), context, dest, source->fields(), source->wkbType(), targetCrs ) );
-  if ( !sink )
-    return QVariantMap();
-
-  long count = source->featureCount();
-  if ( count <= 0 )
-    return QVariantMap();
-
-  QgsFeature f;
-  QgsFeatureRequest req;
-  // perform reprojection in the iterators...
-  req.setDestinationCrs( targetCrs );
-
-  QgsFeatureIterator it = source->getFeatures( req );
-
-  double step = 100.0 / count;
-  int current = 0;
-  while ( it.nextFeature( f ) )
+bool QgsTransformAlgorithm::processFeature( QgsFeature &feature, QgsProcessingFeedback * )
+{
+  if ( !mCreatedTransform )
   {
-    if ( feedback->isCanceled() )
-    {
-      break;
-    }
-
-    sink->addFeature( f, QgsFeatureSink::FastInsert );
-    feedback->setProgress( current * step );
-    current++;
+    mCreatedTransform = true;
+    mTransform = QgsCoordinateTransform( sourceCrs(), mDestCrs );
   }
 
-  QVariantMap outputs;
-  outputs.insert( QStringLiteral( "OUTPUT" ), dest );
-  return outputs;
+  if ( feature.hasGeometry() )
+  {
+    QgsGeometry g = feature.geometry();
+    if ( g.transform( mTransform ) == 0 )
+    {
+      feature.setGeometry( g );
+    }
+    else
+    {
+      feature.clearGeometry();
+    }
+  }
+  return true;
 }
 
 
-void QgsSubdivideAlgorithm::initAlgorithm( const QVariantMap & )
+void QgsSubdivideAlgorithm::initParameters( const QVariantMap & )
 {
-  addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "INPUT" ), QObject::tr( "Input layer" ) ) );
   addParameter( new QgsProcessingParameterNumber( QStringLiteral( "MAX_NODES" ), QObject::tr( "Maximum nodes in parts" ), QgsProcessingParameterNumber::Integer,
                 256, false, 8, 100000 ) );
-
-  addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "OUTPUT" ), QObject::tr( "Subdivided" ) ) );
 }
 
 QString QgsSubdivideAlgorithm::shortHelpString() const
@@ -615,53 +596,28 @@ QgsSubdivideAlgorithm *QgsSubdivideAlgorithm::createInstance() const
   return new QgsSubdivideAlgorithm();
 }
 
-QVariantMap QgsSubdivideAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
+QgsWkbTypes::Type QgsSubdivideAlgorithm::outputWkbType( QgsWkbTypes::Type inputWkbType ) const
 {
-  std::unique_ptr< QgsFeatureSource > source( parameterAsSource( parameters, QStringLiteral( "INPUT" ), context ) );
-  if ( !source )
-    return QVariantMap();
+  return QgsWkbTypes::multiType( inputWkbType );
+}
 
-  int maxNodes = parameterAsInt( parameters, QStringLiteral( "MAX_NODES" ), context );
-  QString dest;
-  std::unique_ptr< QgsFeatureSink > sink( parameterAsSink( parameters, QStringLiteral( "OUTPUT" ), context, dest, source->fields(),
-                                          QgsWkbTypes::multiType( source->wkbType() ), source->sourceCrs() ) );
-  if ( !sink )
-    return QVariantMap();
-
-  long count = source->featureCount();
-  if ( count <= 0 )
-    return QVariantMap();
-
-  QgsFeature f;
-  QgsFeatureIterator it = source->getFeatures();
-
-  double step = 100.0 / count;
-  int current = 0;
-  while ( it.nextFeature( f ) )
+bool QgsSubdivideAlgorithm::processFeature( QgsFeature &feature, QgsProcessingFeedback *feedback )
+{
+  if ( feature.hasGeometry() )
   {
-    if ( feedback->isCanceled() )
+    feature.setGeometry( feature.geometry().subdivide( mMaxNodes ) );
+    if ( !feature.geometry() )
     {
-      break;
+      feedback->reportError( QObject::tr( "Error calculating subdivision for feature %1" ).arg( feature.id() ) );
     }
-
-    QgsFeature out = f;
-    if ( out.hasGeometry() )
-    {
-      out.setGeometry( f.geometry().subdivide( maxNodes ) );
-      if ( !out.geometry() )
-      {
-        QgsMessageLog::logMessage( QObject::tr( "Error calculating subdivision for feature %1" ).arg( f.id() ), QObject::tr( "Processing" ), QgsMessageLog::WARNING );
-      }
-    }
-    sink->addFeature( out, QgsFeatureSink::FastInsert );
-
-    feedback->setProgress( current * step );
-    current++;
   }
+  return true;
+}
 
-  QVariantMap outputs;
-  outputs.insert( QStringLiteral( "OUTPUT" ), dest );
-  return outputs;
+bool QgsSubdivideAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback * )
+{
+  mMaxNodes = parameterAsInt( parameters, QStringLiteral( "MAX_NODES" ), context );
+  return true;
 }
 
 

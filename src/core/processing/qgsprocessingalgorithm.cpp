@@ -612,33 +612,41 @@ bool QgsProcessingAlgorithm::createAutoOutputForParameter( QgsProcessingParamete
 // QgsProcessingFeatureBasedAlgorithm
 //
 
-void QgsProcessingFeatureBasedAlgorithm::initAlgorithm( const QVariantMap & )
+void QgsProcessingFeatureBasedAlgorithm::initAlgorithm( const QVariantMap &config )
 {
   addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "INPUT" ), QObject::tr( "Input layer" ) ) );
+  initParameters( config );
   addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "OUTPUT" ), outputName(), outputLayerType() ) );
-  addOutput( new QgsProcessingOutputVectorLayer( QStringLiteral( "OUTPUT" ), outputName(), outputLayerType() ) );
+}
+
+QgsCoordinateReferenceSystem QgsProcessingFeatureBasedAlgorithm::sourceCrs() const
+{
+  if ( mSource )
+    return mSource->sourceCrs();
+  else
+    return QgsCoordinateReferenceSystem();
 }
 
 QVariantMap QgsProcessingFeatureBasedAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
-  std::unique_ptr< QgsFeatureSource > source( parameterAsSource( parameters, QStringLiteral( "INPUT" ), context ) );
-  if ( !source )
+  mSource.reset( parameterAsSource( parameters, QStringLiteral( "INPUT" ), context ) );
+  if ( !mSource )
     return QVariantMap();
 
   QString dest;
   std::unique_ptr< QgsFeatureSink > sink( parameterAsSink( parameters, QStringLiteral( "OUTPUT" ), context, dest,
-                                          outputFields( source->fields() ),
-                                          outputWkbType( source->wkbType() ),
-                                          outputCrs( source->sourceCrs() ) ) );
+                                          outputFields( mSource->fields() ),
+                                          outputWkbType( mSource->wkbType() ),
+                                          outputCrs( mSource->sourceCrs() ) ) );
   if ( !sink )
     return QVariantMap();
 
-  long count = source->featureCount();
+  long count = mSource->featureCount();
   if ( count <= 0 )
     return QVariantMap();
 
   QgsFeature f;
-  QgsFeatureIterator it = source->getFeatures();
+  QgsFeatureIterator it = mSource->getFeatures();
 
   double step = 100.0 / count;
   int current = 0;
@@ -657,6 +665,8 @@ QVariantMap QgsProcessingFeatureBasedAlgorithm::processAlgorithm( const QVariant
     feedback->setProgress( current * step );
     current++;
   }
+
+  mSource.reset();
 
   QVariantMap outputs;
   outputs.insert( QStringLiteral( "OUTPUT" ), dest );

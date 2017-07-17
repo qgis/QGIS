@@ -772,6 +772,19 @@ class CORE_EXPORT QgsProcessingFeatureBasedAlgorithm : public QgsProcessingAlgor
     virtual QgsCoordinateReferenceSystem outputCrs( const QgsCoordinateReferenceSystem &inputCrs ) const { return inputCrs; }
 
     /**
+     * Initializes any extra parameters added by the algorithm subclass. There is no need
+     * to declare the input source or output sink, as these are automatically created by
+     * QgsProcessingFeatureBasedAlgorithm.
+     */
+    virtual void initParameters( const QVariantMap &configuration = QVariantMap() ) { Q_UNUSED( configuration ); }
+
+    /**
+     * Returns the source's coordinate reference system. This will only return a valid CRS when
+     * called from a subclasses' processFeature() implementation.
+     */
+    QgsCoordinateReferenceSystem sourceCrs() const;
+
+    /**
      * Processes an individual input \a feature from the source. Algorithms should implement their
      * logic in this method for performing the algorithm's operation (e.g. replacing the feature's
      * geometry with the centroid of the original feature geometry for a 'centroid' type
@@ -788,6 +801,10 @@ class CORE_EXPORT QgsProcessingFeatureBasedAlgorithm : public QgsProcessingAlgor
 
     virtual QVariantMap processAlgorithm( const QVariantMap &parameters,
                                           QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
+
+  private:
+
+    std::unique_ptr< QgsFeatureSource > mSource;
 
 };
 
