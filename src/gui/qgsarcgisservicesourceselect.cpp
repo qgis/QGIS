@@ -40,17 +40,17 @@
 /**
  * Item delegate with tweaked sizeHint.
  */
-class QgsSourceSelectItemDelegate : public QItemDelegate
+class QgsAbstractDataSourceWidgetItemDelegate : public QItemDelegate
 {
   public:
     //! Constructor
-    QgsSourceSelectItemDelegate( QObject *parent = 0 ) : QItemDelegate( parent ) { }
+    QgsAbstractDataSourceWidgetItemDelegate( QObject *parent = 0 ) : QItemDelegate( parent ) { }
     QSize sizeHint( const QStyleOptionViewItem &option, const QModelIndex &index ) const override;
 };
 
 
 QgsArcGisServiceSourceSelect::QgsArcGisServiceSourceSelect( const QString &serviceName, ServiceType serviceType, QWidget *parent, Qt::WindowFlags fl, QgsProviderRegistry::WidgetMode widgetMode ):
-  QgsSourceSelect( parent, fl, widgetMode ),
+  QgsAbstractDataSourceWidget( parent, fl, widgetMode ),
   mServiceName( serviceName ),
   mServiceType( serviceType ),
   mBuildQueryButton( 0 ),
@@ -81,7 +81,7 @@ QgsArcGisServiceSourceSelect::QgsArcGisServiceSourceSelect( const QString &servi
   mProjectionSelector = new QgsProjectionSelectionDialog( this );
   mProjectionSelector->setMessage( QString() );
 
-  treeView->setItemDelegate( new QgsSourceSelectItemDelegate( treeView ) );
+  treeView->setItemDelegate( new QgsAbstractDataSourceWidgetItemDelegate( treeView ) );
 
   QgsSettings settings;
   restoreGeometry( settings.value( QStringLiteral( "Windows/SourceSelectDialog/geometry" ) ).toByteArray() );
@@ -458,7 +458,7 @@ void QgsArcGisServiceSourceSelect::filterChanged( const QString &text )
   mModelProxy->sort( mModelProxy->sortColumn(), mModelProxy->sortOrder() );
 }
 
-QSize QgsSourceSelectItemDelegate::sizeHint( const QStyleOptionViewItem &option, const QModelIndex &index ) const
+QSize QgsAbstractDataSourceWidgetItemDelegate::sizeHint( const QStyleOptionViewItem &option, const QModelIndex &index ) const
 {
   QVariant indexData = index.data( Qt::DisplayRole );
   if ( indexData.isNull() )

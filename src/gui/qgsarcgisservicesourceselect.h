@@ -30,7 +30,7 @@
 #include "ui_qgsarcgisservicesourceselectbase.h"
 #include "qgsrectangle.h"
 #include "qgscoordinatereferencesystem.h"
-#include "qgssourceselect.h"
+#include "qgsabstractdatasourcewidget.h"
 #include "qgis_gui.h"
 
 class QStandardItemModel;
@@ -41,7 +41,7 @@ class QgsOwsConnection;
 /**
  * Base class for listing ArcGis layers available from a remote service.
  */
-class GUI_EXPORT QgsArcGisServiceSourceSelect : public QgsSourceSelect, protected Ui::QgsArcGisServiceSourceSelectBase
+class GUI_EXPORT QgsArcGisServiceSourceSelect : public QgsAbstractDataSourceWidget, protected Ui::QgsArcGisServiceSourceSelectBase
 {
     Q_OBJECT
 

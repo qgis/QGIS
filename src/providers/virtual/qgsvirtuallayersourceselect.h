@@ -24,14 +24,14 @@ email                : hugo dot mercier at oslandia dot com
 #include "qgsguiutils.h"
 #include <qgsvirtuallayerdefinition.h>
 #include "qgsproviderregistry.h"
-#include "qgssourceselect.h"
+#include "qgsabstractdatasourcewidget.h"
 
 class QgsVectorLayer;
 class QMainWindow;
 class QgsEmbeddedLayerSelectDialog;
 class QgsLayerTreeView;
 
-class QgsVirtualLayerSourceSelect : public QgsSourceSelect, private Ui::QgsVirtualLayerSourceSelectBase
+class QgsVirtualLayerSourceSelect : public QgsAbstractDataSourceWidget, private Ui::QgsVirtualLayerSourceSelectBase
 {
     Q_OBJECT
 

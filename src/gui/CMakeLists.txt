@@ -346,7 +346,7 @@ SET(QGIS_GUI_SRCS
   qgsvertexmarker.cpp
   qgsfiledownloader.cpp
   qgsdatasourcemanagerdialog.cpp
-  qgssourceselect.cpp
+  qgsabstractdatasourcewidget.cpp
 )
 
 SET(QGIS_GUI_MOC_HDRS
@@ -499,7 +499,7 @@ SET(QGIS_GUI_MOC_HDRS
   qgsvariableeditorwidget.h
   qgsfiledownloader.h
   qgsdatasourcemanagerdialog.h
-  qgssourceselect.h
+  qgsabstractdatasourcewidget.h
 
   ogr/qgsopenvectorlayerdialog.h
   ogr/qgsnewogrconnection.h
@@ -706,7 +706,7 @@ SET(QGIS_GUI_HDRS
   qgsvertexmarker.h
   qgsfiledownloader.h
   qgsdatasourcemanagerdialog.h
-  qgssourceselect.h
+  qgsabstractdatasourcewidget.h
 
   ogr/qgsopenvectorlayerdialog.h
   ogr/qgsogrhelperfunctions.h

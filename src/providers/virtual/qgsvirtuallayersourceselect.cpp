@@ -38,13 +38,13 @@ email                : hugo dot mercier at oslandia dot com
 #include <QTextStream>
 
 QgsVirtualLayerSourceSelect::QgsVirtualLayerSourceSelect( QWidget *parent, Qt::WindowFlags fl, QgsProviderRegistry::WidgetMode widgetMode )
-  : QgsSourceSelect( parent, fl, widgetMode )
+  : QgsAbstractDataSourceWidget( parent, fl, widgetMode )
   , mSrid( 0 )
   , mTreeView( nullptr )
 {
   setupUi( this );
 
-  if ( QgsSourceSelect::widgetMode( ) !=  QgsProviderRegistry::WidgetMode::None )
+  if ( QgsAbstractDataSourceWidget::widgetMode( ) !=  QgsProviderRegistry::WidgetMode::None )
   {
     buttonBox->removeButton( buttonBox->button( QDialogButtonBox::Cancel ) );
     buttonBox->button( QDialogButtonBox::Ok )->setText( tr( "Add" ) );
@@ -380,7 +380,7 @@ void QgsVirtualLayerSourceSelect::on_buttonBox_accepted()
   {
     emit addVectorLayer( def.toString(), layerName, QStringLiteral( "virtual" ) );
   }
-  if ( QgsSourceSelect::widgetMode( ) == QgsProviderRegistry::WidgetMode::None )
+  if ( QgsAbstractDataSourceWidget::widgetMode( ) == QgsProviderRegistry::WidgetMode::None )
   {
     accept( );
   }

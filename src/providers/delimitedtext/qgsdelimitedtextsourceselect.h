@@ -19,7 +19,7 @@
 #include "qgshelp.h"
 #include "qgsguiutils.h"
 #include "qgsproviderregistry.h"
-#include "qgssourceselect.h"
+#include "qgsabstractdatasourcewidget.h"
 
 class QButtonGroup;
 class QgisInterface;
@@ -28,7 +28,7 @@ class QgsDelimitedTextFile;
 /**
  * \class QgsDelimitedTextSourceSelect
  */
-class QgsDelimitedTextSourceSelect : public QgsSourceSelect, private Ui::QgsDelimitedTextSourceSelectBase
+class QgsDelimitedTextSourceSelect : public QgsAbstractDataSourceWidget, private Ui::QgsDelimitedTextSourceSelectBase
 {
     Q_OBJECT
 

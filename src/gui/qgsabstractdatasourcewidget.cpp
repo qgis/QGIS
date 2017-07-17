@@ -1,5 +1,5 @@
 /***************************************************************************
-    qgssourceselect.cpp  -  base class for source selector widgets
+    qgsabstractdatasourcewidget.cpp  -  base class for source selector widgets
                              -------------------
     begin                : 10 July 2017
     original             : (C) 2017 by Alessandro Pasotti email  : apasotti at boundlessgeo dot com
@@ -15,16 +15,16 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgssourceselect.h"
+#include "qgsabstractdatasourcewidget.h"
 
-QgsSourceSelect::QgsSourceSelect( QWidget *parent, Qt::WindowFlags fl, QgsProviderRegistry::WidgetMode widgetMode ):
+QgsAbstractDataSourceWidget::QgsAbstractDataSourceWidget( QWidget *parent, Qt::WindowFlags fl, QgsProviderRegistry::WidgetMode widgetMode ):
   QDialog( parent, fl ),
   mWidgetMode( widgetMode )
 {
 
 }
 
-QgsSourceSelect::~QgsSourceSelect()
+QgsAbstractDataSourceWidget::~QgsAbstractDataSourceWidget()
 {
 
 }

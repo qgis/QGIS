@@ -24,7 +24,7 @@
 #include "qgspgtablemodel.h"
 #include "qgshelp.h"
 #include "qgsproviderregistry.h"
-#include "qgssourceselect.h"
+#include "qgsabstractdatasourcewidget.h"
 
 #include <QMap>
 #include <QPair>
@@ -59,7 +59,7 @@ class QgsPgSourceSelectDelegate : public QItemDelegate
  * for PostGIS enabled PostgreSQL databases. The user can then connect and add
  * tables from the database to the map canvas.
  */
-class QgsPgSourceSelect : public QgsSourceSelect, private Ui::QgsDbSourceSelectBase
+class QgsPgSourceSelect : public QgsAbstractDataSourceWidget, private Ui::QgsDbSourceSelectBase
 {
     Q_OBJECT
 

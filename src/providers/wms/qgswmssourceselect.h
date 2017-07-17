@@ -23,7 +23,7 @@
 #include "qgshelp.h"
 #include "qgsproviderregistry.h"
 #include "qgswmsprovider.h"
-#include "qgssourceselect.h"
+#include "qgsabstractdatasourcewidget.h"
 
 #include <QStringList>
 #include <QPushButton>
@@ -43,7 +43,7 @@ class QgsWmsCapabilities;
  * The user can then connect and add
  * layers from the WMS server to the map canvas.
  */
-class QgsWMSSourceSelect : public QgsSourceSelect, private Ui::QgsWMSSourceSelectBase
+class QgsWMSSourceSelect : public QgsAbstractDataSourceWidget, private Ui::QgsWMSSourceSelectBase
 {
     Q_OBJECT
 

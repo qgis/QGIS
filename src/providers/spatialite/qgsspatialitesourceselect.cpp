@@ -41,7 +41,7 @@ email                : a.furieri@lqt.it
 #endif
 
 QgsSpatiaLiteSourceSelect::QgsSpatiaLiteSourceSelect( QWidget *parent, Qt::WindowFlags fl, QgsProviderRegistry::WidgetMode widgetMode ):
-  QgsSourceSelect( parent, fl, widgetMode )
+  QgsAbstractDataSourceWidget( parent, fl, widgetMode )
 {
   setupUi( this );
 
@@ -66,7 +66,7 @@ QgsSpatiaLiteSourceSelect::QgsSpatiaLiteSourceSelect( QWidget *parent, Qt::Windo
   connect( mBuildQueryButton, &QAbstractButton::clicked, this, &QgsSpatiaLiteSourceSelect::buildQuery );
   mBuildQueryButton->setEnabled( false );
 
-  if ( QgsSourceSelect::widgetMode() != QgsProviderRegistry::WidgetMode::None )
+  if ( QgsAbstractDataSourceWidget::widgetMode() != QgsProviderRegistry::WidgetMode::None )
   {
     buttonBox->removeButton( buttonBox->button( QDialogButtonBox::Close ) );
     mHoldDialogOpen->hide();
@@ -417,7 +417,7 @@ void QgsSpatiaLiteSourceSelect::addTables()
   else
   {
     emit addDatabaseLayers( m_selectedTables, QStringLiteral( "spatialite" ) );
-    if ( QgsSourceSelect::widgetMode( ) == QgsProviderRegistry::WidgetMode::None && ! mHoldDialogOpen->isChecked() )
+    if ( QgsAbstractDataSourceWidget::widgetMode( ) == QgsProviderRegistry::WidgetMode::None && ! mHoldDialogOpen->isChecked() )
     {
       accept();
     }

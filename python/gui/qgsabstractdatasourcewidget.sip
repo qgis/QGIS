@@ -1,7 +1,7 @@
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
- * src/gui/qgssourceselect.h                                            *
+ * src/gui/qgsabstractdatasourcewidget.h                                *
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/
@@ -10,7 +10,7 @@
 
 
 
-class QgsSourceSelect : QDialog
+class QgsAbstractDataSourceWidget : QDialog
 {
 %Docstring
   Abstract base Data Source Widget to create connections and add layers
@@ -21,16 +21,16 @@ class QgsSourceSelect : QDialog
 %End
 
 %TypeHeaderCode
-#include "qgssourceselect.h"
+#include "qgsabstractdatasourcewidget.h"
 %End
   public:
 
-    QgsSourceSelect( QWidget *parent /TransferThis/ = 0, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::None );
+    QgsAbstractDataSourceWidget( QWidget *parent /TransferThis/ = 0, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::None );
 %Docstring
 Constructor
 %End
 
-    virtual ~QgsSourceSelect( ) = 0;
+    virtual ~QgsAbstractDataSourceWidget( ) = 0;
 %Docstring
 Pure Virtual Destructor
 %End
@@ -60,7 +60,7 @@ Emitted when the provider's connections have changed
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
- * src/gui/qgssourceselect.h                                            *
+ * src/gui/qgsabstractdatasourcewidget.h                                *
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/

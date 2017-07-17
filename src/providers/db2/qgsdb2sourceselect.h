@@ -25,7 +25,7 @@
 #include "qgsdb2tablemodel.h"
 #include "qgshelp.h"
 #include "qgsproviderregistry.h"
-#include "qgssourceselect.h"
+#include "qgsabstractdatasourcewidget.h"
 
 #include <QMap>
 #include <QPair>
@@ -88,7 +88,7 @@ class QgsDb2GeomColumnTypeThread : public QThread
  * for Db2 databases. The user can then connect and add
  * tables from the database to the map canvas.
  */
-class QgsDb2SourceSelect : public QgsSourceSelect, private Ui::QgsDbSourceSelectBase
+class QgsDb2SourceSelect : public QgsAbstractDataSourceWidget, private Ui::QgsDbSourceSelectBase
 {
     Q_OBJECT
 

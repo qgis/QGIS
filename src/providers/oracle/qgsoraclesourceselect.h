@@ -24,7 +24,7 @@
 #include "qgshelp.h"
 #include "qgsoracleconnpool.h"
 #include "qgsproviderregistry.h"
-#include "qgssourceselect.h"
+#include "qgsabstractdatasourcewidget.h"
 
 #include <QMap>
 #include <QPair>
@@ -82,7 +82,7 @@ class QgsOracleSourceSelectDelegate : public QItemDelegate
  * for Oracle databases. The user can then connect and add
  * tables from the database to the map canvas.
  */
-class QgsOracleSourceSelect : public QgsSourceSelect, private Ui::QgsDbSourceSelectBase
+class QgsOracleSourceSelect : public QgsAbstractDataSourceWidget, private Ui::QgsDbSourceSelectBase
 {
     Q_OBJECT
 

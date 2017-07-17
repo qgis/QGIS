@@ -55,13 +55,13 @@
 #include <QNetworkReply>
 
 QgsWMSSourceSelect::QgsWMSSourceSelect( QWidget *parent, Qt::WindowFlags fl, QgsProviderRegistry::WidgetMode widgetMode )
-  : QgsSourceSelect( parent, fl, widgetMode )
+  : QgsAbstractDataSourceWidget( parent, fl, widgetMode )
   , mDefaultCRS( GEO_EPSG_CRS_AUTHID )
   , mCurrentTileset( nullptr )
 {
   setupUi( this );
 
-  if ( QgsSourceSelect::widgetMode() != QgsProviderRegistry::WidgetMode::None )
+  if ( QgsAbstractDataSourceWidget::widgetMode() != QgsProviderRegistry::WidgetMode::None )
   {
     // For some obscure reason hiding does not work!
     // buttonBox->button( QDialogButtonBox::Close )->hide();
@@ -80,7 +80,7 @@ QgsWMSSourceSelect::QgsWMSSourceSelect( QWidget *parent, Qt::WindowFlags fl, Qgs
 
   mImageFormatGroup = new QButtonGroup;
 
-  if ( QgsSourceSelect::widgetMode( ) != QgsProviderRegistry::WidgetMode::Manager )
+  if ( QgsAbstractDataSourceWidget::widgetMode( ) != QgsProviderRegistry::WidgetMode::Manager )
   {
     buttonBox->addButton( mAddButton, QDialogButtonBox::ActionRole );
     connect( mAddButton, &QAbstractButton::clicked, this, &QgsWMSSourceSelect::addClicked );

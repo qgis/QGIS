@@ -11,7 +11,7 @@
 
 
 
-class QgsArcGisServiceSourceSelect : QgsSourceSelect, protected Ui::QgsArcGisServiceSourceSelectBase
+class QgsArcGisServiceSourceSelect : QgsAbstractDataSourceWidget, protected Ui::QgsArcGisServiceSourceSelectBase
 {
 %Docstring
  Base class for listing ArcGis layers available from a remote service.

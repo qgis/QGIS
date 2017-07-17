@@ -26,7 +26,7 @@
 #include "qgsguiutils.h"
 #include "qgscontexthelp.h"
 #include "qgsproviderregistry.h"
-#include "qgssourceselect.h"
+#include "qgsabstractdatasourcewidget.h"
 
 #include <QStringList>
 #include <QPushButton>
@@ -49,7 +49,7 @@ class QDomElement;
  * The user can then connect and add
  * layers from the WCS server to the map canvas.
  */
-class GUI_EXPORT QgsOWSSourceSelect : public QgsSourceSelect, protected Ui::QgsOWSSourceSelectBase
+class GUI_EXPORT QgsOWSSourceSelect : public QgsAbstractDataSourceWidget, protected Ui::QgsOWSSourceSelectBase
 {
     Q_OBJECT
 

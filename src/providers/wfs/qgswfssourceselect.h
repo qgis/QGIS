@@ -22,7 +22,7 @@
 #include "qgscontexthelp.h"
 #include "qgswfscapabilities.h"
 #include "qgsproviderregistry.h"
-#include "qgssourceselect.h"
+#include "qgsabstractdatasourcewidget.h"
 
 #include <QItemDelegate>
 #include <QStandardItemModel>
@@ -43,7 +43,7 @@ class QgsWFSItemDelegate : public QItemDelegate
 
 };
 
-class QgsWFSSourceSelect: public QgsSourceSelect, private Ui::QgsWFSSourceSelectBase
+class QgsWFSSourceSelect: public QgsAbstractDataSourceWidget, private Ui::QgsWFSSourceSelectBase
 {
     Q_OBJECT
 

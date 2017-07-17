@@ -1,5 +1,5 @@
 /***************************************************************************
-    qgssourceselect.h  -  base class for source selector widgets
+    qgsabstractdatasourcewidget.h  -  base class for source selector widgets
                              -------------------
     begin                : 10 July 2017
     original             : (C) 2017 by Alessandro Pasotti email  : apasotti at boundlessgeo dot com
@@ -15,8 +15,8 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef QGSSOURCESELECT_H
-#define QGSSOURCESELECT_H
+#ifndef QGSABSTRACTDATASOURCEWIDGET_H
+#define QGSABSTRACTDATASOURCEWIDGET_H
 #include "qgis_sip.h"
 #include "qgis.h"
 #include "qgis_gui.h"
@@ -33,17 +33,17 @@
  * and add layers.
  * \since QGIS 3.0
  */
-class GUI_EXPORT QgsSourceSelect : public QDialog
+class GUI_EXPORT QgsAbstractDataSourceWidget : public QDialog
 {
     Q_OBJECT
 
   public:
 
     //! Constructor
-    QgsSourceSelect( QWidget *parent SIP_TRANSFERTHIS = nullptr, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::None );
+    QgsAbstractDataSourceWidget( QWidget *parent SIP_TRANSFERTHIS = nullptr, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::None );
 
     //! Pure Virtual Destructor
-    virtual ~QgsSourceSelect( ) = 0;
+    virtual ~QgsAbstractDataSourceWidget( ) = 0;
 
     //! Return the widget mode
     QgsProviderRegistry::WidgetMode widgetMode( ) { return mWidgetMode; }
@@ -64,4 +64,4 @@ class GUI_EXPORT QgsSourceSelect : public QDialog
     QgsProviderRegistry::WidgetMode mWidgetMode;
 };
 
-#endif // QGSSOURCESELECT_H
+#endif // QGSABSTRACTDATASOURCEWIDGET_H

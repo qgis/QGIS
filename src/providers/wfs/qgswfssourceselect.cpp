@@ -49,13 +49,13 @@ enum
 };
 
 QgsWFSSourceSelect::QgsWFSSourceSelect( QWidget *parent, Qt::WindowFlags fl, QgsProviderRegistry::WidgetMode widgetMode )
-  : QgsSourceSelect( parent, fl, widgetMode )
+  : QgsAbstractDataSourceWidget( parent, fl, widgetMode )
   , mCapabilities( nullptr )
   , mSQLComposerDialog( nullptr )
 {
   setupUi( this );
 
-  if ( QgsSourceSelect::widgetMode( ) != QgsProviderRegistry::WidgetMode::None )
+  if ( QgsAbstractDataSourceWidget::widgetMode( ) != QgsProviderRegistry::WidgetMode::None )
   {
     // For some obscure reason hiding does not work!
     // buttonBox->button( QDialogButtonBox::Close )->hide();
@@ -408,7 +408,7 @@ void QgsWFSSourceSelect::addLayer()
     emit addWfsLayer( mUri, layerName );
   }
 
-  if ( ! mHoldDialogOpen->isChecked() && QgsSourceSelect::widgetMode( ) == QgsProviderRegistry::WidgetMode::None )
+  if ( ! mHoldDialogOpen->isChecked() && QgsAbstractDataSourceWidget::widgetMode( ) == QgsProviderRegistry::WidgetMode::None )
   {
     accept();
   }
