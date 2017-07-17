@@ -77,6 +77,7 @@
 #include <qgscomposition.h>
 #include <qgslayerstylingwidget.h>
 #include "qgstaskmanager.h"
+#include "qgsziputils.h"
 
 #include <QNetworkReply>
 #include <QNetworkProxy>
@@ -5271,8 +5272,6 @@ void QgisApp::enableProjectMacros()
   */
 bool QgisApp::addProject( const QString &projectFile )
 {
-  bool zip = ( QFileInfo( projectFile ).suffix() == "qgz" );
-
   // close the previous opened project if any
   closeProject();
 
@@ -5285,9 +5284,7 @@ bool QgisApp::addProject( const QString &projectFile )
   bool autoSetupOnFirstLayer = mLayerTreeCanvasBridge->autoSetupOnFirstLayer();
   mLayerTreeCanvasBridge->setAutoSetupOnFirstLayer( false );
 
-  bool readOk = QgsProject::instance()->read( projectFile );
-
-  if ( !readOk && !zip )
+  if ( !QgsProject::instance()->read( projectFile ) && !QgsZipUtils::isZipFile( projectFile ) )
   {
     QString backupFile = projectFile + "~";
     QString loadBackupPrompt;
@@ -5451,11 +5448,12 @@ bool QgisApp::fileSave()
       if ( fullPath.suffix().compare( QLatin1String( "qgs" ), Qt::CaseInsensitive ) != 0 )
         fullPath.setFile( fullPath.filePath() + ".qgs" );
     }
+
+    QgsProject::instance()->setFileName( fullPath.filePath() );
   }
   else
   {
     QFileInfo fi( QgsProject::instance()->fileName() );
-
     fullPath = fi.absoluteFilePath();
     if ( fi.exists() && !mProjectLastModified.isNull() && mProjectLastModified != fi.lastModified() )
     {
@@ -5479,23 +5477,20 @@ bool QgisApp::fileSave()
     }
   }
 
-  bool writeOk = QgsProject::instance()->write( fullPath.filePath() );
-  QString writtenFileName = QgsProject::instance()->fileName();
-
-  if ( writeOk )
+  if ( QgsProject::instance()->write() )
   {
     setTitleBarText_( *this ); // update title bar
-    mStatusBar->showMessage( tr( "Saved project to: %1" ).arg( QDir::toNativeSeparators( writtenFileName ) ), 5000 );
+    mStatusBar->showMessage( tr( "Saved project to: %1" ).arg( QDir::toNativeSeparators( QgsProject::instance()->fileName() ) ), 5000 );
 
     saveRecentProjectPath( fullPath.filePath() );
 
-    QFileInfo fi( writtenFileName );
+    QFileInfo fi( QgsProject::instance()->fileName() );
     mProjectLastModified = fi.lastModified();
   }
   else
   {
     QMessageBox::critical( this,
-                           tr( "Unable to save project %1" ).arg( QDir::toNativeSeparators( writtenFileName ) ),
+                           tr( "Unable to save project %1" ).arg( QDir::toNativeSeparators( QgsProject::instance()->fileName() ) ),
                            QgsProject::instance()->error() );
     return false;
   }
@@ -5540,12 +5535,12 @@ void QgisApp::fileSaveAs()
       fullPath.setFile( fullPath.filePath() + ".qgs" );
   }
 
-  bool writeOk = QgsProject::instance()->write( fullPath.filePath() );
+  QgsProject::instance()->setFileName( fullPath.filePath() );
 
-  if ( writeOk )
+  if ( QgsProject::instance()->write() )
   {
     setTitleBarText_( *this ); // update title bar
-    mStatusBar->showMessage( tr( "Saved project to: %1" ).arg( QDir::toNativeSeparators( fullPath.filePath() ) ), 5000 );
+    mStatusBar->showMessage( tr( "Saved project to: %1" ).arg( QDir::toNativeSeparators( QgsProject::instance()->fileName() ) ), 5000 );
     // add this to the list of recently used project files
     saveRecentProjectPath( fullPath.filePath() );
     mProjectLastModified = fullPath.lastModified();
