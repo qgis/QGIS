@@ -12,7 +12,7 @@
 class QgsArchive
 {
 %Docstring
- Class allowing to manage the zip/unzip actions on project
+ Class allowing to manage the zip/unzip actions
 .. versionadded:: 3.0
 %End
 
@@ -85,6 +85,10 @@ class QgsArchive
 
 class QgsProjectArchive : QgsArchive
 {
+%Docstring
+ Class allowing to manage the zip/unzip actions on project file
+.. versionadded:: 3.0
+%End
 
 %TypeHeaderCode
 #include "qgsarchive.h"

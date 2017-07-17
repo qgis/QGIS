@@ -28,7 +28,7 @@
 /**
  * \class QgsArchive
  * \ingroup core
- * \brief Class allowing to manage the zip/unzip actions on project
+ * \brief Class allowing to manage the zip/unzip actions
  * \since QGIS 3.0
  */
 class CORE_EXPORT QgsArchive
@@ -101,6 +101,12 @@ class CORE_EXPORT QgsArchive
 #endif
 };
 
+/**
+ * \class QgsProjectArchive
+ * \ingroup core
+ * \brief Class allowing to manage the zip/unzip actions on project file
+ * \since QGIS 3.0
+ */
 class  CORE_EXPORT QgsProjectArchive : public QgsArchive
 {
   public:
