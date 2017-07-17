@@ -89,6 +89,8 @@ from .SelectByAttribute import SelectByAttribute
 from .SelectByExpression import SelectByExpression
 from .ServiceAreaFromLayer import ServiceAreaFromLayer
 from .ServiceAreaFromPoint import ServiceAreaFromPoint
+from .SetMValue import SetMValue
+from .SetZValue import SetZValue
 from .ShortestPathLayerToPoint import ShortestPathLayerToPoint
 from .ShortestPathPointToLayer import ShortestPathPointToLayer
 from .ShortestPathPointToPoint import ShortestPathPointToPoint
@@ -276,6 +278,8 @@ class QGISAlgorithmProvider(QgsProcessingProvider):
                 SelectByExpression(),
                 ServiceAreaFromLayer(),
                 ServiceAreaFromPoint(),
+                SetMValue(),
+                SetZValue(),
                 ShortestPathLayerToPoint(),
                 ShortestPathPointToLayer(),
                 ShortestPathPointToPoint(),

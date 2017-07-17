@@ -522,6 +522,30 @@ tests:
         name: expected/multiline_boundary.gml
         type: vector
 
+  - algorithm: qgis:setmvalue
+    name: Set M Value
+    params:
+      INPUT:
+        name: points.gml
+        type: vector
+      M_VALUE: 7
+    results:
+      OUTPUT:
+        name: expected/set_m_value.shp
+        type: vector
+
+  - algorithm: qgis:setzvalue
+    name: Set Z Value
+    params:
+      INPUT:
+        name: points.gml
+        type: vector
+      Z_VALUE: 6
+    results:
+      OUTPUT:
+        name: expected/set_z_value.shp
+        type: vector
+
   - algorithm: qgis:pointonsurface
     name: Point on polygon surface
     params:
