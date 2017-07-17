@@ -302,7 +302,6 @@ SET(QGIS_GUI_SRCS
   qgsoptionsdialogbase.cpp
   qgsorderbydialog.cpp
   qgsowssourceselect.cpp
-  qgsarcgisservicesourceselect.cpp
   qgspanelwidget.cpp
   qgspanelwidgetstack.cpp
   qgspasswordlineedit.cpp
@@ -458,7 +457,6 @@ SET(QGIS_GUI_MOC_HDRS
   qgsoptionswidgetfactory.h
   qgsorderbydialog.h
   qgsowssourceselect.h
-  qgsarcgisservicesourceselect.h
   qgspanelwidget.h
   qgspanelwidgetstack.h
   qgspasswordlineedit.h

@@ -247,7 +247,6 @@ Q_GUI_EXPORT extern int qt_defaultDpiX();
 #include "qgsshortcutsmanager.h"
 #include "qgssinglebandgrayrenderer.h"
 #include "qgssnappingwidget.h"
-#include "qgsarcgisservicesourceselect.h"
 #include "qgsstatisticalsummarydockwidget.h"
 #include "qgsstatusbar.h"
 #include "qgsstatusbarcoordinateswidget.h"

@@ -16,25 +16,12 @@
 #ifndef QGSARCGISSERVICESOURCESELECT_H
 #define QGSARCGISSERVICESOURCESELECT_H
 
-/// @cond PRIVATE
-
-//
-//  W A R N I N G
-//  -------------
-//
-// This file is not part of the QGIS API.  It exists purely as an
-// implementation detail.  This header file may change from version to
-// version without notice, or even be removed.
-//
-
-
 #define SIP_NO_FILE
 
 #include "ui_qgsarcgisservicesourceselectbase.h"
 #include "qgsrectangle.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgsabstractdatasourcewidget.h"
-#include "qgis_gui.h"
 
 class QStandardItemModel;
 class QSortFilterProxyModel;
@@ -44,7 +31,7 @@ class QgsOwsConnection;
 /**
  * Base class for listing ArcGis layers available from a remote service.
  */
-class GUI_EXPORT QgsArcGisServiceSourceSelect : public QgsAbstractDataSourceWidget, protected Ui::QgsArcGisServiceSourceSelectBase
+class QgsArcGisServiceSourceSelect : public QgsAbstractDataSourceWidget, protected Ui::QgsArcGisServiceSourceSelectBase
 {
     Q_OBJECT
 
