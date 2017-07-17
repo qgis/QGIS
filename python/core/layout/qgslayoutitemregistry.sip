@@ -101,6 +101,9 @@ class QgsLayoutItemRegistry : QObject
 
       // known
       LayoutPage,
+      LayoutRectangle,
+      LayoutEllipse,
+      LayoutTriangle,
 
       // item
       PluginItem,

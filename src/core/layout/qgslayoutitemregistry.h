@@ -183,6 +183,9 @@ class CORE_EXPORT QgsLayoutItemRegistry : public QObject
 
       // known item types
       LayoutPage, //!< Page items
+      LayoutRectangle, //!< Rectangular shape item
+      LayoutEllipse, //!< Ellipse shape item
+      LayoutTriangle, //!< Triangle shape item
 
       // item types provided by plugins
       PluginItem, //!< Starting point for plugin item types

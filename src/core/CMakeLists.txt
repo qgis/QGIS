@@ -354,6 +354,7 @@ SET(QGIS_CORE_SRCS
   layout/qgslayoutitem.cpp
   layout/qgslayoutitemmap.cpp
   layout/qgslayoutitemregistry.cpp
+  layout/qgslayoutitemshape.cpp
   layout/qgslayoutmeasurement.cpp
   layout/qgslayoutmeasurementconverter.cpp
   layout/qgslayoutobject.cpp
@@ -677,6 +678,7 @@ SET(QGIS_CORE_MOC_HDRS
   layout/qgslayoutitem.h
   layout/qgslayoutitemmap.h
   layout/qgslayoutitemregistry.h
+  layout/qgslayoutitemshape.h
   layout/qgslayoutobject.h
 
   symbology-ng/qgscptcityarchive.h
