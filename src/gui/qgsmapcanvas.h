@@ -814,6 +814,7 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     QgsMapRendererCache *mCache = nullptr;
 
     QTimer *mResizeTimer = nullptr;
+    QTimer *mRefreshTimer = nullptr;
 
     QgsPreviewEffect *mPreviewEffect = nullptr;
 

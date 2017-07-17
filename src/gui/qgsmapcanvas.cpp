@@ -133,6 +133,10 @@ QgsMapCanvas::QgsMapCanvas( QWidget *parent )
   mResizeTimer->setSingleShot( true );
   connect( mResizeTimer, &QTimer::timeout, this, &QgsMapCanvas::refresh );
 
+  mRefreshTimer = new QTimer( this );
+  mRefreshTimer->setSingleShot( true );
+  connect( mRefreshTimer, &QTimer::timeout, this, &QgsMapCanvas::refreshMap );
+
   // create map canvas item which will show the map
   mMap = new QgsMapCanvasMap( this );
 
@@ -493,7 +497,7 @@ void QgsMapCanvas::refresh()
   QgsDebugMsg( "CANVAS refresh scheduling" );
 
   // schedule a refresh
-  QTimer::singleShot( 1, this, SLOT( refreshMap() ) );
+  mRefreshTimer->start( 1 );
 } // refresh
 
 void QgsMapCanvas::refreshMap()
