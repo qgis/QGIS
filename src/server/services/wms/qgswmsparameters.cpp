@@ -404,7 +404,6 @@ namespace QgsWms
   {
     mRequestParameters = parameters;
 
-    log( "load WMS Request parameters:" );
     const QMetaEnum metaEnum( QMetaEnum::fromType<ParameterName>() );
     foreach ( QString key, parameters.keys() )
     {
@@ -415,7 +414,6 @@ namespace QgsWms
         if ( value.canConvert( mParameters[name].mType ) )
         {
           mParameters[name].mValue = value;
-          log( " - " + key + " : " + parameters[key] );
         }
         else
         {
@@ -716,10 +714,10 @@ namespace QgsWms
   {
     QString fStr = infoFormatAsString();
 
-    if ( fStr.isEmpty() )
-      return Format::NONE;
-
     Format f = Format::TEXT;
+    if ( fStr.isEmpty() )
+      return f;
+
     if ( fStr.startsWith( QLatin1String( "text/xml" ), Qt::CaseInsensitive ) )
       f = Format::XML;
     else if ( fStr.startsWith( QLatin1String( "text/html" ), Qt::CaseInsensitive ) )
@@ -728,6 +726,18 @@ namespace QgsWms
       f = Format::GML;
 
     return f;
+  }
+
+  int QgsWmsParameters::infoFormatVersion() const
+  {
+    if ( infoFormat() != Format::GML )
+      return -1;
+
+    QString fStr = infoFormatAsString();
+    if ( fStr.startsWith( QLatin1String( "application/vnd.ogc.gml/3" ), Qt::CaseInsensitive ) )
+      return 3;
+    else
+      return 2;
   }
 
   QString QgsWmsParameters::i() const

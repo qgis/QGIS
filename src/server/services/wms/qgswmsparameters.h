@@ -276,6 +276,12 @@ namespace QgsWms
        */
       Format infoFormat() const;
 
+      /** Returns the infoFormat version for GML. If the INFO_FORMAT is not GML,
+       *  then the default value is -1.
+       * \returns infoFormat version
+       */
+      int infoFormatVersion() const;
+
       /** Returns I parameter or an empty string if not defined.
        * \returns i parameter
        */

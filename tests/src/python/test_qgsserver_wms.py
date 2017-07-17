@@ -69,7 +69,7 @@ class TestQgsServerWMS(QgsServerTestBase):
         for request in ('GetCapabilities', 'GetProjectSettings', 'GetContext'):
             self.wms_request_compare(request)
 
-        # Test getfeatureinfo response xml (default info_format)
+        # Test getfeatureinfo response xml
         self.wms_request_compare('GetFeatureInfo',
                                  '&layers=testlayer%20%C3%A8%C3%A9&styles=&' +
                                  'info_format=text%2Fxml&transparent=true&' +
@@ -87,10 +87,10 @@ class TestQgsServerWMS(QgsServerTestBase):
                                  'query_layers=testlayer%20%C3%A8%C3%A9&X=190&Y=320',
                                  'wms_getfeatureinfo-text-html')
 
-        # Test getfeatureinfo response text
+        # Test getfeatureinfo default info_format
         self.wms_request_compare('GetFeatureInfo',
                                  '&layers=testlayer%20%C3%A8%C3%A9&styles=&' +
-                                 'info_format=text%2Fplain&transparent=true&' +
+                                 'transparent=true&' +
                                  'width=600&height=400&srs=EPSG%3A3857&bbox=913190.6389747962%2C' +
                                  '5606005.488876367%2C913235.426296057%2C5606035.347090538&' +
                                  'query_layers=testlayer%20%C3%A8%C3%A9&X=190&Y=320',
