@@ -22,12 +22,12 @@
 #include "qgsgraphbuilderinterface.h"
 
 #include "qgsfeatureiterator.h"
-#include <qgsvectorlayer.h>
-#include <qgsvectordataprovider.h>
-#include <qgspoint.h>
-#include <qgsgeometry.h>
-#include <qgsdistancearea.h>
-#include <qgswkbtypes.h>
+#include "qgsfeaturesource.h"
+#include "qgsvectordataprovider.h"
+#include "qgspoint.h"
+#include "qgsgeometry.h"
+#include "qgsdistancearea.h"
+#include "qgswkbtypes.h"
 
 #include <QString>
 #include <QtAlgorithms>
@@ -102,7 +102,7 @@ bool TiePointInfoCompare( const TiePointInfo &a, const TiePointInfo &b )
   return a.mFirstPoint.x() == b.mFirstPoint.x() ? a.mFirstPoint.y() < b.mFirstPoint.y() : a.mFirstPoint.x() < b.mFirstPoint.x();
 }
 
-QgsVectorLayerDirector::QgsVectorLayerDirector( QgsVectorLayer *myLayer,
+QgsVectorLayerDirector::QgsVectorLayerDirector( QgsFeatureSource *source,
     int directionFieldId,
     const QString &directDirectionValue,
     const QString &reverseDirectionValue,
@@ -110,7 +110,7 @@ QgsVectorLayerDirector::QgsVectorLayerDirector( QgsVectorLayer *myLayer,
     const Direction defaultDirection
                                               )
 {
-  mVectorLayer            = myLayer;
+  mSource                 = source;
   mDirectionFieldId       = directionFieldId;
   mDirectDirectionValue   = directDirectionValue;
   mReverseDirectionValue  = reverseDirectionValue;
@@ -124,25 +124,20 @@ QString QgsVectorLayerDirector::name() const
 }
 
 void QgsVectorLayerDirector::makeGraph( QgsGraphBuilderInterface *builder, const QVector< QgsPointXY > &additionalPoints,
-                                        QVector< QgsPointXY > &snappedPoints ) const
+                                        QVector< QgsPointXY > &snappedPoints, QgsFeedback *feedback ) const
 {
-  QgsVectorLayer *vl = mVectorLayer;
-
-  if ( !vl )
-    return;
-
-  int featureCount = ( int ) vl->featureCount() * 2;
+  int featureCount = ( int ) mSource->featureCount() * 2;
   int step = 0;
 
   QgsCoordinateTransform ct;
-  ct.setSourceCrs( vl->crs() );
+  ct.setSourceCrs( mSource->sourceCrs() );
   if ( builder->coordinateTransformationEnabled() )
   {
     ct.setDestinationCrs( builder->destinationCrs() );
   }
   else
   {
-    ct.setDestinationCrs( vl->crs() );
+    ct.setDestinationCrs( mSource->sourceCrs() );
   }
 
   snappedPoints = QVector< QgsPointXY >( additionalPoints.size(), QgsPointXY( 0.0, 0.0 ) );
@@ -156,13 +151,18 @@ void QgsVectorLayerDirector::makeGraph( QgsGraphBuilderInterface *builder, const
   //Graph's points;
   QVector< QgsPointXY > points;
 
-  QgsFeatureIterator fit = vl->getFeatures( QgsFeatureRequest().setSubsetOfAttributes( QgsAttributeList() ) );
+  QgsFeatureIterator fit = mSource->getFeatures( QgsFeatureRequest().setSubsetOfAttributes( QgsAttributeList() ) );
 
   // begin: tie points to the graph
   QgsAttributeList la;
   QgsFeature feature;
   while ( fit.nextFeature( feature ) )
   {
+    if ( feedback && feedback->isCanceled() )
+    {
+      return;
+    }
+
     QgsMultiPolyline mpl;
     if ( QgsWkbTypes::flatType( feature.geometry().geometry()->wkbType() ) == QgsWkbTypes::MultiLineString )
       mpl = feature.geometry().asMultiPolyline();
@@ -212,7 +212,11 @@ void QgsVectorLayerDirector::makeGraph( QgsGraphBuilderInterface *builder, const
         isFirstPoint = false;
       }
     }
-    emit buildProgress( ++step, featureCount );
+    if ( feedback )
+    {
+      feedback->setProgress( 100.0 * static_cast< double >( ++step ) / featureCount );
+    }
+
   }
   // end: tie points to graph
 
@@ -276,9 +280,14 @@ void QgsVectorLayerDirector::makeGraph( QgsGraphBuilderInterface *builder, const
   } // end fill attribute list 'la'
 
   // begin graph construction
-  fit = vl->getFeatures( QgsFeatureRequest().setSubsetOfAttributes( la ) );
+  fit = mSource->getFeatures( QgsFeatureRequest().setSubsetOfAttributes( la ) );
   while ( fit.nextFeature( feature ) )
   {
+    if ( feedback && feedback->isCanceled() )
+    {
+      return;
+    }
+
     Direction directionType = mDefaultDirection;
 
     // What direction have feature?
@@ -387,6 +396,10 @@ void QgsVectorLayerDirector::makeGraph( QgsGraphBuilderInterface *builder, const
         isFirstPoint = false;
       } // for (it = pl.begin(); it != pl.end(); ++it)
     }
-    emit buildProgress( ++step, featureCount );
-  } // while( vl->nextFeature(feature) )
+    if ( feedback )
+    {
+      feedback->setProgress( 100.0 * static_cast< double >( ++step ) / featureCount );
+    }
+
+  } // while( mSource->nextFeature(feature) )
 } // makeGraph( QgsGraphBuilderInterface *builder, const QVector< QgsPointXY >& additionalPoints, QVector< QgsPointXY >& tiedPoint )
