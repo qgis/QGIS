@@ -665,7 +665,7 @@ void TestQgsProcessing::context()
   QString id = v1->id();
   delete v1;
   QVERIFY( !context2.temporaryLayerStore()->mapLayer( id ) );
-  QVERIFY( !context2.takeResultLayer( v1->id() ) );
+  QVERIFY( !context2.takeResultLayer( id ) );
   result = context2.takeResultLayer( v2->id() );
   QCOMPARE( result, v2 );
   id = v2->id();
