@@ -61,7 +61,6 @@ QgsWFSSourceSelect::QgsWFSSourceSelect( QWidget *parent, Qt::WindowFlags fl, Qgs
     // For some obscure reason hiding does not work!
     // buttonBox->button( QDialogButtonBox::Close )->hide();
     buttonBox->removeButton( buttonBox->button( QDialogButtonBox::Close ) );
-    mHoldDialogOpen->setHidden( true );
     mHoldDialogOpen->hide();
   }
 
@@ -405,7 +404,7 @@ void QgsWFSSourceSelect::addLayer()
     emit addWfsLayer( mUri, layerName );
   }
 
-  if ( ! mHoldDialogOpen->isChecked() && mWidgetMode == QgsProviderRegistry::WidgetMode::None )
+  if ( !mHoldDialogOpen->isChecked() && mWidgetMode == QgsProviderRegistry::WidgetMode::None )
   {
     accept();
   }

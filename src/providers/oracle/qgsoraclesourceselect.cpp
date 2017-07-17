@@ -174,9 +174,10 @@ QgsOracleSourceSelect::QgsOracleSourceSelect( QWidget *parent, Qt::WindowFlags f
 {
   setupUi( this );
 
-  if ( mWidgetMode == QgsProviderRegistry::WidgetMode::Embedded )
+  if ( mWidgetMode != QgsProviderRegistry::WidgetMode::None )
   {
-    buttonBox->button( QDialogButtonBox::Close )->hide();
+    buttonBox->removeButton( buttonBox->button( QDialogButtonBox::Close ) );
+    mHoldDialogOpen->hide();
   }
   else
   {
@@ -190,11 +191,14 @@ QgsOracleSourceSelect::QgsOracleSourceSelect( QWidget *parent, Qt::WindowFlags f
   mBuildQueryButton->setToolTip( tr( "Set Filter" ) );
   mBuildQueryButton->setDisabled( true );
 
-  buttonBox->addButton( mAddButton, QDialogButtonBox::ActionRole );
-  connect( mAddButton, SIGNAL( clicked() ), this, SLOT( addTables() ) );
+  if ( mWidgetMode != QgsProviderRegistry::WidgetMode::Manager )
+  {
+    buttonBox->addButton( mAddButton, QDialogButtonBox::ActionRole );
+    connect( mAddButton, &QAbstractButton::clicked, this, &QgsOracleSourceSelect::addTables );
 
-  buttonBox->addButton( mBuildQueryButton, QDialogButtonBox::ActionRole );
-  connect( mBuildQueryButton, SIGNAL( clicked() ), this, SLOT( buildQuery() ) );
+    buttonBox->addButton( mBuildQueryButton, QDialogButtonBox::ActionRole );
+    connect( mBuildQueryButton, &QAbstractButton::clicked, this, &QgsOracleSourceSelect::buildQuery );
+  }
 
   mSearchModeComboBox->addItem( tr( "Wildcard" ) );
   mSearchModeComboBox->addItem( tr( "RegExp" ) );
@@ -220,7 +224,7 @@ QgsOracleSourceSelect::QgsOracleSourceSelect( QWidget *parent, Qt::WindowFlags f
   mTablesTreeView->setEditTriggers( QAbstractItemView::CurrentChanged );
   mTablesTreeView->setItemDelegate( mTablesTreeDelegate );
 
-  connect( mTablesTreeView->selectionModel(), SIGNAL( selectionChanged( const QItemSelection &, const QItemSelection & ) ), this, SLOT( treeWidgetSelectionChanged( const QItemSelection &, const QItemSelection & ) ) );
+  connect( mTablesTreeView->selectionModel(), &QItemSelectionModel::selectionChanged, this, &QgsOracleSourceSelect::treeWidgetSelectionChanged );
 
   QgsSettings settings;
   mTablesTreeView->setSelectionMode( settings.value( "qgis/addOracleDC", false ).toBool() ?
@@ -490,7 +494,7 @@ void QgsOracleSourceSelect::addTables()
   else
   {
     emit addDatabaseLayers( mSelectedTables, "oracle" );
-    if ( !mHoldDialogOpen->isChecked() )
+    if ( !mHoldDialogOpen->isChecked() && mWidgetMode == QgsProviderRegistry::WidgetMode::None )
     {
       accept();
     }

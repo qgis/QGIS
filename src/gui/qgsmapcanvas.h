@@ -729,6 +729,7 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
      */
     void connectNotify( const char *signal ) override;
 #endif
+
     //! Make sure the datum transform store is properly populated
     void updateDatumTransformEntries();
 
