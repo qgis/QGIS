@@ -23,7 +23,7 @@ QgsGeoNodeConnection::QgsGeoNodeConnection( const QString &connName )
   : QgsGeoCmsConnection( QStringLiteral( "GeoNode" ), connName )
 {
   QgsDebugMsg( "theConnName = " + connName );
-  QgsDebugMsg( QString( "encodedUri: '%1'." ).arg( QString( mUri.encodedUri() ) ) );
+  QgsDebugMsg( QString( "encodedUri: '%1'." ).arg( QString( uri().encodedUri() ) ) );
 }
 
 QgsGeoNodeConnection::~QgsGeoNodeConnection()

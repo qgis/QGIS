@@ -13,11 +13,8 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsproviderregistry.h"
 #include "qgsowsdataitems.h"
 #include "qgslogger.h"
-#include "qgsnewhttpconnection.h"
-#include "qgsgeonodenewconnection.h"
 #include "qgsgeonodedataitems.h"
 #include "qgsgeocmsdataitems.h"
 

@@ -96,3 +96,28 @@ void QgsGeoCmsConnection::setSelectedConnection( const QString &geoCMSName, cons
   QgsSettings settings;
   settings.setValue( "qgis/connections-" + geoCMSName.toLower() + "/selected", name );
 }
+
+QString QgsGeoCmsConnection::geoCMSName() const
+{
+  return mGeoCMSName;
+}
+
+void QgsGeoCmsConnection::setGeoCMSName( const QString &geoCMSName )
+{
+  mGeoCMSName = geoCMSName;
+}
+
+QString QgsGeoCmsConnection::connName() const
+{
+  return mConnName;
+}
+
+void QgsGeoCmsConnection::setConnName( const QString &connName )
+{
+  mConnName = connName;
+}
+
+void QgsGeoCmsConnection::setUri( const QgsDataSourceUri &uri )
+{
+  mUri = uri;
+}

@@ -49,6 +49,17 @@ class CORE_EXPORT QgsGeoCmsConnection : public QObject
     //! Destructor
     ~QgsGeoCmsConnection();
 
+
+    // Getter and Setter
+    QString geoCMSName() const;
+    void setGeoCMSName( const QString &geoCMSName );
+
+    QString connName() const;
+    void setConnName( const QString &connName );
+
+    QgsDataSourceUri uri();
+    void setUri( const QgsDataSourceUri &uri );
+
     //! Returns the list of connections for the specified GeoCMS
     static QStringList connectionList( const QString &geoCMSName );
 
@@ -61,14 +72,12 @@ class CORE_EXPORT QgsGeoCmsConnection : public QObject
     //! Marks the specified connection for the specified GeoCMS as selected
     static void setSelectedConnection( const QString &geoCMSName, const QString &name );
 
+  private:
     //! The GeoCMS name
     QString mGeoCMSName;
 
     //! The connection name
     QString mConnName;
-
-    //! Getter for mUri
-    QgsDataSourceUri uri();
 
     //! Property of mUri
     QgsDataSourceUri mUri;

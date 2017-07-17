@@ -19,8 +19,6 @@
 #include "qgsdataitem.h"
 #include "qgsdataitemprovider.h"
 #include "qgsdataprovider.h"
-#include "qgsdatasourceuri.h"
-#include "qgsgeonodeconnection.h"
 
 
 //! Provider for Geonode root data item
