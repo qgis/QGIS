@@ -36,6 +36,8 @@
 #include "qgsogrutils.h"
 #include "qgsjsonutils.h"
 #include "qgssettings.h"
+#include "qgisapp.h"
+#include "qgsmapcanvas.h"
 
 QgsClipboard::QgsClipboard()
   : QObject()
@@ -59,6 +61,9 @@ void QgsClipboard::replaceWithCopyOf( QgsVectorLayer *src )
   mFeatureFields = src->fields();
   mFeatureClipboard = src->selectedFeatures();
   mCRS = src->crs();
+  layerDestroyed();
+  mSrcLayer = src;
+  connect( mSrcLayer, &QObject::destroyed, this, &QgsClipboard::layerDestroyed );
 
   QgsDebugMsg( "replaced QGis clipboard." );
 
@@ -73,9 +78,17 @@ void QgsClipboard::replaceWithCopyOf( QgsFeatureStore &featureStore )
   mFeatureFields = featureStore.fields();
   mFeatureClipboard = featureStore.features();
   mCRS = featureStore.crs();
+  disconnect( mSrcLayer, &QObject::destroyed, this, &QgsClipboard::layerDestroyed );
+  mSrcLayer = nullptr;
   setSystemClipboard();
   mUseSystemClipboard = false;
   emit changed();
+}
+
+void QgsClipboard::layerDestroyed()
+{
+  disconnect( mSrcLayer, &QObject::destroyed, this, &QgsClipboard::layerDestroyed );
+  mSrcLayer = nullptr;
 }
 
 QString QgsClipboard::generateClipboardText() const
@@ -264,7 +277,17 @@ bool QgsClipboard::isEmpty() const
 QgsFeatureList QgsClipboard::transformedCopyOf( const QgsCoordinateReferenceSystem &destCRS, const QgsFields &fields ) const
 {
   QgsFeatureList featureList = copyOf( fields );
-  QgsCoordinateTransform ct( crs(), destCRS );
+
+  QgsCoordinateTransform ct;
+  if ( mSrcLayer )
+  {
+    QgisApp::instance()->mapCanvas()->getDatumTransformInfo( mSrcLayer, crs().authid(), destCRS.authid() );
+    ct = QgisApp::instance()->mapCanvas()->mapSettings().datumTransformStore().transformation( mSrcLayer, crs().authid(), destCRS.authid() );
+  }
+  else
+  {
+    ct = QgsCoordinateTransform( crs(), destCRS );
+  }
 
   QgsDebugMsg( "transforming clipboard." );
   for ( QgsFeatureList::iterator iter = featureList.begin(); iter != featureList.end(); ++iter )

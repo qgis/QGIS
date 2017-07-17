@@ -148,6 +148,10 @@ class APP_EXPORT QgsClipboard : public QObject
     //! Emitted when content changed
     void changed();
 
+  private slots:
+    //! source layer destroyed
+    void layerDestroyed();
+
   private:
 
     /**
@@ -180,6 +184,7 @@ class APP_EXPORT QgsClipboard : public QObject
     QgsFeatureList mFeatureClipboard;
     QgsFields mFeatureFields;
     QgsCoordinateReferenceSystem mCRS;
+    QgsVectorLayer *mSrcLayer = nullptr;
 
     //! True when the data from the system clipboard should be read
     bool mUseSystemClipboard;

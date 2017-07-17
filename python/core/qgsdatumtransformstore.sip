@@ -36,12 +36,13 @@ class QgsDatumTransformStore
  :rtype: bool
 %End
 
-    QgsCoordinateTransform transformation( const QgsMapLayer *layer ) const;
+    QgsCoordinateTransform transformation( const QgsMapLayer *layer, QString srcAuthId = QString(), QString dstAuthId = QString() ) const;
 %Docstring
  Will return transform from layer's CRS to current destination CRS.
- Will emit datumTransformInfoRequested signal if the layer has no entry.
  :return: transformation associated with layer, or an invalid QgsCoordinateTransform
  if no transform is associated with the layer
+ \param srcAuthId source CRS (defaults to layer crs)
+ \param dstAuthId destination CRS (defaults to store's crs)
  :rtype: QgsCoordinateTransform
 %End
 
