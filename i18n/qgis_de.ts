@@ -34348,7 +34348,7 @@ Parser-Fehler:
         <translation>Rechtecke mit Schatten anzeigen (zur Fehlersuche)</translation>
     </message>
     <message>
-        <source>Show partials labels</source>
+        <source>Show partial labels</source>
         <translation>Teilweise Beschriftungen anzeigen</translation>
     </message>
     <message>
