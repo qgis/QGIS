@@ -57,6 +57,7 @@ class GUI_EXPORT QgsAbstractDataSourceWidget : public QDialog
   signals:
 
     //! Emitted when the provider's connections have changed
+    //! This signal is normally forwarded the app and used to refresh browser items
     void connectionsChanged();
 
   private:

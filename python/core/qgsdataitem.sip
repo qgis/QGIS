@@ -320,7 +320,7 @@ Refresh connections: update GUI and emit signal
     void stateChanged( QgsDataItem *item, QgsDataItem::State oldState );
     void connectionsChanged( );
 %Docstring
-Emitted when the provider's connections of the child items have changed
+open browsers
 %End
 
   protected slots:

@@ -52,7 +52,7 @@ The default implementation does nothing
 
     void connectionsChanged();
 %Docstring
-Emitted when the provider's connections have changed
+This signal is normally forwarded the app and used to refresh browser items
 %End
 
 };
