@@ -98,11 +98,6 @@ class QgsSpatiaLiteSourceSelect: public QgsAbstractDataSourceWidget, private Ui:
 
     void on_buttonBox_helpRequested() { QgsHelp::openHelp( QStringLiteral( "working_with_vector/supported_data.html#spatialite-layers" ) ); }
 
-  signals:
-    void addDatabaseLayers( QStringList const &paths, QString const &providerKey );
-    void progress( int, int );
-    void progressMessage( QString );
-
   private:
     enum Columns
     {

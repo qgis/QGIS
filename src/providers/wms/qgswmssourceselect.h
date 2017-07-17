@@ -188,11 +188,6 @@ class QgsWMSSourceSelect : public QgsAbstractDataSourceWidget, private Ui::QgsWM
 
     QList<QgsWmtsTileLayer> mTileLayers;
 
-  signals:
-    void addRasterLayer( QString const &rasterLayerPath,
-                         QString const &baseName,
-                         QString const &providerKey );
-    void connectionsChanged();
   private slots:
     void on_btnSearch_clicked();
     void on_btnAddWMS_clicked();

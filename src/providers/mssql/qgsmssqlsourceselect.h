@@ -79,7 +79,6 @@ class QgsMssqlSourceSelect : public QgsAbstractDataSourceWidget, private Ui::Qgs
     QString connectionInfo();
 
   signals:
-    void addDatabaseLayers( QStringList const &layerPathList, QString const &providerKey );
     void addGeometryColumn( const QgsMssqlLayerProperty & );
     void progress( int, int );
     void progressMessage( QString );

@@ -25,10 +25,10 @@
 #include "qgscoordinatereferencesystem.h"
 #include "qgscoordinatetransform.h"
 #include "qgslogger.h"
-#include "qgsmapcanvas.h"
 #include "qgsmanageconnectionsdialog.h"
 #include "qgsexception.h"
 #include "qgssettings.h"
+#include "qgsmapcanvas.h"
 
 #include <QItemDelegate>
 #include <QListWidgetItem>

@@ -23,15 +23,14 @@
 #include "qgssettings.h"
 #include "qgsproviderregistry.h"
 #include "qgsopenvectorlayerdialog.h"
-#include "qgsarcgisservicesourceselect.h"
+#include "qgsabstractdatasourcewidget.h"
 #include "qgsmapcanvas.h"
 
-
-QgsDataSourceManagerDialog::QgsDataSourceManagerDialog( QgsMapCanvas *mapCanvas, QWidget *parent, Qt::WindowFlags fl ) :
+QgsDataSourceManagerDialog::QgsDataSourceManagerDialog( QWidget *parent, QgsMapCanvas *canvas, Qt::WindowFlags fl ) :
   QgsOptionsDialogBase( QStringLiteral( "Data Source Manager" ), parent, fl ),
   ui( new Ui::QgsDataSourceManagerDialog ),
-  mMapCanvas( mapCanvas ),
-  mPreviousRow( -1 )
+  mPreviousRow( -1 ),
+  mMapCanvas( canvas )
 {
 
   ui->setupUi( this );
@@ -71,7 +70,7 @@ QgsDataSourceManagerDialog::QgsDataSourceManagerDialog( QgsMapCanvas *mapCanvas,
   mPageNames.append( QStringLiteral( "raster" ) );
 
   // Add data provider dialogs
-  QDialog *dlg = nullptr;
+  QWidget *dlg = nullptr;
 
   dlg = providerDialog( QStringLiteral( "delimitedtext" ), tr( "Delimited Text" ), QStringLiteral( "/mActionAddDelimitedTextLayer.svg" ) );
 
@@ -106,35 +105,11 @@ QgsDataSourceManagerDialog::QgsDataSourceManagerDialog( QgsMapCanvas *mapCanvas,
 
   addRasterProviderDialog( QStringLiteral( "wcs" ), tr( "WCS" ), QStringLiteral( "/mActionAddWcsLayer.svg" ) );
 
-  dlg = providerDialog( QStringLiteral( "WFS" ), tr( "WFS" ), QStringLiteral( "/mActionAddWfsLayer.svg" ) );
-
-  if ( dlg )
-  {
-    // Forward (if only a common interface for the signals had been used in the providers ...)
-    connect( dlg, SIGNAL( addWfsLayer( QString, QString ) ), this, SIGNAL( addWfsLayer( QString, QString ) ) );
-    connect( this, &QgsDataSourceManagerDialog::addWfsLayer, this,  [ = ]( const QString & vectorLayerPath, const QString & baseName )
-    {
-      this->vectorLayerAdded( vectorLayerPath, baseName, QStringLiteral( "WFS" ) );
-    } );
-    connect( dlg, SIGNAL( connectionsChanged( ) ), this, SIGNAL( connectionsChanged( ) ) );
-    connect( this,  SIGNAL( providerDialogsRefreshRequested( ) ), dlg, SLOT( refresh( ) ) );
-  }
+  addVectorProviderDialog( QStringLiteral( "WFS" ), tr( "WFS" ), QStringLiteral( "/mActionAddWfsLayer.svg" ) );
 
   addRasterProviderDialog( QStringLiteral( "arcgismapserver" ), tr( "ArcGIS Map Server" ), QStringLiteral( "/mActionAddAmsLayer.svg" ) );
 
-  QgsArcGisServiceSourceSelect *afss = dynamic_cast<QgsArcGisServiceSourceSelect *>( providerDialog( QStringLiteral( "arcgisfeatureserver" ),
-                                       tr( "ArcGIS Feature Server" ),
-                                       QStringLiteral( "/mActionAddAfsLayer.svg" ) ) );
-  if ( afss && mMapCanvas )
-  {
-    afss->setCurrentExtentAndCrs( mMapCanvas->extent(), mMapCanvas->mapSettings().destinationCrs() );
-    // Forward (if only a common interface for the signals had been used in the providers ...)
-    connect( afss, SIGNAL( addLayer( QString, QString ) ), this, SIGNAL( addAfsLayer( QString, QString ) ) );
-    connect( this,  SIGNAL( providerDialogsRefreshRequested( ) ), afss, SLOT( refresh( ) ) );
-    connect( this, &QgsDataSourceManagerDialog::addAfsLayer,
-             this, [ = ]( const QString & vectorLayerPath, const QString & baseName )
-    { this->vectorLayerAdded( vectorLayerPath, baseName, QStringLiteral( "arcgisfeatureserver" ) ); } );
-  }
+  addVectorProviderDialog( QStringLiteral( "arcgisfeatureserver" ), tr( "ArcGIS Feature Server" ), QStringLiteral( "/mActionAddAfsLayer.svg" ) );
 
 }
 
@@ -192,9 +167,9 @@ void QgsDataSourceManagerDialog::vectorLayersAdded( const QStringList &layerQStr
 }
 
 
-QDialog *QgsDataSourceManagerDialog::providerDialog( const QString providerKey, const QString providerName, const QString icon, QString title )
+QgsAbstractDataSourceWidget *QgsDataSourceManagerDialog::providerDialog( const QString providerKey, const QString providerName, const QString icon, QString title )
 {
-  QDialog *dlg = dynamic_cast<QDialog *>( QgsProviderRegistry::instance()->createSelectionWidget( providerKey, this, Qt::Widget, QgsProviderRegistry::WidgetMode::Embedded ) );
+  QgsAbstractDataSourceWidget *dlg = dynamic_cast<QgsAbstractDataSourceWidget *>( QgsProviderRegistry::instance()->createSelectionWidget( providerKey, this, Qt::Widget, QgsProviderRegistry::WidgetMode::Embedded ) );
   if ( !dlg )
   {
     QMessageBox::warning( this, providerName, tr( "Cannot get %1 select dialog from provider %2." ).arg( providerName, providerKey ) );
@@ -207,13 +182,19 @@ QDialog *QgsDataSourceManagerDialog::providerDialog( const QString providerKey, 
     QListWidgetItem *layerItem = new QListWidgetItem( providerName, ui->mOptionsListWidget );
     layerItem->setToolTip( title.isEmpty() ? tr( "Add %1 layer" ).arg( providerName ) : title );
     layerItem->setIcon( QgsApplication::getThemeIcon( icon ) );
+    // Set crs and extent from canvas
+    if ( mMapCanvas )
+    {
+      dlg->setCurrentExtent( mMapCanvas->extent() );
+      dlg->setCurrentCrs( mMapCanvas->mapSettings().destinationCrs( ) );
+    }
     return dlg;
   }
 }
 
 void QgsDataSourceManagerDialog::addDbProviderDialog( const QString providerKey, const QString providerName, const QString icon, QString title )
 {
-  QDialog *dlg = providerDialog( providerKey, providerName, icon, title );
+  QgsAbstractDataSourceWidget *dlg = providerDialog( providerKey, providerName, icon, title );
   if ( dlg )
   {
     connect( dlg, SIGNAL( addDatabaseLayers( QStringList const &, QString const & ) ),
@@ -229,12 +210,23 @@ void QgsDataSourceManagerDialog::addDbProviderDialog( const QString providerKey,
 
 void QgsDataSourceManagerDialog::addRasterProviderDialog( const QString providerKey, const QString providerName, const QString icon, QString title )
 {
-  QDialog *dlg = providerDialog( providerKey, providerName, icon, title );
+  QgsAbstractDataSourceWidget *dlg = providerDialog( providerKey, providerName, icon, title );
   if ( dlg )
   {
-    // Forward
     connect( dlg, SIGNAL( addRasterLayer( QString const &, QString const &, QString const & ) ),
              this, SIGNAL( addRasterLayer( QString const &, QString const &, QString const & ) ) );
     connect( dlg, SIGNAL( connectionsChanged( ) ), this, SIGNAL( connectionsChanged( ) ) );
+    connect( this,  SIGNAL( providerDialogsRefreshRequested( ) ), dlg, SLOT( refresh( ) ) );
+  }
+}
+
+void QgsDataSourceManagerDialog::addVectorProviderDialog( const QString providerKey, const QString providerName, const QString icon, QString title )
+{
+  QgsAbstractDataSourceWidget *dlg = providerDialog( providerKey, providerName, icon, title );
+  if ( dlg )
+  {
+    connect( dlg, &QgsAbstractDataSourceWidget::addVectorLayer, this, [ = ]( const QString & vectorLayerPath, const QString & baseName )
+    { this->vectorLayerAdded( vectorLayerPath, baseName, providerKey ); } );
+    connect( this,  SIGNAL( providerDialogsRefreshRequested( ) ), dlg, SLOT( refresh( ) ) );
   }
 }

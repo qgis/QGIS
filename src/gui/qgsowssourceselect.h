@@ -110,10 +110,7 @@ class GUI_EXPORT QgsOWSSourceSelect : public QgsAbstractDataSourceWidget, protec
     //! Add some default wms servers to the list
     void on_mAddDefaultButton_clicked();
 
-  signals:
-    void addRasterLayer( const QString &rasterLayerPath,
-                         const QString &baseName,
-                         const QString &providerKey );
+    void on_mDialogButtonBox_helpRequested() { QgsContextHelp::run( metaObject()->className() ); }
 
   protected:
 
@@ -224,6 +221,7 @@ class GUI_EXPORT QgsOWSSourceSelect : public QgsAbstractDataSourceWidget, protec
 
     //! URI for selected connection
     QgsDataSourceUri mUri;
+
 
   private:
     //! Selected CRS

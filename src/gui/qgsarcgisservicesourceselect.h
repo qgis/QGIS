@@ -13,8 +13,8 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef QGSARCGISSERVICESOURCESELECTDIALOG_H
-#define QGSARCGISSERVICESOURCESELECTDIALOG_H
+#ifndef QGSARCGISSERVICESOURCESELECT_H
+#define QGSARCGISSERVICESOURCESELECT_H
 
 /// @cond PRIVATE
 
@@ -26,6 +26,9 @@
 // implementation detail.  This header file may change from version to
 // version without notice, or even be removed.
 //
+
+
+#define SIP_NO_FILE
 
 #include "ui_qgsarcgisservicesourceselectbase.h"
 #include "qgsrectangle.h"
@@ -52,9 +55,8 @@ class GUI_EXPORT QgsArcGisServiceSourceSelect : public QgsAbstractDataSourceWidg
     //! Constructor
     QgsArcGisServiceSourceSelect( const QString &serviceName, ServiceType serviceType, QWidget *parent, Qt::WindowFlags fl, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::None );
 
-    ~QgsArcGisServiceSourceSelect();
-    //! Sets the current extent and CRS. Used to select an appropriate CRS and possibly to retrieve data only in the current extent
-    void setCurrentExtentAndCrs( const QgsRectangle &canvasExtent, const QgsCoordinateReferenceSystem &canvasCrs );
+    //! Destructor
+    ~QgsArcGisServiceSourceSelect() override;
 
   signals:
     //! Emitted when a layer is added from the dialog
@@ -89,6 +91,8 @@ class GUI_EXPORT QgsArcGisServiceSourceSelect : public QgsAbstractDataSourceWidg
     void populateImageEncodings( const QStringList &availableEncodings );
     //! Returns the selected image encoding.
     QString getSelectedImageEncoding() const;
+    //! Sets the current extent and CRS. Used to select an appropriate CRS and possibly to retrieve data only in the current extent
+    void setCurrentExtentAndCrs( const QgsRectangle &canvasExtent, const QgsCoordinateReferenceSystem &canvasCrs );
 
   private:
     void populateConnectionList();
@@ -122,4 +126,4 @@ class GUI_EXPORT QgsArcGisServiceSourceSelect : public QgsAbstractDataSourceWidg
 };
 
 
-#endif // QGSARCGISSERVICESOURCESELECTDIALOG_H
+#endif // QGSARCGISSERVICESOURCESELECT_H

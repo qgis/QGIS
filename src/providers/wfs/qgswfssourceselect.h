@@ -52,9 +52,6 @@ class QgsWFSSourceSelect: public QgsAbstractDataSourceWidget, private Ui::QgsWFS
     QgsWFSSourceSelect( QWidget *parent = nullptr, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::None );
     ~QgsWFSSourceSelect();
 
-  signals:
-    void addWfsLayer( const QString &uri, const QString &layerName );
-
   private:
     QgsWFSSourceSelect(); //default constructor is forbidden
     QgsProjectionSelectionDialog *mProjectionSelector = nullptr;

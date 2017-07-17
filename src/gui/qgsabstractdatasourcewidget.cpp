@@ -2,7 +2,8 @@
     qgsabstractdatasourcewidget.cpp  -  base class for source selector widgets
                              -------------------
     begin                : 10 July 2017
-    original             : (C) 2017 by Alessandro Pasotti email  : apasotti at boundlessgeo dot com
+    original             : (C) 2017 by Alessandro Pasotti
+    email                : apasotti at boundlessgeo dot com
 
  ***************************************************************************/
 
@@ -24,7 +25,27 @@ QgsAbstractDataSourceWidget::QgsAbstractDataSourceWidget( QWidget *parent, Qt::W
 
 }
 
-QgsAbstractDataSourceWidget::~QgsAbstractDataSourceWidget()
+QgsProviderRegistry::WidgetMode QgsAbstractDataSourceWidget::widgetMode() const
 {
+  return mWidgetMode;
+}
 
+void QgsAbstractDataSourceWidget::setCurrentCrs( const QgsCoordinateReferenceSystem &crs )
+{
+  mCurrentCrs = crs;
+}
+
+void QgsAbstractDataSourceWidget::setCurrentExtent( const QgsRectangle &extent )
+{
+  mCurrentExtent = extent;
+}
+
+QgsRectangle QgsAbstractDataSourceWidget::currentExtent() const
+{
+  return mCurrentExtent;
+}
+
+QgsCoordinateReferenceSystem QgsAbstractDataSourceWidget::currentCrs() const
+{
+  return mCurrentCrs;
 }

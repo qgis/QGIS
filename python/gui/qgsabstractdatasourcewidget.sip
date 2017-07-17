@@ -14,7 +14,7 @@ class QgsAbstractDataSourceWidget : QDialog
 {
 %Docstring
   Abstract base Data Source Widget to create connections and add layers
- This class must provide common functionality and the interface for all
+ This class provides common functionality and the interface for all
  source select dialogs used by data providers to configure data sources
  and add layers.
 .. versionadded:: 3.0
@@ -25,34 +25,79 @@ class QgsAbstractDataSourceWidget : QDialog
 %End
   public:
 
-    QgsAbstractDataSourceWidget( QWidget *parent /TransferThis/ = 0, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::None );
+    ~QgsAbstractDataSourceWidget( );
 %Docstring
-Constructor
+Destructor
 %End
 
-    virtual ~QgsAbstractDataSourceWidget( ) = 0;
-%Docstring
-Pure Virtual Destructor
-%End
-
-    QgsProviderRegistry::WidgetMode widgetMode( );
+    QgsProviderRegistry::WidgetMode widgetMode( ) const;
 %Docstring
 Return the widget mode
  :rtype: QgsProviderRegistry.WidgetMode
+%End
+
+    void setCurrentCrs( const QgsCoordinateReferenceSystem &crs );
+%Docstring
+ Set the current CRS
+ The CRS is normally the CRS of the map canvas, and it can be used
+ by the provider dialog to transform the extent and constraint the service
+%End
+
+    void setCurrentExtent( const QgsRectangle &extent );
+%Docstring
+ Set the current extent
+ The extent is normally the extent of the map canvas, and it can be used
+ by the provider dialog to constraint the service
+%End
+
+    QgsRectangle currentExtent( ) const;
+%Docstring
+Return the current extent
+ :rtype: QgsRectangle
+%End
+
+    QgsCoordinateReferenceSystem currentCrs( ) const;
+%Docstring
+Return the current CRS
+ :rtype: QgsCoordinateReferenceSystem
 %End
 
   public slots:
 
     virtual void refresh( );
 %Docstring
-The default implementation does nothing
+ Triggered when the provider's connections need to be refreshed
+ The default implementation does nothing
 %End
 
   signals:
 
     void connectionsChanged();
 %Docstring
-This signal is normally forwarded the app and used to refresh browser items
+ Emitted when the provider's connections have changed
+ This signal is normally forwarded the app and used to refresh browser items
+%End
+
+    void addDatabaseLayers( const QStringList &paths, const QString &providerKey );
+%Docstring
+Emitted when a DB layer has been selected for addition
+%End
+
+    void addRasterLayer( const QString &rasterLayerPath, const QString &baseName, const QString &providerKey );
+%Docstring
+Emitted when a raster layer has been selected for addition
+%End
+
+    void addVectorLayer( const QString &uri, const QString &layerName );
+%Docstring
+Emitted when a vector layer has been selected for addition
+%End
+
+  protected:
+
+    QgsAbstractDataSourceWidget( QWidget *parent /TransferThis/ = 0, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::None );
+%Docstring
+Constructor
 %End
 
 };

@@ -405,7 +405,7 @@ void QgsWFSSourceSelect::addLayer()
     mUri = QgsWFSDataSourceURI::build( connection.uri().uri(), typeName, pCrsString,
                                        sql, cbxFeatureCurrentViewExtent->isChecked() );
 
-    emit addWfsLayer( mUri, layerName );
+    emit addVectorLayer( mUri, layerName );
   }
 
   if ( ! mHoldDialogOpen->isChecked() && QgsAbstractDataSourceWidget::widgetMode( ) == QgsProviderRegistry::WidgetMode::None )

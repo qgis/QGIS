@@ -78,7 +78,6 @@ class QgsPgSourceSelect : public QgsAbstractDataSourceWidget, private Ui::QgsDbS
     QgsDataSourceUri dataSourceUri();
 
   signals:
-    void addDatabaseLayers( QStringList const &layerPathList, QString const &providerKey );
     void addGeometryColumn( const QgsPostgresLayerProperty & );
     void progress( int, int );
     void progressMessage( const QString & );

@@ -112,10 +112,7 @@ Stores the selected datasource whenerver it is changed
 Add some default wms servers to the list
 %End
 
-  signals:
-    void addRasterLayer( const QString &rasterLayerPath,
-                         const QString &baseName,
-                         const QString &providerKey );
+    void on_mDialogButtonBox_helpRequested();
 
   protected:
 
@@ -251,6 +248,7 @@ Returns currently selected time
 Returns currently selected cache load control
  :rtype: QNetworkRequest.CacheLoadControl
 %End
+
 
 
 

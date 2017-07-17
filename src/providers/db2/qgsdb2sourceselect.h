@@ -109,7 +109,6 @@ class QgsDb2SourceSelect : public QgsAbstractDataSourceWidget, private Ui::QgsDb
     QString connectionInfo();
 
   signals:
-    void addDatabaseLayers( QStringList const &layerPathList, QString const &providerKey );
     void addGeometryColumn( QgsDb2LayerProperty );
     void progress( int, int );
     void progressMessage( QString );

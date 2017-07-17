@@ -2,7 +2,8 @@
     qgsabstractdatasourcewidget.h  -  base class for source selector widgets
                              -------------------
     begin                : 10 July 2017
-    original             : (C) 2017 by Alessandro Pasotti email  : apasotti at boundlessgeo dot com
+    original             : (C) 2017 by Alessandro Pasotti
+    email                : apasotti at boundlessgeo dot com
 
  ***************************************************************************/
 
@@ -17,18 +18,20 @@
 
 #ifndef QGSABSTRACTDATASOURCEWIDGET_H
 #define QGSABSTRACTDATASOURCEWIDGET_H
+
 #include "qgis_sip.h"
 #include "qgis.h"
 #include "qgis_gui.h"
 
 #include "qgsproviderregistry.h"
 #include "qgsguiutils.h"
-
+#include "qgsrectangle.h"
+#include "qgscoordinatereferencesystem.h"
 #include <QDialog>
 
 /** \ingroup gui
  * \brief  Abstract base Data Source Widget to create connections and add layers
- * This class must provide common functionality and the interface for all
+ * This class provides common functionality and the interface for all
  * source select dialogs used by data providers to configure data sources
  * and add layers.
  * \since QGIS 3.0
@@ -39,30 +42,64 @@ class GUI_EXPORT QgsAbstractDataSourceWidget : public QDialog
 
   public:
 
-    //! Constructor
-    QgsAbstractDataSourceWidget( QWidget *parent SIP_TRANSFERTHIS = nullptr, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::None );
-
-    //! Pure Virtual Destructor
-    virtual ~QgsAbstractDataSourceWidget( ) = 0;
+    //! Destructor
+    ~QgsAbstractDataSourceWidget( ) = default;
 
     //! Return the widget mode
-    QgsProviderRegistry::WidgetMode widgetMode( ) { return mWidgetMode; }
+    QgsProviderRegistry::WidgetMode widgetMode( ) const;
+
+    /** Set the current CRS
+     * The CRS is normally the CRS of the map canvas, and it can be used
+     * by the provider dialog to transform the extent and constraint the service
+     */
+    void setCurrentCrs( const QgsCoordinateReferenceSystem &crs );
+
+    /** Set the current extent
+     * The extent is normally the extent of the map canvas, and it can be used
+     * by the provider dialog to constraint the service
+     */
+    void setCurrentExtent( const QgsRectangle &extent );
+
+    //! Return the current extent
+    QgsRectangle currentExtent( ) const;
+
+    //! Return the current CRS
+    QgsCoordinateReferenceSystem currentCrs( ) const;
 
   public slots:
 
-    //! Triggered when the provider's connections need to be refreshed
-    //! The default implementation does nothing
+    /** Triggered when the provider's connections need to be refreshed
+     * The default implementation does nothing
+     */
     virtual void refresh( ) {}
 
   signals:
 
-    //! Emitted when the provider's connections have changed
-    //! This signal is normally forwarded the app and used to refresh browser items
+    /** Emitted when the provider's connections have changed
+     * This signal is normally forwarded the app and used to refresh browser items
+     */
     void connectionsChanged();
+
+    //! Emitted when a DB layer has been selected for addition
+    void addDatabaseLayers( const QStringList &paths, const QString &providerKey );
+
+    //! Emitted when a raster layer has been selected for addition
+    void addRasterLayer( const QString &rasterLayerPath, const QString &baseName, const QString &providerKey );
+
+    //! Emitted when a vector layer has been selected for addition
+    void addVectorLayer( const QString &uri, const QString &layerName );
+
+  protected:
+
+    //! Constructor
+    QgsAbstractDataSourceWidget( QWidget *parent SIP_TRANSFERTHIS = nullptr, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::None );
 
   private:
 
     QgsProviderRegistry::WidgetMode mWidgetMode;
+    QgsCoordinateReferenceSystem mCurrentCrs;
+    QgsRectangle mCurrentExtent;
+
 };
 
 #endif // QGSABSTRACTDATASOURCEWIDGET_H

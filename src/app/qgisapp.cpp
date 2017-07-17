@@ -1596,7 +1596,7 @@ void QgisApp::dataSourceManager( QString pageName )
 {
   if ( ! mDataSourceManagerDialog )
   {
-    mDataSourceManagerDialog = new QgsDataSourceManagerDialog( mapCanvas( ), this );
+    mDataSourceManagerDialog = new QgsDataSourceManagerDialog( this, mapCanvas( ) );
     // Forward signals to this
     connect( this, &QgisApp::connectionsChanged, mDataSourceManagerDialog, &QgsDataSourceManagerDialog::refresh );
     connect( mDataSourceManagerDialog, &QgsDataSourceManagerDialog::connectionsChanged, this, &QgisApp::connectionsChanged );
