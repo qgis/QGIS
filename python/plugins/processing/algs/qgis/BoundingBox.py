@@ -29,24 +29,17 @@ import os
 
 from qgis.core import (QgsGeometry,
                        QgsWkbTypes,
-                       QgsFeatureSink,
-                       QgsProcessing,
-                       QgsProcessingException,
-                       QgsProcessingParameterFeatureSource,
-                       QgsProcessingParameterFeatureSink)
+                       QgsProcessingException)
 
 
 from qgis.PyQt.QtGui import QIcon
 
-from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
+from processing.algs.qgis.QgisAlgorithm import QgisFeatureBasedAlgorithm
 
 pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
 
-class BoundingBox(QgisAlgorithm):
-
-    INPUT_LAYER = 'INPUT_LAYER'
-    OUTPUT_LAYER = 'OUTPUT_LAYER'
+class BoundingBox(QgisFeatureBasedAlgorithm):
 
     def icon(self):
         return QIcon(os.path.join(pluginPath, 'images', 'ftools', 'matrix.png'))
@@ -57,39 +50,26 @@ class BoundingBox(QgisAlgorithm):
     def __init__(self):
         super().__init__()
 
-    def initAlgorithm(self, config=None):
-        self.addParameter(QgsProcessingParameterFeatureSource(self.INPUT_LAYER, self.tr('Input layer')))
-        self.addParameter(QgsProcessingParameterFeatureSink(self.OUTPUT_LAYER, self.tr('Bounds'), QgsProcessing.TypeVectorPolygon))
-
     def name(self):
         return 'boundingboxes'
 
     def displayName(self):
         return self.tr('Bounding boxes')
 
-    def processAlgorithm(self, parameters, context, feedback):
-        source = self.parameterAsSource(parameters, self.INPUT_LAYER, context)
+    def outputName(self):
+        return self.tr('Bounds')
 
-        (sink, dest_id) = self.parameterAsSink(parameters, self.OUTPUT_LAYER, context,
-                                               source.fields(), QgsWkbTypes.Polygon, source.sourceCrs())
+    def outputWkbType(self, inputWkb):
+        return QgsWkbTypes.Polygon
 
-        features = source.getFeatures()
-        total = 100.0 / source.featureCount() if source.featureCount() else 0
+    def processFeature(self, feature, feedback):
+        input_geometry = feature.geometry()
+        if input_geometry:
+            output_geometry = QgsGeometry.fromRect(input_geometry.boundingBox())
+            if not output_geometry:
+                raise QgsProcessingException(
+                    self.tr('Error calculating bounding box'))
 
-        for current, input_feature in enumerate(features):
-            if feedback.isCanceled():
-                break
-            output_feature = input_feature
-            input_geometry = input_feature.geometry()
-            if input_geometry:
-                output_geometry = QgsGeometry.fromRect(input_geometry.boundingBox())
-                if not output_geometry:
-                    raise QgsProcessingException(
-                        self.tr('Error calculating bounding box'))
+            feature.setGeometry(output_geometry)
 
-                output_feature.setGeometry(output_geometry)
-
-            sink.addFeature(output_feature, QgsFeatureSink.FastInsert)
-            feedback.setProgress(int(current * total))
-
-        return {self.OUTPUT_LAYER: dest_id}
+        return True
