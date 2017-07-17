@@ -546,6 +546,45 @@ tests:
         name: expected/set_z_value.shp
         type: vector
 
+  - algorithm: qgis:dropmzvalues
+    name: Drop M Value
+    params:
+      INPUT:
+        name: custom/pointszm.shp
+        type: vector
+      DROP_Z_VALUES: False
+      DROP_M_VALUES: True
+    results:
+      OUTPUT:
+        name: expected/m_dropped.shp
+        type: vector
+
+  - algorithm: qgis:dropmzvalues
+    name: Drop Z Value
+    params:
+      INPUT:
+        name: custom/pointszm.shp
+        type: vector
+      DROP_Z_VALUES: True
+      DROP_M_VALUES: False
+    results:
+      OUTPUT:
+        name: expected/z_dropped.shp
+        type: vector
+
+  - algorithm: qgis:dropmzvalues
+    name: Drop ZM Value
+    params:
+      INPUT:
+        name: custom/pointszm.shp
+        type: vector
+      DROP_Z_VALUES: True
+      DROP_M_VALUES: True
+    results:
+      OUTPUT:
+        name: expected/zm_dropped.shp
+        type: vector
+
   - algorithm: qgis:pointonsurface
     name: Point on polygon surface
     params:

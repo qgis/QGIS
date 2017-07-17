@@ -160,6 +160,9 @@ qgis:distancetonearesthub: >
 qgis:dropgeometries: >
   This algorithm removes any geometries from an input layer and returns a layer containing only the feature attributes.
 
+qgis:dropmzvalues: >
+  This algorithm can remove any measure (M) or Z values from input geometries.
+
 qgis:eliminateselectedpolygons: >
   This algorithm combines selected polygons of the input layer with certain adjacent polygons by erasing their common boundary. The adjacent polygon can be either the one with the largest or smallest area or the one sharing the largest common boundary with the polygon to be eliminated. The selected features will always be eliminated whether the option "Use only selected features" is set or not.
   Eliminate is normally used to get rid of sliver polygons, i.e. tiny polygons that are a result of polygon intersection processes where boundaries of the inputs are similar but not identical.

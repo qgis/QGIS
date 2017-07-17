@@ -56,6 +56,7 @@ from .DensifyGeometries import DensifyGeometries
 from .DensifyGeometriesInterval import DensifyGeometriesInterval
 from .Difference import Difference
 from .DropGeometry import DropGeometry
+from .DropMZValues import DropMZValues
 from .ExtentFromLayer import ExtentFromLayer
 from .ExtractNodes import ExtractNodes
 from .FixGeometry import FixGeometry
@@ -245,6 +246,7 @@ class QGISAlgorithmProvider(QgsProcessingProvider):
                 DensifyGeometriesInterval(),
                 Difference(),
                 DropGeometry(),
+                DropMZValues(),
                 ExtentFromLayer(),
                 ExtractNodes(),
                 FixGeometry(),
