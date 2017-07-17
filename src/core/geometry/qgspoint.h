@@ -419,16 +419,16 @@ class CORE_EXPORT QgsPoint: public QgsAbstractGeometry
 #ifndef SIP_RUN
 
     /**
-     * Cast the \a geom to a QgsPointV2.
-     * Should be used by qgsgeometry_cast<QgsPointV2 *>( geometry ).
+     * Cast the \a geom to a QgsPoint.
+     * Should be used by qgsgeometry_cast<QgsPoint *>( geometry ).
      *
      * \note Not available in Python. Objects will be automatically be converted to the appropriate target type.
      * \since QGIS 3.0
      */
-    inline const QgsPointV2 *cast( const QgsAbstractGeometry *geom ) const
+    inline const QgsPoint *cast( const QgsAbstractGeometry *geom ) const
     {
       if ( geom && QgsWkbTypes::flatType( geom->wkbType() ) == QgsWkbTypes::Point )
-        return static_cast<const QgsPointV2 *>( geom );
+        return static_cast<const QgsPoint *>( geom );
       return nullptr;
     }
 #endif
