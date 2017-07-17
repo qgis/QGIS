@@ -229,6 +229,12 @@ Returns the path to the translation directory.
  :rtype: str
 %End
 
+    static QString metadataPath();
+%Docstring
+Returns the path to the metadata directory.
+ :rtype: str
+%End
+
     static QString qgisMasterDatabaseFilePath();
 %Docstring
 Returns the path to the master qgis.db file.

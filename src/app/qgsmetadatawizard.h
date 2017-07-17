@@ -36,6 +36,7 @@ class APP_EXPORT QgsMetadataWizard : public QDialog, private Ui::QgsMetadataWiza
     void setPropertiesFromLayer();
     void saveMetadata( QgsLayerMetadata &layerMetadata );
     bool checkMetadata();
+    QStringList parseLanguages();
 
   private:
     void cancelClicked();

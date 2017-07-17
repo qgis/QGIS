@@ -26,6 +26,7 @@
 #include "qgslogger.h"
 #include "qgslayermetadatavalidator.h"
 #include "qgisapp.h"
+#include "qgsapplication.h"
 
 QgsMetadataWizard::QgsMetadataWizard( QWidget *parent, QgsMapLayer *layer )
   : QDialog( parent ), mLayer( layer )
@@ -198,7 +199,7 @@ void QgsMetadataWizard::fillComboBox()
   comboLanguage->setEditable( true );
   types.clear();
   types << "" << "ENG" << "SPA" << "IND" << "FRE";
-  comboLanguage->addItems( types );
+  comboLanguage->addItems( parseLanguages() );
 }
 
 void QgsMetadataWizard::setPropertiesFromLayer()
@@ -328,4 +329,24 @@ bool QgsMetadataWizard::checkMetadata()
   resultsCheckMetadata->setHtml( errors );
 
   return results;
+}
+
+QStringList QgsMetadataWizard::parseLanguages()
+{
+  QString path = QDir( QgsApplication::metadataPath() ).absoluteFilePath( QString( "country_code_ISO_3166.csv" ) );
+  QFile file( path );
+  if ( !file.open( QIODevice::ReadOnly ) )
+  {
+    QgsDebugMsg( QString( "Error while opening the CSV file: %1, %2 " ).arg( path, file.errorString() ) );
+  }
+
+  QStringList wordList;
+  // Skip the first line of the CSV
+  file.readLine();
+  while ( !file.atEnd() )
+  {
+    QByteArray line = file.readLine();
+    wordList.append( line.split( ',' ).at( 2 ) );
+  }
+  return wordList;
 }
