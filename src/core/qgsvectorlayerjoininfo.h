@@ -33,6 +33,10 @@
 class CORE_EXPORT QgsVectorLayerJoinInfo
 {
   public:
+
+    /**
+     * Constructor for QgsVectorLayerJoinInfo.
+     */
     QgsVectorLayerJoinInfo() = default;
 
     //! Sets weak reference to the joined layer

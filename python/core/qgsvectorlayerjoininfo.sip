@@ -22,7 +22,11 @@ class QgsVectorLayerJoinInfo
 #include "qgsvectorlayerjoininfo.h"
 %End
   public:
+
     QgsVectorLayerJoinInfo();
+%Docstring
+ Constructor for QgsVectorLayerJoinInfo.
+%End
 
     void setJoinLayer( QgsVectorLayer *layer );
 %Docstring
