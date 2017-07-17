@@ -38,7 +38,7 @@ QStringList QgsGeoNodeConnection::connectionList()
 
 void QgsGeoNodeConnection::deleteConnection( const QString &name )
 {
-  return QgsGeoCmsConnection::deleteConnection( QStringLiteral( "GeoNode" ), name );
+  QgsGeoCmsConnection::deleteConnection( QStringLiteral( "GeoNode" ), name );
 }
 
 QString QgsGeoNodeConnection::selectedConnection()
@@ -48,5 +48,5 @@ QString QgsGeoNodeConnection::selectedConnection()
 
 void QgsGeoNodeConnection::setSelectedConnection( const QString &name )
 {
-  return QgsGeoCmsConnection::setSelectedConnection( QStringLiteral( "GeoNode" ), name );
+  QgsGeoCmsConnection::setSelectedConnection( QStringLiteral( "GeoNode" ), name );
 }

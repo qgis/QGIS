@@ -170,9 +170,9 @@ void QgsGeoNodeRequest::replyFinished()
 
 }
 
-QList<LayerStruct> QgsGeoNodeRequest::parseLayers( QByteArray layerResponse )
+QList<QgsServiceLayerDetail> QgsGeoNodeRequest::parseLayers( QByteArray layerResponse )
 {
-  QList<LayerStruct> layers;
+  QList<QgsServiceLayerDetail> layers;
   if ( layerResponse.isEmpty() )
   {
     return layers;
@@ -200,7 +200,7 @@ QList<LayerStruct> QgsGeoNodeRequest::parseLayers( QByteArray layerResponse )
   {
     Q_FOREACH ( QVariant layer, layerList )
     {
-      LayerStruct layerStruct;
+      QgsServiceLayerDetail layerStruct;
       QVariantMap layerMap = layer.toMap();
       // Find WMS and WFS. XYZ is not available
       // Trick to get layer's typename from distribution_url or detail_url
@@ -239,7 +239,7 @@ QList<LayerStruct> QgsGeoNodeRequest::parseLayers( QByteArray layerResponse )
   {
     Q_FOREACH ( QVariant layer, layerList )
     {
-      LayerStruct layerStruct;
+      QgsServiceLayerDetail layerStruct;
       QVariantMap layerMap = layer.toMap();
       // Find WMS, WFS, and XYZ link
       QVariantList layerLinks = layerMap["links"].toList();
@@ -294,9 +294,9 @@ QStringList QgsGeoNodeRequest::serviceUrls( QString serviceType )
     return urls;
   }
 
-  QList<LayerStruct> layers = parseLayers( this->response() );
+  QList<QgsServiceLayerDetail> layers = parseLayers( this->response() );
 
-  Q_FOREACH ( LayerStruct layer, layers )
+  Q_FOREACH ( QgsServiceLayerDetail layer, layers )
   {
     QString url;
     if ( serviceType.toLower() == "wms" )
@@ -339,9 +339,9 @@ QgsStringMap QgsGeoNodeRequest::serviceUrlData( QString serviceType )
   {
     return urls;
   }
-  QList<LayerStruct> layers = parseLayers( this->response() );
+  QList<QgsServiceLayerDetail> layers = parseLayers( this->response() );
 
-  Q_FOREACH ( LayerStruct layer, layers )
+  Q_FOREACH ( QgsServiceLayerDetail layer, layers )
   {
     QString url;
 

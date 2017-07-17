@@ -23,7 +23,7 @@
 #include <QObject>
 #include <QUuid>
 
-struct LayerStruct
+struct QgsServiceLayerDetail
 {
   QUuid uuid;
   QString name;
@@ -46,7 +46,7 @@ class CORE_EXPORT QgsGeoNodeRequest : public QObject
 
     bool getLayers();
 
-    QList<LayerStruct> parseLayers( QByteArray layerResponse );
+    QList<QgsServiceLayerDetail> parseLayers( QByteArray layerResponse );
 
     // Obtain list of unique URL in the geonode
     QStringList serviceUrls( QString serviceType );

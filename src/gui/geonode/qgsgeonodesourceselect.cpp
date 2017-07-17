@@ -209,7 +209,7 @@ void QgsGeoNodeSourceSelect::connectToGeonodeConnection()
 
   QByteArray ba = geonodeRequest.response();
 
-  QList<LayerStruct> layers = geonodeRequest.parseLayers( ba );
+  QList<QgsServiceLayerDetail> layers = geonodeRequest.parseLayers( ba );
 
   if ( mModel )
   {
@@ -218,7 +218,7 @@ void QgsGeoNodeSourceSelect::connectToGeonodeConnection()
 
   if ( !layers.isEmpty() )
   {
-    Q_FOREACH ( const LayerStruct &layer, layers )
+    Q_FOREACH ( const QgsServiceLayerDetail &layer, layers )
     {
       QUuid uuid = layer.uuid;
 

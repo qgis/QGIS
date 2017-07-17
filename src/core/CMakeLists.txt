@@ -450,7 +450,6 @@ SET(QGIS_CORE_SRCS
   geometry/qgswkbptr.cpp
   geometry/qgswkbtypes.cpp
 
-
   fieldformatter/qgsdatetimefieldformatter.cpp
   fieldformatter/qgsfallbackfieldformatter.cpp
   fieldformatter/qgskeyvaluefieldformatter.cpp
