@@ -56,6 +56,7 @@ from .DensifyGeometries import DensifyGeometries
 from .DensifyGeometriesInterval import DensifyGeometriesInterval
 from .Difference import Difference
 from .DropGeometry import DropGeometry
+from .DropMZValues import DropMZValues
 from .ExtentFromLayer import ExtentFromLayer
 from .ExtractNodes import ExtractNodes
 from .FixGeometry import FixGeometry
@@ -89,6 +90,8 @@ from .SelectByAttribute import SelectByAttribute
 from .SelectByExpression import SelectByExpression
 from .ServiceAreaFromLayer import ServiceAreaFromLayer
 from .ServiceAreaFromPoint import ServiceAreaFromPoint
+from .SetMValue import SetMValue
+from .SetZValue import SetZValue
 from .ShortestPathLayerToPoint import ShortestPathLayerToPoint
 from .ShortestPathPointToLayer import ShortestPathPointToLayer
 from .ShortestPathPointToPoint import ShortestPathPointToPoint
@@ -243,6 +246,7 @@ class QGISAlgorithmProvider(QgsProcessingProvider):
                 DensifyGeometriesInterval(),
                 Difference(),
                 DropGeometry(),
+                DropMZValues(),
                 ExtentFromLayer(),
                 ExtractNodes(),
                 FixGeometry(),
@@ -276,6 +280,8 @@ class QGISAlgorithmProvider(QgsProcessingProvider):
                 SelectByExpression(),
                 ServiceAreaFromLayer(),
                 ServiceAreaFromPoint(),
+                SetMValue(),
+                SetZValue(),
                 ShortestPathLayerToPoint(),
                 ShortestPathPointToLayer(),
                 ShortestPathPointToPoint(),

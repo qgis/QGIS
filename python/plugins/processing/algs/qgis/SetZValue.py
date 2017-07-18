@@ -2,10 +2,10 @@
 
 """
 ***************************************************************************
-    BoundingBox.py
+    SetZValue.py
     --------------
-    Date                 : July 2016
-    Copyright            : (C) 2016 by Nyall Dawson
+    Date                 : July 2017
+    Copyright            : (C) 2017 by Nyall Dawson
     Email                : nyall dot dawson at gmail dot com
 ***************************************************************************
 *                                                                         *
@@ -18,8 +18,8 @@
 """
 
 __author__ = 'Nyall Dawson'
-__date__ = 'July 2016'
-__copyright__ = '(C) 2016, Nyall Dawson'
+__date__ = 'July 2017'
+__copyright__ = '(C) 2017, Nyall Dawson'
 
 # This will get replaced with a git SHA1 when you do a git archive323
 
@@ -29,47 +29,58 @@ import os
 
 from qgis.core import (QgsGeometry,
                        QgsWkbTypes,
-                       QgsProcessingException)
+                       QgsProcessingParameterNumber)
 
-
-from qgis.PyQt.QtGui import QIcon
 
 from processing.algs.qgis.QgisAlgorithm import QgisFeatureBasedAlgorithm
 
 pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
 
-class BoundingBox(QgisFeatureBasedAlgorithm):
+class SetZValue(QgisFeatureBasedAlgorithm):
 
-    def icon(self):
-        return QIcon(os.path.join(pluginPath, 'images', 'ftools', 'matrix.png'))
+    Z_VALUE = 'Z_VALUE'
 
     def group(self):
         return self.tr('Vector geometry tools')
 
     def __init__(self):
         super().__init__()
+        self.z_value = 0
 
     def name(self):
-        return 'boundingboxes'
+        return 'setzvalue'
 
     def displayName(self):
-        return self.tr('Bounding boxes')
+        return self.tr('Set Z Value')
 
     def outputName(self):
-        return self.tr('Bounds')
+        return self.tr('Z Added')
+
+    def tags(self):
+        return self.tr('set,add,z,25d,3d,values').split(',')
+
+    def initParameters(self, config=None):
+        self.addParameter(QgsProcessingParameterNumber(self.Z_VALUE,
+                                                       self.tr('Z Value'), QgsProcessingParameterNumber.Double, defaultValue=0.0))
 
     def outputWkbType(self, inputWkb):
-        return QgsWkbTypes.Polygon
+        return QgsWkbTypes.addZ(inputWkb)
+
+    def prepareAlgorithm(self, parameters, context, feedback):
+        self.z_value = self.parameterAsDouble(parameters, self.Z_VALUE, context)
+        return True
 
     def processFeature(self, feature, feedback):
         input_geometry = feature.geometry()
         if input_geometry:
-            output_geometry = QgsGeometry.fromRect(input_geometry.boundingBox())
-            if not output_geometry:
-                raise QgsProcessingException(
-                    self.tr('Error calculating bounding box'))
+            new_geom = input_geometry.geometry().clone()
+            if QgsWkbTypes.hasZ(new_geom.wkbType()):
+                # addZValue won't alter existing Z values, so drop them first
+                new_geom.dropZValue()
 
-            feature.setGeometry(output_geometry)
+            new_geom.addZValue(self.z_value)
+
+            feature.setGeometry(QgsGeometry(new_geom))
 
         return feature

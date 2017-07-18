@@ -608,3 +608,64 @@ bool QgsProcessingAlgorithm::createAutoOutputForParameter( QgsProcessingParamete
 }
 
 
+//
+// QgsProcessingFeatureBasedAlgorithm
+//
+
+void QgsProcessingFeatureBasedAlgorithm::initAlgorithm( const QVariantMap &config )
+{
+  addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "INPUT" ), QObject::tr( "Input layer" ) ) );
+  initParameters( config );
+  addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "OUTPUT" ), outputName(), outputLayerType() ) );
+}
+
+QgsCoordinateReferenceSystem QgsProcessingFeatureBasedAlgorithm::sourceCrs() const
+{
+  if ( mSource )
+    return mSource->sourceCrs();
+  else
+    return QgsCoordinateReferenceSystem();
+}
+
+QVariantMap QgsProcessingFeatureBasedAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
+{
+  mSource.reset( parameterAsSource( parameters, QStringLiteral( "INPUT" ), context ) );
+  if ( !mSource )
+    return QVariantMap();
+
+  QString dest;
+  std::unique_ptr< QgsFeatureSink > sink( parameterAsSink( parameters, QStringLiteral( "OUTPUT" ), context, dest,
+                                          outputFields( mSource->fields() ),
+                                          outputWkbType( mSource->wkbType() ),
+                                          outputCrs( mSource->sourceCrs() ) ) );
+  if ( !sink )
+    return QVariantMap();
+
+  long count = mSource->featureCount();
+
+  QgsFeature f;
+  QgsFeatureIterator it = mSource->getFeatures();
+
+  double step = count > 0 ? 100.0 / count : 1;
+  int current = 0;
+  while ( it.nextFeature( f ) )
+  {
+    if ( feedback->isCanceled() )
+    {
+      break;
+    }
+
+    QgsFeature transformed = processFeature( f, feedback );
+    if ( transformed.isValid() )
+      sink->addFeature( transformed, QgsFeatureSink::FastInsert );
+
+    feedback->setProgress( current * step );
+    current++;
+  }
+
+  mSource.reset();
+
+  QVariantMap outputs;
+  outputs.insert( QStringLiteral( "OUTPUT" ), dest );
+  return outputs;
+}
