@@ -91,4 +91,4 @@ class DropMZValues(QgisFeatureBasedAlgorithm):
                 new_geom.dropZValue()
             feature.setGeometry(QgsGeometry(new_geom))
 
-        return True
+        return feature

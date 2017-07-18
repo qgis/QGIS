@@ -820,15 +820,14 @@ class QgsProcessingFeatureBasedAlgorithm : QgsProcessingAlgorithm
  :rtype: QgsCoordinateReferenceSystem
 %End
 
-    virtual bool processFeature( QgsFeature &feature, QgsProcessingFeedback *feedback ) = 0;
+    virtual QgsFeature processFeature( const QgsFeature &feature, QgsProcessingFeedback *feedback ) = 0;
 %Docstring
  Processes an individual input ``feature`` from the source. Algorithms should implement their
  logic in this method for performing the algorithm's operation (e.g. replacing the feature's
  geometry with the centroid of the original feature geometry for a 'centroid' type
  algorithm).
 
- Implementations should return true if the feature should be kept and added to the algorithm's
- output sink, or false if the feature should be skipped and omitted from the output.
+ Implementations should return the modified feature.
 
  The provided ``feedback`` object can be used to push messages to the log and for giving feedback
  to users. Note that handling of progress reports and algorithm cancelation is handled by
@@ -838,7 +837,7 @@ class QgsProcessingFeatureBasedAlgorithm : QgsProcessingAlgorithm
  prevent the algorithm execution from continuing. This can be annoying for users though as it
  can break valid model execution - so use with extreme caution, and consider using
  ``feedback`` to instead report non-fatal processing failures for features instead.
- :rtype: bool
+ :rtype: QgsFeature
 %End
 
     virtual QVariantMap processAlgorithm( const QVariantMap &parameters,

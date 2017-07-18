@@ -83,4 +83,4 @@ class SetMValue(QgisFeatureBasedAlgorithm):
 
             feature.setGeometry(QgsGeometry(new_geom))
 
-        return True
+        return feature

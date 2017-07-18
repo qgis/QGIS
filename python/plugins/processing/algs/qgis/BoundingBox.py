@@ -72,4 +72,4 @@ class BoundingBox(QgisFeatureBasedAlgorithm):
 
             feature.setGeometry(output_geometry)
 
-        return True
+        return feature

@@ -68,7 +68,7 @@ class QgsCentroidAlgorithm : public QgsProcessingFeatureBasedAlgorithm
     QgsProcessing::LayerType outputLayerType() const override { return QgsProcessing::TypeVectorPoint; }
     QgsWkbTypes::Type outputWkbType( QgsWkbTypes::Type inputWkbType ) const override { Q_UNUSED( inputWkbType ); return QgsWkbTypes::Point; }
 
-    bool processFeature( QgsFeature &feature, QgsProcessingFeedback *feedback ) override;
+    QgsFeature processFeature( const QgsFeature &feature, QgsProcessingFeedback *feedback ) override;
 };
 
 /**
@@ -94,7 +94,7 @@ class QgsTransformAlgorithm : public QgsProcessingFeatureBasedAlgorithm
     QString outputName() const override { return QObject::tr( "Reprojected" ); }
 
     bool prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
-    bool processFeature( QgsFeature &feature, QgsProcessingFeedback *feedback ) override;
+    QgsFeature processFeature( const QgsFeature &feature, QgsProcessingFeedback *feedback ) override;
 
   private:
 
@@ -262,7 +262,7 @@ class QgsSubdivideAlgorithm : public QgsProcessingFeatureBasedAlgorithm
     QString outputName() const override { return QObject::tr( "Subdivided" ); }
 
     QgsWkbTypes::Type outputWkbType( QgsWkbTypes::Type inputWkbType ) const override;
-    bool processFeature( QgsFeature &feature, QgsProcessingFeedback *feedback ) override;
+    QgsFeature processFeature( const QgsFeature &feature, QgsProcessingFeedback *feedback ) override;
 
     bool prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
 

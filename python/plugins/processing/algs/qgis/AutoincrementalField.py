@@ -57,4 +57,4 @@ class AutoincrementalField(QgisFeatureBasedAlgorithm):
         attributes.append(self.current)
         self.current += 1
         feature.setAttributes(attributes)
-        return True
+        return feature

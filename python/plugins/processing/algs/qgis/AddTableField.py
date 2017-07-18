@@ -90,4 +90,4 @@ class AddTableField(QgisFeatureBasedAlgorithm):
         attributes = feature.attributes()
         attributes.append(None)
         feature.setAttributes(attributes)
-        return True
+        return feature

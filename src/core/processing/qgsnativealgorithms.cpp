@@ -87,8 +87,9 @@ QgsCentroidAlgorithm *QgsCentroidAlgorithm::createInstance() const
   return new QgsCentroidAlgorithm();
 }
 
-bool QgsCentroidAlgorithm::processFeature( QgsFeature &feature, QgsProcessingFeedback *feedback )
+QgsFeature QgsCentroidAlgorithm::processFeature( const QgsFeature &f, QgsProcessingFeedback *feedback )
 {
+  QgsFeature feature = f;
   if ( feature.hasGeometry() )
   {
     feature.setGeometry( feature.geometry().centroid() );
@@ -97,7 +98,7 @@ bool QgsCentroidAlgorithm::processFeature( QgsFeature &feature, QgsProcessingFee
       feedback->pushInfo( QObject::tr( "Error calculating centroid for feature %1" ).arg( feature.id() ) );
     }
   }
-  return true;
+  return feature;
 }
 //
 // QgsBufferAlgorithm
@@ -548,8 +549,9 @@ bool QgsTransformAlgorithm::prepareAlgorithm( const QVariantMap &parameters, Qgs
   return true;
 }
 
-bool QgsTransformAlgorithm::processFeature( QgsFeature &feature, QgsProcessingFeedback * )
+QgsFeature QgsTransformAlgorithm::processFeature( const QgsFeature &f, QgsProcessingFeedback * )
 {
+  QgsFeature feature = f;
   if ( !mCreatedTransform )
   {
     mCreatedTransform = true;
@@ -568,7 +570,7 @@ bool QgsTransformAlgorithm::processFeature( QgsFeature &feature, QgsProcessingFe
       feature.clearGeometry();
     }
   }
-  return true;
+  return feature;
 }
 
 
@@ -598,8 +600,9 @@ QgsWkbTypes::Type QgsSubdivideAlgorithm::outputWkbType( QgsWkbTypes::Type inputW
   return QgsWkbTypes::multiType( inputWkbType );
 }
 
-bool QgsSubdivideAlgorithm::processFeature( QgsFeature &feature, QgsProcessingFeedback *feedback )
+QgsFeature QgsSubdivideAlgorithm::processFeature( const QgsFeature &f, QgsProcessingFeedback *feedback )
 {
+  QgsFeature feature = f;
   if ( feature.hasGeometry() )
   {
     feature.setGeometry( feature.geometry().subdivide( mMaxNodes ) );
@@ -608,7 +611,7 @@ bool QgsSubdivideAlgorithm::processFeature( QgsFeature &feature, QgsProcessingFe
       feedback->reportError( QObject::tr( "Error calculating subdivision for feature %1" ).arg( feature.id() ) );
     }
   }
-  return true;
+  return feature;
 }
 
 bool QgsSubdivideAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback * )
