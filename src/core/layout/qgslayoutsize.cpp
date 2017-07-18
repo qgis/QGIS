@@ -26,6 +26,13 @@ QgsLayoutSize::QgsLayoutSize( const double width, const double height, const Qgs
 {
 }
 
+QgsLayoutSize::QgsLayoutSize( const QSizeF size, const QgsUnitTypes::LayoutUnit units )
+  : mWidth( size.width() )
+  , mHeight( size.height() )
+  , mUnits( units )
+{
+}
+
 QgsLayoutSize::QgsLayoutSize( const QgsUnitTypes::LayoutUnit units )
   : mUnits( units )
 {
