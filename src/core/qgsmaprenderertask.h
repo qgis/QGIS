@@ -55,7 +55,8 @@ class CORE_EXPORT QgsMapRendererTask : public QgsTask
      */
     QgsMapRendererTask( const QgsMapSettings &ms,
                         const QString &fileName,
-                        const QString &fileFormat = QString( "PNG" ) );
+                        const QString &fileFormat = QString( "PNG" ),
+                        const bool forceRaster = false );
 
     /**
      * Constructor for QgsMapRendererTask to render a map to a painter object.
@@ -108,6 +109,7 @@ class CORE_EXPORT QgsMapRendererTask : public QgsTask
 
     QString mFileName;
     QString mFileFormat;
+    bool mForceRaster = false;
     bool mSaveWorldFile = false;
 
     QList< QgsAnnotation * > mAnnotations;

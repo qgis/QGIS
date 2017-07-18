@@ -18,25 +18,32 @@
 #include "qgsmapsavedialog.h"
 
 #include "qgis.h"
+#include "qgisapp.h"
 #include "qgsscalecalculator.h"
 #include "qgsdecorationitem.h"
 #include "qgsexpressioncontext.h"
 #include "qgsextentgroupbox.h"
 #include "qgsmapsettings.h"
 #include "qgsmapsettingsutils.h"
+#include "qgsmaprenderertask.h"
 #include "qgsproject.h"
 #include "qgssettings.h"
 
 #include <QCheckBox>
-#include <QSpinBox>
+#include <QFileDialog>
+#include <QImage>
 #include <QList>
+#include <QPainter>
+#include <QPrinter>
+#include <QSpinBox>
 
 Q_GUI_EXPORT extern int qt_defaultDpiX();
 
-QgsMapSaveDialog::QgsMapSaveDialog( QWidget *parent, QgsMapCanvas *mapCanvas, const QString &activeDecorations, DialogType type )
+QgsMapSaveDialog::QgsMapSaveDialog( QWidget *parent, QgsMapCanvas *mapCanvas, QList< QgsDecorationItem * > decorations, QList< QgsAnnotation *> annotations, DialogType type )
   : QDialog( parent )
   , mDialogType( type )
   , mMapCanvas( mapCanvas )
+  , mAnnotations( annotations )
 {
   setupUi( this );
 
@@ -57,6 +64,15 @@ QgsMapSaveDialog::QgsMapSaveDialog( QWidget *parent, QgsMapCanvas *mapCanvas, co
   mScaleWidget->setMapCanvas( mMapCanvas );
   mScaleWidget->setShowCurrentScaleButton( true );
 
+  QString activeDecorations;
+  Q_FOREACH ( QgsDecorationItem *decoration, decorations )
+  {
+    mDecorations << decoration;
+    if ( activeDecorations.isEmpty() )
+      activeDecorations = decoration->name().toLower();
+    else
+      activeDecorations += QString( ", %1" ).arg( decoration->name().toLower() );
+  }
   mDrawDecorations->setText( tr( "Draw active decorations: %1" ).arg( !activeDecorations.isEmpty() ? activeDecorations : tr( "none" ) ) );
 
   connect( mResolutionSpinBox, static_cast < void ( QSpinBox::* )( int ) > ( &QSpinBox::valueChanged ), this, &QgsMapSaveDialog::updateDpi );
@@ -92,6 +108,8 @@ QgsMapSaveDialog::QgsMapSaveDialog( QWidget *parent, QgsMapCanvas *mapCanvas, co
 
     this->setWindowTitle( tr( "Save map as PDF" ) );
   }
+
+  connect( buttonBox, &QDialogButtonBox::accepted, this, &QgsMapSaveDialog::accepted );
 }
 
 void QgsMapSaveDialog::updateDpi( int dpi )
@@ -221,4 +239,90 @@ void QgsMapSaveDialog::applyMapSettings( QgsMapSettings &mapSettings )
                     << QgsExpressionContextUtils::mapSettingsScope( mapSettings );
 
   mapSettings.setExpressionContext( expressionContext );
+}
+
+void QgsMapSaveDialog::accepted()
+{
+  if ( mDialogType == Image )
+  {
+    QPair< QString, QString> fileNameAndFilter = QgsGuiUtils::getSaveAsImageName( QgisApp::instance(), tr( "Choose a file name to save the map image as" ) );
+    if ( fileNameAndFilter.first != QLatin1String( "" ) )
+    {
+      QgsMapSettings ms = QgsMapSettings();
+      applyMapSettings( ms );
+
+      QgsMapRendererTask *mapRendererTask = new QgsMapRendererTask( ms, fileNameAndFilter.first, fileNameAndFilter.second );
+
+      if ( drawAnnotations() )
+      {
+        mapRendererTask->addAnnotations( mAnnotations );
+      }
+
+      if ( drawDecorations() )
+      {
+        mapRendererTask->addDecorations( mDecorations );
+      }
+
+      mapRendererTask->setSaveWorldFile( saveWorldFile() );
+
+      connect( mapRendererTask, &QgsMapRendererTask::renderingComplete, [ = ]
+      {
+        QgisApp::instance()->messageBar()->pushSuccess( tr( "Save as image" ), tr( "Successfully saved map to image" ) );
+      } );
+      connect( mapRendererTask, &QgsMapRendererTask::errorOccurred, [ = ]( int error )
+      {
+        switch ( error )
+        {
+          case QgsMapRendererTask::ImageAllocationFail:
+          {
+            QgisApp::instance()->messageBar()->pushWarning( tr( "Save as image" ), tr( "Could not allocate required memory for image" ) );
+            break;
+          }
+          case QgsMapRendererTask::ImageSaveFail:
+          {
+            QgisApp::instance()->messageBar()->pushWarning( tr( "Save as image" ), tr( "Could not save the map to file" ) );
+            break;
+          }
+        }
+      } );
+
+      QgsApplication::taskManager()->addTask( mapRendererTask );
+    }
+  }
+  else
+  {
+    QgsSettings settings;
+    QString lastUsedDir = settings.value( QStringLiteral( "UI/lastSaveAsImageDir" ), QDir::homePath() ).toString();
+    QString fileName = QFileDialog::getSaveFileName( QgisApp::instance(), tr( "Save map as" ), lastUsedDir, tr( "PDF Format" ) + " (*.pdf *.PDF)" );
+    if ( !fileName.isEmpty() )
+    {
+      QgsMapSettings ms = QgsMapSettings();
+      applyMapSettings( ms );
+
+      QgsMapRendererTask *mapRendererTask = new QgsMapRendererTask( ms, fileName, QStringLiteral( "PDF" ), saveAsRaster() );
+
+      if ( drawAnnotations() )
+      {
+        mapRendererTask->addAnnotations( mAnnotations );
+      }
+
+      if ( drawDecorations() )
+      {
+        mapRendererTask->addDecorations( mDecorations );
+      }
+
+      mapRendererTask->setSaveWorldFile( saveWorldFile() );
+
+      connect( mapRendererTask, &QgsMapRendererTask::renderingComplete, [ = ]
+      {
+        QgisApp::instance()->messageBar()->pushSuccess( tr( "Save as PDF" ), tr( "Successfully saved map to PDF" ) );
+      } );
+      connect( mapRendererTask, &QgsMapRendererTask::errorOccurred, [ = ]( int )
+      {
+        QgisApp::instance()->messageBar()->pushWarning( tr( "Save as PDF" ), tr( "Could not save the map to PDF..." ) );
+      } );
+
+      QgsApplication::taskManager()->addTask( mapRendererTask );
+    }
+  }
 }

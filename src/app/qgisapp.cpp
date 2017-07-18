@@ -5740,173 +5740,34 @@ void QgisApp::updateFilterLegend()
 
 void QgisApp::saveMapAsImage()
 {
-  QList< QgsMapDecoration * > decorations;
-  QString activeDecorations;
+  QList< QgsDecorationItem * > decorations;
   Q_FOREACH ( QgsDecorationItem *decoration, mDecorationItems )
   {
     if ( decoration->enabled() )
     {
       decorations << decoration;
-      if ( activeDecorations.isEmpty() )
-        activeDecorations = decoration->name().toLower();
-      else
-        activeDecorations += QString( ", %1" ).arg( decoration->name().toLower() );
     }
   }
 
-  QgsMapSaveDialog dlg( this, mMapCanvas, activeDecorations );
-  if ( !dlg.exec() )
-    return;
-
-  QPair< QString, QString> fileNameAndFilter = QgsGuiUtils::getSaveAsImageName( this, tr( "Choose a file name to save the map image as" ) );
-  if ( fileNameAndFilter.first != QLatin1String( "" ) )
-  {
-    QgsMapSettings ms = QgsMapSettings();
-    dlg.applyMapSettings( ms );
-
-    QgsMapRendererTask *mapRendererTask = new QgsMapRendererTask( ms, fileNameAndFilter.first, fileNameAndFilter.second );
-
-    if ( dlg.drawAnnotations() )
-    {
-      mapRendererTask->addAnnotations( QgsProject::instance()->annotationManager()->annotations() );
-    }
-
-    if ( dlg.drawDecorations() )
-    {
-      mapRendererTask->addDecorations( decorations );
-    }
-
-    mapRendererTask->setSaveWorldFile( dlg.saveWorldFile() );
-
-    connect( mapRendererTask, &QgsMapRendererTask::renderingComplete, this, [ = ]
-    {
-      messageBar()->pushSuccess( tr( "Save as image" ), tr( "Successfully saved map to image" ) );
-    } );
-    connect( mapRendererTask, &QgsMapRendererTask::errorOccurred, this, [ = ]( int error )
-    {
-      switch ( error )
-      {
-        case QgsMapRendererTask::ImageAllocationFail:
-        {
-          messageBar()->pushWarning( tr( "Save as image" ), tr( "Could not allocate required memory for image" ) );
-          break;
-        }
-        case QgsMapRendererTask::ImageSaveFail:
-        {
-          messageBar()->pushWarning( tr( "Save as image" ), tr( "Could not save the image to file" ) );
-          break;
-        }
-      }
-    } );
-
-    QgsApplication::taskManager()->addTask( mapRendererTask );
-  }
-
+  QgsMapSaveDialog *dlg = new QgsMapSaveDialog( this, mMapCanvas, decorations, QgsProject::instance()->annotationManager()->annotations() );
+  dlg->setAttribute( Qt::WA_DeleteOnClose );
+  dlg->show();
 } // saveMapAsImage
 
 void QgisApp::saveMapAsPdf()
 {
-  QList< QgsMapDecoration * > decorations;
-  QString activeDecorations;
+  QList< QgsDecorationItem * > decorations;
   Q_FOREACH ( QgsDecorationItem *decoration, mDecorationItems )
   {
     if ( decoration->enabled() )
     {
       decorations << decoration;
-      if ( activeDecorations.isEmpty() )
-        activeDecorations = decoration->name().toLower();
-      else
-        activeDecorations += QString( ", %1" ).arg( decoration->name().toLower() );
     }
   }
 
-  QgsMapSaveDialog dlg( this, mMapCanvas, activeDecorations, QgsMapSaveDialog::Pdf );
-  if ( !dlg.exec() )
-    return;
-
-  QgsSettings settings;
-  QString lastUsedDir = settings.value( QStringLiteral( "UI/lastSaveAsImageDir" ), QDir::homePath() ).toString();
-  QString fileName = QFileDialog::getSaveFileName( this, tr( "Save map as" ), lastUsedDir, tr( "PDF Format" ) + " (*.pdf *.PDF)" );
-  if ( !fileName.isEmpty() )
-  {
-    QgsMapSettings ms = QgsMapSettings();
-    dlg.applyMapSettings( ms );
-
-    QPrinter *printer = new QPrinter();
-    printer->setOutputFileName( fileName );
-    printer->setOutputFormat( QPrinter::PdfFormat );
-    printer->setOrientation( QPrinter::Portrait );
-    // paper size needs to be given in millimeters in order to be able to set a resolution to pass onto the map renderer
-    printer->setPaperSize( dlg.size()  * 25.4 / dlg.dpi(), QPrinter::Millimeter );
-    printer->setPageMargins( 0, 0, 0, 0, QPrinter::Millimeter );
-    printer->setResolution( dlg.dpi() );
-
-    QPainter *p = new QPainter();
-    QImage *image = nullptr;
-    if ( dlg.saveAsRaster() )
-    {
-      image = new QImage( dlg.size(), QImage::Format_ARGB32 );
-      if ( image->isNull() )
-      {
-        messageBar()->pushWarning( tr( "Save as PDF" ), tr( "Could not allocate required memory for image" ) );
-        delete p;
-        delete image;
-        delete printer;
-
-        return;
-      }
-
-      image->setDotsPerMeterX( 1000 * dlg.dpi() / 25.4 );
-      image->setDotsPerMeterY( 1000 * dlg.dpi() / 25.4 );
-      p->begin( image );
-    }
-    else
-    {
-      p->begin( printer );
-    }
-
-    QgsMapRendererTask *mapRendererTask = new QgsMapRendererTask( ms, p );
-
-    if ( dlg.drawAnnotations() )
-    {
-      mapRendererTask->addAnnotations( QgsProject::instance()->annotationManager()->annotations() );
-    }
-
-    if ( dlg.drawDecorations() )
-    {
-      mapRendererTask->addDecorations( decorations );
-    }
-
-    mapRendererTask->setSaveWorldFile( dlg.saveWorldFile() );
-
-    connect( mapRendererTask, &QgsMapRendererTask::renderingComplete, this, [ this, p, image, printer ]
-    {
-      p->end();
-
-      if ( image )
-      {
-        QPainter pp;
-        pp.begin( printer );
-        QRectF rect( 0, 0, image->width(), image->height() );
-        pp.drawImage( rect, *image, rect );
-        pp.end();
-      }
-
-      messageBar()->pushSuccess( tr( "Save as PDF" ), tr( "Successfully saved map to PDF" ) );
-      delete p;
-      delete image;
-      delete printer;
-    } );
-    connect( mapRendererTask, &QgsMapRendererTask::errorOccurred, this, [ this, p, image, printer ]( int )
-    {
-      delete p;
-      delete image;
-      delete printer;
-    } );
-
-    QgsApplication::taskManager()->addTask( mapRendererTask );
-  }
-
+  QgsMapSaveDialog *dlg = new QgsMapSaveDialog( this, mMapCanvas, decorations, QgsProject::instance()->annotationManager()->annotations(), QgsMapSaveDialog::Pdf );
+  dlg->setAttribute( Qt::WA_DeleteOnClose );
+  dlg->show();
 } // saveMapAsPdf
 
 //overloaded version of the above function
