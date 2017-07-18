@@ -185,8 +185,7 @@ QgsAbstractDataSourceWidget *QgsDataSourceManagerDialog::providerDialog( const Q
     // Set crs and extent from canvas
     if ( mMapCanvas )
     {
-      dlg->setCurrentExtent( mMapCanvas->extent() );
-      dlg->setCurrentCrs( mMapCanvas->mapSettings().destinationCrs( ) );
+      dlg->setMapCanvas( mMapCanvas );
     }
     return dlg;
   }

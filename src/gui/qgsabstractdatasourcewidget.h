@@ -29,6 +29,8 @@
 #include "qgscoordinatereferencesystem.h"
 #include <QDialog>
 
+class QgsMapCanvas;
+
 /** \ingroup gui
  * \brief  Abstract base Data Source Widget to create connections and add layers
  * This class provides common functionality and the interface for all
@@ -45,26 +47,11 @@ class GUI_EXPORT QgsAbstractDataSourceWidget : public QDialog
     //! Destructor
     ~QgsAbstractDataSourceWidget( ) = default;
 
-    //! Return the widget mode
-    QgsProviderRegistry::WidgetMode widgetMode( ) const;
-
-    /** Set the current CRS
-     * The CRS is normally the CRS of the map canvas, and it can be used
-     * by the provider dialog to transform the extent and constraint the service
+    /** Store a pointer to the map canvas to retrieve extent and CRS
+     * Used to select an appropriate CRS and possibly to retrieve data only in the current extent
      */
-    void setCurrentCrs( const QgsCoordinateReferenceSystem &crs );
+    void setMapCanvas( const QgsMapCanvas *mapCanvas );
 
-    /** Set the current extent
-     * The extent is normally the extent of the map canvas, and it can be used
-     * by the provider dialog to constraint the service
-     */
-    void setCurrentExtent( const QgsRectangle &extent );
-
-    //! Return the current extent
-    QgsRectangle currentExtent( ) const;
-
-    //! Return the current CRS
-    QgsCoordinateReferenceSystem currentCrs( ) const;
 
   public slots:
 
@@ -94,11 +81,19 @@ class GUI_EXPORT QgsAbstractDataSourceWidget : public QDialog
     //! Constructor
     QgsAbstractDataSourceWidget( QWidget *parent SIP_TRANSFERTHIS = nullptr, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::None );
 
+    //! Return the widget mode
+    QgsProviderRegistry::WidgetMode widgetMode( ) const;
+
+    /** Return the map canvas (can be null)
+     */
+    const QgsMapCanvas *mapCanvas( ) const;
+
   private:
 
     QgsProviderRegistry::WidgetMode mWidgetMode;
     QgsCoordinateReferenceSystem mCurrentCrs;
     QgsRectangle mCurrentExtent;
+    QgsMapCanvas const *mMapCanvas = nullptr;
 
 };
 

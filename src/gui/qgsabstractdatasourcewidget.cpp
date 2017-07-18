@@ -30,22 +30,13 @@ QgsProviderRegistry::WidgetMode QgsAbstractDataSourceWidget::widgetMode() const
   return mWidgetMode;
 }
 
-void QgsAbstractDataSourceWidget::setCurrentCrs( const QgsCoordinateReferenceSystem &crs )
+const QgsMapCanvas *QgsAbstractDataSourceWidget::mapCanvas() const
 {
-  mCurrentCrs = crs;
+  return mMapCanvas;
 }
 
-void QgsAbstractDataSourceWidget::setCurrentExtent( const QgsRectangle &extent )
-{
-  mCurrentExtent = extent;
-}
 
-QgsRectangle QgsAbstractDataSourceWidget::currentExtent() const
+void QgsAbstractDataSourceWidget::setMapCanvas( const QgsMapCanvas *mapCanvas )
 {
-  return mCurrentExtent;
-}
-
-QgsCoordinateReferenceSystem QgsAbstractDataSourceWidget::currentCrs() const
-{
-  return mCurrentCrs;
+  mMapCanvas = mapCanvas;
 }

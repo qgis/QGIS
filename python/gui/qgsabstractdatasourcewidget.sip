@@ -10,6 +10,7 @@
 
 
 
+
 class QgsAbstractDataSourceWidget : QDialog
 {
 %Docstring
@@ -30,37 +31,12 @@ class QgsAbstractDataSourceWidget : QDialog
 Destructor
 %End
 
-    QgsProviderRegistry::WidgetMode widgetMode( ) const;
+    void setMapCanvas( const QgsMapCanvas *mapCanvas );
 %Docstring
-Return the widget mode
- :rtype: QgsProviderRegistry.WidgetMode
+ Store a pointer to the map canvas to retrieve extent and CRS
+ Used to select an appropriate CRS and possibly to retrieve data only in the current extent
 %End
 
-    void setCurrentCrs( const QgsCoordinateReferenceSystem &crs );
-%Docstring
- Set the current CRS
- The CRS is normally the CRS of the map canvas, and it can be used
- by the provider dialog to transform the extent and constraint the service
-%End
-
-    void setCurrentExtent( const QgsRectangle &extent );
-%Docstring
- Set the current extent
- The extent is normally the extent of the map canvas, and it can be used
- by the provider dialog to constraint the service
-%End
-
-    QgsRectangle currentExtent( ) const;
-%Docstring
-Return the current extent
- :rtype: QgsRectangle
-%End
-
-    QgsCoordinateReferenceSystem currentCrs( ) const;
-%Docstring
-Return the current CRS
- :rtype: QgsCoordinateReferenceSystem
-%End
 
   public slots:
 
@@ -98,6 +74,18 @@ Emitted when a vector layer has been selected for addition
     QgsAbstractDataSourceWidget( QWidget *parent /TransferThis/ = 0, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::None );
 %Docstring
 Constructor
+%End
+
+    QgsProviderRegistry::WidgetMode widgetMode( ) const;
+%Docstring
+Return the widget mode
+ :rtype: QgsProviderRegistry.WidgetMode
+%End
+
+    const QgsMapCanvas *mapCanvas( ) const;
+%Docstring
+ Return the map canvas (can be null)
+ :rtype: QgsMapCanvas
 %End
 
 };

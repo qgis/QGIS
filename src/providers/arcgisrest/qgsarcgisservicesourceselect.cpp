@@ -123,11 +123,6 @@ QgsArcGisServiceSourceSelect::~QgsArcGisServiceSourceSelect()
   delete mModelProxy;
 }
 
-void QgsArcGisServiceSourceSelect::setCurrentExtentAndCrs( const QgsRectangle &canvasExtent, const QgsCoordinateReferenceSystem &canvasCrs )
-{
-  mCanvasExtent = canvasExtent;
-  mCanvasCrs = canvasCrs;
-}
 
 void QgsArcGisServiceSourceSelect::populateImageEncodings( const QStringList &availableEncodings )
 {
@@ -325,15 +320,21 @@ void QgsArcGisServiceSourceSelect::addButtonClicked()
   QString pCrsString( labelCoordRefSys->text() );
   QgsCoordinateReferenceSystem pCrs( pCrsString );
   //prepare canvas extent info for layers with "cache features" option not set
-  QgsRectangle extent = mCanvasExtent;
+  QgsRectangle extent;
+  QgsCoordinateReferenceSystem canvasCrs;
+  if ( mapCanvas() )
+  {
+    extent = mapCanvas()->extent();
+    canvasCrs = mapCanvas()->mapSettings().destinationCrs();
+  }
   //does canvas have "on the fly" reprojection set?
-  if ( pCrs.isValid() && mCanvasCrs.isValid() )
+  if ( pCrs.isValid() && canvasCrs.isValid() )
   {
     try
     {
-      extent = QgsCoordinateTransform( mCanvasCrs, pCrs ).transform( extent );
+      extent = QgsCoordinateTransform( canvasCrs, pCrs ).transform( extent );
       QgsDebugMsg( QString( "canvas transform: Canvas CRS=%1, Provider CRS=%2, BBOX=%3" )
-                   .arg( mCanvasCrs.authid(), pCrs.authid(), extent.asWktCoordinates() ) );
+                   .arg( canvasCrs.authid(), pCrs.authid(), extent.asWktCoordinates() ) );
     }
     catch ( const QgsCsException & )
     {

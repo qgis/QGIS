@@ -27,6 +27,7 @@ class QStandardItemModel;
 class QSortFilterProxyModel;
 class QgsProjectionSelectionDialog;
 class QgsOwsConnection;
+class QgsMapCanvas;
 
 /**
  * Base class for listing ArcGis layers available from a remote service.
@@ -78,8 +79,6 @@ class QgsArcGisServiceSourceSelect : public QgsAbstractDataSourceWidget, protect
     void populateImageEncodings( const QStringList &availableEncodings );
     //! Returns the selected image encoding.
     QString getSelectedImageEncoding() const;
-    //! Sets the current extent and CRS. Used to select an appropriate CRS and possibly to retrieve data only in the current extent
-    void setCurrentExtentAndCrs( const QgsRectangle &canvasExtent, const QgsCoordinateReferenceSystem &canvasCrs );
 
   private:
     void populateConnectionList();
@@ -90,6 +89,12 @@ class QgsArcGisServiceSourceSelect : public QgsAbstractDataSourceWidget, protect
        3. the first entry in the set else
     \returns the authority id of the crs or an empty string in case of error*/
     QString getPreferredCrs( const QSet<QString> &crsSet ) const;
+
+    /** Store a pointer to map canvas to retrieve extent and CRS
+     * Used to select an appropriate CRS and possibly to retrieve data only in the current extent
+     */
+    QgsMapCanvas *mMapCanvas = nullptr;
+
 
   public slots:
 
