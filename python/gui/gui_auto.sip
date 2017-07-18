@@ -21,6 +21,7 @@
 %Include qgsbrowserdockwidget.sip
 %Include qgsvertexmarker.sip
 %Include qgsfiledownloader.sip
+%Include qgsabstractdatasourcewidget.sip
 %Include attributetable/qgsfeaturemodel.sip
 %Include auth/qgsauthauthoritieseditor.sip
 %Include auth/qgsauthcertificateinfo.sip
@@ -158,7 +159,6 @@
 %Include qgsoptionswidgetfactory.sip
 %Include qgsorderbydialog.sip
 %Include qgsowssourceselect.sip
-%Include qgssourceselectdialog.sip
 %Include qgspanelwidget.sip
 %Include qgspanelwidgetstack.sip
 %Include qgspasswordlineedit.sip

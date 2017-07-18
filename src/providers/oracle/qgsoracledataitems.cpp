@@ -199,7 +199,7 @@ void QgsOracleConnectionItem::editConnection()
   if ( nc.exec() )
   {
     // the parent should be updated
-    mParent->refresh();
+    mParent->refreshConnections();
   }
 }
 
@@ -214,7 +214,7 @@ void QgsOracleConnectionItem::deleteConnection()
 
   // the parent should be updated
   if ( mParent )
-    mParent->refresh();
+    mParent->refreshConnections();
 }
 
 void QgsOracleConnectionItem::refreshConnection()
@@ -487,7 +487,7 @@ void QgsOracleRootItem::newConnection()
   QgsOracleNewConnection nc( NULL );
   if ( nc.exec() )
   {
-    refresh();
+    refreshConnections();
   }
 }
 

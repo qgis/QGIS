@@ -157,7 +157,7 @@ void QgsOWSConnectionItem::editConnection()
   if ( nc.exec() )
   {
     // the parent should be updated
-    mParent->refresh();
+    mParent->refreshConnections();
   }
 #endif
 }
@@ -167,7 +167,7 @@ void QgsOWSConnectionItem::deleteConnection()
 #if 0
   QgsOWSConnection::deleteConnection( "OWS", mName );
   // the parent should be updated
-  mParent->refresh();
+  mParent->refreshConnections();
 #endif
 }
 #endif
@@ -247,7 +247,7 @@ void QgsOWSRootItem::newConnection()
 
   if ( nc.exec() )
   {
-    refresh();
+    refreshConnections();
   }
 #endif
 }

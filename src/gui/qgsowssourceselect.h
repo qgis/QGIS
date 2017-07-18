@@ -26,6 +26,7 @@
 #include "qgsguiutils.h"
 #include "qgscontexthelp.h"
 #include "qgsproviderregistry.h"
+#include "qgsabstractdatasourcewidget.h"
 
 #include <QStringList>
 #include <QPushButton>
@@ -40,15 +41,15 @@ class QDomElement;
 
 
 /** \ingroup gui
- * \brief  Dialog to create connections and add layers from WMS, WFS, WCS etc.
+ * \brief  Dialog to create connections and add layers WCS etc.
  *
  * This dialog allows the user to define and save connection information
  * for WMS servers, etc.
  *
  * The user can then connect and add
- * layers from the WMS server to the map canvas.
+ * layers from the WCS server to the map canvas.
  */
-class GUI_EXPORT QgsOWSSourceSelect : public QDialog, protected Ui::QgsOWSSourceSelectBase
+class GUI_EXPORT QgsOWSSourceSelect : public QgsAbstractDataSourceWidget, protected Ui::QgsOWSSourceSelectBase
 {
     Q_OBJECT
 
@@ -66,6 +67,9 @@ class GUI_EXPORT QgsOWSSourceSelect : public QDialog, protected Ui::QgsOWSSource
     ~QgsOWSSourceSelect();
 
   public slots:
+
+    //! Triggered when the provider's connections need to be refreshed
+    void refresh( ) override;
 
     //! Opens the create connection dialog to build a new connection
     void on_mNewButton_clicked();
@@ -105,12 +109,6 @@ class GUI_EXPORT QgsOWSSourceSelect : public QDialog, protected Ui::QgsOWSSource
 
     //! Add some default wms servers to the list
     void on_mAddDefaultButton_clicked();
-
-  signals:
-    void addRasterLayer( const QString &rasterLayerPath,
-                         const QString &baseName,
-                         const QString &providerKey );
-    void connectionsChanged();
 
   protected:
 
@@ -167,10 +165,6 @@ class GUI_EXPORT QgsOWSSourceSelect : public QDialog, protected Ui::QgsOWSSource
     //! Service name
     QString mService;
 
-    //! Embedded mode, without 'Close'
-    QgsProviderRegistry::WidgetMode mWidgetMode = QgsProviderRegistry::WidgetMode::None;
-
-
     /**
      * \brief Populate the layer list.
      *
@@ -225,6 +219,7 @@ class GUI_EXPORT QgsOWSSourceSelect : public QDialog, protected Ui::QgsOWSSource
 
     //! URI for selected connection
     QgsDataSourceUri mUri;
+
 
   private:
     //! Selected CRS

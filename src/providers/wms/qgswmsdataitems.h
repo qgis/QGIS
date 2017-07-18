@@ -107,9 +107,9 @@ class QgsWMSRootItem : public QgsDataCollectionItem
 
   public slots:
 #ifdef HAVE_GUI
-    void connectionsChanged();
     void newConnection();
 #endif
+
 };
 
 

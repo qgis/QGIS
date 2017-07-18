@@ -59,7 +59,7 @@ QList<QAction *> QgsAmsRootItem::actions()
 QWidget *QgsAmsRootItem::paramWidget()
 {
   QgsAmsSourceSelect *select = new QgsAmsSourceSelect( 0, 0, QgsProviderRegistry::WidgetMode::Manager );
-  connect( select, &QgsSourceSelectDialog::connectionsChanged, this, &QgsAmsRootItem::connectionsChanged );
+  connect( select, &QgsArcGisServiceSourceSelect::connectionsChanged, this, &QgsAmsRootItem::connectionsChanged );
   return select;
 }
 
@@ -75,7 +75,7 @@ void QgsAmsRootItem::newConnection()
 
   if ( nc.exec() )
   {
-    refresh();
+    refreshConnections();
   }
 }
 #endif
@@ -158,14 +158,14 @@ void QgsAmsConnectionItem::editConnection()
 
   if ( nc.exec() )
   {
-    mParent->refresh();
+    mParent->refreshConnections();
   }
 }
 
 void QgsAmsConnectionItem::deleteConnection()
 {
   QgsOwsConnection::deleteConnection( QStringLiteral( "arcgismapserver" ), mName );
-  mParent->refresh();
+  mParent->refreshConnections();
 }
 #endif
 

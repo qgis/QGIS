@@ -1,5 +1,5 @@
 /***************************************************************************
-    qgssourceselectdialog.cpp
+    qgsarcgisservicesourceselect.cpp
     -------------------------
   begin                : Nov 26, 2015
   copyright            : (C) 2015 by Sandro Mani
@@ -15,7 +15,7 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgssourceselectdialog.h"
+#include "qgsarcgisservicesourceselect.h"
 #include "qgsowsconnection.h"
 #include "qgsnewhttpconnection.h"
 #include "qgsprojectionselectiondialog.h"
@@ -25,10 +25,10 @@
 #include "qgscoordinatereferencesystem.h"
 #include "qgscoordinatetransform.h"
 #include "qgslogger.h"
-#include "qgsmapcanvas.h"
 #include "qgsmanageconnectionsdialog.h"
 #include "qgsexception.h"
 #include "qgssettings.h"
+#include "qgsmapcanvas.h"
 
 #include <QItemDelegate>
 #include <QListWidgetItem>
@@ -37,51 +37,51 @@
 #include <QRadioButton>
 #include <QImageReader>
 
-/** \ingroup gui
+/**
  * Item delegate with tweaked sizeHint.
- * @note not available in Python bindings */
-class QgsSourceSelectItemDelegate : public QItemDelegate
+ */
+class QgsAbstractDataSourceWidgetItemDelegate : public QItemDelegate
 {
   public:
     //! Constructor
-    QgsSourceSelectItemDelegate( QObject *parent = 0 ) : QItemDelegate( parent ) { }
+    QgsAbstractDataSourceWidgetItemDelegate( QObject *parent = 0 ) : QItemDelegate( parent ) { }
     QSize sizeHint( const QStyleOptionViewItem &option, const QModelIndex &index ) const override;
 };
 
 
-QgsSourceSelectDialog::QgsSourceSelectDialog( const QString &serviceName, ServiceType serviceType, QWidget *parent, Qt::WindowFlags fl )
-  : QDialog( parent, fl ),
-    mServiceName( serviceName ),
-    mServiceType( serviceType ),
-    mBuildQueryButton( 0 ),
-    mImageEncodingGroup( 0 )
+QgsArcGisServiceSourceSelect::QgsArcGisServiceSourceSelect( const QString &serviceName, ServiceType serviceType, QWidget *parent, Qt::WindowFlags fl, QgsProviderRegistry::WidgetMode widgetMode ):
+  QgsAbstractDataSourceWidget( parent, fl, widgetMode ),
+  mServiceName( serviceName ),
+  mServiceType( serviceType ),
+  mBuildQueryButton( 0 ),
+  mImageEncodingGroup( 0 )
 {
   setupUi( this );
   setWindowTitle( QStringLiteral( "Add %1 Layer from a Server" ).arg( mServiceName ) );
 
   mAddButton = buttonBox->addButton( tr( "&Add" ), QDialogButtonBox::ActionRole );
   mAddButton->setEnabled( false );
-  connect( mAddButton, &QAbstractButton::clicked, this, &QgsSourceSelectDialog::addButtonClicked );
+  connect( mAddButton, &QAbstractButton::clicked, this, &QgsArcGisServiceSourceSelect::addButtonClicked );
 
   if ( mServiceType == FeatureService )
   {
     mBuildQueryButton = buttonBox->addButton( tr( "&Build query" ), QDialogButtonBox::ActionRole );
     mBuildQueryButton->setDisabled( true );
-    connect( mBuildQueryButton, &QAbstractButton::clicked, this, &QgsSourceSelectDialog::buildQueryButtonClicked );
+    connect( mBuildQueryButton, &QAbstractButton::clicked, this, &QgsArcGisServiceSourceSelect::buildQueryButtonClicked );
   }
 
   connect( buttonBox, &QDialogButtonBox::rejected, this, &QDialog::reject );
-  connect( btnNew, &QAbstractButton::clicked, this, &QgsSourceSelectDialog::addEntryToServerList );
-  connect( btnEdit, &QAbstractButton::clicked, this, &QgsSourceSelectDialog::modifyEntryOfServerList );
-  connect( btnDelete, &QAbstractButton::clicked, this, &QgsSourceSelectDialog::deleteEntryOfServerList );
-  connect( btnConnect, &QAbstractButton::clicked, this, &QgsSourceSelectDialog::connectToServer );
-  connect( btnChangeSpatialRefSys, &QAbstractButton::clicked, this, &QgsSourceSelectDialog::changeCrs );
-  connect( lineFilter, &QLineEdit::textChanged, this, &QgsSourceSelectDialog::filterChanged );
+  connect( btnNew, &QAbstractButton::clicked, this, &QgsArcGisServiceSourceSelect::addEntryToServerList );
+  connect( btnEdit, &QAbstractButton::clicked, this, &QgsArcGisServiceSourceSelect::modifyEntryOfServerList );
+  connect( btnDelete, &QAbstractButton::clicked, this, &QgsArcGisServiceSourceSelect::deleteEntryOfServerList );
+  connect( btnConnect, &QAbstractButton::clicked, this, &QgsArcGisServiceSourceSelect::connectToServer );
+  connect( btnChangeSpatialRefSys, &QAbstractButton::clicked, this, &QgsArcGisServiceSourceSelect::changeCrs );
+  connect( lineFilter, &QLineEdit::textChanged, this, &QgsArcGisServiceSourceSelect::filterChanged );
   populateConnectionList();
   mProjectionSelector = new QgsProjectionSelectionDialog( this );
   mProjectionSelector->setMessage( QString() );
 
-  treeView->setItemDelegate( new QgsSourceSelectItemDelegate( treeView ) );
+  treeView->setItemDelegate( new QgsAbstractDataSourceWidgetItemDelegate( treeView ) );
 
   QgsSettings settings;
   restoreGeometry( settings.value( QStringLiteral( "Windows/SourceSelectDialog/geometry" ) ).toByteArray() );
@@ -108,11 +108,11 @@ QgsSourceSelectDialog::QgsSourceSelectDialog( const QString &serviceName, Servic
   mModelProxy->setSortCaseSensitivity( Qt::CaseInsensitive );
   treeView->setModel( mModelProxy );
 
-  connect( treeView, &QAbstractItemView::doubleClicked, this, &QgsSourceSelectDialog::treeWidgetItemDoubleClicked );
-  connect( treeView->selectionModel(), &QItemSelectionModel::currentRowChanged, this, &QgsSourceSelectDialog::treeWidgetCurrentRowChanged );
+  connect( treeView, &QAbstractItemView::doubleClicked, this, &QgsArcGisServiceSourceSelect::treeWidgetItemDoubleClicked );
+  connect( treeView->selectionModel(), &QItemSelectionModel::currentRowChanged, this, &QgsArcGisServiceSourceSelect::treeWidgetCurrentRowChanged );
 }
 
-QgsSourceSelectDialog::~QgsSourceSelectDialog()
+QgsArcGisServiceSourceSelect::~QgsArcGisServiceSourceSelect()
 {
   QgsSettings settings;
   settings.setValue( QStringLiteral( "Windows/SourceSelectDialog/geometry" ), saveGeometry() );
@@ -123,13 +123,8 @@ QgsSourceSelectDialog::~QgsSourceSelectDialog()
   delete mModelProxy;
 }
 
-void QgsSourceSelectDialog::setCurrentExtentAndCrs( const QgsRectangle &canvasExtent, const QgsCoordinateReferenceSystem &canvasCrs )
-{
-  mCanvasExtent = canvasExtent;
-  mCanvasCrs = canvasCrs;
-}
 
-void QgsSourceSelectDialog::populateImageEncodings( const QStringList &availableEncodings )
+void QgsArcGisServiceSourceSelect::populateImageEncodings( const QStringList &availableEncodings )
 {
   QLayoutItem *item = nullptr;
   while ( ( item = gbImageEncoding->layout()->takeAt( 0 ) ) != nullptr )
@@ -162,12 +157,12 @@ void QgsSourceSelectDialog::populateImageEncodings( const QStringList &available
   }
 }
 
-QString QgsSourceSelectDialog::getSelectedImageEncoding() const
+QString QgsArcGisServiceSourceSelect::getSelectedImageEncoding() const
 {
   return mImageEncodingGroup ? mImageEncodingGroup->checkedButton()->text() : QString();
 }
 
-void QgsSourceSelectDialog::populateConnectionList()
+void QgsArcGisServiceSourceSelect::populateConnectionList()
 {
   QStringList conns = QgsOwsConnection::connectionList( mServiceName );
   cmbConnections->clear();
@@ -190,7 +185,7 @@ void QgsSourceSelectDialog::populateConnectionList()
   }
 }
 
-QString QgsSourceSelectDialog::getPreferredCrs( const QSet<QString> &crsSet ) const
+QString QgsArcGisServiceSourceSelect::getPreferredCrs( const QSet<QString> &crsSet ) const
 {
   if ( crsSet.size() < 1 )
   {
@@ -221,7 +216,12 @@ QString QgsSourceSelectDialog::getPreferredCrs( const QSet<QString> &crsSet ) co
   return *( crsSet.constBegin() );
 }
 
-void QgsSourceSelectDialog::addEntryToServerList()
+void QgsArcGisServiceSourceSelect::refresh()
+{
+  populateConnectionList();
+}
+
+void QgsArcGisServiceSourceSelect::addEntryToServerList()
 {
 
   QgsNewHttpConnection nc( 0, QStringLiteral( "qgis/connections-%1/" ).arg( mServiceName.toLower() ) );
@@ -234,7 +234,7 @@ void QgsSourceSelectDialog::addEntryToServerList()
   }
 }
 
-void QgsSourceSelectDialog::modifyEntryOfServerList()
+void QgsArcGisServiceSourceSelect::modifyEntryOfServerList()
 {
   QgsNewHttpConnection nc( 0, QStringLiteral( "qgis/connections-%1/" ).arg( mServiceName.toLower() ), cmbConnections->currentText() );
   nc.setWindowTitle( tr( "Modify %1 connection" ).arg( mServiceName ) );
@@ -246,7 +246,7 @@ void QgsSourceSelectDialog::modifyEntryOfServerList()
   }
 }
 
-void QgsSourceSelectDialog::deleteEntryOfServerList()
+void QgsArcGisServiceSourceSelect::deleteEntryOfServerList()
 {
   QString msg = tr( "Are you sure you want to remove the %1 connection and all associated settings?" )
                 .arg( cmbConnections->currentText() );
@@ -264,7 +264,7 @@ void QgsSourceSelectDialog::deleteEntryOfServerList()
   }
 }
 
-void QgsSourceSelectDialog::connectToServer()
+void QgsArcGisServiceSourceSelect::connectToServer()
 {
   bool haveLayers = false;
   btnConnect->setEnabled( false );
@@ -308,7 +308,7 @@ void QgsSourceSelectDialog::connectToServer()
   btnChangeSpatialRefSys->setEnabled( haveLayers );
 }
 
-void QgsSourceSelectDialog::addButtonClicked()
+void QgsArcGisServiceSourceSelect::addButtonClicked()
 {
   if ( treeView->selectionModel()->selectedRows().isEmpty() )
   {
@@ -320,15 +320,21 @@ void QgsSourceSelectDialog::addButtonClicked()
   QString pCrsString( labelCoordRefSys->text() );
   QgsCoordinateReferenceSystem pCrs( pCrsString );
   //prepare canvas extent info for layers with "cache features" option not set
-  QgsRectangle extent = mCanvasExtent;
+  QgsRectangle extent;
+  QgsCoordinateReferenceSystem canvasCrs;
+  if ( mapCanvas() )
+  {
+    extent = mapCanvas()->extent();
+    canvasCrs = mapCanvas()->mapSettings().destinationCrs();
+  }
   //does canvas have "on the fly" reprojection set?
-  if ( pCrs.isValid() && mCanvasCrs.isValid() )
+  if ( pCrs.isValid() && canvasCrs.isValid() )
   {
     try
     {
-      extent = QgsCoordinateTransform( mCanvasCrs, pCrs ).transform( extent );
+      extent = QgsCoordinateTransform( canvasCrs, pCrs ).transform( extent );
       QgsDebugMsg( QString( "canvas transform: Canvas CRS=%1, Provider CRS=%2, BBOX=%3" )
-                   .arg( mCanvasCrs.authid(), pCrs.authid(), extent.asWktCoordinates() ) );
+                   .arg( canvasCrs.authid(), pCrs.authid(), extent.asWktCoordinates() ) );
     }
     catch ( const QgsCsException & )
     {
@@ -368,7 +374,7 @@ void QgsSourceSelectDialog::addButtonClicked()
   accept();
 }
 
-void QgsSourceSelectDialog::changeCrs()
+void QgsArcGisServiceSourceSelect::changeCrs()
 {
   if ( mProjectionSelector->exec() )
   {
@@ -377,7 +383,7 @@ void QgsSourceSelectDialog::changeCrs()
   }
 }
 
-void QgsSourceSelectDialog::changeCrsFilter()
+void QgsArcGisServiceSourceSelect::changeCrsFilter()
 {
   QgsDebugMsg( "changeCRSFilter called" );
   //evaluate currently selected typename and set the CRS filter in mProjectionSelector
@@ -411,20 +417,20 @@ void QgsSourceSelectDialog::changeCrsFilter()
   }
 }
 
-void QgsSourceSelectDialog::on_cmbConnections_activated( int index )
+void QgsArcGisServiceSourceSelect::on_cmbConnections_activated( int index )
 {
   Q_UNUSED( index );
   QgsOwsConnection::setSelectedConnection( mServiceName, cmbConnections->currentText() );
 }
 
-void QgsSourceSelectDialog::treeWidgetItemDoubleClicked( const QModelIndex &index )
+void QgsArcGisServiceSourceSelect::treeWidgetItemDoubleClicked( const QModelIndex &index )
 {
   QgsDebugMsg( "double-click called" );
   QgsOwsConnection connection( mServiceName, cmbConnections->currentText() );
   buildQuery( connection, index );
 }
 
-void QgsSourceSelectDialog::treeWidgetCurrentRowChanged( const QModelIndex &current, const QModelIndex &previous )
+void QgsArcGisServiceSourceSelect::treeWidgetCurrentRowChanged( const QModelIndex &current, const QModelIndex &previous )
 {
   Q_UNUSED( previous )
   QgsDebugMsg( "treeWidget_currentRowChanged called" );
@@ -436,14 +442,14 @@ void QgsSourceSelectDialog::treeWidgetCurrentRowChanged( const QModelIndex &curr
   mAddButton->setEnabled( current.isValid() );
 }
 
-void QgsSourceSelectDialog::buildQueryButtonClicked()
+void QgsArcGisServiceSourceSelect::buildQueryButtonClicked()
 {
   QgsDebugMsg( "mBuildQueryButton click called" );
   QgsOwsConnection connection( mServiceName, cmbConnections->currentText() );
   buildQuery( connection, treeView->selectionModel()->currentIndex() );
 }
 
-void QgsSourceSelectDialog::filterChanged( const QString &text )
+void QgsArcGisServiceSourceSelect::filterChanged( const QString &text )
 {
   QgsDebugMsg( "FeatureType filter changed to :" + text );
   QRegExp::PatternSyntax mySyntax = QRegExp::PatternSyntax( QRegExp::RegExp );
@@ -453,7 +459,7 @@ void QgsSourceSelectDialog::filterChanged( const QString &text )
   mModelProxy->sort( mModelProxy->sortColumn(), mModelProxy->sortOrder() );
 }
 
-QSize QgsSourceSelectItemDelegate::sizeHint( const QStyleOptionViewItem &option, const QModelIndex &index ) const
+QSize QgsAbstractDataSourceWidgetItemDelegate::sizeHint( const QStyleOptionViewItem &option, const QModelIndex &index ) const
 {
   QVariant indexData = index.data( Qt::DisplayRole );
   if ( indexData.isNull() )
@@ -465,7 +471,7 @@ QSize QgsSourceSelectItemDelegate::sizeHint( const QStyleOptionViewItem &option,
   return size;
 }
 
-void QgsSourceSelectDialog::on_buttonBox_helpRequested() const
+void QgsArcGisServiceSourceSelect::on_buttonBox_helpRequested() const
 {
   QgsContextHelp::run( metaObject()->className() );
 }

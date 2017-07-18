@@ -1,5 +1,5 @@
 /***************************************************************************
-    qgssourceselectdialog.h
+    qgsarcgisservicesourceselect.h
     ---------------------
     begin                : Nov 26, 2015
     copyright            : (C) 2015 by Sandro Mani
@@ -13,24 +13,26 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef QGSSOURCESELECTDIALOG_H
-#define QGSSOURCESELECTDIALOG_H
+#ifndef QGSARCGISSERVICESOURCESELECT_H
+#define QGSARCGISSERVICESOURCESELECT_H
 
-#include "ui_qgssourceselectdialogbase.h"
+#define SIP_NO_FILE
+
+#include "ui_qgsarcgisservicesourceselectbase.h"
 #include "qgsrectangle.h"
 #include "qgscoordinatereferencesystem.h"
-
-#include "qgis_gui.h"
+#include "qgsabstractdatasourcewidget.h"
 
 class QStandardItemModel;
 class QSortFilterProxyModel;
 class QgsProjectionSelectionDialog;
 class QgsOwsConnection;
+class QgsMapCanvas;
 
-/** \ingroup gui
- * Generic class listing layers available from a remote service.
+/**
+ * Base class for listing ArcGis layers available from a remote service.
  */
-class GUI_EXPORT QgsSourceSelectDialog : public QDialog, protected Ui::QgsSourceSelectBase
+class QgsArcGisServiceSourceSelect : public QgsAbstractDataSourceWidget, protected Ui::QgsArcGisServiceSourceSelectBase
 {
     Q_OBJECT
 
@@ -39,17 +41,14 @@ class GUI_EXPORT QgsSourceSelectDialog : public QDialog, protected Ui::QgsSource
     enum ServiceType { MapService, FeatureService };
 
     //! Constructor
-    QgsSourceSelectDialog( const QString &serviceName, ServiceType serviceType, QWidget *parent, Qt::WindowFlags fl );
+    QgsArcGisServiceSourceSelect( const QString &serviceName, ServiceType serviceType, QWidget *parent, Qt::WindowFlags fl, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::None );
 
-    ~QgsSourceSelectDialog();
-    //! Sets the current extent and CRS. Used to select an appropriate CRS and possibly to retrieve data only in the current extent
-    void setCurrentExtentAndCrs( const QgsRectangle &canvasExtent, const QgsCoordinateReferenceSystem &canvasCrs );
+    //! Destructor
+    ~QgsArcGisServiceSourceSelect() override;
 
   signals:
     //! Emitted when a layer is added from the dialog
     void addLayer( QString uri, QString typeName );
-    //! Emitted when the connections for the service were changed
-    void connectionsChanged();
 
   protected:
     QString mServiceName;
@@ -91,6 +90,17 @@ class GUI_EXPORT QgsSourceSelectDialog : public QDialog, protected Ui::QgsSource
     \returns the authority id of the crs or an empty string in case of error*/
     QString getPreferredCrs( const QSet<QString> &crsSet ) const;
 
+    /** Store a pointer to map canvas to retrieve extent and CRS
+     * Used to select an appropriate CRS and possibly to retrieve data only in the current extent
+     */
+    QgsMapCanvas *mMapCanvas = nullptr;
+
+
+  public slots:
+
+    //! Triggered when the provider's connections need to be refreshed
+    void refresh( ) override;
+
   private slots:
     void addEntryToServerList();
     void deleteEntryOfServerList();
@@ -108,4 +118,4 @@ class GUI_EXPORT QgsSourceSelectDialog : public QDialog, protected Ui::QgsSource
 };
 
 
-#endif // QGSSOURCESELECTDIALOG_H
+#endif // QGSARCGISSERVICESOURCESELECT_H

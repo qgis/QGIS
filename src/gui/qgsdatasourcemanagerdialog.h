@@ -31,6 +31,7 @@
 class QgsBrowserDockWidget;
 class QgsRasterLayer;
 class QgsMapCanvas;
+class QgsAbstractDataSourceWidget;
 
 /** \ingroup gui
  * The QgsDataSourceManagerDialog class embeds the browser panel and all
@@ -47,11 +48,10 @@ class GUI_EXPORT QgsDataSourceManagerDialog : public QgsOptionsDialogBase, priva
   public:
 
     /** QgsDataSourceManagerDialog constructor
-      * @param mapCanvas the map canvas
       * @param parent the object
       * @param fl window flags
       */
-    explicit QgsDataSourceManagerDialog( QgsMapCanvas *mapCanvas, QWidget *parent = nullptr, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags );
+    explicit QgsDataSourceManagerDialog( QWidget *parent = nullptr, QgsMapCanvas *canvas = nullptr, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags );
     ~QgsDataSourceManagerDialog();
 
     /**
@@ -67,6 +67,7 @@ class GUI_EXPORT QgsDataSourceManagerDialog : public QgsOptionsDialogBase, priva
     void setCurrentPage( int index );
 
     //! A raster layer was added: for signal forwarding to QgisApp
+    //! TODO: use this with an internal source select dialog instead of forwarding the whole raster selection to app
     void rasterLayerAdded( QString const &uri, QString const &baseName, QString const &providerKey );
     //! A vector layer was added: for signal forwarding to QgisApp
     void vectorLayerAdded( const QString &vectorLayerPath, const QString &baseName, const QString &providerKey );
@@ -74,20 +75,18 @@ class GUI_EXPORT QgsDataSourceManagerDialog : public QgsOptionsDialogBase, priva
     void vectorLayersAdded( const QStringList &layerQStringList, const QString &enc, const QString &dataSourceType );
     //! Reset current page to previously selected page
     void setPreviousPage();
+    //! Refresh the browser view
+    void refresh( );
 
   signals:
     //! Emitted when a raster layer was selected for addition: for signal forwarding to QgisApp
-    void addRasterLayer( QString const &uri, QString const &baseName, QString const &providerKey );
+    void addRasterLayer( const QString &uri, const QString &baseName, const QString &providerKey );
     //! Emitted when the user wants to select a raster layer: for signal forwarding to QgisApp
     void addRasterLayer();
     //! Emitted when a vector layer was selected for addition: for signal forwarding to QgisApp
     void addVectorLayer( const QString &vectorLayerPath, const QString &baseName, const QString &providerKey );
     //! Replace the selected layer by a vector layer defined by uri, layer name, data source uri
     void replaceSelectedVectorLayer( const QString &oldId, const QString &uri, const QString &layerName, const QString &provider );
-    //! Emitted when a WFS layer was selected for addition: for signal forwarding to QgisApp
-    void addWfsLayer( const QString &uri, const QString &typeName );
-    //! Emitted when a AFS layer was selected for addition: for signal forwarding to QgisApp
-    void addAfsLayer( const QString &uri, const QString &typeName );
     //! Emitted when a one or more layer were selected for addition: for signal forwarding to QgisApp
     void addVectorLayers( const QStringList &layerQStringList, const QString &enc, const QString &dataSourceType );
     //! Emitted when the dialog is busy: for signal forwarding to QgisApp
@@ -95,25 +94,35 @@ class GUI_EXPORT QgsDataSourceManagerDialog : public QgsOptionsDialogBase, priva
     //! Emitted when a status message needs to be shown: for signal forwarding to QgisApp
     void showStatusMessage( const QString &message );
     //! Emitted when a DB layer was selected for addition: for signal forwarding to QgisApp
-    void addDatabaseLayers( QStringList const &layerPathList, QString const &providerKey );
+    void addDatabaseLayers( const QStringList &layerPathList, const QString &providerKey );
     //! Emitted when a file needs to be opened
     void openFile( const QString & );
     //! Emitted when drop uri list needs to be handled from the browser
     void handleDropUriList( const QgsMimeDataUtils::UriList & );
     //! Update project home directory
     void updateProjectHome();
+    //! Emitted when a connection has changed inside the provider dialogs
+    //! This signal is normally forwarded to the application to notify other
+    //! browsers that they need to refresh their connections list
+    void connectionsChanged();
+    //! One or more provider connections have changed and the
+    //! dialogs should be refreshed
+    void providerDialogsRefreshRequested();
 
   private:
-    //! Return the dialog from the provider
-    QDialog *providerDialog( QString const providerKey, QString const providerName, QString const icon, QString title = QString( ) );
+    // Return the dialog from the provider
+    QgsAbstractDataSourceWidget *providerDialog( const QString providerKey, const QString providerName, const QString icon, QString title = QString( ) );
     void addDbProviderDialog( QString const providerKey, QString const providerName, QString const icon, QString title = QString( ) );
     void addRasterProviderDialog( QString const providerKey, QString const providerName, QString const icon, QString title = QString( ) );
+    void addVectorProviderDialog( QString const providerKey, QString const providerName, QString const icon, QString title = QString( ) );
     Ui::QgsDataSourceManagerDialog *ui;
     QgsBrowserDockWidget *mBrowserWidget = nullptr;
-    //! Map canvas
-    QgsMapCanvas *mMapCanvas = nullptr;
     int mPreviousRow;
     QStringList mPageNames;
+    // Map canvas
+    QgsMapCanvas *mMapCanvas = nullptr;
+
+
 };
 
 #endif // QGSDATASOURCEMANAGERDIALOG_H
