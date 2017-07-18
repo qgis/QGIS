@@ -17,37 +17,34 @@
 #include "qgslayoutitempage.h"
 #include "qgslayout.h"
 #include "qgslayoututils.h"
+#include "qgssymbollayerutils.h"
 #include <QPainter>
 
+#define SHADOW_WIDTH_PIXELS 5
 QgsLayoutItemPage::QgsLayoutItemPage( QgsLayout *layout )
   : QgsLayoutItem( layout )
 {
 
 }
 
-void QgsLayoutItemPage::draw( QgsRenderContext &context, const QStyleOptionGraphicsItem *itemStyle )
+void QgsLayoutItemPage::draw( QgsRenderContext &context, const QStyleOptionGraphicsItem * )
 {
-#if 0
-  Q_UNUSED( itemStyle );
-  Q_UNUSED( pWidget );
-  if ( !painter || !mComposition || !mComposition->pagesVisible() )
+  if ( !context.painter() || !mLayout /*|| !mLayout->pagesVisible() */ )
   {
     return;
   }
 
-  //setup painter scaling to dots so that raster symbology is drawn to scale
-  double dotsPerMM = painter->device()->logicalDpiX() / 25.4;
-
-  //setup render context
-  QgsRenderContext context = QgsComposerUtils::createRenderContextForComposition( mComposition, painter );
-  context.setForceVectorOutput( true );
+  double scale = context.convertToPainterUnits( 1, QgsUnitTypes::RenderMillimeters );
 
   QgsExpressionContext expressionContext = createExpressionContext();
   context.setExpressionContext( expressionContext );
 
+  QPainter *painter = context.painter();
   painter->save();
 
+#if 0 //TODO
   if ( mComposition->plotStyle() ==  QgsComposition::Preview )
+#endif
   {
     //if in preview mode, draw page border and shadow so that it's
     //still possible to tell where pages with a transparent style begin and end
@@ -56,28 +53,33 @@ void QgsLayoutItemPage::draw( QgsRenderContext &context, const QStyleOptionGraph
     //shadow
     painter->setBrush( QBrush( QColor( 150, 150, 150 ) ) );
     painter->setPen( Qt::NoPen );
-    painter->drawRect( QRectF( 1, 1, rect().width() + 1, rect().height() + 1 ) );
+    painter->drawRect( QRectF( SHADOW_WIDTH_PIXELS, SHADOW_WIDTH_PIXELS, rect().width() * scale + SHADOW_WIDTH_PIXELS, rect().height() * scale + SHADOW_WIDTH_PIXELS ) );
 
     //page area
     painter->setBrush( QColor( 215, 215, 215 ) );
     QPen pagePen = QPen( QColor( 100, 100, 100 ), 0 );
     pagePen.setCosmetic( true );
     painter->setPen( pagePen );
-    painter->drawRect( QRectF( 0, 0, rect().width(), rect().height() ) );
+    painter->drawRect( QRectF( 0, 0, scale * rect().width(), scale * rect().height() ) );
   }
 
-  painter->scale( 1 / dotsPerMM, 1 / dotsPerMM ); // scale painter from mm to dots
+  std::unique_ptr< QgsFillSymbol > symbol( mLayout->pageCollection()->pageStyleSymbol()->clone() );
+  symbol->startRender( context );
 
-  painter->setRenderHint( QPainter::Antialiasing );
-  mComposition->pageStyleSymbol()->startRender( context );
+  //get max bleed from symbol
+  double maxBleedPixels = QgsSymbolLayerUtils::estimateMaxSymbolBleed( symbol.get(), context );
 
-  calculatePageMargin();
-  QPolygonF pagePolygon = QPolygonF( QRectF( mPageMargin * dotsPerMM, mPageMargin * dotsPerMM,
-                                     ( rect().width() - 2 * mPageMargin ) * dotsPerMM, ( rect().height() - 2 * mPageMargin ) * dotsPerMM ) );
+  //Now subtract 1 pixel to prevent semi-transparent borders at edge of solid page caused by
+  //anti-aliased painting. This may cause a pixel to be cropped from certain edge lines/symbols,
+  //but that can be counteracted by adding a dummy transparent line symbol layer with a wider line width
+  maxBleedPixels--;
+
+  QPolygonF pagePolygon = QPolygonF( QRectF( maxBleedPixels, maxBleedPixels,
+                                     ( rect().width() * scale - 2 * maxBleedPixels ), ( rect().height() * scale - 2 * maxBleedPixels ) ) );
   QList<QPolygonF> rings; //empty list
 
-  mComposition->pageStyleSymbol()->renderPolygon( pagePolygon, &rings, nullptr, context );
-  mComposition->pageStyleSymbol()->stopRender( context );
+  symbol->renderPolygon( pagePolygon, &rings, nullptr, context );
+  symbol->stopRender( context );
+
   painter->restore();
-#endif
 }

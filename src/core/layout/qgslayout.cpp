@@ -21,7 +21,9 @@ QgsLayout::QgsLayout( QgsProject *project )
   : QGraphicsScene()
   , mProject( project )
   , mPageCollection( new QgsLayoutPageCollection( this ) )
-{}
+{
+  setBackgroundBrush( QColor( 215, 215, 215 ) );
+}
 
 QgsProject *QgsLayout::project() const
 {

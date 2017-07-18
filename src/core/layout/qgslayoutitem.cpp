@@ -78,7 +78,7 @@ void QgsLayoutItem::paint( QPainter *painter, const QStyleOptionGraphicsItem *it
   }
 
   double destinationDpi = itemStyle->matrix.m11() * 25.4;
-  bool useImageCache = true;
+  bool useImageCache = false;
 
   if ( useImageCache )
   {
