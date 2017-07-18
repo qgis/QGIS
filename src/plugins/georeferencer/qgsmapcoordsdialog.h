@@ -33,6 +33,7 @@ class QgsGeorefMapToolEmitPoint : public QgsMapTool
     explicit QgsGeorefMapToolEmitPoint( QgsMapCanvas *canvas )
       : QgsMapTool( canvas )
     {
+      mSnappingMarker = nullptr;
     }
 
     virtual ~QgsGeorefMapToolEmitPoint()

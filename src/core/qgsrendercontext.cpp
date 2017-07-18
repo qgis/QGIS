@@ -285,7 +285,6 @@ double QgsRenderContext::convertToPainterUnits( double size, QgsUnitTypes::Rende
 double QgsRenderContext::convertToMapUnits( double size, QgsUnitTypes::RenderUnit unit, const QgsMapUnitScale &scale ) const
 {
   double mup = mMapToPixel.mapUnitsPerPixel();
-
   switch ( unit )
   {
     case QgsUnitTypes::RenderMetersInMapUnits:
@@ -349,7 +348,6 @@ double QgsRenderContext::convertToMapUnits( double size, QgsUnitTypes::RenderUni
 double QgsRenderContext::convertFromMapUnits( double sizeInMapUnits, QgsUnitTypes::RenderUnit outputUnit ) const
 {
   double mup = mMapToPixel.mapUnitsPerPixel();
-
   switch ( outputUnit )
   {
     case QgsUnitTypes::RenderMetersInMapUnits:

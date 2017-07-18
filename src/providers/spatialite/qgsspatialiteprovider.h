@@ -113,6 +113,15 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
     QVariant defaultValue( int fieldId ) const override;
     bool createAttributeIndex( int field ) override;
     QgsSqliteHandle *getQSqliteHandle() const { return mHandle; }
+
+    /** Retrieve SpatialiteDbInfo
+     * - containing all Information about Database file
+     * \note
+     * - isDbValid() return if the connection contains layers that are supported by
+     * -- QgsSpatiaLiteProvider, QgsGdalProvider and QgsOgrProvider
+     * \see SpatialiteDbInfo::isDbValid()
+     * \since QGIS 3.0
+     */
     SpatialiteDbInfo *getSpatialiteDbInfo() const { return mSpatialiteDbInfo; }
     //! The Database filename being read
     QString getDatabaseFileName() const { return getSpatialiteDbInfo()->getDatabaseFileName(); }
@@ -166,8 +175,24 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
     int dbVectorLayersCount() const { return getSpatialiteDbInfo()->dbVectorLayersCount(); }
     //! Flag indicating if the layer data source has ReadOnly restrictions
     bool isDbReadOnly() const { return getSpatialiteDbInfo()->isDbReadOnly(); }
-    //! Is the read Database supported by QgsSpatiaLiteProvider
+
+    /** Is the read Database supported by QgsSpatiaLiteProvider or
+     * a format only supported by the QgsOgrProvider or QgsGdalProvider
+     * \note
+     *  when false: the file is either a non-supported sqlite3 container
+     *  or not a sqlite3 file (a fossil file would be a sqlite3 container not supported)
+     * \since QGIS 3.0
+     */
     bool isDbValid() const { return getSpatialiteDbInfo()->isDbValid(); }
+
+    /** The read Database only supported by the QgsOgrProvider or QgsGdalProvider Drivers
+     * \note
+     *  - QgsOgrProvider: GeoPackage-Vector
+     *  - QgsGdalProvider: GeoPackage-Raster, MbTiles
+     *  - QgsGdalProvider: RasterLite1 [when Gdal-RasterLite Driver is active]
+     * \since QGIS 3.0
+     */
+    bool isDbGdalOgr() const { return getSpatialiteDbInfo()->isDbGdalOgr(); }
     //! The active Layer
     SpatialiteDbLayer *getDbLayer() const { return mDbLayer; }
     //! The sqlite handler
@@ -364,6 +389,15 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
      */
     QgsSqliteHandle *mHandle = nullptr;
     bool setSqliteHandle( QgsSqliteHandle *sqliteHandle );
+
+    /** SpatialiteDbInfo Object
+     * - containing all Information about Database file
+     * \note
+     * - isDbValid() return if the connection contains layers that are supported by
+     * -- QgsSpatiaLiteProvider, QgsGdalProvider and QgsOgrProvider
+     * \see SpatialiteDbInfo::isDbValid()
+     * \since QGIS 3.0
+     */
     SpatialiteDbInfo *mSpatialiteDbInfo = nullptr;
     bool setDbLayer( SpatialiteDbLayer *dbLayer );
     SpatialiteDbLayer *mDbLayer = nullptr;

@@ -150,6 +150,7 @@ class SymbolLayerItem : public QStandardItem
         icon = QgsSymbolLayerUtils::symbolLayerPreviewIcon( mLayer, QgsUnitTypes::RenderMillimeters, QSize( 16, 16 ) ); //todo: make unit a parameter
       else
         icon = QgsSymbolLayerUtils::symbolPreviewIcon( mSymbol, QSize( 16, 16 ) );
+
       setIcon( icon );
 
       if ( parent() )
@@ -377,7 +378,10 @@ void QgsSymbolSelectorWidget::updateLayerPreview()
   // get current layer item and update its icon
   SymbolLayerItem *item = currentLayerItem();
   if ( item )
+  {
+    qDebug() << QString( "-I-> QgsSymbolSelectorWidget::updateLayerPreview.[%1] " ).arg( "item->updatePreview()" );
     item->updatePreview();
+  }
   // update also preview of the whole symbol
   updatePreview();
 }

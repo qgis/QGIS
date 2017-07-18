@@ -150,11 +150,13 @@ void QgsRendererWidget::changeSymbolUnit()
 
   bool ok;
   int currentUnit = ( firstSymbol->outputUnit() == QgsUnitTypes::RenderMillimeters ) ? 0 : 1;
-  QString item = QInputDialog::getItem( this, tr( "Symbol unit" ), tr( "Select symbol unit" ), QStringList() << tr( "Millimeter" ) << tr( "Map unit" ), currentUnit, false, &ok );
+  QString item = QInputDialog::getItem( this, tr( "Symbol unit" ), tr( "Select symbol unit" ), QStringList() << tr( "Millimeter" ) << tr( "Map unit" ) << "Meters in map Unit", currentUnit, false, &ok );
+  qDebug() << QString( "-I-> QgsRendererWidget::changeSymbolUnit found item.QgsUnitTypes[%1] " ).arg( item );
   if ( ok )
   {
     QgsUnitTypes::RenderUnit unit = ( item.compare( tr( "Millimeter" ) ) == 0 ) ? QgsUnitTypes::RenderMillimeters : QgsUnitTypes::RenderMapUnits;
-
+    if ( item.compare( tr( "Meters in map Unit" ) ) == 0 )
+      unit = QgsUnitTypes::RenderMetersInMapUnits;
     Q_FOREACH ( QgsSymbol *symbol, symbolList )
     {
       if ( symbol )

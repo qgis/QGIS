@@ -173,6 +173,8 @@ class QgsSqliteHandle
       , sqlite_handle( handle )
       , mDbPath( dbPath )
       , mIsValid( true )
+      , mIsGdalOgr( false )
+      , mDbValid( false )
     {
     }
     sqlite3 *handle()
@@ -183,10 +185,68 @@ class QgsSqliteHandle
     {
       return mDbPath;
     }
+
+    /** Is the Database Connection valid
+     * \since QGIS 1.8
+     */
     bool isValid() const
     {
       return mIsValid;
     }
+
+    /** Count on how often this Connection is being used when shared
+     * \note
+     *  -1 not being shared
+     * \since QGIS 3.0
+     */
+    bool getRef() const { return ref; }
+
+    /** Set SpatialiteDbInfo pointer when valid
+     * \see SpatialiteDbInfo::attachQSqliteHandle
+     * \since QGIS 1.8
+     */
+    void setSpatialiteDbInfo( SpatialiteDbInfo *spatialiteDbInfo )
+    {
+      mSpatialiteDbInfo = spatialiteDbInfo;
+      if ( mSpatialiteDbInfo )
+      {
+        mDbValid = getSpatialiteDbInfo()->isDbValid();
+        mIsGdalOgr = getSpatialiteDbInfo()->isDbGdalOgr();
+      }
+      else
+      {
+        mDbValid = false;
+        mIsGdalOgr = false;
+      }
+    }
+
+    /** Retrieve SpatialiteDbInfo
+     * - containing all Information about Database file
+     * \note
+     * - isDbValid() return if the connection contains layers that are supported by
+     * -- QgsSpatiaLiteProvider, QgsGdalProvider and QgsOgrProvider
+     * \see SpatialiteDbInfo::isDbValid()
+     * \since QGIS 3.0
+     */
+    SpatialiteDbInfo *getSpatialiteDbInfo() const { return mSpatialiteDbInfo; }
+
+    /** Is the read Database supported by QgsSpatiaLiteProvider or
+     * a format only supported by the QgsOgrProvider or QgsGdalProvider
+     * \note
+     *  when false: the file is either a non-supported sqlite3 container
+     *  or not a sqlite3 file (a fossil file would be a sqlite3 container not supported)
+     * \since QGIS 3.0
+     */
+    bool isDbValid() const { return mDbValid; }
+
+    /** The read Database only supported by the QgsOgrProvider or QgsGdalProvider Drivers
+     * \note
+     *  - QgsOgrProvider: GeoPackage-Vector
+     *  - QgsGdalProvider: GeoPackage-Raster, MbTiles
+     *  - QgsGdalProvider: RasterLite1 [when Gdal-RasterLite Driver is active]
+     * \since QGIS 3.0
+     */
+    bool isDbGdalOgr() const { return mIsGdalOgr; }
     void invalidate()
     {
       mIsValid = false;
@@ -196,8 +256,6 @@ class QgsSqliteHandle
     //
     void initRasterlite2();
     void sqliteClose();
-    SpatialiteDbInfo *getSpatialiteDbInfo() const { return mSpatialiteDbInfo; }
-    void setSpatialiteDbInfo( SpatialiteDbInfo *spatialiteDbInfo )  { mSpatialiteDbInfo = spatialiteDbInfo; }
 
     /** Open Spatialite Database
      * - at this point we are 'sniffing' the Capabilities of the opened Database
@@ -209,7 +267,7 @@ class QgsSqliteHandle
      * \param shared share this connection with others [default]
      * \param sLayerName when used will load the Layer-Information of that Layer only
      * \param bLoadLayers Load all Layer-Information or only 'sniff' [default] the Database the Database
-     * \returns SpatialiteDbInfo with collected results
+     * \returns SpatialiteDbInfo with collected results if supported by QgsSpatiaLiteProvider,QgsOgrProvider or QgsGdalProvider
      * \see QgsSLConnect
      * \since QGIS 3.0
      */
@@ -230,6 +288,8 @@ class QgsSqliteHandle
     sqlite3 *sqlite_handle = nullptr;
     QString mDbPath;
     bool mIsValid;
+    bool mIsGdalOgr;
+    bool mDbValid;
     SpatialiteDbInfo *mSpatialiteDbInfo = nullptr;
     void *rl2PrivateData = nullptr;  // pointer to RL2 Private Data
     static QMap < QString, QgsSqliteHandle * > sHandles;

@@ -18,6 +18,7 @@
 #include <QStandardItemModel>
 class QIcon;
 #include "qgis.h"
+#include "qgsspatialiteconnection.h"
 
 /** A model that holds the tables of a database in a hierarchy where the
 SQLite DB is the root elements that contain the individual tables as children.
@@ -46,6 +47,16 @@ class QgsSpatiaLiteTableModel: public QStandardItemModel
       mSqliteDb = dbName;
     }
 
+    /** Retrieve SpatialiteDbInfo
+     * - containing all Information about Database file
+     * \note
+     * - isDbValid() return if the connection contains layers that are supported by
+     * -- QgsSpatiaLiteProvider, QgsGdalProvider and QgsOgrProvider
+     * \see SpatialiteDbInfo::isDbValid()
+     * \since QGIS 3.0
+     */
+    SpatialiteDbInfo *getSpatialiteDbInfo() const { return mSpatialiteDbInfo; }
+
   private:
     //! Number of tables in the model
     int mTableCount;
@@ -55,4 +66,14 @@ class QgsSpatiaLiteTableModel: public QStandardItemModel
     QString displayStringForType( QgsWkbTypes::Type type ) const;
     //! Returns qgis wkbtype from database typename
     QgsWkbTypes::Type qgisTypeFromDbType( const QString &dbType ) const;
+
+    /** SpatialiteDbInfo Object
+     * - containing all Information about Database file
+     * \note
+     * - isDbValid() return if the connection contains layers that are supported by
+     * -- QgsSpatiaLiteProvider, QgsGdalProvider and QgsOgrProvider
+     * \see SpatialiteDbInfo::isDbValid()
+     * \since QGIS 3.0
+     */
+    SpatialiteDbInfo *mSpatialiteDbInfo = nullptr;
 };

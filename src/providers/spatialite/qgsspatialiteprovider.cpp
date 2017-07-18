@@ -439,8 +439,13 @@ bool QgsSpatiaLiteProvider::setSqliteHandle( QgsSqliteHandle *sqliteHandle )
   if ( mHandle )
   {
     mSpatialiteDbInfo = mHandle->getSpatialiteDbInfo();
-    if ( ( mSpatialiteDbInfo ) && ( mSpatialiteDbInfo->isDbValid() ) )
+    if ( ( mSpatialiteDbInfo ) && ( isDbValid() )  && ( !isDbGdalOgr() ) )
     {
+      // -- ---------------------------------- --
+      // The combination isDbValid() and !isDbGdalOgr()
+      //  - means that the given Layer is supported by the QgsSpatiaLiteProvider
+      //  --> i.e. not GeoPackage, MBTiles etc.
+      // -- ---------------------------------- --
       QString sLayerName = mUriTableName;
       if ( !mUriGeometryColumn.isEmpty() )
       {

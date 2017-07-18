@@ -303,7 +303,6 @@ void QgsLayerPropertiesWidget::layerTypeChanged()
 void QgsLayerPropertiesWidget::emitSignalChanged()
 {
   emit changed();
-
   // also update paint effect preview
   mEffectWidget->setPreviewPicture( QgsSymbolLayerUtils::symbolLayerPreviewPicture( mLayer, QgsUnitTypes::RenderMillimeters, QSize( 80, 80 ) ) );
   emit widgetChanged();
