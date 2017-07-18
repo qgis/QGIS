@@ -16,29 +16,134 @@
 #include "qgslayoutnewitempropertiesdialog.h"
 #include "qgssettings.h"
 
-QgsLayoutNewItemPropertiesDialog::QgsLayoutNewItemPropertiesDialog( QWidget *parent, Qt::WindowFlags flags )
+QgsLayoutItemPropertiesDialog::QgsLayoutItemPropertiesDialog( QWidget *parent, Qt::WindowFlags flags )
   : QDialog( parent, flags )
 {
   setupUi( this );
+
+  //make button exclusive
+  QButtonGroup *buttonGroup = new QButtonGroup( this );
+  buttonGroup->addButton( mUpperLeftCheckBox );
+  buttonGroup->addButton( mUpperMiddleCheckBox );
+  buttonGroup->addButton( mUpperRightCheckBox );
+  buttonGroup->addButton( mMiddleLeftCheckBox );
+  buttonGroup->addButton( mMiddleCheckBox );
+  buttonGroup->addButton( mMiddleRightCheckBox );
+  buttonGroup->addButton( mLowerLeftCheckBox );
+  buttonGroup->addButton( mLowerMiddleCheckBox );
+  buttonGroup->addButton( mLowerRightCheckBox );
+  buttonGroup->setExclusive( true );
+
   QgsSettings settings;
   double lastWidth = settings.value( QStringLiteral( "LayoutDesigner/lastItemWidth" ), QStringLiteral( "50" ) ).toDouble();
   double lastHeight = settings.value( QStringLiteral( "LayoutDesigner/lastItemHeight" ), QStringLiteral( "50" ) ).toDouble();
-  mWidthSpin->setValue( lastWidth );
-  mHeightSpin->setValue( lastHeight );
+  QgsUnitTypes::LayoutUnit lastSizeUnit = static_cast< QgsUnitTypes::LayoutUnit >( settings.value( QStringLiteral( "LayoutDesigner/lastSizeUnit" ) ).toInt() );
+  setItemSize( QgsLayoutSize( lastWidth, lastHeight, lastSizeUnit ) );
 }
 
-void QgsLayoutNewItemPropertiesDialog::setInitialItemPosition( QPointF position )
+void QgsLayoutItemPropertiesDialog::setItemPosition( QgsLayoutPoint position )
 {
   mXPosSpin->setValue( position.x() );
   mYPosSpin->setValue( position.y() );
+  mPosUnitsComboBox->setUnit( position.units() );
 }
 
-QgsLayoutPoint QgsLayoutNewItemPropertiesDialog::itemPosition() const
+QgsLayoutPoint QgsLayoutItemPropertiesDialog::itemPosition() const
 {
-  return QgsLayoutPoint( mXPosSpin->value(), mYPosSpin->value() );
+  return QgsLayoutPoint( mXPosSpin->value(), mYPosSpin->value(), mPosUnitsComboBox->unit() );
 }
 
-QgsLayoutSize QgsLayoutNewItemPropertiesDialog::itemSize() const
+void QgsLayoutItemPropertiesDialog::setItemSize( QgsLayoutSize size )
 {
-  return QgsLayoutSize( mWidthSpin->value(), mHeightSpin->value() );
+  mWidthSpin->setValue( size.width() );
+  mHeightSpin->setValue( size.height() );
+  mSizeUnitsComboBox->setUnit( size.units() );
+}
+
+QgsLayoutSize QgsLayoutItemPropertiesDialog::itemSize() const
+{
+  return QgsLayoutSize( mWidthSpin->value(), mHeightSpin->value(), mSizeUnitsComboBox->unit() );
+}
+
+QgsLayoutItem::ReferencePoint QgsLayoutItemPropertiesDialog::referencePoint() const
+{
+  if ( mUpperLeftCheckBox->checkState() == Qt::Checked )
+  {
+    return QgsLayoutItem::UpperLeft;
+  }
+  else if ( mUpperMiddleCheckBox->checkState() == Qt::Checked )
+  {
+    return QgsLayoutItem::UpperMiddle;
+  }
+  else if ( mUpperRightCheckBox->checkState() == Qt::Checked )
+  {
+    return QgsLayoutItem::UpperRight;
+  }
+  else if ( mMiddleLeftCheckBox->checkState() == Qt::Checked )
+  {
+    return QgsLayoutItem::MiddleLeft;
+  }
+  else if ( mMiddleCheckBox->checkState() == Qt::Checked )
+  {
+    return QgsLayoutItem::Middle;
+  }
+  else if ( mMiddleRightCheckBox->checkState() == Qt::Checked )
+  {
+    return QgsLayoutItem::MiddleRight;
+  }
+  else if ( mLowerLeftCheckBox->checkState() == Qt::Checked )
+  {
+    return QgsLayoutItem::LowerLeft;
+  }
+  else if ( mLowerMiddleCheckBox->checkState() == Qt::Checked )
+  {
+    return QgsLayoutItem::LowerMiddle;
+  }
+  else if ( mLowerRightCheckBox->checkState() == Qt::Checked )
+  {
+    return QgsLayoutItem::LowerRight;
+  }
+  return QgsLayoutItem::UpperLeft;
+}
+
+void QgsLayoutItemPropertiesDialog::setReferencePoint( QgsLayoutItem::ReferencePoint point )
+{
+  switch ( point )
+  {
+    case QgsLayoutItem::UpperLeft:
+      mUpperLeftCheckBox->setChecked( true );
+      break;
+
+    case QgsLayoutItem::UpperMiddle:
+      mUpperMiddleCheckBox->setChecked( true );
+      break;
+
+    case QgsLayoutItem::UpperRight:
+      mUpperRightCheckBox->setChecked( true );
+      break;
+
+    case QgsLayoutItem::MiddleLeft:
+      mMiddleLeftCheckBox->setChecked( true );
+      break;
+
+    case QgsLayoutItem::Middle:
+      mMiddleCheckBox->setChecked( true );
+      break;
+
+    case QgsLayoutItem::MiddleRight:
+      mMiddleRightCheckBox->setChecked( true );
+      break;
+
+    case QgsLayoutItem::LowerLeft:
+      mLowerLeftCheckBox->setChecked( true );
+      break;
+
+    case QgsLayoutItem::LowerMiddle:
+      mLowerMiddleCheckBox->setChecked( true );
+      break;
+
+    case QgsLayoutItem::LowerRight:
+      mLowerRightCheckBox->setChecked( true );
+      break;
+  }
 }

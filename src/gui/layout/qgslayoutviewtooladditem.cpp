@@ -89,10 +89,11 @@ void QgsLayoutViewToolAddItem::layoutReleaseEvent( QgsLayoutViewMouseEvent *even
   bool clickOnly = !isClickAndDrag( mMousePressStartPos, event->pos() );
   if ( clickOnly )
   {
-    QgsLayoutNewItemPropertiesDialog dlg( view() );
-    dlg.setInitialItemPosition( event->layoutPoint() );
+    QgsLayoutItemPropertiesDialog dlg( view() );
+    dlg.setItemPosition( QgsLayoutPoint( event->layoutPoint(), layout()->units() ) );
     if ( dlg.exec() )
     {
+      item->setReferencePoint( dlg.referencePoint() );
       item->attemptResize( dlg.itemSize() );
       item->attemptMove( dlg.itemPosition() );
     }
@@ -112,7 +113,7 @@ void QgsLayoutViewToolAddItem::layoutReleaseEvent( QgsLayoutViewMouseEvent *even
   QgsSettings settings;
   settings.setValue( QStringLiteral( "LayoutDesigner/lastItemWidth" ), item->sizeWithUnits().width() );
   settings.setValue( QStringLiteral( "LayoutDesigner/lastItemHeight" ), item->sizeWithUnits().height() );
-
+  settings.setValue( QStringLiteral( "LayoutDesigner/lastSizeUnit" ), static_cast< int >( item->sizeWithUnits().units() ) );
 
   layout()->addItem( item );
 }

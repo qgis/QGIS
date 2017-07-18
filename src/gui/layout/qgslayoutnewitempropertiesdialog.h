@@ -22,25 +22,63 @@
 
 #include "qgslayoutsize.h"
 #include "qgslayoutpoint.h"
+#include "qgslayoutitem.h"
 
 /**
  * \ingroup gui
- * \brief A dialog for configuring properties like the size and position of new layout items.
+ * \brief A dialog for configuring properties like the size and position of layout items.
+ *
+ * This is usually used only when constructing new layout items, allowing users to precisely
+ * enter their sizes and positions.
+ *
+ * \since QGIS 3.0
  */
-class GUI_EXPORT QgsLayoutNewItemPropertiesDialog : public QDialog, private Ui::QgsLayoutNewItemPropertiesDialog
+class GUI_EXPORT QgsLayoutItemPropertiesDialog : public QDialog, private Ui::QgsLayoutNewItemPropertiesDialog
 {
     Q_OBJECT
 
   public:
 
-    QgsLayoutNewItemPropertiesDialog( QWidget *parent = nullptr, Qt::WindowFlags flags = 0 );
+    /**
+     * Constructor for QgsLayoutNewItemPropertiesDialog.
+     */
+    QgsLayoutItemPropertiesDialog( QWidget *parent = nullptr, Qt::WindowFlags flags = 0 );
 
+    /**
+     * Sets the item \a position to show in the dialog.
+     * \see itemPosition()
+     */
+    void setItemPosition( QgsLayoutPoint position );
 
-    void setInitialItemPosition( QPointF position );
-
+    /**
+     * Returns the current item position defined by the dialog.
+     * \see setItemPosition()
+     */
     QgsLayoutPoint itemPosition() const;
 
+    /**
+     * Sets the item \a size to show in the dialog.
+     * \see itemSize()
+     */
+    void setItemSize( QgsLayoutSize size );
+
+    /**
+     * Returns the item size defined by the dialog.
+     * \see setItemSize()
+     */
     QgsLayoutSize itemSize() const;
+
+    /**
+     * Returns the item reference point defined by the dialog.
+     * \see setReferencePoint()
+     */
+    QgsLayoutItem::ReferencePoint referencePoint() const;
+
+    /**
+     * Sets the item reference \a point defined to show in the dialog.
+     * \see referencePoint()
+     */
+    void setReferencePoint( QgsLayoutItem::ReferencePoint point );
 
 };
 

@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>391</width>
+    <width>468</width>
     <height>263</height>
    </rect>
   </property>
@@ -21,11 +21,18 @@
      </property>
      <layout class="QVBoxLayout" name="verticalLayout">
       <item>
-       <layout class="QGridLayout" name="gridLayout_3" columnstretch="0,0,0">
+       <layout class="QGridLayout" name="gridLayout_3" columnstretch="0,1,0,0">
+        <item row="3" column="0">
+         <widget class="QLabel" name="mHeightLabel">
+          <property name="text">
+           <string>Height</string>
+          </property>
+         </widget>
+        </item>
         <item row="3" column="1" colspan="2">
          <widget class="QgsDoubleSpinBox" name="mHeightSpin">
           <property name="suffix">
-           <string> mm</string>
+           <string/>
           </property>
           <property name="decimals">
            <number>3</number>
@@ -44,7 +51,7 @@
         <item row="1" column="1" colspan="2">
          <widget class="QgsDoubleSpinBox" name="mYPosSpin">
           <property name="suffix">
-           <string> mm</string>
+           <string/>
           </property>
           <property name="decimals">
            <number>3</number>
@@ -60,17 +67,43 @@
           </property>
          </widget>
         </item>
-        <item row="3" column="0">
-         <widget class="QLabel" name="mHeightLabel">
+        <item row="0" column="0">
+         <widget class="QLabel" name="mXLabel">
           <property name="text">
-           <string>Height</string>
+           <string>X</string>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="1" colspan="2">
+         <widget class="QgsDoubleSpinBox" name="mXPosSpin">
+          <property name="suffix">
+           <string/>
+          </property>
+          <property name="decimals">
+           <number>3</number>
+          </property>
+          <property name="minimum">
+           <double>-9999999.000000000000000</double>
+          </property>
+          <property name="maximum">
+           <double>9999999.000000000000000</double>
+          </property>
+          <property name="showClearButton" stdset="0">
+           <bool>false</bool>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="0">
+         <widget class="QLabel" name="mYLabel">
+          <property name="text">
+           <string>Y</string>
           </property>
          </widget>
         </item>
         <item row="2" column="1" colspan="2">
          <widget class="QgsDoubleSpinBox" name="mWidthSpin">
           <property name="suffix">
-           <string> mm</string>
+           <string/>
           </property>
           <property name="decimals">
            <number>3</number>
@@ -86,25 +119,6 @@
           </property>
          </widget>
         </item>
-        <item row="0" column="1" colspan="2">
-         <widget class="QgsDoubleSpinBox" name="mXPosSpin">
-          <property name="suffix">
-           <string> mm</string>
-          </property>
-          <property name="decimals">
-           <number>3</number>
-          </property>
-          <property name="minimum">
-           <double>-9999999.000000000000000</double>
-          </property>
-          <property name="maximum">
-           <double>9999999.000000000000000</double>
-          </property>
-          <property name="showClearButton" stdset="0">
-           <bool>false</bool>
-          </property>
-         </widget>
-        </item>
         <item row="2" column="0">
          <widget class="QLabel" name="mWidthLabel">
           <property name="text">
@@ -112,19 +126,11 @@
           </property>
          </widget>
         </item>
-        <item row="1" column="0">
-         <widget class="QLabel" name="mYLabel">
-          <property name="text">
-           <string>Y</string>
-          </property>
-         </widget>
+        <item row="0" column="3" rowspan="2">
+         <widget class="QgsLayoutUnitsComboBox" name="mPosUnitsComboBox"/>
         </item>
-        <item row="0" column="0">
-         <widget class="QLabel" name="mXLabel">
-          <property name="text">
-           <string>X</string>
-          </property>
-         </widget>
+        <item row="2" column="3" rowspan="2">
+         <widget class="QgsLayoutUnitsComboBox" name="mSizeUnitsComboBox"/>
         </item>
        </layout>
       </item>
@@ -347,12 +353,19 @@
    <extends>QDoubleSpinBox</extends>
    <header>qgsdoublespinbox.h</header>
   </customwidget>
+  <customwidget>
+   <class>QgsLayoutUnitsComboBox</class>
+   <extends>QComboBox</extends>
+   <header>qgslayoutunitscombobox.h</header>
+  </customwidget>
  </customwidgets>
  <tabstops>
   <tabstop>mXPosSpin</tabstop>
   <tabstop>mYPosSpin</tabstop>
+  <tabstop>mPosUnitsComboBox</tabstop>
   <tabstop>mWidthSpin</tabstop>
   <tabstop>mHeightSpin</tabstop>
+  <tabstop>mSizeUnitsComboBox</tabstop>
   <tabstop>mUpperLeftCheckBox</tabstop>
   <tabstop>mUpperMiddleCheckBox</tabstop>
   <tabstop>mUpperRightCheckBox</tabstop>
