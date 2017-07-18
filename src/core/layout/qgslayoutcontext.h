@@ -26,7 +26,7 @@ class QgsFeature;
 class QgsVectorLayer;
 
 /**
- * \ingroup Layout
+ * \ingroup core
  * \class QgsLayoutContext
  * \brief Stores information relating to the current context and rendering settings for a layout.
  * \since QGIS 3.0

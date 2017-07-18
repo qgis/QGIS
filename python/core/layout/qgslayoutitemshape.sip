@@ -64,6 +64,9 @@ class QgsLayoutItemRectangularShape : QgsLayoutItemShape
 
     static QgsLayoutItemRectangularShape *create( QgsLayout *layout, const QVariantMap &settings ) /Factory/;
 %Docstring
+ Returns a new rectangular item for the specified ``layout``.
+
+ The caller takes responsibility for deleting the returned object.
  :rtype: QgsLayoutItemRectangularShape
 %End
 
@@ -107,6 +110,9 @@ class QgsLayoutItemEllipseShape : QgsLayoutItemShape
 
     static QgsLayoutItemEllipseShape *create( QgsLayout *layout, const QVariantMap &settings ) /Factory/;
 %Docstring
+ Returns a new ellipse item for the specified ``layout``.
+
+ The caller takes responsibility for deleting the returned object.
  :rtype: QgsLayoutItemEllipseShape
 %End
 
@@ -137,6 +143,9 @@ class QgsLayoutItemTriangleShape : QgsLayoutItemShape
 
     static QgsLayoutItemTriangleShape *create( QgsLayout *layout, const QVariantMap &settings ) /Factory/;
 %Docstring
+ Returns a new triangle item for the specified ``layout``.
+
+ The caller takes responsibility for deleting the returned object.
  :rtype: QgsLayoutItemTriangleShape
 %End
 

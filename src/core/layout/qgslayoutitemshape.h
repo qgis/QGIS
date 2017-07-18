@@ -79,6 +79,11 @@ class CORE_EXPORT QgsLayoutItemRectangularShape : public QgsLayoutItemShape
     explicit QgsLayoutItemRectangularShape( QgsLayout *layout );
     virtual int type() const override { return QgsLayoutItemRegistry::LayoutRectangle; }
 
+    /**
+     * Returns a new rectangular item for the specified \a layout.
+     *
+     * The caller takes responsibility for deleting the returned object.
+     */
     static QgsLayoutItemRectangularShape *create( QgsLayout *layout, const QVariantMap &settings ) SIP_FACTORY;
 
     /**
@@ -120,6 +125,11 @@ class CORE_EXPORT QgsLayoutItemEllipseShape : public QgsLayoutItemShape
     explicit QgsLayoutItemEllipseShape( QgsLayout *layout );
     virtual int type() const override { return QgsLayoutItemRegistry::LayoutEllipse; }
 
+    /**
+     * Returns a new ellipse item for the specified \a layout.
+     *
+     * The caller takes responsibility for deleting the returned object.
+     */
     static QgsLayoutItemEllipseShape *create( QgsLayout *layout, const QVariantMap &settings ) SIP_FACTORY;
 
   protected:
@@ -147,6 +157,11 @@ class CORE_EXPORT QgsLayoutItemTriangleShape : public QgsLayoutItemShape
     explicit QgsLayoutItemTriangleShape( QgsLayout *layout );
     virtual int type() const override { return QgsLayoutItemRegistry::LayoutTriangle; }
 
+    /**
+     * Returns a new triangle item for the specified \a layout.
+     *
+     * The caller takes responsibility for deleting the returned object.
+     */
     static QgsLayoutItemTriangleShape *create( QgsLayout *layout, const QVariantMap &settings ) SIP_FACTORY;
 
   protected:
