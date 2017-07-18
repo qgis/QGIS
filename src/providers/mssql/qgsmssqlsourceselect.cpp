@@ -453,7 +453,7 @@ void QgsMssqlSourceSelect::addTables()
   else
   {
     emit addDatabaseLayers( mSelectedTables, QStringLiteral( "mssql" ) );
-    if ( !mHoldDialogOpen->isChecked() && mWidgetMode == QgsProviderRegistry::WidgetMode::None )
+    if ( !mHoldDialogOpen->isChecked() && QgsAbstractDataSourceWidget::widgetMode() == QgsProviderRegistry::WidgetMode::None )
     {
       accept();
     }

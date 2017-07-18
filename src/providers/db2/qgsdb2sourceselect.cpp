@@ -458,7 +458,7 @@ void QgsDb2SourceSelect::addTables()
   else
   {
     emit addDatabaseLayers( mSelectedTables, QStringLiteral( "DB2" ) );
-    if ( !mHoldDialogOpen->isChecked() && mWidgetMode == QgsProviderRegistry::WidgetMode::None )
+    if ( !mHoldDialogOpen->isChecked() && QgsAbstractDataSourceWidget::widgetMode() == QgsProviderRegistry::WidgetMode::None )
     {
       accept();
     }

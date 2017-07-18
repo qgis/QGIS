@@ -69,6 +69,16 @@ Emitted when a raster layer has been selected for addition
 Emitted when a vector layer has been selected for addition
 %End
 
+    void progress( int, int );
+%Docstring
+Emitted when a progress dialog is shown by the provider dialog
+%End
+
+    void progressMessage( QString message );
+%Docstring
+Emitted when a progress dialog is shown by the provider dialog
+%End
+
   protected:
 
     QgsAbstractDataSourceWidget( QWidget *parent /TransferThis/ = 0, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::None );

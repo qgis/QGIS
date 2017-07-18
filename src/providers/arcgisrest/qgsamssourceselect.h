@@ -30,11 +30,6 @@ class QgsAmsSourceSelect: public QgsArcGisServiceSourceSelect
   public:
     QgsAmsSourceSelect( QWidget *parent, Qt::WindowFlags fl, QgsProviderRegistry::WidgetMode widgetMode =  QgsProviderRegistry::WidgetMode::None );
 
-  signals:
-    void addRasterLayer( QString const &rasterLayerPath,
-                         QString const &baseName,
-                         QString const &providerKey );
-
   protected:
     bool connectToService( const QgsOwsConnection &connection ) override;
     QString getLayerURI( const QgsOwsConnection &connection,

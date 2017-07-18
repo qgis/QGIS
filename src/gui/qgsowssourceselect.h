@@ -110,8 +110,6 @@ class GUI_EXPORT QgsOWSSourceSelect : public QgsAbstractDataSourceWidget, protec
     //! Add some default wms servers to the list
     void on_mAddDefaultButton_clicked();
 
-    void on_mDialogButtonBox_helpRequested() { QgsContextHelp::run( metaObject()->className() ); }
-
   protected:
 
     /**

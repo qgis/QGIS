@@ -104,10 +104,10 @@ class GUI_EXPORT QgsDataSourceManagerDialog : public QgsOptionsDialogBase, priva
     //! Emitted when a connection has changed inside the provider dialogs
     //! This signal is normally forwarded to the application to notify other
     //! browsers that they need to refresh their connections list
-    void connectionsChanged( );
+    void connectionsChanged();
     //! One or more provider connections have changed and the
     //! dialogs should be refreshed
-    void providerDialogsRefreshRequested( );
+    void providerDialogsRefreshRequested();
 
   private:
     // Return the dialog from the provider

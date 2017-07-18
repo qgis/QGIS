@@ -76,6 +76,12 @@ class GUI_EXPORT QgsAbstractDataSourceWidget : public QDialog
     //! Emitted when a vector layer has been selected for addition
     void addVectorLayer( const QString &uri, const QString &layerName );
 
+    //! Emitted when a progress dialog is shown by the provider dialog
+    void progress( int, int );
+
+    //! Emitted when a progress dialog is shown by the provider dialog
+    void progressMessage( QString message );
+
   protected:
 
     //! Constructor

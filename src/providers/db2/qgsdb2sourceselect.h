@@ -110,8 +110,6 @@ class QgsDb2SourceSelect : public QgsAbstractDataSourceWidget, private Ui::QgsDb
 
   signals:
     void addGeometryColumn( QgsDb2LayerProperty );
-    void progress( int, int );
-    void progressMessage( QString );
 
   public slots:
     //! Determines the tables the user selected and closes the dialog

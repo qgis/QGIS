@@ -80,8 +80,6 @@ class QgsMssqlSourceSelect : public QgsAbstractDataSourceWidget, private Ui::Qgs
 
   signals:
     void addGeometryColumn( const QgsMssqlLayerProperty & );
-    void progress( int, int );
-    void progressMessage( QString );
 
   public slots:
 
