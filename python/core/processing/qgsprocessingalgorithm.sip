@@ -827,7 +827,10 @@ class QgsProcessingFeatureBasedAlgorithm : QgsProcessingAlgorithm
  geometry with the centroid of the original feature geometry for a 'centroid' type
  algorithm).
 
- Implementations should return the modified feature.
+ Implementations should return the modified feature. Returning an invalid feature (e.g.
+ a default constructed QgsFeature) will indicate that this feature should be 'skipped',
+ and will not be added to the algorithm's output. Subclasses can use this approach to
+ filter the incoming features as desired.
 
  The provided ``feedback`` object can be used to push messages to the log and for giving feedback
  to users. Note that handling of progress reports and algorithm cancelation is handled by
