@@ -804,6 +804,11 @@ class CORE_EXPORT QgsProcessingFeatureBasedAlgorithm : public QgsProcessingAlgor
      * The provided \a feedback object can be used to push messages to the log and for giving feedback
      * to users. Note that handling of progress reports and algorithm cancelation is handled by
      * the base class and subclasses do not need to reimplement this logic.
+     *
+     * Algorithms can throw a QgsProcessingException if a fatal error occurred which should
+     * prevent the algorithm execution from continuing. This can be annoying for users though as it
+     * can break valid model execution - so use with extreme caution, and consider using
+     * \a feedback to instead report non-fatal processing failures for features instead.
      */
     virtual bool processFeature( QgsFeature &feature, QgsProcessingFeedback *feedback ) = 0;
 
