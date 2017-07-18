@@ -23,6 +23,7 @@
 #include "qgsprocessing.h"
 #include "qgsproperty.h"
 #include "qgscoordinatereferencesystem.h"
+#include "qgsfeaturesource.h"
 #include <QMap>
 #include <limits>
 
@@ -30,7 +31,6 @@ class QgsProcessingContext;
 class QgsRasterLayer;
 class QgsVectorLayer;
 class QgsFeatureSink;
-class QgsFeatureSource;
 class QgsProcessingFeatureSource;
 class QgsProcessingOutputDefinition;
 class QgsProcessingFeedback;
