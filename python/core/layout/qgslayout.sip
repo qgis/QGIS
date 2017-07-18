@@ -183,6 +183,13 @@ class QgsLayout : QGraphicsScene, QgsExpressionContextGenerator
 
     void setReferenceMap( QgsLayoutItemMap *map );
 
+    QgsLayoutPageCollection *pageCollection();
+%Docstring
+ Returns a pointer to the layout's page collection, which stores and manages
+ page items in the layout.
+ :rtype: QgsLayoutPageCollection
+%End
+
   signals:
 
     void variablesChanged();

@@ -15,10 +15,12 @@
  ***************************************************************************/
 
 #include "qgslayout.h"
+#include "qgslayoutpagecollection.h"
 
 QgsLayout::QgsLayout( QgsProject *project )
   : QGraphicsScene()
   , mProject( project )
+  , mPageCollection( new QgsLayoutPageCollection( this ) )
 {}
 
 QgsProject *QgsLayout::project() const
@@ -102,4 +104,9 @@ QgsLayoutItemMap *QgsLayout::referenceMap() const
 void QgsLayout::setReferenceMap( QgsLayoutItemMap *map )
 {
   Q_UNUSED( map );
+}
+
+QgsLayoutPageCollection *QgsLayout::pageCollection()
+{
+  return mPageCollection.get();
 }

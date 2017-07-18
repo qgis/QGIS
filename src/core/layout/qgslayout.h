@@ -20,6 +20,7 @@
 #include <QGraphicsScene>
 #include "qgslayoutcontext.h"
 #include "qgsexpressioncontextgenerator.h"
+#include "qgslayoutpagecollection.h"
 
 class QgsLayoutItemMap;
 
@@ -203,6 +204,12 @@ class CORE_EXPORT QgsLayout : public QGraphicsScene, public QgsExpressionContext
     //TODO
     void setReferenceMap( QgsLayoutItemMap *map );
 
+    /**
+     * Returns a pointer to the layout's page collection, which stores and manages
+     * page items in the layout.
+     */
+    QgsLayoutPageCollection *pageCollection();
+
   signals:
 
     /**
@@ -220,6 +227,8 @@ class CORE_EXPORT QgsLayout : public QGraphicsScene, public QgsExpressionContext
 
     QgsUnitTypes::LayoutUnit mUnits = QgsUnitTypes::LayoutMillimeters;
     QgsLayoutContext mContext;
+
+    std::unique_ptr< QgsLayoutPageCollection > mPageCollection;
 
 };
 
