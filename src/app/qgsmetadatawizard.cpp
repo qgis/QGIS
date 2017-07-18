@@ -44,6 +44,9 @@ QgsMetadataWizard::QgsMetadataWizard( QWidget *parent, QgsMapLayer *layer )
   connect( backButton, &QPushButton::clicked, this, &QgsMetadataWizard::backClicked );
   connect( nextButton, &QPushButton::clicked, this, &QgsMetadataWizard::nextClicked );
   connect( finishButton, &QPushButton::clicked, this, &QgsMetadataWizard::finishedClicked );
+  connect( btnAutoSource, &QPushButton::clicked, this, &QgsMetadataWizard::setAutoSource );
+  connect( btnAddVocabulary, &QPushButton::clicked, this, &QgsMetadataWizard::addVocabulary );
+  connect( btnRemoveVocabulary, &QPushButton::clicked, this, &QgsMetadataWizard::removeVocabulary );
   connect( btnAddLink, &QPushButton::clicked, this, &QgsMetadataWizard::addLink );
   connect( btnRemoveLink, &QPushButton::clicked, this, &QgsMetadataWizard::removeLink );
   connect( btnCheckMetadata, &QPushButton::clicked, this, &QgsMetadataWizard::checkMetadata );
@@ -54,6 +57,38 @@ QgsMetadataWizard::QgsMetadataWizard( QWidget *parent, QgsMapLayer *layer )
 
 QgsMetadataWizard::~QgsMetadataWizard()
 {
+}
+
+void QgsMetadataWizard::setAutoSource()
+{
+  lineEditIdentifier->setText( mLayer->publicSource() );
+}
+
+void QgsMetadataWizard::addVocabulary()
+{
+  int row = tabKeywords->rowCount();
+  tabKeywords->setRowCount( row + 1 );
+  QTableWidgetItem *pCell;
+
+  // Vocabulary
+  pCell = new QTableWidgetItem( QString( "undefined %1" ).arg( row ) );
+  tabKeywords->setItem( row, 0, pCell );
+
+  // Keywords
+  pCell = new QTableWidgetItem();
+  tabKeywords->setItem( row, 1, pCell );
+}
+
+void QgsMetadataWizard::removeVocabulary()
+{
+  QItemSelectionModel *selectionModel = tabKeywords->selectionModel();
+  QModelIndexList selectedRows = selectionModel->selectedRows();
+  QgsDebugMsg( QString( "Remove: %1 " ).arg( selectedRows.count() ) );
+
+  for ( int i = 0 ; i < selectedRows.size() ; i++ )
+  {
+    tabKeywords->model()->removeRow( selectedRows[i].row() );
+  }
 }
 
 void QgsMetadataWizard::cancelClicked()
@@ -82,7 +117,6 @@ void QgsMetadataWizard::finishedClicked()
   // OLD API (to remove later)
   mLayer->setName( lineEditTitle->text() );
   mLayer->setAbstract( textEditAbstract->toPlainText() );
-  mLayer->setKeywordList( textEditKeywords->toPlainText() );
 
   // New Metadata API
   saveMetadata( mMetadata );
@@ -140,16 +174,14 @@ void QgsMetadataWizard::addLink()
   // See https://github.com/OSGeo/Cat-Interop/blob/master/LinkPropertyLookupTable.csv
   QComboBox *typeCombo = new QComboBox();
   typeCombo->setEditable( true );
-  QStringList types;
-  types << "" << "OGC:CSW" << "OGC:SOS" << "OGC:WFS";
-  typeCombo->addItems( types );
+  typeCombo->addItems( parseLinkTypes() );
   tabLinks->setCellWidget( row, 1, typeCombo );
 
-  // Description
+  // URL
   pCell = new QTableWidgetItem();
   tabLinks->setItem( row, 2, pCell );
 
-  // URL
+  // Description
   pCell = new QTableWidgetItem();
   tabLinks->setItem( row, 3, pCell );
 
@@ -198,7 +230,6 @@ void QgsMetadataWizard::fillComboBox()
   // It is advised to use the ISO 639.2 or ISO 3166 specifications, e.g. 'ENG' or 'SPA',
   comboLanguage->setEditable( true );
   types.clear();
-  types << "" << "ENG" << "SPA" << "IND" << "FRE";
   comboLanguage->addItems( parseLanguages() );
 }
 
@@ -208,10 +239,15 @@ void QgsMetadataWizard::setPropertiesFromLayer()
   layerLabel->setText( mLayer->name() );
   lineEditTitle->setText( mLayer->name() );
   textEditAbstract->setText( mLayer->abstract() );
-  textEditKeywords->setText( mLayer->keywordList() );
 
   // Set all properties USING THE NEW API
   // It will overwrite existing settings
+
+  // Identifier
+  if ( ! mMetadata.identifier().isEmpty() )
+  {
+    lineEditIdentifier->setText( mMetadata.identifier() );
+  }
 
   // Title
   if ( ! mMetadata.title().isEmpty() )
@@ -239,6 +275,18 @@ void QgsMetadataWizard::setPropertiesFromLayer()
     comboLanguage->setCurrentIndex( comboLanguage->findText( mMetadata.language() ) );
   }
 
+  // Keywords
+  tabKeywords->setRowCount( 0 );
+  QMapIterator<QString, QStringList> i( mMetadata.keywords() );
+  while ( i.hasNext() )
+  {
+    i.next();
+    addVocabulary();
+    int currentRow = tabKeywords->rowCount() - 1;
+    tabKeywords->item( currentRow, 0 )->setText( i.key() );
+    tabKeywords->item( currentRow, 1 )->setText( i.value().join( "," ) );
+  }
+
   // Links
   tabLinks->setRowCount( 0 );
   for ( QgsLayerMetadata::Link link : mMetadata.links() )
@@ -255,8 +303,8 @@ void QgsMetadataWizard::setPropertiesFromLayer()
       }
       combo->setCurrentIndex( combo->findText( link.type ) );
     }
-    tabLinks->item( currentRow, 2 )->setText( link.description );
-    tabLinks->item( currentRow, 3 )->setText( link.url );
+    tabLinks->item( currentRow, 2 )->setText( link.url );
+    tabLinks->item( currentRow, 3 )->setText( link.description );
     tabLinks->item( currentRow, 4 )->setText( link.format );
     if ( ! link.mimeType.isEmpty() )
     {
@@ -273,10 +321,19 @@ void QgsMetadataWizard::setPropertiesFromLayer()
 
 void QgsMetadataWizard::saveMetadata( QgsLayerMetadata &layerMetadata )
 {
+  layerMetadata.setIdentifier( lineEditIdentifier->text() );
   layerMetadata.setTitle( lineEditTitle->text() );
   layerMetadata.setType( comboType->currentText() );
   layerMetadata.setLanguage( comboLanguage->currentText() );
   layerMetadata.setAbstract( textEditAbstract->toPlainText() );
+
+  // Keywords
+  QMap<QString, QStringList> keywords;
+  for ( int i = 0 ; i < tabKeywords->rowCount() ; i++ )
+  {
+    keywords.insert( tabKeywords->item( i, 0 )->text(), tabKeywords->item( i, 1 )->text().split( "," ) );
+  }
+  layerMetadata.setKeywords( keywords );
 
   // Links
   QList<QgsLayerMetadata::Link> links;
@@ -285,8 +342,8 @@ void QgsMetadataWizard::saveMetadata( QgsLayerMetadata &layerMetadata )
     struct QgsLayerMetadata::Link link = QgsLayerMetadata::Link();
     link.name = tabLinks->item( i, 0 )->text();
     link.type = dynamic_cast<QComboBox *>( tabLinks->cellWidget( i, 1 ) )->currentText();
-    link.description = tabLinks->item( i, 2 )->text();
-    link.url = tabLinks->item( i, 3 )->text();
+    link.url = tabLinks->item( i, 2 )->text();
+    link.description = tabLinks->item( i, 3 )->text();
     link.format = tabLinks->item( i, 4 )->text();
     link.mimeType = dynamic_cast<QComboBox *>( tabLinks->cellWidget( i, 5 ) )->currentText();
     link.size = tabLinks->item( i, 6 )->text();
@@ -347,6 +404,26 @@ QStringList QgsMetadataWizard::parseLanguages()
   {
     QByteArray line = file.readLine();
     wordList.append( line.split( ',' ).at( 2 ) );
+  }
+  return wordList;
+}
+
+QStringList QgsMetadataWizard::parseLinkTypes()
+{
+  QString path = QDir( QgsApplication::metadataPath() ).absoluteFilePath( QString( "LinkPropertyLookupTable.csv" ) );
+  QFile file( path );
+  if ( !file.open( QIODevice::ReadOnly ) )
+  {
+    QgsDebugMsg( QString( "Error while opening the CSV file: %1, %2 " ).arg( path, file.errorString() ) );
+  }
+
+  QStringList wordList;
+  // Skip the first line of the CSV
+  file.readLine();
+  while ( !file.atEnd() )
+  {
+    QByteArray line = file.readLine();
+    wordList.append( line.split( ',' ).at( 0 ) );
   }
   return wordList;
 }

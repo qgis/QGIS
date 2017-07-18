@@ -41,16 +41,6 @@
       <enum>QFrame::Raised</enum>
      </property>
      <layout class="QGridLayout" name="gridLayout_3">
-      <item row="2" column="0">
-       <widget class="QLabel" name="layerLabel">
-        <property name="styleSheet">
-         <string notr="true">font: 16pt; color: #fff;</string>
-        </property>
-        <property name="text">
-         <string>Placeholder set in C++ code for the layer title being edited</string>
-        </property>
-       </widget>
-      </item>
       <item row="0" column="0" rowspan="2" colspan="2">
        <widget class="QLabel" name="label">
         <property name="styleSheet">
@@ -58,6 +48,16 @@
         </property>
         <property name="text">
          <string>Metadata Editor</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="0">
+       <widget class="QLabel" name="layerLabel">
+        <property name="styleSheet">
+         <string notr="true">font: 16pt; color: #fff;</string>
+        </property>
+        <property name="text">
+         <string>Placeholder set in C++ code for the layer title being edited</string>
         </property>
        </widget>
       </item>
@@ -78,6 +78,7 @@
      <property name="frameShape">
       <enum>QFrame::NoFrame</enum>
      </property>
+     <zorder>tabWidget</zorder>
     </widget>
    </item>
    <item>
@@ -99,208 +100,181 @@
        <item>
         <widget class="QLabel" name="label_11">
          <property name="text">
-          <string>Identification, HELP TEXT</string>
+          <string>Identification dialog, HELP TEXT TO ADD</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLabel" name="label_3">
+         <property name="text">
+          <string>Identifier</string>
          </property>
         </widget>
        </item>
        <item>
         <layout class="QHBoxLayout" name="horizontalLayout">
          <item>
-          <layout class="QVBoxLayout" name="verticalLayout_2">
-           <property name="spacing">
-            <number>0</number>
-           </property>
-           <item>
-            <widget class="QLabel" name="label_2">
-             <property name="text">
-              <string>Title</string>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QLineEdit" name="lineEditTitle">
-             <property name="sizePolicy">
-              <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-               <horstretch>0</horstretch>
-               <verstretch>0</verstretch>
-              </sizepolicy>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <spacer name="verticalSpacer">
-             <property name="orientation">
-              <enum>Qt::Vertical</enum>
-             </property>
-             <property name="sizeHint" stdset="0">
-              <size>
-               <width>20</width>
-               <height>40</height>
-              </size>
-             </property>
-            </spacer>
-           </item>
-           <item>
-            <widget class="QLabel" name="label_3">
-             <property name="text">
-              <string>Type</string>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QComboBox" name="comboType">
-             <property name="enabled">
-              <bool>true</bool>
-             </property>
-             <property name="editable">
-              <bool>true</bool>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <spacer name="verticalSpacer_5">
-             <property name="orientation">
-              <enum>Qt::Vertical</enum>
-             </property>
-             <property name="sizeHint" stdset="0">
-              <size>
-               <width>20</width>
-               <height>40</height>
-              </size>
-             </property>
-            </spacer>
-           </item>
-           <item>
-            <widget class="QLabel" name="label_4">
-             <property name="text">
-              <string>Language</string>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QComboBox" name="comboLanguage">
-             <property name="enabled">
-              <bool>true</bool>
-             </property>
-             <property name="editable">
-              <bool>true</bool>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <spacer name="verticalSpacer_6">
-             <property name="orientation">
-              <enum>Qt::Vertical</enum>
-             </property>
-             <property name="sizeHint" stdset="0">
-              <size>
-               <width>20</width>
-               <height>40</height>
-              </size>
-             </property>
-            </spacer>
-           </item>
-           <item>
-            <widget class="QLabel" name="label_8">
-             <property name="text">
-              <string>Encoding</string>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QComboBox" name="comboBox">
-             <property name="enabled">
-              <bool>false</bool>
-             </property>
-             <item>
-              <property name="text">
-               <string>Society</string>
-              </property>
-             </item>
-             <item>
-              <property name="text">
-               <string>Economy</string>
-              </property>
-             </item>
-             <item>
-              <property name="text">
-               <string>Utilities Communication</string>
-              </property>
-             </item>
-             <item>
-              <property name="text">
-               <string>Environment</string>
-              </property>
-             </item>
-             <item>
-              <property name="text">
-               <string>Oceans</string>
-              </property>
-             </item>
-            </widget>
-           </item>
-          </layout>
+          <widget class="QLineEdit" name="lineEditIdentifier"/>
          </item>
          <item>
-          <layout class="QVBoxLayout" name="verticalLayout_3">
-           <item>
-            <widget class="QLabel" name="label_7">
-             <property name="text">
-              <string>Free-text Keywords</string>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QTextEdit" name="textEditKeywords">
-             <property name="enabled">
-              <bool>false</bool>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <spacer name="verticalSpacer_3">
-             <property name="orientation">
-              <enum>Qt::Vertical</enum>
-             </property>
-             <property name="sizeHint" stdset="0">
-              <size>
-               <width>20</width>
-               <height>40</height>
-              </size>
-             </property>
-            </spacer>
-           </item>
-           <item>
-            <spacer name="verticalSpacer_2">
-             <property name="orientation">
-              <enum>Qt::Vertical</enum>
-             </property>
-             <property name="sizeHint" stdset="0">
-              <size>
-               <width>20</width>
-               <height>40</height>
-              </size>
-             </property>
-            </spacer>
-           </item>
-           <item>
-            <widget class="QLabel" name="label_6">
-             <property name="text">
-              <string>Abstract</string>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QTextEdit" name="textEditAbstract">
-             <property name="sizePolicy">
-              <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-               <horstretch>0</horstretch>
-               <verstretch>0</verstretch>
-              </sizepolicy>
-             </property>
-            </widget>
-           </item>
-          </layout>
+          <widget class="QPushButton" name="btnAutoSource">
+           <property name="text">
+            <string>Set from layer source</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+       <item>
+        <widget class="QLabel" name="label_2">
+         <property name="text">
+          <string>Title</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLineEdit" name="lineEditTitle">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLabel" name="label_7">
+         <property name="text">
+          <string>Type (it is advised to use the ISO 19115 MD_ScopeCode)</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QComboBox" name="comboType">
+         <property name="enabled">
+          <bool>true</bool>
+         </property>
+         <property name="editable">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLabel" name="label_4">
+         <property name="text">
+          <string>Language (it is advised to follow either the ISO 639.2 or ISO 3166)</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QComboBox" name="comboLanguage">
+         <property name="enabled">
+          <bool>true</bool>
+         </property>
+         <property name="editable">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLabel" name="label_6">
+         <property name="text">
+          <string>Abstract</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QTextEdit" name="textEditAbstract">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="tab_7">
+      <attribute name="title">
+       <string>Keywords</string>
+      </attribute>
+      <layout class="QVBoxLayout" name="verticalLayout_2">
+       <item>
+        <widget class="QLabel" name="label_17">
+         <property name="text">
+          <string>Keywords dialog, the VOCABULARY must be unique. HELP TEXT TO ADD</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QTableWidget" name="tabKeywords">
+         <property name="alternatingRowColors">
+          <bool>true</bool>
+         </property>
+         <property name="selectionMode">
+          <enum>QAbstractItemView::SingleSelection</enum>
+         </property>
+         <property name="selectionBehavior">
+          <enum>QAbstractItemView::SelectRows</enum>
+         </property>
+         <attribute name="horizontalHeaderStretchLastSection">
+          <bool>true</bool>
+         </attribute>
+         <column>
+          <property name="text">
+           <string>Vocabulary</string>
+          </property>
+         </column>
+         <column>
+          <property name="text">
+           <string>Keywords</string>
+          </property>
+         </column>
+        </widget>
+       </item>
+       <item>
+        <layout class="QHBoxLayout" name="horizontalLayout_5">
+         <item>
+          <widget class="QPushButton" name="btnAddVocabulary">
+           <property name="toolTip">
+            <string>Add class</string>
+           </property>
+           <property name="icon">
+            <iconset resource="../../images/images.qrc">
+             <normaloff>:/images/themes/default/symbologyAdd.svg</normaloff>:/images/themes/default/symbologyAdd.svg</iconset>
+           </property>
+           <property name="autoDefault">
+            <bool>false</bool>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QPushButton" name="btnRemoveVocabulary">
+           <property name="toolTip">
+            <string>Delete</string>
+           </property>
+           <property name="icon">
+            <iconset resource="../../images/images.qrc">
+             <normaloff>:/images/themes/default/symbologyRemove.svg</normaloff>:/images/themes/default/symbologyRemove.svg</iconset>
+           </property>
+           <property name="autoDefault">
+            <bool>false</bool>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <spacer name="horizontalSpacer_5">
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>40</width>
+             <height>20</height>
+            </size>
+           </property>
+          </spacer>
          </item>
         </layout>
        </item>
@@ -584,12 +558,18 @@
        <item>
         <widget class="QLabel" name="label_13">
          <property name="text">
-          <string>Links, HELP TEXT</string>
+          <string>Links dialog, HELP TEXT TO ADD</string>
          </property>
         </widget>
        </item>
        <item>
         <widget class="QTableWidget" name="tabLinks">
+         <property name="alternatingRowColors">
+          <bool>true</bool>
+         </property>
+         <property name="selectionMode">
+          <enum>QAbstractItemView::SingleSelection</enum>
+         </property>
          <property name="selectionBehavior">
           <enum>QAbstractItemView::SelectRows</enum>
          </property>
@@ -605,12 +585,12 @@
          </column>
          <column>
           <property name="text">
-           <string>Description</string>
+           <string>URL</string>
           </property>
          </column>
          <column>
           <property name="text">
-           <string>URL</string>
+           <string>Description</string>
           </property>
          </column>
          <column>
@@ -716,10 +696,17 @@
    </item>
    <item>
     <layout class="QGridLayout" name="gridLayout">
-     <item row="0" column="3">
-      <widget class="QPushButton" name="nextButton">
+     <item row="0" column="4">
+      <widget class="QPushButton" name="finishButton">
        <property name="text">
-        <string>Next</string>
+        <string>Save</string>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="2">
+      <widget class="QPushButton" name="backButton">
+       <property name="text">
+        <string>Back</string>
        </property>
       </widget>
      </item>
@@ -727,13 +714,6 @@
       <widget class="QPushButton" name="cancelButton">
        <property name="text">
         <string>Cancel</string>
-       </property>
-      </widget>
-     </item>
-     <item row="0" column="4">
-      <widget class="QPushButton" name="finishButton">
-       <property name="text">
-        <string>Save</string>
        </property>
       </widget>
      </item>
@@ -750,10 +730,10 @@
        </property>
       </spacer>
      </item>
-     <item row="0" column="2">
-      <widget class="QPushButton" name="backButton">
+     <item row="0" column="3">
+      <widget class="QPushButton" name="nextButton">
        <property name="text">
-        <string>Back</string>
+        <string>Next</string>
        </property>
       </widget>
      </item>
