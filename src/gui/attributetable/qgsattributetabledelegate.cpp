@@ -30,6 +30,8 @@
 #include "qgsvectordataprovider.h"
 #include "qgsactionmanager.h"
 #include "qgsgui.h"
+#include "qgsvectorlayerjoininfo.h"
+#include "qgsvectorlayerjoinbuffer.h"
 
 QgsVectorLayer *QgsAttributeTableDelegate::layer( const QAbstractItemModel *model )
 {
@@ -73,7 +75,20 @@ QWidget *QgsAttributeTableDelegate::createEditor( QWidget *parent, const QStyleO
   w->setAutoFillBackground( true );
   w->setFocusPolicy( Qt::StrongFocus ); // to make sure QMouseEvents are propagated to the editor widget
 
-  eww->setEnabled( !vl->editFormConfig().readOnly( fieldIdx ) );
+  const int fieldOrigin = vl->fields().fieldOrigin( fieldIdx );
+  bool readOnly = true;
+  if ( fieldOrigin == QgsFields::OriginJoin )
+  {
+    int srcFieldIndex;
+    const QgsVectorLayerJoinInfo *info = vl->joinBuffer()->joinForFieldIndex( fieldIdx, vl->fields(), srcFieldIndex );
+
+    if ( info && info->isEditable() )
+      readOnly = info->joinLayer()->editFormConfig().readOnly( srcFieldIndex );
+  }
+  else
+    readOnly = vl->editFormConfig().readOnly( fieldIdx );
+
+  eww->setEnabled( !readOnly );
 
   return w;
 }

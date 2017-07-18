@@ -276,6 +276,10 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
 
     void updateJoinedFields( const QgsEditorWidgetWrapper &eww );
 
+    bool fieldIsEditable( int fieldIndex ) const;
+
+    bool fieldIsEditable( const QgsVectorLayer &layer, int fieldIndex, QgsFeatureId fid ) const ;
+
     struct WidgetInfo
     {
       WidgetInfo()

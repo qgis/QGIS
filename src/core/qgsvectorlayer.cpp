@@ -2258,10 +2258,34 @@ bool QgsVectorLayer::changeGeometry( QgsFeatureId fid, const QgsGeometry &geom )
 
 bool QgsVectorLayer::changeAttributeValue( QgsFeatureId fid, int field, const QVariant &newValue, const QVariant &oldValue )
 {
-  if ( !mEditBuffer || !mDataProvider )
-    return false;
+  if ( fields().fieldOrigin( field ) == QgsFields::OriginJoin )
+  {
+    int srcFieldIndex;
+    const QgsVectorLayerJoinInfo *info = mJoinBuffer->joinForFieldIndex( field, fields(), srcFieldIndex );
+    if ( info && info->joinLayer() && info->isEditable() )
+    {
+      QgsFeature feature = getFeature( fid );
 
-  return mEditBuffer->changeAttributeValue( fid, field, newValue, oldValue );
+      if ( !feature.isValid() )
+        return false;
+
+      QgsFeature joinFeature = mJoinBuffer->joinedFeatureOf( info, feature );
+
+      if ( joinFeature.isValid() )
+        return info->joinLayer()->changeAttributeValue( joinFeature.id(), srcFieldIndex, newValue, oldValue );
+      else
+        return false;
+    }
+    else
+      return false;
+  }
+  else
+  {
+    if ( !mEditBuffer || !mDataProvider )
+      return false;
+    else
+      return mEditBuffer->changeAttributeValue( fid, field, newValue, oldValue );
+  }
 }
 
 bool QgsVectorLayer::addAttribute( const QgsField &field )

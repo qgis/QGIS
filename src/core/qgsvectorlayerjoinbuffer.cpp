@@ -439,6 +439,26 @@ QgsFeature QgsVectorLayerJoinBuffer::joinedFeatureOf( const QgsVectorLayerJoinIn
   return joinedFeature;
 }
 
+QgsFeature QgsVectorLayerJoinBuffer::targetedFeatureOf( const QgsVectorLayerJoinInfo *info, const QgsFeature &feature ) const
+{
+  QgsFeature targetedFeature;
+
+  if ( info->joinLayer() )
+  {
+    const QVariant targetValue = feature.attribute( info->joinFieldName() );
+    const QString filter = QgsExpression::createFieldEqualityExpression( info->targetFieldName(), targetValue );
+
+    QgsFeatureRequest request;
+    request.setFilterExpression( filter );
+    request.setLimit( 1 );
+
+    QgsFeatureIterator it = mLayer->getFeatures( request );
+    it.nextFeature( targetedFeature );
+  }
+
+  return targetedFeature;
+}
+
 QgsVectorLayerJoinBuffer *QgsVectorLayerJoinBuffer::clone() const
 {
   QgsVectorLayerJoinBuffer *cloned = new QgsVectorLayerJoinBuffer( mLayer );

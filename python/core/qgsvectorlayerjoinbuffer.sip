@@ -117,6 +117,15 @@ Quick way to test if there is any join at all
  :rtype: QgsFeature
 %End
 
+    QgsFeature targetedFeatureOf( const QgsVectorLayerJoinInfo *info, const QgsFeature &feature ) const;
+%Docstring
+ Returns the targeted feature corresponding to the joined feature.
+ \param info the vector join information
+ \param feature the feature of the joined layer
+.. versionadded:: 3.0
+ :rtype: QgsFeature
+%End
+
     QgsVectorLayerJoinBuffer *clone() const /Factory/;
 %Docstring
 .. versionadded:: 2.6

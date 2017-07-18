@@ -18,6 +18,8 @@
 #include "qgsvectorlayercache.h"
 #include "qgscacheindex.h"
 #include "qgscachedfeatureiterator.h"
+#include "qgsvectorlayerjoininfo.h"
+#include "qgsvectorlayerjoinbuffer.h"
 
 QgsVectorLayerCache::QgsVectorLayerCache( QgsVectorLayer *layer, int cacheSize, QObject *parent )
   : QObject( parent )
@@ -37,6 +39,8 @@ QgsVectorLayerCache::QgsVectorLayerCache( QgsVectorLayer *layer, int cacheSize, 
   connect( mLayer, &QgsVectorLayer::updatedFields, this, &QgsVectorLayerCache::invalidate );
   connect( mLayer, &QgsVectorLayer::dataChanged, this, &QgsVectorLayerCache::invalidate );
   connect( mLayer, &QgsVectorLayer::attributeValueChanged, this, &QgsVectorLayerCache::onAttributeValueChanged );
+
+  connectJoinedLayers();
 }
 
 QgsVectorLayerCache::~QgsVectorLayerCache()
@@ -232,6 +236,28 @@ void QgsVectorLayerCache::onAttributeValueChanged( QgsFeatureId fid, int field, 
   emit attributeValueChanged( fid, field, value );
 }
 
+void QgsVectorLayerCache::onJoinAttributeValueChanged( QgsFeatureId fid, int field, const QVariant &value )
+{
+  const QgsVectorLayer *joinLayer = qobject_cast<const QgsVectorLayer *>( sender() );
+
+  Q_FOREACH ( const QgsVectorLayerJoinInfo &info, mLayer->vectorJoins() )
+  {
+    if ( joinLayer == info.joinLayer() )
+    {
+      QgsFeature feature = mLayer->joinBuffer()->targetedFeatureOf( &info, joinLayer->getFeature( fid ) );
+
+      const QString fieldName = info.prefixedFieldName( joinLayer->fields().field( field ) );
+      const int fieldIndex = mLayer->fields().indexFromName( fieldName );
+
+      if ( feature.isValid() && fieldIndex != -1 )
+      {
+        onAttributeValueChanged( feature.id(), fieldIndex, value );
+        return;
+      }
+    }
+  }
+}
+
 void QgsVectorLayerCache::featureDeleted( QgsFeatureId fid )
 {
   mCache.remove( fid );
@@ -424,4 +450,14 @@ bool QgsVectorLayerCache::checkInformationCovered( const QgsFeatureRequest &feat
   }
 
   return true;
+}
+
+void QgsVectorLayerCache::connectJoinedLayers() const
+{
+  Q_FOREACH ( const QgsVectorLayerJoinInfo &info, mLayer->vectorJoins() )
+  {
+    const QgsVectorLayer *vl = info.joinLayer();
+    if ( vl )
+      connect( vl, &QgsVectorLayer::attributeValueChanged, this, &QgsVectorLayerCache::onJoinAttributeValueChanged );
+  }
 }

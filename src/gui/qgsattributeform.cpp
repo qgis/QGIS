@@ -298,8 +298,7 @@ bool QgsAttributeForm::saveEdits()
         // be careful- sometimes two null qvariants will be reported as not equal!! (e.g., different types)
         bool changed = ( dstVar != srcVar && !dstVar.isNull() && !srcVar.isNull() )
                        || ( dstVar.isNull() != srcVar.isNull() );
-        if ( changed && srcVar.isValid()
-             && !mLayer->editFormConfig().readOnly( eww->fieldIdx() ) )
+        if ( changed && srcVar.isValid() && fieldIsEditable( eww->fieldIdx() ) )
         {
           dst[eww->fieldIdx()] = srcVar;
 
@@ -344,7 +343,7 @@ bool QgsAttributeForm::saveEdits()
         {
           if ( ( dst.at( i ) == src.at( i ) && dst.at( i ).isNull() == src.at( i ).isNull() ) // If field is not changed...
                || !dst.at( i ).isValid()                                     // or the widget returns invalid (== do not change)
-               || mLayer->editFormConfig().readOnly( i ) )                           // or the field cannot be edited ...
+               || !fieldIsEditable( i ) )                           // or the field cannot be edited ...
           {
             continue;
           }
@@ -1019,15 +1018,12 @@ void QgsAttributeForm::synchronizeEnabledState()
 
   Q_FOREACH ( QgsWidgetWrapper *ww, mWidgets )
   {
-    bool fieldEditable = true;
     QgsEditorWidgetWrapper *eww = qobject_cast<QgsEditorWidgetWrapper *>( ww );
     if ( eww )
     {
-      fieldEditable = !mLayer->editFormConfig().readOnly( eww->fieldIdx() ) &&
-                      ( ( mLayer->dataProvider() && layer()->dataProvider()->capabilities() & QgsVectorDataProvider::ChangeAttributeValues ) ||
-                        FID_IS_NEW( mFeature.id() ) );
+      bool enabled = isEditable && fieldIsEditable( eww->fieldIdx() );
+      ww->setEnabled( enabled );
     }
-    ww->setEnabled( isEditable && fieldEditable );
   }
 
   // push a message and disable the OK button if constraints are invalid
@@ -2018,4 +2014,28 @@ void QgsAttributeForm::updateJoinedFields( const QgsEditorWidgetWrapper &eww )
       }
     }
   }
+}
+
+bool QgsAttributeForm::fieldIsEditable( int fieldIndex ) const
+{
+  bool editable = false;
+
+  if ( mLayer->fields().fieldOrigin( fieldIndex ) == QgsFields::OriginJoin )
+  {
+    int srcFieldIndex;
+    const QgsVectorLayerJoinInfo *info = mLayer->joinBuffer()->joinForFieldIndex( fieldIndex, mLayer->fields(), srcFieldIndex );
+
+    if ( info && info->isEditable() && info->joinLayer()->isEditable() )
+      editable = fieldIsEditable( *( info->joinLayer() ), srcFieldIndex, mFeature.id() );
+  }
+  else
+    editable = fieldIsEditable( *mLayer, fieldIndex, mFeature.id() );
+
+  return editable;
+}
+
+bool QgsAttributeForm::fieldIsEditable( const QgsVectorLayer &layer, int fieldIndex,  QgsFeatureId fid ) const
+{
+  return !layer.editFormConfig().readOnly( fieldIndex ) &&
+         ( ( layer.dataProvider() && layer.dataProvider()->capabilities() & QgsVectorDataProvider::ChangeAttributeValues ) || FID_IS_NEW( fid ) );
 }
