@@ -50,6 +50,7 @@
 #include <QProgressDialog>
 #include <QRegExp>
 #include <QRegExpValidator>
+#include <QScreen>
 #include <QShortcut>
 #include <QSpinBox>
 #include <QSplashScreen>
@@ -1033,8 +1034,20 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
   }
 
   // Set icon size of toolbars
-  int size = settings.value( QStringLiteral( "IconSize" ), QGIS_ICON_SIZE ).toInt();
-  setIconSizes( size );
+  if ( settings.contains( QStringLiteral( "IconSize" ) ) )
+  {
+    int size = settings.value( QStringLiteral( "IconSize" ) ).toInt();
+    if ( size < 16 )
+      size = QGIS_ICON_SIZE;
+    setIconSizes( size );
+  }
+  else
+  {
+    // first run, guess a good icon size
+    int size = chooseReasonableDefaultIconSize();
+    settings.setValue( QStringLiteral( "IconSize" ), size );
+    setIconSizes( size );
+  }
 
   mSplash->showMessage( tr( "Initializing file filters" ), Qt::AlignHCenter | Qt::AlignBottom );
   qApp->processEvents();
@@ -1727,6 +1740,31 @@ QgsCoordinateReferenceSystem QgisApp::defaultCrsForNewLayers() const
   }
 
   return defaultCrs;
+}
+
+int QgisApp::chooseReasonableDefaultIconSize() const
+{
+  QScreen *screen = QApplication::screens().at( 0 );
+  if ( screen->physicalDotsPerInch() < 115 )
+  {
+    // no hidpi screen, use default size
+    return QGIS_ICON_SIZE;
+  }
+  else
+  {
+    double size = fontMetrics().width( QStringLiteral( "XXX" ) );
+    if ( size < 24 )
+      return 16;
+    else if ( size < 32 )
+      return 24;
+    else if ( size < 48 )
+      return 32;
+    else if ( size < 64 )
+      return 48;
+    else
+      return 64;
+  }
+
 }
 
 void QgisApp::readSettings()

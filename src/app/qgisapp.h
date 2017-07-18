@@ -1688,6 +1688,9 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
     QgsCoordinateReferenceSystem defaultCrsForNewLayers() const;
 
+    //! Attempts to choose a reasonable default icon size based on the window's screen DPI
+    int chooseReasonableDefaultIconSize() const;
+
     QgisAppStyleSheet *mStyleSheetBuilder = nullptr;
 
     // actions for menus and toolbars -----------------
