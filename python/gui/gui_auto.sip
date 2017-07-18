@@ -137,6 +137,7 @@
 %Include qgsmaptoolcapture.sip
 %Include qgsmaptooledit.sip
 %Include qgsmaptoolemitpoint.sip
+%Include qgsmaptoolextent.sip
 %Include qgsmaptoolidentify.sip
 %Include qgsmaptoolidentifyfeature.sip
 %Include qgsmaptoolpan.sip
