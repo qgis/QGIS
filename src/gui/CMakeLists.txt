@@ -161,6 +161,7 @@ SET(QGIS_GUI_SRCS
   layout/qgslayoutitemguiregistry.cpp
   layout/qgslayoutnewitempropertiesdialog.cpp
   layout/qgslayoutruler.cpp
+  layout/qgslayoutunitscombobox.cpp
   layout/qgslayoutview.cpp
   layout/qgslayoutviewmouseevent.cpp
   layout/qgslayoutviewrubberband.cpp
@@ -650,6 +651,7 @@ SET(QGIS_GUI_MOC_HDRS
   layout/qgslayoutitemguiregistry.h
   layout/qgslayoutnewitempropertiesdialog.h
   layout/qgslayoutruler.h
+  layout/qgslayoutunitscombobox.h
   layout/qgslayoutview.h
   layout/qgslayoutviewtool.h
   layout/qgslayoutviewtooladditem.h
