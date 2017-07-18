@@ -25,8 +25,6 @@
 
 #include "qgsproviderregistry.h"
 #include "qgsguiutils.h"
-#include "qgsrectangle.h"
-#include "qgscoordinatereferencesystem.h"
 #include <QDialog>
 
 class QgsMapCanvas;
@@ -97,8 +95,6 @@ class GUI_EXPORT QgsAbstractDataSourceWidget : public QDialog
   private:
 
     QgsProviderRegistry::WidgetMode mWidgetMode;
-    QgsCoordinateReferenceSystem mCurrentCrs;
-    QgsRectangle mCurrentExtent;
     QgsMapCanvas const *mMapCanvas = nullptr;
 
 };
