@@ -17,6 +17,7 @@
 #include "qgslayoutitempage.h"
 #include "qgslayout.h"
 #include "qgslayoututils.h"
+#include "qgspagesizeregistry.h"
 #include "qgssymbollayerutils.h"
 #include <QPainter>
 
@@ -24,7 +25,77 @@
 QgsLayoutItemPage::QgsLayoutItemPage( QgsLayout *layout )
   : QgsLayoutItem( layout )
 {
+  setFlag( QGraphicsItem::ItemIsSelectable, false );
+  setFlag( QGraphicsItem::ItemIsMovable, false );
+  setZValue( QgsLayout::ZPage );
+}
 
+void QgsLayoutItemPage::setPageSize( const QgsLayoutSize &size )
+{
+  attemptResize( size );
+}
+
+bool QgsLayoutItemPage::setPageSize( const QString &size, Orientation orientation )
+{
+  QgsPageSize newSize;
+  if ( QgsApplication::pageSizeRegistry()->decodePageSize( size, newSize ) )
+  {
+    switch ( orientation )
+    {
+      case Portrait:
+        break; // nothing to do
+
+      case Landscape:
+      {
+        // flip height and width
+        double x = newSize.size.width();
+        newSize.size.setWidth( newSize.size.height() );
+        newSize.size.setHeight( x );
+        break;
+      }
+    }
+
+    setPageSize( newSize.size );
+    return true;
+  }
+  else
+  {
+    return false;
+  }
+}
+
+QgsLayoutSize QgsLayoutItemPage::pageSize() const
+{
+  return sizeWithUnits();
+}
+
+QgsLayoutItemPage::Orientation QgsLayoutItemPage::orientation() const
+{
+  if ( sizeWithUnits().width() >= sizeWithUnits().height() )
+    return Landscape;
+  else
+    return Portrait;
+}
+
+QgsLayoutItemPage::Orientation QgsLayoutItemPage::decodePageOrientation( const QString &string, bool *ok )
+{
+  if ( ok )
+    *ok = false;
+
+  QString trimmedString = string.trimmed();
+  if ( trimmedString.compare( QStringLiteral( "portrait" ), Qt::CaseInsensitive ) == 0 )
+  {
+    if ( ok )
+      *ok = true;
+    return Portrait;
+  }
+  else if ( trimmedString.compare( QStringLiteral( "landscape" ), Qt::CaseInsensitive ) == 0 )
+  {
+    if ( ok )
+      *ok = true;
+    return Landscape;
+  }
+  return Landscape;
 }
 
 void QgsLayoutItemPage::draw( QgsRenderContext &context, const QStyleOptionGraphicsItem * )

@@ -39,7 +39,8 @@ class CORE_EXPORT QgsLayout : public QGraphicsScene, public QgsExpressionContext
     //! Preset item z-values, to ensure correct stacking
     enum ZValues
     {
-      ZMapTool = 10000, //!< Z-Value for temporary map tool items
+      ZPage = 0, //!< Z-value for page (paper) items
+      ZMapTool = 10000, //!< Z-value for temporary map tool items
     };
 
     /**

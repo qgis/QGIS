@@ -22,6 +22,7 @@ class QgsLayout : QGraphicsScene, QgsExpressionContextGenerator
 
     enum ZValues
     {
+      ZPage,
       ZMapTool,
     };
 

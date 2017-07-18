@@ -20,6 +20,7 @@
 #include "qgis_core.h"
 #include "qgslayoutitem.h"
 #include "qgslayoutitemregistry.h"
+#include "qgis_sip.h"
 
 /**
  * \ingroup core
@@ -34,12 +35,55 @@ class CORE_EXPORT QgsLayoutItemPage : public QgsLayoutItem
 
   public:
 
+    //! Page orientiation
+    enum Orientation
+    {
+      Portrait, //!< Portrait orientation
+      Landscape //!< Landscape orientation
+    };
+
     /**
      * Constructor for QgsLayoutItemPage, with the specified parent \a layout.
      */
     explicit QgsLayoutItemPage( QgsLayout *layout SIP_TRANSFERTHIS );
     int type() const override { return QgsLayoutItemRegistry::LayoutPage; }
     QString stringType() const override { return QStringLiteral( "ItemPaper" ); }
+
+    /**
+     * Sets the \a size of the page.
+     * \see pageSize()
+     */
+    void setPageSize( const QgsLayoutSize &size );
+
+    /**
+     * Sets the page size to a known page \a size, e.g. "A4" and \a orientation.
+     * The known page sizes are managed by QgsPageSizeRegistry. Valid page sizes
+     * can be retrieved via QgsPageSizeRegistry::entries().
+     * The function returns true if \a size was a valid page size and the page
+     * size was changed. If false is returned then \a size could not be matched
+     * to a known page size.
+     * \see pageSize()
+     */
+    bool setPageSize( const QString &size, Orientation orientation = Portrait );
+
+    /**
+     * Returns the size of the page.
+     * \see setPageSize()
+     */
+    QgsLayoutSize pageSize() const;
+
+    /**
+     * Returns the page orientiation.
+     * \note There is no direct setter for page orientation - use setPageSize() instead.
+     */
+    Orientation orientation() const;
+
+    /**
+     * Decodes a \a string representing a page orientation. If specified, \a ok
+     * will be set to true if string could be successfully interpreted as a
+     * page orientation.
+    */
+    static QgsLayoutItemPage::Orientation decodePageOrientation( const QString &string, bool *ok SIP_OUT = nullptr );
 
   protected:
 
