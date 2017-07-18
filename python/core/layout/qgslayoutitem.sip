@@ -39,6 +39,22 @@ class QgsLayoutItem : QgsLayoutObject, QGraphicsRectItem
  Constructor for QgsLayoutItem, with the specified parent ``layout``.
 %End
 
+    virtual int type() const = 0;
+%Docstring
+ Return correct graphics item type
+.. seealso:: stringType()
+ :rtype: int
+%End
+
+    virtual QString stringType() const = 0;
+%Docstring
+ Return the item type as a string.
+
+ This string must be a unique, single word, character only representation of the item type, eg "LayoutScaleBar"
+.. seealso:: type()
+ :rtype: str
+%End
+
     virtual void paint( QPainter *painter, const QStyleOptionGraphicsItem *itemStyle, QWidget *pWidget );
 
 %Docstring
@@ -128,6 +144,32 @@ class QgsLayoutItem : QgsLayoutObject, QGraphicsRectItem
     double itemRotation() const;
 %Docstring
  :rtype: float
+%End
+
+    virtual bool writeXml( QDomElement &parentElement, QDomDocument &document, const QgsReadWriteContext &context ) const;
+%Docstring
+ Stores the item state in a DOM element.
+ \param parentElement parent DOM element (e.g. 'Layout' element)
+ \param document DOM document
+ \param context read write context
+.. seealso:: readXml()
+.. note::
+
+   Subclasses should ensure that they call writePropertiesToElement() in their implementation.
+ :rtype: bool
+%End
+
+    virtual bool readXml( const QDomElement &itemElement, const QDomDocument &document, const QgsReadWriteContext &context );
+%Docstring
+ Sets the item state from a DOM element.
+ \param itemElement is the DOM node corresponding to item (e.g. 'LayoutItem' element)
+ \param document DOM document
+ \param context read write context
+.. seealso:: writeXml()
+.. note::
+
+   Subclasses should ensure that they call readPropertiesFromElement() in their implementation.
+ :rtype: bool
 %End
 
   public slots:
@@ -228,6 +270,34 @@ class QgsLayoutItem : QgsLayoutObject, QGraphicsRectItem
 %Docstring
  Returns the current position (in layout units) of a ``reference`` point for the item.
  :rtype: QPointF
+%End
+
+    virtual bool writePropertiesToElement( QDomElement &element, QDomDocument &document, const QgsReadWriteContext &context ) const;
+%Docstring
+ Stores item state within an XML DOM element.
+ \param element is the DOM element to store the item's properties in
+ \param document DOM document
+ \param context read write context
+.. seealso:: writeXml()
+.. seealso:: readPropertiesFromElement()
+.. note::
+
+   derived classes must call this base implementation when overriding this method
+ :rtype: bool
+%End
+
+    virtual bool readPropertiesFromElement( const QDomElement &element, const QDomDocument &document, const QgsReadWriteContext &context );
+%Docstring
+ Sets item state from a DOM element.
+ \param element is the DOM element for the item
+ \param document DOM document
+ \param context read write context
+.. seealso:: writePropertiesToElement()
+.. seealso:: readXml()
+.. note::
+
+   derived classes must call this base implementation when overriding this method
+ :rtype: bool
 %End
 
 };

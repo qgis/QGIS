@@ -208,6 +208,27 @@ double QgsLayoutItem::itemRotation() const
   return rotation();
 }
 
+bool QgsLayoutItem::writeXml( QDomElement &parentElement, QDomDocument &doc, const QgsReadWriteContext &context ) const
+{
+  QDomElement element = doc.createElement( "LayoutItem" );
+  element.setAttribute( "type", stringType() );
+
+  writePropertiesToElement( element, doc, context );
+  parentElement.appendChild( element );
+
+  return true;
+}
+
+bool QgsLayoutItem::readXml( const QDomElement &itemElem, const QDomDocument &doc, const QgsReadWriteContext &context )
+{
+  if ( itemElem.nodeName() != QString( "LayoutItem" ) || itemElem.attribute( "type" ) != stringType() )
+  {
+    return false;
+  }
+
+  return readPropertiesFromElement( itemElem, doc, context );
+}
+
 QgsLayoutPoint QgsLayoutItem::applyDataDefinedPosition( const QgsLayoutPoint &position )
 {
   if ( !mLayout )
@@ -385,6 +406,80 @@ QPointF QgsLayoutItem::positionAtReferencePoint( const QgsLayoutItem::ReferenceP
 {
   QPointF pointWithinItem = itemPositionAtReferencePoint( reference, rect().size() );
   return mapToScene( pointWithinItem );
+}
+
+bool QgsLayoutItem::writePropertiesToElement( QDomElement &element, QDomDocument &document, const QgsReadWriteContext &context ) const
+{
+// element.setAttribute( "uuid", mUuid );
+// element.setAttribute( "id", mId );
+  element.setAttribute( QStringLiteral( "referencePoint" ), QString::number( static_cast< int >( mReferencePoint ) ) );
+  element.setAttribute( QStringLiteral( "position" ), mItemPosition.encodePoint() );
+  element.setAttribute( QStringLiteral( "size" ), mItemSize.encodeSize() );
+  element.setAttribute( QStringLiteral( "rotation" ), QString::number( rotation() ) );
+
+  //TODO
+  /*
+  composerItemElem.setAttribute( "zValue", QString::number( zValue() ) );
+  composerItemElem.setAttribute( "visibility", isVisible() );
+  //position lock for mouse moves/resizes
+  if ( mItemPositionLocked )
+  {
+    composerItemElem.setAttribute( "positionLock", "true" );
+  }
+  else
+  {
+    composerItemElem.setAttribute( "positionLock", "false" );
+  }
+  */
+
+  //blend mode
+  //  composerItemElem.setAttribute( "blendMode", QgsMapRenderer::getBlendModeEnum( mBlendMode ) );
+
+  //transparency
+  //  composerItemElem.setAttribute( "transparency", QString::number( mTransparency ) );
+
+  //  composerItemElem.setAttribute( "excludeFromExports", mExcludeFromExports );
+
+  writeObjectPropertiesToElement( element, document, context );
+  return true;
+}
+
+bool QgsLayoutItem::readPropertiesFromElement( const QDomElement &element, const QDomDocument &document, const QgsReadWriteContext &context )
+{
+  readObjectPropertiesFromElement( element, document, context );
+
+// mUuid = element.attribute( "uuid", QUuid::createUuid().toString() );
+// setId( element.attribute( "id" ) );
+  mReferencePoint = static_cast< ReferencePoint >( element.attribute( QStringLiteral( "referencePoint" ) ).toInt() );
+  attemptMove( QgsLayoutPoint::decodePoint( element.attribute( QStringLiteral( "position" ) ) ) );
+  attemptResize( QgsLayoutSize::decodeSize( element.attribute( QStringLiteral( "size" ) ) ) );
+  setItemRotation( element.attribute( QStringLiteral( "rotation" ), QStringLiteral( "0" ) ).toDouble() );
+
+  //TODO
+  /*
+  // temporary for groups imported from templates
+  mTemplateUuid = itemElem.attribute( "templateUuid" );
+  //position lock for mouse moves/resizes
+  QString positionLock = itemElem.attribute( "positionLock" );
+  if ( positionLock.compare( "true", Qt::CaseInsensitive ) == 0 )
+  {
+    setPositionLock( true );
+  }
+  else
+  {
+    setPositionLock( false );
+  }
+  //visibility
+  setVisibility( itemElem.attribute( "visibility", "1" ) != "0" );
+  setZValue( itemElem.attribute( "zValue" ).toDouble() );
+  //blend mode
+  setBlendMode( QgsMapRenderer::getCompositionMode(( QgsMapRenderer::BlendMode ) itemElem.attribute( "blendMode", "0" ).toUInt() ) );
+  //transparency
+  setTransparency( itemElem.attribute( "transparency", "0" ).toInt() );
+  mExcludeFromExports = itemElem.attribute( "excludeFromExports", "0" ).toInt();
+  mEvaluatedExcludeFromExports = mExcludeFromExports;
+  */
+  return true;
 }
 
 void QgsLayoutItem::initConnectionsToLayout()

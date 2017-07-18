@@ -193,6 +193,7 @@ class CORE_EXPORT QgsLayoutObject: public QObject, public QgsExpressionContextGe
      * Stores object properties within an XML DOM element.
      * \param parentElement is the parent DOM element to store the object's properties in
      * \param document DOM document
+     * \param context read write context
      * \returns true if write was successful
      * \see readObjectPropertiesFromElement()
      */
@@ -202,6 +203,7 @@ class CORE_EXPORT QgsLayoutObject: public QObject, public QgsExpressionContextGe
      * Sets object properties from a DOM element
      * \param parentElement is the parent DOM element for the object
      * \param document DOM document
+     * \param context read write context
      * \returns true if read was successful
      * \see writeObjectPropertiesToElement()
      */

@@ -173,6 +173,7 @@ class QgsLayoutObject: QObject, QgsExpressionContextGenerator
  Stores object properties within an XML DOM element.
  \param parentElement is the parent DOM element to store the object's properties in
  \param document DOM document
+ \param context read write context
  :return: true if write was successful
 .. seealso:: readObjectPropertiesFromElement()
  :rtype: bool
@@ -183,6 +184,7 @@ class QgsLayoutObject: QObject, QgsExpressionContextGenerator
  Sets object properties from a DOM element
  \param parentElement is the parent DOM element for the object
  \param document DOM document
+ \param context read write context
  :return: true if read was successful
 .. seealso:: writeObjectPropertiesToElement()
  :rtype: bool

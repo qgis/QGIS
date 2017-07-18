@@ -60,6 +60,20 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
     explicit QgsLayoutItem( QgsLayout *layout );
 
     /**
+     * Return correct graphics item type
+     * \see stringType()
+     */
+    virtual int type() const = 0;
+
+    /**
+     * Return the item type as a string.
+     *
+     * This string must be a unique, single word, character only representation of the item type, eg "LayoutScaleBar"
+     * \see type()
+     */
+    virtual QString stringType() const = 0;
+
+    /**
      * Handles preparing a paint surface for the layout item and painting the item's
      * content. Derived classes must not override this method, but instead implement
      * the pure virtual method QgsLayoutItem::draw.
@@ -145,6 +159,26 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
      */
     //TODO
     double itemRotation() const;
+
+    /**
+     * Stores the item state in a DOM element.
+     * \param parentElement parent DOM element (e.g. 'Layout' element)
+     * \param document DOM document
+     * \param context read write context
+     * \see readXml()
+     * \note Subclasses should ensure that they call writePropertiesToElement() in their implementation.
+     */
+    virtual bool writeXml( QDomElement &parentElement, QDomDocument &document, const QgsReadWriteContext &context ) const;
+
+    /**
+     * Sets the item state from a DOM element.
+     * \param itemElement is the DOM node corresponding to item (e.g. 'LayoutItem' element)
+     * \param document DOM document
+     * \param context read write context
+     * \see writeXml()
+     * \note Subclasses should ensure that they call readPropertiesFromElement() in their implementation.
+     */
+    virtual bool readXml( const QDomElement &itemElement, const QDomDocument &document, const QgsReadWriteContext &context );
 
   public slots:
 
@@ -241,6 +275,28 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
      * Returns the current position (in layout units) of a \a reference point for the item.
     */
     QPointF positionAtReferencePoint( const ReferencePoint &reference ) const;
+
+    /**
+     * Stores item state within an XML DOM element.
+     * \param element is the DOM element to store the item's properties in
+     * \param document DOM document
+     * \param context read write context
+     * \see writeXml()
+     * \see readPropertiesFromElement()
+     * \note derived classes must call this base implementation when overriding this method
+     */
+    virtual bool writePropertiesToElement( QDomElement &element, QDomDocument &document, const QgsReadWriteContext &context ) const;
+
+    /**
+     * Sets item state from a DOM element.
+     * \param element is the DOM element for the item
+     * \param document DOM document
+     * \param context read write context
+     * \see writePropertiesToElement()
+     * \see readXml()
+     * \note derived classes must call this base implementation when overriding this method
+     */
+    virtual bool readPropertiesFromElement( const QDomElement &element, const QDomDocument &document, const QgsReadWriteContext &context );
 
   private:
 
