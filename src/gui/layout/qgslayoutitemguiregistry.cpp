@@ -41,6 +41,8 @@ bool QgsLayoutItemGuiRegistry::populate()
   if ( !mMetadata.isEmpty() )
     return false;
 
+  addItemGroup( QgsLayoutItemGuiGroup( QStringLiteral( "shapes" ), tr( "Shape" ), QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddBasicShape.svg" ) ) ) );
+
   auto createRubberBand = ( []( QgsLayoutView * view )->QgsLayoutViewRubberBand *
   {
     return new QgsLayoutViewRectangularRubberBand( view );
@@ -55,9 +57,9 @@ bool QgsLayoutItemGuiRegistry::populate()
   } );
 
   addLayoutItemGuiMetadata( new QgsLayoutItemGuiMetadata( 101, QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddLabel.svg" ) ), nullptr, createRubberBand ) );
-  addLayoutItemGuiMetadata( new QgsLayoutItemGuiMetadata( QgsLayoutItemRegistry::LayoutRectangle, QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddBasicRectangle.svg" ) ), nullptr, createRubberBand ) );
-  addLayoutItemGuiMetadata( new QgsLayoutItemGuiMetadata( QgsLayoutItemRegistry::LayoutEllipse, QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddBasicCircle.svg" ) ), nullptr, createEllipseBand ) );
-  addLayoutItemGuiMetadata( new QgsLayoutItemGuiMetadata( QgsLayoutItemRegistry::LayoutTriangle, QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddBasicTriangle.svg" ) ), nullptr, createTriangleBand ) );
+  addLayoutItemGuiMetadata( new QgsLayoutItemGuiMetadata( QgsLayoutItemRegistry::LayoutRectangle, QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddBasicRectangle.svg" ) ), nullptr, createRubberBand, QStringLiteral( "shapes" ) ) );
+  addLayoutItemGuiMetadata( new QgsLayoutItemGuiMetadata( QgsLayoutItemRegistry::LayoutEllipse, QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddBasicCircle.svg" ) ), nullptr, createEllipseBand, QStringLiteral( "shapes" ) ) );
+  addLayoutItemGuiMetadata( new QgsLayoutItemGuiMetadata( QgsLayoutItemRegistry::LayoutTriangle, QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddBasicTriangle.svg" ) ), nullptr, createTriangleBand, QStringLiteral( "shapes" ) ) );
   return true;
 }
 
@@ -74,6 +76,20 @@ bool QgsLayoutItemGuiRegistry::addLayoutItemGuiMetadata( QgsLayoutItemAbstractGu
   mMetadata[metadata->type()] = metadata;
   emit typeAdded( metadata->type() );
   return true;
+}
+
+bool QgsLayoutItemGuiRegistry::addItemGroup( const QgsLayoutItemGuiGroup &group )
+{
+  if ( mItemGroups.contains( group.id ) )
+    return false;
+
+  mItemGroups.insert( group.id, group );
+  return true;
+}
+
+const QgsLayoutItemGuiGroup &QgsLayoutItemGuiRegistry::itemGroup( const QString &id )
+{
+  return mItemGroups[ id ];
 }
 
 QWidget *QgsLayoutItemGuiRegistry::createItemWidget( int type ) const

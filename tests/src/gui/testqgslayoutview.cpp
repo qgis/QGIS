@@ -300,6 +300,12 @@ void TestQgsLayoutView::guiRegistry()
   QCOMPARE( band->view(), view );
   delete band;
 
+  // groups
+  QVERIFY( registry.addItemGroup( QgsLayoutItemGuiGroup( QStringLiteral( "g1" ) ) ) );
+  QCOMPARE( registry.itemGroup( QStringLiteral( "g1" ) ).id, QStringLiteral( "g1" ) );
+  // can't add duplicate group
+  QVERIFY( !registry.addItemGroup( QgsLayoutItemGuiGroup( QStringLiteral( "g1" ) ) ) );
+
   //test populate
   QgsLayoutItemGuiRegistry reg2;
   QVERIFY( reg2.itemTypes().isEmpty() );
