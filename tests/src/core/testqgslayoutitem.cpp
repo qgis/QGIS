@@ -37,6 +37,8 @@ class TestQgsLayoutItem: public QObject
     void init();// will be called before each testfunction is executed.
     void cleanup();// will be called after every testfunction.
     void creation(); //test creation of QgsLayoutItem
+    void uuid();
+    void id();
     void registry();
     void shouldDrawDebug();
     void shouldDrawAntialiased();
@@ -178,6 +180,26 @@ void TestQgsLayoutItem::creation()
   QVERIFY( item );
   delete item;
   delete layout;
+}
+
+void TestQgsLayoutItem::uuid()
+{
+  QgsProject p;
+  QgsLayout l( &p );
+
+  //basic test of uuid
+  TestItem item( &l );
+  TestItem item2( &l );
+  QVERIFY( item.uuid() != item2.uuid() );
+}
+
+void TestQgsLayoutItem::id()
+{
+  QgsProject p;
+  QgsLayout l( &p );
+  TestItem item( &l );
+  item.setId( QStringLiteral( "test" ) );
+  QCOMPARE( item.id(), QStringLiteral( "test" ) );
 }
 
 void TestQgsLayoutItem::registry()
@@ -1229,12 +1251,12 @@ void TestQgsLayoutItem::writeReadXmlProperties()
   original->attemptResize( QgsLayoutSize( 6, 8, QgsUnitTypes::LayoutCentimeters ) );
   original->attemptMove( QgsLayoutPoint( 0.05, 0.09, QgsUnitTypes::LayoutMeters ) );
   original->setItemRotation( 45.0 );
-  //original->setId( QString( "test" ) );
+  original->setId( QStringLiteral( "test" ) );
 
   QgsLayoutItem *copy = createCopyViaXml( &l, original );
 
-  //QCOMPARE( copy->uuid(), original->uuid() );
-  //QCOMPARE( copy->id(), original->id() );
+  QCOMPARE( copy->uuid(), original->uuid() );
+  QCOMPARE( copy->id(), original->id() );
   QgsProperty dd = copy->dataDefinedProperties().property( QgsLayoutObject::TestProperty );
   QVERIFY( dd );
   QVERIFY( dd.isActive() );

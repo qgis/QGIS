@@ -19,12 +19,14 @@
 #include "qgslayoututils.h"
 #include <QPainter>
 #include <QStyleOptionGraphicsItem>
+#include <QUuid>
 
 #define CACHE_SIZE_LIMIT 5000
 
 QgsLayoutItem::QgsLayoutItem( QgsLayout *layout )
   : QgsLayoutObject( layout )
   , QGraphicsRectItem( 0 )
+  , mUuid( QUuid::createUuid().toString() )
 {
   // needed to access current view transform during paint operations
   setFlags( flags() | QGraphicsItem::ItemUsesExtendedStyleOption );
@@ -36,6 +38,28 @@ QgsLayoutItem::QgsLayoutItem( QgsLayout *layout )
   mItemSize = QgsLayoutSize( rect().width(), rect().height(), initialUnits );
 
   initConnectionsToLayout();
+}
+
+void QgsLayoutItem::setId( const QString &id )
+{
+  if ( id == mId )
+  {
+    return;
+  }
+
+  mId = id;
+  setToolTip( id );
+
+  //TODO
+#if 0
+  //inform model that id data has changed
+  if ( mComposition )
+  {
+    mComposition->itemsModel()->updateItemDisplayName( this );
+  }
+
+  emit itemChanged();
+#endif
 }
 
 void QgsLayoutItem::paint( QPainter *painter, const QStyleOptionGraphicsItem *itemStyle, QWidget * )
@@ -410,8 +434,8 @@ QPointF QgsLayoutItem::positionAtReferencePoint( const QgsLayoutItem::ReferenceP
 
 bool QgsLayoutItem::writePropertiesToElement( QDomElement &element, QDomDocument &document, const QgsReadWriteContext &context ) const
 {
-// element.setAttribute( "uuid", mUuid );
-// element.setAttribute( "id", mId );
+  element.setAttribute( QStringLiteral( "uuid" ), mUuid );
+  element.setAttribute( QStringLiteral( "id" ), mId );
   element.setAttribute( QStringLiteral( "referencePoint" ), QString::number( static_cast< int >( mReferencePoint ) ) );
   element.setAttribute( QStringLiteral( "position" ), mItemPosition.encodePoint() );
   element.setAttribute( QStringLiteral( "size" ), mItemSize.encodeSize() );
@@ -448,8 +472,8 @@ bool QgsLayoutItem::readPropertiesFromElement( const QDomElement &element, const
 {
   readObjectPropertiesFromElement( element, document, context );
 
-// mUuid = element.attribute( "uuid", QUuid::createUuid().toString() );
-// setId( element.attribute( "id" ) );
+  mUuid = element.attribute( QStringLiteral( "uuid" ), QUuid::createUuid().toString() );
+  setId( element.attribute( QStringLiteral( "id" ) ) );
   mReferencePoint = static_cast< ReferencePoint >( element.attribute( QStringLiteral( "referencePoint" ) ).toInt() );
   attemptMove( QgsLayoutPoint::decodePoint( element.attribute( QStringLiteral( "position" ) ) ) );
   attemptResize( QgsLayoutSize::decodeSize( element.attribute( QStringLiteral( "size" ) ) ) );

@@ -74,6 +74,31 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
     virtual QString stringType() const = 0;
 
     /**
+     * Returns the item identification string. This is a unique random string set for the item
+     * upon creation.
+     * \note There is no corresponding setter for the uuid - it's created automatically.
+     * \see id()
+     * \see setId()
+    */
+    QString uuid() const { return mUuid; }
+
+    /**
+     * Returns the item's ID name. This is not necessarily unique, and duplicate ID names may exist
+     * for a layout.
+     * \see setId()
+     * \see uuid()
+     */
+    QString id() const { return mId; }
+
+    /**
+     * Set the item's \a id name. This is not necessarily unique, and duplicate ID names may exist
+     * for a layout.
+     * \see id()
+     * \see uuid()
+     */
+    virtual void setId( const QString &id );
+
+    /**
      * Handles preparing a paint surface for the layout item and painting the item's
      * content. Derived classes must not override this method, but instead implement
      * the pure virtual method QgsLayoutItem::draw.
@@ -299,6 +324,12 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
     virtual bool readPropertiesFromElement( const QDomElement &element, const QDomDocument &document, const QgsReadWriteContext &context );
 
   private:
+
+    //! id (not necessarily unique)
+    QString mId;
+
+    //! Unique id
+    QString mUuid;
 
     ReferencePoint mReferencePoint = UpperLeft;
     QgsLayoutSize mFixedSize;

@@ -131,7 +131,7 @@ bool QgsLayoutObject::writeObjectPropertiesToElement( QDomElement &parentElement
   }
 
   //create object element
-  QDomElement objectElement = document.createElement( "LayoutObject" );
+  QDomElement objectElement = document.createElement( QStringLiteral( "LayoutObject" ) );
 
   QDomElement ddPropsElement = document.createElement( QStringLiteral( "dataDefinedProperties" ) );
   mDataDefinedProperties.writeXml( ddPropsElement, sPropertyDefinitions );
@@ -152,7 +152,7 @@ bool QgsLayoutObject::readObjectPropertiesFromElement( const QDomElement &parent
     return false;
   }
 
-  QDomNodeList objectNodeList = parentElement.elementsByTagName( "LayoutObject" );
+  QDomNodeList objectNodeList = parentElement.elementsByTagName( QStringLiteral( "LayoutObject" ) );
   if ( objectNodeList.size() < 1 )
   {
     return false;

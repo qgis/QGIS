@@ -55,6 +55,35 @@ class QgsLayoutItem : QgsLayoutObject, QGraphicsRectItem
  :rtype: str
 %End
 
+    QString uuid() const;
+%Docstring
+ Returns the item identification string. This is a unique random string set for the item
+ upon creation.
+.. note::
+
+   There is no corresponding setter for the uuid - it's created automatically.
+.. seealso:: id()
+.. seealso:: setId()
+ :rtype: str
+%End
+
+    QString id() const;
+%Docstring
+ Returns the item's ID name. This is not necessarily unique, and duplicate ID names may exist
+ for a layout.
+.. seealso:: setId()
+.. seealso:: uuid()
+ :rtype: str
+%End
+
+    virtual void setId( const QString &id );
+%Docstring
+ Set the item's ``id`` name. This is not necessarily unique, and duplicate ID names may exist
+ for a layout.
+.. seealso:: id()
+.. seealso:: uuid()
+%End
+
     virtual void paint( QPainter *painter, const QStyleOptionGraphicsItem *itemStyle, QWidget *pWidget );
 
 %Docstring
