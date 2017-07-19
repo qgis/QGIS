@@ -308,8 +308,8 @@ Mulitline body
 %Docstring
 remove argument
 %End
-    void method( );
-    void test( );
+    void method();
+    void test();
     void avoidIntersections( const QList<QgsVectorLayer *> &avoidIntersectionsLayers );
 
     void position();
