@@ -59,6 +59,8 @@ IF(WITH_CORE)
 
   SET (WITH_DESKTOP TRUE CACHE BOOL "Determines whether QGIS desktop should be built")
 
+  SET (WITH_3D FALSE CACHE BOOL "Determines whether QGIS 3D library should be built")
+
   # server disabled default because it needs FastCGI (which is optional dependency)
   SET (WITH_SERVER FALSE CACHE BOOL "Determines whether QGIS server should be built")
   IF(WITH_SERVER)
@@ -276,6 +278,13 @@ IF(WITH_CORE)
   FIND_PACKAGE(Qt5UiTools REQUIRED)
   FIND_PACKAGE(Qt5Script REQUIRED)
   FIND_PACKAGE(Qt5Sql REQUIRED)
+  IF (WITH_3D)
+    FIND_PACKAGE(Qt53DCore REQUIRED)
+    FIND_PACKAGE(Qt53DRender REQUIRED)
+    FIND_PACKAGE(Qt53DInput REQUIRED)
+    FIND_PACKAGE(Qt53DLogic REQUIRED)
+    FIND_PACKAGE(Qt53DExtras REQUIRED)
+  ENDIF (WITH_3D)
   INCLUDE("cmake/modules/ECMQt4To5Porting.cmake")
   MESSAGE(STATUS "Found Qt version: ${Qt5Core_VERSION_STRING}")
 
