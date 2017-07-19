@@ -73,6 +73,16 @@ class APP_EXPORT QgsMetadataWizard : public QDialog, private Ui::QgsMetadataWiza
     void setAutoCrs();
 
     /**
+     * Add a new contact.
+     */
+    void addContact();
+
+    /**
+     * Remove a selected contact.
+     */
+    void removeContact();
+
+    /**
      * Add a new link.
      */
     void addLink();

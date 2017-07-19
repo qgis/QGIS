@@ -51,6 +51,8 @@ QgsMetadataWizard::QgsMetadataWizard( QWidget *parent, QgsMapLayer *layer )
   connect( btnAddLicence, &QPushButton::clicked, this, &QgsMetadataWizard::addLicence );
   connect( btnRemoveLicence, &QPushButton::clicked, this, &QgsMetadataWizard::removeLicence );
   connect( btnAutoCrs, &QPushButton::clicked, this, &QgsMetadataWizard::setAutoCrs );
+  connect( btnAddContact, &QPushButton::clicked, this, &QgsMetadataWizard::addContact );
+  connect( btnRemoveContact, &QPushButton::clicked, this, &QgsMetadataWizard::removeContact );
   connect( btnAddLink, &QPushButton::clicked, this, &QgsMetadataWizard::addLink );
   connect( btnRemoveLink, &QPushButton::clicked, this, &QgsMetadataWizard::removeLink );
   connect( btnCheckMetadata, &QPushButton::clicked, this, &QgsMetadataWizard::checkMetadata );
@@ -129,73 +131,14 @@ void QgsMetadataWizard::setAutoCrs()
   selectionCrs->setCrs( mLayer->crs() );
 }
 
-void QgsMetadataWizard::cancelClicked()
+void QgsMetadataWizard::addContact()
 {
-  hide();
+
 }
 
-void QgsMetadataWizard::backClicked()
+void QgsMetadataWizard::removeContact()
 {
-  int index = tabWidget->currentIndex();
-  if ( index > 0 )
-    tabWidget->setCurrentIndex( index - 1 );
-  updatePanel();
-}
 
-void QgsMetadataWizard::nextClicked()
-{
-  int index = tabWidget->currentIndex();
-  if ( index < tabWidget->count() )
-    tabWidget->setCurrentIndex( index + 1 );
-  updatePanel();
-}
-
-void QgsMetadataWizard::finishedClicked()
-{
-  // OLD API (to remove later)
-  mLayer->setName( lineEditTitle->text() );
-  mLayer->setAbstract( textEditAbstract->toPlainText() );
-
-  // New Metadata API
-  saveMetadata( mMetadata );
-
-  // Save layer metadata properties
-  mLayer->setMetadata( mMetadata );
-
-  QgsNativeMetadataValidator validator;
-  QList<QgsMetadataValidator::ValidationResult> validationResults;
-  bool results = validator.validate( mMetadata, validationResults );
-
-  hide();
-
-  if ( results )
-  {
-    QgisApp::instance()->messageBar()->pushInfo( tr( "Save metadata" ), tr( "Saving metadata successfull into the project" ) );
-  }
-  else
-  {
-    QgisApp::instance()->messageBar()->pushWarning( tr( "Save metadata" ), tr( "Saving metadata successfull but some fields were missing" ) );
-  }
-}
-
-void QgsMetadataWizard::updatePanel()
-{
-  int index = tabWidget->currentIndex();
-  if ( index == 0 )
-  {
-    backButton->setEnabled( false );
-    nextButton->setEnabled( true );
-  }
-  else if ( index == tabWidget->count() - 1 )
-  {
-    backButton->setEnabled( true );
-    nextButton->setEnabled( false );
-  }
-  else
-  {
-    backButton->setEnabled( true );
-    nextButton->setEnabled( true );
-  }
 }
 
 void QgsMetadataWizard::addLink()
@@ -520,4 +463,73 @@ QStringList QgsMetadataWizard::parseLinkTypes()
     wordList.append( line.split( ',' ).at( 0 ) );
   }
   return wordList;
+}
+
+void QgsMetadataWizard::cancelClicked()
+{
+  hide();
+}
+
+void QgsMetadataWizard::backClicked()
+{
+  int index = tabWidget->currentIndex();
+  if ( index > 0 )
+    tabWidget->setCurrentIndex( index - 1 );
+  updatePanel();
+}
+
+void QgsMetadataWizard::nextClicked()
+{
+  int index = tabWidget->currentIndex();
+  if ( index < tabWidget->count() )
+    tabWidget->setCurrentIndex( index + 1 );
+  updatePanel();
+}
+
+void QgsMetadataWizard::finishedClicked()
+{
+  // OLD API (to remove later)
+  mLayer->setName( lineEditTitle->text() );
+  mLayer->setAbstract( textEditAbstract->toPlainText() );
+
+  // New Metadata API
+  saveMetadata( mMetadata );
+
+  // Save layer metadata properties
+  mLayer->setMetadata( mMetadata );
+
+  QgsNativeMetadataValidator validator;
+  QList<QgsMetadataValidator::ValidationResult> validationResults;
+  bool results = validator.validate( mMetadata, validationResults );
+
+  hide();
+
+  if ( results )
+  {
+    QgisApp::instance()->messageBar()->pushInfo( tr( "Save metadata" ), tr( "Saving metadata successfull into the project" ) );
+  }
+  else
+  {
+    QgisApp::instance()->messageBar()->pushWarning( tr( "Save metadata" ), tr( "Saving metadata successfull but some fields were missing" ) );
+  }
+}
+
+void QgsMetadataWizard::updatePanel()
+{
+  int index = tabWidget->currentIndex();
+  if ( index == 0 )
+  {
+    backButton->setEnabled( false );
+    nextButton->setEnabled( true );
+  }
+  else if ( index == tabWidget->count() - 1 )
+  {
+    backButton->setEnabled( true );
+    nextButton->setEnabled( false );
+  }
+  else
+  {
+    backButton->setEnabled( true );
+    nextButton->setEnabled( true );
+  }
 }
