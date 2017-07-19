@@ -1,12 +1,14 @@
 #ifndef CAMERACONTROLLER_H
 #define CAMERACONTROLLER_H
 
+#include "qgis_3d.h"
+
 #include <Qt3DCore/QEntity>
 #include <Qt3DInput>
 #include <Qt3DRender>
 
 
-class CameraController : public Qt3DCore::QEntity
+class _3D_EXPORT CameraController : public Qt3DCore::QEntity
 {
     Q_OBJECT
     Q_PROPERTY( Qt3DRender::QCamera *camera READ camera WRITE setCamera NOTIFY cameraChanged )

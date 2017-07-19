@@ -1,12 +1,14 @@
 #ifndef AABB_H
 #define AABB_H
 
+#include "qgis_3d.h"
+
 #include <math.h>
 #include <QList>
 #include <QVector3D>
 
 //! axis-aligned bounding box - in world coords
-class AABB
+class _3D_EXPORT AABB
 {
   public:
     AABB()

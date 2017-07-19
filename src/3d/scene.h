@@ -1,6 +1,8 @@
 #ifndef SCENE_H
 #define SCENE_H
 
+#include "qgis_3d.h"
+
 #include <Qt3DCore/QEntity>
 
 namespace Qt3DRender
@@ -27,7 +29,7 @@ class ChunkedEntity;
 /**
  * Entity that encapsulates our 3D scene - contains all other entities (such as terrain) as children.
  */
-class Scene : public Qt3DCore::QEntity
+class _3D_EXPORT Scene : public Qt3DCore::QEntity
 {
     Q_OBJECT
   public:

@@ -1,6 +1,8 @@
 #ifndef FLATTERRAINGENERATOR_H
 #define FLATTERRAINGENERATOR_H
 
+#include "qgis_3d.h"
+
 #include "terraingenerator.h"
 
 #include "qgsrectangle.h"
@@ -12,7 +14,7 @@ namespace Qt3DExtras
   class QPlaneGeometry;
 }
 
-class FlatTerrainGenerator : public TerrainGenerator
+class _3D_EXPORT FlatTerrainGenerator : public TerrainGenerator
 {
   public:
     FlatTerrainGenerator();

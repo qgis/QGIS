@@ -1,6 +1,8 @@
 #ifndef DEMTERRAINGENERATOR_H
 #define DEMTERRAINGENERATOR_H
 
+#include "qgis_3d.h"
+
 #include "terraingenerator.h"
 #include "terrainchunkloader.h"
 
@@ -15,7 +17,7 @@ class QgsRasterLayer;
 /**
  * Implementation of terrain generator that uses a raster layer with DEM to build terrain.
  */
-class DemTerrainGenerator : public TerrainGenerator
+class _3D_EXPORT DemTerrainGenerator : public TerrainGenerator
 {
   public:
     DemTerrainGenerator();

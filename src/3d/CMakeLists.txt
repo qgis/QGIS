@@ -48,6 +48,8 @@ SET(QGIS_3D_MOC_HDRS
 
 QT5_WRAP_CPP(QGIS_3D_MOC_SRCS ${QGIS_3D_MOC_HDRS})
 
+QT5_ADD_RESOURCES(QGIS_3D_RCC_SRCS shaders.qrc)
+
 # install headers
 
 SET(QGIS_3D_HDRS
@@ -100,7 +102,7 @@ INCLUDE_DIRECTORIES(SYSTEM
 #############################################################
 # qgis_3d library
 
-ADD_LIBRARY(qgis_3d SHARED ${QGIS_3D_SRCS} ${QGIS_3D_MOC_SRCS} ${QGIS_3D_HDRS})
+ADD_LIBRARY(qgis_3d SHARED ${QGIS_3D_SRCS} ${QGIS_3D_MOC_SRCS} ${QGIS_3D_HDRS} ${QGIS_3D_RCC_SRCS})
 
 qt5_use_modules(qgis_3d 3DCore 3DRender 3DInput 3DLogic 3DExtras)
 
@@ -174,3 +176,14 @@ IF (APPLE AND QGIS_MACAPP_INSTALL_DEV)
   INSTALL(CODE "EXECUTE_PROCESS(COMMAND install_name_tool -id \"${QGIS_MACAPP_DEV_PREFIX}/qgis_3d.framework/Versions/${CPACK_PACKAGE_VERSION_MAJOR}.${CPACK_PACKAGE_VERSION_MINOR}/qgis_3d\" \"$ENV{DESTDIR}${QGIS_MACAPP_DEV_PREFIX}/qgis_3d.framework/qgis_3d\")")
   INSTALL(CODE "EXECUTE_PROCESS(COMMAND install_name_tool -change \"${CMAKE_INSTALL_NAME_DIR}/qgis_core.framework/Versions/${CPACK_PACKAGE_VERSION_MAJOR}.${CPACK_PACKAGE_VERSION_MINOR}/qgis_core\" \"${QGIS_MACAPP_DEV_PREFIX}/qgis_core.framework/Versions/${CPACK_PACKAGE_VERSION_MAJOR}.${CPACK_PACKAGE_VERSION_MINOR}/qgis_core\" \"$ENV{DESTDIR}${QGIS_MACAPP_DEV_PREFIX}/qgis_3d.framework/qgis_3d\")")
 ENDIF (APPLE AND QGIS_MACAPP_INSTALL_DEV)
+
+
+#############################################################
+# qgis 3d test executable (temporary)
+
+add_executable(qgis3d
+  testapp/main.cpp
+  testapp/sidepanel.cpp
+  testapp/window3d.cpp
+)
+target_link_libraries(qgis3d qgis_3d)

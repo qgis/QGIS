@@ -1,6 +1,8 @@
 #ifndef MAP3D_H
 #define MAP3D_H
 
+#include "qgis_3d.h"
+
 #include <memory>
 #include <QColor>
 #include <QMatrix4x4>
@@ -39,7 +41,7 @@ AltitudeBinding altBindingFromString( const QString &str );
 
 
 //! Basic shading material used for rendering
-class PhongMaterialSettings
+class _3D_EXPORT PhongMaterialSettings
 {
   public:
     PhongMaterialSettings()
@@ -71,7 +73,7 @@ class PhongMaterialSettings
 };
 
 
-class PolygonRenderer
+class _3D_EXPORT PolygonRenderer
 {
   public:
     PolygonRenderer();
@@ -94,7 +96,7 @@ class PolygonRenderer
     QgsMapLayerRef layerRef; //!< Layer used to extract polygons from
 };
 
-class PointRenderer
+class _3D_EXPORT PointRenderer
 {
   public:
     PointRenderer();
@@ -115,7 +117,7 @@ class PointRenderer
     QgsMapLayerRef layerRef; //!< Layer used to extract points from
 };
 
-class LineRenderer
+class _3D_EXPORT LineRenderer
 {
   public:
     LineRenderer();
@@ -146,7 +148,7 @@ class QgsProject;
 class QDomElement;
 
 //! Definition of the world
-class Map3D
+class _3D_EXPORT Map3D
 {
   public:
     Map3D();
