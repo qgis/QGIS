@@ -2133,13 +2133,8 @@ QMap<QString, QgsMapLayer *> QgsProject::mapLayers() const
   return mLayerStore->mapLayers();
 }
 
-QgsTransactionGroup *QgsProject::transactionGroup(const QString &providerKey, const QString &connString)
+QgsTransactionGroup *QgsProject::transactionGroup( const QString &providerKey, const QString &connString )
 {
-    QgsTransactionGroup *transaction = mTransactionGroups.value( qMakePair( providerKey, connString ) );
-
-    if (!transaction)
-        QgsLogger::debug("Unknown transactions group: <" + providerKey + ", " + connString + ">");
-
-    return transaction;
+  return mTransactionGroups.value( qMakePair( providerKey, connString ) );
 }
 

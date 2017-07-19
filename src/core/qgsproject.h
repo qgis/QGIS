@@ -469,15 +469,16 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * \note Not available in Python bindings
      */
     QMap< QPair< QString, QString>, QgsTransactionGroup *> transactionGroups() SIP_SKIP;
-    
+
     /**
      * Get a transaction group by getting provider & connection string.
+     * Returns null pointer if transaction group is not available.
      *
      * providerKey, connString -> transactionGroup
      *
      * \since QGIS 3.0
      */
-    QgsTransactionGroup* transactionGroup(const QString &providerKey, const QString &connString);
+    QgsTransactionGroup *transactionGroup( const QString &providerKey, const QString &connString );
 
     /**
      * Should default values be evaluated on provider side when requested and not when committed.
