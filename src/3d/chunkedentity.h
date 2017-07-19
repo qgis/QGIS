@@ -9,7 +9,7 @@ class AABB;
 class ChunkNode;
 class ChunkList;
 class ChunkLoaderFactory;
-class TerrainBoundsEntity;
+class ChunkBoundsEntity;
 class LoaderThread;
 
 #include <QVector3D>
@@ -76,7 +76,7 @@ class ChunkedEntity : public Qt3DCore::QEntity
     //! max. length for replacement queue
     int maxLoadedChunks;
 
-    TerrainBoundsEntity *bboxesEntity;
+    ChunkBoundsEntity *bboxesEntity;
 
     LoaderThread *loaderThread;
     QMutex loaderMutex;

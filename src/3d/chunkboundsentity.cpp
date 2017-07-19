@@ -1,4 +1,4 @@
-#include "terrainboundsentity.h"
+#include "chunkboundsentity.h"
 
 #include <Qt3DRender/QAttribute>
 #include <Qt3DRender/QBuffer>
@@ -105,7 +105,7 @@ void AABBMesh::setBoxes( const QList<AABB> &bboxes )
 // ----------------
 
 
-TerrainBoundsEntity::TerrainBoundsEntity( Qt3DCore::QNode *parent )
+ChunkBoundsEntity::ChunkBoundsEntity( Qt3DCore::QNode *parent )
   : Qt3DCore::QEntity( parent )
 {
   aabbMesh = new AABBMesh;
@@ -116,7 +116,7 @@ TerrainBoundsEntity::TerrainBoundsEntity( Qt3DCore::QNode *parent )
   addComponent( bboxesMaterial );
 }
 
-void TerrainBoundsEntity::setBoxes( const QList<AABB> &bboxes )
+void ChunkBoundsEntity::setBoxes( const QList<AABB> &bboxes )
 {
   aabbMesh->setBoxes( bboxes );
 }

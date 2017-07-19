@@ -1,9 +1,10 @@
 #include "chunkedentity.h"
 
-#include "chunknode.h"
+#include "chunkboundsentity.h"
 #include "chunklist.h"
 #include "chunkloader.h"
-#include "terrainboundsentity.h"
+#include "chunknode.h"
+
 
 static float screenSpaceError( float epsilon, float distance, float screenSize, float fov )
 {
@@ -195,7 +196,7 @@ void ChunkedEntity::setShowBoundingBoxes( bool enabled )
 
   if ( enabled )
   {
-    bboxesEntity = new TerrainBoundsEntity( this );
+    bboxesEntity = new ChunkBoundsEntity( this );
   }
   else
   {

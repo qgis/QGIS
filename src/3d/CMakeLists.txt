@@ -3,6 +3,7 @@
 
 SET(QGIS_3D_SRCS
   cameracontroller.cpp
+  chunkboundsentity.cpp
   chunkedentity.cpp
   chunklist.cpp
   chunkloader.cpp
@@ -21,7 +22,6 @@ SET(QGIS_3D_SRCS
   #quantizedmeshterraingenerator.cpp
   scene.cpp
   terrain.cpp
-  terrainboundsentity.cpp
   terrainchunkloader.cpp
   terraingenerator.cpp
   tessellator.cpp
@@ -55,6 +55,7 @@ QT5_ADD_RESOURCES(QGIS_3D_RCC_SRCS shaders.qrc)
 SET(QGIS_3D_HDRS
   aabb.h
   cameracontroller.h
+  chunkboundsentity.h
   chunkedentity.h
   chunklist.h
   chunkloader.h
@@ -73,7 +74,6 @@ SET(QGIS_3D_HDRS
   #quantizedmeshterraingenerator.h
   scene.h
   terrain.h
-  terrainboundsentity.h
   terrainchunkloader.h
   terraingenerator.h
   tessellator.h

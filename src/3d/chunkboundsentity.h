@@ -1,5 +1,5 @@
-#ifndef TERRAINBOUNDSENTITY_H
-#define TERRAINBOUNDSENTITY_H
+#ifndef CHUNKBOUNDSENTITY_H
+#define CHUNKBOUNDSENTITY_H
 
 #include <Qt3DCore/QEntity>
 
@@ -7,10 +7,10 @@ class AABB;
 class AABBMesh;
 
 //! Draws bounds of axis aligned bounding boxes
-class TerrainBoundsEntity : public Qt3DCore::QEntity
+class ChunkBoundsEntity : public Qt3DCore::QEntity
 {
   public:
-    TerrainBoundsEntity( Qt3DCore::QNode *parent = nullptr );
+    ChunkBoundsEntity( Qt3DCore::QNode *parent = nullptr );
 
     void setBoxes( const QList<AABB> &bboxes );
 
@@ -18,4 +18,4 @@ class TerrainBoundsEntity : public Qt3DCore::QEntity
     AABBMesh *aabbMesh;
 };
 
-#endif // TERRAINBOUNDSENTITY_H
+#endif // CHUNKBOUNDSENTITY_H
