@@ -45,8 +45,18 @@ class CORE_EXPORT QgsLayout : public QGraphicsScene, public QgsExpressionContext
 
     /**
      * Construct a new layout linked to the specified \a project.
+     *
+     * If the layout is a "new" layout (as opposed to a layout which will
+     * restore a previous state from XML) then initializeDefaults() should be
+     * called on the new layout.
      */
     QgsLayout( QgsProject *project );
+
+    /**
+     * Initializes an empty layout, e.g. by adding a default page to the layout. This should be called after creating
+     * a new layout.
+     */
+    void initializeDefaults();
 
     /**
      * The project associated with the layout. Used to get access to layers, map themes,
@@ -210,6 +220,28 @@ class CORE_EXPORT QgsLayout : public QGraphicsScene, public QgsExpressionContext
      * page items in the layout.
      */
     QgsLayoutPageCollection *pageCollection();
+
+    /**
+     * Calculates the bounds of all non-gui items in the layout. Ignores snap lines, mouse handles
+     * and other cosmetic items.
+     * \param ignorePages set to true to ignore page items
+     * \param margin optional marginal (in percent, e.g., 0.05 = 5% ) to add around items
+     * \returns layout bounds, in layout units.
+     */
+    QRectF layoutBounds( bool ignorePages = false, double margin = 0.0 ) const;
+
+    /**
+     * Adds an \a item to the layout. This should be called instead of the base class addItem()
+     * method. Ownership of the item is transferred to the layout.
+     */
+    void addLayoutItem( QgsLayoutItem *item SIP_TRANSFER );
+
+  public slots:
+
+    /**
+     * Updates the scene bounds of the layout.
+     */
+    void updateBounds();
 
   signals:
 

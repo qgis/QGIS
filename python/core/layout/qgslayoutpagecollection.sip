@@ -65,6 +65,9 @@ class QgsLayoutPageCollection : QObject
  to the collection, and the page will automatically be added to the collection's
  layout() (there is no need to manually add the page item to the layout).
  The page will be added after all pages currently contained in the collection.
+
+ Calling addPage() automatically triggers a reflow() of pages.
+
 .. seealso:: insertPage()
 %End
 
@@ -80,6 +83,8 @@ class QgsLayoutPageCollection : QObject
  (Page numbers in collections begin at 0 - so a ``beforePage`` of 0 will insert
  the page before all existing pages).
 
+ Calling insertPage() automatically triggers a reflow() of pages.
+
 .. seealso:: addPage()
 %End
 
@@ -90,6 +95,8 @@ class QgsLayoutPageCollection : QObject
 
  Page numbers in collections begin at 0 - so a ``pageNumber`` of 0 will delete
  the first page in the collection.
+
+ Calling deletePage() automatically triggers a reflow() of pages.
 %End
 
     void setPageStyleSymbol( QgsFillSymbol *symbol );
@@ -105,6 +112,19 @@ class QgsLayoutPageCollection : QObject
  Returns the symbol to use for drawing pages in the collection.
 .. seealso:: setPageStyleSymbol()
  :rtype: QgsFillSymbol
+%End
+
+    void reflow();
+%Docstring
+ Forces the page collection to reflow the arrangement of pages, e.g. to account
+ for page size/orientation change.
+%End
+
+    double maximumPageWidth() const;
+%Docstring
+ Returns the maximum width of pages in the collection. The returned value is
+ in layout units.
+ :rtype: float
 %End
 
 };

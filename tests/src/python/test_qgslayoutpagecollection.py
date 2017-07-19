@@ -15,7 +15,14 @@ __revision__ = '$Format:%H$'
 import qgis  # NOQA
 import sip
 
-from qgis.core import QgsUnitTypes, QgsLayout, QgsLayoutItemPage, QgsProject, QgsLayoutPageCollection, QgsSimpleFillSymbolLayer, QgsFillSymbol
+from qgis.core import (QgsUnitTypes,
+                       QgsLayout,
+                       QgsLayoutItemPage,
+                       QgsLayoutSize,
+                       QgsProject,
+                       QgsLayoutPageCollection,
+                       QgsSimpleFillSymbolLayer,
+                       QgsFillSymbol)
 from qgis.PyQt.QtCore import Qt, QCoreApplication, QEvent
 from qgis.testing import start_app, unittest
 
@@ -120,6 +127,86 @@ class TestQgsLayoutPageCollection(unittest.TestCase):
         self.assertTrue(sip.isdeleted(page))
         self.assertTrue(sip.isdeleted(page2))
 
+    def testMaxPageWidth(self):
+        """
+        Test calculating maximum page width
+        """
+        p = QgsProject()
+        l = QgsLayout(p)
+        collection = l.pageCollection()
+
+        # add a page
+        page = QgsLayoutItemPage(l)
+        page.setPageSize('A4')
+        collection.addPage(page)
+        self.assertEqual(collection.maximumPageWidth(), 210.0)
+
+        # add a second page
+        page2 = QgsLayoutItemPage(l)
+        page2.setPageSize('A3')
+        collection.addPage(page2)
+        self.assertEqual(collection.maximumPageWidth(), 297.0)
+
+        # add a page with other units
+        page3 = QgsLayoutItemPage(l)
+        page3.setPageSize(QgsLayoutSize(100, 100, QgsUnitTypes.LayoutMeters))
+        collection.addPage(page3)
+        self.assertEqual(collection.maximumPageWidth(), 100000.0)
+
+    def testReflow(self):
+        """
+        Test reflowing pages
+        """
+        p = QgsProject()
+        l = QgsLayout(p)
+        collection = l.pageCollection()
+
+        #add a page
+        page = QgsLayoutItemPage(l)
+        page.setPageSize('A4')
+        collection.addPage(page)
+
+        #should be positioned at origin
+        self.assertEqual(page.pos().x(), 0)
+        self.assertEqual(page.pos().y(), 0)
+
+        #second page
+        page2 = QgsLayoutItemPage(l)
+        page2.setPageSize('A5')
+        collection.addPage(page2)
+
+        self.assertEqual(page.pos().x(), 0)
+        self.assertEqual(page.pos().y(), 0)
+        self.assertEqual(page2.pos().x(), 0)
+        self.assertEqual(page2.pos().y(), 307)
+
+        #third page, slotted in middle
+        page3 = QgsLayoutItemPage(l)
+        page3.setPageSize('A3')
+        collection.insertPage(page3, 1)
+
+        self.assertEqual(page.pos().x(), 0)
+        self.assertEqual(page.pos().y(), 0)
+        self.assertEqual(page2.pos().x(), 0)
+        self.assertEqual(page2.pos().y(), 737)
+        self.assertEqual(page3.pos().x(), 0)
+        self.assertEqual(page3.pos().y(), 307)
+
+        page.setPageSize(QgsLayoutSize(100, 120))
+        # no update until reflow is called
+        self.assertEqual(page.pos().x(), 0)
+        self.assertEqual(page.pos().y(), 0)
+        self.assertEqual(page2.pos().x(), 0)
+        self.assertEqual(page2.pos().y(), 737)
+        self.assertEqual(page3.pos().x(), 0)
+        self.assertEqual(page3.pos().y(), 307)
+        collection.reflow()
+        self.assertEqual(page.pos().x(), 0)
+        self.assertEqual(page.pos().y(), 0)
+        self.assertEqual(page2.pos().x(), 0)
+        self.assertEqual(page2.pos().y(), 560)
+        self.assertEqual(page3.pos().x(), 0)
+        self.assertEqual(page3.pos().y(), 130)
 
 if __name__ == '__main__':
     unittest.main()

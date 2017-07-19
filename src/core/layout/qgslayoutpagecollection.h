@@ -78,6 +78,9 @@ class CORE_EXPORT QgsLayoutPageCollection : public QObject
      * to the collection, and the page will automatically be added to the collection's
      * layout() (there is no need to manually add the page item to the layout).
      * The page will be added after all pages currently contained in the collection.
+     *
+     * Calling addPage() automatically triggers a reflow() of pages.
+     *
      * \see insertPage()
      */
     void addPage( QgsLayoutItemPage *page SIP_TRANSFER );
@@ -93,6 +96,8 @@ class CORE_EXPORT QgsLayoutPageCollection : public QObject
      * (Page numbers in collections begin at 0 - so a \a beforePage of 0 will insert
      * the page before all existing pages).
      *
+     * Calling insertPage() automatically triggers a reflow() of pages.
+     *
      * \see addPage()
      */
     void insertPage( QgsLayoutItemPage *page SIP_TRANSFER, int beforePage );
@@ -103,6 +108,8 @@ class CORE_EXPORT QgsLayoutPageCollection : public QObject
      *
      * Page numbers in collections begin at 0 - so a \a pageNumber of 0 will delete
      * the first page in the collection.
+     *
+     * Calling deletePage() automatically triggers a reflow() of pages.
      */
     void deletePage( int pageNumber );
 
@@ -119,6 +126,18 @@ class CORE_EXPORT QgsLayoutPageCollection : public QObject
      * \see setPageStyleSymbol()
      */
     const QgsFillSymbol *pageStyleSymbol() const { return mPageStyleSymbol.get(); }
+
+    /**
+     * Forces the page collection to reflow the arrangement of pages, e.g. to account
+     * for page size/orientation change.
+     */
+    void reflow();
+
+    /**
+     * Returns the maximum width of pages in the collection. The returned value is
+     * in layout units.
+     */
+    double maximumPageWidth() const;
 
   private:
 

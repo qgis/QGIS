@@ -17,6 +17,8 @@
 #include "qgslayoutpagecollection.h"
 #include "qgslayout.h"
 
+#define SPACE_BETWEEN_PAGES 10
+
 QgsLayoutPageCollection::QgsLayoutPageCollection( QgsLayout *layout )
   : QObject( layout )
   , mLayout( layout )
@@ -39,6 +41,29 @@ void QgsLayoutPageCollection::setPageStyleSymbol( QgsFillSymbol *symbol )
     return;
 
   mPageStyleSymbol.reset( static_cast<QgsFillSymbol *>( symbol->clone() ) );
+}
+
+void QgsLayoutPageCollection::reflow()
+{
+  double currentY = 0;
+  QgsLayoutPoint p( 0, 0, mLayout->units() );
+  Q_FOREACH ( QgsLayoutItemPage *page, mPages )
+  {
+    page->attemptMove( p );
+    currentY += mLayout->convertToLayoutUnits( page->pageSize() ).height() + SPACE_BETWEEN_PAGES;
+    p.setY( currentY );
+  }
+  mLayout->updateBounds();
+}
+
+double QgsLayoutPageCollection::maximumPageWidth() const
+{
+  double maxWidth = 0;
+  Q_FOREACH ( QgsLayoutItemPage *page, mPages )
+  {
+    maxWidth = qMax( maxWidth, mLayout->convertToLayoutUnits( page->pageSize() ).width() );
+  }
+  return maxWidth;
 }
 
 QgsLayout *QgsLayoutPageCollection::layout() const
@@ -65,6 +90,7 @@ void QgsLayoutPageCollection::addPage( QgsLayoutItemPage *page )
 {
   mPages.append( page );
   mLayout->addItem( page );
+  reflow();
 }
 
 void QgsLayoutPageCollection::insertPage( QgsLayoutItemPage *page, int beforePage )
@@ -81,6 +107,7 @@ void QgsLayoutPageCollection::insertPage( QgsLayoutItemPage *page, int beforePag
     mPages.insert( beforePage, page );
   }
   mLayout->addItem( page );
+  reflow();
 }
 
 void QgsLayoutPageCollection::deletePage( int pageNumber )
@@ -91,6 +118,7 @@ void QgsLayoutPageCollection::deletePage( int pageNumber )
   QgsLayoutItemPage *page = mPages.takeAt( pageNumber );
   mLayout->removeItem( page );
   page->deleteLater();
+  reflow();
 }
 
 void QgsLayoutPageCollection::createDefaultPageStyleSymbol()

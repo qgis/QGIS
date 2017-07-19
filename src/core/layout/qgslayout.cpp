@@ -25,6 +25,14 @@ QgsLayout::QgsLayout( QgsProject *project )
   setBackgroundBrush( QColor( 215, 215, 215 ) );
 }
 
+void QgsLayout::initializeDefaults()
+{
+  // default to a A4 landscape page
+  QgsLayoutItemPage *page = new QgsLayoutItemPage( this );
+  page->setPageSize( QgsLayoutSize( 297, 210, QgsUnitTypes::LayoutMillimeters ) );
+  mPageCollection->addPage( page );
+}
+
 QgsProject *QgsLayout::project() const
 {
   return mProject;
@@ -111,4 +119,49 @@ void QgsLayout::setReferenceMap( QgsLayoutItemMap *map )
 QgsLayoutPageCollection *QgsLayout::pageCollection()
 {
   return mPageCollection.get();
+}
+
+QRectF QgsLayout::layoutBounds( bool ignorePages, double margin ) const
+{
+  //start with an empty rectangle
+  QRectF bounds;
+
+  //add all QgsComposerItems and QgsPaperItems which are in the composition
+  Q_FOREACH ( const QGraphicsItem *item, items() )
+  {
+    const QgsLayoutItem *layoutItem = dynamic_cast<const QgsLayoutItem *>( item );
+    if ( !layoutItem )
+      continue;
+
+    bool isPage = layoutItem->type() == QgsLayoutItemRegistry::LayoutPage;
+    if ( !isPage || !ignorePages )
+    {
+      //expand bounds with current item's bounds
+      if ( bounds.isValid() )
+        bounds = bounds.united( item->sceneBoundingRect() );
+      else
+        bounds = item->sceneBoundingRect();
+    }
+  }
+
+  if ( bounds.isValid() && margin > 0.0 )
+  {
+    //finally, expand bounds out by specified margin of page size
+    double maxWidth = mPageCollection->maximumPageWidth();
+    bounds.adjust( -maxWidth * margin, -maxWidth * margin, maxWidth * margin, maxWidth * margin );
+  }
+
+  return bounds;
+
+}
+
+void QgsLayout::addLayoutItem( QgsLayoutItem *item )
+{
+  addItem( item );
+  updateBounds();
+}
+
+void QgsLayout::updateBounds()
+{
+  setSceneRect( layoutBounds( false, 0.05 ) );
 }
