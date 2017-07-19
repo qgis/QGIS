@@ -35,6 +35,7 @@
 #include "qgsvectorlayer.h"
 #include "qgsogrutils.h"
 #include "qgsjsonutils.h"
+#include "qgsdatumtransformdialog.h"
 
 QgsClipboard::QgsClipboard()
     : QObject()
@@ -264,6 +265,28 @@ QgsFeatureList QgsClipboard::transformedCopyOf( const QgsCoordinateReferenceSyst
 {
   QgsFeatureList featureList = copyOf( fields );
   QgsCoordinateTransform ct( crs(), destCRS );
+
+  //ask user about datum transformation
+  QSettings settings;
+  QList< QList< int > > dt = QgsCoordinateTransform::datumTransformations( crs(), destCRS );
+  if ( dt.size() > 1 && settings.value( "Projections/showDatumTransformDialog", false ).toBool() )
+  {
+    QgsDatumTransformDialog d( tr( "Datum transformation for copied features" ), dt );
+    if ( d.exec() == QDialog::Accepted )
+    {
+      QList< int > sdt = d.selectedDatumTransform();
+      if ( !sdt.isEmpty() )
+      {
+        ct.setSourceDatumTransform( sdt.at( 0 ) );
+      }
+      if ( sdt.size() > 1 )
+      {
+        ct.setDestinationDatumTransform( sdt.at( 1 ) );
+      }
+      ct.initialise();
+    }
+  }
+
 
   QgsDebugMsg( "transforming clipboard." );
   for ( QgsFeatureList::iterator iter = featureList.begin(); iter != featureList.end(); ++iter )
