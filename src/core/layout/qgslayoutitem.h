@@ -35,6 +35,28 @@ class QPainter;
  */
 class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectItem
 {
+#ifdef SIP_RUN
+#include <qgslayoutitemshape.h>
+#include <qgslayoutitempage.h>
+#endif
+
+
+#ifdef SIP_RUN
+    SIP_CONVERT_TO_SUBCLASS_CODE
+    // the conversions have to be static, because they're using multiple inheritance
+    // (seen in PyQt4 .sip files for some QGraphicsItem classes)
+    switch ( sipCpp->type() )
+    {
+      // really, these *should* use the constants from QgsLayoutItemRegistry, but sip doesn't like that!
+      case QGraphicsItem::UserType + 101:
+        sipType = sipType_QgsLayoutItemPage;
+        *sipCppRet = static_cast<QgsLayoutItemPage *>( sipCpp );
+        break;
+      default:
+        sipType = 0;
+    }
+    SIP_END
+#endif
 
     Q_OBJECT
 

@@ -18,6 +18,24 @@ class QgsLayoutItem : QgsLayoutObject, QGraphicsRectItem
 
 %TypeHeaderCode
 #include "qgslayoutitem.h"
+
+#include <qgslayoutitemshape.h>
+#include <qgslayoutitempage.h>
+%End
+
+%ConvertToSubClassCode
+    // the conversions have to be static, because they're using multiple inheritance
+    // (seen in PyQt4 .sip files for some QGraphicsItem classes)
+    switch ( sipCpp->type() )
+    {
+      // really, these *should* use the constants from QgsLayoutItemRegistry, but sip doesn't like that!
+      case QGraphicsItem::UserType + 101:
+        sipType = sipType_QgsLayoutItemPage;
+        *sipCppRet = static_cast<QgsLayoutItemPage *>( sipCpp );
+        break;
+      default:
+        sipType = 0;
+    }
 %End
   public:
 
