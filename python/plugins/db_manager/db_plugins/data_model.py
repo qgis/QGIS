@@ -144,7 +144,7 @@ class SqlResultModel(BaseTableModel):
 
         t = QTime()
         t.start()
-        c = self.db._execute(None, unicode(sql))
+        c = self.db._execute(None, sql)
         self._secs = t.elapsed() / 1000.0
         del t
 

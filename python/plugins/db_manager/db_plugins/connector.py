@@ -78,7 +78,7 @@ class DBConnector:
         if cursor is None:
             cursor = self._get_cursor()
         try:
-            cursor.execute(str(sql))
+            cursor.execute(sql)
 
         except self.connection_error_types() as e:
             raise ConnectionError(e)
