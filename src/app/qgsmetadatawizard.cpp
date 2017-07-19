@@ -50,6 +50,7 @@ QgsMetadataWizard::QgsMetadataWizard( QWidget *parent, QgsMapLayer *layer )
   connect( btnRemoveVocabulary, &QPushButton::clicked, this, &QgsMetadataWizard::removeVocabulary );
   connect( btnAddLicence, &QPushButton::clicked, this, &QgsMetadataWizard::addLicence );
   connect( btnRemoveLicence, &QPushButton::clicked, this, &QgsMetadataWizard::removeLicence );
+  connect( btnAutoCrs, &QPushButton::clicked, this, &QgsMetadataWizard::setAutoCrs );
   connect( btnAddLink, &QPushButton::clicked, this, &QgsMetadataWizard::addLink );
   connect( btnRemoveLink, &QPushButton::clicked, this, &QgsMetadataWizard::removeLink );
   connect( btnCheckMetadata, &QPushButton::clicked, this, &QgsMetadataWizard::checkMetadata );
@@ -121,6 +122,11 @@ void QgsMetadataWizard::removeLicence()
   {
     tabLicenses->model()->removeRow( selectedRows[i].row() );
   }
+}
+
+void QgsMetadataWizard::setAutoCrs()
+{
+  selectionCrs->setCrs( mLayer->crs() );
 }
 
 void QgsMetadataWizard::cancelClicked()
@@ -334,6 +340,12 @@ void QgsMetadataWizard::setPropertiesFromLayer()
     pCell->setText( licence );
   }
 
+  // CRS
+  if ( mMetadata.crs().isValid() )
+  {
+    selectionCrs->setCrs( mMetadata.crs() );
+  }
+
   // Links
   tabLinks->setRowCount( 0 );
   for ( QgsLayerMetadata::Link link : mMetadata.links() )
@@ -389,6 +401,12 @@ void QgsMetadataWizard::saveMetadata( QgsLayerMetadata &layerMetadata )
     licenses.append( tabLicenses->item( i, 0 )->text() );
   }
   layerMetadata.setLicenses( licenses );
+
+  // CRS
+  if ( selectionCrs->crs().isValid() )
+  {
+    layerMetadata.setCrs( selectionCrs->crs() );
+  }
 
   // Links
   QList<QgsLayerMetadata::Link> links;

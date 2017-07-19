@@ -35,6 +35,7 @@ class APP_EXPORT QgsMetadataWizard : public QDialog, private Ui::QgsMetadataWiza
     void removeVocabulary();
     void addLicence();
     void removeLicence();
+    void setAutoCrs();
     void addLink();
     void removeLink();
     void fillComboBox();

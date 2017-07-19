@@ -89,7 +89,7 @@
       <enum>QTabWidget::Rounded</enum>
      </property>
      <property name="currentIndex">
-      <number>2</number>
+      <number>3</number>
      </property>
      <widget class="QWidget" name="tabIdentificationDialog">
       <attribute name="title">
@@ -280,13 +280,17 @@
       </layout>
      </widget>
      <widget class="QWidget" name="tabAccessDialog">
-      <property name="enabled">
-       <bool>true</bool>
-      </property>
       <attribute name="title">
        <string>Access</string>
       </attribute>
       <layout class="QVBoxLayout" name="verticalLayout_3">
+       <item>
+        <widget class="QLabel" name="label_5">
+         <property name="text">
+          <string>Access dialog. HELP TEXT TO ADD</string>
+         </property>
+        </widget>
+       </item>
        <item>
         <widget class="QLabel" name="label_8">
          <property name="text">
@@ -344,38 +348,67 @@
       </layout>
      </widget>
      <widget class="QWidget" name="tabExtentDialog">
-      <property name="enabled">
-       <bool>false</bool>
-      </property>
       <attribute name="title">
        <string>Extent</string>
       </attribute>
-      <widget class="QLabel" name="label_14">
-       <property name="geometry">
-        <rect>
-         <x>30</x>
-         <y>50</y>
-         <width>541</width>
-         <height>61</height>
-        </rect>
-       </property>
-       <property name="text">
-        <string>Temporal, it's a list of QgsDateTimeRange, need to check how to present this</string>
-       </property>
-      </widget>
-      <widget class="QLabel" name="label_15">
-       <property name="geometry">
-        <rect>
-         <x>30</x>
-         <y>220</y>
-         <width>411</width>
-         <height>16</height>
-        </rect>
-       </property>
-       <property name="text">
-        <string>Spatial, need to check how to present this</string>
-       </property>
-      </widget>
+      <layout class="QVBoxLayout" name="verticalLayout_9">
+       <item>
+        <widget class="QLabel" name="label_9">
+         <property name="text">
+          <string>Extent dialog. HELP TEXT TO ADD</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QgsCollapsibleGroupBox" name="groupBox">
+         <property name="title">
+          <string>Spatial Extent</string>
+         </property>
+         <layout class="QVBoxLayout" name="verticalLayout_8">
+          <item>
+           <layout class="QHBoxLayout" name="horizontalLayout_7">
+            <item>
+             <widget class="QgsProjectionSelectionWidget" name="selectionCrs" native="true"/>
+            </item>
+            <item>
+             <widget class="QPushButton" name="btnAutoCrs">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="text">
+               <string>Set CRS from layer</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item>
+        <widget class="QgsCollapsibleGroupBox" name="groupBox_2">
+         <property name="title">
+          <string>Temporal Extent</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <spacer name="verticalSpacer">
+         <property name="orientation">
+          <enum>Qt::Vertical</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>20</width>
+           <height>40</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+      </layout>
      </widget>
      <widget class="QWidget" name="tabContactsDialog">
       <property name="enabled">
@@ -671,6 +704,20 @@
    </item>
   </layout>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>QgsCollapsibleGroupBox</class>
+   <extends>QGroupBox</extends>
+   <header>qgscollapsiblegroupbox.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsProjectionSelectionWidget</class>
+   <extends>QWidget</extends>
+   <header>qgsprojectionselectionwidget.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
  <resources>
   <include location="../../images/images.qrc"/>
  </resources>
