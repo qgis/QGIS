@@ -19,7 +19,9 @@ from qgis.core import (QgsUnitTypes,
                        QgsLayout,
                        QgsLayoutItemPage,
                        QgsLayoutSize,
+                       QgsLayoutObject,
                        QgsProject,
+                       QgsProperty,
                        QgsLayoutPageCollection,
                        QgsSimpleFillSymbolLayer,
                        QgsFillSymbol)
@@ -207,6 +209,50 @@ class TestQgsLayoutPageCollection(unittest.TestCase):
         self.assertEqual(page2.pos().y(), 560)
         self.assertEqual(page3.pos().x(), 0)
         self.assertEqual(page3.pos().y(), 130)
+
+    def testDataDefinedSize(self):
+        p = QgsProject()
+        l = QgsLayout(p)
+        collection = l.pageCollection()
+
+        # add some pages
+        page = QgsLayoutItemPage(l)
+        page.setPageSize('A4')
+        collection.addPage(page)
+        page2 = QgsLayoutItemPage(l)
+        page2.setPageSize('A5')
+        collection.addPage(page2)
+        page3 = QgsLayoutItemPage(l)
+        page3.setPageSize('A5')
+        collection.addPage(page3)
+
+        self.assertEqual(page.pos().x(), 0)
+        self.assertEqual(page.pos().y(), 0)
+        self.assertEqual(page2.pos().x(), 0)
+        self.assertEqual(page2.pos().y(), 307)
+        self.assertEqual(page3.pos().x(), 0)
+        self.assertEqual(page3.pos().y(), 527)
+
+        page.dataDefinedProperties().setProperty(QgsLayoutObject.ItemHeight, QgsProperty.fromExpression('50*3'))
+        page.refresh()
+        collection.reflow()
+        self.assertEqual(page.pos().x(), 0)
+        self.assertEqual(page.pos().y(), 0)
+        self.assertEqual(page2.pos().x(), 0)
+        self.assertEqual(page2.pos().y(), 160)
+        self.assertEqual(page3.pos().x(), 0)
+        self.assertEqual(page3.pos().y(), 380)
+
+        page2.dataDefinedProperties().setProperty(QgsLayoutObject.ItemHeight, QgsProperty.fromExpression('50-20'))
+        page2.refresh()
+        collection.reflow()
+        self.assertEqual(page.pos().x(), 0)
+        self.assertEqual(page.pos().y(), 0)
+        self.assertEqual(page2.pos().x(), 0)
+        self.assertEqual(page2.pos().y(), 160)
+        self.assertEqual(page3.pos().x(), 0)
+        self.assertEqual(page3.pos().y(), 200)
+
 
 if __name__ == '__main__':
     unittest.main()
