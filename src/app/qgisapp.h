@@ -1197,6 +1197,12 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     void circularStringCurvePoint();
     //! activates the circular string radius tool
     void circularStringRadius();
+    //! activates the add circle from 2 points tool
+    void circle2Points();
+    //! activates the add circle from 3 points tool
+    void circle3Points();
+    //! activates the add circle from center and radius tool
+    void circleCenterPoint();
     //! activates the move feature tool
     void moveFeature();
     //! activates the copy and move feature tool
@@ -1745,6 +1751,9 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
           , mAddFeature( nullptr )
           , mCircularStringCurvePoint( nullptr )
           , mCircularStringRadius( nullptr )
+          , mCircle2Points( nullptr )
+          , mCircle3Points( nullptr )
+          , mCircleCenterPoint( nullptr )
           , mMoveFeature( nullptr )
           , mOffsetCurve( nullptr )
           , mReshapeFeatures( nullptr )
@@ -1791,6 +1800,9 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
         QgsMapTool *mAddFeature = nullptr;
         QgsMapTool *mCircularStringCurvePoint = nullptr;
         QgsMapTool *mCircularStringRadius = nullptr;
+        QgsMapTool *mCircle2Points = nullptr;
+        QgsMapTool *mCircle3Points = nullptr;
+        QgsMapTool *mCircleCenterPoint = nullptr;
         QgsMapTool *mMoveFeature = nullptr;
         QgsMapTool *mMoveFeatureCopy = nullptr;
         QgsMapTool *mOffsetCurve = nullptr;

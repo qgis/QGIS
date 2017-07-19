@@ -38,7 +38,7 @@ QgsCircle QgsCircle::from2Points( const QgsPoint &pt1, const QgsPoint &pt2 )
 {
   QgsPoint center = QgsGeometryUtils::midpoint( pt1, pt2 );
   double azimuth = QgsGeometryUtils::lineAngle( pt1.x(), pt1.y(), pt2.x(), pt2.y() ) * 180.0 / M_PI;
-  double radius = pt1.distance( pt2 );
+  double radius = pt1.distance( pt2 ) / 2.0;
 
   return QgsCircle( center, radius, azimuth );
 }
