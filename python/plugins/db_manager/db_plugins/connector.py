@@ -20,6 +20,7 @@ email                : brush.tyler@gmail.com
  ***************************************************************************/
 """
 
+from builtins import str
 from qgis.core import QgsDataSourceURI
 
 from .plugin import DbError, ConnectionError
