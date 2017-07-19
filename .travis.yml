@@ -10,6 +10,7 @@ matrix:
         - BUILD=qt4
         - QT_VERSION=4
 #        - LLVM_VERSION=3.8
+      dist: precise
       sudo: false
       cache:
         apt: true
@@ -64,6 +65,7 @@ matrix:
         - BUILD=qt5
         - QT_VERSION=5
         - LLVM_VERSION=3.8
+      dist: precise
       sudo: false
       cache:
         apt: true
@@ -85,7 +87,7 @@ matrix:
             - graphviz
             - libpq-dev
             - libfcgi-dev
-            - libfftw3-3	    
+            - libfftw3-3
             - pkg-config
             - poppler-utils
             - txt2tags
