@@ -16,14 +16,11 @@
 #ifndef QGSKDE_H
 #define QGSKDE_H
 
-#include "qgsrectangle.h"
 #include <QString>
 
-// GDAL includes
-#include <gdal.h>
-#include <cpl_string.h>
-#include <cpl_conv.h>
 #include "qgis_analysis.h"
+#include "qgsrectangle.h"
+#include "qgsrasterdataprovider.h"
 
 class QgsFeatureSource;
 class QgsFeature;
@@ -162,11 +159,8 @@ class ANALYSIS_EXPORT QgsKernelDensityEstimation
 
     int mBufferSize;
 
-    GDALDatasetH mDatasetH;
-    GDALRasterBandH mRasterBandH;
+    QgsRasterDataProvider *mProvider = nullptr;
 
-    //! Creates a new raster layer and initializes it to the no data value
-    bool createEmptyLayer( GDALDriverH driver, const QgsRectangle &bounds, int rows, int columns ) const;
     int radiusSizeInPixels( double radius ) const;
 };
 
