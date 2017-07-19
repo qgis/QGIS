@@ -124,6 +124,7 @@
 %Include qgslistwidget.sip
 %Include qgslegendfilterbutton.sip
 %Include qgslimitedrandomcolorrampdialog.sip
+%Include qgsratiolockbutton.sip
 %Include qgslonglongvalidator.sip
 %Include qgsludialog.sip
 %Include qgsmanageconnectionsdialog.sip

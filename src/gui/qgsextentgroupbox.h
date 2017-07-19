@@ -177,6 +177,19 @@ class GUI_EXPORT QgsExtentGroupBox : public QgsCollapsibleGroupBox, private Ui::
      */
     void setOutputExtentFromDrawOnCanvas();
 
+    /** Sets a fixed aspect ratio to be used when dragging extent onto the canvas.
+     * To unset a fixed aspect ratio, set the width and height to zero.
+     * \param ratio aspect ratio's width and height
+     * \since QGIS 3.0
+     * */
+    void setRatio( QSize ratio ) { mRatio = ratio; }
+
+    /** Returns the current fixed aspect ratio to be used when dragging extent onto the canvas.
+     * If the aspect ratio isn't fixed, the width and height will be set to zero.
+     * \since QGIS 3.0
+     * */
+    QSize ratio() const { return mRatio; }
+
   signals:
 
     /**
@@ -223,6 +236,7 @@ class GUI_EXPORT QgsExtentGroupBox : public QgsCollapsibleGroupBox, private Ui::
     std::unique_ptr< QgsMapToolExtent > mMapToolExtent;
     QPointer< QgsMapTool > mMapToolPrevious = nullptr;
     QgsMapCanvas *mCanvas = nullptr;
+    QSize mRatio;
 
     void setExtentToLayerExtent( const QString &layerId );
 

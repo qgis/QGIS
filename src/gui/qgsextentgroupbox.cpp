@@ -277,6 +277,7 @@ void QgsExtentGroupBox::setOutputExtentFromDrawOnCanvas()
         mMapToolPrevious = nullptr;
       } );
     }
+    mMapToolExtent->setRatio( mRatio );
     mCanvas->setMapTool( mMapToolExtent.get() );
     window()->setVisible( false );
   }
