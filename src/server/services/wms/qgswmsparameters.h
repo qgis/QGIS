@@ -86,6 +86,8 @@ namespace QgsWms
         LAYERS,
         LAYERSPACE,
         LAYERTITLESPACE,
+        QUERY_LAYERS,
+        FEATURE_COUNT,
         SHOWFEATURECOUNT,
         STYLE,
         STYLES,
@@ -95,7 +97,13 @@ namespace QgsWms
         OPACITIES,
         SLD,
         FILTER,
+        FILTER_GEOM,
         FORMAT,
+        INFO_FORMAT,
+        I,
+        J,
+        X,
+        Y,
         RULE,
         RULELABEL,
         SCALE,
@@ -108,7 +116,8 @@ namespace QgsWms
         HIGHLIGHT_LABELWEIGHT,
         HIGHLIGHT_LABELCOLOR,
         HIGHLIGHT_LABELBUFFERCOLOR,
-        HIGHLIGHT_LABELBUFFERSIZE
+        HIGHLIGHT_LABELBUFFERSIZE,
+        WMS_PRECISION
       };
       Q_ENUM( ParameterName )
 
@@ -116,7 +125,11 @@ namespace QgsWms
       {
         NONE,
         JPG,
-        PNG
+        PNG,
+        TEXT,
+        XML,
+        HTML,
+        GML
       };
 
       struct Parameter
@@ -203,6 +216,11 @@ namespace QgsWms
        */
       QStringList filters() const;
 
+      /** Returns the filter geometry found in FILTER_GEOM parameter.
+       * \returns the filter geometry as Well Known Text.
+       */
+      QString filterGeom() const;
+
       /** Returns the list of opacities found in OPACITIES parameter.
        * \returns the list of opacities in string
        */
@@ -220,6 +238,11 @@ namespace QgsWms
        * \returns nickname of layers
        */
       QStringList allLayersNickname() const;
+
+      /** Returns nickname of layers found in QUERY_LAYERS parameter.
+       * \returns nickname of layers
+       */
+      QStringList queryLayersNickname() const;
 
       /** Returns styles found in STYLE and STYLES parameters.
        * \returns name of styles
@@ -241,6 +264,75 @@ namespace QgsWms
        * \returns format
        */
       Format format() const;
+
+      /** Returns INFO_FORMAT parameter as a string.
+       * \returns INFO_FORMAT parameter as string
+       */
+      QString infoFormatAsString() const;
+
+      /** Returns infoFormat. If the INFO_FORMAT parameter is not used, then the
+       *  default value is text/plain.
+       * \returns infoFormat
+       */
+      Format infoFormat() const;
+
+      /** Returns the infoFormat version for GML. If the INFO_FORMAT is not GML,
+       *  then the default value is -1.
+       * \returns infoFormat version
+       */
+      int infoFormatVersion() const;
+
+      /** Returns I parameter or an empty string if not defined.
+       * \returns i parameter
+       */
+      QString i() const;
+
+      /** Returns I parameter as an int or its default value if not
+       *  defined. An exception is raised if I is defined and cannot be
+       *  converted.
+       * \returns i parameter
+       * \throws QgsBadRequestException
+       */
+      int iAsInt() const;
+
+      /** Returns J parameter or an empty string if not defined.
+       * \returns j parameter
+       */
+      QString j() const;
+
+      /** Returns J parameter as an int or its default value if not
+       *  defined. An exception is raised if J is defined and cannot be
+       *  converted.
+       * \returns j parameter
+       * \throws QgsBadRequestException
+       */
+      int jAsInt() const;
+
+      /** Returns X parameter or an empty string if not defined.
+       * \returns x parameter
+       */
+      QString x() const;
+
+      /** Returns X parameter as an int or its default value if not
+       *  defined. An exception is raised if X is defined and cannot be
+       *  converted.
+       * \returns x parameter
+       * \throws QgsBadRequestException
+       */
+      int xAsInt() const;
+
+      /** Returns Y parameter or an empty string if not defined.
+       * \returns y parameter
+       */
+      QString y() const;
+
+      /** Returns Y parameter as an int or its default value if not
+       *  defined. An exception is raised if Y is defined and cannot be
+       *  converted.
+       * \returns j parameter
+       * \throws QgsBadRequestException
+       */
+      int yAsInt() const;
 
       /** Returns RULE parameter or an empty string if none is defined
        * \returns RULE parameter or an empty string if none is defined
@@ -270,6 +362,18 @@ namespace QgsWms
        * \throws QgsBadRequestException
        */
       bool showFeatureCountAsBool() const;
+
+      /** Returns FEATURE_COUNT parameter or an empty string if none is defined
+       * \returns FEATURE_COUNT parameter or an empty string if none is defined
+       */
+      QString featureCount() const;
+
+      /** Returns FEATURE_COUNT as an integer. An exception is raised if an invalid
+       *  parameter is found.
+       * \returns FeatureCount
+       * \throws QgsBadRequestException
+       */
+      int featureCountAsInt() const;
 
       /** Returns SCALE parameter or an empty string if none is defined
        * \returns SCALE parameter or an empty string if none is defined
@@ -594,6 +698,19 @@ namespace QgsWms
        * \throws QgsBadRequestException
        */
       QList<QColor> highlightLabelBufferColorAsColor() const;
+
+      /** Returns WMS_PRECISION parameter or an empty string if not defined.
+       * \returns wms precision parameter
+       */
+      QString wmsPrecision() const;
+
+      /** Returns WMS_PRECISION parameter as an int or its default value if not
+       *  defined. An exception is raised if WMS_PRECISION is defined and cannot be
+       *  converted.
+       * \returns wms precision parameter
+       * \throws QgsBadRequestException
+       */
+      int wmsPrecisionAsInt() const;
 
     private:
       QString name( ParameterName name ) const;

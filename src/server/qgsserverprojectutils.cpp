@@ -117,6 +117,77 @@ bool QgsServerProjectUtils::wmsInfoFormatSia2045( const QgsProject &project )
   return false;
 }
 
+bool QgsServerProjectUtils::wmsFeatureInfoAddWktGeometry( const QgsProject &project )
+{
+  QString wktGeom = project.readEntry( QStringLiteral( "WMSAddWktGeometry" ), QStringLiteral( "/" ), "" );
+
+  if ( wktGeom.compare( QLatin1String( "enabled" ), Qt::CaseInsensitive ) == 0
+       || wktGeom.compare( QLatin1String( "true" ), Qt::CaseInsensitive ) == 0 )
+  {
+    return true;
+  }
+  return false;
+}
+
+bool QgsServerProjectUtils::wmsFeatureInfoSegmentizeWktGeometry( const QgsProject &project )
+{
+  QString segmGeom = project.readEntry( QStringLiteral( "WMSSegmentizeFeatureInfoGeometry" ), QStringLiteral( "/" ), "" );
+
+  if ( segmGeom.compare( QLatin1String( "enabled" ), Qt::CaseInsensitive ) == 0
+       || segmGeom.compare( QLatin1String( "true" ), Qt::CaseInsensitive ) == 0 )
+  {
+    return true;
+  }
+  return false;
+}
+
+int QgsServerProjectUtils::wmsFeatureInfoPrecision( const QgsProject &project )
+{
+  return project.readNumEntry( QStringLiteral( "WMSPrecision" ), QStringLiteral( "/" ), 6 );
+}
+
+QString QgsServerProjectUtils::wmsFeatureInfoDocumentElement( const QgsProject &project )
+{
+  return project.readEntry( QStringLiteral( "WMSFeatureInfoDocumentElement" ), QStringLiteral( "/" ), "" );
+}
+
+QString QgsServerProjectUtils::wmsFeatureInfoDocumentElementNs( const QgsProject &project )
+{
+  return project.readEntry( QStringLiteral( "WMSFeatureInfoDocumentElementNS" ), QStringLiteral( "/" ), "" );
+}
+
+QString QgsServerProjectUtils::wmsFeatureInfoSchema( const QgsProject &project )
+{
+  return project.readEntry( QStringLiteral( "WMSFeatureInfoSchema" ), QStringLiteral( "/" ), "" );
+}
+
+QHash<QString, QString> QgsServerProjectUtils::wmsFeatureInfoLayerAliasMap( const QgsProject &project )
+{
+  QHash<QString, QString> aliasMap;
+
+  //WMSFeatureInfoAliasLayers
+  QStringList aliasLayerStringList = project.readListEntry( QStringLiteral( "WMSFeatureInfoAliasLayers" ), QStringLiteral( "/value" ), QStringList() );
+  if ( aliasLayerStringList.isEmpty() )
+  {
+    return aliasMap;
+  }
+
+  //WMSFeatureInfoLayerAliases
+  QStringList layerAliasStringList = project.readListEntry( QStringLiteral( "WMSFeatureInfoLayerAliases" ), QStringLiteral( "/value" ), QStringList() );
+  if ( layerAliasStringList.isEmpty() )
+  {
+    return aliasMap;
+  }
+
+  int nMapEntries = qMin( aliasLayerStringList.size(), layerAliasStringList.size() );
+  for ( int i = 0; i < nMapEntries; ++i )
+  {
+    aliasMap.insert( aliasLayerStringList.at( i ), layerAliasStringList.at( i ) );
+  }
+
+  return aliasMap;
+}
+
 bool QgsServerProjectUtils::wmsInspireActivate( const QgsProject &project )
 {
   return project.readBoolEntry( QStringLiteral( "WMSInspire" ), QStringLiteral( "/activated" ) );

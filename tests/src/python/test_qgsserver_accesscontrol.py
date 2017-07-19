@@ -454,6 +454,33 @@ class TestQgsServerAccessControl(unittest.TestCase):
             "No color in result of GetFeatureInfo\n%s" % response)
 
         response, headers = self._get_restricted(query_string)
+        self.assertEqual(
+            headers.get("Content-Type"), "text/xml; charset=utf-8",
+            "Content type for GetFeatureInfo is wrong: %s" % headers.get("Content-Type"))
+        self.assertTrue(
+            str(response).find('<ServiceException code="Security">') != -1,
+            "Not allowed do a GetFeatureInfo on Country"
+        )
+
+        query_string = "&".join(["%s=%s" % i for i in list({
+            "MAP": urllib.parse.quote(self.projectPath),
+            "SERVICE": "WMS",
+            "VERSION": "1.1.1",
+            "REQUEST": "GetFeatureInfo",
+            "LAYERS": "Hello",
+            "QUERY_LAYERS": "Hello",
+            "STYLES": "",
+            "FORMAT": "image/png",
+            "BBOX": "-16817707,-6318936.5,5696513,16195283.5",
+            "HEIGHT": "500",
+            "WIDTH": "500",
+            "SRS": "EPSG:3857",
+            "FEATURE_COUNT": "10",
+            "INFO_FORMAT": "application/vnd.ogc.gml",
+            "X": "56",
+            "Y": "144"
+        }.items())])
+        response, headers = self._get_restricted(query_string)
         self.assertTrue(
             str(response).find("<qgs:pk>1</qgs:pk>") != -1,
             "No result in GetFeatureInfo\n%s" % response)
@@ -1053,6 +1080,33 @@ class TestQgsServerAccessControl(unittest.TestCase):
             str(response).find("<qgs:pk>1</qgs:pk>") != -1,
             "No good result in GetFeatureInfo Hello/1\n%s" % response)
 
+        response, headers = self._get_restricted(query_string)
+        self.assertEqual(
+            headers.get("Content-Type"), "text/xml; charset=utf-8",
+            "Content type for GetFeatureInfo is wrong: %s" % headers.get("Content-Type"))
+        self.assertTrue(
+            str(response).find('<ServiceException code="Security">') != -1,
+            "Not allowed do a GetFeatureInfo on Country"
+        )
+
+        query_string = "&".join(["%s=%s" % i for i in list({
+            "SERVICE": "WMS",
+            "VERSION": "1.1.1",
+            "REQUEST": "GetFeatureInfo",
+            "LAYERS": "Hello_SubsetString",
+            "QUERY_LAYERS": "Hello_SubsetString",
+            "STYLES": "",
+            "FORMAT": "image/png",
+            "BBOX": "-16817707,-6318936.5,5696513,16195283.5",
+            "HEIGHT": "500",
+            "WIDTH": "500",
+            "SRS": "EPSG:3857",
+            "FEATURE_COUNT": "10",
+            "INFO_FORMAT": "application/vnd.ogc.gml",
+            "X": "56",
+            "Y": "144",
+            "MAP": urllib.parse.quote(self.projectPath)
+        }.items())])
         response, headers = self._get_restricted(query_string)
         self.assertTrue(
             str(response).find("<qgs:pk>") != -1,
