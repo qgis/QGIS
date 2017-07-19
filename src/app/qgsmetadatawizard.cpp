@@ -471,6 +471,7 @@ QStringList QgsMetadataWizard::parseLanguages()
   }
 
   QStringList wordList;
+  wordList.append( "" );
   // Skip the first line of the CSV
   file.readLine();
   while ( !file.atEnd() )
