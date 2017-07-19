@@ -279,7 +279,7 @@
    <item row="0" column="0">
     <widget class="QCheckBox" name="mCheckBoxNoProjection">
      <property name="toolTip">
-      <string>Use this option to treat all coordinates as cartesian coordinates in an unknown reference system.</string>
+      <string>Use this option to treat all coordinates as Cartesian coordinates in an unknown reference system.</string>
      </property>
      <property name="text">
       <string>No projection (or unknown/non-Earth projection)</string>

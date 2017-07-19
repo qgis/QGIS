@@ -65,14 +65,14 @@ void QgsCodeEditorPython::setSciLexerPython()
 
   if ( mAPISFilesList.isEmpty() )
   {
-    mPapFile = QgsApplication::pkgDataPath() + "/python/qsci_apis/pyqgis.pap";
+    mPapFile = QgsApplication::pkgDataPath() + QStringLiteral( "/python/qsci_apis/pyqgis.pap" );
     apis->loadPrepared( mPapFile );
   }
   else if ( mAPISFilesList.length() == 1 && mAPISFilesList[0].right( 3 ) == QLatin1String( "pap" ) )
   {
     if ( !QFileInfo::exists( mAPISFilesList[0] ) )
     {
-      QgsDebugMsg( QString( "The apis file %1 not found" ).arg( mAPISFilesList.at( 0 ) ) );
+      QgsDebugMsg( QStringLiteral( "The apis file %1 not found" ).arg( mAPISFilesList.at( 0 ) ) );
       return;
     }
     mPapFile = mAPISFilesList[0];

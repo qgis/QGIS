@@ -6,10 +6,6 @@
 ##INPUT_LAYER=vector
 ##OUTPUT_LAYER=vectorDestination
 
-#outputs
-
-##OUTPUT_LAYER=output outputVector
-
 import processing
 
 result = processing.run("qgis:selectbyattribute",

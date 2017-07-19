@@ -95,7 +95,7 @@ QgsGeometry QgsInternalGeometryEngine::extrude( double x, double y ) const
 
 
 // polylabel implementation
-// ported from the original Javascript implementation developed by Vladimir Agafonkin
+// ported from the original JavaScript implementation developed by Vladimir Agafonkin
 // originally licensed under the ISC License
 
 /// @cond PRIVATE
@@ -155,25 +155,10 @@ Cell *getCentroidCell( const QgsPolygonV2 *polygon )
     return new Cell( x / area, y / area, 0.0, polygon );
 }
 
-///@endcond
-
-QgsGeometry QgsInternalGeometryEngine::poleOfInaccessibility( double precision, double *distanceFromBoundary ) const
+QgsPoint surfacePoleOfInaccessibility( const QgsSurface *surface, double precision, double &distanceFromBoundary )
 {
-  if ( distanceFromBoundary )
-    *distanceFromBoundary = DBL_MAX;
-
-  if ( !mGeometry || mGeometry->isEmpty() )
-    return QgsGeometry();
-
-  if ( precision <= 0 )
-    return QgsGeometry();
-
-  const QgsSurface *surface = dynamic_cast< const QgsSurface * >( mGeometry );
-  if ( !surface )
-    return QgsGeometry();
-
   std::unique_ptr< QgsPolygonV2 > segmentizedPoly;
-  const QgsPolygonV2 *polygon = dynamic_cast< const QgsPolygonV2 * >( mGeometry );
+  const QgsPolygonV2 *polygon = dynamic_cast< const QgsPolygonV2 * >( surface );
   if ( !polygon )
   {
     segmentizedPoly.reset( static_cast< QgsPolygonV2 *>( surface->segmentize() ) );
@@ -187,7 +172,7 @@ QgsGeometry QgsInternalGeometryEngine::poleOfInaccessibility( double precision, 
   double cellSize = qMin( bounds.width(), bounds.height() );
 
   if ( qgsDoubleNear( cellSize, 0.0 ) )
-    return QgsGeometry( new QgsPoint( bounds.xMinimum(), bounds.yMinimum() ) );
+    return QgsPoint( bounds.xMinimum(), bounds.yMinimum() );
 
   double h = cellSize / 2.0;
   std::priority_queue< Cell *, std::vector<Cell *>, GreaterThanByMax > cellQueue;
@@ -238,15 +223,70 @@ QgsGeometry QgsInternalGeometryEngine::poleOfInaccessibility( double precision, 
     cellQueue.push( new Cell( currentCell->x + h, currentCell->y + h, h, polygon ) );
   }
 
-  if ( distanceFromBoundary )
-    *distanceFromBoundary = bestCell->d;
+  distanceFromBoundary = bestCell->d;
 
-  return QgsGeometry( new QgsPoint( bestCell->x, bestCell->y ) );
+  return QgsPoint( bestCell->x, bestCell->y );
+}
+
+///@endcond
+
+QgsGeometry QgsInternalGeometryEngine::poleOfInaccessibility( double precision, double *distanceFromBoundary ) const
+{
+  if ( distanceFromBoundary )
+    *distanceFromBoundary = DBL_MAX;
+
+  if ( !mGeometry || mGeometry->isEmpty() )
+    return QgsGeometry();
+
+  if ( precision <= 0 )
+    return QgsGeometry();
+
+  if ( const QgsGeometryCollection *gc = dynamic_cast< const QgsGeometryCollection *>( mGeometry ) )
+  {
+    int numGeom = gc->numGeometries();
+    double maxDist = 0;
+    QgsPoint bestPoint;
+    bool found = false;
+    for ( int i = 0; i < numGeom; ++i )
+    {
+      const QgsSurface *surface = dynamic_cast< const QgsSurface * >( gc->geometryN( i ) );
+      if ( !surface )
+        continue;
+
+      found = true;
+      double dist = DBL_MAX;
+      QgsPoint p = surfacePoleOfInaccessibility( surface, precision, dist );
+      if ( dist > maxDist )
+      {
+        maxDist = dist;
+        bestPoint = p;
+      }
+    }
+
+    if ( !found )
+      return QgsGeometry();
+
+    if ( distanceFromBoundary )
+      *distanceFromBoundary = maxDist;
+    return QgsGeometry( new QgsPoint( bestPoint ) );
+  }
+  else
+  {
+    const QgsSurface *surface = dynamic_cast< const QgsSurface * >( mGeometry );
+    if ( !surface )
+      return QgsGeometry();
+
+    double dist = DBL_MAX;
+    QgsPoint p = surfacePoleOfInaccessibility( surface, precision, dist );
+    if ( distanceFromBoundary )
+      *distanceFromBoundary = dist;
+    return QgsGeometry( new QgsPoint( p ) );
+  }
 }
 
 
 // helpers for orthogonalize
-// adapted from original code in potlach/id osm editor
+// adapted from original code in potlatch/id osm editor
 
 bool dotProductWithinAngleTolerance( double dotProduct, double lowerThreshold, double upperThreshold )
 {

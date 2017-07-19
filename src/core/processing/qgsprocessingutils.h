@@ -29,6 +29,7 @@ class QgsProject;
 class QgsProcessingContext;
 class QgsMapLayerStore;
 class QgsProcessingFeedback;
+class QgsProcessingFeatureSource;
 
 #include <QString>
 #include <QVariant>
@@ -94,6 +95,19 @@ class CORE_EXPORT QgsProcessingUtils
      * Ownership of the layer remains with the \a context or the context's current project.
      */
     static QgsMapLayer *mapLayerFromString( const QString &string, QgsProcessingContext &context, bool allowLoadingNewLayers = true );
+
+    /**
+     * Converts a variant \a value to a new feature source.
+     *
+     * Sources will either be taken from \a context's active project, or loaded from external
+     * sources and stored temporarily in the \a context.
+     *
+     * The optional \a fallbackValue can be used to specify a "default" value which is used
+     * if \a value cannot be successfully converted to a source.
+     *
+     * This function creates a new object and the caller takes responsibility for deleting the returned object.
+     */
+    static QgsProcessingFeatureSource *variantToSource( const QVariant &value, QgsProcessingContext &context, const QVariant &fallbackValue = QVariant() ) SIP_FACTORY;
 
     /**
      * Normalizes a layer \a source string for safe comparison across different
@@ -282,6 +296,9 @@ class CORE_EXPORT QgsProcessingFeatureSource : public QgsFeatureSource
     QgsWkbTypes::Type wkbType() const override;
     long featureCount() const override;
     QString sourceName() const override;
+    QSet<QVariant> uniqueValues( int fieldIndex, int limit = -1 ) const override;
+    QVariant minimumValue( int fieldIndex ) const override;
+    QVariant maximumValue( int fieldIndex ) const override;
 
   private:
 

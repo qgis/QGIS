@@ -41,6 +41,7 @@ from qgis.core import (QgsApplication,
                        QgsFeature,
                        QgsPointXY,
                        QgsMessageLog,
+                       QgsProject,
                        QgsProcessingUtils)
 
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
@@ -97,6 +98,9 @@ class RandomPointsAlongLines(QgisAlgorithm):
         points = dict()
 
         da = QgsDistanceArea()
+        da.setSourceCrs(layer.sourceCrs())
+        da.setEllipsoid(QgsProject.instance().ellipsoid())
+
         request = QgsFeatureRequest()
 
         random.seed()

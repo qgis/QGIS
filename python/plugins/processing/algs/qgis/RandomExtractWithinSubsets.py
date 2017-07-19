@@ -28,18 +28,15 @@ __revision__ = '$Format:%H$'
 
 import random
 
-from qgis.core import (QgsApplication,
-                       QgsFeatureSink,
-                       QgsProcessingUtils,
+from qgis.core import (QgsFeatureSink,
+                       QgsProcessingException,
                        QgsProcessingParameterFeatureSource,
                        QgsProcessingParameterEnum,
                        QgsProcessingParameterField,
                        QgsProcessingParameterNumber,
-                       QgsProcessingParameterFeatureSink,
-                       QgsProcessingOutputVectorLayer)
+                       QgsProcessingParameterFeatureSink)
 from collections import defaultdict
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
-from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 
 
 class RandomExtractWithinSubsets(QgisAlgorithm):
@@ -74,7 +71,6 @@ class RandomExtractWithinSubsets(QgisAlgorithm):
                                                        10, False, 0.0, 999999999999.0))
 
         self.addParameter(QgsProcessingParameterFeatureSink(self.OUTPUT, self.tr('Extracted (random stratified)')))
-        self.addOutput(QgsProcessingOutputVectorLayer(self.OUTPUT, self.tr('Extracted (random stratified)')))
 
     def name(self):
         return 'randomextractwithinsubsets'
@@ -96,12 +92,12 @@ class RandomExtractWithinSubsets(QgisAlgorithm):
         value = self.parameterAsInt(parameters, self.NUMBER, context)
         if method == 0:
             if value > featureCount:
-                raise GeoAlgorithmExecutionException(
+                raise QgsProcessingException(
                     self.tr('Selected number is greater that feature count. '
                             'Choose lesser value and try again.'))
         else:
             if value > 100:
-                raise GeoAlgorithmExecutionException(
+                raise QgsProcessingException(
                     self.tr("Percentage can't be greater than 100. Set "
                             "correct value and try again."))
             value = value / 100.0

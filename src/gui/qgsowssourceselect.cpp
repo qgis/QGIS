@@ -55,14 +55,13 @@
 #include <QNetworkReply>
 
 QgsOWSSourceSelect::QgsOWSSourceSelect( const QString &service, QWidget *parent, Qt::WindowFlags fl, QgsProviderRegistry::WidgetMode widgetMode )
-  : QDialog( parent, fl )
+  : QgsAbstractDataSourceWidget( parent, fl, widgetMode )
   , mService( service )
-  , mWidgetMode( widgetMode )
   , mCurrentTileset( nullptr )
 {
   setupUi( this );
 
-  if ( mWidgetMode != QgsProviderRegistry::WidgetMode::None )
+  if ( QgsAbstractDataSourceWidget::widgetMode( ) != QgsProviderRegistry::WidgetMode::None )
   {
     buttonBox->removeButton( buttonBox->button( QDialogButtonBox::Close ) );
   }
@@ -89,7 +88,7 @@ QgsOWSSourceSelect::QgsOWSSourceSelect( const QString &service, QWidget *parent,
   // 'Prefer network' is the default noted in the combobox's tool tip
   mCacheComboBox->setCurrentIndex( mCacheComboBox->findData( QNetworkRequest::PreferNetwork ) );
 
-  if ( mWidgetMode != QgsProviderRegistry::WidgetMode::Manager )
+  if ( QgsAbstractDataSourceWidget::widgetMode( ) != QgsProviderRegistry::WidgetMode::Manager )
   {
     connect( mAddButton, &QAbstractButton::clicked, this, &QgsOWSSourceSelect::addClicked );
     //set the current project CRS if available
@@ -124,6 +123,11 @@ QgsOWSSourceSelect::~QgsOWSSourceSelect()
   QgsSettings settings;
   QgsDebugMsg( "saving geometry" );
   settings.setValue( QStringLiteral( "Windows/WMSSourceSelect/geometry" ), saveGeometry() );
+}
+
+void QgsOWSSourceSelect::refresh()
+{
+  populateConnectionList();
 }
 
 void QgsOWSSourceSelect::clearFormats()

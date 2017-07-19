@@ -37,6 +37,7 @@ except ImportError:
 
 from qgis.core import (QgsApplication,
                        QgsProcessingAlgorithm,
+                       QgsProcessingParameterEnum,
                        QgsProcessingParameterFeatureSink,
                        QgsProcessingParameterVectorDestination,
                        QgsProcessingParameterRasterDestination,
@@ -47,30 +48,37 @@ from processing.core.parameters import ParameterSelection
 from processing.gui.Postprocessing import handleAlgorithmResults
 
 
-def algorithmOptions(id):
-    """Prints all algorithm options with their values.
-    """
-    alg = QgsApplication.processingRegistry().createAlgorithmById(id)
-    if alg is not None:
-        opts = ''
-        for param in alg.parameterDefinitions():
-            if isinstance(param, ParameterSelection):
-                opts += '{} ({})\n'.format(param.name(), param.description())
-                for option in enumerate(param.options):
-                    opts += '\t{} - {}\n'.format(option[0], option[1])
-        print(opts)
-    else:
-        print('Algorithm "{}" not found.'.format(id))
-
-
 def algorithmHelp(id):
     """Prints algorithm parameters with their types. Also
     provides information about options if any.
     """
-    alg = QgsApplication.processingRegistry().createAlgorithmById(id)
+    alg = QgsApplication.processingRegistry().algorithmById(id)
     if alg is not None:
-        print(str(alg))
-        algorithmOptions(id)
+        print('{} ({})\n'.format(alg.displayName(), alg.id()))
+        print(alg.shortHelpString())
+        print('\n----------------')
+        print('Input parameters')
+        print('----------------')
+        for p in alg.parameterDefinitions():
+            print('\n{}:  <{}>'.format(p.name(), p.__class__.__name__))
+            if p.description():
+                print('\t' + p.description())
+
+            if isinstance(p, QgsProcessingParameterEnum):
+                opts = []
+                for i, o in enumerate(p.options()):
+                    opts.append('\t\t{} - {}'.format(i, o))
+                print('\n'.join(opts))
+
+        print('\n----------------')
+        print('Outputs')
+        print('----------------')
+
+        for o in alg.outputDefinitions():
+            print('\n{}:  <{}>'.format(o.name(), o.__class__.__name__))
+            if o.description():
+                print('\t' + o.description())
+
     else:
         print('Algorithm "{}" not found.'.format(id))
 
@@ -105,11 +113,3 @@ def runAndLoadResults(algOrName, parameters, feedback=None, context=None):
                 parameters[param.name()] = p
 
     return Processing.runAlgorithm(alg, parameters=parameters, onFinish=handleAlgorithmResults, feedback=feedback, context=context)
-
-
-def version():
-    pluginPath = os.path.split(os.path.dirname(__file__))[0]
-    cfg = configparser.ConfigParser()
-    cfg.read(os.path.join(pluginPath, 'metadata.txt'))
-    ver = cfg.get('general', 'version').split('.')
-    return 10000 * int(ver[0]) + 100 * int(ver[1]) + int(ver[2])

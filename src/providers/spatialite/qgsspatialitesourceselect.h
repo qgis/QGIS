@@ -22,6 +22,7 @@
 #include "qgsspatialitetablemodel.h"
 #include "qgshelp.h"
 #include "qgsproviderregistry.h"
+#include "qgsabstractdatasourcewidget.h"
 
 #include <QThread>
 #include <QMap>
@@ -41,7 +42,7 @@ class QPushButton;
  * for SpatiaLite/SQLite databases. The user can then connect and add
  * tables from the database to the map canvas.
  */
-class QgsSpatiaLiteSourceSelect: public QDialog, private Ui::QgsDbSourceSelectBase
+class QgsSpatiaLiteSourceSelect: public QgsAbstractDataSourceWidget, private Ui::QgsDbSourceSelectBase
 {
     Q_OBJECT
 
@@ -51,7 +52,7 @@ class QgsSpatiaLiteSourceSelect: public QDialog, private Ui::QgsDbSourceSelectBa
     static bool newConnection( QWidget *parent );
 
     //! Constructor
-    QgsSpatiaLiteSourceSelect( QWidget *parent, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::None );
+    QgsSpatiaLiteSourceSelect( QWidget *parent = nullptr, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::None );
 
     ~QgsSpatiaLiteSourceSelect();
     //! Populate the connection list combo box
@@ -66,6 +67,9 @@ class QgsSpatiaLiteSourceSelect: public QDialog, private Ui::QgsDbSourceSelectBa
     void dbChanged();
 
   public slots:
+
+    //! Triggered when the provider's connections need to be refreshed
+    void refresh( ) override;
 
     /** Connects to the database using the stored connection parameters.
      * Once connected, available layers are displayed.
@@ -93,10 +97,6 @@ class QgsSpatiaLiteSourceSelect: public QDialog, private Ui::QgsDbSourceSelectBa
     void setSearchExpression( const QString &regexp );
 
     void on_buttonBox_helpRequested() { QgsHelp::openHelp( QStringLiteral( "working_with_vector/supported_data.html#spatialite-layers" ) ); }
-
-  signals:
-    void connectionsChanged();
-    void addDatabaseLayers( QStringList const &paths, QString const &providerKey );
 
   private:
     enum Columns
@@ -130,7 +130,6 @@ class QgsSpatiaLiteSourceSelect: public QDialog, private Ui::QgsDbSourceSelectBa
     QPushButton *mBuildQueryButton = nullptr;
     QPushButton *mAddButton = nullptr;
     QPushButton *mStatsButton = nullptr;
-    QgsProviderRegistry::WidgetMode mWidgetMode = QgsProviderRegistry::WidgetMode::None;
 };
 
 #endif // QGSSPATIALITESOURCESELECT_H

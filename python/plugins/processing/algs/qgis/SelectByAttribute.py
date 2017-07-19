@@ -25,17 +25,15 @@ __copyright__ = '(C) 2010, Michael Minn'
 
 __revision__ = '$Format:%H$'
 
-from qgis.core import (QgsApplication)
 from qgis.PyQt.QtCore import QVariant
 from qgis.core import (QgsExpression,
-                       QgsProcessingUtils,
+                       QgsProcessingException,
                        QgsProcessingParameterVectorLayer,
                        QgsProcessingParameterField,
                        QgsProcessingParameterEnum,
                        QgsProcessingParameterString,
                        QgsProcessingOutputVectorLayer)
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
-from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 
 
 class SelectByAttribute(QgisAlgorithm):
@@ -114,7 +112,7 @@ class SelectByAttribute(QgisAlgorithm):
 
         if fieldType != QVariant.String and operator in self.STRING_OPERATORS:
             op = ''.join(['"%s", ' % o for o in self.STRING_OPERATORS])
-            raise GeoAlgorithmExecutionException(
+            raise QgsProcessingException(
                 self.tr('Operators {0} can be used only with string fields.').format(op))
 
         field_ref = QgsExpression.quotedColumnRef(fieldName)
@@ -134,7 +132,7 @@ class SelectByAttribute(QgisAlgorithm):
 
         expression = QgsExpression(expression_string)
         if expression.hasParserError():
-            raise GeoAlgorithmExecutionException(expression.parserErrorString())
+            raise QgsProcessingException(expression.parserErrorString())
 
         layer.selectByExpression(expression_string)
         return {self.OUTPUT: parameters[self.INPUT]}

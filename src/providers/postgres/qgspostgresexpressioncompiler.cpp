@@ -191,6 +191,7 @@ QgsSqlExpressionCompiler::Result QgsPostgresExpressionCompiler::compileNode( con
         return Complete;
       }
 #endif
+      FALLTHROUGH;
     }
 
     default:

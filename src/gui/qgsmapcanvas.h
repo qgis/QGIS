@@ -586,6 +586,9 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     //! called when a renderer job has finished successfully or when it was canceled
     void rendererJobFinished();
 
+    //! called when a preview job has been finished
+    void previewJobFinished();
+
     void mapUpdateTimeout();
 
     void refreshMap();
@@ -729,6 +732,7 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
      */
     void connectNotify( const char *signal ) override;
 #endif
+
     //! Make sure the datum transform store is properly populated
     void updateDatumTransformEntries();
 
@@ -813,12 +817,15 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     QgsMapRendererCache *mCache = nullptr;
 
     QTimer *mResizeTimer = nullptr;
+    QTimer *mRefreshTimer = nullptr;
 
     QgsPreviewEffect *mPreviewEffect = nullptr;
 
     QgsRectangle imageRect( const QImage &img, const QgsMapSettings &mapSettings );
 
     QgsSnappingUtils *mSnappingUtils = nullptr;
+
+    QList< QgsMapRendererQImageJob * > mPreviewJobs;
 
     //! lock the scale, so zooming can be performed using magnication
     bool mScaleLocked;
@@ -867,6 +874,9 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     bool boundingBoxOfFeatureIds( const QgsFeatureIds &ids, QgsVectorLayer *layer, QgsRectangle &bbox, QString &errorMsg ) const;
 
     void setLayersPrivate( const QList<QgsMapLayer *> &layers );
+
+    void startPreviewJobs();
+    void stopPreviewJobs();
 
     friend class TestQgsMapCanvas;
 

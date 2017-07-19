@@ -525,10 +525,6 @@ QVector<QgsDataItem *> QgsGrassMapsetItem::createChildren()
     {
       topoError = tr( "topology version 6" );
     }
-    else if ( topoMinor == 1 &&  GRASS_VERSION_MAJOR < 7 )
-    {
-      topoError = tr( "topology version 7" );
-    }
 
     if ( !topoError.isEmpty() )
     {

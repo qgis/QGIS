@@ -19,6 +19,9 @@
 #include "qgseditorwidgetregistry.h"
 #include "qgslayertreeembeddedwidgetregistry.h"
 #include "qgsmaplayeractionregistry.h"
+#include "qgslayoutitemregistry.h"
+#include "qgslayoutitemguiregistry.h"
+#include "qgslayoutviewrubberband.h"
 #ifdef Q_OS_MACX
 #include "qgsmacnative.h"
 #else
@@ -57,8 +60,14 @@ QgsMapLayerActionRegistry *QgsGui::mapLayerActionRegistry()
   return instance()->mMapLayerActionRegistry;
 }
 
+QgsLayoutItemGuiRegistry *QgsGui::layoutItemGuiRegistry()
+{
+  return instance()->mLayoutItemGuiRegistry;
+}
+
 QgsGui::~QgsGui()
 {
+  delete mLayoutItemGuiRegistry;
   delete mLayerTreeEmbeddedWidgetRegistry;
   delete mEditorWidgetRegistry;
   delete mMapLayerActionRegistry;
@@ -78,4 +87,6 @@ QgsGui::QgsGui()
   mShortcutsManager = new QgsShortcutsManager();
   mLayerTreeEmbeddedWidgetRegistry = new QgsLayerTreeEmbeddedWidgetRegistry();
   mMapLayerActionRegistry = new QgsMapLayerActionRegistry();
+  mLayoutItemGuiRegistry = new QgsLayoutItemGuiRegistry();
+  mLayoutItemGuiRegistry->populate();
 }

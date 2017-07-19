@@ -82,6 +82,21 @@ class GUI_EXPORT QgsDateTimeEdit : public QDateTimeEdit
     QLineEdit *mNullLabel = nullptr;
     QToolButton *mClearButton = nullptr;
 
+    /** Set the lowest Date that can be displayed with the Qt::ISODate format
+     *  - uses QDateTimeEdit::setMinimumDateTime (since Qt 4.4)
+     * \note
+     *  - QDate and QDateTime does not support minus years for the Qt::ISODate format
+     *  -> returns empty (toString) or invalid (fromString) values
+     *  - QDateTimeEdit::setMinimumDateTime does not support dates < '0100-01-01'
+     *  -> it is not for us to wonder why [defined in qdatetimeparser_p.h]
+    * \since QGIS 3.0
+    * \note not available in Python bindings
+    */
+    void setMinimumEditDateTime()
+    {
+      setMinimumDateTime( QDateTime::fromString( "0100-01-01", Qt::ISODate ) );
+    }
+
 };
 
 #endif // QGSDATETIMEEDIT_H

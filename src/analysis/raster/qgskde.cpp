@@ -14,7 +14,8 @@
  ***************************************************************************/
 
 #include "qgskde.h"
-#include "qgsvectorlayer.h"
+#include "qgsfeaturesource.h"
+#include "qgsfeatureiterator.h"
 #include "qgsgeometry.h"
 
 #define NO_DATA -9999
@@ -24,7 +25,7 @@
 #endif
 
 QgsKernelDensityEstimation::QgsKernelDensityEstimation( const QgsKernelDensityEstimation::Parameters &parameters, const QString &outputFile, const QString &outputFormat )
-  : mInputLayer( parameters.vectorLayer )
+  : mSource( parameters.source )
   , mOutputFile( outputFile )
   , mOutputFormat( outputFormat )
   , mRadiusField( -1 )
@@ -39,9 +40,9 @@ QgsKernelDensityEstimation::QgsKernelDensityEstimation( const QgsKernelDensityEs
   , mRasterBandH( nullptr )
 {
   if ( !parameters.radiusField.isEmpty() )
-    mRadiusField = mInputLayer->fields().lookupField( parameters.radiusField );
+    mRadiusField = mSource->fields().lookupField( parameters.radiusField );
   if ( !parameters.weightField.isEmpty() )
-    mWeightField = mInputLayer->fields().lookupField( parameters.weightField );
+    mWeightField = mSource->fields().lookupField( parameters.weightField );
 }
 
 QgsKernelDensityEstimation::Result QgsKernelDensityEstimation::run()
@@ -58,7 +59,7 @@ QgsKernelDensityEstimation::Result QgsKernelDensityEstimation::run()
   if ( mWeightField >= 0 )
     requiredAttributes << mWeightField;
 
-  QgsFeatureIterator fit = mInputLayer->getFeatures( QgsFeatureRequest().setSubsetOfAttributes( requiredAttributes ) );
+  QgsFeatureIterator fit = mSource->getFeatures( QgsFeatureRequest().setSubsetOfAttributes( requiredAttributes ) );
 
   QgsFeature f;
   while ( fit.nextFeature( f ) )
@@ -79,7 +80,7 @@ QgsKernelDensityEstimation::Result QgsKernelDensityEstimation::prepare()
     return DriverError;
   }
 
-  if ( !mInputLayer )
+  if ( !mSource )
     return InvalidParameters;
 
   mBounds = calculateBounds();
@@ -235,7 +236,7 @@ bool QgsKernelDensityEstimation::createEmptyLayer( GDALDriverH driver, const Qgs
     return false;
 
   // Set the projection on the raster destination to match the input layer
-  if ( GDALSetProjection( emptyDataset, mInputLayer->crs().toWkt().toLocal8Bit().data() ) != CE_None )
+  if ( GDALSetProjection( emptyDataset, mSource->sourceCrs().toWkt().toLocal8Bit().data() ) != CE_None )
     return false;
 
   GDALRasterBandH poBand = GDALGetRasterBand( emptyDataset, 1 );
@@ -399,16 +400,16 @@ double QgsKernelDensityEstimation::triangularKernel( const double distance, cons
 
 QgsRectangle QgsKernelDensityEstimation::calculateBounds() const
 {
-  if ( !mInputLayer )
+  if ( !mSource )
     return QgsRectangle();
 
-  QgsRectangle bbox = mInputLayer->extent();
+  QgsRectangle bbox = mSource->sourceExtent();
 
   double radius = 0;
   if ( mRadiusField >= 0 )
   {
     // if radius is using a field, find the max value
-    radius = mInputLayer->maximumValue( mRadiusField ).toDouble();
+    radius = mSource->maximumValue( mRadiusField ).toDouble();
   }
   else
   {

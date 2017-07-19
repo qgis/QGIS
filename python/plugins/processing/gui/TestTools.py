@@ -239,7 +239,7 @@ def createTest(text):
 
     definition['params'] = params
 
-    for i, out in enumerate([out for out in alg.destinationParameterDefinitions() if not out.flags() & QgsProcessingParameterDefinition.FlagHiddenn]):
+    for i, out in enumerate([out for out in alg.destinationParameterDefinitions() if not out.flags() & QgsProcessingParameterDefinition.FlagHidden]):
         token = tokens[i - len(alg.destinationParameterDefinitions())]
 
         if isinstance(out, (OutputNumber, OutputString)):

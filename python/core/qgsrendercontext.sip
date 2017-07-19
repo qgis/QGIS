@@ -101,6 +101,13 @@ class QgsRenderContext
  :rtype: QgsCoordinateTransform
 %End
 
+    const QgsDistanceArea &distanceArea() const;
+%Docstring
+ A general purpose distance and area calculator, capable of performing ellipsoid based calculations.
+.. versionadded:: 3.0
+ :rtype: QgsDistanceArea
+%End
+
     const QgsRectangle &extent() const;
 %Docstring
  :rtype: QgsRectangle
@@ -181,6 +188,13 @@ Sets coordinate transformation.
     void setDrawEditingInformation( bool b );
 
     void setRenderingStopped( bool stopped );
+
+    void setDistanceArea( const QgsDistanceArea distanceArea );
+%Docstring
+ A general purpose distance and area calculator, capable of performing ellipsoid based calculations.
+ Will be used to convert meter distances to active MapUnit values for QgsUnitTypes.RenderMetersInMapUnits
+.. versionadded:: 3.0
+%End
 
     void setScaleFactor( double factor );
 %Docstring
@@ -324,6 +338,15 @@ Gets segmentation tolerance type (maximum angle or maximum difference between cu
  Converts a size from map units to the specified units.
 .. versionadded:: 3.0
 .. seealso:: convertToMapUnits()
+ :rtype: float
+%End
+
+    double convertMetersToMapUnits( double meters ) const;
+%Docstring
+ Convert meter distances to active MapUnit values for QgsUnitTypes.RenderMetersInMapUnits
+ \note
+ When the sourceCrs() is geographic, the center of the Extent will be used
+.. versionadded:: 3.0
  :rtype: float
 %End
 

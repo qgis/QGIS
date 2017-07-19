@@ -62,6 +62,30 @@ class TestQgsFeatureSource(unittest.TestCase):
         self.assertEqual(layer.dataProvider().uniqueValues(0), {'test', 'test2', 'test3', 'test4'})
         self.assertEqual(layer.dataProvider().uniqueValues(1), {1, 3, 3, 4})
 
+    def testMinValues(self):
+        """
+        Test retrieving min values using base class method
+        """
+
+        # memory provider uses base class method
+        layer = createLayerWithFivePoints()
+        self.assertFalse(layer.dataProvider().minimumValue(-1))
+        self.assertFalse(layer.dataProvider().minimumValue(100))
+        self.assertEqual(layer.dataProvider().minimumValue(0), 'test')
+        self.assertEqual(layer.dataProvider().minimumValue(1), 1)
+
+    def testMaxValues(self):
+        """
+        Test retrieving min values using base class method
+        """
+
+        # memory provider uses base class method
+        layer = createLayerWithFivePoints()
+        self.assertFalse(layer.dataProvider().maximumValue(-1))
+        self.assertFalse(layer.dataProvider().maximumValue(100))
+        self.assertEqual(layer.dataProvider().maximumValue(0), 'test4')
+        self.assertEqual(layer.dataProvider().maximumValue(1), 4)
+
 
 if __name__ == '__main__':
     unittest.main()

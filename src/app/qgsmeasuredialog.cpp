@@ -306,7 +306,7 @@ void QgsMeasureDialog::updateUi()
     if ( !mTool->canvas()->mapSettings().destinationCrs().isValid() )
     {
       // no CRS => no units, newb!
-      toolTip += "<br> * " + tr( "No map projection set, so area is calculated using cartesian calculations." );
+      toolTip += "<br> * " + tr( "No map projection set, so area is calculated using Cartesian calculations." );
       toolTip += "<br> * " + tr( "Units are unknown." );
       forceCartesian = true;
       convertToDisplayUnits = false;
@@ -315,7 +315,7 @@ void QgsMeasureDialog::updateUi()
               && ( mAreaUnits == QgsUnitTypes::AreaSquareDegrees || mAreaUnits == QgsUnitTypes::AreaUnknownUnit ) )
     {
       //both source and destination units are degrees
-      toolTip += "<br> * " + tr( "Both project CRS (%1) and measured area are in degrees, so area is calculated using cartesian calculations in square degrees." ).arg(
+      toolTip += "<br> * " + tr( "Both project CRS (%1) and measured area are in degrees, so area is calculated using Cartesian calculations in square degrees." ).arg(
                    mTool->canvas()->mapSettings().destinationCrs().description() );
       forceCartesian = true;
       convertToDisplayUnits = false; //not required since we will be measuring in degrees
@@ -376,7 +376,7 @@ void QgsMeasureDialog::updateUi()
     if ( !mTool->canvas()->mapSettings().destinationCrs().isValid() )
     {
       // no CRS => no units, newb!
-      toolTip += "<br> * " + tr( "No map projection set, so distance is calculated using cartesian calculations." );
+      toolTip += "<br> * " + tr( "No map projection set, so distance is calculated using Cartesian calculations." );
       toolTip += "<br> * " + tr( "Units are unknown." );
       forceCartesian = true;
       convertToDisplayUnits = false;
@@ -385,7 +385,7 @@ void QgsMeasureDialog::updateUi()
               && mDistanceUnits == QgsUnitTypes::DistanceDegrees )
     {
       //both source and destination units are degrees
-      toolTip += "<br> * " + tr( "Both project CRS (%1) and measured length are in degrees, so distance is calculated using cartesian calculations in degrees." ).arg(
+      toolTip += "<br> * " + tr( "Both project CRS (%1) and measured length are in degrees, so distance is calculated using Cartesian calculations in degrees." ).arg(
                    mTool->canvas()->mapSettings().destinationCrs().description() );
       forceCartesian = true;
       convertToDisplayUnits = false; //not required since we will be measuring in degrees
@@ -488,7 +488,7 @@ void QgsMeasureDialog::updateUi()
         double d = -1;
         if ( forceCartesian )
         {
-          //cartesian calculation forced
+          //Cartesian calculation forced
           d = sqrt( p2.sqrDist( p1 ) );
           mTotal += d;
         }

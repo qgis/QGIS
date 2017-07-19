@@ -22,6 +22,8 @@
 #include "qgsexpression.h"
 #include "qgsvectorlayer.h"
 #include "qgsfeaturefilterprovider.h"
+#include "qgslogger.h"
+#include "qgspoint.h"
 
 #define POINTS_TO_MM 2.83464567
 #define INCH_TO_MM 25.4
@@ -30,12 +32,16 @@ QgsRenderContext::QgsRenderContext()
   : mFlags( DrawEditingInfo | UseAdvancedEffects | DrawSelection | UseRenderingOptimization )
 {
   mVectorSimplifyMethod.setSimplifyHints( QgsVectorSimplifyMethod::NoSimplification );
+  // For RenderMetersInMapUnits support, when rendering in Degrees, the Ellipsoid must be set
+  // - for Previews/Icons the default Extent can be used
+  mDistanceArea.setEllipsoid( mDistanceArea.sourceCrs().ellipsoidAcronym() );
 }
 
 QgsRenderContext::QgsRenderContext( const QgsRenderContext &rh )
   : mFlags( rh.mFlags )
   , mPainter( rh.mPainter )
   , mCoordTransform( rh.mCoordTransform )
+  , mDistanceArea( rh.mDistanceArea )
   , mExtent( rh.mExtent )
   , mMapToPixel( rh.mMapToPixel )
   , mRenderingStopped( rh.mRenderingStopped )
@@ -70,6 +76,7 @@ QgsRenderContext &QgsRenderContext::operator=( const QgsRenderContext &rh )
   mFeatureFilterProvider.reset( rh.mFeatureFilterProvider ? rh.mFeatureFilterProvider->clone() : nullptr );
   mSegmentationTolerance = rh.mSegmentationTolerance;
   mSegmentationToleranceType = rh.mSegmentationToleranceType;
+  mDistanceArea = rh.mDistanceArea;
   return *this;
 }
 
@@ -132,7 +139,8 @@ QgsRenderContext QgsRenderContext::fromMapSettings( const QgsMapSettings &mapSet
   ctx.setExpressionContext( mapSettings.expressionContext() );
   ctx.setSegmentationTolerance( mapSettings.segmentationTolerance() );
   ctx.setSegmentationToleranceType( mapSettings.segmentationToleranceType() );
-
+  ctx.mDistanceArea.setSourceCrs( mapSettings.destinationCrs() );
+  ctx.mDistanceArea.setEllipsoid( mapSettings.ellipsoid() );
   //this flag is only for stopping during the current rendering progress,
   //so must be false at every new render operation
   ctx.setRenderingStopped( false );
@@ -229,6 +237,13 @@ double QgsRenderContext::convertToPainterUnits( double size, QgsUnitTypes::Rende
       conversionFactor = mScaleFactor * INCH_TO_MM;
       break;
 
+    case QgsUnitTypes::RenderMetersInMapUnits:
+    {
+      size = convertMetersToMapUnits( size );
+      unit = QgsUnitTypes::RenderMapUnits;
+      // Fall through to RenderMapUnits with size in meters converted to size in MapUnits
+      FALLTHROUGH;
+    }
     case QgsUnitTypes::RenderMapUnits:
     {
       double mup = scale.computeMapUnitsPerPixel( *this );
@@ -273,6 +288,12 @@ double QgsRenderContext::convertToMapUnits( double size, QgsUnitTypes::RenderUni
 
   switch ( unit )
   {
+    case QgsUnitTypes::RenderMetersInMapUnits:
+    {
+      size = convertMetersToMapUnits( size );
+      // Fall through to RenderMapUnits with values of meters converted to MapUnits
+      FALLTHROUGH;
+    }
     case QgsUnitTypes::RenderMapUnits:
     {
       // check scale
@@ -331,6 +352,10 @@ double QgsRenderContext::convertFromMapUnits( double sizeInMapUnits, QgsUnitType
 
   switch ( outputUnit )
   {
+    case QgsUnitTypes::RenderMetersInMapUnits:
+    {
+      return sizeInMapUnits / convertMetersToMapUnits( 1.0 );
+    }
     case QgsUnitTypes::RenderMapUnits:
     {
       return sizeInMapUnits;
@@ -358,4 +383,35 @@ double QgsRenderContext::convertFromMapUnits( double sizeInMapUnits, QgsUnitType
       return 0.0;
   }
   return 0.0;
+}
+
+double QgsRenderContext::convertMetersToMapUnits( double meters ) const
+{
+  switch ( mDistanceArea.sourceCrs().mapUnits() )
+  {
+    case QgsUnitTypes::DistanceMeters:
+      return meters;
+    case QgsUnitTypes::DistanceDegrees:
+    {
+      QgsPointXY pointCenter = mExtent.center();
+      // The Extent is in the sourceCrs(), when different from destinationCrs()
+      // - the point must be transformed, since DistanceArea uses the destinationCrs()
+      // Note: the default QgsCoordinateTransform() : authid() will return an empty String
+      if ( !mCoordTransform.isShortCircuited() )
+      {
+        pointCenter = mCoordTransform.transform( pointCenter );
+      }
+      return mDistanceArea.measureLineProjected( pointCenter, meters );
+    }
+    case QgsUnitTypes::DistanceKilometers:
+    case QgsUnitTypes::DistanceFeet:
+    case QgsUnitTypes::DistanceNauticalMiles:
+    case QgsUnitTypes::DistanceYards:
+    case QgsUnitTypes::DistanceMiles:
+    case QgsUnitTypes::DistanceCentimeters:
+    case QgsUnitTypes::DistanceMillimeters:
+    case QgsUnitTypes::DistanceUnknownUnit:
+      return ( meters * QgsUnitTypes::fromUnitToUnitFactor( QgsUnitTypes::DistanceMeters, mDistanceArea.sourceCrs().mapUnits() ) );
+  }
+  return meters;
 }

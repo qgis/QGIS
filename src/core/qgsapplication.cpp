@@ -1596,6 +1596,7 @@ QgsApplication::ApplicationMembers::ApplicationMembers()
   mProcessingRegistry = new QgsProcessingRegistry();
   mPageSizeRegistry = new QgsPageSizeRegistry();
   mLayoutItemRegistry = new QgsLayoutItemRegistry();
+  mLayoutItemRegistry->populate();
   mProcessingRegistry->addProvider( new QgsNativeAlgorithms( mProcessingRegistry ) );
   mAnnotationRegistry = new QgsAnnotationRegistry();
 }

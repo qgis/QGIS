@@ -134,7 +134,7 @@ void QgsPGConnectionItem::editConnection()
   {
     // the parent should be updated
     if ( mParent )
-      mParent->refresh();
+      mParent->refreshConnections();
   }
 }
 
@@ -148,13 +148,15 @@ void QgsPGConnectionItem::deleteConnection()
   QgsPostgresConn::deleteConnection( mName );
   // the parent should be updated
   if ( mParent )
-    mParent->refresh();
+    mParent->refreshConnections();
 }
 
 void QgsPGConnectionItem::refreshConnection()
 {
-  // the parent should be updated
   refresh();
+  // the parent should be updated
+  if ( mParent )
+    mParent->refreshConnections();
 }
 
 void QgsPGConnectionItem::createSchema()
@@ -185,6 +187,9 @@ void QgsPGConnectionItem::createSchema()
 
   conn->unref();
   refresh();
+  // the parent should be updated
+  if ( mParent )
+    mParent->refreshConnections();
 }
 #endif
 

@@ -31,16 +31,17 @@ from qgis.PyQt.QtGui import QIcon
 
 from qgis.core import (QgsFeatureRequest,
                        QgsFeature,
+                       QgsFields,
                        QgsFeatureSink,
                        QgsGeometry,
                        QgsWkbTypes,
-                       QgsMessageLog,
-                       QgsProcessingUtils)
+                       QgsProcessingException,
+                       QgsProcessingParameterFeatureSource,
+                       QgsProcessingParameterFeatureSink,
+                       QgsSpatialIndex,
+                       QgsProcessingParameterField)
 
-from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
-from processing.core.parameters import ParameterVector
-from processing.core.outputs import OutputVector
 from processing.tools import vector
 
 pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
@@ -58,8 +59,10 @@ for key, value in list(wkbTypeGroups.items()):
 class Intersection(QgisAlgorithm):
 
     INPUT = 'INPUT'
-    INPUT2 = 'INPUT2'
+    OVERLAY = 'OVERLAY'
     OUTPUT = 'OUTPUT'
+    INPUT_FIELDS = 'INPUT_FIELDS'
+    OVERLAY_FIELDS = 'OVERLAY_FIELDS'
 
     def icon(self):
         return QIcon(os.path.join(pluginPath, 'images', 'ftools', 'intersect.png'))
@@ -71,11 +74,23 @@ class Intersection(QgisAlgorithm):
         super().__init__()
 
     def initAlgorithm(self, config=None):
-        self.addParameter(ParameterVector(self.INPUT,
-                                          self.tr('Input layer')))
-        self.addParameter(ParameterVector(self.INPUT2,
-                                          self.tr('Intersect layer')))
-        self.addOutput(OutputVector(self.OUTPUT, self.tr('Intersection')))
+        self.addParameter(QgsProcessingParameterFeatureSource(self.INPUT,
+                                                              self.tr('Input layer')))
+        self.addParameter(QgsProcessingParameterFeatureSource(self.OVERLAY,
+                                                              self.tr('Intersection layer')))
+
+        self.addParameter(QgsProcessingParameterField(
+            self.INPUT_FIELDS,
+            self.tr('Input fields to keep (leave empty to keep all fields)'),
+            parentLayerParameterName=self.INPUT,
+            optional=True, allowMultiple=True))
+        self.addParameter(QgsProcessingParameterField(
+            self.OVERLAY_FIELDS,
+            self.tr('Intersect fields to keep (leave empty to keep all fields)'),
+            parentLayerParameterName=self.OVERLAY,
+            optional=True, allowMultiple=True))
+
+        self.addParameter(QgsProcessingParameterFeatureSink(self.OUTPUT, self.tr('Intersection')))
 
     def name(self):
         return 'intersection'
@@ -84,22 +99,65 @@ class Intersection(QgisAlgorithm):
         return self.tr('Intersection')
 
     def processAlgorithm(self, parameters, context, feedback):
-        vlayerA = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT), context)
-        vlayerB = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT2), context)
+        sourceA = self.parameterAsSource(parameters, self.INPUT, context)
+        sourceB = self.parameterAsSource(parameters, self.OVERLAY, context)
 
-        geomType = QgsWkbTypes.multiType(vlayerA.wkbType())
-        fields = vector.combineVectorFields(vlayerA, vlayerB)
-        writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(fields, geomType, vlayerA.crs(), context)
+        geomType = QgsWkbTypes.multiType(sourceA.wkbType())
+
+        fieldsA = self.parameterAsFields(parameters, self.INPUT_FIELDS, context)
+        fieldsB = self.parameterAsFields(parameters, self.OVERLAY_FIELDS, context)
+
+        fieldListA = QgsFields()
+        field_indices_a = []
+        if len(fieldsA) > 0:
+            for f in fieldsA:
+                idxA = sourceA.fields().lookupField(f)
+                if idxA >= 0:
+                    field_indices_a.append(idxA)
+                    fieldListA.append(sourceA.fields()[idxA])
+        else:
+            fieldListA = sourceA.fields()
+            field_indices_a = [i for i in range(0, fieldListA.count())]
+
+        fieldListB = QgsFields()
+        field_indices_b = []
+        if len(fieldsB) > 0:
+            for f in fieldsB:
+                idxB = sourceB.fields().lookupField(f)
+                if idxB >= 0:
+                    field_indices_b.append(idxB)
+                    fieldListB.append(sourceB.fields()[idxB])
+        else:
+            fieldListB = sourceB.fields()
+            field_indices_b = [i for i in range(0, fieldListB.count())]
+
+        fieldListB = vector.testForUniqueness(fieldListA, fieldListB)
+        for b in fieldListB:
+            fieldListA.append(b)
+
+        (sink, dest_id) = self.parameterAsSink(parameters, self.OUTPUT, context,
+                                               fieldListA, geomType, sourceA.sourceCrs())
+
         outFeat = QgsFeature()
-        index = QgsProcessingUtils.createSpatialIndex(vlayerB, context)
-        selectionA = QgsProcessingUtils.getFeatures(vlayerA, context)
-        total = 100.0 / vlayerA.featureCount() if vlayerA.featureCount() else 0
-        for current, inFeatA in enumerate(selectionA):
-            feedback.setProgress(int(current * total))
-            geom = inFeatA.geometry()
-            atMapA = inFeatA.attributes()
-            intersects = index.intersects(geom.boundingBox())
+        indexB = QgsSpatialIndex(sourceB.getFeatures(QgsFeatureRequest().setSubsetOfAttributes([]).setDestinationCrs(sourceA.sourceCrs())), feedback)
+
+        total = 100.0 / sourceA.featureCount() if sourceA.featureCount() else 1
+        count = 0
+
+        for featA in sourceA.getFeatures(QgsFeatureRequest().setSubsetOfAttributes(field_indices_a)):
+            if feedback.isCanceled():
+                break
+
+            if not featA.hasGeometry():
+                continue
+
+            geom = featA.geometry()
+            atMapA = featA.attributes()
+            intersects = indexB.intersects(geom.boundingBox())
+
             request = QgsFeatureRequest().setFilterFids(intersects)
+            request.setDestinationCrs(sourceA.sourceCrs())
+            request.setSubsetOfAttributes(field_indices_b)
 
             engine = None
             if len(intersects) > 0:
@@ -107,10 +165,14 @@ class Intersection(QgisAlgorithm):
                 engine = QgsGeometry.createGeometryEngine(geom.geometry())
                 engine.prepareGeometry()
 
-            for inFeatB in vlayerB.getFeatures(request):
-                tmpGeom = inFeatB.geometry()
+            for featB in sourceB.getFeatures(request):
+                if feedback.isCanceled():
+                    break
+
+                tmpGeom = featB.geometry()
                 if engine.intersects(tmpGeom.geometry()):
-                    atMapB = inFeatB.attributes()
+                    out_attributes = [featA.attributes()[i] for i in field_indices_a]
+                    out_attributes.extend([featB.attributes()[i] for i in field_indices_b])
                     int_geom = QgsGeometry(geom.intersection(tmpGeom))
                     if int_geom.wkbType() == QgsWkbTypes.Unknown or QgsWkbTypes.flatType(int_geom.geometry().wkbType()) == QgsWkbTypes.GeometryCollection:
                         int_com = geom.combine(tmpGeom)
@@ -119,22 +181,22 @@ class Intersection(QgisAlgorithm):
                             int_sym = geom.symDifference(tmpGeom)
                             int_geom = QgsGeometry(int_com.difference(int_sym))
                     if int_geom.isEmpty() or not int_geom.isGeosValid():
-                        raise GeoAlgorithmExecutionException(
+                        raise QgsProcessingException(
                             self.tr('GEOS geoprocessing error: One or '
                                     'more input features have invalid '
                                     'geometry.'))
                     try:
                         if int_geom.wkbType() in wkbTypeGroups[wkbTypeGroups[int_geom.wkbType()]]:
                             outFeat.setGeometry(int_geom)
-                            attrs = []
-                            attrs.extend(atMapA)
-                            attrs.extend(atMapB)
-                            outFeat.setAttributes(attrs)
-                            writer.addFeature(outFeat, QgsFeatureSink.FastInsert)
+                            outFeat.setAttributes(out_attributes)
+                            sink.addFeature(outFeat, QgsFeatureSink.FastInsert)
                     except:
-                        raise GeoAlgorithmExecutionException(
+                        raise QgsProcessingException(
                             self.tr('Feature geometry error: One or more '
                                     'output features ignored due to invalid '
                                     'geometry.'))
 
-        del writer
+            count += 1
+            feedback.setProgress(int(count * total))
+
+        return {self.OUTPUT: dest_id}

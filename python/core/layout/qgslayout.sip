@@ -19,6 +19,11 @@ class QgsLayout : QGraphicsScene
 %End
   public:
 
+    enum ZValues
+    {
+      ZMapTool,
+    };
+
     QgsLayout();
 
 };

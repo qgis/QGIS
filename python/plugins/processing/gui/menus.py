@@ -48,7 +48,7 @@ defaultMenuEntries.update({'qgis:convexhull': geoprocessingToolsMenu,
                            'qgis:intersection': geoprocessingToolsMenu,
                            'qgis:union': geoprocessingToolsMenu,
                            'qgis:symmetricaldifference': geoprocessingToolsMenu,
-                           'qgis:clip': geoprocessingToolsMenu,
+                           'native:clip': geoprocessingToolsMenu,
                            'qgis:difference': geoprocessingToolsMenu,
                            'qgis:dissolve': geoprocessingToolsMenu,
                            'qgis:eliminateselectedpolygons': geoprocessingToolsMenu})
@@ -211,6 +211,9 @@ def _executeAlgorithm(alg):
         prevMapTool = canvas.mapTool()
         dlg.show()
         dlg.exec_()
+        # have to manually delete the dialog - otherwise it's owned by the
+        # iface mainWindow and never deleted
+        del dlg
         if canvas.mapTool() != prevMapTool:
             try:
                 canvas.mapTool().reset()

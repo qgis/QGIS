@@ -293,7 +293,7 @@ class QgsProcessingModelAlgorithm : QgsProcessingAlgorithm
 %End
 
     QList< QgsProcessingModelChildParameterSource > availableSourcesForChild( const QString &childId, const QStringList &parameterTypes = QStringList(),
-        const QStringList &outputTypes = QStringList(), const QList< int > dataTypes = QList< int >() ) const;
+        const QStringList &outputTypes = QStringList(), const QList< int > &dataTypes = QList< int >() ) const;
 %Docstring
  Returns a list of possible sources which can be used for the parameters for a child
  algorithm in the model. Returned sources are those which match either one of the

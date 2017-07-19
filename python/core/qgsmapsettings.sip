@@ -152,6 +152,26 @@ Get units of map's geographical coordinates - used for scale calculation
  :rtype: QgsUnitTypes.DistanceUnit
 %End
 
+    bool setEllipsoid( const QString &ellipsoid );
+%Docstring
+ Sets the ``ellipsoid`` by its acronym. Known ellipsoid acronyms can be
+ retrieved using QgsEllipsoidUtils.acronyms().
+ Calculations will only use the ellipsoid if a valid ellipsoid has been set.
+ :return: true if ellipsoid was successfully set
+.. versionadded:: 3.0
+.. seealso:: ellipsoid()
+ :rtype: bool
+%End
+
+    QString ellipsoid() const;
+%Docstring
+ Returns ellipsoid's acronym. Calculations will only use the
+ ellipsoid if a valid ellipsoid has been set.
+.. versionadded:: 3.0
+.. seealso:: setEllipsoid()
+ :rtype: str
+%End
+
     void setBackgroundColor( const QColor &color );
 %Docstring
 Set the background color of the map

@@ -114,7 +114,7 @@ void QgsWfsConnectionItem::editConnection()
   if ( nc.exec() )
   {
     // the parent should be updated
-    mParent->refresh();
+    mParent->refreshConnections();
   }
 }
 
@@ -122,7 +122,7 @@ void QgsWfsConnectionItem::deleteConnection()
 {
   QgsWfsConnection::deleteConnection( mName );
   // the parent should be updated
-  mParent->refresh();
+  mParent->refreshConnections();
 }
 #endif
 
@@ -187,7 +187,7 @@ void QgsWfsRootItem::newConnection()
 
   if ( nc.exec() )
   {
-    refresh();
+    refreshConnections();
   }
 }
 #endif

@@ -26,31 +26,15 @@ __copyright__ = '(C) 2012, Victor Olaya'
 __revision__ = '$Format:%H$'
 
 from qgis.PyQt.QtCore import QVariant
-from qgis.core import (QgsField,
-                       QgsFeature,
-                       QgsFeatureSink,
-                       QgsApplication,
-                       QgsProcessingUtils,
-                       QgsProcessingParameterFeatureSource,
-                       QgsProcessingParameterFeatureSink,
-                       QgsProcessingOutputVectorLayer)
-from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
+from qgis.core import (QgsField)
+from processing.algs.qgis.QgisAlgorithm import QgisFeatureBasedAlgorithm
 
 
-class AutoincrementalField(QgisAlgorithm):
-
-    INPUT = 'INPUT'
-    OUTPUT = 'OUTPUT'
+class AutoincrementalField(QgisFeatureBasedAlgorithm):
 
     def __init__(self):
         super().__init__()
-
-    def initAlgorithm(self, config=None):
-        self.addParameter(QgsProcessingParameterFeatureSource(self.INPUT,
-                                                              self.tr('Input layer')))
-
-        self.addParameter(QgsProcessingParameterFeatureSink(self.OUTPUT, self.tr('Incremented')))
-        self.addOutput(QgsProcessingOutputVectorLayer(self.OUTPUT, self.tr('Incremented')))
+        self.current = 0
 
     def group(self):
         return self.tr('Vector table tools')
@@ -61,26 +45,16 @@ class AutoincrementalField(QgisAlgorithm):
     def displayName(self):
         return self.tr('Add autoincremental field')
 
-    def processAlgorithm(self, parameters, context, feedback):
-        source = self.parameterAsSource(parameters, self.INPUT, context)
-        fields = source.fields()
-        fields.append(QgsField('AUTO', QVariant.Int))
+    def outputName(self):
+        return self.tr('Incremented')
 
-        (sink, dest_id) = self.parameterAsSink(parameters, self.OUTPUT, context,
-                                               fields, source.wkbType(), source.sourceCrs())
+    def outputFields(self, inputFields):
+        inputFields.append(QgsField('AUTO', QVariant.Int))
+        return inputFields
 
-        features = source.getFeatures()
-        total = 100.0 / source.featureCount() if source.featureCount() else 0
-        for current, input_feature in enumerate(features):
-            if feedback.isCanceled():
-                break
-
-            output_feature = input_feature
-            attributes = input_feature.attributes()
-            attributes.append(current)
-            output_feature.setAttributes(attributes)
-
-            sink.addFeature(output_feature, QgsFeatureSink.FastInsert)
-            feedback.setProgress(int(current * total))
-
-        return {self.OUTPUT: dest_id}
+    def processFeature(self, feature, feedback):
+        attributes = feature.attributes()
+        attributes.append(self.current)
+        self.current += 1
+        feature.setAttributes(attributes)
+        return feature

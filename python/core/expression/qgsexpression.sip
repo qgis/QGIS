@@ -270,9 +270,9 @@ expression() instead.
  Sets the geometry calculator used for distance and area calculations in expressions.
  (used by $length, $area and $perimeter functions only). By default, no geometry
  calculator is set and all distance and area calculations are performed using simple
- cartesian methods (ie no ellipsoidal calculations).
+ Cartesian methods (ie no ellipsoidal calculations).
  \param calc geometry calculator. Ownership is not transferred. Set to a None to force
- cartesian calculations.
+ Cartesian calculations.
 .. seealso:: geomCalculator()
 %End
 

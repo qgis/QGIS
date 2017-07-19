@@ -805,7 +805,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
      */
     bool addVectorLayers( const QStringList &layerQStringList, const QString &enc, const QString &dataSourceType );
 
-    /** Overloaded vesion of the private addRasterLayer()
+    /** Overloaded version of the private addRasterLayer()
       Method that takes a list of file names instead of prompting
       user with a dialog.
       \returns true if successfully added layer(s)
@@ -1494,6 +1494,12 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
   signals:
 
+    /**
+     * Emitted when a connection has been added/removed or changed by the provider
+     * selection dialogs
+     */
+    void connectionsChanged( );
+
     /** Emitted when a key is pressed and we want non widget sublasses to be able
       to pick up on this (e.g. maplayer) */
     void keyPressed( QKeyEvent *e );
@@ -1687,6 +1693,9 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     void applyDefaultSettingsToCanvas( QgsMapCanvas *canvas );
 
     QgsCoordinateReferenceSystem defaultCrsForNewLayers() const;
+
+    //! Attempts to choose a reasonable default icon size based on the window's screen DPI
+    int chooseReasonableDefaultIconSize() const;
 
     QgisAppStyleSheet *mStyleSheetBuilder = nullptr;
 

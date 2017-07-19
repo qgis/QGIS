@@ -31,19 +31,12 @@ from qgis.core import (QgsGeometry,
                        QgsWkbTypes,
                        QgsFeatureSink,
                        QgsProcessing,
-                       QgsProcessingUtils,
-                       QgsProcessingParameterDefinition,
                        QgsProcessingParameterFeatureSource,
-                       QgsProcessingParameterFeatureSink,
-                       QgsProcessingOutputVectorLayer)
+                       QgsProcessingParameterFeatureSink)
 
 from qgis.PyQt.QtGui import QIcon
 
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
-from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
-from processing.core.parameters import ParameterVector
-from processing.core.outputs import OutputVector
-from processing.tools import dataobjects
 
 pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
@@ -59,7 +52,6 @@ class Boundary(QgisAlgorithm):
     def initAlgorithm(self, config=None):
         self.addParameter(QgsProcessingParameterFeatureSource(self.INPUT_LAYER, self.tr('Input layer'), [QgsProcessing.TypeVectorLine, QgsProcessing.TypeVectorPolygon]))
         self.addParameter(QgsProcessingParameterFeatureSink(self.OUTPUT_LAYER, self.tr('Boundary')))
-        self.addOutput(QgsProcessingOutputVectorLayer(self.OUTPUT_LAYER, self.tr("Boundaries")))
 
     def icon(self):
         return QIcon(os.path.join(pluginPath, 'images', 'ftools', 'convex_hull.png'))
@@ -100,10 +92,10 @@ class Boundary(QgisAlgorithm):
             if input_geometry:
                 output_geometry = QgsGeometry(input_geometry.geometry().boundary())
                 if not output_geometry:
-                    raise GeoAlgorithmExecutionException(
-                        self.tr('Error calculating boundary'))
-
-                output_feature.setGeometry(output_geometry)
+                    feedback.reportError(self.tr('No boundary for feature {} (possibly a closed linestring?)').format(input_feature.id()))
+                    output_feature.clearGeometry()
+                else:
+                    output_feature.setGeometry(output_geometry)
 
             sink.addFeature(output_feature, QgsFeatureSink.FastInsert)
             feedback.setProgress(int(current * total))

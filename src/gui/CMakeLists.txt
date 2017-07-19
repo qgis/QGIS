@@ -158,9 +158,29 @@ SET(QGIS_GUI_SRCS
   layertree/qgslayertreeview.cpp
   layertree/qgslayertreeviewdefaultactions.cpp
 
+  layout/qgslayoutitemguiregistry.cpp
+  layout/qgslayoutruler.cpp
+  layout/qgslayoutview.cpp
+  layout/qgslayoutviewmouseevent.cpp
+  layout/qgslayoutviewrubberband.cpp
+  layout/qgslayoutviewtool.cpp
+  layout/qgslayoutviewtooladditem.cpp
+  layout/qgslayoutviewtoolpan.cpp
+  layout/qgslayoutviewtoolselect.cpp
+  layout/qgslayoutviewtooltemporarykeypan.cpp
+  layout/qgslayoutviewtooltemporarykeyzoom.cpp
+  layout/qgslayoutviewtooltemporarymousepan.cpp
+  layout/qgslayoutviewtoolzoom.cpp
+
   locator/qgslocator.cpp
   locator/qgslocatorfilter.cpp
   locator/qgslocatorwidget.cpp
+
+  ogr/qgsopenvectorlayerdialog.cpp
+  ogr/qgsogrhelperfunctions.cpp
+  ogr/qgsnewogrconnection.cpp
+  ogr/qgsopenvectorlayerdialog.cpp
+  ogr/qgsvectorlayersaveasdialog.cpp
 
   qgisinterface.cpp
   qgsactionmenu.cpp
@@ -263,6 +283,7 @@ SET(QGIS_GUI_SRCS
   qgsmaptoolcapture.cpp
   qgsmaptooledit.cpp
   qgsmaptoolemitpoint.cpp
+  qgsmaptoolextent.cpp
   qgsmaptoolidentify.cpp
   qgsmaptoolidentifyfeature.cpp
   qgsmaptoolpan.cpp
@@ -282,7 +303,6 @@ SET(QGIS_GUI_SRCS
   qgsoptionsdialogbase.cpp
   qgsorderbydialog.cpp
   qgsowssourceselect.cpp
-  qgssourceselectdialog.cpp
   qgspanelwidget.cpp
   qgspanelwidgetstack.cpp
   qgspasswordlineedit.cpp
@@ -325,6 +345,8 @@ SET(QGIS_GUI_SRCS
   qgsvariableeditorwidget.cpp
   qgsvertexmarker.cpp
   qgsfiledownloader.cpp
+  qgsdatasourcemanagerdialog.cpp
+  qgsabstractdatasourcewidget.cpp
 )
 
 SET(QGIS_GUI_MOC_HDRS
@@ -416,6 +438,7 @@ SET(QGIS_GUI_MOC_HDRS
   qgsmaptoolcapture.h
   qgsmaptooledit.h
   qgsmaptoolemitpoint.h
+  qgsmaptoolextent.h
   qgsmaptoolidentify.h
   qgsmaptoolidentifyfeature.h
   qgsmaptoolpan.h
@@ -436,7 +459,6 @@ SET(QGIS_GUI_MOC_HDRS
   qgsoptionswidgetfactory.h
   qgsorderbydialog.h
   qgsowssourceselect.h
-  qgssourceselectdialog.h
   qgspanelwidget.h
   qgspanelwidgetstack.h
   qgspasswordlineedit.h
@@ -476,6 +498,12 @@ SET(QGIS_GUI_MOC_HDRS
   qgsuserinputdockwidget.h
   qgsvariableeditorwidget.h
   qgsfiledownloader.h
+  qgsdatasourcemanagerdialog.h
+  qgsabstractdatasourcewidget.h
+
+  ogr/qgsopenvectorlayerdialog.h
+  ogr/qgsnewogrconnection.h
+  ogr/qgsvectorlayersaveasdialog.h
 
   raster/qgsmultibandcolorrendererwidget.h
   raster/qgspalettedrendererwidget.h
@@ -620,6 +648,17 @@ SET(QGIS_GUI_MOC_HDRS
   layertree/qgslayertreeviewdefaultactions.h
 
   layout/qgslayoutdesignerinterface.h
+  layout/qgslayoutitemguiregistry.h
+  layout/qgslayoutruler.h
+  layout/qgslayoutview.h
+  layout/qgslayoutviewtool.h
+  layout/qgslayoutviewtooladditem.h
+  layout/qgslayoutviewtoolpan.h
+  layout/qgslayoutviewtoolselect.h
+  layout/qgslayoutviewtooltemporarykeypan.h
+  layout/qgslayoutviewtooltemporarykeyzoom.h
+  layout/qgslayoutviewtooltemporarymousepan.h
+  layout/qgslayoutviewtoolzoom.h
 
   locator/qgslocator.h
   locator/qgslocatorfilter.h
@@ -666,6 +705,13 @@ SET(QGIS_GUI_HDRS
   qgsbrowserdockwidget_p.h
   qgsvertexmarker.h
   qgsfiledownloader.h
+  qgsdatasourcemanagerdialog.h
+  qgsabstractdatasourcewidget.h
+
+  ogr/qgsopenvectorlayerdialog.h
+  ogr/qgsogrhelperfunctions.h
+  ogr/qgsnewogrconnection.h
+  ogr/qgsvectorlayersaveasdialog.h
 
   attributetable/qgsfeaturemodel.h
 
@@ -713,6 +759,9 @@ SET(QGIS_GUI_HDRS
   layertree/qgslayertreeembeddedconfigwidget.h
   layertree/qgslayertreeembeddedwidgetregistry.h
 
+  layout/qgslayoutviewmouseevent.h
+  layout/qgslayoutviewrubberband.h
+
   locator/qgslocatorcontext.h
 
   raster/qgsrasterrendererwidget.h
@@ -751,11 +800,13 @@ SET(QGIS_GUI_UI_HDRS
   ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsmessagelogviewer.h
   ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsmessageviewer.h
   ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsowssourceselectbase.h
+  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsarcgisservicesourceselectbase.h
   ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsprojectionselectorbase.h
   ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsquerybuilderbase.h
   ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgssqlcomposerdialogbase.h
   ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgssublayersdialogbase.h
   ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgstablewidgetuibase.h
+  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsopenvectorlayerdialogbase.h
 )
 
 IF(ENABLE_MODELTEST)
@@ -775,6 +826,7 @@ INCLUDE_DIRECTORIES(
   ${CMAKE_SOURCE_DIR}/src/gui/layertree
   ${CMAKE_SOURCE_DIR}/src/gui/layout
   ${CMAKE_SOURCE_DIR}/src/gui/effects
+  ${CMAKE_SOURCE_DIR}/src/gui/ogr
   ${CMAKE_SOURCE_DIR}/src/core
   ${CMAKE_SOURCE_DIR}/src/core/annotations
   ${CMAKE_SOURCE_DIR}/src/core/auth

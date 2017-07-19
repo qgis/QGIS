@@ -1609,6 +1609,11 @@ class TestQgsVectorLayer(unittest.TestCase, FeatureSourceTestCase):
 
         self.assertEqual(layer.pendingFields().count(), cnt)
 
+        # expression field which references itself
+        idx = layer.addExpressionField('sum(test2)', QgsField('test2', QVariant.LongLong))
+        fet = next(layer.getFeatures())
+        self.assertEqual(fet['test2'], NULL)
+
     def test_ExpressionFieldEllipsoidLengthCalculation(self):
         #create a temporary layer
         temp_layer = QgsVectorLayer("LineString?crs=epsg:3111&field=pk:int", "vl", "memory")
@@ -1828,6 +1833,27 @@ class TestQgsVectorLayer(unittest.TestCase, FeatureSourceTestCase):
         val, ok = layer.aggregate(QgsAggregateCalculator.StringConcatenate, 'fldstring', params)
         self.assertTrue(ok)
         self.assertEqual(val, 'this is a test')
+
+    def testAggregateInVirtualField(self):
+        """
+        Test aggregates in a virtual field
+        """
+        layer = QgsVectorLayer("Point?field=fldint:integer", "layer", "memory")
+        pr = layer.dataProvider()
+
+        int_values = [4, 2, 3, 2, 5, None, 8]
+        features = []
+        for i in int_values:
+            f = QgsFeature()
+            f.setFields(layer.fields())
+            f.setAttributes([i])
+            features.append(f)
+        assert pr.addFeatures(features)
+
+        field = QgsField('virtual', QVariant.Double)
+        layer.addExpressionField('sum(fldint*2)', field)
+        vals = [f['virtual'] for f in layer.getFeatures()]
+        self.assertEqual(vals, [48, 48, 48, 48, 48, 48, 48])
 
     def onLayerOpacityChanged(self, tr):
         self.opacityTest = tr
@@ -2511,6 +2537,12 @@ class TestQgsVectorLayerSourceAddedFeaturesInBuffer(unittest.TestCase, FeatureSo
         """
         pass
 
+    def testMinimumValue(self):
+        """ Skip min values test - due to inconsistencies in how null values are treated by providers.
+        They are included here, but providers don't include them.... which is right?
+        """
+        pass
+
 
 class TestQgsVectorLayerSourceChangedGeometriesInBuffer(unittest.TestCase, FeatureSourceTestCase):
 
@@ -2661,6 +2693,21 @@ class TestQgsVectorLayerSourceChangedAttributesInBuffer(unittest.TestCase, Featu
         """
         pass
 
+    def testUniqueValues(self):
+        """ Skip unique values test - as noted in the docs this is unreliable when features are in the buffer
+        """
+        pass
+
+    def testMinimumValue(self):
+        """ Skip min values test - as noted in the docs this is unreliable when features are in the buffer
+        """
+        pass
+
+    def testMaximumValue(self):
+        """ Skip max values test - as noted in the docs this is unreliable when features are in the buffer
+        """
+        pass
+
 
 class TestQgsVectorLayerSourceDeletedFeaturesInBuffer(unittest.TestCase, FeatureSourceTestCase):
 
@@ -2743,6 +2790,21 @@ class TestQgsVectorLayerSourceDeletedFeaturesInBuffer(unittest.TestCase, Feature
     def testOrderBy(self):
         """ Skip order by tests - edited features are not sorted in iterators.
         (Maybe they should be??)
+        """
+        pass
+
+    def testUniqueValues(self):
+        """ Skip unique values test - as noted in the docs this is unreliable when features are in the buffer
+        """
+        pass
+
+    def testMinimumValue(self):
+        """ Skip min values test - as noted in the docs this is unreliable when features are in the buffer
+        """
+        pass
+
+    def testMaximumValue(self):
+        """ Skip max values test - as noted in the docs this is unreliable when features are in the buffer
         """
         pass
 

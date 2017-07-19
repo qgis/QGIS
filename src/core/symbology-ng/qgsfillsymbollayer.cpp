@@ -2800,8 +2800,12 @@ void QgsLinePatternFillSymbolLayer::startRender( QgsSymbolRenderContext &context
   }
 }
 
-void QgsLinePatternFillSymbolLayer::stopRender( QgsSymbolRenderContext & )
+void QgsLinePatternFillSymbolLayer::stopRender( QgsSymbolRenderContext &context )
 {
+  if ( mFillLineSymbol )
+  {
+    mFillLineSymbol->stopRender( context.renderContext() );
+  }
 }
 
 QgsStringMap QgsLinePatternFillSymbolLayer::properties() const

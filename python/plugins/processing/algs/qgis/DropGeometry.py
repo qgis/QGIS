@@ -29,12 +29,9 @@ from qgis.core import (QgsFeatureRequest,
                        QgsWkbTypes,
                        QgsFeatureSink,
                        QgsCoordinateReferenceSystem,
-                       QgsApplication,
                        QgsProcessing,
-                       QgsProcessingParameterDefinition,
                        QgsProcessingParameterFeatureSource,
-                       QgsProcessingParameterFeatureSink,
-                       QgsProcessingOutputVectorLayer)
+                       QgsProcessingParameterFeatureSink)
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 
 
@@ -55,7 +52,6 @@ class DropGeometry(QgisAlgorithm):
     def initAlgorithm(self, config=None):
         self.addParameter(QgsProcessingParameterFeatureSource(self.INPUT, self.tr('Input layer'), [QgsProcessing.TypeVectorPoint, QgsProcessing.TypeVectorLine, QgsProcessing.TypeVectorPolygon]))
         self.addParameter(QgsProcessingParameterFeatureSink(self.OUTPUT, self.tr('Dropped geometry')))
-        self.addOutput(QgsProcessingOutputVectorLayer(self.OUTPUT, self.tr("Dropped geometry")))
 
     def name(self):
         return 'dropgeometries'

@@ -50,6 +50,7 @@
 #include <QProgressDialog>
 #include <QRegExp>
 #include <QRegExpValidator>
+#include <QScreen>
 #include <QShortcut>
 #include <QSpinBox>
 #include <QSplashScreen>
@@ -247,7 +248,6 @@ Q_GUI_EXPORT extern int qt_defaultDpiX();
 #include "qgsshortcutsmanager.h"
 #include "qgssinglebandgrayrenderer.h"
 #include "qgssnappingwidget.h"
-#include "qgssourceselectdialog.h"
 #include "qgsstatisticalsummarydockwidget.h"
 #include "qgsstatusbar.h"
 #include "qgsstatusbarcoordinateswidget.h"
@@ -888,6 +888,8 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
   addDockWidget( Qt::LeftDockWidgetArea, mBrowserWidget );
   mBrowserWidget->hide();
   connect( this, &QgisApp::newProject, mBrowserWidget, &QgsBrowserDockWidget::updateProjectHome );
+  connect( this, &QgisApp::connectionsChanged, mBrowserWidget, &QgsBrowserDockWidget::refresh );
+  connect( mBrowserWidget, &QgsBrowserDockWidget::connectionsChanged, this, &QgisApp::connectionsChanged );
   connect( mBrowserWidget, &QgsBrowserDockWidget::openFile, this, &QgisApp::openFile );
   connect( mBrowserWidget, &QgsBrowserDockWidget::handleDropUriList, this, &QgisApp::handleDropUriList );
 
@@ -896,6 +898,8 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
   addDockWidget( Qt::LeftDockWidgetArea, mBrowserWidget2 );
   mBrowserWidget2->hide();
   connect( this, &QgisApp::newProject, mBrowserWidget2, &QgsBrowserDockWidget::updateProjectHome );
+  connect( mBrowserWidget2, &QgsBrowserDockWidget::connectionsChanged, this, &QgisApp::connectionsChanged );
+  connect( this, &QgisApp::connectionsChanged, mBrowserWidget2, &QgsBrowserDockWidget::refresh );
   connect( mBrowserWidget2, &QgsBrowserDockWidget::openFile, this, &QgisApp::openFile );
   connect( mBrowserWidget2, &QgsBrowserDockWidget::handleDropUriList, this, &QgisApp::handleDropUriList );
 
@@ -1033,8 +1037,20 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
   }
 
   // Set icon size of toolbars
-  int size = settings.value( QStringLiteral( "IconSize" ), QGIS_ICON_SIZE ).toInt();
-  setIconSizes( size );
+  if ( settings.contains( QStringLiteral( "IconSize" ) ) )
+  {
+    int size = settings.value( QStringLiteral( "IconSize" ) ).toInt();
+    if ( size < 16 )
+      size = QGIS_ICON_SIZE;
+    setIconSizes( size );
+  }
+  else
+  {
+    // first run, guess a good icon size
+    int size = chooseReasonableDefaultIconSize();
+    settings.setValue( QStringLiteral( "IconSize" ), size );
+    setIconSizes( size );
+  }
 
   mSplash->showMessage( tr( "Initializing file filters" ), Qt::AlignHCenter | Qt::AlignBottom );
   qApp->processEvents();
@@ -1592,8 +1608,10 @@ void QgisApp::dataSourceManager( QString pageName )
 {
   if ( ! mDataSourceManagerDialog )
   {
-    mDataSourceManagerDialog = new QgsDataSourceManagerDialog( mapCanvas( ), this );
+    mDataSourceManagerDialog = new QgsDataSourceManagerDialog( this, mapCanvas( ) );
     // Forward signals to this
+    connect( this, &QgisApp::connectionsChanged, mDataSourceManagerDialog, &QgsDataSourceManagerDialog::refresh );
+    connect( mDataSourceManagerDialog, &QgsDataSourceManagerDialog::connectionsChanged, this, &QgisApp::connectionsChanged );
     connect( mDataSourceManagerDialog, SIGNAL( addRasterLayer( QString const &, QString const &, QString const & ) ),
              this, SLOT( addRasterLayer( QString const &, QString const &, QString const & ) ) );
     connect( mDataSourceManagerDialog, SIGNAL( addVectorLayer( QString const &, QString const &, QString const & ) ),
@@ -1727,6 +1745,31 @@ QgsCoordinateReferenceSystem QgisApp::defaultCrsForNewLayers() const
   }
 
   return defaultCrs;
+}
+
+int QgisApp::chooseReasonableDefaultIconSize() const
+{
+  QScreen *screen = QApplication::screens().at( 0 );
+  if ( screen->physicalDotsPerInch() < 115 )
+  {
+    // no hidpi screen, use default size
+    return QGIS_ICON_SIZE;
+  }
+  else
+  {
+    double size = fontMetrics().width( QStringLiteral( "XXX" ) );
+    if ( size < 24 )
+      return 16;
+    else if ( size < 32 )
+      return 24;
+    else if ( size < 48 )
+      return 32;
+    else if ( size < 64 )
+      return 48;
+    else
+      return 64;
+  }
+
 }
 
 void QgisApp::readSettings()
@@ -2999,6 +3042,7 @@ void QgisApp::setupConnections()
   connect( QgsProject::instance(), &QgsProject::crsChanged,
            this, [ = ]
   {
+    QgsDebugMsgLevel( QString( "QgisApp::setupConnections -1- : QgsProject::instance()->crs().description[%1]ellipsoid[%2]" ).arg( QgsProject::instance()->crs().description() ).arg( QgsProject::instance()->crs().ellipsoidAcronym() ), 3 );
     mMapCanvas->setDestinationCrs( QgsProject::instance()->crs() );
   } );
 
@@ -3259,6 +3303,7 @@ QgsMapCanvas *QgisApp::createNewMapCanvas( const QString &name )
 
   dock->mapCanvas()->setLayers( mMapCanvas->layers() );
   dock->mapCanvas()->setExtent( mMapCanvas->extent() );
+  QgsDebugMsgLevel( QString( "QgisApp::createNewMapCanvas -2- : QgsProject::instance()->crs().description[%1]ellipsoid[%2]" ).arg( QgsProject::instance()->crs().description() ).arg( QgsProject::instance()->crs().ellipsoidAcronym() ), 3 );
   dock->mapCanvas()->setDestinationCrs( QgsProject::instance()->crs() );
   dock->mapCanvas()->freeze( false );
   return dock->mapCanvas();
@@ -3785,9 +3830,13 @@ void QgisApp::restoreWindowState()
   }
 
   // restore window geometry
-  if ( !restoreGeometry( settings.value( QStringLiteral( "UI/geometry" ), QByteArray::fromRawData( reinterpret_cast< const char * >( defaultUIgeometry ), sizeof defaultUIgeometry ) ).toByteArray() ) )
+  if ( !restoreGeometry( settings.value( QStringLiteral( "UI/geometry" ) ).toByteArray() ) )
   {
     QgsDebugMsg( "restore of UI geometry failed" );
+    // default to 80% of screen size, at 10% from top left corner
+    resize( QDesktopWidget().availableGeometry( this ).size() * 0.8 );
+    QSize pos = QDesktopWidget().availableGeometry( this ).size() * 0.1;
+    move( pos.width(), pos.height() );
   }
 
 }
@@ -5738,173 +5787,34 @@ void QgisApp::updateFilterLegend()
 
 void QgisApp::saveMapAsImage()
 {
-  QList< QgsMapDecoration * > decorations;
-  QString activeDecorations;
+  QList< QgsDecorationItem * > decorations;
   Q_FOREACH ( QgsDecorationItem *decoration, mDecorationItems )
   {
     if ( decoration->enabled() )
     {
       decorations << decoration;
-      if ( activeDecorations.isEmpty() )
-        activeDecorations = decoration->name().toLower();
-      else
-        activeDecorations += QString( ", %1" ).arg( decoration->name().toLower() );
     }
   }
 
-  QgsMapSaveDialog dlg( this, mMapCanvas, activeDecorations );
-  if ( !dlg.exec() )
-    return;
-
-  QPair< QString, QString> fileNameAndFilter = QgsGuiUtils::getSaveAsImageName( this, tr( "Choose a file name to save the map image as" ) );
-  if ( fileNameAndFilter.first != QLatin1String( "" ) )
-  {
-    QgsMapSettings ms = QgsMapSettings();
-    dlg.applyMapSettings( ms );
-
-    QgsMapRendererTask *mapRendererTask = new QgsMapRendererTask( ms, fileNameAndFilter.first, fileNameAndFilter.second );
-
-    if ( dlg.drawAnnotations() )
-    {
-      mapRendererTask->addAnnotations( QgsProject::instance()->annotationManager()->annotations() );
-    }
-
-    if ( dlg.drawDecorations() )
-    {
-      mapRendererTask->addDecorations( decorations );
-    }
-
-    mapRendererTask->setSaveWorldFile( dlg.saveWorldFile() );
-
-    connect( mapRendererTask, &QgsMapRendererTask::renderingComplete, this, [ = ]
-    {
-      messageBar()->pushSuccess( tr( "Save as image" ), tr( "Successfully saved map to image" ) );
-    } );
-    connect( mapRendererTask, &QgsMapRendererTask::errorOccurred, this, [ = ]( int error )
-    {
-      switch ( error )
-      {
-        case QgsMapRendererTask::ImageAllocationFail:
-        {
-          messageBar()->pushWarning( tr( "Save as image" ), tr( "Could not allocate required memory for image" ) );
-          break;
-        }
-        case QgsMapRendererTask::ImageSaveFail:
-        {
-          messageBar()->pushWarning( tr( "Save as image" ), tr( "Could not save the image to file" ) );
-          break;
-        }
-      }
-    } );
-
-    QgsApplication::taskManager()->addTask( mapRendererTask );
-  }
-
+  QgsMapSaveDialog *dlg = new QgsMapSaveDialog( this, mMapCanvas, decorations, QgsProject::instance()->annotationManager()->annotations() );
+  dlg->setAttribute( Qt::WA_DeleteOnClose );
+  dlg->show();
 } // saveMapAsImage
 
 void QgisApp::saveMapAsPdf()
 {
-  QList< QgsMapDecoration * > decorations;
-  QString activeDecorations;
+  QList< QgsDecorationItem * > decorations;
   Q_FOREACH ( QgsDecorationItem *decoration, mDecorationItems )
   {
     if ( decoration->enabled() )
     {
       decorations << decoration;
-      if ( activeDecorations.isEmpty() )
-        activeDecorations = decoration->name().toLower();
-      else
-        activeDecorations += QString( ", %1" ).arg( decoration->name().toLower() );
     }
   }
 
-  QgsMapSaveDialog dlg( this, mMapCanvas, activeDecorations, QgsMapSaveDialog::Pdf );
-  if ( !dlg.exec() )
-    return;
-
-  QgsSettings settings;
-  QString lastUsedDir = settings.value( QStringLiteral( "UI/lastSaveAsImageDir" ), QDir::homePath() ).toString();
-  QString fileName = QFileDialog::getSaveFileName( this, tr( "Save map as" ), lastUsedDir, tr( "PDF Format" ) + " (*.pdf *.PDF)" );
-  if ( !fileName.isEmpty() )
-  {
-    QgsMapSettings ms = QgsMapSettings();
-    dlg.applyMapSettings( ms );
-
-    QPrinter *printer = new QPrinter();
-    printer->setOutputFileName( fileName );
-    printer->setOutputFormat( QPrinter::PdfFormat );
-    printer->setOrientation( QPrinter::Portrait );
-    // paper size needs to be given in millimeters in order to be able to set a resolution to pass onto the map renderer
-    printer->setPaperSize( dlg.size()  * 25.4 / dlg.dpi(), QPrinter::Millimeter );
-    printer->setPageMargins( 0, 0, 0, 0, QPrinter::Millimeter );
-    printer->setResolution( dlg.dpi() );
-
-    QPainter *p = new QPainter();
-    QImage *image = nullptr;
-    if ( dlg.saveAsRaster() )
-    {
-      image = new QImage( dlg.size(), QImage::Format_ARGB32 );
-      if ( image->isNull() )
-      {
-        messageBar()->pushWarning( tr( "Save as PDF" ), tr( "Could not allocate required memory for image" ) );
-        delete p;
-        delete image;
-        delete printer;
-
-        return;
-      }
-
-      image->setDotsPerMeterX( 1000 * dlg.dpi() / 25.4 );
-      image->setDotsPerMeterY( 1000 * dlg.dpi() / 25.4 );
-      p->begin( image );
-    }
-    else
-    {
-      p->begin( printer );
-    }
-
-    QgsMapRendererTask *mapRendererTask = new QgsMapRendererTask( ms, p );
-
-    if ( dlg.drawAnnotations() )
-    {
-      mapRendererTask->addAnnotations( QgsProject::instance()->annotationManager()->annotations() );
-    }
-
-    if ( dlg.drawDecorations() )
-    {
-      mapRendererTask->addDecorations( decorations );
-    }
-
-    mapRendererTask->setSaveWorldFile( dlg.saveWorldFile() );
-
-    connect( mapRendererTask, &QgsMapRendererTask::renderingComplete, this, [ this, p, image, printer ]
-    {
-      p->end();
-
-      if ( image )
-      {
-        QPainter pp;
-        pp.begin( printer );
-        QRectF rect( 0, 0, image->width(), image->height() );
-        pp.drawImage( rect, *image, rect );
-        pp.end();
-      }
-
-      messageBar()->pushSuccess( tr( "Save as PDF" ), tr( "Successfully saved map to PDF" ) );
-      delete p;
-      delete image;
-      delete printer;
-    } );
-    connect( mapRendererTask, &QgsMapRendererTask::errorOccurred, this, [ this, p, image, printer ]( int )
-    {
-      delete p;
-      delete image;
-      delete printer;
-    } );
-
-    QgsApplication::taskManager()->addTask( mapRendererTask );
-  }
-
+  QgsMapSaveDialog *dlg = new QgsMapSaveDialog( this, mMapCanvas, decorations, QgsProject::instance()->annotationManager()->annotations(), QgsMapSaveDialog::Pdf );
+  dlg->setAttribute( Qt::WA_DeleteOnClose );
+  dlg->show();
 } // saveMapAsPdf
 
 //overloaded version of the above function
@@ -9960,6 +9870,7 @@ void QgisApp::newMapCanvas()
   {
     dock->mapCanvas()->setLayers( mMapCanvas->layers() );
     dock->mapCanvas()->setExtent( mMapCanvas->extent() );
+    QgsDebugMsgLevel( QString( "QgisApp::newMapCanvas() -4- : QgsProject::instance()->crs().description[%1] ellipsoid[%2]" ).arg( QgsProject::instance()->crs().description() ).arg( QgsProject::instance()->crs().ellipsoidAcronym() ), 3 );
     dock->mapCanvas()->setDestinationCrs( QgsProject::instance()->crs() );
     dock->mapCanvas()->freeze( false );
   }

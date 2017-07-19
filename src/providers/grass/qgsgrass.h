@@ -53,29 +53,11 @@ class QgsRectangle;
 #define GRASS_VERSION_RELEASE_STRING EXPAND( GRASS_VERSION_RELEASE )
 
 // try/catch like macros using setjmp
-#if (GRASS_VERSION_MAJOR < 7)
-#define G_TRY try { if( !setjmp(QgsGrass::jumper) )
-#else
 #define G_TRY try { if( !setjmp(*G_fatal_longjmp(1)) )
-#endif
 #define G_CATCH else { throw QgsGrass::Exception( QgsGrass::errorMessage() ); } } catch
 
 // Throw QgsGrass::Exception if G_fatal_error happens when calling F
-#if (GRASS_VERSION_MAJOR < 7)
-#define G_FATAL_THROW(F) if( !setjmp(QgsGrass::jumper) ) { F; } else { throw QgsGrass::Exception( QgsGrass::errorMessage() ); }
-#else
 #define G_FATAL_THROW(F) if( !setjmp(*G_fatal_longjmp(1)) ) { F; } else { throw QgsGrass::Exception( QgsGrass::errorMessage() ); }
-#endif
-
-#if GRASS_VERSION_MAJOR >= 7
-#define G_available_mapsets G_get_available_mapsets
-#define G__mapset_permissions2 G_mapset_permissions2
-#define G_suppress_masking Rast_suppress_masking
-#define G__get_window(window,element,name,mapset) (G_get_element_window(window,element,name,mapset),0)
-#define G__getenv G_getenv_nofatal
-#define G__setenv G_setenv_nogisrc
-#define BOUND_BOX bound_box
-#endif
 
 // Element info container
 class GRASS_LIB_EXPORT QgsGrassObject

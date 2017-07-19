@@ -36,7 +36,7 @@ class QgsCurve;
  *
  * If a valid ellipsoid() has been set for the QgsDistanceArea, all calculations will be
  * performed using ellipsoidal algorithms (e.g. using Vincenty's formulas). If no
- * ellipsoid has been set, all calculations will be performed using cartesian
+ * ellipsoid has been set, all calculations will be performed using Cartesian
  * formulas only. The behavior can be determined by calling willUseEllipsoid().
  *
  * In order to perform accurate calculations, the source coordinate reference system
@@ -277,6 +277,9 @@ class CORE_EXPORT QgsDistanceArea
      * \note code (and documentation) taken from rttopo project
      * https://git.osgeo.org/gogs/rttopo/librttopo
      * - spheroid_project.spheroid_project(...)
+     * -  Valid bounds checking for degrees (latitude=+- 85.05115) is based values used for
+     * -> 'WGS84 Web Mercator (Auxiliary Sphere)' calculations
+     * --> latitudes outside these bounds cause the calculations to become unstable and can return invalid results
      * \since QGIS 3.0
      * \param p1 - location of first geographic (latitude/longitude) point as degrees.
      * \param distance - distance in meters.

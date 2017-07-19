@@ -177,7 +177,7 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider, public QgsFeat
      * and maximal values. If provider has facilities to retrieve minimal
      * value directly, override this function.
      */
-    virtual QVariant minimumValue( int index ) const;
+    virtual QVariant minimumValue( int index ) const override;
 
     /**
      * Returns the maximum value of an attribute
@@ -187,7 +187,7 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider, public QgsFeat
      * and maximal values. If provider has facilities to retrieve maximal
      * value directly, override this function.
      */
-    virtual QVariant maximumValue( int index ) const;
+    virtual QVariant maximumValue( int index ) const override;
 
     /**
      * Returns unique string values of an attribute which contain a specified subset string. Subset

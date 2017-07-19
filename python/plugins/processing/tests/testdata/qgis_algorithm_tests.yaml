@@ -115,20 +115,20 @@ tests:
 #  # check this behavior.
 #  # This test should stay in place because for shapefiles there should always
 #  # be a polygon result created since it does not support geometry collections.
-#  - name: Intersection (Collection Fallback)
-#    algorithm: qgis:intersection
-#    params:
-#      INPUT:
-#        name: multipolys.gml
-#        type: vector
-#      INPUT2:
-#        name: polys.gml
-#        type: vector
-#    results:
-#      OUTPUT:
-#        name: expected/intersection_collection_fallback.shp
-#        type: vector
-#
+  - algorithm: qgis:intersection
+    name: Intersects multipolygons with polygons
+    params:
+      INPUT:
+        name: multipolys.gml
+        type: vector
+      OVERLAY:
+        name: polys.gml
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/intersection_collection_fallback.shp
+        type: vector
+
   - name: Densify geometries
     algorithm: qgis:densifygeometries
     params:
@@ -141,19 +141,19 @@ tests:
         name: expected/multipolys_densify.gml
         type: vector
 
-#  - name: Polygons to Lines
-#    algorithm: qgis:polygonstolines
-#    params:
-#    - name: multipolys.gml
-#      type: vector
-#    results:
-#      OUTPUT:
-#        name: expected/polys_to_lines.gml
-#        type: vector
-#        compare:
-#          fields:
-#            fid: skip
-#
+  - name: Polygons to Lines
+    algorithm: qgis:polygonstolines
+    params:
+    - name: multipolys.gml
+      type: vector
+    results:
+      OUTPUT:
+        name: expected/polys_to_lines.gml
+        type: vector
+        compare:
+          fields:
+            fid: skip
+
   - algorithm: qgis:basicstatisticsforfields
     name: Basic statistics for numeric fields
     params:
@@ -241,6 +241,19 @@ tests:
 #          geometry:
 #            precision: 7
 #
+
+  - algorithm: qgis:listuniquevalues
+    name: Unique values
+    params:
+      INPUT:
+        name: points.gml
+        type: vector
+      FIELD_NAME: id2
+    results:
+      OUTPUT:
+        name: expected/unique_values.gml
+        type: vector
+
   - algorithm: qgis:addautoincrementalfield
     name: Add autoincremental field
     params:
@@ -402,66 +415,66 @@ tests:
   - algorithm: qgis:boundingboxes
     name: Bounding boxes for lines
     params:
-      INPUT_LAYER:
+      INPUT:
         name: lines.gml
         type: vector
     results:
-      OUTPUT_LAYER:
+      OUTPUT:
         name: expected/lines_bounds.gml
         type: vector
 
   - algorithm: qgis:boundingboxes
     name: Bounding boxes for multilines
     params:
-      INPUT_LAYER:
+      INPUT:
         name: multilines.gml
         type: vector
     results:
-      OUTPUT_LAYER:
+      OUTPUT:
         name: expected/multiline_bounds.gml
         type: vector
 
   - algorithm: qgis:boundingboxes
     name: Bounding boxes for multipolygons
     params:
-      INPUT_LAYER:
+      INPUT:
         name: multipolys.gml
         type: vector
     results:
-      OUTPUT_LAYER:
+      OUTPUT:
         name: expected/multipoly_bounds.gml
         type: vector
 
   - algorithm: qgis:boundingboxes
     name: Bounding boxes for points
     params:
-      INPUT_LAYER:
+      INPUT:
         name: points.gml
         type: vector
     results:
-      OUTPUT_LAYER:
+      OUTPUT:
         name: expected/point_bounds.gml
         type: vector
 
   - algorithm: qgis:boundingboxes
     name: Bounding boxes for polygons
     params:
-      INPUT_LAYER:
+      INPUT:
         name: polys.gml
         type: vector
     results:
-      OUTPUT_LAYER:
+      OUTPUT:
         name: expected/poly_bounds.gml
         type: vector
 
   - algorithm: qgis:boundingboxes
     name: Bounding boxes for multipoints
     params:
-      INPUT_LAYER:
+      INPUT:
         name: multipoints.gml
         type: vector
     results:
-      OUTPUT_LAYER:
+      OUTPUT:
         name: expected/multipoint_bounds.gml
         type: vector
 
@@ -509,129 +522,206 @@ tests:
         name: expected/multiline_boundary.gml
         type: vector
 
-#  - algorithm: qgis:pointonsurface
-#    name: Point on polygon surface
-#    params:
-#      INPUT_LAYER:
-#        name: polys.gml
-#        type: vector
-#    results:
-#      OUTPUT_LAYER:
-#        name: expected/point_on_poly.gml
-#        type: vector
-#
-#  - algorithm: qgis:pointonsurface
-#    name: Point on multipoint surface
-#    params:
-#      INPUT_LAYER:
-#        name: multipoints.gml
-#        type: vector
-#    results:
-#      OUTPUT_LAYER:
-#        name: expected/point_on_multipoint.gml
-#        type: vector
-#
-#  - algorithm: qgis:pointonsurface
-#    name: Point on line surface
-#    params:
-#      INPUT_LAYER:
-#        name: lines.gml
-#        type: vector
-#    results:
-#      OUTPUT_LAYER:
-#        name: expected/point_on_line.gml
-#        type: vector
-#
-#  - algorithm: qgis:offsetline
-#    name: Offset line positive
-#    params:
-#      DISTANCE: 1.0
-#      INPUT_LAYER:
-#        name: lines.gml
-#        type: vector
-#      JOIN_STYLE: '0'
-#      MITRE_LIMIT: 2
-#      SEGMENTS: 8
-#    results:
-#      OUTPUT_LAYER:
-#        name: expected/line_offset_round_positive.gml
-#        type: vector
-#        compare:
-#          geometry:
-#            precision: 7
-#
-#  - algorithm: qgis:offsetline
-#    name: Offset line negative
-#    params:
-#      DISTANCE: -1.0
-#      INPUT_LAYER:
-#        name: lines.gml
-#        type: vector
-#      JOIN_STYLE: '0'
-#      MITRE_LIMIT: 2
-#      SEGMENTS: 8
-#    results:
-#      OUTPUT_LAYER:
-#        name: expected/line_offset_round_negative.gml
-#        type: vector
-#        compare:
-#          geometry:
-#            precision: 7
-#
-#  - algorithm: qgis:offsetline
-#    name: Offset line mitre
-#    params:
-#      DISTANCE: 1.0
-#      INPUT_LAYER:
-#        name: lines.gml
-#        type: vector
-#      JOIN_STYLE: '1'
-#      MITRE_LIMIT: 2
-#      SEGMENTS: 4
-#    results:
-#      OUTPUT_LAYER:
-#        name: expected/line_offset_mitre.gml
-#        type: vector
-#        compare:
-#          geometry:
-#            precision: 7
-#
-#  - algorithm: qgis:offsetline
-#    name: Offset line bevel
-#    params:
-#      DISTANCE: 1.0
-#      INPUT_LAYER:
-#        name: lines.gml
-#        type: vector
-#      JOIN_STYLE: '2'
-#      MITRE_LIMIT: 2
-#      SEGMENTS: 8
-#    results:
-#      OUTPUT_LAYER:
-#        name: expected/line_offset_bevel.gml
-#        type: vector
-#        compare:
-#          geometry:
-#            precision: 7
-#
-#  - algorithm: qgis:offsetline
-#    name: Offset multilines
-#    params:
-#      DISTANCE: 1.0
-#      INPUT_LAYER:
-#        name: multilines.gml
-#        type: vector
-#      JOIN_STYLE: '0'
-#      MITRE_LIMIT: 2
-#      SEGMENTS: 8
-#    results:
-#      OUTPUT_LAYER:
-#        name: expected/multiline_offset.gml
-#        type: vector
-#        compare:
-#          geometry:
-#            precision: 7
-#
+  - algorithm: qgis:setmvalue
+    name: Set M Value
+    params:
+      INPUT:
+        name: points.gml
+        type: vector
+      M_VALUE: 7
+    results:
+      OUTPUT:
+        name: expected/set_m_value.shp
+        type: vector
+
+  - algorithm: qgis:setzvalue
+    name: Set Z Value
+    params:
+      INPUT:
+        name: points.gml
+        type: vector
+      Z_VALUE: 6
+    results:
+      OUTPUT:
+        name: expected/set_z_value.shp
+        type: vector
+
+  - algorithm: qgis:dropmzvalues
+    name: Drop M Value
+    params:
+      INPUT:
+        name: custom/pointszm.shp
+        type: vector
+      DROP_Z_VALUES: False
+      DROP_M_VALUES: True
+    results:
+      OUTPUT:
+        name: expected/m_dropped.shp
+        type: vector
+
+  - algorithm: qgis:dropmzvalues
+    name: Drop Z Value
+    params:
+      INPUT:
+        name: custom/pointszm.shp
+        type: vector
+      DROP_Z_VALUES: True
+      DROP_M_VALUES: False
+    results:
+      OUTPUT:
+        name: expected/z_dropped.shp
+        type: vector
+
+  - algorithm: qgis:dropmzvalues
+    name: Drop ZM Value
+    params:
+      INPUT:
+        name: custom/pointszm.shp
+        type: vector
+      DROP_Z_VALUES: True
+      DROP_M_VALUES: True
+    results:
+      OUTPUT:
+        name: expected/zm_dropped.shp
+        type: vector
+
+  - algorithm: qgis:pointonsurface
+    name: Point on polygon surface
+    params:
+      INPUT_LAYER:
+        name: polys.gml
+        type: vector
+    results:
+      OUTPUT_LAYER:
+        name: expected/point_on_poly.gml
+        type: vector
+
+  - algorithm: qgis:pointonsurface
+    name: Point on multipoint surface
+    params:
+      INPUT_LAYER:
+        name: multipoints.gml
+        type: vector
+    results:
+      OUTPUT_LAYER:
+        name: expected/point_on_multipoint.gml
+        type: vector
+
+  - algorithm: qgis:pointonsurface
+    name: Point on line surface
+    params:
+      INPUT_LAYER:
+        name: lines.gml
+        type: vector
+    results:
+      OUTPUT_LAYER:
+        name: expected/point_on_line.gml
+        type: vector
+
+  - algorithm: qgis:reverselinedirection
+    name: Reverse line direction
+    params:
+      INPUT:
+        name: lines.gml
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/lines_reversed.gml
+        type: vector
+        compare:
+          geometry:
+            precision: 7
+
+  - algorithm: qgis:offsetline
+    name: Offset line positive
+    params:
+      DISTANCE: 1.0
+      INPUT:
+        name: lines.gml
+        type: vector
+      JOIN_STYLE: '0'
+      MITRE_LIMIT: 2
+      SEGMENTS: 8
+    results:
+      OUTPUT:
+        name: expected/line_offset_round_positive.gml
+        type: vector
+        compare:
+          geometry:
+            precision: 7
+
+  - algorithm: qgis:offsetline
+    name: Offset line negative
+    params:
+      DISTANCE: -1.0
+      INPUT:
+        name: lines.gml
+        type: vector
+      JOIN_STYLE: '0'
+      MITRE_LIMIT: 2
+      SEGMENTS: 8
+    results:
+      OUTPUT:
+        name: expected/line_offset_round_negative.gml
+        type: vector
+        compare:
+          geometry:
+            precision: 7
+
+  - algorithm: qgis:offsetline
+    name: Offset line mitre
+    params:
+      DISTANCE: 1.0
+      INPUT:
+        name: lines.gml
+        type: vector
+      JOIN_STYLE: '1'
+      MITRE_LIMIT: 2
+      SEGMENTS: 4
+    results:
+      OUTPUT:
+        name: expected/line_offset_mitre.gml
+        type: vector
+        compare:
+          geometry:
+            precision: 7
+
+  - algorithm: qgis:offsetline
+    name: Offset line bevel
+    params:
+      DISTANCE: 1.0
+      INPUT:
+        name: lines.gml
+        type: vector
+      JOIN_STYLE: '2'
+      MITRE_LIMIT: 2
+      SEGMENTS: 8
+    results:
+      OUTPUT:
+        name: expected/line_offset_bevel.gml
+        type: vector
+        compare:
+          geometry:
+            precision: 7
+
+  - algorithm: qgis:offsetline
+    name: Offset multilines
+    params:
+      DISTANCE: 1.0
+      INPUT:
+        name: multilines.gml
+        type: vector
+      JOIN_STYLE: '0'
+      MITRE_LIMIT: 2
+      SEGMENTS: 8
+    results:
+      OUTPUT:
+        name: expected/multiline_offset.gml
+        type: vector
+        compare:
+          geometry:
+            precision: 7
+
 #  - algorithm: qgis:fixeddistancebuffer
 #    name: Buffer polygons using bevel
 #    params:
@@ -876,50 +966,50 @@ tests:
 #      OUTPUT_LAYER:
 #        name: expected/single_sided_buffer_multiline_bevel.gml
 #        type: vector
-#
-#  - algorithm: qgis:extractnodes
-#    name: Test (qgis:extractnodes)
-#    params:
-#      INPUT:
-#        name: multipolys.gml
-#        type: vector
-#    results:
-#      OUTPUT:
-#        name: expected/extract_nodes_multipolys.gml
-#        type: vector
-#
-#  - algorithm: qgis:extractnodes
-#    name: Extract nodes from polygons
-#    params:
-#      INPUT:
-#        name: polys.gml
-#        type: vector
-#    results:
-#      OUTPUT:
-#        name: expected/extract_nodes_polys.gml
-#        type: vector
-#
-#  - algorithm: qgis:extractnodes
-#    name: Extract nodes from multilines
-#    params:
-#      INPUT:
-#        name: multilines.gml
-#        type: vector
-#    results:
-#      OUTPUT:
-#        name: expected/extract_nodes_multilines.gml
-#        type: vector
-#
-#  - algorithm: qgis:extractnodes
-#    name: Extract nodes from lines
-#    params:
-#      INPUT:
-#        name: lines.gml
-#        type: vector
-#    results:
-#      OUTPUT:
-#        name: expected/extract_nodes_lines.gml
-#        type: vector
+
+  - algorithm: qgis:extractnodes
+    name: Test (qgis:extractnodes)
+    params:
+      INPUT:
+        name: multipolys.gml
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/extract_nodes_multipolys.gml
+        type: vector
+
+  - algorithm: qgis:extractnodes
+    name: Extract nodes from polygons
+    params:
+      INPUT:
+        name: polys.gml
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/extract_nodes_polys.gml
+        type: vector
+
+  - algorithm: qgis:extractnodes
+    name: Extract nodes from multilines
+    params:
+      INPUT:
+        name: multilines.gml
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/extract_nodes_multilines.gml
+        type: vector
+
+  - algorithm: qgis:extractnodes
+    name: Extract nodes from lines
+    params:
+      INPUT:
+        name: lines.gml
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/extract_nodes_lines.gml
+        type: vector
 
   - algorithm: qgis:simplifygeometries
     name: Simplify (lines)
@@ -1016,22 +1106,22 @@ tests:
 #      OUTPUT:
 #        name: expected/add_geometry_pointz.gml
 #        type: vector
-#
-#  - algorithm: qgis:countpointsinpolygon
-#    name: Count points in polygon
-#    params:
-#      FIELD: NUMPOINTS
-#      POINTS:
-#        name: points_in_polys.gml
-#        type: vector
-#      POLYGONS:
-#        name: polys.gml
-#        type: vector
-#    results:
-#      OUTPUT:
-#        name: expected/points_in_polys.gml
-#        type: vector
-#
+
+  - algorithm: qgis:countpointsinpolygon
+    name: Count points in polygon
+    params:
+      FIELD: NUMPOINTS
+      POINTS:
+        name: points_in_polys.gml
+        type: vector
+      POLYGONS:
+        name: polys.gml
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/points_in_polys.gml
+        type: vector
+
   - algorithm: qgis:aspect
     name: Aspect from QGIS analysis library
     params:
@@ -1044,44 +1134,44 @@ tests:
         hash: 762865ee485a6736d188402aa10e6fd38a812a9e45a7dd2d4885a63a
         type: rasterhash
 
-#  - algorithm: qgis:slope
-#    name: Slope from QGIS analysis library
-#    params:
-#      INPUT_LAYER:
-#        name: dem.tif
-#        type: raster
-#      Z_FACTOR: 1.0
-#    results:
-#      OUTPUT_LAYER:
-#        hash: 151ea76a21b286c16567eb6b4b692925a84145b65561a0017effb1a1
-#        type: rasterhash
-#
-#  - algorithm: qgis:ruggednessindex
-#    name: Ruggedness index from QGIS analysis library
-#    params:
-#      INPUT_LAYER:
-#        name: dem.tif
-#        type: raster
-#      Z_FACTOR: 1.0
-#    results:
-#      OUTPUT_LAYER:
-#        hash: ff630246e8dc19c7217d81261c6b64f965c17fa04d3e41d7979c1f1e
-#        type: rasterhash
-#
-#  - algorithm: qgis:hillshade
-#    name: Hillshade from QGIS analysis library
-#    params:
-#      AZIMUTH: 300.0
-#      INPUT_LAYER:
-#        name: dem.tif
-#        type: raster
-#      V_ANGLE: 40.0
-#      Z_FACTOR: 1.0
-#    results:
-#      OUTPUT_LAYER:
-#        hash: 58365b3715b925d6286e7f082ebd9c2a20f09fa1c922176d3f238002
-#        type: rasterhash
-#
+  - algorithm: qgis:slope
+    name: Slope from QGIS analysis library
+    params:
+      INPUT:
+        name: dem.tif
+        type: raster
+      Z_FACTOR: 1.0
+    results:
+      OUTPUT:
+        hash: 151ea76a21b286c16567eb6b4b692925a84145b65561a0017effb1a1
+        type: rasterhash
+
+  - algorithm: qgis:ruggednessindex
+    name: Ruggedness index from QGIS analysis library
+    params:
+      INPUT:
+        name: dem.tif
+        type: raster
+      Z_FACTOR: 1.0
+    results:
+      OUTPUT:
+        hash: ff630246e8dc19c7217d81261c6b64f965c17fa04d3e41d7979c1f1e
+        type: rasterhash
+
+  - algorithm: qgis:hillshade
+    name: Hillshade from QGIS analysis library
+    params:
+      AZIMUTH: 300.0
+      INPUT:
+        name: dem.tif
+        type: raster
+      V_ANGLE: 40.0
+      Z_FACTOR: 1.0
+    results:
+      OUTPUT:
+        hash: 58365b3715b925d6286e7f082ebd9c2a20f09fa1c922176d3f238002
+        type: rasterhash
+
 #  - algorithm: qgis:relief
 #    name: Relief (automatic colors generation)
 #    params:
@@ -1112,54 +1202,54 @@ tests:
 #      OUTPUT_LAYER:
 #        hash: 7fe0e0174185fd743e23760f33615adf10f771b4275f320db6f7f4f8
 #        type: rasterhash
-#
-#  # Case 1: Keep all fields
-#  - algorithm: qgis:lineintersections
-#    name: Line Intersection Keep All Fields from Both
-#    params:
-#      INPUT_A:
-#        name: lines.gml
-#        type: vector
-#      INPUT_B:
-#        name: simplify_lines.gml
-#        type: vector
-#    results:
-#      OUTPUT:
-#        name: expected/line_intersection.gml
-#        type: vector
-#
-#  # Case 2: Keep fid field from both layers
-#  - algorithm: qgis:lineintersections
-#    name: Line Intersection Keep fid from Both
-#    params:
-#      FIELD_A: fid
-#      FIELD_B: fid
-#      INPUT_A:
-#        name: lines.gml
-#        type: vector
-#      INPUT_B:
-#        name: simplify_lines.gml
-#        type: vector
-#    results:
-#      OUTPUT:
-#        name: expected/line_intersection.gml
-#        type: vector
-#
-#  - algorithm: qgis:sumlinelengths
-#    name: Sum line lengths
-#    params:
-#      COUNT_FIELD: line_count
-#      LEN_FIELD: line_len
-#      LINES:
-#        name: lines.gml
-#        type: vector
-#      POLYGONS:
-#        name: polys.gml
-#        type: vector
-#    results:
-#      OUTPUT:
-#        name: expected/sum_line_length.gml
-#        type: vector
+
+  # Case 1: Keep all fields
+  - algorithm: qgis:lineintersections
+    name: Line Intersection Keep All Fields from Both
+    params:
+      INPUT:
+        name: lines.gml
+        type: vector
+      INTERSECT:
+        name: simplify_lines.gml
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/line_intersection.gml
+        type: vector
+
+  # Case 2: Keep fid field from both layers
+  - algorithm: qgis:lineintersections
+    name: Line Intersection Keep fid from Both
+    params:
+      INPUT_FIELDS: fid
+      INTERSECT_FIELDS: fid
+      INPUT:
+        name: lines.gml
+        type: vector
+      INTERSECT:
+        name: simplify_lines.gml
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/line_intersection.gml
+        type: vector
+
+  - algorithm: qgis:sumlinelengths
+    name: Sum line lengths
+    params:
+      COUNT_FIELD: line_count
+      LEN_FIELD: line_len
+      LINES:
+        name: lines.gml
+        type: vector
+      POLYGONS:
+        name: polys.gml
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/sum_line_length.gml
+        type: vector
 
   - algorithm: qgis:delaunaytriangulation
     name: Delaunay triangulation (multipoint data)
@@ -1245,17 +1335,17 @@ tests:
 #      #TRIANULATION_FILE:
 #      #  name: expected/triangulation.gml
 #      #  type: vector
-#
-#  - algorithm: qgis:removenullgeometries
-#    name: Remove null geometries
-#    params:
-#      INPUT_LAYER:
-#        name: polys.gml
-#        type: vector
-#    results:
-#      OUTPUT_LAYER:
-#        name: expected/remove_null_polys.gml
-#        type: vector
+
+  - algorithm: native:removenullgeometries
+    name: Remove null geometries
+    params:
+      INPUT:
+        name: polys.gml
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/remove_null_polys.gml
+        type: vector
 #
   - algorithm: native:extractbyexpression
     name: Extract by Expression
@@ -1468,21 +1558,21 @@ tests:
         name: expected/snap_internal.gml
         type: vector
 
-#  - algorithm: qgis:poleofinaccessibility
-#    name: Pole of inaccessibility (polygons)
-#    params:
-#      INPUT_LAYER:
-#        name: polys.gml
-#        type: vector
-#      TOLERANCE: 1.0e-05
-#    results:
-#      OUTPUT_LAYER:
-#        name: expected/pole_inaccessibility_polys.gml
-#        type: vector
-#        compare:
-#          geometry:
-#            precision: 7
-#
+  - algorithm: qgis:poleofinaccessibility
+    name: Pole of inaccessibility (polygons)
+    params:
+      INPUT:
+        name: polys.gml
+        type: vector
+      TOLERANCE: 1.0e-05
+    results:
+      OUTPUT:
+        name: expected/pole_inaccessibility_polys.gml
+        type: vector
+        compare:
+          geometry:
+            precision: 7
+
   - algorithm: native:extractbyattribute
     name: Extract by attribute (is null)
     params:
@@ -1932,34 +2022,34 @@ tests:
 #        compare:
 #          geometry:
 #            precision: 7
-#
-#  - algorithm: qgis:orthogonalize
-#    name: Orthogonalize polys
-#    params:
-#      INPUT_LAYER:
-#        name: custom/polys_to_orth.gml
-#        type: vector
-#    results:
-#      OUTPUT_LAYER:
-#        name: expected/orthagonal_polys.gml
-#        type: vector
-#        compare:
-#          geometry:
-#            precision: 7
-#
-#  - algorithm: qgis:orthogonalize
-#    name: Orthogonalize lines
-#    params:
-#      INPUT_LAYER:
-#        name: custom/lines_to_orth.gml
-#        type: vector
-#    results:
-#      OUTPUT_LAYER:
-#        name: expected/orthagonal_lines.gml
-#        type: vector
-#        compare:
-#          geometry:
-#            precision: 7
+
+  - algorithm: qgis:orthogonalize
+    name: Orthogonalize polys
+    params:
+      INPUT:
+        name: custom/polys_to_orth.gml
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/orthagonal_polys.gml
+        type: vector
+        compare:
+          geometry:
+            precision: 7
+
+  - algorithm: qgis:orthogonalize
+    name: Orthogonalize lines
+    params:
+      INPUT:
+        name: custom/lines_to_orth.gml
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/orthagonal_lines.gml
+        type: vector
+        compare:
+          geometry:
+            precision: 7
 
 
   - algorithm: native:reprojectlayer
@@ -2023,17 +2113,17 @@ tests:
 #        name: expected/add_unique_field.gml
 #        type: vector
 #
-#  - algorithm: qgis:linestopolygons
-#    name: convert lines to polygon
-#    params:
-#      INPUT:
-#        name: lines.gml
-#        type: vector
-#    results:
-#      OUTPUT:
-#        name: expected/lines_to_polygon.gml
-#        type: vector
-#
+  - algorithm: qgis:linestopolygons
+    name: convert lines to polygon
+    params:
+      INPUT:
+        name: lines.gml
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/lines_to_polygon.gml
+        type: vector
+
 #  - algorithm: qgis:joinattributestable
 #    name: join the attribute table by common field
 #    params:
@@ -2171,54 +2261,58 @@ tests:
 #        name: expected/truncated.shp
 #        type: vector
 #        in_place_result: true
-#
-#  - algorithm: qgis:distancematrix
-#    name: Distance matrix (only tests for TableWriter, does not check result)
-#    params:
-#      INPUT_FIELD: fid
-#      INPUT_LAYER:
-#        name: points.gml
-#        type: vector
-#      MATRIX_TYPE: '0'
-#      NEAREST_POINTS: 0
-#      TARGET_FIELD: fid
-#      TARGET_LAYER:
-#        name: points.gml
-#        type: vector
-#    results: {}
-#
-#  - algorithm: qgis:countuniquepointsinpolygon
-#    name: standard count unique points in polygon
-#    params:
-#      CLASSFIELD: id2
-#      FIELD: NUMPOINTS
-#      POINTS:
-#        name: points.gml
-#        type: vector
-#      POLYGONS:
-#        name: polys.gml
-#        type: vector
-#    results:
-#      OUTPUT:
-#        name: expected/count_unique_points.gml
-#        type: vector
-#
-#  - algorithm: qgis:countpointsinpolygonweighted
-#    name: standard count points in polygon wighted
-#    params:
-#      FIELD: NUMPOINTS
-#      POINTS:
-#        name: custom/points_weighted.gml
-#        type: vector
-#      POLYGONS:
-#        name: polys.gml
-#        type: vector
-#      WEIGHT: id
-#    results:
-#      OUTPUT:
-#        name: expected/count_points_weighted.gml
-#        type: vector
-#
+
+  - algorithm: qgis:distancematrix
+    name: Distance matrix (only tests for run, does not check result as rows are in random order)
+    params:
+      INPUT_FIELD: fid
+      INPUT:
+        name: points.gml
+        type: vector
+      MATRIX_TYPE: '0'
+      NEAREST_POINTS: 0
+      TARGET_FIELD: fid
+      TARGET:
+        name: points.gml
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/count_unique_points.gml
+        type: vector
+        compare: false
+
+  - algorithm: qgis:countpointsinpolygon
+    name: standard count unique points in polygon
+    params:
+      CLASSFIELD: id2
+      FIELD: NUMPOINTS
+      POINTS:
+        name: points.gml
+        type: vector
+      POLYGONS:
+        name: polys.gml
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/count_unique_points.gml
+        type: vector
+
+  - algorithm: qgis:countpointsinpolygon
+    name: standard count points in polygon weighted
+    params:
+      FIELD: NUMPOINTS
+      POINTS:
+        name: custom/points_weighted.gml
+        type: vector
+      POLYGONS:
+        name: polys.gml
+        type: vector
+      WEIGHT: id
+    results:
+      OUTPUT:
+        name: expected/count_points_weighted.gml
+        type: vector
+
 #  - algorithm: qgis:pointsalonglines
 #    name: standard points alog lines
 #    params:
@@ -2232,18 +2326,18 @@ tests:
 #      OUTPUT:
 #        name: expected/points_alog_lines.gml
 #        type: vector
-#
-#  - algorithm: qgis:meancoordinates
-#    name: standard mean coordinates
-#    params:
-#      POINTS:
-#        name: custom/points.shp
-#        type: vector
-#    results:
-#      OUTPUT:
-#        name: expected/mean_coordinates.gml
-#        type: vector
-#
+
+  - algorithm: qgis:meancoordinates
+    name: standard mean coordinates
+    params:
+      INPUT:
+        name: custom/points.shp
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/mean_coordinates.gml
+        type: vector
+
 #  # Temporarily disable until we figure out why it failed after merging
 #  # into master
 #  #- algorithm: qgis:singlepartstomultipart
@@ -2525,11 +2619,11 @@ tests:
       FIELD_NAME: field
       FIELD_PRECISION: 2
       FIELD_TYPE: '1'
-      INPUT_LAYER:
+      INPUT:
         name: custom/points.shp
         type: vector
     results:
-      OUTPUT_LAYER:
+      OUTPUT:
         name: expected/add_field.gml
         type: vector
 
@@ -2591,3 +2685,19 @@ tests:
         type: vector
         name: points_weighted.gml
         compare: false
+
+  - algorithm: qgis:heatmapkerneldensityestimation
+    name: Heatmap (Kernel density estimation)
+    params:
+      DECAY: 0.0
+      INPUT:
+        name: points.gml
+        type: vector
+      KERNEL: '0'
+      OUTPUT_VALUE: '0'
+      PIXEL_SIZE: 0.1
+      RADIUS: 0.5
+    results:
+      OUTPUT:
+        hash: a594d4fa994b81641bfadde54447dc548fa6e23f630c6a4c383487c5
+        type: rasterhash

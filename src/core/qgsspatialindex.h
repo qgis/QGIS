@@ -33,6 +33,7 @@ namespace SpatialIndex SIP_SKIP
   }
 }
 
+class QgsFeedback;
 class QgsFeature;
 class QgsRectangle;
 class QgsPointXY;
@@ -64,17 +65,26 @@ class CORE_EXPORT QgsSpatialIndex
     /** Constructor - creates R-tree and bulk loads it with features from the iterator.
      * This is much faster approach than creating an empty index and then inserting features one by one.
      *
+     * The optional \a feedback object can be used to allow cancelation of bulk feature loading. Ownership
+     * of \a feedback is not transferred, and callers must take care that the lifetime of feedback exceeds
+     * that of the spatial index construction.
+     *
      * \since QGIS 2.8
      */
-    explicit QgsSpatialIndex( const QgsFeatureIterator &fi );
+    explicit QgsSpatialIndex( const QgsFeatureIterator &fi, QgsFeedback *feedback = nullptr );
 
     /**
      * Constructor - creates R-tree and bulk loads it with features from the source.
      * This is much faster approach than creating an empty index and then inserting features one by one.
      *
+     * The optional \a feedback object can be used to allow cancelation of bulk feature loading. Ownership
+     * of \a feedback is not transferred, and callers must take care that the lifetime of feedback exceeds
+     * that of the spatial index construction.
+
+     *
      * \since QGIS 3.0
      */
-    explicit QgsSpatialIndex( const QgsFeatureSource &source );
+    explicit QgsSpatialIndex( const QgsFeatureSource &source, QgsFeedback *feedback = nullptr );
 
     //! Copy constructor
     QgsSpatialIndex( const QgsSpatialIndex &other );

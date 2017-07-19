@@ -673,6 +673,7 @@ void QgsGrassTools::on_mFilterInput_textChanged( QString text )
 
 void QgsGrassTools::itemClicked( const QModelIndex &index )
 {
+  QgsDebugMsg( "Entered" );
   if ( index.column() == 0 )
   {
     //
@@ -685,7 +686,7 @@ void QgsGrassTools::itemClicked( const QModelIndex &index )
     {
       return;
     }
-    QModelIndex index = proxyModel->mapToSource( index );
+    QModelIndex modelIndex = proxyModel->mapToSource( index );
 
     QStandardItemModel *model = 0;
     if ( proxyModel == mTreeModelProxy )
@@ -697,7 +698,7 @@ void QgsGrassTools::itemClicked( const QModelIndex &index )
       model = mModulesListModel;
     }
 
-    QStandardItem *mypItem = model->itemFromIndex( index );
+    QStandardItem *mypItem = model->itemFromIndex( modelIndex );
     if ( mypItem )
     {
       QString myModuleName = mypItem->data( Qt::UserRole + Name ).toString();

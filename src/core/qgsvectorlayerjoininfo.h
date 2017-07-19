@@ -33,10 +33,11 @@
 class CORE_EXPORT QgsVectorLayerJoinInfo
 {
   public:
-    QgsVectorLayerJoinInfo()
-      : mMemoryCache( false )
-      , cacheDirty( true )
-    {}
+
+    /**
+     * Constructor for QgsVectorLayerJoinInfo.
+     */
+    QgsVectorLayerJoinInfo() = default;
 
     //! Sets weak reference to the joined layer
     void setJoinLayer( QgsVectorLayer *layer ) { mJoinLayerRef = QgsVectorLayerRef( layer ); }
@@ -119,7 +120,7 @@ class CORE_EXPORT QgsVectorLayerJoinInfo
     QString mPrefix;
 
     //! True if the join is cached in virtual memory
-    bool mMemoryCache;
+    bool mMemoryCache = false;
 
     //! Subset of fields to use from joined layer. null = use all fields
     std::shared_ptr<QStringList> mJoinFieldsSubset;
@@ -130,9 +131,9 @@ class CORE_EXPORT QgsVectorLayerJoinInfo
     friend class QgsVectorLayerFeatureIterator;
 
     //! True if the cached join attributes need to be updated
-    bool cacheDirty;
+    bool cacheDirty = true;
 
-    bool mDynamicForm;
+    bool mDynamicForm = false;
 
     //! Cache for joined attributes to provide fast lookup (size is 0 if no memory caching)
     QHash< QString, QgsAttributes> cachedAttributes;

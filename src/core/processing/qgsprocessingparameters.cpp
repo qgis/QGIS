@@ -277,55 +277,7 @@ QgsProcessingFeatureSource *QgsProcessingParameters::parameterAsSource( const Qg
 
   QVariant val = parameters.value( definition->name() );
 
-  bool selectedFeaturesOnly = false;
-  if ( val.canConvert<QgsProcessingFeatureSourceDefinition>() )
-  {
-    // input is a QgsProcessingFeatureSourceDefinition - get extra properties from it
-    QgsProcessingFeatureSourceDefinition fromVar = qvariant_cast<QgsProcessingFeatureSourceDefinition>( val );
-    selectedFeaturesOnly = fromVar.selectedFeaturesOnly;
-    val = fromVar.source;
-  }
-
-  if ( QgsVectorLayer *layer = qobject_cast< QgsVectorLayer * >( qvariant_cast<QObject *>( val ) ) )
-  {
-    return new QgsProcessingFeatureSource( layer, context );
-  }
-
-  QString layerRef;
-  if ( val.canConvert<QgsProperty>() )
-  {
-    layerRef = val.value< QgsProperty >().valueAsString( context.expressionContext(), definition->defaultValue().toString() );
-  }
-  else if ( !val.isValid() || val.toString().isEmpty() )
-  {
-    // fall back to default
-    if ( QgsVectorLayer *layer = qobject_cast< QgsVectorLayer * >( qvariant_cast<QObject *>( definition->defaultValue() ) ) )
-    {
-      return new QgsProcessingFeatureSource( layer, context );
-    }
-
-    layerRef = definition->defaultValue().toString();
-  }
-  else
-  {
-    layerRef = val.toString();
-  }
-
-  if ( layerRef.isEmpty() )
-    return nullptr;
-
-  QgsVectorLayer *vl = qobject_cast< QgsVectorLayer *>( QgsProcessingUtils::mapLayerFromString( layerRef, context ) );
-  if ( !vl )
-    return nullptr;
-
-  if ( selectedFeaturesOnly )
-  {
-    return new QgsProcessingFeatureSource( new QgsVectorLayerSelectedFeatureSource( vl ), context, true );
-  }
-  else
-  {
-    return new QgsProcessingFeatureSource( vl, context );
-  }
+  return QgsProcessingUtils::variantToSource( val, context, definition->defaultValue() );
 }
 
 QString QgsProcessingParameters::parameterAsCompatibleSourceLayerPath( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, QgsProcessingContext &context, const QStringList &compatibleFormats, const QString &preferredFormat, QgsProcessingFeedback *feedback )
@@ -2965,6 +2917,7 @@ QVariantMap QgsProcessingDestinationParameter::toVariantMap() const
 {
   QVariantMap map = QgsProcessingParameterDefinition::toVariantMap();
   map.insert( QStringLiteral( "supports_non_file_outputs" ), mSupportsNonFileBasedOutputs );
+  map.insert( QStringLiteral( "create_by_default" ), mCreateByDefault );
   return map;
 }
 
@@ -2972,12 +2925,23 @@ bool QgsProcessingDestinationParameter::fromVariantMap( const QVariantMap &map )
 {
   QgsProcessingParameterDefinition::fromVariantMap( map );
   mSupportsNonFileBasedOutputs = map.value( QStringLiteral( "supports_non_file_outputs" ) ).toBool();
+  mCreateByDefault = map.value( QStringLiteral( "create_by_default" ), QStringLiteral( "1" ) ).toBool();
   return true;
 }
 
 QString QgsProcessingDestinationParameter::generateTemporaryDestination() const
 {
   return QgsProcessingUtils::generateTempFilename( name() + '.' + defaultFileExtension() );
+}
+
+bool QgsProcessingDestinationParameter::createByDefault() const
+{
+  return mCreateByDefault;
+}
+
+void QgsProcessingDestinationParameter::setCreateByDefault( bool createByDefault )
+{
+  mCreateByDefault = createByDefault;
 }
 
 QgsProcessingParameterVectorDestination::QgsProcessingParameterVectorDestination( const QString &name, const QString &description, QgsProcessing::LayerType type, const QVariant &defaultValue, bool optional )

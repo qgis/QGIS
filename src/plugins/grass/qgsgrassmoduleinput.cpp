@@ -44,11 +44,7 @@
 
 extern "C"
 {
-#if GRASS_VERSION_MAJOR < 7
-#include <grass/Vect.h>
-#else
 #include <grass/vector.h>
-#endif
 }
 
 #include "qgsgrassmoduleinput.h"
@@ -117,9 +113,7 @@ void QgsGrassModuleInputModel::onDirectoryChanged( const QString &path )
       watch( path + "/" + watchedDir );
     }
     // TODO: use db path defined in mapset VAR
-#if GRASS_VERSION_MAJOR >= 7
     watch( path + "/tgis/sqlite.db" );
-#endif
   }
   else // cellhd or vector dir
   {
@@ -209,9 +203,7 @@ void QgsGrassModuleInputModel::refreshMapset( QStandardItem *mapsetItem, const Q
   if ( typesCopy.isEmpty() )
   {
     typesCopy << QgsGrassObject::Raster << QgsGrassObject::Vector;
-#if GRASS_VERSION_MAJOR >= 7
     typesCopy << QgsGrassObject::Strds << QgsGrassObject::Stvds << QgsGrassObject::Str3ds;
-#endif
   }
   Q_FOREACH ( QgsGrassObject::Type type, typesCopy )
   {
@@ -305,9 +297,7 @@ void QgsGrassModuleInputModel::reload()
     {
       watch( dirPath + "/" + watchedDir );
     }
-#if GRASS_VERSION_MAJOR >= 7
     watch( dirPath + "/tgis/sqlite.db" );
-#endif
   }
 }
 

@@ -1186,6 +1186,16 @@ bool QgsOracleProvider::addFeatures( QgsFeatureList &flist, QgsFeatureSink::Flag
 
   bool returnvalue = true;
 
+  if ( !( flags & QgsFeatureSink::FastInsert ) && !getWorkspace().isEmpty() && getWorkspace().toUpper() != "LIVE" )
+  {
+    static bool warn = true;
+    if ( warn )
+    {
+      QgsMessageLog::logMessage( tr( "Retrieval of updated primary keys from versioned tables not supported" ), tr( "Oracle" ) );
+      warn = false;
+    }
+    flags |= QgsFeatureSink::FastInsert;
+  }
 
   QSqlDatabase db( *mConnection );
 

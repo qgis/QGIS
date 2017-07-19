@@ -42,7 +42,7 @@ class HeatmapPixelSizeWidget(BASE, WIDGET):
         self.setupUi(self)
 
         self.layer_bounds = QgsRectangle()
-        self.layer = None
+        self.source = None
         self.raster_bounds = QgsRectangle()
         self.radius = 100
         self.radius_field = None
@@ -65,28 +65,28 @@ class HeatmapPixelSizeWidget(BASE, WIDGET):
         self.radius_field = radius_field
         self.recalculate_bounds()
 
-    def setLayer(self, layer):
-        if not layer:
+    def setSource(self, source):
+        if not source:
             return
-        bounds = layer.extent()
+        bounds = source.sourceExtent()
         if bounds.isNull():
             return
 
-        self.layer = layer
+        self.source = source
         self.layer_bounds = bounds
         self.recalculate_bounds()
 
     def recalculate_bounds(self):
         self.raster_bounds = QgsRectangle(self.layer_bounds)
 
-        if not self.layer:
+        if not self.source:
             return
 
         max_radius = self.radius
         if self.radius_field:
-            idx = self.layer.fields().lookupField(self.radius_field)
+            idx = self.source.fields().lookupField(self.radius_field)
             try:
-                max_radius = float(self.layer.maximumValue(idx))
+                max_radius = float(self.source.maximumValue(idx))
             except:
                 pass
 
@@ -157,6 +157,10 @@ class HeatmapPixelSizeWidget(BASE, WIDGET):
 
 class HeatmapPixelSizeWidgetWrapper(WidgetWrapper):
 
+    def __init__(self, param, dialog, row=0, col=0, **kwargs):
+        super().__init__(param, dialog, row, col, **kwargs)
+        self.context = dataobjects.createContext()
+
     def _panel(self):
         return HeatmapPixelSizeWidget()
 
@@ -177,24 +181,22 @@ class HeatmapPixelSizeWidgetWrapper(WidgetWrapper):
             return
 
         for wrapper in wrappers:
-            if wrapper.param.name == self.param.parent_layer:
-                self.setLayer(wrapper.value())
+            if wrapper.param.name() == self.param.parent_layer:
+                self.setSource(wrapper.value())
                 wrapper.widgetValueHasChanged.connect(self.parentLayerChanged)
-            elif wrapper.param.name == self.param.radius_param:
+            elif wrapper.param.name() == self.param.radius_param:
                 self.setRadius(wrapper.value())
                 wrapper.widgetValueHasChanged.connect(self.radiusChanged)
-            elif wrapper.param.name == self.param.radius_field_param:
-                self.setLayer(wrapper.value())
+            elif wrapper.param.name() == self.param.radius_field_param:
+                self.setSource(wrapper.value())
                 wrapper.widgetValueHasChanged.connect(self.radiusFieldChanged)
 
     def parentLayerChanged(self, wrapper):
-        self.setLayer(wrapper.value())
+        self.setSource(wrapper.value())
 
-    def setLayer(self, layer):
-        context = dataobjects.createContext()
-        if isinstance(layer, str):
-            layer = QgsProcessingUtils.mapLayerFromString(layer, context)
-        self.widget.setLayer(layer)
+    def setSource(self, source):
+        source = QgsProcessingUtils.variantToSource(source, self.context)
+        self.widget.setSource(source)
 
     def radiusChanged(self, wrapper):
         self.setRadius(wrapper.value())

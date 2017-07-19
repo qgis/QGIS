@@ -36,7 +36,16 @@ class QgsLayoutDesignerInterface: QObject
     virtual QgsLayout *layout() = 0;
 %Docstring
  Returns the layout displayed in the designer.
+.. seealso:: view()
  :rtype: QgsLayout
+%End
+
+
+    virtual QgsLayoutView *view() = 0;
+%Docstring
+ Returns the layout view utilized by the designer.
+.. seealso:: layout()
+ :rtype: QgsLayoutView
 %End
 
   public slots:

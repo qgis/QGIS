@@ -46,6 +46,9 @@
 QgsDistanceArea::QgsDistanceArea()
 {
   // init with default settings
+  mSemiMajor = -1.0;
+  mSemiMinor = -1.0;
+  mInvFlattening = -1.0;
   setSourceCrs( QgsCoordinateReferenceSystem::fromSrsId( GEOCRS_ID ) ); // WGS 84
   setEllipsoid( GEO_NONE );
 }
@@ -353,7 +356,7 @@ double QgsDistanceArea::measureLineProjected( const QgsPointXY &p1, double dista
     p2 = computeSpheroidProject( p1, distance, azimuth );
     result = p1.distance( p2 );
   }
-  else // cartesian coordinates
+  else // Cartesian coordinates
   {
     result = distance; // Avoid rounding errors when using meters [return as sent]
     if ( sourceCrs().mapUnits() != QgsUnitTypes::DistanceMeters )
@@ -363,6 +366,19 @@ double QgsDistanceArea::measureLineProjected( const QgsPointXY &p1, double dista
     }
     p2 = p1.project( distance, azimuth );
   }
+  QgsDebugMsgLevel( QString( "Converted distance of %1 %2 to %3 distance %4 %5, using azimuth[%6] from point[%7] to point[%8] sourceCrs[%9] mEllipsoid[%10] isGeographic[%11] [%12]" )
+                    .arg( QString::number( distance, 'f', 7 ) )
+                    .arg( QgsUnitTypes::toString( QgsUnitTypes::DistanceMeters ) )
+                    .arg( QString::number( result, 'f', 7 ) )
+                    .arg( ( ( mCoordTransform.sourceCrs().isGeographic() ) == 1 ? QString( "Geographic" ) : QString( "Cartesian" ) ) )
+                    .arg( QgsUnitTypes::toString( sourceCrs().mapUnits() ) )
+                    .arg( azimuth )
+                    .arg( p1.wellKnownText() )
+                    .arg( p2.wellKnownText() )
+                    .arg( sourceCrs().description() )
+                    .arg( mEllipsoid )
+                    .arg( sourceCrs().isGeographic() )
+                    .arg( QString( "SemiMajor[%1] SemiMinor[%2] InvFlattening[%3] " ).arg( QString::number( mSemiMajor, 'f', 7 ) ).arg( QString::number( mSemiMinor, 'f', 7 ) ).arg( QString::number( mInvFlattening, 'f', 7 ) ) ), 4 );
   if ( projectedPoint )
   {
     *projectedPoint = QgsPointXY( p2 );
@@ -384,6 +400,13 @@ QgsPointXY QgsDistanceArea::computeSpheroidProject(
   double a = mSemiMajor;
   double b = mSemiMinor;
   double f = 1 / mInvFlattening;
+  if ( ( ( a < 0 ) && ( b < 0 ) ) ||
+       ( ( p1.x() < -180.0 ) || ( p1.x() > 180.0 ) || ( p1.y() < -85.05115 ) || ( p1.y() > 85.05115 ) ) )
+  {
+    // latitudes outside these bounds cause the calculations to become unstable and can return invalid results
+    return QgsPoint( 0, 0 );
+
+  }
   double radians_lat = DEG2RAD( p1.y() );
   double radians_long = DEG2RAD( p1.x() );
   double b2 = POW2( b ); // spheroid_mu2
@@ -674,17 +697,18 @@ double QgsDistanceArea::computePolygonArea( const QList<QgsPointXY> &points ) co
     return 0;
   }
 
+  // IMPORTANT
+  // don't change anything here without reporting the changes to upstream (GRASS)
+  // let's all be good opensource citizens and share the improvements!
+
   double x1, y1, x2, y2, dx, dy;
   double Qbar1, Qbar2;
   double area;
 
   /* GRASS comment: threshold for dy, should be between 1e-4 and 1e-7
-   * QGIS note: while the grass comment states that thres should be between 1e-4->1e-7,
-   * a value of 1e-7 caused TestQgsDistanceArea::regression14675() to regress
-   * The maximum threshold possible which permits regression14675() to pass
-   * was found to be ~0.7e-7.
+   * See relevant discussion at https://trac.osgeo.org/grass/ticket/3369
   */
-  const double thresh = 0.7e-7;
+  const double thresh = 1e-6;
 
   QgsDebugMsgLevel( "Ellipsoid: " + mEllipsoid, 3 );
   if ( !willUseEllipsoid() )
@@ -732,7 +756,7 @@ double QgsDistanceArea::computePolygonArea( const QList<QgsPointXY> &points ) co
        * (Qbar2 - Qbar1) / dy should approach Q((y1 + y2) / 2)
        * Metz 2017
        */
-      area += dx * ( m_Qp - getQ( y2 ) );
+      area += dx * ( m_Qp - getQ( ( y1 + y2 ) / 2.0 ) );
 
       /* original:
        * area += dx * getQ( y2 ) - ( dx / dy ) * ( Qbar2 - Qbar1 );

@@ -36,10 +36,8 @@ from qgis.core import (QgsFeature,
                        NULL,
                        QgsWkbTypes,
                        QgsMessageLog,
-                       QgsProcessingUtils,
                        QgsProcessingParameterFeatureSource,
                        QgsProcessingParameterFeatureSink,
-                       QgsProcessingOutputVectorLayer,
                        QgsSpatialIndex)
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 from processing.tools import vector
@@ -69,7 +67,6 @@ class SymmetricalDifference(QgisAlgorithm):
                                                               self.tr('Difference layer')))
 
         self.addParameter(QgsProcessingParameterFeatureSink(self.OUTPUT, self.tr('Symmetrical difference')))
-        self.addOutput(QgsProcessingOutputVectorLayer(self.OUTPUT, self.tr('Symmetrical difference')))
 
     def name(self):
         return 'symmetricaldifference'
@@ -90,8 +87,8 @@ class SymmetricalDifference(QgisAlgorithm):
         featB = QgsFeature()
         outFeat = QgsFeature()
 
-        indexA = QgsSpatialIndex(sourceA)
-        indexB = QgsSpatialIndex(sourceB.getFeatures(QgsFeatureRequest().setSubsetOfAttributes([]).setDestinationCrs(sourceA.sourceCrs())))
+        indexA = QgsSpatialIndex(sourceA, feedback)
+        indexB = QgsSpatialIndex(sourceB.getFeatures(QgsFeatureRequest().setSubsetOfAttributes([]).setDestinationCrs(sourceA.sourceCrs())), feedback)
 
         total = 100.0 / (sourceA.featureCount() * sourceB.featureCount()) if sourceA.featureCount() and sourceB.featureCount() else 1
         count = 0

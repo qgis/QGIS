@@ -25,17 +25,14 @@ __copyright__ = '(C) 2015, Nyall Dawson'
 
 __revision__ = '$Format:%H$'
 
-from qgis.core import (QgsApplication,
-                       QgsFeatureSink,
-                       QgsProcessingUtils,
+from qgis.core import (QgsFeatureSink,
+                       QgsProcessing,
+                       QgsProcessingException,
                        QgsProcessingParameterFeatureSource,
                        QgsProcessingParameterFeatureSink,
-                       QgsProcessingParameterNumber,
-                       QgsProcessingOutputVectorLayer)
+                       QgsProcessingParameterNumber)
 
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
-from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
-from processing.tools import dataobjects
 
 
 class Smooth(QgisAlgorithm):
@@ -54,7 +51,7 @@ class Smooth(QgisAlgorithm):
 
     def initAlgorithm(self, config=None):
         self.addParameter(QgsProcessingParameterFeatureSource(self.INPUT,
-                                                              self.tr('Input layer'), [dataobjects.TYPE_VECTOR_POLYGON, dataobjects.TYPE_VECTOR_LINE]))
+                                                              self.tr('Input layer'), [QgsProcessing.TypeVectorPolygon, QgsProcessing.TypeVectorLine]))
         self.addParameter(QgsProcessingParameterNumber(self.ITERATIONS,
                                                        self.tr('Iterations'),
                                                        defaultValue=1, minValue=1, maxValue=10))
@@ -66,7 +63,6 @@ class Smooth(QgisAlgorithm):
                                                        defaultValue=180.0, minValue=0.0, maxValue=180.0))
 
         self.addParameter(QgsProcessingParameterFeatureSink(self.OUTPUT, self.tr('Smoothed')))
-        self.addOutput(QgsProcessingOutputVectorLayer(self.OUTPUT, self.tr('Smoothed')))
 
     def name(self):
         return 'smoothgeometry'
@@ -93,7 +89,7 @@ class Smooth(QgisAlgorithm):
             if input_feature.geometry():
                 output_geometry = input_feature.geometry().smooth(iterations, offset, -1, max_angle)
                 if not output_geometry:
-                    raise GeoAlgorithmExecutionException(
+                    raise QgsProcessingException(
                         self.tr('Error smoothing geometry'))
 
                 output_feature.setGeometry(output_geometry)

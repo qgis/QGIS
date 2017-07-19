@@ -41,8 +41,7 @@ email                : a.furieri@lqt.it
 #endif
 
 QgsSpatiaLiteSourceSelect::QgsSpatiaLiteSourceSelect( QWidget *parent, Qt::WindowFlags fl, QgsProviderRegistry::WidgetMode widgetMode ):
-  QDialog( parent, fl ),
-  mWidgetMode( widgetMode )
+  QgsAbstractDataSourceWidget( parent, fl, widgetMode )
 {
   setupUi( this );
 
@@ -67,7 +66,7 @@ QgsSpatiaLiteSourceSelect::QgsSpatiaLiteSourceSelect( QWidget *parent, Qt::Windo
   connect( mBuildQueryButton, &QAbstractButton::clicked, this, &QgsSpatiaLiteSourceSelect::buildQuery );
   mBuildQueryButton->setEnabled( false );
 
-  if ( mWidgetMode != QgsProviderRegistry::WidgetMode::None )
+  if ( QgsAbstractDataSourceWidget::widgetMode() != QgsProviderRegistry::WidgetMode::None )
   {
     buttonBox->removeButton( buttonBox->button( QDialogButtonBox::Close ) );
     mHoldDialogOpen->hide();
@@ -418,7 +417,7 @@ void QgsSpatiaLiteSourceSelect::addTables()
   else
   {
     emit addDatabaseLayers( m_selectedTables, QStringLiteral( "spatialite" ) );
-    if ( mWidgetMode == QgsProviderRegistry::WidgetMode::None && ! mHoldDialogOpen->isChecked() )
+    if ( QgsAbstractDataSourceWidget::widgetMode( ) == QgsProviderRegistry::WidgetMode::None && ! mHoldDialogOpen->isChecked() )
     {
       accept();
     }
@@ -553,6 +552,11 @@ void QgsSpatiaLiteSourceSelect::dbChanged()
   // Remember which database was selected.
   QgsSettings settings;
   settings.setValue( QStringLiteral( "SpatiaLite/connections/selected" ), cmbConnections->currentText() );
+}
+
+void QgsSpatiaLiteSourceSelect::refresh()
+{
+  populateConnectionList();
 }
 
 void QgsSpatiaLiteSourceSelect::setConnectionListPosition()

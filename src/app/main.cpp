@@ -384,6 +384,7 @@ void myMessageOutput( QtMsgType type, const char *msg )
       dumpBacktrace( 256 );
       abort();                    // deliberately dump core
 #endif
+      break; // silence warnings
     }
 
 #if QT_VERSION >= 0x050500
@@ -1033,7 +1034,7 @@ int main( int argc, char *argv[] )
     }
     else
     {
-      qWarning( "loading of qgis translation failed [%s]", QStringLiteral( "%1/qgis_%2" ).arg( i18nPath, myTranslationCode ).toLocal8Bit().constData() );
+      QgsDebugMsg( QStringLiteral( "loading of qgis translation failed %1/qgis_%2" ).arg( i18nPath, myTranslationCode ) );
     }
 
     /* Translation file for Qt.
@@ -1047,7 +1048,7 @@ int main( int argc, char *argv[] )
     }
     else
     {
-      qWarning( "loading of qt translation failed [%s]", QStringLiteral( "%1/qt_%2" ).arg( QLibraryInfo::location( QLibraryInfo::TranslationsPath ), myTranslationCode ).toLocal8Bit().constData() );
+      QgsDebugMsg( QStringLiteral( "loading of qt translation failed %1/qt_%2" ).arg( QLibraryInfo::location( QLibraryInfo::TranslationsPath ), myTranslationCode ) );
     }
   }
 

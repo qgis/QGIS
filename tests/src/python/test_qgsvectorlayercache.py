@@ -90,6 +90,21 @@ class TestQgsVectorLayerCache(unittest.TestCase, FeatureSourceTestCase):
         """
         pass
 
+    def testUniqueValues(self):
+        """ Skip unique values test - not implemented by the cache (yet)
+        """
+        pass
+
+    def testMinimumValue(self):
+        """ Skip min values test - not implemented by the cache (yet)
+        """
+        pass
+
+    def testMaximumValue(self):
+        """ Skip max values test - not implemented by the cache (yet)
+        """
+        pass
+
 
 if __name__ == '__main__':
     unittest.main()

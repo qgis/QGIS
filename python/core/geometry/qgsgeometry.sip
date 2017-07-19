@@ -336,7 +336,7 @@ Returns true if WKB of the geometry is of WKBMulti* type
 
     double sqrDistToVertexAt( QgsPointXY &point /In/, int atVertex ) const;
 %Docstring
-  Returns the squared cartesian distance between the given point
+  Returns the squared Cartesian distance between the given point
   to the given vertex index (vertex at the given position number,
   ring and item (first number is index 0))
  :rtype: float
@@ -363,7 +363,7 @@ Returns true if WKB of the geometry is of WKBMulti* type
  Searches for the closest vertex in this geometry to the given point.
  \param point Specifiest the point for search
  \param atVertex Receives index of the closest vertex
- :return: The squared cartesian distance is also returned in sqrDist, negative number on error
+ :return: The squared Cartesian distance is also returned in sqrDist, negative number on error
  :rtype: float
 %End
 
@@ -376,7 +376,7 @@ Returns true if WKB of the geometry is of WKBMulti* type
  before the closest segment is always afterVertex - 1
  \param leftOf Out: Returns if the point lies on the left of right side of the segment ( < 0 means left, > 0 means right )
  \param epsilon epsilon for segment snapping
- :return: The squared cartesian distance is also returned in sqrDist, negative number on error
+ :return: The squared Cartesian distance is also returned in sqrDist, negative number on error
  :rtype: float
 %End
 
@@ -716,6 +716,12 @@ Returns a simplified version of this geometry using a specified tolerance value
     QgsGeometry centroid() const;
 %Docstring
  Returns the center of mass of a geometry.
+
+ If the input is a NULL geometry, the output will also be a NULL geometry.
+
+ If an error was encountered while creating the result, more information can be retrieved
+ by calling `error()` on the returned geometry.
+
 .. note::
 
    for line based geometries, the center point of the line is returned,
@@ -730,6 +736,12 @@ Returns a simplified version of this geometry using a specified tolerance value
  Returns a point guaranteed to lie on the surface of a geometry. While the centroid()
  of a geometry may be located outside of the geometry itself (e.g., for concave shapes),
  the point on surface will always be inside the geometry.
+
+ If the input is a NULL geometry, the output will also be a NULL geometry.
+
+ If an error was encountered while creating the result, more information can be retrieved
+ by calling `error()` on the returned geometry.
+
 .. seealso:: centroid()
 .. seealso:: poleOfInaccessibility()
  :rtype: QgsGeometry
@@ -752,7 +764,12 @@ Returns a simplified version of this geometry using a specified tolerance value
 
     QgsGeometry convexHull() const;
 %Docstring
-Returns the smallest convex polygon that contains all the points in the geometry.
+ Returns the smallest convex polygon that contains all the points in the geometry.
+
+ If the input is a NULL geometry, the output will also be a NULL geometry.
+
+ If an error was encountered while creating the result, more information can be retrieved
+ by calling `error()` on the returned geometry.
  :rtype: QgsGeometry
 %End
 
@@ -799,14 +816,25 @@ Returns the smallest convex polygon that contains all the points in the geometry
 
  Curved geometries will be segmentized before subdivision.
 
+ If the input is a NULL geometry, the output will also be a NULL geometry.
+
+ If an error was encountered while creating the result, more information can be retrieved
+ by calling `error()` on the returned geometry.
+
 .. versionadded:: 3.0
  :rtype: QgsGeometry
 %End
 
     QgsGeometry interpolate( double distance ) const;
 %Docstring
- Return interpolated point on line at distance
-.. versionadded:: 1.9
+ Return interpolated point on line at distance.
+
+ If the input is a NULL geometry, the output will also be a NULL geometry.
+
+ If an error was encountered while creating the result, more information can be retrieved
+ by calling `error()` on the returned geometry.
+
+.. versionadded:: 2.0
 .. seealso:: lineLocatePoint()
  :rtype: QgsGeometry
 %End
@@ -841,7 +869,12 @@ Returns the smallest convex polygon that contains all the points in the geometry
 
     QgsGeometry intersection( const QgsGeometry &geometry ) const;
 %Docstring
-Returns a geometry representing the points shared by this geometry and other.
+ Returns a geometry representing the points shared by this geometry and other.
+
+ If the input is a NULL geometry, the output will also be a NULL geometry.
+
+ If an error was encountered while creating the result, more information can be retrieved
+ by calling `error()` on the returned geometry.
  :rtype: QgsGeometry
 %End
 
@@ -859,6 +892,12 @@ Returns a geometry representing the points shared by this geometry and other.
 %Docstring
  Returns a geometry representing all the points in this geometry and other (a
  union geometry operation).
+
+ If the input is a NULL geometry, the output will also be a NULL geometry.
+
+ If an error was encountered while creating the result, more information can be retrieved
+ by calling `error()` on the returned geometry.
+
 .. note::
 
    this operation is not called union since its a reserved word in C++.
@@ -878,13 +917,23 @@ Returns a geometry representing the points shared by this geometry and other.
 
     QgsGeometry difference( const QgsGeometry &geometry ) const;
 %Docstring
-Returns a geometry representing the points making up this geometry that do not make up other.
+ Returns a geometry representing the points making up this geometry that do not make up other.
+
+ If the input is a NULL geometry, the output will also be a NULL geometry.
+
+ If an error was encountered while creating the result, more information can be retrieved
+ by calling `error()` on the returned geometry.
  :rtype: QgsGeometry
 %End
 
     QgsGeometry symDifference( const QgsGeometry &geometry ) const;
 %Docstring
-Returns a geometry representing the points making up this geometry that do not make up other.
+ Returns a geometry representing the points making up this geometry that do not make up other.
+
+ If the input is a NULL geometry, the output will also be a NULL geometry.
+
+ If an error was encountered while creating the result, more information can be retrieved
+ by calling `error()` on the returned geometry.
  :rtype: QgsGeometry
 %End
 
@@ -1182,6 +1231,15 @@ Ring 0 is outer ring and can't be deleted.
 .. versionadded:: 2.10
 .. seealso:: vertexIdFromVertexNr
  :rtype: int
+%End
+
+    QString error() const;
+%Docstring
+ Returns an error string referring to an error that was produced
+ when this geometry was created.
+
+.. versionadded:: 3.0
+ :rtype: str
 %End
 
 

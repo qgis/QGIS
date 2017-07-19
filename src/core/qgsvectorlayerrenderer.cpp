@@ -61,7 +61,6 @@ QgsVectorLayerRenderer::QgsVectorLayerRenderer( QgsVectorLayer *layer, QgsRender
   mGeometryType = layer->geometryType();
 
   mFeatureBlendMode = layer->featureBlendMode();
-
   mSimplifyMethod = layer->simplifyMethod();
   mSimplifyGeometry = layer->simplifyDrawingCanbeApplied( mContext, QgsVectorSimplifyMethod::GeometrySimplification );
 
@@ -94,7 +93,6 @@ QgsVectorLayerRenderer::QgsVectorLayerRenderer( QgsVectorLayer *layer, QgsRender
     // set editing vertex markers style
     mRenderer->setVertexMarkerAppearance( mVertexMarkerStyle, mVertexMarkerSize );
   }
-
   mContext.expressionContext() << QgsExpressionContextUtils::layerScope( layer );
 
   mAttrNames = mRenderer->usedAttributes( context );
@@ -102,7 +100,6 @@ QgsVectorLayerRenderer::QgsVectorLayerRenderer( QgsVectorLayer *layer, QgsRender
   //register label and diagram layer to the labeling engine
   prepareLabeling( layer, mAttrNames );
   prepareDiagrams( layer, mAttrNames );
-
 }
 
 

@@ -54,54 +54,69 @@ from .DeleteColumn import DeleteColumn
 from .DeleteHoles import DeleteHoles
 from .DensifyGeometries import DensifyGeometries
 from .DensifyGeometriesInterval import DensifyGeometriesInterval
+from .Difference import Difference
 from .DropGeometry import DropGeometry
+from .DropMZValues import DropMZValues
 from .ExtentFromLayer import ExtentFromLayer
+from .ExtractNodes import ExtractNodes
 from .FixGeometry import FixGeometry
 from .GridPolygon import GridPolygon
+from .Heatmap import Heatmap
+from .Hillshade import Hillshade
 from .ImportIntoPostGIS import ImportIntoPostGIS
 from .ImportIntoSpatialite import ImportIntoSpatialite
+from .Intersection import Intersection
+from .LinesIntersection import LinesIntersection
+from .LinesToPolygons import LinesToPolygons
+from .MeanCoords import MeanCoords
 from .Merge import Merge
+from .NearestNeighbourAnalysis import NearestNeighbourAnalysis
+from .OffsetLine import OffsetLine
+from .Orthogonalize import Orthogonalize
+from .PointDistance import PointDistance
+from .PointOnSurface import PointOnSurface
+from .PointsInPolygon import PointsInPolygon
 from .PointsLayerFromTable import PointsLayerFromTable
+from .PoleOfInaccessibility import PoleOfInaccessibility
+from .PolygonsToLines import PolygonsToLines
 from .PostGISExecuteSQL import PostGISExecuteSQL
 from .RandomExtract import RandomExtract
 from .RandomExtractWithinSubsets import RandomExtractWithinSubsets
 from .RegularPoints import RegularPoints
+from .ReverseLineDirection import ReverseLineDirection
+from .Ruggedness import Ruggedness
 from .SaveSelectedFeatures import SaveSelectedFeatures
 from .SelectByAttribute import SelectByAttribute
 from .SelectByExpression import SelectByExpression
+from .ServiceAreaFromLayer import ServiceAreaFromLayer
+from .ServiceAreaFromPoint import ServiceAreaFromPoint
+from .SetMValue import SetMValue
+from .SetZValue import SetZValue
+from .ShortestPathLayerToPoint import ShortestPathLayerToPoint
+from .ShortestPathPointToLayer import ShortestPathPointToLayer
+from .ShortestPathPointToPoint import ShortestPathPointToPoint
 from .SimplifyGeometries import SimplifyGeometries
+from .Slope import Slope
 from .Smooth import Smooth
 from .SnapGeometries import SnapGeometriesToLayer
 from .SpatialiteExecuteSQL import SpatialiteExecuteSQL
+from .SumLines import SumLines
 from .SymmetricalDifference import SymmetricalDifference
+from .Union import Union
+from .UniqueValues import UniqueValues
 from .VectorSplit import VectorSplit
 from .VoronoiPolygons import VoronoiPolygons
 from .ZonalStatistics import ZonalStatistics
 
 # from .ExtractByLocation import ExtractByLocation
-# from .PointsInPolygon import PointsInPolygon
-# from .PointsInPolygonUnique import PointsInPolygonUnique
-# from .PointsInPolygonWeighted import PointsInPolygonWeighted
-# from .SumLines import SumLines
-# from .NearestNeighbourAnalysis import NearestNeighbourAnalysis
-# from .LinesIntersection import LinesIntersection
-# from .MeanCoords import MeanCoords
-# from .PointDistance import PointDistance
-# from .UniqueValues import UniqueValues
 # from .ExportGeometryInfo import ExportGeometryInfo
-# from .LinesToPolygons import LinesToPolygons
-# from .PolygonsToLines import PolygonsToLines
 # from .SinglePartsToMultiparts import SinglePartsToMultiparts
-# from .ExtractNodes import ExtractNodes
 # from .ConvexHull import ConvexHull
 # from .FixedDistanceBuffer import FixedDistanceBuffer
 # from .VariableDistanceBuffer import VariableDistanceBuffer
-# from .Difference import Difference
-# from .Intersection import Intersection
 # from .RandomSelection import RandomSelection
 # from .RandomSelectionWithinSubsets import RandomSelectionWithinSubsets
 # from .SelectByLocation import SelectByLocation
-# from .Union import Union
 # from .SpatialJoin import SpatialJoin
 # from .DeleteDuplicateGeometries import DeleteDuplicateGeometries
 # from .TextToFloat import TextToFloat
@@ -136,36 +151,21 @@ from .ZonalStatistics import ZonalStatistics
 # from .FieldsMapper import FieldsMapper
 # from .Datasources2Vrt import Datasources2Vrt
 # from .OrientedMinimumBoundingBox import OrientedMinimumBoundingBox
-# from .ReverseLineDirection import ReverseLineDirection
 # from .SpatialIndex import SpatialIndex
 # from .DefineProjection import DefineProjection
 # from .RectanglesOvalsDiamondsVariable import RectanglesOvalsDiamondsVariable
 # from .RectanglesOvalsDiamondsFixed import RectanglesOvalsDiamondsFixed
 # from .MergeLines import MergeLines
-# from .PointOnSurface import PointOnSurface
-# from .OffsetLine import OffsetLine
 # from .Translate import Translate
 # from .SingleSidedBuffer import SingleSidedBuffer
 # from .PointsAlongGeometry import PointsAlongGeometry
-# from .Slope import Slope
-# from .Ruggedness import Ruggedness
-# from .Hillshade import Hillshade
 # from .Relief import Relief
 # from .IdwInterpolation import IdwInterpolation
 # from .TinInterpolation import TinInterpolation
-# from .RemoveNullGeometry import RemoveNullGeometry
 # from .ExtendLines import ExtendLines
 # from .ExtractSpecificNodes import ExtractSpecificNodes
 # from .GeometryByExpression import GeometryByExpression
-# from .PoleOfInaccessibility import PoleOfInaccessibility
 # from .RasterCalculator import RasterCalculator
-# from .Heatmap import Heatmap
-# from .Orthogonalize import Orthogonalize
-# from .ShortestPathPointToPoint import ShortestPathPointToPoint
-# from .ShortestPathPointToLayer import ShortestPathPointToLayer
-# from .ShortestPathLayerToPoint import ShortestPathLayerToPoint
-# from .ServiceAreaFromPoint import ServiceAreaFromPoint
-# from .ServiceAreaFromLayer import ServiceAreaFromLayer
 # from .TruncateTable import TruncateTable
 # from .Polygonize import Polygonize
 # from .ExecuteSQL import ExecuteSQL
@@ -185,16 +185,12 @@ class QGISAlgorithmProvider(QgsProcessingProvider):
         self.externalAlgs = []
 
     def getAlgs(self):
-        # algs = [SumLines(), PointsInPolygon(),
-        #         PointsInPolygonWeighted(), PointsInPolygonUnique(),
-        #         NearestNeighbourAnalysis(), MeanCoords(),
-        #         LinesIntersection(), UniqueValues(), PointDistance(),
+        # algs = [
+        #
         #         ExportGeometryInfo(),
-        #         , SinglePartsToMultiparts(),
-        #         PolygonsToLines(), LinesToPolygons(), ExtractNodes(),
+        #         SinglePartsToMultiparts(),
         #         ConvexHull(), FixedDistanceBuffer(),
-        #         VariableDistanceBuffer(), Difference(),
-        #         Intersection(), Union(),
+        #         VariableDistanceBuffer(),
         #         RandomSelection(), RandomSelectionWithinSubsets(),
         #         SelectByLocation(),
         #         ExtractByLocation(),
@@ -218,21 +214,16 @@ class QGISAlgorithmProvider(QgsProcessingProvider):
         #         SplitWithLines(), CreateConstantRaster(),
         #         FieldsMapper(), SelectByAttributeSum(), Datasources2Vrt(),
         #         OrientedMinimumBoundingBox(),
-        #         ReverseLineDirection(), SpatialIndex(), DefineProjection(),
+        #         SpatialIndex(), DefineProjection(),
         #         RectanglesOvalsDiamondsVariable(),
         #         RectanglesOvalsDiamondsFixed(), MergeLines(),
-        #         PointOnSurface(),
-        #         OffsetLine(), Translate(),
+        #          Translate(),
         #         SingleSidedBuffer(), PointsAlongGeometry(),
-        #          Slope(), Ruggedness(), Hillshade(),
         #         Relief(),
         #         IdwInterpolation(), TinInterpolation(),
-        #         RemoveNullGeometry(),
         #         ExtendLines(), ExtractSpecificNodes(),
         #         GeometryByExpression(),
-        #         PoleOfInaccessibility(),
-        #
-        #         RasterCalculator(), Heatmap(), Orthogonalize(),
+        #         RasterCalculator(),
         #         ShortestPathPointToPoint(), ShortestPathPointToLayer(),
         #         ShortestPathLayerToPoint(), ServiceAreaFromPoint(),
         #         ServiceAreaFromLayer(), TruncateTable(), Polygonize(),
@@ -253,26 +244,56 @@ class QGISAlgorithmProvider(QgsProcessingProvider):
                 DeleteHoles(),
                 DensifyGeometries(),
                 DensifyGeometriesInterval(),
+                Difference(),
                 DropGeometry(),
+                DropMZValues(),
                 ExtentFromLayer(),
+                ExtractNodes(),
                 FixGeometry(),
                 GridPolygon(),
+                Heatmap(),
+                Hillshade(),
                 ImportIntoPostGIS(),
                 ImportIntoSpatialite(),
+                Intersection(),
+                LinesIntersection(),
+                LinesToPolygons(),
+                MeanCoords(),
                 Merge(),
+                NearestNeighbourAnalysis(),
+                OffsetLine(),
+                Orthogonalize(),
+                PointDistance(),
+                PointOnSurface(),
+                PointsInPolygon(),
                 PointsLayerFromTable(),
+                PoleOfInaccessibility(),
+                PolygonsToLines(),
                 PostGISExecuteSQL(),
                 RandomExtract(),
                 RandomExtractWithinSubsets(),
                 RegularPoints(),
+                ReverseLineDirection(),
+                Ruggedness(),
                 SaveSelectedFeatures(),
                 SelectByAttribute(),
                 SelectByExpression(),
+                ServiceAreaFromLayer(),
+                ServiceAreaFromPoint(),
+                SetMValue(),
+                SetZValue(),
+                ShortestPathLayerToPoint(),
+                ShortestPathPointToLayer(),
+                ShortestPathPointToPoint(),
                 SimplifyGeometries(),
+                Slope(),
                 Smooth(),
                 SnapGeometriesToLayer(),
                 SpatialiteExecuteSQL(),
+                SumLines(),
                 SymmetricalDifference(),
+                Union(),
+                UniqueValues(),
                 VectorSplit(),
                 VoronoiPolygons(),
                 ZonalStatistics()

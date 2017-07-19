@@ -19,7 +19,6 @@
 
 #include "qgis_core.h"
 #include "qgslayoutobject.h"
-#include "qgslayoutitemregistry.h"
 #include <QGraphicsRectItem>
 
 class QgsLayout;

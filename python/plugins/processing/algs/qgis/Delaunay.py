@@ -39,15 +39,12 @@ from qgis.core import (QgsField,
                        QgsPointXY,
                        QgsWkbTypes,
                        QgsProcessing,
-                       QgsProcessingUtils,
                        QgsFields,
+                       QgsProcessingException,
                        QgsProcessingParameterFeatureSource,
-                       QgsProcessingParameterDefinition,
-                       QgsProcessingParameterFeatureSink,
-                       QgsProcessingOutputVectorLayer)
+                       QgsProcessingParameterFeatureSink)
 
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
-from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 
 from . import voronoi
 
@@ -71,7 +68,6 @@ class Delaunay(QgisAlgorithm):
     def initAlgorithm(self, config=None):
         self.addParameter(QgsProcessingParameterFeatureSource(self.INPUT, self.tr('Input layer'), [QgsProcessing.TypeVectorPoint]))
         self.addParameter(QgsProcessingParameterFeatureSink(self.OUTPUT, self.tr('Delaunay triangulation'), type=QgsProcessing.TypeVectorPolygon))
-        self.addOutput(QgsProcessingOutputVectorLayer(self.OUTPUT, self.tr("Delaunay triangulation"), type=QgsProcessing.TypeVectorPolygon))
 
     def name(self):
         return 'delaunaytriangulation'
@@ -116,7 +112,7 @@ class Delaunay(QgisAlgorithm):
             feedback.setProgress(int(current * total))
 
         if len(pts) < 3:
-            raise GeoAlgorithmExecutionException(
+            raise QgsProcessingException(
                 self.tr('Input file should contain at least 3 points. Choose '
                         'another file and try again.'))
 

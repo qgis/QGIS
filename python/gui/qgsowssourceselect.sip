@@ -11,16 +11,16 @@
 
 
 
-class QgsOWSSourceSelect : QDialog, protected Ui::QgsOWSSourceSelectBase
+class QgsOWSSourceSelect : QgsAbstractDataSourceWidget, protected Ui::QgsOWSSourceSelectBase
 {
 %Docstring
-  Dialog to create connections and add layers from WMS, WFS, WCS etc.
+  Dialog to create connections and add layers WCS etc.
 
  This dialog allows the user to define and save connection information
  for WMS servers, etc.
 
  The user can then connect and add
- layers from the WMS server to the map canvas.
+ layers from the WCS server to the map canvas.
 %End
 
 %TypeHeaderCode
@@ -41,6 +41,12 @@ Constructor
     ~QgsOWSSourceSelect();
 
   public slots:
+
+    virtual void refresh( );
+
+%Docstring
+Triggered when the provider's connections need to be refreshed
+%End
 
     void on_mNewButton_clicked();
 %Docstring
@@ -105,14 +111,6 @@ Stores the selected datasource whenerver it is changed
 %Docstring
 Add some default wms servers to the list
 %End
-
-    void on_mDialogButtonBox_helpRequested();
-
-  signals:
-    void addRasterLayer( const QString &rasterLayerPath,
-                         const QString &baseName,
-                         const QString &providerKey );
-    void connectionsChanged();
 
   protected:
 
@@ -200,8 +198,6 @@ Add a few example servers to the list.
 %End
 
 
-
-
     virtual void populateLayerList();
 %Docstring
  Populate the layer list.
@@ -250,6 +246,7 @@ Returns currently selected time
 Returns currently selected cache load control
  :rtype: QNetworkRequest.CacheLoadControl
 %End
+
 
 
 

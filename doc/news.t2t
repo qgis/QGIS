@@ -498,7 +498,7 @@ key new features.
       normal map view as well as in print composer.
 - HTML support has been added map composer label item to give you even
       more control over your final maps. HTML labels support full css styles
-      sheets, html, and even javascript if you are that way inclined.
+      sheets, html, and even JavaScript if you are that way inclined.
 - The labeling system has been totally overhauled - it now includes many
       new features such as drop shadows, 'highway shields', many more data bound
       options, and various performance enhancements. We are slowly doing away
@@ -2496,7 +2496,7 @@ Added QgsRasterLayer::filterLayer which gets called near the end of each of
 
 2004-03-06 [didge] 0.1.0devel6
 Changed configure stuff to write DEFINES in config.h.
-   Postgresql stuff needs testing as I commented the compileflags in src/Makefile.am
+   PostgreSQL stuff needs testing as I commented the compileflags in src/Makefile.am
 Infos will be posted on the devel mailinglist
 
 2004-03-04 [ts] 0.1.0devel5

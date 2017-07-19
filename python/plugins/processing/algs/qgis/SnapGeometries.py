@@ -29,12 +29,10 @@ from qgis.analysis import (QgsGeometrySnapper,
                            QgsInternalGeometrySnapper)
 from qgis.core import (QgsFeatureSink,
                        QgsProcessing,
-                       QgsProcessingParameterDefinition,
                        QgsProcessingParameterFeatureSource,
                        QgsProcessingParameterFeatureSink,
                        QgsProcessingParameterNumber,
-                       QgsProcessingParameterEnum,
-                       QgsProcessingOutputVectorLayer)
+                       QgsProcessingParameterEnum)
 
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 
@@ -74,7 +72,6 @@ class SnapGeometriesToLayer(QgisAlgorithm):
             options=self.modes, defaultValue=0))
 
         self.addParameter(QgsProcessingParameterFeatureSink(self.OUTPUT, self.tr('Snapped geometry')))
-        self.addOutput(QgsProcessingOutputVectorLayer(self.OUTPUT, self.tr("Snapped geometry")))
 
     def name(self):
         return 'snapgeometries'

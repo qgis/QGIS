@@ -8,13 +8,18 @@
 
 
 
+
 class QgsLayoutItemAbstractMetadata
 {
 %Docstring
  Stores metadata about one layout item class.
+
+ A companion class, QgsLayoutItemAbstractGuiMetadata, handles the
+ GUI behavior of QgsLayoutItems.
+
 .. note::
 
-   In C++ you can use QgsSymbolLayerMetadata convenience class.
+   In C++ you can use QgsLayoutItemMetadata convenience class.
 .. versionadded:: 3.0
 %End
 
@@ -55,12 +60,6 @@ class QgsLayoutItemAbstractMetadata
  :rtype: QgsLayoutItem
 %End
 
-    virtual QWidget *createItemWidget() /Factory/;
-%Docstring
- Creates a configuration widget for layout items of this type. Can return None if no configuration GUI is required.
- :rtype: QWidget
-%End
-
     virtual void resolvePaths( QVariantMap &properties, const QgsPathResolver &pathResolver, bool saving );
 %Docstring
  Resolve paths in the item's ``properties`` (if there are any paths).
@@ -77,7 +76,6 @@ class QgsLayoutItemAbstractMetadata
 
 
 
-
 class QgsLayoutItemRegistry : QObject
 {
 %Docstring
@@ -85,6 +83,9 @@ class QgsLayoutItemRegistry : QObject
 
  QgsLayoutItemRegistry is not usually directly created, but rather accessed through
  QgsApplication.layoutItemRegistry().
+
+ A companion class, QgsLayoutItemGuiRegistry, handles the GUI behavior
+ of layout items.
 
 .. versionadded:: 3.0
 %End
@@ -107,13 +108,22 @@ class QgsLayoutItemRegistry : QObject
 
     QgsLayoutItemRegistry( QObject *parent = 0 );
 %Docstring
- Creates a registry and populates it with standard item types.
+ Creates a new empty item registry.
 
  QgsLayoutItemRegistry is not usually directly created, but rather accessed through
  QgsApplication.layoutItemRegistry().
+
+.. seealso:: populate()
 %End
 
     ~QgsLayoutItemRegistry();
+
+    bool populate();
+%Docstring
+ Populates the registry with standard item types. If called on a non-empty registry
+ then this will have no effect and will return false.
+ :rtype: bool
+%End
 
 
     QgsLayoutItemAbstractMetadata *itemMetadata( int type ) const;
@@ -133,12 +143,6 @@ class QgsLayoutItemRegistry : QObject
 %Docstring
  Creates a new instance of a layout item given the item ``type``, target ``layout`` and ``properties``.
  :rtype: QgsLayoutItem
-%End
-
-    QWidget *createItemWidget( int type ) const /Factory/;
-%Docstring
- Creates a new instance of a layout item configuration widget for the specified item ``type``.
- :rtype: QWidget
 %End
 
     void resolvePaths( int type, QVariantMap &properties, const QgsPathResolver &pathResolver, bool saving ) const;
@@ -165,6 +169,7 @@ class QgsLayoutItemRegistry : QObject
   private:
     QgsLayoutItemRegistry( const QgsLayoutItemRegistry &rh );
 };
+
 
 
 

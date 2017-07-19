@@ -29,13 +29,12 @@ __revision__ = '$Format:%H$'
 import random
 
 from qgis.core import (QgsFeatureSink,
+                       QgsProcessingException,
                        QgsProcessingParameterFeatureSource,
                        QgsProcessingParameterEnum,
                        QgsProcessingParameterNumber,
-                       QgsProcessingParameterFeatureSink,
-                       QgsProcessingOutputVectorLayer)
+                       QgsProcessingParameterFeatureSink)
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
-from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 
 
 class RandomExtract(QgisAlgorithm):
@@ -66,7 +65,6 @@ class RandomExtract(QgisAlgorithm):
                                                        10, False, 0.0, 999999999999.0))
 
         self.addParameter(QgsProcessingParameterFeatureSink(self.OUTPUT, self.tr('Extracted (random)')))
-        self.addOutput(QgsProcessingOutputVectorLayer(self.OUTPUT, self.tr('Extracted (random)')))
 
     def name(self):
         return 'randomextract'
@@ -84,12 +82,12 @@ class RandomExtract(QgisAlgorithm):
 
         if method == 0:
             if value > featureCount:
-                raise GeoAlgorithmExecutionException(
+                raise QgsProcessingException(
                     self.tr('Selected number is greater than feature count. '
                             'Choose a lower value and try again.'))
         else:
             if value > 100:
-                raise GeoAlgorithmExecutionException(
+                raise QgsProcessingException(
                     self.tr("Percentage can't be greater than 100. Set a "
                             "different value and try again."))
             value = int(round(value / 100.0000, 4) * featureCount)

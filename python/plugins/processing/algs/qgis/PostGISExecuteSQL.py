@@ -26,10 +26,8 @@ __copyright__ = '(C) 2012, Victor Olaya, Carterix Geomatics'
 
 __revision__ = '$Format:%H$'
 
-from qgis.core import (QgsApplication,
-                       QgsProcessingParameterString)
+from qgis.core import (QgsProcessingException, QgsProcessingParameterString)
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
-from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from processing.tools import postgis
 
 
@@ -68,6 +66,6 @@ class PostGISExecuteSQL(QgisAlgorithm):
         try:
             db._exec_sql_and_commit(str(sql))
         except postgis.DbError as e:
-            raise GeoAlgorithmExecutionException(
+            raise QgsProcessingException(
                 self.tr('Error executing SQL:\n{0}').format(str(e)))
         return {}

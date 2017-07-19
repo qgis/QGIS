@@ -75,19 +75,11 @@ qgis:countpointsinpolygon: >
 
   A new polygons layer is generated, with the exact same content as the input polygons layer, but containing an additional field with the points count corresponding to each polygon.
 
-qgis:countpointsinpolygonweighted: >
-  This algorithm takes a points layer and a polygon layer and counts the number of points from the first one in each polygon of the second one.
+  An optional weight field can be used to assign weights to each point. If set, the count generated will be the sum of the weight field for each point contained by the polygon.
 
-  An attribute is used in the points layer to assign weights to each point.
+  Alternatively, a unique class field can be specified. If set, points are classified based on the selected attribute, and if several points with the same attribute value are within the polygon, only one of them is counted. The final count of the point in a polygon is, therefore, the count of different classes that are found in it.
 
-  A new polygons layer is generated, with the exact same content as the input polygons layer, but containing an additional field with the points count corresponding to each polygon.
-
-qgis:countuniquepointsinpolygon: >
-  This algorithm takes a points layer and a polygon layer and counts the number of points from the first one in each polygon of the second one.
-
-  Points are classified based on an attribute, and if several points with the same attribute value are within the extent of the polygon, only one of them is counted. The final count of point in a polygon is, therefore, the count of different classes that are found in it.
-
-  A new polygons layer is generated, with the exact same content as the input polygons layer, but containing an additional field with the points count corresponding to each polygon.
+  Both the weight field and unique class field cannot be specified. If they are, the weight field will take precedence and the unique class field will be ignored.
 
 qgis:createattributeindex: >
   Creates an index to speed up queries made against a field in a table. Support for index creation is dependent on the layer's data provider and the field type.
@@ -167,6 +159,9 @@ qgis:distancetonearesthub: >
 
 qgis:dropgeometries: >
   This algorithm removes any geometries from an input layer and returns a layer containing only the feature attributes.
+
+qgis:dropmzvalues: >
+  This algorithm can remove any measure (M) or Z values from input geometries.
 
 qgis:eliminateselectedpolygons: >
   This algorithm combines selected polygons of the input layer with certain adjacent polygons by erasing their common boundary. The adjacent polygon can be either the one with the largest or smallest area or the one sharing the largest common boundary with the polygon to be eliminated. The selected features will always be eliminated whether the option "Use only selected features" is set or not.
@@ -511,12 +506,21 @@ qgis:selectbyexpression: >
 qgis:selectbylocation: >
   This algorithm creates a selection in a vector layer. The criteria for selecting features is based on the spatial relationship between each feature and the features in an additional layer.
 
+qgis:setmvalue: >
+  This algorithm sets the M value for geometries in a layer.
+
+  If M values already exist in the layer, they will be overwritten with the new value. If no M values exist, the geometry will be upgraded to include M values and the specified value used as the initial M value for all geometries.
 
 qgis:setstyleforrasterlayer: >
   This algorithm sets the style of a raster layer. The style must be defined in a QML file.
 
 qgis:setstyleforvectorlayer: >
   This algorithm sets the style of a vector layer. The style must be defined in a QML file.
+
+qgis:setzvalue: >
+  This algorithm sets the Z value for geometries in a layer.
+
+  If Z values already exist in the layer, they will be overwritten with the new value. If no Z values exist, the geometry will be upgraded to include Z values and the specified value used as the initial Z value for all geometries.
 
 qgis:simplifygeometries: >
   This algorithm simplifies the geometries in a line or polygon layer. It creates a new layer with the same features as the ones in the input layer, but with geometries containing a lower number of vertices.

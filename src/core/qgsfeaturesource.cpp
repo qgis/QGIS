@@ -40,6 +40,52 @@ QSet<QVariant> QgsFeatureSource::uniqueValues( int fieldIndex, int limit ) const
   return values;
 }
 
+QVariant QgsFeatureSource::minimumValue( int fieldIndex ) const
+{
+  if ( fieldIndex < 0 || fieldIndex >= fields().count() )
+    return QVariant();
+
+  QgsFeatureRequest req;
+  req.setFlags( QgsFeatureRequest::NoGeometry );
+  req.setSubsetOfAttributes( QgsAttributeList() << fieldIndex );
+
+  QVariant min;
+  QgsFeatureIterator it = getFeatures( req );
+  QgsFeature f;
+  while ( it.nextFeature( f ) )
+  {
+    QVariant v = f.attribute( fieldIndex );
+    if ( v.isValid() && qgsVariantLessThan( v, min ) )
+    {
+      min = v;
+    }
+  }
+  return min;
+}
+
+QVariant QgsFeatureSource::maximumValue( int fieldIndex ) const
+{
+  if ( fieldIndex < 0 || fieldIndex >= fields().count() )
+    return QVariant();
+
+  QgsFeatureRequest req;
+  req.setFlags( QgsFeatureRequest::NoGeometry );
+  req.setSubsetOfAttributes( QgsAttributeList() << fieldIndex );
+
+  QVariant max;
+  QgsFeatureIterator it = getFeatures( req );
+  QgsFeature f;
+  while ( it.nextFeature( f ) )
+  {
+    QVariant v = f.attribute( fieldIndex );
+    if ( v.isValid() && qgsVariantGreaterThan( v, max ) )
+    {
+      max = v;
+    }
+  }
+  return max;
+}
+
 QgsRectangle QgsFeatureSource::sourceExtent() const
 {
   QgsRectangle r;

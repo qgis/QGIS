@@ -23,6 +23,7 @@
 #include "qgsprocessing.h"
 #include "qgsproperty.h"
 #include "qgscoordinatereferencesystem.h"
+#include "qgsfeaturesource.h"
 #include <QMap>
 #include <limits>
 
@@ -30,7 +31,6 @@ class QgsProcessingContext;
 class QgsRasterLayer;
 class QgsVectorLayer;
 class QgsFeatureSink;
-class QgsFeatureSource;
 class QgsProcessingFeatureSource;
 class QgsProcessingOutputDefinition;
 class QgsProcessingFeedback;
@@ -1555,9 +1555,24 @@ class CORE_EXPORT QgsProcessingDestinationParameter : public QgsProcessingParame
      */
     virtual QString generateTemporaryDestination() const;
 
+    /**
+     * Returns true if the destination should be created by default. For optional parameters,
+     * a return value of false indicates that the destination should not be created by default.
+     * \see setCreateByDefault()
+     */
+    bool createByDefault() const;
+
+    /**
+     * Sets whether the destination should be created by default. For optional parameters,
+     * a value of false indicates that the destination should not be created by default.
+     * \see createByDefault()
+     */
+    void setCreateByDefault( bool createByDefault );
+
   private:
 
     bool mSupportsNonFileBasedOutputs = true;
+    bool mCreateByDefault = true;
 
 };
 

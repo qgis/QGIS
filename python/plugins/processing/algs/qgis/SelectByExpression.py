@@ -26,11 +26,11 @@ __revision__ = '$Format:%H$'
 
 from qgis.core import (QgsExpression,
                        QgsVectorLayer,
+                       QgsProcessingException,
                        QgsProcessingParameterVectorLayer,
                        QgsProcessingParameterExpression,
                        QgsProcessingParameterEnum,
                        QgsProcessingOutputVectorLayer)
-from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 
 
@@ -85,7 +85,7 @@ class SelectByExpression(QgisAlgorithm):
         expression = self.parameterAsString(parameters, self.EXPRESSION, context)
         qExp = QgsExpression(expression)
         if qExp.hasParserError():
-            raise GeoAlgorithmExecutionException(qExp.parserErrorString())
+            raise QgsProcessingException(qExp.parserErrorString())
 
         layer.selectByExpression(expression, behavior)
         return {self.OUTPUT: parameters[self.INPUT]}

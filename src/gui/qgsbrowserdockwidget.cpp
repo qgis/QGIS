@@ -117,7 +117,7 @@ void QgsBrowserDockWidget::showEvent( QShowEvent *e )
     mModel = new QgsBrowserModel( mBrowserView );
     mProxyModel = new QgsBrowserTreeFilterProxyModel( this );
     mProxyModel->setBrowserModel( mModel );
-    mBrowserView->setSettingsSection( objectName().toLower() ); // to distinguish 2 instances ow browser
+    mBrowserView->setSettingsSection( objectName().toLower() ); // to distinguish 2 or more instances of the browser
     mBrowserView->setBrowserModel( mModel );
     mBrowserView->setModel( mProxyModel );
     // provide a horizontal scroll bar instead of using ellipse (...) for longer items
@@ -128,6 +128,11 @@ void QgsBrowserDockWidget::showEvent( QShowEvent *e )
     // selectionModel is created when model is set on tree
     connect( mBrowserView->selectionModel(), &QItemSelectionModel::selectionChanged,
              this, &QgsBrowserDockWidget::selectionChanged );
+
+    // Forward the model changed signals to the widget
+    connect( mModel, &QgsBrowserModel::connectionsChanged,
+             this, &QgsBrowserDockWidget::connectionsChanged );
+
 
     // objectName used by settingsSection() is not yet set in constructor
     QgsSettings settings;
@@ -242,7 +247,8 @@ void QgsBrowserDockWidget::removeFavorite()
 
 void QgsBrowserDockWidget::refresh()
 {
-  refreshModel( QModelIndex() );
+  if ( mModel )
+    refreshModel( QModelIndex() );
 }
 
 void QgsBrowserDockWidget::refreshModel( const QModelIndex &index )
