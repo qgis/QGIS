@@ -2053,7 +2053,7 @@ QgsExpressionNode *QgsOgcUtils::nodeIsBetweenFromOgcFilter( QDomElement &element
       QDomElement lowerBoundElem = operandElem.firstChildElement();
       lowerBound = nodeFromOgcFilter( lowerBoundElem, errorMessage );
     }
-    else if ( operandElem.tagName() ==  QLatin1String( "UpperBoundary" ) )
+    else if ( operandElem.tagName() == QLatin1String( "UpperBoundary" ) )
     {
       QDomElement upperBoundElem = operandElem.firstChildElement();
       upperBound = nodeFromOgcFilter( upperBoundElem, errorMessage );

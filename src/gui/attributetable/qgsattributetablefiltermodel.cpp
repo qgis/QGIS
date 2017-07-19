@@ -99,7 +99,7 @@ QVariant QgsAttributeTableFilterModel::data( const QModelIndex &index, int role 
 
 QVariant QgsAttributeTableFilterModel::headerData( int section, Qt::Orientation orientation, int role ) const
 {
-  if ( orientation ==  Qt::Horizontal )
+  if ( orientation == Qt::Horizontal )
   {
     if ( mColumnMapping.at( section ) == -1 && role == Qt::DisplayRole )
       return tr( "Actions" );

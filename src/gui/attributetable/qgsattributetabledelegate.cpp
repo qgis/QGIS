@@ -100,10 +100,10 @@ void QgsAttributeTableDelegate::setModelData( QWidget *editor, QAbstractItemMode
     // This fixes https://issues.qgis.org/issues/16492
     QgsFeatureRequest request( fid );
     request.setFlags( QgsFeatureRequest::NoGeometry );
-    request.setSubsetOfAttributes( QgsAttributeList( ) );
+    request.setSubsetOfAttributes( QgsAttributeList() );
     QgsFeature feature;
     vl->getFeatures( request ).nextFeature( feature );
-    if ( feature.isValid( ) )
+    if ( feature.isValid() )
     {
       vl->beginEditCommand( tr( "Attribute changed" ) );
       vl->changeAttributeValue( fid, fieldIdx, newValue, oldValue );

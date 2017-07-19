@@ -81,7 +81,7 @@ class SERVER_EXPORT QgsServer
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
     //! Initialize Python
     //! Note: not in Python bindings
-    void initPython( );
+    void initPython();
 #endif
 
   private:

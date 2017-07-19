@@ -3570,12 +3570,12 @@ void TestQgsGeometry::triangle()
   QVERIFY( !t3.interiorRing( 0 ) );
 
   // equality
-  QVERIFY( QgsTriangle() == QgsTriangle( ) ); // empty
+  QVERIFY( QgsTriangle() == QgsTriangle() ); // empty
   QVERIFY( QgsTriangle() == QgsTriangle( QgsPoint( 0, 0 ), QgsPoint( 0, 5 ), QgsPoint( 0, 10 ) ) ); // empty
-  QVERIFY( QgsTriangle( QgsPoint( 0, 0 ), QgsPoint( 0, 5 ), QgsPoint( 0, 10 ) ) ==  QgsTriangle() ); // empty
+  QVERIFY( QgsTriangle( QgsPoint( 0, 0 ), QgsPoint( 0, 5 ), QgsPoint( 0, 10 ) ) == QgsTriangle() ); // empty
   QVERIFY( QgsTriangle() != QgsTriangle( QgsPoint( 0, 0 ), QgsPoint( 5, 5 ), QgsPoint( 0, 10 ) ) );
-  QVERIFY( QgsTriangle( QgsPoint( 0, 0 ), QgsPoint( 5, 5 ), QgsPoint( 0, 10 ) ) !=  QgsTriangle() );
-  QVERIFY( QgsTriangle( QgsPoint( 0, 0 ), QgsPoint( 5, 5 ), QgsPoint( 0, 10 ) ) !=  QgsTriangle( QgsPoint( 0, 10 ), QgsPoint( 5, 5 ), QgsPoint( 0, 0 ) ) );
+  QVERIFY( QgsTriangle( QgsPoint( 0, 0 ), QgsPoint( 5, 5 ), QgsPoint( 0, 10 ) ) != QgsTriangle() );
+  QVERIFY( QgsTriangle( QgsPoint( 0, 0 ), QgsPoint( 5, 5 ), QgsPoint( 0, 10 ) ) != QgsTriangle( QgsPoint( 0, 10 ), QgsPoint( 5, 5 ), QgsPoint( 0, 0 ) ) );
 
   // clone
   QgsTriangle *t4 = t3.clone();
@@ -4426,7 +4426,7 @@ void TestQgsGeometry::regularPolygon()
   // polygon
   QgsPointSequence ptsPol;
   std::unique_ptr< QgsPolygonV2 > pol( new QgsPolygonV2() );
-  pol.reset( rp10.toPolygon( ) );
+  pol.reset( rp10.toPolygon() );
   QCOMPARE( pol->numInteriorRings(), 0 );
   QCOMPARE( pol->exteriorRing()->numPoints(), 5 );
 
@@ -4440,7 +4440,7 @@ void TestQgsGeometry::regularPolygon()
   ptsPol.pop_back();
 
   std::unique_ptr< QgsLineString > l( new QgsLineString() );
-  l.reset( rp10.toLineString( ) );
+  l.reset( rp10.toLineString() );
   QCOMPARE( l->numPoints(), 4 );
   QgsPointSequence pts_l;
   l->points( pts_l );

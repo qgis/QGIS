@@ -121,7 +121,7 @@ Emitted when a file needs to be opened
 %Docstring
 Emitted when drop uri list needs to be handled
 %End
-    void connectionsChanged( );
+    void connectionsChanged();
 %Docstring
 Connections changed in the browser
 %End

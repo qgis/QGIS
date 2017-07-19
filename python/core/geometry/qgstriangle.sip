@@ -201,7 +201,7 @@ Inherited method not used. You cannot delete or insert a vertex directly. Return
  :rtype: bool
 %End
 
-    QVector<QgsLineString> altitudes( ) const;
+    QVector<QgsLineString> altitudes() const;
 %Docstring
  An altitude is a segment (defined by a QgsLineString) from a vertex to the opposite side (or, if necessary, to the extension of the opposite side).
  :return: Three altitudes from this triangle
@@ -214,7 +214,7 @@ Inherited method not used. You cannot delete or insert a vertex directly. Return
  :rtype: list of QgsLineString
 %End
 
-    QVector<QgsLineString> medians( ) const;
+    QVector<QgsLineString> medians() const;
 %Docstring
  A median is a segment (defined by a QgsLineString) from a vertex to the midpoint of the opposite side.
  :return: Three medians from this triangle
@@ -241,7 +241,7 @@ Inherited method not used. You cannot delete or insert a vertex directly. Return
  :rtype: list of QgsLineString
 %End
 
-    QgsTriangle medial( ) const;
+    QgsTriangle medial() const;
 %Docstring
  Medial (or midpoint) triangle of a triangle ABC is the triangle with vertices at the midpoints of the triangle's sides.
  :return: The medial from this triangle
@@ -268,7 +268,7 @@ Inherited method not used. You cannot delete or insert a vertex directly. Return
  :rtype: QgsPoint
 %End
 
-    QgsPoint circumscribedCenter( ) const;
+    QgsPoint circumscribedCenter() const;
 %Docstring
  Center of the circumscribed circle of the triangle.
  :return: The center of the circumscribed circle of the triangle
@@ -281,7 +281,7 @@ Inherited method not used. You cannot delete or insert a vertex directly. Return
  :rtype: QgsPoint
 %End
 
-    double circumscribedRadius( ) const;
+    double circumscribedRadius() const;
 %Docstring
  Radius of the circumscribed circle of the triangle.
  :return: The radius of the circumscribed circle of the triangle
@@ -294,7 +294,7 @@ Inherited method not used. You cannot delete or insert a vertex directly. Return
  :rtype: float
 %End
 
-    QgsCircle circumscribedCircle( ) const;
+    QgsCircle circumscribedCircle() const;
 %Docstring
  Circumscribed circle of the triangle.
  @return The circumbscribed of the triangle with a QgsCircle.
@@ -307,7 +307,7 @@ Inherited method not used. You cannot delete or insert a vertex directly. Return
  :rtype: QgsCircle
 %End
 
-    QgsPoint inscribedCenter( ) const;
+    QgsPoint inscribedCenter() const;
 %Docstring
  Center of the inscribed circle of the triangle.
  :return: The center of the inscribed circle of the triangle
@@ -320,7 +320,7 @@ Inherited method not used. You cannot delete or insert a vertex directly. Return
  :rtype: QgsPoint
 %End
 
-    double inscribedRadius( ) const;
+    double inscribedRadius() const;
 %Docstring
  Radius of the inscribed circle of the triangle.
  :return: The radius of the inscribed circle of the triangle
@@ -333,7 +333,7 @@ Inherited method not used. You cannot delete or insert a vertex directly. Return
  :rtype: float
 %End
 
-    QgsCircle inscribedCircle( ) const;
+    QgsCircle inscribedCircle() const;
 %Docstring
  Inscribed circle of the triangle.
  @return The inscribed of the triangle with a QgsCircle.

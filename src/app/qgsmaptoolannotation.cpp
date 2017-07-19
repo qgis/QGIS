@@ -230,14 +230,14 @@ void QgsMapToolAnnotation::canvasMoveEvent( QgsMapMouseEvent *e )
            mCurrentMoveAction == QgsMapCanvasAnnotationItem::ResizeFrameLeftUp )
       {
         xmin += e->posF().x() - mLastMousePosition.x();
-        relPosX = ( relPosX * mCanvas->width() + e->posF().x() - mLastMousePosition.x( ) ) / ( double )mCanvas->width();
+        relPosX = ( relPosX * mCanvas->width() + e->posF().x() - mLastMousePosition.x() ) / ( double )mCanvas->width();
       }
       if ( mCurrentMoveAction == QgsMapCanvasAnnotationItem::ResizeFrameUp ||
            mCurrentMoveAction == QgsMapCanvasAnnotationItem::ResizeFrameLeftUp ||
            mCurrentMoveAction == QgsMapCanvasAnnotationItem::ResizeFrameRightUp )
       {
         ymin += e->posF().y() - mLastMousePosition.y();
-        relPosY = ( relPosY * mCanvas->height() + e->posF().y() - mLastMousePosition.y( ) ) / ( double )mCanvas->height();
+        relPosY = ( relPosY * mCanvas->height() + e->posF().y() - mLastMousePosition.y() ) / ( double )mCanvas->height();
       }
       if ( mCurrentMoveAction == QgsMapCanvasAnnotationItem::ResizeFrameDown ||
            mCurrentMoveAction == QgsMapCanvasAnnotationItem::ResizeFrameLeftDown ||

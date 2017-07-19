@@ -1608,7 +1608,7 @@ void QgisApp::dataSourceManager( QString pageName )
 {
   if ( ! mDataSourceManagerDialog )
   {
-    mDataSourceManagerDialog = new QgsDataSourceManagerDialog( this, mapCanvas( ) );
+    mDataSourceManagerDialog = new QgsDataSourceManagerDialog( this, mapCanvas() );
     // Forward signals to this
     connect( this, &QgisApp::connectionsChanged, mDataSourceManagerDialog, &QgsDataSourceManagerDialog::refresh );
     connect( mDataSourceManagerDialog, &QgsDataSourceManagerDialog::connectionsChanged, this, &QgisApp::connectionsChanged );
@@ -1629,11 +1629,11 @@ void QgisApp::dataSourceManager( QString pageName )
 
   }
   // Try to open the dialog on a particular page
-  if ( ! pageName.isEmpty( ) )
+  if ( ! pageName.isEmpty() )
   {
     mDataSourceManagerDialog->openPage( pageName );
   }
-  if ( QgsSettings().value( "/qgis/dataSourceManagerNonModal", true ).toBool( ) )
+  if ( QgsSettings().value( "/qgis/dataSourceManagerNonModal", true ).toBool() )
   {
     mDataSourceManagerDialog->show();
   }
@@ -1892,7 +1892,7 @@ void QgisApp::createActions()
 
   // Layer Menu Items
 
-  connect( mActionDataSourceManager, &QAction::triggered, this, [ = ]( ) { dataSourceManager( ); } );
+  connect( mActionDataSourceManager, &QAction::triggered, this, [ = ]() { dataSourceManager(); } );
   connect( mActionNewVectorLayer, &QAction::triggered, this, &QgisApp::newVectorLayer );
   connect( mActionNewSpatiaLiteLayer, &QAction::triggered, this, &QgisApp::newSpatialiteLayer );
   connect( mActionNewGeoPackageLayer, &QAction::triggered, this, &QgisApp::newGeoPackageLayer );
@@ -11391,7 +11391,7 @@ void QgisApp::renameView()
 
 
 // this is a slot for action from GUI to open and add raster layers
-void QgisApp::addRasterLayer( )
+void QgisApp::addRasterLayer()
 {
   QStringList selectedFiles;
   QString e;//only for parameter correctness

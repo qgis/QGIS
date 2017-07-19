@@ -812,13 +812,13 @@ int main( int argc, char *argv[] )
   // - use the path specified with --globalsettings path,
   // - use the environment if not found
   // - use a default location as a fallback
-  if ( globalsettingsfile.isEmpty( ) )
+  if ( globalsettingsfile.isEmpty() )
   {
     globalsettingsfile = getenv( "QGIS_GLOBAL_SETTINGS_FILE" );
   }
-  if ( globalsettingsfile.isEmpty( ) )
+  if ( globalsettingsfile.isEmpty() )
   {
-    QString default_globalsettingsfile = QgsApplication::pkgDataPath( ) + "/qgis_global_settings.ini";
+    QString default_globalsettingsfile = QgsApplication::pkgDataPath() + "/qgis_global_settings.ini";
     if ( QFile::exists( default_globalsettingsfile ) )
     {
       globalsettingsfile = default_globalsettingsfile;

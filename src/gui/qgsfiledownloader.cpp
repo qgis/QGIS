@@ -33,7 +33,7 @@ QgsFileDownloader::QgsFileDownloader( const QUrl &url, const QString &outputFile
   , mDownloadCanceled( false )
   , mErrors()
   , mGuiNotificationsEnabled( enableGuiNotifications )
-  , mAuthCfg( )
+  , mAuthCfg()
 {
   mFile.setFileName( outputFileName );
   mAuthCfg = authcfg;

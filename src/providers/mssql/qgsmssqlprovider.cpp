@@ -379,7 +379,7 @@ void QgsMssqlProvider::loadFields()
   // Get computed columns which need to be ignored on insert or update.
   if ( !query.exec( QStringLiteral( "SELECT name FROM sys.columns WHERE is_computed = 1 AND object_id = OBJECT_ID('[%1].[%2]')" ).arg( mSchemaName, mTableName ) ) )
   {
-    pushError( query.lastError().text( ) );
+    pushError( query.lastError().text() );
     return;
   }
 
@@ -393,7 +393,7 @@ void QgsMssqlProvider::loadFields()
 
   if ( !query.exec( QStringLiteral( "exec sp_columns @table_name = N'%1', @table_owner = '%2'" ).arg( mTableName, mSchemaName ) ) )
   {
-    pushError( query.lastError().text( ) );
+    pushError( query.lastError().text() );
     return;
   }
   if ( query.isActive() )
@@ -2302,7 +2302,7 @@ QGISEXTERN QString getStyleById( const QString &uri, QString styleId, QString &e
     QString msg = query.lastError().text();
     QgsDebugMsg( msg );
     errCause = query.lastError().text();
-    return QString( );
+    return QString();
   }
   while ( query.next() )
   {

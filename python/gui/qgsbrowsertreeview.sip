@@ -29,7 +29,7 @@ class QgsBrowserTreeView : QTreeView
 %Docstring
 Set the browser model
 %End
-    QgsBrowserModel *browserModel( );
+    QgsBrowserModel *browserModel();
 %Docstring
 Return the browser model
  :rtype: QgsBrowserModel

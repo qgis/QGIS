@@ -777,7 +777,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
      * \param pageName the page name, usually the provider name or "browser" (for the browser panel)
      *        or "ogr" (vector layers) or "raster" (raster layers)
      */
-    void dataSourceManager( QString pageName = QString( ) );
+    void dataSourceManager( QString pageName = QString() );
 
     /** Add a raster layer directly without prompting user for location
       The caller must provide information compatible with the provider plugin
@@ -1498,7 +1498,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
      * Emitted when a connection has been added/removed or changed by the provider
      * selection dialogs
      */
-    void connectionsChanged( );
+    void connectionsChanged();
 
     /** Emitted when a key is pressed and we want non widget sublasses to be able
       to pick up on this (e.g. maplayer) */

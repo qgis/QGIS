@@ -53,7 +53,7 @@ Returns a pointer to the server interface
  :rtype: QgsServerInterfaceImpl
 %End
 
-    void initPython( );
+    void initPython();
 %Docstring
 Note: not in Python bindings
 %End

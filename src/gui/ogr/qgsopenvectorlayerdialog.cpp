@@ -399,9 +399,9 @@ void QgsOpenVectorLayerDialog::accept()
   {
     QDialog::accept();
   }
-  else if ( ! mDataSources.isEmpty( ) )
+  else if ( ! mDataSources.isEmpty() )
   {
-    emit addVectorLayers( mDataSources, encoding(), dataSourceType( ) );
+    emit addVectorLayers( mDataSources, encoding(), dataSourceType() );
   }
 }
 

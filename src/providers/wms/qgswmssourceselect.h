@@ -56,7 +56,7 @@ class QgsWMSSourceSelect : public QgsAbstractDataSourceWidget, private Ui::QgsWM
   public slots:
 
     //! Triggered when the provider's connections need to be refreshed
-    void refresh( ) override;
+    void refresh() override;
 
     //! Opens the create connection dialog to build a new connection
     void on_btnNew_clicked();

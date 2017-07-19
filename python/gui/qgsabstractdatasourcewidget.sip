@@ -26,7 +26,7 @@ class QgsAbstractDataSourceWidget : QDialog
 %End
   public:
 
-    ~QgsAbstractDataSourceWidget( );
+    ~QgsAbstractDataSourceWidget();
 %Docstring
 Destructor
 %End
@@ -40,7 +40,7 @@ Destructor
 
   public slots:
 
-    virtual void refresh( );
+    virtual void refresh();
 %Docstring
  Triggered when the provider's connections need to be refreshed
  The default implementation does nothing
@@ -86,13 +86,13 @@ Emitted when a progress dialog is shown by the provider dialog
 Constructor
 %End
 
-    QgsProviderRegistry::WidgetMode widgetMode( ) const;
+    QgsProviderRegistry::WidgetMode widgetMode() const;
 %Docstring
 Return the widget mode
  :rtype: QgsProviderRegistry.WidgetMode
 %End
 
-    const QgsMapCanvas *mapCanvas( ) const;
+    const QgsMapCanvas *mapCanvas() const;
 %Docstring
  Return the map canvas (can be null)
  :rtype: QgsMapCanvas

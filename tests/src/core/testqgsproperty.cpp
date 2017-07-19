@@ -144,8 +144,8 @@ void TestQgsProperty::conversions()
   collection.property( 0 ).setStaticValue( QColor( 255, 200, 100, 50 ) ); //color in qvariant
   QCOMPARE( c1.valueAsColor( context, QColor( 200, 210, 220 ) ), QColor( 255, 200, 100, 50 ) );
   QCOMPARE( collection.valueAsColor( 0, context, QColor( 200, 210, 220 ) ), QColor( 255, 200, 100, 50 ) );
-  c1.setStaticValue( QColor( ) );  //invalid color in qvariant, should return default color
-  collection.property( 0 ).setStaticValue( QColor( ) );  //invalid color in qvariant, should return default color
+  c1.setStaticValue( QColor() );  //invalid color in qvariant, should return default color
+  collection.property( 0 ).setStaticValue( QColor() );  //invalid color in qvariant, should return default color
   QCOMPARE( c1.valueAsColor( context, QColor( 200, 210, 220 ) ), QColor( 200, 210, 220 ) );
   QCOMPARE( collection.valueAsColor( 0, context, QColor( 200, 210, 220 ) ), QColor( 200, 210, 220 ) );
   c1.setStaticValue( QgsSymbolLayerUtils::encodeColor( QColor( 255, 200, 100, 50 ) ) ); //encoded color

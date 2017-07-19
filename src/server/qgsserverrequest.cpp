@@ -57,7 +57,7 @@ void QgsServerRequest::setHeader( const QString &name, const QString &value )
   mHeaders.insert( name, value );
 }
 
-QMap<QString, QString> QgsServerRequest::headers( ) const
+QMap<QString, QString> QgsServerRequest::headers() const
 {
   return mHeaders;
 }

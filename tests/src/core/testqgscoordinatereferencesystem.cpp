@@ -328,7 +328,7 @@ QString TestQgsCoordinateReferenceSystem::testESRIWkt( int i, QgsCoordinateRefer
   if ( myCrs.toProj4().indexOf( myTOWGS84Strings[i] ) == -1 )
     return QStringLiteral( "test %1 [%2] not found, PROJ.4 = [%3] expecting [%4]"
                          ).arg( i ).arg( myTOWGS84Strings[i], myCrs.toProj4(), myProj4Strings[i] );
-  if ( myCrs.authid() !=  myAuthIdStrings[i] )
+  if ( myCrs.authid() != myAuthIdStrings[i] )
     return QStringLiteral( "test %1 AUTHID = [%2] expecting [%3]"
                          ).arg( i ).arg( myCrs.authid(), myAuthIdStrings[i] );
 

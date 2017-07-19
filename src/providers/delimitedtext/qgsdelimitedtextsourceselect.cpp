@@ -199,7 +199,7 @@ void QgsDelimitedTextSourceSelect::on_buttonBox_accepted()
 
   // add the layer to the map
   emit addVectorLayer( QString::fromAscii( url.toEncoded() ), txtLayerName->text(), QStringLiteral( "delimitedtext" ) );
-  if ( widgetMode() ==  QgsProviderRegistry::WidgetMode::None )
+  if ( widgetMode() == QgsProviderRegistry::WidgetMode::None )
   {
     accept();
   }

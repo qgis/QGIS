@@ -76,7 +76,7 @@ QString QgsRequestHandler::responseHeader( const QString &name ) const
 
 QMap<QString, QString> QgsRequestHandler::responseHeaders() const
 {
-  return mResponse.headers( );
+  return mResponse.headers();
 }
 
 void QgsRequestHandler::setRequestHeader( const QString &name, const QString &value )
@@ -97,7 +97,7 @@ QString QgsRequestHandler::requestHeader( const QString &name ) const
 
 QMap<QString, QString> QgsRequestHandler::requestHeaders() const
 {
-  return mRequest.headers( );
+  return mRequest.headers();
 }
 
 
@@ -123,12 +123,12 @@ QByteArray QgsRequestHandler::body() const
 
 QByteArray QgsRequestHandler::data() const
 {
-  return mRequest.data( );
+  return mRequest.data();
 }
 
 QString QgsRequestHandler::url() const
 {
-  return mRequest.url( ).toString( );
+  return mRequest.url().toString();
 }
 
 void QgsRequestHandler::setStatusCode( int code )

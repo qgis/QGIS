@@ -137,33 +137,33 @@ class CORE_EXPORT QgsRegularPolygon
 
     /** Returns a list including the vertices of the regular polygon.
      */
-    QgsPointSequence points( ) const;
+    QgsPointSequence points() const;
 
     /** Returns as a polygon.
      */
-    QgsPolygonV2 *toPolygon( ) const SIP_FACTORY;
+    QgsPolygonV2 *toPolygon() const SIP_FACTORY;
 
     /** Returns as a linestring.
      */
-    QgsLineString *toLineString( ) const SIP_FACTORY;
+    QgsLineString *toLineString() const SIP_FACTORY;
 
     /** Returns as a triangle.
      * An empty triangle is returned if the regular polygon is empty or if the number of sides is different from 3.
      */
-    QgsTriangle toTriangle( ) const;
+    QgsTriangle toTriangle() const;
 
     /** Returns a triangulation (vertices from sides to the center) of the regular polygon.
      * An empty list is returned if the regular polygon is empty.
      */
-    QList<QgsTriangle> triangulate( ) const;
+    QList<QgsTriangle> triangulate() const;
 
     /** Returns the inscribed circle
      */
-    QgsCircle inscribedCircle( ) const;
+    QgsCircle inscribedCircle() const;
 
     /** Returns the circumscribed circle
      */
-    QgsCircle circumscribedCircle( ) const;
+    QgsCircle circumscribedCircle() const;
 
     /**
      * Returns a string representation of the regular polygon.
@@ -173,26 +173,26 @@ class CORE_EXPORT QgsRegularPolygon
 
     /** Returns the measure of the interior angles in degrees.
      */
-    double interiorAngle( ) const;
+    double interiorAngle() const;
 
     /** Returns the measure of the central angle (the angle subtended at the center of the polygon by one of its sides) in degrees.
      */
-    double centralAngle( ) const;
+    double centralAngle() const;
 
     /** Returns the area.
      * Returns 0 if the regular polygon is empty.
      */
-    double area( ) const;
+    double area() const;
 
     /** Returns the perimeter.
      * Returns 0 if the regular polygon is empty.
      */
-    double perimeter( ) const;
+    double perimeter() const;
 
     /** Returns the length of a side.
      * Returns 0 if the regular polygon is empty.
      */
-    double length( ) const;
+    double length() const;
 
   private:
     QgsPoint mCenter;

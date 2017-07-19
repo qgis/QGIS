@@ -35,7 +35,7 @@ bool QgsSettings::setGlobalSettingsPath( QString path )
 
 void QgsSettings::init()
 {
-  if ( ! sGlobalSettingsPath.isEmpty( ) )
+  if ( ! sGlobalSettingsPath.isEmpty() )
   {
     mGlobalSettings = new QSettings( sGlobalSettingsPath, QSettings::IniFormat );
     mGlobalSettings->setIniCodec( "UTF-8" );
@@ -93,17 +93,17 @@ void QgsSettings::beginGroup( const QString &prefix )
 
 void QgsSettings::endGroup()
 {
-  mUserSettings->endGroup( );
+  mUserSettings->endGroup();
   if ( mGlobalSettings )
   {
-    mGlobalSettings->endGroup( );
+    mGlobalSettings->endGroup();
   }
 }
 
 
 QStringList QgsSettings::allKeys() const
 {
-  QStringList keys = mUserSettings->allKeys( );
+  QStringList keys = mUserSettings->allKeys();
   if ( mGlobalSettings )
   {
     for ( auto &s : mGlobalSettings->allKeys() )
@@ -120,7 +120,7 @@ QStringList QgsSettings::allKeys() const
 
 QStringList QgsSettings::childKeys() const
 {
-  QStringList keys = mUserSettings->childKeys( );
+  QStringList keys = mUserSettings->childKeys();
   if ( mGlobalSettings )
   {
     for ( auto &s : mGlobalSettings->childKeys() )
@@ -136,7 +136,7 @@ QStringList QgsSettings::childKeys() const
 
 QStringList QgsSettings::childGroups() const
 {
-  QStringList keys = mUserSettings->childGroups( );
+  QStringList keys = mUserSettings->childGroups();
   if ( mGlobalSettings )
   {
     for ( auto &s : mGlobalSettings->childGroups() )
@@ -173,7 +173,7 @@ bool QgsSettings::contains( const QString &key, const QgsSettings::Section secti
 
 QString QgsSettings::fileName() const
 {
-  return mUserSettings->fileName( );
+  return mUserSettings->fileName();
 }
 
 void QgsSettings::sync()

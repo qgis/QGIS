@@ -318,7 +318,7 @@ Refresh connections: update GUI and emit signal
     void endRemoveItems();
     void dataChanged( QgsDataItem *item );
     void stateChanged( QgsDataItem *item, QgsDataItem::State oldState );
-    void connectionsChanged( );
+    void connectionsChanged();
 %Docstring
 open browsers
 %End

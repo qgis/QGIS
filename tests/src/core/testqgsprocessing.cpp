@@ -2088,7 +2088,7 @@ void TestQgsProcessing::parameterMatrix()
   QgsProcessingContext context;
 
   // not optional!
-  std::unique_ptr< QgsProcessingParameterMatrix > def( new QgsProcessingParameterMatrix( "non_optional", QString(), 3, false, QStringList(), QString( ), false ) );
+  std::unique_ptr< QgsProcessingParameterMatrix > def( new QgsProcessingParameterMatrix( "non_optional", QString(), 3, false, QStringList(), QString(), false ) );
   QVERIFY( !def->checkValueIsAcceptable( false ) );
   QVERIFY( !def->checkValueIsAcceptable( true ) );
   QVERIFY( def->checkValueIsAcceptable( 5 ) );

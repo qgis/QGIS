@@ -155,7 +155,7 @@ for I in $(seq -f '%02g' 0  $(($SPLIT-1)) ) ; do
         echo "*** error: could not find error in $LINE" >&2
       else
         # if the error is not in IGNORECASE_INWORD, then it matched previous and next character (needs to remove them)
-        # also make error small case and escape special chars: ( ) |
+        # also make error small case and escape special chars: () |
         ERRORSMALLCASE=$(echo ${ERROR,,} |${GP}sed -r 's/\(/\\(/g' |${GP}sed -r 's/\)/\\)/g' |${GP}sed -r 's/\|/\\|/g')
         if [[ ! "${ERRORSMALLCASE}" =~ $IGNORECASE_INWORD ]]; then
          if [[ -n $(ag --nonumbers --case-sensitive "^${ERRORSMALLCASE:1:-1}${ERRORSMALLCASE: -1}?:" scripts/spell_check/spelling.dat) ]]; then

@@ -90,16 +90,16 @@ class GUI_EXPORT QgsAuthEditorWidgets : public QWidget, private Ui::QgsAuthEdito
     void authMessageOut( const QString &message, const QString &authtag, QgsAuthManager::MessageLevel level );
 
     //! Remove master password from wallet
-    void  passwordHelperDelete( );
+    void  passwordHelperDelete();
 
     //! Store master password into the wallet
-    void  passwordHelperSync( );
+    void  passwordHelperSync();
 
     //! Toggle password helper (enable/disable)
-    void passwordHelperEnableTriggered( );
+    void passwordHelperEnableTriggered();
 
     //! Toggle password helper logging (enable/disable)
-    void passwordHelperLoggingEnableTriggered( );
+    void passwordHelperLoggingEnableTriggered();
 
   private:
     void setupUtilitiesMenu();

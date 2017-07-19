@@ -44,7 +44,7 @@ QgsVirtualLayerSourceSelect::QgsVirtualLayerSourceSelect( QWidget *parent, Qt::W
 {
   setupUi( this );
 
-  if ( widgetMode !=  QgsProviderRegistry::WidgetMode::None )
+  if ( widgetMode != QgsProviderRegistry::WidgetMode::None )
   {
     buttonBox->removeButton( buttonBox->button( QDialogButtonBox::Cancel ) );
     buttonBox->button( QDialogButtonBox::Ok )->setText( tr( "Add" ) );

@@ -143,7 +143,7 @@ void QgsAttributeFormEditorWidget::setMode( QgsAttributeFormEditorWidget::Mode m
 void QgsAttributeFormEditorWidget::setIsMixed( bool mixed )
 {
   if ( mWidget && mixed )
-    mWidget->showIndeterminateState( );
+    mWidget->showIndeterminateState();
   mMultiEditButton->setIsMixed( mixed );
   mIsMixed = mixed;
 }

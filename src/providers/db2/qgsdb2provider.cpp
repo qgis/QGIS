@@ -952,7 +952,7 @@ bool QgsDb2Provider::addFeatures( QgsFeatureList &flist, Flags flags )
   {
     copyOperation = true; // FID is first field but no attribute in attrs
   }
-  else if ( mAttributeFields.count() !=  attrs.count() )
+  else if ( mAttributeFields.count() != attrs.count() )
   {
     QgsDebugMsg( "Count mismatch - failing" );
     return false;

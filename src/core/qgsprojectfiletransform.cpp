@@ -1142,7 +1142,7 @@ void QgsProjectFileTransform::transformContrastEnhancement( QDomDocument &doc, c
   {
     enhancementNameList << QStringLiteral( "contrastEnhancement" );
   }
-  if ( minMaxEntryList.size() ==  3 )
+  if ( minMaxEntryList.size() == 3 )
   {
     enhancementNameList << QStringLiteral( "redContrastEnhancement" ) << QStringLiteral( "greenContrastEnhancement" ) << QStringLiteral( "blueContrastEnhancement" );
   }

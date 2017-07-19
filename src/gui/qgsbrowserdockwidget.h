@@ -103,7 +103,7 @@ class GUI_EXPORT QgsBrowserDockWidget : public QgsDockWidget, private Ui::QgsBro
     //! Emitted when drop uri list needs to be handled
     void handleDropUriList( const QgsMimeDataUtils::UriList & );
     //! Connections changed in the browser
-    void connectionsChanged( );
+    void connectionsChanged();
 
   protected:
     //! Show event override

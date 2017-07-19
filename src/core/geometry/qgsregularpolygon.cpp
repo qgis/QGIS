@@ -174,7 +174,7 @@ void QgsRegularPolygon::setNumberSides( const int numSides )
   }
 }
 
-QgsPointSequence QgsRegularPolygon::points( ) const
+QgsPointSequence QgsRegularPolygon::points() const
 {
   QgsPointSequence pts;
   if ( isEmpty() )
@@ -210,7 +210,7 @@ QgsPolygonV2 *QgsRegularPolygon::toPolygon() const
     return polygon.release();
   }
 
-  polygon->setExteriorRing( toLineString( ) );
+  polygon->setExteriorRing( toLineString() );
 
   return polygon.release();
 }
@@ -224,7 +224,7 @@ QgsLineString *QgsRegularPolygon::toLineString() const
   }
 
   QgsPointSequence pts;
-  pts = points( );
+  pts = points();
 
   ext->setPoints( pts );
 
@@ -239,7 +239,7 @@ QgsTriangle QgsRegularPolygon::toTriangle() const
   }
 
   QgsPointSequence pts;
-  pts = points( );
+  pts = points();
 
   return QgsTriangle( pts.at( 0 ), pts.at( 1 ), pts.at( 2 ) );
 }
@@ -253,7 +253,7 @@ QList<QgsTriangle> QgsRegularPolygon::triangulate() const
   }
 
   QgsPointSequence pts;
-  pts = points( );
+  pts = points();
 
   unsigned int n = 0;
   while ( n < mNumberSides - 1 )

@@ -69,7 +69,7 @@ class GUI_EXPORT QgsOWSSourceSelect : public QgsAbstractDataSourceWidget, protec
   public slots:
 
     //! Triggered when the provider's connections need to be refreshed
-    void refresh( ) override;
+    void refresh() override;
 
     //! Opens the create connection dialog to build a new connection
     void on_mNewButton_clicked();

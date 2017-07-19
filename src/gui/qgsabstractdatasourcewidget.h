@@ -43,7 +43,7 @@ class GUI_EXPORT QgsAbstractDataSourceWidget : public QDialog
   public:
 
     //! Destructor
-    ~QgsAbstractDataSourceWidget( ) = default;
+    ~QgsAbstractDataSourceWidget() = default;
 
     /** Store a pointer to the map canvas to retrieve extent and CRS
      * Used to select an appropriate CRS and possibly to retrieve data only in the current extent
@@ -56,7 +56,7 @@ class GUI_EXPORT QgsAbstractDataSourceWidget : public QDialog
     /** Triggered when the provider's connections need to be refreshed
      * The default implementation does nothing
      */
-    virtual void refresh( ) {}
+    virtual void refresh() {}
 
   signals:
 
@@ -86,11 +86,11 @@ class GUI_EXPORT QgsAbstractDataSourceWidget : public QDialog
     QgsAbstractDataSourceWidget( QWidget *parent SIP_TRANSFERTHIS = nullptr, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::None );
 
     //! Return the widget mode
-    QgsProviderRegistry::WidgetMode widgetMode( ) const;
+    QgsProviderRegistry::WidgetMode widgetMode() const;
 
     /** Return the map canvas (can be null)
      */
-    const QgsMapCanvas *mapCanvas( ) const;
+    const QgsMapCanvas *mapCanvas() const;
 
   private:
 

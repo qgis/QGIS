@@ -3903,7 +3903,7 @@ QList<double> QgsSymbolLayerUtils::prettyBreaks( double minimum, double maximum,
   QgsDebugMsg( QString( "pretty classes: %1" ).arg( end ) );
 
   // If we don't have quite enough labels, extend the range out
-  // to make more (these labels are beyond the data :( )
+  // to make more (these labels are beyond the data :()
   int k = floor( 0.5 + end - start );
   if ( k < minimumCount )
   {

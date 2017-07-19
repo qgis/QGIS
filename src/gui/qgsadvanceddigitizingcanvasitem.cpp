@@ -107,7 +107,7 @@ void QgsAdvancedDigitizingCanvasItem::paint( QPainter *painter )
   }
 
   // Draw segment par/per input
-  if ( mAdvancedDigitizingDockWidget->additionalConstraint() !=   QgsAdvancedDigitizingDockWidget::NoConstraint && hasSnappedSegment )
+  if ( mAdvancedDigitizingDockWidget->additionalConstraint() != QgsAdvancedDigitizingDockWidget::NoConstraint && hasSnappedSegment )
   {
     painter->setPen( mConstruction2Pen );
     painter->drawLine( snapSegmentPix1.x(),

@@ -99,7 +99,7 @@ class QgsArcGisServiceSourceSelect : public QgsAbstractDataSourceWidget, protect
   public slots:
 
     //! Triggered when the provider's connections need to be refreshed
-    void refresh( ) override;
+    void refresh() override;
 
   private slots:
     void addEntryToServerList();

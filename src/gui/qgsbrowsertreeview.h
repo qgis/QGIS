@@ -38,7 +38,7 @@ class GUI_EXPORT QgsBrowserTreeView : public QTreeView
     //! Set the browser model
     void setBrowserModel( QgsBrowserModel *model );
     //! Return the browser model
-    QgsBrowserModel *browserModel( ) { return mBrowserModel; }
+    QgsBrowserModel *browserModel() { return mBrowserModel; }
     virtual void showEvent( QShowEvent *e ) override;
     virtual void hideEvent( QHideEvent *e ) override;
 

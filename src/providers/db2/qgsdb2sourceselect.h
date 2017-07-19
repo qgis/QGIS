@@ -116,7 +116,7 @@ class QgsDb2SourceSelect : public QgsAbstractDataSourceWidget, private Ui::QgsDb
     void addTables();
     void buildQuery();
     //! Triggered when the provider's connections need to be refreshed
-    void refresh( ) override;
+    void refresh() override;
 
     /** Connects to the database using the stored connection parameters.
     * Once connected, available layers are displayed.

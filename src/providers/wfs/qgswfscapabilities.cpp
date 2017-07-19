@@ -297,8 +297,8 @@ void QgsWfsCapabilities::capabilitiesReplyFinished()
     QDomNodeList operationNodes = doc.elementsByTagName( "Operation" );
     for ( int i = 0; i < operationNodes.count(); i++ )
     {
-      QDomElement operationElement = operationNodes.at( i ).toElement( );
-      if ( operationElement.isElement( ) && "Transaction" == operationElement.attribute( "name" ) )
+      QDomElement operationElement = operationNodes.at( i ).toElement();
+      if ( operationElement.isElement() && "Transaction" == operationElement.attribute( "name" ) )
       {
         insertCap = true;
         updateCap = true;
