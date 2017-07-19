@@ -78,7 +78,7 @@ void QgsLayoutItem::paint( QPainter *painter, const QStyleOptionGraphicsItem *it
   }
 
   double destinationDpi = itemStyle->matrix.m11() * 25.4;
-  bool useImageCache = true;
+  bool useImageCache = false;
 
   if ( useImageCache )
   {
@@ -224,7 +224,10 @@ void QgsLayoutItem::setScenePos( const QPointF &destinationPos )
   //since setPos does not account for item rotation, use difference between
   //current scenePos (which DOES account for rotation) and destination pos
   //to calculate how much the item needs to move
-  setPos( pos() + ( destinationPos - scenePos() ) );
+  if ( parentItem() )
+    setPos( pos() + ( destinationPos - scenePos() ) + parentItem()->scenePos() );
+  else
+    setPos( pos() + ( destinationPos - scenePos() ) );
 }
 
 double QgsLayoutItem::itemRotation() const
