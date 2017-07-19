@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>721</width>
-    <height>546</height>
+    <height>554</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -78,7 +78,6 @@
      <property name="frameShape">
       <enum>QFrame::NoFrame</enum>
      </property>
-     <zorder>tabWidget</zorder>
     </widget>
    </item>
    <item>
@@ -90,9 +89,9 @@
       <enum>QTabWidget::Rounded</enum>
      </property>
      <property name="currentIndex">
-      <number>0</number>
+      <number>2</number>
      </property>
-     <widget class="QWidget" name="tab">
+     <widget class="QWidget" name="tabIdentificationDialog">
       <attribute name="title">
        <string>Identification</string>
       </attribute>
@@ -195,7 +194,7 @@
        </item>
       </layout>
      </widget>
-     <widget class="QWidget" name="tab_7">
+     <widget class="QWidget" name="tabKeywordsDialog">
       <attribute name="title">
        <string>Keywords</string>
       </attribute>
@@ -280,140 +279,71 @@
        </item>
       </layout>
      </widget>
-     <widget class="QWidget" name="tab_2">
+     <widget class="QWidget" name="tabAccessDialog">
       <property name="enabled">
-       <bool>false</bool>
+       <bool>true</bool>
       </property>
       <attribute name="title">
        <string>Access</string>
       </attribute>
-      <widget class="QLabel" name="label_5">
-       <property name="geometry">
-        <rect>
-         <x>10</x>
-         <y>10</y>
-         <width>60</width>
-         <height>16</height>
-        </rect>
-       </property>
-       <property name="text">
-        <string>Fees</string>
-       </property>
-      </widget>
-      <widget class="QLineEdit" name="lineEdit">
-       <property name="enabled">
-        <bool>false</bool>
-       </property>
-       <property name="geometry">
-        <rect>
-         <x>10</x>
-         <y>30</y>
-         <width>113</width>
-         <height>21</height>
-        </rect>
-       </property>
-      </widget>
-      <widget class="QLabel" name="label_9">
-       <property name="geometry">
-        <rect>
-         <x>10</x>
-         <y>80</y>
-         <width>101</width>
-         <height>16</height>
-        </rect>
-       </property>
-       <property name="text">
-        <string>Constraints</string>
-       </property>
-      </widget>
-      <widget class="QTreeWidget" name="treeWidget">
-       <property name="enabled">
-        <bool>false</bool>
-       </property>
-       <property name="geometry">
-        <rect>
-         <x>10</x>
-         <y>110</y>
-         <width>221</width>
-         <height>151</height>
-        </rect>
-       </property>
-       <property name="columnCount">
-        <number>2</number>
-       </property>
-       <column>
-        <property name="text">
-         <string>Type</string>
-        </property>
-       </column>
-       <column>
-        <property name="text">
-         <string>Label</string>
-        </property>
-       </column>
-      </widget>
-      <widget class="QPushButton" name="btnGraduatedAdd">
-       <property name="geometry">
-        <rect>
-         <x>240</x>
-         <y>230</y>
-         <width>62</width>
-         <height>32</height>
-        </rect>
-       </property>
-       <property name="toolTip">
-        <string>Add class</string>
-       </property>
-       <property name="icon">
-        <iconset resource="../../images/images.qrc">
-         <normaloff>:/images/themes/default/symbologyAdd.svg</normaloff>:/images/themes/default/symbologyAdd.svg</iconset>
-       </property>
-      </widget>
-      <widget class="QTextBrowser" name="textBrowser">
-       <property name="enabled">
-        <bool>false</bool>
-       </property>
-       <property name="geometry">
-        <rect>
-         <x>400</x>
-         <y>70</y>
-         <width>256</width>
-         <height>192</height>
-        </rect>
-       </property>
-      </widget>
-      <widget class="QPushButton" name="btnGraduatedDelete">
-       <property name="geometry">
-        <rect>
-         <x>240</x>
-         <y>200</y>
-         <width>62</width>
-         <height>32</height>
-        </rect>
-       </property>
-       <property name="toolTip">
-        <string>Delete</string>
-       </property>
-       <property name="icon">
-        <iconset resource="../../images/images.qrc">
-         <normaloff>:/images/themes/default/symbologyRemove.svg</normaloff>:/images/themes/default/symbologyRemove.svg</iconset>
-       </property>
-      </widget>
-      <widget class="QLabel" name="label_10">
-       <property name="geometry">
-        <rect>
-         <x>400</x>
-         <y>40</y>
-         <width>60</width>
-         <height>16</height>
-        </rect>
-       </property>
-       <property name="text">
-        <string>Rights</string>
-       </property>
-      </widget>
+      <layout class="QVBoxLayout" name="verticalLayout_3">
+       <item>
+        <widget class="QLabel" name="label_8">
+         <property name="text">
+          <string>Licenses</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QTableWidget" name="tabLicenses">
+         <property name="selectionMode">
+          <enum>QAbstractItemView::SingleSelection</enum>
+         </property>
+         <property name="selectionBehavior">
+          <enum>QAbstractItemView::SelectRows</enum>
+         </property>
+         <attribute name="horizontalHeaderVisible">
+          <bool>false</bool>
+         </attribute>
+         <attribute name="horizontalHeaderStretchLastSection">
+          <bool>true</bool>
+         </attribute>
+         <column>
+          <property name="text">
+           <string>Label</string>
+          </property>
+         </column>
+        </widget>
+       </item>
+       <item>
+        <layout class="QHBoxLayout" name="horizontalLayout_6">
+         <item>
+          <widget class="QPushButton" name="btnAddLicence">
+           <property name="toolTip">
+            <string>Add class</string>
+           </property>
+           <property name="icon">
+            <iconset resource="../../images/images.qrc">
+             <normaloff>:/images/themes/default/symbologyAdd.svg</normaloff>:/images/themes/default/symbologyAdd.svg</iconset>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QPushButton" name="btnRemoveLicence">
+           <property name="toolTip">
+            <string>Delete</string>
+           </property>
+           <property name="icon">
+            <iconset resource="../../images/images.qrc">
+             <normaloff>:/images/themes/default/symbologyRemove.svg</normaloff>:/images/themes/default/symbologyRemove.svg</iconset>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+      </layout>
      </widget>
-     <widget class="QWidget" name="tab_3">
+     <widget class="QWidget" name="tabExtentDialog">
       <property name="enabled">
        <bool>false</bool>
       </property>
@@ -447,7 +377,7 @@
        </property>
       </widget>
      </widget>
-     <widget class="QWidget" name="tab_4">
+     <widget class="QWidget" name="tabContactsDialog">
       <property name="enabled">
        <bool>false</bool>
       </property>
@@ -550,7 +480,7 @@
        </item>
       </layout>
      </widget>
-     <widget class="QWidget" name="tab_5">
+     <widget class="QWidget" name="tabLinksDialog">
       <attribute name="title">
        <string>Links</string>
       </attribute>
@@ -651,7 +581,7 @@
        </item>
       </layout>
      </widget>
-     <widget class="QWidget" name="tab_6">
+     <widget class="QWidget" name="tabValidationDialog">
       <attribute name="title">
        <string>Validation</string>
       </attribute>

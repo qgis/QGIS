@@ -20,6 +20,7 @@
 #include <QPushButton>
 #include <QComboBox>
 #include <QString>
+#include <QInputDialog>
 
 //#include "qgsmetadatalinkdelegate.h"
 #include "qgsmetadatawizard.h"
@@ -47,6 +48,8 @@ QgsMetadataWizard::QgsMetadataWizard( QWidget *parent, QgsMapLayer *layer )
   connect( btnAutoSource, &QPushButton::clicked, this, &QgsMetadataWizard::setAutoSource );
   connect( btnAddVocabulary, &QPushButton::clicked, this, &QgsMetadataWizard::addVocabulary );
   connect( btnRemoveVocabulary, &QPushButton::clicked, this, &QgsMetadataWizard::removeVocabulary );
+  connect( btnAddLicence, &QPushButton::clicked, this, &QgsMetadataWizard::addLicence );
+  connect( btnRemoveLicence, &QPushButton::clicked, this, &QgsMetadataWizard::removeLicence );
   connect( btnAddLink, &QPushButton::clicked, this, &QgsMetadataWizard::addLink );
   connect( btnRemoveLink, &QPushButton::clicked, this, &QgsMetadataWizard::removeLink );
   connect( btnCheckMetadata, &QPushButton::clicked, this, &QgsMetadataWizard::checkMetadata );
@@ -88,6 +91,35 @@ void QgsMetadataWizard::removeVocabulary()
   for ( int i = 0 ; i < selectedRows.size() ; i++ )
   {
     tabKeywords->model()->removeRow( selectedRows[i].row() );
+  }
+}
+
+void QgsMetadataWizard::addLicence()
+{
+  QString newLicence = QInputDialog::getItem( this, tr( "New Licence" ), tr( "New Licence" ), parseLicenses(), 0, true );
+  if ( tabLicenses->findItems( newLicence, Qt::MatchExactly ).isEmpty() )
+  {
+    int row = tabLicenses->rowCount();
+    tabLicenses->setRowCount( row + 1 );
+    QTableWidgetItem *pCell = new QTableWidgetItem( newLicence );
+    tabLicenses->setItem( row, 0, pCell );
+    QgsDebugMsg( QString( "Adding" ) );
+  }
+  else
+  {
+    QgsDebugMsg( QString( "Cant add" ) );
+  }
+}
+
+void QgsMetadataWizard::removeLicence()
+{
+  QItemSelectionModel *selectionModel = tabLicenses->selectionModel();
+  QModelIndexList selectedRows = selectionModel->selectedRows();
+  QgsDebugMsg( QString( "Remove: %1 " ).arg( selectedRows.count() ) );
+
+  for ( int i = 0 ; i < selectedRows.size() ; i++ )
+  {
+    tabLicenses->model()->removeRow( selectedRows[i].row() );
   }
 }
 
@@ -287,6 +319,21 @@ void QgsMetadataWizard::setPropertiesFromLayer()
     tabKeywords->item( currentRow, 1 )->setText( i.value().join( "," ) );
   }
 
+  // Licenses
+  tabLicenses->setRowCount( 0 );
+  for ( QString licence : mMetadata.licenses() )
+  {
+    int currentRow = tabLicenses->rowCount();
+    tabLicenses->setRowCount( currentRow + 1 );
+    QTableWidgetItem *pCell = tabLicenses->item( currentRow, 0 );
+    if ( !pCell )
+    {
+      pCell = new QTableWidgetItem;
+      tabLicenses->setItem( currentRow, 0, pCell );
+    }
+    pCell->setText( licence );
+  }
+
   // Links
   tabLinks->setRowCount( 0 );
   for ( QgsLayerMetadata::Link link : mMetadata.links() )
@@ -334,6 +381,14 @@ void QgsMetadataWizard::saveMetadata( QgsLayerMetadata &layerMetadata )
     keywords.insert( tabKeywords->item( i, 0 )->text(), tabKeywords->item( i, 1 )->text().split( "," ) );
   }
   layerMetadata.setKeywords( keywords );
+
+  // Licenses
+  QStringList licenses;
+  for ( int i = 0 ; i < tabLicenses->rowCount() ; i++ )
+  {
+    licenses.append( tabLicenses->item( i, 0 )->text() );
+  }
+  layerMetadata.setLicenses( licenses );
 
   // Links
   QList<QgsLayerMetadata::Link> links;
@@ -404,6 +459,26 @@ QStringList QgsMetadataWizard::parseLanguages()
   {
     QByteArray line = file.readLine();
     wordList.append( line.split( ',' ).at( 2 ) );
+  }
+  return wordList;
+}
+
+QStringList QgsMetadataWizard::parseLicenses()
+{
+  QString path = QDir( QgsApplication::metadataPath() ).absoluteFilePath( QString( "licenses.csv" ) );
+  QFile file( path );
+  if ( !file.open( QIODevice::ReadOnly ) )
+  {
+    QgsDebugMsg( QString( "Error while opening the CSV file: %1, %2 " ).arg( path, file.errorString() ) );
+  }
+
+  QStringList wordList;
+  // Skip the first line of the CSV
+  file.readLine();
+  while ( !file.atEnd() )
+  {
+    QByteArray line = file.readLine();
+    wordList.append( line.split( ',' ).at( 0 ) );
   }
   return wordList;
 }

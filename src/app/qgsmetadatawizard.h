@@ -33,6 +33,8 @@ class APP_EXPORT QgsMetadataWizard : public QDialog, private Ui::QgsMetadataWiza
     void setAutoSource();
     void addVocabulary();
     void removeVocabulary();
+    void addLicence();
+    void removeLicence();
     void addLink();
     void removeLink();
     void fillComboBox();
@@ -40,6 +42,7 @@ class APP_EXPORT QgsMetadataWizard : public QDialog, private Ui::QgsMetadataWiza
     void saveMetadata( QgsLayerMetadata &layerMetadata );
     bool checkMetadata();
     QStringList parseLanguages();
+    QStringList parseLicenses();
     QStringList parseLinkTypes();
 
   private:
