@@ -14,7 +14,6 @@ class QgsMapLayer;
 class QgsRasterLayer;
 class QgsVectorLayer;
 
-class MapTextureGenerator;
 class TerrainGenerator;
 
 

@@ -8,25 +8,26 @@ SET(QGIS_3D_SRCS
   chunklist.cpp
   chunkloader.cpp
   chunknode.cpp
-  demterraingenerator.cpp
-  demterraintilegeometry.cpp
-  flatterraingenerator.cpp
   lineentity.cpp
   map3d.cpp
-  maptexturegenerator.cpp
-  maptextureimage.cpp
   pointentity.cpp
   polygonentity.cpp
   polygongeometry.cpp
-  #quantizedmeshgeometry.cpp
-  #quantizedmeshterraingenerator.cpp
   scene.cpp
-  terrain.cpp
-  terrainchunkloader.cpp
-  terraingenerator.cpp
   tessellator.cpp
   tilingscheme.cpp
   utils.cpp
+
+  terrain/demterraingenerator.cpp
+  terrain/demterraintilegeometry.cpp
+  terrain/flatterraingenerator.cpp
+  terrain/maptexturegenerator.cpp
+  terrain/maptextureimage.cpp
+  #terrain/quantizedmeshgeometry.cpp
+  #terrain/quantizedmeshterraingenerator.cpp
+  terrain/terrain.cpp
+  terrain/terrainchunkloader.cpp
+  terrain/terraingenerator.cpp
 
   poly2tri/common/shapes.cc
   poly2tri/sweep/advancing_front.cc
@@ -38,12 +39,13 @@ SET(QGIS_3D_SRCS
 SET(QGIS_3D_MOC_HDRS
   cameracontroller.h
   chunkedentity.h
-  demterraingenerator.h
-  demterraintilegeometry.h
-  maptexturegenerator.h
-  maptextureimage.h
   scene.h
-  terrain.h
+
+  terrain/demterraingenerator.h
+  terrain/demterraintilegeometry.h
+  terrain/maptexturegenerator.h
+  terrain/maptextureimage.h
+  terrain/terrain.h
 )
 
 QT5_WRAP_CPP(QGIS_3D_MOC_SRCS ${QGIS_3D_MOC_HDRS})
@@ -60,29 +62,31 @@ SET(QGIS_3D_HDRS
   chunklist.h
   chunkloader.h
   chunknode.h
-  demterraingenerator.h
-  demterraintilegeometry.h
-  flatterraingenerator.h
   lineentity.h
   map3d.h
-  maptexturegenerator.h
-  maptextureimage.h
   pointentity.h
   polygonentity.h
   polygongeometry.h
-  #quantizedmeshgeometry.h
-  #quantizedmeshterraingenerator.h
   scene.h
-  terrain.h
-  terrainchunkloader.h
-  terraingenerator.h
   tessellator.h
   tilingscheme.h
   utils.h
+
+  terrain/demterraingenerator.h
+  terrain/demterraintilegeometry.h
+  terrain/flatterraingenerator.h
+  terrain/maptexturegenerator.h
+  terrain/maptextureimage.h
+  #terrain/quantizedmeshgeometry.h
+  #terrain/quantizedmeshterraingenerator.h
+  terrain/terrain.h
+  terrain/terrainchunkloader.h
+  terrain/terraingenerator.h
 )
 
 INCLUDE_DIRECTORIES(
   ${CMAKE_CURRENT_SOURCE_DIR}
+  ${CMAKE_CURRENT_SOURCE_DIR}/terrain
   ${CMAKE_SOURCE_DIR}/src/core/
   ${CMAKE_SOURCE_DIR}/src/core/geometry
   ${CMAKE_SOURCE_DIR}/src/core/raster
