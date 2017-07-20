@@ -65,7 +65,7 @@ class ImportIntoPostGIS(GeoAlgorithm):
         self.addParameter(ParameterString(self.SCHEMA,
                                           self.tr('Schema (schema name)'), 'public'))
         self.addParameter(ParameterString(self.TABLENAME,
-                                          self.tr('Table to import to (leave blank to use layer name)')))
+                                          self.tr('Table to import to (leave blank to use layer name)'), optional=True))
         self.addParameter(ParameterTableField(self.PRIMARY_KEY,
                                               self.tr('Primary key field'), self.INPUT, optional=True))
         self.addParameter(ParameterString(self.GEOMETRY_COLUMN,
