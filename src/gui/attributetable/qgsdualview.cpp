@@ -474,7 +474,7 @@ void QgsDualView::viewWillShowContextMenu( QMenu *menu, const QModelIndex &atInd
         continue;
 
       QgsAttributeTableAction *a = new QgsAttributeTableAction( action.name(), this, action.id(), sourceIndex );
-      menu->addAction( action.name(), a, SLOT( execute() ) );
+      menu->addAction( action.name(), a, &QgsAttributeTableAction::execute );
     }
   }
 
@@ -485,11 +485,10 @@ void QgsDualView::viewWillShowContextMenu( QMenu *menu, const QModelIndex &atInd
     //add a separator between user defined and standard actions
     menu->addSeparator();
 
-    QList<QgsMapLayerAction *>::iterator actionIt;
-    for ( actionIt = registeredActions.begin(); actionIt != registeredActions.end(); ++actionIt )
+    Q_FOREACH ( QgsMapLayerAction *action, registeredActions )
     {
-      QgsAttributeTableMapLayerAction *a = new QgsAttributeTableMapLayerAction( ( *actionIt )->text(), this, ( *actionIt ), sourceIndex );
-      menu->addAction( ( *actionIt )->text(), a, &QgsAttributeTableMapLayerAction::execute );
+      QgsAttributeTableMapLayerAction *a = new QgsAttributeTableMapLayerAction( action->text(), this, action, sourceIndex );
+      menu->addAction( action->text(), a, &QgsAttributeTableMapLayerAction::execute );
     }
   }
 
