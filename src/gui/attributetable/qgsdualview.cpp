@@ -489,13 +489,13 @@ void QgsDualView::viewWillShowContextMenu( QMenu *menu, const QModelIndex &atInd
     for ( actionIt = registeredActions.begin(); actionIt != registeredActions.end(); ++actionIt )
     {
       QgsAttributeTableMapLayerAction *a = new QgsAttributeTableMapLayerAction( ( *actionIt )->text(), this, ( *actionIt ), sourceIndex );
-      menu->addAction( ( *actionIt )->text(), a, SLOT( execute() ) );
+      menu->addAction( ( *actionIt )->text(), a, &QgsAttributeTableMapLayerAction::execute );
     }
   }
 
   menu->addSeparator();
   QgsAttributeTableAction *a = new QgsAttributeTableAction( tr( "Open form" ), this, QString(), sourceIndex );
-  menu->addAction( tr( "Open form" ), a, SLOT( featureForm() ) );
+  menu->addAction( tr( "Open form" ), a, &QgsAttributeTableAction::featureForm );
 }
 
 void QgsDualView::showViewHeaderMenu( QPoint point )
