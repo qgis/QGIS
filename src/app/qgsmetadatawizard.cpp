@@ -40,6 +40,15 @@ QgsMetadataWizard::QgsMetadataWizard( QWidget *parent, QgsMapLayer *layer )
   backButton->setEnabled( false );
   nextButton->setEnabled( true );
 
+  // Setup the link view
+  mLinksModel = new QStandardItemModel();
+  mLinksModel->setColumnCount( 7 );
+  QStringList headers = QStringList();
+  headers << tr( "Name" ) << tr( "Type" ) << tr( "URL" ) << tr( "Description" ) << tr( "Format" ) << tr( "MIME" ) << tr( "Size" );
+  mLinksModel->setHorizontalHeaderLabels( headers );
+  tabLinks->setModel( mLinksModel );
+  tabLinks->setItemDelegate( new LinkItemDelegate() );
+
   connect( tabWidget, &QTabWidget::currentChanged, this, &QgsMetadataWizard::updatePanel );
   connect( cancelButton, &QPushButton::clicked, this, &QgsMetadataWizard::cancelClicked );
   connect( backButton, &QPushButton::clicked, this, &QgsMetadataWizard::backClicked );
@@ -184,58 +193,20 @@ void QgsMetadataWizard::updateContactDetails()
 
 void QgsMetadataWizard::addLink()
 {
-  int row = tabLinks->rowCount();
-  tabLinks->setRowCount( row + 1 );
-  QTableWidgetItem *pCell;
-
-  // Name
-  pCell = new QTableWidgetItem( QString( "undefined %1" ).arg( row + 1 ) );
-  tabLinks->setItem( row, 0, pCell );
-
-  // Type
-  // See https://github.com/OSGeo/Cat-Interop/blob/master/LinkPropertyLookupTable.csv
-  QComboBox *typeCombo = new QComboBox();
-  typeCombo->setEditable( true );
-  typeCombo->addItems( parseLinkTypes() );
-  tabLinks->setCellWidget( row, 1, typeCombo );
-
-  // URL
-  pCell = new QTableWidgetItem();
-  tabLinks->setItem( row, 2, pCell );
-
-  // Description
-  pCell = new QTableWidgetItem();
-  tabLinks->setItem( row, 3, pCell );
-
-  // Format
-  // It is strongly suggested to use GDAL/OGR format values. QgsLayerMetadata documentation
-  pCell = new QTableWidgetItem();
-  tabLinks->setItem( row, 4, pCell );
-
-  // MIME
-  // See https://fr.wikipedia.org/wiki/Type_MIME
-  QComboBox *mimeCombo = new QComboBox();
-  mimeCombo->setEditable( true );
-  QStringList mime;
-  mime << "" << "image/png" << "image/tiff" << "application/pdf";
-  mimeCombo->addItems( mime );
-  tabLinks->setCellWidget( row, 5, mimeCombo );
-
-  // Size
-  pCell = new QTableWidgetItem();
-  tabLinks->setItem( row, 6, pCell );
+  int row = mLinksModel->rowCount();
+  mLinksModel->setItem( row, 0, new QStandardItem( QString( "undefined %1" ).arg( row + 1 ) ) );
+  mLinksModel->setItem( row, 1, new QStandardItem() );
+  mLinksModel->setItem( row, 2, new QStandardItem() );
+  mLinksModel->setItem( row, 3, new QStandardItem() );
+  mLinksModel->setItem( row, 4, new QStandardItem() );
+  mLinksModel->setItem( row, 5, new QStandardItem() );
+  mLinksModel->setItem( row, 6, new QStandardItem() );
 }
 
 void QgsMetadataWizard::removeLink()
 {
-  QItemSelectionModel *selectionModel = tabLinks->selectionModel();
-  QModelIndexList selectedRows = selectionModel->selectedRows();
-  QgsDebugMsg( QString( "Remove: %1 " ).arg( selectedRows.count() ) );
-
-  for ( int i = 0 ; i < selectedRows.size() ; i++ )
-  {
-    tabLinks->model()->removeRow( selectedRows[i].row() );
-  }
+  QModelIndexList selectedRows = tabLinks->selectionModel()->selectedRows();
+  mLinksModel->removeRow( selectedRows[0].row() );
 }
 
 void QgsMetadataWizard::fillComboBox()
@@ -331,34 +302,16 @@ void QgsMetadataWizard::setPropertiesFromLayer()
   }
 
   // Links
-  tabLinks->setRowCount( 0 );
   for ( QgsLayerMetadata::Link link : mMetadata.links() )
   {
-    addLink();
-    int currentRow = tabLinks->rowCount() - 1;
-    tabLinks->item( currentRow, 0 )->setText( link.name );
-    if ( ! link.type.isEmpty() )
-    {
-      QComboBox *combo = dynamic_cast<QComboBox *>( tabLinks->cellWidget( currentRow, 1 ) );
-      if ( combo->findText( link.type ) == -1 )
-      {
-        combo->addItem( link.type );
-      }
-      combo->setCurrentIndex( combo->findText( link.type ) );
-    }
-    tabLinks->item( currentRow, 2 )->setText( link.url );
-    tabLinks->item( currentRow, 3 )->setText( link.description );
-    tabLinks->item( currentRow, 4 )->setText( link.format );
-    if ( ! link.mimeType.isEmpty() )
-    {
-      QComboBox *combo = dynamic_cast<QComboBox *>( tabLinks->cellWidget( currentRow, 5 ) );
-      if ( combo->findText( link.mimeType ) == -1 )
-      {
-        combo->addItem( link.mimeType );
-      }
-      combo->setCurrentIndex( combo->findText( link.mimeType ) );
-    }
-    tabLinks->item( currentRow, 6 )->setText( link.size );
+    int row = mLinksModel->rowCount();
+    mLinksModel->setItem( row, 0, new QStandardItem( link.name ) );
+    mLinksModel->setItem( row, 1, new QStandardItem( link.type ) );
+    mLinksModel->setItem( row, 2, new QStandardItem( link.url ) );
+    mLinksModel->setItem( row, 3, new QStandardItem( link.description ) );
+    mLinksModel->setItem( row, 4, new QStandardItem( link.format ) );
+    mLinksModel->setItem( row, 5, new QStandardItem( link.mimeType ) );
+    mLinksModel->setItem( row, 6, new QStandardItem( link.size ) );
   }
 }
 
@@ -394,16 +347,16 @@ void QgsMetadataWizard::saveMetadata( QgsLayerMetadata &layerMetadata )
 
   // Links
   QList<QgsLayerMetadata::Link> links;
-  for ( int i = 0 ; i < tabLinks->rowCount() ; i++ )
+  for ( int row = 0 ; row < mLinksModel->rowCount() ; row++ )
   {
     struct QgsLayerMetadata::Link link = QgsLayerMetadata::Link();
-    link.name = tabLinks->item( i, 0 )->text();
-    link.type = dynamic_cast<QComboBox *>( tabLinks->cellWidget( i, 1 ) )->currentText();
-    link.url = tabLinks->item( i, 2 )->text();
-    link.description = tabLinks->item( i, 3 )->text();
-    link.format = tabLinks->item( i, 4 )->text();
-    link.mimeType = dynamic_cast<QComboBox *>( tabLinks->cellWidget( i, 5 ) )->currentText();
-    link.size = tabLinks->item( i, 6 )->text();
+    link.name = mLinksModel->item( row, 0 )->text();
+    link.type = mLinksModel->item( row, 1 )->text();
+    link.url = mLinksModel->item( row, 2 )->text();
+    link.description = mLinksModel->item( row, 3 )->text();
+    link.format = mLinksModel->item( row, 4 )->text();
+    link.mimeType = mLinksModel->item( row, 5 )->text();
+    link.size = mLinksModel->item( row, 6 )->text();
     links.append( link );
   }
   layerMetadata.setLinks( links );
@@ -573,4 +526,31 @@ void QgsMetadataWizard::updatePanel()
     backButton->setEnabled( true );
     nextButton->setEnabled( true );
   }
+}
+
+QWidget *LinkItemDelegate::createEditor( QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index ) const
+{
+  if ( index.column() == 1 )
+  {
+    QComboBox *typeEditor = new QComboBox( parent );
+    typeEditor->setEditable( true );
+    QStringListModel *model = new QStringListModel( parent );
+    model->setStringList( QgsMetadataWizard::parseLinkTypes() );
+    typeEditor->setModel( model );
+    return typeEditor;
+  }
+  else if ( index.column() == 5 )
+  {
+    // See https://fr.wikipedia.org/wiki/Type_MIME
+    QComboBox *mimeEditor = new QComboBox( parent );
+    mimeEditor->setEditable( true );
+    QStringListModel *model = new QStringListModel( parent );
+    QStringList mime;
+    mime << "" << "image/png" << "image/tiff" << "application/pdf";
+    model->setStringList( mime );
+    mimeEditor->setModel( model );
+    return mimeEditor;
+  }
+
+  return QStyledItemDelegate::createEditor( parent, option, index );
 }

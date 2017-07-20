@@ -17,6 +17,9 @@
 #ifndef QGSMETADATAWIZARD_H
 #define QGSMETADATAWIZARD_H
 
+#include "QStandardItemModel"
+#include "QStyledItemDelegate"
+
 #include "qgis_app.h"
 #include "qgsmaplayer.h"
 #include "qgslayermetadata.h"
@@ -120,17 +123,18 @@ class APP_EXPORT QgsMetadataWizard : public QDialog, private Ui::QgsMetadataWiza
     /**
      * Returns a list of languages by default available in the wizard.
      */
-    QStringList parseLanguages();
+    static QStringList parseLanguages();
 
     /**
      * Returns a list of licences by default available in the wizard.
      */
-    QStringList parseLicenses();
+    static QStringList parseLicenses();
 
     /**
      * Returns a list of link types by default available in the wizard.
+     * \see https://github.com/OSGeo/Cat-Interop/blob/master/LinkPropertyLookupTable.csv
      */
-    QStringList parseLinkTypes();
+    static QStringList parseLinkTypes();
 
   private:
     void cancelClicked();
@@ -140,6 +144,16 @@ class APP_EXPORT QgsMetadataWizard : public QDialog, private Ui::QgsMetadataWiza
     void updatePanel();
     QgsMapLayer *mLayer = nullptr;
     QgsLayerMetadata mMetadata;
+    QStandardItemModel *mLinksModel = nullptr;
+};
+
+class LinkItemDelegate : public QStyledItemDelegate
+{
+
+    Q_OBJECT
+
+  public:
+    QWidget *createEditor( QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index ) const;
 };
 
 #endif

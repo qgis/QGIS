@@ -89,7 +89,7 @@
       <enum>QTabWidget::Rounded</enum>
      </property>
      <property name="currentIndex">
-      <number>4</number>
+      <number>5</number>
      </property>
      <widget class="QWidget" name="tabIdentificationDialog">
       <attribute name="title">
@@ -700,7 +700,7 @@
         </widget>
        </item>
        <item>
-        <widget class="QTableWidget" name="tabLinks">
+        <widget class="QTableView" name="tabLinks">
          <property name="alternatingRowColors">
           <bool>true</bool>
          </property>
@@ -710,41 +710,9 @@
          <property name="selectionBehavior">
           <enum>QAbstractItemView::SelectRows</enum>
          </property>
-         <column>
-          <property name="text">
-           <string>Name</string>
-          </property>
-         </column>
-         <column>
-          <property name="text">
-           <string>Type</string>
-          </property>
-         </column>
-         <column>
-          <property name="text">
-           <string>URL</string>
-          </property>
-         </column>
-         <column>
-          <property name="text">
-           <string>Description</string>
-          </property>
-         </column>
-         <column>
-          <property name="text">
-           <string>Format</string>
-          </property>
-         </column>
-         <column>
-          <property name="text">
-           <string>MIME</string>
-          </property>
-         </column>
-         <column>
-          <property name="text">
-           <string>Size</string>
-          </property>
-         </column>
+         <attribute name="horizontalHeaderStretchLastSection">
+          <bool>true</bool>
+         </attribute>
         </widget>
        </item>
        <item>
