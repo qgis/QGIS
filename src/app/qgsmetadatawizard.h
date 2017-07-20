@@ -83,6 +83,11 @@ class APP_EXPORT QgsMetadataWizard : public QDialog, private Ui::QgsMetadataWiza
     void removeContact();
 
     /**
+     * Update the contact details according to the selection in the contact list.
+     */
+    void updateContactDetails();
+
+    /**
      * Add a new link.
      */
     void addLink();

@@ -53,12 +53,14 @@ QgsMetadataWizard::QgsMetadataWizard( QWidget *parent, QgsMapLayer *layer )
   connect( btnAutoCrs, &QPushButton::clicked, this, &QgsMetadataWizard::setAutoCrs );
   connect( btnAddContact, &QPushButton::clicked, this, &QgsMetadataWizard::addContact );
   connect( btnRemoveContact, &QPushButton::clicked, this, &QgsMetadataWizard::removeContact );
+  connect( tabContacts, &QTableWidget::itemSelectionChanged, this, &QgsMetadataWizard::updateContactDetails );
   connect( btnAddLink, &QPushButton::clicked, this, &QgsMetadataWizard::addLink );
   connect( btnRemoveLink, &QPushButton::clicked, this, &QgsMetadataWizard::removeLink );
   connect( btnCheckMetadata, &QPushButton::clicked, this, &QgsMetadataWizard::checkMetadata );
 
   fillComboBox();
   setPropertiesFromLayer();
+  updateContactDetails();
 }
 
 QgsMetadataWizard::~QgsMetadataWizard()
@@ -77,7 +79,7 @@ void QgsMetadataWizard::addVocabulary()
   QTableWidgetItem *pCell;
 
   // Vocabulary
-  pCell = new QTableWidgetItem( QString( "undefined %1" ).arg( row ) );
+  pCell = new QTableWidgetItem( QString( "undefined %1" ).arg( row + 1 ) );
   tabKeywords->setItem( row, 0, pCell );
 
   // Keywords
@@ -133,12 +135,51 @@ void QgsMetadataWizard::setAutoCrs()
 
 void QgsMetadataWizard::addContact()
 {
+  int row = tabContacts->rowCount();
+  tabContacts->setRowCount( row + 1 );
+  QTableWidgetItem *pCell;
 
+  // Name
+  pCell = new QTableWidgetItem( QString( "unnamed %1" ).arg( row + 1 ) );
+  tabContacts->setItem( row, 0, pCell );
+
+  // Organization
+  pCell = new QTableWidgetItem();
+  tabContacts->setItem( row, 1, pCell );
+
+  // Set last item selected
+  tabContacts->selectRow( row );
 }
 
 void QgsMetadataWizard::removeContact()
 {
+  QItemSelectionModel *selectionModel = tabContacts->selectionModel();
+  QModelIndexList selectedRows = selectionModel->selectedRows();
+  QgsDebugMsg( QString( "Remove: %1 " ).arg( selectedRows.count() ) );
 
+  for ( int i = 0 ; i < selectedRows.size() ; i++ )
+  {
+    tabContacts->model()->removeRow( selectedRows[i].row() );
+  }
+}
+
+void QgsMetadataWizard::updateContactDetails()
+{
+  QItemSelectionModel *selectionModel = tabContacts->selectionModel();
+  QModelIndexList selectedRows = selectionModel->selectedRows();
+
+  if ( selectedRows.size() > 0 )
+  {
+    panelDetails->setDisabled( false );
+    lineEditContactName->setText( tabContacts->item( selectedRows[0].row(), 0 )->text() );
+    lineEditContactOrganization->setText( tabContacts->item( selectedRows[0].row(), 1 )->text() );
+  }
+  else
+  {
+    panelDetails->setDisabled( true );
+    lineEditContactName->clear();
+    lineEditContactOrganization->clear();
+  }
 }
 
 void QgsMetadataWizard::addLink()
@@ -148,7 +189,7 @@ void QgsMetadataWizard::addLink()
   QTableWidgetItem *pCell;
 
   // Name
-  pCell = new QTableWidgetItem( QString( "undefined %1" ).arg( row ) );
+  pCell = new QTableWidgetItem( QString( "undefined %1" ).arg( row + 1 ) );
   tabLinks->setItem( row, 0, pCell );
 
   // Type

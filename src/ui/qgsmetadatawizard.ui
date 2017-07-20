@@ -78,7 +78,6 @@
      <property name="frameShape">
       <enum>QFrame::NoFrame</enum>
      </property>
-     <zorder>tabWidget</zorder>
     </widget>
    </item>
    <item>
@@ -412,6 +411,9 @@
       </layout>
      </widget>
      <widget class="QWidget" name="tabContactsDialog">
+      <property name="enabled">
+       <bool>false</bool>
+      </property>
       <attribute name="title">
        <string>Contacts</string>
       </attribute>
@@ -465,17 +467,45 @@
        <item>
         <layout class="QHBoxLayout" name="horizontalLayout_3">
          <item>
-          <widget class="QListWidget" name="listWidget">
+          <widget class="QTableWidget" name="tabContacts">
            <property name="maximumSize">
             <size>
              <width>200</width>
              <height>16777215</height>
             </size>
            </property>
+           <property name="editTriggers">
+            <set>QAbstractItemView::NoEditTriggers</set>
+           </property>
+           <property name="selectionMode">
+            <enum>QAbstractItemView::SingleSelection</enum>
+           </property>
+           <property name="selectionBehavior">
+            <enum>QAbstractItemView::SelectRows</enum>
+           </property>
+           <attribute name="horizontalHeaderStretchLastSection">
+            <bool>true</bool>
+           </attribute>
+           <column>
+            <property name="text">
+             <string>Name</string>
+            </property>
+           </column>
+           <column>
+            <property name="text">
+             <string>Organization</string>
+            </property>
+           </column>
           </widget>
          </item>
          <item>
-          <widget class="QScrollArea" name="scrollArea">
+          <widget class="QScrollArea" name="panelDetails">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Minimum" vsizetype="Expanding">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
            <property name="widgetResizable">
             <bool>true</bool>
            </property>
@@ -491,6 +521,9 @@
             <layout class="QVBoxLayout" name="verticalLayout_6">
              <item>
               <layout class="QFormLayout" name="formLayout_2">
+               <property name="sizeConstraint">
+                <enum>QLayout::SetNoConstraint</enum>
+               </property>
                <item row="0" column="0">
                 <widget class="QLabel" name="label_10">
                  <property name="text">
@@ -653,10 +686,6 @@
         </layout>
        </item>
       </layout>
-      <zorder>label_16</zorder>
-      <zorder>horizontalLayoutWidget_3</zorder>
-      <zorder>btnRemoveContact_2</zorder>
-      <zorder>horizontalLayoutWidget</zorder>
      </widget>
      <widget class="QWidget" name="tabLinksDialog">
       <attribute name="title">
