@@ -471,12 +471,6 @@ int main( int argc, char *argv[] )
 #endif
 
 #ifdef Q_OS_WIN
-  if ( !QgsApplication::isRunningFromBuildDir() )
-  {
-    QString symbolPath( getenv( "QGIS_PREFIX_PATH" ) );
-    symbolPath = symbolPath + "\\pdb;http://msdl.microsoft.com/download/symbols;http://download.osgeo.org/osgeo4w/symstore";
-    QgsStackTrace::setSymbolPath( symbolPath );
-  }
   SetUnhandledExceptionFilter( QgsCrashHandler::handle );
 #endif
 
@@ -800,6 +794,20 @@ int main( int argc, char *argv[] )
   myApp.setWindowIcon( QIcon( QgsApplication::appIconPath() ) );
 #endif
 
+#ifdef Q_OS_WIN
+  if ( !QgsApplication::isRunningFromBuildDir() )
+  {
+    QString symbolPath( getenv( "QGIS_PREFIX_PATH" ) );
+    symbolPath = symbolPath + "\\pdb;http://msdl.microsoft.com/download/symbols;http://download.osgeo.org/osgeo4w/symstore";
+    QgsStackTrace::setSymbolPath( symbolPath );
+  }
+  else
+  {
+    QString symbolPath( getenv( "QGIS_PDB_PATH" ) );
+    symbolPath = symbolPath + ";http://msdl.microsoft.com/download/symbols;http://download.osgeo.org/osgeo4w/symstore";
+    QgsStackTrace::setSymbolPath( symbolPath );
+  }
+#endif
 
   //
   // Set up the QSettings environment must be done after qapp is created

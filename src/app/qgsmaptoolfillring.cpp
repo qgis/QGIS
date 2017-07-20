@@ -145,8 +145,6 @@ void QgsMapToolFillRing::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
     }
   }
 
-  QgsRectangle bBox = g.boundingBox();
-
   QgsExpressionContext context = vlayer->createExpressionContext();
 
   QgsFeatureIterator fit = vlayer->getFeatures( QgsFeatureRequest().setFilterFid( fid ) );
