@@ -57,6 +57,7 @@ from .DensifyGeometriesInterval import DensifyGeometriesInterval
 from .Difference import Difference
 from .DropGeometry import DropGeometry
 from .DropMZValues import DropMZValues
+from .ExtendLines import ExtendLines
 from .ExtentFromLayer import ExtentFromLayer
 from .ExtractNodes import ExtractNodes
 from .FixGeometry import FixGeometry
@@ -162,7 +163,6 @@ from .ZonalStatistics import ZonalStatistics
 # from .Relief import Relief
 # from .IdwInterpolation import IdwInterpolation
 # from .TinInterpolation import TinInterpolation
-# from .ExtendLines import ExtendLines
 # from .ExtractSpecificNodes import ExtractSpecificNodes
 # from .GeometryByExpression import GeometryByExpression
 # from .RasterCalculator import RasterCalculator
@@ -217,11 +217,10 @@ class QGISAlgorithmProvider(QgsProcessingProvider):
         #         SpatialIndex(), DefineProjection(),
         #         RectanglesOvalsDiamondsVariable(),
         #         RectanglesOvalsDiamondsFixed(), MergeLines(),
-        #
         #         PointsAlongGeometry(),
         #         Relief(),
         #         IdwInterpolation(), TinInterpolation(),
-        #         ExtendLines(), ExtractSpecificNodes(),
+        #         ExtractSpecificNodes(),
         #         GeometryByExpression(),
         #         RasterCalculator(),
         #         ShortestPathPointToPoint(), ShortestPathPointToLayer(),
@@ -247,6 +246,7 @@ class QGISAlgorithmProvider(QgsProcessingProvider):
                 Difference(),
                 DropGeometry(),
                 DropMZValues(),
+                ExtendLines(),
                 ExtentFromLayer(),
                 ExtractNodes(),
                 FixGeometry(),
