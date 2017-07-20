@@ -60,7 +60,7 @@ class TestQgsServerTwoLayer(unittest.TestCase):
         f = open(os.path.dirname(__file__) + '/wfs_getfeature_' +  requestid + '_response.txt', 'w+')
         f.write(response)
         f.close()
-        """       
+        """
         response = re.sub(RE_STRIP_PATH, '', response)
         expected = re.sub(RE_STRIP_PATH, '', expected)
         self.assertEqual(response, expected, msg=u"%s\n Expected:\n%s\n\n Response:\n%s"
@@ -109,9 +109,11 @@ class TestQgsServerTwoLayer(unittest.TestCase):
         </gml:Envelope>
       </ogc:BBOX>
     </ogc:Filter>
-  </wfs:Query>  </wfs:GetFeature>
+  </wfs:Query>
+</wfs:GetFeature>
 """
         self.wfs_getfeature_post_compare('multiple', template)
-        
+
+
 if __name__ == '__main__':
     unittest.main()
