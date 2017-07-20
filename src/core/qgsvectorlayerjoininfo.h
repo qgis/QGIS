@@ -123,6 +123,14 @@ class CORE_EXPORT QgsVectorLayerJoinInfo
      */
     QString prefixedFieldName( const QgsField &field ) const;
 
+    /** Extract the join feature from the target feature for the current
+     *  join layer information.
+     * \param feature A feature from the target layer
+     * \returns the corresponding joined feature
+     * \since QGIS 3.0
+     */
+    QgsFeature extractJoinedFeature( const QgsFeature &feature ) const;
+
     bool operator==( const QgsVectorLayerJoinInfo &other ) const
     {
       return mTargetFieldName == other.mTargetFieldName &&

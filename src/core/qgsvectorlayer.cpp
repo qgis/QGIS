@@ -947,7 +947,10 @@ bool QgsVectorLayer::addFeature( QgsFeature &feature, Flags )
   bool success = mEditBuffer->addFeature( feature );
 
   if ( success )
+  {
     updateExtents();
+    success = addFeaturesToJoinedLayers( QgsFeatureList() << feature );
+  }
 
   return success;
 }
@@ -2633,9 +2636,66 @@ bool QgsVectorLayer::addFeatures( QgsFeatureList &features, Flags )
   bool res = mEditBuffer->addFeatures( features );
   updateExtents();
 
+  if ( res )
+    res = addFeaturesToJoinedLayers( features );
+
   return res;
 }
 
+bool QgsVectorLayer::addFeaturesToJoinedLayers( QgsFeatureList &features, Flags )
+{
+  // try to add/update a feature in each joined layer
+  Q_FOREACH ( const QgsVectorLayerJoinInfo &info, vectorJoins() )
+  {
+    QgsVectorLayer *joinLayer = info.joinLayer();
+
+    if ( joinLayer && joinLayer->isEditable() && info.isEditable() && info.isUpsertOnEdit() )
+    {
+      QgsFeatureList joinFeatures;
+
+      Q_FOREACH ( const QgsFeature &feature, features )
+      {
+        const QgsFeature joinFeature = info.extractJoinedFeature( feature );
+
+        // we don't want to add a new feature in joined layer when the id
+        // column value yet exist, we just want to update the existing one
+        const QVariant idFieldValue = feature.attribute( info.targetFieldName() );
+        const QString filter = QgsExpression::createFieldEqualityExpression( info.joinFieldName(), idFieldValue.toString() );
+
+        QgsFeatureRequest request;
+        request.setFilterExpression( filter );
+        request.setLimit( 1 );
+
+        QgsFeatureIterator it = info.joinLayer()->getFeatures( request );
+        QgsFeature existingFeature;
+        it.nextFeature( existingFeature );
+
+        if ( existingFeature.isValid() )
+        {
+          const QStringList *subsetFields = info.joinFieldNamesSubset();
+          if ( subsetFields )
+          {
+            Q_FOREACH ( const QString &field, *subsetFields )
+              existingFeature.setAttribute( field, joinFeature.attribute( field ) );
+          }
+          else
+          {
+            Q_FOREACH ( const QgsField &field, joinFeature.fields() )
+              existingFeature.setAttribute( field.name(), joinFeature.attribute( field.name() ) );
+          }
+
+          joinLayer->updateFeature( existingFeature );
+        }
+        else
+          joinFeatures << joinFeature;
+      }
+
+      joinLayer->addFeatures( joinFeatures );
+    }
+  }
+
+  return true;
+}
 
 void QgsVectorLayer::setCoordinateSystem()
 {

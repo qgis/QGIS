@@ -44,3 +44,26 @@ void QgsVectorLayerJoinInfo::setEditable( bool enabled )
     setUpsertOnEdit( false );
   }
 }
+
+QgsFeature QgsVectorLayerJoinInfo::extractJoinedFeature( const QgsFeature &feature ) const
+{
+  QgsFeature joinFeature;
+
+  if ( joinLayer() )
+  {
+    const QVariant idFieldValue = feature.attribute( targetFieldName() );
+    joinFeature.initAttributes( joinLayer()->fields().count() );
+    joinFeature.setFields( joinLayer()->fields() );
+    joinFeature.setAttribute( joinFieldName(), idFieldValue );
+
+    Q_FOREACH ( const QgsField &field, joinFeature.fields() )
+    {
+      const QString prefixedName = prefixedFieldName( field );
+
+      if ( feature.fieldNameIndex( prefixedName ) != -1 )
+        joinFeature.setAttribute( field.name(), feature.attribute( prefixedName ) );
+    }
+  }
+
+  return joinFeature;
+}
