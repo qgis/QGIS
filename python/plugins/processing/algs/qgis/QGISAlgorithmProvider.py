@@ -102,6 +102,7 @@ from .SnapGeometries import SnapGeometriesToLayer
 from .SpatialiteExecuteSQL import SpatialiteExecuteSQL
 from .SumLines import SumLines
 from .SymmetricalDifference import SymmetricalDifference
+from .Translate import Translate
 from .Union import Union
 from .UniqueValues import UniqueValues
 from .VectorSplit import VectorSplit
@@ -156,7 +157,6 @@ from .ZonalStatistics import ZonalStatistics
 # from .RectanglesOvalsDiamondsVariable import RectanglesOvalsDiamondsVariable
 # from .RectanglesOvalsDiamondsFixed import RectanglesOvalsDiamondsFixed
 # from .MergeLines import MergeLines
-# from .Translate import Translate
 # from .SingleSidedBuffer import SingleSidedBuffer
 # from .PointsAlongGeometry import PointsAlongGeometry
 # from .Relief import Relief
@@ -217,7 +217,7 @@ class QGISAlgorithmProvider(QgsProcessingProvider):
         #         SpatialIndex(), DefineProjection(),
         #         RectanglesOvalsDiamondsVariable(),
         #         RectanglesOvalsDiamondsFixed(), MergeLines(),
-        #          Translate(),
+        #
         #         SingleSidedBuffer(), PointsAlongGeometry(),
         #         Relief(),
         #         IdwInterpolation(), TinInterpolation(),
@@ -292,6 +292,7 @@ class QGISAlgorithmProvider(QgsProcessingProvider):
                 SpatialiteExecuteSQL(),
                 SumLines(),
                 SymmetricalDifference(),
+                Translate(),
                 Union(),
                 UniqueValues(),
                 VectorSplit(),
