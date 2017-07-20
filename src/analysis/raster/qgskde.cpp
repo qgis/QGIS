@@ -95,7 +95,7 @@ QgsKernelDensityEstimation::Result QgsKernelDensityEstimation::prepare()
   }
 
   int dataTypeSize = QgsRasterBlock::typeSize( Qgis::Float32 );
-  float *line = new float[ dataTypeSize * cols ];
+  float *line = new float[ cols ];
   for ( int i = 0; i < cols; i++ )
   {
     line[i] = NO_DATA;
@@ -180,7 +180,6 @@ QgsKernelDensityEstimation::Result QgsKernelDensityEstimation::addFeature( const
     // get the data
     QgsRasterBlock *block = mProvider->block( 1, extent, blockSize, blockSize );
     QByteArray blockData = block->data();
-    blockData.detach();
     float *dataBuffer = ( float * ) blockData.data();
 
     for ( int xp = 0; xp < blockSize; xp++ )
@@ -208,7 +207,7 @@ QgsKernelDensityEstimation::Result QgsKernelDensityEstimation::addFeature( const
       }
     }
 
-    block->setData( QByteArray::fromRawData( ( char * )dataBuffer, sizeof( float ) * blockSize * blockSize ) );
+    block->setData( blockData );
     if ( !mProvider->writeBlock( block, 1, xPosition, yPosition ) )
     {
       result = RasterIoError;
