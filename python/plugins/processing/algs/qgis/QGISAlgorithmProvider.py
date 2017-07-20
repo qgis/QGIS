@@ -96,6 +96,7 @@ from .ShortestPathLayerToPoint import ShortestPathLayerToPoint
 from .ShortestPathPointToLayer import ShortestPathPointToLayer
 from .ShortestPathPointToPoint import ShortestPathPointToPoint
 from .SimplifyGeometries import SimplifyGeometries
+from .SingleSidedBuffer import SingleSidedBuffer
 from .Slope import Slope
 from .Smooth import Smooth
 from .SnapGeometries import SnapGeometriesToLayer
@@ -157,7 +158,6 @@ from .ZonalStatistics import ZonalStatistics
 # from .RectanglesOvalsDiamondsVariable import RectanglesOvalsDiamondsVariable
 # from .RectanglesOvalsDiamondsFixed import RectanglesOvalsDiamondsFixed
 # from .MergeLines import MergeLines
-# from .SingleSidedBuffer import SingleSidedBuffer
 # from .PointsAlongGeometry import PointsAlongGeometry
 # from .Relief import Relief
 # from .IdwInterpolation import IdwInterpolation
@@ -218,7 +218,7 @@ class QGISAlgorithmProvider(QgsProcessingProvider):
         #         RectanglesOvalsDiamondsVariable(),
         #         RectanglesOvalsDiamondsFixed(), MergeLines(),
         #
-        #         SingleSidedBuffer(), PointsAlongGeometry(),
+        #         PointsAlongGeometry(),
         #         Relief(),
         #         IdwInterpolation(), TinInterpolation(),
         #         ExtendLines(), ExtractSpecificNodes(),
@@ -286,6 +286,7 @@ class QGISAlgorithmProvider(QgsProcessingProvider):
                 ShortestPathPointToLayer(),
                 ShortestPathPointToPoint(),
                 SimplifyGeometries(),
+                SingleSidedBuffer(),
                 Slope(),
                 Smooth(),
                 SnapGeometriesToLayer(),
