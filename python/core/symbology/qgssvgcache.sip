@@ -185,7 +185,7 @@ Get image data
 %End
 
     QByteArray svgContent( const QString &path, double size, const QColor &fill, const QColor &stroke, double strokeWidth,
-                           double widthScaleFactor, double fixedAspectRatio = 0);
+                           double widthScaleFactor, double fixedAspectRatio = 0 );
 %Docstring
 Get SVG content
  :rtype: QByteArray

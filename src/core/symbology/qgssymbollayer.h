@@ -129,6 +129,7 @@ class CORE_EXPORT QgsSymbolLayer
       PropertyCharacter, //!< Character, eg for font marker symbol layers
       PropertyWidth, //!< Symbol width
       PropertyHeight, //!< Symbol height
+      PropertyPreserveAspectRatio, //!< Preserve aspect ratio between width and height
       PropertyFillStyle, //!< Fill style (eg solid, dots)
       PropertyJoinStyle, //!< Line join style
       PropertySecondaryColor, //!< Secondary color (eg for gradient fills)

@@ -1754,7 +1754,9 @@ QgsSvgMarkerSymbolLayerWidget::QgsSvgMarkerSymbolLayerWidget( const QgsVectorLay
 
   connect( viewImages->selectionModel(), &QItemSelectionModel::currentChanged, this, &QgsSvgMarkerSymbolLayerWidget::setName );
   connect( viewGroups->selectionModel(), &QItemSelectionModel::currentChanged, this, &QgsSvgMarkerSymbolLayerWidget::populateIcons );
-  connect( spinSize, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsSvgMarkerSymbolLayerWidget::setSize );
+  connect( spinWidth, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsSvgMarkerSymbolLayerWidget::setWidth );
+  connect( spinHeight, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsSvgMarkerSymbolLayerWidget::setHeight );
+  connect( checkBoxAspectRatio, static_cast < void ( QCheckBox::* )( int ) > ( &QCheckBox::stateChanged ), this, &QgsSvgMarkerSymbolLayerWidget::stateChangedAspectRatio );
   connect( spinAngle, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsSvgMarkerSymbolLayerWidget::setAngle );
   connect( spinOffsetX, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsSvgMarkerSymbolLayerWidget::setOffset );
   connect( spinOffsetY, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsSvgMarkerSymbolLayerWidget::setOffset );
@@ -1764,7 +1766,11 @@ QgsSvgMarkerSymbolLayerWidget::QgsSvgMarkerSymbolLayerWidget( const QgsVectorLay
   mAssistantPreviewSymbol.reset( new QgsMarkerSymbol() );
 
   if ( vectorLayer() )
-    mSizeDDBtn->setSymbol( mAssistantPreviewSymbol );
+  {
+    mWidthDDBtn->setSymbol( mAssistantPreviewSymbol );
+    mHeightDDBtn->setSymbol( mAssistantPreviewSymbol );
+    mAspectRatioDDBtn->setSymbol( mAssistantPreviewSymbol );
+  }
 }
 
 #include <QTime>
@@ -1859,6 +1865,20 @@ void QgsSvgMarkerSymbolLayerWidget::setGuiForSvg( const QgsSvgMarkerSymbolLayer 
   mStrokeWidthSpinBox->blockSignals( true );
   mStrokeWidthSpinBox->setValue( hasDefaultStrokeWidth ? defaultStrokeWidth : layer->strokeWidth() );
   mStrokeWidthSpinBox->blockSignals( false );
+
+  bool preservedAspectRatio = layer->preservedAspectRatio();
+  spinHeight->blockSignals( true );
+  if ( preservedAspectRatio )
+  {
+    spinHeight->setValue( layer->size() );
+  }
+  else
+  {
+    spinHeight->setValue( layer->size() * layer->fixedAspectRatio() );
+  }
+  spinHeight->blockSignals( false );
+  spinHeight->setEnabled( !preservedAspectRatio );
+  checkBoxAspectRatio->setChecked( preservedAspectRatio );
 }
 
 void QgsSvgMarkerSymbolLayerWidget::updateAssistantSymbol()
@@ -1903,9 +1923,9 @@ void QgsSvgMarkerSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer *layer )
     }
   }
 
-  spinSize->blockSignals( true );
-  spinSize->setValue( mLayer->size() );
-  spinSize->blockSignals( false );
+  spinWidth->blockSignals( true );
+  spinWidth->setValue( mLayer->size() );
+  spinWidth->blockSignals( false );
   spinAngle->blockSignals( true );
   spinAngle->setValue( mLayer->angle() );
   spinAngle->blockSignals( false );
@@ -1941,7 +1961,9 @@ void QgsSvgMarkerSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer *layer )
 
   setGuiForSvg( mLayer );
 
-  registerDataDefinedButton( mSizeDDBtn, QgsSymbolLayer::PropertySize );
+  registerDataDefinedButton( mWidthDDBtn, QgsSymbolLayer::PropertyWidth );
+  registerDataDefinedButton( mHeightDDBtn, QgsSymbolLayer::PropertyHeight );
+  registerDataDefinedButton( mAspectRatioDDBtn, QgsSymbolLayer::PropertyPreserveAspectRatio );
   registerDataDefinedButton( mStrokeWidthDDBtn, QgsSymbolLayer::PropertyStrokeWidth );
   registerDataDefinedButton( mAngleDDBtn, QgsSymbolLayer::PropertyAngle );
   registerDataDefinedButton( mOffsetDDBtn, QgsSymbolLayer::PropertyOffset );
@@ -1969,9 +1991,56 @@ void QgsSvgMarkerSymbolLayerWidget::setName( const QModelIndex &idx )
   emit changed();
 }
 
-void QgsSvgMarkerSymbolLayerWidget::setSize()
+void QgsSvgMarkerSymbolLayerWidget::setWidth()
 {
-  mLayer->setSize( spinSize->value() );
+  double defaultAspectRatio = mLayer->defaultAspectRatio();
+  double fixedAspectRatio = 0.0;
+  spinHeight->blockSignals( true );
+  if ( defaultAspectRatio <= 0.0 )
+  {
+    spinHeight->setValue( spinWidth->value() );
+  }
+  else if ( checkBoxAspectRatio->isChecked() )
+  {
+    spinHeight->setValue( spinWidth->value() * defaultAspectRatio );
+  }
+  else
+  {
+    fixedAspectRatio = spinHeight->value() / spinWidth->value();
+  }
+  spinHeight->blockSignals( false );
+  mLayer->setSize( spinWidth->value() );
+  mLayer->setFixedAspectRatio( fixedAspectRatio );
+  emit changed();
+}
+
+void QgsSvgMarkerSymbolLayerWidget::setHeight()
+{
+  double defaultAspectRatio = mLayer->defaultAspectRatio();
+  double fixedAspectRatio = 0.0;
+  spinWidth->blockSignals( true );
+  if ( defaultAspectRatio <= 0.0 )
+  {
+    spinWidth->setValue( spinHeight->value() );
+  }
+  else if ( checkBoxAspectRatio->isChecked() )
+  {
+    spinWidth->setValue( spinHeight->value() / defaultAspectRatio );
+  }
+  else
+  {
+    fixedAspectRatio = spinHeight->value() / spinWidth->value();
+  }
+  spinWidth->blockSignals( false );
+  mLayer->setSize( spinWidth->value() );
+  mLayer->setFixedAspectRatio( fixedAspectRatio );
+  emit changed();
+}
+
+void QgsSvgMarkerSymbolLayerWidget::stateChangedAspectRatio()
+{
+  spinHeight->setEnabled( !checkBoxAspectRatio->isChecked() );
+  setWidth();
   emit changed();
 }
 

@@ -110,7 +110,7 @@ QImage QgsSvgCache::svgAsImage( const QString &file, double size, const QColor &
     double hwRatio = 1.0;
     if ( r.viewBoxF().width() > 0 )
     {
-      if( currentEntry->fixedAspectRatio > 0 )
+      if ( currentEntry->fixedAspectRatio > 0 )
       {
         hwRatio = currentEntry->fixedAspectRatio;
       }
@@ -485,7 +485,7 @@ void QgsSvgCache::cacheImage( QgsSvgCacheEntry *entry )
   double hwRatio = 1.0;
   if ( r.viewBoxF().width() > 0 )
   {
-    if( isFixedAR )
+    if ( isFixedAR )
     {
       hwRatio = entry->fixedAspectRatio;
     }
@@ -547,14 +547,14 @@ void QgsSvgCache::cachePicture( QgsSvgCacheEntry *entry, bool forceVectorOutput 
   double hwRatio = 1.0;
   if ( r.viewBoxF().width() > 0 )
   {
-     if( isFixedAR )
-     {
-       hwRatio = entry->fixedAspectRatio;
-     }
-     else
-     {
-       hwRatio = r.viewBoxF().height() / r.viewBoxF().width();
-     }
+    if ( isFixedAR )
+    {
+      hwRatio = entry->fixedAspectRatio;
+    }
+    else
+    {
+      hwRatio = r.viewBoxF().height() / r.viewBoxF().width();
+    }
   }
 
   double wSize = entry->size;
@@ -583,7 +583,7 @@ QgsSvgCacheEntry *QgsSvgCache::cacheEntry( const QString &path, double size, con
     QgsSvgCacheEntry *cacheEntry = *entryIt;
     if ( qgsDoubleNear( cacheEntry->size, size ) && cacheEntry->fill == fill && cacheEntry->stroke == stroke &&
          qgsDoubleNear( cacheEntry->strokeWidth, strokeWidth ) && qgsDoubleNear( cacheEntry->widthScaleFactor, widthScaleFactor ) &&
-         qgsDoubleNear( cacheEntry->fixedAspectRatio, fixedAspectRatio ))
+         qgsDoubleNear( cacheEntry->fixedAspectRatio, fixedAspectRatio ) )
     {
       currentEntry = cacheEntry;
       break;
@@ -594,7 +594,7 @@ QgsSvgCacheEntry *QgsSvgCache::cacheEntry( const QString &path, double size, con
   //cache and replace params in svg content
   if ( !currentEntry )
   {
-    currentEntry = insertSvg( path, size, fill, stroke, strokeWidth, widthScaleFactor, fixedAspectRatio);
+    currentEntry = insertSvg( path, size, fill, stroke, strokeWidth, widthScaleFactor, fixedAspectRatio );
   }
   else
   {

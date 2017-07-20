@@ -364,7 +364,9 @@ class QgsSvgMarkerSymbolLayerWidget : QgsSymbolLayerWidget
   public slots:
     void setName( const QModelIndex &idx );
     void populateIcons( const QModelIndex &idx );
-    void setSize();
+    void setWidth();
+    void setHeight();
+    void stateChangedAspectRatio();
     void setAngle();
     void setOffset();
     void on_mFileToolButton_clicked();

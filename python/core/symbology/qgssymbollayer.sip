@@ -92,6 +92,7 @@ class QgsSymbolLayer
       PropertyCharacter,
       PropertyWidth,
       PropertyHeight,
+      PropertyPreserveAspectRatio,
       PropertyFillStyle,
       PropertyJoinStyle,
       PropertySecondaryColor,

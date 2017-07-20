@@ -127,6 +127,7 @@ class CORE_EXPORT QgsSvgCache : public QObject
      * \param strokeWidth width of stroke
      * \param widthScaleFactor width scale factor
      * \param fitsInCache
+     * \param fixedAspectRatio fixed aspect ratio (optional)
      */
     QImage svgAsImage( const QString &path, double size, const QColor &fill, const QColor &stroke, double strokeWidth,
                        double widthScaleFactor, bool &fitsInCache, double fixedAspectRatio = 0 );
@@ -139,6 +140,7 @@ class CORE_EXPORT QgsSvgCache : public QObject
      * \param strokeWidth width of stroke
      * \param widthScaleFactor width scale factor
      * \param forceVectorOutput
+     * \param fixedAspectRatio fixed aspect ratio (optional)
      */
     QPicture svgAsPicture( const QString &path, double size, const QColor &fill, const QColor &stroke, double strokeWidth,
                            double widthScaleFactor, bool forceVectorOutput = false, double fixedAspectRatio = 0 );
@@ -150,6 +152,7 @@ class CORE_EXPORT QgsSvgCache : public QObject
      * \param stroke color of stroke
      * \param strokeWidth width of stroke
      * \param widthScaleFactor width scale factor
+     * \param fixedAspectRatio fixed aspect ratio (optional)
      * \returns viewbox size set in SVG file
      * \since QGIS 2.14
      */
@@ -193,7 +196,7 @@ class CORE_EXPORT QgsSvgCache : public QObject
 
     //! Get SVG content
     QByteArray svgContent( const QString &path, double size, const QColor &fill, const QColor &stroke, double strokeWidth,
-                           double widthScaleFactor, double fixedAspectRatio = 0);
+                           double widthScaleFactor, double fixedAspectRatio = 0 );
 
   signals:
     //! Emit a signal to be caught by qgisapp and display a msg on status bar
@@ -208,6 +211,7 @@ class CORE_EXPORT QgsSvgCache : public QObject
      * \param stroke color of stroke
      * \param strokeWidth width of stroke
      * \param widthScaleFactor width scale factor
+     * \param fixedAspectRatio fixed aspect ratio (optional)
      */
     QgsSvgCacheEntry *insertSvg( const QString &path, double size, const QColor &fill, const QColor &stroke, double strokeWidth,
                                  double widthScaleFactor, double fixedAspectRatio = 0 );

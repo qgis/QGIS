@@ -526,6 +526,20 @@ Constructs SVG marker symbol layer with picture from given absolute path to a SV
 %End
     void setPath( const QString &path );
 
+    double defaultAspectRatio() const;
+%Docstring
+ :rtype: float
+%End
+    double updateDefaultAspectRatio();
+%Docstring
+ :rtype: float
+%End
+    double fixedAspectRatio() const;
+%Docstring
+ :rtype: float
+%End
+    void setFixedAspectRatio( double far );
+
     virtual QColor fillColor() const;
     virtual void setFillColor( const QColor &color );
 
@@ -575,6 +589,19 @@ Constructs SVG marker symbol layer with picture from given absolute path to a SV
 
 
   protected:
+
+    double calculateAspectRatio( QgsSymbolRenderContext &context, double scaledSize, bool &hasDataDefinedAspectRatio ) const;
+%Docstring
+ Calculates the marker aspect ratio between width and height.
+ \param context symbol render context
+ \param scaledSize size of symbol to render
+ \param hasDataDefinedAspectRatio will be set to true if marker has data defined aspectRatio
+.. note::
+
+   not available in Python bindings
+ :rtype: float
+%End
+
 
 
 };
