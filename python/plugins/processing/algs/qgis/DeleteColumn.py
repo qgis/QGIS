@@ -25,18 +25,13 @@ __copyright__ = '(C) 2010, Michael Minn'
 
 __revision__ = '$Format:%H$'
 
-from qgis.core import (QgsFeatureSink,
-                       QgsProcessingParameterFeatureSource,
-                       QgsProcessingParameterFeatureSink,
-                       QgsProcessingParameterField)
-from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
+from qgis.core import (QgsProcessingParameterField)
+from processing.algs.qgis.QgisAlgorithm import QgisFeatureBasedAlgorithm
 
 
-class DeleteColumn(QgisAlgorithm):
+class DeleteColumn(QgisFeatureBasedAlgorithm):
 
-    INPUT = 'INPUT'
     COLUMNS = 'COLUMN'
-    OUTPUT = 'OUTPUT'
 
     def tags(self):
         return self.tr('drop,delete,remove,fields,columns,attributes').split(',')
@@ -46,14 +41,13 @@ class DeleteColumn(QgisAlgorithm):
 
     def __init__(self):
         super().__init__()
+        self.fields_to_delete = []
+        self.field_indices = []
 
-    def initAlgorithm(self, config=None):
-        self.addParameter(QgsProcessingParameterFeatureSource(self.INPUT, self.tr('Input layer')))
+    def initParameters(self, config=None):
         self.addParameter(QgsProcessingParameterField(self.COLUMNS,
                                                       self.tr('Fields to drop'),
-                                                      None, self.INPUT, QgsProcessingParameterField.Any, True))
-
-        self.addParameter(QgsProcessingParameterFeatureSink(self.OUTPUT, self.tr('Output layer')))
+                                                      None, 'INPUT', QgsProcessingParameterField.Any, True))
 
     def name(self):
         return 'deletecolumn'
@@ -61,40 +55,30 @@ class DeleteColumn(QgisAlgorithm):
     def displayName(self):
         return self.tr('Drop field(s)')
 
-    def processAlgorithm(self, parameters, context, feedback):
-        source = self.parameterAsSource(parameters, self.INPUT, context)
-        fields_to_delete = self.parameterAsFields(parameters, self.COLUMNS, context)
+    def outputName(self):
+        return self.tr('Fields dropped')
 
-        fields = source.fields()
-        field_indices = []
+    def prepareAlgorithm(self, parameters, context, feedback):
+        self.fields_to_delete = self.parameterAsFields(parameters, self.COLUMNS, context)
+        return True
+
+    def outputFields(self, input_fields):
         # loop through twice - first we need to build up a list of original attribute indices
-        for f in fields_to_delete:
-            index = fields.lookupField(f)
-            field_indices.append(index)
+        for f in self.fields_to_delete:
+            index = input_fields.lookupField(f)
+            self.field_indices.append(index)
 
         # important - make sure we remove from the end so we aren't changing used indices as we go
-        field_indices.sort(reverse=True)
+        self.field_indices.sort(reverse=True)
 
         # this second time we make a cleaned version of the fields
-        for index in field_indices:
-            fields.remove(index)
+        for index in self.field_indices:
+            input_fields.remove(index)
+        return input_fields
 
-        (sink, dest_id) = self.parameterAsSink(parameters, self.OUTPUT, context,
-                                               fields, source.wkbType(), source.sourceCrs())
-
-        features = source.getFeatures()
-        total = 100.0 / source.featureCount() if source.featureCount() else 0
-
-        for current, f in enumerate(features):
-            if feedback.isCanceled():
-                break
-
-            attributes = f.attributes()
-            for index in field_indices:
-                del attributes[index]
-            f.setAttributes(attributes)
-            sink.addFeature(f, QgsFeatureSink.FastInsert)
-
-            feedback.setProgress(int(current * total))
-
-        return {self.OUTPUT: dest_id}
+    def processFeature(self, feature, feedback):
+        attributes = feature.attributes()
+        for index in self.field_indices:
+            del attributes[index]
+        feature.setAttributes(attributes)
+        return feature

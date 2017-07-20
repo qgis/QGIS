@@ -29,28 +29,19 @@ import os
 
 from qgis.PyQt.QtGui import QIcon
 
-from qgis.core import (QgsFeature,
-                       QgsGeometry,
+from qgis.core import (QgsGeometry,
                        QgsGeometryCollection,
                        QgsMultiLineString,
                        QgsMultiCurve,
                        QgsWkbTypes,
-                       QgsFeatureSink,
-                       QgsProcessing,
-                       QgsProcessingParameterFeatureSource,
-                       QgsProcessingParameterFeatureSink,
-                       QgsProcessingUtils)
+                       QgsProcessing)
 
-from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
-from processing.tools import dataobjects
+from processing.algs.qgis.QgisAlgorithm import QgisFeatureBasedAlgorithm
 
 pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
 
-class PolygonsToLines(QgisAlgorithm):
-
-    INPUT = 'INPUT'
-    OUTPUT = 'OUTPUT'
+class PolygonsToLines(QgisFeatureBasedAlgorithm):
 
     def icon(self):
         return QIcon(os.path.join(pluginPath, 'images', 'ftools', 'to_lines.png'))
@@ -64,50 +55,25 @@ class PolygonsToLines(QgisAlgorithm):
     def __init__(self):
         super().__init__()
 
-    def initAlgorithm(self, config=None):
-        self.addParameter(QgsProcessingParameterFeatureSource(self.INPUT,
-                                                              self.tr('Input layer'),
-                                                              [QgsProcessing.TypeVectorPolygon]))
-
-        self.addParameter(QgsProcessingParameterFeatureSink(self.OUTPUT,
-                                                            self.tr('Polygons to lines'),
-                                                            QgsProcessing.TypeVectorLine))
-
     def name(self):
         return 'polygonstolines'
 
     def displayName(self):
         return self.tr('Polygons to lines')
 
-    def processAlgorithm(self, parameters, context, feedback):
-        source = self.parameterAsSource(parameters, self.INPUT, context)
+    def outputName(self):
+        return self.tr('Lines')
 
-        geomType = self.convertWkbToLines(source.wkbType())
+    def outputType(self):
+        return QgsProcessing.TypeVectorLine
 
-        (sink, dest_id) = self.parameterAsSink(parameters, self.OUTPUT, context,
-                                               source.fields(), geomType, source.sourceCrs())
+    def outputWkbType(self, input_wkb_type):
+        return self.convertWkbToLines(input_wkb_type)
 
-        outFeat = QgsFeature()
-
-        total = 100.0 / source.featureCount() if source.featureCount() else 0
-        count = 0
-
-        for feat in source.getFeatures():
-            if feedback.isCanceled():
-                break
-
-            if feat.hasGeometry():
-                outFeat.setGeometry(QgsGeometry(self.convertToLines(feat.geometry())))
-                attrs = feat.attributes()
-                outFeat.setAttributes(attrs)
-                sink.addFeature(outFeat, QgsFeatureSink.FastInsert)
-            else:
-                sink.addFeature(feat, QgsFeatureSink.FastInsert)
-
-            count += 1
-            feedback.setProgress(int(count * total))
-
-        return {self.OUTPUT: dest_id}
+    def processFeature(self, feature, feedback):
+        if feature.hasGeometry():
+            feature.setGeometry(QgsGeometry(self.convertToLines(feature.geometry())))
+        return feature
 
     def convertWkbToLines(self, wkb):
         multi_wkb = None

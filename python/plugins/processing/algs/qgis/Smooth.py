@@ -25,20 +25,14 @@ __copyright__ = '(C) 2015, Nyall Dawson'
 
 __revision__ = '$Format:%H$'
 
-from qgis.core import (QgsFeatureSink,
-                       QgsProcessing,
-                       QgsProcessingException,
-                       QgsProcessingParameterFeatureSource,
-                       QgsProcessingParameterFeatureSink,
+from qgis.core import (QgsProcessingException,
                        QgsProcessingParameterNumber)
 
-from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
+from processing.algs.qgis.QgisAlgorithm import QgisFeatureBasedAlgorithm
 
 
-class Smooth(QgisAlgorithm):
+class Smooth(QgisFeatureBasedAlgorithm):
 
-    INPUT = 'INPUT'
-    OUTPUT = 'OUTPUT'
     ITERATIONS = 'ITERATIONS'
     MAX_ANGLE = 'MAX_ANGLE'
     OFFSET = 'OFFSET'
@@ -49,9 +43,7 @@ class Smooth(QgisAlgorithm):
     def __init__(self):
         super().__init__()
 
-    def initAlgorithm(self, config=None):
-        self.addParameter(QgsProcessingParameterFeatureSource(self.INPUT,
-                                                              self.tr('Input layer'), [QgsProcessing.TypeVectorPolygon, QgsProcessing.TypeVectorLine]))
+    def initParameters(self, config=None):
         self.addParameter(QgsProcessingParameterNumber(self.ITERATIONS,
                                                        self.tr('Iterations'),
                                                        defaultValue=1, minValue=1, maxValue=10))
@@ -62,39 +54,27 @@ class Smooth(QgisAlgorithm):
                                                        self.tr('Maximum node angle to smooth'), QgsProcessingParameterNumber.Double,
                                                        defaultValue=180.0, minValue=0.0, maxValue=180.0))
 
-        self.addParameter(QgsProcessingParameterFeatureSink(self.OUTPUT, self.tr('Smoothed')))
-
     def name(self):
         return 'smoothgeometry'
 
     def displayName(self):
         return self.tr('Smooth geometry')
 
-    def processAlgorithm(self, parameters, context, feedback):
-        source = self.parameterAsSource(parameters, self.INPUT, context)
-        iterations = self.parameterAsInt(parameters, self.ITERATIONS, context)
-        offset = self.parameterAsDouble(parameters, self.OFFSET, context)
-        max_angle = self.parameterAsDouble(parameters, self.MAX_ANGLE, context)
+    def outputName(self):
+        return self.tr('Smoothed')
 
-        (sink, dest_id) = self.parameterAsSink(parameters, self.OUTPUT, context,
-                                               source.fields(), source.wkbType(), source.sourceCrs())
+    def prepareAlgorithm(self, parameters, context, feedback):
+        self.iterations = self.parameterAsInt(parameters, self.ITERATIONS, context)
+        self.offset = self.parameterAsDouble(parameters, self.OFFSET, context)
+        self.max_angle = self.parameterAsDouble(parameters, self.MAX_ANGLE, context)
+        return True
 
-        features = source.getFeatures()
-        total = 100.0 / source.featureCount() if source.featureCount() else 0
+    def processFeature(self, feature, feedback):
+        if feature.hasGeometry():
+            output_geometry = feature.geometry().smooth(self.iterations, self.offset, -1, self.max_angle)
+            if not output_geometry:
+                raise QgsProcessingException(
+                    self.tr('Error smoothing geometry'))
 
-        for current, input_feature in enumerate(features):
-            if feedback.isCanceled():
-                break
-            output_feature = input_feature
-            if input_feature.geometry():
-                output_geometry = input_feature.geometry().smooth(iterations, offset, -1, max_angle)
-                if not output_geometry:
-                    raise QgsProcessingException(
-                        self.tr('Error smoothing geometry'))
-
-                output_feature.setGeometry(output_geometry)
-
-            sink.addFeature(output_feature, QgsFeatureSink.FastInsert)
-            feedback.setProgress(int(current * total))
-
-        return {self.OUTPUT: dest_id}
+            feature.setGeometry(output_geometry)
+        return feature

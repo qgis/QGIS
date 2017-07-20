@@ -35,14 +35,13 @@ from qgis.core import (QgsFeatureSink,
                        QgsProcessingParameterEnum,
                        QgsProcessingParameterFeatureSink)
 
-from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
+from processing.algs.qgis.QgisAlgorithm import QgisFeatureBasedAlgorithm
 
 pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
 
-class OffsetLine(QgisAlgorithm):
-    INPUT = 'INPUT'
-    OUTPUT = 'OUTPUT'
+class OffsetLine(QgisFeatureBasedAlgorithm):
+
     DISTANCE = 'DISTANCE'
     SEGMENTS = 'SEGMENTS'
     JOIN_STYLE = 'JOIN_STYLE'
@@ -54,9 +53,12 @@ class OffsetLine(QgisAlgorithm):
     def __init__(self):
         super().__init__()
 
-    def initAlgorithm(self, config=None):
-        self.addParameter(QgsProcessingParameterFeatureSource(self.INPUT, self.tr('Input layer'),
-                                                              [QgsProcessing.TypeVectorLine]))
+        self.distance = None
+        self.segments = None
+        self.join_style = None
+        self.miter_limit = None
+
+    def initParameters(self, config=None):
         self.addParameter(QgsProcessingParameterNumber(self.DISTANCE,
                                                        self.tr('Distance'),
                                                        type=QgsProcessingParameterNumber.Double,
@@ -76,43 +78,33 @@ class OffsetLine(QgisAlgorithm):
                                                        self.tr('Mitre limit'), type=QgsProcessingParameterNumber.Double,
                                                        minValue=1, defaultValue=2))
 
-        self.addParameter(
-            QgsProcessingParameterFeatureSink(self.OUTPUT, self.tr('Offset'), QgsProcessing.TypeVectorLine))
-
     def name(self):
         return 'offsetline'
 
     def displayName(self):
         return self.tr('Offset line')
 
-    def processAlgorithm(self, parameters, context, feedback):
-        source = self.parameterAsSource(parameters, self.INPUT, context)
-        (sink, dest_id) = self.parameterAsSink(parameters, self.OUTPUT, context,
-                                               source.fields(), source.wkbType(), source.sourceCrs())
+    def outputName(self):
+        return self.tr('Offset')
 
-        distance = self.parameterAsDouble(parameters, self.DISTANCE, context)
-        segments = self.parameterAsInt(parameters, self.SEGMENTS, context)
-        join_style = self.parameterAsEnum(parameters, self.JOIN_STYLE, context) + 1
-        miter_limit = self.parameterAsDouble(parameters, self.MITRE_LIMIT, context)
+    def outputType(self):
+        return QgsProcessing.TypeVectorLine
 
-        features = source.getFeatures()
-        total = 100.0 / source.featureCount() if source.featureCount() else 0
+    def prepareAlgorithm(self, parameters, context, feedback):
+        self.distance = self.parameterAsDouble(parameters, self.DISTANCE, context)
+        self.segments = self.parameterAsInt(parameters, self.SEGMENTS, context)
+        self.join_style = self.parameterAsEnum(parameters, self.JOIN_STYLE, context) + 1
+        self.miter_limit = self.parameterAsDouble(parameters, self.MITRE_LIMIT, context)
+        return True
 
-        for current, input_feature in enumerate(features):
-            if feedback.isCanceled():
-                break
+    def processFeature(self, feature, feedback):
+        input_geometry = feature.geometry()
+        if input_geometry:
+            output_geometry = input_geometry.offsetCurve(self.distance, self.segments, self.join_style, self.miter_limit)
+            if not output_geometry:
+                raise QgsProcessingException(
+                    self.tr('Error calculating line offset'))
 
-            output_feature = input_feature
-            input_geometry = input_feature.geometry()
-            if input_geometry:
-                output_geometry = input_geometry.offsetCurve(distance, segments, join_style, miter_limit)
-                if not output_geometry:
-                    raise QgsProcessingException(
-                        self.tr('Error calculating line offset'))
+            feature.setGeometry(output_geometry)
 
-                output_feature.setGeometry(output_geometry)
-
-            sink.addFeature(output_feature, QgsFeatureSink.FastInsert)
-            feedback.setProgress(int(current * total))
-
-        return {self.OUTPUT: dest_id}
+        return feature

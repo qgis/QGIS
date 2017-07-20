@@ -26,19 +26,12 @@ __copyright__ = '(C) 2015, Nyall Dawson'
 __revision__ = '$Format:%H$'
 
 from qgis.core import (QgsGeometry,
-                       QgsFeature,
-                       QgsFeatureSink,
                        QgsProcessingException,
-                       QgsProcessing,
-                       QgsProcessingParameterFeatureSource,
-                       QgsProcessingParameterFeatureSink)
-from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
+                       QgsProcessing)
+from processing.algs.qgis.QgisAlgorithm import QgisFeatureBasedAlgorithm
 
 
-class ReverseLineDirection(QgisAlgorithm):
-
-    INPUT = 'INPUT'
-    OUTPUT = 'OUTPUT'
+class ReverseLineDirection(QgisFeatureBasedAlgorithm):
 
     def group(self):
         return self.tr('Vector geometry tools')
@@ -46,41 +39,26 @@ class ReverseLineDirection(QgisAlgorithm):
     def __init__(self):
         super().__init__()
 
-    def initAlgorithm(self, config=None):
-        self.addParameter(QgsProcessingParameterFeatureSource(self.INPUT, self.tr('Input layer'),
-                                                              [QgsProcessing.TypeVectorLine]))
-        self.addParameter(
-            QgsProcessingParameterFeatureSink(self.OUTPUT, self.tr('Reversed'), QgsProcessing.TypeVectorLine))
-
     def name(self):
         return 'reverselinedirection'
 
     def displayName(self):
         return self.tr('Reverse line direction')
 
-    def processAlgorithm(self, parameters, context, feedback):
-        source = self.parameterAsSource(parameters, self.INPUT, context)
+    def outputName(self):
+        return self.tr('Reversed')
 
-        (sink, dest_id) = self.parameterAsSink(parameters, self.OUTPUT, context,
-                                               source.fields(), source.wkbType(), source.sourceCrs())
+    def outputType(self):
+        return QgsProcessing.TypeVectorLine
 
-        features = source.getFeatures()
-        total = 100.0 / source.featureCount() if source.featureCount() else 0
-        for current, inFeat in enumerate(features):
-            if feedback.isCanceled():
-                break
+    def processFeature(self, feature, feedback):
+        if feature.geometry():
+            inGeom = feature.geometry()
+            reversedLine = inGeom.geometry().reversed()
+            if not reversedLine:
+                raise QgsProcessingException(
+                    self.tr('Error reversing line'))
+            outGeom = QgsGeometry(reversedLine)
 
-            outFeat = inFeat
-            if inFeat.geometry():
-                inGeom = inFeat.geometry()
-                reversedLine = inGeom.geometry().reversed()
-                if not reversedLine:
-                    raise QgsProcessingException(
-                        self.tr('Error reversing line'))
-                outGeom = QgsGeometry(reversedLine)
-
-                outFeat.setGeometry(outGeom)
-            sink.addFeature(outFeat, QgsFeatureSink.FastInsert)
-            feedback.setProgress(int(current * total))
-
-        return {self.OUTPUT: dest_id}
+            feature.setGeometry(outGeom)
+        return feature

@@ -25,27 +25,17 @@ __copyright__ = '(C) 2016, Nyall Dawson'
 
 __revision__ = '$Format:%H$'
 
-import os
-
-from qgis.core import (QgsApplication,
-                       QgsGeometry,
-                       QgsFeatureSink,
+from qgis.core import (QgsGeometry,
                        QgsWkbTypes,
-                       QgsProcessingUtils)
+                       QgsProcessing,
+                       QgsProcessingParameterNumber,
+                       QgsProcessingParameterEnum,
+                       QgsProcessingException)
 
-from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
-from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
-from processing.core.parameters import ParameterVector, ParameterSelection, ParameterNumber
-from processing.core.outputs import OutputVector
-from processing.tools import dataobjects
-
-pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
+from processing.algs.qgis.QgisAlgorithm import QgisFeatureBasedAlgorithm
 
 
-class SingleSidedBuffer(QgisAlgorithm):
-
-    INPUT_LAYER = 'INPUT_LAYER'
-    OUTPUT_LAYER = 'OUTPUT_LAYER'
+class SingleSidedBuffer(QgisFeatureBasedAlgorithm):
     DISTANCE = 'DISTANCE'
     SIDE = 'SIDE'
     SEGMENTS = 'SEGMENTS'
@@ -57,33 +47,35 @@ class SingleSidedBuffer(QgisAlgorithm):
 
     def __init__(self):
         super().__init__()
-
-    def initAlgorithm(self, config=None):
-        self.addParameter(ParameterVector(self.INPUT_LAYER,
-                                          self.tr('Input layer'), [dataobjects.TYPE_VECTOR_LINE]))
-        self.addParameter(ParameterNumber(self.DISTANCE,
-                                          self.tr('Distance'), default=10.0))
+        self.distance = None
+        self.segments = None
+        self.join_style = None
+        self.side = None
+        self.miter_limit = None
         self.sides = [self.tr('Left'),
                       'Right']
-        self.addParameter(ParameterSelection(
-            self.SIDE,
-            self.tr('Side'),
-            self.sides))
-
-        self.addParameter(ParameterNumber(self.SEGMENTS,
-                                          self.tr('Segments'), 1, default=8))
-
         self.join_styles = [self.tr('Round'),
                             'Mitre',
                             'Bevel']
-        self.addParameter(ParameterSelection(
+
+    def initParameters(self, config=None):
+        self.addParameter(QgsProcessingParameterNumber(self.DISTANCE,
+                                                       self.tr('Distance'), defaultValue=10.0))
+        self.addParameter(QgsProcessingParameterEnum(
+            self.SIDE,
+            self.tr('Side'),
+            options=self.sides))
+
+        self.addParameter(QgsProcessingParameterNumber(self.SEGMENTS,
+                                                       self.tr('Segments'), QgsProcessingParameterNumber.Integer,
+                                                       minValue=1, defaultValue=8))
+
+        self.addParameter(QgsProcessingParameterEnum(
             self.JOIN_STYLE,
             self.tr('Join style'),
-            self.join_styles))
-        self.addParameter(ParameterNumber(self.MITRE_LIMIT,
-                                          self.tr('Mitre limit'), 1, default=2))
-
-        self.addOutput(OutputVector(self.OUTPUT_LAYER, self.tr('Single sided buffers')))
+            options=self.join_styles))
+        self.addParameter(QgsProcessingParameterNumber(self.MITRE_LIMIT,
+                                                       self.tr('Mitre limit'), minValue=1, defaultValue=2))
 
     def name(self):
         return 'singlesidedbuffer'
@@ -91,37 +83,35 @@ class SingleSidedBuffer(QgisAlgorithm):
     def displayName(self):
         return self.tr('Single sided buffer')
 
-    def processAlgorithm(self, parameters, context, feedback):
-        layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT_LAYER), context)
+    def outputName(self):
+        return self.tr('Buffers')
 
-        writer = self.getOutputFromName(
-            self.OUTPUT_LAYER).getVectorWriter(layer.fields(), QgsWkbTypes.Polygon, layer.crs(), context)
+    def outputType(self):
+        return QgsProcessing.TypeVectorPolygon
 
-        distance = self.getParameterValue(self.DISTANCE)
-        segments = int(self.getParameterValue(self.SEGMENTS))
-        join_style = self.getParameterValue(self.JOIN_STYLE) + 1
-        if self.getParameterValue(self.SIDE) == 0:
-            side = QgsGeometry.SideLeft
+    def outputWkbType(self, input_wkb_type):
+        return QgsWkbTypes.Polygon
+
+    def prepareAlgorithm(self, parameters, context, feedback):
+        self.distance = self.parameterAsDouble(parameters, self.DISTANCE, context)
+        self.segments = self.parameterAsInt(parameters, self.SEGMENTS, context)
+        self.join_style = self.parameterAsEnum(parameters, self.JOIN_STYLE, context) + 1
+        if self.parameterAsEnum(parameters, self.SIDE, context) == 0:
+            self.side = QgsGeometry.SideLeft
         else:
-            side = QgsGeometry.SideRight
-        miter_limit = self.getParameterValue(self.MITRE_LIMIT)
+            self.side = QgsGeometry.SideRight
+        self.miter_limit = self.parameterAsDouble(parameters, self.MITRE_LIMIT, context)
+        return True
 
-        features = QgsProcessingUtils.getFeatures(layer, context)
-        total = 100.0 / layer.featureCount() if layer.featureCount() else 0
+    def processFeature(self, feature, feedback):
+        input_geometry = feature.geometry()
+        if input_geometry:
+            output_geometry = input_geometry.singleSidedBuffer(self.distance, self.segments,
+                                                               self.side, self.join_style, self.miter_limit)
+            if not output_geometry:
+                raise QgsProcessingException(
+                    self.tr('Error calculating single sided buffer'))
 
-        for current, input_feature in enumerate(features):
-            output_feature = input_feature
-            input_geometry = input_feature.geometry()
-            if input_geometry:
-                output_geometry = input_geometry.singleSidedBuffer(distance, segments,
-                                                                   side, join_style, miter_limit)
-                if not output_geometry:
-                    raise GeoAlgorithmExecutionException(
-                        self.tr('Error calculating single sided buffer'))
+            feature.setGeometry(output_geometry)
 
-                output_feature.setGeometry(output_geometry)
-
-            writer.addFeature(output_feature, QgsFeatureSink.FastInsert)
-            feedback.setProgress(int(current * total))
-
-        del writer
+        return feature
