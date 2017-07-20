@@ -132,11 +132,16 @@ class TestDBManagerPostgisPlugin(unittest.TestCase):
         obj = QObject() # needs to be kept alive
         database = PGDatabase(obj, QgsDataSourceUri())
         self.assertIsInstance(database, PGDatabase)
-        sql = "SELECT 'é'::text"
-        res = database.sqlResultModel(sql, obj)
+        # SQL as string literal
+        res = database.sqlResultModel("SELECT 'é'::text", obj)
         self.assertIsInstance(res, PGSqlResultModel)
         dat = res.getData(0, 0)
-        self.assertEqual(dat, "é")
+        self.assertEqual(dat, u"é")
+        # SQL as unicode literal
+        res = database.sqlResultModel(u"SELECT 'é'::text", obj)
+        self.assertIsInstance(res, PGSqlResultModel)
+        dat = res.getData(0, 0)
+        self.assertEqual(dat, u"é")
 
 
 if __name__ == '__main__':
