@@ -44,6 +44,7 @@ class TestQgsAttributeForm : public QObject
     void testOKButtonStatus();
     void testDynamicForm();
     void testConstraintsOnJoinedFields();
+    void testEditableJoin();
 };
 
 void TestQgsAttributeForm::initTestCase()
@@ -510,6 +511,125 @@ void TestQgsAttributeForm::testConstraintsOnJoinedFields()
   label = form.mBuddyMap.value( ww->widget() );
   QCOMPARE( label->text(), "layerB_" + warningLabel );
 }
+
+void TestQgsAttributeForm::testEditableJoin()
+{
+  // make temporary layers
+  QString defA = QStringLiteral( "Point?field=id_a:integer" );
+  QgsVectorLayer *layerA = new QgsVectorLayer( defA, QStringLiteral( "layerA" ), QStringLiteral( "memory" ) );
+
+  QString defB = QStringLiteral( "Point?field=id_b:integer&field=col0:integer" );
+  QgsVectorLayer *layerB = new QgsVectorLayer( defB, QStringLiteral( "layerB" ), QStringLiteral( "memory" ) );
+
+  QString defC = QStringLiteral( "Point?field=id_c:integer&field=col0:integer" );
+  QgsVectorLayer *layerC = new QgsVectorLayer( defC, QStringLiteral( "layerC" ), QStringLiteral( "memory" ) );
+
+  // join configuration
+  QgsVectorLayerJoinInfo infoJoinAB;
+  infoJoinAB.setTargetFieldName( "id_a" );
+  infoJoinAB.setJoinLayer( layerB );
+  infoJoinAB.setJoinFieldName( "id_b" );
+  infoJoinAB.setDynamicFormEnabled( true );
+  infoJoinAB.setEditable( true );
+
+  layerA->addJoin( infoJoinAB );
+
+  QgsVectorLayerJoinInfo infoJoinAC;
+  infoJoinAC.setTargetFieldName( "id_a" );
+  infoJoinAC.setJoinLayer( layerC );
+  infoJoinAC.setJoinFieldName( "id_c" );
+  infoJoinAC.setDynamicFormEnabled( true );
+  infoJoinAC.setEditable( false );
+
+  layerA->addJoin( infoJoinAC );
+
+  // add features for main layer
+  QgsFeature ftA( layerA->fields() );
+  ftA.setAttribute( QStringLiteral( "id_a" ), 31 );
+  layerA->startEditing();
+  layerA->addFeature( ftA );
+  layerA->commitChanges();
+
+  // add features for joined layers
+  QgsFeature ft0B( layerB->fields() );
+  ft0B.setAttribute( QStringLiteral( "id_b" ), 31 );
+  ft0B.setAttribute( QStringLiteral( "col0" ), 11 );
+  layerB->startEditing();
+  layerB->addFeature( ft0B );
+  layerB->commitChanges();
+
+  QgsFeature ft0C( layerC->fields() );
+  ft0C.setAttribute( QStringLiteral( "id_c" ), 31 );
+  ft0C.setAttribute( QStringLiteral( "col0" ), 13 );
+  layerC->startEditing();
+  layerC->addFeature( ft0C );
+  layerC->commitChanges();
+
+  // start editing layers
+  layerA->startEditing();
+  layerB->startEditing();
+  layerC->startEditing();
+
+  // build a form with feature A
+  ftA = layerA->getFeature( 1 );
+
+  QgsAttributeForm form( layerA );
+  form.setMode( QgsAttributeForm::SingleEditMode );
+  form.setFeature( ftA );
+
+  for ( int i = 0; i < ftA.fields().count(); i++ )
+    std::cout << "    - " << ftA.fields().field( i ).name().toStdString() << " : " << ftA.attribute( i ).toString().toStdString() << std::endl;
+
+  // change layerA join id field to join with layerB and layerC
+  QgsEditorWidgetWrapper *ww = nullptr;
+
+  ww = qobject_cast<QgsEditorWidgetWrapper *>( form.mWidgets[0] );
+  QCOMPARE( ww->field().name(), QString( "id_a" ) );
+  QCOMPARE( ww->value(), QVariant( 31 ) );
+
+  ww = qobject_cast<QgsEditorWidgetWrapper *>( form.mWidgets[1] );
+  QCOMPARE( ww->field().name(), QString( "layerB_col0" ) );
+  QCOMPARE( ww->value(), QVariant( 11 ) );
+
+  ww = qobject_cast<QgsEditorWidgetWrapper *>( form.mWidgets[2] );
+  QCOMPARE( ww->field().name(), QString( "layerC_col0" ) );
+  QCOMPARE( ww->value(), QVariant( 13 ) );
+
+  // test if widget is enabled for layerA
+  ww = qobject_cast<QgsEditorWidgetWrapper *>( form.mWidgets[0] );
+  QCOMPARE( ww->widget()->isEnabled(), true );
+
+  // test if widget is enabled for layerB
+  ww = qobject_cast<QgsEditorWidgetWrapper *>( form.mWidgets[1] );
+  QCOMPARE( ww->widget()->isEnabled(), true );
+
+  // test if widget is disabled for layerC
+  ww = qobject_cast<QgsEditorWidgetWrapper *>( form.mWidgets[2] );
+  QCOMPARE( ww->widget()->isEnabled(), false );
+
+  // change attributes
+  form.changeAttribute( "layerB_col0", QVariant( 333 ) );
+  form.changeAttribute( "layerC_col0", QVariant( 444 ) );
+  form.save();
+
+  // commit changes
+  layerA->commitChanges();
+  layerB->commitChanges();
+  layerC->commitChanges();
+
+  // check attributes
+  ft0B = layerB->getFeature( 1 );
+  QCOMPARE( ft0B.attribute( "col0" ), QVariant( 333 ) );
+
+  ft0C = layerC->getFeature( 1 );
+  QCOMPARE( ft0C.attribute( "col0" ), QVariant( 13 ) );
+
+  // clean
+  delete layerA;
+  delete layerB;
+  delete layerC;
+}
+
 
 QGSTEST_MAIN( TestQgsAttributeForm )
 #include "testqgsattributeform.moc"
