@@ -54,10 +54,10 @@ QVector<QgsStackTrace::StackLine> QgsStackTrace::trace( _EXCEPTION_POINTERS *Exc
   // StackWalk64() may modify context record passed to it, so we will
   // use a copy.
   CONTEXT context_record;
-  if (ExceptionInfo)
+  if ( ExceptionInfo )
     context_record = *ExceptionInfo->ContextRecord;
   else
-    RtlCaptureContext(&context_record);
+    RtlCaptureContext( &context_record );
 
   // Initialize stack walking.
   STACKFRAME64 stack_frame;
