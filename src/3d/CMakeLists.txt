@@ -3,11 +3,6 @@
 
 SET(QGIS_3D_SRCS
   cameracontroller.cpp
-  chunkboundsentity.cpp
-  chunkedentity.cpp
-  chunklist.cpp
-  chunkloader.cpp
-  chunknode.cpp
   lineentity.cpp
   map3d.cpp
   pointentity.cpp
@@ -17,6 +12,12 @@ SET(QGIS_3D_SRCS
   tessellator.cpp
   tilingscheme.cpp
   utils.cpp
+
+  chunks/chunkboundsentity.cpp
+  chunks/chunkedentity.cpp
+  chunks/chunklist.cpp
+  chunks/chunkloader.cpp
+  chunks/chunknode.cpp
 
   terrain/demterraingenerator.cpp
   terrain/demterraintilegeometry.cpp
@@ -38,8 +39,9 @@ SET(QGIS_3D_SRCS
 
 SET(QGIS_3D_MOC_HDRS
   cameracontroller.h
-  chunkedentity.h
   scene.h
+
+  chunks/chunkedentity.h
 
   terrain/demterraingenerator.h
   terrain/demterraintilegeometry.h
@@ -57,11 +59,6 @@ QT5_ADD_RESOURCES(QGIS_3D_RCC_SRCS shaders.qrc)
 SET(QGIS_3D_HDRS
   aabb.h
   cameracontroller.h
-  chunkboundsentity.h
-  chunkedentity.h
-  chunklist.h
-  chunkloader.h
-  chunknode.h
   lineentity.h
   map3d.h
   pointentity.h
@@ -71,6 +68,12 @@ SET(QGIS_3D_HDRS
   tessellator.h
   tilingscheme.h
   utils.h
+
+  chunks/chunkboundsentity.h
+  chunks/chunkedentity.h
+  chunks/chunklist.h
+  chunks/chunkloader.h
+  chunks/chunknode.h
 
   terrain/demterraingenerator.h
   terrain/demterraintilegeometry.h
@@ -86,6 +89,7 @@ SET(QGIS_3D_HDRS
 
 INCLUDE_DIRECTORIES(
   ${CMAKE_CURRENT_SOURCE_DIR}
+  ${CMAKE_CURRENT_SOURCE_DIR}/chunks
   ${CMAKE_CURRENT_SOURCE_DIR}/terrain
   ${CMAKE_SOURCE_DIR}/src/core/
   ${CMAKE_SOURCE_DIR}/src/core/geometry
