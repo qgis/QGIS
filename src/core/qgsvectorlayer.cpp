@@ -949,7 +949,9 @@ bool QgsVectorLayer::addFeature( QgsFeature &feature, Flags )
   if ( success )
   {
     updateExtents();
-    success = addFeaturesToJoinedLayers( QgsFeatureList() << feature );
+
+    if ( mJoinBuffer->containsJoins() )
+      success = addFeaturesToJoinedLayers( QgsFeatureList() << feature );
   }
 
   return success;
@@ -2636,7 +2638,7 @@ bool QgsVectorLayer::addFeatures( QgsFeatureList &features, Flags )
   bool res = mEditBuffer->addFeatures( features );
   updateExtents();
 
-  if ( res )
+  if ( res && mJoinBuffer->containsJoins() )
     res = addFeaturesToJoinedLayers( features );
 
   return res;
