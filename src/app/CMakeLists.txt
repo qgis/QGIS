@@ -136,6 +136,11 @@ SET(QGIS_APP_SRCS
   qgsmaptoolcircle2points.cpp
   qgsmaptoolcircle3points.cpp
   qgsmaptoolcirclecenterpoint.cpp
+  qgsmaptooladdellipse.cpp
+  qgsmaptoolellipsefoci.cpp
+  qgsmaptoolellipseextent.cpp
+  qgsmaptoolellipsecenterpoint.cpp
+  qgsmaptoolellipsecenter2points.cpp
 
   composer/qgsattributeselectiondialog.cpp
   composer/qgscomposer.cpp
@@ -291,6 +296,11 @@ SET (QGIS_APP_MOC_HDRS
   qgsmaptoolcircle2points.h
   qgsmaptoolcircle3points.h
   qgsmaptoolcirclecenterpoint.h
+  qgsmaptooladdellipse.h
+  qgsmaptoolellipsefoci.h
+  qgsmaptoolellipseextent.h
+  qgsmaptoolellipsecenterpoint.h
+  qgsmaptoolellipsecenter2points.h
 
 
   nodetool/qgsselectedfeature.h

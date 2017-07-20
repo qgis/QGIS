@@ -272,6 +272,23 @@
      <addaction name="mActionPasteAsNewVector"/>
      <addaction name="mActionPasteAsNewMemoryVector"/>
     </widget>
+    <widget class="QMenu" name="mMenuCircle">
+     <property name="title">
+      <string>Add circle</string>
+     </property>
+     <addaction name="mActionCircle2Points"/>
+     <addaction name="mActionCircle3Points"/>
+     <addaction name="mActionCircleCenterPoint"/>
+    </widget>
+    <widget class="QMenu" name="mMenuEllipse">
+     <property name="title">
+      <string>Add ellipse</string>
+     </property>
+     <addaction name="mActionEllipseCenter2Points"/>
+     <addaction name="mActionEllipseCenterPoint"/>
+     <addaction name="mActionEllipseExtent"/>
+     <addaction name="mActionEllipseFoci"/>
+    </widget>
     <addaction name="mActionUndo"/>
     <addaction name="mActionRedo"/>
     <addaction name="separator"/>
@@ -284,9 +301,8 @@
     <addaction name="mActionAddFeature"/>
     <addaction name="mActionCircularStringCurvePoint"/>
     <addaction name="mActionCircularStringRadius"/>
-    <addaction name="mActionCircle2Points"/>
-    <addaction name="mActionCircle3Points"/>
-    <addaction name="mActionCircleCenterPoint"/>
+    <addaction name="mMenuCircle"/>
+    <addaction name="mMenuEllipse"/>
     <addaction name="mActionMoveFeature"/>
     <addaction name="mActionDeleteSelected"/>
     <addaction name="mActionMultiEditAttributes"/>
@@ -2723,10 +2739,70 @@ Acts on currently active editable layer</string>
      <normaloff>:/images/themes/default/mActionCircleCenterPoint.svg</normaloff>:/images/themes/default/mActionCircleCenterPoint.svg</iconset>
    </property>
    <property name="text">
-    <string>Add Circle by a center point and another point</string>
+    <string>&amp;Add Circle by a center point and another point</string>
    </property>
    <property name="toolTip">
     <string>Add Circle by a center point and another point</string>
+   </property>
+  </action>
+  <action name="mActionEllipseCenter2Points">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionEllipseCenter2Points.svg</normaloff>:/images/themes/default/mActionEllipseCenter2Points.svg</iconset>
+   </property>
+   <property name="text">
+    <string>&amp;Add Ellipse from Center and 2 Points</string>
+   </property>
+   <property name="toolTip">
+    <string>Add Ellipse from center and 2 points</string>
+   </property>
+  </action>
+  <action name="mActionEllipseCenterPoint">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionEllipseCenterPoint.svg</normaloff>:/images/themes/default/mActionEllipseCenterPoint.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Add Ellipse from &amp;Center and a Point</string>
+   </property>
+   <property name="toolTip">
+    <string>Add Ellipse from center and a point</string>
+   </property>
+  </action>
+  <action name="mActionEllipseExtent">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionEllipseExtent.svg</normaloff>:/images/themes/default/mActionEllipseExtent.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Add Ellipse from &amp;Extent</string>
+   </property>
+   <property name="toolTip">
+    <string>Add Ellipse from extent</string>
+   </property>
+  </action>
+  <action name="mActionEllipseFoci">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionEllipseFoci.svg</normaloff>:/images/themes/default/mActionEllipseFoci.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Add Ellipse from &amp;Foci</string>
+   </property>
+   <property name="toolTip">
+    <string>Add Ellipse from foci</string>
    </property>
   </action>
  </widget>

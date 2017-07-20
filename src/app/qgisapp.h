@@ -1203,6 +1203,14 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     void circle3Points();
     //! activates the add circle from center and radius tool
     void circleCenterPoint();
+    //! activates the add ellipse from center and 2 points tool
+    void ellipseCenter2Points();
+    //! activates the add ellipse from center point tool
+    void ellipseCenterPoint();
+    //! activates the add ellipse from extent tool
+    void ellipseExtent();
+    //! activates the add ellipse from foci tool
+    void ellipseFoci();
     //! activates the move feature tool
     void moveFeature();
     //! activates the copy and move feature tool
@@ -1754,6 +1762,10 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
           , mCircle2Points( nullptr )
           , mCircle3Points( nullptr )
           , mCircleCenterPoint( nullptr )
+          , mEllipseCenter2Points( nullptr )
+          , mEllipseCenterPoint( nullptr )
+          , mEllipseExtent( nullptr )
+          , mEllipseFoci( nullptr )
           , mMoveFeature( nullptr )
           , mOffsetCurve( nullptr )
           , mReshapeFeatures( nullptr )
@@ -1803,6 +1815,10 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
         QgsMapTool *mCircle2Points = nullptr;
         QgsMapTool *mCircle3Points = nullptr;
         QgsMapTool *mCircleCenterPoint = nullptr;
+        QgsMapTool *mEllipseCenter2Points = nullptr;
+        QgsMapTool *mEllipseCenterPoint = nullptr;
+        QgsMapTool *mEllipseExtent = nullptr;
+        QgsMapTool *mEllipseFoci = nullptr;
         QgsMapTool *mMoveFeature = nullptr;
         QgsMapTool *mMoveFeatureCopy = nullptr;
         QgsMapTool *mOffsetCurve = nullptr;

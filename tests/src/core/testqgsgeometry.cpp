@@ -4014,7 +4014,7 @@ void TestQgsGeometry::ellipse()
   QgsLineString *l = new QgsLineString();
 
   l = QgsEllipse( QgsPoint( 0, 0 ), 5, 2, 0 ).toLineString( 4 );
-  QCOMPARE( l->numPoints(), 4 );
+  QCOMPARE( l->numPoints(), 5 ); // closed linestring
   QgsPointSequence pts_l;
   l->points( pts_l );
   QCOMPARE( pts, pts_l );
