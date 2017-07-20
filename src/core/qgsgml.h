@@ -289,7 +289,9 @@ class CORE_EXPORT QgsGmlStreamingParser
     QString mCoordinateSeparator;
     /** Tuple separator for coordinate strings. Usually " " */
     QString mTupleSeparator;
-    /** Number of dimensions in pos or posList */
+    /** Keep track about number of dimensions in pos or posList */
+    QStack<int> mDimensionStack;
+    /** Number of dimensions in pos or posList for the current geometry */
     int mDimension;
     /** Coordinates mode, coordinate or posList */
     ParseMode mCoorMode;

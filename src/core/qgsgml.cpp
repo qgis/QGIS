@@ -485,6 +485,7 @@ void QgsGmlStreamingParser::startElement( const XML_Char* el, const XML_Char** a
   const int nsLen = ( pszSep ) ? ( int )( pszSep - el ) : 0;
   const int localNameLen = ( pszSep ) ? ( int )( elLen - nsLen ) - 1 : elLen;
   ParseMode theParseMode( mParseModeStack.isEmpty() ? none : mParseModeStack.top() );
+  int elDimension = 0;
 
   // Figure out if the GML namespace is GML_NAMESPACE or GML32_NAMESPACE
   if ( !mGMLNameSpaceURIPtr && pszSep )
@@ -543,14 +544,14 @@ void QgsGmlStreamingParser::startElement( const XML_Char* el, const XML_Char** a
     mParseModeStack.push( QgsGmlStreamingParser::posList );
     mCoorMode = QgsGmlStreamingParser::posList;
     mStringCash.clear();
-    if ( mDimension == 0 )
+    if ( elDimension == 0 )
     {
       QString srsDimension = readAttribute( "srsDimension", attr );
       bool ok;
       int dimension = srsDimension.toInt( &ok );
       if ( ok )
       {
-        mDimension = dimension;
+        elDimension = dimension;
       }
     }
   }
@@ -808,7 +809,7 @@ void QgsGmlStreamingParser::startElement( const XML_Char* el, const XML_Char** a
   if ( !mGeometryString.empty() )
     isGeom = true;
 
-  if ( mDimension == 0 && isGeom )
+  if ( elDimension == 0 && isGeom )
   {
     // srsDimension can also be set on the top geometry element
     // e.g. https://data.linz.govt.nz/services;key=XXXXXXXX/wfs?SERVICE=WFS&REQUEST=GetFeature&VERSION=2.0.0&TYPENAMES=data.linz.govt.nz:layer-524
@@ -817,9 +818,15 @@ void QgsGmlStreamingParser::startElement( const XML_Char* el, const XML_Char** a
     int dimension = srsDimension.toInt( &ok );
     if ( ok )
     {
-      mDimension = dimension;
+      elDimension = dimension;
     }
   }
+
+  if ( elDimension != 0 )
+  {
+    mDimension = elDimension;
+  }
+  mDimensionStack.push( mDimension );
 
   if ( mEpsg == 0 && isGeom )
   {
@@ -846,6 +853,8 @@ void QgsGmlStreamingParser::endElement( const XML_Char* el )
   const int nsLen = ( pszSep ) ? ( int )( pszSep - el ) : 0;
   const int localNameLen = ( pszSep ) ? ( int )( elLen - nsLen ) - 1 : elLen;
   ParseMode theParseMode( mParseModeStack.isEmpty() ? none : mParseModeStack.top() );
+
+  mDimension = mDimensionStack.isEmpty() ? 0 : mDimensionStack.top() ;
 
   const bool isGMLNS = ( nsLen == mGMLNameSpaceURI.size() && mGMLNameSpaceURIPtr && memcmp( el, mGMLNameSpaceURIPtr, nsLen ) == 0 );
 
