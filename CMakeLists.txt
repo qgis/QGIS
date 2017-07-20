@@ -43,7 +43,7 @@ IF(WITH_CORE)
   FOREACH (GRASS_SEARCH_VERSION 7)
     # Legacy note:
     # For GRASS 6 there were used cached variables without version suffix so that existing caches didn't have to be reconfigured.
-    # Cached variables were: WITH_GRASS, WITH_GRASS7, GRASS_PREFIX, GRASS_PREFIX7, GRASS_INCLUDE_DIR, GRASS_INCLUDE_DIR7
+    # Cached variables were: WITH_GRASS, GRASS_PREFIX, GRASS_INCLUDE_DIR
     # Everywhere else each variable has version major appended.
     # Normal variables were: GRASS_FOUND6, GRASS_FOUND7, GRASS_MAJOR_VERSION6, GRASS_MAJOR_VERSION7, etc.
     # In addition there is also GRASS_FOUND, which is TRUE if at least one version of GRASS was found

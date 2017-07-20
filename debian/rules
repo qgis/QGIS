@@ -83,8 +83,7 @@ endif
 ifeq ($(GRASSVER),7)
 	CMAKE_OPTS += \
 		-DWITH_GRASS=TRUE \
-		-DWITH_GRASS7=TRUE \
-		-DGRASS_PREFIX7=/usr/lib/$(GRASS)
+		-DGRASS_PREFIX=/usr/lib/$(GRASS)
 endif
 
 ifneq (,$(filter parallel=%,$(DEB_BUILD_OPTIONS)))
@@ -296,7 +295,7 @@ override_dh_auto_install:
 		install -o root -g root -d $(CURDIR)/debian/tmp/usr/share/icons/hicolor/$${size}/apps ; \
 		install -o root -g root -m 644 $(CURDIR)/debian/icons/qgis-icon$${size}.png $(CURDIR)/debian/tmp/usr/share/icons/hicolor/$${size}/apps/qgis.png ; \
 	done
-	
+
 	install -o root -g root -d $(CURDIR)/debian/tmp/usr/share/icons/hicolor/scalable/apps
 	install -o root -g root -m 644 $(CURDIR)/images/icons/qgis_icon.svg $(CURDIR)/debian/tmp/usr/share/icons/hicolor/scalable/apps/qgis.svg
 
@@ -364,4 +363,3 @@ endif
 
 override_dh_strip:
 	dh_strip --dbg-package=qgis-dbg
-
