@@ -25,19 +25,14 @@ __copyright__ = '(C) 2016, Nyall Dawson'
 
 __revision__ = '$Format:%H$'
 
-from qgis.core import (QgsFeatureSink,
-                       QgsProcessingException,
-                       QgsProcessing,
+from qgis.core import (QgsProcessingException,
                        QgsProcessingParameterDefinition,
-                       QgsProcessingParameterFeatureSource,
-                       QgsProcessingParameterNumber,
-                       QgsProcessingParameterFeatureSink)
-from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
+                       QgsProcessingParameterNumber)
+from processing.algs.qgis.QgisAlgorithm import QgisFeatureBasedAlgorithm
 
 
-class Orthogonalize(QgisAlgorithm):
-    INPUT = 'INPUT'
-    OUTPUT = 'OUTPUT'
+class Orthogonalize(QgisFeatureBasedAlgorithm):
+
     MAX_ITERATIONS = 'MAX_ITERATIONS'
     DISTANCE_THRESHOLD = 'DISTANCE_THRESHOLD'
     ANGLE_TOLERANCE = 'ANGLE_TOLERANCE'
@@ -50,12 +45,10 @@ class Orthogonalize(QgisAlgorithm):
 
     def __init__(self):
         super().__init__()
+        self.max_iterations = None
+        self.angle_tolerance = None
 
-    def initAlgorithm(self, config=None):
-        self.addParameter(QgsProcessingParameterFeatureSource(self.INPUT, self.tr('Input layer'),
-                                                              [QgsProcessing.TypeVectorLine,
-                                                               QgsProcessing.TypeVectorPolygon]))
-
+    def initParameters(self, config=None):
         self.addParameter(QgsProcessingParameterNumber(self.ANGLE_TOLERANCE,
                                                        self.tr('Maximum angle tolerance (degrees)'),
                                                        type=QgsProcessingParameterNumber.Double,
@@ -68,41 +61,27 @@ class Orthogonalize(QgisAlgorithm):
         max_iterations.setFlags(max_iterations.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
         self.addParameter(max_iterations)
 
-        self.addParameter(
-            QgsProcessingParameterFeatureSink(self.OUTPUT, self.tr('Orthogonalized')))
-
     def name(self):
         return 'orthogonalize'
 
     def displayName(self):
         return self.tr('Orthogonalize')
 
-    def processAlgorithm(self, parameters, context, feedback):
-        source = self.parameterAsSource(parameters, self.INPUT, context)
-        max_iterations = self.parameterAsInt(parameters, self.MAX_ITERATIONS, context)
-        angle_tolerance = self.parameterAsDouble(parameters, self.ANGLE_TOLERANCE, context)
+    def outputName(self):
+        return self.tr('Orthogonalized')
 
-        (sink, dest_id) = self.parameterAsSink(parameters, self.OUTPUT, context,
-                                               source.fields(), source.wkbType(), source.sourceCrs())
+    def prepareAlgorithm(self, parameters, context, feedback):
+        self.max_iterations = self.parameterAsInt(parameters, self.MAX_ITERATIONS, context)
+        self.angle_tolerance = self.parameterAsDouble(parameters, self.ANGLE_TOLERANCE, context)
+        return True
 
-        features = source.getFeatures()
-        total = 100.0 / source.featureCount() if source.featureCount() else 0
+    def processFeature(self, feature, feedback):
+        input_geometry = feature.geometry()
+        if input_geometry:
+            output_geometry = input_geometry.orthogonalize(1.0e-8, self.max_iterations, self.angle_tolerance)
+            if not output_geometry:
+                raise QgsProcessingException(
+                    self.tr('Error orthogonalizing geometry'))
 
-        for current, input_feature in enumerate(features):
-            if feedback.isCanceled():
-                break
-
-            output_feature = input_feature
-            input_geometry = input_feature.geometry()
-            if input_geometry:
-                output_geometry = input_geometry.orthogonalize(1.0e-8, max_iterations, angle_tolerance)
-                if not output_geometry:
-                    raise QgsProcessingException(
-                        self.tr('Error orthogonalizing geometry'))
-
-                output_feature.setGeometry(output_geometry)
-
-            sink.addFeature(output_feature, QgsFeatureSink.FastInsert)
-            feedback.setProgress(int(current * total))
-
-        return {self.OUTPUT: dest_id}
+            feature.setGeometry(output_geometry)
+        return feature
