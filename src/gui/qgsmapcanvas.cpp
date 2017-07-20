@@ -648,6 +648,8 @@ void QgsMapCanvas::previewJobFinished()
   if ( mMap )
   {
     mMap->addPreviewImage( job->renderedImage(), job->mapSettings().extent() );
+    mPreviewJobs.removeAll( job );
+    delete job;
   }
 }
 
