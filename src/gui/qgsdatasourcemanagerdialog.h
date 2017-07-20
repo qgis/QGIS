@@ -78,6 +78,9 @@ class GUI_EXPORT QgsDataSourceManagerDialog : public QgsOptionsDialogBase, priva
     //! Refresh the browser view
     void refresh();
 
+  protected:
+      virtual void showEvent( QShowEvent *event ) override;
+
   signals:
     //! Emitted when a raster layer was selected for addition: for signal forwarding to QgisApp
     void addRasterLayer( const QString &uri, const QString &baseName, const QString &providerKey );

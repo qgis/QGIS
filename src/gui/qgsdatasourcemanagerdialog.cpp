@@ -60,6 +60,7 @@ QgsDataSourceManagerDialog::QgsDataSourceManagerDialog( QWidget *parent, QgsMapC
   ogrItem->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddOgrLayer.svg" ) ) );
   ogrItem->setToolTip( tr( "Add Vector layer" ) );
   connect( ovl, &QgsOpenVectorLayerDialog::addVectorLayers, this, &QgsDataSourceManagerDialog::vectorLayersAdded );
+  connect( ovl, &QgsOpenVectorLayerDialog::rejected, this, &QgsDataSourceManagerDialog::reject );
   mPageNames.append( QStringLiteral( "ogr" ) );
 
   // RASTER (forward to app)
@@ -187,6 +188,7 @@ QgsAbstractDataSourceWidget *QgsDataSourceManagerDialog::providerDialog( const Q
     {
       dlg->setMapCanvas( mMapCanvas );
     }
+    connect( dlg, &QgsAbstractDataSourceWidget::rejected, this, &QgsDataSourceManagerDialog::reject );
     return dlg;
   }
 }
@@ -228,4 +230,10 @@ void QgsDataSourceManagerDialog::addVectorProviderDialog( const QString provider
     { this->vectorLayerAdded( vectorLayerPath, baseName, providerKey ); } );
     connect( this,  SIGNAL( providerDialogsRefreshRequested() ), dlg, SLOT( refresh() ) );
   }
+}
+
+void QgsDataSourceManagerDialog::showEvent( QShowEvent *e )
+{
+  ui->mOptionsStackedWidget->currentWidget()->show();
+  QDialog::showEvent( e );
 }
