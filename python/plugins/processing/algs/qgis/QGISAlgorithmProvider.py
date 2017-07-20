@@ -61,6 +61,7 @@ from .ExtendLines import ExtendLines
 from .ExtentFromLayer import ExtentFromLayer
 from .ExtractNodes import ExtractNodes
 from .FixGeometry import FixGeometry
+from .GeometryByExpression import GeometryByExpression
 from .GridPolygon import GridPolygon
 from .Heatmap import Heatmap
 from .Hillshade import Hillshade
@@ -164,7 +165,6 @@ from .ZonalStatistics import ZonalStatistics
 # from .IdwInterpolation import IdwInterpolation
 # from .TinInterpolation import TinInterpolation
 # from .ExtractSpecificNodes import ExtractSpecificNodes
-# from .GeometryByExpression import GeometryByExpression
 # from .RasterCalculator import RasterCalculator
 # from .TruncateTable import TruncateTable
 # from .Polygonize import Polygonize
@@ -221,7 +221,6 @@ class QGISAlgorithmProvider(QgsProcessingProvider):
         #         Relief(),
         #         IdwInterpolation(), TinInterpolation(),
         #         ExtractSpecificNodes(),
-        #         GeometryByExpression(),
         #         RasterCalculator(),
         #         ShortestPathPointToPoint(), ShortestPathPointToLayer(),
         #         ShortestPathLayerToPoint(), ServiceAreaFromPoint(),
@@ -250,6 +249,7 @@ class QGISAlgorithmProvider(QgsProcessingProvider):
                 ExtentFromLayer(),
                 ExtractNodes(),
                 FixGeometry(),
+                GeometryByExpression(),
                 GridPolygon(),
                 Heatmap(),
                 Hillshade(),
