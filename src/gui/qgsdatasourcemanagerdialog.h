@@ -79,7 +79,7 @@ class GUI_EXPORT QgsDataSourceManagerDialog : public QgsOptionsDialogBase, priva
     void refresh();
 
   protected:
-      virtual void showEvent( QShowEvent *event ) override;
+    virtual void showEvent( QShowEvent *event ) override;
 
   signals:
     //! Emitted when a raster layer was selected for addition: for signal forwarding to QgisApp
