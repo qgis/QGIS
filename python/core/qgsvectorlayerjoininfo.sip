@@ -156,6 +156,16 @@ Returns whether values from the joined layer should be cached in memory to speed
  :rtype: str
 %End
 
+    QgsFeature extractJoinedFeature( const QgsFeature &feature ) const;
+%Docstring
+ Extract the join feature from the target feature for the current
+  join layer information.
+ \param feature A feature from the target layer
+ :return: the corresponding joined feature
+.. versionadded:: 3.0
+ :rtype: QgsFeature
+%End
+
     bool operator==( const QgsVectorLayerJoinInfo &other ) const;
 
     void setJoinFieldNamesSubset( QStringList *fieldNamesSubset /Transfer/ );
