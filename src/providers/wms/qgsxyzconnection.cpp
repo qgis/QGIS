@@ -27,6 +27,14 @@ QString QgsXyzConnection::encodedUri() const
     uri.setParam( QStringLiteral( "zmin" ), QString::number( zMin ) );
   if ( zMax != -1 )
     uri.setParam( QStringLiteral( "zmax" ), QString::number( zMax ) );
+  if ( ! authCfg.isEmpty() )
+    uri.setParam( QStringLiteral( "authcfg" ), authCfg );
+  if ( ! username.isEmpty() )
+    uri.setParam( QStringLiteral( "username" ), username );
+  if ( ! password.isEmpty() )
+    uri.setParam( QStringLiteral( "password" ), password );
+  if ( ! referer.isEmpty() )
+    uri.setParam( QStringLiteral( "referer" ), referer );
   return uri.encodedUri();
 }
 
@@ -47,6 +55,10 @@ QgsXyzConnection QgsXyzConnectionUtils::connection( const QString &name )
   conn.url = settings.value( QStringLiteral( "url" ) ).toString();
   conn.zMin = settings.value( QStringLiteral( "zmin" ), -1 ).toInt();
   conn.zMax = settings.value( QStringLiteral( "zmax" ), -1 ).toInt();
+  conn.authCfg = settings.value( QStringLiteral( "authcfg" ) ).toString();
+  conn.username = settings.value( QStringLiteral( "username" ) ).toString();
+  conn.password = settings.value( QStringLiteral( "password" ) ).toString();
+  conn.referer = settings.value( QStringLiteral( "referer" ) ).toString();
   return conn;
 }
 
@@ -63,4 +75,8 @@ void QgsXyzConnectionUtils::addConnection( const QgsXyzConnection &conn )
   settings.setValue( QStringLiteral( "url" ), conn.url );
   settings.setValue( QStringLiteral( "zmin" ), conn.zMin );
   settings.setValue( QStringLiteral( "zmax" ), conn.zMax );
+  settings.setValue( QStringLiteral( "authcfg" ), conn.authCfg );
+  settings.setValue( QStringLiteral( "username" ), conn.username );
+  settings.setValue( QStringLiteral( "password" ), conn.password );
+  settings.setValue( QStringLiteral( "referer" ), conn.referer );
 }
