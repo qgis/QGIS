@@ -20,6 +20,7 @@ email                : marco.hugentobler at sourcepole dot com
 #include "qgsgeometrycollection.h"
 #include "qgslinestring.h"
 #include "qgswkbptr.h"
+#include "qgslogger.h"
 
 #include <memory>
 #include <QStringList>
@@ -631,6 +632,7 @@ double QgsGeometryUtils::circleTangentDirection( const QgsPoint &tangentPoint, c
 
 void QgsGeometryUtils::segmentizeArc( const QgsPoint &p1, const QgsPoint &p2, const QgsPoint &p3, QgsPointSequence &points, double tolerance, QgsAbstractGeometry::SegmentationToleranceType toleranceType, bool hasZ, bool hasM )
 {
+  bool reversed = false;
   bool clockwise = false;
   int segSide = segmentSide( p1, p3, p2 );
   if ( segSide == -1 )
@@ -638,9 +640,23 @@ void QgsGeometryUtils::segmentizeArc( const QgsPoint &p1, const QgsPoint &p2, co
     clockwise = true;
   }
 
-  QgsPoint circlePoint1 = clockwise ? p3 : p1;
-  QgsPoint circlePoint2 = p2;
-  QgsPoint circlePoint3 = clockwise ? p1 : p3 ;
+  QgsPoint circlePoint1;
+  const QgsPoint circlePoint2 = p2;
+  QgsPoint circlePoint3;
+
+  if ( clockwise )
+  {
+    // Reverse !
+    circlePoint1 = p3;
+    circlePoint3 = p1;
+    clockwise = false;
+    reversed = true;
+  }
+  else
+  {
+    circlePoint1 = p1;
+    circlePoint3 = p3;
+  }
 
   //adapted code from PostGIS
   double radius = 0;
@@ -648,8 +664,12 @@ void QgsGeometryUtils::segmentizeArc( const QgsPoint &p1, const QgsPoint &p2, co
   double centerY = 0;
   circleCenterRadius( circlePoint1, circlePoint2, circlePoint3, radius, centerX, centerY );
 
+  QgsDebugMsg( QString( "Center: POINT(%1 %2) - Radius: %3 - Clockwise: %4" )
+               .arg( centerX ) .arg( centerY ) .arg( radius ) .arg( clockwise ) );
+
   if ( circlePoint1 != circlePoint3 && ( radius < 0 || qgsDoubleNear( segSide, 0.0 ) ) ) //points are colinear
   {
+    QgsDebugMsg( QString( "Collinear curve" ) );
     points.append( p1 );
     points.append( p2 );
     points.append( p3 );
@@ -662,24 +682,65 @@ void QgsGeometryUtils::segmentizeArc( const QgsPoint &p1, const QgsPoint &p2, co
     double halfAngle = std::acos( -tolerance / radius + 1 );
     increment = 2 * halfAngle;
   }
+  QgsDebugMsg( QString( "Increment: %1" ).arg( increment ) );
 
   //angles of pt1, pt2, pt3
   double a1 = std::atan2( circlePoint1.y() - centerY, circlePoint1.x() - centerX );
   double a2 = std::atan2( circlePoint2.y() - centerY, circlePoint2.x() - centerX );
   double a3 = std::atan2( circlePoint3.y() - centerY, circlePoint3.x() - centerX );
 
-  /* Adjust a3 up so we can increment from a1 to a3 cleanly */
-  if ( a3 <= a1 )
-    a3 += 2.0 * M_PI;
-  if ( a2 < a1 )
-    a2 += 2.0 * M_PI;
+  QgsDebugMsg( QString( "a1:%1 (%4) a2:%2 (%5) a3:%3 (%6)" )
+               .arg( a1 ).arg( a2 ).arg( a3 )
+               .arg( a1 * 180 / M_PI ).arg( a2 * 180 / M_PI ).arg( a3 * 180 / M_PI )
+             );
+
+  // Make segmentation symmetric
+  const bool symmetric = true;
+  if ( symmetric )
+  {
+    double angle = clockwise ? a1 - a3 : a3 - a1;
+    if ( angle < 0 ) angle += M_PI * 2;
+    QgsDebugMsg( QString( "total angle: %1 (%2)" )
+                 .arg( angle ) .arg( angle * 180 / M_PI )
+               );
+
+    /* Number of segments in output */
+    int segs = ceil( angle / increment );
+    /* Tweak increment to be regular for all the arc */
+    increment = angle / segs;
+
+    QgsDebugMsg( QString( "symmetric adjusted increment:%1" ) .arg( increment ) );
+  }
+
+  if ( clockwise )
+  {
+    increment *= -1;
+    /* Adjust a3 down so we can increment from a1 to a3 cleanly */
+    if ( a3 > a1 )
+      a3 -= 2.0 * M_PI;
+    if ( a2 > a1 )
+      a2 -= 2.0 * M_PI;
+  }
+  else
+  {
+    /* Adjust a3 up so we can increment from a1 to a3 cleanly */
+    if ( a3 < a1 )
+      a3 += 2.0 * M_PI;
+    if ( a2 < a1 )
+      a2 += 2.0 * M_PI;
+  }
+
+  QgsDebugMsg( QString( "ADJUSTED - a1:%1 (%4) a2:%2 (%5) a3:%3 (%6)" )
+               .arg( a1 ).arg( a2 ).arg( a3 )
+               .arg( a1 * 180 / M_PI ).arg( a2 * 180 / M_PI ).arg( a3 * 180 / M_PI )
+             );
 
   double x, y;
   double z = 0;
   double m = 0;
 
   QList<QgsPoint> stringPoints;
-  stringPoints.insert( clockwise ? 0 : stringPoints.size(), circlePoint1 );
+  stringPoints.insert( 0, circlePoint1 );
   if ( circlePoint2 != circlePoint3 && circlePoint1 != circlePoint2 ) //draw straight line segment if two points have the same position
   {
     QgsWkbTypes::Type pointWkbType = QgsWkbTypes::Point;
@@ -688,29 +749,57 @@ void QgsGeometryUtils::segmentizeArc( const QgsPoint &p1, const QgsPoint &p2, co
     if ( hasM )
       pointWkbType = QgsWkbTypes::addM( pointWkbType );
 
+    QgsDebugMsg( QString( "a1:%1 (%2), a3:%3 (%4), inc:%5, shi:?, cw:%6" )
+                 . arg( a1 ).  arg( a1 * 180 / M_PI )
+                 . arg( a3 ).  arg( a3 * 180 / M_PI )
+                 . arg( increment ).  arg( clockwise )
+               );
+
     //make sure the curve point p2 is part of the segmentized vertices. But only if p1 != p3
+    // TODO: make this a parameter
     bool addP2 = true;
     if ( qgsDoubleNear( circlePoint1.x(), circlePoint3.x() ) && qgsDoubleNear( circlePoint1.y(), circlePoint3.y() ) )
     {
       addP2 = false;
     }
+    addP2 = false;
 
-    for ( double angle = a1 + increment; angle < a3; angle += increment )
+    // As we're adding the last point in any case, we'll avoid
+    // including a point which is at less than 1% increment distance
+    // from it (may happen to find them due to numbers approximation).
+    // NOTE that this effectively allows in output some segments which
+    //      are more distant than requested. This is at most 1% off
+    //      from requested MaxAngle and less for MaxError.
+    double tolError = increment / 100;
+    double stopAngle = clockwise ? a3 - tolError : a3 - tolError;
+    QgsDebugMsg( QString( "stopAngle: %1 (%2)" ) . arg( stopAngle ) .arg( stopAngle * 180 / M_PI ) );
+    for ( double angle = a1 + increment; clockwise ? angle > stopAngle : angle < stopAngle; angle += increment )
     {
-      if ( ( addP2 && angle > a2 ) )
+      if ( addP2 && angle > a2 )
       {
-        stringPoints.insert( clockwise ? 0 : stringPoints.size(), circlePoint2 );
+        if ( clockwise )
+        {
+          if ( *stringPoints.begin() != circlePoint2 )
+          {
+            QgsDebugMsg( QString( "Adding control point, with angle %1 (%2)" ) . arg( a2 ) .arg( a2 * 180 / M_PI ) );
+            stringPoints.insert( 0, circlePoint2 );
+          }
+        }
+        else
+        {
+          if ( *stringPoints.rbegin() != circlePoint2 )
+          {
+            QgsDebugMsg( QString( "Adding control point, with angle %1 (%2)" ) . arg( a2 ) .arg( a2 * 180 / M_PI ) );
+            stringPoints.insert( stringPoints.size(), circlePoint2 );
+          }
+        }
         addP2 = false;
       }
 
+      QgsDebugMsg( QString( "SA - %1 (%2)" ) . arg( angle ) .arg( angle * 180 / M_PI ) );
+
       x = centerX + radius * std::cos( angle );
       y = centerY + radius * std::sin( angle );
-
-      if ( !hasZ && !hasM )
-      {
-        stringPoints.insert( clockwise ? 0 : stringPoints.size(), QgsPoint( x, y ) );
-        continue;
-      }
 
       if ( hasZ )
       {
@@ -721,10 +810,18 @@ void QgsGeometryUtils::segmentizeArc( const QgsPoint &p1, const QgsPoint &p2, co
         m = interpolateArcValue( angle, a1, a2, a3, circlePoint1.m(), circlePoint2.m(), circlePoint3.m() );
       }
 
-      stringPoints.insert( clockwise ? 0 : stringPoints.size(), QgsPoint( pointWkbType, x, y, z, m ) );
+      QgsDebugMsg( QString( " -> POINT(%1 %2)" ) . arg( x ) .arg( y ) );
+      stringPoints.insert( stringPoints.size(), QgsPoint( pointWkbType, x, y, z, m ) );
     }
   }
-  stringPoints.insert( clockwise ? 0 : stringPoints.size(), circlePoint3 );
+  QgsDebugMsg( QString( " appending last point -> POINT(%1 %2)" ) .  arg( circlePoint3.x() ) .arg( circlePoint3.y() ) );
+  stringPoints.insert( stringPoints.size(), circlePoint3 );
+
+  // TODO: check if or implement QgsPointSequence directly taking an iterator to append
+  if ( reversed )
+  {
+    std::reverse( stringPoints.begin(), stringPoints.end() );
+  }
   points.append( stringPoints );
 }
 
