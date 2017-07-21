@@ -54,6 +54,7 @@ from qgis.core import (QgsWkbTypes,
                        QgsDiagramLayerSettings,
                        QgsTextFormat,
                        QgsVectorLayerSelectedFeatureSource,
+                       QgsExpression,
                        NULL)
 from qgis.gui import (QgsAttributeTableModel,
                       QgsGui
@@ -452,6 +453,53 @@ class TestQgsVectorLayer(unittest.TestCase, FeatureSourceTestCase):
         checkAfter2()
 
         self.assertEqual(layer.dataProvider().featureCount(), 0)
+
+    def test_DeleteJoinedFeature(self):
+        joinLayer = createJoinLayer()
+        joinLayer2 = createJoinLayer()
+        QgsProject.instance().addMapLayers([joinLayer, joinLayer2])
+
+        layer = createLayerWithOnePoint()
+
+        join = QgsVectorLayerJoinInfo()
+        join.setTargetFieldName("fldint")
+        join.setJoinLayer(joinLayer)
+        join.setJoinFieldName("y")
+        join.setUsingMemoryCache(True)
+        join.setEditable(True)
+        join.setDeleteCascade(True)
+
+        layer.addJoin(join)
+
+        join2 = QgsVectorLayerJoinInfo()
+        join2.setTargetFieldName("fldint")
+        join2.setJoinLayer(joinLayer2)
+        join2.setJoinFieldName("y")
+        join2.setUsingMemoryCache(True)
+        join2.setPrefix("custom-prefix_")
+        join2.setEditable(True)
+        join2.setDeleteCascade(False)
+
+        layer.addJoin(join2)
+
+        # check number of features
+        self.assertEqual(layer.featureCount(), 1)
+        self.assertEqual(joinLayer.featureCount(), 4)
+        self.assertEqual(joinLayer2.featureCount(), 4)
+
+        # delete a feature which is also in joined layers
+        layer.startEditing()
+        joinLayer.startEditing()
+        joinLayer2.startEditing()
+
+        filter = QgsExpression.createFieldEqualityExpression('fldint', '123')
+        feature = next(layer.getFeatures(QgsFeatureRequest().setFilterExpression(filter)))
+        layer.deleteFeature(feature.id())
+
+        # check number of features
+        self.assertEqual(layer.featureCount(), 0)
+        self.assertEqual(joinLayer.featureCount(), 3)  # deleteCascade activated
+        self.assertEqual(joinLayer2.featureCount(), 4)  # deleteCascade deactivated
 
     # CHANGE ATTRIBUTE
 
