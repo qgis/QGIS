@@ -2699,5 +2699,5 @@ tests:
       RADIUS: 0.5
     results:
       OUTPUT:
-        hash: a594d4fa994b81641bfadde54447dc548fa6e23f630c6a4c383487c5
+        hash: f09384c64f56286ec4146a7b9a679cea7c6711ec4c7d77eec054e364
         type: rasterhash
