@@ -164,7 +164,7 @@ void QgsMapSaveDialog::updateOutputHeight( int height )
     double scale = ( double )width / mSize.width();
     double adjustment = ( ( mExtent.width() * scale ) - mExtent.width() ) / 2;
 
-    whileBlocking( mOutputWidthSpinBox )->setValue( height );
+    whileBlocking( mOutputWidthSpinBox )->setValue( width );
     mSize.setWidth( width );
 
     mExtent.setXMinimum( mExtent.xMinimum() - adjustment );
