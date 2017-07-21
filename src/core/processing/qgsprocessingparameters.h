@@ -233,6 +233,8 @@ class CORE_EXPORT QgsProcessingParameterDefinition
       sipType = sipType_QgsProcessingParameterFolderDestination;
     else if ( sipCpp->type() == QgsProcessingParameterBand::typeName() )
       sipType = sipType_QgsProcessingParameterBand;
+    else
+      sipType = nullptr;
     SIP_END
 #endif
 

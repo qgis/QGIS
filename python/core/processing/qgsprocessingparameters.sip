@@ -191,6 +191,8 @@ class QgsProcessingParameterDefinition
       sipType = sipType_QgsProcessingParameterFolderDestination;
     else if ( sipCpp->type() == QgsProcessingParameterBand::typeName() )
       sipType = sipType_QgsProcessingParameterBand;
+    else
+      sipType = nullptr;
 %End
   public:
 
