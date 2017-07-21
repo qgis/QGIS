@@ -104,7 +104,6 @@ class QgsEditorWidgetWrapper : QgsWidgetWrapper
 %End
 
     virtual void setEnabled( bool enabled );
-
 %Docstring
  Is used to enable or disable the edit functionality of the managed widget.
  By default this will enable or disable the whole widget
