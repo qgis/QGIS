@@ -16,8 +16,6 @@
 #ifndef QGSGEOCMSCONNECTION_H
 #define QGSGEOCMSCONNECTION_H
 
-#define SIP_NO_FILE
-
 #include "qgis_core.h"
 #include "qgsdatasourceuri.h"
 #include "qgsmaplayer.h"

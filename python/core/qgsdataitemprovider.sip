@@ -49,6 +49,11 @@ Caller takes responsibility of deleting created items.
  :rtype: QgsDataItem
 %End
 
+    virtual QVector<QgsDataItem *> createDataItems( const QString &path, QgsDataItem *parentItem );
+%Docstring
+Caller takes responsibility of deleting created items.
+ :rtype: list of QgsDataItem
+%End
 };
 
 /************************************************************************
