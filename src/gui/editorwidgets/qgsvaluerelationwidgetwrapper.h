@@ -59,6 +59,8 @@ class GUI_EXPORT QgsValueRelationWidgetWrapper : public QgsEditorWidgetWrapper
 
     void showIndeterminateState() override;
 
+    void setEnabled( bool enabled ) override;
+
   protected:
     QWidget *createWidget( QWidget *parent ) override;
     void initWidget( QWidget *editor ) override;
@@ -74,6 +76,8 @@ class GUI_EXPORT QgsValueRelationWidgetWrapper : public QgsEditorWidgetWrapper
 
     QgsValueRelationFieldFormatter::ValueRelationCache mCache;
     QgsVectorLayer *mLayer = nullptr;
+
+    bool mUpdating;
 
     friend class QgsValueRelationWidgetFactory;
 };
