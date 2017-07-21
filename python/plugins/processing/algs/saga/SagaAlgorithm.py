@@ -168,7 +168,7 @@ class SagaAlgorithm(GeoAlgorithm):
                 layers = param.value.split(';')
                 if layers is None or len(layers) == 0:
                     continue
-                if param.datatype == dataobjects.TYPE_RASTER:
+                if param.datatype == ParameterMultipleInput.TYPE_RASTER:
                     for i, layerfile in enumerate(layers):
                         if layerfile.endswith('sdat'):
                             layerfile = param.value[:-4] + "sgrd"
