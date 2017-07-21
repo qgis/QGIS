@@ -66,9 +66,8 @@ void QgsLayoutRuler::paintEvent( QPaintEvent *event )
   {
     return;
   }
-#if 0
+
   QgsLayout *layout = mView->currentLayout();
-#endif
   QPainter p( this );
 
   QTransform t = mTransform.inverted();
@@ -137,14 +136,23 @@ void QgsLayoutRuler::paintEvent( QPaintEvent *event )
       double startY = t.map( QPointF( 0, 0 ) ).y(); //start position in mm (total including space between pages)
       double endY = t.map( QPointF( 0, height() ) ).y(); //stop position in mm (total including space between pages)
 
-#if 0 // TODO
-      int startPage = ( int )( startY / ( layout->paperHeight() + layout->spaceBetweenPages() ) );
-#endif
-
+      // work out start page
       int startPage = 0;
-      if ( startPage < 0 )
+      int endPage = 0;
+      double currentY = 0;
+      double currentPageY = 0;
+      for ( int page = 0; page < layout->pageCollection()->pageCount(); ++page )
       {
-        startPage = 0;
+        if ( currentY < startY )
+        {
+          startPage = page;
+          currentPageY = currentY;
+        }
+        endPage = page;
+
+        currentY += layout->pageCollection()->page( startPage )->rect().height() + layout->pageCollection()->SPACE_BETWEEN_PAGES;
+        if ( currentY > endY )
+          break;
       }
 
       if ( startY < 0 )
@@ -177,15 +185,6 @@ void QgsLayoutRuler::paintEvent( QPaintEvent *event )
         drawSmallDivisions( &p, beforePageCoord + mmDisplay, numSmallDivisions, -mmDisplay, startY );
       }
 
-#if 0 //TODO
-      int endPage = ( int )( endY / ( layout->paperHeight() + layout->spaceBetweenPages() ) );
-      if ( endPage > ( mLayout->numPages() - 1 ) )
-      {
-        endPage = mLayout->numPages() - 1;
-      }
-#endif
-      int endPage = 0;
-
       double nextPageStartPos = 0;
       int nextPageStartPixel = 0;
 
@@ -193,14 +192,14 @@ void QgsLayoutRuler::paintEvent( QPaintEvent *event )
       {
         double pageCoord = 0; //page coordinate in mm
         //total (composition) coordinate in mm, including space between pages
-#if 0 //TODO
-        double totalCoord = i * ( layout->paperHeight() + layout->spaceBetweenPages() );
+
+        double totalCoord = currentPageY;
 
         //position of next page
         if ( i < endPage )
         {
           //not the last page
-          nextPageStartPos = ( i + 1 ) * ( layout->paperHeight() + layout->spaceBetweenPages() );
+          nextPageStartPos = currentPageY + layout->pageCollection()->page( i )->rect().height() + layout->pageCollection()->SPACE_BETWEEN_PAGES;
           nextPageStartPixel = mTransform.map( QPointF( 0, nextPageStartPos ) ).y();
         }
         else
@@ -209,8 +208,7 @@ void QgsLayoutRuler::paintEvent( QPaintEvent *event )
           nextPageStartPos = 0;
           nextPageStartPixel = 0;
         }
-#endif
-        double totalCoord = 0;
+
         while ( ( totalCoord < nextPageStartPos ) || ( ( nextPageStartPos == 0 ) && ( totalCoord <= endY ) ) )
         {
           double pixelCoord = mTransform.map( QPointF( 0, totalCoord ) ).y();
@@ -232,6 +230,7 @@ void QgsLayoutRuler::paintEvent( QPaintEvent *event )
           pageCoord += mmDisplay;
           totalCoord += mmDisplay;
         }
+        currentPageY += layout->pageCollection()->page( i )->rect().height() + layout->pageCollection()->SPACE_BETWEEN_PAGES;
       }
       break;
     }
@@ -407,10 +406,6 @@ int QgsLayoutRuler::optimumNumberDivisions( double rulerScale, int scaleMultiple
 
 void QgsLayoutRuler::setSceneTransform( const QTransform &transform )
 {
-#if 0
-  QString debug = QString::number( transform.dx() ) + ',' + QString::number( transform.dy() ) + ','
-                  + QString::number( transform.m11() ) + ',' + QString::number( transform.m22() );
-#endif
   mTransform = transform;
   update();
 }

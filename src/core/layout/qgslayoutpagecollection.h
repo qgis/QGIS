@@ -145,6 +145,13 @@ class CORE_EXPORT QgsLayoutPageCollection : public QObject
      */
     double maximumPageWidth() const;
 
+  signals:
+
+    /**
+     * Emitted when pages are added or removed from the collection.
+     */
+    void changed();
+
   private:
 
     QgsLayout *mLayout = nullptr;

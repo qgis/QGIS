@@ -257,15 +257,10 @@ void QgsLayoutDesignerDialog::open()
 {
   show();
   activate();
-  mView->zoomFull(); // zoomFull() does not work properly until we have called show()
-
-#if 0 // TODO
-
   if ( mView )
   {
-    mView->updateRulers();
+    mView->zoomFull(); // zoomFull() does not work properly until we have called show()
   }
-#endif
 }
 
 void QgsLayoutDesignerDialog::activate()

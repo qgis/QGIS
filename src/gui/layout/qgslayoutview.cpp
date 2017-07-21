@@ -53,6 +53,9 @@ void QgsLayoutView::setCurrentLayout( QgsLayout *layout )
 {
   setScene( layout );
 
+  connect( layout->pageCollection(), &QgsLayoutPageCollection::changed, this, &QgsLayoutView::updateRulers );
+  updateRulers();
+
   //emit layoutSet, so that designer dialogs can update for the new layout
   emit layoutSet( layout );
 }
@@ -131,6 +134,7 @@ void QgsLayoutView::setVerticalRuler( QgsLayoutRuler *ruler )
 void QgsLayoutView::zoomFull()
 {
   fitInView( scene()->sceneRect(), Qt::KeepAspectRatio );
+  updateRulers();
   emit zoomLevelChanged();
 }
 
@@ -303,6 +307,12 @@ void QgsLayoutView::resizeEvent( QResizeEvent *event )
 {
   QGraphicsView::resizeEvent( event );
   emit zoomLevelChanged();
+}
+
+void QgsLayoutView::scrollContentsBy( int dx, int dy )
+{
+  QGraphicsView::scrollContentsBy( dx, dy );
+  updateRulers();
 }
 
 void QgsLayoutView::updateRulers()

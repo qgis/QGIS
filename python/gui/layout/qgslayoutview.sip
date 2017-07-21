@@ -186,6 +186,8 @@ class QgsLayoutView: QGraphicsView
 
     virtual void resizeEvent( QResizeEvent *event );
 
+    virtual void scrollContentsBy( int dx, int dy );
+
 
 };
 

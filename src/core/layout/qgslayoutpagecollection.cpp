@@ -52,6 +52,7 @@ void QgsLayoutPageCollection::reflow()
     p.setY( currentY );
   }
   mLayout->updateBounds();
+  emit changed();
 }
 
 double QgsLayoutPageCollection::maximumPageWidth() const

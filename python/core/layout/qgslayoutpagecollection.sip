@@ -137,6 +137,13 @@ Size of page shadow, in layout coordinates
  :rtype: float
 %End
 
+  signals:
+
+    void changed();
+%Docstring
+ Emitted when pages are added or removed from the collection.
+%End
+
 };
 
 /************************************************************************
