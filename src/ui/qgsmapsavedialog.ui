@@ -94,6 +94,12 @@ Rasterizing the map is recommended when such effects are used.</string>
        </property>
        <item row="0" column="0">
         <widget class="QgsSpinBox" name="mOutputWidthSpinBox">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
          <property name="suffix">
           <string> px</string>
          </property>
