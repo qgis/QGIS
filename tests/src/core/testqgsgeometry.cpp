@@ -5319,6 +5319,7 @@ void TestQgsGeometry::directionNeutralSegmentation()
   QgsLineString *CCWLineString = CCWCircularString->curveToLine();
   QgsLineString *reversedCCWLineString = CCWLineString->reversed();
 
+  QCOMPARE( CWLineString->asWkt(), reversedCCWLineString->asWkt() );
   bool equal = ( *CWLineString == *reversedCCWLineString );
 
   delete CWCircularString;

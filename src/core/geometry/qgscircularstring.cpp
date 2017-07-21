@@ -23,6 +23,7 @@
 #include "qgsmaptopixel.h"
 #include "qgspoint.h"
 #include "qgswkbptr.h"
+#include "qgslogger.h"
 #include <QPainter>
 #include <QPainterPath>
 
@@ -353,6 +354,7 @@ QgsLineString *QgsCircularString::curveToLine( double tolerance, SegmentationTol
   QgsPointSequence points;
   int nPoints = numPoints();
 
+  QgsDebugMsg( QString( "curveToLine input: %1" ) .arg( asWkt( 2 ) ) );
   for ( int i = 0; i < ( nPoints - 2 ) ; i += 2 )
   {
     QgsGeometryUtils::segmentizeArc( pointN( i ), pointN( i + 1 ), pointN( i + 2 ), points, tolerance, toleranceType, is3D(), isMeasure() );
