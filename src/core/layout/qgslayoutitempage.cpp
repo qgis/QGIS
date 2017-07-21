@@ -28,6 +28,14 @@ QgsLayoutItemPage::QgsLayoutItemPage( QgsLayout *layout )
   setFlag( QGraphicsItem::ItemIsSelectable, false );
   setFlag( QGraphicsItem::ItemIsMovable, false );
   setZValue( QgsLayout::ZPage );
+
+  // bit hacky - we set a big hidden pen to avoid Qt clipping out the cosmetic shadow for the page
+  // Unfortunately it's possible to adapt the item's bounding rect based on the view's transform, so it's
+  // impossible to have a pixel based bounding rect. Instead we just set a big pen to force the page's
+  // bounding rect to be kinda large enough to handle the shadow at most zoom levels...
+  QPen shadowPen( QBrush( Qt::transparent ), 30 );
+  shadowPen.setCosmetic( true );
+  setPen( shadowPen );
 }
 
 void QgsLayoutItemPage::setPageSize( const QgsLayoutSize &size )
@@ -121,17 +129,20 @@ void QgsLayoutItemPage::draw( QgsRenderContext &context, const QStyleOptionGraph
     //still possible to tell where pages with a transparent style begin and end
     painter->setRenderHint( QPainter::Antialiasing, false );
 
+    QRectF pageRect = QRectF( 0, 0, scale * rect().width(), scale * rect().height() );
+
     //shadow
     painter->setBrush( QBrush( QColor( 150, 150, 150 ) ) );
     painter->setPen( Qt::NoPen );
-    painter->drawRect( QRectF( SHADOW_WIDTH_PIXELS, SHADOW_WIDTH_PIXELS, rect().width() * scale + SHADOW_WIDTH_PIXELS, rect().height() * scale + SHADOW_WIDTH_PIXELS ) );
+    painter->drawRect( pageRect.translated( SHADOW_WIDTH_PIXELS, SHADOW_WIDTH_PIXELS ) );
 
     //page area
     painter->setBrush( QColor( 215, 215, 215 ) );
     QPen pagePen = QPen( QColor( 100, 100, 100 ), 0 );
+    pagePen.setJoinStyle( Qt::MiterJoin );
     pagePen.setCosmetic( true );
     painter->setPen( pagePen );
-    painter->drawRect( QRectF( 0, 0, scale * rect().width(), scale * rect().height() ) );
+    painter->drawRect( pageRect );
   }
 
   std::unique_ptr< QgsFillSymbol > symbol( mLayout->pageCollection()->pageStyleSymbol()->clone() );
