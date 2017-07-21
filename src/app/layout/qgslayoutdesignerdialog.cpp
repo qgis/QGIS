@@ -29,6 +29,7 @@
 #include "qgsgui.h"
 #include "qgslayoutitemguiregistry.h"
 #include "qgslayoutruler.h"
+#include "qgslayoutaddpagesdialog.h"
 #include <QShortcut>
 #include <QComboBox>
 #include <QLineEdit>
@@ -154,6 +155,8 @@ QgsLayoutDesignerDialog::QgsLayoutDesignerDialog( QWidget *parent, Qt::WindowFla
   connect( mActionZoomAll, &QAction::triggered, mView, &QgsLayoutView::zoomFull );
   connect( mActionZoomActual, &QAction::triggered, mView, &QgsLayoutView::zoomActual );
   connect( mActionZoomToWidth, &QAction::triggered, mView, &QgsLayoutView::zoomWidth );
+
+  connect( mActionAddPages, &QAction::triggered, this, &QgsLayoutDesignerDialog::addPages );
 
   //create status bar labels
   mStatusCursorXLabel = new QLabel( mStatusBar );
@@ -451,6 +454,38 @@ void QgsLayoutDesignerDialog::toggleFullScreen( bool enabled )
   else
   {
     showNormal();
+  }
+}
+
+void QgsLayoutDesignerDialog::addPages()
+{
+  QgsLayoutAddPagesDialog dlg( this );
+  dlg.setLayout( mLayout );
+
+  if ( dlg.exec() )
+  {
+    int firstPagePosition = dlg.beforePage() - 1;
+    switch ( dlg.pagePosition() )
+    {
+      case QgsLayoutAddPagesDialog::BeforePage:
+        break;
+
+      case QgsLayoutAddPagesDialog::AfterPage:
+        firstPagePosition = firstPagePosition + 1;
+        break;
+
+      case QgsLayoutAddPagesDialog::AtEnd:
+        firstPagePosition = mLayout->pageCollection()->pageCount();
+        break;
+
+    }
+
+    for ( int i = 0; i < dlg.numberPages(); ++i )
+    {
+      QgsLayoutItemPage *page = new QgsLayoutItemPage( mLayout );
+      page->setPageSize( dlg.pageSize() );
+      mLayout->pageCollection()->insertPage( page, firstPagePosition + i );
+    }
   }
 }
 

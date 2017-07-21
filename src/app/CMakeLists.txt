@@ -155,6 +155,7 @@ SET(QGIS_APP_SRCS
   composer/qgscompositionwidget.cpp
   composer/qgsatlascompositionwidget.cpp
 
+  layout/qgslayoutaddpagesdialog.cpp
   layout/qgslayoutdesignerdialog.cpp
 
   locator/qgsinbuiltlocatorfilters.cpp
@@ -332,6 +333,7 @@ SET (QGIS_APP_MOC_HDRS
   composer/qgscompositionwidget.h
   composer/qgsatlascompositionwidget.h
 
+  layout/qgslayoutaddpagesdialog.h
   layout/qgslayoutdesignerdialog.h
 
   locator/qgsinbuiltlocatorfilters.h

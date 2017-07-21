@@ -90,6 +90,7 @@
     <property name="title">
      <string>&amp;Layout</string>
     </property>
+    <addaction name="mActionAddPages"/>
     <addaction name="mActionClose"/>
    </widget>
    <widget class="QMenu" name="mItemMenu">
@@ -289,6 +290,15 @@
    </property>
    <property name="shortcut">
     <string>F11</string>
+   </property>
+  </action>
+  <action name="mActionAddPages">
+   <property name="icon">
+    <iconset resource="../../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionFileNew.svg</normaloff>:/images/themes/default/mActionFileNew.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Add Pages…</string>
    </property>
   </action>
  </widget>

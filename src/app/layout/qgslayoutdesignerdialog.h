@@ -133,6 +133,8 @@ class QgsLayoutDesignerDialog: public QMainWindow, private Ui::QgsLayoutDesigner
 
     void toggleFullScreen( bool enabled );
 
+    void addPages();
+
   private:
 
     QgsAppLayoutDesignerInterface *mInterface = nullptr;

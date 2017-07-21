@@ -22,35 +22,35 @@
 
 QgsPageSizeRegistry::QgsPageSizeRegistry()
 {
-  add( QgsPageSize( QStringLiteral( "A6" ), QgsLayoutSize( 105, 148 ) ) );
-  add( QgsPageSize( QStringLiteral( "A5" ), QgsLayoutSize( 148, 210 ) ) );
-  add( QgsPageSize( QStringLiteral( "A4" ), QgsLayoutSize( 210, 297 ) ) );
-  add( QgsPageSize( QStringLiteral( "A3" ), QgsLayoutSize( 297, 420 ) ) );
-  add( QgsPageSize( QStringLiteral( "A2" ), QgsLayoutSize( 420, 594 ) ) );
-  add( QgsPageSize( QStringLiteral( "A1" ), QgsLayoutSize( 594, 841 ) ) );
-  add( QgsPageSize( QStringLiteral( "A0" ), QgsLayoutSize( 841, 1189 ) ) );
-  add( QgsPageSize( QStringLiteral( "B6" ), QgsLayoutSize( 125, 176 ) ) );
-  add( QgsPageSize( QStringLiteral( "B5" ), QgsLayoutSize( 176, 250 ) ) );
-  add( QgsPageSize( QStringLiteral( "B4" ), QgsLayoutSize( 250, 353 ) ) );
-  add( QgsPageSize( QStringLiteral( "B3" ), QgsLayoutSize( 353, 500 ) ) );
-  add( QgsPageSize( QStringLiteral( "B2" ), QgsLayoutSize( 500, 707 ) ) );
-  add( QgsPageSize( QStringLiteral( "B1" ), QgsLayoutSize( 707, 1000 ) ) );
-  add( QgsPageSize( QStringLiteral( "B0" ), QgsLayoutSize( 1000, 1414 ) ) );
-  add( QgsPageSize( QStringLiteral( "Legal" ), QgsLayoutSize( 215.9, 355.6 ) ) );
-  add( QgsPageSize( QStringLiteral( "Letter" ), QgsLayoutSize( 215.9, 279.4 ) ) );
-  add( QgsPageSize( QStringLiteral( "ANSI A" ), QgsLayoutSize( 215.9, 279.4 ) ) );
-  add( QgsPageSize( QStringLiteral( "ANSI B" ), QgsLayoutSize( 279.4, 431.8 ) ) );
-  add( QgsPageSize( QStringLiteral( "ANSI C" ), QgsLayoutSize( 431.8, 558.8 ) ) );
-  add( QgsPageSize( QStringLiteral( "ANSI D" ), QgsLayoutSize( 558.8, 863.6 ) ) );
-  add( QgsPageSize( QStringLiteral( "ANSI E" ), QgsLayoutSize( 863.6, 1117.6 ) ) );
-  add( QgsPageSize( QStringLiteral( "Arch A" ), QgsLayoutSize( 228.6, 304.8 ) ) );
-  add( QgsPageSize( QStringLiteral( "Arch B" ), QgsLayoutSize( 304.8, 457.2 ) ) );
-  add( QgsPageSize( QStringLiteral( "Arch C" ), QgsLayoutSize( 457.2, 609.6 ) ) );
-  add( QgsPageSize( QStringLiteral( "Arch D" ), QgsLayoutSize( 609.6, 914.4 ) ) );
-  add( QgsPageSize( QStringLiteral( "Arch E" ), QgsLayoutSize( 914.4, 1219.2 ) ) );
-  add( QgsPageSize( QStringLiteral( "Arch E1" ), QgsLayoutSize( 762, 1066.8 ) ) );
-  add( QgsPageSize( QStringLiteral( "Arch E2" ), QgsLayoutSize( 660, 965 ) ) );
-  add( QgsPageSize( QStringLiteral( "Arch E3" ), QgsLayoutSize( 686, 991 ) ) );
+  add( QgsPageSize( QStringLiteral( "A6" ), QgsLayoutSize( 105, 148 ), QObject::tr( "A6" ) ) );
+  add( QgsPageSize( QStringLiteral( "A5" ), QgsLayoutSize( 148, 210 ), QObject::tr( "A5" ) ) );
+  add( QgsPageSize( QStringLiteral( "A4" ), QgsLayoutSize( 210, 297 ), QObject::tr( "A4" ) ) );
+  add( QgsPageSize( QStringLiteral( "A3" ), QgsLayoutSize( 297, 420 ), QObject::tr( "A3" ) ) );
+  add( QgsPageSize( QStringLiteral( "A2" ), QgsLayoutSize( 420, 594 ), QObject::tr( "A2" ) ) );
+  add( QgsPageSize( QStringLiteral( "A1" ), QgsLayoutSize( 594, 841 ), QObject::tr( "A1" ) ) );
+  add( QgsPageSize( QStringLiteral( "A0" ), QgsLayoutSize( 841, 1189 ), QObject::tr( "A0" ) ) );
+  add( QgsPageSize( QStringLiteral( "B6" ), QgsLayoutSize( 125, 176 ), QObject::tr( "B6" ) ) );
+  add( QgsPageSize( QStringLiteral( "B5" ), QgsLayoutSize( 176, 250 ), QObject::tr( "B5" ) ) );
+  add( QgsPageSize( QStringLiteral( "B4" ), QgsLayoutSize( 250, 353 ), QObject::tr( "B4" ) ) );
+  add( QgsPageSize( QStringLiteral( "B3" ), QgsLayoutSize( 353, 500 ), QObject::tr( "B3" ) ) );
+  add( QgsPageSize( QStringLiteral( "B2" ), QgsLayoutSize( 500, 707 ), QObject::tr( "B2" ) ) );
+  add( QgsPageSize( QStringLiteral( "B1" ), QgsLayoutSize( 707, 1000 ), QObject::tr( "B1" ) ) );
+  add( QgsPageSize( QStringLiteral( "B0" ), QgsLayoutSize( 1000, 1414 ), QObject::tr( "B0" ) ) );
+  add( QgsPageSize( QStringLiteral( "Legal" ), QgsLayoutSize( 215.9, 355.6 ), QObject::tr( "Legal" ) ) );
+  add( QgsPageSize( QStringLiteral( "Letter" ), QgsLayoutSize( 215.9, 279.4 ), QObject::tr( "Letter" ) ) );
+  add( QgsPageSize( QStringLiteral( "ANSI A" ), QgsLayoutSize( 215.9, 279.4 ), QObject::tr( "ANSI A" ) ) );
+  add( QgsPageSize( QStringLiteral( "ANSI B" ), QgsLayoutSize( 279.4, 431.8 ), QObject::tr( "ANSI B" ) ) );
+  add( QgsPageSize( QStringLiteral( "ANSI C" ), QgsLayoutSize( 431.8, 558.8 ), QObject::tr( "ANSI C" ) ) );
+  add( QgsPageSize( QStringLiteral( "ANSI D" ), QgsLayoutSize( 558.8, 863.6 ), QObject::tr( "ANSI D" ) ) );
+  add( QgsPageSize( QStringLiteral( "ANSI E" ), QgsLayoutSize( 863.6, 1117.6 ), QObject::tr( "ANSI E" ) ) );
+  add( QgsPageSize( QStringLiteral( "Arch A" ), QgsLayoutSize( 228.6, 304.8 ), QObject::tr( "Arch A" ) ) );
+  add( QgsPageSize( QStringLiteral( "Arch B" ), QgsLayoutSize( 304.8, 457.2 ), QObject::tr( "Arch B" ) ) );
+  add( QgsPageSize( QStringLiteral( "Arch C" ), QgsLayoutSize( 457.2, 609.6 ), QObject::tr( "Arch C" ) ) );
+  add( QgsPageSize( QStringLiteral( "Arch D" ), QgsLayoutSize( 609.6, 914.4 ), QObject::tr( "Arch D" ) ) );
+  add( QgsPageSize( QStringLiteral( "Arch E" ), QgsLayoutSize( 914.4, 1219.2 ), QObject::tr( "Arch E" ) ) );
+  add( QgsPageSize( QStringLiteral( "Arch E1" ), QgsLayoutSize( 762, 1066.8 ), QObject::tr( "Arch E1" ) ) );
+  add( QgsPageSize( QStringLiteral( "Arch E2" ), QgsLayoutSize( 660, 965 ), QObject::tr( "Arch E2" ) ) );
+  add( QgsPageSize( QStringLiteral( "Arch E3" ), QgsLayoutSize( 686, 991 ), QObject::tr( "Arch E3" ) ) );
 }
 
 void QgsPageSizeRegistry::add( const QgsPageSize &size )
@@ -103,9 +103,10 @@ QgsPageSize::QgsPageSize()
 {
 }
 
-QgsPageSize::QgsPageSize( const QString &pageName, const QgsLayoutSize &pageSize )
+QgsPageSize::QgsPageSize( const QString &pageName, const QgsLayoutSize &pageSize, const QString &displayName )
   : name( pageName )
   , size( pageSize )
+  , displayName( displayName )
 {
 }
 

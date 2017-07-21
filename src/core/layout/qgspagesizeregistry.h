@@ -40,7 +40,7 @@ class CORE_EXPORT QgsPageSize
      * Constructor for QgsPageSize, accepting the \a name of the page size and
      * page \a size.
     */
-    QgsPageSize( const QString &name, const QgsLayoutSize &size );
+    QgsPageSize( const QString &name, const QgsLayoutSize &size, const QString &displayName = QString() );
 
     /**
      * Constructor for QgsPageSize, accepting a page \a size.
@@ -52,6 +52,9 @@ class CORE_EXPORT QgsPageSize
 
     //! Page size
     QgsLayoutSize size;
+
+    //! Translated page name
+    QString displayName;
 
     bool operator==( const QgsPageSize &other ) const;
     bool operator!=( const QgsPageSize &other ) const;

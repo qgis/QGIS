@@ -23,7 +23,7 @@ class QgsPageSize
 
     QgsPageSize();
 
-    QgsPageSize( const QString &name, const QgsLayoutSize &size );
+    QgsPageSize( const QString &name, const QgsLayoutSize &size, const QString &displayName = QString() );
 %Docstring
  Constructor for QgsPageSize, accepting the ``name`` of the page size and
  page ``size``.
@@ -42,6 +42,11 @@ Name of page size
     QgsLayoutSize size;
 %Docstring
 Page size
+%End
+
+    QString displayName;
+%Docstring
+Translated page name
 %End
 
     bool operator==( const QgsPageSize &other ) const;

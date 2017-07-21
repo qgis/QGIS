@@ -61,7 +61,7 @@ void QgsLayoutUnitsComboBox::indexChanged( int )
     Q_FOREACH ( const QPointer< QDoubleSpinBox > &widget, mLinkedSpinBoxes )
     {
       if ( widget )
-        widget->setValue( mConverter->convert( QgsLayoutMeasurement( widget->value(), mOldUnit ), newUnit ).length() );
+        whileBlocking( widget.data() )->setValue( mConverter->convert( QgsLayoutMeasurement( widget->value(), mOldUnit ), newUnit ).length() );
     }
   }
   emit changed( newUnit );
