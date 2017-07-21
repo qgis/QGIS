@@ -22,6 +22,9 @@
 #include "qgis_gui.h"
 #include "qgis.h"
 
+#include <QPointer>
+class QDoubleSpinBox;
+
 /** \ingroup gui
  * \class QgsRatioLockButton
  * A cross platform button subclass used to represent a locked / unlocked ratio state.
@@ -51,6 +54,30 @@ class GUI_EXPORT QgsRatioLockButton : public QToolButton
      */
     bool locked() const { return mLocked; }
 
+    /**
+     * Registers a spin box \a widget as the linked "width" spin box.
+     *
+     * If both a width and height spin box are linked to the button, they will automatically
+     * have their values updates when if the other spin box value is changed. I.e. changing the
+     * width spin box will automatically update the height spin box to a value which keeps the
+     * same locked ratio.
+     *
+     * \see setHeightSpinBox()
+     */
+    void setWidthSpinBox( QDoubleSpinBox *widget );
+
+    /**
+     * Registers a spin box \a widget as the linked "height" spin box.
+     *
+     * If both a width and height spin box are linked to the button, they will automatically
+     * have their values updates when if the other spin box value is changed. I.e. changing the
+     * width spin box will automatically update the height spin box to a value which keeps the
+     * same locked ratio.
+     *
+     * \see setWidthSpinBox()
+     */
+    void setHeightSpinBox( QDoubleSpinBox *widget );
+
   signals:
 
     /** Emitted whenever the lock state changes.
@@ -69,9 +96,18 @@ class GUI_EXPORT QgsRatioLockButton : public QToolButton
 
     bool mLocked = false;
 
+    QPointer< QDoubleSpinBox > mWidthSpinBox;
+    double mPrevWidth = 0;
+    QPointer< QDoubleSpinBox > mHeightSpinBox;
+    double mPrevHeight = 0;
+    bool mUpdatingRatio = false;
+
   private slots:
 
     void buttonClicked();
+
+    void widthSpinBoxChanged( double value );
+    void heightSpinBoxChanged( double value );
 
 };
 

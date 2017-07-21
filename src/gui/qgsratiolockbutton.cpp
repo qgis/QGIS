@@ -20,6 +20,7 @@
 #include <QPainter>
 #include <QPushButton>
 #include <QWidget>
+#include <QDoubleSpinBox>
 
 QgsRatioLockButton::QgsRatioLockButton( QWidget *parent )
   : QToolButton( parent )
@@ -46,6 +47,38 @@ void QgsRatioLockButton::buttonClicked()
   emit lockChanged( mLocked );
 
   drawButton();
+}
+
+void QgsRatioLockButton::widthSpinBoxChanged( double value )
+{
+  if ( mUpdatingRatio || qgsDoubleNear( value, 0.0 ) || qgsDoubleNear( mPrevWidth, 0.0 )
+       || qgsDoubleNear( mPrevHeight, 0.0 ) || !mHeightSpinBox || !mLocked )
+  {
+    mPrevWidth = value;
+    return;
+  }
+
+  double oldRatio = mPrevHeight / mPrevWidth;
+  mUpdatingRatio = true;
+  mHeightSpinBox->setValue( oldRatio * value );
+  mUpdatingRatio = false;
+  mPrevWidth = value;
+}
+
+void QgsRatioLockButton::heightSpinBoxChanged( double value )
+{
+  if ( mUpdatingRatio || qgsDoubleNear( value, 0.0 ) || qgsDoubleNear( mPrevWidth, 0.0 )
+       || qgsDoubleNear( mPrevHeight, 0.0 ) || !mWidthSpinBox || !mLocked )
+  {
+    mPrevHeight = value;
+    return;
+  }
+
+  double oldRatio = mPrevWidth / mPrevHeight;
+  mUpdatingRatio = true;
+  mWidthSpinBox->setValue( oldRatio * value );
+  mUpdatingRatio = false;
+  mPrevHeight = value;
 }
 
 void QgsRatioLockButton::changeEvent( QEvent *e )
@@ -107,4 +140,18 @@ void QgsRatioLockButton::drawButton()
 
   setIconSize( currentIconSize );
   setIcon( pm );
+}
+
+void QgsRatioLockButton::setWidthSpinBox( QDoubleSpinBox *widget )
+{
+  mWidthSpinBox = widget;
+  mPrevWidth = widget->value();
+  connect( mWidthSpinBox, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, &QgsRatioLockButton::widthSpinBoxChanged );
+}
+
+void QgsRatioLockButton::setHeightSpinBox( QDoubleSpinBox *widget )
+{
+  mHeightSpinBox = widget;
+  mPrevHeight = widget->value();
+  connect( mHeightSpinBox, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, &QgsRatioLockButton::heightSpinBoxChanged );
 }

@@ -9,6 +9,7 @@
 
 
 
+
 class QgsRatioLockButton : QToolButton
 {
 %Docstring
@@ -40,6 +41,30 @@ class QgsRatioLockButton : QToolButton
  :return: true if the button state is locked.
 .. seealso:: setLocked
  :rtype: bool
+%End
+
+    void setWidthSpinBox( QDoubleSpinBox *widget );
+%Docstring
+ Registers a spin box ``widget`` as the linked "width" spin box.
+
+ If both a width and height spin box are linked to the button, they will automatically
+ have their values updates when if the other spin box value is changed. I.e. changing the
+ width spin box will automatically update the height spin box to a value which keeps the
+ same locked ratio.
+
+.. seealso:: setHeightSpinBox()
+%End
+
+    void setHeightSpinBox( QDoubleSpinBox *widget );
+%Docstring
+ Registers a spin box ``widget`` as the linked "height" spin box.
+
+ If both a width and height spin box are linked to the button, they will automatically
+ have their values updates when if the other spin box value is changed. I.e. changing the
+ width spin box will automatically update the height spin box to a value which keeps the
+ same locked ratio.
+
+.. seealso:: setWidthSpinBox()
 %End
 
   signals:
