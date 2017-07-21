@@ -2438,6 +2438,9 @@ bool QgsVectorLayer::deleteFeature( QgsFeatureId fid )
   if ( !mEditBuffer )
     return false;
 
+  if ( mJoinBuffer->containsJoins() )
+    deleteFeaturesFromJoinedLayers( QgsFeatureIds() << fid );
+
   bool res = mEditBuffer->deleteFeature( fid );
   if ( res )
   {
@@ -2456,6 +2459,9 @@ bool QgsVectorLayer::deleteFeatures( const QgsFeatureIds &fids )
     return false;
   }
 
+  if ( mJoinBuffer->containsJoins() )
+    deleteFeaturesFromJoinedLayers( fids );
+
   bool res = mEditBuffer->deleteFeatures( fids );
 
   if ( res )
@@ -2465,6 +2471,26 @@ bool QgsVectorLayer::deleteFeatures( const QgsFeatureIds &fids )
   }
 
   return res;
+}
+
+bool QgsVectorLayer::deleteFeaturesFromJoinedLayers( QgsFeatureIds fids )
+{
+  bool rc = false;
+
+  Q_FOREACH ( const QgsFeatureId &fid, fids )
+  {
+    Q_FOREACH ( const QgsVectorLayerJoinInfo &info, vectorJoins() )
+    {
+      if ( info.isEditable() && info.isDeleteCascade() )
+      {
+        QgsFeature joinFeature = mJoinBuffer->joinedFeatureOf( &info, getFeature( fid ) );
+        if ( joinFeature.isValid() )
+          info.joinLayer()->deleteFeature( joinFeature.id() );
+      }
+    }
+  }
+
+  return rc;
 }
 
 QgsAttributeList QgsVectorLayer::pkAttributeList() const

@@ -1933,6 +1933,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     QgsAbstractVectorLayerLabeling *readLabelingFromCustomProperties();
 
     bool addFeaturesToJoinedLayers( QgsFeatureList &features, Flags flags = 0 );
+    bool deleteFeaturesFromJoinedLayers( QgsFeatureIds fids );
 
 #ifdef SIP_RUN
     QgsVectorLayer( const QgsVectorLayer &rhs );
