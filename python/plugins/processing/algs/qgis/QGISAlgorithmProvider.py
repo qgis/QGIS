@@ -86,6 +86,7 @@ from .RandomExtract import RandomExtract
 from .RandomExtractWithinSubsets import RandomExtractWithinSubsets
 from .RandomPointsExtent import RandomPointsExtent
 from .RandomPointsLayer import RandomPointsLayer
+from .RandomPointsPolygons import RandomPointsPolygons
 from .RegularPoints import RegularPoints
 from .ReverseLineDirection import ReverseLineDirection
 from .Ruggedness import Ruggedness
@@ -143,8 +144,6 @@ from .ZonalStatistics import ZonalStatistics
 # from .PointsDisplacement import PointsDisplacement
 # from .PointsFromPolygons import PointsFromPolygons
 # from .PointsFromLines import PointsFromLines
-# from .RandomPointsPolygonsFixed import RandomPointsPolygonsFixed
-# from .RandomPointsPolygonsVariable import RandomPointsPolygonsVariable
 # from .RandomPointsAlongLines import RandomPointsAlongLines
 # from .PointsToPaths import PointsToPaths
 # from .SetVectorStyle import SetVectorStyle
@@ -274,6 +273,7 @@ class QGISAlgorithmProvider(QgsProcessingProvider):
                 RandomExtractWithinSubsets(),
                 RandomPointsExtent(),
                 RandomPointsLayer(),
+                RandomPointsPolygons(),
                 RegularPoints(),
                 ReverseLineDirection(),
                 Ruggedness(),
