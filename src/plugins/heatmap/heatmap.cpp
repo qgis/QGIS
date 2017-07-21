@@ -149,7 +149,7 @@ void Heatmap::run()
     return;
   }
 
-  double geoTransform[6] = { myBBox.xMinimum(), cellsize, 0, myBBox.yMinimum(), 0, cellsize };
+  double geoTransform[6] = { myBBox.xMinimum(), cellsize, 0, myBBox.yMaximum(), 0, -cellsize };
   GDALDatasetH emptyDataset = GDALCreate( myDriver, d.outputFilename().toUtf8(), columns, rows, 1, GDT_Float32, nullptr );
   GDALSetGeoTransform( emptyDataset, geoTransform );
   // Set the projection on the raster destination to match the input layer
@@ -293,7 +293,7 @@ void Heatmap::run()
       // calculate the pixel position
       unsigned int xPosition, yPosition;
       xPosition = ((( *pointIt ).x() - myBBox.xMinimum() ) / cellsize ) - myBuffer;
-      yPosition = ((( *pointIt ).y() - myBBox.yMinimum() ) / cellsize ) - myBuffer;
+      yPosition = (( myBBox.yMaximum() - ( *pointIt ).y() ) / cellsize ) - myBuffer;
 
       // get the data
       float *dataBuffer = ( float * ) CPLMalloc( sizeof( float ) * blockSize * blockSize );
