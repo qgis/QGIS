@@ -160,7 +160,7 @@ from .ZonalStatistics import ZonalStatistics
 # from .SetRasterStyle import SetRasterStyle
 # from .SelectByAttributeSum import SelectByAttributeSum
 # from .HypsometricCurves import HypsometricCurves
-# from .FieldsMapper import FieldsMapper
+from .FieldsMapper import FieldsMapper
 # from .Datasources2Vrt import Datasources2Vrt
 # from .OrientedMinimumBoundingBox import OrientedMinimumBoundingBox
 # from .DefineProjection import DefineProjection
@@ -231,6 +231,7 @@ class QGISAlgorithmProvider(QgsProcessingProvider):
                 ExtentFromLayer(),
                 ExtractNodes(),
                 ExtractSpecificNodes(),
+                FieldsMapper(),
                 FixedDistanceBuffer(),
                 FixGeometry(),
                 GeometryByExpression(),

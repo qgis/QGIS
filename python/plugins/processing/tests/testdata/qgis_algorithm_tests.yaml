@@ -2086,6 +2086,38 @@ tests:
           geometry:
             precision: 7
 
+  - algorithm: qgis:refactorfields
+    name: refactor fields
+    params:
+      INPUT:
+        name: multipolys.gml
+        type: vector
+      FIELDS_MAPPING:
+        - expression: '@row_number'
+          name: 'row_number'
+          type: 2
+          length: 0
+          precision: 0
+        - expression: >
+            "fid" || ' - ' || "Bname"
+          name: 'Bname'
+          type: 10
+          length: 30
+          precision: 0
+        - expression: '"Bintval" + 1'
+          name: 'Bintval'
+          type: 2
+          length: 0
+          precision: 0
+        - expression: '"Bfloatval" * 2'
+          name: 'Bfloatval'
+          type: 6
+          length: 0
+          precision: 0
+    results:
+      OUTPUT:
+        name: expected/refactorfields.gml
+        type: vector
 
   - algorithm: native:reprojectlayer
     name: reproject vector layer
