@@ -46,6 +46,9 @@ QgsLayoutItemPropertiesDialog::QgsLayoutItemPropertiesDialog( QWidget *parent, Q
   mPosUnitsComboBox->linkToWidget( mYPosSpin );
   mSizeUnitsComboBox->linkToWidget( mWidthSpin );
   mSizeUnitsComboBox->linkToWidget( mHeightSpin );
+
+  mLockAspectRatio->setWidthSpinBox( mWidthSpin );
+  mLockAspectRatio->setHeightSpinBox( mHeightSpin );
 }
 
 void QgsLayoutItemPropertiesDialog::setItemPosition( QgsLayoutPoint position )
