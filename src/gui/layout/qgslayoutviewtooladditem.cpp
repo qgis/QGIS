@@ -90,6 +90,7 @@ void QgsLayoutViewToolAddItem::layoutReleaseEvent( QgsLayoutViewMouseEvent *even
   if ( clickOnly )
   {
     QgsLayoutItemPropertiesDialog dlg( view() );
+    dlg.setLayout( layout() );
     dlg.setItemPosition( QgsLayoutPoint( event->layoutPoint(), layout()->units() ) );
     if ( dlg.exec() )
     {

@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgslayoutunitscombobox.h"
+#include "qgslayoutmeasurementconverter.h"
 
 QgsLayoutUnitsComboBox::QgsLayoutUnitsComboBox( QWidget *parent )
   : QComboBox( parent )
@@ -34,10 +35,7 @@ QgsLayoutUnitsComboBox::QgsLayoutUnitsComboBox( QWidget *parent )
   setItemData( 6, tr( "Picas" ), Qt::ToolTipRole );
   addItem( tr( "px" ), QgsUnitTypes::LayoutPixels );
   setItemData( 7, tr( "Pixels" ), Qt::ToolTipRole );
-  connect( this, static_cast<void ( QgsLayoutUnitsComboBox::* )( int )>( &QgsLayoutUnitsComboBox::currentIndexChanged ), this, [ = ]( int )
-  {
-    emit changed( unit() );
-  } );
+  connect( this, static_cast<void ( QgsLayoutUnitsComboBox::* )( int )>( &QgsLayoutUnitsComboBox::currentIndexChanged ), this, &QgsLayoutUnitsComboBox::indexChanged );
 }
 
 QgsUnitTypes::LayoutUnit QgsLayoutUnitsComboBox::unit() const
@@ -48,6 +46,36 @@ QgsUnitTypes::LayoutUnit QgsLayoutUnitsComboBox::unit() const
 void QgsLayoutUnitsComboBox::setUnit( QgsUnitTypes::LayoutUnit unit )
 {
   setCurrentIndex( findData( unit ) );
+}
+
+void QgsLayoutUnitsComboBox::linkToWidget( QDoubleSpinBox *widget )
+{
+  mLinkedSpinBoxes << widget;
+}
+
+void QgsLayoutUnitsComboBox::indexChanged( int )
+{
+  QgsUnitTypes::LayoutUnit newUnit = unit();
+  if ( mConverter )
+  {
+    Q_FOREACH ( const QPointer< QDoubleSpinBox > &widget, mLinkedSpinBoxes )
+    {
+      if ( widget )
+        widget->setValue( mConverter->convert( QgsLayoutMeasurement( widget->value(), mOldUnit ), newUnit ).length() );
+    }
+  }
+  emit changed( newUnit );
+  mOldUnit = newUnit;
+}
+
+QgsLayoutMeasurementConverter *QgsLayoutUnitsComboBox::converter() const
+{
+  return mConverter;
+}
+
+void QgsLayoutUnitsComboBox::setConverter( QgsLayoutMeasurementConverter *converter )
+{
+  mConverter = converter;
 }
 
 #include "qgslayoutunitscombobox.h"
