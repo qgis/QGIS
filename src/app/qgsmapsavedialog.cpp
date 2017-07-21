@@ -54,7 +54,7 @@ QgsMapSaveDialog::QgsMapSaveDialog( QWidget *parent, QgsMapCanvas *mapCanvas, QL
   mDpi = ms.outputDpi();
   mSize = ms.outputSize();
 
-  mResolutionSpinBox->setValue( qt_defaultDpiX() );
+  mResolutionSpinBox->setValue( mDpi );
 
   mExtentGroupBox->setOutputCrs( ms.destinationCrs() );
   mExtentGroupBox->setCurrentExtent( mExtent, ms.destinationCrs() );
@@ -176,16 +176,39 @@ void QgsMapSaveDialog::updateOutputHeight( int height )
 
 void QgsMapSaveDialog::updateExtent( const QgsRectangle &extent )
 {
-  mSize.setWidth( mSize.width() * extent.width() / mExtent.width() );
-  mSize.setHeight( mSize.height() * extent.height() / mExtent.height() );
-  mExtent = extent;
+  int currentDpi = 0;
 
+  // reset scale to properly sync output width and height when extent set using
+  // current map view, layer extent, or drawn on canvas buttons
+  if ( mExtentGroupBox->extentState() != QgsExtentGroupBox::UserExtent )
+  {
+    currentDpi = mDpi;
+
+    QgsMapSettings ms = mMapCanvas->mapSettings();
+    ms.setRotation( 0 );
+    mDpi = ms.outputDpi();
+    mSize.setWidth( ms.outputSize().width() * extent.width() / ms.visibleExtent().width() );
+    mSize.setHeight( ms.outputSize().height() * extent.height() / ms.visibleExtent().height() );
+
+    whileBlocking( mScaleWidget )->setScale( ms.scale() );
+
+    if ( currentDpi != mDpi )
+    {
+      updateDpi( currentDpi );
+    }
+  }
+  else
+  {
+    mSize.setWidth( mSize.width() * extent.width() / mExtent.width() );
+    mSize.setHeight( mSize.height() * extent.height() / mExtent.height() );
+  }
+  updateOutputSize();
+
+  mExtent = extent;
   if ( mLockAspectRatio->locked() )
   {
     mExtentGroupBox->setRatio( QSize( mSize.width(), mSize.height() ) );
   }
-
-  updateOutputSize();
 }
 
 void QgsMapSaveDialog::updateScale( double scale )
