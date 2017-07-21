@@ -191,10 +191,10 @@ void QgsRelationReferenceWidget::setRelation( const QgsRelation& relation, bool 
     mReferencedFieldIdx = mReferencedLayer->fieldNameIndex( relation.fieldPairs().at( 0 ).second );
     mReferencingFieldIdx = mReferencingLayer->fieldNameIndex( relation.fieldPairs().at( 0 ).first );
 
-    QgsAttributeEditorContext context( mEditorContext, relation, QgsAttributeEditorContext::Single, QgsAttributeEditorContext::Embed );
 
     if ( mEmbedForm )
     {
+      QgsAttributeEditorContext context( mEditorContext, relation, QgsAttributeEditorContext::Single, QgsAttributeEditorContext::Embed );
       mAttributeEditorFrame->setTitle( mReferencedLayer->name() );
       mReferencedAttributeForm = new QgsAttributeForm( relation.referencedLayer(), QgsFeature(), context, this );
       mAttributeEditorLayout->addWidget( mReferencedAttributeForm );
@@ -464,6 +464,10 @@ void QgsRelationReferenceWidget::init()
       {
         QVariantList uniqueValues;
         int idx = mReferencedLayer->fieldNameIndex( fieldName );
+
+        if ( idx == -1 )
+          continue;
+
         QComboBox* cb = new QComboBox();
         cb->setProperty( "Field", fieldName );
         cb->setProperty( "FieldAlias", mReferencedLayer->attributeDisplayName( idx ) );

@@ -219,6 +219,8 @@ class GUI_EXPORT QgsRelationReferenceWidget : public QWidget
     QVBoxLayout* mAttributeEditorLayout;
     QLineEdit* mLineEdit;
     QLabel* mInvalidLabel;
+
+    friend class TestQgsRelationReferenceWidget;
 };
 
 #endif // QGSRELATIONREFERENCEWIDGET_H
