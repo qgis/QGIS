@@ -80,6 +80,7 @@ class GUI_EXPORT QgsValueRelationWidgetWrapper : public QgsEditorWidgetWrapper
     bool mUpdating;
 
     friend class QgsValueRelationWidgetFactory;
+    friend class TestQgsValueRelationWidgetWrapper;
 };
 
 #endif // QGSVALUERELATIONWIDGETWRAPPER_H

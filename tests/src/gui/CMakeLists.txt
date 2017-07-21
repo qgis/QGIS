@@ -22,6 +22,7 @@ INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}
   ${CMAKE_SOURCE_DIR}/src/core/metadata
   ${CMAKE_SOURCE_DIR}/src/core/raster
   ${CMAKE_SOURCE_DIR}/src/core/symbology-ng
+  ${CMAKE_SOURCE_DIR}/src/core/fieldformatter
   ${CMAKE_SOURCE_DIR}/src/test
   ${CMAKE_SOURCE_DIR}/src/native
 
@@ -134,3 +135,4 @@ ADD_QGIS_TEST(listwidgettest testqgslistwidget.cpp)
 ADD_QGIS_TEST(filedownloader testqgsfiledownloader.cpp)
 ADD_QGIS_TEST(composergui testqgscomposergui.cpp)
 ADD_QGIS_TEST(layoutview testqgslayoutview.cpp)
+ADD_QGIS_TEST(valuerelationwidgetwrapper testqgsvaluerelationwidgetwrapper.cpp)
