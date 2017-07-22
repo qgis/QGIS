@@ -281,6 +281,7 @@
 %Include layertree/qgslayertreeviewdefaultactions.sip
 %Include layout/qgslayoutdesignerinterface.sip
 %Include layout/qgslayoutitemguiregistry.sip
+%Include layout/qgslayoutitemwidget.sip
 %Include layout/qgslayoutnewitempropertiesdialog.sip
 %Include layout/qgslayoutruler.sip
 %Include layout/qgslayoutunitscombobox.sip
