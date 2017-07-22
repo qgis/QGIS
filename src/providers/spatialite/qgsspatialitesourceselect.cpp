@@ -83,8 +83,9 @@ QgsSpatiaLiteSourceSelect::QgsSpatiaLiteSourceSelect( QWidget *parent, Qt::Windo
   mSearchModeComboBox->addItem( tr( "RegExp" ) );
 
   mSearchColumnComboBox->addItem( tr( "All" ) );
+  // This must be keep onSync with the QgsSpatiaLiteTableModel Header-Labels
   mSearchColumnComboBox->addItem( tr( "Table" ) );
-  mSearchColumnComboBox->addItem( tr( "Type" ) );
+  mSearchColumnComboBox->addItem( tr( "Geometry-Type" ) );
   mSearchColumnComboBox->addItem( tr( "Geometry column" ) );
   mSearchColumnComboBox->addItem( tr( "Sql" ) );
 
@@ -95,6 +96,7 @@ QgsSpatiaLiteSourceSelect::QgsSpatiaLiteSourceSelect( QWidget *parent, Qt::Windo
   mProxyModel.setSourceModel( &mTableModel );
   mTablesTreeView->setModel( &mProxyModel );
   mTablesTreeView->setSortingEnabled( true );
+  mTablesTreeView->header()->setResizeMode( QHeaderView::ResizeToContents );
 
   connect( mTablesTreeView->selectionModel(), &QItemSelectionModel::selectionChanged, this, &QgsSpatiaLiteSourceSelect::treeWidgetSelectionChanged );
 
@@ -143,10 +145,30 @@ void QgsSpatiaLiteSourceSelect::buildQuery()
 
 void QgsSpatiaLiteSourceSelect::updateStatistics()
 {
+  if ( !mTableModel.isSpatialite() )
+  {
+    return;
+  }
+  QString subKey = mTableModel.getDbName( false ); // without path
+  if ( collectSelectedTables() > 0 )
+  {
+    if ( m_selectedLayers.size() == 1 )
+      subKey = QString( "%1 of %2" ).arg( m_selectedLayers.at( 0 ) ).arg( subKey );
+    else
+      subKey = QString( "%1 selected layers of %2" ).arg( m_selectedLayers.size() ).arg( subKey );
+#if 0
+    for ( int i = 0; i < m_selectedLayers.size(); i++ )
+    {
+      qDebug() << QString( "-I-> QgsSpatiaLiteSourceSelect::updateStatistics Layer[%1]" ).arg( m_selectedLayers.at( i ) );
+    }
+#endif
+  }
+#if 0
   QString subKey = cmbConnections->currentText();
   int idx = subKey.indexOf( '@' );
   if ( idx > 0 )
     subKey.truncate( idx );
+#endif
 
   QString msg = tr( "Are you sure you want to update the internal statistics for DB: %1?\n\n"
                     "This could take a long time (depending on the DB size),\n"
@@ -156,18 +178,21 @@ void QgsSpatiaLiteSourceSelect::updateStatistics()
   if ( result != QMessageBox::Ok )
     return;
 
+#if 0
   // trying to connect to SpatiaLite DB
   QgsSpatiaLiteConnection conn( subKey );
   if ( conn.updateStatistics() )
-  {
-    QMessageBox::information( this, tr( "Update Statistics" ),
-                              tr( "Internal statistics successfully updated for: %1" ).arg( subKey ) );
-  }
-  else
-  {
-    QMessageBox::critical( this, tr( "Update Statistics" ),
-                           tr( "Error while updating internal statistics for: %1" ).arg( subKey ) );
-  }
+#endif
+    if ( mTableModel.UpdateLayerStatistics( m_selectedLayers ) )
+    {
+      QMessageBox::information( this, tr( "Update Statistics" ),
+                                tr( "Internal statistics successfully updated for: %1" ).arg( subKey ) );
+    }
+    else
+    {
+      QMessageBox::critical( this, tr( "Update Statistics" ),
+                             tr( "Error while updating internal statistics for: %1" ).arg( subKey ) );
+    }
 }
 
 void QgsSpatiaLiteSourceSelect::on_cbxAllowGeometrylessTables_stateChanged( int )
@@ -213,19 +238,19 @@ void QgsSpatiaLiteSourceSelect::on_mSearchColumnComboBox_currentIndexChanged( co
   }
   else if ( text == tr( "Table" ) )
   {
-    mProxyModel.setFilterKeyColumn( 0 );
-  }
-  else if ( text == tr( "Type" ) )
-  {
-    mProxyModel.setFilterKeyColumn( 1 );
+    mProxyModel.setFilterKeyColumn( mTableModel.getTableNameIndex() );
   }
   else if ( text == tr( "Geometry column" ) )
   {
-    mProxyModel.setFilterKeyColumn( 2 );
+    mProxyModel.setFilterKeyColumn( mTableModel.getGeometryNameIndex() );
+  }
+  else if ( text == tr( "Geometry-Type" ) )
+  {
+    mProxyModel.setFilterKeyColumn( mTableModel.getGeometryTypeIndex() );
   }
   else if ( text == tr( "Sql" ) )
   {
-    mProxyModel.setFilterKeyColumn( 3 );
+    mProxyModel.setFilterKeyColumn( mTableModel.getSqlQueryIndex() );
   }
 }
 
@@ -234,13 +259,13 @@ void QgsSpatiaLiteSourceSelect::on_mSearchModeComboBox_currentIndexChanged( cons
   Q_UNUSED( text );
   on_mSearchTableEdit_textChanged( mSearchTableEdit->text() );
 }
-
+#if 0
 void QgsSpatiaLiteSourceSelect::setLayerType( const QString &table, const QString &column, const QString &type )
 {
   mTableModel.setGeometryTypesForTable( table, column, type );
   mTablesTreeView->sortByColumn( 0, Qt::AscendingOrder );
 }
-
+#endif
 
 void QgsSpatiaLiteSourceSelect::populateConnectionList()
 {
@@ -316,9 +341,14 @@ bool QgsSpatiaLiteSourceSelect::newConnection( QWidget *parent )
 
 QString QgsSpatiaLiteSourceSelect::layerURI( const QModelIndex &index )
 {
+#if 0
   QString tableName = mTableModel.itemFromIndex( index.sibling( index.row(), 0 ) )->text();
   QString geomColumnName = mTableModel.itemFromIndex( index.sibling( index.row(), 2 ) )->text();
   QString sql = mTableModel.itemFromIndex( index.sibling( index.row(), 3 ) )->text();
+#endif
+  QString tableName = mTableModel.getTableName( index );
+  QString geomColumnName = mTableModel.getGeometryName( index );
+  QString sql = mTableModel.getSqlQuery( index );
 
   if ( geomColumnName.contains( QLatin1String( " AS " ) ) )
   {
@@ -375,11 +405,10 @@ void QgsSpatiaLiteSourceSelect::on_btnDelete_clicked()
   populateConnectionList();
   emit connectionsChanged();
 }
-
-void QgsSpatiaLiteSourceSelect::addTables()
+int QgsSpatiaLiteSourceSelect::collectSelectedTables()
 {
   m_selectedTables.clear();
-
+  m_selectedLayers.clear();
   typedef QMap < int, bool >schemaInfo;
   QMap < QString, schemaInfo > dbInfo;
 
@@ -407,10 +436,15 @@ void QgsSpatiaLiteSourceSelect::addTables()
     if ( !dbInfo[currentSchemaName].contains( currentRow ) )
     {
       dbInfo[currentSchemaName][currentRow] = true;
+      m_selectedLayers.append( QString( "%1(%2)" ).arg( mTableModel.getTableName( mProxyModel.mapToSource( *selected_it ) ) ).arg( mTableModel.getGeometryName( mProxyModel.mapToSource( *selected_it ) ) ) );
       m_selectedTables << layerURI( mProxyModel.mapToSource( *selected_it ) );
     }
   }
-
+  return m_selectedLayers.size();
+}
+void QgsSpatiaLiteSourceSelect::addTables()
+{
+  collectSelectedTables();
   if ( m_selectedTables.empty() )
   {
     QMessageBox::information( this, tr( "Select Table" ), tr( "You must select a table in order to add a Layer." ) );
@@ -428,7 +462,7 @@ void QgsSpatiaLiteSourceSelect::addTables()
 void QgsSpatiaLiteSourceSelect::on_btnConnect_clicked()
 {
   cbxAllowGeometrylessTables->setEnabled( false );
-
+#if 0
   QString subKey = cmbConnections->currentText();
   int idx = subKey.indexOf( '@' );
   if ( idx > 0 )
@@ -473,7 +507,6 @@ void QgsSpatiaLiteSourceSelect::on_btnConnect_clicked()
     mSqlitePath = QString();
     return;
   }
-
   QModelIndex rootItemIndex = mTableModel.indexFromItem( mTableModel.invisibleRootItem() );
   mTableModel.removeRows( 0, mTableModel.rowCount( rootItemIndex ), rootItemIndex );
 
@@ -487,22 +520,64 @@ void QgsSpatiaLiteSourceSelect::on_btnConnect_clicked()
   {
     mTableModel.addTableEntry( table.type, table.tableName, table.column, QLatin1String( "" ) );
   }
+#endif
 
-  if ( cmbConnections->count() > 0 )
+  // trying to connect to SpatiaLite DB
+  QgsSpatiaLiteConnection connectionInfo( cmbConnections->currentText() );
+  mSqlitePath = connectionInfo.path();
+  qDebug() << QString( "QgsSpatiaLiteSourceSelect::on_btnConnect_clicked -01- currentText[%1]\n\t subkey[%2] mSqlitePath[%3] " ).arg( cmbConnections->currentText() ).arg( connectionInfo.getSubKey() ).arg( connectionInfo.path() );
+
+  QApplication::setOverrideCursor( Qt::WaitCursor );
+  QString sLayerName = QString::null;
+  bool bLoadLayers = true;
+  bool bShared = true;
+  SpatialiteDbInfo *spatialiteDbInfo = connectionInfo.CreateSpatialiteConnection( sLayerName, bLoadLayers, bShared );
+
+  QApplication::restoreOverrideCursor();
+
+  if ( !spatialiteDbInfo )
+  {
+    if ( !QFile::exists( mSqlitePath ) )
+    {
+      QMessageBox::critical( this, tr( "SpatiaLite DB Open Error" ), tr( "Database does not exist: %1" ).arg( mSqlitePath ) );
+    }
+    else
+    {
+      QMessageBox::critical( this, tr( "SpatiaLite DB Open Error" ), tr( " File is not a Sqlite3 Container: %1" ).arg( mSqlitePath ) );
+    }
+    delete spatialiteDbInfo;
+    spatialiteDbInfo = nullptr;
+    return;
+  }
+  else
+  {
+    if ( !spatialiteDbInfo->isDbValid() )
+    {
+      QMessageBox::critical( this, tr( "SpatiaLite DB Open Error" ), tr( "The read Sqlite3 Container is not supported by QgsSpatiaLiteProvider,QgsOgrProvider or QgsGdalProvider: %1" ).arg( mSqlitePath ) );
+      return;
+    }
+    // populate the table list
+    // get the list of suitable tables and columns and populate the UI
+    mTableModel.setSqliteDb( spatialiteDbInfo, cbxAllowGeometrylessTables->isChecked() );
+  }
+  if ( mTableModel.isSpatialite() )
   {
     mStatsButton->setEnabled( true );
   }
 
   mTablesTreeView->sortByColumn( 0, Qt::AscendingOrder );
 
+#if 0
   //expand all the toplevel items
   int numTopLevelItems = mTableModel.invisibleRootItem()->rowCount();
   for ( int i = 0; i < numTopLevelItems; ++i )
   {
     mTablesTreeView->expand( mProxyModel.mapFromSource( mTableModel.indexFromItem( mTableModel.invisibleRootItem()->child( i ) ) ) );
   }
-  mTablesTreeView->resizeColumnToContents( 0 );
-  mTablesTreeView->resizeColumnToContents( 1 );
+#endif
+  mTablesTreeView->expandToDepth( 1 );
+  // mTablesTreeView->resizeColumnToContents( 0 );
+  // mTablesTreeView->resizeColumnToContents( 1 );
 
   cbxAllowGeometrylessTables->setEnabled( true );
 }
@@ -520,7 +595,7 @@ QString QgsSpatiaLiteSourceSelect::connectionInfo()
 void QgsSpatiaLiteSourceSelect::setSql( const QModelIndex &index )
 {
   QModelIndex idx = mProxyModel.mapToSource( index );
-  QString tableName = mTableModel.itemFromIndex( idx.sibling( idx.row(), 0 ) )->text();
+  QString tableName = mTableModel.getTableName( idx );
 
   QgsVectorLayer *vlayer = new QgsVectorLayer( layerURI( idx ), tableName, QStringLiteral( "spatialite" ) );
 

@@ -28,23 +28,67 @@ class QgsSpatiaLiteTableModel: public QStandardItemModel
   Q_OBJECT public:
 
     QgsSpatiaLiteTableModel();
+#if 0
     //! Adds entry for one database table to the model
-    void addTableEntry( const QString &type, const QString &tableName, const QString &geometryColName, const QString &sql );
-    //! Sets an sql statement that belongs to a cell specified by a model index
-    void setSql( const QModelIndex &index, const QString &sql );
+    void addTableEntryLayer( const QString &type, const QString &tableName, const QString &geometryColName, const QString &sql );
+    //! Sets the SQLite DB full path
+    void setSqliteDb( const QString &dbName )
+    {
+      mSqliteDb = dbName;
+    }
 
     /** Sets one or more geometry types to a row. In case of several types, additional rows are inserted.
        This is for tables where the type is detected later by thread*/
     void setGeometryTypesForTable( const QString &table, const QString &attribute, const QString &type );
+#endif
+    //! Sets an sql statement that belongs to a cell specified by a model index
+    void setSql( const QModelIndex &index, const QString &sql );
+
     //! Returns the number of tables in the model
     int tableCount() const
     {
       return mTableCount;
     }
-    //! Sets the SQLite DB full path
-    void setSqliteDb( const QString &dbName )
+    //! Returns the Column 'Table' form the selected Item
+    int getTableNameIndex() const { return i_field_table; }
+    QString getTableName( const QModelIndex &index ) const
     {
-      mSqliteDb = dbName;
+      return itemFromIndex( index.sibling( index.row(), i_field_table ) )->text();
+    }
+    //! Returns the Column 'Geometry column' form the selected Item
+    int getGeometryNameIndex() const { return i_field_geometry_name; }
+    QString getGeometryName( const QModelIndex &index ) const
+    {
+      return itemFromIndex( index.sibling( index.row(), i_field_geometry_name ) )->text();
+    }
+    //! Returns the Column 'Geometry column' form the selected Item
+    int getGeometryTypeIndex() const { return i_field_geometry_type; }
+    QString getGeometryType( const QModelIndex &index ) const
+    {
+      return itemFromIndex( index.sibling( index.row(), i_field_geometry_type ) )->text();
+    }
+    //! Returns the Column 'Sql' form the selected Item
+    int getSqlQueryIndex() const { return i_field_sql; }
+    QString getSqlQuery( const QModelIndex &index ) const
+    {
+      return itemFromIndex( index.sibling( index.row(), i_field_sql ) )->text();
+    }
+    void setSqliteDb( SpatialiteDbInfo *spatialiteDbInfo, bool loadGeometrylessTables = false );
+    QString getDbName( bool withPath = true ) const
+    {
+      QString sDBName = QString();
+      if ( ( mSpatialiteDbInfo ) && ( mSpatialiteDbInfo->isDbValid() ) )
+      {
+        if ( withPath )
+        {
+          sDBName = mSpatialiteDbInfo->getDatabaseFileName();
+        }
+        else
+        {
+          sDBName = mSpatialiteDbInfo->getFileName();
+        }
+      }
+      return sDBName;
     }
 
     /** Retrieve SpatialiteDbInfo
@@ -57,15 +101,94 @@ class QgsSpatiaLiteTableModel: public QStandardItemModel
      */
     SpatialiteDbInfo *getSpatialiteDbInfo() const { return mSpatialiteDbInfo; }
 
+    /** UpdateLayerStatistics for the Database or Layers
+     * - this will be called from the SpatialiteDbLayer::UpdateLayerStatistics
+     * - this is also called with a selection of tables/geometries
+     *  -> calls InvalidateLayerStatistics before UpdateLayerStatistics
+     * \note
+     *  - if the sent List is empty or containe 1 empty QString
+     *  -> the whole Database will be done
+     *  - when only a specific table or table with geometry is to be done
+     *  -> format: 'table_name(geometry_name)' or only 'table_name', with all of its geometries
+     *  - otherwise all tables with geometries
+     *  - All commands within a TRANSACTION
+     * \param saLayers List of LayerNames formatted as 'table_name(geometry_name)'
+     * \returns result of the last returned rc
+     * \see SpatialiteDbInfo::::UpdateLayerStatistics
+     * \since QGIS 3.0
+     */
+    bool UpdateLayerStatistics( QStringList saLayers )
+    {
+      if ( ( mSpatialiteDbInfo ) && ( mSpatialiteDbInfo->isDbValid() ) && ( mSpatialiteDbInfo->isDbSpatialite() ) )
+      {
+        return mSpatialiteDbInfo->UpdateLayerStatistics( saLayers );
+      }
+      return false;
+    }
+
+    /** Is the Container a Spatialite Database
+     * \note
+     *  - Spatialite specific functions should not be called when false
+     *  -> UpdateLayerStatistics()
+     * \see SpatialiteDbInfo::isDbSpatialite()
+     * \since QGIS 3.0
+     */
+    bool isSpatialite() const
+    {
+      if ( ( mSpatialiteDbInfo ) && ( mSpatialiteDbInfo->isDbValid() ) && ( mSpatialiteDbInfo->isDbSpatialite() ) )
+      {
+        return true;
+      }
+      return false;
+    }
+
   private:
+    enum EntryType
+    {
+      EntryTypeLayer = 0,
+      EntryTypeMap = 1
+    };
+
     //! Number of tables in the model
     int mTableCount;
-    QString mSqliteDb;
+    int mTableCounter;
+    int i_field_table;
+    int i_field_geometry_type;
+    int i_field_geometry_name;
+    int i_field_sql;
 
-    QIcon iconForType( QgsWkbTypes::Type type ) const;
-    QString displayStringForType( QgsWkbTypes::Type type ) const;
-    //! Returns qgis wkbtype from database typename
-    QgsWkbTypes::Type qgisTypeFromDbType( const QString &dbType ) const;
+    /** Retrieve the Table Entries based on a list of Layer-Types
+     * \see addTableEntryType
+     * \since QGIS 3.0
+     */
+    void addTableEntryTypes( );
+
+    /** Retrieve the  Layer-Type entries
+     * \see addTableEntry
+     * \since QGIS 3.0
+     */
+    void addTableEntryType( QMap<QString, QString> mapLayers, QgsSpatiaLiteTableModel::EntryType entryType = QgsSpatiaLiteTableModel::EntryTypeLayer, SpatialiteDbInfo::SpatialiteLayerType layerType = SpatialiteDbInfo::SpatialiteUnknown );
+
+    /** Build entry for the  Layer-Type in Root
+     * \see addRootEntry
+     * \since QGIS 3.0
+     */
+    QList < QStandardItem * > createLayerTypeEntry( SpatialiteDbInfo::SpatialiteLayerType layerType = SpatialiteDbInfo::SpatialTable, int amountLayers = 0 );
+
+    /** Fill the model Item based on the retrieved Layer
+     * \since QGIS 3.0
+     */
+    void addRootEntry( );
+
+    /** Fill the model Item based on the retrieved Layer
+     * \since QGIS 3.0
+     */
+    void addTableEntryLayer( SpatialiteDbLayer *dbLayer );
+
+    /** Fill the model Item based on the retrieved Layer
+     * \since QGIS 3.0
+     */
+    void addTableEntryMap( QString sKey, QString sValue, SpatialiteDbInfo::SpatialiteLayerType layerType = SpatialiteDbInfo::NonSpatialTables );
 
     /** SpatialiteDbInfo Object
      * - containing all Information about Database file
@@ -76,4 +199,6 @@ class QgsSpatiaLiteTableModel: public QStandardItemModel
      * \since QGIS 3.0
      */
     SpatialiteDbInfo *mSpatialiteDbInfo = nullptr;
+    QStandardItem *mDbRootItem = nullptr;
+    bool mLoadGeometrylessTables = false;
 };

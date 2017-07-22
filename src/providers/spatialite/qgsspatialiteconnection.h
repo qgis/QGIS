@@ -35,10 +35,32 @@ class QgsSpatiaLiteConnection : public QObject
 {
     Q_OBJECT
   public:
-    //! Construct a connection. Name can be either stored connection name or a path to the database file
+
+    /** Construct a connection. Name can be either stored connection name or a path to the database file
+     * - not used outside the QgsSpatiaLiteProvider classes
+     * \since QGIS 1.8
+     */
     explicit QgsSpatiaLiteConnection( const QString &name );
 
+    /** Absolute Path of the Connection
+     * - 'SpatiaLite/connections'
+     * \note
+     *  - extrcted from ConnectionString
+     * \returns name of connection
+     * \see connectionPath
+     * \since QGIS 1.8
+     */
     QString path() { return mPath; }
+
+    /** Key of the Connection
+     * - 'SpatiaLite/connections'
+     * \note
+     *  - extrcted from ConnectionString
+     * \returns name of connection
+     * \see connectionPath
+     * \since QGIS 1.8
+     */
+    QString getSubKey() { return mSubKey; }
 
     /** Return List of all stored Connection-Namess in QgsSettings
      * - 'SpatiaLite/connections'
@@ -78,6 +100,19 @@ class QgsSpatiaLiteConnection : public QObject
      */
     static QString connectionPath( const QString &name );
 
+    /** Create a SpatialiteDbInfo based Connection
+     *  -> containing all needed Information about a Spatial Sqlite3 Container
+     * \note
+     *  - check result with spatialiteDbInfo->isDbSqlite3()
+     *  -> if File exists and is a Sqlite3 Container.
+     *  - check result with spatialiteDbInfo->isDbGdalOgr()
+     *  -> if File only supported by QgsOgrProvider or QgsGdalProvider
+     *  -> otherwise supported by QgsSpatiaLiteProvider
+    * \returns true if file is a sqlite3 Database
+    * \since QGIS 3.0
+    */
+    SpatialiteDbInfo *CreateSpatialiteConnection( QString sLayerName = QString::null, bool bLoadLayers = true, bool bShared = true );
+
     typedef struct TableEntry
     {
       TableEntry( const QString &_tableName, const QString &_column, const QString &_type )
@@ -103,6 +138,7 @@ class QgsSpatiaLiteConnection : public QObject
       LayoutLegacy,
       LayoutCurrent,
     };
+#if 0
     // TODO: Remove after replacing with SpatialiteDbInfo
     Error fetchTables( bool loadGeometrylessTables );
     //! Return list of tables. fetchTables() function has to be called before
@@ -112,7 +148,9 @@ class QgsSpatiaLiteConnection : public QObject
     // TODO: Remove after replacing with SpatialiteDbInfo
     //! Updates the Internal Statistics
     bool updateStatistics();
+#endif
   protected:
+#if 0
     // SpatiaLite DB open / close
     // TODO: Remove after replacing with SpatialiteDbInfo
     sqlite3 *openSpatiaLiteDb( const QString &path );
@@ -158,7 +196,9 @@ class QgsSpatiaLiteConnection : public QObject
     // TODO: Remove after replacing with SpatialiteDbInfo
     //! Checks if this layer is a RasterLite-1 datasource
     bool isRasterlite1Datasource( sqlite3 *handle, const char *table );
+#endif
     QString mErrorMsg;
+    QString mSubKey;
     QString mPath; // full path to the database
     QList<TableEntry> mTables;
 };

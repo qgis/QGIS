@@ -73,6 +73,15 @@ class QgsSpatiaLiteSourceSelect: public QDialog, private Ui::QgsDbSourceSelectBa
     void on_btnConnect_clicked();
     void buildQuery();
     void addClicked();
+
+    /** Calls UpdateLayerStatistics for a Spatialite Database
+     *  - for selected Layers ar the whole Database
+     * \note
+     *  - Uses the SpatialiteDbInfo interface
+     *  -> UpdateLayerStatistics()
+     * \see SpatialiteDbInfo::isDbSpatialite()
+     * \since QGIS 3.0
+     */
     void updateStatistics();
     //! Opens the create connection dialog to build a new connection
     void on_btnNew_clicked();
@@ -85,7 +94,6 @@ class QgsSpatiaLiteSourceSelect: public QDialog, private Ui::QgsDbSourceSelectBa
     void on_cbxAllowGeometrylessTables_stateChanged( int );
     void setSql( const QModelIndex &index );
     void on_cmbConnections_activated( int );
-    void setLayerType( const QString &table, const QString &column, const QString &type );
     void on_mTablesTreeView_clicked( const QModelIndex &index );
     void on_mTablesTreeView_doubleClicked( const QModelIndex &index );
     void treeWidgetSelectionChanged( const QItemSelection &selected, const QItemSelection &deselected );
@@ -93,7 +101,9 @@ class QgsSpatiaLiteSourceSelect: public QDialog, private Ui::QgsDbSourceSelectBa
     void setSearchExpression( const QString &regexp );
 
     void on_buttonBox_helpRequested() { QgsHelp::openHelp( QStringLiteral( "working_with_vector/supported_data.html#spatialite-layers" ) ); }
-
+#if 0
+    void setLayerType( const QString &table, const QString &column, const QString &type );
+#endif
   signals:
     void connectionsChanged();
     void addDatabaseLayers( QStringList const &paths, QString const &providerKey );
@@ -119,7 +129,18 @@ class QgsSpatiaLiteSourceSelect: public QDialog, private Ui::QgsDbSourceSelectBa
     // The column labels
     QStringList mColumnLabels;
     QString mSqlitePath;
+
+    /** Function to collect selected layers
+     * \note
+     *  - fills m_selectedTables with uri
+     *  - fills m_selectedLayers with LayerName formatted as 'table_name(geometry_name)'
+     * \see addTables()
+     * \see updateStatistics()
+     * \since QGIS 3.0
+     */
+    int collectSelectedTables();
     QStringList m_selectedTables;
+    QStringList m_selectedLayers;
     // Storage for the range of layer type icons
     QMap < QString, QPair < QString, QIcon > >mLayerIcons;
     //! Model that acts as datasource for mTableTreeWidget

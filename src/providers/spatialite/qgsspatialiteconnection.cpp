@@ -60,12 +60,50 @@ QString QgsSpatiaLiteConnection::connectionPath( const QString &name )
 QgsSpatiaLiteConnection::QgsSpatiaLiteConnection( const QString &name )
 {
   // "name" can be either a saved connection or a path to database
-
+  mSubKey = name;
   QgsSettings settings;
-  mPath = settings.value( QStringLiteral( "SpatiaLite/connections/%1/sqlitepath" ).arg( name ) ).toString();
+  if ( mSubKey.indexOf( '@' ) > 0 )
+  {
+    QStringList sa_list = mSubKey.split( '@' );
+    mSubKey = sa_list[0];
+    mPath = sa_list[1];
+  }
+  mPath = settings.value( QStringLiteral( "SpatiaLite/connections/%1/sqlitepath" ).arg( mSubKey ) ).toString();
   if ( mPath.isNull() )
+  {
+    mSubKey = "";
     mPath = name; // not found in settings - probably it's a path
+  }
 }
+SpatialiteDbInfo *QgsSpatiaLiteConnection::CreateSpatialiteConnection( QString sLayerName,  bool bLoadLayers,  bool bShared )
+{
+  SpatialiteDbInfo *spatialiteDbInfo = nullptr;
+  SpatialiteDbInfo::SpatialSniff sniffType = SpatialiteDbInfo::SniffMinimal;
+  if ( bLoadLayers )
+  {
+    sniffType = SpatialiteDbInfo::SniffLoadLayers;
+  }
+  QgsSqliteHandle *qSqliteHandle = QgsSqliteHandle::openDb( mPath, bShared, sLayerName, bLoadLayers );
+  if ( ( qSqliteHandle ) && ( qSqliteHandle->getSpatialiteDbInfo() ) )
+  {
+    spatialiteDbInfo = qSqliteHandle->getSpatialiteDbInfo();
+    if ( ( spatialiteDbInfo ) && ( spatialiteDbInfo->isDbSqlite3() ) )
+    {
+      if ( !spatialiteDbInfo->GetSpatialiteDbInfo( sLayerName, bLoadLayers, sniffType ) )
+      {
+        // The read Sqlite3 Container is not supported by QgsSpatiaLiteProvider,QgsOgrProvider or QgsGdalProvider.
+      }
+    }
+    else
+    {
+      // File does not exist or is not a Sqlite3 Container.
+      delete spatialiteDbInfo;
+      spatialiteDbInfo = nullptr;
+    }
+  }
+  return spatialiteDbInfo;
+}
+#if 0
 // TODO: Remove after replacing with SpatialiteDbInfo
 QgsSpatiaLiteConnection::Error QgsSpatiaLiteConnection::fetchTables( bool loadGeometrylessTables )
 {
@@ -691,6 +729,7 @@ error:
   }
   return false;
 }
+#endif
 // -- ---------------------------------- --
 // QgsSqliteHandle
 // -- ---------------------------------- --
@@ -783,41 +822,32 @@ QgsSqliteHandle *QgsSqliteHandle::openDb( const QString &dbPath, bool shared,  Q
     // The file exists, is a Sqlite3-File and a connection has been made.
     if ( spatialiteDbInfo->isDbValid() )
     {
+      if ( spatialiteDbInfo->isConnectionShared() )
+        sHandles.insert( spatialiteDbInfo->getDatabaseFileName(), spatialiteDbInfo->getQSqliteHandle() );
       // The file Sqlite3-Container is supported by QgsSpatiaLiteProvider,QgsOgrProvider or QgsGdalProvider
       if ( !spatialiteDbInfo->isDbGdalOgr() )
       {
         // The file Sqlite3-Container is supported by QgsSpatiaLiteProvider.
-        if ( spatialiteDbInfo->isConnectionShared() )
-          sHandles.insert( spatialiteDbInfo->getDatabaseFileName(), spatialiteDbInfo->getQSqliteHandle() );
-        return spatialiteDbInfo->getQSqliteHandle();
       }
       else
       {
         // The file Sqlite3-Container is supported by QgsOgrProvider or QgsGdalProvider.
-        // this will not be used by the QgsSpatiaLiteProvider, do not share [destructor will close the connection upon delete]
-        spatialiteDbInfo->setConnectionShared( false );
-        return spatialiteDbInfo->getQSqliteHandle();
       }
+      return spatialiteDbInfo->getQSqliteHandle();
     }
     else
     {
-      // Either not aSqlite3 file or the Sqlite3-Container is not supported by QgsSpatiaLiteProvider,QgsOgrProvider or QgsGdalProvider
+      // Either not a Sqlite3 file or the Sqlite3-Container is not supported by QgsSpatiaLiteProvider,QgsOgrProvider or QgsGdalProvider
       if ( !spatialiteDbInfo->isDbSqlite3() )
       {
         // Is not aSqlite3 file
-        spatialiteDbInfo = nullptr;
       }
       else
       {
         // The Sqlite3-Container is not supported by QgsSpatiaLiteProvider,QgsOgrProvider or QgsGdalProvider
         // - but allow anybody to use the QgsSqliteHandle as desired
-        QgsSqliteHandle *handle = spatialiteDbInfo->getQSqliteHandle();
-        handle->setSpatialiteDbInfo( nullptr );
-        // The destructor will close the connection upon delete, because isDbValid() == false
-        spatialiteDbInfo = nullptr;
-        // The Caller must close/delete it with QgsSqliteHandle::closeDb manually
-        return handle;
       }
+      return spatialiteDbInfo->getQSqliteHandle();
     }
   }
   return nullptr;

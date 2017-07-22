@@ -35,7 +35,7 @@ QgsSpatiaLiteFeatureIterator::QgsSpatiaLiteFeatureIterator( QgsSpatiaLiteFeature
   mFetchGeometry = !mSource->getGeometryColumn() .isNull() && !( mRequest.flags() & QgsFeatureRequest::NoGeometry );
   mHasPrimaryKey = !mSource->getPrimaryKey().isEmpty();
   mRowNumber = 0;
-  // qDebug() << QString( "QgsSpatiaLiteFeatureIterator::QgsSpatiaLiteFeatureIterator(%1) GeomType[%2]" ).arg( mSource->getLayerName() ).arg( mSource->getGeomTypeString() );
+  // qDebug() << QString( "QgsSpatiaLiteFeatureIterator::QgsSpatiaLiteFeatureIterator(%1) GeomType[%2]" ).arg( mSource->getLayerName() ).arg( mSource->getGeometryTypeString() );
   QStringList whereClauses;
   bool useFallbackWhereClause = false;
   QString fallbackWhereClause;
@@ -72,6 +72,7 @@ QgsSpatiaLiteFeatureIterator::QgsSpatiaLiteFeatureIterator( QgsSpatiaLiteFeature
 
   if ( !mSource->mSubsetString.isEmpty() )
   {
+    qDebug() << QString( "QgsSpatiaLiteFeatureIterator::QgsSpatiaLiteFeatureIterator(%1) mSubsetString[%2]" ).arg( mSource->getLayerName() ).arg( mSource->mSubsetString );
     whereClause = "( " + mSource->mSubsetString + ')';
     if ( ! whereClause.isEmpty() )
     {
@@ -346,12 +347,12 @@ bool QgsSpatiaLiteFeatureIterator::prepareStatement( const QString &whereClause,
 
     if ( limit >= 0 )
       sql += QStringLiteral( " LIMIT %1" ).arg( limit );
-    qDebug() << QString( "-I-> QgsSpatiaLiteFeatureIterator::prepareStatement(%1) GeomType[%2] - sql[%3]" ).arg( mSource->getLayerName() ).arg( mSource->getGeomTypeString() ).arg( sql );
+    qDebug() << QString( "-I-> QgsSpatiaLiteFeatureIterator::prepareStatement(%1) GeomType[%2] - sql[%3]" ).arg( mSource->getLayerName() ).arg( mSource->getGeometryTypeString() ).arg( sql );
     if ( sqlite3_prepare_v2( mHandle->handle(), sql.toUtf8().constData(), -1, &sqliteStatement, nullptr ) != SQLITE_OK )
     {
       // some error occurred
       QgsMessageLog::logMessage( QObject::tr( "SQLite error: %2\nSQL: %1" ).arg( sql, sqlite3_errmsg( mHandle->handle() ) ), QObject::tr( "SpatiaLite" ) );
-      qDebug() << QString( "-E-> QgsSpatiaLiteFeatureIterator::prepareStatement(%1) GeomType[%2] - SQLite error getting feature: %3" ).arg( mSource->getLayerName() ).arg( mSource->getGeomTypeString() ).arg( QString::fromUtf8( sqlite3_errmsg( mHandle->handle() ) ) );
+      qDebug() << QString( "-E-> QgsSpatiaLiteFeatureIterator::prepareStatement(%1) GeomType[%2] - SQLite error getting feature: %3" ).arg( mSource->getLayerName() ).arg( mSource->getGeometryTypeString() ).arg( QString::fromUtf8( sqlite3_errmsg( mHandle->handle() ) ) );
       return false;
     }
   }
@@ -478,7 +479,7 @@ bool QgsSpatiaLiteFeatureIterator::getFeature( sqlite3_stmt *stmt, QgsFeature &f
   {
     // some unexpected error occurred
     QgsMessageLog::logMessage( QObject::tr( "SQLite error getting feature: %1" ).arg( QString::fromUtf8( sqlite3_errmsg( mHandle->handle() ) ) ), QObject::tr( "SpatiaLite" ) );
-    qDebug() << QString( "-E-> QgsSpatiaLiteFeatureIterator::getFeature(%1) GeomType[%2] - SQLite error getting feature: %3" ).arg( mSource->getLayerName() ).arg( mSource->getGeomTypeString() ).arg( QString::fromUtf8( sqlite3_errmsg( mHandle->handle() ) ) );
+    qDebug() << QString( "-E-> QgsSpatiaLiteFeatureIterator::getFeature(%1) GeomType[%2] - SQLite error getting feature: %3" ).arg( mSource->getLayerName() ).arg( mSource->getGeometryTypeString() ).arg( QString::fromUtf8( sqlite3_errmsg( mHandle->handle() ) ) );
     return false;
   }
   // one valid row has been fetched from the result set

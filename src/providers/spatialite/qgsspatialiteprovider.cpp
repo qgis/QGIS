@@ -465,7 +465,7 @@ bool QgsSpatiaLiteProvider::setDbLayer( SpatialiteDbLayer *dbLayer )
     mDbLayer = dbLayer;
     // mDbLayer->setLayerQuery(mSubsetString);
     mSrid = mDbLayer->getSrid();
-    mGeomType = mDbLayer->getGeomType();
+    mGeometryType = mDbLayer->getGeometryType();
     if ( mDbLayer->getSpatialIndexType() == GAIA_SPATIAL_INDEX_RTREE )
     {
       mSpatialIndexRTree = true;
@@ -475,7 +475,7 @@ bool QgsSpatiaLiteProvider::setDbLayer( SpatialiteDbLayer *dbLayer )
       mSpatialIndexMbrCache = true;
     }
     if ( ( mDbLayer->getLayerType() == SpatialiteDbInfo::SpatialTable ) ||
-         ( mDbLayer->getLayerType() == SpatialiteDbInfo::TopopogyLayer ) )
+         ( mDbLayer->getLayerType() == SpatialiteDbInfo::TopopogyExport ) )
     {
       mTableBased = true;
     }
@@ -518,7 +518,7 @@ QgsSpatiaLiteProvider::QgsSpatiaLiteProvider( QString const &uri )
   , mUriTableName( QString::null )
   , mUriGeometryColumn( QString::null )
   , mUriLayerName( QString::null )
-  , mGeomType( QgsWkbTypes::Unknown )
+  , mGeometryType( QgsWkbTypes::Unknown )
   , mSpatialIndexRTree( false )
   , mSpatialIndexMbrCache( false )
 {
@@ -530,7 +530,7 @@ QgsSpatiaLiteProvider::QgsSpatiaLiteProvider( QString const &uri )
   mSubsetString = anUri.sql(); // \"id_admin\"  < 2
   mUriPrimaryKey = anUri.keyColumn();
   mQuery = mUriTableName;
-  // qDebug() << QString( "QgsSpatiaLiteProvider::QgsSpatiaLiteProvider -1- driver[%1] schema[%2] mSubsetString[%3]" ).arg( anUri.driver() ).arg( anUri.schema() ).arg( mSubsetString );
+  qDebug() << QString( "QgsSpatiaLiteProvider::QgsSpatiaLiteProvider -1- driver[%1] schema[%2] mSubsetString[%3]" ).arg( anUri.driver() ).arg( anUri.schema() ).arg( mSubsetString );
   qDebug() << QString( "QgsSpatiaLiteProvider::QgsSpatiaLiteProvider -0- QgsDataSourceUri[%1] " ).arg( uri );
   // trying to open the SQLite DB
   bool bShared = true;
@@ -678,7 +678,7 @@ size_t QgsSpatiaLiteProvider::layerCount() const
  */
 QgsWkbTypes::Type QgsSpatiaLiteProvider::wkbType() const
 {
-  return getGeomType();
+  return getGeometryType() ;
 }
 
 /**
@@ -1654,6 +1654,8 @@ bool QgsSpatiaLiteProvider::checkQuery()
   // checking for validity
   return count == 1;
 }
+#if 0
+// TODO: Remove after replacing with SpatialiteDbInfo
 bool QgsSpatiaLiteProvider::getQueryGeometryDetails()
 {
   int ret;
@@ -1738,39 +1740,39 @@ bool QgsSpatiaLiteProvider::getQueryGeometryDetails()
 
     if ( fType == QLatin1String( "POINT" ) )
     {
-      mGeomType = QgsWkbTypes::Point;
+      mGeometryType = QgsWkbTypes::Point;
     }
     else if ( fType == QLatin1String( "MULTIPOINT" ) )
     {
-      mGeomType = QgsWkbTypes::MultiPoint;
+      mGeometryType = QgsWkbTypes::MultiPoint;
     }
     else if ( fType == QLatin1String( "LINESTRING" ) )
     {
-      mGeomType = QgsWkbTypes::LineString;
+      mGeometryType = QgsWkbTypes::LineString;
     }
     else if ( fType == QLatin1String( "MULTILINESTRING" ) )
     {
-      mGeomType = QgsWkbTypes::MultiLineString;
+      mGeometryType = QgsWkbTypes::MultiLineString;
     }
     else if ( fType == QLatin1String( "POLYGON" ) )
     {
-      mGeomType = QgsWkbTypes::Polygon;
+      mGeometryType = QgsWkbTypes::Polygon;
     }
     else if ( fType == QLatin1String( "MULTIPOLYGON" ) )
     {
-      mGeomType = QgsWkbTypes::MultiPolygon;
+      mGeometryType = QgsWkbTypes::MultiPolygon;
     }
     mSrid = xSrid.toInt();
   }
 
-  if ( mGeomType == QgsWkbTypes::Unknown || mSrid < 0 )
+  if ( mGeometryType == QgsWkbTypes::Unknown || mSrid < 0 )
   {
     handleError( sql, errMsg );
     return false;
   }
   return true;
 }
-
+#endif
 QgsField QgsSpatiaLiteProvider::field( int index ) const
 {
   if ( index < 0 || index >= getAttributeFields().count() )

@@ -136,17 +136,17 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
     //! The revision Spatialite Version being used
     int dbSpatialiteVersionRevision() const { return getSpatialiteDbInfo()->dbSpatialiteVersionRevision(); }
     //! Does the read Database contain SpatialTables [ 0=none, otherwise amount]
-    int dbSpatialTablesCount() const { return getSpatialiteDbInfo()->dbSpatialTablesCount(); }
+    int dbSpatialTablesLayersCount() const { return getSpatialiteDbInfo()->dbSpatialTablesLayersCount(); }
     //! Does the read Database contain SpatialViews views [ 0=none, otherwise amount]
-    int dbSpatialViewsCount() const { return getSpatialiteDbInfo()->dbSpatialViewsCount(); }
+    int dbSpatialViewsLayersCount() const { return getSpatialiteDbInfo()->dbSpatialViewsLayersCount(); }
     //! Does the read Database contain VirtualShapes tables [0=none, otherwise amount]
-    int dbVirtualShapesCount() const { return getSpatialiteDbInfo()->dbVirtualShapesCount(); }
+    int dbVirtualShapesLayersCount() const { return getSpatialiteDbInfo()->dbVirtualShapesLayersCount(); }
     //! Does the read Database contain RasterLite1 coverages [-1=no rasterlit1 logic found, otherwise amount (0 being empty)]
-    int dbRasterLite1TablesCount() const { return getSpatialiteDbInfo()->dbRasterLite1TablesCount(); }
+    int dbRasterLite1LayersCount() const { return getSpatialiteDbInfo()->dbRasterLite1LayersCount(); }
     //! Does the read Database contain RasterLite2 coverages [-1=no raster_coverages table, otherwise amount (0 being empty)]
-    int dbRasterLite2TablesCount() const { return getSpatialiteDbInfo()->dbRasterLite2TablesCount(); }
+    int dbRasterLite2LayersCount() const { return getSpatialiteDbInfo()->dbRasterLite2LayersCount(); }
     //! Does the read Database contain Topology tables [-1=no topologies table, otherwise amount (0 being empty)]
-    int dbTopologyTablesCount() const { return getSpatialiteDbInfo()->dbTopologyTablesCount(); }
+    int dbTopologyExportTablesCount() const { return getSpatialiteDbInfo()->dbTopologyExportTablesCount(); }
     //! Is the used Spatialite compiled with Spatialite-Gcp support
     bool hasDbGcpSupport() const { return getSpatialiteDbInfo()->hasDbGcpSupport(); }
     //! Is the used Spatialite compiled with Topology (and thus RtTopo) support
@@ -226,9 +226,9 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
     //! The Spatialite Layer-Type being read
     SpatialiteDbInfo::SpatialiteLayerType getLayerType() const { return getDbLayer()->getLayerType(); }
     //! The Spatialite Geometry-Type being read
-    QgsWkbTypes::Type getGeomType() const { return getDbLayer()->getGeomType(); }
+    QgsWkbTypes::Type getGeometryType() const { return getDbLayer()->getGeometryType(); }
     //! The Spatialite Geometry-Type being read (as String)
-    QString getGeomTypeString() const { return getDbLayer()->getGeomTypeString(); }
+    QString getGeometryTypeString() const { return getDbLayer()->getGeometryTypeString(); }
     //! The Spatialite Coord-Dimensions
     int getCoordDimensions() const { return getDbLayer()->getCoordDimensions(); }
 
@@ -446,7 +446,7 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
     QString mUriLayerName;
 
     //! Geometry type
-    QgsWkbTypes::Type mGeomType;
+    QgsWkbTypes::Type mGeometryType;
 
     //! String used to define a subset of the layer
     QString mSubsetString;
@@ -468,8 +468,10 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
     //void sqliteOpen();
     void closeDb();
     bool checkQuery();
+#if 0
+    // TODO: Remove after replacing with SpatialiteDbInfo
     bool getQueryGeometryDetails();
-
+#endif
     bool prepareStatement( sqlite3_stmt *&stmt,
                            const QgsAttributeList &fetchAttributes,
                            bool fetchGeometry,

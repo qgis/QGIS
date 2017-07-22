@@ -33,11 +33,62 @@
 #include <QMessageBox>
 
 QGISEXTERN bool deleteLayer( const QString &dbPath, const QString &tableName, QString &errCause );
+static QgsLayerItem::LayerType _layerTypeFromDb( const QString &dbType )
+{
+  if ( dbType.startsWith( QLatin1String( "POINT" ) ) || dbType.startsWith( QLatin1String( "MULTIPOINT" ) ) )
+  {
+    return QgsLayerItem::Point;
+  }
+  else if ( dbType.startsWith( QLatin1String( "LINESTRING" ) ) || dbType.startsWith( QLatin1String( "MULTILINESTRING" ) ) )
+  {
+    return QgsLayerItem::Line;
+  }
+  else if ( dbType.startsWith( QLatin1String( "POLYGON" ) ) || dbType.startsWith( QLatin1String( "MULTIPOLYGON" ) ) )
+  {
+    return QgsLayerItem::Polygon;
+  }
+  else if ( dbType == QLatin1String( "qgis_table" ) )
+  {
+    return QgsLayerItem::Table;
+  }
+  else
+  {
+    return QgsLayerItem::NoType;
+  }
+}
 
 QgsSLLayerItem::QgsSLLayerItem( QgsDataItem *parent, QString name, QString path, QString uri, LayerType layerType )
-  : QgsLayerItem( parent, name, path, uri, layerType, QStringLiteral( "spatialite" ) )
+  : QgsLayerItem( parent, name, path, uri, layerType, QStringLiteral( "spatialite" ) ), mSpatialiteDbInfo( nullptr )
 {
   setState( Populated ); // no children are expected
+}
+QgsSLLayerItem::QgsSLLayerItem( QgsDataItem *parent, QString path, QString sLayerName, QString sLayerInfo, SpatialiteDbInfo *spatialiteDbInfo )
+  : QgsLayerItem( parent, "", "", "", QgsLayerItem::Point, QStringLiteral( "spatialite" ) ), mSpatialiteDbInfo( spatialiteDbInfo )
+{
+  setState( Populated ); // no children are expected
+  if ( mSpatialiteDbInfo )
+  {
+    QString sTableName  = sLayerName;
+    QString sGeometryColumn = QString::null;
+    mUri = mSpatialiteDbInfo->getDbLayerUris( sLayerName );
+    if ( ( sTableName.contains( "(" ) ) && ( sTableName.endsWith( QString( ")" ) ) ) )
+    {
+      // Extract GeometryName from sent 'table_name(field_name)' from layerName
+      QStringList sa_list_name = sTableName.split( "(" );
+      sGeometryColumn = sa_list_name[1].replace( ")", "" );
+      sTableName = sa_list_name[0];
+    }
+    //  GeometryType and Srid formatted as 'geometry_type:srid'
+    if ( sLayerInfo.contains( ";" ) )
+    {
+      QStringList sa_list_name = sTableName.split( ";" );
+      sLayerInfo = sa_list_name[0];
+    }
+    mLayerType = _layerTypeFromDb( sLayerInfo );
+    mName = sTableName;
+    setPath( QString( "%1/%2" ).arg( path ).arg( sTableName ) );
+  }
+
 }
 
 #ifdef HAVE_GUI
@@ -84,35 +135,54 @@ QgsSLConnectionItem::QgsSLConnectionItem( QgsDataItem *parent, QString name, QSt
   mCapabilities |= Collapse;
 }
 
-static QgsLayerItem::LayerType _layerTypeFromDb( const QString &dbType )
-{
-  if ( dbType == QLatin1String( "POINT" ) || dbType == QLatin1String( "MULTIPOINT" ) )
-  {
-    return QgsLayerItem::Point;
-  }
-  else if ( dbType == QLatin1String( "LINESTRING" ) || dbType == QLatin1String( "MULTILINESTRING" ) )
-  {
-    return QgsLayerItem::Line;
-  }
-  else if ( dbType == QLatin1String( "POLYGON" ) || dbType == QLatin1String( "MULTIPOLYGON" ) )
-  {
-    return QgsLayerItem::Polygon;
-  }
-  else if ( dbType == QLatin1String( "qgis_table" ) )
-  {
-    return QgsLayerItem::Table;
-  }
-  else
-  {
-    return QgsLayerItem::NoType;
-  }
-}
-
 QVector<QgsDataItem *> QgsSLConnectionItem::createChildren()
 {
   QVector<QgsDataItem *> children;
-  QgsSpatiaLiteConnection connection( mName );
-
+  QgsSpatiaLiteConnection connectionInfo( mName );
+  bool bLoadLayers = false;
+  bool bShared = true;
+  SpatialiteDbInfo *spatialiteDbInfo = connectionInfo.CreateSpatialiteConnection( QString(), bLoadLayers, bShared );
+  QString msgDetails;
+  QString msg;
+  if ( !spatialiteDbInfo )
+  {
+    if ( !QFile::exists( connectionInfo.path() ) )
+    {
+      msg = tr( "SpatiaLite DB Open Error" );
+      msgDetails = tr( "Database does not exist: %1" ).arg( connectionInfo.path() );
+    }
+    else
+    {
+      msg =  tr( "SpatiaLite DB Open Error" );
+      msgDetails = tr( " File is not a Sqlite3 Container: %1" ).arg( connectionInfo.path() );
+    }
+    children.append( new QgsErrorItem( this, msg, mPath + "/error" ) );
+    return children;
+    delete spatialiteDbInfo;
+    spatialiteDbInfo = nullptr;
+    return children;
+  }
+  else
+  {
+    if ( !spatialiteDbInfo->isDbValid() )
+    {
+      msg = tr( "SpatiaLite DB Open Error" );
+      msgDetails = tr( "The read Sqlite3 Container is not supported by QgsSpatiaLiteProvider,QgsOgrProvider or QgsGdalProvider: %1" ).arg( connectionInfo.path() );
+      children.append( new QgsErrorItem( this, msg, mPath + "/error" ) );
+      return children;
+    }
+    // populate the table list
+    // get the list of suitable tables and columns and populate the UI
+    // mTableModel.setSqliteDb( spatialiteDbInfo, cbxAllowGeometrylessTables->isChecked() );
+    SpatialiteDbInfo::SpatialiteLayerType typeLayer = SpatialiteDbInfo::AllSpatialLayers; // SpatialiteDbInfo::AllLayers
+    QMap<QString, QString> mapLayers = spatialiteDbInfo->getDbLayersType( typeLayer );
+    for ( QMap<QString, QString>::iterator itLayers = mapLayers.begin(); itLayers != mapLayers.end(); ++itLayers )
+    {
+      QgsSLLayerItem *layer = new QgsSLLayerItem( this, mPath, itLayers.key(), itLayers.value(), spatialiteDbInfo );
+      children.append( layer );
+    }
+  }
+#if 0
   QgsSpatiaLiteConnection::Error err = connection.fetchTables( false ); // TODO: allow geometryless tables
   if ( err != QgsSpatiaLiteConnection::NoError )
   {
@@ -151,6 +221,7 @@ QVector<QgsDataItem *> QgsSLConnectionItem::createChildren()
     QgsSLLayerItem *layer = new QgsSLLayerItem( this, entry.tableName, mPath + '/' + entry.tableName, uri.uri(), _layerTypeFromDb( entry.type ) );
     children.append( layer );
   }
+#endif
   return children;
 }
 

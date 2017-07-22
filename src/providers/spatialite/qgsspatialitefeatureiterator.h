@@ -52,7 +52,7 @@ class QgsSpatiaLiteFeatureSource : public QgsAbstractFeatureSource
     //! Name of the Layer format: 'table_name(geometry_name)'
     QString getLayerName() const { return getDbLayer()->getLayerName(); }
     //! The Spatialite Geometry-Type being read (as String)
-    QString getGeomTypeString() const { return getDbLayer()->getGeomTypeString(); }
+    QString getGeometryTypeString() const { return getDbLayer()->getGeometryTypeString(); }
     //! The SpatialiIndex used for the Geometry
     int getSpatialIndexType() const { return getDbLayer()->getSpatialIndexType(); }
     QString mSubsetString;
