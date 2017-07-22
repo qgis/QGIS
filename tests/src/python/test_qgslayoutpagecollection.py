@@ -296,6 +296,42 @@ class TestQgsLayoutPageCollection(unittest.TestCase):
         self.assertEqual(collection.positionOnPage(QPointF(-100, 370)), QPointF(-100, 63))
         self.assertEqual(collection.positionOnPage(QPointF(-100, 1270)), QPointF(-100, 753))
 
+    def testPageAtPoint(self):
+        """
+        Test pageAtPoint
+        """
+        p = QgsProject()
+        l = QgsLayout(p)
+        collection = l.pageCollection()
+
+        self.assertFalse(collection.pageAtPoint(QPointF(0, 0)))
+        self.assertFalse(collection.pageAtPoint(QPointF(10, 10)))
+
+        # add a page
+        page = QgsLayoutItemPage(l)
+        page.setPageSize('A4')
+        collection.addPage(page)
+
+        self.assertFalse(collection.pageAtPoint(QPointF(10, -1)))
+        self.assertEqual(collection.pageAtPoint(QPointF(1, 1)), page)
+        self.assertEqual(collection.pageAtPoint(QPointF(10, 10)), page)
+        self.assertFalse(collection.pageAtPoint(QPointF(-10, 10)))
+        self.assertFalse(collection.pageAtPoint(QPointF(1000, 10)))
+        self.assertFalse(collection.pageAtPoint(QPointF(10, -10)))
+        self.assertFalse(collection.pageAtPoint(QPointF(10, 1000)))
+
+        page2 = QgsLayoutItemPage(l)
+        page2.setPageSize('A5')
+        collection.addPage(page2)
+
+        self.assertEqual(collection.pageAtPoint(QPointF(1, 1)), page)
+        self.assertEqual(collection.pageAtPoint(QPointF(10, 10)), page)
+        self.assertFalse(collection.pageAtPoint(QPointF(-10, 10)))
+        self.assertFalse(collection.pageAtPoint(QPointF(1000, 10)))
+        self.assertFalse(collection.pageAtPoint(QPointF(10, -10)))
+        self.assertEqual(collection.pageAtPoint(QPointF(10, 330)), page2)
+        self.assertEqual(collection.pageAtPoint(QPointF(10, 500)), page2)
+        self.assertFalse(collection.pageAtPoint(QPointF(10, 600)))
 
 if __name__ == '__main__':
     unittest.main()

@@ -134,8 +134,30 @@ class QgsLayoutPageCollection : QObject
  Page numbers in collections begin at 0 - so a page number of 0 indicates the
  first page.
 
+.. note::
+
+   This is a relaxed check, which will always return a page number. For instance,
+ it does not consider x coordinates and vertical coordinates before the first page or
+ after the last page will still return the nearest page.
+
+.. seealso:: pageAtPoint()
 .. seealso:: positionOnPage()
  :rtype: int
+%End
+
+    QgsLayoutItemPage *pageAtPoint( QPointF point ) const;
+%Docstring
+ Returns the page at a specified ``point`` (in layout coordinates).
+
+ If no page exists at ``point``, None will be returned.
+
+.. note::
+
+   Unlike pageNumberForPoint(), this method only returns pages which
+ directly intersect with the specified point.
+
+.. seealso:: pageNumberForPoint()
+ :rtype: QgsLayoutItemPage
 %End
 
     QPointF positionOnPage( QPointF point ) const;

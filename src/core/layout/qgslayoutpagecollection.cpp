@@ -82,6 +82,20 @@ int QgsLayoutPageCollection::pageNumberForPoint( QPointF point ) const
   return pageNumber;
 }
 
+QgsLayoutItemPage *QgsLayoutPageCollection::pageAtPoint( QPointF point ) const
+{
+  Q_FOREACH ( QGraphicsItem *item, mLayout->items( point ) )
+  {
+    if ( item->type() == QgsLayoutItemRegistry::LayoutPage )
+    {
+      QgsLayoutItemPage *page = static_cast< QgsLayoutItemPage * >( item );
+      if ( page->mapToScene( page->rect() ).boundingRect().contains( point ) )
+        return page;
+    }
+  }
+  return nullptr;
+}
+
 QPointF QgsLayoutPageCollection::positionOnPage( QPointF position ) const
 {
   double startCurrentPageY = 0;
