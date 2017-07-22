@@ -150,7 +150,7 @@ void QgsLayoutRuler::paintEvent( QPaintEvent *event )
         }
         endPage = page;
 
-        currentY += layout->pageCollection()->page( startPage )->rect().height() + layout->pageCollection()->SPACE_BETWEEN_PAGES;
+        currentY += layout->pageCollection()->page( startPage )->rect().height() + layout->pageCollection()->spaceBetweenPages();
         if ( currentY > endY )
           break;
       }
@@ -199,7 +199,7 @@ void QgsLayoutRuler::paintEvent( QPaintEvent *event )
         if ( i < endPage )
         {
           //not the last page
-          nextPageStartPos = currentPageY + layout->pageCollection()->page( i )->rect().height() + layout->pageCollection()->SPACE_BETWEEN_PAGES;
+          nextPageStartPos = currentPageY + layout->pageCollection()->page( i )->rect().height() + layout->pageCollection()->spaceBetweenPages();
           nextPageStartPixel = mTransform.map( QPointF( 0, nextPageStartPos ) ).y();
         }
         else
@@ -230,7 +230,7 @@ void QgsLayoutRuler::paintEvent( QPaintEvent *event )
           pageCoord += mmDisplay;
           totalCoord += mmDisplay;
         }
-        currentPageY += layout->pageCollection()->page( i )->rect().height() + layout->pageCollection()->SPACE_BETWEEN_PAGES;
+        currentPageY += layout->pageCollection()->page( i )->rect().height() + layout->pageCollection()->spaceBetweenPages();
       }
       break;
     }

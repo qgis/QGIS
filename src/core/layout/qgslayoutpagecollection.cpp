@@ -48,7 +48,7 @@ void QgsLayoutPageCollection::reflow()
   Q_FOREACH ( QgsLayoutItemPage *page, mPages )
   {
     page->attemptMove( p );
-    currentY += mLayout->convertToLayoutUnits( page->pageSize() ).height() + SPACE_BETWEEN_PAGES;
+    currentY += mLayout->convertToLayoutUnits( page->pageSize() ).height() + spaceBetweenPages();
     p.setY( currentY );
   }
   mLayout->updateBounds();
@@ -71,7 +71,7 @@ int QgsLayoutPageCollection::pageNumberForPoint( QPointF point ) const
   double startNextPageY = 0;
   Q_FOREACH ( QgsLayoutItemPage *page, mPages )
   {
-    startNextPageY += page->rect().height() + SPACE_BETWEEN_PAGES;
+    startNextPageY += page->rect().height() + spaceBetweenPages();
     if ( startNextPageY > point.y() )
       break;
     pageNumber++;
@@ -90,7 +90,7 @@ QPointF QgsLayoutPageCollection::positionOnPage( QPointF position ) const
   Q_FOREACH ( QgsLayoutItemPage *page, mPages )
   {
     startCurrentPageY = startNextPageY;
-    startNextPageY += page->rect().height() + SPACE_BETWEEN_PAGES;
+    startNextPageY += page->rect().height() + spaceBetweenPages();
     if ( startNextPageY > position.y() )
       break;
     pageNumber++;
@@ -101,7 +101,7 @@ QPointF QgsLayoutPageCollection::positionOnPage( QPointF position ) const
   {
     //y coordinate is greater then the end of the last page, so return distance between
     //top of last page and y coordinate
-    y = position.y() - ( startNextPageY - SPACE_BETWEEN_PAGES );
+    y = position.y() - ( startNextPageY - spaceBetweenPages() );
   }
   else
   {
@@ -109,6 +109,16 @@ QPointF QgsLayoutPageCollection::positionOnPage( QPointF position ) const
     y = position.y() - startCurrentPageY;
   }
   return QPointF( position.x(), y );
+}
+
+double QgsLayoutPageCollection::spaceBetweenPages() const
+{
+  return mLayout->convertToLayoutUnits( QgsLayoutMeasurement( 10 ) );
+}
+
+double QgsLayoutPageCollection::pageShadowWidth() const
+{
+  return spaceBetweenPages() / 2;
 }
 
 QgsLayout *QgsLayoutPageCollection::layout() const

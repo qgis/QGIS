@@ -30,7 +30,7 @@ QgsLayoutItemPage::QgsLayoutItemPage( QgsLayout *layout )
 
   // use a hidden pen to specify the amount the page "bleeds" outside it's scene bounds,
   // (it's a lot easier than reimplementing boundingRect() just to handle this)
-  QPen shadowPen( QBrush( Qt::transparent ), QgsLayoutPageCollection::PAGE_SHADOW_WIDTH * 2 );
+  QPen shadowPen( QBrush( Qt::transparent ), layout->pageCollection()->pageShadowWidth() * 2 );
   setPen( shadowPen );
 
   QFont font;
@@ -134,8 +134,8 @@ void QgsLayoutItemPage::draw( QgsRenderContext &context, const QStyleOptionGraph
     //shadow
     painter->setBrush( QBrush( QColor( 150, 150, 150 ) ) );
     painter->setPen( Qt::NoPen );
-    painter->drawRect( pageRect.translated( qMin( scale * QgsLayoutPageCollection::PAGE_SHADOW_WIDTH, mMaximumShadowWidth ),
-                                            qMin( scale * QgsLayoutPageCollection::PAGE_SHADOW_WIDTH, mMaximumShadowWidth ) ) );
+    painter->drawRect( pageRect.translated( qMin( scale * mLayout->pageCollection()->pageShadowWidth(), mMaximumShadowWidth ),
+                                            qMin( scale * mLayout->pageCollection()->pageShadowWidth(), mMaximumShadowWidth ) ) );
 
     //page area
     painter->setBrush( QColor( 215, 215, 215 ) );
