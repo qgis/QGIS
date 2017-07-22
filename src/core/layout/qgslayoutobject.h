@@ -49,8 +49,8 @@ class CORE_EXPORT QgsLayoutObject: public QObject, public QgsExpressionContextGe
       TestProperty, //!< Dummy property with no effect on item
       //composer page properties
       PresetPaperSize, //!< Preset paper size for composition
-      PaperWidth, //!< Paper width
-      PaperHeight, //!< Paper height
+      PaperWidth, //!< Paper width (deprecated)
+      PaperHeight, //!< Paper height (deprecated)
       NumPages, //!< Number of pages in composition
       PaperOrientation, //!< Paper orientation
       //general composer item properties
