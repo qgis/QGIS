@@ -41,6 +41,12 @@ class QgsLayoutPagePropertiesWidget : public QgsLayoutItemBaseWidget, private Ui
      */
     QgsLayoutPagePropertiesWidget( QWidget *parent, QgsLayoutItem *page );
 
+  private slots:
+
+    void pageSizeChanged( int index );
+    void orientationChanged( int index );
+    void updatePageSize();
+
   private:
 
     QgsLayoutItemPage *mPage = nullptr;

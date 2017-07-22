@@ -14,7 +14,10 @@
  ***************************************************************************/
 
 #include "qgslayoutpagepropertieswidget.h"
+#include "qgsapplication.h"
+#include "qgspagesizeregistry.h"
 #include "qgslayoutitempage.h"
+#include "qgslayout.h"
 
 QgsLayoutPagePropertiesWidget::QgsLayoutPagePropertiesWidget( QWidget *parent, QgsLayoutItem *layoutItem )
   : QgsLayoutItemBaseWidget( parent, layoutItem )
@@ -22,4 +25,106 @@ QgsLayoutPagePropertiesWidget::QgsLayoutPagePropertiesWidget( QWidget *parent, Q
 {
   setupUi( this );
 
+  mPageOrientationComboBox->addItem( tr( "Portrait" ), QgsLayoutItemPage::Portrait );
+  mPageOrientationComboBox->addItem( tr( "Landscape" ), QgsLayoutItemPage::Landscape );
+
+  Q_FOREACH ( const QgsPageSize &size, QgsApplication::pageSizeRegistry()->entries() )
+  {
+    mPageSizeComboBox->addItem( size.displayName, size.name );
+  }
+  mPageSizeComboBox->addItem( tr( "Custom" ) );
+  mPageSizeComboBox->setCurrentIndex( mPageSizeComboBox->count() - 1 );
+  //TODO - match to preset page sizes
+
+  mWidthSpin->setValue( mPage->pageSize().width() );
+  mHeightSpin->setValue( mPage->pageSize().height() );
+  mSizeUnitsComboBox->setUnit( mPage->pageSize().units() );
+
+  mPageOrientationComboBox->setCurrentIndex( mPageOrientationComboBox->findData( mPage->orientation() ) );
+
+  mSizeUnitsComboBox->linkToWidget( mWidthSpin );
+  mSizeUnitsComboBox->linkToWidget( mHeightSpin );
+  mSizeUnitsComboBox->setConverter( &mPage->layout()->context().measurementConverter() );
+
+  mLockAspectRatio->setWidthSpinBox( mWidthSpin );
+  mLockAspectRatio->setHeightSpinBox( mHeightSpin );
+
+  connect( mPageSizeComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsLayoutPagePropertiesWidget::pageSizeChanged );
+  connect( mPageOrientationComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsLayoutPagePropertiesWidget::orientationChanged );
+
+  connect( mWidthSpin, static_cast< void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, &QgsLayoutPagePropertiesWidget::updatePageSize );
+  connect( mHeightSpin, static_cast< void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, &QgsLayoutPagePropertiesWidget::updatePageSize );
+
+}
+
+void QgsLayoutPagePropertiesWidget::pageSizeChanged( int )
+{
+  if ( mPageSizeComboBox->currentData().toString().isEmpty() )
+  {
+    //custom size
+    mWidthSpin->setEnabled( true );
+    mHeightSpin->setEnabled( true );
+    mLockAspectRatio->setEnabled( true );
+    mSizeUnitsComboBox->setEnabled( true );
+    mPageOrientationComboBox->setEnabled( false );
+  }
+  else
+  {
+    mWidthSpin->setEnabled( false );
+    mHeightSpin->setEnabled( false );
+    mLockAspectRatio->setEnabled( false );
+    mLockAspectRatio->setLocked( false );
+    mSizeUnitsComboBox->setEnabled( false );
+    mPageOrientationComboBox->setEnabled( true );
+    QgsPageSize size = QgsApplication::pageSizeRegistry()->find( mPageSizeComboBox->currentData().toString() ).value( 0 );
+    QgsLayoutSize convertedSize = mConverter.convert( size.size, mSizeUnitsComboBox->unit() );
+    switch ( mPageOrientationComboBox->currentData().toInt() )
+    {
+      case QgsLayoutItemPage::Landscape:
+        mWidthSpin->setValue( convertedSize.height() );
+        mHeightSpin->setValue( convertedSize.width() );
+        break;
+
+      case QgsLayoutItemPage::Portrait:
+        mWidthSpin->setValue( convertedSize.width() );
+        mHeightSpin->setValue( convertedSize.height() );
+        break;
+    }
+  }
+  updatePageSize();
+}
+
+void QgsLayoutPagePropertiesWidget::orientationChanged( int )
+{
+  if ( mPageSizeComboBox->currentData().toString().isEmpty() )
+    return;
+
+  double width = mWidthSpin->value();
+  double height = mHeightSpin->value();
+  switch ( mPageOrientationComboBox->currentData().toInt() )
+  {
+    case QgsLayoutItemPage::Landscape:
+      if ( width < height )
+      {
+        whileBlocking( mWidthSpin )->setValue( height );
+        whileBlocking( mHeightSpin )->setValue( width );
+      }
+      break;
+
+    case QgsLayoutItemPage::Portrait:
+      if ( width > height )
+      {
+        whileBlocking( mWidthSpin )->setValue( height );
+        whileBlocking( mHeightSpin )->setValue( width );
+      }
+      break;
+  }
+
+  updatePageSize();
+}
+
+void QgsLayoutPagePropertiesWidget::updatePageSize()
+{
+  mPage->setPageSize( QgsLayoutSize( mWidthSpin->value(), mHeightSpin->value(), mSizeUnitsComboBox->unit() ) );
+  mPage->layout()->pageCollection()->reflow();
 }
