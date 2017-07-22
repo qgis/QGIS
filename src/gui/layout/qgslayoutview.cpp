@@ -28,6 +28,7 @@
 #include "qgsapplication.h"
 #include <memory>
 #include <QDesktopWidget>
+#include <QMenu>
 
 #define MIN_VIEW_SCALE 0.05
 #define MAX_VIEW_SCALE 1000.0
@@ -139,6 +140,16 @@ void QgsLayoutView::setVerticalRuler( QgsLayoutRuler *ruler )
   updateRulers();
 }
 
+void QgsLayoutView::setMenuProvider( QgsLayoutViewMenuProvider *provider )
+{
+  mMenuProvider.reset( provider );
+}
+
+QgsLayoutViewMenuProvider *QgsLayoutView::menuProvider() const
+{
+  return mMenuProvider.get();
+}
+
 void QgsLayoutView::zoomFull()
 {
   fitInView( scene()->sceneRect(), Qt::KeepAspectRatio );
@@ -204,6 +215,15 @@ void QgsLayoutView::mousePressEvent( QMouseEvent *event )
       // Pan layout with middle mouse button
       setTool( mMidMouseButtonPanTool );
       event->accept();
+    }
+    else if ( event->button() == Qt::RightButton && mMenuProvider )
+    {
+      QMenu *menu = mMenuProvider->createContextMenu( this, currentLayout(), mapToScene( event->pos() ) );
+      if ( menu )
+      {
+        menu->exec( event->globalPos() );
+        delete menu;
+      }
     }
     else
     {

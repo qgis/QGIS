@@ -22,13 +22,16 @@
 #include "qgis_gui.h"
 #include <QPointer>
 #include <QGraphicsView>
+#include <memory>
 
+class QMenu;
 class QgsLayout;
 class QgsLayoutViewTool;
 class QgsLayoutViewToolTemporaryKeyPan;
 class QgsLayoutViewToolTemporaryKeyZoom;
 class QgsLayoutViewToolTemporaryMousePan;
 class QgsLayoutRuler;
+class QgsLayoutViewMenuProvider;
 
 /**
  * \ingroup gui
@@ -111,6 +114,18 @@ class GUI_EXPORT QgsLayoutView: public QGraphicsView
      * \see setHorizontalRuler()
      */
     void setVerticalRuler( QgsLayoutRuler *ruler );
+
+    /**
+     * Sets a \a provider for context menus. Ownership of the provider is transferred to the view.
+     * \see menuProvider()
+     */
+    void setMenuProvider( QgsLayoutViewMenuProvider *provider SIP_TRANSFER );
+
+    /**
+    * Returns the provider for context menus. Returned value may be nullptr if no provider is set.
+    * \see setMenuProvider()
+    */
+    QgsLayoutViewMenuProvider *menuProvider() const;
 
   public slots:
 
@@ -228,9 +243,31 @@ class GUI_EXPORT QgsLayoutView: public QGraphicsView
 
     QgsLayoutRuler *mHorizontalRuler = nullptr;
     QgsLayoutRuler *mVerticalRuler = nullptr;
+    std::unique_ptr< QgsLayoutViewMenuProvider > mMenuProvider;
 
     friend class TestQgsLayoutView;
 
+};
+
+
+/**
+ * \ingroup gui
+ *
+ * Interface for a QgsLayoutView context menu.
+ *
+ * Implementations of this interface can be made to allow QgsLayoutView
+ * instances to provide custom context menus (opened upon right-click).
+ *
+ * \see QgsLayoutView
+ * \since QGIS 3.0
+ */
+class GUI_EXPORT QgsLayoutViewMenuProvider
+{
+  public:
+    virtual ~QgsLayoutViewMenuProvider() = default;
+
+    //! Return a newly created menu instance (or null pointer on error)
+    virtual QMenu *createContextMenu( QWidget *parent SIP_TRANSFER, QgsLayout *layout, QPointF layoutPoint ) const = 0 SIP_FACTORY;
 };
 
 #endif // QGSLAYOUTVIEW_H
