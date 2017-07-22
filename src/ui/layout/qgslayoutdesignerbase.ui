@@ -83,7 +83,7 @@
      <x>0</x>
      <y>0</y>
      <width>1083</width>
-     <height>25</height>
+     <height>42</height>
     </rect>
    </property>
    <widget class="QMenu" name="mLayoutMenu">
@@ -107,6 +107,11 @@
       <string>&amp;Toolbars</string>
      </property>
     </widget>
+    <widget class="QMenu" name="mPanelsMenu">
+     <property name="title">
+      <string>&amp;Panels</string>
+     </property>
+    </widget>
     <addaction name="mActionZoomIn"/>
     <addaction name="mActionZoomOut"/>
     <addaction name="mActionZoomActual"/>
@@ -116,6 +121,7 @@
     <addaction name="mActionShowRulers"/>
     <addaction name="separator"/>
     <addaction name="mToolbarMenu"/>
+    <addaction name="mPanelsMenu"/>
     <addaction name="mActionToggleFullScreen"/>
    </widget>
    <addaction name="mLayoutMenu"/>

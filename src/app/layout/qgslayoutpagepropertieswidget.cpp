@@ -1,6 +1,6 @@
 /***************************************************************************
-                             qgslayoutappmenuprovider.h
-                             -------------------------
+                             qgslayoutpagepropertieswidget.cpp
+                             ---------------------------------
     Date                 : July 2017
     Copyright            : (C) 2017 Nyall Dawson
     Email                : nyall dot dawson at gmail dot com
@@ -13,32 +13,13 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef QGSLAYOUTAPPMENUPROVIDER_H
-#define QGSLAYOUTAPPMENUPROVIDER_H
+#include "qgslayoutpagepropertieswidget.h"
+#include "qgslayoutitempage.h"
 
-#include "qgis.h"
-#include "qgslayoutview.h"
-#include <QObject>
-
-class QgsLayoutDesignerDialog;
-
-/**
- * A menu provider for QgsLayoutView
- */
-class QgsLayoutAppMenuProvider : public QObject, public QgsLayoutViewMenuProvider
+QgsLayoutPagePropertiesWidget::QgsLayoutPagePropertiesWidget( QWidget *parent, QgsLayoutItem *layoutItem )
+  : QgsLayoutItemBaseWidget( parent, layoutItem )
+  , mPage( static_cast< QgsLayoutItemPage *>( layoutItem ) )
 {
-    Q_OBJECT
+  setupUi( this );
 
-  public:
-
-    QgsLayoutAppMenuProvider( QgsLayoutDesignerDialog *designer );
-
-    QMenu *createContextMenu( QWidget *parent, QgsLayout *layout, QPointF layoutPoint ) const override;
-
-  private:
-
-    QgsLayoutDesignerDialog *mDesigner = nullptr;
-
-};
-
-#endif // QGSLAYOUTAPPMENUPROVIDER_H
+}

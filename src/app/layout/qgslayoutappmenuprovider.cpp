@@ -15,12 +15,14 @@
 
 #include "qgslayoutappmenuprovider.h"
 #include "qgslayoutitempage.h"
+#include "qgslayoutdesignerdialog.h"
 #include "qgslayout.h"
 #include <QMenu>
 #include <QMessageBox>
 
-QgsLayoutAppMenuProvider::QgsLayoutAppMenuProvider( QObject *parent )
-  : QObject( parent )
+QgsLayoutAppMenuProvider::QgsLayoutAppMenuProvider( QgsLayoutDesignerDialog *designer )
+  : QObject( nullptr )
+  , mDesigner( designer )
 {
 
 }
@@ -34,10 +36,9 @@ QMenu *QgsLayoutAppMenuProvider::createContextMenu( QWidget *parent, QgsLayout *
   if ( page )
   {
     QAction *pagePropertiesAction = new QAction( tr( "Page Properties…" ), menu );
-    connect( pagePropertiesAction, &QAction::triggered, this, [page]()
+    connect( pagePropertiesAction, &QAction::triggered, this, [this, page]()
     {
-
-
+      mDesigner->showItemOptions( page );
     } );
     menu->addAction( pagePropertiesAction );
     QAction *removePageAction = new QAction( tr( "Remove Page" ), menu );

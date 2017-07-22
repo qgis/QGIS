@@ -32,6 +32,9 @@ class QComboBox;
 class QSlider;
 class QLabel;
 class QgsLayoutAppMenuProvider;
+class QgsLayoutItem;
+class QgsPanelWidgetStack;
+class QgsDockWidget;
 
 class QgsAppLayoutDesignerInterface : public QgsLayoutDesignerInterface
 {
@@ -90,6 +93,10 @@ class QgsLayoutDesignerDialog: public QMainWindow, private Ui::QgsLayoutDesigner
      */
     void setIconSizes( int size );
 
+    /**
+     * Shows the configuration widget for the specified layout \a item.
+     */
+    void showItemOptions( QgsLayoutItem *item );
 
   public slots:
 
@@ -138,6 +145,8 @@ class QgsLayoutDesignerDialog: public QMainWindow, private Ui::QgsLayoutDesigner
 
   private:
 
+    static bool sInitializedRegistry;
+
     QgsAppLayoutDesignerInterface *mInterface = nullptr;
 
     QgsLayout *mLayout = nullptr;
@@ -170,6 +179,9 @@ class QgsLayoutDesignerDialog: public QMainWindow, private Ui::QgsLayoutDesigner
 
     QgsLayoutAppMenuProvider *mMenuProvider;
 
+    QgsDockWidget *mItemDock = nullptr;
+    QgsPanelWidgetStack *mItemPropertiesStack = nullptr;
+
     //! Save window state
     void saveWindowState();
 
@@ -178,6 +190,8 @@ class QgsLayoutDesignerDialog: public QMainWindow, private Ui::QgsLayoutDesigner
 
     //! Switch to new item creation tool, for a new item of the specified \a type.
     void activateNewItemCreationTool( int type );
+
+    void initializeRegistry();
 
 };
 

@@ -28,7 +28,14 @@ class QgsLayoutItemAbstractGuiMetadata
 %End
   public:
 
-    QgsLayoutItemAbstractGuiMetadata( int type, const QString &groupId = QString() );
+    enum Flag
+    {
+      FlagNoCreationTools,
+    };
+    typedef QFlags<QgsLayoutItemAbstractGuiMetadata::Flag> Flags;
+
+
+    QgsLayoutItemAbstractGuiMetadata( int type, const QString &groupId = QString(), Flags flags = 0 );
 %Docstring
  Constructor for QgsLayoutItemAbstractGuiMetadata with the specified class ``type``.
 
@@ -41,6 +48,12 @@ class QgsLayoutItemAbstractGuiMetadata
 %Docstring
  Returns the unique item type code for the layout item class.
  :rtype: int
+%End
+
+    Flags flags() const;
+%Docstring
+ Returns item flags.
+ :rtype: Flags
 %End
 
     QString groupId() const;

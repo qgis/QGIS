@@ -1,6 +1,6 @@
 /***************************************************************************
-                             qgslayoutappmenuprovider.h
-                             -------------------------
+                             qgslayoutpagepropertieswidget.h
+                             -------------------------------
     Date                 : July 2017
     Copyright            : (C) 2017 Nyall Dawson
     Email                : nyall dot dawson at gmail dot com
@@ -13,32 +13,40 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef QGSLAYOUTAPPMENUPROVIDER_H
-#define QGSLAYOUTAPPMENUPROVIDER_H
+#ifndef QGSLAYOUTPAGEPROPERTIESWIDGET_H
+#define QGSLAYOUTPAGEPROPERTIESWIDGET_H
 
 #include "qgis.h"
-#include "qgslayoutview.h"
-#include <QObject>
+#include "ui_qgslayoutpagepropertieswidget.h"
 
-class QgsLayoutDesignerDialog;
+#include "qgslayoutsize.h"
+#include "qgslayoutpoint.h"
+#include "qgslayoutitemwidget.h"
+#include "qgslayoutmeasurementconverter.h"
+
+class QgsLayoutItem;
+class QgsLayoutItemPage;
 
 /**
- * A menu provider for QgsLayoutView
+ * A widget for configuring properties of pages in a layout
  */
-class QgsLayoutAppMenuProvider : public QObject, public QgsLayoutViewMenuProvider
+class QgsLayoutPagePropertiesWidget : public QgsLayoutItemBaseWidget, private Ui::QgsLayoutPagePropertiesWidget
 {
     Q_OBJECT
 
   public:
 
-    QgsLayoutAppMenuProvider( QgsLayoutDesignerDialog *designer );
-
-    QMenu *createContextMenu( QWidget *parent, QgsLayout *layout, QPointF layoutPoint ) const override;
+    /**
+     * Constructor for QgsLayoutPagePropertiesWidget.
+     */
+    QgsLayoutPagePropertiesWidget( QWidget *parent, QgsLayoutItem *page );
 
   private:
 
-    QgsLayoutDesignerDialog *mDesigner = nullptr;
+    QgsLayoutItemPage *mPage = nullptr;
+
+    QgsLayoutMeasurementConverter mConverter;
 
 };
 
-#endif // QGSLAYOUTAPPMENUPROVIDER_H
+#endif // QGSLAYOUTPAGEPROPERTIESWIDGET_H

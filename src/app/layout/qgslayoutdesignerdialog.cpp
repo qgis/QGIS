@@ -27,10 +27,15 @@
 #include "qgslayoutviewtoolpan.h"
 #include "qgslayoutviewtoolzoom.h"
 #include "qgslayoutviewtoolselect.h"
+#include "qgslayoutitemwidget.h"
 #include "qgsgui.h"
 #include "qgslayoutitemguiregistry.h"
 #include "qgslayoutruler.h"
 #include "qgslayoutaddpagesdialog.h"
+#include "qgspanelwidgetstack.h"
+#include "qgspanelwidget.h"
+#include "qgsdockwidget.h"
+#include "qgslayoutpagepropertieswidget.h"
 #include <QShortcut>
 #include <QComboBox>
 #include <QLineEdit>
@@ -43,6 +48,8 @@
 QList<double> QgsLayoutDesignerDialog::sStatusZoomLevelsList { 0.125, 0.25, 0.5, 1.0, 2.0, 4.0, 8.0};
 #define FIT_LAYOUT -101
 #define FIT_LAYOUT_WIDTH -102
+
+bool QgsLayoutDesignerDialog::sInitializedRegistry = false;
 
 QgsAppLayoutDesignerInterface::QgsAppLayoutDesignerInterface( QgsLayoutDesignerDialog *dialog )
   : QgsLayoutDesignerInterface( dialog )
@@ -70,6 +77,10 @@ QgsLayoutDesignerDialog::QgsLayoutDesignerDialog( QWidget *parent, Qt::WindowFla
   , mInterface( new QgsAppLayoutDesignerInterface( this ) )
   , mToolsActionGroup( new QActionGroup( this ) )
 {
+  if ( !sInitializedRegistry )
+  {
+    initializeRegistry();
+  }
   QgsSettings settings;
   int size = settings.value( QStringLiteral( "IconSize" ), QGIS_ICON_SIZE ).toInt();
   setIconSize( QSize( size, size ) );
@@ -222,8 +233,21 @@ QgsLayoutDesignerDialog::QgsLayoutDesignerDialog( QWidget *parent, Qt::WindowFla
 
   connect( mActionToggleFullScreen, &QAction::toggled, this, &QgsLayoutDesignerDialog::toggleFullScreen );
 
-  mMenuProvider = new QgsLayoutAppMenuProvider();
+  mMenuProvider = new QgsLayoutAppMenuProvider( this );
   mView->setMenuProvider( mMenuProvider );
+
+  int minDockWidth( fontMetrics().width( QStringLiteral( "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX" ) ) );
+
+  mItemDock = new QgsDockWidget( tr( "Item properties" ), this );
+  mItemDock->setObjectName( QStringLiteral( "ItemDock" ) );
+  mItemDock->setMinimumWidth( minDockWidth );
+  mItemPropertiesStack = new QgsPanelWidgetStack();
+  mItemDock->setWidget( mItemPropertiesStack );
+  mPanelsMenu->addAction( mItemDock->toggleViewAction() );
+
+  addDockWidget( Qt::RightDockWidgetArea, mItemDock );
+
+  mItemDock->show();
 
   restoreWindowState();
 }
@@ -255,6 +279,25 @@ void QgsLayoutDesignerDialog::setIconSizes( int size )
   {
     toolbar->setIconSize( QSize( size, size ) );
   }
+}
+
+void QgsLayoutDesignerDialog::showItemOptions( QgsLayoutItem *item )
+{
+  if ( !item )
+  {
+    delete mItemPropertiesStack->takeMainPanel();
+    return;
+  }
+
+  std::unique_ptr< QgsLayoutItemBaseWidget > widget( QgsGui::layoutItemGuiRegistry()->createItemWidget( item ) );
+  if ( ! widget )
+  {
+    return;
+  }
+
+  delete mItemPropertiesStack->takeMainPanel();
+  widget->setDockMode( true );
+  mItemPropertiesStack->setMainPanel( widget.release() );
 }
 
 void QgsLayoutDesignerDialog::open()
@@ -302,6 +345,9 @@ void QgsLayoutDesignerDialog::closeEvent( QCloseEvent * )
 
 void QgsLayoutDesignerDialog::itemTypeAdded( int type )
 {
+  if ( QgsGui::layoutItemGuiRegistry()->itemMetadata( type )->flags() & QgsLayoutItemAbstractGuiMetadata::FlagNoCreationTools )
+    return;
+
   QString name = QgsApplication::layoutItemRegistry()->itemMetadata( type )->visibleName();
   QString groupId = QgsGui::layoutItemGuiRegistry()->itemMetadata( type )->groupId();
   QToolButton *groupButton = nullptr;
@@ -530,6 +576,18 @@ void QgsLayoutDesignerDialog::activateNewItemCreationTool( int type )
   {
     mView->setTool( mAddItemTool );
   }
+}
+
+void QgsLayoutDesignerDialog::initializeRegistry()
+{
+  sInitializedRegistry = true;
+  auto createPageWidget = ( []( QgsLayoutItem * item )->QgsLayoutItemBaseWidget *
+  {
+    return new QgsLayoutPagePropertiesWidget( nullptr, item );
+  } );
+
+  QgsGui::layoutItemGuiRegistry()->addLayoutItemGuiMetadata( new QgsLayoutItemGuiMetadata( QgsLayoutItemRegistry::LayoutPage, QIcon(), createPageWidget, nullptr, QString(), QgsLayoutItemAbstractGuiMetadata::FlagNoCreationTools ) );
+
 }
 
 

@@ -46,14 +46,22 @@ class GUI_EXPORT QgsLayoutItemAbstractGuiMetadata
 {
   public:
 
+    //! Flags for controlling how a items behave in the GUI
+    enum Flag
+    {
+      FlagNoCreationTools = 1 << 1,  //!< Do not show item creation tools for the item type
+    };
+    Q_DECLARE_FLAGS( Flags, Flag )
+
     /**
      * Constructor for QgsLayoutItemAbstractGuiMetadata with the specified class \a type.
      *
      * An optional \a groupId can be set, which allows grouping of related layout item classes. See QgsLayoutItemGuiMetadata for details.
      */
-    QgsLayoutItemAbstractGuiMetadata( int type, const QString &groupId = QString() )
+    QgsLayoutItemAbstractGuiMetadata( int type, const QString &groupId = QString(), Flags flags = 0 )
       : mType( type )
       , mGroupId( groupId )
+      , mFlags( flags )
     {}
 
     virtual ~QgsLayoutItemAbstractGuiMetadata() = default;
@@ -62,6 +70,11 @@ class GUI_EXPORT QgsLayoutItemAbstractGuiMetadata
      * Returns the unique item type code for the layout item class.
      */
     int type() const { return mType; }
+
+    /**
+     * Returns item flags.
+     */
+    Flags flags() const { return mFlags; }
 
     /**
      * Returns the item group ID, if set.
@@ -88,6 +101,7 @@ class GUI_EXPORT QgsLayoutItemAbstractGuiMetadata
 
     int mType = -1;
     QString mGroupId;
+    Flags mFlags;
 
 };
 
@@ -118,8 +132,8 @@ class GUI_EXPORT QgsLayoutItemGuiMetadata : public QgsLayoutItemAbstractGuiMetad
      */
     QgsLayoutItemGuiMetadata( int type, const QIcon &creationIcon,
                               QgsLayoutItemWidgetFunc pfWidget = nullptr,
-                              QgsLayoutItemRubberBandFunc pfRubberBand = nullptr, const QString &groupId = QString() )
-      : QgsLayoutItemAbstractGuiMetadata( type, groupId )
+                              QgsLayoutItemRubberBandFunc pfRubberBand = nullptr, const QString &groupId = QString(), QgsLayoutItemAbstractGuiMetadata::Flags flags = 0 )
+      : QgsLayoutItemAbstractGuiMetadata( type, groupId, flags )
       , mIcon( creationIcon )
       , mWidgetFunc( pfWidget )
       , mRubberBandFunc( pfRubberBand )
