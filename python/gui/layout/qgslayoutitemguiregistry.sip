@@ -55,10 +55,10 @@ class QgsLayoutItemAbstractGuiMetadata
  :rtype: QIcon
 %End
 
-    virtual QWidget *createItemWidget() /Factory/;
+    virtual QgsLayoutItemBaseWidget *createItemWidget( QgsLayoutItem *item ) /Factory/;
 %Docstring
- Creates a configuration widget for layout items of this type. Can return None if no configuration GUI is required.
- :rtype: QWidget
+ Creates a configuration widget for an ``item`` of this type. Can return None if no configuration GUI is required.
+ :rtype: QgsLayoutItemBaseWidget
 %End
 
     virtual QgsLayoutViewRubberBand *createRubberBand( QgsLayoutView *view ) /Factory/;
@@ -186,10 +186,10 @@ class QgsLayoutItemGuiRegistry : QObject
  :rtype: QgsLayoutItemGuiGroup
 %End
 
-    QWidget *createItemWidget( int type ) const /Factory/;
+    QgsLayoutItemBaseWidget *createItemWidget( QgsLayoutItem *item ) const /Factory/;
 %Docstring
- Creates a new instance of a layout item configuration widget for the specified item ``type``.
- :rtype: QWidget
+ Creates a new instance of a layout item configuration widget for the specified ``item``.
+ :rtype: QgsLayoutItemBaseWidget
 %End
 
 

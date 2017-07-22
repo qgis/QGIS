@@ -92,12 +92,15 @@ const QgsLayoutItemGuiGroup &QgsLayoutItemGuiRegistry::itemGroup( const QString 
   return mItemGroups[ id ];
 }
 
-QWidget *QgsLayoutItemGuiRegistry::createItemWidget( int type ) const
+QgsLayoutItemBaseWidget *QgsLayoutItemGuiRegistry::createItemWidget( QgsLayoutItem *item ) const
 {
-  if ( !mMetadata.contains( type ) )
+  if ( !item )
     return nullptr;
 
-  return mMetadata[type]->createItemWidget();
+  if ( !mMetadata.contains( item->type() ) )
+    return nullptr;
+
+  return mMetadata[item->type()]->createItemWidget( item );
 }
 
 QgsLayoutViewRubberBand *QgsLayoutItemGuiRegistry::createItemRubberBand( int type, QgsLayoutView *view ) const
