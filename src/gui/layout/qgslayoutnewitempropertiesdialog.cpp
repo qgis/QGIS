@@ -53,9 +53,9 @@ QgsLayoutItemPropertiesDialog::QgsLayoutItemPropertiesDialog( QWidget *parent, Q
 
 void QgsLayoutItemPropertiesDialog::setItemPosition( QgsLayoutPoint position )
 {
+  mPosUnitsComboBox->setUnit( position.units() );
   mXPosSpin->setValue( position.x() );
   mYPosSpin->setValue( position.y() );
-  mPosUnitsComboBox->setUnit( position.units() );
 }
 
 QgsLayoutPoint QgsLayoutItemPropertiesDialog::itemPosition() const
