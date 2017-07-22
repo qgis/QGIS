@@ -17,7 +17,7 @@
 #include "qgspagesizeregistry.h"
 #include "qgssettings.h"
 #include "qgslayout.h"
-
+#include "qgslayoutmeasurementconverter.h"
 
 QgsLayoutAddPagesDialog::QgsLayoutAddPagesDialog( QWidget *parent, Qt::WindowFlags flags )
   : QDialog( parent, flags )
@@ -52,8 +52,10 @@ QgsLayoutAddPagesDialog::QgsLayoutAddPagesDialog( QWidget *parent, Qt::WindowFla
 
 void QgsLayoutAddPagesDialog::setLayout( QgsLayout *layout )
 {
-  mSizeUnitsComboBox->setConverter( &layout->context().measurementConverter() );
+  mConverter = layout->context().measurementConverter();
+  mSizeUnitsComboBox->setConverter( &mConverter );
   mExistingPageSpinBox->setMaximum( layout->pageCollection()->pageCount() );
+  mSizeUnitsComboBox->setUnit( layout->units() );
 }
 
 int QgsLayoutAddPagesDialog::numberPages() const
@@ -101,19 +103,19 @@ void QgsLayoutAddPagesDialog::pageSizeChanged( int )
     mSizeUnitsComboBox->setEnabled( false );
     mPageOrientationComboBox->setEnabled( true );
     QgsPageSize size = QgsApplication::pageSizeRegistry()->find( mPageSizeComboBox->currentData().toString() ).value( 0 );
+    QgsLayoutSize convertedSize = mConverter.convert( size.size, mSizeUnitsComboBox->unit() );
     switch ( mPageOrientationComboBox->currentData().toInt() )
     {
       case QgsLayoutItemPage::Landscape:
-        mWidthSpin->setValue( size.size.height() );
-        mHeightSpin->setValue( size.size.width() );
+        mWidthSpin->setValue( convertedSize.height() );
+        mHeightSpin->setValue( convertedSize.width() );
         break;
 
       case QgsLayoutItemPage::Portrait:
-        mWidthSpin->setValue( size.size.width() );
-        mHeightSpin->setValue( size.size.height() );
+        mWidthSpin->setValue( convertedSize.width() );
+        mHeightSpin->setValue( convertedSize.height() );
         break;
     }
-    mSizeUnitsComboBox->setUnit( size.size.units() );
   }
 }
 

@@ -23,6 +23,7 @@
 #include "qgslayoutsize.h"
 #include "qgslayoutpoint.h"
 #include "qgslayoutitem.h"
+#include "qgslayoutmeasurementconverter.h"
 
 /**
  * A dialog for configuring properties of new pages to be added to a layout
@@ -77,6 +78,10 @@ class QgsLayoutAddPagesDialog : public QDialog, private Ui::QgsLayoutNewPageDial
     void positionChanged( int index );
     void pageSizeChanged( int index );
     void orientationChanged( int index );
+
+  private:
+
+    QgsLayoutMeasurementConverter mConverter;
 
 };
 
