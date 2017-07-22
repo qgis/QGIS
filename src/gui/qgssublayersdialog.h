@@ -80,6 +80,10 @@ class GUI_EXPORT QgsSublayersDialog : public QDialog, private Ui::QgsSublayersDi
     //! \since QGIS 3.0
     bool addToGroupCheckbox() const { return mCheckboxAddToGroup->isChecked(); }
 
+    //! Return column with count or -1
+    //! \since QGIS 3.0
+    int countColumn() const { return mShowCount ? 2 : -1; }
+
   public slots:
     void on_buttonBox_helpRequested() { QgsContextHelp::run( metaObject()->className() ); }
     int exec();
