@@ -145,6 +145,23 @@ class CORE_EXPORT QgsLayoutPageCollection : public QObject
      */
     double maximumPageWidth() const;
 
+    /**
+     * Returns the page number corresponding to a \a point in the layout (in layout units).
+     *
+     * Page numbers in collections begin at 0 - so a page number of 0 indicates the
+     * first page.
+     *
+     * \see positionOnPage()
+     */
+    int pageNumberForPoint( QPointF point ) const;
+
+    /**
+     * Returns the position within a page of a \a point in the layout (in layout units).
+     *
+     * \see pageNumberForPoint()
+     */
+    QPointF positionOnPage( QPointF point ) const;
+
   signals:
 
     /**

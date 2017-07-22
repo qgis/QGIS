@@ -428,16 +428,12 @@ void QgsLayoutDesignerDialog::updateStatusCursorPos( QPointF position )
   }
 
   //convert cursor position to position on current page
-#if 0 // TODO
-  QPointF pagePosition = mView->currentLayout()->positionOnPage( cursorPosition );
-  int currentPage = mView->currentLayout()->pageNumberForPoint( cursorPosition );
-#endif
-  QPointF pagePosition = position;
-  int currentPage = 1;
+  QPointF pagePosition = mLayout->pageCollection()->positionOnPage( position );
+  int currentPage = mLayout->pageCollection()->pageNumberForPoint( position );
 
   mStatusCursorXLabel->setText( QString( tr( "x: %1 mm" ) ).arg( pagePosition.x() ) );
   mStatusCursorYLabel->setText( QString( tr( "y: %1 mm" ) ).arg( pagePosition.y() ) );
-  mStatusCursorPageLabel->setText( QString( tr( "page: %1" ) ).arg( currentPage ) );
+  mStatusCursorPageLabel->setText( QString( tr( "page: %1" ) ).arg( currentPage + 1 ) );
 }
 
 void QgsLayoutDesignerDialog::toggleFullScreen( bool enabled )

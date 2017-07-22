@@ -65,6 +65,52 @@ double QgsLayoutPageCollection::maximumPageWidth() const
   return maxWidth;
 }
 
+int QgsLayoutPageCollection::pageNumberForPoint( QPointF point ) const
+{
+  int pageNumber = 0;
+  double startNextPageY = 0;
+  Q_FOREACH ( QgsLayoutItemPage *page, mPages )
+  {
+    startNextPageY += page->rect().height() + SPACE_BETWEEN_PAGES;
+    if ( startNextPageY > point.y() )
+      break;
+    pageNumber++;
+  }
+
+  if ( pageNumber > mPages.count() - 1 )
+    pageNumber = mPages.count() - 1;
+  return pageNumber;
+}
+
+QPointF QgsLayoutPageCollection::positionOnPage( QPointF position ) const
+{
+  double startCurrentPageY = 0;
+  double startNextPageY = 0;
+  int pageNumber = 0;
+  Q_FOREACH ( QgsLayoutItemPage *page, mPages )
+  {
+    startCurrentPageY = startNextPageY;
+    startNextPageY += page->rect().height() + SPACE_BETWEEN_PAGES;
+    if ( startNextPageY > position.y() )
+      break;
+    pageNumber++;
+  }
+
+  double y;
+  if ( pageNumber == mPages.size() )
+  {
+    //y coordinate is greater then the end of the last page, so return distance between
+    //top of last page and y coordinate
+    y = position.y() - ( startNextPageY - SPACE_BETWEEN_PAGES );
+  }
+  else
+  {
+    //y coordinate is less then the end of the last page
+    y = position.y() - startCurrentPageY;
+  }
+  return QPointF( position.x(), y );
+}
+
 QgsLayout *QgsLayoutPageCollection::layout() const
 {
   return mLayout;

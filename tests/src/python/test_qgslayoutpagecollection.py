@@ -25,7 +25,7 @@ from qgis.core import (QgsUnitTypes,
                        QgsLayoutPageCollection,
                        QgsSimpleFillSymbolLayer,
                        QgsFillSymbol)
-from qgis.PyQt.QtCore import Qt, QCoreApplication, QEvent
+from qgis.PyQt.QtCore import Qt, QCoreApplication, QEvent, QPointF
 from qgis.testing import start_app, unittest
 
 start_app()
@@ -252,6 +252,49 @@ class TestQgsLayoutPageCollection(unittest.TestCase):
         self.assertEqual(page2.pos().y(), 160)
         self.assertEqual(page3.pos().x(), 0)
         self.assertEqual(page3.pos().y(), 200)
+
+    def testPositionOnPage(self):
+        """
+        Test pageNumberForPoint and positionOnPage
+        """
+        p = QgsProject()
+        l = QgsLayout(p)
+        collection = l.pageCollection()
+
+        # add a page
+        page = QgsLayoutItemPage(l)
+        page.setPageSize('A4')
+        collection.addPage(page)
+
+        self.assertEqual(collection.pageNumberForPoint(QPointF(-100, -100)), 0)
+        self.assertEqual(collection.pageNumberForPoint(QPointF(-100, -1)), 0)
+        self.assertEqual(collection.pageNumberForPoint(QPointF(-100, 1)), 0)
+        self.assertEqual(collection.pageNumberForPoint(QPointF(-100, 270)), 0)
+        self.assertEqual(collection.pageNumberForPoint(QPointF(-100, 1270)), 0)
+
+        self.assertEqual(collection.positionOnPage(QPointF(-100, -100)), QPointF(-100, -100))
+        self.assertEqual(collection.positionOnPage(QPointF(-100, -1)), QPointF(-100, -1))
+        self.assertEqual(collection.positionOnPage(QPointF(-100, 1)), QPointF(-100, 1))
+        self.assertEqual(collection.positionOnPage(QPointF(-100, 270)), QPointF(-100, 270))
+        self.assertEqual(collection.positionOnPage(QPointF(-100, 1270)), QPointF(-100, 973))
+
+        page2 = QgsLayoutItemPage(l)
+        page2.setPageSize('A5')
+        collection.addPage(page2)
+
+        self.assertEqual(collection.pageNumberForPoint(QPointF(-100, -100)), 0)
+        self.assertEqual(collection.pageNumberForPoint(QPointF(-100, -1)), 0)
+        self.assertEqual(collection.pageNumberForPoint(QPointF(-100, 1)), 0)
+        self.assertEqual(collection.pageNumberForPoint(QPointF(-100, 270)), 0)
+        self.assertEqual(collection.pageNumberForPoint(QPointF(-100, 370)), 1)
+        self.assertEqual(collection.pageNumberForPoint(QPointF(-100, 1270)), 1)
+
+        self.assertEqual(collection.positionOnPage(QPointF(-100, -100)), QPointF(-100, -100))
+        self.assertEqual(collection.positionOnPage(QPointF(-100, -1)), QPointF(-100, -1))
+        self.assertEqual(collection.positionOnPage(QPointF(-100, 1)), QPointF(-100, 1))
+        self.assertEqual(collection.positionOnPage(QPointF(-100, 270)), QPointF(-100, 270))
+        self.assertEqual(collection.positionOnPage(QPointF(-100, 370)), QPointF(-100, 63))
+        self.assertEqual(collection.positionOnPage(QPointF(-100, 1270)), QPointF(-100, 753))
 
 
 if __name__ == '__main__':

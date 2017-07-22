@@ -137,6 +137,25 @@ Size of page shadow, in layout coordinates
  :rtype: float
 %End
 
+    int pageNumberForPoint( QPointF point ) const;
+%Docstring
+ Returns the page number corresponding to a ``point`` in the layout (in layout units).
+
+ Page numbers in collections begin at 0 - so a page number of 0 indicates the
+ first page.
+
+.. seealso:: positionOnPage()
+ :rtype: int
+%End
+
+    QPointF positionOnPage( QPointF point ) const;
+%Docstring
+ Returns the position within a page of a ``point`` in the layout (in layout units).
+
+.. seealso:: pageNumberForPoint()
+ :rtype: QPointF
+%End
+
   signals:
 
     void changed();
