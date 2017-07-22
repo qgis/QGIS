@@ -129,6 +129,46 @@ class TestQgsLayoutPageCollection(unittest.TestCase):
         self.assertTrue(sip.isdeleted(page))
         self.assertTrue(sip.isdeleted(page2))
 
+    def testDeletePages(self):
+        """
+        Test deleting pages from the collection
+        """
+        p = QgsProject()
+        l = QgsLayout(p)
+        collection = l.pageCollection()
+
+        # add a page
+        page = QgsLayoutItemPage(l)
+        page.setPageSize('A4')
+        collection.addPage(page)
+        # add a second page
+        page2 = QgsLayoutItemPage(l)
+        page2.setPageSize('A5')
+        collection.addPage(page2)
+
+        # delete page
+        collection.deletePage(None)
+        self.assertEqual(collection.pageCount(), 2)
+
+        page3 = QgsLayoutItemPage(l)
+        # try deleting a page not in collection
+        collection.deletePage(page3)
+        QCoreApplication.sendPostedEvents(None, QEvent.DeferredDelete)
+        self.assertFalse(sip.isdeleted(page3))
+        self.assertEqual(collection.pageCount(), 2)
+
+        collection.deletePage(page)
+        self.assertEqual(collection.pageCount(), 1)
+        self.assertFalse(page in collection.pages())
+        QCoreApplication.sendPostedEvents(None, QEvent.DeferredDelete)
+        self.assertTrue(sip.isdeleted(page))
+
+        collection.deletePage(page2)
+        self.assertEqual(collection.pageCount(), 0)
+        self.assertFalse(collection.pages())
+        QCoreApplication.sendPostedEvents(None, QEvent.DeferredDelete)
+        self.assertTrue(sip.isdeleted(page2))
+
     def testMaxPageWidth(self):
         """
         Test calculating maximum page width

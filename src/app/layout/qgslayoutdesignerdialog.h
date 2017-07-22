@@ -31,6 +31,7 @@ class QgsLayoutRuler;
 class QComboBox;
 class QSlider;
 class QLabel;
+class QgsLayoutAppMenuProvider;
 
 class QgsAppLayoutDesignerInterface : public QgsLayoutDesignerInterface
 {
@@ -166,6 +167,8 @@ class QgsLayoutDesignerDialog: public QMainWindow, private Ui::QgsLayoutDesigner
 
     QMap< QString, QToolButton * > mItemGroupToolButtons;
     QMap< QString, QMenu * > mItemGroupSubmenus;
+
+    QgsLayoutAppMenuProvider *mMenuProvider;
 
     //! Save window state
     void saveWindowState();

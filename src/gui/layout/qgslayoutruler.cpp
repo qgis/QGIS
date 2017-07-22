@@ -230,7 +230,8 @@ void QgsLayoutRuler::paintEvent( QPaintEvent *event )
           pageCoord += mmDisplay;
           totalCoord += mmDisplay;
         }
-        currentPageY += layout->pageCollection()->page( i )->rect().height() + layout->pageCollection()->spaceBetweenPages();
+        if ( i < endPage )
+          currentPageY += layout->pageCollection()->page( i )->rect().height() + layout->pageCollection()->spaceBetweenPages();
       }
       break;
     }

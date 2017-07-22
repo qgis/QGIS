@@ -99,6 +99,14 @@ class QgsLayoutPageCollection : QObject
  Calling deletePage() automatically triggers a reflow() of pages.
 %End
 
+    void deletePage( QgsLayoutItemPage *page );
+%Docstring
+ Deletes a page from the collection. The page will automatically be removed
+ from the collection's layout().
+
+ Calling deletePage() automatically triggers a reflow() of pages.
+%End
+
     void setPageStyleSymbol( QgsFillSymbol *symbol );
 %Docstring
  Sets the ``symbol`` to use for drawing pages in the collection.

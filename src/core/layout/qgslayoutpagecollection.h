@@ -114,6 +114,14 @@ class CORE_EXPORT QgsLayoutPageCollection : public QObject
     void deletePage( int pageNumber );
 
     /**
+     * Deletes a page from the collection. The page will automatically be removed
+     * from the collection's layout().
+     *
+     * Calling deletePage() automatically triggers a reflow() of pages.
+     */
+    void deletePage( QgsLayoutItemPage *page );
+
+    /**
      * Sets the \a symbol to use for drawing pages in the collection.
      *
      * Ownership is not transferred, and a copy of the symbol is created internally.

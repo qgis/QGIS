@@ -21,6 +21,7 @@
 #include "qgisapp.h"
 #include "qgslogger.h"
 #include "qgslayout.h"
+#include "qgslayoutappmenuprovider.h"
 #include "qgslayoutview.h"
 #include "qgslayoutviewtooladditem.h"
 #include "qgslayoutviewtoolpan.h"
@@ -220,6 +221,9 @@ QgsLayoutDesignerDialog::QgsLayoutDesignerDialog( QWidget *parent, Qt::WindowFla
   mToolbarMenu->addAction( mToolsToolbar->toggleViewAction() );
 
   connect( mActionToggleFullScreen, &QAction::toggled, this, &QgsLayoutDesignerDialog::toggleFullScreen );
+
+  mMenuProvider = new QgsLayoutAppMenuProvider();
+  mView->setMenuProvider( mMenuProvider );
 
   restoreWindowState();
 }

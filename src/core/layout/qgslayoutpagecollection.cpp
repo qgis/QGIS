@@ -190,6 +190,16 @@ void QgsLayoutPageCollection::deletePage( int pageNumber )
   reflow();
 }
 
+void QgsLayoutPageCollection::deletePage( QgsLayoutItemPage *page )
+{
+  if ( !mPages.contains( page ) )
+    return;
+
+  mPages.removeAll( page );
+  page->deleteLater();
+  reflow();
+}
+
 void QgsLayoutPageCollection::createDefaultPageStyleSymbol()
 {
   QgsStringMap properties;
