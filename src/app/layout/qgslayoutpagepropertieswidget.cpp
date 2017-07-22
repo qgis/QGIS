@@ -33,8 +33,7 @@ QgsLayoutPagePropertiesWidget::QgsLayoutPagePropertiesWidget( QWidget *parent, Q
     mPageSizeComboBox->addItem( size.displayName, size.name );
   }
   mPageSizeComboBox->addItem( tr( "Custom" ) );
-  mPageSizeComboBox->setCurrentIndex( mPageSizeComboBox->count() - 1 );
-  //TODO - match to preset page sizes
+  showCurrentPageSize();
 
   mWidthSpin->setValue( mPage->pageSize().width() );
   mHeightSpin->setValue( mPage->pageSize().height() );
@@ -127,4 +126,30 @@ void QgsLayoutPagePropertiesWidget::updatePageSize()
 {
   mPage->setPageSize( QgsLayoutSize( mWidthSpin->value(), mHeightSpin->value(), mSizeUnitsComboBox->unit() ) );
   mPage->layout()->pageCollection()->reflow();
+}
+
+void QgsLayoutPagePropertiesWidget::showCurrentPageSize()
+{
+  QgsLayoutSize paperSize = mPage->pageSize();
+  QString pageSize = QgsApplication::pageSizeRegistry()->find( paperSize );
+  if ( !pageSize.isEmpty() )
+  {
+    mPageSizeComboBox->setCurrentIndex( mPageSizeComboBox->findData( pageSize ) );
+    mWidthSpin->setEnabled( false );
+    mHeightSpin->setEnabled( false );
+    mLockAspectRatio->setEnabled( false );
+    mLockAspectRatio->setLocked( false );
+    mSizeUnitsComboBox->setEnabled( false );
+    mPageOrientationComboBox->setEnabled( true );
+  }
+  else
+  {
+    // custom
+    mPageSizeComboBox->setCurrentIndex( mPageSizeComboBox->count() - 1 );
+    mWidthSpin->setEnabled( true );
+    mHeightSpin->setEnabled( true );
+    mLockAspectRatio->setEnabled( true );
+    mSizeUnitsComboBox->setEnabled( true );
+    mPageOrientationComboBox->setEnabled( false );
+  }
 }

@@ -36,6 +36,7 @@ class TestQgsPageSizeRegistry : public QObject
     void instanceHasDefaultSizes(); // check that global instance is populated with default page sizes
     void addSize(); // check adding a size to the registry
     void findSize(); //find a size in the registry
+    void findBySize(); //find a matching size in the registry
     void decodePageSize(); //test decoding a page size string
 
   private:
@@ -120,6 +121,17 @@ void TestQgsPageSizeRegistry::findSize()
   QList< QgsPageSize > results2 = registry->find( QString( "tEsT Size" ) );
   QVERIFY( results2.length() > 0 );
   QCOMPARE( results2.at( 0 ), newSize );
+}
+
+void TestQgsPageSizeRegistry::findBySize()
+{
+  QgsPageSizeRegistry *registry = QgsApplication::pageSizeRegistry();
+  QVERIFY( registry->find( QgsLayoutSize( 1, 1 ) ).isEmpty() );
+  QCOMPARE( registry->find( QgsLayoutSize( 210, 297 ) ), QStringLiteral( "A4" ) );
+  QCOMPARE( registry->find( QgsLayoutSize( 297, 210 ) ), QStringLiteral( "A4" ) );
+  QCOMPARE( registry->find( QgsLayoutSize( 125, 176 ) ), QStringLiteral( "B6" ) );
+  QCOMPARE( registry->find( QgsLayoutSize( 21, 29.7, QgsUnitTypes::LayoutCentimeters ) ), QStringLiteral( "A4" ) );
+
 }
 
 void TestQgsPageSizeRegistry::decodePageSize()

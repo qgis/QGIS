@@ -15,6 +15,7 @@
  ***************************************************************************/
 
 #include "qgspagesizeregistry.h"
+#include "qgslayoutmeasurementconverter.h"
 
 //
 // QgsPageSizeRegistry
@@ -81,6 +82,25 @@ QList<QgsPageSize> QgsPageSizeRegistry::find( const QString &name ) const
     }
   }
   return result;
+}
+
+QString QgsPageSizeRegistry::find( const QgsLayoutSize &size ) const
+{
+  //try to match to existing page size
+  QgsLayoutMeasurementConverter converter;
+  Q_FOREACH ( const QgsPageSize &pageSize, mPageSizes )
+  {
+    // convert passed size to same units
+    QgsLayoutSize xSize = converter.convert( size, pageSize.size.units() );
+
+    //consider width and height values may be exchanged
+    if ( ( qgsDoubleNear( xSize.width(), pageSize.size.width() ) && qgsDoubleNear( xSize.height(), pageSize.size.height() ) )
+         || ( qgsDoubleNear( xSize.height(), pageSize.size.width() ) && qgsDoubleNear( xSize.width(), pageSize.size.height() ) ) )
+    {
+      return pageSize.name;
+    }
+  }
+  return QString();
 }
 
 bool QgsPageSizeRegistry::decodePageSize( const QString &pageSizeName, QgsPageSize &pageSize )

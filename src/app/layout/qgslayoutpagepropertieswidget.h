@@ -53,6 +53,8 @@ class QgsLayoutPagePropertiesWidget : public QgsLayoutItemBaseWidget, private Ui
 
     QgsLayoutMeasurementConverter mConverter;
 
+    void showCurrentPageSize();
+
 };
 
 #endif // QGSLAYOUTPAGEPROPERTIESWIDGET_H

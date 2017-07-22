@@ -96,6 +96,15 @@ class CORE_EXPORT QgsPageSizeRegistry
     QList< QgsPageSize > find( const QString &name ) const;
 
     /**
+     * Finds a matching page \a size from the registry. Returns the page size name,
+     * or an empty string if no matching size could be found.
+     *
+     * Orientation is ignored when matching page sizes, so a landscape A4 page will
+     * match to the portrait A4 size in the registry.
+     */
+    QString find( const QgsLayoutSize &size ) const;
+
+    /**
      * Decodes a \a string representing a preset page size.
      * The decoded page size will be stored in the \a size argument.
      * \returns true if string was successfully decoded
