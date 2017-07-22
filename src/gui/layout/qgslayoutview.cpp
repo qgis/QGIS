@@ -105,14 +105,22 @@ void QgsLayoutView::scaleSafe( double scale )
 
 void QgsLayoutView::setZoomLevel( double level )
 {
-  double dpi = QgsApplication::desktop()->logicalDpiX();
-  //monitor dpi is not always correct - so make sure the value is sane
-  if ( ( dpi < 60 ) || ( dpi > 1200 ) )
-    dpi = 72;
+  if ( currentLayout()->units() == QgsUnitTypes::LayoutPixels )
+  {
+    setTransform( QTransform::fromScale( level, level ) );
+  }
+  else
+  {
+    double dpi = QgsApplication::desktop()->logicalDpiX();
+    //monitor dpi is not always correct - so make sure the value is sane
+    if ( ( dpi < 60 ) || ( dpi > 1200 ) )
+      dpi = 72;
 
-  //desired pixel width for 1mm on screen
-  double scale = qBound( MIN_VIEW_SCALE, level * dpi / 25.4, MAX_VIEW_SCALE );
-  setTransform( QTransform::fromScale( scale, scale ) );
+    //desired pixel width for 1mm on screen
+    level = qBound( MIN_VIEW_SCALE, level, MAX_VIEW_SCALE );
+    double mmLevel = currentLayout()->convertFromLayoutUnits( level, QgsUnitTypes::LayoutMillimeters ).length() * dpi / 25.4;
+    setTransform( QTransform::fromScale( mmLevel, mmLevel ) );
+  }
   emit zoomLevelChanged();
   updateRulers();
 }

@@ -406,16 +406,24 @@ void QgsLayoutDesignerDialog::sliderZoomChanged( int value )
 
 void QgsLayoutDesignerDialog::updateStatusZoom()
 {
-  double dpi = QgsApplication::desktop()->logicalDpiX();
-  //monitor dpi is not always correct - so make sure the value is sane
-  if ( ( dpi < 60 ) || ( dpi > 1200 ) )
-    dpi = 72;
+  double zoomLevel = 0;
+  if ( currentLayout()->units() == QgsUnitTypes::LayoutPixels )
+  {
+    zoomLevel = mView->transform().m11() * 100;
+  }
+  else
+  {
+    double dpi = QgsApplication::desktop()->logicalDpiX();
+    //monitor dpi is not always correct - so make sure the value is sane
+    if ( ( dpi < 60 ) || ( dpi > 1200 ) )
+      dpi = 72;
 
-  //pixel width for 1mm on screen
-  double scale100 = dpi / 25.4;
-  //current zoomLevel
-  double zoomLevel = mView->transform().m11() * 100 / scale100;
-
+    //pixel width for 1mm on screen
+    double scale100 = dpi / 25.4;
+    scale100 = currentLayout()->convertFromLayoutUnits( scale100, QgsUnitTypes::LayoutMillimeters ).length();
+    //current zoomLevel
+    zoomLevel = mView->transform().m11() * 100 / scale100;
+  }
   whileBlocking( mStatusZoomCombo )->lineEdit()->setText( tr( "%1%" ).arg( zoomLevel, 0, 'f', 1 ) );
   whileBlocking( mStatusZoomSlider )->setValue( zoomLevel );
 }
