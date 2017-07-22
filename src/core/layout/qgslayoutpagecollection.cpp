@@ -17,8 +17,6 @@
 #include "qgslayoutpagecollection.h"
 #include "qgslayout.h"
 
-#define SPACE_BETWEEN_PAGES 10
-
 QgsLayoutPageCollection::QgsLayoutPageCollection( QgsLayout *layout )
   : QObject( layout )
   , mLayout( layout )

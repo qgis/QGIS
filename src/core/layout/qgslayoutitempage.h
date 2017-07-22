@@ -88,6 +88,11 @@ class CORE_EXPORT QgsLayoutItemPage : public QgsLayoutItem
   protected:
 
     void draw( QgsRenderContext &context, const QStyleOptionGraphicsItem *itemStyle = nullptr ) override;
+
+  private:
+
+    double mMaximumShadowWidth = -1;
+
 };
 
 #endif //QGSLAYOUTITEMPAGE_H

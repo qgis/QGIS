@@ -39,6 +39,12 @@ class CORE_EXPORT QgsLayoutPageCollection : public QObject
 
   public:
 
+    //! Space between pages in the layout, in layout coordinates
+    static constexpr double SPACE_BETWEEN_PAGES = 10;
+
+    //! Size of page shadow, in layout coordinates
+    static constexpr double PAGE_SHADOW_WIDTH = 5; // Must be less than SPACE_BETWEEN_PAGES
+
     /**
      * Constructor for QgsLayoutItemPage, with the specified parent \a layout.
      */

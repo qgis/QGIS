@@ -21,7 +21,6 @@
 #include "qgssymbollayerutils.h"
 #include <QPainter>
 
-#define SHADOW_WIDTH_PIXELS 5
 QgsLayoutItemPage::QgsLayoutItemPage( QgsLayout *layout )
   : QgsLayoutItem( layout )
 {
@@ -29,13 +28,14 @@ QgsLayoutItemPage::QgsLayoutItemPage( QgsLayout *layout )
   setFlag( QGraphicsItem::ItemIsMovable, false );
   setZValue( QgsLayout::ZPage );
 
-  // bit hacky - we set a big hidden pen to avoid Qt clipping out the cosmetic shadow for the page
-  // Unfortunately it's possible to adapt the item's bounding rect based on the view's transform, so it's
-  // impossible to have a pixel based bounding rect. Instead we just set a big pen to force the page's
-  // bounding rect to be kinda large enough to handle the shadow at most zoom levels...
-  QPen shadowPen( QBrush( Qt::transparent ), 30 );
-  shadowPen.setCosmetic( true );
+  // use a hidden pen to specify the amount the page "bleeds" outside it's scene bounds,
+  // (it's a lot easier than reimplementing boundingRect() just to handle this)
+  QPen shadowPen( QBrush( Qt::transparent ), QgsLayoutPageCollection::PAGE_SHADOW_WIDTH * 2 );
   setPen( shadowPen );
+
+  QFont font;
+  QFontMetrics fm( font );
+  mMaximumShadowWidth = fm.width( "X" );
 }
 
 void QgsLayoutItemPage::setPageSize( const QgsLayoutSize &size )
@@ -134,7 +134,8 @@ void QgsLayoutItemPage::draw( QgsRenderContext &context, const QStyleOptionGraph
     //shadow
     painter->setBrush( QBrush( QColor( 150, 150, 150 ) ) );
     painter->setPen( Qt::NoPen );
-    painter->drawRect( pageRect.translated( SHADOW_WIDTH_PIXELS, SHADOW_WIDTH_PIXELS ) );
+    painter->drawRect( pageRect.translated( qMin( scale * QgsLayoutPageCollection::PAGE_SHADOW_WIDTH, mMaximumShadowWidth ),
+                                            qMin( scale * QgsLayoutPageCollection::PAGE_SHADOW_WIDTH, mMaximumShadowWidth ) ) );
 
     //page area
     painter->setBrush( QColor( 215, 215, 215 ) );

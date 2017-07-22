@@ -21,6 +21,16 @@ class QgsLayoutPageCollection : QObject
 %End
   public:
 
+    static const double SPACE_BETWEEN_PAGES;
+%Docstring
+Space between pages in the layout, in layout coordinates
+%End
+
+    static const double PAGE_SHADOW_WIDTH;
+%Docstring
+Size of page shadow, in layout coordinates
+%End
+
     explicit QgsLayoutPageCollection( QgsLayout *layout /TransferThis/ );
 %Docstring
  Constructor for QgsLayoutItemPage, with the specified parent ``layout``.
