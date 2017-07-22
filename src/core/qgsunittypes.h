@@ -384,6 +384,7 @@ class CORE_EXPORT QgsUnitTypes
      * \param unit unit to encode
      * \returns encoded string
      * \see decodeLayoutUnit()
+     * \since QGIS 3.0
      */
     Q_INVOKABLE static QString encodeUnit( LayoutUnit unit );
 
@@ -392,13 +393,30 @@ class CORE_EXPORT QgsUnitTypes
      * \param ok optional boolean, will be set to true if string was converted successfully
      * \returns decoded units
      * \see encodeUnit()
+     * \since QGIS 3.0
      */
     Q_INVOKABLE static LayoutUnit decodeLayoutUnit( const QString &string, bool *ok SIP_OUT = 0 );
 
     /**
      * Returns the type for a unit of measurement.
+     *
+     * \since QGIS 3.0
     */
     Q_INVOKABLE static LayoutUnitType unitType( const LayoutUnit units );
+
+    /**
+     * Returns a translated abbreviation representing a layout \a unit (e.g. "mm").
+     *
+     * \since QGIS 3.0
+     */
+    Q_INVOKABLE static QString toAbbreviatedString( LayoutUnit unit );
+
+    /**
+     * Returns a translated string representing a layout \a unit.
+     *
+     * \since QGIS 3.0
+     */
+    Q_INVOKABLE static QString toString( LayoutUnit unit );
 
 };
 

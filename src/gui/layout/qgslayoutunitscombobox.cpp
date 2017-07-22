@@ -19,22 +19,21 @@
 QgsLayoutUnitsComboBox::QgsLayoutUnitsComboBox( QWidget *parent )
   : QComboBox( parent )
 {
-  addItem( tr( "mm" ), QgsUnitTypes::LayoutMillimeters );
-  setItemData( 0, tr( "Millimeters" ), Qt::ToolTipRole );
-  addItem( tr( "cm" ), QgsUnitTypes::LayoutCentimeters );
-  setItemData( 1, tr( "Centimeters" ), Qt::ToolTipRole );
-  addItem( tr( "m" ), QgsUnitTypes::LayoutMeters );
-  setItemData( 2, tr( "Meters" ), Qt::ToolTipRole );
-  addItem( tr( "in" ), QgsUnitTypes::LayoutInches );
-  setItemData( 3, tr( "Inches" ), Qt::ToolTipRole );
-  addItem( tr( "ft" ), QgsUnitTypes::LayoutFeet );
-  setItemData( 4, tr( "Feet" ), Qt::ToolTipRole );
-  addItem( tr( "pt" ), QgsUnitTypes::LayoutPoints );
-  setItemData( 5, tr( "Points" ), Qt::ToolTipRole );
-  addItem( tr( "pica" ), QgsUnitTypes::LayoutPicas );
-  setItemData( 6, tr( "Picas" ), Qt::ToolTipRole );
-  addItem( tr( "px" ), QgsUnitTypes::LayoutPixels );
-  setItemData( 7, tr( "Pixels" ), Qt::ToolTipRole );
+  QList< QgsUnitTypes::LayoutUnit > units;
+  units << QgsUnitTypes::LayoutMillimeters
+        << QgsUnitTypes::LayoutCentimeters
+        << QgsUnitTypes::LayoutMeters
+        << QgsUnitTypes::LayoutInches
+        << QgsUnitTypes::LayoutFeet
+        << QgsUnitTypes::LayoutPoints
+        << QgsUnitTypes::LayoutPicas
+        << QgsUnitTypes::LayoutPixels;
+
+  Q_FOREACH ( QgsUnitTypes::LayoutUnit u, units )
+  {
+    addItem( QgsUnitTypes::toAbbreviatedString( u ), u );
+    setItemData( count() - 1, QgsUnitTypes::toString( u ), Qt::ToolTipRole );
+  }
   connect( this, static_cast<void ( QgsLayoutUnitsComboBox::* )( int )>( &QgsLayoutUnitsComboBox::currentIndexChanged ), this, &QgsLayoutUnitsComboBox::indexChanged );
 }
 

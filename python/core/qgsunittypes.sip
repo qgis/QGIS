@@ -396,6 +396,7 @@ class QgsUnitTypes
  \param unit unit to encode
  :return: encoded string
 .. seealso:: decodeLayoutUnit()
+.. versionadded:: 3.0
  :rtype: str
 %End
 
@@ -406,13 +407,32 @@ class QgsUnitTypes
  \param ok optional boolean, will be set to true if string was converted successfully
  :return: decoded units
 .. seealso:: encodeUnit()
+.. versionadded:: 3.0
  :rtype: LayoutUnit
 %End
 
     static LayoutUnitType unitType( const LayoutUnit units );
 %Docstring
  Returns the type for a unit of measurement.
+
+.. versionadded:: 3.0
  :rtype: LayoutUnitType
+%End
+
+    static QString toAbbreviatedString( LayoutUnit unit );
+%Docstring
+ Returns a translated abbreviation representing a layout ``unit`` (e.g. "mm").
+
+.. versionadded:: 3.0
+ :rtype: str
+%End
+
+    static QString toString( LayoutUnit unit );
+%Docstring
+ Returns a translated string representing a layout ``unit``.
+
+.. versionadded:: 3.0
+ :rtype: str
 %End
 
 };

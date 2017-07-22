@@ -1859,3 +1859,51 @@ QgsUnitTypes::LayoutUnitType QgsUnitTypes::unitType( const QgsUnitTypes::LayoutU
   // avoid warnings
   return LayoutPaperUnits;
 }
+
+QString QgsUnitTypes::toAbbreviatedString( QgsUnitTypes::LayoutUnit unit )
+{
+  switch ( unit )
+  {
+    case LayoutPixels:
+      return QObject::tr( "px" );
+    case  LayoutMillimeters:
+      return QObject::tr( "mm" );
+    case LayoutCentimeters:
+      return QObject::tr( "cm" );
+    case LayoutMeters:
+      return QObject::tr( "m" );
+    case LayoutInches:
+      return QObject::tr( "in" );
+    case LayoutFeet:
+      return QObject::tr( "ft" );
+    case LayoutPoints:
+      return QObject::tr( "pt" );
+    case LayoutPicas:
+      return QObject::tr( "pica" );
+  }
+  return QString(); // no warnings
+}
+
+QString QgsUnitTypes::toString( QgsUnitTypes::LayoutUnit unit )
+{
+  switch ( unit )
+  {
+    case LayoutPixels:
+      return QObject::tr( "pixels" );
+    case  LayoutMillimeters:
+      return QObject::tr( "millimeters" );
+    case LayoutCentimeters:
+      return QObject::tr( "centimeters" );
+    case LayoutMeters:
+      return QObject::tr( "meters" );
+    case LayoutInches:
+      return QObject::tr( "inches" );
+    case LayoutFeet:
+      return QObject::tr( "feet" );
+    case LayoutPoints:
+      return QObject::tr( "points" );
+    case LayoutPicas:
+      return QObject::tr( "picas" );
+  }
+  return QString(); // no warnings
+}
