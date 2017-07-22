@@ -20,6 +20,7 @@
 #include <QTableWidgetItem>
 #include <QPushButton>
 
+//! @cond
 class SubLayerItem : public QTreeWidgetItem
 {
   public:
@@ -38,6 +39,7 @@ class SubLayerItem : public QTreeWidgetItem
         return text( col ) < other.text( col );
     }
 };
+//! @endcond
 
 QgsSublayersDialog::QgsSublayersDialog( ProviderType providerType, const QString &name,
                                         QWidget *parent, Qt::WindowFlags fl )
