@@ -20,11 +20,7 @@
 
 QgsLayoutContext::QgsLayoutContext()
   : mFlags( FlagAntialiasing | FlagUseAdvancedEffects )
-  , mGridResolution( QgsLayoutMeasurement( 10 ) )
-{
-  mGridPen = QPen( QColor( 190, 190, 190, 100 ), 0 );
-  mGridPen.setCosmetic( true );
-}
+{}
 
 void QgsLayoutContext::setFlags( const QgsLayoutContext::Flags flags )
 {

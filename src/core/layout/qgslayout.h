@@ -19,6 +19,7 @@
 #include "qgis_core.h"
 #include <QGraphicsScene>
 #include "qgslayoutcontext.h"
+#include "qgslayoutsnapper.h"
 #include "qgsexpressioncontextgenerator.h"
 #include "qgslayoutpagecollection.h"
 
@@ -155,6 +156,18 @@ class CORE_EXPORT QgsLayout : public QGraphicsScene, public QgsExpressionContext
     SIP_SKIP const QgsLayoutContext &context() const { return mContext; }
 
     /**
+     * Returns a reference to the layout's snapper, which stores handles layout snap grids and lines
+     * and snapping points to the nearest matching point.
+     */
+    QgsLayoutSnapper &snapper() { return mSnapper; }
+
+    /**
+     * Returns a reference to the layout's snapper, which stores handles layout snap grids and lines
+     * and snapping points to the nearest matching point.
+     */
+    SIP_SKIP const QgsLayoutSnapper &snapper() const { return mSnapper; }
+
+    /**
      * Creates an expression context relating to the layout's current state. The context includes
      * scopes for global, project, layout and layout context properties.
      */
@@ -262,6 +275,7 @@ class CORE_EXPORT QgsLayout : public QGraphicsScene, public QgsExpressionContext
 
     QgsUnitTypes::LayoutUnit mUnits = QgsUnitTypes::LayoutMillimeters;
     QgsLayoutContext mContext;
+    QgsLayoutSnapper mSnapper;
 
     std::unique_ptr< QgsLayoutPageCollection > mPageCollection;
 

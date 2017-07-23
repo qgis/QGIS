@@ -161,6 +161,7 @@
 %Include layout/qgspagesizeregistry.sip
 %Include layout/qgslayoutpoint.sip
 %Include layout/qgslayoutsize.sip
+%Include layout/qgslayoutsnapper.sip
 %Include layout/qgslayoututils.sip
 %Include metadata/qgslayermetadata.sip
 %Include metadata/qgslayermetadatavalidator.sip

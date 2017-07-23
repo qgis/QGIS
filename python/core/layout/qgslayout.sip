@@ -141,6 +141,14 @@ class QgsLayout : QGraphicsScene, QgsExpressionContextGenerator
 %End
 
 
+    QgsLayoutSnapper &snapper();
+%Docstring
+ Returns a reference to the layout's snapper, which stores handles layout snap grids and lines
+ and snapping points to the nearest matching point.
+ :rtype: QgsLayoutSnapper
+%End
+
+
     virtual QgsExpressionContext createExpressionContext() const;
 
 %Docstring
