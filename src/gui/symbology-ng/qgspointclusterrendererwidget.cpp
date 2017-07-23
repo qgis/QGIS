@@ -79,6 +79,7 @@ QgsPointClusterRendererWidget::QgsPointClusterRendererWidget( QgsVectorLayer *la
   mDistanceSpinBox->setValue( mRenderer->tolerance() );
   mDistanceUnitWidget->setUnit( mRenderer->toleranceUnit() );
   mDistanceUnitWidget->setMapUnitScale( mRenderer->toleranceMapUnitScale() );
+  mCenterSymbolToolButton->setSymbol( mRenderer->clusterSymbol()->clone() );
 
   blockAllSignals( false );
 
@@ -94,7 +95,10 @@ QgsPointClusterRendererWidget::QgsPointClusterRendererWidget( QgsVectorLayer *la
     }
   }
 
-  updateCenterIcon();
+  connect( mCenterSymbolToolButton, &QgsSymbolButton::changed, this, &QgsPointClusterRendererWidget::centerSymbolChanged );
+  mCenterSymbolToolButton->setDialogTitle( tr( "Cluster symbol" ) );
+  mCenterSymbolToolButton->setLayer( mLayer );
+  mCenterSymbolToolButton->registerExpressionContextGenerator( this );
 }
 
 QgsPointClusterRendererWidget::~QgsPointClusterRendererWidget()
@@ -112,6 +116,8 @@ void QgsPointClusterRendererWidget::setContext( const QgsSymbolWidgetContext &co
   QgsRendererWidget::setContext( context );
   if ( mDistanceUnitWidget )
     mDistanceUnitWidget->setMapCanvas( context.mapCanvas() );
+  if ( mCenterSymbolToolButton )
+    mCenterSymbolToolButton->setMapCanvas( context.mapCanvas() );
 }
 
 void QgsPointClusterRendererWidget::on_mRendererComboBox_currentIndexChanged( int index )
@@ -175,53 +181,34 @@ void QgsPointClusterRendererWidget::on_mDistanceUnitWidget_changed()
 void QgsPointClusterRendererWidget::blockAllSignals( bool block )
 {
   mRendererComboBox->blockSignals( block );
-  mCenterSymbolPushButton->blockSignals( block );
+  mCenterSymbolToolButton->blockSignals( block );
   mDistanceSpinBox->blockSignals( block );
   mDistanceUnitWidget->blockSignals( block );
 }
 
-void QgsPointClusterRendererWidget::on_mCenterSymbolPushButton_clicked()
+QgsExpressionContext QgsPointClusterRendererWidget::createExpressionContext() const
 {
-  if ( !mRenderer || !mRenderer->clusterSymbol() )
-  {
-    return;
-  }
-  QgsMarkerSymbol *markerSymbol = mRenderer->clusterSymbol()->clone();
-  QgsSymbolSelectorWidget *dlg = new QgsSymbolSelectorWidget( markerSymbol, QgsStyle::defaultStyle(), mLayer, this );
-  dlg->setPanelTitle( tr( "Cluster symbol" ) );
-  dlg->setDockMode( this->dockMode() );
-
-  QgsSymbolWidgetContext context = mContext;
+  QgsExpressionContext context;
+  if ( mContext.expressionContext() )
+    context = *mContext.expressionContext();
+  else
+    context.appendScopes( mContext.globalProjectAtlasMapLayerScopes( mLayer ) );
   QgsExpressionContextScope scope;
   scope.addVariable( QgsExpressionContextScope::StaticVariable( QgsExpressionContext::EXPR_CLUSTER_COLOR, "", true ) );
   scope.addVariable( QgsExpressionContextScope::StaticVariable( QgsExpressionContext::EXPR_CLUSTER_SIZE, 0, true ) );
-  QList< QgsExpressionContextScope > scopes = context.additionalExpressionContextScopes();
+  QList< QgsExpressionContextScope > scopes = mContext.additionalExpressionContextScopes();
   scopes << scope;
-  context.setAdditionalExpressionContextScopes( scopes );
-
-  dlg->setContext( context );
-
-  connect( dlg, &QgsPanelWidget::widgetChanged, this, &QgsPointClusterRendererWidget::updateCenterSymbolFromWidget );
-  connect( dlg, &QgsPanelWidget::panelAccepted, this, &QgsPointClusterRendererWidget::cleanUpSymbolSelector );
-  openPanel( dlg );
-}
-
-void QgsPointClusterRendererWidget::updateCenterSymbolFromWidget()
-{
-  QgsSymbolSelectorWidget *dlg = qobject_cast<QgsSymbolSelectorWidget *>( sender() );
-  QgsSymbol *symbol = dlg->symbol()->clone();
-  mRenderer->setClusterSymbol( static_cast< QgsMarkerSymbol * >( symbol ) );
-  updateCenterIcon();
-  emit widgetChanged();
-}
-
-void QgsPointClusterRendererWidget::cleanUpSymbolSelector( QgsPanelWidget *container )
-{
-  if ( container )
+  Q_FOREACH ( const QgsExpressionContextScope &s, scopes )
   {
-    QgsSymbolSelectorWidget *dlg = qobject_cast<QgsSymbolSelectorWidget *>( container );
-    delete dlg->symbol();
+    context << new QgsExpressionContextScope( s );
   }
+  return context;
+}
+
+void QgsPointClusterRendererWidget::centerSymbolChanged()
+{
+  mRenderer->setClusterSymbol( mCenterSymbolToolButton->clonedSymbol< QgsMarkerSymbol >() );
+  emit widgetChanged();
 }
 
 void QgsPointClusterRendererWidget::updateRendererFromWidget()
@@ -232,17 +219,6 @@ void QgsPointClusterRendererWidget::updateRendererFromWidget()
 
   mRenderer->setEmbeddedRenderer( w->renderer()->clone() );
   emit widgetChanged();
-}
-
-void QgsPointClusterRendererWidget::updateCenterIcon()
-{
-  QgsMarkerSymbol *symbol = mRenderer->clusterSymbol();
-  if ( !symbol )
-  {
-    return;
-  }
-  QIcon icon = QgsSymbolLayerUtils::symbolPreviewIcon( symbol, mCenterSymbolPushButton->iconSize() );
-  mCenterSymbolPushButton->setIcon( icon );
 }
 
 void QgsPointClusterRendererWidget::setupBlankUi( const QString &layerName )

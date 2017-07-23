@@ -53,6 +53,7 @@ class QgsSymbolButton : QToolButton
  :rtype: QgsSymbol
 %End
 
+
     QgsMapCanvas *mapCanvas() const;
 %Docstring
  Returns the map canvas associated with the widget.

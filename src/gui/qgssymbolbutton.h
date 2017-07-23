@@ -73,6 +73,28 @@ class GUI_EXPORT QgsSymbolButton : public QToolButton
     QgsSymbol *symbol();
 
     /**
+    * Returns a clone of the current symbol (as the specified template type) defined by the button.
+    * \see setSymbol()
+    * \see changed()
+    * \note Not available in Python bindings.
+    */
+    template <class SymbolType> SymbolType *clonedSymbol() SIP_SKIP
+    {
+      QgsSymbol *tmpSymbol = mSymbol.get();
+      SymbolType *symbolCastToType = dynamic_cast<SymbolType *>( tmpSymbol );
+
+      if ( symbolCastToType )
+      {
+        return symbolCastToType->clone();
+      }
+      else
+      {
+        //could not cast
+        return nullptr;
+      }
+    }
+
+    /**
      * Returns the map canvas associated with the widget.
      * \see setMapCanvas()
      */

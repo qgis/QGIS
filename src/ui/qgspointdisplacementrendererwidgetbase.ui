@@ -136,13 +136,6 @@
      </property>
     </widget>
    </item>
-   <item row="0" column="1">
-    <widget class="QPushButton" name="mCenterSymbolPushButton">
-     <property name="text">
-      <string/>
-     </property>
-    </widget>
-   </item>
    <item row="4" column="0" colspan="2">
     <widget class="QPushButton" name="mRendererSettingsButton">
      <property name="text">
@@ -272,14 +265,26 @@
      </layout>
     </widget>
    </item>
+   <item row="0" column="1">
+    <widget class="QgsSymbolButton" name="mCenterSymbolToolButton">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="text">
+      <string/>
+     </property>
+    </widget>
+   </item>
   </layout>
  </widget>
  <customwidgets>
   <customwidget>
-   <class>QgsColorButton</class>
-   <extends>QToolButton</extends>
-   <header>qgscolorbutton.h</header>
-   <container>1</container>
+   <class>QgsDoubleSpinBox</class>
+   <extends>QDoubleSpinBox</extends>
+   <header>qgsdoublespinbox.h</header>
   </customwidget>
   <customwidget>
    <class>QgsCollapsibleGroupBoxBasic</class>
@@ -288,9 +293,15 @@
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>QgsDoubleSpinBox</class>
-   <extends>QDoubleSpinBox</extends>
-   <header>qgsdoublespinbox.h</header>
+   <class>QgsSymbolButton</class>
+   <extends>QToolButton</extends>
+   <header>qgssymbolbutton.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsColorButton</class>
+   <extends>QToolButton</extends>
+   <header>qgscolorbutton.h</header>
+   <container>1</container>
   </customwidget>
   <customwidget>
    <class>QgsFontButton</class>
@@ -310,7 +321,7 @@
   </customwidget>
  </customwidgets>
  <tabstops>
-  <tabstop>mCenterSymbolPushButton</tabstop>
+  <tabstop>mCenterSymbolToolButton</tabstop>
   <tabstop>mRendererComboBox</tabstop>
   <tabstop>mRendererSettingsButton</tabstop>
   <tabstop>mDistanceSpinBox</tabstop>
