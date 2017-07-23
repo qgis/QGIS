@@ -141,7 +141,7 @@ void FlatTerrainGenerator::setExtent( const QgsRectangle &extent )
 
 void FlatTerrainGenerator::updateTilingScheme()
 {
-  if ( mExtent.isNull() || !mCrs.isValid() )
+  if ( mExtent.isNull() )
   {
     terrainTilingScheme = TilingScheme();
   }
