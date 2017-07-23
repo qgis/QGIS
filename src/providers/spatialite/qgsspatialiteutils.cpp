@@ -238,6 +238,7 @@ QStringList SpatialiteDbInfo::getSpatialiteTypes()
   {
     mSpatialiteTypes.append( "SpatialIndex-Data" );
     mSpatialiteTypes.append( "Spatialite-Internal" );
+    mSpatialiteTypes.append( "Spatialite-Virtual" );
     mSpatialiteTypes.append( "Spatialite2-Internal" );
     mSpatialiteTypes.append( "Geometries-Internal" );
     mSpatialiteTypes.append( "SpatialTable-Data" );
@@ -264,6 +265,93 @@ QStringList SpatialiteDbInfo::getSpatialiteTypes()
     mSpatialiteTypes.append( "MBTiles-Internal" );
   }
   return mSpatialiteTypes;
+}
+QIcon SpatialiteDbInfo::NonSpatialTablesTypeIcon( QString typeName )
+{
+  if ( typeName.startsWith( QLatin1String( "Table" ), Qt::CaseInsensitive ) )
+  {
+    return QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddTable.svg" ) );
+  }
+  else if ( typeName.startsWith( QLatin1String( "View" ), Qt::CaseInsensitive ) )
+  {
+    return QgsApplication::getThemeIcon( QStringLiteral( "/mActionCalculateField.svg" ) );
+  }
+  else if ( typeName.startsWith( QLatin1String( "SpatialTable" ), Qt::CaseInsensitive ) )
+  {
+    return QgsApplication::getThemeIcon( QStringLiteral( "/mActionNewVectorLayer.svg" ) );
+  }
+  else if ( typeName.startsWith( QLatin1String( "SpatialView" ), Qt::CaseInsensitive ) )
+  {
+    return QgsApplication::getThemeIcon( QStringLiteral( "/mActionNodeTool.svg" ) );
+  }
+  else if ( typeName.startsWith( QLatin1String( "VirtualShapes" ), Qt::CaseInsensitive ) )
+  {
+    return QgsApplication::getThemeIcon( QStringLiteral( "/rendererPointDisplacementSymbol.svg" ) );
+  }
+  else if ( typeName.startsWith( QLatin1String( "Virtual" ), Qt::CaseInsensitive ) )
+  {
+    return QgsApplication::getThemeIcon( QStringLiteral( "/rendererGraduatedSymbol.svg" ) );
+  }
+  else if ( typeName.startsWith( QLatin1String( "SpatialIndex" ), Qt::CaseInsensitive ) )
+  {
+    return QgsApplication::getThemeIcon( QStringLiteral( "/mActionGroupItems.svg" ) );
+  }
+  else if ( typeName.startsWith( QLatin1String( "Geometries" ), Qt::CaseInsensitive ) )
+  {
+    return QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddWfsLayer.svg" ) );
+  }
+  else if ( typeName.startsWith( QLatin1String( "RasterLite2" ), Qt::CaseInsensitive ) )
+  {
+    return QgsApplication::getThemeIcon( QStringLiteral( "/mIconColorSwatches.svg" ) );
+  }
+  else if ( typeName.startsWith( QLatin1String( "RasterLite1" ), Qt::CaseInsensitive ) )
+  {
+    return QgsApplication::getThemeIcon( QStringLiteral( "/mIconColorBox.svg" ) );
+  }
+  else if ( typeName.startsWith( QLatin1String( "MBTiles" ), Qt::CaseInsensitive ) )
+  {
+    return QgsApplication::getThemeIcon( QStringLiteral( "/mIconRasterGroup.svg" ) );
+  }
+  else if ( typeName.startsWith( QLatin1String( "GeoPackage-Raster" ), Qt::CaseInsensitive ) )
+  {
+    return QgsApplication::getThemeIcon( QStringLiteral( "/mIconRasterGroup.svg" ) );
+  }
+  else if ( typeName.startsWith( QLatin1String( "GeoPackage-Vector" ), Qt::CaseInsensitive ) )
+  {
+    return QgsApplication::getThemeIcon( QStringLiteral( "/mActionNewVectorLayer.svg" ) );
+  }
+  else if ( typeName.startsWith( QLatin1String( "EPSG" ), Qt::CaseInsensitive ) )
+  {
+    return QgsApplication::getThemeIcon( QStringLiteral( "/mIconProjectionEnabled.svg" ) );
+  }
+  else if ( typeName.startsWith( QLatin1String( "Trigger" ), Qt::CaseInsensitive ) )
+  {
+    return QgsApplication::getThemeIcon( QStringLiteral( "/mActionMergeFeatureAttributes.svg" ) );
+  }
+  else if ( typeName.startsWith( QLatin1String( "Sqlite3" ), Qt::CaseInsensitive ) )
+  {
+    return QgsApplication::getThemeIcon( QStringLiteral( "/mActionDataSourceManager.svg" ) );
+  }
+  else if ( typeName.startsWith( QLatin1String( "Topology" ), Qt::CaseInsensitive ) )
+  {
+    return QgsApplication::getThemeIcon( QStringLiteral( "/rendererPointClusterSymbol.svg" ) );
+  }
+  else if ( typeName.startsWith( QLatin1String( "Styles" ), Qt::CaseInsensitive ) )
+  {
+    return QgsApplication::getThemeIcon( QStringLiteral( "/rendererRuleBasedSymbol.svg" ) );
+  }
+  else if ( typeName.startsWith( QLatin1String( "Spatialite2" ), Qt::CaseInsensitive ) )
+  {
+    return QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddLegend.svg" ) );
+  }
+  else if ( typeName.startsWith( QLatin1String( "Spatialite" ), Qt::CaseInsensitive ) )
+  {
+    return QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddSpatiaLiteLayer.svg" ) );
+  }
+  else
+  {
+    return QgsApplication::getThemeIcon( QStringLiteral( "/multieditChangedValues.svg" ) );
+  }
 }
 QString SpatialiteDbInfo::SpatialiteLayerTypeName( SpatialiteDbInfo::SpatialiteLayerType layerType )
 {
@@ -655,7 +743,7 @@ bool SpatialiteDbInfo::prepareDataSourceUris()
     }
     mDbLayersDataSourceUris.insert( sLayerName, sDataSourceUri );
   }
-  for ( QMap<QString, QString>::iterator itLayers = mTopologyLayers.begin(); itLayers != mTopologyLayers.end(); ++itLayers )
+  for ( QMap<QString, QString>::iterator itLayers = mTopologyExportLayers.begin(); itLayers != mTopologyExportLayers.end(); ++itLayers )
   {
     QString sLayerName  = itLayers.key();
     QString sTableName  = sLayerName;
@@ -731,7 +819,7 @@ QMap<QString, QString> SpatialiteDbInfo::getDbLayersType( SpatialiteLayerType ty
       mapLayers = getDbRasterLite2Layers();
       break;
     case SpatialiteDbInfo::TopopogyExport:
-      mapLayers = getDbTopologyLayers();
+      mapLayers = getDbTopologyExportLayers();
       break;
     case SpatialiteDbInfo::GeoPackageVector:
     case SpatialiteDbInfo::GeoPackageRaster:
@@ -762,9 +850,9 @@ QMap<QString, QString> SpatialiteDbInfo::getDbLayersType( SpatialiteLayerType ty
           mapLayers.insert( itLayers.key(), itLayers.value() );
         }
       }
-      if ( dbTopologyExportTablesCount() > 0 )
+      if ( dbTopologyExportLayersCount() > 0 )
       {
-        for ( QMap<QString, QString>::iterator itLayers = getDbTopologyLayers().begin(); itLayers != getDbTopologyLayers().end(); ++itLayers )
+        for ( QMap<QString, QString>::iterator itLayers = getDbTopologyExportLayers().begin(); itLayers != getDbTopologyExportLayers().end(); ++itLayers )
         {
           mapLayers.insert( itLayers.key(), itLayers.value() );
         }
@@ -1252,7 +1340,7 @@ bool SpatialiteDbInfo::GetSpatialiteDbInfo( QString sLayerName, bool bLoadLayers
       // Determine the amount of LayerTypeTables that exist
       if ( getSniffLayerMetadata( ) )
       {
-        // The amount of Layers for each Layer-Type is determineeed.
+        // The amount of Layers for each Layer-Type is determined.
         getSniffReadLayers();
       }
     }
@@ -1486,7 +1574,7 @@ bool SpatialiteDbInfo::readTopologyLayers()
   if ( mIsValid )
   {
     mTopologyNames.clear();
-    mTopologyLayers.clear();
+    mTopologyExportLayers.clear();
     sqlite3_stmt *stmt = nullptr;
     QString sql = QStringLiteral( "SELECT topology_name,srid FROM 'topologies'" );
     int i_rc = sqlite3_prepare_v2( mSqliteHandle, sql.toUtf8().constData(), -1, &stmt, nullptr );
@@ -1521,13 +1609,13 @@ bool SpatialiteDbInfo::readTopologyLayers()
               {
                 QString sTopoLayerName = QString::fromUtf8( ( const char * ) sqlite3_column_text( stmt, 0 ) );
                 QString sLayerName = QString( "%1(%2)" ).arg( sTopologyName ).arg( sTopoLayerName );
-                mTopologyLayers.insert( sLayerName, QString( "%1;%2" ).arg( sLayerType ).arg( iSrid ) );
+                mTopologyExportLayers.insert( sLayerName, QString( "%1;%2" ).arg( sLayerType ).arg( iSrid ) );
               }
             }
             sqlite3_finalize( stmt );
           }
         }
-        mHasTopologyExportTables = mTopologyLayers.count();
+        mHasTopologyExportTables = mTopologyExportLayers.count();
         if ( mHasTopologyExportTables > 0 )
         {
           bRc = true;
@@ -1989,10 +2077,11 @@ bool SpatialiteDbInfo::GetDbLayersInfo( QString sLayerName )
                             if ( dbLayer->mSpatialIndexType == SpatialiteDbInfo::SpatialIndexRTree )
                             {
                               // Replace type
-                              mNonSpatialTables[QString( "idx_%1" ).arg( dbLayer->mTableName ) ] = "SpatialIndex-Table";
-                              mNonSpatialTables[QString( "idx_%1_node" ).arg( dbLayer->mTableName ) ] = "SpatialIndex-Node";
-                              mNonSpatialTables[QString( "idx_%1_parent" ).arg( dbLayer->mTableName ) ] = "SpatialIndex-Parent";
-                              mNonSpatialTables[QString( "idx_%1_rowid" ).arg( dbLayer->mTableName ) ] = "SpatialIndex-Rowid";
+                              QString sIndexName = QString( "idx_%1_%2" ).arg( dbLayer->mTableName ).arg( dbLayer->mGeometryColumn );
+                              mNonSpatialTables[ sIndexName ] = "SpatialIndex-Table";
+                              mNonSpatialTables[QString( "%1_node" ).arg( sIndexName ) ] = "SpatialIndex-Node";
+                              mNonSpatialTables[QString( "%1_parent" ).arg( sIndexName ) ] = "SpatialIndex-Parent";
+                              mNonSpatialTables[QString( "%1_rowid" ).arg( sIndexName ) ] = "SpatialIndex-Rowid";
                             }
                             break;
                           case SpatialiteDbInfo::SpatialView:
@@ -2490,7 +2579,7 @@ bool SpatialiteDbInfo::GetTopologyLayersInfo( QString sLayerName )
                 delete removeLayer;
                 // mHasSpatialTables -= 4;
                 removeLayer = static_cast<SpatialiteDbLayer *>( mDbLayers.take( QString( "%1_edge_seeds" ).arg( dbLayer->mTableName ) ) );
-                mNonSpatialTables[QString( "%1_edge_seeds" ).arg( dbLayer->mTableName ) ] = "Topology-View-Edgs_Seeds";
+                mNonSpatialTables[QString( "%1_edge_seeds" ).arg( dbLayer->mTableName ) ] = "Topology-View-Edges_Seeds";
                 delete removeLayer;
                 removeLayer = static_cast<SpatialiteDbLayer *>( mDbLayers.take( QString( "%1_face_seeds" ).arg( dbLayer->mTableName ) ) );
                 mNonSpatialTables[QString( "%1_face_seeds" ).arg( dbLayer->mTableName ) ] = "Topology-View-Face_Seeds";
@@ -2949,26 +3038,29 @@ bool SpatialiteDbInfo::GetFdoOgrLayersInfo( QString sLayerName )
 bool SpatialiteDbInfo::readNonSpatialTables( )
 {
   bool bRc = false;
+  mNonSpatialTables.clear();
   sqlite3_stmt *stmt = nullptr;
   QString sWhere = QString( "WHERE ((type IN ('table','view','trigger')) AND (name NOT IN (SELECT table_name FROM vector_layers)))" );
   QString sql = QStringLiteral( "SELECT name,type FROM sqlite_master %1 ORDER BY  type,name;" ).arg( sWhere );
   // SELECT name,type FROM sqlite_master WHERE ((type IN ('table','view','trigger')) AND (name NOT LIKE 'idx_%') AND (name NOT IN (SELECT table_name FROM vector_layers)))
+  // SELECT name,type FROM sqlite_master WHERE ((type IN ('table','view','trigger')) AND (name NOT IN (SELECT table_name FROM vector_layers)))
   int i_rc = sqlite3_prepare_v2( mSqliteHandle, sql.toUtf8().constData(), -1, &stmt, nullptr );
   if ( i_rc == SQLITE_OK )
   {
     bRc = true;
     QMap<QString, QString> spatialiteTypes;
-    spatialiteTypes.insert( "SpatialIndex", "SpatialIndex-Data" );
-    spatialiteTypes.insert( "KNN", "SpatialIndex-Data" );
-    spatialiteTypes.insert( "ElementaryGeometries", "Spatialite-Internal" );
+    spatialiteTypes.insert( "SpatialIndex", "Virtual-Internal" );
+    spatialiteTypes.insert( "KNN", "Virtual-Internal" );
+    spatialiteTypes.insert( "ElementaryGeometries", "Virtual-Internal" );
     spatialiteTypes.insert( "spatialite_history", "Spatialite-Internal" );
     spatialiteTypes.insert( "data_licenses", "Spatialite-Internal" );
     spatialiteTypes.insert( "networks", "Networks-Internal" );
     spatialiteTypes.insert( "geometry_columns", "Geometries-Internal" );
     spatialiteTypes.insert( "sql_statements_log", "Spatialite-Internal" );
+    spatialiteTypes.insert( "geom_cols_ref_sys", "Geometries-Internal" );
     spatialiteTypes.insert( "geometry_columns_auth", "Geometries-Internal" );
     spatialiteTypes.insert( "geometry_columns_field_infos", "Geometries-Internal" );
-    spatialiteTypes.insert( "geometry_columns_statisctics", "Geometries-Internal" );
+    spatialiteTypes.insert( "geometry_columns_statistics", "Geometries-Internal" );
     spatialiteTypes.insert( "geometry_columns_time", "Geometries-Internal" );
     spatialiteTypes.insert( "vector_layers", "SpatialTable-Internal" );
     spatialiteTypes.insert( "vector_layers_auth", "SpatialTable-Internal" );
@@ -3001,7 +3093,7 @@ bool SpatialiteDbInfo::readNonSpatialTables( )
         QString sName = QString::fromUtf8( ( const char * ) sqlite3_column_text( stmt, 0 ) );
         QString sType = QString::fromUtf8( ( const char * ) sqlite3_column_text( stmt, 1 ) );
         QString masterType = "Unknown-Data";
-        if ( spatialiteTypes.contains( sName ) )
+        if ( !spatialiteTypes.value( sName ).isEmpty() )
         {
           masterType = spatialiteTypes.value( sName );
         }
@@ -3031,10 +3123,12 @@ bool SpatialiteDbInfo::readNonSpatialTables( )
             }
           }
         }
-        if ( !mNonSpatialTables.key( sName ).isEmpty() )
+        if ( mNonSpatialTables.value( sName ).isEmpty() )
         {
+          // sName is not contained in the Key-Field (returns value field)
           mNonSpatialTables.insert( sName, masterType );
         }
+        // qDebug() << QString( " -I-> readNonSpatialTables -  count[%1] sName[%2] masterType[%3]" ).arg(mNonSpatialTables.count() ).arg( sName ).arg(masterType );
       }
     }
     sqlite3_finalize( stmt );

@@ -564,8 +564,8 @@ void QgsSpatiaLiteSourceSelect::on_btnConnect_clicked()
   {
     mStatsButton->setEnabled( true );
   }
-
-  mTablesTreeView->sortByColumn( 0, Qt::AscendingOrder );
+  mTablesTreeView->setColumnHidden( mTableModel.getColumnSortHidden(), true );
+  mTablesTreeView->sortByColumn( mTableModel.getColumnSortHidden(), Qt::AscendingOrder );
 
 #if 0
   //expand all the toplevel items
@@ -589,7 +589,7 @@ QStringList QgsSpatiaLiteSourceSelect::selectedTables()
 
 QString QgsSpatiaLiteSourceSelect::connectionInfo()
 {
-  return QStringLiteral( "dbname='%1'" ).arg( QString( mSqlitePath ).replace( '\'', QLatin1String( "\\'" ) ) );
+  return mTableModel.getDbConnectionInfo( );
 }
 
 void QgsSpatiaLiteSourceSelect::setSql( const QModelIndex &index )

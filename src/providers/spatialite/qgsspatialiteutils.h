@@ -264,9 +264,9 @@ class SpatialiteDbInfo : public QObject
       {
         sSummary = QString( "%1 ; %2 RL1 Coverages" ).arg( sSummary ).arg( dbRasterLite1LayersCount() );
       }
-      if ( dbTopologyExportTablesCount() > 0 )
+      if ( dbTopologyExportLayersCount() > 0 )
       {
-        sSummary = QString( "%1 ; %2 Topologies" ).arg( sSummary ).arg( dbTopologyExportTablesCount() );
+        sSummary = QString( "%1 ; %2 Topologies" ).arg( sSummary ).arg( dbTopologyExportLayersCount() );
       }
 
       return sSummary;
@@ -338,7 +338,7 @@ class SpatialiteDbInfo : public QObject
      * - this does not reflect the amount of Topology-Layers that have been loaded
      * \since QGIS 3.0
      */
-    int dbTopologyExportTablesCount() const { return mHasTopologyExportTables; }
+    int dbTopologyExportLayersCount() const { return mHasTopologyExportTables; }
 
     /** Amount of MBTiles found in the Database
      * - from the metadata table Table [-1 if Table not found, otherwise 1]
@@ -525,7 +525,7 @@ class SpatialiteDbInfo : public QObject
      * \see getDbVectorLayers()
      * \see getDbRasterLite2Layers()
      * \see getDbRasterLite1Layers()
-     * \see getDbTopologyLayers()
+     * \see getDbTopologyExportLayers
      * \see getDbMBTilesLayers()
      * \see getDbGeoPackageLayers()
      * \see getDbFdoOgrLayers()
@@ -587,7 +587,7 @@ class SpatialiteDbInfo : public QObject
      * \see readTopologyLayers()
      * \since QGIS 3.0
      */
-    QMap<QString, QString> getDbTopologyLayers() const { return mTopologyLayers; }
+    QMap<QString, QString> getDbTopologyExportLayers() const { return mTopologyExportLayers; }
 
     /** Map of layers from metadata
      * - there can be only 1 Raster-Layer
@@ -743,13 +743,25 @@ class SpatialiteDbInfo : public QObject
      */
     static QIcon SpatialiteLayerTypeIcon( SpatialiteDbInfo::SpatialiteLayerType layerType );
 
+
+    /** Returns the QIcon representation  of non-Spatialial or Spatial-Admin TABLEs in a Sqlite3 Container
+     * - SpatialiteDbInfo::SpatialiteLayerType
+     * \note
+     * - SpatialTable, SpatialView, VirtualShape, RasterLite1, RasterLite2
+     * - SpatialiteTopopogy, TopopogyExport, GeoPackageVector, GeoPackageRaster
+     * - MBTilesTable, MBTilesView
+     * \see SpatialiteDbLayer::setLayerType
+     * \since QGIS 3.0
+     */
+    static QIcon NonSpatialTablesTypeIcon( QString typeName );
+
     /** Returns QIcon representation of the enum of a Geometry-Type
      * - QgsWkbTypes::Type
      * \note
      * - QgsWkbTypes::Point, Multi and 25D
      * - QgsWkbTypes::LineString, Multi and 25D
      * - QgsWkbTypes::Polygon, Multi and 25D
-     * \see SpatialiteDbLayer::getLayerTypeIcon()
+     * \see getSpatialiteTypes
      * \since QGIS 3.0
      */
     static QIcon SpatialGeometryTypeIcon( QgsWkbTypes::Type geometryType );
@@ -1170,7 +1182,7 @@ class SpatialiteDbInfo : public QObject
      * \see readTopologyLayers()
      * \since QGIS 3.0
      */
-    QMap<QString, QString> mTopologyLayers;
+    QMap<QString, QString> mTopologyExportLayers;
 
     /** Map of layers from metadata
      * - there can be only 1 Raster-Layer
@@ -1275,7 +1287,7 @@ class SpatialiteDbInfo : public QObject
     /** Determine if valid Topology Layers exist
      * - called only when mHasTopologyExportTables > 0 during GetSpatialiteDbInfo
      * \note
-     * - results are stored in mTopologyLayers
+     * - results are stored in mTopologyExportLayers
      * \returns true if the the count of valid-layers > 0
      * \see GetSpatialiteDbInfo
      * \since QGIS 3.0
@@ -1509,7 +1521,16 @@ class SpatialiteDbLayer : public QObject
     {
       if ( mLayerType == SpatialiteDbInfo::RasterLite1 )
       {
-        return QString( "RASTERLITE:%1,table=%2" ).arg( mDatabaseFileName ).arg( "RASTERLITE" ).arg( mTableName );
+        // RASTERLITE:/home/mj10777/000_links/qgis_git/QGIS_3/git_commands/master3.spatialite_utils/test.projects/db/rasterlite1/ItalyRail.atlas,table=srtm
+        return QString( "RASTERLITE:%1,table=%2" ).arg( mDatabaseFileName ).arg( mTableName );
+      }
+      if ( ( mLayerType == SpatialiteDbInfo::MBTilesTable ) || ( mLayerType == SpatialiteDbInfo::MBTilesView ) )
+      {
+        return QString( "%1" ).arg( mDatabaseFileName );
+      }
+      if ( ( mLayerType == SpatialiteDbInfo::GeoPackageVector ) || ( mLayerType == SpatialiteDbInfo::GeoPackageRaster ) )
+      {
+        return QString( "%1|layername=%2" ).arg( mDatabaseFileName ).arg( mTableName );
       }
       if ( !mGeometryColumn.isEmpty() )
       {

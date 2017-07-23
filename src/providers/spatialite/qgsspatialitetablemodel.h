@@ -50,6 +50,8 @@ class QgsSpatiaLiteTableModel: public QStandardItemModel
       return mTableCount;
     }
     //! Returns the Column 'Table' form the selected Item
+    int getColumnSortHidden() const { return i_field_sort_hidden; }
+    //! Returns the Column 'Table' form the selected Item
     int getTableNameIndex() const { return i_field_table; }
     QString getTableName( const QModelIndex &index ) const
     {
@@ -89,6 +91,15 @@ class QgsSpatiaLiteTableModel: public QStandardItemModel
         }
       }
       return sDBName;
+    }
+    QString getDbConnectionInfo( ) const
+    {
+      QString sDbConnectionInfo = QString();
+      if ( ( mSpatialiteDbInfo ) && ( mSpatialiteDbInfo->isDbValid() ) )
+      {
+        sDbConnectionInfo = mSpatialiteDbInfo->dbConnectionInfo( ) ;
+      }
+      return sDbConnectionInfo;
     }
 
     /** Retrieve SpatialiteDbInfo
@@ -152,6 +163,7 @@ class QgsSpatiaLiteTableModel: public QStandardItemModel
     //! Number of tables in the model
     int mTableCount;
     int mTableCounter;
+    int i_field_sort_hidden;
     int i_field_table;
     int i_field_geometry_type;
     int i_field_geometry_name;

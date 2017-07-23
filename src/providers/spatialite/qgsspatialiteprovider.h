@@ -146,7 +146,7 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
     //! Does the read Database contain RasterLite2 coverages [-1=no raster_coverages table, otherwise amount (0 being empty)]
     int dbRasterLite2LayersCount() const { return getSpatialiteDbInfo()->dbRasterLite2LayersCount(); }
     //! Does the read Database contain Topology tables [-1=no topologies table, otherwise amount (0 being empty)]
-    int dbTopologyExportTablesCount() const { return getSpatialiteDbInfo()->dbTopologyExportTablesCount(); }
+    int dbTopologyExportLayersCount() const { return getSpatialiteDbInfo()->dbTopologyExportLayersCount(); }
     //! Is the used Spatialite compiled with Spatialite-Gcp support
     bool hasDbGcpSupport() const { return getSpatialiteDbInfo()->hasDbGcpSupport(); }
     //! Is the used Spatialite compiled with Topology (and thus RtTopo) support
