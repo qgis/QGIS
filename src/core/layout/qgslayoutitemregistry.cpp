@@ -15,6 +15,9 @@
  ***************************************************************************/
 
 #include "qgslayoutitemregistry.h"
+#include "qgslayoutitemshape.h"
+#include "qgsgloweffect.h"
+#include "qgseffectstack.h"
 #include <QPainter>
 
 QgsLayoutItemRegistry::QgsLayoutItemRegistry( QObject *parent )
@@ -39,6 +42,10 @@ bool QgsLayoutItemRegistry::populate()
   };
 
   addLayoutItemType( new QgsLayoutItemMetadata( 101, QStringLiteral( "temp type" ), QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddLabel.svg" ) ), createTemporaryItem ) );
+  addLayoutItemType( new QgsLayoutItemMetadata( LayoutRectangle, QStringLiteral( "Rectangle" ), QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddBasicRectangle.svg" ) ), QgsLayoutItemRectangularShape::create ) );
+  addLayoutItemType( new QgsLayoutItemMetadata( LayoutEllipse, QStringLiteral( "Ellipse" ), QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddBasicCircle.svg" ) ), QgsLayoutItemEllipseShape::create ) );
+  addLayoutItemType( new QgsLayoutItemMetadata( LayoutTriangle, QStringLiteral( "Triangle" ), QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddBasicTriangle.svg" ) ), QgsLayoutItemTriangleShape::create ) );
+
   return true;
 }
 
@@ -93,17 +100,45 @@ TestLayoutItem::TestLayoutItem( QgsLayout *layout )
   int s = ( qrand() % ( 200 - 100 + 1 ) ) + 100;
   int v = ( qrand() % ( 130 - 255 + 1 ) ) + 130;
   mColor = QColor::fromHsv( h, s, v );
+
+  QgsStringMap properties;
+  properties.insert( QStringLiteral( "color" ), mColor.name() );
+  properties.insert( QStringLiteral( "style" ), QStringLiteral( "solid" ) );
+  properties.insert( QStringLiteral( "style_border" ), QStringLiteral( "solid" ) );
+  properties.insert( QStringLiteral( "color_border" ), QStringLiteral( "black" ) );
+  properties.insert( QStringLiteral( "width_border" ), QStringLiteral( "0.3" ) );
+  properties.insert( QStringLiteral( "joinstyle" ), QStringLiteral( "miter" ) );
+  mShapeStyleSymbol = QgsFillSymbol::createSimple( properties );
+
 }
 
-void TestLayoutItem::draw( QPainter *painter, const QStyleOptionGraphicsItem *itemStyle, QWidget *pWidget )
+void TestLayoutItem::draw( QgsRenderContext &context, const QStyleOptionGraphicsItem *itemStyle )
 {
   Q_UNUSED( itemStyle );
-  Q_UNUSED( pWidget );
+
+  QgsEffectStack stack;
+  stack.appendEffect( new QgsDrawSourceEffect() );
+  stack.appendEffect( new QgsInnerGlowEffect() );
+  stack.begin( context );
+
+  QPainter *painter = context.painter();
+
   painter->save();
   painter->setRenderHint( QPainter::Antialiasing, false );
   painter->setPen( Qt::NoPen );
   painter->setBrush( mColor );
-  painter->drawRect( rect() );
+
+  double scale = context.convertToPainterUnits( 1, QgsUnitTypes::RenderMillimeters );
+
+  QPolygonF shapePolygon = QPolygonF( QRectF( 0, 0, rect().width() * scale, rect().height() * scale ) );
+  QList<QPolygonF> rings; //empty list
+
+  mShapeStyleSymbol->startRender( context );
+  mShapeStyleSymbol->renderPolygon( shapePolygon, &rings, nullptr, context );
+  mShapeStyleSymbol->stopRender( context );
+
+// painter->drawRect( r );
   painter->restore();
+  stack.end( context );
 }
 ///@endcond

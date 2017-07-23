@@ -19,6 +19,7 @@
 
 #include "ui_qgslayoutdesignerbase.h"
 #include "qgslayoutdesignerinterface.h"
+#include <QToolButton>
 
 class QgsLayoutDesignerDialog;
 class QgsLayoutView;
@@ -160,6 +161,9 @@ class QgsLayoutDesignerDialog: public QMainWindow, private Ui::QgsLayoutDesigner
     QgsLayoutViewToolPan *mPanTool = nullptr;
     QgsLayoutViewToolZoom *mZoomTool = nullptr;
     QgsLayoutViewToolSelect *mSelectTool = nullptr;
+
+    QMap< QString, QToolButton * > mItemGroupToolButtons;
+    QMap< QString, QMenu * > mItemGroupSubmenus;
 
     //! Save window state
     void saveWindowState();

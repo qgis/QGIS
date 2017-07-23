@@ -50,6 +50,11 @@ class CORE_EXPORT QgsLayoutSize
     QgsLayoutSize( const double width, const double height, const QgsUnitTypes::LayoutUnit units = QgsUnitTypes::LayoutMillimeters );
 
     /**
+     * Constructor for QgsLayoutSize.
+    */
+    explicit QgsLayoutSize( const QSizeF size, const QgsUnitTypes::LayoutUnit units = QgsUnitTypes::LayoutMillimeters );
+
+    /**
      * Constructor for an empty layout size
      * \param units units for measurement
     */

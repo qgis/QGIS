@@ -259,6 +259,12 @@ void TestQgsLayoutUnits::createSize()
   QCOMPARE( empty.units(), QgsUnitTypes::LayoutPixels );
   QCOMPARE( empty.width(), 0.0 );
   QCOMPARE( empty.height(), 0.0 );
+
+  //test constructing from QSizeF
+  QgsLayoutSize fromQSizeF( QSizeF( 17.0, 18.0 ), QgsUnitTypes::LayoutInches );
+  QCOMPARE( fromQSizeF.units(), QgsUnitTypes::LayoutInches );
+  QCOMPARE( fromQSizeF.width(), 17.0 );
+  QCOMPARE( fromQSizeF.height(), 18.0 );
 }
 
 void TestQgsLayoutUnits::sizeGettersSetters()
@@ -393,6 +399,12 @@ void TestQgsLayoutUnits::createPoint()
   QCOMPARE( empty.units(), QgsUnitTypes::LayoutPixels );
   QCOMPARE( empty.x(), 0.0 );
   QCOMPARE( empty.y(), 0.0 );
+
+  //test constructing from QPointF
+  QgsLayoutPoint fromQPointF( QPointF( 17.0, 18.0 ), QgsUnitTypes::LayoutInches );
+  QCOMPARE( fromQPointF.units(), QgsUnitTypes::LayoutInches );
+  QCOMPARE( fromQPointF.x(), 17.0 );
+  QCOMPARE( fromQPointF.y(), 18.0 );
 }
 
 void TestQgsLayoutUnits::pointGettersSetters()

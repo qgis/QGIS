@@ -24,6 +24,8 @@
 #include "qgslayoutviewrubberband.h"
 #include "qgsgui.h"
 #include "qgslayoutitemguiregistry.h"
+#include "qgslayoutnewitempropertiesdialog.h"
+#include "qgssettings.h"
 #include <QGraphicsRectItem>
 #include <QPen>
 #include <QBrush>
@@ -81,12 +83,38 @@ void QgsLayoutViewToolAddItem::layoutReleaseEvent( QgsLayoutViewMouseEvent *even
 
   QRectF rect = mRubberBand->finish( event->layoutPoint(), event->modifiers() );
 
+  QgsLayoutItem *item = QgsApplication::layoutItemRegistry()->createItem( mItemType, layout() );
+
   // click? or click-and-drag?
   bool clickOnly = !isClickAndDrag( mMousePressStartPos, event->pos() );
-  Q_UNUSED( clickOnly );
+  if ( clickOnly )
+  {
+    QgsLayoutItemPropertiesDialog dlg( view() );
+    dlg.setItemPosition( QgsLayoutPoint( event->layoutPoint(), layout()->units() ) );
+    if ( dlg.exec() )
+    {
+      item->setReferencePoint( dlg.referencePoint() );
+      item->attemptResize( dlg.itemSize() );
+      item->attemptMove( dlg.itemPosition() );
+    }
+    else
+    {
+      delete item;
+      return;
+    }
+  }
+  else
+  {
+    item->attemptResize( QgsLayoutSize( rect.width(), rect.height(), QgsUnitTypes::LayoutMillimeters ) );
+    item->attemptMove( QgsLayoutPoint( rect.left(), rect.top(), QgsUnitTypes::LayoutMillimeters ) );
+  }
 
-  QgsLayoutItem *item = QgsApplication::layoutItemRegistry()->createItem( mItemType, layout() );
-  item->setRect( rect );
+  // record last created item size
+  QgsSettings settings;
+  settings.setValue( QStringLiteral( "LayoutDesigner/lastItemWidth" ), item->sizeWithUnits().width() );
+  settings.setValue( QStringLiteral( "LayoutDesigner/lastItemHeight" ), item->sizeWithUnits().height() );
+  settings.setValue( QStringLiteral( "LayoutDesigner/lastSizeUnit" ), static_cast< int >( item->sizeWithUnits().units() ) );
+
   layout()->addItem( item );
 }
 

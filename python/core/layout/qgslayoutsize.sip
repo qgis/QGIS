@@ -40,6 +40,11 @@ class QgsLayoutSize
  \param units units for width and height
 %End
 
+    explicit QgsLayoutSize( const QSizeF size, const QgsUnitTypes::LayoutUnit units = QgsUnitTypes::LayoutMillimeters );
+%Docstring
+ Constructor for QgsLayoutSize.
+%End
+
     explicit QgsLayoutSize( const QgsUnitTypes::LayoutUnit units = QgsUnitTypes::LayoutMillimeters );
 %Docstring
  Constructor for an empty layout size

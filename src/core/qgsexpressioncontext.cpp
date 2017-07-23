@@ -31,6 +31,7 @@
 #include "qgsmaplayerlistutils.h"
 #include "qgsprocessingcontext.h"
 #include "qgsprocessingalgorithm.h"
+#include "qgslayout.h"
 
 #include <QSettings>
 #include <QDir>
@@ -1023,6 +1024,80 @@ void QgsExpressionContextUtils::setCompositionVariables( QgsComposition *composi
 
   composition->setCustomProperty( QStringLiteral( "variableNames" ), variableNames );
   composition->setCustomProperty( QStringLiteral( "variableValues" ), variableValues );
+}
+
+QgsExpressionContextScope *QgsExpressionContextUtils::layoutScope( const QgsLayout *layout )
+{
+  std::unique_ptr< QgsExpressionContextScope > scope( new QgsExpressionContextScope( QObject::tr( "Layout" ) ) );
+  if ( !layout )
+    return scope.release();
+
+  //add variables defined in layout properties
+  QStringList variableNames = layout->customProperty( QStringLiteral( "variableNames" ) ).toStringList();
+  QStringList variableValues = layout->customProperty( QStringLiteral( "variableValues" ) ).toStringList();
+
+  int varIndex = 0;
+  Q_FOREACH ( const QString &variableName, variableNames )
+  {
+    if ( varIndex >= variableValues.length() )
+    {
+      break;
+    }
+
+    QVariant varValue = variableValues.at( varIndex );
+    varIndex++;
+    scope->setVariable( variableName, varValue );
+  }
+
+  //add known layout context variables
+  scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "layout_name" ), layout->name(), true ) );
+#if 0 //TODO
+  scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "layout_numpages" ), composition->numPages(), true ) );
+  scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "layout_pageheight" ), composition->paperHeight(), true ) );
+  scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "layout_pagewidth" ), composition->paperWidth(), true ) );
+  scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "layout_dpi" ), layout->context().dpi(), true ) );
+#endif
+
+#if 0 //TODO
+  scope->addFunction( QStringLiteral( "item_variables" ), new GetComposerItemVariables( composition ) );
+#endif
+
+  return scope.release();
+}
+
+void QgsExpressionContextUtils::setLayoutVariable( QgsLayout *layout, const QString &name, const QVariant &value )
+{
+  if ( !layout )
+    return;
+
+  //write variable to composition
+  QStringList variableNames = layout->customProperty( QStringLiteral( "variableNames" ) ).toStringList();
+  QStringList variableValues = layout->customProperty( QStringLiteral( "variableValues" ) ).toStringList();
+
+  variableNames << name;
+  variableValues << value.toString();
+
+  layout->setCustomProperty( QStringLiteral( "variableNames" ), variableNames );
+  layout->setCustomProperty( QStringLiteral( "variableValues" ), variableValues );
+}
+
+void QgsExpressionContextUtils::setLayoutVariables( QgsLayout *layout, const QVariantMap &variables )
+{
+  if ( !layout )
+    return;
+
+  QStringList variableNames;
+  QStringList variableValues;
+
+  QVariantMap::const_iterator it = variables.constBegin();
+  for ( ; it != variables.constEnd(); ++it )
+  {
+    variableNames << it.key();
+    variableValues << it.value().toString();
+  }
+
+  layout->setCustomProperty( QStringLiteral( "variableNames" ), variableNames );
+  layout->setCustomProperty( QStringLiteral( "variableValues" ), variableValues );
 }
 
 QgsExpressionContextScope *QgsExpressionContextUtils::atlasScope( const QgsAtlasComposition *atlas )
