@@ -20,7 +20,6 @@
 #include "qgis_gui.h"
 
 class QgsNullSymbolRenderer;
-class QgsSymbolSelectorDialog;
 
 class QMenu;
 

@@ -39,11 +39,9 @@ class APP_EXPORT QgsDecorationLayoutExtentDialog : public QDialog, private Ui::Q
     void on_buttonBox_accepted();
     void on_buttonBox_rejected();
 
-    void changeSymbol();
 
   private:
     QgsDecorationLayoutExtent &mDeco;
-    std::unique_ptr< QgsFillSymbol > mSymbol;
 
     void updateGuiElements();
     void updateDecoFromGui();

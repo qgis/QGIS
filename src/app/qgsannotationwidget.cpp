@@ -22,6 +22,7 @@
 #include "qgssymbollayerutils.h"
 #include "qgssymbol.h"
 #include "qgssymbolselectordialog.h"
+#include "qgisapp.h"
 #include <QColorDialog>
 
 
@@ -66,6 +67,8 @@ QgsAnnotationWidget::QgsAnnotationWidget( QgsMapCanvasAnnotationItem *item, QWid
 
     blockAllSignals( false );
   }
+  mMapMarkerButton->setMapCanvas( QgisApp::instance()->mapCanvas() );
+  mFrameStyleButton->setMapCanvas( QgisApp::instance()->mapCanvas() );
 }
 
 QgsAnnotationWidget::~QgsAnnotationWidget()
