@@ -45,7 +45,7 @@ Scene::Scene( const Map3D &map, Qt3DExtras::QForwardRenderer *defaultFrameGraph,
   mCameraController = new CameraController( this ); // attaches to the scene
   mCameraController->setViewport( viewportRect );
   mCameraController->setCamera( camera );
-  mCameraController->setCameraData( 0, 0, 1000 );
+  mCameraController->resetView();
 
   // create terrain entity
   mTerrain = new Terrain( 3, map );

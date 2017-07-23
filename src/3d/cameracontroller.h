@@ -27,6 +27,9 @@ class _3D_EXPORT CameraController : public Qt3DCore::QEntity
 
     void frameTriggered( float dt );
 
+    //! Move camera back to the initial position (looking down towards origin of world's coordinates)
+    void resetView();
+
   signals:
     void cameraChanged();
     void viewportChanged();

@@ -1,5 +1,6 @@
 #include "maptexturegenerator.h"
 
+#include <qgsmaprenderercustompainterjob.h>
 #include <qgsmaprenderersequentialjob.h>
 #include <qgsmapsettings.h>
 #include <qgsproject.h>
@@ -54,21 +55,25 @@ QImage MapTextureGenerator::renderSynchronously( const QgsRectangle &extent, con
   QgsMapSettings mapSettings( baseMapSettings() );
   mapSettings.setExtent( extent );
 
-  QgsMapRendererSequentialJob job( mapSettings );
-  job.start();
-  job.waitForFinished();
+  QImage img = QImage( mapSettings.outputSize(), mapSettings.outputImageFormat() );
+  img.setDotsPerMeterX( 1000 * mapSettings.outputDpi() / 25.4 );
+  img.setDotsPerMeterY( 1000 * mapSettings.outputDpi() / 25.4 );
+  img.fill( Qt::transparent );
 
-  QImage img = job.renderedImage();
+  QPainter p( &img );
+
+  QgsMapRendererCustomPainterJob job( mapSettings, &p );
+  job.renderSynchronously();
 
   if ( !debugText.isEmpty() )
   {
     // extra tile information for debugging
-    QPainter p( &img );
     p.setPen( Qt::white );
     p.drawRect( 0, 0, img.width() - 1, img.height() - 1 );
     p.drawText( img.rect(), debugText, QTextOption( Qt::AlignCenter ) );
-    p.end();
   }
+
+  p.end();
 
   return img;
 }

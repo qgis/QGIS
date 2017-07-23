@@ -86,6 +86,10 @@ Map3D::Map3D()
 {
 }
 
+Map3D::~Map3D()
+{
+}
+
 void Map3D::readXml( const QDomElement &elem, const QgsReadWriteContext &context )
 {
   Q_UNUSED( context );

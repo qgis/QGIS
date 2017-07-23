@@ -363,6 +363,22 @@ SET (QGIS_APP_MOC_HDRS
   qgscrashdialog.h
   )
 
+
+IF (WITH_3D)
+  SET(QGIS_APP_SRCS
+    ${QGIS_APP_SRCS}
+    3d/qgs3dmapcanvas.cpp
+    3d/qgs3dmapcanvasdockwidget.cpp
+  )
+
+  SET (QGIS_APP_MOC_HDRS
+    ${QGIS_APP_MOC_HDRS}
+    3d/qgs3dmapcanvas.h
+    3d/qgs3dmapcanvasdockwidget.h
+  )
+ENDIF (WITH_3D)
+
+
 SET (WITH_QWTPOLAR FALSE CACHE BOOL "Determines whether QwtPolar should be built")
 
 IF (WITH_QWTPOLAR)
@@ -540,6 +556,16 @@ INCLUDE_DIRECTORIES(
   ${CMAKE_BINARY_DIR}/src/native
 )
 
+IF (WITH_3D)
+  INCLUDE_DIRECTORIES(
+    ${CMAKE_SOURCE_DIR}/src/app/3d
+    ${CMAKE_SOURCE_DIR}/src/3d
+    ${CMAKE_SOURCE_DIR}/src/3d/terrain
+    ${CMAKE_SOURCE_DIR}/src/3d/chunks
+    ${CMAKE_BINARY_DIR}/src/3d
+  )
+ENDIF (WITH_3D)
+
 INCLUDE_DIRECTORIES(SYSTEM
   ${QWT_INCLUDE_DIR}
   ${QT_QTUITOOLS_INCLUDE_DIR}
@@ -636,6 +662,12 @@ TARGET_LINK_LIBRARIES(qgis_app
   qgis_native
   libdxfrw
 )
+
+IF (WITH_3D)
+  TARGET_LINK_LIBRARIES(qgis_app
+    qgis_3d
+  )
+ENDIF (WITH_3D)
 
 GENERATE_EXPORT_HEADER(
    qgis_app

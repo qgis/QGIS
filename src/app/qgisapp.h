@@ -1157,6 +1157,8 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
     //! Creates a new map canvas view
     void newMapCanvas();
+    //! Creates a new 3D map canvas view
+    void new3DMapCanvas();
 
     //! Create a new empty vector layer
     void newVectorLayer();

@@ -217,6 +217,13 @@ void CameraController::frameTriggered( float dt )
   }
 }
 
+void CameraController::resetView()
+{
+  setCameraData( 0, 0, 1000 );
+
+  emit cameraChanged();
+}
+
 void CameraController::onPositionChanged( Qt3DInput::QMouseEvent *mouse )
 {
   mMousePos = QPoint( mouse->x(), mouse->y() );

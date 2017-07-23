@@ -151,6 +151,7 @@ class _3D_EXPORT Map3D
 {
   public:
     Map3D();
+    ~Map3D();
 
     void readXml( const QDomElement &elem, const QgsReadWriteContext &context );
 

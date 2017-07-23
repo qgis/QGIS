@@ -1709,6 +1709,7 @@ void QgisApp::createActions()
   connect( mActionSaveMapAsImage, &QAction::triggered, this, [ = ] { saveMapAsImage(); } );
   connect( mActionSaveMapAsPdf, &QAction::triggered, this, [ = ] { saveMapAsPdf(); } );
   connect( mActionNewMapCanvas, &QAction::triggered, this, &QgisApp::newMapCanvas );
+  connect( mActionNew3DMapCanvas, &QAction::triggered, this, &QgisApp::new3DMapCanvas );
   connect( mActionNewPrintComposer, &QAction::triggered, this, &QgisApp::newPrintComposer );
   connect( mActionShowComposerManager, &QAction::triggered, this, &QgisApp::showComposerManager );
   connect( mActionExit, &QAction::triggered, this, &QgisApp::fileExit );
@@ -9876,6 +9877,39 @@ void QgisApp::newMapCanvas()
     dock->mapCanvas()->setDestinationCrs( QgsProject::instance()->crs() );
     dock->mapCanvas()->freeze( false );
   }
+}
+
+#include "qgs3dmapcanvasdockwidget.h"
+#include "map3d.h"
+#include "flatterraingenerator.h"
+
+void QgisApp::new3DMapCanvas()
+{
+  // initialize from project
+  QgsProject *prj = QgsProject::instance();
+  QgsRectangle fullExtent = mMapCanvas->fullExtent();
+
+  Map3D *map = new Map3D;
+  map->showBoundingBoxes = true;
+  map->drawTerrainTileInfo = true;
+  map->crs = prj->crs();
+  map->originX = fullExtent.center().x();
+  map->originY = fullExtent.center().y();
+  map->backgroundColor = mMapCanvas->canvasColor();
+  map->setLayers( mMapCanvas->layers() );
+
+  FlatTerrainGenerator *flatTerrain = new FlatTerrainGenerator;
+  flatTerrain->setCrs( map->crs );
+  flatTerrain->setExtent( fullExtent );
+  map->terrainGenerator.reset( flatTerrain );
+
+  // TODO: combine with code in createNewMapCanvasDock()
+  Qgs3DMapCanvasDockWidget *map3DWidget = new Qgs3DMapCanvasDockWidget( this );
+  map3DWidget->setWindowTitle( "Super 3D Map Widget" );
+  map3DWidget->setAllowedAreas( Qt::AllDockWidgetAreas );
+  map3DWidget->setGeometry( QRect( rect().width() * 0.75, rect().height() * 0.5, 400, 400 ) );
+  map3DWidget->setMap( map );
+  addDockWidget( Qt::RightDockWidgetArea, map3DWidget );
 }
 
 void QgisApp::setExtent( const QgsRectangle &rect )
