@@ -96,7 +96,6 @@ class GUI_EXPORT QgsFieldConditionalFormatWidget : public QWidget, private Ui::Q
     bool mEditing;
     QStandardItemModel *mModel = nullptr;
     QStandardItemModel *mPresetsModel = nullptr;
-    QgsSymbol *mSymbol = nullptr;
     QList<QgsConditionalStyle> mPresets;
 
     QList<QgsConditionalStyle> getStyles();
@@ -105,7 +104,6 @@ class GUI_EXPORT QgsFieldConditionalFormatWidget : public QWidget, private Ui::Q
 
   private slots:
     void setExpression();
-    void updateIcon();
     void presetSet( int index );
     bool isCustomSet();
     void ruleClicked( const QModelIndex &index );
