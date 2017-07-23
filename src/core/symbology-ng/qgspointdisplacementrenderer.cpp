@@ -70,7 +70,7 @@ void QgsPointDisplacementRenderer::drawGroup( QPointF centerPoint, QgsRenderCont
 
   Q_FOREACH ( const GroupedFeature &feature, group )
   {
-    if ( QgsMarkerSymbol *symbol = feature.symbol )
+    if ( QgsMarkerSymbol *symbol = feature.symbol() )
     {
       diagonal = qMax( diagonal, context.convertToPainterUnits( M_SQRT2 * symbol->size(),
                        symbol->sizeUnit(), symbol->sizeMapUnitScale() ) );
@@ -327,9 +327,9 @@ void QgsPointDisplacementRenderer::drawSymbols( const ClusteredGroup &group, Qgs
         ++symbolPosIt, ++groupIt )
   {
     context.expressionContext().setFeature( groupIt->feature );
-    groupIt->symbol->startRender( context );
-    groupIt->symbol->renderPoint( *symbolPosIt, &( groupIt->feature ), context, -1, groupIt->isSelected );
-    groupIt->symbol->stopRender( context );
+    groupIt->symbol()->startRender( context );
+    groupIt->symbol()->renderPoint( *symbolPosIt, &( groupIt->feature ), context, -1, groupIt->isSelected );
+    groupIt->symbol()->stopRender( context );
   }
 }
 

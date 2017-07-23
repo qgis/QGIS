@@ -72,8 +72,10 @@ void QgsPointClusterRenderer::drawGroup( QPointF centerPoint, QgsRenderContext &
   else
   {
     //single isolated symbol, draw it untouched
-    QgsMarkerSymbol *symbol = group.at( 0 ).symbol;
+    QgsMarkerSymbol *symbol = group.at( 0 ).symbol();
+    symbol->startRender( context );
     symbol->renderPoint( centerPoint, &( group.at( 0 ).feature ), context, -1, group.at( 0 ).isSelected );
+    symbol->stopRender( context );
   }
 }
 

@@ -96,7 +96,7 @@ bool QgsPointDistanceRenderer::renderFeature( QgsFeature &feature, QgsRenderCont
     mSpatialIndex->insertFeature( transformedFeature );
     // create new group
     ClusteredGroup newGroup;
-    newGroup << GroupedFeature( transformedFeature, symbol, selected, label );
+    newGroup << GroupedFeature( transformedFeature, symbol->clone(), selected, label );
     mClusteredGroups.push_back( newGroup );
     // add to group index
     mGroupIndex.insert( transformedFeature.id(), mClusteredGroups.count() - 1 );
@@ -127,7 +127,7 @@ bool QgsPointDistanceRenderer::renderFeature( QgsFeature &feature, QgsRenderCont
                                           ( oldCenter.y() * group.size() + point.y() ) / ( group.size() + 1.0 ) );
 
     // add to a group
-    group << GroupedFeature( transformedFeature, symbol, selected, label );
+    group << GroupedFeature( transformedFeature, symbol->clone(), selected, label );
     // add to group index
     mGroupIndex.insert( transformedFeature.id(), groupIdx );
   }
@@ -425,16 +425,16 @@ QgsExpressionContextScope *QgsPointDistanceRenderer::createGroupScope( const Clu
     ClusteredGroup::const_iterator groupIt = group.constBegin();
     for ( ; groupIt != group.constEnd(); ++groupIt )
     {
-      if ( !groupIt->symbol )
+      if ( !groupIt->symbol() )
         continue;
 
       if ( !groupColor.isValid() )
       {
-        groupColor = groupIt->symbol->color();
+        groupColor = groupIt->symbol()->color();
       }
       else
       {
-        if ( groupColor != groupIt->symbol->color() )
+        if ( groupColor != groupIt->symbol()->color() )
         {
           groupColor = QColor();
           break;
