@@ -46,6 +46,14 @@ class CORE_EXPORT QgsLayoutContext
     };
     Q_DECLARE_FLAGS( Flags, Flag )
 
+    //! Style for drawing the page/snapping grid
+    enum GridStyle
+    {
+      GridLines, //! Solid lines
+      GridDots, //! Dots
+      GridCrosses //! Crosses
+    };
+
     QgsLayoutContext();
 
     /**
@@ -139,6 +147,67 @@ class CORE_EXPORT QgsLayoutContext
      */
     QgsLayoutMeasurementConverter &measurementConverter() { return mMeasurementConverter; }
 
+    /**
+     * Returns true if the page grid should be drawn.
+     */
+    bool gridVisible() const;
+
+    /**
+     * Sets the page/snap grid \a resolution.
+     * \see gridResolution()
+     * \see setGridOffset()
+     */
+    void setGridResolution( const QgsLayoutMeasurement &resolution ) { mGridResolution = resolution; }
+
+    /**
+     * Returns the page/snap grid resolution.
+     * \see setGridResolution()
+     * \see gridOffset()
+     */
+    QgsLayoutMeasurement gridResolution() const { return mGridResolution;}
+
+    /**
+     * Sets the \a offset of the page/snap grid.
+     * \see gridOffset()
+     * \see setGridResolution()
+     */
+    void setGridOffset( const QgsLayoutPoint offset ) { mGridOffset = offset; }
+
+    /**
+     * Returns the offset of the page/snap grid.
+     * \see setGridOffset()
+     * \see gridResolution()
+     */
+    QgsLayoutPoint gridOffset() const { return mGridOffset; }
+
+    /**
+     * Sets the \a pen used for drawing page/snap grids.
+     * \see gridPen()
+     * \see setGridStyle()
+     */
+    void setGridPen( const QPen &pen ) { mGridPen = pen; }
+
+    /**
+     * Returns the pen used for drawing page/snap grids.
+     * \see setGridPen()
+     * \see gridStyle()
+     */
+    QPen gridPen() const { return mGridPen; }
+
+    /**
+     * Sets the \a style used for drawing the page/snap grids.
+     * \see gridStyle()
+     * \see setGridPen()
+     */
+    void setGridStyle( const GridStyle style ) { mGridStyle = style; }
+
+    /**
+     * Returns the style used for drawing the page/snap grids.
+     * \see setGridStyle()
+     * \see gridPen()
+     */
+    GridStyle gridStyle() const { return mGridStyle; }
+
   private:
 
     Flags mFlags = 0;
@@ -147,6 +216,11 @@ class CORE_EXPORT QgsLayoutContext
     QPointer< QgsVectorLayer > mLayer;
 
     QgsLayoutMeasurementConverter mMeasurementConverter;
+
+    QgsLayoutMeasurement mGridResolution;
+    QgsLayoutPoint mGridOffset;
+    QPen mGridPen;
+    GridStyle mGridStyle = GridLines;
 
 };
 

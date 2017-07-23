@@ -40,7 +40,9 @@ class CORE_EXPORT QgsLayout : public QGraphicsScene, public QgsExpressionContext
     enum ZValues
     {
       ZPage = 0, //!< Z-value for page (paper) items
+      ZGrid = 9999, //!< Z-value for page grids
       ZMapTool = 10000, //!< Z-value for temporary map tool items
+
     };
 
     /**
