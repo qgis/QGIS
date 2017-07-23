@@ -28,6 +28,10 @@ Scene::Scene( const Map3D &map, Qt3DExtras::QForwardRenderer *defaultFrameGraph,
 {
   defaultFrameGraph->setClearColor( map.backgroundColor );
 
+  // TODO: strange - setting OnDemand render policy still keeps QGIS busy (Qt 5.9.0)
+  // actually it is more busy than with the default "Always" policy although there are no changes in the scene.
+  //renderSettings->setRenderPolicy( Qt3DRender::QRenderSettings::OnDemand );
+
 #if QT_VERSION >= 0x050900
   // we want precise picking of terrain (also bounding volume picking does not seem to work - not sure why)
   renderSettings->pickingSettings()->setPickMethod( Qt3DRender::QPickingSettings::TrianglePicking );

@@ -35,6 +35,9 @@ class TerrainGenerator : public ChunkLoaderFactory
 
     void setTerrain( Terrain *t ) { mTerrain = t; }
 
+    //! Makes a copy of the current instance
+    virtual TerrainGenerator *clone() const = 0;
+
     //! What texture generator implementation is this
     virtual Type type() const = 0;
 

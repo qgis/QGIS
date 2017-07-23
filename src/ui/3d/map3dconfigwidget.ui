@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>Form</class>
- <widget class="QWidget" name="Form">
+ <class>Map3DConfigWidget</class>
+ <widget class="QWidget" name="Map3DConfigWidget">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -28,7 +28,7 @@
        </widget>
       </item>
       <item row="0" column="1" colspan="2">
-       <widget class="QComboBox" name="cboTerrainLayer"/>
+       <widget class="QgsMapLayerComboBox" name="cboTerrainLayer"/>
       </item>
       <item row="1" column="0">
        <widget class="QLabel" name="label_2">
@@ -56,6 +56,9 @@
         <property name="suffix">
          <string> px</string>
         </property>
+        <property name="maximum">
+         <number>4096</number>
+        </property>
        </widget>
       </item>
      </layout>
@@ -75,6 +78,9 @@
        <property name="suffix">
         <string> px</string>
        </property>
+       <property name="maximum">
+        <number>4096</number>
+       </property>
       </widget>
      </item>
      <item row="1" column="0">
@@ -85,7 +91,7 @@
       </widget>
      </item>
      <item row="1" column="1">
-      <widget class="QDoubleSpinBox" name="spinScreenError">
+      <widget class="QSpinBox" name="spinScreenError">
        <property name="suffix">
         <string> px</string>
        </property>
@@ -122,6 +128,13 @@
    </item>
   </layout>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>QgsMapLayerComboBox</class>
+   <extends>QComboBox</extends>
+   <header>qgsmaplayercombobox.h</header>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections/>
 </ui>

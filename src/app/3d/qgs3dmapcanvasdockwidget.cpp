@@ -1,8 +1,13 @@
 #include "qgs3dmapcanvasdockwidget.h"
 
 #include "qgs3dmapcanvas.h"
+#include "qgs3dmapconfigwidget.h"
+
+#include "map3d.h"
 
 #include <QBoxLayout>
+#include <QDialog>
+#include <QDialogButtonBox>
 #include <QToolBar>
 
 Qgs3DMapCanvasDockWidget::Qgs3DMapCanvasDockWidget( QWidget *parent )
@@ -12,6 +17,7 @@ Qgs3DMapCanvasDockWidget::Qgs3DMapCanvasDockWidget( QWidget *parent )
 
   QToolBar *toolBar = new QToolBar( contentsWidget );
   toolBar->addAction( "Reset view", this, &Qgs3DMapCanvasDockWidget::resetView );
+  toolBar->addAction( "Configure", this, &Qgs3DMapCanvasDockWidget::configure );
 
   mCanvas = new Qgs3DMapCanvas( contentsWidget );
   mCanvas->setMinimumSize( QSize( 200, 200 ) );
@@ -33,4 +39,22 @@ void Qgs3DMapCanvasDockWidget::setMap( Map3D *map )
 void Qgs3DMapCanvasDockWidget::resetView()
 {
   mCanvas->resetView();
+}
+
+void Qgs3DMapCanvasDockWidget::configure()
+{
+  QDialog dlg;
+  Qgs3DMapConfigWidget *w = new Qgs3DMapConfigWidget( mCanvas->map(), &dlg );
+  QDialogButtonBox *buttons = new QDialogButtonBox( QDialogButtonBox::Ok | QDialogButtonBox::Cancel, &dlg );
+  connect( buttons, &QDialogButtonBox::accepted, &dlg, &QDialog::accept );
+  connect( buttons, &QDialogButtonBox::rejected, &dlg, &QDialog::reject );
+
+  QVBoxLayout *layout = new QVBoxLayout( &dlg );
+  layout->addWidget( w, 1 );
+  layout->addWidget( buttons );
+  if ( !dlg.exec() )
+    return;
+
+  // update map
+  setMap( new Map3D( *w->map() ) );
 }

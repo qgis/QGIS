@@ -129,6 +129,15 @@ QgsRasterLayer *DemTerrainGenerator::layer() const
   return qobject_cast<QgsRasterLayer *>( mLayer.layer.data() );
 }
 
+TerrainGenerator *DemTerrainGenerator::clone() const
+{
+  DemTerrainGenerator *cloned = new DemTerrainGenerator;
+  cloned->mLayer = mLayer;
+  cloned->mResolution = mResolution;
+  cloned->updateGenerator();
+  return cloned;
+}
+
 TerrainGenerator::Type DemTerrainGenerator::type() const
 {
   return TerrainGenerator::Dem;

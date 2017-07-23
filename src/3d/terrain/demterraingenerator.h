@@ -30,6 +30,7 @@ class _3D_EXPORT DemTerrainGenerator : public TerrainGenerator
 
     DemHeightMapGenerator *heightMapGenerator() { return mHeightMapGenerator.get(); }
 
+    virtual TerrainGenerator *clone() const override;
     Type type() const override;
     QgsRectangle extent() const override;
     float heightAt( double x, double y, const Map3D &map ) const override;

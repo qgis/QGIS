@@ -86,6 +86,28 @@ Map3D::Map3D()
 {
 }
 
+Map3D::Map3D( const Map3D &other )
+  : originX( other.originX )
+  , originY( other.originY )
+  , originZ( other.originZ )
+  , crs( other.crs )
+  , backgroundColor( other.backgroundColor )
+  , zExaggeration( other.zExaggeration )
+  , tileTextureSize( other.tileTextureSize )
+  , maxTerrainError( other.maxTerrainError )
+  , terrainGenerator( other.terrainGenerator ? other.terrainGenerator->clone() : nullptr )
+  , polygonRenderers( other.polygonRenderers )
+  , pointRenderers( other.pointRenderers )
+  , lineRenderers( other.lineRenderers )
+  , skybox( other.skybox )
+  , skyboxFileBase( other.skyboxFileBase )
+  , skyboxFileExtension( other.skyboxFileExtension )
+  , showBoundingBoxes( other.showBoundingBoxes )
+  , drawTerrainTileInfo( other.drawTerrainTileInfo )
+  , mLayers( other.mLayers )
+{
+}
+
 Map3D::~Map3D()
 {
 }

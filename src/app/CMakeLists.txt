@@ -369,12 +369,14 @@ IF (WITH_3D)
     ${QGIS_APP_SRCS}
     3d/qgs3dmapcanvas.cpp
     3d/qgs3dmapcanvasdockwidget.cpp
+    3d/qgs3dmapconfigwidget.cpp
   )
 
   SET (QGIS_APP_MOC_HDRS
     ${QGIS_APP_MOC_HDRS}
     3d/qgs3dmapcanvas.h
     3d/qgs3dmapcanvasdockwidget.h
+    3d/qgs3dmapconfigwidget.h
   )
 ENDIF (WITH_3D)
 

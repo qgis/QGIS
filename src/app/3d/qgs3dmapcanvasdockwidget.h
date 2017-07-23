@@ -19,6 +19,7 @@ class Qgs3DMapCanvasDockWidget : public QgsDockWidget
 
   private slots:
     void resetView();
+    void configure();
 
   private:
     Qgs3DMapCanvas *mCanvas;

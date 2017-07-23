@@ -21,6 +21,7 @@ class _3D_EXPORT FlatTerrainGenerator : public TerrainGenerator
 
     virtual ChunkLoader *createChunkLoader( ChunkNode *node ) const override;
 
+    virtual TerrainGenerator *clone() const override;
     Type type() const override;
     QgsRectangle extent() const override;
     virtual void rootChunkHeightRange( float &hMin, float &hMax ) const override;

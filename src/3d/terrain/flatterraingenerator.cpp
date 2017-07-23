@@ -86,6 +86,15 @@ ChunkLoader *FlatTerrainGenerator::createChunkLoader( ChunkNode *node ) const
   return new FlatTerrainChunkLoader( mTerrain, tileGeometry, node );
 }
 
+TerrainGenerator *FlatTerrainGenerator::clone() const
+{
+  FlatTerrainGenerator *cloned = new FlatTerrainGenerator;
+  cloned->mCrs = mCrs;
+  cloned->mExtent = mExtent;
+  cloned->updateTilingScheme();
+  return cloned;
+}
+
 TerrainGenerator::Type FlatTerrainGenerator::type() const
 {
   return TerrainGenerator::Flat;
