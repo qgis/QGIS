@@ -244,11 +244,6 @@ void QgsSymbolButton::dropEvent( QDropEvent *e )
   {
     //accept drop and set new color
     e->acceptProposedAction();
-
-    if ( hasAlpha )
-    {
-      mSymbol->setOpacity( mimeColor.alphaF() );
-    }
     mimeColor.setAlphaF( 1.0 );
     mSymbol->setColor( mimeColor );
     QgsRecentColorScheme::addRecentColor( mimeColor );
@@ -278,6 +273,23 @@ void QgsSymbolButton::prepareMenu()
   colorAction->setDismissOnColorSelection( false );
   connect( colorAction, &QgsColorWidgetAction::colorChanged, this, &QgsSymbolButton::setColor );
   mMenu->addAction( colorAction );
+
+  QgsColorRampWidget *alphaRamp = new QgsColorRampWidget( mMenu, QgsColorWidget::Alpha, QgsColorRampWidget::Horizontal );
+  QColor alphaColor = mSymbol->color();
+  alphaColor.setAlphaF( mSymbol->opacity() );
+  alphaRamp->setColor( alphaColor );
+  QgsColorWidgetAction *alphaAction = new QgsColorWidgetAction( alphaRamp, mMenu, mMenu );
+  alphaAction->setDismissOnColorSelection( false );
+  connect( alphaAction, &QgsColorWidgetAction::colorChanged, this, [ = ]( const QColor & color )
+  {
+    double opacity = color.alphaF();
+    mSymbol->setOpacity( opacity );
+    updatePreview();
+    emit changed();
+  } );
+  connect( colorAction, &QgsColorWidgetAction::colorChanged, alphaRamp, [alphaRamp]( const QColor & color ) { alphaRamp->setColor( color, false ); }
+         );
+  mMenu->addAction( alphaAction );
 
   //get schemes with ShowInColorButtonMenu flag set
   QList< QgsColorScheme * > schemeList = QgsApplication::colorSchemeRegistry()->schemes( QgsColorScheme::ShowInColorButtonMenu );
