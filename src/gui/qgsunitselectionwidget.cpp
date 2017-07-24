@@ -172,11 +172,11 @@ void QgsUnitSelectionWidget::setUnits( const QgsUnitTypes::RenderUnitList &units
   }
   if ( units.contains( QgsUnitTypes::RenderMetersInMapUnits ) )
   {
-    mUnitCombo->addItem( tr( "Meters in Map unit" ), QgsUnitTypes::RenderMetersInMapUnits );
+    mUnitCombo->addItem( tr( "Meters (at Map Scale)" ), QgsUnitTypes::RenderMetersInMapUnits );
   }
   if ( units.contains( QgsUnitTypes::RenderMapUnits ) )
   {
-    mUnitCombo->addItem( tr( "Map unit" ), QgsUnitTypes::RenderMapUnits );
+    mUnitCombo->addItem( tr( "Map Units" ), QgsUnitTypes::RenderMapUnits );
   }
   if ( units.contains( QgsUnitTypes::RenderPercentage ) )
   {
