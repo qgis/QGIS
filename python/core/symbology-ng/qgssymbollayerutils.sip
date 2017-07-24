@@ -337,15 +337,15 @@ Writes a symbol definition to XML
  :rtype: bool
 %End
 
-    static QgsSymbolLayer *createFillLayerFromSld( QDomElement &element );
+    static QgsSymbolLayer *createFillLayerFromSld( QDomElement &element ) /Factory/;
 %Docstring
  :rtype: QgsSymbolLayer
 %End
-    static QgsSymbolLayer *createLineLayerFromSld( QDomElement &element );
+    static QgsSymbolLayer *createLineLayerFromSld( QDomElement &element ) /Factory/;
 %Docstring
  :rtype: QgsSymbolLayer
 %End
-    static QgsSymbolLayer *createMarkerLayerFromSld( QDomElement &element );
+    static QgsSymbolLayer *createMarkerLayerFromSld( QDomElement &element ) /Factory/;
 %Docstring
  :rtype: QgsSymbolLayer
 %End
@@ -577,7 +577,7 @@ Writes a collection of symbols to XML with specified tagName for the top-level e
  :rtype: QVariant
 %End
 
-    static QgsColorRamp *loadColorRamp( const QVariant &value );
+    static QgsColorRamp *loadColorRamp( const QVariant &value ) /Factory/;
 %Docstring
  Load a color ramp from a QVariantMap, wrapped in a QVariant.
  You can use QgsXmlUtils.readVariant to load it from an XML document.
@@ -605,7 +605,7 @@ Writes a collection of symbols to XML with specified tagName for the top-level e
  :rtype: list of QColor
 %End
 
-    static QMimeData *colorToMimeData( const QColor &color );
+    static QMimeData *colorToMimeData( const QColor &color ) /Factory/;
 %Docstring
  Creates mime data from a color. Sets both the mime data's color data, and the
  mime data's text with the color's hex code.
@@ -636,7 +636,7 @@ Writes a collection of symbols to XML with specified tagName for the top-level e
  :rtype: QgsNamedColorList
 %End
 
-    static QMimeData *colorListToMimeData( const QgsNamedColorList &colorList, const bool allFormats = true );
+    static QMimeData *colorListToMimeData( const QgsNamedColorList &colorList, const bool allFormats = true ) /Factory/;
 %Docstring
  Creates mime data from a list of named colors
  \param colorList list of named colors
