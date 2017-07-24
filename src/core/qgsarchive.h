@@ -50,7 +50,7 @@ class CORE_EXPORT QgsArchive
     /**
      * Destructor
      */
-    ~QgsArchive() = default;
+    virtual ~QgsArchive() = default;
 
     /**
      * Zip the content of this archive
