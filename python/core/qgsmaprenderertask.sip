@@ -40,7 +40,7 @@ class QgsMapRendererTask : QgsTask
     QgsMapRendererTask( const QgsMapSettings &ms,
                         QPainter *p );
 %Docstring
- Constructor for QgsMapRendererTask to render a map to a painter object.
+ Constructor for QgsMapRendererTask to render a map to a QPainter object.
 %End
 
     void addAnnotations( QList< QgsAnnotation * > annotations );
