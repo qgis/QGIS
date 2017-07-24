@@ -2133,8 +2133,3 @@ QMap<QString, QgsMapLayer *> QgsProject::mapLayers() const
   return mLayerStore->mapLayers();
 }
 
-QgsTransactionGroup *QgsProject::transactionGroup( const QString &providerKey, const QString &connString )
-{
-  return mTransactionGroups.value( qMakePair( providerKey, connString ) );
-}
-
