@@ -94,23 +94,23 @@ class Ogr2OgrDissolve(GdalAlgorithm):
         count = self.getParameterValue(self.COUNT)
         fields = self.getParameterValue(self.FIELDS)
         querystart = '-dialect sqlite -sql "SELECT ST_Union(' + geometry + ')'
-        queryend = ' FROM ' + layername + ' GROUP BY ' + field + '"'
+        queryend = u' FROM ' + layername + ' GROUP BY ' + field + '"'
         if fields:
-            queryfields = ",*"
+            queryfields = u",*"
         else:
-            queryfields = "," + field
+            queryfields = u"," + field
         if count:
-            querycount = ", COUNT(" + geometry + ") AS count"
+            querycount = u", COUNT(" + geometry + ") AS count"
         else:
-            querycount = ""
+            querycount = u""
         if stats:
-            querystats = ", SUM(" + statsatt + ") AS sum_diss, MIN(" + statsatt + ") AS min_diss, MAX(" + statsatt + ") AS max_diss, AVG(" + statsatt + ") AS avg_diss"
+            querystats = u", SUM(" + statsatt + ") AS sum_diss, MIN(" + statsatt + ") AS min_diss, MAX(" + statsatt + ") AS max_diss, AVG(" + statsatt + ") AS avg_diss"
         else:
-            querystats = ""
+            querystats = u""
         if area:
-            queryarea = ", SUM(ST_area(" + geometry + ")) AS area_diss, ST_perimeter(ST_union(" + geometry + ")) AS peri_diss"
+            queryarea = u", SUM(ST_area(" + geometry + ")) AS area_diss, ST_perimeter(ST_union(" + geometry + ")) AS peri_diss"
         else:
-            queryarea = ""
+            queryarea = u""
 
         query = querystart + queryfields + querycount + querystats + queryarea + queryend
         output = self.getOutputFromName(self.OUTPUT_LAYER)

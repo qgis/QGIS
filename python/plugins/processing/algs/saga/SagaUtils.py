@@ -25,6 +25,7 @@ __copyright__ = '(C) 2012, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
+import io
 import os
 import stat
 import subprocess
@@ -34,7 +35,7 @@ from qgis.PyQt.QtCore import QCoreApplication
 from qgis.core import QgsApplication
 from processing.core.ProcessingConfig import ProcessingConfig
 from processing.core.ProcessingLog import ProcessingLog
-from processing.tools.system import isWindows, isMac, userFolder
+from processing.tools.system import isWindows, isMac, userFolder, commandlineEncoding
 
 SAGA_LOG_COMMANDS = 'SAGA_LOG_COMMANDS'
 SAGA_LOG_CONSOLE = 'SAGA_LOG_CONSOLE'
@@ -94,29 +95,21 @@ def sagaDescriptionPath():
 
 
 def createSagaBatchJobFileFromSagaCommands(commands):
+    encoding = commandlineEncoding()
+    with io.open(sagaBatchJobFilename(), 'w', encoding=encoding) as fout:
+        if isWindows():
+            fout.write(u'set SAGA={}\n'.format(sagaPath()))
+            fout.write(u'set SAGA_MLB={}\n'.format(os.path.join(sagaPath(), 'modules')))
+            fout.write(u'PATH=%PATH%;%SAGA%;%SAGA_MLB%\n')
+        elif isMac():
+            fout.write(u'export SAGA_MLB={}\n'.format(os.path.join(sagaPath(), '../lib/saga')))
+            fout.write(u'export PATH={}:$PATH\n'.format(sagaPath()))
+        else:
+            pass
+        for command in commands:
+            fout.write(u'saga_cmd {}\n'.format(command))
 
-    fout = open(sagaBatchJobFilename(), 'w')
-    if isWindows():
-        fout.write('set SAGA=' + sagaPath() + '\n')
-        fout.write('set SAGA_MLB=' + sagaPath() + os.sep +
-                   'modules' + '\n')
-        fout.write('PATH=%PATH%;%SAGA%;%SAGA_MLB%\n')
-    elif isMac():
-        fout.write('export SAGA_MLB=' + sagaPath() +
-                   '/../lib/saga\n')
-        fout.write('export PATH=' + sagaPath() + ':$PATH\n')
-    else:
-        pass
-    for command in commands:
-        try:
-            # Python 2
-            fout.write('saga_cmd ' + command.encode('utf8') + '\n')
-        except TypeError:
-            # Python 3
-            fout.write('saga_cmd ' + command + '\n')
-
-    fout.write('exit')
-    fout.close()
+        fout.write(u'exit')
 
 
 def getSagaInstalledVersion(runSaga=False):

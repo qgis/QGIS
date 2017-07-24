@@ -192,8 +192,8 @@ class SagaAlgorithm(GeoAlgorithm):
                                 self.tr('Unsupported file format'))
 
         # 2: Set parameters and outputs
-        command = self.undecoratedGroup + ' "' + self.cmdname + '"'
-        command += ' ' + ' '.join(self.hardcodedStrings)
+        command = u'{} "{}"'.format(self.undecoratedGroup, self.cmdname)
+        command += u' {}'.format(u' '.join(self.hardcodedStrings))
 
         for param in self.parameters:
             if param.value is None:
@@ -201,20 +201,19 @@ class SagaAlgorithm(GeoAlgorithm):
             if isinstance(param, (ParameterRaster, ParameterVector, ParameterTable)):
                 value = param.value
                 if value in list(self.exportedLayers.keys()):
-                    command += ' -' + param.name + ' "' \
-                        + self.exportedLayers[value] + '"'
+                    command += u' -{} "{}"'.format(param.name, self.exportedLayers[value])
                 else:
-                    command += ' -' + param.name + ' "' + value + '"'
+                    command += u' -{} "{}"'.format(param.name, value)
             elif isinstance(param, ParameterMultipleInput):
                 s = param.value
                 for layer in list(self.exportedLayers.keys()):
                     s = s.replace(layer, self.exportedLayers[layer])
-                command += ' -' + param.name + ' "' + s + '"'
+                command += u' -{} "{}"'.format(param.name, s)
             elif isinstance(param, ParameterBoolean):
                 if param.value:
-                    command += ' -' + param.name.strip() + " true"
+                    command += u' -{} "true"'.format(param.name.strip())
                 else:
-                    command += ' -' + param.name.strip() + " false"
+                    command += u' -{} "false"'.format(param.name.strip())
             elif isinstance(param, ParameterFixedTable):
                 tempTableFile = getTempFilename('txt')
                 with open(tempTableFile, 'w') as f:
@@ -223,7 +222,7 @@ class SagaAlgorithm(GeoAlgorithm):
                     for i in range(0, len(values), 3):
                         s = values[i] + '\t' + values[i + 1] + '\t' + values[i + 2] + '\n'
                         f.write(s)
-                command += ' -' + param.name + ' "' + tempTableFile + '"'
+                command += u' -{} "{}"'.format(param.name, tempTableFile)
             elif isinstance(param, ParameterExtent):
                 # 'We have to substract/add half cell size, since SAGA is
                 # center based, not corner based
@@ -231,15 +230,14 @@ class SagaAlgorithm(GeoAlgorithm):
                 offset = [halfcell, -halfcell, halfcell, -halfcell]
                 values = param.value.split(',')
                 for i in range(4):
-                    command += ' -' + self.extentParamNames[i] + ' ' \
-                        + str(float(values[i]) + offset[i])
+                    command += u' -{} {}'.format(self.extentParamNames[i], float(values[i]) + offset[i])
             elif isinstance(param, (ParameterNumber, ParameterSelection)):
-                command += ' -' + param.name + ' ' + str(param.value)
+                command += u' -{} {}'.format(param.name, param.value)
             else:
-                command += ' -' + param.name + ' "' + str(param.value) + '"'
+                command += u' -{} "{}"'.format(param.name, param.value)
 
         for out in self.outputs:
-            command += ' -' + out.name + ' "' + out.getCompatibleFileName(self) + '"'
+            command += u' -{} "{}"'.format(out.name, out.getCompatibleFileName(self))
 
         commands.append(command)
 
@@ -250,8 +248,7 @@ class SagaAlgorithm(GeoAlgorithm):
                 filename = out.getCompatibleFileName(self)
                 filename2 = filename + '.sgrd'
                 if self.cmdname == 'RGB Composite':
-                    commands.append('io_grid_image 0 -IS_RGB -GRID:"' + filename2
-                                    + '" -FILE:"' + filename + '"')
+                    commands.append(u'io_grid_image 0 -IS_RGB -GRID:"{}" -FILE:"{}"'.format(filename2, filename))
 
         # 3: Run SAGA
         commands = self.editCommands(commands)
@@ -327,7 +324,7 @@ class SagaAlgorithm(GeoAlgorithm):
         destFilename = getTempFilenameInTempFolder(filename + '.sgrd')
         self.exportedLayers[source] = destFilename
         sessionExportedLayers[source] = destFilename
-        return 'io_gdal 0 -TRANSFORM 1 -RESAMPLING 3 -GRIDS "' + destFilename + '" -FILES "' + source + '"'
+        return u'io_gdal 0 -TRANSFORM 1 -RESAMPLING 3 -GRIDS "{}" -FILES "{}"'.format(destFilename, source)
 
     def checkParameterValuesBeforeExecuting(self):
         """

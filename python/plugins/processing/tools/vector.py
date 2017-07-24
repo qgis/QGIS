@@ -522,7 +522,7 @@ def ogrConnectionString(uri):
     else:
         ogrstr = unicode(layer.source()).split("|")[0]
 
-    return '"' + ogrstr + '"'
+    return u'"{}"'.format(unicode(ogrstr))
 
 
 #
@@ -585,7 +585,7 @@ def ogrLayerName(uri):
     if not ly:
         return "invalid-layerid"
     name = ly.GetName()
-    return name
+    return unicode(name, "utf-8")
 
 
 class VectorWriter:
