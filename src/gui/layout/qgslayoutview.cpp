@@ -49,6 +49,7 @@ QgsLayoutView::QgsLayoutView( QWidget *parent )
   mSpacePanTool = new QgsLayoutViewToolTemporaryKeyPan( this );
   mMidMouseButtonPanTool = new QgsLayoutViewToolTemporaryMousePan( this );
   mSpaceZoomTool = new QgsLayoutViewToolTemporaryKeyZoom( this );
+  mSnapMarker.reset( new QgsLayoutViewSnapMarker() );
 }
 
 QgsLayout *QgsLayoutView::currentLayout()
@@ -62,6 +63,10 @@ void QgsLayoutView::setCurrentLayout( QgsLayout *layout )
 
   connect( layout->pageCollection(), &QgsLayoutPageCollection::changed, this, &QgsLayoutView::updateRulers );
   updateRulers();
+
+  mSnapMarker.reset( new QgsLayoutViewSnapMarker() );
+  mSnapMarker->hide();
+  layout->addItem( mSnapMarker.get() );
 
   //emit layoutSet, so that designer dialogs can update for the new layout
   emit layoutSet( layout );
@@ -81,6 +86,8 @@ void QgsLayoutView::setTool( QgsLayoutViewTool *tool )
   {
     mTool->deactivate();
   }
+
+  mSnapMarker->setVisible( false );
 
   // activate new tool before setting it - gives tools a chance
   // to respond to whatever the current tool is
@@ -207,6 +214,8 @@ void QgsLayoutView::emitZoomLevelChanged()
 
 void QgsLayoutView::mousePressEvent( QMouseEvent *event )
 {
+  mSnapMarker->setVisible( false );
+
   if ( mTool )
   {
     std::unique_ptr<QgsLayoutViewMouseEvent> me( new QgsLayoutViewMouseEvent( this, event, mTool->flags() & QgsLayoutViewTool::FlagSnaps ) );
@@ -264,12 +273,18 @@ void QgsLayoutView::mouseMoveEvent( QMouseEvent *event )
 
   if ( mTool )
   {
-    if ( !event->buttons() && mTool->flags() & QgsLayoutViewTool::FlagSnaps )
+    std::unique_ptr<QgsLayoutViewMouseEvent> me( new QgsLayoutViewMouseEvent( this, event, mTool->flags() & QgsLayoutViewTool::FlagSnaps ) );
+    if ( mTool->flags() & QgsLayoutViewTool::FlagSnaps )
     {
       //draw snapping point indicator
-
+      if ( me->isSnapped() )
+      {
+        mSnapMarker->setPos( me->snappedPoint() );
+        mSnapMarker->setVisible( true );
+      }
+      else
+        mSnapMarker->setVisible( false );
     }
-    std::unique_ptr<QgsLayoutViewMouseEvent> me( new QgsLayoutViewMouseEvent( this, event, mTool->flags() & QgsLayoutViewTool::FlagSnaps ) );
     mTool->layoutMoveEvent( me.get() );
     event->setAccepted( me->isAccepted() );
   }
@@ -408,3 +423,34 @@ void QgsLayoutView::wheelZoom( QWheelEvent *event )
     scaleSafe( 1 / zoomFactor );
   }
 }
+
+
+//
+// QgsLayoutViewSnapMarker
+//
+
+///@cond PRIVATE
+QgsLayoutViewSnapMarker::QgsLayoutViewSnapMarker()
+  : QGraphicsRectItem( QRectF( 0, 0, 0, 0 ) )
+{
+  QFont f;
+  QFontMetrics fm( f );
+  mSize = fm.width( "X" );
+  setPen( QPen( Qt::transparent, mSize ) );
+
+  setFlags( flags() | QGraphicsItem::ItemIgnoresTransformations );
+}
+
+void QgsLayoutViewSnapMarker::paint( QPainter *p, const QStyleOptionGraphicsItem *, QWidget * )
+{
+  QPen pen( QColor( 255, 0, 0 ) );
+  pen.setWidth( 0 );
+  p->setPen( pen );
+  p->setBrush( Qt::NoBrush );
+
+  double halfSize = mSize / 2.0;
+  p->drawLine( QLineF( -halfSize, -halfSize, halfSize, halfSize ) );
+  p->drawLine( QLineF( -halfSize, halfSize, halfSize, -halfSize ) );
+}
+
+///@endcond

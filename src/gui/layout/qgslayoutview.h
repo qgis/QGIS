@@ -22,6 +22,7 @@
 #include "qgis_gui.h"
 #include <QPointer>
 #include <QGraphicsView>
+#include <QGraphicsRectItem>
 #include <memory>
 
 class QMenu;
@@ -32,6 +33,7 @@ class QgsLayoutViewToolTemporaryKeyZoom;
 class QgsLayoutViewToolTemporaryMousePan;
 class QgsLayoutRuler;
 class QgsLayoutViewMenuProvider;
+class QgsLayoutViewSnapMarker;
 
 /**
  * \ingroup gui
@@ -245,6 +247,8 @@ class GUI_EXPORT QgsLayoutView: public QGraphicsView
     QgsLayoutRuler *mVerticalRuler = nullptr;
     std::unique_ptr< QgsLayoutViewMenuProvider > mMenuProvider;
 
+    std::unique_ptr< QgsLayoutViewSnapMarker > mSnapMarker;
+
     friend class TestQgsLayoutView;
 
 };
@@ -269,5 +273,31 @@ class GUI_EXPORT QgsLayoutViewMenuProvider
     //! Return a newly created menu instance (or null pointer on error)
     virtual QMenu *createContextMenu( QWidget *parent SIP_TRANSFER, QgsLayout *layout, QPointF layoutPoint ) const = 0 SIP_FACTORY;
 };
+
+
+#ifndef SIP_RUN
+///@cond PRIVATE
+
+
+/**
+ * \ingroup gui
+ * A simple graphics item rendered as an 'x'.
+ */
+class GUI_EXPORT QgsLayoutViewSnapMarker : public QGraphicsRectItem
+{
+  public:
+
+    QgsLayoutViewSnapMarker();
+
+    void paint( QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget = nullptr ) override;
+
+  private:
+
+    int mSize = 0;
+
+};
+
+///@endcond
+#endif
 
 #endif // QGSLAYOUTVIEW_H
