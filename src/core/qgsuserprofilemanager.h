@@ -1,5 +1,5 @@
-#ifndef QGSUSERprofileMANAGER_H
-#define QGSUSERprofileMANAGER_H
+#ifndef QGSUSERPROFILEMANAGER_H
+#define QGSUSERPROFILEMANAGER_H
 
 #include <QSettings>
 #include <QFileSystemWatcher>
@@ -17,7 +17,7 @@
  *
  * In QGIS 3 all settings, plugins, etc were moved into a %APPDATA%/profiles folder for each platform.
  * This allows for manage different user profiles per machine vs the single default one that was allowed in the
- * pass.
+ * past.
  *
  * A user profile is all settings and anything that used to be found in .qgis3 in the users home folder.
  *
@@ -35,10 +35,8 @@ class CORE_EXPORT QgsUserProfileManager : public QObject
     QgsUserProfileManager( const QString &rootLocation = QString(), QObject *parent = nullptr );
 
     /**
-     * Resolves the profiles folder for the given path. All paths will have \\profiles appended to the path
-     * Checks QGIS_CUSTOM_CONFIG_PATH first.
-     * \param basePath The base path to resolve the path from.  If empty will use QtStandardPaths to find OS
-     * app data location.
+     * Resolves the profiles folder for the given path. Path will have \\profiles appended to the path
+     * \param basePath The base path to resolve the path from to append the \\profiles folder to.
      * \return The root path to store user profiles.
      */
     static QString resolveProfilesFolder( const QString  &basePath = QString() );
@@ -48,7 +46,7 @@ class CORE_EXPORT QgsUserProfileManager : public QObject
      * If no name is given it returns a profile called "default".
      * By default will create the profile folder if not found.
      * By default will init the user settings.
-     * \note Returns a new QgsUserProfile. Ownership transfered to caller.
+     * \note Returns a new QgsUserProfile. Ownership transferred to caller.
      * \param defaultProfile The profile name to find. Empty profile name will return "default" for the name.
      * \param createNew Create the profile folder if it doesn't exist.
      * \return The user profile
@@ -93,7 +91,7 @@ class CORE_EXPORT QgsUserProfileManager : public QObject
     QString defaultProfileName() const;
 
     /**
-     * Sets the default profile name.  The default profile name is used when loading QGIS
+     * Sets the default profile name. The default profile name is used when loading QGIS
      * with no arguments.
      * \param name The name of the profile to save.
      */
@@ -167,4 +165,4 @@ class CORE_EXPORT QgsUserProfileManager : public QObject
     QSettings *mSettings = nullptr;
 };
 
-#endif // QGSUSERprofileMANAGER_H
+#endif // QGSUSERPROFILEMANAGER_H

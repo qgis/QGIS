@@ -125,9 +125,14 @@ void QgsApplication::init( QString profileFolder )
 {
   if ( profileFolder.isEmpty() )
   {
+    if ( getenv( "QGIS_CUSTOM_CONFIG_PATH" ) )
+    {
+      QString envProfileFolder = getenv( "QGIS_CUSTOM_CONFIG_PATH" );
+      profileFolder = envProfileFolder + QDir::separator() + "profiles";
+    }
     // This will normally get here for custom scripts that use QgsApplication.
     // This doesn't get this hit for QGIS Desktop because we setup the profile via main
-    QString rootProfileFolder = QgsUserProfileManager::resolveProfilesFolder();
+    QString rootProfileFolder = QgsUserProfileManager::resolveProfilesFolder( profileFolder );
     QgsUserProfileManager manager( rootProfileFolder );
     QgsUserProfile *profile = manager.getProfile();
     profileFolder = profile->folder();

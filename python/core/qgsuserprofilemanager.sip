@@ -17,7 +17,7 @@ class QgsUserProfileManager : QObject
 
  In QGIS 3 all settings, plugins, etc were moved into a %APPDATA%/profiles folder for each platform.
  This allows for manage different user profiles per machine vs the single default one that was allowed in the
- pass.
+ past.
 
  A user profile is all settings and anything that used to be found in .qgis3 in the users home folder.
 
@@ -36,10 +36,8 @@ class QgsUserProfileManager : QObject
 
     static QString resolveProfilesFolder( const QString  &basePath = QString() );
 %Docstring
- Resolves the profiles folder for the given path. All paths will have \\profiles appended to the path
- Checks QGIS_CUSTOM_CONFIG_PATH first.
- \param basePath The base path to resolve the path from.  If empty will use QtStandardPaths to find OS
- app data location.
+ Resolves the profiles folder for the given path. Path will have \\profiles appended to the path
+ \param basePath The base path to resolve the path from to append the \\profiles folder to.
  :return: The root path to store user profiles.
  :rtype: str
 %End
@@ -52,7 +50,7 @@ class QgsUserProfileManager : QObject
  By default will init the user settings.
 .. note::
 
-   Returns a new QgsUserProfile. Ownership transfered to caller.
+   Returns a new QgsUserProfile. Ownership transferred to caller.
  \param defaultProfile The profile name to find. Empty profile name will return "default" for the name.
  \param createNew Create the profile folder if it doesn't exist.
  :return: The user profile
@@ -103,7 +101,7 @@ class QgsUserProfileManager : QObject
 
     void setDefaultProfileName( const QString &name );
 %Docstring
- Sets the default profile name.  The default profile name is used when loading QGIS
+ Sets the default profile name. The default profile name is used when loading QGIS
  with no arguments.
  \param name The name of the profile to save.
 %End

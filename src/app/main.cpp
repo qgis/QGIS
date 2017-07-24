@@ -785,6 +785,18 @@ int main( int argc, char *argv[] )
   QCoreApplication::setApplicationName( QgsApplication::QGIS_APPLICATION_NAME );
   QCoreApplication::setAttribute( Qt::AA_DontShowIconsInMenus, false );
 
+  if ( getenv( "QGIS_CUSTOM_CONFIG_PATH" ) )
+  {
+    QString envProfileFolder = getenv( "QGIS_CUSTOM_CONFIG_PATH" );
+    configLocalStorageLocation = envProfileFolder + QDir::separator() + "profiles";
+  }
+  else
+  {
+    // TODO Get from global settings.
+    configLocalStorageLocation = QStandardPaths::standardLocations( QStandardPaths::AppDataLocation ).value( 0 );
+  }
+
+
   QString rootProfileFolder = QgsUserProfileManager::resolveProfilesFolder( configLocalStorageLocation );
   QgsUserProfileManager manager( rootProfileFolder );
   QgsUserProfile *profile = manager.getProfile( profileName, true );
@@ -873,7 +885,7 @@ int main( int argc, char *argv[] )
     customizationsettings = new QSettings( QStringLiteral( "QGIS" ), QStringLiteral( "QGISCUSTOMIZATION2" ) );
   }
 
-  // Load and set possible default customization, must be done afterQgsApplication init and QgsSettings ( QCoreApplication ) init
+  // Load and set possible default customization, must be done after QgsApplication init and QgsSettings ( QCoreApplication ) init
   QgsCustomization::instance()->setSettings( customizationsettings );
   QgsCustomization::instance()->loadDefault();
 

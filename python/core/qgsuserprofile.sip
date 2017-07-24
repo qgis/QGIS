@@ -13,7 +13,7 @@ class QgsUserProfile
  User profile contains information about the user profile folders on the machine.
  In QGIS 3 all settings, plugins, etc were moved into a %APPDATA%/profiles folder for each platform.
  This allows for manage different user profiles per machine vs the single default one that was allowed in the
- pass.
+ past.
 
  A user profile is all settings and anything that used to be found in .qgis3 in the users home folder.
 
@@ -58,13 +58,13 @@ class QgsUserProfile
     const QString alias() const;
 %Docstring
  Return the alias for the user profile.
- :return: If no alais is set name() is returned.
+ :return: If no alias is set name() is returned.
  :rtype: str
 %End
 
     QgsError setAlias( const QString &alias );
 %Docstring
- Set the alias of the profile.  The alias is a user friendly name.
+ Set the alias of the profile. The alias is a user friendly name.
  \param alias A user friendly name for the profile.
  :return: True of setting the alias was successful.
  :rtype: QgsError

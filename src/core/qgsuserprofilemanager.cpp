@@ -23,25 +23,7 @@ QgsUserProfileManager::QgsUserProfileManager( const QString &rootLocation, QObje
 
 QString QgsUserProfileManager::resolveProfilesFolder( const QString &basePath )
 {
-  if ( getenv( "QGIS_CUSTOM_CONFIG_PATH" ) )
-  {
-    QString rootFolder = getenv( "QGIS_CUSTOM_CONFIG_PATH" );
-    rootFolder = rootFolder + QDir::separator() + "profiles";
-    return rootFolder;
-  }
-
-  if ( basePath.isEmpty() )
-  {
-    QString rootFolder = QStandardPaths::standardLocations( QStandardPaths::AppDataLocation ).value( 0 );
-    rootFolder = rootFolder + QDir::separator() + "profiles";
-    return rootFolder;
-  }
-  else
-  {
-    QString rootFolder = basePath + QDir::separator() + "profiles";
-    return rootFolder;
-  }
-
+  return basePath + QDir::separator() + "profiles";
 }
 
 QgsUserProfile *QgsUserProfileManager::getProfile( const QString &defaultProfile, bool createNew, bool initSettings )
@@ -132,7 +114,7 @@ QgsError QgsUserProfileManager::createUserProfile( const QString &name )
   // first we look for ~/.qgis/qgis.db
   if ( !qgisPrivateDbFile.exists() )
   {
-    // if it doesn't exist we copy it in from the global resources dir
+    // if it doesn't exist we copy it from the global resources dir
     QString qgisMasterDbFileName = QgsApplication::qgisMasterDatabaseFilePath();
     QFile masterFile( qgisMasterDbFileName );
 
@@ -153,7 +135,7 @@ QgsError QgsUserProfileManager::deleteProfile( const QString name )
   QgsError error;
   QDir folder( mRootProfilePath + QDir::separator() + name );
 
-  // This might have be changed to something better.
+  // This might have to be changed to something better.
   bool deleted = folder.removeRecursively();
   if ( !deleted )
   {
