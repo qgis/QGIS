@@ -188,6 +188,7 @@
 %Include qgsstatusbar.sip
 %Include qgssublayersdialog.sip
 %Include qgssubstitutionlistwidget.sip
+%Include qgssymbolbutton.sip
 %Include qgstablewidgetbase.sip
 %Include qgstabwidget.sip
 %Include qgstaskmanagerwidget.sip

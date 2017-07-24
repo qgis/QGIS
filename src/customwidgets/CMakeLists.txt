@@ -38,6 +38,7 @@ SET (QGIS_CUSTOMWIDGETS_SRCS
   qgsscalewidgetplugin.cpp
 #  qgsscrollareawidgetplugin.cpp
   qgsspinboxplugin.cpp
+  qgssymbolbuttonplugin.cpp
 )
 
 SET (QGIS_CUSTOMWIDGETS_MOC_HDRS
@@ -68,6 +69,7 @@ SET (QGIS_CUSTOMWIDGETS_MOC_HDRS
   qgsscalewidgetplugin.h
 #  qgsscrollareawidgetplugin.h
   qgsspinboxplugin.h
+  qgssymbolbuttonplugin.h
 )
 
 IF(MSVC)

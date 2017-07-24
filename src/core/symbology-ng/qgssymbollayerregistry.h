@@ -50,7 +50,7 @@ class CORE_EXPORT QgsSymbolLayerAbstractMetadata
     //! Create widget for symbol layer of this type. Can return NULL if there's no GUI
     virtual QgsSymbolLayerWidget *createSymbolLayerWidget( const QgsVectorLayer * ) SIP_FACTORY { return nullptr; }
     //! Create a symbol layer of this type given the map of properties.
-    virtual QgsSymbolLayer *createSymbolLayerFromSld( QDomElement & ) { return nullptr; }
+    virtual QgsSymbolLayer *createSymbolLayerFromSld( QDomElement & ) SIP_FACTORY { return nullptr; }
 
     /** Resolve paths in symbol layer's properties (if there are any paths).
      * When saving is true, paths are converted from absolute to relative,
@@ -109,9 +109,9 @@ class CORE_EXPORT QgsSymbolLayerMetadata : public QgsSymbolLayerAbstractMetadata
     //! \note not available in Python bindings
     void setWidgetFunction( QgsSymbolLayerWidgetFunc f ) { mWidgetFunc = f; } SIP_SKIP
 
-    virtual QgsSymbolLayer *createSymbolLayer( const QgsStringMap &map ) override { return mCreateFunc ? mCreateFunc( map ) : nullptr; } SIP_FACTORY
-    virtual QgsSymbolLayerWidget *createSymbolLayerWidget( const QgsVectorLayer *vl ) override { return mWidgetFunc ? mWidgetFunc( vl ) : nullptr; } SIP_FACTORY
-    virtual QgsSymbolLayer *createSymbolLayerFromSld( QDomElement &elem ) override { return mCreateFromSldFunc ? mCreateFromSldFunc( elem ) : nullptr; } SIP_FACTORY
+    virtual QgsSymbolLayer *createSymbolLayer( const QgsStringMap &map ) override SIP_FACTORY { return mCreateFunc ? mCreateFunc( map ) : nullptr; }
+    virtual QgsSymbolLayerWidget *createSymbolLayerWidget( const QgsVectorLayer *vl ) override SIP_FACTORY { return mWidgetFunc ? mWidgetFunc( vl ) : nullptr; }
+    virtual QgsSymbolLayer *createSymbolLayerFromSld( QDomElement &elem ) override SIP_FACTORY { return mCreateFromSldFunc ? mCreateFromSldFunc( elem ) : nullptr; }
     virtual void resolvePaths( QgsStringMap &properties, const QgsPathResolver &pathResolver, bool saving ) override
     {
       if ( mPathResolverFunc )
@@ -159,7 +159,7 @@ class CORE_EXPORT QgsSymbolLayerRegistry
     QgsSymbolLayer *createSymbolLayer( const QString &name, const QgsStringMap &properties = QgsStringMap() ) const SIP_FACTORY;
 
     //! create a new instance of symbol layer given symbol layer name and SLD
-    QgsSymbolLayer *createSymbolLayerFromSld( const QString &name, QDomElement &element ) const;
+    QgsSymbolLayer *createSymbolLayerFromSld( const QString &name, QDomElement &element ) const SIP_FACTORY;
 
     /** Resolve paths in properties of a particular symbol layer.
      * This normally means converting relative paths to absolute paths when loading

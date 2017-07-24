@@ -252,7 +252,11 @@ class CORE_EXPORT QgsSymbolLayer
 
     virtual void drawPreviewIcon( QgsSymbolRenderContext &context, QSize size ) = 0;
 
+    /**
+     * Returns the symbol's sub symbol, if present.
+     */
     virtual QgsSymbol *subSymbol() { return nullptr; }
+
     //! set layer's subsymbol. takes ownership of the passed symbol
     virtual bool setSubSymbol( QgsSymbol *symbol SIP_TRANSFER ) { delete symbol; return false; }
 

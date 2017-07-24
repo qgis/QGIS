@@ -42,14 +42,8 @@ class APP_EXPORT QgsAnnotationWidget: public QWidget, private Ui::QgsAnnotationW
     //! Emitted when the background color of the annotation is changed
     void backgroundColorChanged( const QColor &color );
 
-  private slots:
-    void on_mMapMarkerButton_clicked();
-    void on_mFrameStyleButton_clicked();
-
   private:
     QgsMapCanvasAnnotationItem *mItem = nullptr;
-    std::unique_ptr< QgsMarkerSymbol > mMarkerSymbol;
-    std::unique_ptr< QgsFillSymbol > mFillSymbol;
 
     void blockAllSignals( bool block );
     void updateCenterIcon();

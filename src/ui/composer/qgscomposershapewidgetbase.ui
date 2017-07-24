@@ -96,8 +96,11 @@
             </property>
            </widget>
           </item>
+          <item row="0" column="0" colspan="2">
+           <widget class="QComboBox" name="mShapeComboBox"/>
+          </item>
           <item row="2" column="1">
-           <widget class="QPushButton" name="mShapeStyleButton">
+           <widget class="QgsSymbolButton" name="mShapeStyleButton">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
               <horstretch>0</horstretch>
@@ -109,9 +112,6 @@
             </property>
            </widget>
           </item>
-          <item row="0" column="0" colspan="2">
-           <widget class="QComboBox" name="mShapeComboBox"/>
-          </item>
          </layout>
         </widget>
        </item>
@@ -122,6 +122,11 @@
   </layout>
  </widget>
  <customwidgets>
+  <customwidget>
+   <class>QgsDoubleSpinBox</class>
+   <extends>QDoubleSpinBox</extends>
+   <header>qgsdoublespinbox.h</header>
+  </customwidget>
   <customwidget>
    <class>QgsScrollArea</class>
    <extends>QScrollArea</extends>
@@ -135,9 +140,9 @@
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>QgsDoubleSpinBox</class>
-   <extends>QDoubleSpinBox</extends>
-   <header>qgsdoublespinbox.h</header>
+   <class>QgsSymbolButton</class>
+   <extends>QToolButton</extends>
+   <header>qgssymbolbutton.h</header>
   </customwidget>
  </customwidgets>
  <tabstops>

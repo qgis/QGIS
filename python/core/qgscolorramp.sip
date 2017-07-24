@@ -144,7 +144,7 @@ class QgsGradientColorRamp : QgsColorRamp
  \param stops optional list of additional color stops
 %End
 
-    static QgsColorRamp *create( const QgsStringMap &properties = QgsStringMap() );
+    static QgsColorRamp *create( const QgsStringMap &properties = QgsStringMap() ) /Factory/;
 %Docstring
 Creates a new QgsColorRamp from a map of properties
  :rtype: QgsColorRamp
@@ -477,7 +477,7 @@ class QgsPresetSchemeColorRamp : QgsColorRamp, QgsColorScheme
    not available in Python bindings - use setColors instead
 %End
 
-    static QgsColorRamp *create( const QgsStringMap &properties = QgsStringMap() );
+    static QgsColorRamp *create( const QgsStringMap &properties = QgsStringMap() ) /Factory/;
 %Docstring
  Returns a new QgsPresetSchemeColorRamp color ramp created using the properties encoded in a string
  map.
@@ -541,7 +541,7 @@ class QgsColorBrewerColorRamp : QgsColorRamp
  \param inverted invert ramp ordering
 %End
 
-    static QgsColorRamp *create( const QgsStringMap &properties = QgsStringMap() );
+    static QgsColorRamp *create( const QgsStringMap &properties = QgsStringMap() ) /Factory/;
 %Docstring
  Returns a new QgsColorBrewerColorRamp color ramp created using the properties encoded in a string
  map.
@@ -647,7 +647,7 @@ class QgsCptCityColorRamp : QgsGradientColorRamp
  \param doLoadFile load cpt-city ramp from file
 %End
 
-    static QgsColorRamp *create( const QgsStringMap &properties = QgsStringMap() );
+    static QgsColorRamp *create( const QgsStringMap &properties = QgsStringMap() ) /Factory/;
 %Docstring
  :rtype: QgsColorRamp
 %End

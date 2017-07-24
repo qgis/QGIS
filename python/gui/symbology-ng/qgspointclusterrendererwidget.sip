@@ -11,7 +11,7 @@
 
 
 
-class QgsPointClusterRendererWidget: QgsRendererWidget
+class QgsPointClusterRendererWidget: QgsRendererWidget, QgsExpressionContextGenerator
 {
 %Docstring
  A widget which allows configuration of the properties for a QgsPointClusterRenderer.
@@ -46,6 +46,9 @@ class QgsPointClusterRendererWidget: QgsRendererWidget
     virtual QgsFeatureRenderer *renderer();
 
     virtual void setContext( const QgsSymbolWidgetContext &context );
+
+
+    virtual QgsExpressionContext createExpressionContext() const;
 
 
 };
