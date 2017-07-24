@@ -785,17 +785,54 @@ int main( int argc, char *argv[] )
   QCoreApplication::setApplicationName( QgsApplication::QGIS_APPLICATION_NAME );
   QCoreApplication::setAttribute( Qt::AA_DontShowIconsInMenus, false );
 
-  if ( getenv( "QGIS_CUSTOM_CONFIG_PATH" ) )
+
+  // SetUp the QgsSettings Global Settings:
+  // - use the path specified with --globalsettings path,
+  // - use the environment if not found
+  // - use a default location as a fallback
+  if ( globalsettingsfile.isEmpty() )
   {
-    QString envProfileFolder = getenv( "QGIS_CUSTOM_CONFIG_PATH" );
-    configLocalStorageLocation = envProfileFolder + QDir::separator() + "profiles";
+    globalsettingsfile = getenv( "QGIS_GLOBAL_SETTINGS_FILE" );
   }
-  else
+  if ( globalsettingsfile.isEmpty() )
   {
-    // TODO Get from global settings.
-    configLocalStorageLocation = QStandardPaths::standardLocations( QStandardPaths::AppDataLocation ).value( 0 );
+    QString default_globalsettingsfile = QgsApplication::pkgDataPath() + "/qgis_global_settings.ini";
+    if ( QFile::exists( default_globalsettingsfile ) )
+    {
+      globalsettingsfile = default_globalsettingsfile;
+    }
+  }
+  if ( !globalsettingsfile.isEmpty() )
+  {
+    if ( ! QgsSettings::setGlobalSettingsPath( globalsettingsfile ) )
+    {
+      QgsMessageLog::logMessage( QString( "Invalid globalsettingsfile path: %1" ).arg( globalsettingsfile ), QStringLiteral( "QGIS" ) );
+    }
+    else
+    {
+      QgsMessageLog::logMessage( QString( "Successfully loaded globalsettingsfile path: %1" ).arg( globalsettingsfile ), QStringLiteral( "QGIS" ) );
+    }
   }
 
+  QgsSettings settings;
+  if ( configLocalStorageLocation.isEmpty() )
+  {
+    if ( getenv( "QGIS_CUSTOM_CONFIG_PATH" ) )
+    {
+      configLocalStorageLocation = getenv( "QGIS_CUSTOM_CONFIG_PATH" );
+    }
+    else if ( settings.contains( "profiles-path", QgsSettings::Core ) )
+    {
+      configLocalStorageLocation = settings.value( "profiles-path", "", QgsSettings::Core ).toString();
+      QgsDebugMsg( QString( "Loading profiles path from global config at %1" ).arg( configLocalStorageLocation ) );
+    }
+
+    // If it is still empty at this point we get it from the standard location.
+    if ( configLocalStorageLocation.isEmpty() )
+    {
+      configLocalStorageLocation = QStandardPaths::standardLocations( QStandardPaths::AppDataLocation ).value( 0 );
+    }
+  }
 
   QString rootProfileFolder = QgsUserProfileManager::resolveProfilesFolder( configLocalStorageLocation );
   QgsUserProfileManager manager( rootProfileFolder );
@@ -835,41 +872,6 @@ int main( int argc, char *argv[] )
     QgsStackTrace::setSymbolPath( symbolPath );
   }
 #endif
-
-  //
-  // Set up the QSettings environment must be done after qapp is created
-  QCoreApplication::setOrganizationName( QgsApplication::QGIS_ORGANIZATION_NAME );
-  QCoreApplication::setOrganizationDomain( QgsApplication::QGIS_ORGANIZATION_DOMAIN );
-  QCoreApplication::setApplicationName( QgsApplication::QGIS_APPLICATION_NAME );
-  QCoreApplication::setAttribute( Qt::AA_DontShowIconsInMenus, false );
-
-  // SetUp the QgsSettings Global Settings:
-  // - use the path specified with --globalsettings path,
-  // - use the environment if not found
-  // - use a default location as a fallback
-  if ( globalsettingsfile.isEmpty() )
-  {
-    globalsettingsfile = getenv( "QGIS_GLOBAL_SETTINGS_FILE" );
-  }
-  if ( globalsettingsfile.isEmpty() )
-  {
-    QString default_globalsettingsfile = QgsApplication::pkgDataPath() + "/qgis_global_settings.ini";
-    if ( QFile::exists( default_globalsettingsfile ) )
-    {
-      globalsettingsfile = default_globalsettingsfile;
-    }
-  }
-  if ( !globalsettingsfile.isEmpty() )
-  {
-    if ( ! QgsSettings::setGlobalSettingsPath( globalsettingsfile ) )
-    {
-      QgsMessageLog::logMessage( QString( "Invalid globalsettingsfile path: %1" ).arg( globalsettingsfile ), QStringLiteral( "QGIS" ) );
-    }
-    else
-    {
-      QgsMessageLog::logMessage( QString( "Successfully loaded globalsettingsfile path: %1" ).arg( globalsettingsfile ), QStringLiteral( "QGIS" ) );
-    }
-  }
 
   // TODO: use QgsSettings
   QSettings *customizationsettings = nullptr;
