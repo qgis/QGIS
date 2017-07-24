@@ -29,6 +29,7 @@
 class QgsLayout;
 class QgsLayoutView;
 class QgsLayoutItem;
+class QgsFillSymbol;
 
 /**
  * \ingroup core
@@ -182,6 +183,9 @@ class CORE_EXPORT QgsLayoutItemRegistry : public QObject
 
       // known item types
       LayoutPage, //!< Page items
+      LayoutRectangle, //!< Rectangular shape item
+      LayoutEllipse, //!< Ellipse shape item
+      LayoutTriangle, //!< Triangle shape item
 
       // item types provided by plugins
       PluginItem, //!< Starting point for plugin item types
@@ -267,11 +271,13 @@ class TestLayoutItem : public QgsLayoutItem
 
     //implement pure virtual methods
     int type() const { return QgsLayoutItemRegistry::LayoutItem + 102; }
-    void draw( QPainter *painter, const QStyleOptionGraphicsItem *itemStyle, QWidget *pWidget );
+    void draw( QgsRenderContext &context, const QStyleOptionGraphicsItem *itemStyle = nullptr );
 
   private:
     QColor mColor;
+    QgsFillSymbol *mShapeStyleSymbol = nullptr;
 };
+
 
 ///@endcond
 #endif

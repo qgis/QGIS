@@ -19,6 +19,7 @@
 #include "qgslayoutview.h"
 #include <QGraphicsRectItem>
 #include <QGraphicsEllipseItem>
+#include <QGraphicsPolygonItem>
 
 QgsLayoutViewRubberBand::QgsLayoutViewRubberBand( QgsLayoutView *view )
   : mView( view )
@@ -236,6 +237,81 @@ void QgsLayoutViewEllipticalRubberBand::update( QPointF position, Qt::KeyboardMo
 }
 
 QRectF QgsLayoutViewEllipticalRubberBand::finish( QPointF position, Qt::KeyboardModifiers modifiers )
+{
+  bool constrainSquare = modifiers & Qt::ShiftModifier;
+  bool fromCenter = modifiers & Qt::AltModifier;
+
+  if ( mRubberBandItem )
+  {
+    layout()->removeItem( mRubberBandItem );
+    delete mRubberBandItem;
+    mRubberBandItem = nullptr;
+  }
+  return updateRect( mRubberBandStartPos, position, constrainSquare, fromCenter );
+}
+
+//
+// QgsLayoutViewTriangleRubberBand
+//
+
+QgsLayoutViewTriangleRubberBand::QgsLayoutViewTriangleRubberBand( QgsLayoutView *view )
+  : QgsLayoutViewRubberBand( view )
+{
+
+}
+
+QgsLayoutViewTriangleRubberBand *QgsLayoutViewTriangleRubberBand::create( QgsLayoutView *view ) const
+{
+  return new QgsLayoutViewTriangleRubberBand( view );
+}
+
+QgsLayoutViewTriangleRubberBand::~QgsLayoutViewTriangleRubberBand()
+{
+  if ( mRubberBandItem )
+  {
+    layout()->removeItem( mRubberBandItem );
+    delete mRubberBandItem;
+  }
+}
+
+void QgsLayoutViewTriangleRubberBand::start( QPointF position, Qt::KeyboardModifiers )
+{
+  QTransform t;
+  mRubberBandItem = new QGraphicsPolygonItem();
+  mRubberBandItem->setBrush( brush() );
+  mRubberBandItem->setPen( pen() );
+  mRubberBandStartPos = position;
+  t.translate( position.x(), position.y() );
+  mRubberBandItem->setTransform( t );
+  mRubberBandItem->setZValue( QgsLayout::ZMapTool );
+  layout()->addItem( mRubberBandItem );
+  layout()->update();
+}
+
+void QgsLayoutViewTriangleRubberBand::update( QPointF position, Qt::KeyboardModifiers modifiers )
+{
+  if ( !mRubberBandItem )
+  {
+    return;
+  }
+
+  bool constrainSquare = modifiers & Qt::ShiftModifier;
+  bool fromCenter = modifiers & Qt::AltModifier;
+
+  QRectF newRect = updateRect( mRubberBandStartPos, position, constrainSquare, fromCenter );
+
+  QPolygonF shapePolygon = QPolygonF() << QPointF( 0, newRect.height() )
+                           << QPointF( newRect.width(), newRect.height() )
+                           << QPointF( newRect.width() / 2.0, 0 )
+                           << QPointF( 0, newRect.height() );
+
+  mRubberBandItem->setPolygon( shapePolygon );
+  QTransform t;
+  t.translate( newRect.x(), newRect.y() );
+  mRubberBandItem->setTransform( t );
+}
+
+QRectF QgsLayoutViewTriangleRubberBand::finish( QPointF position, Qt::KeyboardModifiers modifiers )
 {
   bool constrainSquare = modifiers & Qt::ShiftModifier;
   bool fromCenter = modifiers & Qt::AltModifier;

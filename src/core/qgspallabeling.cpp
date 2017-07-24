@@ -269,9 +269,9 @@ QgsPalLayerSettings::QgsPalLayerSettings()
   quadOffset = QuadrantOver;
   xOffset = 0;
   yOffset = 0;
-  labelOffsetInMapUnits = true;
+  offsetUnits = QgsUnitTypes::RenderMillimeters;
   dist = 0;
-  distInMapUnits = false;
+  distUnits = QgsUnitTypes::RenderMillimeters;
   offsetType = FromPoint;
   angleOffset = 0;
   preserveRotation = true;
@@ -279,7 +279,7 @@ QgsPalLayerSettings::QgsPalLayerSettings()
   maxCurvedCharAngleOut = -25.0;
   priority = 5;
   repeatDistance = 0;
-  repeatDistanceUnit = MM;
+  repeatDistanceUnit = QgsUnitTypes::RenderMillimeters;
 
   // rendering
   scaleVisibility = false;
@@ -354,11 +354,11 @@ QgsPalLayerSettings &QgsPalLayerSettings::operator=( const QgsPalLayerSettings &
   quadOffset = s.quadOffset;
   xOffset = s.xOffset;
   yOffset = s.yOffset;
-  labelOffsetInMapUnits = s.labelOffsetInMapUnits;
+  offsetUnits = s.offsetUnits;
   labelOffsetMapUnitScale = s.labelOffsetMapUnitScale;
   dist = s.dist;
   offsetType = s.offsetType;
-  distInMapUnits = s.distInMapUnits;
+  distUnits = s.distUnits;
   distMapUnitScale = s.distMapUnitScale;
   angleOffset = s.angleOffset;
   preserveRotation = s.preserveRotation;
@@ -417,16 +417,6 @@ QgsExpression *QgsPalLayerSettings::getLabelExpression()
     expression = new QgsExpression( fieldName );
   }
   return expression;
-}
-
-static QgsPalLayerSettings::SizeUnit _decodeUnits( const QString &str )
-{
-  if ( str.compare( QLatin1String( "Point" ), Qt::CaseInsensitive ) == 0
-       || str.compare( QLatin1String( "Points" ), Qt::CaseInsensitive ) == 0 ) return QgsPalLayerSettings::Points;
-  if ( str.compare( QLatin1String( "MapUnit" ), Qt::CaseInsensitive ) == 0
-       || str.compare( QLatin1String( "MapUnits" ), Qt::CaseInsensitive ) == 0 ) return QgsPalLayerSettings::MapUnits;
-  if ( str.compare( QLatin1String( "Percent" ), Qt::CaseInsensitive ) == 0 ) return QgsPalLayerSettings::Percent;
-  return QgsPalLayerSettings::MM; // "MM"
 }
 
 static Qt::PenJoinStyle _decodePenJoinStyle( const QString &str )
@@ -575,7 +565,7 @@ void QgsPalLayerSettings::readFromLayerCustomProperties( QgsVectorLayer *layer )
     predefinedPositionOrder = DEFAULT_PLACEMENT_ORDER;
   fitInPolygonOnly = layer->customProperty( QStringLiteral( "labeling/fitInPolygonOnly" ), QVariant( false ) ).toBool();
   dist = layer->customProperty( QStringLiteral( "labeling/dist" ) ).toDouble();
-  distInMapUnits = layer->customProperty( QStringLiteral( "labeling/distInMapUnits" ) ).toBool();
+  distUnits = layer->customProperty( QStringLiteral( "labeling/distInMapUnits" ) ).toBool() ? QgsUnitTypes::RenderMapUnits : QgsUnitTypes::RenderMillimeters;
   if ( layer->customProperty( QStringLiteral( "labeling/distMapUnitScale" ) ).toString().isEmpty() )
   {
     //fallback to older property
@@ -592,7 +582,11 @@ void QgsPalLayerSettings::readFromLayerCustomProperties( QgsVectorLayer *layer )
   quadOffset = static_cast< QuadrantPosition >( layer->customProperty( QStringLiteral( "labeling/quadOffset" ), QVariant( QuadrantOver ) ).toUInt() );
   xOffset = layer->customProperty( QStringLiteral( "labeling/xOffset" ), QVariant( 0.0 ) ).toDouble();
   yOffset = layer->customProperty( QStringLiteral( "labeling/yOffset" ), QVariant( 0.0 ) ).toDouble();
-  labelOffsetInMapUnits = layer->customProperty( QStringLiteral( "labeling/labelOffsetInMapUnits" ), QVariant( true ) ).toBool();
+  if ( layer->customProperty( QStringLiteral( "labeling/labelOffsetInMapUnits" ), QVariant( true ) ).toBool() )
+    offsetUnits = QgsUnitTypes::RenderMapUnits;
+  else
+    offsetUnits = QgsUnitTypes::RenderMillimeters;
+
   if ( layer->customProperty( QStringLiteral( "labeling/labelOffsetMapUnitScale" ) ).toString().isEmpty() )
   {
     //fallback to older property
@@ -622,7 +616,21 @@ void QgsPalLayerSettings::readFromLayerCustomProperties( QgsVectorLayer *layer )
   maxCurvedCharAngleOut = layer->customProperty( QStringLiteral( "labeling/maxCurvedCharAngleOut" ), QVariant( -25.0 ) ).toDouble();
   priority = layer->customProperty( QStringLiteral( "labeling/priority" ) ).toInt();
   repeatDistance = layer->customProperty( QStringLiteral( "labeling/repeatDistance" ), 0.0 ).toDouble();
-  repeatDistanceUnit = static_cast< SizeUnit >( layer->customProperty( QStringLiteral( "labeling/repeatDistanceUnit" ), QVariant( MM ) ).toUInt() );
+  switch ( layer->customProperty( QStringLiteral( "labeling/repeatDistanceUnit" ), QVariant( 1 ) ).toUInt() )
+  {
+    case 0:
+      repeatDistanceUnit = QgsUnitTypes::RenderPoints;
+      break;
+    case 1:
+      repeatDistanceUnit = QgsUnitTypes::RenderMillimeters;
+      break;
+    case 2:
+      repeatDistanceUnit = QgsUnitTypes::RenderMapUnits;
+      break;
+    case 3:
+      repeatDistanceUnit = QgsUnitTypes::RenderPercentage;
+      break;
+  }
   if ( layer->customProperty( QStringLiteral( "labeling/repeatDistanceMapUnitScale" ) ).toString().isEmpty() )
   {
     //fallback to older property
@@ -765,7 +773,17 @@ void QgsPalLayerSettings::readXml( QDomElement &elem, const QgsReadWriteContext 
     predefinedPositionOrder = DEFAULT_PLACEMENT_ORDER;
   fitInPolygonOnly = placementElem.attribute( QStringLiteral( "fitInPolygonOnly" ), QStringLiteral( "0" ) ).toInt();
   dist = placementElem.attribute( QStringLiteral( "dist" ) ).toDouble();
-  distInMapUnits = placementElem.attribute( QStringLiteral( "distInMapUnits" ) ).toInt();
+  if ( !placementElem.hasAttribute( QStringLiteral( "distUnits" ) ) )
+  {
+    if ( placementElem.attribute( QStringLiteral( "distInMapUnits" ) ).toInt() )
+      distUnits = QgsUnitTypes::RenderMapUnits;
+    else
+      distUnits = QgsUnitTypes::RenderMillimeters;
+  }
+  else
+  {
+    distUnits = QgsUnitTypes::decodeRenderUnit( placementElem.attribute( QStringLiteral( "distUnits" ) ) );
+  }
   if ( !placementElem.hasAttribute( QStringLiteral( "distMapUnitScale" ) ) )
   {
     //fallback to older property
@@ -782,7 +800,14 @@ void QgsPalLayerSettings::readXml( QDomElement &elem, const QgsReadWriteContext 
   quadOffset = static_cast< QuadrantPosition >( placementElem.attribute( QStringLiteral( "quadOffset" ), QString::number( QuadrantOver ) ).toUInt() );
   xOffset = placementElem.attribute( QStringLiteral( "xOffset" ), QStringLiteral( "0" ) ).toDouble();
   yOffset = placementElem.attribute( QStringLiteral( "yOffset" ), QStringLiteral( "0" ) ).toDouble();
-  labelOffsetInMapUnits = placementElem.attribute( QStringLiteral( "labelOffsetInMapUnits" ), QStringLiteral( "1" ) ).toInt();
+  if ( !placementElem.hasAttribute( QStringLiteral( "offsetUnits" ) ) )
+  {
+    offsetUnits =  placementElem.attribute( QStringLiteral( "labelOffsetInMapUnits" ), QStringLiteral( "1" ) ).toInt() ? QgsUnitTypes::RenderMapUnits : QgsUnitTypes::RenderMillimeters;
+  }
+  else
+  {
+    offsetUnits = QgsUnitTypes::decodeRenderUnit( placementElem.attribute( QStringLiteral( "offsetUnits" ) ) );
+  }
   if ( !placementElem.hasAttribute( QStringLiteral( "labelOffsetMapUnitScale" ) ) )
   {
     //fallback to older property
@@ -811,7 +836,29 @@ void QgsPalLayerSettings::readXml( QDomElement &elem, const QgsReadWriteContext 
   maxCurvedCharAngleOut = placementElem.attribute( QStringLiteral( "maxCurvedCharAngleOut" ), QStringLiteral( "-25" ) ).toDouble();
   priority = placementElem.attribute( QStringLiteral( "priority" ) ).toInt();
   repeatDistance = placementElem.attribute( QStringLiteral( "repeatDistance" ), QStringLiteral( "0" ) ).toDouble();
-  repeatDistanceUnit = static_cast< SizeUnit >( placementElem.attribute( QStringLiteral( "repeatDistanceUnit" ), QString::number( MM ) ).toUInt() );
+  if ( !placementElem.hasAttribute( QStringLiteral( "repeatDistanceUnits" ) ) )
+  {
+    // upgrade old setting
+    switch ( placementElem.attribute( QStringLiteral( "repeatDistanceUnit" ), QString::number( 1 ) ).toUInt() )
+    {
+      case 0:
+        repeatDistanceUnit = QgsUnitTypes::RenderPoints;
+        break;
+      case 1:
+        repeatDistanceUnit = QgsUnitTypes::RenderMillimeters;
+        break;
+      case 2:
+        repeatDistanceUnit = QgsUnitTypes::RenderMapUnits;
+        break;
+      case 3:
+        repeatDistanceUnit = QgsUnitTypes::RenderPercentage;
+        break;
+    }
+  }
+  else
+  {
+    repeatDistanceUnit = QgsUnitTypes::decodeRenderUnit( placementElem.attribute( QStringLiteral( "repeatDistanceUnits" ) ) );
+  }
   if ( !placementElem.hasAttribute( QStringLiteral( "repeatDistanceMapUnitScale" ) ) )
   {
     //fallback to older property
@@ -938,13 +985,13 @@ QDomElement QgsPalLayerSettings::writeXml( QDomDocument &doc, const QgsReadWrite
   placementElem.setAttribute( QStringLiteral( "predefinedPositionOrder" ), QgsLabelingUtils::encodePredefinedPositionOrder( predefinedPositionOrder ) );
   placementElem.setAttribute( QStringLiteral( "fitInPolygonOnly" ), fitInPolygonOnly );
   placementElem.setAttribute( QStringLiteral( "dist" ), dist );
-  placementElem.setAttribute( QStringLiteral( "distInMapUnits" ), distInMapUnits );
+  placementElem.setAttribute( QStringLiteral( "distUnits" ), QgsUnitTypes::encodeUnit( distUnits ) );
   placementElem.setAttribute( QStringLiteral( "distMapUnitScale" ), QgsSymbolLayerUtils::encodeMapUnitScale( distMapUnitScale ) );
   placementElem.setAttribute( QStringLiteral( "offsetType" ), static_cast< unsigned int >( offsetType ) );
   placementElem.setAttribute( QStringLiteral( "quadOffset" ), static_cast< unsigned int >( quadOffset ) );
   placementElem.setAttribute( QStringLiteral( "xOffset" ), xOffset );
   placementElem.setAttribute( QStringLiteral( "yOffset" ), yOffset );
-  placementElem.setAttribute( QStringLiteral( "labelOffsetInMapUnits" ), labelOffsetInMapUnits );
+  placementElem.setAttribute( QStringLiteral( "offsetUnits" ), QgsUnitTypes::encodeUnit( offsetUnits ) );
   placementElem.setAttribute( QStringLiteral( "labelOffsetMapUnitScale" ), QgsSymbolLayerUtils::encodeMapUnitScale( labelOffsetMapUnitScale ) );
   placementElem.setAttribute( QStringLiteral( "rotationAngle" ), angleOffset );
   placementElem.setAttribute( QStringLiteral( "preserveRotation" ), preserveRotation );
@@ -952,7 +999,7 @@ QDomElement QgsPalLayerSettings::writeXml( QDomDocument &doc, const QgsReadWrite
   placementElem.setAttribute( QStringLiteral( "maxCurvedCharAngleOut" ), maxCurvedCharAngleOut );
   placementElem.setAttribute( QStringLiteral( "priority" ), priority );
   placementElem.setAttribute( QStringLiteral( "repeatDistance" ), repeatDistance );
-  placementElem.setAttribute( QStringLiteral( "repeatDistanceUnit" ), repeatDistanceUnit );
+  placementElem.setAttribute( QStringLiteral( "repeatDistanceUnits" ), QgsUnitTypes::encodeUnit( repeatDistanceUnit ) );
   placementElem.setAttribute( QStringLiteral( "repeatDistanceMapUnitScale" ), QgsSymbolLayerUtils::encodeMapUnitScale( repeatDistanceMapUnitScale ) );
 
   // rendering
@@ -1605,7 +1652,7 @@ void QgsPalLayerSettings::registerFeature( QgsFeature &f, QgsRenderContext &cont
   }
 
   // data defined label offset units?
-  bool offinmapunits = labelOffsetInMapUnits;
+  QgsUnitTypes::RenderUnit offUnit = offsetUnits;
   exprVal = mDataDefinedProperties.value( QgsPalLayerSettings::OffsetUnits, context.expressionContext() );
   if ( exprVal.isValid() )
   {
@@ -1613,29 +1660,20 @@ void QgsPalLayerSettings::registerFeature( QgsFeature &f, QgsRenderContext &cont
     QgsDebugMsgLevel( QString( "exprVal OffsetUnits:%1" ).arg( units ), 4 );
     if ( !units.isEmpty() )
     {
-      offinmapunits = ( _decodeUnits( units ) == QgsPalLayerSettings::MapUnits );
+      bool ok = false;
+      QgsUnitTypes::RenderUnit decodedUnits = QgsUnitTypes::decodeRenderUnit( units, &ok );
+      if ( ok )
+      {
+        offUnit = decodedUnits;
+      }
     }
   }
 
   // adjust offset of labels to match chosen unit and map scale
   // offsets match those of symbology: -x = left, -y = up
-  double mapUntsPerMM = labelOffsetMapUnitScale.computeMapUnitsPerPixel( context ) * context.scaleFactor();
-  if ( !qgsDoubleNear( xOff, 0.0 ) )
-  {
-    offsetX = xOff;  // must be positive to match symbology offset direction
-    if ( !offinmapunits )
-    {
-      offsetX *= mapUntsPerMM; //convert offset from mm to map units
-    }
-  }
-  if ( !qgsDoubleNear( yOff, 0.0 ) )
-  {
-    offsetY = -yOff; // must be negative to match symbology offset direction
-    if ( !offinmapunits )
-    {
-      offsetY *= mapUntsPerMM; //convert offset from mm to map units
-    }
-  }
+  offsetX = context.convertToMapUnits( xOff, offUnit, labelOffsetMapUnitScale );
+  // must be negative to match symbology offset direction
+  offsetY = context.convertToMapUnits( -yOff, offUnit, labelOffsetMapUnitScale );
 
   // layer defined rotation?
   // only rotate non-pinned OverPoint placements until other placements are supported in pal::Feature
@@ -1782,7 +1820,7 @@ void QgsPalLayerSettings::registerFeature( QgsFeature &f, QgsRenderContext &cont
   double repeatDist = mDataDefinedProperties.valueAsDouble( QgsPalLayerSettings::RepeatDistance, context.expressionContext(), repeatDistance );
 
   // data defined label-repeat distance units?
-  bool repeatdistinmapunit = repeatDistanceUnit == QgsPalLayerSettings::MapUnits;
+  QgsUnitTypes::RenderUnit repeatUnits = repeatDistanceUnit;
   exprVal = mDataDefinedProperties.value( QgsPalLayerSettings::RepeatDistanceUnit, context.expressionContext() );
   if ( exprVal.isValid() )
   {
@@ -1790,15 +1828,20 @@ void QgsPalLayerSettings::registerFeature( QgsFeature &f, QgsRenderContext &cont
     QgsDebugMsgLevel( QString( "exprVal RepeatDistanceUnits:%1" ).arg( units ), 4 );
     if ( !units.isEmpty() )
     {
-      repeatdistinmapunit = ( _decodeUnits( units ) == QgsPalLayerSettings::MapUnits );
+      bool ok = false;
+      QgsUnitTypes::RenderUnit decodedUnits = QgsUnitTypes::decodeRenderUnit( units, &ok );
+      if ( ok )
+      {
+        repeatUnits = decodedUnits;
+      }
     }
   }
 
   if ( !qgsDoubleNear( repeatDist, 0.0 ) )
   {
-    if ( !repeatdistinmapunit )
+    if ( repeatUnits != QgsUnitTypes::RenderMapUnits )
     {
-      repeatDist *= mapUntsPerMM; //convert repeat distance from mm to map units
+      repeatDist = context.convertToMapUnits( repeatDist, repeatUnits, repeatDistanceMapUnitScale );
     }
   }
 
@@ -1856,7 +1899,7 @@ void QgsPalLayerSettings::registerFeature( QgsFeature &f, QgsRenderContext &cont
   double distance = mDataDefinedProperties.valueAsDouble( QgsPalLayerSettings::LabelDistance, context.expressionContext(), dist );
 
   // data defined label-feature distance units?
-  bool distinmapunit = distInMapUnits;
+  QgsUnitTypes::RenderUnit distUnit = distUnits;
   exprVal = mDataDefinedProperties.value( QgsPalLayerSettings::DistanceUnits, context.expressionContext() );
   if ( exprVal.isValid() )
   {
@@ -1864,18 +1907,15 @@ void QgsPalLayerSettings::registerFeature( QgsFeature &f, QgsRenderContext &cont
     QgsDebugMsgLevel( QString( "exprVal DistanceUnits:%1" ).arg( units ), 4 );
     if ( !units.isEmpty() )
     {
-      distinmapunit = ( _decodeUnits( units ) == QgsPalLayerSettings::MapUnits );
+      bool ok = false;
+      QgsUnitTypes::RenderUnit decodedUnits = QgsUnitTypes::decodeRenderUnit( units, &ok );
+      if ( ok )
+      {
+        distUnit = decodedUnits;
+      }
     }
   }
-
-  if ( distinmapunit ) //convert distance from mm/map units to pixels
-  {
-    distance /= distMapUnitScale.computeMapUnitsPerPixel( context );
-  }
-  else //mm
-  {
-    distance *= context.scaleFactor();
-  }
+  distance = context.convertToPainterUnits( distance, distUnit, distMapUnitScale );
 
   // when using certain placement modes, we force a tiny minimum distance. This ensures that
   // candidates are created just offset from a border and avoids candidates being incorrectly flagged as colliding with neighbours

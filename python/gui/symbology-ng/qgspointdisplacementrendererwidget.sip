@@ -10,7 +10,7 @@
 
 
 
-class QgsPointDisplacementRendererWidget: QgsRendererWidget
+class QgsPointDisplacementRendererWidget: QgsRendererWidget, QgsExpressionContextGenerator
 {
 
 %TypeHeaderCode
@@ -27,6 +27,9 @@ class QgsPointDisplacementRendererWidget: QgsRendererWidget
     virtual QgsFeatureRenderer *renderer();
 
     virtual void setContext( const QgsSymbolWidgetContext &context );
+
+
+    virtual QgsExpressionContext createExpressionContext() const;
 
 
 };

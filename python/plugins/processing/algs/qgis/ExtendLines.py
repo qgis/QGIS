@@ -25,20 +25,13 @@ __copyright__ = '(C) 2016, Nyall Dawson'
 
 __revision__ = '$Format:%H$'
 
-from qgis.core import (QgsApplication,
-                       QgsFeatureSink,
-                       QgsProcessingUtils)
-from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
-from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
-from processing.core.parameters import ParameterVector, ParameterNumber
-from processing.core.outputs import OutputVector
-from processing.tools import dataobjects
+from qgis.core import (QgsProcessingParameterNumber,
+                       QgsProcessingException)
+from processing.algs.qgis.QgisAlgorithm import QgisFeatureBasedAlgorithm
 
 
-class ExtendLines(QgisAlgorithm):
+class ExtendLines(QgisFeatureBasedAlgorithm):
 
-    INPUT_LAYER = 'INPUT_LAYER'
-    OUTPUT_LAYER = 'OUTPUT_LAYER'
     START_DISTANCE = 'START_DISTANCE'
     END_DISTANCE = 'END_DISTANCE'
 
@@ -47,16 +40,14 @@ class ExtendLines(QgisAlgorithm):
 
     def __init__(self):
         super().__init__()
+        self.start_distance = None
+        self.end_distance = None
 
-    def initAlgorithm(self, config=None):
-        self.addParameter(ParameterVector(self.INPUT_LAYER,
-                                          self.tr('Input layer'), [dataobjects.TYPE_VECTOR_LINE]))
-        self.addParameter(ParameterNumber(self.START_DISTANCE,
-                                          self.tr('Start distance'), default=0.0))
-        self.addParameter(ParameterNumber(self.END_DISTANCE,
-                                          self.tr('End distance'), default=0.0))
-
-        self.addOutput(OutputVector(self.OUTPUT_LAYER, self.tr('Extended lines')))
+    def initParameters(self, config=None):
+        self.addParameter(QgsProcessingParameterNumber(self.START_DISTANCE,
+                                                       self.tr('Start distance'), defaultValue=0.0))
+        self.addParameter(QgsProcessingParameterNumber(self.END_DISTANCE,
+                                                       self.tr('End distance'), defaultValue=0.0))
 
     def name(self):
         return 'extendlines'
@@ -64,30 +55,22 @@ class ExtendLines(QgisAlgorithm):
     def displayName(self):
         return self.tr('Extend lines')
 
-    def processAlgorithm(self, parameters, context, feedback):
-        layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT_LAYER), context)
+    def outputName(self):
+        return self.tr('Extended')
 
-        writer = self.getOutputFromName(
-            self.OUTPUT_LAYER).getVectorWriter(layer.fields(), layer.wkbType(), layer.crs(), context)
+    def prepareAlgorithm(self, parameters, context, feedback):
+        self.start_distance = self.parameterAsDouble(parameters, self.START_DISTANCE, context)
+        self.end_distance = self.parameterAsDouble(parameters, self.END_DISTANCE, context)
+        return True
 
-        start_distance = self.getParameterValue(self.START_DISTANCE)
-        end_distance = self.getParameterValue(self.END_DISTANCE)
+    def processFeature(self, feature, feedback):
+        input_geometry = feature.geometry()
+        if input_geometry:
+            output_geometry = input_geometry.extendLine(self.start_distance, self.end_distance)
+            if not output_geometry:
+                raise QgsProcessingException(
+                    self.tr('Error calculating extended line'))
 
-        features = QgsProcessingUtils.getFeatures(layer, context)
-        total = 100.0 / layer.featureCount() if layer.featureCount() else 0
+            feature.setGeometry(output_geometry)
 
-        for current, input_feature in enumerate(features):
-            output_feature = input_feature
-            input_geometry = input_feature.geometry()
-            if input_geometry:
-                output_geometry = input_geometry.extendLine(start_distance, end_distance)
-                if not output_geometry:
-                    raise GeoAlgorithmExecutionException(
-                        self.tr('Error calculating extended line'))
-
-                output_feature.setGeometry(output_geometry)
-
-            writer.addFeature(output_feature, QgsFeatureSink.FastInsert)
-            feedback.setProgress(int(current * total))
-
-        del writer
+        return feature

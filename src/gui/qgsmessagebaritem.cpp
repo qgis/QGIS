@@ -196,11 +196,21 @@ QgsMessageBarItem *QgsMessageBarItem::setText( const QString &text )
   return this;
 }
 
+QString QgsMessageBarItem::text() const
+{
+  return mText;
+}
+
 QgsMessageBarItem *QgsMessageBarItem::setTitle( const QString &title )
 {
   mTitle = title;
   writeContent();
   return this;
+}
+
+QString QgsMessageBarItem::title() const
+{
+  return mTitle;
 }
 
 QgsMessageBarItem *QgsMessageBarItem::setLevel( QgsMessageBar::MessageLevel level )
@@ -209,6 +219,11 @@ QgsMessageBarItem *QgsMessageBarItem::setLevel( QgsMessageBar::MessageLevel leve
   writeContent();
   emit styleChanged( mStyleSheet );
   return this;
+}
+
+QgsMessageBar::MessageLevel QgsMessageBarItem::level() const
+{
+  return mLevel;
 }
 
 QgsMessageBarItem *QgsMessageBarItem::setWidget( QWidget *widget )
@@ -227,10 +242,20 @@ QgsMessageBarItem *QgsMessageBarItem::setWidget( QWidget *widget )
   return this;
 }
 
+QWidget *QgsMessageBarItem::widget() const
+{
+  return mWidget;
+}
+
 QgsMessageBarItem *QgsMessageBarItem::setIcon( const QIcon &icon )
 {
   mUserIcon = icon;
   return this;
+}
+
+QIcon QgsMessageBarItem::icon() const
+{
+  return mUserIcon;
 }
 
 

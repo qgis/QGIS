@@ -279,51 +279,51 @@ QgsSimpleMarkerSymbolLayerBase::Shape QgsSimpleMarkerSymbolLayerBase::decodeShap
     *ok = true;
   QString cleaned = name.toLower().trimmed();
 
-  if ( cleaned ==  QLatin1String( "square" ) || cleaned ==  QLatin1String( "rectangle" ) )
+  if ( cleaned == QLatin1String( "square" ) || cleaned == QLatin1String( "rectangle" ) )
     return Square;
-  else if ( cleaned ==  QLatin1String( "diamond" ) )
+  else if ( cleaned == QLatin1String( "diamond" ) )
     return Diamond;
-  else if ( cleaned ==  QLatin1String( "pentagon" ) )
+  else if ( cleaned == QLatin1String( "pentagon" ) )
     return Pentagon;
-  else if ( cleaned ==  QLatin1String( "hexagon" ) )
+  else if ( cleaned == QLatin1String( "hexagon" ) )
     return Hexagon;
-  else if ( cleaned ==  QLatin1String( "triangle" ) )
+  else if ( cleaned == QLatin1String( "triangle" ) )
     return Triangle;
-  else if ( cleaned ==  QLatin1String( "equilateral_triangle" ) )
+  else if ( cleaned == QLatin1String( "equilateral_triangle" ) )
     return EquilateralTriangle;
-  else if ( cleaned ==  QLatin1String( "star" ) || cleaned == QLatin1String( "regular_star" ) )
+  else if ( cleaned == QLatin1String( "star" ) || cleaned == QLatin1String( "regular_star" ) )
     return Star;
-  else if ( cleaned ==  QLatin1String( "arrow" ) )
+  else if ( cleaned == QLatin1String( "arrow" ) )
     return Arrow;
-  else if ( cleaned ==  QLatin1String( "circle" ) )
+  else if ( cleaned == QLatin1String( "circle" ) )
     return Circle;
-  else if ( cleaned ==  QLatin1String( "cross" ) )
+  else if ( cleaned == QLatin1String( "cross" ) )
     return Cross;
-  else if ( cleaned ==  QLatin1String( "cross_fill" ) )
+  else if ( cleaned == QLatin1String( "cross_fill" ) )
     return CrossFill;
-  else if ( cleaned ==  QLatin1String( "cross2" ) || cleaned == QLatin1String( "x" ) )
+  else if ( cleaned == QLatin1String( "cross2" ) || cleaned == QLatin1String( "x" ) )
     return Cross2;
-  else if ( cleaned ==  QLatin1String( "line" ) )
+  else if ( cleaned == QLatin1String( "line" ) )
     return Line;
-  else if ( cleaned ==  QLatin1String( "arrowhead" ) )
+  else if ( cleaned == QLatin1String( "arrowhead" ) )
     return ArrowHead;
-  else if ( cleaned ==  QLatin1String( "filled_arrowhead" ) )
+  else if ( cleaned == QLatin1String( "filled_arrowhead" ) )
     return ArrowHeadFilled;
-  else if ( cleaned ==  QLatin1String( "semi_circle" ) )
+  else if ( cleaned == QLatin1String( "semi_circle" ) )
     return SemiCircle;
-  else if ( cleaned ==  QLatin1String( "third_circle" ) )
+  else if ( cleaned == QLatin1String( "third_circle" ) )
     return ThirdCircle;
-  else if ( cleaned ==  QLatin1String( "quarter_circle" ) )
+  else if ( cleaned == QLatin1String( "quarter_circle" ) )
     return QuarterCircle;
-  else if ( cleaned ==  QLatin1String( "quarter_square" ) )
+  else if ( cleaned == QLatin1String( "quarter_square" ) )
     return QuarterSquare;
-  else if ( cleaned ==  QLatin1String( "half_square" ) )
+  else if ( cleaned == QLatin1String( "half_square" ) )
     return HalfSquare;
-  else if ( cleaned ==  QLatin1String( "diagonal_half_square" ) )
+  else if ( cleaned == QLatin1String( "diagonal_half_square" ) )
     return DiagonalHalfSquare;
-  else if ( cleaned ==  QLatin1String( "right_half_triangle" ) )
+  else if ( cleaned == QLatin1String( "right_half_triangle" ) )
     return RightHalfTriangle;
-  else if ( cleaned ==  QLatin1String( "left_half_triangle" ) )
+  else if ( cleaned == QLatin1String( "left_half_triangle" ) )
     return LeftHalfTriangle;
 
   if ( ok )

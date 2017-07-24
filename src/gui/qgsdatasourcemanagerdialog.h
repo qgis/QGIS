@@ -48,15 +48,16 @@ class GUI_EXPORT QgsDataSourceManagerDialog : public QgsOptionsDialogBase, priva
   public:
 
     /** QgsDataSourceManagerDialog constructor
-      * @param parent the object
-      * @param fl window flags
+      * \param parent the object
+      * \param canvas a pointer to the map canvas
+      * \param fl window flags
       */
     explicit QgsDataSourceManagerDialog( QWidget *parent = nullptr, QgsMapCanvas *canvas = nullptr, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags );
     ~QgsDataSourceManagerDialog();
 
     /**
      * @brief openPage open a given page in the dialog
-     * @param pageName the page name, usually the provider name or "browser" (for the browser panel)
+     * \param pageName the page name, usually the provider name or "browser" (for the browser panel)
      *        or "ogr" (vector layers) or "raster" (raster layers)
      */
     void openPage( QString pageName );
@@ -76,7 +77,10 @@ class GUI_EXPORT QgsDataSourceManagerDialog : public QgsOptionsDialogBase, priva
     //! Reset current page to previously selected page
     void setPreviousPage();
     //! Refresh the browser view
-    void refresh( );
+    void refresh();
+
+  protected:
+    virtual void showEvent( QShowEvent *event ) override;
 
   signals:
     //! Emitted when a raster layer was selected for addition: for signal forwarding to QgisApp
@@ -111,10 +115,10 @@ class GUI_EXPORT QgsDataSourceManagerDialog : public QgsOptionsDialogBase, priva
 
   private:
     // Return the dialog from the provider
-    QgsAbstractDataSourceWidget *providerDialog( const QString providerKey, const QString providerName, const QString icon, QString title = QString( ) );
-    void addDbProviderDialog( QString const providerKey, QString const providerName, QString const icon, QString title = QString( ) );
-    void addRasterProviderDialog( QString const providerKey, QString const providerName, QString const icon, QString title = QString( ) );
-    void addVectorProviderDialog( QString const providerKey, QString const providerName, QString const icon, QString title = QString( ) );
+    QgsAbstractDataSourceWidget *providerDialog( const QString providerKey, const QString providerName, const QString icon, QString title = QString() );
+    void addDbProviderDialog( QString const providerKey, QString const providerName, QString const icon, QString title = QString() );
+    void addRasterProviderDialog( QString const providerKey, QString const providerName, QString const icon, QString title = QString() );
+    void addVectorProviderDialog( QString const providerKey, QString const providerName, QString const icon, QString title = QString() );
     Ui::QgsDataSourceManagerDialog *ui;
     QgsBrowserDockWidget *mBrowserWidget = nullptr;
     int mPreviousRow;

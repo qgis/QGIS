@@ -547,7 +547,7 @@ void* CompactHistoryBlock::allocate ( size_t length )
   return block;
 }
 
-void CompactHistoryBlock::deallocate ( )
+void CompactHistoryBlock::deallocate ()
 {
   allocCount--;
   Q_ASSERT ( allocCount >= 0 );

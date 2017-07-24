@@ -301,15 +301,65 @@ void QgsLayoutDesignerDialog::closeEvent( QCloseEvent * )
 void QgsLayoutDesignerDialog::itemTypeAdded( int type )
 {
   QString name = QgsApplication::layoutItemRegistry()->itemMetadata( type )->visibleName();
+  QString groupId = QgsGui::layoutItemGuiRegistry()->itemMetadata( type )->groupId();
+  QToolButton *groupButton = nullptr;
+  QMenu *itemSubmenu = nullptr;
+  if ( !groupId.isEmpty() )
+  {
+    // find existing group toolbutton and submenu, or create new ones if this is the first time the group has been encountered
+    const QgsLayoutItemGuiGroup &group = QgsGui::layoutItemGuiRegistry()->itemGroup( groupId );
+    QIcon groupIcon = group.icon.isNull() ? QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddBasicShape.svg" ) ) : group.icon;
+    QString groupText = tr( "Add %1" ).arg( group.name );
+    if ( mItemGroupToolButtons.contains( groupId ) )
+    {
+      groupButton = mItemGroupToolButtons.value( groupId );
+    }
+    else
+    {
+      QToolButton *groupToolButton = new QToolButton( mToolsToolbar );
+      groupToolButton->setIcon( groupIcon );
+      groupToolButton->setCheckable( true );
+      groupToolButton->setPopupMode( QToolButton::InstantPopup );
+      groupToolButton->setAutoRaise( true );
+      groupToolButton->setToolButtonStyle( Qt::ToolButtonIconOnly );
+      groupToolButton->setToolTip( groupText );
+      mToolsToolbar->addWidget( groupToolButton );
+      mItemGroupToolButtons.insert( groupId, groupToolButton );
+      groupButton = groupToolButton;
+    }
+
+    if ( mItemGroupSubmenus.contains( groupId ) )
+    {
+      itemSubmenu = mItemGroupSubmenus.value( groupId );
+    }
+    else
+    {
+      QMenu *groupSubmenu = mItemMenu->addMenu( groupText );
+      groupSubmenu->setIcon( groupIcon );
+      mItemMenu->addMenu( groupSubmenu );
+      mItemGroupSubmenus.insert( groupId, groupSubmenu );
+      itemSubmenu = groupSubmenu;
+    }
+  }
+
   // update UI for new item type
   QAction *action = new QAction( tr( "Add %1" ).arg( name ), this );
   action->setToolTip( tr( "Adds a new %1 to the layout" ).arg( name ) );
   action->setCheckable( true );
   action->setData( type );
   action->setIcon( QgsGui::layoutItemGuiRegistry()->itemMetadata( type )->creationIcon() );
+
   mToolsActionGroup->addAction( action );
-  mItemMenu->addAction( action );
-  mToolsToolbar->addAction( action );
+  if ( itemSubmenu )
+    itemSubmenu->addAction( action );
+  else
+    mItemMenu->addAction( action );
+
+  if ( groupButton )
+    groupButton->addAction( action );
+  else
+    mToolsToolbar->addAction( action );
+
   connect( action, &QAction::triggered, this, [this, type]()
   {
     activateNewItemCreationTool( type );

@@ -2745,7 +2745,7 @@ const QByteArray QgsAuthManager::getTrustedCaCertsPemText()
 
 bool QgsAuthManager::passwordHelperSync()
 {
-  if ( masterPasswordIsSet( ) )
+  if ( masterPasswordIsSet() )
   {
     return passwordHelperWrite( mMasterPass );
   }
@@ -2895,7 +2895,7 @@ QString QgsAuthManager::passwordHelperName() const
 
 void QgsAuthManager::passwordHelperLog( const QString &msg ) const
 {
-  if ( passwordHelperLoggingEnabled( ) )
+  if ( passwordHelperLoggingEnabled() )
   {
     QgsMessageLog::logMessage( msg, passwordHelperName() );
   }
@@ -2907,7 +2907,7 @@ bool QgsAuthManager::passwordHelperDelete()
   bool result;
   QKeychain::DeletePasswordJob job( AUTH_PASSWORD_HELPER_FOLDER_NAME );
   QgsSettings settings;
-  job.setInsecureFallback( settings.value( QStringLiteral( "password_helper_insecure_fallback" ), false, QgsSettings::Section::Auth ).toBool( ) );
+  job.setInsecureFallback( settings.value( QStringLiteral( "password_helper_insecure_fallback" ), false, QgsSettings::Section::Auth ).toBool() );
   job.setAutoDelete( false );
   job.setKey( AUTH_PASSWORD_HELPER_KEY_NAME );
   QEventLoop loop;
@@ -2939,7 +2939,7 @@ QString QgsAuthManager::passwordHelperRead()
   passwordHelperLog( tr( "Opening %1 for READ ..." ).arg( AUTH_PASSWORD_HELPER_DISPLAY_NAME ) );
   QKeychain::ReadPasswordJob job( AUTH_PASSWORD_HELPER_FOLDER_NAME );
   QgsSettings settings;
-  job.setInsecureFallback( settings.value( QStringLiteral( "password_helper_insecure_fallback" ), false, QgsSettings::Section::Auth ).toBool( ) );
+  job.setInsecureFallback( settings.value( QStringLiteral( "password_helper_insecure_fallback" ), false, QgsSettings::Section::Auth ).toBool() );
   job.setAutoDelete( false );
   job.setKey( AUTH_PASSWORD_HELPER_KEY_NAME );
   QEventLoop loop;
@@ -2981,7 +2981,7 @@ bool QgsAuthManager::passwordHelperWrite( const QString &password )
   passwordHelperLog( tr( "Opening %1 for WRITE ..." ).arg( AUTH_PASSWORD_HELPER_DISPLAY_NAME ) );
   QKeychain::WritePasswordJob job( AUTH_PASSWORD_HELPER_FOLDER_NAME );
   QgsSettings settings;
-  job.setInsecureFallback( settings.value( QStringLiteral( "password_helper_insecure_fallback" ), false, QgsSettings::Section::Auth ).toBool( ) );
+  job.setInsecureFallback( settings.value( QStringLiteral( "password_helper_insecure_fallback" ), false, QgsSettings::Section::Auth ).toBool() );
   job.setAutoDelete( false );
   job.setKey( AUTH_PASSWORD_HELPER_KEY_NAME );
   job.setTextData( password );
@@ -3004,7 +3004,7 @@ bool QgsAuthManager::passwordHelperWrite( const QString &password )
     emit passwordHelperSuccess();
     result = true;
   }
-  passwordHelperProcessError( );
+  passwordHelperProcessError();
   return result;
 }
 
@@ -3012,7 +3012,7 @@ bool QgsAuthManager::passwordHelperEnabled() const
 {
   // Does the user want to store the password in the wallet?
   QgsSettings settings;
-  return settings.value( QStringLiteral( "use_password_helper" ), true, QgsSettings::Section::Auth ).toBool( );
+  return settings.value( QStringLiteral( "use_password_helper" ), true, QgsSettings::Section::Auth ).toBool();
 }
 
 void QgsAuthManager::setPasswordHelperEnabled( const bool enabled )
@@ -3029,7 +3029,7 @@ bool QgsAuthManager::passwordHelperLoggingEnabled() const
 {
   // Does the user want to store the password in the wallet?
   QgsSettings settings;
-  return settings.value( QStringLiteral( "password_helper_logging" ), false, QgsSettings::Section::Auth ).toBool( );
+  return settings.value( QStringLiteral( "password_helper_logging" ), false, QgsSettings::Section::Auth ).toBool();
 }
 
 void QgsAuthManager::setPasswordHelperLoggingEnabled( const bool enabled )
@@ -3081,10 +3081,10 @@ bool QgsAuthManager::masterPasswordInput()
   bool ok = false;
 
   // Read the password from the wallet
-  if ( passwordHelperEnabled( ) )
+  if ( passwordHelperEnabled() )
   {
-    pass = passwordHelperRead( );
-    if ( ! pass.isEmpty( ) && ( mPasswordHelperErrorCode == QKeychain::NoError ) )
+    pass = passwordHelperRead();
+    if ( ! pass.isEmpty() && ( mPasswordHelperErrorCode == QKeychain::NoError ) )
     {
       // Let's check the password!
       if ( verifyMasterPassword( pass ) )
@@ -3112,7 +3112,7 @@ bool QgsAuthManager::masterPasswordInput()
   if ( ok && !pass.isEmpty() && mMasterPass != pass )
   {
     mMasterPass = pass;
-    if ( passwordHelperEnabled( ) && ! storedPasswordIsValid )
+    if ( passwordHelperEnabled() && ! storedPasswordIsValid )
     {
       if ( passwordHelperWrite( pass ) )
       {

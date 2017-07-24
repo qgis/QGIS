@@ -48,14 +48,14 @@ enum
   MODEL_IDX_SQL
 };
 
-QgsWFSSourceSelect::QgsWFSSourceSelect( QWidget *parent, Qt::WindowFlags fl, QgsProviderRegistry::WidgetMode widgetMode )
-  : QgsAbstractDataSourceWidget( parent, fl, widgetMode )
+QgsWFSSourceSelect::QgsWFSSourceSelect( QWidget *parent, Qt::WindowFlags fl, QgsProviderRegistry::WidgetMode theWidgetMode )
+  : QgsAbstractDataSourceWidget( parent, fl, theWidgetMode )
   , mCapabilities( nullptr )
   , mSQLComposerDialog( nullptr )
 {
   setupUi( this );
 
-  if ( QgsAbstractDataSourceWidget::widgetMode( ) != QgsProviderRegistry::WidgetMode::None )
+  if ( widgetMode() != QgsProviderRegistry::WidgetMode::None )
   {
     // For some obscure reason hiding does not work!
     // buttonBox->button( QDialogButtonBox::Close )->hide();
@@ -408,7 +408,7 @@ void QgsWFSSourceSelect::addLayer()
     emit addVectorLayer( mUri, layerName );
   }
 
-  if ( ! mHoldDialogOpen->isChecked() && QgsAbstractDataSourceWidget::widgetMode( ) == QgsProviderRegistry::WidgetMode::None )
+  if ( ! mHoldDialogOpen->isChecked() && widgetMode() == QgsProviderRegistry::WidgetMode::None )
   {
     accept();
   }

@@ -26,7 +26,6 @@ QgsFieldConditionalFormatWidget::QgsFieldConditionalFormatWidget( QWidget *paren
   , mLayer( nullptr )
   , mEditIndex( 0 )
   , mEditing( false )
-  , mSymbol( nullptr )
 {
   setupUi( this );
   mDeleteButton->hide();
@@ -38,7 +37,6 @@ QgsFieldConditionalFormatWidget::QgsFieldConditionalFormatWidget( QWidget *paren
   connect( mCancelButton, &QAbstractButton::clicked, this, &QgsFieldConditionalFormatWidget::cancelRule );
   connect( mDeleteButton, &QAbstractButton::clicked, this, &QgsFieldConditionalFormatWidget::deleteRule );
   connect( listView, &QAbstractItemView::clicked, this, &QgsFieldConditionalFormatWidget::ruleClicked );
-  connect( btnChangeIcon, &QAbstractButton::clicked, this, &QgsFieldConditionalFormatWidget::updateIcon );
   connect( btnBuildExpression, &QAbstractButton::clicked, this, &QgsFieldConditionalFormatWidget::setExpression );
   connect( mPresetsList, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsFieldConditionalFormatWidget::presetSet );
   btnBackgroundColor->setAllowOpacity( true );
@@ -49,27 +47,14 @@ QgsFieldConditionalFormatWidget::QgsFieldConditionalFormatWidget( QWidget *paren
   mModel = new QStandardItemModel( listView );
   listView->setModel( mModel );
   mPresetsList->setModel( mPresetsModel );
+  btnChangeIcon->setSymbolType( QgsSymbol::Marker );
+  btnChangeIcon->setSymbol( QgsSymbol::defaultSymbol( QgsWkbTypes::PointGeometry ) );
 
   setPresets( defaultPresets() );
 }
 
 QgsFieldConditionalFormatWidget::~QgsFieldConditionalFormatWidget()
 {
-  delete mSymbol;
-}
-
-void QgsFieldConditionalFormatWidget::updateIcon()
-{
-  mSymbol = QgsSymbol::defaultSymbol( QgsWkbTypes::PointGeometry );
-
-  QgsSymbolSelectorDialog dlg( mSymbol, QgsStyle::defaultStyle(), nullptr, this );
-  if ( !dlg.exec() )
-  {
-    return;
-  }
-
-  QIcon icon = QgsSymbolLayerUtils::symbolPreviewIcon( mSymbol, btnChangeIcon->iconSize() );
-  btnChangeIcon->setIcon( icon );
 }
 
 void QgsFieldConditionalFormatWidget::setExpression()
@@ -130,24 +115,14 @@ void QgsFieldConditionalFormatWidget::setFormattingFromStyle( const QgsCondition
 {
   btnBackgroundColor->setColor( style.backgroundColor() );
   btnTextColor->setColor( style.textColor() );
-  if ( !style.icon().isNull() )
+  if ( style.symbol() )
   {
+    btnChangeIcon->setSymbol( style.symbol()->clone() );
     checkIcon->setChecked( true );
-    QIcon icon( style.icon() );
-    btnChangeIcon->setIcon( icon );
   }
   else
   {
     checkIcon->setChecked( false );
-    btnChangeIcon->setIcon( QIcon() );
-  }
-  if ( style.symbol() )
-  {
-    mSymbol = style.symbol()->clone();
-  }
-  else
-  {
-    mSymbol = nullptr;
   }
   QFont font = style.font();
   mFontBoldBtn->setChecked( font.bold() );
@@ -206,7 +181,6 @@ void QgsFieldConditionalFormatWidget::addNewRule()
 
 void QgsFieldConditionalFormatWidget::reset()
 {
-  mSymbol = nullptr;
   mNameEdit->clear();
   mRuleEdit->clear();
   if ( fieldRadio->isChecked() )
@@ -297,9 +271,9 @@ void QgsFieldConditionalFormatWidget::saveRule()
   style.setFont( font );
   style.setBackgroundColor( backColor );
   style.setTextColor( fontColor );
-  if ( mSymbol && checkIcon->isChecked() )
+  if ( checkIcon->isChecked() )
   {
-    style.setSymbol( mSymbol );
+    style.setSymbol( btnChangeIcon->clonedSymbol< QgsMarkerSymbol >() );
   }
   else
   {

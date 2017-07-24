@@ -427,7 +427,7 @@ void QgsWMSRootItem::newConnection()
 
   if ( nc.exec() )
   {
-    refreshConnections( );
+    refreshConnections();
   }
 }
 #endif

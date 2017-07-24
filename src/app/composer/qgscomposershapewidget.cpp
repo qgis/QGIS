@@ -45,6 +45,8 @@ QgsComposerShapeWidget::QgsComposerShapeWidget( QgsComposerShape *composerShape 
   mShapeComboBox->addItem( tr( "Rectangle" ) );
   mShapeComboBox->addItem( tr( "Triangle" ) );
 
+  mShapeStyleButton->setSymbolType( QgsSymbol::Fill );
+
   setGuiElementValues();
 
   blockAllSignals( false );
@@ -52,7 +54,10 @@ QgsComposerShapeWidget::QgsComposerShapeWidget( QgsComposerShape *composerShape 
   if ( mComposerShape )
   {
     connect( mComposerShape, &QgsComposerObject::itemChanged, this, &QgsComposerShapeWidget::setGuiElementValues );
+    mShapeStyleButton->registerExpressionContextGenerator( mComposerShape );
   }
+  connect( mShapeStyleButton, &QgsSymbolButton::changed, this, &QgsComposerShapeWidget::symbolChanged );
+  mShapeStyleButton->setLayer( atlasCoverageLayer() );
 }
 
 QgsComposerShapeWidget::~QgsComposerShapeWidget()
@@ -76,7 +81,7 @@ void QgsComposerShapeWidget::setGuiElementValues()
 
   blockAllSignals( true );
 
-  updateShapeStyle();
+  mShapeStyleButton->setSymbol( mComposerShape->shapeStyleSymbol()->clone() );
 
   mCornerRadiusSpinBox->setValue( mComposerShape->cornerRadius() );
   if ( mComposerShape->shapeType() == QgsComposerShape::Ellipse )
@@ -98,38 +103,16 @@ void QgsComposerShapeWidget::setGuiElementValues()
   blockAllSignals( false );
 }
 
-void QgsComposerShapeWidget::on_mShapeStyleButton_clicked()
+void QgsComposerShapeWidget::symbolChanged()
 {
   if ( !mComposerShape )
   {
     return;
   }
 
-  // use the atlas coverage layer, if any
-  QgsVectorLayer *coverageLayer = atlasCoverageLayer();
-
-  QgsFillSymbol *newSymbol = mComposerShape->shapeStyleSymbol()->clone();
-  QgsExpressionContext context = mComposerShape->createExpressionContext();
-
-  QgsSymbolSelectorWidget *d = new QgsSymbolSelectorWidget( newSymbol, QgsStyle::defaultStyle(), coverageLayer, nullptr );
-  QgsSymbolWidgetContext symbolContext;
-  symbolContext.setExpressionContext( &context );
-  d->setContext( symbolContext );
-
-  connect( d, &QgsPanelWidget::widgetChanged, this, &QgsComposerShapeWidget::updateSymbolFromWidget );
-  connect( d, &QgsPanelWidget::panelAccepted, this, &QgsComposerShapeWidget::cleanUpSymbolSelector );
-  openPanel( d );
   mComposerShape->beginCommand( tr( "Shape style changed" ) );
-}
-
-void QgsComposerShapeWidget::updateShapeStyle()
-{
-  if ( mComposerShape )
-  {
-    mComposerShape->refreshSymbol();
-    QIcon icon = QgsSymbolLayerUtils::symbolPreviewIcon( mComposerShape->shapeStyleSymbol(), mShapeStyleButton->iconSize() );
-    mShapeStyleButton->setIcon( icon );
-  }
+  mComposerShape->setShapeStyleSymbol( mShapeStyleButton->clonedSymbol<QgsFillSymbol>() );
+  mComposerShape->endCommand();
 }
 
 void QgsComposerShapeWidget::on_mCornerRadiusSpinBox_valueChanged( double val )
@@ -179,23 +162,3 @@ void QgsComposerShapeWidget::toggleRadiusSpin( const QString &shapeText )
     mCornerRadiusSpinBox->setEnabled( false );
   }
 }
-
-void QgsComposerShapeWidget::updateSymbolFromWidget()
-{
-  if ( QgsSymbolSelectorWidget *w = qobject_cast<QgsSymbolSelectorWidget *>( sender() ) )
-    mComposerShape->setShapeStyleSymbol( static_cast< QgsFillSymbol * >( w->symbol() ) );
-}
-
-void QgsComposerShapeWidget::cleanUpSymbolSelector( QgsPanelWidget *container )
-{
-  QgsSymbolSelectorWidget *w = qobject_cast<QgsSymbolSelectorWidget *>( container );
-  if ( !w )
-    return;
-
-  delete w->symbol();
-  updateShapeStyle();
-  mComposerShape->endCommand();
-}
-
-
-

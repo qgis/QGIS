@@ -208,6 +208,7 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
      *
      * \param field The field to change
      * \param value The new value
+     * \param hintText A hint text for non existent joined features
      */
     void changeAttribute( const QString &field, const QVariant &value, const QString &hintText = QString() );
 

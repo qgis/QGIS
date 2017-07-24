@@ -139,7 +139,7 @@ Refresh item children
 %Docstring
 Emitted when item children fetch was finished
 %End
-    void connectionsChanged( );
+    void connectionsChanged();
 %Docstring
 notify the provider dialogs of a changed connection
 %End

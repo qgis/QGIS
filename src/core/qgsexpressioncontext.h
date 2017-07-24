@@ -31,6 +31,7 @@
 class QgsExpression;
 class QgsExpressionNodeFunction;
 class QgsMapLayer;
+class QgsLayout;
 class QgsComposition;
 class QgsComposerItem;
 class QgsAtlasComposition;
@@ -776,7 +777,8 @@ class CORE_EXPORT QgsExpressionContextUtils
      */
     static void setCompositionVariable( QgsComposition *composition, const QString &name, const QVariant &value );
 
-    /** Sets all composition context variables. Existing composition variables will be removed and replaced
+    /**
+     * Sets all composition context variables. Existing composition variables will be removed and replaced
      * with the variables specified.
      * \param composition target composition
      * \param variables new set of layer variables
@@ -784,6 +786,36 @@ class CORE_EXPORT QgsExpressionContextUtils
      * \see compositionScope()
      */
     static void setCompositionVariables( QgsComposition *composition, const QVariantMap &variables );
+
+    /**
+     * Creates a new scope which contains variables and functions relating to a QgsLayout \a layout.
+     * For instance, number of pages and page sizes.
+     * \since QGIS 3.0
+     */
+    static QgsExpressionContextScope *layoutScope( const QgsLayout *layout ) SIP_FACTORY;
+
+    /**
+     * Sets a layout context variable. This variable will be contained within scopes retrieved via
+     * layoutScope().
+     * \param layout target layout
+     * \param name variable name
+     * \param value variable value
+     * \see setLayoutVariables()
+     * \see layoutScope()
+     * \since QGIS 3.0
+     */
+    static void setLayoutVariable( QgsLayout *layout, const QString &name, const QVariant &value );
+
+    /**
+     * Sets all layout context variables. Existing layout variables will be removed and replaced
+     * with the variables specified.
+     * \param layout target layout
+     * \param variables new set of layer variables
+     * \see setLayoutVariable()
+     * \see layoutScope()
+     * \since QGIS 3.0
+     */
+    static void setLayoutVariables( QgsLayout *layout, const QVariantMap &variables );
 
     /** Creates a new scope which contains variables and functions relating to a QgsAtlasComposition.
      * For instance, current page name and number.

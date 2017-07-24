@@ -54,7 +54,7 @@ QgsMapSaveDialog::QgsMapSaveDialog( QWidget *parent, QgsMapCanvas *mapCanvas, QL
   mDpi = ms.outputDpi();
   mSize = ms.outputSize();
 
-  mResolutionSpinBox->setValue( qt_defaultDpiX() );
+  mResolutionSpinBox->setValue( mDpi );
 
   mExtentGroupBox->setOutputCrs( ms.destinationCrs() );
   mExtentGroupBox->setCurrentExtent( mExtent, ms.destinationCrs() );
@@ -81,6 +81,7 @@ QgsMapSaveDialog::QgsMapSaveDialog( QWidget *parent, QgsMapCanvas *mapCanvas, QL
   connect( mOutputHeightSpinBox, static_cast < void ( QSpinBox::* )( int ) > ( &QSpinBox::valueChanged ), this, &QgsMapSaveDialog::updateOutputHeight );
   connect( mExtentGroupBox, &QgsExtentGroupBox::extentChanged, this, &QgsMapSaveDialog::updateExtent );
   connect( mScaleWidget, &QgsScaleWidget::scaleChanged, this, &QgsMapSaveDialog::updateScale );
+  connect( mLockAspectRatio, &QgsRatioLockButton::lockChanged, this, &QgsMapSaveDialog::lockChanged );
 
   updateOutputSize();
 
@@ -126,12 +127,25 @@ void QgsMapSaveDialog::updateOutputWidth( int width )
   double scale = ( double )width / mSize.width();
   double adjustment = ( ( mExtent.width() * scale ) - mExtent.width() ) / 2;
 
+  mSize.setWidth( width );
+
   mExtent.setXMinimum( mExtent.xMinimum() - adjustment );
   mExtent.setXMaximum( mExtent.xMaximum() + adjustment );
 
-  whileBlocking( mExtentGroupBox )->setOutputExtentFromUser( mExtent, mExtentGroupBox->currentCrs() );
+  if ( mLockAspectRatio->locked() )
+  {
+    int height = width * mExtentGroupBox->ratio().height() / mExtentGroupBox->ratio().width();
+    double scale = ( double )height / mSize.height();
+    double adjustment = ( ( mExtent.height() * scale ) - mExtent.height() ) / 2;
 
-  mSize.setWidth( width );
+    whileBlocking( mOutputHeightSpinBox )->setValue( height );
+    mSize.setHeight( height );
+
+    mExtent.setYMinimum( mExtent.yMinimum() - adjustment );
+    mExtent.setYMaximum( mExtent.yMaximum() + adjustment );
+  }
+
+  whileBlocking( mExtentGroupBox )->setOutputExtentFromUser( mExtent, mExtentGroupBox->currentCrs() );
 }
 
 void QgsMapSaveDialog::updateOutputHeight( int height )
@@ -139,21 +153,62 @@ void QgsMapSaveDialog::updateOutputHeight( int height )
   double scale = ( double )height / mSize.height();
   double adjustment = ( ( mExtent.height() * scale ) - mExtent.height() ) / 2;
 
+  mSize.setHeight( height );
+
   mExtent.setYMinimum( mExtent.yMinimum() - adjustment );
   mExtent.setYMaximum( mExtent.yMaximum() + adjustment );
 
-  whileBlocking( mExtentGroupBox )->setOutputExtentFromUser( mExtent, mExtentGroupBox->currentCrs() );
+  if ( mLockAspectRatio->locked() )
+  {
+    int width = height * mExtentGroupBox->ratio().width() / mExtentGroupBox->ratio().height();
+    double scale = ( double )width / mSize.width();
+    double adjustment = ( ( mExtent.width() * scale ) - mExtent.width() ) / 2;
 
-  mSize.setHeight( height );
+    whileBlocking( mOutputWidthSpinBox )->setValue( width );
+    mSize.setWidth( width );
+
+    mExtent.setXMinimum( mExtent.xMinimum() - adjustment );
+    mExtent.setXMaximum( mExtent.xMaximum() + adjustment );
+  }
+
+  whileBlocking( mExtentGroupBox )->setOutputExtentFromUser( mExtent, mExtentGroupBox->currentCrs() );
 }
 
 void QgsMapSaveDialog::updateExtent( const QgsRectangle &extent )
 {
-  mSize.setWidth( mSize.width() * extent.width() / mExtent.width() );
-  mSize.setHeight( mSize.height() * extent.height() / mExtent.height() );
-  mExtent = extent;
+  int currentDpi = 0;
 
+  // reset scale to properly sync output width and height when extent set using
+  // current map view, layer extent, or drawn on canvas buttons
+  if ( mExtentGroupBox->extentState() != QgsExtentGroupBox::UserExtent )
+  {
+    currentDpi = mDpi;
+
+    QgsMapSettings ms = mMapCanvas->mapSettings();
+    ms.setRotation( 0 );
+    mDpi = ms.outputDpi();
+    mSize.setWidth( ms.outputSize().width() * extent.width() / ms.visibleExtent().width() );
+    mSize.setHeight( ms.outputSize().height() * extent.height() / ms.visibleExtent().height() );
+
+    whileBlocking( mScaleWidget )->setScale( ms.scale() );
+
+    if ( currentDpi != mDpi )
+    {
+      updateDpi( currentDpi );
+    }
+  }
+  else
+  {
+    mSize.setWidth( mSize.width() * extent.width() / mExtent.width() );
+    mSize.setHeight( mSize.height() * extent.height() / mExtent.height() );
+  }
   updateOutputSize();
+
+  mExtent = extent;
+  if ( mLockAspectRatio->locked() )
+  {
+    mExtentGroupBox->setRatio( QSize( mSize.width(), mSize.height() ) );
+  }
 }
 
 void QgsMapSaveDialog::updateScale( double scale )
@@ -240,6 +295,18 @@ void QgsMapSaveDialog::applyMapSettings( QgsMapSettings &mapSettings )
                     << QgsExpressionContextUtils::mapSettingsScope( mapSettings );
 
   mapSettings.setExpressionContext( expressionContext );
+}
+
+void QgsMapSaveDialog::lockChanged( const bool locked )
+{
+  if ( locked )
+  {
+    mExtentGroupBox->setRatio( QSize( mOutputWidthSpinBox->value(), mOutputHeightSpinBox->value() ) );
+  }
+  else
+  {
+    mExtentGroupBox->setRatio( QSize( 0, 0 ) );
+  }
 }
 
 void QgsMapSaveDialog::accepted()

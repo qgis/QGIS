@@ -333,7 +333,7 @@ class CORE_EXPORT QgsSipifyHeader : public QtClass<QVariant>, private Ui::QgsBas
 
     //! remove argument
     void simple( bool test SIP_PYARGREMOVE );
-    void method( bool myArg SIP_PYARGREMOVE =  test );
+    void method( bool myArg SIP_PYARGREMOVE = test );
     void test( QgsMapLayer *vl SIP_PYARGREMOVE = nullptr );
     void avoidIntersections( const QList<QgsVectorLayer *> &avoidIntersectionsLayers,
                              const QHash<QgsVectorLayer *, QSet<QgsFeatureId> > &ignoreFeatures SIP_PYARGREMOVE = ( QHash<QgsVectorLayer *, QSet<QgsFeatureId> >() ) );

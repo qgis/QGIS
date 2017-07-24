@@ -28,19 +28,14 @@ __revision__ = '$Format:%H$'
 
 import os
 
-from qgis.core import (QgsFeatureSink,
-                       QgsProcessing,
-                       QgsProcessingParameterFeatureSource,
-                       QgsProcessingParameterNumber,
-                       QgsProcessingParameterFeatureSink)
-from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
+from qgis.core import (QgsProcessingParameterNumber)
+
+from processing.algs.qgis.QgisAlgorithm import QgisFeatureBasedAlgorithm
 
 
-class DensifyGeometries(QgisAlgorithm):
+class DensifyGeometries(QgisFeatureBasedAlgorithm):
 
-    INPUT = 'INPUT'
     VERTICES = 'VERTICES'
-    OUTPUT = 'OUTPUT'
 
     def tags(self):
         return self.tr('add,vertices,points').split(',')
@@ -50,15 +45,12 @@ class DensifyGeometries(QgisAlgorithm):
 
     def __init__(self):
         super().__init__()
+        self.vertices = None
 
-    def initAlgorithm(self, config=None):
-        self.addParameter(QgsProcessingParameterFeatureSource(self.INPUT,
-                                                              self.tr('Input layer'), [QgsProcessing.TypeVectorPolygon, QgsProcessing.TypeVectorLine]))
+    def initParameters(self, config=None):
         self.addParameter(QgsProcessingParameterNumber(self.VERTICES,
                                                        self.tr('Vertices to add'), QgsProcessingParameterNumber.Integer,
                                                        1, False, 1, 10000000))
-
-        self.addParameter(QgsProcessingParameterFeatureSink(self.OUTPUT, self.tr('Densified')))
 
     def name(self):
         return 'densifygeometries'
@@ -66,25 +58,15 @@ class DensifyGeometries(QgisAlgorithm):
     def displayName(self):
         return self.tr('Densify geometries')
 
-    def processAlgorithm(self, parameters, context, feedback):
-        source = self.parameterAsSource(parameters, self.INPUT, context)
-        vertices = self.parameterAsInt(parameters, self.VERTICES, context)
+    def outputName(self):
+        return self.tr('Densified')
 
-        (sink, dest_id) = self.parameterAsSink(parameters, self.OUTPUT, context,
-                                               source.fields(), source.wkbType(), source.sourceCrs())
+    def prepareAlgorithm(self, parameters, context, feedback):
+        self.vertices = self.parameterAsInt(parameters, self.VERTICES, context)
+        return True
 
-        features = source.getFeatures()
-        total = 100.0 / source.featureCount() if source.featureCount() else 0
-
-        for current, f in enumerate(features):
-            if feedback.isCanceled():
-                break
-
-            feature = f
-            if feature.hasGeometry():
-                new_geometry = feature.geometry().densifyByCount(vertices)
-                feature.setGeometry(new_geometry)
-            sink.addFeature(feature, QgsFeatureSink.FastInsert)
-            feedback.setProgress(int(current * total))
-
-        return {self.OUTPUT: dest_id}
+    def processFeature(self, feature, feedback):
+        if feature.hasGeometry():
+            new_geometry = feature.geometry().densifyByCount(self.vertices)
+            feature.setGeometry(new_geometry)
+        return feature

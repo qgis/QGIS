@@ -166,14 +166,14 @@ void QgsOracleSourceSelectDelegate::setModelData( QWidget *editor, QAbstractItem
   }
 }
 
-QgsOracleSourceSelect::QgsOracleSourceSelect( QWidget *parent, Qt::WindowFlags fl, QgsProviderRegistry::WidgetMode widgetMode )
-  : QgsAbstractDataSourceWidget( parent, fl, widgetMode )
+QgsOracleSourceSelect::QgsOracleSourceSelect( QWidget *parent, Qt::WindowFlags fl, QgsProviderRegistry::WidgetMode theWidgetMode )
+  : QgsAbstractDataSourceWidget( parent, fl, theWidgetMode )
   , mColumnTypeThread( 0 )
   , mIsConnected( false )
 {
   setupUi( this );
 
-  if ( QgsAbstractDataSourceWidget::widgetMode( ) == QgsProviderRegistry::WidgetMode::Embedded )
+  if ( widgetMode() != QgsProviderRegistry::WidgetMode::None )
   {
     buttonBox->removeButton( buttonBox->button( QDialogButtonBox::Close ) );
     mHoldDialogOpen->hide();
@@ -190,7 +190,7 @@ QgsOracleSourceSelect::QgsOracleSourceSelect( QWidget *parent, Qt::WindowFlags f
   mBuildQueryButton->setToolTip( tr( "Set Filter" ) );
   mBuildQueryButton->setDisabled( true );
 
-  if ( mWidgetMode != QgsProviderRegistry::WidgetMode::Manager )
+  if ( widgetMode() != QgsProviderRegistry::WidgetMode::Manager )
   {
     buttonBox->addButton( mAddButton, QDialogButtonBox::ActionRole );
     connect( mAddButton, &QAbstractButton::clicked, this, &QgsOracleSourceSelect::addTables );
@@ -357,7 +357,7 @@ void QgsOracleSourceSelect::on_mTablesTreeView_clicked( const QModelIndex &index
 void QgsOracleSourceSelect::on_mTablesTreeView_doubleClicked( const QModelIndex &index )
 {
   QgsSettings settings;
-  if ( settings.value( "qgis/addOracleDC", false ).toBool() )
+  if ( settings.value( QStringLiteral( "qgis/addOracleDC" ), false ).toBool() )
   {
     addTables();
   }
@@ -443,12 +443,12 @@ QgsOracleSourceSelect::~QgsOracleSourceSelect()
   }
 
   QgsSettings settings;
-  settings.setValue( "/Windows/OracleSourceSelect/geometry", saveGeometry() );
-  settings.setValue( "/Windows/OracleSourceSelect/HoldDialogOpen", mHoldDialogOpen->isChecked() );
+  settings.setValue( QStringLiteral( "/Windows/OracleSourceSelect/geometry" ), saveGeometry() );
+  settings.setValue( QStringLiteral( "/Windows/OracleSourceSelect/HoldDialogOpen" ), mHoldDialogOpen->isChecked() );
 
   for ( int i = 0; i < mTableModel.columnCount(); i++ )
   {
-    settings.setValue( QString( "/Windows/OracleSourceSelect/columnWidths/%1" ).arg( i ), mTablesTreeView->columnWidth( i ) );
+    settings.setValue( QStringLiteral( "Windows/OracleSourceSelect/columnWidths/%1" ).arg( i ), mTablesTreeView->columnWidth( i ) );
   }
 }
 
@@ -492,8 +492,8 @@ void QgsOracleSourceSelect::addTables()
   }
   else
   {
-    emit addDatabaseLayers( mSelectedTables, "oracle" );
-    if ( !mHoldDialogOpen->isChecked() && mWidgetMode == QgsProviderRegistry::WidgetMode::None )
+    emit addDatabaseLayers( mSelectedTables, QStringLiteral( "oracle" ) );
+    if ( !mHoldDialogOpen->isChecked() && widgetMode() == QgsProviderRegistry::WidgetMode::None )
     {
       accept();
     }
@@ -540,11 +540,6 @@ void QgsOracleSourceSelect::on_btnConnect_clicked()
 void QgsOracleSourceSelect::finishList()
 {
   QApplication::restoreOverrideCursor();
-
-#if 0
-  for ( int i = 0; i < QgsOracleTableModel::DbtmColumns; i++ )
-    mTablesTreeView->resizeColumnToContents( i );
-#endif
 
   mTablesTreeView->sortByColumn( QgsOracleTableModel::DbtmTable, Qt::AscendingOrder );
   mTablesTreeView->sortByColumn( QgsOracleTableModel::DbtmOwner, Qt::AscendingOrder );

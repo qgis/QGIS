@@ -20,6 +20,26 @@
 #include <QTableWidgetItem>
 #include <QPushButton>
 
+//! @cond
+class SubLayerItem : public QTreeWidgetItem
+{
+  public:
+    SubLayerItem( const QStringList &strings, int type = QTreeWidgetItem::Type )
+      :  QTreeWidgetItem( strings, type )
+    {}
+
+    bool operator <( const QTreeWidgetItem &other ) const
+    {
+      QgsSublayersDialog *d = qobject_cast<QgsSublayersDialog *>( treeWidget()->parent() );
+      int col = treeWidget()->sortColumn();
+
+      if ( col == 0 || ( col > 0 && d->countColumn() == col ) )
+        return text( col ).toInt() < other.text( col ).toInt();
+      else
+        return text( col ) < other.text( col );
+    }
+};
+//! @endcond
 
 QgsSublayersDialog::QgsSublayersDialog( ProviderType providerType, const QString &name,
                                         QWidget *parent, Qt::WindowFlags fl )
@@ -123,7 +143,7 @@ void QgsSublayersDialog::populateLayerTable( const QgsSublayersDialog::LayerDefi
       elements << QString::number( item.count );
     if ( mShowType )
       elements << item.type;
-    layersTable->addTopLevelItem( new QTreeWidgetItem( elements ) );
+    layersTable->addTopLevelItem( new SubLayerItem( elements ) );
   }
 
   // resize columns

@@ -528,7 +528,7 @@ class CORE_EXPORT QgsAuthManager : public QObject
 
     //! Store the password manager into the wallet
     //! @note not available in Python bindings
-    bool passwordHelperSync( ) SIP_SKIP;
+    bool passwordHelperSync() SIP_SKIP;
 
     //! The display name of the password helper (platform dependent)
     static const QString AUTH_PASSWORD_HELPER_DISPLAY_NAME;

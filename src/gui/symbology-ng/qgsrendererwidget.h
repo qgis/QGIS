@@ -28,7 +28,6 @@ class QgsDataDefinedSizeLegendWidget;
 class QgsVectorLayer;
 class QgsStyle;
 class QgsFeatureRenderer;
-class QgsSymbolSelectorDialog;
 class QgsMapCanvas;
 
 /** \ingroup gui

@@ -23,6 +23,7 @@
 #include "qgslayoutitemregistry.h"
 #include "qgslayoutitemguiregistry.h"
 #include "qgstestutils.h"
+#include "qgsproject.h"
 #include "qgsgui.h"
 #include <QtTest/QSignalSpy>
 
@@ -63,7 +64,8 @@ void TestQgsLayoutView::cleanup()
 
 void TestQgsLayoutView::basic()
 {
-  QgsLayout *layout = new QgsLayout();
+  QgsProject p;
+  QgsLayout *layout = new QgsLayout( &p );
   QgsLayoutView *view = new QgsLayoutView();
 
   QSignalSpy spyLayoutChanged( view, &QgsLayoutView::layoutSet );
@@ -180,8 +182,9 @@ class LoggingTool : public QgsLayoutViewTool
 
 void TestQgsLayoutView::events()
 {
+  QgsProject p;
   QgsLayoutView *view = new QgsLayoutView();
-  QgsLayout *layout = new QgsLayout();
+  QgsLayout *layout = new QgsLayout( &p );
   view->setCurrentLayout( layout );
   layout->setSceneRect( 0, 0, 1000, 1000 );
   view->setHorizontalScrollBarPolicy( Qt::ScrollBarAlwaysOff );
@@ -239,7 +242,7 @@ class TestItem : public QgsLayoutItem
 
     //implement pure virtual methods
     int type() const override { return QgsLayoutItemRegistry::LayoutItem + 101; }
-    void draw( QPainter *, const QStyleOptionGraphicsItem *, QWidget * ) override
+    void draw( QgsRenderContext &, const QStyleOptionGraphicsItem * = nullptr ) override
     {    }
 };
 
@@ -296,6 +299,12 @@ void TestQgsLayoutView::guiRegistry()
   QVERIFY( dynamic_cast< QgsLayoutViewRectangularRubberBand * >( band ) );
   QCOMPARE( band->view(), view );
   delete band;
+
+  // groups
+  QVERIFY( registry.addItemGroup( QgsLayoutItemGuiGroup( QStringLiteral( "g1" ) ) ) );
+  QCOMPARE( registry.itemGroup( QStringLiteral( "g1" ) ).id, QStringLiteral( "g1" ) );
+  // can't add duplicate group
+  QVERIFY( !registry.addItemGroup( QgsLayoutItemGuiGroup( QStringLiteral( "g1" ) ) ) );
 
   //test populate
   QgsLayoutItemGuiRegistry reg2;

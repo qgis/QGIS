@@ -203,7 +203,7 @@ class CORE_EXPORT QgsTriangle : public QgsPolygonV2
      *   # ['LineString (0 0, 0 5)', 'LineString (0 5, 2.5 2.5)', 'LineString (5 5, 0 5)']
      * \endcode
      */
-    QVector<QgsLineString> altitudes( ) const;
+    QVector<QgsLineString> altitudes() const;
 
     /**
      * A median is a segment (defined by a QgsLineString) from a vertex to the midpoint of the opposite side.
@@ -215,7 +215,7 @@ class CORE_EXPORT QgsTriangle : public QgsPolygonV2
      *   # ['LineString (0 0, 2.5 5)', 'LineString (0 5, 2.5 2.5)', 'LineString (5 5, 0 2.5)']
      * \endcode
      */
-    QVector<QgsLineString> medians( ) const;
+    QVector<QgsLineString> medians() const;
 
     /**
      * The segment (defined by a QgsLineString) returned bisect the angle of a vertex to the opposite side.
@@ -240,7 +240,7 @@ class CORE_EXPORT QgsTriangle : public QgsPolygonV2
      *   # 'Triangle ((0 2.5, 2.5 5, 2.5 2.5, 0 2.5))'
      * \endcode
      */
-    QgsTriangle medial( ) const;
+    QgsTriangle medial() const;
 
     /**
      * An orthocenter is the point of intersection of the altitudes of a triangle.
@@ -265,7 +265,7 @@ class CORE_EXPORT QgsTriangle : public QgsPolygonV2
      *   # 'Point (2.5 2.5)'
      * \endcode
      */
-    QgsPoint circumscribedCenter( ) const;
+    QgsPoint circumscribedCenter() const;
 
     /**
      * Radius of the circumscribed circle of the triangle.
@@ -277,7 +277,7 @@ class CORE_EXPORT QgsTriangle : public QgsPolygonV2
      *   # 3.5355339059327378
      * \endcode
      */
-    double circumscribedRadius( ) const;
+    double circumscribedRadius() const;
 
     /**
     * Circumscribed circle of the triangle.
@@ -289,7 +289,7 @@ class CORE_EXPORT QgsTriangle : public QgsPolygonV2
     *   # QgsCircle(Point (2.5 2.5), 3.5355339059327378, 0)
     * \endcode
     */
-    QgsCircle circumscribedCircle( ) const;
+    QgsCircle circumscribedCircle() const;
 
     /**
      * Center of the inscribed circle of the triangle.
@@ -301,7 +301,7 @@ class CORE_EXPORT QgsTriangle : public QgsPolygonV2
      *   # 'Point (1.46446609406726225 3.53553390593273775)'
      * \endcode
      */
-    QgsPoint inscribedCenter( ) const;
+    QgsPoint inscribedCenter() const;
 
     /**
      * Radius of the inscribed circle of the triangle.
@@ -313,7 +313,7 @@ class CORE_EXPORT QgsTriangle : public QgsPolygonV2
      *   # 1.4644660940672622
      * \endcode
      */
-    double inscribedRadius( ) const;
+    double inscribedRadius() const;
 
     /**
     * Inscribed circle of the triangle.
@@ -325,7 +325,7 @@ class CORE_EXPORT QgsTriangle : public QgsPolygonV2
     *   # QgsCircle(Point (1.46446609406726225 3.53553390593273775), 1.4644660940672622, 0)
     * \endcode
     */
-    QgsCircle inscribedCircle( ) const;
+    QgsCircle inscribedCircle() const;
 
   private:
 

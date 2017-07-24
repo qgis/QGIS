@@ -22,8 +22,8 @@
 #include "qgsattributedialog.h"
 #include "qgisapp.h"
 #include "qgsvectorlayerutils.h"
-#include <QMouseEvent>
 
+#include <QMouseEvent>
 #include <limits>
 
 QgsMapToolFillRing::QgsMapToolFillRing( QgsMapCanvas *canvas )
@@ -52,38 +52,49 @@ void QgsMapToolFillRing::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
     return;
   }
 
-  //add point to list and to rubber band
-  if ( e->button() == Qt::LeftButton )
+  if ( e->button() == Qt::LeftButton && QApplication::keyboardModifiers() == Qt::ShiftModifier && !isCapturing() )
   {
+    // left button with shift fills an existing ring
+  }
+  else if ( e->button() == Qt::LeftButton )
+  {
+    // add point to list and to rubber band
+
     int error = addVertex( e->mapPoint() );
     if ( error == 1 )
     {
-      //current layer is not a vector layer
+      // current layer is not a vector layer
       return;
     }
     else if ( error == 2 )
     {
-      //problem with coordinate transformation
+      // problem with coordinate transformation
       emit messageEmitted( tr( "Cannot transform the point to the layers coordinate system" ), QgsMessageBar::WARNING );
       return;
     }
 
     startCapturing();
+    return;
   }
-  else if ( e->button() == Qt::RightButton )
+  else if ( e->button() != Qt::RightButton || !isCapturing() )
   {
-    if ( !isCapturing() )
-      return;
+    return;
+  }
 
+  QgsGeometry g;
+  QgsFeatureId fid;
+
+  if ( isCapturing() )
+  {
     deleteTempRubberBand();
 
     closePolygon();
 
     vlayer->beginEditCommand( tr( "Ring added and filled" ) );
+
     QList< QgsPointXY > pointList = points();
 
-    QgsFeatureId modifiedFid;
-    int addRingReturnCode = vlayer->addRing( pointList, &modifiedFid );
+    int addRingReturnCode = vlayer->addRing( pointList, &fid );
     if ( addRingReturnCode != 0 )
     {
       QString errorMessage;
@@ -114,65 +125,112 @@ void QgsMapToolFillRing::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
       }
       emit messageEmitted( tr( "could not add ring since %1." ).arg( errorMessage ), QgsMessageBar::CRITICAL );
       vlayer->destroyEditCommand();
+
+      return;
+    }
+
+    g = QgsGeometry::fromPolygon( QgsPolygon() << pointList.toVector() );
+  }
+  else
+  {
+    vlayer->beginEditCommand( tr( "Ring filled" ) );
+
+    g = ringUnderPoint( e->mapPoint(), fid );
+
+    if ( fid == -1 )
+    {
+      emit messageEmitted( tr( "No ring found to fill." ), QgsMessageBar::CRITICAL );
+      vlayer->destroyEditCommand();
+      return;
+    }
+  }
+
+  QgsExpressionContext context = vlayer->createExpressionContext();
+
+  QgsFeatureIterator fit = vlayer->getFeatures( QgsFeatureRequest().setFilterFid( fid ) );
+
+  QgsFeature f;
+  if ( fit.nextFeature( f ) )
+  {
+    //create QgsFeature with wkb representation
+    QgsFeature ft = QgsVectorLayerUtils::createFeature( vlayer, g, f.attributes().toMap(), &context );
+
+    bool res = false;
+    if ( QApplication::keyboardModifiers() == Qt::ControlModifier )
+    {
+      res = vlayer->addFeature( ft );
     }
     else
     {
-      // find parent feature and get it attributes
-      double xMin, xMax, yMin, yMax;
-      QgsRectangle bBox;
+      QgsAttributeDialog *dialog = new QgsAttributeDialog( vlayer, &ft, false, nullptr, true );
+      dialog->setMode( QgsAttributeForm::AddFeatureMode );
+      res = dialog->exec(); // will also add the feature
+    }
 
-      xMin = std::numeric_limits<double>::max();
-      xMax = -std::numeric_limits<double>::max();
-      yMin = std::numeric_limits<double>::max();
-      yMax = -std::numeric_limits<double>::max();
+    if ( res )
+    {
+      vlayer->endEditCommand();
+    }
+    else
+    {
+      vlayer->destroyEditCommand();
+    }
+  }
 
-      Q_FOREACH ( const QgsPointXY &point, pointList )
+  if ( isCapturing() )
+    stopCapturing();
+}
+
+// TODO refactor - shamelessly copied from QgsMapToolDeleteRing::ringUnderPoint
+QgsGeometry QgsMapToolFillRing::ringUnderPoint( const QgsPointXY &p, QgsFeatureId &fid )
+{
+  //check if we operate on a vector layer
+  QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( mCanvas->currentLayer() );
+
+  //There is no clean way to find if we are inside the ring of a feature,
+  //so we iterate over all the features visible in the canvas
+  //If several rings are found at this position, the smallest one is chosen,
+  //in order to be able to delete a ring inside another ring
+  double area = std::numeric_limits<double>::max();
+
+  QgsGeometry ringGeom;
+  QgsFeatureIterator fit = vlayer->getFeatures( QgsFeatureRequest().setFilterRect( toLayerCoordinates( vlayer, mCanvas->extent() ) ) );
+
+  QgsFeature f;
+  while ( fit.nextFeature( f ) )
+  {
+    QgsGeometry g = f.geometry();
+    if ( g.isNull() )
+      continue;
+
+    QgsMultiPolygon pol;
+    if ( g.wkbType() == QgsWkbTypes::Polygon ||  g.wkbType()  == QgsWkbTypes::Polygon25D )
+    {
+      pol = QgsMultiPolygon() << g.asPolygon();
+    }
+    else
+    {
+      pol = g.asMultiPolygon();
+    }
+
+    for ( int i = 0; i < pol.size() ; ++i )
+    {
+      //for each part
+      if ( pol[i].size() > 1 )
       {
-        xMin = qMin( xMin, point.x() );
-        xMax = qMax( xMax, point.x() );
-        yMin = qMin( yMin, point.y() );
-        yMax = qMax( yMax, point.y() );
-      }
-
-      bBox.setXMinimum( xMin );
-      bBox.setYMinimum( yMin );
-      bBox.setXMaximum( xMax );
-      bBox.setYMaximum( yMax );
-
-      QgsExpressionContext context = vlayer->createExpressionContext();
-
-      QgsFeatureIterator fit = vlayer->getFeatures( QgsFeatureRequest().setFilterFid( modifiedFid ) );
-
-      QgsFeature f;
-      if ( fit.nextFeature( f ) )
-      {
-        QgsGeometry g = QgsGeometry::fromPolygon( QgsPolygon() << pointList.toVector() );
-
-        //create QgsFeature with wkb representation
-        QgsFeature ft = QgsVectorLayerUtils::createFeature( vlayer, g, f.attributes().toMap(), &context );
-
-        bool res = false;
-        if ( QApplication::keyboardModifiers() == Qt::ControlModifier )
+        for ( int j = 1; j < pol[i].size(); ++j )
         {
-          res = vlayer->addFeature( ft );
-        }
-        else
-        {
-          QgsAttributeDialog *dialog = new QgsAttributeDialog( vlayer, &ft, false, nullptr, true );
-          dialog->setMode( QgsAttributeForm::AddFeatureMode );
-          res = dialog->exec(); // will also add the feature
-        }
-
-        if ( res )
-        {
-          vlayer->endEditCommand();
-        }
-        else
-        {
-          vlayer->destroyEditCommand();
+          QgsPolygon tempPol = QgsPolygon() << pol[i][j];
+          QgsGeometry tempGeom = QgsGeometry::fromPolygon( tempPol );
+          if ( tempGeom.area() < area && tempGeom.contains( &p ) )
+          {
+            fid = f.id();
+            area = tempGeom.area();
+            ringGeom = tempGeom;
+          }
         }
       }
     }
-    stopCapturing();
   }
+  return ringGeom;
 }

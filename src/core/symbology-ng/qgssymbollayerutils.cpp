@@ -2809,6 +2809,48 @@ void QgsSymbolLayerUtils::clearSymbolMap( QgsSymbolMap &symbols )
   symbols.clear();
 }
 
+QMimeData *QgsSymbolLayerUtils::symbolToMimeData( QgsSymbol *symbol )
+{
+  if ( !symbol )
+    return nullptr;
+
+  std::unique_ptr< QMimeData >mimeData( new QMimeData );
+
+  QDomDocument symbolDoc;
+  QDomElement symbolElem = saveSymbol( QStringLiteral( "symbol" ), symbol, symbolDoc, QgsReadWriteContext() );
+  symbolDoc.appendChild( symbolElem );
+  mimeData->setText( symbolDoc.toString() );
+
+  mimeData->setImageData( symbolPreviewPixmap( symbol, QSize( 100, 100 ), 18 ).toImage() );
+  mimeData->setColorData( symbol->color() );
+
+  return mimeData.release();
+}
+
+QgsSymbol *QgsSymbolLayerUtils::symbolFromMimeData( const QMimeData *data )
+{
+  if ( !data )
+    return nullptr;
+
+  QString text = data->text();
+  if ( !text.isEmpty() )
+  {
+    QDomDocument doc;
+    QDomElement elem;
+
+    if ( doc.setContent( text ) )
+    {
+      elem = doc.documentElement();
+
+      if ( elem.nodeName() != QStringLiteral( "symbol" ) )
+        elem = elem.firstChildElement( QStringLiteral( "symbol" ) );
+
+      return loadSymbol( elem, QgsReadWriteContext() );
+    }
+  }
+  return nullptr;
+}
+
 
 QgsColorRamp *QgsSymbolLayerUtils::loadColorRamp( QDomElement &element )
 {
@@ -3903,7 +3945,7 @@ QList<double> QgsSymbolLayerUtils::prettyBreaks( double minimum, double maximum,
   QgsDebugMsg( QString( "pretty classes: %1" ).arg( end ) );
 
   // If we don't have quite enough labels, extend the range out
-  // to make more (these labels are beyond the data :( )
+  // to make more (these labels are beyond the data :()
   int k = floor( 0.5 + end - start );
   if ( k < minimumCount )
   {

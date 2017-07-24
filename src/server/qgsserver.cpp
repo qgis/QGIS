@@ -65,7 +65,7 @@ QgsServerSettings QgsServer::sSettings;
 
 QgsServiceRegistry QgsServer::sServiceRegistry;
 
-QgsServer::QgsServer( )
+QgsServer::QgsServer()
 {
   // QgsApplication must exist
   if ( qobject_cast<QgsApplication *>( qApp ) == nullptr )
@@ -183,7 +183,7 @@ QString QgsServer::configPath( const QString &defaultConfigPath, const QMap<QStr
 /**
  * Server initialization
  */
-bool QgsServer::init( )
+bool QgsServer::init()
 {
   if ( sInitialized )
   {

@@ -825,7 +825,7 @@ bool QgsWFSProvider::addFeatures( QgsFeatureList &flist, Flags flags )
       QDomElement geomElem = transactionDoc.createElementNS( mApplicationNamespace, mShared->mGeometryAttribute );
       QgsGeometry the_geom( geometry );
       // convert to multi if the layer geom type is multi and the geom is not
-      if ( QgsWkbTypes::isMultiType( this->wkbType( ) ) && ! the_geom.isMultipart( ) )
+      if ( QgsWkbTypes::isMultiType( this->wkbType() ) && ! the_geom.isMultipart() )
       {
         the_geom.convertToMultiType();
       }

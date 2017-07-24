@@ -88,7 +88,7 @@ return new default symbol for specified geometry type
  :rtype: QgsSymbolLayer
 %End
 
-    int symbolLayerCount();
+    int symbolLayerCount() const;
 %Docstring
  Returns total number of symbol layers contained in the symbol.
  :return: count of symbol layers

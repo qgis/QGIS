@@ -27,34 +27,26 @@ __copyright__ = '(C) 2012, Anita Graser'
 
 __revision__ = '$Format:%H$'
 
-from qgis.core import (QgsFeatureSink,
-                       QgsProcessing,
-                       QgsProcessingParameterFeatureSource,
-                       QgsProcessingParameterNumber,
-                       QgsProcessingParameterFeatureSink)
-from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
+from qgis.core import (QgsProcessingParameterNumber)
+
+from processing.algs.qgis.QgisAlgorithm import QgisFeatureBasedAlgorithm
 
 
-class DensifyGeometriesInterval(QgisAlgorithm):
+class DensifyGeometriesInterval(QgisFeatureBasedAlgorithm):
 
-    INPUT = 'INPUT'
     INTERVAL = 'INTERVAL'
-    OUTPUT = 'OUTPUT'
 
     def group(self):
         return self.tr('Vector geometry tools')
 
     def __init__(self):
         super().__init__()
+        self.interval = None
 
-    def initAlgorithm(self, config=None):
-        self.addParameter(QgsProcessingParameterFeatureSource(self.INPUT,
-                                                              self.tr('Input layer'), [QgsProcessing.TypeVectorPolygon, QgsProcessing.TypeVectorLine]))
+    def initParameters(self, config=None):
         self.addParameter(QgsProcessingParameterNumber(self.INTERVAL,
                                                        self.tr('Interval between vertices to add'), QgsProcessingParameterNumber.Double,
                                                        1, False, 0, 10000000))
-
-        self.addParameter(QgsProcessingParameterFeatureSink(self.OUTPUT, self.tr('Densified')))
 
     def name(self):
         return 'densifygeometriesgivenaninterval'
@@ -62,25 +54,15 @@ class DensifyGeometriesInterval(QgisAlgorithm):
     def displayName(self):
         return self.tr('Densify geometries given an interval')
 
-    def processAlgorithm(self, parameters, context, feedback):
-        source = self.parameterAsSource(parameters, self.INPUT, context)
+    def outputName(self):
+        return self.tr('Densified')
+
+    def prepareAlgorithm(self, parameters, context, feedback):
         interval = self.parameterAsDouble(parameters, self.INTERVAL, context)
+        return True
 
-        (sink, dest_id) = self.parameterAsSink(parameters, self.OUTPUT, context,
-                                               source.fields(), source.wkbType(), source.sourceCrs())
-
-        features = source.getFeatures()
-        total = 100.0 / source.featureCount() if source.featureCount() else 0
-        for current, f in enumerate(features):
-            if feedback.isCanceled():
-                break
-
-            feature = f
-            if feature.hasGeometry():
-                new_geometry = feature.geometry().densifyByDistance(float(interval))
-                feature.setGeometry(new_geometry)
-            sink.addFeature(feature, QgsFeatureSink.FastInsert)
-
-            feedback.setProgress(int(current * total))
-
-        return {self.OUTPUT: dest_id}
+    def processFeature(self, feature, feedback):
+        if feature.hasGeometry():
+            new_geometry = feature.geometry().densifyByDistance(float(interval))
+            feature.setGeometry(new_geometry)
+        return feature

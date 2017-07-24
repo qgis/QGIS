@@ -66,6 +66,7 @@ QString QgsCrashDialog::htmlToMarkdown( const QString &html )
   markdown.replace( "<br>", "\n" );
   markdown.replace( "<b>", "*" );
   markdown.replace( "</b>", "*" );
+  markdown.replace( "QGIS code revision: ", "QGIS code revision: commit:" );
   return markdown;
 }
 

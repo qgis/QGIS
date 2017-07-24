@@ -140,7 +140,7 @@ QVariant QgsNodeEditorModel::data( const QModelIndex &index, int role ) const
     return vertex->point().y();
   else if ( index.column() == mZCol )
     return vertex->point().z();
-  else if ( index.column() ==  mMCol )
+  else if ( index.column() == mMCol )
     return vertex->point().m();
   else if ( index.column() == mRCol )
   {
@@ -175,7 +175,7 @@ QVariant QgsNodeEditorModel::headerData( int section, Qt::Orientation orientatio
         return QVariant( tr( "y" ) );
       else if ( section == mZCol )
         return QVariant( tr( "z" ) );
-      else if ( section ==  mMCol )
+      else if ( section == mMCol )
         return QVariant( tr( "m" ) );
       else if ( section == mRCol )
         return QVariant( tr( "r" ) );

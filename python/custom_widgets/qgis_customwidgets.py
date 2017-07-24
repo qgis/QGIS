@@ -50,6 +50,8 @@ pluginType = MODULE
 def moduleInformation():
     try:
         import qgis.gui
-        return "qgis.gui", dir(qgis.gui)
+        widget_list = dir(qgis.gui)
+        widget_list.remove('QgsScrollArea')
+        return "qgis.gui", widget_list
     except ImportError:
         return "", []

@@ -288,6 +288,9 @@ Q_GUI_EXPORT extern int qt_defaultDpiX();
 #include "qgsgui.h"
 #include "qgsdatasourcemanagerdialog.h"
 
+#include "qgsuserprofilemanager.h"
+#include "qgsuserprofile.h"
+
 #include "qgssublayersdialog.h"
 #include "ogr/qgsopenvectorlayerdialog.h"
 #include "ogr/qgsvectorlayersaveasdialog.h"
@@ -400,6 +403,8 @@ extern "C"
 #endif
 
 class QTreeWidgetItem;
+class QgsUserProfileManager;
+class QgsUserProfile;
 
 /** Set the application title bar text
 
@@ -598,7 +603,7 @@ static bool cmpByText_( QAction *a, QAction *b )
 QgisApp *QgisApp::sInstance = nullptr;
 
 // constructor starts here
-QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCheck, QWidget *parent, Qt::WindowFlags fl )
+QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCheck, const QString rootProfileLocation, const QString activeProfile, QWidget *parent, Qt::WindowFlags fl )
   : QMainWindow( parent, fl )
   , mNonEditMapTool( nullptr )
   , mScaleWidget( nullptr )
@@ -645,6 +650,13 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
 
   sInstance = this;
   QgsRuntimeProfiler *profiler = QgsApplication::profiler();
+
+  startProfile( QStringLiteral( "User profile manager" ) );
+  mUserProfileManager = new QgsUserProfileManager( "", this );
+  mUserProfileManager->setRootLocation( rootProfileLocation );
+  mUserProfileManager->setActiveUserProfile( activeProfile );
+  connect( mUserProfileManager, &QgsUserProfileManager::profilesChanged, this, &QgisApp::refreshProfileMenu );
+  endProfile();
 
   namSetup();
 
@@ -1270,6 +1282,7 @@ QgisApp::QgisApp()
   , mPopupMenu( nullptr )
   , mDatabaseMenu( nullptr )
   , mWebMenu( nullptr )
+  , mConfigMenu( nullptr )
   , mToolPopupOverviews( nullptr )
   , mToolPopupDisplay( nullptr )
   , mMapCanvas( nullptr )
@@ -1608,7 +1621,7 @@ void QgisApp::dataSourceManager( QString pageName )
 {
   if ( ! mDataSourceManagerDialog )
   {
-    mDataSourceManagerDialog = new QgsDataSourceManagerDialog( this, mapCanvas( ) );
+    mDataSourceManagerDialog = new QgsDataSourceManagerDialog( this, mapCanvas() );
     // Forward signals to this
     connect( this, &QgisApp::connectionsChanged, mDataSourceManagerDialog, &QgsDataSourceManagerDialog::refresh );
     connect( mDataSourceManagerDialog, &QgsDataSourceManagerDialog::connectionsChanged, this, &QgisApp::connectionsChanged );
@@ -1629,11 +1642,11 @@ void QgisApp::dataSourceManager( QString pageName )
 
   }
   // Try to open the dialog on a particular page
-  if ( ! pageName.isEmpty( ) )
+  if ( ! pageName.isEmpty() )
   {
     mDataSourceManagerDialog->openPage( pageName );
   }
-  if ( QgsSettings().value( "/qgis/dataSourceManagerNonModal", true ).toBool( ) )
+  if ( QgsSettings().value( "/qgis/dataSourceManagerNonModal", true ).toBool() )
   {
     mDataSourceManagerDialog->show();
   }
@@ -1892,7 +1905,7 @@ void QgisApp::createActions()
 
   // Layer Menu Items
 
-  connect( mActionDataSourceManager, &QAction::triggered, this, [ = ]( ) { dataSourceManager( ); } );
+  connect( mActionDataSourceManager, &QAction::triggered, this, [ = ]() { dataSourceManager(); } );
   connect( mActionNewVectorLayer, &QAction::triggered, this, &QgisApp::newVectorLayer );
   connect( mActionNewSpatiaLiteLayer, &QAction::triggered, this, &QgisApp::newSpatialiteLayer );
   connect( mActionNewGeoPackageLayer, &QAction::triggered, this, &QgisApp::newGeoPackageLayer );
@@ -2273,12 +2286,69 @@ void QgisApp::createMenus()
   mWebMenu = new QMenu( tr( "&Web" ), menuBar() );
   mWebMenu->setObjectName( QStringLiteral( "mWebMenu" ) );
 
+
   // Help menu
   // add What's this button to it
   QAction *before = mActionHelpAPI;
   QAction *actionWhatsThis = QWhatsThis::createAction( this );
   actionWhatsThis->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionWhatsThis.svg" ) ) );
   mHelpMenu->insertAction( before, actionWhatsThis );
+
+  createProfileMenu();
+}
+
+void QgisApp::refreshProfileMenu()
+{
+  mConfigMenu->clear();
+  QgsUserProfile *profile = userProfileManager()->userProfile();
+  QString activeName = profile->name();
+  mConfigMenu->setTitle( tr( "&User Profiles" ) );
+
+  mConfigMenu->addSection( tr( "Active Profile" ) );
+
+  QAction *profileSection = mConfigMenu->addSection( tr( "Profiles" ) );
+
+  QAction *configSection = mConfigMenu->addSection( tr( "Config" ) );
+
+  QAction *openProfileFolderAction = mConfigMenu->addAction( tr( "Open current profile folder" ) );
+  connect( openProfileFolderAction, &QAction::triggered, this, [this]()
+  {
+    QDesktopServices::openUrl( QUrl::fromLocalFile( userProfileManager()->userProfile()->folder() ) );
+  } );
+
+  QAction *newProfileAction = mConfigMenu->addAction( tr( "New profile" ) );
+  connect( newProfileAction, &QAction::triggered, this, &QgisApp::newProfile );
+
+  Q_FOREACH ( const QString &name, userProfileManager()->allProfiles() )
+  {
+    profile = userProfileManager()->profileForName( name );
+    // Qt 5.5 has no parent default as nullptr
+    QAction *action = new QAction( profile->icon(), profile->alias(), nullptr );
+    action->setToolTip( profile->folder() );
+    delete profile;
+
+    if ( name == activeName )
+    {
+      mConfigMenu->insertAction( profileSection, action );
+    }
+    else
+    {
+      mConfigMenu->insertAction( configSection, action );
+    }
+    connect( action, &QAction::triggered, this, [this, name]()
+    {
+      userProfileManager()->loadUserProfile( name );
+    } );
+  }
+}
+
+void QgisApp::createProfileMenu()
+{
+  mConfigMenu = new QMenu();
+
+  menuBar()->addMenu( mConfigMenu );
+
+  refreshProfileMenu();
 }
 
 void QgisApp::createToolBars()
@@ -3287,6 +3357,12 @@ QgsPluginManager *QgisApp::pluginManager()
 {
   Q_ASSERT( mPluginManager );
   return mPluginManager;
+}
+
+QgsUserProfileManager *QgisApp::userProfileManager()
+{
+  Q_ASSERT( mUserProfileManager );
+  return mUserProfileManager;
 }
 
 QgsMapCanvas *QgisApp::mapCanvas()
@@ -4735,6 +4811,7 @@ void QgisApp::fileExit()
   if ( saveDirty() )
   {
     closeProject();
+    userProfileManager()->setDefaultFromActive();
     qApp->exit( 0 );
   }
 }
@@ -11391,7 +11468,7 @@ void QgisApp::renameView()
 
 
 // this is a slot for action from GUI to open and add raster layers
-void QgisApp::addRasterLayer( )
+void QgisApp::addRasterLayer()
 {
   QStringList selectedFiles;
   QString e;//only for parameter correctness
@@ -11724,6 +11801,16 @@ void QgisApp::keyPressEvent( QKeyEvent *e )
   {
     e->ignore();
   }
+}
+
+void QgisApp::newProfile()
+{
+  QString text = QInputDialog::getText( this, tr( "New profile name" ), tr( "New profile name" ) );
+  if ( text.isEmpty() )
+    return;
+
+  userProfileManager()->createUserProfile( text );
+  userProfileManager()->loadUserProfile( text );
 }
 
 void QgisApp::onTaskCompleteShowNotify( long taskId, int status )

@@ -2080,7 +2080,7 @@ static QVariant fcnMakeRegularPolygon( const QVariantList &values, const QgsExpr
 
   QgsRegularPolygon rp = QgsRegularPolygon( *center, *corner, nbEdges, option );
 
-  return QVariant::fromValue( QgsGeometry( rp.toPolygon( ) ) );
+  return QVariant::fromValue( QgsGeometry( rp.toPolygon() ) );
 
 }
 

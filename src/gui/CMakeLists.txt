@@ -159,7 +159,9 @@ SET(QGIS_GUI_SRCS
   layertree/qgslayertreeviewdefaultactions.cpp
 
   layout/qgslayoutitemguiregistry.cpp
+  layout/qgslayoutnewitempropertiesdialog.cpp
   layout/qgslayoutruler.cpp
+  layout/qgslayoutunitscombobox.cpp
   layout/qgslayoutview.cpp
   layout/qgslayoutviewmouseevent.cpp
   layout/qgslayoutviewrubberband.cpp
@@ -263,6 +265,7 @@ SET(QGIS_GUI_SRCS
   qgslistwidget.cpp
   qgslegendfilterbutton.cpp
   qgslimitedrandomcolorrampdialog.cpp
+  qgsratiolockbutton.cpp
   qgsludialog.cpp
   qgsmanageconnectionsdialog.cpp
   qgsmapcanvas.cpp
@@ -333,6 +336,7 @@ SET(QGIS_GUI_SRCS
   qgssubstitutionlistwidget.cpp
   qgssqlcomposerdialog.cpp
   qgsstatusbar.cpp
+  qgssymbolbutton.cpp
   qgstablewidgetbase.cpp
   qgstabwidget.cpp
   qgstablewidgetitem.cpp
@@ -421,6 +425,7 @@ SET(QGIS_GUI_MOC_HDRS
   qgslistwidget.h
   qgslegendfilterbutton.h
   qgslimitedrandomcolorrampdialog.h
+  qgsratiolockbutton.h
   qgslonglongvalidator.h
   qgsludialog.h
   qgsmanageconnectionsdialog.h
@@ -488,6 +493,7 @@ SET(QGIS_GUI_MOC_HDRS
   qgsstatusbar.h
   qgssublayersdialog.h
   qgssubstitutionlistwidget.h
+  qgssymbolbutton.h
   qgstablewidgetbase.h
   qgstabwidget.h
   qgstaskmanagerwidget.h
@@ -649,7 +655,9 @@ SET(QGIS_GUI_MOC_HDRS
 
   layout/qgslayoutdesignerinterface.h
   layout/qgslayoutitemguiregistry.h
+  layout/qgslayoutnewitempropertiesdialog.h
   layout/qgslayoutruler.h
+  layout/qgslayoutunitscombobox.h
   layout/qgslayoutview.h
   layout/qgslayoutviewtool.h
   layout/qgslayoutviewtooladditem.h

@@ -163,6 +163,24 @@ class QgsExtentGroupBox : QgsCollapsibleGroupBox
 .. versionadded:: 3.0
 %End
 
+    void setRatio( QSize ratio );
+%Docstring
+ Sets a fixed aspect ratio to be used when dragging extent onto the canvas.
+ To unset a fixed aspect ratio, set the width and height to zero.
+ \param ratio aspect ratio's width and height
+.. versionadded:: 3.0
+ *
+%End
+
+    QSize ratio() const;
+%Docstring
+ Returns the current fixed aspect ratio to be used when dragging extent onto the canvas.
+ If the aspect ratio isn't fixed, the width and height will be set to zero.
+.. versionadded:: 3.0
+ *
+ :rtype: QSize
+%End
+
   signals:
 
     void extentChanged( const QgsRectangle &r );

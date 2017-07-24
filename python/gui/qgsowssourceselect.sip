@@ -42,7 +42,7 @@ Constructor
 
   public slots:
 
-    virtual void refresh( );
+    virtual void refresh();
 
 %Docstring
 Triggered when the provider's connections need to be refreshed

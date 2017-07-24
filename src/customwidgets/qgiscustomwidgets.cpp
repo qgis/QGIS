@@ -39,9 +39,9 @@
 #include "qgsrelationreferencewidgetplugin.h"
 #include "qgsscalerangewidgetplugin.h"
 #include "qgsscalewidgetplugin.h"
-#include "qgsscrollareawidgetplugin.h"
+//#include "qgsscrollareawidgetplugin.h"
 #include "qgsspinboxplugin.h"
-
+#include "qgssymbolbuttonplugin.h"
 
 QgisCustomWidgets::QgisCustomWidgets( QObject *parent )
   : QObject( parent )
@@ -69,8 +69,9 @@ QgisCustomWidgets::QgisCustomWidgets( QObject *parent )
   mWidgets.append( new QgsRelationReferenceWidgetPlugin( this ) );
   mWidgets.append( new QgsScaleRangeWidgetPlugin( this ) );
   mWidgets.append( new QgsScaleWidgetPlugin( this ) );
-  mWidgets.append( new QgsScrollAreaWidgetPlugin( this ) );
+//  mWidgets.append( new QgsScrollAreaWidgetPlugin( this ) ); // this is causing troubles at the moment
   mWidgets.append( new QgsSpinBoxPlugin( this ) );
+  mWidgets.append( new QgsSymbolButtonPlugin( this ) );
 }
 
 QList<QDesignerCustomWidgetInterface *> QgisCustomWidgets::customWidgets() const

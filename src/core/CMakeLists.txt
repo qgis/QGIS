@@ -350,11 +350,15 @@ SET(QGIS_CORE_SRCS
   dxf/qgsdxfpallabeling.cpp
 
   layout/qgslayout.cpp
+  layout/qgslayoutcontext.cpp
   layout/qgslayoutitem.cpp
+  layout/qgslayoutitemmap.cpp
   layout/qgslayoutitemregistry.cpp
+  layout/qgslayoutitemshape.cpp
   layout/qgslayoutmeasurement.cpp
   layout/qgslayoutmeasurementconverter.cpp
   layout/qgslayoutobject.cpp
+  layout/qgslayoututils.cpp
   layout/qgspagesizeregistry.cpp
   layout/qgslayoutpoint.cpp
   layout/qgslayoutsize.cpp
@@ -453,6 +457,9 @@ SET(QGIS_CORE_SRCS
 
   ${CMAKE_CURRENT_BINARY_DIR}/qgscontexthelp_texts.cpp
   ${CMAKE_CURRENT_BINARY_DIR}/qgsexpression_texts.cpp
+
+  qgsuserprofile.cpp
+  qgsuserprofilemanager.cpp
 )
 
 
@@ -672,7 +679,9 @@ SET(QGIS_CORE_MOC_HDRS
 
   layout/qgslayout.h
   layout/qgslayoutitem.h
+  layout/qgslayoutitemmap.h
   layout/qgslayoutitemregistry.h
+  layout/qgslayoutitemshape.h
   layout/qgslayoutobject.h
 
   symbology-ng/qgscptcityarchive.h
@@ -686,6 +695,7 @@ SET(QGIS_CORE_MOC_HDRS
   layertree/qgslayertreemodellegendnode.h
   layertree/qgslayertreenode.h
   layertree/qgslayertreeregistrybridge.h
+  qgsuserprofilemanager.h
 )
 
 IF (NOT WITH_QTWEBKIT)
@@ -916,12 +926,13 @@ SET(QGIS_CORE_HDRS
   composer/qgscomposertexttable.h
   composer/qgspaperitem.h
 
-  layout/qgslayout.h
+  layout/qgslayoutcontext.h
   layout/qgslayoutmeasurement.h
   layout/qgslayoutmeasurementconverter.h
   layout/qgspagesizeregistry.h
   layout/qgslayoutpoint.h
   layout/qgslayoutsize.h
+  layout/qgslayoututils.h
 
   metadata/qgslayermetadata.h
   metadata/qgslayermetadatavalidator.h

@@ -84,7 +84,7 @@ class QgsPgSourceSelect : public QgsAbstractDataSourceWidget, private Ui::QgsDbS
 
   public slots:
     //! Triggered when the provider's connections need to be refreshed
-    void refresh( ) override;
+    void refresh() override;
     //! Determines the tables the user selected and closes the dialog
     void addTables();
     void buildQuery();

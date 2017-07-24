@@ -35,6 +35,7 @@ start_app()
 
 from db_manager.db_plugins.postgis.plugin import PostGisDBPlugin, PGRasterTable
 from db_manager.db_plugins.postgis.plugin import PGDatabase
+from db_manager.db_plugins.postgis.data_model import PGSqlResultModel
 from db_manager.db_plugins.plugin import Table
 from db_manager.db_plugins.postgis.connector import PostGisDBConnector
 
@@ -124,6 +125,23 @@ class TestDBManagerPostgisPlugin(unittest.TestCase):
         self.assertEqual(uri.service(), 'dbmanager')
 
         check_rasterTableGdalURI(expected_dbname)
+
+    # See http://issues.qgis.org/issues/16833
+    def test_unicodeInQuery(self):
+        os.environ['PGDATABASE'] = self.testdb
+        obj = QObject() # needs to be kept alive
+        database = PGDatabase(obj, QgsDataSourceUri())
+        self.assertIsInstance(database, PGDatabase)
+        # SQL as string literal
+        res = database.sqlResultModel("SELECT 'é'::text", obj)
+        self.assertIsInstance(res, PGSqlResultModel)
+        dat = res.getData(0, 0)
+        self.assertEqual(dat, u"é")
+        # SQL as unicode literal
+        res = database.sqlResultModel(u"SELECT 'é'::text", obj)
+        self.assertIsInstance(res, PGSqlResultModel)
+        dat = res.getData(0, 0)
+        self.assertEqual(dat, u"é")
 
 
 if __name__ == '__main__':

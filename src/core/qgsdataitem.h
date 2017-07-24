@@ -299,7 +299,7 @@ class CORE_EXPORT QgsDataItem : public QObject
     //! This signal is normally forwarded to the app in order to refresh the connection
     //! item in the provider dialogs and to refresh the connection items in the other
     //! open browsers
-    void connectionsChanged( );
+    void connectionsChanged();
 
   protected slots:
 

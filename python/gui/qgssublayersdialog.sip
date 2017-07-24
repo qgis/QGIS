@@ -70,6 +70,12 @@ class QgsSublayersDialog : QDialog
  :rtype: bool
 %End
 
+    int countColumn() const;
+%Docstring
+.. versionadded:: 3.0
+ :rtype: int
+%End
+
   public slots:
     void on_buttonBox_helpRequested();
     int exec();

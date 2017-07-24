@@ -97,6 +97,8 @@ class QgsWelcomePage;
 class QgsOptionsWidgetFactory;
 class QgsStatusBar;
 
+class QgsUserProfileManagerWidgetFactory;
+
 class QDomDocument;
 class QNetworkReply;
 class QNetworkProxy;
@@ -162,7 +164,10 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     Q_OBJECT
   public:
     //! Constructor
-    QgisApp( QSplashScreen *splash, bool restorePlugins = true, bool skipVersionCheck = false, QWidget *parent = nullptr, Qt::WindowFlags fl = Qt::Window );
+    QgisApp( QSplashScreen *splash, bool restorePlugins = true,
+             bool skipVersionCheck = false, const QString rootProfileLocation = QString(),
+             const QString activeProfile = QString(),
+             QWidget *parent = nullptr, Qt::WindowFlags fl = Qt::Window );
     //! Constructor for unit tests
     QgisApp();
 
@@ -569,6 +574,11 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     //! returns pointer to plugin manager
     QgsPluginManager *pluginManager();
 
+    /**
+     * The applications user profile manager.
+     */
+    QgsUserProfileManager *userProfileManager();
+
     /** Return vector layers in edit mode
      * \param modified whether to return only layers that have been modified
      * \returns list of layers in legend order, or empty list */
@@ -777,7 +787,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
      * \param pageName the page name, usually the provider name or "browser" (for the browser panel)
      *        or "ogr" (vector layers) or "raster" (raster layers)
      */
-    void dataSourceManager( QString pageName = QString( ) );
+    void dataSourceManager( QString pageName = QString() );
 
     /** Add a raster layer directly without prompting user for location
       The caller must provide information compatible with the provider plugin
@@ -858,6 +868,8 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 #endif
 
   private slots:
+    void newProfile();
+
     void onTaskCompleteShowNotify( long taskId, int status );
 
     void onTransactionGroupsChanged();
@@ -1498,7 +1510,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
      * Emitted when a connection has been added/removed or changed by the provider
      * selection dialogs
      */
-    void connectionsChanged( );
+    void connectionsChanged();
 
     /** Emitted when a key is pressed and we want non widget sublasses to be able
       to pick up on this (e.g. maplayer) */
@@ -1661,6 +1673,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     void createActions();
     void createActionGroups();
     void createMenus();
+    void createProfileMenu();
     void createToolBars();
     void createStatusBar();
     void setupConnections();
@@ -1669,6 +1682,11 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     void createCanvasTools();
     void createMapTips();
     void createDecorations();
+
+    /**
+     * Refresh the user profile menu.
+     */
+    void refreshProfileMenu();
 
     //! Do histogram stretch for singleband gray / multiband color rasters
     void histogramStretch( bool visibleAreaOnly = false, QgsRasterMinMaxOrigin::Limits limits = QgsRasterMinMaxOrigin::MinMax );
@@ -1871,6 +1889,9 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     QMenu *mDatabaseMenu = nullptr;
     //! Top level web menu
     QMenu *mWebMenu = nullptr;
+
+    QMenu *mConfigMenu = nullptr;
+
     //! Popup menu for the map overview tools
     QMenu *mToolPopupOverviews = nullptr;
     //! Popup menu for the display tools
@@ -1966,6 +1987,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     QgsSnappingWidget *mSnappingDialog = nullptr;
 
     QgsPluginManager *mPluginManager = nullptr;
+    QgsUserProfileManager *mUserProfileManager = nullptr;
     QgsDockWidget *mMapStylingDock = nullptr;
     QgsLayerStylingWidget *mMapStyleWidget = nullptr;
 

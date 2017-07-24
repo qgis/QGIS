@@ -37,7 +37,7 @@ class QgsEmbeddedLayerSelectDialog : public QDialog, private Ui::QgsEmbeddedLaye
     QStringList layers() const;
 
   public slots:
-    void updateLayersList( );
+    void updateLayersList();
 
   private:
     QgsLayerTreeView *mTreeView = nullptr;

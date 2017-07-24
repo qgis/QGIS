@@ -116,7 +116,7 @@ namespace QgsWms
       /** Creates an xml document that describes the result of the getFeatureInfo request.
        * May throw an exception
        */
-      QDomDocument getFeatureInfo( const QString &version = "1.3.0" );
+      QByteArray *getFeatureInfo( const QString &version = "1.3.0" );
 
     private:
 
@@ -139,6 +139,9 @@ namespace QgsWms
 
       // Remove unwanted layers (restricted, not visible, etc)
       void removeUnwantedLayers( QList<QgsMapLayer *> &layers, double scaleDenominator = -1 ) const;
+
+      // Remove non identifiable layers (restricted, not visible, etc)
+      void removeNonIdentifiableLayers( QList<QgsMapLayer *> &layers ) const;
 
       // Rendering step for layers
       QPainter *layersRendering( const QgsMapSettings &mapSettings, QImage &image, HitTest *hitTest = nullptr ) const;
@@ -211,6 +214,9 @@ namespace QgsWms
        */
       void initializeSLDParser( QStringList &layersList, QStringList &stylesList );
 
+      QDomDocument featureInfoDocument( QList<QgsMapLayer *> &layers, const QgsMapSettings &mapSettings,
+                                        const QImage *outputImage, const QString &version ) const;
+
       /** Appends feature info xml for the layer to the layer element of the feature info dom document
       \param featureBBox the bounding box of the selected features in output CRS
       \returns true in case of success*/
@@ -222,7 +228,6 @@ namespace QgsWms
                                        const QgsMapSettings &mapSettings,
                                        QgsRenderContext &renderContext,
                                        const QString &version,
-                                       const QString &infoFormat,
                                        QgsRectangle *featureBBox = nullptr,
                                        QgsGeometry *filterGeom = nullptr ) const;
       //! Appends feature info xml for the layer to the layer element of the dom document
@@ -231,8 +236,7 @@ namespace QgsWms
                                        const QgsPointXY *infoPoint,
                                        QDomDocument &infoDocument,
                                        QDomElement &layerElement,
-                                       const QString &version,
-                                       const QString &infoFormat ) const;
+                                       const QString &version ) const;
 
       /** Creates a layer set and returns a stringlist with layer ids that can be passed to a renderer. Usually used in conjunction with readLayersAndStyles
          \param scaleDenominator Filter out layer if scale based visibility does not match (or use -1 if no scale restriction)*/
@@ -291,7 +295,13 @@ namespace QgsWms
       bool checkMaximumWidthHeight() const;
 
       //! Converts a feature info xml document to SIA2045 norm
-      void convertFeatureInfoToSIA2045( QDomDocument &doc );
+      void convertFeatureInfoToSia2045( QDomDocument &doc ) const;
+
+      //! Converts a feature info xml document to HTML
+      QByteArray convertFeatureInfoToHtml( const QDomDocument &doc ) const;
+
+      //! Converts a feature info xml document to Text
+      QByteArray convertFeatureInfoToText( const QDomDocument &doc ) const;
 
       QDomElement createFeatureGML(
         QgsFeature *feat,
@@ -334,7 +344,7 @@ namespace QgsWms
       int getImageQuality() const;
 
       //! Return precision to use for GetFeatureInfo request
-      int getWMSPrecision( int defaultValue ) const;
+      int getWMSPrecision() const;
 
   };
 

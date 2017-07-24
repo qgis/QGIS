@@ -191,6 +191,41 @@ namespace QgsWms
                               };
     save( pFormat );
 
+    const Parameter pInfoFormat = { ParameterName::INFO_FORMAT,
+                                    QVariant::String,
+                                    QVariant( "" ),
+                                    QVariant()
+                                  };
+    save( pInfoFormat );
+
+    const Parameter pI = { ParameterName::I,
+                           QVariant::Int,
+                           QVariant( -1 ),
+                           QVariant()
+                         };
+    save( pI );
+
+    const Parameter pJ = { ParameterName::J,
+                           QVariant::Int,
+                           QVariant( -1 ),
+                           QVariant()
+                         };
+    save( pJ );
+
+    const Parameter pX = { ParameterName::X,
+                           QVariant::Int,
+                           QVariant( -1 ),
+                           QVariant()
+                         };
+    save( pX );
+
+    const Parameter pY = { ParameterName::Y,
+                           QVariant::Int,
+                           QVariant( -1 ),
+                           QVariant()
+                         };
+    save( pY );
+
     const Parameter pRule = { ParameterName::RULE,
                               QVariant::String,
                               QVariant( "" ),
@@ -253,6 +288,20 @@ namespace QgsWms
                                 QVariant()
                               };
     save( pLayers );
+
+    const Parameter pQueryLayers = { ParameterName::QUERY_LAYERS,
+                                     QVariant::String,
+                                     QVariant( "" ),
+                                     QVariant()
+                                   };
+    save( pQueryLayers );
+
+    const Parameter pFeatureCount = { ParameterName::FEATURE_COUNT,
+                                      QVariant::Int,
+                                      QVariant( 1 ),
+                                      QVariant()
+                                    };
+    save( pFeatureCount );
 
     const Parameter pLayerTitle = { ParameterName::LAYERTITLE,
                                     QVariant::Bool,
@@ -324,12 +373,26 @@ namespace QgsWms
                               };
     save( pFilter );
 
+    const Parameter pFilterGeom = { ParameterName::FILTER_GEOM,
+                                    QVariant::String,
+                                    QVariant( "" ),
+                                    QVariant()
+                                  };
+    save( pFilterGeom );
+
     const Parameter pSelection = { ParameterName::SELECTION,
                                    QVariant::String,
                                    QVariant( "" ),
                                    QVariant()
                                  };
     save( pSelection );
+
+    const Parameter pWmsPrecision = { ParameterName::WMS_PRECISION,
+                                      QVariant::Int,
+                                      QVariant( -1 ),
+                                      QVariant()
+                                    };
+    save( pWmsPrecision );
   }
 
   QgsWmsParameters::QgsWmsParameters( const QgsServerRequest::Parameters &parameters )
@@ -628,15 +691,93 @@ namespace QgsWms
 
   QgsWmsParameters::Format QgsWmsParameters::format() const
   {
-    Format f = Format::PNG;
     QString fStr = formatAsString();
 
+    if ( fStr.isEmpty() )
+      return Format::NONE;
+
+    Format f = Format::PNG;
     if ( fStr.compare( QLatin1String( "jpg" ), Qt::CaseInsensitive ) == 0
          || fStr.compare( QLatin1String( "jpeg" ), Qt::CaseInsensitive ) == 0
          || fStr.compare( QLatin1String( "image/jpeg" ), Qt::CaseInsensitive ) == 0 )
       f = Format::JPG;
 
     return f;
+  }
+
+  QString QgsWmsParameters::infoFormatAsString() const
+  {
+    return value( ParameterName::INFO_FORMAT ).toString();
+  }
+
+  QgsWmsParameters::Format QgsWmsParameters::infoFormat() const
+  {
+    QString fStr = infoFormatAsString();
+
+    Format f = Format::TEXT;
+    if ( fStr.isEmpty() )
+      return f;
+
+    if ( fStr.startsWith( QLatin1String( "text/xml" ), Qt::CaseInsensitive ) )
+      f = Format::XML;
+    else if ( fStr.startsWith( QLatin1String( "text/html" ), Qt::CaseInsensitive ) )
+      f = Format::HTML;
+    else if ( fStr.startsWith( QLatin1String( "application/vnd.ogc.gml" ), Qt::CaseInsensitive ) )
+      f = Format::GML;
+
+    return f;
+  }
+
+  int QgsWmsParameters::infoFormatVersion() const
+  {
+    if ( infoFormat() != Format::GML )
+      return -1;
+
+    QString fStr = infoFormatAsString();
+    if ( fStr.startsWith( QLatin1String( "application/vnd.ogc.gml/3" ), Qt::CaseInsensitive ) )
+      return 3;
+    else
+      return 2;
+  }
+
+  QString QgsWmsParameters::i() const
+  {
+    return value( ParameterName::I ).toString();
+  }
+
+  QString QgsWmsParameters::j() const
+  {
+    return value( ParameterName::J ).toString();
+  }
+
+  int QgsWmsParameters::iAsInt() const
+  {
+    return toInt( ParameterName::I );
+  }
+
+  int QgsWmsParameters::jAsInt() const
+  {
+    return toInt( ParameterName::J );
+  }
+
+  QString QgsWmsParameters::x() const
+  {
+    return value( ParameterName::X ).toString();
+  }
+
+  QString QgsWmsParameters::y() const
+  {
+    return value( ParameterName::Y ).toString();
+  }
+
+  int QgsWmsParameters::xAsInt() const
+  {
+    return toInt( ParameterName::X );
+  }
+
+  int QgsWmsParameters::yAsInt() const
+  {
+    return toInt( ParameterName::Y );
   }
 
   QString QgsWmsParameters::rule() const
@@ -672,6 +813,16 @@ namespace QgsWms
   bool QgsWmsParameters::showFeatureCountAsBool() const
   {
     return toBool( ParameterName::SHOWFEATURECOUNT );
+  }
+
+  QString QgsWmsParameters::featureCount() const
+  {
+    return value( ParameterName::FEATURE_COUNT ).toString();
+  }
+
+  int QgsWmsParameters::featureCountAsInt() const
+  {
+    return toInt( ParameterName::FEATURE_COUNT );
   }
 
   QString QgsWmsParameters::boxSpace() const
@@ -960,6 +1111,16 @@ namespace QgsWms
     return toFloatList( highlightLabelBufferSize(), ParameterName::HIGHLIGHT_LABELBUFFERSIZE );
   }
 
+  QString QgsWmsParameters::wmsPrecision() const
+  {
+    return value( ParameterName::WMS_PRECISION ).toString();
+  }
+
+  int QgsWmsParameters::wmsPrecisionAsInt() const
+  {
+    return toInt( ParameterName::WMS_PRECISION );
+  }
+
   QString QgsWmsParameters::sld() const
   {
     return value( ParameterName::SLD ).toString();
@@ -968,6 +1129,11 @@ namespace QgsWms
   QStringList QgsWmsParameters::filters() const
   {
     return toStringList( ParameterName::FILTER, ';' );
+  }
+
+  QString QgsWmsParameters::filterGeom() const
+  {
+    return value( ParameterName::FILTER_GEOM ).toString();
   }
 
   QStringList QgsWmsParameters::selections() const
@@ -990,6 +1156,11 @@ namespace QgsWms
     QStringList layer = toStringList( ParameterName::LAYER );
     QStringList layers = toStringList( ParameterName::LAYERS );
     return layer << layers;
+  }
+
+  QStringList QgsWmsParameters::queryLayersNickname() const
+  {
+    return toStringList( ParameterName::QUERY_LAYERS );
   }
 
   QStringList QgsWmsParameters::allStyles() const

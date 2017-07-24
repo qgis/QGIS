@@ -22,6 +22,7 @@
 #include <QFileDialog>
 #include <QFileInfo>
 #include <QGraphicsScene>
+#include <QPushButton>
 
 QgsFormAnnotationDialog::QgsFormAnnotationDialog( QgsMapCanvasAnnotationItem *item, QWidget *parent, Qt::WindowFlags f )
   : QDialog( parent, f )

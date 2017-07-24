@@ -884,7 +884,7 @@ void QgsWFSSharedData::serializeFeatures( QVector<QgsWFSFeatureGmlIdPair> &featu
         const QVariant &v = gmlFeature.attributes().value( i );
         if ( v.type() == QVariant::DateTime && !v.isNull() )
           cachedFeature.setAttribute( idx, QVariant( v.toDateTime().toMSecsSinceEpoch() ) );
-        else if ( v.type() !=  dataProviderFields.at( idx ).type() )
+        else if ( v.type() != dataProviderFields.at( idx ).type() )
           cachedFeature.setAttribute( idx, QgsVectorDataProvider::convertValue( dataProviderFields.at( idx ).type(), v.toString() ) );
         else
           cachedFeature.setAttribute( idx, v );

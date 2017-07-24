@@ -48,21 +48,43 @@ class GUI_EXPORT QgsMessageBarItem : public QWidget
 
     QgsMessageBarItem *setText( const QString &text );
 
+    /**
+     * Returns the text for the message.
+     */
+    QString text() const;
+
     QgsMessageBarItem *setTitle( const QString &title );
+
+    /**
+     * Returns the title for the message.
+     */
+    QString title() const;
 
     QgsMessageBarItem *setLevel( QgsMessageBar::MessageLevel level );
 
+    /**
+     * Returns the message level for the message.
+     */
+    QgsMessageBar::MessageLevel level() const;
+
     QgsMessageBarItem *setWidget( QWidget *widget );
 
+    /**
+     * Returns the widget for the message.
+     */
+    QWidget *widget() const;
+
     QgsMessageBarItem *setIcon( const QIcon &icon );
+
+    /**
+     * Returns the icon for the message.
+     */
+    QIcon icon() const;
 
     QgsMessageBarItem *setDuration( int duration );
 
     //! returns the duration in second of the message
     int duration() const { return mDuration; }
-
-    //! returns the level
-    QgsMessageBar::MessageLevel level() { return mLevel; }
 
     //! returns the styleSheet
     QString getStyleSheet() { return mStyleSheet; }

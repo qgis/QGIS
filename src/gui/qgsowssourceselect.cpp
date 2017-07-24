@@ -54,14 +54,14 @@
 #include <QNetworkRequest>
 #include <QNetworkReply>
 
-QgsOWSSourceSelect::QgsOWSSourceSelect( const QString &service, QWidget *parent, Qt::WindowFlags fl, QgsProviderRegistry::WidgetMode widgetMode )
-  : QgsAbstractDataSourceWidget( parent, fl, widgetMode )
+QgsOWSSourceSelect::QgsOWSSourceSelect( const QString &service, QWidget *parent, Qt::WindowFlags fl, QgsProviderRegistry::WidgetMode theWidgetMode )
+  : QgsAbstractDataSourceWidget( parent, fl, theWidgetMode )
   , mService( service )
   , mCurrentTileset( nullptr )
 {
   setupUi( this );
 
-  if ( QgsAbstractDataSourceWidget::widgetMode( ) != QgsProviderRegistry::WidgetMode::None )
+  if ( widgetMode() != QgsProviderRegistry::WidgetMode::None )
   {
     buttonBox->removeButton( buttonBox->button( QDialogButtonBox::Close ) );
   }
@@ -88,7 +88,7 @@ QgsOWSSourceSelect::QgsOWSSourceSelect( const QString &service, QWidget *parent,
   // 'Prefer network' is the default noted in the combobox's tool tip
   mCacheComboBox->setCurrentIndex( mCacheComboBox->findData( QNetworkRequest::PreferNetwork ) );
 
-  if ( QgsAbstractDataSourceWidget::widgetMode( ) != QgsProviderRegistry::WidgetMode::Manager )
+  if ( widgetMode() != QgsProviderRegistry::WidgetMode::Manager )
   {
     connect( mAddButton, &QAbstractButton::clicked, this, &QgsOWSSourceSelect::addClicked );
     //set the current project CRS if available

@@ -36,6 +36,11 @@ class QgsLayoutPoint
  Constructor for QgsLayoutPoint.
 %End
 
+    explicit QgsLayoutPoint( const QPointF point, const QgsUnitTypes::LayoutUnit units = QgsUnitTypes::LayoutMillimeters );
+%Docstring
+ Constructor for QgsLayoutPoint.
+%End
+
     explicit QgsLayoutPoint( const QgsUnitTypes::LayoutUnit units = QgsUnitTypes::LayoutMillimeters );
 %Docstring
  Constructor for an empty point, where both x and y are set to 0.

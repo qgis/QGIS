@@ -35,6 +35,8 @@ QgsDecorationLayoutExtentDialog::QgsDecorationLayoutExtentDialog( QgsDecorationL
 {
   setupUi( this );
 
+  mSymbolButton->setSymbolType( QgsSymbol::Fill );
+
   QgsSettings settings;
   restoreGeometry( settings.value( "/Windows/DecorationLayoutExtent/geometry" ).toByteArray() );
 
@@ -44,19 +46,14 @@ QgsDecorationLayoutExtentDialog::QgsDecorationLayoutExtentDialog( QgsDecorationL
 
   updateGuiElements();
   connect( buttonBox->button( QDialogButtonBox::Apply ), &QAbstractButton::clicked, this, &QgsDecorationLayoutExtentDialog::apply );
-  connect( mSymbolButton, &QPushButton::clicked, this, &QgsDecorationLayoutExtentDialog::changeSymbol );
+
+  mSymbolButton->setMapCanvas( QgisApp::instance()->mapCanvas() );
 }
 
 void QgsDecorationLayoutExtentDialog::updateGuiElements()
 {
   grpEnable->setChecked( mDeco.enabled() );
-
-  if ( mDeco.symbol() )
-  {
-    mSymbol.reset( static_cast<QgsFillSymbol *>( mDeco.symbol()->clone() ) );
-    QIcon icon = QgsSymbolLayerUtils::symbolPreviewIcon( mSymbol.get(), mSymbolButton->iconSize() );
-    mSymbolButton->setIcon( icon );
-  }
+  mSymbolButton->setSymbol( mDeco.symbol()->clone() );
   mButtonFontStyle->setTextFormat( mDeco.textFormat() );
   mCheckBoxLabelExtents->setChecked( mDeco.labelExtents() );
 }
@@ -64,11 +61,7 @@ void QgsDecorationLayoutExtentDialog::updateGuiElements()
 void QgsDecorationLayoutExtentDialog::updateDecoFromGui()
 {
   mDeco.setEnabled( grpEnable->isChecked() );
-
-  if ( mSymbol )
-  {
-    mDeco.setSymbol( mSymbol->clone() );
-  }
+  mDeco.setSymbol( mSymbolButton->clonedSymbol< QgsFillSymbol >() );
   mDeco.setTextFormat( mButtonFontStyle->textFormat() );
   mDeco.setLabelExtents( mCheckBoxLabelExtents->isChecked() );
 }
@@ -94,26 +87,4 @@ void QgsDecorationLayoutExtentDialog::apply()
 void QgsDecorationLayoutExtentDialog::on_buttonBox_rejected()
 {
   reject();
-}
-
-void QgsDecorationLayoutExtentDialog::changeSymbol()
-{
-  if ( !mSymbol )
-    return;
-
-  QgsFillSymbol *symbol = mSymbol->clone();
-  QgsSymbolSelectorDialog dlg( symbol, QgsStyle::defaultStyle(), nullptr, this );
-  if ( dlg.exec() == QDialog::Rejected )
-  {
-    delete symbol;
-  }
-  else
-  {
-    mSymbol.reset( symbol );
-    if ( mSymbol )
-    {
-      QIcon icon = QgsSymbolLayerUtils::symbolPreviewIcon( mSymbol.get(), mSymbolButton->iconSize() );
-      mSymbolButton->setIcon( icon );
-    }
-  }
 }

@@ -481,44 +481,44 @@ tests:
   - algorithm: qgis:boundary
     name: Polygon boundary
     params:
-      INPUT_LAYER:
+      INPUT:
         name: polys.gml
         type: vector
     results:
-      OUTPUT_LAYER:
+      OUTPUT:
         name: expected/poly_boundary.gml
         type: vector
 
   - algorithm: qgis:boundary
     name: Multipoly boundary
     params:
-      INPUT_LAYER:
+      INPUT:
         name: multipolys.gml
         type: vector
     results:
-      OUTPUT_LAYER:
+      OUTPUT:
         name: expected/multipoly_boundary.gml
         type: vector
 
   - algorithm: qgis:boundary
     name: Line boundary
     params:
-      INPUT_LAYER:
+      INPUT:
         name: lines.gml
         type: vector
     results:
-      OUTPUT_LAYER:
+      OUTPUT:
         name: expected/lines_boundary.gml
         type: vector
 
   - algorithm: qgis:boundary
     name: Multiline boundary
     params:
-      INPUT_LAYER:
+      INPUT:
         name: multilines.gml
         type: vector
     results:
-      OUTPUT_LAYER:
+      OUTPUT:
         name: expected/multiline_boundary.gml
         type: vector
 
@@ -588,33 +588,33 @@ tests:
   - algorithm: qgis:pointonsurface
     name: Point on polygon surface
     params:
-      INPUT_LAYER:
+      INPUT:
         name: polys.gml
         type: vector
     results:
-      OUTPUT_LAYER:
+      OUTPUT:
         name: expected/point_on_poly.gml
         type: vector
 
   - algorithm: qgis:pointonsurface
     name: Point on multipoint surface
     params:
-      INPUT_LAYER:
+      INPUT:
         name: multipoints.gml
         type: vector
     results:
-      OUTPUT_LAYER:
+      OUTPUT:
         name: expected/point_on_multipoint.gml
         type: vector
 
   - algorithm: qgis:pointonsurface
     name: Point on line surface
     params:
-      INPUT_LAYER:
+      INPUT:
         name: lines.gml
         type: vector
     results:
-      OUTPUT_LAYER:
+      OUTPUT:
         name: expected/point_on_line.gml
         type: vector
 
@@ -900,72 +900,72 @@ tests:
           geometry:
             precision: 7
 
-#  - algorithm: qgis:translategeometry
-#    name: Lines translated
-#    params:
-#      DELTA_X: 0.1
-#      DELTA_Y: -0.2
-#      INPUT_LAYER:
-#        name: lines.gml
-#        type: vector
-#    results:
-#      OUTPUT_LAYER:
-#        name: expected/lines_translated.gml
-#        type: vector
-#
-#  - algorithm: qgis:singlesidedbuffer
-#    name: Single sided buffer lines (left, round)
-#    params:
-#      DISTANCE: 1.0
-#      INPUT_LAYER:
-#        name: lines.gml
-#        type: vector
-#      JOIN_STYLE: '0'
-#      MITRE_LIMIT: 2
-#      SEGMENTS: 8
-#      SIDE: '0'
-#    results:
-#      OUTPUT_LAYER:
-#        name: expected/single_sided_buffer_line.gml
-#        type: vector
-#        compare:
-#          geometry:
-#            precision: 7
-#
-#  - algorithm: qgis:singlesidedbuffer
-#    name: Single sided buffer lines (Right, mitre)
-#    params:
-#      DISTANCE: 1.0
-#      INPUT_LAYER:
-#        name: lines.gml
-#        type: vector
-#      JOIN_STYLE: '1'
-#      MITRE_LIMIT: 2
-#      SEGMENTS: 8
-#      SIDE: '1'
-#    results:
-#      OUTPUT_LAYER:
-#        name: expected/single_sided_buffer_line_mitre.gml
-#        type: vector
-#        compare:
-#          geometry:
-#            precision: 7
-#
-#  - algorithm: qgis:singlesidedbuffer
-#    name: Single sided buffer multiline (bevel)
-#    params:
-#      DISTANCE: 1.0
-#      INPUT_LAYER:
-#        name: multilines.gml
-#        type: vector
-#      JOIN_STYLE: '2'
-#      MITRE_LIMIT: 2
-#      SEGMENTS: 8
-#      SIDE: '0'
-#    results:
-#      OUTPUT_LAYER:
-#        name: expected/single_sided_buffer_multiline_bevel.gml
-#        type: vector
+  - algorithm: qgis:translategeometry
+    name: Lines translated
+    params:
+      DELTA_X: 0.1
+      DELTA_Y: -0.2
+      INPUT:
+        name: lines.gml
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/lines_translated.gml
+        type: vector
+
+  - algorithm: qgis:singlesidedbuffer
+    name: Single sided buffer lines (left, round)
+    params:
+      DISTANCE: 1.0
+      INPUT:
+        name: lines.gml
+        type: vector
+      JOIN_STYLE: '0'
+      MITRE_LIMIT: 2
+      SEGMENTS: 8
+      SIDE: '0'
+    results:
+      OUTPUT:
+        name: expected/single_sided_buffer_line.gml
+        type: vector
+        compare:
+          geometry:
+            precision: 7
+
+  - algorithm: qgis:singlesidedbuffer
+    name: Single sided buffer lines (Right, mitre)
+    params:
+      DISTANCE: 1.0
+      INPUT:
+        name: lines.gml
+        type: vector
+      JOIN_STYLE: '1'
+      MITRE_LIMIT: 2
+      SEGMENTS: 8
+      SIDE: '1'
+    results:
+      OUTPUT:
+        name: expected/single_sided_buffer_line_mitre.gml
+        type: vector
+        compare:
+          geometry:
+            precision: 7
+
+  - algorithm: qgis:singlesidedbuffer
+    name: Single sided buffer multiline (bevel)
+    params:
+      DISTANCE: 1.0
+      INPUT:
+        name: multilines.gml
+        type: vector
+      JOIN_STYLE: '2'
+      MITRE_LIMIT: 2
+      SEGMENTS: 8
+      SIDE: '0'
+    results:
+      OUTPUT:
+        name: expected/single_sided_buffer_multiline_bevel.gml
+        type: vector
 
   - algorithm: qgis:extractnodes
     name: Test (qgis:extractnodes)
@@ -1346,7 +1346,7 @@ tests:
       OUTPUT:
         name: expected/remove_null_polys.gml
         type: vector
-#
+
   - algorithm: native:extractbyexpression
     name: Extract by Expression
     params:
@@ -1359,34 +1359,34 @@ tests:
         name: expected/extract_expression.gml
         type: vector
 
-#  - algorithm: qgis:extendlines
-#    name: Extend lines
-#    params:
-#      END_DISTANCE: 0.2
-#      INPUT_LAYER:
-#        name: lines.gml
-#        type: vector
-#      START_DISTANCE: 0.1
-#    results:
-#      OUTPUT_LAYER:
-#        name: expected/extend_lines.gml
-#        type: vector
-#        compare:
-#          geometry:
-#            precision: 7
-#  - algorithm: qgis:extendlines
-#    name: Extend multilines
-#    params:
-#      END_DISTANCE: 0.4
-#      INPUT_LAYER:
-#        name: multilines.gml
-#        type: vector
-#      START_DISTANCE: 0.2
-#    results:
-#      OUTPUT_LAYER:
-#        name: expected/extend_multilines.gml
-#        type: vector
-#
+  - algorithm: qgis:extendlines
+    name: Extend lines
+    params:
+      END_DISTANCE: 0.2
+      INPUT:
+        name: lines.gml
+        type: vector
+      START_DISTANCE: 0.1
+    results:
+      OUTPUT:
+        name: expected/extend_lines.gml
+        type: vector
+        compare:
+          geometry:
+            precision: 7
+  - algorithm: qgis:extendlines
+    name: Extend multilines
+    params:
+      END_DISTANCE: 0.4
+      INPUT:
+        name: multilines.gml
+        type: vector
+      START_DISTANCE: 0.2
+    results:
+      OUTPUT:
+        name: expected/extend_multilines.gml
+        type: vector
+
 #  - algorithm: qgis:extractspecificnodes
 #    name: Extract specific nodes lines
 #    params:
@@ -1416,54 +1416,54 @@ tests:
 #        compare:
 #          fields:
 #            fid: skip
-#
-#  - algorithm: qgis:geometrybyexpression
-#    name: Geometry by expression (point)
-#    params:
-#      EXPRESSION: 'translate( $geometry,1,1)'
-#      INPUT_LAYER:
-#        name: points.gml
-#        type: vector
-#      OUTPUT_GEOMETRY: '0'
-#      WITH_M: false
-#      WITH_Z: false
-#    results:
-#      OUTPUT_LAYER:
-#        name: expected/geometry_by_expression_point.gml
-#        type: vector
-#
-#  - algorithm: qgis:geometrybyexpression
-#    name: Geometry by expression (polygon)
-#    params:
-#      EXPRESSION: ' translate( centroid($geometry),1,1)'
-#      INPUT_LAYER:
-#        name: polys.gml
-#        type: vector
-#      OUTPUT_GEOMETRY: '2'
-#      WITH_M: false
-#      WITH_Z: false
-#    results:
-#      OUTPUT_LAYER:
-#        name: expected/geometry_by_expression_poly.gml
-#        type: vector
-#        compare:
-#          geometry:
-#            precision: 7
-#
-#  - algorithm: qgis:geometrybyexpression
-#    name: Geometry by expression (line)
-#    params:
-#      EXPRESSION: ' translate( $geometry,1,1)'
-#      INPUT_LAYER:
-#        name: lines.gml
-#        type: vector
-#      OUTPUT_GEOMETRY: '1'
-#      WITH_M: false
-#      WITH_Z: false
-#    results:
-#      OUTPUT_LAYER:
-#        name: expected/geometry_by_expression_line.gml
-#        type: vector
+
+  - algorithm: qgis:geometrybyexpression
+    name: Geometry by expression (point)
+    params:
+      EXPRESSION: 'translate( $geometry,1,1)'
+      INPUT:
+        name: points.gml
+        type: vector
+      OUTPUT_GEOMETRY: '0'
+      WITH_M: false
+      WITH_Z: false
+    results:
+      OUTPUT:
+        name: expected/geometry_by_expression_point.gml
+        type: vector
+
+  - algorithm: qgis:geometrybyexpression
+    name: Geometry by expression (polygon)
+    params:
+      EXPRESSION: ' translate( centroid($geometry),1,1)'
+      INPUT:
+        name: polys.gml
+        type: vector
+      OUTPUT_GEOMETRY: '2'
+      WITH_M: false
+      WITH_Z: false
+    results:
+      OUTPUT:
+        name: expected/geometry_by_expression_poly.gml
+        type: vector
+        compare:
+          geometry:
+            precision: 7
+
+  - algorithm: qgis:geometrybyexpression
+    name: Geometry by expression (line)
+    params:
+      EXPRESSION: ' translate( $geometry,1,1)'
+      INPUT:
+        name: lines.gml
+        type: vector
+      OUTPUT_GEOMETRY: '1'
+      WITH_M: false
+      WITH_Z: false
+    results:
+      OUTPUT:
+        name: expected/geometry_by_expression_line.gml
+        type: vector
 
   - algorithm: qgis:snapgeometries
     name: Snap lines to lines
@@ -2699,5 +2699,5 @@ tests:
       RADIUS: 0.5
     results:
       OUTPUT:
-        hash: a594d4fa994b81641bfadde54447dc548fa6e23f630c6a4c383487c5
+        hash: f09384c64f56286ec4146a7b9a679cea7c6711ec4c7d77eec054e364
         type: rasterhash

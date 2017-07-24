@@ -145,6 +145,62 @@ namespace QgsServerProjectUtils
  :rtype: bool
 %End
 
+  bool wmsFeatureInfoAddWktGeometry( const QgsProject &project );
+%Docstring
+ Returns if the geometry is displayed as Well Known Text in GetFeatureInfo request.
+ \param project the QGIS project
+ :return: if the geometry is displayed as Well Known Text in GetFeatureInfo request.
+ :rtype: bool
+%End
+
+  bool wmsFeatureInfoSegmentizeWktGeometry( const QgsProject &project );
+%Docstring
+ Returns if the geometry has to be segmentize in GetFeatureInfo request.
+ \param project the QGIS project
+ :return: if the geometry has to be segmentize in GetFeatureInfo request.
+ :rtype: bool
+%End
+
+  int wmsFeatureInfoPrecision( const QgsProject &project );
+%Docstring
+ Returns the geometry precision for GetFeatureInfo request.
+ \param project the QGIS project
+ :return: the geometry precision for GetFeatureInfo request.
+ :rtype: int
+%End
+
+  QString wmsFeatureInfoDocumentElement( const QgsProject &project );
+%Docstring
+ Returns the document element name for XML GetFeatureInfo request.
+ \param project the QGIS project
+ :return: the document element name for XML GetFeatureInfo request.
+ :rtype: str
+%End
+
+  QString wmsFeatureInfoDocumentElementNs( const QgsProject &project );
+%Docstring
+ Returns the document element namespace for XML GetFeatureInfo request.
+ \param project the QGIS project
+ :return: the document element namespace for XML GetFeatureInfo request.
+ :rtype: str
+%End
+
+  QString wmsFeatureInfoSchema( const QgsProject &project );
+%Docstring
+ Returns the schema URL for XML GetFeatureInfo request.
+ \param project the QGIS project
+ :return: the schema URL for XML GetFeatureInfo request.
+ :rtype: str
+%End
+
+  QHash<QString, QString> wmsFeatureInfoLayerAliasMap( const QgsProject &project );
+%Docstring
+ Returns the mapping between layer name and wms layer name for GetFeatureInfo request.
+ \param project the QGIS project
+ :return: the mapping between layer name and wms layer name for GetFeatureInfo request.
+ :rtype: QHash<str, QString>
+%End
+
   bool wmsInspireActivate( const QgsProject &project );
 %Docstring
  Returns if Inspire is activated.

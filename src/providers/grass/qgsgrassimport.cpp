@@ -250,15 +250,15 @@ bool QgsGrassRasterImport::import()
   {
     QgsDebugMsg( QString( "band = %1" ).arg( band ) );
     int colorInterpretation = provider->colorInterpretation( band );
-    if ( colorInterpretation ==  QgsRaster::RedBand )
+    if ( colorInterpretation == QgsRaster::RedBand )
     {
       redBand = band;
     }
-    else if ( colorInterpretation ==  QgsRaster::GreenBand )
+    else if ( colorInterpretation == QgsRaster::GreenBand )
     {
       greenBand = band;
     }
-    else if ( colorInterpretation ==  QgsRaster::BlueBand )
+    else if ( colorInterpretation == QgsRaster::BlueBand )
     {
       blueBand = band;
     }

@@ -180,6 +180,36 @@ class QgsLayoutViewEllipticalRubberBand : QgsLayoutViewRubberBand
 
 
 };
+
+class QgsLayoutViewTriangleRubberBand : QgsLayoutViewRubberBand
+{
+%Docstring
+ QgsLayoutViewTriangleRubberBand is triangular rubber band for use within QgsLayoutView widgets.
+.. versionadded:: 3.0
+%End
+
+%TypeHeaderCode
+#include "qgslayoutviewrubberband.h"
+%End
+  public:
+
+    QgsLayoutViewTriangleRubberBand( QgsLayoutView *view = 0 );
+%Docstring
+ Constructor for QgsLayoutViewTriangleRubberBand.
+%End
+    virtual QgsLayoutViewTriangleRubberBand *create( QgsLayoutView *view ) const /Factory/;
+
+
+    ~QgsLayoutViewTriangleRubberBand();
+
+    virtual void start( QPointF position, Qt::KeyboardModifiers modifiers );
+
+    virtual void update( QPointF position, Qt::KeyboardModifiers modifiers );
+
+    virtual QRectF finish( QPointF position = QPointF(), Qt::KeyboardModifiers modifiers = 0 );
+
+
+};
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *

@@ -303,15 +303,6 @@ EXTENSION_MAPPING      =
 
 MARKDOWN_SUPPORT       = YES
 
-# When the TOC_INCLUDE_HEADINGS tag is set to a non-zero value, all headings up
-# to that level are automatically included in the table of contents, even if
-# they do not have an id attribute.
-# Note: This feature currently applies only to Markdown headings.
-# Minimum value: 0, maximum value: 99, default value: 0.
-# This tag requires that the tag MARKDOWN_SUPPORT is set to YES.
-
-TOC_INCLUDE_HEADINGS   = 0
-
 # When enabled doxygen tries to link words that correspond to documented
 # classes, or namespaces to their corresponding documentation. Such a link can
 # be prevented in individual cases by putting a % sign in front of the word or
@@ -2387,11 +2378,6 @@ DIAFILE_DIRS           =
 # will not generate output for the diagram.
 
 PLANTUML_JAR_PATH      =
-
-# When using plantuml, the PLANTUML_CFG_FILE tag can be used to specify a
-# configuration file for plantuml.
-
-PLANTUML_CFG_FILE      =
 
 # When using plantuml, the specified paths are searched for files specified by
 # the !include statement in a plantuml block.

@@ -124,6 +124,7 @@
 %Include qgslistwidget.sip
 %Include qgslegendfilterbutton.sip
 %Include qgslimitedrandomcolorrampdialog.sip
+%Include qgsratiolockbutton.sip
 %Include qgslonglongvalidator.sip
 %Include qgsludialog.sip
 %Include qgsmanageconnectionsdialog.sip
@@ -187,6 +188,7 @@
 %Include qgsstatusbar.sip
 %Include qgssublayersdialog.sip
 %Include qgssubstitutionlistwidget.sip
+%Include qgssymbolbutton.sip
 %Include qgstablewidgetbase.sip
 %Include qgstabwidget.sip
 %Include qgstaskmanagerwidget.sip
@@ -279,7 +281,9 @@
 %Include layertree/qgslayertreeviewdefaultactions.sip
 %Include layout/qgslayoutdesignerinterface.sip
 %Include layout/qgslayoutitemguiregistry.sip
+%Include layout/qgslayoutnewitempropertiesdialog.sip
 %Include layout/qgslayoutruler.sip
+%Include layout/qgslayoutunitscombobox.sip
 %Include layout/qgslayoutview.sip
 %Include layout/qgslayoutviewtool.sip
 %Include layout/qgslayoutviewtooladditem.sip
