@@ -95,10 +95,8 @@ class CORE_EXPORT QgsArchive
     QStringList mFiles;
 
   private:
-#ifndef SIP_RUN
     // used when unzip is performed
     std::unique_ptr<QTemporaryDir> mDir;
-#endif
 };
 
 /**
