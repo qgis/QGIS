@@ -374,6 +374,11 @@ void QgsLayoutItem::refresh()
   refreshDataDefinedProperty();
 }
 
+void QgsLayoutItem::redraw()
+{
+  update();
+}
+
 void QgsLayoutItem::drawDebugRect( QPainter *painter )
 {
   if ( !painter )

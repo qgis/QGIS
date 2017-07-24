@@ -236,6 +236,11 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
     void refresh() override;
 
     /**
+     * Triggers a redraw (update) of the item.
+     */
+    virtual void redraw();
+
+    /**
      * Refreshes a data defined \a property for the item by reevaluating the property's value
      * and redrawing the item with this new value. If \a property is set to
      * QgsLayoutObject::AllProperties then all data defined properties for the item will be

@@ -110,6 +110,10 @@ class CORE_EXPORT QgsLayoutItemPage : public QgsLayoutItem
 
     void attemptResize( const QgsLayoutSize &size ) override;
 
+  public slots:
+
+    void redraw() override;
+
   protected:
 
     void draw( QgsRenderContext &context, const QStyleOptionGraphicsItem *itemStyle = nullptr ) override;

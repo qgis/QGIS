@@ -118,6 +118,9 @@
     <addaction name="mActionZoomAll"/>
     <addaction name="mActionZoomToWidth"/>
     <addaction name="separator"/>
+    <addaction name="mActionShowGrid"/>
+    <addaction name="mActionSnapGrid"/>
+    <addaction name="separator"/>
     <addaction name="mActionShowRulers"/>
     <addaction name="separator"/>
     <addaction name="mToolbarMenu"/>
@@ -305,6 +308,38 @@
    </property>
    <property name="text">
     <string>Add Pages…</string>
+   </property>
+  </action>
+  <action name="mActionShowGrid">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="../../../images/images.qrc">
+     <normaloff>:/images/themes/default/vector_grid.png</normaloff>:/images/themes/default/vector_grid.png</iconset>
+   </property>
+   <property name="text">
+    <string>Show &amp;Grid</string>
+   </property>
+   <property name="toolTip">
+    <string>Show grid</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+'</string>
+   </property>
+  </action>
+  <action name="mActionSnapGrid">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>S&amp;nap to Grid</string>
+   </property>
+   <property name="toolTip">
+    <string>Snap to grid</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Shift+'</string>
    </property>
   </action>
  </widget>

@@ -80,6 +80,11 @@ class QgsLayoutItemPage : QgsLayoutItem
     virtual void attemptResize( const QgsLayoutSize &size );
 
 
+  public slots:
+
+    virtual void redraw();
+
+
   protected:
 
     virtual void draw( QgsRenderContext &context, const QStyleOptionGraphicsItem *itemStyle = 0 );

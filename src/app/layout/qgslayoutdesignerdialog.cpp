@@ -122,6 +122,9 @@ QgsLayoutDesignerDialog::QgsLayoutDesignerDialog( QWidget *parent, Qt::WindowFla
   mActionShowRulers->blockSignals( false );
   connect( mActionShowRulers, &QAction::triggered, this, &QgsLayoutDesignerDialog::showRulers );
 
+  connect( mActionShowGrid, &QAction::triggered, this, &QgsLayoutDesignerDialog::showGrid );
+  connect( mActionSnapGrid, &QAction::triggered, this, &QgsLayoutDesignerDialog::snapToGrid );
+
   mView = new QgsLayoutView();
   //mView->setMapCanvas( mQgis->mapCanvas() );
   mView->setContentsMargins( 0, 0, 0, 0 );
@@ -335,6 +338,17 @@ void QgsLayoutDesignerDialog::showRulers( bool visible )
 
   QgsSettings settings;
   settings.setValue( QStringLiteral( "LayoutDesigner/showRulers" ), visible );
+}
+
+void QgsLayoutDesignerDialog::showGrid( bool visible )
+{
+  mLayout->context().setGridVisible( visible );
+  mLayout->pageCollection()->redraw();
+}
+
+void QgsLayoutDesignerDialog::snapToGrid( bool enabled )
+{
+  mLayout->snapper().setSnapToGrid( enabled );
 }
 
 void QgsLayoutDesignerDialog::closeEvent( QCloseEvent * )

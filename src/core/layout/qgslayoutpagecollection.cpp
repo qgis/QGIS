@@ -135,6 +135,14 @@ double QgsLayoutPageCollection::pageShadowWidth() const
   return spaceBetweenPages() / 2;
 }
 
+void QgsLayoutPageCollection::redraw()
+{
+  Q_FOREACH ( QgsLayoutItemPage *page, mPages )
+  {
+    page->redraw();
+  }
+}
+
 QgsLayout *QgsLayoutPageCollection::layout() const
 {
   return mLayout;

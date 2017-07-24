@@ -80,5 +80,10 @@ double QgsLayoutContext::dpi() const
 
 bool QgsLayoutContext::gridVisible() const
 {
-  return true;
+  return mGridVisible;
+}
+
+void QgsLayoutContext::setGridVisible( bool visible )
+{
+  mGridVisible = visible;
 }

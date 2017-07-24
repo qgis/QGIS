@@ -191,6 +191,13 @@ class CORE_EXPORT QgsLayoutPageCollection : public QObject
      */
     double pageShadowWidth() const;
 
+  public slots:
+
+    /**
+     * Triggers a redraw for all pages.
+     */
+    void redraw();
+
   signals:
 
     /**

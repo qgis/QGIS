@@ -115,6 +115,16 @@ class QgsLayoutDesignerDialog: public QMainWindow, private Ui::QgsLayoutDesigner
      */
     void showRulers( bool visible );
 
+    /**
+     * Toggles whether the page grid should be \a visible.
+     */
+    void showGrid( bool visible );
+
+    /**
+     * Toggles whether snapping to the page grid is \a enabled.
+     */
+    void snapToGrid( bool enabled );
+
   signals:
 
     /**

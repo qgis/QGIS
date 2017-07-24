@@ -188,6 +188,13 @@ class QgsLayoutPageCollection : QObject
  :rtype: float
 %End
 
+  public slots:
+
+    void redraw();
+%Docstring
+ Triggers a redraw for all pages.
+%End
+
   signals:
 
     void changed();

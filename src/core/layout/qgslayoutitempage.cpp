@@ -117,6 +117,12 @@ void QgsLayoutItemPage::attemptResize( const QgsLayoutSize &size )
   mGrid->setRect( 0, 0, rect().width(), rect().height() );
 }
 
+void QgsLayoutItemPage::redraw()
+{
+  QgsLayoutItem::redraw();
+  mGrid->update();
+}
+
 void QgsLayoutItemPage::draw( QgsRenderContext &context, const QStyleOptionGraphicsItem * )
 {
   if ( !context.painter() || !mLayout /*|| !mLayout->pagesVisible() */ )
