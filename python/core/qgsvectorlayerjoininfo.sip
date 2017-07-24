@@ -117,7 +117,7 @@ Returns whether values from the joined layer should be cached in memory to speed
 .. versionadded:: 3.0
 %End
 
-    bool isUpsertOnEdit() const;
+    bool hasUpsertOnEdit() const;
 %Docstring
  Returns whether a feature created on the target layer has to impact
   the joined layer by creating a new feature if necessary.

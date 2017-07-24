@@ -277,7 +277,7 @@ void QgsVectorLayerJoinBuffer::writeXml( QDomNode &layer_node, QDomDocument &doc
     joinElem.setAttribute( QStringLiteral( "memoryCache" ), joinIt->isUsingMemoryCache() );
     joinElem.setAttribute( QStringLiteral( "dynamicForm" ), joinIt->isDynamicFormEnabled() );
     joinElem.setAttribute( QStringLiteral( "editable" ), joinIt->isEditable() );
-    joinElem.setAttribute( QStringLiteral( "upsertOnEdit" ), joinIt->isUpsertOnEdit() );
+    joinElem.setAttribute( QStringLiteral( "upsertOnEdit" ), joinIt->hasUpsertOnEdit() );
     joinElem.setAttribute( QStringLiteral( "deleteCascade" ), joinIt->isDeleteCascade() );
 
     if ( joinIt->joinFieldNamesSubset() )

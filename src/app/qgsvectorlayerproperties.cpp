@@ -1246,7 +1246,7 @@ void QgsVectorLayerProperties::addJoinToTreeWidget( const QgsVectorLayerJoinInfo
     joinItem->setText( 5, QChar( 0x2714 ) );
   }
 
-  if ( join.isUpsertOnEdit() )
+  if ( join.hasUpsertOnEdit() )
   {
     joinItem->setText( 6, QChar( 0x2714 ) );
   }

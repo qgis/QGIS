@@ -96,7 +96,7 @@ class CORE_EXPORT QgsVectorLayerJoinInfo
      *  the joined layer by creating a new feature if necessary.
      * \since QGIS 3.0
      */
-    bool isUpsertOnEdit() const { return mUpsertOnEdit; }
+    bool hasUpsertOnEdit() const { return mUpsertOnEdit; }
 
     /** Sets whether a feature created on the target layer has to impact
      *  the joined layer by creating a new feature if necessary.

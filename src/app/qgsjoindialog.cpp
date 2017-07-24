@@ -77,7 +77,7 @@ void QgsJoinDialog::setJoinInfo( const QgsVectorLayerJoinInfo &joinInfo )
   mCacheInMemoryCheckBox->setChecked( joinInfo.isUsingMemoryCache() );
   mDynamicFormCheckBox->setChecked( joinInfo.isDynamicFormEnabled() );
   mEditableJoinLayer->setChecked( joinInfo.isEditable() );
-  mUpsertOnEditCheckBox->setChecked( joinInfo.isUpsertOnEdit() );
+  mUpsertOnEditCheckBox->setChecked( joinInfo.hasUpsertOnEdit() );
   mDeleteCascadeCheckBox->setChecked( joinInfo.isDeleteCascade() );
 
   if ( joinInfo.prefix().isNull() )
