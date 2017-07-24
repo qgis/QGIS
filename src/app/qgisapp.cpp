@@ -2322,8 +2322,8 @@ void QgisApp::refreshProfileMenu()
   Q_FOREACH ( const QString &name, userProfileManager()->allProfiles() )
   {
     profile = userProfileManager()->profileForName( name );
-    QAction *action = new QAction( profile->icon(), profile->alias() );
-    action->setToolTip( profile->folder() );
+    // Qt 5.5 has no parent default as nullptr
+    QAction *action = new QAction( profile->icon(), profile->alias(), nullptr );
     action->setToolTip( profile->folder() );
     delete profile;
 
