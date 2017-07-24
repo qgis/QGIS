@@ -209,7 +209,7 @@ void QgsLayoutView::mousePressEvent( QMouseEvent *event )
 {
   if ( mTool )
   {
-    std::unique_ptr<QgsLayoutViewMouseEvent> me( new QgsLayoutViewMouseEvent( this, event ) );
+    std::unique_ptr<QgsLayoutViewMouseEvent> me( new QgsLayoutViewMouseEvent( this, event, mTool->flags() & QgsLayoutViewTool::FlagSnaps ) );
     mTool->layoutPressEvent( me.get() );
     event->setAccepted( me->isAccepted() );
   }
@@ -246,7 +246,7 @@ void QgsLayoutView::mouseReleaseEvent( QMouseEvent *event )
 {
   if ( mTool )
   {
-    std::unique_ptr<QgsLayoutViewMouseEvent> me( new QgsLayoutViewMouseEvent( this, event ) );
+    std::unique_ptr<QgsLayoutViewMouseEvent> me( new QgsLayoutViewMouseEvent( this, event, mTool->flags() & QgsLayoutViewTool::FlagSnaps ) );
     mTool->layoutReleaseEvent( me.get() );
     event->setAccepted( me->isAccepted() );
   }
@@ -264,7 +264,12 @@ void QgsLayoutView::mouseMoveEvent( QMouseEvent *event )
 
   if ( mTool )
   {
-    std::unique_ptr<QgsLayoutViewMouseEvent> me( new QgsLayoutViewMouseEvent( this, event ) );
+    if ( !event->buttons() && mTool->flags() & QgsLayoutViewTool::FlagSnaps )
+    {
+      //draw snapping point indicator
+
+    }
+    std::unique_ptr<QgsLayoutViewMouseEvent> me( new QgsLayoutViewMouseEvent( this, event, mTool->flags() & QgsLayoutViewTool::FlagSnaps ) );
     mTool->layoutMoveEvent( me.get() );
     event->setAccepted( me->isAccepted() );
   }
@@ -277,7 +282,7 @@ void QgsLayoutView::mouseDoubleClickEvent( QMouseEvent *event )
 {
   if ( mTool )
   {
-    std::unique_ptr<QgsLayoutViewMouseEvent> me( new QgsLayoutViewMouseEvent( this, event ) );
+    std::unique_ptr<QgsLayoutViewMouseEvent> me( new QgsLayoutViewMouseEvent( this, event, mTool->flags() & QgsLayoutViewTool::FlagSnaps ) );
     mTool->layoutDoubleClickEvent( me.get() );
     event->setAccepted( me->isAccepted() );
   }
