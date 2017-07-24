@@ -6,20 +6,36 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>442</width>
+    <width>434</width>
     <height>554</height>
    </rect>
   </property>
   <layout class="QGridLayout" name="gridLayout">
-   <item row="0" column="0">
-    <widget class="QLabel" name="label_4">
+   <item row="1" column="1">
+    <widget class="QPushButton" name="btnChangeGraduatedSymbol">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+       <horstretch>1</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
      <property name="text">
-      <string>Column</string>
+      <string>Change...</string>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="0">
+    <widget class="QLabel" name="label_6">
+     <property name="text">
+      <string>Symbol</string>
+     </property>
+     <property name="buddy">
+      <cstring>btnChangeGraduatedSymbol</cstring>
      </property>
     </widget>
    </item>
    <item row="0" column="1">
-    <widget class="QgsFieldExpressionWidget" name="mExpressionWidget" native="true">
+    <widget class="QgsFieldExpressionWidget" name="mExpressionWidget">
      <property name="sizePolicy">
       <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
        <horstretch>0</horstretch>
@@ -43,120 +59,58 @@
      </property>
     </widget>
    </item>
-   <item row="1" column="0">
-    <widget class="QLabel" name="label_6">
-     <property name="text">
-      <string>Symbol</string>
-     </property>
-     <property name="buddy">
-      <cstring>btnChangeGraduatedSymbol</cstring>
-     </property>
-    </widget>
-   </item>
-   <item row="1" column="1">
-    <widget class="QPushButton" name="btnChangeGraduatedSymbol">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-       <horstretch>1</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
-     <property name="text">
-      <string>Change...</string>
-     </property>
-    </widget>
-   </item>
-   <item row="2" column="0">
-    <widget class="QLabel" name="label">
-     <property name="text">
-      <string>Legend Format</string>
-     </property>
-     <property name="alignment">
-      <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
-     </property>
-     <property name="buddy">
-      <cstring>txtLegendFormat</cstring>
-     </property>
-    </widget>
-   </item>
-   <item row="2" column="1">
-    <layout class="QHBoxLayout" name="horizontalLayout_6">
-     <property name="topMargin">
-      <number>0</number>
-     </property>
+   <item row="15" column="1">
+    <layout class="QHBoxLayout" name="horizontalLayout">
      <item>
-      <widget class="QLineEdit" name="txtLegendFormat">
-       <property name="toolTip">
-        <string>Template for the legend text associated with each classification.  
-Use &quot;%1&quot; for the lower bound of the classification, and &quot;%2&quot; for the upper bound.</string>
+      <widget class="QLabel" name="label_5">
+       <property name="text">
+        <string>Classes</string>
        </property>
-       <property name="alignment">
-        <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+       <property name="buddy">
+        <cstring>spinGraduatedClasses</cstring>
        </property>
       </widget>
      </item>
      <item>
-      <widget class="QSpinBox" name="spinPrecision">
+      <widget class="QSpinBox" name="spinGraduatedClasses">
        <property name="sizePolicy">
         <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
          <horstretch>0</horstretch>
          <verstretch>0</verstretch>
         </sizepolicy>
        </property>
-       <property name="toolTip">
-        <string>Precision of upper and lower values in label text.
-Positive is number of decimal places
-Negative rounds to powers of 10</string>
-       </property>
-       <property name="prefix">
-        <string>Precision </string>
-       </property>
        <property name="minimum">
-        <number>0</number>
+        <number>1</number>
        </property>
        <property name="maximum">
-        <number>10</number>
+        <number>999</number>
        </property>
        <property name="value">
-        <number>4</number>
+        <number>5</number>
        </property>
       </widget>
      </item>
      <item>
-      <widget class="QCheckBox" name="cbxTrimTrailingZeroes">
-       <property name="toolTip">
-        <string>Check to remove trailing zeroes after the decimal point from the upper and lower values in the legend.</string>
+      <spacer name="horizontalSpacer">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
        </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>40</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+     <item>
+      <widget class="QPushButton" name="btnGraduatedClassify">
        <property name="text">
-        <string>Trim</string>
+        <string>Classify</string>
        </property>
       </widget>
      </item>
     </layout>
-   </item>
-   <item row="3" column="0">
-    <widget class="QLabel" name="label_3">
-     <property name="text">
-      <string>Method</string>
-     </property>
-    </widget>
-   </item>
-   <item row="3" column="1">
-    <widget class="QComboBox" name="methodComboBox">
-     <property name="toolTip">
-      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Choose between color and size graduation. &lt;/p&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;p&gt;If you want to combine both, use a data-defined size for the symbol and graduate by color.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-     </property>
-    </widget>
-   </item>
-   <item row="4" column="0">
-    <widget class="QLabel" name="lblColorRamp">
-     <property name="text">
-      <string>Color ramp</string>
-     </property>
-     <property name="buddy">
-      <cstring>btnColorRamp</cstring>
-     </property>
-    </widget>
    </item>
    <item row="4" column="1">
     <widget class="QgsColorRampButton" name="btnColorRamp">
@@ -180,17 +134,17 @@ Negative rounds to powers of 10</string>
      </property>
     </widget>
    </item>
-   <item row="5" column="0">
-    <widget class="QLabel" name="lblSize">
+   <item row="4" column="0">
+    <widget class="QLabel" name="lblColorRamp">
      <property name="text">
-      <string>Size from </string>
+      <string>Color ramp</string>
      </property>
      <property name="buddy">
-      <cstring>minSizeSpinBox</cstring>
+      <cstring>btnColorRamp</cstring>
      </property>
     </widget>
    </item>
-   <item row="5" column="1">
+   <item row="12" column="1">
     <layout class="QHBoxLayout" name="layoutSize">
      <item>
       <widget class="QgsDoubleSpinBox" name="minSizeSpinBox">
@@ -245,20 +199,75 @@ Negative rounds to powers of 10</string>
      </item>
     </layout>
    </item>
-   <item row="6" column="1">
-    <widget class="QgsUnitSelectionWidget" name="mSizeUnitWidget" native="true">
-     <property name="minimumSize">
-      <size>
-       <width>14</width>
-       <height>0</height>
-      </size>
+   <item row="2" column="1">
+    <layout class="QHBoxLayout" name="horizontalLayout_6">
+     <property name="topMargin">
+      <number>0</number>
      </property>
-     <property name="focusPolicy">
-      <enum>Qt::StrongFocus</enum>
+     <item>
+      <widget class="QLineEdit" name="txtLegendFormat">
+       <property name="toolTip">
+        <string>Template for the legend text associated with each classification.
+Use &quot;%1&quot; for the lower bound of the classification, and &quot;%2&quot; for the upper bound.</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QSpinBox" name="spinPrecision">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="toolTip">
+        <string>Precision of upper and lower values in label text.
+Positive is number of decimal places
+Negative rounds to powers of 10</string>
+       </property>
+       <property name="prefix">
+        <string>Precision </string>
+       </property>
+       <property name="minimum">
+        <number>0</number>
+       </property>
+       <property name="maximum">
+        <number>10</number>
+       </property>
+       <property name="value">
+        <number>4</number>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QCheckBox" name="cbxTrimTrailingZeroes">
+       <property name="toolTip">
+        <string>Check to remove trailing zeroes after the decimal point from the upper and lower values in the legend.</string>
+       </property>
+       <property name="text">
+        <string>Trim</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item row="2" column="0">
+    <widget class="QLabel" name="label">
+     <property name="text">
+      <string>Legend Format</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+     </property>
+     <property name="buddy">
+      <cstring>txtLegendFormat</cstring>
      </property>
     </widget>
    </item>
-   <item row="7" column="0" colspan="2">
+   <item row="17" column="0" colspan="2">
     <widget class="QTabWidget" name="tabWidget">
      <property name="currentIndex">
       <number>0</number>
@@ -303,99 +312,7 @@ Negative rounds to powers of 10</string>
         </widget>
        </item>
        <item>
-        <layout class="QHBoxLayout" name="horizontalLayout_5">
-         <item>
-          <widget class="QLabel" name="label_8">
-           <property name="text">
-            <string>Mode</string>
-           </property>
-           <property name="buddy">
-            <cstring>cboGraduatedMode</cstring>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QComboBox" name="cboGraduatedMode">
-           <item>
-            <property name="text">
-             <string>Equal Interval</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>Quantile (Equal Count)</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>Natural Breaks (Jenks)</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>Standard Deviation</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>Pretty Breaks</string>
-            </property>
-           </item>
-          </widget>
-         </item>
-         <item>
-          <spacer name="horizontalSpacer_4">
-           <property name="orientation">
-            <enum>Qt::Horizontal</enum>
-           </property>
-           <property name="sizeHint" stdset="0">
-            <size>
-             <width>40</width>
-             <height>20</height>
-            </size>
-           </property>
-          </spacer>
-         </item>
-         <item>
-          <widget class="QLabel" name="label_5">
-           <property name="text">
-            <string>Classes</string>
-           </property>
-           <property name="buddy">
-            <cstring>spinGraduatedClasses</cstring>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QSpinBox" name="spinGraduatedClasses">
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
-           </property>
-           <property name="minimum">
-            <number>1</number>
-           </property>
-           <property name="maximum">
-            <number>999</number>
-           </property>
-           <property name="value">
-            <number>5</number>
-           </property>
-          </widget>
-         </item>
-        </layout>
-       </item>
-       <item>
         <layout class="QHBoxLayout" name="horizontalLayout_3">
-         <item>
-          <widget class="QPushButton" name="btnGraduatedClassify">
-           <property name="text">
-            <string>Classify</string>
-           </property>
-          </widget>
-         </item>
          <item>
           <widget class="QPushButton" name="btnGraduatedAdd">
            <property name="toolTip">
@@ -475,6 +392,99 @@ Negative rounds to powers of 10</string>
      </widget>
     </widget>
    </item>
+   <item row="0" column="0">
+    <widget class="QLabel" name="label_4">
+     <property name="text">
+      <string>Column</string>
+     </property>
+    </widget>
+   </item>
+   <item row="3" column="1">
+    <widget class="QComboBox" name="methodComboBox">
+     <property name="toolTip">
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Choose between color and size graduation. &lt;/p&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;p&gt;If you want to combine both, use a data-defined size for the symbol and graduate by color.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+     </property>
+    </widget>
+   </item>
+   <item row="3" column="0">
+    <widget class="QLabel" name="label_3">
+     <property name="text">
+      <string>Method</string>
+     </property>
+    </widget>
+   </item>
+   <item row="14" column="1">
+    <layout class="QHBoxLayout" name="horizontalLayout_5">
+     <item>
+      <widget class="QLabel" name="label_8">
+       <property name="text">
+        <string>Mode</string>
+       </property>
+       <property name="buddy">
+        <cstring>cboGraduatedMode</cstring>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QComboBox" name="cboGraduatedMode">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <item>
+        <property name="text">
+         <string>Equal Interval</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Quantile (Equal Count)</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Natural Breaks (Jenks)</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Standard Deviation</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Pretty Breaks</string>
+        </property>
+       </item>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item row="12" column="0">
+    <widget class="QLabel" name="lblSize">
+     <property name="text">
+      <string>Size from </string>
+     </property>
+     <property name="buddy">
+      <cstring>minSizeSpinBox</cstring>
+     </property>
+    </widget>
+   </item>
+   <item row="13" column="1">
+    <widget class="QgsUnitSelectionWidget" name="mSizeUnitWidget" native="true">
+     <property name="minimumSize">
+      <size>
+       <width>14</width>
+       <height>0</height>
+      </size>
+     </property>
+     <property name="focusPolicy">
+      <enum>Qt::StrongFocus</enum>
+     </property>
+    </widget>
+   </item>
   </layout>
  </widget>
  <customwidgets>
@@ -490,15 +500,15 @@ Negative rounds to powers of 10</string>
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>QgsUnitSelectionWidget</class>
-   <extends>QWidget</extends>
-   <header>qgsunitselectionwidget.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
    <class>QgsColorRampButton</class>
    <extends>QToolButton</extends>
    <header>qgscolorrampbutton.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsUnitSelectionWidget</class>
+   <extends>QWidget</extends>
+   <header>qgsunitselectionwidget.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
@@ -518,12 +528,9 @@ Negative rounds to powers of 10</string>
   <tabstop>btnColorRamp</tabstop>
   <tabstop>minSizeSpinBox</tabstop>
   <tabstop>maxSizeSpinBox</tabstop>
-  <tabstop>mSizeUnitWidget</tabstop>
   <tabstop>tabWidget</tabstop>
   <tabstop>viewGraduated</tabstop>
   <tabstop>cboGraduatedMode</tabstop>
-  <tabstop>spinGraduatedClasses</tabstop>
-  <tabstop>btnGraduatedClassify</tabstop>
   <tabstop>btnGraduatedAdd</tabstop>
   <tabstop>btnGraduatedDelete</tabstop>
   <tabstop>btnDeleteAllClasses</tabstop>
