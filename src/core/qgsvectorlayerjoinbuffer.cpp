@@ -422,6 +422,7 @@ QgsFeature QgsVectorLayerJoinBuffer::joinedFeatureOf( const QgsVectorLayerJoinIn
 
   if ( info->joinLayer() )
   {
+    joinedFeature.initAttributes( info->joinLayer()->fields().count() );
     joinedFeature.setFields( info->joinLayer()->fields() );
 
     QString joinFieldName = info->joinFieldName();
