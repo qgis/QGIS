@@ -63,6 +63,7 @@ class CORE_EXPORT QgsUserProfileManager : public QObject
      * \note Returns a new QgsUserProfile. Ownership transferred to caller.
      * \param defaultProfile The profile name to find. Empty profile name will return "default" for the name.
      * \param createNew Create the profile folder if it doesn't exist.
+     * \param initSettings if the settings should be initialized
      * \return The user profile
      */
     QgsUserProfile *getProfile( const QString &defaultProfile = "default", bool createNew = true, bool initSettings = true ) SIP_FACTORY;

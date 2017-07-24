@@ -41,6 +41,7 @@ class QgsDatumTransformStore
  Will return transform from layer's CRS to current destination CRS.
  :return: transformation associated with layer, or an invalid QgsCoordinateTransform
  if no transform is associated with the layer
+ \param layer the associated layer
  \param srcAuthId source CRS (defaults to layer crs)
  \param dstAuthId destination CRS (defaults to store's crs)
  :rtype: QgsCoordinateTransform

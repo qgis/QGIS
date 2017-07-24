@@ -173,6 +173,7 @@ class QgsAttributeForm : QWidget
 
  \param field The field to change
  \param value The new value
+ \param hintText A hint text for non existent joined features
 %End
 
     void setFeature( const QgsFeature &feature );

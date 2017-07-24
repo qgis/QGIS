@@ -53,6 +53,7 @@ class QgsUserProfileManager : QObject
    Returns a new QgsUserProfile. Ownership transferred to caller.
  \param defaultProfile The profile name to find. Empty profile name will return "default" for the name.
  \param createNew Create the profile folder if it doesn't exist.
+ \param initSettings if the settings should be initialized
  :return: The user profile
  :rtype: QgsUserProfile
 %End

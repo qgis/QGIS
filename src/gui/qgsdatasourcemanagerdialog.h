@@ -48,15 +48,16 @@ class GUI_EXPORT QgsDataSourceManagerDialog : public QgsOptionsDialogBase, priva
   public:
 
     /** QgsDataSourceManagerDialog constructor
-      * @param parent the object
-      * @param fl window flags
+      * \param parent the object
+      * \param canvas a pointer to the map canvas
+      * \param fl window flags
       */
     explicit QgsDataSourceManagerDialog( QWidget *parent = nullptr, QgsMapCanvas *canvas = nullptr, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags );
     ~QgsDataSourceManagerDialog();
 
     /**
      * @brief openPage open a given page in the dialog
-     * @param pageName the page name, usually the provider name or "browser" (for the browser panel)
+     * \param pageName the page name, usually the provider name or "browser" (for the browser panel)
      *        or "ogr" (vector layers) or "raster" (raster layers)
      */
     void openPage( QString pageName );
