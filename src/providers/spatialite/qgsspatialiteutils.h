@@ -610,11 +610,21 @@ class SpatialiteDbInfo : public QObject
      * - Value: LayerType and Srid formatted as 'layer_type:srid'
      * -> layer_type: GeoPackageVector or GeoPackageRaster
      * - Checking is done if the 'GPKG' Gdal/Ogr Driver is active
-     * \see readGeoPackageLayers()
+     * \see readGeoPackageLayers
      * \since QGIS 3.0
      */
     QMap<QString, QString> getDbGeoPackageLayers() const { return mGeoPackageLayers; }
-    //! Map of tables that are contained in the Gdal-FdoOgr [LayerName,LayerType]
+
+    /** Map of f_table_name that are contained in the TABLE geometry_columns for Gdal-FdoOgr
+     *  - FdoOgr  geometry_columns contains different fields as the Spatialite Version
+     *  -> this must be rendered with QgsOgrProvider
+     * \note
+     * - Key: LayerName formatted as 'table_name(geometry_name)'
+     * - Value: GeometryType and Srid formatted as 'geometry_type:srid'
+     * - Checking is done if the SQLite' Gdal/Ogr Driver is active
+     * \see readFdoOgrLayers
+     * \since QGIS 3.0
+     */
     QMap<QString, QString> getDbFdoOgrLayers() const { return mFdoOgrLayers; }
 
     /** Map of table_name that are contained in geopackage_contents
@@ -884,7 +894,14 @@ class SpatialiteDbInfo : public QObject
     SpatialiteDbInfo::SpatialMetadata mSpatialMetadata;
     //! The Spatialite internal Database structure being read (as String)
     QString mSpatialMetadataString;
-    //! Set the Spatialite internal Database structure being read (and the String)
+
+    /** Set the Sqlite3-Container type being read (and the String)
+     * \note
+     *  - if not known, will check for MBTiles
+     * \see getSniffDatabaseType
+     * \see checkMBTiles
+    * \since QGIS 3.0
+    */
     void setSpatialMetadata( int iSpatialMetadata );
     //! The Spatialite Version as returned by spatialite_version()
     QString mSpatialiteVersionInfo;
@@ -1050,6 +1067,7 @@ class SpatialiteDbInfo : public QObject
      *  -> SpatialTables/Views/VirtualShapes
      *  -> RasterLite2 Coverages
      *  -> Topologies
+     *  -> Geopackage
      *  - Build a list of non-SpatialTables
      * \returns mIsValid if no errors where found
      * \see GetSpatialiteDbInfo
@@ -1330,18 +1348,13 @@ class SpatialiteDbInfo : public QObject
      */
     bool readGeoPackageLayers();
 
-    /** Check if Database contains possible FdoOgr-Tables
-     * - sets mHasFdoOgrTables
-     * \note
-     * \returns true mHasFdoOgrTables=0
-     * \since QGIS 3.0
-     */
-    bool checkFdoOgr();
-
     /** Determine if valid Gdal-FdoOgr Layers exist
      * - called only when mHasFdoOgrTables > 0 during GetSpatialiteDbInfo
+     *  - FdoOgr  geometry_columns contains different fields as the Spatialite Version
+     *  -> this must be rendered with QgsOgrProvider
      * \note
      * - results are stored in mFdoOgrLayers
+     * - Checking is done if the SQLite' Gdal/Ogr Driver is active
      * \returns true if the the count of valid-layers > 0
      * \see GetSpatialiteDbInfo
      * \since QGIS 3.0

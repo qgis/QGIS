@@ -347,12 +347,10 @@ bool QgsSpatiaLiteFeatureIterator::prepareStatement( const QString &whereClause,
 
     if ( limit >= 0 )
       sql += QStringLiteral( " LIMIT %1" ).arg( limit );
-    qDebug() << QString( "-I-> QgsSpatiaLiteFeatureIterator::prepareStatement(%1) GeomType[%2] - sql[%3]" ).arg( mSource->getLayerName() ).arg( mSource->getGeometryTypeString() ).arg( sql );
     if ( sqlite3_prepare_v2( mHandle->handle(), sql.toUtf8().constData(), -1, &sqliteStatement, nullptr ) != SQLITE_OK )
     {
       // some error occurred
       QgsMessageLog::logMessage( QObject::tr( "SQLite error: %2\nSQL: %1" ).arg( sql, sqlite3_errmsg( mHandle->handle() ) ), QObject::tr( "SpatiaLite" ) );
-      qDebug() << QString( "-E-> QgsSpatiaLiteFeatureIterator::prepareStatement(%1) GeomType[%2] - SQLite error getting feature: %3" ).arg( mSource->getLayerName() ).arg( mSource->getGeometryTypeString() ).arg( QString::fromUtf8( sqlite3_errmsg( mHandle->handle() ) ) );
       return false;
     }
   }
