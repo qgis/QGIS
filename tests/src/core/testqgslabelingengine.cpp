@@ -216,7 +216,6 @@ void TestQgsLabelingEngine::testRuleBased()
   s1.fieldName = QStringLiteral( "Class" );
   s1.obstacle = false;
   s1.dist = 2;
-  s1.distInMapUnits = false;
   QgsTextFormat format = s1.format();
   format.setColor( QColor( 200, 0, 200 ) );
   format.setFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) ) );

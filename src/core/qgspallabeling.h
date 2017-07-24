@@ -249,16 +249,6 @@ class CORE_EXPORT QgsPalLayerSettings
        placing labels over any part of the polygon is avoided.*/
     };
 
-
-    //! Units used for option sizes, before being converted to rendered sizes
-    enum SizeUnit
-    {
-      Points = 0,
-      MM,
-      MapUnits,
-      Percent
-    };
-
     //! Data definable properties.
     enum Property
     {
@@ -395,14 +385,22 @@ class CORE_EXPORT QgsPalLayerSettings
 
     //-- text style
 
+    /**
+     * Name of field (or an expression) to use for label text.
+     * If fieldName is an expression, then isExpression should be set to true.
+     * \see isExpression
+     */
     QString fieldName;
 
-    /** Is this label made from a expression string, e.g., FieldName || 'mm'
-      */
+    /**
+     * True if this label is made from a expression string, e.g., FieldName || 'mm'
+     * \see fieldName
+     */
     bool isExpression;
 
-    /** Returns the QgsExpression for this label settings.
-      */
+    /**
+     * Returns the QgsExpression for this label settings. May be nullptr if isExpression is false.
+     */
     QgsExpression *getLabelExpression();
 
     QColor previewBkgrdColor;
@@ -414,20 +412,70 @@ class CORE_EXPORT QgsPalLayerSettings
 
     //-- text formatting
 
+    /**
+     * Wrapping character string. If set, any occurrences of this string in the calculated
+     * label text will be replaced with new line characters.
+     */
     QString wrapChar;
-    MultiLineAlign multilineAlign; // horizontal alignment of multi-line labels
 
-    // Adds '<' or '>', or user-defined symbol to the label string pointing to the
-    // direction of the line / polygon ring
-    // Works only if Placement == Line
+    //! Horizontal alignment of multi-line labels.
+    MultiLineAlign multilineAlign;
+
+    /**
+     * If true, '<' or '>' (or custom strings set via leftDirectionSymbol and rightDirectionSymbol)
+     * will be automatically added to the label text, pointing in the
+     * direction of the line or polygon ring.
+     * This setting only affects line or perimeter based labels.
+     * \see leftDirectionSymbol
+     * \see rightDirectionSymbol
+     * \see placeDirectionSymbol
+     * \see reverseDirectionSymbol
+     */
     bool addDirectionSymbol;
+
+    /**
+     * String to use for left direction arrows.
+     * \see addDirectionSymbol
+     * \see rightDirectionSymbol
+     */
     QString leftDirectionSymbol;
+
+    /**
+     * String to use for right direction arrows.
+     * \see addDirectionSymbol
+     * \see leftDirectionSymbol
+     */
     QString rightDirectionSymbol;
-    DirectionSymbols placeDirectionSymbol; // whether to place left/right, above or below label
+
+    /**
+     * Placement option for direction symbols. Controls whether to place symbols to the left/right, above or below label.
+     * \see addDirectionSymbol
+     */
+    DirectionSymbols placeDirectionSymbol;
+
+    //! True if direction symbols should be reversed
     bool reverseDirectionSymbol;
 
+    /**
+     * Set to true to format numeric label text as numbers (e.g. inserting thousand separators
+     * and fixed number of decimal places).
+     * \see decimals
+     * \see plusSign
+     */
     bool formatNumbers;
+
+    /**
+     * Number of decimal places to show for numeric labels. formatNumbers must be true for this
+     * setting to have an effect.
+     * \see formatNumbers
+     */
     int decimals;
+
+    /**
+     * Whether '+' signs should be prepended to positive numeric labels. formatNumbers must be true for this
+     * setting to have an effect.
+     * \see formatNumbers
+     */
     bool plusSign;
 
     //-- placement
@@ -435,57 +483,156 @@ class CORE_EXPORT QgsPalLayerSettings
     Placement placement;
     unsigned int placementFlags;
 
-    bool centroidWhole; // whether centroid calculated from whole or visible polygon
-    bool centroidInside; // whether centroid-point calculated must be inside polygon
+    /**
+     * True if feature centroid should be calculated from the whole feature, or
+     * false if only the visible part of the feature should be considered.
+     */
+    bool centroidWhole;
 
-    /** Ordered list of predefined label positions for points. Positions earlier
+    /**
+     * True if centroid positioned labels must be placed inside their corresponding
+     * feature polygon, or false if centroids which fall outside the polygon
+     * are permitted.
+     */
+    bool centroidInside;
+
+    /**
+     * Ordered list of predefined label positions for points. Positions earlier
      * in the list will be prioritized over later positions. Only used when the placement
      * is set to QgsPalLayerSettings::OrderedPositionsAroundPoint.
      * \note not available in Python bindings
      */
     QVector< PredefinedPointPosition > predefinedPositionOrder SIP_SKIP;
 
-    /** True if only labels which completely fit within a polygon are allowed.
+    /**
+     * True if only labels which completely fit within a polygon are allowed.
      */
     bool fitInPolygonOnly;
-    double dist; // distance from the feature (in mm)
-    bool distInMapUnits; //true if distance is in map units (otherwise in mm)
+
+    /**
+     * Distance from feature to the label. Units are specified via distUnits.
+     * \see distUnits
+     * \see distMapUnitScale
+     */
+    double dist;
+
+    /**
+     * Units the distance from feature to the label.
+     * \see dist
+     * \see distMapUnitScale
+     */
+    QgsUnitTypes::RenderUnit distUnits;
+
+    /**
+     * Map unit scale for label feature distance.
+     * \see dist
+     * \see distUnits
+     */
     QgsMapUnitScale distMapUnitScale;
+
     //! Offset type for layer (only applies in certain placement modes)
     OffsetType offsetType;
 
+    /**
+     * Distance for repeating labels for a single feature.
+     * \see repeatDistanceUnit
+     * \see repeatDistanceMapUnitScale
+     */
     double repeatDistance;
-    SizeUnit repeatDistanceUnit;
+
+    /**
+     * Units for repeating labels for a single feature.
+     * \see repeatDistance
+     * \see repeatDistanceMapUnitScale
+     */
+    QgsUnitTypes::RenderUnit repeatDistanceUnit;
+
+    /**
+     * Map unit scale for repeating labels for a single feature.
+     * \see repeatDistance
+     * \see repeatDistanceUnit
+     */
     QgsMapUnitScale repeatDistanceMapUnitScale;
 
-    // offset labels of point/centroid features default to center
-    // move label to quadrant: left/down, don't move, right/up (-1, 0, 1)
+    /**
+     * Sets the quadrant in which to offset labels from feature.
+     */
     QuadrantPosition quadOffset;
 
-    double xOffset; // offset from point in mm or map units
-    double yOffset; // offset from point in mm or map units
-    bool labelOffsetInMapUnits; //true if label offset is in map units (otherwise in mm)
+    /**
+     * Horizontal offset of label. Units are specified via offsetUnits.
+     * \see yOffset
+     * \see offsetUnits
+     * \see labelOffsetMapUnitScale
+     */
+    double xOffset;
+
+    /**
+     * Vertical offset of label. Units are specified via offsetUnits.
+     * \see xOffset
+     * \see offsetUnits
+     * \see labelOffsetMapUnitScale
+     */
+    double yOffset;
+
+    /**
+     * Units for offsets of label.
+     * \see xOffset
+     * \see yOffset
+     * \see labelOffsetMapUnitScale
+     */
+    QgsUnitTypes::RenderUnit offsetUnits;
+
+    /**
+     * Map unit scale for label offset.
+     * \see xOffset
+     * \see yOffset
+     * \see offsetUnits
+     */
     QgsMapUnitScale labelOffsetMapUnitScale;
 
     //! Label rotation, in degrees clockwise
     double angleOffset;
 
-    bool preserveRotation; // preserve predefined rotation data during label pin/unpin operations
+    //! True if label rotation should be preserved during label pin/unpin operations.
+    bool preserveRotation;
 
-    double maxCurvedCharAngleIn; // maximum angle between inside curved label characters (defaults to 20.0, range 20.0 to 60.0)
-    double maxCurvedCharAngleOut; // maximum angle between outside curved label characters (defaults to -20.0, range -20.0 to -95.0)
+    /**
+     * Maximum angle between inside curved label characters (valid range 20.0 to 60.0).
+     * \see maxCurvedCharAngleOut
+     */
+    double maxCurvedCharAngleIn;
 
-    int priority; // 0 = low, 10 = high
+    /**
+     * Maximum angle between outside curved label characters (valid range -20.0 to -95.0)
+     * \see maxCurvedCharAngleIn
+     */
+    double maxCurvedCharAngleOut;
+
+    /**
+     * Label priority. Valid ranges are from 0 to 10, where 0 = lowest priority
+     * and 10 = highest priority.
+     */
+    int priority;
 
     //-- rendering
 
+    /**
+     * Set to true to limit label visibility to a range of scales.
+     * \see maximumScale
+     * \see minimumScale
+     */
     bool scaleVisibility;
 
     /**
      * The maximum map scale (i.e. most "zoomed in" scale) at which the labels will be visible.
      * The scale value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
      * A scale of 0 indicates no maximum scale visibility.
+     *
+     * This setting is only considered if scaleVisibility is true.
+     *
      * \see minimumScale
+     * \see scaleVisibility
     */
     double maximumScale;
 
@@ -493,32 +640,90 @@ class CORE_EXPORT QgsPalLayerSettings
      * The minimum map scale (i.e. most "zoomed out" scale) at which the labels will be visible.
      * The scale value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
      * A scale of 0 indicates no minimum scale visibility.
+     *
+     * This setting is only considered if scaleVisibility is true.
+     *
      * \see maximumScale
+     * \see scaleVisibility
     */
     double minimumScale;
 
-    bool fontLimitPixelSize; // true is label should be limited by fontMinPixelSize/fontMaxPixelSize
-    int fontMinPixelSize; // minimum pixel size for showing rendered map unit labels (1 - 1000)
-    int fontMaxPixelSize; // maximum pixel size for showing rendered map unit labels (1 - 10000)
+    /**
+     * True if label sizes should be limited by pixel size.
+     * \see fontMinPixelSize
+     * \see fontMaxPixelSize
+     */
+    bool fontLimitPixelSize;
 
-    bool displayAll;  // if true, all features will be labelled even though overlaps occur
-    UpsideDownLabels upsidedownLabels; // whether, or how, to show upsidedown labels
+    /**
+     * Minimum pixel size for showing rendered map unit labels (1 - 1000).
+     * \see fontLimitPixelSize
+     * \see fontMaxPixelSize
+     */
+    int fontMinPixelSize;
 
-    bool labelPerPart; // whether to label every feature's part or only the biggest one
+    /**
+     * Maximum pixel size for showing rendered map unit labels (1 - 10000).
+     * \see fontLimitPixelSize
+     * \see fontMinPixelSize
+     */
+    int fontMaxPixelSize;
+
+    //! If true, all features will be labelled even when overlaps occur.
+    bool displayAll;
+
+    //! Controls whether upside down labels are displayed and how they are handled.
+    UpsideDownLabels upsidedownLabels;
+
+    /**
+     * True if every part of a multi-part feature should be labeled. If false,
+     * only the largest part will be labeled.
+     */
+    bool labelPerPart;
+
+    /**
+     * True if connected line features with identical label text should be merged
+     * prior to generating label positions.
+     */
     bool mergeLines;
 
-    bool limitNumLabels; // whether to limit the number of labels to be drawn
-    int maxNumLabels; // maximum number of labels to be drawn
+    /**
+     * True if the number of labels drawn should be limited.
+     * \see maxNumLabels
+     */
+    bool limitNumLabels;
 
-    double minFeatureSize; // minimum feature size to be labelled (in mm)
-    bool obstacle; // whether features for layer are obstacles to labels of other layers
+    /**
+     * The maximum number of labels which should be drawn for this layer.
+     * This only has an effect if limitNumLabels is true.
+     * \see limitNumLabels
+     */
+    int maxNumLabels;
 
-    /** Obstacle factor, where 1.0 = default, < 1.0 more likely to be covered by labels,
+    /**
+     * Minimum feature size (in millimeters) for a feature to be labelled.
+     */
+    double minFeatureSize;
+
+    /**
+     * True if features for layer are obstacles to labels of other layers.
+     * \see obstacleFactor
+     * \see obstacleType
+     */
+    bool obstacle;
+
+    /**
+     * Obstacle factor, where 1.0 = default, < 1.0 more likely to be covered by labels,
      * > 1.0 less likely to be covered
+     * \see obstacle
+     * \see obstacleType
      */
     double obstacleFactor;
 
-    /** Controls how features act as obstacles for labels
+    /**
+     * Controls how features act as obstacles for labels.
+     * \see obstacle
+     * \see obstacleFactor
      */
     ObstacleType obstacleType;
 

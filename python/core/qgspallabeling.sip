@@ -136,15 +136,6 @@ class QgsPalLayerSettings
       PolygonWhole
     };
 
-
-    enum SizeUnit
-    {
-      Points,
-      MM,
-      MapUnits,
-      Percent
-    };
-
     enum Property
     {
       // text
@@ -282,15 +273,21 @@ class QgsPalLayerSettings
 
 
     QString fieldName;
+%Docstring
+ Name of field (or an expression) to use for label text.
+ If fieldName is an expression, then isExpression should be set to true.
+.. seealso:: isExpression
+%End
 
     bool isExpression;
 %Docstring
- Is this label made from a expression string, e.g., FieldName || 'mm'
+ True if this label is made from a expression string, e.g., FieldName || 'mm'
+.. seealso:: fieldName
 %End
 
     QgsExpression *getLabelExpression();
 %Docstring
- Returns the QgsExpression for this label settings.
+ Returns the QgsExpression for this label settings. May be None if isExpression is false.
  :rtype: QgsExpression
 %End
 
@@ -307,70 +304,228 @@ True if substitutions should be applied
 
 
     QString wrapChar;
-    MultiLineAlign multilineAlign; // horizontal alignment of multi-line labels
+%Docstring
+ Wrapping character string. If set, any occurrences of this string in the calculated
+ label text will be replaced with new line characters.
+%End
+
+    MultiLineAlign multilineAlign;
+%Docstring
+Horizontal alignment of multi-line labels.
+%End
 
     bool addDirectionSymbol;
+%Docstring
+ If true, '<' or '>' (or custom strings set via leftDirectionSymbol and rightDirectionSymbol)
+ will be automatically added to the label text, pointing in the
+ direction of the line or polygon ring.
+ This setting only affects line or perimeter based labels.
+.. seealso:: leftDirectionSymbol
+.. seealso:: rightDirectionSymbol
+.. seealso:: placeDirectionSymbol
+.. seealso:: reverseDirectionSymbol
+%End
+
     QString leftDirectionSymbol;
+%Docstring
+ String to use for left direction arrows.
+.. seealso:: addDirectionSymbol
+.. seealso:: rightDirectionSymbol
+%End
+
     QString rightDirectionSymbol;
-    DirectionSymbols placeDirectionSymbol; // whether to place left/right, above or below label
+%Docstring
+ String to use for right direction arrows.
+.. seealso:: addDirectionSymbol
+.. seealso:: leftDirectionSymbol
+%End
+
+    DirectionSymbols placeDirectionSymbol;
+%Docstring
+ Placement option for direction symbols. Controls whether to place symbols to the left/right, above or below label.
+.. seealso:: addDirectionSymbol
+%End
+
     bool reverseDirectionSymbol;
+%Docstring
+True if direction symbols should be reversed
+%End
 
     bool formatNumbers;
+%Docstring
+ Set to true to format numeric label text as numbers (e.g. inserting thousand separators
+ and fixed number of decimal places).
+.. seealso:: decimals
+.. seealso:: plusSign
+%End
+
     int decimals;
+%Docstring
+ Number of decimal places to show for numeric labels. formatNumbers must be true for this
+ setting to have an effect.
+.. seealso:: formatNumbers
+%End
+
     bool plusSign;
+%Docstring
+ Whether '+' signs should be prepended to positive numeric labels. formatNumbers must be true for this
+ setting to have an effect.
+.. seealso:: formatNumbers
+%End
 
 
     Placement placement;
     unsigned int placementFlags;
 
-    bool centroidWhole; // whether centroid calculated from whole or visible polygon
-    bool centroidInside; // whether centroid-point calculated must be inside polygon
+    bool centroidWhole;
+%Docstring
+ True if feature centroid should be calculated from the whole feature, or
+ false if only the visible part of the feature should be considered.
+%End
+
+    bool centroidInside;
+%Docstring
+ True if centroid positioned labels must be placed inside their corresponding
+ feature polygon, or false if centroids which fall outside the polygon
+ are permitted.
+%End
 
 
     bool fitInPolygonOnly;
 %Docstring
  True if only labels which completely fit within a polygon are allowed.
 %End
-    double dist; // distance from the feature (in mm)
-    bool distInMapUnits; //true if distance is in map units (otherwise in mm)
+
+    double dist;
+%Docstring
+ Distance from feature to the label. Units are specified via distUnits.
+.. seealso:: distUnits
+.. seealso:: distMapUnitScale
+%End
+
+    QgsUnitTypes::RenderUnit distUnits;
+%Docstring
+ Units the distance from feature to the label.
+.. seealso:: dist
+.. seealso:: distMapUnitScale
+%End
+
     QgsMapUnitScale distMapUnitScale;
+%Docstring
+ Map unit scale for label feature distance.
+.. seealso:: dist
+.. seealso:: distUnits
+%End
+
     OffsetType offsetType;
 %Docstring
 Offset type for layer (only applies in certain placement modes)
 %End
 
     double repeatDistance;
-    SizeUnit repeatDistanceUnit;
+%Docstring
+ Distance for repeating labels for a single feature.
+.. seealso:: repeatDistanceUnit
+.. seealso:: repeatDistanceMapUnitScale
+%End
+
+    QgsUnitTypes::RenderUnit repeatDistanceUnit;
+%Docstring
+ Units for repeating labels for a single feature.
+.. seealso:: repeatDistance
+.. seealso:: repeatDistanceMapUnitScale
+%End
+
     QgsMapUnitScale repeatDistanceMapUnitScale;
+%Docstring
+ Map unit scale for repeating labels for a single feature.
+.. seealso:: repeatDistance
+.. seealso:: repeatDistanceUnit
+%End
 
     QuadrantPosition quadOffset;
+%Docstring
+ Sets the quadrant in which to offset labels from feature.
+%End
 
-    double xOffset; // offset from point in mm or map units
-    double yOffset; // offset from point in mm or map units
-    bool labelOffsetInMapUnits; //true if label offset is in map units (otherwise in mm)
+    double xOffset;
+%Docstring
+ Horizontal offset of label. Units are specified via offsetUnits.
+.. seealso:: yOffset
+.. seealso:: offsetUnits
+.. seealso:: labelOffsetMapUnitScale
+%End
+
+    double yOffset;
+%Docstring
+ Vertical offset of label. Units are specified via offsetUnits.
+.. seealso:: xOffset
+.. seealso:: offsetUnits
+.. seealso:: labelOffsetMapUnitScale
+%End
+
+    QgsUnitTypes::RenderUnit offsetUnits;
+%Docstring
+ Units for offsets of label.
+.. seealso:: xOffset
+.. seealso:: yOffset
+.. seealso:: labelOffsetMapUnitScale
+%End
+
     QgsMapUnitScale labelOffsetMapUnitScale;
+%Docstring
+ Map unit scale for label offset.
+.. seealso:: xOffset
+.. seealso:: yOffset
+.. seealso:: offsetUnits
+%End
 
     double angleOffset;
 %Docstring
 Label rotation, in degrees clockwise
 %End
 
-    bool preserveRotation; // preserve predefined rotation data during label pin/unpin operations
+    bool preserveRotation;
+%Docstring
+True if label rotation should be preserved during label pin/unpin operations.
+%End
 
-    double maxCurvedCharAngleIn; // maximum angle between inside curved label characters (defaults to 20.0, range 20.0 to 60.0)
-    double maxCurvedCharAngleOut; // maximum angle between outside curved label characters (defaults to -20.0, range -20.0 to -95.0)
+    double maxCurvedCharAngleIn;
+%Docstring
+ Maximum angle between inside curved label characters (valid range 20.0 to 60.0).
+.. seealso:: maxCurvedCharAngleOut
+%End
 
-    int priority; // 0 = low, 10 = high
+    double maxCurvedCharAngleOut;
+%Docstring
+ Maximum angle between outside curved label characters (valid range -20.0 to -95.0)
+.. seealso:: maxCurvedCharAngleIn
+%End
+
+    int priority;
+%Docstring
+ Label priority. Valid ranges are from 0 to 10, where 0 = lowest priority
+ and 10 = highest priority.
+%End
 
 
     bool scaleVisibility;
+%Docstring
+ Set to true to limit label visibility to a range of scales.
+.. seealso:: maximumScale
+.. seealso:: minimumScale
+%End
 
     double maximumScale;
 %Docstring
  The maximum map scale (i.e. most "zoomed in" scale) at which the labels will be visible.
  The scale value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
  A scale of 0 indicates no maximum scale visibility.
+
+ This setting is only considered if scaleVisibility is true.
+
 .. seealso:: minimumScale
+.. seealso:: scaleVisibility
 %End
 
     double minimumScale;
@@ -378,34 +533,94 @@ Label rotation, in degrees clockwise
  The minimum map scale (i.e. most "zoomed out" scale) at which the labels will be visible.
  The scale value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
  A scale of 0 indicates no minimum scale visibility.
+
+ This setting is only considered if scaleVisibility is true.
+
 .. seealso:: maximumScale
+.. seealso:: scaleVisibility
 %End
 
-    bool fontLimitPixelSize; // true is label should be limited by fontMinPixelSize/fontMaxPixelSize
-    int fontMinPixelSize; // minimum pixel size for showing rendered map unit labels (1 - 1000)
-    int fontMaxPixelSize; // maximum pixel size for showing rendered map unit labels (1 - 10000)
+    bool fontLimitPixelSize;
+%Docstring
+ True if label sizes should be limited by pixel size.
+.. seealso:: fontMinPixelSize
+.. seealso:: fontMaxPixelSize
+%End
 
-    bool displayAll;  // if true, all features will be labelled even though overlaps occur
-    UpsideDownLabels upsidedownLabels; // whether, or how, to show upsidedown labels
+    int fontMinPixelSize;
+%Docstring
+ Minimum pixel size for showing rendered map unit labels (1 - 1000).
+.. seealso:: fontLimitPixelSize
+.. seealso:: fontMaxPixelSize
+%End
 
-    bool labelPerPart; // whether to label every feature's part or only the biggest one
+    int fontMaxPixelSize;
+%Docstring
+ Maximum pixel size for showing rendered map unit labels (1 - 10000).
+.. seealso:: fontLimitPixelSize
+.. seealso:: fontMinPixelSize
+%End
+
+    bool displayAll;
+%Docstring
+If true, all features will be labelled even when overlaps occur.
+%End
+
+    UpsideDownLabels upsidedownLabels;
+%Docstring
+Controls whether upside down labels are displayed and how they are handled.
+%End
+
+    bool labelPerPart;
+%Docstring
+ True if every part of a multi-part feature should be labeled. If false,
+ only the largest part will be labeled.
+%End
+
     bool mergeLines;
+%Docstring
+ True if connected line features with identical label text should be merged
+ prior to generating label positions.
+%End
 
-    bool limitNumLabels; // whether to limit the number of labels to be drawn
-    int maxNumLabels; // maximum number of labels to be drawn
+    bool limitNumLabels;
+%Docstring
+ True if the number of labels drawn should be limited.
+.. seealso:: maxNumLabels
+%End
 
-    double minFeatureSize; // minimum feature size to be labelled (in mm)
-    bool obstacle; // whether features for layer are obstacles to labels of other layers
+    int maxNumLabels;
+%Docstring
+ The maximum number of labels which should be drawn for this layer.
+ This only has an effect if limitNumLabels is true.
+.. seealso:: limitNumLabels
+%End
+
+    double minFeatureSize;
+%Docstring
+ Minimum feature size (in millimeters) for a feature to be labelled.
+%End
+
+    bool obstacle;
+%Docstring
+ True if features for layer are obstacles to labels of other layers.
+.. seealso:: obstacleFactor
+.. seealso:: obstacleType
+%End
 
     double obstacleFactor;
 %Docstring
  Obstacle factor, where 1.0 = default, < 1.0 more likely to be covered by labels,
  > 1.0 less likely to be covered
+.. seealso:: obstacle
+.. seealso:: obstacleType
 %End
 
     ObstacleType obstacleType;
 %Docstring
- Controls how features act as obstacles for labels
+ Controls how features act as obstacles for labels.
+.. seealso:: obstacle
+.. seealso:: obstacleFactor
 %End
 
     double zIndex;
