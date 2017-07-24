@@ -46,11 +46,11 @@ namespace QgsZipUtils
    */
   CORE_EXPORT bool unzip( const QString &zip, const QString &dir, QStringList &files SIP_OUT );
 
-  /** Zip the list of files in the zip file. If the zip file yet exists or is
+  /** Zip the list of files in the zip file. If the zip file already exists or is
    *  empty, an error is returned. If an input file does not exist, an error is
    *  also returned.
    * \param zip The zip filename
-   * \param files The absolute path filles to embed within the zip
+   * \param files The absolute path to files to embed within the zip
    * \since QGIS 3.0
    */
   CORE_EXPORT bool zip( const QString &zip, const QStringList &files );
