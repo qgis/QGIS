@@ -32,6 +32,21 @@ class QgsSymbolButton : QToolButton
 
     virtual QSize minimumSizeHint() const;
 
+    void setSymbolType( QgsSymbol::SymbolType type );
+%Docstring
+ Sets the symbol ``type`` which the button requires.
+ If the type differs from the current symbol type, the symbol will be reset
+ to a default symbol style of the new type.
+.. seealso:: symbolType()
+%End
+
+    QgsSymbol::SymbolType symbolType() const;
+%Docstring
+ Returns the symbol type which the button requires.
+.. seealso:: setSymbolType()
+ :rtype: QgsSymbol.SymbolType
+%End
+
     void setDialogTitle( const QString &title );
 %Docstring
  Sets the ``title`` for the symbol settings dialog window.
@@ -103,6 +118,19 @@ class QgsSymbolButton : QToolButton
 %Docstring
  Sets the current ``color`` for the symbol. Will emit a changed() signal if the color is different
  to the previous symbol color.
+%End
+
+    void copySymbol();
+%Docstring
+ Copies the current symbol to the clipboard.
+.. seealso:: pasteSymbol()
+%End
+
+    void pasteSymbol();
+%Docstring
+ Pastes a symbol from the clipboard. If clipboard does not contain a valid
+ symbol then no change is applied.
+.. seealso:: copySymbol()
 %End
 
     void copyColor();

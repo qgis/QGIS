@@ -35,6 +35,8 @@ QgsDecorationLayoutExtentDialog::QgsDecorationLayoutExtentDialog( QgsDecorationL
 {
   setupUi( this );
 
+  mSymbolButton->setSymbolType( QgsSymbol::Fill );
+
   QgsSettings settings;
   restoreGeometry( settings.value( "/Windows/DecorationLayoutExtent/geometry" ).toByteArray() );
 

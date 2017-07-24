@@ -54,6 +54,20 @@ class GUI_EXPORT QgsSymbolButton : public QToolButton
     virtual QSize minimumSizeHint() const override;
 
     /**
+     * Sets the symbol \a type which the button requires.
+     * If the type differs from the current symbol type, the symbol will be reset
+     * to a default symbol style of the new type.
+     * \see symbolType()
+     */
+    void setSymbolType( QgsSymbol::SymbolType type );
+
+    /**
+     * Returns the symbol type which the button requires.
+     * \see setSymbolType()
+     */
+    QgsSymbol::SymbolType symbolType() const { return mType; }
+
+    /**
      * Sets the \a title for the symbol settings dialog window.
      * \see dialogTitle()
      */
@@ -143,6 +157,18 @@ class GUI_EXPORT QgsSymbolButton : public QToolButton
      */
     void setColor( const QColor &color );
 
+    /** Copies the current symbol to the clipboard.
+     * \see pasteSymbol()
+     */
+    void copySymbol();
+
+    /**
+     * Pastes a symbol from the clipboard. If clipboard does not contain a valid
+     * symbol then no change is applied.
+     * \see copySymbol()
+     */
+    void pasteSymbol();
+
     /**
      * Copies the current symbol color to the clipboard.
      * \see pasteColor()
@@ -199,6 +225,8 @@ class GUI_EXPORT QgsSymbolButton : public QToolButton
   private:
 
     QString mDialogTitle;
+
+    QgsSymbol::SymbolType mType = QgsSymbol::Fill;
 
     QgsMapCanvas *mMapCanvas = nullptr;
 

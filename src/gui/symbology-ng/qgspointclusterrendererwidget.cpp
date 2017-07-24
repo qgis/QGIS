@@ -53,6 +53,8 @@ QgsPointClusterRendererWidget::QgsPointClusterRendererWidget( QgsVectorLayer *la
   mDistanceUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderMapUnits << QgsUnitTypes::RenderPixels
                                  << QgsUnitTypes::RenderPoints << QgsUnitTypes::RenderInches );
 
+  mCenterSymbolToolButton->setSymbolType( QgsSymbol::Marker );
+
   if ( renderer )
   {
     mRenderer = QgsPointClusterRenderer::convertFromRenderer( renderer );

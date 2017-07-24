@@ -34,6 +34,9 @@ QgsDecorationGridDialog::QgsDecorationGridDialog( QgsDecorationGrid &deco, QWidg
 {
   setupUi( this );
 
+  mMarkerSymbolButton->setSymbolType( QgsSymbol::Marker );
+  mLineSymbolButton->setSymbolType( QgsSymbol::Line );
+
   mAnnotationFontButton->setMode( QgsFontButton::ModeQFont );
 
   QgsSettings settings;
@@ -65,6 +68,7 @@ QgsDecorationGridDialog::QgsDecorationGridDialog( QgsDecorationGrid &deco, QWidg
   connect( mAnnotationFontButton, &QgsFontButton::changed, this, &QgsDecorationGridDialog::annotationFontChanged );
 
   mMarkerSymbolButton->setMapCanvas( QgisApp::instance()->mapCanvas() );
+  mLineSymbolButton->setMapCanvas( QgisApp::instance()->mapCanvas() );
 }
 
 void QgsDecorationGridDialog::updateGuiElements()

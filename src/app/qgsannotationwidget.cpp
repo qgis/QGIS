@@ -33,6 +33,9 @@ QgsAnnotationWidget::QgsAnnotationWidget( QgsMapCanvasAnnotationItem *item, QWid
   setupUi( this );
   mLayerComboBox->setAllowEmptyLayer( true );
 
+  mMapMarkerButton->setSymbolType( QgsSymbol::Marker );
+  mFrameStyleButton->setSymbolType( QgsSymbol::Fill );
+
   if ( mItem && mItem->annotation() )
   {
     QgsAnnotation *annotation = mItem->annotation();

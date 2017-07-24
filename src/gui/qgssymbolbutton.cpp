@@ -52,6 +52,29 @@ QSize QgsSymbolButton::minimumSizeHint() const
   return QSize( size.width(), qMax( size.height(), fontHeight ) );
 }
 
+void QgsSymbolButton::setSymbolType( QgsSymbol::SymbolType type )
+{
+  if ( type != mType )
+  {
+    switch ( type )
+    {
+      case QgsSymbol::Marker:
+        mSymbol.reset( QgsMarkerSymbol::createSimple( QgsStringMap() ) );
+        break;
+
+      case QgsSymbol::Line:
+        mSymbol.reset( QgsLineSymbol::createSimple( QgsStringMap() ) );
+        break;
+
+      case QgsSymbol::Fill:
+        mSymbol.reset( QgsFillSymbol::createSimple( QgsStringMap() ) );
+        break;
+    }
+  }
+  updatePreview();
+  mType = type;
+}
+
 void QgsSymbolButton::showSettingsDialog()
 {
   QgsExpressionContext context;
@@ -153,6 +176,18 @@ void QgsSymbolButton::setColor( const QColor &color )
   mSymbol->setColor( opaque );
   updatePreview();
   emit changed();
+}
+
+void QgsSymbolButton::copySymbol()
+{
+  QApplication::clipboard()->setMimeData( QgsSymbolLayerUtils::symbolToMimeData( mSymbol.get() ) );
+}
+
+void QgsSymbolButton::pasteSymbol()
+{
+  std::unique_ptr< QgsSymbol > symbol( QgsSymbolLayerUtils::symbolFromMimeData( QApplication::clipboard()->mimeData() ) );
+  if ( symbol && symbol->type() == mType )
+    setSymbol( symbol.release() );
 }
 
 void QgsSymbolButton::copyColor()
@@ -264,6 +299,24 @@ void QgsSymbolButton::prepareMenu()
   QAction *configureAction = new QAction( tr( "Configure symbol..." ), this );
   mMenu->addAction( configureAction );
   connect( configureAction, &QAction::triggered, this, &QgsSymbolButton::showSettingsDialog );
+
+  QAction *copySymbolAction = new QAction( tr( "Copy symbol" ), this );
+  mMenu->addAction( copySymbolAction );
+  connect( copySymbolAction, &QAction::triggered, this, &QgsSymbolButton::copySymbol );
+  QAction *pasteSymbolAction = new QAction( tr( "Paste symbol" ), this );
+  //enable or disable paste action based on current clipboard contents. We always show the paste
+  //action, even if it's disabled, to give hint to the user that pasting symbols is possible
+  std::unique_ptr< QgsSymbol > tempSymbol( QgsSymbolLayerUtils::symbolFromMimeData( QApplication::clipboard()->mimeData() ) );
+  if ( tempSymbol && tempSymbol->type() == mType )
+  {
+    pasteSymbolAction->setIcon( QgsSymbolLayerUtils::symbolPreviewIcon( tempSymbol.get(), QSize( 16, 16 ), 1 ) );
+  }
+  else
+  {
+    pasteSymbolAction->setEnabled( false );
+  }
+  mMenu->addAction( pasteSymbolAction );
+  connect( pasteSymbolAction, &QAction::triggered, this, &QgsSymbolButton::pasteSymbol );
 
   mMenu->addSeparator();
 

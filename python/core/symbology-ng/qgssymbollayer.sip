@@ -231,8 +231,10 @@ class QgsSymbolLayer
 
     virtual QgsSymbol *subSymbol();
 %Docstring
+ Returns the symbol's sub symbol, if present.
  :rtype: QgsSymbol
 %End
+
     virtual bool setSubSymbol( QgsSymbol *symbol /Transfer/ );
 %Docstring
 set layer's subsymbol. takes ownership of the passed symbol

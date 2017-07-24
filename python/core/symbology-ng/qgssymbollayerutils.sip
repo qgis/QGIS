@@ -548,6 +548,25 @@ Writes a collection of symbols to XML with specified tagName for the top-level e
 
     static void clearSymbolMap( QgsSymbolMap &symbols );
 
+    static QMimeData *symbolToMimeData( QgsSymbol *symbol ) /Factory/;
+%Docstring
+ Creates new mime data from a ``symbol``.
+ This also sets the mime color data to match the symbol's color, so that copied symbols
+ can be paste in places where a color is expected.
+.. seealso:: symbolFromMimeData()
+.. versionadded:: 3.0
+ :rtype: QMimeData
+%End
+
+    static QgsSymbol *symbolFromMimeData( const QMimeData *data ) /Factory/;
+%Docstring
+ Attempts to parse ``mime`` data as a symbol. A new symbol instance will be returned
+ if the data was successfully converted to a symbol.
+.. seealso:: symbolToMimeData()
+.. versionadded:: 3.0
+ :rtype: QgsSymbol
+%End
+
     static QgsColorRamp *loadColorRamp( QDomElement &element ) /Factory/;
 %Docstring
  Creates a color ramp from the settings encoded in an XML element

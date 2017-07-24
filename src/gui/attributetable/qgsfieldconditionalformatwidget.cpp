@@ -47,6 +47,7 @@ QgsFieldConditionalFormatWidget::QgsFieldConditionalFormatWidget( QWidget *paren
   mModel = new QStandardItemModel( listView );
   listView->setModel( mModel );
   mPresetsList->setModel( mPresetsModel );
+  btnChangeIcon->setSymbolType( QgsSymbol::Marker );
   btnChangeIcon->setSymbol( QgsSymbol::defaultSymbol( QgsWkbTypes::PointGeometry ) );
 
   setPresets( defaultPresets() );

@@ -45,6 +45,8 @@ QgsComposerShapeWidget::QgsComposerShapeWidget( QgsComposerShape *composerShape 
   mShapeComboBox->addItem( tr( "Rectangle" ) );
   mShapeComboBox->addItem( tr( "Triangle" ) );
 
+  mShapeStyleButton->setSymbolType( QgsSymbol::Fill );
+
   setGuiElementValues();
 
   blockAllSignals( false );
