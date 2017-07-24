@@ -21,6 +21,8 @@
 #include "qgslayoutpoint.h"
 #include <QPen>
 
+class QgsLayout;
+
 /**
  * \ingroup core
  * \class QgsLayoutSnapper
@@ -41,7 +43,22 @@ class CORE_EXPORT QgsLayoutSnapper
       GridCrosses //! Crosses
     };
 
-    QgsLayoutSnapper();
+    /**
+     * Constructor for QgsLayoutSnapper, attached to the specified \a layout.
+     */
+    QgsLayoutSnapper( QgsLayout *layout );
+
+    /**
+     * Sets the snap \a tolerance (in pixels) to use when snapping.
+     * \see snapTolerance()
+     */
+    void setSnapTolerance( const int snapTolerance ) { mTolerance = snapTolerance; }
+
+    /**
+     * Returns the snap tolerance (in pixels) to use when snapping.
+     * \see setSnapTolerance()
+     */
+    int snapTolerance() const { return mTolerance; }
 
     /**
      * Sets the page/snap grid \a resolution.
@@ -99,12 +116,54 @@ class CORE_EXPORT QgsLayoutSnapper
      */
     GridStyle gridStyle() const { return mGridStyle; }
 
+    /**
+     * Returns true if snapping to grid is enabled.
+     * \see setSnapToGrid()
+     */
+    bool snapToGrid() const { return mSnapToGrid; }
+
+    /**
+     * Sets whether snapping to grid is \a enabled.
+     * \see snapToGrid()
+     */
+    void setSnapToGrid( bool enabled ) { mSnapToGrid = enabled; }
+
+    /**
+     * Snaps a layout coordinate \a point. If \a point was snapped, \a snapped will be set to true.
+     *
+     * The \a scaleFactor argument should be set to the transformation from
+     * scalar transform from layout coordinates to pixels, i.e. the
+     * graphics view transform().m11() value.
+     *
+     * This method considers snapping to the grid, snap lines, etc.
+     */
+    QPointF snapPoint( QPointF point, double scaleFactor, bool &snapped SIP_OUT ) const;
+
+    /**
+     * Snaps a layout coordinate \a point to the grid. If \a point
+     * was snapped, \a snapped will be set to true.
+     *
+     * The \a scaleFactor argument should be set to the transformation from
+     * scalar transform from layout coordinates to pixels, i.e. the
+     * graphics view transform().m11() value.
+     *
+     * If snapToGrid() is disabled, this method will return the point
+     * unchanged.
+     */
+    QPointF snapPointToGrid( QPointF point, double scaleFactor, bool &snapped SIP_OUT ) const;
+
   private:
+
+    QgsLayout *mLayout = nullptr;
+
+    int mTolerance = 5;
 
     QgsLayoutMeasurement mGridResolution;
     QgsLayoutPoint mGridOffset;
     QPen mGridPen;
     GridStyle mGridStyle = GridLines;
+
+    bool mSnapToGrid = false;
 
 };
 
