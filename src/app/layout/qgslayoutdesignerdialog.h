@@ -191,6 +191,8 @@ class QgsLayoutDesignerDialog: public QMainWindow, private Ui::QgsLayoutDesigner
 
     QgsDockWidget *mItemDock = nullptr;
     QgsPanelWidgetStack *mItemPropertiesStack = nullptr;
+    QgsDockWidget *mGeneralDock = nullptr;
+    QgsPanelWidgetStack *mGeneralPropertiesStack = nullptr;
 
     //! Save window state
     void saveWindowState();
@@ -200,6 +202,8 @@ class QgsLayoutDesignerDialog: public QMainWindow, private Ui::QgsLayoutDesigner
 
     //! Switch to new item creation tool, for a new item of the specified \a type.
     void activateNewItemCreationTool( int type );
+
+    void createLayoutPropertiesWidget();
 
     void initializeRegistry();
 

@@ -30,6 +30,7 @@
 #include "qgslayoutitemwidget.h"
 #include "qgsgui.h"
 #include "qgslayoutitemguiregistry.h"
+#include "qgslayoutpropertieswidget.h"
 #include "qgslayoutruler.h"
 #include "qgslayoutaddpagesdialog.h"
 #include "qgspanelwidgetstack.h"
@@ -241,6 +242,14 @@ QgsLayoutDesignerDialog::QgsLayoutDesignerDialog( QWidget *parent, Qt::WindowFla
 
   int minDockWidth( fontMetrics().width( QStringLiteral( "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX" ) ) );
 
+  setTabPosition( Qt::AllDockWidgetAreas, QTabWidget::North );
+  mGeneralDock = new QgsDockWidget( tr( "Layout" ), this );
+  mGeneralDock->setObjectName( QStringLiteral( "LayoutDock" ) );
+  mGeneralDock->setMinimumWidth( minDockWidth );
+  mGeneralPropertiesStack = new QgsPanelWidgetStack();
+  mGeneralDock->setWidget( mGeneralPropertiesStack );
+  mPanelsMenu->addAction( mGeneralDock->toggleViewAction() );
+
   mItemDock = new QgsDockWidget( tr( "Item properties" ), this );
   mItemDock->setObjectName( QStringLiteral( "ItemDock" ) );
   mItemDock->setMinimumWidth( minDockWidth );
@@ -249,8 +258,14 @@ QgsLayoutDesignerDialog::QgsLayoutDesignerDialog( QWidget *parent, Qt::WindowFla
   mPanelsMenu->addAction( mItemDock->toggleViewAction() );
 
   addDockWidget( Qt::RightDockWidgetArea, mItemDock );
+  addDockWidget( Qt::RightDockWidgetArea, mGeneralDock );
+
+  createLayoutPropertiesWidget();
 
   mItemDock->show();
+  mGeneralDock->show();
+
+  tabifyDockWidget( mGeneralDock, mItemDock );
 
   restoreWindowState();
 }
@@ -269,6 +284,7 @@ void QgsLayoutDesignerDialog::setCurrentLayout( QgsLayout *layout )
 {
   mLayout = layout;
   mView->setCurrentLayout( layout );
+  createLayoutPropertiesWidget();
 }
 
 void QgsLayoutDesignerDialog::setIconSizes( int size )
@@ -590,6 +606,22 @@ void QgsLayoutDesignerDialog::activateNewItemCreationTool( int type )
   {
     mView->setTool( mAddItemTool );
   }
+}
+
+void QgsLayoutDesignerDialog::createLayoutPropertiesWidget()
+{
+  if ( !mLayout )
+  {
+    return;
+  }
+
+  // update composition widget
+  QgsLayoutPropertiesWidget *oldCompositionWidget = qobject_cast<QgsLayoutPropertiesWidget *>( mGeneralPropertiesStack->takeMainPanel() );
+  delete oldCompositionWidget;
+
+  QgsLayoutPropertiesWidget *widget = new QgsLayoutPropertiesWidget( mGeneralDock, mLayout );
+  widget->setDockMode( true );
+  mGeneralPropertiesStack->setMainPanel( widget );
 }
 
 void QgsLayoutDesignerDialog::initializeRegistry()
