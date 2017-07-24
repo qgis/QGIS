@@ -32,7 +32,7 @@ class QgsArchive
 %End
 
 
-    ~QgsArchive();
+    virtual ~QgsArchive();
 %Docstring
  Destructor
 %End
