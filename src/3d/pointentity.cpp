@@ -22,6 +22,7 @@
 #include <QUrl>
 #include <QVector3D>
 
+#include "abstract3drenderer.h"
 #include "map3d.h"
 #include "terraingenerator.h"
 

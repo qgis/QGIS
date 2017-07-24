@@ -5,6 +5,7 @@
 #include <Qt3DRender>
 #include <Qt3DExtras>
 
+#include "abstract3drenderer.h"
 #include "maptexturegenerator.h"
 #include "sidepanel.h"
 #include "window3d.h"
@@ -67,7 +68,7 @@ int main( int argc, char *argv[] )
   map.crs = rlSat->crs();
   map.zExaggeration = 3;
   map.setShowTerrainBoundingBoxes( true );
-  map.setShowTerrainTileInfo( true );
+  map.setShowTerrainTilesInfo( true );
 
   TerrainGenerator::Type tt;
   //tt = TerrainGenerator::Flat;
@@ -105,7 +106,7 @@ int main( int argc, char *argv[] )
     flatGen->setExtent( _fullExtent( map.layers(), map.crs ) );
   }
 
-  QgsRectangle fullExtentInTerrainCrs = _fullExtent( map.layers(), map.terrainGenerator() );
+  QgsRectangle fullExtentInTerrainCrs = _fullExtent( map.layers(), map.terrainGenerator()->crs() );
 
 #if 0
   if ( map.terrainGenerator->type() == TerrainGenerator::QuantizedMesh )
@@ -130,7 +131,7 @@ int main( int argc, char *argv[] )
   pr.material.setShininess( 0 );
   pr.height = 0;
   pr.extrusionHeight = 10;
-  map.polygonRenderers << pr;
+  map.renderers << new PolygonRenderer( pr );
 
   // points
 
@@ -146,7 +147,7 @@ int main( int argc, char *argv[] )
   //Qt3DCore::QTransform tr;
   //tr.setScale3D(QVector3D(4,1,4));
   //ptr.transform = tr.matrix();
-  map.pointRenderers << ptr;
+  map.renderers << new PointRenderer( ptr );
 
   PointRenderer ptr2;
   ptr2.setLayer( vlPoints );
@@ -156,7 +157,7 @@ int main( int argc, char *argv[] )
   ptr2.height = 7.5;
   ptr2.shapeProperties["shape"] = "sphere";
   ptr2.shapeProperties["radius"] = 3.5;
-  map.pointRenderers << ptr2;
+  map.renderers << new PointRenderer( ptr2 );
 
 #if 0
   // Q on top of trees - only in Qt 5.9
@@ -183,7 +184,7 @@ int main( int argc, char *argv[] )
   lr.altBinding = AltBindVertex;  // follow terrain
   lr.height = 1.5;
   lr.distance = 2.5;
-  map.lineRenderers << lr;
+  map.renderers << new LineRenderer( lr );
 
   // skybox
 

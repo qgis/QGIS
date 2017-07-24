@@ -1,5 +1,6 @@
 #include "polygonentity.h"
 
+#include "abstract3drenderer.h"
 #include "polygongeometry.h"
 #include "map3d.h"
 #include "terraingenerator.h"

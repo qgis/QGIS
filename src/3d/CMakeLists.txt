@@ -2,9 +2,11 @@
 # sources
 
 SET(QGIS_3D_SRCS
+  abstract3drenderer.cpp
   cameracontroller.cpp
   lineentity.cpp
   map3d.cpp
+  phongmaterialsettings.cpp
   pointentity.cpp
   polygonentity.cpp
   polygongeometry.cpp
@@ -60,9 +62,11 @@ QT5_ADD_RESOURCES(QGIS_3D_RCC_SRCS shaders.qrc)
 
 SET(QGIS_3D_HDRS
   aabb.h
+  abstract3drenderer.h
   cameracontroller.h
   lineentity.h
   map3d.h
+  phongmaterialsettings.h
   pointentity.h
   polygonentity.h
   polygongeometry.h

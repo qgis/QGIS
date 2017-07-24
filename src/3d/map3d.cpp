@@ -1,5 +1,6 @@
 #include "map3d.h"
 
+#include "abstract3drenderer.h"
 #include "flatterraingenerator.h"
 #include "demterraingenerator.h"
 //#include "quantizedmeshterraingenerator.h"
@@ -9,67 +10,6 @@
 
 #include "qgssymbollayerutils.h"
 #include "qgsrasterlayer.h"
-#include "qgsvectorlayer.h"
-#include "qgsxmlutils.h"
-
-
-static QString _matrix4x4toString( const QMatrix4x4 &m )
-{
-  const float *d = m.constData();
-  QStringList elems;
-  for ( int i = 0; i < 16; ++i )
-    elems << QString::number( d[i] );
-  return elems.join( ' ' );
-}
-
-static QMatrix4x4 _stringToMatrix4x4( const QString &str )
-{
-  QMatrix4x4 m;
-  float *d = m.data();
-  QStringList elems = str.split( ' ' );
-  for ( int i = 0; i < 16; ++i )
-    d[i] = elems[i].toFloat();
-  return m;
-}
-
-QString altClampingToString( AltitudeClamping altClamp )
-{
-  switch ( altClamp )
-  {
-    case AltClampAbsolute: return QStringLiteral( "absolute" );
-    case AltClampRelative: return QStringLiteral( "relative" );
-    case AltClampTerrain: return QStringLiteral( "terrain" );
-    default: Q_ASSERT( false ); return QString();
-  }
-}
-
-AltitudeClamping altClampingFromString( const QString &str )
-{
-  if ( str == "absolute" )
-    return AltClampAbsolute;
-  else if ( str == "terrain" )
-    return AltClampTerrain;
-  else   // "relative"  (default)
-    return AltClampRelative;
-}
-
-QString altBindingToString( AltitudeBinding altBind )
-{
-  switch ( altBind )
-  {
-    case AltBindVertex: return QStringLiteral( "vertex" );
-    case AltBindCentroid: return QStringLiteral( "centroid" );
-    default: Q_ASSERT( false ); return QString();
-  }
-}
-
-AltitudeBinding altBindingFromString( const QString &str )
-{
-  if ( str == "vertex" )
-    return AltBindVertex;
-  else  // "centroid"  (default)
-    return AltBindCentroid;
-}
 
 
 Map3D::Map3D()
@@ -96,21 +36,23 @@ Map3D::Map3D( const Map3D &other )
   , zExaggeration( other.zExaggeration )
   , tileTextureSize( other.tileTextureSize )
   , maxTerrainError( other.maxTerrainError )
-  , mTerrainGenerator( other.mTerrainGenerator ? other.mTerrainGenerator->clone() : nullptr )
-  , polygonRenderers( other.polygonRenderers )
-  , pointRenderers( other.pointRenderers )
-  , lineRenderers( other.lineRenderers )
   , skybox( other.skybox )
   , skyboxFileBase( other.skyboxFileBase )
   , skyboxFileExtension( other.skyboxFileExtension )
+  , mTerrainGenerator( other.mTerrainGenerator ? other.mTerrainGenerator->clone() : nullptr )
   , mShowTerrainBoundingBoxes( other.mShowTerrainBoundingBoxes )
   , mShowTerrainTileInfo( other.mShowTerrainTileInfo )
   , mLayers( other.mLayers )
 {
+  Q_FOREACH ( Abstract3DRenderer *renderer, other.renderers )
+  {
+    renderers << renderer->clone();
+  }
 }
 
 Map3D::~Map3D()
 {
+  qDeleteAll( renderers );
 }
 
 void Map3D::readXml( const QDomElement &elem, const QgsReadWriteContext &context )
@@ -159,31 +101,32 @@ void Map3D::readXml( const QDomElement &elem, const QgsReadWriteContext &context
   }
   mTerrainGenerator->readXml( elemTerrainGenerator );
 
-  polygonRenderers.clear();
-  pointRenderers.clear();
+  qDeleteAll( renderers );
+  renderers.clear();;
 
   QDomElement elemRenderers = elem.firstChildElement( "renderers" );
   QDomElement elemRenderer = elemRenderers.firstChildElement( "renderer" );
   while ( !elemRenderer.isNull() )
   {
+    Abstract3DRenderer *renderer = nullptr;
     QString type = elemRenderer.attribute( "type" );
     if ( type == "polygon" )
     {
-      PolygonRenderer r;
-      r.readXml( elemRenderer );
-      polygonRenderers.append( r );
+      renderer = new PolygonRenderer;
     }
     else if ( type == "point" )
     {
-      PointRenderer r;
-      r.readXml( elemRenderer );
-      pointRenderers.append( r );
+      renderer = new PointRenderer;
     }
     else if ( type == "line" )
     {
-      LineRenderer r;
-      r.readXml( elemRenderer );
-      lineRenderers.append( r );
+      renderer = new LineRenderer;
+    }
+
+    if ( renderer )
+    {
+      renderer->readXml( elemRenderer );
+      renderers.append( renderer );
     }
     elemRenderer = elemRenderer.nextSiblingElement( "renderer" );
   }
@@ -232,25 +175,11 @@ QDomElement Map3D::writeXml( QDomDocument &doc, const QgsReadWriteContext &conte
   elem.appendChild( elemTerrain );
 
   QDomElement elemRenderers = doc.createElement( "renderers" );
-  Q_FOREACH ( const PointRenderer &r, pointRenderers )
+  Q_FOREACH ( const Abstract3DRenderer *renderer, renderers )
   {
     QDomElement elemRenderer = doc.createElement( "renderer" );
-    elemRenderer.setAttribute( "type", "point" );
-    r.writeXml( elemRenderer );
-    elemRenderers.appendChild( elemRenderer );
-  }
-  Q_FOREACH ( const PolygonRenderer &r, polygonRenderers )
-  {
-    QDomElement elemRenderer = doc.createElement( "renderer" );
-    elemRenderer.setAttribute( "type", "polygon" );
-    r.writeXml( elemRenderer );
-    elemRenderers.appendChild( elemRenderer );
-  }
-  Q_FOREACH ( const LineRenderer &r, lineRenderers )
-  {
-    QDomElement elemRenderer = doc.createElement( "renderer" );
-    elemRenderer.setAttribute( "type", "line" );
-    r.writeXml( elemRenderer );
+    elemRenderer.setAttribute( "type", renderer->type() );
+    renderer->writeXml( elemRenderer );
     elemRenderers.appendChild( elemRenderer );
   }
   elem.appendChild( elemRenderers );
@@ -280,22 +209,10 @@ void Map3D::resolveReferences( const QgsProject &project )
 
   mTerrainGenerator->resolveReferences( project );
 
-  for ( int i = 0; i < polygonRenderers.count(); ++i )
+  for ( int i = 0; i < renderers.count(); ++i )
   {
-    PolygonRenderer &r = polygonRenderers[i];
-    r.resolveReferences( project );
-  }
-
-  for ( int i = 0; i < pointRenderers.count(); ++i )
-  {
-    PointRenderer &r = pointRenderers[i];
-    r.resolveReferences( project );
-  }
-
-  for ( int i = 0; i < lineRenderers.count(); ++i )
-  {
-    LineRenderer &r = lineRenderers[i];
-    r.resolveReferences( project );
+    Abstract3DRenderer *renderer = renderers[i];
+    renderer->resolveReferences( project );
   }
 }
 
@@ -349,196 +266,4 @@ void Map3D::setShowTerrainTilesInfo( bool enabled )
 
   mShowTerrainTileInfo = enabled;
   emit showTerrainTilesInfoChanged();
-}
-
-// ---------------
-
-PolygonRenderer::PolygonRenderer()
-  : altClamping( AltClampRelative )
-  , altBinding( AltBindCentroid )
-  , height( 0 )
-  , extrusionHeight( 0 )
-{
-}
-
-void PolygonRenderer::setLayer( QgsVectorLayer *layer )
-{
-  layerRef = QgsMapLayerRef( layer );
-}
-
-QgsVectorLayer *PolygonRenderer::layer() const
-{
-  return qobject_cast<QgsVectorLayer *>( layerRef.layer );
-}
-
-void PolygonRenderer::writeXml( QDomElement &elem ) const
-{
-  QDomDocument doc = elem.ownerDocument();
-
-  QDomElement elemDataProperties = doc.createElement( "data" );
-  elemDataProperties.setAttribute( "layer", layerRef.layerId );
-  elemDataProperties.setAttribute( "alt-clamping", altClampingToString( altClamping ) );
-  elemDataProperties.setAttribute( "alt-binding", altBindingToString( altBinding ) );
-  elemDataProperties.setAttribute( "height", height );
-  elemDataProperties.setAttribute( "extrusion-height", extrusionHeight );
-  elem.appendChild( elemDataProperties );
-
-  QDomElement elemMaterial = doc.createElement( "material" );
-  material.writeXml( elemMaterial );
-  elem.appendChild( elemMaterial );
-}
-
-void PolygonRenderer::readXml( const QDomElement &elem )
-{
-  QDomElement elemDataProperties = elem.firstChildElement( "data" );
-  layerRef = QgsMapLayerRef( elemDataProperties.attribute( "layer" ) );
-  altClamping = altClampingFromString( elemDataProperties.attribute( "alt-clamping" ) );
-  altBinding = altBindingFromString( elemDataProperties.attribute( "alt-binding" ) );
-  height = elemDataProperties.attribute( "height" ).toFloat();
-  extrusionHeight = elemDataProperties.attribute( "extrusion-height" ).toFloat();
-
-  QDomElement elemMaterial = elem.firstChildElement( "material" );
-  material.readXml( elemMaterial );
-}
-
-void PolygonRenderer::resolveReferences( const QgsProject &project )
-{
-  layerRef.setLayer( project.mapLayer( layerRef.layerId ) );
-}
-
-// ---------------
-
-PointRenderer::PointRenderer()
-  : height( 0 )
-{
-}
-
-void PointRenderer::setLayer( QgsVectorLayer *layer )
-{
-  layerRef = QgsMapLayerRef( layer );
-}
-
-QgsVectorLayer *PointRenderer::layer() const
-{
-  return qobject_cast<QgsVectorLayer *>( layerRef.layer );
-}
-
-void PointRenderer::writeXml( QDomElement &elem ) const
-{
-  QDomDocument doc = elem.ownerDocument();
-
-  QDomElement elemDataProperties = doc.createElement( "data" );
-  elemDataProperties.setAttribute( "layer", layerRef.layerId );
-  elemDataProperties.setAttribute( "height", height );
-  elem.appendChild( elemDataProperties );
-
-  QDomElement elemMaterial = doc.createElement( "material" );
-  material.writeXml( elemMaterial );
-  elem.appendChild( elemMaterial );
-
-  QDomElement elemShapeProperties = doc.createElement( "shape-properties" );
-  elemShapeProperties.appendChild( QgsXmlUtils::writeVariant( shapeProperties, doc ) );
-  elem.appendChild( elemShapeProperties );
-
-  QDomElement elemTransform = doc.createElement( "transform" );
-  elemTransform.setAttribute( "matrix", _matrix4x4toString( transform ) );
-  elem.appendChild( elemTransform );
-}
-
-void PointRenderer::readXml( const QDomElement &elem )
-{
-  QDomElement elemDataProperties = elem.firstChildElement( "data" );
-  layerRef = QgsMapLayerRef( elemDataProperties.attribute( "layer" ) );
-  height = elemDataProperties.attribute( "height" ).toFloat();
-
-  QDomElement elemMaterial = elem.firstChildElement( "material" );
-  material.readXml( elemMaterial );
-
-  QDomElement elemShapeProperties = elem.firstChildElement( "shape-properties" );
-  shapeProperties = QgsXmlUtils::readVariant( elemShapeProperties.firstChildElement() ).toMap();
-
-  QDomElement elemTransform = elem.firstChildElement( "transform" );
-  transform = _stringToMatrix4x4( elemTransform.attribute( "matrix" ) );
-}
-
-void PointRenderer::resolveReferences( const QgsProject &project )
-{
-  layerRef.setLayer( project.mapLayer( layerRef.layerId ) );
-}
-
-// ---------------
-
-LineRenderer::LineRenderer()
-  : altClamping( AltClampRelative )
-  , altBinding( AltBindCentroid )
-  , height( 0 )
-  , extrusionHeight( 0 )
-  , distance( 1 )
-{
-
-}
-
-void LineRenderer::setLayer( QgsVectorLayer *layer )
-{
-  layerRef = QgsMapLayerRef( layer );
-}
-
-QgsVectorLayer *LineRenderer::layer() const
-{
-  return qobject_cast<QgsVectorLayer *>( layerRef.layer );
-}
-
-void LineRenderer::writeXml( QDomElement &elem ) const
-{
-  QDomDocument doc = elem.ownerDocument();
-
-  QDomElement elemDataProperties = doc.createElement( "data" );
-  elemDataProperties.setAttribute( "layer", layerRef.layerId );
-  elemDataProperties.setAttribute( "alt-clamping", altClampingToString( altClamping ) );
-  elemDataProperties.setAttribute( "alt-binding", altBindingToString( altBinding ) );
-  elemDataProperties.setAttribute( "height", height );
-  elemDataProperties.setAttribute( "extrusion-height", extrusionHeight );
-  elemDataProperties.setAttribute( "distance", distance );
-  elem.appendChild( elemDataProperties );
-
-  QDomElement elemMaterial = doc.createElement( "material" );
-  material.writeXml( elemMaterial );
-  elem.appendChild( elemMaterial );
-}
-
-void LineRenderer::readXml( const QDomElement &elem )
-{
-  QDomElement elemDataProperties = elem.firstChildElement( "data" );
-  layerRef = QgsMapLayerRef( elemDataProperties.attribute( "layer" ) );
-  altClamping = altClampingFromString( elemDataProperties.attribute( "alt-clamping" ) );
-  altBinding = altBindingFromString( elemDataProperties.attribute( "alt-binding" ) );
-  height = elemDataProperties.attribute( "height" ).toFloat();
-  extrusionHeight = elemDataProperties.attribute( "extrusion-height" ).toFloat();
-  distance = elemDataProperties.attribute( "distance" ).toFloat();
-
-  QDomElement elemMaterial = elem.firstChildElement( "material" );
-  material.readXml( elemMaterial );
-}
-
-void LineRenderer::resolveReferences( const QgsProject &project )
-{
-  layerRef.setLayer( project.mapLayer( layerRef.layerId ) );
-}
-
-// ---------------
-
-void PhongMaterialSettings::readXml( const QDomElement &elem )
-{
-  mAmbient = QgsSymbolLayerUtils::decodeColor( elem.attribute( "ambient" ) );
-  mDiffuse = QgsSymbolLayerUtils::decodeColor( elem.attribute( "diffuse" ) );
-  mSpecular = QgsSymbolLayerUtils::decodeColor( elem.attribute( "specular" ) );
-  mShininess = elem.attribute( "shininess" ).toFloat();
-}
-
-void PhongMaterialSettings::writeXml( QDomElement &elem ) const
-{
-  elem.setAttribute( "ambient", QgsSymbolLayerUtils::encodeColor( mAmbient ) );
-  elem.setAttribute( "diffuse", QgsSymbolLayerUtils::encodeColor( mDiffuse ) );
-  elem.setAttribute( "specular", QgsSymbolLayerUtils::encodeColor( mSpecular ) );
-  elem.setAttribute( "shininess", mShininess );
 }

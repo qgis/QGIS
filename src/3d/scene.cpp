@@ -8,11 +8,9 @@
 #include <Qt3DLogic/QFrameAction>
 
 #include "aabb.h"
+#include "abstract3drenderer.h"
 #include "cameracontroller.h"
-#include "lineentity.h"
 #include "map3d.h"
-#include "pointentity.h"
-#include "polygonentity.h"
 #include "terrain.h"
 #include "terraingenerator.h"
 //#include "testchunkloader.h"
@@ -59,9 +57,11 @@ Scene::Scene( const Map3D &map, Qt3DExtras::QForwardRenderer *defaultFrameGraph,
   createTerrain();
   connect( &map, &Map3D::terrainGeneratorChanged, this, &Scene::createTerrain );
 
-  Q_FOREACH ( const PolygonRenderer &pr, map.polygonRenderers )
+  // create entities of renderers
+
+  Q_FOREACH ( const Abstract3DRenderer *renderer, map.renderers )
   {
-    PolygonEntity *p = new PolygonEntity( map, pr );
+    Qt3DCore::QEntity *p = renderer->createEntity( map );
     p->setParent( this );
   }
 
@@ -78,17 +78,6 @@ Scene::Scene( const Map3D &map, Qt3DExtras::QForwardRenderer *defaultFrameGraph,
   lightEntity->addComponent( lightTransform );
   lightEntity->setParent( this );
 
-  Q_FOREACH ( const PointRenderer &pr, map.pointRenderers )
-  {
-    PointEntity *pe = new PointEntity( map, pr );
-    pe->setParent( this );
-  }
-
-  Q_FOREACH ( const LineRenderer &lr, map.lineRenderers )
-  {
-    LineEntity *le = new LineEntity( map, lr );
-    le->setParent( this );
-  }
 
 #if 0
   ChunkedEntity *testChunkEntity = new ChunkedEntity( AABB( -500, 0, -500, 500, 100, 500 ), 2.f, 3.f, 7, new TestChunkLoaderFactory );
