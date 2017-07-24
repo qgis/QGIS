@@ -9909,6 +9909,7 @@ void QgisApp::new3DMapCanvas()
   map3DWidget->setAllowedAreas( Qt::AllDockWidgetAreas );
   map3DWidget->setGeometry( QRect( rect().width() * 0.75, rect().height() * 0.5, 400, 400 ) );
   map3DWidget->setMap( map );
+  map3DWidget->setMainCanvas( mMapCanvas );
   addDockWidget( Qt::RightDockWidgetArea, map3DWidget );
 }
 

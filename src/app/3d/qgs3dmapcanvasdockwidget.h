@@ -4,6 +4,7 @@
 #include "qgsdockwidget.h"
 
 class Qgs3DMapCanvas;
+class QgsMapCanvas;
 
 class Map3D;
 
@@ -17,12 +18,17 @@ class Qgs3DMapCanvasDockWidget : public QgsDockWidget
     //! takes ownership
     void setMap( Map3D *map );
 
+    void setMainCanvas( QgsMapCanvas *canvas );
+
   private slots:
     void resetView();
     void configure();
 
+    void onMainCanvasLayersChanged();
+
   private:
     Qgs3DMapCanvas *mCanvas;
+    QgsMapCanvas *mMainCanvas;
 };
 
 #endif // QGS3DMAPCANVASDOCKWIDGET_H

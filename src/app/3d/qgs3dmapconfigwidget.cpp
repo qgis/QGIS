@@ -2,15 +2,21 @@
 
 #include "map3d.h"
 #include "demterraingenerator.h"
+#include "flatterraingenerator.h"
 
+#include "qgsmapcanvas.h"
 #include "qgsrasterlayer.h"
 //#include "qgsproject.h"
 
-Qgs3DMapConfigWidget::Qgs3DMapConfigWidget( const Map3D *map, QWidget *parent )
+Qgs3DMapConfigWidget::Qgs3DMapConfigWidget( const Map3D *map, QgsMapCanvas *mainCanvas, QWidget *parent )
   : QWidget( parent )
   , mMap( nullptr )
+  , mMainCanvas( mainCanvas )
 {
   setupUi( this );
+
+  Q_ASSERT( map );
+  Q_ASSERT( mainCanvas );
 
   mMap = new Map3D( *map );
 
@@ -28,6 +34,7 @@ Qgs3DMapConfigWidget::Qgs3DMapConfigWidget( const Map3D *map, QWidget *parent )
   {
     cboTerrainLayer->setLayer( nullptr );
     spinTerrainResolution->setEnabled( false );
+    spinTerrainResolution->setValue( 16 );
   }
 
   spinTerrainScale->setValue( mMap->zExaggeration );
@@ -35,6 +42,8 @@ Qgs3DMapConfigWidget::Qgs3DMapConfigWidget( const Map3D *map, QWidget *parent )
   spinScreenError->setValue( mMap->maxTerrainError );
   chkShowTileInfo->setChecked( mMap->drawTerrainTileInfo );
   chkShowBoundingBoxes->setChecked( mMap->showBoundingBoxes );
+
+  connect( cboTerrainLayer, static_cast<void ( QComboBox::* )( int )>( &QgsMapLayerComboBox::currentIndexChanged ), this, &Qgs3DMapConfigWidget::onTerrainLayerChanged );
 }
 
 Qgs3DMapConfigWidget::~Qgs3DMapConfigWidget()
@@ -44,7 +53,21 @@ Qgs3DMapConfigWidget::~Qgs3DMapConfigWidget()
 
 Map3D *Qgs3DMapConfigWidget::map()
 {
-  // TODO: update terrain settings
+  // update terrain settings
+  if ( QgsRasterLayer *demLayer = qobject_cast<QgsRasterLayer *>( cboTerrainLayer->currentLayer() ) )
+  {
+    DemTerrainGenerator *demTerrainGen = new DemTerrainGenerator;
+    demTerrainGen->setLayer( demLayer );
+    demTerrainGen->setResolution( spinTerrainResolution->value() );
+    mMap->terrainGenerator.reset( demTerrainGen );
+  }
+  else
+  {
+    FlatTerrainGenerator *flatTerrainGen = new FlatTerrainGenerator;
+    flatTerrainGen->setCrs( mMap->crs );
+    flatTerrainGen->setExtent( mMainCanvas->fullExtent() );
+    mMap->terrainGenerator.reset( flatTerrainGen );
+  }
 
   mMap->zExaggeration = spinTerrainScale->value();
   mMap->tileTextureSize = spinMapResolution->value();
@@ -53,4 +76,9 @@ Map3D *Qgs3DMapConfigWidget::map()
   mMap->showBoundingBoxes = chkShowBoundingBoxes->isChecked();
 
   return mMap;
+}
+
+void Qgs3DMapConfigWidget::onTerrainLayerChanged()
+{
+  spinTerrainResolution->setEnabled( cboTerrainLayer->currentLayer() );
 }

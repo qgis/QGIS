@@ -38,7 +38,8 @@ Scene::Scene( const Map3D &map, Qt3DExtras::QForwardRenderer *defaultFrameGraph,
 #endif
 
   // Camera
-  camera->lens()->setPerspectiveProjection( 45.0f, 16.0f / 9.0f, 10.f, 10000.0f );
+  float aspectRatio = ( float )viewportRect.width() / viewportRect.height();
+  camera->lens()->setPerspectiveProjection( 45.0f, aspectRatio, 10.f, 10000.0f );
 
   mFrameAction = new Qt3DLogic::QFrameAction();
   connect( mFrameAction, &Qt3DLogic::QFrameAction::triggered,
@@ -142,6 +143,9 @@ Scene::Scene( const Map3D &map, Qt3DExtras::QForwardRenderer *defaultFrameGraph,
     // but then when zoomed in more it would disappear - so let's keep frustum culling disabled
     defaultFrameGraph->setFrustumCullingEnabled( false );
   }
+
+  // force initial update of chunked entities
+  onCameraChanged();
 }
 
 SceneState _sceneState( CameraController *cameraController )

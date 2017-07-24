@@ -2,6 +2,7 @@
 
 #include "qgs3dmapcanvas.h"
 #include "qgs3dmapconfigwidget.h"
+#include "qgsmapcanvas.h"
 
 #include "map3d.h"
 
@@ -12,12 +13,13 @@
 
 Qgs3DMapCanvasDockWidget::Qgs3DMapCanvasDockWidget( QWidget *parent )
   : QgsDockWidget( parent )
+  , mMainCanvas( nullptr )
 {
   QWidget *contentsWidget = new QWidget( this );
 
   QToolBar *toolBar = new QToolBar( contentsWidget );
-  toolBar->addAction( "Reset view", this, &Qgs3DMapCanvasDockWidget::resetView );
-  toolBar->addAction( "Configure", this, &Qgs3DMapCanvasDockWidget::configure );
+  toolBar->addAction( QgsApplication::getThemeIcon( QStringLiteral( "mActionZoomFullExtent.svg" ) ), "Reset view", this, &Qgs3DMapCanvasDockWidget::resetView );
+  toolBar->addAction( QgsApplication::getThemeIcon( QStringLiteral( "mIconProperties.svg" ) ), "Configure", this, &Qgs3DMapCanvasDockWidget::configure );
 
   mCanvas = new Qgs3DMapCanvas( contentsWidget );
   mCanvas->setMinimumSize( QSize( 200, 200 ) );
@@ -36,6 +38,13 @@ void Qgs3DMapCanvasDockWidget::setMap( Map3D *map )
   mCanvas->setMap( map );
 }
 
+void Qgs3DMapCanvasDockWidget::setMainCanvas( QgsMapCanvas *canvas )
+{
+  mMainCanvas = canvas;
+
+  connect( mMainCanvas, &QgsMapCanvas::layersChanged, this, &Qgs3DMapCanvasDockWidget::onMainCanvasLayersChanged );
+}
+
 void Qgs3DMapCanvasDockWidget::resetView()
 {
   mCanvas->resetView();
@@ -44,7 +53,7 @@ void Qgs3DMapCanvasDockWidget::resetView()
 void Qgs3DMapCanvasDockWidget::configure()
 {
   QDialog dlg;
-  Qgs3DMapConfigWidget *w = new Qgs3DMapConfigWidget( mCanvas->map(), &dlg );
+  Qgs3DMapConfigWidget *w = new Qgs3DMapConfigWidget( mCanvas->map(), mMainCanvas, &dlg );
   QDialogButtonBox *buttons = new QDialogButtonBox( QDialogButtonBox::Ok | QDialogButtonBox::Cancel, &dlg );
   connect( buttons, &QDialogButtonBox::accepted, &dlg, &QDialog::accept );
   connect( buttons, &QDialogButtonBox::rejected, &dlg, &QDialog::reject );
@@ -57,4 +66,11 @@ void Qgs3DMapCanvasDockWidget::configure()
 
   // update map
   setMap( new Map3D( *w->map() ) );
+}
+
+void Qgs3DMapCanvasDockWidget::onMainCanvasLayersChanged()
+{
+  Map3D *newMap = new Map3D( *mCanvas->map() );
+  newMap->setLayers( mMainCanvas->layers() );
+  setMap( newMap );
 }
