@@ -17,7 +17,9 @@ import qgis  # NOQA
 from qgis.core import QgsSymbolLayerUtils, QgsMarkerSymbol
 from qgis.PyQt.QtGui import QColor
 from qgis.PyQt.QtCore import QSizeF, QPointF
-from qgis.testing import unittest
+from qgis.testing import unittest, start_app
+
+start_app()
 
 
 class PyQgsSymbolLayerUtils(unittest.TestCase):
