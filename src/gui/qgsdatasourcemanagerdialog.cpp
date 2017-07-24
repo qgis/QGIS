@@ -34,6 +34,9 @@ QgsDataSourceManagerDialog::QgsDataSourceManagerDialog( QWidget *parent, QgsMapC
 {
 
   ui->setupUi( this );
+  ui->verticalLayout_2->setSpacing( 6 );
+  ui->verticalLayout_2->setMargin( 0 );
+  ui->verticalLayout_2->setContentsMargins( 0, 0, 0, 0 );
   // QgsOptionsDialogBase handles saving/restoring of geometry, splitter and current tab states,
   // switching vertical tabs between icon/text to icon-only modes (splitter collapsed to left),
   // and connecting QDialogButtonBox's accepted/rejected signals to dialog's accept/reject slots
