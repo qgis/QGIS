@@ -39,7 +39,7 @@ class TestQgsSymbolButton(unittest.TestCase):
         button.setSymbolType(QgsSymbol.Line)
         self.assertEqual(button.symbolType(), QgsSymbol.Line)
 
-    def testSettingSymbolType(self)
+    def testSettingSymbolType(self):
         button = QgsSymbolButton()
         button.setSymbolType(QgsSymbol.Marker)
         symbol = QgsMarkerSymbol.createSimple({})
@@ -74,7 +74,7 @@ class TestQgsSymbolButton(unittest.TestCase):
         # try pasting incompatible symbol
         button2.setSymbolType(QgsSymbol.Fill)
         fill_symbol = QgsFillSymbol.createSimple({})
-        fill_symbol.setColor(QColor(0,0,255))
+        fill_symbol.setColor(QColor(0, 0, 255))
         button2.setSymbol(fill_symbol)
         button.copySymbol() # copied a marker symbol
         button2.pasteSymbol() # should have no effect

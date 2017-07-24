@@ -15,6 +15,7 @@ __revision__ = '$Format:%H$'
 import qgis  # NOQA
 
 from qgis.core import QgsSymbolLayerUtils, QgsMarkerSymbol
+from qgis.PyQt.QtGui import QColor
 from qgis.PyQt.QtCore import QSizeF, QPointF
 from qgis.testing import unittest
 

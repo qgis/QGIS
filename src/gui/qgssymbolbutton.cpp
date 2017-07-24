@@ -69,6 +69,9 @@ void QgsSymbolButton::setSymbolType( QgsSymbol::SymbolType type )
       case QgsSymbol::Fill:
         mSymbol.reset( QgsFillSymbol::createSimple( QgsStringMap() ) );
         break;
+
+      case QgsSymbol::Hybrid:
+        break;
     }
   }
   updatePreview();
