@@ -14,6 +14,24 @@ class QDomElement;
 class QDomDocument;
 class QgsProject;
 
+
+class MapTextureImage;
+
+#include <Qt3DCore/QEntity>
+class TerrainChunkEntity : public Qt3DCore::QEntity
+{
+    Q_OBJECT
+  public:
+    TerrainChunkEntity( Qt3DCore::QNode *parent = nullptr )
+      : Qt3DCore::QEntity( parent )
+    {
+    }
+
+    MapTextureImage *mTextureImage = nullptr;
+};
+
+
+
 /**
  * Base class for generators of terrain. All terrain generators are tile based
  * to support hierarchical level of detail. Tiling scheme of a generator is defined

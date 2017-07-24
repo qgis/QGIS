@@ -25,6 +25,8 @@
 
 Scene::Scene( const Map3D &map, Qt3DExtras::QForwardRenderer *defaultFrameGraph, Qt3DRender::QRenderSettings *renderSettings, Qt3DRender::QCamera *camera, const QRect &viewportRect, Qt3DCore::QNode *parent )
   : Qt3DCore::QEntity( parent )
+  , mMap( map )
+  , mTerrain( nullptr )
 {
   defaultFrameGraph->setClearColor( map.backgroundColor );
 
@@ -53,14 +55,9 @@ Scene::Scene( const Map3D &map, Qt3DExtras::QForwardRenderer *defaultFrameGraph,
   mCameraController->resetView();
 
   // create terrain entity
-  mTerrain = new Terrain( 3, map );
-  //mTerrain->setEnabled(false);
-  mTerrain->setParent( this );
-  // add camera control's terrain picker as a component to be able to capture height where mouse was
-  // pressed in order to correcly pan camera when draggin mouse
-  mTerrain->addComponent( mCameraController->terrainPicker() );
-  if ( map.showBoundingBoxes )
-    mTerrain->setShowBoundingBoxes( true );
+
+  createTerrain();
+  connect( &map, &Map3D::terrainGeneratorChanged, this, &Scene::createTerrain );
 
   Q_FOREACH ( const PolygonRenderer &pr, map.polygonRenderers )
   {
@@ -102,8 +99,6 @@ Scene::Scene( const Map3D &map, Qt3DExtras::QForwardRenderer *defaultFrameGraph,
 
                 connect( mCameraController, &CameraController::cameraChanged, this, &Scene::onCameraChanged );
   connect( mCameraController, &CameraController::viewportChanged, this, &Scene::onCameraChanged );
-
-  chunkEntities << mTerrain;
 
 #if 0
   // experiments with loading of existing 3D models.
@@ -181,4 +176,28 @@ void Scene::onFrameTriggered( float dt )
       entity->update( _sceneState( mCameraController ) );
     }
   }
+}
+
+void Scene::createTerrain()
+{
+  if ( mTerrain )
+  {
+    chunkEntities.removeOne( mTerrain );
+
+    mTerrain->deleteLater();
+    mTerrain = nullptr;
+  }
+
+  mTerrain = new Terrain( 3, mMap );
+  //mTerrain->setEnabled(false);
+  mTerrain->setParent( this );
+
+  if ( mMap.showTerrainBoundingBoxes() )
+    mTerrain->setShowBoundingBoxes( true );
+
+  mCameraController->addTerrainPicker( mTerrain->terrainPicker() );
+
+  chunkEntities << mTerrain;
+
+  onCameraChanged();  // force update of the new terrain
 }

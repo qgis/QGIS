@@ -20,6 +20,12 @@ class MapTextureImage : public Qt3DRender::QAbstractTextureImage
 
     virtual Qt3DRender::QTextureImageDataGeneratorPtr dataGenerator() const override;
 
+    void invalidate();
+    void setImage( const QImage &img );
+
+    QgsRectangle imageExtent() const { return extent; }
+    QString imageDebugText() const { return debugText; }
+
   private slots:
     void onTileReady( int jobId, const QImage &img );
 
@@ -31,6 +37,7 @@ class MapTextureImage : public Qt3DRender::QAbstractTextureImage
     QgsRectangle extent;
     QString debugText;
     QImage img;
+    int version;
     int jobId;
     bool jobDone;
 };

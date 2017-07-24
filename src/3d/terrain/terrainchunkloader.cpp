@@ -39,9 +39,9 @@ TerrainChunkLoader::TerrainChunkLoader( Terrain *terrain, ChunkNode *node )
     tz = node->z;
   }
 
-  QgsRectangle extentTerrainCrs = map.terrainGenerator->terrainTilingScheme.tileToExtent( tx, ty, tz );
+  QgsRectangle extentTerrainCrs = map.terrainGenerator()->terrainTilingScheme.tileToExtent( tx, ty, tz );
   mExtentMapCrs = terrain->terrainToMapTransform().transformBoundingBox( extentTerrainCrs );
-  mTileDebugText = map.drawTerrainTileInfo ? QString( "%1 | %2 | %3" ).arg( tx ).arg( ty ).arg( tz ) : QString();
+  mTileDebugText = QString( "%1 | %2 | %3" ).arg( tx ).arg( ty ).arg( tz );
 }
 
 void TerrainChunkLoader::loadTexture()
@@ -49,11 +49,11 @@ void TerrainChunkLoader::loadTexture()
   mTextureImage = mTerrain->mapTextureGenerator()->renderSynchronously( mExtentMapCrs, mTileDebugText );
 }
 
-void TerrainChunkLoader::createTextureComponent( Qt3DCore::QEntity *entity )
+void TerrainChunkLoader::createTextureComponent( TerrainChunkEntity *entity )
 {
   Qt3DRender::QTexture2D *texture = new Qt3DRender::QTexture2D( entity );
-  MapTextureImage *image = new MapTextureImage( mTextureImage, mExtentMapCrs, mTileDebugText );
-  texture->addTextureImage( image );
+  entity->mTextureImage = new MapTextureImage( mTextureImage, mExtentMapCrs, mTileDebugText );
+  texture->addTextureImage( entity->mTextureImage );
   texture->setMinificationFilter( Qt3DRender::QTexture2D::Linear );
   texture->setMagnificationFilter( Qt3DRender::QTexture2D::Linear );
   Qt3DExtras::QTextureMaterial *material;

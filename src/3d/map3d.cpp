@@ -81,13 +81,14 @@ Map3D::Map3D()
   , tileTextureSize( 512 )
   , maxTerrainError( 3.f )
   , skybox( false )
-  , showBoundingBoxes( false )
-  , drawTerrainTileInfo( false )
+  , mShowTerrainBoundingBoxes( false )
+  , mShowTerrainTileInfo( false )
 {
 }
 
 Map3D::Map3D( const Map3D &other )
-  : originX( other.originX )
+  : QObject()
+  , originX( other.originX )
   , originY( other.originY )
   , originZ( other.originZ )
   , crs( other.crs )
@@ -95,15 +96,15 @@ Map3D::Map3D( const Map3D &other )
   , zExaggeration( other.zExaggeration )
   , tileTextureSize( other.tileTextureSize )
   , maxTerrainError( other.maxTerrainError )
-  , terrainGenerator( other.terrainGenerator ? other.terrainGenerator->clone() : nullptr )
+  , mTerrainGenerator( other.mTerrainGenerator ? other.mTerrainGenerator->clone() : nullptr )
   , polygonRenderers( other.polygonRenderers )
   , pointRenderers( other.pointRenderers )
   , lineRenderers( other.lineRenderers )
   , skybox( other.skybox )
   , skyboxFileBase( other.skyboxFileBase )
   , skyboxFileExtension( other.skyboxFileExtension )
-  , showBoundingBoxes( other.showBoundingBoxes )
-  , drawTerrainTileInfo( other.drawTerrainTileInfo )
+  , mShowTerrainBoundingBoxes( other.mShowTerrainBoundingBoxes )
+  , mShowTerrainTileInfo( other.mShowTerrainTileInfo )
   , mLayers( other.mLayers )
 {
 }
@@ -141,7 +142,7 @@ void Map3D::readXml( const QDomElement &elem, const QgsReadWriteContext &context
   QString terrainGenType = elemTerrainGenerator.attribute( "type" );
   if ( terrainGenType == "dem" )
   {
-    terrainGenerator.reset( new DemTerrainGenerator );
+    mTerrainGenerator.reset( new DemTerrainGenerator );
   }
   else if ( terrainGenType == "quantized-mesh" )
   {
@@ -154,9 +155,9 @@ void Map3D::readXml( const QDomElement &elem, const QgsReadWriteContext &context
   {
     FlatTerrainGenerator *flatGen = new FlatTerrainGenerator;
     flatGen->setCrs( crs );
-    terrainGenerator.reset( flatGen );
+    mTerrainGenerator.reset( flatGen );
   }
-  terrainGenerator->readXml( elemTerrainGenerator );
+  mTerrainGenerator->readXml( elemTerrainGenerator );
 
   polygonRenderers.clear();
   pointRenderers.clear();
@@ -193,8 +194,8 @@ void Map3D::readXml( const QDomElement &elem, const QgsReadWriteContext &context
   skyboxFileExtension = elemSkybox.attribute( "file-ext" );
 
   QDomElement elemDebug = elem.firstChildElement( "debug" );
-  showBoundingBoxes = elemDebug.attribute( "bounding-boxes", "0" ).toInt();
-  drawTerrainTileInfo = elemDebug.attribute( "terrain-tile-info", "0" ).toInt();
+  mShowTerrainBoundingBoxes = elemDebug.attribute( "bounding-boxes", "0" ).toInt();
+  mShowTerrainTileInfo = elemDebug.attribute( "terrain-tile-info", "0" ).toInt();
 }
 
 QDomElement Map3D::writeXml( QDomDocument &doc, const QgsReadWriteContext &context ) const
@@ -225,8 +226,8 @@ QDomElement Map3D::writeXml( QDomDocument &doc, const QgsReadWriteContext &conte
   }
   elemTerrain.appendChild( elemMapLayers );
   QDomElement elemTerrainGenerator = doc.createElement( "generator" );
-  elemTerrainGenerator.setAttribute( "type", TerrainGenerator::typeToString( terrainGenerator->type() ) );
-  terrainGenerator->writeXml( elemTerrainGenerator );
+  elemTerrainGenerator.setAttribute( "type", TerrainGenerator::typeToString( mTerrainGenerator->type() ) );
+  mTerrainGenerator->writeXml( elemTerrainGenerator );
   elemTerrain.appendChild( elemTerrainGenerator );
   elem.appendChild( elemTerrain );
 
@@ -262,8 +263,8 @@ QDomElement Map3D::writeXml( QDomDocument &doc, const QgsReadWriteContext &conte
   elem.appendChild( elemSkybox );
 
   QDomElement elemDebug = doc.createElement( "debug" );
-  elemDebug.setAttribute( "bounding-boxes", showBoundingBoxes ? 1 : 0 );
-  elemDebug.setAttribute( "terrain-tile-info", drawTerrainTileInfo ? 1 : 0 );
+  elemDebug.setAttribute( "bounding-boxes", mShowTerrainBoundingBoxes ? 1 : 0 );
+  elemDebug.setAttribute( "terrain-tile-info", mShowTerrainTileInfo ? 1 : 0 );
   elem.appendChild( elemDebug );
 
   return elem;
@@ -277,7 +278,7 @@ void Map3D::resolveReferences( const QgsProject &project )
     layerRef.setLayer( project.mapLayer( layerRef.layerId ) );
   }
 
-  terrainGenerator->resolveReferences( project );
+  mTerrainGenerator->resolveReferences( project );
 
   for ( int i = 0; i < polygonRenderers.count(); ++i )
   {
@@ -306,7 +307,12 @@ void Map3D::setLayers( const QList<QgsMapLayer *> &layers )
   {
     lst.append( layer );
   }
+
+  if ( mLayers == lst )
+    return;
+
   mLayers = lst;
+  emit layersChanged();
 }
 
 QList<QgsMapLayer *> Map3D::layers() const
@@ -319,6 +325,30 @@ QList<QgsMapLayer *> Map3D::layers() const
       lst.append( layerRef.layer );
   }
   return lst;
+}
+
+void Map3D::setTerrainGenerator( TerrainGenerator *gen )
+{
+  mTerrainGenerator.reset( gen );
+  emit terrainGeneratorChanged();
+}
+
+void Map3D::setShowTerrainBoundingBoxes( bool enabled )
+{
+  if ( mShowTerrainBoundingBoxes == enabled )
+    return;
+
+  mShowTerrainBoundingBoxes = enabled;
+  emit showTerrainBoundingBoxesChanged();
+}
+
+void Map3D::setShowTerrainTilesInfo( bool enabled )
+{
+  if ( mShowTerrainTileInfo == enabled )
+    return;
+
+  mShowTerrainTileInfo = enabled;
+  emit showTerrainTilesInfoChanged();
 }
 
 // ---------------

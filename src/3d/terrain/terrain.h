@@ -3,9 +3,15 @@
 
 #include "chunkedentity.h"
 
+namespace Qt3DRender
+{
+  class QObjectPicker;
+}
+
 class Map3D;
 class MapTextureGenerator;
 class QgsCoordinateTransform;
+class TerrainChunkEntity;
 class TerrainGenerator;
 
 /**
@@ -24,11 +30,21 @@ class Terrain : public ChunkedEntity
     MapTextureGenerator *mapTextureGenerator() { return mMapTextureGenerator; }
     const QgsCoordinateTransform &terrainToMapTransform() const { return *mTerrainToMapTransform; }
 
+    Qt3DRender::QObjectPicker *terrainPicker() const { return mTerrainPicker; }
+
+  private slots:
+    void onShowBoundingBoxesChanged();
+    void invalidateMapImages();
+
   private:
 
     const Map3D &map;
+    //! picker of terrain to know height of terrain when dragging
+    Qt3DRender::QObjectPicker *mTerrainPicker;
     MapTextureGenerator *mMapTextureGenerator;
     QgsCoordinateTransform *mTerrainToMapTransform;
+
+    QList<TerrainChunkEntity *> mEntitiesToUpdate;
 };
 
 #endif // TERRAIN_H

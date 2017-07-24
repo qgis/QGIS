@@ -41,8 +41,10 @@ class _3D_EXPORT Scene : public Qt3DCore::QEntity
   private slots:
     void onCameraChanged();
     void onFrameTriggered( float dt );
+    void createTerrain();
 
   private:
+    const Map3D &mMap;
     //! Provides a way to have a synchronous function executed each frame
     Qt3DLogic::QFrameAction *mFrameAction;
     CameraController *mCameraController;

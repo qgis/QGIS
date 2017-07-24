@@ -7,7 +7,7 @@
 #include "qgsrectangle.h"
 
 class Terrain;
-
+class TerrainChunkEntity;
 
 class TerrainChunkLoader : public ChunkLoader
 {
@@ -15,7 +15,7 @@ class TerrainChunkLoader : public ChunkLoader
     TerrainChunkLoader( Terrain *terrain, ChunkNode *node );
 
     void loadTexture();
-    void createTextureComponent( Qt3DCore::QEntity *entity );
+    void createTextureComponent( TerrainChunkEntity *entity );
 
   protected:
     Terrain *mTerrain;

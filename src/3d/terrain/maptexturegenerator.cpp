@@ -65,7 +65,7 @@ QImage MapTextureGenerator::renderSynchronously( const QgsRectangle &extent, con
   QgsMapRendererCustomPainterJob job( mapSettings, &p );
   job.renderSynchronously();
 
-  if ( !debugText.isEmpty() )
+  if ( map.showTerrainTilesInfo() )
   {
     // extra tile information for debugging
     p.setPen( Qt::white );

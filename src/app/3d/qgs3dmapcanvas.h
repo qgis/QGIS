@@ -22,7 +22,7 @@ class Qgs3DMapCanvas : public QWidget
     //! Configure map scene being displayed. Takes ownership.
     void setMap( Map3D *map );
 
-    const Map3D *map() const { return mMap; }
+    Map3D *map() { return mMap; }
 
     //! Resets camera position to the default: looking down at the origin of world coordinates
     void resetView();

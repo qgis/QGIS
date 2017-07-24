@@ -65,12 +65,10 @@ void Qgs3DMapCanvasDockWidget::configure()
     return;
 
   // update map
-  setMap( new Map3D( *w->map() ) );
+  w->apply();
 }
 
 void Qgs3DMapCanvasDockWidget::onMainCanvasLayersChanged()
 {
-  Map3D *newMap = new Map3D( *mCanvas->map() );
-  newMap->setLayers( mMainCanvas->layers() );
-  setMap( newMap );
+  mCanvas->map()->setLayers( mMainCanvas->layers() );
 }

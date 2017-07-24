@@ -6,7 +6,6 @@
 
 CameraController::CameraController( Qt3DCore::QNode *parent )
   : Qt3DCore::QEntity( parent )
-  , mTerrainPicker( nullptr )
   , mLastPressedHeight( 0 )
   , mMouseDevice( new Qt3DInput::QMouseDevice() )
   , mKeyboardDevice( new Qt3DInput::QKeyboardDevice() )
@@ -25,10 +24,6 @@ CameraController::CameraController( Qt3DCore::QNode *parent )
   , mKeyboardTxNegInput( new Qt3DInput::QButtonAxisInput() )
   , mKeyboardTyNegInput( new Qt3DInput::QButtonAxisInput() )
 {
-
-  // object picker for terrain for correct map panning. it will be associated as a component of terrain entity
-  mTerrainPicker = new Qt3DRender::QObjectPicker;
-  connect( mTerrainPicker, &Qt3DRender::QObjectPicker::pressed, this, &CameraController::onPickerMousePressed );
 
   // not using QAxis + QAnalogAxisInput for mouse X,Y because
   // it is only in action when a mouse button is pressed.
@@ -93,6 +88,12 @@ CameraController::CameraController( Qt3DCore::QNode *parent )
            mLogicalDevice, &Qt3DInput::QLogicalDevice::setEnabled );
 
   addComponent( mLogicalDevice );
+}
+
+void CameraController::addTerrainPicker( Qt3DRender::QObjectPicker *picker )
+{
+  // object picker for terrain for correct map panning
+  connect( picker, &Qt3DRender::QObjectPicker::pressed, this, &CameraController::onPickerMousePressed );
 }
 
 void CameraController::setCamera( Qt3DRender::QCamera *camera )

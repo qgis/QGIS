@@ -66,8 +66,8 @@ int main( int argc, char *argv[] )
   map.setLayers( QList<QgsMapLayer *>() << rlSat );
   map.crs = rlSat->crs();
   map.zExaggeration = 3;
-  map.showBoundingBoxes = true;
-  map.drawTerrainTileInfo = true;
+  map.setShowTerrainBoundingBoxes( true );
+  map.setShowTerrainTileInfo( true );
 
   TerrainGenerator::Type tt;
   //tt = TerrainGenerator::Flat;
@@ -78,13 +78,13 @@ int main( int argc, char *argv[] )
   {
     // TODO: tiling scheme - from this project's CRS + full extent
     FlatTerrainGenerator *flatTerrain = new FlatTerrainGenerator;
-    map.terrainGenerator.reset( flatTerrain );
+    map.setTerrainGenerator( flatTerrain );
   }
   else if ( tt == TerrainGenerator::Dem )
   {
     DemTerrainGenerator *demTerrain = new DemTerrainGenerator;
     demTerrain->setLayer( rlDtm );
-    map.terrainGenerator.reset( demTerrain );
+    map.setTerrainGenerator( demTerrain );
   }
   else if ( tt == TerrainGenerator::QuantizedMesh )
   {
@@ -95,17 +95,17 @@ int main( int argc, char *argv[] )
     Q_ASSERT( false );
   }
 
-  Q_ASSERT( map.terrainGenerator ); // we need a terrain generator
+  Q_ASSERT( map.terrainGenerator() ); // we need a terrain generator
 
-  if ( map.terrainGenerator->type() == TerrainGenerator::Flat )
+  if ( map.terrainGenerator()->type() == TerrainGenerator::Flat )
   {
     // we are free to define terrain extent to whatever works best
-    FlatTerrainGenerator *flatGen = static_cast<FlatTerrainGenerator *>( map.terrainGenerator.get() );
+    FlatTerrainGenerator *flatGen = static_cast<FlatTerrainGenerator *>( map.terrainGenerator() );
     flatGen->setCrs( map.crs );
     flatGen->setExtent( _fullExtent( map.layers(), map.crs ) );
   }
 
-  QgsRectangle fullExtentInTerrainCrs = _fullExtent( map.layers(), map.terrainGenerator->crs() );
+  QgsRectangle fullExtentInTerrainCrs = _fullExtent( map.layers(), map.terrainGenerator() );
 
 #if 0
   if ( map.terrainGenerator->type() == TerrainGenerator::QuantizedMesh )
@@ -117,7 +117,7 @@ int main( int argc, char *argv[] )
 
   // origin X,Y - at the project extent's center
   QgsPointXY centerTerrainCrs = fullExtentInTerrainCrs.center();
-  QgsPointXY centerMapCrs = QgsCoordinateTransform( map.terrainGenerator->terrainTilingScheme.crs, map.crs ).transform( centerTerrainCrs );
+  QgsPointXY centerMapCrs = QgsCoordinateTransform( map.terrainGenerator()->terrainTilingScheme.crs, map.crs ).transform( centerTerrainCrs );
   map.originX = centerMapCrs.x();
   map.originY = centerMapCrs.y();
 
@@ -211,7 +211,7 @@ int main( int argc, char *argv[] )
   } );
   project2.read( "/tmp/3d.qgs" );
   map2.resolveReferences( project2 );
-  map2.terrainGenerator->terrainTilingScheme = map.terrainGenerator->terrainTilingScheme;
+  map2.terrainGenerator()->terrainTilingScheme = map.terrainGenerator()->terrainTilingScheme;
 
   //
   // GUI initialization

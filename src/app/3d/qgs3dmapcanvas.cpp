@@ -38,6 +38,10 @@ void Qgs3DMapCanvas::resizeEvent( QResizeEvent *ev )
 
 void Qgs3DMapCanvas::setMap( Map3D *map )
 {
+  // TODO: eventually we want to get rid of this
+  Q_ASSERT( !mMap );
+  Q_ASSERT( !mScene );
+
   QRect viewportRect( QPoint( 0, 0 ), size() );
   Scene *newScene = new Scene( *map, mWindow3D->defaultFrameGraph(), mWindow3D->renderSettings(), mWindow3D->camera(), viewportRect );
 

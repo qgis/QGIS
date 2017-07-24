@@ -147,8 +147,9 @@ class QgsProject;
 class QDomElement;
 
 //! Definition of the world
-class _3D_EXPORT Map3D
+class _3D_EXPORT Map3D : public QObject
 {
+    Q_OBJECT
   public:
     Map3D();
     Map3D( const Map3D &other );
@@ -175,7 +176,10 @@ class _3D_EXPORT Map3D
 
     int tileTextureSize;   //!< Size of map textures of tiles in pixels (width/height)
     int maxTerrainError;   //!< Maximum allowed terrain error in pixels
-    std::unique_ptr<TerrainGenerator> terrainGenerator;  //!< Implementation of the terrain generation
+
+    //! Takes ownership of the generator
+    void setTerrainGenerator( TerrainGenerator *gen );
+    TerrainGenerator *terrainGenerator() const { return mTerrainGenerator.get(); }
 
     //
     // 3D renderers
@@ -189,10 +193,21 @@ class _3D_EXPORT Map3D
     QString skyboxFileBase;
     QString skyboxFileExtension;
 
-    bool showBoundingBoxes;  //!< Whether to show bounding boxes of entities - useful for debugging
-    bool drawTerrainTileInfo;  //!< Whether to draw extra information about terrain tiles to the textures - useful for debugging
+    void setShowTerrainBoundingBoxes( bool enabled );
+    bool showTerrainBoundingBoxes() const { return mShowTerrainBoundingBoxes; }
+    void setShowTerrainTilesInfo( bool enabled );
+    bool showTerrainTilesInfo() const { return mShowTerrainTileInfo; }
+
+  signals:
+    void layersChanged();
+    void terrainGeneratorChanged();
+    void showTerrainBoundingBoxesChanged();
+    void showTerrainTilesInfoChanged();
 
   private:
+    std::unique_ptr<TerrainGenerator> mTerrainGenerator;  //!< Implementation of the terrain generation
+    bool mShowTerrainBoundingBoxes;  //!< Whether to show bounding boxes of entities - useful for debugging
+    bool mShowTerrainTileInfo;  //!< Whether to draw extra information about terrain tiles to the textures - useful for debugging
     QList<QgsMapLayerRef> mLayers;   //!< Layers to be rendered
 };
 

@@ -39,7 +39,7 @@ void FlatTerrainChunkLoader::load()
 
 Qt3DCore::QEntity *FlatTerrainChunkLoader::createEntity( Qt3DCore::QEntity *parent )
 {
-  Qt3DCore::QEntity *entity = new Qt3DCore::QEntity;
+  TerrainChunkEntity *entity = new TerrainChunkEntity;
 
   // make geometry renderer
 

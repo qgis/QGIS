@@ -39,6 +39,7 @@ SET(QGIS_3D_SRCS
 
 SET(QGIS_3D_MOC_HDRS
   cameracontroller.h
+  map3d.h
   scene.h
 
   chunks/chunkedentity.h
@@ -48,6 +49,7 @@ SET(QGIS_3D_MOC_HDRS
   terrain/maptexturegenerator.h
   terrain/maptextureimage.h
   terrain/terrain.h
+  terrain/terraingenerator.h
 )
 
 QT5_WRAP_CPP(QGIS_3D_MOC_SRCS ${QGIS_3D_MOC_HDRS})

@@ -55,7 +55,7 @@ class DemTerrainChunkLoader : public TerrainChunkLoader
     virtual void load() override
     {
       const Map3D &map = mTerrain->map3D();
-      DemTerrainGenerator *generator = static_cast<DemTerrainGenerator *>( map.terrainGenerator.get() );
+      DemTerrainGenerator *generator = static_cast<DemTerrainGenerator *>( map.terrainGenerator() );
 
       heightMap = generator->heightMapGenerator()->renderSynchronously( node->x, node->y, node->z );
       resolution = generator->heightMapGenerator()->resolution();
@@ -65,7 +65,7 @@ class DemTerrainChunkLoader : public TerrainChunkLoader
 
     virtual Qt3DCore::QEntity *createEntity( Qt3DCore::QEntity *parent )
     {
-      Qt3DCore::QEntity *entity = new Qt3DCore::QEntity;
+      TerrainChunkEntity *entity = new TerrainChunkEntity;
 
       // create geometry renderer
 
@@ -87,7 +87,7 @@ class DemTerrainChunkLoader : public TerrainChunkLoader
       _heightMapMinMax( heightMap, zMin, zMax );
 
       const Map3D &map = mTerrain->map3D();
-      QgsRectangle extent = map.terrainGenerator->terrainTilingScheme.tileToExtent( node->x, node->y, node->z ); //node->extent;
+      QgsRectangle extent = map.terrainGenerator()->terrainTilingScheme.tileToExtent( node->x, node->y, node->z ); //node->extent;
       double x0 = extent.xMinimum() - map.originX;
       double y0 = extent.yMinimum() - map.originY;
       double side = extent.width();

@@ -10,6 +10,7 @@ class MapTextureImageDataGenerator : public Qt3DRender::QTextureImageDataGenerat
     QgsRectangle extent;
     QString debugText;
     QImage img;
+    int version;
 
     static QImage placeholderImage()
     {
@@ -22,8 +23,8 @@ class MapTextureImageDataGenerator : public Qt3DRender::QTextureImageDataGenerat
       return i;
     }
 
-    MapTextureImageDataGenerator( const QgsRectangle &extent, const QString &debugText, const QImage &img )
-      : extent( extent ), debugText( debugText ), img( img ) {}
+    MapTextureImageDataGenerator( const QgsRectangle &extent, const QString &debugText, const QImage &img, int version )
+      : extent( extent ), debugText( debugText ), img( img ), version( version ) {}
 
     virtual Qt3DRender::QTextureImageDataPtr operator()() override
     {
@@ -35,7 +36,7 @@ class MapTextureImageDataGenerator : public Qt3DRender::QTextureImageDataGenerat
     virtual bool operator ==( const QTextureImageDataGenerator &other ) const override
     {
       const MapTextureImageDataGenerator *otherFunctor = functor_cast<MapTextureImageDataGenerator>( &other );
-      return otherFunctor != nullptr && otherFunctor->img.isNull() == img.isNull() &&
+      return otherFunctor != nullptr && otherFunctor->version == version &&
              extent == otherFunctor->extent;
     }
 
@@ -48,6 +49,7 @@ MapTextureImage::MapTextureImage( MapTextureGenerator *mapGen, const QgsRectangl
   , mapGen( mapGen )
   , extent( extent )
   , debugText( debugText )
+  , version( 1 )
   , jobDone( false )
 {
   connect( mapGen, &MapTextureGenerator::tileReady, this, &MapTextureImage::onTileReady );
@@ -62,6 +64,7 @@ MapTextureImage::MapTextureImage( const QImage &image, const QgsRectangle &exten
   , extent( extent )
   , debugText( debugText )
   , img( image )
+  , version( 1 )
   , jobDone( true )
 {
 }
@@ -75,7 +78,21 @@ MapTextureImage::~MapTextureImage()
 
 Qt3DRender::QTextureImageDataGeneratorPtr MapTextureImage::dataGenerator() const
 {
-  return Qt3DRender::QTextureImageDataGeneratorPtr( new MapTextureImageDataGenerator( extent, debugText, img ) );
+  return Qt3DRender::QTextureImageDataGeneratorPtr( new MapTextureImageDataGenerator( extent, debugText, img, version ) );
+}
+
+void MapTextureImage::invalidate()
+{
+  img = QImage();
+  version++;
+  notifyDataGeneratorChanged();
+}
+
+void MapTextureImage::setImage( const QImage &img )
+{
+  this->img = img;
+  version++;
+  notifyDataGeneratorChanged();
 }
 
 void MapTextureImage::onTileReady( int jobId, const QImage &img )
@@ -84,6 +101,7 @@ void MapTextureImage::onTileReady( int jobId, const QImage &img )
   {
     this->img = img;
     this->jobDone = true;
+    version++;
     notifyDataGeneratorChanged();
     emit textureReady();
   }

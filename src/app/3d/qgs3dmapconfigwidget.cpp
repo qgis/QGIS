@@ -8,9 +8,9 @@
 #include "qgsrasterlayer.h"
 //#include "qgsproject.h"
 
-Qgs3DMapConfigWidget::Qgs3DMapConfigWidget( const Map3D *map, QgsMapCanvas *mainCanvas, QWidget *parent )
+Qgs3DMapConfigWidget::Qgs3DMapConfigWidget( Map3D *map, QgsMapCanvas *mainCanvas, QWidget *parent )
   : QWidget( parent )
-  , mMap( nullptr )
+  , mMap( map )
   , mMainCanvas( mainCanvas )
 {
   setupUi( this );
@@ -18,12 +18,10 @@ Qgs3DMapConfigWidget::Qgs3DMapConfigWidget( const Map3D *map, QgsMapCanvas *main
   Q_ASSERT( map );
   Q_ASSERT( mainCanvas );
 
-  mMap = new Map3D( *map );
-
   cboTerrainLayer->setAllowEmptyLayer( true );
   cboTerrainLayer->setFilters( QgsMapLayerProxyModel::RasterLayer );
 
-  TerrainGenerator *terrainGen = mMap->terrainGenerator.get();
+  TerrainGenerator *terrainGen = mMap->terrainGenerator();
   if ( terrainGen && terrainGen->type() == TerrainGenerator::Dem )
   {
     DemTerrainGenerator *demTerrainGen = static_cast<DemTerrainGenerator *>( terrainGen );
@@ -40,42 +38,41 @@ Qgs3DMapConfigWidget::Qgs3DMapConfigWidget( const Map3D *map, QgsMapCanvas *main
   spinTerrainScale->setValue( mMap->zExaggeration );
   spinMapResolution->setValue( mMap->tileTextureSize );
   spinScreenError->setValue( mMap->maxTerrainError );
-  chkShowTileInfo->setChecked( mMap->drawTerrainTileInfo );
-  chkShowBoundingBoxes->setChecked( mMap->showBoundingBoxes );
+  chkShowTileInfo->setChecked( mMap->showTerrainTilesInfo() );
+  chkShowBoundingBoxes->setChecked( mMap->showTerrainBoundingBoxes() );
 
   connect( cboTerrainLayer, static_cast<void ( QComboBox::* )( int )>( &QgsMapLayerComboBox::currentIndexChanged ), this, &Qgs3DMapConfigWidget::onTerrainLayerChanged );
 }
 
 Qgs3DMapConfigWidget::~Qgs3DMapConfigWidget()
 {
-  delete mMap;
 }
 
-Map3D *Qgs3DMapConfigWidget::map()
+void Qgs3DMapConfigWidget::apply()
 {
-  // update terrain settings
-  if ( QgsRasterLayer *demLayer = qobject_cast<QgsRasterLayer *>( cboTerrainLayer->currentLayer() ) )
+  QgsRasterLayer *demLayer = qobject_cast<QgsRasterLayer *>( cboTerrainLayer->currentLayer() );
+
+  // TODO: what if just changing generator's properties
+  if ( demLayer && mMap->terrainGenerator()->type() != TerrainGenerator::Dem )
   {
     DemTerrainGenerator *demTerrainGen = new DemTerrainGenerator;
     demTerrainGen->setLayer( demLayer );
     demTerrainGen->setResolution( spinTerrainResolution->value() );
-    mMap->terrainGenerator.reset( demTerrainGen );
+    mMap->setTerrainGenerator( demTerrainGen );
   }
-  else
+  else if ( !demLayer && mMap->terrainGenerator()->type() != TerrainGenerator::Flat )
   {
     FlatTerrainGenerator *flatTerrainGen = new FlatTerrainGenerator;
     flatTerrainGen->setCrs( mMap->crs );
     flatTerrainGen->setExtent( mMainCanvas->fullExtent() );
-    mMap->terrainGenerator.reset( flatTerrainGen );
+    mMap->setTerrainGenerator( flatTerrainGen );
   }
 
   mMap->zExaggeration = spinTerrainScale->value();
   mMap->tileTextureSize = spinMapResolution->value();
   mMap->maxTerrainError = spinScreenError->value();
-  mMap->drawTerrainTileInfo = chkShowTileInfo->isChecked();
-  mMap->showBoundingBoxes = chkShowBoundingBoxes->isChecked();
-
-  return mMap;
+  mMap->setShowTerrainTilesInfo( chkShowTileInfo->isChecked() );
+  mMap->setShowTerrainBoundingBoxes( chkShowBoundingBoxes->isChecked() );
 }
 
 void Qgs3DMapConfigWidget::onTerrainLayerChanged()

@@ -18,7 +18,8 @@ class _3D_EXPORT CameraController : public Qt3DCore::QEntity
 
     Qt3DRender::QCamera *camera() const { return mCamera; }
     QRect viewport() const { return mViewport; }
-    Qt3DRender::QObjectPicker *terrainPicker() const { return mTerrainPicker; }
+
+    void addTerrainPicker( Qt3DRender::QObjectPicker *picker );
 
     void setCamera( Qt3DRender::QCamera *camera );
     void setViewport( const QRect &viewport );
@@ -43,8 +44,6 @@ class _3D_EXPORT CameraController : public Qt3DCore::QEntity
     Qt3DRender::QCamera *mCamera;
     //! used for computation of translation when dragging mouse
     QRect mViewport;
-    //! picker of terrain to know height of terrain when dragging
-    Qt3DRender::QObjectPicker *mTerrainPicker;
     //! height of terrain when mouse button was last pressed - for camera control
     float mLastPressedHeight;
 

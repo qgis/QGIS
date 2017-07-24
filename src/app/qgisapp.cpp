@@ -9890,8 +9890,8 @@ void QgisApp::new3DMapCanvas()
   QgsRectangle fullExtent = mMapCanvas->fullExtent();
 
   Map3D *map = new Map3D;
-  map->showBoundingBoxes = true;
-  map->drawTerrainTileInfo = true;
+  map->setShowTerrainBoundingBoxes( true );
+  map->setShowTerrainTilesInfo( true );
   map->crs = prj->crs();
   map->originX = fullExtent.center().x();
   map->originY = fullExtent.center().y();
@@ -9901,7 +9901,7 @@ void QgisApp::new3DMapCanvas()
   FlatTerrainGenerator *flatTerrain = new FlatTerrainGenerator;
   flatTerrain->setCrs( map->crs );
   flatTerrain->setExtent( fullExtent );
-  map->terrainGenerator.reset( flatTerrain );
+  map->setTerrainGenerator( flatTerrain );
 
   // TODO: combine with code in createNewMapCanvasDock()
   Qgs3DMapCanvasDockWidget *map3DWidget = new Qgs3DMapCanvasDockWidget( this );

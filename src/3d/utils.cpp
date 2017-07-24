@@ -23,7 +23,7 @@ void Utils::clampAltitudes( QgsLineString *lineString, AltitudeClamping altClamp
       {
         pt.set( centroid.x(), centroid.y() );
       }
-      terrainZ = map.terrainGenerator->heightAt( pt.x(), pt.y(), map );
+      terrainZ = map.terrainGenerator()->heightAt( pt.x(), pt.y(), map );
     }
 
     float geomZ = 0;
