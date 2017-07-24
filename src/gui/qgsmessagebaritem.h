@@ -86,9 +86,6 @@ class GUI_EXPORT QgsMessageBarItem : public QWidget
     //! returns the duration in second of the message
     int duration() const { return mDuration; }
 
-    //! returns the level
-    QgsMessageBar::MessageLevel level() { return mLevel; }
-
     //! returns the styleSheet
     QString getStyleSheet() { return mStyleSheet; }
 

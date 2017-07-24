@@ -102,12 +102,6 @@ returns the duration in second of the message
  :rtype: int
 %End
 
-    QgsMessageBar::MessageLevel level();
-%Docstring
-returns the level
- :rtype: QgsMessageBar.MessageLevel
-%End
-
     QString getStyleSheet();
 %Docstring
 returns the styleSheet
