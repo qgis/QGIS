@@ -278,7 +278,7 @@ void QgsVectorLayerJoinBuffer::writeXml( QDomNode &layer_node, QDomDocument &doc
     joinElem.setAttribute( QStringLiteral( "dynamicForm" ), joinIt->isDynamicFormEnabled() );
     joinElem.setAttribute( QStringLiteral( "editable" ), joinIt->isEditable() );
     joinElem.setAttribute( QStringLiteral( "upsertOnEdit" ), joinIt->hasUpsertOnEdit() );
-    joinElem.setAttribute( QStringLiteral( "deleteCascade" ), joinIt->isDeleteCascade() );
+    joinElem.setAttribute( QStringLiteral( "cascadedDelete" ), joinIt->hasCascadedDelete() );
 
     if ( joinIt->joinFieldNamesSubset() )
     {
@@ -322,7 +322,7 @@ void QgsVectorLayerJoinBuffer::readXml( const QDomNode &layer_node )
       info.setDynamicFormEnabled( infoElem.attribute( QStringLiteral( "dynamicForm" ) ).toInt() );
       info.setEditable( infoElem.attribute( QStringLiteral( "editable" ) ).toInt() );
       info.setUpsertOnEdit( infoElem.attribute( QStringLiteral( "upsertOnEdit" ) ).toInt() );
-      info.setDeleteCascade( infoElem.attribute( QStringLiteral( "deleteCascade" ) ).toInt() );
+      info.setCascadedDelete( infoElem.attribute( QStringLiteral( "cascadedDelete" ) ).toInt() );
 
       QDomElement subsetElem = infoElem.firstChildElement( QStringLiteral( "joinFieldsSubset" ) );
       if ( !subsetElem.isNull() )

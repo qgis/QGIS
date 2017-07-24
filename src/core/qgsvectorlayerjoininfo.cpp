@@ -40,7 +40,7 @@ void QgsVectorLayerJoinInfo::setEditable( bool enabled )
 
   if ( ! mEditable )
   {
-    setDeleteCascade( false );
+    setCascadedDelete( false );
     setUpsertOnEdit( false );
   }
 }

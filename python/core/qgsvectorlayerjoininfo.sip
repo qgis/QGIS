@@ -132,7 +132,7 @@ Returns whether values from the joined layer should be cached in memory to speed
 .. versionadded:: 3.0
 %End
 
-    bool isDeleteCascade() const;
+    bool hasCascadedDelete() const;
 %Docstring
  Returns whether a feature deleted on the target layer has to impact the
   joined layer by deleting the corresponding joined feature.
@@ -140,7 +140,7 @@ Returns whether values from the joined layer should be cached in memory to speed
  :rtype: bool
 %End
 
-    void setDeleteCascade( bool enabled );
+    void setCascadedDelete( bool enabled );
 %Docstring
  Sets whether a feature deleted on the target layer has to impact the
   joined layer by deleting the corresponding joined feature.

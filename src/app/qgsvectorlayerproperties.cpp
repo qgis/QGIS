@@ -1251,7 +1251,7 @@ void QgsVectorLayerProperties::addJoinToTreeWidget( const QgsVectorLayerJoinInfo
     joinItem->setText( 6, QChar( 0x2714 ) );
   }
 
-  if ( join.isDeleteCascade() )
+  if ( join.hasCascadedDelete() )
   {
     joinItem->setText( 7, QChar( 0x2714 ) );
   }

@@ -2481,7 +2481,7 @@ bool QgsVectorLayer::deleteFeaturesFromJoinedLayers( QgsFeatureIds fids )
   {
     Q_FOREACH ( const QgsVectorLayerJoinInfo &info, vectorJoins() )
     {
-      if ( info.isEditable() && info.isDeleteCascade() )
+      if ( info.isEditable() && info.hasCascadedDelete() )
       {
         QgsFeature joinFeature = mJoinBuffer->joinedFeatureOf( &info, getFeature( fid ) );
         if ( joinFeature.isValid() )

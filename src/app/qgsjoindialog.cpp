@@ -78,7 +78,7 @@ void QgsJoinDialog::setJoinInfo( const QgsVectorLayerJoinInfo &joinInfo )
   mDynamicFormCheckBox->setChecked( joinInfo.isDynamicFormEnabled() );
   mEditableJoinLayer->setChecked( joinInfo.isEditable() );
   mUpsertOnEditCheckBox->setChecked( joinInfo.hasUpsertOnEdit() );
-  mDeleteCascadeCheckBox->setChecked( joinInfo.isDeleteCascade() );
+  mDeleteCascadeCheckBox->setChecked( joinInfo.hasCascadedDelete() );
 
   if ( joinInfo.prefix().isNull() )
   {
@@ -123,7 +123,7 @@ QgsVectorLayerJoinInfo QgsJoinDialog::joinInfo() const
   if ( info.isEditable() )
   {
     info.setUpsertOnEdit( mUpsertOnEditCheckBox->isChecked() );
-    info.setDeleteCascade( mDeleteCascadeCheckBox->isChecked() );
+    info.setCascadedDelete( mDeleteCascadeCheckBox->isChecked() );
   }
 
   if ( mUseCustomPrefix->isChecked() )

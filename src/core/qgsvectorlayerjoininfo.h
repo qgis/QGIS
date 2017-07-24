@@ -108,13 +108,13 @@ class CORE_EXPORT QgsVectorLayerJoinInfo
      *  joined layer by deleting the corresponding joined feature.
      * \since QGIS 3.0
      */
-    bool isDeleteCascade() const { return mDeleteCascade; }
+    bool hasCascadedDelete() const { return mCascadedDelete; }
 
     /** Sets whether a feature deleted on the target layer has to impact the
      *  joined layer by deleting the corresponding joined feature.
      * \since QGIS 3.0
      */
-    void setDeleteCascade( bool enabled ) { mDeleteCascade = enabled; }
+    void setCascadedDelete( bool enabled ) { mCascadedDelete = enabled; }
 
     /** Returns the prefixed name of the field.
      * \param field the field
@@ -182,7 +182,7 @@ class CORE_EXPORT QgsVectorLayerJoinInfo
 
     bool mUpsertOnEdit;
 
-    bool mDeleteCascade;
+    bool mCascadedDelete;
 
     //! Cache for joined attributes to provide fast lookup (size is 0 if no memory caching)
     QHash< QString, QgsAttributes> cachedAttributes;
