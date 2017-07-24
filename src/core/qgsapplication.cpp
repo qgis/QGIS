@@ -130,6 +130,10 @@ void QgsApplication::init( QString profileFolder )
       QString envProfileFolder = getenv( "QGIS_CUSTOM_CONFIG_PATH" );
       profileFolder = envProfileFolder + QDir::separator() + "profiles";
     }
+    else
+    {
+      profileFolder = QStandardPaths::standardLocations( QStandardPaths::AppDataLocation ).value( 0 );
+    }
     // This will normally get here for custom scripts that use QgsApplication.
     // This doesn't get this hit for QGIS Desktop because we setup the profile via main
     QString rootProfileFolder = QgsUserProfileManager::resolveProfilesFolder( profileFolder );
