@@ -178,11 +178,11 @@ class CORE_EXPORT QgsVectorLayerJoinInfo
 
     bool mDynamicForm = false;
 
-    bool mEditable;
+    bool mEditable = false;
 
-    bool mUpsertOnEdit;
+    bool mUpsertOnEdit = false;
 
-    bool mCascadedDelete;
+    bool mCascadedDelete = false;
 
     //! Cache for joined attributes to provide fast lookup (size is 0 if no memory caching)
     QHash< QString, QgsAttributes> cachedAttributes;
