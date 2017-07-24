@@ -1891,7 +1891,6 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     QMenu *mWebMenu = nullptr;
 
     QMenu *mConfigMenu = nullptr;
-    QMenuBar *mConfigMenuBar = nullptr;
 
     //! Popup menu for the map overview tools
     QMenu *mToolPopupOverviews = nullptr;
