@@ -395,5 +395,7 @@
 %Include layertree/qgslayertreemodellegendnode.sip
 %Include layertree/qgslayertreenode.sip
 %Include layertree/qgslayertreeregistrybridge.sip
+%Include qgsuserprofilemanager.sip
 %Include symbology-ng/qgsarrowsymbollayer.sip
 %Include composer/qgscomposerutils.sip
+%Include qgsuserprofile.sip
