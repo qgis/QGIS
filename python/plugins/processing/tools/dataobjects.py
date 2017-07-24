@@ -74,7 +74,7 @@ def getSupportedOutputTableExtensions():
 
 
 def getRasterLayers(sorting=True):
-    layers = QgsProject.instance().layerTreeRoot().findLayers()
+    layers = QgsMapLayerRegistry.instance().mapLayers().values()
     raster = [lay.layer() for lay in layers if lay.layer() is not None and canUseRasterLayer(lay.layer())]
     if sorting:
         return sorted(raster, key=lambda layer: layer.name().lower())
@@ -83,7 +83,7 @@ def getRasterLayers(sorting=True):
 
 
 def getVectorLayers(shapetype=[-1], sorting=True):
-    layers = QgsProject.instance().layerTreeRoot().findLayers()
+    layers = QgsMapLayerRegistry.instance().mapLayers().values()
     vector = [lay.layer() for lay in layers if canUseVectorLayer(lay.layer(), shapetype)]
     if sorting:
         return sorted(vector, key=lambda layer: layer.name().lower())
@@ -115,7 +115,7 @@ def getAllLayers():
 
 
 def getTables(sorting=True):
-    layers = QgsProject.instance().layerTreeRoot().findLayers()
+    layers = QgsMapLayerRegistry.instance().mapLayers().values()
     tables = []
     for layer in layers:
         mapLayer = layer.layer()
