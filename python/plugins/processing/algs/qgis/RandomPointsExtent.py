@@ -36,7 +36,6 @@ from qgis.core import (QgsField,
                        QgsFeature,
                        QgsFields,
                        QgsGeometry,
-                       QgsPoint,
                        QgsPointXY,
                        QgsWkbTypes,
                        QgsSpatialIndex,
@@ -45,7 +44,6 @@ from qgis.core import (QgsField,
                        QgsProcessingParameterExtent,
                        QgsProcessingParameterNumber,
                        QgsProcessingParameterCrs,
-                       QgsProcessingParameterBoolean,
                        QgsProcessingParameterFeatureSink,
                        QgsProcessingParameterDefinition)
 
@@ -61,8 +59,6 @@ class RandomPointsExtent(QgisAlgorithm):
     POINTS_NUMBER = 'POINTS_NUMBER'
     MIN_DISTANCE = 'MIN_DISTANCE'
     TARGET_CRS = 'TARGET_CRS'
-    ADD_Z = 'ADD_Z'
-    ADD_M = 'ADD_M'
     OUTPUT = 'OUTPUT'
 
     def icon(self):
@@ -87,18 +83,6 @@ class RandomPointsExtent(QgisAlgorithm):
         self.addParameter(QgsProcessingParameterCrs(self.TARGET_CRS,
                                                     self.tr('Target CRS'),
                                                     'ProjectCrs'))
-
-        params = []
-        params.append(QgsProcessingParameterBoolean(self.ADD_Z,
-                                                    self.tr('Add Z coordinate'),
-                                                    False))
-        params.append(QgsProcessingParameterBoolean(self.ADD_M,
-                                                    self.tr('Add M coordinate'),
-                                                    False))
-        for p in params:
-            p.setFlags(p.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
-            self.addParameter(p)
-
         self.addParameter(QgsProcessingParameterFeatureSink(self.OUTPUT,
                                                             self.tr('Random points'),
                                                             type=QgsProcessing.TypeVectorPoint))
@@ -114,22 +98,14 @@ class RandomPointsExtent(QgisAlgorithm):
         pointCount = self.parameterAsDouble(parameters, self.POINTS_NUMBER, context)
         minDistance = self.parameterAsDouble(parameters, self.MIN_DISTANCE, context)
         crs = self.parameterAsCrs(parameters, self.TARGET_CRS, context)
-        addZ = self.parameterAsBool(parameters, self.ADD_Z, context)
-        addM = self.parameterAsBool(parameters, self.ADD_M, context)
 
         extent = QgsGeometry().fromRect(bbox)
 
         fields = QgsFields()
         fields.append(QgsField('id', QVariant.Int, '', 10, 0))
 
-        wkbType = QgsWkbTypes.Point
-        if addZ:
-            wkbType = QgsWkbTypes.addZ(wkbType)
-        if addM:
-            wkbType = QgsWkbTypes.addM(wkbType)
-
         (sink, dest_id) = self.parameterAsSink(parameters, self.OUTPUT, context,
-                                               fields, wkbType, crs)
+                                               fields, QgsWkbTypes.Point, crs)
 
         nPoints = 0
         nIterations = 0
@@ -148,13 +124,8 @@ class RandomPointsExtent(QgisAlgorithm):
             rx = bbox.xMinimum() + bbox.width() * random.random()
             ry = bbox.yMinimum() + bbox.height() * random.random()
 
-            pnt = QgsPoint(rx, ry)
             p = QgsPointXY(rx, ry)
-            if addZ:
-                pnt.addZValue(0.0)
-            if addM:
-                pnt.addMValue(0.0)
-            geom = QgsGeometry(pnt)
+            geom = QgsGeometry.fromPoint(p)
             if geom.within(extent) and \
                     vector.checkMinDistance(p, index, minDistance, points):
                 f = QgsFeature(nPoints)
