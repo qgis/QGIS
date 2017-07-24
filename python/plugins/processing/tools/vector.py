@@ -31,7 +31,6 @@ import csv
 import uuid
 import codecs
 import cStringIO
-import locale
 
 import psycopg2
 
@@ -586,7 +585,7 @@ def ogrLayerName(uri):
     if not ly:
         return "invalid-layerid"
     name = ly.GetName()
-    return unicode(name, locale.getdefaultlocale()[1])
+    return unicode(name, 'utf-8')
 
 
 class VectorWriter:
