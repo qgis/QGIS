@@ -470,13 +470,13 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      */
     QMap< QPair< QString, QString>, QgsTransactionGroup *> transactionGroups() SIP_SKIP;
 
-
     /**
      * Should default values be evaluated on provider side when requested and not when committed.
      *
      * \since QGIS 2.16
      */
     bool evaluateDefaultValues() const;
+
 
     /**
      * Defines if default values should be evaluated on provider side when requested and not when committed.
