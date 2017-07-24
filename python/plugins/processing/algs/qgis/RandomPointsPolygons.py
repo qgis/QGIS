@@ -2,7 +2,7 @@
 
 """
 ***************************************************************************
-    RandomPointsAlongLines.py
+    RandomPointsPolygons.py
     ---------------------
     Date                 : April 2014
     Copyright            : (C) 2014 by Alexander Bruy
@@ -16,7 +16,6 @@
 *                                                                         *
 ***************************************************************************
 """
-from builtins import next
 
 __author__ = 'Alexander Bruy'
 __date__ = 'April 2014'
@@ -26,8 +25,10 @@ __copyright__ = '(C) 2014, Alexander Bruy'
 
 __revision__ = '$Format:%H$'
 
+import os
 import random
 
+from qgis.PyQt.QtGui import QIcon
 from qgis.PyQt.QtCore import QVariant
 from qgis.core import (QgsField,
                        QgsFeatureSink,
@@ -38,6 +39,7 @@ from qgis.core import (QgsField,
                        QgsWkbTypes,
                        QgsSpatialIndex,
                        QgsFeatureRequest,
+                       QgsExpression,
                        QgsDistanceArea,
                        QgsProject,
                        QgsProcessing,
@@ -45,18 +47,26 @@ from qgis.core import (QgsField,
                        QgsProcessingParameterNumber,
                        QgsProcessingParameterFeatureSource,
                        QgsProcessingParameterFeatureSink,
+                       QgsProcessingParameterExpression,
+                       QgsProcessingParameterEnum,
                        QgsProcessingParameterDefinition)
 
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 from processing.tools import vector
 
+pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
-class RandomPointsAlongLines(QgisAlgorithm):
+
+class RandomPointsPolygons(QgisAlgorithm):
 
     INPUT = 'INPUT'
-    POINTS_NUMBER = 'POINTS_NUMBER'
+    EXPRESSION = 'EXPRESSION'
     MIN_DISTANCE = 'MIN_DISTANCE'
+    STRATEGY = 'STRATEGY'
     OUTPUT = 'OUTPUT'
+
+    def icon(self):
+        return QIcon(os.path.join(pluginPath, 'images', 'ftools', 'random_points.png'))
 
     def group(self):
         return self.tr('Vector creation tools')
@@ -65,13 +75,20 @@ class RandomPointsAlongLines(QgisAlgorithm):
         super().__init__()
 
     def initAlgorithm(self, config=None):
+        self.strategies = [self.tr('Points count'),
+                           self.tr('Points density')]
+
         self.addParameter(QgsProcessingParameterFeatureSource(self.INPUT,
                                                               self.tr('Input layer'),
-                                                              [QgsProcessing.TypeVectorLine]))
-        self.addParameter(QgsProcessingParameterNumber(self.POINTS_NUMBER,
-                                                       self.tr('Number of points'),
-                                                       QgsProcessingParameterNumber.Integer,
-                                                       1, False, 1, 1000000000))
+                                                              [QgsProcessing.TypeVectorPolygon]))
+        self.addParameter(QgsProcessingParameterEnum(self.STRATEGY,
+                                                     self.tr('Sampling strategy'),
+                                                     self.strategies,
+                                                     False,
+                                                     0))
+        self.addParameter(QgsProcessingParameterExpression(self.EXPRESSION,
+                                                           self.tr('Expression'),
+                                                           parentLayerParameterName=self.INPUT))
         self.addParameter(QgsProcessingParameterNumber(self.MIN_DISTANCE,
                                                        self.tr('Minimum distance between points'),
                                                        QgsProcessingParameterNumber.Double,
@@ -81,15 +98,24 @@ class RandomPointsAlongLines(QgisAlgorithm):
                                                             type=QgsProcessing.TypeVectorPoint))
 
     def name(self):
-        return 'randompointsalongline'
+        return 'randompointsinsidepolygons'
 
     def displayName(self):
-        return self.tr('Random points along line')
+        return self.tr('Random points inside polygons')
 
     def processAlgorithm(self, parameters, context, feedback):
         source = self.parameterAsSource(parameters, self.INPUT, context)
-        pointCount = self.parameterAsDouble(parameters, self.POINTS_NUMBER, context)
+        strategy = self.parameterAsEnum(parameters, self.STRATEGY, context)
         minDistance = self.parameterAsDouble(parameters, self.MIN_DISTANCE, context)
+
+        expression = QgsExpression(self.parameterAsString(parameters, self.EXPRESSION, context))
+        if expression.hasParserError():
+            raise ProcessingException(expression.parserErrorString())
+
+        expressionContext = self.createExpressionContext(parameters, context)
+        if not expression.prepare(expressionContext):
+            raise ProcessingException(
+                self.tr('Evaluation error: {0}').format(expression.evalErrorString()))
 
         fields = QgsFields()
         fields.append(QgsField('id', QVariant.Int, '', 10, 0))
@@ -97,59 +123,54 @@ class RandomPointsAlongLines(QgisAlgorithm):
         (sink, dest_id) = self.parameterAsSink(parameters, self.OUTPUT, context,
                                                fields, QgsWkbTypes.Point, source.sourceCrs())
 
-        nPoints = 0
-        nIterations = 0
-        maxIterations = pointCount * 200
-        featureCount = source.featureCount()
-        total = 100.0 / pointCount if pointCount else 1
-
-        index = QgsSpatialIndex()
-        points = dict()
-
         da = QgsDistanceArea()
         da.setSourceCrs(source.sourceCrs())
         da.setEllipsoid(QgsProject.instance().ellipsoid())
 
-        request = QgsFeatureRequest()
-
-        random.seed()
-
-        while nIterations < maxIterations and nPoints < pointCount:
+        total = 100.0 / source.featureCount() if source.featureCount() else 0
+        for current, f in enumerate(source.getFeatures()):
             if feedback.isCanceled():
                 break
 
-            # pick random feature
-            fid = random.randint(0, featureCount - 1)
-            f = next(source.getFeatures(request.setFilterFid(fid).setSubsetOfAttributes([])))
+            expressionContext.setFeature(f)
+            value = expression.evaluate(expressionContext)
+            if expression.hasEvalError():
+                feedback.pushInfo(
+                    self.tr('Evaluation error for feature ID {}: {}').format(f.id(), expression.evalErrorString()))
+                continue
+
             fGeom = f.geometry()
-
-            if fGeom.isMultipart():
-                lines = fGeom.asMultiPolyline()
-                # pick random line
-                lineId = random.randint(0, len(lines) - 1)
-                vertices = lines[lineId]
+            bbox = fGeom.boundingBox()
+            if strategy == 0:
+                pointCount = int(value)
             else:
-                vertices = fGeom.asPolyline()
+                pointCount = int(round(value * da.measureArea(fGeom)))
 
-            # pick random segment
-            if len(vertices) == 2:
-                vid = 0
-            else:
-                vid = random.randint(0, len(vertices) - 2)
-            startPoint = vertices[vid]
-            endPoint = vertices[vid + 1]
-            length = da.measureLine(startPoint, endPoint)
-            dist = length * random.random()
+            if pointCount == 0:
+                feedback.pushInfo("Skip feature {} as number of points for it is 0.")
+                continue
 
-            if dist > minDistance:
-                d = dist / (length - dist)
-                rx = (startPoint.x() + d * endPoint.x()) / (1 + d)
-                ry = (startPoint.y() + d * endPoint.y()) / (1 + d)
+            index = QgsSpatialIndex()
+            points = dict()
 
-                # generate random point
+            nPoints = 0
+            nIterations = 0
+            maxIterations = pointCount * 200
+            total = 100.0 / pointCount if pointCount else 1
+
+            random.seed()
+
+            while nIterations < maxIterations and nPoints < pointCount:
+                if feedback.isCanceled():
+                    break
+
+                rx = bbox.xMinimum() + bbox.width() * random.random()
+                ry = bbox.yMinimum() + bbox.height() * random.random()
+
                 p = QgsPointXY(rx, ry)
                 geom = QgsGeometry.fromPoint(p)
-                if vector.checkMinDistance(p, index, minDistance, points):
+                if geom.within(fGeom) and \
+                        vector.checkMinDistance(p, index, minDistance, points):
                     f = QgsFeature(nPoints)
                     f.initAttributes(1)
                     f.setFields(fields)
@@ -160,10 +181,12 @@ class RandomPointsAlongLines(QgisAlgorithm):
                     points[nPoints] = p
                     nPoints += 1
                     feedback.setProgress(int(nPoints * total))
-            nIterations += 1
+                nIterations += 1
 
-        if nPoints < pointCount:
-            feedback.pushInfo(self.tr('Could not generate requested number of random points. '
-                                      'Maximum number of attempts exceeded.'))
+            if nPoints < pointCount:
+                feedback.pushInfo(self.tr('Could not generate requested number of random '
+                                          'points. Maximum number of attempts exceeded.'))
+
+            feedback.setProgress(0)
 
         return {self.OUTPUT: dest_id}
