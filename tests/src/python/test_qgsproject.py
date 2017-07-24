@@ -684,5 +684,6 @@ class TestQgsProject(unittest.TestCase):
         p = None
         self.assertTrue(l1.isValid())
 
+
 if __name__ == '__main__':
     unittest.main()
