@@ -8,7 +8,6 @@
 
 
 
-
 class QgsUserProfile
 {
 %Docstring

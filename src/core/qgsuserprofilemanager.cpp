@@ -17,6 +17,7 @@
 #include "qgsuserprofile.h"
 #include "qgsapplication.h"
 #include "qgslogger.h"
+#include "qgssettings.h"
 
 #include <QFile>
 #include <QDir>
@@ -80,14 +81,22 @@ bool QgsUserProfileManager::rootLocationIsSet() const
 
 QString QgsUserProfileManager::defaultProfileName() const
 {
-  QString profileName = "default";
-  mSettings->value( "/defaultProfile", "default" );
-  return profileName;
+  QString defaultName = "default";
+  // If the profiles.ini doesn't have the default profile we grab it from
+  // global settings as it might be set by the admin.
+  // If the overrideProfile flag is set then no matter what the profiles.ini says we always take the
+  // global profile.
+  QgsSettings globalSettings;
+  if ( !mSettings->contains( "/core/defaultProfile" ) || globalSettings.value( "overrideLocalProfile", false, QgsSettings::Core ).toBool() )
+  {
+    return globalSettings.value( "defaultProfile", defaultName, QgsSettings::Core ).toString();
+  }
+  return mSettings->value( "/core/defaultProfile", defaultName ).toString();
 }
 
 void QgsUserProfileManager::setDefaultProfileName( const QString &name )
 {
-  mSettings->setValue( "/defaultProfile", name );
+  mSettings->setValue( "/core/defaultProfile", name );
   mSettings->sync();
 }
 

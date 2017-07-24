@@ -821,9 +821,9 @@ int main( int argc, char *argv[] )
     {
       configLocalStorageLocation = getenv( "QGIS_CUSTOM_CONFIG_PATH" );
     }
-    else if ( settings.contains( "profiles-path", QgsSettings::Core ) )
+    else if ( settings.contains( "profilesPath", QgsSettings::Core ) )
     {
-      configLocalStorageLocation = settings.value( "profiles-path", "", QgsSettings::Core ).toString();
+      configLocalStorageLocation = settings.value( "profilesPath", "", QgsSettings::Core ).toString();
       QgsDebugMsg( QString( "Loading profiles path from global config at %1" ).arg( configLocalStorageLocation ) );
     }
 

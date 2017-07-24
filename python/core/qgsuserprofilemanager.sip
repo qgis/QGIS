@@ -95,6 +95,12 @@ class QgsUserProfileManager : QObject
     QString defaultProfileName() const;
 %Docstring
  Returns the name of the default profile that has been set in .default.
+ First checks profile.ini in \\profiles folder
+ Then checks defaultProfile in global settings
+ Finally returns "default" if all else fails
+.. note::
+
+   Setting overrideLocalProfile in global settings will always ignore profiles.ini
  :return: The name of the default profile.
  :rtype: str
 %End
