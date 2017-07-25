@@ -138,7 +138,6 @@ class ScriptEditorDialog(BASE, WIDGET):
 
         self.editor.setLexerType(self.algType)
 
-
     def showSnippets(self, evt):
         popupmenu = QMenu()
         for name, snippet in self.snippets.iteritems():

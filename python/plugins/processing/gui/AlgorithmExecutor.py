@@ -38,6 +38,7 @@ from processing.tools.system import getTempFilename
 from processing.tools import vector
 from processing.core.SilentProgress import SilentProgress
 
+
 def runalg(alg, progress=None):
     """Executes a given algorithm, showing its progress in the
     progress object passed along.
