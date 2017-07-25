@@ -292,10 +292,10 @@ void TestQgsLayout::bounds()
   QGSCOMPARENEAR( compositionBoundsNoPage.top(), 49.79, 0.01 );
 #endif
 
-  QGSCOMPARENEAR( layoutBounds.height(), 211.000000, 0.01 );
-  QGSCOMPARENEAR( layoutBounds.width(), 298.000000, 0.01 );
-  QGSCOMPARENEAR( layoutBounds.left(), -0.500000, 0.01 );
-  QGSCOMPARENEAR( layoutBounds.top(), -0.500000, 0.01 );
+  QGSCOMPARENEAR( layoutBounds.height(), 210.000000, 0.01 );
+  QGSCOMPARENEAR( layoutBounds.width(), 297.000000, 0.01 );
+  QGSCOMPARENEAR( layoutBounds.left(), 0.00000, 0.01 );
+  QGSCOMPARENEAR( layoutBounds.top(), 0.00000, 0.01 );
 
   QRectF compositionBoundsNoPage = l.layoutBounds( true );
   QGSCOMPARENEAR( compositionBoundsNoPage.height(), 175.704581, 0.01 );

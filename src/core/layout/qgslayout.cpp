@@ -138,10 +138,20 @@ QRectF QgsLayout::layoutBounds( bool ignorePages, double margin ) const
     if ( !isPage || !ignorePages )
     {
       //expand bounds with current item's bounds
-      if ( bounds.isValid() )
-        bounds = bounds.united( item->sceneBoundingRect() );
+      QRectF itemBounds;
+      if ( isPage )
+      {
+        // for pages we only consider the item's rect - not the bounding rect
+        // as the bounding rect contains extra padding
+        itemBounds = layoutItem->mapToScene( layoutItem->rect() ).boundingRect();
+      }
       else
-        bounds = item->sceneBoundingRect();
+        itemBounds = item->sceneBoundingRect();
+
+      if ( bounds.isValid() )
+        bounds = bounds.united( itemBounds );
+      else
+        bounds = itemBounds;
     }
   }
 
