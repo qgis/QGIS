@@ -204,6 +204,7 @@ Q_GUI_EXPORT extern int qt_defaultDpiX();
 #include "qgsmapoverviewcanvas.h"
 #include "qgsmapsettings.h"
 #include "qgsmaptip.h"
+#include "qgsmenuheader.h"
 #include "qgsmergeattributesdialog.h"
 #include "qgsmessageviewer.h"
 #include "qgsmessagebar.h"
@@ -2304,11 +2305,13 @@ void QgisApp::refreshProfileMenu()
   QString activeName = profile->name();
   mConfigMenu->setTitle( tr( "&User Profiles" ) );
 
-  mConfigMenu->addSection( tr( "Active Profile" ) );
+  mConfigMenu->addAction( new QgsMenuHeaderWidgetAction( tr( "Active Profile" ), mConfigMenu ) );
 
-  QAction *profileSection = mConfigMenu->addSection( tr( "Profiles" ) );
+  mConfigMenu->addAction( new QgsMenuHeaderWidgetAction( tr( "Profiles" ), mConfigMenu ) );
+  QAction *profileSection = mConfigMenu->actions().at( 1 );
 
-  QAction *configSection = mConfigMenu->addSection( tr( "Config" ) );
+  mConfigMenu->addAction( new QgsMenuHeaderWidgetAction( tr( "Config" ), mConfigMenu ) );
+  QAction *configSection = mConfigMenu->actions().at( 2 );
 
   QAction *openProfileFolderAction = mConfigMenu->addAction( tr( "Open current profile folder" ) );
   connect( openProfileFolderAction, &QAction::triggered, this, [this]()
