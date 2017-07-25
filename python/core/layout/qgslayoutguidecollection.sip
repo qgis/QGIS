@@ -8,7 +8,7 @@
 
 
 
-class QgsLayoutGuide
+class QgsLayoutGuide : QObject
 {
 %Docstring
  Contains the configuration for a single snap guide used by a layout.

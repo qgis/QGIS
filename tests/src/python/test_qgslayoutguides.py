@@ -23,6 +23,7 @@ from qgis.core import (QgsProject,
                        QgsLayoutItemPage)
 from qgis.PyQt.QtGui import (QPen,
                              QColor)
+from qgis.PyQt.QtTest import QSignalSpy
 
 from qgis.testing import start_app, unittest
 
@@ -40,9 +41,11 @@ class TestQgsLayoutGuide(unittest.TestCase):
         self.assertEqual(g.position().length(), 5.0)
         self.assertEqual(g.position().units(), QgsUnitTypes.LayoutCentimeters)
 
+        position_changed_spy = QSignalSpy(g.positionChanged)
         g.setPosition(QgsLayoutMeasurement(15, QgsUnitTypes.LayoutInches))
         self.assertEqual(g.position().length(), 15.0)
         self.assertEqual(g.position().units(), QgsUnitTypes.LayoutInches)
+        self.assertEqual(len(position_changed_spy), 1)
 
         g.setPage(1)
         self.assertEqual(g.page(), 1)
@@ -59,6 +62,7 @@ class TestQgsLayoutGuide(unittest.TestCase):
         self.assertEqual(g.item().line().y1(), 50)
         self.assertEqual(g.item().line().x2(), 297)
         self.assertEqual(g.item().line().y2(), 50)
+        self.assertEqual(g.layoutPosition(), 50)
 
         g.setPosition(QgsLayoutMeasurement(15, QgsUnitTypes.LayoutMillimeters))
         g.update()
@@ -67,6 +71,17 @@ class TestQgsLayoutGuide(unittest.TestCase):
         self.assertEqual(g.item().line().y1(), 15)
         self.assertEqual(g.item().line().x2(), 297)
         self.assertEqual(g.item().line().y2(), 15)
+        self.assertEqual(g.layoutPosition(), 15)
+
+        # vertical guide
+        g2 = QgsLayoutGuide(l, QgsLayoutGuide.Vertical, QgsLayoutMeasurement(5, QgsUnitTypes.LayoutCentimeters))
+        g2.update()
+        self.assertTrue(g2.item().isVisible())
+        self.assertEqual(g2.item().line().x1(), 50)
+        self.assertEqual(g2.item().line().y1(), 0)
+        self.assertEqual(g2.item().line().x2(), 50)
+        self.assertEqual(g2.item().line().y2(), 210)
+        self.assertEqual(g2.layoutPosition(), 50)
 
         g.setPage(10)
         g.update()

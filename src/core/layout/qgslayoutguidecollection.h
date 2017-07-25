@@ -31,8 +31,10 @@ class QGraphicsLineItem;
  * \brief Contains the configuration for a single snap guide used by a layout.
  * \since QGIS 3.0
  */
-class CORE_EXPORT QgsLayoutGuide
+class CORE_EXPORT QgsLayoutGuide : public QObject
 {
+
+    Q_OBJECT
 
   public:
 
@@ -97,6 +99,18 @@ class CORE_EXPORT QgsLayoutGuide
      * Returns the guide's line item.
      */
     QGraphicsLineItem *item();
+
+    /**
+     * Returns the guide's position in absolute layout units.
+     */
+    double layoutPosition() const;
+
+  signals:
+
+    /**
+     * Emitted when the guide's position is changed.
+     */
+    void positionChanged();
 
   private:
 

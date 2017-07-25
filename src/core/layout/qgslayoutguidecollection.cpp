@@ -24,7 +24,8 @@
 //
 
 QgsLayoutGuide::QgsLayoutGuide( QgsLayout *layout, Orientation orientation, const QgsLayoutMeasurement &position )
-  : mOrientation( orientation )
+  : QObject( layout )
+  , mOrientation( orientation )
   , mPosition( position )
   , mLayout( layout )
   , mLineItem( new QGraphicsLineItem() )
@@ -50,6 +51,7 @@ void QgsLayoutGuide::setPosition( const QgsLayoutMeasurement &position )
 {
   mPosition = position;
   update();
+  emit positionChanged();
 }
 
 int QgsLayoutGuide::page() const
@@ -108,6 +110,19 @@ void QgsLayoutGuide::update()
 QGraphicsLineItem *QgsLayoutGuide::item()
 {
   return mLineItem.get();
+}
+
+double QgsLayoutGuide::layoutPosition() const
+{
+  switch ( mOrientation )
+  {
+    case Horizontal:
+      return mLineItem->line().y1();
+
+    case Vertical:
+      return mLineItem->line().x1();
+  }
+  return -999; // avoid warning
 }
 
 QgsLayoutGuide::Orientation QgsLayoutGuide::orientation() const
