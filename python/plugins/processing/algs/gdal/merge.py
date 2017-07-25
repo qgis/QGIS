@@ -65,7 +65,7 @@ class merge(GdalAlgorithm):
         self.addParameter(ParameterBoolean(merge.SEPARATE,
                                            self.tr('Place each input file into a separate band'), False))
         self.addParameter(ParameterNumber(self.NODATA,
-                                          self.tr('Assign a specified nodata value to output bands'), None, None, -9999))        
+                                          self.tr('Assign a specified nodata value to output bands'), None, None, -9999))
         self.addParameter(ParameterSelection(self.RTYPE,
                                              self.tr('Output raster type'), self.TYPE, 5))
 
@@ -75,7 +75,7 @@ class merge(GdalAlgorithm):
         arguments = []
         if self.getParameterValue(merge.NODATA):
             arguments.append('-a_nodata')
-            arguments.append(unicode(self.getParameterValue(merge.NODATA)))        
+            arguments.append(unicode(self.getParameterValue(merge.NODATA)))
         arguments.append('-ot')
         arguments.append(self.TYPE[self.getParameterValue(self.RTYPE)])
         if self.getParameterValue(merge.SEPARATE):
