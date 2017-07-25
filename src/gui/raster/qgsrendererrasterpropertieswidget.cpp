@@ -62,6 +62,11 @@ QgsRendererRasterPropertiesWidget::QgsRendererRasterPropertiesWidget( QgsMapLaye
 
   setupUi( this );
 
+  gridLayout->setSpacing( 6 );
+  gridLayout->setContentsMargins( 0, 12, 0, 0 );
+  gridLayout_3->setSpacing( 6 );
+  gridLayout_3->setContentsMargins( 0, 12, 0, 0 );
+
   _initRendererWidgetFunctions();
 
   mZoomedInResamplingComboBox->insertItem( 0, tr( "Nearest neighbour" ) );
