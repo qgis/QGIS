@@ -34,6 +34,7 @@ from processing.core.outputs import OutputRaster
 from processing.core.parameters import ParameterBoolean
 from processing.core.parameters import ParameterMultipleInput
 from processing.core.parameters import ParameterSelection
+from processing.core.parameters import ParameterNumber
 from processing.tools.system import isWindows
 from processing.algs.gdal.GdalUtils import GdalUtils
 
@@ -45,6 +46,7 @@ class merge(GdalAlgorithm):
     INPUT = 'INPUT'
     OUTPUT = 'OUTPUT'
     PCT = 'PCT'
+    NODATA = 'NODATA'
     SEPARATE = 'SEPARATE'
     RTYPE = 'RTYPE'
 
@@ -62,6 +64,8 @@ class merge(GdalAlgorithm):
                                            self.tr('Grab pseudocolor table from first layer'), False))
         self.addParameter(ParameterBoolean(merge.SEPARATE,
                                            self.tr('Place each input file into a separate band'), False))
+        self.addParameter(ParameterNumber(self.NODATA,
+                                          self.tr('Assign a specified nodata value to output bands'), None, None, -9999))        
         self.addParameter(ParameterSelection(self.RTYPE,
                                              self.tr('Output raster type'), self.TYPE, 5))
 
@@ -69,6 +73,9 @@ class merge(GdalAlgorithm):
 
     def getConsoleCommands(self):
         arguments = []
+        if self.getParameterValue(merge.NODATA):
+            arguments.append('-a_nodata')
+            arguments.append(unicode(self.getParameterValue(merge.NODATA)))        
         arguments.append('-ot')
         arguments.append(self.TYPE[self.getParameterValue(self.RTYPE)])
         if self.getParameterValue(merge.SEPARATE):
