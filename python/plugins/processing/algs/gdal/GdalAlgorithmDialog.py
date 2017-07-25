@@ -33,7 +33,8 @@ from qgis.PyQt.QtWidgets import (QWidget,
                                  QLineEdit,
                                  QComboBox,
                                  QCheckBox,
-                                 QSizePolicy)
+                                 QSizePolicy,
+                                 QDialogButtonBox)
 
 from qgis.gui import QgsMessageBar
 
@@ -57,15 +58,9 @@ class GdalAlgorithmDialog(AlgorithmDialog):
 
         self.setMainWidget(GdalParametersPanel(self, alg))
 
-        cornerWidget = QWidget()
-        layout = QVBoxLayout()
-        layout.setContentsMargins(0, 0, 0, 5)
-        self.tabWidget.setStyleSheet("QTabBar::tab { height: 30px; }")
-        runAsBatchButton = QPushButton(self.tr("Run as batch process..."))
-        runAsBatchButton.clicked.connect(self.runAsBatch)
-        layout.addWidget(runAsBatchButton)
-        cornerWidget.setLayout(layout)
-        self.tabWidget.setCornerWidget(cornerWidget)
+        self.runAsBatchButton = QPushButton(self.tr("Run as Batch Process…"))
+        self.runAsBatchButton.clicked.connect(self.runAsBatch)
+        self.buttonBox.addButton(self.runAsBatchButton, QDialogButtonBox.ResetRole) # reset role to ensure left alignment
 
         self.mainWidget.parametersHaveChanged()
 

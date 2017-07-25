@@ -30,7 +30,7 @@ from pprint import pformat
 import time
 
 from qgis.PyQt.QtCore import Qt
-from qgis.PyQt.QtWidgets import QMessageBox, QApplication, QPushButton, QWidget, QVBoxLayout, QSizePolicy
+from qgis.PyQt.QtWidgets import QMessageBox, QApplication, QPushButton, QWidget, QVBoxLayout, QSizePolicy, QDialogButtonBox
 from qgis.PyQt.QtGui import QCursor, QColor, QPalette
 
 from qgis.core import (QgsProject,
@@ -83,14 +83,9 @@ class AlgorithmDialog(AlgorithmDialogBase):
         self.bar.setSizePolicy(QSizePolicy.Minimum, QSizePolicy.Fixed)
         self.layout().insertWidget(0, self.bar)
 
-        self.cornerWidget = QWidget()
-        layout = QVBoxLayout()
-        layout.setContentsMargins(0, 0, 0, 5)
-        self.runAsBatchButton = QPushButton(self.tr("Run as batch process..."))
+        self.runAsBatchButton = QPushButton(self.tr("Run as Batch Process…"))
         self.runAsBatchButton.clicked.connect(self.runAsBatch)
-        layout.addWidget(self.runAsBatchButton)
-        self.cornerWidget.setLayout(layout)
-        self.tabWidget.setCornerWidget(self.cornerWidget)
+        self.buttonBox.addButton(self.runAsBatchButton, QDialogButtonBox.ResetRole) # reset role to ensure left alignment
 
     def getParametersPanel(self, alg, parent):
         return ParametersPanel(parent, alg)
