@@ -97,8 +97,8 @@ QString QgsPageSizeRegistry::find( const QgsLayoutSize &size ) const
     QgsLayoutSize xSize = converter.convert( size, pageSize.size.units() );
 
     //consider width and height values may be exchanged
-    if ( ( qgsDoubleNear( xSize.width(), pageSize.size.width() ) && qgsDoubleNear( xSize.height(), pageSize.size.height() ) )
-         || ( qgsDoubleNear( xSize.height(), pageSize.size.width() ) && qgsDoubleNear( xSize.width(), pageSize.size.height() ) ) )
+    if ( ( qgsDoubleNear( xSize.width(), pageSize.size.width(), 0.01 ) && qgsDoubleNear( xSize.height(), pageSize.size.height(), 0.01 ) )
+         || ( qgsDoubleNear( xSize.height(), pageSize.size.width(), 0.01 ) && qgsDoubleNear( xSize.width(), pageSize.size.height(), 0.01 ) ) )
     {
       return pageSize.name;
     }
