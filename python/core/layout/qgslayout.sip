@@ -159,6 +159,13 @@ class QgsLayout : QGraphicsScene, QgsExpressionContextGenerator
 %End
 
 
+    QgsLayoutGuideCollection &guides();
+%Docstring
+ Returns a reference to the layout's guide collection, which manages page snap guides.
+ :rtype: QgsLayoutGuideCollection
+%End
+
+
     virtual QgsExpressionContext createExpressionContext() const;
 
 %Docstring

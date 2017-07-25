@@ -20,10 +20,12 @@
 #include "qgslayoutmeasurement.h"
 #include "qgslayoutpoint.h"
 #include <QPen>
+#include <QAbstractListModel>
+#include <QSortFilterProxyModel>
+#include <QGraphicsLineItem>
 #include <memory>
 
 class QgsLayout;
-class QGraphicsLineItem;
 
 /**
  * \ingroup core
@@ -45,7 +47,31 @@ class CORE_EXPORT QgsLayoutGuide : public QObject
       Vertical, //!< Vertical guide
     };
 
-    QgsLayoutGuide( QgsLayout *layout, Orientation orientation, const QgsLayoutMeasurement &position );
+    /**
+     * Constructor for a new guide with the specified \a orientation and
+     * initial \a position.
+     *
+     * A layout must be set by calling setLayout() before the guide can be used.
+     * Adding the guide to a QgsLayoutGuideCollection will automatically set
+     * the corresponding layout for you.
+     */
+    QgsLayoutGuide( Orientation orientation, const QgsLayoutMeasurement &position );
+
+    /**
+     * Returns the layout the guide belongs to.
+     * \see setLayout()
+     */
+    QgsLayout *layout() const;
+
+    /**
+     * Sets the \a layout the guide belongs to.
+     *
+     * \note Adding the guide to a QgsLayoutGuideCollection will automatically set
+     * the corresponding layout for you.
+     *
+     * \see layout()
+     */
+    void setLayout( QgsLayout *layout );
 
     /**
      * Returns the guide's orientation.
@@ -125,9 +151,96 @@ class CORE_EXPORT QgsLayoutGuide : public QObject
     QgsLayout *mLayout = nullptr;
 
     //! Line item used in scene for guide
-    std::shared_ptr< QGraphicsLineItem > mLineItem;
+    std::unique_ptr< QGraphicsLineItem > mLineItem;
+
+};
+
+/**
+ * \ingroup core
+ * \class QgsLayoutGuideCollection
+ * \brief Stores and manages the snap guides used by a layout.
+ * \since QGIS 3.0
+ */
+class CORE_EXPORT QgsLayoutGuideCollection : public QAbstractListModel
+{
+
+    Q_OBJECT
+
+  public:
+
+    //! Model roles
+    enum Roles
+    {
+      OrientationRole = Qt::UserRole, //!< Guide orientation role
+      PositionRole, //!< Guide position role
+      UnitsRole, //!< Guide position units role
+      PageRole, //!< Guide page role
+    };
+
+    /**
+     * Constructor for QgsLayoutGuideCollection belonging to the specified layout.
+     */
+    QgsLayoutGuideCollection( QgsLayout *layout );
+    ~QgsLayoutGuideCollection();
+
+    int rowCount( const QModelIndex & ) const override;
+    QVariant data( const QModelIndex &index, int role ) const override;
+    bool setData( const QModelIndex &index, const QVariant &value, int role ) override;
+    Qt::ItemFlags flags( const QModelIndex &index ) const override;
+
+    /**
+     * Adds a \a guide to the collection. Ownership of the guide is transferred to the
+     * collection, and the guide will automatically have the correct layout
+     * set.
+     */
+    void addGuide( QgsLayoutGuide *guide SIP_TRANSFER );
+
+    /**
+     * Updates the position (and visibility) of all guide line items.
+     */
+    void update();
+
+    /**
+     * Returns the list of guides contained in the collection with the specified
+     * \a orientation.
+     */
+    QList< QgsLayoutGuide * > guides( QgsLayoutGuide::Orientation orientation );
+
+  private:
+
+    QgsLayout *mLayout = nullptr;
+
+    QList< QgsLayoutGuide * > mGuides;
+
 };
 
 
+/**
+ * \ingroup core
+ * \class QgsLayoutGuideProxyModel
+ * \brief Filters QgsLayoutGuideCollection models to guides of a single orientation (horizontal or vertical).
+ * \since QGIS 3.0
+ */
+class CORE_EXPORT QgsLayoutGuideProxyModel : public QSortFilterProxyModel
+{
+    Q_OBJECT
+
+  public:
+
+    /**
+     * Constructor for QgsLayoutGuideProxyModel, filtered to guides of the specified \a orientation and \a page only.
+     *
+     * Page numbers begin at 0.
+     */
+    explicit QgsLayoutGuideProxyModel( QObject *parent SIP_TRANSFERTHIS, QgsLayoutGuide::Orientation orientation, int page );
+
+    bool filterAcceptsRow( int sourceRow, const QModelIndex &sourceParent ) const override;
+    bool lessThan( const QModelIndex &left, const QModelIndex &right ) const override;
+
+  private:
+    QgsLayoutGuide::Orientation mOrientation = QgsLayoutGuide::Horizontal;
+    int mPage = 0;
+
+};
 
 #endif //QGSLAYOUTGUIDECOLLECTION_H

@@ -23,17 +23,14 @@
 // QgsLayoutGuide
 //
 
-QgsLayoutGuide::QgsLayoutGuide( QgsLayout *layout, Orientation orientation, const QgsLayoutMeasurement &position )
-  : QObject( layout )
+QgsLayoutGuide::QgsLayoutGuide( Orientation orientation, const QgsLayoutMeasurement &position )
+  : QObject( nullptr )
   , mOrientation( orientation )
   , mPosition( position )
-  , mLayout( layout )
   , mLineItem( new QGraphicsLineItem() )
 {
   mLineItem->hide();
   mLineItem->setZValue( QgsLayout::ZGuide );
-  mLayout->addItem( mLineItem.get() );
-
   QPen linePen( Qt::SolidLine );
   linePen.setColor( Qt::red );
   // use a pen width of 0, since this activates a cosmetic pen
@@ -67,6 +64,9 @@ void QgsLayoutGuide::setPage( int page )
 
 void QgsLayoutGuide::update()
 {
+  if ( !mLayout )
+    return;
+
   // first find matching page
   if ( mPage >= mLayout->pageCollection()->pageCount() )
   {
@@ -125,7 +125,181 @@ double QgsLayoutGuide::layoutPosition() const
   return -999; // avoid warning
 }
 
+QgsLayout *QgsLayoutGuide::layout() const
+{
+  return mLayout;
+}
+
+void QgsLayoutGuide::setLayout( QgsLayout *layout )
+{
+  mLayout = layout;
+  mLayout->addItem( mLineItem.get() );
+  update();
+}
+
 QgsLayoutGuide::Orientation QgsLayoutGuide::orientation() const
 {
   return mOrientation;
+}
+
+
+
+//
+// QgsLayoutGuideCollection
+//
+
+QgsLayoutGuideCollection::QgsLayoutGuideCollection( QgsLayout *layout )
+  : QAbstractListModel( layout )
+  , mLayout( layout )
+{
+
+}
+
+QgsLayoutGuideCollection::~QgsLayoutGuideCollection()
+{
+  qDeleteAll( mGuides );
+}
+
+int QgsLayoutGuideCollection::rowCount( const QModelIndex & ) const
+{
+  return mGuides.count();
+}
+
+QVariant QgsLayoutGuideCollection::data( const QModelIndex &index, int role ) const
+{
+  if ( !index.isValid() )
+    return QVariant();
+
+  if ( index.row() >= mGuides.count() || index.row() < 0 )
+    return QVariant();
+
+  QgsLayoutGuide *guide = mGuides.at( index.row() );
+  switch ( role )
+  {
+    case Qt::DisplayRole:
+    case Qt::EditRole:
+    {
+      return guide->position().length();
+    }
+
+    case Qt::TextAlignmentRole:
+      return QVariant( Qt::AlignRight | Qt::AlignVCenter );
+
+    case OrientationRole:
+      return guide->orientation();
+
+    case PositionRole:
+      return guide->position().length();
+
+    case UnitsRole:
+      return guide->position().units();
+
+    case PageRole:
+      return guide->page();
+
+    case LayoutPositionRole:
+      return guide->layoutPosition();
+
+    default:
+      return QVariant();
+  }
+}
+
+bool QgsLayoutGuideCollection::setData( const QModelIndex &index, const QVariant &value, int role )
+{
+  if ( !index.isValid() )
+    return false;
+
+  if ( index.row() >= mGuides.count() || index.row() < 0 )
+    return false;
+
+  QgsLayoutGuide *guide = mGuides.at( index.row() );
+
+  if ( role == Qt::EditRole )
+  {
+    bool ok = false;
+    double newPos = value.toDouble( &ok );
+    if ( !ok )
+      return false;
+
+    QgsLayoutMeasurement m = guide->position();
+    m.setLength( newPos );
+    guide->setPosition( m );
+    guide->update();
+    return true;
+  }
+  return false;
+}
+
+Qt::ItemFlags QgsLayoutGuideCollection::flags( const QModelIndex &index ) const
+{
+  if ( !index.isValid() )
+    return Qt::ItemIsEnabled | Qt::ItemIsSelectable;
+  return Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsEditable;
+}
+
+void QgsLayoutGuideCollection::addGuide( QgsLayoutGuide *guide )
+{
+  guide->setLayout( mLayout );
+
+  beginInsertRows( QModelIndex(), mGuides.count(), mGuides.count() );
+  mGuides.append( guide );
+  endInsertRows();
+
+  QModelIndex index = createIndex( mGuides.length() - 1, 0 );
+  connect( guide, &QgsLayoutGuide::positionChanged, this, [ this, index ]
+  {
+    emit dataChanged( index, index );
+  } );
+}
+
+void QgsLayoutGuideCollection::update()
+{
+  Q_FOREACH ( QgsLayoutGuide *guide, mGuides )
+  {
+    guide->update();
+  }
+}
+
+QList<QgsLayoutGuide *> QgsLayoutGuideCollection::guides( QgsLayoutGuide::Orientation orientation )
+{
+  QList<QgsLayoutGuide *> res;
+  Q_FOREACH ( QgsLayoutGuide *guide, mGuides )
+  {
+    if ( guide->orientation() == orientation && guide->item()->isVisible() )
+      res << guide;
+  }
+  return res;
+}
+
+
+//
+// QgsLayoutGuideProxyModel
+//
+
+QgsLayoutGuideProxyModel::QgsLayoutGuideProxyModel( QObject *parent, QgsLayoutGuide::Orientation orientation, int page )
+  : QSortFilterProxyModel( parent )
+  , mOrientation( orientation )
+  , mPage( page )
+{
+  setDynamicSortFilter( true );
+  sort( 0 );
+}
+
+bool QgsLayoutGuideProxyModel::filterAcceptsRow( int source_row, const QModelIndex &source_parent ) const
+{
+  QModelIndex index = sourceModel()->index( source_row, 0, source_parent );
+  QgsLayoutGuide::Orientation orientation = static_cast< QgsLayoutGuide::Orientation>( sourceModel()->data( index, QgsLayoutGuideCollection::OrientationRole ).toInt() );
+  if ( orientation != mOrientation )
+    return false;
+
+  int page = sourceModel()->data( index, QgsLayoutGuideCollection::PageRole ).toInt();
+  return page == mPage;
+}
+
+bool QgsLayoutGuideProxyModel::lessThan( const QModelIndex &left, const QModelIndex &right ) const
+{
+  double leftPos = sourceModel()->data( left, QgsLayoutGuideCollection::LayoutPositionRole ).toDouble();
+  double rightPos = sourceModel()->data( right, QgsLayoutGuideCollection::LayoutPositionRole ).toDouble();
+  return leftPos < rightPos;
 }

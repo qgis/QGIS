@@ -20,7 +20,10 @@ from qgis.core import (QgsProject,
                        QgsLayoutMeasurement,
                        QgsUnitTypes,
                        QgsLayoutPoint,
-                       QgsLayoutItemPage)
+                       QgsLayoutItemPage,
+                       QgsLayoutGuideCollection,
+                       QgsLayoutGuideProxyModel)
+from qgis.PyQt.QtCore import (QModelIndex)
 from qgis.PyQt.QtGui import (QPen,
                              QColor)
 from qgis.PyQt.QtTest import QSignalSpy
@@ -36,10 +39,13 @@ class TestQgsLayoutGuide(unittest.TestCase):
         p = QgsProject()
         l = QgsLayout(p)
         l.initializeDefaults()  # add a page
-        g = QgsLayoutGuide(l, QgsLayoutGuide.Horizontal, QgsLayoutMeasurement(5, QgsUnitTypes.LayoutCentimeters))
+        g = QgsLayoutGuide(QgsLayoutGuide.Horizontal, QgsLayoutMeasurement(5, QgsUnitTypes.LayoutCentimeters))
         self.assertEqual(g.orientation(), QgsLayoutGuide.Horizontal)
         self.assertEqual(g.position().length(), 5.0)
         self.assertEqual(g.position().units(), QgsUnitTypes.LayoutCentimeters)
+
+        g.setLayout(l)
+        self.assertEqual(g.layout(), l)
 
         position_changed_spy = QSignalSpy(g.positionChanged)
         g.setPosition(QgsLayoutMeasurement(15, QgsUnitTypes.LayoutInches))
@@ -54,7 +60,8 @@ class TestQgsLayoutGuide(unittest.TestCase):
         p = QgsProject()
         l = QgsLayout(p)
         l.initializeDefaults() # add a page
-        g = QgsLayoutGuide(l, QgsLayoutGuide.Horizontal, QgsLayoutMeasurement(5, QgsUnitTypes.LayoutCentimeters))
+        g = QgsLayoutGuide(QgsLayoutGuide.Horizontal, QgsLayoutMeasurement(5, QgsUnitTypes.LayoutCentimeters))
+        g.setLayout(l)
         g.update()
 
         self.assertTrue(g.item().isVisible())
@@ -74,7 +81,8 @@ class TestQgsLayoutGuide(unittest.TestCase):
         self.assertEqual(g.layoutPosition(), 15)
 
         # vertical guide
-        g2 = QgsLayoutGuide(l, QgsLayoutGuide.Vertical, QgsLayoutMeasurement(5, QgsUnitTypes.LayoutCentimeters))
+        g2 = QgsLayoutGuide(QgsLayoutGuide.Vertical, QgsLayoutMeasurement(5, QgsUnitTypes.LayoutCentimeters))
+        g2.setLayout(l)
         g2.update()
         self.assertTrue(g2.item().isVisible())
         self.assertEqual(g2.item().line().x1(), 50)
@@ -95,6 +103,90 @@ class TestQgsLayoutGuide(unittest.TestCase):
         g.setPosition(QgsLayoutMeasurement(1115, QgsUnitTypes.LayoutMillimeters))
         g.update()
         self.assertFalse(g.item().isVisible())
+
+    def testCollection(self):
+        p = QgsProject()
+        l = QgsLayout(p)
+        l.initializeDefaults() # add a page
+        guides = l.guides()
+
+        # no guides initially
+        self.assertEqual(guides.rowCount(QModelIndex()), 0)
+        self.assertFalse(guides.data(QModelIndex(), QgsLayoutGuideCollection.OrientationRole))
+        self.assertFalse(guides.guides(QgsLayoutGuide.Horizontal))
+        self.assertFalse(guides.guides(QgsLayoutGuide.Vertical))
+
+        # add a guide
+        g1 = QgsLayoutGuide(QgsLayoutGuide.Horizontal, QgsLayoutMeasurement(5, QgsUnitTypes.LayoutCentimeters))
+        guides.addGuide(g1)
+        self.assertEqual(guides.rowCount(QModelIndex()), 1)
+        self.assertEqual(guides.data(guides.index(0, 0), QgsLayoutGuideCollection.OrientationRole), QgsLayoutGuide.Horizontal)
+        self.assertEqual(guides.data(guides.index(0, 0), QgsLayoutGuideCollection.PositionRole), 5)
+        self.assertEqual(guides.data(guides.index(0, 0), QgsLayoutGuideCollection.UnitsRole), QgsUnitTypes.LayoutCentimeters)
+        self.assertEqual(guides.data(guides.index(0, 0), QgsLayoutGuideCollection.PageRole), 0)
+        self.assertEqual(guides.guides(QgsLayoutGuide.Horizontal), [g1])
+        self.assertFalse(guides.guides(QgsLayoutGuide.Vertical))
+
+        g2 = QgsLayoutGuide(QgsLayoutGuide.Horizontal, QgsLayoutMeasurement(15))
+        guides.addGuide(g2)
+        self.assertEqual(guides.rowCount(QModelIndex()), 2)
+        self.assertEqual(guides.data(guides.index(1, 0), QgsLayoutGuideCollection.OrientationRole), QgsLayoutGuide.Horizontal)
+        self.assertEqual(guides.data(guides.index(1, 0), QgsLayoutGuideCollection.PositionRole), 15)
+        self.assertEqual(guides.data(guides.index(1, 0), QgsLayoutGuideCollection.UnitsRole), QgsUnitTypes.LayoutMillimeters)
+        self.assertEqual(guides.data(guides.index(1, 0), QgsLayoutGuideCollection.PageRole), 0)
+        self.assertEqual(guides.guides(QgsLayoutGuide.Horizontal), [g1, g2])
+        self.assertFalse(guides.guides(QgsLayoutGuide.Vertical))
+
+        page2 = QgsLayoutItemPage(l)
+        page2.setPageSize('A3')
+        l.pageCollection().addPage(page2)
+        g3 = QgsLayoutGuide(QgsLayoutGuide.Vertical, QgsLayoutMeasurement(35))
+        g3.setPage(1)
+        guides.addGuide(g3)
+        self.assertEqual(guides.rowCount(QModelIndex()), 3)
+        self.assertEqual(guides.data(guides.index(2, 0), QgsLayoutGuideCollection.OrientationRole), QgsLayoutGuide.Vertical)
+        self.assertEqual(guides.data(guides.index(2, 0), QgsLayoutGuideCollection.PositionRole), 35)
+        self.assertEqual(guides.data(guides.index(2, 0), QgsLayoutGuideCollection.UnitsRole), QgsUnitTypes.LayoutMillimeters)
+        self.assertEqual(guides.data(guides.index(2, 0), QgsLayoutGuideCollection.PageRole), 1)
+        self.assertEqual(guides.guides(QgsLayoutGuide.Horizontal), [g1, g2])
+        self.assertEqual(guides.guides(QgsLayoutGuide.Vertical), [g3])
+
+    def testQgsLayoutGuideProxyModel(self):
+        p = QgsProject()
+        l = QgsLayout(p)
+        l.initializeDefaults() # add a page
+        page2 = QgsLayoutItemPage(l)
+        page2.setPageSize('A3')
+        l.pageCollection().addPage(page2)
+        guides = l.guides()
+
+        hoz_filter = QgsLayoutGuideProxyModel(None, QgsLayoutGuide.Horizontal, 0)
+        hoz_filter.setSourceModel(guides)
+        hoz_page_1_filter = QgsLayoutGuideProxyModel(None, QgsLayoutGuide.Horizontal, 1)
+        hoz_page_1_filter.setSourceModel(guides)
+        vert_filter = QgsLayoutGuideProxyModel(None, QgsLayoutGuide.Vertical, 0)
+        vert_filter.setSourceModel(guides)
+
+        # no guides initially
+        self.assertEqual(hoz_filter.rowCount(QModelIndex()), 0)
+        self.assertEqual(hoz_page_1_filter.rowCount(QModelIndex()), 0)
+        self.assertEqual(vert_filter.rowCount(QModelIndex()), 0)
+
+        # add some guides
+        g1 = QgsLayoutGuide(QgsLayoutGuide.Horizontal, QgsLayoutMeasurement(5, QgsUnitTypes.LayoutCentimeters))
+        guides.addGuide(g1)
+        g2 = QgsLayoutGuide(QgsLayoutGuide.Horizontal, QgsLayoutMeasurement(15))
+        g2.setPage(1)
+        guides.addGuide(g2)
+        g3 = QgsLayoutGuide(QgsLayoutGuide.Vertical, QgsLayoutMeasurement(35))
+        guides.addGuide(g3)
+
+        self.assertEqual(hoz_filter.rowCount(QModelIndex()), 1)
+        self.assertEqual(hoz_filter.data(hoz_filter.index(0, 0), QgsLayoutGuideCollection.PositionRole), 5)
+        self.assertEqual(hoz_page_1_filter.rowCount(QModelIndex()), 1)
+        self.assertEqual(hoz_page_1_filter.data(hoz_page_1_filter.index(0, 0), QgsLayoutGuideCollection.PositionRole), 15)
+        self.assertEqual(vert_filter.rowCount(QModelIndex()), 1)
+        self.assertEqual(vert_filter.data(vert_filter.index(0, 0), QgsLayoutGuideCollection.PositionRole), 35)
 
 
 if __name__ == '__main__':

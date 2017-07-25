@@ -23,6 +23,7 @@
 #include "qgsexpressioncontextgenerator.h"
 #include "qgslayoutpagecollection.h"
 #include "qgslayoutgridsettings.h"
+#include "qgslayoutguidecollection.h"
 
 class QgsLayoutItemMap;
 
@@ -183,6 +184,16 @@ class CORE_EXPORT QgsLayout : public QGraphicsScene, public QgsExpressionContext
     SIP_SKIP const QgsLayoutGridSettings &gridSettings() const { return mGridSettings; }
 
     /**
+     * Returns a reference to the layout's guide collection, which manages page snap guides.
+     */
+    QgsLayoutGuideCollection &guides();
+
+    /**
+     * Returns a reference to the layout's guide collection, which manages page snap guides.
+     */
+    SIP_SKIP const QgsLayoutGuideCollection &guides() const;
+
+    /**
      * Creates an expression context relating to the layout's current state. The context includes
      * scopes for global, project, layout and layout context properties.
      */
@@ -292,6 +303,7 @@ class CORE_EXPORT QgsLayout : public QGraphicsScene, public QgsExpressionContext
     QgsLayoutContext mContext;
     QgsLayoutSnapper mSnapper;
     QgsLayoutGridSettings mGridSettings;
+    std::unique_ptr< QgsLayoutGuideCollection > mGuideCollection;
 
     std::unique_ptr< QgsLayoutPageCollection > mPageCollection;
 

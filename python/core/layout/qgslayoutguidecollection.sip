@@ -26,7 +26,34 @@ class QgsLayoutGuide : QObject
       Vertical,
     };
 
-    QgsLayoutGuide( QgsLayout *layout, Orientation orientation, const QgsLayoutMeasurement &position );
+    QgsLayoutGuide( Orientation orientation, const QgsLayoutMeasurement &position );
+%Docstring
+ Constructor for a new guide with the specified ``orientation`` and
+ initial ``position``.
+
+ A layout must be set by calling setLayout() before the guide can be used.
+ Adding the guide to a QgsLayoutGuideCollection will automatically set
+ the corresponding layout for you.
+%End
+
+    QgsLayout *layout() const;
+%Docstring
+ Returns the layout the guide belongs to.
+.. seealso:: setLayout()
+ :rtype: QgsLayout
+%End
+
+    void setLayout( QgsLayout *layout );
+%Docstring
+ Sets the ``layout`` the guide belongs to.
+
+.. note::
+
+   Adding the guide to a QgsLayoutGuideCollection will automatically set
+ the corresponding layout for you.
+
+.. seealso:: layout()
+%End
 
     Orientation orientation() const;
 %Docstring
@@ -85,9 +112,103 @@ class QgsLayoutGuide : QObject
  :rtype: QGraphicsLineItem
 %End
 
+    double layoutPosition() const;
+%Docstring
+ Returns the guide's position in absolute layout units.
+ :rtype: float
+%End
+
+  signals:
+
+    void positionChanged();
+%Docstring
+ Emitted when the guide's position is changed.
+%End
+
+};
+
+class QgsLayoutGuideCollection : QAbstractListModel
+{
+%Docstring
+ Stores and manages the snap guides used by a layout.
+.. versionadded:: 3.0
+%End
+
+%TypeHeaderCode
+#include "qgslayoutguidecollection.h"
+%End
+  public:
+
+    enum Roles
+    {
+      OrientationRole,
+      PositionRole,
+      UnitsRole,
+      PageRole,
+    };
+
+    QgsLayoutGuideCollection( QgsLayout *layout );
+%Docstring
+ Constructor for QgsLayoutGuideCollection belonging to the specified layout.
+%End
+    ~QgsLayoutGuideCollection();
+
+    virtual int rowCount( const QModelIndex & ) const;
+
+    virtual QVariant data( const QModelIndex &index, int role ) const;
+
+    virtual bool setData( const QModelIndex &index, const QVariant &value, int role );
+
+    virtual Qt::ItemFlags flags( const QModelIndex &index ) const;
+
+
+    void addGuide( QgsLayoutGuide *guide /Transfer/ );
+%Docstring
+ Adds a ``guide`` to the collection. Ownership of the guide is transferred to the
+ collection, and the guide will automatically have the correct layout
+ set.
+%End
+
+    void update();
+%Docstring
+ Updates the position (and visibility) of all guide line items.
+%End
+
+    QList< QgsLayoutGuide * > guides( QgsLayoutGuide::Orientation orientation );
+%Docstring
+ Returns the list of guides contained in the collection with the specified
+ ``orientation``.
+ :rtype: list of QgsLayoutGuide
+%End
+
 };
 
 
+class QgsLayoutGuideProxyModel : QSortFilterProxyModel
+{
+%Docstring
+ Filters QgsLayoutGuideCollection models to guides of a single orientation (horizontal or vertical).
+.. versionadded:: 3.0
+%End
+
+%TypeHeaderCode
+#include "qgslayoutguidecollection.h"
+%End
+  public:
+
+    explicit QgsLayoutGuideProxyModel( QObject *parent /TransferThis/, QgsLayoutGuide::Orientation orientation, int page );
+%Docstring
+ Constructor for QgsLayoutGuideProxyModel, filtered to guides of the specified ``orientation`` and ``page`` only.
+
+ Page numbers begin at 0.
+%End
+
+    virtual bool filterAcceptsRow( int sourceRow, const QModelIndex &sourceParent ) const;
+
+    virtual bool lessThan( const QModelIndex &left, const QModelIndex &right ) const;
+
+
+};
 
 /************************************************************************
  * This file has been generated automatically from                      *
