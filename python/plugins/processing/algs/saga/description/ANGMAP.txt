@@ -1,0 +1,10 @@
+ANGMAP
+ta_slope_stability
+ParameterRaster|DEM|Elevation|False
+ParameterRaster|C|Dip grid (degrees)|True
+ParameterRaster|D|Dip direction grid (degrees)|True
+ParameterNumber|fB|Global structure dip (degrees)|None|None| 45.000000
+ParameterNumber|fC|Global structure dip direction (degrees)|None|None| 90.000000
+OutputRaster|E|Angle
+OutputRaster|F|CL dipdir
+OutputRaster|G|CL dip

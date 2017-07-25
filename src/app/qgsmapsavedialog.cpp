@@ -29,6 +29,7 @@
 #include "qgsproject.h"
 #include "qgssettings.h"
 
+#include <QClipboard>
 #include <QCheckBox>
 #include <QFileDialog>
 #include <QImage>
@@ -109,6 +110,12 @@ QgsMapSaveDialog::QgsMapSaveDialog( QWidget *parent, QgsMapCanvas *mapCanvas, QL
     mSaveAsRaster->setVisible( true );
 
     this->setWindowTitle( tr( "Save map as PDF" ) );
+  }
+  else
+  {
+    QPushButton *button = new QPushButton( tr( "Copy to clipboard" ) );
+    buttonBox->addButton( button, QDialogButtonBox::ResetRole );
+    connect( button, &QPushButton::clicked, this, &QgsMapSaveDialog::copyToClipboard );
   }
 
   connect( buttonBox, &QDialogButtonBox::accepted, this, &QgsMapSaveDialog::accepted );
@@ -309,6 +316,64 @@ void QgsMapSaveDialog::lockChanged( const bool locked )
   }
 }
 
+void QgsMapSaveDialog::copyToClipboard()
+{
+  QgsMapSettings ms = QgsMapSettings();
+  applyMapSettings( ms );
+
+  QPainter *p;
+  QImage *img;
+
+  img = new QImage( ms.outputSize(), QImage::Format_ARGB32 );
+  if ( img->isNull() )
+  {
+    QgisApp::instance()->messageBar()->pushWarning( tr( "Save as image" ), tr( "Could not allocate required memory for image" ) );
+    return;
+  }
+
+  img->setDotsPerMeterX( 1000 * ms.outputDpi() / 25.4 );
+  img->setDotsPerMeterY( 1000 * ms.outputDpi() / 25.4 );
+
+  p = new QPainter( img );
+
+  QgsMapRendererTask *mapRendererTask = new QgsMapRendererTask( ms, p );
+
+  if ( drawAnnotations() )
+  {
+    mapRendererTask->addAnnotations( mAnnotations );
+  }
+
+  if ( drawDecorations() )
+  {
+    mapRendererTask->addDecorations( mDecorations );
+  }
+
+  connect( mapRendererTask, &QgsMapRendererTask::renderingComplete, [ = ]
+  {
+    QApplication::clipboard()->setImage( *img, QClipboard::Clipboard );
+    QApplication::restoreOverrideCursor();
+    QgisApp::instance()->messageBar()->pushSuccess( tr( "Save as image" ), tr( "Successfully copied map to clipboard" ) );
+
+    delete p;
+    delete img;
+    setEnabled( true );
+  } );
+  connect( mapRendererTask, &QgsMapRendererTask::errorOccurred, [ = ]( int )
+  {
+    QApplication::restoreOverrideCursor();
+    QgisApp::instance()->messageBar()->pushWarning( tr( "Save as PDF" ), tr( "Could not copy the map to clipboard" ) );
+
+    delete p;
+    delete img;
+    setEnabled( true );
+  } );
+
+  setEnabled( false );
+
+  QApplication::setOverrideCursor( Qt::WaitCursor );
+  QgsApplication::taskManager()->addTask( mapRendererTask );
+}
+
 void QgsMapSaveDialog::accepted()
 {
   if ( mDialogType == Image )
@@ -387,7 +452,7 @@ void QgsMapSaveDialog::accepted()
       } );
       connect( mapRendererTask, &QgsMapRendererTask::errorOccurred, [ = ]( int )
       {
-        QgisApp::instance()->messageBar()->pushWarning( tr( "Save as PDF" ), tr( "Could not save the map to PDF..." ) );
+        QgisApp::instance()->messageBar()->pushWarning( tr( "Save as PDF" ), tr( "Could not save the map to PDF" ) );
       } );
 
       QgsApplication::taskManager()->addTask( mapRendererTask );

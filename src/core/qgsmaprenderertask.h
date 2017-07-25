@@ -59,7 +59,7 @@ class CORE_EXPORT QgsMapRendererTask : public QgsTask
                         const bool forceRaster = false );
 
     /**
-     * Constructor for QgsMapRendererTask to render a map to a painter object.
+     * Constructor for QgsMapRendererTask to render a map to a QPainter object.
      */
     QgsMapRendererTask( const QgsMapSettings &ms,
                         QPainter *p );

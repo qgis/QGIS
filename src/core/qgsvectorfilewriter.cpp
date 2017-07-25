@@ -764,7 +764,7 @@ QMap<QString, QgsVectorFileWriter::MetaData> QgsVectorFileWriter::initMetaData()
                          << QStringLiteral( "AS_XYZ" )
                          << QStringLiteral( "AS_XY" )
                          << QStringLiteral( "AS_YX" ),
-                         QStringLiteral( "AS_XY" ), // Default value
+                         QStringLiteral( "" ), // Default value
                          true // Allow None
                        ) );
 
@@ -807,9 +807,21 @@ QMap<QString, QgsVectorFileWriter::MetaData> QgsVectorFileWriter::initMetaData()
                          QObject::tr( "Override the type of shapefile created. "
                                       "Can be one of NULL for a simple .dbf file with no .shp file, POINT, "
                                       "ARC, POLYGON or MULTIPOINT for 2D, or POINTZ, ARCZ, POLYGONZ or "
-                                      "MULTIPOINTZ for 3D. Shapefiles with measure values are not supported, "
-                                      "nor are MULTIPATCH files." ),
-                         QStringList()
+                                      "MULTIPOINTZ for 3D;" ) +
+#if defined(GDAL_COMPUTE_VERSION) && GDAL_VERSION_NUM < GDAL_COMPUTE_VERSION(2,1,0)
+                         QObject::tr( " Shapefiles with measure values are not supported,"
+                                      " nor are MULTIPATCH files." ) +
+#endif
+#if defined(GDAL_COMPUTE_VERSION) && GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(2,1,0)
+                         QObject::tr( " POINTM, ARCM, POLYGONM or MULTIPOINTM for measured geometries"
+                                      " and POINTZM, ARCZM, POLYGONZM or MULTIPOINTZM for 3D measured"
+                                      " geometries." ) +
+#endif
+#if defined(GDAL_COMPUTE_VERSION) && GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(2,2,0)
+                         QObject::tr( " MULTIPATCH files are supported since GDAL 2.2." ) +
+#endif
+                         ""
+                         , QStringList()
                          << QStringLiteral( "NULL" )
                          << QStringLiteral( "POINT" )
                          << QStringLiteral( "ARC" )
@@ -818,7 +830,21 @@ QMap<QString, QgsVectorFileWriter::MetaData> QgsVectorFileWriter::initMetaData()
                          << QStringLiteral( "POINTZ" )
                          << QStringLiteral( "ARCZ" )
                          << QStringLiteral( "POLYGONZ" )
-                         << QStringLiteral( "MULTIPOINTZ" ),
+                         << QStringLiteral( "MULTIPOINTZ" )
+#if defined(GDAL_COMPUTE_VERSION) && GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(2,1,0)
+                         << QStringLiteral( "POINTM" )
+                         << QStringLiteral( "ARCM" )
+                         << QStringLiteral( "POLYGONM" )
+                         << QStringLiteral( "MULTIPOINTM" )
+                         << QStringLiteral( "POINTZM" )
+                         << QStringLiteral( "ARCZM" )
+                         << QStringLiteral( "POLYGONZM" )
+                         << QStringLiteral( "MULTIPOINTZM" )
+#endif
+#if defined(GDAL_COMPUTE_VERSION) && GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(2,2,0)
+                         << QStringLiteral( "MULTIPATCH" )
+#endif
+                         << QStringLiteral( "" ),
                          QString(), // Default value
                          true  // Allow None
                        ) );
@@ -940,7 +966,7 @@ QMap<QString, QgsVectorFileWriter::MetaData> QgsVectorFileWriter::initMetaData()
                                         "the foo_bar pattern, foo will be considered as the namespace "
                                         "of the element, and a <foo:bar> element will be written. "
                                         "Otherwise, elements will be written in the <ogr:> namespace." ),
-                           true  // Default value
+                           false // Default value
                          ) );
 
   datasetOptions.insert( QStringLiteral( "WRITE_HEADER_AND_FOOTER" ), new BoolOption(
@@ -1116,7 +1142,7 @@ QMap<QString, QgsVectorFileWriter::MetaData> QgsVectorFileWriter::initMetaData()
 
   layerOptions.insert( QStringLiteral( "GEOMETRY_NAME" ), new StringOption(
                          QObject::tr( "Name for the geometry column" ),
-                         QStringLiteral( "geometry" )  // Default value
+                         QStringLiteral( "geom" )  // Default value
                        ) );
 
   layerOptions.insert( "SPATIAL_INDEX", new BoolOption(
@@ -1175,7 +1201,7 @@ QMap<QString, QgsVectorFileWriter::MetaData> QgsVectorFileWriter::initMetaData()
   datasetOptions.insert( QStringLiteral( "GPX_USE_EXTENSIONS" ), new BoolOption(
                            QObject::tr( "If GPX_USE_EXTENSIONS=YES is specified, "
                                         "extra fields will be written inside the <extensions> tag." ),
-                           true  // Default value
+                           false // Default value
                          ) );
 
   datasetOptions.insert( QStringLiteral( "GPX_EXTENSIONS_NS" ), new StringOption(
@@ -1266,8 +1292,16 @@ QMap<QString, QgsVectorFileWriter::MetaData> QgsVectorFileWriter::initMetaData()
                            << QStringLiteral( "clampToGround" )
                            << QStringLiteral( "relativeToGround" )
                            << QStringLiteral( "absolute" ),
-                           QStringLiteral( "clampToGround" ) // Default value
+                           QStringLiteral( "relativeToGround" ) // Default value
                          ) );
+
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(2,2,0)
+  datasetOptions.insert( QStringLiteral( "DOCUMENT_ID" ), new StringOption(
+                           QObject::tr( "The DOCUMENT_ID datasource creation option can be used to specified "
+                                        "the id of the root <Document> node. The default value is root_doc." ),
+                           QStringLiteral( "root_doc" )  // Default value
+                         ) );
+#endif
 
   driverMetadata.insert( QStringLiteral( "KML" ),
                          MetaData(
@@ -1285,15 +1319,34 @@ QMap<QString, QgsVectorFileWriter::MetaData> QgsVectorFileWriter::initMetaData()
   datasetOptions.clear();
   layerOptions.clear();
 
-  layerOptions.insert( QStringLiteral( "SPATIAL_INDEX_MODE" ), new SetOption(
-                         QObject::tr( "Use this to turn on 'quick spatial index mode'. "
-                                      "In this mode writing files can be about 5 times faster, "
-                                      "but spatial queries can be up to 30 times slower." ),
-                         QStringList()
-                         << QStringLiteral( "QUICK" ),
-                         QLatin1String( "" ), // Default value
-                         true // Allow None
+  datasetOptions.insert( QStringLiteral( "SPATIAL_INDEX_MODE" ), new SetOption(
+                           QObject::tr( "Use this to turn on 'quick spatial index mode'. "
+                                        "In this mode writing files can be about 5 times faster, "
+                                        "but spatial queries can be up to 30 times slower." ),
+                           QStringList()
+                           << QStringLiteral( "QUICK" )
+                           << QStringLiteral( "OPTIMIZED" ),
+                           QLatin1String( "QUICK" ), // Default value
+                           true // Allow None
+                         ) );
+
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(2,0,2)
+  datasetOptions.insert( QStringLiteral( "BLOCK_SIZE" ), new IntOption(
+                           QObject::tr( "(multiples of 512): Block size for .map files. Defaults "
+                                        "to 512. MapInfo 15.2 and above creates .tab files with a "
+                                        "blocksize of 16384 bytes. Any MapInfo version should be "
+                                        "able to handle block sizes from 512 to 32256." ),
+                           512
+                         ) );
+#endif
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(2,0,0)
+  layerOptions.insert( QStringLiteral( "BOUNDS" ), new StringOption(
+                         QObject::tr( "xmin,ymin,xmax,ymax: Define custom layer bounds to increase the "
+                                      "accuracy of the coordinates. Note: the geometry of written "
+                                      "features must be within the defined box." ),
+                         QLatin1String( "" ) // Default value
                        ) );
+#endif
 
   driverMetadata.insert( QStringLiteral( "MapInfo File" ),
                          MetaData(
@@ -1415,7 +1468,7 @@ QMap<QString, QgsVectorFileWriter::MetaData> QgsVectorFileWriter::initMetaData()
   datasetOptions.insert( QStringLiteral( "RETURN_PRIMITIVES" ), new BoolOption(
                            QObject::tr( "Should all the low level geometry primitives be returned as special "
                                         "IsolatedNode, ConnectedNode, Edge and Face layers." ),
-                           true  // Default value
+                           false  // Default value
                          ) );
 
   datasetOptions.insert( QStringLiteral( "PRESERVE_EMPTY_NUMBERS" ), new BoolOption(
@@ -1435,7 +1488,7 @@ QMap<QString, QgsVectorFileWriter::MetaData> QgsVectorFileWriter::initMetaData()
                            QObject::tr( "Should additional attributes relating features to their underlying "
                                         "geometric primitives be attached. These are the values of the FSPT group, "
                                         "and are primarily needed when doing S-57 to S-57 translations." ),
-                           true  // Default value
+                           false  // Default value
                          ) );
 
   datasetOptions.insert( QStringLiteral( "RECODE_BY_DSSI" ), new BoolOption(
@@ -1632,17 +1685,15 @@ QMap<QString, QgsVectorFileWriter::MetaData> QgsVectorFileWriter::initMetaData()
   datasetOptions.clear();
   layerOptions.clear();
 
-#if 0
   datasetOptions.insert( "HEADER", new StringOption(
                            QObject::tr( "Override the header file used - in place of header.dxf." ),
-                           ""  // Default value
+                           QLatin1String( "" )  // Default value
                          ) );
 
   datasetOptions.insert( "TRAILER", new StringOption(
                            QObject::tr( "Override the trailer file used - in place of trailer.dxf." ),
-                           ""  // Default value
+                           QLatin1String( "" )  // Default value
                          ) );
-#endif
 
   driverMetadata.insert( QStringLiteral( "DXF" ),
                          MetaData(
@@ -1668,14 +1719,20 @@ QMap<QString, QgsVectorFileWriter::MetaData> QgsVectorFileWriter::initMetaData()
                            QStringLiteral( "GXT" ) // Default value
                          ) );
 
-#if 0
   datasetOptions.insert( "CONFIG", new StringOption(
                            QObject::tr( "path to the GCT : the GCT file describe the GeoConcept types definitions: "
                                         "In this file, every line must start with //# followed by a keyword. "
                                         "Lines starting with // are comments." ),
-                           ""  // Default value
+                           QLatin1String( "" )  // Default value
                          ) );
-#endif
+
+  datasetOptions.insert( "FEATURETYPE", new StringOption(
+                           QObject::tr( "defines the feature to be created. The TYPE corresponds to one of the Name "
+                                        "found in the GCT file for a type section. The SUBTYPE corresponds to one of "
+                                        "the Name found in the GCT file for a sub-type section within the previous "
+                                        "type section." ),
+                           QLatin1String( "" )  // Default value
+                         ) );
 
   driverMetadata.insert( QStringLiteral( "Geoconcept" ),
                          MetaData(
@@ -1703,7 +1760,7 @@ QMap<QString, QgsVectorFileWriter::MetaData> QgsVectorFileWriter::initMetaData()
                          QStringLiteral( "SHAPE" )  // Default value
                        ) );
 
-  layerOptions.insert( QStringLiteral( "OID_NAME" ), new StringOption(
+  layerOptions.insert( QStringLiteral( "FID" ), new StringOption(
                          QObject::tr( "Name of the OID column to create. Defaults to 'OBJECTID'." ),
                          QStringLiteral( "OBJECTID" )  // Default value
                        ) );
@@ -1734,6 +1791,18 @@ QMap<QString, QgsVectorFileWriter::MetaData> QgsVectorFileWriter::initMetaData()
                          false // Allow None
                        ) );
 
+  layerOptions.insert( QStringLiteral( "OGR_XLSX_HEADERS" ), new SetOption(
+                         QObject::tr( "By default, the driver will read the first lines of each sheet to detect "
+                                      "if the first line might be the name of columns. If set to FORCE, the "
+                                      "driver will consider the first default" ),
+                         QStringList()
+                         << QStringLiteral( "FORCE" )
+                         << QStringLiteral( "DISABLE" )
+                         << QStringLiteral( "AUTO" ),
+                         QStringLiteral( "AUTO" ), // Default value
+                         false // Allow None
+                       ) );
+
   driverMetadata.insert( QStringLiteral( "XLSX" ),
                          MetaData(
                            QStringLiteral( "MS Office Open XML spreadsheet" ),
@@ -1756,6 +1825,18 @@ QMap<QString, QgsVectorFileWriter::MetaData> QgsVectorFileWriter::initMetaData()
                          QStringList()
                          << QStringLiteral( "AUTO" )
                          << QStringLiteral( "STRING" ),
+                         QStringLiteral( "AUTO" ), // Default value
+                         false // Allow None
+                       ) );
+
+  layerOptions.insert( QStringLiteral( "OGR_ODS_HEADERS" ), new SetOption(
+                         QObject::tr( "By default, the driver will read the first lines of each sheet to detect "
+                                      "if the first line might be the name of columns. If set to FORCE, the "
+                                      "driver will consider the first default" ),
+                         QStringList()
+                         << QStringLiteral( "FORCE" )
+                         << QStringLiteral( "DISABLE" )
+                         << QStringLiteral( "AUTO" ),
                          QStringLiteral( "AUTO" ), // Default value
                          false // Allow None
                        ) );

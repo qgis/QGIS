@@ -1,0 +1,7 @@
+Split Lines at Points
+shapes_lines
+ParameterVector|LINES|Lines|1|False
+ParameterVector|SPLIT|Split Features|0|False
+OutputVector|INTERSECT|Intersection
+ParameterSelection|OUTPUT|Output|[0] polylines;[1] separate lines| 1
+ParameterNumber|EPSILON|Epsilon|None|None| 0.000000
