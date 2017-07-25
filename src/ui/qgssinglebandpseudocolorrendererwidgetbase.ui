@@ -14,16 +14,7 @@
    <string>Form</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
-   <property name="leftMargin">
-    <number>3</number>
-   </property>
-   <property name="topMargin">
-    <number>3</number>
-   </property>
-   <property name="rightMargin">
-    <number>3</number>
-   </property>
-   <property name="bottomMargin">
+   <property name="margin">
     <number>3</number>
    </property>
    <item row="5" column="1" colspan="4">
@@ -173,6 +164,9 @@ suffix</string>
     <layout class="QHBoxLayout" name="horizontalLayout_3">
      <item>
       <widget class="QPushButton" name="mClassifyButton">
+       <property name="toolTip">
+        <string>Calculate all classes</string>
+       </property>
        <property name="text">
         <string>Classify</string>
        </property>
@@ -192,7 +186,7 @@ suffix</string>
      <item>
       <widget class="QPushButton" name="mDeleteEntryButton">
        <property name="toolTip">
-        <string>Remove selected row(s)</string>
+        <string>Remove selected value(s)</string>
        </property>
        <property name="icon">
         <iconset resource="../../images/images.qrc">

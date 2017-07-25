@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>339</width>
+    <width>381</width>
     <height>566</height>
    </rect>
   </property>
@@ -62,6 +62,9 @@
     <layout class="QHBoxLayout" name="horizontalLayout_3">
      <item>
       <widget class="QPushButton" name="btnAddCategories">
+       <property name="toolTip">
+        <string>Add all missing categories from column or expression unique values</string>
+       </property>
        <property name="text">
         <string>Classify</string>
        </property>
@@ -70,7 +73,7 @@
      <item>
       <widget class="QPushButton" name="btnAddCategory">
        <property name="toolTip">
-        <string>Add</string>
+        <string>Add categories manually</string>
        </property>
        <property name="icon">
         <iconset resource="../../images/images.qrc">
@@ -81,7 +84,7 @@
      <item>
       <widget class="QPushButton" name="btnDeleteCategories">
        <property name="toolTip">
-        <string>Delete</string>
+        <string>Remove selected categories</string>
        </property>
        <property name="icon">
         <iconset resource="../../images/images.qrc">
@@ -91,6 +94,9 @@
      </item>
      <item>
       <widget class="QPushButton" name="btnDeleteAllCategories">
+       <property name="toolTip">
+        <string>Remove all categories</string>
+       </property>
        <property name="text">
         <string>Delete all</string>
        </property>
@@ -145,7 +151,7 @@
     </widget>
    </item>
    <item row="0" column="1">
-    <widget class="QgsFieldExpressionWidget" name="mExpressionWidget" native="true">
+    <widget class="QgsFieldExpressionWidget" name="mExpressionWidget">
      <property name="maximumSize">
       <size>
        <width>500</width>

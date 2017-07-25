@@ -93,7 +93,7 @@
          <item>
           <widget class="QPushButton" name="btnGraduatedAdd">
            <property name="toolTip">
-            <string>Add class</string>
+            <string>Add class manually</string>
            </property>
            <property name="icon">
             <iconset resource="../../images/images.qrc">
@@ -104,7 +104,7 @@
          <item>
           <widget class="QPushButton" name="btnGraduatedDelete">
            <property name="toolTip">
-            <string>Delete</string>
+            <string>Remove selected class(es)</string>
            </property>
            <property name="icon">
             <iconset resource="../../images/images.qrc">
@@ -114,6 +114,9 @@
          </item>
          <item>
           <widget class="QPushButton" name="btnDeleteAllClasses">
+           <property name="toolTip">
+            <string>Remove all classes</string>
+           </property>
            <property name="text">
             <string>Delete all</string>
            </property>
@@ -192,7 +195,7 @@
     </widget>
    </item>
    <item row="0" column="1">
-    <widget class="QgsFieldExpressionWidget" name="mExpressionWidget" native="true">
+    <widget class="QgsFieldExpressionWidget" name="mExpressionWidget">
      <property name="sizePolicy">
       <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
        <horstretch>0</horstretch>
@@ -232,7 +235,7 @@
        <property name="value">
         <double>1.000000000000000</double>
        </property>
-       <property name="showClearButton" stdset="0">
+       <property name="showClearButton">
         <bool>false</bool>
        </property>
       </widget>
@@ -264,7 +267,7 @@
        <property name="value">
         <double>10.000000000000000</double>
        </property>
-       <property name="showClearButton" stdset="0">
+       <property name="showClearButton">
         <bool>false</bool>
        </property>
       </widget>
