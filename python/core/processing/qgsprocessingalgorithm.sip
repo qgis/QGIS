@@ -61,7 +61,8 @@ class QgsProcessingAlgorithm
     virtual ~QgsProcessingAlgorithm();
 
 
-    QgsProcessingAlgorithm *create( const QVariantMap &configuration = QVariantMap() ) const /Factory/;
+
+    QgsProcessingAlgorithm *create( const QVariantMap &configuration = QVariantMap() ) const /TransferBack/;
 %Docstring
  Creates a copy of the algorithm, ready for execution.
 
@@ -360,18 +361,12 @@ class QgsProcessingAlgorithm
 
   protected:
 
-    virtual QgsProcessingAlgorithm *createInstance() const = 0;
+    virtual QgsProcessingAlgorithm *createInstance() const = 0 /Factory/;
 %Docstring
  Creates a new instance of the algorithm class.
 
  This method should return a 'pristine' instance of the algorithm class.
  :rtype: QgsProcessingAlgorithm
-%End
-%VirtualCatcherCode
-    PyObject *resObj = sipCallMethod( 0, sipMethod, "" );
-    sipIsErr = !resObj || sipParseResult( 0, sipMethod, resObj, "H2", sipType_QgsProcessingAlgorithm, &sipRes ) < 0;
-    if ( !sipIsErr )
-      sipTransferTo( resObj, Py_None );
 %End
 
     virtual void initAlgorithm( const QVariantMap &configuration = QVariantMap() ) = 0;
