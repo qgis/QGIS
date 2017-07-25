@@ -59,6 +59,13 @@ class QgsLayoutPageCollection : QObject
  :rtype: QgsLayoutItemPage
 %End
 
+    int pageNumber( QgsLayoutItemPage *page ) const;
+%Docstring
+ Returns the page number for the specified ``page``, or -1 if the page
+ is not contained in the collection.
+ :rtype: int
+%End
+
     void addPage( QgsLayoutItemPage *page /Transfer/ );
 %Docstring
  Adds a ``page`` to the collection. Ownership of the ``page`` is transferred

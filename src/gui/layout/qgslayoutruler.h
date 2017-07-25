@@ -78,6 +78,10 @@ class GUI_EXPORT QgsLayoutRuler: public QWidget
      */
     void setCursorPosition( QPointF position );
 
+  signals:
+    //! Is emitted when mouse cursor coordinates change
+    void cursorPosChanged( QPointF );
+
   protected:
     void paintEvent( QPaintEvent *event ) override;
     void mouseMoveEvent( QMouseEvent *event ) override;
@@ -129,9 +133,10 @@ class GUI_EXPORT QgsLayoutRuler: public QWidget
     //! Draw current marker pos on ruler
     void drawMarkerPos( QPainter *painter );
 
-  signals:
-    //! Is emitted when mouse cursor coordinates change
-    void cursorPosChanged( QPointF );
+    void createTemporaryGuideItem();
+
+    QPointF convertLocalPointToLayout( QPoint localPoint ) const;
+
 
 };
 

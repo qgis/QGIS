@@ -260,6 +260,25 @@ void QgsLayoutRuler::drawMarkerPos( QPainter *painter )
   }
 }
 
+void QgsLayoutRuler::createTemporaryGuideItem()
+{
+  mGuideItem.reset( new QGraphicsLineItem() );
+
+  mGuideItem->setZValue( QgsLayout::ZGuide );
+  QPen linePen( Qt::DashLine );
+  linePen.setColor( Qt::red );
+  linePen.setWidthF( 0 );
+  mGuideItem->setPen( linePen );
+
+  mView->currentLayout()->addItem( mGuideItem.get() );
+}
+
+QPointF QgsLayoutRuler::convertLocalPointToLayout( QPoint localPoint ) const
+{
+  QPoint viewPoint = mView->mapFromGlobal( mapToGlobal( localPoint ) );
+  return  mView->mapToScene( viewPoint );
+}
+
 void QgsLayoutRuler::drawRotatedText( QPainter *painter, QPointF pos, const QString &text )
 {
   painter->save();
@@ -432,9 +451,9 @@ void QgsLayoutRuler::mouseMoveEvent( QMouseEvent *event )
   if ( mCreatingGuide )
   {
     // event -> layout coordinates
+    displayPos = convertLocalPointToLayout( event->pos() );
+
     QgsLayout *layout = mView->currentLayout();
-    QPoint viewPoint  = mView->mapFromGlobal( mapToGlobal( event->pos() ) );
-    displayPos = mView->mapToScene( viewPoint );
     int pageNo = layout->pageCollection()->pageNumberForPoint( displayPos );
     QgsLayoutItemPage *page = layout->pageCollection()->page( pageNo );
 
@@ -484,15 +503,7 @@ void QgsLayoutRuler::mousePressEvent( QMouseEvent *event )
   if ( event->button() == Qt::LeftButton )
   {
     mCreatingGuide = true;
-    mGuideItem.reset( new QGraphicsLineItem() );
-
-    mGuideItem->setZValue( QgsLayout::ZGuide );
-    QPen linePen( Qt::DashLine );
-    linePen.setColor( Qt::red );
-    linePen.setWidthF( 0 );
-    mGuideItem->setPen( linePen );
-
-    mView->currentLayout()->addItem( mGuideItem.get() );
+    createTemporaryGuideItem();
 
     switch ( mOrientation )
     {
@@ -516,12 +527,32 @@ void QgsLayoutRuler::mouseReleaseEvent( QMouseEvent *event )
     QApplication::restoreOverrideCursor();
     mGuideItem.reset();
 
+    // check that cursor left the ruler
+    switch ( mOrientation )
+    {
+      case Qt::Horizontal:
+      {
+        if ( event->pos().y() <= height() )
+          return;
+        break;
+      }
+      case Qt::Vertical:
+      {
+        if ( event->pos().x() <= width() )
+          return;
+        break;
+      }
+    }
+
     QgsLayout *layout = mView->currentLayout();
 
     // create guide
-    QPoint viewPoint  = mView->mapFromGlobal( mapToGlobal( event->pos() ) );
-    QPointF scenePos = mView->mapToScene( viewPoint );
-    int page = layout->pageCollection()->pageNumberForPoint( scenePos );
+    QPointF scenePos = convertLocalPointToLayout( event->pos() );
+    QgsLayoutItemPage *page = layout->pageCollection()->pageAtPoint( scenePos );
+    if ( !page )
+      return; // dragged outside of a page
+
+    int pageNumber = layout->pageCollection()->pageNumber( page );
     std::unique_ptr< QgsLayoutGuide > guide;
     switch ( mOrientation )
     {
@@ -539,7 +570,7 @@ void QgsLayoutRuler::mouseReleaseEvent( QMouseEvent *event )
         break;
       }
     }
-    guide->setPage( page );
+    guide->setPage( pageNumber );
     mView->currentLayout()->guides().addGuide( guide.release() );
   }
 }

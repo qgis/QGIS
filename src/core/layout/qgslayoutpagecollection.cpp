@@ -163,6 +163,11 @@ QgsLayoutItemPage *QgsLayoutPageCollection::page( int pageNumber )
   return mPages.value( pageNumber );
 }
 
+int QgsLayoutPageCollection::pageNumber( QgsLayoutItemPage *page ) const
+{
+  return mPages.indexOf( page );
+}
+
 void QgsLayoutPageCollection::addPage( QgsLayoutItemPage *page )
 {
   mPages.append( page );

@@ -74,6 +74,12 @@ class CORE_EXPORT QgsLayoutPageCollection : public QObject
     QgsLayoutItemPage *page( int pageNumber );
 
     /**
+     * Returns the page number for the specified \a page, or -1 if the page
+     * is not contained in the collection.
+     */
+    int pageNumber( QgsLayoutItemPage *page ) const;
+
+    /**
      * Adds a \a page to the collection. Ownership of the \a page is transferred
      * to the collection, and the page will automatically be added to the collection's
      * layout() (there is no need to manually add the page item to the layout).

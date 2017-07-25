@@ -76,6 +76,8 @@ class TestQgsLayoutPageCollection(unittest.TestCase):
         # add a page
         page = QgsLayoutItemPage(l)
         page.setPageSize('A4')
+        self.assertEqual(collection.pageNumber(page), -1)
+
         collection.addPage(page)
 
         self.assertTrue(page in l.items())
@@ -85,6 +87,7 @@ class TestQgsLayoutPageCollection(unittest.TestCase):
         self.assertFalse(collection.page(-1))
         self.assertEqual(collection.page(0), page)
         self.assertFalse(collection.page(1))
+        self.assertEqual(collection.pageNumber(page), 0)
 
         # add a second page
         page2 = QgsLayoutItemPage(l)
@@ -96,6 +99,7 @@ class TestQgsLayoutPageCollection(unittest.TestCase):
         self.assertFalse(collection.page(-1))
         self.assertEqual(collection.page(0), page)
         self.assertEqual(collection.page(1), page2)
+        self.assertEqual(collection.pageNumber(page2), 1)
 
         # insert a page
         page3 = QgsLayoutItemPage(l)
@@ -108,6 +112,7 @@ class TestQgsLayoutPageCollection(unittest.TestCase):
         self.assertEqual(collection.page(0), page)
         self.assertEqual(collection.page(1), page3)
         self.assertEqual(collection.page(2), page2)
+        self.assertEqual(collection.pageNumber(page3), 1)
 
         # delete page
         collection.deletePage(-1)

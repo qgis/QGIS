@@ -67,6 +67,12 @@ class QgsLayoutRuler: QWidget
  ``position`` is in layout coordinates.
 %End
 
+  signals:
+    void cursorPosChanged( QPointF );
+%Docstring
+Is emitted when mouse cursor coordinates change
+%End
+
   protected:
     virtual void paintEvent( QPaintEvent *event );
 
@@ -76,12 +82,6 @@ class QgsLayoutRuler: QWidget
 
     virtual void mouseReleaseEvent( QMouseEvent *event );
 
-
-  signals:
-    void cursorPosChanged( QPointF );
-%Docstring
-Is emitted when mouse cursor coordinates change
-%End
 
 };
 
