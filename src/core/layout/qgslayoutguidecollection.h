@@ -161,7 +161,7 @@ class CORE_EXPORT QgsLayoutGuide : public QObject
  * \brief Stores and manages the snap guides used by a layout.
  * \since QGIS 3.0
  */
-class CORE_EXPORT QgsLayoutGuideCollection : public QAbstractListModel
+class CORE_EXPORT QgsLayoutGuideCollection : public QAbstractTableModel
 {
 
     Q_OBJECT
@@ -185,6 +185,7 @@ class CORE_EXPORT QgsLayoutGuideCollection : public QAbstractListModel
     ~QgsLayoutGuideCollection();
 
     int rowCount( const QModelIndex & ) const override;
+    int columnCount( const QModelIndex & ) const override;
     QVariant data( const QModelIndex &index, int role ) const override;
     bool setData( const QModelIndex &index, const QVariant &value, int role ) override;
     Qt::ItemFlags flags( const QModelIndex &index ) const override;

@@ -127,7 +127,7 @@ class QgsLayoutGuide : QObject
 
 };
 
-class QgsLayoutGuideCollection : QAbstractListModel
+class QgsLayoutGuideCollection : QAbstractTableModel
 {
 %Docstring
  Stores and manages the snap guides used by a layout.
@@ -155,6 +155,8 @@ class QgsLayoutGuideCollection : QAbstractListModel
     ~QgsLayoutGuideCollection();
 
     virtual int rowCount( const QModelIndex & ) const;
+
+    virtual int columnCount( const QModelIndex & ) const;
 
     virtual QVariant data( const QModelIndex &index, int role ) const;
 

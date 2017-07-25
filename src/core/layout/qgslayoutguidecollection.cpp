@@ -149,7 +149,7 @@ QgsLayoutGuide::Orientation QgsLayoutGuide::orientation() const
 //
 
 QgsLayoutGuideCollection::QgsLayoutGuideCollection( QgsLayout *layout )
-  : QAbstractListModel( layout )
+  : QAbstractTableModel( layout )
   , mLayout( layout )
 {
 
@@ -163,6 +163,14 @@ QgsLayoutGuideCollection::~QgsLayoutGuideCollection()
 int QgsLayoutGuideCollection::rowCount( const QModelIndex & ) const
 {
   return mGuides.count();
+}
+
+int QgsLayoutGuideCollection::columnCount( const QModelIndex &parent ) const
+{
+  if ( parent.isValid() )
+    return 0;
+
+  return 2;
 }
 
 QVariant QgsLayoutGuideCollection::data( const QModelIndex &index, int role ) const
@@ -179,11 +187,11 @@ QVariant QgsLayoutGuideCollection::data( const QModelIndex &index, int role ) co
     case Qt::DisplayRole:
     case Qt::EditRole:
     {
-      return guide->position().length();
+      if ( index.column() == 0 )
+        return guide->position().length();
+      else
+        return QgsUnitTypes::toAbbreviatedString( guide->position().units() );
     }
-
-    case Qt::TextAlignmentRole:
-      return QVariant( Qt::AlignRight | Qt::AlignVCenter );
 
     case OrientationRole:
       return guide->orientation();
@@ -215,19 +223,49 @@ bool QgsLayoutGuideCollection::setData( const QModelIndex &index, const QVariant
 
   QgsLayoutGuide *guide = mGuides.at( index.row() );
 
-  if ( role == Qt::EditRole )
+  switch ( role )
   {
-    bool ok = false;
-    double newPos = value.toDouble( &ok );
-    if ( !ok )
-      return false;
+    case  Qt::EditRole:
+    {
+      bool ok = false;
+      double newPos = value.toDouble( &ok );
+      if ( !ok )
+        return false;
 
-    QgsLayoutMeasurement m = guide->position();
-    m.setLength( newPos );
-    guide->setPosition( m );
-    guide->update();
-    return true;
+      QgsLayoutMeasurement m = guide->position();
+      m.setLength( newPos );
+      guide->setPosition( m );
+      guide->update();
+      return true;
+    }
+    case PositionRole:
+    {
+      bool ok = false;
+      double newPos = value.toDouble( &ok );
+      if ( !ok )
+        return false;
+
+      QgsLayoutMeasurement m = guide->position();
+      m.setLength( newPos );
+      guide->setPosition( m );
+      guide->update();
+      return true;
+    }
+    case UnitsRole:
+    {
+      bool ok = false;
+      int units = value.toInt( &ok );
+      if ( !ok )
+        return false;
+
+      QgsLayoutMeasurement m = guide->position();
+      m.setUnits( static_cast< QgsUnitTypes::LayoutUnit >( units ) );
+      guide->setPosition( m );
+      guide->update();
+      return true;
+    }
   }
+
   return false;
 }
 
