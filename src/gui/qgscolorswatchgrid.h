@@ -117,6 +117,10 @@ class GUI_EXPORT QgsColorSwatchGrid : public QWidget
     int mCurrentFocusBox;
 
     int mWidth;
+    //! Label rect height
+    int mLabelHeight = 0;
+    //! Spacing between label box and text
+    int mLabelMargin = 0;
 
     bool mPressedOnWidget;
 

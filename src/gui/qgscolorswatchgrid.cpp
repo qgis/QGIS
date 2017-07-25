@@ -27,8 +27,6 @@
 #define RIGHT_MARGIN 6 //margin between right edge and last swatch
 #define TOP_MARGIN 6 //margin between label and first swatch
 #define BOTTOM_MARGIN 6 //margin between last swatch row and end of widget
-#define LABEL_SIZE 20 //label rect height
-#define LABEL_MARGIN 4 //spacing between label box and text
 
 QgsColorSwatchGrid::QgsColorSwatchGrid( QgsColorScheme *scheme, const QString &context, QWidget *parent )
   : QWidget( parent )
@@ -45,6 +43,9 @@ QgsColorSwatchGrid::QgsColorSwatchGrid( QgsColorScheme *scheme, const QString &c
 
   setFocusPolicy( Qt::StrongFocus );
   setSizePolicy( QSizePolicy::Fixed, QSizePolicy::Fixed );
+
+  mLabelHeight = fontMetrics().height();
+  mLabelMargin = fontMetrics().width( QStringLiteral( "." ) );
 
   //calculate widget width
   mWidth = NUMBER_COLORS_PER_ROW * SWATCH_SIZE + ( NUMBER_COLORS_PER_ROW - 1 ) * SWATCH_SPACING + LEFT_MARGIN + RIGHT_MARGIN;
@@ -240,7 +241,7 @@ void QgsColorSwatchGrid::focusOutEvent( QFocusEvent *event )
 int QgsColorSwatchGrid::calculateHeight() const
 {
   int numberRows = ceil( ( double )mColors.length() / NUMBER_COLORS_PER_ROW );
-  return numberRows * ( SWATCH_SIZE ) + ( numberRows - 1 ) * SWATCH_SPACING + TOP_MARGIN + LABEL_SIZE + BOTTOM_MARGIN;
+  return numberRows * ( SWATCH_SIZE ) + ( numberRows - 1 ) * SWATCH_SPACING + TOP_MARGIN + mLabelHeight + 0.5 * mLabelMargin + BOTTOM_MARGIN;
 }
 
 void QgsColorSwatchGrid::draw( QPainter &painter )
@@ -253,11 +254,11 @@ void QgsColorSwatchGrid::draw( QPainter &painter )
   //draw header background
   painter.setBrush( headerBgColor );
   painter.setPen( Qt::NoPen );
-  painter.drawRect( QRect( 0, 0, width(), LABEL_SIZE ) );
+  painter.drawRect( QRect( 0, 0, width(), mLabelHeight + 0.5 * mLabelMargin ) );
 
   //draw header text
   painter.setPen( headerTextColor );
-  painter.drawText( QRect( LABEL_MARGIN, 0, width() - 2 * LABEL_MARGIN, LABEL_SIZE ),
+  painter.drawText( QRect( mLabelMargin, 0.25 * mLabelMargin, width() - 2 * mLabelMargin, mLabelHeight ),
                     Qt::AlignLeft | Qt::AlignVCenter, mScheme->schemeName() );
 
   //draw color swatches
@@ -269,7 +270,7 @@ void QgsColorSwatchGrid::draw( QPainter &painter )
     int column = index % NUMBER_COLORS_PER_ROW;
 
     QRect swatchRect = QRect( column * ( SWATCH_SIZE + SWATCH_SPACING ) + LEFT_MARGIN,
-                              row * ( SWATCH_SIZE + SWATCH_SPACING ) + TOP_MARGIN + LABEL_SIZE,
+                              row * ( SWATCH_SIZE + SWATCH_SPACING ) + TOP_MARGIN + mLabelHeight + 0.5 * mLabelMargin,
                               SWATCH_SIZE, SWATCH_SIZE );
 
     if ( mCurrentHoverBox == index )
@@ -336,8 +337,8 @@ int QgsColorSwatchGrid::swatchForPosition( QPoint position ) const
   int box = -1;
   int column = ( position.x() - LEFT_MARGIN ) / ( SWATCH_SIZE + SWATCH_SPACING );
   int xRem = ( position.x() - LEFT_MARGIN ) % ( SWATCH_SIZE + SWATCH_SPACING );
-  int row = ( position.y() - TOP_MARGIN - LABEL_SIZE ) / ( SWATCH_SIZE + SWATCH_SPACING );
-  int yRem = ( position.y() - TOP_MARGIN - LABEL_SIZE ) % ( SWATCH_SIZE + SWATCH_SPACING );
+  int row = ( position.y() - TOP_MARGIN - mLabelHeight ) / ( SWATCH_SIZE + SWATCH_SPACING );
+  int yRem = ( position.y() - TOP_MARGIN - mLabelHeight ) % ( SWATCH_SIZE + SWATCH_SPACING );
 
   if ( xRem <= SWATCH_SIZE + 1 && yRem <= SWATCH_SIZE + 1 && column < NUMBER_COLORS_PER_ROW )
   {

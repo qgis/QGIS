@@ -49,6 +49,8 @@ class GUI_EXPORT QgsMenuHeader : public QWidget
   private:
     int mMinWidth = 0;
     QString mText;
+    int mTextHeight = 0;
+    int mLabelMargin = 0;
 
 };
 
