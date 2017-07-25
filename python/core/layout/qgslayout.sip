@@ -23,9 +23,10 @@ class QgsLayout : QGraphicsScene, QgsExpressionContextGenerator
     enum ZValues
     {
       ZPage,
+      ZItem,
       ZGrid,
       ZMapTool,
-
+      ZSnapIndicator,
     };
 
     QgsLayout( QgsProject *project );

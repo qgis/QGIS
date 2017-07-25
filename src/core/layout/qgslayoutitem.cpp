@@ -29,6 +29,8 @@ QgsLayoutItem::QgsLayoutItem( QgsLayout *layout )
   , QGraphicsRectItem( 0 )
   , mUuid( QUuid::createUuid().toString() )
 {
+  setZValue( QgsLayout::ZItem );
+
   // needed to access current view transform during paint operations
   setFlags( flags() | QGraphicsItem::ItemUsesExtendedStyleOption );
   setCacheMode( QGraphicsItem::DeviceCoordinateCache );

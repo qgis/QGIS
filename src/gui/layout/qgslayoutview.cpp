@@ -439,6 +439,7 @@ QgsLayoutViewSnapMarker::QgsLayoutViewSnapMarker()
   setPen( QPen( Qt::transparent, mSize ) );
 
   setFlags( flags() | QGraphicsItem::ItemIgnoresTransformations );
+  setZValue( QgsLayout::ZSnapIndicator );
 }
 
 void QgsLayoutViewSnapMarker::paint( QPainter *p, const QStyleOptionGraphicsItem *, QWidget * )
