@@ -354,6 +354,7 @@ SET(QGIS_CORE_SRCS
   layout/qgslayout.cpp
   layout/qgslayoutcontext.cpp
   layout/qgslayoutgridsettings.cpp
+  layout/qgslayoutguidecollection.cpp
   layout/qgslayoutitem.cpp
   layout/qgslayoutitemmap.cpp
   layout/qgslayoutitempage.cpp
@@ -684,6 +685,7 @@ SET(QGIS_CORE_MOC_HDRS
   gps/qgsgpsdconnection.h
 
   layout/qgslayout.h
+  layout/qgslayoutguidecollection.h
   layout/qgslayoutitem.h
   layout/qgslayoutitemmap.h
   layout/qgslayoutitempage.h

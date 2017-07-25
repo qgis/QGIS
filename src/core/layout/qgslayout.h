@@ -43,7 +43,8 @@ class CORE_EXPORT QgsLayout : public QGraphicsScene, public QgsExpressionContext
     {
       ZPage = 0, //!< Z-value for page (paper) items
       ZItem = 1, //!< Minimum z value for items
-      ZGrid = 9999, //!< Z-value for page grids
+      ZGrid = 9998, //!< Z-value for page grids
+      ZGuide = 9999, //!< Z-value for page guides
       ZMapTool = 10000, //!< Z-value for temporary map tool items
       ZSnapIndicator = 10001, //!< Z-value for snapping indicator
     };

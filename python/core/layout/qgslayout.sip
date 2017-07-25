@@ -25,6 +25,7 @@ class QgsLayout : QGraphicsScene, QgsExpressionContextGenerator
       ZPage,
       ZItem,
       ZGrid,
+      ZGuide,
       ZMapTool,
       ZSnapIndicator,
     };
