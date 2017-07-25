@@ -146,15 +146,15 @@ QVector<QgsDataItem *> QgsSLConnectionItem::createChildren()
   QString msg;
   if ( !spatialiteDbInfo )
   {
-    if ( !QFile::exists( connectionInfo.path() ) )
+    if ( !QFile::exists( connectionInfo.dbPath() ) )
     {
       msg = tr( "SpatiaLite DB Open Error" );
-      msgDetails = tr( "Database does not exist: %1" ).arg( connectionInfo.path() );
+      msgDetails = tr( "Database does not exist: %1" ).arg( connectionInfo.dbPath() );
     }
     else
     {
       msg =  tr( "SpatiaLite DB Open Error" );
-      msgDetails = tr( " File is not a Sqlite3 Container: %1" ).arg( connectionInfo.path() );
+      msgDetails = tr( " File is not a Sqlite3 Container: %1" ).arg( connectionInfo.dbPath() );
     }
     children.append( new QgsErrorItem( this, msg, mPath + "/error" ) );
     return children;
@@ -167,7 +167,7 @@ QVector<QgsDataItem *> QgsSLConnectionItem::createChildren()
     if ( !spatialiteDbInfo->isDbValid() )
     {
       msg = tr( "SpatiaLite DB Open Error" );
-      msgDetails = tr( "The read Sqlite3 Container is not supported by QgsSpatiaLiteProvider,QgsOgrProvider or QgsGdalProvider: %1" ).arg( connectionInfo.path() );
+      msgDetails = tr( "The read Sqlite3 Container is not supported by QgsSpatiaLiteProvider,QgsOgrProvider or QgsGdalProvider: %1" ).arg( connectionInfo.dbPath() );
       children.append( new QgsErrorItem( this, msg, mPath + "/error" ) );
       return children;
     }
@@ -182,46 +182,6 @@ QVector<QgsDataItem *> QgsSLConnectionItem::createChildren()
       children.append( layer );
     }
   }
-#if 0
-  QgsSpatiaLiteConnection::Error err = connection.fetchTables( false ); // TODO: allow geometryless tables
-  if ( err != QgsSpatiaLiteConnection::NoError )
-  {
-    QString msg;
-    switch ( err )
-    {
-      case QgsSpatiaLiteConnection::NotExists:
-        msg = tr( "Database does not exist" );
-        break;
-      case QgsSpatiaLiteConnection::FailedToOpen:
-        msg = tr( "Failed to open database" );
-        break;
-      case QgsSpatiaLiteConnection::FailedToCheckMetadata:
-        msg = tr( "Failed to check metadata" );
-        break;
-      case QgsSpatiaLiteConnection::FailedToGetTables:
-        msg = tr( "Failed to get list of tables" );
-        break;
-      default:
-        msg = tr( "Unknown error" );
-        break;
-    }
-    QString msgDetails = connection.errorMessage();
-    if ( !msgDetails.isEmpty() )
-      msg = QStringLiteral( "%1 (%2)" ).arg( msg, msgDetails );
-    children.append( new QgsErrorItem( this, msg, mPath + "/error" ) );
-    return children;
-  }
-
-  QString connectionInfo = QStringLiteral( "dbname='%1'" ).arg( QString( connection.path() ).replace( '\'', QLatin1String( "\\'" ) ) );
-  QgsDataSourceUri uri( connectionInfo );
-
-  Q_FOREACH ( const QgsSpatiaLiteConnection::TableEntry &entry, connection.tables() )
-  {
-    uri.setDataSource( QString(), entry.tableName, entry.column, QString(), QString() );
-    QgsSLLayerItem *layer = new QgsSLLayerItem( this, entry.tableName, mPath + '/' + entry.tableName, uri.uri(), _layerTypeFromDb( entry.type ) );
-    children.append( layer );
-  }
-#endif
   return children;
 }
 

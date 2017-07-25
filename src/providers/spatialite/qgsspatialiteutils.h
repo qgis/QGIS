@@ -28,6 +28,8 @@
 #include <spatialite.h>
 
 #include "qgsvectordataprovider.h"
+#include "qgsvectorlayer.h"
+#include "qgsrasterlayer.h"
 
 class SpatialiteDbLayer;
 class QgsSqliteHandle;
@@ -521,7 +523,7 @@ class SpatialiteDbInfo : public QObject
      * \note
      *  This is a convenience function
      * - Key: LayerName formatted as 'table_name(geometry_name)'
-     * - Value: GeometryType and Srid formatted as 'geometry_type:srid'
+     * - Value: GeometryType and Srid formatted as 'geometry_type:srid:provider'
      * \see getDbVectorLayers()
      * \see getDbRasterLite2Layers()
      * \see getDbRasterLite1Layers()
@@ -538,7 +540,7 @@ class SpatialiteDbInfo : public QObject
      *  - ordered by LayerType (SpatialTable, SpatialView and VirtualShape)
      * \note
      * - Key: LayerName formatted as 'table_name(geometry_name)'
-     * - Value: GeometryType and Srid formatted as 'geometry_type:srid'
+     * - Value: GeometryType and Srid formatted as 'geometry_type:srid:provider'
      * \see readVectorLayers()
      * \since QGIS 3.0
      */
@@ -549,7 +551,7 @@ class SpatialiteDbInfo : public QObject
      *  - ordered by coverage_name
      * \note
      * - Key: LayerName formatted as 'table_name(geometry_name)'
-     * - Value: GeometryType and Srid formatted as 'geometry_type:srid'
+     * - Value: GeometryType and Srid formatted as 'geometry_type:srid:provider'
      * \see readRL2Layers()
      * \since QGIS 3.0
      */
@@ -564,7 +566,7 @@ class SpatialiteDbInfo : public QObject
      *  -> TABLEs 'table_name'_metadata and 'table_name'_rasters must exist
      * \note
      * - Key: LayerName formatted as 'table_name(geometry_name)'
-     * - Value: GeometryType and Srid formatted as 'geometry_type:srid'
+     * - Value: GeometryType and Srid formatted as 'geometry_type:srid:provider'
      * \see readRL1Layers
      * \since QGIS 3.0
      */
@@ -583,7 +585,7 @@ class SpatialiteDbInfo : public QObject
      *  -> and topology_name from 'topology_name'_topolayers TABLE
      * \note
      * - Key: LayerName formatted as 'topologies(topolayer_name)'
-     * - Value: GeometryType and Srid formatted as 'geometry_type:srid'
+     * - Value: GeometryType and Srid formatted as 'geometry_type:srid:provider'
      * \see readTopologyLayers()
      * \since QGIS 3.0
      */
@@ -620,7 +622,7 @@ class SpatialiteDbInfo : public QObject
      *  -> this must be rendered with QgsOgrProvider
      * \note
      * - Key: LayerName formatted as 'table_name(geometry_name)'
-     * - Value: GeometryType and Srid formatted as 'geometry_type:srid'
+     * - Value: GeometryType and Srid formatted as 'geometry_type:srid:provider'
      * - Checking is done if the SQLite' Gdal/Ogr Driver is active
      * \see readFdoOgrLayers
      * \since QGIS 3.0
@@ -665,23 +667,106 @@ class SpatialiteDbInfo : public QObject
      */
     bool UpdateLayerStatistics( QStringList saLayers );
 
-    /** Map of valid Layers supported by this Database [mLayerName as Key]
+    /** Retrieve Map of valid Layers supported by this Database [mLayerName as Key]
      * - contains Layer-Name and a SpatialiteDbLayer-Pointer
      * \note
      * - contains all Layer-Types (SpatialTable/View, RasterLite1/2, Topology and VirtualShape)
      * -- when  getDbLoadLayers is true, getSpatialiteDbLayer will load all layers
+     * \returns mDbLayers Map of LayerNames and valid SpatialiteDbLayer entries
      * \see getDbLoadLayers
      * \since QGIS 3.0
      */
     QMap<QString, SpatialiteDbLayer *> getDbLayers() const { return mDbLayers; }
 
+    /** Retrieve Map of valid Selected VectorLayers supported by this Database [mLayerName as Key]
+     * - contains Layer-Name and a QgsVectorLayer-Pointer
+     * \note
+     * --> will possibly never be used [use addDatabaseLayers instead]
+     * - requested by User to add to main QGis
+     * - can be for both QgsSpatiaLiteProvider or QgsOgrProvider
+     * \returns mSelectedVectorLayers Map of LayerNames and  valid QgsVectorLayer entries
+     * \see setSelectedLayers
+     * \see getSelectedDbRasterLayers
+     * \since QGIS 3.0
+     */
+    QMap<QString, QgsVectorLayer *> getSelectedDbVectorLayers() const { return mSelectedVectorLayers; }
+
+    /** Retrieve Map of valid Selected RasterrLayers supported by this Database [mLayerName as Key]
+     * - contains Layer-Name and a QgsRasterLayer-Pointer
+     * \note
+     * --> will possibly never be used [use addDatabaseLayers instead]
+     * - requested by User to add to main QGis
+     * - can be for both QgsSpatiaLiteProvider or QgsGdalProvider
+     * \returns mSelectedRasterLayers Map of LayerNames and  valid QgsRasterLayer entries
+     * \see setSelectedLayers
+     * \see getSelectedDbVectorLayers
+     * \since QGIS 3.0
+     */
+    QMap<QString, QgsRasterLayer *> getSelectedDbRasterLayers() const { return mSelectedRasterLayers; }
+
+    /** Map of valid Selected Layers requested by the User
+     * - only Uris that created a valid QgsVectorLayer/QgsRasterLayer
+     * -> corresponding QgsMapLayer contained in  getSelectedDb??????Layers
+     * \note
+     * - Key: LayerName formatted as 'table_name(geometry)'
+     * - Value: Uris dependent on provider
+     * - can be for both QgsSpatiaLiteProvider or QgsGdalProvider
+     * \returns mSelectedLayersUris  Map of LayerNames and  valid Layer-Uris entries
+     * \see getDataSourceUris()
+     * \see setSelectedDbLayers
+     * \see getSelectedDbRasterLayers
+     * \see getSelectedDbVectorLayers
+     * \since QGIS 3.0
+     */
+    QMap<QString, QString>  getSelectedLayersUris() const { return mSelectedLayersUris; }
+
+    /** Sent List of requested Layers
+     * - to fill a Map of QgsVectorLayer and QgsRasterLayer
+     * \note
+     * --> will possibly never be used [use addDatabaseLayers instead]
+     * - can be for both QgsSpatiaLiteProvider or QgsGdalProvider
+     * - only valid QgsMapLayer (Vector/Raster) will be added to the Maps
+     * \param saSelectedLayers formatted as 'table_name(geometry_name)'
+     * \returns amount of valid QgsMapLayer (Vector/Raster) entries
+     * \see getSelectedDbVectorLayers
+     * \see getSelectedDbRasterLayers
+     * \see getSelectedLayersUris
+     * \see addDatabaseLayersSql
+     * \since QGIS 3.0
+     */
+    int setSelectedDbLayers( QStringList saSelectedLayers );
+
+    /** Add a list of database layers to the map
+     * - to fill a Map of QgsVectorLayers and/or QgsRasterLayers
+     * -> can be for both QgsSpatiaLiteProvider or QgsOgr/GdalProvider
+     * \note
+     * - requested by User to add to main QGis
+     * -> emit addDatabaseLayers for each supported Provider
+     * \param saSelectedLayers formatted as 'table_name(geometry_name)'
+     * \param saSelectedLayersSql Extra Sql-Query for selected Layers
+     * \returns amount of Uris entries
+     * \see getSelectedLayersUris
+     * \since QGIS 3.0
+     */
+    int addDatabaseLayersSql( QStringList saSelectedLayers, QStringList saSelectedLayersSql );
+
     /** List of DataSourceUri of valid Layers
      * -  contains Layer-Name and DataSourceUri
      * \note
      * - Lists all Layer-Types (SpatialTable/View, RasterLite1/2, Topology and VirtualShape)
+     * - and MbTiles, FdoOgr and Geopoackage
+     * - Key: LayerName formatted as 'table_name(geometry)'
+     * - Value: dependent on provider
+     * -> Spatialite: 'PathToFile table="table_name" (geometry_name)'
+     * -> RasterLite2: [TODO] 'PathToFile table="coverage_name"'
+     * -> RasterLite1 [Gdal]: 'RASTERLITE:/long/path/to/database/ItalyRail.atlas,table=srtm'
+     * -> MBTiles [Gdal]: 'PathToFile'
+     * -> FdoOgr [Ogr]:  'PathToFile|layername=table_name(geometry)'
+     * -> GeoPackage [Ogr]: 'PathToFile|layername=table_name'
      * \see mDbLayersDataSourceUris
      * \see mDbLayers
      * \see getSpatialiteDbLayer
+     * \see prepareDataSourceUris
      * \since QGIS 3.0
      */
     QMap<QString, QString> getDataSourceUris() const { return mDbLayersDataSourceUris; }
@@ -719,7 +804,7 @@ class SpatialiteDbInfo : public QObject
      * \see getSpatialiteDbLayer
      * \since QGIS 3.0
      */
-    SpatialiteDbLayer *getSpatialiteDbLayer( int iLayerId );
+    SpatialiteDbLayer *getSpatialiteDbLayer( int layerId );
 
     /** Returns the enum  value from the given String of the Layer-Types of the Sqlite3 Container
      * - SpatialiteDbInfo::SpatialiteLayerType
@@ -873,6 +958,9 @@ class SpatialiteDbInfo : public QObject
     //! Collection of reasons for the Database being invalid
     QStringList getErrors() const { return mErrors; }
   protected:
+  signals:
+    //! Add a list of database layers to the map
+    void addDatabaseLayers( QStringList const &paths, QString const &providerKey );
   private:
 
     /** The Database filename (with Path)
@@ -886,7 +974,15 @@ class SpatialiteDbInfo : public QObject
     * \since QGIS 3.0
     */
     QString mFileName;
-    //! The sqlite handler
+
+    /** The sqlite handler
+     *  - created in QgsSqliteHandle
+     * \note
+     *  - closing done through QgsSqliteHandle
+     * \see QgsSqliteHandle::openDb
+     * \see attachQSqliteHandle
+    * \since QGIS 3.0
+    */
     sqlite3 *mSqliteHandle = nullptr;
     //! The class allowing to reuse the same sqlite handle for more layers
     QgsSqliteHandle *mQSqliteHandle = nullptr;
@@ -1125,7 +1221,40 @@ class SpatialiteDbInfo : public QObject
      * \since QGIS 3.0
      */
     QMap<QString, SpatialiteDbLayer *> mDbLayers;
-    //!
+
+    /** Map of valid Selected VectorLayers supported by this Database [mLayerName as Key]
+     * - contains Layer-Name and a QgsVectorLayer-Pointer
+     * \note
+     * - requested by User to add to main QGis
+     * - can be for both QgsSpatiaLiteProvider or QgsOgrProvider
+     * \see setSelectedLayers
+     * \see getSelectedDbVectorLayers
+     * \since QGIS 3.0
+     */
+    QMap<QString, QgsVectorLayer *> mSelectedVectorLayers;
+
+    /** Map of valid Selected RasterrLayers supported by this Database [mLayerName as Key]
+     * - contains Layer-Name and a QgsRasterLayer-Pointer
+     * \note
+     * - requested by User to add to main QGis
+     * - can be for both QgsSpatiaLiteProvider or QgsGdalProvider
+     * \see setSelectedLayers
+     * \see getSelectedDbRasterLayers
+     * \since QGIS 3.0
+     */
+    QMap<QString, QgsRasterLayer *> mSelectedRasterLayers;
+
+    /** Map of valid Selected Layers requested by the User
+     * - only Uris that created a valid QgsVectorLayer/QgsRasterLayer
+     * \note
+     * - Key: LayerName formatted as 'table_name(geometry)'
+     * - Value: Uris dependent on provider
+     * - can be for both QgsSpatiaLiteProvider or QgsGdalProvider
+     * \see getDataSourceUris()
+     * \see setSelectedDbLayers
+     * \since QGIS 3.0
+     */
+    QMap<QString, QString>  mSelectedLayersUris;
 
     /** Map of tables and views that are not part of the Layers
      * - i.e. not Spatial-Tables or Spatial-Administration Tables
@@ -1140,7 +1269,7 @@ class SpatialiteDbInfo : public QObject
      *  - ordered by LayerType (SpatialTable, SpatialView and VirtualShape)
      * \note
      * - Key: LayerName formatted as 'table_name(geometry_name)'
-     * - Value: GeometryType and Srid formatted as 'geometry_type:srid'
+     * - Value: GeometryType and Srid formatted as 'geometry_type:srid:provider'
      * \see readVectorLayers()
      * \since QGIS 3.0
      */
@@ -1162,7 +1291,7 @@ class SpatialiteDbInfo : public QObject
      *  - ordered by coverage_name
      * \note
      * - Key: LayerName formatted as 'table_name(geometry_name)'
-     * - Value: GeometryType and Srid formatted as 'geometry_type:srid'
+     * - Value: GeometryType and Srid formatted as 'geometry_type:srid:provider'
      * \see readRL2Layers()
      * \since QGIS 3.0
      */
@@ -1177,7 +1306,7 @@ class SpatialiteDbInfo : public QObject
      *  -> TABLEs 'table_name'_metadata and 'table_name'_rasters must exist
      * \note
      * - Key: LayerName formatted as 'table_name(geometry_name)'
-     * - Value: GeometryType and Srid formatted as 'geometry_type:srid'
+     * - Value: GeometryType and Srid formatted as 'geometry_type:srid:provider'
      * \see readRL1Layers
      * \since QGIS 3.0
      */
@@ -1196,7 +1325,7 @@ class SpatialiteDbInfo : public QObject
      *  -> and topology_name from 'topology_name'_topolayers TABLE
      * \note
      * - Key: LayerName formatted as 'topologies(topolayer_name)'
-     * - Value: GeometryType and Srid formatted as 'geometry_type:srid'
+     * - Value: GeometryType and Srid formatted as 'geometry_type:srid:provider'
      * \see readTopologyLayers()
      * \since QGIS 3.0
      */
@@ -1241,10 +1370,23 @@ class SpatialiteDbInfo : public QObject
      */
     QMap<QString, QString> mFdoOgrLayers;
 
-    /** Map of Connection-String of mDbLayers
-     * - contains Layer-Name and DataSourceUri
+    /** List of DataSourceUri of valid Layers
+     * -  contains Layer-Name and DataSourceUri
      * \note
-     * - contains all Layer-Types (SpatialTable/View, RasterLite1/2, Topology and VirtualShape)
+     * - Lists all Layer-Types (SpatialTable/View, RasterLite1/2, Topology and VirtualShape)
+     * - and MbTiles, FdoOgr and Geopoackage
+     * - Key: LayerName formatted as 'table_name(geometry)'
+     * - Value: dependent on provider
+     * -> Spatialite: 'PathToFile table="table_name" (geometry_name)'
+     * -> RasterLite2: [TODO] 'PathToFile table="coverage_name"'
+     * -> RasterLite1 [Gdal]: 'RASTERLITE:/long/path/to/database/ItalyRail.atlas,table=srtm'
+     * -> MBTiles [Gdal]: 'PathToFile'
+     * -> FdoOgr [Ogr]:  'PathToFile|layername=table_name(geometry)'
+     * -> GeoPackage [Ogr]: 'PathToFile|layername=table_name'
+     * \see mDbLayersDataSourceUris
+     * \see mDbLayers
+     * \see getSpatialiteDbLayer
+     * \see prepareDataSourceUris
      * \since QGIS 3.0
      */
     QMap<QString, QString> mDbLayersDataSourceUris;
@@ -1544,6 +1686,10 @@ class SpatialiteDbLayer : public QObject
       if ( ( mLayerType == SpatialiteDbInfo::GeoPackageVector ) || ( mLayerType == SpatialiteDbInfo::GeoPackageRaster ) )
       {
         return QString( "%1|layername=%2" ).arg( mDatabaseFileName ).arg( mTableName );
+      }
+      if ( mLayerType == SpatialiteDbInfo::GdalFdoOgr )
+      {
+        return QString( "%1|layername=%2" ).arg( mDatabaseFileName ).arg( mLayerName );
       }
       if ( !mGeometryColumn.isEmpty() )
       {

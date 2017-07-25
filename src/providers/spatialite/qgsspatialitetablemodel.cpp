@@ -58,6 +58,7 @@ void QgsSpatiaLiteTableModel::setSqliteDb( SpatialiteDbInfo *spatialiteDbInfo, b
       }
     }
     mSpatialiteDbInfo = spatialiteDbInfo;
+    mDbLayersDataSourceUris = getDataSourceUris();
     mTableCounter = 0;
     mLoadGeometrylessTables = loadGeometrylessTables;
     // mLoadGeometrylessTables = true;

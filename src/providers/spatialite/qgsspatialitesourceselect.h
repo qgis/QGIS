@@ -56,13 +56,41 @@ class QgsSpatiaLiteSourceSelect: public QDialog, private Ui::QgsDbSourceSelectBa
     ~QgsSpatiaLiteSourceSelect();
     //! Populate the connection list combo box
     void populateConnectionList();
-    //! Determines the tables the user selected and closes the dialog
+
+    /** Determines the tables the user selected and closes the dialog
+     * \note
+     *  - as url
+     * \see collectSelectedTables()
+     * \since QGIS 1.8
+     */
     void addTables();
-    //! String list containing the selected tables
-    QStringList selectedTables();
-    //! Connection info (DB-path)
-    QString connectionInfo();
-    // Store the selected database
+#if 0
+
+    /** List of selected Tabels
+     * \note
+     *  - Loads seleted entries to map
+     * \see collectSelectedTables()
+     * \see addDatabaseLayers( )
+     * \since QGIS 1.8
+     */
+    QStringList selectedTables() { return m_selectedTables; }
+#endif
+
+    /** List of selected Tabels
+     * \note
+     *  - as LayerName LayerName formatted as 'table_name(geometry_name)'
+     * \see collectSelectedTables()
+     * \since QGIS 1.8
+     */
+    QString connectionInfo() {  return mTableModel.getDbConnectionInfo( ); }
+
+    /** Store the selected database
+     * \note
+     *  - Remember which database was selected
+     *  - in 'SpatiaLite/connections/selected'
+     * \see collectSelectedTables()
+     * \since QGIS 1.8
+     */
     void dbChanged();
 
   public slots:
@@ -101,14 +129,18 @@ class QgsSpatiaLiteSourceSelect: public QDialog, private Ui::QgsDbSourceSelectBa
     void setSearchExpression( const QString &regexp );
 
     void on_buttonBox_helpRequested() { QgsHelp::openHelp( QStringLiteral( "working_with_vector/supported_data.html#spatialite-layers" ) ); }
-#if 0
-    void setLayerType( const QString &table, const QString &column, const QString &type );
-#endif
   signals:
     void connectionsChanged();
     void addDatabaseLayers( QStringList const &paths, QString const &providerKey );
 
   private:
+#if 0
+
+    /** Columns
+     * \note
+     *  - not used
+     * \since QGIS 1.8
+     */
     enum Columns
     {
       DbssType = 0,
@@ -117,17 +149,51 @@ class QgsSpatiaLiteSourceSelect: public QDialog, private Ui::QgsDbSourceSelectBa
       DbssColumns,
     };
 
+    /** GeomPair
+     * \note
+     *  - not used
+     * \since QGIS 1.8
+     */
     typedef QPair< QString, QString > geomPair;
-    typedef QList< geomPair > geomCol;
 
-    // Set the position of the database connection list to the last
-    // used one.
+    /** GeomCol
+     * \note
+     *  - not used
+     * \since QGIS 1.8
+     */
+    typedef QList< geomPair > geomCol;
+#endif
+
+    /** Set the position of the database connection list to the last used one.
+     * \note
+     *  - from 'SpatiaLite/connections/selected'
+     * \see populateConnectionList
+     * \since QGIS 1.8
+     */
     void setConnectionListPosition();
-    // Combine the table and column data into a single string
-    // useful for display to the user
+
+    /** Combine the table and column data into a single string
+     * \note
+     *  - useful for display to the user
+     * \since QGIS 1.8
+     */
     QString fullDescription( const QString &table, const QString &column, const QString &type );
-    // The column labels
+
+    /** The column labels
+     * \note
+     *  - not used
+     * \since QGIS 1.8
+     */
     QStringList mColumnLabels;
+
+    /** Absolute Path of the Connection
+     * - 'SpatiaLite/connections'
+     * \note
+     *  - retrieved from QgsSpatiaLiteConnection
+     * \returns name of connection
+     * \see on_btnConnect_clicked
+     * \since QGIS 1.8
+     */
     QString mSqlitePath;
 
     /** Function to collect selected layers
@@ -139,18 +205,136 @@ class QgsSpatiaLiteSourceSelect: public QDialog, private Ui::QgsDbSourceSelectBa
      * \since QGIS 3.0
      */
     int collectSelectedTables();
+#if 0
+
+    /** List of selected Tabels
+     * \note
+     *  - as url
+     * \see collectSelectedTables()
+     * \since QGIS 1.8
+     */
     QStringList m_selectedTables;
+#endif
+
+    /** List of selected Tabels
+     * \note
+     *  - as LayerName LayerName formatted as 'table_name(geometry_name)'
+     * \see collectSelectedTables()
+     * \since QGIS 3.0
+     */
     QStringList m_selectedLayers;
-    // Storage for the range of layer type icons
+
+    /** List of extra Sql-Query for selected Layers
+     * \note
+     *  - as extra Sql-Query
+     * \see collectSelectedTables()
+     * \since QGIS 1.8
+     */
+    QStringList m_selectedLayersSql;
+
+    /** Add a list of database layers to the map
+     * - to fill a Map of QgsVectorLayers and/or QgsRasterLayers
+     * -> can be for both QgsSpatiaLiteProvider or QgsOgr/GdalProvider
+     * \note
+     * - requested by User to add to main QGis
+     * - collectSelectedTables must be called beforhand
+     * -> emit addDatabaseLayers for each supported Provider
+     * \param saSelectedLayers formatted as 'table_name(geometry_name)'
+     * \returns amount of Uris entries
+     * \see getSelectedLayersUris
+     * \see collectSelectedTables()
+     * \since QGIS 3.0
+     */
+    int addDatabaseLayersSql( ) const {  return mTableModel.addDatabaseLayersSql( m_selectedLayers, m_selectedLayersSql );  }
+
+    /** Map of valid Selected Layers requested by the User
+     * - only Uris that created a valid QgsVectorLayer/QgsRasterLayer
+     * -> filled during addDatabaseLayers
+     * -> called through the SpatialiteDbInfo stored in QgsSpatiaLiteTableModel
+     * \note
+     * - Key: LayerName formatted as 'table_name(geometry)'
+     * - Value: Uris dependent on provider
+     * - can be for both QgsSpatiaLiteProvider or QgsGdalProvider
+     * \returns mSelectedLayersUris  Map of LayerNames and  valid Layer-Uris entries
+     * \see QgsSpatiaLiteTableModel:;getSpatialiteDbInfo
+     * \see addDatabaseLayers
+     * \since QGIS 3.0
+     */
+    QMap<QString, QString> getSelectedLayersUris() const { return mTableModel.getSelectedLayersUris(); }
+
+    /** Storage for the range of layer type icons
+     * \note
+     *  - fills m_selectedTables with uri
+     *  - fills m_selectedLayers with LayerName formatted as 'table_name(geometry_name)'
+     * \see addTables()
+     * \see updateStatistics()
+     * \since QGIS 3.0
+     */
     QMap < QString, QPair < QString, QIcon > >mLayerIcons;
-    //! Model that acts as datasource for mTableTreeWidget
+
+    /** Model that acts as datasource for mTableTreeWidget
+     * \note
+     *  - filled by values contained in SpatialiteDbInfo
+     * \since QGIS 1.8
+     */
     QgsSpatiaLiteTableModel mTableModel;
+
+    /** QgsDatabaseFilterProxyMode
+     * \note
+     *  - does what ever needs to be done
+     * \since QGIS 1.8
+     */
     QgsDatabaseFilterProxyModel mProxyModel;
 
-    QString layerURI( const QModelIndex &index );
+    /** Creates extra Sql-Query for selected Layers
+     * \note
+     *  - retrieves Table and Geometry Names with Sql from TableModel
+     *  -> which know the needed index-number
+     *  TODO for QGIS 3.0
+     *  - TableModel should retrieve the Url from SpatialiteDbInfo
+     *  -> adding the Sql-Query to that result
+     * \see QgsSpatiaLiteTableModel::getTableName
+     * \see QgsSpatiaLiteTableModel::getGeometryName
+     * \see QgsSpatiaLiteTableModel::getSqlQuery
+     * \see m_selectedLayersSql
+     * \since QGIS 1.8
+     */
+    QString layerUriSql( const QModelIndex &index );
+
+    /** Build Sql-Query
+     * \note
+     *  - calls setSql
+     *  TODO for QGIS 3.0
+     *  - TableModel should the Layer-Type (Raster/Vector)
+     *  - TableModel should the Provider-Type (Spatialite/Gdal/Oge)
+     * \see buildQuery
+     * \see setSql
+     * \since QGIS 1.8
+     */
     QPushButton *mBuildQueryButton = nullptr;
+
+    /** Add selected Entries to Qgis
+     * \note
+     *  - calls addTables
+     * \see addClicked
+     * \see addTables
+     * \since QGIS 1.8
+     */
     QPushButton *mAddButton = nullptr;
+
+    /** Button Interface for UpdateLayerStatitics
+     * \note
+     *  - UpdateLayerStatitics is done through SpatialiteDbInfo
+     * \see updateStatistics
+     * \since QGIS 1.8
+     */
     QPushButton *mStatsButton = nullptr;
+
+    /** QgsProviderRegistry::WidgetMode
+     * \note
+     *  - does what ever needs to be done
+     * \since QGIS 1.8
+     */
     QgsProviderRegistry::WidgetMode mWidgetMode = QgsProviderRegistry::WidgetMode::None;
 };
 
