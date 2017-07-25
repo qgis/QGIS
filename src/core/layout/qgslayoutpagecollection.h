@@ -80,6 +80,20 @@ class CORE_EXPORT QgsLayoutPageCollection : public QObject
     int pageNumber( QgsLayoutItemPage *page ) const;
 
     /**
+     * Returns a list of the pages which are visible within the specified
+     * \a region (in layout coordinates).
+     * \see visiblePageNumbers()
+     */
+    QList< QgsLayoutItemPage * > visiblePages( QRectF region ) const;
+
+    /**
+     * Returns a list of the page numbers which are visible within the specified
+     * \a region (in layout coordinates).
+     * \see visiblePages()
+     */
+    QList< int > visiblePageNumbers( QRectF region ) const;
+
+    /**
      * Adds a \a page to the collection. Ownership of the \a page is transferred
      * to the collection, and the page will automatically be added to the collection's
      * layout() (there is no need to manually add the page item to the layout).

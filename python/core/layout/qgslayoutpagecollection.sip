@@ -66,6 +66,22 @@ class QgsLayoutPageCollection : QObject
  :rtype: int
 %End
 
+    QList< QgsLayoutItemPage * > visiblePages( QRectF region ) const;
+%Docstring
+ Returns a list of the pages which are visible within the specified
+ ``region`` (in layout coordinates).
+.. seealso:: visiblePageNumbers()
+ :rtype: list of QgsLayoutItemPage
+%End
+
+    QList< int > visiblePageNumbers( QRectF region ) const;
+%Docstring
+ Returns a list of the page numbers which are visible within the specified
+ ``region`` (in layout coordinates).
+.. seealso:: visiblePages()
+ :rtype: list of int
+%End
+
     void addPage( QgsLayoutItemPage *page /Transfer/ );
 %Docstring
  Adds a ``page`` to the collection. Ownership of the ``page`` is transferred

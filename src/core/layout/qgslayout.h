@@ -263,6 +263,12 @@ class CORE_EXPORT QgsLayout : public QGraphicsScene, public QgsExpressionContext
     QgsLayoutPageCollection *pageCollection();
 
     /**
+     * Returns a pointer to the layout's page collection, which stores and manages
+     * page items in the layout.
+     */
+    SIP_SKIP const QgsLayoutPageCollection *pageCollection() const;
+
+    /**
      * Calculates the bounds of all non-gui items in the layout. Ignores snap lines, mouse handles
      * and other cosmetic items.
      * \param ignorePages set to true to ignore page items

@@ -228,6 +228,7 @@ class QgsLayout : QGraphicsScene, QgsExpressionContextGenerator
  :rtype: QgsLayoutPageCollection
 %End
 
+
     QRectF layoutBounds( bool ignorePages = false, double margin = 0.0 ) const;
 %Docstring
  Calculates the bounds of all non-gui items in the layout. Ignores snap lines, mouse handles

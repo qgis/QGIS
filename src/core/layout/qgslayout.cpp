@@ -135,6 +135,11 @@ QgsLayoutPageCollection *QgsLayout::pageCollection()
   return mPageCollection.get();
 }
 
+const QgsLayoutPageCollection *QgsLayout::pageCollection() const
+{
+  return mPageCollection.get();
+}
+
 QRectF QgsLayout::layoutBounds( bool ignorePages, double margin ) const
 {
   //start with an empty rectangle

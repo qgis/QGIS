@@ -168,6 +168,30 @@ int QgsLayoutPageCollection::pageNumber( QgsLayoutItemPage *page ) const
   return mPages.indexOf( page );
 }
 
+QList<QgsLayoutItemPage *> QgsLayoutPageCollection::visiblePages( QRectF region ) const
+{
+  QList<QgsLayoutItemPage *> pages;
+  Q_FOREACH ( QgsLayoutItemPage *page, mPages )
+  {
+    if ( page->mapToScene( page->rect() ).boundingRect().intersects( region ) )
+      pages << page;
+  }
+  return pages;
+}
+
+QList<int> QgsLayoutPageCollection::visiblePageNumbers( QRectF region ) const
+{
+  QList< int > pages;
+  int p = 0;
+  Q_FOREACH ( QgsLayoutItemPage *page, mPages )
+  {
+    if ( page->mapToScene( page->rect() ).boundingRect().intersects( region ) )
+      pages << p;
+    p++;
+  }
+  return pages;
+}
+
 void QgsLayoutPageCollection::addPage( QgsLayoutItemPage *page )
 {
   mPages.append( page );

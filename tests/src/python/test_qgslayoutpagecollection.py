@@ -25,7 +25,8 @@ from qgis.core import (QgsUnitTypes,
                        QgsLayoutPageCollection,
                        QgsSimpleFillSymbolLayer,
                        QgsFillSymbol)
-from qgis.PyQt.QtCore import Qt, QCoreApplication, QEvent, QPointF
+from qgis.PyQt.QtCore import Qt, QCoreApplication, QEvent, QPointF, QRectF
+
 from qgis.testing import start_app, unittest
 
 start_app()
@@ -377,6 +378,44 @@ class TestQgsLayoutPageCollection(unittest.TestCase):
         self.assertEqual(collection.pageAtPoint(QPointF(10, 330)), page2)
         self.assertEqual(collection.pageAtPoint(QPointF(10, 500)), page2)
         self.assertFalse(collection.pageAtPoint(QPointF(10, 600)))
+
+    def testVisiblePages(self):
+        p = QgsProject()
+        l = QgsLayout(p)
+        collection = l.pageCollection()
+
+        self.assertFalse(collection.visiblePages(QRectF(0, 0, 10, 10)))
+        self.assertFalse(collection.visiblePageNumbers(QRectF(0, 0, 10, 10)))
+
+        # add a page
+        page = QgsLayoutItemPage(l)
+        page.setPageSize('A4')
+        collection.addPage(page)
+
+        self.assertFalse(collection.visiblePages(QRectF(-10, -10, 5, 5)))
+        self.assertFalse(collection.visiblePageNumbers(QRectF(-10, -10, 5, 5)))
+        self.assertEqual(collection.visiblePages(QRectF(-10, -10, 15, 15)), [page])
+        self.assertEqual(collection.visiblePageNumbers(QRectF(-10, -10, 15, 15)), [0])
+        self.assertEqual(collection.visiblePages(QRectF(200, 200, 115, 115)), [page])
+        self.assertEqual(collection.visiblePageNumbers(QRectF(200, 200, 115, 115)), [0])
+
+        page2 = QgsLayoutItemPage(l)
+        page2.setPageSize('A5')
+        collection.addPage(page2)
+
+        self.assertFalse(collection.visiblePages(QRectF(-10, -10, 5, 5)))
+        self.assertFalse(collection.visiblePageNumbers(QRectF(-10, -10, 5, 5)))
+        self.assertEqual(collection.visiblePages(QRectF(-10, -10, 15, 15)), [page])
+        self.assertEqual(collection.visiblePageNumbers(QRectF(-10, -10, 15, 15)), [0])
+        self.assertEqual(collection.visiblePages(QRectF(200, 200, 115, 115)), [page])
+        self.assertEqual(collection.visiblePageNumbers(QRectF(200, 200, 115, 115)), [0])
+
+        self.assertEqual(collection.visiblePages(QRectF(200, 200, 115, 615)), [page])
+        self.assertEqual(collection.visiblePageNumbers(QRectF(200, 200, 115, 115)), [0])
+        self.assertEqual(collection.visiblePages(QRectF(100, 200, 115, 615)), [page, page2])
+        self.assertEqual(collection.visiblePageNumbers(QRectF(100, 200, 115, 115)), [0, 1])
+        self.assertEqual(collection.visiblePages(QRectF(100, 310, 115, 615)), [page2])
+        self.assertEqual(collection.visiblePageNumbers(QRectF(100, 310, 115, 115)), [1])
 
 
 if __name__ == '__main__':

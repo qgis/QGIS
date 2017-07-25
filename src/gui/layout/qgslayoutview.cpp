@@ -57,6 +57,11 @@ QgsLayout *QgsLayoutView::currentLayout()
   return qobject_cast<QgsLayout *>( scene() );
 }
 
+const QgsLayout *QgsLayoutView::currentLayout() const
+{
+  return qobject_cast<const QgsLayout *>( scene() );
+}
+
 void QgsLayoutView::setCurrentLayout( QgsLayout *layout )
 {
   setScene( layout );
@@ -161,6 +166,22 @@ void QgsLayoutView::setMenuProvider( QgsLayoutViewMenuProvider *provider )
 QgsLayoutViewMenuProvider *QgsLayoutView::menuProvider() const
 {
   return mMenuProvider.get();
+}
+
+QList<QgsLayoutItemPage *> QgsLayoutView::visiblePages() const
+{
+  //get current visible part of scene
+  QRect viewportRect( 0, 0, viewport()->width(), viewport()->height() );
+  QRectF visibleRect = mapToScene( viewportRect ).boundingRect();
+  return currentLayout()->pageCollection()->visiblePages( visibleRect );
+}
+
+QList<int> QgsLayoutView::visiblePageNumbers() const
+{
+  //get current visible part of scene
+  QRect viewportRect( 0, 0, viewport()->width(), viewport()->height() );
+  QRectF visibleRect = mapToScene( viewportRect ).boundingRect();
+  return currentLayout()->pageCollection()->visiblePageNumbers( visibleRect );
 }
 
 void QgsLayoutView::zoomFull()

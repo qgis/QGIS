@@ -20,6 +20,7 @@
 #include "qgis.h"
 #include "qgsprevieweffect.h" // for QgsPreviewEffect::PreviewMode
 #include "qgis_gui.h"
+#include "qgslayoutitempage.h"
 #include <QPointer>
 #include <QGraphicsView>
 #include <QGraphicsRectItem>
@@ -64,6 +65,13 @@ class GUI_EXPORT QgsLayoutView: public QGraphicsView
      * \see layoutSet()
      */
     QgsLayout *currentLayout();
+
+    /**
+     * Returns the current layout associated with the view.
+     * \see setCurrentLayout()
+     * \see layoutSet()
+     */
+    SIP_SKIP const QgsLayout *currentLayout() const;
 
     /**
      * Sets the current \a layout to edit in the view.
@@ -136,6 +144,18 @@ class GUI_EXPORT QgsLayoutView: public QGraphicsView
      * \see pageChanged()
      */
     int currentPage() const { return mCurrentPage; }
+
+    /**
+     * Returns a list of page items which are currently visible in the view.
+     * \see visiblePageNumbers()
+     */
+    QList< QgsLayoutItemPage * > visiblePages() const;
+
+    /**
+     * Returns a list of page numbers for pages which are currently visible in the view.
+     * \see visiblePages()
+     */
+    QList< int > visiblePageNumbers() const;
 
   public slots:
 

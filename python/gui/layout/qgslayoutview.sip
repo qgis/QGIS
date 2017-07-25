@@ -37,6 +37,7 @@ class QgsLayoutView: QGraphicsView
  :rtype: QgsLayout
 %End
 
+
     void setCurrentLayout( QgsLayout *layout /KeepReference/ );
 %Docstring
  Sets the current ``layout`` to edit in the view.
@@ -110,6 +111,20 @@ class QgsLayoutView: QGraphicsView
  page.
 .. seealso:: pageChanged()
  :rtype: int
+%End
+
+    QList< QgsLayoutItemPage * > visiblePages() const;
+%Docstring
+ Returns a list of page items which are currently visible in the view.
+.. seealso:: visiblePageNumbers()
+ :rtype: list of QgsLayoutItemPage
+%End
+
+    QList< int > visiblePageNumbers() const;
+%Docstring
+ Returns a list of page numbers for pages which are currently visible in the view.
+.. seealso:: visiblePages()
+ :rtype: list of int
 %End
 
   public slots:
