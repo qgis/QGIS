@@ -46,12 +46,15 @@ class QgsLayoutPagePropertiesWidget : public QgsLayoutItemBaseWidget, private Ui
     void pageSizeChanged( int index );
     void orientationChanged( int index );
     void updatePageSize();
+    void setToCustomSize();
 
   private:
 
     QgsLayoutItemPage *mPage = nullptr;
 
     QgsLayoutMeasurementConverter mConverter;
+
+    bool mSettingPresetSize = false;
 
     void showCurrentPageSize();
 

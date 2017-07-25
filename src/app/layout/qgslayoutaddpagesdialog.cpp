@@ -48,6 +48,9 @@ QgsLayoutAddPagesDialog::QgsLayoutAddPagesDialog( QWidget *parent, Qt::WindowFla
 
   connect( mPageSizeComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsLayoutAddPagesDialog::pageSizeChanged );
   connect( mPageOrientationComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsLayoutAddPagesDialog::orientationChanged );
+
+  connect( mWidthSpin, static_cast< void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, &QgsLayoutAddPagesDialog::setToCustomSize );
+  connect( mHeightSpin, static_cast< void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, &QgsLayoutAddPagesDialog::setToCustomSize );
 }
 
 void QgsLayoutAddPagesDialog::setLayout( QgsLayout *layout )
@@ -88,22 +91,19 @@ void QgsLayoutAddPagesDialog::pageSizeChanged( int )
   if ( mPageSizeComboBox->currentData().toString().isEmpty() )
   {
     //custom size
-    mWidthSpin->setEnabled( true );
-    mHeightSpin->setEnabled( true );
     mLockAspectRatio->setEnabled( true );
     mSizeUnitsComboBox->setEnabled( true );
     mPageOrientationComboBox->setEnabled( false );
   }
   else
   {
-    mWidthSpin->setEnabled( false );
-    mHeightSpin->setEnabled( false );
     mLockAspectRatio->setEnabled( false );
     mLockAspectRatio->setLocked( false );
     mSizeUnitsComboBox->setEnabled( false );
     mPageOrientationComboBox->setEnabled( true );
     QgsPageSize size = QgsApplication::pageSizeRegistry()->find( mPageSizeComboBox->currentData().toString() ).value( 0 );
     QgsLayoutSize convertedSize = mConverter.convert( size.size, mSizeUnitsComboBox->unit() );
+    mSettingPresetSize = true;
     switch ( mPageOrientationComboBox->currentData().toInt() )
     {
       case QgsLayoutItemPage::Landscape:
@@ -116,6 +116,7 @@ void QgsLayoutAddPagesDialog::pageSizeChanged( int )
         mHeightSpin->setValue( convertedSize.height() );
         break;
     }
+    mSettingPresetSize = false;
   }
 }
 
@@ -144,4 +145,12 @@ void QgsLayoutAddPagesDialog::orientationChanged( int )
       }
       break;
   }
+}
+
+void QgsLayoutAddPagesDialog::setToCustomSize()
+{
+  if ( mSettingPresetSize )
+    return;
+  whileBlocking( mPageSizeComboBox )->setCurrentIndex( mPageSizeComboBox->count() - 1 );
+  mPageOrientationComboBox->setEnabled( false );
 }
