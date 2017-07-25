@@ -787,7 +787,7 @@ int main( int argc, char *argv[] )
 
 
   // SetUp the QgsSettings Global Settings:
-  // - use the path specified with --globalsettings path,
+  // - use the path specified with --globalsettingsfile path,
   // - use the environment if not found
   // - use a default location as a fallback
   if ( globalsettingsfile.isEmpty() )
