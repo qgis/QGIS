@@ -21,12 +21,6 @@
 #include <QMenu>
 
 #define NUMBER_COLORS_PER_ROW 10 //number of color swatches per row
-#define SWATCH_SIZE 14 //width/height of color swatches
-#define SWATCH_SPACING 4 //horizontal/vertical gap between swatches
-#define LEFT_MARGIN 6 //margin between left edge and first swatch
-#define RIGHT_MARGIN 6 //margin between right edge and last swatch
-#define TOP_MARGIN 6 //margin between label and first swatch
-#define BOTTOM_MARGIN 6 //margin between last swatch row and end of widget
 
 QgsColorSwatchGrid::QgsColorSwatchGrid( QgsColorScheme *scheme, const QString &context, QWidget *parent )
   : QWidget( parent )
@@ -47,8 +41,14 @@ QgsColorSwatchGrid::QgsColorSwatchGrid( QgsColorScheme *scheme, const QString &c
   mLabelHeight = fontMetrics().height();
   mLabelMargin = fontMetrics().width( QStringLiteral( "." ) );
 
+  mSwatchSize = fontMetrics().width( QStringLiteral( "X" ) ) * 1.75;
+  mSwatchOutlineSize = qMax( mLabelMargin * 0.4, 1.0 );
+
+  mSwatchSpacing = mSwatchSize * 0.3;
+  mSwatchMargin = mLabelMargin * 1.5;
+
   //calculate widget width
-  mWidth = NUMBER_COLORS_PER_ROW * SWATCH_SIZE + ( NUMBER_COLORS_PER_ROW - 1 ) * SWATCH_SPACING + LEFT_MARGIN + RIGHT_MARGIN;
+  mWidth = NUMBER_COLORS_PER_ROW * mSwatchSize + ( NUMBER_COLORS_PER_ROW - 1 ) * mSwatchSpacing + mSwatchMargin + mSwatchMargin;
 
   refreshColors();
 }
@@ -241,7 +241,7 @@ void QgsColorSwatchGrid::focusOutEvent( QFocusEvent *event )
 int QgsColorSwatchGrid::calculateHeight() const
 {
   int numberRows = ceil( ( double )mColors.length() / NUMBER_COLORS_PER_ROW );
-  return numberRows * ( SWATCH_SIZE ) + ( numberRows - 1 ) * SWATCH_SPACING + TOP_MARGIN + mLabelHeight + 0.5 * mLabelMargin + BOTTOM_MARGIN;
+  return numberRows * ( mSwatchSize ) + ( numberRows - 1 ) * mSwatchSpacing + mSwatchMargin + mLabelHeight + 0.5 * mLabelMargin + mSwatchMargin;
 }
 
 void QgsColorSwatchGrid::draw( QPainter &painter )
@@ -269,9 +269,9 @@ void QgsColorSwatchGrid::draw( QPainter &painter )
     int row = index / NUMBER_COLORS_PER_ROW;
     int column = index % NUMBER_COLORS_PER_ROW;
 
-    QRect swatchRect = QRect( column * ( SWATCH_SIZE + SWATCH_SPACING ) + LEFT_MARGIN,
-                              row * ( SWATCH_SIZE + SWATCH_SPACING ) + TOP_MARGIN + mLabelHeight + 0.5 * mLabelMargin,
-                              SWATCH_SIZE, SWATCH_SIZE );
+    QRect swatchRect = QRect( column * ( mSwatchSize + mSwatchSpacing ) + mSwatchMargin,
+                              row * ( mSwatchSize + mSwatchSpacing ) + mSwatchMargin + mLabelHeight + 0.5 * mLabelMargin,
+                              mSwatchSize, mSwatchSize );
 
     if ( mCurrentHoverBox == index )
     {
@@ -292,12 +292,12 @@ void QgsColorSwatchGrid::draw( QPainter &painter )
     {
       if ( mDrawBoxDepressed )
       {
-        painter.setPen( QColor( 100, 100, 100 ) );
+        painter.setPen( QPen( QColor( 100, 100, 100 ), mSwatchOutlineSize ) );
       }
       else
       {
         //hover color
-        painter.setPen( QColor( 220, 220, 220 ) );
+        painter.setPen( QPen( QColor( 220, 220, 220 ), mSwatchOutlineSize ) );
       }
     }
     else if ( mFocused && index == mCurrentFocusBox )
@@ -307,11 +307,11 @@ void QgsColorSwatchGrid::draw( QPainter &painter )
     else if ( ( *colorIt ).first.name() == mBaseColor.name() )
     {
       //currently active color
-      painter.setPen( QColor( 75, 75, 75 ) );
+      painter.setPen( QPen( QColor( 75, 75, 75 ), mSwatchOutlineSize ) );
     }
     else
     {
-      painter.setPen( QColor( 197, 197, 197 ) );
+      painter.setPen( QPen( QColor( 197, 197, 197 ), mSwatchOutlineSize ) );
     }
 
     painter.setBrush( ( *colorIt ).first );
@@ -335,12 +335,12 @@ int QgsColorSwatchGrid::swatchForPosition( QPoint position ) const
 {
   //calculate box for position
   int box = -1;
-  int column = ( position.x() - LEFT_MARGIN ) / ( SWATCH_SIZE + SWATCH_SPACING );
-  int xRem = ( position.x() - LEFT_MARGIN ) % ( SWATCH_SIZE + SWATCH_SPACING );
-  int row = ( position.y() - TOP_MARGIN - mLabelHeight ) / ( SWATCH_SIZE + SWATCH_SPACING );
-  int yRem = ( position.y() - TOP_MARGIN - mLabelHeight ) % ( SWATCH_SIZE + SWATCH_SPACING );
+  int column = ( position.x() - mSwatchMargin ) / ( mSwatchSize + mSwatchSpacing );
+  int xRem = ( position.x() - mSwatchMargin ) % ( mSwatchSize + mSwatchSpacing );
+  int row = ( position.y() - mSwatchMargin - mLabelHeight ) / ( mSwatchSize + mSwatchSpacing );
+  int yRem = ( position.y() - mSwatchMargin - mLabelHeight ) % ( mSwatchSize + mSwatchSpacing );
 
-  if ( xRem <= SWATCH_SIZE + 1 && yRem <= SWATCH_SIZE + 1 && column < NUMBER_COLORS_PER_ROW )
+  if ( xRem <= mSwatchSize + 1 && yRem <= mSwatchSize + 1 && column < NUMBER_COLORS_PER_ROW )
   {
     //if pos is actually inside a valid box, calculate which box
     box = column + row * NUMBER_COLORS_PER_ROW;

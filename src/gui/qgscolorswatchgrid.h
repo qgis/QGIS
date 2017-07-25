@@ -122,6 +122,17 @@ class GUI_EXPORT QgsColorSwatchGrid : public QWidget
     //! Spacing between label box and text
     int mLabelMargin = 0;
 
+    //! Width/height of color swatches
+    int mSwatchSize = 0;
+    //! Swatch outline size
+    int mSwatchOutlineSize = 0;
+
+    //! Margins between edges of grid widget and swatches
+    int mSwatchMargin = 0;
+
+    //! Horizontal/vertical gap between swatches
+    int mSwatchSpacing = 0;
+
     bool mPressedOnWidget;
 
     /** Calculate height of widget based on number of colors
