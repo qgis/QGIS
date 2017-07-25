@@ -268,9 +268,7 @@ void QgsLayoutView::mouseMoveEvent( QMouseEvent *event )
 {
   mMouseCurrentXY = event->pos();
 
-  //update cursor position in status bar
-  emit cursorPosChanged( mapToScene( mMouseCurrentXY ) );
-
+  QPointF cursorPos = mapToScene( mMouseCurrentXY );
   if ( mTool )
   {
     std::unique_ptr<QgsLayoutViewMouseEvent> me( new QgsLayoutViewMouseEvent( this, event, mTool->flags() & QgsLayoutViewTool::FlagSnaps ) );
@@ -279,6 +277,7 @@ void QgsLayoutView::mouseMoveEvent( QMouseEvent *event )
       //draw snapping point indicator
       if ( me->isSnapped() )
       {
+        cursorPos = me->snappedPoint();
         mSnapMarker->setPos( me->snappedPoint() );
         mSnapMarker->setVisible( true );
       }
@@ -288,6 +287,9 @@ void QgsLayoutView::mouseMoveEvent( QMouseEvent *event )
     mTool->layoutMoveEvent( me.get() );
     event->setAccepted( me->isAccepted() );
   }
+
+  //update cursor position in status bar
+  emit cursorPosChanged( cursorPos );
 
   if ( !mTool || !event->isAccepted() )
     QGraphicsView::mouseMoveEvent( event );
