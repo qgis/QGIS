@@ -80,7 +80,7 @@ void QgsLayoutGuide::update()
   switch ( mOrientation )
   {
     case Horizontal:
-      if ( layoutPos > page->rect().width() )
+      if ( layoutPos > page->rect().height() )
       {
         mLineItem->hide();
       }
@@ -93,7 +93,7 @@ void QgsLayoutGuide::update()
       break;
 
     case Vertical:
-      if ( layoutPos > page->rect().height() )
+      if ( layoutPos > page->rect().width() )
       {
         mLineItem->hide();
       }

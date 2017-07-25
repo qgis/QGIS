@@ -81,6 +81,8 @@ class GUI_EXPORT QgsLayoutRuler: public QWidget
   protected:
     void paintEvent( QPaintEvent *event ) override;
     void mouseMoveEvent( QMouseEvent *event ) override;
+    void mousePressEvent( QMouseEvent *event ) override;
+    void mouseReleaseEvent( QMouseEvent *event ) override;
 
   private:
     static const int VALID_SCALE_MULTIPLES[];
@@ -101,6 +103,9 @@ class GUI_EXPORT QgsLayoutRuler: public QWidget
     int mPixelsBetweenLineAndText;
     int mTextBaseline;
     int mMinSpacingVerticalLabels;
+
+    bool mCreatingGuide = false;
+    std::unique_ptr< QGraphicsLineItem > mGuideItem;
 
     //! Calculates the optimum labeled units for ruler so that labels are a good distance apart
     int optimumScale( double minPixelDiff, int &magnitude, int &multiple );

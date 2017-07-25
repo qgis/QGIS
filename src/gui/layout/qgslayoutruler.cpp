@@ -428,22 +428,118 @@ void QgsLayoutRuler::mouseMoveEvent( QMouseEvent *event )
   mMarkerPos = event->posF();
   update();
 
-  //update cursor position in status bar
-  QPointF displayPos = mTransform.inverted().map( event->posF() );
-  switch ( mOrientation )
+  QPointF displayPos;
+  if ( mCreatingGuide )
   {
-    case Qt::Horizontal:
+    // event -> layout coordinates
+    QgsLayout *layout = mView->currentLayout();
+    QPoint viewPoint  = mView->mapFromGlobal( mapToGlobal( event->pos() ) );
+    displayPos = mView->mapToScene( viewPoint );
+    int pageNo = layout->pageCollection()->pageNumberForPoint( displayPos );
+    QgsLayoutItemPage *page = layout->pageCollection()->page( pageNo );
+
+    switch ( mOrientation )
     {
-      //mouse is over a horizontal ruler, so don't show a y coordinate
-      displayPos.setY( 0 );
-      break;
+      case Qt::Horizontal:
+      {
+        //mouse is creating a horizontal ruler, so don't show x coordinate
+        mGuideItem->setLine( 0, displayPos.y(), page->rect().width(), displayPos.y() );
+        displayPos.setX( 0 );
+        break;
+      }
+      case Qt::Vertical:
+      {
+        //mouse is creating a vertical ruler, so don't show a y coordinate
+        mGuideItem->setLine( displayPos.x(), 0, displayPos.x(), page->rect().height() );
+        displayPos.setY( 0 );
+        break;
+      }
     }
-    case Qt::Vertical:
+  }
+  else
+  {
+    //update cursor position in status bar
+    displayPos = mTransform.inverted().map( event->posF() );
+    switch ( mOrientation )
     {
-      //mouse is over a vertical ruler, so don't show an x coordinate
-      displayPos.setX( 0 );
-      break;
+      case Qt::Horizontal:
+      {
+        //mouse is over a horizontal ruler, so don't show a y coordinate
+        displayPos.setY( 0 );
+        break;
+      }
+      case Qt::Vertical:
+      {
+        //mouse is over a vertical ruler, so don't show an x coordinate
+        displayPos.setX( 0 );
+        break;
+      }
     }
   }
   emit cursorPosChanged( displayPos );
+}
+
+void QgsLayoutRuler::mousePressEvent( QMouseEvent *event )
+{
+  if ( event->button() == Qt::LeftButton )
+  {
+    mCreatingGuide = true;
+    mGuideItem.reset( new QGraphicsLineItem() );
+
+    mGuideItem->setZValue( QgsLayout::ZGuide );
+    QPen linePen( Qt::DashLine );
+    linePen.setColor( Qt::red );
+    linePen.setWidthF( 0 );
+    mGuideItem->setPen( linePen );
+
+    mView->currentLayout()->addItem( mGuideItem.get() );
+
+    switch ( mOrientation )
+    {
+      case Qt::Horizontal:
+      {
+        QApplication::setOverrideCursor( Qt::SplitVCursor );
+        break;
+      }
+      case Qt::Vertical:
+        QApplication::setOverrideCursor( Qt::SplitHCursor );
+        break;
+    }
+  }
+}
+
+void QgsLayoutRuler::mouseReleaseEvent( QMouseEvent *event )
+{
+  if ( event->button() == Qt::LeftButton )
+  {
+    mCreatingGuide = false;
+    QApplication::restoreOverrideCursor();
+    mGuideItem.reset();
+
+    QgsLayout *layout = mView->currentLayout();
+
+    // create guide
+    QPoint viewPoint  = mView->mapFromGlobal( mapToGlobal( event->pos() ) );
+    QPointF scenePos = mView->mapToScene( viewPoint );
+    int page = layout->pageCollection()->pageNumberForPoint( scenePos );
+    std::unique_ptr< QgsLayoutGuide > guide;
+    switch ( mOrientation )
+    {
+      case Qt::Horizontal:
+      {
+        //mouse is creating a horizontal guide
+        double posOnPage = layout->pageCollection()->positionOnPage( scenePos ).y();
+        guide.reset( new QgsLayoutGuide( QgsLayoutGuide::Horizontal, QgsLayoutMeasurement( posOnPage, layout->units() ) ) );
+        break;
+      }
+      case Qt::Vertical:
+      {
+        //mouse is creating a vertical guide
+        guide.reset( new QgsLayoutGuide( QgsLayoutGuide::Vertical, QgsLayoutMeasurement( scenePos.x(), layout->units() ) ) );
+        break;
+      }
+    }
+    guide->setPage( page );
+    mView->currentLayout()->guides().addGuide( guide.release() );
+  }
 }

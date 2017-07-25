@@ -72,6 +72,10 @@ class QgsLayoutRuler: QWidget
 
     virtual void mouseMoveEvent( QMouseEvent *event );
 
+    virtual void mousePressEvent( QMouseEvent *event );
+
+    virtual void mouseReleaseEvent( QMouseEvent *event );
+
 
   signals:
     void cursorPosChanged( QPointF );
