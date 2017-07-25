@@ -467,7 +467,7 @@ class TestQgsVectorLayer(unittest.TestCase, FeatureSourceTestCase):
         join.setJoinFieldName("y")
         join.setUsingMemoryCache(True)
         join.setEditable(True)
-        join.setDeleteCascade(True)
+        join.setCascadedDelete(True)
 
         layer.addJoin(join)
 
@@ -478,7 +478,7 @@ class TestQgsVectorLayer(unittest.TestCase, FeatureSourceTestCase):
         join2.setUsingMemoryCache(True)
         join2.setPrefix("custom-prefix_")
         join2.setEditable(True)
-        join2.setDeleteCascade(False)
+        join2.setCascadedDelete(False)
 
         layer.addJoin(join2)
 
