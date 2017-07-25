@@ -6,6 +6,7 @@
 #include <Qt3DExtras>
 
 #include "abstract3drenderer.h"
+#include "abstract3dsymbol.h"
 #include "maptexturegenerator.h"
 #include "sidepanel.h"
 #include "window3d.h"
@@ -124,40 +125,43 @@ int main( int argc, char *argv[] )
 
   // polygons
 
-  PolygonRenderer pr;
-  pr.setLayer( vlPolygons );
-  pr.material.setAmbient( Qt::gray );
-  pr.material.setDiffuse( Qt::lightGray );
-  pr.material.setShininess( 0 );
-  pr.height = 0;
-  pr.extrusionHeight = 10;
-  map.renderers << new PolygonRenderer( pr );
+  Polygon3DSymbol *polygonSymbol = new Polygon3DSymbol;
+  polygonSymbol->material.setAmbient( Qt::gray );
+  polygonSymbol->material.setDiffuse( Qt::lightGray );
+  polygonSymbol->material.setShininess( 0 );
+  polygonSymbol->height = 0;
+  polygonSymbol->extrusionHeight = 10;
+  VectorLayer3DRenderer *pr = new VectorLayer3DRenderer( polygonSymbol );
+  pr->setLayer( vlPolygons );
+  map.renderers << pr;
 
   // points
 
-  PointRenderer ptr;
-  ptr.setLayer( vlPoints );
-  ptr.material.setDiffuse( QColor( 222, 184, 135 ) );
-  ptr.material.setAmbient( ptr.material.diffuse().darker() );
-  ptr.material.setShininess( 0 );
-  ptr.height = 2.5;
-  ptr.shapeProperties["shape"] = "cylinder";
-  ptr.shapeProperties["radius"] = 1;
-  ptr.shapeProperties["length"] = 5;
+  Point3DSymbol *pointSymbol = new Point3DSymbol;
+  pointSymbol->material.setDiffuse( QColor( 222, 184, 135 ) );
+  pointSymbol->material.setAmbient( pointSymbol->material.diffuse().darker() );
+  pointSymbol->material.setShininess( 0 );
+  pointSymbol->height = 2.5;
+  pointSymbol->shapeProperties["shape"] = "cylinder";
+  pointSymbol->shapeProperties["radius"] = 1;
+  pointSymbol->shapeProperties["length"] = 5;
   //Qt3DCore::QTransform tr;
   //tr.setScale3D(QVector3D(4,1,4));
-  //ptr.transform = tr.matrix();
-  map.renderers << new PointRenderer( ptr );
+  //pointSymbol->transform = tr.matrix();
+  VectorLayer3DRenderer *ptr = new VectorLayer3DRenderer( pointSymbol );
+  ptr->setLayer( vlPoints );
+  map.renderers << ptr;
 
-  PointRenderer ptr2;
-  ptr2.setLayer( vlPoints );
-  ptr2.material.setDiffuse( QColor( 60, 179, 113 ) );
-  ptr2.material.setAmbient( ptr2.material.diffuse().darker() );
-  ptr2.material.setShininess( 0 );
-  ptr2.height = 7.5;
-  ptr2.shapeProperties["shape"] = "sphere";
-  ptr2.shapeProperties["radius"] = 3.5;
-  map.renderers << new PointRenderer( ptr2 );
+  Point3DSymbol *pointSymbol2 = new Point3DSymbol;
+  pointSymbol2->material.setDiffuse( QColor( 60, 179, 113 ) );
+  pointSymbol2->material.setAmbient( pointSymbol2->material.diffuse().darker() );
+  pointSymbol2->material.setShininess( 0 );
+  pointSymbol2->height = 7.5;
+  pointSymbol2->shapeProperties["shape"] = "sphere";
+  pointSymbol2->shapeProperties["radius"] = 3.5;
+  VectorLayer3DRenderer *ptr2 = new VectorLayer3DRenderer( pointSymbol2 );
+  ptr2->setLayer( vlPoints );
+  map.renderers << ptr2;
 
 #if 0
   // Q on top of trees - only in Qt 5.9
@@ -177,14 +181,15 @@ int main( int argc, char *argv[] )
 
   // lines
 
-  LineRenderer lr;
-  lr.setLayer( vlLines );
-  lr.material.setAmbient( Qt::yellow );
-  lr.material.setShininess( 0 );
-  lr.altBinding = AltBindVertex;  // follow terrain
-  lr.height = 1.5;
-  lr.distance = 2.5;
-  map.renderers << new LineRenderer( lr );
+  Line3DSymbol *lineSymbol = new Line3DSymbol;
+  lineSymbol->material.setAmbient( Qt::yellow );
+  lineSymbol->material.setShininess( 0 );
+  lineSymbol->altBinding = AltBindVertex;  // follow terrain
+  lineSymbol->height = 1.5;
+  lineSymbol->distance = 2.5;
+  VectorLayer3DRenderer *lr = new VectorLayer3DRenderer( lineSymbol );
+  lr->setLayer( vlLines );
+  map.renderers << lr;
 
   // skybox
 

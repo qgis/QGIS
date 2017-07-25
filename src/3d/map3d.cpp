@@ -110,17 +110,9 @@ void Map3D::readXml( const QDomElement &elem, const QgsReadWriteContext &context
   {
     Abstract3DRenderer *renderer = nullptr;
     QString type = elemRenderer.attribute( "type" );
-    if ( type == "polygon" )
+    if ( type == "vector" )
     {
-      renderer = new PolygonRenderer;
-    }
-    else if ( type == "point" )
-    {
-      renderer = new PointRenderer;
-    }
-    else if ( type == "line" )
-    {
-      renderer = new LineRenderer;
+      renderer = new VectorLayer3DRenderer;
     }
 
     if ( renderer )

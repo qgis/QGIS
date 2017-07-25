@@ -1,6 +1,6 @@
 #include "polygonentity.h"
 
-#include "abstract3drenderer.h"
+#include "abstract3dsymbol.h"
 #include "polygongeometry.h"
 #include "map3d.h"
 #include "terraingenerator.h"
@@ -15,17 +15,16 @@
 
 
 
-PolygonEntity::PolygonEntity( const Map3D &map, const PolygonRenderer &settings, Qt3DCore::QNode *parent )
+PolygonEntity::PolygonEntity( const Map3D &map, QgsVectorLayer *layer, const Polygon3DSymbol &symbol, Qt3DCore::QNode *parent )
   : Qt3DCore::QEntity( parent )
 {
-  QgsVectorLayer *layer = settings.layer();
   QgsPointXY origin( map.originX, map.originY );
 
   Qt3DExtras::QPhongMaterial *material = new Qt3DExtras::QPhongMaterial;
-  material->setAmbient( settings.material.ambient() );
-  material->setDiffuse( settings.material.diffuse() );
-  material->setSpecular( settings.material.specular() );
-  material->setShininess( settings.material.shininess() );
+  material->setAmbient( symbol.material.ambient() );
+  material->setDiffuse( symbol.material.diffuse() );
+  material->setSpecular( symbol.material.specular() );
+  material->setShininess( symbol.material.shininess() );
   addComponent( material );
 
   QList<QgsPolygonV2 *> polygons;
@@ -44,7 +43,7 @@ PolygonEntity::PolygonEntity( const Map3D &map, const PolygonRenderer &settings,
     {
       QgsPolygonV2 *poly = static_cast<QgsPolygonV2 *>( g );
       QgsPolygonV2 *polyClone = poly->clone();
-      Utils::clampAltitudes( polyClone, settings.altClamping, settings.altBinding, settings.height, map );
+      Utils::clampAltitudes( polyClone, symbol.altClamping, symbol.altBinding, symbol.height, map );
       polygons.append( polyClone );
     }
     else if ( QgsWkbTypes::flatType( g->wkbType() ) == QgsWkbTypes::MultiPolygon )
@@ -55,7 +54,7 @@ PolygonEntity::PolygonEntity( const Map3D &map, const PolygonRenderer &settings,
         QgsAbstractGeometry *g2 = mpoly->geometryN( i );
         Q_ASSERT( QgsWkbTypes::flatType( g2->wkbType() ) == QgsWkbTypes::Polygon );
         QgsPolygonV2 *polyClone = static_cast<QgsPolygonV2 *>( g2 )->clone();
-        Utils::clampAltitudes( polyClone, settings.altClamping, settings.altBinding, settings.height, map );
+        Utils::clampAltitudes( polyClone, symbol.altClamping, symbol.altBinding, symbol.height, map );
         polygons.append( polyClone );
       }
     }
@@ -64,7 +63,7 @@ PolygonEntity::PolygonEntity( const Map3D &map, const PolygonRenderer &settings,
   }
 
   geometry = new PolygonGeometry;
-  geometry->setPolygons( polygons, origin, settings.extrusionHeight );
+  geometry->setPolygons( polygons, origin, symbol.extrusionHeight );
 
   Qt3DRender::QGeometryRenderer *renderer = new Qt3DRender::QGeometryRenderer;
   renderer->setGeometry( geometry );

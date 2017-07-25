@@ -12,6 +12,7 @@
 
 class QgsVectorLayer;
 
+class Abstract3DSymbol;
 class Map3D;
 
 
@@ -20,7 +21,7 @@ namespace Qt3DCore
   class QEntity;
 }
 
-class Abstract3DRenderer //: public QObject
+class _3D_EXPORT Abstract3DRenderer //: public QObject
 {
     //Q_OBJECT
   public:
@@ -36,85 +37,35 @@ class Abstract3DRenderer //: public QObject
 };
 
 
-class _3D_EXPORT PolygonRenderer : public Abstract3DRenderer
+/** 3D renderer that renders all features of a vector layer with the same 3D symbol.
+ * The appearance if completely defined by the symbol.
+ */
+class _3D_EXPORT VectorLayer3DRenderer : public Abstract3DRenderer
 {
   public:
-    PolygonRenderer();
+    //! Takes ownership of the symbol object
+    explicit VectorLayer3DRenderer( Abstract3DSymbol *s = nullptr );
+    ~VectorLayer3DRenderer();
 
     void setLayer( QgsVectorLayer *layer );
     QgsVectorLayer *layer() const;
 
-    QString type() const override { return "polygon"; }
+    //! takes ownership of the symbol
+    void setSymbol( Abstract3DSymbol *symbol );
+    const Abstract3DSymbol *symbol() const;
+
+    QString type() const override { return "vector"; }
     Abstract3DRenderer *clone() const override;
     Qt3DCore::QEntity *createEntity( const Map3D &map ) const override;
 
     void writeXml( QDomElement &elem ) const override;
     void readXml( const QDomElement &elem ) override;
     void resolveReferences( const QgsProject &project ) override;
-
-    AltitudeClamping altClamping;  //! how to handle altitude of vector features
-    AltitudeBinding altBinding;    //! how to handle clamping of vertices of individual features
-
-    float height;           //!< Base height of polygons
-    float extrusionHeight;  //!< How much to extrude (0 means no walls)
-    PhongMaterialSettings material;  //!< Defines appearance of objects
 
   private:
     QgsMapLayerRef layerRef; //!< Layer used to extract polygons from
+    std::unique_ptr<Abstract3DSymbol> mSymbol;  //!< 3D symbol that defines appearance
 };
 
-class _3D_EXPORT PointRenderer : public Abstract3DRenderer
-{
-  public:
-    PointRenderer();
-
-    void setLayer( QgsVectorLayer *layer );
-    QgsVectorLayer *layer() const;
-
-    QString type() const override { return "point"; }
-    Abstract3DRenderer *clone() const override;
-    Qt3DCore::QEntity *createEntity( const Map3D &map ) const override;
-
-    void writeXml( QDomElement &elem ) const override;
-    void readXml( const QDomElement &elem ) override;
-    void resolveReferences( const QgsProject &project ) override;
-
-    float height;
-    PhongMaterialSettings material;  //!< Defines appearance of objects
-    QVariantMap shapeProperties;  //!< What kind of shape to use and what
-    QMatrix4x4 transform;  //!< Transform of individual instanced models
-
-  private:
-    QgsMapLayerRef layerRef; //!< Layer used to extract points from
-};
-
-class _3D_EXPORT LineRenderer : public Abstract3DRenderer
-{
-  public:
-    LineRenderer();
-
-    void setLayer( QgsVectorLayer *layer );
-    QgsVectorLayer *layer() const;
-
-    QString type() const override { return "line"; }
-    Abstract3DRenderer *clone() const override;
-    Qt3DCore::QEntity *createEntity( const Map3D &map ) const override;
-
-    void writeXml( QDomElement &elem ) const override;
-    void readXml( const QDomElement &elem ) override;
-    void resolveReferences( const QgsProject &project ) override;
-
-    AltitudeClamping altClamping;  //! how to handle altitude of vector features
-    AltitudeBinding altBinding;    //! how to handle clamping of vertices of individual features
-
-    float height;           //!< Base height of polygons
-    float extrusionHeight;  //!< How much to extrude (0 means no walls)
-    PhongMaterialSettings material;  //!< Defines appearance of objects
-
-    float distance;  //!< Distance of buffer of lines
-
-  private:
-    QgsMapLayerRef layerRef; //!< Layer used to extract points from
-};
 
 #endif // ABSTRACT3DRENDERER_H

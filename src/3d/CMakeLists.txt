@@ -3,6 +3,7 @@
 
 SET(QGIS_3D_SRCS
   abstract3drenderer.cpp
+  abstract3dsymbol.cpp
   cameracontroller.cpp
   lineentity.cpp
   map3d.cpp
@@ -63,6 +64,7 @@ QT5_ADD_RESOURCES(QGIS_3D_RCC_SRCS shaders.qrc)
 SET(QGIS_3D_HDRS
   aabb.h
   abstract3drenderer.h
+  abstract3dsymbol.h
   cameracontroller.h
   lineentity.h
   map3d.h

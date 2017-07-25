@@ -5,7 +5,7 @@
 
 class Map3D;
 class PolygonGeometry;
-class PolygonRenderer;
+class Polygon3DSymbol;
 
 class QgsPointXY;
 class QgsVectorLayer;
@@ -15,7 +15,7 @@ class QgsVectorLayer;
 class PolygonEntity : public Qt3DCore::QEntity
 {
   public:
-    PolygonEntity( const Map3D &map, const PolygonRenderer &settings, Qt3DCore::QNode *parent = nullptr );
+    PolygonEntity( const Map3D &map, QgsVectorLayer *layer, const Polygon3DSymbol &symbol, Qt3DCore::QNode *parent = nullptr );
 
     PolygonGeometry *geometry;
 };

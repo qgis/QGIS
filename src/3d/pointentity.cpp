@@ -22,7 +22,7 @@
 #include <QUrl>
 #include <QVector3D>
 
-#include "abstract3drenderer.h"
+#include "abstract3dsymbol.h"
 #include "map3d.h"
 #include "terraingenerator.h"
 
@@ -31,7 +31,7 @@
 
 
 
-PointEntity::PointEntity( const Map3D &map, const PointRenderer &settings, Qt3DCore::QNode *parent )
+PointEntity::PointEntity( const Map3D &map, QgsVectorLayer *layer, const Point3DSymbol &symbol, Qt3DCore::QNode *parent )
   : Qt3DCore::QEntity( parent )
 {
   //
@@ -42,7 +42,7 @@ PointEntity::PointEntity( const Map3D &map, const PointRenderer &settings, Qt3DC
   QgsFeature f;
   QgsFeatureRequest request;
   request.setDestinationCrs( map.crs );
-  QgsFeatureIterator fi = settings.layer()->getFeatures( request );
+  QgsFeatureIterator fi = layer->getFeatures( request );
   while ( fi.nextFeature( f ) )
   {
     if ( f.geometry().isNull() )
@@ -54,7 +54,7 @@ PointEntity::PointEntity( const Map3D &map, const PointRenderer &settings, Qt3DC
       QgsPoint *pt = static_cast<QgsPoint *>( g );
       // TODO: use Z coordinates if the point is 3D
       float h = map.terrainGenerator()->heightAt( pt->x(), pt->y(), map ) * map.zExaggeration;
-      positions.append( QVector3D( pt->x() - map.originX, h + settings.height, -( pt->y() - map.originY ) ) );
+      positions.append( QVector3D( pt->x() - map.originX, h + symbol.height, -( pt->y() - map.originY ) ) );
       //qDebug() << positions.last();
     }
     else
@@ -88,19 +88,19 @@ PointEntity::PointEntity( const Map3D &map, const PointRenderer &settings, Qt3DC
   instanceDataAttribute->setBuffer( instanceBuffer );
 
   Qt3DRender::QGeometry *geometry = nullptr;
-  QString shape = settings.shapeProperties["shape"].toString();
+  QString shape = symbol.shapeProperties["shape"].toString();
   if ( shape == "sphere" )
   {
-    float radius = settings.shapeProperties["radius"].toFloat();
+    float radius = symbol.shapeProperties["radius"].toFloat();
     Qt3DExtras::QSphereGeometry *g = new Qt3DExtras::QSphereGeometry;
     g->setRadius( radius ? radius : 10 );
     geometry = g;
   }
   else if ( shape == "cone" )
   {
-    float length = settings.shapeProperties["length"].toFloat();
-    float bottomRadius = settings.shapeProperties["bottomRadius"].toFloat();
-    float topRadius = settings.shapeProperties["topRadius"].toFloat();
+    float length = symbol.shapeProperties["length"].toFloat();
+    float bottomRadius = symbol.shapeProperties["bottomRadius"].toFloat();
+    float topRadius = symbol.shapeProperties["topRadius"].toFloat();
     Qt3DExtras::QConeGeometry *g = new Qt3DExtras::QConeGeometry;
     g->setLength( length ? length : 10 );
     g->setBottomRadius( bottomRadius );
@@ -111,7 +111,7 @@ PointEntity::PointEntity( const Map3D &map, const PointRenderer &settings, Qt3DC
   }
   else if ( shape == "cube" )
   {
-    float size = settings.shapeProperties["size"].toFloat();
+    float size = symbol.shapeProperties["size"].toFloat();
     Qt3DExtras::QCuboidGeometry *g = new Qt3DExtras::QCuboidGeometry;
     g->setXExtent( size ? size : 10 );
     g->setYExtent( size ? size : 10 );
@@ -120,8 +120,8 @@ PointEntity::PointEntity( const Map3D &map, const PointRenderer &settings, Qt3DC
   }
   else if ( shape == "torus" )
   {
-    float radius = settings.shapeProperties["radius"].toFloat();
-    float minorRadius = settings.shapeProperties["minorRadius"].toFloat();
+    float radius = symbol.shapeProperties["radius"].toFloat();
+    float minorRadius = symbol.shapeProperties["minorRadius"].toFloat();
     Qt3DExtras::QTorusGeometry *g = new Qt3DExtras::QTorusGeometry;
     g->setRadius( radius ? radius : 10 );
     g->setMinorRadius( minorRadius ? minorRadius : 5 );
@@ -129,7 +129,7 @@ PointEntity::PointEntity( const Map3D &map, const PointRenderer &settings, Qt3DC
   }
   else if ( shape == "plane" )
   {
-    float size = settings.shapeProperties["size"].toFloat();
+    float size = symbol.shapeProperties["size"].toFloat();
     Qt3DExtras::QPlaneGeometry *g = new Qt3DExtras::QPlaneGeometry;
     g->setWidth( size ? size : 10 );
     g->setHeight( size ? size : 10 );
@@ -138,8 +138,8 @@ PointEntity::PointEntity( const Map3D &map, const PointRenderer &settings, Qt3DC
 #if QT_VERSION >= 0x050900
   else if ( shape == "extrudedText" )
   {
-    float depth = settings.shapeProperties["depth"].toFloat();
-    QString text = settings.shapeProperties["text"].toString();
+    float depth = symbol.shapeProperties["depth"].toFloat();
+    QString text = symbol.shapeProperties["text"].toString();
     Qt3DExtras::QExtrudedTextGeometry *g = new Qt3DExtras::QExtrudedTextGeometry;
     g->setDepth( depth ? depth : 1 );
     g->setText( text );
@@ -148,8 +148,8 @@ PointEntity::PointEntity( const Map3D &map, const PointRenderer &settings, Qt3DC
 #endif
   else  // shape == "cylinder" or anything else
   {
-    float radius = settings.shapeProperties["radius"].toFloat();
-    float length = settings.shapeProperties["length"].toFloat();
+    float radius = symbol.shapeProperties["radius"].toFloat();
+    float length = symbol.shapeProperties["length"].toFloat();
     Qt3DExtras::QCylinderGeometry *g = new Qt3DExtras::QCylinderGeometry;
     //g->setRings(2);  // how many vertices vertically
     //g->setSlices(8); // how many vertices on circumference
@@ -196,12 +196,12 @@ PointEntity::PointEntity( const Map3D &map, const PointRenderer &settings, Qt3DC
   Qt3DRender::QParameter *specularParameter = new Qt3DRender::QParameter( QStringLiteral( "ks" ), QColor::fromRgbF( 0.01f, 0.01f, 0.01f, 1.0f ) );
   Qt3DRender::QParameter *shininessParameter = new Qt3DRender::QParameter( QStringLiteral( "shininess" ), 150.0f );
 
-  diffuseParameter->setValue( settings.material.diffuse() );
-  ambientParameter->setValue( settings.material.ambient() );
-  specularParameter->setValue( settings.material.specular() );
-  shininessParameter->setValue( settings.material.shininess() );
+  diffuseParameter->setValue( symbol.material.diffuse() );
+  ambientParameter->setValue( symbol.material.ambient() );
+  specularParameter->setValue( symbol.material.specular() );
+  shininessParameter->setValue( symbol.material.shininess() );
 
-  QMatrix4x4 transformMatrix = settings.transform;
+  QMatrix4x4 transformMatrix = symbol.transform;
   QMatrix3x3 normalMatrix = transformMatrix.normalMatrix();  // transponed inverse of 3x3 sub-matrix
 
   // QMatrix3x3 is not supported for passing to shaders, so we pass QMatrix4x4

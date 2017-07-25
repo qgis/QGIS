@@ -1,5 +1,6 @@
 #include "abstract3drenderer.h"
 
+#include "abstract3dsymbol.h"
 #include "lineentity.h"
 #include "pointentity.h"
 #include "polygonentity.h"
@@ -8,206 +9,94 @@
 #include "qgsxmlutils.h"
 
 
-// ---------------
-
-PolygonRenderer::PolygonRenderer()
-  : altClamping( AltClampRelative )
-  , altBinding( AltBindCentroid )
-  , height( 0 )
-  , extrusionHeight( 0 )
+VectorLayer3DRenderer::VectorLayer3DRenderer( Abstract3DSymbol *s )
+  : mSymbol( s )
 {
 }
 
-void PolygonRenderer::setLayer( QgsVectorLayer *layer )
-{
-  layerRef = QgsMapLayerRef( layer );
-}
-
-QgsVectorLayer *PolygonRenderer::layer() const
-{
-  return qobject_cast<QgsVectorLayer *>( layerRef.layer );
-}
-
-Abstract3DRenderer *PolygonRenderer::clone() const
-{
-  return new PolygonRenderer( *this );
-}
-
-Qt3DCore::QEntity *PolygonRenderer::createEntity( const Map3D &map ) const
-{
-  return new PolygonEntity( map, *this );
-}
-
-void PolygonRenderer::writeXml( QDomElement &elem ) const
-{
-  QDomDocument doc = elem.ownerDocument();
-
-  QDomElement elemDataProperties = doc.createElement( "data" );
-  elemDataProperties.setAttribute( "layer", layerRef.layerId );
-  elemDataProperties.setAttribute( "alt-clamping", Utils::altClampingToString( altClamping ) );
-  elemDataProperties.setAttribute( "alt-binding", Utils::altBindingToString( altBinding ) );
-  elemDataProperties.setAttribute( "height", height );
-  elemDataProperties.setAttribute( "extrusion-height", extrusionHeight );
-  elem.appendChild( elemDataProperties );
-
-  QDomElement elemMaterial = doc.createElement( "material" );
-  material.writeXml( elemMaterial );
-  elem.appendChild( elemMaterial );
-}
-
-void PolygonRenderer::readXml( const QDomElement &elem )
-{
-  QDomElement elemDataProperties = elem.firstChildElement( "data" );
-  layerRef = QgsMapLayerRef( elemDataProperties.attribute( "layer" ) );
-  altClamping = Utils::altClampingFromString( elemDataProperties.attribute( "alt-clamping" ) );
-  altBinding = Utils::altBindingFromString( elemDataProperties.attribute( "alt-binding" ) );
-  height = elemDataProperties.attribute( "height" ).toFloat();
-  extrusionHeight = elemDataProperties.attribute( "extrusion-height" ).toFloat();
-
-  QDomElement elemMaterial = elem.firstChildElement( "material" );
-  material.readXml( elemMaterial );
-}
-
-void PolygonRenderer::resolveReferences( const QgsProject &project )
-{
-  layerRef.setLayer( project.mapLayer( layerRef.layerId ) );
-}
-
-// ---------------
-
-PointRenderer::PointRenderer()
-  : height( 0 )
+VectorLayer3DRenderer::~VectorLayer3DRenderer()
 {
 }
 
-void PointRenderer::setLayer( QgsVectorLayer *layer )
+Abstract3DRenderer *VectorLayer3DRenderer::clone() const
+{
+  VectorLayer3DRenderer *r = new VectorLayer3DRenderer( mSymbol ? mSymbol->clone() : nullptr );
+  r->layerRef = layerRef;
+  return r;
+}
+
+void VectorLayer3DRenderer::setLayer( QgsVectorLayer *layer )
 {
   layerRef = QgsMapLayerRef( layer );
 }
 
-QgsVectorLayer *PointRenderer::layer() const
+QgsVectorLayer *VectorLayer3DRenderer::layer() const
 {
   return qobject_cast<QgsVectorLayer *>( layerRef.layer );
 }
 
-Abstract3DRenderer *PointRenderer::clone() const
+void VectorLayer3DRenderer::setSymbol( Abstract3DSymbol *symbol )
 {
-  return new PointRenderer( *this );
+  mSymbol.reset( symbol );
 }
 
-Qt3DCore::QEntity *PointRenderer::createEntity( const Map3D &map ) const
+const Abstract3DSymbol *VectorLayer3DRenderer::symbol() const
 {
-  return new PointEntity( map, *this );
+  return mSymbol.get();
 }
 
-void PointRenderer::writeXml( QDomElement &elem ) const
+Qt3DCore::QEntity *VectorLayer3DRenderer::createEntity( const Map3D &map ) const
 {
-  QDomDocument doc = elem.ownerDocument();
+  QgsVectorLayer *vl = layer();
 
-  QDomElement elemDataProperties = doc.createElement( "data" );
-  elemDataProperties.setAttribute( "layer", layerRef.layerId );
-  elemDataProperties.setAttribute( "height", height );
-  elem.appendChild( elemDataProperties );
+  if ( !mSymbol || !vl )
+    return nullptr;
 
-  QDomElement elemMaterial = doc.createElement( "material" );
-  material.writeXml( elemMaterial );
-  elem.appendChild( elemMaterial );
-
-  QDomElement elemShapeProperties = doc.createElement( "shape-properties" );
-  elemShapeProperties.appendChild( QgsXmlUtils::writeVariant( shapeProperties, doc ) );
-  elem.appendChild( elemShapeProperties );
-
-  QDomElement elemTransform = doc.createElement( "transform" );
-  elemTransform.setAttribute( "matrix", Utils::matrix4x4toString( transform ) );
-  elem.appendChild( elemTransform );
+  if ( mSymbol->type() == "polygon" )
+    return new PolygonEntity( map, vl, *static_cast<Polygon3DSymbol *>( mSymbol.get() ) );
+  else if ( mSymbol->type() == "point" )
+    return new PointEntity( map, vl, *static_cast<Point3DSymbol *>( mSymbol.get() ) );
+  else if ( mSymbol->type() == "line" )
+    return new LineEntity( map, vl, *static_cast<Line3DSymbol *>( mSymbol.get() ) );
+  else
+    return nullptr;
 }
 
-void PointRenderer::readXml( const QDomElement &elem )
-{
-  QDomElement elemDataProperties = elem.firstChildElement( "data" );
-  layerRef = QgsMapLayerRef( elemDataProperties.attribute( "layer" ) );
-  height = elemDataProperties.attribute( "height" ).toFloat();
-
-  QDomElement elemMaterial = elem.firstChildElement( "material" );
-  material.readXml( elemMaterial );
-
-  QDomElement elemShapeProperties = elem.firstChildElement( "shape-properties" );
-  shapeProperties = QgsXmlUtils::readVariant( elemShapeProperties.firstChildElement() ).toMap();
-
-  QDomElement elemTransform = elem.firstChildElement( "transform" );
-  transform = Utils::stringToMatrix4x4( elemTransform.attribute( "matrix" ) );
-}
-
-void PointRenderer::resolveReferences( const QgsProject &project )
-{
-  layerRef.setLayer( project.mapLayer( layerRef.layerId ) );
-}
-
-// ---------------
-
-LineRenderer::LineRenderer()
-  : altClamping( AltClampRelative )
-  , altBinding( AltBindCentroid )
-  , height( 0 )
-  , extrusionHeight( 0 )
-  , distance( 1 )
-{
-
-}
-
-void LineRenderer::setLayer( QgsVectorLayer *layer )
-{
-  layerRef = QgsMapLayerRef( layer );
-}
-
-QgsVectorLayer *LineRenderer::layer() const
-{
-  return qobject_cast<QgsVectorLayer *>( layerRef.layer );
-}
-
-Abstract3DRenderer *LineRenderer::clone() const
-{
-  return new LineRenderer( *this );
-}
-
-Qt3DCore::QEntity *LineRenderer::createEntity( const Map3D &map ) const
-{
-  return new LineEntity( map, *this );
-}
-
-void LineRenderer::writeXml( QDomElement &elem ) const
+void VectorLayer3DRenderer::writeXml( QDomElement &elem ) const
 {
   QDomDocument doc = elem.ownerDocument();
 
-  QDomElement elemDataProperties = doc.createElement( "data" );
-  elemDataProperties.setAttribute( "layer", layerRef.layerId );
-  elemDataProperties.setAttribute( "alt-clamping", Utils::altClampingToString( altClamping ) );
-  elemDataProperties.setAttribute( "alt-binding", Utils::altBindingToString( altBinding ) );
-  elemDataProperties.setAttribute( "height", height );
-  elemDataProperties.setAttribute( "extrusion-height", extrusionHeight );
-  elemDataProperties.setAttribute( "distance", distance );
-  elem.appendChild( elemDataProperties );
+  elem.setAttribute( "layer", layerRef.layerId );
 
-  QDomElement elemMaterial = doc.createElement( "material" );
-  material.writeXml( elemMaterial );
-  elem.appendChild( elemMaterial );
+  QDomElement elemSymbol = doc.createElement( "symbol" );
+  if ( mSymbol )
+  {
+    elemSymbol.setAttribute( "type", mSymbol->type() );
+    mSymbol->writeXml( elemSymbol );
+  }
+  elem.appendChild( elemSymbol );
 }
 
-void LineRenderer::readXml( const QDomElement &elem )
+void VectorLayer3DRenderer::readXml( const QDomElement &elem )
 {
-  QDomElement elemDataProperties = elem.firstChildElement( "data" );
-  layerRef = QgsMapLayerRef( elemDataProperties.attribute( "layer" ) );
-  altClamping = Utils::altClampingFromString( elemDataProperties.attribute( "alt-clamping" ) );
-  altBinding = Utils::altBindingFromString( elemDataProperties.attribute( "alt-binding" ) );
-  height = elemDataProperties.attribute( "height" ).toFloat();
-  extrusionHeight = elemDataProperties.attribute( "extrusion-height" ).toFloat();
-  distance = elemDataProperties.attribute( "distance" ).toFloat();
+  layerRef = QgsMapLayerRef( elem.attribute( "layer" ) );
 
-  QDomElement elemMaterial = elem.firstChildElement( "material" );
-  material.readXml( elemMaterial );
+  QDomElement elemSymbol = elem.firstChildElement( "symbol" );
+  QString symbolType = elemSymbol.attribute( "type" );
+  Abstract3DSymbol *symbol = nullptr;
+  if ( symbolType == "polygon" )
+    symbol = new Polygon3DSymbol;
+  else if ( symbolType == "point" )
+    symbol = new Point3DSymbol;
+  else if ( symbolType == "line" )
+    symbol = new Line3DSymbol;
+
+  if ( symbol )
+    symbol->readXml( elemSymbol );
+  mSymbol.reset( symbol );
 }
 
-void LineRenderer::resolveReferences( const QgsProject &project )
+void VectorLayer3DRenderer::resolveReferences( const QgsProject &project )
 {
   layerRef.setLayer( project.mapLayer( layerRef.layerId ) );
 }
