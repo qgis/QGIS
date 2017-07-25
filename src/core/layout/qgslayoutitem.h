@@ -85,7 +85,7 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
      * Return correct graphics item type
      * \see stringType()
      */
-    virtual int type() const = 0;
+    virtual int type() const override = 0;
 
     /**
      * Return the item type as a string.
