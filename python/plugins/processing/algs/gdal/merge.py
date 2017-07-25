@@ -46,6 +46,7 @@ class merge(GdalAlgorithm):
     INPUT = 'INPUT'
     OUTPUT = 'OUTPUT'
     PCT = 'PCT'
+    NODATA = 'NODATA'
     SEPARATE = 'SEPARATE'
     RTYPE = 'RTYPE'
 
