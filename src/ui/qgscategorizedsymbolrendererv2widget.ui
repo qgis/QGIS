@@ -11,13 +11,6 @@
    </rect>
   </property>
   <layout class="QGridLayout" name="gridLayout">
-   <item row="4" column="1">
-    <widget class="QPushButton" name="btnAddCategories">
-     <property name="text">
-      <string>Classify</string>
-     </property>
-    </widget>
-   </item>
    <item row="1" column="1">
     <widget class="QPushButton" name="btnChangeCategorizedSymbol">
      <property name="sizePolicy">
@@ -67,6 +60,13 @@
    </item>
    <item row="6" column="0" colspan="2">
     <layout class="QHBoxLayout" name="horizontalLayout_3">
+     <item>
+      <widget class="QPushButton" name="btnAddCategories">
+       <property name="text">
+        <string>Classify</string>
+       </property>
+      </widget>
+     </item>
      <item>
       <widget class="QPushButton" name="btnAddCategory">
        <property name="toolTip">
@@ -145,7 +145,7 @@
     </widget>
    </item>
    <item row="0" column="1">
-    <widget class="QgsFieldExpressionWidget" name="mExpressionWidget">
+    <widget class="QgsFieldExpressionWidget" name="mExpressionWidget" native="true">
      <property name="maximumSize">
       <size>
        <width>500</width>
@@ -190,9 +190,6 @@
        <height>16777215</height>
       </size>
      </property>
-     <zorder>btnAddCategories</zorder>
-     <zorder>btnAddCategories</zorder>
-     <zorder>btnAddCategories</zorder>
     </widget>
    </item>
   </layout>
@@ -202,7 +199,6 @@
   <zorder>label_10</zorder>
   <zorder>mExpressionWidget</zorder>
   <zorder>label_3</zorder>
-  <zorder>btnAddCategories</zorder>
   <zorder>btnColorRamp</zorder>
  </widget>
  <customwidgets>
@@ -222,11 +218,13 @@
  <tabstops>
   <tabstop>mExpressionWidget</tabstop>
   <tabstop>btnChangeCategorizedSymbol</tabstop>
+  <tabstop>btnColorRamp</tabstop>
+  <tabstop>viewCategories</tabstop>
+  <tabstop>btnAddCategories</tabstop>
   <tabstop>btnAddCategory</tabstop>
   <tabstop>btnDeleteCategories</tabstop>
   <tabstop>btnDeleteAllCategories</tabstop>
   <tabstop>btnAdvanced</tabstop>
-  <tabstop>viewCategories</tabstop>
  </tabstops>
  <resources>
   <include location="../../images/images.qrc"/>

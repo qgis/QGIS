@@ -14,47 +14,20 @@
    <string>Form</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
-   <property name="margin">
+   <property name="leftMargin">
     <number>3</number>
    </property>
-   <item row="4" column="1" colspan="5">
-    <widget class="QgsColorRampButton" name="btnColorRamp">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
-     <property name="minimumSize">
-      <size>
-       <width>120</width>
-       <height>0</height>
-      </size>
-     </property>
-     <property name="maximumSize">
-      <size>
-       <width>16777215</width>
-       <height>16777215</height>
-      </size>
-     </property>
-    </widget>
-   </item>
-   <item row="3" column="0">
-    <widget class="QLabel" name="mColorInterpolationLabel">
-     <property name="text">
-      <string>Interpolation</string>
-     </property>
-    </widget>
-   </item>
-   <item row="5" column="1" rowspan="2" colspan="5">
+   <property name="topMargin">
+    <number>3</number>
+   </property>
+   <property name="rightMargin">
+    <number>3</number>
+   </property>
+   <property name="bottomMargin">
+    <number>3</number>
+   </property>
+   <item row="5" column="1" colspan="4">
     <layout class="QHBoxLayout" name="horizontalLayout">
-     <item>
-      <widget class="QLabel" name="mClassificationModeLabel">
-       <property name="text">
-        <string>Mode</string>
-       </property>
-      </widget>
-     </item>
      <item>
       <widget class="QComboBox" name="mClassificationModeComboBox">
        <property name="sizePolicy">
@@ -65,10 +38,6 @@
        </property>
       </widget>
      </item>
-    </layout>
-   </item>
-   <item row="7" column="1" rowspan="2" colspan="5">
-    <layout class="QHBoxLayout" name="horizontalLayout_2">
      <item>
       <widget class="QLabel" name="mNumberOfEntriesLabel">
        <property name="text">
@@ -95,50 +64,9 @@
        </property>
       </widget>
      </item>
-     <item>
-      <spacer name="horizontalSpacer_2">
-       <property name="orientation">
-        <enum>Qt::Horizontal</enum>
-       </property>
-       <property name="sizeHint" stdset="0">
-        <size>
-         <width>40</width>
-         <height>20</height>
-        </size>
-       </property>
-      </spacer>
-     </item>
-     <item>
-      <widget class="QPushButton" name="mClassifyButton">
-       <property name="text">
-        <string>Classify</string>
-       </property>
-      </widget>
-     </item>
     </layout>
    </item>
-   <item row="3" column="1" colspan="5">
-    <widget class="QComboBox" name="mColorInterpolationComboBox"/>
-   </item>
-   <item row="1" column="5">
-    <widget class="QLineEdit" name="mMaxLineEdit"/>
-   </item>
-   <item row="10" column="0">
-    <widget class="QLabel" name="mUnitLabel">
-     <property name="text">
-      <string>Label unit
-suffix</string>
-     </property>
-    </widget>
-   </item>
-   <item row="10" column="1" colspan="5">
-    <widget class="QLineEdit" name="mUnitLineEdit">
-     <property name="toolTip">
-      <string>Unit suffix</string>
-     </property>
-    </widget>
-   </item>
-   <item row="11" column="0" colspan="6">
+   <item row="9" column="0" colspan="5">
     <widget class="QTreeWidget" name="mColormapTreeWidget">
      <property name="sizePolicy">
       <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
@@ -178,8 +106,78 @@ suffix</string>
      </column>
     </widget>
    </item>
-   <item row="13" column="0" colspan="6">
+   <item row="4" column="1" colspan="4">
+    <widget class="QgsColorRampButton" name="btnColorRamp">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="minimumSize">
+      <size>
+       <width>120</width>
+       <height>0</height>
+      </size>
+     </property>
+     <property name="maximumSize">
+      <size>
+       <width>16777215</width>
+       <height>16777215</height>
+      </size>
+     </property>
+    </widget>
+   </item>
+   <item row="3" column="0">
+    <widget class="QLabel" name="mColorInterpolationLabel">
+     <property name="text">
+      <string>Interpolation</string>
+     </property>
+    </widget>
+   </item>
+   <item row="3" column="1" colspan="4">
+    <widget class="QComboBox" name="mColorInterpolationComboBox"/>
+   </item>
+   <item row="1" column="4">
+    <widget class="QLineEdit" name="mMaxLineEdit"/>
+   </item>
+   <item row="8" column="0">
+    <widget class="QLabel" name="mUnitLabel">
+     <property name="text">
+      <string>Label unit
+suffix</string>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="2">
+    <widget class="QLineEdit" name="mMinLineEdit"/>
+   </item>
+   <item row="8" column="1" colspan="4">
+    <widget class="QLineEdit" name="mUnitLineEdit">
+     <property name="toolTip">
+      <string>Unit suffix</string>
+     </property>
+    </widget>
+   </item>
+   <item row="12" column="0" colspan="5">
+    <widget class="QCheckBox" name="mClipCheckBox">
+     <property name="toolTip">
+      <string>If checked, any pixels with a value out of range will not be rendered</string>
+     </property>
+     <property name="text">
+      <string>Hide out of range values</string>
+     </property>
+    </widget>
+   </item>
+   <item row="11" column="0" colspan="5">
     <layout class="QHBoxLayout" name="horizontalLayout_3">
+     <item>
+      <widget class="QPushButton" name="mClassifyButton">
+       <property name="text">
+        <string>Classify</string>
+       </property>
+      </widget>
+     </item>
      <item>
       <widget class="QPushButton" name="mAddEntryButton">
        <property name="toolTip">
@@ -250,17 +248,7 @@ suffix</string>
      </item>
     </layout>
    </item>
-   <item row="14" column="0" colspan="6">
-    <widget class="QCheckBox" name="mClipCheckBox">
-     <property name="toolTip">
-      <string>If checked, any pixels with a value out of range will not be rendered</string>
-     </property>
-     <property name="text">
-      <string>Hide out of range values</string>
-     </property>
-    </widget>
-   </item>
-   <item row="1" column="4">
+   <item row="1" column="3">
     <widget class="QLabel" name="mMaxLabel">
      <property name="sizePolicy">
       <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
@@ -293,10 +281,10 @@ suffix</string>
      </property>
     </widget>
    </item>
-   <item row="0" column="1" colspan="5">
+   <item row="0" column="1" colspan="4">
     <widget class="QgsRasterBandComboBox" name="mBandComboBox"/>
    </item>
-   <item row="2" column="0" colspan="6">
+   <item row="2" column="0" colspan="5">
     <widget class="QWidget" name="mMinMaxContainerWidget" native="true"/>
    </item>
    <item row="0" column="0">
@@ -306,22 +294,26 @@ suffix</string>
      </property>
     </widget>
    </item>
-   <item row="1" column="3">
-    <widget class="QLineEdit" name="mMinLineEdit"/>
+   <item row="5" column="0">
+    <widget class="QLabel" name="mClassificationModeLabel">
+     <property name="text">
+      <string>Mode</string>
+     </property>
+    </widget>
    </item>
   </layout>
  </widget>
  <customwidgets>
   <customwidget>
-   <class>QgsRasterBandComboBox</class>
-   <extends>QComboBox</extends>
-   <header>raster/qgsrasterbandcombobox.h</header>
-  </customwidget>
-  <customwidget>
    <class>QgsColorRampButton</class>
    <extends>QToolButton</extends>
    <header>qgscolorrampbutton.h</header>
    <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsRasterBandComboBox</class>
+   <extends>QComboBox</extends>
+   <header>raster/qgsrasterbandcombobox.h</header>
   </customwidget>
  </customwidgets>
  <tabstops>
@@ -330,8 +322,11 @@ suffix</string>
   <tabstop>mMaxLineEdit</tabstop>
   <tabstop>mColorInterpolationComboBox</tabstop>
   <tabstop>btnColorRamp</tabstop>
+  <tabstop>mClassificationModeComboBox</tabstop>
+  <tabstop>mNumberOfEntriesSpinBox</tabstop>
   <tabstop>mUnitLineEdit</tabstop>
   <tabstop>mColormapTreeWidget</tabstop>
+  <tabstop>mClassifyButton</tabstop>
   <tabstop>mAddEntryButton</tabstop>
   <tabstop>mDeleteEntryButton</tabstop>
   <tabstop>mLoadFromBandButton</tabstop>
