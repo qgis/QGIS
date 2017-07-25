@@ -203,16 +203,16 @@ class TestQgsLayoutPageCollection(unittest.TestCase):
         l = QgsLayout(p)
         collection = l.pageCollection()
 
-        #add a page
+        # add a page
         page = QgsLayoutItemPage(l)
         page.setPageSize('A4')
         collection.addPage(page)
 
-        #should be positioned at origin
+        # should be positioned at origin
         self.assertEqual(page.pos().x(), 0)
         self.assertEqual(page.pos().y(), 0)
 
-        #second page
+        # second page
         page2 = QgsLayoutItemPage(l)
         page2.setPageSize('A5')
         collection.addPage(page2)
@@ -222,7 +222,7 @@ class TestQgsLayoutPageCollection(unittest.TestCase):
         self.assertEqual(page2.pos().x(), 0)
         self.assertEqual(page2.pos().y(), 307)
 
-        #third page, slotted in middle
+        # third page, slotted in middle
         page3 = QgsLayoutItemPage(l)
         page3.setPageSize('A3')
         collection.insertPage(page3, 1)
@@ -372,6 +372,7 @@ class TestQgsLayoutPageCollection(unittest.TestCase):
         self.assertEqual(collection.pageAtPoint(QPointF(10, 330)), page2)
         self.assertEqual(collection.pageAtPoint(QPointF(10, 500)), page2)
         self.assertFalse(collection.pageAtPoint(QPointF(10, 600)))
+
 
 if __name__ == '__main__':
     unittest.main()
