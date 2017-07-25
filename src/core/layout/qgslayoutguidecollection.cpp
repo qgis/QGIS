@@ -31,7 +31,7 @@ QgsLayoutGuide::QgsLayoutGuide( Orientation orientation, const QgsLayoutMeasurem
 {
   mLineItem->hide();
   mLineItem->setZValue( QgsLayout::ZGuide );
-  QPen linePen( Qt::SolidLine );
+  QPen linePen( Qt::DotLine );
   linePen.setColor( Qt::red );
   // use a pen width of 0, since this activates a cosmetic pen
   // which doesn't scale with the composer and keeps a constant size

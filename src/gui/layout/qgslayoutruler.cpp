@@ -265,8 +265,8 @@ void QgsLayoutRuler::createTemporaryGuideItem()
   mGuideItem.reset( new QGraphicsLineItem() );
 
   mGuideItem->setZValue( QgsLayout::ZGuide );
-  QPen linePen( Qt::DashLine );
-  linePen.setColor( Qt::red );
+  QPen linePen( Qt::DotLine );
+  linePen.setColor( QColor( 255, 0, 0, 150 ) );
   linePen.setWidthF( 0 );
   mGuideItem->setPen( linePen );
 
@@ -456,6 +456,17 @@ void QgsLayoutRuler::mouseMoveEvent( QMouseEvent *event )
     QgsLayout *layout = mView->currentLayout();
     int pageNo = layout->pageCollection()->pageNumberForPoint( displayPos );
     QgsLayoutItemPage *page = layout->pageCollection()->page( pageNo );
+    QPen linePen = mGuideItem->pen();
+    // if guide preview is outside a page draw it a lot fainter, to indicate it's invalid
+    if ( !layout->pageCollection()->pageAtPoint( displayPos ) )
+    {
+      linePen.setColor( QColor( 255, 0, 0, 150 ) );
+    }
+    else
+    {
+      linePen.setColor( QColor( 255, 0, 0, 225 ) );
+    }
+    mGuideItem->setPen( linePen );
 
     switch ( mOrientation )
     {
