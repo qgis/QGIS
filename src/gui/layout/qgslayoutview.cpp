@@ -40,6 +40,12 @@ QgsLayoutView::QgsLayoutView( QWidget *parent )
   setMouseTracking( true );
   viewport()->setMouseTracking( true );
 
+  // set the "scene" background on the view using stylesheets
+  // we don't want to use QGraphicsScene::setBackgroundBrush because we want to keep
+  // a transparent background for exports, and it's only a cosmetic thing for the view only
+  // ALSO - only set it on the viewport - we don't want scrollbars/etc affected by this
+  viewport()->setStyleSheet( QStringLiteral( "background-color:#d7d7d7;" ) );
+
   mSpacePanTool = new QgsLayoutViewToolTemporaryKeyPan( this );
   mMidMouseButtonPanTool = new QgsLayoutViewToolTemporaryMousePan( this );
   mSpaceZoomTool = new QgsLayoutViewToolTemporaryKeyZoom( this );

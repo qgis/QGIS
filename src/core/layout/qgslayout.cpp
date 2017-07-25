@@ -22,7 +22,8 @@ QgsLayout::QgsLayout( QgsProject *project )
   , mProject( project )
   , mPageCollection( new QgsLayoutPageCollection( this ) )
 {
-  setBackgroundBrush( QColor( 215, 215, 215 ) );
+  // just to make sure - this should be the default, but maybe it'll change in some future Qt version...
+  setBackgroundBrush( Qt::NoBrush );
 }
 
 void QgsLayout::initializeDefaults()
