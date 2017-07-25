@@ -151,6 +151,27 @@ class TestQgsLayoutGuide(unittest.TestCase):
         self.assertEqual(guides.guides(QgsLayoutGuide.Horizontal), [g1, g2])
         self.assertEqual(guides.guides(QgsLayoutGuide.Vertical), [g3])
 
+    def testDeleteRows(self):
+        p = QgsProject()
+        l = QgsLayout(p)
+        l.initializeDefaults()
+        guides = l.guides()
+
+        g1 = QgsLayoutGuide(QgsLayoutGuide.Horizontal, QgsLayoutMeasurement(5, QgsUnitTypes.LayoutCentimeters))
+        guides.addGuide(g1)
+        g2 = QgsLayoutGuide(QgsLayoutGuide.Horizontal, QgsLayoutMeasurement(15))
+        guides.addGuide(g2)
+        g3 = QgsLayoutGuide(QgsLayoutGuide.Vertical, QgsLayoutMeasurement(35))
+        guides.addGuide(g3)
+
+        self.assertTrue(guides.removeRows(1, 1))
+        self.assertEqual(guides.guides(QgsLayoutGuide.Horizontal), [g1])
+        self.assertEqual(guides.guides(QgsLayoutGuide.Vertical), [g3])
+
+        self.assertTrue(guides.removeRows(0, 2))
+        self.assertEqual(guides.guides(QgsLayoutGuide.Horizontal), [])
+        self.assertEqual(guides.guides(QgsLayoutGuide.Vertical), [])
+
     def testQgsLayoutGuideProxyModel(self):
         p = QgsProject()
         l = QgsLayout(p)

@@ -235,7 +235,7 @@ bool QgsLayoutGuideCollection::setData( const QModelIndex &index, const QVariant
 
       QgsLayoutMeasurement m = guide->position();
       m.setLength( newPos );
-      guide->setPosition( m );
+      whileBlocking( guide )->setPosition( m );
       guide->update();
       return true;
     }
@@ -248,7 +248,7 @@ bool QgsLayoutGuideCollection::setData( const QModelIndex &index, const QVariant
 
       QgsLayoutMeasurement m = guide->position();
       m.setLength( newPos );
-      guide->setPosition( m );
+      whileBlocking( guide )->setPosition( m );
       guide->update();
       return true;
     }
@@ -261,7 +261,7 @@ bool QgsLayoutGuideCollection::setData( const QModelIndex &index, const QVariant
 
       QgsLayoutMeasurement m = guide->position();
       m.setUnits( static_cast< QgsUnitTypes::LayoutUnit >( units ) );
-      guide->setPosition( m );
+      whileBlocking( guide )->setPosition( m );
       guide->update();
       return true;
     }
@@ -286,6 +286,20 @@ QVariant QgsLayoutGuideCollection::headerData( int section, Qt::Orientation orie
     return QSize( mHeaderSize, mHeaderSize );
   }
   return QAbstractTableModel::headerData( section, orientation, role );
+}
+
+bool QgsLayoutGuideCollection::removeRows( int row, int count, const QModelIndex &parent )
+{
+  if ( parent.isValid() )
+    return false;
+
+  beginRemoveRows( parent, row, row + count - 1 );
+  for ( int i = 0; i < count; ++ i )
+  {
+    delete mGuides.takeAt( row );
+  }
+  endRemoveRows();
+  return true;
 }
 
 void QgsLayoutGuideCollection::addGuide( QgsLayoutGuide *guide )

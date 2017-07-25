@@ -166,6 +166,8 @@ class QgsLayoutGuideCollection : QAbstractTableModel
 
      virtual QVariant headerData( int section, Qt::Orientation orientation,
                          int role = Qt::DisplayRole ) const;
+    virtual bool removeRows( int row, int count, const QModelIndex &parent = QModelIndex() );
+
 
     void addGuide( QgsLayoutGuide *guide /Transfer/ );
 %Docstring

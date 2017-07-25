@@ -115,6 +115,8 @@ void QgsLayoutItemPage::attemptResize( const QgsLayoutSize &size )
   QgsLayoutItem::attemptResize( size );
   //update size of attached grid to reflect new page size and position
   mGrid->setRect( 0, 0, rect().width(), rect().height() );
+
+  mLayout->guides().update();
 }
 
 void QgsLayoutItemPage::redraw()
