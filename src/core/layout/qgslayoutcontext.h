@@ -82,6 +82,11 @@ class CORE_EXPORT QgsLayoutContext
     bool testFlag( const Flag flag ) const;
 
     /**
+     * Returns the combination of render context flags matched to the layout context's settings.
+     */
+    QgsRenderContext::Flags renderContextFlags() const;
+
+    /**
      * Sets the current \a feature for evaluating the layout. This feature may
      * be used for altering an item's content and appearance for a report
      * or atlas layout.

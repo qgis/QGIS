@@ -43,7 +43,7 @@ class CORE_EXPORT QgsLayoutUtils
     /**
      * Creates a render context suitable for the specified layout \a map and \a painter destination.
      * This method returns a new QgsRenderContext which matches the scale and settings of the
-     * target map. If the \a dpi argument is not specified then the dpi will be taken from the destinatation
+     * target map. If the \a dpi argument is not specified then the dpi will be taken from the destination
      * painter device.
      * \see createRenderContextForLayout()
      */
@@ -53,9 +53,11 @@ class CORE_EXPORT QgsLayoutUtils
      * Creates a render context suitable for the specified \a layout and \a painter destination.
      * This method returns a new QgsRenderContext which matches the scale and settings from the layout's
      * QgsLayout::referenceMap().
+     * If the \a dpi argument is not specified then the dpi will be taken from the destination
+     * painter device.
      * \see createRenderContextForMap()
      */
-    static QgsRenderContext createRenderContextForLayout( QgsLayout *layout, QPainter *painter );
+    static QgsRenderContext createRenderContextForLayout( QgsLayout *layout, QPainter *painter, double dpi = -1 );
 
 };
 

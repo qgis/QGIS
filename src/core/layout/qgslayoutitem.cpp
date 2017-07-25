@@ -128,7 +128,7 @@ void QgsLayoutItem::paint( QPainter *painter, const QStyleOptionGraphicsItem *it
       QPainter p( &mItemCachedImage );
 
       preparePainter( &p );
-      QgsRenderContext context = QgsLayoutUtils::createRenderContextForMap( nullptr, &p, destinationDpi );
+      QgsRenderContext context = QgsLayoutUtils::createRenderContextForLayout( nullptr, &p, destinationDpi );
       // painter is already scaled to dots
       // need to translate so that item origin is at 0,0 in painter coordinates (not bounding rect origin)
       p.translate( -boundingRect().x() * context.scaleFactor(), -boundingRect().y() * context.scaleFactor() );
@@ -147,7 +147,8 @@ void QgsLayoutItem::paint( QPainter *painter, const QStyleOptionGraphicsItem *it
   {
     // no caching or flattening
     painter->save();
-    QgsRenderContext context = QgsLayoutUtils::createRenderContextForMap( nullptr, painter, destinationDpi );
+    preparePainter( painter );
+    QgsRenderContext context = QgsLayoutUtils::createRenderContextForLayout( mLayout, painter, destinationDpi );
     // scale painter from mm to dots
     painter->scale( 1.0 / context.scaleFactor(), 1.0 / context.scaleFactor() );
     draw( context, itemStyle );
