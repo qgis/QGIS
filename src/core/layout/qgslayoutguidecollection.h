@@ -175,6 +175,7 @@ class CORE_EXPORT QgsLayoutGuideCollection : public QAbstractListModel
       PositionRole, //!< Guide position role
       UnitsRole, //!< Guide position units role
       PageRole, //!< Guide page role
+      LayoutPositionRole, //!< Guide position in layout coordinates
     };
 
     /**
@@ -233,6 +234,11 @@ class CORE_EXPORT QgsLayoutGuideProxyModel : public QSortFilterProxyModel
      * Page numbers begin at 0.
      */
     explicit QgsLayoutGuideProxyModel( QObject *parent SIP_TRANSFERTHIS, QgsLayoutGuide::Orientation orientation, int page );
+
+    /**
+     * Sets the current \a page for filtering matching guides. Page numbers begin at 0.
+     */
+    void setPage( int page );
 
     bool filterAcceptsRow( int sourceRow, const QModelIndex &sourceParent ) const override;
     bool lessThan( const QModelIndex &left, const QModelIndex &right ) const override;

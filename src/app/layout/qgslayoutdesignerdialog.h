@@ -193,6 +193,8 @@ class QgsLayoutDesignerDialog: public QMainWindow, private Ui::QgsLayoutDesigner
     QgsPanelWidgetStack *mItemPropertiesStack = nullptr;
     QgsDockWidget *mGeneralDock = nullptr;
     QgsPanelWidgetStack *mGeneralPropertiesStack = nullptr;
+    QgsDockWidget *mGuideDock = nullptr;
+    QgsPanelWidgetStack *mGuideStack = nullptr;
 
     //! Save window state
     void saveWindowState();

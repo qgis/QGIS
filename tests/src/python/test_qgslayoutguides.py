@@ -188,6 +188,11 @@ class TestQgsLayoutGuide(unittest.TestCase):
         self.assertEqual(vert_filter.rowCount(QModelIndex()), 1)
         self.assertEqual(vert_filter.data(vert_filter.index(0, 0), QgsLayoutGuideCollection.PositionRole), 35)
 
+        # change page
+        hoz_page_1_filter.setPage(0)
+        self.assertEqual(hoz_page_1_filter.rowCount(QModelIndex()), 1)
+        self.assertEqual(hoz_page_1_filter.data(hoz_page_1_filter.index(0, 0), QgsLayoutGuideCollection.PositionRole), 5)
+
 
 if __name__ == '__main__':
     unittest.main()

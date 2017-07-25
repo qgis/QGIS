@@ -121,6 +121,10 @@
     <addaction name="mActionShowGrid"/>
     <addaction name="mActionSnapGrid"/>
     <addaction name="separator"/>
+    <addaction name="mActionShowGuides"/>
+    <addaction name="mActionSnapGuides"/>
+    <addaction name="mActionManageGuides"/>
+    <addaction name="separator"/>
     <addaction name="mActionShowRulers"/>
     <addaction name="separator"/>
     <addaction name="mToolbarMenu"/>
@@ -342,8 +346,58 @@
     <string>Ctrl+Shift+'</string>
    </property>
   </action>
+  <action name="mActionManageGuides">
+   <property name="text">
+    <string>Manage Guides…</string>
+   </property>
+  </action>
+  <action name="mActionShowGuides">
+   <property name="text">
+    <string>Show G&amp;uides</string>
+   </property>
+   <property name="toolTip">
+    <string>Show guides</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+;</string>
+   </property>
+  </action>
+  <action name="mActionSnapGuides">
+   <property name="text">
+    <string>&amp;Snap to Guides</string>
+   </property>
+   <property name="toolTip">
+    <string>Snap to guides</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Shift+;</string>
+   </property>
+  </action>
  </widget>
  <resources>
+  <include location="../../../images/images.qrc"/>
+  <include location="../../../images/images.qrc"/>
+  <include location="../../../images/images.qrc"/>
+  <include location="../../../images/images.qrc"/>
+  <include location="../../../images/images.qrc"/>
+  <include location="../../../images/images.qrc"/>
+  <include location="../../../images/images.qrc"/>
+  <include location="../../../images/images.qrc"/>
+  <include location="../../../images/images.qrc"/>
+  <include location="../../../images/images.qrc"/>
+  <include location="../../../images/images.qrc"/>
+  <include location="../../../images/images.qrc"/>
+  <include location="../../../images/images.qrc"/>
+  <include location="../../../images/images.qrc"/>
+  <include location="../../../images/images.qrc"/>
+  <include location="../../../images/images.qrc"/>
+  <include location="../../../images/images.qrc"/>
+  <include location="../../../images/images.qrc"/>
+  <include location="../../../images/images.qrc"/>
+  <include location="../../../images/images.qrc"/>
+  <include location="../../../images/images.qrc"/>
+  <include location="../../../images/images.qrc"/>
+  <include location="../../../images/images.qrc"/>
   <include location="../../../images/images.qrc"/>
   <include location="../../../images/images.qrc"/>
   <include location="../../../images/images.qrc"/>

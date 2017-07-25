@@ -35,6 +35,21 @@ QPointF QgsLayoutSnapper::snapPoint( QPointF point, double scaleFactor, bool &sn
     return res;
   }
 
+  bool snappedToHozGuides = false;
+  double newX = snapPointToGuides( point.x(), QgsLayoutGuide::Vertical, scaleFactor, snappedToHozGuides );
+  if ( snappedToHozGuides )
+  {
+    snapped = true;
+    point.setX( newX );
+  }
+  bool snappedToVertGuides = false;
+  double newY = snapPointToGuides( point.y(), QgsLayoutGuide::Horizontal, scaleFactor, snappedToVertGuides );
+  if ( snappedToVertGuides )
+  {
+    snapped = true;
+    point.setY( newY );
+  }
+
   return point;
 }
 
@@ -87,4 +102,36 @@ QPointF QgsLayoutSnapper::snapPointToGrid( QPointF point, double scaleFactor, bo
   }
 
   return QPointF( xSnapped, ySnapped );
+}
+
+double QgsLayoutSnapper::snapPointToGuides( double original, QgsLayoutGuide::Orientation orientation, double scaleFactor, bool &snapped ) const
+{
+  snapped = false;
+
+  //convert snap tolerance from pixels to layout units
+  double alignThreshold = mTolerance / scaleFactor;
+
+  double bestPos = original;
+  double smallestDiff = DBL_MAX;
+
+  Q_FOREACH ( QgsLayoutGuide *guide, mLayout->guides().guides( orientation ) )
+  {
+    double guidePos = guide->layoutPosition();
+    double diff = qAbs( original - guidePos );
+    if ( diff < smallestDiff )
+    {
+      smallestDiff = diff;
+      bestPos = guidePos;
+    }
+  }
+
+  if ( smallestDiff <= alignThreshold )
+  {
+    snapped = true;
+    return bestPos;
+  }
+  else
+  {
+    return original;
+  }
 }

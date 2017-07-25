@@ -61,8 +61,8 @@ void QgsLayoutView::setCurrentLayout( QgsLayout *layout )
 {
   setScene( layout );
 
-  connect( layout->pageCollection(), &QgsLayoutPageCollection::changed, this, &QgsLayoutView::updateRulers );
-  updateRulers();
+  connect( layout->pageCollection(), &QgsLayoutPageCollection::changed, this, &QgsLayoutView::viewChanged );
+  viewChanged();
 
   mSnapMarker.reset( new QgsLayoutViewSnapMarker() );
   mSnapMarker->hide();
@@ -114,7 +114,7 @@ void QgsLayoutView::scaleSafe( double scale )
   scale = qBound( MIN_VIEW_SCALE, scale, MAX_VIEW_SCALE );
   setTransform( QTransform::fromScale( scale, scale ) );
   emit zoomLevelChanged();
-  updateRulers();
+  viewChanged();
 }
 
 void QgsLayoutView::setZoomLevel( double level )
@@ -136,21 +136,21 @@ void QgsLayoutView::setZoomLevel( double level )
     setTransform( QTransform::fromScale( mmLevel, mmLevel ) );
   }
   emit zoomLevelChanged();
-  updateRulers();
+  viewChanged();
 }
 
 void QgsLayoutView::setHorizontalRuler( QgsLayoutRuler *ruler )
 {
   mHorizontalRuler = ruler;
   ruler->setLayoutView( this );
-  updateRulers();
+  viewChanged();
 }
 
 void QgsLayoutView::setVerticalRuler( QgsLayoutRuler *ruler )
 {
   mVerticalRuler = ruler;
   ruler->setLayoutView( this );
-  updateRulers();
+  viewChanged();
 }
 
 void QgsLayoutView::setMenuProvider( QgsLayoutViewMenuProvider *provider )
@@ -166,7 +166,7 @@ QgsLayoutViewMenuProvider *QgsLayoutView::menuProvider() const
 void QgsLayoutView::zoomFull()
 {
   fitInView( scene()->sceneRect(), Qt::KeepAspectRatio );
-  updateRulers();
+  viewChanged();
   emit zoomLevelChanged();
 }
 
@@ -189,7 +189,7 @@ void QgsLayoutView::zoomWidth()
 
   fitInView( targetRect, Qt::KeepAspectRatio );
   emit zoomLevelChanged();
-  updateRulers();
+  viewChanged();
 }
 
 void QgsLayoutView::zoomIn()
@@ -363,15 +363,16 @@ void QgsLayoutView::resizeEvent( QResizeEvent *event )
 {
   QGraphicsView::resizeEvent( event );
   emit zoomLevelChanged();
+  viewChanged();
 }
 
 void QgsLayoutView::scrollContentsBy( int dx, int dy )
 {
   QGraphicsView::scrollContentsBy( dx, dy );
-  updateRulers();
+  viewChanged();
 }
 
-void QgsLayoutView::updateRulers()
+void QgsLayoutView::viewChanged()
 {
   if ( mHorizontalRuler )
   {
@@ -380,6 +381,21 @@ void QgsLayoutView::updateRulers()
   if ( mVerticalRuler )
   {
     mVerticalRuler->setSceneTransform( viewportTransform() );
+  }
+
+  // determine page at center of view
+  QRect viewportRect( 0, 0, viewport()->width(), viewport()->height() );
+  QRectF visibleRect = mapToScene( viewportRect ).boundingRect();
+  QPointF centerVisible = visibleRect.center();
+
+  if ( currentLayout() && currentLayout()->pageCollection() )
+  {
+    int newPage = currentLayout()->pageCollection()->pageNumberForPoint( centerVisible );
+    if ( newPage != mCurrentPage )
+    {
+      mCurrentPage = newPage;
+      emit pageChanged( mCurrentPage );
+    }
   }
 }
 

@@ -129,6 +129,14 @@ class GUI_EXPORT QgsLayoutView: public QGraphicsView
     */
     QgsLayoutViewMenuProvider *menuProvider() const;
 
+    /**
+     * Returns the page visible in the view. This method
+     * considers the page at the center of the view as the current visible
+     * page.
+     * \see pageChanged()
+     */
+    int currentPage() const { return mCurrentPage; }
+
   public slots:
 
     /**
@@ -183,12 +191,12 @@ class GUI_EXPORT QgsLayoutView: public QGraphicsView
     void emitZoomLevelChanged();
 
     /**
-     * Updates associated rulers after view extent or zoom has changed.
+     * Updates associated rulers and other widgets after view extent or zoom has changed.
      * This should be called after calling any of the QGraphicsView
      * base class methods which alter the view's zoom level or extent,
      * i.e. QGraphicsView::fitInView().
      */
-    void updateRulers();
+    void viewChanged();
 
   signals:
 
@@ -216,6 +224,14 @@ class GUI_EXPORT QgsLayoutView: public QGraphicsView
      * the layout coordinate system.
      */
     void cursorPosChanged( QPointF layoutPoint );
+
+    /**
+     * Emitted when the page visible in the view is changed. This signal
+     * considers the page at the center of the view as the current visible
+     * page.
+     * \see currentPage()
+     */
+    void pageChanged( int page );
 
   protected:
     void mousePressEvent( QMouseEvent *event ) override;
@@ -248,6 +264,8 @@ class GUI_EXPORT QgsLayoutView: public QGraphicsView
     std::unique_ptr< QgsLayoutViewMenuProvider > mMenuProvider;
 
     std::unique_ptr< QgsLayoutViewSnapMarker > mSnapMarker;
+
+    int mCurrentPage = 0;
 
     friend class TestQgsLayoutView;
 

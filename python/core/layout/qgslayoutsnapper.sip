@@ -78,6 +78,20 @@ class QgsLayoutSnapper
  :rtype: QPointF
 %End
 
+    double snapPointToGuides( double original, QgsLayoutGuide::Orientation orientation, double scaleFactor, bool &snapped /Out/ ) const;
+%Docstring
+ Snaps a layout coordinate ``point`` to the grid. If ``point``
+ was snapped, ``snapped`` will be set to true.
+
+ The ``scaleFactor`` argument should be set to the transformation from
+ scalar transform from layout coordinates to pixels, i.e. the
+ graphics view transform().m11() value.
+
+ If snapToGrid() is disabled, this method will return the point
+ unchanged.
+ :rtype: float
+%End
+
 };
 
 /************************************************************************

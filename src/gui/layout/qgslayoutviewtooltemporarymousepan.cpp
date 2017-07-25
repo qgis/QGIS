@@ -29,7 +29,7 @@ void QgsLayoutViewToolTemporaryMousePan::layoutMoveEvent( QgsLayoutViewMouseEven
   view()->horizontalScrollBar()->setValue( view()->horizontalScrollBar()->value() - ( event->x() - mLastMousePos.x() ) );
   view()->verticalScrollBar()->setValue( view()->verticalScrollBar()->value() - ( event->y() - mLastMousePos.y() ) );
   mLastMousePos = event->pos();
-  view()->updateRulers();
+  view()->viewChanged();
 }
 
 void QgsLayoutViewToolTemporaryMousePan::layoutReleaseEvent( QgsLayoutViewMouseEvent *event )

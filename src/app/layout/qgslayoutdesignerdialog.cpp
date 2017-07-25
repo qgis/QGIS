@@ -37,6 +37,7 @@
 #include "qgspanelwidget.h"
 #include "qgsdockwidget.h"
 #include "qgslayoutpagepropertieswidget.h"
+#include "qgslayoutguidewidget.h"
 #include <QShortcut>
 #include <QComboBox>
 #include <QLineEdit>
@@ -257,8 +258,20 @@ QgsLayoutDesignerDialog::QgsLayoutDesignerDialog( QWidget *parent, Qt::WindowFla
   mItemDock->setWidget( mItemPropertiesStack );
   mPanelsMenu->addAction( mItemDock->toggleViewAction() );
 
+  mGuideDock = new QgsDockWidget( tr( "Guides" ), this );
+  mGuideDock->setObjectName( QStringLiteral( "GuideDock" ) );
+  mGuideDock->setMinimumWidth( minDockWidth );
+  mGuideStack = new QgsPanelWidgetStack();
+  mGuideDock->setWidget( mGuideStack );
+  mPanelsMenu->addAction( mGuideDock->toggleViewAction() );
+  connect( mActionManageGuides, &QAction::triggered, this, [ = ]
+  {
+    mGuideDock->setUserVisible( true );
+  } );
+
   addDockWidget( Qt::RightDockWidgetArea, mItemDock );
   addDockWidget( Qt::RightDockWidgetArea, mGeneralDock );
+  addDockWidget( Qt::RightDockWidgetArea, mGuideDock );
 
   createLayoutPropertiesWidget();
 
@@ -317,6 +330,7 @@ void QgsLayoutDesignerDialog::showItemOptions( QgsLayoutItem *item )
   delete mItemPropertiesStack->takeMainPanel();
   widget->setDockMode( true );
   mItemPropertiesStack->setMainPanel( widget.release() );
+  mItemDock->setUserVisible( true );
 }
 
 void QgsLayoutDesignerDialog::open()
@@ -615,13 +629,19 @@ void QgsLayoutDesignerDialog::createLayoutPropertiesWidget()
     return;
   }
 
-  // update composition widget
+  // update layout based widgets
   QgsLayoutPropertiesWidget *oldCompositionWidget = qobject_cast<QgsLayoutPropertiesWidget *>( mGeneralPropertiesStack->takeMainPanel() );
   delete oldCompositionWidget;
+  QgsLayoutGuideWidget *oldGuideWidget = qobject_cast<QgsLayoutGuideWidget *>( mGuideStack->takeMainPanel() );
+  delete oldGuideWidget;
 
   QgsLayoutPropertiesWidget *widget = new QgsLayoutPropertiesWidget( mGeneralDock, mLayout );
   widget->setDockMode( true );
   mGeneralPropertiesStack->setMainPanel( widget );
+
+  QgsLayoutGuideWidget *guideWidget = new QgsLayoutGuideWidget( mGuideDock, mLayout, mView );
+  guideWidget->setDockMode( true );
+  mGuideStack->setMainPanel( guideWidget );
 }
 
 void QgsLayoutDesignerDialog::initializeRegistry()

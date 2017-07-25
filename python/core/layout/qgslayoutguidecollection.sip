@@ -145,6 +145,7 @@ class QgsLayoutGuideCollection : QAbstractListModel
       PositionRole,
       UnitsRole,
       PageRole,
+      LayoutPositionRole,
     };
 
     QgsLayoutGuideCollection( QgsLayout *layout );
@@ -201,6 +202,11 @@ class QgsLayoutGuideProxyModel : QSortFilterProxyModel
  Constructor for QgsLayoutGuideProxyModel, filtered to guides of the specified ``orientation`` and ``page`` only.
 
  Page numbers begin at 0.
+%End
+
+    void setPage( int page );
+%Docstring
+ Sets the current ``page`` for filtering matching guides. Page numbers begin at 0.
 %End
 
     virtual bool filterAcceptsRow( int sourceRow, const QModelIndex &sourceParent ) const;

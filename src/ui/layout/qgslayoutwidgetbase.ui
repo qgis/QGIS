@@ -2,6 +2,14 @@
 <ui version="4.0">
  <class>QgsLayoutWidgetBase</class>
  <widget class="QWidget" name="QgsLayoutWidgetBase">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>234</width>
+    <height>327</height>
+   </rect>
+  </property>
   <property name="windowTitle">
    <string>Composition</string>
   </property>
@@ -33,7 +41,7 @@
       <enum>Qt::WheelFocus</enum>
      </property>
      <property name="frameShape">
-      <enum>QFrame::StyledPanel</enum>
+      <enum>QFrame::NoFrame</enum>
      </property>
      <property name="frameShadow">
       <enum>QFrame::Plain</enum>
@@ -46,8 +54,8 @@
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>494</width>
-        <height>564</height>
+        <width>234</width>
+        <height>327</height>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="verticalLayout_2">
@@ -71,7 +79,7 @@
          <property name="collapsed" stdset="0">
           <bool>false</bool>
          </property>
-         <layout class="QGridLayout" name="gridLayout_2" columnstretch="0,0,0">
+         <layout class="QGridLayout" name="gridLayout_2" columnstretch="0,0">
           <item row="1" column="1">
            <widget class="QgsLayoutUnitsComboBox" name="mGridSpacingUnitsCombo"/>
           </item>
@@ -189,6 +197,16 @@
  <layoutdefault spacing="6" margin="11"/>
  <customwidgets>
   <customwidget>
+   <class>QgsDoubleSpinBox</class>
+   <extends>QDoubleSpinBox</extends>
+   <header>qgsdoublespinbox.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsLayoutUnitsComboBox</class>
+   <extends>QComboBox</extends>
+   <header>qgslayoutunitscombobox.h</header>
+  </customwidget>
+  <customwidget>
    <class>QgsScrollArea</class>
    <extends>QScrollArea</extends>
    <header>qgsscrollarea.h</header>
@@ -201,19 +219,9 @@
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>QgsDoubleSpinBox</class>
-   <extends>QDoubleSpinBox</extends>
-   <header>qgsdoublespinbox.h</header>
-  </customwidget>
-  <customwidget>
    <class>QgsSpinBox</class>
    <extends>QSpinBox</extends>
    <header>qgsspinbox.h</header>
-  </customwidget>
-  <customwidget>
-   <class>QgsLayoutUnitsComboBox</class>
-   <extends>QComboBox</extends>
-   <header>qgslayoutunitscombobox.h</header>
   </customwidget>
  </customwidgets>
  <tabstops>

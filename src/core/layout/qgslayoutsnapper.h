@@ -19,6 +19,7 @@
 #include "qgis_core.h"
 #include "qgslayoutmeasurement.h"
 #include "qgslayoutpoint.h"
+#include "qgslayoutguidecollection.h"
 #include <QPen>
 
 class QgsLayout;
@@ -87,6 +88,19 @@ class CORE_EXPORT QgsLayoutSnapper
      * unchanged.
      */
     QPointF snapPointToGrid( QPointF point, double scaleFactor, bool &snapped SIP_OUT ) const;
+
+    /**
+     * Snaps a layout coordinate \a point to the grid. If \a point
+     * was snapped, \a snapped will be set to true.
+     *
+     * The \a scaleFactor argument should be set to the transformation from
+     * scalar transform from layout coordinates to pixels, i.e. the
+     * graphics view transform().m11() value.
+     *
+     * If snapToGrid() is disabled, this method will return the point
+     * unchanged.
+     */
+    double snapPointToGuides( double original, QgsLayoutGuide::Orientation orientation, double scaleFactor, bool &snapped SIP_OUT ) const;
 
   private:
 
