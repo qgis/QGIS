@@ -92,7 +92,7 @@ QgsError QgsUserProfile::setAlias( const QString &alias )
 
   if ( !qgisPrivateDbFile.exists() )
   {
-    error.append( QObject::tr( "qgis.db doesn't exist in the uers profile folder" ) );
+    error.append( QObject::tr( "qgis.db doesn't exist in the user's profile folder" ) );
     return error;
   }
 
