@@ -61,12 +61,12 @@
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>530</width>
-        <height>635</height>
+        <width>514</width>
+        <height>644</height>
        </rect>
       </property>
       <layout class="QGridLayout" name="gridLayout_5">
-       <item row="4" column="0">
+       <item row="5" column="0">
         <widget class="QCheckBox" name="mCheckBoxCreateSpatialIndex">
          <property name="toolTip">
           <string>Add an integer id field as the primary key for the new layer</string>
@@ -79,7 +79,7 @@
        <item row="0" column="0">
         <layout class="QHBoxLayout" name="horizontalLayout_6"/>
        </item>
-       <item row="5" column="0">
+       <item row="6" column="0">
         <widget class="QGroupBox" name="groupBox_3">
          <property name="title">
           <string>New field</string>
@@ -342,7 +342,7 @@
          </item>
         </layout>
        </item>
-       <item row="6" column="0">
+       <item row="7" column="0">
         <widget class="QGroupBox" name="groupBox_2">
          <property name="title">
           <string>Fields list</string>
@@ -421,10 +421,17 @@
          </layout>
         </widget>
        </item>
-       <item row="2" column="0">
+       <item row="3" column="0">
         <widget class="QgsProjectionSelectionWidget" name="mCrsSelector" native="true">
          <property name="focusPolicy">
           <enum>Qt::StrongFocus</enum>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="0">
+        <widget class="QCheckBox" name="mGeometryWithZCheckBox">
+         <property name="text">
+          <string>Geometries with Z/M coordinate</string>
          </property>
         </widget>
        </item>
