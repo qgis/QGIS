@@ -152,7 +152,8 @@ QgsLayoutGuideCollection::QgsLayoutGuideCollection( QgsLayout *layout )
   : QAbstractTableModel( layout )
   , mLayout( layout )
 {
-
+  QFont f;
+  mHeaderSize = QFontMetrics( f ).width( "XX" );
 }
 
 QgsLayoutGuideCollection::~QgsLayoutGuideCollection()
@@ -274,6 +275,17 @@ Qt::ItemFlags QgsLayoutGuideCollection::flags( const QModelIndex &index ) const
   if ( !index.isValid() )
     return Qt::ItemIsEnabled | Qt::ItemIsSelectable;
   return Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsEditable;
+}
+
+QVariant QgsLayoutGuideCollection::headerData( int section, Qt::Orientation orientation, int role ) const
+{
+  if ( role == Qt::DisplayRole )
+    return QVariant();
+  else if ( role == Qt::SizeHintRole )
+  {
+    return QSize( mHeaderSize, mHeaderSize );
+  }
+  return QAbstractTableModel::headerData( section, orientation, role );
 }
 
 void QgsLayoutGuideCollection::addGuide( QgsLayoutGuide *guide )

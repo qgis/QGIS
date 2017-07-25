@@ -189,6 +189,8 @@ class CORE_EXPORT QgsLayoutGuideCollection : public QAbstractTableModel
     QVariant data( const QModelIndex &index, int role ) const override;
     bool setData( const QModelIndex &index, const QVariant &value, int role ) override;
     Qt::ItemFlags flags( const QModelIndex &index ) const override;
+    QVariant headerData( int section, Qt::Orientation orientation,
+                         int role = Qt::DisplayRole ) const override;
 
     /**
      * Adds a \a guide to the collection. Ownership of the guide is transferred to the
@@ -213,6 +215,7 @@ class CORE_EXPORT QgsLayoutGuideCollection : public QAbstractTableModel
     QgsLayout *mLayout = nullptr;
 
     QList< QgsLayoutGuide * > mGuides;
+    int mHeaderSize = 0;
 
 };
 
