@@ -17,13 +17,13 @@ import qgis  # NOQA
 from qgis.core import (QgsProject,
                        QgsLayout,
                        QgsLayoutSnapper,
+                       QgsLayoutGridSettings,
                        QgsLayoutMeasurement,
                        QgsUnitTypes,
                        QgsLayoutPoint,
                        QgsLayoutItemPage)
-from qgis.PyQt.QtCore import QRectF, QPointF
-from qgis.PyQt.QtGui import (QTransform,
-                             QPen,
+from qgis.PyQt.QtCore import QPointF
+from qgis.PyQt.QtGui import (QPen,
                              QColor)
 
 from qgis.testing import start_app, unittest
@@ -37,20 +37,6 @@ class TestQgsLayoutSnapper(unittest.TestCase):
         p = QgsProject()
         l = QgsLayout(p)
         s = QgsLayoutSnapper(l)
-        s.setGridResolution(QgsLayoutMeasurement(5, QgsUnitTypes.LayoutPoints))
-        self.assertEqual(s.gridResolution().length(), 5.0)
-        self.assertEqual(s.gridResolution().units(), QgsUnitTypes.LayoutPoints)
-
-        s.setGridOffset(QgsLayoutPoint(6, 7, QgsUnitTypes.LayoutPixels))
-        self.assertEqual(s.gridOffset().x(), 6.0)
-        self.assertEqual(s.gridOffset().y(), 7.0)
-        self.assertEqual(s.gridOffset().units(), QgsUnitTypes.LayoutPixels)
-
-        s.setGridPen(QPen(QColor(255, 0, 255)))
-        self.assertEqual(s.gridPen().color().name(), QColor(255, 0, 255).name())
-
-        s.setGridStyle(QgsLayoutSnapper.GridDots)
-        self.assertEqual(s.gridStyle(), QgsLayoutSnapper.GridDots)
 
         s.setSnapToGrid(False)
         self.assertFalse(s.snapToGrid())
@@ -69,7 +55,8 @@ class TestQgsLayoutSnapper(unittest.TestCase):
         l.pageCollection().addPage(page)
         s = QgsLayoutSnapper(l)
 
-        s.setGridResolution(QgsLayoutMeasurement(5, QgsUnitTypes.LayoutMillimeters))
+        l.gridSettings().setResolution(QgsLayoutMeasurement(5, QgsUnitTypes.LayoutMillimeters))
+
         s.setSnapToGrid(True)
         s.setSnapTolerance(1)
 
@@ -113,11 +100,10 @@ class TestQgsLayoutSnapper(unittest.TestCase):
         self.assertEqual(point, QPointF(0.5, 0.5))
 
         # with offset grid
-        s.setGridOffset(QgsLayoutPoint(2, 0))
+        l.gridSettings().setOffset(QgsLayoutPoint(2, 0))
         point, snapped = s.snapPointToGrid(QPointF(13, 23), 1)
         self.assertTrue(snapped)
         self.assertEqual(point, QPointF(12, 23))
-
 
     def testSnapPoint(self):
         p = QgsProject()
@@ -128,7 +114,7 @@ class TestQgsLayoutSnapper(unittest.TestCase):
         s = QgsLayoutSnapper(l)
 
         # first test snapping to grid
-        s.setGridResolution(QgsLayoutMeasurement(5, QgsUnitTypes.LayoutMillimeters))
+        l.gridSettings().setResolution(QgsLayoutMeasurement(5, QgsUnitTypes.LayoutMillimeters))
         s.setSnapToGrid(True)
         s.setSnapTolerance(1)
 

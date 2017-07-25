@@ -149,6 +149,14 @@ class QgsLayout : QGraphicsScene, QgsExpressionContextGenerator
 %End
 
 
+    QgsLayoutGridSettings &gridSettings();
+%Docstring
+ Returns a reference to the layout's grid settings, which stores settings relating
+ to grid appearance, spacing and offsets.
+ :rtype: QgsLayoutGridSettings
+%End
+
+
     virtual QgsExpressionContext createExpressionContext() const;
 
 %Docstring

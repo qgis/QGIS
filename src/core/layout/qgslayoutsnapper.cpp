@@ -19,10 +19,7 @@
 
 QgsLayoutSnapper::QgsLayoutSnapper( QgsLayout *layout )
   : mLayout( layout )
-  , mGridResolution( QgsLayoutMeasurement( 10 ) )
 {
-  mGridPen = QPen( QColor( 190, 190, 190, 100 ), 0 );
-  mGridPen.setCosmetic( true );
 }
 
 QPointF QgsLayoutSnapper::snapPoint( QPointF point, double scaleFactor, bool &snapped ) const
@@ -44,10 +41,13 @@ QPointF QgsLayoutSnapper::snapPoint( QPointF point, double scaleFactor, bool &sn
 QPointF QgsLayoutSnapper::snapPointToGrid( QPointF point, double scaleFactor, bool &snapped ) const
 {
   snapped = false;
-  if ( !mLayout || !mSnapToGrid || mGridResolution.length() <= 0 )
+  if ( !mLayout || !mSnapToGrid )
   {
     return point;
   }
+  const QgsLayoutGridSettings &grid = mLayout->gridSettings();
+  if ( grid.resolution().length() <= 0 )
+    return point;
 
   //calculate y offset to current page
   QPointF pagePoint = mLayout->pageCollection()->positionOnPage( point );
@@ -56,8 +56,8 @@ QPointF QgsLayoutSnapper::snapPointToGrid( QPointF point, double scaleFactor, bo
   double yAtTopOfPage = mLayout->pageCollection()->page( mLayout->pageCollection()->pageNumberForPoint( point ) )->pos().y();
 
   //snap x coordinate
-  double gridRes = mLayout->convertToLayoutUnits( mGridResolution );
-  QPointF gridOffset = mLayout->convertToLayoutUnits( mGridOffset );
+  double gridRes = mLayout->convertToLayoutUnits( grid.resolution() );
+  QPointF gridOffset = mLayout->convertToLayoutUnits( grid.offset() );
   int xRatio = static_cast< int >( ( point.x() - gridOffset.x() ) / gridRes + 0.5 ); //NOLINT
   int yRatio = static_cast< int >( ( yPage - gridOffset.y() ) / gridRes + 0.5 ); //NOLINT
 

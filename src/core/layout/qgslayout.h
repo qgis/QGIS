@@ -22,6 +22,7 @@
 #include "qgslayoutsnapper.h"
 #include "qgsexpressioncontextgenerator.h"
 #include "qgslayoutpagecollection.h"
+#include "qgslayoutgridsettings.h"
 
 class QgsLayoutItemMap;
 
@@ -168,6 +169,18 @@ class CORE_EXPORT QgsLayout : public QGraphicsScene, public QgsExpressionContext
     SIP_SKIP const QgsLayoutSnapper &snapper() const { return mSnapper; }
 
     /**
+     * Returns a reference to the layout's grid settings, which stores settings relating
+     * to grid appearance, spacing and offsets.
+     */
+    QgsLayoutGridSettings &gridSettings() { return mGridSettings; }
+
+    /**
+     * Returns a reference to the layout's grid settings, which stores settings relating
+     * to grid appearance, spacing and offsets.
+     */
+    SIP_SKIP const QgsLayoutGridSettings &gridSettings() const { return mGridSettings; }
+
+    /**
      * Creates an expression context relating to the layout's current state. The context includes
      * scopes for global, project, layout and layout context properties.
      */
@@ -276,6 +289,7 @@ class CORE_EXPORT QgsLayout : public QGraphicsScene, public QgsExpressionContext
     QgsUnitTypes::LayoutUnit mUnits = QgsUnitTypes::LayoutMillimeters;
     QgsLayoutContext mContext;
     QgsLayoutSnapper mSnapper;
+    QgsLayoutGridSettings mGridSettings;
 
     std::unique_ptr< QgsLayoutPageCollection > mPageCollection;
 

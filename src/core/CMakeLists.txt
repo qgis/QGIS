@@ -353,6 +353,7 @@ SET(QGIS_CORE_SRCS
 
   layout/qgslayout.cpp
   layout/qgslayoutcontext.cpp
+  layout/qgslayoutgridsettings.cpp
   layout/qgslayoutitem.cpp
   layout/qgslayoutitemmap.cpp
   layout/qgslayoutitempage.cpp
@@ -936,6 +937,7 @@ SET(QGIS_CORE_HDRS
   composer/qgspaperitem.h
 
   layout/qgslayoutcontext.h
+  layout/qgslayoutgridsettings.h
   layout/qgslayoutmeasurement.h
   layout/qgslayoutmeasurementconverter.h
   layout/qgspagesizeregistry.h

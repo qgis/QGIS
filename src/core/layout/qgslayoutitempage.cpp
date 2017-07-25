@@ -212,13 +212,13 @@ void QgsLayoutItemPageGrid::paint( QPainter *painter, const QStyleOptionGraphics
     return;
 
   const QgsLayoutContext &context = mLayout->context();
-  const QgsLayoutSnapper &snapper = mLayout->snapper();
+  const QgsLayoutGridSettings &grid = mLayout->gridSettings();
 
-  if ( !context.gridVisible() || snapper.gridResolution().length() <= 0 )
+  if ( !context.gridVisible() || grid.resolution().length() <= 0 )
     return;
 
-  QPointF gridOffset = mLayout->convertToLayoutUnits( snapper.gridOffset() );
-  double gridResolution = mLayout->convertToLayoutUnits( snapper.gridResolution() );
+  QPointF gridOffset = mLayout->convertToLayoutUnits( grid.offset() );
+  double gridResolution = mLayout->convertToLayoutUnits( grid.resolution() );
   int gridMultiplyX = static_cast< int >( gridOffset.x() / gridResolution );
   int gridMultiplyY = static_cast< int >( gridOffset.y() / gridResolution );
   double currentXCoord = gridOffset.x() - gridMultiplyX * gridResolution;
@@ -229,11 +229,11 @@ void QgsLayoutItemPageGrid::paint( QPainter *painter, const QStyleOptionGraphics
   //turn of antialiasing so grid is nice and sharp
   painter->setRenderHint( QPainter::Antialiasing, false );
 
-  switch ( snapper.gridStyle() )
+  switch ( grid.style() )
   {
-    case QgsLayoutSnapper::GridLines:
+    case QgsLayoutGridSettings::StyleLines:
     {
-      painter->setPen( snapper.gridPen() );
+      painter->setPen( grid.pen() );
 
       //draw vertical lines
       for ( ; currentXCoord <= rect().width(); currentXCoord += gridResolution )
@@ -250,14 +250,14 @@ void QgsLayoutItemPageGrid::paint( QPainter *painter, const QStyleOptionGraphics
       break;
     }
 
-    case QgsLayoutSnapper::GridDots:
-    case QgsLayoutSnapper::GridCrosses:
+    case QgsLayoutGridSettings::StyleDots:
+    case QgsLayoutGridSettings::StyleCrosses:
     {
-      QPen gridPen = snapper.gridPen();
+      QPen gridPen = grid.pen();
       painter->setPen( gridPen );
       painter->setBrush( QBrush( gridPen.color() ) );
       double halfCrossLength = 1;
-      if ( snapper.gridStyle() == QgsLayoutSnapper::GridDots )
+      if ( grid.style() == QgsLayoutGridSettings::StyleDots )
       {
         //dots are actually drawn as tiny crosses a few pixels across
         //set halfCrossLength to equivalent of 1 pixel

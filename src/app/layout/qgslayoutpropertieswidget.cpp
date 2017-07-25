@@ -47,51 +47,51 @@ void QgsLayoutPropertiesWidget::updateSnappingElements()
 {
   mSnapToleranceSpinBox->setValue( mLayout->snapper().snapTolerance() );
 
-  mGridSpacingUnitsCombo->setUnit( mLayout->snapper().gridResolution().units() );
-  mGridResolutionSpinBox->setValue( mLayout->snapper().gridResolution().length() );
+  mGridSpacingUnitsCombo->setUnit( mLayout->gridSettings().resolution().units() );
+  mGridResolutionSpinBox->setValue( mLayout->gridSettings().resolution().length() );
 
-  mGridOffsetUnitsComboBox->setUnit( mLayout->snapper().gridOffset().units() );
-  mOffsetXSpinBox->setValue( mLayout->snapper().gridOffset().x() );
-  mOffsetYSpinBox->setValue( mLayout->snapper().gridOffset().y() );
+  mGridOffsetUnitsComboBox->setUnit( mLayout->gridSettings().offset().units() );
+  mOffsetXSpinBox->setValue( mLayout->gridSettings().offset().x() );
+  mOffsetYSpinBox->setValue( mLayout->gridSettings().offset().y() );
 }
 
 void QgsLayoutPropertiesWidget::gridResolutionChanged( double d )
 {
-  QgsLayoutMeasurement m = mLayout->snapper().gridResolution();
+  QgsLayoutMeasurement m = mLayout->gridSettings().resolution();
   m.setLength( d );
-  mLayout->snapper().setGridResolution( m );
+  mLayout->gridSettings().setResolution( m );
   mLayout->pageCollection()->redraw();
 }
 
 void QgsLayoutPropertiesWidget::gridResolutionUnitsChanged( QgsUnitTypes::LayoutUnit unit )
 {
-  QgsLayoutMeasurement m = mLayout->snapper().gridResolution();
+  QgsLayoutMeasurement m = mLayout->gridSettings().resolution();
   m.setUnits( unit );
-  mLayout->snapper().setGridResolution( m );
+  mLayout->gridSettings().setResolution( m );
   mLayout->pageCollection()->redraw();
 }
 
 void QgsLayoutPropertiesWidget::gridOffsetXChanged( double d )
 {
-  QgsLayoutPoint o = mLayout->snapper().gridOffset();
+  QgsLayoutPoint o = mLayout->gridSettings().offset();
   o.setX( d );
-  mLayout->snapper().setGridOffset( o );
+  mLayout->gridSettings().setOffset( o );
   mLayout->pageCollection()->redraw();
 }
 
 void QgsLayoutPropertiesWidget::gridOffsetYChanged( double d )
 {
-  QgsLayoutPoint o = mLayout->snapper().gridOffset();
+  QgsLayoutPoint o = mLayout->gridSettings().offset();
   o.setY( d );
-  mLayout->snapper().setGridOffset( o );
+  mLayout->gridSettings().setOffset( o );
   mLayout->pageCollection()->redraw();
 }
 
 void QgsLayoutPropertiesWidget::gridOffsetUnitsChanged( QgsUnitTypes::LayoutUnit unit )
 {
-  QgsLayoutPoint o = mLayout->snapper().gridOffset();
+  QgsLayoutPoint o = mLayout->gridSettings().offset();
   o.setUnits( unit );
-  mLayout->snapper().setGridOffset( o );
+  mLayout->gridSettings().setOffset( o );
   mLayout->pageCollection()->redraw();
 }
 

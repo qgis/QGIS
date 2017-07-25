@@ -156,6 +156,7 @@
 %Include composer/qgscomposertexttable.sip
 %Include composer/qgspaperitem.sip
 %Include layout/qgslayoutcontext.sip
+%Include layout/qgslayoutgridsettings.sip
 %Include layout/qgslayoutmeasurement.sip
 %Include layout/qgslayoutmeasurementconverter.sip
 %Include layout/qgspagesizeregistry.sip
