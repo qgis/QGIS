@@ -79,6 +79,7 @@ class APP_EXPORT QgsMapSaveDialog: public QDialog, private Ui::QgsMapSaveDialog
 
     void lockChanged( const bool locked );
     void accepted();
+    void copyToClipboard();
 
     void updateDpi( int dpi );
     void updateOutputWidth( int width );
