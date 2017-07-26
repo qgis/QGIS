@@ -22,6 +22,7 @@
 class QgsLayout;
 class QGraphicsLineItem;
 class QgsLayoutView;
+class QgsLayoutGuide;
 
 /**
  * \ingroup gui
@@ -107,6 +108,9 @@ class GUI_EXPORT QgsLayoutRuler: public QWidget
     int mPixelsBetweenLineAndText;
     int mTextBaseline;
     int mMinSpacingVerticalLabels;
+
+    int mDragGuideTolerance = 0;
+    QgsLayoutGuide *mDraggingGuide = nullptr;
 
     bool mCreatingGuide = false;
     std::unique_ptr< QGraphicsLineItem > mGuideItem;

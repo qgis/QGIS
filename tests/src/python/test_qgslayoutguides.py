@@ -104,6 +104,7 @@ class TestQgsLayoutGuide(unittest.TestCase):
         g.update()
         self.assertFalse(g.item().isVisible())
 
+
     def testCollection(self):
         p = QgsProject()
         l = QgsLayout(p)

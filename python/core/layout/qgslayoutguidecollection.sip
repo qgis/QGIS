@@ -115,7 +115,14 @@ class QgsLayoutGuide : QObject
     double layoutPosition() const;
 %Docstring
  Returns the guide's position in absolute layout units.
+.. seealso:: setLayoutPosition()
  :rtype: float
+%End
+
+    void setLayoutPosition( double position );
+%Docstring
+ Sets the guide's ``position`` in absolute layout units.
+.. seealso:: layoutPosition()
 %End
 
   signals:

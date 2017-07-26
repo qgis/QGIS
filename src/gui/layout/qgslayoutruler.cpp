@@ -55,6 +55,7 @@ QgsLayoutRuler::QgsLayoutRuler( QWidget *parent, Qt::Orientation orientation )
   mMinSpacingVerticalLabels = mRulerMinSize / 5;
 
   double guideMarkerSize = mRulerFontMetrics->width( "*" );
+  mDragGuideTolerance = guideMarkerSize;
   switch ( mOrientation )
   {
     case Qt::Horizontal:
@@ -521,40 +522,62 @@ void QgsLayoutRuler::mouseMoveEvent( QMouseEvent *event )
   update();
 
   QPointF displayPos;
-  if ( mCreatingGuide )
+  if ( mCreatingGuide || mDraggingGuide )
   {
     // event -> layout coordinates
     displayPos = convertLocalPointToLayout( event->pos() );
 
-    QgsLayout *layout = mView->currentLayout();
-    int pageNo = layout->pageCollection()->pageNumberForPoint( displayPos );
-    QgsLayoutItemPage *page = layout->pageCollection()->page( pageNo );
-    QPen linePen = mGuideItem->pen();
-    // if guide preview is outside a page draw it a lot fainter, to indicate it's invalid
-    if ( !layout->pageCollection()->pageAtPoint( displayPos ) )
+    if ( mCreatingGuide )
     {
-      linePen.setColor( QColor( 255, 0, 0, 150 ) );
+      QgsLayout *layout = mView->currentLayout();
+      int pageNo = layout->pageCollection()->pageNumberForPoint( displayPos );
+      QgsLayoutItemPage *page = layout->pageCollection()->page( pageNo );
+      QPen linePen = mGuideItem->pen();
+      // if guide preview is outside a page draw it a lot fainter, to indicate it's invalid
+      if ( !layout->pageCollection()->pageAtPoint( displayPos ) )
+      {
+        linePen.setColor( QColor( 255, 0, 0, 150 ) );
+      }
+      else
+      {
+        linePen.setColor( QColor( 255, 0, 0, 225 ) );
+      }
+      mGuideItem->setPen( linePen );
+      switch ( mOrientation )
+      {
+        case Qt::Horizontal:
+        {
+          //mouse is creating a horizontal ruler, so don't show x coordinate
+          mGuideItem->setLine( page->scenePos().x(), displayPos.y(), page->scenePos().x() + page->rect().width(), displayPos.y() );
+          displayPos.setX( 0 );
+          break;
+        }
+        case Qt::Vertical:
+        {
+          //mouse is creating a vertical ruler, so don't show a y coordinate
+          mGuideItem->setLine( displayPos.x(), page->scenePos().y(), displayPos.x(), page->scenePos().y() + page->rect().height() );
+          displayPos.setY( 0 );
+          break;
+        }
+      }
     }
     else
     {
-      linePen.setColor( QColor( 255, 0, 0, 225 ) );
-    }
-    mGuideItem->setPen( linePen );
-    switch ( mOrientation )
-    {
-      case Qt::Horizontal:
+      // dragging guide
+      switch ( mOrientation )
       {
-        //mouse is creating a horizontal ruler, so don't show x coordinate
-        mGuideItem->setLine( page->scenePos().x(), displayPos.y(), page->scenePos().x() + page->rect().width(), displayPos.y() );
-        displayPos.setX( 0 );
-        break;
-      }
-      case Qt::Vertical:
-      {
-        //mouse is creating a vertical ruler, so don't show a y coordinate
-        mGuideItem->setLine( displayPos.x(), page->scenePos().y(), displayPos.x(), page->scenePos().y() + page->rect().height() );
-        displayPos.setY( 0 );
-        break;
+        case Qt::Horizontal:
+        {
+          mDraggingGuide->setLayoutPosition( displayPos.x() );
+          displayPos.setY( 0 );
+          break;
+        }
+        case Qt::Vertical:
+        {
+          mDraggingGuide->setLayoutPosition( displayPos.y() );
+          displayPos.setX( 0 );
+          break;
+        }
       }
     }
   }
@@ -585,18 +608,53 @@ void QgsLayoutRuler::mousePressEvent( QMouseEvent *event )
 {
   if ( event->button() == Qt::LeftButton )
   {
-    mCreatingGuide = true;
-    createTemporaryGuideItem();
+    // was click on an existing guide? huh?? was it??
+    QPointF layoutPoint = convertLocalPointToLayout( event->pos() );
+    QList< int > visiblePageNumbers = mView->visiblePageNumbers();
+    QList< QgsLayoutGuide * > guides = mView->currentLayout()->guides().guides( mOrientation == Qt::Horizontal ? QgsLayoutGuide::Vertical : QgsLayoutGuide::Horizontal );
+    QgsLayoutGuide *closestGuide = nullptr;
+    double minDelta = DBL_MAX;
+    Q_FOREACH ( QgsLayoutGuide *guide, guides )
+    {
+      if ( visiblePageNumbers.contains( guide->page() ) )
+      {
+        double currentDelta = 0;
+        switch ( mOrientation )
+        {
+          case Qt::Horizontal:
+            currentDelta = qAbs( layoutPoint.x() - guide->layoutPosition() );
+            break;
 
+          case Qt::Vertical:
+            currentDelta = qAbs( layoutPoint.y() - guide->layoutPosition() );
+            break;
+        }
+        if ( currentDelta < minDelta )
+        {
+          minDelta = currentDelta;
+          closestGuide = guide;
+        }
+      }
+    }
+
+    if ( minDelta * mView->transform().m11() <= mDragGuideTolerance )
+    {
+      mDraggingGuide = closestGuide;
+    }
+    else
+    {
+      mCreatingGuide = true;
+      createTemporaryGuideItem();
+    }
     switch ( mOrientation )
     {
       case Qt::Horizontal:
       {
-        QApplication::setOverrideCursor( Qt::SplitVCursor );
+        QApplication::setOverrideCursor( mDraggingGuide ? Qt::SplitHCursor : Qt::SplitVCursor );
         break;
       }
       case Qt::Vertical:
-        QApplication::setOverrideCursor( Qt::SplitHCursor );
+        QApplication::setOverrideCursor( mDraggingGuide ? Qt::SplitVCursor : Qt::SplitHCursor );
         break;
     }
   }
@@ -606,54 +664,65 @@ void QgsLayoutRuler::mouseReleaseEvent( QMouseEvent *event )
 {
   if ( event->button() == Qt::LeftButton )
   {
-    mCreatingGuide = false;
-    QApplication::restoreOverrideCursor();
-    mGuideItem.reset();
-
-    // check that cursor left the ruler
-    switch ( mOrientation )
+    if ( mDraggingGuide )
     {
-      case Qt::Horizontal:
-      {
-        if ( event->pos().y() <= height() )
-          return;
-        break;
-      }
-      case Qt::Vertical:
-      {
-        if ( event->pos().x() <= width() )
-          return;
-        break;
-      }
+      QApplication::restoreOverrideCursor();
+
+      // TODO - delete guide if outside of page
+
+      mDraggingGuide = nullptr;
     }
-
-    QgsLayout *layout = mView->currentLayout();
-
-    // create guide
-    QPointF scenePos = convertLocalPointToLayout( event->pos() );
-    QgsLayoutItemPage *page = layout->pageCollection()->pageAtPoint( scenePos );
-    if ( !page )
-      return; // dragged outside of a page
-
-    int pageNumber = layout->pageCollection()->pageNumber( page );
-    std::unique_ptr< QgsLayoutGuide > guide;
-    switch ( mOrientation )
+    else
     {
-      case Qt::Horizontal:
+      mCreatingGuide = false;
+      QApplication::restoreOverrideCursor();
+      mGuideItem.reset();
+
+      // check that cursor left the ruler
+      switch ( mOrientation )
       {
-        //mouse is creating a horizontal guide
-        double posOnPage = layout->pageCollection()->positionOnPage( scenePos ).y();
-        guide.reset( new QgsLayoutGuide( QgsLayoutGuide::Horizontal, QgsLayoutMeasurement( posOnPage, layout->units() ) ) );
-        break;
+        case Qt::Horizontal:
+        {
+          if ( event->pos().y() <= height() )
+            return;
+          break;
+        }
+        case Qt::Vertical:
+        {
+          if ( event->pos().x() <= width() )
+            return;
+          break;
+        }
       }
-      case Qt::Vertical:
+
+      QgsLayout *layout = mView->currentLayout();
+
+      // create guide
+      QPointF scenePos = convertLocalPointToLayout( event->pos() );
+      QgsLayoutItemPage *page = layout->pageCollection()->pageAtPoint( scenePos );
+      if ( !page )
+        return; // dragged outside of a page
+
+      int pageNumber = layout->pageCollection()->pageNumber( page );
+      std::unique_ptr< QgsLayoutGuide > guide;
+      switch ( mOrientation )
       {
-        //mouse is creating a vertical guide
-        guide.reset( new QgsLayoutGuide( QgsLayoutGuide::Vertical, QgsLayoutMeasurement( scenePos.x(), layout->units() ) ) );
-        break;
+        case Qt::Horizontal:
+        {
+          //mouse is creating a horizontal guide
+          double posOnPage = layout->pageCollection()->positionOnPage( scenePos ).y();
+          guide.reset( new QgsLayoutGuide( QgsLayoutGuide::Horizontal, QgsLayoutMeasurement( posOnPage, layout->units() ) ) );
+          break;
+        }
+        case Qt::Vertical:
+        {
+          //mouse is creating a vertical guide
+          guide.reset( new QgsLayoutGuide( QgsLayoutGuide::Vertical, QgsLayoutMeasurement( scenePos.x(), layout->units() ) ) );
+          break;
+        }
       }
+      guide->setPage( pageNumber );
+      mView->currentLayout()->guides().addGuide( guide.release() );
     }
-    guide->setPage( pageNumber );
-    mView->currentLayout()->guides().addGuide( guide.release() );
   }
 }

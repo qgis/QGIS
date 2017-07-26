@@ -125,6 +125,24 @@ double QgsLayoutGuide::layoutPosition() const
   return -999; // avoid warning
 }
 
+void QgsLayoutGuide::setLayoutPosition( double position )
+{
+  double p = 0;
+  switch ( mOrientation )
+  {
+    case Horizontal:
+      p = mLineItem->mapFromScene( QPointF( 0, position ) ).y();
+      break;
+
+    case Vertical:
+      p = mLineItem->mapFromScene( QPointF( position, 0 ) ).x();
+      break;
+  }
+  mPosition = mLayout->convertFromLayoutUnits( p, mPosition.units() );
+  update();
+  emit positionChanged();
+}
+
 QgsLayout *QgsLayoutGuide::layout() const
 {
   return mLayout;

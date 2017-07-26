@@ -128,8 +128,15 @@ class CORE_EXPORT QgsLayoutGuide : public QObject
 
     /**
      * Returns the guide's position in absolute layout units.
+     * \see setLayoutPosition()
      */
     double layoutPosition() const;
+
+    /**
+     * Sets the guide's \a position in absolute layout units.
+     * \see layoutPosition()
+     */
+    void setLayoutPosition( double position );
 
   signals:
 
