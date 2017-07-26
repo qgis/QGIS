@@ -50,6 +50,7 @@ class GdalAlgorithm(GeoAlgorithm):
 
     def processAlgorithm(self, progress):
         commands = self.getConsoleCommands()
+        commands = GeoAlgorithm.setConsoleCommandEncoding(commands)
         layers = dataobjects.getVectorLayers()
         supported = dataobjects.getSupportedOutputVectorLayerExtensions()
         for i, c in enumerate(commands):

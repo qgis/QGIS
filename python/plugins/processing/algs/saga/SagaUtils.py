@@ -34,6 +34,7 @@ from qgis.PyQt.QtCore import QCoreApplication
 from qgis.core import QgsApplication
 from processing.core.ProcessingConfig import ProcessingConfig
 from processing.core.ProcessingLog import ProcessingLog
+from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.tools.system import isWindows, isMac, userFolder
 
 SAGA_LOG_COMMANDS = 'SAGA_LOG_COMMANDS'
@@ -167,6 +168,8 @@ def getSagaInstalledVersion(runSaga=False):
 def executeSaga(progress):
     if isWindows():
         command = ['cmd.exe', '/C ', sagaBatchJobFilename()]
+        command = GeoAlgorithm.setConsoleCommandEncoding(command)
+
     else:
         os.chmod(sagaBatchJobFilename(), stat.S_IEXEC |
                  stat.S_IREAD | stat.S_IWRITE)
