@@ -21,6 +21,7 @@
 #include <QSettings>
 #include <QSqlDatabase>
 #include <QSqlQuery>
+#include <QSqlError>
 
 QgsUserProfile::QgsUserProfile( const QString &folder )
 {
@@ -76,10 +77,12 @@ const QString QgsUserProfile::alias() const
   QString profileAlias = name();
   if ( query.exec() )
   {
-    query.next();
-    QString alias = query.value( 0 ).toString();
-    if ( !alias.isEmpty() )
-      profileAlias = alias;
+    if ( query.next() )
+    {
+      QString alias = query.value( 0 ).toString();
+      if ( !alias.isEmpty() )
+        profileAlias = alias;
+    }
   }
   db.close();
   return profileAlias;
@@ -108,7 +111,10 @@ QgsError QgsUserProfile::setAlias( const QString &alias )
   QString sql = "INSERT OR REPLACE INTO tbl_config_variables VALUES ('ALIAS', :alias);";
   query.prepare( sql );
   query.bindValue( ":alias", alias );
-  query.exec();
+  if ( !query.exec() )
+  {
+    error.append( QObject::tr( "Could not save alias to database: %1" ).arg( query.lastError().text() ) );
+  }
   db.close();
   return error;
 }
