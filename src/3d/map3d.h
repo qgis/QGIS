@@ -13,7 +13,7 @@
 class QgsMapLayer;
 class QgsRasterLayer;
 
-class Abstract3DRenderer;
+class QgsAbstract3DRenderer;
 class TerrainGenerator;
 
 
@@ -61,7 +61,7 @@ class _3D_EXPORT Map3D : public QObject
     // 3D renderers
     //
 
-    QList<Abstract3DRenderer *> renderers;  //!< Stuff to render as 3D object
+    QList<QgsAbstract3DRenderer *> renderers;  //!< Stuff to render as 3D object
 
     bool skybox;  //!< Whether to render skybox
     QString skyboxFileBase;

@@ -21,6 +21,7 @@ namespace Qt3DExtras
   class QForwardRenderer;
 }
 
+class QgsMapLayer;
 class CameraController;
 class Map3D;
 class Terrain;
@@ -42,6 +43,7 @@ class _3D_EXPORT Scene : public Qt3DCore::QEntity
     void onCameraChanged();
     void onFrameTriggered( float dt );
     void createTerrain();
+    void onLayerRenderer3DChanged();
 
   private:
     const Map3D &mMap;
@@ -50,6 +52,8 @@ class _3D_EXPORT Scene : public Qt3DCore::QEntity
     CameraController *mCameraController;
     Terrain *mTerrain;
     QList<ChunkedEntity *> chunkEntities;
+    //! Keeps track of entities that belong to a particular layer
+    QMap<QgsMapLayer *, Qt3DCore::QEntity *> mLayerEntities;
 };
 
 #endif // SCENE_H

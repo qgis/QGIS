@@ -1,9 +1,9 @@
 #include "map3d.h"
 
-#include "abstract3drenderer.h"
 #include "flatterraingenerator.h"
 #include "demterraingenerator.h"
 //#include "quantizedmeshterraingenerator.h"
+#include "vectorlayer3drenderer.h"
 
 #include <QDomDocument>
 #include <QDomElement>
@@ -44,7 +44,7 @@ Map3D::Map3D( const Map3D &other )
   , mShowTerrainTileInfo( other.mShowTerrainTileInfo )
   , mLayers( other.mLayers )
 {
-  Q_FOREACH ( Abstract3DRenderer *renderer, other.renderers )
+  Q_FOREACH ( QgsAbstract3DRenderer *renderer, other.renderers )
   {
     renderers << renderer->clone();
   }
@@ -108,7 +108,7 @@ void Map3D::readXml( const QDomElement &elem, const QgsReadWriteContext &context
   QDomElement elemRenderer = elemRenderers.firstChildElement( "renderer" );
   while ( !elemRenderer.isNull() )
   {
-    Abstract3DRenderer *renderer = nullptr;
+    QgsAbstract3DRenderer *renderer = nullptr;
     QString type = elemRenderer.attribute( "type" );
     if ( type == "vector" )
     {
@@ -167,7 +167,7 @@ QDomElement Map3D::writeXml( QDomDocument &doc, const QgsReadWriteContext &conte
   elem.appendChild( elemTerrain );
 
   QDomElement elemRenderers = doc.createElement( "renderers" );
-  Q_FOREACH ( const Abstract3DRenderer *renderer, renderers )
+  Q_FOREACH ( const QgsAbstract3DRenderer *renderer, renderers )
   {
     QDomElement elemRenderer = doc.createElement( "renderer" );
     elemRenderer.setAttribute( "type", renderer->type() );
@@ -203,7 +203,7 @@ void Map3D::resolveReferences( const QgsProject &project )
 
   for ( int i = 0; i < renderers.count(); ++i )
   {
-    Abstract3DRenderer *renderer = renderers[i];
+    QgsAbstract3DRenderer *renderer = renderers[i];
     renderer->resolveReferences( project );
   }
 }

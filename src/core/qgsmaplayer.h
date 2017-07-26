@@ -36,6 +36,7 @@
 #include "qgsmaplayerdependency.h"
 #include "qgslayermetadata.h"
 
+class QgsAbstract3DRenderer;
 class QgsDataProvider;
 class QgsMapLayerLegend;
 class QgsMapLayerRenderer;
@@ -675,6 +676,20 @@ class CORE_EXPORT QgsMapLayer : public QObject
      */
     QgsMapLayerStyleManager *styleManager() const;
 
+    /**
+     * Sets 3D renderer for the layer. Takes ownership of the renderer.
+     * \note not available in Python bindings
+     * \since QGIS 3.0
+     */
+    void setRenderer3D( QgsAbstract3DRenderer *renderer SIP_TRANSFER ) SIP_SKIP;
+
+    /**
+     * Returns 3D renderer associated with the layer. May be null.
+     * \note not available in Python bindings
+     * \since QGIS 3.0
+     */
+    QgsAbstract3DRenderer *renderer3D() const SIP_SKIP;
+
     /** Tests whether the layer should be visible at the specified \a scale.
      *  The \a scale value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
      * \returns true if the layer is visible at the given scale.
@@ -898,6 +913,12 @@ class CORE_EXPORT QgsMapLayer : public QObject
     void legendChanged();
 
     /**
+     * Signal emitted when 3D renderer associated with the layer has changed.
+     * \since QGIS 3.0
+     */
+    void renderer3DChanged();
+
+    /**
      * Emitted whenever the configuration is changed. The project listens to this signal
      * to be marked as dirty.
      */
@@ -1079,6 +1100,9 @@ class CORE_EXPORT QgsMapLayer : public QObject
     QTimer mRefreshTimer;
 
     QgsLayerMetadata mMetadata;
+
+    //! Renderer for 3D views
+    QgsAbstract3DRenderer *m3DRenderer = nullptr;
 
 };
 

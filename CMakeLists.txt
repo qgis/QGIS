@@ -284,6 +284,7 @@ IF(WITH_CORE)
     FIND_PACKAGE(Qt53DInput REQUIRED)
     FIND_PACKAGE(Qt53DLogic REQUIRED)
     FIND_PACKAGE(Qt53DExtras REQUIRED)
+    SET(HAVE_3D TRUE)  # used in qgsconfig.h
   ENDIF (WITH_3D)
   INCLUDE("cmake/modules/ECMQt4To5Porting.cmake")
   MESSAGE(STATUS "Found Qt version: ${Qt5Core_VERSION_STRING}")

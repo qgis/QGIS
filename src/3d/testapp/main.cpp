@@ -5,10 +5,10 @@
 #include <Qt3DRender>
 #include <Qt3DExtras>
 
-#include "abstract3drenderer.h"
 #include "abstract3dsymbol.h"
 #include "maptexturegenerator.h"
 #include "sidepanel.h"
+#include "vectorlayer3drenderer.h"
 #include "window3d.h"
 #include "map3d.h"
 #include "flatterraingenerator.h"
@@ -239,6 +239,7 @@ int main( int argc, char *argv[] )
   hLayout->addWidget( container, 1 );
   hLayout->addWidget( sidePanel );
 
+  widget.setWindowTitle( "QGIS 3D" );
   widget.resize( 800, 600 );
   widget.show();
 

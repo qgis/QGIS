@@ -42,6 +42,7 @@
 #include "qgsuserprofile.h"
 #include "qgsuserprofilemanager.h"
 #include "qgsreferencedgeometry.h"
+#include "qgs3drendererregistry.h"
 
 #include "gps/qgsgpsconnectionregistry.h"
 #include "processing/qgsprocessingregistry.h"
@@ -1574,6 +1575,11 @@ QgsFieldFormatterRegistry *QgsApplication::fieldFormatterRegistry()
   return members()->mFieldFormatterRegistry;
 }
 
+Qgs3DRendererRegistry *QgsApplication::renderer3DRegistry()
+{
+  return members()->m3DRendererRegistry;
+}
+
 QgsApplication::ApplicationMembers::ApplicationMembers()
 {
   // don't use initializer lists or scoped pointers - as more objects are added here we
@@ -1598,11 +1604,13 @@ QgsApplication::ApplicationMembers::ApplicationMembers()
   mLayoutItemRegistry->populate();
   mProcessingRegistry->addProvider( new QgsNativeAlgorithms( mProcessingRegistry ) );
   mAnnotationRegistry = new QgsAnnotationRegistry();
+  m3DRendererRegistry = new Qgs3DRendererRegistry();
 }
 
 QgsApplication::ApplicationMembers::~ApplicationMembers()
 {
   delete mActionScopeRegistry;
+  delete m3DRendererRegistry;
   delete mAnnotationRegistry;
   delete mColorSchemeRegistry;
   delete mFieldFormatterRegistry;

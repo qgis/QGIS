@@ -2,7 +2,6 @@
 # sources
 
 SET(QGIS_3D_SRCS
-  abstract3drenderer.cpp
   abstract3dsymbol.cpp
   cameracontroller.cpp
   lineentity.cpp
@@ -15,6 +14,7 @@ SET(QGIS_3D_SRCS
   tessellator.cpp
   tilingscheme.cpp
   utils.cpp
+  vectorlayer3drenderer.cpp
 
   chunks/chunkboundsentity.cpp
   chunks/chunkedentity.cpp
@@ -63,7 +63,6 @@ QT5_ADD_RESOURCES(QGIS_3D_RCC_SRCS shaders.qrc)
 
 SET(QGIS_3D_HDRS
   aabb.h
-  abstract3drenderer.h
   abstract3dsymbol.h
   cameracontroller.h
   lineentity.h
@@ -76,6 +75,7 @@ SET(QGIS_3D_HDRS
   tessellator.h
   tilingscheme.h
   utils.h
+  vectorlayer3drenderer.h
 
   chunks/chunkboundsentity.h
   chunks/chunkedentity.h
@@ -105,6 +105,7 @@ INCLUDE_DIRECTORIES(
   ${CMAKE_SOURCE_DIR}/src/core/symbology-ng
   ${CMAKE_SOURCE_DIR}/src/core/metadata
   ${CMAKE_SOURCE_DIR}/src/core/expression
+  ${CMAKE_SOURCE_DIR}/src/core/3d
   ${CMAKE_BINARY_DIR}/src/core
   ${CMAKE_BINARY_DIR}/src/3d
 )

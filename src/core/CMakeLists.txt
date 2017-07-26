@@ -463,6 +463,9 @@ SET(QGIS_CORE_SRCS
   geometry/qgswkbptr.cpp
   geometry/qgswkbtypes.cpp
 
+  3d/qgs3drendererregistry.cpp
+  3d/qgsabstract3drenderer.cpp
+
   fieldformatter/qgsdatetimefieldformatter.cpp
   fieldformatter/qgsfallbackfieldformatter.cpp
   fieldformatter/qgskeyvaluefieldformatter.cpp
@@ -1093,6 +1096,9 @@ SET(QGIS_CORE_HDRS
   geometry/qgswkbptr.h
   geometry/qgswkbtypes.h
 
+  3d/qgs3drendererregistry.h
+  3d/qgsabstract3drenderer.h
+
   fieldformatter/qgsdatetimefieldformatter.h
   fieldformatter/qgsfallbackfieldformatter.h
   fieldformatter/qgskeyvaluefieldformatter.h
@@ -1118,6 +1124,7 @@ INCLUDE_DIRECTORIES(
   ${CMAKE_CURRENT_SOURCE_DIR}
   ${CMAKE_CURRENT_BINARY_DIR}
   ${LIBZIP_INCLUDE_DIR}
+  3d
   annotations
   auth
   composer

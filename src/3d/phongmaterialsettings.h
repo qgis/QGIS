@@ -12,10 +12,10 @@ class _3D_EXPORT PhongMaterialSettings
 {
   public:
     PhongMaterialSettings()
-      : mAmbient( QColor::fromRgbF( 0.05f, 0.05f, 0.05f, 1.0f ) )
+      : mAmbient( QColor::fromRgbF( 0.1f, 0.1f, 0.1f, 1.0f ) )
       , mDiffuse( QColor::fromRgbF( 0.7f, 0.7f, 0.7f, 1.0f ) )
-      , mSpecular( QColor::fromRgbF( 0.01f, 0.01f, 0.01f, 1.0f ) )
-      , mShininess( 150.0f )
+      , mSpecular( QColor::fromRgbF( 1.0f, 1.0f, 1.0f, 1.0f ) )
+      , mShininess( 0.0f )
     {
     }
 

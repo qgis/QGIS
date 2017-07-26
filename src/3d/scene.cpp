@@ -8,7 +8,7 @@
 #include <Qt3DLogic/QFrameAction>
 
 #include "aabb.h"
-#include "abstract3drenderer.h"
+#include "qgsabstract3drenderer.h"
 #include "cameracontroller.h"
 #include "map3d.h"
 #include "terrain.h"
@@ -59,10 +59,24 @@ Scene::Scene( const Map3D &map, Qt3DExtras::QForwardRenderer *defaultFrameGraph,
 
   // create entities of renderers
 
-  Q_FOREACH ( const Abstract3DRenderer *renderer, map.renderers )
+  Q_FOREACH ( const QgsAbstract3DRenderer *renderer, map.renderers )
   {
     Qt3DCore::QEntity *p = renderer->createEntity( map );
     p->setParent( this );
+  }
+
+  // create entities of renderers of layers
+
+  Q_FOREACH ( QgsMapLayer *layer, map.layers() )
+  {
+    if ( layer->renderer3D() )
+    {
+      Qt3DCore::QEntity *p = layer->renderer3D()->createEntity( map );
+      p->setParent( this );
+      mLayerEntities.insert( layer, p );
+    }
+    connect( layer, &QgsMapLayer::renderer3DChanged, this, &Scene::onLayerRenderer3DChanged );
+    // TODO: connect( layer, &QgsMapLayer::willBeDeleted, this, &Scene::onLayerWillBeDeleted );
   }
 
   Qt3DCore::QEntity *lightEntity = new Qt3DCore::QEntity;
@@ -83,10 +97,10 @@ Scene::Scene( const Map3D &map, Qt3DExtras::QForwardRenderer *defaultFrameGraph,
   ChunkedEntity *testChunkEntity = new ChunkedEntity( AABB( -500, 0, -500, 500, 100, 500 ), 2.f, 3.f, 7, new TestChunkLoaderFactory );
   testChunkEntity->setEnabled( false );
   testChunkEntity->setParent( this );
-  chunkEntities << testChunkEntity
+  chunkEntities << testChunkEntity;
 #endif
 
-                connect( mCameraController, &CameraController::cameraChanged, this, &Scene::onCameraChanged );
+  connect( mCameraController, &CameraController::cameraChanged, this, &Scene::onCameraChanged );
   connect( mCameraController, &CameraController::viewportChanged, this, &Scene::onCameraChanged );
 
 #if 0
@@ -189,4 +203,24 @@ void Scene::createTerrain()
   chunkEntities << mTerrain;
 
   onCameraChanged();  // force update of the new terrain
+}
+
+void Scene::onLayerRenderer3DChanged()
+{
+  QgsMapLayer *layer = qobject_cast<QgsMapLayer *>( sender() );
+  Q_ASSERT( layer );
+
+  // remove old entity - if any
+  Qt3DCore::QEntity *entity = mLayerEntities.take( layer );
+  if ( entity )
+    entity->deleteLater();
+
+  // add new entity - if any 3D renderer
+  QgsAbstract3DRenderer *renderer = layer->renderer3D();
+  if ( renderer )
+  {
+    Qt3DCore::QEntity *newEntity = renderer->createEntity( mMap );
+    newEntity->setParent( this );
+    mLayerEntities.insert( layer, newEntity );
+  }
 }

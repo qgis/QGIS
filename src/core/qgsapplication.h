@@ -23,6 +23,7 @@
 #include "qgis.h"
 #include "qgsconfig.h"
 
+class Qgs3DRendererRegistry;
 class QgsActionScopeRegistry;
 class QgsRuntimeProfiler;
 class QgsTaskManager;
@@ -584,6 +585,13 @@ class CORE_EXPORT QgsApplication : public QApplication
     static QgsFieldFormatterRegistry *fieldFormatterRegistry();
 
     /**
+     * Returns registry of available 3D renderers.
+     * \note not available in Python bindings
+     * \since QGIS 3.0
+     */
+    static Qgs3DRendererRegistry *renderer3DRegistry() SIP_SKIP;
+
+    /**
      * This string is used to represent the value `NULL` throughout QGIS.
      *
      * In general, when passing values around, prefer to use a null QVariant
@@ -698,6 +706,7 @@ class CORE_EXPORT QgsApplication : public QApplication
 
     struct ApplicationMembers
     {
+      Qgs3DRendererRegistry *m3DRendererRegistry = nullptr;
       QgsActionScopeRegistry *mActionScopeRegistry = nullptr;
       QgsAnnotationRegistry *mAnnotationRegistry = nullptr;
       QgsColorSchemeRegistry *mColorSchemeRegistry = nullptr;

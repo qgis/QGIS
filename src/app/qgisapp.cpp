@@ -9879,6 +9879,7 @@ void QgisApp::newMapCanvas()
   }
 }
 
+#include "qgsabstract3drenderer.h"
 #include "qgs3dmapcanvasdockwidget.h"
 #include "map3d.h"
 #include "flatterraingenerator.h"
@@ -9890,8 +9891,6 @@ void QgisApp::new3DMapCanvas()
   QgsRectangle fullExtent = mMapCanvas->fullExtent();
 
   Map3D *map = new Map3D;
-  map->setShowTerrainBoundingBoxes( true );
-  map->setShowTerrainTilesInfo( true );
   map->crs = prj->crs();
   map->originX = fullExtent.center().x();
   map->originY = fullExtent.center().y();
@@ -9910,7 +9909,7 @@ void QgisApp::new3DMapCanvas()
   map3DWidget->setGeometry( QRect( rect().width() * 0.75, rect().height() * 0.5, 400, 400 ) );
   map3DWidget->setMap( map );
   map3DWidget->setMainCanvas( mMapCanvas );
-  addDockWidget( Qt::RightDockWidgetArea, map3DWidget );
+  addDockWidget( Qt::BottomDockWidgetArea, map3DWidget );
 }
 
 void QgisApp::setExtent( const QgsRectangle &rect )

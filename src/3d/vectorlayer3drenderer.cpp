@@ -1,4 +1,4 @@
-#include "abstract3drenderer.h"
+#include "vectorlayer3drenderer.h"
 
 #include "abstract3dsymbol.h"
 #include "lineentity.h"
@@ -18,7 +18,7 @@ VectorLayer3DRenderer::~VectorLayer3DRenderer()
 {
 }
 
-Abstract3DRenderer *VectorLayer3DRenderer::clone() const
+VectorLayer3DRenderer *VectorLayer3DRenderer::clone() const
 {
   VectorLayer3DRenderer *r = new VectorLayer3DRenderer( mSymbol ? mSymbol->clone() : nullptr );
   r->layerRef = layerRef;

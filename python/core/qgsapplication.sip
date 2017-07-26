@@ -704,6 +704,7 @@ Returns path to the build output directory. Valid only when running from build d
  :rtype: QgsFieldFormatterRegistry
 %End
 
+
     static QString nullRepresentation();
 %Docstring
  This string is used to represent the value `NULL` throughout QGIS.
