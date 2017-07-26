@@ -38,14 +38,14 @@ QgsColorSwatchGrid::QgsColorSwatchGrid( QgsColorScheme *scheme, const QString &c
   setFocusPolicy( Qt::StrongFocus );
   setSizePolicy( QSizePolicy::Fixed, QSizePolicy::Fixed );
 
-  mLabelHeight = fontMetrics().height();
-  mLabelMargin = fontMetrics().width( QStringLiteral( "." ) );
+  mLabelHeight = Qgis::UI_SCALE_FACTOR * fontMetrics().height();
+  mLabelMargin = Qgis::UI_SCALE_FACTOR * fontMetrics().width( QStringLiteral( "." ) );
 
-  mSwatchSize = fontMetrics().width( QStringLiteral( "X" ) ) * 1.75;
-  mSwatchOutlineSize = qMax( mLabelMargin * 0.4, 1.0 );
+  mSwatchSize = Qgis::UI_SCALE_FACTOR * fontMetrics().width( QStringLiteral( "X" ) ) * 1.75;
+  mSwatchOutlineSize = qMax( fontMetrics().width( QStringLiteral( "." ) ) * 0.4, 1.0 );
 
   mSwatchSpacing = mSwatchSize * 0.3;
-  mSwatchMargin = mLabelMargin * 1.5;
+  mSwatchMargin = mLabelMargin;
 
   //calculate widget width
   mWidth = NUMBER_COLORS_PER_ROW * mSwatchSize + ( NUMBER_COLORS_PER_ROW - 1 ) * mSwatchSpacing + mSwatchMargin + mSwatchMargin;

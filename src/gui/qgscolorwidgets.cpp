@@ -397,7 +397,7 @@ QgsColorWheel::~QgsColorWheel()
 
 QSize QgsColorWheel::sizeHint() const
 {
-  int size = fontMetrics().width( QStringLiteral( "XXXXXXXXXXXXXXXXXXXXXX" ) );
+  int size = Qgis::UI_SCALE_FACTOR * fontMetrics().width( QStringLiteral( "XXXXXXXXXXXXXXXXXXXXXX" ) );
   return QSize( size, size );
 }
 
@@ -758,7 +758,7 @@ QgsColorBox::~QgsColorBox()
 
 QSize QgsColorBox::sizeHint() const
 {
-  int size = fontMetrics().width( QStringLiteral( "XXXXXXXXXXXXXXXXXXXXXX" ) );
+  int size = Qgis::UI_SCALE_FACTOR * fontMetrics().width( QStringLiteral( "XXXXXXXXXXXXXXXXXXXXXX" ) );
   return QSize( size, size );
 }
 
@@ -991,12 +991,12 @@ QSize QgsColorRampWidget::sizeHint() const
   if ( mOrientation == QgsColorRampWidget::Horizontal )
   {
     //horizontal
-    return QSize( fontMetrics().width( QStringLiteral( "XXXXXXXXXXXXXXXXXXXXXX" ) ), fontMetrics().height() * 1.3 );
+    return QSize( Qgis::UI_SCALE_FACTOR * fontMetrics().width( QStringLiteral( "XXXXXXXXXXXXXXXXXXXXXX" ) ), Qgis::UI_SCALE_FACTOR * fontMetrics().height() * 1.3 );
   }
   else
   {
     //vertical
-    return QSize( fontMetrics().height() * 1.3, fontMetrics().width( QStringLiteral( "XXXXXXXXXXXXXXXXXXXXXX" ) ) );
+    return QSize( Qgis::UI_SCALE_FACTOR * fontMetrics().height() * 1.3, Qgis::UI_SCALE_FACTOR * fontMetrics().width( QStringLiteral( "XXXXXXXXXXXXXXXXXXXXXX" ) ) );
   }
 }
 
@@ -1598,7 +1598,7 @@ void QgsColorPreviewWidget::paintEvent( QPaintEvent *event )
 
 QSize QgsColorPreviewWidget::sizeHint() const
 {
-  return QSize( fontMetrics().width( QStringLiteral( "XXXXXXXXXXXXXXXXXXXXXX" ) ), fontMetrics().width( QStringLiteral( "XXXXXXXXXXXXXXXXXXXXXX" ) ) * 0.75 );
+  return QSize( Qgis::UI_SCALE_FACTOR *  fontMetrics().width( QStringLiteral( "XXXXXXXXXXXXXXXXXXXXXX" ) ), Qgis::UI_SCALE_FACTOR * fontMetrics().width( QStringLiteral( "XXXXXXXXXXXXXXXXXXXXXX" ) ) * 0.75 );
 }
 
 void QgsColorPreviewWidget::setColor2( const QColor &color )

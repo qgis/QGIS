@@ -110,6 +110,13 @@ Default threshold between map coordinates and device coordinates for map2pixel s
 .. versionadded:: 3.0
 %End
 
+    static const double UI_SCALE_FACTOR;
+%Docstring
+ UI scaling factor. This should be applied to all widget sizes obtained from font metrics,
+ to account for differences in the default font sizes across different platforms.
+.. versionadded:: 3.0
+%End
+
 };
 
 
