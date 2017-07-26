@@ -57,13 +57,45 @@ void QgsSpatiaLiteTableModel::setSqliteDb( SpatialiteDbInfo *spatialiteDbInfo, b
         mDbRootItem = nullptr;
       }
     }
+    int iDump = 1;
     mSpatialiteDbInfo = spatialiteDbInfo;
     mDbLayersDataSourceUris = getDataSourceUris();
+    if ( iDump > 0 )
+    {
+      dumpTests( iDump );
+    }
     mTableCounter = 0;
     mLoadGeometrylessTables = loadGeometrylessTables;
-    // mLoadGeometrylessTables = true;
+    mLoadGeometrylessTables = true;
     addTableEntryTypes( );
   }
+}
+int QgsSpatiaLiteTableModel::dumpTests( int iDump )
+{
+  int i_counter = 0;
+  if ( iDump == 1 )
+  {
+    qDebug() << QString( "-I-> QgsSpatiaLiteTableModel::dumpTests(%1) -Has- VectorLayers[%2] SpatialTables[%3] SpatialViews[%4] VirtualShapes[%5]  RasterLite2[%6] RasterLite1[%7] TopologyExport[%8]  FdoOgr[%9] GeoPackage[%10] MBTiles[%11] NonSpatial[%12] IsValid[%13] IsSpatialite[%14] IsGdalOgr[%15] DbLayersCount[%16]" ).arg( mSpatialiteDbInfo->dbSpatialMetadataString() ).arg( mSpatialiteDbInfo->dbVectorLayersCount() ).arg( mSpatialiteDbInfo->dbSpatialTablesLayersCount() ).arg( mSpatialiteDbInfo->dbSpatialViewsLayersCount() ).arg( mSpatialiteDbInfo->dbVirtualShapesLayersCount() ).arg( mSpatialiteDbInfo->dbRasterLite2LayersCount() ).arg( mSpatialiteDbInfo->dbRasterLite1LayersCount() ).arg( mSpatialiteDbInfo->dbTopologyExportLayersCount() ).arg( mSpatialiteDbInfo->dbFdoOgrLayersCount() ).arg( mSpatialiteDbInfo->dbGeoPackageLayersCount() ).arg( mSpatialiteDbInfo->dbMBTilesLayersCount() ).arg( mSpatialiteDbInfo->dbNonSpatialTablesCount() ).arg( mSpatialiteDbInfo->isDbValid() ).arg( mSpatialiteDbInfo->isDbSpatialite() ).arg( mSpatialiteDbInfo->isDbGdalOgr() ).arg( mSpatialiteDbInfo->getDbLayers().count() );
+    dumpDataSourceUris( iDump );
+    i_counter++;
+  }
+  return i_counter;
+}
+int QgsSpatiaLiteTableModel::dumpDataSourceUris( int iDump )
+{
+  int i_valid = 0;
+  if ( iDump > 0 )
+  {
+    qDebug() << QString( "-I.> QgsSpatiaLiteTableModel::dump: mDbLayersDataSourceUris(%1): " ).arg( mDbLayersDataSourceUris.count() );
+    for ( QMap<QString, QString>::iterator itLayers = mDbLayersDataSourceUris.begin(); itLayers != mDbLayersDataSourceUris.end(); ++itLayers )
+    {
+      i_valid++;
+      QString sKey = itLayers.key();
+      QString sValue = itLayers.value();
+      qDebug() << QString( "-I.> QgsSpatiaLiteTableModel::dump: mDbLayersDataSourceUris(%1): Layer-Name: Key[%2] ; Layer-Uris: Value[%3]" ).arg( i_valid ).arg( sKey ).arg( sValue );
+    }
+  }
+  return i_valid;
 }
 QList < QStandardItem * > QgsSpatiaLiteTableModel::createLayerTypeEntry( SpatialiteDbInfo::SpatialiteLayerType layerType, int amountLayers )
 {
@@ -409,8 +441,10 @@ void QgsSpatiaLiteTableModel::addTableEntryType( QMap<QString, QString> mapLayer
         default:
         {
           SpatialiteDbLayer *dbLayer = mSpatialiteDbInfo->getSpatialiteDbLayer( itLayers.key(), true );
+          // qDebug() << QString("QgsSpatiaLiteTableModel::addTableEntryType: Key[%1]").arg(itLayers.key());
           if ( ( dbLayer ) && ( dbLayer->isLayerValid() ) )
           {
+            // qDebug() << QString("QgsSpatiaLiteTableModel::addTableEntryType: Key[%1,] IsValid[%2]").arg(itLayers.key()).arg(dbLayer->isLayerValid());
             addTableEntryLayer( dbLayer );
           }
         }
@@ -421,6 +455,7 @@ void QgsSpatiaLiteTableModel::addTableEntryType( QMap<QString, QString> mapLayer
 }
 void QgsSpatiaLiteTableModel::addTableEntryMap( QString sKey, QString sValue, SpatialiteDbInfo::SpatialiteLayerType layerType )
 {
+  QString sGroupLayerType = SpatialiteDbInfo::SpatialiteLayerTypeName( layerType );
   switch ( layerType )
   {
     case SpatialiteDbInfo::GeoPackageVector:
@@ -494,23 +529,25 @@ void QgsSpatiaLiteTableModel::addTableEntryMap( QString sKey, QString sValue, Sp
       childItemList.push_back( sortHiddenItem );
       gpkgTypeItem->appendRow( childItemList );
     }
+    break;
     case SpatialiteDbInfo::NonSpatialTables:
-      break;
     default:
     {
       QStandardItem *nonSpatialItem = nullptr;
-      QList < QStandardItem * >dbItems = findItems( "NonSpatialTables", Qt::MatchExactly | Qt::MatchRecursive, 0 );
+      QList < QStandardItem * >dbItems = findItems( sGroupLayerType, Qt::MatchExactly | Qt::MatchRecursive, 0 );
       if ( !dbItems.isEmpty() )
       {
         nonSpatialItem = dbItems.at( 0 );
       }
       else
       {
+        qDebug() << QString( "-E-.> QgsSpatiaLiteTableModel::addTableEntryMap: sGroupLayerType(%1): not found" ).arg( sGroupLayerType );
         return;
       }
       QStandardItem *nonSpatialGroupItem = nullptr;
       QString sGroup = sValue;
       QString sSubGroup = sValue;
+
       QStringList sa_list_type = sValue.split( "-" );
       if ( sa_list_type.size() == 2 )
       {
@@ -518,6 +555,12 @@ void QgsSpatiaLiteTableModel::addTableEntryMap( QString sKey, QString sValue, Sp
         sSubGroup = sa_list_type[1];
       }
       QString sSortTag = QString( "ZZCA_%1" ).arg( sGroup );
+      if ( ( sGroup.startsWith( "RasterLite1" ) ) || ( sGroup.startsWith( "RasterLite2" ) ) )
+      {
+        // Avoid using the same names as used for the Group of Layer-Names
+        sGroup = QString( "Metatdata-%1" ).arg( sGroup );
+        sSortTag = QString( "ZZBA_%1" ).arg( sGroup );
+      }
       if ( ( sGroup.startsWith( "Table" ) ) || ( sGroup.startsWith( "View" ) ) )
       {
         // Normal Data-Tables and Views should come first
@@ -616,6 +659,7 @@ void QgsSpatiaLiteTableModel::addTableEntryLayer( SpatialiteDbLayer *dbLayer )
     QStandardItem *dbItem = nullptr;
     QString sSortTag = "";
     QString sSearchName = dbLayer->getLayerTypeString();
+    qDebug() << QString( "QgsSpatiaLiteTableModel::addTableEntryLayer(%1): RasterLite1[%2]" ).arg( sSearchName ).arg( mSpatialiteDbInfo->dbRasterLite1LayersCount() );
     if ( sSearchName == "TopopogyExport" )
     {
       sSearchName = dbLayer->getTableName();

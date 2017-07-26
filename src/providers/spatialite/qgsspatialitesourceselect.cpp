@@ -156,12 +156,6 @@ void QgsSpatiaLiteSourceSelect::updateStatistics()
       subKey = QString( "%1 of %2" ).arg( m_selectedLayers.at( 0 ) ).arg( subKey );
     else
       subKey = QString( "%1 selected layers of %2" ).arg( m_selectedLayers.size() ).arg( subKey );
-#if 0
-    for ( int i = 0; i < m_selectedLayers.size(); i++ )
-    {
-      qDebug() << QString( "-I-> QgsSpatiaLiteSourceSelect::updateStatistics Layer[%1]" ).arg( m_selectedLayers.at( i ) );
-    }
-#endif
   }
 
   QString msg = tr( "Are you sure you want to update the internal statistics for DB: %1?\n\n"
@@ -279,10 +273,10 @@ bool QgsSpatiaLiteSourceSelect::newConnection( QWidget *parent )
   // Retrieve last used project dir from persistent settings
   QgsSettings settings;
   QString lastUsedDir = settings.value( QStringLiteral( "UI/lastSpatiaLiteDir" ), QDir::homePath() ).toString();
-
+  // RasterLite1 : sometimes used the '.atlas' extension for [Vector and Rasters]
   QString fileSelect = QFileDialog::getOpenFileName( parent,
                        tr( "Choose a SpatiaLite/SQLite DB to open" ),
-                       lastUsedDir, tr( "SpatiaLite DB" ) + " (*.sqlite *.db *.sqlite3 *.db3 *.s3db);;" + tr( "All files" ) + " (*)" );
+                       lastUsedDir, tr( "SpatiaLite DB" ) + " (*.sqlite *.db *.sqlite3 *.db3 *.s3db *.atlas);;" + tr( "All files" ) + " (*)" );
 
   if ( fileSelect.isEmpty() )
     return false;
@@ -380,9 +374,6 @@ void QgsSpatiaLiteSourceSelect::on_btnDelete_clicked()
 }
 int QgsSpatiaLiteSourceSelect::collectSelectedTables()
 {
-#if 0
-  m_selectedTables.clear();
-#endif
   m_selectedLayers.clear();
   m_selectedLayersSql.clear();
   typedef QMap < int, bool >schemaInfo;
@@ -414,9 +405,6 @@ int QgsSpatiaLiteSourceSelect::collectSelectedTables()
       dbInfo[currentSchemaName][currentRow] = true;
       m_selectedLayers.append( QString( "%1(%2)" ).arg( mTableModel.getTableName( mProxyModel.mapToSource( *selected_it ) ) ).arg( mTableModel.getGeometryName( mProxyModel.mapToSource( *selected_it ) ) ) );
       m_selectedLayersSql  << layerUriSql( mProxyModel.mapToSource( *selected_it ) );
-#if 0
-      m_selectedTables << layerURI( mProxyModel.mapToSource( *selected_it ) );
-#endif
     }
   }
   return m_selectedLayers.size();
@@ -430,10 +418,7 @@ void QgsSpatiaLiteSourceSelect::addTables()
   }
   else
   {
-#if 0
-    emit addDatabaseLayers( m_selectedTables, QStringLiteral( "spatialite" ) );
-#endif
-    addDatabaseLayersSql( );
+    addDbMapLayers( );
     if ( mWidgetMode == QgsProviderRegistry::WidgetMode::None && ! mHoldDialogOpen->isChecked() )
     {
       accept();

@@ -160,6 +160,7 @@ class SpatialiteDbInfo : public QObject
       , mSpatialiteVersionMinor( -1 )
       , mSpatialiteVersionRevision( -1 )
       , mHasVectorLayers( -1 )
+      , mHasLegacyGeometryLayers( -1 )
       , mHasSpatialTables( 0 )
       , mHasSpatialViews( 0 )
       , mHasVirtualShapes( 0 )
@@ -678,32 +679,6 @@ class SpatialiteDbInfo : public QObject
      */
     QMap<QString, SpatialiteDbLayer *> getDbLayers() const { return mDbLayers; }
 
-    /** Retrieve Map of valid Selected VectorLayers supported by this Database [mLayerName as Key]
-     * - contains Layer-Name and a QgsVectorLayer-Pointer
-     * \note
-     * --> will possibly never be used [use addDatabaseLayers instead]
-     * - requested by User to add to main QGis
-     * - can be for both QgsSpatiaLiteProvider or QgsOgrProvider
-     * \returns mSelectedVectorLayers Map of LayerNames and  valid QgsVectorLayer entries
-     * \see setSelectedLayers
-     * \see getSelectedDbRasterLayers
-     * \since QGIS 3.0
-     */
-    QMap<QString, QgsVectorLayer *> getSelectedDbVectorLayers() const { return mSelectedVectorLayers; }
-
-    /** Retrieve Map of valid Selected RasterrLayers supported by this Database [mLayerName as Key]
-     * - contains Layer-Name and a QgsRasterLayer-Pointer
-     * \note
-     * --> will possibly never be used [use addDatabaseLayers instead]
-     * - requested by User to add to main QGis
-     * - can be for both QgsSpatiaLiteProvider or QgsGdalProvider
-     * \returns mSelectedRasterLayers Map of LayerNames and  valid QgsRasterLayer entries
-     * \see setSelectedLayers
-     * \see getSelectedDbVectorLayers
-     * \since QGIS 3.0
-     */
-    QMap<QString, QgsRasterLayer *> getSelectedDbRasterLayers() const { return mSelectedRasterLayers; }
-
     /** Map of valid Selected Layers requested by the User
      * - only Uris that created a valid QgsVectorLayer/QgsRasterLayer
      * -> corresponding QgsMapLayer contained in  getSelectedDb??????Layers
@@ -720,22 +695,6 @@ class SpatialiteDbInfo : public QObject
      */
     QMap<QString, QString>  getSelectedLayersUris() const { return mSelectedLayersUris; }
 
-    /** Sent List of requested Layers
-     * - to fill a Map of QgsVectorLayer and QgsRasterLayer
-     * \note
-     * --> will possibly never be used [use addDatabaseLayers instead]
-     * - can be for both QgsSpatiaLiteProvider or QgsGdalProvider
-     * - only valid QgsMapLayer (Vector/Raster) will be added to the Maps
-     * \param saSelectedLayers formatted as 'table_name(geometry_name)'
-     * \returns amount of valid QgsMapLayer (Vector/Raster) entries
-     * \see getSelectedDbVectorLayers
-     * \see getSelectedDbRasterLayers
-     * \see getSelectedLayersUris
-     * \see addDatabaseLayersSql
-     * \since QGIS 3.0
-     */
-    int setSelectedDbLayers( QStringList saSelectedLayers );
-
     /** Add a list of database layers to the map
      * - to fill a Map of QgsVectorLayers and/or QgsRasterLayers
      * -> can be for both QgsSpatiaLiteProvider or QgsOgr/GdalProvider
@@ -748,7 +707,7 @@ class SpatialiteDbInfo : public QObject
      * \see getSelectedLayersUris
      * \since QGIS 3.0
      */
-    int addDatabaseLayersSql( QStringList saSelectedLayers, QStringList saSelectedLayersSql );
+    int addDbMapLayers( QStringList saSelectedLayers, QStringList saSelectedLayersSql );
 
     /** List of DataSourceUri of valid Layers
      * -  contains Layer-Name and DataSourceUri
@@ -1009,6 +968,15 @@ class SpatialiteDbInfo : public QObject
     int mSpatialiteVersionRevision;
     //! Does the read Database contain SpatialTables [ 0=none, otherwise amount]
     int mHasVectorLayers;
+
+    /** Does the read Database contain SpatialTables, without vector_layers [ 0=none, otherwise amount]
+     * - when set the VectorLayers logic will read geometry_columns instead of vector_layers
+     * \note
+     *  - final result will be set to VectorLayers
+     *  -> so that externaly it is the same
+     * \since QGIS 3.0
+     */
+    int mHasLegacyGeometryLayers;
     //! Does the read Database contain SpatialTables [ 0=none, otherwise amount]
     int mHasSpatialTables;
     //! Does the read Database contain SpatialViews views [ 0=none, otherwise amount]
@@ -1221,28 +1189,6 @@ class SpatialiteDbInfo : public QObject
      * \since QGIS 3.0
      */
     QMap<QString, SpatialiteDbLayer *> mDbLayers;
-
-    /** Map of valid Selected VectorLayers supported by this Database [mLayerName as Key]
-     * - contains Layer-Name and a QgsVectorLayer-Pointer
-     * \note
-     * - requested by User to add to main QGis
-     * - can be for both QgsSpatiaLiteProvider or QgsOgrProvider
-     * \see setSelectedLayers
-     * \see getSelectedDbVectorLayers
-     * \since QGIS 3.0
-     */
-    QMap<QString, QgsVectorLayer *> mSelectedVectorLayers;
-
-    /** Map of valid Selected RasterrLayers supported by this Database [mLayerName as Key]
-     * - contains Layer-Name and a QgsRasterLayer-Pointer
-     * \note
-     * - requested by User to add to main QGis
-     * - can be for both QgsSpatiaLiteProvider or QgsGdalProvider
-     * \see setSelectedLayers
-     * \see getSelectedDbRasterLayers
-     * \since QGIS 3.0
-     */
-    QMap<QString, QgsRasterLayer *> mSelectedRasterLayers;
 
     /** Map of valid Selected Layers requested by the User
      * - only Uris that created a valid QgsVectorLayer/QgsRasterLayer

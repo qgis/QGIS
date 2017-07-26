@@ -64,17 +64,6 @@ class QgsSpatiaLiteSourceSelect: public QDialog, private Ui::QgsDbSourceSelectBa
      * \since QGIS 1.8
      */
     void addTables();
-#if 0
-
-    /** List of selected Tabels
-     * \note
-     *  - Loads seleted entries to map
-     * \see collectSelectedTables()
-     * \see addDatabaseLayers( )
-     * \since QGIS 1.8
-     */
-    QStringList selectedTables() { return m_selectedTables; }
-#endif
 
     /** List of selected Tabels
      * \note
@@ -134,35 +123,6 @@ class QgsSpatiaLiteSourceSelect: public QDialog, private Ui::QgsDbSourceSelectBa
     void addDatabaseLayers( QStringList const &paths, QString const &providerKey );
 
   private:
-#if 0
-
-    /** Columns
-     * \note
-     *  - not used
-     * \since QGIS 1.8
-     */
-    enum Columns
-    {
-      DbssType = 0,
-      DbssDetail,
-      DbssSql,
-      DbssColumns,
-    };
-
-    /** GeomPair
-     * \note
-     *  - not used
-     * \since QGIS 1.8
-     */
-    typedef QPair< QString, QString > geomPair;
-
-    /** GeomCol
-     * \note
-     *  - not used
-     * \since QGIS 1.8
-     */
-    typedef QList< geomPair > geomCol;
-#endif
 
     /** Set the position of the database connection list to the last used one.
      * \note
@@ -205,16 +165,6 @@ class QgsSpatiaLiteSourceSelect: public QDialog, private Ui::QgsDbSourceSelectBa
      * \since QGIS 3.0
      */
     int collectSelectedTables();
-#if 0
-
-    /** List of selected Tabels
-     * \note
-     *  - as url
-     * \see collectSelectedTables()
-     * \since QGIS 1.8
-     */
-    QStringList m_selectedTables;
-#endif
 
     /** List of selected Tabels
      * \note
@@ -245,7 +195,7 @@ class QgsSpatiaLiteSourceSelect: public QDialog, private Ui::QgsDbSourceSelectBa
      * \see collectSelectedTables()
      * \since QGIS 3.0
      */
-    int addDatabaseLayersSql( ) const {  return mTableModel.addDatabaseLayersSql( m_selectedLayers, m_selectedLayersSql );  }
+    int addDbMapLayers( ) const {  return mTableModel.addDbMapLayers( m_selectedLayers, m_selectedLayersSql );  }
 
     /** Map of valid Selected Layers requested by the User
      * - only Uris that created a valid QgsVectorLayer/QgsRasterLayer

@@ -78,18 +78,13 @@ QgsSpatiaLiteConnection::QgsSpatiaLiteConnection( const QString &name )
 SpatialiteDbInfo *QgsSpatiaLiteConnection::CreateSpatialiteConnection( QString sLayerName,  bool bLoadLayers,  bool bShared )
 {
   SpatialiteDbInfo *spatialiteDbInfo = nullptr;
-  SpatialiteDbInfo::SpatialSniff sniffType = SpatialiteDbInfo::SniffMinimal;
-  if ( bLoadLayers )
-  {
-    sniffType = SpatialiteDbInfo::SniffLoadLayers;
-  }
   QgsSqliteHandle *qSqliteHandle = QgsSqliteHandle::openDb( mDbPath, bShared, sLayerName, bLoadLayers );
   if ( ( qSqliteHandle ) && ( qSqliteHandle->getSpatialiteDbInfo() ) )
   {
     spatialiteDbInfo = qSqliteHandle->getSpatialiteDbInfo();
     if ( ( spatialiteDbInfo ) && ( spatialiteDbInfo->isDbSqlite3() ) )
     {
-      if ( !spatialiteDbInfo->GetSpatialiteDbInfo( sLayerName, bLoadLayers, sniffType ) )
+      if ( ( !spatialiteDbInfo->isDbSpatialite() ) && ( !spatialiteDbInfo->isDbGdalOgr() ) )
       {
         // The read Sqlite3 Container is not supported by QgsSpatiaLiteProvider,QgsOgrProvider or QgsGdalProvider.
       }

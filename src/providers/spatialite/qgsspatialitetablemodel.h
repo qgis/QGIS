@@ -208,7 +208,7 @@ class QgsSpatiaLiteTableModel: public QStandardItemModel
      * \see getSelectedLayersUris
      * \since QGIS 3.0
      */
-    int addDatabaseLayersSql( QStringList saSelectedLayers, QStringList saSelectedLayersSql ) const {  return mSpatialiteDbInfo->addDatabaseLayersSql( saSelectedLayers, saSelectedLayersSql );  }
+    int addDbMapLayers( QStringList saSelectedLayers, QStringList saSelectedLayersSql ) const {  return mSpatialiteDbInfo->addDbMapLayers( saSelectedLayers, saSelectedLayersSql );  }
 
   private:
     enum EntryType
@@ -289,6 +289,21 @@ class QgsSpatiaLiteTableModel: public QStandardItemModel
      * \since QGIS 3.0
      */
     QMap<QString, QString> mDbLayersDataSourceUris;
+
+    /** Dump routines
+     * - general function to call dump routines
+     * \note
+     * - testing for valid Uris
+     * \see dumpDataSourceUris
+     * \since QGIS 3.0
+     */
+    int dumpTests( int iDump );
+
+    /** Dump retrieved DataSourceUris
+     * - testing for valid Uris
+     * \since QGIS 3.0
+     */
+    int dumpDataSourceUris( int iDump );
     QStandardItem *mDbRootItem = nullptr;
     bool mLoadGeometrylessTables = false;
 };
