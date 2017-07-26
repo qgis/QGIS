@@ -130,6 +130,7 @@ SET(TESTS
  testqgslayoutcontext.cpp
  testqgslayoutitem.cpp
  testqgslayoutobject.cpp
+ testqgslayoutpage.cpp
  testqgslayoutunits.cpp
  testqgslayoututils.cpp
  testqgslegendrenderer.cpp

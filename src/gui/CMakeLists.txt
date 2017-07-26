@@ -159,6 +159,7 @@ SET(QGIS_GUI_SRCS
   layertree/qgslayertreeviewdefaultactions.cpp
 
   layout/qgslayoutitemguiregistry.cpp
+  layout/qgslayoutitemwidget.cpp
   layout/qgslayoutnewitempropertiesdialog.cpp
   layout/qgslayoutruler.cpp
   layout/qgslayoutunitscombobox.cpp
@@ -655,6 +656,7 @@ SET(QGIS_GUI_MOC_HDRS
 
   layout/qgslayoutdesignerinterface.h
   layout/qgslayoutitemguiregistry.h
+  layout/qgslayoutitemwidget.h
   layout/qgslayoutnewitempropertiesdialog.h
   layout/qgslayoutruler.h
   layout/qgslayoutunitscombobox.h

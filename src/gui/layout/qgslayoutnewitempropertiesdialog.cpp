@@ -15,6 +15,8 @@
 
 #include "qgslayoutnewitempropertiesdialog.h"
 #include "qgssettings.h"
+#include "qgslayout.h"
+
 
 QgsLayoutItemPropertiesDialog::QgsLayoutItemPropertiesDialog( QWidget *parent, Qt::WindowFlags flags )
   : QDialog( parent, flags )
@@ -39,13 +41,21 @@ QgsLayoutItemPropertiesDialog::QgsLayoutItemPropertiesDialog( QWidget *parent, Q
   double lastHeight = settings.value( QStringLiteral( "LayoutDesigner/lastItemHeight" ), QStringLiteral( "50" ) ).toDouble();
   QgsUnitTypes::LayoutUnit lastSizeUnit = static_cast< QgsUnitTypes::LayoutUnit >( settings.value( QStringLiteral( "LayoutDesigner/lastSizeUnit" ) ).toInt() );
   setItemSize( QgsLayoutSize( lastWidth, lastHeight, lastSizeUnit ) );
+
+  mPosUnitsComboBox->linkToWidget( mXPosSpin );
+  mPosUnitsComboBox->linkToWidget( mYPosSpin );
+  mSizeUnitsComboBox->linkToWidget( mWidthSpin );
+  mSizeUnitsComboBox->linkToWidget( mHeightSpin );
+
+  mLockAspectRatio->setWidthSpinBox( mWidthSpin );
+  mLockAspectRatio->setHeightSpinBox( mHeightSpin );
 }
 
 void QgsLayoutItemPropertiesDialog::setItemPosition( QgsLayoutPoint position )
 {
+  mPosUnitsComboBox->setUnit( position.units() );
   mXPosSpin->setValue( position.x() );
   mYPosSpin->setValue( position.y() );
-  mPosUnitsComboBox->setUnit( position.units() );
 }
 
 QgsLayoutPoint QgsLayoutItemPropertiesDialog::itemPosition() const
@@ -146,4 +156,10 @@ void QgsLayoutItemPropertiesDialog::setReferencePoint( QgsLayoutItem::ReferenceP
       mLowerRightCheckBox->setChecked( true );
       break;
   }
+}
+
+void QgsLayoutItemPropertiesDialog::setLayout( QgsLayout *layout )
+{
+  mSizeUnitsComboBox->setConverter( &layout->context().measurementConverter() );
+  mPosUnitsComboBox->setConverter( &layout->context().measurementConverter() );
 }

@@ -122,3 +122,51 @@ QgsExpressionContext QgsLayoutObject::createExpressionContext() const
     return QgsExpressionContext() << QgsExpressionContextUtils::globalScope();
   }
 }
+
+bool QgsLayoutObject::writeObjectPropertiesToElement( QDomElement &parentElement, QDomDocument &document, const QgsReadWriteContext & ) const
+{
+  if ( parentElement.isNull() )
+  {
+    return false;
+  }
+
+  //create object element
+  QDomElement objectElement = document.createElement( QStringLiteral( "LayoutObject" ) );
+
+  QDomElement ddPropsElement = document.createElement( QStringLiteral( "dataDefinedProperties" ) );
+  mDataDefinedProperties.writeXml( ddPropsElement, sPropertyDefinitions );
+  objectElement.appendChild( ddPropsElement );
+
+  //custom properties
+  mCustomProperties.writeXml( objectElement, document );
+
+  parentElement.appendChild( objectElement );
+  return true;
+}
+
+bool QgsLayoutObject::readObjectPropertiesFromElement( const QDomElement &parentElement, const QDomDocument &document, const QgsReadWriteContext & )
+{
+  Q_UNUSED( document );
+  if ( parentElement.isNull() )
+  {
+    return false;
+  }
+
+  QDomNodeList objectNodeList = parentElement.elementsByTagName( QStringLiteral( "LayoutObject" ) );
+  if ( objectNodeList.size() < 1 )
+  {
+    return false;
+  }
+  QDomElement objectElement = objectNodeList.at( 0 ).toElement();
+
+  QDomNode propsNode = objectElement.namedItem( QStringLiteral( "dataDefinedProperties" ) );
+  if ( !propsNode.isNull() )
+  {
+    mDataDefinedProperties.readXml( propsNode.toElement(), sPropertyDefinitions );
+  }
+
+  //custom properties
+  mCustomProperties.readXml( objectElement );
+
+  return true;
+}

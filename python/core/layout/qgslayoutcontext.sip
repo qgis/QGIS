@@ -67,6 +67,12 @@ class QgsLayoutContext
  :rtype: bool
 %End
 
+    QgsRenderContext::Flags renderContextFlags() const;
+%Docstring
+ Returns the combination of render context flags matched to the layout context's settings.
+ :rtype: QgsRenderContext.Flags
+%End
+
     void setFeature( const QgsFeature &feature );
 %Docstring
  Sets the current ``feature`` for evaluating the layout. This feature may

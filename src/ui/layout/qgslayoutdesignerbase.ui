@@ -83,13 +83,14 @@
      <x>0</x>
      <y>0</y>
      <width>1083</width>
-     <height>25</height>
+     <height>42</height>
     </rect>
    </property>
    <widget class="QMenu" name="mLayoutMenu">
     <property name="title">
      <string>&amp;Layout</string>
     </property>
+    <addaction name="mActionAddPages"/>
     <addaction name="mActionClose"/>
    </widget>
    <widget class="QMenu" name="mItemMenu">
@@ -106,6 +107,11 @@
       <string>&amp;Toolbars</string>
      </property>
     </widget>
+    <widget class="QMenu" name="mPanelsMenu">
+     <property name="title">
+      <string>&amp;Panels</string>
+     </property>
+    </widget>
     <addaction name="mActionZoomIn"/>
     <addaction name="mActionZoomOut"/>
     <addaction name="mActionZoomActual"/>
@@ -115,6 +121,7 @@
     <addaction name="mActionShowRulers"/>
     <addaction name="separator"/>
     <addaction name="mToolbarMenu"/>
+    <addaction name="mPanelsMenu"/>
     <addaction name="mActionToggleFullScreen"/>
    </widget>
    <addaction name="mLayoutMenu"/>
@@ -289,6 +296,15 @@
    </property>
    <property name="shortcut">
     <string>F11</string>
+   </property>
+  </action>
+  <action name="mActionAddPages">
+   <property name="icon">
+    <iconset resource="../../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionFileNew.svg</normaloff>:/images/themes/default/mActionFileNew.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Add Pages…</string>
    </property>
   </action>
  </widget>

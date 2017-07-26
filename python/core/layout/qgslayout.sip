@@ -22,12 +22,23 @@ class QgsLayout : QGraphicsScene, QgsExpressionContextGenerator
 
     enum ZValues
     {
+      ZPage,
       ZMapTool,
     };
 
     QgsLayout( QgsProject *project );
 %Docstring
  Construct a new layout linked to the specified ``project``.
+
+ If the layout is a "new" layout (as opposed to a layout which will
+ restore a previous state from XML) then initializeDefaults() should be
+ called on the new layout.
+%End
+
+    void initializeDefaults();
+%Docstring
+ Initializes an empty layout, e.g. by adding a default page to the layout. This should be called after creating
+ a new layout.
 %End
 
     QgsProject *project() const;
@@ -182,6 +193,36 @@ class QgsLayout : QGraphicsScene, QgsExpressionContextGenerator
 %End
 
     void setReferenceMap( QgsLayoutItemMap *map );
+
+    QgsLayoutPageCollection *pageCollection();
+%Docstring
+ Returns a pointer to the layout's page collection, which stores and manages
+ page items in the layout.
+ :rtype: QgsLayoutPageCollection
+%End
+
+    QRectF layoutBounds( bool ignorePages = false, double margin = 0.0 ) const;
+%Docstring
+ Calculates the bounds of all non-gui items in the layout. Ignores snap lines, mouse handles
+ and other cosmetic items.
+ \param ignorePages set to true to ignore page items
+ \param margin optional marginal (in percent, e.g., 0.05 = 5% ) to add around items
+ :return: layout bounds, in layout units.
+ :rtype: QRectF
+%End
+
+    void addLayoutItem( QgsLayoutItem *item /Transfer/ );
+%Docstring
+ Adds an ``item`` to the layout. This should be called instead of the base class addItem()
+ method. Ownership of the item is transferred to the layout.
+%End
+
+  public slots:
+
+    void updateBounds();
+%Docstring
+ Updates the scene bounds of the layout.
+%End
 
   signals:
 

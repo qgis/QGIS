@@ -19,6 +19,8 @@
 #include "qgstest.h"
 #include "qgsproject.h"
 #include "qgslayoutitemmap.h"
+#include "qgslayoutitemshape.h"
+#include "qgstestutils.h"
 
 class TestQgsLayout: public QObject
 {
@@ -36,6 +38,8 @@ class TestQgsLayout: public QObject
     void variablesEdited();
     void scope();
     void referenceMap();
+    void bounds();
+    void addItem();
 
   private:
     QString mReport;
@@ -244,6 +248,117 @@ void TestQgsLayout::referenceMap()
   QCOMPARE( l.referenceMap(), map );
 #endif
 
+}
+
+void TestQgsLayout::bounds()
+{
+  //add some items to a layout
+  QgsProject p;
+  QgsLayout l( &p );
+  l.initializeDefaults();
+
+  QgsLayoutItemRectangularShape *shape1 = new QgsLayoutItemRectangularShape( &l );
+  shape1->attemptResize( QgsLayoutSize( 90, 50 ) );
+  shape1->attemptMove( QgsLayoutPoint( 90, 50 ) );
+  shape1->setItemRotation( 45 );
+  l.addLayoutItem( shape1 );
+  QgsLayoutItemRectangularShape *shape2 = new QgsLayoutItemRectangularShape( &l );
+  shape2->attemptResize( QgsLayoutSize( 110, 50 ) );
+  shape2->attemptMove( QgsLayoutPoint( 100, 150 ) );
+  l.addLayoutItem( shape2 );
+
+#if 0
+  QgsLayoutItemRectangularShape *shape3 = new QgsLayoutItemRectangularShape( &l );
+  l.addLayoutItem( shape3 );
+  shape3->setItemPosition( 210, 30, 50, 100, QgsComposerItem::UpperLeft, false, 2 );
+  QgsLayoutItemRectangularShape *shape4 = new QgsLayoutItemRectangularShape( &l );
+  l.addLayoutItem( shape4 );
+  shape4->setItemPosition( 10, 120, 50, 30, QgsComposerItem::UpperLeft, false, 2 );
+  shape4->setVisibility( false );
+#endif
+
+  //check bounds
+  QRectF layoutBounds = l.layoutBounds( false );
+#if 0 // correct values when 2nd page items are added back in
+  QGSCOMPARENEAR( layoutBounds.height(), 372.15, 0.01 );
+  QGSCOMPARENEAR( layoutBounds.width(), 301.00, 0.01 );
+  QGSCOMPARENEAR( layoutBounds.left(), -2, 0.01 );
+  QGSCOMPARENEAR( layoutBounds.top(), -2, 0.01 );
+
+  QRectF compositionBoundsNoPage = l.layoutBounds( true );
+  QGSCOMPARENEAR( compositionBoundsNoPage.height(), 320.36, 0.01 );
+  QGSCOMPARENEAR( compositionBoundsNoPage.width(), 250.30, 0.01 );
+  QGSCOMPARENEAR( compositionBoundsNoPage.left(), 9.85, 0.01 );
+  QGSCOMPARENEAR( compositionBoundsNoPage.top(), 49.79, 0.01 );
+#endif
+
+  QGSCOMPARENEAR( layoutBounds.height(), 210.000000, 0.01 );
+  QGSCOMPARENEAR( layoutBounds.width(), 297.000000, 0.01 );
+  QGSCOMPARENEAR( layoutBounds.left(), 0.00000, 0.01 );
+  QGSCOMPARENEAR( layoutBounds.top(), 0.00000, 0.01 );
+
+  QRectF compositionBoundsNoPage = l.layoutBounds( true );
+  QGSCOMPARENEAR( compositionBoundsNoPage.height(), 175.704581, 0.01 );
+  QGSCOMPARENEAR( compositionBoundsNoPage.width(), 125.704581, 0.01 );
+  QGSCOMPARENEAR( compositionBoundsNoPage.left(), 84.795419, 0.01 );
+  QGSCOMPARENEAR( compositionBoundsNoPage.top(), 24.795419, 0.01 );
+
+#if 0
+  QRectF page1Bounds = composition->pageItemBounds( 0, true );
+  QGSCOMPARENEAR( page1Bounds.height(), 150.36, 0.01 );
+  QGSCOMPARENEAR( page1Bounds.width(), 155.72, 0.01 );
+  QGSCOMPARENEAR( page1Bounds.left(), 54.43, 0.01 );
+  QGSCOMPARENEAR( page1Bounds.top(), 49.79, 0.01 );
+
+  QRectF page2Bounds = composition->pageItemBounds( 1, true );
+  QGSCOMPARENEAR( page2Bounds.height(), 100.30, 0.01 );
+  QGSCOMPARENEAR( page2Bounds.width(), 50.30, 0.01 );
+  QGSCOMPARENEAR( page2Bounds.left(), 209.85, 0.01 );
+  QGSCOMPARENEAR( page2Bounds.top(), 249.85, 0.01 );
+
+  QRectF page2BoundsWithHidden = composition->pageItemBounds( 1, false );
+  QGSCOMPARENEAR( page2BoundsWithHidden.height(), 120.30, 0.01 );
+  QGSCOMPARENEAR( page2BoundsWithHidden.width(), 250.30, 0.01 );
+  QGSCOMPARENEAR( page2BoundsWithHidden.left(), 9.85, 0.01 );
+  QGSCOMPARENEAR( page2BoundsWithHidden.top(), 249.85, 0.01 );
+#endif
+}
+
+void TestQgsLayout::addItem()
+{
+  QgsProject p;
+  QgsLayout l( &p );
+  l.pageCollection()->deletePage( 0 );
+
+  QgsLayoutItemRectangularShape *shape1 = new QgsLayoutItemRectangularShape( &l );
+  shape1->attemptResize( QgsLayoutSize( 140, 70 ) );
+  shape1->attemptMove( QgsLayoutPoint( 90, 50 ) );
+
+  l.addLayoutItem( shape1 );
+  QVERIFY( l.items().contains( shape1 ) );
+  // bounds should be updated to include item
+  QGSCOMPARENEAR( l.sceneRect().left(), 89.5, 0.001 );
+  QGSCOMPARENEAR( l.sceneRect().top(), 49.5, 0.001 );
+  QGSCOMPARENEAR( l.sceneRect().width(), 141, 0.001 );
+  QGSCOMPARENEAR( l.sceneRect().height(), 71, 0.001 );
+
+  QgsLayoutItemRectangularShape *shape2 = new QgsLayoutItemRectangularShape( &l );
+  shape2->attemptResize( QgsLayoutSize( 240, 170 ) );
+  shape2->attemptMove( QgsLayoutPoint( 30, 20 ) );
+
+  // don't use addLayoutItem - we want to manually trigger a bounds update
+  l.addItem( shape2 );
+  QGSCOMPARENEAR( l.sceneRect().left(), 89.5, 0.001 );
+  QGSCOMPARENEAR( l.sceneRect().top(), 49.5, 0.001 );
+  QGSCOMPARENEAR( l.sceneRect().width(), 141, 0.001 );
+  QGSCOMPARENEAR( l.sceneRect().height(), 71, 0.001 );
+
+  l.updateBounds();
+  // bounds should be updated to include item
+  QGSCOMPARENEAR( l.sceneRect().left(), 29.5, 0.001 );
+  QGSCOMPARENEAR( l.sceneRect().top(), 19.5, 0.001 );
+  QGSCOMPARENEAR( l.sceneRect().width(), 241, 0.001 );
+  QGSCOMPARENEAR( l.sceneRect().height(), 171, 0.001 );
 }
 
 

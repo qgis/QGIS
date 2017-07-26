@@ -90,6 +90,19 @@ class QgsLayoutView: QGraphicsView
 .. seealso:: setHorizontalRuler()
 %End
 
+    void setMenuProvider( QgsLayoutViewMenuProvider *provider /Transfer/ );
+%Docstring
+ Sets a ``provider`` for context menus. Ownership of the provider is transferred to the view.
+.. seealso:: menuProvider()
+%End
+
+    QgsLayoutViewMenuProvider *menuProvider() const;
+%Docstring
+ Returns the provider for context menus. Returned value may be None if no provider is set.
+.. seealso:: setMenuProvider()
+ :rtype: QgsLayoutViewMenuProvider
+%End
+
   public slots:
 
     void zoomFull();
@@ -186,7 +199,36 @@ class QgsLayoutView: QGraphicsView
 
     virtual void resizeEvent( QResizeEvent *event );
 
+    virtual void scrollContentsBy( int dx, int dy );
 
+
+};
+
+
+class QgsLayoutViewMenuProvider
+{
+%Docstring
+
+ Interface for a QgsLayoutView context menu.
+
+ Implementations of this interface can be made to allow QgsLayoutView
+ instances to provide custom context menus (opened upon right-click).
+
+.. seealso:: QgsLayoutView
+.. versionadded:: 3.0
+%End
+
+%TypeHeaderCode
+#include "qgslayoutview.h"
+%End
+  public:
+    virtual ~QgsLayoutViewMenuProvider();
+
+    virtual QMenu *createContextMenu( QWidget *parent /Transfer/, QgsLayout *layout, QPointF layoutPoint ) const = 0 /Factory/;
+%Docstring
+Return a newly created menu instance (or null pointer on error)
+ :rtype: QMenu
+%End
 };
 
 /************************************************************************

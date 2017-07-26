@@ -22,6 +22,7 @@
 #include "qgslayoutviewrubberband.h"
 #include "qgslayoutitemregistry.h"
 #include "qgslayoutitemguiregistry.h"
+#include "qgslayoutitemwidget.h"
 #include "qgstestutils.h"
 #include "qgsproject.h"
 #include "qgsgui.h"
@@ -242,6 +243,7 @@ class TestItem : public QgsLayoutItem
 
     //implement pure virtual methods
     int type() const override { return QgsLayoutItemRegistry::LayoutItem + 101; }
+    QString stringType() const override { return QStringLiteral( "testitem" ); }
     void draw( QgsRenderContext &, const QStyleOptionGraphicsItem * = nullptr ) override
     {    }
 };
@@ -259,14 +261,17 @@ void TestQgsLayoutView::guiRegistry()
   // empty registry
   QVERIFY( !registry.itemMetadata( -1 ) );
   QVERIFY( registry.itemTypes().isEmpty() );
-  QVERIFY( !registry.createItemWidget( 1 ) );
+  QVERIFY( !registry.createItemWidget( nullptr ) );
+  QVERIFY( !registry.createItemWidget( nullptr ) );
+  TestItem *testItem = new TestItem( nullptr );
+  QVERIFY( !registry.createItemWidget( testItem ) ); // not in registry
 
   QSignalSpy spyTypeAdded( &registry, &QgsLayoutItemGuiRegistry::typeAdded );
 
   // add a dummy item to registry
-  auto createWidget = []()->QWidget*
+  auto createWidget = []( QgsLayoutItem * item )->QgsLayoutItemBaseWidget*
   {
-    return new QWidget();
+    return new QgsLayoutItemBaseWidget( nullptr, item );
   };
 
   auto createRubberBand = []( QgsLayoutView * view )->QgsLayoutViewRubberBand *
@@ -274,27 +279,27 @@ void TestQgsLayoutView::guiRegistry()
     return new QgsLayoutViewRectangularRubberBand( view );
   };
 
-  QgsLayoutItemGuiMetadata *metadata = new QgsLayoutItemGuiMetadata( 2, QIcon(), createWidget, createRubberBand );
+  QgsLayoutItemGuiMetadata *metadata = new QgsLayoutItemGuiMetadata( QgsLayoutItemRegistry::LayoutItem + 101, QIcon(), createWidget, createRubberBand );
   QVERIFY( registry.addLayoutItemGuiMetadata( metadata ) );
   QCOMPARE( spyTypeAdded.count(), 1 );
-  QCOMPARE( spyTypeAdded.value( 0 ).at( 0 ).toInt(), 2 );
+  QCOMPARE( spyTypeAdded.value( 0 ).at( 0 ).toInt(), QgsLayoutItemRegistry::LayoutItem + 101 );
   // duplicate type id
   QVERIFY( !registry.addLayoutItemGuiMetadata( metadata ) );
   QCOMPARE( spyTypeAdded.count(), 1 );
 
   //retrieve metadata
   QVERIFY( !registry.itemMetadata( -1 ) );
-  QVERIFY( registry.itemMetadata( 2 ) );
+  QVERIFY( registry.itemMetadata( QgsLayoutItemRegistry::LayoutItem + 101 ) );
   QCOMPARE( registry.itemTypes().count(), 1 );
-  QCOMPARE( registry.itemTypes().value( 0 ), 2 );
+  QCOMPARE( registry.itemTypes().value( 0 ), QgsLayoutItemRegistry::LayoutItem + 101 );
 
-  QWidget *widget = registry.createItemWidget( 2 );
+  QWidget *widget = registry.createItemWidget( testItem );
   QVERIFY( widget );
   delete widget;
 
   QgsLayoutView *view = new QgsLayoutView();
   //should use metadata's method
-  QgsLayoutViewRubberBand *band = registry.createItemRubberBand( 2, view );
+  QgsLayoutViewRubberBand *band = registry.createItemRubberBand( QgsLayoutItemRegistry::LayoutItem + 101, view );
   QVERIFY( band );
   QVERIFY( dynamic_cast< QgsLayoutViewRectangularRubberBand * >( band ) );
   QCOMPARE( band->view(), view );

@@ -61,6 +61,7 @@ class QgsLayoutItemRectangularShape : QgsLayoutItemShape
  Constructor for QgsLayoutItemRectangularShape, with the specified parent ``layout``.
 %End
     virtual int type() const;
+    virtual QString stringType() const;
 
     static QgsLayoutItemRectangularShape *create( QgsLayout *layout, const QVariantMap &settings ) /Factory/;
 %Docstring
@@ -107,6 +108,7 @@ class QgsLayoutItemEllipseShape : QgsLayoutItemShape
  Constructor for QgsLayoutItemEllipseShape, with the specified parent ``layout``.
 %End
     virtual int type() const;
+    virtual QString stringType() const;
 
     static QgsLayoutItemEllipseShape *create( QgsLayout *layout, const QVariantMap &settings ) /Factory/;
 %Docstring
@@ -140,6 +142,7 @@ class QgsLayoutItemTriangleShape : QgsLayoutItemShape
  Constructor for QgsLayoutItemTriangleShape, with the specified parent ``layout``.
 %End
     virtual int type() const;
+    virtual QString stringType() const;
 
     static QgsLayoutItemTriangleShape *create( QgsLayout *layout, const QVariantMap &settings ) /Factory/;
 %Docstring

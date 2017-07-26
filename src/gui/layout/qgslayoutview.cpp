@@ -28,6 +28,7 @@
 #include "qgsapplication.h"
 #include <memory>
 #include <QDesktopWidget>
+#include <QMenu>
 
 #define MIN_VIEW_SCALE 0.05
 #define MAX_VIEW_SCALE 1000.0
@@ -38,6 +39,12 @@ QgsLayoutView::QgsLayoutView( QWidget *parent )
   setResizeAnchor( QGraphicsView::AnchorViewCenter );
   setMouseTracking( true );
   viewport()->setMouseTracking( true );
+
+  // set the "scene" background on the view using stylesheets
+  // we don't want to use QGraphicsScene::setBackgroundBrush because we want to keep
+  // a transparent background for exports, and it's only a cosmetic thing for the view only
+  // ALSO - only set it on the viewport - we don't want scrollbars/etc affected by this
+  viewport()->setStyleSheet( QStringLiteral( "background-color:#d7d7d7;" ) );
 
   mSpacePanTool = new QgsLayoutViewToolTemporaryKeyPan( this );
   mMidMouseButtonPanTool = new QgsLayoutViewToolTemporaryMousePan( this );
@@ -52,6 +59,9 @@ QgsLayout *QgsLayoutView::currentLayout()
 void QgsLayoutView::setCurrentLayout( QgsLayout *layout )
 {
   setScene( layout );
+
+  connect( layout->pageCollection(), &QgsLayoutPageCollection::changed, this, &QgsLayoutView::updateRulers );
+  updateRulers();
 
   //emit layoutSet, so that designer dialogs can update for the new layout
   emit layoutSet( layout );
@@ -102,14 +112,22 @@ void QgsLayoutView::scaleSafe( double scale )
 
 void QgsLayoutView::setZoomLevel( double level )
 {
-  double dpi = QgsApplication::desktop()->logicalDpiX();
-  //monitor dpi is not always correct - so make sure the value is sane
-  if ( ( dpi < 60 ) || ( dpi > 1200 ) )
-    dpi = 72;
+  if ( currentLayout()->units() == QgsUnitTypes::LayoutPixels )
+  {
+    setTransform( QTransform::fromScale( level, level ) );
+  }
+  else
+  {
+    double dpi = QgsApplication::desktop()->logicalDpiX();
+    //monitor dpi is not always correct - so make sure the value is sane
+    if ( ( dpi < 60 ) || ( dpi > 1200 ) )
+      dpi = 72;
 
-  //desired pixel width for 1mm on screen
-  double scale = qBound( MIN_VIEW_SCALE, level * dpi / 25.4, MAX_VIEW_SCALE );
-  setTransform( QTransform::fromScale( scale, scale ) );
+    //desired pixel width for 1mm on screen
+    level = qBound( MIN_VIEW_SCALE, level, MAX_VIEW_SCALE );
+    double mmLevel = currentLayout()->convertFromLayoutUnits( level, QgsUnitTypes::LayoutMillimeters ).length() * dpi / 25.4;
+    setTransform( QTransform::fromScale( mmLevel, mmLevel ) );
+  }
   emit zoomLevelChanged();
   updateRulers();
 }
@@ -128,9 +146,20 @@ void QgsLayoutView::setVerticalRuler( QgsLayoutRuler *ruler )
   updateRulers();
 }
 
+void QgsLayoutView::setMenuProvider( QgsLayoutViewMenuProvider *provider )
+{
+  mMenuProvider.reset( provider );
+}
+
+QgsLayoutViewMenuProvider *QgsLayoutView::menuProvider() const
+{
+  return mMenuProvider.get();
+}
+
 void QgsLayoutView::zoomFull()
 {
   fitInView( scene()->sceneRect(), Qt::KeepAspectRatio );
+  updateRulers();
   emit zoomLevelChanged();
 }
 
@@ -192,6 +221,15 @@ void QgsLayoutView::mousePressEvent( QMouseEvent *event )
       // Pan layout with middle mouse button
       setTool( mMidMouseButtonPanTool );
       event->accept();
+    }
+    else if ( event->button() == Qt::RightButton && mMenuProvider )
+    {
+      QMenu *menu = mMenuProvider->createContextMenu( this, currentLayout(), mapToScene( event->pos() ) );
+      if ( menu )
+      {
+        menu->exec( event->globalPos() );
+        delete menu;
+      }
     }
     else
     {
@@ -303,6 +341,12 @@ void QgsLayoutView::resizeEvent( QResizeEvent *event )
 {
   QGraphicsView::resizeEvent( event );
   emit zoomLevelChanged();
+}
+
+void QgsLayoutView::scrollContentsBy( int dx, int dy )
+{
+  QGraphicsView::scrollContentsBy( dx, dy );
+  updateRulers();
 }
 
 void QgsLayoutView::updateRulers()

@@ -19,6 +19,10 @@
 #include "qgis_gui.h"
 #include "qgis_sip.h"
 #include "qgsunittypes.h"
+#include <QDoubleSpinBox>
+#include <QPointer>
+
+class QgsLayoutMeasurementConverter;
 
 /**
  * \ingroup gui
@@ -50,6 +54,32 @@ class GUI_EXPORT QgsLayoutUnitsComboBox : public QComboBox
      */
     void setUnit( QgsUnitTypes::LayoutUnit unit );
 
+    /**
+     * Registers a spin box \a widget as linked with the combo box.
+     *
+     * Registered spin boxes will automatically be upodated whenever the unit is changed. I.e. a
+     * spin box with a value of 100 will be set to 1 when the unit is changed from centimeters to meters.
+     *
+     * A measurement converter() must be set in order for the automatic unit conversion to occur.
+     *
+     * \see setConverter()
+     */
+    void linkToWidget( QDoubleSpinBox *widget );
+
+    /**
+     * Returns the converter used when automatically converting units for linked widgets.
+     * \see setConverter()
+     */
+    QgsLayoutMeasurementConverter *converter() const;
+
+    /**
+     * Sets a \a converter to use when automatically converting units for linked widgets.
+     * The ownership of \a converter is not transferred, and converter must exist for the
+     * life of the combo box.
+     * \see converter()
+     */
+    void setConverter( QgsLayoutMeasurementConverter *converter );
+
   signals:
 
     /**
@@ -57,6 +87,17 @@ class GUI_EXPORT QgsLayoutUnitsComboBox : public QComboBox
      */
     void changed( QgsUnitTypes::LayoutUnit unit );
 
+  private slots:
+
+    void indexChanged( int index );
+
+  private:
+
+    QgsLayoutMeasurementConverter *mConverter = nullptr;
+
+    QgsUnitTypes::LayoutUnit mOldUnit = QgsUnitTypes::LayoutMillimeters;
+
+    QList< QPointer< QDoubleSpinBox > > mLinkedSpinBoxes;
 };
 
 #endif // QGSLAYOUTUNITSCOMBOBOX_H

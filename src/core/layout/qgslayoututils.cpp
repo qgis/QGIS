@@ -74,12 +74,17 @@ QgsRenderContext QgsLayoutUtils::createRenderContextForMap( QgsLayoutItemMap *ma
     QgsRenderContext context; // = QgsRenderContext::fromMapSettings( ms );
     if ( painter )
       context.setPainter( painter );
+
+    context.setFlags( map->layout()->context().renderContextFlags() );
     return context;
   }
 }
 
-QgsRenderContext QgsLayoutUtils::createRenderContextForLayout( QgsLayout *layout, QPainter *painter )
+QgsRenderContext QgsLayoutUtils::createRenderContextForLayout( QgsLayout *layout, QPainter *painter, double dpi )
 {
   QgsLayoutItemMap *referenceMap = layout ? layout->referenceMap() : nullptr;
-  return createRenderContextForMap( referenceMap, painter );
+  QgsRenderContext context = createRenderContextForMap( referenceMap, painter, dpi );
+  if ( layout )
+    context.setFlags( layout->context().renderContextFlags() );
+  return context;
 }

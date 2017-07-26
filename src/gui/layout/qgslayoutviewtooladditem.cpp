@@ -90,6 +90,7 @@ void QgsLayoutViewToolAddItem::layoutReleaseEvent( QgsLayoutViewMouseEvent *even
   if ( clickOnly )
   {
     QgsLayoutItemPropertiesDialog dlg( view() );
+    dlg.setLayout( layout() );
     dlg.setItemPosition( QgsLayoutPoint( event->layoutPoint(), layout()->units() ) );
     if ( dlg.exec() )
     {
@@ -115,7 +116,7 @@ void QgsLayoutViewToolAddItem::layoutReleaseEvent( QgsLayoutViewMouseEvent *even
   settings.setValue( QStringLiteral( "LayoutDesigner/lastItemHeight" ), item->sizeWithUnits().height() );
   settings.setValue( QStringLiteral( "LayoutDesigner/lastSizeUnit" ), static_cast< int >( item->sizeWithUnits().units() ) );
 
-  layout()->addItem( item );
+  layout()->addLayoutItem( item );
 }
 
 void QgsLayoutViewToolAddItem::deactivate()

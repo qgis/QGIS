@@ -77,7 +77,8 @@ class CORE_EXPORT QgsLayoutItemRectangularShape : public QgsLayoutItemShape
      * Constructor for QgsLayoutItemRectangularShape, with the specified parent \a layout.
      */
     explicit QgsLayoutItemRectangularShape( QgsLayout *layout );
-    virtual int type() const override { return QgsLayoutItemRegistry::LayoutRectangle; }
+    int type() const override { return QgsLayoutItemRegistry::LayoutRectangle; }
+    QString stringType() const override { return QStringLiteral( "ItemRect" ); }
 
     /**
      * Returns a new rectangular item for the specified \a layout.
@@ -124,6 +125,7 @@ class CORE_EXPORT QgsLayoutItemEllipseShape : public QgsLayoutItemShape
      */
     explicit QgsLayoutItemEllipseShape( QgsLayout *layout );
     virtual int type() const override { return QgsLayoutItemRegistry::LayoutEllipse; }
+    QString stringType() const override { return QStringLiteral( "ItemEllipse" ); }
 
     /**
      * Returns a new ellipse item for the specified \a layout.
@@ -156,6 +158,7 @@ class CORE_EXPORT QgsLayoutItemTriangleShape : public QgsLayoutItemShape
      */
     explicit QgsLayoutItemTriangleShape( QgsLayout *layout );
     virtual int type() const override { return QgsLayoutItemRegistry::LayoutTriangle; }
+    QString stringType() const override { return QStringLiteral( "ItemTriangle" ); }
 
     /**
      * Returns a new triangle item for the specified \a layout.
