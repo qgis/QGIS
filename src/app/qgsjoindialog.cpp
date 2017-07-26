@@ -44,6 +44,10 @@ QgsJoinDialog::QgsJoinDialog( QgsVectorLayer *layer, QList<QgsMapLayer *> alread
 
   mDynamicFormCheckBox->setToolTip( tr( "This option allows values of the joined fields to be automatically reloaded when the \"Target Field\" is changed" ) );
 
+  mEditableJoinLayer->setToolTip( tr( "This option allows values of the joined layers to be editable if they're themselves editable" ) );
+  mUpsertOnEditCheckBox->setToolTip( tr( "Automatically adds a matching row to the joined table, but if one already exists then update that matching row instead" ) );
+  mDeleteCascadeCheckBox->setToolTip( tr( "Automatically delete the corresponding feature of the linked layer if one exists" ) );
+
   mJoinLayerComboBox->setFilters( QgsMapLayerProxyModel::VectorLayer );
   mJoinLayerComboBox->setExceptedLayerList( alreadyJoinedLayers );
   connect( mJoinLayerComboBox, &QgsMapLayerComboBox::layerChanged, mJoinFieldComboBox, &QgsFieldComboBox::setLayer );
