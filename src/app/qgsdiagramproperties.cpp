@@ -851,7 +851,7 @@ QString QgsDiagramProperties::showExpressionBuilder( const QString &initialExpre
           << QgsExpressionContextUtils::layerScope( mLayer );
 
   QgsExpressionBuilderDialog dlg( mLayer, initialExpression, this, QStringLiteral( "generic" ), context );
-  dlg.setWindowTitle( tr( "Expression based attribute" ) );
+  dlg.setWindowTitle( tr( "Expression Based Attribute" ) );
 
   QgsDistanceArea myDa;
   myDa.setSourceCrs( mLayer->crs() );

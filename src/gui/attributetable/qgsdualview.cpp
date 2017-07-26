@@ -377,7 +377,7 @@ void QgsDualView::previewExpressionBuilder()
   QgsExpressionContext context( QgsExpressionContextUtils::globalProjectLayerScopes( mLayer ) );
 
   QgsExpressionBuilderDialog dlg( mLayer, mFeatureList->displayExpression(), this, QStringLiteral( "generic" ), context );
-  dlg.setWindowTitle( tr( "Expression based preview" ) );
+  dlg.setWindowTitle( tr( "Expression Based Preview" ) );
   dlg.setExpressionText( mFeatureList->displayExpression() );
 
   if ( dlg.exec() == QDialog::Accepted )
@@ -606,7 +606,7 @@ void QgsDualView::modifySort()
   QgsAttributeTableConfig config = mConfig;
 
   QDialog orderByDlg;
-  orderByDlg.setWindowTitle( tr( "Configure attribute table sort order" ) );
+  orderByDlg.setWindowTitle( tr( "Configure Attribute Table Sort Order" ) );
   QDialogButtonBox *dialogButtonBox = new QDialogButtonBox( QDialogButtonBox::Ok | QDialogButtonBox::Cancel );
   QGridLayout *layout = new QGridLayout();
   connect( dialogButtonBox, &QDialogButtonBox::accepted, &orderByDlg, &QDialog::accept );
@@ -800,7 +800,7 @@ void QgsDualView::progress( int i, bool &cancel )
   if ( !mProgressDlg )
   {
     mProgressDlg = new QProgressDialog( tr( "Loading features..." ), tr( "Abort" ), 0, 0, this );
-    mProgressDlg->setWindowTitle( tr( "Attribute table" ) );
+    mProgressDlg->setWindowTitle( tr( "Attribute Table" ) );
     mProgressDlg->setWindowModality( Qt::WindowModal );
     mProgressDlg->show();
   }

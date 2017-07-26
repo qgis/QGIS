@@ -107,7 +107,7 @@ void QgsGeometryCheckerResultTab::finalize()
     dialog.layout()->addWidget( bbox );
     connect( bbox, &QDialogButtonBox::accepted, &dialog, &QDialog::accept );
     connect( bbox, &QDialogButtonBox::rejected, &dialog, &QDialog::reject );
-    dialog.setWindowTitle( tr( "Check errors occurred" ) );
+    dialog.setWindowTitle( tr( "Check Errors Occurred" ) );
     dialog.exec();
   }
 }

@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Save map as image</string>
+   <string>Save Map as Image</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>

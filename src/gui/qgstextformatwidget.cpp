@@ -1431,7 +1431,7 @@ void QgsTextFormatWidget::enableDataDefinedAlignment( bool enable )
 QgsTextFormatDialog::QgsTextFormatDialog( const QgsTextFormat &format, QgsMapCanvas *mapCanvas, QWidget *parent, Qt::WindowFlags fl )
   : QDialog( parent, fl )
 {
-  setWindowTitle( tr( "Text settings" ) );
+  setWindowTitle( tr( "Text Settings" ) );
 
   mFormatWidget = new QgsTextFormatWidget( format, mapCanvas, this );
   mFormatWidget->layout()->setContentsMargins( 0, 0, 0, 0 );

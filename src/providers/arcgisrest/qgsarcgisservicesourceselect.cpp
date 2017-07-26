@@ -225,7 +225,7 @@ void QgsArcGisServiceSourceSelect::addEntryToServerList()
 {
 
   QgsNewHttpConnection nc( 0, QStringLiteral( "qgis/connections-%1/" ).arg( mServiceName.toLower() ) );
-  nc.setWindowTitle( tr( "Create a new %1 connection" ).arg( mServiceName ) );
+  nc.setWindowTitle( tr( "Create a New %1 Connection" ).arg( mServiceName ) );
 
   if ( nc.exec() )
   {
@@ -237,7 +237,7 @@ void QgsArcGisServiceSourceSelect::addEntryToServerList()
 void QgsArcGisServiceSourceSelect::modifyEntryOfServerList()
 {
   QgsNewHttpConnection nc( 0, QStringLiteral( "qgis/connections-%1/" ).arg( mServiceName.toLower() ), cmbConnections->currentText() );
-  nc.setWindowTitle( tr( "Modify %1 connection" ).arg( mServiceName ) );
+  nc.setWindowTitle( tr( "Modify %1 Connection" ).arg( mServiceName ) );
 
   if ( nc.exec() )
   {

@@ -149,7 +149,7 @@ void QgsComposerLabelWidget::on_mInsertExpressionButton_clicked()
   QgsExpressionContext context = mComposerLabel->createExpressionContext();
   QgsExpressionBuilderDialog exprDlg( coverageLayer, selText, this, QStringLiteral( "generic" ), context );
 
-  exprDlg.setWindowTitle( tr( "Insert expression" ) );
+  exprDlg.setWindowTitle( tr( "Insert Expression" ) );
   if ( exprDlg.exec() == QDialog::Accepted )
   {
     QString expression =  exprDlg.expressionText();

@@ -1695,7 +1695,7 @@ void QgsComposer::exportCompositionAsPDF( QgsComposer::OutputMode mode )
     }
 
     QProgressDialog progress( tr( "Rendering maps..." ), tr( "Abort" ), 0, atlasMap->numFeatures(), this );
-    progress.setWindowTitle( tr( "Exporting atlas" ) );
+    progress.setWindowTitle( tr( "Exporting Atlas" ) );
     QApplication::setOverrideCursor( Qt::BusyCursor );
 
     for ( int featureI = 0; featureI < atlasMap->numFeatures(); ++featureI )
@@ -1862,7 +1862,7 @@ void QgsComposer::printComposition( QgsComposer::OutputMode mode )
       return;
     }
     QProgressDialog progress( tr( "Rendering maps..." ), tr( "Abort" ), 0, atlasMap->numFeatures(), this );
-    progress.setWindowTitle( tr( "Exporting atlas" ) );
+    progress.setWindowTitle( tr( "Exporting Atlas" ) );
 
     for ( int i = 0; i < atlasMap->numFeatures(); ++i )
     {
@@ -2194,7 +2194,7 @@ void QgsComposer::exportCompositionAsImage( QgsComposer::OutputMode mode )
     }
 
     QProgressDialog progress( tr( "Rendering maps..." ), tr( "Abort" ), 0, atlasMap->numFeatures(), this );
-    progress.setWindowTitle( tr( "Exporting atlas" ) );
+    progress.setWindowTitle( tr( "Exporting Atlas" ) );
 
     for ( int feature = 0; feature < atlasMap->numFeatures(); ++feature )
     {
@@ -2383,7 +2383,7 @@ void QgsComposer::exportCompositionAsSVG( QgsComposer::OutputMode mode )
   if ( displaySVGWarning )
   {
     QgsMessageViewer *m = new QgsMessageViewer( this );
-    m->setWindowTitle( tr( "SVG warning" ) );
+    m->setWindowTitle( tr( "SVG Warning" ) );
     m->setCheckBoxText( tr( "Don't show this message again" ) );
     m->setCheckBoxState( Qt::Unchecked );
     m->setCheckBoxVisible( true );
@@ -2541,7 +2541,7 @@ void QgsComposer::exportCompositionAsSVG( QgsComposer::OutputMode mode )
     }
   }
   QProgressDialog progress( tr( "Rendering maps..." ), tr( "Abort" ), 0, atlasMap->numFeatures(), this );
-  progress.setWindowTitle( tr( "Exporting atlas" ) );
+  progress.setWindowTitle( tr( "Exporting Atlas" ) );
 
   do
   {
@@ -3429,7 +3429,7 @@ void QgsComposer::showWmsPrintingWarning()
   if ( displayWMSWarning )
   {
     QgsMessageViewer *m = new QgsMessageViewer( this );
-    m->setWindowTitle( tr( "Project contains WMS layers" ) );
+    m->setWindowTitle( tr( "Project Contains WMS Layers" ) );
     m->setMessage( tr( "Some WMS servers (e.g. UMN mapserver) have a limit for the WIDTH and HEIGHT parameter. Printing layers from such servers may exceed this limit. If this is the case, the WMS layer will not be printed" ), QgsMessageOutput::MessageText );
     m->setCheckBoxText( tr( "Don't show this message again" ) );
     m->setCheckBoxState( Qt::Unchecked );
@@ -3444,7 +3444,7 @@ void QgsComposer::showAdvancedEffectsWarning()
   if ( ! mComposition->printAsRaster() )
   {
     QgsMessageViewer *m = new QgsMessageViewer( this, QgsGuiUtils::ModalDialogFlags, false );
-    m->setWindowTitle( tr( "Project contains composition effects" ) );
+    m->setWindowTitle( tr( "Project Contains Composition Effects" ) );
     m->setMessage( tr( "Advanced composition effects such as blend modes or vector layer transparency are enabled in this project, which cannot be printed as vectors. Printing as a raster is recommended." ), QgsMessageOutput::MessageText );
     m->setCheckBoxText( tr( "Print as raster" ) );
     m->setCheckBoxState( Qt::Checked );

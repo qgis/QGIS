@@ -785,7 +785,7 @@ void QgsComposerAttributeTableWidget::on_mFeatureFilterButton_clicked()
 
   QgsExpressionContext context = mComposerTable->createExpressionContext();
   QgsExpressionBuilderDialog exprDlg( mComposerTable->sourceLayer(), mFeatureFilterEdit->text(), this, QStringLiteral( "generic" ), context );
-  exprDlg.setWindowTitle( tr( "Expression based filter" ) );
+  exprDlg.setWindowTitle( tr( "Expression Based Filter" ) );
   if ( exprDlg.exec() == QDialog::Accepted )
   {
     QString expression =  exprDlg.expressionText();

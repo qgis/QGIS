@@ -109,7 +109,7 @@ QgsMapSaveDialog::QgsMapSaveDialog( QWidget *parent, QgsMapCanvas *mapCanvas, QL
     }
     mSaveAsRaster->setVisible( true );
 
-    this->setWindowTitle( tr( "Save map as PDF" ) );
+    this->setWindowTitle( tr( "Save Map as PDF" ) );
   }
   else
   {

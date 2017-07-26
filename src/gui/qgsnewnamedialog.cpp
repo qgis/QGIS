@@ -35,7 +35,7 @@ QgsNewNameDialog::QgsNewNameDialog( const QString &source, const QString &initia
   , mRegexp( regexp )
   , mOverwriteEnabled( true )
 {
-  setWindowTitle( tr( "New name" ) );
+  setWindowTitle( tr( "New Name" ) );
   QDialog::layout()->setSizeConstraint( QLayout::SetMinimumSize );
   layout()->setSizeConstraint( QLayout::SetMinimumSize );
   layout()->setSpacing( 6 );

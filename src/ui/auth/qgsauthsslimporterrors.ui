@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Unable To Validate The Connection</string>
+   <string>Unable to Validate the Connection</string>
   </property>
   <layout class="QVBoxLayout">
    <item>
