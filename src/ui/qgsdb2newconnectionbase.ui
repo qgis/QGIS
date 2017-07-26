@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Create a New DB2 connection</string>
+   <string>Create a New DB2 Connection</string>
   </property>
   <layout class="QGridLayout" name="gridLayout_3">
    <item row="1" column="0">

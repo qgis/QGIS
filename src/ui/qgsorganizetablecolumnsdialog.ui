@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Organize table columns</string>
+   <string>Organize Table columns</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
    <item row="2" column="3">

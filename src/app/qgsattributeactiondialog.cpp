@@ -267,7 +267,7 @@ void QgsAttributeActionDialog::insert()
   int pos = mAttributeActionTable->rowCount();
 
   QgsAttributeActionPropertiesDialog dlg( mLayer, this );
-  dlg.setWindowTitle( tr( "Add new action" ) );
+  dlg.setWindowTitle( tr( "Add New Action" ) );
 
   if ( dlg.exec() )
   {
@@ -325,7 +325,7 @@ void QgsAttributeActionDialog::itemDoubleClicked( QTableWidgetItem *item )
     mLayer
   );
 
-  actionProperties.setWindowTitle( tr( "Edit action" ) );
+  actionProperties.setWindowTitle( tr( "Edit Action" ) );
 
   if ( actionProperties.exec() )
   {

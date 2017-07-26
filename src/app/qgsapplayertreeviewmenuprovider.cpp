@@ -504,7 +504,7 @@ void QgsAppLayerTreeViewMenuProvider::editVectorSymbol()
 
   std::unique_ptr< QgsSymbol > symbol( singleRenderer->symbol() ? singleRenderer->symbol()->clone() : nullptr );
   QgsSymbolSelectorDialog dlg( symbol.get(), QgsStyle::defaultStyle(), layer, mView->window() );
-  dlg.setWindowTitle( tr( "Symbol selector" ) );
+  dlg.setWindowTitle( tr( "Symbol Selector" ) );
   QgsSymbolWidgetContext context;
   context.setMapCanvas( mCanvas );
   dlg.setContext( context );
@@ -581,7 +581,7 @@ void QgsAppLayerTreeViewMenuProvider::editSymbolLegendNodeSymbol()
   std::unique_ptr< QgsSymbol > symbol( originalSymbol->clone() );
   QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( node->layerNode()->layer() );
   QgsSymbolSelectorDialog dlg( symbol.get(), QgsStyle::defaultStyle(), vlayer, mView->window() );
-  dlg.setWindowTitle( tr( "Symbol selector" ) );
+  dlg.setWindowTitle( tr( "Symbol Selector" ) );
   QgsSymbolWidgetContext context;
   context.setMapCanvas( mCanvas );
   dlg.setContext( context );

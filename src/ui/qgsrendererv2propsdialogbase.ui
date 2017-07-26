@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Renderer settings</string>
+   <string>Renderer Settings</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout_5">
    <property name="leftMargin">

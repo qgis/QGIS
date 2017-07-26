@@ -229,7 +229,7 @@ void QgsVectorLayerSaveAsDialog::accept()
       {
         QMessageBox msgBox;
         msgBox.setIcon( QMessageBox::Question );
-        msgBox.setWindowTitle( tr( "The layer already exists" ) );
+        msgBox.setWindowTitle( tr( "The Layer Already Exists" ) );
         msgBox.setText( tr( "Do you want to overwrite the whole file or overwrite the layer?" ) );
         QPushButton *overwriteFileButton = msgBox.addButton( tr( "Overwrite file" ), QMessageBox::ActionRole );
         QPushButton *overwriteLayerButton = msgBox.addButton( tr( "Overwrite layer" ), QMessageBox::ActionRole );
@@ -258,7 +258,7 @@ void QgsVectorLayerSaveAsDialog::accept()
       {
         QMessageBox msgBox;
         msgBox.setIcon( QMessageBox::Question );
-        msgBox.setWindowTitle( tr( "The layer already exists" ) );
+        msgBox.setWindowTitle( tr( "The Layer Already Exists" ) );
         msgBox.setText( tr( "Do you want to overwrite the whole file, overwrite the layer or append features to the layer?" ) );
         QPushButton *overwriteFileButton = msgBox.addButton( tr( "Overwrite file" ), QMessageBox::ActionRole );
         QPushButton *overwriteLayerButton = msgBox.addButton( tr( "Overwrite layer" ), QMessageBox::ActionRole );
@@ -279,7 +279,7 @@ void QgsVectorLayerSaveAsDialog::accept()
       {
         QMessageBox msgBox;
         msgBox.setIcon( QMessageBox::Question );
-        msgBox.setWindowTitle( tr( "The layer already exists" ) );
+        msgBox.setWindowTitle( tr( "The Layer Already Exists" ) );
         msgBox.setText( tr( "Do you want to overwrite the whole file or append features to the layer?" ) );
         QPushButton *overwriteFileButton = msgBox.addButton( tr( "Overwrite file" ), QMessageBox::ActionRole );
         QPushButton *appendToLayerButton = msgBox.addButton( tr( "Append to layer" ), QMessageBox::ActionRole );

@@ -44,7 +44,7 @@ QgsSelectByFormDialog::QgsSelectByFormDialog( QgsVectorLayer *layer, const QgsAt
   QgsSettings settings;
   restoreGeometry( settings.value( QStringLiteral( "Windows/SelectByForm/geometry" ) ).toByteArray() );
 
-  setWindowTitle( tr( "Select features by value" ) );
+  setWindowTitle( tr( "Select Features by Value" ) );
 }
 
 QgsSelectByFormDialog::~QgsSelectByFormDialog()

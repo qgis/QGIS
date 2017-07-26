@@ -241,7 +241,7 @@ bool QgsNewGeoPackageLayerDialog::apply()
   {
     QMessageBox msgBox;
     msgBox.setIcon( QMessageBox::Question );
-    msgBox.setWindowTitle( tr( "The file already exists." ) );
+    msgBox.setWindowTitle( tr( "The File Already Exists." ) );
     msgBox.setText( tr( "Do you want to overwrite the existing file with a new database or add a new layer to it?" ) );
     QPushButton *overwriteButton = msgBox.addButton( tr( "Overwrite" ), QMessageBox::ActionRole );
     QPushButton *addNewLayerButton = msgBox.addButton( tr( "Add new layer" ), QMessageBox::ActionRole );

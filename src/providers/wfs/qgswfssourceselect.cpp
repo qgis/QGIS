@@ -300,7 +300,7 @@ void QgsWFSSourceSelect::addEntryToServerList()
 {
   QgsNewHttpConnection *nc = new QgsNewHttpConnection( this, QgsWFSConstants::CONNECTIONS_WFS );
   nc->setAttribute( Qt::WA_DeleteOnClose );
-  nc->setWindowTitle( tr( "Create a new WFS connection" ) );
+  nc->setWindowTitle( tr( "Create a New WFS Connection" ) );
 
   // For testability, do not use exec()
   if ( !property( "hideDialogs" ).toBool() )
@@ -313,7 +313,7 @@ void QgsWFSSourceSelect::modifyEntryOfServerList()
 {
   QgsNewHttpConnection *nc = new QgsNewHttpConnection( this, QgsWFSConstants::CONNECTIONS_WFS, cmbConnections->currentText() );
   nc->setAttribute( Qt::WA_DeleteOnClose );
-  nc->setWindowTitle( tr( "Modify WFS connection" ) );
+  nc->setWindowTitle( tr( "Modify WFS Connection" ) );
 
   // For testability, do not use exec()
   if ( !property( "hideDialogs" ).toBool() )

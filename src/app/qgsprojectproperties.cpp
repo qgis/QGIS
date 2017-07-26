@@ -1399,7 +1399,7 @@ void QgsProjectProperties::on_mRemoveWMSComposerButton_clicked()
 void QgsProjectProperties::on_mAddLayerRestrictionButton_clicked()
 {
   QgsProjectLayerGroupDialog d( this, QgsProject::instance()->fileName() );
-  d.setWindowTitle( tr( "Select restricted layers and groups" ) );
+  d.setWindowTitle( tr( "Select Restricted Layers and Groups" ) );
   if ( d.exec() == QDialog::Accepted )
   {
     QStringList layerNames = d.selectedLayerNames();

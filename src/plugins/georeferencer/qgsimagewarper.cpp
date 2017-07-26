@@ -215,7 +215,7 @@ int QgsImageWarper::warpFile( const QString &input,
 
   // Create a QT progress dialog
   QProgressDialog *progressDialog = new QProgressDialog( mParent );
-  progressDialog->setWindowTitle( tr( "Progress indication" ) );
+  progressDialog->setWindowTitle( tr( "Progress Indication" ) );
   progressDialog->setRange( 0, 100 );
   progressDialog->setAutoClose( true );
   progressDialog->setModal( true );

@@ -31,7 +31,7 @@ QgsExpressionSelectionDialog::QgsExpressionSelectionDialog( QgsVectorLayer *laye
 {
   setupUi( this );
 
-  setWindowTitle( QStringLiteral( "Select by expression - %1" ).arg( layer->name() ) );
+  setWindowTitle( QStringLiteral( "Select by Expression - %1" ).arg( layer->name() ) );
 
   mActionSelect->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mIconExpressionSelect.svg" ) ) );
   mActionAddToSelection->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mIconSelectAdd.svg" ) ) );

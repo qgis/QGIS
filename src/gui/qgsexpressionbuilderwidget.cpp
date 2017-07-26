@@ -649,7 +649,7 @@ void QgsExpressionBuilderWidget::on_lblPreview_linkActivated( const QString &lin
 {
   Q_UNUSED( link );
   QgsMessageViewer *mv = new QgsMessageViewer( this );
-  mv->setWindowTitle( tr( "More info on expression error" ) );
+  mv->setWindowTitle( tr( "More Info on Expression Error" ) );
   mv->setMessageAsHtml( txtExpressionString->toolTip() );
   mv->exec();
 }

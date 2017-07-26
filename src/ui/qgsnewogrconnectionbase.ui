@@ -17,7 +17,7 @@
    </sizepolicy>
   </property>
   <property name="windowTitle">
-   <string>Create a New OGR Database connection</string>
+   <string>Create a New OGR Database Connection</string>
   </property>
   <property name="sizeGripEnabled">
    <bool>true</bool>

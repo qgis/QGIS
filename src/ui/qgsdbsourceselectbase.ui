@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Add PostGIS layers</string>
+   <string>Add PostGIS Layers</string>
   </property>
   <property name="windowIcon">
    <iconset>

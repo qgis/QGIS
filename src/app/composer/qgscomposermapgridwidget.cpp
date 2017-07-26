@@ -1075,7 +1075,7 @@ void QgsComposerMapGridWidget::on_mAnnotationFormatButton_clicked()
   QgsExpressionContext expressionContext = mComposerMapGrid->createExpressionContext();
 
   QgsExpressionBuilderDialog exprDlg( nullptr, mComposerMapGrid->annotationExpression(), this, QStringLiteral( "generic" ), expressionContext );
-  exprDlg.setWindowTitle( tr( "Expression based annotation" ) );
+  exprDlg.setWindowTitle( tr( "Expression Based Annotation" ) );
 
   if ( exprDlg.exec() == QDialog::Accepted )
   {

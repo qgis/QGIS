@@ -888,7 +888,7 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
   else
   {
     QDialog *dialog = new QDialog( this );
-    dialog->setWindowTitle( tr( "Project snapping settings" ) );
+    dialog->setWindowTitle( tr( "Project Snapping Settings" ) );
     QVBoxLayout *layout = new QVBoxLayout( dialog );
     layout->addWidget( mSnappingDialog );
     layout->setMargin( 0 );
@@ -6378,7 +6378,7 @@ void QgisApp::labelingFontNotFound( QgsVectorLayer *vlayer, const QString &fontf
 void QgisApp::commitError( QgsVectorLayer *vlayer )
 {
   QgsMessageViewer *mv = new QgsMessageViewer();
-  mv->setWindowTitle( tr( "Commit errors" ) );
+  mv->setWindowTitle( tr( "Commit Errors" ) );
   mv->setMessageAsPlainText( tr( "Could not commit changes to layer %1" ).arg( vlayer->name() )
                              + "\n\n"
                              + tr( "Errors: %1\n" ).arg( vlayer->commitErrors().join( QStringLiteral( "\n  " ) ) )
@@ -6480,7 +6480,7 @@ void QgisApp::diagramProperties()
   }
 
   QDialog dlg;
-  dlg.setWindowTitle( tr( "Layer diagram properties" ) );
+  dlg.setWindowTitle( tr( "Layer Diagram Properties" ) );
   QgsDiagramProperties *gui = new QgsDiagramProperties( vlayer, &dlg, mMapCanvas );
   gui->layout()->setContentsMargins( 0, 0, 0, 0 );
   QVBoxLayout *layout = new QVBoxLayout( &dlg );
@@ -6880,7 +6880,7 @@ void QgisApp::saveAsVectorFileGeneral( QgsVectorLayer *vlayer, bool symbologyOpt
       if ( error != QgsVectorFileWriter::Canceled )
       {
         QgsMessageViewer *m = new QgsMessageViewer( nullptr );
-        m->setWindowTitle( tr( "Save error" ) );
+        m->setWindowTitle( tr( "Save Error" ) );
         m->setMessageAsPlainText( tr( "Export to vector file failed.\nError: %1" ).arg( errorMessage ) );
         m->exec();
       }
