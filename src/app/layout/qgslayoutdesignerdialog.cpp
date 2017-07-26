@@ -124,6 +124,12 @@ QgsLayoutDesignerDialog::QgsLayoutDesignerDialog( QWidget *parent, Qt::WindowFla
   mActionShowRulers->blockSignals( false );
   connect( mActionShowRulers, &QAction::triggered, this, &QgsLayoutDesignerDialog::showRulers );
 
+  QMenu *rulerMenu = new QMenu( this );
+  rulerMenu->addAction( mActionManageGuides );
+  rulerMenu->addAction( mActionClearGuides );
+  mHorizontalRuler->setContextMenu( rulerMenu );
+  mVerticalRuler->setContextMenu( rulerMenu );
+
   connect( mActionShowGrid, &QAction::triggered, this, &QgsLayoutDesignerDialog::showGrid );
   connect( mActionSnapGrid, &QAction::triggered, this, &QgsLayoutDesignerDialog::snapToGrid );
 
@@ -297,6 +303,12 @@ void QgsLayoutDesignerDialog::setCurrentLayout( QgsLayout *layout )
 {
   mLayout = layout;
   mView->setCurrentLayout( layout );
+
+  connect( mActionClearGuides, &QAction::triggered, &mLayout->guides(), [ = ]
+  {
+    mLayout->guides().clear();
+  } );
+
   createLayoutPropertiesWidget();
 }
 

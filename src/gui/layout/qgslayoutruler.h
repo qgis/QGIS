@@ -70,6 +70,12 @@ class GUI_EXPORT QgsLayoutRuler: public QWidget
      */
     int rulerSize() const { return mRulerMinSize; }
 
+    /**
+     * Sets a context \a menu to show when right clicking occurs on the ruler.
+     * Ownership of \a menu is unchanged.
+     */
+    void setContextMenu( QMenu *menu );
+
   public slots:
 
     /**
@@ -117,6 +123,8 @@ class GUI_EXPORT QgsLayoutRuler: public QWidget
 
     //! Polygon for drawing guide markers
     QPolygonF mGuideMarker;
+
+    QMenu *mMenu = nullptr;
 
     //! Calculates the optimum labeled units for ruler so that labels are a good distance apart
     int optimumScale( double minPixelDiff, int &magnitude, int &multiple );

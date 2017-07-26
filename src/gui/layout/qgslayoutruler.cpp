@@ -20,6 +20,7 @@
 #include <QDragEnterEvent>
 #include <QGraphicsLineItem>
 #include <QPainter>
+#include <QMenu>
 #include <cmath>
 
 const int RULER_FONT_SIZE = 8;
@@ -510,6 +511,11 @@ void QgsLayoutRuler::setLayoutView( QgsLayoutView *view )
   connect( mView, &QgsLayoutView::cursorPosChanged, this, &QgsLayoutRuler::setCursorPosition );
 }
 
+void QgsLayoutRuler::setContextMenu( QMenu *menu )
+{
+  mMenu = menu;
+}
+
 void QgsLayoutRuler::setCursorPosition( QPointF position )
 {
   mMarkerPos = mView->mapFromScene( position );
@@ -744,5 +750,10 @@ void QgsLayoutRuler::mouseReleaseEvent( QMouseEvent *event )
       guide->setPage( pageNumber );
       mView->currentLayout()->guides().addGuide( guide.release() );
     }
+  }
+  else if ( event->button() == Qt::RightButton )
+  {
+    if ( mMenu )
+      mMenu->popup( event->globalPos() );
   }
 }

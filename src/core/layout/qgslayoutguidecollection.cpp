@@ -347,6 +347,14 @@ void QgsLayoutGuideCollection::removeGuide( QgsLayoutGuide *guide )
   removeRow( row );
 }
 
+void QgsLayoutGuideCollection::clear()
+{
+  beginResetModel();
+  qDeleteAll( mGuides );
+  mGuides.clear();
+  endResetModel();
+}
+
 void QgsLayoutGuideCollection::update()
 {
   Q_FOREACH ( QgsLayoutGuide *guide, mGuides )

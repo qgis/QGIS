@@ -124,6 +124,7 @@
     <addaction name="mActionShowGuides"/>
     <addaction name="mActionSnapGuides"/>
     <addaction name="mActionManageGuides"/>
+    <addaction name="mActionClearGuides"/>
     <addaction name="separator"/>
     <addaction name="mActionShowRulers"/>
     <addaction name="separator"/>
@@ -371,6 +372,14 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+Shift+;</string>
+   </property>
+  </action>
+  <action name="mActionClearGuides">
+   <property name="text">
+    <string>&amp;Clear Guides</string>
+   </property>
+   <property name="toolTip">
+    <string>Clear guides</string>
    </property>
   </action>
  </widget>

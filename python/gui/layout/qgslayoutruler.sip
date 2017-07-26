@@ -58,6 +58,12 @@ class QgsLayoutRuler: QWidget
  :rtype: int
 %End
 
+    void setContextMenu( QMenu *menu );
+%Docstring
+ Sets a context ``menu`` to show when right clicking occurs on the ruler.
+ Ownership of ``menu`` is unchanged.
+%End
+
   public slots:
 
     void setCursorPosition( QPointF position );

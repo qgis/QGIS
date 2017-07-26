@@ -209,8 +209,15 @@ class CORE_EXPORT QgsLayoutGuideCollection : public QAbstractTableModel
 
     /**
      * Removes the specified \a guide, and deletes it.
+     * \see clear()
      */
     void removeGuide( QgsLayoutGuide *guide );
+
+    /**
+     * Removes all guides from the collection.
+     * \see removeGuide()
+     */
+    void clear();
 
     /**
      * Updates the position (and visibility) of all guide line items.

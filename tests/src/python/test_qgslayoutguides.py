@@ -234,6 +234,21 @@ class TestQgsLayoutGuide(unittest.TestCase):
         guides.removeGuide(g1)
         self.assertEqual(guides.guides(QgsLayoutGuide.Horizontal), [])
 
+    def testClear(self):
+        p = QgsProject()
+        l = QgsLayout(p)
+        l.initializeDefaults() # add a page
+        guides = l.guides()
+
+        # add a guide
+        g1 = QgsLayoutGuide(QgsLayoutGuide.Horizontal, QgsLayoutMeasurement(5, QgsUnitTypes.LayoutCentimeters))
+        guides.addGuide(g1)
+        g2 = QgsLayoutGuide(QgsLayoutGuide.Horizontal, QgsLayoutMeasurement(5, QgsUnitTypes.LayoutCentimeters))
+        guides.addGuide(g2)
+        self.assertEqual(guides.guides(QgsLayoutGuide.Horizontal), [g1, g2])
+        guides.clear()
+        self.assertEqual(guides.guides(QgsLayoutGuide.Horizontal), [])
+
 
 if __name__ == '__main__':
     unittest.main()
