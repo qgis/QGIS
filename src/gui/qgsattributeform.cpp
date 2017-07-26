@@ -50,7 +50,6 @@
 #include <QMessageBox>
 #include <QToolButton>
 #include <QMenu>
-#include <QSvgWidget>
 
 int QgsAttributeForm::sFormCounter = 0;
 
@@ -1023,6 +1022,8 @@ void QgsAttributeForm::synchronizeEnabledState()
     {
       bool enabled = isEditable && fieldIsEditable( eww->fieldIdx() );
       ww->setEnabled( enabled );
+
+      updateIcon( eww );
     }
   }
 
@@ -1230,6 +1231,8 @@ void QgsAttributeForm::init()
 
   // Autogenerate Layout
   // If there is still no layout loaded (defined as autogenerate or other methods failed)
+  mIconMap.clear();
+
   if ( !formWidget )
   {
     formWidget = new QWidget( this );
@@ -1271,6 +1274,9 @@ void QgsAttributeForm::init()
 
       // This will also create the widget
       QLabel *l = new QLabel( fieldName );
+      QSvgWidget *i = new QSvgWidget();
+      i->setFixedSize( 18, 18 );
+
       QgsEditorWidgetWrapper *eww = QgsGui::editorWidgetRegistry()->create( widgetSetup.type(), mLayer, idx, widgetSetup.config(), nullptr, this, mContext );
 
       QWidget *w = nullptr;
@@ -1293,17 +1299,22 @@ void QgsAttributeForm::init()
         w->setObjectName( field.name() );
 
       if ( eww )
+      {
         addWidgetWrapper( eww );
+        mIconMap[eww->widget()] = i;
+      }
 
       if ( labelOnTop )
       {
         gridLayout->addWidget( l, row++, 0, 1, 2 );
         gridLayout->addWidget( w, row++, 0, 1, 2 );
+        gridLayout->addWidget( i, row++, 0, 1, 2 );
       }
       else
       {
         gridLayout->addWidget( l, row, 0 );
-        gridLayout->addWidget( w, row++, 1 );
+        gridLayout->addWidget( w, row, 1 );
+        gridLayout->addWidget( i, row++, 2 );
       }
     }
 
@@ -2025,7 +2036,9 @@ bool QgsAttributeForm::fieldIsEditable( int fieldIndex ) const
     int srcFieldIndex;
     const QgsVectorLayerJoinInfo *info = mLayer->joinBuffer()->joinForFieldIndex( fieldIndex, mLayer->fields(), srcFieldIndex );
 
-    if ( info && info->isEditable() && info->joinLayer()->isEditable() )
+    if ( !info->hasUpsertOnEdit() && mMode == QgsAttributeForm::AddFeatureMode )
+      editable = false;
+    else if ( info && info->isEditable() && info->joinLayer()->isEditable() )
       editable = fieldIsEditable( *( info->joinLayer() ), srcFieldIndex, mFeature.id() );
   }
   else
@@ -2038,4 +2051,48 @@ bool QgsAttributeForm::fieldIsEditable( const QgsVectorLayer &layer, int fieldIn
 {
   return !layer.editFormConfig().readOnly( fieldIndex ) &&
          ( ( layer.dataProvider() && layer.dataProvider()->capabilities() & QgsVectorDataProvider::ChangeAttributeValues ) || FID_IS_NEW( fid ) );
+}
+
+void QgsAttributeForm::updateIcon( QgsEditorWidgetWrapper *eww )
+{
+  // no icon by default
+  mIconMap[eww->widget()]->hide();
+
+  if ( !eww->widget()->isEnabled() && mLayer->isEditable() )
+  {
+    if ( mLayer->fields().fieldOrigin( eww->fieldIdx() ) == QgsFields::OriginJoin )
+    {
+      int srcFieldIndex;
+      const QgsVectorLayerJoinInfo *info = mLayer->joinBuffer()->joinForFieldIndex( eww->fieldIdx(), mLayer->fields(), srcFieldIndex );
+
+      if ( !info )
+        return;
+
+      if ( !info->isEditable() )
+      {
+        QString file = QStringLiteral( "/mIconJoinNotEditable.svg" );
+        QString tooltip = tr( "Join settings do not allow editing" );
+        reloadIcon( file, tooltip, mIconMap[eww->widget()] );
+      }
+      else if ( mMode == QgsAttributeForm::AddFeatureMode && !info->hasUpsertOnEdit() )
+      {
+        QString file = QStringLiteral( "mIconJoinHasNotUpsertOnEdit.svg" );
+        QString tooltip = tr( "Join settings do not allow upsert on edit" );
+        reloadIcon( file, tooltip, mIconMap[eww->widget()] );
+      }
+      else if ( !info->joinLayer()->isEditable() )
+      {
+        QString file = QStringLiteral( "/mIconJoinedLayerNotEditable.svg" );
+        QString tooltip = tr( "Joined layer is not toggled editable" );
+        reloadIcon( file, tooltip, mIconMap[eww->widget()] );
+      }
+    }
+  }
+}
+
+void QgsAttributeForm::reloadIcon( const QString &file, const QString &tooltip, QSvgWidget *sw )
+{
+  sw->load( QgsApplication::iconPath( file ) );
+  sw->setToolTip( tooltip );
+  sw->show();
 }

@@ -22,6 +22,7 @@
 #include "qgseditorwidgetwrapper.h"
 
 #include <QWidget>
+#include <QSvgWidget>
 #include <QLabel>
 #include <QDialogButtonBox>
 #include "qgis_gui.h"
@@ -373,6 +374,10 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
 
     void registerContainerInformation( ContainerInformation *info );
 
+    void updateIcon( QgsEditorWidgetWrapper *eww );
+
+    void reloadIcon( const QString &file, const QString &tooltip, QSvgWidget *sw );
+
     // Contains information about tabs and groupboxes, their visibility state visibility conditions
     QVector<ContainerInformation *> mContainerVisibilityInformation;
     QMap<QString, QVector<ContainerInformation *> > mContainerInformationDependency;
@@ -401,6 +406,7 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
 
     //! Backlinks widgets to buddies.
     QMap<QWidget *, QLabel *> mBuddyMap;
+    QMap<QWidget *, QSvgWidget *> mIconMap;
 
     friend class TestQgsDualView;
     friend class TestQgsAttributeForm;
