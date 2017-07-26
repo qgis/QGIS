@@ -7,7 +7,7 @@
 #include "utils.h"
 
 
-/** 3D symbols are used by VectorLayer3DRenderer. They define appearance of data in 3D. */
+//! 3D symbols are used by VectorLayer3DRenderer. They define appearance of data in 3D.
 class _3D_EXPORT Abstract3DSymbol
 {
   public:
@@ -21,7 +21,7 @@ class _3D_EXPORT Abstract3DSymbol
 };
 
 
-/** 3D symbol that draws polygon geometries as planar polygons, optionally extruded (with added walls). */
+//! 3D symbol that draws polygon geometries as planar polygons, optionally extruded (with added walls).
 class _3D_EXPORT Polygon3DSymbol : public Abstract3DSymbol
 {
   public:
@@ -42,7 +42,7 @@ class _3D_EXPORT Polygon3DSymbol : public Abstract3DSymbol
 };
 
 
-/** 3D symbol that draws point geometries as 3D objects using one of the predefined shapes. */
+//! 3D symbol that draws point geometries as 3D objects using one of the predefined shapes.
 class _3D_EXPORT Point3DSymbol : public Abstract3DSymbol
 {
   public:
@@ -61,7 +61,7 @@ class _3D_EXPORT Point3DSymbol : public Abstract3DSymbol
 };
 
 
-/** 3D symbol that draws linestring geometries as planar polygons (created from lines using a buffer with given thickness). */
+//! 3D symbol that draws linestring geometries as planar polygons (created from lines using a buffer with given thickness).
 class _3D_EXPORT Line3DSymbol : public Abstract3DSymbol
 {
   public:
@@ -80,7 +80,7 @@ class _3D_EXPORT Line3DSymbol : public Abstract3DSymbol
     float extrusionHeight;  //!< How much to extrude (0 means no walls)
     PhongMaterialSettings material;  //!< Defines appearance of objects
 
-    float distance;  //!< Distance of buffer of lines
+    float width;  //!< Line width (horizontally)
 };
 
 

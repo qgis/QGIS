@@ -186,7 +186,7 @@ int main( int argc, char *argv[] )
   lineSymbol->material.setShininess( 0 );
   lineSymbol->altBinding = AltBindVertex;  // follow terrain
   lineSymbol->height = 1.5;
-  lineSymbol->distance = 2.5;
+  lineSymbol->width = 5;
   VectorLayer3DRenderer *lr = new VectorLayer3DRenderer( lineSymbol );
   lr->setLayer( vlLines );
   map.renderers << lr;

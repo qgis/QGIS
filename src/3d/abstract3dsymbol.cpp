@@ -101,7 +101,7 @@ Line3DSymbol::Line3DSymbol()
   , altBinding( AltBindCentroid )
   , height( 0 )
   , extrusionHeight( 0 )
-  , distance( 1 )
+  , width( 2 )
 {
 
 }
@@ -120,7 +120,7 @@ void Line3DSymbol::writeXml( QDomElement &elem ) const
   elemDataProperties.setAttribute( "alt-binding", Utils::altBindingToString( altBinding ) );
   elemDataProperties.setAttribute( "height", height );
   elemDataProperties.setAttribute( "extrusion-height", extrusionHeight );
-  elemDataProperties.setAttribute( "distance", distance );
+  elemDataProperties.setAttribute( "width", width );
   elem.appendChild( elemDataProperties );
 
   QDomElement elemMaterial = doc.createElement( "material" );
@@ -135,7 +135,7 @@ void Line3DSymbol::readXml( const QDomElement &elem )
   altBinding = Utils::altBindingFromString( elemDataProperties.attribute( "alt-binding" ) );
   height = elemDataProperties.attribute( "height" ).toFloat();
   extrusionHeight = elemDataProperties.attribute( "extrusion-height" ).toFloat();
-  distance = elemDataProperties.attribute( "distance" ).toFloat();
+  width = elemDataProperties.attribute( "width" ).toFloat();
 
   QDomElement elemMaterial = elem.firstChildElement( "material" );
   material.readXml( elemMaterial );

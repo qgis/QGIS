@@ -370,6 +370,7 @@ IF (WITH_3D)
     3d/qgs3dmapcanvas.cpp
     3d/qgs3dmapcanvasdockwidget.cpp
     3d/qgs3dmapconfigwidget.cpp
+    3d/qgsline3dsymbolwidget.cpp
     3d/qgspolygon3dsymbolwidget.cpp
     3d/qgsphongmaterialwidget.cpp
     3d/qgsvectorlayer3drendererwidget.cpp
@@ -380,6 +381,7 @@ IF (WITH_3D)
     3d/qgs3dmapcanvas.h
     3d/qgs3dmapcanvasdockwidget.h
     3d/qgs3dmapconfigwidget.h
+    3d/qgsline3dsymbolwidget.h
     3d/qgspolygon3dsymbolwidget.h
     3d/qgsphongmaterialwidget.h
     3d/qgsvectorlayer3drendererwidget.h

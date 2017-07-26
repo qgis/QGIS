@@ -45,7 +45,7 @@ LineEntity::LineEntity( const Map3D &map, QgsVectorLayer *layer, const Line3DSym
     QgsAbstractGeometry *g = f.geometry().geometry();
 
     QgsGeos engine( g );
-    QgsAbstractGeometry *buffered = engine.buffer( symbol.distance, nSegments, endCapStyle, joinStyle, mitreLimit ); // factory
+    QgsAbstractGeometry *buffered = engine.buffer( symbol.width / 2., nSegments, endCapStyle, joinStyle, mitreLimit ); // factory
 
     if ( QgsWkbTypes::flatType( buffered->wkbType() ) == QgsWkbTypes::Polygon )
     {

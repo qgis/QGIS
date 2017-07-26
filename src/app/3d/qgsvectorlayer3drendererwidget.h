@@ -6,6 +6,10 @@
 #include "qgsmaplayerconfigwidget.h"
 
 class QCheckBox;
+class QLabel;
+class QStackedWidget;
+
+class QgsLine3DSymbolWidget;
 class QgsPolygon3DSymbolWidget;
 class QgsVectorLayer;
 class QgsMapCanvas;
@@ -35,7 +39,10 @@ class QgsVectorLayer3DRendererWidget : public QgsMapLayerConfigWidget
 
   private:
     QCheckBox *chkEnabled;
+    QStackedWidget *widgetStack;
+    QgsLine3DSymbolWidget *widgetLine;
     QgsPolygon3DSymbolWidget *widgetPolygon;
+    QLabel *widgetUnsupported;
 
     std::unique_ptr<VectorLayer3DRenderer> mRenderer;
 };
