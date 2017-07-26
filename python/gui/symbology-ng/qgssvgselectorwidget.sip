@@ -24,18 +24,20 @@ class QgsSvgSelectorListModel : QAbstractListModel
 %End
   public:
 
-    QgsSvgSelectorListModel( QObject *parent /TransferThis/ );
+    QgsSvgSelectorListModel( QObject *parent /TransferThis/, int iconSize = 30 );
 %Docstring
  Constructor for QgsSvgSelectorListModel. All SVGs in folders from the application SVG
  search paths will be shown.
  \param parent parent object
+ \param iconSize desired size of SVG icons to create
 %End
 
-    QgsSvgSelectorListModel( QObject *parent /TransferThis/, const QString &path );
+    QgsSvgSelectorListModel( QObject *parent /TransferThis/, const QString &path, int iconSize = 30 );
 %Docstring
  Constructor for creating a model for SVG files in a specific path.
  \param parent parent object
  \param path initial path, which is recursively searched
+ \param iconSize desired size of SVG icons to create
 %End
 
     virtual int rowCount( const QModelIndex &parent = QModelIndex() ) const;
