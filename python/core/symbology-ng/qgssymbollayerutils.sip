@@ -481,6 +481,14 @@ Create ogr feature style string for pen
  :rtype: bool
 %End
 
+    static void createAnchorPointElement( QDomDocument &doc, QDomElement &element, QPointF anchor );
+%Docstring
+ Creates a SE 1.1 anchor point element as a child of the specified element
+ \param doc The document
+ \param element The parent element
+ \param anchor An anchor specification, with values between 0 and 1
+%End
+
     static void createOnlineResourceElement( QDomDocument &doc, QDomElement &element, const QString &path, const QString &format );
     static bool onlineResourceFromSldElement( QDomElement &element, QString &path, QString &format );
 %Docstring

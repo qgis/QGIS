@@ -332,6 +332,14 @@ class CORE_EXPORT QgsSymbolLayerUtils
     static void createDisplacementElement( QDomDocument &doc, QDomElement &element, QPointF offset );
     static bool displacementFromSldElement( QDomElement &element, QPointF &offset );
 
+    /**
+     * \brief Creates a SE 1.1 anchor point element as a child of the specified element
+     * \param doc The document
+     * \param element The parent element
+     * \param anchor An anchor specification, with values between 0 and 1
+     */
+    static void createAnchorPointElement( QDomDocument &doc, QDomElement &element, QPointF anchor );
+
     static void createOnlineResourceElement( QDomDocument &doc, QDomElement &element, const QString &path, const QString &format );
     static bool onlineResourceFromSldElement( QDomElement &element, QString &path, QString &format );
 
