@@ -2362,15 +2362,14 @@ int QgsWMSServer::featureInfoFromVectorLayer( QgsVectorLayer* layer,
       break;
     }
 
+    renderContext.expressionContext().setFeature( feature );
+
     if ( layer->wkbType() != QGis::WKBNoGeometry && ! searchRect.isEmpty() )
     {
       if ( !r2 )
       {
         continue;
       }
-
-      renderContext.expressionContext().setFeature( feature );
-
 
       //check if feature is rendered at all
       bool render = r2->willRenderFeature( feature, renderContext );
