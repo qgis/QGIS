@@ -208,6 +208,11 @@ class CORE_EXPORT QgsLayoutGuideCollection : public QAbstractTableModel
     void addGuide( QgsLayoutGuide *guide SIP_TRANSFER );
 
     /**
+     * Removes the specified \a guide, and deletes it.
+     */
+    void removeGuide( QgsLayoutGuide *guide );
+
+    /**
      * Updates the position (and visibility) of all guide line items.
      */
     void update();

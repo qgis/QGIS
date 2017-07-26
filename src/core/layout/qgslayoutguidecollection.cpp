@@ -338,6 +338,15 @@ void QgsLayoutGuideCollection::addGuide( QgsLayoutGuide *guide )
   } );
 }
 
+void QgsLayoutGuideCollection::removeGuide( QgsLayoutGuide *guide )
+{
+  int row = mGuides.indexOf( guide );
+  if ( row < 0 )
+    return;
+
+  removeRow( row );
+}
+
 void QgsLayoutGuideCollection::update()
 {
   Q_FOREACH ( QgsLayoutGuide *guide, mGuides )

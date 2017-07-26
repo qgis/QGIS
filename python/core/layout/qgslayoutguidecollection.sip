@@ -183,6 +183,11 @@ class QgsLayoutGuideCollection : QAbstractTableModel
  set.
 %End
 
+    void removeGuide( QgsLayoutGuide *guide );
+%Docstring
+ Removes the specified ``guide``, and deletes it.
+%End
+
     void update();
 %Docstring
  Updates the position (and visibility) of all guide line items.

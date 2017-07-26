@@ -104,7 +104,6 @@ class TestQgsLayoutGuide(unittest.TestCase):
         g.update()
         self.assertFalse(g.item().isVisible())
 
-
     def testCollection(self):
         p = QgsProject()
         l = QgsLayout(p)
@@ -219,6 +218,21 @@ class TestQgsLayoutGuide(unittest.TestCase):
         hoz_page_1_filter.setPage(0)
         self.assertEqual(hoz_page_1_filter.rowCount(QModelIndex()), 1)
         self.assertEqual(hoz_page_1_filter.data(hoz_page_1_filter.index(0, 0), QgsLayoutGuideCollection.PositionRole), 5)
+
+    def testRemoveGuide(self):
+        p = QgsProject()
+        l = QgsLayout(p)
+        l.initializeDefaults() # add a page
+        guides = l.guides()
+
+        # add a guide
+        g1 = QgsLayoutGuide(QgsLayoutGuide.Horizontal, QgsLayoutMeasurement(5, QgsUnitTypes.LayoutCentimeters))
+        guides.addGuide(g1)
+        self.assertEqual(guides.guides(QgsLayoutGuide.Horizontal), [g1])
+        guides.removeGuide(None)
+        self.assertEqual(guides.guides(QgsLayoutGuide.Horizontal), [g1])
+        guides.removeGuide(g1)
+        self.assertEqual(guides.guides(QgsLayoutGuide.Horizontal), [])
 
 
 if __name__ == '__main__':

@@ -668,8 +668,28 @@ void QgsLayoutRuler::mouseReleaseEvent( QMouseEvent *event )
     {
       QApplication::restoreOverrideCursor();
 
-      // TODO - delete guide if outside of page
+      QPointF layoutPoint = convertLocalPointToLayout( event->pos() );
 
+      // delete guide if it ends outside of page
+      QgsLayoutItemPage *page = mView->currentLayout()->pageCollection()->page( mDraggingGuide->page() );
+      bool deleteGuide = false;
+      switch ( mDraggingGuide->orientation() )
+      {
+        case QgsLayoutGuide::Horizontal:
+          if ( layoutPoint.y() < page->scenePos().y() || layoutPoint.y() > page->scenePos().y() + page->rect().height() )
+            deleteGuide = true;
+          break;
+
+        case QgsLayoutGuide::Vertical:
+          if ( layoutPoint.x() < page->scenePos().x() || layoutPoint.x() > page->scenePos().x() + page->rect().width() )
+            deleteGuide = true;
+          break;
+      }
+
+      if ( deleteGuide )
+      {
+        mView->currentLayout()->guides().removeGuide( mDraggingGuide );
+      }
       mDraggingGuide = nullptr;
     }
     else
