@@ -172,7 +172,7 @@ std::unique_ptr<QgsMarkerSymbolLayer> backgroundToMarkerLayer( const QgsTextBack
     {
       QgsSimpleMarkerSymbolLayer *marker = new QgsSimpleMarkerSymbolLayer();
       // default value
-      QgsSimpleMarkerSymbolLayerBase::Shape shape = shape = QgsSimpleMarkerSymbolLayerBase::Diamond;
+      QgsSimpleMarkerSymbolLayerBase::Shape shape = QgsSimpleMarkerSymbolLayerBase::Diamond;
       switch ( settings.type() )
       {
         case QgsTextBackgroundSettings::ShapeCircle:
