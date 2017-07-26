@@ -73,6 +73,19 @@ void QgsLayoutView::setCurrentLayout( QgsLayout *layout )
   mSnapMarker->hide();
   layout->addItem( mSnapMarker.get() );
 
+  if ( mHorizontalRuler )
+  {
+    connect( &layout->guides(), &QAbstractItemModel::dataChanged, mHorizontalRuler, [ = ] { mHorizontalRuler->update(); } );
+    connect( &layout->guides(), &QAbstractItemModel::rowsInserted, mHorizontalRuler, [ = ] { mHorizontalRuler->update(); } );
+    connect( &layout->guides(), &QAbstractItemModel::rowsRemoved, mHorizontalRuler, [ = ] { mHorizontalRuler->update(); } );
+  }
+  if ( mVerticalRuler )
+  {
+    connect( &layout->guides(), &QAbstractItemModel::dataChanged, mVerticalRuler, [ = ] { mVerticalRuler->update(); } );
+    connect( &layout->guides(), &QAbstractItemModel::rowsInserted, mVerticalRuler, [ = ] { mVerticalRuler->update(); } );
+    connect( &layout->guides(), &QAbstractItemModel::rowsRemoved, mVerticalRuler, [ = ] { mVerticalRuler->update(); } );
+  }
+
   //emit layoutSet, so that designer dialogs can update for the new layout
   emit layoutSet( layout );
 }
@@ -148,6 +161,12 @@ void QgsLayoutView::setHorizontalRuler( QgsLayoutRuler *ruler )
 {
   mHorizontalRuler = ruler;
   ruler->setLayoutView( this );
+  if ( QgsLayout *layout = currentLayout() )
+  {
+    connect( &layout->guides(), &QAbstractItemModel::dataChanged, ruler, [ = ] { mHorizontalRuler->update(); } );
+    connect( &layout->guides(), &QAbstractItemModel::rowsInserted, ruler, [ = ] { mHorizontalRuler->update(); } );
+    connect( &layout->guides(), &QAbstractItemModel::rowsRemoved, ruler, [ = ] { mHorizontalRuler->update(); } );
+  }
   viewChanged();
 }
 
@@ -155,6 +174,12 @@ void QgsLayoutView::setVerticalRuler( QgsLayoutRuler *ruler )
 {
   mVerticalRuler = ruler;
   ruler->setLayoutView( this );
+  if ( QgsLayout *layout = currentLayout() )
+  {
+    connect( &layout->guides(), &QAbstractItemModel::dataChanged, ruler, [ = ] { mVerticalRuler->update(); } );
+    connect( &layout->guides(), &QAbstractItemModel::rowsInserted, ruler, [ = ] { mVerticalRuler->update(); } );
+    connect( &layout->guides(), &QAbstractItemModel::rowsRemoved, ruler, [ = ] { mVerticalRuler->update(); } );
+  }
   viewChanged();
 }
 

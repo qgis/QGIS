@@ -207,9 +207,10 @@ class CORE_EXPORT QgsLayoutGuideCollection : public QAbstractTableModel
 
     /**
      * Returns the list of guides contained in the collection with the specified
-     * \a orientation.
+     * \a orientation and on a matching \a page.
+     * If \a page is -1, guides from all pages will be returned.
      */
-    QList< QgsLayoutGuide * > guides( QgsLayoutGuide::Orientation orientation );
+    QList< QgsLayoutGuide * > guides( QgsLayoutGuide::Orientation orientation, int page = -1 );
 
   private:
 

@@ -181,10 +181,11 @@ class QgsLayoutGuideCollection : QAbstractTableModel
  Updates the position (and visibility) of all guide line items.
 %End
 
-    QList< QgsLayoutGuide * > guides( QgsLayoutGuide::Orientation orientation );
+    QList< QgsLayoutGuide * > guides( QgsLayoutGuide::Orientation orientation, int page = -1 );
 %Docstring
  Returns the list of guides contained in the collection with the specified
- ``orientation``.
+ ``orientation`` and on a matching ``page``.
+ If ``page`` is -1, guides from all pages will be returned.
  :rtype: list of QgsLayoutGuide
 %End
 

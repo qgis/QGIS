@@ -117,10 +117,10 @@ double QgsLayoutGuide::layoutPosition() const
   switch ( mOrientation )
   {
     case Horizontal:
-      return mLineItem->line().y1();
+      return mLineItem->mapToScene( mLineItem->line().p1() ).y();
 
     case Vertical:
-      return mLineItem->line().x1();
+      return mLineItem->mapToScene( mLineItem->line().p1() ).x();
   }
   return -999; // avoid warning
 }
@@ -237,6 +237,7 @@ bool QgsLayoutGuideCollection::setData( const QModelIndex &index, const QVariant
       m.setLength( newPos );
       whileBlocking( guide )->setPosition( m );
       guide->update();
+      emit dataChanged( index, index, QVector<int>() << role );
       return true;
     }
     case PositionRole:
@@ -250,6 +251,7 @@ bool QgsLayoutGuideCollection::setData( const QModelIndex &index, const QVariant
       m.setLength( newPos );
       whileBlocking( guide )->setPosition( m );
       guide->update();
+      emit dataChanged( index, index, QVector<int>() << role );
       return true;
     }
     case UnitsRole:
@@ -263,6 +265,7 @@ bool QgsLayoutGuideCollection::setData( const QModelIndex &index, const QVariant
       m.setUnits( static_cast< QgsUnitTypes::LayoutUnit >( units ) );
       whileBlocking( guide )->setPosition( m );
       guide->update();
+      emit dataChanged( index, index, QVector<int>() << role );
       return true;
     }
   }
@@ -325,12 +328,13 @@ void QgsLayoutGuideCollection::update()
   }
 }
 
-QList<QgsLayoutGuide *> QgsLayoutGuideCollection::guides( QgsLayoutGuide::Orientation orientation )
+QList<QgsLayoutGuide *> QgsLayoutGuideCollection::guides( QgsLayoutGuide::Orientation orientation, int page )
 {
   QList<QgsLayoutGuide *> res;
   Q_FOREACH ( QgsLayoutGuide *guide, mGuides )
   {
-    if ( guide->orientation() == orientation && guide->item()->isVisible() )
+    if ( guide->orientation() == orientation && guide->item()->isVisible() &&
+         ( page < 0 || page == guide->page() ) )
       res << guide;
   }
   return res;

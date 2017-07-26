@@ -16,6 +16,7 @@
 #include "qgslayout.h"
 #include "qgis.h"
 #include "qgslayoutview.h"
+#include "qgslogger.h"
 #include <QDragEnterEvent>
 #include <QGraphicsLineItem>
 #include <QPainter>
@@ -52,6 +53,20 @@ QgsLayoutRuler::QgsLayoutRuler( QWidget *parent, Qt::Orientation orientation )
   mPixelsBetweenLineAndText = mRulerMinSize / 10;
   mTextBaseline = mRulerMinSize / 1.667;
   mMinSpacingVerticalLabels = mRulerMinSize / 5;
+
+  double guideMarkerSize = mRulerFontMetrics->width( "*" );
+  switch ( mOrientation )
+  {
+    case Qt::Horizontal:
+      mGuideMarker << QPoint( -guideMarkerSize / 2, mRulerMinSize - guideMarkerSize ) << QPoint( 0, mRulerMinSize ) <<
+                   QPoint( guideMarkerSize / 2, mRulerMinSize - guideMarkerSize );
+      break;
+
+    case Qt::Vertical:
+      mGuideMarker << QPoint( mRulerMinSize - guideMarkerSize, -guideMarkerSize / 2 ) << QPoint( mRulerMinSize, 0 ) <<
+                   QPoint( mRulerMinSize - guideMarkerSize, guideMarkerSize / 2 );
+      break;
+  }
 }
 
 QSize QgsLayoutRuler::minimumSizeHint() const
@@ -69,6 +84,8 @@ void QgsLayoutRuler::paintEvent( QPaintEvent *event )
 
   QgsLayout *layout = mView->currentLayout();
   QPainter p( this );
+
+  drawGuideMarkers( &p, layout );
 
   QTransform t = mTransform.inverted();
   p.setFont( mRulerFont );
@@ -260,6 +277,56 @@ void QgsLayoutRuler::drawMarkerPos( QPainter *painter )
   }
 }
 
+void QgsLayoutRuler::drawGuideMarkers( QPainter *p, QgsLayout *layout )
+{
+  QList< int > visiblePageNumbers = mView->visiblePageNumbers();
+  QList< QgsLayoutGuide * > guides = layout->guides().guides( mOrientation == Qt::Horizontal ? QgsLayoutGuide::Vertical : QgsLayoutGuide::Horizontal );
+  p->save();
+  p->setRenderHint( QPainter::Antialiasing, true );
+  p->setBrush( QBrush( QColor( 255, 0, 0 ) ) );
+  p->setPen( Qt::NoPen );
+  Q_FOREACH ( QgsLayoutGuide *guide, guides )
+  {
+    if ( visiblePageNumbers.contains( guide->page() ) )
+    {
+      QPointF point;
+      switch ( mOrientation )
+      {
+        case Qt::Horizontal:
+          point = QPointF( guide->layoutPosition(), 0 );
+          break;
+
+        case Qt::Vertical:
+          point = QPointF( 0, guide->layoutPosition() );
+          break;
+      }
+      drawGuideAtPos( p, convertLayoutPointToLocal( point ) );
+    }
+  }
+  p->restore();
+}
+
+void QgsLayoutRuler::drawGuideAtPos( QPainter *painter, QPoint pos )
+{
+  switch ( mOrientation )
+  {
+    case Qt::Horizontal:
+    {
+      painter->translate( pos.x(), 0 );
+      painter->drawPolygon( mGuideMarker );
+      painter->translate( -pos.x(), 0 );
+      break;
+    }
+    case Qt::Vertical:
+    {
+      painter->translate( 0, pos.y() );
+      painter->drawPolygon( mGuideMarker );
+      painter->translate( 0, -pos.y() );
+      break;
+    }
+  }
+}
+
 void QgsLayoutRuler::createTemporaryGuideItem()
 {
   mGuideItem.reset( new QGraphicsLineItem() );
@@ -277,6 +344,12 @@ QPointF QgsLayoutRuler::convertLocalPointToLayout( QPoint localPoint ) const
 {
   QPoint viewPoint = mView->mapFromGlobal( mapToGlobal( localPoint ) );
   return  mView->mapToScene( viewPoint );
+}
+
+QPoint QgsLayoutRuler::convertLayoutPointToLocal( QPointF layoutPoint ) const
+{
+  QPoint viewPoint = mView->mapFromScene( layoutPoint );
+  return mapFromGlobal( mView->mapToGlobal( viewPoint ) );
 }
 
 void QgsLayoutRuler::drawRotatedText( QPainter *painter, QPointF pos, const QString &text )
@@ -467,20 +540,19 @@ void QgsLayoutRuler::mouseMoveEvent( QMouseEvent *event )
       linePen.setColor( QColor( 255, 0, 0, 225 ) );
     }
     mGuideItem->setPen( linePen );
-
     switch ( mOrientation )
     {
       case Qt::Horizontal:
       {
         //mouse is creating a horizontal ruler, so don't show x coordinate
-        mGuideItem->setLine( 0, displayPos.y(), page->rect().width(), displayPos.y() );
+        mGuideItem->setLine( page->scenePos().x(), displayPos.y(), page->scenePos().x() + page->rect().width(), displayPos.y() );
         displayPos.setX( 0 );
         break;
       }
       case Qt::Vertical:
       {
         //mouse is creating a vertical ruler, so don't show a y coordinate
-        mGuideItem->setLine( displayPos.x(), 0, displayPos.x(), page->rect().height() );
+        mGuideItem->setLine( displayPos.x(), page->scenePos().y(), displayPos.x(), page->scenePos().y() + page->rect().height() );
         displayPos.setY( 0 );
         break;
       }

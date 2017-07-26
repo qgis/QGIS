@@ -111,6 +111,9 @@ class GUI_EXPORT QgsLayoutRuler: public QWidget
     bool mCreatingGuide = false;
     std::unique_ptr< QGraphicsLineItem > mGuideItem;
 
+    //! Polygon for drawing guide markers
+    QPolygonF mGuideMarker;
+
     //! Calculates the optimum labeled units for ruler so that labels are a good distance apart
     int optimumScale( double minPixelDiff, int &magnitude, int &multiple );
 
@@ -133,9 +136,16 @@ class GUI_EXPORT QgsLayoutRuler: public QWidget
     //! Draw current marker pos on ruler
     void drawMarkerPos( QPainter *painter );
 
+    void drawGuideMarkers( QPainter *painter, QgsLayout *layout );
+
+    //! Draw a guide marker on the ruler
+    void drawGuideAtPos( QPainter *painter, QPoint pos );
+
     void createTemporaryGuideItem();
 
     QPointF convertLocalPointToLayout( QPoint localPoint ) const;
+
+    QPoint convertLayoutPointToLocal( QPointF layoutPoint ) const;
 
 
 };

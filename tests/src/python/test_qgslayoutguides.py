@@ -149,7 +149,12 @@ class TestQgsLayoutGuide(unittest.TestCase):
         self.assertEqual(guides.data(guides.index(2, 0), QgsLayoutGuideCollection.UnitsRole), QgsUnitTypes.LayoutMillimeters)
         self.assertEqual(guides.data(guides.index(2, 0), QgsLayoutGuideCollection.PageRole), 1)
         self.assertEqual(guides.guides(QgsLayoutGuide.Horizontal), [g1, g2])
+        self.assertEqual(guides.guides(QgsLayoutGuide.Horizontal, 0), [g1, g2])
+        self.assertEqual(guides.guides(QgsLayoutGuide.Horizontal, 1), [])
         self.assertEqual(guides.guides(QgsLayoutGuide.Vertical), [g3])
+        self.assertEqual(guides.guides(QgsLayoutGuide.Vertical, 0), [])
+        self.assertEqual(guides.guides(QgsLayoutGuide.Vertical, 1), [g3])
+        self.assertEqual(guides.guides(QgsLayoutGuide.Vertical, 2), [])
 
     def testDeleteRows(self):
         p = QgsProject()
