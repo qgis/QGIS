@@ -30,8 +30,12 @@ import os
 from qgis.PyQt.QtGui import QIcon
 from qgis.PyQt.QtCore import QVariant
 
-from qgis.core import QgsProject, QgsCoordinateTransform, QgsFeature, QgsField, QgsWkbTypes, QgsFeatureSink, QgsProcessingUtils
-from qgis.utils import iface
+from qgis.core import (QgsCoordinateTransform,
+                       QgsField,
+                       QgsWkbTypes,
+                       QgsFeatureSink,
+                       QgsProcessingUtils,
+                       QgsDistanceArea)
 
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 from processing.core.parameters import ParameterVector
@@ -59,6 +63,9 @@ class ExportGeometryInfo(QgisAlgorithm):
 
     def __init__(self):
         super().__init__()
+        self.export_z = False
+        self.export_m = False
+        self.distance_area = None
 
     def initAlgorithm(self, config=None):
         self.calc_methods = [self.tr('Layer CRS'),
@@ -85,8 +92,6 @@ class ExportGeometryInfo(QgisAlgorithm):
         geometryType = layer.geometryType()
         fields = layer.fields()
 
-        export_z = False
-        export_m = False
         if geometryType == QgsWkbTypes.PolygonGeometry:
             areaName = vector.createUniqueFieldName('area', fields)
             fields.append(QgsField(areaName, QVariant.Double))
@@ -101,19 +106,17 @@ class ExportGeometryInfo(QgisAlgorithm):
             yName = vector.createUniqueFieldName('ycoord', fields)
             fields.append(QgsField(yName, QVariant.Double))
             if QgsWkbTypes.hasZ(layer.wkbType()):
-                export_z = True
+                self.export_z = True
                 zName = vector.createUniqueFieldName('zcoord', fields)
                 fields.append(QgsField(zName, QVariant.Double))
             if QgsWkbTypes.hasM(layer.wkbType()):
-                export_m = True
+                self.export_m = True
                 zName = vector.createUniqueFieldName('mvalue', fields)
                 fields.append(QgsField(zName, QVariant.Double))
 
         writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(fields, layer.wkbType(), layer.crs(),
                                                                      context)
 
-        ellips = None
-        crs = None
         coordTransform = None
 
         # Calculate with:
@@ -121,40 +124,29 @@ class ExportGeometryInfo(QgisAlgorithm):
         # 1 - project CRS
         # 2 - ellipsoidal
 
+        self.distance_area = QgsDistanceArea()
         if method == 2:
-            ellips = QgsProject.instance().ellipsoid()
-            crs = layer.crs().srsid()
+            self.distance_area.setSourceCrs(layer.crs())
+            self.distance_area.setEllipsoid(context.project().ellipsoid())
         elif method == 1:
-            mapCRS = iface.mapCanvas().mapSettings().destinationCrs()
-            layCRS = layer.crs()
-            coordTransform = QgsCoordinateTransform(layCRS, mapCRS)
-
-        outFeat = QgsFeature()
-
-        outFeat.initAttributes(len(fields))
-        outFeat.setFields(fields)
+            coordTransform = QgsCoordinateTransform(layer.crs(), context.project().crs())
 
         features = QgsProcessingUtils.getFeatures(layer, context)
         total = 100.0 / layer.featureCount() if layer.featureCount() else 0
         for current, f in enumerate(features):
-            inGeom = f.geometry()
-
-            if method == 1:
-                inGeom.transform(coordTransform)
-
-            (attr1, attr2) = vector.simpleMeasure(inGeom, method, ellips, crs)
-
-            outFeat.setGeometry(inGeom)
+            outFeat = f
             attrs = f.attributes()
-            attrs.append(attr1)
-            if attr2 is not None:
-                attrs.append(attr2)
+            inGeom = f.geometry()
+            if inGeom:
+                if coordTransform is not None:
+                    inGeom.transform(coordTransform)
 
-            # add point z/m
-            if export_z:
-                attrs.append(inGeom.geometry().z())
-            if export_m:
-                attrs.append(inGeom.geometry().m())
+                if inGeom.type() == QgsWkbTypes.PointGeometry:
+                    attrs.extend(self.point_attributes(inGeom))
+                elif inGeom.type() == QgsWkbTypes.PolygonGeometry:
+                    attrs.extend(self.polygon_attributes(inGeom))
+                else:
+                    attrs.extend(self.line_attributes(inGeom))
 
             outFeat.setAttributes(attrs)
             writer.addFeature(outFeat, QgsFeatureSink.FastInsert)
@@ -162,3 +154,29 @@ class ExportGeometryInfo(QgisAlgorithm):
             feedback.setProgress(int(current * total))
 
         del writer
+
+    def point_attributes(self, geometry):
+        pt = None
+        if not geometry.isMultipart():
+            pt = geometry.geometry()
+        else:
+            if geometry.numGeometries() > 0:
+                pt = geometry.geometryN(0)
+        attrs = []
+        if pt:
+            attrs.append(pt.x())
+            attrs.append(pt.y())
+            # add point z/m
+            if self.export_z:
+                attrs.append(pt.z())
+            if self.export_m:
+                attrs.append(pt.m())
+        return attrs
+
+    def line_attributes(self, geometry):
+        return [self.distance_area.measureLength(geometry)]
+
+    def polygon_attributes(self, geometry):
+        area = self.distance_area.measureArea(geometry)
+        perimeter = self.distance_area.measurePerimeter(geometry)
+        return [area, perimeter]

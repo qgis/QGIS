@@ -196,38 +196,6 @@ def extractPoints(geom):
     return points
 
 
-def simpleMeasure(geom, method=0, ellips=None, crs=None):
-    # Method defines calculation type:
-    # 0 - layer CRS
-    # 1 - project CRS
-    # 2 - ellipsoidal
-
-    if geom.type() == QgsWkbTypes.PointGeometry:
-        if not geom.isMultipart():
-            pt = geom.geometry()
-            attr1 = pt.x()
-            attr2 = pt.y()
-        else:
-            pt = geom.asMultiPoint()
-            attr1 = pt[0].x()
-            attr2 = pt[0].y()
-    else:
-        measure = QgsDistanceArea()
-
-        if method == 2:
-            measure.setSourceCrs(crs)
-            measure.setEllipsoid(ellips)
-
-        if geom.type() == QgsWkbTypes.PolygonGeometry:
-            attr1 = measure.measureArea(geom)
-            attr2 = measure.measurePerimeter(geom)
-        else:
-            attr1 = measure.measureLength(geom)
-            attr2 = None
-
-    return (attr1, attr2)
-
-
 def combineFields(fieldsA, fieldsB):
     """Create single field map from two input field maps.
     """

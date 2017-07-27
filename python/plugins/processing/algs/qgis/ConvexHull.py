@@ -37,7 +37,8 @@ from qgis.core import (QgsField,
                        QgsGeometry,
                        QgsWkbTypes,
                        QgsProcessingUtils,
-                       QgsFields)
+                       QgsFields,
+                       NULL)
 
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
@@ -145,7 +146,12 @@ class ConvexHull(QgisAlgorithm):
                     tmpGeom = QgsGeometry(outGeom.fromMultiPoint(hull))
                     try:
                         outGeom = tmpGeom.convexHull()
-                        (area, perim) = vector.simpleMeasure(outGeom)
+                        if outGeom:
+                            area = outGeom.geometry().area()
+                            perim = outGeom.geometry().perimeter()
+                        else:
+                            area = NULL
+                            perim = NULL
                         outFeat.setGeometry(outGeom)
                         outFeat.setAttributes([fid, val, area, perim])
                         writer.addFeature(outFeat, QgsFeatureSink.FastInsert)
@@ -166,7 +172,12 @@ class ConvexHull(QgisAlgorithm):
             tmpGeom = QgsGeometry(outGeom.fromMultiPoint(hull))
             try:
                 outGeom = tmpGeom.convexHull()
-                (area, perim) = vector.simpleMeasure(outGeom)
+                if outGeom:
+                    area = outGeom.geometry().area()
+                    perim = outGeom.geometry().perimeter()
+                else:
+                    area = NULL
+                    perim = NULL
                 outFeat.setGeometry(outGeom)
                 outFeat.setAttributes([0, 'all', area, perim])
                 writer.addFeature(outFeat, QgsFeatureSink.FastInsert)
