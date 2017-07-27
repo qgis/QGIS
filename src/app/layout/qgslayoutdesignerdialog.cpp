@@ -125,8 +125,12 @@ QgsLayoutDesignerDialog::QgsLayoutDesignerDialog( QWidget *parent, Qt::WindowFla
   connect( mActionShowRulers, &QAction::triggered, this, &QgsLayoutDesignerDialog::showRulers );
 
   QMenu *rulerMenu = new QMenu( this );
+  rulerMenu->addAction( mActionShowGuides );
+  rulerMenu->addAction( mActionSnapGuides );
   rulerMenu->addAction( mActionManageGuides );
   rulerMenu->addAction( mActionClearGuides );
+  rulerMenu->addSeparator();
+  rulerMenu->addAction( mActionShowRulers );
   mHorizontalRuler->setContextMenu( rulerMenu );
   mVerticalRuler->setContextMenu( rulerMenu );
 
