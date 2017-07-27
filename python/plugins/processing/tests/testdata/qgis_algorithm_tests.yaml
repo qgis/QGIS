@@ -2248,19 +2248,19 @@ tests:
         type: vector
         in_place_result: true
 
-#  - algorithm: qgis:createspatialindex
-#    name: Create spatial index
-#    params:
-#      INPUT:
-#        name: custom/points.shp
-#        type: vector
-#        in_place: true
-#    results:
-#      INPUT:
-#        name: expected/create_attr_index_points.shp
-#        type: vector
-#        in_place_result: true
-#
+  - algorithm: qgis:createspatialindex
+    name: Create spatial index
+    params:
+      INPUT:
+        name: custom/points.shp
+        type: vector
+        in_place: true
+    results:
+      INPUT:
+        name: expected/create_attr_index_points.shp
+        type: vector
+        in_place_result: true
+
 #  - algorithm: qgis:truncatetable
 #    name: Truncate table
 #    params:

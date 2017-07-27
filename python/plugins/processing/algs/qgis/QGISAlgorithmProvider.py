@@ -109,6 +109,7 @@ from .Slope import Slope
 from .Smooth import Smooth
 from .SnapGeometries import SnapGeometriesToLayer
 from .SpatialiteExecuteSQL import SpatialiteExecuteSQL
+from .SpatialIndex import SpatialIndex
 from .SumLines import SumLines
 from .SymmetricalDifference import SymmetricalDifference
 from .TextToFloat import TextToFloat
@@ -155,7 +156,6 @@ from .ZonalStatistics import ZonalStatistics
 # from .FieldsMapper import FieldsMapper
 # from .Datasources2Vrt import Datasources2Vrt
 # from .OrientedMinimumBoundingBox import OrientedMinimumBoundingBox
-# from .SpatialIndex import SpatialIndex
 # from .DefineProjection import DefineProjection
 # from .RectanglesOvalsDiamondsVariable import RectanglesOvalsDiamondsVariable
 # from .RectanglesOvalsDiamondsFixed import RectanglesOvalsDiamondsFixed
@@ -211,7 +211,7 @@ class QGISAlgorithmProvider(QgsProcessingProvider):
         #         SplitWithLines(), CreateConstantRaster(),
         #         FieldsMapper(), SelectByAttributeSum(), Datasources2Vrt(),
         #         OrientedMinimumBoundingBox(),
-        #         SpatialIndex(), DefineProjection(),
+        #         DefineProjection(),
         #         RectanglesOvalsDiamondsVariable(),
         #         RectanglesOvalsDiamondsFixed(),
         #         PointsAlongGeometry(),
@@ -294,6 +294,7 @@ class QGISAlgorithmProvider(QgsProcessingProvider):
                 Smooth(),
                 SnapGeometriesToLayer(),
                 SpatialiteExecuteSQL(),
+                SpatialIndex(),
                 SumLines(),
                 SymmetricalDifference(),
                 TextToFloat(),
