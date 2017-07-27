@@ -77,10 +77,11 @@ class QgsLayoutSnapper
  :rtype: QPointF
 %End
 
-    QPointF snapPointToGrid( QPointF point, double scaleFactor, bool &snapped /Out/ ) const;
+    QPointF snapPointToGrid( QPointF point, double scaleFactor, bool &snappedX /Out/, bool &snappedY /Out/ ) const;
 %Docstring
  Snaps a layout coordinate ``point`` to the grid. If ``point``
- was snapped, ``snapped`` will be set to true.
+ was snapped horizontally, ``snappedX`` will be set to true. If ``point``
+ was snapped vertically, ``snappedY`` will be set to true.
 
  The ``scaleFactor`` argument should be set to the transformation from
  scalar transform from layout coordinates to pixels, i.e. the

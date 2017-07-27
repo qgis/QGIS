@@ -21,10 +21,9 @@ from qgis.core import (QgsProject,
                        QgsLayoutMeasurement,
                        QgsUnitTypes,
                        QgsLayoutPoint,
-                       QgsLayoutItemPage)
+                       QgsLayoutItemPage,
+                       QgsLayoutGuide)
 from qgis.PyQt.QtCore import QPointF
-from qgis.PyQt.QtGui import (QPen,
-                             QColor)
 
 from qgis.testing import start_app, unittest
 
@@ -65,50 +64,103 @@ class TestQgsLayoutSnapper(unittest.TestCase):
         s.setSnapToGrid(True)
         s.setSnapTolerance(1)
 
-        point, snapped = s.snapPointToGrid(QPointF(1, 1), 1)
-        self.assertTrue(snapped)
+        point, snappedX, snappedY = s.snapPointToGrid(QPointF(1, 1), 1)
+        self.assertTrue(snappedX)
+        self.assertTrue(snappedY)
         self.assertEqual(point, QPointF(0, 0))
 
-        point, snapped = s.snapPointToGrid(QPointF(9, 1), 1)
-        self.assertTrue(snapped)
+        point, snappedX, snappedY = s.snapPointToGrid(QPointF(9, 1), 1)
+        self.assertTrue(snappedX)
+        self.assertTrue(snappedY)
         self.assertEqual(point, QPointF(10, 0))
 
-        point, snapped = s.snapPointToGrid(QPointF(1, 11), 1)
-        self.assertTrue(snapped)
+        point, snappedX, snappedY = s.snapPointToGrid(QPointF(1, 11), 1)
+        self.assertTrue(snappedX)
+        self.assertTrue(snappedY)
         self.assertEqual(point, QPointF(0, 10))
 
-        point, snapped = s.snapPointToGrid(QPointF(13, 11), 1)
-        self.assertTrue(snapped)
+        point, snappedX, snappedY = s.snapPointToGrid(QPointF(13, 11), 1)
+        self.assertFalse(snappedX)
+        self.assertTrue(snappedY)
         self.assertEqual(point, QPointF(13, 10))
 
-        point, snapped = s.snapPointToGrid(QPointF(11, 13), 1)
-        self.assertTrue(snapped)
+        point, snappedX, snappedY = s.snapPointToGrid(QPointF(11, 13), 1)
+        self.assertTrue(snappedX)
+        self.assertFalse(snappedY)
         self.assertEqual(point, QPointF(10, 13))
 
-        point, snapped = s.snapPointToGrid(QPointF(13, 23), 1)
-        self.assertFalse(snapped)
+        point, snappedX, snappedY = s.snapPointToGrid(QPointF(13, 23), 1)
+        self.assertFalse(snappedX)
+        self.assertFalse(snappedY)
         self.assertEqual(point, QPointF(13, 23))
 
         # grid disabled
         s.setSnapToGrid(False)
-        point, snapped = s.snapPointToGrid(QPointF(1, 1), 1)
-        self.assertFalse(snapped)
+        point, nappedX, snappedY = s.snapPointToGrid(QPointF(1, 1), 1)
+        self.assertFalse(nappedX)
+        self.assertFalse(snappedY)
         self.assertEqual(point, QPointF(1, 1))
         s.setSnapToGrid(True)
 
         # with different pixel scale
-        point, snapped = s.snapPointToGrid(QPointF(0.5, 0.5), 1)
-        self.assertTrue(snapped)
+        point, snappedX, snappedY = s.snapPointToGrid(QPointF(0.5, 0.5), 1)
+        self.assertTrue(snappedX)
+        self.assertTrue(snappedY)
         self.assertEqual(point, QPointF(0, 0))
-        point, snapped = s.snapPointToGrid(QPointF(0.5, 0.5), 3)
-        self.assertFalse(snapped)
+        point, snappedX, snappedY = s.snapPointToGrid(QPointF(0.5, 0.5), 3)
+        self.assertFalse(snappedX)
+        self.assertFalse(snappedY)
         self.assertEqual(point, QPointF(0.5, 0.5))
 
         # with offset grid
         l.gridSettings().setOffset(QgsLayoutPoint(2, 0))
-        point, snapped = s.snapPointToGrid(QPointF(13, 23), 1)
-        self.assertTrue(snapped)
+        point, snappedX, snappedY = s.snapPointToGrid(QPointF(13, 23), 1)
+        self.assertTrue(snappedX)
+        self.assertFalse(snappedY)
         self.assertEqual(point, QPointF(12, 23))
+
+    def testSnapPointToGuides(self):
+        p = QgsProject()
+        l = QgsLayout(p)
+        page = QgsLayoutItemPage(l)
+        page.setPageSize('A4')
+        l.pageCollection().addPage(page)
+        s = QgsLayoutSnapper(l)
+        guides = l.guides()
+
+        s.setSnapToGuides(True)
+        s.setSnapTolerance(1)
+
+        # no guides
+        point, snapped = s.snapPointToGuides(0.5, QgsLayoutGuide.Vertical, 1)
+        self.assertFalse(snapped)
+
+        guides.addGuide(QgsLayoutGuide(QgsLayoutGuide.Vertical, QgsLayoutMeasurement(1)))
+        point, snapped = s.snapPointToGuides(0.5, QgsLayoutGuide.Vertical, 1)
+        self.assertTrue(snapped)
+        self.assertEqual(point, 1)
+
+        # outside tolerance
+        point, snapped = s.snapPointToGuides(5.5, QgsLayoutGuide.Vertical, 1)
+        self.assertFalse(snapped)
+
+        # snapping off
+        s.setSnapToGuides(False)
+        point, snapped = s.snapPointToGuides(0.5, QgsLayoutGuide.Vertical, 1)
+        self.assertFalse(snapped)
+
+        s.setSnapToGuides(True)
+        # snap to hoz
+        point, snapped = s.snapPointToGuides(0.5, QgsLayoutGuide.Horizontal, 1)
+        self.assertFalse(snapped)
+        guides.addGuide(QgsLayoutGuide(QgsLayoutGuide.Horizontal, QgsLayoutMeasurement(1)))
+        point, snapped = s.snapPointToGuides(0.5, QgsLayoutGuide.Horizontal, 1)
+        self.assertTrue(snapped)
+        self.assertEqual(point, 1)
+
+        # with different pixel scale
+        point, snapped = s.snapPointToGuides(0.5, QgsLayoutGuide.Horizontal, 3)
+        self.assertFalse(snapped)
 
     def testSnapPoint(self):
         p = QgsProject()
@@ -117,6 +169,7 @@ class TestQgsLayoutSnapper(unittest.TestCase):
         page.setPageSize('A4')
         l.pageCollection().addPage(page)
         s = QgsLayoutSnapper(l)
+        guides = l.guides()
 
         # first test snapping to grid
         l.gridSettings().setResolution(QgsLayoutMeasurement(5, QgsUnitTypes.LayoutMillimeters))
@@ -131,6 +184,14 @@ class TestQgsLayoutSnapper(unittest.TestCase):
         point, snapped = s.snapPoint(QPointF(1, 1), 1)
         self.assertFalse(snapped)
         self.assertEqual(point, QPointF(1, 1))
+
+        # test that guide takes precedence
+        s.setSnapToGrid(True)
+        s.setSnapToGuides(True)
+        guides.addGuide(QgsLayoutGuide(QgsLayoutGuide.Horizontal, QgsLayoutMeasurement(0.5)))
+        point, snapped = s.snapPoint(QPointF(1, 1), 1)
+        self.assertTrue(snapped)
+        self.assertEqual(point, QPointF(0, 0.5))
 
 
 if __name__ == '__main__':

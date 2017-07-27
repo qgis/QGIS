@@ -26,36 +26,43 @@ QPointF QgsLayoutSnapper::snapPoint( QPointF point, double scaleFactor, bool &sn
 {
   snapped = false;
 
-  // highest priority - grid
-  bool snappedToGrid = false;
-  QPointF res = snapPointToGrid( point, scaleFactor, snappedToGrid );
-  if ( snappedToGrid )
-  {
-    snapped = true;
-    return res;
-  }
-
-  bool snappedToHozGuides = false;
-  double newX = snapPointToGuides( point.x(), QgsLayoutGuide::Vertical, scaleFactor, snappedToHozGuides );
-  if ( snappedToHozGuides )
+  // highest priority - guides
+  bool snappedXToGuides = false;
+  double newX = snapPointToGuides( point.x(), QgsLayoutGuide::Vertical, scaleFactor, snappedXToGuides );
+  if ( snappedXToGuides )
   {
     snapped = true;
     point.setX( newX );
   }
-  bool snappedToVertGuides = false;
-  double newY = snapPointToGuides( point.y(), QgsLayoutGuide::Horizontal, scaleFactor, snappedToVertGuides );
-  if ( snappedToVertGuides )
+  bool snappedYToGuides = false;
+  double newY = snapPointToGuides( point.y(), QgsLayoutGuide::Horizontal, scaleFactor, snappedYToGuides );
+  if ( snappedYToGuides )
   {
     snapped = true;
     point.setY( newY );
   }
 
+  bool snappedXToGrid = false;
+  bool snappedYToGrid = false;
+  QPointF res = snapPointToGrid( point, scaleFactor, snappedXToGrid, snappedYToGrid );
+  if ( snappedXToGrid && !snappedXToGuides )
+  {
+    snapped = true;
+    point.setX( res.x() );
+  }
+  if ( snappedYToGrid && !snappedYToGuides )
+  {
+    snapped = true;
+    point.setY( res.y() );
+  }
+
   return point;
 }
 
-QPointF QgsLayoutSnapper::snapPointToGrid( QPointF point, double scaleFactor, bool &snapped ) const
+QPointF QgsLayoutSnapper::snapPointToGrid( QPointF point, double scaleFactor, bool &snappedX, bool &snappedY ) const
 {
-  snapped = false;
+  snappedX = false;
+  snappedY = false;
   if ( !mLayout || !mSnapToGrid )
   {
     return point;
@@ -89,7 +96,7 @@ QPointF QgsLayoutSnapper::snapPointToGrid( QPointF point, double scaleFactor, bo
   }
   else
   {
-    snapped = true;
+    snappedX = true;
   }
   if ( fabs( ySnapped - point.y() ) > alignThreshold )
   {
@@ -98,7 +105,7 @@ QPointF QgsLayoutSnapper::snapPointToGrid( QPointF point, double scaleFactor, bo
   }
   else
   {
-    snapped = true;
+    snappedY = true;
   }
 
   return QPointF( xSnapped, ySnapped );

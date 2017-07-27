@@ -90,7 +90,8 @@ class CORE_EXPORT QgsLayoutSnapper
 
     /**
      * Snaps a layout coordinate \a point to the grid. If \a point
-     * was snapped, \a snapped will be set to true.
+     * was snapped horizontally, \a snappedX will be set to true. If \a point
+     * was snapped vertically, \a snappedY will be set to true.
      *
      * The \a scaleFactor argument should be set to the transformation from
      * scalar transform from layout coordinates to pixels, i.e. the
@@ -99,7 +100,7 @@ class CORE_EXPORT QgsLayoutSnapper
      * If snapToGrid() is disabled, this method will return the point
      * unchanged.
      */
-    QPointF snapPointToGrid( QPointF point, double scaleFactor, bool &snapped SIP_OUT ) const;
+    QPointF snapPointToGrid( QPointF point, double scaleFactor, bool &snappedX SIP_OUT, bool &snappedY SIP_OUT ) const;
 
     /**
      * Snaps a layout coordinate \a point to the grid. If \a point
