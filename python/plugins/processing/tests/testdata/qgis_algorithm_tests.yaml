@@ -389,18 +389,18 @@ tests:
 #        compare:
 #          geometry:
 #            precision: 7
-#
-#  - algorithm: qgis:mergelines
-#    name: Merge lines algorithm
-#    params:
-#      INPUT_LAYER:
-#        name: multilines.gml
-#        type: vector
-#    results:
-#      OUTPUT_LAYER:
-#        name: expected/merge_lines.gml
-#        type: vector
-#
+
+  - algorithm: qgis:mergelines
+    name: Merge lines algorithm
+    params:
+      INPUT:
+        name: multilines.gml
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/merge_lines.gml
+        type: vector
+
   - algorithm: native:multiparttosingleparts
     name: Multiparts to singleparts
     params:
@@ -1095,17 +1095,29 @@ tests:
         name: expected/smoothed_lines_max_angle.gml
         type: vector
 
-#  - algorithm: qgis:exportaddgeometrycolumns
-#    name: Add Geometry PointZ
-#    params:
-#      CALC_METHOD: '0'
-#      INPUT:
-#        name: pointsz.gml
-#        type: vector
-#    results:
-#      OUTPUT:
-#        name: expected/add_geometry_pointz.gml
-#        type: vector
+  - algorithm: qgis:exportaddgeometrycolumns
+    name: Add Geometry PointZ
+    params:
+      CALC_METHOD: '0'
+      INPUT:
+        name: pointsz.gml
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/add_geometry_pointz.gml
+        type: vector
+
+  - algorithm: qgis:texttofloat
+    name: Text to float
+    params:
+      FIELD: 'text_float'
+      INPUT:
+        name: custom/text_to_float.gml
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/text_to_float.gml
+        type: vector
 
   - algorithm: qgis:countpointsinpolygon
     name: Count points in polygon
@@ -1202,6 +1214,19 @@ tests:
 #      OUTPUT_LAYER:
 #        hash: 7fe0e0174185fd743e23760f33615adf10f771b4275f320db6f7f4f8
 #        type: rasterhash
+
+  - algorithm: qgis:createconstantrasterlayer
+    name: Create constant raster
+    params:
+      INPUT:
+        name: raster.tif
+        type: raster
+      NUMBER: 3.0
+    results:
+      OUTPUT:
+        hash: 4cb3e82e8512cdbb75d9c39a10adc818dd6842c5dc6361fbc43dd9aa
+        type: rasterhash
+
 
   # Case 1: Keep all fields
   - algorithm: qgis:lineintersections
@@ -1704,56 +1729,56 @@ tests:
         name: expected/create_points.gml
         type: vector
 
-#  - algorithm: qgis:splitwithlines
-#    name: Split lines with lines (new alg)
-#    params:
-#      INPUT_A:
-#        name: lines.gml
-#        type: vector
-#      INPUT_B:
-#        name: custom/lines2.gml
-#        type: vector
-#    results:
-#      OUTPUT:
-#        name: expected/split_lines_with_lines.gml
-#        type: vector
-#        compare:
-#          geometry:
-#            precision: 7
-#
-#  - algorithm: qgis:splitwithlines
-#    name: Split poly with lines
-#    params:
-#      INPUT_A:
-#        name: polys.gml
-#        type: vector
-#      INPUT_B:
-#        name: lines.gml
-#        type: vector
-#    results:
-#      OUTPUT:
-#        name: expected/split_polys_with_lines.gml
-#        type: vector
-#        compare:
-#          geometry:
-#            precision: 7
-#
-#  - algorithm: qgis:splitwithlines
-#    name: Split lines with same lines
-#    params:
-#      INPUT_A:
-#        name: lines.gml
-#        type: vector
-#      INPUT_B:
-#        name: lines.gml
-#        type: vector
-#    results:
-#      OUTPUT:
-#        name: expected/split_lines_with_lines_same.gml
-#        type: vector
-#        compare:
-#          geometry:
-#            precision: 7
+  - algorithm: qgis:splitwithlines
+    name: Split lines with lines (new alg)
+    params:
+      INPUT:
+        name: lines.gml
+        type: vector
+      LINES:
+        name: custom/lines2.gml
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/split_lines_with_lines.gml
+        type: vector
+        compare:
+          geometry:
+            precision: 7
+
+  - algorithm: qgis:splitwithlines
+    name: Split poly with lines
+    params:
+      INPUT:
+        name: polys.gml
+        type: vector
+      LINES:
+        name: lines.gml
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/split_polys_with_lines.gml
+        type: vector
+        compare:
+          geometry:
+            precision: 7
+
+  - algorithm: qgis:splitwithlines
+    name: Split lines with same lines
+    params:
+      INPUT:
+        name: lines.gml
+        type: vector
+      LINES:
+        name: lines.gml
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/split_lines_with_lines_same.gml
+        type: vector
+        compare:
+          geometry:
+            precision: 7
 
   - algorithm: qgis:dropgeometries
     name: Drop geometries
@@ -2236,31 +2261,31 @@ tests:
         type: vector
         in_place_result: true
 
-#  - algorithm: qgis:createspatialindex
-#    name: Create spatial index
-#    params:
-#      INPUT:
-#        name: custom/points.shp
-#        type: vector
-#        in_place: true
-#    results:
-#      INPUT:
-#        name: expected/create_attr_index_points.shp
-#        type: vector
-#        in_place_result: true
-#
-#  - algorithm: qgis:truncatetable
-#    name: Truncate table
-#    params:
-#      INPUT:
-#        name: custom/points.shp
-#        type: vector
-#        in_place: true
-#    results:
-#      INPUT:
-#        name: expected/truncated.shp
-#        type: vector
-#        in_place_result: true
+  - algorithm: qgis:createspatialindex
+    name: Create spatial index
+    params:
+      INPUT:
+        name: custom/points.shp
+        type: vector
+        in_place: true
+    results:
+      INPUT:
+        name: expected/create_attr_index_points.shp
+        type: vector
+        in_place_result: true
+
+  - algorithm: qgis:truncatetable
+    name: Truncate table
+    params:
+      INPUT:
+        name: custom/points.shp
+        type: vector
+        in_place: true
+    results:
+      INPUT:
+        name: expected/truncated.shp
+        type: vector
+        in_place_result: true
 
   - algorithm: qgis:distancematrix
     name: Distance matrix (only tests for run, does not check result as rows are in random order)
@@ -2380,18 +2405,17 @@ tests:
         name: expected/valid.gml
         type: vector
 
-#  - algorithm: qgis:polygonize
-#    name: Polygonize
-#    params:
-#      FIELDS: false
-#      GEOMETRY: true
-#      INPUT:
-#        name: custom/polygonize_lines.gml
-#        type: vector
-#    results:
-#      OUTPUT:
-#        name: expected/polygonize.gml
-#        type: vector
+  - algorithm: qgis:polygonize
+    name: Polygonize
+    params:
+      KEEP_FIELDS: false
+      INPUT:
+        name: custom/polygonize_lines.gml
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/polygonize.gml
+        type: vector
 
   - algorithm: qgis:voronoipolygons
     name: Standard voronoi
@@ -2416,6 +2440,34 @@ tests:
       OUTPUT:
         name: expected/voronoi_buffer.gml
         type: vector
+
+  - algorithm: qgis:explodelines
+    name: Explode lines
+    params:
+      INPUT:
+        name: lines.gml
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/explode_lines.gml
+        type: vector
+        compare:
+          fields:
+            fid: skip
+
+  - algorithm: qgis:explodelines
+    name: Explode multilines
+    params:
+      INPUT:
+        name: multilines.gml
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/explode_multilines.gml
+        type: vector
+        compare:
+          fields:
+            fid: skip
 
 #  - algorithm: qgis:findprojection
 #    name: Find projection

@@ -14,22 +14,16 @@
   <gml:featureMember>
     <ogr:polygonize fid="polygonize.0">
       <ogr:geometryProperty><gml:Polygon srsName="EPSG:4326"><gml:outerBoundaryIs><gml:LinearRing><gml:coordinates>-0.6,0.2 0.0,0.2 0.6,0.2 -0.6,-0.314285714285714 -0.6,0.2</gml:coordinates></gml:LinearRing></gml:outerBoundaryIs></gml:Polygon></ogr:geometryProperty>
-      <ogr:area>0.31</ogr:area>
-      <ogr:perimeter>3.02</ogr:perimeter>
     </ogr:polygonize>
   </gml:featureMember>
   <gml:featureMember>
     <ogr:polygonize fid="polygonize.1">
       <ogr:geometryProperty><gml:Polygon srsName="EPSG:4326"><gml:outerBoundaryIs><gml:LinearRing><gml:coordinates>0.0,0.2 -0.6,0.2 -0.6,0.4 0.0,0.4 0.0,0.2</gml:coordinates></gml:LinearRing></gml:outerBoundaryIs></gml:Polygon></ogr:geometryProperty>
-      <ogr:area>0.12</ogr:area>
-      <ogr:perimeter>1.60</ogr:perimeter>
     </ogr:polygonize>
   </gml:featureMember>
   <gml:featureMember>
     <ogr:polygonize fid="polygonize.2">
       <ogr:geometryProperty><gml:Polygon srsName="EPSG:4326"><gml:outerBoundaryIs><gml:LinearRing><gml:coordinates>-0.6,0.4 -0.6,0.6 0.0,0.6 0.0,0.4 -0.6,0.4</gml:coordinates></gml:LinearRing></gml:outerBoundaryIs></gml:Polygon></ogr:geometryProperty>
-      <ogr:area>0.12</ogr:area>
-      <ogr:perimeter>1.60</ogr:perimeter>
     </ogr:polygonize>
   </gml:featureMember>
 </ogr:FeatureCollection>
