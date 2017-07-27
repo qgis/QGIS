@@ -73,6 +73,7 @@ from .LinesIntersection import LinesIntersection
 from .LinesToPolygons import LinesToPolygons
 from .MeanCoords import MeanCoords
 from .Merge import Merge
+from .MergeLines import MergeLines
 from .NearestNeighbourAnalysis import NearestNeighbourAnalysis
 from .OffsetLine import OffsetLine
 from .Orthogonalize import Orthogonalize
@@ -158,7 +159,6 @@ from .ZonalStatistics import ZonalStatistics
 # from .DefineProjection import DefineProjection
 # from .RectanglesOvalsDiamondsVariable import RectanglesOvalsDiamondsVariable
 # from .RectanglesOvalsDiamondsFixed import RectanglesOvalsDiamondsFixed
-# from .MergeLines import MergeLines
 # from .PointsAlongGeometry import PointsAlongGeometry
 # from .Relief import Relief
 # from .IdwInterpolation import IdwInterpolation
@@ -213,7 +213,7 @@ class QGISAlgorithmProvider(QgsProcessingProvider):
         #         OrientedMinimumBoundingBox(),
         #         SpatialIndex(), DefineProjection(),
         #         RectanglesOvalsDiamondsVariable(),
-        #         RectanglesOvalsDiamondsFixed(), MergeLines(),
+        #         RectanglesOvalsDiamondsFixed(),
         #         PointsAlongGeometry(),
         #         Relief(),
         #         IdwInterpolation(), TinInterpolation(),
@@ -258,6 +258,7 @@ class QGISAlgorithmProvider(QgsProcessingProvider):
                 LinesToPolygons(),
                 MeanCoords(),
                 Merge(),
+                MergeLines(),
                 NearestNeighbourAnalysis(),
                 OffsetLine(),
                 Orthogonalize(),
