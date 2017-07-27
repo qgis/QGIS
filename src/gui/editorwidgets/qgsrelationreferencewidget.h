@@ -185,6 +185,7 @@ class GUI_EXPORT QgsRelationReferenceWidget : public QWidget
   private:
     void highlightFeature( QgsFeature f = QgsFeature(), CanvasExtent canvasExtent = Fixed );
     void updateAttributeEditorFrame( const QgsFeature &feature );
+    void disableChainedComboBoxes( const QComboBox *cb );
 
     // initialized
     QgsAttributeEditorContext mEditorContext;
