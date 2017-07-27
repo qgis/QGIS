@@ -17,6 +17,7 @@
 
 #include "qgscomposeritem.h"
 #include <QWidget>
+#include <QPointer>
 #include "qgis_gui.h"
 
 class QgsLayout;
@@ -117,6 +118,7 @@ class GUI_EXPORT QgsLayoutRuler: public QWidget
 
     int mDragGuideTolerance = 0;
     QgsLayoutGuide *mDraggingGuide = nullptr;
+    QgsLayoutGuide *mHoverGuide = nullptr;
 
     bool mCreatingGuide = false;
     std::unique_ptr< QGraphicsLineItem > mGuideItem;
@@ -124,7 +126,7 @@ class GUI_EXPORT QgsLayoutRuler: public QWidget
     //! Polygon for drawing guide markers
     QPolygonF mGuideMarker;
 
-    QMenu *mMenu = nullptr;
+    QPointer< QMenu > mMenu;
 
     //! Calculates the optimum labeled units for ruler so that labels are a good distance apart
     int optimumScale( double minPixelDiff, int &magnitude, int &multiple );
@@ -159,6 +161,11 @@ class GUI_EXPORT QgsLayoutRuler: public QWidget
 
     QPoint convertLayoutPointToLocal( QPointF layoutPoint ) const;
 
+    /**
+     * Returns the closest guide to a local ruler point, or nullptr if no guides
+     * are within the acceptable tolerance of the point.
+     */
+    QgsLayoutGuide *guideAtPoint( QPoint localPoint ) const;
 
 };
 

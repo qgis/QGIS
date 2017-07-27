@@ -285,12 +285,19 @@ void QgsLayoutRuler::drawGuideMarkers( QPainter *p, QgsLayout *layout )
   QList< QgsLayoutGuide * > guides = layout->guides().guides( mOrientation == Qt::Horizontal ? QgsLayoutGuide::Vertical : QgsLayoutGuide::Horizontal );
   p->save();
   p->setRenderHint( QPainter::Antialiasing, true );
-  p->setBrush( QBrush( QColor( 255, 0, 0 ) ) );
   p->setPen( Qt::NoPen );
   Q_FOREACH ( QgsLayoutGuide *guide, guides )
   {
     if ( visiblePageNumbers.contains( guide->page() ) )
     {
+      if ( guide == mHoverGuide )
+      {
+        p->setBrush( QBrush( QColor( 255, 0, 0, 225 ) ) );
+      }
+      else
+      {
+        p->setBrush( QBrush( QColor( 255, 0, 0, 150 ) ) );
+      }
       QPointF point;
       switch ( mOrientation )
       {
@@ -352,6 +359,46 @@ QPoint QgsLayoutRuler::convertLayoutPointToLocal( QPointF layoutPoint ) const
 {
   QPoint viewPoint = mView->mapFromScene( layoutPoint );
   return mapFromGlobal( mView->mapToGlobal( viewPoint ) );
+}
+
+QgsLayoutGuide *QgsLayoutRuler::guideAtPoint( QPoint localPoint ) const
+{
+  QPointF layoutPoint = convertLocalPointToLayout( localPoint );
+  QList< int > visiblePageNumbers = mView->visiblePageNumbers();
+  QList< QgsLayoutGuide * > guides = mView->currentLayout()->guides().guides( mOrientation == Qt::Horizontal ? QgsLayoutGuide::Vertical : QgsLayoutGuide::Horizontal );
+  QgsLayoutGuide *closestGuide = nullptr;
+  double minDelta = DBL_MAX;
+  Q_FOREACH ( QgsLayoutGuide *guide, guides )
+  {
+    if ( visiblePageNumbers.contains( guide->page() ) )
+    {
+      double currentDelta = 0;
+      switch ( mOrientation )
+      {
+        case Qt::Horizontal:
+          currentDelta = qAbs( layoutPoint.x() - guide->layoutPosition() );
+          break;
+
+        case Qt::Vertical:
+          currentDelta = qAbs( layoutPoint.y() - guide->layoutPosition() );
+          break;
+      }
+      if ( currentDelta < minDelta )
+      {
+        minDelta = currentDelta;
+        closestGuide = guide;
+      }
+    }
+  }
+
+  if ( minDelta * mView->transform().m11() <= mDragGuideTolerance )
+  {
+    return closestGuide;
+  }
+  else
+  {
+    return nullptr;
+  }
 }
 
 void QgsLayoutRuler::drawRotatedText( QPainter *painter, QPointF pos, const QString &text )
@@ -589,6 +636,17 @@ void QgsLayoutRuler::mouseMoveEvent( QMouseEvent *event )
   }
   else
   {
+    // is cursor over a guide marker?
+    mHoverGuide = guideAtPoint( event->pos() );
+    if ( mHoverGuide )
+    {
+      setCursor( mOrientation == Qt::Vertical ? Qt::SplitVCursor : Qt::SplitHCursor );
+    }
+    else
+    {
+      setCursor( Qt::ArrowCursor );
+    }
+
     //update cursor position in status bar
     displayPos = mTransform.inverted().map( event->posF() );
     switch ( mOrientation )
@@ -614,41 +672,10 @@ void QgsLayoutRuler::mousePressEvent( QMouseEvent *event )
 {
   if ( event->button() == Qt::LeftButton )
   {
-    // was click on an existing guide? huh?? was it??
-    QPointF layoutPoint = convertLocalPointToLayout( event->pos() );
-    QList< int > visiblePageNumbers = mView->visiblePageNumbers();
-    QList< QgsLayoutGuide * > guides = mView->currentLayout()->guides().guides( mOrientation == Qt::Horizontal ? QgsLayoutGuide::Vertical : QgsLayoutGuide::Horizontal );
-    QgsLayoutGuide *closestGuide = nullptr;
-    double minDelta = DBL_MAX;
-    Q_FOREACH ( QgsLayoutGuide *guide, guides )
+    mDraggingGuide = guideAtPoint( event->pos() );
+    if ( !mDraggingGuide )
     {
-      if ( visiblePageNumbers.contains( guide->page() ) )
-      {
-        double currentDelta = 0;
-        switch ( mOrientation )
-        {
-          case Qt::Horizontal:
-            currentDelta = qAbs( layoutPoint.x() - guide->layoutPosition() );
-            break;
-
-          case Qt::Vertical:
-            currentDelta = qAbs( layoutPoint.y() - guide->layoutPosition() );
-            break;
-        }
-        if ( currentDelta < minDelta )
-        {
-          minDelta = currentDelta;
-          closestGuide = guide;
-        }
-      }
-    }
-
-    if ( minDelta * mView->transform().m11() <= mDragGuideTolerance )
-    {
-      mDraggingGuide = closestGuide;
-    }
-    else
-    {
+      // if no guide at the point, then we're creating one
       mCreatingGuide = true;
       createTemporaryGuideItem();
     }
