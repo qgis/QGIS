@@ -103,7 +103,7 @@ class GUI_EXPORT QgsEditorWidgetWrapper : public QgsWidgetWrapper
      *
      * @param enabled  Enable or Disable?
      */
-    void setEnabled( bool enabled ) override;
+    virtual void setEnabled( bool enabled ) override;
 
     /** Sets the widget to display in an indeterminate "mixed value" state.
      * @note added in QGIS 2.16

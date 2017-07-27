@@ -43,6 +43,7 @@ QgsValueRelationWidgetWrapper::QgsValueRelationWidgetWrapper( QgsVectorLayer* vl
     , mListWidget( nullptr )
     , mLineEdit( nullptr )
     , mLayer( nullptr )
+    , mUpdating( false )
 {
 }
 
@@ -247,4 +248,27 @@ void QgsValueRelationWidgetWrapper::showIndeterminateState()
   {
     whileBlocking( mLineEdit )->clear();
   }
+}
+
+void QgsValueRelationWidgetWrapper::setEnabled( bool enabled )
+{
+  if ( mUpdating )
+    return;
+
+  if ( mListWidget )
+  {
+    mUpdating = true;
+    for ( int i = 0; i < mListWidget->count(); ++i )
+    {
+      QListWidgetItem *item = mListWidget->item( i );
+
+      if ( enabled )
+        item->setFlags( item->flags() | Qt::ItemIsEnabled );
+      else
+        item->setFlags( item->flags() & ~Qt::ItemIsEnabled );
+    }
+    mUpdating = false;
+  }
+  else
+    QgsEditorWidgetWrapper::setEnabled( enabled );
 }
