@@ -134,6 +134,7 @@ QgsLayoutDesignerDialog::QgsLayoutDesignerDialog( QWidget *parent, Qt::WindowFla
   connect( mActionSnapGrid, &QAction::triggered, this, &QgsLayoutDesignerDialog::snapToGrid );
 
   connect( mActionShowGuides, &QAction::triggered, this, &QgsLayoutDesignerDialog::showGuides );
+  connect( mActionSnapGuides, &QAction::triggered, this, &QgsLayoutDesignerDialog::snapToGuides );
 
   mView = new QgsLayoutView();
   //mView->setMapCanvas( mQgis->mapCanvas() );
@@ -314,6 +315,7 @@ void QgsLayoutDesignerDialog::setCurrentLayout( QgsLayout *layout )
   mActionShowGrid->setChecked( mLayout->context().gridVisible() );
   mActionSnapGrid->setChecked( mLayout->snapper().snapToGrid() );
   mActionShowGuides->setChecked( mLayout->guides().visible() );
+  mActionSnapGuides->setChecked( mLayout->snapper().snapToGuides() );
 
   createLayoutPropertiesWidget();
 }
@@ -406,7 +408,7 @@ void QgsLayoutDesignerDialog::showGuides( bool visible )
 
 void QgsLayoutDesignerDialog::snapToGuides( bool enabled )
 {
-
+  mLayout->snapper().setSnapToGuides( enabled );
 }
 
 void QgsLayoutDesignerDialog::closeEvent( QCloseEvent * )

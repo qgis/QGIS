@@ -43,6 +43,11 @@ class TestQgsLayoutSnapper(unittest.TestCase):
         s.setSnapToGrid(True)
         self.assertTrue(s.snapToGrid())
 
+        s.setSnapToGuides(False)
+        self.assertFalse(s.snapToGuides())
+        s.setSnapToGuides(True)
+        self.assertTrue(s.snapToGuides())
+
         s.setSnapTolerance(15)
         self.assertEqual(s.snapTolerance(), 15)
 

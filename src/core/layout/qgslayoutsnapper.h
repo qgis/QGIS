@@ -66,6 +66,18 @@ class CORE_EXPORT QgsLayoutSnapper
     void setSnapToGrid( bool enabled ) { mSnapToGrid = enabled; }
 
     /**
+     * Returns true if snapping to guides is enabled.
+     * \see setSnapToGuides()
+     */
+    bool snapToGuides() const { return mSnapToGuides; }
+
+    /**
+     * Sets whether snapping to guides is \a enabled.
+     * \see snapToGuides()
+     */
+    void setSnapToGuides( bool enabled ) { mSnapToGuides = enabled; }
+
+    /**
      * Snaps a layout coordinate \a point. If \a point was snapped, \a snapped will be set to true.
      *
      * The \a scaleFactor argument should be set to the transformation from
@@ -108,6 +120,7 @@ class CORE_EXPORT QgsLayoutSnapper
 
     int mTolerance = 5;
     bool mSnapToGrid = false;
+    bool mSnapToGuides = true;
 
 };
 

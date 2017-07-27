@@ -107,6 +107,10 @@ QPointF QgsLayoutSnapper::snapPointToGrid( QPointF point, double scaleFactor, bo
 double QgsLayoutSnapper::snapPointToGuides( double original, QgsLayoutGuide::Orientation orientation, double scaleFactor, bool &snapped ) const
 {
   snapped = false;
+  if ( !mLayout || !mSnapToGuides )
+  {
+    return original;
+  }
 
   //convert snap tolerance from pixels to layout units
   double alignThreshold = mTolerance / scaleFactor;

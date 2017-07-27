@@ -52,6 +52,19 @@ class QgsLayoutSnapper
 .. seealso:: snapToGrid()
 %End
 
+    bool snapToGuides() const;
+%Docstring
+ Returns true if snapping to guides is enabled.
+.. seealso:: setSnapToGuides()
+ :rtype: bool
+%End
+
+    void setSnapToGuides( bool enabled );
+%Docstring
+ Sets whether snapping to guides is ``enabled``.
+.. seealso:: snapToGuides()
+%End
+
     QPointF snapPoint( QPointF point, double scaleFactor, bool &snapped /Out/ ) const;
 %Docstring
  Snaps a layout coordinate ``point``. If ``point`` was snapped, ``snapped`` will be set to true.
