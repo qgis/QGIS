@@ -54,8 +54,8 @@
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>231</width>
-        <height>518</height>
+        <width>217</width>
+        <height>526</height>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="verticalLayout_2">
@@ -193,7 +193,20 @@
         </widget>
        </item>
        <item>
+        <widget class="QPushButton" name="mApplyToAllButton">
+         <property name="toolTip">
+          <string>Resets all other pages' guides to match this page</string>
+         </property>
+         <property name="text">
+          <string>Apply to All Pages</string>
+         </property>
+        </widget>
+       </item>
+       <item>
         <widget class="QPushButton" name="mClearAllButton">
+         <property name="toolTip">
+          <string>Removes all guides from the current page</string>
+         </property>
          <property name="text">
           <string>Clear All Guides</string>
          </property>

@@ -355,6 +355,35 @@ void QgsLayoutGuideCollection::clear()
   endResetModel();
 }
 
+void QgsLayoutGuideCollection::applyGuidesToAllOtherPages( int sourcePage )
+{
+  // remove other page's guides
+  Q_FOREACH ( QgsLayoutGuide *guide, mGuides )
+  {
+    if ( guide->page() != sourcePage )
+      removeGuide( guide );
+  }
+
+  // remaining guides belong to source page - clone them to other pages
+  Q_FOREACH ( QgsLayoutGuide *guide, mGuides )
+  {
+    for ( int p = 0; p < mLayout->pageCollection()->pageCount(); ++p )
+    {
+      if ( p == sourcePage )
+        continue;
+
+      std::unique_ptr< QgsLayoutGuide> newGuide( new QgsLayoutGuide( guide->orientation(), guide->position() ) );
+      newGuide->setPage( p );
+      newGuide->setLayout( mLayout );
+      if ( newGuide->item()->isVisible() )
+      {
+        // if invisible, new guide is outside of page bounds
+        addGuide( newGuide.release() );
+      }
+    }
+  }
+}
+
 void QgsLayoutGuideCollection::update()
 {
   Q_FOREACH ( QgsLayoutGuide *guide, mGuides )

@@ -52,6 +52,7 @@ QgsLayoutGuideWidget::QgsLayoutGuideWidget( QWidget *parent, QgsLayout *layout, 
   connect( mDeleteVertGuideButton, &QPushButton::clicked, this, &QgsLayoutGuideWidget::deleteVerticalGuide );
 
   connect( mClearAllButton, &QPushButton::clicked, this, &QgsLayoutGuideWidget::clearAll );
+  connect( mApplyToAllButton, &QPushButton::clicked, this, &QgsLayoutGuideWidget::applyToAll );
 
   connect( layoutView, &QgsLayoutView::pageChanged, this, &QgsLayoutGuideWidget::pageChanged );
   pageChanged( 0 );
@@ -126,6 +127,11 @@ void QgsLayoutGuideWidget::clearAll()
 
   mVertProxyModel->removeRows( 0, mVertProxyModel->rowCount() );
   mHozProxyModel->removeRows( 0, mHozProxyModel->rowCount() );
+}
+
+void QgsLayoutGuideWidget::applyToAll()
+{
+  mLayout->guides().applyGuidesToAllOtherPages( mPage );
 }
 
 

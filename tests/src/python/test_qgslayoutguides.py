@@ -30,6 +30,8 @@ from qgis.PyQt.QtTest import QSignalSpy
 
 from qgis.testing import start_app, unittest
 
+import sip
+
 start_app()
 
 
@@ -248,6 +250,48 @@ class TestQgsLayoutGuide(unittest.TestCase):
         self.assertEqual(guides.guides(QgsLayoutGuide.Horizontal), [g1, g2])
         guides.clear()
         self.assertEqual(guides.guides(QgsLayoutGuide.Horizontal), [])
+
+    def testApplyToOtherPages(self):
+        p = QgsProject()
+        l = QgsLayout(p)
+        l.initializeDefaults()
+        page2 = QgsLayoutItemPage(l)
+        page2.setPageSize('A6')
+        l.pageCollection().addPage(page2)
+        guides = l.guides()
+
+        # add some guides
+        g1 = QgsLayoutGuide(QgsLayoutGuide.Horizontal, QgsLayoutMeasurement(5))
+        guides.addGuide(g1)
+        g2 = QgsLayoutGuide(QgsLayoutGuide.Vertical, QgsLayoutMeasurement(6))
+        guides.addGuide(g2)
+        g3 = QgsLayoutGuide(QgsLayoutGuide.Horizontal, QgsLayoutMeasurement(190))
+        guides.addGuide(g3)
+        g4 = QgsLayoutGuide(QgsLayoutGuide.Horizontal, QgsLayoutMeasurement(1))
+        g4.setPage(1)
+        guides.addGuide(g4)
+
+        # apply guides from page 0 - should delete g4
+        guides.applyGuidesToAllOtherPages(0)
+        self.assertEqual(guides.guides(QgsLayoutGuide.Horizontal, 0), [g1, g3])
+        self.assertEqual(guides.guides(QgsLayoutGuide.Vertical, 0), [g2])
+        self.assertTrue(sip.isdeleted(g4))
+
+        # g3 is outside of page 2 bounds - should not be copied
+        self.assertEqual(len(guides.guides(QgsLayoutGuide.Horizontal, 1)), 1)
+        self.assertEqual(guides.guides(QgsLayoutGuide.Horizontal, 1)[0].position().length(), 5)
+        self.assertEqual(len(guides.guides(QgsLayoutGuide.Vertical, 1)), 1)
+        self.assertEqual(guides.guides(QgsLayoutGuide.Vertical, 1)[0].position().length(), 6)
+
+        # apply guides from page 1 to 0
+        guides.applyGuidesToAllOtherPages(1)
+        self.assertTrue(sip.isdeleted(g1))
+        self.assertTrue(sip.isdeleted(g2))
+        self.assertTrue(sip.isdeleted(g3))
+        self.assertEqual(len(guides.guides(QgsLayoutGuide.Horizontal, 0)), 1)
+        self.assertEqual(guides.guides(QgsLayoutGuide.Horizontal, 0)[0].position().length(), 5)
+        self.assertEqual(len(guides.guides(QgsLayoutGuide.Vertical, 0)), 1)
+        self.assertEqual(guides.guides(QgsLayoutGuide.Vertical, 0)[0].position().length(), 6)
 
 
 if __name__ == '__main__':

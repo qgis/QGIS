@@ -220,6 +220,11 @@ class CORE_EXPORT QgsLayoutGuideCollection : public QAbstractTableModel
     void clear();
 
     /**
+     * Resets all other pages' guides to match the guides from the specified \a sourcePage.
+     */
+    void applyGuidesToAllOtherPages( int sourcePage );
+
+    /**
      * Updates the position (and visibility) of all guide line items.
      */
     void update();

@@ -195,6 +195,11 @@ class QgsLayoutGuideCollection : QAbstractTableModel
 .. seealso:: removeGuide()
 %End
 
+    void applyGuidesToAllOtherPages( int sourcePage );
+%Docstring
+ Resets all other pages' guides to match the guides from the specified ``sourcePage``.
+%End
+
     void update();
 %Docstring
  Updates the position (and visibility) of all guide line items.
