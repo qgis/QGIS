@@ -33,7 +33,6 @@ from processing.core.parameters import ParameterVector
 from processing.core.outputs import OutputVector
 from processing.core.parameters import ParameterFile
 from processing.tools import dataobjects
-from qgis.utils import iface
 
 
 class SetVectorStyle(QgisAlgorithm):
