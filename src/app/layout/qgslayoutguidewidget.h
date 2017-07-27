@@ -42,6 +42,8 @@ class QgsLayoutGuideWidget: public QgsPanelWidget, private Ui::QgsLayoutGuideWid
 
     void pageChanged( int page );
 
+    void clearAll();
+
   private:
 
     QgsLayout *mLayout = nullptr;

@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>377</width>
-    <height>629</height>
+    <width>231</width>
+    <height>518</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -54,8 +54,8 @@
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>349</width>
-        <height>675</height>
+        <width>231</width>
+        <height>518</height>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="verticalLayout_2">
@@ -103,6 +103,12 @@
           </item>
           <item row="0" column="0" colspan="2">
            <widget class="QTableView" name="mHozGuidesTableView">
+            <property name="minimumSize">
+             <size>
+              <width>0</width>
+              <height>120</height>
+             </size>
+            </property>
             <property name="selectionBehavior">
              <enum>QAbstractItemView::SelectRows</enum>
             </property>
@@ -160,6 +166,12 @@
           </item>
           <item row="0" column="0" colspan="2">
            <widget class="QTableView" name="mVertGuidesTableView">
+            <property name="minimumSize">
+             <size>
+              <width>0</width>
+              <height>120</height>
+             </size>
+            </property>
             <property name="selectionBehavior">
              <enum>QAbstractItemView::SelectRows</enum>
             </property>
@@ -178,6 +190,13 @@
            </widget>
           </item>
          </layout>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="mClearAllButton">
+         <property name="text">
+          <string>Clear All Guides</string>
+         </property>
         </widget>
        </item>
        <item>

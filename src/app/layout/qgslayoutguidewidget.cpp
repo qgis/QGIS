@@ -51,6 +51,8 @@ QgsLayoutGuideWidget::QgsLayoutGuideWidget( QWidget *parent, QgsLayout *layout, 
   connect( mDeleteHozGuideButton, &QPushButton::clicked, this, &QgsLayoutGuideWidget::deleteHorizontalGuide );
   connect( mDeleteVertGuideButton, &QPushButton::clicked, this, &QgsLayoutGuideWidget::deleteVerticalGuide );
 
+  connect( mClearAllButton, &QPushButton::clicked, this, &QgsLayoutGuideWidget::clearAll );
+
   connect( layoutView, &QgsLayoutView::pageChanged, this, &QgsLayoutGuideWidget::pageChanged );
   pageChanged( 0 );
 }
@@ -108,6 +110,22 @@ void QgsLayoutGuideWidget::pageChanged( int page )
   mHozProxyModel->setPage( page );
   mVertProxyModel->setPage( page );
   mPageLabel->setText( tr( "Guides for page %1" ).arg( page + 1 ) );
+}
+
+void QgsLayoutGuideWidget::clearAll()
+{
+  // qt - y u no do this for me?
+  Q_FOREACH ( const QModelIndex &index, mHozGuidesTableView->selectionModel()->selectedIndexes() )
+  {
+    mHozGuidesTableView->closePersistentEditor( index );
+  }
+  Q_FOREACH ( const QModelIndex &index, mVertGuidesTableView->selectionModel()->selectedIndexes() )
+  {
+    mVertGuidesTableView->closePersistentEditor( index );
+  }
+
+  mVertProxyModel->removeRows( 0, mVertProxyModel->rowCount() );
+  mHozProxyModel->removeRows( 0, mHozProxyModel->rowCount() );
 }
 
 
