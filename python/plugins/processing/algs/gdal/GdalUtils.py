@@ -137,7 +137,7 @@ class GdalUtils(object):
             shortName = driver.ShortName
             metadata = driver.GetMetadata()
             if gdal.DCAP_RASTER not in metadata \
-                or metadata[gdal.DCAP_RASTER] != 'YES':
+                    or metadata[gdal.DCAP_RASTER] != 'YES':
                 continue
 
             # ===================================================================
