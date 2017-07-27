@@ -263,6 +263,10 @@ QgsLayoutDesignerDialog::QgsLayoutDesignerDialog( QWidget *parent, Qt::WindowFla
   mGeneralPropertiesStack = new QgsPanelWidgetStack();
   mGeneralDock->setWidget( mGeneralPropertiesStack );
   mPanelsMenu->addAction( mGeneralDock->toggleViewAction() );
+  connect( mActionLayoutProperties, &QAction::triggered, this, [ = ]
+  {
+    mGeneralDock->setUserVisible( true );
+  } );
 
   mItemDock = new QgsDockWidget( tr( "Item properties" ), this );
   mItemDock->setObjectName( QStringLiteral( "ItemDock" ) );

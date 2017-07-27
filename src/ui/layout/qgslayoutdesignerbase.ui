@@ -90,7 +90,9 @@
     <property name="title">
      <string>&amp;Layout</string>
     </property>
+    <addaction name="mActionLayoutProperties"/>
     <addaction name="mActionAddPages"/>
+    <addaction name="separator"/>
     <addaction name="mActionClose"/>
    </widget>
    <widget class="QMenu" name="mItemMenu">
@@ -386,6 +388,11 @@
    </property>
    <property name="toolTip">
     <string>Clear guides</string>
+   </property>
+  </action>
+  <action name="mActionLayoutProperties">
+   <property name="text">
+    <string>Layout Properties…</string>
    </property>
   </action>
  </widget>
