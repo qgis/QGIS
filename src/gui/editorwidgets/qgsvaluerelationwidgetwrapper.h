@@ -89,6 +89,7 @@ class GUI_EXPORT QgsValueRelationWidgetWrapper : public QgsEditorWidgetWrapper
     bool mUpdating;
 
     friend class QgsValueRelationWidgetFactory;
+    friend class TestQgsValueRelationWidgetWrapper;
 };
 
 Q_DECLARE_METATYPE( QgsValueRelationWidgetWrapper::ValueRelationCache )

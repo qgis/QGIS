@@ -144,4 +144,4 @@ ADD_QGIS_TEST(spinbox testqgsspinbox.cpp)
 ADD_QGIS_TEST(sqlcomposerdialog testqgssqlcomposerdialog.cpp)
 ADD_QGIS_TEST(filedownloader testqgsfiledownloader.cpp)
 ADD_QGIS_TEST(composergui testqgscomposergui.cpp)
-
+ADD_QGIS_TEST(valuerelationwidgetwrapper testqgsvaluerelationwidgetwrapper.cpp)
