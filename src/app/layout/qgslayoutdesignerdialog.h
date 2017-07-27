@@ -125,6 +125,16 @@ class QgsLayoutDesignerDialog: public QMainWindow, private Ui::QgsLayoutDesigner
      */
     void snapToGrid( bool enabled );
 
+    /**
+     * Toggles whether the page guides should be \a visible.
+     */
+    void showGuides( bool visible );
+
+    /**
+     * Toggles whether snapping to the page guides is \a enabled.
+     */
+    void snapToGuides( bool enabled );
+
   signals:
 
     /**

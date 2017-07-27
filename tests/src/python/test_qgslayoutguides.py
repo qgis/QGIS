@@ -293,6 +293,25 @@ class TestQgsLayoutGuide(unittest.TestCase):
         self.assertEqual(len(guides.guides(QgsLayoutGuide.Vertical, 0)), 1)
         self.assertEqual(guides.guides(QgsLayoutGuide.Vertical, 0)[0].position().length(), 6)
 
+    def testSetVisible(self):
+        p = QgsProject()
+        l = QgsLayout(p)
+        l.initializeDefaults()
+        guides = l.guides()
+
+        # add some guides
+        g1 = QgsLayoutGuide(QgsLayoutGuide.Horizontal, QgsLayoutMeasurement(5))
+        guides.addGuide(g1)
+        g2 = QgsLayoutGuide(QgsLayoutGuide.Vertical, QgsLayoutMeasurement(6))
+        guides.addGuide(g2)
+
+        guides.setVisible(False)
+        self.assertFalse(g1.item().isVisible())
+        self.assertFalse(g2.item().isVisible())
+        guides.setVisible(True)
+        self.assertTrue(g1.item().isVisible())
+        self.assertTrue(g2.item().isVisible())
+
 
 if __name__ == '__main__':
     unittest.main()

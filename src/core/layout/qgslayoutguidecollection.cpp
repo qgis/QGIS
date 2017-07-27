@@ -77,6 +77,7 @@ void QgsLayoutGuide::update()
   QgsLayoutItemPage *page = mLayout->pageCollection()->page( mPage );
   mLineItem->setParentItem( page );
   double layoutPos = mLayout->convertToLayoutUnits( mPosition );
+  bool showGuide = mLayout->guides().visible();
   switch ( mOrientation )
   {
     case Horizontal:
@@ -87,7 +88,7 @@ void QgsLayoutGuide::update()
       else
       {
         mLineItem->setLine( 0, layoutPos, page->rect().width(), layoutPos );
-        mLineItem->show();
+        mLineItem->setVisible( showGuide );
       }
 
       break;
@@ -100,7 +101,7 @@ void QgsLayoutGuide::update()
       else
       {
         mLineItem->setLine( layoutPos, 0, layoutPos, page->rect().height() );
-        mLineItem->show();
+        mLineItem->setVisible( showGuide );
       }
 
       break;
@@ -403,6 +404,18 @@ QList<QgsLayoutGuide *> QgsLayoutGuideCollection::guides( QgsLayoutGuide::Orient
   }
   return res;
 }
+
+bool QgsLayoutGuideCollection::visible() const
+{
+  return mGuidesVisible;
+}
+
+void QgsLayoutGuideCollection::setVisible( bool visible )
+{
+  mGuidesVisible = visible;
+  update();
+}
+
 
 
 //

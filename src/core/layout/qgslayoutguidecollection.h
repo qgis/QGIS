@@ -236,12 +236,27 @@ class CORE_EXPORT QgsLayoutGuideCollection : public QAbstractTableModel
      */
     QList< QgsLayoutGuide * > guides( QgsLayoutGuide::Orientation orientation, int page = -1 );
 
+
+    /**
+     * Returns true if the guide lines should be drawn.
+     * \see setVisible()
+     */
+    bool visible() const;
+
+    /**
+     * Sets whether the guide lines should be \a visible.
+     * \see visible()
+     */
+    void setVisible( bool visible );
+
   private:
 
     QgsLayout *mLayout = nullptr;
 
     QList< QgsLayoutGuide * > mGuides;
     int mHeaderSize = 0;
+
+    bool mGuidesVisible = true;
 
 };
 

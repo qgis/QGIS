@@ -213,6 +213,20 @@ class QgsLayoutGuideCollection : QAbstractTableModel
  :rtype: list of QgsLayoutGuide
 %End
 
+
+    bool visible() const;
+%Docstring
+ Returns true if the guide lines should be drawn.
+.. seealso:: setVisible()
+ :rtype: bool
+%End
+
+    void setVisible( bool visible );
+%Docstring
+ Sets whether the guide lines should be ``visible``.
+.. seealso:: visible()
+%End
+
 };
 
 
