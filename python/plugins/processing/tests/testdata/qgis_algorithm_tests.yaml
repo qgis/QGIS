@@ -2428,6 +2428,34 @@ tests:
         name: expected/voronoi_buffer.gml
         type: vector
 
+  - algorithm: qgis:explodelines
+    name: Explode lines
+    params:
+      INPUT:
+        name: lines.gml
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/explode_lines.gml
+        type: vector
+        compare:
+          fields:
+            fid: skip
+
+  - algorithm: qgis:explodelines
+    name: Explode multilines
+    params:
+      INPUT:
+        name: multilines.gml
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/explode_multilines.gml
+        type: vector
+        compare:
+          fields:
+            fid: skip
+
 #  - algorithm: qgis:findprojection
 #    name: Find projection
 #    params:
