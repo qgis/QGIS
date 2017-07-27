@@ -1215,6 +1215,19 @@ tests:
 #        hash: 7fe0e0174185fd743e23760f33615adf10f771b4275f320db6f7f4f8
 #        type: rasterhash
 
+  - algorithm: qgis:createconstantrasterlayer
+    name: Create constant raster
+    params:
+      INPUT:
+        name: raster.tif
+        type: raster
+      NUMBER: 3.0
+    results:
+      OUTPUT:
+        hash: 4cb3e82e8512cdbb75d9c39a10adc818dd6842c5dc6361fbc43dd9aa
+        type: rasterhash
+
+
   # Case 1: Keep all fields
   - algorithm: qgis:lineintersections
     name: Line Intersection Keep All Fields from Both

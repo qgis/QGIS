@@ -49,6 +49,7 @@ from .BoundingBox import BoundingBox
 from .CheckValidity import CheckValidity
 from .ConcaveHull import ConcaveHull
 from .CreateAttributeIndex import CreateAttributeIndex
+from .CreateConstantRaster import CreateConstantRaster
 from .Delaunay import Delaunay
 from .DeleteColumn import DeleteColumn
 from .DeleteHoles import DeleteHoles
@@ -146,7 +147,6 @@ from .ZonalStatistics import ZonalStatistics
 # from .FieldsCalculator import FieldsCalculator
 # from .FieldPyculator import FieldsPyculator
 # from .JoinAttributes import JoinAttributes
-# from .CreateConstantRaster import CreateConstantRaster
 # from .PointsDisplacement import PointsDisplacement
 # from .PointsFromPolygons import PointsFromPolygons
 # from .PointsFromLines import PointsFromLines
@@ -205,7 +205,7 @@ class QGISAlgorithmProvider(QgsProcessingProvider):
         #         PointsFromLines(), PointsToPaths(),
         #         SetVectorStyle(), SetRasterStyle(),
         #          HypsometricCurves(),
-        #         CreateConstantRaster(),
+        #
         #         FieldsMapper(), SelectByAttributeSum(), Datasources2Vrt(),
         #         OrientedMinimumBoundingBox(),
         #         DefineProjection(),
@@ -228,6 +228,7 @@ class QGISAlgorithmProvider(QgsProcessingProvider):
                 CheckValidity(),
                 ConcaveHull(),
                 CreateAttributeIndex(),
+                CreateConstantRaster(),
                 Delaunay(),
                 DeleteColumn(),
                 DeleteHoles(),
