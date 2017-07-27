@@ -112,6 +112,7 @@ from .Smooth import Smooth
 from .SnapGeometries import SnapGeometriesToLayer
 from .SpatialiteExecuteSQL import SpatialiteExecuteSQL
 from .SpatialIndex import SpatialIndex
+from .SplitWithLines import SplitWithLines
 from .SumLines import SumLines
 from .SymmetricalDifference import SymmetricalDifference
 from .TextToFloat import TextToFloat
@@ -154,7 +155,6 @@ from .ZonalStatistics import ZonalStatistics
 # from .SetRasterStyle import SetRasterStyle
 # from .SelectByAttributeSum import SelectByAttributeSum
 # from .HypsometricCurves import HypsometricCurves
-# from .SplitWithLines import SplitWithLines
 # from .FieldsMapper import FieldsMapper
 # from .Datasources2Vrt import Datasources2Vrt
 # from .OrientedMinimumBoundingBox import OrientedMinimumBoundingBox
@@ -205,7 +205,7 @@ class QGISAlgorithmProvider(QgsProcessingProvider):
         #         PointsFromLines(), PointsToPaths(),
         #         SetVectorStyle(), SetRasterStyle(),
         #          HypsometricCurves(),
-        #         SplitWithLines(), CreateConstantRaster(),
+        #         CreateConstantRaster(),
         #         FieldsMapper(), SelectByAttributeSum(), Datasources2Vrt(),
         #         OrientedMinimumBoundingBox(),
         #         DefineProjection(),
@@ -291,6 +291,7 @@ class QGISAlgorithmProvider(QgsProcessingProvider):
                 SnapGeometriesToLayer(),
                 SpatialiteExecuteSQL(),
                 SpatialIndex(),
+                SplitWithLines(),
                 SumLines(),
                 SymmetricalDifference(),
                 TextToFloat(),
