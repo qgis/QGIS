@@ -54,7 +54,6 @@ class _3D_EXPORT Point3DSymbol : public Abstract3DSymbol
     void writeXml( QDomElement &elem ) const override;
     void readXml( const QDomElement &elem ) override;
 
-    float height;
     PhongMaterialSettings material;  //!< Defines appearance of objects
     QVariantMap shapeProperties;  //!< What kind of shape to use and what
     QMatrix4x4 transform;  //!< Transform of individual instanced models

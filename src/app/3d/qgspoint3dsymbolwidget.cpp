@@ -1,0 +1,177 @@
+#include "qgspoint3dsymbolwidget.h"
+
+#include "abstract3dsymbol.h"
+
+QgsPoint3DSymbolWidget::QgsPoint3DSymbolWidget( QWidget *parent )
+  : QWidget( parent )
+{
+  setupUi( this );
+
+  cboShape->addItem( tr( "Sphere" ), "sphere" );
+  cboShape->addItem( tr( "Cylinder" ), "cylinder" );
+  cboShape->addItem( tr( "Cube" ), "cube" );
+  cboShape->addItem( tr( "Cone" ), "cone" );
+  cboShape->addItem( tr( "Plane" ), "plane" );
+  cboShape->addItem( tr( "Torus" ), "torus" );
+
+  setSymbol( Point3DSymbol() );
+  onShapeChanged();
+
+  connect( cboShape, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsPoint3DSymbolWidget::onShapeChanged );
+  QList<QDoubleSpinBox *> spinWidgets;
+  spinWidgets << spinRadius << spinTopRadius << spinBottomRadius << spinMinorRadius << spinSize << spinLength;
+  spinWidgets << spinTX << spinTY << spinTZ << spinSX << spinSY << spinSZ << spinRX << spinRY << spinRZ;
+  Q_FOREACH ( QDoubleSpinBox *spinBox, spinWidgets )
+    connect( spinBox, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, &QgsPoint3DSymbolWidget::changed );
+  connect( widgetMaterial, &QgsPhongMaterialWidget::changed, this, &QgsPoint3DSymbolWidget::changed );
+}
+
+void QgsPoint3DSymbolWidget::setSymbol( const Point3DSymbol &symbol )
+{
+  QVariantMap vm = symbol.shapeProperties;
+  int index = cboShape->findData( vm["shape"] );
+  cboShape->setCurrentIndex( index != -1 ? index : 1 );  // use cylinder by default if shape is not set
+
+  switch ( cboShape->currentIndex() )
+  {
+    case 0:  // sphere
+      spinRadius->setValue( vm["radius"].toDouble() );
+      break;
+    case 1:  // cylinder
+      spinRadius->setValue( vm["radius"].toDouble() );
+      spinLength->setValue( vm["length"].toDouble() );
+      break;
+    case 2:  // cube
+      spinSize->setValue( vm["size"].toDouble() );
+      break;
+    case 3:  // cone
+      spinTopRadius->setValue( vm["topRadius"].toDouble() );
+      spinBottomRadius->setValue( vm["bottomRadius"].toDouble() );
+      spinLength->setValue( vm["length"].toDouble() );
+      break;
+    case 4:  // plane
+      spinSize->setValue( vm["size"].toDouble() );
+      break;
+    case 5:  // torus
+      spinRadius->setValue( vm["radius"].toDouble() );
+      spinMinorRadius->setValue( vm["minorRadius"].toDouble() );
+      break;
+  }
+
+  widgetMaterial->setMaterial( symbol.material );
+
+  // decompose the transform matrix
+  // assuming the last row has values [0 0 0 1]
+  // see https://math.stackexchange.com/questions/237369/given-this-transformation-matrix-how-do-i-decompose-it-into-translation-rotati
+  QMatrix4x4 m = symbol.transform;
+  float *md = m.data();  // returns data in column-major order
+  float sx = QVector3D( md[0], md[1], md[2] ).length();
+  float sy = QVector3D( md[4], md[5], md[6] ).length();
+  float sz = QVector3D( md[8], md[9], md[10] ).length();
+  float rd[9] =
+  {
+    md[0] / sx, md[4] / sy, md[8] / sz,
+    md[1] / sx, md[5] / sy, md[9] / sz,
+    md[2] / sx, md[6] / sy, md[10] / sz,
+  };
+  QMatrix3x3 rot3x3( rd ); // takes data in row-major order
+  QVector3D rot = QQuaternion::fromRotationMatrix( rot3x3 ).toEulerAngles();
+
+  spinTX->setValue( md[12] );
+  spinTY->setValue( md[13] );
+  spinTZ->setValue( md[14] );
+  spinSX->setValue( sx );
+  spinSY->setValue( sy );
+  spinSZ->setValue( sz );
+  spinRX->setValue( rot.x() );
+  spinRY->setValue( rot.y() );
+  spinRZ->setValue( rot.z() );
+}
+
+Point3DSymbol QgsPoint3DSymbolWidget::symbol() const
+{
+  QVariantMap vm;
+  vm["shape"] = cboShape->itemData( cboShape->currentIndex() );
+
+  switch ( cboShape->currentIndex() )
+  {
+    case 0:  // sphere
+      vm["radius"] = spinRadius->value();
+      break;
+    case 1:  // cylinder
+      vm["radius"] = spinRadius->value();
+      vm["length"] = spinLength->value();
+      break;
+    case 2:  // cube
+      vm["size"] = spinSize->value();
+      break;
+    case 3:  // cone
+      vm["topRadius"] = spinTopRadius->value();
+      vm["bottomRadius"] = spinBottomRadius->value();
+      vm["length"] = spinLength->value();
+      break;
+    case 4:  // plane
+      vm["size"] = spinSize->value();
+      break;
+    case 5:  // torus
+      vm["radius"] = spinRadius->value();
+      vm["minorRadius"] = spinMinorRadius->value();
+      break;
+  }
+
+  QQuaternion rot( QQuaternion::fromEulerAngles( spinRX->value(), spinRY->value(), spinRZ->value() ) );
+  QVector3D sca( spinSX->value(), spinSY->value(), spinSZ->value() );
+  QVector3D tra( spinTX->value(), spinTY->value(), spinTZ->value() );
+
+  QMatrix4x4 tr;
+  tr.translate( tra );
+  tr.scale( sca );
+  tr.rotate( rot );
+
+  Point3DSymbol sym;
+  sym.shapeProperties = vm;
+  sym.material = widgetMaterial->material();
+  sym.transform = tr;
+  return sym;
+}
+
+void QgsPoint3DSymbolWidget::onShapeChanged()
+{
+  QList<QWidget *> allWidgets;
+  allWidgets << labelSize << spinSize
+             << labelRadius << spinRadius
+             << labelMinorRadius << spinMinorRadius
+             << labelTopRadius << spinTopRadius
+             << labelBottomRadius << spinBottomRadius
+             << labelLength << spinLength;
+
+  QList<QWidget *> activeWidgets;
+  switch ( cboShape->currentIndex() )
+  {
+    case 0:  // sphere
+      activeWidgets << labelRadius << spinRadius;
+      break;
+    case 1:  // cylinder
+      activeWidgets << labelRadius << spinRadius << labelLength << spinLength;
+      break;
+    case 2:  // cube
+      activeWidgets << labelSize << spinSize;
+      break;
+    case 3:  // cone
+      activeWidgets << labelTopRadius << spinTopRadius << labelBottomRadius << spinBottomRadius << labelLength << spinLength;
+      break;
+    case 4:  // plane
+      activeWidgets << labelSize << spinSize;
+      break;
+    case 5:  // torus
+      activeWidgets << labelRadius << spinRadius << labelMinorRadius << spinMinorRadius;
+      break;
+  }
+
+  Q_FOREACH ( QWidget *w, allWidgets )
+  {
+    w->setVisible( activeWidgets.contains( w ) );
+  }
+
+  emit changed();
+}

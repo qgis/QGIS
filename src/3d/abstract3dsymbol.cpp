@@ -48,7 +48,6 @@ void Polygon3DSymbol::readXml( const QDomElement &elem )
 // ---------------
 
 Point3DSymbol::Point3DSymbol()
-  : height( 0 )
 {
 }
 
@@ -60,10 +59,6 @@ Abstract3DSymbol *Point3DSymbol::clone() const
 void Point3DSymbol::writeXml( QDomElement &elem ) const
 {
   QDomDocument doc = elem.ownerDocument();
-
-  QDomElement elemDataProperties = doc.createElement( "data" );
-  elemDataProperties.setAttribute( "height", height );
-  elem.appendChild( elemDataProperties );
 
   QDomElement elemMaterial = doc.createElement( "material" );
   material.writeXml( elemMaterial );
@@ -80,9 +75,6 @@ void Point3DSymbol::writeXml( QDomElement &elem ) const
 
 void Point3DSymbol::readXml( const QDomElement &elem )
 {
-  QDomElement elemDataProperties = elem.firstChildElement( "data" );
-  height = elemDataProperties.attribute( "height" ).toFloat();
-
   QDomElement elemMaterial = elem.firstChildElement( "material" );
   material.readXml( elemMaterial );
 

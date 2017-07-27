@@ -2,6 +2,7 @@
 
 #include "abstract3dsymbol.h"
 #include "qgsline3dsymbolwidget.h"
+#include "qgspoint3dsymbolwidget.h"
 #include "qgspolygon3dsymbolwidget.h"
 #include "vectorlayer3drenderer.h"
 
@@ -24,14 +25,17 @@ QgsVectorLayer3DRendererWidget::QgsVectorLayer3DRendererWidget( QgsVectorLayer *
 
   widgetUnsupported = new QLabel( tr( "Sorry, this layer is not supported." ), this );
   widgetLine = new QgsLine3DSymbolWidget( this );
+  widgetPoint = new QgsPoint3DSymbolWidget( this );
   widgetPolygon = new QgsPolygon3DSymbolWidget( this );
 
   widgetStack->addWidget( widgetUnsupported );
   widgetStack->addWidget( widgetLine );
+  widgetStack->addWidget( widgetPoint );
   widgetStack->addWidget( widgetPolygon );
 
   connect( chkEnabled, &QCheckBox::clicked, this, &QgsVectorLayer3DRendererWidget::onEnabledClicked );
   connect( widgetLine, &QgsLine3DSymbolWidget::changed, this, &QgsVectorLayer3DRendererWidget::widgetChanged );
+  connect( widgetPoint, &QgsPoint3DSymbolWidget::changed, this, &QgsVectorLayer3DRendererWidget::widgetChanged );
   connect( widgetPolygon, &QgsPolygon3DSymbolWidget::changed, this, &QgsVectorLayer3DRendererWidget::widgetChanged );
 }
 
@@ -61,12 +65,25 @@ void QgsVectorLayer3DRendererWidget::setRenderer( const VectorLayer3DRenderer *r
 
   whileBlocking( chkEnabled )->setChecked( ( bool )mRenderer );
   widgetLine->setEnabled( chkEnabled->isChecked() );
+  widgetPoint->setEnabled( chkEnabled->isChecked() );
   widgetPolygon->setEnabled( chkEnabled->isChecked() );
 
   int pageIndex;
   QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( mLayer );
   switch ( vlayer->geometryType() )
   {
+    case QgsWkbTypes::PointGeometry:
+      pageIndex = 2;
+      if ( mRenderer && mRenderer->symbol() && mRenderer->symbol()->type() == "point" )
+      {
+        whileBlocking( widgetPoint )->setSymbol( *static_cast<const Point3DSymbol *>( mRenderer->symbol() ) );
+      }
+      else
+      {
+        whileBlocking( widgetPoint )->setSymbol( Point3DSymbol() );
+      }
+      break;
+
     case QgsWkbTypes::LineGeometry:
       pageIndex = 1;
       if ( mRenderer && mRenderer->symbol() && mRenderer->symbol()->type() == "line" )
@@ -80,7 +97,7 @@ void QgsVectorLayer3DRendererWidget::setRenderer( const VectorLayer3DRenderer *r
       break;
 
     case QgsWkbTypes::PolygonGeometry:
-      pageIndex = 2;
+      pageIndex = 3;
       if ( mRenderer && mRenderer->symbol() && mRenderer->symbol()->type() == "polygon" )
       {
         whileBlocking( widgetPolygon )->setSymbol( *static_cast<const Polygon3DSymbol *>( mRenderer->symbol() ) );
@@ -103,11 +120,13 @@ VectorLayer3DRenderer *QgsVectorLayer3DRendererWidget::renderer()
   if ( chkEnabled->isChecked() )
   {
     int pageIndex = widgetStack->currentIndex();
-    if ( pageIndex == 1 || pageIndex == 2 )
+    if ( pageIndex == 1 || pageIndex == 2 || pageIndex == 3 )
     {
       Abstract3DSymbol *sym;
       if ( pageIndex == 1 )
         sym = new Line3DSymbol( widgetLine->symbol() );
+      else if ( pageIndex == 2 )
+        sym = new Point3DSymbol( widgetPoint->symbol() );
       else
         sym = new Polygon3DSymbol( widgetPolygon->symbol() );
       VectorLayer3DRenderer *r = new VectorLayer3DRenderer( sym );
@@ -136,6 +155,7 @@ void QgsVectorLayer3DRendererWidget::apply()
 void QgsVectorLayer3DRendererWidget::onEnabledClicked()
 {
   widgetLine->setEnabled( chkEnabled->isChecked() );
+  widgetPoint->setEnabled( chkEnabled->isChecked() );
   widgetPolygon->setEnabled( chkEnabled->isChecked() );
   emit widgetChanged();
 }

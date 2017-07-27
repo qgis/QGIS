@@ -54,7 +54,7 @@ PointEntity::PointEntity( const Map3D &map, QgsVectorLayer *layer, const Point3D
       QgsPoint *pt = static_cast<QgsPoint *>( g );
       // TODO: use Z coordinates if the point is 3D
       float h = map.terrainGenerator()->heightAt( pt->x(), pt->y(), map ) * map.zExaggeration;
-      positions.append( QVector3D( pt->x() - map.originX, h + symbol.height, -( pt->y() - map.originY ) ) );
+      positions.append( QVector3D( pt->x() - map.originX, h, -( pt->y() - map.originY ) ) );
       //qDebug() << positions.last();
     }
     else

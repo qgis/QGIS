@@ -10,6 +10,7 @@ class QLabel;
 class QStackedWidget;
 
 class QgsLine3DSymbolWidget;
+class QgsPoint3DSymbolWidget;
 class QgsPolygon3DSymbolWidget;
 class QgsVectorLayer;
 class QgsMapCanvas;
@@ -41,6 +42,7 @@ class QgsVectorLayer3DRendererWidget : public QgsMapLayerConfigWidget
     QCheckBox *chkEnabled;
     QStackedWidget *widgetStack;
     QgsLine3DSymbolWidget *widgetLine;
+    QgsPoint3DSymbolWidget *widgetPoint;
     QgsPolygon3DSymbolWidget *widgetPolygon;
     QLabel *widgetUnsupported;
 
