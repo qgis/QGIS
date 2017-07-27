@@ -1107,6 +1107,18 @@ tests:
         name: expected/add_geometry_pointz.gml
         type: vector
 
+  - algorithm: qgis:texttofloat
+    name: Text to float
+    params:
+      FIELD: 'text_float'
+      INPUT:
+        name: custom/text_to_float.gml
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/text_to_float.gml
+        type: vector
+
   - algorithm: qgis:countpointsinpolygon
     name: Count points in polygon
     params:

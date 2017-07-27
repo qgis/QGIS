@@ -110,6 +110,7 @@ from .SnapGeometries import SnapGeometriesToLayer
 from .SpatialiteExecuteSQL import SpatialiteExecuteSQL
 from .SumLines import SumLines
 from .SymmetricalDifference import SymmetricalDifference
+from .TextToFloat import TextToFloat
 from .Translate import Translate
 from .Union import Union
 from .UniqueValues import UniqueValues
@@ -127,7 +128,6 @@ from .ZonalStatistics import ZonalStatistics
 # from .SelectByLocation import SelectByLocation
 # from .SpatialJoin import SpatialJoin
 # from .DeleteDuplicateGeometries import DeleteDuplicateGeometries
-# from .TextToFloat import TextToFloat
 # from .GridLine import GridLine
 # from .Gridify import Gridify
 # from .HubDistancePoints import HubDistancePoints
@@ -192,7 +192,7 @@ class QGISAlgorithmProvider(QgsProcessingProvider):
         #         SelectByLocation(),
         #         ExtractByLocation(),
         #         SpatialJoin(),
-        #         DeleteDuplicateGeometries(), TextToFloat(),
+        #         DeleteDuplicateGeometries(),
         #         GridLine(), Gridify(), HubDistancePoints(),
         #         HubDistanceLines(), HubLines(),
         #         GeometryConvert(), FieldsCalculator(),
@@ -295,6 +295,7 @@ class QGISAlgorithmProvider(QgsProcessingProvider):
                 SpatialiteExecuteSQL(),
                 SumLines(),
                 SymmetricalDifference(),
+                TextToFloat(),
                 Translate(),
                 Union(),
                 UniqueValues(),
