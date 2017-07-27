@@ -125,7 +125,7 @@ class RandomPointsPolygons(QgisAlgorithm):
 
         da = QgsDistanceArea()
         da.setSourceCrs(source.sourceCrs())
-        da.setEllipsoid(QgsProject.instance().ellipsoid())
+        da.setEllipsoid(context.project().ellipsoid())
 
         total = 100.0 / source.featureCount() if source.featureCount() else 0
         for current, f in enumerate(source.getFeatures()):

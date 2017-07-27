@@ -108,7 +108,7 @@ class RandomPointsAlongLines(QgisAlgorithm):
 
         da = QgsDistanceArea()
         da.setSourceCrs(source.sourceCrs())
-        da.setEllipsoid(QgsProject.instance().ellipsoid())
+        da.setEllipsoid(context.project().ellipsoid())
 
         request = QgsFeatureRequest()
 

@@ -107,7 +107,7 @@ class RasterCalculator(QgisAlgorithm):
             layers = [QgsProcessingUtils.mapLayerFromString(f, context) for f in layersValue.split(";")]
             layersDict = {os.path.basename(lyr.source().split(".")[0]): lyr for lyr in layers}
 
-        for lyr in QgsProcessingUtils.compatibleRasterLayers(QgsProject.instance()):
+        for lyr in QgsProcessingUtils.compatibleRasterLayers(context.project()):
             name = lyr.name()
             if (name + "@") in expression:
                 layersDict[name] = lyr

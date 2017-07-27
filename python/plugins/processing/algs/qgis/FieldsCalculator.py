@@ -115,10 +115,10 @@ class FieldsCalculator(QgisAlgorithm):
 
         da = QgsDistanceArea()
         da.setSourceCrs(layer.crs())
-        da.setEllipsoid(QgsProject.instance().ellipsoid())
+        da.setEllipsoid(context.project().ellipsoid())
         exp.setGeomCalculator(da)
-        exp.setDistanceUnits(QgsProject.instance().distanceUnits())
-        exp.setAreaUnits(QgsProject.instance().areaUnits())
+        exp.setDistanceUnits(context.project().distanceUnits())
+        exp.setAreaUnits(context.project().areaUnits())
 
         exp_context = QgsExpressionContext(QgsExpressionContextUtils.globalProjectLayerScopes(layer))
 
