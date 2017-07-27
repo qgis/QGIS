@@ -31,11 +31,11 @@ modules=(core gui analysis server)
 for module in "${modules[@]}"; do
   while read -r sipfile; do
       echo "$sipfile"
-      header=$(sed -E 's/(.*)\.sip/src\/\1.h/' <<< $sipfile)
+      header=$(${GP}sed -E 's/(.*)\.sip/src\/\1.h/' <<< $sipfile)
       if [ ! -f $header ]; then
         echo "*** Missing header: $header for sipfile $sipfile"
       else
-        path=$(sed -r 's@/[^/]+$@@' <<< $sipfile)
+        path=$(${GP}sed -r 's@/[^/]+$@@' <<< $sipfile)
         mkdir -p python/$path
         ./scripts/sipify.pl $header > python/$sipfile
       fi
