@@ -114,6 +114,7 @@ from .SumLines import SumLines
 from .SymmetricalDifference import SymmetricalDifference
 from .TextToFloat import TextToFloat
 from .Translate import Translate
+from .TruncateTable import TruncateTable
 from .Union import Union
 from .UniqueValues import UniqueValues
 from .VectorSplit import VectorSplit
@@ -165,7 +166,6 @@ from .ZonalStatistics import ZonalStatistics
 # from .TinInterpolation import TinInterpolation
 # from .ExtractSpecificNodes import ExtractSpecificNodes
 # from .RasterCalculator import RasterCalculator
-# from .TruncateTable import TruncateTable
 # from .Polygonize import Polygonize
 # from .ExecuteSQL import ExecuteSQL
 # from .FindProjection import FindProjection
@@ -202,10 +202,7 @@ class QGISAlgorithmProvider(QgsProcessingProvider):
         #         StatisticsByCategories(),
         #         RasterLayerStatistics(), PointsDisplacement(),
         #         PointsFromPolygons(),
-        #         PointsFromLines(), RandomPointsExtent(),
-        #         RandomPointsLayer(), RandomPointsPolygonsFixed(),
-        #         RandomPointsPolygonsVariable(),
-        #         RandomPointsAlongLines(), PointsToPaths(),
+        #         PointsFromLines(), PointsToPaths(),
         #         SetVectorStyle(), SetRasterStyle(),
         #          HypsometricCurves(),
         #         SplitWithLines(), CreateConstantRaster(),
@@ -219,9 +216,7 @@ class QGISAlgorithmProvider(QgsProcessingProvider):
         #         IdwInterpolation(), TinInterpolation(),
         #         ExtractSpecificNodes(),
         #         RasterCalculator(),
-        #         ShortestPathPointToPoint(), ShortestPathPointToLayer(),
-        #         ShortestPathLayerToPoint(), ServiceAreaFromPoint(),
-        #         ServiceAreaFromLayer(), TruncateTable(), Polygonize(),
+        #         Polygonize(),
         #          ExecuteSQL(), FindProjection(),
         #         TopoColor(), EliminateSelection()
         #         ]
@@ -299,6 +294,7 @@ class QGISAlgorithmProvider(QgsProcessingProvider):
                 SymmetricalDifference(),
                 TextToFloat(),
                 Translate(),
+                TruncateTable(),
                 Union(),
                 UniqueValues(),
                 VectorSplit(),

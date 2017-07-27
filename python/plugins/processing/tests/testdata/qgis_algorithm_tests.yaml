@@ -2261,18 +2261,18 @@ tests:
         type: vector
         in_place_result: true
 
-#  - algorithm: qgis:truncatetable
-#    name: Truncate table
-#    params:
-#      INPUT:
-#        name: custom/points.shp
-#        type: vector
-#        in_place: true
-#    results:
-#      INPUT:
-#        name: expected/truncated.shp
-#        type: vector
-#        in_place_result: true
+  - algorithm: qgis:truncatetable
+    name: Truncate table
+    params:
+      INPUT:
+        name: custom/points.shp
+        type: vector
+        in_place: true
+    results:
+      INPUT:
+        name: expected/truncated.shp
+        type: vector
+        in_place_result: true
 
   - algorithm: qgis:distancematrix
     name: Distance matrix (only tests for run, does not check result as rows are in random order)
