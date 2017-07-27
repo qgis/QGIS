@@ -57,6 +57,7 @@ from .DensifyGeometriesInterval import DensifyGeometriesInterval
 from .Difference import Difference
 from .DropGeometry import DropGeometry
 from .DropMZValues import DropMZValues
+from .ExportGeometryInfo import ExportGeometryInfo
 from .ExtendLines import ExtendLines
 from .ExtentFromLayer import ExtentFromLayer
 from .ExtractNodes import ExtractNodes
@@ -117,7 +118,6 @@ from .VoronoiPolygons import VoronoiPolygons
 from .ZonalStatistics import ZonalStatistics
 
 # from .ExtractByLocation import ExtractByLocation
-# from .ExportGeometryInfo import ExportGeometryInfo
 # from .SinglePartsToMultiparts import SinglePartsToMultiparts
 # from .ConvexHull import ConvexHull
 # from .FixedDistanceBuffer import FixedDistanceBuffer
@@ -185,8 +185,6 @@ class QGISAlgorithmProvider(QgsProcessingProvider):
 
     def getAlgs(self):
         # algs = [
-        #
-        #         ExportGeometryInfo(),
         #         SinglePartsToMultiparts(),
         #         ConvexHull(), FixedDistanceBuffer(),
         #         VariableDistanceBuffer(),
@@ -244,6 +242,7 @@ class QGISAlgorithmProvider(QgsProcessingProvider):
                 Difference(),
                 DropGeometry(),
                 DropMZValues(),
+                ExportGeometryInfo(),
                 ExtendLines(),
                 ExtentFromLayer(),
                 ExtractNodes(),

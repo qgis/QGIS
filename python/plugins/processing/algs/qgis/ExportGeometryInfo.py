@@ -34,13 +34,12 @@ from qgis.core import (QgsCoordinateTransform,
                        QgsField,
                        QgsWkbTypes,
                        QgsFeatureSink,
-                       QgsProcessingUtils,
-                       QgsDistanceArea)
+                       QgsDistanceArea,
+                       QgsProcessingParameterFeatureSource,
+                       QgsProcessingParameterEnum,
+                       QgsProcessingParameterFeatureSink)
 
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
-from processing.core.parameters import ParameterVector
-from processing.core.parameters import ParameterSelection
-from processing.core.outputs import OutputVector
 from processing.tools import vector
 
 pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
@@ -66,18 +65,16 @@ class ExportGeometryInfo(QgisAlgorithm):
         self.export_z = False
         self.export_m = False
         self.distance_area = None
-
-    def initAlgorithm(self, config=None):
         self.calc_methods = [self.tr('Layer CRS'),
                              self.tr('Project CRS'),
                              self.tr('Ellipsoidal')]
 
-        self.addParameter(ParameterVector(self.INPUT,
-                                          self.tr('Input layer')))
-        self.addParameter(ParameterSelection(self.METHOD,
-                                             self.tr('Calculate using'), self.calc_methods, 0))
-
-        self.addOutput(OutputVector(self.OUTPUT, self.tr('Added geom info')))
+    def initAlgorithm(self, config=None):
+        self.addParameter(QgsProcessingParameterFeatureSource(self.INPUT,
+                                                              self.tr('Input layer')))
+        self.addParameter(QgsProcessingParameterEnum(self.METHOD,
+                                                     self.tr('Calculate using'), options=self.calc_methods, defaultValue=0))
+        self.addParameter(QgsProcessingParameterFeatureSink(self.OUTPUT, self.tr('Added geom info')))
 
     def name(self):
         return 'exportaddgeometrycolumns'
@@ -86,18 +83,18 @@ class ExportGeometryInfo(QgisAlgorithm):
         return self.tr('Export/Add geometry columns')
 
     def processAlgorithm(self, parameters, context, feedback):
-        layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT), context)
-        method = self.getParameterValue(self.METHOD)
+        source = self.parameterAsSource(parameters, self.INPUT, context)
+        method = self.parameterAsEnum(parameters, self.METHOD, context)
 
-        geometryType = layer.geometryType()
-        fields = layer.fields()
+        wkb_type = source.wkbType()
+        fields = source.fields()
 
-        if geometryType == QgsWkbTypes.PolygonGeometry:
+        if QgsWkbTypes.geometryType(wkb_type) == QgsWkbTypes.PolygonGeometry:
             areaName = vector.createUniqueFieldName('area', fields)
             fields.append(QgsField(areaName, QVariant.Double))
             perimeterName = vector.createUniqueFieldName('perimeter', fields)
             fields.append(QgsField(perimeterName, QVariant.Double))
-        elif geometryType == QgsWkbTypes.LineGeometry:
+        elif QgsWkbTypes.geometryType(wkb_type) == QgsWkbTypes.LineGeometry:
             lengthName = vector.createUniqueFieldName('length', fields)
             fields.append(QgsField(lengthName, QVariant.Double))
         else:
@@ -105,17 +102,17 @@ class ExportGeometryInfo(QgisAlgorithm):
             fields.append(QgsField(xName, QVariant.Double))
             yName = vector.createUniqueFieldName('ycoord', fields)
             fields.append(QgsField(yName, QVariant.Double))
-            if QgsWkbTypes.hasZ(layer.wkbType()):
+            if QgsWkbTypes.hasZ(source.wkbType()):
                 self.export_z = True
                 zName = vector.createUniqueFieldName('zcoord', fields)
                 fields.append(QgsField(zName, QVariant.Double))
-            if QgsWkbTypes.hasM(layer.wkbType()):
+            if QgsWkbTypes.hasM(source.wkbType()):
                 self.export_m = True
                 zName = vector.createUniqueFieldName('mvalue', fields)
                 fields.append(QgsField(zName, QVariant.Double))
 
-        writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(fields, layer.wkbType(), layer.crs(),
-                                                                     context)
+        (sink, dest_id) = self.parameterAsSink(parameters, self.OUTPUT, context,
+                                               fields, wkb_type, source.sourceCrs())
 
         coordTransform = None
 
@@ -126,14 +123,17 @@ class ExportGeometryInfo(QgisAlgorithm):
 
         self.distance_area = QgsDistanceArea()
         if method == 2:
-            self.distance_area.setSourceCrs(layer.crs())
+            self.distance_area.setSourceCrs(source.sourceCrs())
             self.distance_area.setEllipsoid(context.project().ellipsoid())
         elif method == 1:
-            coordTransform = QgsCoordinateTransform(layer.crs(), context.project().crs())
+            coordTransform = QgsCoordinateTransform(source.sourceCrs(), context.project().crs())
 
-        features = QgsProcessingUtils.getFeatures(layer, context)
-        total = 100.0 / layer.featureCount() if layer.featureCount() else 0
+        features = source.getFeatures()
+        total = 100.0 / source.featureCount() if source.featureCount() else 0
         for current, f in enumerate(features):
+            if feedback.isCanceled():
+                break
+
             outFeat = f
             attrs = f.attributes()
             inGeom = f.geometry()
@@ -149,11 +149,11 @@ class ExportGeometryInfo(QgisAlgorithm):
                     attrs.extend(self.line_attributes(inGeom))
 
             outFeat.setAttributes(attrs)
-            writer.addFeature(outFeat, QgsFeatureSink.FastInsert)
+            sink.addFeature(outFeat, QgsFeatureSink.FastInsert)
 
             feedback.setProgress(int(current * total))
 
-        del writer
+        return {self.OUTPUT: dest_id}
 
     def point_attributes(self, geometry):
         pt = None
