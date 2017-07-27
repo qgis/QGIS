@@ -1067,7 +1067,17 @@ class TableWidgetWrapper(WidgetWrapper):
             if self.param.flags() & QgsProcessingParameterDefinition.FlagOptional:
                 self.combo.setAllowEmptyLayer(True)
 
-            self.combo.setFilters(QgsMapLayerProxyModel.VectorLayer)
+            filters = QgsMapLayerProxyModel.Filters()
+            if QgsProcessing.TypeVectorAny in self.param.dataTypes() or len(self.param.dataTypes()) == 0:
+                filters = QgsMapLayerProxyModel.VectorLayer
+            if QgsProcessing.TypeVectorPoint in self.param.dataTypes():
+                filters |= QgsMapLayerProxyModel.PointLayer
+            if QgsProcessing.TypeVectorLine in self.param.dataTypes():
+                filters |= QgsMapLayerProxyModel.LineLayer
+            if QgsProcessing.TypeVectorPolygon in self.param.dataTypes():
+                filters |= QgsMapLayerProxyModel.PolygonLayer
+            self.combo.setFilters(filters)
+
             self.combo.setExcludedProviders(['grass'])
             try:
                 if iface.activeLayer().type() == QgsMapLayer.VectorLayer:
