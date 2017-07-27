@@ -82,6 +82,7 @@ from .PointOnSurface import PointOnSurface
 from .PointsInPolygon import PointsInPolygon
 from .PointsLayerFromTable import PointsLayerFromTable
 from .PoleOfInaccessibility import PoleOfInaccessibility
+from .Polygonize import Polygonize
 from .PolygonsToLines import PolygonsToLines
 from .PostGISExecuteSQL import PostGISExecuteSQL
 from .RandomExtract import RandomExtract
@@ -166,7 +167,6 @@ from .ZonalStatistics import ZonalStatistics
 # from .TinInterpolation import TinInterpolation
 # from .ExtractSpecificNodes import ExtractSpecificNodes
 # from .RasterCalculator import RasterCalculator
-# from .Polygonize import Polygonize
 # from .ExecuteSQL import ExecuteSQL
 # from .FindProjection import FindProjection
 # from .TopoColors import TopoColor
@@ -216,7 +216,6 @@ class QGISAlgorithmProvider(QgsProcessingProvider):
         #         IdwInterpolation(), TinInterpolation(),
         #         ExtractSpecificNodes(),
         #         RasterCalculator(),
-        #         Polygonize(),
         #          ExecuteSQL(), FindProjection(),
         #         TopoColor(), EliminateSelection()
         #         ]
@@ -262,6 +261,7 @@ class QGISAlgorithmProvider(QgsProcessingProvider):
                 PointsInPolygon(),
                 PointsLayerFromTable(),
                 PoleOfInaccessibility(),
+                Polygonize(),
                 PolygonsToLines(),
                 PostGISExecuteSQL(),
                 RandomExtract(),

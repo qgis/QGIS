@@ -2392,18 +2392,17 @@ tests:
         name: expected/valid.gml
         type: vector
 
-#  - algorithm: qgis:polygonize
-#    name: Polygonize
-#    params:
-#      FIELDS: false
-#      GEOMETRY: true
-#      INPUT:
-#        name: custom/polygonize_lines.gml
-#        type: vector
-#    results:
-#      OUTPUT:
-#        name: expected/polygonize.gml
-#        type: vector
+  - algorithm: qgis:polygonize
+    name: Polygonize
+    params:
+      KEEP_FIELDS: false
+      INPUT:
+        name: custom/polygonize_lines.gml
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/polygonize.gml
+        type: vector
 
   - algorithm: qgis:voronoipolygons
     name: Standard voronoi
