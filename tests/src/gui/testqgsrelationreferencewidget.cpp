@@ -166,6 +166,19 @@ void TestQgsRelationReferenceWidget::testChainFilter()
       // "material" ==  'iron' AND "diameter" == '120' AND "raccord" = 'collar'
     }
   }
+
+  // set the filter for "raccord" and then reset filter for "diameter". As
+  // chain filter is activated, the filter on "raccord" field should be reset
+  cbs[2]->setCurrentIndex( cbs[2]->findText( "brides" ) );
+  cbs[1]->setCurrentIndex( cbs[1]->findText( "diameter" ) );
+
+  // combobox should propose NULL, 10 and 11 because the filter is now:
+  // "material" == 'iron'
+  QCOMPARE( w.mComboBox->count(), 3 );
+
+  // if there's no filter at all, all features' id should be proposed
+  cbs[0]->setCurrentIndex( cbs[0]->findText( "material" ) );
+  QCOMPARE( w.mComboBox->count(), 4 );
 }
 
 QGSTEST_MAIN( TestQgsRelationReferenceWidget )
