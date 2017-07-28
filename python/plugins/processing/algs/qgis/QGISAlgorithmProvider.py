@@ -111,6 +111,7 @@ from .ShortestPathLayerToPoint import ShortestPathLayerToPoint
 from .ShortestPathPointToLayer import ShortestPathPointToLayer
 from .ShortestPathPointToPoint import ShortestPathPointToPoint
 from .SimplifyGeometries import SimplifyGeometries
+from .SinglePartsToMultiparts import SinglePartsToMultiparts
 from .SingleSidedBuffer import SingleSidedBuffer
 from .Slope import Slope
 from .Smooth import Smooth
@@ -130,7 +131,6 @@ from .VoronoiPolygons import VoronoiPolygons
 from .ZonalStatistics import ZonalStatistics
 
 # from .ExtractByLocation import ExtractByLocation
-# from .SinglePartsToMultiparts import SinglePartsToMultiparts
 # from .ConvexHull import ConvexHull
 # from .FixedDistanceBuffer import FixedDistanceBuffer
 # from .VariableDistanceBuffer import VariableDistanceBuffer
@@ -185,7 +185,6 @@ class QGISAlgorithmProvider(QgsProcessingProvider):
 
     def getAlgs(self):
         # algs = [
-        #         SinglePartsToMultiparts(),
         #         ConvexHull(), FixedDistanceBuffer(),
         #         VariableDistanceBuffer(),
         #         RandomSelection(), RandomSelectionWithinSubsets(),
@@ -285,6 +284,7 @@ class QGISAlgorithmProvider(QgsProcessingProvider):
                 ShortestPathPointToLayer(),
                 ShortestPathPointToPoint(),
                 SimplifyGeometries(),
+                SinglePartsToMultiparts(),
                 SingleSidedBuffer(),
                 Slope(),
                 Smooth(),
