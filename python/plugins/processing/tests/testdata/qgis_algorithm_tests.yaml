@@ -2164,32 +2164,30 @@ tests:
 #      OUTPUT_LAYER:
 #        name: expected/join_attribute_table.gml
 #        type: vector
-#
-#  - algorithm: qgis:convexhull
-#    name: Simple convex hull
-#    params:
-#      INPUT:
-#        name: custom/points_hull.gml
-#        type: vector
-#      METHOD: '0'
-#    results:
-#      OUTPUT:
-#        name: expected/convex_hull.gml
-#        type: vector
-#
-#  - algorithm: qgis:convexhull
-#    name: Convex hull based on field attribute
-#    params:
-#      FIELD: hull
-#      INPUT:
-#        name: custom/points_hull.gml
-#        type: vector
-#      METHOD: '1'
-#    results:
-#      OUTPUT:
-#        name: expected/convex_hull_fields.gml
-#        type: vector
-#
+
+  - algorithm: qgis:convexhull
+    name: Simple convex hull
+    params:
+      INPUT:
+        name: custom/points_hull.gml
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/convex_hull.gml
+        type: vector
+
+  - algorithm: qgis:convexhull
+    name: Convex hull based on field attribute
+    params:
+      FIELD: hull
+      INPUT:
+        name: custom/points_hull.gml
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/convex_hull_fields.gml
+        type: vector
+
 #  # These tests dissabled because algs require access to iface which
 #  # is not available in the test suite.
 #  #- algorithm: qgis:shortestpathpointtopoint

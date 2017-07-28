@@ -48,6 +48,7 @@ from .Boundary import Boundary
 from .BoundingBox import BoundingBox
 from .CheckValidity import CheckValidity
 from .ConcaveHull import ConcaveHull
+from .ConvexHull import ConvexHull
 from .CreateAttributeIndex import CreateAttributeIndex
 from .CreateConstantRaster import CreateConstantRaster
 from .Delaunay import Delaunay
@@ -131,7 +132,6 @@ from .VoronoiPolygons import VoronoiPolygons
 from .ZonalStatistics import ZonalStatistics
 
 # from .ExtractByLocation import ExtractByLocation
-# from .ConvexHull import ConvexHull
 # from .FixedDistanceBuffer import FixedDistanceBuffer
 # from .VariableDistanceBuffer import VariableDistanceBuffer
 # from .RandomSelection import RandomSelection
@@ -185,7 +185,7 @@ class QGISAlgorithmProvider(QgsProcessingProvider):
 
     def getAlgs(self):
         # algs = [
-        #         ConvexHull(), FixedDistanceBuffer(),
+        #         FixedDistanceBuffer(),
         #         VariableDistanceBuffer(),
         #         RandomSelection(), RandomSelectionWithinSubsets(),
         #         SelectByLocation(),
@@ -221,6 +221,7 @@ class QGISAlgorithmProvider(QgsProcessingProvider):
                 BoundingBox(),
                 CheckValidity(),
                 ConcaveHull(),
+                ConvexHull(),
                 CreateAttributeIndex(),
                 CreateConstantRaster(),
                 Delaunay(),
