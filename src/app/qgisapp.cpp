@@ -2349,7 +2349,7 @@ void QgisApp::createProfileMenu()
 {
   mConfigMenu = new QMenu();
 
-  menuBar()->addMenu( mConfigMenu );
+  settingsMenu()->insertMenu( settingsMenu()->actions().first(), mConfigMenu );
 
   refreshProfileMenu();
 }
