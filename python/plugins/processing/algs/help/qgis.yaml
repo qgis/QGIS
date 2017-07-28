@@ -467,9 +467,7 @@ qgis:rasterlayerhistogram: >
   The raster layer must have a single band.
 
 qgis:rasterlayerstatistics: >
-  This algorithm computes basic statistics from the values in a raster layer.
-
-  The raster layer must have a single band.
+  This algorithm computes basic statistics from the values in a given band of the raster layer.
 
 qgis:refactorfields: >
   This algorithm allows editing the structure of the attributes table of a vector layer. Fields can be modified in their type and name, using a fields mapping.

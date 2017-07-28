@@ -2758,3 +2758,23 @@ tests:
       OUTPUT:
         hash: f09384c64f56286ec4146a7b9a679cea7c6711ec4c7d77eec054e364
         type: rasterhash
+
+  - algorithm: qgis:rasterlayerstatistics
+    name: Raster layer statistics
+    params:
+      INPUT:
+        name: dem.tif
+        type: raster
+      BAND: 1
+    results:
+      OUTPUT_HTML_FILE:
+        name: raster_statistics.html
+        type: regex
+        rules:
+          - 'Minimum value: 85.0'
+          - 'Maximum value: 243.0'
+          - 'Range: 158.0'
+          - 'Sum: 19213301.982429504'
+          - 'Mean value: 147.17197994967066'
+          - 'Standard deviation: 43.9618116337985'
+          - 'Sum of the squares: 252304334.52061242'

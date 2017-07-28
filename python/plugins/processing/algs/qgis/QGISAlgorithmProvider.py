@@ -99,6 +99,7 @@ from .RandomPointsAlongLines import RandomPointsAlongLines
 from .RandomPointsExtent import RandomPointsExtent
 from .RandomPointsLayer import RandomPointsLayer
 from .RandomPointsPolygons import RandomPointsPolygons
+from .RasterLayerStatistics import RasterLayerStatistics
 from .RegularPoints import RegularPoints
 from .ReverseLineDirection import ReverseLineDirection
 from .Ruggedness import Ruggedness
@@ -144,7 +145,6 @@ from .ZonalStatistics import ZonalStatistics
 # from .HubDistanceLines import HubDistanceLines
 # from .HubLines import HubLines
 # from .GeometryConvert import GeometryConvert
-# from .RasterLayerStatistics import RasterLayerStatistics
 # from .StatisticsByCategories import StatisticsByCategories
 # from .FieldsCalculator import FieldsCalculator
 # from .FieldPyculator import FieldsPyculator
@@ -270,6 +270,7 @@ class QGISAlgorithmProvider(QgsProcessingProvider):
                 RandomPointsExtent(),
                 RandomPointsLayer(),
                 RandomPointsPolygons(),
+                RasterLayerStatistics(),
                 RegularPoints(),
                 ReverseLineDirection(),
                 Ruggedness(),
