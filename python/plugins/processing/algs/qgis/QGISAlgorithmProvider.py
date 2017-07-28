@@ -52,6 +52,7 @@ from .CreateAttributeIndex import CreateAttributeIndex
 from .CreateConstantRaster import CreateConstantRaster
 from .Delaunay import Delaunay
 from .DeleteColumn import DeleteColumn
+from .DeleteDuplicateGeometries import DeleteDuplicateGeometries
 from .DeleteHoles import DeleteHoles
 from .DensifyGeometries import DensifyGeometries
 from .DensifyGeometriesInterval import DensifyGeometriesInterval
@@ -135,7 +136,6 @@ from .ZonalStatistics import ZonalStatistics
 # from .RandomSelectionWithinSubsets import RandomSelectionWithinSubsets
 # from .SelectByLocation import SelectByLocation
 # from .SpatialJoin import SpatialJoin
-# from .DeleteDuplicateGeometries import DeleteDuplicateGeometries
 # from .GridLine import GridLine
 # from .Gridify import Gridify
 # from .HubDistancePoints import HubDistancePoints
@@ -192,7 +192,6 @@ class QGISAlgorithmProvider(QgsProcessingProvider):
         #         SelectByLocation(),
         #         ExtractByLocation(),
         #         SpatialJoin(),
-        #         DeleteDuplicateGeometries(),
         #         GridLine(), Gridify(), HubDistancePoints(),
         #         HubDistanceLines(), HubLines(),
         #         GeometryConvert(), FieldsCalculator(),
@@ -204,7 +203,6 @@ class QGISAlgorithmProvider(QgsProcessingProvider):
         #         PointsFromLines(), PointsToPaths(),
         #         SetVectorStyle(), SetRasterStyle(),
         #          HypsometricCurves(),
-        #
         #         FieldsMapper(), SelectByAttributeSum(), Datasources2Vrt(),
         #         OrientedMinimumBoundingBox(),
         #         DefineProjection(),
@@ -230,6 +228,7 @@ class QGISAlgorithmProvider(QgsProcessingProvider):
                 CreateConstantRaster(),
                 Delaunay(),
                 DeleteColumn(),
+                DeleteDuplicateGeometries(),
                 DeleteHoles(),
                 DensifyGeometries(),
                 DensifyGeometriesInterval(),
