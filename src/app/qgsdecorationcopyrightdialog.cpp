@@ -53,7 +53,7 @@ QgsDecorationCopyrightDialog::QgsDecorationCopyrightDialog( QgsDecorationCopyrig
   pbnColorChooser->setAllowOpacity( true );
   pbnColorChooser->setColor( mDeco.mColor );
   pbnColorChooser->setContext( QStringLiteral( "gui" ) );
-  pbnColorChooser->setColorDialogTitle( tr( "Select text color" ) );
+  pbnColorChooser->setColorDialogTitle( tr( "Select Text color" ) );
 
   QTextCursor cursor = txtCopyrightText->textCursor();
   txtCopyrightText->selectAll();

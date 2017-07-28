@@ -1350,7 +1350,7 @@ void DesignerTree::onItemDoubleClicked( QTreeWidgetItem *item, int column )
     visibilityExpressionGroupBox->setLayout( new QGridLayout );
     QgsFieldExpressionWidget *visibilityExpressionWidget = new QgsFieldExpressionWidget;
     visibilityExpressionWidget->setLayer( mLayer );
-    visibilityExpressionWidget->setExpressionDialogTitle( tr( "Visibility expression" ) );
+    visibilityExpressionWidget->setExpressionDialogTitle( tr( "Visibility Expression" ) );
     visibilityExpressionWidget->setExpression( itemData.visibilityExpression()->expression() );
     visibilityExpressionGroupBox->layout()->addWidget( visibilityExpressionWidget );
 

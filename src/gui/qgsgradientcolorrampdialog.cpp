@@ -54,12 +54,12 @@ QgsGradientColorRampDialog::QgsGradientColorRampDialog( const QgsGradientColorRa
 
   mPositionSpinBox->setShowClearButton( false );
   btnColor1->setAllowOpacity( true );
-  btnColor1->setColorDialogTitle( tr( "Select ramp color" ) );
+  btnColor1->setColorDialogTitle( tr( "Select Ramp Color" ) );
   btnColor1->setContext( QStringLiteral( "symbology" ) );
   btnColor1->setShowNoColor( true );
   btnColor1->setNoColorString( tr( "Transparent" ) );
   btnColor2->setAllowOpacity( true );
-  btnColor2->setColorDialogTitle( tr( "Select ramp color" ) );
+  btnColor2->setColorDialogTitle( tr( "Select Ramp Color" ) );
   btnColor2->setContext( QStringLiteral( "symbology" ) );
   btnColor2->setShowNoColor( true );
   btnColor2->setNoColorString( tr( "Transparent" ) );
