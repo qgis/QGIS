@@ -69,15 +69,12 @@ Scene::Scene( const Map3D &map, Qt3DExtras::QForwardRenderer *defaultFrameGraph,
 
   Q_FOREACH ( QgsMapLayer *layer, map.layers() )
   {
-    if ( layer->renderer3D() )
-    {
-      Qt3DCore::QEntity *p = layer->renderer3D()->createEntity( map );
-      p->setParent( this );
-      mLayerEntities.insert( layer, p );
-    }
-    connect( layer, &QgsMapLayer::renderer3DChanged, this, &Scene::onLayerRenderer3DChanged );
+    addLayerEntity( layer );
     // TODO: connect( layer, &QgsMapLayer::willBeDeleted, this, &Scene::onLayerWillBeDeleted );
   }
+
+  // listen to changes of layers in order to add/remove 3D renderer entities
+  connect( &map, &Map3D::layersChanged, this, &Scene::onLayersChanged );
 
   Qt3DCore::QEntity *lightEntity = new Qt3DCore::QEntity;
   Qt3DCore::QTransform *lightTransform = new Qt3DCore::QTransform;
@@ -211,11 +208,42 @@ void Scene::onLayerRenderer3DChanged()
   Q_ASSERT( layer );
 
   // remove old entity - if any
-  Qt3DCore::QEntity *entity = mLayerEntities.take( layer );
-  if ( entity )
-    entity->deleteLater();
+  removeLayerEntity( layer );
 
   // add new entity - if any 3D renderer
+  addLayerEntity( layer );
+}
+
+void Scene::onLayersChanged()
+{
+  QSet<QgsMapLayer *> layersBefore = QSet<QgsMapLayer *>::fromList( mLayerEntities.keys() );
+  QList<QgsMapLayer *> layersAdded;
+  Q_FOREACH ( QgsMapLayer *layer, mMap.layers() )
+  {
+    if ( !layersBefore.contains( layer ) )
+    {
+      layersAdded << layer;
+    }
+    else
+    {
+      layersBefore.remove( layer );
+    }
+  }
+
+  // what is left in layersBefore are layers that have been removed
+  Q_FOREACH ( QgsMapLayer *layer, layersBefore )
+  {
+    removeLayerEntity( layer );
+  }
+
+  Q_FOREACH ( QgsMapLayer *layer, layersAdded )
+  {
+    addLayerEntity( layer );
+  }
+}
+
+void Scene::addLayerEntity( QgsMapLayer *layer )
+{
   QgsAbstract3DRenderer *renderer = layer->renderer3D();
   if ( renderer )
   {
@@ -223,4 +251,15 @@ void Scene::onLayerRenderer3DChanged()
     newEntity->setParent( this );
     mLayerEntities.insert( layer, newEntity );
   }
+
+  connect( layer, &QgsMapLayer::renderer3DChanged, this, &Scene::onLayerRenderer3DChanged );
+}
+
+void Scene::removeLayerEntity( QgsMapLayer *layer )
+{
+  Qt3DCore::QEntity *entity = mLayerEntities.take( layer );
+  if ( entity )
+    entity->deleteLater();
+
+  disconnect( layer, &QgsMapLayer::renderer3DChanged, this, &Scene::onLayerRenderer3DChanged );
 }

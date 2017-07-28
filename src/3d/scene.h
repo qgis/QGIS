@@ -44,6 +44,11 @@ class _3D_EXPORT Scene : public Qt3DCore::QEntity
     void onFrameTriggered( float dt );
     void createTerrain();
     void onLayerRenderer3DChanged();
+    void onLayersChanged();
+
+  private:
+    void addLayerEntity( QgsMapLayer *layer );
+    void removeLayerEntity( QgsMapLayer *layer );
 
   private:
     const Map3D &mMap;
