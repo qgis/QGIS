@@ -2287,14 +2287,6 @@ void QgisApp::createMenus()
   mWebMenu = new QMenu( tr( "&Web" ), menuBar() );
   mWebMenu->setObjectName( QStringLiteral( "mWebMenu" ) );
 
-
-  // Help menu
-  // add What's this button to it
-  QAction *before = mActionHelpAPI;
-  QAction *actionWhatsThis = QWhatsThis::createAction( this );
-  actionWhatsThis->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionWhatsThis.svg" ) ) );
-  mHelpMenu->insertAction( before, actionWhatsThis );
-
   createProfileMenu();
 }
 
