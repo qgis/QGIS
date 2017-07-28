@@ -546,21 +546,20 @@ bool QgsGeometry::insertVertex( const QgsPoint &point, int beforeVertex )
   return d->geometry->insertVertex( id, point );
 }
 
-QgsPointXY QgsGeometry::vertexAt( int atVertex ) const
+QgsPoint QgsGeometry::vertexAt( int atVertex ) const
 {
   if ( !d->geometry )
   {
-    return QgsPointXY( 0, 0 );
+    return QgsPoint();
   }
 
   QgsVertexId vId;
   ( void )vertexIdFromVertexNr( atVertex, vId );
   if ( vId.vertex < 0 )
   {
-    return QgsPointXY( 0, 0 );
+    return QgsPoint();
   }
-  QgsPoint pt = d->geometry->vertexAt( vId );
-  return QgsPointXY( pt.x(), pt.y() );
+  return d->geometry->vertexAt( vId );
 }
 
 double QgsGeometry::sqrDistToVertexAt( QgsPointXY &point, int atVertex ) const

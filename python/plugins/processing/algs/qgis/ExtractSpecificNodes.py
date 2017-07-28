@@ -120,7 +120,7 @@ class ExtractSpecificNodes(QgisAlgorithm):
                     output_feature.setAttributes(attrs)
 
                     point = input_geometry.vertexAt(node_index)
-                    output_feature.setGeometry(QgsGeometry.fromPoint(point))
+                    output_feature.setGeometry(QgsGeometry(point))
 
                     writer.addFeature(output_feature, QgsFeatureSink.FastInsert)
 

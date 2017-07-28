@@ -1242,6 +1242,7 @@ empty geometry collection)
 - avoidIntersections() got an extra argument: list of layers to include in the operation (previously read from active QgsProject)
 - isGeosEmpty() was removed. Use isEmpty() instead.
 - reshapeGeometry() expects QgsLineString as a parameter instead of a list of 2D points (so that it can support 3D geometries)
+- vertexAt() now returns a QgsPoint (previously QgsPointV2) instead of a QgsPointXY (previously QgsPoint)
 
 
 QgsGeometryAnalyzer        {#qgis_api_break_3_0_QgsGeometryAnalyzer}

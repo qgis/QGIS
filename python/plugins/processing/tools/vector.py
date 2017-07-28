@@ -52,7 +52,7 @@ from qgis.core import (QgsFields,
                        QgsCredentials,
                        QgsFeatureRequest,
                        QgsSettings,
-                       QgsProcessingContext,
+                       QgsPointXY,
                        QgsProcessingUtils)
 
 from processing.tools import dataobjects
@@ -251,7 +251,7 @@ def snapToPrecision(geom, precision):
         snapped.moveVertex(x, y, i)
         i = i + 1
         p = snapped.vertexAt(i)
-    return snapped
+    return QgsPointXY(snapped.x(), snapped.y())
 
 
 def ogrConnectionString(uri):
