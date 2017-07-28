@@ -36,16 +36,16 @@ from qgis.core import (QgsField,
                        QgsFeatureSink,
                        QgsGeometry,
                        QgsWkbTypes,
-                       QgsProcessingUtils,
+                       QgsFeatureRequest,
                        QgsFields,
-                       NULL)
+                       NULL,
+                       QgsProcessingParameterFeatureSource,
+                       QgsProcessingParameterField,
+                       QgsProcessingParameterFeatureSink,
+                       QgsProcessing,
+                       QgsProcessingException)
 
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
-from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
-from processing.core.parameters import ParameterVector
-from processing.core.parameters import ParameterTableField
-from processing.core.parameters import ParameterSelection
-from processing.core.outputs import OutputVector
 from processing.tools import dataobjects, vector
 
 pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
@@ -56,7 +56,6 @@ class ConvexHull(QgisAlgorithm):
     INPUT = 'INPUT'
     OUTPUT = 'OUTPUT'
     FIELD = 'FIELD'
-    METHOD = 'METHOD'
 
     def icon(self):
         return QIcon(os.path.join(pluginPath, 'images', 'ftools', 'convex_hull.png'))
@@ -68,17 +67,12 @@ class ConvexHull(QgisAlgorithm):
         super().__init__()
 
     def initAlgorithm(self, config=None):
-        self.methods = [self.tr('Create single minimum convex hull'),
-                        self.tr('Create convex hulls based on field')]
-
-        self.addParameter(ParameterVector(self.INPUT,
-                                          self.tr('Input layer')))
-        self.addParameter(ParameterTableField(self.FIELD,
-                                              self.tr('Field (optional, only used if creating convex hulls by classes)'),
-                                              self.INPUT, optional=True))
-        self.addParameter(ParameterSelection(self.METHOD,
-                                             self.tr('Method'), self.methods))
-        self.addOutput(OutputVector(self.OUTPUT, self.tr('Convex hull'), datatype=[dataobjects.TYPE_VECTOR_POLYGON]))
+        self.addParameter(QgsProcessingParameterFeatureSource(self.INPUT,
+                                                              self.tr('Input layer')))
+        self.addParameter(QgsProcessingParameterField(self.FIELD,
+                                                      self.tr('Field (optional, set if creating convex hulls by classes)'),
+                                                      parentLayerParameterName=self.INPUT, optional=True))
+        self.addParameter(QgsProcessingParameterFeatureSink(self.OUTPUT, self.tr('Convex hull'), QgsProcessing.TypeVectorPolygon))
 
     def name(self):
         return 'convexhull'
@@ -87,14 +81,15 @@ class ConvexHull(QgisAlgorithm):
         return self.tr('Convex hull')
 
     def processAlgorithm(self, parameters, context, feedback):
-        layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT), context)
-        useField = self.getParameterValue(self.METHOD) == 1
-        fieldName = self.getParameterValue(self.FIELD)
+        source = self.parameterAsSource(parameters, self.INPUT, context)
+        fieldName = self.parameterAsString(parameters, self.FIELD, context)
+        useField = bool(fieldName)
 
+        field_index = None
         f = QgsField('value', QVariant.String, '', 255)
         if useField:
-            index = layer.fields().lookupField(fieldName)
-            fType = layer.fields()[index].type()
+            field_index = source.fields().lookupField(fieldName)
+            fType = source.fields()[field_index].type()
             if fType in [QVariant.Int, QVariant.UInt, QVariant.LongLong, QVariant.ULongLong]:
                 f.setType(fType)
                 f.setLength(20)
@@ -112,25 +107,30 @@ class ConvexHull(QgisAlgorithm):
         fields.append(QgsField('area', QVariant.Double, '', 20, 6))
         fields.append(QgsField('perim', QVariant.Double, '', 20, 6))
 
-        writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(fields, QgsWkbTypes.Polygon, layer.crs(), context)
+        (sink, dest_id) = self.parameterAsSink(parameters, self.OUTPUT, context,
+                                               fields, QgsWkbTypes.Polygon, source.sourceCrs())
 
         outFeat = QgsFeature()
-        inGeom = QgsGeometry()
         outGeom = QgsGeometry()
 
         fid = 0
         val = None
-        features = QgsProcessingUtils.getFeatures(layer, context)
         if useField:
-            unique = layer.uniqueValues(index)
+            unique = source.uniqueValues(field_index)
             current = 0
-            total = 100.0 / (layer.featureCount() * len(unique)) if layer.featureCount() else 1
+            total = 100.0 / (source.featureCount() * len(unique)) if source.featureCount() else 1
             for i in unique:
+                if feedback.isCanceled():
+                    break
+
                 first = True
                 hull = []
-                features = QgsProcessingUtils.getFeatures(layer, context)
+                features = source.getFeatures(QgsFeatureRequest().setSubsetOfAttributes([field_index]))
                 for f in features:
-                    idVar = f[fieldName]
+                    if feedback.isCanceled():
+                        break
+
+                    idVar = f.attributes()[field_index]
                     if str(idVar).strip() == str(i).strip():
                         if first:
                             val = idVar
@@ -154,16 +154,19 @@ class ConvexHull(QgisAlgorithm):
                             perim = NULL
                         outFeat.setGeometry(outGeom)
                         outFeat.setAttributes([fid, val, area, perim])
-                        writer.addFeature(outFeat, QgsFeatureSink.FastInsert)
+                        sink.addFeature(outFeat, QgsFeatureSink.FastInsert)
                     except:
-                        raise GeoAlgorithmExecutionException(
+                        raise QgsProcessingException(
                             self.tr('Exception while computing convex hull'))
                 fid += 1
         else:
             hull = []
-            total = 100.0 / layer.featureCount() if layer.featureCount() else 1
-            features = QgsProcessingUtils.getFeatures(layer, context)
+            total = 100.0 / source.featureCount() if source.featureCount() else 1
+            features = source.getFeatures(QgsFeatureRequest().setSubsetOfAttributes([]))
             for current, f in enumerate(features):
+                if feedback.isCanceled():
+                    break
+
                 inGeom = f.geometry()
                 points = vector.extractPoints(inGeom)
                 hull.extend(points)
@@ -180,9 +183,9 @@ class ConvexHull(QgisAlgorithm):
                     perim = NULL
                 outFeat.setGeometry(outGeom)
                 outFeat.setAttributes([0, 'all', area, perim])
-                writer.addFeature(outFeat, QgsFeatureSink.FastInsert)
+                sink.addFeature(outFeat, QgsFeatureSink.FastInsert)
             except:
-                raise GeoAlgorithmExecutionException(
+                raise QgsProcessingException(
                     self.tr('Exception while computing convex hull'))
 
-        del writer
+        return {self.OUTPUT: dest_id}

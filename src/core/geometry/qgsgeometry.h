@@ -343,9 +343,9 @@ class CORE_EXPORT QgsGeometry
     /**
      *  Returns coordinates of a vertex.
      *  \param atVertex index of the vertex
-     *  \returns Coordinates of the vertex or QgsPointXY(0,0) on error
+     *  \returns Coordinates of the vertex or QgsPoint(0,0) on error
      */
-    QgsPointXY vertexAt( int atVertex ) const;
+    QgsPoint vertexAt( int atVertex ) const;
 
     /**
      *  Returns the squared Cartesian distance between the given point
