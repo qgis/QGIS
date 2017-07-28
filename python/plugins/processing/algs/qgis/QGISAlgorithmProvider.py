@@ -58,6 +58,7 @@ from .DensifyGeometriesInterval import DensifyGeometriesInterval
 from .Difference import Difference
 from .DropGeometry import DropGeometry
 from .DropMZValues import DropMZValues
+from .EquivalentNumField import EquivalentNumField
 from .Explode import Explode
 from .ExportGeometryInfo import ExportGeometryInfo
 from .ExtendLines import ExtendLines
@@ -143,7 +144,6 @@ from .ZonalStatistics import ZonalStatistics
 # from .GeometryConvert import GeometryConvert
 # from .RasterLayerStatistics import RasterLayerStatistics
 # from .StatisticsByCategories import StatisticsByCategories
-# from .EquivalentNumField import EquivalentNumField
 # from .FieldsCalculator import FieldsCalculator
 # from .FieldPyculator import FieldsPyculator
 # from .JoinAttributes import JoinAttributes
@@ -198,7 +198,6 @@ class QGISAlgorithmProvider(QgsProcessingProvider):
         #         GeometryConvert(), FieldsCalculator(),
         #          JoinAttributes(),
         #         FieldsPyculator(),
-        #         EquivalentNumField(),
         #         StatisticsByCategories(),
         #         RasterLayerStatistics(), PointsDisplacement(),
         #         PointsFromPolygons(),
@@ -237,6 +236,7 @@ class QGISAlgorithmProvider(QgsProcessingProvider):
                 Difference(),
                 DropGeometry(),
                 DropMZValues(),
+                EquivalentNumField(),
                 Explode(),
                 ExportGeometryInfo(),
                 ExtendLines(),

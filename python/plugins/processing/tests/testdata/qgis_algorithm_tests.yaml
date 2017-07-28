@@ -2125,19 +2125,19 @@ tests:
 #        compare:
 #          geometry:
 #            precision: 5
-#
-#  - algorithm: qgis:adduniquevalueindexfield
-#    name: add unique field based on another field
-#    params:
-#      FIELD: id2
-#      INPUT:
-#        name: points.gml
-#        type: vector
-#    results:
-#      OUTPUT:
-#        name: expected/add_unique_field.gml
-#        type: vector
-#
+
+  - algorithm: qgis:adduniquevalueindexfield
+    name: add unique field based on another field
+    params:
+      FIELD: id2
+      INPUT:
+        name: points.gml
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/add_unique_field.gml
+        type: vector
+
   - algorithm: qgis:linestopolygons
     name: convert lines to polygon
     params:
