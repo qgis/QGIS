@@ -128,12 +128,12 @@ from .Translate import Translate
 from .TruncateTable import TruncateTable
 from .Union import Union
 from .UniqueValues import UniqueValues
+from .VariableDistanceBuffer import VariableDistanceBuffer
 from .VectorSplit import VectorSplit
 from .VoronoiPolygons import VoronoiPolygons
 from .ZonalStatistics import ZonalStatistics
 
 # from .ExtractByLocation import ExtractByLocation
-# from .VariableDistanceBuffer import VariableDistanceBuffer
 # from .RandomSelection import RandomSelection
 # from .RandomSelectionWithinSubsets import RandomSelectionWithinSubsets
 # from .SelectByLocation import SelectByLocation
@@ -185,7 +185,6 @@ class QGISAlgorithmProvider(QgsProcessingProvider):
 
     def getAlgs(self):
         # algs = [
-        #         VariableDistanceBuffer(),
         #         RandomSelection(), RandomSelectionWithinSubsets(),
         #         SelectByLocation(),
         #         ExtractByLocation(),
@@ -300,6 +299,7 @@ class QGISAlgorithmProvider(QgsProcessingProvider):
                 TruncateTable(),
                 Union(),
                 UniqueValues(),
+                VariableDistanceBuffer(),
                 VectorSplit(),
                 VoronoiPolygons(),
                 ZonalStatistics()

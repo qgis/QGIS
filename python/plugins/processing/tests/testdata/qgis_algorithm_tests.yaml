@@ -370,6 +370,11 @@ tests:
         compare:
           geometry:
             precision: 7
+          fields:
+            fid: skip
+            name: skip
+            intval: skip
+            floatval: skip
 
 #  - algorithm: qgis:rectanglesovalsdiamondsfixed
 #    name: Create fixed distance rectange buffers around points
@@ -2092,39 +2097,44 @@ tests:
           geometry:
             precision: 7
 
-#  - algorithm: qgis:variabledistancebuffer
-#    name: variable buffer on points
-#    params:
-#      DISSOLVE: false
-#      FIELD: buffer
-#      INPUT:
-#        name: custom/variable_buffer.gml
-#        type: vector
-#      SEGMENTS: 5
-#    results:
-#      OUTPUT:
-#        name: expected/variable_buffer_points.gml
-#        type: vector
-#        compare:
-#          geometry:
-#            precision: 5
-#
-#  - algorithm: qgis:variabledistancebuffer
-#    name: variable buffer on points with dissolve option
-#    params:
-#      DISSOLVE: true
-#      FIELD: buffer
-#      INPUT:
-#        name: custom/variable_buffer.gml
-#        type: vector
-#      SEGMENTS: 5
-#    results:
-#      OUTPUT:
-#        name: expected/variable_buffer_points_dissolved.gml
-#        type: vector
-#        compare:
-#          geometry:
-#            precision: 5
+  - algorithm: qgis:variabledistancebuffer
+    name: variable buffer on points
+    params:
+      DISSOLVE: false
+      FIELD: buffer
+      INPUT:
+        name: custom/variable_buffer.gml
+        type: vector
+      SEGMENTS: 5
+    results:
+      OUTPUT:
+        name: expected/variable_buffer_points.gml
+        type: vector
+        compare:
+          geometry:
+            precision: 5
+
+  - algorithm: qgis:variabledistancebuffer
+    name: variable buffer on points with dissolve option
+    params:
+      DISSOLVE: true
+      FIELD: buffer
+      INPUT:
+        name: custom/variable_buffer.gml
+        type: vector
+      SEGMENTS: 5
+    results:
+      OUTPUT:
+        name: expected/variable_buffer_points_dissolved.gml
+        type: vector
+        compare:
+          geometry:
+            precision: 5
+          fields:
+            id: skip
+            id2: skip
+            fid: skip
+
 
   - algorithm: qgis:adduniquevalueindexfield
     name: add unique field based on another field

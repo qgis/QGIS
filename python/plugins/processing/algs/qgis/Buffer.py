@@ -44,8 +44,11 @@ def buffering(feedback, context, sink, distance, field, useField, source, dissol
 
     # With dissolve
     if dissolve:
+        attributes_to_fetch = []
+        if useField:
+            attributes_to_fetch.append(field)
 
-        features = source.getFeatures(QgsFeatureRequest().setSubsetOfAttributes([]))
+        features = source.getFeatures(QgsFeatureRequest().setSubsetOfAttributes(attributes_to_fetch))
         buffered_geometries = []
         for inFeat in features:
             if feedback.isCanceled():
