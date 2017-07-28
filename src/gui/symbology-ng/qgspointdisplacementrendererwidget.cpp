@@ -101,13 +101,13 @@ QgsPointDisplacementRendererWidget::QgsPointDisplacementRendererWidget( QgsVecto
     }
   }
 
-  mCircleColorButton->setColorDialogTitle( tr( "Select color" ) );
+  mCircleColorButton->setColorDialogTitle( tr( "Select Color" ) );
   mCircleColorButton->setContext( QStringLiteral( "symbology" ) );
   mCircleColorButton->setAllowOpacity( true );
   mCircleColorButton->setShowNoColor( true );
   mCircleColorButton->setNoColorString( tr( "No stroke" ) );
   mLabelColorButton->setContext( QStringLiteral( "symbology" ) );
-  mLabelColorButton->setColorDialogTitle( tr( "Select color" ) );
+  mLabelColorButton->setColorDialogTitle( tr( "Select Color" ) );
   mLabelColorButton->setAllowOpacity( true );
 
   mCircleWidthSpinBox->setValue( mRenderer->circleWidth() );

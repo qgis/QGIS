@@ -157,8 +157,8 @@ void QgsLabelPropertyDialog::init( const QString &layerId, const QString &provid
   mMaxScaleWidget->setScale( layerSettings.maximumScale );
   mHaliComboBox->setCurrentIndex( mHaliComboBox->findData( "Left" ) );
   mValiComboBox->setCurrentIndex( mValiComboBox->findData( "Bottom" ) );
-  mFontColorButton->setColorDialogTitle( tr( "Font color" ) );
-  mBufferColorButton->setColorDialogTitle( tr( "Buffer color" ) );
+  mFontColorButton->setColorDialogTitle( tr( "Font Color" ) );
+  mBufferColorButton->setColorDialogTitle( tr( "Buffer Color" ) );
 
   disableGuiElements();
 

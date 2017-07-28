@@ -233,7 +233,7 @@ QgsShadowEffectWidget::QgsShadowEffectWidget( QWidget *parent )
   setupUi( this );
 
   mShadowColorBtn->setAllowOpacity( false );
-  mShadowColorBtn->setColorDialogTitle( tr( "Select shadow color" ) );
+  mShadowColorBtn->setColorDialogTitle( tr( "Select Shadow Color" ) );
   mShadowColorBtn->setContext( QStringLiteral( "symbology" ) );
   mShadowOffsetAngleSpnBx->setClearValue( 0 );
 
@@ -391,7 +391,7 @@ QgsGlowWidget::QgsGlowWidget( QWidget *parent )
   setupUi( this );
 
   mColorBtn->setAllowOpacity( false );
-  mColorBtn->setColorDialogTitle( tr( "Select glow color" ) );
+  mColorBtn->setColorDialogTitle( tr( "Select Glow Color" ) );
   mColorBtn->setContext( QStringLiteral( "symbology" ) );
 
   mSpreadUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderPixels << QgsUnitTypes::RenderMapUnits
