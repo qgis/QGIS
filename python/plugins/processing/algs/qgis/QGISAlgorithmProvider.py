@@ -65,6 +65,7 @@ from .ExportGeometryInfo import ExportGeometryInfo
 from .ExtendLines import ExtendLines
 from .ExtentFromLayer import ExtentFromLayer
 from .ExtractNodes import ExtractNodes
+from .ExtractSpecificNodes import ExtractSpecificNodes
 from .FixGeometry import FixGeometry
 from .GeometryByExpression import GeometryByExpression
 from .GridPolygon import GridPolygon
@@ -165,7 +166,6 @@ from .ZonalStatistics import ZonalStatistics
 # from .Relief import Relief
 # from .IdwInterpolation import IdwInterpolation
 # from .TinInterpolation import TinInterpolation
-# from .ExtractSpecificNodes import ExtractSpecificNodes
 # from .RasterCalculator import RasterCalculator
 # from .ExecuteSQL import ExecuteSQL
 # from .FindProjection import FindProjection
@@ -211,7 +211,6 @@ class QGISAlgorithmProvider(QgsProcessingProvider):
         #         PointsAlongGeometry(),
         #         Relief(),
         #         IdwInterpolation(), TinInterpolation(),
-        #         ExtractSpecificNodes(),
         #         RasterCalculator(),
         #          ExecuteSQL(), FindProjection(),
         #         TopoColor(), EliminateSelection()
@@ -241,6 +240,7 @@ class QGISAlgorithmProvider(QgsProcessingProvider):
                 ExtendLines(),
                 ExtentFromLayer(),
                 ExtractNodes(),
+                ExtractSpecificNodes(),
                 FixGeometry(),
                 GeometryByExpression(),
                 GridPolygon(),

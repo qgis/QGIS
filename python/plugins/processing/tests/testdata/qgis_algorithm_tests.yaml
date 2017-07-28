@@ -1412,35 +1412,35 @@ tests:
         name: expected/extend_multilines.gml
         type: vector
 
-#  - algorithm: qgis:extractspecificnodes
-#    name: Extract specific nodes lines
-#    params:
-#      INPUT_LAYER:
-#        name: lines.gml
-#        type: vector
-#      NODES: 0,-1,2,-2
-#    results:
-#      OUTPUT_LAYER:
-#        name: expected/extract_specific_nodes_lines.gml
-#        type: vector
-#        compare:
-#          fields:
-#            fid: skip
-#
-#  - algorithm: qgis:extractspecificnodes
-#    name: Extract specific nodes polygons
-#    params:
-#      INPUT_LAYER:
-#        name: polys.gml
-#        type: vector
-#      NODES: 0,-1,5,-5
-#    results:
-#      OUTPUT_LAYER:
-#        name: expected/extract_specific_nodes_polys.gml
-#        type: vector
-#        compare:
-#          fields:
-#            fid: skip
+  - algorithm: qgis:extractspecificnodes
+    name: Extract specific nodes lines
+    params:
+      INPUT:
+        name: lines.gml
+        type: vector
+      NODES: 0,-1,2,-2
+    results:
+      OUTPUT:
+        name: expected/extract_specific_nodes_lines.gml
+        type: vector
+        compare:
+          fields:
+            fid: skip
+
+  - algorithm: qgis:extractspecificnodes
+    name: Extract specific nodes polygons
+    params:
+      INPUT:
+        name: polys.gml
+        type: vector
+      NODES: 0,-1,5,-5
+    results:
+      OUTPUT:
+        name: expected/extract_specific_nodes_polys.gml
+        type: vector
+        compare:
+          fields:
+            fid: skip
 
   - algorithm: qgis:geometrybyexpression
     name: Geometry by expression (point)
