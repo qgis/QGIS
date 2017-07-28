@@ -29469,7 +29469,7 @@ Die Datei ist möglicherweise in einer anderen Anwendung geöffnet.</translation
     </message>
     <message>
         <source>Select line color</source>
-        <translation>Lienienfarbe wählen</translation>
+        <translation>Linienfarbe wählen</translation>
     </message>
     <message>
         <source>Transparent line</source>
@@ -62246,7 +62246,7 @@ und nur die Geometriespalte des Haupttypname kann als die Geometriespalte des Er
     <name>QgsSimpleLineSymbolLayerV2Widget</name>
     <message>
         <source>Select line color</source>
-        <translation>Lienienfarbe wählen</translation>
+        <translation>Linienfarbe wählen</translation>
     </message>
     <message>
         <source>Width Assistant...</source>
