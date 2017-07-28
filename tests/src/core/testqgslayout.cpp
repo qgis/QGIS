@@ -39,6 +39,8 @@ class TestQgsLayout: public QObject
     void referenceMap();
     void bounds();
     void addItem();
+    void layoutItems();
+    void layoutItemByUuid();
 
   private:
     QString mReport;
@@ -358,6 +360,61 @@ void TestQgsLayout::addItem()
   QGSCOMPARENEAR( l.sceneRect().top(), 19.5, 0.001 );
   QGSCOMPARENEAR( l.sceneRect().width(), 241, 0.001 );
   QGSCOMPARENEAR( l.sceneRect().height(), 171, 0.001 );
+}
+
+void TestQgsLayout::layoutItems()
+{
+  QgsProject p;
+  QgsLayout l( &p );
+  l.pageCollection()->deletePage( 0 );
+
+  QgsLayoutItemRectangularShape *shape1 = new QgsLayoutItemRectangularShape( &l );
+  l.addLayoutItem( shape1 );
+
+  QgsLayoutItemRectangularShape *shape2 = new QgsLayoutItemRectangularShape( &l );
+  l.addLayoutItem( shape2 );
+
+  QgsLayoutItemMap *map1 = new QgsLayoutItemMap( &l );
+  l.addLayoutItem( map1 );
+
+  QList< QgsLayoutItem * > items;
+  l.layoutItems( items );
+  QCOMPARE( items.count(), 3 );
+  QVERIFY( items.contains( shape1 ) );
+  QVERIFY( items.contains( shape2 ) );
+  QVERIFY( items.contains( map1 ) );
+
+  QList< QgsLayoutItemRectangularShape * > shapes;
+  l.layoutItems( shapes );
+  QCOMPARE( shapes.count(), 2 );
+  QVERIFY( shapes.contains( shape1 ) );
+  QVERIFY( shapes.contains( shape2 ) );
+
+  QList< QgsLayoutItemMap * > maps;
+  l.layoutItems( maps );
+  QCOMPARE( maps.count(), 1 );
+  QVERIFY( maps.contains( map1 ) );
+}
+
+void TestQgsLayout::layoutItemByUuid()
+{
+  QgsProject p;
+  QgsLayout l( &p );
+  l.pageCollection()->deletePage( 0 );
+
+  QgsLayoutItemRectangularShape *shape1 = new QgsLayoutItemRectangularShape( &l );
+  l.addLayoutItem( shape1 );
+
+  QgsLayoutItemRectangularShape *shape2 = new QgsLayoutItemRectangularShape( &l );
+  l.addLayoutItem( shape2 );
+
+  QgsLayoutItemMap *map1 = new QgsLayoutItemMap( &l );
+  l.addLayoutItem( map1 );
+
+  QVERIFY( !l.itemByUuid( QStringLiteral( "xxx" ) ) );
+  QCOMPARE( l.itemByUuid( shape1->uuid() ), shape1 );
+  QCOMPARE( l.itemByUuid( shape2->uuid() ), shape2 );
+  QCOMPARE( l.itemByUuid( map1->uuid() ), map1 );
 }
 
 

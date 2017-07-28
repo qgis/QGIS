@@ -48,6 +48,21 @@ QgsProject *QgsLayout::project() const
   return mProject;
 }
 
+QgsLayoutItem *QgsLayout::itemByUuid( const QString &uuid )
+{
+  QList<QgsLayoutItem *> itemList;
+  layoutItems( itemList );
+  Q_FOREACH ( QgsLayoutItem *item, itemList )
+  {
+    if ( item->uuid() == uuid )
+    {
+      return item;
+    }
+  }
+
+  return nullptr;
+}
+
 double QgsLayout::convertToLayoutUnits( const QgsLayoutMeasurement &measurement ) const
 {
   return mContext.measurementConverter().convert( measurement, mUnits ).length();

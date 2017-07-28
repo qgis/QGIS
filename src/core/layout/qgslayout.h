@@ -87,6 +87,31 @@ class CORE_EXPORT QgsLayout : public QGraphicsScene, public QgsExpressionContext
     void setName( const QString &name ) { mName = name; }
 
     /**
+     * Returns a list of layout items of a specific type.
+     * \note not available in Python bindings
+     */
+    template<class T> void layoutItems( QList<T *> &itemList ) SIP_SKIP
+    {
+      itemList.clear();
+      QList<QGraphicsItem *> graphicsItemList = items();
+      QList<QGraphicsItem *>::iterator itemIt = graphicsItemList.begin();
+      for ( ; itemIt != graphicsItemList.end(); ++itemIt )
+      {
+        T *item = dynamic_cast<T *>( *itemIt );
+        if ( item )
+        {
+          itemList.push_back( item );
+        }
+      }
+    }
+
+    /**
+     * Returns the layout item with matching \a uuid unique identifier, or a nullptr
+     * if a matching item could not be found.
+     */
+    QgsLayoutItem *itemByUuid( const QString &uuid );
+
+    /**
      * Sets the native measurement \a units for the layout. These also form the default unit
      * for measurements for the layout.
      * \see units()

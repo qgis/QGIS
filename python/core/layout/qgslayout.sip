@@ -67,6 +67,14 @@ class QgsLayout : QGraphicsScene, QgsExpressionContextGenerator
 .. seealso:: name()
 %End
 
+
+    QgsLayoutItem *itemByUuid( const QString &uuid );
+%Docstring
+ Returns the layout item with matching ``uuid`` unique identifier, or a None
+ if a matching item could not be found.
+ :rtype: QgsLayoutItem
+%End
+
     void setUnits( QgsUnitTypes::LayoutUnit units );
 %Docstring
  Sets the native measurement ``units`` for the layout. These also form the default unit
