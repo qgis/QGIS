@@ -2383,7 +2383,7 @@ displayExpression instead. For the map tip use mapTipTemplate() instead.
 - selectedFeaturesIds() replaced by selectedFeatureIds()
 - selectedFeaturesIterator() was replaced by getSelectedFeatures()
 - setSelectedFeatures() replaced by selectByIds()
-- applyNamedStyle() replaced by applyNamedStyle()
+- applyNamedStyle() replaced by importNamedStyle()
 - isReadOnly() use readOnly()
 - Signal changeAttributeValue()
 - Deleted GroupData (Use QgsEditFormConfig::GroupData)
