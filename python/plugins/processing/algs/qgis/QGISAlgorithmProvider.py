@@ -84,6 +84,7 @@ from .OffsetLine import OffsetLine
 from .Orthogonalize import Orthogonalize
 from .PointDistance import PointDistance
 from .PointOnSurface import PointOnSurface
+from .PointsAlongGeometry import PointsAlongGeometry
 from .PointsInPolygon import PointsInPolygon
 from .PointsLayerFromTable import PointsLayerFromTable
 from .PoleOfInaccessibility import PoleOfInaccessibility
@@ -162,7 +163,6 @@ from .ZonalStatistics import ZonalStatistics
 # from .DefineProjection import DefineProjection
 # from .RectanglesOvalsDiamondsVariable import RectanglesOvalsDiamondsVariable
 # from .RectanglesOvalsDiamondsFixed import RectanglesOvalsDiamondsFixed
-# from .PointsAlongGeometry import PointsAlongGeometry
 # from .Relief import Relief
 # from .IdwInterpolation import IdwInterpolation
 # from .TinInterpolation import TinInterpolation
@@ -208,7 +208,6 @@ class QGISAlgorithmProvider(QgsProcessingProvider):
         #         DefineProjection(),
         #         RectanglesOvalsDiamondsVariable(),
         #         RectanglesOvalsDiamondsFixed(),
-        #         PointsAlongGeometry(),
         #         Relief(),
         #         IdwInterpolation(), TinInterpolation(),
         #         RasterCalculator(),
@@ -259,6 +258,7 @@ class QGISAlgorithmProvider(QgsProcessingProvider):
                 Orthogonalize(),
                 PointDistance(),
                 PointOnSurface(),
+                PointsAlongGeometry(),
                 PointsInPolygon(),
                 PointsLayerFromTable(),
                 PoleOfInaccessibility(),
