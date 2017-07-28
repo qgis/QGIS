@@ -12,8 +12,8 @@ AABB TerrainGenerator::rootChunkBbox( const Map3D &map ) const
 
   float hMin, hMax;
   rootChunkHeightRange( hMin, hMax );
-  return AABB( te.xMinimum() - map.originX, hMin * map.zExaggeration, -te.yMaximum() + map.originY,
-               te.xMaximum() - map.originX, hMax * map.zExaggeration, -te.yMinimum() + map.originY );
+  return AABB( te.xMinimum() - map.originX, hMin * map.terrainVerticalScale(), -te.yMaximum() + map.originY,
+               te.xMaximum() - map.originX, hMax * map.terrainVerticalScale(), -te.yMinimum() + map.originY );
 }
 
 float TerrainGenerator::rootChunkError( const Map3D &map ) const

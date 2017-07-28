@@ -67,7 +67,7 @@ int main( int argc, char *argv[] )
   Map3D map;
   map.setLayers( QList<QgsMapLayer *>() << rlSat );
   map.crs = rlSat->crs();
-  map.zExaggeration = 3;
+  map.setTerrainVerticalScale( 3 );
   map.setShowTerrainBoundingBoxes( true );
   map.setShowTerrainTilesInfo( true );
 

@@ -56,6 +56,7 @@ Scene::Scene( const Map3D &map, Qt3DExtras::QForwardRenderer *defaultFrameGraph,
 
   createTerrain();
   connect( &map, &Map3D::terrainGeneratorChanged, this, &Scene::createTerrain );
+  connect( &map, &Map3D::terrainVerticalScaleChanged, this, &Scene::createTerrain );
 
   // create entities of renderers
 
@@ -63,14 +64,6 @@ Scene::Scene( const Map3D &map, Qt3DExtras::QForwardRenderer *defaultFrameGraph,
   {
     Qt3DCore::QEntity *p = renderer->createEntity( map );
     p->setParent( this );
-  }
-
-  // create entities of renderers of layers
-
-  Q_FOREACH ( QgsMapLayer *layer, map.layers() )
-  {
-    addLayerEntity( layer );
-    // TODO: connect( layer, &QgsMapLayer::willBeDeleted, this, &Scene::onLayerWillBeDeleted );
   }
 
   // listen to changes of layers in order to add/remove 3D renderer entities
@@ -200,6 +193,16 @@ void Scene::createTerrain()
   chunkEntities << mTerrain;
 
   onCameraChanged();  // force update of the new terrain
+
+  // make sure that renderers for layers are re-created as well
+  Q_FOREACH ( QgsMapLayer *layer, mMap.layers() )
+  {
+    // remove old entity - if any
+    removeLayerEntity( layer );
+
+    // add new entity - if any 3D renderer
+    addLayerEntity( layer );
+  }
 }
 
 void Scene::onLayerRenderer3DChanged()

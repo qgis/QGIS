@@ -45,7 +45,8 @@ class _3D_EXPORT Map3D : public QObject
     // terrain related config
     //
 
-    double zExaggeration;   //!< Multiplier of terrain heights to make the terrain shape more pronounced
+    void setTerrainVerticalScale( double zScale );
+    double terrainVerticalScale() const;
 
     void setLayers( const QList<QgsMapLayer *> &layers );
     QList<QgsMapLayer *> layers() const;
@@ -75,10 +76,12 @@ class _3D_EXPORT Map3D : public QObject
   signals:
     void layersChanged();
     void terrainGeneratorChanged();
+    void terrainVerticalScaleChanged();
     void showTerrainBoundingBoxesChanged();
     void showTerrainTilesInfoChanged();
 
   private:
+    double mTerrainVerticalScale;   //!< Multiplier of terrain heights to make the terrain shape more pronounced
     std::unique_ptr<TerrainGenerator> mTerrainGenerator;  //!< Implementation of the terrain generation
     bool mShowTerrainBoundingBoxes;  //!< Whether to show bounding boxes of entities - useful for debugging
     bool mShowTerrainTileInfo;  //!< Whether to draw extra information about terrain tiles to the textures - useful for debugging

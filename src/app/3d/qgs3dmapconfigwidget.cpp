@@ -35,7 +35,7 @@ Qgs3DMapConfigWidget::Qgs3DMapConfigWidget( Map3D *map, QgsMapCanvas *mainCanvas
     spinTerrainResolution->setValue( 16 );
   }
 
-  spinTerrainScale->setValue( mMap->zExaggeration );
+  spinTerrainScale->setValue( mMap->terrainVerticalScale() );
   spinMapResolution->setValue( mMap->tileTextureSize );
   spinScreenError->setValue( mMap->maxTerrainError );
   chkShowTileInfo->setChecked( mMap->showTerrainTilesInfo() );
@@ -68,7 +68,7 @@ void Qgs3DMapConfigWidget::apply()
     mMap->setTerrainGenerator( flatTerrainGen );
   }
 
-  mMap->zExaggeration = spinTerrainScale->value();
+  mMap->setTerrainVerticalScale( spinTerrainScale->value() );
   mMap->tileTextureSize = spinMapResolution->value();
   mMap->maxTerrainError = spinScreenError->value();
   mMap->setShowTerrainTilesInfo( chkShowTileInfo->isChecked() );

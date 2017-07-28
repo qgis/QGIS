@@ -74,7 +74,7 @@ void Utils::clampAltitudes( QgsLineString *lineString, AltitudeClamping altClamp
     if ( altClamp == AltClampAbsolute || altClamp == AltClampRelative )
       geomZ = lineString->zAt( i );
 
-    float z = ( terrainZ + geomZ ) * map.zExaggeration + height;
+    float z = ( terrainZ + geomZ ) * map.terrainVerticalScale() + height;
     lineString->setZAt( i, z );
   }
 }

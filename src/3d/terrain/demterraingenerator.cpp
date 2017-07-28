@@ -93,10 +93,10 @@ class DemTerrainChunkLoader : public TerrainChunkLoader
       double side = extent.width();
       double half = side / 2;
 
-      transform->setScale3D( QVector3D( side, map.zExaggeration, side ) );
+      transform->setScale3D( QVector3D( side, map.terrainVerticalScale(), side ) );
       transform->setTranslation( QVector3D( x0 + half, 0, - ( y0 + half ) ) );
 
-      node->setExactBbox( AABB( x0, zMin * map.zExaggeration, -y0, x0 + side, zMax * map.zExaggeration, -( y0 + side ) ) );
+      node->setExactBbox( AABB( x0, zMin * map.terrainVerticalScale(), -y0, x0 + side, zMax * map.terrainVerticalScale(), -( y0 + side ) ) );
 
       entity->setEnabled( false );
       entity->setParent( parent );
