@@ -1700,6 +1700,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     void createCanvasTools();
     void createMapTips();
     void createDecorations();
+    void init3D();
 
     /**
      * Refresh the user profile menu.

@@ -16,8 +16,8 @@ class _3D_EXPORT Abstract3DSymbol
     virtual QString type() const = 0;
     virtual Abstract3DSymbol *clone() const = 0;
 
-    virtual void writeXml( QDomElement &elem ) const = 0;
-    virtual void readXml( const QDomElement &elem ) = 0;
+    virtual void writeXml( QDomElement &elem, const QgsReadWriteContext &context ) const = 0;
+    virtual void readXml( const QDomElement &elem, const QgsReadWriteContext &context ) = 0;
 };
 
 
@@ -30,8 +30,8 @@ class _3D_EXPORT Polygon3DSymbol : public Abstract3DSymbol
     QString type() const override { return "polygon"; }
     Abstract3DSymbol *clone() const override;
 
-    void writeXml( QDomElement &elem ) const override;
-    void readXml( const QDomElement &elem ) override;
+    void writeXml( QDomElement &elem, const QgsReadWriteContext &context ) const override;
+    void readXml( const QDomElement &elem, const QgsReadWriteContext &context ) override;
 
     AltitudeClamping altClamping;  //! how to handle altitude of vector features
     AltitudeBinding altBinding;    //! how to handle clamping of vertices of individual features
@@ -51,8 +51,8 @@ class _3D_EXPORT Point3DSymbol : public Abstract3DSymbol
     QString type() const override { return "point"; }
     Abstract3DSymbol *clone() const override;
 
-    void writeXml( QDomElement &elem ) const override;
-    void readXml( const QDomElement &elem ) override;
+    void writeXml( QDomElement &elem, const QgsReadWriteContext &context ) const override;
+    void readXml( const QDomElement &elem, const QgsReadWriteContext &context ) override;
 
     PhongMaterialSettings material;  //!< Defines appearance of objects
     QVariantMap shapeProperties;  //!< What kind of shape to use and what
@@ -69,8 +69,8 @@ class _3D_EXPORT Line3DSymbol : public Abstract3DSymbol
     QString type() const override { return "line"; }
     Abstract3DSymbol *clone() const override;
 
-    void writeXml( QDomElement &elem ) const override;
-    void readXml( const QDomElement &elem ) override;
+    void writeXml( QDomElement &elem, const QgsReadWriteContext &context ) const override;
+    void readXml( const QDomElement &elem, const QgsReadWriteContext &context ) override;
 
     AltitudeClamping altClamping;  //! how to handle altitude of vector features
     AltitudeBinding altBinding;    //! how to handle clamping of vertices of individual features

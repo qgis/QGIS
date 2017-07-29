@@ -16,8 +16,10 @@ Abstract3DSymbol *Polygon3DSymbol::clone() const
   return new Polygon3DSymbol( *this );
 }
 
-void Polygon3DSymbol::writeXml( QDomElement &elem ) const
+void Polygon3DSymbol::writeXml( QDomElement &elem, const QgsReadWriteContext &context ) const
 {
+  Q_UNUSED( context );
+
   QDomDocument doc = elem.ownerDocument();
 
   QDomElement elemDataProperties = doc.createElement( "data" );
@@ -32,8 +34,10 @@ void Polygon3DSymbol::writeXml( QDomElement &elem ) const
   elem.appendChild( elemMaterial );
 }
 
-void Polygon3DSymbol::readXml( const QDomElement &elem )
+void Polygon3DSymbol::readXml( const QDomElement &elem, const QgsReadWriteContext &context )
 {
+  Q_UNUSED( context );
+
   QDomElement elemDataProperties = elem.firstChildElement( "data" );
   altClamping = Utils::altClampingFromString( elemDataProperties.attribute( "alt-clamping" ) );
   altBinding = Utils::altBindingFromString( elemDataProperties.attribute( "alt-binding" ) );
@@ -56,8 +60,10 @@ Abstract3DSymbol *Point3DSymbol::clone() const
   return new Point3DSymbol( *this );
 }
 
-void Point3DSymbol::writeXml( QDomElement &elem ) const
+void Point3DSymbol::writeXml( QDomElement &elem, const QgsReadWriteContext &context ) const
 {
+  Q_UNUSED( context );
+
   QDomDocument doc = elem.ownerDocument();
 
   QDomElement elemMaterial = doc.createElement( "material" );
@@ -73,8 +79,10 @@ void Point3DSymbol::writeXml( QDomElement &elem ) const
   elem.appendChild( elemTransform );
 }
 
-void Point3DSymbol::readXml( const QDomElement &elem )
+void Point3DSymbol::readXml( const QDomElement &elem, const QgsReadWriteContext &context )
 {
+  Q_UNUSED( context );
+
   QDomElement elemMaterial = elem.firstChildElement( "material" );
   material.readXml( elemMaterial );
 
@@ -103,8 +111,10 @@ Abstract3DSymbol *Line3DSymbol::clone() const
   return new Line3DSymbol( *this );
 }
 
-void Line3DSymbol::writeXml( QDomElement &elem ) const
+void Line3DSymbol::writeXml( QDomElement &elem, const QgsReadWriteContext &context ) const
 {
+  Q_UNUSED( context );
+
   QDomDocument doc = elem.ownerDocument();
 
   QDomElement elemDataProperties = doc.createElement( "data" );
@@ -120,8 +130,10 @@ void Line3DSymbol::writeXml( QDomElement &elem ) const
   elem.appendChild( elemMaterial );
 }
 
-void Line3DSymbol::readXml( const QDomElement &elem )
+void Line3DSymbol::readXml( const QDomElement &elem, const QgsReadWriteContext &context )
 {
+  Q_UNUSED( context );
+
   QDomElement elemDataProperties = elem.firstChildElement( "data" );
   altClamping = Utils::altClampingFromString( elemDataProperties.attribute( "alt-clamping" ) );
   altBinding = Utils::altBindingFromString( elemDataProperties.attribute( "alt-binding" ) );

@@ -57,8 +57,6 @@ Map3D::~Map3D()
 
 void Map3D::readXml( const QDomElement &elem, const QgsReadWriteContext &context )
 {
-  Q_UNUSED( context );
-
   QDomElement elemOrigin = elem.firstChildElement( "origin" );
   originX = elemOrigin.attribute( "x" ).toDouble();
   originY = elemOrigin.attribute( "y" ).toDouble();
@@ -117,7 +115,7 @@ void Map3D::readXml( const QDomElement &elem, const QgsReadWriteContext &context
 
     if ( renderer )
     {
-      renderer->readXml( elemRenderer );
+      renderer->readXml( elemRenderer, context );
       renderers.append( renderer );
     }
     elemRenderer = elemRenderer.nextSiblingElement( "renderer" );
@@ -135,7 +133,6 @@ void Map3D::readXml( const QDomElement &elem, const QgsReadWriteContext &context
 
 QDomElement Map3D::writeXml( QDomDocument &doc, const QgsReadWriteContext &context ) const
 {
-  Q_UNUSED( context );
   QDomElement elem = doc.createElement( "qgis3d" );
 
   QDomElement elemOrigin = doc.createElement( "origin" );
@@ -171,7 +168,7 @@ QDomElement Map3D::writeXml( QDomDocument &doc, const QgsReadWriteContext &conte
   {
     QDomElement elemRenderer = doc.createElement( "renderer" );
     elemRenderer.setAttribute( "type", renderer->type() );
-    renderer->writeXml( elemRenderer );
+    renderer->writeXml( elemRenderer, context );
     elemRenderers.appendChild( elemRenderer );
   }
   elem.appendChild( elemRenderers );

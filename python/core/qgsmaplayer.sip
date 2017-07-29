@@ -453,6 +453,12 @@ Invoked by QgsProject.read().
  :rtype: bool
 %End
 
+    virtual void resolveReferences( QgsProject *project );
+%Docstring
+ Resolve references to other layers (kept as layer IDs after reading XML) into layer objects.
+.. versionadded:: 3.0
+%End
+
     QStringList customPropertyKeys() const;
 %Docstring
  Returns list of all keys within custom properties. Properties are stored in a map and saved in project file.
@@ -1090,7 +1096,6 @@ Set whether layer is valid or not - should be used in constructor.
   project files.
  :rtype: bool
 %End
-
 
     void readCustomProperties( const QDomNode &layerNode, const QString &keyStartsWith = QString() );
 %Docstring

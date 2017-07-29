@@ -431,6 +431,11 @@ class CORE_EXPORT QgsMapLayer : public QObject
      */
     bool writeLayerXml( QDomElement &layerElement, QDomDocument &document, const QgsReadWriteContext &context ) const;
 
+    /** Resolve references to other layers (kept as layer IDs after reading XML) into layer objects.
+     * \since QGIS 3.0
+     */
+    virtual void resolveReferences( QgsProject *project );
+
     /** Returns list of all keys within custom properties. Properties are stored in a map and saved in project file.
      * \see customProperty()
      * \since QGIS 3.0
@@ -975,7 +980,6 @@ class CORE_EXPORT QgsMapLayer : public QObject
      *  project files.
      */
     virtual bool writeXml( QDomNode &layer_node, QDomDocument &document, const QgsReadWriteContext &context ) const;
-
 
     /** Read custom properties from project file.
       \param layerNode note to read from

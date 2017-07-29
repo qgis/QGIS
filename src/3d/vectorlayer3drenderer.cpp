@@ -9,6 +9,22 @@
 #include "qgsxmlutils.h"
 
 
+VectorLayer3DRendererMetadata::VectorLayer3DRendererMetadata()
+  : Qgs3DRendererAbstractMetadata( "vector" )
+{
+}
+
+QgsAbstract3DRenderer *VectorLayer3DRendererMetadata::createRenderer( QDomElement &elem, const QgsReadWriteContext &context )
+{
+  VectorLayer3DRenderer *r = new VectorLayer3DRenderer;
+  r->readXml( elem, context );
+  return r;
+}
+
+
+// ---------
+
+
 VectorLayer3DRenderer::VectorLayer3DRenderer( Abstract3DSymbol *s )
   : mSymbol( s )
 {
@@ -62,7 +78,7 @@ Qt3DCore::QEntity *VectorLayer3DRenderer::createEntity( const Map3D &map ) const
     return nullptr;
 }
 
-void VectorLayer3DRenderer::writeXml( QDomElement &elem ) const
+void VectorLayer3DRenderer::writeXml( QDomElement &elem, const QgsReadWriteContext &context ) const
 {
   QDomDocument doc = elem.ownerDocument();
 
@@ -72,12 +88,12 @@ void VectorLayer3DRenderer::writeXml( QDomElement &elem ) const
   if ( mSymbol )
   {
     elemSymbol.setAttribute( "type", mSymbol->type() );
-    mSymbol->writeXml( elemSymbol );
+    mSymbol->writeXml( elemSymbol, context );
   }
   elem.appendChild( elemSymbol );
 }
 
-void VectorLayer3DRenderer::readXml( const QDomElement &elem )
+void VectorLayer3DRenderer::readXml( const QDomElement &elem, const QgsReadWriteContext &context )
 {
   layerRef = QgsMapLayerRef( elem.attribute( "layer" ) );
 
@@ -92,7 +108,7 @@ void VectorLayer3DRenderer::readXml( const QDomElement &elem )
     symbol = new Line3DSymbol;
 
   if ( symbol )
-    symbol->readXml( elemSymbol );
+    symbol->readXml( elemSymbol, context );
   mSymbol.reset( symbol );
 }
 
