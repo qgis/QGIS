@@ -19,7 +19,7 @@
 #define QGSWFSSOURCESELECT_H
 
 #include "ui_qgswfssourceselectbase.h"
-#include "qgscontexthelp.h"
+#include "qgshelp.h"
 #include "qgswfscapabilities.h"
 #include "qgsproviderregistry.h"
 #include "qgsabstractdatasourcewidget.h"
@@ -103,7 +103,8 @@ class QgsWFSSourceSelect: public QgsAbstractDataSourceWidget, private Ui::QgsWFS
 
     void populateConnectionList();
 
-    void on_buttonBox_helpRequested() { QgsContextHelp::run( metaObject()->className() ); }
+    void on_buttonBox_helpRequested() { QgsHelp::openHelp( QStringLiteral( "working_with_ogc/ogc_client_support.html" ) ); }
+
 
 };
 

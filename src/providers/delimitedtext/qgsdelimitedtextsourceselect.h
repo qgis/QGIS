@@ -62,7 +62,7 @@ class QgsDelimitedTextSourceSelect : public QgsAbstractDataSourceWidget, private
   private slots:
     void on_buttonBox_helpRequested()
     {
-      QgsHelp::openHelp( QStringLiteral( "working_with_vector/supported_data.html#delimited-text-files" ) );
+      QgsHelp::openHelp( QStringLiteral( "managing_data_source/opening_data.html#importing-a-delimited-text-file" ) );
     }
     void on_btnBrowseForFile_clicked();
 

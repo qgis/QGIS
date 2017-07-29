@@ -40,7 +40,7 @@ class QgsPgNewConnection : public QDialog, private Ui::QgsPgNewConnectionBase
     void accept() override;
     void on_btnConnect_clicked();
     void on_cb_geometryColumnsOnly_clicked();
-    void on_buttonBox_helpRequested() { QgsHelp::openHelp( QStringLiteral( "working_with_vector/supported_data.html#postgis-layers" ) ); }
+    void on_buttonBox_helpRequested() { QgsHelp::openHelp( QStringLiteral( "managing_data_source/opening_data.html#creating-a-stored-connection" ) ); }
   private:
     QString mOriginalConnName; //store initial name to delete entry in case of rename
     QgsAuthConfigSelect *mAuthConfigSelect = nullptr;

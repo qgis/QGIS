@@ -94,7 +94,7 @@ class QgsSpatiaLiteSourceSelect: public QgsAbstractDataSourceWidget, private Ui:
     //!Sets a new regular expression to the model
     void setSearchExpression( const QString &regexp );
 
-    void on_buttonBox_helpRequested() { QgsHelp::openHelp( QStringLiteral( "working_with_vector/supported_data.html#spatialite-layers" ) ); }
+    void on_buttonBox_helpRequested() { QgsHelp::openHelp( QStringLiteral( "managing_data_source/opening_data.html#spatialite-layers" ) ); }
 
   private:
     enum Columns
