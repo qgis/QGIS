@@ -39,7 +39,7 @@ class QgsOracleNewConnection : public QDialog, private Ui::QgsOracleNewConnectio
   public slots:
     void accept();
     void on_btnConnect_clicked();
-    void on_buttonBox_helpRequested() { QgsHelp::openHelp( QStringLiteral( "working_with_vector/supported_data.html#oracle-spatial-layers" ) ); }
+    void on_buttonBox_helpRequested() { QgsHelp::openHelp( QStringLiteral( "managing_data_source/opening_data.html#connecting-to-oracle-spatial" ) ); }
   private:
     QString mOriginalConnName; //store initial name to delete entry in case of rename
 };

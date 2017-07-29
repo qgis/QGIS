@@ -17,7 +17,7 @@
 #define QGSFIELDCALCULATOR_H
 
 #include "ui_qgsfieldcalculatorbase.h"
-#include "qgscontexthelp.h"
+#include "qgshelp.h"
 #include "qgsfields.h"
 #include "qgis_app.h"
 
@@ -42,7 +42,8 @@ class APP_EXPORT QgsFieldCalculator: public QDialog, private Ui::QgsFieldCalcula
     void on_mOutputFieldNameLineEdit_textChanged( const QString &text );
     void on_mOutputFieldTypeComboBox_activated( int index );
 
-    void on_mButtonBox_helpRequested() { QgsContextHelp::run( metaObject()->className() ); }
+    void on_mButtonBox_helpRequested() { QgsHelp::openHelp( QStringLiteral( "working_with_vector/attribute_table.html#editing-attribute-values" ) ); }
+
 
   private slots:
     //! Sets the OK button enabled / disabled
