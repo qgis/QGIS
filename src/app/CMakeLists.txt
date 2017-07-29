@@ -141,6 +141,15 @@ SET(QGIS_APP_SRCS
   qgsmaptoolellipseextent.cpp
   qgsmaptoolellipsecenterpoint.cpp
   qgsmaptoolellipsecenter2points.cpp
+  qgsmaptooladdrectangle.cpp
+  qgsmaptooladdregularshape.cpp
+  qgsmaptooladdregularpolygon.cpp
+  qgsmaptoolrectanglecenter.cpp
+  qgsmaptoolrectangleextent.cpp
+  qgsmaptoolrectangle3points.cpp
+  qgsmaptoolsquarecenter.cpp
+  qgsmaptoolregularpolygon2points.cpp
+  qgsmaptoolregularpolygoncenterpoint.cpp
 
   composer/qgsattributeselectiondialog.cpp
   composer/qgscomposer.cpp
@@ -301,7 +310,15 @@ SET (QGIS_APP_MOC_HDRS
   qgsmaptoolellipseextent.h
   qgsmaptoolellipsecenterpoint.h
   qgsmaptoolellipsecenter2points.h
-
+  qgsmaptooladdrectangle.h
+  qgsmaptooladdregularshape.h
+  qgsmaptooladdregularpolygon.h
+  qgsmaptoolrectanglecenter.h
+  qgsmaptoolrectangleextent.h
+  qgsmaptoolrectangle3points.h
+  qgsmaptoolsquarecenter.h
+  qgsmaptoolregularpolygon2points.h
+  qgsmaptoolregularpolygoncenterpoint.h
 
   nodetool/qgsselectedfeature.h
   nodetool/qgsnodeeditor.h

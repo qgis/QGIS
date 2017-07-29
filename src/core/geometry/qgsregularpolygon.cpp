@@ -227,6 +227,7 @@ QgsLineString *QgsRegularPolygon::toLineString() const
   pts = points( );
 
   ext->setPoints( pts );
+  ext->addVertex( pts.at( 0 ) ); //close regular polygon
 
   return ext.release();
 }

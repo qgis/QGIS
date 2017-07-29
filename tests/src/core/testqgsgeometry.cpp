@@ -4441,7 +4441,8 @@ void TestQgsGeometry::regularPolygon()
 
   std::unique_ptr< QgsLineString > l( new QgsLineString() );
   l.reset( rp10.toLineString( ) );
-  QCOMPARE( l->numPoints(), 4 );
+  QCOMPARE( l->numPoints(), 5 );
+  QCOMPARE( l->pointN( 0 ), l->pointN( 4 ) );
   QgsPointSequence pts_l;
   l->points( pts_l );
   QCOMPARE( ptsPol, pts_l );

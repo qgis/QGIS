@@ -1,5 +1,5 @@
 /***************************************************************************
-    qgsmaptooladdcircle.cpp  -  map tool for adding circle
+    qgsmaptooladdregularshape.cpp  -  map tool for adding regular shape
     ---------------------
     begin                : July 2017
     copyright            : (C) 2017
@@ -13,47 +13,47 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsmaptooladdcircle.h"
+#include "qgsmaptooladdregularshape.h"
 #include "qgscompoundcurve.h"
 #include "qgscurvepolygon.h"
 #include "qgsgeometryrubberband.h"
 #include "qgsgeometryutils.h"
-#include "qgslinestring.h"
 #include "qgsmapcanvas.h"
 #include "qgspoint.h"
 #include "qgisapp.h"
 
-QgsMapToolAddCircle::QgsMapToolAddCircle( QgsMapToolCapture *parentTool, QgsMapCanvas *canvas, CaptureMode mode )
+QgsMapToolAddRegularShape::QgsMapToolAddRegularShape( QgsMapToolCapture *parentTool, QgsMapCanvas *canvas, CaptureMode mode )
   : QgsMapToolCapture( canvas, QgisApp::instance()->cadDockWidget(), mode )
   , mParentTool( parentTool )
   , mTempRubberBand( nullptr )
-  , mCircle( QgsCircle() )
+  , mRegularShape( nullptr )
 {
   if ( mCanvas )
   {
-    connect( mCanvas, &QgsMapCanvas::mapToolSet, this, &QgsMapToolAddCircle::setParentTool );
+    connect( mCanvas, &QgsMapCanvas::mapToolSet, this, &QgsMapToolAddRegularShape::setParentTool );
   }
 }
 
-QgsMapToolAddCircle::QgsMapToolAddCircle( QgsMapCanvas *canvas )
+QgsMapToolAddRegularShape::QgsMapToolAddRegularShape( QgsMapCanvas *canvas )
   : QgsMapToolCapture( canvas, QgisApp::instance()->cadDockWidget() )
   , mParentTool( nullptr )
   , mTempRubberBand( nullptr )
-  , mCircle( QgsCircle() )
+  , mRegularShape( nullptr )
 {
   if ( mCanvas )
   {
-    connect( mCanvas, &QgsMapCanvas::mapToolSet, this, &QgsMapToolAddCircle::setParentTool );
+    connect( mCanvas, &QgsMapCanvas::mapToolSet, this, &QgsMapToolAddRegularShape::setParentTool );
   }
 }
 
-QgsMapToolAddCircle::~QgsMapToolAddCircle()
+QgsMapToolAddRegularShape::~QgsMapToolAddRegularShape()
 {
   delete mTempRubberBand;
+  delete mRegularShape;
   mPoints.clear();
 }
 
-void QgsMapToolAddCircle::setParentTool( QgsMapTool *newTool, QgsMapTool *oldTool )
+void QgsMapToolAddRegularShape::setParentTool( QgsMapTool *newTool, QgsMapTool *oldTool )
 {
   if ( mTempRubberBand )
   {
@@ -62,7 +62,7 @@ void QgsMapToolAddCircle::setParentTool( QgsMapTool *newTool, QgsMapTool *oldToo
   }
   mPoints.clear();
   QgsMapToolCapture *tool = dynamic_cast<QgsMapToolCapture *>( oldTool );
-  QgsMapToolAddCircle *csTool = dynamic_cast<QgsMapToolAddCircle *>( oldTool );
+  QgsMapToolAddRegularShape *csTool = dynamic_cast<QgsMapToolAddRegularShape *>( oldTool );
   if ( csTool && newTool == this )
   {
     mParentTool = csTool->mParentTool;
@@ -73,7 +73,7 @@ void QgsMapToolAddCircle::setParentTool( QgsMapTool *newTool, QgsMapTool *oldToo
   }
 }
 
-void QgsMapToolAddCircle::keyPressEvent( QKeyEvent *e )
+void QgsMapToolAddRegularShape::keyPressEvent( QKeyEvent *e )
 {
   if ( e && e->isAutoRepeat() )
   {
@@ -90,7 +90,7 @@ void QgsMapToolAddCircle::keyPressEvent( QKeyEvent *e )
   }
 }
 
-void QgsMapToolAddCircle::keyReleaseEvent( QKeyEvent *e )
+void QgsMapToolAddRegularShape::keyReleaseEvent( QKeyEvent *e )
 {
   if ( e && e->isAutoRepeat() )
   {
@@ -98,26 +98,23 @@ void QgsMapToolAddCircle::keyReleaseEvent( QKeyEvent *e )
   }
 }
 
-void QgsMapToolAddCircle::deactivate()
+void QgsMapToolAddRegularShape::deactivate()
 {
-  if ( !mParentTool || mCircle.isEmpty() )
+  if ( !mParentTool || mRegularShape->isEmpty() )
   {
     return;
   }
-
-  mParentTool->addCurve( mCircle.toCircularString() );
-
+  mParentTool->addCurve( mRegularShape );
   delete mTempRubberBand;
   mTempRubberBand = nullptr;
   mPoints.clear();
-  mCircle = QgsCircle();
+
   QgsMapToolCapture::deactivate();
 }
 
-void QgsMapToolAddCircle::activate()
+void QgsMapToolAddRegularShape::activate()
 {
   mPoints.clear();
-
   if ( mParentTool )
   {
     mParentTool->deleteTempRubberBand();

@@ -274,7 +274,7 @@
     </widget>
     <widget class="QMenu" name="mMenuCircle">
      <property name="title">
-      <string>Add circle</string>
+      <string>Add Circle</string>
      </property>
      <addaction name="mActionCircle2Points"/>
      <addaction name="mActionCircle3Points"/>
@@ -282,12 +282,28 @@
     </widget>
     <widget class="QMenu" name="mMenuEllipse">
      <property name="title">
-      <string>Add ellipse</string>
+      <string>Add Ellipse</string>
      </property>
      <addaction name="mActionEllipseCenter2Points"/>
      <addaction name="mActionEllipseCenterPoint"/>
      <addaction name="mActionEllipseExtent"/>
      <addaction name="mActionEllipseFoci"/>
+    </widget>
+    <widget class="QMenu" name="mMenuRectangle">
+     <property name="title">
+      <string>Add Rectangle</string>
+     </property>
+     <addaction name="mActionRectangleExtent"/>
+     <addaction name="mActionRectangleCenterPoint"/>
+     <addaction name="mActionRectangle3Points"/>
+     <addaction name="mActionSquareCenter"/>
+    </widget>
+    <widget class="QMenu" name="mMenuRegularPolygon">
+     <property name="title">
+      <string>Add Regular Polygon</string>
+     </property>
+     <addaction name="mActionRegularPolygonCenterPoint"/>
+     <addaction name="mActionRegularPolygon2Points"/>
     </widget>
     <addaction name="mActionUndo"/>
     <addaction name="mActionRedo"/>
@@ -302,6 +318,8 @@
     <addaction name="mActionCircularStringCurvePoint"/>
     <addaction name="mActionCircularStringRadius"/>
     <addaction name="mMenuCircle"/>
+    <addaction name="mMenuRectangle"/>
+    <addaction name="mMenuRegularPolygon"/>
     <addaction name="mMenuEllipse"/>
     <addaction name="mActionMoveFeature"/>
     <addaction name="mActionDeleteSelected"/>
@@ -2803,6 +2821,96 @@ Acts on currently active editable layer</string>
    </property>
    <property name="toolTip">
     <string>Add Ellipse from foci</string>
+   </property>
+  </action>
+  <action name="mActionRectangleExtent">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionRectangleExtent.svg</normaloff>:/images/themes/default/mActionRectangleExtent.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Add Rectangle From Extent</string>
+   </property>
+   <property name="toolTip">
+    <string>Add rectangle from extent</string>
+   </property>
+  </action>
+  <action name="mActionRectangleCenterPoint">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionRectangleCenter.svg</normaloff>:/images/themes/default/mActionRectangleCenter.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Add Rectangle From Center and a Point</string>
+   </property>
+   <property name="toolTip">
+    <string>Add rectangle from center and a point</string>
+   </property>
+  </action>
+  <action name="mActionRectangle3Points">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionRectangle3Points.svg</normaloff>:/images/themes/default/mActionRectangle3Points.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Add Rectangle From 3 Points</string>
+   </property>
+   <property name="toolTip">
+    <string>Add rectangle from 3 points</string>
+   </property>
+  </action>
+  <action name="mActionSquareCenter">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionSquareCenter.svg</normaloff>:/images/themes/default/mActionSquareCenter.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Add Square From Center</string>
+   </property>
+   <property name="toolTip">
+    <string>Add square from center</string>
+   </property>
+  </action>
+  <action name="mActionRegularPolygonCenterPoint">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionRegularPolygonCenterPoint.svg</normaloff>:/images/themes/default/mActionRegularPolygonCenterPoint.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Add Regular Polygon From Center and a Point</string>
+   </property>
+   <property name="toolTip">
+    <string>Add regular polygon from center and a point</string>
+   </property>
+  </action>
+  <action name="mActionRegularPolygon2Points">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionRegularPolygon2Points.svg</normaloff>:/images/themes/default/mActionRegularPolygon2Points.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Add Regular Polygon From 2 Points</string>
+   </property>
+   <property name="toolTip">
+    <string>Add regular polygon from 2 points</string>
    </property>
   </action>
  </widget>

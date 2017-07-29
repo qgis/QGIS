@@ -1,5 +1,5 @@
 /***************************************************************************
-    qgsmaptooladdcircle.cpp  -  map tool for adding circle
+    qgsmaptooladdregularpolygon.h  -  map tool for adding regular polygon
     ---------------------
     begin                : July 2017
     copyright            : (C) 2017
@@ -13,47 +13,48 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsmaptooladdcircle.h"
+#include "qgsmaptooladdregularpolygon.h"
 #include "qgscompoundcurve.h"
 #include "qgscurvepolygon.h"
 #include "qgsgeometryrubberband.h"
 #include "qgsgeometryutils.h"
-#include "qgslinestring.h"
 #include "qgsmapcanvas.h"
 #include "qgspoint.h"
 #include "qgisapp.h"
+#include "qgsstatusbar.h"
 
-QgsMapToolAddCircle::QgsMapToolAddCircle( QgsMapToolCapture *parentTool, QgsMapCanvas *canvas, CaptureMode mode )
+QgsMapToolAddRegularPolygon::QgsMapToolAddRegularPolygon( QgsMapToolCapture *parentTool, QgsMapCanvas *canvas, CaptureMode mode )
   : QgsMapToolCapture( canvas, QgisApp::instance()->cadDockWidget(), mode )
   , mParentTool( parentTool )
   , mTempRubberBand( nullptr )
-  , mCircle( QgsCircle() )
+  , mRegularPolygon( QgsRegularPolygon() )
 {
   if ( mCanvas )
   {
-    connect( mCanvas, &QgsMapCanvas::mapToolSet, this, &QgsMapToolAddCircle::setParentTool );
+    connect( mCanvas, &QgsMapCanvas::mapToolSet, this, &QgsMapToolAddRegularPolygon::setParentTool );
   }
 }
 
-QgsMapToolAddCircle::QgsMapToolAddCircle( QgsMapCanvas *canvas )
+QgsMapToolAddRegularPolygon::QgsMapToolAddRegularPolygon( QgsMapCanvas *canvas )
   : QgsMapToolCapture( canvas, QgisApp::instance()->cadDockWidget() )
   , mParentTool( nullptr )
   , mTempRubberBand( nullptr )
-  , mCircle( QgsCircle() )
+  , mRegularPolygon( QgsRegularPolygon() )
 {
   if ( mCanvas )
   {
-    connect( mCanvas, &QgsMapCanvas::mapToolSet, this, &QgsMapToolAddCircle::setParentTool );
+    connect( mCanvas, &QgsMapCanvas::mapToolSet, this, &QgsMapToolAddRegularPolygon::setParentTool );
   }
 }
 
-QgsMapToolAddCircle::~QgsMapToolAddCircle()
+QgsMapToolAddRegularPolygon::~QgsMapToolAddRegularPolygon()
 {
   delete mTempRubberBand;
+  mTempRubberBand = nullptr;
   mPoints.clear();
 }
 
-void QgsMapToolAddCircle::setParentTool( QgsMapTool *newTool, QgsMapTool *oldTool )
+void QgsMapToolAddRegularPolygon::setParentTool( QgsMapTool *newTool, QgsMapTool *oldTool )
 {
   if ( mTempRubberBand )
   {
@@ -62,7 +63,7 @@ void QgsMapToolAddCircle::setParentTool( QgsMapTool *newTool, QgsMapTool *oldToo
   }
   mPoints.clear();
   QgsMapToolCapture *tool = dynamic_cast<QgsMapToolCapture *>( oldTool );
-  QgsMapToolAddCircle *csTool = dynamic_cast<QgsMapToolAddCircle *>( oldTool );
+  QgsMapToolAddRegularPolygon *csTool = dynamic_cast<QgsMapToolAddRegularPolygon *>( oldTool );
   if ( csTool && newTool == this )
   {
     mParentTool = csTool->mParentTool;
@@ -73,7 +74,29 @@ void QgsMapToolAddCircle::setParentTool( QgsMapTool *newTool, QgsMapTool *oldToo
   }
 }
 
-void QgsMapToolAddCircle::keyPressEvent( QKeyEvent *e )
+void QgsMapToolAddRegularPolygon::createNumberSidesSpinBox()
+{
+  deleteNumberSidesSpinBox();
+  mNumberSidesSpinBox = new QSpinBox();
+  mNumberSidesSpinBox->setMaximum( 99999999 );
+  mNumberSidesSpinBox->setMinimum( 3 );
+  mNumberSidesSpinBox->setPrefix( tr( "Number of sides: " ) );
+  mNumberSidesSpinBox->setValue( mNumberSides );
+  QgisApp::instance()->addUserInputWidget( mNumberSidesSpinBox );
+  mNumberSidesSpinBox->setFocus( Qt::TabFocusReason );
+}
+
+void QgsMapToolAddRegularPolygon::deleteNumberSidesSpinBox()
+{
+  if ( mNumberSidesSpinBox )
+  {
+    QgisApp::instance()->statusBarIface()->removeWidget( mNumberSidesSpinBox );
+    delete mNumberSidesSpinBox;
+    mNumberSidesSpinBox = nullptr;
+  }
+}
+
+void QgsMapToolAddRegularPolygon::keyPressEvent( QKeyEvent *e )
 {
   if ( e && e->isAutoRepeat() )
   {
@@ -82,6 +105,10 @@ void QgsMapToolAddCircle::keyPressEvent( QKeyEvent *e )
 
   if ( e && e->key() == Qt::Key_Escape )
   {
+    if ( mNumberSidesSpinBox )
+    {
+      deleteNumberSidesSpinBox();
+    }
     mPoints.clear();
     delete mTempRubberBand;
     mTempRubberBand = nullptr;
@@ -90,7 +117,7 @@ void QgsMapToolAddCircle::keyPressEvent( QKeyEvent *e )
   }
 }
 
-void QgsMapToolAddCircle::keyReleaseEvent( QKeyEvent *e )
+void QgsMapToolAddRegularPolygon::keyReleaseEvent( QKeyEvent *e )
 {
   if ( e && e->isAutoRepeat() )
   {
@@ -98,26 +125,28 @@ void QgsMapToolAddCircle::keyReleaseEvent( QKeyEvent *e )
   }
 }
 
-void QgsMapToolAddCircle::deactivate()
+void QgsMapToolAddRegularPolygon::deactivate()
 {
-  if ( !mParentTool || mCircle.isEmpty() )
+  if ( !mParentTool || mRegularPolygon.isEmpty() )
   {
     return;
   }
-
-  mParentTool->addCurve( mCircle.toCircularString() );
-
+  mParentTool->addCurve( mRegularPolygon.toLineString() );
   delete mTempRubberBand;
   mTempRubberBand = nullptr;
   mPoints.clear();
-  mCircle = QgsCircle();
+  mRegularPolygon = QgsRegularPolygon();
+  if ( mNumberSidesSpinBox )
+  {
+    deleteNumberSidesSpinBox();
+  }
+
   QgsMapToolCapture::deactivate();
 }
 
-void QgsMapToolAddCircle::activate()
+void QgsMapToolAddRegularPolygon::activate()
 {
   mPoints.clear();
-
   if ( mParentTool )
   {
     mParentTool->deleteTempRubberBand();

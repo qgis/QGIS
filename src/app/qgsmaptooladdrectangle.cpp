@@ -1,5 +1,5 @@
 /***************************************************************************
-    qgsmaptooladdcircle.cpp  -  map tool for adding circle
+    qgsmaptooladdrectangle.h  -  map tool for adding rectangle
     ---------------------
     begin                : July 2017
     copyright            : (C) 2017
@@ -13,47 +13,46 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsmaptooladdcircle.h"
+#include "qgsmaptooladdrectangle.h"
 #include "qgscompoundcurve.h"
 #include "qgscurvepolygon.h"
 #include "qgsgeometryrubberband.h"
 #include "qgsgeometryutils.h"
-#include "qgslinestring.h"
 #include "qgsmapcanvas.h"
 #include "qgspoint.h"
 #include "qgisapp.h"
 
-QgsMapToolAddCircle::QgsMapToolAddCircle( QgsMapToolCapture *parentTool, QgsMapCanvas *canvas, CaptureMode mode )
+QgsMapToolAddRectangle::QgsMapToolAddRectangle( QgsMapToolCapture *parentTool, QgsMapCanvas *canvas, CaptureMode mode )
   : QgsMapToolCapture( canvas, QgisApp::instance()->cadDockWidget(), mode )
   , mParentTool( parentTool )
   , mTempRubberBand( nullptr )
-  , mCircle( QgsCircle() )
+  , mRectangle( QgsRectangle() )
 {
   if ( mCanvas )
   {
-    connect( mCanvas, &QgsMapCanvas::mapToolSet, this, &QgsMapToolAddCircle::setParentTool );
+    connect( mCanvas, &QgsMapCanvas::mapToolSet, this, &QgsMapToolAddRectangle::setParentTool );
   }
 }
 
-QgsMapToolAddCircle::QgsMapToolAddCircle( QgsMapCanvas *canvas )
+QgsMapToolAddRectangle::QgsMapToolAddRectangle( QgsMapCanvas *canvas )
   : QgsMapToolCapture( canvas, QgisApp::instance()->cadDockWidget() )
   , mParentTool( nullptr )
   , mTempRubberBand( nullptr )
-  , mCircle( QgsCircle() )
+  , mRectangle( QgsRectangle() )
 {
   if ( mCanvas )
   {
-    connect( mCanvas, &QgsMapCanvas::mapToolSet, this, &QgsMapToolAddCircle::setParentTool );
+    connect( mCanvas, &QgsMapCanvas::mapToolSet, this, &QgsMapToolAddRectangle::setParentTool );
   }
 }
 
-QgsMapToolAddCircle::~QgsMapToolAddCircle()
+QgsMapToolAddRectangle::~QgsMapToolAddRectangle()
 {
   delete mTempRubberBand;
   mPoints.clear();
 }
 
-void QgsMapToolAddCircle::setParentTool( QgsMapTool *newTool, QgsMapTool *oldTool )
+void QgsMapToolAddRectangle::setParentTool( QgsMapTool *newTool, QgsMapTool *oldTool )
 {
   if ( mTempRubberBand )
   {
@@ -62,7 +61,7 @@ void QgsMapToolAddCircle::setParentTool( QgsMapTool *newTool, QgsMapTool *oldToo
   }
   mPoints.clear();
   QgsMapToolCapture *tool = dynamic_cast<QgsMapToolCapture *>( oldTool );
-  QgsMapToolAddCircle *csTool = dynamic_cast<QgsMapToolAddCircle *>( oldTool );
+  QgsMapToolAddRectangle *csTool = dynamic_cast<QgsMapToolAddRectangle *>( oldTool );
   if ( csTool && newTool == this )
   {
     mParentTool = csTool->mParentTool;
@@ -73,7 +72,7 @@ void QgsMapToolAddCircle::setParentTool( QgsMapTool *newTool, QgsMapTool *oldToo
   }
 }
 
-void QgsMapToolAddCircle::keyPressEvent( QKeyEvent *e )
+void QgsMapToolAddRectangle::keyPressEvent( QKeyEvent *e )
 {
   if ( e && e->isAutoRepeat() )
   {
@@ -90,7 +89,7 @@ void QgsMapToolAddCircle::keyPressEvent( QKeyEvent *e )
   }
 }
 
-void QgsMapToolAddCircle::keyReleaseEvent( QKeyEvent *e )
+void QgsMapToolAddRectangle::keyReleaseEvent( QKeyEvent *e )
 {
   if ( e && e->isAutoRepeat() )
   {
@@ -98,28 +97,28 @@ void QgsMapToolAddCircle::keyReleaseEvent( QKeyEvent *e )
   }
 }
 
-void QgsMapToolAddCircle::deactivate()
+void QgsMapToolAddRectangle::deactivate()
 {
-  if ( !mParentTool || mCircle.isEmpty() )
+  if ( !mParentTool || mRectangle.isEmpty() )
   {
     return;
   }
+  std::unique_ptr<QgsPolygonV2> rubber( new QgsPolygonV2() );
+  rubber->fromWkt( mRectangle.asPolygon() );
 
-  mParentTool->addCurve( mCircle.toCircularString() );
-
+  mParentTool->addCurve( rubber.release()->exteriorRing()->clone() );
   delete mTempRubberBand;
   mTempRubberBand = nullptr;
   mPoints.clear();
-  mCircle = QgsCircle();
+
   QgsMapToolCapture::deactivate();
 }
 
-void QgsMapToolAddCircle::activate()
+void QgsMapToolAddRectangle::activate()
 {
-  mPoints.clear();
-
   if ( mParentTool )
   {
+    mPoints.clear();
     mParentTool->deleteTempRubberBand();
   }
   QgsMapToolCapture::activate();

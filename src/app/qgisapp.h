@@ -1211,6 +1211,18 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     void ellipseExtent();
     //! activates the add ellipse from foci tool
     void ellipseFoci();
+    //! activates the add rectangle from 3 points tool
+    void rectangle3Points();
+    //! activates the add rectangle from center and a point tool
+    void rectangleCenterPoint();
+    //! activates the add rectangle from extent tool
+    void rectangleExtent();
+    //! activates the add square from center tool
+    void squareCenter();
+    //! activates the add regular polygon from 2 points tool
+    void regularPolygon2Points();
+    //! activates the add regular polygon from center and a point tool
+    void regularPolygonCenterPoint();
     //! activates the move feature tool
     void moveFeature();
     //! activates the copy and move feature tool
@@ -1766,6 +1778,12 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
           , mEllipseCenterPoint( nullptr )
           , mEllipseExtent( nullptr )
           , mEllipseFoci( nullptr )
+          , mRectangle3Points( nullptr )
+          , mRectangleCenterPoint( nullptr )
+          , mRectangleExtent( nullptr )
+          , mSquareCenter( nullptr )
+          , mRegularPolygon2Points( nullptr )
+          , mRegularPolygonCenterPoint( nullptr )
           , mMoveFeature( nullptr )
           , mOffsetCurve( nullptr )
           , mReshapeFeatures( nullptr )
@@ -1819,6 +1837,12 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
         QgsMapTool *mEllipseCenterPoint = nullptr;
         QgsMapTool *mEllipseExtent = nullptr;
         QgsMapTool *mEllipseFoci = nullptr;
+        QgsMapTool *mRectangle3Points = nullptr;
+        QgsMapTool *mRectangleCenterPoint = nullptr;
+        QgsMapTool *mRectangleExtent = nullptr;
+        QgsMapTool *mSquareCenter = nullptr;
+        QgsMapTool *mRegularPolygon2Points = nullptr;
+        QgsMapTool *mRegularPolygonCenterPoint = nullptr;
         QgsMapTool *mMoveFeature = nullptr;
         QgsMapTool *mMoveFeatureCopy = nullptr;
         QgsMapTool *mOffsetCurve = nullptr;
