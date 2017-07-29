@@ -585,6 +585,9 @@ void QgsLayoutRuler::mouseMoveEvent( QMouseEvent *event )
       QgsLayout *layout = mView->currentLayout();
       int pageNo = layout->pageCollection()->pageNumberForPoint( displayPos );
       QgsLayoutItemPage *page = layout->pageCollection()->page( pageNo );
+      if ( !page )
+        return;
+
       QPen linePen = mGuideItem->pen();
       // if guide preview is outside a page draw it a lot fainter, to indicate it's invalid
       if ( !layout->pageCollection()->pageAtPoint( displayPos ) )
