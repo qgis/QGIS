@@ -4017,6 +4017,7 @@ void TestQgsGeometry::ellipse()
   QCOMPARE( l->numPoints(), 5 ); // closed linestring
   QgsPointSequence pts_l;
   l->points( pts_l );
+  pts_l.pop_back();
   QCOMPARE( pts, pts_l );
 
   // polygon
@@ -4445,6 +4446,7 @@ void TestQgsGeometry::regularPolygon()
   QCOMPARE( l->pointN( 0 ), l->pointN( 4 ) );
   QgsPointSequence pts_l;
   l->points( pts_l );
+  pts_l.pop_back();
   QCOMPARE( ptsPol, pts_l );
 
   //test toString
