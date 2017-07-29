@@ -9,10 +9,6 @@
 
 #include "chunkloader.h"
 
-namespace Qt3DExtras
-{
-  class QPlaneGeometry;
-}
 
 class _3D_EXPORT FlatTerrainGenerator : public TerrainGenerator
 {
@@ -34,7 +30,6 @@ class _3D_EXPORT FlatTerrainGenerator : public TerrainGenerator
     QgsCoordinateReferenceSystem crs() const { return mCrs; }
 
   private:
-    Qt3DExtras::QPlaneGeometry *tileGeometry;
 
     void updateTilingScheme();
 

@@ -45,6 +45,7 @@ class _3D_EXPORT Scene : public Qt3DCore::QEntity
     void createTerrain();
     void onLayerRenderer3DChanged();
     void onLayersChanged();
+    void createTerrainDeferred();
 
   private:
     void addLayerEntity( QgsMapLayer *layer );
@@ -59,6 +60,7 @@ class _3D_EXPORT Scene : public Qt3DCore::QEntity
     QList<ChunkedEntity *> chunkEntities;
     //! Keeps track of entities that belong to a particular layer
     QMap<QgsMapLayer *, Qt3DCore::QEntity *> mLayerEntities;
+    bool mTerrainUpdateScheduled = false;
 };
 
 #endif // SCENE_H

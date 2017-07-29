@@ -13,7 +13,7 @@
 Terrain::Terrain( int maxLevel, const Map3D &map, Qt3DCore::QNode *parent )
   : ChunkedEntity( map.terrainGenerator()->rootChunkBbox( map ),
                    map.terrainGenerator()->rootChunkError( map ),
-                   map.maxTerrainError, maxLevel, map.terrainGenerator(), parent )
+                   map.maxTerrainScreenError(), maxLevel, map.terrainGenerator(), parent )
   , map( map )
   , mTerrainPicker( nullptr )
 {

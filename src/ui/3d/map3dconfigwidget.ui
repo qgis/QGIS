@@ -66,6 +66,13 @@
    </item>
    <item>
     <layout class="QGridLayout" name="gridLayout_2">
+     <item row="2" column="0">
+      <widget class="QLabel" name="label_6">
+       <property name="text">
+        <string>Max. ground error</string>
+       </property>
+      </widget>
+     </item>
      <item row="0" column="0">
       <widget class="QLabel" name="label_4">
        <property name="text">
@@ -90,10 +97,46 @@
        </property>
       </widget>
      </item>
+     <item row="2" column="1">
+      <widget class="QDoubleSpinBox" name="spinGroundError">
+       <property name="suffix">
+        <string> map units</string>
+       </property>
+       <property name="decimals">
+        <number>1</number>
+       </property>
+       <property name="minimum">
+        <double>0.100000000000000</double>
+       </property>
+       <property name="maximum">
+        <double>1000.000000000000000</double>
+       </property>
+       <property name="value">
+        <double>1.000000000000000</double>
+       </property>
+      </widget>
+     </item>
+     <item row="3" column="0">
+      <widget class="QLabel" name="label_7">
+       <property name="text">
+        <string>Zoom levels</string>
+       </property>
+      </widget>
+     </item>
+     <item row="3" column="1">
+      <widget class="QLabel" name="labelZoomLevels">
+       <property name="text">
+        <string>0</string>
+       </property>
+      </widget>
+     </item>
      <item row="1" column="1">
-      <widget class="QSpinBox" name="spinScreenError">
+      <widget class="QDoubleSpinBox" name="spinScreenError">
        <property name="suffix">
         <string> px</string>
+       </property>
+       <property name="decimals">
+        <number>1</number>
        </property>
       </widget>
      </item>
@@ -135,6 +178,16 @@
    <header>qgsmaplayercombobox.h</header>
   </customwidget>
  </customwidgets>
+ <tabstops>
+  <tabstop>cboTerrainLayer</tabstop>
+  <tabstop>spinTerrainScale</tabstop>
+  <tabstop>spinTerrainResolution</tabstop>
+  <tabstop>spinMapResolution</tabstop>
+  <tabstop>spinScreenError</tabstop>
+  <tabstop>spinGroundError</tabstop>
+  <tabstop>chkShowTileInfo</tabstop>
+  <tabstop>chkShowBoundingBoxes</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>

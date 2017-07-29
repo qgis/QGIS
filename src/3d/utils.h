@@ -24,9 +24,15 @@ enum AltitudeBinding
 };
 
 
-class Utils
+class _3D_EXPORT Utils
 {
   public:
+
+    /**
+     * Calculates the highest needed zoom level for tiles in quad-tree given width of the base tile (zoom level 0)
+     * in map units, resolution of the tile (e.g. tile's texture width) and desired maximum error in map units.
+     */
+    static int maxZoomLevel( double tile0width, double tileResolution, double maxError );
 
     static QString altClampingToString( AltitudeClamping altClamp );
     static AltitudeClamping altClampingFromString( const QString &str );

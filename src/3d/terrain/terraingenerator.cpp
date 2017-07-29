@@ -23,7 +23,7 @@ float TerrainGenerator::rootChunkError( const Map3D &map ) const
   te = terrainToMapTransform.transformBoundingBox( te );
 
   // use texel size as the error
-  return te.width() / map.tileTextureSize;
+  return te.width() / map.mapTileResolution();
 }
 
 void TerrainGenerator::rootChunkHeightRange( float &hMin, float &hMax ) const

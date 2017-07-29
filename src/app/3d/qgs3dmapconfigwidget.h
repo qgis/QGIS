@@ -24,6 +24,7 @@ class Qgs3DMapConfigWidget : public QWidget, private Ui::Map3DConfigWidget
 
   private slots:
     void onTerrainLayerChanged();
+    void updateMaxZoomLevel();
 
   private:
     Map3D *mMap;

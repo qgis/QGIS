@@ -111,7 +111,7 @@ QgsMapSettings MapTextureGenerator::baseMapSettings()
 {
   QgsMapSettings mapSettings;
   mapSettings.setLayers( map.layers() );
-  mapSettings.setOutputSize( QSize( map.tileTextureSize, map.tileTextureSize ) );
+  mapSettings.setOutputSize( QSize( map.mapTileResolution(), map.mapTileResolution() ) );
   mapSettings.setDestinationCrs( map.crs );
   mapSettings.setBackgroundColor( Qt::gray );
   return mapSettings;

@@ -7,6 +7,8 @@
 #include <Qt3DExtras/QSkyboxEntity>
 #include <Qt3DLogic/QFrameAction>
 
+#include <QTimer>
+
 #include "aabb.h"
 #include "qgsabstract3drenderer.h"
 #include "cameracontroller.h"
@@ -15,6 +17,7 @@
 #include "terraingenerator.h"
 //#include "testchunkloader.h"
 #include "chunkedentity.h"
+#include "utils.h"
 
 #include <Qt3DRender/QMesh>
 #include <Qt3DRender/QSceneLoader>
@@ -57,6 +60,9 @@ Scene::Scene( const Map3D &map, Qt3DExtras::QForwardRenderer *defaultFrameGraph,
   createTerrain();
   connect( &map, &Map3D::terrainGeneratorChanged, this, &Scene::createTerrain );
   connect( &map, &Map3D::terrainVerticalScaleChanged, this, &Scene::createTerrain );
+  connect( &map, &Map3D::mapTileResolutionChanged, this, &Scene::createTerrain );
+  connect( &map, &Map3D::maxTerrainScreenErrorChanged, this, &Scene::createTerrain );
+  connect( &map, &Map3D::maxTerrainGroundErrorChanged, this, &Scene::createTerrain );
 
   // create entities of renderers
 
@@ -181,7 +187,20 @@ void Scene::createTerrain()
     mTerrain = nullptr;
   }
 
-  mTerrain = new Terrain( 3, mMap );
+  if ( !mTerrainUpdateScheduled )
+  {
+    // defer re-creation of terrain: there may be multiple invokations of this slot, so create the new entity just once
+    QTimer::singleShot( 0, this, &Scene::createTerrainDeferred );
+    mTerrainUpdateScheduled = true;
+  }
+}
+
+void Scene::createTerrainDeferred()
+{
+  double tile0width = mMap.terrainGenerator()->extent().width();
+  int maxZoomLevel = Utils::maxZoomLevel( tile0width, mMap.mapTileResolution(), mMap.maxTerrainGroundError() );
+
+  mTerrain = new Terrain( maxZoomLevel, mMap );
   //mTerrain->setEnabled(false);
   mTerrain->setParent( this );
 
@@ -203,6 +222,8 @@ void Scene::createTerrain()
     // add new entity - if any 3D renderer
     addLayerEntity( layer );
   }
+
+  mTerrainUpdateScheduled = false;
 }
 
 void Scene::onLayerRenderer3DChanged()

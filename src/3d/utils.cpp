@@ -7,6 +7,19 @@
 
 
 
+int Utils::maxZoomLevel( double tile0width, double tileResolution, double maxError )
+{
+  if ( maxError <= 0 || tileResolution <= 0 || tile0width <= 0 )
+    return 0;  // invalid input
+
+  // derived from:
+  // tile width [map units] = tile0width / 2^zoomlevel
+  // tile error [map units] = tile width / tile resolution
+  // + re-arranging to get zoom level if we know tile error we want to get
+  double zoomLevel = -log( tileResolution * maxError / tile0width ) / log( 2 );
+  return round( zoomLevel );  // we could use ceil() here if we wanted to always get to the desired error
+}
+
 QString Utils::altClampingToString( AltitudeClamping altClamp )
 {
   switch ( altClamp )

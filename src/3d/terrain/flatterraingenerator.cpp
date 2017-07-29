@@ -13,22 +13,21 @@
 class FlatTerrainChunkLoader : public TerrainChunkLoader
 {
   public:
-    FlatTerrainChunkLoader( Terrain *terrain, Qt3DExtras::QPlaneGeometry *tileGeometry, ChunkNode *node );
+    FlatTerrainChunkLoader( Terrain *terrain, ChunkNode *node );
 
     virtual void load() override;
     virtual Qt3DCore::QEntity *createEntity( Qt3DCore::QEntity *parent ) override;
 
   private:
-    Qt3DExtras::QPlaneGeometry *mTileGeometry;
+    Qt3DExtras::QPlaneGeometry *mTileGeometry = nullptr;
 };
 
 
 //---------------
 
 
-FlatTerrainChunkLoader::FlatTerrainChunkLoader( Terrain *terrain, Qt3DExtras::QPlaneGeometry *tileGeometry, ChunkNode *node )
+FlatTerrainChunkLoader::FlatTerrainChunkLoader( Terrain *terrain, ChunkNode *node )
   : TerrainChunkLoader( terrain, node )
-  , mTileGeometry( tileGeometry )
 {
 }
 
@@ -43,8 +42,13 @@ Qt3DCore::QEntity *FlatTerrainChunkLoader::createEntity( Qt3DCore::QEntity *pare
 
   // make geometry renderer
 
+  // simple quad geometry shared by all tiles
+  // QPlaneGeometry by default is 1x1 with mesh resultion QSize(2,2), centered at 0
+  // TODO: the geometry could be shared inside Terrain instance (within terrain-generator specific data?)
+  mTileGeometry = new Qt3DExtras::QPlaneGeometry;
+
   Qt3DRender::QGeometryRenderer *mesh = new Qt3DRender::QGeometryRenderer;
-  mesh->setGeometry( mTileGeometry ); // does not take ownership - geometry is already owned by FlatTerrain entity
+  mesh->setGeometry( mTileGeometry ); // takes ownership if the component has no parent
   entity->addComponent( mesh ); // takes ownership if the component has no parent
 
   // create material
@@ -76,14 +80,11 @@ Qt3DCore::QEntity *FlatTerrainChunkLoader::createEntity( Qt3DCore::QEntity *pare
 
 FlatTerrainGenerator::FlatTerrainGenerator()
 {
-  // simple quad geometry shared by all tiles
-  // QPlaneGeometry by default is 1x1 with mesh resultion QSize(2,2), centered at 0
-  tileGeometry = new Qt3DExtras::QPlaneGeometry;  // TODO: parent to a node...
 }
 
 ChunkLoader *FlatTerrainGenerator::createChunkLoader( ChunkNode *node ) const
 {
-  return new FlatTerrainChunkLoader( mTerrain, tileGeometry, node );
+  return new FlatTerrainChunkLoader( mTerrain, node );
 }
 
 TerrainGenerator *FlatTerrainGenerator::clone() const

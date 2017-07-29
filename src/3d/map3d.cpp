@@ -17,10 +17,11 @@ Map3D::Map3D()
   , originY( 0 )
   , originZ( 0 )
   , backgroundColor( Qt::black )
-  , tileTextureSize( 512 )
-  , maxTerrainError( 3.f )
   , skybox( false )
   , mTerrainVerticalScale( 1 )
+  , mMapTileResolution( 512 )
+  , mMaxTerrainScreenError( 3.f )
+  , mMaxTerrainGroundError( 1.f )
   , mShowTerrainBoundingBoxes( false )
   , mShowTerrainTileInfo( false )
 {
@@ -33,13 +34,14 @@ Map3D::Map3D( const Map3D &other )
   , originZ( other.originZ )
   , crs( other.crs )
   , backgroundColor( other.backgroundColor )
-  , tileTextureSize( other.tileTextureSize )
-  , maxTerrainError( other.maxTerrainError )
   , skybox( other.skybox )
   , skyboxFileBase( other.skyboxFileBase )
   , skyboxFileExtension( other.skyboxFileExtension )
   , mTerrainVerticalScale( other.mTerrainVerticalScale )
   , mTerrainGenerator( other.mTerrainGenerator ? other.mTerrainGenerator->clone() : nullptr )
+  , mMapTileResolution( other.mMapTileResolution )
+  , mMaxTerrainScreenError( other.mMaxTerrainScreenError )
+  , mMaxTerrainGroundError( other.mMaxTerrainGroundError )
   , mShowTerrainBoundingBoxes( other.mShowTerrainBoundingBoxes )
   , mShowTerrainTileInfo( other.mShowTerrainTileInfo )
   , mLayers( other.mLayers )
@@ -67,8 +69,9 @@ void Map3D::readXml( const QDomElement &elem, const QgsReadWriteContext &context
 
   QDomElement elemTerrain = elem.firstChildElement( "terrain" );
   mTerrainVerticalScale = elemTerrain.attribute( "exaggeration", "1" ).toFloat();
-  tileTextureSize = elemTerrain.attribute( "texture-size", "512" ).toInt();
-  maxTerrainError = elemTerrain.attribute( "max-terrain-error", "3" ).toFloat();
+  mMapTileResolution = elemTerrain.attribute( "texture-size", "512" ).toInt();
+  mMaxTerrainScreenError = elemTerrain.attribute( "max-terrain-error", "3" ).toFloat();
+  mMaxTerrainGroundError = elemTerrain.attribute( "max-ground-error", "1" ).toFloat();
   QDomElement elemMapLayers = elemTerrain.firstChildElement( "layers" );
   QDomElement elemMapLayer = elemMapLayers.firstChildElement( "layer" );
   QList<QgsMapLayerRef> mapLayers;
@@ -147,8 +150,9 @@ QDomElement Map3D::writeXml( QDomDocument &doc, const QgsReadWriteContext &conte
 
   QDomElement elemTerrain = doc.createElement( "terrain" );
   elemTerrain.setAttribute( "exaggeration", QString::number( mTerrainVerticalScale ) );
-  elemTerrain.setAttribute( "texture-size", tileTextureSize );
-  elemTerrain.setAttribute( "max-terrain-error", QString::number( maxTerrainError ) );
+  elemTerrain.setAttribute( "texture-size", mMapTileResolution );
+  elemTerrain.setAttribute( "max-terrain-error", QString::number( mMaxTerrainScreenError ) );
+  elemTerrain.setAttribute( "max-ground-error", QString::number( mMaxTerrainGroundError ) );
   QDomElement elemMapLayers = doc.createElement( "layers" );
   Q_FOREACH ( const QgsMapLayerRef &layerRef, mLayers )
   {
@@ -245,6 +249,48 @@ QList<QgsMapLayer *> Map3D::layers() const
       lst.append( layerRef.layer );
   }
   return lst;
+}
+
+void Map3D::setMapTileResolution( int res )
+{
+  if ( mMapTileResolution == res )
+    return;
+
+  mMapTileResolution = res;
+  emit mapTileResolutionChanged();
+}
+
+int Map3D::mapTileResolution() const
+{
+  return mMapTileResolution;
+}
+
+void Map3D::setMaxTerrainScreenError( float error )
+{
+  if ( mMaxTerrainScreenError == error )
+    return;
+
+  mMaxTerrainScreenError = error;
+  emit maxTerrainScreenErrorChanged();
+}
+
+float Map3D::maxTerrainScreenError() const
+{
+  return mMaxTerrainScreenError;
+}
+
+void Map3D::setMaxTerrainGroundError( float error )
+{
+  if ( mMaxTerrainGroundError == error )
+    return;
+
+  mMaxTerrainGroundError = error;
+  emit maxTerrainGroundErrorChanged();
+}
+
+float Map3D::maxTerrainGroundError() const
+{
+  return mMaxTerrainGroundError;
 }
 
 void Map3D::setTerrainGenerator( TerrainGenerator *gen )
