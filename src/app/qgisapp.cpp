@@ -2313,7 +2313,7 @@ void QgisApp::refreshProfileMenu()
   mConfigMenu->addAction( new QgsMenuHeaderWidgetAction( tr( "Config" ), mConfigMenu ) );
   QAction *configSection = mConfigMenu->actions().at( 2 );
 
-  QAction *openProfileFolderAction = mConfigMenu->addAction( tr( "Open current profile folder" ) );
+  QAction *openProfileFolderAction = mConfigMenu->addAction( tr( "Open active profile folder" ) );
   connect( openProfileFolderAction, &QAction::triggered, this, [this]()
   {
     QDesktopServices::openUrl( QUrl::fromLocalFile( userProfileManager()->userProfile()->folder() ) );
