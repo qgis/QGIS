@@ -72,12 +72,9 @@ void QgsMapToolRectangleCenter::cadCanvasMoveEvent( QgsMapMouseEvent *e )
         double xOffset = fabs( mapPoint.x() - mPoints.at( 0 ).x() );
         double yOffset = fabs( mapPoint.y() - mPoints.at( 0 ).y() );
 
-        mRectangle = QgsRectangle( QgsPoint( -xOffset, -yOffset ), QgsPoint( xOffset, yOffset ) );
+        mRectangle = QgsRectangle( QgsPoint( mPoints.at( 0 ).x() - xOffset, mPoints.at( 0 ).y() - yOffset ), QgsPoint( mPoints.at( 0 ).x() + xOffset, mPoints.at( 0 ).y() + yOffset ) );
 
-        std::unique_ptr<QgsPolygonV2> rubber( new QgsPolygonV2() );
-        rubber->fromWkt( mRectangle.asPolygon() );
-
-        mTempRubberBand->setGeometry( rubber.release() );
+        mTempRubberBand->setGeometry( QgsMapToolAddRectangle::rectangleToPolygon() );
       }
       break;
       default:

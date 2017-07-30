@@ -16,6 +16,8 @@
 #include "qgsmaptooladdrectangle.h"
 #include "qgscompoundcurve.h"
 #include "qgscurvepolygon.h"
+#include "qgslinestring.h"
+#include "qgspolygon.h"
 #include "qgsgeometryrubberband.h"
 #include "qgsgeometryutils.h"
 #include "qgsmapcanvas.h"
@@ -97,16 +99,44 @@ void QgsMapToolAddRectangle::keyReleaseEvent( QKeyEvent *e )
   }
 }
 
+QgsLineString *QgsMapToolAddRectangle::rectangleToLinestring( ) const
+{
+  std::unique_ptr<QgsLineString> ext( new QgsLineString() );
+  if ( mRectangle.isEmpty() )
+  {
+    return ext.release();
+  }
+
+  ext->addVertex( QgsPoint( mRectangle.xMinimum(), mRectangle.yMinimum() ) );
+  ext->addVertex( QgsPoint( mRectangle.xMinimum(), mRectangle.yMaximum() ) );
+  ext->addVertex( QgsPoint( mRectangle.xMaximum(), mRectangle.yMaximum() ) );
+  ext->addVertex( QgsPoint( mRectangle.xMaximum(), mRectangle.yMinimum() ) );
+  ext->addVertex( QgsPoint( mRectangle.xMinimum(), mRectangle.yMinimum() ) );
+
+  return ext.release();
+}
+
+QgsPolygonV2 *QgsMapToolAddRectangle::rectangleToPolygon() const
+{
+  std::unique_ptr<QgsPolygonV2> polygon( new QgsPolygonV2() );
+  if ( mRectangle.isEmpty() )
+  {
+    return polygon.release();
+  }
+
+  polygon->setExteriorRing( rectangleToLinestring( ) );
+
+  return polygon.release();
+}
+
 void QgsMapToolAddRectangle::deactivate()
 {
   if ( !mParentTool || mRectangle.isEmpty() )
   {
     return;
   }
-  std::unique_ptr<QgsPolygonV2> rubber( new QgsPolygonV2() );
-  rubber->fromWkt( mRectangle.asPolygon() );
 
-  mParentTool->addCurve( rubber.release()->exteriorRing()->clone() );
+  mParentTool->addCurve( rectangleToLinestring() );
   delete mTempRubberBand;
   mTempRubberBand = nullptr;
   mPoints.clear();

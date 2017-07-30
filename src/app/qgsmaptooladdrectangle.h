@@ -52,6 +52,8 @@ class QgsMapToolAddRectangle: public QgsMapToolCapture
     //! Rectangle
     QgsRectangle mRectangle;
 
+    QgsLineString *rectangleToLinestring() const;
+    QgsPolygonV2 *rectangleToPolygon() const;
 };
 
 

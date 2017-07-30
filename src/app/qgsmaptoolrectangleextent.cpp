@@ -16,7 +16,6 @@
 #include "qgsmaptoolrectangleextent.h"
 #include "qgsgeometryrubberband.h"
 #include "qgsgeometryutils.h"
-#include "qgspolygon.h"
 #include "qgsmapcanvas.h"
 #include "qgspoint.h"
 #include <QMouseEvent>
@@ -70,10 +69,8 @@ void QgsMapToolRectangleExtent::cadCanvasMoveEvent( QgsMapMouseEvent *e )
       case 1:
       {
         mRectangle = QgsRectangle( mPoints.at( 0 ), mapPoint );
-        std::unique_ptr<QgsPolygonV2> rubber( new QgsPolygonV2() );
-        rubber->fromWkt( mRectangle.asPolygon() );
 
-        mTempRubberBand->setGeometry( rubber.release() );
+        mTempRubberBand->setGeometry( QgsMapToolAddRectangle::rectangleToPolygon() );
       }
       break;
       default:
