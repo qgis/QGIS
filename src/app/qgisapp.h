@@ -1211,8 +1211,6 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     void ellipseExtent();
     //! activates the add ellipse from foci tool
     void ellipseFoci();
-    //! activates the add rectangle from 3 points tool
-    void rectangle3Points();
     //! activates the add rectangle from center and a point tool
     void rectangleCenterPoint();
     //! activates the add rectangle from extent tool
@@ -1778,7 +1776,6 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
           , mEllipseCenterPoint( nullptr )
           , mEllipseExtent( nullptr )
           , mEllipseFoci( nullptr )
-          , mRectangle3Points( nullptr )
           , mRectangleCenterPoint( nullptr )
           , mRectangleExtent( nullptr )
           , mSquareCenter( nullptr )
@@ -1837,7 +1834,6 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
         QgsMapTool *mEllipseCenterPoint = nullptr;
         QgsMapTool *mEllipseExtent = nullptr;
         QgsMapTool *mEllipseFoci = nullptr;
-        QgsMapTool *mRectangle3Points = nullptr;
         QgsMapTool *mRectangleCenterPoint = nullptr;
         QgsMapTool *mRectangleExtent = nullptr;
         QgsMapTool *mSquareCenter = nullptr;

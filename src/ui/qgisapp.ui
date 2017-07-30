@@ -295,7 +295,6 @@
      </property>
      <addaction name="mActionRectangleExtent"/>
      <addaction name="mActionRectangleCenterPoint"/>
-     <addaction name="mActionRectangle3Points"/>
      <addaction name="mActionSquareCenter"/>
     </widget>
     <widget class="QMenu" name="mMenuRegularPolygon">
@@ -2832,7 +2831,7 @@ Acts on currently active editable layer</string>
      <normaloff>:/images/themes/default/mActionRectangleExtent.svg</normaloff>:/images/themes/default/mActionRectangleExtent.svg</iconset>
    </property>
    <property name="text">
-    <string>Add Rectangle From Extent</string>
+    <string>&amp;Add Rectangle From Extent</string>
    </property>
    <property name="toolTip">
     <string>Add rectangle from extent</string>
@@ -2847,25 +2846,10 @@ Acts on currently active editable layer</string>
      <normaloff>:/images/themes/default/mActionRectangleCenter.svg</normaloff>:/images/themes/default/mActionRectangleCenter.svg</iconset>
    </property>
    <property name="text">
-    <string>Add Rectangle From Center and a Point</string>
+    <string>Add &amp;Rectangle From Center and a Point</string>
    </property>
    <property name="toolTip">
     <string>Add rectangle from center and a point</string>
-   </property>
-  </action>
-  <action name="mActionRectangle3Points">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="icon">
-    <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/themes/default/mActionRectangle3Points.svg</normaloff>:/images/themes/default/mActionRectangle3Points.svg</iconset>
-   </property>
-   <property name="text">
-    <string>Add Rectangle From 3 Points</string>
-   </property>
-   <property name="toolTip">
-    <string>Add rectangle from 3 points</string>
    </property>
   </action>
   <action name="mActionSquareCenter">
@@ -2877,7 +2861,7 @@ Acts on currently active editable layer</string>
      <normaloff>:/images/themes/default/mActionSquareCenter.svg</normaloff>:/images/themes/default/mActionSquareCenter.svg</iconset>
    </property>
    <property name="text">
-    <string>Add Square From Center</string>
+    <string>Add &amp;Square From Center</string>
    </property>
    <property name="toolTip">
     <string>Add square from center</string>
@@ -2892,7 +2876,7 @@ Acts on currently active editable layer</string>
      <normaloff>:/images/themes/default/mActionRegularPolygonCenterPoint.svg</normaloff>:/images/themes/default/mActionRegularPolygonCenterPoint.svg</iconset>
    </property>
    <property name="text">
-    <string>Add Regular Polygon From Center and a Point</string>
+    <string>&amp;Add Regular Polygon From Center and a Point</string>
    </property>
    <property name="toolTip">
     <string>Add regular polygon from center and a point</string>
@@ -2907,7 +2891,7 @@ Acts on currently active editable layer</string>
      <normaloff>:/images/themes/default/mActionRegularPolygon2Points.svg</normaloff>:/images/themes/default/mActionRegularPolygon2Points.svg</iconset>
    </property>
    <property name="text">
-    <string>Add Regular Polygon From 2 Points</string>
+    <string>Add &amp;Regular Polygon From 2 Points</string>
    </property>
    <property name="toolTip">
     <string>Add regular polygon from 2 points</string>

@@ -336,7 +336,6 @@ Q_GUI_EXPORT extern int qt_defaultDpiX();
 #include "qgsmaptoolellipsecenterpoint.h"
 #include "qgsmaptoolellipseextent.h"
 #include "qgsmaptoolellipsefoci.h"
-#include "qgsmaptoolrectangle3points.h"
 #include "qgsmaptoolrectanglecenter.h"
 #include "qgsmaptoolrectangleextent.h"
 #include "qgsmaptoolsquarecenter.h"
@@ -1387,7 +1386,6 @@ QgisApp::~QgisApp()
   delete mMapTools.mEllipseCenterPoint;
   delete mMapTools.mEllipseExtent;
   delete mMapTools.mEllipseFoci;
-  delete mMapTools.mRectangle3Points;
   delete mMapTools.mRectangleCenterPoint;
   delete mMapTools.mRectangleExtent;
   delete mMapTools.mSquareCenter;
@@ -1819,7 +1817,6 @@ void QgisApp::createActions()
   connect( mActionEllipseCenterPoint, &QAction::triggered, this, &QgisApp::ellipseCenterPoint );
   connect( mActionEllipseExtent, &QAction::triggered, this, &QgisApp::ellipseExtent );
   connect( mActionEllipseFoci, &QAction::triggered, this, &QgisApp::ellipseFoci );
-  connect( mActionRectangle3Points, &QAction::triggered, this, &QgisApp::rectangle3Points );
   connect( mActionRectangleCenterPoint, &QAction::triggered, this, &QgisApp::rectangleCenterPoint );
   connect( mActionRectangleExtent, &QAction::triggered, this, &QgisApp::rectangleExtent );
   connect( mActionSquareCenter, &QAction::triggered, this, &QgisApp::squareCenter );
@@ -2106,7 +2103,6 @@ void QgisApp::createActionGroups()
   mMapToolGroup->addAction( mActionEllipseCenterPoint );
   mMapToolGroup->addAction( mActionEllipseExtent );
   mMapToolGroup->addAction( mActionEllipseFoci );
-  mMapToolGroup->addAction( mActionRectangle3Points );
   mMapToolGroup->addAction( mActionRectangleCenterPoint );
   mMapToolGroup->addAction( mActionRectangleExtent );
   mMapToolGroup->addAction( mActionSquareCenter );
@@ -2604,11 +2600,10 @@ void QgisApp::createToolBars()
   //Rectangle digitize tool button
   QToolButton *tbAddRectangle = new QToolButton( mRegularShapeDigitizeToolBar );
   tbAddRectangle->setPopupMode( QToolButton::MenuButtonPopup );
-  tbAddRectangle->addAction( mActionRectangle3Points );
   tbAddRectangle->addAction( mActionRectangleCenterPoint );
   tbAddRectangle->addAction( mActionRectangleExtent );
   tbAddRectangle->addAction( mActionSquareCenter );
-  tbAddRectangle->setDefaultAction( mActionRectangleExtent );
+  tbAddRectangle->setDefaultAction( mActionRectangleCenterPoint );
   connect( tbAddRectangle, &QToolButton::triggered, this, &QgisApp::toolButtonActionTriggered );
   mRegularShapeDigitizeToolBar->insertWidget( mActionNodeTool, tbAddRectangle );
 
@@ -3216,8 +3211,6 @@ void QgisApp::createCanvasTools()
   mMapTools.mEllipseExtent->setAction( mActionEllipseExtent );
   mMapTools.mEllipseFoci = new QgsMapToolEllipseFoci( dynamic_cast<QgsMapToolAddFeature *>( mMapTools.mAddFeature ), mMapCanvas );
   mMapTools.mEllipseFoci->setAction( mActionEllipseFoci );
-  mMapTools.mRectangle3Points = new QgsMapToolRectangle3Points( dynamic_cast<QgsMapToolAddFeature *>( mMapTools.mAddFeature ), mMapCanvas );
-  mMapTools.mRectangle3Points->setAction( mActionRectangle3Points );
   mMapTools.mRectangleCenterPoint = new QgsMapToolRectangleCenter( dynamic_cast<QgsMapToolAddFeature *>( mMapTools.mAddFeature ), mMapCanvas );
   mMapTools.mRectangleCenterPoint->setAction( mActionRectangleCenterPoint );
   mMapTools.mRectangleExtent = new QgsMapToolRectangleExtent( dynamic_cast<QgsMapToolAddFeature *>( mMapTools.mAddFeature ), mMapCanvas );
@@ -7939,11 +7932,6 @@ void QgisApp::ellipseFoci()
   mMapCanvas->setMapTool( mMapTools.mEllipseFoci );
 }
 
-void QgisApp::rectangle3Points()
-{
-  mMapCanvas->setMapTool( mMapTools.mRectangle3Points );
-}
-
 void QgisApp::rectangleCenterPoint()
 {
   mMapCanvas->setMapTool( mMapTools.mRectangleCenterPoint );
@@ -11260,7 +11248,6 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer *layer )
     mActionEllipseCenterPoint->setEnabled( false );
     mActionEllipseExtent->setEnabled( false );
     mActionEllipseFoci->setEnabled( false );
-    mActionRectangle3Points->setEnabled( false );
     mActionRectangleCenterPoint->setEnabled( false );
     mActionRectangleExtent->setEnabled( false );
     mActionSquareCenter->setEnabled( false );
@@ -11415,8 +11402,6 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer *layer )
                                         && ( vlayer->geometryType() == QgsWkbTypes::LineGeometry || vlayer->geometryType() == QgsWkbTypes::PolygonGeometry ) );
       mActionEllipseFoci->setEnabled( isEditable && ( canAddFeatures || canChangeGeometry )
                                       && ( vlayer->geometryType() == QgsWkbTypes::LineGeometry || vlayer->geometryType() == QgsWkbTypes::PolygonGeometry ) );
-      mActionRectangle3Points->setEnabled( isEditable && ( canAddFeatures || canChangeGeometry )
-                                           && ( vlayer->geometryType() == QgsWkbTypes::LineGeometry || vlayer->geometryType() == QgsWkbTypes::PolygonGeometry ) );
       mActionRectangleCenterPoint->setEnabled( isEditable && ( canAddFeatures || canChangeGeometry )
           && ( vlayer->geometryType() == QgsWkbTypes::LineGeometry || vlayer->geometryType() == QgsWkbTypes::PolygonGeometry ) );
       mActionRectangleExtent->setEnabled( isEditable && ( canAddFeatures || canChangeGeometry )
