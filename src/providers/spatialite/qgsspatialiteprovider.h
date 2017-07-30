@@ -185,6 +185,15 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
      */
     bool isDbValid() const { return getSpatialiteDbInfo()->isDbValid(); }
 
+    /** Is the read Database a Spatialite Database
+     * - supported by QgsSpatiaLiteProvider
+     * \note
+     *  - Spatialite specific functions should not be called when false
+     *  -> UpdateLayerStatistics()
+     * \since QGIS 3.0
+     */
+    bool isDbSpatialite() const { return getSpatialiteDbInfo()->isDbSpatialite(); }
+
     /** The read Database only supported by the QgsOgrProvider or QgsGdalProvider Drivers
      * \note
      *  - QgsOgrProvider: GeoPackage-Vector
@@ -265,7 +274,7 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
      * - this should be called after the LayerType and PrimaryKeys have been set
      * \note
      * The following receive: QgsVectorDataProvider::NoCapabilities
-     * - SpatialiteTopopogy: will serve only TopopogyLayer, which ate SpatialTables
+     * - SpatialiteTopology: will serve only TopopogyLayer, which ate SpatialTables
      * - VectorStyle: nothing as yet
      * - RasterStyle: nothing as yet
      * \note
@@ -309,6 +318,15 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
     QString layerConnectionInfo() const { return getDbLayer()->layerConnectionInfo(); }
     //! Is the Layer valid
     bool isLayerValid() const { if ( getDbLayer() ) return getDbLayer()->isLayerValid(); else return false;}
+
+    /** Is the Layer
+     * - supported by QgsSpatiaLiteProvider
+     * \note
+     *  - Spatialite specific functions should not be called when false
+     *  -> UpdateLayerStatistics()
+     * \since QGIS 3.0
+     */
+    bool isLayerSpatialite() const { if ( getDbLayer() ) return getDbLayer()->isLayerSpatialite(); else return false;}
 
     /** The SpatiaLite provider does its own transforms so we return
      * true for the following three functions to indicate that transforms

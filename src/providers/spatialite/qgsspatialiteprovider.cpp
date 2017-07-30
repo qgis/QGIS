@@ -439,12 +439,17 @@ bool QgsSpatiaLiteProvider::setSqliteHandle( QgsSqliteHandle *sqliteHandle )
   if ( mHandle )
   {
     mSpatialiteDbInfo = mHandle->getSpatialiteDbInfo();
-    if ( ( mSpatialiteDbInfo ) && ( isDbValid() )  && ( !isDbGdalOgr() ) )
+    qDebug() << QString( "QgsSpatiaLiteProvider::setSqliteHandle -a- DbValid[%1] DbSpatialite[%2] isDbGdalOgr[%3]" ).arg( isDbValid() ).arg( isDbSpatialite() ).arg( isDbGdalOgr() );
+    if ( ( mSpatialiteDbInfo ) && ( isDbValid() )  && ( isDbSpatialite() ) )
     {
       // -- ---------------------------------- --
-      // The combination isDbValid() and !isDbGdalOgr()
+      // The combination isDbValid() and isDbSpatialite()
       //  - means that the given Layer is supported by the QgsSpatiaLiteProvider
       //  --> i.e. not GeoPackage, MBTiles etc.
+      //  - RasterLite1 will return isDbGdalOgr() == 1
+      //  -> which renders the RasterLayers with gdal
+      //  --> so a check must be done later
+      //  ---> that the layer is not a RasterLite1-Layer
       // -- ---------------------------------- --
       QString sLayerName = mUriTableName;
       if ( !mUriGeometryColumn.isEmpty() )
@@ -460,7 +465,8 @@ bool QgsSpatiaLiteProvider::setSqliteHandle( QgsSqliteHandle *sqliteHandle )
 bool QgsSpatiaLiteProvider::setDbLayer( SpatialiteDbLayer *dbLayer )
 {
   bool bRc = false;
-  if ( ( dbLayer ) && ( dbLayer->isLayerValid() ) )
+  qDebug() << QString( "QgsSpatiaLiteProvider::setDbLayer LayeValid[%1] LayerSpatialite[%2] " ).arg( dbLayer->isLayerValid() ).arg( dbLayer->isLayerSpatialite() );
+  if ( ( dbLayer ) && ( dbLayer->isLayerValid() ) && ( dbLayer->isLayerSpatialite() ) )
   {
     mDbLayer = dbLayer;
     // mDbLayer->setLayerQuery(mSubsetString);
@@ -475,7 +481,7 @@ bool QgsSpatiaLiteProvider::setDbLayer( SpatialiteDbLayer *dbLayer )
       mSpatialIndexMbrCache = true;
     }
     if ( ( mDbLayer->getLayerType() == SpatialiteDbInfo::SpatialTable ) ||
-         ( mDbLayer->getLayerType() == SpatialiteDbInfo::TopopogyExport ) )
+         ( mDbLayer->getLayerType() == SpatialiteDbInfo::TopologyExport ) )
     {
       mTableBased = true;
     }

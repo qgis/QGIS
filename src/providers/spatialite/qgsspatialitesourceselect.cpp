@@ -276,7 +276,7 @@ bool QgsSpatiaLiteSourceSelect::newConnection( QWidget *parent )
   // RasterLite1 : sometimes used the '.atlas' extension for [Vector and Rasters]
   QString fileSelect = QFileDialog::getOpenFileName( parent,
                        tr( "Choose a SpatiaLite/SQLite DB to open" ),
-                       lastUsedDir, tr( "SpatiaLite DB" ) + " (*.sqlite *.db *.sqlite3 *.db3 *.s3db *.atlas);;" + tr( "All files" ) + " (*)" );
+                       lastUsedDir, tr( "SpatiaLite DB" ) + " (*.sqlite *.db *.sqlite3 *.db3 *.s3db *.atlas *.mbtiles *.gpkg);;" + tr( "All files" ) + " (*)" );
 
   if ( fileSelect.isEmpty() )
     return false;
@@ -403,7 +403,7 @@ int QgsSpatiaLiteSourceSelect::collectSelectedTables()
     if ( !dbInfo[currentSchemaName].contains( currentRow ) )
     {
       dbInfo[currentSchemaName][currentRow] = true;
-      m_selectedLayers.append( QString( "%1(%2)" ).arg( mTableModel.getTableName( mProxyModel.mapToSource( *selected_it ) ) ).arg( mTableModel.getGeometryName( mProxyModel.mapToSource( *selected_it ) ) ) );
+      m_selectedLayers.append( mTableModel.getLayerName( mProxyModel.mapToSource( *selected_it ) ) );
       m_selectedLayersSql  << layerUriSql( mProxyModel.mapToSource( *selected_it ) );
     }
   }

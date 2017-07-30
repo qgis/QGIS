@@ -135,8 +135,8 @@ class SpatialiteDbInfo : public QObject
       VirtualShape = 3,
       RasterLite1 = 4, // Gdal
       RasterLite2 = 5,
-      SpatialiteTopopogy = 6,
-      TopopogyExport = 7,
+      SpatialiteTopology = 6,
+      TopologyExport = 7,
       VectorStyle = 8,
       RasterStyle = 9,
       GdalFdoOgr = 10, // Ogr
@@ -167,10 +167,13 @@ class SpatialiteDbInfo : public QObject
       , mHasRasterLite1Tables( -1 )
       , mHasGdalRasterLite1Driver( false )
       , mHasRasterLite2Tables( -1 )
+      , mHasGdalRasterLite2Driver( false )
       , mHasTopologyExportTables( -1 )
       , mHasMBTilesTables( -1 )
       , mHasGdalMBTilesDriver( false )
       , mHasGeoPackageTables( -1 )
+      , mHasGeoPackageVectors( -1 )
+      , mHasGeoPackageRasters( -1 )
       , mHasGdalGeoPackageDriver( false )
       , mHasFdoOgrTables( -1 )
       , mHasFdoOgrDriver( false )
@@ -335,6 +338,13 @@ class SpatialiteDbInfo : public QObject
      */
     int dbRasterLite2LayersCount() const { return mHasRasterLite2Tables; }
 
+    /** Is the Gdal-RasterLite2-Driver available ?
+     * \note
+     * - RasterLite2-Rasters can only be rendered when the Driver is available
+     * \since QGIS 3.0
+     */
+    bool hasDbGdalRasterLite2Driver() const { return mHasGdalRasterLite2Driver; }
+
     /** Amount of Topologies found in the Database
      * - from the topologies table Table [-1 if Table not found]
      * \note
@@ -365,6 +375,22 @@ class SpatialiteDbInfo : public QObject
      * \since QGIS 3.0
      */
     int dbGeoPackageLayersCount() const { return mHasGeoPackageTables; }
+
+    /** Amount of GeoPackage Vector-Layers found in the Database
+     * - from the geopackage_contents Table [-1 if Table not found, otherwise amount]
+     * \note
+     * - this does not reflect the amount of GeoPackage-Layers that have been loaded
+     * \since QGIS 3.0
+     */
+    int dbGeoPackageVectorsCount() const { return mHasGeoPackageVectors; }
+
+    /** Amount of GeoPackage Vector-Layers found in the Database
+     * - from the geopackage_contents Table [-1 if Table not found, otherwise amount]
+     * \note
+     * - this does not reflect the amount of GeoPackage-Layers that have been loaded
+     * \since QGIS 3.0
+     */
+    int dbGeoPackageRastersCount() const { return mHasGeoPackageRasters; }
 
     /** Is the Gdal-GeoPackage-Driver available ?
      * \note
@@ -523,7 +549,7 @@ class SpatialiteDbInfo : public QObject
      * - short list of the Layers retrieved from a Layer-Type
      * \note
      *  This is a convenience function
-     * - Key: LayerName formatted as 'table_name(geometry_name)'
+     * - Key: LayerName formatted as 'table_name(geometry_name)' or 'table_name'
      * - Value: GeometryType and Srid formatted as 'geometry_type:srid:provider'
      * \see getDbVectorLayers()
      * \see getDbRasterLite2Layers()
@@ -540,7 +566,7 @@ class SpatialiteDbInfo : public QObject
      * - short list of the Layers retrieved from vector_layers
      *  - ordered by LayerType (SpatialTable, SpatialView and VirtualShape)
      * \note
-     * - Key: LayerName formatted as 'table_name(geometry_name)'
+     * - Key: LayerName formatted as 'table_name(geometry_name)' or 'table_name'
      * - Value: GeometryType and Srid formatted as 'geometry_type:srid:provider'
      * \see readVectorLayers()
      * \since QGIS 3.0
@@ -551,7 +577,7 @@ class SpatialiteDbInfo : public QObject
      * - short list of the Layers retrieved from raster_coverages
      *  - ordered by coverage_name
      * \note
-     * - Key: LayerName formatted as 'table_name(geometry_name)'
+     * - Key: LayerName formatted as 'table_name(geometry_name)' or 'table_name'
      * - Value: GeometryType and Srid formatted as 'geometry_type:srid:provider'
      * \see readRL2Layers()
      * \since QGIS 3.0
@@ -566,7 +592,7 @@ class SpatialiteDbInfo : public QObject
      *  - Checks:
      *  -> TABLEs 'table_name'_metadata and 'table_name'_rasters must exist
      * \note
-     * - Key: LayerName formatted as 'table_name(geometry_name)'
+     * - Key: LayerName formatted as 'table_name(geometry_name)' or 'table_name'
      * - Value: GeometryType and Srid formatted as 'geometry_type:srid:provider'
      * \see readRL1Layers
      * \since QGIS 3.0
@@ -622,7 +648,7 @@ class SpatialiteDbInfo : public QObject
      *  - FdoOgr  geometry_columns contains different fields as the Spatialite Version
      *  -> this must be rendered with QgsOgrProvider
      * \note
-     * - Key: LayerName formatted as 'table_name(geometry_name)'
+     * - Key: LayerName formatted as 'table_name(geometry_name)' or 'table_name'
      * - Value: GeometryType and Srid formatted as 'geometry_type:srid:provider'
      * - Checking is done if the SQLite' Gdal/Ogr Driver is active
      * \see readFdoOgrLayers
@@ -769,7 +795,7 @@ class SpatialiteDbInfo : public QObject
      * - SpatialiteDbInfo::SpatialiteLayerType
      * \note
      * - SpatialTable, SpatialView, VirtualShape, RasterLite1, RasterLite2
-     * - SpatialiteTopopogy, TopopogyExport, GeoPackageVector, GeoPackageRaster
+     * - SpatialiteTopology, TopologyExport, GeoPackageVector, GeoPackageRaster
      * - MBTilesTable, MBTilesView
      * \since QGIS 3.0
      */
@@ -779,7 +805,7 @@ class SpatialiteDbInfo : public QObject
      * - SpatialiteDbInfo::SpatialiteLayerType
      * \note
      * - SpatialTable, SpatialView, VirtualShape, RasterLite1, RasterLite2
-     * - SpatialiteTopopogy, TopopogyExport, GeoPackageVector, GeoPackageRaster
+     * - SpatialiteTopology, TopologyExport, GeoPackageVector, GeoPackageRaster
      * - MBTilesTable, MBTilesView
      * \see SpatialiteDbLayer::setLayerType
      * \since QGIS 3.0
@@ -790,7 +816,7 @@ class SpatialiteDbInfo : public QObject
      * - SpatialiteDbInfo::SpatialiteLayerType
      * \note
      * - SpatialTable, SpatialView, VirtualShape, RasterLite1, RasterLite2
-     * - SpatialiteTopopogy, TopopogyExport, GeoPackageVector, GeoPackageRaster
+     * - SpatialiteTopology, TopologyExport, GeoPackageVector, GeoPackageRaster
      * - MBTilesTable, MBTilesView
      * \see SpatialiteDbLayer::setLayerType
      * \since QGIS 3.0
@@ -802,7 +828,7 @@ class SpatialiteDbInfo : public QObject
      * - SpatialiteDbInfo::SpatialiteLayerType
      * \note
      * - SpatialTable, SpatialView, VirtualShape, RasterLite1, RasterLite2
-     * - SpatialiteTopopogy, TopopogyExport, GeoPackageVector, GeoPackageRaster
+     * - SpatialiteTopology, TopologyExport, GeoPackageVector, GeoPackageRaster
      * - MBTilesTable, MBTilesView
      * \see SpatialiteDbLayer::setLayerType
      * \since QGIS 3.0
@@ -958,15 +984,49 @@ class SpatialiteDbInfo : public QObject
     * \since QGIS 3.0
     */
     void setSpatialMetadata( int iSpatialMetadata );
-    //! The Spatialite Version as returned by spatialite_version()
+
+    /** The Spatialite Version Driver being used
+     * \note
+     *  - returned from spatialite_version()
+     * \see getSniffDatabaseType
+    * \since QGIS 3.0
+    */
     QString mSpatialiteVersionInfo;
-    //! The major Spatialite Version being used
+
+    /** The major Spatialite Version being used
+     * \note
+     *  - extracted from spatialite_version()
+     * \see getSniffDatabaseType
+    * \since QGIS 3.0
+    */
     int mSpatialiteVersionMajor;
-    //! The minor Spatialite Version being used
+
+    /** The minor Spatialite Version being used
+     * \note
+     *  - extracted from spatialite_version()
+     * \see getSniffDatabaseType
+    * \since QGIS 3.0
+    */
     int mSpatialiteVersionMinor;
-    //! The revision Spatialite Version being used
+
+    /** The revision Spatialite Version being used
+     * \note
+     *  - extracted from spatialite_version()
+     * \see getSniffDatabaseType
+    * \since QGIS 3.0
+    */
     int mSpatialiteVersionRevision;
-    //! Does the read Database contain SpatialTables [ 0=none, otherwise amount]
+
+    /** Does the read Database contain SpatialTables, SpatialViews or VirtualShapes
+     * - determine through Sql-Queries, without usage of any Drivers
+     * -> for Databases created with a version before 4.0.0, vector_layers will be simulated
+     * \note
+     *   -1=no vector_layers entries, otherwise amount (0 being empty)
+     * \see getSniffSniffMinimal
+     * \see getSniffReadLayers
+     * \see readVectorLayers
+     * \since QGIS 3.0
+     */
     int mHasVectorLayers;
 
     /** Does the read Database contain SpatialTables, without vector_layers [ 0=none, otherwise amount]
@@ -974,46 +1034,235 @@ class SpatialiteDbInfo : public QObject
      * \note
      *  - final result will be set to VectorLayers
      *  -> so that externaly it is the same
+     * \see getSniffSniffMinimal
+     * \see getSniffReadLayers
+     * \see readVectorLayers
      * \since QGIS 3.0
      */
     int mHasLegacyGeometryLayers;
-    //! Does the read Database contain SpatialTables [ 0=none, otherwise amount]
+
+    /** Does the read Database contain SpatialTables
+     * - determine through Sql-Queries, without usage of any Drivers
+     * \note
+     *   -1=no Spatialite specific geometry_columns entries, otherwise amount (0 being empty)
+     * \see getSniffReadLayers
+     * \see readVectorLayers
+     * \since QGIS 3.0
+     */
     int mHasSpatialTables;
-    //! Does the read Database contain SpatialViews views [ 0=none, otherwise amount]
+
+    /** Does the read Database contain SpatialViews views
+     * - determine through Sql-Queries, without usage of any Drivers
+     * \note
+     *   -1=no views_geometry_columns entries, otherwise amount (0 being empty)
+     * \see getSniffReadLayers
+     * \see readVectorLayers
+     * \since QGIS 3.0
+     */
     int mHasSpatialViews;
-    //! Does the read Database contain VirtualShapes tables [0=none, otherwise amount]
+
+    /** Does the read Database contain VirtualShapes tables
+     * - determine through Sql-Queries, without usage of any Drivers
+     * \note
+     *   -1=no virts_geometry_columns entries, otherwise amount (0 being empty)
+     * \see getSniffReadLayers
+     * \see readVectorLayers
+     * \since QGIS 3.0
+     */
     int mHasVirtualShapes;
-    //! Does the read Database contain RasterLite1 coverages [-1=no rasterlit1 logic found, otherwise amount (0 being empty)]
+
+    /** Does the read Database contain RasterLite1 coverages
+     * - determine through Sql-Queries, without usage of any Drivers
+     * \note
+     *   -1=no rasterlit1 logic found, otherwise amount (0 being empty)
+     * \see getSniffSniffMinimal
+     * \see getSniffLayerMetadata
+     * \see getSniffReadLayers
+     * \see readRL1Layers
+     * \see GetRasterLite1LayersInfo
+     * \since QGIS 3.0
+     */
     int mHasRasterLite1Tables;
-    //! Is the Gdal-RasterLite1-Driver available ?
+
+    /** Is the Gdal-RasterLite1-Driver available ?
+     * - GDALGetDriverByName( 'RasterLite' )
+     * \note
+     *  - QgsGdalProvider:  RasterLite1
+     * \since QGIS 3.0
+     */
     bool mHasGdalRasterLite1Driver;
-    //! Does the read Database contain RasterLite2 coverages [-1=no raster_coverages table, otherwise amount (0 being empty)]
+
+    /** Does the read Database contain RasterLite2 coverages
+     * - determine through Sql-Queries, without usage of any Drivers
+     * \note
+     *   -1=no raster_coverages table, otherwise amount (0 being empty)
+     * \see getSniffSniffMinimal
+     * \see getSniffLayerMetadata
+     * \see getSniffReadLayers
+     * \see readRL2Layers()
+     * \see GetRasterLite2LayersInfo
+     * \since QGIS 3.0
+     */
     int mHasRasterLite2Tables;
-    //! Does the read Database contain Topology tables [-1=no topologies table, otherwise amount (0 being empty)]
+
+    /** Is the Gdal-RasterLite2-Driver available ?
+     * - GDALGetDriverByName( 'SQLite' )
+     * \note
+     *  - QgsGdalProvider:  RasterLite2
+     *  - assuming Gdal has been compiled with Rasterite2 support
+     * \see readRL2Layers()
+     * \since QGIS 3.0
+     */
+    bool mHasGdalRasterLite2Driver;
+
+    /** Does the read Database contain Topology tables ]
+     * - determine through Sql-Queries, without usage of any Drivers
+     * \note
+     *   -1=no topologies table, otherwise amount (0 being empty)
+     * \see getSniffSniffMinimal
+     * \see getSniffReadLayers
+     * \see readTopologyLayers
+     * \see GetTopologyLayersInfo
+     * \since QGIS 3.0
+     */
     int mHasTopologyExportTables;
-    //! Does the read Database contain MbTiles-Tables [ 0=none, otherwise 3=View-based MbTiles, else 2]
+
+    /** Does the read Database contain MbTiles-Tables
+     * - determine through Sql-Queries, without usage of any Drivers
+     * \note
+     *   0=none, otherwise 3=View-based MbTiles, else 2
+     * \see checkMBTiles
+     * \see readMBTilesLayers
+     * \see GetMBTilesLayersInfo
+     * \since QGIS 3.0
+     */
     int mHasMBTilesTables;
-    //! Is the Gdal-MBTiles-Driver available ?
+
+    /** Is the Gdal-MBTiles-Driver available ?
+     * - GDALGetDriverByName( 'MBTiles' )
+     * \note
+     *  - QgsGdalProvider:  MBTiles
+     * \see readMBTilesLayers()
+     * \since QGIS 3.0
+     */
     bool mHasGdalMBTilesDriver;
-    //! Does the read Database contain GPKG-Tables [ 0=none,  if 'gpkg_contents'  exists GeoPackage Revision 10]
+
+    /** Does the read Database contain GPKG-Tables
+     * - determine through Sql-Queries, without usage of any Drivers
+     * \note
+     *   0=none,  if 'gpkg_contents'  exists,  otherwise amount (0 being empty) [GeoPackage Revision 10]
+     * \see getSniffSniffMinimal
+     * \see getSniffLayerMetadata
+     * \see getSniffReadLayers
+     * \see readGeoPackageLayers
+     * \see GetGeoPackageLayersInfo
+     * \since QGIS 3.0
+     */
     int mHasGeoPackageTables;
-    //! Is the Gdal-GeoPackage-Driver available ?
+
+    /** Does the read Database contain GPKG-Vector-Tables [features]
+     * - determine through Sql-Queries, without usage of any Drivers
+     * \note
+     *   0=none,  if 'gpkg_contents'  exists,  otherwise amount (0 being empty) [GeoPackage Revision 10]
+     * \see readGeoPackageLayers
+     * \see GetGeoPackageLayersInfo
+     * \since QGIS 3.0
+     */
+    int mHasGeoPackageVectors;
+
+    /** Does the read Database contain GPKG-Vector-Tables [tiles]
+     * - determine through Sql-Queries, without usage of any Drivers
+     * \note
+     *   0=none,  if 'gpkg_contents'  exists,  otherwise amount (0 being empty) [GeoPackage Revision 10]
+     * \see readGeoPackageLayers
+     * \see GetGeoPackageLayersInfo
+     * \since QGIS 3.0
+     */
+    int mHasGeoPackageRasters;
+
+    /** Is the Gdal-GeoPackage-Driver available ?
+     * - GDALGetDriverByName( 'GPKG' )
+     * \note
+     *  - QgsGdalProvider / QgsOgrProvider:  GPKG
+     * \see readGeoPackageLayers
+     * \since QGIS 3.0
+     */
     bool mHasGdalGeoPackageDriver;
-    //! Does the read Database contain GPKG-Tables [ 0=none,  if 'gpkg_contents'  exists GeoPackage Revision 10]
+
+    /** Does the read Database contain FdoOgr-Tables
+     * - determine through Sql-Queries, without usage of any Drivers
+     * \note
+     *   0=none,  if OGR specific 'geometry_columns'  exists,  otherwise amount (0 being empty)
+     * \see getSniffSniffMinimal
+     * \see getSniffLayerMetadata
+     * \see getSniffReadLayers
+     * \see readFdoOgrLayers
+     * \see GetFdoOgrLayersInfo
+     * \since QGIS 3.0
+     */
     int mHasFdoOgrTables;
-    //! Is the Gdal-FdoOgr-Driver available ?
+
+    /** Is the Gdal-FdoOgr-Driver available ?
+     * - GDALGetDriverByName( 'SQLite' )
+     * \note
+     *  - QgsOgrProvider:  SQLite
+     * \see readFdoOgrLayers
+     * \since QGIS 3.0
+     */
     bool mHasFdoOgrDriver;
-    //! Is the used Spatialite compiled with Spatialite-Gcp support
+
+    /** Has the used Spatialite compiled with Spatialite-Gcp support
+     * - ./configure --enable-gcp=yes
+     * \note
+     *  - Based on GRASS GIS was initially released under the GPLv2+ license terms.
+     * \see https://www.gaia-gis.it/fossil/libspatialite/wiki?name=Ground+Control+Points
+     * \see getSniffSniffMinimal
+     * \since QGIS 3.0
+     */
     bool mHasGcp;
-    //! Is the used Spatialite compiled with Topology (and thus RtTopo) support
+
+    /** Has the used Spatialite compiled with Topology (and thus RtTopo) support
+     * - ./configure --enable-rttopo
+     * \note
+     *  - Based on RT Topology Library
+     * \see https://www.gaia-gis.it/fossil/libspatialite/wiki?name=ISO+Topology
+     * \see https://git.osgeo.org/gogs/rttopo/librttopo
+     * \see getSniffSniffMinimal
+     * \since QGIS 3.0
+     */
     bool mHasTopology;
-    //! Is the used Spatialite 4.5.0 or greater
+
+    /** Is the used connection Spatialite 4.5.0 or greater
+     * \note
+     *  - bsed on values offrom spatialite_version()
+     * \see getSniffDatabaseType
+    * \since QGIS 3.0
+    */
     bool mIsVersion45;
-    //! Layers-Counter [not all of which may be valid and contained in mDbLayers]
+
+    /** Layers-Counter
+     * - not all of which may be valid and contained in mDbLayers
+     * \note
+     *  - mDbLayers will only contain Layers that are valid
+     * \see GetDbLayersInfo
+    * \since QGIS 3.0
+    */
     int mLayersCount;
-    //! Flag indicating if the layer data source has ReadOnly restrictions
+
+    /** Flag indicating if the layer data source (Sqkite3) has ReadOnly restrictions
+     * \note
+     *  - sqlite3_db_readonly( mSqliteHandle, "main" )
+     * \see getSniffDatabaseType
+    * \since QGIS 3.0
+    */
     bool mReadOnly;
-    //! Load all Layer-Information [default] or only 'sniff' the Database
+
+    /** Load all Layer-Information [default]
+     * \note
+     *  -  or only 'sniff' the Database
+     * \see GetSpatialiteDbInfo
+    * \since QGIS 3.0
+    */
     bool mLoadLayers;
 
     /** Is the read Database supported by QgsSpatiaLiteProvider or
@@ -1071,7 +1320,11 @@ class SpatialiteDbInfo : public QObject
      * \since QGIS 3.0
      */
     bool mIsSqlite3;
-    //! Set the Database as invalid, with possible Message, returns amount of Errors collected
+
+    /** Set the Database as invalid
+     * - Uwith possible Message, returns amount of Errors collected
+     * \since QGIS 3.0
+     */
     int setDatabaseInvalid( QString errCause = QString::null );
 
     /**
@@ -1214,7 +1467,7 @@ class SpatialiteDbInfo : public QObject
      * - short list of the Layers retrieved from vector_layers
      *  - ordered by LayerType (SpatialTable, SpatialView and VirtualShape)
      * \note
-     * - Key: LayerName formatted as 'table_name(geometry_name)'
+     * - Key: LayerName formatted as 'table_name(geometry_name)' or 'table_name'
      * - Value: GeometryType and Srid formatted as 'geometry_type:srid:provider'
      * \see readVectorLayers()
      * \since QGIS 3.0
@@ -1225,7 +1478,7 @@ class SpatialiteDbInfo : public QObject
      * - with the Layer-Type as Value
      *  - used to retrieve a specific Layer-Type contained in mVectorLayers
      * \note
-     * - Key: LayerName formatted as 'table_name(geometry_name)'
+     * - Key: LayerName formatted as 'table_name(geometry_name)' or 'table_name'
      * - Value: LayerType SpatialTable, SpatialView and VirtualShape
      * \see getDbLayersType
      * \since QGIS 3.0
@@ -1236,7 +1489,7 @@ class SpatialiteDbInfo : public QObject
      * - short list of the Layers retrieved from raster_coverages
      *  - ordered by coverage_name
      * \note
-     * - Key: LayerName formatted as 'table_name(geometry_name)'
+     * - Key: LayerName formatted as 'table_name(geometry_name)' or 'table_name'
      * - Value: GeometryType and Srid formatted as 'geometry_type:srid:provider'
      * \see readRL2Layers()
      * \since QGIS 3.0
@@ -1251,7 +1504,7 @@ class SpatialiteDbInfo : public QObject
      *  - Checks:
      *  -> TABLEs 'table_name'_metadata and 'table_name'_rasters must exist
      * \note
-     * - Key: LayerName formatted as 'table_name(geometry_name)'
+     * - Key: LayerName formatted as 'table_name(geometry_name)' or 'table_name'
      * - Value: GeometryType and Srid formatted as 'geometry_type:srid:provider'
      * \see readRL1Layers
      * \since QGIS 3.0
@@ -1342,16 +1595,16 @@ class SpatialiteDbInfo : public QObject
      * \note
      * - gathers all information from gaiaGetVectorLayersList
      * -> complementary information will be retrieved from SpatialiteGetLayerSettingsWrapper
-     * -> RasterLite2 information will be retrieved from SpatialiteGetRL2LayersInfoWrapper
-     * -> Topology information will be retrieved from SpatialiteGetRL2LayersInfoWrapper
-     * -> RasterLite1 information will be retrieved from SpatialiteGetRL2LayersInfoWrapper
+     * -> RasterLite2 information will be retrieved from SpatialiteGetRasterLite2LayersInfoWrapper
+     * -> Topology information will be retrieved from SpatialiteGetRasterLite2LayersInfoWrapper
+     * -> RasterLite1 information will be retrieved from SpatialiteGetRasterLite2LayersInfoWrapper
      * \param sLayerName Name of the Layer to search for format: 'table_name(geometry_name)'
      * \returns true or false
      * \see GetDbConnectionInfo
      * \see SpatialiteGetLayerSettingsWrapper
-     * \see SpatialiteGetRL2LayersInfoWrapper
+     * \see SpatialiteGetRasterLite2LayersInfoWrapper
      * \see SpatialiteGetTopologyLayersInfoWrapper
-     * \see SpatialiteGetRL1LayersInfoWrapper
+     * \see SpatialiteGetRasterLite1LayersInfoWrapper
      * \since QGIS 3.0
      */
     bool GetDbLayersInfo( QString sLayerName = QString::null );
@@ -1459,7 +1712,7 @@ class SpatialiteDbInfo : public QObject
      * \see GetDbLayersInfo
      * \since QGIS 3.0
      */
-    bool GetRL2LayersInfo( const QString sLayerName = QString::null );
+    bool GetRasterLite2LayersInfo( const QString sLayerName = QString::null );
 
     /** Retrieve Topology Layers-Information of spatialite connection
      * - used to fill list in  SpatialiteDbInfo
@@ -1481,7 +1734,7 @@ class SpatialiteDbInfo : public QObject
      * \see GetDbLayersInfo
      * \since QGIS 3.0
      */
-    bool GetRL1LayersInfo( QString sLayerName = QString::null );
+    bool GetRasterLite1LayersInfo( QString sLayerName = QString::null );
 
     /** Retrieve MBTiles Layers-Information of spatialite connection
      * - used to fill list in  SpatialiteDbInfo
@@ -1551,11 +1804,26 @@ class SpatialiteDbInfo : public QObject
      * \since QGIS 3.0
      */
     bool prepareDataSourceUris();
-    //! List of tables or views that could not be resolved
+
+    /** List of tables or views that could not be resolved
+     * \note
+     * set but otherwised not used
+     * \since QGIS 3.0
+     */
     QStringList mVectorLayersMissing;
-    //! Collection of warnings for the Database being invalid
+
+    /** Collection of warnings for the Database being invalid
+     * \note
+     * set but otherwised not used
+     * \since QGIS 3.0
+     */
     QStringList mWarnings;
-    //! Collection of reasons for the Database being invalid
+
+    /** Collection of reasons for the Database being invalid
+     * \note
+     * set but otherwised not used
+     * \since QGIS 3.0
+     */
     QStringList mErrors;
 };
 
@@ -1585,6 +1853,7 @@ class SpatialiteDbLayer : public QObject
       , mSpatialIndexType( SpatialiteDbInfo::SpatialIndexNone )
       , mLayerType( SpatialiteDbInfo::SpatialiteUnknown )
       , mLayerTypeString( QString::null )
+      , mIsSpatialite( false )
       , mGeometryType( QgsWkbTypes::Unknown )
       , mGeometryTypeString( QString::null )
       , mCoordDimensions( GAIA_XY )
@@ -1717,11 +1986,21 @@ class SpatialiteDbLayer : public QObject
     //! The Spatialite Layer-Type being read (as String)
     QString getLayerTypeString() const { return mLayerTypeString; }
 
+    /** Is the Layer supported by QgsSpatiaLiteProvider
+     * - QgsSpatiaLiteProvider should never accept a Layer when this is not true
+     * \note
+     *  - check for valid Layer in the provider
+     * \see setLayerType
+     * \see QgsSpatiaLiteProvider::setDbLayer
+     * \since QGIS 3.0
+     */
+    bool isLayerSpatialite() const { return mIsSpatialite; }
+
     /** Returns QIcon representation of the enum of Layer-Types of the Sqlite3 Container
      * - SpatialiteDbInfo::SpatialiteLayerType
      * \note
      * - SpatialTable, SpatialView, VirtualShape, RasterLite1, RasterLite2
-     * - SpatialiteTopopogy, TopopogyExport, GeoPackageVector, GeoPackageRaster
+     * - SpatialiteTopology, TopologyExport, GeoPackageVector, GeoPackageRaster
      * - MBTilesTable, MBTilesView
      * \see SpatialiteLayerTypeNameIcon
      * \since QGIS 3.0
@@ -1793,7 +2072,7 @@ class SpatialiteDbLayer : public QObject
      * - this should be called after the LayerType and PrimaryKeys have been set
      * \note
      * The following receive: QgsVectorDataProvider::NoCapabilities
-     * - SpatialiteTopopogy: will serve only TopopogyExport, which ate SpatialTables
+     * - SpatialiteTopology: will serve only TopologyExport, which ate SpatialTables
      * - VectorStyle: nothing as yet
      * - RasterStyle: nothing as yet
      * \note
@@ -1846,36 +2125,138 @@ class SpatialiteDbLayer : public QObject
     QString mViewTableGeometryColumn;
     //! Name of the Layer format: 'table_name(geometry_name)'
     QString mLayerViewTableName;
-    //! Title [RasterLite2]
+
+    /** Title of the Layer
+     * - based on Provider specific values
+     * \note
+     *  - RasterLite2: Column title of 'raster_coverages'
+     *  - MbTiles: Column  value of 'metadata' WHERE (name='description')
+     *  - GeoPackage: Column identifier of 'gpkg_contents'
+     * \since QGIS 3.0
+     */
     QString mTitle;
-    //! Abstract [RasterLite2]
+
+    /** Abstract of the Layer
+     * - based on Provider specific values
+     * \note
+     *  - RasterLite2: Column abstract of 'raster_coverages'
+     *  - MbTiles: Column  value of 'metadata' WHERE (name='name')
+     *  - GeoPackage: Column description of 'gpkg_contents'
+     * \since QGIS 3.0
+     */
     QString mAbstract;
-    //! Copyright [RasterLite2]
+
+    /** Copyright of the Layer
+     * - based on Provider specific values
+     * \note
+     *  - RasterLite2: Column copyright of 'raster_coverages'
+     *  - MbTiles: nothing
+     *  - GeoPackage: nothing
+     * \since QGIS 3.0
+     */
     QString mCopyright;
-    //! The Srid of the Geometry
+
+    /** The Srid of the Geometry
+     *  \see setSrid
+     * \since QGIS 3.0
+     */
     int mSrid;
-    //! AuthId [auth_name||':'||auth_srid]
+
+    /** The AuthId [auth_name||':'||auth_srid]
+     *  \see setSrid
+     * \since QGIS 3.0
+     */
     QString mAuthId;
-    //! Proj4text [from mSrid]
+
+    /** The Proj4text [from mSrid]
+     *  \see setSrid
+     * \since QGIS 3.0
+     */
     QString mProj4text;
-    //! The SpatialIndex-Type used for the Geometry
+
+    /** The SpatialIndex-Type used for the Geometry
+     * \see setSpatialIndexType
+     * \see mSpatialIndexTypeString
+     * \since QGIS 3.0
+     */
     SpatialiteDbInfo::SpatialIndexType mSpatialIndexType;
-    //! The SpatialiIndex-Type used for the Geometry (as String)
+
+    /** The SpatialIndex-Type used for the Geometry as String
+     * \see setSpatialIndexType
+     * \see mSpatialIndexType
+     * \since QGIS 3.0
+     */
     QString mSpatialIndexTypeString;
-    //! Set the SpatialIndex-Type used for the Geometry (and the String)
+
+    /** Set the SpatialIndex-Type used for the Geometry
+     * - will also set the String version of theSpatialIndex-Type
+     * \see SpatialIndexTypeName
+     * \see mSpatialIndexType
+     * \since QGIS 3.0
+     */
     void setSpatialIndexType( int iSpatialIndexType );
-    //! The Spatialite Layer-Type being read
+
+    /** The Spatialite Layer-Type of the Layer
+     *  \see setGeometryType
+     *  \see mLayerTypeString
+     * \since QGIS 3.0
+     */
     SpatialiteDbInfo::SpatialiteLayerType mLayerType;
-    //! The Spatialite Layer-Type being read (as String)
+
+    /** Set the Spatialite Layer-Type String
+     * - representing mLayerType
+     *  \see setLayerType
+     * \see SpatialiteLayerTypeName
+     * \since QGIS 3.0
+     */
     QString mLayerTypeString;
-    //! Set the Spatialite Layer-Type being read  (and the String)
+
+    /** Set the Spatialite Layer-Type
+     * - will also set the String version of the Layer-Type
+     * \note
+     *  - will set whether this Layer is supported by the QgsSpatiaLiteProvider
+     * \see SpatialiteLayerTypeName
+     * \see mLayerTypeString
+     * \see mIsSpatialite
+     * \since QGIS 3.0
+     */
     void setLayerType( SpatialiteDbInfo::SpatialiteLayerType layerType );
-    //! The Spatialite Geometry-Type being read
+
+    /** Is the Layer
+     * - supported by QgsSpatiaLiteProvider
+     * \note
+     *  - Spatialite specific functions should not be called when false
+     *  -> UpdateLayerStatistics()
+     * \since QGIS 3.0
+     */
+    bool mIsSpatialite;
+
+    /** The Spatialite Geometry-Type of the Layer
+     * - representing mGeometryType
+     * \note
+     *  - QgsWkbTypes::displayString(mGeometryType)
+     *  \see setGeometryType
+     * \since QGIS 3.0
+     */
     QgsWkbTypes::Type mGeometryType;
-    //! The Spatialite Geometry-Type being read (as String)
+
+    /** Set the Spatialite Geometry-Type String
+     * - representing mGeometryType
+     * \note
+     *  - QgsWkbTypes::displayString(mGeometryType)
+     *  \see setGeometryType
+     * \since QGIS 3.0
+     */
     QString  mGeometryTypeString;
-    //! Set the Spatialite Geometry-Type being read  (and the String)
-    void setGeomType( int iGeomType );
+
+    /** Set the Spatialite Geometry-Type
+     * - will also set the String version of the Geometry-Type
+     * \note
+     *  - QgsWkbTypes::displayString(mGeometryType)
+     *  \see mGeometryTypeString
+     * \since QGIS 3.0
+     */
+    void setGeometryType( int iGeomType );
     //! The Spatialite Coord-Dimensions
     int mCoordDimensions;
     //! Rectangle that contains the extent (bounding box) of the layer
@@ -1938,7 +2319,7 @@ class SpatialiteDbLayer : public QObject
      * \param spatialiteGeometryType Spatialite-GeometryType
      * \param spatialiteGeometryDimension Spatialite-Dimensions
      * \returns geomType as QgsWkbTypes::Type
-     * \see GetRL1LayersInfo
+     * \see GetRasterLite1LayersInfo
      * \see GetSpatialiteQgsField
      * \since QGIS 3.0
      */

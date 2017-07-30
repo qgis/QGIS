@@ -252,7 +252,7 @@ class QgsSpatiaLiteTableModel: public QStandardItemModel
     /** Fill the model Item based on the retrieved Layer
      * \since QGIS 3.0
      */
-    void addTableEntryLayer( SpatialiteDbLayer *dbLayer );
+    void addTableEntryLayer( SpatialiteDbLayer *dbLayer, int iLayersCount = 1 );
 
     /** Fill the model Item based on the retrieved Layer
      * \since QGIS 3.0
@@ -304,6 +304,12 @@ class QgsSpatiaLiteTableModel: public QStandardItemModel
      * \since QGIS 3.0
      */
     int dumpDataSourceUris( int iDump );
+
+    /** Dump retrieved NonSpatialTables
+     * - testing for valid NonSpatialTables
+     * \since QGIS 3.0
+     */
+    int dumpNonSpatialTables( int iDump );
     QStandardItem *mDbRootItem = nullptr;
     bool mLoadGeometrylessTables = false;
 };

@@ -67,7 +67,7 @@ class QgsSpatiaLiteSourceSelect: public QDialog, private Ui::QgsDbSourceSelectBa
 
     /** List of selected Tabels
      * \note
-     *  - as LayerName LayerName formatted as 'table_name(geometry_name)'
+     *  - as LayerName LayerName formatted as 'table_name(geometry_name)' or 'table_name'
      * \see collectSelectedTables()
      * \since QGIS 1.8
      */
@@ -159,7 +159,7 @@ class QgsSpatiaLiteSourceSelect: public QDialog, private Ui::QgsDbSourceSelectBa
     /** Function to collect selected layers
      * \note
      *  - fills m_selectedTables with uri
-     *  - fills m_selectedLayers with LayerName formatted as 'table_name(geometry_name)'
+     *  - fills m_selectedLayers with LayerName formatted as 'table_name(geometry_name)' or 'table_name'
      * \see addTables()
      * \see updateStatistics()
      * \since QGIS 3.0
@@ -168,7 +168,7 @@ class QgsSpatiaLiteSourceSelect: public QDialog, private Ui::QgsDbSourceSelectBa
 
     /** List of selected Tabels
      * \note
-     *  - as LayerName LayerName formatted as 'table_name(geometry_name)'
+     *  - as LayerName LayerName formatted as 'table_name(geometry_name)' or 'table_name'
      * \see collectSelectedTables()
      * \since QGIS 3.0
      */
@@ -215,7 +215,7 @@ class QgsSpatiaLiteSourceSelect: public QDialog, private Ui::QgsDbSourceSelectBa
     /** Storage for the range of layer type icons
      * \note
      *  - fills m_selectedTables with uri
-     *  - fills m_selectedLayers with LayerName formatted as 'table_name(geometry_name)'
+     *  - fills m_selectedLayers with LayerName formatted as 'table_name(geometry_name)' or 'table_name'
      * \see addTables()
      * \see updateStatistics()
      * \since QGIS 3.0
