@@ -165,7 +165,7 @@ class GetScriptsAndModelsDialog(BASE, WIDGET):
 
     def grabHTTP(self, url, loadFunction, arguments=None):
         """Grab distant content via QGIS internal classes and QtNetwork."""
-        QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
+        QApplication.setOverrideCursor(Qt.WaitCursor)
         request = QUrl(url)
         reply = self.manager.get(QNetworkRequest(request))
         if arguments:
