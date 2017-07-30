@@ -2343,6 +2343,11 @@ void QgisApp::refreshProfileMenu()
       userProfileManager()->loadUserProfile( name );
     } );
   }
+
+  if ( userProfileManager()->allProfiles().count() == 1 )
+  {
+    profileSection->setVisible( false );
+  }
 }
 
 void QgisApp::createProfileMenu()
