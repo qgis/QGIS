@@ -244,6 +244,22 @@ Sets the expression string for the widget
  :rtype: QStandardItemModel
 %End
 
+    QgsProject *project();
+%Docstring
+ Returns the project currently associated with the widget.
+.. seealso:: setProject()
+.. versionadded:: 3.0
+ :rtype: QgsProject
+%End
+
+    void setProject( QgsProject *project );
+%Docstring
+ Sets the ``project`` currently associated with the widget. This
+ controls which layers and relations and other project-specific items are shown in the widget.
+.. seealso:: project()
+.. versionadded:: 3.0
+%End
+
   public slots:
 
     void loadSampleValues();

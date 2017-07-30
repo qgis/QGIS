@@ -45,6 +45,7 @@ QgsExpressionBuilderWidget::QgsExpressionBuilderWidget( QWidget *parent )
   , mLayer( nullptr )
   , highlighter( nullptr )
   , mExpressionValid( false )
+  , mProject( QgsProject::instance() )
 {
   setupUi( this );
 
@@ -445,7 +446,10 @@ void QgsExpressionBuilderWidget::loadRecent( const QString &collection )
 
 void QgsExpressionBuilderWidget::loadLayers()
 {
-  QMap<QString, QgsMapLayer *> layers = QgsProject::instance()->mapLayers();
+  if ( !mProject )
+    return;
+
+  QMap<QString, QgsMapLayer *> layers = mProject->mapLayers();
   QMap<QString, QgsMapLayer *>::const_iterator layerIt = layers.constBegin();
   for ( ; layerIt != layers.constEnd(); ++layerIt )
   {
@@ -455,7 +459,10 @@ void QgsExpressionBuilderWidget::loadLayers()
 
 void QgsExpressionBuilderWidget::loadRelations()
 {
-  QMap<QString, QgsRelation> relations = QgsProject::instance()->relationManager()->relations();
+  if ( !mProject )
+    return;
+
+  QMap<QString, QgsRelation> relations = mProject->relationManager()->relations();
   QMap<QString, QgsRelation>::const_iterator relIt = relations.constBegin();
   for ( ; relIt != relations.constEnd(); ++relIt )
   {
@@ -660,6 +667,17 @@ QString QgsExpressionBuilderWidget::formatLayerHelp( const QgsMapLayer *layer ) 
 QStandardItemModel *QgsExpressionBuilderWidget::model()
 {
   return mModel;
+}
+
+QgsProject *QgsExpressionBuilderWidget::project()
+{
+  return mProject;
+}
+
+void QgsExpressionBuilderWidget::setProject( QgsProject *project )
+{
+  mProject = project;
+  updateFunctionTree();
 }
 
 void QgsExpressionBuilderWidget::showEvent( QShowEvent *e )

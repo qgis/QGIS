@@ -122,6 +122,19 @@ class TestQgsExpressionBuilderWidget(unittest.TestCase):
         items = m.findItems('layer2', Qt.MatchRecursive)
         self.assertEqual(len(items), 1)
 
+        # change project
+        p2 = QgsProject()
+        layer3 = QgsVectorLayer("Point", "layer3", "memory")
+        p2.addMapLayers([layer3])
+        w.setProject(p2)
+        m = w.model()
+        items = m.findItems('layer1', Qt.MatchRecursive)
+        self.assertEqual(len(items), 0)
+        items = m.findItems('layer2', Qt.MatchRecursive)
+        self.assertEqual(len(items), 0)
+        items = m.findItems('layer3', Qt.MatchRecursive)
+        self.assertEqual(len(items), 1)
+
     def testRelations(self):
         """ check that layers are shown in widget model"""
         p = QgsProject.instance()

@@ -233,6 +233,21 @@ class GUI_EXPORT QgsExpressionBuilderWidget : public QWidget, private Ui::QgsExp
      */
     QStandardItemModel *model();
 
+    /**
+     * Returns the project currently associated with the widget.
+     * \see setProject()
+     * \since QGIS 3.0
+     */
+    QgsProject *project();
+
+    /**
+     * Sets the \a project currently associated with the widget. This
+     * controls which layers and relations and other project-specific items are shown in the widget.
+     * \see project()
+     * \since QGIS 3.0
+     */
+    void setProject( QgsProject *project );
+
   public slots:
 
     /**
@@ -338,6 +353,7 @@ class GUI_EXPORT QgsExpressionBuilderWidget : public QWidget, private Ui::QgsExp
     QString mRecentKey;
     QMap<QString, QStringList> mFieldValues;
     QgsExpressionContext mExpressionContext;
+    QPointer< QgsProject > mProject;
 };
 
 #endif // QGSEXPRESSIONBUILDER_H
