@@ -31,6 +31,7 @@
 
 class QgsFields;
 class QgsExpressionHighlighter;
+class QgsRelation;
 
 /** \ingroup gui
  * An expression item that can be used in the QgsExpressionBuilderWidget tree.
@@ -286,6 +287,12 @@ class GUI_EXPORT QgsExpressionBuilderWidget : public QWidget, private Ui::QgsExp
 
     void loadExpressionContext();
 
+    //! Loads current project relations names/id into the expression help tree
+    void loadRelations();
+
+    //! Loads current project layer names/ids into the expression help tree
+    void loadLayers();
+
     /** Registers a node item for the expression builder, adding multiple items when the function exists in multiple groups
       * \param groups The groups the item will be show in the tree view.  If a group doesn't exist it will be created.
       * \param label The label that is show to the user for the item in the tree.
@@ -299,6 +306,16 @@ class GUI_EXPORT QgsExpressionBuilderWidget : public QWidget, private Ui::QgsExp
                                    const QString &helpText = "",
                                    QgsExpressionItem::ItemType type = QgsExpressionItem::ExpressionNode,
                                    bool highlightedItem = false, int sortOrder = 1 );
+
+    /**
+     * Returns a HTML formatted string for use as a \a relation item help.
+     */
+    QString formatRelationHelp( const QgsRelation &relation ) const;
+
+    /**
+     * Returns a HTML formatted string for use as a \a layer item help.
+     */
+    QString formatLayerHelp( const QgsMapLayer *layer ) const;
 
     bool mAutoSave;
     QString mFunctionsPath;
