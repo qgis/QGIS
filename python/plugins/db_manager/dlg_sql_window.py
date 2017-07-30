@@ -31,6 +31,7 @@ from qgis.PyQt.QtGui import QKeySequence, QCursor, QClipboard, QIcon, QStandardI
 from qgis.PyQt.Qsci import QsciAPIs
 
 from qgis.core import QgsProject
+from qgis.utils import OverrideCursor
 
 from .db_plugins.plugin import BaseError
 from .db_plugins.postgis.plugin import PGDatabase
@@ -182,37 +183,34 @@ class DlgSqlWindow(QWidget, Ui_Dialog):
         if sql == "":
             return
 
-        QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
+        with OverrideCursor(Qt.WaitCursor):
+            # delete the old model
+            old_model = self.viewResult.model()
+            self.viewResult.setModel(None)
+            if old_model:
+                old_model.deleteLater()
 
-        # delete the old model
-        old_model = self.viewResult.model()
-        self.viewResult.setModel(None)
-        if old_model:
-            old_model.deleteLater()
+            cols = []
+            quotedCols = []
 
-        cols = []
-        quotedCols = []
+            try:
+                # set the new model
+                model = self.db.sqlResultModel(sql, self)
+                self.viewResult.setModel(model)
+                self.lblResult.setText(self.tr("{0} rows, {1:.1f} seconds").format(model.affectedRows(), model.secs()))
+                cols = self.viewResult.model().columnNames()
+                for col in cols:
+                    quotedCols.append(self.db.connector.quoteId(col))
 
-        try:
-            # set the new model
-            model = self.db.sqlResultModel(sql, self)
-            self.viewResult.setModel(model)
-            self.lblResult.setText(self.tr("{0} rows, {1:.1f} seconds").format(model.affectedRows(), model.secs()))
-            cols = self.viewResult.model().columnNames()
-            for col in cols:
-                quotedCols.append(self.db.connector.quoteId(col))
+            except BaseError as e:
+                DlgDbError.showError(e, self)
+                self.uniqueModel.clear()
+                self.geomCombo.clear()
+                return
 
-        except BaseError as e:
-            QApplication.restoreOverrideCursor()
-            DlgDbError.showError(e, self)
-            self.uniqueModel.clear()
-            self.geomCombo.clear()
-            return
+            self.setColumnCombos(cols, quotedCols)
 
-        self.setColumnCombos(cols, quotedCols)
-
-        self.update()
-        QApplication.restoreOverrideCursor()
+            self.update()
 
     def _getSqlLayer(self, _filter):
         hasUniqueField = self.uniqueColumnCheck.checkState() == Qt.Checked
@@ -270,67 +268,60 @@ class DlgSqlWindow(QWidget, Ui_Dialog):
             return None
 
     def loadSqlLayer(self):
-        QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
-        try:
+        with OverrideCursor(Qt.WaitCursor):
             layer = self._getSqlLayer(self.filter)
             if layer is None:
                 return
 
             QgsProject.instance().addMapLayers([layer], True)
-        finally:
-            QApplication.restoreOverrideCursor()
 
     def fillColumnCombos(self):
         query = self._getSqlQuery()
         if query == "":
             return
 
-        QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
+        with OverrideCursor(Qt.WaitCursor):
+            # remove a trailing ';' from query if present
+            if query.strip().endswith(';'):
+                query = query.strip()[:-1]
 
-        # remove a trailing ';' from query if present
-        if query.strip().endswith(';'):
-            query = query.strip()[:-1]
+            # get all the columns
+            cols = []
+            quotedCols = []
+            connector = self.db.connector
+            if self.aliasSubQuery:
+                # get a new alias
+                aliasIndex = 0
+                while True:
+                    alias = "_subQuery__%d" % aliasIndex
+                    escaped = re.compile('\\b("?)' + re.escape(alias) + '\\1\\b')
+                    if not escaped.search(query):
+                        break
+                    aliasIndex += 1
 
-        # get all the columns
-        cols = []
-        quotedCols = []
-        connector = self.db.connector
-        if self.aliasSubQuery:
-            # get a new alias
-            aliasIndex = 0
-            while True:
-                alias = "_subQuery__%d" % aliasIndex
-                escaped = re.compile('\\b("?)' + re.escape(alias) + '\\1\\b')
-                if not escaped.search(query):
-                    break
-                aliasIndex += 1
+                sql = u"SELECT * FROM (%s\n) AS %s LIMIT 0" % (str(query), connector.quoteId(alias))
+            else:
+                sql = u"SELECT * FROM (%s\n) WHERE 1=0" % str(query)
 
-            sql = u"SELECT * FROM (%s\n) AS %s LIMIT 0" % (str(query), connector.quoteId(alias))
-        else:
-            sql = u"SELECT * FROM (%s\n) WHERE 1=0" % str(query)
+            c = None
+            try:
+                c = connector._execute(None, sql)
+                cols = connector._get_cursor_columns(c)
+                for col in cols:
+                    quotedCols.append(connector.quoteId(col))
 
-        c = None
-        try:
-            c = connector._execute(None, sql)
-            cols = connector._get_cursor_columns(c)
-            for col in cols:
-                quotedCols.append(connector.quoteId(col))
+            except BaseError as e:
+                DlgDbError.showError(e, self)
+                self.uniqueModel.clear()
+                self.geomCombo.clear()
+                return
 
-        except BaseError as e:
-            QApplication.restoreOverrideCursor()
-            DlgDbError.showError(e, self)
-            self.uniqueModel.clear()
-            self.geomCombo.clear()
-            return
+            finally:
+                if c:
+                    c.close()
+                    del c
 
-        finally:
-            if c:
-                c.close()
-                del c
-
-        self.setColumnCombos(cols, quotedCols)
-
-        QApplication.restoreOverrideCursor()
+            self.setColumnCombos(cols, quotedCols)
 
     def setColumnCombos(self, cols, quotedCols):
         # get sensible default columns. do this before sorting in case there's hints in the column order (e.g., id is more likely to be first)
