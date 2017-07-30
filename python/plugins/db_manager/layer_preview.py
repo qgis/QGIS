@@ -26,6 +26,7 @@ from qgis.PyQt.QtWidgets import QApplication
 
 from qgis.gui import QgsMapCanvas, QgsMessageBar
 from qgis.core import QgsVectorLayer, QgsProject, QgsSettings
+from qgis.utils import OverrideCursor
 
 from .db_plugins.plugin import Table
 

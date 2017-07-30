@@ -28,6 +28,8 @@ from qgis.PyQt.QtCore import Qt, QModelIndex
 from qgis.PyQt.QtWidgets import QItemDelegate, QComboBox, QDialog, QPushButton, QDialogButtonBox, QMessageBox, QApplication
 from qgis.PyQt.QtCore import QItemSelectionModel, pyqtSignal
 
+from qgis.utils import OverrideCursor
+
 from .db_plugins.data_model import TableFieldsModel
 from .db_plugins.plugin import DbError, ConnectionError
 from .dlg_db_error import DlgDbError
