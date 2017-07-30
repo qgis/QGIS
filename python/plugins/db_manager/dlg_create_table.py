@@ -297,19 +297,16 @@ class DlgCreateTable(QDialog, Ui_Dialog):
             flds[pk_index].primaryKey = True
 
         # commit to DB
-        QApplication.setOverrideCursor(Qt.WaitCursor)
-        try:
-            if not useGeomColumn:
-                self.db.createTable(table, flds, schema)
-            else:
-                geom = geomColumn, geomType, geomSrid, geomDim, useSpatialIndex
-                self.db.createVectorTable(table, flds, geom, schema)
+        with OverrideCursor(Qt.WaitCursor):
+            try:
+                if not useGeomColumn:
+                    self.db.createTable(table, flds, schema)
+                else:
+                    geom = geomColumn, geomType, geomSrid, geomDim, useSpatialIndex
+                    self.db.createVectorTable(table, flds, geom, schema)
 
-        except (ConnectionError, DbError) as e:
-            DlgDbError.showError(e, self)
+            except (ConnectionError, DbError) as e:
+                DlgDbError.showError(e, self)
             return
-
-        finally:
-            QApplication.restoreOverrideCursor()
 
         QMessageBox.information(self, self.tr("Good"), self.tr("everything went fine"))
