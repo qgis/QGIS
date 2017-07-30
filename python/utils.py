@@ -625,6 +625,28 @@ or using the "mod_spatialite" extension (python3)"""
     return dbapi2.connect(*args, **kwargs)
 
 
+class OverrideCursor():
+    """
+    Executes a code block with a different cursor set and makes sure the cursor
+    is restored even if exceptions are raised or an intermediate ``return``
+    statement is hit.
+
+    Example:
+    ```
+    with OverrideCursor(Qt.WaitCursor):
+        do_a_slow(operation)
+    ```
+    """
+
+    def __init__(self, cursor):
+        self.cursor = cursor
+
+    def __enter__(self):
+        QApplication.setOverrideCursor(self.cursor)
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        QApplication.restoreOverrideCursor()
+
 #######################
 # IMPORT wrapper
 
