@@ -226,6 +226,13 @@ class GUI_EXPORT QgsExpressionBuilderWidget : public QWidget, private Ui::QgsExp
      */
     void updateFunctionFileList( const QString &path );
 
+    /**
+     * Returns a pointer to the dialog's function item model.
+     * This method is exposed for testing purposes only - it should not be used to modify the model.
+     * \since QGIS 3.0
+     */
+    QStandardItemModel *model();
+
   public slots:
 
     /**

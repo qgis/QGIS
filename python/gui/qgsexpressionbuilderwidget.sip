@@ -236,6 +236,14 @@ Sets the expression string for the widget
  Update the list of function files found at the given path
 %End
 
+    QStandardItemModel *model();
+%Docstring
+ Returns a pointer to the dialog's function item model.
+ This method is exposed for testing purposes only - it should not be used to modify the model.
+.. versionadded:: 3.0
+ :rtype: QStandardItemModel
+%End
+
   public slots:
 
     void loadSampleValues();

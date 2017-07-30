@@ -657,6 +657,11 @@ QString QgsExpressionBuilderWidget::formatLayerHelp( const QgsMapLayer *layer ) 
   return text;
 }
 
+QStandardItemModel *QgsExpressionBuilderWidget::model()
+{
+  return mModel;
+}
+
 void QgsExpressionBuilderWidget::showEvent( QShowEvent *e )
 {
   QWidget::showEvent( e );
