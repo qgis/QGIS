@@ -51,6 +51,7 @@ from qgis.gui import (QgsDoubleSpinBox,
                       QgsSpinBox,
                       QgsOptionsPageWidget)
 from qgis.core import NULL, QgsApplication, QgsSettings
+from qgis.utils import OverrideCursor
 
 from processing.core.ProcessingConfig import (ProcessingConfig,
                                               settingsWatcher,
@@ -293,10 +294,9 @@ class ConfigDialog(BASE, WIDGET):
                         return
                 setting.save(qsettings)
 
-        QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
-        for p in QgsApplication.processingRegistry().providers():
-            p.refreshAlgorithms()
-        QApplication.restoreOverrideCursor()
+        with OverrideCursor(Qt.WaitCursor):
+            for p in QgsApplication.processingRegistry().providers():
+                p.refreshAlgorithms()
 
         settingsWatcher.settingsChanged.emit()
 

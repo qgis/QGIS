@@ -24,6 +24,7 @@ The content of this file is based on
 
 from qgis.PyQt.QtCore import Qt
 from qgis.PyQt.QtWidgets import QDialog, QMessageBox, QApplication
+from qgis.utils import OverrideCursor
 
 from .db_plugins.plugin import DbError
 from .dlg_db_error import DlgDbError
@@ -60,14 +61,12 @@ class DlgCreateIndex(QDialog, Ui_Dialog):
             return
 
         # now create the index
-        QApplication.setOverrideCursor(Qt.WaitCursor)
-        try:
-            self.table.addIndex(idx)
-        except DbError as e:
-            DlgDbError.showError(e, self)
-            return
-        finally:
-            QApplication.restoreOverrideCursor()
+        with OverrideCursor(Qt.WaitCursor):
+            try:
+                self.table.addIndex(idx)
+            except DbError as e:
+                DlgDbError.showError(e, self)
+                return
 
         self.accept()
 
