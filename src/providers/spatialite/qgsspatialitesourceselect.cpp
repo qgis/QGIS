@@ -465,6 +465,7 @@ void QgsSpatiaLiteSourceSelect::on_btnConnect_clicked()
     }
     // populate the table list
     // get the list of suitable tables and columns and populate the UI
+    cbxAllowGeometrylessTables->setChecked( true );
     mTableModel.setSqliteDb( spatialiteDbInfo, cbxAllowGeometrylessTables->isChecked() );
   }
   if ( mTableModel.isSpatialite() )

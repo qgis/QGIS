@@ -311,5 +311,5 @@ class QgsSpatiaLiteTableModel: public QStandardItemModel
      */
     int dumpNonSpatialTables( int iDump );
     QStandardItem *mDbRootItem = nullptr;
-    bool mLoadGeometrylessTables = false;
+    bool mLoadGeometrylessTables = true;
 };

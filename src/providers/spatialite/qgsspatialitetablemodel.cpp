@@ -66,7 +66,6 @@ void QgsSpatiaLiteTableModel::setSqliteDb( SpatialiteDbInfo *spatialiteDbInfo, b
     }
     mTableCounter = 0;
     mLoadGeometrylessTables = loadGeometrylessTables;
-    mLoadGeometrylessTables = true;
     addTableEntryTypes( );
   }
 }
@@ -261,7 +260,6 @@ void QgsSpatiaLiteTableModel::addRootEntry( )
           }
           break;
         case SpatialiteDbInfo::SpatialiteGpkg:
-          mLoadGeometrylessTables = true;
           sProvider = QStringLiteral( "QgsOgrProvider" );
           sInfoText = "The 'GPKG' Driver is NOT active and cannot be displayed";
           if ( mSpatialiteDbInfo->hasDbGdalGeoPackageDriver() )
@@ -270,7 +268,6 @@ void QgsSpatiaLiteTableModel::addRootEntry( )
           }
           break;
         case SpatialiteDbInfo::SpatialiteMBTiles:
-          mLoadGeometrylessTables = true;
           sProvider = QStringLiteral( "QgsGdalProvider" );
           sInfoText = "The 'MBTiles' Driver is NOT active and cannot be displayed";
           if ( mSpatialiteDbInfo->hasDbGdalMBTilesDriver() )
@@ -475,7 +472,7 @@ void QgsSpatiaLiteTableModel::addTableEntryType( QMap<QString, QString> mapLayer
           // qDebug() << QString( "QgsSpatiaLiteTableModel::addTableEntryType(%1): Key[%2] Value[%3]" ).arg( sGroupLayerType ).arg( itLayers.key() ).arg( itLayers.value() );
           if ( ( dbLayer ) && ( dbLayer->isLayerValid() ) )
           {
-            qDebug() << QString( "QgsSpatiaLiteTableModel::addTableEntryType: Key[%1] IsValid[%2] Value[%3]" ).arg( itLayers.key() ).arg( dbLayer->isLayerValid() ).arg( itLayers.value() );
+            // qDebug() << QString( "QgsSpatiaLiteTableModel::addTableEntryType: Key[%1] IsValid[%2] Value[%3]" ).arg( itLayers.key() ).arg( dbLayer->isLayerValid() ).arg( itLayers.value() );
             addTableEntryLayer( dbLayer, mapLayers.count() );
           }
         }
@@ -489,6 +486,7 @@ void QgsSpatiaLiteTableModel::addTableEntryMap( QString sKey, QString sValue, Sp
   QString sGroupLayerType = SpatialiteDbInfo::SpatialiteLayerTypeName( layerType );
   switch ( layerType )
   {
+#if 0
     case SpatialiteDbInfo::GeoPackageVector:
     {
       // Key[fromosm_tiles] Value[GeoPackageRaster;3857]
@@ -561,6 +559,7 @@ void QgsSpatiaLiteTableModel::addTableEntryMap( QString sKey, QString sValue, Sp
       gpkgTypeItem->appendRow( childItemList );
     }
     break;
+#endif
     case SpatialiteDbInfo::NonSpatialTables:
     default:
     {
@@ -588,17 +587,21 @@ void QgsSpatiaLiteTableModel::addTableEntryMap( QString sKey, QString sValue, Sp
       QString sSortTag = QString( "ZZCA_%1" ).arg( sGroup );
       if ( ( sGroup.startsWith( "RasterLite1" ) ) || ( sGroup.startsWith( "RasterLite2" ) ) )
       {
-        // Avoid using the same names as used for the Group of Layer-Names
-        sGroup = QString( "Metatdata-%1" ).arg( sGroup );
-        sSortTag = QString( "ZZBA_%1" ).arg( sGroup );
+        // Avoid using the same names as used for the Group of Layer-Names [RasterLite1 has no Internals ]
+        if ( sValue != QString( "%1-Internal" ).arg( "RasterLite2" ) )
+        {
+          sGroup = QString( "%1-Metatdata" ).arg( sGroup );
+          sSortTag = QString( "ZZBA_%1" ).arg( sGroup );
+        }
       }
       if ( ( sGroup.startsWith( "Table" ) ) || ( sGroup.startsWith( "View" ) ) )
       {
+        qDebug() << QString( "-II-.> QgsSpatiaLiteTableModel::addTableEntryMap: sGroupLayerType(%1): Key[%2] Value[%3]" ).arg( sGroupLayerType ).arg( sKey ).arg( sValue );
         // Normal Data-Tables and Views should come first
         sGroup = QString( "%1-Admin" ).arg( sGroup );
         sSortTag = QString( "ZZBA_%1" ).arg( sGroup );
       }
-      if ( ( sGroup.startsWith( "SpatialTable" ) ) || ( sGroup.startsWith( "SpatialView" ) )  || ( sGroup.startsWith( "VirtualShapes" ) ) )
+      if ( ( sGroup.startsWith( "SpatialTable" ) ) || ( sGroup.startsWith( "SpatialView" ) )  || ( sGroup.startsWith( "VirtualShapes" )  || ( sValue.startsWith( "RasterLite2-I" ) ) ) )
       {
         // Spatial-Admin-Tables and Views should come first
         sGroup = QString( "%1-Admin" ).arg( sGroup );
@@ -784,6 +787,11 @@ void QgsSpatiaLiteTableModel::addTableEntryLayer( SpatialiteDbLayer *dbLayer, in
       sGeomItemText = ""; // Must remain empty
       sGeometryTypeString = dbLayer->getAbstract();
     }
+    if ( sSearchName == "RasterLite2" )
+    {
+      sGeomItemText = ""; // Must remain empty
+      sGeometryTypeString = dbLayer->getTitle();
+    }
     QStandardItem *geomItem = new QStandardItem( sGeomItemText );
     geomItem->setFlags( Qt::ItemIsEnabled | Qt::ItemIsSelectable );
     QIcon iconType;
@@ -797,6 +805,11 @@ void QgsSpatiaLiteTableModel::addTableEntryLayer( SpatialiteDbLayer *dbLayer, in
       if ( sGroup == "RasterLite1" )
       {
         sGroup = "RasterLite1-Tiles";
+        sGeometryTypeString = sGroup;
+      }
+      if ( sGroup == "RasterLite2" )
+      {
+        sGroup = "RasterLite2-Tiles";
         sGeometryTypeString = sGroup;
       }
       if ( sGroup == "GeoPackageRaster" )

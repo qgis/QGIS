@@ -1593,6 +1593,7 @@ class SpatialiteDbInfo : public QObject
     /** Retrieve Layers-Information of spatialite connection
      * - used to fill list in  SpatialiteDbInfo
      * \note
+     * Spatial* : QString( "%1,table=%2 (%3)" ).arg( getDatabaseFileName() ).arg( sTableName ).arg(sGeometryColumn);
      * - gathers all information from gaiaGetVectorLayersList
      * -> complementary information will be retrieved from SpatialiteGetLayerSettingsWrapper
      * -> RasterLite2 information will be retrieved from SpatialiteGetRasterLite2LayersInfoWrapper
@@ -1705,7 +1706,9 @@ class SpatialiteDbInfo : public QObject
     /** Retrieve RasterLite2 Layers-Information of spatialite connection
      * - used to fill list in  SpatialiteDbInfo
      * \note
+     *  RasterLite2 [gdal]: QString( "%3:%1:%2" ).arg( getDatabaseFileName() ).arg( sTableName ).arg( "RASTERLITE2" )
      * - there is no direct RasterLite2 support needed during this function
+     * - at present (2017-07-31) QGdalProvider cannot read RasterLite2 created with the development version
      * \param dbConnectionInfo SpatialiteDbInfo
      * \param sLayerName Name of the Layer to search for format: 'table_name(geometry_name)'
      * \returns true or false
@@ -1728,6 +1731,7 @@ class SpatialiteDbInfo : public QObject
     /** Retrieve RasterLite1 Layers-Information of spatialite connection
      * - used to fill list in  SpatialiteDbInfo
      * \note
+     *  RasterLite1: QString( "%3:%1,table=%2" ).arg( getDatabaseFileName() ).arg( sTableName ).arg( "RASTERLITE" );
      * \param dbConnectionInfo SpatialiteDbInfo
      * \param sLayerName Name of the Layer to search for format: 'table_name(geometry_name)'
      * \returns true or false
@@ -1739,6 +1743,7 @@ class SpatialiteDbInfo : public QObject
     /** Retrieve MBTiles Layers-Information of spatialite connection
      * - used to fill list in  SpatialiteDbInfo
      * \note
+     *  MBTiles: QString( "%1" ).arg( getDatabaseFileName() )
      * \param dbConnectionInfo SpatialiteDbInfo
      * \param sLayerName Name of the Layer to search for format: 'name'
      * \returns true or false
@@ -1750,6 +1755,8 @@ class SpatialiteDbInfo : public QObject
     /** Retrieve GeoPackage Layers-Information of spatialite connection
      * - used to fill list in  SpatialiteDbInfo
      * \note
+     *  GeoPackageVector: QString( "%1|%3=%2" ).arg( getDatabaseFileName() ).arg( sTableName ).arg( "layername" );
+     *  GeoPackageRaster: QString( "%3:%1:%2" ).arg( getDatabaseFileName() ).arg( sTableName ).arg( "GPKG" );
      * \param dbConnectionInfo SpatialiteDbInfo
      * \param sLayerName Name of the Layer to search for format: 'table_name(geometry_name)'
      * \returns true or false
@@ -1761,6 +1768,7 @@ class SpatialiteDbInfo : public QObject
     /** Retrieve FdoOgr Layers-Information of spatialite connection
      * - used to fill list in  SpatialiteDbInfo
      * \note
+     *  GdalFdoOgr: QString( "%1|%3=%2" ).arg( getDatabaseFileName() ).arg( sTableName ).arg( "layername" );
      * \param dbConnectionInfo SpatialiteDbInfo
      * \param sLayerName Name of the Layer to search for format: 'table_name(geometry_name)'
      * \returns true or false
