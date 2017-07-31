@@ -70,7 +70,7 @@ class SERVER_EXPORT QgsServerResponse
     /**
      * Return the header value
      */
-    virtual QMap<QString, QString> headers( ) const = 0;
+    virtual QMap<QString, QString> headers() const = 0;
 
     /**
      * Return true if the headers have alredy been sent
@@ -85,7 +85,7 @@ class SERVER_EXPORT QgsServerResponse
 
     /** Return the http status code
      */
-    virtual int statusCode( ) const = 0;
+    virtual int statusCode() const = 0;
 
     /**
      * Send error

@@ -10,6 +10,8 @@
 
 
 
+
+
 class QgsExtentGroupBox : QgsCollapsibleGroupBox
 {
 %Docstring
@@ -34,6 +36,7 @@ class QgsExtentGroupBox : QgsCollapsibleGroupBox
       CurrentExtent,
       UserExtent,
       ProjectLayerExtent,
+      DrawOnCanvas,
     };
 
     explicit QgsExtentGroupBox( QWidget *parent /TransferThis/ = 0 );
@@ -124,6 +127,13 @@ class QgsExtentGroupBox : QgsCollapsibleGroupBox
  :rtype: str
 %End
 
+    void setMapCanvas( QgsMapCanvas *canvas );
+%Docstring
+ Sets the map canvas to enable dragging of extent on a canvas.
+ \param canvas the map canvas
+.. versionadded:: 3.0
+%End
+
   public slots:
 
     void setOutputExtentFromOriginal();
@@ -145,6 +155,30 @@ class QgsExtentGroupBox : QgsCollapsibleGroupBox
 %Docstring
  Sets the output extent to match a ``layer``'s extent (may be transformed to output CRS).
 .. versionadded:: 3.0
+%End
+
+    void setOutputExtentFromDrawOnCanvas();
+%Docstring
+ Sets the output extent by dragging on the canvas.
+.. versionadded:: 3.0
+%End
+
+    void setRatio( QSize ratio );
+%Docstring
+ Sets a fixed aspect ratio to be used when dragging extent onto the canvas.
+ To unset a fixed aspect ratio, set the width and height to zero.
+ \param ratio aspect ratio's width and height
+.. versionadded:: 3.0
+ *
+%End
+
+    QSize ratio() const;
+%Docstring
+ Returns the current fixed aspect ratio to be used when dragging extent onto the canvas.
+ If the aspect ratio isn't fixed, the width and height will be set to zero.
+.. versionadded:: 3.0
+ *
+ :rtype: QSize
 %End
 
   signals:

@@ -1114,7 +1114,7 @@ double QgsMarkerSymbol::angle() const
 {
   Q_FOREACH ( QgsSymbolLayer *layer, mLayers )
   {
-    if ( layer->type() !=  QgsSymbol::Marker )
+    if ( layer->type() != QgsSymbol::Marker )
       continue;
     const QgsMarkerSymbolLayer *markerLayer = static_cast<const QgsMarkerSymbolLayer *>( layer );
     return markerLayer->angle();
@@ -1126,7 +1126,7 @@ void QgsMarkerSymbol::setLineAngle( double lineAng )
 {
   Q_FOREACH ( QgsSymbolLayer *layer, mLayers )
   {
-    if ( layer->type() !=  QgsSymbol::Marker )
+    if ( layer->type() != QgsSymbol::Marker )
       continue;
     QgsMarkerSymbolLayer *markerLayer = static_cast<QgsMarkerSymbolLayer *>( layer );
     markerLayer->setLineAngle( lineAng );
@@ -1139,7 +1139,7 @@ void QgsMarkerSymbol::setDataDefinedAngle( const QgsProperty &property )
 
   Q_FOREACH ( QgsSymbolLayer *layer, mLayers )
   {
-    if ( layer->type() !=  QgsSymbol::Marker )
+    if ( layer->type() != QgsSymbol::Marker )
       continue;
     const QgsMarkerSymbolLayer *markerLayer = static_cast<const QgsMarkerSymbolLayer *>( layer );
     if ( !property )
@@ -1169,7 +1169,7 @@ QgsProperty QgsMarkerSymbol::dataDefinedAngle() const
   // find the base of the "en masse" pattern
   Q_FOREACH ( QgsSymbolLayer *layer, mLayers )
   {
-    if ( layer->type() !=  QgsSymbol::Marker )
+    if ( layer->type() != QgsSymbol::Marker )
       continue;
     const QgsMarkerSymbolLayer *markerLayer = static_cast<const QgsMarkerSymbolLayer *>( layer );
     if ( qgsDoubleNear( markerLayer->angle(), symbolRotation ) && markerLayer->dataDefinedProperties().isActive( QgsSymbolLayer::PropertyAngle ) )
@@ -1185,7 +1185,7 @@ QgsProperty QgsMarkerSymbol::dataDefinedAngle() const
   // check that all layer's angle expressions match the "en masse" pattern
   Q_FOREACH ( QgsSymbolLayer *layer, mLayers )
   {
-    if ( layer->type() !=  QgsSymbol::Marker )
+    if ( layer->type() != QgsSymbol::Marker )
       continue;
     const QgsMarkerSymbolLayer *markerLayer = static_cast<const QgsMarkerSymbolLayer *>( layer );
 
@@ -1213,7 +1213,7 @@ void QgsMarkerSymbol::setSize( double s )
 
   Q_FOREACH ( QgsSymbolLayer *layer, mLayers )
   {
-    if ( layer->type() !=  QgsSymbol::Marker )
+    if ( layer->type() != QgsSymbol::Marker )
       continue;
     QgsMarkerSymbolLayer *markerLayer = static_cast<QgsMarkerSymbolLayer *>( layer );
     if ( qgsDoubleNear( markerLayer->size(), origSize ) )
@@ -1236,7 +1236,7 @@ double QgsMarkerSymbol::size() const
   double maxSize = 0;
   Q_FOREACH ( QgsSymbolLayer *layer, mLayers )
   {
-    if ( layer->type() !=  QgsSymbol::Marker )
+    if ( layer->type() != QgsSymbol::Marker )
       continue;
     const QgsMarkerSymbolLayer *markerLayer = static_cast<const QgsMarkerSymbolLayer *>( layer );
     double lsize = markerLayer->size();
@@ -1250,7 +1250,7 @@ void QgsMarkerSymbol::setSizeUnit( QgsUnitTypes::RenderUnit unit )
 {
   Q_FOREACH ( QgsSymbolLayer *layer, mLayers )
   {
-    if ( layer->type() !=  QgsSymbol::Marker )
+    if ( layer->type() != QgsSymbol::Marker )
       continue;
 
     QgsMarkerSymbolLayer *markerLayer = static_cast<QgsMarkerSymbolLayer *>( layer );
@@ -1265,7 +1265,7 @@ QgsUnitTypes::RenderUnit QgsMarkerSymbol::sizeUnit() const
 
   Q_FOREACH ( QgsSymbolLayer *layer, mLayers )
   {
-    if ( layer->type() !=  QgsSymbol::Marker )
+    if ( layer->type() != QgsSymbol::Marker )
       continue;
     const QgsMarkerSymbolLayer *markerLayer = static_cast<const QgsMarkerSymbolLayer *>( layer );
 
@@ -1286,7 +1286,7 @@ void QgsMarkerSymbol::setSizeMapUnitScale( const QgsMapUnitScale &scale )
 {
   Q_FOREACH ( QgsSymbolLayer *layer, mLayers )
   {
-    if ( layer->type() !=  QgsSymbol::Marker )
+    if ( layer->type() != QgsSymbol::Marker )
       continue;
 
     QgsMarkerSymbolLayer *markerLayer = static_cast<QgsMarkerSymbolLayer *>( layer );
@@ -1298,7 +1298,7 @@ QgsMapUnitScale QgsMarkerSymbol::sizeMapUnitScale() const
 {
   Q_FOREACH ( QgsSymbolLayer *layer, mLayers )
   {
-    if ( layer->type() !=  QgsSymbol::Marker )
+    if ( layer->type() != QgsSymbol::Marker )
       continue;
 
     QgsMarkerSymbolLayer *markerLayer = static_cast<QgsMarkerSymbolLayer *>( layer );
@@ -1313,7 +1313,7 @@ void QgsMarkerSymbol::setDataDefinedSize( const QgsProperty &property )
 
   Q_FOREACH ( QgsSymbolLayer *layer, mLayers )
   {
-    if ( layer->type() !=  QgsSymbol::Marker )
+    if ( layer->type() != QgsSymbol::Marker )
       continue;
     QgsMarkerSymbolLayer *markerLayer = static_cast<QgsMarkerSymbolLayer *>( layer );
 
@@ -1352,7 +1352,7 @@ QgsProperty QgsMarkerSymbol::dataDefinedSize() const
   // find the base of the "en masse" pattern
   Q_FOREACH ( QgsSymbolLayer *layer, mLayers )
   {
-    if ( layer->type() !=  QgsSymbol::Marker )
+    if ( layer->type() != QgsSymbol::Marker )
       continue;
     const QgsMarkerSymbolLayer *markerLayer = static_cast<const QgsMarkerSymbolLayer *>( layer );
     if ( qgsDoubleNear( markerLayer->size(), symbolSize ) && markerLayer->dataDefinedProperties().isActive( QgsSymbolLayer::PropertySize ) )
@@ -1368,7 +1368,7 @@ QgsProperty QgsMarkerSymbol::dataDefinedSize() const
   // check that all layers size expressions match the "en masse" pattern
   Q_FOREACH ( QgsSymbolLayer *layer, mLayers )
   {
-    if ( layer->type() !=  QgsSymbol::Marker )
+    if ( layer->type() != QgsSymbol::Marker )
       continue;
     const QgsMarkerSymbolLayer *markerLayer = static_cast<const QgsMarkerSymbolLayer *>( layer );
 
@@ -1402,7 +1402,7 @@ void QgsMarkerSymbol::setScaleMethod( QgsSymbol::ScaleMethod scaleMethod )
 {
   Q_FOREACH ( QgsSymbolLayer *layer, mLayers )
   {
-    if ( layer->type() !=  QgsSymbol::Marker )
+    if ( layer->type() != QgsSymbol::Marker )
       continue;
     QgsMarkerSymbolLayer *markerLayer = static_cast<QgsMarkerSymbolLayer *>( layer );
     markerLayer->setScaleMethod( scaleMethod );
@@ -1413,7 +1413,7 @@ QgsSymbol::ScaleMethod QgsMarkerSymbol::scaleMethod()
 {
   Q_FOREACH ( QgsSymbolLayer *layer, mLayers )
   {
-    if ( layer->type() !=  QgsSymbol::Marker )
+    if ( layer->type() != QgsSymbol::Marker )
       continue;
     const QgsMarkerSymbolLayer *markerLayer = static_cast<const QgsMarkerSymbolLayer *>( layer );
     // return scale method of the first symbol layer
@@ -1623,7 +1623,7 @@ QgsProperty QgsLineSymbol::dataDefinedWidth() const
   // check that all layers width expressions match the "en masse" pattern
   Q_FOREACH ( QgsSymbolLayer *layer, mLayers )
   {
-    if ( layer->type() !=  QgsSymbol::Line )
+    if ( layer->type() != QgsSymbol::Line )
       continue;
     const QgsLineSymbolLayer *lineLayer = static_cast<const QgsLineSymbolLayer *>( layer );
 

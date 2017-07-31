@@ -19,6 +19,7 @@
 
 #include "ui_qgslayoutdesignerbase.h"
 #include "qgslayoutdesignerinterface.h"
+#include <QToolButton>
 
 class QgsLayoutDesignerDialog;
 class QgsLayoutView;
@@ -30,6 +31,10 @@ class QgsLayoutRuler;
 class QComboBox;
 class QSlider;
 class QLabel;
+class QgsLayoutAppMenuProvider;
+class QgsLayoutItem;
+class QgsPanelWidgetStack;
+class QgsDockWidget;
 
 class QgsAppLayoutDesignerInterface : public QgsLayoutDesignerInterface
 {
@@ -88,6 +93,10 @@ class QgsLayoutDesignerDialog: public QMainWindow, private Ui::QgsLayoutDesigner
      */
     void setIconSizes( int size );
 
+    /**
+     * Shows the configuration widget for the specified layout \a item.
+     */
+    void showItemOptions( QgsLayoutItem *item );
 
   public slots:
 
@@ -132,7 +141,11 @@ class QgsLayoutDesignerDialog: public QMainWindow, private Ui::QgsLayoutDesigner
 
     void toggleFullScreen( bool enabled );
 
+    void addPages();
+
   private:
+
+    static bool sInitializedRegistry;
 
     QgsAppLayoutDesignerInterface *mInterface = nullptr;
 
@@ -161,6 +174,14 @@ class QgsLayoutDesignerDialog: public QMainWindow, private Ui::QgsLayoutDesigner
     QgsLayoutViewToolZoom *mZoomTool = nullptr;
     QgsLayoutViewToolSelect *mSelectTool = nullptr;
 
+    QMap< QString, QToolButton * > mItemGroupToolButtons;
+    QMap< QString, QMenu * > mItemGroupSubmenus;
+
+    QgsLayoutAppMenuProvider *mMenuProvider;
+
+    QgsDockWidget *mItemDock = nullptr;
+    QgsPanelWidgetStack *mItemPropertiesStack = nullptr;
+
     //! Save window state
     void saveWindowState();
 
@@ -169,6 +190,8 @@ class QgsLayoutDesignerDialog: public QMainWindow, private Ui::QgsLayoutDesigner
 
     //! Switch to new item creation tool, for a new item of the specified \a type.
     void activateNewItemCreationTool( int type );
+
+    void initializeRegistry();
 
 };
 

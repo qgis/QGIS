@@ -50,6 +50,7 @@
 #include <QProgressDialog>
 #include <QRegExp>
 #include <QRegExpValidator>
+#include <QScreen>
 #include <QShortcut>
 #include <QSpinBox>
 #include <QSplashScreen>
@@ -203,6 +204,7 @@ Q_GUI_EXPORT extern int qt_defaultDpiX();
 #include "qgsmapoverviewcanvas.h"
 #include "qgsmapsettings.h"
 #include "qgsmaptip.h"
+#include "qgsmenuheader.h"
 #include "qgsmergeattributesdialog.h"
 #include "qgsmessageviewer.h"
 #include "qgsmessagebar.h"
@@ -247,7 +249,6 @@ Q_GUI_EXPORT extern int qt_defaultDpiX();
 #include "qgsshortcutsmanager.h"
 #include "qgssinglebandgrayrenderer.h"
 #include "qgssnappingwidget.h"
-#include "qgssourceselectdialog.h"
 #include "qgsstatisticalsummarydockwidget.h"
 #include "qgsstatusbar.h"
 #include "qgsstatusbarcoordinateswidget.h"
@@ -287,6 +288,9 @@ Q_GUI_EXPORT extern int qt_defaultDpiX();
 #include "qgsnewnamedialog.h"
 #include "qgsgui.h"
 #include "qgsdatasourcemanagerdialog.h"
+
+#include "qgsuserprofilemanager.h"
+#include "qgsuserprofile.h"
 
 #include "qgssublayersdialog.h"
 #include "ogr/qgsopenvectorlayerdialog.h"
@@ -412,6 +416,8 @@ extern "C"
 #endif
 
 class QTreeWidgetItem;
+class QgsUserProfileManager;
+class QgsUserProfile;
 
 /** Set the application title bar text
 
@@ -610,7 +616,7 @@ static bool cmpByText_( QAction *a, QAction *b )
 QgisApp *QgisApp::sInstance = nullptr;
 
 // constructor starts here
-QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCheck, QWidget *parent, Qt::WindowFlags fl )
+QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCheck, const QString rootProfileLocation, const QString activeProfile, QWidget *parent, Qt::WindowFlags fl )
   : QMainWindow( parent, fl )
   , mNonEditMapTool( nullptr )
   , mScaleWidget( nullptr )
@@ -657,6 +663,13 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
 
   sInstance = this;
   QgsRuntimeProfiler *profiler = QgsApplication::profiler();
+
+  startProfile( QStringLiteral( "User profile manager" ) );
+  mUserProfileManager = new QgsUserProfileManager( "", this );
+  mUserProfileManager->setRootLocation( rootProfileLocation );
+  mUserProfileManager->setActiveUserProfile( activeProfile );
+  connect( mUserProfileManager, &QgsUserProfileManager::profilesChanged, this, &QgisApp::refreshProfileMenu );
+  endProfile();
 
   namSetup();
 
@@ -887,7 +900,7 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
   else
   {
     QDialog *dialog = new QDialog( this );
-    dialog->setWindowTitle( tr( "Project snapping settings" ) );
+    dialog->setWindowTitle( tr( "Project Snapping Settings" ) );
     QVBoxLayout *layout = new QVBoxLayout( dialog );
     layout->addWidget( mSnappingDialog );
     layout->setMargin( 0 );
@@ -900,6 +913,8 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
   addDockWidget( Qt::LeftDockWidgetArea, mBrowserWidget );
   mBrowserWidget->hide();
   connect( this, &QgisApp::newProject, mBrowserWidget, &QgsBrowserDockWidget::updateProjectHome );
+  connect( this, &QgisApp::connectionsChanged, mBrowserWidget, &QgsBrowserDockWidget::refresh );
+  connect( mBrowserWidget, &QgsBrowserDockWidget::connectionsChanged, this, &QgisApp::connectionsChanged );
   connect( mBrowserWidget, &QgsBrowserDockWidget::openFile, this, &QgisApp::openFile );
   connect( mBrowserWidget, &QgsBrowserDockWidget::handleDropUriList, this, &QgisApp::handleDropUriList );
 
@@ -908,6 +923,8 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
   addDockWidget( Qt::LeftDockWidgetArea, mBrowserWidget2 );
   mBrowserWidget2->hide();
   connect( this, &QgisApp::newProject, mBrowserWidget2, &QgsBrowserDockWidget::updateProjectHome );
+  connect( mBrowserWidget2, &QgsBrowserDockWidget::connectionsChanged, this, &QgisApp::connectionsChanged );
+  connect( this, &QgisApp::connectionsChanged, mBrowserWidget2, &QgsBrowserDockWidget::refresh );
   connect( mBrowserWidget2, &QgsBrowserDockWidget::openFile, this, &QgisApp::openFile );
   connect( mBrowserWidget2, &QgsBrowserDockWidget::handleDropUriList, this, &QgisApp::handleDropUriList );
 
@@ -1045,8 +1062,20 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
   }
 
   // Set icon size of toolbars
-  int size = settings.value( QStringLiteral( "IconSize" ), QGIS_ICON_SIZE ).toInt();
-  setIconSizes( size );
+  if ( settings.contains( QStringLiteral( "IconSize" ) ) )
+  {
+    int size = settings.value( QStringLiteral( "IconSize" ) ).toInt();
+    if ( size < 16 )
+      size = QGIS_ICON_SIZE;
+    setIconSizes( size );
+  }
+  else
+  {
+    // first run, guess a good icon size
+    int size = chooseReasonableDefaultIconSize();
+    settings.setValue( QStringLiteral( "IconSize" ), size );
+    setIconSizes( size );
+  }
 
   mSplash->showMessage( tr( "Initializing file filters" ), Qt::AlignHCenter | Qt::AlignBottom );
   qApp->processEvents();
@@ -1266,6 +1295,7 @@ QgisApp::QgisApp()
   , mPopupMenu( nullptr )
   , mDatabaseMenu( nullptr )
   , mWebMenu( nullptr )
+  , mConfigMenu( nullptr )
   , mToolPopupOverviews( nullptr )
   , mToolPopupDisplay( nullptr )
   , mMapCanvas( nullptr )
@@ -1615,8 +1645,10 @@ void QgisApp::dataSourceManager( QString pageName )
 {
   if ( ! mDataSourceManagerDialog )
   {
-    mDataSourceManagerDialog = new QgsDataSourceManagerDialog( mapCanvas( ), this );
+    mDataSourceManagerDialog = new QgsDataSourceManagerDialog( this, mapCanvas() );
     // Forward signals to this
+    connect( this, &QgisApp::connectionsChanged, mDataSourceManagerDialog, &QgsDataSourceManagerDialog::refresh );
+    connect( mDataSourceManagerDialog, &QgsDataSourceManagerDialog::connectionsChanged, this, &QgisApp::connectionsChanged );
     connect( mDataSourceManagerDialog, SIGNAL( addRasterLayer( QString const &, QString const &, QString const & ) ),
              this, SLOT( addRasterLayer( QString const &, QString const &, QString const & ) ) );
     connect( mDataSourceManagerDialog, SIGNAL( addVectorLayer( QString const &, QString const &, QString const & ) ),
@@ -1634,11 +1666,11 @@ void QgisApp::dataSourceManager( QString pageName )
 
   }
   // Try to open the dialog on a particular page
-  if ( ! pageName.isEmpty( ) )
+  if ( ! pageName.isEmpty() )
   {
     mDataSourceManagerDialog->openPage( pageName );
   }
-  if ( QgsSettings().value( "/qgis/dataSourceManagerNonModal", true ).toBool( ) )
+  if ( QgsSettings().value( "/qgis/dataSourceManagerNonModal", true ).toBool() )
   {
     mDataSourceManagerDialog->show();
   }
@@ -1750,6 +1782,31 @@ QgsCoordinateReferenceSystem QgisApp::defaultCrsForNewLayers() const
   }
 
   return defaultCrs;
+}
+
+int QgisApp::chooseReasonableDefaultIconSize() const
+{
+  QScreen *screen = QApplication::screens().at( 0 );
+  if ( screen->physicalDotsPerInch() < 115 )
+  {
+    // no hidpi screen, use default size
+    return QGIS_ICON_SIZE;
+  }
+  else
+  {
+    double size = fontMetrics().width( QStringLiteral( "XXX" ) );
+    if ( size < 24 )
+      return 16;
+    else if ( size < 32 )
+      return 24;
+    else if ( size < 48 )
+      return 32;
+    else if ( size < 64 )
+      return 48;
+    else
+      return 64;
+  }
+
 }
 
 void QgisApp::readSettings()
@@ -1885,7 +1942,7 @@ void QgisApp::createActions()
 
   // Layer Menu Items
 
-  connect( mActionDataSourceManager, &QAction::triggered, this, [ = ]( ) { dataSourceManager( ); } );
+  connect( mActionDataSourceManager, &QAction::triggered, this, [ = ]() { dataSourceManager(); } );
   connect( mActionNewVectorLayer, &QAction::triggered, this, &QgisApp::newVectorLayer );
   connect( mActionNewSpatiaLiteLayer, &QAction::triggered, this, &QgisApp::newSpatialiteLayer );
   connect( mActionNewGeoPackageLayer, &QAction::triggered, this, &QgisApp::newGeoPackageLayer );
@@ -2278,12 +2335,76 @@ void QgisApp::createMenus()
   mWebMenu = new QMenu( tr( "&Web" ), menuBar() );
   mWebMenu->setObjectName( QStringLiteral( "mWebMenu" ) );
 
+
   // Help menu
   // add What's this button to it
   QAction *before = mActionHelpAPI;
   QAction *actionWhatsThis = QWhatsThis::createAction( this );
   actionWhatsThis->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionWhatsThis.svg" ) ) );
   mHelpMenu->insertAction( before, actionWhatsThis );
+
+  createProfileMenu();
+}
+
+void QgisApp::refreshProfileMenu()
+{
+  mConfigMenu->clear();
+  QgsUserProfile *profile = userProfileManager()->userProfile();
+  QString activeName = profile->name();
+  mConfigMenu->setTitle( tr( "&User Profiles" ) );
+
+  mConfigMenu->addAction( new QgsMenuHeaderWidgetAction( tr( "Active Profile" ), mConfigMenu ) );
+
+  mConfigMenu->addAction( new QgsMenuHeaderWidgetAction( tr( "Profiles" ), mConfigMenu ) );
+  QAction *profileSection = mConfigMenu->actions().at( 1 );
+
+  mConfigMenu->addAction( new QgsMenuHeaderWidgetAction( tr( "Config" ), mConfigMenu ) );
+  QAction *configSection = mConfigMenu->actions().at( 2 );
+
+  QAction *openProfileFolderAction = mConfigMenu->addAction( tr( "Open active profile folder" ) );
+  connect( openProfileFolderAction, &QAction::triggered, this, [this]()
+  {
+    QDesktopServices::openUrl( QUrl::fromLocalFile( userProfileManager()->userProfile()->folder() ) );
+  } );
+
+  QAction *newProfileAction = mConfigMenu->addAction( tr( "New profile" ) );
+  connect( newProfileAction, &QAction::triggered, this, &QgisApp::newProfile );
+
+  Q_FOREACH ( const QString &name, userProfileManager()->allProfiles() )
+  {
+    profile = userProfileManager()->profileForName( name );
+    // Qt 5.5 has no parent default as nullptr
+    QAction *action = new QAction( profile->icon(), profile->alias(), nullptr );
+    action->setToolTip( profile->folder() );
+    delete profile;
+
+    if ( name == activeName )
+    {
+      mConfigMenu->insertAction( profileSection, action );
+    }
+    else
+    {
+      mConfigMenu->insertAction( configSection, action );
+    }
+    connect( action, &QAction::triggered, this, [this, name]()
+    {
+      userProfileManager()->loadUserProfile( name );
+    } );
+  }
+
+  if ( userProfileManager()->allProfiles().count() == 1 )
+  {
+    profileSection->setVisible( false );
+  }
+}
+
+void QgisApp::createProfileMenu()
+{
+  mConfigMenu = new QMenu();
+
+  settingsMenu()->insertMenu( settingsMenu()->actions().first(), mConfigMenu );
+
+  refreshProfileMenu();
 }
 
 void QgisApp::createToolBars()
@@ -3358,6 +3479,12 @@ QgsPluginManager *QgisApp::pluginManager()
   return mPluginManager;
 }
 
+QgsUserProfileManager *QgisApp::userProfileManager()
+{
+  Q_ASSERT( mUserProfileManager );
+  return mUserProfileManager;
+}
+
 QgsMapCanvas *QgisApp::mapCanvas()
 {
   Q_ASSERT( mMapCanvas );
@@ -3899,9 +4026,13 @@ void QgisApp::restoreWindowState()
   }
 
   // restore window geometry
-  if ( !restoreGeometry( settings.value( QStringLiteral( "UI/geometry" ), QByteArray::fromRawData( reinterpret_cast< const char * >( defaultUIgeometry ), sizeof defaultUIgeometry ) ).toByteArray() ) )
+  if ( !restoreGeometry( settings.value( QStringLiteral( "UI/geometry" ) ).toByteArray() ) )
   {
     QgsDebugMsg( "restore of UI geometry failed" );
+    // default to 80% of screen size, at 10% from top left corner
+    resize( QDesktopWidget().availableGeometry( this ).size() * 0.8 );
+    QSize pos = QDesktopWidget().availableGeometry( this ).size() * 0.1;
+    move( pos.width(), pos.height() );
   }
 
 }
@@ -4800,6 +4931,7 @@ void QgisApp::fileExit()
   if ( saveDirty() )
   {
     closeProject();
+    userProfileManager()->setDefaultFromActive();
     qApp->exit( 0 );
   }
 }
@@ -5852,173 +5984,34 @@ void QgisApp::updateFilterLegend()
 
 void QgisApp::saveMapAsImage()
 {
-  QList< QgsMapDecoration * > decorations;
-  QString activeDecorations;
+  QList< QgsDecorationItem * > decorations;
   Q_FOREACH ( QgsDecorationItem *decoration, mDecorationItems )
   {
     if ( decoration->enabled() )
     {
       decorations << decoration;
-      if ( activeDecorations.isEmpty() )
-        activeDecorations = decoration->name().toLower();
-      else
-        activeDecorations += QString( ", %1" ).arg( decoration->name().toLower() );
     }
   }
 
-  QgsMapSaveDialog dlg( this, mMapCanvas, activeDecorations );
-  if ( !dlg.exec() )
-    return;
-
-  QPair< QString, QString> fileNameAndFilter = QgsGuiUtils::getSaveAsImageName( this, tr( "Choose a file name to save the map image as" ) );
-  if ( fileNameAndFilter.first != QLatin1String( "" ) )
-  {
-    QgsMapSettings ms = QgsMapSettings();
-    dlg.applyMapSettings( ms );
-
-    QgsMapRendererTask *mapRendererTask = new QgsMapRendererTask( ms, fileNameAndFilter.first, fileNameAndFilter.second );
-
-    if ( dlg.drawAnnotations() )
-    {
-      mapRendererTask->addAnnotations( QgsProject::instance()->annotationManager()->annotations() );
-    }
-
-    if ( dlg.drawDecorations() )
-    {
-      mapRendererTask->addDecorations( decorations );
-    }
-
-    mapRendererTask->setSaveWorldFile( dlg.saveWorldFile() );
-
-    connect( mapRendererTask, &QgsMapRendererTask::renderingComplete, this, [ = ]
-    {
-      messageBar()->pushSuccess( tr( "Save as image" ), tr( "Successfully saved map to image" ) );
-    } );
-    connect( mapRendererTask, &QgsMapRendererTask::errorOccurred, this, [ = ]( int error )
-    {
-      switch ( error )
-      {
-        case QgsMapRendererTask::ImageAllocationFail:
-        {
-          messageBar()->pushWarning( tr( "Save as image" ), tr( "Could not allocate required memory for image" ) );
-          break;
-        }
-        case QgsMapRendererTask::ImageSaveFail:
-        {
-          messageBar()->pushWarning( tr( "Save as image" ), tr( "Could not save the image to file" ) );
-          break;
-        }
-      }
-    } );
-
-    QgsApplication::taskManager()->addTask( mapRendererTask );
-  }
-
+  QgsMapSaveDialog *dlg = new QgsMapSaveDialog( this, mMapCanvas, decorations, QgsProject::instance()->annotationManager()->annotations() );
+  dlg->setAttribute( Qt::WA_DeleteOnClose );
+  dlg->show();
 } // saveMapAsImage
 
 void QgisApp::saveMapAsPdf()
 {
-  QList< QgsMapDecoration * > decorations;
-  QString activeDecorations;
+  QList< QgsDecorationItem * > decorations;
   Q_FOREACH ( QgsDecorationItem *decoration, mDecorationItems )
   {
     if ( decoration->enabled() )
     {
       decorations << decoration;
-      if ( activeDecorations.isEmpty() )
-        activeDecorations = decoration->name().toLower();
-      else
-        activeDecorations += QString( ", %1" ).arg( decoration->name().toLower() );
     }
   }
 
-  QgsMapSaveDialog dlg( this, mMapCanvas, activeDecorations, QgsMapSaveDialog::Pdf );
-  if ( !dlg.exec() )
-    return;
-
-  QgsSettings settings;
-  QString lastUsedDir = settings.value( QStringLiteral( "UI/lastSaveAsImageDir" ), QDir::homePath() ).toString();
-  QString fileName = QFileDialog::getSaveFileName( this, tr( "Save map as" ), lastUsedDir, tr( "PDF Format" ) + " (*.pdf *.PDF)" );
-  if ( !fileName.isEmpty() )
-  {
-    QgsMapSettings ms = QgsMapSettings();
-    dlg.applyMapSettings( ms );
-
-    QPrinter *printer = new QPrinter();
-    printer->setOutputFileName( fileName );
-    printer->setOutputFormat( QPrinter::PdfFormat );
-    printer->setOrientation( QPrinter::Portrait );
-    // paper size needs to be given in millimeters in order to be able to set a resolution to pass onto the map renderer
-    printer->setPaperSize( dlg.size()  * 25.4 / dlg.dpi(), QPrinter::Millimeter );
-    printer->setPageMargins( 0, 0, 0, 0, QPrinter::Millimeter );
-    printer->setResolution( dlg.dpi() );
-
-    QPainter *p = new QPainter();
-    QImage *image = nullptr;
-    if ( dlg.saveAsRaster() )
-    {
-      image = new QImage( dlg.size(), QImage::Format_ARGB32 );
-      if ( image->isNull() )
-      {
-        messageBar()->pushWarning( tr( "Save as PDF" ), tr( "Could not allocate required memory for image" ) );
-        delete p;
-        delete image;
-        delete printer;
-
-        return;
-      }
-
-      image->setDotsPerMeterX( 1000 * dlg.dpi() / 25.4 );
-      image->setDotsPerMeterY( 1000 * dlg.dpi() / 25.4 );
-      p->begin( image );
-    }
-    else
-    {
-      p->begin( printer );
-    }
-
-    QgsMapRendererTask *mapRendererTask = new QgsMapRendererTask( ms, p );
-
-    if ( dlg.drawAnnotations() )
-    {
-      mapRendererTask->addAnnotations( QgsProject::instance()->annotationManager()->annotations() );
-    }
-
-    if ( dlg.drawDecorations() )
-    {
-      mapRendererTask->addDecorations( decorations );
-    }
-
-    mapRendererTask->setSaveWorldFile( dlg.saveWorldFile() );
-
-    connect( mapRendererTask, &QgsMapRendererTask::renderingComplete, this, [ this, p, image, printer ]
-    {
-      p->end();
-
-      if ( image )
-      {
-        QPainter pp;
-        pp.begin( printer );
-        QRectF rect( 0, 0, image->width(), image->height() );
-        pp.drawImage( rect, *image, rect );
-        pp.end();
-      }
-
-      messageBar()->pushSuccess( tr( "Save as PDF" ), tr( "Successfully saved map to PDF" ) );
-      delete p;
-      delete image;
-      delete printer;
-    } );
-    connect( mapRendererTask, &QgsMapRendererTask::errorOccurred, this, [ this, p, image, printer ]( int )
-    {
-      delete p;
-      delete image;
-      delete printer;
-    } );
-
-    QgsApplication::taskManager()->addTask( mapRendererTask );
-  }
-
+  QgsMapSaveDialog *dlg = new QgsMapSaveDialog( this, mMapCanvas, decorations, QgsProject::instance()->annotationManager()->annotations(), QgsMapSaveDialog::Pdf );
+  dlg->setAttribute( Qt::WA_DeleteOnClose );
+  dlg->show();
 } // saveMapAsPdf
 
 //overloaded version of the above function
@@ -6502,7 +6495,7 @@ void QgisApp::labelingFontNotFound( QgsVectorLayer *vlayer, const QString &fontf
 void QgisApp::commitError( QgsVectorLayer *vlayer )
 {
   QgsMessageViewer *mv = new QgsMessageViewer();
-  mv->setWindowTitle( tr( "Commit errors" ) );
+  mv->setWindowTitle( tr( "Commit Errors" ) );
   mv->setMessageAsPlainText( tr( "Could not commit changes to layer %1" ).arg( vlayer->name() )
                              + "\n\n"
                              + tr( "Errors: %1\n" ).arg( vlayer->commitErrors().join( QStringLiteral( "\n  " ) ) )
@@ -6604,7 +6597,7 @@ void QgisApp::diagramProperties()
   }
 
   QDialog dlg;
-  dlg.setWindowTitle( tr( "Layer diagram properties" ) );
+  dlg.setWindowTitle( tr( "Layer Diagram Properties" ) );
   QgsDiagramProperties *gui = new QgsDiagramProperties( vlayer, &dlg, mMapCanvas );
   gui->layout()->setContentsMargins( 0, 0, 0, 0 );
   QVBoxLayout *layout = new QVBoxLayout( &dlg );
@@ -7004,7 +6997,7 @@ void QgisApp::saveAsVectorFileGeneral( QgsVectorLayer *vlayer, bool symbologyOpt
       if ( error != QgsVectorFileWriter::Canceled )
       {
         QgsMessageViewer *m = new QgsMessageViewer( nullptr );
-        m->setWindowTitle( tr( "Save error" ) );
+        m->setWindowTitle( tr( "Save Error" ) );
         m->setMessageAsPlainText( tr( "Export to vector file failed.\nError: %1" ).arg( errorMessage ) );
         m->exec();
       }
@@ -11690,7 +11683,7 @@ void QgisApp::renameView()
 
 
 // this is a slot for action from GUI to open and add raster layers
-void QgisApp::addRasterLayer( )
+void QgisApp::addRasterLayer()
 {
   QStringList selectedFiles;
   QString e;//only for parameter correctness
@@ -12023,6 +12016,16 @@ void QgisApp::keyPressEvent( QKeyEvent *e )
   {
     e->ignore();
   }
+}
+
+void QgisApp::newProfile()
+{
+  QString text = QInputDialog::getText( this, tr( "New profile name" ), tr( "New profile name" ) );
+  if ( text.isEmpty() )
+    return;
+
+  userProfileManager()->createUserProfile( text );
+  userProfileManager()->loadUserProfile( text );
 }
 
 void QgisApp::onTaskCompleteShowNotify( long taskId, int status )

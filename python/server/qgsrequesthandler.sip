@@ -135,7 +135,7 @@ Return request url
 Set response http status code
 %End
 
-    int statusCode( ) const;
+    int statusCode() const;
 %Docstring
 Return response http status code
  :rtype: int

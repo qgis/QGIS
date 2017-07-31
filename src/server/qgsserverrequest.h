@@ -66,7 +66,7 @@ class SERVER_EXPORT QgsServerRequest
      * \param method the request method
      * \param headers
      */
-    QgsServerRequest( const QString &url, QgsServerRequest::Method method = QgsServerRequest::GetMethod, const QgsServerRequest::Headers &headers = QgsServerRequest::Headers( ) );
+    QgsServerRequest( const QString &url, QgsServerRequest::Method method = QgsServerRequest::GetMethod, const QgsServerRequest::Headers &headers = QgsServerRequest::Headers() );
 
     /**
      * Constructor
@@ -75,7 +75,7 @@ class SERVER_EXPORT QgsServerRequest
      * \param method the request method
      * \param headers
      */
-    QgsServerRequest( const QUrl &url, QgsServerRequest::Method method = QgsServerRequest::GetMethod, const QgsServerRequest::Headers &headers = QgsServerRequest::Headers( ) );
+    QgsServerRequest( const QUrl &url, QgsServerRequest::Method method = QgsServerRequest::GetMethod, const QgsServerRequest::Headers &headers = QgsServerRequest::Headers() );
 
     //! destructor
     virtual ~QgsServerRequest() = default;
@@ -129,7 +129,7 @@ class SERVER_EXPORT QgsServerRequest
      * Return the header map
      * @return the headers map
      */
-    QMap<QString, QString> headers( ) const;
+    QMap<QString, QString> headers() const;
 
     /**
     * Remove an header

@@ -304,15 +304,15 @@ Mulitline body
     void combinedAnnotations() /Factory,PyName=otherName/;
     void multiAnnotationArg( SomeClass **object /Out,TransferBack/, int &another /Out/ );
 
-    void simple(  );
+    void simple();
 %Docstring
 remove argument
 %End
-    void method( );
-    void test( );
+    void method();
+    void test();
     void avoidIntersections( const QList<QgsVectorLayer *> &avoidIntersectionsLayers );
 
-    void position(  );
+    void position();
     void position(  bool keep );
     void position( bool keep, bool keep );
     void position( bool keep );

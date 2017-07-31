@@ -119,7 +119,7 @@ class FieldsMapper(QgisAlgorithm):
 
         da = QgsDistanceArea()
         da.setSourceCrs(layer.crs())
-        da.setEllipsoid(QgsProject.instance().ellipsoid())
+        da.setEllipsoid(context.project().ellipsoid())
 
         exp_context = layer.createExpressionContext()
 
@@ -131,8 +131,8 @@ class FieldsMapper(QgisAlgorithm):
 
             expression = QgsExpression(field_def['expression'])
             expression.setGeomCalculator(da)
-            expression.setDistanceUnits(QgsProject.instance().distanceUnits())
-            expression.setAreaUnits(QgsProject.instance().areaUnits())
+            expression.setDistanceUnits(context.project().distanceUnits())
+            expression.setAreaUnits(context.project().areaUnits())
             expression.prepare(exp_context)
             if expression.hasParserError():
                 raise GeoAlgorithmExecutionException(

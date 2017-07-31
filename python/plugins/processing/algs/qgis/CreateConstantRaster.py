@@ -27,12 +27,10 @@ __revision__ = '$Format:%H$'
 
 from osgeo import gdal
 
-from qgis.core import (QgsApplication,
-                       QgsProcessingUtils)
+from qgis.core import (QgsProcessingParameterRasterLayer,
+                       QgsProcessingParameterNumber,
+                       QgsProcessingParameterRasterDestination)
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
-from processing.core.parameters import ParameterRaster
-from processing.core.parameters import ParameterNumber
-from processing.core.outputs import OutputRaster
 from processing.tools.raster import RasterWriter
 
 
@@ -49,14 +47,12 @@ class CreateConstantRaster(QgisAlgorithm):
         super().__init__()
 
     def initAlgorithm(self, config=None):
-        self.addParameter(ParameterRaster(self.INPUT,
-                                          self.tr('Reference layer')))
-        self.addParameter(ParameterNumber(self.NUMBER,
-                                          self.tr('Constant value'),
-                                          default=1.0))
-
-        self.addOutput(OutputRaster(self.OUTPUT,
-                                    self.tr('Constant')))
+        self.addParameter(QgsProcessingParameterRasterLayer(self.INPUT,
+                                                            self.tr('Reference layer')))
+        self.addParameter(QgsProcessingParameterNumber(self.NUMBER,
+                                                       self.tr('Constant value'), QgsProcessingParameterNumber.Double,
+                                                       defaultValue=1))
+        self.addParameter(QgsProcessingParameterRasterDestination(self.OUTPUT, self.tr('Constant')))
 
     def name(self):
         return 'createconstantrasterlayer'
@@ -65,10 +61,10 @@ class CreateConstantRaster(QgisAlgorithm):
         return self.tr('Create constant raster layer')
 
     def processAlgorithm(self, parameters, context, feedback):
-        layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT), context)
-        value = self.getParameterValue(self.NUMBER)
+        layer = self.parameterAsRasterLayer(parameters, self.INPUT, context)
+        value = self.parameterAsDouble(parameters, self.NUMBER, context)
 
-        output = self.getOutputFromName(self.OUTPUT)
+        outputFile = self.parameterAsOutputLayer(parameters, self.OUTPUT, context)
 
         raster = gdal.Open(layer.source(), gdal.GA_ReadOnly)
         geoTransform = raster.GetGeoTransform()
@@ -76,7 +72,7 @@ class CreateConstantRaster(QgisAlgorithm):
         cellsize = (layer.extent().xMaximum() - layer.extent().xMinimum()) \
             / layer.width()
 
-        w = RasterWriter(output.getCompatibleFileName(self),
+        w = RasterWriter(outputFile,
                          layer.extent().xMinimum(),
                          layer.extent().yMinimum(),
                          layer.extent().xMaximum(),
@@ -88,3 +84,5 @@ class CreateConstantRaster(QgisAlgorithm):
                          )
         w.matrix.fill(value)
         w.close()
+
+        return {self.OUTPUT: outputFile}

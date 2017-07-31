@@ -24,31 +24,22 @@ __copyright__ = '(C) 2015, Etienne Trimaille'
 
 __revision__ = '$Format:%H$'
 
-from qgis.core import (QgsFeatureSink,
-                       QgsProcessing,
-                       QgsProcessingParameterFeatureSource,
-                       QgsProcessingParameterNumber,
-                       QgsProcessingParameterFeatureSink)
-from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
+from qgis.core import (QgsProcessingParameterNumber)
+from processing.algs.qgis.QgisAlgorithm import QgisFeatureBasedAlgorithm
 
 
-class DeleteHoles(QgisAlgorithm):
+class DeleteHoles(QgisFeatureBasedAlgorithm):
 
-    INPUT = 'INPUT'
     MIN_AREA = 'MIN_AREA'
-    OUTPUT = 'OUTPUT'
 
     def __init__(self):
         super().__init__()
+        self.min_area = None
 
-    def initAlgorithm(self, config=None):
-        self.addParameter(QgsProcessingParameterFeatureSource(self.INPUT,
-                                                              self.tr('Input layer'), [QgsProcessing.TypeVectorPolygon]))
+    def initParameters(self, config=None):
         self.addParameter(QgsProcessingParameterNumber(self.MIN_AREA,
                                                        self.tr('Remove holes with area less than'), QgsProcessingParameterNumber.Double,
                                                        0, True, 0.0, 10000000.0))
-
-        self.addParameter(QgsProcessingParameterFeatureSink(self.OUTPUT, self.tr('Cleaned'), QgsProcessing.TypeVectorPolygon))
 
     def tags(self):
         return self.tr('remove,delete,drop,holes,rings,fill').split(',')
@@ -62,25 +53,16 @@ class DeleteHoles(QgisAlgorithm):
     def displayName(self):
         return self.tr('Delete holes')
 
-    def processAlgorithm(self, parameters, context, feedback):
-        source = self.parameterAsSource(parameters, self.INPUT, context)
-        min_area = self.parameterAsDouble(parameters, self.MIN_AREA, context)
-        if min_area == 0.0:
-            min_area = -1.0
+    def outputName(self):
+        return self.tr('Cleaned')
 
-        (sink, dest_id) = self.parameterAsSink(parameters, self.OUTPUT, context,
-                                               source.fields(), source.wkbType(), source.sourceCrs())
+    def prepareAlgorithm(self, parameters, context, feedback):
+        self.min_area = self.parameterAsDouble(parameters, self.MIN_AREA, context)
+        if self.min_area == 0.0:
+            self.min_area = -1.0
+        return True
 
-        features = source.getFeatures()
-        total = 100.0 / source.featureCount() if source.featureCount() else 0
-
-        for current, f in enumerate(features):
-            if feedback.isCanceled():
-                break
-
-            if f.hasGeometry():
-                f.setGeometry(f.geometry().removeInteriorRings(min_area))
-            sink.addFeature(f, QgsFeatureSink.FastInsert)
-            feedback.setProgress(int(current * total))
-
-        return {self.OUTPUT: dest_id}
+    def processFeature(self, feature, feedback):
+        if feature.hasGeometry():
+            feature.setGeometry(feature.geometry().removeInteriorRings(self.min_area))
+        return feature

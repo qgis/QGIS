@@ -23,6 +23,7 @@
 #include "qgsprocessing.h"
 #include "qgsproperty.h"
 #include "qgscoordinatereferencesystem.h"
+#include "qgsfeaturesource.h"
 #include <QMap>
 #include <limits>
 
@@ -30,7 +31,6 @@ class QgsProcessingContext;
 class QgsRasterLayer;
 class QgsVectorLayer;
 class QgsFeatureSink;
-class QgsFeatureSource;
 class QgsProcessingFeatureSource;
 class QgsProcessingOutputDefinition;
 class QgsProcessingFeedback;
@@ -1341,7 +1341,10 @@ class CORE_EXPORT QgsProcessingParameterVectorLayer : public QgsProcessingParame
     /**
      * Constructor for QgsProcessingParameterVectorLayer.
      */
-    QgsProcessingParameterVectorLayer( const QString &name, const QString &description = QString(), const QVariant &defaultValue = QVariant(),
+    QgsProcessingParameterVectorLayer( const QString &name,
+                                       const QString &description = QString(),
+                                       const QList< int > &types = QList< int >(),
+                                       const QVariant &defaultValue = QVariant(),
                                        bool optional = false );
 
     /**
@@ -1353,9 +1356,29 @@ class CORE_EXPORT QgsProcessingParameterVectorLayer : public QgsProcessingParame
     QString valueAsPythonString( const QVariant &value, QgsProcessingContext &context ) const override;
 
     /**
+     * Returns the geometry types for sources acceptable by the parameter.
+     * \see setDataTypes()
+     */
+    QList< int > dataTypes() const;
+
+    /**
+     * Sets the geometry \a types for sources acceptable by the parameter.
+     * \see dataTypes()
+     */
+    void setDataTypes( const QList< int > &types );
+
+    QVariantMap toVariantMap() const override;
+    bool fromVariantMap( const QVariantMap &map ) override;
+
+    /**
      * Creates a new parameter using the definition from a script code.
      */
     static QgsProcessingParameterVectorLayer *fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition ) SIP_FACTORY;
+
+  private:
+
+    QList< int > mDataTypes = QList< int >() << QgsProcessing::TypeVectorAny;
+
 
 };
 

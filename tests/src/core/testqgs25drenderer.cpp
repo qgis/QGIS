@@ -115,7 +115,7 @@ void TestQgs25DRenderer::render()
   mReport += QLatin1String( "<h2>Render</h2>\n" );
 
   //setup 25d renderer
-  Qgs25DRenderer *renderer = new Qgs25DRenderer( );
+  Qgs25DRenderer *renderer = new Qgs25DRenderer();
   renderer->setShadowEnabled( false );
   renderer->setWallShadingEnabled( false );
   renderer->setRoofColor( QColor( "#fdbf6f" ) );

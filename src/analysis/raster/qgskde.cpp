@@ -163,10 +163,12 @@ QgsKernelDensityEstimation::Result QgsKernelDensityEstimation::addFeature( const
     // calculate the pixel position
     unsigned int xPosition = ( ( ( *pointIt ).x() - mBounds.xMinimum() ) / mPixelSize ) - buffer;
     unsigned int yPosition = ( ( ( *pointIt ).y() - mBounds.yMinimum() ) / mPixelSize ) - buffer;
+    unsigned int yPositionIO = ( ( mBounds.yMaximum() - ( *pointIt ).y() ) / mPixelSize ) - buffer;
+
 
     // get the data
     float *dataBuffer = ( float * ) CPLMalloc( sizeof( float ) * blockSize * blockSize );
-    if ( GDALRasterIO( mRasterBandH, GF_Read, xPosition, yPosition, blockSize, blockSize,
+    if ( GDALRasterIO( mRasterBandH, GF_Read, xPosition, yPositionIO, blockSize, blockSize,
                        dataBuffer, blockSize, blockSize, GDT_Float32, 0, 0 ) != CE_None )
     {
       result = RasterIoError;
@@ -196,7 +198,7 @@ QgsKernelDensityEstimation::Result QgsKernelDensityEstimation::addFeature( const
         dataBuffer[ pos ] += pixelValue;
       }
     }
-    if ( GDALRasterIO( mRasterBandH, GF_Write, xPosition, yPosition, blockSize, blockSize,
+    if ( GDALRasterIO( mRasterBandH, GF_Write, xPosition, yPositionIO, blockSize, blockSize,
                        dataBuffer, blockSize, blockSize, GDT_Float32, 0, 0 ) != CE_None )
     {
       result = RasterIoError;
@@ -227,7 +229,7 @@ int QgsKernelDensityEstimation::radiusSizeInPixels( double radius ) const
 
 bool QgsKernelDensityEstimation::createEmptyLayer( GDALDriverH driver, const QgsRectangle &bounds, int rows, int columns ) const
 {
-  double geoTransform[6] = { bounds.xMinimum(), mPixelSize, 0, bounds.yMinimum(), 0, mPixelSize };
+  double geoTransform[6] = { bounds.xMinimum(), mPixelSize, 0, bounds.yMaximum(), 0, -mPixelSize };
   GDALDatasetH emptyDataset = GDALCreate( driver, mOutputFile.toUtf8(), columns, rows, 1, GDT_Float32, nullptr );
   if ( !emptyDataset )
     return false;

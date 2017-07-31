@@ -1,0 +1,19 @@
+Morphometric Features
+ta_morphometry
+ParameterRaster|DEM|Elevation|False
+OutputRaster|FEATURES|Morphometric Features
+OutputRaster|ELEVATION|Generalized Surface
+OutputRaster|SLOPE|Slope
+OutputRaster|ASPECT|Aspect
+OutputRaster|PROFC|Profile Curvature
+OutputRaster|PLANC|Plan Curvature
+OutputRaster|LONGC|Longitudinal Curvature
+OutputRaster|CROSC|Cross-Sectional Curvature
+OutputRaster|MAXIC|Maximum Curvature
+OutputRaster|MINIC|Minimum Curvature
+ParameterNumber|SIZE|Scale Radius (Cells)| 1|None| 5
+ParameterNumber|TOL_SLOPE|Slope Tolerance|None|None| 1.000000
+ParameterNumber|TOL_CURVE|Curvature Tolerance|None|None| 0.000100
+ParameterNumber|EXPONENT|Distance Weighting Exponent| 0.000000| 4.000000| 0.000000
+ParameterNumber|ZSCALE|Vertical Scaling|None|None| 1.000000
+ParameterBoolean|CONSTRAIN|Constrain|False

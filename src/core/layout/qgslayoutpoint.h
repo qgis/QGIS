@@ -46,6 +46,11 @@ class CORE_EXPORT QgsLayoutPoint
     QgsLayoutPoint( const double x, const double y, const QgsUnitTypes::LayoutUnit units = QgsUnitTypes::LayoutMillimeters );
 
     /**
+     * Constructor for QgsLayoutPoint.
+    */
+    explicit QgsLayoutPoint( const QPointF point, const QgsUnitTypes::LayoutUnit units = QgsUnitTypes::LayoutMillimeters );
+
+    /**
      * Constructor for an empty point, where both x and y are set to 0.
      * \param units units for measurement
     */

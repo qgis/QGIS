@@ -36,7 +36,7 @@ class QgsServerRequest
  Constructor
 %End
 
-    QgsServerRequest( const QString &url, QgsServerRequest::Method method = QgsServerRequest::GetMethod, const QgsServerRequest::Headers &headers = QgsServerRequest::Headers( ) );
+    QgsServerRequest( const QString &url, QgsServerRequest::Method method = QgsServerRequest::GetMethod, const QgsServerRequest::Headers &headers = QgsServerRequest::Headers() );
 %Docstring
  Constructor
 
@@ -45,7 +45,7 @@ class QgsServerRequest
  \param headers
 %End
 
-    QgsServerRequest( const QUrl &url, QgsServerRequest::Method method = QgsServerRequest::GetMethod, const QgsServerRequest::Headers &headers = QgsServerRequest::Headers( ) );
+    QgsServerRequest( const QUrl &url, QgsServerRequest::Method method = QgsServerRequest::GetMethod, const QgsServerRequest::Headers &headers = QgsServerRequest::Headers() );
 %Docstring
  Constructor
 
@@ -109,7 +109,7 @@ destructor
  @param value
 %End
 
-    QMap<QString, QString> headers( ) const;
+    QMap<QString, QString> headers() const;
 %Docstring
  Return the header map
  @return the headers map

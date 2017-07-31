@@ -66,7 +66,7 @@ class QgsBufferServerResponse: QgsServerResponse
  \param code HTTP status code value
 %End
 
-    virtual int statusCode( ) const;
+    virtual int statusCode() const;
 %Docstring
  Return the http status code
  :rtype: int

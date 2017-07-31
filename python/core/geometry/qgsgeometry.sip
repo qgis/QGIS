@@ -326,12 +326,12 @@ Returns true if WKB of the geometry is of WKBMulti* type
  :rtype: bool
 %End
 
-    QgsPointXY vertexAt( int atVertex ) const;
+    QgsPoint vertexAt( int atVertex ) const;
 %Docstring
   Returns coordinates of a vertex.
   \param atVertex index of the vertex
-  :return: Coordinates of the vertex or QgsPointXY(0,0) on error
- :rtype: QgsPointXY
+  :return: Coordinates of the vertex or QgsPoint(0,0) on error
+ :rtype: QgsPoint
 %End
 
     double sqrDistToVertexAt( QgsPointXY &point /In/, int atVertex ) const;

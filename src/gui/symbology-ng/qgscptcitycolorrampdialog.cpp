@@ -60,7 +60,7 @@ QgsCptCityColorRampDialog::QgsCptCityColorRampDialog( const QgsCptCityColorRamp 
   if ( ! mArchive || mArchive->isEmpty() )
   {
     // QgsDialog dlg( this );
-    // dlg.setWindowTitle( tr( "cpt-city gradient files not found" ) );
+    // dlg.setWindowTitle( tr( "Cpt-city Gradient Files Not Found" ) );
     QTextEdit *edit = new QTextEdit( nullptr );
     edit->setReadOnly( true );
     // not sure if we want this long string to be translated
@@ -314,11 +314,11 @@ void QgsCptCityColorRampDialog::on_pbtnLicenseDetails_pressed()
   path = item->path();
   if ( item->type() == QgsCptCityDataItem::Directory )
   {
-    title = tr( "%1 directory details" ).arg( item->path() );
+    title = tr( "%1 Directory Details" ).arg( item->path() );
   }
   else if ( item->type() == QgsCptCityColorRampItem::Directory )
   {
-    title = tr( "%1 gradient details" ).arg( path );
+    title = tr( "%1 Gradient Details" ).arg( path );
   }
   else
   {

@@ -1385,7 +1385,7 @@ void TestQgsGrassProvider::edit()
       }
       else if ( command.command == TestQgsGrassCommand::UndoAll )
       {
-        if ( grassLayer->undoStack()->count() !=  editCommands.size() ||
+        if ( grassLayer->undoStack()->count() != editCommands.size() ||
              grassLayer->undoStack()->count() != expectedLayer->undoStack()->count() )
         {
           reportRow( QStringLiteral( "Different undo stack size: %1, expected: %2, editCommands: %3" )
@@ -1414,7 +1414,7 @@ void TestQgsGrassProvider::edit()
       }
       else if ( command.command == TestQgsGrassCommand::RedoAll )
       {
-        if ( grassLayer->undoStack()->count() !=  editCommands.size() ||
+        if ( grassLayer->undoStack()->count() != editCommands.size() ||
              grassLayer->undoStack()->count() != expectedLayer->undoStack()->count() )
         {
           reportRow( QStringLiteral( "Different undo stack size: %1, expected: %2, editCommands: %3" )

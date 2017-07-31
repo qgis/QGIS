@@ -81,7 +81,7 @@ QgsGrassSelect::QgsGrassSelect( QWidget *parent, int type )
       /* Remove layer combo box */
       Layer->hide();
       elayer->hide();
-      setWindowTitle( tr( "Select GRASS mapcalc schema" ) );
+      setWindowTitle( tr( "Select GRASS Mapcalc Schema" ) );
       break;
 
     case QgsGrassSelect::MapSet:

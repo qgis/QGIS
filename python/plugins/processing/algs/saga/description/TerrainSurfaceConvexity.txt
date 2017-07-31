@@ -1,0 +1,13 @@
+Terrain Surface Convexity
+ta_morphometry
+ParameterRaster|DEM|Elevation|False
+OutputRaster|CONVEXITY|Convexity
+ParameterSelection|KERNEL|Laplacian Filter Kernel|[0] conventional four-neighbourhood;[1] conventional eight-neihbourhood;[2] eight-neihbourhood (distance based weighting)| 0
+ParameterSelection|TYPE|Type|[0] convexity;[1] concavity| 0
+ParameterNumber|EPSILON|Flat Area Threshold| 0.000000|None| 0.000000
+ParameterNumber|SCALE|Scale (Cells)| 1|None| 10
+ParameterSelection|METHOD|Method|[0] counting cells;[1] resampling| 1
+ParameterSelection|DW_WEIGHTING|Weighting Function|[0] no distance weighting;[1] inverse distance to a power;[2] exponential;[3] gaussian weighting| 3
+ParameterNumber|DW_IDW_POWER|Inverse Distance Weighting Power| 0.000000|None| 1.000000
+ParameterBoolean|DW_IDW_OFFSET|Inverse Distance Offset|True
+ParameterNumber|DW_BANDWIDTH|Gaussian and Exponential Weighting Bandwidth| 0.000000|None| 0.700000

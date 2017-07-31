@@ -19,27 +19,26 @@
 #include <QPainter>
 #include <QApplication>
 
-#define LABEL_SIZE 20 //label rect height
-#define LABEL_MARGIN 4 //spacing between label box and text
-
 QgsMenuHeader::QgsMenuHeader( const QString &text, QWidget *parent )
   : QWidget( parent )
   , mText( text )
 {
   int textMinWidth = fontMetrics().width( mText );
-  mMinWidth = 2 * LABEL_MARGIN + textMinWidth;
+  mTextHeight = fontMetrics().height();
+  mLabelMargin = Qgis::UI_SCALE_FACTOR * fontMetrics().width( QStringLiteral( "." ) );
+  mMinWidth = 2 * mLabelMargin + textMinWidth;
   setSizePolicy( QSizePolicy::Minimum, QSizePolicy::Fixed );
   updateGeometry();
 }
 
 QSize QgsMenuHeader::minimumSizeHint() const
 {
-  return QSize( mMinWidth, LABEL_SIZE );
+  return QSize( mMinWidth, mTextHeight + mLabelMargin );
 }
 
 QSize QgsMenuHeader::sizeHint() const
 {
-  return QSize( mMinWidth, LABEL_SIZE );
+  return QSize( mMinWidth, mTextHeight + mLabelMargin );
 }
 
 void QgsMenuHeader::paintEvent( QPaintEvent * )
@@ -52,12 +51,11 @@ void QgsMenuHeader::paintEvent( QPaintEvent * )
   //draw header background
   painter.setBrush( headerBgColor );
   painter.setPen( Qt::NoPen );
-  painter.drawRect( QRect( 0, 0, width(), LABEL_SIZE ) );
+  painter.drawRect( QRect( 0, 0, width(), mTextHeight + mLabelMargin ) );
 
   //draw header text
   painter.setPen( headerTextColor );
-  painter.drawText( QRect( LABEL_MARGIN, 0, width() - 2 * LABEL_MARGIN, LABEL_SIZE ),
-                    Qt::AlignLeft | Qt::AlignVCenter, mText );
+  painter.drawText( QPoint( mLabelMargin, 0.25 * mLabelMargin + mTextHeight ), mText );
   painter.end();
 }
 

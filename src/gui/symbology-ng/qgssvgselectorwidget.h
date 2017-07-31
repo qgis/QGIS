@@ -174,14 +174,16 @@ class GUI_EXPORT QgsSvgSelectorListModel : public QAbstractListModel
     /** Constructor for QgsSvgSelectorListModel. All SVGs in folders from the application SVG
      * search paths will be shown.
      * \param parent parent object
+     * \param iconSize desired size of SVG icons to create
      */
-    QgsSvgSelectorListModel( QObject *parent SIP_TRANSFERTHIS );
+    QgsSvgSelectorListModel( QObject *parent SIP_TRANSFERTHIS, int iconSize = 30 );
 
     /** Constructor for creating a model for SVG files in a specific path.
      * \param parent parent object
      * \param path initial path, which is recursively searched
+     * \param iconSize desired size of SVG icons to create
      */
-    QgsSvgSelectorListModel( QObject *parent SIP_TRANSFERTHIS, const QString &path );
+    QgsSvgSelectorListModel( QObject *parent SIP_TRANSFERTHIS, const QString &path, int iconSize = 30 );
 
     int rowCount( const QModelIndex &parent = QModelIndex() ) const override;
     QVariant data( const QModelIndex &index, int role = Qt::DisplayRole ) const override;
@@ -192,6 +194,8 @@ class GUI_EXPORT QgsSvgSelectorListModel : public QAbstractListModel
   private:
     QPixmap createPreview( const QString &entry ) const;
     QgsSvgSelectorLoader *mSvgLoader = nullptr;
+
+    int mIconSize = 30;
 
   private slots:
 
@@ -259,6 +263,9 @@ class GUI_EXPORT QgsSvgSelectorWidget : public QWidget, private Ui::WidgetSvgSel
     void on_mFileLineEdit_textChanged( const QString &text );
 
   private:
+
+    int mIconSize = 30;
+
     QString mCurrentSvgPath; //!< Always stored as absolute path
 
 };

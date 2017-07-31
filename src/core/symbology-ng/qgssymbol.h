@@ -136,7 +136,7 @@ class CORE_EXPORT QgsSymbol
      * \see symbolLayers
      * \see symbolLayer
      */
-    int symbolLayerCount() { return mLayers.count(); }
+    int symbolLayerCount() const { return mLayers.count(); }
 
     /**
      * Insert symbol layer to specified index

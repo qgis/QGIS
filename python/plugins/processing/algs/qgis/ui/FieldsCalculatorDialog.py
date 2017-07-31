@@ -40,6 +40,7 @@ from qgis.core import (QgsExpressionContextUtils,
                        QgsMapLayerProxyModel,
                        QgsMessageLog)
 from qgis.gui import QgsEncodingFileDialog
+from qgis.utils import OverrideCursor
 
 from processing.core.ProcessingConfig import ProcessingConfig
 from processing.core.ProcessingLog import ProcessingLog
@@ -220,10 +221,9 @@ class FieldsCalculatorDialog(BASE, WIDGET):
 
     def accept(self):
         keepOpen = ProcessingConfig.getSetting(ProcessingConfig.KEEP_DIALOG_OPEN)
-        try:
-            parameters = self.getParamValues()
-            if parameters:
-                QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
+        parameters = self.getParamValues()
+        if parameters:
+            with OverrideCursor(Qt.WaitCursor):
                 context = dataobjects.createContext()
                 ProcessingLog.addToLog(self.alg.asPythonCommand(parameters, context))
 
@@ -235,8 +235,6 @@ class FieldsCalculatorDialog(BASE, WIDGET):
                                            not keepOpen)
                 if not keepOpen:
                     QDialog.reject(self)
-        finally:
-            QApplication.restoreOverrideCursor()
 
     def reject(self):
         self.executed = False

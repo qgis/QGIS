@@ -59,7 +59,7 @@ QList<QAction *> QgsAmsRootItem::actions()
 QWidget *QgsAmsRootItem::paramWidget()
 {
   QgsAmsSourceSelect *select = new QgsAmsSourceSelect( 0, 0, QgsProviderRegistry::WidgetMode::Manager );
-  connect( select, &QgsSourceSelectDialog::connectionsChanged, this, &QgsAmsRootItem::connectionsChanged );
+  connect( select, &QgsArcGisServiceSourceSelect::connectionsChanged, this, &QgsAmsRootItem::connectionsChanged );
   return select;
 }
 
@@ -71,11 +71,11 @@ void QgsAmsRootItem::connectionsChanged()
 void QgsAmsRootItem::newConnection()
 {
   QgsNewHttpConnection nc( 0, QStringLiteral( "qgis/connections-arcgismapserver/" ) );
-  nc.setWindowTitle( tr( "Create a new ArcGisMapServer connection" ) );
+  nc.setWindowTitle( tr( "Create a New ArcGisMapServer Connection" ) );
 
   if ( nc.exec() )
   {
-    refresh();
+    refreshConnections();
   }
 }
 #endif
@@ -154,18 +154,18 @@ QList<QAction *> QgsAmsConnectionItem::actions()
 void QgsAmsConnectionItem::editConnection()
 {
   QgsNewHttpConnection nc( 0, QStringLiteral( "qgis/connections-arcgismapserver/" ), mName );
-  nc.setWindowTitle( tr( "Modify ArcGisMapServer connection" ) );
+  nc.setWindowTitle( tr( "Modify ArcGisMapServer Connection" ) );
 
   if ( nc.exec() )
   {
-    mParent->refresh();
+    mParent->refreshConnections();
   }
 }
 
 void QgsAmsConnectionItem::deleteConnection()
 {
   QgsOwsConnection::deleteConnection( QStringLiteral( "arcgismapserver" ), mName );
-  mParent->refresh();
+  mParent->refreshConnections();
 }
 #endif
 

@@ -12,10 +12,13 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+
 #ifndef QGSEXTENTGROUPBOX_H
 #define QGSEXTENTGROUPBOX_H
 
 #include "qgscollapsiblegroupbox.h"
+#include "qgsmaptool.h"
+#include "qgsmaptoolextent.h"
 #include "qgis.h"
 
 #include "ui_qgsextentgroupboxwidget.h"
@@ -23,6 +26,8 @@
 #include "qgscoordinatereferencesystem.h"
 #include "qgsrectangle.h"
 #include "qgis_gui.h"
+
+#include <memory>
 
 class QgsCoordinateReferenceSystem;
 class QgsMapLayerModel;
@@ -52,6 +57,7 @@ class GUI_EXPORT QgsExtentGroupBox : public QgsCollapsibleGroupBox, private Ui::
       CurrentExtent,   //!< Map canvas extent
       UserExtent,      //!< Extent manually entered/modified by the user
       ProjectLayerExtent, //!< Extent taken from a layer within the project
+      DrawOnCanvas, //!< Extent taken from a rectangled drawn onto the map canvas
     };
 
     /**
@@ -135,6 +141,13 @@ class GUI_EXPORT QgsExtentGroupBox : public QgsCollapsibleGroupBox, private Ui::
      */
     QString titleBase() const;
 
+    /**
+     * Sets the map canvas to enable dragging of extent on a canvas.
+     * \param canvas the map canvas
+     * \since QGIS 3.0
+     */
+    void setMapCanvas( QgsMapCanvas *canvas );
+
   public slots:
 
     /**
@@ -158,6 +171,25 @@ class GUI_EXPORT QgsExtentGroupBox : public QgsCollapsibleGroupBox, private Ui::
      */
     void setOutputExtentFromLayer( const QgsMapLayer *layer );
 
+    /**
+     * Sets the output extent by dragging on the canvas.
+     * \since QGIS 3.0
+     */
+    void setOutputExtentFromDrawOnCanvas();
+
+    /** Sets a fixed aspect ratio to be used when dragging extent onto the canvas.
+     * To unset a fixed aspect ratio, set the width and height to zero.
+     * \param ratio aspect ratio's width and height
+     * \since QGIS 3.0
+     * */
+    void setRatio( QSize ratio ) { mRatio = ratio; }
+
+    /** Returns the current fixed aspect ratio to be used when dragging extent onto the canvas.
+     * If the aspect ratio isn't fixed, the width and height will be set to zero.
+     * \since QGIS 3.0
+     * */
+    QSize ratio() const { return mRatio; }
+
   signals:
 
     /**
@@ -174,6 +206,8 @@ class GUI_EXPORT QgsExtentGroupBox : public QgsCollapsibleGroupBox, private Ui::
 
     void groupBoxClicked();
     void layerMenuAboutToShow();
+
+    void extentDrawn( const QgsRectangle &extent );
 
   private:
     void setOutputExtent( const QgsRectangle &r, const QgsCoordinateReferenceSystem &srcCrs, QgsExtentGroupBox::ExtentState state );
@@ -198,6 +232,11 @@ class GUI_EXPORT QgsExtentGroupBox : public QgsCollapsibleGroupBox, private Ui::
     QList< QAction * > mMenuActions;
     QPointer< const QgsMapLayer > mExtentLayer;
     QString mExtentLayerName;
+
+    std::unique_ptr< QgsMapToolExtent > mMapToolExtent;
+    QPointer< QgsMapTool > mMapToolPrevious = nullptr;
+    QgsMapCanvas *mCanvas = nullptr;
+    QSize mRatio;
 
     void setExtentToLayerExtent( const QString &layerId );
 

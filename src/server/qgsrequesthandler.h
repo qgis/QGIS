@@ -114,7 +114,7 @@ class SERVER_EXPORT QgsRequestHandler
     void setStatusCode( int code );
 
     //! Return response http status code
-    int statusCode( ) const;
+    int statusCode() const;
 
     /** Return the parsed parameters as a key-value pair, to modify
      * a parameter setParameter( const QString &key, const QString &value)

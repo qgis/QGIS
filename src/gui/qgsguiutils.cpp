@@ -91,7 +91,7 @@ namespace QgsGuiUtils
     Q_FOREACH ( const QByteArray &format, QImageWriter::supportedImageFormats() )
     {
       //svg doesn't work so skip it
-      if ( format ==  "svg" )
+      if ( format == "svg" )
         continue;
 
       filterMap.insert( createFileFilter_( format ), format );

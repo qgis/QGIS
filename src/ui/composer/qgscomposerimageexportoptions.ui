@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Image export options</string>
+   <string>Image Export Options</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>

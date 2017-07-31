@@ -105,7 +105,7 @@ Toggle fast scan
 
     void selectionChanged( const QItemSelection &selected, const QItemSelection &deselected );
 %Docstring
-Selection hass changed
+Selection has changed
 %End
     void splitterMoved();
 %Docstring
@@ -120,6 +120,10 @@ Emitted when a file needs to be opened
     void handleDropUriList( const QgsMimeDataUtils::UriList & );
 %Docstring
 Emitted when drop uri list needs to be handled
+%End
+    void connectionsChanged();
+%Docstring
+Connections changed in the browser
 %End
 
   protected:

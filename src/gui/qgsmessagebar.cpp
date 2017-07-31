@@ -18,6 +18,7 @@
 #include "qgsmessagebar.h"
 #include "qgsmessagebaritem.h"
 #include "qgsapplication.h"
+#include "qgsmessagelog.h"
 
 #include <QWidget>
 #include <QPalette>
@@ -85,7 +86,7 @@ QgsMessageBar::QgsMessageBar( QWidget *parent )
   mCloseBtn->setSizePolicy( QSizePolicy::Maximum, QSizePolicy::Maximum );
   mCloseBtn->setMenu( mCloseMenu );
   mCloseBtn->setPopupMode( QToolButton::MenuButtonPopup );
-  connect( mCloseBtn, &QAbstractButton::clicked, this, static_cast < bool ( QgsMessageBar::* )( ) > ( &QgsMessageBar::popWidget ) );
+  connect( mCloseBtn, &QAbstractButton::clicked, this, static_cast < bool ( QgsMessageBar::* )() > ( &QgsMessageBar::popWidget ) );
   mLayout->addWidget( mCloseBtn, 0, 3, 1, 1 );
 
   mCountdownTimer = new QTimer( this );
@@ -268,6 +269,27 @@ void QgsMessageBar::pushItem( QgsMessageBarItem *item )
   // avoid duplicated widget
   popWidget( item );
   showItem( item );
+
+  // Log all messages that are sent to the message bar into the message log so the
+  // user can get them back easier.
+  QString formattedTitle = QString( "%1 : %2" ).arg( item->title() ).arg( item->text() );
+  QgsMessageLog::MessageLevel level;
+  switch ( item->level() )
+  {
+    case QgsMessageBar::INFO:
+      level = QgsMessageLog::INFO;
+      break;
+    case QgsMessageBar::WARNING:
+      level = QgsMessageLog::WARNING;
+      break;
+    case QgsMessageBar::CRITICAL:
+      level = QgsMessageLog::CRITICAL;
+      break;
+    default:
+      level = QgsMessageLog::NONE;
+      break;
+  }
+  QgsMessageLog::logMessage( formattedTitle, tr( "Messages" ), level );
 }
 
 QgsMessageBarItem *QgsMessageBar::pushWidget( QWidget *widget, QgsMessageBar::MessageLevel level, int duration )

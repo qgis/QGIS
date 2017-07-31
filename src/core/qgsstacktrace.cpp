@@ -53,7 +53,12 @@ QVector<QgsStackTrace::StackLine> QgsStackTrace::trace( _EXCEPTION_POINTERS *Exc
 
   // StackWalk64() may modify context record passed to it, so we will
   // use a copy.
-  CONTEXT context_record = *ExceptionInfo->ContextRecord;
+  CONTEXT context_record;
+  if ( ExceptionInfo )
+    context_record = *ExceptionInfo->ContextRecord;
+  else
+    RtlCaptureContext( &context_record );
+
   // Initialize stack walking.
   STACKFRAME64 stack_frame;
   memset( &stack_frame, 0, sizeof( stack_frame ) );
@@ -98,32 +103,30 @@ QVector<QgsStackTrace::StackLine> QgsStackTrace::trace( _EXCEPTION_POINTERS *Exc
     if ( SymFromAddr( process, ( DWORD64 )stack_frame.AddrPC.Offset, &displacement, symbol ) )
     {
       DWORD dwDisplacement;
-      QString fileName;
-      QString lineNumber;
-      QString moduleName;
-      if ( SymGetLineFromAddr( process, ( DWORD )( stack_frame.AddrPC.Offset ), &dwDisplacement, line ) )
-      {
-        fileName = QString( line->FileName );
-        lineNumber = QString::number( line->LineNumber );
-      }
-      else
-      {
-        fileName = "(unknown file)";
-        lineNumber = "(unknown line)";
-      }
-      if ( SymGetModuleInfo( process, ( DWORD )( stack_frame.AddrPC.Offset ), module ) )
-      {
-        moduleName = QString( module->ModuleName );
-      }
-      else
-      {
-        moduleName = "(unknown module)";
-      }
+
       QgsStackTrace::StackLine stackline;
-      stackline.moduleName = moduleName;
-      stackline.fileName = fileName;
-      stackline.lineNumber = lineNumber;
       stackline.symbolName = QString( symbol->Name );
+
+      if ( SymGetLineFromAddr( process, ( DWORD64 ) stack_frame.AddrPC.Offset, &dwDisplacement, line ) )
+      {
+        stackline.fileName = QString( line->FileName );
+        stackline.lineNumber = QString::number( line->LineNumber );
+      }
+      else
+      {
+        stackline.fileName = "(unknown file)";
+        stackline.lineNumber = "(unknown line)";
+      }
+
+      if ( SymGetModuleInfo( process, ( DWORD64 ) stack_frame.AddrPC.Offset, module ) )
+      {
+        stackline.moduleName = module->ModuleName;
+      }
+      else
+      {
+        stackline.moduleName = "(unknown module)";
+      }
+
       stack.append( stackline );
     }
   }
@@ -133,7 +136,6 @@ QVector<QgsStackTrace::StackLine> QgsStackTrace::trace( _EXCEPTION_POINTERS *Exc
   qgsFree( module );
   SymCleanup( process );
   return stack;
-
 }
 
 QString QgsStackTrace::mSymbolPaths;

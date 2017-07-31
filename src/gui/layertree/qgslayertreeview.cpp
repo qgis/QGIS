@@ -255,7 +255,7 @@ void QgsLayerTreeView::updateExpandedStateFromNode( QgsLayerTreeNode *node )
 QgsMapLayer *QgsLayerTreeView::layerForIndex( const QModelIndex &index ) const
 {
   // Check if model has been set and index is valid
-  if ( layerTreeModel() && index.isValid( ) )
+  if ( layerTreeModel() && index.isValid() )
   {
     QgsLayerTreeNode *node = layerTreeModel()->index2node( index );
     if ( node )

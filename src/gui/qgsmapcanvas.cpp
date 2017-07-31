@@ -133,6 +133,10 @@ QgsMapCanvas::QgsMapCanvas( QWidget *parent )
   mResizeTimer->setSingleShot( true );
   connect( mResizeTimer, &QTimer::timeout, this, &QgsMapCanvas::refresh );
 
+  mRefreshTimer = new QTimer( this );
+  mRefreshTimer->setSingleShot( true );
+  connect( mRefreshTimer, &QTimer::timeout, this, &QgsMapCanvas::refreshMap );
+
   // create map canvas item which will show the map
   mMap = new QgsMapCanvasMap( this );
 
@@ -493,7 +497,7 @@ void QgsMapCanvas::refresh()
   QgsDebugMsg( "CANVAS refresh scheduling" );
 
   // schedule a refresh
-  QTimer::singleShot( 1, this, SLOT( refreshMap() ) );
+  mRefreshTimer->start( 1 );
 } // refresh
 
 void QgsMapCanvas::refreshMap()
@@ -503,6 +507,7 @@ void QgsMapCanvas::refreshMap()
   QgsDebugMsgLevel( "CANVAS refresh!", 3 );
 
   stopRendering(); // if any...
+  stopPreviewJobs();
 
   //build the expression context
   QgsExpressionContext expressionContext;
@@ -624,6 +629,7 @@ void QgsMapCanvas::rendererJobFinished()
     p.end();
 
     mMap->setContent( img, imageRect( img, mSettings ) );
+    startPreviewJobs();
   }
 
   // now we are in a slot called from mJob - do not delete it immediately
@@ -632,6 +638,19 @@ void QgsMapCanvas::rendererJobFinished()
   mJob = nullptr;
 
   emit mapCanvasRefreshed();
+}
+
+void QgsMapCanvas::previewJobFinished()
+{
+  QgsMapRendererQImageJob *job = qobject_cast<QgsMapRendererQImageJob *>( sender() );
+  Q_ASSERT( job );
+
+  if ( mMap )
+  {
+    mMap->addPreviewImage( job->renderedImage(), job->mapSettings().extent() );
+    mPreviewJobs.removeAll( job );
+    delete job;
+  }
 }
 
 QgsRectangle QgsMapCanvas::imageRect( const QImage &img, const QgsMapSettings &mapSettings )
@@ -2108,4 +2127,57 @@ void QgsMapCanvas::setLabelingEngineSettings( const QgsLabelingEngineSettings &s
 const QgsLabelingEngineSettings &QgsMapCanvas::labelingEngineSettings() const
 {
   return mSettings.labelingEngineSettings();
+}
+
+void QgsMapCanvas::startPreviewJobs()
+{
+  stopPreviewJobs(); //just in case still running
+
+  QgsRectangle mapRect = mSettings.visibleExtent();
+
+  for ( int j = 0; j < 3; ++j )
+  {
+    for ( int i = 0; i < 3; ++i )
+    {
+      if ( i == 1 && j == 1 )
+      {
+        continue;
+      }
+
+
+      //copy settings, only update extent
+      QgsMapSettings jobSettings = mSettings;
+
+      double dx = ( i - 1 ) * mapRect.width();
+      double dy = ( 1 - j ) * mapRect.height();
+      QgsRectangle jobExtent = mapRect;
+      jobExtent.setXMaximum( jobExtent.xMaximum() + dx );
+      jobExtent.setXMinimum( jobExtent.xMinimum() + dx );
+      jobExtent.setYMaximum( jobExtent.yMaximum() + dy );
+      jobExtent.setYMinimum( jobExtent.yMinimum() + dy );
+
+      jobSettings.setExtent( jobExtent );
+      jobSettings.setFlag( QgsMapSettings::DrawLabeling, false );
+
+      QgsMapRendererQImageJob *job = new QgsMapRendererParallelJob( jobSettings );
+      mPreviewJobs.append( job );
+      connect( job, &QgsMapRendererJob::finished, this, &QgsMapCanvas::previewJobFinished );
+      job->start();
+    }
+  }
+}
+
+void QgsMapCanvas::stopPreviewJobs()
+{
+  QList< QgsMapRendererQImageJob * >::const_iterator it = mPreviewJobs.constBegin();
+  for ( ; it != mPreviewJobs.constEnd(); ++it )
+  {
+    if ( *it )
+    {
+      disconnect( *it, &QgsMapRendererJob::finished, this, &QgsMapCanvas::previewJobFinished );
+      connect( *it, &QgsMapRendererQImageJob::finished, *it, &QgsMapRendererQImageJob::deleteLater );
+      ( *it )->cancelWithoutBlocking();
+    }
+  }
+  mPreviewJobs.clear();
 }

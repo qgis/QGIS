@@ -84,6 +84,12 @@ const double Qgis::SCALE_PRECISION = 0.9999999999;
 
 const double Qgis::DEFAULT_Z_COORDINATE = 0.0;
 
+#ifdef Q_OS_WIN
+const double Qgis::UI_SCALE_FACTOR = 1.5;
+#else
+const double Qgis::UI_SCALE_FACTOR = 1;
+#endif
+
 double qgsPermissiveToDouble( QString string, bool &ok )
 {
   //remove any thousands separators

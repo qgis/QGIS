@@ -42,9 +42,11 @@ SET (AFS_MOC_HDRS
 IF (WITH_GUI)
   SET(AFS_SRCS ${AFS_SRCS}
     qgsafssourceselect.cpp
+    qgsarcgisservicesourceselect.cpp
   )
   SET(AFS_MOC_HDRS ${AFS_MOC_HDRS}
     qgsafssourceselect.h
+    qgsarcgisservicesourceselect.h
   )
 ENDIF ()
 
@@ -83,9 +85,11 @@ SET (AMS_MOC_HDRS
 IF (WITH_GUI)
   SET(AMS_SRCS ${AMS_SRCS}
     qgsamssourceselect.cpp
+    qgsarcgisservicesourceselect.cpp
   )
   SET(AMS_MOC_HDRS ${AMS_MOC_HDRS}
     qgsamssourceselect.h
+    qgsarcgisservicesourceselect.h
   )
 ENDIF ()
 

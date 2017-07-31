@@ -137,45 +137,45 @@ A regular polygon is empty if radius equal to 0 or number of sides < 3
 .. seealso:: numberSides()
 %End
 
-    QgsPointSequence points( ) const;
+    QgsPointSequence points() const;
 %Docstring
  Returns a list including the vertices of the regular polygon.
  :rtype: QgsPointSequence
 %End
 
-    QgsPolygonV2 *toPolygon( ) const /Factory/;
+    QgsPolygonV2 *toPolygon() const /Factory/;
 %Docstring
  Returns as a polygon.
  :rtype: QgsPolygonV2
 %End
 
-    QgsLineString *toLineString( ) const /Factory/;
+    QgsLineString *toLineString() const /Factory/;
 %Docstring
  Returns as a linestring.
  :rtype: QgsLineString
 %End
 
-    QgsTriangle toTriangle( ) const;
+    QgsTriangle toTriangle() const;
 %Docstring
  Returns as a triangle.
  An empty triangle is returned if the regular polygon is empty or if the number of sides is different from 3.
  :rtype: QgsTriangle
 %End
 
-    QList<QgsTriangle> triangulate( ) const;
+    QList<QgsTriangle> triangulate() const;
 %Docstring
  Returns a triangulation (vertices from sides to the center) of the regular polygon.
  An empty list is returned if the regular polygon is empty.
  :rtype: list of QgsTriangle
 %End
 
-    QgsCircle inscribedCircle( ) const;
+    QgsCircle inscribedCircle() const;
 %Docstring
  Returns the inscribed circle
  :rtype: QgsCircle
 %End
 
-    QgsCircle circumscribedCircle( ) const;
+    QgsCircle circumscribedCircle() const;
 %Docstring
  Returns the circumscribed circle
  :rtype: QgsCircle
@@ -188,33 +188,33 @@ A regular polygon is empty if radius equal to 0 or number of sides < 3
  :rtype: str
 %End
 
-    double interiorAngle( ) const;
+    double interiorAngle() const;
 %Docstring
  Returns the measure of the interior angles in degrees.
  :rtype: float
 %End
 
-    double centralAngle( ) const;
+    double centralAngle() const;
 %Docstring
  Returns the measure of the central angle (the angle subtended at the center of the polygon by one of its sides) in degrees.
  :rtype: float
 %End
 
-    double area( ) const;
+    double area() const;
 %Docstring
  Returns the area.
  Returns 0 if the regular polygon is empty.
  :rtype: float
 %End
 
-    double perimeter( ) const;
+    double perimeter() const;
 %Docstring
  Returns the perimeter.
  Returns 0 if the regular polygon is empty.
  :rtype: float
 %End
 
-    double length( ) const;
+    double length() const;
 %Docstring
  Returns the length of a side.
  Returns 0 if the regular polygon is empty.

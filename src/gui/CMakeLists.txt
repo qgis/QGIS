@@ -159,7 +159,10 @@ SET(QGIS_GUI_SRCS
   layertree/qgslayertreeviewdefaultactions.cpp
 
   layout/qgslayoutitemguiregistry.cpp
+  layout/qgslayoutitemwidget.cpp
+  layout/qgslayoutnewitempropertiesdialog.cpp
   layout/qgslayoutruler.cpp
+  layout/qgslayoutunitscombobox.cpp
   layout/qgslayoutview.cpp
   layout/qgslayoutviewmouseevent.cpp
   layout/qgslayoutviewrubberband.cpp
@@ -263,6 +266,7 @@ SET(QGIS_GUI_SRCS
   qgslistwidget.cpp
   qgslegendfilterbutton.cpp
   qgslimitedrandomcolorrampdialog.cpp
+  qgsratiolockbutton.cpp
   qgsludialog.cpp
   qgsmanageconnectionsdialog.cpp
   qgsmapcanvas.cpp
@@ -283,6 +287,7 @@ SET(QGIS_GUI_SRCS
   qgsmaptoolcapture.cpp
   qgsmaptooledit.cpp
   qgsmaptoolemitpoint.cpp
+  qgsmaptoolextent.cpp
   qgsmaptoolidentify.cpp
   qgsmaptoolidentifyfeature.cpp
   qgsmaptoolpan.cpp
@@ -302,7 +307,6 @@ SET(QGIS_GUI_SRCS
   qgsoptionsdialogbase.cpp
   qgsorderbydialog.cpp
   qgsowssourceselect.cpp
-  qgssourceselectdialog.cpp
   qgspanelwidget.cpp
   qgspanelwidgetstack.cpp
   qgspasswordlineedit.cpp
@@ -333,6 +337,7 @@ SET(QGIS_GUI_SRCS
   qgssubstitutionlistwidget.cpp
   qgssqlcomposerdialog.cpp
   qgsstatusbar.cpp
+  qgssymbolbutton.cpp
   qgstablewidgetbase.cpp
   qgstabwidget.cpp
   qgstablewidgetitem.cpp
@@ -346,6 +351,7 @@ SET(QGIS_GUI_SRCS
   qgsvertexmarker.cpp
   qgsfiledownloader.cpp
   qgsdatasourcemanagerdialog.cpp
+  qgsabstractdatasourcewidget.cpp
 )
 
 SET(QGIS_GUI_MOC_HDRS
@@ -420,6 +426,7 @@ SET(QGIS_GUI_MOC_HDRS
   qgslistwidget.h
   qgslegendfilterbutton.h
   qgslimitedrandomcolorrampdialog.h
+  qgsratiolockbutton.h
   qgslonglongvalidator.h
   qgsludialog.h
   qgsmanageconnectionsdialog.h
@@ -437,6 +444,7 @@ SET(QGIS_GUI_MOC_HDRS
   qgsmaptoolcapture.h
   qgsmaptooledit.h
   qgsmaptoolemitpoint.h
+  qgsmaptoolextent.h
   qgsmaptoolidentify.h
   qgsmaptoolidentifyfeature.h
   qgsmaptoolpan.h
@@ -457,7 +465,6 @@ SET(QGIS_GUI_MOC_HDRS
   qgsoptionswidgetfactory.h
   qgsorderbydialog.h
   qgsowssourceselect.h
-  qgssourceselectdialog.h
   qgspanelwidget.h
   qgspanelwidgetstack.h
   qgspasswordlineedit.h
@@ -487,6 +494,7 @@ SET(QGIS_GUI_MOC_HDRS
   qgsstatusbar.h
   qgssublayersdialog.h
   qgssubstitutionlistwidget.h
+  qgssymbolbutton.h
   qgstablewidgetbase.h
   qgstabwidget.h
   qgstaskmanagerwidget.h
@@ -498,6 +506,7 @@ SET(QGIS_GUI_MOC_HDRS
   qgsvariableeditorwidget.h
   qgsfiledownloader.h
   qgsdatasourcemanagerdialog.h
+  qgsabstractdatasourcewidget.h
 
   ogr/qgsopenvectorlayerdialog.h
   ogr/qgsnewogrconnection.h
@@ -647,7 +656,10 @@ SET(QGIS_GUI_MOC_HDRS
 
   layout/qgslayoutdesignerinterface.h
   layout/qgslayoutitemguiregistry.h
+  layout/qgslayoutitemwidget.h
+  layout/qgslayoutnewitempropertiesdialog.h
   layout/qgslayoutruler.h
+  layout/qgslayoutunitscombobox.h
   layout/qgslayoutview.h
   layout/qgslayoutviewtool.h
   layout/qgslayoutviewtooladditem.h
@@ -704,12 +716,12 @@ SET(QGIS_GUI_HDRS
   qgsvertexmarker.h
   qgsfiledownloader.h
   qgsdatasourcemanagerdialog.h
+  qgsabstractdatasourcewidget.h
 
   ogr/qgsopenvectorlayerdialog.h
   ogr/qgsogrhelperfunctions.h
   ogr/qgsnewogrconnection.h
   ogr/qgsvectorlayersaveasdialog.h
-
 
   attributetable/qgsfeaturemodel.h
 
@@ -798,6 +810,7 @@ SET(QGIS_GUI_UI_HDRS
   ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsmessagelogviewer.h
   ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsmessageviewer.h
   ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsowssourceselectbase.h
+  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsarcgisservicesourceselectbase.h
   ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsprojectionselectorbase.h
   ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsquerybuilderbase.h
   ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgssqlcomposerdialogbase.h

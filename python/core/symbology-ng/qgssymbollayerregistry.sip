@@ -52,7 +52,7 @@ Create a symbol layer of this type given the map of properties.
 Create widget for symbol layer of this type. Can return NULL if there's no GUI
  :rtype: QgsSymbolLayerWidget
 %End
-    virtual QgsSymbolLayer *createSymbolLayerFromSld( QDomElement & );
+    virtual QgsSymbolLayer *createSymbolLayerFromSld( QDomElement & ) /Factory/;
 %Docstring
 Create a symbol layer of this type given the map of properties.
  :rtype: QgsSymbolLayer
@@ -85,9 +85,9 @@ Convenience metadata class that uses static functions to create symbol layer and
 
 
 
-    virtual QgsSymbolLayer *createSymbolLayer( const QgsStringMap &map );
-    virtual QgsSymbolLayerWidget *createSymbolLayerWidget( const QgsVectorLayer *vl );
-    virtual QgsSymbolLayer *createSymbolLayerFromSld( QDomElement &elem );
+    virtual QgsSymbolLayer *createSymbolLayer( const QgsStringMap &map ) /Factory/;
+    virtual QgsSymbolLayerWidget *createSymbolLayerWidget( const QgsVectorLayer *vl ) /Factory/;
+    virtual QgsSymbolLayer *createSymbolLayerFromSld( QDomElement &elem ) /Factory/;
     virtual void resolvePaths( QgsStringMap &properties, const QgsPathResolver &pathResolver, bool saving );
 
   protected:
@@ -133,7 +133,7 @@ create a new instance of symbol layer given symbol layer name and properties
  :rtype: QgsSymbolLayer
 %End
 
-    QgsSymbolLayer *createSymbolLayerFromSld( const QString &name, QDomElement &element ) const;
+    QgsSymbolLayer *createSymbolLayerFromSld( const QString &name, QDomElement &element ) const /Factory/;
 %Docstring
 create a new instance of symbol layer given symbol layer name and SLD
  :rtype: QgsSymbolLayer

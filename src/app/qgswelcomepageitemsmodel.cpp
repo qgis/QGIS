@@ -42,10 +42,10 @@ void QgsWelcomePageItemDelegate::paint( QPainter *painter, const QStyleOptionVie
   QAbstractTextDocumentLayout::PaintContext ctx;
   QStyleOptionViewItem optionV4 = option;
 
-  QColor color;
+  QColor color = optionV4.palette.color( QPalette::Active, QPalette::Window );
   if ( option.state & QStyle::State_Selected && option.state & QStyle::State_HasFocus )
   {
-    color = QColor( 255, 255, 255, 60 );
+    color.setAlpha( 40 );
     ctx.palette.setColor( QPalette::Text, optionV4.palette.color( QPalette::Active, QPalette::HighlightedText ) );
 
     QStyle *style = QApplication::style();
@@ -53,7 +53,10 @@ void QgsWelcomePageItemDelegate::paint( QPainter *painter, const QStyleOptionVie
   }
   else if ( option.state & QStyle::State_Enabled )
   {
-    color = QColor( 100, 100, 100, 30 );
+    if ( option.state & QStyle::State_Selected )
+    {
+      color.setAlpha( 40 );
+    }
     ctx.palette.setColor( QPalette::Text, optionV4.palette.color( QPalette::Active, QPalette::Text ) );
 
     QStyle *style = QApplication::style();
@@ -61,7 +64,6 @@ void QgsWelcomePageItemDelegate::paint( QPainter *painter, const QStyleOptionVie
   }
   else
   {
-    color = QColor( 100, 100, 100, 30 );
     ctx.palette.setColor( QPalette::Text, optionV4.palette.color( QPalette::Disabled, QPalette::Text ) );
   }
 

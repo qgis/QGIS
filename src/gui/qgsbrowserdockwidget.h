@@ -92,7 +92,7 @@ class GUI_EXPORT QgsBrowserDockWidget : public QgsDockWidget, private Ui::QgsBro
     //! Toggle fast scan
     void toggleFastScan();
 
-    //! Selection hass changed
+    //! Selection has changed
     void selectionChanged( const QItemSelection &selected, const QItemSelection &deselected );
     //! Splitter has been moved
     void splitterMoved();
@@ -102,6 +102,8 @@ class GUI_EXPORT QgsBrowserDockWidget : public QgsDockWidget, private Ui::QgsBro
     void openFile( const QString & );
     //! Emitted when drop uri list needs to be handled
     void handleDropUriList( const QgsMimeDataUtils::UriList & );
+    //! Connections changed in the browser
+    void connectionsChanged();
 
   protected:
     //! Show event override

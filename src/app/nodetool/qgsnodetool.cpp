@@ -1313,7 +1313,7 @@ void QgsNodeTool::startDraggingEdge( const QgsPointLocator::Match &m, const QgsP
   Q_FOREACH ( const Vertex &v, movingVertices )
   {
     mDraggingExtraVertices << v;
-    mDraggingExtraVerticesOffset << ( geom.vertexAt( v.vertexId ) - layerPoint );
+    mDraggingExtraVerticesOffset << ( geom.vertexAt( v.vertexId ) - QgsPoint( layerPoint ) );
   }
 
   mOverrideCadPoints.clear();
@@ -1639,10 +1639,10 @@ void QgsNodeTool::deleteVertex()
     int vertexId = vertex.vertexId;
 
     // if next vertex is not available, use the previous one
-    if ( geom.vertexAt( vertexId ) == QgsPointXY() )
+    if ( geom.vertexAt( vertexId ) == QgsPoint() )
       vertexId -= 1;
 
-    if ( geom.vertexAt( vertexId ) != QgsPointXY() )
+    if ( geom.vertexAt( vertexId ) != QgsPoint() )
     {
       QList<Vertex> nodes_new;
       nodes_new << Vertex( vertex.layer, vertex.fid, vertexId );

@@ -115,7 +115,7 @@ class HubDistanceLines(QgisAlgorithm):
 
         distance = QgsDistanceArea()
         distance.setSourceCrs(layerPoints.crs())
-        distance.setEllipsoid(QgsProject.instance().ellipsoid())
+        distance.setEllipsoid(context.project().ellipsoid())
 
         # Scan source points, find nearest hub, and write to output file
         features = QgsProcessingUtils.getFeatures(layerPoints, context)

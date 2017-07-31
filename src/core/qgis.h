@@ -120,6 +120,13 @@ class CORE_EXPORT Qgis
      *  \since QGIS 3.0 */
     static const double DEFAULT_Z_COORDINATE;
 
+    /**
+     * UI scaling factor. This should be applied to all widget sizes obtained from font metrics,
+     * to account for differences in the default font sizes across different platforms.
+     *  \since QGIS 3.0
+    */
+    static const double UI_SCALE_FACTOR;
+
 };
 
 // hack to workaround warnings when casting void pointers

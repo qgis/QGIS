@@ -254,9 +254,9 @@ class CORE_EXPORT QgsSymbolLayerUtils
 
     static bool createSymbolLayerListFromSld( QDomElement &element, QgsWkbTypes::GeometryType geomType, QgsSymbolLayerList &layers );
 
-    static QgsSymbolLayer *createFillLayerFromSld( QDomElement &element );
-    static QgsSymbolLayer *createLineLayerFromSld( QDomElement &element );
-    static QgsSymbolLayer *createMarkerLayerFromSld( QDomElement &element );
+    static QgsSymbolLayer *createFillLayerFromSld( QDomElement &element ) SIP_FACTORY;
+    static QgsSymbolLayer *createLineLayerFromSld( QDomElement &element ) SIP_FACTORY;
+    static QgsSymbolLayer *createMarkerLayerFromSld( QDomElement &element ) SIP_FACTORY;
 
     static bool convertPolygonSymbolizerToPointMarker( QDomElement &element, QgsSymbolLayerList &layerList );
     static bool hasExternalGraphic( QDomElement &element );
@@ -332,6 +332,14 @@ class CORE_EXPORT QgsSymbolLayerUtils
     static void createDisplacementElement( QDomDocument &doc, QDomElement &element, QPointF offset );
     static bool displacementFromSldElement( QDomElement &element, QPointF &offset );
 
+    /**
+     * \brief Creates a SE 1.1 anchor point element as a child of the specified element
+     * \param doc The document
+     * \param element The parent element
+     * \param anchor An anchor specification, with values between 0 and 1
+     */
+    static void createAnchorPointElement( QDomDocument &doc, QDomElement &element, QPointF anchor );
+
     static void createOnlineResourceElement( QDomDocument &doc, QDomElement &element, const QString &path, const QString &format );
     static bool onlineResourceFromSldElement( QDomElement &element, QString &path, QString &format );
 
@@ -365,6 +373,23 @@ class CORE_EXPORT QgsSymbolLayerUtils
 
     static void clearSymbolMap( QgsSymbolMap &symbols );
 
+    /**
+     * Creates new mime data from a \a symbol.
+     * This also sets the mime color data to match the symbol's color, so that copied symbols
+     * can be paste in places where a color is expected.
+     * \see symbolFromMimeData()
+     * \since QGIS 3.0
+     */
+    static QMimeData *symbolToMimeData( QgsSymbol *symbol ) SIP_FACTORY;
+
+    /**
+     * Attempts to parse \a mime data as a symbol. A new symbol instance will be returned
+     * if the data was successfully converted to a symbol.
+     * \see symbolToMimeData()
+     * \since QGIS 3.0
+     */
+    static QgsSymbol *symbolFromMimeData( const QMimeData *data ) SIP_FACTORY;
+
     /** Creates a color ramp from the settings encoded in an XML element
      * \param element DOM element
      * \returns new color ramp. Caller takes responsibility for deleting the returned value.
@@ -395,7 +420,7 @@ class CORE_EXPORT QgsSymbolLayerUtils
      *
      * \see colorRampToVariant()
      */
-    static QgsColorRamp *loadColorRamp( const QVariant &value );
+    static QgsColorRamp *loadColorRamp( const QVariant &value ) SIP_FACTORY;
 
     /**
      * Returns a friendly display name for a color
@@ -421,7 +446,7 @@ class CORE_EXPORT QgsSymbolLayerUtils
      * \see colorFromMimeData
      * \since QGIS 2.5
      */
-    static QMimeData *colorToMimeData( const QColor &color );
+    static QMimeData *colorToMimeData( const QColor &color ) SIP_FACTORY;
 
     /**
      * Attempts to parse mime data as a color
@@ -449,7 +474,7 @@ class CORE_EXPORT QgsSymbolLayerUtils
      * \returns mime data containing encoded colors
      * \since QGIS 2.5
      */
-    static QMimeData *colorListToMimeData( const QgsNamedColorList &colorList, const bool allFormats = true );
+    static QMimeData *colorListToMimeData( const QgsNamedColorList &colorList, const bool allFormats = true ) SIP_FACTORY;
 
     /**
      * Exports colors to a gpl GIMP palette file

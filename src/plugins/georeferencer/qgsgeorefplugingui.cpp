@@ -1841,7 +1841,7 @@ void QgsGeorefPluginGui::showGDALScript( const QStringList &commands )
   layout->addWidget( bbxGdalScript );
 
   QDialog *dlgShowGdalScrip = new QDialog( this );
-  dlgShowGdalScrip->setWindowTitle( tr( "GDAL script" ) );
+  dlgShowGdalScrip->setWindowTitle( tr( "GDAL Script" ) );
   dlgShowGdalScrip->setLayout( layout );
 
   connect( bbxGdalScript, &QDialogButtonBox::accepted, dlgShowGdalScrip, &QDialog::accept );

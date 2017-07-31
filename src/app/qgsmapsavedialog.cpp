@@ -18,25 +18,33 @@
 #include "qgsmapsavedialog.h"
 
 #include "qgis.h"
+#include "qgisapp.h"
 #include "qgsscalecalculator.h"
 #include "qgsdecorationitem.h"
 #include "qgsexpressioncontext.h"
 #include "qgsextentgroupbox.h"
 #include "qgsmapsettings.h"
 #include "qgsmapsettingsutils.h"
+#include "qgsmaprenderertask.h"
 #include "qgsproject.h"
 #include "qgssettings.h"
 
+#include <QClipboard>
 #include <QCheckBox>
-#include <QSpinBox>
+#include <QFileDialog>
+#include <QImage>
 #include <QList>
+#include <QPainter>
+#include <QPrinter>
+#include <QSpinBox>
 
 Q_GUI_EXPORT extern int qt_defaultDpiX();
 
-QgsMapSaveDialog::QgsMapSaveDialog( QWidget *parent, QgsMapCanvas *mapCanvas, const QString &activeDecorations, DialogType type )
+QgsMapSaveDialog::QgsMapSaveDialog( QWidget *parent, QgsMapCanvas *mapCanvas, QList< QgsDecorationItem * > decorations, QList< QgsAnnotation *> annotations, DialogType type )
   : QDialog( parent )
   , mDialogType( type )
   , mMapCanvas( mapCanvas )
+  , mAnnotations( annotations )
 {
   setupUi( this );
 
@@ -47,16 +55,26 @@ QgsMapSaveDialog::QgsMapSaveDialog( QWidget *parent, QgsMapCanvas *mapCanvas, co
   mDpi = ms.outputDpi();
   mSize = ms.outputSize();
 
-  mResolutionSpinBox->setValue( qt_defaultDpiX() );
+  mResolutionSpinBox->setValue( mDpi );
 
   mExtentGroupBox->setOutputCrs( ms.destinationCrs() );
   mExtentGroupBox->setCurrentExtent( mExtent, ms.destinationCrs() );
   mExtentGroupBox->setOutputExtentFromCurrent();
+  mExtentGroupBox->setMapCanvas( mapCanvas );
 
   mScaleWidget->setScale( ms.scale() );
   mScaleWidget->setMapCanvas( mMapCanvas );
   mScaleWidget->setShowCurrentScaleButton( true );
 
+  QString activeDecorations;
+  Q_FOREACH ( QgsDecorationItem *decoration, decorations )
+  {
+    mDecorations << decoration;
+    if ( activeDecorations.isEmpty() )
+      activeDecorations = decoration->name().toLower();
+    else
+      activeDecorations += QString( ", %1" ).arg( decoration->name().toLower() );
+  }
   mDrawDecorations->setText( tr( "Draw active decorations: %1" ).arg( !activeDecorations.isEmpty() ? activeDecorations : tr( "none" ) ) );
 
   connect( mResolutionSpinBox, static_cast < void ( QSpinBox::* )( int ) > ( &QSpinBox::valueChanged ), this, &QgsMapSaveDialog::updateDpi );
@@ -64,6 +82,7 @@ QgsMapSaveDialog::QgsMapSaveDialog( QWidget *parent, QgsMapCanvas *mapCanvas, co
   connect( mOutputHeightSpinBox, static_cast < void ( QSpinBox::* )( int ) > ( &QSpinBox::valueChanged ), this, &QgsMapSaveDialog::updateOutputHeight );
   connect( mExtentGroupBox, &QgsExtentGroupBox::extentChanged, this, &QgsMapSaveDialog::updateExtent );
   connect( mScaleWidget, &QgsScaleWidget::scaleChanged, this, &QgsMapSaveDialog::updateScale );
+  connect( mLockAspectRatio, &QgsRatioLockButton::lockChanged, this, &QgsMapSaveDialog::lockChanged );
 
   updateOutputSize();
 
@@ -90,8 +109,16 @@ QgsMapSaveDialog::QgsMapSaveDialog( QWidget *parent, QgsMapCanvas *mapCanvas, co
     }
     mSaveAsRaster->setVisible( true );
 
-    this->setWindowTitle( tr( "Save map as PDF" ) );
+    this->setWindowTitle( tr( "Save Map as PDF" ) );
   }
+  else
+  {
+    QPushButton *button = new QPushButton( tr( "Copy to clipboard" ) );
+    buttonBox->addButton( button, QDialogButtonBox::ResetRole );
+    connect( button, &QPushButton::clicked, this, &QgsMapSaveDialog::copyToClipboard );
+  }
+
+  connect( buttonBox, &QDialogButtonBox::accepted, this, &QgsMapSaveDialog::accepted );
 }
 
 void QgsMapSaveDialog::updateDpi( int dpi )
@@ -107,12 +134,25 @@ void QgsMapSaveDialog::updateOutputWidth( int width )
   double scale = ( double )width / mSize.width();
   double adjustment = ( ( mExtent.width() * scale ) - mExtent.width() ) / 2;
 
+  mSize.setWidth( width );
+
   mExtent.setXMinimum( mExtent.xMinimum() - adjustment );
   mExtent.setXMaximum( mExtent.xMaximum() + adjustment );
 
-  whileBlocking( mExtentGroupBox )->setOutputExtentFromUser( mExtent, mExtentGroupBox->currentCrs() );
+  if ( mLockAspectRatio->locked() )
+  {
+    int height = width * mExtentGroupBox->ratio().height() / mExtentGroupBox->ratio().width();
+    double scale = ( double )height / mSize.height();
+    double adjustment = ( ( mExtent.height() * scale ) - mExtent.height() ) / 2;
 
-  mSize.setWidth( width );
+    whileBlocking( mOutputHeightSpinBox )->setValue( height );
+    mSize.setHeight( height );
+
+    mExtent.setYMinimum( mExtent.yMinimum() - adjustment );
+    mExtent.setYMaximum( mExtent.yMaximum() + adjustment );
+  }
+
+  whileBlocking( mExtentGroupBox )->setOutputExtentFromUser( mExtent, mExtentGroupBox->currentCrs() );
 }
 
 void QgsMapSaveDialog::updateOutputHeight( int height )
@@ -120,21 +160,62 @@ void QgsMapSaveDialog::updateOutputHeight( int height )
   double scale = ( double )height / mSize.height();
   double adjustment = ( ( mExtent.height() * scale ) - mExtent.height() ) / 2;
 
+  mSize.setHeight( height );
+
   mExtent.setYMinimum( mExtent.yMinimum() - adjustment );
   mExtent.setYMaximum( mExtent.yMaximum() + adjustment );
 
-  whileBlocking( mExtentGroupBox )->setOutputExtentFromUser( mExtent, mExtentGroupBox->currentCrs() );
+  if ( mLockAspectRatio->locked() )
+  {
+    int width = height * mExtentGroupBox->ratio().width() / mExtentGroupBox->ratio().height();
+    double scale = ( double )width / mSize.width();
+    double adjustment = ( ( mExtent.width() * scale ) - mExtent.width() ) / 2;
 
-  mSize.setHeight( height );
+    whileBlocking( mOutputWidthSpinBox )->setValue( width );
+    mSize.setWidth( width );
+
+    mExtent.setXMinimum( mExtent.xMinimum() - adjustment );
+    mExtent.setXMaximum( mExtent.xMaximum() + adjustment );
+  }
+
+  whileBlocking( mExtentGroupBox )->setOutputExtentFromUser( mExtent, mExtentGroupBox->currentCrs() );
 }
 
 void QgsMapSaveDialog::updateExtent( const QgsRectangle &extent )
 {
-  mSize.setWidth( mSize.width() * extent.width() / mExtent.width() );
-  mSize.setHeight( mSize.height() * extent.height() / mExtent.height() );
-  mExtent = extent;
+  int currentDpi = 0;
 
+  // reset scale to properly sync output width and height when extent set using
+  // current map view, layer extent, or drawn on canvas buttons
+  if ( mExtentGroupBox->extentState() != QgsExtentGroupBox::UserExtent )
+  {
+    currentDpi = mDpi;
+
+    QgsMapSettings ms = mMapCanvas->mapSettings();
+    ms.setRotation( 0 );
+    mDpi = ms.outputDpi();
+    mSize.setWidth( ms.outputSize().width() * extent.width() / ms.visibleExtent().width() );
+    mSize.setHeight( ms.outputSize().height() * extent.height() / ms.visibleExtent().height() );
+
+    whileBlocking( mScaleWidget )->setScale( ms.scale() );
+
+    if ( currentDpi != mDpi )
+    {
+      updateDpi( currentDpi );
+    }
+  }
+  else
+  {
+    mSize.setWidth( mSize.width() * extent.width() / mExtent.width() );
+    mSize.setHeight( mSize.height() * extent.height() / mExtent.height() );
+  }
   updateOutputSize();
+
+  mExtent = extent;
+  if ( mLockAspectRatio->locked() )
+  {
+    mExtentGroupBox->setRatio( QSize( mSize.width(), mSize.height() ) );
+  }
 }
 
 void QgsMapSaveDialog::updateScale( double scale )
@@ -221,4 +302,160 @@ void QgsMapSaveDialog::applyMapSettings( QgsMapSettings &mapSettings )
                     << QgsExpressionContextUtils::mapSettingsScope( mapSettings );
 
   mapSettings.setExpressionContext( expressionContext );
+}
+
+void QgsMapSaveDialog::lockChanged( const bool locked )
+{
+  if ( locked )
+  {
+    mExtentGroupBox->setRatio( QSize( mOutputWidthSpinBox->value(), mOutputHeightSpinBox->value() ) );
+  }
+  else
+  {
+    mExtentGroupBox->setRatio( QSize( 0, 0 ) );
+  }
+}
+
+void QgsMapSaveDialog::copyToClipboard()
+{
+  QgsMapSettings ms = QgsMapSettings();
+  applyMapSettings( ms );
+
+  QPainter *p;
+  QImage *img;
+
+  img = new QImage( ms.outputSize(), QImage::Format_ARGB32 );
+  if ( img->isNull() )
+  {
+    QgisApp::instance()->messageBar()->pushWarning( tr( "Save as image" ), tr( "Could not allocate required memory for image" ) );
+    return;
+  }
+
+  img->setDotsPerMeterX( 1000 * ms.outputDpi() / 25.4 );
+  img->setDotsPerMeterY( 1000 * ms.outputDpi() / 25.4 );
+
+  p = new QPainter( img );
+
+  QgsMapRendererTask *mapRendererTask = new QgsMapRendererTask( ms, p );
+
+  if ( drawAnnotations() )
+  {
+    mapRendererTask->addAnnotations( mAnnotations );
+  }
+
+  if ( drawDecorations() )
+  {
+    mapRendererTask->addDecorations( mDecorations );
+  }
+
+  connect( mapRendererTask, &QgsMapRendererTask::renderingComplete, [ = ]
+  {
+    QApplication::clipboard()->setImage( *img, QClipboard::Clipboard );
+    QApplication::restoreOverrideCursor();
+    QgisApp::instance()->messageBar()->pushSuccess( tr( "Save as image" ), tr( "Successfully copied map to clipboard" ) );
+
+    delete p;
+    delete img;
+    setEnabled( true );
+  } );
+  connect( mapRendererTask, &QgsMapRendererTask::errorOccurred, [ = ]( int )
+  {
+    QApplication::restoreOverrideCursor();
+    QgisApp::instance()->messageBar()->pushWarning( tr( "Save as PDF" ), tr( "Could not copy the map to clipboard" ) );
+
+    delete p;
+    delete img;
+    setEnabled( true );
+  } );
+
+  setEnabled( false );
+
+  QApplication::setOverrideCursor( Qt::WaitCursor );
+  QgsApplication::taskManager()->addTask( mapRendererTask );
+}
+
+void QgsMapSaveDialog::accepted()
+{
+  if ( mDialogType == Image )
+  {
+    QPair< QString, QString> fileNameAndFilter = QgsGuiUtils::getSaveAsImageName( QgisApp::instance(), tr( "Choose a file name to save the map image as" ) );
+    if ( fileNameAndFilter.first != QLatin1String( "" ) )
+    {
+      QgsMapSettings ms = QgsMapSettings();
+      applyMapSettings( ms );
+
+      QgsMapRendererTask *mapRendererTask = new QgsMapRendererTask( ms, fileNameAndFilter.first, fileNameAndFilter.second );
+
+      if ( drawAnnotations() )
+      {
+        mapRendererTask->addAnnotations( mAnnotations );
+      }
+
+      if ( drawDecorations() )
+      {
+        mapRendererTask->addDecorations( mDecorations );
+      }
+
+      mapRendererTask->setSaveWorldFile( saveWorldFile() );
+
+      connect( mapRendererTask, &QgsMapRendererTask::renderingComplete, [ = ]
+      {
+        QgisApp::instance()->messageBar()->pushSuccess( tr( "Save as image" ), tr( "Successfully saved map to image" ) );
+      } );
+      connect( mapRendererTask, &QgsMapRendererTask::errorOccurred, [ = ]( int error )
+      {
+        switch ( error )
+        {
+          case QgsMapRendererTask::ImageAllocationFail:
+          {
+            QgisApp::instance()->messageBar()->pushWarning( tr( "Save as image" ), tr( "Could not allocate required memory for image" ) );
+            break;
+          }
+          case QgsMapRendererTask::ImageSaveFail:
+          {
+            QgisApp::instance()->messageBar()->pushWarning( tr( "Save as image" ), tr( "Could not save the map to file" ) );
+            break;
+          }
+        }
+      } );
+
+      QgsApplication::taskManager()->addTask( mapRendererTask );
+    }
+  }
+  else
+  {
+    QgsSettings settings;
+    QString lastUsedDir = settings.value( QStringLiteral( "UI/lastSaveAsImageDir" ), QDir::homePath() ).toString();
+    QString fileName = QFileDialog::getSaveFileName( QgisApp::instance(), tr( "Save map as" ), lastUsedDir, tr( "PDF Format" ) + " (*.pdf *.PDF)" );
+    if ( !fileName.isEmpty() )
+    {
+      QgsMapSettings ms = QgsMapSettings();
+      applyMapSettings( ms );
+
+      QgsMapRendererTask *mapRendererTask = new QgsMapRendererTask( ms, fileName, QStringLiteral( "PDF" ), saveAsRaster() );
+
+      if ( drawAnnotations() )
+      {
+        mapRendererTask->addAnnotations( mAnnotations );
+      }
+
+      if ( drawDecorations() )
+      {
+        mapRendererTask->addDecorations( mDecorations );
+      }
+
+      mapRendererTask->setSaveWorldFile( saveWorldFile() );
+
+      connect( mapRendererTask, &QgsMapRendererTask::renderingComplete, [ = ]
+      {
+        QgisApp::instance()->messageBar()->pushSuccess( tr( "Save as PDF" ), tr( "Successfully saved map to PDF" ) );
+      } );
+      connect( mapRendererTask, &QgsMapRendererTask::errorOccurred, [ = ]( int )
+      {
+        QgisApp::instance()->messageBar()->pushWarning( tr( "Save as PDF" ), tr( "Could not save the map to PDF" ) );
+      } );
+
+      QgsApplication::taskManager()->addTask( mapRendererTask );
+    }
+  }
 }

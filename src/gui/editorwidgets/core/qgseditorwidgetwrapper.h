@@ -122,7 +122,7 @@ class GUI_EXPORT QgsEditorWidgetWrapper : public QgsWidgetWrapper
      *
      * \param enabled  Enable or Disable?
      */
-    void setEnabled( bool enabled ) override;
+    virtual void setEnabled( bool enabled ) override;
 
     /** Sets the widget to display in an indeterminate "mixed value" state.
      * \since QGIS 2.16
@@ -137,6 +137,18 @@ class GUI_EXPORT QgsEditorWidgetWrapper : public QgsWidgetWrapper
      * \since QGIS 2.16
      */
     void updateConstraint( const QgsFeature &featureContext, QgsFieldConstraints::ConstraintOrigin constraintOrigin = QgsFieldConstraints::ConstraintOriginNotSet );
+
+    /**
+     * Update constraint on a feature coming from a specific layer.
+     * \param layer The vector layer where the feature is defined
+     * \param index The index of the field to check
+     * \param feature The feature to use to evaluate the constraint
+     * \param constraintOrigin Optional origin for constraints to check. This
+     * can be used to limit the constraints tested to only provider or layer
+     * based constraints.
+     * \since QGIS 3.0
+     */
+    void updateConstraint( const QgsVectorLayer *layer, int index, const QgsFeature &feature, QgsFieldConstraints::ConstraintOrigin constraintOrigin = QgsFieldConstraints::ConstraintOriginNotSet );
 
     /**
      * Get the current constraint status.

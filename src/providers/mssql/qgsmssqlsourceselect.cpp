@@ -118,20 +118,21 @@ void QgsMssqlSourceSelectDelegate::setModelData( QWidget *editor, QAbstractItemM
     model->setData( index, le->text() );
 }
 
-QgsMssqlSourceSelect::QgsMssqlSourceSelect( QWidget *parent, Qt::WindowFlags fl, QgsProviderRegistry::WidgetMode widgetMode )
-  : QDialog( parent, fl )
-  , mWidgetMode( widgetMode )
+QgsMssqlSourceSelect::QgsMssqlSourceSelect( QWidget *parent, Qt::WindowFlags fl, QgsProviderRegistry::WidgetMode theWidgetMode )
+  : QgsAbstractDataSourceWidget( parent, fl, theWidgetMode )
   , mColumnTypeThread( nullptr )
   , mUseEstimatedMetadata( false )
 {
   setupUi( this );
 
-  setWindowTitle( tr( "Add MSSQL Table(s)" ) );
-
-  if ( mWidgetMode != QgsProviderRegistry::WidgetMode::None )
+  if ( widgetMode() != QgsProviderRegistry::WidgetMode::None )
   {
     buttonBox->removeButton( buttonBox->button( QDialogButtonBox::Close ) );
     mHoldDialogOpen->hide();
+  }
+  else
+  {
+    setWindowTitle( tr( "Add MSSQL Table(s)" ) );
   }
 
   mAddButton = new QPushButton( tr( "&Add" ) );
@@ -141,7 +142,7 @@ QgsMssqlSourceSelect::QgsMssqlSourceSelect( QWidget *parent, Qt::WindowFlags fl,
   mBuildQueryButton->setToolTip( tr( "Set Filter" ) );
   mBuildQueryButton->setDisabled( true );
 
-  if ( mWidgetMode != QgsProviderRegistry::WidgetMode::Manager )
+  if ( widgetMode() != QgsProviderRegistry::WidgetMode::Manager )
   {
     buttonBox->addButton( mAddButton, QDialogButtonBox::ActionRole );
     connect( mAddButton, &QAbstractButton::clicked, this, &QgsMssqlSourceSelect::addTables );
@@ -454,7 +455,7 @@ void QgsMssqlSourceSelect::addTables()
   else
   {
     emit addDatabaseLayers( mSelectedTables, QStringLiteral( "mssql" ) );
-    if ( !mHoldDialogOpen->isChecked() )
+    if ( !mHoldDialogOpen->isChecked() && widgetMode() == QgsProviderRegistry::WidgetMode::None )
     {
       accept();
     }
@@ -655,6 +656,11 @@ QStringList QgsMssqlSourceSelect::selectedTables()
 QString QgsMssqlSourceSelect::connectionInfo()
 {
   return mConnInfo;
+}
+
+void QgsMssqlSourceSelect::refresh()
+{
+  populateConnectionList();
 }
 
 void QgsMssqlSourceSelect::setSql( const QModelIndex &index )

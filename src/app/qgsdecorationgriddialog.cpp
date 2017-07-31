@@ -31,10 +31,11 @@
 QgsDecorationGridDialog::QgsDecorationGridDialog( QgsDecorationGrid &deco, QWidget *parent )
   : QDialog( parent )
   , mDeco( deco )
-  , mLineSymbol( nullptr )
-  , mMarkerSymbol( nullptr )
 {
   setupUi( this );
+
+  mMarkerSymbolButton->setSymbolType( QgsSymbol::Marker );
+  mLineSymbolButton->setSymbolType( QgsSymbol::Line );
 
   mAnnotationFontButton->setMode( QgsFontButton::ModeQFont );
 
@@ -65,6 +66,9 @@ QgsDecorationGridDialog::QgsDecorationGridDialog( QgsDecorationGrid &deco, QWidg
 
   connect( buttonBox->button( QDialogButtonBox::Apply ), &QAbstractButton::clicked, this, &QgsDecorationGridDialog::apply );
   connect( mAnnotationFontButton, &QgsFontButton::changed, this, &QgsDecorationGridDialog::annotationFontChanged );
+
+  mMarkerSymbolButton->setMapCanvas( QgisApp::instance()->mapCanvas() );
+  mLineSymbolButton->setMapCanvas( QgisApp::instance()->mapCanvas() );
 }
 
 void QgsDecorationGridDialog::updateGuiElements()
@@ -88,22 +92,8 @@ void QgsDecorationGridDialog::updateGuiElements()
   // mLineWidthSpinBox->setValue( gridPen.widthF() );
   // mLineColorButton->setColor( gridPen.color() );
 
-  if ( mLineSymbol )
-    delete mLineSymbol;
-  if ( mDeco.lineSymbol() )
-  {
-    mLineSymbol = static_cast<QgsLineSymbol *>( mDeco.lineSymbol()->clone() );
-    QIcon icon = QgsSymbolLayerUtils::symbolPreviewIcon( mLineSymbol, mLineSymbolButton->iconSize() );
-    mLineSymbolButton->setIcon( icon );
-  }
-  if ( mMarkerSymbol )
-    delete mMarkerSymbol;
-  if ( mDeco.markerSymbol() )
-  {
-    mMarkerSymbol = static_cast<QgsMarkerSymbol *>( mDeco.markerSymbol()->clone() );
-    QIcon icon = QgsSymbolLayerUtils::symbolPreviewIcon( mMarkerSymbol, mMarkerSymbolButton->iconSize() );
-    mMarkerSymbolButton->setIcon( icon );
-  }
+  mLineSymbolButton->setSymbol( mDeco.lineSymbol()->clone() );
+  mMarkerSymbolButton->setSymbol( mDeco.markerSymbol()->clone() );
 
   whileBlocking( mAnnotationFontButton )->setCurrentFont( mDeco.gridAnnotationFont() );
 
@@ -157,26 +147,14 @@ void QgsDecorationGridDialog::updateDecoFromGui()
     mDeco.setGridAnnotationDirection( QgsDecorationGrid::BoundaryDirection );
   }
   mDeco.setGridAnnotationPrecision( mCoordinatePrecisionSpinBox->value() );
-  if ( mLineSymbol )
-  {
-    mDeco.setLineSymbol( mLineSymbol );
-    mLineSymbol = mDeco.lineSymbol()->clone();
-  }
-  if ( mMarkerSymbol )
-  {
-    mDeco.setMarkerSymbol( mMarkerSymbol );
-    mMarkerSymbol = mDeco.markerSymbol()->clone();
-  }
+  mDeco.setLineSymbol( mLineSymbolButton->clonedSymbol< QgsLineSymbol >() );
+  mDeco.setMarkerSymbol( mMarkerSymbolButton->clonedSymbol< QgsMarkerSymbol >() );
 }
 
 QgsDecorationGridDialog::~QgsDecorationGridDialog()
 {
   QgsSettings settings;
   settings.setValue( QStringLiteral( "/Windows/DecorationGrid/geometry" ), saveGeometry() );
-  if ( mLineSymbol )
-    delete mLineSymbol;
-  if ( mMarkerSymbol )
-    delete mMarkerSymbol;
 }
 
 void QgsDecorationGridDialog::on_buttonBox_helpRequested()
@@ -208,53 +186,6 @@ void QgsDecorationGridDialog::on_mGridTypeComboBox_currentIndexChanged( int inde
   mLineSymbolButton->setEnabled( index == QgsDecorationGrid::Line );
   // mCrossWidthSpinBox->setEnabled( index == QgsDecorationGrid::Cross );
   mMarkerSymbolButton->setEnabled( index == QgsDecorationGrid::Marker );
-}
-
-
-void QgsDecorationGridDialog::on_mLineSymbolButton_clicked()
-{
-  if ( ! mLineSymbol )
-    return;
-
-  QgsLineSymbol *lineSymbol = mLineSymbol->clone();
-  QgsSymbolSelectorDialog dlg( lineSymbol, QgsStyle::defaultStyle(), nullptr, this );
-  if ( dlg.exec() == QDialog::Rejected )
-  {
-    delete lineSymbol;
-  }
-  else
-  {
-    delete mLineSymbol;
-    mLineSymbol = lineSymbol;
-    if ( mLineSymbol )
-    {
-      QIcon icon = QgsSymbolLayerUtils::symbolPreviewIcon( mLineSymbol, mLineSymbolButton->iconSize() );
-      mLineSymbolButton->setIcon( icon );
-    }
-  }
-}
-
-void QgsDecorationGridDialog::on_mMarkerSymbolButton_clicked()
-{
-  if ( ! mMarkerSymbol )
-    return;
-
-  QgsMarkerSymbol *markerSymbol = mMarkerSymbol->clone();
-  QgsSymbolSelectorDialog dlg( markerSymbol, QgsStyle::defaultStyle(), nullptr, this );
-  if ( dlg.exec() == QDialog::Rejected )
-  {
-    delete markerSymbol;
-  }
-  else
-  {
-    delete mMarkerSymbol;
-    mMarkerSymbol = markerSymbol;
-    if ( mMarkerSymbol )
-    {
-      QIcon icon = QgsSymbolLayerUtils::symbolPreviewIcon( mMarkerSymbol, mMarkerSymbolButton->iconSize() );
-      mMarkerSymbolButton->setIcon( icon );
-    }
-  }
 }
 
 void QgsDecorationGridDialog::on_mPbtnUpdateFromExtents_clicked()

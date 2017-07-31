@@ -241,7 +241,7 @@ void QgsWMSConnectionItem::editConnection()
   if ( nc.exec() )
   {
     // the parent should be updated
-    mParent->refresh();
+    mParent->refreshConnections();
   }
 }
 
@@ -249,7 +249,7 @@ void QgsWMSConnectionItem::deleteConnection()
 {
   QgsWMSConnection::deleteConnection( mName );
   // the parent should be updated
-  mParent->refresh();
+  mParent->refreshConnections();
 }
 #endif
 
@@ -418,13 +418,7 @@ QList<QAction *> QgsWMSRootItem::actions()
 QWidget *QgsWMSRootItem::paramWidget()
 {
   QgsWMSSourceSelect *select = new QgsWMSSourceSelect( nullptr, 0, QgsProviderRegistry::WidgetMode::Manager );
-  connect( select, &QgsWMSSourceSelect::connectionsChanged, this, &QgsWMSRootItem::connectionsChanged );
   return select;
-}
-
-void QgsWMSRootItem::connectionsChanged()
-{
-  refresh();
 }
 
 void QgsWMSRootItem::newConnection()
@@ -433,7 +427,7 @@ void QgsWMSRootItem::newConnection()
 
   if ( nc.exec() )
   {
-    refresh();
+    refreshConnections();
   }
 }
 #endif

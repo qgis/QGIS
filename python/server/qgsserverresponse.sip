@@ -49,7 +49,7 @@ destructor
  :rtype: str
 %End
 
-    virtual QMap<QString, QString> headers( ) const = 0;
+    virtual QMap<QString, QString> headers() const = 0;
 %Docstring
  Return the header value
  :rtype: QMap<str, QString>
@@ -68,7 +68,7 @@ destructor
  \param code HTTP status code value
 %End
 
-    virtual int statusCode( ) const = 0;
+    virtual int statusCode() const = 0;
 %Docstring
  Return the http status code
  :rtype: int

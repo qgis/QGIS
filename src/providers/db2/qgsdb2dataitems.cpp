@@ -275,7 +275,7 @@ void QgsDb2ConnectionItem::editConnection()
   if ( nc.exec() )
   {
     // the parent should be updated
-    mParent->refresh();
+    mParent->refreshConnections();
   }
 }
 
@@ -292,7 +292,7 @@ void QgsDb2ConnectionItem::deleteConnection()
   settings.remove( key + "/password" );
   settings.remove( key + "/environment" );
   settings.remove( key );
-  mParent->refresh();
+  mParent->refreshConnections();
 }
 
 void QgsDb2ConnectionItem::refreshConnection()
@@ -453,7 +453,7 @@ void QgsDb2RootItem::newConnection()
   QgsDb2NewConnection newConnection( NULL, mName );
   if ( newConnection.exec() )
   {
-    refresh();
+    refreshConnections();
   }
 
 }

@@ -59,12 +59,12 @@ QgsDecorationNorthArrowDialog::QgsDecorationNorthArrowDialog( QgsDecorationNorth
   pbnChangeColor->setAllowOpacity( true );
   pbnChangeColor->setColor( mDeco.mColor );
   pbnChangeColor->setContext( QStringLiteral( "gui" ) );
-  pbnChangeColor->setColorDialogTitle( tr( "Select north arrow fill color" ) );
+  pbnChangeColor->setColorDialogTitle( tr( "Select North Arrow Fill Color" ) );
 
   pbnChangeOutlineColor->setAllowOpacity( true );
   pbnChangeOutlineColor->setColor( mDeco.mOutlineColor );
   pbnChangeOutlineColor->setContext( QStringLiteral( "gui" ) );
-  pbnChangeOutlineColor->setColorDialogTitle( tr( "Select north arrow outline color" ) );
+  pbnChangeOutlineColor->setColorDialogTitle( tr( "Select North Arrow Outline Color" ) );
 
   connect( pbnChangeColor, &QgsColorButton::colorChanged, this, [ = ]( QColor ) { drawNorthArrow(); } );
   connect( pbnChangeOutlineColor, &QgsColorButton::colorChanged, this, [ = ]( QColor ) { drawNorthArrow(); } );

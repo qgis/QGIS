@@ -337,15 +337,15 @@ Writes a symbol definition to XML
  :rtype: bool
 %End
 
-    static QgsSymbolLayer *createFillLayerFromSld( QDomElement &element );
+    static QgsSymbolLayer *createFillLayerFromSld( QDomElement &element ) /Factory/;
 %Docstring
  :rtype: QgsSymbolLayer
 %End
-    static QgsSymbolLayer *createLineLayerFromSld( QDomElement &element );
+    static QgsSymbolLayer *createLineLayerFromSld( QDomElement &element ) /Factory/;
 %Docstring
  :rtype: QgsSymbolLayer
 %End
-    static QgsSymbolLayer *createMarkerLayerFromSld( QDomElement &element );
+    static QgsSymbolLayer *createMarkerLayerFromSld( QDomElement &element ) /Factory/;
 %Docstring
  :rtype: QgsSymbolLayer
 %End
@@ -481,6 +481,14 @@ Create ogr feature style string for pen
  :rtype: bool
 %End
 
+    static void createAnchorPointElement( QDomDocument &doc, QDomElement &element, QPointF anchor );
+%Docstring
+ Creates a SE 1.1 anchor point element as a child of the specified element
+ \param doc The document
+ \param element The parent element
+ \param anchor An anchor specification, with values between 0 and 1
+%End
+
     static void createOnlineResourceElement( QDomDocument &doc, QDomElement &element, const QString &path, const QString &format );
     static bool onlineResourceFromSldElement( QDomElement &element, QString &path, QString &format );
 %Docstring
@@ -548,6 +556,25 @@ Writes a collection of symbols to XML with specified tagName for the top-level e
 
     static void clearSymbolMap( QgsSymbolMap &symbols );
 
+    static QMimeData *symbolToMimeData( QgsSymbol *symbol ) /Factory/;
+%Docstring
+ Creates new mime data from a ``symbol``.
+ This also sets the mime color data to match the symbol's color, so that copied symbols
+ can be paste in places where a color is expected.
+.. seealso:: symbolFromMimeData()
+.. versionadded:: 3.0
+ :rtype: QMimeData
+%End
+
+    static QgsSymbol *symbolFromMimeData( const QMimeData *data ) /Factory/;
+%Docstring
+ Attempts to parse ``mime`` data as a symbol. A new symbol instance will be returned
+ if the data was successfully converted to a symbol.
+.. seealso:: symbolToMimeData()
+.. versionadded:: 3.0
+ :rtype: QgsSymbol
+%End
+
     static QgsColorRamp *loadColorRamp( QDomElement &element ) /Factory/;
 %Docstring
  Creates a color ramp from the settings encoded in an XML element
@@ -577,7 +604,7 @@ Writes a collection of symbols to XML with specified tagName for the top-level e
  :rtype: QVariant
 %End
 
-    static QgsColorRamp *loadColorRamp( const QVariant &value );
+    static QgsColorRamp *loadColorRamp( const QVariant &value ) /Factory/;
 %Docstring
  Load a color ramp from a QVariantMap, wrapped in a QVariant.
  You can use QgsXmlUtils.readVariant to load it from an XML document.
@@ -605,7 +632,7 @@ Writes a collection of symbols to XML with specified tagName for the top-level e
  :rtype: list of QColor
 %End
 
-    static QMimeData *colorToMimeData( const QColor &color );
+    static QMimeData *colorToMimeData( const QColor &color ) /Factory/;
 %Docstring
  Creates mime data from a color. Sets both the mime data's color data, and the
  mime data's text with the color's hex code.
@@ -636,7 +663,7 @@ Writes a collection of symbols to XML with specified tagName for the top-level e
  :rtype: QgsNamedColorList
 %End
 
-    static QMimeData *colorListToMimeData( const QgsNamedColorList &colorList, const bool allFormats = true );
+    static QMimeData *colorListToMimeData( const QgsNamedColorList &colorList, const bool allFormats = true ) /Factory/;
 %Docstring
  Creates mime data from a list of named colors
  \param colorList list of named colors

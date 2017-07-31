@@ -26,6 +26,7 @@
 class QgsLayoutView;
 class QGraphicsRectItem;
 class QGraphicsEllipseItem;
+class QGraphicsPolygonItem;
 class QgsLayout;
 
 /**
@@ -195,6 +196,37 @@ class GUI_EXPORT QgsLayoutViewEllipticalRubberBand : public QgsLayoutViewRubberB
 
     //! Rubber band item
     QGraphicsEllipseItem *mRubberBandItem = nullptr;
+
+    //! Start of rubber band creation
+    QPointF mRubberBandStartPos;
+
+};
+
+/**
+ * \ingroup gui
+ * QgsLayoutViewTriangleRubberBand is triangular rubber band for use within QgsLayoutView widgets.
+ * \since QGIS 3.0
+ */
+class GUI_EXPORT QgsLayoutViewTriangleRubberBand : public QgsLayoutViewRubberBand
+{
+  public:
+
+    /**
+     * Constructor for QgsLayoutViewTriangleRubberBand.
+     */
+    QgsLayoutViewTriangleRubberBand( QgsLayoutView *view = nullptr );
+    QgsLayoutViewTriangleRubberBand *create( QgsLayoutView *view ) const override SIP_FACTORY;
+
+    ~QgsLayoutViewTriangleRubberBand();
+
+    void start( QPointF position, Qt::KeyboardModifiers modifiers ) override;
+    void update( QPointF position, Qt::KeyboardModifiers modifiers ) override;
+    QRectF finish( QPointF position = QPointF(), Qt::KeyboardModifiers modifiers = 0 ) override;
+
+  private:
+
+    //! Rubber band item
+    QGraphicsPolygonItem *mRubberBandItem = nullptr;
 
     //! Start of rubber band creation
     QPointF mRubberBandStartPos;

@@ -45,13 +45,13 @@ from processing.tools.system import isWindows, isMac
 
 try:
     from osgeo import gdal  # NOQA
+
     gdalAvailable = True
 except:
     gdalAvailable = False
 
 
 class GdalUtils(object):
-
     GDAL_HELP_PATH = 'GDAL_HELP_PATH'
 
     supportedRasters = None
@@ -106,7 +106,9 @@ class GdalUtils(object):
                 if retry_count < 5:
                     retry_count += 1
                 else:
-                    raise IOError(e.message + u'\nTried 5 times without success. Last iteration stopped after reading {} line(s).\nLast line(s):\n{}'.format(len(loglines), u'\n'.join(loglines[-10:])))
+                    raise IOError(
+                        e.message + u'\nTried 5 times without success. Last iteration stopped after reading {} line(s).\nLast line(s):\n{}'.format(
+                            len(loglines), u'\n'.join(loglines[-10:])))
 
             QgsMessageLog.logMessage('\n'.join(loglines), 'Processing', QgsMessageLog.INFO)
             GdalUtils.consoleOutput = loglines
@@ -134,6 +136,10 @@ class GdalUtils(object):
                 continue
             shortName = driver.ShortName
             metadata = driver.GetMetadata()
+            if gdal.DCAP_RASTER not in metadata \
+                    or metadata[gdal.DCAP_RASTER] != 'YES':
+                continue
+
             # ===================================================================
             # if gdal.DCAP_CREATE not in metadata \
             #         or metadata[gdal.DCAP_CREATE] != 'YES':
@@ -183,7 +189,7 @@ class GdalUtils(object):
         for s in strList:
             if s and s[0] != '-' and ' ' in s:
                 escaped = '"' + s.replace('\\', '\\\\').replace('"', '\\"') \
-                    + '"'
+                          + '"'
             else:
                 escaped = s
             joined += escaped + ' '

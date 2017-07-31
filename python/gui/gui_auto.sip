@@ -21,6 +21,7 @@
 %Include qgsbrowserdockwidget.sip
 %Include qgsvertexmarker.sip
 %Include qgsfiledownloader.sip
+%Include qgsabstractdatasourcewidget.sip
 %Include attributetable/qgsfeaturemodel.sip
 %Include auth/qgsauthauthoritieseditor.sip
 %Include auth/qgsauthcertificateinfo.sip
@@ -123,6 +124,7 @@
 %Include qgslistwidget.sip
 %Include qgslegendfilterbutton.sip
 %Include qgslimitedrandomcolorrampdialog.sip
+%Include qgsratiolockbutton.sip
 %Include qgslonglongvalidator.sip
 %Include qgsludialog.sip
 %Include qgsmanageconnectionsdialog.sip
@@ -137,6 +139,7 @@
 %Include qgsmaptoolcapture.sip
 %Include qgsmaptooledit.sip
 %Include qgsmaptoolemitpoint.sip
+%Include qgsmaptoolextent.sip
 %Include qgsmaptoolidentify.sip
 %Include qgsmaptoolidentifyfeature.sip
 %Include qgsmaptoolpan.sip
@@ -157,7 +160,6 @@
 %Include qgsoptionswidgetfactory.sip
 %Include qgsorderbydialog.sip
 %Include qgsowssourceselect.sip
-%Include qgssourceselectdialog.sip
 %Include qgspanelwidget.sip
 %Include qgspanelwidgetstack.sip
 %Include qgspasswordlineedit.sip
@@ -186,6 +188,7 @@
 %Include qgsstatusbar.sip
 %Include qgssublayersdialog.sip
 %Include qgssubstitutionlistwidget.sip
+%Include qgssymbolbutton.sip
 %Include qgstablewidgetbase.sip
 %Include qgstabwidget.sip
 %Include qgstaskmanagerwidget.sip
@@ -278,7 +281,10 @@
 %Include layertree/qgslayertreeviewdefaultactions.sip
 %Include layout/qgslayoutdesignerinterface.sip
 %Include layout/qgslayoutitemguiregistry.sip
+%Include layout/qgslayoutitemwidget.sip
+%Include layout/qgslayoutnewitempropertiesdialog.sip
 %Include layout/qgslayoutruler.sip
+%Include layout/qgslayoutunitscombobox.sip
 %Include layout/qgslayoutview.sip
 %Include layout/qgslayoutviewtool.sip
 %Include layout/qgslayoutviewtooladditem.sip

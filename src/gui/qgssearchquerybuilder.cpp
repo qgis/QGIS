@@ -40,7 +40,7 @@ QgsSearchQueryBuilder::QgsSearchQueryBuilder( QgsVectorLayer *layer,
   setupUi( this );
   setupListViews();
 
-  setWindowTitle( tr( "Search query builder" ) );
+  setWindowTitle( tr( "Search Query Builder" ) );
 
   QPushButton *pbn = new QPushButton( tr( "&Test" ) );
   buttonBox->addButton( pbn, QDialogButtonBox::ActionRole );

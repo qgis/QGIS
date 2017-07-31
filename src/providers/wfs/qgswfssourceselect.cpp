@@ -48,20 +48,18 @@ enum
   MODEL_IDX_SQL
 };
 
-QgsWFSSourceSelect::QgsWFSSourceSelect( QWidget *parent, Qt::WindowFlags fl, QgsProviderRegistry::WidgetMode widgetMode )
-  : QDialog( parent, fl )
+QgsWFSSourceSelect::QgsWFSSourceSelect( QWidget *parent, Qt::WindowFlags fl, QgsProviderRegistry::WidgetMode theWidgetMode )
+  : QgsAbstractDataSourceWidget( parent, fl, theWidgetMode )
   , mCapabilities( nullptr )
   , mSQLComposerDialog( nullptr )
-  , mWidgetMode( widgetMode )
 {
   setupUi( this );
 
-  if ( mWidgetMode != QgsProviderRegistry::WidgetMode::None )
+  if ( widgetMode() != QgsProviderRegistry::WidgetMode::None )
   {
     // For some obscure reason hiding does not work!
     // buttonBox->button( QDialogButtonBox::Close )->hide();
     buttonBox->removeButton( buttonBox->button( QDialogButtonBox::Close ) );
-    mHoldDialogOpen->setHidden( true );
     mHoldDialogOpen->hide();
   }
 
@@ -207,6 +205,11 @@ QString QgsWFSSourceSelect::getPreferredCrs( const QSet<QString> &crsSet ) const
   return *( crsSet.constBegin() );
 }
 
+void QgsWFSSourceSelect::refresh()
+{
+  populateConnectionList();
+}
+
 void QgsWFSSourceSelect::capabilitiesReplyFinished()
 {
   btnConnect->setEnabled( true );
@@ -297,7 +300,7 @@ void QgsWFSSourceSelect::addEntryToServerList()
 {
   QgsNewHttpConnection *nc = new QgsNewHttpConnection( this, QgsWFSConstants::CONNECTIONS_WFS );
   nc->setAttribute( Qt::WA_DeleteOnClose );
-  nc->setWindowTitle( tr( "Create a new WFS connection" ) );
+  nc->setWindowTitle( tr( "Create a New WFS Connection" ) );
 
   // For testability, do not use exec()
   if ( !property( "hideDialogs" ).toBool() )
@@ -310,7 +313,7 @@ void QgsWFSSourceSelect::modifyEntryOfServerList()
 {
   QgsNewHttpConnection *nc = new QgsNewHttpConnection( this, QgsWFSConstants::CONNECTIONS_WFS, cmbConnections->currentText() );
   nc->setAttribute( Qt::WA_DeleteOnClose );
-  nc->setWindowTitle( tr( "Modify WFS connection" ) );
+  nc->setWindowTitle( tr( "Modify WFS Connection" ) );
 
   // For testability, do not use exec()
   if ( !property( "hideDialogs" ).toBool() )
@@ -402,10 +405,10 @@ void QgsWFSSourceSelect::addLayer()
     mUri = QgsWFSDataSourceURI::build( connection.uri().uri(), typeName, pCrsString,
                                        sql, cbxFeatureCurrentViewExtent->isChecked() );
 
-    emit addWfsLayer( mUri, layerName );
+    emit addVectorLayer( mUri, layerName );
   }
 
-  if ( ! mHoldDialogOpen->isChecked() && mWidgetMode == QgsProviderRegistry::WidgetMode::None )
+  if ( ! mHoldDialogOpen->isChecked() && widgetMode() == QgsProviderRegistry::WidgetMode::None )
   {
     accept();
   }

@@ -75,7 +75,7 @@ class APP_EXPORT QgsSnappingWidget : public QWidget
     QAction *enableTracingAction() { return mEnableTracingAction; }
 
   signals:
-    void snappingConfigChanged( );
+    void snappingConfigChanged();
 
   private slots:
     void projectSnapSettingsChanged();

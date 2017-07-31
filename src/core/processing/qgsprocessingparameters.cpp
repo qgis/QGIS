@@ -2096,8 +2096,9 @@ QgsProcessingParameterExpression *QgsProcessingParameterExpression::fromScriptCo
   return new QgsProcessingParameterExpression( name, description, definition, QString(), isOptional );
 }
 
-QgsProcessingParameterVectorLayer::QgsProcessingParameterVectorLayer( const QString &name, const QString &description, const QVariant &defaultValue, bool optional )
+QgsProcessingParameterVectorLayer::QgsProcessingParameterVectorLayer( const QString &name, const QString &description, const QList<int> &types, const QVariant &defaultValue, bool optional )
   : QgsProcessingParameterDefinition( name, description, defaultValue, optional )
+  , mDataTypes( types )
 {
 
 }
@@ -2142,9 +2143,43 @@ QString QgsProcessingParameterVectorLayer::valueAsPythonString( const QVariant &
   return layer ? QgsProcessingUtils::normalizeLayerSource( layer->source() ).prepend( '\'' ).append( '\'' ) : QString();
 }
 
+QList<int> QgsProcessingParameterVectorLayer::dataTypes() const
+{
+  return mDataTypes;
+}
+
+void QgsProcessingParameterVectorLayer::setDataTypes( const QList<int> &types )
+{
+  mDataTypes = types;
+}
+
+QVariantMap QgsProcessingParameterVectorLayer::toVariantMap() const
+{
+  QVariantMap map = QgsProcessingParameterDefinition::toVariantMap();
+  QVariantList types;
+  Q_FOREACH ( int type, mDataTypes )
+  {
+    types << type;
+  }
+  map.insert( QStringLiteral( "data_types" ), types );
+  return map;
+}
+
+bool QgsProcessingParameterVectorLayer::fromVariantMap( const QVariantMap &map )
+{
+  QgsProcessingParameterDefinition::fromVariantMap( map );
+  mDataTypes.clear();
+  QVariantList values = map.value( QStringLiteral( "data_types" ) ).toList();
+  Q_FOREACH ( const QVariant &val, values )
+  {
+    mDataTypes << val.toInt();
+  }
+  return true;
+}
+
 QgsProcessingParameterVectorLayer *QgsProcessingParameterVectorLayer::fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition )
 {
-  return new QgsProcessingParameterVectorLayer( name, description, definition.isEmpty() ? QVariant() : definition, isOptional );
+  return new QgsProcessingParameterVectorLayer( name, description, QList< int>(),  definition.isEmpty() ? QVariant() : definition, isOptional );
 }
 
 QgsProcessingParameterField::QgsProcessingParameterField( const QString &name, const QString &description, const QVariant &defaultValue, const QString &parentLayerParameterName, DataType type, bool allowMultiple, bool optional )

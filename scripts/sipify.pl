@@ -253,6 +253,7 @@ sub fix_annotations {
         }
         # see https://regex101.com/r/5iNptO/4
         $line =~ s/(?<coma>, +)?(const )?(\w+)(\<(?>[^<>]|(?4))*\>)?\s+[\w&*]+\s+SIP_PYARGREMOVE( = [^()]*(\(\s*(?:[^()]++|(?6))*\s*\))?)?(?(<coma>)|,?)//g;
+        $line =~ s/\(\s+\)/()/;
     }
     $line =~ s/SIP_FORCE//;
     return $line;

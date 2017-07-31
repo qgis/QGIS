@@ -36,7 +36,7 @@ QgsNewHttpConnection::QgsNewHttpConnection(
 
   QRegExp rx( "/connections-([^/]+)/" );
   rx.indexIn( baseKey );
-  setWindowTitle( tr( "Create a new %1 connection" ).arg( rx.cap( 1 ).toUpper() ) );
+  setWindowTitle( tr( "Create a New %1 Connection" ).arg( rx.cap( 1 ).toUpper() ) );
 
   // It would be obviously much better to use mBaseKey also for credentials,
   // but for some strange reason a different hardcoded key was used instead.

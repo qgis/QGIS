@@ -75,7 +75,7 @@ class SERVER_EXPORT QgsBufferServerResponse: public QgsServerResponse
 
     /** Return the http status code
      */
-    int statusCode( ) const override { return mStatusCode; }
+    int statusCode() const override { return mStatusCode; }
 
     /**
      * Send error

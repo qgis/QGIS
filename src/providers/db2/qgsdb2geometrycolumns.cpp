@@ -27,7 +27,7 @@ QgsDb2GeometryColumns::QgsDb2GeometryColumns( const QSqlDatabase &db )
   QgsDebugMsg( "constructing" );
 }
 
-QgsDb2GeometryColumns::~QgsDb2GeometryColumns( )
+QgsDb2GeometryColumns::~QgsDb2GeometryColumns()
 {
   mQuery.clear();
 }

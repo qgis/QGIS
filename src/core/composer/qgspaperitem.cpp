@@ -43,7 +43,7 @@ void QgsPaperGrid::paint( QPainter *painter, const QStyleOptionGraphicsItem *ite
   //draw grid
   if ( mComposition )
   {
-    if ( mComposition->gridVisible() && mComposition->plotStyle() ==  QgsComposition::Preview
+    if ( mComposition->gridVisible() && mComposition->plotStyle() == QgsComposition::Preview
          && mComposition->snapGridResolution() > 0 )
     {
       int gridMultiplyX = static_cast< int >( mComposition->snapGridOffsetX() / mComposition->snapGridResolution() );
@@ -164,7 +164,7 @@ void QgsPaperItem::paint( QPainter *painter, const QStyleOptionGraphicsItem *ite
 
   painter->save();
 
-  if ( mComposition->plotStyle() ==  QgsComposition::Preview )
+  if ( mComposition->plotStyle() == QgsComposition::Preview )
   {
     //if in preview mode, draw page border and shadow so that it's
     //still possible to tell where pages with a transparent style begin and end

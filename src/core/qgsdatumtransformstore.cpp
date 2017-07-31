@@ -50,13 +50,15 @@ bool QgsDatumTransformStore::hasEntryForLayer( QgsMapLayer *layer ) const
   return mEntries.contains( layer->id() );
 }
 
-QgsCoordinateTransform QgsDatumTransformStore::transformation( const QgsMapLayer *layer ) const
+QgsCoordinateTransform QgsDatumTransformStore::transformation( const QgsMapLayer *layer, QString srcAuthId, QString dstAuthId ) const
 {
   if ( !layer )
     return QgsCoordinateTransform();
 
-  QString srcAuthId = layer->crs().authid();
-  QString dstAuthId = mDestCRS.authid();
+  if ( srcAuthId.isEmpty() )
+    srcAuthId = layer->crs().authid();
+  if ( dstAuthId.isEmpty() )
+    dstAuthId = mDestCRS.authid();
 
   if ( srcAuthId == dstAuthId )
   {

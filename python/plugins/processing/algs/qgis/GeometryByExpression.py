@@ -27,23 +27,17 @@ __revision__ = '$Format:%H$'
 
 from qgis.core import (QgsWkbTypes,
                        QgsExpression,
-                       QgsFeatureSink,
-                       QgsExpressionContext,
-                       QgsExpressionContextUtils,
                        QgsGeometry,
-                       QgsApplication,
-                       QgsProcessingUtils)
+                       QgsProcessingException,
+                       QgsProcessingParameterBoolean,
+                       QgsProcessingParameterEnum,
+                       QgsProcessingParameterExpression)
 
-from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
-from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
-from processing.core.parameters import ParameterVector, ParameterSelection, ParameterBoolean, ParameterExpression
-from processing.core.outputs import OutputVector
+from processing.algs.qgis.QgisAlgorithm import QgisFeatureBasedAlgorithm
 
 
-class GeometryByExpression(QgisAlgorithm):
+class GeometryByExpression(QgisFeatureBasedAlgorithm):
 
-    INPUT_LAYER = 'INPUT_LAYER'
-    OUTPUT_LAYER = 'OUTPUT_LAYER'
     OUTPUT_GEOMETRY = 'OUTPUT_GEOMETRY'
     WITH_Z = 'WITH_Z'
     WITH_M = 'WITH_M'
@@ -54,27 +48,22 @@ class GeometryByExpression(QgisAlgorithm):
 
     def __init__(self):
         super().__init__()
-
-    def initAlgorithm(self, config=None):
-        self.addParameter(ParameterVector(self.INPUT_LAYER,
-                                          self.tr('Input layer')))
-
         self.geometry_types = [self.tr('Polygon'),
                                'Line',
                                'Point']
-        self.addParameter(ParameterSelection(
+
+    def initParameters(self, config=None):
+        self.addParameter(QgsProcessingParameterEnum(
             self.OUTPUT_GEOMETRY,
             self.tr('Output geometry type'),
-            self.geometry_types, default=0))
-        self.addParameter(ParameterBoolean(self.WITH_Z,
-                                           self.tr('Output geometry has z dimension'), False))
-        self.addParameter(ParameterBoolean(self.WITH_M,
-                                           self.tr('Output geometry has m values'), False))
+            options=self.geometry_types, defaultValue=0))
+        self.addParameter(QgsProcessingParameterBoolean(self.WITH_Z,
+                                                        self.tr('Output geometry has z dimension'), defaultValue=False))
+        self.addParameter(QgsProcessingParameterBoolean(self.WITH_M,
+                                                        self.tr('Output geometry has m values'), defaultValue=False))
 
-        self.addParameter(ParameterExpression(self.EXPRESSION,
-                                              self.tr("Geometry expression"), '$geometry', parent_layer=self.INPUT_LAYER))
-
-        self.addOutput(OutputVector(self.OUTPUT_LAYER, self.tr('Modified geometry')))
+        self.addParameter(QgsProcessingParameterExpression(self.EXPRESSION,
+                                                           self.tr("Geometry expression"), defaultValue='$geometry', parentLayerParameterName='INPUT'))
 
     def name(self):
         return 'geometrybyexpression'
@@ -82,55 +71,52 @@ class GeometryByExpression(QgisAlgorithm):
     def displayName(self):
         return self.tr('Geometry by expression')
 
-    def processAlgorithm(self, parameters, context, feedback):
-        layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT_LAYER), context)
+    def outputName(self):
+        return self.tr('Modified geometry')
 
-        geometry_type = self.getParameterValue(self.OUTPUT_GEOMETRY)
-        wkb_type = None
-        if geometry_type == 0:
-            wkb_type = QgsWkbTypes.Polygon
-        elif geometry_type == 1:
-            wkb_type = QgsWkbTypes.LineString
+    def prepareAlgorithm(self, parameters, context, feedback):
+        self.geometry_type = self.parameterAsEnum(parameters, self.OUTPUT_GEOMETRY, context)
+        self.wkb_type = None
+        if self.geometry_type == 0:
+            self.wkb_type = QgsWkbTypes.Polygon
+        elif self.geometry_type == 1:
+            self.wkb_type = QgsWkbTypes.LineString
         else:
-            wkb_type = QgsWkbTypes.Point
-        if self.getParameterValue(self.WITH_Z):
-            wkb_type = QgsWkbTypes.addZ(wkb_type)
-        if self.getParameterValue(self.WITH_M):
-            wkb_type = QgsWkbTypes.addM(wkb_type)
+            self.wkb_type = QgsWkbTypes.Point
+        if self.parameterAsBool(parameters, self.WITH_Z, context):
+            self.wkb_type = QgsWkbTypes.addZ(self.wkb_type)
+        if self.parameterAsBool(parameters, self.WITH_M, context):
+            self.wkb_type = QgsWkbTypes.addM(self.wkb_type)
 
-        writer = self.getOutputFromName(
-            self.OUTPUT_LAYER).getVectorWriter(layer.fields(), wkb_type, layer.crs(), context)
+        self.expression = QgsExpression(self.parameterAsString(parameters, self.EXPRESSION, context))
+        if self.expression.hasParserError():
+            feedback.reportError(self.expression.parserErrorString())
+            return False
 
-        expression = QgsExpression(self.getParameterValue(self.EXPRESSION))
-        if expression.hasParserError():
-            raise GeoAlgorithmExecutionException(expression.parserErrorString())
+        self.expression_context = self.createExpressionContext(parameters, context)
 
-        exp_context = QgsExpressionContext(QgsExpressionContextUtils.globalProjectLayerScopes(layer))
+        if not self.expression.prepare(self.expression_context):
+            feedback.reportErro(
+                self.tr('Evaluation error: {0}').format(self.expression.evalErrorString()))
+            return False
 
-        if not expression.prepare(exp_context):
-            raise GeoAlgorithmExecutionException(
-                self.tr('Evaluation error: {0}').format(expression.evalErrorString()))
+        return True
 
-        features = QgsProcessingUtils.getFeatures(layer, context)
-        total = 100.0 / layer.featureCount() if layer.featureCount() else 0
-        for current, input_feature in enumerate(features):
-            output_feature = input_feature
+    def outputWkbType(self, input_wkb_type):
+        return self.wkb_type
 
-            exp_context.setFeature(input_feature)
-            value = expression.evaluate(exp_context)
-            if expression.hasEvalError():
-                raise GeoAlgorithmExecutionException(
-                    self.tr('Evaluation error: {0}').format(expression.evalErrorString()))
+    def processFeature(self, feature, feedback):
+        self.expression_context.setFeature(feature)
+        value = self.expression.evaluate(self.expression_context)
+        if self.expression.hasEvalError():
+            raise QgsProcessingException(
+                self.tr('Evaluation error: {0}').format(self.expression.evalErrorString()))
 
-            if not value:
-                output_feature.setGeometry(QgsGeometry())
-            else:
-                if not isinstance(value, QgsGeometry):
-                    raise GeoAlgorithmExecutionException(
-                        self.tr('{} is not a geometry').format(value))
-                output_feature.setGeometry(value)
-
-            writer.addFeature(output_feature, QgsFeatureSink.FastInsert)
-            feedback.setProgress(int(current * total))
-
-        del writer
+        if not value:
+            feature.setGeometry(QgsGeometry())
+        else:
+            if not isinstance(value, QgsGeometry):
+                raise QgsProcessingException(
+                    self.tr('{} is not a geometry').format(value))
+            feature.setGeometry(value)
+        return feature

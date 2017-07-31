@@ -38,14 +38,13 @@ email                : hugo dot mercier at oslandia dot com
 #include <QTextStream>
 
 QgsVirtualLayerSourceSelect::QgsVirtualLayerSourceSelect( QWidget *parent, Qt::WindowFlags fl, QgsProviderRegistry::WidgetMode widgetMode )
-  : QDialog( parent, fl )
+  : QgsAbstractDataSourceWidget( parent, fl, widgetMode )
   , mSrid( 0 )
-  , mWidgetMode( widgetMode )
   , mTreeView( nullptr )
 {
   setupUi( this );
 
-  if ( mWidgetMode !=  QgsProviderRegistry::WidgetMode::None )
+  if ( widgetMode != QgsProviderRegistry::WidgetMode::None )
   {
     buttonBox->removeButton( buttonBox->button( QDialogButtonBox::Cancel ) );
     buttonBox->button( QDialogButtonBox::Ok )->setText( tr( "Add" ) );
@@ -71,7 +70,7 @@ QgsVirtualLayerSourceSelect::QgsVirtualLayerSourceSelect( QWidget *parent, Qt::W
   }
   // It needs to find the layertree view without relying on the parent
   // being the main window
-  for ( const QWidget *widget : qApp->allWidgets( ) )
+  for ( const QWidget *widget : qApp->allWidgets() )
   {
     if ( ! mTreeView )
     {
@@ -93,6 +92,12 @@ QgsVirtualLayerSourceSelect::QgsVirtualLayerSourceSelect( QWidget *parent, Qt::W
     connect( mTreeView->model(), &QAbstractItemModel::rowsRemoved, this, &QgsVirtualLayerSourceSelect::updateLayersList );
     connect( mTreeView->model(), &QAbstractItemModel::dataChanged, this, &QgsVirtualLayerSourceSelect::updateLayersList );
   }
+}
+
+void QgsVirtualLayerSourceSelect::refresh()
+{
+  // TODO: check that this really works
+  updateLayersList();
 }
 
 void QgsVirtualLayerSourceSelect::onLayerComboChanged( int idx )
@@ -132,7 +137,7 @@ void QgsVirtualLayerSourceSelect::onLayerComboChanged( int idx )
   }
 
   // Clear embedded layers table
-  mLayersTable->model()->removeRows( 0, mLayersTable->model()->rowCount( ) );
+  mLayersTable->model()->removeRows( 0, mLayersTable->model()->rowCount() );
   // Add embedded layers
   Q_FOREACH ( const QgsVirtualLayerDefinition::SourceLayer &l, def.sourceLayers() )
   {
@@ -375,9 +380,9 @@ void QgsVirtualLayerSourceSelect::on_buttonBox_accepted()
   {
     emit addVectorLayer( def.toString(), layerName, QStringLiteral( "virtual" ) );
   }
-  if ( mWidgetMode == QgsProviderRegistry::WidgetMode::None )
+  if ( widgetMode() == QgsProviderRegistry::WidgetMode::None )
   {
-    accept( );
+    accept();
   }
 }
 

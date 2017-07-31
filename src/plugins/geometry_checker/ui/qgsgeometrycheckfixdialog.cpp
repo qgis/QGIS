@@ -40,7 +40,7 @@ QgsGeometryCheckerFixDialog::QgsGeometryCheckerFixDialog( QgsGeometryChecker *ch
   , mErrors( errors )
   , mIface( iface )
 {
-  setWindowTitle( tr( "Fix errors" ) );
+  setWindowTitle( tr( "Fix Errors" ) );
 
   QGridLayout *layout = new QGridLayout();
   layout->setContentsMargins( 4, 4, 4, 4 );

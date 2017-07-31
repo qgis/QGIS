@@ -255,31 +255,31 @@ void TestQgsAttributeTable::testRegression15974()
   QString path = QDir::tempPath() + "/testshp15974.shp";
   std::unique_ptr< QgsVectorLayer> tempLayer( new QgsVectorLayer( QStringLiteral( "polygon?crs=epsg:4326&field=id:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
   QVERIFY( tempLayer->isValid() );
-  QgsVectorFileWriter::writeAsVectorFormat( tempLayer.get( ), path, "system", QgsCoordinateReferenceSystem( 4326 ), "ESRI Shapefile" );
+  QgsVectorFileWriter::writeAsVectorFormat( tempLayer.get(), path, "system", QgsCoordinateReferenceSystem( 4326 ), "ESRI Shapefile" );
   std::unique_ptr< QgsVectorLayer> shpLayer( new QgsVectorLayer( path, QStringLiteral( "test" ),  QStringLiteral( "ogr" ) ) );
   QgsFeature f1( shpLayer->dataProvider()->fields(), 1 );
   QgsGeometry geom;
   geom = QgsGeometry().fromWkt( QStringLiteral( "polygon((0 0, 0 1, 1 1, 1 0, 0 0))" ) );
-  Q_ASSERT( geom.isGeosValid( ) );
+  Q_ASSERT( geom.isGeosValid() );
   f1.setGeometry( geom );
   QgsFeature f2( shpLayer->dataProvider()->fields(), 2 );
   f2.setGeometry( geom );
   QgsFeature f3( shpLayer->dataProvider()->fields(), 3 );
   f3.setGeometry( geom );
-  QVERIFY( shpLayer->startEditing( ) );
+  QVERIFY( shpLayer->startEditing() );
   QVERIFY( shpLayer->addFeatures( QgsFeatureList() << f1 << f2 << f3 ) );
   std::unique_ptr< QgsAttributeTableDialog > dlg( new QgsAttributeTableDialog( shpLayer.get() ) );
-  QCOMPARE( shpLayer->featureCount( ), 3L );
-  mQgisApp->saveEdits( shpLayer.get( ) );
-  QCOMPARE( shpLayer->featureCount( ), 3L );
+  QCOMPARE( shpLayer->featureCount(), 3L );
+  mQgisApp->saveEdits( shpLayer.get() );
+  QCOMPARE( shpLayer->featureCount(), 3L );
   QCOMPARE( dlg->mMainView->masterModel()->rowCount(), 3 );
-  QCOMPARE( dlg->mMainView->mLayerCache->cachedFeatureIds( ).count(), 3 );
-  QCOMPARE( dlg->mMainView->featureCount( ), 3 );
+  QCOMPARE( dlg->mMainView->mLayerCache->cachedFeatureIds().count(), 3 );
+  QCOMPARE( dlg->mMainView->featureCount(), 3 );
   // All the following instructions made the test pass, before the connections to invalidate()
   // were introduced in QgsDualView::initModels
   // dlg->mMainView->mFilterModel->setSourceModel( dlg->mMainView->masterModel() );
   // dlg->mMainView->mFilterModel->invalidate();
-  QCOMPARE( dlg->mMainView->filteredFeatureCount( ), 3 );
+  QCOMPARE( dlg->mMainView->filteredFeatureCount(), 3 );
 }
 
 

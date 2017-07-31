@@ -193,7 +193,7 @@ void QgsSLConnectionItem::deleteConnection()
 
   QgsSpatiaLiteConnection::deleteConnection( mName );
   // the parent should be updated
-  mParent->refresh();
+  mParent->refreshConnections();
 }
 #endif
 
@@ -326,7 +326,7 @@ void QgsSLRootItem::newConnection()
 {
   if ( QgsSpatiaLiteSourceSelect::newConnection( nullptr ) )
   {
-    refresh();
+    refreshConnections();
   }
 }
 #endif

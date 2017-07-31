@@ -39,17 +39,21 @@ class SERVER_EXPORT QgsBufferServerRequest : public QgsServerRequest
     * Constructor
     *
     * \param url the url string
-    * \param method the request method
+    * \param method the request method, default to GET
+    * \param headers optional dictionary of header name-values
+    * \param data optional POST data
     */
-    QgsBufferServerRequest( const QString &url, QgsServerRequest::Method method = QgsServerRequest::GetMethod, const QgsServerRequest::Headers &headers = QgsServerRequest::Headers( ), QByteArray *data = nullptr );
+    QgsBufferServerRequest( const QString &url, QgsServerRequest::Method method = QgsServerRequest::GetMethod, const QgsServerRequest::Headers &headers = QgsServerRequest::Headers(), QByteArray *data = nullptr );
 
     /**
      * Constructor
      *
      * \param url QUrl
-     * \param method the request method
+     * \param method the request method, default to GET
+     * \param headers optional dictionary of header name-values
+     * \param data optional POST data
      */
-    QgsBufferServerRequest( const QUrl &url, QgsServerRequest::Method method = QgsServerRequest::GetMethod, const QgsServerRequest::Headers &headers = QgsServerRequest::Headers( ), QByteArray *data = nullptr );
+    QgsBufferServerRequest( const QUrl &url, QgsServerRequest::Method method = QgsServerRequest::GetMethod, const QgsServerRequest::Headers &headers = QgsServerRequest::Headers(), QByteArray *data = nullptr );
 
     ~QgsBufferServerRequest();
 

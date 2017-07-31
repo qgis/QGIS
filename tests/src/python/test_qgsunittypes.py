@@ -660,6 +660,24 @@ class TestQgsUnitTypes(unittest.TestCase):
         assert ok
         self.assertEqual(res, QgsUnitTypes.LayoutPixels)
 
+    def testAbbreviateLayoutUnits(self):
+        """Test abbreviating layout units"""
+        units = [QgsUnitTypes.LayoutMillimeters,
+                 QgsUnitTypes.LayoutCentimeters,
+                 QgsUnitTypes.LayoutMeters,
+                 QgsUnitTypes.LayoutInches,
+                 QgsUnitTypes.LayoutFeet,
+                 QgsUnitTypes.LayoutPoints,
+                 QgsUnitTypes.LayoutPicas,
+                 QgsUnitTypes.LayoutPixels]
+
+        used = set()
+        for u in units:
+            self.assertTrue(QgsUnitTypes.toString(u))
+            self.assertTrue(QgsUnitTypes.toAbbreviatedString(u))
+            self.assertFalse(QgsUnitTypes.toAbbreviatedString(u) in used)
+            used.add(QgsUnitTypes.toAbbreviatedString(u))
+
 
 if __name__ == "__main__":
     unittest.main()

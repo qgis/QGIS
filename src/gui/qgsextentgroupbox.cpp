@@ -12,13 +12,17 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+
 #include "qgsextentgroupbox.h"
 
+#include "qgslogger.h"
 #include "qgscoordinatetransform.h"
 #include "qgsrasterblock.h"
+#include "qgsmapcanvas.h"
 #include "qgsmaplayermodel.h"
 #include "qgsexception.h"
 #include "qgsproject.h"
+
 #include <QMenu>
 #include <QAction>
 
@@ -40,12 +44,14 @@ QgsExtentGroupBox::QgsExtentGroupBox( QWidget *parent )
   mYMaxLineEdit->setValidator( new QDoubleValidator( this ) );
 
   mOriginalExtentButton->setVisible( false );
+  mButtonDrawOnCanvas->setVisible( false );
 
   connect( mCurrentExtentButton, &QAbstractButton::clicked, this, &QgsExtentGroupBox::setOutputExtentFromCurrent );
   connect( mOriginalExtentButton, &QAbstractButton::clicked, this, &QgsExtentGroupBox::setOutputExtentFromOriginal );
+  connect( mButtonDrawOnCanvas, &QAbstractButton::clicked, this, &QgsExtentGroupBox::setOutputExtentFromDrawOnCanvas );
+
   connect( this, &QGroupBox::clicked, this, &QgsExtentGroupBox::groupBoxClicked );
 }
-
 
 void QgsExtentGroupBox::setOriginalExtent( const QgsRectangle &originalExtent, const QgsCoordinateReferenceSystem &originalCrs )
 {
@@ -81,6 +87,11 @@ void QgsExtentGroupBox::setOutputCrs( const QgsCoordinateReferenceSystem &output
       case ProjectLayerExtent:
         mOutputCrs = outputCrs;
         setOutputExtentFromLayer( mExtentLayer.data() );
+        break;
+
+      case DrawOnCanvas:
+        mOutputCrs = outputCrs;
+        extentDrawn( outputExtent() );
         break;
 
       case UserExtent:
@@ -167,6 +178,9 @@ void QgsExtentGroupBox::updateTitle()
     case ProjectLayerExtent:
       msg = mExtentLayerName;
       break;
+    case DrawOnCanvas:
+      msg = tr( "drawn on canvas" );
+      break;
   }
   if ( isCheckable() && !isChecked() )
     msg = tr( "none" );
@@ -213,7 +227,17 @@ void QgsExtentGroupBox::setExtentToLayerExtent( const QString &layerId )
 
 void QgsExtentGroupBox::setOutputExtentFromCurrent()
 {
-  setOutputExtent( mCurrentExtent, mCurrentCrs, CurrentExtent );
+  if ( mCanvas )
+  {
+    // Use unrotated visible extent to insure output size and scale matches canvas
+    QgsMapSettings ms = mCanvas->mapSettings();
+    ms.setRotation( 0 );
+    setOutputExtent( ms.visibleExtent(), ms.destinationCrs(), CurrentExtent );
+  }
+  else
+  {
+    setOutputExtent( mCurrentExtent, mCurrentCrs, CurrentExtent );
+  }
 }
 
 
@@ -236,6 +260,35 @@ void QgsExtentGroupBox::setOutputExtentFromLayer( const QgsMapLayer *layer )
   mExtentLayerName = layer->name();
 
   setOutputExtent( layer->extent(), layer->crs(), ProjectLayerExtent );
+}
+
+void QgsExtentGroupBox::setOutputExtentFromDrawOnCanvas()
+{
+  if ( mCanvas )
+  {
+    mMapToolPrevious = mCanvas->mapTool();
+    if ( !mMapToolExtent )
+    {
+      mMapToolExtent.reset( new QgsMapToolExtent( mCanvas ) );
+      connect( mMapToolExtent.get(), &QgsMapToolExtent::extentChanged, this, &QgsExtentGroupBox::extentDrawn );
+      connect( mMapToolExtent.get(), &QgsMapTool::deactivated, this, [ = ]
+      {
+        window()->setVisible( true );
+        mMapToolPrevious = nullptr;
+      } );
+    }
+    mMapToolExtent->setRatio( mRatio );
+    mCanvas->setMapTool( mMapToolExtent.get() );
+    window()->setVisible( false );
+  }
+}
+
+void QgsExtentGroupBox::extentDrawn( const QgsRectangle &extent )
+{
+  setOutputExtent( extent, mCanvas->mapSettings().destinationCrs(), DrawOnCanvas );
+  mCanvas->setMapTool( mMapToolPrevious );
+  window()->setVisible( true );
+  mMapToolPrevious = nullptr;
 }
 
 void QgsExtentGroupBox::groupBoxClicked()
@@ -268,4 +321,17 @@ void QgsExtentGroupBox::setTitleBase( const QString &title )
 QString QgsExtentGroupBox::titleBase() const
 {
   return mTitleBase;
+}
+
+void QgsExtentGroupBox::setMapCanvas( QgsMapCanvas *canvas )
+{
+  if ( canvas )
+  {
+    mCanvas = canvas;
+    mButtonDrawOnCanvas->setVisible( true );
+  }
+  else
+  {
+    mButtonDrawOnCanvas->setVisible( false );
+  }
 }

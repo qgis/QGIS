@@ -42,16 +42,13 @@ from qgis.core import (QgsFeature,
                        QgsProcessingParameterFeatureSink,
                        QgsProcessingUtils)
 
-from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
+from processing.algs.qgis.QgisAlgorithm import QgisFeatureBasedAlgorithm
 from processing.tools import dataobjects, vector
 
 pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
 
-class LinesToPolygons(QgisAlgorithm):
-
-    INPUT = 'INPUT'
-    OUTPUT = 'OUTPUT'
+class LinesToPolygons(QgisFeatureBasedAlgorithm):
 
     def icon(self):
         return QIcon(os.path.join(pluginPath, 'images', 'ftools', 'to_lines.png'))
@@ -65,52 +62,27 @@ class LinesToPolygons(QgisAlgorithm):
     def __init__(self):
         super().__init__()
 
-    def initAlgorithm(self, config=None):
-        self.addParameter(QgsProcessingParameterFeatureSource(self.INPUT,
-                                                              self.tr('Input layer'),
-                                                              [QgsProcessing.TypeVectorLine]))
-
-        self.addParameter(QgsProcessingParameterFeatureSink(self.OUTPUT,
-                                                            self.tr('Lines to polygons'),
-                                                            QgsProcessing.TypeVectorPolygon))
-
     def name(self):
         return 'linestopolygons'
 
     def displayName(self):
         return self.tr('Lines to polygons')
 
-    def processAlgorithm(self, parameters, context, feedback):
-        source = self.parameterAsSource(parameters, self.INPUT, context)
+    def outputName(self):
+        return self.tr('Polygons')
 
-        geomType = self.convertWkbToPolygons(source.wkbType())
+    def outputType(self):
+        return QgsProcessing.TypeVectorPolygon
 
-        (sink, dest_id) = self.parameterAsSink(parameters, self.OUTPUT, context,
-                                               source.fields(), geomType, source.sourceCrs())
+    def outputWkbType(self, input_wkb_type):
+        return self.convertWkbToPolygons(input_wkb_type)
 
-        outFeat = QgsFeature()
-
-        total = 100.0 / source.featureCount() if source.featureCount() else 0
-        count = 0
-
-        for feat in source.getFeatures():
-            if feedback.isCanceled():
-                break
-
-            if feat.hasGeometry():
-                outFeat.setGeometry(QgsGeometry(self.convertToPolygons(feat.geometry())))
-                attrs = feat.attributes()
-                outFeat.setAttributes(attrs)
-                sink.addFeature(outFeat, QgsFeatureSink.FastInsert)
-                if outFeat.geometry().isEmpty():
-                    feedback.reportError(self.tr("One or more line ignored due to geometry not having a minimum of three vertices."))
-            else:
-                sink.addFeature(feat, QgsFeatureSink.FastInsert)
-
-            count += 1
-            feedback.setProgress(int(count * total))
-
-        return {self.OUTPUT: dest_id}
+    def processFeature(self, feature, feedback):
+        if feature.hasGeometry():
+            feature.setGeometry(QgsGeometry(self.convertToPolygons(feature.geometry())))
+            if feature.geometry().isEmpty():
+                feedback.reportError(self.tr("One or more line ignored due to geometry not having a minimum of three vertices."))
+        return feature
 
     def convertWkbToPolygons(self, wkb):
         multi_wkb = None

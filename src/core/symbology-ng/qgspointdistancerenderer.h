@@ -42,30 +42,33 @@ class CORE_EXPORT QgsPointDistanceRenderer: public QgsFeatureRenderer
     struct GroupedFeature
     {
 
-      /** Constructor for GroupedFeature.
-      * \param feature feature
-      * \param symbol base symbol for rendering feature
-      * \param isSelected set to true if feature is selected and should be rendered in a selected state
-      * \param label optional label text, or empty string for no label
-      */
-      GroupedFeature( const QgsFeature &feature, QgsMarkerSymbol *symbol, bool isSelected, const QString &label = QString() )
-        : feature( feature )
-        , symbol( symbol )
-        , isSelected( isSelected )
-        , label( label )
-      {}
+        /** Constructor for GroupedFeature.
+        * \param feature feature
+        * \param symbol base symbol for rendering feature (owned by GroupedFeature)
+        * \param isSelected set to true if feature is selected and should be rendered in a selected state
+        * \param label optional label text, or empty string for no label
+        */
+        GroupedFeature( const QgsFeature &feature, QgsMarkerSymbol *symbol SIP_TRANSFER, bool isSelected, const QString &label = QString() )
+          : feature( feature )
+          , isSelected( isSelected )
+          , label( label )
+          , mSymbol( symbol )
+        {}
 
-      //! Feature
-      QgsFeature feature;
+        //! Feature
+        QgsFeature feature;
 
-      //! Base symbol for rendering feature
-      QgsMarkerSymbol *symbol = nullptr;
+        //! Base symbol for rendering feature
+        QgsMarkerSymbol *symbol() const { return mSymbol.get(); }
 
-      //! True if feature is selected and should be rendered in a selected state
-      bool isSelected;
+        //! True if feature is selected and should be rendered in a selected state
+        bool isSelected;
 
-      //! Optional label text
-      QString label;
+        //! Optional label text
+        QString label;
+
+      private:
+        std::shared_ptr< QgsMarkerSymbol > mSymbol;
     };
 
     //! A group of clustered points (ie features within the distance tolerance).

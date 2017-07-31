@@ -1395,7 +1395,10 @@ class QgsProcessingParameterVectorLayer : QgsProcessingParameterDefinition
 %End
   public:
 
-    QgsProcessingParameterVectorLayer( const QString &name, const QString &description = QString(), const QVariant &defaultValue = QVariant(),
+    QgsProcessingParameterVectorLayer( const QString &name,
+                                       const QString &description = QString(),
+                                       const QList< int > &types = QList< int >(),
+                                       const QVariant &defaultValue = QVariant(),
                                        bool optional = false );
 %Docstring
  Constructor for QgsProcessingParameterVectorLayer.
@@ -1410,6 +1413,24 @@ class QgsProcessingParameterVectorLayer : QgsProcessingParameterDefinition
     virtual bool checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context = 0 ) const;
 
     virtual QString valueAsPythonString( const QVariant &value, QgsProcessingContext &context ) const;
+
+
+    QList< int > dataTypes() const;
+%Docstring
+ Returns the geometry types for sources acceptable by the parameter.
+.. seealso:: setDataTypes()
+ :rtype: list of int
+%End
+
+    void setDataTypes( const QList< int > &types );
+%Docstring
+ Sets the geometry ``types`` for sources acceptable by the parameter.
+.. seealso:: dataTypes()
+%End
+
+    virtual QVariantMap toVariantMap() const;
+
+    virtual bool fromVariantMap( const QVariantMap &map );
 
 
     static QgsProcessingParameterVectorLayer *fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition ) /Factory/;

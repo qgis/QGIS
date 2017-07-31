@@ -366,7 +366,7 @@ void QgsMssqlConnectionItem::editConnection()
   if ( nc.exec() )
   {
     // the parent should be updated
-    mParent->refresh();
+    mParent->refreshConnections();
   }
 }
 
@@ -374,7 +374,7 @@ void QgsMssqlConnectionItem::deleteConnection()
 {
   QgsMssqlSourceSelect::deleteConnection( mName );
   // the parent should be updated
-  mParent->refresh();
+  mParent->refreshConnections();
 }
 #endif
 
@@ -633,7 +633,7 @@ void QgsMssqlRootItem::newConnection()
   QgsMssqlNewConnection nc( nullptr );
   if ( nc.exec() )
   {
-    refresh();
+    refreshConnections();
   }
 }
 #endif

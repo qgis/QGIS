@@ -467,6 +467,7 @@ class GUI_EXPORT QgsSvgMarkerSymbolLayerWidget : public QgsSymbolLayerWidget, pr
   private:
 
     std::shared_ptr< QgsMarkerSymbol > mAssistantPreviewSymbol;
+    int mIconSize = 30;
 
 };
 

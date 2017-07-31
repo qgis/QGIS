@@ -342,6 +342,12 @@ void QgsDataItem::refresh()
   }
 }
 
+void QgsDataItem::refreshConnections()
+{
+  refresh();
+  emit connectionsChanged();
+}
+
 void QgsDataItem::refresh( const QVector<QgsDataItem *> &children )
 {
   QgsDebugMsgLevel( "mPath = " + mPath, 2 );

@@ -28,9 +28,18 @@ class QgsLayoutItemAbstractGuiMetadata
 %End
   public:
 
-    QgsLayoutItemAbstractGuiMetadata( int type );
+    enum Flag
+    {
+      FlagNoCreationTools,
+    };
+    typedef QFlags<QgsLayoutItemAbstractGuiMetadata::Flag> Flags;
+
+
+    QgsLayoutItemAbstractGuiMetadata( int type, const QString &groupId = QString(), Flags flags = 0 );
 %Docstring
  Constructor for QgsLayoutItemAbstractGuiMetadata with the specified class ``type``.
+
+ An optional ``groupId`` can be set, which allows grouping of related layout item classes. See QgsLayoutItemGuiMetadata for details.
 %End
 
     virtual ~QgsLayoutItemAbstractGuiMetadata();
@@ -41,16 +50,28 @@ class QgsLayoutItemAbstractGuiMetadata
  :rtype: int
 %End
 
+    Flags flags() const;
+%Docstring
+ Returns item flags.
+ :rtype: Flags
+%End
+
+    QString groupId() const;
+%Docstring
+ Returns the item group ID, if set.
+ :rtype: str
+%End
+
     virtual QIcon creationIcon() const;
 %Docstring
  Returns an icon representing creation of the layout item type.
  :rtype: QIcon
 %End
 
-    virtual QWidget *createItemWidget() /Factory/;
+    virtual QgsLayoutItemBaseWidget *createItemWidget( QgsLayoutItem *item ) /Factory/;
 %Docstring
- Creates a configuration widget for layout items of this type. Can return None if no configuration GUI is required.
- :rtype: QWidget
+ Creates a configuration widget for an ``item`` of this type. Can return None if no configuration GUI is required.
+ :rtype: QgsLayoutItemBaseWidget
 %End
 
     virtual QgsLayoutViewRubberBand *createRubberBand( QgsLayoutView *view ) /Factory/;
@@ -63,6 +84,48 @@ class QgsLayoutItemAbstractGuiMetadata
 };
 
 
+
+
+class QgsLayoutItemGuiGroup
+{
+%Docstring
+ Stores GUI metadata about a group of layout item classes.
+
+ QgsLayoutItemGuiGroup stores settings about groups of related layout item classes
+ which should be presented to users grouped together.
+
+ For instance, the various basic shape creation tools would use QgsLayoutItemGuiGroup
+ to display grouped within designer dialogs.
+
+.. versionadded:: 3.0
+%End
+
+%TypeHeaderCode
+#include "qgslayoutitemguiregistry.h"
+%End
+  public:
+
+    QgsLayoutItemGuiGroup( const QString &id = QString(), const QString &name = QString(), const QIcon &icon = QIcon() );
+%Docstring
+ Constructor for QgsLayoutItemGuiGroup.
+%End
+
+    QString id;
+%Docstring
+ Unique (untranslated) group ID string.
+%End
+
+    QString name;
+%Docstring
+ Translated group name.
+%End
+
+    QIcon icon;
+%Docstring
+ Icon for group.
+%End
+
+};
 
 
 class QgsLayoutItemGuiRegistry : QObject
@@ -117,10 +180,29 @@ class QgsLayoutItemGuiRegistry : QObject
  :rtype: bool
 %End
 
-    QWidget *createItemWidget( int type ) const /Factory/;
+    bool addItemGroup( const QgsLayoutItemGuiGroup &group );
 %Docstring
- Creates a new instance of a layout item configuration widget for the specified item ``type``.
- :rtype: QWidget
+ Registers a new item group with the registry. This must be done before calling
+ addLayoutItemGuiMetadata() for any item types associated with the group.
+
+ Returns true if group was added, or false if group could not be added (e.g. due to
+ duplicate id value).
+
+.. seealso:: itemGroup()
+ :rtype: bool
+%End
+
+    const QgsLayoutItemGuiGroup &itemGroup( const QString &id );
+%Docstring
+ Returns a reference to the item group with matching ``id``.
+.. seealso:: addItemGroup()
+ :rtype: QgsLayoutItemGuiGroup
+%End
+
+    QgsLayoutItemBaseWidget *createItemWidget( QgsLayoutItem *item ) const /Factory/;
+%Docstring
+ Creates a new instance of a layout item configuration widget for the specified ``item``.
+ :rtype: QgsLayoutItemBaseWidget
 %End
 
 

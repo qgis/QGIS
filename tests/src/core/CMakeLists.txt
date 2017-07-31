@@ -127,9 +127,12 @@ SET(TESTS
  testqgslabelingengine.cpp
  testqgslayertree.cpp
  testqgslayout.cpp
+ testqgslayoutcontext.cpp
  testqgslayoutitem.cpp
  testqgslayoutobject.cpp
+ testqgslayoutpage.cpp
  testqgslayoutunits.cpp
+ testqgslayoututils.cpp
  testqgslegendrenderer.cpp
  testqgscentroidfillsymbol.cpp
  testqgslinefillsymbol.cpp

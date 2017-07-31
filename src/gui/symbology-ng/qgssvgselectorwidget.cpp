@@ -214,18 +214,20 @@ void QgsSvgGroupLoader::loadGroup( const QString &parentPath )
 // QgsSvgSelectorListModel
 //
 
-QgsSvgSelectorListModel::QgsSvgSelectorListModel( QObject *parent )
+QgsSvgSelectorListModel::QgsSvgSelectorListModel( QObject *parent, int iconSize )
   : QAbstractListModel( parent )
   , mSvgLoader( new QgsSvgSelectorLoader( this ) )
+  , mIconSize( iconSize )
 {
   mSvgLoader->setPath( QString() );
   connect( mSvgLoader, &QgsSvgSelectorLoader::foundSvgs, this, &QgsSvgSelectorListModel::addSvgs );
   mSvgLoader->start();
 }
 
-QgsSvgSelectorListModel::QgsSvgSelectorListModel( QObject *parent, const QString &path )
+QgsSvgSelectorListModel::QgsSvgSelectorListModel( QObject *parent, const QString &path, int iconSize )
   : QAbstractListModel( parent )
   , mSvgLoader( new QgsSvgSelectorLoader( this ) )
+  , mIconSize( iconSize )
 {
   mSvgLoader->setPath( path );
   connect( mSvgLoader, &QgsSvgSelectorLoader::foundSvgs, this, &QgsSvgSelectorListModel::addSvgs );
@@ -263,7 +265,7 @@ QPixmap QgsSvgSelectorListModel::createPreview( const QString &entry ) const
     strokeWidth = 0.2;
 
   bool fitsInCache; // should always fit in cache at these sizes (i.e. under 559 px ^ 2, or half cache size)
-  const QImage &img = QgsApplication::svgCache()->svgAsImage( entry, 30.0, fill, stroke, strokeWidth, 3.5 /*appr. 88 dpi*/, fitsInCache );
+  const QImage &img = QgsApplication::svgCache()->svgAsImage( entry, mIconSize, fill, stroke, strokeWidth, 3.5 /*appr. 88 dpi*/, fitsInCache );
   return QPixmap::fromImage( img );
 }
 
@@ -375,6 +377,9 @@ QgsSvgSelectorWidget::QgsSvgSelectorWidget( QWidget *parent )
   // TODO: in-code gui setup with option to vertically or horizontally stack SVG groups/images widgets
   setupUi( this );
 
+  mIconSize = qMax( 30, qRound( Qgis::UI_SCALE_FACTOR * fontMetrics().width( QStringLiteral( "XXXX" ) ) ) );
+  mImagesListView->setGridSize( QSize( mIconSize * 1.2, mIconSize * 1.2 ) );
+
   mGroupsTreeView->setHeaderHidden( true );
   populateList();
 
@@ -436,7 +441,7 @@ void QgsSvgSelectorWidget::populateIcons( const QModelIndex &idx )
   QString path = idx.data( Qt::UserRole + 1 ).toString();
 
   QAbstractItemModel *oldModel = mImagesListView->model();
-  QgsSvgSelectorListModel *m = new QgsSvgSelectorListModel( mImagesListView, path );
+  QgsSvgSelectorListModel *m = new QgsSvgSelectorListModel( mImagesListView, path, mIconSize );
   mImagesListView->setModel( m );
   delete oldModel; //explicitly delete old model to force any background threads to stop
 

@@ -134,6 +134,9 @@ class CORE_EXPORT QgsBrowserModel : public QAbstractItemModel
   signals:
     //! Emitted when item children fetch was finished
     void stateChanged( const QModelIndex &index, QgsDataItem::State oldState );
+    //! Connections changed in the browser, forwarded to the widget and used to
+    //! notify the provider dialogs of a changed connection
+    void connectionsChanged();
 
   public slots:
     //! Reload the whole model

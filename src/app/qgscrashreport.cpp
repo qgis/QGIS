@@ -48,15 +48,18 @@ const QString QgsCrashReport::toHtml() const
     }
     else
     {
+      reportData.append( "<pre>" );
       Q_FOREACH ( const QgsStackTrace::StackLine &line, mStackTrace )
       {
         QFileInfo fileInfo( line.fileName );
         QString filename( fileInfo.fileName() );
         reportData.append( QString( "(%1) %2 %3:%4" ).arg( line.moduleName, line.symbolName, filename, line.lineNumber ) );
       }
+      reportData.append( "</pre>" );
     }
   }
 
+#if 0
   if ( flags().testFlag( QgsCrashReport::Plugins ) )
   {
     reportData.append( "<br>" );
@@ -70,6 +73,7 @@ const QString QgsCrashReport::toHtml() const
     reportData.append( "<b>Project Info</b>" );
     // TODO Get project details
   }
+#endif
 
   if ( flags().testFlag( QgsCrashReport::QgisInfo ) )
   {

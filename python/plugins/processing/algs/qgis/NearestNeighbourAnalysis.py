@@ -98,7 +98,7 @@ class NearestNeighbourAnalysis(QgisAlgorithm):
 
         distance = QgsDistanceArea()
         distance.setSourceCrs(source.sourceCrs())
-        distance.setEllipsoid(QgsProject.instance().ellipsoid())
+        distance.setEllipsoid(context.project().ellipsoid())
 
         sumDist = 0.00
         A = source.sourceExtent()

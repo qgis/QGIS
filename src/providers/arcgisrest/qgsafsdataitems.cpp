@@ -60,7 +60,7 @@ QList<QAction *> QgsAfsRootItem::actions()
 QWidget *QgsAfsRootItem::paramWidget()
 {
   QgsAfsSourceSelect *select = new QgsAfsSourceSelect( 0, 0, QgsProviderRegistry::WidgetMode::Manager );
-  connect( select, &QgsSourceSelectDialog::connectionsChanged, this, &QgsAfsRootItem::connectionsChanged );
+  connect( select, &QgsArcGisServiceSourceSelect::connectionsChanged, this, &QgsAfsRootItem::connectionsChanged );
   return select;
 }
 
@@ -72,7 +72,7 @@ void QgsAfsRootItem::connectionsChanged()
 void QgsAfsRootItem::newConnection()
 {
   QgsNewHttpConnection nc( 0, QStringLiteral( "qgis/connections-arcgisfeatureserver/" ) );
-  nc.setWindowTitle( tr( "Create a new ArcGisFeatureServer connection" ) );
+  nc.setWindowTitle( tr( "Create a New ArcGisFeatureServer Connection" ) );
 
   if ( nc.exec() )
   {
@@ -138,7 +138,7 @@ QList<QAction *> QgsAfsConnectionItem::actions()
 void QgsAfsConnectionItem::editConnection()
 {
   QgsNewHttpConnection nc( 0, QStringLiteral( "qgis/connections-arcgisfeatureserver/" ), mName );
-  nc.setWindowTitle( tr( "Modify ArcGisFeatureServer connection" ) );
+  nc.setWindowTitle( tr( "Modify ArcGisFeatureServer Connection" ) );
 
   if ( nc.exec() )
   {

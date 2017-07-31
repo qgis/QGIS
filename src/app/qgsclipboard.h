@@ -21,6 +21,7 @@
 #include <QList>
 #include <QMap>
 #include <QObject>
+#include <QPointer>
 
 #include "qgsfields.h"
 #include "qgsfeature.h"
@@ -180,6 +181,7 @@ class APP_EXPORT QgsClipboard : public QObject
     QgsFeatureList mFeatureClipboard;
     QgsFields mFeatureFields;
     QgsCoordinateReferenceSystem mCRS;
+    QPointer<QgsVectorLayer> mSrcLayer;
 
     //! True when the data from the system clipboard should be read
     bool mUseSystemClipboard;

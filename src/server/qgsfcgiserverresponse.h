@@ -51,7 +51,7 @@ class SERVER_EXPORT QgsFcgiServerResponse: public QgsServerResponse
 
     void setStatusCode( int code ) override;
 
-    int statusCode( ) const override { return mStatusCode; }
+    int statusCode() const override { return mStatusCode; }
 
     void sendError( int code,  const QString &message ) override;
 

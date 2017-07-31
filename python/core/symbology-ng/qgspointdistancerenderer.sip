@@ -29,34 +29,36 @@ class QgsPointDistanceRenderer: QgsFeatureRenderer
     struct GroupedFeature
     {
 
-      GroupedFeature( const QgsFeature &feature, QgsMarkerSymbol *symbol, bool isSelected, const QString &label = QString() );
+        GroupedFeature( const QgsFeature &feature, QgsMarkerSymbol *symbol /Transfer/, bool isSelected, const QString &label = QString() );
 %Docstring
  Constructor for GroupedFeature.
  \param feature feature
- \param symbol base symbol for rendering feature
+ \param symbol base symbol for rendering feature (owned by GroupedFeature)
  \param isSelected set to true if feature is selected and should be rendered in a selected state
  \param label optional label text, or empty string for no label
 %End
 
-      QgsFeature feature;
+        QgsFeature feature;
 %Docstring
 Feature
 %End
 
-      QgsMarkerSymbol *symbol;
+        QgsMarkerSymbol *symbol() const;
 %Docstring
 Base symbol for rendering feature
+ :rtype: QgsMarkerSymbol
 %End
 
-      bool isSelected;
+        bool isSelected;
 %Docstring
 True if feature is selected and should be rendered in a selected state
 %End
 
-      QString label;
+        QString label;
 %Docstring
 Optional label text
 %End
+
     };
 
     typedef QList< QgsPointDistanceRenderer::GroupedFeature > ClusteredGroup;

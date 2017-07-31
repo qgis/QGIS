@@ -853,6 +853,7 @@ called when panning is in action, reset indicates end of panning
 
 
 
+
     void updateDatumTransformEntries();
 %Docstring
 Make sure the datum transform store is properly populated

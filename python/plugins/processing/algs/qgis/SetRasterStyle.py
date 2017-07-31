@@ -36,7 +36,6 @@ from processing.core.parameters import ParameterFile
 from processing.core.parameters import ParameterRaster
 from processing.core.outputs import OutputRaster
 from processing.tools import dataobjects
-from qgis.utils import iface
 
 
 class SetRasterStyle(QgisAlgorithm):

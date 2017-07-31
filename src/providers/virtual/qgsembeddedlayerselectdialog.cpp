@@ -34,7 +34,7 @@ QgsEmbeddedLayerSelectDialog::QgsEmbeddedLayerSelectDialog( QWidget *parent, Qgs
     mTreeView( tv )
 {
   setupUi( this );
-  updateLayersList( );
+  updateLayersList();
 }
 
 QStringList QgsEmbeddedLayerSelectDialog::layers() const
@@ -49,10 +49,10 @@ QStringList QgsEmbeddedLayerSelectDialog::layers() const
   return ids;
 }
 
-void QgsEmbeddedLayerSelectDialog::updateLayersList( )
+void QgsEmbeddedLayerSelectDialog::updateLayersList()
 {
   // populate list
-  mLayers->clear( );
+  mLayers->clear();
   QList<QgsLayerTreeLayer *> layers = mTreeView->layerTreeModel()->rootGroup()->findLayers();
   Q_FOREACH ( const QgsLayerTreeLayer *l, layers )
   {
