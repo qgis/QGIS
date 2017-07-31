@@ -142,7 +142,6 @@ SET(QGIS_APP_SRCS
   qgsmaptoolellipsecenterpoint.cpp
   qgsmaptoolellipsecenter2points.cpp
   qgsmaptooladdrectangle.cpp
-  qgsmaptooladdregularshape.cpp
   qgsmaptooladdregularpolygon.cpp
   qgsmaptoolrectanglecenter.cpp
   qgsmaptoolrectangleextent.cpp
@@ -310,7 +309,6 @@ SET (QGIS_APP_MOC_HDRS
   qgsmaptoolellipsecenterpoint.h
   qgsmaptoolellipsecenter2points.h
   qgsmaptooladdrectangle.h
-  qgsmaptooladdregularshape.h
   qgsmaptooladdregularpolygon.h
   qgsmaptoolrectanglecenter.h
   qgsmaptoolrectangleextent.h
