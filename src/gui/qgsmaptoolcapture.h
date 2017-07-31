@@ -50,6 +50,13 @@ class GUI_EXPORT QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
     int addCurve( QgsCurve *c );
 
     /**
+     * Clear capture curve.
+     *
+     * \since QGIS 3.0
+     */
+    void clearCurve( );
+
+    /**
      * Get the capture curve
      *
      * \returns Capture curve

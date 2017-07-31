@@ -29,6 +29,7 @@ QgsMapToolAddRegularPolygon::QgsMapToolAddRegularPolygon( QgsMapToolCapture *par
   , mTempRubberBand( nullptr )
   , mRegularPolygon( QgsRegularPolygon() )
 {
+  clean();
   if ( mCanvas )
   {
     connect( mCanvas, &QgsMapCanvas::mapToolSet, this, &QgsMapToolAddRegularPolygon::setParentTool );
@@ -41,6 +42,7 @@ QgsMapToolAddRegularPolygon::QgsMapToolAddRegularPolygon( QgsMapCanvas *canvas )
   , mTempRubberBand( nullptr )
   , mRegularPolygon( QgsRegularPolygon() )
 {
+  clean();
   if ( mCanvas )
   {
     connect( mCanvas, &QgsMapCanvas::mapToolSet, this, &QgsMapToolAddRegularPolygon::setParentTool );
@@ -49,19 +51,12 @@ QgsMapToolAddRegularPolygon::QgsMapToolAddRegularPolygon( QgsMapCanvas *canvas )
 
 QgsMapToolAddRegularPolygon::~QgsMapToolAddRegularPolygon()
 {
-  delete mTempRubberBand;
-  mTempRubberBand = nullptr;
-  mPoints.clear();
+  clean();
 }
 
 void QgsMapToolAddRegularPolygon::setParentTool( QgsMapTool *newTool, QgsMapTool *oldTool )
 {
-  if ( mTempRubberBand )
-  {
-    delete mTempRubberBand;
-    mTempRubberBand = nullptr;
-  }
-  mPoints.clear();
+  clean();
   QgsMapToolCapture *tool = dynamic_cast<QgsMapToolCapture *>( oldTool );
   QgsMapToolAddRegularPolygon *csTool = dynamic_cast<QgsMapToolAddRegularPolygon *>( oldTool );
   if ( csTool && newTool == this )
@@ -105,13 +100,7 @@ void QgsMapToolAddRegularPolygon::keyPressEvent( QKeyEvent *e )
 
   if ( e && e->key() == Qt::Key_Escape )
   {
-    if ( mNumberSidesSpinBox )
-    {
-      deleteNumberSidesSpinBox();
-    }
-    mPoints.clear();
-    delete mTempRubberBand;
-    mTempRubberBand = nullptr;
+    clean();
     if ( mParentTool )
       mParentTool->keyPressEvent( e );
   }
@@ -131,25 +120,33 @@ void QgsMapToolAddRegularPolygon::deactivate()
   {
     return;
   }
+  mParentTool->clearCurve( );
   mParentTool->addCurve( mRegularPolygon.toLineString() );
-  delete mTempRubberBand;
-  mTempRubberBand = nullptr;
-  mPoints.clear();
-  mRegularPolygon = QgsRegularPolygon();
-  if ( mNumberSidesSpinBox )
-  {
-    deleteNumberSidesSpinBox();
-  }
+  clean();
 
   QgsMapToolCapture::deactivate();
 }
 
 void QgsMapToolAddRegularPolygon::activate()
 {
+  clean();
+  QgsMapToolCapture::activate();
+}
+
+void QgsMapToolAddRegularPolygon::clean()
+{
+  if ( mTempRubberBand )
+  {
+    delete mTempRubberBand;
+    mTempRubberBand = nullptr;
+  }
   mPoints.clear();
   if ( mParentTool )
   {
     mParentTool->deleteTempRubberBand();
   }
-  QgsMapToolCapture::activate();
+  if ( mNumberSidesSpinBox )
+  {
+    deleteNumberSidesSpinBox();
+  }
 }

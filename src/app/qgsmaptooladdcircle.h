@@ -23,6 +23,7 @@ class QgsGeometryRubberBand;
 class QgsMapToolAddCircle: public QgsMapToolCapture
 {
     Q_OBJECT
+    void clean();
   public:
     QgsMapToolAddCircle( QgsMapToolCapture *parentTool, QgsMapCanvas *canvas, CaptureMode mode = CaptureLine );
     ~QgsMapToolAddCircle();

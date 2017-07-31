@@ -50,10 +50,7 @@ void QgsMapToolRegularPolygon2Points::cadCanvasReleaseEvent( QgsMapMouseEvent *e
         mTempRubberBand->show();
 
         createNumberSidesSpinBox();
-        /*if ( mNumberSidesSpinBox )
-        {
-          mNumberSidesSpinBox->setMinimum( 3 );
-        }*/
+
       }
     }
   }

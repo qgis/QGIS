@@ -24,6 +24,8 @@ class QgsPolygonV2;
 class QgsMapToolAddRectangle: public QgsMapToolCapture
 {
     Q_OBJECT
+    //! convenient method to clean members
+    void clean();
   public:
     QgsMapToolAddRectangle( QgsMapToolCapture *parentTool, QgsMapCanvas *canvas, CaptureMode mode = CaptureLine );
     ~QgsMapToolAddRectangle();

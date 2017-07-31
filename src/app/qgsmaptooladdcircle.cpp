@@ -29,6 +29,7 @@ QgsMapToolAddCircle::QgsMapToolAddCircle( QgsMapToolCapture *parentTool, QgsMapC
   , mTempRubberBand( nullptr )
   , mCircle( QgsCircle() )
 {
+  clean();
   if ( mCanvas )
   {
     connect( mCanvas, &QgsMapCanvas::mapToolSet, this, &QgsMapToolAddCircle::setParentTool );
@@ -41,6 +42,7 @@ QgsMapToolAddCircle::QgsMapToolAddCircle( QgsMapCanvas *canvas )
   , mTempRubberBand( nullptr )
   , mCircle( QgsCircle() )
 {
+  clean();
   if ( mCanvas )
   {
     connect( mCanvas, &QgsMapCanvas::mapToolSet, this, &QgsMapToolAddCircle::setParentTool );
@@ -49,18 +51,11 @@ QgsMapToolAddCircle::QgsMapToolAddCircle( QgsMapCanvas *canvas )
 
 QgsMapToolAddCircle::~QgsMapToolAddCircle()
 {
-  delete mTempRubberBand;
-  mPoints.clear();
+  clean();
 }
 
 void QgsMapToolAddCircle::setParentTool( QgsMapTool *newTool, QgsMapTool *oldTool )
 {
-  if ( mTempRubberBand )
-  {
-    delete mTempRubberBand;
-    mTempRubberBand = nullptr;
-  }
-  mPoints.clear();
   QgsMapToolCapture *tool = dynamic_cast<QgsMapToolCapture *>( oldTool );
   QgsMapToolAddCircle *csTool = dynamic_cast<QgsMapToolAddCircle *>( oldTool );
   if ( csTool && newTool == this )
@@ -82,9 +77,7 @@ void QgsMapToolAddCircle::keyPressEvent( QKeyEvent *e )
 
   if ( e && e->key() == Qt::Key_Escape )
   {
-    mPoints.clear();
-    delete mTempRubberBand;
-    mTempRubberBand = nullptr;
+    clean();
     if ( mParentTool )
       mParentTool->keyPressEvent( e );
   }
@@ -105,22 +98,29 @@ void QgsMapToolAddCircle::deactivate()
     return;
   }
 
+  mParentTool->clearCurve();
   mParentTool->addCurve( mCircle.toCircularString() );
+  clean();
 
-  delete mTempRubberBand;
-  mTempRubberBand = nullptr;
-  mPoints.clear();
-  mCircle = QgsCircle();
   QgsMapToolCapture::deactivate();
 }
 
 void QgsMapToolAddCircle::activate()
 {
-  mPoints.clear();
+  clean();
+  QgsMapToolCapture::activate();
+}
 
+void QgsMapToolAddCircle::clean()
+{
+  if ( mTempRubberBand )
+  {
+    delete mTempRubberBand;
+    mTempRubberBand = nullptr;
+  }
+  mPoints.clear();
   if ( mParentTool )
   {
     mParentTool->deleteTempRubberBand();
   }
-  QgsMapToolCapture::activate();
 }

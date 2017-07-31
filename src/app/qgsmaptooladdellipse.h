@@ -23,6 +23,7 @@ class QgsGeometryRubberBand;
 class QgsMapToolAddEllipse: public QgsMapToolCapture
 {
     Q_OBJECT
+    void clean();
   public:
     QgsMapToolAddEllipse( QgsMapToolCapture *parentTool, QgsMapCanvas *canvas, CaptureMode mode = CaptureLine );
     ~QgsMapToolAddEllipse();

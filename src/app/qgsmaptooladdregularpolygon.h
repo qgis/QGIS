@@ -10,6 +10,7 @@ class QSpinBox;
 class QgsMapToolAddRegularPolygon: public QgsMapToolCapture
 {
     Q_OBJECT
+    void clean();
   public:
     QgsMapToolAddRegularPolygon( QgsMapToolCapture *parentTool, QgsMapCanvas *canvas, CaptureMode mode = CaptureLine );
     ~QgsMapToolAddRegularPolygon();

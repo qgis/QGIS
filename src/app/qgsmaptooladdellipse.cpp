@@ -29,6 +29,7 @@ QgsMapToolAddEllipse::QgsMapToolAddEllipse( QgsMapToolCapture *parentTool, QgsMa
   , mTempRubberBand( nullptr )
   , mEllipse( QgsEllipse() )
 {
+  clean();
   if ( mCanvas )
   {
     connect( mCanvas, &QgsMapCanvas::mapToolSet, this, &QgsMapToolAddEllipse::setParentTool );
@@ -41,6 +42,7 @@ QgsMapToolAddEllipse::QgsMapToolAddEllipse( QgsMapCanvas *canvas )
   , mTempRubberBand( nullptr )
   , mEllipse( QgsEllipse() )
 {
+  clean();
   if ( mCanvas )
   {
     connect( mCanvas, &QgsMapCanvas::mapToolSet, this, &QgsMapToolAddEllipse::setParentTool );
@@ -49,8 +51,7 @@ QgsMapToolAddEllipse::QgsMapToolAddEllipse( QgsMapCanvas *canvas )
 
 QgsMapToolAddEllipse::~QgsMapToolAddEllipse()
 {
-  delete mTempRubberBand;
-  mPoints.clear();
+  clean();
 }
 
 void QgsMapToolAddEllipse::setParentTool( QgsMapTool *newTool, QgsMapTool *oldTool )
@@ -76,9 +77,7 @@ void QgsMapToolAddEllipse::keyPressEvent( QKeyEvent *e )
 
   if ( e && e->key() == Qt::Key_Escape )
   {
-    mPoints.clear();
-    delete mTempRubberBand;
-    mTempRubberBand = nullptr;
+    clean();
     if ( mParentTool )
       mParentTool->keyPressEvent( e );
   }
@@ -99,20 +98,30 @@ void QgsMapToolAddEllipse::deactivate()
     return;
   }
 
+  mParentTool->clearCurve();
   mParentTool->addCurve( mEllipse.toLineString() );
 
-  delete mTempRubberBand;
-  mTempRubberBand = nullptr;
-  mPoints.clear();
-  mEllipse = QgsEllipse();
+  clean();
   QgsMapToolCapture::deactivate();
 }
 
 void QgsMapToolAddEllipse::activate()
 {
+
+  clean();
+  QgsMapToolCapture::activate();
+}
+
+void QgsMapToolAddEllipse::clean()
+{
+  if ( mTempRubberBand )
+  {
+    delete mTempRubberBand;
+    mTempRubberBand = nullptr;
+  }
+  mPoints.clear();
   if ( mParentTool )
   {
     mParentTool->deleteTempRubberBand();
   }
-  QgsMapToolCapture::activate();
 }
