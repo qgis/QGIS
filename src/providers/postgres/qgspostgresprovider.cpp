@@ -3950,9 +3950,21 @@ QgsCoordinateReferenceSystem QgsPostgresProvider::crs() const
   srs.createFromSrid( srid );
   if ( !srs.isValid() )
   {
-    QgsPostgresResult result( connectionRO()->PQexec( QStringLiteral( "SELECT proj4text FROM spatial_ref_sys WHERE srid=%1" ).arg( srid ) ) );
-    if ( result.PQresultStatus() == PGRES_TUPLES_OK )
-      srs = QgsCoordinateReferenceSystem::fromProj4( result.PQgetvalue( 0, 0 ) );
+    static QMap<int, QgsCoordinateReferenceSystem> sCrsCache;
+    if ( sCrsCache.contains( srid ) )
+      srs = sCrsCache.value( srid );
+    else
+    {
+      QgsPostgresConn *conn = connectionRO();
+      conn->lock();
+      QgsPostgresResult result( conn->PQexec( QStringLiteral( "SELECT proj4text FROM spatial_ref_sys WHERE srid=%1" ).arg( srid ) ) );
+      conn->unlock();
+      if ( result.PQresultStatus() == PGRES_TUPLES_OK )
+      {
+        srs = QgsCoordinateReferenceSystem::fromProj4( result.PQgetvalue( 0, 0 ) );
+        sCrsCache.insert( srid, srs );
+      }
+    }
   }
   return srs;
 }
