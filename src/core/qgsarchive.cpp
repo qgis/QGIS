@@ -95,6 +95,18 @@ void QgsArchive::addFile( const QString &file )
   mFiles.append( file );
 }
 
+bool QgsArchive::removeFile( const QString &file )
+{
+  bool rc = false;
+
+  if ( !file.isEmpty() && mFiles.contains( file ) && QFile::exists( file ) )
+    rc = QFile::remove( file );
+
+  mFiles.removeOne( file );
+
+  return rc;
+}
+
 QStringList QgsArchive::files() const
 {
   return mFiles;
@@ -102,7 +114,7 @@ QStringList QgsArchive::files() const
 
 QString QgsProjectArchive::projectFile() const
 {
-  Q_FOREACH ( const QString &file, mFiles )
+  Q_FOREACH ( const QString &file, files() )
   {
     QFileInfo fileInfo( file );
     if ( fileInfo.suffix().compare( QLatin1String( "qgs" ), Qt::CaseInsensitive ) == 0 )
@@ -122,14 +134,5 @@ bool QgsProjectArchive::unzip( const QString &filename )
 
 bool QgsProjectArchive::clearProjectFile()
 {
-  bool rc = false;
-  QString file = projectFile();
-
-  if ( !file.isEmpty() && QFile::exists( file ) )
-    rc = QFile::remove( file );
-
-  if ( rc )
-    mFiles.removeOne( file );
-
-  return rc;
+  return removeFile( projectFile() );
 }

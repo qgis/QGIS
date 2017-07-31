@@ -81,6 +81,13 @@ class CORE_EXPORT QgsArchive
     void addFile( const QString &filename );
 
     /**
+     * Remove a file from this archive and from the filesystem.
+     * \param filename The path of the file to remove
+     * \returns true if the file has been removed from the filesystem, false otherwise
+     */
+    bool removeFile( const QString &filename );
+
+    /**
      * Returns the list of files within this archive
      */
     QStringList files() const;
@@ -90,11 +97,10 @@ class CORE_EXPORT QgsArchive
      */
     QString dir() const;
 
-  protected:
+  private:
     // content of the archive
     QStringList mFiles;
 
-  private:
     // used when unzip is performed
     std::unique_ptr<QTemporaryDir> mDir;
 };

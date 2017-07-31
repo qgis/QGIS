@@ -67,6 +67,14 @@ class QgsArchive
  \param filename A file to add when zipping this archive
 %End
 
+    bool removeFile( const QString &filename );
+%Docstring
+ Remove a file from this archive and from the filesystem.
+ \param filename The path of the file to remove
+ :return: true if the file has been removed from the filesystem, false otherwise
+ :rtype: bool
+%End
+
     QStringList files() const;
 %Docstring
  Returns the list of files within this archive
@@ -78,8 +86,6 @@ class QgsArchive
  Returns the current temporary directory.
  :rtype: str
 %End
-
-  protected:
 
 };
 
