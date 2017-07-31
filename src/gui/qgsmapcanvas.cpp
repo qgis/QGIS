@@ -2132,43 +2132,50 @@ const QgsLabelingEngineSettings &QgsMapCanvas::labelingEngineSettings() const
 void QgsMapCanvas::startPreviewJobs()
 {
   stopPreviewJobs(); //just in case still running
+  startPreviewJob( 0 );
+}
 
+void QgsMapCanvas::startPreviewJob( int number )
+{
   QgsRectangle mapRect = mSettings.visibleExtent();
 
-  for ( int j = 0; j < 3; ++j )
+  if ( number == 4 )
+    number += 1;
+
+  int j = number / 3;
+  int i = number % 3;
+
+  //copy settings, only update extent
+  QgsMapSettings jobSettings = mSettings;
+
+  double dx = ( i - 1 ) * mapRect.width();
+  double dy = ( 1 - j ) * mapRect.height();
+  QgsRectangle jobExtent = mapRect;
+
+  jobExtent.setXMaximum( jobExtent.xMaximum() + dx );
+  jobExtent.setXMinimum( jobExtent.xMinimum() + dx );
+  jobExtent.setYMaximum( jobExtent.yMaximum() + dy );
+  jobExtent.setYMinimum( jobExtent.yMinimum() + dy );
+
+  jobSettings.setExtent( jobExtent );
+  jobSettings.setFlag( QgsMapSettings::DrawLabeling, false );
+
+  QgsMapRendererQImageJob *job = new QgsMapRendererParallelJob( jobSettings );
+  mPreviewJobs.append( job );
+  connect( job, &QgsMapRendererJob::finished, this, &QgsMapCanvas::previewJobFinished );
+  job->start();
+
+  if ( number < 8 )
   {
-    for ( int i = 0; i < 3; ++i )
-    {
-      if ( i == 1 && j == 1 )
-      {
-        continue;
-      }
-
-
-      //copy settings, only update extent
-      QgsMapSettings jobSettings = mSettings;
-
-      double dx = ( i - 1 ) * mapRect.width();
-      double dy = ( 1 - j ) * mapRect.height();
-      QgsRectangle jobExtent = mapRect;
-      jobExtent.setXMaximum( jobExtent.xMaximum() + dx );
-      jobExtent.setXMinimum( jobExtent.xMinimum() + dx );
-      jobExtent.setYMaximum( jobExtent.yMaximum() + dy );
-      jobExtent.setYMinimum( jobExtent.yMinimum() + dy );
-
-      jobSettings.setExtent( jobExtent );
-      jobSettings.setFlag( QgsMapSettings::DrawLabeling, false );
-
-      QgsMapRendererQImageJob *job = new QgsMapRendererParallelJob( jobSettings );
-      mPreviewJobs.append( job );
-      connect( job, &QgsMapRendererJob::finished, this, &QgsMapCanvas::previewJobFinished );
-      job->start();
-    }
+    mPreviewTimer.setSingleShot( true );
+    mPreviewTimer.setInterval( 10 );
+    connect( &mPreviewTimer, &QTimer::timeout, [ = ]() { startPreviewJob( number + 1 ); } );
   }
 }
 
 void QgsMapCanvas::stopPreviewJobs()
 {
+  mPreviewTimer.stop();
   QList< QgsMapRendererQImageJob * >::const_iterator it = mPreviewJobs.constBegin();
   for ( ; it != mPreviewJobs.constEnd(); ++it )
   {

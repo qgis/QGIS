@@ -750,6 +750,8 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
 
     void projectThemesChanged();
 
+    void startPreviewJob( int number );
+
   private:
     /// this class is non-copyable
 
@@ -844,6 +846,8 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     QCursor mZoomCursor;
 
     QTimer mAutoRefreshTimer;
+
+    QTimer mPreviewTimer;
 
     QString mTheme;
 
