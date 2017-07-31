@@ -223,7 +223,7 @@ class FieldsCalculatorDialog(BASE, WIDGET):
         keepOpen = ProcessingConfig.getSetting(ProcessingConfig.KEEP_DIALOG_OPEN)
         parameters = self.getParamValues()
         if parameters:
-            with OverrideCusor(Qt.WaitCursor):
+            with OverrideCursor(Qt.WaitCursor):
                 context = dataobjects.createContext()
                 ProcessingLog.addToLog(self.alg.asPythonCommand(parameters, context))
 
