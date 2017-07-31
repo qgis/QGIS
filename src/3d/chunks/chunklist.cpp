@@ -31,8 +31,17 @@ void ChunkList::insertEntry( ChunkListEntry *entry, ChunkListEntry *next )
   else
   {
     entry->next = next;
-    entry->prev = next->prev;
-    next->prev = entry;
+    if ( next == nullptr )
+    {
+      entry->prev = mTail;
+      mTail->next = entry;
+      mTail = entry;
+    }
+    else
+    {
+      entry->prev = next->prev;
+      next->prev = entry;
+    }
     if ( next == mHead )
       mHead = entry;   // update head if "entry" we was head before
   }
@@ -95,6 +104,11 @@ ChunkListEntry *ChunkList::takeLast()
 void ChunkList::insertFirst( ChunkListEntry *entry )
 {
   insertEntry( entry, mHead );
+}
+
+void ChunkList::insertLast( ChunkListEntry *entry )
+{
+  insertEntry( entry, nullptr );
 }
 
 bool ChunkList::isEmpty() const

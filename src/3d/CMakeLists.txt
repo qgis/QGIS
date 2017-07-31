@@ -46,6 +46,7 @@ SET(QGIS_3D_MOC_HDRS
   scene.h
 
   chunks/chunkedentity.h
+  chunks/chunkloader.h
 
   terrain/demterraingenerator.h
   terrain/demterraintilegeometry.h

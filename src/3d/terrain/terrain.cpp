@@ -1,13 +1,37 @@
 #include "terrain.h"
 
 #include "aabb.h"
+#include "chunknode.h"
 #include "map3d.h"
 #include "maptexturegenerator.h"
+#include "maptextureimage.h"
 #include "terraingenerator.h"
 
 #include "qgscoordinatetransform.h"
 
 #include <Qt3DRender/QObjectPicker>
+
+
+
+class TerrainMapUpdateJobFactory : public ChunkQueueJobFactory
+{
+  public:
+    TerrainMapUpdateJobFactory( MapTextureGenerator *mapTextureGenerator )
+      : mMapTextureGenerator( mapTextureGenerator )
+    {
+    }
+
+    virtual ChunkQueueJob *createJob( ChunkNode *chunk )
+    {
+      return new TerrainMapUpdateJob( mMapTextureGenerator, chunk );
+    }
+
+  private:
+    MapTextureGenerator *mMapTextureGenerator;
+};
+
+
+
 
 
 Terrain::Terrain( int maxLevel, const Map3D &map, Qt3DCore::QNode *parent )
@@ -27,6 +51,8 @@ Terrain::Terrain( int maxLevel, const Map3D &map, Qt3DCore::QNode *parent )
 
   mMapTextureGenerator = new MapTextureGenerator( map );
 
+  mUpdateJobFactory.reset( new TerrainMapUpdateJobFactory( mMapTextureGenerator ) );
+
   mTerrainPicker = new Qt3DRender::QObjectPicker;
   // add camera control's terrain picker as a component to be able to capture height where mouse was
   // pressed in order to correcly pan camera when draggin mouse
@@ -35,6 +61,10 @@ Terrain::Terrain( int maxLevel, const Map3D &map, Qt3DCore::QNode *parent )
 
 Terrain::~Terrain()
 {
+  // cancel / wait for jobs
+  if ( activeJob )
+    cancelActiveJob();
+
   delete mMapTextureGenerator;
   delete mTerrainToMapTransform;
 }
@@ -44,31 +74,61 @@ void Terrain::onShowBoundingBoxesChanged()
   setShowBoundingBoxes( map.showTerrainBoundingBoxes() );
 }
 
-#include "maptextureimage.h"
+
 void Terrain::invalidateMapImages()
 {
-  qDebug() << "!!! INVALIDATE MAP IMAGES !!!";
-  QList<TerrainChunkEntity *> active, inactive;
-  Q_FOREACH ( TerrainChunkEntity *entity, findChildren<TerrainChunkEntity *>() )
+  qDebug() << "TERRAIN - INVALIDATE MAP IMAGES";
+
+  // handle active nodes
+
+  updateNodes( activeNodes, mUpdateJobFactory.get() );
+  qDebug() << " updating " << activeNodes.count() << " active nodes";
+
+  // handle inactive nodes afterwards
+
+  QList<ChunkNode *> inactiveNodes;
+  Q_FOREACH ( ChunkNode *node, rootNode->descendants() )
   {
-    if ( entity->isEnabled() )
-      active << entity;
-    else
-      inactive << entity;
-    entity->mTextureImage->invalidate(); // turn into placeholder
+    if ( !node->entity )
+      continue;
+    if ( activeNodes.contains( node ) )
+      continue;
+    inactiveNodes << node;
   }
 
-  mEntitiesToUpdate.clear();
-  mEntitiesToUpdate << active << inactive;
+  updateNodes( inactiveNodes, mUpdateJobFactory.get() );
+  qDebug() << " updating " << inactiveNodes.count() << " inactive nodes";
 
-  // TODO: do it in background
+  needsUpdate = true;
+}
 
-  qDebug() << "\n\nTO UPDATE:" << mEntitiesToUpdate.count() << "\n";
 
-  Q_FOREACH ( TerrainChunkEntity *entity, mEntitiesToUpdate )
+// -----------
+
+
+TerrainMapUpdateJob::TerrainMapUpdateJob( MapTextureGenerator *mapTextureGenerator, ChunkNode *node )
+  : ChunkQueueJob( node )
+  , mMapTextureGenerator( mapTextureGenerator )
+{
+  TerrainChunkEntity *entity = qobject_cast<TerrainChunkEntity *>( node->entity );
+  connect( mapTextureGenerator, &MapTextureGenerator::tileReady, this, &TerrainMapUpdateJob::onTileReady );
+  mJobId = mapTextureGenerator->render( entity->mTextureImage->imageExtent(), entity->mTextureImage->imageDebugText() );
+}
+
+void TerrainMapUpdateJob::cancel()
+{
+  if ( mJobId != -1 )
+    mMapTextureGenerator->cancelJob( mJobId );
+}
+
+
+void TerrainMapUpdateJob::onTileReady( int jobId, const QImage &image )
+{
+  if ( mJobId == jobId )
   {
-    qDebug() << "-------- UPDATING ENTITY";
-    QImage img = mapTextureGenerator()->renderSynchronously( entity->mTextureImage->imageExtent(), entity->mTextureImage->imageDebugText() );
-    entity->mTextureImage->setImage( img );
+    TerrainChunkEntity *entity = qobject_cast<TerrainChunkEntity *>( node->entity );
+    entity->mTextureImage->setImage( image );
+    mJobId = -1;
+    emit finished();
   }
 }

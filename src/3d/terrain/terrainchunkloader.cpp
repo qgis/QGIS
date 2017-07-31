@@ -46,7 +46,8 @@ TerrainChunkLoader::TerrainChunkLoader( Terrain *terrain, ChunkNode *node )
 
 void TerrainChunkLoader::loadTexture()
 {
-  mTextureImage = mTerrain->mapTextureGenerator()->renderSynchronously( mExtentMapCrs, mTileDebugText );
+  connect( mTerrain->mapTextureGenerator(), &MapTextureGenerator::tileReady, this, &TerrainChunkLoader::onImageReady );
+  mTextureJobId = mTerrain->mapTextureGenerator()->render( mExtentMapCrs, mTileDebugText );
 }
 
 void TerrainChunkLoader::createTextureComponent( TerrainChunkEntity *entity )
@@ -67,4 +68,14 @@ void TerrainChunkLoader::createTextureComponent( TerrainChunkEntity *entity )
   material->setAmbient( Qt::white );
 #endif
   entity->addComponent( material ); // takes ownership if the component has no parent
+}
+
+void TerrainChunkLoader::onImageReady( int jobId, const QImage &image )
+{
+  if ( mTextureJobId == jobId )
+  {
+    mTextureImage = image;
+    mTextureJobId = -1;
+    emit finished();  // TODO: this should be left for derived class!
+  }
 }

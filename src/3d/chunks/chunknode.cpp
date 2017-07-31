@@ -18,6 +18,8 @@ ChunkNode::ChunkNode( int x, int y, int z, const AABB &bbox, float error, ChunkN
   , replacementQueueEntry( nullptr )
   , loader( nullptr )
   , entity( nullptr )
+  , updaterFactory( nullptr )
+  , updater( nullptr )
 {
   for ( int i = 0; i < 4; ++i )
     children[i] = nullptr;
@@ -30,6 +32,8 @@ ChunkNode::~ChunkNode()
   Q_ASSERT( !replacementQueueEntry );
   Q_ASSERT( !loader ); // should be deleted when removed from loader queue
   Q_ASSERT( !entity ); // should be deleted when removed from replacement queue
+  Q_ASSERT( !updater );
+  Q_ASSERT( !updaterFactory );
   for ( int i = 0; i < 4; ++i )
     delete children[i];
 }
@@ -40,7 +44,7 @@ bool ChunkNode::allChildChunksResident( const QTime &currentTime ) const
   {
     if ( !children[i] )
       return false;  // not even a skeleton
-    if ( children[i]->state != Loaded )
+    if ( !children[i]->entity )
       return false;  // no there yet
     Q_UNUSED( currentTime ); // seems we do not need this extra time (it just brings extra problems)
     //if (children[i]->entityCreatedTime.msecsTo(currentTime) < 100)
@@ -81,30 +85,79 @@ int ChunkNode::level() const
   return lvl;
 }
 
-void ChunkNode::setLoading( ChunkLoader *chunkLoader, ChunkListEntry *entry )
+QList<ChunkNode *> ChunkNode::descendants()
 {
+  QList<ChunkNode *> lst;
+  lst << this;
+
+  for ( int i = 0; i < 4; ++i )
+  {
+    if ( children[i] )
+      lst << children[i]->descendants();
+  }
+
+  return lst;
+}
+
+void ChunkNode::setQueuedForLoad( ChunkListEntry *entry )
+{
+  Q_ASSERT( state == Skeleton );
   Q_ASSERT( !loaderQueueEntry );
   Q_ASSERT( !loader );
 
-  state = ChunkNode::Loading;
-  loader = chunkLoader;
+  state = ChunkNode::QueuedForLoad;
   loaderQueueEntry = entry;
 }
 
-void ChunkNode::setLoaded( Qt3DCore::QEntity *newEntity, ChunkListEntry *entry )
+void ChunkNode::cancelQueuedForLoad()
+{
+  Q_ASSERT( state == QueuedForLoad );
+  Q_ASSERT( loaderQueueEntry );
+
+  delete loaderQueueEntry;
+  loaderQueueEntry = nullptr;
+
+  state = ChunkNode::Skeleton;
+}
+
+void ChunkNode::setLoading( ChunkLoader *chunkLoader )
+{
+  Q_ASSERT( state == QueuedForLoad );
+  Q_ASSERT( !loader );
+  Q_ASSERT( loaderQueueEntry );
+
+  state = Loading;
+  loader = chunkLoader;
+  loaderQueueEntry = nullptr;
+}
+
+void ChunkNode::cancelLoading()
 {
   Q_ASSERT( state == ChunkNode::Loading );
   Q_ASSERT( loader );
+  Q_ASSERT( !loaderQueueEntry );
+  Q_ASSERT( !entity );
+  Q_ASSERT( !replacementQueueEntry );
+
+  loader = nullptr;  // not owned by chunk node
+
+  state = ChunkNode::Skeleton;
+}
+
+void ChunkNode::setLoaded( Qt3DCore::QEntity *newEntity )
+{
+  Q_ASSERT( state == ChunkNode::Loading );
+  Q_ASSERT( loader );
+  Q_ASSERT( !loaderQueueEntry );
+  Q_ASSERT( !replacementQueueEntry );
 
   entity = newEntity;
   entityCreatedTime = QTime::currentTime();
 
-  delete loader;
-  loader = nullptr;
+  loader = nullptr;  // not owned by chunk node
 
   state = ChunkNode::Loaded;
-  loaderQueueEntry = nullptr;
-  replacementQueueEntry = entry;
+  replacementQueueEntry = new ChunkListEntry( this );
 }
 
 void ChunkNode::unloadChunk()
@@ -118,6 +171,73 @@ void ChunkNode::unloadChunk()
   delete replacementQueueEntry;
   replacementQueueEntry = nullptr;
   state = ChunkNode::Skeleton;
+}
+
+void ChunkNode::setQueuedForUpdate( ChunkListEntry *entry, ChunkQueueJobFactory *updateJobFactory )
+{
+  Q_ASSERT( state == ChunkNode::Loaded );
+  Q_ASSERT( entity );
+  Q_ASSERT( replacementQueueEntry );
+  Q_ASSERT( !loaderQueueEntry );
+  Q_ASSERT( !updater );
+  Q_ASSERT( !updaterFactory );
+
+  state = QueuedForUpdate;
+  loaderQueueEntry = entry;
+  updaterFactory = updateJobFactory;
+}
+
+void ChunkNode::cancelQueuedForUpdate()
+{
+  Q_ASSERT( state == QueuedForUpdate );
+  Q_ASSERT( entity );
+  Q_ASSERT( loaderQueueEntry );
+  Q_ASSERT( updaterFactory );
+  Q_ASSERT( !updater );
+
+  state = Loaded;
+  updaterFactory = nullptr;  // not owned by the node
+
+  delete loaderQueueEntry;
+  loaderQueueEntry = nullptr;
+}
+
+void ChunkNode::setUpdating()
+{
+  Q_ASSERT( state == ChunkNode::QueuedForUpdate );
+  Q_ASSERT( entity );
+  Q_ASSERT( replacementQueueEntry );
+  Q_ASSERT( loaderQueueEntry );
+  Q_ASSERT( !updater );
+  Q_ASSERT( updaterFactory );
+
+  state = Updating;
+  updater = updaterFactory->createJob( this );
+  updaterFactory = nullptr;  // not owned by the node
+  loaderQueueEntry = nullptr;
+}
+
+void ChunkNode::cancelUpdating()
+{
+  Q_ASSERT( state == ChunkNode::Updating );
+  Q_ASSERT( updater );
+  Q_ASSERT( !loaderQueueEntry );
+
+  updater = nullptr;  // not owned by chunk node
+
+  state = Loaded;
+}
+
+void ChunkNode::setUpdated()
+{
+  Q_ASSERT( state == ChunkNode::Updating );
+  Q_ASSERT( updater );
+  Q_ASSERT( !loaderQueueEntry );
+  Q_ASSERT( replacementQueueEntry );
+
+  updater = nullptr;   // not owned by chunk node
+
+  state = ChunkNode::Loaded;
 }
 
 void ChunkNode::setExactBbox( const AABB &box )

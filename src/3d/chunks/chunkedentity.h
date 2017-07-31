@@ -2,15 +2,14 @@
 #define CHUNKEDENTITY_H
 
 #include <Qt3DCore/QEntity>
-#include <QMutex>
-#include <QWaitCondition>
 
 class AABB;
 class ChunkNode;
 class ChunkList;
+class ChunkQueueJob;
 class ChunkLoaderFactory;
 class ChunkBoundsEntity;
-class LoaderThread;
+class ChunkQueueJobFactory;
 
 #include <QVector3D>
 #include <QMatrix4x4>
@@ -43,16 +42,24 @@ class ChunkedEntity : public Qt3DCore::QEntity
 
     void setShowBoundingBoxes( bool enabled );
 
+    //! update already loaded nodes (add to the queue)
+    void updateNodes( const QList<ChunkNode *> &nodes, ChunkQueueJobFactory *updateJobFactory );
+
+  protected:
+    void cancelActiveJob();
+
   private:
     void update( ChunkNode *node, const SceneState &state );
 
     //! make sure that the chunk will be loaded soon (if not loaded yet) and not unloaded anytime soon (if loaded already)
     void requestResidency( ChunkNode *node );
 
-  private slots:
-    void onNodeLoaded( ChunkNode *node );
+    void startJob();
 
-  private:
+  private slots:
+    void onActiveJobFinished();
+
+  protected:
     //! root node of the quadtree hierarchy
     ChunkNode *rootNode;
     //! max. allowed screen space error
@@ -78,32 +85,9 @@ class ChunkedEntity : public Qt3DCore::QEntity
 
     ChunkBoundsEntity *bboxesEntity;
 
-    LoaderThread *loaderThread;
-    QMutex loaderMutex;
-    QWaitCondition loaderWaitCondition;
+    //! job that is currently being processed (asynchronously in a worker thread)
+    ChunkQueueJob *activeJob = nullptr;
 };
 
-
-#include <QThread>
-
-class LoaderThread : public QThread
-{
-    Q_OBJECT
-  public:
-    LoaderThread( ChunkList *list, QMutex &mutex, QWaitCondition &waitCondition );
-
-    void setStopping( bool stop ) { stopping = stop; }
-
-    void run() override;
-
-  signals:
-    void nodeLoaded( ChunkNode *node );
-
-  private:
-    ChunkList *loadList;
-    QMutex &mutex;
-    QWaitCondition &waitCondition;
-    bool stopping;
-};
 
 #endif // CHUNKEDENTITY_H

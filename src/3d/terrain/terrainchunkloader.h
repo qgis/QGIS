@@ -20,9 +20,13 @@ class TerrainChunkLoader : public ChunkLoader
   protected:
     Terrain *mTerrain;
 
+  private slots:
+    void onImageReady( int jobId, const QImage &image );
+
   private:
     QgsRectangle mExtentMapCrs;
     QString mTileDebugText;
+    int mTextureJobId;
     QImage mTextureImage;
 };
 

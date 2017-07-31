@@ -3,6 +3,8 @@
 
 #include "chunkedentity.h"
 
+#include <memory>
+
 namespace Qt3DRender
 {
   class QObjectPicker;
@@ -13,6 +15,7 @@ class MapTextureGenerator;
 class QgsCoordinateTransform;
 class TerrainChunkEntity;
 class TerrainGenerator;
+class TerrainMapUpdateJobFactory;
 
 /**
  * Controller for terrain - decides on what terrain tiles to show based on camera position
@@ -44,7 +47,27 @@ class Terrain : public ChunkedEntity
     MapTextureGenerator *mMapTextureGenerator;
     QgsCoordinateTransform *mTerrainToMapTransform;
 
-    QList<TerrainChunkEntity *> mEntitiesToUpdate;
+    std::unique_ptr<TerrainMapUpdateJobFactory> mUpdateJobFactory;
+};
+
+
+#include "chunkloader.h"
+
+//! Handles asynchronous updates of terrain's map images when layers change
+class TerrainMapUpdateJob : public ChunkQueueJob
+{
+    Q_OBJECT
+  public:
+    TerrainMapUpdateJob( MapTextureGenerator *mapTextureGenerator, ChunkNode *node );
+
+    virtual void cancel() override;
+
+  private slots:
+    void onTileReady( int jobId, const QImage &image );
+
+  private:
+    MapTextureGenerator *mMapTextureGenerator;
+    int mJobId;
 };
 
 #endif // TERRAIN_H

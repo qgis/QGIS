@@ -52,10 +52,34 @@ class _3D_EXPORT DemTerrainGenerator : public TerrainGenerator
 };
 
 
+
+class DemTerrainChunkLoader : public TerrainChunkLoader
+{
+    Q_OBJECT
+  public:
+    DemTerrainChunkLoader( Terrain *terrain, ChunkNode *node );
+    ~DemTerrainChunkLoader();
+
+    virtual Qt3DCore::QEntity *createEntity( Qt3DCore::QEntity *parent );
+
+  private slots:
+    void onHeightMapReady( int jobId, const QByteArray &heightMap );
+
+  private:
+
+    int heightMapJobId;
+    QByteArray heightMap;
+    int resolution;
+};
+
+
+
 #include <QtConcurrent/QtConcurrentRun>
 #include <QFutureWatcher>
+#include <QElapsedTimer>
 
 #include "qgsrectangle.h"
+class QgsRasterDataProvider;
 
 /**
  * Utility class to asynchronously create heightmaps from DEM raster for given tiles of terrain.
@@ -89,6 +113,9 @@ class DemHeightMapGenerator : public QObject
     //! raster used to build terrain
     QgsRasterLayer *dtm;
 
+    //! cloned provider to be used in worker thread
+    QgsRasterDataProvider *clonedProvider;
+
     TilingScheme tilingScheme;
 
     int res;
@@ -101,6 +128,7 @@ class DemHeightMapGenerator : public QObject
       QgsRectangle extent;
       QFuture<QByteArray> future;
       QFutureWatcher<QByteArray> *fw;
+      QElapsedTimer timer;
     };
 
     QHash<QFutureWatcher<QByteArray>*, JobData> jobs;

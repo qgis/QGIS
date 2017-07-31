@@ -70,6 +70,7 @@ int main( int argc, char *argv[] )
   map.setTerrainVerticalScale( 3 );
   map.setShowTerrainBoundingBoxes( true );
   map.setShowTerrainTilesInfo( true );
+  map.setMaxTerrainGroundError( 0.2 );
 
   TerrainGenerator::Type tt;
   //tt = TerrainGenerator::Flat;

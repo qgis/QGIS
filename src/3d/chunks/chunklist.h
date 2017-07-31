@@ -45,6 +45,8 @@ class ChunkList
 
     void insertFirst( ChunkListEntry *entry );
 
+    void insertLast( ChunkListEntry *entry );
+
   private:
     ChunkListEntry *mHead;
     ChunkListEntry *mTail;

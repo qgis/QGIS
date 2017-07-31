@@ -15,7 +15,6 @@ class FlatTerrainChunkLoader : public TerrainChunkLoader
   public:
     FlatTerrainChunkLoader( Terrain *terrain, ChunkNode *node );
 
-    virtual void load() override;
     virtual Qt3DCore::QEntity *createEntity( Qt3DCore::QEntity *parent ) override;
 
   private:
@@ -29,12 +28,9 @@ class FlatTerrainChunkLoader : public TerrainChunkLoader
 FlatTerrainChunkLoader::FlatTerrainChunkLoader( Terrain *terrain, ChunkNode *node )
   : TerrainChunkLoader( terrain, node )
 {
-}
-
-void FlatTerrainChunkLoader::load()
-{
   loadTexture();
 }
+
 
 Qt3DCore::QEntity *FlatTerrainChunkLoader::createEntity( Qt3DCore::QEntity *parent )
 {

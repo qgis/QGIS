@@ -88,7 +88,7 @@ void MapTextureGenerator::onRenderingFinished()
 
   QImage img = mapJob->renderedImage();
 
-  if ( !jobData.debugText.isEmpty() )
+  if ( map.showTerrainTilesInfo() )
   {
     // extra tile information for debugging
     QPainter p( &img );

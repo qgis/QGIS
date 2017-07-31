@@ -91,19 +91,15 @@ ChunkedEntity::ChunkedEntity( const AABB &rootBbox, float rootError, float tau, 
   rootNode = new ChunkNode( 0, 0, 0, rootBbox, rootError );
   chunkLoaderQueue = new ChunkList;
   replacementQueue = new ChunkList;
-
-  loaderThread = new LoaderThread( chunkLoaderQueue, loaderMutex, loaderWaitCondition );
-  connect( loaderThread, &LoaderThread::nodeLoaded, this, &ChunkedEntity::onNodeLoaded );
-  loaderThread->start();
 }
 
 
 ChunkedEntity::~ChunkedEntity()
 {
-  loaderThread->setStopping( true );
-  loaderWaitCondition.wakeOne();  // may be waiting
-  loaderThread->wait();
-  delete loaderThread;
+  // derived classes have to make sure that any pending active job has finished / been cancelled
+  // before getting to this destructor - here it would be too late to cancel them
+  // (e.g. objects required for loading/updating have been deleted already)
+  Q_ASSERT( !activeJob );
 
   // clean up any pending load requests
   while ( !chunkLoaderQueue->isEmpty() )
@@ -111,13 +107,12 @@ ChunkedEntity::~ChunkedEntity()
     ChunkListEntry *entry = chunkLoaderQueue->takeFirst();
     ChunkNode *node = entry->chunk;
 
-    delete entry;
-    delete node->loader;
-
-    // unload node that is in "loading" state
-    node->state = ChunkNode::Skeleton;
-    node->loaderQueueEntry = nullptr;
-    node->loader = nullptr;
+    if ( node->state == ChunkNode::QueuedForLoad )
+      node->cancelQueuedForLoad();
+    else if ( node->state == ChunkNode::QueuedForUpdate )
+      node->cancelQueuedForUpdate();
+    else
+      Q_ASSERT( false );  // impossible!
   }
 
   delete chunkLoaderQueue;
@@ -137,9 +132,13 @@ ChunkedEntity::~ChunkedEntity()
   //delete chunkLoaderFactory;
 }
 
+#include <QElapsedTimer>
 
 void ChunkedEntity::update( const SceneState &state )
 {
+  QElapsedTimer t;
+  t.start();
+
   QSet<ChunkNode *> activeBefore = QSet<ChunkNode *>::fromList( activeNodes );
   activeNodes.clear();
   frustumCulled = 0;
@@ -184,9 +183,13 @@ void ChunkedEntity::update( const SceneState &state )
     bboxesEntity->setBoxes( bboxes );
   }
 
+  // start a job from queue if there is anything waiting
+  if ( !activeJob )
+    startJob();
+
   needsUpdate = false;  // just updated
 
-  qDebug() << "update: active " << activeNodes.count() << " enabled " << enabled << " disabled " << disabled << " | culled " << frustumCulled << " | loading " << chunkLoaderQueue->count() << " loaded " << replacementQueue->count() << " | unloaded " << unloaded;
+  qDebug() << "update: active " << activeNodes.count() << " enabled " << enabled << " disabled " << disabled << " | culled " << frustumCulled << " | loading " << chunkLoaderQueue->count() << " loaded " << replacementQueue->count() << " | unloaded " << unloaded << " elapsed " << t.elapsed() << "ms";
 }
 
 void ChunkedEntity::setShowBoundingBoxes( bool enabled )
@@ -203,6 +206,32 @@ void ChunkedEntity::setShowBoundingBoxes( bool enabled )
     bboxesEntity->deleteLater();
     bboxesEntity = nullptr;
   }
+}
+
+void ChunkedEntity::updateNodes( const QList<ChunkNode *> &nodes, ChunkQueueJobFactory *updateJobFactory )
+{
+  Q_FOREACH ( ChunkNode *node, nodes )
+  {
+    if ( node->state == ChunkNode::QueuedForUpdate )
+    {
+      chunkLoaderQueue->takeEntry( node->loaderQueueEntry );
+      node->cancelQueuedForUpdate();
+    }
+    else if ( node->state == ChunkNode::Updating )
+    {
+      cancelActiveJob();  // we have currently just one active job so that must be it
+    }
+
+    Q_ASSERT( node->state == ChunkNode::Loaded );
+
+    ChunkListEntry *entry = new ChunkListEntry( node );
+    node->setQueuedForUpdate( entry, updateJobFactory );
+    chunkLoaderQueue->insertLast( entry );
+  }
+
+  // trigger update
+  if ( !activeJob )
+    startJob();
 }
 
 
@@ -260,108 +289,124 @@ void ChunkedEntity::update( ChunkNode *node, const SceneState &state )
 
 void ChunkedEntity::requestResidency( ChunkNode *node )
 {
-  if ( node->state == ChunkNode::Loaded )
+  if ( node->state == ChunkNode::Loaded || node->state == ChunkNode::QueuedForUpdate || node->state == ChunkNode::Updating )
   {
     Q_ASSERT( node->replacementQueueEntry );
     Q_ASSERT( node->entity );
     replacementQueue->takeEntry( node->replacementQueueEntry );
     replacementQueue->insertFirst( node->replacementQueueEntry );
   }
-  else if ( node->state == ChunkNode::Loading )
+  else if ( node->state == ChunkNode::QueuedForLoad )
   {
     // move to the front of loading queue
-    loaderMutex.lock();
     Q_ASSERT( node->loaderQueueEntry );
-    Q_ASSERT( node->loader );
+    Q_ASSERT( !node->loader );
     if ( node->loaderQueueEntry->prev || node->loaderQueueEntry->next )
     {
       chunkLoaderQueue->takeEntry( node->loaderQueueEntry );
       chunkLoaderQueue->insertFirst( node->loaderQueueEntry );
     }
-    else
-    {
-      // the entry is being currently processed by the loading thread
-      // (or it is at the head of 1-entry list)
-    }
-    loaderMutex.unlock();
+  }
+  else if ( node->state == ChunkNode::Loading )
+  {
+    // the entry is being currently processed - nothing to do really
   }
   else if ( node->state == ChunkNode::Skeleton )
   {
     // add to the loading queue
-    loaderMutex.lock();
     ChunkListEntry *entry = new ChunkListEntry( node );
-    node->setLoading( chunkLoaderFactory->createChunkLoader( node ), entry );
+    node->setQueuedForLoad( entry );
     chunkLoaderQueue->insertFirst( entry );
-    if ( chunkLoaderQueue->count() == 1 )
-      loaderWaitCondition.wakeOne();
-    loaderMutex.unlock();
   }
   else
     Q_ASSERT( false && "impossible!" );
 }
 
-void ChunkedEntity::onNodeLoaded( ChunkNode *node )
+
+void ChunkedEntity::onActiveJobFinished()
 {
-  Qt3DCore::QEntity *entity = node->loader->createEntity( this );
+  ChunkQueueJob *job = qobject_cast<ChunkQueueJob *>( sender() );
+  Q_ASSERT( job );
+  Q_ASSERT( job == activeJob );
 
-  loaderMutex.lock();
-  ChunkListEntry *entry = node->loaderQueueEntry;
+  ChunkNode *node = job->chunk();
 
-  // load into node (should be in main thread again)
-  node->setLoaded( entity, entry );
-  loaderMutex.unlock();
-
-  replacementQueue->insertFirst( entry );
-
-  // now we need an update!
-  needsUpdate = true;
-}
-
-
-// -------
-
-
-LoaderThread::LoaderThread( ChunkList *list, QMutex &mutex, QWaitCondition &waitCondition )
-  : loadList( list )
-  , mutex( mutex )
-  , waitCondition( waitCondition )
-  , stopping( false )
-{
-}
-
-void LoaderThread::run()
-{
-  while ( 1 )
+  if ( ChunkLoader *loader = qobject_cast<ChunkLoader *>( job ) )
   {
-    ChunkListEntry *entry = nullptr;
-    mutex.lock();
-    if ( loadList->isEmpty() )
-      waitCondition.wait( &mutex );
+    Q_ASSERT( node->state == ChunkNode::Loading );
+    Q_ASSERT( node->loader == loader );
 
-    // we can get woken up also when we need to stop
-    if ( stopping )
-    {
-      mutex.unlock();
-      break;
-    }
+    // mark as loaded + create entity
+    Qt3DCore::QEntity *entity = node->loader->createEntity( this );
 
-    Q_ASSERT( !loadList->isEmpty() );
-    entry = loadList->takeFirst();
-    mutex.unlock();
+    // load into node (should be in main thread again)
+    node->setLoaded( entity );
 
-    qDebug() << "[THR] loading! " << entry->chunk->x << " | " << entry->chunk->y << " | " << entry->chunk->z;
+    replacementQueue->insertFirst( node->replacementQueueEntry );
 
-    entry->chunk->loader->load();
-
-    qDebug() << "[THR] done!";
-
-    emit nodeLoaded( entry->chunk );
-
-    if ( stopping )
-    {
-      // this chunk we just processed will not be processed anymore because we are shutting down everything
-      // so at least put it back into the loader queue so that we can clean up the chunk
-      loadList->insertFirst( entry );
-    }
+    // now we need an update!
+    needsUpdate = true;
   }
+  else
+  {
+    Q_ASSERT( node->state == ChunkNode::Updating );
+    node->setUpdated();
+  }
+
+  // cleanup the job that has just finished
+  activeJob->deleteLater();
+  activeJob = nullptr;
+
+  // start another job - if any
+  startJob();
+}
+
+void ChunkedEntity::startJob()
+{
+  Q_ASSERT( !activeJob );
+  if ( chunkLoaderQueue->isEmpty() )
+    return;
+
+  ChunkListEntry *entry = chunkLoaderQueue->takeFirst();
+  Q_ASSERT( entry );
+  ChunkNode *node = entry->chunk;
+  delete entry;
+
+  if ( node->state == ChunkNode::QueuedForLoad )
+  {
+    ChunkLoader *loader = chunkLoaderFactory->createChunkLoader( node );
+    connect( loader, &ChunkQueueJob::finished, this, &ChunkedEntity::onActiveJobFinished );
+    node->setLoading( loader );
+    activeJob = loader;
+  }
+  else if ( node->state == ChunkNode::QueuedForUpdate )
+  {
+    node->setUpdating();
+    connect( node->updater, &ChunkQueueJob::finished, this, &ChunkedEntity::onActiveJobFinished );
+    activeJob = node->updater;
+  }
+  else
+    Q_ASSERT( false );  // not possible
+}
+
+void ChunkedEntity::cancelActiveJob()
+{
+  Q_ASSERT( activeJob );
+
+  ChunkNode *node = activeJob->chunk();
+
+  if ( qobject_cast<ChunkLoader *>( activeJob ) )
+  {
+    // return node back to skeleton
+    node->cancelLoading();
+  }
+  else
+  {
+    // return node back to loaded state
+    node->cancelUpdating();
+  }
+
+  activeJob->cancel();
+  activeJob->deleteLater();
+  activeJob = nullptr;
 }
