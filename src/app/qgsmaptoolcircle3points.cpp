@@ -36,7 +36,8 @@ void QgsMapToolCircle3Points::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
 
   if ( e->button() == Qt::LeftButton )
   {
-    mPoints.append( mapPoint );
+    if ( mPoints.size() < 2 )
+      mPoints.append( mapPoint );
 
     if ( !mPoints.isEmpty() )
     {
