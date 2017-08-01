@@ -188,8 +188,6 @@ Returns the name of the setting group in which the collapsed state will be saved
  :rtype: str
 %End
 
-  protected slots:
-
     void loadState();
 %Docstring
  Will load the collapsed and checked state
