@@ -25,6 +25,7 @@ __copyright__ = '(C) 2012, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
+import os
 import math
 import struct
 
@@ -36,7 +37,6 @@ from qgis.core import (Qgis,
                        QgsProcessingParameterCrs,
                        QgsProcessingParameterRasterDestination)
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
-from processing.tools import raster
 
 
 class CreateConstantRaster(QgisAlgorithm):
@@ -62,7 +62,7 @@ class CreateConstantRaster(QgisAlgorithm):
         self.addParameter(QgsProcessingParameterNumber(self.PIXEL_SIZE,
                                                        self.tr('Pixel size'),
                                                        QgsProcessingParameterNumber.Double,
-                                                       0.1, False, 0.001, 999))
+                                                       0.1, False, 0.01, 999))
         self.addParameter(QgsProcessingParameterNumber(self.NUMBER,
                                                        self.tr('Constant value'),
                                                        QgsProcessingParameterNumber.Double,
@@ -82,7 +82,7 @@ class CreateConstantRaster(QgisAlgorithm):
         pixelSize = self.parameterAsDouble(parameters, self.PIXEL_SIZE, context)
 
         outputFile = self.parameterAsOutputLayer(parameters, self.OUTPUT, context)
-        outputFormat = raster.formatShortNameFromFileName(outputFile)
+        outputFormat = QgsRasterFileWriter.driverForExtension(os.path.splitext(outputFile)[1])
 
         rows = max([math.ceil(extent.height() / pixelSize) + 1, 1.0])
         cols = max([math.ceil(extent.width() / pixelSize) + 1, 1.0])
