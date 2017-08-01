@@ -1223,15 +1223,14 @@ tests:
   - algorithm: qgis:createconstantrasterlayer
     name: Create constant raster
     params:
-      INPUT:
-        name: raster.tif
-        type: raster
+      EXTENT: 270736.0673250682,270899.8544675339,4458899.000550019,4459029.574521748
+      TARGET_CRS: EPSG:23030
+      PIXEL_SIZE: 10.0
       NUMBER: 3.0
     results:
       OUTPUT:
-        hash: 4cb3e82e8512cdbb75d9c39a10adc818dd6842c5dc6361fbc43dd9aa
+        hash: e453e9e36ce314d5197963ac27872a0cc3dfe43764ed586a334c66f0
         type: rasterhash
-
 
   # Case 1: Keep all fields
   - algorithm: qgis:lineintersections
@@ -2759,3 +2758,23 @@ tests:
       OUTPUT:
         hash: f09384c64f56286ec4146a7b9a679cea7c6711ec4c7d77eec054e364
         type: rasterhash
+
+  - algorithm: qgis:rasterlayerstatistics
+    name: Raster layer statistics
+    params:
+      INPUT:
+        name: dem.tif
+        type: raster
+      BAND: 1
+    results:
+      OUTPUT_HTML_FILE:
+        name: raster_statistics.html
+        type: regex
+        rules:
+          - 'Minimum value: 85.0'
+          - 'Maximum value: 243.0'
+          - 'Range: 158.0'
+          - 'Sum: 19213301.982429504'
+          - 'Mean value: 147.17197994967066'
+          - 'Standard deviation: 43.9618116337985'
+          - 'Sum of the squares: 252304334.52061242'

@@ -31,6 +31,7 @@ from collections import OrderedDict
 from qgis.PyQt.QtGui import QIcon
 
 from qgis.core import (QgsFeatureRequest,
+                       QgsRasterFileWriter,
                        QgsProcessing,
                        QgsProcessingException,
                        QgsProcessingParameterFeatureSource,
@@ -43,7 +44,6 @@ from qgis.core import (QgsFeatureRequest,
 from qgis.analysis import QgsKernelDensityEstimation
 
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
-from processing.tools import raster
 
 pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
@@ -175,7 +175,7 @@ class Heatmap(QgisAlgorithm):
         decay = self.parameterAsDouble(parameters, self.DECAY, context)
         output_values = self.parameterAsEnum(parameters, self.OUTPUT_VALUE, context)
         outputFile = self.parameterAsOutputLayer(parameters, self.OUTPUT, context)
-        output_format = raster.formatShortNameFromFileName(outputFile)
+        output_format = QgsRasterFileWriter.driverForExtension(os.path.splitext(outputFile)[1])
         weight_field = self.parameterAsString(parameters, self.WEIGHT_FIELD, context)
         radius_field = self.parameterAsString(parameters, self.RADIUS_FIELD, context)
 

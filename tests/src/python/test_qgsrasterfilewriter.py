@@ -97,6 +97,16 @@ class TestQgsRasterFileWriter(unittest.TestCase):
 
         assert allOk, "Raster file writer test failed"
 
+    def testDriverForExtension(self):
+        self.assertEqual(QgsRasterFileWriter.driverForExtension('tif'), 'GTiff')
+        self.assertEqual(QgsRasterFileWriter.driverForExtension('TIF'), 'GTiff')
+        self.assertEqual(QgsRasterFileWriter.driverForExtension('tIf'), 'GTiff')
+        self.assertEqual(QgsRasterFileWriter.driverForExtension('.tif'), 'GTiff')
+        self.assertEqual(QgsRasterFileWriter.driverForExtension('img'), 'HFA')
+        self.assertEqual(QgsRasterFileWriter.driverForExtension('.vrt'), 'VRT')
+        self.assertEqual(QgsRasterFileWriter.driverForExtension('not a format'), '')
+        self.assertEqual(QgsRasterFileWriter.driverForExtension(''), '')
+
 
 if __name__ == '__main__':
     unittest.main()
