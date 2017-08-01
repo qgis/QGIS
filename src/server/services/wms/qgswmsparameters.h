@@ -22,11 +22,13 @@
 #include <QObject>
 #include <QMetaEnum>
 #include <QColor>
+
 #include "qgsrectangle.h"
 #include "qgswmsserviceexception.h"
 #include "qgsserverrequest.h"
 #include "qgslegendsettings.h"
 #include "qgsgeometry.h"
+#include "qgsprojectversion.h"
 
 /** QgsWmsParameters provides an interface to retrieve and manipulate WMS
  *  parameters received from the client.
@@ -66,7 +68,7 @@ namespace QgsWms
       {
         BOXSPACE,
         CRS, // instead of SRS for WMS 1.3.0
-        // SRS, // for WMS 1.1.1
+        SRS, // for WMS 1.1.1
         WIDTH,
         HEIGHT,
         BBOX,
@@ -117,7 +119,10 @@ namespace QgsWms
         HIGHLIGHT_LABELCOLOR,
         HIGHLIGHT_LABELBUFFERCOLOR,
         HIGHLIGHT_LABELBUFFERSIZE,
-        WMS_PRECISION
+        WMS_PRECISION,
+        TRANSPARENT,
+        BGCOLOR,
+        DPI
       };
       Q_ENUM( ParameterName )
 
@@ -188,6 +193,17 @@ namespace QgsWms
        * \throws QgsBadRequestException
        */
       int heightAsInt() const;
+
+      /** Returns VERSION parameter as a string or an empty string if not
+       *  defined.
+       * \returns version
+       */
+      QString version() const;
+
+      /** Returns VERSION parameter if defined or its default value.
+       * \returns version
+       */
+      QgsProjectVersion versionAsNumber() const;
 
       /** Returns BBOX if defined or an empty string.
        * \returns bbox parameter
@@ -712,6 +728,45 @@ namespace QgsWms
        */
       int wmsPrecisionAsInt() const;
 
+      /** Returns TRANSPARENT parameter or an empty string if not defined.
+       * \returns TRANSPARENT parameter
+       */
+      QString transparent() const;
+
+      /** Returns TRANSPARENT parameter as a bool or its default value if not
+       * defined. An exception is raised if TRANSPARENT is defined and cannot
+       * be converted.
+       * \returns transparent parameter
+       * \throws QgsBadRequestException
+       */
+      bool transparentAsBool() const;
+
+      /** Returns BGCOLOR parameter or an empty string if not defined.
+       * \returns BGCOLOR parameter
+       */
+      QString backgroundColor() const;
+
+      /** Returns BGCOLOR parameter as a QColor or its default value if not
+       * defined. An exception is raised if BGCOLOR is defined and cannot
+       * be converted.
+       * \returns background color parameter
+       * \throws QgsBadRequestException
+       */
+      QColor backgroundColorAsColor() const;
+
+      /** Returns DPI parameter or an empty string if not defined.
+       * \returns DPI parameter
+       */
+      QString dpi() const;
+
+      /** Returns DPI parameter as an int or its default value if not
+       * defined. An exception is raised if DPI is defined and cannot
+       * be converted.
+       * \returns dpi parameter
+       * \throws QgsBadRequestException
+       */
+      int dpiAsInt() const;
+
     private:
       QString name( ParameterName name ) const;
       void raiseError( ParameterName name ) const;
@@ -724,6 +779,7 @@ namespace QgsWms
       double toDouble( ParameterName name ) const;
       bool toBool( ParameterName name ) const;
       int toInt( ParameterName name ) const;
+      QColor toColor( ParameterName name ) const;
       QStringList toStringList( ParameterName name, char delimiter = ',' ) const;
       QList<int> toIntList( QStringList l, ParameterName name ) const;
       QList<float> toFloatList( QStringList l, ParameterName name ) const;
@@ -731,6 +787,7 @@ namespace QgsWms
 
       QgsServerRequest::Parameters mRequestParameters;
       QMap<ParameterName, Parameter> mParameters;
+      QList<QgsProjectVersion> mVersions;
   };
 }
 
