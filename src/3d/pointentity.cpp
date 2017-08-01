@@ -86,6 +86,8 @@ PointEntity::PointEntity( const Map3D &map, QgsVectorLayer *layer, const Point3D
   instanceDataAttribute->setVertexSize( 3 );
   instanceDataAttribute->setDivisor( 1 );
   instanceDataAttribute->setBuffer( instanceBuffer );
+  instanceDataAttribute->setCount(count);
+  instanceDataAttribute->setByteStride(3 * sizeof(float));
 
   Qt3DRender::QGeometry *geometry = nullptr;
   QString shape = symbol.shapeProperties["shape"].toString();
@@ -159,6 +161,7 @@ PointEntity::PointEntity( const Map3D &map, QgsVectorLayer *layer, const Point3D
   }
 
   geometry->addAttribute( instanceDataAttribute );
+  geometry->setBoundingVolumePositionAttribute(instanceDataAttribute);
 
   Qt3DRender::QGeometryRenderer *renderer = new Qt3DRender::QGeometryRenderer;
   renderer->setGeometry( geometry );
