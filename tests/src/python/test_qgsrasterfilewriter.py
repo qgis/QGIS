@@ -107,5 +107,6 @@ class TestQgsRasterFileWriter(unittest.TestCase):
         self.assertEqual(QgsRasterFileWriter.driverForExtension('not a format'), '')
         self.assertEqual(QgsRasterFileWriter.driverForExtension(''), '')
 
+
 if __name__ == '__main__':
     unittest.main()
