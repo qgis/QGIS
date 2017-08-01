@@ -21,6 +21,8 @@ Qgs3DMapCanvas::Qgs3DMapCanvas( QWidget *parent )
   QHBoxLayout *hLayout = new QHBoxLayout( this );
   hLayout->setMargin( 0 );
   hLayout->addWidget( mContainer, 1 );
+
+  mWindow3D->setCursor( Qt::OpenHandCursor );
 }
 
 Qgs3DMapCanvas::~Qgs3DMapCanvas()

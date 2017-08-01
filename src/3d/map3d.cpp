@@ -16,8 +16,8 @@ Map3D::Map3D()
   : originX( 0 )
   , originY( 0 )
   , originZ( 0 )
-  , backgroundColor( Qt::black )
   , skybox( false )
+  , mBackgroundColor( Qt::black )
   , mTerrainVerticalScale( 1 )
   , mMapTileResolution( 512 )
   , mMaxTerrainScreenError( 3.f )
@@ -33,10 +33,10 @@ Map3D::Map3D( const Map3D &other )
   , originY( other.originY )
   , originZ( other.originZ )
   , crs( other.crs )
-  , backgroundColor( other.backgroundColor )
   , skybox( other.skybox )
   , skyboxFileBase( other.skyboxFileBase )
   , skyboxFileExtension( other.skyboxFileExtension )
+  , mBackgroundColor( other.mBackgroundColor )
   , mTerrainVerticalScale( other.mTerrainVerticalScale )
   , mTerrainGenerator( other.mTerrainGenerator ? other.mTerrainGenerator->clone() : nullptr )
   , mMapTileResolution( other.mMapTileResolution )
@@ -207,6 +207,20 @@ void Map3D::resolveReferences( const QgsProject &project )
     QgsAbstract3DRenderer *renderer = renderers[i];
     renderer->resolveReferences( project );
   }
+}
+
+void Map3D::setBackgroundColor( const QColor &color )
+{
+  if ( color == mBackgroundColor )
+    return;
+
+  mBackgroundColor = color;
+  emit backgroundColorChanged();
+}
+
+QColor Map3D::backgroundColor() const
+{
+  return mBackgroundColor;
 }
 
 void Map3D::setTerrainVerticalScale( double zScale )

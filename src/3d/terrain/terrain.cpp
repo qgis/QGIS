@@ -46,6 +46,7 @@ Terrain::Terrain( int maxLevel, const Map3D &map, Qt3DCore::QNode *parent )
   connect( &map, &Map3D::showTerrainBoundingBoxesChanged, this, &Terrain::onShowBoundingBoxesChanged );
   connect( &map, &Map3D::showTerrainTilesInfoChanged, this, &Terrain::invalidateMapImages );
   connect( &map, &Map3D::layersChanged, this, &Terrain::onLayersChanged );
+  connect( &map, &Map3D::backgroundColorChanged, this, &Terrain::invalidateMapImages );
 
   connectToLayersRepaintRequest();
 

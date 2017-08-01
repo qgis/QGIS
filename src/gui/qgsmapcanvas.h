@@ -636,6 +636,10 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     //! \since QGIS 2.16
     void magnificationChanged( double );
 
+    //! Emitted when canvas background color changes
+    //! \since QGIS 3.0
+    void canvasColorChanged();
+
     /** Emitted when the canvas has rendered.
      * Passes a pointer to the painter on which the map was drawn. This is
      * useful for plugins that wish to draw on the map after it has been

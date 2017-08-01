@@ -39,7 +39,9 @@ class _3D_EXPORT Map3D : public QObject
 
     double originX, originY, originZ;   //!< Coordinates in map CRS at which our 3D world has origin (0,0,0)
     QgsCoordinateReferenceSystem crs;   //!< Destination coordinate system of the world  (TODO: not needed? can be
-    QColor backgroundColor;   //!< Background color of the scene
+
+    void setBackgroundColor( const QColor &color );
+    QColor backgroundColor() const;
 
     //
     // terrain related config
@@ -80,6 +82,7 @@ class _3D_EXPORT Map3D : public QObject
     bool showTerrainTilesInfo() const { return mShowTerrainTileInfo; }
 
   signals:
+    void backgroundColorChanged();
     void layersChanged();
     void terrainGeneratorChanged();
     void terrainVerticalScaleChanged();
@@ -90,6 +93,7 @@ class _3D_EXPORT Map3D : public QObject
     void showTerrainTilesInfoChanged();
 
   private:
+    QColor mBackgroundColor;   //!< Background color of the scene
     double mTerrainVerticalScale;   //!< Multiplier of terrain heights to make the terrain shape more pronounced
     std::unique_ptr<TerrainGenerator> mTerrainGenerator;  //!< Implementation of the terrain generation
     int mMapTileResolution;   //!< Size of map textures of tiles in pixels (width/height)

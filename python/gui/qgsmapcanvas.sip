@@ -720,6 +720,11 @@ Emitted when the extents of the map change
 .. versionadded:: 2.16
 %End
 
+    void canvasColorChanged();
+%Docstring
+.. versionadded:: 3.0
+%End
+
     void renderComplete( QPainter * );
 %Docstring
 - additional drawing shall be done directly within the renderer job or independently as a map canvas item

@@ -25,6 +25,7 @@ class Qgs3DMapCanvasDockWidget : public QgsDockWidget
     void configure();
 
     void onMainCanvasLayersChanged();
+    void onMainCanvasColorChanged();
 
   private:
     Qgs3DMapCanvas *mCanvas;

@@ -43,6 +43,7 @@ void Qgs3DMapCanvasDockWidget::setMainCanvas( QgsMapCanvas *canvas )
   mMainCanvas = canvas;
 
   connect( mMainCanvas, &QgsMapCanvas::layersChanged, this, &Qgs3DMapCanvasDockWidget::onMainCanvasLayersChanged );
+  connect( mMainCanvas, &QgsMapCanvas::canvasColorChanged, this, &Qgs3DMapCanvasDockWidget::onMainCanvasColorChanged );
 }
 
 void Qgs3DMapCanvasDockWidget::resetView()
@@ -71,4 +72,9 @@ void Qgs3DMapCanvasDockWidget::configure()
 void Qgs3DMapCanvasDockWidget::onMainCanvasLayersChanged()
 {
   mCanvas->map()->setLayers( mMainCanvas->layers() );
+}
+
+void Qgs3DMapCanvasDockWidget::onMainCanvasColorChanged()
+{
+  mCanvas->map()->setBackgroundColor( mMainCanvas->canvasColor() );
 }

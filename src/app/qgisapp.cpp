@@ -9910,7 +9910,7 @@ void QgisApp::new3DMapCanvas()
   map->crs = prj->crs();
   map->originX = fullExtent.center().x();
   map->originY = fullExtent.center().y();
-  map->backgroundColor = mMapCanvas->canvasColor();
+  map->setBackgroundColor( mMapCanvas->canvasColor() );
   map->setLayers( mMapCanvas->layers() );
 
   FlatTerrainGenerator *flatTerrain = new FlatTerrainGenerator;
