@@ -59,6 +59,18 @@ namespace QgsWms
     QColor mBufferColor;
   };
 
+  struct QgsWmsParametersComposerMap
+  {
+    int mId; // composer map id
+    bool mHasExtent; // does the request contains extent for this composer map
+    QgsRectangle mExtent; // the request extent for this composer map
+    float mScale = -1;
+    float mRotation;
+    float mGridX = 0;
+    float mGridY = 0;
+    QList<QgsWmsParametersLayer> mLayers; // list of layers fr this composer map
+  };
+
   class QgsWmsParameters
   {
       Q_GADGET
@@ -766,6 +778,38 @@ namespace QgsWms
        * \throws QgsBadRequestException
        */
       int dpiAsInt() const;
+
+      /** Returns the requested parameters for a composer map parameter.
+       * An exception is raised if parameters are defined and cannot be
+       * converted like EXTENT, SCALE, ROTATION, GRID_INTERVAL_X and
+       * GRID_INTERVAL_Y.
+       * \param mapId the composer map id.
+       * \returns parameters for the composer map.
+       * \throws QgsBadRequestException
+       */
+      QgsWmsParametersComposerMap composerMapParameters( int mapId ) const;
+
+      /** Returns a composer map parameter as a double or the defaultVal.
+       * An exception is raised if the parameter is defined and cannot
+       * be converted. Made for specific composer map SCALE, ROTATION,
+       * GRID_INTERVAL_X and GRID_INTERVAL_Y parameter.
+       * \param mapId the composer map id.
+       * \param name the parameter's name.
+       * \param defaultVal the default value for this parameter.
+       * \returns parameter as double
+       * \throws QgsBadRequestException
+       */
+      double composerMapParamToDouble( int mapId, QString name, double defaultVal ) const;
+
+      /** Returns a composer map parameter as a string list or an empty
+       * list. Made for specific composer map LAYERS and STYLES
+       * parameter.
+       * \param mapId the composer map id.
+       * \param name the parameter's name.
+       * \param delimiter the delimiter to split the list.
+       * \returns parameter as a string list
+       */
+      QStringList composerMapParamToStringList( int mapId, QString name, char delimiter ) const;
 
     private:
       QString name( ParameterName name ) const;

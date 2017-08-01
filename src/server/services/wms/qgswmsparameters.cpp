@@ -1271,8 +1271,8 @@ namespace QgsWms
 
   QStringList QgsWmsParameters::allStyles() const
   {
-    QStringList style = value( ParameterName::STYLE ).toString().split( ",", QString::SkipEmptyParts );
-    QStringList styles = value( ParameterName::STYLES ).toString().split( "," );
+    QStringList style = toStringList( ParameterName::STYLE );
+    QStringList styles = toStringList( ParameterName::STYLES );
     return style << styles;
   }
 
@@ -1415,6 +1415,134 @@ namespace QgsWms
   QColor QgsWmsParameters::backgroundColorAsColor() const
   {
     return toColor( ParameterName::BGCOLOR );
+  }
+
+  QgsWmsParametersComposerMap QgsWmsParameters::composerMapParameters( int mapId ) const
+  {
+    QgsWmsParametersComposerMap param;
+    param.mId = mapId;
+
+    QString pMapId = "MAP" + QString::number( mapId );
+
+    //map extent is mandatory
+    if ( !mRequestParameters.contains( pMapId + ":EXTENT" ) )
+      return param;
+
+    QVariant extentValue( mRequestParameters[pMapId + ":EXTENT"] );
+    QString extentStr = extentValue.toString();
+
+    if ( extentStr.isEmpty() )
+      return param;
+
+    QgsRectangle extent;
+    QStringList corners = extentStr.split( "," );
+
+    if ( corners.size() == 4 )
+    {
+      double d[4];
+      bool ok;
+
+      for ( int i = 0; i < 4; i++ )
+      {
+        corners[i].replace( QLatin1String( " " ), QLatin1String( "+" ) );
+        d[i] = corners[i].toDouble( &ok );
+        if ( !ok )
+        {
+          raiseError( pMapId + "BBOX ('" + extentStr + "') cannot be converted into a rectangle" );
+        }
+      }
+
+      extent = QgsRectangle( d[0], d[1], d[2], d[3] );
+    }
+    else
+    {
+      raiseError( pMapId + "BBOX ('" + extentStr + "') cannot be converted into a rectangle" );
+    }
+
+    param.mHasExtent = true;
+    param.mExtent = extent;
+
+    // scale
+    if ( mRequestParameters.contains( pMapId + ":SCALE" ) )
+    {
+      param.mScale = composerMapParamToDouble( mapId, "SCALE", param.mScale );
+    }
+
+    // rotation
+    if ( mRequestParameters.contains( pMapId + ":ROTATION" ) )
+    {
+      param.mRotation = composerMapParamToDouble( mapId, "ROTATION", param.mRotation );
+    }
+
+    //grid space x / y
+    if ( mRequestParameters.contains( pMapId + ":GRID_INTERVAL_X" ) && mRequestParameters.contains( pMapId + ":GRID_INTERVAL_Y" ) )
+    {
+      param.mGridX = composerMapParamToDouble( mapId, "GRID_INTERVAL_X", param.mGridX );
+      param.mGridY = composerMapParamToDouble( mapId, "GRID_INTERVAL_Y", param.mGridY );
+    }
+
+    //layers
+    QList<QgsWmsParametersLayer> parameters;
+    QStringList layers = composerMapParamToStringList( mapId, "LAYERS", ',' );
+    QStringList styles = composerMapParamToStringList( mapId, "STYLES", ',' );
+    for ( int i = 0; i < layers.size(); i++ )
+    {
+      QString layer = layers[i];
+      QgsWmsParametersLayer param;
+      param.mNickname = layer;
+
+      if ( i < styles.count() )
+        param.mStyle = styles[i];
+
+      parameters.append( param );
+    }
+    param.mLayers = parameters;
+
+    return param;
+  }
+
+  double QgsWmsParameters::composerMapParamToDouble( int mapId, QString name, double defaultVal ) const
+  {
+    QString pMapId = "MAP" + QString::number( mapId );
+    QString paramName = pMapId + ":" + name;
+    double val = defaultVal;
+
+    if ( mRequestParameters.contains( paramName ) )
+    {
+      QVariant value( mRequestParameters[paramName] );
+      QString valStr = value.toString();
+
+      if ( ! valStr.isEmpty() && value.canConvert( QVariant::Double ) )
+      {
+        bool ok;
+        val = value.toDouble( &ok );
+
+        if ( !ok )
+        {
+          QString msg = paramName + " ('" + valStr + "') cannot be converted into a double";
+          raiseError( msg );
+        }
+
+      }
+    }
+
+    return val;
+  }
+
+  QStringList QgsWmsParameters::composerMapParamToStringList( int mapId, QString name, char delimiter ) const
+  {
+    QString pMapId = "MAP" + QString::number( mapId );
+    QString paramName = pMapId + ":" + name;
+
+    QString valStr;
+
+    if ( mRequestParameters.contains( paramName ) )
+    {
+      QVariant value( mRequestParameters[paramName] );
+      valStr = value.toString();
+    }
+
+    return valStr.split( delimiter, QString::SkipEmptyParts );
   }
 
   QString QgsWmsParameters::name( ParameterName name ) const

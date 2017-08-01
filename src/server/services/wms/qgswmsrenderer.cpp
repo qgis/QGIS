@@ -68,6 +68,7 @@
 #include "qgsdxfexport.h"
 #include "qgssymbollayerutils.h"
 
+
 #include <QImage>
 #include <QPainter>
 #include <QStringList>
@@ -76,7 +77,18 @@
 #include <QDir>
 
 //for printing
+#include "qgslayoutmanager.h"
 #include "qgscomposition.h"
+#include "qgscomposerarrow.h"
+#include "qgscomposerlabel.h"
+#include "qgscomposerlegend.h"
+#include "qgscomposermap.h"
+#include "qgscomposermapgrid.h"
+#include "qgscomposerframe.h"
+#include "qgscomposerhtml.h"
+#include "qgscomposerpicture.h"
+#include "qgscomposerscalebar.h"
+#include "qgscomposershape.h"
 #include <QBuffer>
 #include <QPrinter>
 #include <QSvgGenerator>
@@ -274,61 +286,92 @@ namespace QgsWms
 
   QByteArray QgsRenderer::getPrint( const QString &formatString )
   {
-    QStringList layersList, stylesList, layerIdList;
-    QgsMapSettings mapSettings;
-    QImage *image = initializeRendering( layersList, stylesList, layerIdList, mapSettings );
-    if ( !image )
-    {
-      return nullptr;
-    }
-    delete image;
-
-#ifdef HAVE_SERVER_PYTHON_PLUGINS
-    Q_FOREACH ( QgsMapLayer *layer, QgsProject::instance()->mapLayers() )
-    {
-      if ( !mAccessControl->layerReadPermission( layer ) )
-      {
-        throw QgsSecurityException( QStringLiteral( "You are not allowed to access to the layer: %1" ).arg( layer->name() ) );
-      }
-    }
-#endif
-
-    //scoped pointer to restore all original layer filters (subsetStrings) when pointer goes out of scope
-    //there's LOTS of potential exit paths here, so we avoid having to restore the filters manually
-    std::unique_ptr< QgsOWSServerFilterRestorer > filterRestorer( new QgsOWSServerFilterRestorer( mAccessControl ) );
-
-    applyRequestedLayerFilters( layersList, mapSettings, filterRestorer->originalFilters() );
-
-#ifdef HAVE_SERVER_PYTHON_PLUGINS
-    applyAccessControlLayersFilters( layersList, filterRestorer->originalFilters() );
-#endif
-
-    QStringList selectedLayerIdList = applyFeatureSelections( layersList );
-
     //GetPrint request needs a template parameter
     if ( !mParameters.contains( QStringLiteral( "TEMPLATE" ) ) )
     {
-      clearFeatureSelections( selectedLayerIdList );
       throw QgsBadRequestException( QStringLiteral( "ParameterMissing" ),
                                     QStringLiteral( "The TEMPLATE parameter is required for the GetPrint request" ) );
     }
 
-    QList< QPair< QgsVectorLayer *, QgsFeatureRenderer *> > bkVectorRenderers;
-    QList< QPair< QgsRasterLayer *, QgsRasterRenderer * > > bkRasterRenderers;
-    QList< QPair< QgsVectorLayer *, double > > labelTransparencies;
-    QList< QPair< QgsVectorLayer *, double > > labelBufferTransparencies;
+    // get layers parameters
+    QList<QgsMapLayer *> layers;
+    QList<QgsWmsParametersLayer> params = mWmsParameters.layersParameters();
 
-    applyOpacities( layersList, bkVectorRenderers, bkRasterRenderers, labelTransparencies, labelBufferTransparencies );
+    // create the output image
+    std::unique_ptr<QImage> image( createImage() );
 
-    QStringList highlightLayers;
-    QgsComposition *c = mConfigParser->createPrintComposition( mParameters[ QStringLiteral( "TEMPLATE" )], mapSettings, QMap<QString, QString>( mParameters ), highlightLayers );
-    if ( !c )
+    // configure map settings (background, DPI, ...)
+    QgsMapSettings mapSettings;
+    configureMapSettings( image.get(), mapSettings );
+
+    // init layer restorer before doing anything
+    std::unique_ptr<QgsLayerRestorer> restorer;
+    restorer.reset( new QgsLayerRestorer( mNicknameLayers.values() ) );
+
+    // init stylized layers according to LAYERS/STYLES or SLD
+    QString sld = mWmsParameters.sld();
+    if ( !sld.isEmpty() )
     {
-      restoreOpacities( bkVectorRenderers, bkRasterRenderers, labelTransparencies, labelBufferTransparencies );
-      clearFeatureSelections( selectedLayerIdList );
-      QgsWmsConfigParser::removeHighlightLayers( highlightLayers );
-      return nullptr;
+      layers = sldStylizedLayers( sld );
     }
+    else
+    {
+      layers = stylizedLayers( params );
+    }
+
+    // remove unwanted layers (restricted layers, ...)
+    removeUnwantedLayers( layers );
+
+    // configure each layer with opacity, selection filter, ...
+    bool updateMapExtent = mWmsParameters.bbox().isEmpty() ? true : false;
+    Q_FOREACH ( QgsMapLayer *layer, layers )
+    {
+      Q_FOREACH ( QgsWmsParametersLayer param, params )
+      {
+        if ( param.mNickname == layerNickname( *layer ) )
+        {
+          checkLayerReadPermissions( layer );
+
+          setLayerOpacity( layer, param.mOpacity );
+
+          setLayerFilter( layer, param.mFilter );
+
+          setLayerAccessControlFilter( layer );
+
+          setLayerSelection( layer, param.mSelection );
+
+          if ( updateMapExtent )
+            updateExtent( layer, mapSettings );
+
+          break;
+        }
+      }
+    }
+
+    // add highlight layers above others
+    layers = layers << highlightLayers();
+
+    // add layers to map settings (revert order for the rendering)
+    std::reverse( layers.begin(), layers.end() );
+    mapSettings.setLayers( layers );
+
+    //QgsComposition *c = mConfigParser->createPrintComposition( mParameters[ QStringLiteral( "TEMPLATE" )], mapSettings, QMap<QString, QString>( mParameters ), highlightLayers );
+    QString templateName = mParameters[ QStringLiteral( "TEMPLATE" ) ];
+    const QgsLayoutManager *lManager = mProject->layoutManager();
+    QDomDocument cDocument;
+    if ( !lManager->saveAsTemplate( templateName, cDocument ) )
+    {
+      throw QgsBadRequestException( QStringLiteral( "InvalidTemplate" ),
+                                    QStringLiteral( "Template '%1' is not known" ).arg( templateName ) );
+    }
+
+    QgsComposition *c = new QgsComposition( const_cast<QgsProject *>( mProject ) );
+    if ( !c->loadFromTemplate( cDocument, nullptr, false, true ) )
+    {
+      throw QgsBadRequestException( QStringLiteral( "InvalidTemplate" ),
+                                    QStringLiteral( "Template '%1' is not loaded correctly" ).arg( templateName ) );
+    }
+    configureComposition( c, mapSettings );
 
     c->setPlotStyle( QgsComposition::Print );
 
@@ -373,8 +416,6 @@ namespace QgsWms
       if ( !tempFile.open() )
       {
         delete c;
-        restoreOpacities( bkVectorRenderers, bkRasterRenderers, labelTransparencies, labelBufferTransparencies );
-        clearFeatureSelections( selectedLayerIdList );
         return nullptr;
       }
 
@@ -383,18 +424,252 @@ namespace QgsWms
     }
     else //unknown format
     {
-      restoreOpacities( bkVectorRenderers, bkRasterRenderers, labelTransparencies, labelBufferTransparencies );
-      clearFeatureSelections( selectedLayerIdList );
       throw QgsBadRequestException( QStringLiteral( "InvalidFormat" ),
                                     QStringLiteral( "Output format '%1' is not supported in the GetPrint request" ).arg( formatString ) );
     }
 
-    restoreOpacities( bkVectorRenderers, bkRasterRenderers, labelTransparencies, labelBufferTransparencies );
-    clearFeatureSelections( selectedLayerIdList );
-    QgsWmsConfigParser::removeHighlightLayers( highlightLayers );
-
     delete c;
     return ba;
+  }
+
+  bool QgsRenderer::configureComposition( QgsComposition *c, const QgsMapSettings &mapSettings )
+  {
+    if ( !mWmsParameters.dpi().isEmpty() )
+      c->setPrintResolution( mWmsParameters.dpiAsInt() );
+
+    // Composer items
+    QList<QgsComposerItem * > itemList;
+    c->composerItems( itemList );
+    // Composer legends have to be updated after the other items
+    QList<QgsComposerLegend *> composerLegends;
+
+    // Update composer items
+    QList<QgsComposerItem *>::iterator itemIt = itemList.begin();
+    for ( ; itemIt != itemList.end(); ++itemIt )
+    {
+      // firstly the composer maps
+      if ( ( *itemIt )->type() == QgsComposerItem::ComposerMap )
+      {
+        QgsComposerMap *map = qobject_cast< QgsComposerMap *>( *itemIt );
+        if ( !map )
+          continue;
+
+        QgsWmsParametersComposerMap cMapParams = mWmsParameters.composerMapParameters( map->id() );
+
+        QString mapId = "MAP" + QString::number( map->id() );
+        //map extent is mandatory
+        if ( !cMapParams.mHasExtent )
+        {
+          //remove map from composition if not referenced by the request
+          c->removeItem( map );
+          delete map;
+          continue;
+        }
+
+        // Change CRS of map set to "project CRS" to match requested CRS
+        // (if map has a valid preset crs then we keep this crs and don't use the
+        // requested crs for this map item)
+        if ( mapSettings.destinationCrs().isValid() && !map->presetCrs().isValid() )
+          map->setCrs( mapSettings.destinationCrs() );
+
+        QgsRectangle r( cMapParams.mExtent );
+        if ( mWmsParameters.versionAsNumber() >= QgsProjectVersion( 1, 3, 0 ) && mapSettings.destinationCrs().hasAxisInverted() )
+        {
+          r.invert();
+        }
+        map->setNewExtent( r );
+
+        // scale
+        if ( cMapParams.mScale > 0 )
+        {
+          map->setNewScale( cMapParams.mScale );
+        }
+
+        // rotation
+        if ( cMapParams.mRotation )
+        {
+          map->setMapRotation( cMapParams.mRotation );
+        }
+
+        if ( !map->keepLayerSet() )
+        {
+          if ( !mParameters.contains( mapId + ":LAYERS" ) )
+          {
+            map->setLayers( mapSettings.layers() );
+          }
+          else
+          {
+            QList<QgsMapLayer *> layerSet;
+            QList<QgsWmsParametersLayer> layers = cMapParams.mLayers;
+            Q_FOREACH ( QgsWmsParametersLayer layer, layers )
+            {
+              QString nickname = layer.mNickname;
+              QString style = layer.mStyle;
+              if ( mNicknameLayers.contains( nickname ) && !mRestrictedLayers.contains( nickname ) )
+              {
+                if ( !style.isEmpty() )
+                {
+                  bool rc = mNicknameLayers[nickname]->styleManager()->setCurrentStyle( style );
+                  if ( ! rc )
+                  {
+                    throw QgsMapServiceException( QStringLiteral( "StyleNotDefined" ), QStringLiteral( "Style \"%1\" does not exist for layer \"%2\"" ).arg( style, nickname ) );
+                  }
+                }
+                layerSet << mNicknameLayers[nickname];
+              }
+              else
+              {
+                throw QgsBadRequestException( QStringLiteral( "LayerNotDefined" ),
+                                              QStringLiteral( "Layer \"%1\" does not exist" ).arg( nickname ) );
+              }
+            }
+            std::reverse( layerSet.begin(), layerSet.end() );
+            map->setLayers( layerSet );
+          }
+          map->setKeepLayerSet( true );
+        }
+
+        //grid space x / y
+        if ( cMapParams.mGridX > 0 && cMapParams.mGridY > 0 )
+        {
+          map->grid()->setIntervalX( cMapParams.mGridX );
+          map->grid()->setIntervalY( cMapParams.mGridY );
+        }
+        continue;
+      }
+      // secondly the composer legends
+      else if ( ( *itemIt )->type() == QgsComposerItem::ComposerLegend )
+      {
+        QgsComposerLegend *legend = qobject_cast< QgsComposerLegend *>( *itemIt );
+        if ( !legend )
+          continue;
+
+        composerLegends.push_back( legend );
+        continue;
+      }
+      // thirdly the composer labels
+      else if ( ( *itemIt )->type() == QgsComposerItem::ComposerLabel )
+      {
+        QgsComposerLabel *label = qobject_cast< QgsComposerLabel *>( *itemIt );
+        if ( !label )
+          continue;
+
+        QString labelId = label->id().toUpper();
+        if ( !mParameters.contains( labelId ) )
+          continue;
+
+        QString labelParam = mParameters[ labelId ];
+        if ( labelParam.isEmpty() )
+        {
+          //remove exported labels referenced in the request
+          //but with empty string
+          c->removeItem( label );
+          delete label;
+          continue;
+        }
+
+        label->setText( labelParam );
+        continue;
+      }
+      // forthly the composer HTMLs
+      // an html item will be a composer frame and if it is we can try to get
+      // its multiframe parent and then try to cast that to a composer html
+      else if ( ( *itemIt )->type() == QgsComposerItem::ComposerFrame )
+      {
+        QgsComposerFrame *frame = qobject_cast< QgsComposerFrame *>( *itemIt );
+        if ( !frame )
+          continue;
+        const QgsComposerMultiFrame *multiFrame = frame->multiFrame();
+        const QgsComposerHtml *composerHtml = qobject_cast<const QgsComposerHtml *>( multiFrame );
+        if ( !composerHtml )
+          continue;
+
+        QgsComposerHtml *html = const_cast<QgsComposerHtml *>( composerHtml );
+        QgsComposerFrame *htmlFrame = html->frame( 0 );
+        QString htmlId = htmlFrame->id().toUpper();
+        if ( !mParameters.contains( htmlId ) )
+        {
+          html->update();
+          continue;
+        }
+
+        QString url = mParameters[ htmlId ];
+        //remove exported Htmls referenced in the request
+        //but with empty string
+        if ( url.isEmpty() )
+        {
+          c->removeMultiFrame( html );
+          delete composerHtml;
+          continue;
+        }
+
+        QUrl newUrl( url );
+        html->setUrl( newUrl );
+        html->update();
+        continue;
+      }
+    }
+
+    //update legend
+    // if it has an auto-update model
+    Q_FOREACH ( QgsComposerLegend *currentLegend, composerLegends )
+    {
+      if ( !currentLegend )
+      {
+        continue;
+      }
+
+      if ( currentLegend->autoUpdateModel() )
+      {
+        // the legend has an auto-update model
+        // we will update it with map's layers
+        const QgsComposerMap *map = currentLegend->composerMap();
+        if ( !map )
+        {
+          continue;
+        }
+
+        currentLegend->setAutoUpdateModel( false );
+
+        // get model and layer tree root of the legend
+        QgsLegendModel *model = currentLegend->model();
+        QStringList layerSet;
+        Q_FOREACH ( QgsMapLayer *layer, map->layers() )
+          layerSet << layer->id();
+        //setLayerIdsToLegendModel( model, layerSet, map->scale() );
+
+        // get model and layer tree root of the legend
+        QgsLayerTree *root = model->rootGroup();
+
+        // get layerIds find in the layer tree root
+        QStringList layerIds = root->findLayerIds();
+
+        // Q_FOREACH layer find in the layer tree
+        // remove it if the layer id is not in map layerIds
+        Q_FOREACH ( const QString &layerId, layerIds )
+        {
+          QgsLayerTreeLayer *nodeLayer = root->findLayer( layerId );
+          if ( !nodeLayer )
+          {
+            continue;
+          }
+          if ( !layerSet.contains( layerId ) )
+          {
+            qobject_cast<QgsLayerTreeGroup *>( nodeLayer->parent() )->removeChildNode( nodeLayer );
+          }
+          else
+          {
+            QgsMapLayer *layer = nodeLayer->layer();
+            if ( !layer->isInScaleRange( map->scale() ) )
+            {
+              qobject_cast<QgsLayerTreeGroup *>( nodeLayer->parent() )->removeChildNode( nodeLayer );
+            }
+          }
+        }
+        root->removeChildrenGroupWithoutLayers();
+      }
+    }
+    return true;
   }
 
 #if 0

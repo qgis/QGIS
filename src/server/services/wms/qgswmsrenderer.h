@@ -319,6 +319,8 @@ namespace QgsWms
       //! Gets layer search rectangle (depending on request parameter, layer type, map and layer crs)
       QgsRectangle featureInfoSearchRect( QgsVectorLayer *ml, const QgsMapSettings &ms, const QgsRenderContext &rct, const QgsPointXY &infoPoint ) const;
 
+      //! configure the composition for the GetPrint request
+      bool configureComposition( QgsComposition *c, const QgsMapSettings &mapSettings );
 
     private:
 
