@@ -62,7 +62,7 @@ class CreateConstantRaster(QgisAlgorithm):
         self.addParameter(QgsProcessingParameterNumber(self.PIXEL_SIZE,
                                                        self.tr('Pixel size'),
                                                        QgsProcessingParameterNumber.Double,
-                                                       defaultValue=0.1))
+                                                       0.1, False, 0.001, 999))
         self.addParameter(QgsProcessingParameterNumber(self.NUMBER,
                                                        self.tr('Constant value'),
                                                        QgsProcessingParameterNumber.Double,
