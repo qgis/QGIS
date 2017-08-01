@@ -13,6 +13,7 @@ namespace Qt3DRender
 class Map3D;
 class MapTextureGenerator;
 class QgsCoordinateTransform;
+class QgsMapLayer;
 class TerrainChunkEntity;
 class TerrainGenerator;
 class TerrainMapUpdateJobFactory;
@@ -38,8 +39,11 @@ class Terrain : public ChunkedEntity
   private slots:
     void onShowBoundingBoxesChanged();
     void invalidateMapImages();
+    void onLayersChanged();
 
   private:
+
+    void connectToLayersRepaintRequest();
 
     const Map3D &map;
     //! picker of terrain to know height of terrain when dragging
@@ -48,6 +52,9 @@ class Terrain : public ChunkedEntity
     QgsCoordinateTransform *mTerrainToMapTransform;
 
     std::unique_ptr<TerrainMapUpdateJobFactory> mUpdateJobFactory;
+
+    //! layers that are currently being used for map rendering (and thus being watched for renderer updates)
+    QList<QgsMapLayer *> mLayers;
 };
 
 

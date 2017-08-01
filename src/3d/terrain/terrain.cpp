@@ -45,7 +45,9 @@ Terrain::Terrain( int maxLevel, const Map3D &map, Qt3DCore::QNode *parent )
 
   connect( &map, &Map3D::showTerrainBoundingBoxesChanged, this, &Terrain::onShowBoundingBoxesChanged );
   connect( &map, &Map3D::showTerrainTilesInfoChanged, this, &Terrain::invalidateMapImages );
-  connect( &map, &Map3D::layersChanged, this, &Terrain::invalidateMapImages );
+  connect( &map, &Map3D::layersChanged, this, &Terrain::onLayersChanged );
+
+  connectToLayersRepaintRequest();
 
   mTerrainToMapTransform = new QgsCoordinateTransform( map.terrainGenerator()->crs(), map.crs );
 
@@ -100,6 +102,27 @@ void Terrain::invalidateMapImages()
   qDebug() << " updating " << inactiveNodes.count() << " inactive nodes";
 
   needsUpdate = true;
+}
+
+void Terrain::onLayersChanged()
+{
+  connectToLayersRepaintRequest();
+  invalidateMapImages();
+}
+
+void Terrain::connectToLayersRepaintRequest()
+{
+  Q_FOREACH ( QgsMapLayer *layer, mLayers )
+  {
+    disconnect( layer, &QgsMapLayer::repaintRequested, this, &Terrain::invalidateMapImages );
+  }
+
+  mLayers = map.layers();
+
+  Q_FOREACH ( QgsMapLayer *layer, mLayers )
+  {
+    connect( layer, &QgsMapLayer::repaintRequested, this, &Terrain::invalidateMapImages );
+  }
 }
 
 
