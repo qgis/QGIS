@@ -115,6 +115,9 @@ Apply and accept the changes for the dialog.
     virtual void keyPressEvent( QKeyEvent *event );
 
 
+    virtual void hideEvent( QHideEvent *event );
+
+
 
 
 

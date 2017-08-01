@@ -84,6 +84,9 @@
      <property name="title">
       <string>Layer rendering</string>
      </property>
+     <property name="saveCollapsedState" stdset="0">
+      <bool>true</bool>
+     </property>
      <layout class="QGridLayout" name="gridLayout_3">
       <property name="leftMargin">
        <number>0</number>
@@ -408,6 +411,9 @@
     <widget class="QgsCollapsibleGroupBox" name="mResamplingBox">
      <property name="title">
       <string>Resampling</string>
+     </property>
+     <property name="saveCollapsedState" stdset="0">
+      <bool>true</bool>
      </property>
      <layout class="QGridLayout" name="gridLayout">
       <property name="leftMargin">
