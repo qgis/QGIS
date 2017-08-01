@@ -130,6 +130,14 @@ class CORE_EXPORT QgsRasterFileWriter
     void setPyramidsConfigOptions( const QStringList &list ) { mPyramidsConfigOptions = list; }
     QStringList pyramidsConfigOptions() const { return mPyramidsConfigOptions; }
 
+    /**
+     * Returns the GDAL driver name for a specified file \a extension. E.g. the
+     * driver name for the ".tif" extension is "GTiff".
+     * If no suitable drivers are found then an empty string is returned.
+     * \since QGIS 3.0
+     */
+    static QString driverForExtension( const QString &extension );
+
   private:
     QgsRasterFileWriter(); //forbidden
     WriterError writeDataRaster( const QgsRasterPipe *pipe, QgsRasterIterator *iter, int nCols, int nRows, const QgsRectangle &outputExtent,
