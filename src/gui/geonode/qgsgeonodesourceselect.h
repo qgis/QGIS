@@ -24,7 +24,7 @@
 #include "ui_qgsgeonodesourceselectbase.h"
 #include "qgis_gui.h"
 
-class QgsGeonodeItemDelegate : public QItemDelegate
+class GUI_EXPORT QgsGeonodeItemDelegate : public QItemDelegate
 {
     Q_OBJECT
 

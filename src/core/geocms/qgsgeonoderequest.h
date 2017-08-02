@@ -23,7 +23,7 @@
 #include <QObject>
 #include <QUuid>
 
-struct QgsServiceLayerDetail
+struct CORE_EXPORT QgsServiceLayerDetail
 {
   QUuid uuid;
   QString name;
