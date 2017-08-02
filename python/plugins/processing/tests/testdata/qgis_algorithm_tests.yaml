@@ -2158,6 +2158,32 @@ tests:
         name: expected/lines_to_polygon.gml
         type: vector
 
+  - algorithm: qgis:snappointstogrid
+    name: Gridify polys
+    params:
+      INPUT:
+        name: polys.gml
+        type: vector
+      HSPACING: 2
+      VSPACING: 2
+    results:
+      OUTPUT:
+        name: expected/gridify_polys.gml
+        type: vector
+
+  - algorithm: qgis:snappointstogrid
+    name: Gridify lines
+    params:
+      INPUT:
+        name: lines.gml
+        type: vector
+      HSPACING: 2
+      VSPACING: 2
+    results:
+      OUTPUT:
+        name: expected/gridify_lines.gml
+        type: vector
+
 #  - algorithm: qgis:joinattributestable
 #    name: join the attribute table by common field
 #    params:
