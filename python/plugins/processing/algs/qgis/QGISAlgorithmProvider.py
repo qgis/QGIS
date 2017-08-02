@@ -75,6 +75,7 @@ from .GridLine import GridLine
 from .GridPolygon import GridPolygon
 from .Heatmap import Heatmap
 from .Hillshade import Hillshade
+from .HubDistancePoints import HubDistancePoints
 from .ImportIntoPostGIS import ImportIntoPostGIS
 from .ImportIntoSpatialite import ImportIntoSpatialite
 from .Intersection import Intersection
@@ -141,7 +142,7 @@ from .ZonalStatistics import ZonalStatistics
 # from .ExtractByLocation import ExtractByLocation
 # from .SelectByLocation import SelectByLocation
 # from .SpatialJoin import SpatialJoin
-# from .HubDistancePoints import HubDistancePoints
+
 # from .HubDistanceLines import HubDistanceLines
 # from .HubLines import HubLines
 # from .GeometryConvert import GeometryConvert
@@ -188,7 +189,6 @@ class QGISAlgorithmProvider(QgsProcessingProvider):
         #         SelectByLocation(),
         #         ExtractByLocation(),
         #         SpatialJoin(),
-        #         HubDistancePoints(),
         #         HubDistanceLines(), HubLines(),
         #         GeometryConvert(), FieldsCalculator(),
         #          JoinAttributes(),
@@ -245,6 +245,7 @@ class QGISAlgorithmProvider(QgsProcessingProvider):
                 GridPolygon(),
                 Heatmap(),
                 Hillshade(),
+                HubDistancePoints(),
                 ImportIntoPostGIS(),
                 ImportIntoSpatialite(),
                 Intersection(),
