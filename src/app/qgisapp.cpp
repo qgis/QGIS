@@ -336,6 +336,7 @@ Q_GUI_EXPORT extern int qt_defaultDpiX();
 #include "qgsmaptoolcircle2points.h"
 #include "qgsmaptoolcircle3points.h"
 #include "qgsmaptoolcirclecenterpoint.h"
+#include "qgsmaptoolcircle3tangents.h"
 #include "qgsmaptoolellipsecenter2points.h"
 #include "qgsmaptoolellipsecenterpoint.h"
 #include "qgsmaptoolellipseextent.h"
@@ -1412,6 +1413,7 @@ QgisApp::~QgisApp()
   delete mMapTools.mCircle2Points;
   delete mMapTools.mCircle3Points;
   delete mMapTools.mCircleCenterPoint;
+  delete mMapTools.mCircle3Tangents;
   delete mMapTools.mEllipseCenter2Points;
   delete mMapTools.mEllipseCenterPoint;
   delete mMapTools.mEllipseExtent;
@@ -1870,6 +1872,7 @@ void QgisApp::createActions()
   connect( mActionCircle2Points, &QAction::triggered, this, &QgisApp::circle2Points );
   connect( mActionCircle3Points, &QAction::triggered, this, &QgisApp::circle3Points );
   connect( mActionCircleCenterPoint, &QAction::triggered, this, &QgisApp::circleCenterPoint );
+  connect( mActionCircle3Tangents, &QAction::triggered, this, &QgisApp::circle3Tangents );
   connect( mActionEllipseCenter2Points, &QAction::triggered, this, &QgisApp::ellipseCenter2Points );
   connect( mActionEllipseCenterPoint, &QAction::triggered, this, &QgisApp::ellipseCenterPoint );
   connect( mActionEllipseExtent, &QAction::triggered, this, &QgisApp::ellipseExtent );
@@ -2156,6 +2159,7 @@ void QgisApp::createActionGroups()
   mMapToolGroup->addAction( mActionCircle2Points );
   mMapToolGroup->addAction( mActionCircle3Points );
   mMapToolGroup->addAction( mActionCircleCenterPoint );
+  mMapToolGroup->addAction( mActionCircle3Tangents );
   mMapToolGroup->addAction( mActionEllipseCenter2Points );
   mMapToolGroup->addAction( mActionEllipseCenterPoint );
   mMapToolGroup->addAction( mActionEllipseExtent );
@@ -2703,6 +2707,7 @@ void QgisApp::createToolBars()
   tbAddCircle->addAction( mActionCircle2Points );
   tbAddCircle->addAction( mActionCircle3Points );
   tbAddCircle->addAction( mActionCircleCenterPoint );
+  tbAddCircle->addAction( mActionCircle3Tangents );
   tbAddCircle->setDefaultAction( mActionCircle2Points );
   connect( tbAddCircle, &QToolButton::triggered, this, &QgisApp::toolButtonActionTriggered );
   mRegularShapeDigitizeToolBar->insertWidget( mActionNodeTool, tbAddCircle );
@@ -3324,6 +3329,8 @@ void QgisApp::createCanvasTools()
   mMapTools.mCircle3Points->setAction( mActionCircle3Points );
   mMapTools.mCircleCenterPoint = new QgsMapToolCircleCenterPoint( dynamic_cast<QgsMapToolAddFeature *>( mMapTools.mAddFeature ), mMapCanvas );
   mMapTools.mCircleCenterPoint->setAction( mActionCircleCenterPoint );
+  mMapTools.mCircle3Tangents = new QgsMapToolCircle3Tangents( dynamic_cast<QgsMapToolAddFeature *>( mMapTools.mAddFeature ), mMapCanvas );
+  mMapTools.mCircle3Tangents->setAction( mActionCircle3Tangents );
   mMapTools.mEllipseCenter2Points = new QgsMapToolEllipseCenter2Points( dynamic_cast<QgsMapToolAddFeature *>( mMapTools.mAddFeature ), mMapCanvas );
   mMapTools.mEllipseCenter2Points->setAction( mActionEllipseCenter2Points );
   mMapTools.mEllipseCenterPoint = new QgsMapToolEllipseCenterPoint( dynamic_cast<QgsMapToolAddFeature *>( mMapTools.mAddFeature ), mMapCanvas );
@@ -7905,6 +7912,11 @@ void QgisApp::circleCenterPoint()
   mMapCanvas->setMapTool( mMapTools.mCircleCenterPoint );
 }
 
+void QgisApp::circle3Tangents()
+{
+  mMapCanvas->setMapTool( mMapTools.mCircle3Tangents );
+}
+
 void QgisApp::ellipseCenter2Points()
 {
   mMapCanvas->setMapTool( mMapTools.mEllipseCenter2Points );
@@ -11237,6 +11249,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer *layer )
     mActionCircle2Points->setEnabled( false );
     mActionCircle3Points->setEnabled( false );
     mActionCircleCenterPoint->setEnabled( false );
+    mActionCircle3Tangents->setEnabled( false );
     mActionEllipseCenter2Points->setEnabled( false );
     mActionEllipseCenterPoint->setEnabled( false );
     mActionEllipseExtent->setEnabled( false );
@@ -11387,6 +11400,8 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer *layer )
                                         && ( vlayer->geometryType() == QgsWkbTypes::LineGeometry || vlayer->geometryType() == QgsWkbTypes::PolygonGeometry ) );
       mActionCircleCenterPoint->setEnabled( isEditable && ( canAddFeatures || canChangeGeometry )
                                             && ( vlayer->geometryType() == QgsWkbTypes::LineGeometry || vlayer->geometryType() == QgsWkbTypes::PolygonGeometry ) );
+      mActionCircle3Tangents->setEnabled( isEditable && ( canAddFeatures || canChangeGeometry )
+                                          && ( vlayer->geometryType() == QgsWkbTypes::LineGeometry || vlayer->geometryType() == QgsWkbTypes::PolygonGeometry ) );
       mActionEllipseCenter2Points->setEnabled( isEditable && ( canAddFeatures || canChangeGeometry )
           && ( vlayer->geometryType() == QgsWkbTypes::LineGeometry || vlayer->geometryType() == QgsWkbTypes::PolygonGeometry ) );
       mActionEllipseCenterPoint->setEnabled( isEditable && ( canAddFeatures || canChangeGeometry )

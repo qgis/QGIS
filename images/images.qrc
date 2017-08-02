@@ -576,6 +576,7 @@
         <file>themes/default/mActionRegularPolygonCenterPoint.svg</file>
         <file>themes/default/mActionRegularPolygon2Points.svg</file>
         <file>themes/default/mActionSquareCenter.svg</file>
+        <file>themes/default/mActionCircle3Tangents.svg</file>
     </qresource>
     <qresource prefix="/images/tips">
         <file alias="symbol_levels.png">qgis_tips/symbol_levels.png</file>

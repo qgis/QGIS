@@ -279,6 +279,7 @@
      <addaction name="mActionCircle2Points"/>
      <addaction name="mActionCircle3Points"/>
      <addaction name="mActionCircleCenterPoint"/>
+     <addaction name="mActionCircle3Tangents"/>
     </widget>
     <widget class="QMenu" name="mMenuEllipse">
      <property name="title">
@@ -2895,6 +2896,21 @@ Acts on currently active editable layer</string>
    </property>
    <property name="toolTip">
     <string>Add regular polygon from 2 points</string>
+   </property>
+  </action>
+  <action name="mActionCircle3Tangents">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionCircle3Tangents.svg</normaloff>:/images/themes/default/mActionCircle3Tangents.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Add Circle from 3 Tangents</string>
+   </property>
+   <property name="toolTip">
+    <string>Add circle from 3 tangents</string>
    </property>
   </action>
  </widget>

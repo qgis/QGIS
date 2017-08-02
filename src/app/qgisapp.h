@@ -1215,6 +1215,8 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     void circle3Points();
     //! activates the add circle from center and radius tool
     void circleCenterPoint();
+    //! activates the add circle from 3 tangents tool
+    void circle3Tangents();
     //! activates the add ellipse from center and 2 points tool
     void ellipseCenter2Points();
     //! activates the add ellipse from center point tool
@@ -1799,6 +1801,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
           , mCircle2Points( nullptr )
           , mCircle3Points( nullptr )
           , mCircleCenterPoint( nullptr )
+          , mCircle3Tangents( nullptr )
           , mEllipseCenter2Points( nullptr )
           , mEllipseCenterPoint( nullptr )
           , mEllipseExtent( nullptr )
@@ -1857,6 +1860,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
         QgsMapTool *mCircle2Points = nullptr;
         QgsMapTool *mCircle3Points = nullptr;
         QgsMapTool *mCircleCenterPoint = nullptr;
+        QgsMapTool *mCircle3Tangents = nullptr;
         QgsMapTool *mEllipseCenter2Points = nullptr;
         QgsMapTool *mEllipseCenterPoint = nullptr;
         QgsMapTool *mEllipseExtent = nullptr;
