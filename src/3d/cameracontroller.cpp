@@ -13,6 +13,8 @@ CameraController::CameraController( Qt3DCore::QNode *parent )
   , mLogicalDevice( new Qt3DInput::QLogicalDevice() )
   , mLeftMouseButtonAction( new Qt3DInput::QAction() )
   , mLeftMouseButtonInput( new Qt3DInput::QActionInput() )
+  , mMiddleMouseButtonAction( new Qt3DInput::QAction() )
+  , mMiddleMouseButtonInput( new Qt3DInput::QActionInput() )
   , mShiftAction( new Qt3DInput::QAction() )
   , mShiftInput( new Qt3DInput::QActionInput() )
   , mWheelAxis( new Qt3DInput::QAxis() )
@@ -39,6 +41,11 @@ CameraController::CameraController( Qt3DCore::QNode *parent )
   mLeftMouseButtonInput->setButtons( QVector<int>() << Qt::LeftButton );
   mLeftMouseButtonInput->setSourceDevice( mMouseDevice );
   mLeftMouseButtonAction->addInput( mLeftMouseButtonInput );
+
+  // middle mouse button
+  mMiddleMouseButtonInput->setButtons( QVector<int>() << Qt::MiddleButton );
+  mMiddleMouseButtonInput->setSourceDevice( mMouseDevice );
+  mMiddleMouseButtonAction->addInput( mMiddleMouseButtonInput );
 
   // Mouse Wheel (Y)
   // TODO: zoom with mouse wheel in Qt < 5.8
@@ -78,6 +85,7 @@ CameraController::CameraController( Qt3DCore::QNode *parent )
   mTyAxis->addInput( mKeyboardTyNegInput );
 
   mLogicalDevice->addAction( mLeftMouseButtonAction );
+  mLogicalDevice->addAction( mMiddleMouseButtonAction );
   mLogicalDevice->addAction( mShiftAction );
   mLogicalDevice->addAxis( mWheelAxis );
   mLogicalDevice->addAxis( mTxAxis );
@@ -167,6 +175,11 @@ void CameraController::frameTriggered( float dt )
   mLastMousePos = mMousePos;
 
   cd.dist -= cd.dist * mWheelAxis->value() * 10 * dt;
+
+  if ( mMiddleMouseButtonAction->isActive() )
+  {
+    cd.dist -= cd.dist * dy * 0.01;
+  }
 
   float tx = mTxAxis->value() * dt * cd.dist * 1.5;
   float ty = -mTyAxis->value() * dt * cd.dist * 1.5;
