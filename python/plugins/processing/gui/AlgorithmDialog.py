@@ -229,7 +229,7 @@ class AlgorithmDialog(AlgorithmDialogBase):
                     feedback.pushInfo(
                         self.tr('Execution completed in {0:0.2f} seconds'.format(time.time() - start_time)))
                     self.buttonCancel.setEnabled(False)
-                    self.finish(parameters, context, feedback)
+                    self.finish(True, parameters, context, feedback)
                 else:
                     self.buttonCancel.setEnabled(False)
                     self.resetGUI()
@@ -250,7 +250,7 @@ class AlgorithmDialog(AlgorithmDialogBase):
                     feedback.pushInfo('')
 
                     self.buttonCancel.setEnabled(False)
-                    self.finish(results, context, feedback)
+                    self.finish(ok, results, context, feedback)
 
                 task = QgsProcessingAlgRunnerTask(self.alg, parameters, context, feedback)
                 task.executed.connect(on_complete)
@@ -269,8 +269,8 @@ class AlgorithmDialog(AlgorithmDialogBase):
             self.bar.pushMessage("", self.tr("Wrong or missing parameter value: {0}").format(e.parameter.description()),
                                  level=QgsMessageBar.WARNING, duration=5)
 
-    def finish(self, result, context, feedback):
-        keepOpen = ProcessingConfig.getSetting(ProcessingConfig.KEEP_DIALOG_OPEN)
+    def finish(self, successful, result, context, feedback):
+        keepOpen = not successful or ProcessingConfig.getSetting(ProcessingConfig.KEEP_DIALOG_OPEN)
 
         if self.iterateParam is None:
 
