@@ -12616,11 +12616,16 @@ void QgisApp::onLayerError( const QString &msg )
 
 bool QgisApp::gestureEvent( QGestureEvent *event )
 {
+#ifdef Q_OS_ANDROID
   if ( QGesture *tapAndHold = event->gesture( Qt::TapAndHoldGesture ) )
   {
     tapAndHoldTriggered( static_cast<QTapAndHoldGesture *>( tapAndHold ) );
   }
   return true;
+#else
+  Q_UNUSED( event );
+  return false;
+#endif
 }
 
 void QgisApp::tapAndHoldTriggered( QTapAndHoldGesture *gesture )
