@@ -11,6 +11,9 @@
 
 struct QgsServiceLayerDetail
 {
+%TypeHeaderCode
+#include <qgsgeonoderequest.h>
+%End
   QUuid uuid;
   QString name;
   QString typeName;
@@ -77,9 +80,9 @@ Abort network request immediately
 %End
 
   signals:
-    void statusChanged( QString const   &statusQString );
+    void statusChanged( const QString &statusQString );
 %Docstring
- emit a signal to be caught by qgisapp and display a msg on status bar
+ emit a signal to be caught by qgisapp and display a statusQString on status bar
 %End
 
     void requestFinished();

@@ -19,10 +19,9 @@
 #include "qgsmessagelog.h"
 #include "qgsproviderregistry.h"
 
+#include "qgsgeonodesourceselect.h"
 #include "qgsgeonodeconnection.h"
 #include "qgsgeonoderequest.h"
-
-#include "qgsgeonodesourceselect.h"
 
 #include "qgsgeonodenewconnection.h"
 #include "qgsmanageconnectionsdialog.h"

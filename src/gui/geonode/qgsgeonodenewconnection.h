@@ -19,8 +19,8 @@
 #define QGSGEONODENEWCONNECTION_H
 
 #include "ui_qgsnewgeonodeconnectionbase.h"
-#include "qgsguiutils.h"
 #include "qgis_gui.h"
+#include "qgsguiutils.h"
 #include "qgsauthconfigselect.h"
 
 class GUI_EXPORT QgsGeoNodeNewConnection : public QDialog, private Ui::QgsNewGeoNodeConnectionBase

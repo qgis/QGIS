@@ -14,10 +14,10 @@
  ***************************************************************************/
 
 #include "qgsnetworkaccessmanager.h"
-#include "qgsgeonoderequest.h"
 #include "qgssettings.h"
 #include "qgsmessagelog.h"
 #include "qgslogger.h"
+#include "qgsgeonoderequest.h"
 
 #include <QEventLoop>
 #include <QNetworkCacheMetaData>
@@ -86,7 +86,7 @@ void QgsGeoNodeRequest::replyFinished()
       if ( !redirect.isNull() )
       {
 
-        emit statusChanged( tr( "GeoNode request redirected." ) );
+        emit statusChanged( QStringLiteral( "GeoNode request redirected." ) );
 
         const QUrl &toUrl = redirect.toUrl();
         mGeoNodeReply->request();

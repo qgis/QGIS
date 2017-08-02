@@ -25,6 +25,11 @@
 
 struct CORE_EXPORT QgsServiceLayerDetail
 {
+#ifdef SIP_RUN
+  % TypeHeaderCode
+#include <qgsgeonoderequest.h>
+  % End
+#endif
   QUuid uuid;
   QString name;
   QString typeName;
@@ -64,8 +69,8 @@ class CORE_EXPORT QgsGeoNodeRequest : public QObject
     void abort();
 
   signals:
-    //! \brief emit a signal to be caught by qgisapp and display a msg on status bar
-    void statusChanged( QString const   &statusQString );
+    //! \brief emit a signal to be caught by qgisapp and display a statusQString on status bar
+    void statusChanged( const QString &statusQString );
 
     //! \brief emit a signal once the request is finished
     void requestFinished();
