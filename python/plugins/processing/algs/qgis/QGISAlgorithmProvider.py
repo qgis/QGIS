@@ -99,6 +99,8 @@ from .RandomPointsAlongLines import RandomPointsAlongLines
 from .RandomPointsExtent import RandomPointsExtent
 from .RandomPointsLayer import RandomPointsLayer
 from .RandomPointsPolygons import RandomPointsPolygons
+from .RandomSelection import RandomSelection
+from .RandomSelectionWithinSubsets import RandomSelectionWithinSubsets
 from .RasterLayerStatistics import RasterLayerStatistics
 from .RegularPoints import RegularPoints
 from .ReverseLineDirection import ReverseLineDirection
@@ -135,8 +137,6 @@ from .VoronoiPolygons import VoronoiPolygons
 from .ZonalStatistics import ZonalStatistics
 
 # from .ExtractByLocation import ExtractByLocation
-# from .RandomSelection import RandomSelection
-# from .RandomSelectionWithinSubsets import RandomSelectionWithinSubsets
 # from .SelectByLocation import SelectByLocation
 # from .SpatialJoin import SpatialJoin
 # from .GridLine import GridLine
@@ -185,7 +185,6 @@ class QGISAlgorithmProvider(QgsProcessingProvider):
 
     def getAlgs(self):
         # algs = [
-        #         RandomSelection(), RandomSelectionWithinSubsets(),
         #         SelectByLocation(),
         #         ExtractByLocation(),
         #         SpatialJoin(),
@@ -270,6 +269,8 @@ class QGISAlgorithmProvider(QgsProcessingProvider):
                 RandomPointsExtent(),
                 RandomPointsLayer(),
                 RandomPointsPolygons(),
+                RandomSelection(),
+                RandomSelectionWithinSubsets(),
                 RasterLayerStatistics(),
                 RegularPoints(),
                 ReverseLineDirection(),
