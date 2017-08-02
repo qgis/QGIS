@@ -74,7 +74,7 @@ class CORE_EXPORT QgsRasterHistogram
     /** \brief Store the histogram for a given layer
       * \note not available via Python binding
       */
-    HistogramVector histogramVector;
+    QgsRasterHistogram::HistogramVector histogramVector;
 
     //! \brief The maximum histogram value.
     double maximum;

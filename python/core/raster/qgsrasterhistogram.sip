@@ -47,7 +47,7 @@ class QgsRasterHistogram
  Whether histogram includes out of range values (in first and last bin)
 %End
 
-    HistogramVector histogramVector;
+    QgsRasterHistogram::HistogramVector histogramVector;
 %Docstring
  Store the histogram for a given layer
 .. note::
