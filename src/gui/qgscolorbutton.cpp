@@ -66,19 +66,26 @@ QgsColorButton::QgsColorButton( QWidget *parent, const QString &cdt, QgsColorSch
   connect( mMenu, &QMenu::aboutToShow, this, &QgsColorButton::prepareMenu );
   setMenu( mMenu );
   setPopupMode( QToolButton::MenuButtonPopup );
+
+#ifdef Q_OS_WIN
+  mMinimumSize = QSize( 120, 22 );
+#else
+  mMinimumSize = QSize( 120, 28 );
+#endif
+
+  mMinimumSize.setHeight( qMax( static_cast<int>( fontMetrics().height() * 1.1 ), mMinimumSize.height() ) );
 }
+
+
 
 QSize QgsColorButton::minimumSizeHint() const
 {
-  //make sure height of button looks good under different platforms
-  QSize size;
-#ifdef Q_OS_WIN
-  size = QSize( 120, 22 );
-#else
-  size = QSize( 120, 28 );
-#endif
-  int textHeight = fontMetrics().height() * 1.1;
-  return QSize( size.width(), qMax( size.height(), textHeight ) );
+  return mMinimumSize;
+}
+
+QSize QgsColorButton::sizeHint() const
+{
+  return mMinimumSize;
 }
 
 const QPixmap &QgsColorButton::transparentBackground()

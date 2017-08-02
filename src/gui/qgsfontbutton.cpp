@@ -46,14 +46,21 @@ QgsFontButton::QgsFontButton( QWidget *parent, const QString &dialogTitle )
   connect( mMenu, &QMenu::aboutToShow, this, &QgsFontButton::prepareMenu );
   setMenu( mMenu );
   setPopupMode( QToolButton::MenuButtonPopup );
+
+  //make sure height of button looks good under different platforms
+  QSize size = QToolButton::minimumSizeHint();
+  int fontHeight = fontMetrics().height() * 1.4;
+  mSizeHint = QSize( size.width(), qMax( size.height(), fontHeight ) );
 }
 
 QSize QgsFontButton::minimumSizeHint() const
 {
-  //make sure height of button looks good under different platforms
-  QSize size = QToolButton::minimumSizeHint();
-  int fontHeight = fontMetrics().height() * 1.4;
-  return QSize( size.width(), qMax( size.height(), fontHeight ) );
+  return mSizeHint;
+}
+
+QSize QgsFontButton::sizeHint() const
+{
+  return mSizeHint;
 }
 
 void QgsFontButton::showSettingsDialog()

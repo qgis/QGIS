@@ -31,6 +31,7 @@ class QgsSymbolButton : QToolButton
 %End
 
     virtual QSize minimumSizeHint() const;
+    virtual QSize sizeHint() const;
 
     void setSymbolType( QgsSymbol::SymbolType type );
 %Docstring

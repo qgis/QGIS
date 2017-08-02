@@ -52,6 +52,7 @@ class GUI_EXPORT QgsSymbolButton : public QToolButton
     QgsSymbolButton( QWidget *parent SIP_TRANSFERTHIS = nullptr, const QString &dialogTitle = QString() );
 
     virtual QSize minimumSizeHint() const override;
+    virtual QSize sizeHint() const override;
 
     /**
      * Sets the symbol \a type which the button requires.
@@ -223,6 +224,8 @@ class GUI_EXPORT QgsSymbolButton : public QToolButton
     void addRecentColor( const QColor &color );
 
   private:
+
+    QSize mSizeHint;
 
     QString mDialogTitle;
 
