@@ -19,6 +19,7 @@
 #include "qgslinestring.h"
 #include "qgsmapcanvas.h"
 #include "qgspoint.h"
+#include "qgisapp.h"
 #include <QMouseEvent>
 
 QgsMapToolCircle3Tangents::QgsMapToolCircle3Tangents( QgsMapToolCapture *parentTool,
@@ -38,14 +39,11 @@ void QgsMapToolCircle3Tangents::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
 
   if ( e->button() == Qt::LeftButton )
   {
-    if ( ( mPoints.size() <= 2 * 2 ) )
+    if ( !segment.empty() && ( mPoints.size() <= 2 * 2 ) )
     {
       mPoints.append( QgsPoint( segment.at( 0 ) ) );
       mPoints.append( QgsPoint( segment.at( 1 ) ) );
-
-
     }
-
     if ( !mPoints.isEmpty() )
     {
       if ( !mTempRubberBand )
@@ -53,13 +51,28 @@ void QgsMapToolCircle3Tangents::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
         mTempRubberBand = createGeometryRubberBand( ( mode() == CapturePolygon ) ? QgsWkbTypes::PolygonGeometry : QgsWkbTypes::LineGeometry, true );
         mTempRubberBand->show();
       }
+      std::unique_ptr<QgsLineString> line( new QgsLineString() );
+
+      line->addVertex( QgsPoint( segment.at( 0 ) ) );
+      line->addVertex( QgsPoint( segment.at( 1 ) ) );
+
+      mTempRubberBand->setGeometry( line.release() );
     }
   }
   else if ( e->button() == Qt::RightButton )
   {
-    if ( !segment.empty() && ( mPoints.size() == 6 ) )
+    if ( !segment.empty() && ( mPoints.size() == 4 ) )
     {
+      mPoints.append( QgsPoint( segment.at( 0 ) ) );
+      mPoints.append( QgsPoint( segment.at( 1 ) ) );
       mCircle = QgsCircle().from3Tangents( mPoints.at( 0 ), mPoints.at( 1 ), mPoints.at( 2 ), mPoints.at( 3 ), mPoints.at( 4 ), mPoints.at( 5 ) );
+      if ( mCircle.isEmpty() )
+      {
+        QgisApp::instance()->messageBar()->pushMessage( tr( "Error" ), tr( "At least two segments are parallels" ), QgsMessageBar::WARNING, QgisApp::instance()->messageTimeout() );
+        mPoints.clear();
+        delete mTempRubberBand;
+        mTempRubberBand = nullptr;
+      }
     }
     deactivate();
     if ( mParentTool )

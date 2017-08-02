@@ -123,4 +123,5 @@ void QgsMapToolAddCircle::clean()
   {
     mParentTool->deleteTempRubberBand();
   }
+  mCircle = QgsCircle();
 }
