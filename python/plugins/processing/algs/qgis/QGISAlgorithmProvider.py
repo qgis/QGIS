@@ -70,6 +70,7 @@ from .ExtractSpecificNodes import ExtractSpecificNodes
 from .FixedDistanceBuffer import FixedDistanceBuffer
 from .FixGeometry import FixGeometry
 from .GeometryByExpression import GeometryByExpression
+from .Gridify import Gridify
 from .GridLine import GridLine
 from .GridPolygon import GridPolygon
 from .Heatmap import Heatmap
@@ -140,7 +141,6 @@ from .ZonalStatistics import ZonalStatistics
 # from .ExtractByLocation import ExtractByLocation
 # from .SelectByLocation import SelectByLocation
 # from .SpatialJoin import SpatialJoin
-# from .Gridify import Gridify
 # from .HubDistancePoints import HubDistancePoints
 # from .HubDistanceLines import HubDistanceLines
 # from .HubLines import HubLines
@@ -188,7 +188,7 @@ class QGISAlgorithmProvider(QgsProcessingProvider):
         #         SelectByLocation(),
         #         ExtractByLocation(),
         #         SpatialJoin(),
-        #         Gridify(), HubDistancePoints(),
+        #         HubDistancePoints(),
         #         HubDistanceLines(), HubLines(),
         #         GeometryConvert(), FieldsCalculator(),
         #          JoinAttributes(),
@@ -240,6 +240,7 @@ class QGISAlgorithmProvider(QgsProcessingProvider):
                 FixedDistanceBuffer(),
                 FixGeometry(),
                 GeometryByExpression(),
+                Gridify(),
                 GridLine(),
                 GridPolygon(),
                 Heatmap(),
