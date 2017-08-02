@@ -551,7 +551,7 @@ QString QgsExpression::helpText( QString name )
 
         if ( v.mVariableLenArguments )
         {
-          helpContents += QLatin1String( "…" );
+          helpContents += QStringLiteral( "…" );
         }
 
         helpContents += ')';
