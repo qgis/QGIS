@@ -125,8 +125,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
     QString id() const;
 
     /**
-     * Set the display name of the layer
-     * \param name new name for the layer
+     * Set the display \a name of the layer.
      * \since QGIS 2.16
      * \see name()
      */
@@ -150,7 +149,6 @@ class CORE_EXPORT QgsMapLayer : public QObject
     virtual const QgsDataProvider *dataProvider() const SIP_SKIP;
 
     /** Returns the original name of the layer.
-     * \returns the original layer name
      */
     QString originalName() const;
 
@@ -163,14 +161,12 @@ class CORE_EXPORT QgsMapLayer : public QObject
 
     /** Returns the short name of the layer
      *  used by QGIS Server to identify the layer.
-     * \returns the layer short name
      * \see setShortName()
      */
     QString shortName() const { return mShortName; }
 
     /** Sets the title of the layer
      *  used by QGIS Server in GetCapabilities request.
-     * \returns the layer title
      * \see title()
      */
     void setTitle( const QString &title ) { mTitle = title; }
