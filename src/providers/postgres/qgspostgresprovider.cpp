@@ -3950,6 +3950,8 @@ QgsCoordinateReferenceSystem QgsPostgresProvider::crs() const
   srs.createFromSrid( srid );
   if ( !srs.isValid() )
   {
+    static QMutex sMutex;
+    QMutexLocker locker( &sMutex );
     static QMap<int, QgsCoordinateReferenceSystem> sCrsCache;
     if ( sCrsCache.contains( srid ) )
       srs = sCrsCache.value( srid );
