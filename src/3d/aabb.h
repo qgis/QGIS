@@ -37,6 +37,8 @@ class _3D_EXPORT AABB
     float zCenter() const { return ( zMax + zMin ) / 2; }
 
     QVector3D center() const { return QVector3D( xCenter(), yCenter(), zCenter() ); }
+    QVector3D minimum() const { return QVector3D( xMin, yMin, zMin ); }
+    QVector3D maximum() const { return QVector3D( xMax, yMax, zMax ); }
 
     bool intersects( const AABB &other ) const
     {

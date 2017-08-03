@@ -5,7 +5,7 @@ class QgsLineString;
 class QgsPolygonV2;
 
 #include "map3d.h"
-
+#include "aabb.h"
 
 //! how to handle altitude of vector features
 enum AltitudeClamping
@@ -45,6 +45,12 @@ class _3D_EXPORT Utils
 
     static QString matrix4x4toString( const QMatrix4x4 &m );
     static QMatrix4x4 stringToMatrix4x4( const QString &str );
+
+    /**
+        Returns true if bbox is completely outside the current viewing volume.
+        This is used to perform object culling checks.
+    */
+    static bool isCullable(const AABB &bbox, const QMatrix4x4 &viewProjectionMatrix );
 };
 
 #endif // UTILS_H

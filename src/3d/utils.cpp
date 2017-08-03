@@ -140,3 +140,52 @@ QMatrix4x4 Utils::stringToMatrix4x4( const QString &str )
     d[i] = elems[i].toFloat();
   return m;
 }
+
+//! copied from https://searchcode.com/codesearch/view/35195518/
+//! qt3d /src/threed/painting/qglpainter.cpp
+//! no changes in the code
+static inline uint outcode(const QVector4D &v)
+{
+    // For a discussion of outcodes see pg 388 Dunn & Parberry.
+    // For why you can't just test if the point is in a bounding box
+    // consider the case where a view frustum with view-size 1.5 x 1.5
+    // is tested against a 2x2 box which encloses the near-plane, while
+    // all the points in the box are outside the frustum.
+    // TODO: optimise this with assembler - according to D&P this can
+    // be done in one line of assembler on some platforms
+    uint code = 0;
+    if (v.x() < -v.w()) code |= 0x01;
+    if (v.x() > v.w())  code |= 0x02;
+    if (v.y() < -v.w()) code |= 0x04;
+    if (v.y() > v.w())  code |= 0x08;
+    if (v.z() < -v.w()) code |= 0x10;
+    if (v.z() > v.w())  code |= 0x20;
+    return code;
+}
+
+
+//! coarse box vs frustum test for culling.
+//! corners of oriented box are transformed to clip space
+//! and there is a test that all points are on the wrong side of the same plane
+//! see http://www.lighthouse3d.com/tutorials/view-frustum-culling/geometric-approach-testing-boxes/
+//!
+//! should be equivalent to https://searchcode.com/codesearch/view/35195518/
+//! qt3d /src/threed/painting/qglpainter.cpp
+//! bool QGLPainter::isCullable(const QBox3D& box) const
+bool Utils::isCullable( const AABB &bbox, const QMatrix4x4 &viewProjectionMatrix )
+{
+  uint out = 0xff;
+
+  for ( int i = 0; i < 8; ++i )
+  {
+    QVector4D p( ( ( i >> 0 ) & 1 ) ? bbox.xMin : bbox.xMax,
+                 ( ( i >> 1 ) & 1 ) ? bbox.yMin : bbox.yMax,
+                 ( ( i >> 2 ) & 1 ) ? bbox.zMin : bbox.zMax, 1 );
+    QVector4D pc = viewProjectionMatrix * p;
+
+    // if the logical AND of all the outcodes is non-zero then the BB is
+    // definitely outside the view frustum.
+    out = out & outcode(pc);
+  }
+  return out;
+}

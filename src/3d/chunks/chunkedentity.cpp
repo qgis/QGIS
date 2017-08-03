@@ -1,10 +1,10 @@
+#include <QVector4D>
 #include "chunkedentity.h"
-
 #include "chunkboundsentity.h"
 #include "chunklist.h"
 #include "chunkloader.h"
 #include "chunknode.h"
-
+#include "utils.h"
 
 static float screenSpaceError( float epsilon, float distance, float screenSize, float fov )
 {
@@ -41,43 +41,6 @@ static float screenSpaceError( ChunkNode *node, const SceneState &state )
   float sse = screenSpaceError( node->error, dist, state.screenSizePx, state.cameraFov );
   return sse;
 }
-
-
-#include <QVector4D>
-
-//! coarse box vs frustum test for culling.
-//! corners of oriented box are transformed to clip space and new axis-aligned box is created for intersection test
-static bool isInFrustum( const AABB &bbox, const QMatrix4x4 &viewProjectionMatrix )
-{
-  float xmin, ymin, zmin, xmax, ymax, zmax;
-  for ( int i = 0; i < 8; ++i )
-  {
-    QVector4D p( ( ( i >> 0 ) & 1 ) ? bbox.xMin : bbox.xMax,
-                 ( ( i >> 1 ) & 1 ) ? bbox.yMin : bbox.yMax,
-                 ( ( i >> 2 ) & 1 ) ? bbox.zMin : bbox.zMax, 1 );
-    QVector4D pc = viewProjectionMatrix * p;
-    pc /= pc.w();
-    float x = pc.x(), y = pc.y(), z = pc.z();
-
-    if ( i == 0 )
-    {
-      xmin = xmax = x;
-      ymin = ymax = y;
-      zmin = zmax = z;
-    }
-    else
-    {
-      if ( x < xmin ) xmin = x;
-      if ( x > xmax ) xmax = x;
-      if ( y < ymin ) ymin = y;
-      if ( y > ymax ) ymax = y;
-      if ( z < zmin ) zmin = z;
-      if ( z > zmax ) zmax = z;
-    }
-  }
-  return AABB( -1, -1, -1, 1, 1, 1 ).intersects( AABB( xmin, ymin, zmin, xmax, ymax, zmax ) );
-}
-
 
 ChunkedEntity::ChunkedEntity( const AABB &rootBbox, float rootError, float tau, int maxLevel, ChunkLoaderFactory *loaderFactory, Qt3DCore::QNode *parent )
   : Qt3DCore::QEntity( parent )
@@ -237,8 +200,7 @@ void ChunkedEntity::updateNodes( const QList<ChunkNode *> &nodes, ChunkQueueJobF
 
 void ChunkedEntity::update( ChunkNode *node, const SceneState &state )
 {
-  // TODO: fix and re-enable frustum culling
-  if ( 0 && !isInFrustum( node->bbox, state.viewProjectionMatrix ) )
+  if (Utils::isCullable(node->bbox, state.viewProjectionMatrix ) )
   {
     ++frustumCulled;
     return;
