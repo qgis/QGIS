@@ -581,6 +581,12 @@ QgsMapLayer::LayerType QgsLayerItem::mapLayerType() const
   return QgsMapLayer::VectorLayer;
 }
 
+QString QgsLayerItem::layerTypeAsString( const QgsLayerItem::LayerType &layerType )
+{
+  static int enumIdx = staticMetaObject.indexOfEnumerator( "LayerType" );
+  return staticMetaObject.enumerator( enumIdx ).valueToKey( layerType );
+}
+
 bool QgsLayerItem::equal( const QgsDataItem *other )
 {
   //QgsDebugMsg ( mPath + " x " + other->mPath );

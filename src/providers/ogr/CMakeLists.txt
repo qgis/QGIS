@@ -6,6 +6,8 @@ SET (OGR_SRCS
     qgsogrconnpool.cpp
     qgsogrexpressioncompiler.cpp
     qgsogrsourceselect.cpp
+    qgsgeopackagedataitems.cpp
+    qgsgeopackageconnection.cpp
 )
 
 SET(OGR_MOC_HDRS
@@ -13,6 +15,8 @@ SET(OGR_MOC_HDRS
     qgsogrdataitems.h
     qgsogrconnpool.h
     qgsogrsourceselect.h
+    qgsgeopackagedataitems.h
+    qgsgeopackageconnection.h
 )
 
 ########################################################

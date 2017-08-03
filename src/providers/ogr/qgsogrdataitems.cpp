@@ -21,6 +21,7 @@
 
 #include <QFileInfo>
 #include <QTextStream>
+#include <QAction>
 
 #include <ogr_srs_api.h>
 #include <cpl_error.h>

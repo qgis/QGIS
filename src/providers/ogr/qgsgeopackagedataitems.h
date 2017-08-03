@@ -1,0 +1,106 @@
+/***************************************************************************
+    qgsgeopackagedataitems.h
+    ---------------------
+    begin                : October 2011
+    copyright            : (C) 2011 by Martin Dobias
+    email                : wonder dot sk at gmail dot com
+ ***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ ***************************************************************************/
+#ifndef QGSGEOPACKAGEDATAITEMS_H
+#define QGSGEOPACKAGEDATAITEMS_H
+
+#include "qgsdataitem.h"
+#include "qgsdataitemprovider.h"
+#include "qgsdataprovider.h"
+
+class QgsGeoPackageLayerItem : public QgsLayerItem
+{
+    Q_OBJECT
+  public:
+    QgsGeoPackageLayerItem( QgsDataItem *parent, QString name, QString path, QString uri, LayerType layerType );
+
+#ifdef HAVE_GUI
+    QList<QAction *> actions() override;
+#endif
+
+  public slots:
+#ifdef HAVE_GUI
+    void deleteLayer();
+#endif
+};
+
+class QgsGeoPackageConnectionItem : public QgsDataCollectionItem
+{
+    Q_OBJECT
+  public:
+    QgsGeoPackageConnectionItem( QgsDataItem *parent, QString name, QString path );
+
+    QVector<QgsDataItem *> createChildren() override;
+    virtual bool equal( const QgsDataItem *other ) override;
+
+#ifdef HAVE_GUI
+    virtual QList<QAction *> actions() override;
+#endif
+
+    virtual bool acceptDrop() override { return true; }
+    //virtual bool handleDrop( const QMimeData *data, Qt::DropAction action ) override;
+
+    //! Return the layer type from \a geometryType
+    static QgsLayerItem::LayerType layerTypeFromDb( const QString &geometryType );
+
+  public slots:
+#ifdef HAVE_GUI
+    void editConnection();
+    void deleteConnection();
+
+#endif
+
+  protected:
+    QString mPath;
+};
+
+
+class QgsGeoPackageRootItem : public QgsDataCollectionItem
+{
+    Q_OBJECT
+  public:
+    QgsGeoPackageRootItem( QgsDataItem *parent, QString name, QString path );
+    ~QgsGeoPackageRootItem();
+
+    QVector<QgsDataItem *> createChildren() override;
+
+#ifdef HAVE_GUI
+    virtual QList<QAction *> actions() override;
+    virtual QWidget *paramWidget() override;
+#endif
+
+  public slots:
+#ifdef HAVE_GUI
+    void newConnection();
+    void connectionsChanged();
+#endif
+    void createDatabase();
+
+};
+
+
+//! Provider for geopackage root data item
+class QgsGeoPackageDataItemProvider : public QgsDataItemProvider
+{
+  public:
+    virtual QString name() override { return QStringLiteral( "GPKG" ); }
+
+    virtual int capabilities() override { return QgsDataProvider::Database; }
+
+    virtual QgsDataItem *createDataItem( const QString &path, QgsDataItem *parentItem ) override;
+};
+
+
+
+#endif // QGSGEOPACKAGEDATAITEMS_H
