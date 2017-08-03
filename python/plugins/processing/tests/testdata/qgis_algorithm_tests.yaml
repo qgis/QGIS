@@ -2200,6 +2200,22 @@ tests:
         name: expected/hub_distance_points.gml
         type: vector
 
+  - algorithm: qgis:distancetonearesthublinetohub
+    name: Hub distance lines
+    params:
+      INPUT:
+        name: points.gml
+        type: vector
+      HUBS:
+        name: custom/hub_points.gml
+        type: vector
+      FIELD: name
+      UNIT: 0
+    results:
+      OUTPUT:
+        name: expected/hub_distance_lines.gml
+        type: vector
+
 #  - algorithm: qgis:joinattributestable
 #    name: join the attribute table by common field
 #    params:
