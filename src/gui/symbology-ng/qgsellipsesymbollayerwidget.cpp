@@ -49,22 +49,31 @@ QgsEllipseSymbolLayerWidget::QgsEllipseSymbolLayerWidget( const QgsVectorLayer *
 
   QStringList names;
   names << QStringLiteral( "circle" ) << QStringLiteral( "rectangle" ) << QStringLiteral( "diamond" ) << QStringLiteral( "cross" ) << QStringLiteral( "triangle" ) << QStringLiteral( "right_half_triangle" ) << QStringLiteral( "left_half_triangle" ) << QStringLiteral( "semi_circle" );
-  QSize iconSize = mShapeListWidget->iconSize();
 
+  int size = mShapeListWidget->iconSize().width();
+  size = qMax( 30, qRound( Qgis::UI_SCALE_FACTOR * fontMetrics().width( QStringLiteral( "XXX" ) ) ) );
+  mShapeListWidget->setGridSize( QSize( size * 1.2, size * 1.2 ) );
+  mShapeListWidget->setIconSize( QSize( size, size ) );
+
+  double markerSize = size * 0.8;
   Q_FOREACH ( const QString &name, names )
   {
     QgsEllipseSymbolLayer *lyr = new QgsEllipseSymbolLayer();
+    lyr->setSymbolWidthUnit( QgsUnitTypes::RenderPixels );
+    lyr->setSymbolHeightUnit( QgsUnitTypes::RenderPixels );
     lyr->setSymbolName( name );
     lyr->setStrokeColor( QColor( 0, 0, 0 ) );
     lyr->setFillColor( QColor( 200, 200, 200 ) );
-    lyr->setSymbolWidth( 4 );
-    lyr->setSymbolHeight( 2 );
-    QIcon icon = QgsSymbolLayerUtils::symbolLayerPreviewIcon( lyr, QgsUnitTypes::RenderMillimeters, iconSize );
-    QListWidgetItem *item = new QListWidgetItem( icon, QLatin1String( "" ), mShapeListWidget );
+    lyr->setSymbolWidth( markerSize );
+    lyr->setSymbolHeight( markerSize * 0.75 );
+    QIcon icon = QgsSymbolLayerUtils::symbolLayerPreviewIcon( lyr, QgsUnitTypes::RenderPixels, QSize( size, size ) );
+    QListWidgetItem *item = new QListWidgetItem( icon, QString(), mShapeListWidget );
     item->setToolTip( name );
     item->setData( Qt::UserRole, name );
     delete lyr;
   }
+  // show at least 2 rows (only 1 row is required, but looks too cramped)
+  mShapeListWidget->setMinimumHeight( mShapeListWidget->gridSize().height() * 2.1 );
 
   connect( spinOffsetX, static_cast < void ( QgsDoubleSpinBox::* )( double ) > ( &QgsDoubleSpinBox::valueChanged ), this, &QgsEllipseSymbolLayerWidget::setOffset );
   connect( spinOffsetY, static_cast < void ( QgsDoubleSpinBox::* )( double ) > ( &QgsDoubleSpinBox::valueChanged ), this, &QgsEllipseSymbolLayerWidget::setOffset );
