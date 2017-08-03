@@ -242,7 +242,9 @@ qgis:generatepointspixelcentroidsinsidepolygons:
 
 
 qgis:hublines:
+  This algorithm creates hub and spoke diagrams with lines drawn from points on the Spoke Point layer to matching points in the Hub Point layer.
 
+  Determination of which hub goes with each point is based on a match between the Hub ID field on the hub points and the Spoke ID field on the spoke points.
 
 qgis:hypsometriccurves: >
   This algorithm computes hypsometric curves  for an input Digital Elevation Model. Curves are produced as table files in an output folder specified by the user.

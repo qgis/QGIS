@@ -2216,6 +2216,22 @@ tests:
         name: expected/hub_distance_lines.gml
         type: vector
 
+  - algorithm: qgis:hublines
+    name: Hub lines
+    params:
+      HUBS:
+        name: points.gml
+        type: vector
+      SPOKES:
+        name: custom/spoke_points.gml
+        type: vector
+      HUB_FIELD: id
+      SPOKE_FIELD: id
+    results:
+      OUTPUT:
+        name: expected/hub_lines.gml
+        type: vector
+
 #  - algorithm: qgis:joinattributestable
 #    name: join the attribute table by common field
 #    params:
