@@ -2133,4 +2133,3 @@ QMap<QString, QgsMapLayer *> QgsProject::mapLayers() const
   return mLayerStore->mapLayers();
 }
 
-
