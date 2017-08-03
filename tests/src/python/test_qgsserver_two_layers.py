@@ -28,7 +28,7 @@ class TestQgsServerTwoLayer(unittest.TestCase):
 
     def setUp(self):
         """Create the server instance"""
-        self.testdata_path = unitTestDataPath('qgis_server') + '/'
+        self.testdata_path = unitTestDataPath('qgis_server')
 
         env_vars = ['QUERY_STRING', 'QGIS_PROJECT_FILE']
         for ev in env_vars:
@@ -49,7 +49,7 @@ class TestQgsServerTwoLayer(unittest.TestCase):
     def result_compare(self, file_name, error_msg_header, header, body):
         self.assert_headers(header, body)
         response = header + body
-        f = open(self.testdata_path + file_name)
+        f = open(os.path.join(self.testdata_path, file_name))
         expected = f.read()
         f.close()
         # Store the output for debug or to regenerate the reference documents:
@@ -69,8 +69,8 @@ class TestQgsServerTwoLayer(unittest.TestCase):
                                                     unicode(response, errors='replace')))
 
     def wfs_getfeature_post_compare(self, requestid, request):
-        project = self.testdata_path + "test_project_two_layers.qgs"
-        assert os.path.exists(project), "Project file not found: " + project
+        project = os.path.join (self.testdata_path, "test_project_two_layers.qgs")
+        self.assertTrue(os.path.exists(project), msg=u"Project file not found: %s" % (project))
 
         query_string = 'MAP={}'.format(urllib.quote(project))
         self.server.putenv("REQUEST_METHOD", "POST")
