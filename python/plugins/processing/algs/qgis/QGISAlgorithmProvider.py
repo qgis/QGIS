@@ -133,6 +133,7 @@ from .SplitWithLines import SplitWithLines
 from .SumLines import SumLines
 from .SymmetricalDifference import SymmetricalDifference
 from .TextToFloat import TextToFloat
+from .TopoColors import TopoColor
 from .Translate import Translate
 from .TruncateTable import TruncateTable
 from .Union import Union
@@ -169,7 +170,6 @@ from .ZonalStatistics import ZonalStatistics
 # from .RasterCalculator import RasterCalculator
 # from .ExecuteSQL import ExecuteSQL
 # from .FindProjection import FindProjection
-# from .TopoColors import TopoColor
 # from .EliminateSelection import EliminateSelection
 
 pluginPath = os.path.normpath(os.path.join(
@@ -206,7 +206,7 @@ class QGISAlgorithmProvider(QgsProcessingProvider):
         #         IdwInterpolation(), TinInterpolation(),
         #         RasterCalculator(),
         #          ExecuteSQL(), FindProjection(),
-        #         TopoColor(), EliminateSelection()
+        #        EliminateSelection()
         #         ]
         algs = [AddTableField(),
                 Aspect(),
@@ -301,6 +301,7 @@ class QGISAlgorithmProvider(QgsProcessingProvider):
                 SumLines(),
                 SymmetricalDifference(),
                 TextToFloat(),
+                TopoColor(),
                 Translate(),
                 TruncateTable(),
                 Union(),

@@ -41,7 +41,7 @@
       <ogr:right>8.23935</ogr:right>
       <ogr:bottom>-3.11331</ogr:bottom>
       <ogr:id>11</ogr:id>
-      <ogr:color_id>4</ogr:color_id>
+      <ogr:color_id>5</ogr:color_id>
     </ogr:topocolor_polys>
   </gml:featureMember>
   <gml:featureMember>
@@ -52,7 +52,7 @@
       <ogr:right>8.23935</ogr:right>
       <ogr:bottom>-6.11331</ogr:bottom>
       <ogr:id>12</ogr:id>
-      <ogr:color_id>5</ogr:color_id>
+      <ogr:color_id>4</ogr:color_id>
     </ogr:topocolor_polys>
   </gml:featureMember>
   <gml:featureMember>
