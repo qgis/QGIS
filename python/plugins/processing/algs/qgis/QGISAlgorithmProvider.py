@@ -60,6 +60,7 @@ from .DensifyGeometriesInterval import DensifyGeometriesInterval
 from .Difference import Difference
 from .DropGeometry import DropGeometry
 from .DropMZValues import DropMZValues
+from .EliminateSelection import EliminateSelection
 from .EquivalentNumField import EquivalentNumField
 from .Explode import Explode
 from .ExportGeometryInfo import ExportGeometryInfo
@@ -170,7 +171,6 @@ from .ZonalStatistics import ZonalStatistics
 # from .RasterCalculator import RasterCalculator
 # from .ExecuteSQL import ExecuteSQL
 # from .FindProjection import FindProjection
-# from .EliminateSelection import EliminateSelection
 
 pluginPath = os.path.normpath(os.path.join(
     os.path.split(os.path.dirname(__file__))[0], os.pardir))
@@ -206,7 +206,6 @@ class QGISAlgorithmProvider(QgsProcessingProvider):
         #         IdwInterpolation(), TinInterpolation(),
         #         RasterCalculator(),
         #          ExecuteSQL(), FindProjection(),
-        #        EliminateSelection()
         #         ]
         algs = [AddTableField(),
                 Aspect(),
@@ -228,6 +227,7 @@ class QGISAlgorithmProvider(QgsProcessingProvider):
                 Difference(),
                 DropGeometry(),
                 DropMZValues(),
+                EliminateSelection(),
                 EquivalentNumField(),
                 Explode(),
                 ExportGeometryInfo(),
