@@ -2232,6 +2232,31 @@ tests:
         name: expected/hub_lines.gml
         type: vector
 
+  - algorithm: qgis:pointstopath
+    name: Points to path (non grouped)
+    params:
+      INPUT:
+        name: points.gml
+        type: vector
+      ORDER_FIELD: id
+    results:
+      OUTPUT:
+        name: expected/points_to_path.gml
+        type: vector
+
+  - algorithm: qgis:pointstopath
+    name: Points to path (grouped)
+    params:
+      INPUT:
+        name: points.gml
+        type: vector
+      ORDER_FIELD: id
+      GROUP_FIELD: id2
+    results:
+      OUTPUT:
+        name: expected/points_to_path_grouped.gml
+        type: vector
+
 #  - algorithm: qgis:joinattributestable
 #    name: join the attribute table by common field
 #    params:

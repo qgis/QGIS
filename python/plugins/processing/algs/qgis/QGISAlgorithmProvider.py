@@ -94,6 +94,7 @@ from .PointOnSurface import PointOnSurface
 from .PointsAlongGeometry import PointsAlongGeometry
 from .PointsInPolygon import PointsInPolygon
 from .PointsLayerFromTable import PointsLayerFromTable
+from .PointsToPaths import PointsToPaths
 from .PoleOfInaccessibility import PoleOfInaccessibility
 from .Polygonize import Polygonize
 from .PolygonsToLines import PolygonsToLines
@@ -152,7 +153,6 @@ from .ZonalStatistics import ZonalStatistics
 # from .PointsDisplacement import PointsDisplacement
 # from .PointsFromPolygons import PointsFromPolygons
 # from .PointsFromLines import PointsFromLines
-# from .PointsToPaths import PointsToPaths
 # from .SetVectorStyle import SetVectorStyle
 # from .SetRasterStyle import SetRasterStyle
 # from .SelectByAttributeSum import SelectByAttributeSum
@@ -194,7 +194,7 @@ class QGISAlgorithmProvider(QgsProcessingProvider):
         #         StatisticsByCategories(),
         #         RasterLayerStatistics(), PointsDisplacement(),
         #         PointsFromPolygons(),
-        #         PointsFromLines(), PointsToPaths(),
+        #         PointsFromLines(),
         #         SetVectorStyle(), SetRasterStyle(),
         #          HypsometricCurves(),
         #         FieldsMapper(), SelectByAttributeSum(), Datasources2Vrt(),
@@ -262,6 +262,7 @@ class QGISAlgorithmProvider(QgsProcessingProvider):
                 PointsAlongGeometry(),
                 PointsInPolygon(),
                 PointsLayerFromTable(),
+                PointsToPaths(),
                 PoleOfInaccessibility(),
                 Polygonize(),
                 PolygonsToLines(),

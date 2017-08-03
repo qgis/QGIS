@@ -370,7 +370,9 @@ qgis:pointslayerfromtable: >
   The attributes table of the resulting layer will be the input table.
 
 qgis:pointstopath:
+  Converts a point layer to a line layer, by joining points in a defined order.
 
+  Points can be grouped by a field to output individual line features per group.
 
 qgis:polarplot: >
   This algorithm generates a polar plot based on the value of an input vector layer.
