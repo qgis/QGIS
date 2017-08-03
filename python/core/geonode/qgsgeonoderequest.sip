@@ -1,7 +1,7 @@
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
- * src/core/geocms/qgsgeonoderequest.h                                  *
+ * src/core/geonode/qgsgeonoderequest.h                                  *
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/
@@ -107,7 +107,7 @@ Abort network request immediately
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
- * src/core/geocms/qgsgeonoderequest.h                                  *
+ * src/core/geonode/qgsgeonoderequest.h                                  *
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/

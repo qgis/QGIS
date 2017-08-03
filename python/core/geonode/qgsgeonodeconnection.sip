@@ -1,7 +1,7 @@
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
- * src/core/geocms/qgsgeonodeconnection.h                               *
+ * src/core/geonode/qgsgeonodeconnection.h                               *
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/
@@ -9,7 +9,7 @@
 
 
 
-class QgsGeoNodeConnection : QgsGeoCmsConnection
+class QgsGeoNodeConnection : QObject
 {
 %Docstring
 !
@@ -29,6 +29,18 @@ Constructor
 %Docstring
 Destructor
 %End
+
+    QString connName() const;
+%Docstring
+ :rtype: str
+%End
+    void setConnName( const QString &connName );
+
+    QgsDataSourceUri uri();
+%Docstring
+ :rtype: QgsDataSourceUri
+%End
+    void setUri( const QgsDataSourceUri &uri );
 
     static QStringList connectionList();
 %Docstring
@@ -54,13 +66,14 @@ Set selected connection
 
     static const QString pathGeoNodeConnection;
     static const QString pathGeoNodeConnectionDetails;
+
 };
 
 
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
- * src/core/geocms/qgsgeonodeconnection.h                               *
+ * src/core/geonode/qgsgeonodeconnection.h                               *
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/

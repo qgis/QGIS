@@ -19,7 +19,59 @@
 #include "qgsdataitem.h"
 #include "qgsdataitemprovider.h"
 #include "qgsdataprovider.h"
+#include "qgsdatasourceuri.h"
+#include "qgsgeonodeconnection.h"
 
+class QgsGeoNodeConnectionItem : public QgsDataCollectionItem
+{
+    Q_OBJECT
+  public:
+    QgsGeoNodeConnectionItem( QgsDataItem *parent, QString name, QString path, QgsGeoNodeConnection *conn );
+    QVector<QgsDataItem *> createChildren() override;
+    virtual QList<QAction *> actions() override;
+
+    QString mGeoNodeName;
+
+  private:
+    void editConnection();
+    void deleteConnection()
+    {
+      QgsGeoNodeConnection::deleteConnection( mParent->name() );
+      mParent->refresh();
+    };
+
+    QString mUri;
+    QgsGeoNodeConnection *mConnection = nullptr;
+};
+
+class QgsGeoNodeServiceItem : public QgsDataCollectionItem
+{
+    Q_OBJECT
+  public:
+    QgsGeoNodeServiceItem( QgsDataItem *parent, QgsGeoNodeConnection *conn, QString serviceName, QString path );
+    QVector<QgsDataItem *> createChildren() override;
+
+  private:
+    void replacePath( QgsDataItem *item, QString before, QString after );
+    QString mName;
+    QString mServiceName;
+    QString mUri;
+    QgsGeoNodeConnection *mConnection = nullptr;
+};
+
+class QgsGeoNodeRootItem : public QgsDataCollectionItem
+{
+    Q_OBJECT
+  public:
+    QgsGeoNodeRootItem( QgsDataItem *parent, QString name, QString path );
+
+    QVector<QgsDataItem *> createChildren() override;
+
+    virtual QList<QAction *> actions() override;
+
+  private slots:
+    void newConnection();
+};
 
 //! Provider for Geonode root data item
 class QgsGeoNodeDataItemProvider : public QgsDataItemProvider

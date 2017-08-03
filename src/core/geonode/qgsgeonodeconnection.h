@@ -17,13 +17,13 @@
 #define QGSGEONODECONNECTION_H
 
 #include "qgis_core.h"
-#include "qgsgeocmsconnection.h"
+#include "qgsdatasourceuri.h"
 
 
 /*!
  * \brief   GeoNode Connections management
  */
-class CORE_EXPORT QgsGeoNodeConnection : public QgsGeoCmsConnection
+class CORE_EXPORT QgsGeoNodeConnection : public QObject
 {
     Q_OBJECT
 
@@ -33,6 +33,12 @@ class CORE_EXPORT QgsGeoNodeConnection : public QgsGeoCmsConnection
 
     //! Destructor
     ~QgsGeoNodeConnection();
+
+    QString connName() const;
+    void setConnName( const QString &connName );
+
+    QgsDataSourceUri uri();
+    void setUri( const QgsDataSourceUri &uri );
 
     //! Retrieve all geonode connection
     static QStringList connectionList();
@@ -49,6 +55,13 @@ class CORE_EXPORT QgsGeoNodeConnection : public QgsGeoCmsConnection
     // Path in QSetting
     static const QString pathGeoNodeConnection;// = "qgis/connections-geonode/";
     static const QString pathGeoNodeConnectionDetails;// = "qgis/GeoNode/";
+
+  private:
+    //! The connection name
+    QString mConnName;
+
+    //! Property of mUri
+    QgsDataSourceUri mUri;
 };
 
 

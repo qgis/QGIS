@@ -1,12 +1,10 @@
 SET(OWS_SRCS
   qgsowsprovider.cpp
   qgsowsdataitems.cpp
-  qgsgeocmsdataitems.cpp
   qgsgeonodedataitems.cpp)
 SET(OWS_MOC_HDRS
   qgsowsprovider.h
   qgsowsdataitems.h
-  qgsgeocmsdataitems.h
   qgsgeonodedataitems.h
 )
 
@@ -15,7 +13,7 @@ INCLUDE_DIRECTORIES (
   ${CMAKE_SOURCE_DIR}/src/core
   ${CMAKE_SOURCE_DIR}/src/core/expression
   ${CMAKE_SOURCE_DIR}/src/core/geometry
-  ${CMAKE_SOURCE_DIR}/src/core/geocms
+  ${CMAKE_SOURCE_DIR}/src/core/geonode
   ${CMAKE_SOURCE_DIR}/src/core/auth
   ${CMAKE_SOURCE_DIR}/src/core/metadata
   ${CMAKE_SOURCE_DIR}/src/gui

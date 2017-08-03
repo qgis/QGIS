@@ -1,5 +1,5 @@
 /***************************************************************************
-    qgsgeocmsconnection.cpp
+    qgsgeonodeconnection.cpp
     ---------------------
     begin                : Feb 2017
     copyright            : (C) 2017 by Muhammad Yarjuna Rohmat, Ismail Sunni
@@ -13,31 +13,21 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsgeocmsconnection.h"
 #include "qgssettings.h"
+#include "qgsgeonodeconnection.h"
 #include "qgslogger.h"
-#include "qgsnetworkaccessmanager.h"
+#include "qgsdatasourceuri.h"
 
-#include <QMultiMap>
-#include <QNetworkRequest>
-#include <QNetworkReply>
-#include <QByteArray>
-#include <QJsonDocument>
-#include <QDebug>
-#include <QUrl>
-#include <QDomDocument>
+const QString QgsGeoNodeConnection::pathGeoNodeConnection = "qgis/connections-geonode";
+const QString QgsGeoNodeConnection::pathGeoNodeConnectionDetails = "qgis/GeoNode";
 
-
-QgsGeoCmsConnection::QgsGeoCmsConnection( const QString &geoCMSName, const QString &connName )
-  : mGeoCMSName( geoCMSName )
-  , mConnName( connName )
+QgsGeoNodeConnection::QgsGeoNodeConnection( const QString &connName )
+  : mConnName( connName )
 {
-  QgsDebugMsg( "Connection name = " + connName );
-
   QgsSettings settings;
 
-  QString key = "qgis/connections-" + mGeoCMSName.toLower() + '/' + mConnName;
-  QString credentialsKey = "qgis/" + mGeoCMSName + '/' + mConnName;
+  QString key = "qgis/connections-geonode/" + mConnName;
+  QString credentialsKey = "qgis/geonode/" + mConnName;
 
   QStringList connStringParts;
 
@@ -61,63 +51,53 @@ QgsGeoCmsConnection::QgsGeoCmsConnection( const QString &geoCMSName, const QStri
   QgsDebugMsg( QString( "encodedUri: '%1'." ).arg( QString( mUri.encodedUri() ) ) );
 }
 
-QgsGeoCmsConnection::~QgsGeoCmsConnection()
+QgsGeoNodeConnection::~QgsGeoNodeConnection()
 {
 
 }
 
-QgsDataSourceUri QgsGeoCmsConnection::uri()
+QgsDataSourceUri QgsGeoNodeConnection::uri()
 {
   return mUri;
 }
 
-QStringList QgsGeoCmsConnection::connectionList( const QString &geoCMSName )
+QStringList QgsGeoNodeConnection::connectionList()
 {
   QgsSettings settings;
-  settings.beginGroup( "qgis/connections-" + geoCMSName.toLower() );
+  settings.beginGroup( "qgis/connections-geonode" );
   return settings.childGroups();
 }
 
-void QgsGeoCmsConnection::deleteConnection( const QString &geoCMSName, const QString &name )
+void QgsGeoNodeConnection::deleteConnection( const QString &name )
 {
   QgsSettings settings;
-  settings.remove( "qgis/connections-" + geoCMSName.toLower() + '/' + name );
-  settings.remove( "qgis/" + geoCMSName + '/' + name );
+  settings.remove( "qgis/connections-geonode/" + name );
+  settings.remove( "qgis/geonode/" + name );
 }
 
-QString QgsGeoCmsConnection::selectedConnection( const QString &geoCMSName )
+QString QgsGeoNodeConnection::selectedConnection()
 {
   QgsSettings settings;
-  return settings.value( "qgis/connections-" + geoCMSName.toLower() + "/selected" ).toString();
+  return settings.value( "qgis/connections-geonode/selected" ).toString();
 }
 
-void QgsGeoCmsConnection::setSelectedConnection( const QString &geoCMSName, const QString &name )
+void QgsGeoNodeConnection::setSelectedConnection( const QString &name )
 {
   QgsSettings settings;
-  settings.setValue( "qgis/connections-" + geoCMSName.toLower() + "/selected", name );
+  settings.setValue( "qgis/connections-geonode/selected", name );
 }
 
-QString QgsGeoCmsConnection::geoCMSName() const
-{
-  return mGeoCMSName;
-}
-
-void QgsGeoCmsConnection::setGeoCMSName( const QString &geoCMSName )
-{
-  mGeoCMSName = geoCMSName;
-}
-
-QString QgsGeoCmsConnection::connName() const
+QString QgsGeoNodeConnection::connName() const
 {
   return mConnName;
 }
 
-void QgsGeoCmsConnection::setConnName( const QString &connName )
+void QgsGeoNodeConnection::setConnName( const QString &connName )
 {
   mConnName = connName;
 }
 
-void QgsGeoCmsConnection::setUri( const QgsDataSourceUri &uri )
+void QgsGeoNodeConnection::setUri( const QgsDataSourceUri &uri )
 {
   mUri = uri;
 }

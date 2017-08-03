@@ -16,7 +16,258 @@
 #include "qgsowsdataitems.h"
 #include "qgslogger.h"
 #include "qgsgeonodedataitems.h"
-#include "qgsgeocmsdataitems.h"
+#include "qgsproviderregistry.h"
+#include "qgsnewhttpconnection.h"
+#include "qgsgeonodenewconnection.h"
+#include "qgsgeonoderequest.h"
+
+typedef QList<QgsDataItemProvider *> dataItemProviders_t();
+
+QgsGeoNodeConnectionItem::QgsGeoNodeConnectionItem( QgsDataItem *parent, QString name, QString path, QgsGeoNodeConnection *conn )
+  : QgsDataCollectionItem( parent, name, path )
+  , mGeoNodeName( parent->name() )
+  , mUri( conn->uri().uri() )
+  , mConnection( conn )
+{
+  mIconName = QStringLiteral( "mIconConnect.png" );
+}
+
+QVector<QgsDataItem *> QgsGeoNodeConnectionItem::createChildren()
+{
+  QVector<QgsDataItem *> services;
+
+  QString url = mConnection->uri().param( "url" );
+  QgsGeoNodeRequest geonodeRequest( url, true );
+
+  QStringList wmsUrl = geonodeRequest.serviceUrls( QStringLiteral( "WMS" ) );
+  QStringList wfsUrl = geonodeRequest.serviceUrls( QStringLiteral( "WFS" ) );
+  QStringList xyzUrl = geonodeRequest.serviceUrls( QStringLiteral( "XYZ" ) );
+
+  if ( !wmsUrl.isEmpty() )
+  {
+    QString path = mPath + "/wms";
+    QgsDataItem *service = new QgsGeoNodeServiceItem( this, mConnection, QStringLiteral( "WMS" ), path );
+    services.append( service );
+  }
+
+  if ( !wfsUrl.isEmpty() )
+  {
+    QString path = mPath + "/wfs";
+    QgsDataItem *service = new QgsGeoNodeServiceItem( this, mConnection, QStringLiteral( "WFS" ), path );
+    services.append( service );
+  }
+
+  if ( !xyzUrl.isEmpty() )
+  {
+    QString path = mPath + "/xyz";
+    QgsDataItem *service = new QgsGeoNodeServiceItem( this, mConnection, QStringLiteral( "XYZ" ), path );
+    services.append( service );
+  }
+
+  return services;
+}
+
+QList<QAction *> QgsGeoNodeConnectionItem::actions()
+{
+  QAction *actionEdit = new QAction( tr( "Edit..." ), this );
+  QAction *actionDelete = new QAction( tr( "Delete" ), this );
+  connect( actionEdit, &QAction::triggered, this, &QgsGeoNodeConnectionItem::editConnection );
+  connect( actionDelete, &QAction::triggered, this, &QgsGeoNodeConnectionItem::deleteConnection );
+  return QList<QAction *>() << actionEdit << actionDelete;
+}
+
+void QgsGeoNodeConnectionItem::editConnection()
+{
+  QgsGeoNodeNewConnection *nc = new QgsGeoNodeNewConnection( nullptr, mConnection->connName() );
+  nc->setWindowTitle( tr( "Modify GeoNode connection" ) );
+
+  if ( nc->exec() )
+  {
+    // the parent should be updated
+    mParent->refresh();
+  }
+}
+
+QgsGeoNodeServiceItem::QgsGeoNodeServiceItem( QgsDataItem *parent, QgsGeoNodeConnection *conn, QString serviceName, QString path )
+  : QgsDataCollectionItem( parent, serviceName, path )
+  , mName( conn->connName() )
+  , mServiceName( serviceName )
+  , mConnection( conn )
+{
+  if ( serviceName == QStringLiteral( "WMS" ) || serviceName == QStringLiteral( "XYZ" ) )
+  {
+    mIconName = QStringLiteral( "mIconWms.svg" );
+  }
+  else
+  {
+    mIconName = QStringLiteral( "mIconWfs.svg" );
+  }
+}
+
+QVector<QgsDataItem *> QgsGeoNodeServiceItem::createChildren()
+{
+  QVector<QgsDataItem *> children;
+  QHash<QgsDataItem *, QString> serviceItems; // service/provider key
+
+  int layerCount = 0;
+  // Try to open with service provider
+  bool skipProvider = false;
+
+  QgsGeoNodeConnectionItem *parentItem = dynamic_cast<QgsGeoNodeConnectionItem *>( mParent );
+  QString pathPrefix = parentItem->mGeoNodeName.toLower() + ":/";
+
+  while ( !skipProvider )
+  {
+    const QString &key = mServiceName != QString( "WFS" ) ? QString( "WMS" ).toLower() : mServiceName;
+    QgsDebugMsg( "Add connection for provider " + key );
+    std::unique_ptr< QLibrary > library( QgsProviderRegistry::instance()->createProviderLibrary( key ) );
+    if ( !library )
+    {
+      QgsDebugMsg( "Cannot get provider " + key );
+      skipProvider = true;
+      continue;
+    }
+
+    dataItemProviders_t *dataItemProvidersFn = reinterpret_cast< dataItemProviders_t * >( cast_to_fptr( library->resolve( "dataItemProviders" ) ) );
+    dataItem_t *dItem = ( dataItem_t * ) cast_to_fptr( library->resolve( "dataItem" ) );
+    if ( !dItem && !dataItemProvidersFn )
+    {
+      QgsDebugMsg( library->fileName() + " does not have dataItem" );
+      skipProvider = true;
+      continue;
+    }
+
+    QString path =  pathPrefix + mName;
+    QgsDebugMsg( "path = " + path );
+
+    QVector<QgsDataItem *> items;
+    Q_FOREACH ( QgsDataItemProvider *pr, dataItemProvidersFn() )
+    {
+      items = pr->name().startsWith( mServiceName ) ? pr->createDataItems( path, this ) : items;
+      if ( !items.isEmpty() )
+      {
+        break;
+      }
+    }
+
+    if ( items.isEmpty() )
+    {
+      QgsDebugMsg( "Connection not found by provider" );
+      skipProvider = true;
+      continue;
+    }
+
+    if ( mServiceName == QStringLiteral( "XYZ" ) )
+    {
+      QgsDebugMsg( "Add new item : " + mServiceName );
+      return items;
+    }
+
+    Q_FOREACH ( QgsDataItem *item, items )
+    {
+      item->populate( true ); // populate in foreground - this is already run in a thread
+
+      layerCount += item->rowCount();
+      if ( item->rowCount() > 0 )
+      {
+        QgsDebugMsg( "Add new item : " + item->name() );
+        serviceItems.insert( item, key );
+      }
+      else
+      {
+        //delete item;
+      }
+    }
+
+    skipProvider = true;
+  }
+
+  Q_FOREACH ( QgsDataItem *item, serviceItems.keys() )
+  {
+    QgsDebugMsg( QString( "serviceItems.size = %1 layerCount = %2 rowCount = %3" ).arg( serviceItems.size() ).arg( layerCount ).arg( item->rowCount() ) );
+    QString providerKey = serviceItems.value( item );
+
+    // Add layers directly to service item
+    Q_FOREACH ( QgsDataItem *subItem, item->children() )
+    {
+      if ( subItem->path().endsWith( QString( "error" ) ) )
+      {
+        continue;
+      }
+      item->removeChildItem( subItem );
+      subItem->setParent( this );
+      replacePath( subItem, providerKey.toLower() + ":/", pathPrefix );
+      children.append( subItem );
+    }
+
+    delete item;
+  }
+
+  return children;
+}
+
+// reset path recursively
+void QgsGeoNodeServiceItem::replacePath( QgsDataItem *item, QString before, QString after )
+{
+  item->setPath( item->path().replace( before, after ) );
+  Q_FOREACH ( QgsDataItem *subItem, item->children() )
+  {
+    replacePath( subItem, before, after );
+  }
+}
+
+QgsGeoNodeRootItem::QgsGeoNodeRootItem( QgsDataItem *parent, QString name, QString path ) : QgsDataCollectionItem( parent, name, path )
+{
+  mCapabilities |= Fast;
+  if ( name == QString( "GeoNode" ) )
+  {
+    mIconName = QStringLiteral( "mIconGeonode.svg" );
+  }
+  else
+  {
+    mIconName = QStringLiteral( "mIconConnect.svg" );
+  }
+  populate();
+}
+
+QVector<QgsDataItem *> QgsGeoNodeRootItem::createChildren()
+{
+  QVector<QgsDataItem *> connections;
+
+  Q_FOREACH ( const QString &connName, QgsGeoNodeConnection::connectionList() )
+  {
+    QgsGeoNodeConnection *connection = nullptr;
+    if ( mName == QString( "GeoNode" ) )
+    {
+      connection = new QgsGeoNodeConnection( connName );
+    }
+    else
+    {
+      connection = new QgsGeoNodeConnection( connName );
+    }
+    QString path = mPath + "/" + connName;
+    QgsDataItem *conn = new QgsGeoNodeConnectionItem( this, connName, path, connection );
+    connections.append( conn );
+  }
+  return connections;
+}
+
+QList<QAction *> QgsGeoNodeRootItem::actions()
+{
+  QAction *actionNew = new QAction( tr( "New Connection..." ), this );
+  connect( actionNew, &QAction::triggered, this, &QgsGeoNodeRootItem::newConnection );
+  return QList<QAction *>() << actionNew;
+}
+
+void QgsGeoNodeRootItem::newConnection()
+{
+  QgsGeoNodeNewConnection *nc = new QgsGeoNodeNewConnection( nullptr );
+
+  if ( nc->exec() )
+  {
+    refresh();
+  }
+}
 
 
 QgsDataItem *QgsGeoNodeDataItemProvider::createDataItem( const QString &path, QgsDataItem *parentItem )
@@ -24,7 +275,7 @@ QgsDataItem *QgsGeoNodeDataItemProvider::createDataItem( const QString &path, Qg
   QgsDebugMsg( "thePath = " + path );
   if ( path.isEmpty() )
   {
-    return new QgsGeoCMSRootItem( parentItem, QStringLiteral( "GeoNode" ), QStringLiteral( "geonode:" ) );
+    return new QgsGeoNodeRootItem( parentItem, QStringLiteral( "GeoNode" ), QStringLiteral( "geonode:" ) );
   }
 
   // path schema: geonode:/connection name (used by OWS)
@@ -34,7 +285,7 @@ QgsDataItem *QgsGeoNodeDataItemProvider::createDataItem( const QString &path, Qg
     if ( QgsGeoNodeConnection::connectionList().contains( connectionName ) )
     {
       QgsGeoNodeConnection *connection = new QgsGeoNodeConnection( connectionName );
-      return new QgsGeoCMSConnectionItem( parentItem, QStringLiteral( "GeoNode" ), path, connection );
+      return new QgsGeoNodeConnectionItem( parentItem, QStringLiteral( "GeoNode" ), path, connection );
     }
   }
 

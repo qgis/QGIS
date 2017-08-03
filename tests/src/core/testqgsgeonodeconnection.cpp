@@ -18,6 +18,7 @@
 #include <QtTest/QSignalSpy>
 #include <QString>
 #include <QMultiMap>
+#include <iostream>
 
 //#include "qgis_core.h"
 #include "qgsgeonodeconnection.h"

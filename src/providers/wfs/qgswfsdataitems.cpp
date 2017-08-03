@@ -22,6 +22,7 @@
 #include "qgswfsdatasourceuri.h"
 #include "qgssettings.h"
 #include "qgsgeonodeconnection.h"
+#include "qgsgeonoderequest.h"
 
 #ifdef HAVE_GUI
 #include "qgsnewhttpconnection.h"
