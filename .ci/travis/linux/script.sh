@@ -15,31 +15,13 @@
 
 set -e
 
-export PYTHONPATH=${HOME}/osgeo4travis/lib/python3.3/site-packages/
-export PATH=${HOME}/osgeo4travis/bin:${HOME}/osgeo4travis/sbin:${HOME}/OTB-5.6.0-Linux64/bin:${PATH}
-export LD_LIBRARY_PATH=${HOME}/osgeo4travis/lib
-export CTEST_PARALLEL_LEVEL=1
-export CCACHE_TEMPDIR=/tmp
-ccache -M 500M
-ccache -z
+DIR=$(git rev-parse --show-toplevel)/.docker
 
-DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+docker-compose -f $DOCKER_COMPOSE run --rm qgis-deps
 
-# Set OTB application path (installed in before_install.sh script)
-export OTB_APPLICATION_PATH=${HOME}/OTB-5.6.0-Linux64/lib/otb/applications
-export LD_PRELOAD=/lib/x86_64-linux-gnu/libSegFault.so
+ccachedir=${HOME}/.ccache
+mkdir -p $ccachedir
 
-export CTEST_BUILD_COMMAND="/usr/bin/make -j3 -i"
+docker-compose -f $DOCKER_COMPOSE run --rm qgis-deps
 
-# This works around an issue where travis would timeout because
-# when make is run inside ctest no output is generated. At the current time
-# nobody know why, but at least this workaround gets travis results
-# back. Better approaches VERY welcome.
-pushd build
-echo "travis_fold:start:qgis_build"
-$CTEST_BUILD_COMMAND
-echo "travis_fold:end:qgis_build"
 popd
-
-python ${TRAVIS_BUILD_DIR}/.ci/travis/scripts/ctest2travis.py \
-  xvfb-run ctest -V -E "$(cat ${DIR}/blacklist.txt | sed -r '/^(#.*?)?$/d' | paste -sd '|' -)" -S ${DIR}/../travis.ctest --output-on-failure

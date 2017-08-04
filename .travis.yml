@@ -3,39 +3,28 @@ matrix:
   include:
     # QT5 based build with Python 3 // using container based builds and prebuild binary dependencies in osgeo4travis
     - os: linux
+      services: docker
       language: python # This lets us use newer python versions from virtualenv
       env:
-        - LLVM_VERSION=3.8
         - TRAVIS_CONFIG=linux
-      dist: precise
+        - DOCKER_COMPOSE=${TRAVIS_BUILD_DIR}/.docker/docker-compose.travis.yml
+        - DOCKER_TAG=$( [[ $TRAVIS_REPO_SLUG =~ qgis/QGIS ]] && echo $TRAVIS_BRANCH | sed 's/master/latest/' || echo "latest" )
+        - DOCKER_PUSH=$( [[ $TRAVIS_REPO_SLUG =~ qgis/QGIS ]] && [[ $TRAVIS_PULL_REQUEST =~ false ]] && echo "true" || echo "false" )
+
+      dist: trusty
       sudo: false
       cache:
         apt: true
         pip: true
         directories:
           - $HOME/.ccache
-          - $HOME/depcache
         timeout: 1000
       compiler: clang
-      python: "3.3"
+      python: "3.5"
       addons:
-        postgresql: "9.4"
         apt:
           sources:
-            - llvm-toolchain-precise-3.8
-            - ubuntu-toolchain-r-test
           packages:
-            - bison
-            - flex
-            - libpq-dev
-            - libfcgi-dev
-            - libfftw3-3
-            - libgsl0-dev
-            - pkg-config
-            - poppler-utils
-            - xvfb
-            - clang-3.8
-            - libzip-dev
 
 
     - os: linux
