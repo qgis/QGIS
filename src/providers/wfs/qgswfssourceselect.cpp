@@ -54,25 +54,18 @@ QgsWFSSourceSelect::QgsWFSSourceSelect( QWidget *parent, Qt::WindowFlags fl, Qgs
   , mSQLComposerDialog( nullptr )
 {
   setupUi( this );
+  setupButtons( buttonBox );
 
   if ( widgetMode() != QgsProviderRegistry::WidgetMode::None )
   {
-    // For some obscure reason hiding does not work!
-    // buttonBox->button( QDialogButtonBox::Close )->hide();
-    buttonBox->removeButton( buttonBox->button( QDialogButtonBox::Close ) );
     mHoldDialogOpen->hide();
   }
 
-  mAddButton = new QPushButton( tr( "&Add" ) );
-  mAddButton->setEnabled( false );
 
   mBuildQueryButton = new QPushButton( tr( "&Build query" ) );
   mBuildQueryButton->setToolTip( tr( "Build query" ) );
   mBuildQueryButton->setDisabled( true );
 
-
-  buttonBox->addButton( mAddButton, QDialogButtonBox::ActionRole );
-  connect( mAddButton, &QAbstractButton::clicked, this, &QgsWFSSourceSelect::addLayer );
 
   buttonBox->addButton( mBuildQueryButton, QDialogButtonBox::ActionRole );
   connect( mBuildQueryButton, &QAbstractButton::clicked, this, &QgsWFSSourceSelect::buildQueryButtonClicked );
@@ -127,7 +120,6 @@ QgsWFSSourceSelect::~QgsWFSSourceSelect()
   delete mCapabilities;
   delete mModel;
   delete mModelProxy;
-  delete mAddButton;
   delete mBuildQueryButton;
 }
 
@@ -244,7 +236,7 @@ void QgsWFSSourceSelect::capabilitiesReplyFinished()
     if ( !property( "hideDialogs" ).toBool() )
       box->open();
 
-    mAddButton->setEnabled( false );
+    emit enableButtons( false );
     return;
   }
 
@@ -291,7 +283,7 @@ void QgsWFSSourceSelect::capabilitiesReplyFinished()
   else
   {
     QMessageBox::information( nullptr, tr( "No Layers" ), tr( "capabilities document contained no layers." ) );
-    mAddButton->setEnabled( false );
+    emit enableButtons( false );
     mBuildQueryButton->setEnabled( false );
   }
 }
@@ -368,7 +360,7 @@ void QgsWFSSourceSelect::connectToServer()
 }
 
 
-void QgsWFSSourceSelect::addLayer()
+void QgsWFSSourceSelect::addClicked()
 {
   //get selected entry in treeview
   QModelIndex currentIndex = treeView->selectionModel()->currentIndex();
@@ -768,7 +760,7 @@ void QgsWFSSourceSelect::treeWidgetCurrentRowChanged( const QModelIndex &current
   QgsDebugMsg( "treeWidget_currentRowChanged called" );
   changeCRSFilter();
   mBuildQueryButton->setEnabled( current.isValid() );
-  mAddButton->setEnabled( current.isValid() );
+  emit enableButtons( current.isValid() );
 }
 
 void QgsWFSSourceSelect::buildQueryButtonClicked()

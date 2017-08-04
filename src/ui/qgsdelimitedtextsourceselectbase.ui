@@ -214,7 +214,7 @@
       <property name="geometry">
        <rect>
         <x>0</x>
-        <y>-229</y>
+        <y>0</y>
         <width>696</width>
         <height>742</height>
        </rect>
@@ -1340,7 +1340,7 @@
       <enum>Qt::Horizontal</enum>
      </property>
      <property name="standardButtons">
-      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Help|QDialogButtonBox::Ok</set>
+      <set>QDialogButtonBox::Help</set>
      </property>
     </widget>
    </item>

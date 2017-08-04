@@ -113,7 +113,7 @@ class QgsDb2SourceSelect : public QgsAbstractDataSourceWidget, private Ui::QgsDb
 
   public slots:
     //! Determines the tables the user selected and closes the dialog
-    void addTables();
+    void addClicked() override;
     void buildQuery();
     //! Triggered when the provider's connections need to be refreshed
     void refresh() override;
@@ -179,7 +179,6 @@ class QgsDb2SourceSelect : public QgsAbstractDataSourceWidget, private Ui::QgsDb
     QgsDatabaseFilterProxyModel mProxyModel;
 
     QPushButton *mBuildQueryButton = nullptr;
-    QPushButton *mAddButton = nullptr;
 
     void finishList();
 };

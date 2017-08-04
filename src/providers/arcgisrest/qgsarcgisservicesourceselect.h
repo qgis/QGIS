@@ -59,7 +59,6 @@ class QgsArcGisServiceSourceSelect : public QgsAbstractDataSourceWidget, protect
     QStandardItemModel *mModel = nullptr;
     QSortFilterProxyModel *mModelProxy = nullptr;
     QPushButton *mBuildQueryButton = nullptr;
-    QPushButton *mAddButton = nullptr;
     QButtonGroup *mImageEncodingGroup = nullptr;
     QgsRectangle mCanvasExtent;
     QgsCoordinateReferenceSystem mCanvasCrs;
@@ -105,7 +104,7 @@ class QgsArcGisServiceSourceSelect : public QgsAbstractDataSourceWidget, protect
     void addEntryToServerList();
     void deleteEntryOfServerList();
     void modifyEntryOfServerList();
-    void addButtonClicked();
+    void addClicked() override;
     void buildQueryButtonClicked();
     void changeCrs();
     void changeCrsFilter();

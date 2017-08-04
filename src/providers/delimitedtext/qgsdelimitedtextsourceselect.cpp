@@ -44,15 +44,10 @@ QgsDelimitedTextSourceSelect::QgsDelimitedTextSourceSelect( QWidget *parent, Qt:
 {
 
   setupUi( this );
+  setupButtons( buttonBox );
 
   QgsSettings settings;
   restoreGeometry( settings.value( mPluginKey + "/geometry" ).toByteArray() );
-
-  if ( widgetMode() !=  QgsProviderRegistry::WidgetMode::None )
-  {
-    buttonBox->removeButton( buttonBox->button( QDialogButtonBox::Cancel ) );
-    buttonBox->button( QDialogButtonBox::Ok )->setText( tr( "Add" ) );
-  }
 
   bgFileFormat = new QButtonGroup( this );
   bgFileFormat->addButton( delimiterCSV, swFileFormat->indexOf( swpCSVOptions ) );
@@ -114,7 +109,7 @@ void QgsDelimitedTextSourceSelect::on_btnBrowseForFile_clicked()
   getOpenFileName();
 }
 
-void QgsDelimitedTextSourceSelect::on_buttonBox_accepted()
+void QgsDelimitedTextSourceSelect::addClicked()
 {
   // The following conditions should not be hit! OK will not be enabled...
   if ( txtLayerName->text().isEmpty() )
@@ -205,10 +200,6 @@ void QgsDelimitedTextSourceSelect::on_buttonBox_accepted()
   }
 }
 
-void QgsDelimitedTextSourceSelect::on_buttonBox_rejected()
-{
-  reject();
-}
 
 QString QgsDelimitedTextSourceSelect::selectedChars()
 {
@@ -745,6 +736,5 @@ bool QgsDelimitedTextSourceSelect::validate()
 
 void QgsDelimitedTextSourceSelect::enableAccept()
 {
-  bool enabled = validate();
-  buttonBox->button( QDialogButtonBox::Ok )->setEnabled( enabled );
+  emit enableButtons( validate() );
 }

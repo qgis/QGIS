@@ -43,12 +43,7 @@ QgsVirtualLayerSourceSelect::QgsVirtualLayerSourceSelect( QWidget *parent, Qt::W
   , mTreeView( nullptr )
 {
   setupUi( this );
-
-  if ( widgetMode != QgsProviderRegistry::WidgetMode::None )
-  {
-    buttonBox->removeButton( buttonBox->button( QDialogButtonBox::Cancel ) );
-    buttonBox->button( QDialogButtonBox::Ok )->setText( tr( "Add" ) );
-  }
+  setupButtons( buttonBox );
 
   connect( mTestButton, &QAbstractButton::clicked, this, &QgsVirtualLayerSourceSelect::onTestQuery );
   connect( mBrowseCRSBtn, &QAbstractButton::clicked, this, &QgsVirtualLayerSourceSelect::onBrowseCRS );
@@ -92,6 +87,9 @@ QgsVirtualLayerSourceSelect::QgsVirtualLayerSourceSelect( QWidget *parent, Qt::W
     connect( mTreeView->model(), &QAbstractItemModel::rowsRemoved, this, &QgsVirtualLayerSourceSelect::updateLayersList );
     connect( mTreeView->model(), &QAbstractItemModel::dataChanged, this, &QgsVirtualLayerSourceSelect::updateLayersList );
   }
+  // There is no validation logic to enable/disable the buttons
+  // so they must be enabled by default
+  emit enableButtons( true );
 }
 
 void QgsVirtualLayerSourceSelect::refresh()
@@ -346,7 +344,7 @@ void QgsVirtualLayerSourceSelect::onImportLayer()
   }
 }
 
-void QgsVirtualLayerSourceSelect::on_buttonBox_accepted()
+void QgsVirtualLayerSourceSelect::addClicked()
 {
   QString layerName = QStringLiteral( "virtual_layer" );
   QString id;

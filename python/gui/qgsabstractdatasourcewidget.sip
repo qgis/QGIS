@@ -46,6 +46,18 @@ Destructor
  The default implementation does nothing
 %End
 
+    virtual void addClicked();
+%Docstring
+ Triggered when the add button is clicked, the add layer signal is emitted
+ Concrete classes should implement the right behavior depending on the layer
+ being added.
+%End
+
+    virtual void okClicked();
+%Docstring
+ Triggered when the dialog is accepted, call addClicked() and emit the accepted() signal
+%End
+
   signals:
 
     void connectionsChanged();
@@ -79,6 +91,12 @@ Emitted when a progress dialog is shown by the provider dialog
 Emitted when a progress dialog is shown by the provider dialog
 %End
 
+    void enableButtons( bool enable );
+%Docstring
+Emitted when the ok/add buttons should be enabled/disabled
+%End
+
+
   protected:
 
     QgsAbstractDataSourceWidget( QWidget *parent /TransferThis/ = 0, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::None );
@@ -94,8 +112,19 @@ Return the widget mode
 
     const QgsMapCanvas *mapCanvas() const;
 %Docstring
- Return the map canvas (can be null)
+Return the map canvas (can be null)
  :rtype: QgsMapCanvas
+%End
+
+    void setupButtons( QDialogButtonBox *buttonBox );
+%Docstring
+Connect the ok and apply/add buttons to the slots
+%End
+
+    const QPushButton *addButton( );
+%Docstring
+Return the add Button
+ :rtype: QPushButton
 %End
 
 };

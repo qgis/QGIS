@@ -57,11 +57,9 @@ QgsArcGisServiceSourceSelect::QgsArcGisServiceSourceSelect( const QString &servi
   mImageEncodingGroup( 0 )
 {
   setupUi( this );
+  // Creates and connects standard ok/apply buttons
+  setupButtons( buttonBox );
   setWindowTitle( QStringLiteral( "Add %1 Layer from a Server" ).arg( mServiceName ) );
-
-  mAddButton = buttonBox->addButton( tr( "&Add" ), QDialogButtonBox::ActionRole );
-  mAddButton->setEnabled( false );
-  connect( mAddButton, &QAbstractButton::clicked, this, &QgsArcGisServiceSourceSelect::addButtonClicked );
 
   if ( mServiceType == FeatureService )
   {
@@ -300,7 +298,7 @@ void QgsArcGisServiceSourceSelect::connectToServer()
   }
 
   btnConnect->setEnabled( true );
-  mAddButton->setEnabled( haveLayers );
+  emit enableButtons( haveLayers );
   if ( mServiceType == FeatureService )
   {
     mBuildQueryButton->setEnabled( haveLayers );
@@ -308,7 +306,7 @@ void QgsArcGisServiceSourceSelect::connectToServer()
   btnChangeSpatialRefSys->setEnabled( haveLayers );
 }
 
-void QgsArcGisServiceSourceSelect::addButtonClicked()
+void QgsArcGisServiceSourceSelect::addClicked()
 {
   if ( treeView->selectionModel()->selectedRows().isEmpty() )
   {
@@ -439,7 +437,7 @@ void QgsArcGisServiceSourceSelect::treeWidgetCurrentRowChanged( const QModelInde
   {
     mBuildQueryButton->setEnabled( current.isValid() );
   }
-  mAddButton->setEnabled( current.isValid() );
+  emit enableButtons( current.isValid() );
 }
 
 void QgsArcGisServiceSourceSelect::buildQueryButtonClicked()

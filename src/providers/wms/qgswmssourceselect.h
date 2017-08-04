@@ -75,7 +75,7 @@ class QgsWMSSourceSelect : public QgsAbstractDataSourceWidget, private Ui::QgsWM
     void on_btnConnect_clicked();
 
     //! Determines the layers the user selected
-    void addClicked();
+    void addClicked() override;
 
     void searchFinished();
 
@@ -168,8 +168,6 @@ class QgsWMSSourceSelect : public QgsAbstractDataSourceWidget, private Ui::QgsWM
 
     //! The widget that controls the image format radio buttons
     QButtonGroup *mImageFormatGroup = nullptr;
-
-    QPushButton *mAddButton = nullptr;
 
     QMap<QString, QString> mCrsNames;
 

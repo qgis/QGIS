@@ -87,7 +87,7 @@ class QgsMssqlSourceSelect : public QgsAbstractDataSourceWidget, private Ui::Qgs
     void refresh() override;
 
     //! Determines the tables the user selected and closes the dialog
-    void addTables();
+    void addClicked() override;
     void buildQuery();
 
     /** Connects to the database using the stored connection parameters.
@@ -152,7 +152,6 @@ class QgsMssqlSourceSelect : public QgsAbstractDataSourceWidget, private Ui::Qgs
     QgsDatabaseFilterProxyModel mProxyModel;
 
     QPushButton *mBuildQueryButton = nullptr;
-    QPushButton *mAddButton = nullptr;
 
     void finishList();
 };

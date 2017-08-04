@@ -66,7 +66,6 @@ class QgsWFSSourceSelect: public QgsAbstractDataSourceWidget, private Ui::QgsWFS
     QStandardItemModel *mModel = nullptr;
     QSortFilterProxyModel *mModelProxy = nullptr;
     QPushButton *mBuildQueryButton = nullptr;
-    QPushButton *mAddButton = nullptr;
     QgsWfsCapabilities::Capabilities mCaps;
     QModelIndex mSQLIndex;
     QgsSQLComposerDialog *mSQLComposerDialog = nullptr;
@@ -82,13 +81,13 @@ class QgsWFSSourceSelect: public QgsAbstractDataSourceWidget, private Ui::QgsWFS
 
     //! Triggered when the provider's connections need to be refreshed
     void refresh() override;
+    void addClicked() override;
 
   private slots:
     void addEntryToServerList();
     void modifyEntryOfServerList();
     void deleteEntryOfServerList();
     void connectToServer();
-    void addLayer();
     void buildQuery( const QModelIndex &index );
     void changeCRS();
     void changeCRSFilter();

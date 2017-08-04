@@ -60,19 +60,10 @@ QgsOWSSourceSelect::QgsOWSSourceSelect( const QString &service, QWidget *parent,
   , mCurrentTileset( nullptr )
 {
   setupUi( this );
-
-  if ( widgetMode() != QgsProviderRegistry::WidgetMode::None )
-  {
-    buttonBox->removeButton( buttonBox->button( QDialogButtonBox::Close ) );
-  }
+  setupButtons( buttonBox );
 
 
   setWindowTitle( tr( "Add Layer(s) from a %1 Server" ).arg( service ) );
-
-  mAddButton = buttonBox->button( QDialogButtonBox::Apply );
-  mAddButton->setText( tr( "&Add" ) );
-  mAddButton->setToolTip( tr( "Add selected layers to map" ) );
-  mAddButton->setEnabled( false );
 
   clearCrs();
 
@@ -90,7 +81,6 @@ QgsOWSSourceSelect::QgsOWSSourceSelect( const QString &service, QWidget *parent,
 
   if ( widgetMode() != QgsProviderRegistry::WidgetMode::Manager )
   {
-    connect( mAddButton, &QAbstractButton::clicked, this, &QgsOWSSourceSelect::addClicked );
     //set the current project CRS if available
     QgsCoordinateReferenceSystem currentRefSys = QgsProject::instance()->crs();
     //convert CRS id to epsg
@@ -106,7 +96,6 @@ QgsOWSSourceSelect::QgsOWSSourceSelect( const QString &service, QWidget *parent,
     mTimeWidget->hide();
     mFormatWidget->hide();
     mCRSWidget->hide();
-    mAddButton->hide();
     mCacheWidget->hide();
   }
 
@@ -359,10 +348,6 @@ void QgsOWSSourceSelect::on_mConnectButton_clicked()
   populateLayerList();
 
   QApplication::restoreOverrideCursor();
-}
-
-void QgsOWSSourceSelect::addClicked()
-{
 }
 
 void QgsOWSSourceSelect::enableLayersForCrs( QTreeWidgetItem * )
