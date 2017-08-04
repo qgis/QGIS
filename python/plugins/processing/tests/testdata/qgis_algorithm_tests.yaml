@@ -2260,7 +2260,9 @@ tests:
       GROUP_FIELD: id2
     results:
       OUTPUT:
-        name: expected/points_to_path_grouped.gml
+        name:
+        - expected/points_to_path_grouped.gml
+        - expected/points_to_path_grouped2.gml
         type: vector
 
 #  - algorithm: qgis:joinattributestable
