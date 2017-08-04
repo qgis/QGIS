@@ -48,6 +48,7 @@
 #include "qgsmaplayerlistutils.h"
 #include "qgslayoutmanager.h"
 #include "qgsmaplayerstore.h"
+#include "qgsziputils.h"
 
 #include <QApplication>
 #include <QFileInfo>
@@ -332,6 +333,7 @@ QgsProject::QgsProject( QObject *parent )
   , mLayoutManager( new QgsLayoutManager( this ) )
   , mRootGroup( new QgsLayerTree )
   , mLabelingEngineSettings( new QgsLabelingEngineSettings )
+  , mArchive( new QgsProjectArchive() )
   , mAutoTransaction( false )
   , mEvaluateDefaultValues( false )
   , mDirty( false )
@@ -424,6 +426,8 @@ void QgsProject::setFileName( const QString &name )
   if ( newHomePath != oldHomePath )
     emit homePathChanged();
 
+  mArchive->clear();
+
   setDirty( true );
 }
 
@@ -491,6 +495,9 @@ void QgsProject::clear()
   mRootGroup->clear();
 
   mLabelingEngineSettings->clear();
+
+  mArchive->clear();
+
   emit labelingEngineSettingsChanged();
 
   // reset some default project properties
@@ -760,15 +767,30 @@ bool QgsProject::read( const QString &filename )
 
 bool QgsProject::read()
 {
+  QString filename = mFile.fileName();
+  bool rc;
+
+  if ( QgsZipUtils::isZipFile( mFile.fileName() ) )
+    rc = unzip( mFile.fileName() );
+  else
+    rc = readProjectFile( mFile.fileName() );
+
+  mFile.setFileName( filename );
+  return rc;
+}
+
+bool QgsProject::readProjectFile( const QString &filename )
+{
+  QFile projectFile( filename );
   clearError();
 
   std::unique_ptr<QDomDocument> doc( new QDomDocument( QStringLiteral( "qgis" ) ) );
 
-  if ( !mFile.open( QIODevice::ReadOnly | QIODevice::Text ) )
+  if ( !projectFile.open( QIODevice::ReadOnly | QIODevice::Text ) )
   {
-    mFile.close();
+    projectFile.close();
 
-    setError( tr( "Unable to open %1" ).arg( mFile.fileName() ) );
+    setError( tr( "Unable to open %1" ).arg( projectFile.fileName() ) );
 
     return false;
   }
@@ -777,7 +799,7 @@ bool QgsProject::read()
   int line, column;
   QString errorMsg;
 
-  if ( !doc->setContent( &mFile, &errorMsg, &line, &column ) )
+  if ( !doc->setContent( &projectFile, &errorMsg, &line, &column ) )
   {
     // want to make this class as GUI independent as possible; so commented out
 #if 0
@@ -786,21 +808,21 @@ bool QgsProject::read()
 #endif
 
     QString errorString = tr( "Project file read error in file %1: %2 at line %3 column %4" )
-                          .arg( mFile.fileName() ).arg( errorMsg ).arg( line ).arg( column );
+                          .arg( projectFile.fileName() ).arg( errorMsg ).arg( line ).arg( column );
 
     QgsDebugMsg( errorString );
 
-    mFile.close();
+    projectFile.close();
 
-    setError( tr( "%1 for file %2" ).arg( errorString, mFile.fileName() ) );
+    setError( tr( "%1 for file %2" ).arg( errorString, projectFile.fileName() ) );
 
     return false;
   }
 
-  mFile.close();
+  projectFile.close();
 
 
-  QgsDebugMsg( "Opened document " + mFile.fileName() );
+  QgsDebugMsg( "Opened document " + projectFile.fileName() );
   QgsDebugMsg( "Project title: " + mTitle );
 
   // get project version string, if any
@@ -1223,16 +1245,25 @@ bool QgsProject::write( const QString &filename )
 
 bool QgsProject::write()
 {
+  if ( QgsZipUtils::isZipFile( mFile.fileName() ) )
+    return zip( mFile.fileName() );
+  else
+    return writeProjectFile( mFile.fileName() );
+}
+
+bool QgsProject::writeProjectFile( const QString &filename )
+{
+  QFile projectFile( filename );
   clearError();
 
   // if we have problems creating or otherwise writing to the project file,
   // let's find out up front before we go through all the hand-waving
   // necessary to create all the Dom objects
-  QFileInfo myFileInfo( mFile );
+  QFileInfo myFileInfo( projectFile );
   if ( myFileInfo.exists() && !myFileInfo.isWritable() )
   {
     setError( tr( "%1 is not writable. Please adjust permissions (if possible) and try again." )
-              .arg( mFile.fileName() ) );
+              .arg( projectFile.fileName() ) );
     return false;
   }
 
@@ -1363,19 +1394,19 @@ bool QgsProject::write()
   // Create backup file
   if ( QFile::exists( fileName() ) )
   {
-    QFile backupFile( fileName() + '~' );
+    QFile backupFile( QString( "%1~" ).arg( filename ) );
     bool ok = true;
     ok &= backupFile.open( QIODevice::WriteOnly | QIODevice::Truncate );
-    ok &= mFile.open( QIODevice::ReadOnly );
+    ok &= projectFile.open( QIODevice::ReadOnly );
 
     QByteArray ba;
-    while ( ok && !mFile.atEnd() )
+    while ( ok && !projectFile.atEnd() )
     {
-      ba = mFile.read( 10240 );
+      ba = projectFile.read( 10240 );
       ok &= backupFile.write( ba ) == ba.size();
     }
 
-    mFile.close();
+    projectFile.close();
     backupFile.close();
 
     if ( !ok )
@@ -1389,12 +1420,12 @@ bool QgsProject::write()
     utime( backupFile.fileName().toUtf8().constData(), &tb );
   }
 
-  if ( !mFile.open( QIODevice::WriteOnly | QIODevice::Truncate ) )
+  if ( !projectFile.open( QIODevice::WriteOnly | QIODevice::Truncate ) )
   {
-    mFile.close();         // even though we got an error, let's make
+    projectFile.close();         // even though we got an error, let's make
     // sure it's closed anyway
 
-    setError( tr( "Unable to save to file %1" ).arg( mFile.fileName() ) );
+    setError( tr( "Unable to save to file %1" ).arg( projectFile.fileName() ) );
     return false;
   }
 
@@ -1412,12 +1443,12 @@ bool QgsProject::write()
     while ( ok && !tempFile.atEnd() )
     {
       ba = tempFile.read( 10240 );
-      ok &= mFile.write( ba ) == ba.size();
+      ok &= projectFile.write( ba ) == ba.size();
     }
 
-    ok &= mFile.error() == QFile::NoError;
+    ok &= projectFile.error() == QFile::NoError;
 
-    mFile.close();
+    projectFile.close();
   }
 
   tempFile.close();
@@ -1427,7 +1458,7 @@ bool QgsProject::write()
     setError( tr( "Unable to save to file %1. Your project "
                   "may be corrupted on disk. Try clearing some space on the volume and "
                   "check file permissions before pressing save again." )
-              .arg( mFile.fileName() ) );
+              .arg( projectFile.fileName() ) );
     return false;
   }
 
@@ -2062,6 +2093,82 @@ QgsMapLayer *QgsProject::mapLayer( const QString &layerId ) const
 QList<QgsMapLayer *> QgsProject::mapLayersByName( const QString &layerName ) const
 {
   return mLayerStore->mapLayersByName( layerName );
+}
+
+bool QgsProject::unzip( const QString &filename )
+{
+  clearError();
+  std::unique_ptr<QgsProjectArchive> archive( new QgsProjectArchive() );
+
+  // unzip the archive
+  if ( !archive->unzip( filename ) )
+  {
+    setError( tr( "Unable to unzip file '%1'" ).arg( filename ) );
+    return false;
+  }
+
+  // test if zip provides a .qgs file
+  if ( archive->projectFile().isEmpty() )
+  {
+    setError( tr( "Zip archive does not provide a project file" ) );
+    return false;
+  }
+
+  // read the project file
+  if ( ! readProjectFile( archive->projectFile() ) )
+  {
+    setError( tr( "Cannot read unzipped qgs project file" ) );
+    return false;
+  }
+
+  // keep the archive and remove the temporary .qgs file
+  mArchive.reset( archive.release() );
+  mArchive->clearProjectFile();
+
+  return true;
+}
+
+bool QgsProject::zip( const QString &filename )
+{
+  clearError();
+
+  // save the current project in a temporary .qgs file
+  std::unique_ptr<QgsProjectArchive> archive( new QgsProjectArchive() );
+  const QString baseName = QFileInfo( filename ).baseName();
+  const QString qgsFileName = QString( "%1.qgs" ).arg( baseName );
+  QFile qgsFile( QDir( archive->dir() ).filePath( qgsFileName ) );
+
+  bool writeOk = false;
+  if ( qgsFile.open( QIODevice::WriteOnly | QIODevice::Truncate ) )
+  {
+    writeOk = writeProjectFile( qgsFile.fileName() );
+    qgsFile.close();
+  }
+
+  // stop here with an error message
+  if ( ! writeOk )
+  {
+    setError( tr( "Unable to write temporary qgs file" ) );
+    return false;
+  }
+
+  // create the archive
+  archive->addFile( qgsFile.fileName() );
+
+  // zip
+  QString errMsg;
+  if ( !archive->zip( filename ) )
+  {
+    setError( tr( "Unable to perform zip" ) );
+    return false;
+  }
+
+  return true;
+}
+
+bool QgsProject::isZipped() const
+{
+  return QgsZipUtils::isZipFile( mFile.fileName() );
 }
 
 QList<QgsMapLayer *> QgsProject::addMapLayers(

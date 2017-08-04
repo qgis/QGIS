@@ -77,6 +77,7 @@
 #include <qgscomposition.h>
 #include <qgslayerstylingwidget.h>
 #include "qgstaskmanager.h"
+#include "qgsziputils.h"
 
 #include <QNetworkReply>
 #include <QNetworkProxy>
@@ -5230,7 +5231,7 @@ void QgisApp::fileOpen()
     QString fullPath = QFileDialog::getOpenFileName( this,
                        tr( "Choose a QGIS project file to open" ),
                        lastUsedDir,
-                       tr( "QGIS files" ) + " (*.qgs *.QGS)" );
+                       tr( "QGIS files" ) + " (*.qgs *.qgz *.QGS)" );
     if ( fullPath.isNull() )
     {
       return;
@@ -5275,7 +5276,7 @@ bool QgisApp::addProject( const QString &projectFile )
   bool autoSetupOnFirstLayer = mLayerTreeCanvasBridge->autoSetupOnFirstLayer();
   mLayerTreeCanvasBridge->setAutoSetupOnFirstLayer( false );
 
-  if ( !QgsProject::instance()->read( projectFile ) )
+  if ( !QgsProject::instance()->read( projectFile ) && !QgsZipUtils::isZipFile( projectFile ) )
   {
     QString backupFile = projectFile + "~";
     QString loadBackupPrompt;
@@ -5415,22 +5416,30 @@ bool QgisApp::fileSave()
     QgsSettings settings;
     QString lastUsedDir = settings.value( QStringLiteral( "UI/lastProjectDir" ), QDir::homePath() ).toString();
 
+    const QString qgsExt = tr( "QGIS files" ) + " (*.qgs)";
+    const QString zipExt = tr( "QGZ files" ) + " (*.qgz)";
+    QString filter;
     QString path = QFileDialog::getSaveFileName(
                      this,
                      tr( "Choose a QGIS project file" ),
                      lastUsedDir + '/' + QgsProject::instance()->title(),
-                     tr( "QGIS files" ) + " (*.qgs *.QGS)" );
+                     qgsExt + ";;" + zipExt, &filter );
     if ( path.isEmpty() )
       return false;
 
     fullPath.setFile( path );
 
     // make sure we have the .qgs extension in the file name
-    if ( "qgs" != fullPath.suffix().toLower() )
+    if ( filter == zipExt )
     {
-      fullPath.setFile( fullPath.filePath() + ".qgs" );
+      if ( fullPath.suffix().compare( QLatin1String( "qgz" ), Qt::CaseInsensitive ) != 0 )
+        fullPath.setFile( fullPath.filePath() + ".qgz" );
     }
-
+    else
+    {
+      if ( fullPath.suffix().compare( QLatin1String( "qgs" ), Qt::CaseInsensitive ) != 0 )
+        fullPath.setFile( fullPath.filePath() + ".qgs" );
+    }
 
     QgsProject::instance()->setFileName( fullPath.filePath() );
   }
@@ -5493,10 +5502,13 @@ void QgisApp::fileSaveAs()
   QgsSettings settings;
   QString lastUsedDir = settings.value( QStringLiteral( "UI/lastProjectDir" ), QDir::homePath() ).toString();
 
+  const QString qgsExt = tr( "QGIS files" ) + " (*.qgs *.QGS)";
+  const QString zipExt = tr( "QGZ files" ) + " (*.qgz)";
+  QString filter;
   QString path = QFileDialog::getSaveFileName( this,
                  tr( "Choose a file name to save the QGIS project file as" ),
                  lastUsedDir + '/' + QgsProject::instance()->title(),
-                 tr( "QGIS files" ) + " (*.qgs *.QGS)" );
+                 qgsExt + ";;" + zipExt, &filter );
   if ( path.isEmpty() )
     return;
 
@@ -5504,10 +5516,15 @@ void QgisApp::fileSaveAs()
 
   settings.setValue( QStringLiteral( "UI/lastProjectDir" ), fullPath.path() );
 
-  // make sure the .qgs extension is included in the path name. if not, add it...
-  if ( "qgs" != fullPath.suffix().toLower() )
+  if ( filter == zipExt )
   {
-    fullPath.setFile( fullPath.filePath() + ".qgs" );
+    if ( fullPath.suffix().compare( QLatin1String( "qgz" ), Qt::CaseInsensitive ) != 0 )
+      fullPath.setFile( fullPath.filePath() + ".qgz" );
+  }
+  else // .qgs
+  {
+    if ( fullPath.suffix().compare( QLatin1String( "qgs" ), Qt::CaseInsensitive ) != 0 )
+      fullPath.setFile( fullPath.filePath() + ".qgs" );
   }
 
   QgsProject::instance()->setFileName( fullPath.filePath() );

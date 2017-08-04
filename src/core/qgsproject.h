@@ -40,6 +40,7 @@
 #include "qgsprojectproperty.h"
 #include "qgsmaplayer.h"
 #include "qgsmaplayerstore.h"
+#include "qgsarchive.h"
 
 class QFileInfo;
 class QDomDocument;
@@ -575,6 +576,11 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      */
     QMap<QString, QgsMapLayer *> mapLayers() const;
 
+    /**
+     * Returns true if the project comes from a zip archive, false otherwise.
+     */
+    bool isZipped() const;
+
 #ifndef SIP_RUN
 
     /** Returns a list of registered map layers with a specified layer type.
@@ -1016,6 +1022,18 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     //! \note not available in Python bindings
     void loadEmbeddedNodes( QgsLayerTreeGroup *group ) SIP_SKIP;
 
+    //! Read .qgs file
+    bool readProjectFile( const QString &filename );
+
+    //! Write .qgs file
+    bool writeProjectFile( const QString &filename );
+
+    //! Unzip .qgz file then read embedded .qgs file
+    bool unzip( const QString &filename );
+
+    //! Zip project
+    bool zip( const QString &filename );
+
     std::unique_ptr< QgsMapLayerStore > mLayerStore;
 
     QString mErrorMessage;
@@ -1047,6 +1065,8 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     std::unique_ptr<QgsLabelingEngineSettings> mLabelingEngineSettings;
 
     QVariantMap mCustomVariables;
+
+    std::unique_ptr<QgsProjectArchive> mArchive;
 
     QFile mFile;                 // current physical project file
     mutable QgsProjectPropertyKey mProperties;  // property hierarchy, TODO: this shouldn't be mutable

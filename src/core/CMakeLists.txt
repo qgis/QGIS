@@ -305,6 +305,8 @@ SET(QGIS_CORE_SRCS
   qgsxmlutils.cpp
   qgssettings.cpp
   qgsstacktrace.cpp
+  qgsarchive.cpp
+  qgsziputils.cpp
 
   composer/qgsaddremoveitemcommand.cpp
   composer/qgsaddremovemultiframecommand.cpp
@@ -892,6 +894,8 @@ SET(QGIS_CORE_HDRS
   qgsvirtuallayerdefinitionutils.h
   qgsmapthemecollection.h
   qgsxmlutils.h
+  qgsarchive.h
+  qgsziputils.h
   qgsvector.h
   qgslocalec.h
 
@@ -1218,6 +1222,7 @@ TARGET_LINK_LIBRARIES(qgis_core
   ${EXPAT_LIBRARY}
   ${SQLITE3_LIBRARY}
   ${SPATIALITE_LIBRARY}
+  ${LIBZIP_LIBRARY}
 )
 
 IF (Qt5Positioning_FOUND)

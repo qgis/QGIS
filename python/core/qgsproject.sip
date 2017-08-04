@@ -612,6 +612,12 @@ Returns the number of registered layers.
  :rtype: QMap<str, QgsMapLayer *>
 %End
 
+    bool isZipped() const;
+%Docstring
+ Returns true if the project comes from a zip archive, false otherwise.
+ :rtype: bool
+%End
+
 
     QList<QgsMapLayer *> addMapLayers( const QList<QgsMapLayer *> &mapLayers /Transfer/,
                                        bool addToLegend = true);
