@@ -23,8 +23,6 @@ ccache -z
 
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
-# Set OTB application path (installed in before_install.sh script)
-export OTB_APPLICATION_PATH=${HOME}/OTB-5.6.0-Linux64/lib/otb/applications
 export LD_PRELOAD=/lib/x86_64-linux-gnu/libSegFault.so
 
 export CTEST_BUILD_COMMAND="/usr/bin/make -j3 -i -k"
