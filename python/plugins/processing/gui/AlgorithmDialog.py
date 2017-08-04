@@ -83,7 +83,7 @@ class AlgorithmDialog(AlgorithmDialogBase):
         self.bar.setSizePolicy(QSizePolicy.Minimum, QSizePolicy.Fixed)
         self.layout().insertWidget(0, self.bar)
 
-        self.runAsBatchButton = QPushButton(self.trUtf8("Run as Batch Process…"))
+        self.runAsBatchButton = QPushButton(self.tr("Run as Batch Process…"))
         self.runAsBatchButton.clicked.connect(self.runAsBatch)
         self.buttonBox.addButton(self.runAsBatchButton, QDialogButtonBox.ResetRole) # reset role to ensure left alignment
 
