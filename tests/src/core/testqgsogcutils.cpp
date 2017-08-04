@@ -75,7 +75,7 @@ void TestQgsOgcUtils::testGeometryFromGML()
   QgsGeometry geom( QgsOgcUtils::geometryFromGML( QStringLiteral( "<Point><coordinates>123,456</coordinates></Point>" ) ) );
   QVERIFY( geom );
   QVERIFY( geom.wkbType() == QgsWkbTypes::Point );
-  QVERIFY( geom.asPoint() == QgsPoint( 123, 456 ) );
+  QVERIFY( geom.asPoint() == QgsPointXY( 123, 456 ) );
 
   QgsGeometry geomBox( QgsOgcUtils::geometryFromGML( QStringLiteral( "<gml:Box srsName=\"foo\"><gml:coordinates>135.2239,34.4879 135.8578,34.8471</gml:coordinates></gml:Box>" ) ) );
   QVERIFY( geomBox );
@@ -86,7 +86,7 @@ void TestQgsOgcUtils::testGeometryFromGML()
   geom = QgsOgcUtils::geometryFromGML( QStringLiteral( "<Point><pos>123 456</pos></Point>" ) );
   QVERIFY( geom );
   QVERIFY( geom.wkbType() == QgsWkbTypes::Point );
-  QVERIFY( geom.asPoint() == QgsPoint( 123, 456 ) );
+  QVERIFY( geom.asPoint() == QgsPointXY( 123, 456 ) );
 
   geomBox = QgsOgcUtils::geometryFromGML( QStringLiteral( "<gml:Envelope srsName=\"foo\"><gml:lowerCorner>135.2239 34.4879</gml:lowerCorner><gml:upperCorner>135.8578 34.8471</gml:upperCorner></gml:Envelope>" ) );
   QVERIFY( geomBox );
@@ -206,7 +206,7 @@ static QDomElement comparableElement( const QString &xmlText )
 void TestQgsOgcUtils::testGeometryToGML()
 {
   QDomDocument doc;
-  QgsGeometry geomPoint( QgsGeometry::fromPoint( QgsPoint( 111, 222 ) ) );
+  QgsGeometry geomPoint( QgsGeometry::fromPoint( QgsPointXY( 111, 222 ) ) );
   QgsGeometry geomLine( QgsGeometry::fromWkt( QStringLiteral( "LINESTRING(111 222, 222 222)" ) ) );
 
   // Elements to compare
@@ -214,10 +214,10 @@ void TestQgsOgcUtils::testGeometryToGML()
   QDomElement ogcElem;
 
   // Test GML2
-  QDomElement elemInvalid = QgsOgcUtils::geometryToGML( 0, doc );
+  QDomElement elemInvalid = QgsOgcUtils::geometryToGML( QgsGeometry(), doc );
   QVERIFY( elemInvalid.isNull() );
 
-  QDomElement elemPoint = QgsOgcUtils::geometryToGML( &geomPoint, doc );
+  QDomElement elemPoint = QgsOgcUtils::geometryToGML( geomPoint, doc );
   QVERIFY( !elemPoint.isNull() );
 
   doc.appendChild( elemPoint );
@@ -226,7 +226,7 @@ void TestQgsOgcUtils::testGeometryToGML()
   QVERIFY( compareElements( xmlElem, ogcElem ) );
   doc.removeChild( elemPoint );
 
-  QDomElement elemLine = QgsOgcUtils::geometryToGML( &geomLine, doc );
+  QDomElement elemLine = QgsOgcUtils::geometryToGML( geomLine, doc );
   QVERIFY( !elemLine.isNull() );
 
   doc.appendChild( elemLine );
@@ -236,10 +236,10 @@ void TestQgsOgcUtils::testGeometryToGML()
   doc.removeChild( elemLine );
 
   // Test GML3
-  elemInvalid = QgsOgcUtils::geometryToGML( 0, doc, QStringLiteral( "GML3" ) );
+  elemInvalid = QgsOgcUtils::geometryToGML( QgsGeometry(), doc, QStringLiteral( "GML3" ) );
   QVERIFY( elemInvalid.isNull() );
 
-  elemPoint = QgsOgcUtils::geometryToGML( &geomPoint, doc, QStringLiteral( "GML3" ) );
+  elemPoint = QgsOgcUtils::geometryToGML( geomPoint, doc, QStringLiteral( "GML3" ) );
   QVERIFY( !elemPoint.isNull() );
 
   doc.appendChild( elemPoint );
@@ -248,7 +248,7 @@ void TestQgsOgcUtils::testGeometryToGML()
   QVERIFY( compareElements( xmlElem, ogcElem ) );
   doc.removeChild( elemPoint );
 
-  elemLine = QgsOgcUtils::geometryToGML( &geomLine, doc, QStringLiteral( "GML3" ) );
+  elemLine = QgsOgcUtils::geometryToGML( geomLine, doc, QStringLiteral( "GML3" ) );
   QVERIFY( !elemLine.isNull() );
 
   doc.appendChild( elemLine );

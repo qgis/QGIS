@@ -37,6 +37,7 @@ class QgsGPXFeatureSource : public QgsAbstractFeatureSource
     QgsGPSData *data = nullptr;
     QVector<int> indexToAttr;
     QgsFields mFields;
+    QgsCoordinateReferenceSystem mCrs;
 
     friend class QgsGPXFeatureIterator;
 };
@@ -80,6 +81,9 @@ class QgsGPXFeatureIterator : public QgsAbstractFeatureIteratorFromSource<QgsGPX
     QgsGPSData::TrackIterator mTrkIter;
 
     bool mFetchedFid = false;
+
+    QgsCoordinateTransform mTransform;
+    QgsRectangle mFilterRect;
 };
 
 #endif // QGSGPXFEATUREITERATOR_H

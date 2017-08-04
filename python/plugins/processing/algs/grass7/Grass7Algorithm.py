@@ -36,7 +36,9 @@ from qgis.PyQt.QtCore import QCoreApplication, QUrl
 from qgis.core import (QgsRasterLayer,
                        QgsApplication,
                        QgsProcessingUtils,
-                       QgsMessageLog)
+                       QgsMessageLog,
+                       QgsProcessingAlgorithm,
+                       QgsProcessingParameterDefinition)
 from qgis.utils import iface
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
@@ -97,9 +99,6 @@ class Grass7Algorithm(GeoAlgorithm):
         except ImportError:
             self.module = None
 
-    def getCopy(self):
-        return self
-
     def name(self):
         return self._name
 
@@ -115,15 +114,15 @@ class Grass7Algorithm(GeoAlgorithm):
     def svgIconPath(self):
         return QgsApplication.iconPath("providerGrass.svg")
 
-    def help(self):
+    def helpUrl(self):
         helpPath = Grass7Utils.grassHelpPath()
         if helpPath == '':
-            return False, None
+            return None
 
         if os.path.exists(helpPath):
-            return False, QUrl.fromLocalFile(os.path.join(helpPath, '{}.html'.format(self.grass7Name))).toString()
+            return QUrl.fromLocalFile(os.path.join(helpPath, '{}.html'.format(self.grass7Name))).toString()
         else:
-            return False, helpPath + '{}.html'.format(self.grass7Name)
+            return helpPath + '{}.html'.format(self.grass7Name)
 
     def getParameterDescriptions(self):
         descs = {}
@@ -133,11 +132,11 @@ class Grass7Algorithm(GeoAlgorithm):
                 lines = infile.readlines()
                 for i in range(len(lines)):
                     if lines[i].startswith('<DT><b>'):
-                        for param in self.parameters:
-                            searchLine = '<b>' + param.name + '</b>'
+                        for param in self.parameterDefinitions():
+                            searchLine = '<b>' + param.name() + '</b>'
                             if searchLine in lines[i]:
                                 i += 1
-                                descs[param.name] = (lines[i])[4:-6]
+                                descs[param.name()] = (lines[i])[4:-6]
                                 break
 
         except Exception:
@@ -185,7 +184,7 @@ class Grass7Algorithm(GeoAlgorithm):
                             vectorOutputs += 1
                         if isinstance(output, OutputHTML):
                             self.addOutput(OutputFile("rawoutput",
-                                                      self.tr("{0} (raw output)").format(output.description),
+                                                      self.tr("{0} (raw output)").format(output.description()),
                                                       "txt"))
                     line = lines.readline().strip('\n').strip()
                 except Exception as e:
@@ -205,27 +204,27 @@ class Grass7Algorithm(GeoAlgorithm):
             param = ParameterNumber(self.GRASS_SNAP_TOLERANCE_PARAMETER,
                                     'v.in.ogr snap tolerance (-1 = no snap)',
                                     -1, None, -1.0)
-            param.isAdvanced = True
+            param.setFlags(param.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
             self.addParameter(param)
             param = ParameterNumber(self.GRASS_MIN_AREA_PARAMETER,
                                     'v.in.ogr min area', 0, None, 0.0001)
-            param.isAdvanced = True
+            param.setFlags(param.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
             self.addParameter(param)
         if vectorOutputs == 1:
             param = ParameterSelection(self.GRASS_OUTPUT_TYPE_PARAMETER,
                                        'v.out.ogr output type',
                                        self.OUTPUT_TYPES)
-            param.isAdvanced = True
+            param.setFlags(param.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
             self.addParameter(param)
 
-    def getDefaultCellsize(self):
-        context = dataobjects.createContext()
+    def getDefaultCellsize(self, parameters, context):
         cellsize = 0
-        for param in self.parameters:
-            if param.value:
+        for param in self.parameterDefinitions():
+            if param.name() in parameters:
+                value = parameters[param.name()]
                 if isinstance(param, ParameterRaster):
-                    if isinstance(param.value, QgsRasterLayer):
-                        layer = param.value
+                    if isinstance(value, QgsRasterLayer):
+                        layer = value
                     else:
                         layer = QgsProcessingUtils.mapLayerFromString(param.value, context)
                     cellsize = max(cellsize, (layer.extent().xMaximum() -
@@ -233,7 +232,7 @@ class Grass7Algorithm(GeoAlgorithm):
                                    layer.width())
                 elif isinstance(param, ParameterMultipleInput):
 
-                    layers = param.value.split(';')
+                    layers = value.split(';')
                     for layername in layers:
                         layer = QgsProcessingUtils.mapLayerFromString(layername, context)
                         if isinstance(layer, QgsRasterLayer):
@@ -247,7 +246,7 @@ class Grass7Algorithm(GeoAlgorithm):
             cellsize = 100
         return cellsize
 
-    def processAlgorithm(self, context, feedback):
+    def processAlgorithm(self, parameters, context, feedback):
         if system.isWindows():
             path = Grass7Utils.grassPath()
             if path == '':
@@ -275,7 +274,7 @@ class Grass7Algorithm(GeoAlgorithm):
                 func = getattr(self.module, 'processInputs')
                 func(self)
             else:
-                self.processInputs()
+                self.processInputs(parameters, context)
 
             if hasattr(self.module, 'processCommand'):
                 func = getattr(self.module, 'processCommand')
@@ -289,7 +288,7 @@ class Grass7Algorithm(GeoAlgorithm):
             else:
                 self.processOutputs()
         else:
-            self.processInputs()
+            self.processInputs(parameters, context)
             self.processCommand()
             self.processOutputs()
 
@@ -318,13 +317,13 @@ class Grass7Algorithm(GeoAlgorithm):
         else:
             Grass7Utils.endGrass7Session()
 
-    def processInputs(self):
+    def processInputs(self, parameters, context):
         """Prepare the GRASS import commands"""
-        for param in self.parameters:
+        for param in self.parameterDefinitions():
             if isinstance(param, ParameterRaster):
-                if param.value is None:
+                if not param.name() in parameters():
                     continue
-                value = param.value
+                value = parameters[param.name()]
 
                 # Check if the layer hasn't already been exported in, for
                 # example, previous GRASS calls in this session
@@ -334,9 +333,9 @@ class Grass7Algorithm(GeoAlgorithm):
                     self.setSessionProjectionFromLayer(value, self.commands)
                     self.commands.append(self.exportRasterLayer(value))
             if isinstance(param, ParameterVector):
-                if param.value is None:
+                if not param.name() in parameters():
                     continue
-                value = param.value
+                value = parameters[param.name()]
                 if value in list(self.exportedLayers.keys()):
                     continue
                 else:
@@ -345,9 +344,10 @@ class Grass7Algorithm(GeoAlgorithm):
             if isinstance(param, ParameterTable):
                 pass
             if isinstance(param, ParameterMultipleInput):
-                if param.value is None:
+                if not param.name() in parameters():
                     continue
-                layers = param.value.split(';')
+                value = parameters[param.name()]
+                layers = value.split(';')
                 if layers is None or len(layers) == 0:
                     continue
                 if param.datatype == dataobjects.TYPE_RASTER:
@@ -372,6 +372,9 @@ class Grass7Algorithm(GeoAlgorithm):
 
         region = \
             str(self.getParameterValue(self.GRASS_REGION_EXTENT_PARAMETER))
+        if not region:
+            region = QgsProcessingUtils.combineLayerExtents(layers)
+
         regionCoords = region.split(',')
         command = 'g.region'
         command += ' n=' + str(regionCoords[3])
@@ -382,20 +385,22 @@ class Grass7Algorithm(GeoAlgorithm):
         if cellsize:
             command += ' res=' + str(cellsize)
         else:
-            command += ' res=' + str(self.getDefaultCellsize())
+            command += ' res=' + str(self.getDefaultCellsize(parameters, context))
         alignToResolution = \
             self.getParameterValue(self.GRASS_REGION_ALIGN_TO_RESOLUTION)
         if alignToResolution:
             command += ' -a'
         self.commands.append(command)
 
-    def processCommand(self):
-        """Prepare the GRASS algorithm command"""
+    def processCommand(self, parameters):
+        """Prepare the GRASS algorithm command
+        :param parameters:
+        """
         command = self.grass7Name
         command += ' ' + ' '.join(self.hardcodedStrings)
 
         # Add algorithm command
-        for param in self.parameters:
+        for param in self.parameterDefinitions():
             if param.value is None or param.value == '':
                 continue
             if param.name in [self.GRASS_REGION_CELLSIZE_PARAMETER, self.GRASS_REGION_EXTENT_PARAMETER, self.GRASS_MIN_AREA_PARAMETER, self.GRASS_SNAP_TOLERANCE_PARAMETER, self.GRASS_OUTPUT_TYPE_PARAMETER, self.GRASS_REGION_ALIGN_TO_RESOLUTION]:
@@ -403,28 +408,28 @@ class Grass7Algorithm(GeoAlgorithm):
             if isinstance(param, (ParameterRaster, ParameterVector)):
                 value = param.value
                 if value in list(self.exportedLayers.keys()):
-                    command += ' ' + param.name + '=' \
+                    command += ' ' + param.name() + '=' \
                         + self.exportedLayers[value]
                 else:
-                    command += ' ' + param.name + '=' + value
+                    command += ' ' + param.name() + '=' + value
             elif isinstance(param, ParameterMultipleInput):
                 s = param.value
                 for layer in list(self.exportedLayers.keys()):
                     s = s.replace(layer, self.exportedLayers[layer])
                 s = s.replace(';', ',')
-                command += ' ' + param.name + '=' + s
+                command += ' ' + param.name() + '=' + s
             elif isinstance(param, ParameterBoolean):
                 if param.value:
-                    command += ' ' + param.name
+                    command += ' ' + param.name()
             elif isinstance(param, ParameterSelection):
                 idx = int(param.value)
-                command += ' ' + param.name + '=' + str(param.options[idx][1])
+                command += ' ' + param.name() + '=' + str(param.options[idx][1])
             elif isinstance(param, ParameterString):
-                command += ' ' + param.name + '="' + str(param.value) + '"'
+                command += ' ' + param.name() + '="' + str(param.value) + '"'
             elif isinstance(param, ParameterPoint):
-                command += ' ' + param.name + '=' + str(param.value)
+                command += ' ' + param.name() + '=' + str(param.value)
             else:
-                command += ' ' + param.name + '="' + str(param.value) + '"'
+                command += ' ' + param.name() + '="' + str(param.value) + '"'
 
         for out in self.outputs:
             if isinstance(out, OutputFile):
@@ -520,8 +525,9 @@ class Grass7Algorithm(GeoAlgorithm):
         else:
             layer = QgsProcessingUtils.mapLayerFromString(orgFilename, context, False)
             if layer:
-                useSelection = \
-                    ProcessingConfig.getSetting(ProcessingConfig.USE_SELECTED)
+                #TODO
+                #useSelection = \
+                #    ProcessingConfig.getSetting(ProcessingConfig.USE_SELECTED)
                 if useSelection and layer.selectedFeatureCount() != 0:
                     filename = dataobjects.exportVectorLayer(layer)
                 else:
@@ -575,12 +581,13 @@ class Grass7Algorithm(GeoAlgorithm):
     def getTempFilename(self):
         return system.getTempFilename()
 
-    def checkBeforeOpeningParametersDialog(self):
-        return Grass7Utils.checkGrass7IsInstalled()
+    def canExecute(self):
+        message = Grass7Utils.checkGrass7IsInstalled()
+        return not message, message
 
-    def checkParameterValuesBeforeExecuting(self):
+    def checkParameterValues(self, parameters, context):
         if self.module:
             if hasattr(self.module, 'checkParameterValuesBeforeExecuting'):
                 func = getattr(self.module, 'checkParameterValuesBeforeExecuting')
-                return func(self)
-        return
+                return func(self), None
+        return super(Grass7Algorithm, self).checkParameterValues(parameters, context)

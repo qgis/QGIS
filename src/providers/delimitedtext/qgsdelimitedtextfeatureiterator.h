@@ -50,6 +50,7 @@ class QgsDelimitedTextFeatureSource : public QgsAbstractFeatureSource
     QString mDecimalPoint;
     bool mXyDms;
     QList<int> attributeColumns;
+    QgsCoordinateReferenceSystem mCrs;
 
     friend class QgsDelimitedTextFeatureIterator;
 };
@@ -72,7 +73,7 @@ class QgsDelimitedTextFeatureIterator : public QgsAbstractFeatureIteratorFromSou
     virtual bool close() override;
 
     // Tests whether the geometry is required, given that testGeometry is true.
-    bool wantGeometry( const QgsPoint &point ) const;
+    bool wantGeometry( const QgsPointXY &point ) const;
     bool wantGeometry( const QgsGeometry &geom ) const;
 
   protected:
@@ -94,6 +95,8 @@ class QgsDelimitedTextFeatureIterator : public QgsAbstractFeatureIteratorFromSou
     bool mTestGeometry = false;
     bool mTestGeometryExact = false;
     bool mLoadGeometry = false;
+    QgsRectangle mFilterRect;
+    QgsCoordinateTransform mTransform;
 };
 
 

@@ -20,7 +20,7 @@
 #include "ui_widget_svgselector.h"
 #include "qgis.h"
 
-#include "qgisgui.h"
+#include "qgsguiutils.h"
 #include <QAbstractListModel>
 #include <QDialog>
 #include <QDialogButtonBox>
@@ -38,6 +38,8 @@ class QListView;
 class QPushButton;
 class QTreeView;
 
+
+#ifndef SIP_RUN
 ///@cond PRIVATE
 
 /** \ingroup gui
@@ -155,7 +157,7 @@ class GUI_EXPORT QgsSvgGroupLoader : public QThread
 };
 
 ///@endcond
-///
+#endif
 
 /** \ingroup gui
  * \class QgsSvgSelectorListModel
@@ -172,14 +174,16 @@ class GUI_EXPORT QgsSvgSelectorListModel : public QAbstractListModel
     /** Constructor for QgsSvgSelectorListModel. All SVGs in folders from the application SVG
      * search paths will be shown.
      * \param parent parent object
+     * \param iconSize desired size of SVG icons to create
      */
-    QgsSvgSelectorListModel( QObject *parent SIP_TRANSFERTHIS );
+    QgsSvgSelectorListModel( QObject *parent SIP_TRANSFERTHIS, int iconSize = 30 );
 
     /** Constructor for creating a model for SVG files in a specific path.
      * \param parent parent object
      * \param path initial path, which is recursively searched
+     * \param iconSize desired size of SVG icons to create
      */
-    QgsSvgSelectorListModel( QObject *parent SIP_TRANSFERTHIS, const QString &path );
+    QgsSvgSelectorListModel( QObject *parent SIP_TRANSFERTHIS, const QString &path, int iconSize = 30 );
 
     int rowCount( const QModelIndex &parent = QModelIndex() ) const override;
     QVariant data( const QModelIndex &index, int role = Qt::DisplayRole ) const override;
@@ -190,6 +194,8 @@ class GUI_EXPORT QgsSvgSelectorListModel : public QAbstractListModel
   private:
     QPixmap createPreview( const QString &entry ) const;
     QgsSvgSelectorLoader *mSvgLoader = nullptr;
+
+    int mIconSize = 30;
 
   private slots:
 
@@ -235,20 +241,10 @@ class GUI_EXPORT QgsSvgSelectorWidget : public QWidget, private Ui::WidgetSvgSel
     QgsSvgSelectorWidget( QWidget *parent SIP_TRANSFERTHIS = 0 );
     ~QgsSvgSelectorWidget();
 
-    static QgsSvgSelectorWidget *create( QWidget *parent = nullptr ) { return new QgsSvgSelectorWidget( parent ); }
-
     QString currentSvgPath() const;
-    QString currentSvgPathToName() const;
-
-    QTreeView *groupsTreeView() { return mGroupsTreeView; }
-    QListView *imagesListView() { return mImagesListView; }
-    QLineEdit *filePathLineEdit() { return mFileLineEdit; }
-    QPushButton *filePathButton() { return mFilePushButton; }
-    QCheckBox *relativePathCheckbox() { return mRelativePathChkBx; }
-    QLayout *selectorLayout() { return this->layout(); }
 
   public slots:
-    //! Accepts absolute and relative paths
+    //! Accepts absolute paths
     void setSvgPath( const QString &svgPath );
 
   signals:
@@ -267,7 +263,10 @@ class GUI_EXPORT QgsSvgSelectorWidget : public QWidget, private Ui::WidgetSvgSel
     void on_mFileLineEdit_textChanged( const QString &text );
 
   private:
-    QString mCurrentSvgPath; // always stored as absolute path
+
+    int mIconSize = 30;
+
+    QString mCurrentSvgPath; //!< Always stored as absolute path
 
 };
 
@@ -282,16 +281,11 @@ class GUI_EXPORT QgsSvgSelectorDialog : public QDialog
     /**
      * Constructor for QgsSvgSelectorDialog.
      */
-    QgsSvgSelectorDialog( QWidget *parent = nullptr, Qt::WindowFlags fl = QgisGui::ModalDialogFlags,
+    QgsSvgSelectorDialog( QWidget *parent SIP_TRANSFERTHIS = nullptr,
+                          Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags,
                           QDialogButtonBox::StandardButtons buttons = QDialogButtonBox::Close | QDialogButtonBox::Ok,
                           Qt::Orientation orientation = Qt::Horizontal );
     ~QgsSvgSelectorDialog();
-
-    //! Returns the central layout. Widgets added to it must have this dialog as parent
-    QVBoxLayout *layout() { return mLayout; }
-
-    //! Returns the button box
-    QDialogButtonBox *buttonBox() { return mButtonBox; }
 
     //! Returns pointer to the embedded SVG selector widget
     QgsSvgSelectorWidget *svgSelector() { return mSvgSelector; }

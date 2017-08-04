@@ -30,29 +30,42 @@ import plotly.graph_objs as go
 
 
 from qgis.core import (QgsApplication,
-                       QgsProcessingUtils)
-from processing.core.parameters import ParameterTable
-from processing.core.parameters import ParameterTableField
-from processing.core.GeoAlgorithm import GeoAlgorithm
-from processing.core.outputs import OutputHTML
+                       QgsFeatureSink,
+                       QgsProcessingUtils,
+                       QgsProcessingParameterFeatureSource,
+                       QgsProcessingParameterField,
+                       QgsProcessingParameterFileDestination,
+                       QgsProcessingOutputHtml)
+from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 from processing.tools import vector
 
 
-class BarPlot(GeoAlgorithm):
+class BarPlot(QgisAlgorithm):
 
     INPUT = 'INPUT'
     OUTPUT = 'OUTPUT'
     NAME_FIELD = 'NAME_FIELD'
     VALUE_FIELD = 'VALUE_FIELD'
 
-    def icon(self):
-        return QgsApplication.getThemeIcon("/providerQgis.svg")
-
-    def svgIconPath(self):
-        return QgsApplication.iconPath("providerQgis.svg")
-
     def group(self):
         return self.tr('Graphics')
+
+    def __init__(self):
+        super().__init__()
+
+    def initAlgorithm(self, config=None):
+        self.addParameter(QgsProcessingParameterFeatureSource(self.INPUT,
+                                                              self.tr('Input layer')))
+        self.addParameter(QgsProcessingParameterField(self.NAME_FIELD,
+                                                      self.tr('Category name field'),
+                                                      None, self.INPUT, QgsProcessingParameterField.Any))
+        self.addParameter(QgsProcessingParameterField(self.VALUE_FIELD,
+                                                      self.tr('Value field'),
+                                                      None, self.INPUT, QgsProcessingParameterField.Numeric))
+
+        self.addParameter(QgsProcessingParameterFileDestination(self.OUTPUT, self.tr('Added'), self.tr('HTML files (*.html)')))
+
+        self.addOutput(QgsProcessingOutputHtml(self.OUTPUT, self.tr('Bar plot')))
 
     def name(self):
         return 'barplot'
@@ -60,30 +73,20 @@ class BarPlot(GeoAlgorithm):
     def displayName(self):
         return self.tr('Bar plot')
 
-    def defineCharacteristics(self):
-        self.addParameter(ParameterTable(self.INPUT, self.tr('Input table')))
-        self.addParameter(ParameterTableField(self.NAME_FIELD,
-                                              self.tr('Category name field'),
-                                              self.INPUT,
-                                              ParameterTableField.DATA_TYPE_ANY))
-        self.addParameter(ParameterTableField(self.VALUE_FIELD,
-                                              self.tr('Value field'),
-                                              self.INPUT,
-                                              ParameterTableField.DATA_TYPE_NUMBER))
+    def processAlgorithm(self, parameters, context, feedback):
+        source = self.parameterAsSource(parameters, self.INPUT, context)
 
-        self.addOutput(OutputHTML(self.OUTPUT, self.tr('Bar plot')))
+        namefieldname = self.parameterAsString(parameters, self.NAME_FIELD, context)
+        valuefieldname = self.parameterAsString(parameters, self.VALUE_FIELD, context)
 
-    def processAlgorithm(self, context, feedback):
-        layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT), context)
-        namefieldname = self.getParameterValue(self.NAME_FIELD)
-        valuefieldname = self.getParameterValue(self.VALUE_FIELD)
+        output = self.parameterAsFileOutput(parameters, self.OUTPUT, context)
 
-        output = self.getOutputValue(self.OUTPUT)
+        values = vector.values(source, valuefieldname)
 
-        values = vector.values(layer, context, valuefieldname)
-
-        x_var = [i[namefieldname] for i in layer.getFeatures()]
+        x_var = [i[namefieldname] for i in source.getFeatures()]
 
         data = [go.Bar(x=x_var,
                        y=values[valuefieldname])]
         plt.offline.plot(data, filename=output, auto_open=False)
+
+        return {self.OUTPUT: output}

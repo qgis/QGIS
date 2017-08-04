@@ -25,35 +25,24 @@ __copyright__ = '(C) 2013, Piotr Pociask'
 
 __revision__ = '$Format:%H$'
 
-from qgis.PyQt.QtCore import QVariant
-from qgis.core import (QgsApplication,
-                       QgsFields,
-                       QgsField,
+from qgis.core import (QgsFields,
                        QgsFeature,
+                       QgsFeatureSink,
                        QgsGeometry,
                        QgsWkbTypes,
                        QgsFeatureRequest,
-                       QgsProcessingUtils)
-from processing.core.GeoAlgorithm import GeoAlgorithm
-from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
-from processing.core.parameters import ParameterVector
-from processing.core.parameters import ParameterBoolean
-from processing.core.outputs import OutputVector
-from processing.tools import dataobjects
+                       QgsProcessing,
+                       QgsProcessingParameterFeatureSource,
+                       QgsProcessingParameterBoolean,
+                       QgsProcessingParameterFeatureSink)
+from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 
 
-class Polygonize(GeoAlgorithm):
+class Polygonize(QgisAlgorithm):
 
     INPUT = 'INPUT'
     OUTPUT = 'OUTPUT'
-    FIELDS = 'FIELDS'
-    GEOMETRY = 'GEOMETRY'
-
-    def icon(self):
-        return QgsApplication.getThemeIcon("/providerQgis.svg")
-
-    def svgIconPath(self):
-        return QgsApplication.iconPath("providerQgis.svg")
+    KEEP_FIELDS = 'KEEP_FIELDS'
 
     def tags(self):
         return self.tr('create,lines,polygons,convert').split(',')
@@ -61,38 +50,40 @@ class Polygonize(GeoAlgorithm):
     def group(self):
         return self.tr('Vector geometry tools')
 
+    def __init__(self):
+        super().__init__()
+
+    def initAlgorithm(self, config=None):
+        self.addParameter(QgsProcessingParameterFeatureSource(self.INPUT,
+                                                              self.tr('Input layer'), types=[QgsProcessing.TypeVectorLine]))
+        self.addParameter(QgsProcessingParameterBoolean(self.KEEP_FIELDS,
+                                                        self.tr('Keep table structure of line layer'), defaultValue=False, optional=True))
+        self.addParameter(QgsProcessingParameterFeatureSink(self.OUTPUT, self.tr('Polygons from lines'), QgsProcessing.TypeVectorPolygon))
+
     def name(self):
         return 'polygonize'
 
     def displayName(self):
         return self.tr('Polygonize')
 
-    def defineCharacteristics(self):
-        self.addParameter(ParameterVector(self.INPUT,
-                                          self.tr('Input layer'), [dataobjects.TYPE_VECTOR_LINE]))
-        self.addParameter(ParameterBoolean(self.FIELDS,
-                                           self.tr('Keep table structure of line layer'), False))
-        self.addParameter(ParameterBoolean(self.GEOMETRY,
-                                           self.tr('Create geometry columns'), True))
-        self.addOutput(OutputVector(self.OUTPUT, self.tr('Polygons from lines'), datatype=[dataobjects.TYPE_VECTOR_POLYGON]))
-
-    def processAlgorithm(self, context, feedback):
-        vlayer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT), context)
-        output = self.getOutputFromName(self.OUTPUT)
-        if self.getParameterValue(self.FIELDS):
-            fields = vlayer.fields()
+    def processAlgorithm(self, parameters, context, feedback):
+        source = self.parameterAsSource(parameters, self.INPUT, context)
+        if self.parameterAsBool(parameters, self.KEEP_FIELDS, context):
+            fields = source.fields()
         else:
             fields = QgsFields()
-        if self.getParameterValue(self.GEOMETRY):
-            fieldsCount = fields.count()
-            fields.append(QgsField('area', QVariant.Double, 'double', 16, 2))
-            fields.append(QgsField('perimeter', QVariant.Double,
-                                   'double', 16, 2))
+
+        (sink, dest_id) = self.parameterAsSink(parameters, self.OUTPUT, context,
+                                               fields, QgsWkbTypes.Polygon, source.sourceCrs())
+
         allLinesList = []
-        features = QgsProcessingUtils.getFeatures(vlayer, context, QgsFeatureRequest().setSubsetOfAttributes([]))
+        features = source.getFeatures(QgsFeatureRequest().setSubsetOfAttributes([]))
         feedback.pushInfo(self.tr('Processing lines...'))
-        total = 40.0 / QgsProcessingUtils.featureCount(vlayer, context)
+        total = (40.0 / source.featureCount()) if source.featureCount() else 1
         for current, inFeat in enumerate(features):
+            if feedback.isCanceled():
+                break
+
             if inFeat.geometry():
                 allLinesList.append(inFeat.geometry())
             feedback.setProgress(int(current * total))
@@ -101,24 +92,27 @@ class Polygonize(GeoAlgorithm):
 
         feedback.pushInfo(self.tr('Noding lines...'))
         allLines = QgsGeometry.unaryUnion(allLinesList)
+        if feedback.isCanceled():
+            return {}
 
         feedback.setProgress(45)
         feedback.pushInfo(self.tr('Polygonizing...'))
         polygons = QgsGeometry.polygonize([allLines])
         if polygons.isEmpty():
-            raise GeoAlgorithmExecutionException(self.tr('No polygons were created!'))
+            feedback.reportError(self.tr('No polygons were created!'))
         feedback.setProgress(50)
 
-        feedback.pushInfo('Saving polygons...')
-        writer = output.getVectorWriter(fields, QgsWkbTypes.Polygon, vlayer.crs(), context)
-        total = 50.0 / polygons.geometry().numGeometries()
-        for i in range(polygons.geometry().numGeometries()):
-            outFeat = QgsFeature()
-            geom = QgsGeometry(polygons.geometry().geometryN(i).clone())
-            outFeat.setGeometry(geom)
-            if self.getParameterValue(self.GEOMETRY):
-                outFeat.setAttributes([None] * fieldsCount + [geom.geometry().area(),
-                                                              geom.geometry().perimeter()])
-            writer.addFeature(outFeat)
-            feedback.setProgress(50 + int(current * total))
-        del writer
+        if not polygons.isEmpty():
+            feedback.pushInfo('Saving polygons...')
+            total = 50.0 / polygons.geometry().numGeometries()
+            for i in range(polygons.geometry().numGeometries()):
+                if feedback.isCanceled():
+                    break
+
+                outFeat = QgsFeature()
+                geom = QgsGeometry(polygons.geometry().geometryN(i).clone())
+                outFeat.setGeometry(geom)
+                sink.addFeature(outFeat, QgsFeatureSink.FastInsert)
+                feedback.setProgress(50 + int(current * total))
+
+        return {self.OUTPUT: dest_id}

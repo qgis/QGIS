@@ -11,12 +11,15 @@ INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}
   ${CMAKE_SOURCE_DIR}/src/annotations
   ${CMAKE_SOURCE_DIR}/src/core/auth
   ${CMAKE_SOURCE_DIR}/src/core/composer
+  ${CMAKE_SOURCE_DIR}/src/core/expression
   ${CMAKE_SOURCE_DIR}/src/core/geometry
+  ${CMAKE_SOURCE_DIR}/src/core/layout
   ${CMAKE_SOURCE_DIR}/src/core/metadata
   ${CMAKE_SOURCE_DIR}/src/core/effects
   ${CMAKE_SOURCE_DIR}/src/core/layertree
   ${CMAKE_SOURCE_DIR}/src/core/metadata
   ${CMAKE_SOURCE_DIR}/src/core/processing
+  ${CMAKE_SOURCE_DIR}/src/core/processing/models
   ${CMAKE_SOURCE_DIR}/src/core/raster
   ${CMAKE_SOURCE_DIR}/src/core/scalebar
   ${CMAKE_SOURCE_DIR}/src/core/symbology-ng
@@ -97,6 +100,7 @@ SET(TESTS
  testcontrastenhancements.cpp
  testqgscoordinatereferencesystem.cpp
  testqgscoordinatetransform.cpp
+ testqgsdatadefinedsizelegend.cpp
  testqgsdataitem.cpp
  testqgsdatasourceuri.cpp
  testqgsdiagram.cpp
@@ -122,6 +126,13 @@ SET(TESTS
  testqgsjsonutils.cpp
  testqgslabelingengine.cpp
  testqgslayertree.cpp
+ testqgslayout.cpp
+ testqgslayoutcontext.cpp
+ testqgslayoutitem.cpp
+ testqgslayoutobject.cpp
+ testqgslayoutpage.cpp
+ testqgslayoutunits.cpp
+ testqgslayoututils.cpp
  testqgslegendrenderer.cpp
  testqgscentroidfillsymbol.cpp
  testqgslinefillsymbol.cpp
@@ -137,6 +148,7 @@ SET(TESTS
  testqgsnetworkcontentfetcher.cpp
  testqgsogcutils.cpp
  testqgsogrutils.cpp
+ testqgspagesizeregistry.cpp
  testqgspainteffectregistry.cpp
  testqgspainteffect.cpp
  testqgspallabeling.cpp

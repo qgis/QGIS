@@ -17,6 +17,18 @@
 #define QGIS_SIP_H
 
 /*
+ * if written, the SIP file will not be generated automatically
+ * or can be also defined directly in the file (to avoid including this)
+ */
+#define SIP_NO_FILE
+
+/*
+ * the module will be included if the condition is met
+ */
+#define SIP_IF_MODULE(condition)
+
+
+/*
  * http://pyqt.sourceforge.net/Docs/sip4/annotations.html?highlight=keepreference#function-annotation-Transfer
  *
  * Example QgsVectorLayer::setDiagramRenderer
@@ -34,35 +46,35 @@
 #define SIP_TRANSFERTHIS
 
 /*
- * http://pyqt.sourceforge.net/Docs/sip4/annotations.html?highlight=keepreference#argument-annotation-Out
+ * http://pyqt.sourceforge.net/Docs/sip4/annotations.html#argument-annotation-Out
  */
 #define SIP_OUT
 
 /*
- * http://pyqt.sourceforge.net/Docs/sip4/annotations.html?highlight=keepreference#argument-annotation-In
+ * http://pyqt.sourceforge.net/Docs/sip4/annotations.html#argument-annotation-In
  */
 #define SIP_IN
 
 /*
  * Combination of
- * http://pyqt.sourceforge.net/Docs/sip4/annotations.html?highlight=keepreference#argument-annotation-In
+ * http://pyqt.sourceforge.net/Docs/sip4/annotations.html#argument-annotation-In
  * and
- * http://pyqt.sourceforge.net/Docs/sip4/annotations.html?highlight=keepreference#argument-annotation-Out
+ * http://pyqt.sourceforge.net/Docs/sip4/annotations.html#argument-annotation-Out
  */
 #define SIP_INOUT
 
 /*
- * http://pyqt.sourceforge.net/Docs/sip4/annotations.html?highlight=keepreference#function-annotation-Factory
+ * http://pyqt.sourceforge.net/Docs/sip4/annotations.html#function-annotation-Factory
  */
 #define SIP_FACTORY
 
 /*
- * http://pyqt.sourceforge.net/Docs/sip4/annotations.html?highlight=keepreference#function-annotation-PyName
+ * http://pyqt.sourceforge.net/Docs/sip4/annotations.html#class-annotation-PyName
  */
 #define SIP_PYNAME(name)
 
 /*
- * http://pyqt.sourceforge.net/Docs/sip4/annotations.html?highlight=keepreference#argument-annotation-KeepReference
+ * http://pyqt.sourceforge.net/Docs/sip4/annotations.html#argument-annotation-KeepReference
  */
 #define SIP_KEEPREFERENCE
 
@@ -77,6 +89,31 @@
 #define SIP_ARRAYSIZE
 
 /*
+ * http://pyqt.sourceforge.net/Docs/sip4/annotations.html#class-annotation-NoDefaultCtors
+ */
+#define SIP_NODEFAULTCTORS
+
+/*
+ * http://pyqt.sourceforge.net/Docs/sip4/annotations.html?highlight=deprecated#function-annotation-Deprecated
+ */
+#define SIP_DEPRECATED
+
+/*
+ * http://pyqt.sourceforge.net/Docs/sip4/annotations.html?highlight=constrained#argument-annotation-Constrained
+ */
+#define SIP_CONSTRAINED
+
+/*
+ * http://pyqt.sourceforge.net/Docs/sip4/annotations.html?highlight=external#class-annotation-External
+ */
+#define SIP_EXTERNAL
+
+/*
+ * http://pyqt.sourceforge.net/Docs/sip4/annotations.html?highlight=allownone
+ */
+#define SIP_ALLOWNONE
+
+/*
   * discard line
   */
 #define SIP_SKIP
@@ -89,7 +126,7 @@
 /*
   * specify an alternative type for SIP argument or return value
   */
-#define SIP_PYTYPE(type)
+#define SIP_PYALTERNATIVETYPE(type)
 
 /*
   * specify an alternative default value for SIP argument
@@ -118,9 +155,19 @@
 #define SIP_IF_FEATURE(feature)
 
 /*
+ * Will place the current line with an `%If feature` directive in sip file
+ */
+#define SIP_WHEN_FEATURE(feature)
+
+/*
  * Convert to subclass code
  */
 #define SIP_CONVERT_TO_SUBCLASS_CODE(code)
+
+/*
+ * Virtual error handler (/VirtualErrorHandler/)
+ */
+#define SIP_VIRTUALERRORHANDLER(name)
 
 /*
  * Will insert a `%End` directive in sip files
@@ -132,5 +179,9 @@
  */
 #define SIP_ABSTRACT
 
+/*
+ * Virtual catcher code
+ */
+#define SIP_VIRTUAL_CATCHER_CODE(code)
 
 #endif // QGIS_SIP_H

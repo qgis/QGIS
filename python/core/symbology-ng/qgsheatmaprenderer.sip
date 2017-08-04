@@ -1,126 +1,191 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/symbology-ng/qgsheatmaprenderer.h                           *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
 class QgsHeatmapRenderer : QgsFeatureRenderer
 {
+%Docstring
+ A renderer which draws points as a live heatmap
+.. versionadded:: 2.7
+%End
+
 %TypeHeaderCode
-#include <qgsheatmaprenderer.h>
+#include "qgsheatmaprenderer.h"
 %End
   public:
 
     QgsHeatmapRenderer();
     virtual ~QgsHeatmapRenderer();
 
-    //reimplemented methods
+
     virtual QgsHeatmapRenderer *clone() const /Factory/;
     virtual void startRender( QgsRenderContext &context, const QgsFields &fields );
     virtual bool renderFeature( QgsFeature &feature, QgsRenderContext &context, int layer = -1, bool selected = false, bool drawVertexMarker = false );
     virtual void stopRender( QgsRenderContext &context );
-    //! @note symbolForFeature2 in python bindings
     virtual QgsSymbol *symbolForFeature( QgsFeature &feature, QgsRenderContext &context );
-    //! @note symbol2 in python bindings
+%Docstring
+.. note::
+
+   symbolForFeature2 in Python bindings
+ :rtype: QgsSymbol
+%End
     virtual QgsSymbolList symbols( QgsRenderContext &context );
+%Docstring
+.. note::
+
+   symbol2 in Python bindings
+ :rtype: QgsSymbolList
+%End
     virtual QString dump() const;
     virtual QSet<QString> usedAttributes( const QgsRenderContext &context ) const;
-    static QgsFeatureRenderer *create( QDomElement &element ) /Factory/;
-    virtual QDomElement save( QDomDocument &doc );
+    static QgsFeatureRenderer *create( QDomElement &element, const QgsReadWriteContext &context ) /Factory/;
+%Docstring
+Creates a new heatmap renderer instance from XML
+ :rtype: QgsFeatureRenderer
+%End
+    virtual QDomElement save( QDomDocument &doc, const QgsReadWriteContext &context );
     static QgsHeatmapRenderer *convertFromRenderer( const QgsFeatureRenderer *renderer ) /Factory/;
+%Docstring
+ :rtype: QgsHeatmapRenderer
+%End
 
-    //reimplemented to extent the request so that points up to heatmap's radius distance outside
-    //visible area are included
     virtual void modifyRequestExtent( QgsRectangle &extent, QgsRenderContext &context );
 
-    //heatmap specific methods
 
-    /** Returns the color ramp used for shading the heatmap.
-     * @returns color ramp for heatmap
-     * @see setColorRamp
-     */
     QgsColorRamp *colorRamp() const;
-    /** Sets the color ramp to use for shading the heatmap.
-     * @param ramp color ramp for heatmap. Ownership of ramp is transferred to the renderer.
-     * @see colorRamp
-     */
+%Docstring
+ Returns the color ramp used for shading the heatmap.
+ :return: color ramp for heatmap
+.. seealso:: setColorRamp
+ :rtype: QgsColorRamp
+%End
+
     void setColorRamp( QgsColorRamp *ramp /Transfer/ );
+%Docstring
+ Sets the color ramp to use for shading the heatmap.
+ \param ramp color ramp for heatmap. Ownership of ramp is transferred to the renderer.
+.. seealso:: colorRamp
+%End
 
-    /** Returns the radius for the heatmap
-     * @returns heatmap radius
-     * @see setRadius
-     * @see radiusUnit
-     * @see radiusMapUnitScale
-     */
     double radius() const;
-    /** Sets the radius for the heatmap
-     * @param radius heatmap radius
-     * @see radius
-     * @see setRadiusUnit
-     * @see setRadiusMapUnitScale
-     */
+%Docstring
+ Returns the radius for the heatmap
+ :return: heatmap radius
+.. seealso:: setRadius
+.. seealso:: radiusUnit
+.. seealso:: radiusMapUnitScale
+ :rtype: float
+%End
+
     void setRadius( const double radius );
+%Docstring
+ Sets the radius for the heatmap
+ \param radius heatmap radius
+.. seealso:: radius
+.. seealso:: setRadiusUnit
+.. seealso:: setRadiusMapUnitScale
+%End
 
-    /** Returns the units used for the heatmap's radius
-     * @returns units for heatmap radius
-     * @see radius
-     * @see setRadiusUnit
-     * @see radiusMapUnitScale
-     */
     QgsUnitTypes::RenderUnit radiusUnit() const;
-    /** Sets the units used for the heatmap's radius
-     * @param unit units for heatmap radius
-     * @see radiusUnit
-     * @see setRadius
-     * @see radiusMapUnitScale
-     */
+%Docstring
+ Returns the units used for the heatmap's radius
+ :return: units for heatmap radius
+.. seealso:: radius
+.. seealso:: setRadiusUnit
+.. seealso:: radiusMapUnitScale
+ :rtype: QgsUnitTypes.RenderUnit
+%End
+
     void setRadiusUnit( const QgsUnitTypes::RenderUnit unit );
+%Docstring
+ Sets the units used for the heatmap's radius
+ \param unit units for heatmap radius
+.. seealso:: radiusUnit
+.. seealso:: setRadius
+.. seealso:: radiusMapUnitScale
+%End
 
-    /** Returns the map unit scale used for the heatmap's radius
-     * @returns map unit scale for heatmap's radius
-     * @see radius
-     * @see radiusUnit
-     * @see setRadiusMapUnitScale
-     */
     const QgsMapUnitScale &radiusMapUnitScale() const;
-    /** Sets the map unit scale used for the heatmap's radius
-     * @param scale map unit scale for heatmap's radius
-     * @see setRadius
-     * @see setRadiusUnit
-     * @see radiusMapUnitScale
-     */
+%Docstring
+ Returns the map unit scale used for the heatmap's radius
+ :return: map unit scale for heatmap's radius
+.. seealso:: radius
+.. seealso:: radiusUnit
+.. seealso:: setRadiusMapUnitScale
+ :rtype: QgsMapUnitScale
+%End
+
     void setRadiusMapUnitScale( const QgsMapUnitScale &scale );
+%Docstring
+ Sets the map unit scale used for the heatmap's radius
+ \param scale map unit scale for heatmap's radius
+.. seealso:: setRadius
+.. seealso:: setRadiusUnit
+.. seealso:: radiusMapUnitScale
+%End
 
-    /** Returns the maximum value used for shading the heatmap.
-     * @returns maximum value for heatmap shading. If 0, then maximum value will be automatically
-     * calculated.
-     * @see setMaximumValue
-     */
     double maximumValue() const;
-    /** Sets the maximum value used for shading the heatmap.
-     * @param value maximum value for heatmap shading. Set to 0 for automatic calculation of
-     * maximum value.
-     * @see maximumValue
-     */
+%Docstring
+ Returns the maximum value used for shading the heatmap.
+ :return: maximum value for heatmap shading. If 0, then maximum value will be automatically
+ calculated.
+.. seealso:: setMaximumValue
+ :rtype: float
+%End
+
     void setMaximumValue( const double value );
+%Docstring
+ Sets the maximum value used for shading the heatmap.
+ \param value maximum value for heatmap shading. Set to 0 for automatic calculation of
+ maximum value.
+.. seealso:: maximumValue
+%End
 
-    /** Returns the render quality used for drawing the heatmap.
-     * @returns render quality. A value of 1 indicates maximum quality, and increasing the
-     * value will result in faster drawing but lower quality rendering.
-     * @see setRenderQuality
-     */
     double renderQuality() const;
-    /** Sets the render quality used for drawing the heatmap.
-     * @param quality render quality. A value of 1 indicates maximum quality, and increasing the
-     * value will result in faster drawing but lower quality rendering.
-     * @see renderQuality
-     */
+%Docstring
+ Returns the render quality used for drawing the heatmap.
+ :return: render quality. A value of 1 indicates maximum quality, and increasing the
+ value will result in faster drawing but lower quality rendering.
+.. seealso:: setRenderQuality
+ :rtype: float
+%End
+
     void setRenderQuality( const int quality );
+%Docstring
+ Sets the render quality used for drawing the heatmap.
+ \param quality render quality. A value of 1 indicates maximum quality, and increasing the
+ value will result in faster drawing but lower quality rendering.
+.. seealso:: renderQuality
+%End
 
-    /** Returns the expression used for weighting points when generating the heatmap.
-     * @returns point weight expression. If empty, all points are equally weighted.
-     * @see setWeightExpression
-     */
     QString weightExpression() const;
+%Docstring
+ Returns the expression used for weighting points when generating the heatmap.
+ :return: point weight expression. If empty, all points are equally weighted.
+.. seealso:: setWeightExpression
+ :rtype: str
+%End
 
-    /** Sets the expression used for weighting points when generating the heatmap.
-     * @param expression point weight expression. If set to empty, all points are equally weighted.
-     * @see weightExpression
-     */
     void setWeightExpression( const QString &expression );
+%Docstring
+ Sets the expression used for weighting points when generating the heatmap.
+ \param expression point weight expression. If set to empty, all points are equally weighted.
+.. seealso:: weightExpression
+%End
 
 };
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/symbology-ng/qgsheatmaprenderer.h                           *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

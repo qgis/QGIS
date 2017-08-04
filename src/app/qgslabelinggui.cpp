@@ -56,7 +56,7 @@ void QgsLabelingGui::updateProperty()
   mDataDefinedProperties.setProperty( key, button->toProperty() );
 }
 
-QgsLabelingGui::QgsLabelingGui( QgsVectorLayer *layer, QgsMapCanvas *mapCanvas, const QgsPalLayerSettings *layerSettings, QWidget *parent )
+QgsLabelingGui::QgsLabelingGui( QgsVectorLayer *layer, QgsMapCanvas *mapCanvas, const QgsPalLayerSettings &layerSettings, QWidget *parent )
   : QgsTextFormatWidget( mapCanvas, parent, QgsTextFormatWidget::Labeling )
   , mLayer( layer )
   , mSettings( layerSettings )
@@ -72,6 +72,11 @@ QgsLabelingGui::QgsLabelingGui( QgsVectorLayer *layer, QgsMapCanvas *mapCanvas, 
   connect( mFontLimitPixelChkBox, &QAbstractButton::toggled, this, &QgsLabelingGui::updateUi );
 
   mFieldExpressionWidget->registerExpressionContextGenerator( this );
+
+  mMinScaleWidget->setMapCanvas( mapCanvas );
+  mMinScaleWidget->setShowCurrentScaleButton( true );
+  mMaxScaleWidget->setMapCanvas( mapCanvas );
+  mMaxScaleWidget->setShowCurrentScaleButton( true );
 
   setLayer( layer );
 }
@@ -92,11 +97,7 @@ void QgsLabelingGui::setLayer( QgsMapLayer *mapLayer )
   mLayer = layer;
 
   // load labeling settings from layer
-  QgsPalLayerSettings lyr;
-  if ( mSettings )
-    lyr = *mSettings;
-  else
-    lyr.readFromLayer( mLayer );
+  const QgsPalLayerSettings &lyr = mSettings;
 
   // show/hide options based upon geometry type
   chkMergeLines->setVisible( mLayer->geometryType() == QgsWkbTypes::LineGeometry );
@@ -159,13 +160,13 @@ void QgsLabelingGui::setLayer( QgsMapLayer *mapLayer )
   mCentroidInsideCheckBox->setChecked( lyr.centroidInside );
   mFitInsidePolygonCheckBox->setChecked( lyr.fitInPolygonOnly );
   mLineDistanceSpnBx->setValue( lyr.dist );
-  mLineDistanceUnitWidget->setUnit( lyr.distInMapUnits ? QgsUnitTypes::RenderMapUnits : QgsUnitTypes::RenderMillimeters );
+  mLineDistanceUnitWidget->setUnit( lyr.distUnits );
   mLineDistanceUnitWidget->setMapUnitScale( lyr.distMapUnitScale );
   mOffsetTypeComboBox->setCurrentIndex( mOffsetTypeComboBox->findData( lyr.offsetType ) );
   mQuadrantBtnGrp->button( ( int )lyr.quadOffset )->setChecked( true );
   mPointOffsetXSpinBox->setValue( lyr.xOffset );
   mPointOffsetYSpinBox->setValue( lyr.yOffset );
-  mPointOffsetUnitWidget->setUnit( lyr.labelOffsetInMapUnits ? QgsUnitTypes::RenderMapUnits : QgsUnitTypes::RenderMillimeters );
+  mPointOffsetUnitWidget->setUnit( lyr.offsetUnits );
   mPointOffsetUnitWidget->setMapUnitScale( lyr.labelOffsetMapUnitScale );
   mPointAngleSpinBox->setValue( lyr.angleOffset );
   chkLineAbove->setChecked( lyr.placementFlags & QgsPalLayerSettings::AboveLine );
@@ -208,7 +209,7 @@ void QgsLabelingGui::setLayer( QgsMapLayer *mapLayer )
 
   // Label repeat distance
   mRepeatDistanceSpinBox->setValue( lyr.repeatDistance );
-  mRepeatDistanceUnitWidget->setUnit( lyr.repeatDistanceUnit == QgsPalLayerSettings::MapUnits ? QgsUnitTypes::RenderMapUnits : QgsUnitTypes::RenderMillimeters );
+  mRepeatDistanceUnitWidget->setUnit( lyr.repeatDistanceUnit );
   mRepeatDistanceUnitWidget->setMapUnitScale( lyr.repeatDistanceMapUnitScale );
 
   mPrioritySlider->setValue( lyr.priority );
@@ -247,8 +248,8 @@ void QgsLabelingGui::setLayer( QgsMapLayer *mapLayer )
   setPreviewBackground( lyr.previewBkgrdColor );
 
   mScaleBasedVisibilityChkBx->setChecked( lyr.scaleVisibility );
-  mScaleBasedVisibilityMinSpnBx->setValue( lyr.scaleMin );
-  mScaleBasedVisibilityMaxSpnBx->setValue( lyr.scaleMax );
+  mMinScaleWidget->setScale( lyr.minimumScale );
+  mMaxScaleWidget->setScale( lyr.maximumScale );
 
   mFormatNumChkBx->setChecked( lyr.formatNumbers );
   mFormatNumDecimalsSpnBx->setValue( lyr.decimals );
@@ -288,24 +289,6 @@ void QgsLabelingGui::blockInitSignals( bool block )
   mPlacePolygonBtnGrp->blockSignals( block );
 }
 
-void QgsLabelingGui::apply()
-{
-  writeSettingsToLayer();
-  mFontMissingLabel->setVisible( false );
-  QgisApp::instance()->markDirty();
-  // trigger refresh
-  mLayer->triggerRepaint();
-}
-
-void QgsLabelingGui::writeSettingsToLayer()
-{
-  mLayer->setLabeling( new QgsVectorLayerSimpleLabeling );
-
-  // all configuration is still in layer's custom properties
-  QgsPalLayerSettings settings = layerSettings();
-  settings.writeToLayer( mLayer );
-}
-
 void QgsLabelingGui::setLabelMode( LabelMode mode )
 {
   mMode = mode;
@@ -317,7 +300,6 @@ QgsPalLayerSettings QgsLabelingGui::layerSettings()
 {
   QgsPalLayerSettings lyr;
 
-  lyr.enabled = ( mMode == Labels || mMode == ObstaclesOnly );
   lyr.drawLabels = ( mMode == Labels );
 
   bool isExpression;
@@ -332,7 +314,7 @@ QgsPalLayerSettings QgsLabelingGui::layerSettings()
   lyr.centroidInside = mCentroidInsideCheckBox->isChecked();
   lyr.fitInPolygonOnly = mFitInsidePolygonCheckBox->isChecked();
   lyr.dist = mLineDistanceSpnBx->value();
-  lyr.distInMapUnits = ( mLineDistanceUnitWidget->unit() == QgsUnitTypes::RenderMapUnits );
+  lyr.distUnits = mLineDistanceUnitWidget->unit();
   lyr.distMapUnitScale = mLineDistanceUnitWidget->getMapUnitScale();
   lyr.offsetType = static_cast< QgsPalLayerSettings::OffsetType >( mOffsetTypeComboBox->currentData().toInt() );
   if ( mQuadrantBtnGrp )
@@ -341,7 +323,7 @@ QgsPalLayerSettings QgsLabelingGui::layerSettings()
   }
   lyr.xOffset = mPointOffsetXSpinBox->value();
   lyr.yOffset = mPointOffsetYSpinBox->value();
-  lyr.labelOffsetInMapUnits = ( mPointOffsetUnitWidget->unit() == QgsUnitTypes::RenderMapUnits );
+  lyr.offsetUnits = mPointOffsetUnitWidget->unit();
   lyr.labelOffsetMapUnitScale = mPointOffsetUnitWidget->getMapUnitScale();
   lyr.angleOffset = mPointAngleSpinBox->value();
   if ( chkLineAbove->isChecked() )
@@ -394,7 +376,7 @@ QgsPalLayerSettings QgsLabelingGui::layerSettings()
   }
 
   lyr.repeatDistance = mRepeatDistanceSpinBox->value();
-  lyr.repeatDistanceUnit = mRepeatDistanceUnitWidget->unit() == QgsUnitTypes::RenderMapUnits ? QgsPalLayerSettings::MapUnits : QgsPalLayerSettings::MM;
+  lyr.repeatDistanceUnit = mRepeatDistanceUnitWidget->unit();
   lyr.repeatDistanceMapUnitScale = mRepeatDistanceUnitWidget->getMapUnitScale();
 
   lyr.previewBkgrdColor = mPreviewBackgroundBtn->color();
@@ -408,8 +390,8 @@ QgsPalLayerSettings QgsLabelingGui::layerSettings()
   lyr.mergeLines = chkMergeLines->isChecked();
 
   lyr.scaleVisibility = mScaleBasedVisibilityChkBx->isChecked();
-  lyr.scaleMin = mScaleBasedVisibilityMinSpnBx->value();
-  lyr.scaleMax = mScaleBasedVisibilityMaxSpnBx->value();
+  lyr.minimumScale = mMinScaleWidget->scale();
+  lyr.maximumScale = mMaxScaleWidget->scale();
   lyr.useSubstitutions = mCheckBoxSubstituteText->isChecked();
   lyr.substitutions = mSubstitutions;
 
@@ -468,7 +450,7 @@ void QgsLabelingGui::populateDataDefinedButtons()
   registerDataDefinedButton( mFontSizeDDBtn, QgsPalLayerSettings::Size );
   registerDataDefinedButton( mFontUnitsDDBtn, QgsPalLayerSettings::FontSizeUnit );
   registerDataDefinedButton( mFontColorDDBtn, QgsPalLayerSettings::Color );
-  registerDataDefinedButton( mFontTranspDDBtn, QgsPalLayerSettings::FontTransp );
+  registerDataDefinedButton( mFontOpacityDDBtn, QgsPalLayerSettings::FontOpacity );
   registerDataDefinedButton( mFontCaseDDBtn, QgsPalLayerSettings::FontCase );
   registerDataDefinedButton( mFontLetterSpacingDDBtn, QgsPalLayerSettings::FontLetterSpacing );
   registerDataDefinedButton( mFontWordSpacingDDBtn, QgsPalLayerSettings::FontWordSpacing );
@@ -498,7 +480,7 @@ void QgsLabelingGui::populateDataDefinedButtons()
   registerDataDefinedButton( mBufferSizeDDBtn, QgsPalLayerSettings::BufferSize );
   registerDataDefinedButton( mBufferUnitsDDBtn, QgsPalLayerSettings::BufferUnit );
   registerDataDefinedButton( mBufferColorDDBtn, QgsPalLayerSettings::BufferColor );
-  registerDataDefinedButton( mBufferTranspDDBtn, QgsPalLayerSettings::BufferTransp );
+  registerDataDefinedButton( mBufferOpacityDDBtn, QgsPalLayerSettings::BufferOpacity );
   registerDataDefinedButton( mBufferJoinStyleDDBtn, QgsPalLayerSettings::BufferJoinStyle );
   registerDataDefinedButton( mBufferBlendModeDDBtn, QgsPalLayerSettings::BufferBlendMode );
 
@@ -517,7 +499,7 @@ void QgsLabelingGui::populateDataDefinedButtons()
   registerDataDefinedButton( mShapeOffsetUnitsDDBtn, QgsPalLayerSettings::ShapeOffsetUnits );
   registerDataDefinedButton( mShapeRadiusDDBtn, QgsPalLayerSettings::ShapeRadii );
   registerDataDefinedButton( mShapeRadiusUnitsDDBtn, QgsPalLayerSettings::ShapeRadiiUnits );
-  registerDataDefinedButton( mShapeTranspDDBtn, QgsPalLayerSettings::ShapeTransparency );
+  registerDataDefinedButton( mShapeOpacityDDBtn, QgsPalLayerSettings::ShapeOpacity );
   registerDataDefinedButton( mShapeBlendModeDDBtn, QgsPalLayerSettings::ShapeBlendMode );
   registerDataDefinedButton( mShapeFillColorDDBtn, QgsPalLayerSettings::ShapeFillColor );
   registerDataDefinedButton( mShapeStrokeColorDDBtn, QgsPalLayerSettings::ShapeStrokeColor );
@@ -534,7 +516,7 @@ void QgsLabelingGui::populateDataDefinedButtons()
   registerDataDefinedButton( mShadowOffsetUnitsDDBtn, QgsPalLayerSettings::ShadowOffsetUnits );
   registerDataDefinedButton( mShadowRadiusDDBtn, QgsPalLayerSettings::ShadowRadius );
   registerDataDefinedButton( mShadowRadiusUnitsDDBtn, QgsPalLayerSettings::ShadowRadiusUnits );
-  registerDataDefinedButton( mShadowTranspDDBtn, QgsPalLayerSettings::ShadowTransparency );
+  registerDataDefinedButton( mShadowOpacityDDBtn, QgsPalLayerSettings::ShadowOpacity );
   registerDataDefinedButton( mShadowScaleDDBtn, QgsPalLayerSettings::ShadowScale );
   registerDataDefinedButton( mShadowColorDDBtn, QgsPalLayerSettings::ShadowColor );
   registerDataDefinedButton( mShadowBlendDDBtn, QgsPalLayerSettings::ShadowBlendMode );
@@ -568,7 +550,7 @@ void QgsLabelingGui::populateDataDefinedButtons()
   mCoordAlignmentHDDBtn->setUsageInfo( ddPlaceInfo );
   registerDataDefinedButton( mCoordAlignmentVDDBtn, QgsPalLayerSettings::Vali );
   mCoordAlignmentVDDBtn->setUsageInfo( ddPlaceInfo );
-  registerDataDefinedButton( mCoordRotationDDBtn, QgsPalLayerSettings::Rotation );
+  registerDataDefinedButton( mCoordRotationDDBtn, QgsPalLayerSettings::LabelRotation );
   mCoordRotationDDBtn->setUsageInfo( ddPlaceInfo );
 
   // rendering
@@ -576,9 +558,9 @@ void QgsLabelingGui::populateDataDefinedButtons()
                                "Value of 0 disables the specific limit." );
   registerDataDefinedButton( mScaleBasedVisibilityDDBtn, QgsPalLayerSettings::ScaleVisibility );
   mScaleBasedVisibilityDDBtn->registerCheckedWidget( mScaleBasedVisibilityChkBx );
-  registerDataDefinedButton( mScaleBasedVisibilityMinDDBtn, QgsPalLayerSettings::MinScale );
+  registerDataDefinedButton( mScaleBasedVisibilityMinDDBtn, QgsPalLayerSettings::MinimumScale );
   mScaleBasedVisibilityMinDDBtn->setUsageInfo( ddScaleVisInfo );
-  registerDataDefinedButton( mScaleBasedVisibilityMaxDDBtn, QgsPalLayerSettings::MaxScale );
+  registerDataDefinedButton( mScaleBasedVisibilityMaxDDBtn, QgsPalLayerSettings::MaximumScale );
   mScaleBasedVisibilityMaxDDBtn->setUsageInfo( ddScaleVisInfo );
 
   registerDataDefinedButton( mFontLimitPixelDDBtn, QgsPalLayerSettings::FontLimitPixel );

@@ -27,23 +27,18 @@ __revision__ = '$Format:%H$'
 
 import os
 
-from qgis.core import QgsFeature, QgsProcessingUtils
+from qgis.core import (QgsProcessing,
+                       QgsWkbTypes)
 
 from qgis.PyQt.QtGui import QIcon
 
-from processing.core.GeoAlgorithm import GeoAlgorithm
-from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
-from processing.core.parameters import ParameterVector
-from processing.core.outputs import OutputVector
-from processing.tools import dataobjects
+from processing.algs.qgis.QgisAlgorithm import QgisFeatureBasedAlgorithm
+
 
 pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
 
-class MergeLines(GeoAlgorithm):
-
-    INPUT_LAYER = 'INPUT_LAYER'
-    OUTPUT_LAYER = 'OUTPUT_LAYER'
+class MergeLines(QgisFeatureBasedAlgorithm):
 
     def icon(self):
         return QIcon(os.path.join(pluginPath, 'images', 'ftools', 'to_lines.png'))
@@ -54,41 +49,30 @@ class MergeLines(GeoAlgorithm):
     def group(self):
         return self.tr('Vector geometry tools')
 
+    def __init__(self):
+        super().__init__()
+
     def name(self):
         return 'mergelines'
 
     def displayName(self):
         return self.tr('Merge lines')
 
-    def defineCharacteristics(self):
-        self.addParameter(ParameterVector(self.INPUT_LAYER,
-                                          self.tr('Input layer'), [dataobjects.TYPE_VECTOR_LINE]))
-        self.addOutput(OutputVector(self.OUTPUT_LAYER, self.tr('Merged'), datatype=[dataobjects.TYPE_VECTOR_LINE]))
+    def outputName(self):
+        return self.tr('Merged')
 
-    def processAlgorithm(self, context, feedback):
-        layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT_LAYER), context)
+    def outputType(self):
+        return QgsProcessing.TypeVectorLine
 
-        writer = self.getOutputFromName(
-            self.OUTPUT_LAYER).getVectorWriter(layer.fields(), layer.wkbType(), layer.crs(), context)
+    def outputWkbType(self, input_wkb):
+        return QgsWkbTypes.MultiLineString
 
-        features = QgsProcessingUtils.getFeatures(layer, context)
-        total = 100.0 / QgsProcessingUtils.featureCount(layer, context)
+    def processFeature(self, feature, feedback):
+        input_geometry = feature.geometry()
+        if input_geometry:
+            output_geometry = input_geometry.mergeLines()
+            if not output_geometry:
+                feedback.reportError(self.tr('Error merging lines for feature {}').format(feature.id()))
 
-        for current, inFeat in enumerate(features):
-            outFeat = QgsFeature()
-            attrs = inFeat.attributes()
-            outFeat.setAttributes(attrs)
-
-            inGeom = inFeat.geometry()
-            if inGeom:
-                outGeom = inGeom.mergeLines()
-                if outGeom is None:
-                    raise GeoAlgorithmExecutionException(
-                        self.tr('Error merging lines'))
-
-                outFeat.setGeometry(outGeom)
-
-            writer.addFeature(outFeat)
-            feedback.setProgress(int(current * total))
-
-        del writer
+            feature.setGeometry(output_geometry)
+        return feature

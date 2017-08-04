@@ -244,6 +244,9 @@ class QgsWFSFeatureIterator : public QObject,
     QFile *mReaderFile = nullptr;
     QDataStream *mReaderStream = nullptr;
     bool mFetchGeometry;
+
+    QgsCoordinateTransform mTransform;
+    QgsRectangle mFilterRect;
 };
 
 //! Feature source
@@ -258,6 +261,7 @@ class QgsWFSFeatureSource : public QgsAbstractFeatureSource
   private:
 
     std::shared_ptr<QgsWFSSharedData> mShared;  //!< Mutable data shared between provider and feature sources
+    QgsCoordinateReferenceSystem mCrs;
 
     friend class QgsWFSFeatureIterator;
 };

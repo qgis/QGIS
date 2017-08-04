@@ -16,9 +16,13 @@
 #ifndef QGSSQLEXPRESSIONCOMPILER_H
 #define QGSSQLEXPRESSIONCOMPILER_H
 
+#define SIP_NO_FILE
+
 #include "qgis_core.h"
-#include "qgsexpression.h"
 #include "qgsfields.h"
+
+class QgsExpression;
+class QgsExpressionNode;
 
 /** \ingroup core
  * \class QgsSqlExpressionCompiler
@@ -69,7 +73,7 @@ class CORE_EXPORT QgsSqlExpressionCompiler
 
     /** Returns the compiled expression string for use by the provider.
      */
-    virtual QString result() { return mResult; }
+    virtual QString result();
 
   protected:
 
@@ -93,7 +97,7 @@ class CORE_EXPORT QgsSqlExpressionCompiler
      * \param str string representing compiled node should be stored in this parameter
      * \returns result of node compilation
      */
-    virtual Result compileNode( const QgsExpression::Node *node, QString &str );
+    virtual Result compileNode( const QgsExpressionNode *node, QString &str );
 
     /** Return the SQL function for the expression function.
      * Derived classes should override this to help compile functions
@@ -132,7 +136,7 @@ class CORE_EXPORT QgsSqlExpressionCompiler
 
     Flags mFlags;
 
-    bool nodeIsNullLiteral( const QgsExpression::Node *node ) const;
+    bool nodeIsNullLiteral( const QgsExpressionNode *node ) const;
 
 };
 

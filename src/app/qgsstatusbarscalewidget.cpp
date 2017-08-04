@@ -102,6 +102,5 @@ void QgsStatusBarScaleWidget::updateScales( const QStringList &scales )
 
 void QgsStatusBarScaleWidget::userScale() const
 {
-  // Why has MapCanvas the scale inverted?
-  mMapCanvas->zoomScale( 1.0 / mScale->scale() );
+  mMapCanvas->zoomScale( mScale->scale() );
 }

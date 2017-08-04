@@ -16,7 +16,6 @@
  ***************************************************************************/
 #include "qgsdb2geometrycolumns.h"
 #include "qgsdb2tablemodel.h" // needed for QgsDB2LayerProperty
-#include "qgsdb2newconnection.h" // needed for ENV_ZOS, ENV_LUW
 #include <QtSql>
 #include <qgslogger.h>
 
@@ -28,7 +27,7 @@ QgsDb2GeometryColumns::QgsDb2GeometryColumns( const QSqlDatabase &db )
   QgsDebugMsg( "constructing" );
 }
 
-QgsDb2GeometryColumns::~QgsDb2GeometryColumns( )
+QgsDb2GeometryColumns::~QgsDb2GeometryColumns()
 {
   mQuery.clear();
 }
@@ -159,6 +158,6 @@ bool QgsDb2GeometryColumns::populateLayerProperty( QgsDb2LayerProperty &layer )
   {
     QgsDebugMsg( "Warning: table primary key count is " + QString::number( pk.count() ) );
   }
-  layer.pkColumnName = layer.pkCols.size() > 0 ? layer.pkCols.at( 0 ) : QString::null;
+  layer.pkColumnName = layer.pkCols.size() > 0 ? layer.pkCols.at( 0 ) : QString();
   return true;
 }

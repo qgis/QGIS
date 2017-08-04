@@ -21,6 +21,13 @@
 #include "qgis_server.h"
 #include "qgsproject.h"
 
+#ifdef SIP_RUN
+% ModuleHeaderCode
+#include "qgsserverprojectutils.h"
+% End
+#endif
+
+
 /** \ingroup server
  * The QgsServerProjectUtils namespace provides a way to retrieve specific
  * entries from a QgsProject.
@@ -123,13 +130,55 @@ namespace QgsServerProjectUtils
     * \param project the QGIS project
     * \returns if the info format is SIA20145.
     */
-  SERVER_EXPORT bool wmsInfoFormatSIA2045( const QgsProject &project );
+  SERVER_EXPORT bool wmsInfoFormatSia2045( const QgsProject &project );
+
+  /** Returns if the geometry is displayed as Well Known Text in GetFeatureInfo request.
+    * \param project the QGIS project
+    * \returns if the geometry is displayed as Well Known Text in GetFeatureInfo request.
+    */
+  SERVER_EXPORT bool wmsFeatureInfoAddWktGeometry( const QgsProject &project );
+
+  /** Returns if the geometry has to be segmentize in GetFeatureInfo request.
+    * \param project the QGIS project
+    * \returns if the geometry has to be segmentize in GetFeatureInfo request.
+    */
+  SERVER_EXPORT bool wmsFeatureInfoSegmentizeWktGeometry( const QgsProject &project );
+
+  /** Returns the geometry precision for GetFeatureInfo request.
+    * \param project the QGIS project
+    * \returns the geometry precision for GetFeatureInfo request.
+    */
+  SERVER_EXPORT int wmsFeatureInfoPrecision( const QgsProject &project );
+
+  /** Returns the document element name for XML GetFeatureInfo request.
+    * \param project the QGIS project
+    * \returns the document element name for XML GetFeatureInfo request.
+    */
+  SERVER_EXPORT QString wmsFeatureInfoDocumentElement( const QgsProject &project );
+
+  /** Returns the document element namespace for XML GetFeatureInfo request.
+    * \param project the QGIS project
+    * \returns the document element namespace for XML GetFeatureInfo request.
+    */
+  SERVER_EXPORT QString wmsFeatureInfoDocumentElementNs( const QgsProject &project );
+
+  /** Returns the schema URL for XML GetFeatureInfo request.
+    * \param project the QGIS project
+    * \returns the schema URL for XML GetFeatureInfo request.
+    */
+  SERVER_EXPORT QString wmsFeatureInfoSchema( const QgsProject &project );
+
+  /** Returns the mapping between layer name and wms layer name for GetFeatureInfo request.
+    * \param project the QGIS project
+    * \returns the mapping between layer name and wms layer name for GetFeatureInfo request.
+    */
+  SERVER_EXPORT QHash<QString, QString> wmsFeatureInfoLayerAliasMap( const QgsProject &project );
 
   /** Returns if Inspire is activated.
     * \param project the QGIS project
     * \returns if Inspire is activated.
     */
-  SERVER_EXPORT bool wmsInspireActivated( const QgsProject &project );
+  SERVER_EXPORT bool wmsInspireActivate( const QgsProject &project );
 
   /** Returns the Inspire language.
     * \param project the QGIS project
@@ -172,6 +221,30 @@ namespace QgsServerProjectUtils
     * \returns url if defined in project, an empty string otherwise.
     */
   SERVER_EXPORT QString wmsServiceUrl( const QgsProject &project );
+
+  /** Returns the WMS root layer name defined in a QGIS project.
+    * \param project the QGIS project
+    * \returns root layer name if defined in project, an empty string otherwise.
+    */
+  SERVER_EXPORT QString wmsRootName( const QgsProject &project );
+
+  /** Returns the restricted layer name list.
+    * \param project the QGIS project
+    * \returns the restricted layer name list if defined in project.
+    */
+  SERVER_EXPORT QStringList wmsRestrictedLayers( const QgsProject &project );
+
+  /** Returns the WMS output CRS list.
+    * \param project the QGIS project
+    * \returns the WMS output CRS list.
+    */
+  SERVER_EXPORT QStringList wmsOutputCrsList( const QgsProject &project );
+
+  /** Returns the WMS Extent restriction.
+    * \param project the QGIS project
+    * \returns the WMS Extent restriction.
+    */
+  SERVER_EXPORT  QgsRectangle wmsExtent( const QgsProject &project );
 
   /** Returns the WFS service url defined in a QGIS project.
     * \param project the QGIS project
@@ -221,7 +294,7 @@ namespace QgsServerProjectUtils
     * \param project the QGIS project
     * \returns the Layer ids list.
     */
-  SERVER_EXPORT QStringList wcsLayers( const QgsProject &project );
+  SERVER_EXPORT QStringList wcsLayerIds( const QgsProject &project );
 };
 
 #endif

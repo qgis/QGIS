@@ -20,6 +20,7 @@
 
 #include "qgis_core.h"
 #include "qgis.h"
+#include "qgis_sip.h"
 #include <limits>
 
 #include <QCoreApplication> // for tr()
@@ -76,6 +77,67 @@ class CORE_EXPORT QgsRasterBlockFeedback : public QgsFeedback
  */
 class CORE_EXPORT QgsRasterInterface
 {
+#ifdef SIP_RUN
+// QgsRasterInterface subclasses
+#include <qgsbrightnesscontrastfilter.h>
+#include <qgshuesaturationfilter.h>
+#include <qgsrasterdataprovider.h>
+#include <qgsrasternuller.h>
+#include <qgsrasterprojector.h>
+#include <qgsrasterrenderer.h>
+#include <qgsrasterresamplefilter.h>
+
+// QgsRasterRenderer subclasses
+#include <qgshillshaderenderer.h>
+#include <qgsmultibandcolorrenderer.h>
+#include <qgspalettedrasterrenderer.h>
+#include <qgssinglebandcolordatarenderer.h>
+#include <qgssinglebandgrayrenderer.h>
+#include <qgssinglebandpseudocolorrenderer.h>
+#endif
+
+
+#ifdef SIP_RUN
+    SIP_CONVERT_TO_SUBCLASS_CODE
+    if ( dynamic_cast<QgsBrightnessContrastFilter *>( sipCpp ) )
+      sipType = sipType_QgsBrightnessContrastFilter;
+    else if ( dynamic_cast<QgsHueSaturationFilter *>( sipCpp ) )
+      sipType = sipType_QgsHueSaturationFilter;
+    else if ( dynamic_cast<QgsRasterDataProvider *>( sipCpp ) )
+    {
+      sipType = sipType_QgsRasterDataProvider;
+      // use static cast because QgsRasterDataProvider has multiple inheritance
+      // and we would end up with bad pointer otherwise!
+      *sipCppRet = static_cast<QgsRasterDataProvider *>( sipCpp );
+    }
+    else if ( dynamic_cast<QgsRasterNuller *>( sipCpp ) )
+      sipType = sipType_QgsRasterNuller;
+    else if ( dynamic_cast<QgsRasterProjector *>( sipCpp ) )
+      sipType = sipType_QgsRasterProjector;
+    else if ( dynamic_cast<QgsRasterRenderer *>( sipCpp ) )
+    {
+      if ( dynamic_cast<QgsHillshadeRenderer *>( sipCpp ) )
+        sipType = sipType_QgsHillshadeRenderer;
+      else if ( dynamic_cast<QgsMultiBandColorRenderer *>( sipCpp ) )
+        sipType = sipType_QgsMultiBandColorRenderer;
+      else if ( dynamic_cast<QgsPalettedRasterRenderer *>( sipCpp ) )
+        sipType = sipType_QgsPalettedRasterRenderer;
+      else if ( dynamic_cast<QgsSingleBandColorDataRenderer *>( sipCpp ) )
+        sipType = sipType_QgsSingleBandColorDataRenderer;
+      else if ( dynamic_cast<QgsSingleBandGrayRenderer *>( sipCpp ) )
+        sipType = sipType_QgsSingleBandGrayRenderer;
+      else if ( dynamic_cast<QgsSingleBandPseudoColorRenderer *>( sipCpp ) )
+        sipType = sipType_QgsSingleBandPseudoColorRenderer;
+      else
+        sipType = sipType_QgsRasterRenderer;
+    }
+    else if ( dynamic_cast<QgsRasterResampleFilter *>( sipCpp ) )
+      sipType = sipType_QgsRasterResampleFilter;
+    else
+      sipType = 0;
+    SIP_END
+#endif
+
     Q_DECLARE_TR_FUNCTIONS( QgsRasterInterface )
 
   public:
@@ -171,8 +233,9 @@ class CORE_EXPORT QgsRasterInterface
     /** Get source / raw input, the first in pipe, usually provider.
      *  It may be used to get info about original data, e.g. resolution to decide
      *  resampling etc.
+     * \note not available in Python bindings.
      */
-    virtual const QgsRasterInterface *sourceInput() const
+    virtual const QgsRasterInterface *sourceInput() const SIP_SKIP
     {
       QgsDebugMsgLevel( "Entered", 4 );
       return mInput ? mInput->sourceInput() : this;
@@ -209,11 +272,12 @@ class CORE_EXPORT QgsRasterInterface
                                 const QgsRectangle &extent = QgsRectangle(),
                                 int sampleSize = 0 );
 
+
     /** \brief Get histogram. Histograms are cached in providers.
      * \param bandNo The band (number).
      * \param binCount Number of bins (intervals,buckets). If 0, the number of bins is decided automatically according to data type, raster size etc.
-     * \param minimum Minimum value, if NaN, raster minimum value will be used.
-     * \param maximum Maximum value, if NaN, raster minimum value will be used.
+     * \param minimum Minimum value, if NaN (None for Python), raster minimum value will be used.
+     * \param maximum Maximum value, if NaN (None for Python), raster maximum value will be used.
      * \param extent Extent used to calc histogram, if empty, whole raster extent is used.
      * \param sampleSize Approximate number of cells in sample. If 0, all cells (whole raster will be used). If raster does not have exact size (WCS without exact size for example), provider decides size of sample.
      * \param includeOutOfRange include out of range values
@@ -221,17 +285,63 @@ class CORE_EXPORT QgsRasterInterface
      * \returns Vector of non NULL cell counts for each bin.
      * \note binCount, minimum and maximum not optional in Python bindings
      */
+#ifndef SIP_RUN
     virtual QgsRasterHistogram histogram( int bandNo,
                                           int binCount = 0,
                                           double minimum = std::numeric_limits<double>::quiet_NaN(),
                                           double maximum = std::numeric_limits<double>::quiet_NaN(),
                                           const QgsRectangle &extent = QgsRectangle(),
                                           int sampleSize = 0,
-                                          bool includeOutOfRange = false, QgsRasterBlockFeedback *feedback = nullptr );
+                                          bool includeOutOfRange = false,
+                                          QgsRasterBlockFeedback *feedback = nullptr );
+#else
+    virtual QgsRasterHistogram histogram( int bandNo,
+                                          int binCount = 0,
+                                          SIP_PYOBJECT minimum = Py_None,
+                                          SIP_PYOBJECT maximum = Py_None,
+                                          const QgsRectangle &extent = QgsRectangle(),
+                                          int sampleSize = 0,
+                                          bool includeOutOfRange = false,
+                                          QgsRasterBlockFeedback *feedback = nullptr )
+    [QgsRasterHistogram( int bandNo,
+                         int binCount = 0,
+                         double minimum = 0.0,
+                         double maximum = 0.0,
+                         const QgsRectangle &extent = QgsRectangle(),
+                         int sampleSize = 0,
+                         bool includeOutOfRange = false,
+                         QgsRasterBlockFeedback *feedback = nullptr )];
+    % MethodCode
+    double minimum;
+    double maximum;
+    if ( a2 == Py_None )
+    {
+      minimum = std::numeric_limits<double>::quiet_NaN();
+    }
+    else
+    {
+      minimum = PyFloat_AsDouble( a2 );
+    }
 
-    /** \brief Returns true if histogram is available (cached, already calculated), the parameters are the same as in histogram()
-     * \note binCount, minimum and maximum not optional in Python bindings
+    if ( a3 == Py_None )
+    {
+      maximum = std::numeric_limits<double>::quiet_NaN();
+    }
+    else
+    {
+      maximum = PyFloat_AsDouble( a3 );
+    }
+
+    QgsRasterHistogram h = sipCpp->histogram( a0, a1, minimum, maximum, *a4, a5, a6, a7 );
+    sipRes = &h;
+    % End
+#endif
+
+
+    /** \brief Returns true if histogram is available (cached, already calculated)
+     * \note the parameters are the same as in \see histogram()
      */
+#ifndef SIP_RUN
     virtual bool hasHistogram( int bandNo,
                                int binCount,
                                double minimum = std::numeric_limits<double>::quiet_NaN(),
@@ -239,6 +349,46 @@ class CORE_EXPORT QgsRasterInterface
                                const QgsRectangle &extent = QgsRectangle(),
                                int sampleSize = 0,
                                bool includeOutOfRange = false );
+#else
+    virtual bool hasHistogram( int bandNo,
+                               int binCount,
+                               SIP_PYOBJECT minimum = Py_None,
+                               SIP_PYOBJECT maximum = Py_None,
+                               const QgsRectangle &extent = QgsRectangle(),
+                               int sampleSize = 0,
+                               bool includeOutOfRange = false )
+    [bool( int bandNo,
+           int binCount,
+           double minimum = 0.0,
+           double maximum = 0.0,
+           const QgsRectangle &extent = QgsRectangle(),
+           int sampleSize = 0,
+           bool includeOutOfRange = false )];
+    % MethodCode
+    double minimum;
+    double maximum;
+    if ( a2 == Py_None )
+    {
+      minimum = std::numeric_limits<double>::quiet_NaN();
+    }
+    else
+    {
+      minimum = PyFloat_AsDouble( a2 );
+    }
+
+    if ( a3 == Py_None )
+    {
+      maximum = std::numeric_limits<double>::quiet_NaN();
+    }
+    else
+    {
+      maximum = PyFloat_AsDouble( a3 );
+    }
+
+    sipRes = sipCpp->hasHistogram( a0, a1, minimum, maximum, *a4, a5, a6 );
+    % End
+#endif
+
 
     /** \brief Find values for cumulative pixel count cut.
      * \param bandNo The band (number).
@@ -267,24 +417,73 @@ class CORE_EXPORT QgsRasterInterface
     QgsRasterInterface *mInput = nullptr;
 
     //! \brief List  of cached statistics, all bands mixed
-    QList <QgsRasterBandStats> mStatistics;
+    QList<QgsRasterBandStats> mStatistics;
 
     //! \brief List  of cached histograms, all bands mixed
-    QList <QgsRasterHistogram> mHistograms;
+    QList<QgsRasterHistogram> mHistograms;
 
     // On/off state, if off, it does not do anything, replicates input
     bool mOn;
 
     /** Fill in histogram defaults if not specified
-     * \note binCount, minimum and maximum not optional in Python bindings
+     * \note the parameters are the same as in \see histogram()
      */
-    void initHistogram( QgsRasterHistogram &histogram, int bandNo,
-                        int binCount = 0,
+#ifndef SIP_RUN
+    void initHistogram( QgsRasterHistogram &histogram,
+                        int bandNo,
+                        int binCount,
                         double minimum = std::numeric_limits<double>::quiet_NaN(),
                         double maximum = std::numeric_limits<double>::quiet_NaN(),
                         const QgsRectangle &boundingBox = QgsRectangle(),
                         int sampleSize = 0,
                         bool includeOutOfRange = false );
+#else
+    void initHistogram( QgsRasterHistogram &histogram,
+                        int bandNo,
+                        int binCount,
+                        SIP_PYOBJECT minimum = Py_None,
+                        SIP_PYOBJECT maximum = Py_None,
+                        const QgsRectangle &boundingBox = QgsRectangle(),
+                        int sampleSize = 0,
+                        bool includeOutOfRange = false )
+    [void ( QgsRasterHistogram & histogram,
+            int bandNo,
+            int binCount,
+            double minimum = 0.0,
+            double maximum = 0.0,
+            const QgsRectangle &boundingBox = QgsRectangle(),
+            int sampleSize = 0,
+            bool includeOutOfRange = false )];
+    % MethodCode
+    double minimum;
+    double maximum;
+    if ( a3 == Py_None )
+    {
+      minimum = std::numeric_limits<double>::quiet_NaN();
+    }
+    else
+    {
+      minimum = PyFloat_AsDouble( a3 );
+    }
+
+    if ( a4 == Py_None )
+    {
+      maximum = std::numeric_limits<double>::quiet_NaN();
+    }
+    else
+    {
+      maximum = PyFloat_AsDouble( a4 );
+    }
+
+#if defined(SIP_PROTECTED_IS_PUBLIC)
+    sipCpp->initHistogram( *a0, a1, a2, minimum, maximum, *a5, a6, a7 );
+#else
+    sipCpp->sipProtect_initHistogram( *a0, a1, a2, minimum, maximum, *a5, a6, a7 );
+#endif
+    % End
+#endif
+
+
 
     //! Fill in statistics defaults if not specified
     void initStatistics( QgsRasterBandStats &statistics, int bandNo,
@@ -293,6 +492,11 @@ class CORE_EXPORT QgsRasterInterface
                          int binCount = 0 );
 
   private:
+#ifdef SIP_RUN
+    QgsRasterInterface( const QgsRasterInterface & );
+    QgsRasterInterface &operator=( const QgsRasterInterface & );
+#endif
+
     Q_DISABLE_COPY( QgsRasterInterface )   // there is clone() for copying
 };
 

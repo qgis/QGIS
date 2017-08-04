@@ -729,10 +729,15 @@ void QgsSpatiaLiteProvider::loadFieldsAbstractInterface( gaiaVectorLayerPtr lyr 
   int ret = sqlite3_get_table( mSqliteHandle, sql.toUtf8().constData(), &results, &rows, &columns, &errMsg );
   if ( ret == SQLITE_OK )
   {
+    int realFieldIndex = 0;
     for ( int i = 1; i <= rows; i++ )
     {
       QString name = QString::fromUtf8( results[( i * columns ) + 1] );
-      insertDefaultValue( i - 1, QString::fromUtf8( results[( i * columns ) + 4] ) );
+
+      if ( name.toLower() == mGeometryColumn )
+        continue;
+
+      insertDefaultValue( realFieldIndex, QString::fromUtf8( results[( i * columns ) + 4] ) );
 
       QString pk = results[( i * columns ) + 5];
       QString type = results[( i * columns ) + 2];
@@ -762,6 +767,7 @@ void QgsSpatiaLiteProvider::loadFieldsAbstractInterface( gaiaVectorLayerPtr lyr 
       else
         mPrimaryKey.clear();
       mPrimaryKeyAttrs << i - 1;
+      realFieldIndex += 1;
     }
   }
 
@@ -797,7 +803,7 @@ QString QgsSpatiaLiteProvider::spatialiteVersion()
   if ( ret != SQLITE_OK || rows != 1 )
   {
     QgsMessageLog::logMessage( tr( "Retrieval of spatialite version failed" ), tr( "SpatiaLite" ) );
-    return QString::null;
+    return QString();
   }
 
   mSpatialiteVersionInfo = QString::fromUtf8( results[( 1 * columns ) + 0] );
@@ -812,7 +818,7 @@ QString QgsSpatiaLiteProvider::spatialiteVersion()
   if ( spatialiteVersionParts.size() < 2 )
   {
     QgsMessageLog::logMessage( tr( "Could not parse spatialite version string '%1'" ).arg( mSpatialiteVersionInfo ), tr( "SpatiaLite" ) );
-    return QString::null;
+    return QString();
   }
 
   mSpatialiteVersionMajor = spatialiteVersionParts[0].toInt();
@@ -3641,17 +3647,17 @@ QVariant QgsSpatiaLiteProvider::maximumValue( int index ) const
 }
 
 // Returns the list of unique values of an attribute
-void QgsSpatiaLiteProvider::uniqueValues( int index, QList < QVariant > &uniqueValues, int limit ) const
+QSet<QVariant> QgsSpatiaLiteProvider::uniqueValues( int index, int limit ) const
 {
   sqlite3_stmt *stmt = nullptr;
   QString sql;
 
-  uniqueValues.clear();
+  QSet<QVariant> uniqueValues;
 
   // get the field name
   if ( index < 0 || index >= mAttributeFields.count() )
   {
-    return; //invalid field
+    return uniqueValues; //invalid field
   }
   QgsField fld = mAttributeFields.at( index );
 
@@ -3674,7 +3680,7 @@ void QgsSpatiaLiteProvider::uniqueValues( int index, QList < QVariant > &uniqueV
   {
     // some error occurred
     QgsMessageLog::logMessage( tr( "SQLite error: %2\nSQL: %1" ).arg( sql, sqlite3_errmsg( mSqliteHandle ) ), tr( "SpatiaLite" ) );
-    return;
+    return uniqueValues;
   }
 
   while ( 1 )
@@ -3694,16 +3700,16 @@ void QgsSpatiaLiteProvider::uniqueValues( int index, QList < QVariant > &uniqueV
       switch ( sqlite3_column_type( stmt, 0 ) )
       {
         case SQLITE_INTEGER:
-          uniqueValues.append( QVariant( sqlite3_column_int( stmt, 0 ) ) );
+          uniqueValues.insert( QVariant( sqlite3_column_int( stmt, 0 ) ) );
           break;
         case SQLITE_FLOAT:
-          uniqueValues.append( QVariant( sqlite3_column_double( stmt, 0 ) ) );
+          uniqueValues.insert( QVariant( sqlite3_column_double( stmt, 0 ) ) );
           break;
         case SQLITE_TEXT:
-          uniqueValues.append( QVariant( QString::fromUtf8( ( const char * ) sqlite3_column_text( stmt, 0 ) ) ) );
+          uniqueValues.insert( QVariant( QString::fromUtf8( ( const char * ) sqlite3_column_text( stmt, 0 ) ) ) );
           break;
         default:
-          uniqueValues.append( QVariant( mAttributeFields.at( index ).type() ) );
+          uniqueValues.insert( QVariant( mAttributeFields.at( index ).type() ) );
           break;
       }
     }
@@ -3711,13 +3717,13 @@ void QgsSpatiaLiteProvider::uniqueValues( int index, QList < QVariant > &uniqueV
     {
       QgsMessageLog::logMessage( tr( "SQLite error: %2\nSQL: %1" ).arg( sql, sqlite3_errmsg( mSqliteHandle ) ), tr( "SpatiaLite" ) );
       sqlite3_finalize( stmt );
-      return;
+      return uniqueValues;
     }
   }
 
   sqlite3_finalize( stmt );
 
-  return;
+  return uniqueValues;
 }
 
 QStringList QgsSpatiaLiteProvider::uniqueStringsMatching( int index, const QString &substring, int limit, QgsFeedback *feedback ) const
@@ -3823,7 +3829,7 @@ static void deleteWkbBlob( void *wkbBlob )
   delete[]( char * )wkbBlob;
 }
 
-bool QgsSpatiaLiteProvider::addFeatures( QgsFeatureList &flist )
+bool QgsSpatiaLiteProvider::addFeatures( QgsFeatureList &flist, Flags flags )
 {
   sqlite3_stmt *stmt = nullptr;
   char *errMsg = nullptr;
@@ -3956,7 +3962,7 @@ bool QgsSpatiaLiteProvider::addFeatures( QgsFeatureList &flist )
           }
           else if ( type == QVariant::StringList || type == QVariant::List )
           {
-            const QByteArray ba = QgsJSONUtils::encodeValue( v ).toUtf8();
+            const QByteArray ba = QgsJsonUtils::encodeValue( v ).toUtf8();
             sqlite3_bind_text( stmt, ++ia, ba.constData(), ba.size(), SQLITE_TRANSIENT );
           }
           else
@@ -3972,7 +3978,10 @@ bool QgsSpatiaLiteProvider::addFeatures( QgsFeatureList &flist )
         if ( ret == SQLITE_DONE || ret == SQLITE_ROW )
         {
           // update feature id
-          feature->setId( sqlite3_last_insert_rowid( mSqliteHandle ) );
+          if ( !( flags & QgsFeatureSink::FastInsert ) )
+          {
+            feature->setId( sqlite3_last_insert_rowid( mSqliteHandle ) );
+          }
           mNumberFeatures++;
         }
         else
@@ -4264,7 +4273,7 @@ bool QgsSpatiaLiteProvider::changeAttributeValues( const QgsChangedAttributesMap
         else if ( type == QVariant::StringList || type == QVariant::List )
         {
           // binding an array value
-          sql += QStringLiteral( "%1=%2" ).arg( quotedIdentifier( fld.name() ), quotedValue( QgsJSONUtils::encodeValue( val ) ) );
+          sql += QStringLiteral( "%1=%2" ).arg( quotedIdentifier( fld.name() ), quotedValue( QgsJsonUtils::encodeValue( val ) ) );
         }
         else
         {

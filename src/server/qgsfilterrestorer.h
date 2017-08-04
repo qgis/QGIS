@@ -18,6 +18,9 @@
 #ifndef QGSFILTERRESTORER_H
 #define QGSFILTERRESTORER_H
 
+#define SIP_NO_FILE
+
+
 #include "qgis_server.h"
 
 #include <QHash>
@@ -52,6 +55,13 @@ class SERVER_EXPORT QgsOWSServerFilterRestorer
     //XXX May be this method should be owned QgsAccessControl
     static void applyAccessControlLayerFilters( const QgsAccessControl *accessControl, QgsMapLayer *mapLayer,
         QHash<QgsMapLayer *, QString> &originalLayerFilters );
+
+    /** Applies filters from access control on layer.
+     * \param accessControl The access control instance
+     * \param mapLayer The layer on which the filter has to be applied
+     * \since QGIS 3.0
+     */
+    static void applyAccessControlLayerFilters( const QgsAccessControl *accessControl, QgsMapLayer *mapLayer );
 
   private:
     const QgsAccessControl *mAccessControl = nullptr;

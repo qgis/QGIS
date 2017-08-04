@@ -19,6 +19,7 @@
 #define QGSPOINTDISTANCERENDERER_H
 
 #include "qgis_core.h"
+#include "qgis.h"
 #include "qgsrenderer.h"
 #include <QFont>
 
@@ -41,34 +42,37 @@ class CORE_EXPORT QgsPointDistanceRenderer: public QgsFeatureRenderer
     struct GroupedFeature
     {
 
-      /** Constructor for GroupedFeature.
-      * \param feature feature
-      * \param symbol base symbol for rendering feature
-      * \param isSelected set to true if feature is selected and should be rendered in a selected state
-      * \param label optional label text, or empty string for no label
-      */
-      GroupedFeature( const QgsFeature &feature, QgsMarkerSymbol *symbol, bool isSelected, const QString &label = QString() )
-        : feature( feature )
-        , symbol( symbol )
-        , isSelected( isSelected )
-        , label( label )
-      {}
+        /** Constructor for GroupedFeature.
+        * \param feature feature
+        * \param symbol base symbol for rendering feature (owned by GroupedFeature)
+        * \param isSelected set to true if feature is selected and should be rendered in a selected state
+        * \param label optional label text, or empty string for no label
+        */
+        GroupedFeature( const QgsFeature &feature, QgsMarkerSymbol *symbol SIP_TRANSFER, bool isSelected, const QString &label = QString() )
+          : feature( feature )
+          , isSelected( isSelected )
+          , label( label )
+          , mSymbol( symbol )
+        {}
 
-      //! Feature
-      QgsFeature feature;
+        //! Feature
+        QgsFeature feature;
 
-      //! Base symbol for rendering feature
-      QgsMarkerSymbol *symbol = nullptr;
+        //! Base symbol for rendering feature
+        QgsMarkerSymbol *symbol() const { return mSymbol.get(); }
 
-      //! True if feature is selected and should be rendered in a selected state
-      bool isSelected;
+        //! True if feature is selected and should be rendered in a selected state
+        bool isSelected;
 
-      //! Optional label text
-      QString label;
+        //! Optional label text
+        QString label;
+
+      private:
+        std::shared_ptr< QgsMarkerSymbol > mSymbol;
     };
 
     //! A group of clustered points (ie features within the distance tolerance).
-    typedef QList< GroupedFeature > ClusteredGroup;
+    typedef QList< QgsPointDistanceRenderer::GroupedFeature > ClusteredGroup;
 
     /** Constructor for QgsPointDistanceRenderer.
      * \param rendererName name of renderer for registry
@@ -79,7 +83,7 @@ class CORE_EXPORT QgsPointDistanceRenderer: public QgsFeatureRenderer
     virtual void toSld( QDomDocument &doc, QDomElement &element, const QgsStringMap &props = QgsStringMap() ) const override;
     bool renderFeature( QgsFeature &feature, QgsRenderContext &context, int layer = -1, bool selected = false, bool drawVertexMarker = false ) override;
     virtual QSet<QString> usedAttributes( const QgsRenderContext &context ) const override;
-    virtual Capabilities capabilities() override;
+    virtual QgsFeatureRenderer::Capabilities capabilities() override;
     virtual QgsSymbolList symbols( QgsRenderContext &context ) override;
     virtual QgsSymbol *symbolForFeature( QgsFeature &feature, QgsRenderContext &context ) override;
     virtual QgsSymbol *originalSymbolForFeature( QgsFeature &feat, QgsRenderContext &context ) override;
@@ -89,11 +93,10 @@ class CORE_EXPORT QgsPointDistanceRenderer: public QgsFeatureRenderer
     virtual bool willRenderFeature( QgsFeature &feat, QgsRenderContext &context ) override;
     virtual void startRender( QgsRenderContext &context, const QgsFields &fields ) override;
     void stopRender( QgsRenderContext &context ) override;
-    QgsLegendSymbologyList legendSymbologyItems( QSize iconSize ) override;
-    QgsLegendSymbolList legendSymbolItems( double scaleDenominator = -1, const QString &rule = "" ) override;
-    void setEmbeddedRenderer( QgsFeatureRenderer *r ) override;
+    virtual QgsLegendSymbolList legendSymbolItems() const override;
+    void setEmbeddedRenderer( QgsFeatureRenderer *r SIP_TRANSFER ) override;
     const QgsFeatureRenderer *embeddedRenderer() const override;
-    void setLegendSymbolItem( const QString &key, QgsSymbol *symbol ) override;
+    void setLegendSymbolItem( const QString &key, QgsSymbol *symbol SIP_TRANSFER ) override;
     bool legendSymbolItemsCheckable() const override;
     bool legendSymbolItemChecked( const QString &key ) override;
     void checkLegendSymbolItem( const QString &key, bool state ) override;
@@ -104,7 +107,7 @@ class CORE_EXPORT QgsPointDistanceRenderer: public QgsFeatureRenderer
      * \see labelAttributeName()
      * \see setLabelFont()
      * \see setLabelColor()
-     * \see setMaxLabelScaleDenominator()
+     * \see setMinimumLabelScale()
      */
     void setLabelAttributeName( const QString &name ) { mLabelAttributeName = name; }
 
@@ -112,7 +115,7 @@ class CORE_EXPORT QgsPointDistanceRenderer: public QgsFeatureRenderer
      * will be done by the renderer.
      * \see setLabelAttributeName()
      * \see labelFont()
-     * \see maxLabelScaleDenominator()
+     * \see minimumLabelScale()
      * \see labelColor()
      */
     QString labelAttributeName() const { return mLabelAttributeName; }
@@ -132,18 +135,21 @@ class CORE_EXPORT QgsPointDistanceRenderer: public QgsFeatureRenderer
      */
     QFont labelFont() const { return mLabelFont;}
 
-    /** Sets the maximum scale at which points should be labeled by the renderer.
-     * \param denominator maximum scale denominator
-     * \see maxLabelScaleDenominator()
+    /**
+     * Sets the minimum map \a scale (i.e. most "zoomed out") at which points should be labeled by the renderer.
+     * The \a scale value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
+     * \see minimumLabelScale()
      * \see setLabelAttributeName()
      */
-    void setMaxLabelScaleDenominator( double denominator ) { mMaxLabelScaleDenominator = denominator; }
+    void setMinimumLabelScale( double scale ) { mMinLabelScale = scale; }
 
-    /** Returns the denominator for the maximum scale at which points should be labeled by the renderer.
-     * \see setMaxLabelScaleDenominator()
+    /**
+     * Returns the minimum map scale (i.e. most "zoomed out") at which points should be labeled by the renderer.
+     * The scale value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
+     * \see setMinimumLabelScale()
      * \see labelAttributeName()
      */
-    double maxLabelScaleDenominator() const { return mMaxLabelScaleDenominator; }
+    double minimumLabelScale() const { return mMinLabelScale; }
 
     /** Sets the color to use for for labeling points.
      * \param color label color
@@ -229,8 +235,8 @@ class CORE_EXPORT QgsPointDistanceRenderer: public QgsFeatureRenderer
     QColor mLabelColor;
     //! Whether labels should be drawn for points. This is set internally from startRender() depending on scale denominator.
     bool mDrawLabels;
-    //! Maximum scale denominator for label display. A negative number indicatese no scale limitation.
-    double mMaxLabelScaleDenominator;
+    //! Maximum scale denominator for label display. A zero value indicates no scale limitation.
+    double mMinLabelScale = 0;
 
     //! Groups of features that are considered clustered together.
     QList<ClusteredGroup> mClusteredGroups;
@@ -239,7 +245,7 @@ class CORE_EXPORT QgsPointDistanceRenderer: public QgsFeatureRenderer
     QMap<QgsFeatureId, int> mGroupIndex;
 
     //! Mapping of feature ID to approximate group location
-    QMap<QgsFeatureId, QgsPoint > mGroupLocations;
+    QMap<QgsFeatureId, QgsPointXY > mGroupLocations;
 
     //! Spatial index for fast lookup of nearby points.
     QgsSpatialIndex *mSpatialIndex = nullptr;
@@ -260,10 +266,10 @@ class CORE_EXPORT QgsPointDistanceRenderer: public QgsFeatureRenderer
      * \param context destination render context
      * \param group contents of group
      */
-    virtual void drawGroup( QPointF centerPoint, QgsRenderContext &context, const ClusteredGroup &group ) = 0;
+    virtual void drawGroup( QPointF centerPoint, QgsRenderContext &context, const ClusteredGroup &group ) = 0 SIP_FORCE;
 
     //! Creates a search rectangle with specified distance tolerance.
-    QgsRectangle searchRect( const QgsPoint &p, double distance ) const;
+    QgsRectangle searchRect( const QgsPointXY &p, double distance ) const;
 
     //! Debugging function to check the entries in the clustered groups
     void printGroupInfo() const;

@@ -1,106 +1,126 @@
-/***************************************************************************
-  qgs25drenderer.sip - Qgs25DRenderer
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/symbology-ng/qgs25drenderer.h                               *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
 
- ---------------------
- begin                : 14.1.2016
- copyright            : (C) 2016 by Matthias Kuhn
- email                : matthias@opengis.ch
- ***************************************************************************
- *                                                                         *
- *   This program is free software; you can redistribute it and/or modify  *
- *   it under the terms of the GNU General Public License as published by  *
- *   the Free Software Foundation; either version 2 of the License, or     *
- *   (at your option) any later version.                                   *
- *                                                                         *
- ***************************************************************************/
+
 
 class Qgs25DRenderer : QgsFeatureRenderer
 {
+
 %TypeHeaderCode
 #include "qgs25drenderer.h"
 %End
   public:
     Qgs25DRenderer();
 
-    /**
-     * Create a new 2.5D renderer from XML
-     *
-     * @param element XML information
-     */
-    static QgsFeatureRenderer *create( QDomElement &element );
-    QDomElement save( QDomDocument &doc );
+    static QgsFeatureRenderer *create( QDomElement &element, const QgsReadWriteContext &context ) /Factory/;
+%Docstring
+ Create a new 2.5D renderer from XML
 
-    void startRender( QgsRenderContext &context, const QgsFields &fields );
-    void stopRender( QgsRenderContext &context );
+ \param element XML information
+ \param context reading context
+ :rtype: QgsFeatureRenderer
+%End
+    virtual QDomElement save( QDomDocument &doc, const QgsReadWriteContext &context );
 
-    QSet<QString> usedAttributes( const QgsRenderContext &context ) const;
-    QgsFeatureRenderer *clone() const;
+
+    virtual void startRender( QgsRenderContext &context, const QgsFields &fields );
+
+    virtual void stopRender( QgsRenderContext &context );
+
+
+    virtual QSet<QString> usedAttributes( const QgsRenderContext &context ) const;
+
+    virtual QgsFeatureRenderer *clone() const /Factory/;
+
 
     virtual QgsSymbol *symbolForFeature( QgsFeature &feature, QgsRenderContext &context );
     virtual QgsSymbolList symbols( QgsRenderContext &context );
 
-    /**
-     * Get the roof color
-     */
     QColor roofColor() const;
+%Docstring
+ Get the roof color
+ :rtype: QColor
+%End
 
-    /**
-     * Set the roof color
-     */
     void setRoofColor( const QColor &roofColor );
+%Docstring
+ Set the roof color
+%End
 
-    /**
-     * Get the wall color
-     */
     QColor wallColor() const;
+%Docstring
+ Get the wall color
+ :rtype: QColor
+%End
 
-    /**
-     * Set the wall color
-     */
     void setWallColor( const QColor &wallColor );
+%Docstring
+ Set the wall color
+%End
 
-    /**
-     * Set wall shading enabled
-     */
     void setWallShadingEnabled( bool enabled );
+%Docstring
+ Set wall shading enabled
+%End
 
-    /**
-     * Get wall shading enabled
-     */
     bool wallShadingEnabled() const;
+%Docstring
+ Get wall shading enabled
+ :rtype: bool
+%End
 
-    /**
-     * Get the shadow's color
-     */
     QColor shadowColor() const;
+%Docstring
+ Get the shadow's color
+ :rtype: QColor
+%End
 
-    /**
-     * Set the shadow's color
-     */
     void setShadowColor( const QColor &shadowColor );
+%Docstring
+ Set the shadow's color
+%End
 
-    /**
-     * Get the shadow's spread distance in map units
-     */
     double shadowSpread() const;
-    /**
-     * Set the shadow's spread distance in map units
-     */
+%Docstring
+ Get the shadow's spread distance in map units
+ :rtype: float
+%End
+
     void setShadowSpread( double shadowSpread );
+%Docstring
+ Set the shadow's spread distance in map units
+%End
 
-    /**
-     * Try to convert from an existing renderer. If it is not of the same type
-     * we assume that the internals are not compatible and create a new default
-     * 2.5D renderer.
-     */
-    static Qgs25DRenderer *convertFromRenderer( QgsFeatureRenderer *renderer );
+    static Qgs25DRenderer *convertFromRenderer( QgsFeatureRenderer *renderer ) /Factory/;
+%Docstring
+ Try to convert from an existing renderer. If it is not of the same type
+ we assume that the internals are not compatible and create a new default
+ 2.5D renderer.
+ :rtype: Qgs25DRenderer
+%End
 
-    /**
-     * Is the shadow enabled
-     */
     bool shadowEnabled() const;
-    /**
-     * Enable or disable the shadow
-     */
+%Docstring
+ Is the shadow enabled
+ :rtype: bool
+%End
+
     void setShadowEnabled( bool value );
+%Docstring
+ Enable or disable the shadow
+%End
+
 };
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/symbology-ng/qgs25drenderer.h                               *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

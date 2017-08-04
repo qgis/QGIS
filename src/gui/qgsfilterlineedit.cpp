@@ -174,7 +174,7 @@ void QgsFilterLineEdit::onTextChanged( const QString &text )
   if ( isNull() )
   {
     setStyleSheet( QStringLiteral( "QLineEdit { font: italic; color: gray; } %1" ).arg( mStyleSheet ) );
-    emit valueChanged( QString::null );
+    emit valueChanged( QString() );
   }
   else
   {

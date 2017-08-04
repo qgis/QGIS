@@ -18,6 +18,9 @@
 #ifndef QGSSENTDATASOURCEBUILDER_H
 #define QGSSENTDATASOURCEBUILDER_H
 
+#define SIP_NO_FILE
+
+
 #include "qgsmslayerbuilder.h"
 
 class QgsVectorLayer;

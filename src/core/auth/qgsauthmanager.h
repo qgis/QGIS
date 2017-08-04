@@ -41,10 +41,12 @@
 // Qt5KeyChain library
 #include "keychain.h"
 
+#ifndef SIP_RUN
 namespace QCA
 {
   class Initializer;
 }
+#endif
 class QgsAuthMethod;
 class QgsAuthMethodEdit;
 class QgsAuthProvider;
@@ -87,7 +89,7 @@ class CORE_EXPORT QgsAuthManager : public QObject
     const QString authDatabaseServersTable() const { return AUTH_SERVERS_TABLE; }
 
     //! Initialize QCA, prioritize qca-ossl plugin and optionally set up the authentication database
-    bool init( const QString &pluginPath = QString::null );
+    bool init( const QString &pluginPath = QString() );
 
     //! Whether QCA has the qca-ossl plugin, which a base run-time requirement
     bool isDisabled() const;
@@ -117,7 +119,7 @@ class CORE_EXPORT QgsAuthManager : public QObject
      * \note Do not emit verification signals when only comparing
      * \param compare Password to compare against
      */
-    bool verifyMasterPassword( const QString &compare = QString::null );
+    bool verifyMasterPassword( const QString &compare = QString() );
 
     //! Whether master password has be input and verified, i.e. authentication database is accessible
     bool masterPasswordIsSet() const;
@@ -142,7 +144,7 @@ class CORE_EXPORT QgsAuthManager : public QObject
      * \param keepbackup Whether to keep the generated backup of current database
      * \param backuppath Where the backup is located, if kept
      */
-    bool resetMasterPassword( const QString &newpass, const QString &oldpass, bool keepbackup, QString *backuppath = nullptr );
+    bool resetMasterPassword( const QString &newpass, const QString &oldpass, bool keepbackup, QString *backuppath SIP_INOUT = nullptr );
 
     /** Whether there is a scheduled opitonal erase of authentication database.
      * \note not available in Python bindings
@@ -252,7 +254,7 @@ class CORE_EXPORT QgsAuthManager : public QObject
      * \param mconfig Associated authentication config id
      * \returns Whether operation succeeded
      */
-    bool storeAuthenticationConfig( QgsAuthMethodConfig &mconfig );
+    bool storeAuthenticationConfig( QgsAuthMethodConfig &mconfig SIP_INOUT );
 
     /**
      * Update an authentication config in the database
@@ -268,7 +270,7 @@ class CORE_EXPORT QgsAuthManager : public QObject
      * \param full Whether to decrypt and populate all sensitive data in subclass
      * \returns Whether operation succeeded
      */
-    bool loadAuthenticationConfig( const QString &authcfg, QgsAuthMethodConfig &mconfig, bool full = false );
+    bool loadAuthenticationConfig( const QString &authcfg, QgsAuthMethodConfig &mconfig SIP_INOUT, bool full = false );
 
     /**
      * Remove an authentication config in the database
@@ -287,7 +289,7 @@ class CORE_EXPORT QgsAuthManager : public QObject
      * Close connection to current authentication database and back it up
      * \returns Path to backup
      */
-    bool backupAuthenticationDatabase( QString *backuppath = nullptr );
+    bool backupAuthenticationDatabase( QString *backuppath SIP_INOUT = nullptr );
 
     /**
      * Erase all rows from all tables in authentication database
@@ -295,7 +297,7 @@ class CORE_EXPORT QgsAuthManager : public QObject
      * \param backuppath Where the backup is locate
      * \returns Whether operation succeeded
      */
-    bool eraseAuthenticationDatabase( bool backup, QString *backuppath = nullptr );
+    bool eraseAuthenticationDatabase( bool backup, QString *backuppath SIP_INOUT = nullptr );
 
 
     ////////////////// Auth Method calls ///////////////////////
@@ -307,7 +309,7 @@ class CORE_EXPORT QgsAuthManager : public QObject
      * \param dataprovider Provider key filter, offering logic branching in authentication method
      * \returns Whether operation succeeded
      */
-    bool updateNetworkRequest( QNetworkRequest &request, const QString &authcfg,
+    bool updateNetworkRequest( QNetworkRequest &request SIP_INOUT, const QString &authcfg,
                                const QString &dataprovider = QString() );
 
     /**
@@ -327,7 +329,7 @@ class CORE_EXPORT QgsAuthManager : public QObject
      * \param dataprovider Provider key filter, offering logic branching in authentication method
      * \returns Whether operation succeeded
      */
-    bool updateDataSourceUriItems( QStringList &connectionItems, const QString &authcfg,
+    bool updateDataSourceUriItems( QStringList &connectionItems SIP_INOUT, const QString &authcfg,
                                    const QString &dataprovider = QString() );
 
     ////////////////// Generic settings ///////////////////////
@@ -526,7 +528,7 @@ class CORE_EXPORT QgsAuthManager : public QObject
 
     //! Store the password manager into the wallet
     //! @note not available in Python bindings
-    bool passwordHelperSync( ) SIP_SKIP;
+    bool passwordHelperSync() SIP_SKIP;
 
     //! The display name of the password helper (platform dependent)
     static const QString AUTH_PASSWORD_HELPER_DISPLAY_NAME;
@@ -555,7 +557,7 @@ class CORE_EXPORT QgsAuthManager : public QObject
      * \param tag Associated tag (title)
      * \param level Message log level
      */
-    void messageOut( const QString &message, const QString &tag = AUTH_MAN_TAG, QgsAuthManager::MessageLevel level = INFO ) const;
+    void messageOut( const QString &message, const QString &tag = QgsAuthManager::AUTH_MAN_TAG, QgsAuthManager::MessageLevel level = QgsAuthManager::INFO ) const;
 
     /**
      * Custom logging signal to inform the user about master password <-> password manager interactions
@@ -564,7 +566,7 @@ class CORE_EXPORT QgsAuthManager : public QObject
      * @param tag Associated tag (title)
      * @param level Message log level
      */
-    void passwordHelperMessageOut( const QString &message, const QString &tag = AUTH_MAN_TAG, QgsAuthManager::MessageLevel level = INFO ) const;
+    void passwordHelperMessageOut( const QString &message, const QString &tag = QgsAuthManager::AUTH_MAN_TAG, QgsAuthManager::MessageLevel level = QgsAuthManager::INFO ) const;
 
 
     /**
@@ -637,7 +639,7 @@ class CORE_EXPORT QgsAuthManager : public QObject
 
     bool masterPasswordRowsInDb( int *rows ) const;
 
-    bool masterPasswordCheckAgainstDb( const QString &compare = QString::null ) const;
+    bool masterPasswordCheckAgainstDb( const QString &compare = QString() ) const;
 
     bool masterPasswordStoreInDb() const;
 

@@ -26,7 +26,7 @@
 #include "qgsfeature.h"
 #include "qgsfields.h"
 #include "qgslinestring.h"
-#include "qgspointv2.h"
+#include "qgspoint.h"
 #include "qgspolygon.h"
 #include "qgsrectangle.h"
 #include "qgsvectorlayer.h"
@@ -63,12 +63,7 @@ extern "C"
 #include <grass/gprojects.h>
 #include <grass/gis.h>
 #include <grass/dbmi.h>
-#if GRASS_VERSION_MAJOR < 7
-#include <grass/Vect.h>
-#else
 #include <grass/vector.h>
-#define BOUND_BOX bound_box
-#endif
 }
 
 #ifdef _MSC_VER
@@ -83,10 +78,6 @@ extern "C"
 // See: https://lists.osgeo.org/pipermail/grass-dev/2015-June/075539.html
 //      https://lists.osgeo.org/pipermail/grass-dev/2015-September/076338.html
 // TODO: get real off_t size from GRASS, probably contribute a patch which will save 'g.version -g' to a header file during compilation
-#if GRASS_VERSION_MAJOR < 7
-typedef int Vect_rewrite_line_function_type( struct Map_info *, int, int, struct line_pnts *, struct line_cats * );
-typedef int Vect_delete_line_function_type( struct Map_info *, int );
-#else
 #ifdef Q_OS_WIN
 typedef qint64 grass_off_t;
 #else
@@ -100,7 +91,6 @@ typedef off_t grass_off_t; // GRASS_OFF_T_SIZE undefined, default to off_t
 #endif
 typedef grass_off_t Vect_rewrite_line_function_type( struct Map_info *, grass_off_t, int, const struct line_pnts *, const struct line_cats * );
 typedef int Vect_delete_line_function_type( struct Map_info *, grass_off_t );
-#endif
 Vect_rewrite_line_function_type *Vect_rewrite_line_function_pointer = ( Vect_rewrite_line_function_type * )Vect_rewrite_line;
 Vect_delete_line_function_type *Vect_delete_line_function_pointer = ( Vect_delete_line_function_type * )Vect_delete_line;
 
@@ -265,11 +255,7 @@ QgsGrassProvider::QgsGrassProvider( const QString &uri )
   setNativeTypes( QList<NativeType>()
                   << QgsVectorDataProvider::NativeType( tr( "Whole number (integer)" ), QStringLiteral( "integer" ), QVariant::Int, -1, -1, -1, -1 )
                   << QgsVectorDataProvider::NativeType( tr( "Decimal number (real)" ), QStringLiteral( "double precision" ), QVariant::Double, -1, -1, -1, -1 )
-#if GRASS_VERSION_MAJOR < 7
-                  << QgsVectorDataProvider::NativeType( tr( "Text, limited variable length (varchar)" ), "varchar", QVariant::String, 1, 255, -1, -1 )
-#else
                   << QgsVectorDataProvider::NativeType( tr( "Text" ), QStringLiteral( "text" ), QVariant::String )
-#endif
                   // TODO:
                   // << QgsVectorDataProvider::NativeType( tr( "Date" ), "date", QVariant::Date, 8, 8 );
                 );
@@ -435,7 +421,7 @@ QgsRectangle QgsGrassProvider::extent() const
 {
   if ( isValid() )
   {
-    BOUND_BOX box;
+    bound_box box;
     Vect_get_map_box( map(), &box );
     return QgsRectangle( box.W, box.S, box.E, box.N );
   }
@@ -575,7 +561,7 @@ bool QgsGrassProvider::isGrassEditable( void )
     return false;
 
   /* Check if current user is owner of mapset */
-  if ( G__mapset_permissions2( mGrassObject.gisdbase().toUtf8().data(), mGrassObject.location().toUtf8().data(), mGrassObject.mapset().toUtf8().data() ) != 1 )
+  if ( G_mapset_permissions2( mGrassObject.gisdbase().toUtf8().data(), mGrassObject.location().toUtf8().data(), mGrassObject.mapset().toUtf8().data() ) != 1 )
     return false;
 
   // TODO: check format? (cannot edit OGR layers)
@@ -752,13 +738,9 @@ bool QgsGrassProvider::lineNodes( int line, int *node1, int *node2 )
     return false;
   }
 
-#if GRASS_VERSION_MAJOR < 7
-  Vect_get_line_nodes( map(), line, node1, node2 );
-#else
   /* points don't have topology in GRASS >= 7 */
   *node1 = 0;
   *node2 = 0;
-#endif
   return true;
 }
 
@@ -1153,7 +1135,7 @@ void QgsGrassProvider::setPoints( struct line_pnts *points, const QgsAbstractGeo
   }
   if ( geometry->wkbType() == QgsWkbTypes::Point || geometry->wkbType() == QgsWkbTypes::PointZ )
   {
-    const QgsPointV2 *point = dynamic_cast<const QgsPointV2 *>( geometry );
+    const QgsPoint *point = dynamic_cast<const QgsPoint *>( geometry );
     if ( point )
     {
       Vect_append_point( points, point->x(), point->y(), point->z() );
@@ -1167,7 +1149,7 @@ void QgsGrassProvider::setPoints( struct line_pnts *points, const QgsAbstractGeo
     {
       for ( int i = 0; i < lineString->numPoints(); i++ )
       {
-        QgsPointV2 point = lineString->pointN( i );
+        QgsPoint point = lineString->pointN( i );
         Vect_append_point( points, point.x(), point.y(), point.z() );
       }
     }
@@ -1182,7 +1164,7 @@ void QgsGrassProvider::setPoints( struct line_pnts *points, const QgsAbstractGeo
       {
         for ( int i = 0; i < lineString->numPoints(); i++ )
         {
-          QgsPointV2 point = lineString->pointN( i );
+          QgsPoint point = lineString->pointN( i );
           Vect_append_point( points, point.x(), point.y(), point.z() );
         }
       }
@@ -1269,7 +1251,7 @@ void QgsGrassProvider::onFeatureAdded( QgsFeatureId fid )
       // TODO: redo of deleted new features - save new cats somewhere,
       // resetting fid probably is not possible because it is stored in undo commands and used in buffer maps
 
-      // It may be that user manualy entered cat value
+      // It may be that user manually entered cat value
       QgsFeatureMap &addedFeatures = mEditBuffer->mAddedFeatures;
       QgsFeature &feature = addedFeatures[fid];
       int catIndex = feature.fields().indexFromName( mLayer->keyColumnName() );

@@ -36,7 +36,7 @@ void QgsEllipse::normalizeAxis()
 }
 
 QgsEllipse::QgsEllipse()
-  : mCenter( QgsPointV2() )
+  : mCenter( QgsPoint() )
   , mSemiMajorAxis( 0.0 )
   , mSemiMinorAxis( 0.0 )
   , mAzimuth( 90.0 )
@@ -44,7 +44,7 @@ QgsEllipse::QgsEllipse()
 
 }
 
-QgsEllipse::QgsEllipse( const QgsPointV2 &center, const double axis_a, const double axis_b, const double azimuth )
+QgsEllipse::QgsEllipse( const QgsPoint &center, const double axis_a, const double axis_b, const double azimuth )
   : mCenter( center )
   , mSemiMajorAxis( axis_a )
   , mSemiMinorAxis( axis_b )
@@ -53,7 +53,7 @@ QgsEllipse::QgsEllipse( const QgsPointV2 &center, const double axis_a, const dou
   normalizeAxis();
 }
 
-QgsEllipse QgsEllipse::fromFoci( const QgsPointV2 &pt1, const QgsPointV2 &pt2, const QgsPointV2 &pt3 )
+QgsEllipse QgsEllipse::fromFoci( const QgsPoint &pt1, const QgsPoint &pt2, const QgsPoint &pt3 )
 {
   double dist_p1p2 = pt1.distance( pt2 );
   double dist_p1p3 = pt1.distance( pt3 );
@@ -61,7 +61,7 @@ QgsEllipse QgsEllipse::fromFoci( const QgsPointV2 &pt1, const QgsPointV2 &pt2, c
 
   double dist = dist_p1p3 + dist_p2p3;
   double azimuth = 180.0 / M_PI * QgsGeometryUtils::lineAngle( pt1.x(), pt1.y(), pt2.x(), pt2.y() );
-  QgsPointV2 center = QgsGeometryUtils::midpoint( pt1, pt2 );
+  QgsPoint center = QgsGeometryUtils::midpoint( pt1, pt2 );
 
   double axis_a = dist / 2.0;
   double axis_b = sqrt( pow( axis_a, 2.0 ) - pow( dist_p1p2 / 2.0, 2.0 ) );
@@ -69,9 +69,9 @@ QgsEllipse QgsEllipse::fromFoci( const QgsPointV2 &pt1, const QgsPointV2 &pt2, c
   return QgsEllipse( center, axis_a, axis_b, azimuth );
 }
 
-QgsEllipse QgsEllipse::fromExtent( const QgsPointV2 &pt1, const QgsPointV2 &pt2 )
+QgsEllipse QgsEllipse::fromExtent( const QgsPoint &pt1, const QgsPoint &pt2 )
 {
-  QgsPointV2 center = QgsGeometryUtils::midpoint( pt1, pt2 );
+  QgsPoint center = QgsGeometryUtils::midpoint( pt1, pt2 );
   double axis_a = qAbs( pt2.x() - pt1.x() ) / 2.0;
   double axis_b = qAbs( pt2.y() - pt1.y() ) / 2.0;
   double azimuth = 90.0;
@@ -79,7 +79,7 @@ QgsEllipse QgsEllipse::fromExtent( const QgsPointV2 &pt1, const QgsPointV2 &pt2 
   return QgsEllipse( center, axis_a, axis_b, azimuth );
 }
 
-QgsEllipse QgsEllipse::fromCenterPoint( const QgsPointV2 &center, const QgsPointV2 &pt1 )
+QgsEllipse QgsEllipse::fromCenterPoint( const QgsPoint &center, const QgsPoint &pt1 )
 {
   double axis_a = qAbs( pt1.x() - center.x() );
   double axis_b = qAbs( pt1.y() - center.y() );
@@ -88,13 +88,13 @@ QgsEllipse QgsEllipse::fromCenterPoint( const QgsPointV2 &center, const QgsPoint
   return QgsEllipse( center, axis_a, axis_b, azimuth );
 }
 
-QgsEllipse QgsEllipse::fromCenter2Points( const QgsPointV2 &center, const QgsPointV2 &pt1, const QgsPointV2 &pt2 )
+QgsEllipse QgsEllipse::fromCenter2Points( const QgsPoint &center, const QgsPoint &pt1, const QgsPoint &pt2 )
 {
   double azimuth = 180.0 / M_PI * QgsGeometryUtils::lineAngle( center.x(), center.y(), pt1.x(), pt1.y() );
   double axis_a = center.distance( pt1 );
 
   double length = pt2.distance( QgsGeometryUtils::projPointOnSegment( pt2, center, pt1 ) );
-  QgsPointV2 pp = center.project( length, 90 + azimuth );
+  QgsPoint pp = center.project( length, 90 + azimuth );
   double axis_b = center.distance( pp );
 
   return QgsEllipse( center, axis_a, axis_b, azimuth );
@@ -142,9 +142,9 @@ double QgsEllipse::focusDistance() const
   return sqrt( mSemiMajorAxis * mSemiMajorAxis - mSemiMinorAxis * mSemiMinorAxis );
 }
 
-QVector<QgsPointV2> QgsEllipse::foci() const
+QVector<QgsPoint> QgsEllipse::foci() const
 {
-  QVector<QgsPointV2> f;
+  QVector<QgsPoint> f;
   double dist_focus = focusDistance();
   f.append( mCenter.project( dist_focus, mAzimuth ) );
   f.append( mCenter.project( -dist_focus, mAzimuth ) );
@@ -173,9 +173,9 @@ double QgsEllipse::perimeter() const
   return M_PI * ( 3 * ( a + b ) - sqrt( 10 * a * b + 3 * ( a * a + b * b ) ) );
 }
 
-QVector<QgsPointV2> QgsEllipse::quadrant() const
+QVector<QgsPoint> QgsEllipse::quadrant() const
 {
-  QVector<QgsPointV2> quad;
+  QVector<QgsPoint> quad;
   quad.append( mCenter.project( mSemiMajorAxis, mAzimuth ) );
   quad.append( mCenter.project( mSemiMinorAxis, mAzimuth + 90 ) );
   quad.append( mCenter.project( -mSemiMajorAxis, mAzimuth ) );
@@ -213,7 +213,7 @@ QgsPointSequence QgsEllipse::points( unsigned int segments ) const
     double y = mCenter.y() +
                mSemiMajorAxis * cos( *it ) * sin( azimuth ) +
                mSemiMinorAxis * sin( *it ) * cos( azimuth );
-    pts.push_back( QgsPointV2( pType, x, y, z, m ) );
+    pts.push_back( QgsPoint( pType, x, y, z, m ) );
   }
 
   return pts;
@@ -265,8 +265,8 @@ QgsRectangle QgsEllipse::boundingBox() const
   double halfHeight = sqrt( ux * ux + uy * uy );
   double halfWidth = sqrt( vx * vx + vy * vy );
 
-  QgsPoint p1( mCenter.x() - halfWidth, mCenter.y() - halfHeight );
-  QgsPoint p2( mCenter.x() + halfWidth, mCenter.y() + halfHeight );
+  QgsPointXY p1( mCenter.x() - halfWidth, mCenter.y() - halfHeight );
+  QgsPointXY p2( mCenter.x() + halfWidth, mCenter.y() + halfHeight );
 
   return QgsRectangle( p1, p2 );
 }
@@ -294,12 +294,12 @@ QgsPolygonV2 *QgsEllipse::orientedBoundingBox() const
     return ombb.release();
   }
 
-  QVector<QgsPointV2> q = quadrant();
+  QVector<QgsPoint> q = quadrant();
 
-  QgsPointV2 p1 = q.at( 0 ).project( mSemiMinorAxis, mAzimuth - 90 );
-  QgsPointV2 p2 = q.at( 0 ).project( mSemiMinorAxis, mAzimuth + 90 );
-  QgsPointV2 p3 = q.at( 2 ).project( mSemiMinorAxis, mAzimuth + 90 );
-  QgsPointV2 p4 = q.at( 2 ).project( mSemiMinorAxis, mAzimuth - 90 );
+  QgsPoint p1 = q.at( 0 ).project( mSemiMinorAxis, mAzimuth - 90 );
+  QgsPoint p2 = q.at( 0 ).project( mSemiMinorAxis, mAzimuth + 90 );
+  QgsPoint p3 = q.at( 2 ).project( mSemiMinorAxis, mAzimuth + 90 );
+  QgsPoint p4 = q.at( 2 ).project( mSemiMinorAxis, mAzimuth - 90 );
 
   QgsLineString *ext = new QgsLineString();
   ext->setPoints( QgsPointSequence() << p1 << p2 << p3 << p4 );

@@ -96,15 +96,15 @@ class APP_EXPORT QgsNodeTool : public QgsMapToolAdvancedDigitizing
 
   private:
 
-    void buildDragBandsForVertices( const QSet<Vertex> &movingVertices, const QgsPoint &dragVertexMapPoint );
+    void buildDragBandsForVertices( const QSet<Vertex> &movingVertices, const QgsPointXY &dragVertexMapPoint );
 
-    void addDragBand( const QgsPoint &v1, const QgsPoint &v2 );
+    void addDragBand( const QgsPointXY &v1, const QgsPointXY &v2 );
 
-    void addDragStraightBand( QgsVectorLayer *layer, QgsPoint v0, QgsPoint v1, bool moving0, bool moving1, const QgsPoint &mapPoint );
+    void addDragStraightBand( QgsVectorLayer *layer, QgsPointXY v0, QgsPointXY v1, bool moving0, bool moving1, const QgsPointXY &mapPoint );
 
-    void addDragCircularBand( QgsVectorLayer *layer, QgsPoint v0, QgsPoint v1, QgsPoint v2, bool moving0, bool moving1, bool moving2, const QgsPoint &mapPoint );
+    void addDragCircularBand( QgsVectorLayer *layer, QgsPointXY v0, QgsPointXY v1, QgsPointXY v2, bool moving0, bool moving1, bool moving2, const QgsPointXY &mapPoint );
 
-    void moveDragBands( const QgsPoint &mapPoint );
+    void moveDragBands( const QgsPointXY &mapPoint );
 
     void clearDragBands();
 
@@ -121,11 +121,11 @@ class APP_EXPORT QgsNodeTool : public QgsMapToolAdvancedDigitizing
     QgsPointLocator::Match snapToEditableLayer( QgsMapMouseEvent *e );
 
     //! check whether we are still close to the mEndpointMarker
-    bool isNearEndpointMarker( const QgsPoint &mapPoint );
+    bool isNearEndpointMarker( const QgsPointXY &mapPoint );
 
     bool isMatchAtEndpoint( const QgsPointLocator::Match &match );
 
-    QgsPoint positionForEndpointMarker( const QgsPointLocator::Match &match );
+    QgsPointXY positionForEndpointMarker( const QgsPointLocator::Match &match );
 
     void mouseMoveNotDragging( QgsMapMouseEvent *e );
 
@@ -133,31 +133,31 @@ class APP_EXPORT QgsNodeTool : public QgsMapToolAdvancedDigitizing
 
     void startDragging( QgsMapMouseEvent *e );
 
-    void startDraggingMoveVertex( const QgsPoint &mapPoint, const QgsPointLocator::Match &m );
+    void startDraggingMoveVertex( const QgsPointXY &mapPoint, const QgsPointLocator::Match &m );
 
     //! Get list of matches of all vertices of a layer exactly snapped to a map point
-    QList<QgsPointLocator::Match> layerVerticesSnappedToPoint( QgsVectorLayer *layer, const QgsPoint &mapPoint );
+    QList<QgsPointLocator::Match> layerVerticesSnappedToPoint( QgsVectorLayer *layer, const QgsPointXY &mapPoint );
 
     void startDraggingAddVertex( const QgsPointLocator::Match &m );
 
-    void startDraggingAddVertexAtEndpoint( const QgsPoint &mapPoint );
+    void startDraggingAddVertexAtEndpoint( const QgsPointXY &mapPoint );
 
-    void startDraggingEdge( const QgsPointLocator::Match &m, const QgsPoint &mapPoint );
+    void startDraggingEdge( const QgsPointLocator::Match &m, const QgsPointXY &mapPoint );
 
     void stopDragging();
 
-    QgsPoint matchToLayerPoint( const QgsVectorLayer *destLayer, const QgsPoint &mapPoint, const QgsPointLocator::Match *match );
+    QgsPointXY matchToLayerPoint( const QgsVectorLayer *destLayer, const QgsPointXY &mapPoint, const QgsPointLocator::Match *match );
 
     //! Finish moving of an edge
-    void moveEdge( const QgsPoint &mapPoint );
+    void moveEdge( const QgsPointXY &mapPoint );
 
-    void moveVertex( const QgsPoint &mapPoint, const QgsPointLocator::Match *mapPointMatch );
+    void moveVertex( const QgsPointXY &mapPoint, const QgsPointLocator::Match *mapPointMatch );
 
     void deleteVertex();
 
     typedef QHash<QgsVectorLayer *, QHash<QgsFeatureId, QgsGeometry> > NodeEdits;
 
-    void addExtraVerticesToEdits( NodeEdits &edits, const QgsPoint &mapPoint, QgsVectorLayer *dragLayer = nullptr, const QgsPoint &layerPoint = QgsPoint() );
+    void addExtraVerticesToEdits( NodeEdits &edits, const QgsPointXY &mapPoint, QgsVectorLayer *dragLayer = nullptr, const QgsPointXY &layerPoint = QgsPointXY() );
 
     void applyEditsToLayers( NodeEdits &edits );
 
@@ -180,7 +180,7 @@ class APP_EXPORT QgsNodeTool : public QgsMapToolAdvancedDigitizing
 
     //! Using a given edge match and original map point, find out
     //! center of the edge and whether we are close enough to the center
-    bool matchEdgeCenterTest( const QgsPointLocator::Match &m, const QgsPoint &mapPoint, QgsPoint *edgeCenterPtr = nullptr );
+    bool matchEdgeCenterTest( const QgsPointLocator::Match &m, const QgsPointXY &mapPoint, QgsPointXY *edgeCenterPtr = nullptr );
 
     void cleanupNodeEditor();
 
@@ -233,7 +233,7 @@ class APP_EXPORT QgsNodeTool : public QgsMapToolAdvancedDigitizing
     struct StraightBand
     {
       QgsRubberBand *band = nullptr;       //!< Pointer to the actual rubber band
-      QgsPoint p0, p1;                     //!< What are the original positions of points (in map units)
+      QgsPointXY p0, p1;                     //!< What are the original positions of points (in map units)
       bool moving0, moving1;               //!< Which points of the band are moving with mouse cursor
       QgsVector offset0, offset1;          //!< If the point is moving, what is the offset from the mouse cursor
     };
@@ -242,12 +242,12 @@ class APP_EXPORT QgsNodeTool : public QgsMapToolAdvancedDigitizing
     struct CircularBand
     {
       QgsRubberBand *band = nullptr;        //!< Pointer to the actual rubber band
-      QgsPoint p0, p1, p2;                  //!< What are the original positions of points (in map units)
+      QgsPointXY p0, p1, p2;                  //!< What are the original positions of points (in map units)
       bool moving0, moving1, moving2;       //!< Which points of the band are moving with mouse cursor
       QgsVector offset0, offset1, offset2;  //!< If the point is moving, what is the offset from the mouse cursor
 
       //! update geometry of the rubber band band on the current mouse cursor position (in map units)
-      void updateRubberBand( const QgsPoint &mapPoint );
+      void updateRubberBand( const QgsPointXY &mapPoint );
     };
 
     //! list of active straight line rubber bands
@@ -289,8 +289,8 @@ class APP_EXPORT QgsNodeTool : public QgsMapToolAdvancedDigitizing
 
     //! Vertex instance or None
     std::unique_ptr<Vertex> mMouseAtEndpoint;
-    //! QgsPoint or None (can't get center from QgsVertexMarker)
-    std::unique_ptr<QgsPoint> mEndpointMarkerCenter;
+    //! QgsPointXY or None (can't get center from QgsVertexMarker)
+    std::unique_ptr<QgsPointXY> mEndpointMarkerCenter;
     //! marker shown near the end of a curve to suggest that the user
     //! may add a new vertex at the end of the curve
     QgsVertexMarker *mEndpointMarker = nullptr;
@@ -302,7 +302,7 @@ class APP_EXPORT QgsNodeTool : public QgsMapToolAdvancedDigitizing
     //! List of two points that will be forced into CAD dock with fake mouse events
     //! to allow correct functioning of node tool with CAD dock.
     //! (CAD dock does various assumptions that work with simple capture tools, but not with node tool)
-    QList<QgsPoint> mOverrideCadPoints;
+    QList<QgsPointXY> mOverrideCadPoints;
 
     //! When double-clicking to add a new vertex, this member keeps the snap
     //! match from "press" event used to be used in following "release" event

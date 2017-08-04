@@ -29,6 +29,7 @@ class QgsIdentifyResultsDialog;
 class QgsVectorLayer;
 class QgsHighlight;
 class QgsAttributeDialog;
+class QgsExpressionContextScope;
 
 class APP_EXPORT QgsFeatureAction : public QAction
 {
@@ -51,7 +52,7 @@ class APP_EXPORT QgsFeatureAction : public QAction
      *
      * \returns true if feature was added if showModal is true. If showModal is false, returns true in every case
      */
-    bool addFeature( const QgsAttributeMap &defaultAttributes = QgsAttributeMap(), bool showModal = true );
+    bool addFeature( const QgsAttributeMap &defaultAttributes = QgsAttributeMap(), bool showModal = true, QgsExpressionContextScope *scope = nullptr );
 
   private slots:
     void onFeatureSaved( const QgsFeature &feature );

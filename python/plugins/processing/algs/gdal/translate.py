@@ -63,16 +63,8 @@ class translate(GdalAlgorithm):
     def icon(self):
         return QIcon(os.path.join(pluginPath, 'images', 'gdaltools', 'translate.png'))
 
-    def name(self):
-        return 'translate'
-
-    def displayName(self):
-        return self.tr('Translate (convert format)')
-
-    def group(self):
-        return self.tr('Raster conversion')
-
-    def defineCharacteristics(self):
+    def __init__(self):
+        super().__init__()
         self.addParameter(ParameterRaster(self.INPUT, self.tr('Input layer')))
         self.addParameter(ParameterNumber(self.OUTSIZE,
                                           self.tr('Set the size of the output file (In pixels or %)'),
@@ -102,13 +94,25 @@ class translate(GdalAlgorithm):
 
         self.addOutput(OutputRaster(self.OUTPUT, self.tr('Converted')))
 
-    def getConsoleCommands(self):
+    def name(self):
+        return 'translate'
+
+    def displayName(self):
+        return self.tr('Translate (convert format)')
+
+    def group(self):
+        return self.tr('Raster conversion')
+
+    def getConsoleCommands(self, parameters):
+        inLayer = self.getParameterValue(self.INPUT)
         out = self.getOutputValue(translate.OUTPUT)
         outsize = str(self.getParameterValue(self.OUTSIZE))
         outsizePerc = str(self.getParameterValue(self.OUTSIZE_PERC))
         noData = self.getParameterValue(self.NO_DATA)
-        expand = self.getParameterFromName(self.EXPAND).options[self.getParameterValue(self.EXPAND)][1]
+        expand = parameters[self.EXPAND].options[self.getParameterValue(self.EXPAND)][1]
         projwin = str(self.getParameterValue(self.PROJWIN))
+        if not projwin:
+            projwin = QgsProcessingUtils.combineLayerExtents([inLayer])
         crsId = self.getParameterValue(self.SRS)
         sds = self.getParameterValue(self.SDS)
         opts = self.getParameterValue(self.OPTIONS)

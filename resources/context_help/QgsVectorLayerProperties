@@ -12,7 +12,7 @@ This dialog allows you to work with vector layer settings and properties. There 
 <a name="symbology">
 <h4>Symbology</h4>
 </a>
-To change the symbology for a layer, simply double click on its legend entry and the vector <label>Layer Properties</label> dialog will be shown.<p>
+To change the symbology for a layer, simply double-click on its legend entry and the vector <label>Layer Properties</label> dialog will be shown.<p>
 Within this dialog you can style your vector layer. Depending on the selected rendering option you have the possibility to also classify your map features.
 
 <h5>Legend type</h5>
@@ -38,7 +38,7 @@ If you wish to always use a particular style whenever the layer is loaded, use t
 <h4>Labels</h4>
 </a>
 The Labels tab allows you to enable labeling features and control a number of options related to fonts, placement, style, alignment and buffering.<br/>
-Check the <label>Display labels</label> check box to enable labeling.
+Check the <label>Display labels</label> checkbox to enable labeling.
 
 <h5>Basic Label options</h5>
 Choose the field to label with.<p>
@@ -54,7 +54,7 @@ The <label>Font size units</label> allows you to select between <label>Points</l
 <h5>Buffer labels</h5>
 To buffer the labels means putting a backdrop around them to make them stand out better. To buffer the lakes labels:
 <ol>
-<li>Click the <label>Buffer Labels</label> check box to enable buffering.
+<li>Click the <label>Buffer Labels</label> checkbox to enable buffering.
 <li>Choose a size for the buffer using the spin box.
 <li>Choose a color by clicking on <label>Color</label> and choosing your favorite from the color selector. You can also set some transparency for the buffer if you prefer.
 <li>Click <label>Apply</label> to see if you like the changes.
@@ -82,7 +82,7 @@ Within the Attributes tab you also find an edit widget column. This column can b
 <li><label>Enumeration</label> Opens a combo box with values that can be used within the columns type. This is currently only supported by the Postgres provider.
 <li><label>Immutable</label> The immutable attribute column is read-only. The user is not able to modify the content.
 <li><label>Hidden</label> A hidden attribute column is invisible to the user.
-<li><label>Checkbox</label> A check box is shown.  The value representing the state of the check box in the attribute has to be entered.
+<li><label>Checkbox</label> A checkbox is shown.  The value representing the state of the checkbox in the attribute has to be entered.
 <li><label>Text edit</label> A text edit field is shown, that allows entering multiline text.
 </ul>
 

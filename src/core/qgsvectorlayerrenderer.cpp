@@ -32,7 +32,7 @@
 #include "qgsvectorlayerlabelprovider.h"
 #include "qgspainteffect.h"
 #include "qgsfeaturefilterprovider.h"
-#include "qgscsexception.h"
+#include "qgsexception.h"
 #include "qgslogger.h"
 #include "qgssettings.h"
 
@@ -61,7 +61,6 @@ QgsVectorLayerRenderer::QgsVectorLayerRenderer( QgsVectorLayer *layer, QgsRender
   mGeometryType = layer->geometryType();
 
   mFeatureBlendMode = layer->featureBlendMode();
-
   mSimplifyMethod = layer->simplifyMethod();
   mSimplifyGeometry = layer->simplifyDrawingCanbeApplied( mContext, QgsVectorSimplifyMethod::GeometrySimplification );
 
@@ -94,7 +93,6 @@ QgsVectorLayerRenderer::QgsVectorLayerRenderer( QgsVectorLayer *layer, QgsRender
     // set editing vertex markers style
     mRenderer->setVertexMarkerAppearance( mVertexMarkerStyle, mVertexMarkerSize );
   }
-
   mContext.expressionContext() << QgsExpressionContextUtils::layerScope( layer );
 
   mAttrNames = mRenderer->usedAttributes( context );
@@ -102,7 +100,6 @@ QgsVectorLayerRenderer::QgsVectorLayerRenderer( QgsVectorLayer *layer, QgsRender
   //register label and diagram layer to the labeling engine
   prepareLabeling( layer, mAttrNames );
   prepareDiagrams( layer, mAttrNames );
-
 }
 
 
@@ -180,7 +177,7 @@ bool QgsVectorLayerRenderer::render()
     {
       try
       {
-        QgsPoint center = mContext.extent().center();
+        QgsPointXY center = mContext.extent().center();
         double rectSize = ct.sourceCrs().isGeographic() ? 0.0008983 /* ~100/(40075014/360=111319.4833) */ : 100;
 
         QgsRectangle sourceRect = QgsRectangle( center.x(), center.y(), center.x() + rectSize, center.y() + rectSize );
@@ -191,10 +188,10 @@ bool QgsVectorLayerRenderer::render()
 
         if ( !sourceRect.isEmpty() && sourceRect.isFinite() && !targetRect.isEmpty() && targetRect.isFinite() )
         {
-          QgsPoint minimumSrcPoint( sourceRect.xMinimum(), sourceRect.yMinimum() );
-          QgsPoint maximumSrcPoint( sourceRect.xMaximum(), sourceRect.yMaximum() );
-          QgsPoint minimumDstPoint( targetRect.xMinimum(), targetRect.yMinimum() );
-          QgsPoint maximumDstPoint( targetRect.xMaximum(), targetRect.yMaximum() );
+          QgsPointXY minimumSrcPoint( sourceRect.xMinimum(), sourceRect.yMinimum() );
+          QgsPointXY maximumSrcPoint( sourceRect.xMaximum(), sourceRect.yMaximum() );
+          QgsPointXY minimumDstPoint( targetRect.xMinimum(), targetRect.yMinimum() );
+          QgsPointXY maximumDstPoint( targetRect.xMaximum(), targetRect.yMaximum() );
 
           double sourceHypothenuse = sqrt( minimumSrcPoint.sqrDist( maximumSrcPoint ) );
           double targetHypothenuse = sqrt( minimumDstPoint.sqrDist( maximumDstPoint ) );
@@ -294,12 +291,12 @@ void QgsVectorLayerRenderer::drawRenderer( QgsFeatureIterator &fit )
         // new labeling engine
         if ( mContext.labelingEngine() && ( mLabelProvider || mDiagramProvider ) )
         {
-          std::unique_ptr<QgsGeometry> obstacleGeometry;
+          QgsGeometry obstacleGeometry;
           QgsSymbolList symbols = mRenderer->originalSymbolsForFeature( fet, mContext );
 
           if ( !symbols.isEmpty() && fet.geometry().type() == QgsWkbTypes::PointGeometry )
           {
-            obstacleGeometry.reset( QgsVectorLayerLabelProvider::getPointObstacleGeometry( fet, mContext, symbols ) );
+            obstacleGeometry = QgsVectorLayerLabelProvider::getPointObstacleGeometry( fet, mContext, symbols );
           }
 
           if ( !symbols.isEmpty() )
@@ -309,11 +306,11 @@ void QgsVectorLayerRenderer::drawRenderer( QgsFeatureIterator &fit )
 
           if ( mLabelProvider )
           {
-            mLabelProvider->registerFeature( fet, mContext, obstacleGeometry.get() );
+            mLabelProvider->registerFeature( fet, mContext, obstacleGeometry );
           }
           if ( mDiagramProvider )
           {
-            mDiagramProvider->registerFeature( fet, mContext, obstacleGeometry.get() );
+            mDiagramProvider->registerFeature( fet, mContext, obstacleGeometry );
           }
         }
       }
@@ -378,12 +375,12 @@ void QgsVectorLayerRenderer::drawRendererLevels( QgsFeatureIterator &fit )
     // new labeling engine
     if ( mContext.labelingEngine() )
     {
-      std::unique_ptr<QgsGeometry> obstacleGeometry;
+      QgsGeometry obstacleGeometry;
       QgsSymbolList symbols = mRenderer->originalSymbolsForFeature( fet, mContext );
 
       if ( !symbols.isEmpty() && fet.geometry().type() == QgsWkbTypes::PointGeometry )
       {
-        obstacleGeometry.reset( QgsVectorLayerLabelProvider::getPointObstacleGeometry( fet, mContext, symbols ) );
+        obstacleGeometry = QgsVectorLayerLabelProvider::getPointObstacleGeometry( fet, mContext, symbols );
       }
 
       if ( !symbols.isEmpty() )
@@ -393,11 +390,11 @@ void QgsVectorLayerRenderer::drawRendererLevels( QgsFeatureIterator &fit )
 
       if ( mLabelProvider )
       {
-        mLabelProvider->registerFeature( fet, mContext, obstacleGeometry.get() );
+        mLabelProvider->registerFeature( fet, mContext, obstacleGeometry );
       }
       if ( mDiagramProvider )
       {
-        mDiagramProvider->registerFeature( fet, mContext, obstacleGeometry.get() );
+        mDiagramProvider->registerFeature( fet, mContext, obstacleGeometry );
       }
     }
   }

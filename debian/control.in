@@ -20,6 +20,7 @@ Build-Depends:
  libspatialite-dev, libsqlite3-mod-spatialite,
  libsqlite3-dev,
  libspatialindex-dev,
+ libzip-dev,
  qtbase5-dev, qttools5-dev-tools, qttools5-dev, qtscript5-dev, qtpositioning5-dev, qt5keychain-dev,
  libqt5svg5-dev, libqt5xmlpatterns5-dev, libqt5webkit5-dev, libqt5opengl5-dev, libqt5sql5-sqlite, libqt5scintilla2-dev,
  libqwt-qt5-dev, libqca-qt5-2-dev, libqca-qt5-2-plugins,
@@ -38,7 +39,7 @@ Build-Depends:
  xvfb, xauth,
  xfonts-base, xfonts-100dpi, xfonts-75dpi, xfonts-scalable,
 #sid# libosgearth-dev,
-#oracle# oracle-instantclient12.1-devel,
+#oracle# oracle-instantclient12.1-devel, oracle-instantclient12.1-basiclite, qtbase5-private-dev,
  locales, ca-certificates, ninja-build
 Build-Conflicts: libqgis-dev, qgis-dev
 #sid stretch xenial yakkety zesty#Standards-Version: 3.9.7
@@ -131,6 +132,18 @@ Description: QGIS - shared analysis library
  display databases of geographic information.
  .
  This package contains the shared analysis library.
+
+Package: libqgis-native{QGIS_ABI}
+Architecture: any
+Section: libs
+Depends:
+ ${shlibs:Depends},
+ ${misc:Depends}
+Description: QGIS - shared native gui library
+ QGIS is a Geographic Information System (GIS) which manages, analyzes and
+ display databases of geographic information.
+ .
+ This package contains the shared native gui library.
 
 Package: libqgisgrass{GRASSVER}-{QGIS_ABI}
 Architecture: any
@@ -421,7 +434,7 @@ Description: QGIS API documentation
 
 #oracle#Package: qgis-oracle-provider
 #oracle#Architecture: any
-#oracle#Depends: ${shlibs:Depends}, ${misc:Depends}
+#oracle#Depends: libaio1, ${shlibs:Depends}, ${misc:Depends}
 #oracle#Section: contrib/database
 #oracle#Description: QGIS oracle provider
 #oracle# QGIS is a Geographic Information System (GIS) which manages, analyzes and

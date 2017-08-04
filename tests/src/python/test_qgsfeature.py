@@ -15,7 +15,7 @@ __revision__ = '$Format:%H$'
 import qgis  # NOQA
 
 import os
-from qgis.core import QgsFeature, QgsGeometry, QgsPoint, QgsVectorLayer, NULL, QgsFields, QgsField
+from qgis.core import QgsFeature, QgsGeometry, QgsPointXY, QgsVectorLayer, NULL, QgsFields, QgsField
 from qgis.testing import start_app, unittest
 from utilities import unitTestDataPath
 
@@ -28,7 +28,7 @@ class TestQgsFeature(unittest.TestCase):
         feat = QgsFeature()
         feat.initAttributes(1)
         feat.setAttribute(0, "text")
-        feat.setGeometry(QgsGeometry.fromPoint(QgsPoint(123, 456)))
+        feat.setGeometry(QgsGeometry.fromPoint(QgsPointXY(123, 456)))
         myId = feat.id()
         myExpectedId = 0
         myMessage = '\nExpected: %s\nGot: %s' % (myExpectedId, myId)
@@ -132,7 +132,7 @@ class TestQgsFeature(unittest.TestCase):
 
     def test_SetGeometry(self):
         feat = QgsFeature()
-        feat.setGeometry(QgsGeometry.fromPoint(QgsPoint(123, 456)))
+        feat.setGeometry(QgsGeometry.fromPoint(QgsPointXY(123, 456)))
         myGeometry = feat.geometry()
         myExpectedGeometry = "!None"
         myMessage = '\nExpected: %s\nGot: %s' % (myExpectedGeometry, myGeometry)

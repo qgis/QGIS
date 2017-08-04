@@ -114,15 +114,18 @@ class QgsVectorLayerExporter : QgsFeatureSink
  :rtype: int
 %End
 
-    virtual bool addFeatures( QgsFeatureList &features );
+    virtual bool addFeatures( QgsFeatureList &features, QgsFeatureSink::Flags flags = 0 );
 
-    virtual bool addFeature( QgsFeature &feature );
+    virtual bool addFeature( QgsFeature &feature, QgsFeatureSink::Flags flags = 0 );
 
 
     ~QgsVectorLayerExporter();
 %Docstring
  Finalizes the export and closes the new created layer.
 %End
+
+    virtual bool flushBuffer();
+
 
   private:
     QgsVectorLayerExporter( const QgsVectorLayerExporter &rh );
@@ -149,11 +152,13 @@ class QgsVectorLayerExporterTask : QgsTask
                                 const QString &uri,
                                 const QString &providerKey,
                                 const QgsCoordinateReferenceSystem &destinationCrs,
-                                QMap<QString, QVariant> *options = 0 );
+                                QMap<QString, QVariant> *options = 0,
+                                bool ownsLayer = false );
 %Docstring
  Constructor for QgsVectorLayerExporterTask. Takes a source ``layer``, destination ``uri``
  and ``providerKey``, and various export related parameters such as destination CRS
- and export ``options``.
+ and export ``options``. ``ownsLayer`` has to be set to true if the task should take ownership
+ of the layer and delete it after export.
 %End
 
     static QgsVectorLayerExporterTask *withLayerOwnership( QgsVectorLayer *layer /Transfer/,

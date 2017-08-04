@@ -19,6 +19,7 @@
 #define QGSHUESATURATIONFILTER_H
 
 #include "qgis_core.h"
+#include "qgis.h"
 #include "qgsrasterinterface.h"
 
 class QDomElement;
@@ -41,7 +42,7 @@ class CORE_EXPORT QgsHueSaturationFilter : public QgsRasterInterface
 
     QgsHueSaturationFilter( QgsRasterInterface *input = nullptr );
 
-    QgsHueSaturationFilter *clone() const override;
+    QgsHueSaturationFilter *clone() const override SIP_FACTORY;
 
     int bandCount() const override;
 
@@ -49,7 +50,7 @@ class CORE_EXPORT QgsHueSaturationFilter : public QgsRasterInterface
 
     bool setInput( QgsRasterInterface *input ) override;
 
-    QgsRasterBlock *block( int bandNo, const QgsRectangle &extent, int width, int height, QgsRasterBlockFeedback *feedback = nullptr ) override;
+    QgsRasterBlock *block( int bandNo, const QgsRectangle &extent, int width, int height, QgsRasterBlockFeedback *feedback = nullptr ) override SIP_FACTORY;
 
     void setSaturation( int saturation );
     int saturation() const { return mSaturation; }

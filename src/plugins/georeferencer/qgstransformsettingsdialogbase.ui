@@ -120,7 +120,7 @@
         <item>
          <widget class="QToolButton" name="tbnOutputRaster">
           <property name="text">
-           <string>...</string>
+           <string>…</string>
           </property>
          </widget>
         </item>
@@ -287,7 +287,7 @@
         <item>
          <widget class="QToolButton" name="tbnMapFile">
           <property name="text">
-           <string>...</string>
+           <string>…</string>
           </property>
          </widget>
         </item>
@@ -311,7 +311,7 @@
         <item>
          <widget class="QToolButton" name="tbnReportFile">
           <property name="text">
-           <string>...</string>
+           <string>…</string>
           </property>
          </widget>
         </item>

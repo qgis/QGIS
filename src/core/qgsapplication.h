@@ -39,9 +39,10 @@ class QgsPluginLayerRegistry;
 class QgsMessageLog;
 class QgsProcessingRegistry;
 class QgsAnnotationRegistry;
-
-
-SIP_FEATURE( ANDROID )
+class QgsUserProfile;
+class QgsUserProfileManager;
+class QgsPageSizeRegistry;
+class QgsLayoutItemRegistry;
 
 /** \ingroup core
  * Extends QApplication to provide access to QGIS specific resources such
@@ -116,9 +117,9 @@ class CORE_EXPORT QgsApplication : public QApplication
     static const char *QGIS_ORGANIZATION_DOMAIN;
     static const char *QGIS_APPLICATION_NAME;
 #ifndef SIP_RUN
-    QgsApplication( int &argc, char **argv, bool GUIenabled, const QString &customConfigPath = QString(), const QString &platformName = "desktop" );
+    QgsApplication( int &argc, char **argv, bool GUIenabled, const QString &profileFolder = QString(), const QString &platformName = "desktop" );
 #else
-    QgsApplication( SIP_PYLIST argv, bool GUIenabled, QString customConfigPath = QString() ) / PostHook = __pyQtQAppHook__ / [( int &argc, char **argv, bool GUIenabled, const QString &customConfigPath = QString() )];
+    QgsApplication( SIP_PYLIST argv, bool GUIenabled, QString profileFolder = QString(), QString platformName = "desktop" ) / PostHook = __pyQtQAppHook__ / [( int &argc, char **argv, bool GUIenabled, const QString &profileFolder = QString(), const QString &platformName = "desktop" )];
     % MethodCode
     // The Python interface is a list of argument strings that is modified.
 
@@ -133,7 +134,7 @@ class CORE_EXPORT QgsApplication : public QApplication
       // Create it now the arguments are right.
       static int nargc = argc;
 
-      sipCpp = new sipQgsApplication( nargc, argv, a1, *a2 );
+      sipCpp = new sipQgsApplication( nargc, argv, a1, *a2, *a3 );
 
       // Now modify the original list.
       qtgui_UpdatePyArgv( a0, argc, argv );
@@ -156,7 +157,7 @@ class CORE_EXPORT QgsApplication : public QApplication
         the above case.
         \note not available in Python bindings
       */
-    static void init( QString customConfigPath = QString() ) SIP_SKIP;
+    static void init( QString profileFolder = QString() ) SIP_SKIP;
 
     //! Watch for QFileOpenEvent.
     virtual bool event( QEvent *event ) override;
@@ -524,6 +525,12 @@ class CORE_EXPORT QgsApplication : public QApplication
     static QgsSymbolLayerRegistry *symbolLayerRegistry();
 
     /**
+     * Returns the application's layout item registry, used for layout item types.
+     * \since QGIS 3.0
+     */
+    static QgsLayoutItemRegistry *layoutItemRegistry();
+
+    /**
      * Returns the application's GPS connection registry, used for managing GPS connections.
      * \since QGIS 3.0
      */
@@ -547,6 +554,12 @@ class CORE_EXPORT QgsApplication : public QApplication
      * \since QGIS 3.0
      */
     static QgsProcessingRegistry *processingRegistry();
+
+    /**
+     * Returns the application's page size registry, used for managing layout page sizes.
+     * \since QGIS 3.0
+     */
+    static QgsPageSizeRegistry *pageSizeRegistry();
 
     /**
      * Returns the application's annotation registry, used for managing annotation types.
@@ -697,12 +710,15 @@ class CORE_EXPORT QgsApplication : public QApplication
       QgsPaintEffectRegistry *mPaintEffectRegistry = nullptr;
       QgsPluginLayerRegistry *mPluginLayerRegistry = nullptr;
       QgsProcessingRegistry *mProcessingRegistry = nullptr;
+      QgsPageSizeRegistry *mPageSizeRegistry = nullptr;
       QgsRasterRendererRegistry *mRasterRendererRegistry = nullptr;
       QgsRendererRegistry *mRendererRegistry = nullptr;
       QgsRuntimeProfiler *mProfiler = nullptr;
       QgsSvgCache *mSvgCache = nullptr;
       QgsSymbolLayerRegistry *mSymbolLayerRegistry = nullptr;
       QgsTaskManager *mTaskManager = nullptr;
+      QgsLayoutItemRegistry *mLayoutItemRegistry = nullptr;
+      QgsUserProfileManager *mUserConfigManager = nullptr;
       QString mNullRepresentation;
 
       ApplicationMembers();

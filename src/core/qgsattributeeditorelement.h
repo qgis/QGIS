@@ -185,7 +185,7 @@ class CORE_EXPORT QgsAttributeEditorContainer : public QgsAttributeEditorElement
      *
      * \param element The element to add as child
      */
-    virtual void addChildElement( QgsAttributeEditorElement *element );
+    virtual void addChildElement( QgsAttributeEditorElement *element SIP_TRANSFER );
 
     /**
      * Determines if this container is rendered as collapsible group box or tab in a tabwidget

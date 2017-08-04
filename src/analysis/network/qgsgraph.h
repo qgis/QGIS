@@ -29,7 +29,7 @@
 #include <QVector>
 #include <QVariant>
 
-#include "qgspoint.h"
+#include "qgspointxy.h"
 #include "qgis_analysis.h"
 
 class QgsGraphVertex;
@@ -97,7 +97,7 @@ class ANALYSIS_EXPORT QgsGraphVertex
      * This constructor initializes QgsGraphVertex object and associates a vertex with a point
      */
 
-    QgsGraphVertex( const QgsPoint &point );
+    QgsGraphVertex( const QgsPointXY &point );
 
     /**
      * Returns outgoing edges ids
@@ -112,10 +112,10 @@ class ANALYSIS_EXPORT QgsGraphVertex
     /**
      * Returns point associated with graph vertex
      */
-    QgsPoint point() const;
+    QgsPointXY point() const;
 
   private:
-    QgsPoint mCoordinate;
+    QgsPointXY mCoordinate;
     QgsGraphEdgeIds mOutEdges;
     QgsGraphEdgeIds mInEdges;
 
@@ -138,7 +138,7 @@ class ANALYSIS_EXPORT QgsGraph
     /**
      * Add a vertex to the graph
      */
-    int addVertex( const QgsPoint &pt );
+    int addVertex( const QgsPointXY &pt );
 
     /**
      * Add an edge to the graph
@@ -169,7 +169,7 @@ class ANALYSIS_EXPORT QgsGraph
      * Find vertex by associated point
      * \returns vertex index
      */
-    int findVertex( const QgsPoint &pt ) const;
+    int findVertex( const QgsPointXY &pt ) const;
 
   private:
     QVector<QgsGraphVertex> mGraphVertexes;

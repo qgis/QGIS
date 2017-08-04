@@ -18,6 +18,7 @@
 
 #include "qgsapplication.h"
 #include "qgslogger.h"
+#include "qgspathresolver.h"
 #include "qgsproject.h"
 #include "qgssvgcache.h"
 #include "qgssymbollayerutils.h"
@@ -213,18 +214,20 @@ void QgsSvgGroupLoader::loadGroup( const QString &parentPath )
 // QgsSvgSelectorListModel
 //
 
-QgsSvgSelectorListModel::QgsSvgSelectorListModel( QObject *parent )
+QgsSvgSelectorListModel::QgsSvgSelectorListModel( QObject *parent, int iconSize )
   : QAbstractListModel( parent )
   , mSvgLoader( new QgsSvgSelectorLoader( this ) )
+  , mIconSize( iconSize )
 {
   mSvgLoader->setPath( QString() );
   connect( mSvgLoader, &QgsSvgSelectorLoader::foundSvgs, this, &QgsSvgSelectorListModel::addSvgs );
   mSvgLoader->start();
 }
 
-QgsSvgSelectorListModel::QgsSvgSelectorListModel( QObject *parent, const QString &path )
+QgsSvgSelectorListModel::QgsSvgSelectorListModel( QObject *parent, const QString &path, int iconSize )
   : QAbstractListModel( parent )
   , mSvgLoader( new QgsSvgSelectorLoader( this ) )
+  , mIconSize( iconSize )
 {
   mSvgLoader->setPath( path );
   connect( mSvgLoader, &QgsSvgSelectorLoader::foundSvgs, this, &QgsSvgSelectorListModel::addSvgs );
@@ -262,7 +265,7 @@ QPixmap QgsSvgSelectorListModel::createPreview( const QString &entry ) const
     strokeWidth = 0.2;
 
   bool fitsInCache; // should always fit in cache at these sizes (i.e. under 559 px ^ 2, or half cache size)
-  const QImage &img = QgsApplication::svgCache()->svgAsImage( entry, 30.0, fill, stroke, strokeWidth, 3.5 /*appr. 88 dpi*/, fitsInCache );
+  const QImage &img = QgsApplication::svgCache()->svgAsImage( entry, mIconSize, fill, stroke, strokeWidth, 3.5 /*appr. 88 dpi*/, fitsInCache );
   return QPixmap::fromImage( img );
 }
 
@@ -374,6 +377,9 @@ QgsSvgSelectorWidget::QgsSvgSelectorWidget( QWidget *parent )
   // TODO: in-code gui setup with option to vertically or horizontally stack SVG groups/images widgets
   setupUi( this );
 
+  mIconSize = qMax( 30, qRound( Qgis::UI_SCALE_FACTOR * fontMetrics().width( QStringLiteral( "XXXX" ) ) ) );
+  mImagesListView->setGridSize( QSize( mIconSize * 1.2, mIconSize * 1.2 ) );
+
   mGroupsTreeView->setHeaderHidden( true );
   populateList();
 
@@ -381,37 +387,18 @@ QgsSvgSelectorWidget::QgsSvgSelectorWidget( QWidget *parent )
            this, &QgsSvgSelectorWidget::svgSelectionChanged );
   connect( mGroupsTreeView->selectionModel(), &QItemSelectionModel::currentChanged,
            this, &QgsSvgSelectorWidget::populateIcons );
-
-  QgsSettings settings;
-  bool useRelativePath = ( QgsProject::instance()->readBoolEntry( QStringLiteral( "Paths" ), QStringLiteral( "/Absolute" ), false )
-                           || settings.value( QStringLiteral( "Windows/SvgSelectorWidget/RelativePath" ) ).toBool() );
-  mRelativePathChkBx->setChecked( useRelativePath );
 }
 
 QgsSvgSelectorWidget::~QgsSvgSelectorWidget()
 {
-  QgsSettings settings;
-  settings.setValue( QStringLiteral( "Windows/SvgSelectorWidget/RelativePath" ), mRelativePathChkBx->isChecked() );
 }
 
 void QgsSvgSelectorWidget::setSvgPath( const QString &svgPath )
 {
-  QString updatedPath( QLatin1String( "" ) );
-
-  // skip possible urls, excepting those that may locally resolve
-  if ( !svgPath.contains( QLatin1String( "://" ) ) || ( svgPath.contains( QLatin1String( "file://" ), Qt::CaseInsensitive ) ) )
-  {
-    QString resolvedPath = QgsSymbolLayerUtils::symbolNameToPath( svgPath.trimmed() );
-    if ( !resolvedPath.isNull() )
-    {
-      updatedPath = resolvedPath;
-    }
-  }
-
-  mCurrentSvgPath = updatedPath;
+  mCurrentSvgPath = svgPath;
 
   mFileLineEdit->blockSignals( true );
-  mFileLineEdit->setText( updatedPath );
+  mFileLineEdit->setText( svgPath );
   mFileLineEdit->blockSignals( false );
 
   mImagesListView->selectionModel()->blockSignals( true );
@@ -433,15 +420,7 @@ void QgsSvgSelectorWidget::setSvgPath( const QString &svgPath )
 
 QString QgsSvgSelectorWidget::currentSvgPath() const
 {
-  if ( mRelativePathChkBx->isChecked() )
-    return currentSvgPathToName();
-
   return mCurrentSvgPath;
-}
-
-QString QgsSvgSelectorWidget::currentSvgPathToName() const
-{
-  return QgsSymbolLayerUtils::symbolPathToName( mCurrentSvgPath );
 }
 
 void QgsSvgSelectorWidget::updateCurrentSvgPath( const QString &svgPath )
@@ -462,7 +441,7 @@ void QgsSvgSelectorWidget::populateIcons( const QModelIndex &idx )
   QString path = idx.data( Qt::UserRole + 1 ).toString();
 
   QAbstractItemModel *oldModel = mImagesListView->model();
-  QgsSvgSelectorListModel *m = new QgsSvgSelectorListModel( mImagesListView, path );
+  QgsSvgSelectorListModel *m = new QgsSvgSelectorListModel( mImagesListView, path, mIconSize );
   mImagesListView->setModel( m );
   delete oldModel; //explicitly delete old model to force any background threads to stop
 
@@ -514,7 +493,7 @@ void QgsSvgSelectorWidget::updateLineEditFeedback( bool ok, const QString &tip )
 
 void QgsSvgSelectorWidget::on_mFileLineEdit_textChanged( const QString &text )
 {
-  QString resolvedPath = QgsSymbolLayerUtils::symbolNameToPath( text );
+  QString resolvedPath = QgsSymbolLayerUtils::svgSymbolNameToPath( text, QgsProject::instance()->pathResolver() );
   bool validSVG = !resolvedPath.isNull();
 
   updateLineEditFeedback( validSVG, resolvedPath );

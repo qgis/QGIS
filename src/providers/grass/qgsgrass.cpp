@@ -29,8 +29,11 @@
 #endif
 
 #include "qgsgrass.h"
-#include "qgsgrassoptions.h"
 #include "qgsgrassvector.h"
+
+#ifdef HAVE_GUI
+#include "qgsgrassoptions.h"
+#endif
 
 #include "qgsapplication.h"
 #include "qgsconfig.h"
@@ -61,26 +64,9 @@ extern "C"
 #undef M_PI_4 //avoid redefinition warning
 #endif
 #include <grass/gprojects.h>
-
-#if GRASS_VERSION_MAJOR < 7
-#include <grass/Vect.h>
-#else
 #include <grass/vector.h>
 #include <grass/raster.h>
-#endif
 }
-
-#if GRASS_VERSION_MAJOR >= 7
-#define G_get_gdal_link Rast_get_gdal_link
-#define G_close_gdal_link Rast_close_gdal_link
-#endif
-
-#if !defined(GRASS_VERSION_MAJOR) || \
-    !defined(GRASS_VERSION_MINOR) || \
-    GRASS_VERSION_MAJOR<6 || \
-    (GRASS_VERSION_MAJOR == 6 && GRASS_VERSION_MINOR <= 2)
-#define G__setenv(name,value) G__setenv( ( char * ) (name), (char *) (value) )
-#endif
 
 #define GRASS_LOCK sMutex.lock();
 #define GRASS_UNLOCK sMutex.unlock();
@@ -173,19 +159,11 @@ QString QgsGrassObject::elementShort() const
 QString QgsGrassObject::elementShort( Type type )
 {
   if ( type == Raster )
-#if GRASS_VERSION_MAJOR < 7
-    return "rast";
-#else
     return QStringLiteral( "raster" );
-#endif
   else if ( type == Group )
     return QStringLiteral( "group" );
   else if ( type == Vector )
-#if GRASS_VERSION_MAJOR < 7
-    return "vect";
-#else
     return QStringLiteral( "vector" );
-#endif
   else if ( type == Region )
     return QStringLiteral( "region" );
   else if ( type == Strds )
@@ -377,9 +355,7 @@ bool QgsGrass::init( void )
   // TODO7: Rast_suppress_masking (see G_suppress_masking() macro above) needs MAPSET
   // (it should not be necessary, because rasters are read by modules qgis.g.info and qgis.d.rast
   //  where masking is suppressed)
-#if GRASS_VERSION_MAJOR < 7
-  G_suppress_masking();
-#endif
+  //G_suppress_masking();
 
   // Set program name
   G_set_program_name( "QGIS" );
@@ -608,12 +584,12 @@ void QgsGrass::setMapset( const QString &gisdbase, const QString &location, cons
 
   // Set principal GRASS variables (in memory)
 #ifdef Q_OS_WIN
-  G__setenv( "GISDBASE", shortPath( gisdbase ).toUtf8().data() );
+  G_setenv_nogisrc( "GISDBASE", shortPath( gisdbase ).toUtf8().data() );
 #else
-  G__setenv( "GISDBASE", gisdbase.toUtf8().data() );
+  G_setenv_nogisrc( "GISDBASE", gisdbase.toUtf8().data() );
 #endif
-  G__setenv( "LOCATION_NAME", location.toUtf8().data() );
-  G__setenv( "MAPSET", mapset.toUtf8().data() );
+  G_setenv_nogisrc( "LOCATION_NAME", location.toUtf8().data() );
+  G_setenv_nogisrc( "MAPSET", mapset.toUtf8().data() );
 
   // Add all available mapsets to search path
   // Why? Other mapsets should not be necessary.
@@ -636,13 +612,9 @@ void QgsGrass::setMapset( const QString &gisdbase, const QString &location, cons
   for ( int i = 0; ms[i]; i++ )
   {
     G_add_mapset_to_search_path( ms[i] ); // only adds mapset if it is not yet in path
-#if GRASS_VERSION_MAJOR >= 7
     free( ms[i] );
-#endif
   }
-#if GRASS_VERSION_MAJOR >= 7
   free( ms );
-#endif
 #endif
 }
 
@@ -661,11 +633,7 @@ void QgsGrass::addMapsetToSearchPath( const QString &mapset, QString &error )
   QString cmd = gisbase() + "/bin/g.mapsets";
   QStringList arguments;
 
-#if GRASS_VERSION_MAJOR < 7
-  arguments << "addmapset=" + mapset;
-#else
   arguments << QStringLiteral( "operation=add" ) << "mapset=" + mapset;
-#endif
 
   try
   {
@@ -683,11 +651,7 @@ void QgsGrass::removeMapsetFromSearchPath( const QString &mapset, QString &error
   QString cmd = gisbase() + "/bin/g.mapsets";
   QStringList arguments;
 
-#if GRASS_VERSION_MAJOR < 7
-  arguments << "removemapset=" + mapset;
-#else
   arguments << QStringLiteral( "operation=remove" ) << "mapset=" + mapset;
-#endif
 
   try
   {
@@ -715,14 +679,8 @@ void QgsGrass::loadMapsetSearchPath()
   {
     QgsGrass::setMapset( getDefaultGisdbase(), getDefaultLocation(), getDefaultMapset() );
     const char *mapset = 0;
-#if GRASS_VERSION_MAJOR >= 7
     G_reset_mapsets();
     for ( int i = 0; ( mapset = G_get_mapset_name( i ) ); i++ )
-#else
-    int result = G_reset_mapsets();
-    Q_UNUSED( result );
-    for ( int i = 0; ( mapset = G__mapset_name( i ) ); i++ )
-#endif
     {
       QgsDebugMsg( QString( "mapset = %1" ).arg( mapset ) );
       if ( G_is_mapset_in_search_path( mapset ) )
@@ -846,11 +804,6 @@ int QgsGrass::error_routine( const char *msg, int fatal )
     // Exceptions cannot be thrown from here if GRASS lib is not compiled with -fexceptions
     //throw QgsGrass::Exception( QString::fromUtf8( msg ) );
     sLastError = Fatal;
-
-#if (GRASS_VERSION_MAJOR < 7)
-    // longjump() is called by G_fatal_error in GRASS >= 7
-    longjmp( QgsGrass::jumper, 1 );
-#endif
   }
   else
   {
@@ -945,7 +898,7 @@ QString QgsGrass::openMapset( const QString &gisdbase,
   QgsDebugMsg( "processResult: " + processResult );
 
   // lock exit code:
-  // 0 - ok
+  // 0 - OK
   // 1 - error
   // 2 - mapset in use
   if ( process.exitCode() == 2 )
@@ -1043,14 +996,14 @@ QString QgsGrass::openMapset( const QString &gisdbase,
   putEnv( QStringLiteral( "GISRC" ), sGisrc );
 
   // Reinitialize GRASS
-  G__setenv( "GISRC", sGisrc.toUtf8().data() );
+  G_setenv_nogisrc( "GISRC", sGisrc.toUtf8().data() );
 #ifdef Q_OS_WIN
-  G__setenv( "GISDBASE", shortPath( gisdbase ).toLocal8Bit().data() );
+  G_setenv_nogisrc( "GISDBASE", shortPath( gisdbase ).toLocal8Bit().data() );
 #else
-  G__setenv( "GISDBASE", gisdbase.toUtf8().data() );
+  G_setenv_nogisrc( "GISDBASE", gisdbase.toUtf8().data() );
 #endif
-  G__setenv( "LOCATION_NAME", location.toLocal8Bit().data() );
-  G__setenv( "MAPSET", mapset.toLocal8Bit().data() );
+  G_setenv_nogisrc( "LOCATION_NAME", location.toLocal8Bit().data() );
+  G_setenv_nogisrc( "MAPSET", mapset.toLocal8Bit().data() );
   sDefaultGisdbase = gisdbase;
   sDefaultLocation = location;
   sDefaultMapset = mapset;
@@ -1075,7 +1028,7 @@ QString QgsGrass::openMapset( const QString &gisdbase,
   sMapsetLock = lock;
 
   emit QgsGrass::instance()->mapsetChanged();
-  return QString::null;
+  return QString();
 }
 
 QString QgsGrass::closeMapset()
@@ -1095,15 +1048,15 @@ QString QgsGrass::closeMapset()
     putenv( ( char * ) "GISRC" );
 
     // Reinitialize GRASS
-    G__setenv( "GISRC", ( char * ) "" );
+    G_setenv_nogisrc( "GISRC", ( char * ) "" );
 
     // Temporarily commented because of
     //   http://trac.osgeo.org/qgis/ticket/1900
     //   http://trac.osgeo.org/gdal/ticket/3313
     // it can be uncommented once GDAL with patch gets deployed (probably GDAL 1.8)
-    //G__setenv( "GISDBASE", ( char * ) "" );
-    //G__setenv( "LOCATION_NAME", ( char * ) "" );
-    //G__setenv( "MAPSET", ( char * ) "" );
+    //G_setenv_nogisrc( "GISDBASE", ( char * ) "" );
+    //G_setenv_nogisrc( "LOCATION_NAME", ( char * ) "" );
+    //G_setenv_nogisrc( "MAPSET", ( char * ) "" );
 
     sDefaultGisdbase = QLatin1String( "" );
     sDefaultLocation = QLatin1String( "" );
@@ -1137,7 +1090,7 @@ QString QgsGrass::closeMapset()
 
   QgsGrass::instance()->setMapsetSearchPathWatcher(); // unset watcher
   emit QgsGrass::instance()->mapsetChanged();
-  return QString::null;
+  return QString();
 }
 
 bool QgsGrass::closeMapsetWarn()
@@ -1398,9 +1351,8 @@ QStringList QgsGrass::vectorLayers( const QString &gisdbase, const QString &loca
     // add topology layers
     if ( vector.typeCount( GV_POINTS ) > 0 )
     {
-#if GRASS_VERSION_MAJOR < 7 /* no more point in GRASS 7 topo */
-      list.append( "topo_point" );
-#endif
+      /* no more point in GRASS 7 topo */
+      //list.append( "topo_point" );
     }
     if ( vector.typeCount( GV_LINES ) > 0 )
     {
@@ -1535,7 +1487,6 @@ QStringList QgsGrass::grassObjects( const QgsGrassObject &mapsetObject, QgsGrass
   else if ( type == QgsGrassObject::Strds || type == QgsGrassObject::Stvds
             || type == QgsGrassObject::Str3ds || type == QgsGrassObject::Stds )
   {
-#if GRASS_VERSION_MAJOR >= 7
     QString cmd = QStringLiteral( "t.list" );
 
     QStringList arguments;
@@ -1581,7 +1532,6 @@ QStringList QgsGrass::grassObjects( const QgsGrassObject &mapsetObject, QgsGrass
         QgsDebugMsg( QString( "Cannot run %1: %2" ).arg( cmd, e.what() ) );
       }
     }
-#endif
   }
   else
   {
@@ -1665,15 +1615,8 @@ void QgsGrass::region( const QString &gisdbase,
 {
   QgsGrass::setLocation( gisdbase, location );
 
-#if GRASS_VERSION_MAJOR < 7
-  if ( G__get_window( window, ( char * ) "", ( char * ) "WIND", mapset.toUtf8().data() ) )
-  {
-    throw QgsGrass::Exception( QObject::tr( "Cannot get current region" ) );
-  }
-#else
   // In GRASS 7 G__get_window does not return error code and calls G_fatal_error on error
-  G_FATAL_THROW( G__get_window( window, ( char * ) "", ( char * ) "WIND", mapset.toUtf8().data() ) );
-#endif
+  G_FATAL_THROW( G_get_element_window( window, ( char * ) "", ( char * ) "WIND", mapset.toUtf8().data() ) );
 }
 
 void QgsGrass::region( struct Cell_head *window )
@@ -1805,13 +1748,6 @@ QString QgsGrass::setRegion( struct Cell_head *window, const QgsRectangle &rect,
   window->cols = cols;
 
   QString error;
-#if GRASS_VERSION_MAJOR < 7
-  char *err = G_adjust_Cell_head( window, 1, 1 );
-  if ( err )
-  {
-    error = QString( err );
-  }
-#else
   try
   {
     G_adjust_Cell_head( window, 1, 1 );
@@ -1820,7 +1756,6 @@ QString QgsGrass::setRegion( struct Cell_head *window, const QgsRectangle &rect,
   {
     error = e.what();
   }
-#endif
   return error;
 }
 
@@ -1844,16 +1779,7 @@ bool QgsGrass::mapRegion( QgsGrassObject::Type type, const QString &gisdbase,
 
   if ( type == QgsGrassObject::Raster )
   {
-
     QString error = tr( "Cannot read raster map region (%1/%2/%3)" ).arg( gisdbase, location, mapset );
-#if GRASS_VERSION_MAJOR < 7
-    if ( G_get_cellhd( map.toUtf8().data(),
-                       mapset.toUtf8().data(), window ) < 0 )
-    {
-      warning( error );
-      return false;
-    }
-#else
     G_TRY
     {
       Rast_get_cellhd( map.toUtf8().data(), mapset.toUtf8().data(), window );
@@ -1863,7 +1789,6 @@ bool QgsGrass::mapRegion( QgsGrassObject::Type type, const QString &gisdbase,
       warning( error + " : " + e.what() );
       return false;
     }
-#endif
   }
   else if ( type == QgsGrassObject::Vector )
   {
@@ -1911,7 +1836,7 @@ bool QgsGrass::mapRegion( QgsGrassObject::Type type, const QString &gisdbase,
       return false;
     }
 
-    BOUND_BOX box;
+    bound_box box;
     Vect_get_map_box( Map, &box );
     window->north = box.N;
     window->south = box.S;
@@ -1939,26 +1864,16 @@ bool QgsGrass::mapRegion( QgsGrassObject::Type type, const QString &gisdbase,
   }
   else if ( type == QgsGrassObject::Region )
   {
-#if GRASS_VERSION_MAJOR < 7
-    if ( G__get_window( window, ( char * ) "windows",
-                        map.toUtf8().data(),
-                        mapset.toUtf8().data() ) )
-    {
-      warning( tr( "Cannot read region" ) );
-      return false;
-    }
-#else
     // G__get_window does not return error code in GRASS 7 and calls G_fatal_error on error
     G_TRY
     {
-      G__get_window( window, ( char * ) "windows", map.toUtf8().data(), mapset.toUtf8().data() );
+      G_get_element_window( window, ( char * ) "windows", map.toUtf8().data(), mapset.toUtf8().data() );
     }
     G_CATCH( QgsGrass::Exception & e )
     {
       warning( e );
       return false;
     }
-#endif
   }
   return true;
 }
@@ -2401,11 +2316,7 @@ bool QgsGrass::deleteObject( const QgsGrassObject &object )
   QString cmd = gisbase() + "/bin/g.remove";
   QStringList arguments;
 
-#if GRASS_VERSION_MAJOR < 7
-  arguments << object.elementShort() + "=" + object.name();
-#else
   arguments << QStringLiteral( "-f" ) << "type=" + object.elementShort() << "name=" + object.name();
-#endif
 
   try
   {
@@ -2438,12 +2349,7 @@ void QgsGrass::createVectorMap( const QgsGrassObject &object, QString &error )
   {
     Map = vectNewMapStruct();
     Vect_open_new( Map, object.name().toUtf8().data(), 0 );
-
-#if ( GRASS_VERSION_MAJOR == 6 && GRASS_VERSION_MINOR >= 4 ) || GRASS_VERSION_MAJOR > 6
     Vect_build( Map );
-#else
-    Vect_build( Map, stderr );
-#endif
     Vect_set_release_support( Map );
     Vect_close( Map );
   }
@@ -2481,7 +2387,7 @@ void QgsGrass::createTable( dbDriver *driver, const QString &tableName, const Qg
       case QVariant::Double:
         typeName = QStringLiteral( "double precision" );
         break;
-      // TODO: verify how is it with spatialite/dbf support for date, time, datetime, v.in.ogr is using all
+      // TODO: verify how is it with SpatiaLite/dbf support for date, time, datetime, v.in.ogr is using all
       case QVariant::Date:
         typeName = QStringLiteral( "date" );
         break;
@@ -2587,11 +2493,11 @@ bool QgsGrass::isExternal( const QgsGrassObject &object )
   {
     QgsGrass::setLocation( object.gisdbase(), object.location() );
     struct GDAL_link *gdal;
-    gdal = G_get_gdal_link( object.name().toUtf8().data(), object.mapset().toUtf8().data() );
+    gdal = Rast_get_gdal_link( object.name().toUtf8().data(), object.mapset().toUtf8().data() );
     if ( gdal )
     {
       isExternal = true;
-      G_close_gdal_link( gdal );
+      Rast_close_gdal_link( gdal );
     }
   }
   G_CATCH( QgsGrass::Exception & e )
@@ -2604,15 +2510,7 @@ bool QgsGrass::isExternal( const QgsGrassObject &object )
 
 void QgsGrass::adjustCellHead( struct Cell_head *cellhd, int row_flag, int col_flag )
 {
-#if (GRASS_VERSION_MAJOR < 7)
-  char *err = G_adjust_Cell_head( cellhd, row_flag, col_flag );
-  if ( err )
-  {
-    throw QgsGrass::Exception( QObject::tr( "Cannot adjust region, error: '%1'" ).arg( err ) );
-  }
-#else
   G_FATAL_THROW( G_adjust_Cell_head( cellhd, row_flag, col_flag ) );
-#endif
 }
 
 // Map of vector types
@@ -2906,8 +2804,10 @@ void QgsGrass::setModulesDebug( bool debug )
 
 void QgsGrass::openOptions()
 {
+#ifdef HAVE_GUI
   QgsGrassOptions dialog;
   dialog.exec();
+#endif
 }
 
 void QgsGrass::warning( const QString &message )

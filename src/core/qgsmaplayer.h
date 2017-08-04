@@ -40,7 +40,7 @@ class QgsDataProvider;
 class QgsMapLayerLegend;
 class QgsMapLayerRenderer;
 class QgsMapLayerStyleManager;
-class QgsPathResolver;
+class QgsReadWriteContext;
 class QgsProject;
 
 class QDomDocument;
@@ -110,6 +110,13 @@ class CORE_EXPORT QgsMapLayer : public QObject
     //! QgsMapLayer cannot be copied
     QgsMapLayer &operator=( QgsMapLayer const & ) = delete;
 
+    /** Returns a new instance equivalent to this one except for the id which
+     *  is still unique.
+     * \returns a new layer instance
+     * \since QGIS 3.0
+     */
+    virtual QgsMapLayer *clone() const = 0;
+
     /** Returns the type of the layer.
      */
     QgsMapLayer::LayerType type() const;
@@ -118,8 +125,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
     QString id() const;
 
     /**
-     * Set the display name of the layer
-     * \param name new name for the layer
+     * Set the display \a name of the layer.
      * \since QGIS 2.16
      * \see name()
      */
@@ -134,18 +140,17 @@ class CORE_EXPORT QgsMapLayer : public QObject
     /**
      * Returns the layer's data provider.
      */
-    virtual QgsDataProvider *dataProvider() { return nullptr; }
+    virtual QgsDataProvider *dataProvider();
 
     /**
      * Returns the layer's data provider in a const-correct manner
      * \note not available in Python bindings
      */
-    virtual const QgsDataProvider *dataProvider() const SIP_SKIP { return nullptr; }
+    virtual const QgsDataProvider *dataProvider() const SIP_SKIP;
 
     /** Returns the original name of the layer.
-     * \returns the original layer name
      */
-    QString originalName() const { return mLayerOrigName; }
+    QString originalName() const;
 
     /** Sets the short name of the layer
      *  used by QGIS Server to identify the layer.
@@ -156,14 +161,12 @@ class CORE_EXPORT QgsMapLayer : public QObject
 
     /** Returns the short name of the layer
      *  used by QGIS Server to identify the layer.
-     * \returns the layer short name
      * \see setShortName()
      */
     QString shortName() const { return mShortName; }
 
     /** Sets the title of the layer
      *  used by QGIS Server in GetCapabilities request.
-     * \returns the layer title
      * \see title()
      */
     void setTitle( const QString &title ) { mTitle = title; }
@@ -390,11 +393,11 @@ class CORE_EXPORT QgsMapLayer : public QObject
     /** Returns true if the layer is considered a spatial layer, ie it has some form of geometry associated with it.
      * \since QGIS 2.16
      */
-    virtual bool isSpatial() const { return true; }
+    virtual bool isSpatial() const;
 
     /** Sets state from Dom document
        \param layerElement The Dom element corresponding to ``maplayer'' tag
-       \param pathResolver object for conversion between relative and absolute paths
+       \param context writing context (e.g. for conversion between relative and absolute paths)
        \note
 
        The Dom node corresponds to a Dom document project file XML element read
@@ -407,12 +410,12 @@ class CORE_EXPORT QgsMapLayer : public QObject
 
        \returns true if successful
      */
-    bool readLayerXml( const QDomElement &layerElement, const QgsPathResolver &pathResolver );
+    bool readLayerXml( const QDomElement &layerElement, const QgsReadWriteContext &context );
 
     /** Stores state in Dom node
      * \param layerElement is a Dom element corresponding to ``maplayer'' tag
      * \param document is a the dom document being written
-     * \param pathResolver object for conversion between relative and absolute paths
+     * \param context reading context (e.g. for conversion between relative and absolute paths)
      * \note
      *
      * The Dom node corresponds to a Dom document project file XML element to be
@@ -425,7 +428,13 @@ class CORE_EXPORT QgsMapLayer : public QObject
      *
      * \returns true if successful
      */
-    bool writeLayerXml( QDomElement &layerElement, QDomDocument &document, const QgsPathResolver &pathResolver ) const;
+    bool writeLayerXml( QDomElement &layerElement, QDomDocument &document, const QgsReadWriteContext &context ) const;
+
+    /** Returns list of all keys within custom properties. Properties are stored in a map and saved in project file.
+     * \see customProperty()
+     * \since QGIS 3.0
+     */
+    QStringList customPropertyKeys() const;
 
     /** Set a custom property for layer. Properties are stored in a map and saved in project file.
      * \see customProperty()
@@ -438,6 +447,11 @@ class CORE_EXPORT QgsMapLayer : public QObject
     */
     QVariant customProperty( const QString &value, const QVariant &defaultValue = QVariant() ) const;
 
+    /** Set custom properties for layer. Current properties are dropped.
+     * \since QGIS 3.0
+     */
+    void setCustomProperties( const QgsObjectCustomProperties &properties );
+
     /** Remove a custom property from layer. Properties are stored in a map and saved in project file.
      * \see setCustomProperty()
      */
@@ -447,7 +461,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
      *  for which layer cannot work and thus is not valid. It is not last error
      *  after accessing data by draw() etc.
      */
-    virtual QgsError error() const { return mError; }
+    virtual QgsError error() const;
 
     /** Returns the layer's spatial reference system.
     \since QGIS 1.4
@@ -579,36 +593,40 @@ class CORE_EXPORT QgsMapLayer : public QObject
     /** Read the symbology for the current layer from the Dom node supplied.
      * \param node node that will contain the symbology definition for this layer.
      * \param errorMessage reference to string that will be updated with any error messages
+     * \param context reading context (used for transform from relative to absolute paths)
      * \returns true in case of success.
      */
-    virtual bool readSymbology( const QDomNode &node, QString &errorMessage ) = 0;
+    virtual bool readSymbology( const QDomNode &node, QString &errorMessage, const QgsReadWriteContext &context ) = 0;
 
     /** Read the style for the current layer from the Dom node supplied.
      * \param node node that will contain the style definition for this layer.
      * \param errorMessage reference to string that will be updated with any error messages
+     * \param context reading context (used for transform from relative to absolute paths)
      * \returns true in case of success.
      * \since QGIS 2.16
      * \note To be implemented in subclasses. Default implementation does nothing and returns false.
      */
-    virtual bool readStyle( const QDomNode &node, QString &errorMessage );
+    virtual bool readStyle( const QDomNode &node, QString &errorMessage, const QgsReadWriteContext &context );
 
     /** Write the symbology for the layer into the docment provided.
      *  \param node the node that will have the style element added to it.
      *  \param doc the document that will have the QDomNode added.
      *  \param errorMessage reference to string that will be updated with any error messages
+     *  \param context writing context (used for transform from absolute to relative paths)
      *  \returns true in case of success.
      */
-    virtual bool writeSymbology( QDomNode &node, QDomDocument &doc, QString &errorMessage ) const = 0;
+    virtual bool writeSymbology( QDomNode &node, QDomDocument &doc, QString &errorMessage, const QgsReadWriteContext &context ) const = 0;
 
     /** Write just the style information for the layer into the document
      *  \param node the node that will have the style element added to it.
      *  \param doc the document that will have the QDomNode added.
      *  \param errorMessage reference to string that will be updated with any error messages
+     *  \param context writing context (used for transform from absolute to relative paths)
      *  \returns true in case of success.
      *  \since QGIS 2.16
      *  \note To be implemented in subclasses. Default implementation does nothing and returns false.
      */
-    virtual bool writeStyle( QDomNode &node, QDomDocument &doc, QString &errorMessage ) const;
+    virtual bool writeStyle( QDomNode &node, QDomDocument &doc, QString &errorMessage, const QgsReadWriteContext &context ) const;
 
     //! Return pointer to layer's undo stack
     QUndoStack *undoStack();
@@ -657,8 +675,8 @@ class CORE_EXPORT QgsMapLayer : public QObject
      */
     QgsMapLayerStyleManager *styleManager() const;
 
-    /** Tests whether the layer should be visible at the specified scale.
-     * \param scale scale denominator to test
+    /** Tests whether the layer should be visible at the specified \a scale.
+     *  The \a scale value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
      * \returns true if the layer is visible at the given scale.
      * \since QGIS 2.16
      * \see minimumScale()
@@ -667,9 +685,11 @@ class CORE_EXPORT QgsMapLayer : public QObject
      */
     bool isInScaleRange( double scale ) const;
 
-    /** Returns the minimum scale denominator at which the layer is visible.
-     * Scale based visibility is only used if hasScaleBasedVisibility is true.
-     * \returns minimum scale denominator at which the layer will render
+    /**
+     * Returns the minimum map scale (i.e. most "zoomed out" scale) at which the layer will be visible.
+     * The scale value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
+     * A scale of 0 indicates no minimum scale visibility.
+     * \note Scale based visibility is only used if setScaleBasedVisibility() is set to true.
      * \see setMinimumScale()
      * \see maximumScale()
      * \see hasScaleBasedVisibility()
@@ -677,9 +697,11 @@ class CORE_EXPORT QgsMapLayer : public QObject
      */
     double minimumScale() const;
 
-    /** Returns the maximum scale denominator at which the layer is visible.
-     * Scale based visibility is only used if hasScaleBasedVisibility is true.
-     * \returns minimum scale denominator at which the layer will render
+    /**
+     * Returns the maximum map scale (i.e. most "zoomed in" scale) at which the layer will be visible.
+     * The scale value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
+     * A scale of 0 indicates no maximum scale visibility.
+     * \note Scale based visibility is only used if setScaleBasedVisibility() is set to true.
      * \see setMaximumScale()
      * \see minimumScale()
      * \see hasScaleBasedVisibility()
@@ -740,7 +762,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
      * \see setMetadata()
      * \see metadataChanged()
      */
-    virtual const QgsLayerMetadata &metadata() const { return mMetadata; }
+    virtual const QgsLayerMetadata &metadata() const;
 
     /**
      * Sets the layer's \a metadata store.
@@ -757,7 +779,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
     virtual QString htmlMetadata() const;
 
     //! Time stamp of data source in the moment when data/metadata were loaded by provider
-    virtual QDateTime timestamp() const { return QDateTime() ; }
+    virtual QDateTime timestamp() const;
 
     /**
      * Gets the list of dependencies. This includes data dependencies set by the user (\see setDataDependencies)
@@ -770,21 +792,25 @@ class CORE_EXPORT QgsMapLayer : public QObject
 
   public slots:
 
-    /** Sets the minimum scale denominator at which the layer will be visible.
-     * Scale based visibility is only used if setScaleBasedVisibility is set to true.
-     * \param scale minimum scale denominator at which the layer should render
-     * \see minimumScale
-     * \see setMaximumScale
-     * \see setScaleBasedVisibility
+    /**
+     * Sets the minimum map \a scale (i.e. most "zoomed out" scale) at which the layer will be visible.
+     * The \a scale value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
+     * A \a scale of 0 indicates no minimum scale visibility.
+     * \note Scale based visibility is only used if setScaleBasedVisibility() is set to true.
+     * \see minimumScale()
+     * \see setMaximumScale()
+     * \see setScaleBasedVisibility()
      */
     void setMinimumScale( double scale );
 
-    /** Sets the maximum scale denominator at which the layer will be visible.
-     * Scale based visibility is only used if setScaleBasedVisibility is set to true.
-     * \param scale maximum scale denominator at which the layer should render
-     * \see maximumScale
-     * \see setMinimumScale
-     * \see setScaleBasedVisibility
+    /**
+     * Sets the maximum map \a scale (i.e. most "zoomed in" scale) at which the layer will be visible.
+     * The \a scale value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
+     * A \a scale of 0 indicates no maximum scale visibility.
+     * \note Scale based visibility is only used if setScaleBasedVisibility() is set to true.
+     * \see maximumScale()
+     * \see setMinimumScale()
+     * \see setScaleBasedVisibility()
      */
     void setMaximumScale( double scale );
 
@@ -906,6 +932,13 @@ class CORE_EXPORT QgsMapLayer : public QObject
     void metadataChanged();
 
   protected:
+
+    /** Copies attributes like name, short name, ... into another layer.
+     * \param layer The copy recipient
+     * \since QGIS 3.0
+     */
+    void clone( QgsMapLayer *layer ) const;
+
     //! Set the extent
     virtual void setExtent( const QgsRectangle &rect );
 
@@ -915,12 +948,12 @@ class CORE_EXPORT QgsMapLayer : public QObject
     /** Called by readLayerXML(), used by children to read state specific to them from
      *  project files.
      */
-    virtual bool readXml( const QDomNode &layer_node );
+    virtual bool readXml( const QDomNode &layer_node, const QgsReadWriteContext &context );
 
     /** Called by writeLayerXML(), used by children to write state specific to them to
      *  project files.
      */
-    virtual bool writeXml( QDomNode &layer_node, QDomDocument &document ) const;
+    virtual bool writeXml( QDomNode &layer_node, QDomDocument &document, const QgsReadWriteContext &context ) const;
 
 
     /** Read custom properties from project file.
@@ -1003,7 +1036,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
      * This method returns true by default but can be overwritten to specify
      * that a certain layer is writable.
      */
-    virtual bool isReadOnly() const { return true; }
+    virtual bool isReadOnly() const;
 
     /** Layer's spatial reference system.
         private to make sure setCrs must be used and crsChanged() is emitted */

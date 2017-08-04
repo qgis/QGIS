@@ -34,14 +34,18 @@ from qgis.PyQt.QtGui import QFont, QColor
 
 from qgis.core import (
     QgsCoordinateReferenceSystem,
+    QgsCoordinateTransform,
     QgsDataSourceUri,
+    QgsGeometry,
     QgsLabelingEngineSettings,
     QgsProject,
     QgsMapSettings,
     QgsPalLabeling,
     QgsPalLayerSettings,
     QgsProviderRegistry,
+    QgsStringReplacementCollection,
     QgsVectorLayer,
+    QgsVectorLayerSimpleLabeling,
     QgsMultiRenderChecker,
     QgsUnitTypes
 )
@@ -90,7 +94,7 @@ class TestQgsPalLabeling(unittest.TestCase):
         cls._Iface = get_iface()
         cls._Canvas = cls._Iface.mapCanvas()
 
-        # verify that spatialite provider is available
+        # verify that SpatiaLite provider is available
         msg = '\nSpatialite provider not found, SKIPPING TEST SUITE'
         # noinspection PyArgumentList
         res = 'spatialite' in QgsProviderRegistry.instance().providerList()
@@ -247,7 +251,6 @@ class TestQgsPalLabeling(unittest.TestCase):
 
     def defaultLayerSettings(self):
         lyr = QgsPalLayerSettings()
-        lyr.enabled = True
         lyr.fieldName = 'text'  # default in test data sources
         font = self.getTestFont()
         font.setPointSize(32)
@@ -273,6 +276,8 @@ class TestQgsPalLabeling(unittest.TestCase):
         for attr in dir(lyr):
             if attr[0].islower() and not attr.startswith("__"):
                 value = getattr(lyr, attr)
+                if isinstance(value, (QgsGeometry, QgsStringReplacementCollection, QgsCoordinateTransform)):
+                    continue  # ignore these objects
                 if not isinstance(value, collections.Callable):
                     res[attr] = value
         return res
@@ -356,7 +361,7 @@ class TestQgsPalLabeling(unittest.TestCase):
         chk.setColorTolerance(colortol)
         # noinspection PyUnusedLocal
         res = chk.runTest(self._Test, mismatch)
-        if PALREPORT and not res:  # don't report ok checks
+        if PALREPORT and not res:  # don't report OK checks
             testname = self._TestGroup + ' . ' + self._Test
             PALREPORTS[testname] = chk.report()
         msg = '\nRender check failed for "{0}"'.format(self._Test)
@@ -392,18 +397,14 @@ class TestPALConfig(TestQgsPalLabeling):
         msg = '\nExpected: Empty string\nGot: {0}'.format(palset)
         self.assertEqual(palset, '', msg)
 
-    def test_settings_enable_pal(self):
-        # Verify default PAL settings enable PAL labeling for layer
-        lyr = QgsPalLayerSettings()
-        lyr.writeToLayer(self.layer)
-        palset = self.layer.customProperty('labeling', '')
-        msg = '\nExpected: Empty string\nGot: {0}'.format(palset)
-        self.assertEqual(palset, 'pal', msg)
+    def test_settings_no_labeling(self):
+        self.layer.setLabeling(None)
+        self.assertEqual(None, self.layer.labeling())
 
     def test_layer_pal_activated(self):
         # Verify, via engine, that PAL labeling can be activated for layer
         lyr = self.defaultLayerSettings()
-        lyr.writeToLayer(self.layer)
+        self.layer.setLabeling(QgsVectorLayerSimpleLabeling(lyr))
         msg = '\nLayer labeling not activated, as reported by labelingEngine'
         self.assertTrue(QgsPalLabeling.staticWillUseLayer(self.layer), msg)
 
@@ -412,14 +413,13 @@ class TestPALConfig(TestQgsPalLabeling):
         # load and write default test settings
         lyr1 = self.defaultLayerSettings()
         lyr1dict = self.settingsDict(lyr1)
-        # print lyr1dict
-        lyr1.writeToLayer(self.layer)
+        # print(lyr1dict)
+        self.layer.setLabeling(QgsVectorLayerSimpleLabeling(lyr1))
 
         # read settings
-        lyr2 = QgsPalLayerSettings()
-        lyr2.readFromLayer(self.layer)
-        lyr2dict = self.settingsDict(lyr1)
-        # print lyr2dict
+        lyr2 = self.layer.labeling().settings()
+        lyr2dict = self.settingsDict(lyr2)
+        # print(lyr2dict)
 
         msg = '\nLayer settings read not same as settings written'
         self.assertDictEqual(lyr1dict, lyr2dict, msg)

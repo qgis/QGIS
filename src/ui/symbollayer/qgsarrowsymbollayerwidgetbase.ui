@@ -17,7 +17,7 @@
    <item row="1" column="2">
     <widget class="QgsPropertyOverrideButton" name="mArrowTypeDDBtn">
      <property name="text">
-      <string>...</string>
+      <string>…</string>
      </property>
     </widget>
    </item>
@@ -88,14 +88,18 @@
       </widget>
      </item>
      <item>
-      <widget class="QgsUnitSelectionWidget" name="mHeadThicknessUnitWidget" native="true"/>
+      <widget class="QgsUnitSelectionWidget" name="mHeadThicknessUnitWidget" native="true">
+       <property name="focusPolicy">
+        <enum>Qt::TabFocus</enum>
+       </property>
+      </widget>
      </item>
     </layout>
    </item>
    <item row="5" column="2">
     <widget class="QgsPropertyOverrideButton" name="mHeadHeightDDBtn">
      <property name="text">
-      <string>...</string>
+      <string>…</string>
      </property>
     </widget>
    </item>
@@ -129,14 +133,14 @@
    <item row="4" column="2">
     <widget class="QgsPropertyOverrideButton" name="mHeadWidthDDBtn">
      <property name="text">
-      <string>...</string>
+      <string>…</string>
      </property>
     </widget>
    </item>
    <item row="2" column="2">
     <widget class="QgsPropertyOverrideButton" name="mArrowWidthDDBtn">
      <property name="text">
-      <string>...</string>
+      <string>…</string>
      </property>
     </widget>
    </item>
@@ -176,7 +180,7 @@
    <item row="6" column="2">
     <widget class="QgsPropertyOverrideButton" name="mOffsetDDBtn">
      <property name="text">
-      <string>...</string>
+      <string>…</string>
      </property>
     </widget>
    </item>
@@ -205,14 +209,18 @@
       </widget>
      </item>
      <item>
-      <widget class="QgsUnitSelectionWidget" name="mArrowWidthUnitWidget" native="true"/>
+      <widget class="QgsUnitSelectionWidget" name="mArrowWidthUnitWidget" native="true">
+       <property name="focusPolicy">
+        <enum>Qt::TabFocus</enum>
+       </property>
+      </widget>
      </item>
     </layout>
    </item>
    <item row="0" column="2">
     <widget class="QgsPropertyOverrideButton" name="mHeadTypeDDBtn">
      <property name="text">
-      <string>...</string>
+      <string>…</string>
      </property>
     </widget>
    </item>
@@ -226,7 +234,7 @@
    <item row="3" column="2">
     <widget class="QgsPropertyOverrideButton" name="mArrowStartWidthDDBtn">
      <property name="text">
-      <string>...</string>
+      <string>…</string>
      </property>
     </widget>
    </item>
@@ -265,7 +273,11 @@
       </widget>
      </item>
      <item>
-      <widget class="QgsUnitSelectionWidget" name="mHeadLengthUnitWidget" native="true"/>
+      <widget class="QgsUnitSelectionWidget" name="mHeadLengthUnitWidget" native="true">
+       <property name="focusPolicy">
+        <enum>Qt::TabFocus</enum>
+       </property>
+      </widget>
      </item>
     </layout>
    </item>
@@ -330,7 +342,11 @@
       </widget>
      </item>
      <item>
-      <widget class="QgsUnitSelectionWidget" name="mArrowStartWidthUnitWidget" native="true"/>
+      <widget class="QgsUnitSelectionWidget" name="mArrowStartWidthUnitWidget" native="true">
+       <property name="focusPolicy">
+        <enum>Qt::TabFocus</enum>
+       </property>
+      </widget>
      </item>
     </layout>
    </item>
@@ -371,8 +387,27 @@
   </customwidget>
  </customwidgets>
  <tabstops>
+  <tabstop>mHeadTypeCombo</tabstop>
+  <tabstop>mHeadTypeDDBtn</tabstop>
+  <tabstop>mArrowTypeCombo</tabstop>
+  <tabstop>mArrowTypeDDBtn</tabstop>
+  <tabstop>mArrowWidthSpin</tabstop>
+  <tabstop>mArrowWidthUnitWidget</tabstop>
+  <tabstop>mArrowWidthDDBtn</tabstop>
+  <tabstop>mArrowStartWidthSpin</tabstop>
+  <tabstop>mArrowStartWidthUnitWidget</tabstop>
+  <tabstop>mArrowStartWidthDDBtn</tabstop>
+  <tabstop>mHeadLengthSpin</tabstop>
+  <tabstop>mHeadLengthUnitWidget</tabstop>
+  <tabstop>mHeadWidthDDBtn</tabstop>
+  <tabstop>mHeadThicknessSpin</tabstop>
+  <tabstop>mHeadThicknessUnitWidget</tabstop>
+  <tabstop>mHeadHeightDDBtn</tabstop>
   <tabstop>mOffsetSpin</tabstop>
   <tabstop>mOffsetUnitWidget</tabstop>
+  <tabstop>mOffsetDDBtn</tabstop>
+  <tabstop>mCurvedArrowChck</tabstop>
+  <tabstop>mRepeatArrowChck</tabstop>
  </tabstops>
  <resources/>
  <connections/>

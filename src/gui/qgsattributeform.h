@@ -61,28 +61,30 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
       FilterOr, //!< Filter should be combined using "OR"
     };
 
-    explicit QgsAttributeForm( QgsVectorLayer *vl, const QgsFeature &feature = QgsFeature(),
-                               const QgsAttributeEditorContext &context = QgsAttributeEditorContext(), QWidget *parent = nullptr );
+    explicit QgsAttributeForm( QgsVectorLayer *vl,
+                               const QgsFeature &feature = QgsFeature(),
+                               const QgsAttributeEditorContext &context = QgsAttributeEditorContext(),
+                               QWidget *parent SIP_TRANSFERTHIS = nullptr );
     ~QgsAttributeForm();
 
     const QgsFeature &feature() { return mFeature; }
 
     /**
-     * Hides the button box (Ok/Cancel) and enables auto-commit
+     * Hides the button box (OK/Cancel) and enables auto-commit
      * \note set Embed in QgsAttributeEditorContext in constructor instead
      */
     // TODO QGIS 3.0 - make private
     void hideButtonBox();
 
     /**
-     * Shows the button box (Ok/Cancel) and disables auto-commit
+     * Shows the button box (OK/Cancel) and disables auto-commit
      * \note set Embed in QgsAttributeEditorContext in constructor instead
      */
     // TODO QGIS 3.0 - make private
     void showButtonBox();
 
     /**
-     * Disconnects the button box (Ok/Cancel) from the accept/resetValues slots
+     * Disconnects the button box (OK/Cancel) from the accept/resetValues slots
      * If this method is called, you have to create these connections from outside
      */
     // TODO QGIS 3.0 - make private
@@ -169,7 +171,7 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
      * \param ok  Set this parameter to false if you don't want the form to be saved
      * \note not available  in Python bindings
      */
-    void beforeSave( bool &ok );
+    void beforeSave( bool &ok ) SIP_SKIP;
 
     /**
      * Is emitted, when a feature is changed or added
@@ -206,8 +208,9 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
      *
      * \param field The field to change
      * \param value The new value
+     * \param hintText A hint text for non existent joined features
      */
-    void changeAttribute( const QString &field, const QVariant &value );
+    void changeAttribute( const QString &field, const QVariant &value, const QString &hintText = QString() );
 
     /**
      * Update all editors to correspond to a different feature.
@@ -271,6 +274,8 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
 
     void initPython();
 
+    void updateJoinedFields( const QgsEditorWidgetWrapper &eww );
+
     struct WidgetInfo
     {
       WidgetInfo()
@@ -313,6 +318,7 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
     //! constraints management
     void updateAllConstraints();
     void updateConstraints( QgsEditorWidgetWrapper *w );
+    void updateConstraint( const QgsFeature &ft, QgsEditorWidgetWrapper *eww );
     bool currentFormFeature( QgsFeature &feature );
     bool currentFormValidConstraints( QStringList &invalidFields, QStringList &descriptions );
     QList<QgsEditorWidgetWrapper *> constraintDependencies( QgsEditorWidgetWrapper *w );
@@ -335,6 +341,7 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
     QList<QgsAttributeFormInterface *> mInterfaces;
     QMap< int, QgsAttributeFormEditorWidget * > mFormEditorWidgets;
     QgsExpressionContext mExpressionContext;
+    QMap<const QgsVectorLayerJoinInfo *, QgsFeature> mJoinedFeatures;
 
     struct ContainerInformation
     {

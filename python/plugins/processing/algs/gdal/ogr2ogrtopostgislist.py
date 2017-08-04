@@ -84,16 +84,8 @@ class Ogr2OgrToPostGisList(GdalAlgorithm):
         GdalAlgorithm.__init__(self)
         self.processing = False
 
-    def name(self):
-        return 'importvectorintopostgisdatabaseavailableconnections'
-
-    def displayName(self):
-        return self.tr('Import Vector into PostGIS database (available connections)')
-
-    def group(self):
-        return self.tr('Vector miscellaneous')
-
-    def defineCharacteristics(self):
+    def __init__(self):
+        super().__init__()
         self.addParameter(ParameterString(
             self.DATABASE,
             self.tr('Database (connection name)'),
@@ -177,12 +169,21 @@ class Ogr2OgrToPostGisList(GdalAlgorithm):
         self.addParameter(ParameterString(self.OPTIONS,
                                           self.tr('Additional creation options'), '', optional=True))
 
-    def processAlgorithm(self, context, feedback):
+    def name(self):
+        return 'importvectorintopostgisdatabaseavailableconnections'
+
+    def displayName(self):
+        return self.tr('Import Vector into PostGIS database (available connections)')
+
+    def group(self):
+        return self.tr('Vector miscellaneous')
+
+    def processAlgorithm(self, parameters, context, feedback):
         self.processing = True
-        GdalAlgorithm.processAlgorithm(None, self)
+        GdalAlgorithm.processAlgorithm(parameters, None, self)
         self.processing = False
 
-    def getConsoleCommands(self):
+    def getConsoleCommands(self, parameters):
         connection = self.getParameterValue(self.DATABASE)
         uri = uri_from_name(connection)
         if self.processing:
@@ -204,6 +205,8 @@ class Ogr2OgrToPostGisList(GdalAlgorithm):
         simplify = self.getParameterValue(self.SIMPLIFY)
         segmentize = self.getParameterValue(self.SEGMENTIZE)
         spat = self.getParameterValue(self.SPAT)
+        if not spat:
+            spat = QgsProcessingUtils.combineLayerExtents([inLayer])
         clip = self.getParameterValue(self.CLIP)
         where = self.getParameterValue(self.WHERE)
         gt = self.getParameterValue(self.GT)

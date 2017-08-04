@@ -22,9 +22,25 @@ import tempfile
 from qgis.testing import start_app, unittest
 from utilities import unitTestDataPath
 from qgis.PyQt.QtCore import QFileInfo, QRectF, qWarning
-from qgis.core import QgsVectorLayer, QgsProject, QgsCoordinateReferenceSystem, \
-    QgsComposition, QgsFillSymbol, QgsSingleSymbolRenderer, QgsComposerLabel, QgsComposerMap, QgsFontUtils, \
-    QgsRectangle, QgsComposerLegend, QgsFeature, QgsGeometry, QgsPoint, QgsRendererCategory, QgsCategorizedSymbolRenderer, QgsMarkerSymbol
+from qgis.core import (
+    QgsCategorizedSymbolRenderer,
+    QgsComposerLabel,
+    QgsComposerLegend,
+    QgsComposerMap,
+    QgsComposition,
+    QgsCoordinateReferenceSystem,
+    QgsFeature,
+    QgsFillSymbol,
+    QgsFontUtils,
+    QgsGeometry,
+    QgsMarkerSymbol,
+    QgsPointXY,
+    QgsProject,
+    QgsRectangle,
+    QgsRendererCategory,
+    QgsSingleSymbolRenderer,
+    QgsVectorLayer,
+)
 from qgscompositionchecker import QgsCompositionChecker
 
 start_app()
@@ -113,6 +129,7 @@ class TestQgsAtlasComposition(unittest.TestCase):
         self.predefinedscales_render_test()
         self.hidden_render_test()
         self.legend_test()
+        self.rotation_test()
 
         shutil.rmtree(tmppath, True)
 
@@ -266,12 +283,12 @@ class TestQgsAtlasComposition(unittest.TestCase):
         f1.initAttributes(2)
         f1.setAttribute(0, 1)
         f1.setAttribute(1, "Test label 1")
-        f1.setGeometry(QgsGeometry.fromPoint(QgsPoint(-0.638, 48.954)))
+        f1.setGeometry(QgsGeometry.fromPoint(QgsPointXY(-0.638, 48.954)))
         f2 = QgsFeature(2)
         f2.initAttributes(2)
         f2.setAttribute(0, 2)
         f2.setAttribute(1, "Test label 2")
-        f2.setGeometry(QgsGeometry.fromPoint(QgsPoint(-1.682, 48.550)))
+        f2.setGeometry(QgsGeometry.fromPoint(QgsPointXY(-1.682, 48.550)))
         pr.addFeatures([f1, f2])
 
         # categorized symbology
@@ -310,6 +327,53 @@ class TestQgsAtlasComposition(unittest.TestCase):
         self.mAtlasMap.setLayers([layers[1]])
         self.mComposition.removeComposerItem(legend)
         QgsProject.instance().removeMapLayer(ptLayer.id())
+
+    def rotation_test(self):
+        # We will create a polygon layer with a rotated rectangle.
+        # Then we will make it the object layer for the atlas,
+        # rotate the map and test that the bounding rectangle
+        # is smaller than the bounds without rotation.
+        polygonLayer = QgsVectorLayer('Polygon', 'test_polygon', 'memory')
+        poly = QgsFeature(polygonLayer.pendingFields())
+        points = [(10, 15), (15, 10), (45, 40), (40, 45)]
+        poly.setGeometry(QgsGeometry.fromPolygon([[QgsPointXY(x[0], x[1]) for x in points]]))
+        polygonLayer.dataProvider().addFeatures([poly])
+        QgsProject.instance().addMapLayer(polygonLayer)
+
+        # Recreating the composer locally
+        composition = QgsComposition(QgsProject.instance())
+        composition.setPaperSize(297, 210)
+
+        # the atlas map
+        atlasMap = QgsComposerMap(composition, 20, 20, 130, 130)
+        atlasMap.setFrameEnabled(True)
+        atlasMap.setLayers([polygonLayer])
+        atlasMap.setNewExtent(QgsRectangle(0, 0, 100, 50))
+        composition.addComposerMap(atlasMap)
+
+        # the atlas
+        atlas = composition.atlasComposition()
+        atlas.setCoverageLayer(polygonLayer)
+        atlas.setEnabled(True)
+        composition.setAtlasMode(QgsComposition.ExportAtlas)
+
+        atlasMap.setAtlasDriven(True)
+        atlasMap.setAtlasScalingMode(QgsComposerMap.Auto)
+        atlasMap.setAtlasMargin(0.0)
+
+        # Testing
+        atlasMap.setMapRotation(0.0)
+        atlas.firstFeature()
+        nonRotatedExtent = QgsRectangle(atlasMap.currentMapExtent())
+
+        atlasMap.setMapRotation(45.0)
+        atlas.firstFeature()
+        rotatedExtent = QgsRectangle(atlasMap.currentMapExtent())
+
+        assert rotatedExtent.width() < nonRotatedExtent.width() * 0.9
+        assert rotatedExtent.height() < nonRotatedExtent.height() * 0.9
+
+        QgsProject.instance().removeMapLayer(polygonLayer)
 
 
 if __name__ == '__main__':

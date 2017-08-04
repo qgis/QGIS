@@ -303,15 +303,6 @@ EXTENSION_MAPPING      =
 
 MARKDOWN_SUPPORT       = YES
 
-# When the TOC_INCLUDE_HEADINGS tag is set to a non-zero value, all headings up
-# to that level are automatically included in the table of contents, even if
-# they do not have an id attribute.
-# Note: This feature currently applies only to Markdown headings.
-# Minimum value: 0, maximum value: 99, default value: 0.
-# This tag requires that the tag MARKDOWN_SUPPORT is set to YES.
-
-TOC_INCLUDE_HEADINGS   = 0
-
 # When enabled doxygen tries to link words that correspond to documented
 # classes, or namespaces to their corresponding documentation. Such a link can
 # be prevented in individual cases by putting a % sign in front of the word or
@@ -1506,7 +1497,7 @@ MATHJAX_RELPATH        = http://cdn.mathjax.org/mathjax/latest
 
 MATHJAX_EXTENSIONS     =
 
-# The MATHJAX_CODEFILE tag can be used to specify a file with javascript pieces
+# The MATHJAX_CODEFILE tag can be used to specify a file with JavaScript pieces
 # of code that will be used on startup of the MathJax code. See the MathJax site
 # (see: http://docs.mathjax.org/en/latest/output.html) for more details. For an
 # example see the documentation.
@@ -1515,11 +1506,11 @@ MATHJAX_EXTENSIONS     =
 MATHJAX_CODEFILE       =
 
 # When the SEARCHENGINE tag is enabled doxygen will generate a search box for
-# the HTML output. The underlying search engine uses javascript and DHTML and
+# the HTML output. The underlying search engine uses JavaScript and DHTML and
 # should work on any modern browser. Note that when using HTML help
 # (GENERATE_HTMLHELP), Qt help (GENERATE_QHP), or docsets (GENERATE_DOCSET)
 # there is already a search function so this one should typically be disabled.
-# For large projects the javascript based search engine can be slow, then
+# For large projects the JavaScript based search engine can be slow, then
 # enabling SERVER_BASED_SEARCH may provide a better solution. It is possible to
 # search using the keyboard; to jump to the search box use <access key> + S
 # (what the <access key> is depends on the OS and browser, but it is typically
@@ -2050,24 +2041,32 @@ PREDEFINED             =
 # This tag requires that the tag ENABLE_PREPROCESSING is set to YES.
 
 EXPAND_AS_DEFINED      = "SIP_ABSTRACT" \
+                         "SIP_ALLOWNONE" \
                          "SIP_ARRAY" \
                          "SIP_ARRAYSIZE" \
+                         "SIP_CONSTRAINED" \
                          "SIP_CONVERT_TO_SUBCLASS_CODE" \
+                         "SIP_DEPRECATED" \
                          "SIP_END" \
+                         "SIP_EXTERNAL" \
                          "SIP_FACTORY" \
                          "SIP_FEATURE" \
                          "SIP_IF_FEATURE" \
                          "SIP_INOUT" \
                          "SIP_KEEPREFERENCE" \
+                         "SIP_NODEFAULTCTORS" \
                          "SIP_OUT" \
                          "SIP_PYARGDEFAULT" \
                          "SIP_PYARGREMOVE" \
                          "SIP_PYNAME" \
-                         "SIP_PYTYPE" \
+                         "SIP_PYALTERNATIVETYPE" \
                          "SIP_SKIP" \
                          "SIP_TRANSFER" \
                          "SIP_TRANSFERBACK" \
-                         "SIP_TRANSFERTHIS"
+                         "SIP_TRANSFERTHIS" \
+                         "SIP_VIRTUAL_CATCHER_CODE" \
+                         "SIP_VIRTUALERRORHANDLER" \
+                         "SIP_WHEN_FEATURE"
 
 # If the SKIP_FUNCTION_MACROS tag is set to YES then doxygen's preprocessor will
 # remove all references to function-like macros that are alone on a line, have
@@ -2379,11 +2378,6 @@ DIAFILE_DIRS           =
 # will not generate output for the diagram.
 
 PLANTUML_JAR_PATH      =
-
-# When using plantuml, the PLANTUML_CFG_FILE tag can be used to specify a
-# configuration file for plantuml.
-
-PLANTUML_CFG_FILE      =
 
 # When using plantuml, the specified paths are searched for files specified by
 # the !include statement in a plantuml block.

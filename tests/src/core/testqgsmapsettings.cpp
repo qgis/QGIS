@@ -22,7 +22,7 @@
 #include "qgsexpressioncontext.h"
 #include "qgsrectangle.h"
 #include "qgsmapsettings.h"
-#include "qgspoint.h"
+#include "qgspointxy.h"
 #include "qgslogger.h"
 #include "qgsapplication.h"
 #include "qgsmaplayerlistutils.h"
@@ -34,6 +34,7 @@ class TestQgsMapSettings: public QObject
   private slots:
     void initTestCase();
     void cleanupTestCase();
+    void testDefaults();
     void visibleExtent();
     void mapUnitsPerPixel();
     void visiblePolygon();
@@ -71,6 +72,12 @@ QString TestQgsMapSettings::toString( const QPolygonF &p, int dec ) const
   }
 
   return s;
+}
+
+void TestQgsMapSettings::testDefaults()
+{
+  QgsMapSettings ms;
+  QCOMPARE( ms.destinationCrs(), QgsCoordinateReferenceSystem() );
 }
 
 void TestQgsMapSettings::visibleExtent()

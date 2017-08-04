@@ -14,7 +14,7 @@ Configuration from the environment:
 
 From build dir, run: ctest -R PyQgsAuthManagerPKIPostgresTest -V
 
-or, if your postgresql path differs from the default:
+or, if your PostgreSQL path differs from the default:
 
 QGIS_POSTGRES_EXECUTABLE_PATH=/usr/lib/postgresql/<your_version_goes_here>/bin \
     ctest -R PyQgsAuthManagerPKIPostgresTest -V
@@ -175,7 +175,7 @@ class TestAuthManager(unittest.TestCase):
             if line.find(b"database system is ready to accept") != -1:
                 break
             if time.time() > end:
-                raise Exception("Timeout connecting to postgresql")
+                raise Exception("Timeout connecting to PostgreSQL")
         # Create a DB
         subprocess.check_call([os.path.join(QGIS_POSTGRES_EXECUTABLE_PATH, 'createdb'), '-h', 'localhost', '-p', cls.port, 'test_pki'])
         # Inject test SQL from test path

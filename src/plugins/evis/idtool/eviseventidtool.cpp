@@ -86,9 +86,9 @@ void eVisEventIdTool::canvasReleaseEvent( QgsMapMouseEvent *mouseEvent )
 
 /**
 * Selection routine called by the mouse release event
-* @param point = QgsPoint representing the x, y coordinates of the mouse release event
+* @param point = QgsPointXY representing the x, y coordinates of the mouse release event
 */
-void eVisEventIdTool::select( const QgsPoint &point )
+void eVisEventIdTool::select( const QgsPointXY &point )
 {
 
   if ( !mCanvas )

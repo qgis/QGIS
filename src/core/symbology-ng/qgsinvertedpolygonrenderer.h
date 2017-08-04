@@ -52,7 +52,7 @@ class CORE_EXPORT QgsInvertedPolygonRenderer : public QgsFeatureRenderer
     //! Direct copies are forbidden. Use clone() instead.
     QgsInvertedPolygonRenderer &operator=( const QgsInvertedPolygonRenderer & ) = delete;
 
-    virtual QgsInvertedPolygonRenderer *clone() const override;
+    virtual QgsInvertedPolygonRenderer *clone() const override SIP_FACTORY;
     virtual void startRender( QgsRenderContext &context, const QgsFields &fields ) override;
 
     /** Renders a given feature.
@@ -62,7 +62,7 @@ class CORE_EXPORT QgsInvertedPolygonRenderer : public QgsFeatureRenderer
      * \param layer the symbol layer to render, if that makes sense
      * \param selected whether this feature has been selected (this will add decorations)
      * \param drawVertexMarker whether this feature has vertex markers (in edit mode usually)
-     * \returns true if the rendering was ok
+     * \returns true if the rendering was OK
      */
     virtual bool renderFeature( QgsFeature &feature, QgsRenderContext &context, int layer = -1, bool selected = false, bool drawVertexMarker = false ) override;
 
@@ -77,7 +77,7 @@ class CORE_EXPORT QgsInvertedPolygonRenderer : public QgsFeatureRenderer
     //! Proxy that will call this method on the embedded renderer.
     virtual QSet<QString> usedAttributes( const QgsRenderContext &context ) const override;
     //! Proxy that will call this method on the embedded renderer.
-    virtual Capabilities capabilities() override;
+    virtual QgsFeatureRenderer::Capabilities capabilities() override;
 
     /** Proxy that will call this method on the embedded renderer.
      */
@@ -98,24 +98,21 @@ class CORE_EXPORT QgsInvertedPolygonRenderer : public QgsFeatureRenderer
     /** Proxy that will call this method on the embedded renderer.
      */
     virtual QgsSymbolList originalSymbolsForFeature( QgsFeature &feat, QgsRenderContext &context ) override;
-    //! Proxy that will call this method on the embedded renderer.
-    virtual QgsLegendSymbologyList legendSymbologyItems( QSize iconSize ) override;
 
     /** Proxy that will call this method on the embedded renderer.
-     * \note not available in Python bindings
      */
-    virtual QgsLegendSymbolList legendSymbolItems( double scaleDenominator = -1, const QString &rule = "" ) override SIP_SKIP;
+    virtual QgsLegendSymbolList legendSymbolItems() const override;
 
     /** Proxy that will call this method on the embedded renderer.
      */
     virtual bool willRenderFeature( QgsFeature &feat, QgsRenderContext &context ) override;
 
     //! Creates a renderer out of an XML, for loading
-    static QgsFeatureRenderer *create( QDomElement &element ) SIP_FACTORY;
+    static QgsFeatureRenderer *create( QDomElement &element, const QgsReadWriteContext &context ) SIP_FACTORY;
 
-    virtual QDomElement save( QDomDocument &doc ) override;
+    virtual QDomElement save( QDomDocument &doc, const QgsReadWriteContext &context ) override;
 
-    void setEmbeddedRenderer( QgsFeatureRenderer *subRenderer ) override;
+    void setEmbeddedRenderer( QgsFeatureRenderer *subRenderer SIP_TRANSFER ) override;
     const QgsFeatureRenderer *embeddedRenderer() const override;
 
     virtual void setLegendSymbolItem( const QString &key, QgsSymbol *symbol ) override;

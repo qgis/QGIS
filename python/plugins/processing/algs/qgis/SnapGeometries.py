@@ -27,16 +27,17 @@ __revision__ = '$Format:%H$'
 
 from qgis.analysis import (QgsGeometrySnapper,
                            QgsInternalGeometrySnapper)
-from qgis.core import (QgsApplication,
-                       QgsFeature,
-                       QgsProcessingUtils)
+from qgis.core import (QgsFeatureSink,
+                       QgsProcessing,
+                       QgsProcessingParameterFeatureSource,
+                       QgsProcessingParameterFeatureSink,
+                       QgsProcessingParameterNumber,
+                       QgsProcessingParameterEnum)
 
-from processing.core.GeoAlgorithm import GeoAlgorithm
-from processing.core.parameters import ParameterVector, ParameterNumber, ParameterSelection
-from processing.core.outputs import OutputVector
+from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 
 
-class SnapGeometriesToLayer(GeoAlgorithm):
+class SnapGeometriesToLayer(QgisAlgorithm):
 
     INPUT = 'INPUT'
     REFERENCE_LAYER = 'REFERENCE_LAYER'
@@ -44,14 +45,33 @@ class SnapGeometriesToLayer(GeoAlgorithm):
     OUTPUT = 'OUTPUT'
     BEHAVIOR = 'BEHAVIOR'
 
-    def icon(self):
-        return QgsApplication.getThemeIcon("/providerQgis.svg")
-
-    def svgIconPath(self):
-        return QgsApplication.iconPath("providerQgis.svg")
-
     def group(self):
         return self.tr('Vector geometry tools')
+
+    def __init__(self):
+        super().__init__()
+
+    def initAlgorithm(self, config=None):
+        self.addParameter(QgsProcessingParameterFeatureSource(self.INPUT, self.tr('Input layer'), [QgsProcessing.TypeVectorPoint, QgsProcessing.TypeVectorLine, QgsProcessing.TypeVectorPolygon]))
+        self.addParameter(QgsProcessingParameterFeatureSource(self.REFERENCE_LAYER, self.tr('Reference layer'),
+                                                              [QgsProcessing.TypeVectorPoint,
+                                                               QgsProcessing.TypeVectorLine,
+                                                               QgsProcessing.TypeVectorPolygon]))
+
+        self.addParameter(QgsProcessingParameterNumber(self.TOLERANCE, self.tr('Tolerance (layer units)'), type=QgsProcessingParameterNumber.Double,
+                                                       minValue=0.00000001, maxValue=9999999999, defaultValue=10.0))
+
+        self.modes = [self.tr('Prefer aligning nodes'),
+                      self.tr('Prefer closest point'),
+                      self.tr('Move end points only, prefer aligning nodes'),
+                      self.tr('Move end points only, prefer closest point'),
+                      self.tr('Snap end points to end points only')]
+        self.addParameter(QgsProcessingParameterEnum(
+            self.BEHAVIOR,
+            self.tr('Behavior'),
+            options=self.modes, defaultValue=0))
+
+        self.addParameter(QgsProcessingParameterFeatureSink(self.OUTPUT, self.tr('Snapped geometry')))
 
     def name(self):
         return 'snapgeometries'
@@ -59,56 +79,45 @@ class SnapGeometriesToLayer(GeoAlgorithm):
     def displayName(self):
         return self.tr('Snap geometries to layer')
 
-    def defineCharacteristics(self):
-        self.addParameter(ParameterVector(self.INPUT, self.tr('Input layer')))
-        self.addParameter(ParameterVector(self.REFERENCE_LAYER, self.tr('Reference layer')))
-        self.addParameter(ParameterNumber(self.TOLERANCE, self.tr('Tolerance (layer units)'), 0.00000001, 9999999999, default=10.0))
+    def processAlgorithm(self, parameters, context, feedback):
+        source = self.parameterAsSource(parameters, self.INPUT, context)
 
-        self.modes = [self.tr('Prefer aligning nodes'),
-                      self.tr('Prefer closest point'),
-                      self.tr('Move end points only, prefer aligning nodes'),
-                      self.tr('Move end points only, prefer closest point'),
-                      self.tr('Snap end points to end points only')]
-        self.addParameter(ParameterSelection(
-            self.BEHAVIOR,
-            self.tr('Behavior'),
-            self.modes, default=0))
-        self.addOutput(OutputVector(self.OUTPUT, self.tr('Snapped geometries')))
+        reference_source = self.parameterAsSource(parameters, self.REFERENCE_LAYER, context)
+        tolerance = self.parameterAsDouble(parameters, self.TOLERANCE, context)
+        mode = self.parameterAsEnum(parameters, self.BEHAVIOR, context)
 
-    def processAlgorithm(self, context, feedback):
-        layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT), context)
-        reference_layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.REFERENCE_LAYER), context)
-        tolerance = self.getParameterValue(self.TOLERANCE)
-        mode = self.getParameterValue(self.BEHAVIOR)
+        (sink, dest_id) = self.parameterAsSink(parameters, self.OUTPUT, context,
+                                               source.fields(), source.wkbType(), source.sourceCrs())
 
-        writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(layer.fields(), layer.wkbType(), layer.crs(),
-                                                                     context)
+        features = source.getFeatures()
+        total = 100.0 / source.featureCount() if source.featureCount() else 0
 
-        features = QgsProcessingUtils.getFeatures(layer, context)
-
-        self.processed = 0
-        self.feedback = feedback
-        self.total = 100.0 / QgsProcessingUtils.featureCount(layer, context)
-
-        if self.getParameterValue(self.INPUT) != self.getParameterValue(self.REFERENCE_LAYER):
-            snapper = QgsGeometrySnapper(reference_layer)
-            snapper.featureSnapped.connect(self.featureSnapped)
-            snapped_features = snapper.snapFeatures(features, tolerance, mode)
-            for f in snapped_features:
-                writer.addFeature(QgsFeature(f))
+        if parameters[self.INPUT] != parameters[self.REFERENCE_LAYER]:
+            snapper = QgsGeometrySnapper(reference_source)
+            processed = 0
+            for f in features:
+                if feedback.isCanceled():
+                    break
+                if f.hasGeometry():
+                    out_feature = f
+                    out_feature.setGeometry(snapper.snapGeometry(f.geometry(), tolerance, mode))
+                    sink.addFeature(out_feature, QgsFeatureSink.FastInsert)
+                else:
+                    sink.addFeature(f)
+                processed += 1
+                feedback.setProgress(processed * total)
         else:
             # snapping internally
             snapper = QgsInternalGeometrySnapper(tolerance, mode)
             processed = 0
             for f in features:
+                if feedback.isCanceled():
+                    break
+
                 out_feature = f
                 out_feature.setGeometry(snapper.snapFeature(f))
-                writer.addFeature(out_feature)
+                sink.addFeature(out_feature, QgsFeatureSink.FastInsert)
                 processed += 1
-                feedback.setProgress(processed * self.total)
+                feedback.setProgress(processed * total)
 
-        del writer
-
-    def featureSnapped(self):
-        self.processed += 1
-        self.feedback.setProgress(int(self.processed * self.total))
+        return {self.OUTPUT: dest_id}

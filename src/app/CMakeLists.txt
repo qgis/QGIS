@@ -7,7 +7,6 @@ SET(QGIS_APP_SRCS
   qgsabout.cpp
   qgsalignrasterdialog.cpp
   qgsapplayertreeviewmenuprovider.cpp
-  qgssponsors.cpp
   qgsaddattrdialog.cpp
   qgsaddtaborgroup.cpp
   qgsjoindialog.cpp
@@ -17,7 +16,6 @@ SET(QGIS_APP_SRCS
   qgsattributetypedialog.cpp
   qgsattributetabledialog.cpp
   qgsbookmarks.cpp
-  qgsbrowserdockwidget.cpp
   qgsclipboard.cpp
   qgscustomization.cpp
   qgscustomprojectiondialog.cpp
@@ -25,6 +23,8 @@ SET(QGIS_APP_SRCS
   qgsdecorationitem.cpp
   qgsdecorationcopyright.cpp
   qgsdecorationcopyrightdialog.cpp
+  qgsdecorationlayoutextent.cpp
+  qgsdecorationlayoutextentdialog.cpp
   qgsdecorationnortharrow.cpp
   qgsdecorationnortharrowdialog.cpp
   qgsdecorationscalebar.cpp
@@ -155,10 +155,13 @@ SET(QGIS_APP_SRCS
   composer/qgscompositionwidget.cpp
   composer/qgsatlascompositionwidget.cpp
 
-  ogr/qgsogrhelperfunctions.cpp
-  ogr/qgsopenvectorlayerdialog.cpp
-  ogr/qgsnewogrconnection.cpp
-  ogr/qgsvectorlayersaveasdialog.cpp
+  layout/qgslayoutaddpagesdialog.cpp
+  layout/qgslayoutdesignerdialog.cpp
+  layout/qgslayoutappmenuprovider.cpp
+  layout/qgslayoutpagepropertieswidget.cpp
+
+  locator/qgsinbuiltlocatorfilters.cpp
+  locator/qgslocatoroptionswidget.cpp
 
   gps/qgsgpsinformationwidget.cpp
   gps/qgsgpsmarker.cpp
@@ -200,13 +203,14 @@ SET (QGIS_APP_MOC_HDRS
   qgsattributetypedialog.h
   qgsattributetabledialog.h
   qgsbookmarks.h
-  qgsbrowserdockwidget.h
   qgsclipboard.h
   qgscustomization.h
   qgscustomprojectiondialog.h
   qgsdecorationitem.h
   qgsdecorationcopyright.h
   qgsdecorationcopyrightdialog.h
+  qgsdecorationlayoutextent.h
+  qgsdecorationlayoutextentdialog.h
   qgsdecorationnortharrow.h
   qgsdecorationnortharrowdialog.h
   qgsdecorationscalebar.h
@@ -299,7 +303,6 @@ SET (QGIS_APP_MOC_HDRS
   qgsrelationmanagerdialog.h
   qgsrelationadddlg.h
   qgsselectbyformdialog.h
-  qgssponsors.h
   qgsstatisticalsummarydockwidget.h
   qgssvgannotationdialog.h
   qgstextannotationdialog.h
@@ -332,9 +335,13 @@ SET (QGIS_APP_MOC_HDRS
   composer/qgscompositionwidget.h
   composer/qgsatlascompositionwidget.h
 
-  ogr/qgsopenvectorlayerdialog.h
-  ogr/qgsnewogrconnection.h
-  ogr/qgsvectorlayersaveasdialog.h
+  layout/qgslayoutaddpagesdialog.h
+  layout/qgslayoutappmenuprovider.h
+  layout/qgslayoutdesignerdialog.h
+  layout/qgslayoutpagepropertieswidget.h
+
+  locator/qgsinbuiltlocatorfilters.h
+  locator/qgslocatoroptionswidget.h
 
   gps/qgsgpsinformationwidget.h
 
@@ -462,7 +469,7 @@ IF(PEDANTIC)
     SET_SOURCE_FILES_PROPERTIES(
         qgisappinterface.cpp
         ${CMAKE_BINARY_DIR}/src/app/moc_qgisappinterface.cxx
-	PROPERTIES COMPILE_FLAGS "/wd4996"
+    PROPERTIES COMPILE_FLAGS "/wd4996"
     )
   ELSE(MSVC)
     SET_SOURCE_FILES_PROPERTIES(
@@ -474,15 +481,54 @@ IF(PEDANTIC)
 ENDIF(PEDANTIC)
 
 INCLUDE_DIRECTORIES(
-  ${CMAKE_CURRENT_SOURCE_DIR} composer legend pluginmanager
-  ${CMAKE_CURRENT_BINARY_DIR}
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui
+  ${CMAKE_SOURCE_DIR}/src/app
+  ${CMAKE_SOURCE_DIR}/src/app/composer
+  ${CMAKE_SOURCE_DIR}/src/app/layout
+  ${CMAKE_SOURCE_DIR}/src/app/pluginmanager
+  ${CMAKE_SOURCE_DIR}/src/app/gps
+  ${CMAKE_SOURCE_DIR}/src/app/openstreetmap
+  ${CMAKE_SOURCE_DIR}/src/app/dwg
+  ${CMAKE_SOURCE_DIR}/src/app/dwg/libdxfrw
+  ${CMAKE_SOURCE_DIR}/src/app/locator
+  ${CMAKE_SOURCE_DIR}/src/analysis/raster
+  ${CMAKE_SOURCE_DIR}/src/analysis/openstreetmap
+  ${CMAKE_SOURCE_DIR}/src/core
+  ${CMAKE_SOURCE_DIR}/src/core/annotations
+  ${CMAKE_SOURCE_DIR}/src/core/auth
+  ${CMAKE_SOURCE_DIR}/src/core/expression
+  ${CMAKE_SOURCE_DIR}/src/core/gps
+  ${CMAKE_SOURCE_DIR}/src/core/composer
+  ${CMAKE_SOURCE_DIR}/src/core/dxf
+  ${CMAKE_SOURCE_DIR}/src/core/geometry
+  ${CMAKE_SOURCE_DIR}/src/core/metadata
+  ${CMAKE_SOURCE_DIR}/src/core/layertree
+  ${CMAKE_SOURCE_DIR}/src/core/providers/memory
+  ${CMAKE_SOURCE_DIR}/src/core/raster
+  ${CMAKE_SOURCE_DIR}/src/core/scalebar
+  ${CMAKE_SOURCE_DIR}/src/core/symbology-ng
+  ${CMAKE_SOURCE_DIR}/src/gui
+  ${CMAKE_SOURCE_DIR}/src/gui/symbology-ng
+  ${CMAKE_SOURCE_DIR}/src/gui/attributetable
+  ${CMAKE_SOURCE_DIR}/src/gui/auth
+  ${CMAKE_SOURCE_DIR}/src/gui/ogr
+  ${CMAKE_SOURCE_DIR}/src/gui/raster
+  ${CMAKE_SOURCE_DIR}/src/gui/editorwidgets
+  ${CMAKE_SOURCE_DIR}/src/gui/editorwidgets/core
+  ${CMAKE_SOURCE_DIR}/src/gui/layertree
+  ${CMAKE_SOURCE_DIR}/src/gui/locator
+  ${CMAKE_SOURCE_DIR}/src/plugins
+  ${CMAKE_SOURCE_DIR}/src/python
+  ${CMAKE_SOURCE_DIR}/src/native
+
   ${CMAKE_BINARY_DIR}/src/core
   ${CMAKE_BINARY_DIR}/src/gui
   ${CMAKE_BINARY_DIR}/src/python
   ${CMAKE_BINARY_DIR}/src/analysis
   ${CMAKE_BINARY_DIR}/src/app
+  ${CMAKE_BINARY_DIR}/src/ui
+  ${CMAKE_BINARY_DIR}/src/native
 )
+
 INCLUDE_DIRECTORIES(SYSTEM
   ${QWT_INCLUDE_DIR}
   ${QT_QTUITOOLS_INCLUDE_DIR}
@@ -499,6 +545,7 @@ INCLUDE_DIRECTORIES(
   ../core/composer
   ../core/dxf
   ../core/geometry
+  ../core/layout
   ../core/metadata
   ../core/layertree
   ../core/providers/memory
@@ -509,16 +556,20 @@ INCLUDE_DIRECTORIES(
   ../gui/symbology-ng
   ../gui/attributetable
   ../gui/auth
+  ../gui/ogr
   ../gui/raster
   ../gui/editorwidgets
   ../gui/editorwidgets/core
   ../gui/layertree
+  ../gui/layout
   ../plugins
   ../python
   gps
   openstreetmap
   dwg
   dwg/libdxfrw
+  ${CMAKE_SOURCE_DIR}/src/native
+  ${CMAKE_BINARY_DIR}/src/native
 )
 INCLUDE_DIRECTORIES(SYSTEM
   ${SPATIALITE_INCLUDE_DIR}
@@ -529,7 +580,7 @@ INCLUDE_DIRECTORIES(SYSTEM
   ${QWTPOLAR_INCLUDE_DIR}
   ${QCA_INCLUDE_DIR}
   ${QTKEYCHAIN_INCLUDE_DIR}
-  )
+)
 
 IF(ENABLE_MODELTEST)
   INCLUDE_DIRECTORIES(../../tests/qt_modeltest)
@@ -538,6 +589,10 @@ ENDIF(ENABLE_MODELTEST)
 IF (ANDROID)
   INCLUDE_DIRECTORIES(SYSTEM ${ANDROID_NDK_TOOLCHAIN_ROOT}/sysroot/usr/include)
 ENDIF (ANDROID)
+
+IF (APPLE)
+  INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/src/native/mac)
+ENDIF (APPLE)
 
 IF (POSTGRES_FOUND)
   INCLUDE_DIRECTORIES(SYSTEM ${POSTGRES_INCLUDE_DIR})
@@ -566,6 +621,7 @@ TARGET_LINK_LIBRARIES(qgis_app
   qgis_core
   qgis_gui
   qgis_analysis
+  qgis_native
   libdxfrw
 )
 
@@ -586,6 +642,7 @@ IF (APPLE)
   TARGET_LINK_LIBRARIES(qgis_app ${APP_SERVICES_LIBRARY})
 ENDIF(APPLE)
 
+
 if(MSVC AND CMAKE_SIZEOF_VOID_P EQUAL 8)
   SET_TARGET_PROPERTIES(qgis_app PROPERTIES STATIC_LIBRARY_FLAGS "/machine:x64")
 ENDIF(MSVC AND CMAKE_SIZEOF_VOID_P EQUAL 8)
@@ -605,9 +662,9 @@ IF(WIN32)
   TARGET_LINK_LIBRARIES(qgis_app DbgHelp Qt5::WinExtras)
 ENDIF(WIN32)
 
-IF (APPLE)
-  TARGET_LINK_LIBRARIES(${QGIS_APP_NAME} ${APP_SERVICES_LIBRARY})
+TARGET_LINK_LIBRARIES(${QGIS_APP_NAME} qgis_native)
 
+IF (APPLE)
   SET_TARGET_PROPERTIES(${QGIS_APP_NAME} PROPERTIES
     INSTALL_RPATH ${CMAKE_INSTALL_PREFIX}/${QGIS_LIB_DIR}
     INSTALL_RPATH_USE_LINK_PATH true

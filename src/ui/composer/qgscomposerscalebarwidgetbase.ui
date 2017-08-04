@@ -60,9 +60,9 @@
       <property name="geometry">
        <rect>
         <x>0</x>
-        <y>-213</y>
-        <width>440</width>
-        <height>855</height>
+        <y>-121</y>
+        <width>437</width>
+        <height>764</height>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="mainLayout">
@@ -424,7 +424,7 @@
           <item row="2" column="2">
            <widget class="QgsPropertyOverrideButton" name="mLineWidthDDBtn">
             <property name="text">
-             <string>...</string>
+             <string>…</string>
             </property>
            </widget>
           </item>
@@ -511,19 +511,6 @@
             </item>
            </layout>
           </item>
-          <item row="0" column="0" colspan="2">
-           <widget class="QPushButton" name="mFontButton">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="text">
-             <string>Font...</string>
-            </property>
-           </widget>
-          </item>
           <item row="1" column="0">
            <widget class="QLabel" name="label_7">
             <property name="text">
@@ -555,7 +542,7 @@
             <item>
              <widget class="QgsPropertyOverrideButton" name="mLineColorDDBtn">
               <property name="text">
-               <string>...</string>
+               <string>…</string>
               </property>
              </widget>
             </item>
@@ -612,7 +599,7 @@
             <item>
              <widget class="QgsPropertyOverrideButton" name="mFillColor2DDBtn">
               <property name="text">
-               <string>...</string>
+               <string>…</string>
               </property>
              </widget>
             </item>
@@ -662,7 +649,7 @@
             <item>
              <widget class="QgsPropertyOverrideButton" name="mFillColorDDBtn">
               <property name="text">
-               <string>...</string>
+               <string>…</string>
               </property>
              </widget>
             </item>
@@ -680,6 +667,19 @@
              </spacer>
             </item>
            </layout>
+          </item>
+          <item row="0" column="0" colspan="2">
+           <widget class="QgsFontButton" name="mFontButton">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="text">
+             <string>Font</string>
+            </property>
+           </widget>
           </item>
          </layout>
         </widget>
@@ -714,6 +714,11 @@
    <class>QgsDoubleSpinBox</class>
    <extends>QDoubleSpinBox</extends>
    <header>qgsdoublespinbox.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsFontButton</class>
+   <extends>QToolButton</extends>
+   <header>qgsfontbutton.h</header>
   </customwidget>
   <customwidget>
    <class>QgsSpinBox</class>

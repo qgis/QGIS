@@ -17,9 +17,12 @@
 #include "qgswcsprovider.h"
 #include "qgslogger.h"
 #include "qgsdatasourceuri.h"
-#include "qgswcssourceselect.h"
 #include "qgsowsconnection.h"
+
+#ifdef HAVE_GUI
+#include "qgswcssourceselect.h"
 #include "qgsnewhttpconnection.h"
+#endif
 
 #include <QFileInfo>
 #include <QSettings>
@@ -29,6 +32,7 @@ QgsWCSConnectionItem::QgsWCSConnectionItem( QgsDataItem *parent, QString name, Q
   , mUri( uri )
 {
   mIconName = QStringLiteral( "mIconWcs.svg" );
+  mCapabilities |= Collapse;
 }
 
 QgsWCSConnectionItem::~QgsWCSConnectionItem()
@@ -43,23 +47,23 @@ QVector<QgsDataItem *> QgsWCSConnectionItem::createChildren()
   uri.setEncodedUri( mUri );
   QgsDebugMsg( "mUri = " + mUri );
 
-  mCapabilities.setUri( uri );
+  mWcsCapabilities.setUri( uri );
 
   // Attention: supportedLayers() gives tree leafes, not top level
-  if ( !mCapabilities.lastError().isEmpty() )
+  if ( !mWcsCapabilities.lastError().isEmpty() )
   {
     //children.append( new QgsErrorItem( this, tr( "Failed to retrieve layers" ), mPath + "/error" ) );
     // TODO: show the error without adding child
     return children;
   }
 
-  Q_FOREACH ( const QgsWcsCoverageSummary &coverageSummary, mCapabilities.capabilities().contents.coverageSummary )
+  Q_FOREACH ( const QgsWcsCoverageSummary &coverageSummary, mWcsCapabilities.capabilities().contents.coverageSummary )
   {
     // Attention, the name may be empty
     QgsDebugMsg( QString::number( coverageSummary.orderId ) + ' ' + coverageSummary.identifier + ' ' + coverageSummary.title );
     QString pathName = coverageSummary.identifier.isEmpty() ? QString::number( coverageSummary.orderId ) : coverageSummary.identifier;
 
-    QgsWCSLayerItem *layer = new QgsWCSLayerItem( this, coverageSummary.title, mPath + '/' + pathName, mCapabilities.capabilities(), uri, coverageSummary );
+    QgsWCSLayerItem *layer = new QgsWCSLayerItem( this, coverageSummary.title, mPath + '/' + pathName, mWcsCapabilities.capabilities(), uri, coverageSummary );
 
     children.append( layer );
   }
@@ -81,6 +85,7 @@ bool QgsWCSConnectionItem::equal( const QgsDataItem *other )
   return ( mPath == o->mPath && mName == o->mName );
 }
 
+#ifdef HAVE_GUI
 QList<QAction *> QgsWCSConnectionItem::actions()
 {
   QList<QAction *> lst;
@@ -103,7 +108,7 @@ void QgsWCSConnectionItem::editConnection()
   if ( nc.exec() )
   {
     // the parent should be updated
-    mParent->refresh();
+    mParent->refreshConnections();
   }
 }
 
@@ -111,8 +116,9 @@ void QgsWCSConnectionItem::deleteConnection()
 {
   QgsOwsConnection::deleteConnection( QStringLiteral( "WCS" ), mName );
   // the parent should be updated
-  mParent->refresh();
+  mParent->refreshConnections();
 }
+#endif
 
 
 // ---------------------------------------------------------------------------
@@ -239,6 +245,7 @@ QVector<QgsDataItem *>QgsWCSRootItem::createChildren()
   return connections;
 }
 
+#ifdef HAVE_GUI
 QList<QAction *> QgsWCSRootItem::actions()
 {
   QList<QAction *> lst;
@@ -253,7 +260,7 @@ QList<QAction *> QgsWCSRootItem::actions()
 
 QWidget *QgsWCSRootItem::paramWidget()
 {
-  QgsWCSSourceSelect *select = new QgsWCSSourceSelect( nullptr, 0, true, true );
+  QgsWCSSourceSelect *select = new QgsWCSSourceSelect( nullptr, 0, QgsProviderRegistry::WidgetMode::Manager );
   connect( select, &QgsOWSSourceSelect::connectionsChanged, this, &QgsWCSRootItem::connectionsChanged );
   return select;
 }
@@ -269,9 +276,10 @@ void QgsWCSRootItem::newConnection()
 
   if ( nc.exec() )
   {
-    refresh();
+    refreshConnections();
   }
 }
+#endif
 
 // ---------------------------------------------------------------------------
 
@@ -303,8 +311,9 @@ QGISEXTERN QgsDataItem *dataItem( QString path, QgsDataItem *parentItem )
   return nullptr;
 }
 
-QGISEXTERN QgsWCSSourceSelect *selectWidget( QWidget *parent, Qt::WindowFlags fl )
+#ifdef HAVE_GUI
+QGISEXTERN QgsWCSSourceSelect *selectWidget( QWidget *parent, Qt::WindowFlags fl, QgsProviderRegistry::WidgetMode widgetMode )
 {
-  return new QgsWCSSourceSelect( parent, fl );
+  return new QgsWCSSourceSelect( parent, fl, widgetMode );
 }
-
+#endif

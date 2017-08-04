@@ -30,8 +30,8 @@ import os
 import random
 
 from qgis.PyQt.QtGui import QIcon
-from qgis.core import QgsProcessingUtils
-from processing.core.GeoAlgorithm import GeoAlgorithm
+from qgis.core import QgsFeatureSink, QgsProcessingUtils
+from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from processing.core.parameters import ParameterSelection
 from processing.core.parameters import ParameterVector
@@ -41,7 +41,7 @@ from processing.core.outputs import OutputVector
 pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
 
-class RandomSelection(GeoAlgorithm):
+class RandomSelection(QgisAlgorithm):
 
     INPUT = 'INPUT'
     OUTPUT = 'OUTPUT'
@@ -54,13 +54,10 @@ class RandomSelection(GeoAlgorithm):
     def group(self):
         return self.tr('Vector selection tools')
 
-    def name(self):
-        return 'randomselection'
+    def __init__(self):
+        super().__init__()
 
-    def displayName(self):
-        return self.tr('Random selection')
-
-    def defineCharacteristics(self):
+    def initAlgorithm(self, config=None):
         self.methods = [self.tr('Number of selected features'),
                         self.tr('Percentage of selected features')]
 
@@ -72,7 +69,13 @@ class RandomSelection(GeoAlgorithm):
                                           self.tr('Number/percentage of selected features'), 0, None, 10))
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Selection'), True))
 
-    def processAlgorithm(self, context, feedback):
+    def name(self):
+        return 'randomselection'
+
+    def displayName(self):
+        return self.tr('Random selection')
+
+    def processAlgorithm(self, parameters, context, feedback):
         filename = self.getParameterValue(self.INPUT)
         layer = QgsProcessingUtils.mapLayerFromString(filename, context)
         method = self.getParameterValue(self.METHOD)

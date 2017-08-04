@@ -190,7 +190,7 @@ QString QgsSimpleLineSymbolLayer::layerType() const
 void QgsSimpleLineSymbolLayer::startRender( QgsSymbolRenderContext &context )
 {
   QColor penColor = mColor;
-  penColor.setAlphaF( mColor.alphaF() * context.alpha() );
+  penColor.setAlphaF( mColor.alphaF() * context.opacity() );
   mPen.setColor( penColor );
   double scaledWidth = context.renderContext().convertToPainterUnits( mWidth, mWidthUnit, mWidthMapUnitScale );
   mPen.setWidthF( scaledWidth );
@@ -227,7 +227,7 @@ void QgsSimpleLineSymbolLayer::startRender( QgsSymbolRenderContext &context )
   mSelPen = mPen;
   QColor selColor = context.renderContext().selectionColor();
   if ( ! SELECTION_IS_OPAQUE )
-    selColor.setAlphaF( context.alpha() );
+    selColor.setAlphaF( context.opacity() );
   mSelPen.setColor( selColor );
 }
 
@@ -462,7 +462,12 @@ QgsSymbolLayer *QgsSimpleLineSymbolLayer::createFromSld( QDomElement &element )
       offset = d;
   }
 
+  QString uom = element.attribute( QStringLiteral( "uom" ), "" );
+  width = QgsSymbolLayerUtils::sizeInPixelsFromSldUom( uom, width );
+  offset = QgsSymbolLayerUtils::sizeInPixelsFromSldUom( uom, offset );
+
   QgsSimpleLineSymbolLayer *l = new QgsSimpleLineSymbolLayer( color, width, penStyle );
+  l->setOutputUnit( QgsUnitTypes::RenderUnit::RenderPixels );
   l->setOffset( offset );
   l->setPenJoinStyle( penJoinStyle );
   l->setPenCapStyle( penCapStyle );
@@ -599,10 +604,10 @@ double QgsSimpleLineSymbolLayer::dxfWidth( const QgsDxfExport &e, QgsSymbolRende
   {
     context.setOriginalValueVariable( mWidth );
     width = mDataDefinedProperties.valueAsDouble( QgsSymbolLayer::PropertyStrokeWidth, context.renderContext().expressionContext(), mWidth )
-            * e.mapUnitScaleFactor( e.symbologyScaleDenominator(), widthUnit(), e.mapUnits() );
+            * e.mapUnitScaleFactor( e.symbologyScale(), widthUnit(), e.mapUnits() );
   }
 
-  return width * e.mapUnitScaleFactor( e.symbologyScaleDenominator(), widthUnit(), e.mapUnits() );
+  return width * e.mapUnitScaleFactor( e.symbologyScale(), widthUnit(), e.mapUnits() );
 }
 
 QColor QgsSimpleLineSymbolLayer::dxfColor( QgsSymbolRenderContext &context ) const
@@ -795,7 +800,7 @@ QColor QgsMarkerLineSymbolLayer::color() const
 
 void QgsMarkerLineSymbolLayer::startRender( QgsSymbolRenderContext &context )
 {
-  mMarker->setAlpha( context.alpha() );
+  mMarker->setOpacity( context.opacity() );
 
   // if being rotated, it gets initialized with every line segment
   QgsSymbol::RenderHints hints = 0;
@@ -1036,7 +1041,7 @@ void QgsMarkerLineSymbolLayer::renderPolylineVertex( const QPolygonF &points, Qg
     const QgsMapToPixel &mtp = context.renderContext().mapToPixel();
 
     QgsVertexId vId;
-    QgsPointV2 vPoint;
+    QgsPoint vPoint;
     double x, y, z;
     QPointF mapPoint;
     int pointNum = 0;
@@ -1518,7 +1523,12 @@ QgsSymbolLayer *QgsMarkerLineSymbolLayer::createFromSld( QDomElement &element )
       offset = d;
   }
 
+  QString uom = element.attribute( QStringLiteral( "uom" ), "" );
+  interval = QgsSymbolLayerUtils::sizeInPixelsFromSldUom( uom, interval );
+  offset = QgsSymbolLayerUtils::sizeInPixelsFromSldUom( uom, offset );
+
   QgsMarkerLineSymbolLayer *x = new QgsMarkerLineSymbolLayer( rotateMarker );
+  x->setOutputUnit( QgsUnitTypes::RenderUnit::RenderPixels );
   x->setPlacement( placement );
   x->setInterval( interval );
   x->setSubSymbol( marker.release() );

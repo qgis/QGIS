@@ -73,13 +73,13 @@ class CORE_EXPORT QgsSimpleMarkerSymbolLayerBase : public QgsMarkerSymbolLayer
     };
 
     //! Returns a list of all available shape types.
-    static QList< Shape > availableShapes();
+    static QList< QgsSimpleMarkerSymbolLayerBase::Shape > availableShapes();
 
     /** Returns true if a symbol shape has a fill.
      * \param shape shape to test
      * \returns true if shape uses a fill, or false if shape uses lines only
      */
-    static bool shapeIsFilled( Shape shape );
+    static bool shapeIsFilled( QgsSimpleMarkerSymbolLayerBase::Shape shape );
 
     /** Constructor for QgsSimpleMarkerSymbolLayerBase.
     * \param shape symbol shape for markers
@@ -87,7 +87,7 @@ class CORE_EXPORT QgsSimpleMarkerSymbolLayerBase : public QgsMarkerSymbolLayer
     * \param angle symbol rotation angle
     * \param scaleMethod scaling method for data defined scaling
     */
-    QgsSimpleMarkerSymbolLayerBase( Shape shape = Circle,
+    QgsSimpleMarkerSymbolLayerBase( QgsSimpleMarkerSymbolLayerBase::Shape shape = Circle,
                                     double size = DEFAULT_SIMPLEMARKER_SIZE,
                                     double angle = DEFAULT_SIMPLEMARKER_ANGLE,
                                     QgsSymbol::ScaleMethod scaleMethod = DEFAULT_SCALE_METHOD );
@@ -95,13 +95,13 @@ class CORE_EXPORT QgsSimpleMarkerSymbolLayerBase : public QgsMarkerSymbolLayer
     /** Returns the shape for the rendered marker symbol.
      * \see setShape()
      */
-    Shape shape() const { return mShape; }
+    QgsSimpleMarkerSymbolLayerBase::Shape shape() const { return mShape; }
 
     /** Sets the rendered marker shape.
      * \param shape new marker shape
      * \see shape()
      */
-    void setShape( Shape shape ) { mShape = shape; }
+    void setShape( QgsSimpleMarkerSymbolLayerBase::Shape shape ) { mShape = shape; }
 
     /** Attempts to decode a string representation of a shape name to the corresponding
      * shape.
@@ -110,14 +110,14 @@ class CORE_EXPORT QgsSimpleMarkerSymbolLayerBase : public QgsMarkerSymbolLayer
      * \returns decoded name
      * \see encodeShape()
      */
-    static Shape decodeShape( const QString &name, bool *ok = nullptr );
+    static QgsSimpleMarkerSymbolLayerBase::Shape decodeShape( const QString &name, bool *ok = nullptr );
 
     /** Encodes a shape to its string representation.
      * \param shape shape to encode
      * \returns encoded string
      * \see decodeShape()
      */
-    static QString encodeShape( Shape shape );
+    static QString encodeShape( QgsSimpleMarkerSymbolLayerBase::Shape shape );
 
     void startRender( QgsSymbolRenderContext &context ) override;
     void stopRender( QgsSymbolRenderContext &context ) override;
@@ -128,11 +128,11 @@ class CORE_EXPORT QgsSimpleMarkerSymbolLayerBase : public QgsMarkerSymbolLayer
 
     //! Prepares the layer for drawing the specified shape (QPolygonF version)
     //! \note not available in Python bindings
-    bool prepareMarkerShape( Shape shape ) SIP_SKIP;
+    bool prepareMarkerShape( Shape shape );
 
     //! Prepares the layer for drawing the specified shape (QPainterPath version)
     //! \note not available in Python bindings
-    bool prepareMarkerPath( Shape symbol ) SIP_SKIP;
+    bool prepareMarkerPath( Shape symbol );
 
     /** Creates a polygon representing the specified shape.
      * \param shape shape to create
@@ -140,7 +140,7 @@ class CORE_EXPORT QgsSimpleMarkerSymbolLayerBase : public QgsMarkerSymbolLayer
      * \returns true if shape was successfully stored in polygon
      * \note not available in Python bindings
      */
-    bool shapeToPolygon( Shape shape, QPolygonF &polygon ) const SIP_SKIP;
+    bool shapeToPolygon( Shape shape, QPolygonF &polygon ) const;
 
     /** Calculates the desired size of the marker, considering data defined size overrides.
      * \param context symbol render context
@@ -148,7 +148,7 @@ class CORE_EXPORT QgsSimpleMarkerSymbolLayerBase : public QgsMarkerSymbolLayer
      * \returns marker size, in original size units
      * \note not available in Python bindings
      */
-    double calculateSize( QgsSymbolRenderContext &context, bool &hasDataDefinedSize ) const SIP_SKIP;
+    double calculateSize( QgsSymbolRenderContext &context, bool &hasDataDefinedSize ) const;
 
     /** Calculates the marker offset and rotation.
      * \param context symbol render context
@@ -158,7 +158,7 @@ class CORE_EXPORT QgsSimpleMarkerSymbolLayerBase : public QgsMarkerSymbolLayer
      * \param angle will be set to calculated marker angle
      * \note not available in Python bindings
      */
-    void calculateOffsetAndRotation( QgsSymbolRenderContext &context, double scaledSize, bool &hasDataDefinedRotation, QPointF &offset, double &angle ) const SIP_SKIP;
+    void calculateOffsetAndRotation( QgsSymbolRenderContext &context, double scaledSize, bool &hasDataDefinedRotation, QPointF &offset, double &angle ) const;
 
     //! Polygon of points in shape. If polygon is empty then shape is using mPath.
     QPolygonF mPolygon;
@@ -178,7 +178,7 @@ class CORE_EXPORT QgsSimpleMarkerSymbolLayerBase : public QgsMarkerSymbolLayer
      * in the path argument.
      * \param path transformed painter path representing shape to draw
      */
-    virtual void draw( QgsSymbolRenderContext &context, Shape shape, const QPolygonF &polygon, const QPainterPath &path ) = 0;
+    virtual void draw( QgsSymbolRenderContext &context, QgsSimpleMarkerSymbolLayerBase::Shape shape, const QPolygonF &polygon, const QPainterPath &path ) = 0 SIP_FORCE;
 };
 
 /** \ingroup core
@@ -198,7 +198,7 @@ class CORE_EXPORT QgsSimpleMarkerSymbolLayer : public QgsSimpleMarkerSymbolLayer
     * \param strokeColor stroke color for symbol
     * \param penJoinStyle join style for stroke pen
     */
-    QgsSimpleMarkerSymbolLayer( Shape shape = Circle,
+    QgsSimpleMarkerSymbolLayer( QgsSimpleMarkerSymbolLayerBase::Shape shape = Circle,
                                 double size = DEFAULT_SIMPLEMARKER_SIZE,
                                 double angle = DEFAULT_SIMPLEMARKER_ANGLE,
                                 QgsSymbol::ScaleMethod scaleMethod = DEFAULT_SCALE_METHOD,
@@ -226,7 +226,7 @@ class CORE_EXPORT QgsSimpleMarkerSymbolLayer : public QgsSimpleMarkerSymbolLayer
     void startRender( QgsSymbolRenderContext &context ) override;
     void renderPoint( QPointF point, QgsSymbolRenderContext &context ) override;
     QgsStringMap properties() const override;
-    QgsSimpleMarkerSymbolLayer *clone() const override;
+    QgsSimpleMarkerSymbolLayer *clone() const override SIP_FACTORY;
     void writeSldMarker( QDomDocument &doc, QDomElement &element, const QgsStringMap &props ) const override;
     QString ogrFeatureStyle( double mmScaleFactor, double mapUnitScaleFactor ) const override;
     bool writeDxf( QgsDxfExport &e, double mmMapUnitScaleFactor, const QString &layerName, QgsSymbolRenderContext &context, QPointF shift = QPointF( 0.0, 0.0 ) ) const override;
@@ -383,7 +383,7 @@ class CORE_EXPORT QgsSimpleMarkerSymbolLayer : public QgsSimpleMarkerSymbolLayer
 
   private:
 
-    virtual void draw( QgsSymbolRenderContext &context, Shape shape, const QPolygonF &polygon, const QPainterPath &path ) override;
+    virtual void draw( QgsSymbolRenderContext &context, QgsSimpleMarkerSymbolLayerBase::Shape shape, const QPolygonF &polygon, const QPainterPath &path ) override SIP_FORCE;
 };
 
 /** \ingroup core
@@ -402,7 +402,7 @@ class CORE_EXPORT QgsFilledMarkerSymbolLayer : public QgsSimpleMarkerSymbolLayer
     * \param angle symbol rotation angle
     * \param scaleMethod size scaling method
     */
-    QgsFilledMarkerSymbolLayer( Shape shape = Circle,
+    QgsFilledMarkerSymbolLayer( QgsSimpleMarkerSymbolLayerBase::Shape shape = Circle,
                                 double size = DEFAULT_SIMPLEMARKER_SIZE,
                                 double angle = DEFAULT_SIMPLEMARKER_ANGLE,
                                 QgsSymbol::ScaleMethod scaleMethod = DEFAULT_SCALE_METHOD );
@@ -417,17 +417,20 @@ class CORE_EXPORT QgsFilledMarkerSymbolLayer : public QgsSimpleMarkerSymbolLayer
     void startRender( QgsSymbolRenderContext &context ) override;
     void stopRender( QgsSymbolRenderContext &context ) override;
     QgsStringMap properties() const override;
-    QgsFilledMarkerSymbolLayer *clone() const override;
+    QgsFilledMarkerSymbolLayer *clone() const override SIP_FACTORY;
     virtual QgsSymbol *subSymbol() override;
-    virtual bool setSubSymbol( QgsSymbol *symbol ) override;
+    virtual bool setSubSymbol( QgsSymbol *symbol SIP_TRANSFER ) override;
     virtual double estimateMaxBleed( const QgsRenderContext &context ) const override;
     QSet<QString> usedAttributes( const QgsRenderContext &context ) const override;
     void setColor( const QColor &c ) override;
     virtual QColor color() const override;
 
   private:
+#ifdef SIP_RUN
+    QgsFilledMarkerSymbolLayer( const QgsFilledMarkerSymbolLayer & );
+#endif
 
-    virtual void draw( QgsSymbolRenderContext &context, Shape shape, const QPolygonF &polygon, const QPainterPath &path ) override;
+    virtual void draw( QgsSymbolRenderContext &context, QgsSimpleMarkerSymbolLayerBase::Shape shape, const QPolygonF &polygon, const QPainterPath &path ) override SIP_FORCE;
 
     //! Fill subsymbol
     std::unique_ptr< QgsFillSymbol > mFill;
@@ -435,7 +438,6 @@ class CORE_EXPORT QgsFilledMarkerSymbolLayer : public QgsSimpleMarkerSymbolLayer
 
 //////////
 
-#define DEFAULT_SVGMARKER_NAME         "/crosses/Star1.svg"
 #define DEFAULT_SVGMARKER_SIZE         2*DEFAULT_POINT_SIZE
 #define DEFAULT_SVGMARKER_ANGLE        0
 
@@ -445,7 +447,8 @@ class CORE_EXPORT QgsFilledMarkerSymbolLayer : public QgsSimpleMarkerSymbolLayer
 class CORE_EXPORT QgsSvgMarkerSymbolLayer : public QgsMarkerSymbolLayer
 {
   public:
-    QgsSvgMarkerSymbolLayer( const QString &name = DEFAULT_SVGMARKER_NAME,
+    //! Constructs SVG marker symbol layer with picture from given absolute path to a SVG file
+    QgsSvgMarkerSymbolLayer( const QString &path,
                              double size = DEFAULT_SVGMARKER_SIZE,
                              double angle = DEFAULT_SVGMARKER_ANGLE,
                              QgsSymbol::ScaleMethod scaleMethod = DEFAULT_SCALE_METHOD );
@@ -454,6 +457,13 @@ class CORE_EXPORT QgsSvgMarkerSymbolLayer : public QgsMarkerSymbolLayer
 
     static QgsSymbolLayer *create( const QgsStringMap &properties = QgsStringMap() ) SIP_FACTORY;
     static QgsSymbolLayer *createFromSld( QDomElement &element ) SIP_FACTORY;
+
+    /**
+     * Turns relative paths in properties map to absolute when reading and vice versa when writing.
+     * Used internally when reading/writing symbols.
+     * \since QGIS 3.0
+     */
+    static void resolvePaths( QgsStringMap &properties, const QgsPathResolver &pathResolver, bool saving );
 
     // implemented from base classes
 
@@ -467,7 +477,7 @@ class CORE_EXPORT QgsSvgMarkerSymbolLayer : public QgsMarkerSymbolLayer
 
     QgsStringMap properties() const override;
 
-    QgsSvgMarkerSymbolLayer *clone() const override;
+    QgsSvgMarkerSymbolLayer *clone() const override SIP_FACTORY;
 
     void writeSldMarker( QDomDocument &doc, QDomElement &element, const QgsStringMap &props ) const override;
 
@@ -568,7 +578,7 @@ class CORE_EXPORT QgsFontMarkerSymbolLayer : public QgsMarkerSymbolLayer
 
     QgsStringMap properties() const override;
 
-    QgsFontMarkerSymbolLayer *clone() const override;
+    QgsFontMarkerSymbolLayer *clone() const override SIP_FACTORY;
 
     void writeSldMarker( QDomDocument &doc, QDomElement &element, const QgsStringMap &props ) const override;
 

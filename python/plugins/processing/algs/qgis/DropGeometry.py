@@ -25,27 +25,13 @@ __copyright__ = '(C) 2016, Nyall Dawson'
 
 __revision__ = '$Format:%H$'
 
-from qgis.core import (QgsFeatureRequest,
-                       QgsWkbTypes,
-                       QgsCoordinateReferenceSystem,
-                       QgsApplication,
-                       QgsProcessingUtils)
-from processing.core.GeoAlgorithm import GeoAlgorithm
-from processing.core.parameters import ParameterVector
-from processing.core.outputs import OutputVector
-from processing.tools import dataobjects
+from qgis.core import (QgsWkbTypes,
+                       QgsCoordinateReferenceSystem)
+
+from processing.algs.qgis.QgisAlgorithm import QgisFeatureBasedAlgorithm
 
 
-class DropGeometry(GeoAlgorithm):
-
-    INPUT_LAYER = 'INPUT_LAYER'
-    OUTPUT_TABLE = 'OUTPUT_TABLE'
-
-    def icon(self):
-        return QgsApplication.getThemeIcon("/providerQgis.svg")
-
-    def svgIconPath(self):
-        return QgsApplication.iconPath("providerQgis.svg")
+class DropGeometry(QgisFeatureBasedAlgorithm):
 
     def tags(self):
         return self.tr('remove,drop,delete,geometry,objects').split(',')
@@ -53,31 +39,24 @@ class DropGeometry(GeoAlgorithm):
     def group(self):
         return self.tr('Vector general tools')
 
+    def __init__(self):
+        super().__init__()
+
     def name(self):
         return 'dropgeometries'
 
     def displayName(self):
         return self.tr('Drop geometries')
 
-    def defineCharacteristics(self):
-        self.addParameter(ParameterVector(self.INPUT_LAYER,
-                                          self.tr('Input layer'), [dataobjects.TYPE_VECTOR_POINT,
-                                                                   dataobjects.TYPE_VECTOR_LINE,
-                                                                   dataobjects.TYPE_VECTOR_POLYGON]))
-        self.addOutput(OutputVector(self.OUTPUT_TABLE, self.tr('Dropped geometry')))
+    def outputName(self):
+        return self.tr('Dropped geometries')
 
-    def processAlgorithm(self, context, feedback):
-        layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT_LAYER), context)
-        writer = self.getOutputFromName(
-            self.OUTPUT_TABLE).getVectorWriter(layer.fields(), QgsWkbTypes.NoGeometry, QgsCoordinateReferenceSystem(),
-                                               context)
+    def outputCrs(self, input_crs):
+        return QgsCoordinateReferenceSystem()
 
-        request = QgsFeatureRequest().setFlags(QgsFeatureRequest.NoGeometry)
-        features = QgsProcessingUtils.getFeatures(layer, context, request)
-        total = 100.0 / QgsProcessingUtils.featureCount(layer, context)
+    def outputWkbType(self, input_wkb_type):
+        return QgsWkbTypes.NoGeometry
 
-        for current, input_feature in enumerate(features):
-            writer.addFeature(input_feature)
-            feedback.setProgress(int(current * total))
-
-        del writer
+    def processFeature(self, feature, feedback):
+        feature.clearGeometry()
+        return feature

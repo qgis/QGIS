@@ -28,18 +28,17 @@ __revision__ = '$Format:%H$'
 
 import os
 import webbrowser
+import html
 
 from qgis.PyQt import uic
-from qgis.PyQt.QtCore import QCoreApplication, QByteArray, QUrl
-from qgis.PyQt.QtWidgets import QApplication, QDialogButtonBox
-from qgis.PyQt.QtNetwork import QNetworkRequest, QNetworkReply
+from qgis.PyQt.QtCore import pyqtSignal, Qt, QCoreApplication, QByteArray, QUrl
+from qgis.PyQt.QtWidgets import QApplication, QDialogButtonBox, QVBoxLayout, QToolButton
 
 from qgis.utils import iface
-from qgis.core import (QgsNetworkAccessManager,
-                       QgsProject,
+from qgis.core import (QgsProject,
                        QgsProcessingFeedback,
                        QgsSettings)
-
+from qgis.gui import QgsHelp
 
 from processing.core.ProcessingConfig import ProcessingConfig
 
@@ -53,60 +52,92 @@ class AlgorithmDialogFeedback(QgsProcessingFeedback):
     Directs algorithm feedback to an algorithm dialog
     """
 
+    error = pyqtSignal(str)
+    progress_text = pyqtSignal(str)
+    info = pyqtSignal(str)
+    command_info = pyqtSignal(str)
+    debug_info = pyqtSignal(str)
+    console_info = pyqtSignal(str)
+
     def __init__(self, dialog):
         QgsProcessingFeedback.__init__(self)
         self.dialog = dialog
 
     def reportError(self, msg):
-        self.dialog.error(msg)
+        self.error.emit(msg)
 
     def setProgressText(self, text):
-        self.dialog.setText(text)
+        self.progress_text.emit(text)
 
     def pushInfo(self, msg):
-        self.dialog.setInfo(msg)
+        self.info.emit(msg)
 
     def pushCommandInfo(self, msg):
-        self.dialog.setCommand(msg)
+        self.command_info.emit(msg)
 
     def pushDebugInfo(self, msg):
-        self.dialog.setDebugInfo(msg)
+        self.debug_info.emit(msg)
 
     def pushConsoleInfo(self, msg):
-        self.dialog.setConsoleInfo(msg)
+        self.console_info.emit(msg)
 
 
 class AlgorithmDialogBase(BASE, WIDGET):
 
     def __init__(self, alg):
-        super(AlgorithmDialogBase, self).__init__(iface.mainWindow())
+        super(AlgorithmDialogBase, self).__init__(iface.mainWindow() if iface else None)
         self.setupUi(self)
 
-        self.feedback = AlgorithmDialogFeedback(self)
-        self.feedback.progressChanged.connect(self.setPercentage)
+        # don't collapse parameters panel
+        self.splitter.setCollapsible(0, False)
+
+        # add collapse button to splitter
+        splitterHandle = self.splitter.handle(1)
+        handleLayout = QVBoxLayout()
+        handleLayout.setContentsMargins(0, 0, 0, 0)
+        self.btnCollapse = QToolButton(splitterHandle)
+        self.btnCollapse.setAutoRaise(True)
+        self.btnCollapse.setFixedSize(12, 12)
+        self.btnCollapse.setCursor(Qt.ArrowCursor)
+        handleLayout.addWidget(self.btnCollapse)
+        handleLayout.addStretch()
+        splitterHandle.setLayout(handleLayout)
 
         self.settings = QgsSettings()
+        self.splitter.restoreState(self.settings.value("/Processing/dialogBaseSplitter", QByteArray()))
         self.restoreGeometry(self.settings.value("/Processing/dialogBase", QByteArray()))
+        self.splitterState = self.splitter.saveState()
+        self.splitterChanged(0, 0)
 
         self.executed = False
         self.mainWidget = None
         self.alg = alg
 
+        self.setWindowTitle(self.alg.displayName())
+
+        self.buttonBox.rejected.connect(self.reject)
+        self.buttonBox.accepted.connect(self.accept)
+
         # Rename OK button to Run
         self.btnRun = self.buttonBox.button(QDialogButtonBox.Ok)
         self.btnRun.setText(self.tr('Run'))
 
+        self.buttonCancel.setEnabled(False)
+
         self.btnClose = self.buttonBox.button(QDialogButtonBox.Close)
 
-        self.setWindowTitle(self.alg.displayName())
+        self.buttonBox.helpRequested.connect(self.openHelp)
+
+        self.btnCollapse.clicked.connect(self.toggleCollapsed)
+        self.splitter.splitterMoved.connect(self.splitterChanged)
 
         # desktop = QDesktopWidget()
         # if desktop.physicalDpiX() > 96:
         # self.txtHelp.setZoomFactor(desktop.physicalDpiX() / 96)
 
-        algHelp = self.alg.shortHelp()
+        algHelp = self.formatHelp(self.alg)
         if algHelp is None:
-            self.textShortHelp.setVisible(False)
+            self.textShortHelp.hide()
         else:
             self.textShortHelp.document().setDefaultStyleSheet('''.summary { margin-left: 10px; margin-right: 10px; }
                                                     h2 { color: #555555; padding-bottom: 15px; }
@@ -116,46 +147,36 @@ class AlgorithmDialogBase(BASE, WIDGET):
                                                     dl dd { margin-bottom: 5px; }''')
             self.textShortHelp.setHtml(algHelp)
 
-        self.textShortHelp.setOpenLinks(False)
-
         def linkClicked(url):
             webbrowser.open(url.toString())
 
         self.textShortHelp.anchorClicked.connect(linkClicked)
 
-        isText, algHelp = self.alg.help()
-        if algHelp is not None:
-            algHelp = algHelp if isText else QUrl(algHelp)
-            try:
-                if isText:
-                    self.txtHelp.setHtml(algHelp)
-                else:
-                    html = self.tr('<p>Downloading algorithm help... Please wait.</p>')
-                    self.txtHelp.setHtml(html)
-                    rq = QNetworkRequest(algHelp)
-                    self.reply = QgsNetworkAccessManager.instance().get(rq)
-                    self.reply.finished.connect(self.requestFinished)
-            except Exception:
-                self.tabWidget.removeTab(2)
-        else:
-            self.tabWidget.removeTab(2)
-
         self.showDebug = ProcessingConfig.getSetting(
             ProcessingConfig.SHOW_DEBUG_IN_DIALOG)
 
-    def requestFinished(self):
-        """Change the webview HTML content"""
-        reply = self.sender()
-        if reply.error() != QNetworkReply.NoError:
-            html = self.tr('<h2>No help available for this algorithm</h2><p>{}</p>'.format(reply.errorString()))
-        else:
-            html = str(reply.readAll())
-        reply.deleteLater()
-        self.txtHelp.setHtml(html)
+    def createFeedback(self):
+        feedback = AlgorithmDialogFeedback(self)
+        feedback.progressChanged.connect(self.setPercentage)
+        feedback.error.connect(self.error)
+        feedback.progress_text.connect(self.setText)
+        feedback.info.connect(self.setInfo)
+        feedback.command_info.connect(self.setCommand)
+        feedback.debug_info.connect(self.setDebugInfo)
+        feedback.console_info.connect(self.setConsoleInfo)
 
-    def closeEvent(self, evt):
-        self.settings.setValue("/Processing/dialogBase", self.saveGeometry())
-        super(AlgorithmDialogBase, self).closeEvent(evt)
+        self.buttonCancel.clicked.connect(feedback.cancel)
+        return feedback
+
+    def formatHelp(self, alg):
+        text = alg.shortHelpString()
+        if not text:
+            return None
+        return "<h2>%s</h2>%s" % (alg.displayName(), "".join(["<p>%s</p>" % s for s in text.split("\n")]))
+
+    def closeEvent(self, event):
+        self._saveGeometry()
+        super(AlgorithmDialogBase, self).closeEvent(event)
 
     def setMainWidget(self, widget):
         if self.mainWidget is not None:
@@ -167,63 +188,89 @@ class AlgorithmDialogBase(BASE, WIDGET):
         QgsProject.instance().layersWillBeRemoved.connect(self.mainWidget.layerRegistryChanged)
 
     def error(self, msg):
-        QApplication.restoreOverrideCursor()
         self.setInfo(msg, True)
         self.resetGUI()
         self.tabWidget.setCurrentIndex(1)
 
     def resetGUI(self):
-        QApplication.restoreOverrideCursor()
         self.lblProgress.setText('')
         self.progressBar.setMaximum(100)
         self.progressBar.setValue(0)
         self.btnRun.setEnabled(True)
         self.btnClose.setEnabled(True)
 
-    def setInfo(self, msg, error=False):
+    def setInfo(self, msg, error=False, escape_html=True):
         if error:
-            self.txtLog.append('<span style="color:red"><br>%s<br></span>' % msg)
+            self.txtLog.append('<span style="color:red">{}</span><br />'.format(msg, quote=False))
+        elif escape_html:
+            self.txtLog.append(html.escape(msg))
         else:
             self.txtLog.append(msg)
-        QCoreApplication.processEvents()
 
     def setCommand(self, cmd):
         if self.showDebug:
-            self.setInfo('<code>%s<code>' % cmd)
-        QCoreApplication.processEvents()
+            self.txtLog.append('<code>{}<code>'.format(html.escape(cmd, quote=False)))
 
     def setDebugInfo(self, msg):
         if self.showDebug:
-            self.setInfo('<span style="color:blue">%s</span>' % msg)
-        QCoreApplication.processEvents()
+            self.txtLog.append('<span style="color:blue">{}</span>'.format(html.escape(msg, quote=False)))
 
     def setConsoleInfo(self, msg):
         if self.showDebug:
-            self.setCommand('<span style="color:darkgray">%s</span>' % msg)
-        QCoreApplication.processEvents()
+            self.txtLog.append('<code><span style="color:darkgray">{}</span></code>'.format(html.escape(msg, quote=False)))
 
     def setPercentage(self, value):
         if self.progressBar.maximum() == 0:
             self.progressBar.setMaximum(100)
         self.progressBar.setValue(value)
-        QCoreApplication.processEvents()
 
     def setText(self, text):
         self.lblProgress.setText(text)
         self.setInfo(text, False)
-        QCoreApplication.processEvents()
 
-    def setParamValues(self):
-        pass
-
-    def setParamValue(self, param, widget, alg=None):
-        pass
+    def getParamValues(self):
+        return {}
 
     def accept(self):
         pass
 
-    def finish(self, context):
+    def reject(self):
+        self._saveGeometry()
+        super(AlgorithmDialogBase, self).reject()
+
+    def finish(self, context, feedback):
         pass
+
+    def toggleCollapsed(self):
+        if self.helpCollapsed:
+            self.splitter.restoreState(self.splitterState)
+            self.btnCollapse.setArrowType(Qt.RightArrow)
+        else:
+            self.splitterState = self.splitter.saveState()
+            self.splitter.setSizes([1, 0])
+            self.btnCollapse.setArrowType(Qt.LeftArrow)
+        self.helpCollapsed = not self.helpCollapsed
+
+    def splitterChanged(self, pos, index):
+        if self.splitter.sizes()[1] == 0:
+            self.helpCollapsed = True
+            self.btnCollapse.setArrowType(Qt.LeftArrow)
+        else:
+            self.helpCollapsed = False
+            self.btnCollapse.setArrowType(Qt.RightArrow)
+
+    def openHelp(self):
+        algHelp = self.alg.helpUrl()
+        if not algHelp:
+            algHelp = QgsHelp.helpUrl("processing_algs/{}/{}".format(
+                self.alg.provider().id(), self.alg.id())).toString()
+
+        if algHelp not in [None, ""]:
+            webbrowser.open(algHelp)
+
+    def _saveGeometry(self):
+        self.settings.setValue("/Processing/dialogBaseSplitter", self.splitter.saveState())
+        self.settings.setValue("/Processing/dialogBase", self.saveGeometry())
 
     class InvalidParameterValue(Exception):
 

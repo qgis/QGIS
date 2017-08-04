@@ -1,20 +1,27 @@
-/** \ingroup core
- * \class QgsNullSymbolRenderer
- * \brief Null symbol renderer. Renderer which draws no symbols for features by default, but allows for labeling
- * and diagrams for the layer. Selected features will also be drawn with a default symbol.
- * \note Added in version 2.16
- */
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/symbology-ng/qgsnullsymbolrenderer.h                        *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
 
 class QgsNullSymbolRenderer : QgsFeatureRenderer
 {
+%Docstring
+ Null symbol renderer. Renderer which draws no symbols for features by default, but allows for labeling
+ and diagrams for the layer. Selected features will also be drawn with a default symbol.
+.. versionadded:: 2.16
+%End
+
 %TypeHeaderCode
-#include <qgsnullsymbolrenderer.h>
+#include "qgsnullsymbolrenderer.h"
 %End
   public:
 
     QgsNullSymbolRenderer();
-
-    virtual ~QgsNullSymbolRenderer();
 
     virtual QgsSymbol *symbolForFeature( QgsFeature &feature, QgsRenderContext &context );
     virtual QgsSymbol *originalSymbolForFeature( QgsFeature &feature, QgsRenderContext &context );
@@ -29,18 +36,31 @@ class QgsNullSymbolRenderer : QgsFeatureRenderer
     virtual QgsFeatureRenderer *clone() const /Factory/;
     virtual QgsSymbolList symbols( QgsRenderContext &context );
 
-    /** Creates a null renderer from XML element.
-     * @param element DOM element
-     * @returns new null symbol renderer
-     */
-    static QgsFeatureRenderer *create( QDomElement &element ) /Factory/;
+    static QgsFeatureRenderer *create( QDomElement &element, const QgsReadWriteContext &context ) /Factory/;
+%Docstring
+ Creates a null renderer from XML element.
+ \param element DOM element
+ \param context reading context
+ :return: new null symbol renderer
+ :rtype: QgsFeatureRenderer
+%End
 
-    virtual QDomElement save( QDomDocument &doc );
+    virtual QDomElement save( QDomDocument &doc, const QgsReadWriteContext &context );
 
-    /** Creates a QgsNullSymbolRenderer from an existing renderer.
-     * @param renderer renderer to convert from
-     * @returns a new renderer if the conversion was possible, otherwise nullptr.
-     */
     static QgsNullSymbolRenderer *convertFromRenderer( const QgsFeatureRenderer *renderer ) /Factory/;
+%Docstring
+ Creates a QgsNullSymbolRenderer from an existing renderer.
+ \param renderer renderer to convert from
+ :return: a new renderer if the conversion was possible, otherwise None.
+ :rtype: QgsNullSymbolRenderer
+%End
 
 };
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/symbology-ng/qgsnullsymbolrenderer.h                        *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

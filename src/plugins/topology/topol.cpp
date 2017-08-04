@@ -19,7 +19,7 @@
 #include <qgsmaplayer.h>
 #include <qgsapplication.h>
 #include <qgisinterface.h>
-#include <qgisgui.h>
+#include "qgsguiutils.h"
 
 // Qt4 Related Includes
 #include <QAction>

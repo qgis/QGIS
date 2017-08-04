@@ -1,27 +1,50 @@
-/** \ingroup gui
- * \class QgsConfigureShortcutsDialog
- * Reusable dialog for allowing users to configure shortcuts contained in a QgsShortcutsManager.
- * \note added in QGIS 2.16
- */
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgsconfigureshortcutsdialog.h                                *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
 
-class QgsConfigureShortcutsDialog: QDialog
+
+
+
+
+
+class QgsConfigureShortcutsDialog : QDialog
 {
+%Docstring
+ Reusable dialog for allowing users to configure shortcuts contained in a QgsShortcutsManager.
+.. versionadded:: 2.16
+%End
+
 %TypeHeaderCode
-#include <qgsconfigureshortcutsdialog.h>
+#include "qgsconfigureshortcutsdialog.h"
 %End
   public:
 
-    /** Constructor for QgsConfigureShortcutsDialog.
-     * @param parent parent widget
-     * @param manager associated QgsShortcutsManager, or leave as null to use the default
-     * singleton QgsShortcutsManager instance.
-     */
     QgsConfigureShortcutsDialog( QWidget *parent /TransferThis/ = 0, QgsShortcutsManager *manager = 0 );
+%Docstring
+ Constructor for QgsConfigureShortcutsDialog.
+ \param parent parent widget
+ \param manager associated QgsShortcutsManager, or leave as null to use the default
+ singleton QgsShortcutsManager instance.
+%End
 
     ~QgsConfigureShortcutsDialog();
 
   protected:
-    void keyPressEvent( QKeyEvent *event );
-    void keyReleaseEvent( QKeyEvent *event );
+    virtual void keyPressEvent( QKeyEvent *event );
+
+    virtual void keyReleaseEvent( QKeyEvent *event );
+
 
 };
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgsconfigureshortcutsdialog.h                                *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

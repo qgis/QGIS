@@ -17,7 +17,7 @@
      <x>0</x>
      <y>0</y>
      <width>1018</width>
-     <height>18</height>
+     <height>21</height>
     </rect>
    </property>
    <property name="toolTip">
@@ -82,6 +82,7 @@
      <addaction name="mActionDecorationScaleBar"/>
      <addaction name="mActionDecorationNorthArrow"/>
      <addaction name="mActionDecorationCopyright"/>
+     <addaction name="mActionDecorationLayoutExtent"/>
     </widget>
     <widget class="QMenu" name="mMenuPreviewMode">
      <property name="title">
@@ -143,20 +144,21 @@
      </property>
      <addaction name="mActionAddOgrLayer"/>
      <addaction name="mActionAddRasterLayer"/>
+     <addaction name="mActionAddDelimitedText"/>
      <addaction name="mActionAddPgLayer"/>
      <addaction name="mActionAddSpatiaLiteLayer"/>
      <addaction name="mActionAddMssqlLayer"/>
      <addaction name="mActionAddDb2Layer"/>
      <addaction name="mActionAddOracleLayer"/>
+     <addaction name="mActionAddVirtualLayer"/>
      <addaction name="mActionAddWmsLayer"/>
      <addaction name="mActionAddAmsLayer"/>
      <addaction name="mActionAddLayerSeparator"/>
      <addaction name="mActionAddWcsLayer"/>
      <addaction name="mActionAddWfsLayer"/>
      <addaction name="mActionAddAfsLayer"/>
-     <addaction name="mActionAddDelimitedText"/>
-     <addaction name="mActionAddVirtualLayer"/>
     </widget>
+    <addaction name="mActionDataSourceManager"/>
     <addaction name="mNewLayerMenu"/>
     <addaction name="mAddLayerMenu"/>
     <addaction name="mActionEmbedLayers"/>
@@ -353,12 +355,12 @@
    </attribute>
    <addaction name="mActionAddOgrLayer"/>
    <addaction name="mActionAddRasterLayer"/>
+   <addaction name="mActionAddDelimitedText"/>
    <addaction name="mActionAddSpatiaLiteLayer"/>
+   <addaction name="mActionAddVirtualLayer"/>
    <addaction name="mActionAddWmsLayer"/>
    <addaction name="mActionAddWcsLayer"/>
    <addaction name="mActionAddWfsLayer"/>
-   <addaction name="mActionAddDelimitedText"/>
-   <addaction name="mActionAddVirtualLayer"/>
   </widget>
   <widget class="QToolBar" name="mDigitizeToolBar">
    <property name="windowTitle">
@@ -578,7 +580,7 @@
   </widget>
   <widget class="QToolBar" name="mSnappingToolBar">
    <property name="windowTitle">
-    <string>Snapping toolbar</string>
+    <string>Snapping Toolbar</string>
    </property>
    <attribute name="toolBarArea">
     <enum>TopToolBarArea</enum>
@@ -586,6 +588,25 @@
    <attribute name="toolBarBreak">
     <bool>false</bool>
    </attribute>
+  </widget>
+  <widget class="QToolBar" name="mDataSourceManagerToolBar">
+   <property name="windowTitle">
+    <string>Data Source Manager Toolbar</string>
+   </property>
+   <property name="toolTip">
+    <string>Data Source Manager Toolbar</string>
+   </property>
+   <attribute name="toolBarArea">
+    <enum>TopToolBarArea</enum>
+   </attribute>
+   <attribute name="toolBarBreak">
+    <bool>false</bool>
+   </attribute>
+   <addaction name="mActionDataSourceManager"/>
+   <addaction name="mActionNewVectorLayer"/>
+   <addaction name="mActionNewSpatiaLiteLayer"/>
+   <addaction name="mActionNewGeoPackageLayer"/>
+   <addaction name="mActionNewMemoryLayer"/>
   </widget>
   <action name="mActionNewProject">
    <property name="icon">
@@ -1836,7 +1857,10 @@ Ctrl (Cmd) increments by 15 deg.</string>
      <normaloff>:/images/themes/default/copyright_label.svg</normaloff>:/images/themes/default/copyright_label.svg</iconset>
    </property>
    <property name="text">
-    <string>&amp;Copyright Label</string>
+    <string>&amp;Copyright Label…</string>
+   </property>
+   <property name="toolTip">
+    <string>Copyright Label</string>
    </property>
    <property name="whatsThis">
     <string>Creates a copyright label that is displayed on the map canvas.</string>
@@ -1848,7 +1872,10 @@ Ctrl (Cmd) increments by 15 deg.</string>
      <normaloff>:/images/themes/default/north_arrow.png</normaloff>:/images/themes/default/north_arrow.png</iconset>
    </property>
    <property name="text">
-    <string>&amp;North Arrow</string>
+    <string>&amp;North Arrow…</string>
+   </property>
+   <property name="toolTip">
+    <string>North Arrow</string>
    </property>
    <property name="whatsThis">
     <string>&quot;Creates a north arrow that is displayed on the map canvas&quot;</string>
@@ -1860,7 +1887,10 @@ Ctrl (Cmd) increments by 15 deg.</string>
      <normaloff>:/images/themes/default/mActionScaleBar.svg</normaloff>:/images/themes/default/mActionScaleBar.svg</iconset>
    </property>
    <property name="text">
-    <string>&amp;Scale Bar</string>
+    <string>&amp;Scale Bar…</string>
+   </property>
+   <property name="toolTip">
+    <string>Scale Bar</string>
    </property>
    <property name="whatsThis">
     <string>Creates a scale bar that is displayed on the map canvas</string>
@@ -1950,7 +1980,7 @@ Ctrl (Cmd) increments by 15 deg.</string>
      <normaloff>:/images/themes/default/transformed.svg</normaloff>:/images/themes/default/transformed.svg</iconset>
    </property>
    <property name="text">
-    <string>&amp;Grid</string>
+    <string>&amp;Grid…</string>
    </property>
    <property name="toolTip">
     <string>Grid</string>
@@ -2611,6 +2641,33 @@ Acts on currently active editable layer</string>
    </property>
    <property name="text">
     <string>Install plugin from ZIP...</string>
+   </property>
+  </action>
+  <action name="mActionDecorationLayoutExtent">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionAddMap.svg</normaloff>:/images/themes/default/mActionAddMap.svg</iconset>
+   </property>
+   <property name="text">
+    <string>&amp;Layout Extents…</string>
+   </property>
+   <property name="toolTip">
+    <string>Layout Extents</string>
+   </property>
+  </action>
+  <action name="mActionDataSourceManager">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionDataSourceManager.svg</normaloff>:/images/themes/default/mActionDataSourceManager.svg</iconset>
+   </property>
+   <property name="text">
+    <string>&amp;Data Source Manager</string>
+   </property>
+   <property name="toolTip">
+    <string>Open Data Source Manager</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+L</string>
    </property>
   </action>
  </widget>

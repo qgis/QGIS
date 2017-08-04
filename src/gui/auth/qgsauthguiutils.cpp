@@ -293,7 +293,7 @@ void QgsAuthGuiUtils::passwordHelperSync( QgsMessageBar *msgbar, int timeout )
 {
   QString msg;
   QgsMessageBar::MessageLevel level;
-  if ( ! QgsAuthManager::instance()->masterPasswordIsSet( ) )
+  if ( ! QgsAuthManager::instance()->masterPasswordIsSet() )
   {
     msg = QObject::tr( "Master password is not set and cannot be stored in your %1" )
           .arg( QgsAuthManager::AUTH_PASSWORD_HELPER_DISPLAY_NAME );

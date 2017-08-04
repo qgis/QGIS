@@ -446,6 +446,7 @@ void QgsCompositionWidget::applyWidthHeight()
     return;
 
   mComposition->setPaperSize( width, height );
+  mComposition->refreshItems();
 }
 
 void QgsCompositionWidget::on_mPaperWidthDoubleSpinBox_editingFinished()

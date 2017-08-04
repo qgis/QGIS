@@ -337,7 +337,7 @@ QList<double> QgsGeometryAnalyzer::simpleMeasure( QgsGeometry &mpGeometry )
   double perim;
   if ( mpGeometry.wkbType() == QgsWkbTypes::Point )
   {
-    QgsPoint pt = mpGeometry.asPoint();
+    QgsPointXY pt = mpGeometry.asPoint();
     list.append( pt.x() );
     list.append( pt.y() );
   }
@@ -1079,7 +1079,7 @@ QgsGeometry QgsGeometryAnalyzer::createOffsetGeometry( const QgsGeometry &geom, 
     }
     else if ( geom.type() == QgsWkbTypes::PointGeometry )
     {
-      QgsPoint p = ( *inputGeomIt ).asPoint();
+      QgsPointXY p = ( *inputGeomIt ).asPoint();
       p = createPointOffset( p.x(), p.y(), offset, lineGeom );
       GEOSCoordSequence *ptSeq = GEOSCoordSeq_create_r( geosctxt, 1, 2 );
       GEOSCoordSeq_setX_r( geosctxt, ptSeq, 0, p.x() );
@@ -1120,16 +1120,16 @@ QgsGeometry QgsGeometryAnalyzer::createOffsetGeometry( const QgsGeometry &geom, 
   return outGeometry;
 }
 
-QgsPoint QgsGeometryAnalyzer::createPointOffset( double x, double y, double dist, const QgsGeometry &lineGeom ) const
+QgsPointXY QgsGeometryAnalyzer::createPointOffset( double x, double y, double dist, const QgsGeometry &lineGeom ) const
 {
-  QgsPoint p( x, y );
-  QgsPoint minDistPoint;
+  QgsPointXY p( x, y );
+  QgsPointXY minDistPoint;
   int afterVertexNr;
   lineGeom.closestSegmentWithContext( p, minDistPoint, afterVertexNr );
 
   int beforeVertexNr = afterVertexNr - 1;
-  QgsPoint beforeVertex = lineGeom.vertexAt( beforeVertexNr );
-  QgsPoint afterVertex = lineGeom.vertexAt( afterVertexNr );
+  QgsPointXY beforeVertex = lineGeom.vertexAt( beforeVertexNr );
+  QgsPointXY afterVertex = lineGeom.vertexAt( afterVertexNr );
 
   //get normal vector
   double dx = afterVertex.x() - beforeVertex.x();
@@ -1142,7 +1142,7 @@ QgsPoint QgsGeometryAnalyzer::createPointOffset( double x, double y, double dist
 
   double debugLength = sqrt( normalX * normalX + normalY * normalY ); //control  //#spellok
   Q_UNUSED( debugLength );
-  return QgsPoint( x - normalX, y - normalY ); //negative values -> left side, positive values -> right side  //#spellok
+  return QgsPointXY( x - normalX, y - normalY ); //negative values -> left side, positive values -> right side  //#spellok
 }
 
 QgsGeometry QgsGeometryAnalyzer::locateBetweenMeasures( double fromMeasure, double toMeasure, const QgsGeometry &lineGeom )
@@ -1243,7 +1243,7 @@ QgsConstWkbPtr QgsGeometryAnalyzer::locateBetweenWkbString( QgsConstWkbPtr wkbPt
 
     if ( i > 0 )
     {
-      QgsPoint pt1, pt2;
+      QgsPointXY pt1, pt2;
       bool secondPointClipped; //true if second point is != segment endpoint
       bool measureInSegment = clipSegmentByRange( prevx, prevy, prevz, x, y, z, fromMeasure, toMeasure, pt1, pt2, secondPointClipped );
       if ( measureInSegment )
@@ -1289,7 +1289,7 @@ QgsConstWkbPtr QgsGeometryAnalyzer::locateAlongWkbString( QgsConstWkbPtr wkbPtr,
 
     if ( i > 0 )
     {
-      QgsPoint pt1, pt2;
+      QgsPointXY pt1, pt2;
       bool pt1Ok, pt2Ok;
       locateAlongSegment( prevx, prevy, prevz, x, y, z, measure, pt1Ok, pt1, pt2Ok, pt2 );
       if ( pt1Ok )
@@ -1309,8 +1309,8 @@ QgsConstWkbPtr QgsGeometryAnalyzer::locateAlongWkbString( QgsConstWkbPtr wkbPtr,
   return wkbPtr;
 }
 
-bool QgsGeometryAnalyzer::clipSegmentByRange( double x1, double y1, double m1, double x2, double y2, double m2, double range1, double range2, QgsPoint &pt1,
-    QgsPoint &pt2, bool &secondPointClipped )
+bool QgsGeometryAnalyzer::clipSegmentByRange( double x1, double y1, double m1, double x2, double y2, double m2, double range1, double range2, QgsPointXY &pt1,
+    QgsPointXY &pt2, bool &secondPointClipped )
 {
   bool reversed = m1 > m2;
   double tmp;
@@ -1402,7 +1402,7 @@ bool QgsGeometryAnalyzer::clipSegmentByRange( double x1, double y1, double m1, d
 
   if ( reversed ) //switch p1 and p2
   {
-    QgsPoint tmpPt = pt1;
+    QgsPointXY tmpPt = pt1;
     pt1 = pt2;
     pt2 = tmpPt;
   }
@@ -1410,7 +1410,7 @@ bool QgsGeometryAnalyzer::clipSegmentByRange( double x1, double y1, double m1, d
   return true;
 }
 
-void QgsGeometryAnalyzer::locateAlongSegment( double x1, double y1, double m1, double x2, double y2, double m2, double measure, bool &pt1Ok, QgsPoint &pt1, bool &pt2Ok, QgsPoint &pt2 )
+void QgsGeometryAnalyzer::locateAlongSegment( double x1, double y1, double m1, double x2, double y2, double m2, double measure, bool &pt1Ok, QgsPointXY &pt1, bool &pt2Ok, QgsPointXY &pt2 )
 {
   bool reversed = false;
   pt1Ok = false;

@@ -46,6 +46,7 @@ class TestQgsDistanceArea: public QObject
     void measureAreaAndUnits();
     void emptyPolygon();
     void regression14675();
+    void regression16820();
 
 };
 
@@ -67,7 +68,7 @@ void TestQgsDistanceArea::cleanupTestCase()
 
 void TestQgsDistanceArea::basic()
 {
-  QgsPoint p1( 1.0, 3.0 ), p2( -2.0, -1.0 );
+  QgsPointXY p1( 1.0, 3.0 ), p2( -2.0, -1.0 );
   QgsDistanceArea daA;
   double resultA, resultB, resultC;
 
@@ -172,7 +173,7 @@ void TestQgsDistanceArea::test_distances()
   // Column 3 is latitude point 2
   // Column 4 is longitude point 3
   // Column 6 is the resulting distance in meters on the WGS84 ellipsoid
-  // Note: lat is north/south, so the QgsPoint should be ( long, lat )
+  // Note: lat is north/south, so the QgsPointXY should be ( long, lat )
   // See http://geographiclib.sourceforge.net/html/geodesic.html#testgeod
 
   // Set up DA
@@ -199,8 +200,8 @@ void TestQgsDistanceArea::test_distances()
     {
       QStringList myLineList = line.split( ' ' ); // Split fields on space.
       // Create points
-      QgsPoint p1( myLineList[1].toDouble(), myLineList[0].toDouble() );
-      QgsPoint p2( myLineList[4].toDouble(), myLineList[3].toDouble() );
+      QgsPointXY p1( myLineList[1].toDouble(), myLineList[0].toDouble() );
+      QgsPointXY p2( myLineList[4].toDouble(), myLineList[3].toDouble() );
       double result = myDa.measureLine( p1, p2 );
       // QgsDebugMsg( QString( "Distance from %1 to %2 is %3" ).arg( p1.toString( 15 ) ).arg( p2.toString( 15 ) ).arg( result, 0, 'g', 15 ) );
       // QgsDebugMsg( QString( "Distance should be %1" ).arg( myLineList[6] ) );
@@ -259,8 +260,8 @@ void TestQgsDistanceArea::measureUnits()
   calc.setEllipsoid( QStringLiteral( "NONE" ) );
   calc.setSourceCrs( QgsCoordinateReferenceSystem::fromSrsId( 254L ) );
   QgsUnitTypes::DistanceUnit units;
-  QgsPoint p1( 1341683.9854275715, 408256.9562717728 );
-  QgsPoint p2( 1349321.7807031618, 408256.9562717728 );
+  QgsPointXY p1( 1341683.9854275715, 408256.9562717728 );
+  QgsPointXY p2( 1349321.7807031618, 408256.9562717728 );
 
   double result = calc.measureLine( p1, p2 );
   units = calc.lengthUnits();
@@ -284,13 +285,13 @@ void TestQgsDistanceArea::measureAreaAndUnits()
   QgsCoordinateReferenceSystem daCRS;
   daCRS.createFromSrsId( da.sourceCrs().srsid() );
   QgsPolyline ring;
-  ring << QgsPoint( 0, 0 )
-       << QgsPoint( 1, 0 )
-       << QgsPoint( 1, 1 )
-       << QgsPoint( 2, 1 )
-       << QgsPoint( 2, 2 )
-       << QgsPoint( 0, 2 )
-       << QgsPoint( 0, 0 );
+  ring << QgsPointXY( 0, 0 )
+       << QgsPointXY( 1, 0 )
+       << QgsPointXY( 1, 1 )
+       << QgsPointXY( 2, 1 )
+       << QgsPointXY( 2, 2 )
+       << QgsPointXY( 0, 2 )
+       << QgsPointXY( 0, 0 );
   QgsPolygon poly;
   poly << ring;
 
@@ -320,13 +321,13 @@ void TestQgsDistanceArea::measureAreaAndUnits()
 
   // now try with a source CRS which is in feet
   ring.clear();
-  ring << QgsPoint( 1850000, 4423000 )
-       << QgsPoint( 1851000, 4423000 )
-       << QgsPoint( 1851000, 4424000 )
-       << QgsPoint( 1852000, 4424000 )
-       << QgsPoint( 1852000, 4425000 )
-       << QgsPoint( 1851000, 4425000 )
-       << QgsPoint( 1850000, 4423000 );
+  ring << QgsPointXY( 1850000, 4423000 )
+       << QgsPointXY( 1851000, 4423000 )
+       << QgsPointXY( 1851000, 4424000 )
+       << QgsPointXY( 1852000, 4424000 )
+       << QgsPointXY( 1852000, 4425000 )
+       << QgsPointXY( 1851000, 4425000 )
+       << QgsPointXY( 1850000, 4423000 );
   poly.clear();
   poly << ring;
   polygon = QgsGeometry::fromPolygon( poly );
@@ -365,7 +366,7 @@ void TestQgsDistanceArea::emptyPolygon()
   da.setEllipsoid( QStringLiteral( "WGS84" ) );
 
   //test that measuring an empty polygon doesn't crash
-  da.measurePolygon( QList< QgsPoint >() );
+  da.measurePolygon( QList< QgsPointXY >() );
 }
 
 void TestQgsDistanceArea::regression14675()
@@ -376,7 +377,17 @@ void TestQgsDistanceArea::regression14675()
   calc.setSourceCrs( QgsCoordinateReferenceSystem::fromSrsId( 145L ) );
   QgsGeometry geom( QgsGeometryFactory::geomFromWkt( QStringLiteral( "Polygon ((917593.5791854317067191 6833700.00807378999888897, 917596.43389983859378844 6833700.67099479306489229, 917599.53056440979707986 6833700.78673478215932846, 917593.5791854317067191 6833700.00807378999888897))" ) ) );
   //lots of tolerance here - the formulas get quite unstable with small areas due to division by very small floats
-  QGSCOMPARENEAR( calc.measureArea( geom ), 0.83301, 0.02 );
+  QGSCOMPARENEAR( calc.measureArea( geom ), 0.833010, 0.03 );
+}
+
+void TestQgsDistanceArea::regression16820()
+{
+  QgsDistanceArea calc;
+  calc.setEllipsoid( QStringLiteral( "WGS84" ) );
+  calc.setSourceCrs( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:32634" ) ) );
+  QgsGeometry geom( QgsGeometryFactory::geomFromWkt( QStringLiteral( "Polygon ((110250.54038314701756462 5084495.57398066483438015, 110243.46975068224128336 5084507.17200060561299324, 110251.23908144699817058 5084506.68309532757848501, 110251.2394439501222223 5084506.68307251576334238, 110250.54048078990308568 5084495.57553235255181789, 110250.54038314701756462 5084495.57398066483438015))" ) ) );
+  //lots of tolerance here - the formulas get quite unstable with small areas due to division by very small floats
+  QGSCOMPARENEAR( calc.measureArea( geom ), 43.3280029296875, 0.2 );
 }
 
 QGSTEST_MAIN( TestQgsDistanceArea )

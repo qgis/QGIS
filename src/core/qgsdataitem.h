@@ -169,10 +169,11 @@ class CORE_EXPORT QgsDataItem : public QObject
 
     enum Capability
     {
-      NoCapabilities = 0,
-      SetCrs         = 1 << 0, //!< Can set CRS on layer or group of layers
-      Fertile        = 1 << 1, //!< Can create children. Even items without this capability may have children, but cannot create them, it means that children are created by item ancestors.
-      Fast           = 1 << 2  //!< CreateChildren() is fast enough to be run in main thread when refreshing items, most root items (wms,wfs,wcs,postgres...) are considered fast because they are reading data only from QgsSettings
+      NoCapabilities    = 0,
+      SetCrs            = 1 << 0, //!< Can set CRS on layer or group of layers
+      Fertile           = 1 << 1, //!< Can create children. Even items without this capability may have children, but cannot create them, it means that children are created by item ancestors.
+      Fast              = 1 << 2, //!< CreateChildren() is fast enough to be run in main thread when refreshing items, most root items (wms,wfs,wcs,postgres...) are considered fast because they are reading data only from QgsSettings
+      Collapse          = 1 << 3  //!< The collapse/expand status for this items children should be ignored in order to avoid undesired network connections (wms etc.)
     };
     Q_DECLARE_FLAGS( Capabilities, Capability )
 
@@ -282,6 +283,9 @@ class CORE_EXPORT QgsDataItem : public QObject
 
     virtual void refresh();
 
+    //! Refresh connections: update GUI and emit signal
+    virtual void refreshConnections();
+
     virtual void childrenCreated();
 
   signals:
@@ -291,6 +295,11 @@ class CORE_EXPORT QgsDataItem : public QObject
     void endRemoveItems();
     void dataChanged( QgsDataItem *item );
     void stateChanged( QgsDataItem *item, QgsDataItem::State oldState );
+    //! Emitted when the provider's connections of the child items have changed
+    //! This signal is normally forwarded to the app in order to refresh the connection
+    //! item in the provider dialogs and to refresh the connection items in the other
+    //! open browsers
+    void connectionsChanged();
 
   protected slots:
 
@@ -403,7 +412,7 @@ class CORE_EXPORT QgsDataCollectionItem : public QgsDataItem
 {
     Q_OBJECT
   public:
-    QgsDataCollectionItem( QgsDataItem *parent, const QString &name, const QString &path = QString::null );
+    QgsDataCollectionItem( QgsDataItem *parent, const QString &name, const QString &path = QString() );
     ~QgsDataCollectionItem();
 
     void addChild( QgsDataItem *item SIP_TRANSFER ) { mChildren.append( item ); }

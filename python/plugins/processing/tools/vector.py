@@ -52,13 +52,13 @@ from qgis.core import (QgsFields,
                        QgsCredentials,
                        QgsFeatureRequest,
                        QgsSettings,
-                       QgsProcessingContext,
+                       QgsPointXY,
                        QgsProcessingUtils)
 
 from processing.tools import dataobjects
 
 
-def resolveFieldIndex(layer, attr):
+def resolveFieldIndex(source, attr):
     """This method takes an object and returns the index field it
     refers to in a layer. If the passed object is an integer, it
     returns the same integer value. If the passed value is not an
@@ -72,14 +72,14 @@ def resolveFieldIndex(layer, attr):
     if isinstance(attr, int):
         return attr
     else:
-        index = layer.fields().lookupField(attr)
+        index = source.fields().lookupField(attr)
         if index == -1:
             raise ValueError('Wrong field name')
         return index
 
 
-def values(layer, context, *attributes):
-    """Returns the values in the attributes table of a vector layer,
+def values(source, *attributes):
+    """Returns the values in the attributes table of a feature source,
     for the passed fields.
 
     Field can be passed as field names or as zero-based field indices.
@@ -88,20 +88,19 @@ def values(layer, context, *attributes):
 
     It assummes fields are numeric or contain values that can be parsed
     to a number.
-    :param context:
     """
     ret = {}
     indices = []
     attr_keys = {}
     for attr in attributes:
-        index = resolveFieldIndex(layer, attr)
+        index = resolveFieldIndex(source, attr)
         indices.append(index)
         attr_keys[index] = attr
 
     # use an optimised feature request
     request = QgsFeatureRequest().setSubsetOfAttributes(indices).setFlags(QgsFeatureRequest.NoGeometry)
 
-    for feature in QgsProcessingUtils.getFeatures(layer, context, request):
+    for feature in source.getFeatures(request):
         for i in indices:
 
             # convert attribute value to number
@@ -197,46 +196,12 @@ def extractPoints(geom):
     return points
 
 
-def simpleMeasure(geom, method=0, ellips=None, crs=None):
-    # Method defines calculation type:
-    # 0 - layer CRS
-    # 1 - project CRS
-    # 2 - ellipsoidal
-
-    if geom.type() == QgsWkbTypes.PointGeometry:
-        if not geom.isMultipart():
-            pt = geom.geometry()
-            attr1 = pt.x()
-            attr2 = pt.y()
-        else:
-            pt = geom.asMultiPoint()
-            attr1 = pt[0].x()
-            attr2 = pt[0].y()
-    else:
-        measure = QgsDistanceArea()
-
-        if method == 2:
-            measure.setSourceCrs(crs)
-            measure.setEllipsoid(ellips)
-
-        if geom.type() == QgsWkbTypes.PolygonGeometry:
-            attr1 = measure.measureArea(geom)
-            attr2 = measure.measurePerimeter(geom)
-        else:
-            attr1 = measure.measureLength(geom)
-            attr2 = None
-
-    return (attr1, attr2)
-
-
-def combineVectorFields(layerA, layerB):
+def combineFields(fieldsA, fieldsB):
     """Create single field map from two input field maps.
     """
     fields = []
-    fieldsA = layerA.fields()
     fields.extend(fieldsA)
     namesA = [str(f.name()).lower() for f in fieldsA]
-    fieldsB = layerB.fields()
     for field in fieldsB:
         name = str(field.name()).lower()
         if name in namesA:
@@ -286,7 +251,7 @@ def snapToPrecision(geom, precision):
         snapped.moveVertex(x, y, i)
         i = i + 1
         p = snapped.vertexAt(i)
-    return snapped
+    return QgsPointXY(snapped.x(), snapped.y())
 
 
 def ogrConnectionString(uri):

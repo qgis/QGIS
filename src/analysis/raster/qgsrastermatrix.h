@@ -61,8 +61,9 @@ class ANALYSIS_EXPORT QgsRasterMatrix
 
     //! Takes ownership of data array
     QgsRasterMatrix();
+
     //! \note note available in Python bindings
-    QgsRasterMatrix( int nCols, int nRows, double *data, double nodataValue );
+    QgsRasterMatrix( int nCols, int nRows, double *data, double nodataValue ) SIP_SKIP;
     QgsRasterMatrix( const QgsRasterMatrix &m );
     ~QgsRasterMatrix();
 

@@ -31,9 +31,10 @@ import sys
 from qgis.PyQt.QtCore import QVariant
 from qgis.core import (QgsFeature,
                        QgsField,
+                       QgsFeatureSink,
                        QgsApplication,
                        QgsProcessingUtils)
-from processing.core.GeoAlgorithm import GeoAlgorithm
+from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterString
@@ -42,7 +43,7 @@ from processing.core.parameters import ParameterSelection
 from processing.core.outputs import OutputVector
 
 
-class FieldsPyculator(GeoAlgorithm):
+class FieldsPyculator(QgisAlgorithm):
 
     INPUT_LAYER = 'INPUT_LAYER'
     FIELD_NAME = 'FIELD_NAME'
@@ -56,22 +57,13 @@ class FieldsPyculator(GeoAlgorithm):
 
     TYPES = [QVariant.Int, QVariant.Double, QVariant.String]
 
-    def icon(self):
-        return QgsApplication.getThemeIcon("/providerQgis.svg")
-
-    def svgIconPath(self):
-        return QgsApplication.iconPath("providerQgis.svg")
-
     def group(self):
         return self.tr('Vector table tools')
 
-    def name(self):
-        return 'advancedpythonfieldcalculator'
+    def __init__(self):
+        super().__init__()
 
-    def displayName(self):
-        return self.tr('Advanced Python field calculator')
-
-    def defineCharacteristics(self):
+    def initAlgorithm(self, config=None):
         self.type_names = [self.tr('Integer'),
                            self.tr('Float'),
                            self.tr('String')]
@@ -92,7 +84,13 @@ class FieldsPyculator(GeoAlgorithm):
                                           self.tr('Formula'), 'value = ', multiline=True))
         self.addOutput(OutputVector(self.OUTPUT_LAYER, self.tr('Calculated')))
 
-    def processAlgorithm(self, context, feedback):
+    def name(self):
+        return 'advancedpythonfieldcalculator'
+
+    def displayName(self):
+        return self.tr('Advanced Python field calculator')
+
+    def processAlgorithm(self, parameters, context, feedback):
         fieldName = self.getParameterValue(self.FIELD_NAME)
         fieldType = self.getParameterValue(self.FIELD_TYPE)
         fieldLength = self.getParameterValue(self.FIELD_LENGTH)
@@ -143,7 +141,7 @@ class FieldsPyculator(GeoAlgorithm):
 
         # Run
         features = QgsProcessingUtils.getFeatures(layer, context)
-        total = 100.0 / QgsProcessingUtils.featureCount(layer, context)
+        total = 100.0 / layer.featureCount() if layer.featureCount() else 0
         for current, feat in enumerate(features):
             feedback.setProgress(int(current * total))
             attrs = feat.attributes()
@@ -179,10 +177,10 @@ class FieldsPyculator(GeoAlgorithm):
             outFeat.setGeometry(feat.geometry())
             attrs.append(new_ns[self.RESULT_VAR_NAME])
             outFeat.setAttributes(attrs)
-            writer.addFeature(outFeat)
+            writer.addFeature(outFeat, QgsFeatureSink.FastInsert)
 
         del writer
 
-    def checkParameterValuesBeforeExecuting(self):
+    def checkParameterValues(self, parameters, context):
         # TODO check that formula is correct and fields exist
-        pass
+        return super(FieldsPyculator, self).checkParameterValues(parameters, context)

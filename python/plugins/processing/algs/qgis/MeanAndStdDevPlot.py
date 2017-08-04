@@ -29,8 +29,9 @@ import plotly as plt
 import plotly.graph_objs as go
 
 from qgis.core import (QgsApplication,
+                       QgsFeatureSink,
                        QgsProcessingUtils)
-from processing.core.GeoAlgorithm import GeoAlgorithm
+from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 from processing.core.parameters import ParameterTable
 from processing.core.parameters import ParameterTableField
 from processing.core.outputs import OutputHTML
@@ -38,29 +39,20 @@ from processing.core.outputs import OutputHTML
 from processing.tools import vector
 
 
-class MeanAndStdDevPlot(GeoAlgorithm):
+class MeanAndStdDevPlot(QgisAlgorithm):
 
     INPUT = 'INPUT'
     OUTPUT = 'OUTPUT'
     NAME_FIELD = 'NAME_FIELD'
     VALUE_FIELD = 'VALUE_FIELD'
 
-    def icon(self):
-        return QgsApplication.getThemeIcon("/providerQgis.svg")
-
-    def svgIconPath(self):
-        return QgsApplication.iconPath("providerQgis.svg")
-
     def group(self):
         return self.tr('Graphics')
 
-    def name(self):
-        return 'meanandstandarddeviationplot'
+    def __init__(self):
+        super().__init__()
 
-    def displayName(self):
-        return self.tr('Mean and standard deviation plot')
-
-    def defineCharacteristics(self):
+    def initAlgorithm(self, config=None):
         self.addParameter(ParameterTable(self.INPUT,
                                          self.tr('Input table')))
         self.addParameter(ParameterTableField(self.NAME_FIELD,
@@ -71,14 +63,20 @@ class MeanAndStdDevPlot(GeoAlgorithm):
 
         self.addOutput(OutputHTML(self.OUTPUT, self.tr('Plot')))
 
-    def processAlgorithm(self, context, feedback):
+    def name(self):
+        return 'meanandstandarddeviationplot'
+
+    def displayName(self):
+        return self.tr('Mean and standard deviation plot')
+
+    def processAlgorithm(self, parameters, context, feedback):
         layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT), context)
         namefieldname = self.getParameterValue(self.NAME_FIELD)
         valuefieldname = self.getParameterValue(self.VALUE_FIELD)
 
         output = self.getOutputValue(self.OUTPUT)
 
-        values = vector.values(layer, context, namefieldname, valuefieldname)
+        values = vector.values(layer, namefieldname, valuefieldname)
 
         d = {}
         for i in range(len(values[namefieldname])):

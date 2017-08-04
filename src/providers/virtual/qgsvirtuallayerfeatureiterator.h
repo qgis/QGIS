@@ -18,8 +18,9 @@ email                : hugo dot mercier at oslandia dot com
 #define QGSVIRTUALLAYER_FEATURE_ITERATOR_H
 
 
-#include <qgsvirtuallayerprovider.h>
-#include <qgsfeatureiterator.h>
+#include "qgsvirtuallayerprovider.h"
+#include "qgsfeatureiterator.h"
+
 #include <memory>
 #include <QPointer>
 
@@ -45,6 +46,7 @@ class QgsVirtualLayerFeatureSource : public QgsAbstractFeatureSource
     sqlite3 *mSqlite = nullptr;
     QString mTableName;
     QString mSubset;
+    QgsCoordinateReferenceSystem mCrs;
 
     friend class QgsVirtualLayerFeatureIterator;
 };
@@ -69,6 +71,8 @@ class QgsVirtualLayerFeatureIterator : public QgsAbstractFeatureIteratorFromSour
     QgsAttributeList mAttributes;
     QString mSqlQuery;
     QgsFeatureId mFid = 0;
+    QgsCoordinateTransform mTransform;
+    QgsRectangle mFilterRect;
 
 };
 

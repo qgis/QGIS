@@ -141,7 +141,7 @@ class CORE_EXPORT QgsImageOperation
      * \param properties DistanceTransformProperties object with parameters
      * for the distance transform operation
      */
-    static void distanceTransform( QImage &image, const DistanceTransformProperties &properties );
+    static void distanceTransform( QImage &image, const QgsImageOperation::DistanceTransformProperties &properties );
 
     /** Performs a stack blur on an image. Stack blur represents a good balance between
      * speed and blur quality.

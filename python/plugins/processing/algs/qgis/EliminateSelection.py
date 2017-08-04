@@ -32,11 +32,12 @@ from qgis.PyQt.QtGui import QIcon
 
 from qgis.core import (QgsFeatureRequest,
                        QgsFeature,
+                       QgsFeatureSink,
                        QgsGeometry,
                        QgsMessageLog,
                        QgsProcessingUtils)
 
-from processing.core.GeoAlgorithm import GeoAlgorithm
+from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterSelection
@@ -46,7 +47,7 @@ from processing.tools import dataobjects
 pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
 
-class EliminateSelection(GeoAlgorithm):
+class EliminateSelection(QgisAlgorithm):
 
     INPUT = 'INPUT'
     OUTPUT = 'OUTPUT'
@@ -62,13 +63,10 @@ class EliminateSelection(GeoAlgorithm):
     def group(self):
         return self.tr('Vector geometry tools')
 
-    def name(self):
-        return 'eliminateselectedpolygons'
+    def __init__(self):
+        super().__init__()
 
-    def displayName(self):
-        return self.tr('Eliminate selected polygons')
-
-    def defineCharacteristics(self):
+    def initAlgorithm(self, config=None):
         self.modes = [self.tr('Largest area'),
                       self.tr('Smallest Area'),
                       self.tr('Largest common boundary')]
@@ -80,7 +78,13 @@ class EliminateSelection(GeoAlgorithm):
                                              self.modes))
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Eliminated'), datatype=[dataobjects.TYPE_VECTOR_POLYGON]))
 
-    def processAlgorithm(self, context, feedback):
+    def name(self):
+        return 'eliminateselectedpolygons'
+
+    def displayName(self):
+        return self.tr('Eliminate selected polygons')
+
+    def processAlgorithm(self, parameters, context, feedback):
         inLayer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT), context)
         boundary = self.getParameterValue(self.MODE) == self.MODE_BOUNDARY
         smallestArea = self.getParameterValue(self.MODE) == self.MODE_SMALLEST_AREA
@@ -100,7 +104,7 @@ class EliminateSelection(GeoAlgorithm):
                 featToEliminate.append(aFeat)
             else:
                 # write the others to output
-                writer.addFeature(aFeat)
+                writer.addFeature(aFeat, QgsFeatureSink.FastInsert)
 
         # Delete all features to eliminate in processLayer
         processLayer = output.layer
@@ -206,4 +210,4 @@ class EliminateSelection(GeoAlgorithm):
             raise GeoAlgorithmExecutionException(self.tr('Could not commit changes'))
 
         for feature in featNotEliminated:
-            writer.addFeature(feature)
+            writer.addFeature(feature, QgsFeatureSink.FastInsert)

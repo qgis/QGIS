@@ -33,9 +33,9 @@ import os
 from qgis.PyQt.QtGui import QIcon
 from qgis.PyQt.QtCore import QVariant
 
-from qgis.core import QgsFields, QgsField, QgsFeature, QgsGeometry, NULL, QgsWkbTypes, QgsProcessingUtils
+from qgis.core import QgsFields, QgsField, QgsFeatureSink, QgsFeature, QgsGeometry, NULL, QgsWkbTypes, QgsProcessingUtils
 
-from processing.core.GeoAlgorithm import GeoAlgorithm
+from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterNumber
 from processing.core.parameters import ParameterSelection
@@ -46,7 +46,7 @@ from processing.tools import vector
 pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
 
-class SpatialJoin(GeoAlgorithm):
+class SpatialJoin(QgisAlgorithm):
     TARGET = "TARGET"
     JOIN = "JOIN"
     PREDICATE = "PREDICATE"
@@ -62,13 +62,10 @@ class SpatialJoin(GeoAlgorithm):
     def group(self):
         return self.tr('Vector general tools')
 
-    def name(self):
-        return 'joinattributesbylocation'
+    def __init__(self):
+        super().__init__()
 
-    def displayName(self):
-        return self.tr('Join attributes by location')
-
-    def defineCharacteristics(self):
+    def initAlgorithm(self, config=None):
         self.predicates = (
             ('intersects', self.tr('intersects')),
             ('contains', self.tr('contains')),
@@ -108,7 +105,13 @@ class SpatialJoin(GeoAlgorithm):
                                              self.tr('Joined table'), self.keeps))
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Joined layer')))
 
-    def processAlgorithm(self, context, feedback):
+    def name(self):
+        return 'joinattributesbylocation'
+
+    def displayName(self):
+        return self.tr('Join attributes by location')
+
+    def processAlgorithm(self, parameters, context, feedback):
         target = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.TARGET), context)
         join = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.JOIN), context)
         predicates = self.getParameterValue(self.PREDICATE)
@@ -162,7 +165,7 @@ class SpatialJoin(GeoAlgorithm):
             mapP2[f.id()] = QgsFeature(f)
 
         features = QgsProcessingUtils.getFeatures(target, context)
-        total = 100.0 / QgsProcessingUtils.featureCount(target, context)
+        total = 100.0 / target.featureCount() if target.featureCount() else 0
         for c, f in enumerate(features):
             atMap1 = f.attributes()
             outFeat.setGeometry(f.geometry())
@@ -235,10 +238,10 @@ class SpatialJoin(GeoAlgorithm):
                 outFeat.setAttributes(list(atMap.values()))
 
             if keep:
-                writer.addFeature(outFeat)
+                writer.addFeature(outFeat, QgsFeatureSink.FastInsert)
             else:
                 if not none:
-                    writer.addFeature(outFeat)
+                    writer.addFeature(outFeat, QgsFeatureSink.FastInsert)
 
             feedback.setProgress(int(c * total))
         del writer

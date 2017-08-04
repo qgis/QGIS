@@ -77,7 +77,7 @@
         <item row="2" column="0">
          <widget class="QLabel" name="label_28">
           <property name="text">
-           <string>Transparency</string>
+           <string>Opacity</string>
           </property>
          </widget>
         </item>
@@ -154,64 +154,10 @@
             <height>16777215</height>
            </size>
           </property>
-         </widget>         
+         </widget>
         </item>
         <item row="5" column="1" colspan="2">
          <widget class="QgsBlendModeComboBox" name="mBlendCmbBx"/>
-        </item>
-        <item row="2" column="1" colspan="2">
-         <layout class="QHBoxLayout" name="horizontalLayout_28">
-          <item>
-           <widget class="QSlider" name="mTranspSlider">
-            <property name="enabled">
-             <bool>true</bool>
-            </property>
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="minimumSize">
-             <size>
-              <width>50</width>
-              <height>0</height>
-             </size>
-            </property>
-            <property name="maximum">
-             <number>1000</number>
-            </property>
-            <property name="singleStep">
-             <number>10</number>
-            </property>
-            <property name="pageStep">
-             <number>100</number>
-            </property>
-            <property name="orientation">
-             <enum>Qt::Horizontal</enum>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QgsDoubleSpinBox" name="mTranspSpnBx">
-            <property name="enabled">
-             <bool>true</bool>
-            </property>
-            <property name="alignment">
-             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-            </property>
-            <property name="suffix">
-             <string> %</string>
-            </property>
-            <property name="decimals">
-             <number>1</number>
-            </property>
-            <property name="maximum">
-             <double>100.000000000000000</double>
-            </property>
-           </widget>
-          </item>
-         </layout>
         </item>
         <item row="6" column="1" colspan="2">
          <widget class="QgsEffectDrawModeComboBox" name="mDrawModeComboBox"/>
@@ -220,6 +166,13 @@
          <widget class="QLabel" name="label">
           <property name="text">
            <string>Draw mode</string>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="1" colspan="2">
+         <widget class="QgsOpacityWidget" name="mOpacityWidget" native="true">
+          <property name="focusPolicy">
+           <enum>Qt::StrongFocus</enum>
           </property>
          </widget>
         </item>
@@ -282,13 +235,18 @@
    <header>qgscolorrampbutton.h</header>
    <container>1</container>
   </customwidget>
+  <customwidget>
+   <class>QgsOpacityWidget</class>
+   <extends>QWidget</extends>
+   <header>qgsopacitywidget.h</header>
+   <container>1</container>
+  </customwidget>
  </customwidgets>
  <tabstops>
   <tabstop>mSpreadSpnBx</tabstop>
   <tabstop>mSpreadUnitWidget</tabstop>
   <tabstop>mBlurRadiusSpnBx</tabstop>
-  <tabstop>mTranspSlider</tabstop>
-  <tabstop>mTranspSpnBx</tabstop>
+  <tabstop>mOpacityWidget</tabstop>
   <tabstop>radioSingleColor</tabstop>
   <tabstop>mColorBtn</tabstop>
   <tabstop>radioColorRamp</tabstop>

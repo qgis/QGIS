@@ -29,17 +29,8 @@
 extern "C"
 {
 #include <grass/version.h>
-
-#if GRASS_VERSION_MAJOR < 7
-#include <grass/Vect.h>
-#else
 #include <grass/vector.h>
-#define BOUND_BOX bound_box
-#endif
 }
-
-#if GRASS_VERSION_MAJOR < 7
-#else
 
 void copy_boxlist_and_destroy( struct boxlist *blist, struct ilist *list )
 {
@@ -63,7 +54,6 @@ void copy_boxlist_and_destroy( struct boxlist *blist, struct ilist *list )
     Vect_select_areas_by_box( (map), (box), blist); \
     copy_boxlist_and_destroy( blist, (list) );\
   }
-#endif
 
 //QMutex QgsGrassFeatureIterator::sMutex;
 
@@ -130,7 +120,7 @@ void QgsGrassFeatureIterator::setSelectionRect( const QgsRectangle &rect, bool u
 
   mSelection.fill( false );
 
-  BOUND_BOX box;
+  bound_box box;
   box.N = rect.yMaximum();
   box.S = rect.yMinimum();
   box.E = rect.xMaximum();
@@ -518,12 +508,8 @@ bool QgsGrassFeatureIterator::fetchFeature( QgsFeature &feature )
   {
     feature.initAttributes( mSource->mFields.size() );
     feature.setAttribute( 0, lid );
-#if GRASS_VERSION_MAJOR < 7
-    if ( mSource->mLayerType == QgsGrassProvider::TOPO_POINT || mSource->mLayerType == QgsGrassProvider::TOPO_LINE )
-#else
     /* No more topo points in GRASS 7 */
     if ( mSource->mLayerType == QgsGrassProvider::TopoLine )
-#endif
     {
       feature.setAttribute( 1, QgsGrass::vectorTypeName( type ) );
 

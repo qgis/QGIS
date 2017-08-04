@@ -25,25 +25,13 @@ __copyright__ = '(C) 2010, Michael Minn'
 
 __revision__ = '$Format:%H$'
 
-from qgis.core import (QgsApplication,
-                       QgsProcessingUtils)
-from processing.core.GeoAlgorithm import GeoAlgorithm
-from processing.core.parameters import ParameterVector
-from processing.core.parameters import ParameterTableField
-from processing.core.outputs import OutputVector
+from qgis.core import (QgsProcessingParameterField)
+from processing.algs.qgis.QgisAlgorithm import QgisFeatureBasedAlgorithm
 
 
-class DeleteColumn(GeoAlgorithm):
+class DeleteColumn(QgisFeatureBasedAlgorithm):
 
-    INPUT = 'INPUT'
     COLUMNS = 'COLUMN'
-    OUTPUT = 'OUTPUT'
-
-    def icon(self):
-        return QgsApplication.getThemeIcon("/providerQgis.svg")
-
-    def svgIconPath(self):
-        return QgsApplication.iconPath("providerQgis.svg")
 
     def tags(self):
         return self.tr('drop,delete,remove,fields,columns,attributes').split(',')
@@ -51,49 +39,46 @@ class DeleteColumn(GeoAlgorithm):
     def group(self):
         return self.tr('Vector table tools')
 
+    def __init__(self):
+        super().__init__()
+        self.fields_to_delete = []
+        self.field_indices = []
+
+    def initParameters(self, config=None):
+        self.addParameter(QgsProcessingParameterField(self.COLUMNS,
+                                                      self.tr('Fields to drop'),
+                                                      None, 'INPUT', QgsProcessingParameterField.Any, True))
+
     def name(self):
         return 'deletecolumn'
 
     def displayName(self):
-        return self.tr('Delete column')
+        return self.tr('Drop field(s)')
 
-    def defineCharacteristics(self):
-        self.addParameter(ParameterVector(self.INPUT,
-                                          self.tr('Input layer')))
-        self.addParameter(ParameterTableField(self.COLUMNS,
-                                              self.tr('Fields to delete'), self.INPUT, multiple=True))
-        self.addOutput(OutputVector(self.OUTPUT, self.tr('Output layer')))
+    def outputName(self):
+        return self.tr('Fields dropped')
 
-    def processAlgorithm(self, context, feedback):
-        layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT), context)
+    def prepareAlgorithm(self, parameters, context, feedback):
+        self.fields_to_delete = self.parameterAsFields(parameters, self.COLUMNS, context)
+        return True
 
-        fields_to_delete = self.getParameterValue(self.COLUMNS).split(';')
-        fields = layer.fields()
-        field_indices = []
+    def outputFields(self, input_fields):
         # loop through twice - first we need to build up a list of original attribute indices
-        for f in fields_to_delete:
-            index = fields.lookupField(f)
-            field_indices.append(index)
+        for f in self.fields_to_delete:
+            index = input_fields.lookupField(f)
+            self.field_indices.append(index)
 
         # important - make sure we remove from the end so we aren't changing used indices as we go
-        field_indices.sort(reverse=True)
+        self.field_indices.sort(reverse=True)
 
         # this second time we make a cleaned version of the fields
-        for index in field_indices:
-            fields.remove(index)
+        for index in self.field_indices:
+            input_fields.remove(index)
+        return input_fields
 
-        writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(fields, layer.wkbType(), layer.crs(), context)
-
-        features = QgsProcessingUtils.getFeatures(layer, context)
-        total = 100.0 / QgsProcessingUtils.featureCount(layer, context)
-
-        for current, f in enumerate(features):
-            attributes = f.attributes()
-            for index in field_indices:
-                del attributes[index]
-            f.setAttributes(attributes)
-            writer.addFeature(f)
-
-            feedback.setProgress(int(current * total))
-
-        del writer
+    def processFeature(self, feature, feedback):
+        attributes = feature.attributes()
+        for index in self.field_indices:
+            del attributes[index]
+        feature.setAttributes(attributes)
+        return feature

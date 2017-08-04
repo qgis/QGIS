@@ -21,6 +21,7 @@
 #include "qgsunittypes.h"
 #include "qgsdatumtransformstore.h"
 #include "qgis_server.h"
+#include "qgis_sip.h"
 
 class QPainter;
 class QDomDocument;
@@ -39,9 +40,8 @@ class QgsVectorLayer;
 class SERVER_EXPORT QgsWmsConfigParser
 {
   public:
-
-    QgsWmsConfigParser();
-    virtual ~QgsWmsConfigParser() = default;
+    QgsWmsConfigParser() SIP_SKIP;
+  virtual ~QgsWmsConfigParser() = default SIP_SKIP;
 
     /** Adds layer and style specific capabilities elements to the parent node. This includes the individual layers and styles, their description, native CRS, bounding boxes, etc.
         \param fullProjectInformation If true: add extended project information (does not validate against WMS schema)*/
@@ -121,7 +121,7 @@ class SERVER_EXPORT QgsWmsConfigParser
     QgsComposition *createPrintComposition( const QString &composerTemplate, const QgsMapSettings &mapSettings, const QMap< QString, QString > &parameterMap, QStringList &highlightLayers ) const;
 
     //! Creates a composition from the project file (probably delegated to the fallback parser)
-    virtual QgsComposition *initComposition( const QString &composerTemplate, const QgsMapSettings &mapSettings, QList< QgsComposerMap *> &mapList, QList< QgsComposerLegend * > &legendList, QList< QgsComposerLabel * > &labelList, QList<const QgsComposerHtml *> &htmlFrameList ) const = 0;
+    virtual QgsComposition *initComposition( const QString &composerTemplate, const QgsMapSettings &mapSettings, QList< QgsComposerMap *> &mapList, QList< QgsComposerLegend * > &legendList, QList< QgsComposerLabel * > &labelList, QList<const QgsComposerHtml *> &htmlFrameList ) const = 0 SIP_SKIP;
 
     //! Adds print capabilities to xml document. ParentElem usually is the <Capabilities> element
     virtual void printCapabilities( QDomElement &parentElement, QDomDocument &doc ) const = 0;
@@ -129,7 +129,7 @@ class SERVER_EXPORT QgsWmsConfigParser
     virtual void setScaleDenominator( double denom ) = 0;
     virtual void addExternalGMLData( const QString &layerName, QDomDocument *gmlDoc ) = 0;
 
-    virtual QList< QPair< QString, QgsDatumTransformStore::Entry > > layerCoordinateTransforms() const = 0;
+    virtual QList< QPair< QString, QgsDatumTransformStore::Entry > > layerCoordinateTransforms() const = 0 SIP_SKIP;
 
     virtual int nLayers() const = 0;
 
@@ -149,6 +149,10 @@ class SERVER_EXPORT QgsWmsConfigParser
 #endif //0
 
   private:
+#ifdef SIP_RUN
+    QgsWmsConfigParser();
+    virtual ~QgsWmsConfigParser();
+#endif
 
     //helper methods for 'addHighlightLayers'
     static void highlightParameters( const QMap<QString, QString> &parameterMap, const QString &parameterPrefix, QStringList &geom, QStringList &symbol, QStringList &label,

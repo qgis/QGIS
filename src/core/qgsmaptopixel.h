@@ -24,7 +24,7 @@
 #include "qgsunittypes.h"
 #include <cassert>
 
-class QgsPoint;
+class QgsPointXY;
 class QPoint;
 
 /** \ingroup core
@@ -54,8 +54,8 @@ class CORE_EXPORT QgsMapToPixel
      */
     QgsMapToPixel( double mapUnitsPerPixel );
 
-    /** Returns a new QgsMapToPixel created using a specified scale and distance unit.
-     * \param scale map scale
+    /** Returns a new QgsMapToPixel created using a specified \a scale and distance unit.
+     * \param scale map scale denominator, e.g. 1000.0 for a 1:1000 map.
      * \param dpi screen DPI
      * \param mapUnits map units
      * \returns matching QgsMapToPixel
@@ -73,20 +73,20 @@ class CORE_EXPORT QgsMapToPixel
     /**
      * Transform the point from map (world) coordinates to device coordinates
      * \param p Point to transform
-     * \returns QgsPoint in device coordinates
+     * \returns QgsPointXY in device coordinates
      */
-    QgsPoint transform( const QgsPoint &p ) const;
+    QgsPointXY transform( const QgsPointXY &p ) const;
 
-    void transform( QgsPoint *p ) const;
+    void transform( QgsPointXY *p ) const;
 
     /**
      * Transform the point specified by x,y from map (world)
      * coordinates to device coordinates
      * \param x x cordinate o point to transform
      * \param y y coordinate of point to transform
-     * \returns QgsPoint in device coordinates
+     * \returns QgsPointXY in device coordinates
      */
-    QgsPoint transform( qreal x, qreal y ) const;
+    QgsPointXY transform( qreal x, qreal y ) const;
 
     /**
      * Transform device coordinates to map coordinates. Modifies the
@@ -97,6 +97,8 @@ class CORE_EXPORT QgsMapToPixel
 
     //! \note not available in Python bindings
     void transformInPlace( float &x, float &y ) const SIP_SKIP;
+
+#ifndef SIP_RUN
 
     /**
      * Transform device coordinates to map coordinates. Modifies the
@@ -111,20 +113,21 @@ class CORE_EXPORT QgsMapToPixel
       for ( int i = 0; i < x.size(); ++i )
         transformInPlace( x[i], y[i] );
     }
+#endif
 
-    QgsPoint toMapCoordinates( int x, int y ) const;
+    QgsPointXY toMapCoordinates( int x, int y ) const;
 
     //! Transform device coordinates to map (world) coordinates
-    QgsPoint toMapCoordinatesF( double x, double y ) const;
+    QgsPointXY toMapCoordinatesF( double x, double y ) const;
 
     /**
      * Transform device coordinates to map (world) coordinates
      * \param p Point to be converted to map cooordinates
-     * \returns QgsPoint in map coorndiates
+     * \returns QgsPointXY in map coorndiates
      */
-    QgsPoint toMapCoordinates( QPoint p ) const;
+    QgsPointXY toMapCoordinates( QPoint p ) const;
 
-    QgsPoint toMapPoint( double x, double y ) const;
+    QgsPointXY toMapPoint( double x, double y ) const;
 
     /**
      * Set map units per pixel

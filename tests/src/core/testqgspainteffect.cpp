@@ -26,6 +26,7 @@
 #include "qgsshadoweffect.h"
 #include "qgseffectstack.h"
 #include "qgsgloweffect.h"
+#include "qgstransformeffect.h"
 #include "qgspainteffectregistry.h"
 #include "qgscolorramp.h"
 #include "qgssymbollayerutils.h"
@@ -105,6 +106,7 @@ class TestQgsPaintEffect: public QObject
     void blur();
     void dropShadow();
     void glow();
+    void transform();
 
     void stack();
 
@@ -289,8 +291,8 @@ void TestQgsPaintEffect::drawSource()
   QVERIFY( effect );
   effect->setBlendMode( QPainter::CompositionMode_ColorBurn );
   QCOMPARE( effect->blendMode(), QPainter::CompositionMode_ColorBurn );
-  effect->setTransparency( 0.5 );
-  QCOMPARE( effect->transparency(), 0.5 );
+  effect->setOpacity( 0.5 );
+  QCOMPARE( effect->opacity(), 0.5 );
   effect->setEnabled( false );
   QCOMPARE( effect->enabled(), false );
   effect->setDrawMode( QgsPaintEffect::Modifier );
@@ -300,7 +302,7 @@ void TestQgsPaintEffect::drawSource()
   QgsDrawSourceEffect *copy = new QgsDrawSourceEffect( *effect );
   QVERIFY( copy );
   QCOMPARE( copy->blendMode(), effect->blendMode() );
-  QCOMPARE( copy->transparency(), effect->transparency() );
+  QCOMPARE( copy->opacity(), effect->opacity() );
   QCOMPARE( copy->enabled(), effect->enabled() );
   QCOMPARE( copy->drawMode(), effect->drawMode() );
   delete copy;
@@ -310,7 +312,7 @@ void TestQgsPaintEffect::drawSource()
   QgsDrawSourceEffect *cloneCast = dynamic_cast<QgsDrawSourceEffect * >( clone );
   QVERIFY( cloneCast );
   QCOMPARE( cloneCast->blendMode(), effect->blendMode() );
-  QCOMPARE( cloneCast->transparency(), effect->transparency() );
+  QCOMPARE( cloneCast->opacity(), effect->opacity() );
   QCOMPARE( cloneCast->enabled(), effect->enabled() );
   QCOMPARE( cloneCast->drawMode(), effect->drawMode() );
   delete cloneCast;
@@ -321,7 +323,7 @@ void TestQgsPaintEffect::drawSource()
   QgsDrawSourceEffect *readCast = dynamic_cast<QgsDrawSourceEffect * >( readEffect );
   QVERIFY( readCast );
   QCOMPARE( readCast->blendMode(), effect->blendMode() );
-  QCOMPARE( readCast->transparency(), effect->transparency() );
+  QCOMPARE( readCast->opacity(), effect->opacity() );
   QCOMPARE( readCast->enabled(), effect->enabled() );
   QCOMPARE( readCast->drawMode(), effect->drawMode() );
   delete readCast;
@@ -355,8 +357,8 @@ void TestQgsPaintEffect::blur()
   QVERIFY( effect );
   effect->setBlendMode( QPainter::CompositionMode_ColorBurn );
   QCOMPARE( effect->blendMode(), QPainter::CompositionMode_ColorBurn );
-  effect->setTransparency( 0.5 );
-  QCOMPARE( effect->transparency(), 0.5 );
+  effect->setOpacity( 0.5 );
+  QCOMPARE( effect->opacity(), 0.5 );
   effect->setEnabled( false );
   QCOMPARE( effect->enabled(), false );
   effect->setBlurLevel( 6 );
@@ -370,7 +372,7 @@ void TestQgsPaintEffect::blur()
   QgsBlurEffect *copy = new QgsBlurEffect( *effect );
   QVERIFY( copy );
   QCOMPARE( copy->blendMode(), effect->blendMode() );
-  QCOMPARE( copy->transparency(), effect->transparency() );
+  QCOMPARE( copy->opacity(), effect->opacity() );
   QCOMPARE( copy->enabled(), effect->enabled() );
   QCOMPARE( copy->blurLevel(), effect->blurLevel() );
   QCOMPARE( copy->blurMethod(), effect->blurMethod() );
@@ -382,7 +384,7 @@ void TestQgsPaintEffect::blur()
   QgsBlurEffect *cloneCast = dynamic_cast<QgsBlurEffect * >( clone );
   QVERIFY( cloneCast );
   QCOMPARE( cloneCast->blendMode(), effect->blendMode() );
-  QCOMPARE( cloneCast->transparency(), effect->transparency() );
+  QCOMPARE( cloneCast->opacity(), effect->opacity() );
   QCOMPARE( cloneCast->enabled(), effect->enabled() );
   QCOMPARE( cloneCast->blurLevel(), effect->blurLevel() );
   QCOMPARE( cloneCast->blurMethod(), effect->blurMethod() );
@@ -395,7 +397,7 @@ void TestQgsPaintEffect::blur()
   QgsBlurEffect *readCast = dynamic_cast<QgsBlurEffect * >( readEffect );
   QVERIFY( readCast );
   QCOMPARE( readCast->blendMode(), effect->blendMode() );
-  QCOMPARE( readCast->transparency(), effect->transparency() );
+  QCOMPARE( readCast->opacity(), effect->opacity() );
   QCOMPARE( readCast->enabled(), effect->enabled() );
   QCOMPARE( readCast->blurLevel(), effect->blurLevel() );
   QCOMPARE( readCast->blurMethod(), effect->blurMethod() );
@@ -429,8 +431,8 @@ void TestQgsPaintEffect::dropShadow()
   QVERIFY( effect );
   effect->setBlendMode( QPainter::CompositionMode_ColorBurn );
   QCOMPARE( effect->blendMode(), QPainter::CompositionMode_ColorBurn );
-  effect->setTransparency( 0.5 );
-  QCOMPARE( effect->transparency(), 0.5 );
+  effect->setOpacity( 0.5 );
+  QCOMPARE( effect->opacity(), 0.5 );
   effect->setEnabled( false );
   QCOMPARE( effect->enabled(), false );
   effect->setBlurLevel( 6 );
@@ -453,7 +455,7 @@ void TestQgsPaintEffect::dropShadow()
   QgsDropShadowEffect *copy = new QgsDropShadowEffect( *effect );
   QVERIFY( copy );
   QCOMPARE( copy->blendMode(), effect->blendMode() );
-  QCOMPARE( copy->transparency(), effect->transparency() );
+  QCOMPARE( copy->opacity(), effect->opacity() );
   QCOMPARE( copy->enabled(), effect->enabled() );
   QCOMPARE( copy->blurLevel(), effect->blurLevel() );
   QCOMPARE( copy->offsetAngle(), effect->offsetAngle() );
@@ -470,7 +472,7 @@ void TestQgsPaintEffect::dropShadow()
   QgsDropShadowEffect *cloneCast = dynamic_cast<QgsDropShadowEffect * >( clone );
   QVERIFY( cloneCast );
   QCOMPARE( cloneCast->blendMode(), effect->blendMode() );
-  QCOMPARE( cloneCast->transparency(), effect->transparency() );
+  QCOMPARE( cloneCast->opacity(), effect->opacity() );
   QCOMPARE( cloneCast->enabled(), effect->enabled() );
   QCOMPARE( cloneCast->blurLevel(), effect->blurLevel() );
   QCOMPARE( cloneCast->offsetAngle(), effect->offsetAngle() );
@@ -488,7 +490,7 @@ void TestQgsPaintEffect::dropShadow()
   QgsDropShadowEffect *readCast = dynamic_cast<QgsDropShadowEffect * >( readEffect );
   QVERIFY( readCast );
   QCOMPARE( readCast->blendMode(), effect->blendMode() );
-  QCOMPARE( readCast->transparency(), effect->transparency() );
+  QCOMPARE( readCast->opacity(), effect->opacity() );
   QCOMPARE( readCast->enabled(), effect->enabled() );
   QCOMPARE( readCast->blurLevel(), effect->blurLevel() );
   QCOMPARE( readCast->offsetAngle(), effect->offsetAngle() );
@@ -526,8 +528,8 @@ void TestQgsPaintEffect::glow()
   QVERIFY( effect );
   effect->setBlendMode( QPainter::CompositionMode_ColorBurn );
   QCOMPARE( effect->blendMode(), QPainter::CompositionMode_ColorBurn );
-  effect->setTransparency( 0.5 );
-  QCOMPARE( effect->transparency(), 0.5 );
+  effect->setOpacity( 0.5 );
+  QCOMPARE( effect->opacity(), 0.5 );
   effect->setEnabled( false );
   QCOMPARE( effect->enabled(), false );
   effect->setBlurLevel( 6 );
@@ -553,7 +555,7 @@ void TestQgsPaintEffect::glow()
   QgsOuterGlowEffect *copy = new QgsOuterGlowEffect( *effect );
   QVERIFY( copy );
   QCOMPARE( copy->blendMode(), effect->blendMode() );
-  QCOMPARE( copy->transparency(), effect->transparency() );
+  QCOMPARE( copy->opacity(), effect->opacity() );
   QCOMPARE( copy->enabled(), effect->enabled() );
   QCOMPARE( copy->blurLevel(), effect->blurLevel() );
   QCOMPARE( copy->spread(), effect->spread() );
@@ -571,7 +573,7 @@ void TestQgsPaintEffect::glow()
   QgsOuterGlowEffect *cloneCast = dynamic_cast<QgsOuterGlowEffect * >( clone );
   QVERIFY( cloneCast );
   QCOMPARE( cloneCast->blendMode(), effect->blendMode() );
-  QCOMPARE( cloneCast->transparency(), effect->transparency() );
+  QCOMPARE( cloneCast->opacity(), effect->opacity() );
   QCOMPARE( cloneCast->enabled(), effect->enabled() );
   QCOMPARE( cloneCast->blurLevel(), effect->blurLevel() );
   QCOMPARE( cloneCast->spread(), effect->spread() );
@@ -590,7 +592,7 @@ void TestQgsPaintEffect::glow()
   QgsOuterGlowEffect *readCast = dynamic_cast<QgsOuterGlowEffect * >( readEffect );
   QVERIFY( readCast );
   QCOMPARE( readCast->blendMode(), effect->blendMode() );
-  QCOMPARE( readCast->transparency(), effect->transparency() );
+  QCOMPARE( readCast->opacity(), effect->opacity() );
   QCOMPARE( readCast->enabled(), effect->enabled() );
   QCOMPARE( readCast->blurLevel(), effect->blurLevel() );
   QCOMPARE( readCast->spread(), effect->spread() );
@@ -625,6 +627,99 @@ void TestQgsPaintEffect::glow()
 
   //TODO - inner glow
 
+}
+
+void TestQgsPaintEffect::transform()
+{
+  //create
+  std::unique_ptr< QgsTransformEffect > effect( new QgsTransformEffect() );
+  QVERIFY( effect.get() );
+  effect->setEnabled( false );
+  QCOMPARE( effect->enabled(), false );
+  effect->setTranslateX( 6 );
+  QCOMPARE( effect->translateX(), 6.0 );
+  effect->setTranslateY( 77 );
+  QCOMPARE( effect->translateY(), 77.0 );
+  effect->setTranslateUnit( QgsUnitTypes::RenderMapUnits );
+  QCOMPARE( effect->translateUnit(), QgsUnitTypes::RenderMapUnits );
+  effect->setTranslateMapUnitScale( QgsMapUnitScale( 1.0, 2.0 ) );
+  QCOMPARE( effect->translateMapUnitScale().minScale, 1.0 );
+  QCOMPARE( effect->translateMapUnitScale().maxScale, 2.0 );
+  effect->setScaleX( 0.5 );
+  QCOMPARE( effect->scaleX(), 0.5 );
+  effect->setScaleY( 1.5 );
+  QCOMPARE( effect->scaleY(), 1.5 );
+  effect->setRotation( 45.5 );
+  QCOMPARE( effect->rotation(), 45.5 );
+  effect->setShearX( 1.2 );
+  QCOMPARE( effect->shearX(), 1.2 );
+  effect->setShearY( 0.6 );
+  QCOMPARE( effect->shearY(), 0.6 );
+  effect->setReflectX( true );
+  QCOMPARE( effect->reflectX(), true );
+  effect->setReflectY( true );
+  QCOMPARE( effect->reflectY(), true );
+  effect->setDrawMode( QgsPaintEffect::Modifier );
+  QCOMPARE( effect->drawMode(), QgsPaintEffect::Modifier );
+
+  //copy constructor
+  std::unique_ptr< QgsTransformEffect > copy( new QgsTransformEffect( *effect ) );
+  QVERIFY( copy.get() );
+  QCOMPARE( copy->enabled(), false );
+  QCOMPARE( copy->translateX(), 6.0 );
+  QCOMPARE( copy->translateY(), 77.0 );
+  QCOMPARE( copy->translateUnit(), QgsUnitTypes::RenderMapUnits );
+  QCOMPARE( copy->translateMapUnitScale().minScale, 1.0 );
+  QCOMPARE( copy->translateMapUnitScale().maxScale, 2.0 );
+  QCOMPARE( copy->scaleX(), 0.5 );
+  QCOMPARE( copy->scaleY(), 1.5 );
+  QCOMPARE( copy->rotation(), 45.5 );
+  QCOMPARE( copy->shearX(), 1.2 );
+  QCOMPARE( copy->shearY(), 0.6 );
+  QCOMPARE( copy->reflectX(), true );
+  QCOMPARE( copy->reflectY(), true );
+  QCOMPARE( copy->drawMode(), QgsPaintEffect::Modifier );
+  copy.reset( nullptr );
+
+  //clone
+  std::unique_ptr< QgsPaintEffect > clone( effect->clone() );
+  QgsTransformEffect *cloneCast = dynamic_cast<QgsTransformEffect * >( clone.get() );
+  QVERIFY( cloneCast );
+  QCOMPARE( cloneCast->enabled(), false );
+  QCOMPARE( cloneCast->translateX(), 6.0 );
+  QCOMPARE( cloneCast->translateY(), 77.0 );
+  QCOMPARE( cloneCast->translateUnit(), QgsUnitTypes::RenderMapUnits );
+  QCOMPARE( cloneCast->translateMapUnitScale().minScale, 1.0 );
+  QCOMPARE( cloneCast->translateMapUnitScale().maxScale, 2.0 );
+  QCOMPARE( cloneCast->scaleX(), 0.5 );
+  QCOMPARE( cloneCast->scaleY(), 1.5 );
+  QCOMPARE( cloneCast->rotation(), 45.5 );
+  QCOMPARE( cloneCast->shearX(), 1.2 );
+  QCOMPARE( cloneCast->shearY(), 0.6 );
+  QCOMPARE( cloneCast->reflectX(), true );
+  QCOMPARE( cloneCast->reflectY(), true );
+  QCOMPARE( cloneCast->drawMode(), QgsPaintEffect::Modifier );
+  clone.reset( nullptr );
+
+  //read/write
+  QgsStringMap props = effect->properties();
+  std::unique_ptr< QgsPaintEffect > readEffect( QgsTransformEffect::create( props ) );
+  QgsTransformEffect *readCast = dynamic_cast<QgsTransformEffect * >( readEffect.get() );
+  QVERIFY( readCast );
+  QCOMPARE( readCast->enabled(), false );
+  QCOMPARE( readCast->translateX(), 6.0 );
+  QCOMPARE( readCast->translateY(), 77.0 );
+  QCOMPARE( readCast->translateUnit(), QgsUnitTypes::RenderMapUnits );
+  QCOMPARE( readCast->translateMapUnitScale().minScale, 1.0 );
+  QCOMPARE( readCast->translateMapUnitScale().maxScale, 2.0 );
+  QCOMPARE( readCast->scaleX(), 0.5 );
+  QCOMPARE( readCast->scaleY(), 1.5 );
+  QCOMPARE( readCast->rotation(), 45.5 );
+  QCOMPARE( readCast->shearX(), 1.2 );
+  QCOMPARE( readCast->shearY(), 0.6 );
+  QCOMPARE( readCast->reflectX(), true );
+  QCOMPARE( readCast->reflectY(), true );
+  QCOMPARE( readCast->drawMode(), QgsPaintEffect::Modifier );
 }
 
 void TestQgsPaintEffect::stack()

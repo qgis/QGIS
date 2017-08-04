@@ -18,7 +18,7 @@
 #define QGSMESSAGEVIEWER_H
 
 #include "ui_qgsmessageviewer.h"
-#include "qgisgui.h"
+#include "qgsguiutils.h"
 #include "qgsmessageoutput.h"
 #include "qgis_gui.h"
 
@@ -32,7 +32,7 @@ class GUI_EXPORT QgsMessageViewer: public QDialog, public QgsMessageOutput, priv
 {
     Q_OBJECT
   public:
-    QgsMessageViewer( QWidget *parent = nullptr, Qt::WindowFlags fl = QgisGui::ModalDialogFlags, bool deleteOnClose = true );
+    QgsMessageViewer( QWidget *parent SIP_TRANSFERTHIS = nullptr, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags, bool deleteOnClose = true );
     ~QgsMessageViewer();
 
     virtual void setMessage( const QString &message, MessageType msgType ) override;
@@ -54,7 +54,7 @@ class GUI_EXPORT QgsMessageViewer: public QDialog, public QgsMessageOutput, priv
     // A checkbox that can be used for something like
     // "don't show this message again"
     void setCheckBoxText( const QString &text );
-    // Make the check box visible/invisible
+    // Make the checkbox visible/invisible
     void setCheckBoxVisible( bool visible );
     // Sets the check state
     void setCheckBoxState( Qt::CheckState state );

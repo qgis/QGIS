@@ -205,7 +205,7 @@ class CORE_EXPORT QgsGmlStreamingParser
        \param coordString the text containing the coordinates
        \returns 0 in case of success
       */
-    int pointsFromCoordinateString( QList<QgsPoint> &points, const QString &coordString ) const;
+    int pointsFromCoordinateString( QList<QgsPointXY> &points, const QString &coordString ) const;
 
     /** Creates a set of points from a gml:posList or gml:pos coordinate string.
        \param points list that will contain the created points
@@ -213,12 +213,12 @@ class CORE_EXPORT QgsGmlStreamingParser
        \param dimension number of dimensions
        \returns 0 in case of success
       */
-    int pointsFromPosListString( QList<QgsPoint> &points, const QString &coordString, int dimension ) const;
+    int pointsFromPosListString( QList<QgsPointXY> &points, const QString &coordString, int dimension ) const;
 
-    int pointsFromString( QList<QgsPoint> &points, const QString &coordString ) const;
-    int getPointWKB( QgsWkbPtr &wkbPtr, const QgsPoint & ) const;
-    int getLineWKB( QgsWkbPtr &wkbPtr, const QList<QgsPoint> &lineCoordinates ) const;
-    int getRingWKB( QgsWkbPtr &wkbPtr, const QList<QgsPoint> &ringCoordinates ) const;
+    int pointsFromString( QList<QgsPointXY> &points, const QString &coordString ) const;
+    int getPointWKB( QgsWkbPtr &wkbPtr, const QgsPointXY & ) const;
+    int getLineWKB( QgsWkbPtr &wkbPtr, const QList<QgsPointXY> &lineCoordinates ) const;
+    int getRingWKB( QgsWkbPtr &wkbPtr, const QList<QgsPointXY> &ringCoordinates ) const;
 
     /** Creates a multiline from the information in mCurrentWKBFragments and
      * mCurrentWKBFragmentSizes. Assign the result. The multiline is in
@@ -298,7 +298,9 @@ class CORE_EXPORT QgsGmlStreamingParser
     QString mCoordinateSeparator;
     //! Tuple separator for coordinate strings. Usually " "
     QString mTupleSeparator;
-    //! Number of dimensions in pos or posList
+    //! Keep track about number of dimensions in pos or posList
+    QStack<int> mDimensionStack;
+    //! Number of dimensions in pos or posList for the current geometry
     int mDimension;
     //! Coordinates mode, coordinate or posList
     ParseMode mCoorMode;

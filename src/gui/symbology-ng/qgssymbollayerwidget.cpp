@@ -129,15 +129,15 @@ QgsSimpleLineSymbolLayerWidget::QgsSimpleLineSymbolLayerWidget( const QgsVectorL
   mLayer = nullptr;
 
   setupUi( this );
-  mPenWidthUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderMapUnits << QgsUnitTypes::RenderPixels
+  mPenWidthUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderMetersInMapUnits << QgsUnitTypes::RenderMapUnits << QgsUnitTypes::RenderPixels
                                  << QgsUnitTypes::RenderPoints << QgsUnitTypes::RenderInches );
-  mOffsetUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderMapUnits << QgsUnitTypes::RenderPixels
+  mOffsetUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderMetersInMapUnits << QgsUnitTypes::RenderMapUnits << QgsUnitTypes::RenderPixels
                                << QgsUnitTypes::RenderPoints << QgsUnitTypes::RenderInches );
-  mDashPatternUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderMapUnits << QgsUnitTypes::RenderPixels
+  mDashPatternUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderMetersInMapUnits << QgsUnitTypes::RenderMapUnits << QgsUnitTypes::RenderPixels
                                     << QgsUnitTypes::RenderPoints << QgsUnitTypes::RenderInches );
 
-  btnChangeColor->setAllowAlpha( true );
-  btnChangeColor->setColorDialogTitle( tr( "Select line color" ) );
+  btnChangeColor->setAllowOpacity( true );
+  btnChangeColor->setColorDialogTitle( tr( "Select Line color" ) );
   btnChangeColor->setContext( QStringLiteral( "symbology" ) );
 
   spinOffset->setClearValue( 0.0 );
@@ -371,26 +371,27 @@ QgsSimpleMarkerSymbolLayerWidget::QgsSimpleMarkerSymbolLayerWidget( const QgsVec
   mLayer = nullptr;
 
   setupUi( this );
-  mSizeUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderMapUnits << QgsUnitTypes::RenderPixels
+  mSizeUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderMetersInMapUnits << QgsUnitTypes::RenderMapUnits << QgsUnitTypes::RenderPixels
                              << QgsUnitTypes::RenderPoints << QgsUnitTypes::RenderInches );
-  mOffsetUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderMapUnits << QgsUnitTypes::RenderPixels
+  mOffsetUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderMetersInMapUnits << QgsUnitTypes::RenderMapUnits << QgsUnitTypes::RenderPixels
                                << QgsUnitTypes::RenderPoints << QgsUnitTypes::RenderInches );
-  mStrokeWidthUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderMapUnits << QgsUnitTypes::RenderPixels
+  mStrokeWidthUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderMetersInMapUnits << QgsUnitTypes::RenderMapUnits << QgsUnitTypes::RenderPixels
                                     << QgsUnitTypes::RenderPoints << QgsUnitTypes::RenderInches );
 
-  btnChangeColorFill->setAllowAlpha( true );
-  btnChangeColorFill->setColorDialogTitle( tr( "Select fill color" ) );
+  btnChangeColorFill->setAllowOpacity( true );
+  btnChangeColorFill->setColorDialogTitle( tr( "Select Fill Color" ) );
   btnChangeColorFill->setContext( QStringLiteral( "symbology" ) );
   btnChangeColorFill->setShowNoColor( true );
   btnChangeColorFill->setNoColorString( tr( "Transparent fill" ) );
-  btnChangeColorStroke->setAllowAlpha( true );
-  btnChangeColorStroke->setColorDialogTitle( tr( "Select stroke color" ) );
+  btnChangeColorStroke->setAllowOpacity( true );
+  btnChangeColorStroke->setColorDialogTitle( tr( "Select Stroke Color" ) );
   btnChangeColorStroke->setContext( QStringLiteral( "symbology" ) );
   btnChangeColorStroke->setShowNoColor( true );
-  btnChangeColorStroke->setNoColorString( tr( "Transparent stroke" ) );
+  btnChangeColorStroke->setNoColorString( tr( "Transparent Stroke" ) );
 
   spinOffsetX->setClearValue( 0.0 );
   spinOffsetY->setClearValue( 0.0 );
+  spinAngle->setClearValue( 0.0 );
 
   //make a temporary symbol for the size assistant preview
   mAssistantPreviewSymbol.reset( new QgsMarkerSymbol() );
@@ -398,19 +399,26 @@ QgsSimpleMarkerSymbolLayerWidget::QgsSimpleMarkerSymbolLayerWidget( const QgsVec
   if ( vectorLayer() )
     mSizeDDBtn->setSymbol( mAssistantPreviewSymbol );
 
-  QSize size = lstNames->iconSize();
-  double markerSize = DEFAULT_POINT_SIZE * 2;
+  int size = lstNames->iconSize().width();
+  size = qMax( 30, qRound( Qgis::UI_SCALE_FACTOR * fontMetrics().width( QStringLiteral( "XXX" ) ) ) );
+  lstNames->setGridSize( QSize( size * 1.2, size * 1.2 ) );
+  lstNames->setIconSize( QSize( size, size ) );
+
+  double markerSize = size * 0.8;
   Q_FOREACH ( QgsSimpleMarkerSymbolLayerBase::Shape shape, QgsSimpleMarkerSymbolLayerBase::availableShapes() )
   {
     QgsSimpleMarkerSymbolLayer *lyr = new QgsSimpleMarkerSymbolLayer( shape, markerSize );
+    lyr->setSizeUnit( QgsUnitTypes::RenderPixels );
     lyr->setColor( QColor( 200, 200, 200 ) );
     lyr->setStrokeColor( QColor( 0, 0, 0 ) );
-    QIcon icon = QgsSymbolLayerUtils::symbolLayerPreviewIcon( lyr, QgsUnitTypes::RenderMillimeters, size );
+    QIcon icon = QgsSymbolLayerUtils::symbolLayerPreviewIcon( lyr, QgsUnitTypes::RenderPixels, QSize( size, size ) );
     QListWidgetItem *item = new QListWidgetItem( icon, QString(), lstNames );
     item->setData( Qt::UserRole, static_cast< int >( shape ) );
     item->setToolTip( QgsSimpleMarkerSymbolLayerBase::encodeShape( shape ) );
     delete lyr;
   }
+  // show at least 3 rows
+  lstNames->setMinimumHeight( lstNames->gridSize().height() * 3.1 );
 
   connect( lstNames, &QListWidget::currentRowChanged, this, &QgsSimpleMarkerSymbolLayerWidget::setShape );
   connect( btnChangeColorStroke, &QgsColorButton::colorChanged, this, &QgsSimpleMarkerSymbolLayerWidget::setColorStroke );
@@ -645,18 +653,18 @@ QgsSimpleFillSymbolLayerWidget::QgsSimpleFillSymbolLayerWidget( const QgsVectorL
   mLayer = nullptr;
 
   setupUi( this );
-  mStrokeWidthUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderMapUnits << QgsUnitTypes::RenderPixels
+  mStrokeWidthUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderMetersInMapUnits << QgsUnitTypes::RenderMapUnits << QgsUnitTypes::RenderPixels
                                     << QgsUnitTypes::RenderPoints << QgsUnitTypes::RenderInches );
-  mOffsetUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderMapUnits << QgsUnitTypes::RenderPixels
+  mOffsetUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderMetersInMapUnits << QgsUnitTypes::RenderMapUnits << QgsUnitTypes::RenderPixels
                                << QgsUnitTypes::RenderPoints << QgsUnitTypes::RenderInches );
 
-  btnChangeColor->setAllowAlpha( true );
-  btnChangeColor->setColorDialogTitle( tr( "Select fill color" ) );
+  btnChangeColor->setAllowOpacity( true );
+  btnChangeColor->setColorDialogTitle( tr( "Select Fill Color" ) );
   btnChangeColor->setContext( QStringLiteral( "symbology" ) );
   btnChangeColor->setShowNoColor( true );
   btnChangeColor->setNoColorString( tr( "Transparent fill" ) );
-  btnChangeStrokeColor->setAllowAlpha( true );
-  btnChangeStrokeColor->setColorDialogTitle( tr( "Select stroke color" ) );
+  btnChangeStrokeColor->setAllowOpacity( true );
+  btnChangeStrokeColor->setColorDialogTitle( tr( "Select Stroke Color" ) );
   btnChangeStrokeColor->setContext( QStringLiteral( "symbology" ) );
   btnChangeStrokeColor->setShowNoColor( true );
   btnChangeStrokeColor->setNoColorString( tr( "Transparent stroke" ) );
@@ -796,13 +804,14 @@ QgsFilledMarkerSymbolLayerWidget::QgsFilledMarkerSymbolLayerWidget( const QgsVec
   mLayer = nullptr;
 
   setupUi( this );
-  mSizeUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderMapUnits << QgsUnitTypes::RenderPixels
+  mSizeUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderMetersInMapUnits << QgsUnitTypes::RenderMapUnits << QgsUnitTypes::RenderPixels
                              << QgsUnitTypes::RenderPoints << QgsUnitTypes::RenderInches );
-  mOffsetUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderMapUnits << QgsUnitTypes::RenderPixels
+  mOffsetUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderMetersInMapUnits << QgsUnitTypes::RenderMapUnits << QgsUnitTypes::RenderPixels
                                << QgsUnitTypes::RenderPoints << QgsUnitTypes::RenderInches );
 
   spinOffsetX->setClearValue( 0.0 );
   spinOffsetY->setClearValue( 0.0 );
+  spinAngle->setClearValue( 0.0 );
 
   //make a temporary symbol for the size assistant preview
   mAssistantPreviewSymbol.reset( new QgsMarkerSymbol() );
@@ -969,24 +978,25 @@ QgsGradientFillSymbolLayerWidget::QgsGradientFillSymbolLayerWidget( const QgsVec
   mLayer = nullptr;
 
   setupUi( this );
-  mOffsetUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderMapUnits << QgsUnitTypes::RenderPixels
+  mOffsetUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderMetersInMapUnits << QgsUnitTypes::RenderMapUnits << QgsUnitTypes::RenderPixels
                                << QgsUnitTypes::RenderPoints << QgsUnitTypes::RenderInches );
 
   btnColorRamp->setShowGradientOnly( true );
 
-  btnChangeColor->setAllowAlpha( true );
-  btnChangeColor->setColorDialogTitle( tr( "Select gradient color" ) );
+  btnChangeColor->setAllowOpacity( true );
+  btnChangeColor->setColorDialogTitle( tr( "Select Gradient Color" ) );
   btnChangeColor->setContext( QStringLiteral( "symbology" ) );
   btnChangeColor->setShowNoColor( true );
   btnChangeColor->setNoColorString( tr( "Transparent" ) );
-  btnChangeColor2->setAllowAlpha( true );
-  btnChangeColor2->setColorDialogTitle( tr( "Select gradient color" ) );
+  btnChangeColor2->setAllowOpacity( true );
+  btnChangeColor2->setColorDialogTitle( tr( "Select Gradient Color" ) );
   btnChangeColor2->setContext( QStringLiteral( "symbology" ) );
   btnChangeColor2->setShowNoColor( true );
   btnChangeColor2->setNoColorString( tr( "Transparent" ) );
 
   spinOffsetX->setClearValue( 0.0 );
   spinOffsetY->setClearValue( 0.0 );
+  mSpinAngle->setClearValue( 0.0 );
 
   connect( btnChangeColor, &QgsColorButton::colorChanged, this, &QgsGradientFillSymbolLayerWidget::setColor );
   connect( btnChangeColor2, &QgsColorButton::colorChanged, this, &QgsGradientFillSymbolLayerWidget::setColor2 );
@@ -1297,9 +1307,9 @@ QgsShapeburstFillSymbolLayerWidget::QgsShapeburstFillSymbolLayerWidget( const Qg
   mLayer = nullptr;
 
   setupUi( this );
-  mDistanceUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderMapUnits << QgsUnitTypes::RenderPixels
+  mDistanceUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderMetersInMapUnits << QgsUnitTypes::RenderMapUnits << QgsUnitTypes::RenderPixels
                                  << QgsUnitTypes::RenderPoints << QgsUnitTypes::RenderInches );
-  mOffsetUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderMapUnits << QgsUnitTypes::RenderPixels
+  mOffsetUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderMetersInMapUnits << QgsUnitTypes::RenderMapUnits << QgsUnitTypes::RenderPixels
                                << QgsUnitTypes::RenderPoints << QgsUnitTypes::RenderInches );
 
   QButtonGroup *group1 = new QButtonGroup( this );
@@ -1308,13 +1318,13 @@ QgsShapeburstFillSymbolLayerWidget::QgsShapeburstFillSymbolLayerWidget( const Qg
   QButtonGroup *group2 = new QButtonGroup( this );
   group2->addButton( mRadioUseMaxDistance );
   group2->addButton( mRadioUseWholeShape );
-  btnChangeColor->setAllowAlpha( true );
-  btnChangeColor->setColorDialogTitle( tr( "Select gradient color" ) );
+  btnChangeColor->setAllowOpacity( true );
+  btnChangeColor->setColorDialogTitle( tr( "Select Gradient color" ) );
   btnChangeColor->setContext( QStringLiteral( "symbology" ) );
   btnChangeColor->setShowNoColor( true );
   btnChangeColor->setNoColorString( tr( "Transparent" ) );
-  btnChangeColor2->setAllowAlpha( true );
-  btnChangeColor2->setColorDialogTitle( tr( "Select gradient color" ) );
+  btnChangeColor2->setAllowOpacity( true );
+  btnChangeColor2->setColorDialogTitle( tr( "Select Gradient color" ) );
   btnChangeColor2->setContext( QStringLiteral( "symbology" ) );
   btnChangeColor2->setShowNoColor( true );
   btnChangeColor2->setNoColorString( tr( "Transparent" ) );
@@ -1552,11 +1562,11 @@ QgsMarkerLineSymbolLayerWidget::QgsMarkerLineSymbolLayerWidget( const QgsVectorL
   mLayer = nullptr;
 
   setupUi( this );
-  mIntervalUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderMapUnits << QgsUnitTypes::RenderPixels
+  mIntervalUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderMetersInMapUnits << QgsUnitTypes::RenderMapUnits << QgsUnitTypes::RenderPixels
                                  << QgsUnitTypes::RenderPoints << QgsUnitTypes::RenderInches );
-  mOffsetUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderMapUnits << QgsUnitTypes::RenderPixels
+  mOffsetUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderMetersInMapUnits << QgsUnitTypes::RenderMapUnits << QgsUnitTypes::RenderPixels
                                << QgsUnitTypes::RenderPoints << QgsUnitTypes::RenderInches );
-  mOffsetAlongLineUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderMapUnits << QgsUnitTypes::RenderPixels
+  mOffsetAlongLineUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderMetersInMapUnits << QgsUnitTypes::RenderMapUnits << QgsUnitTypes::RenderPixels
                                         << QgsUnitTypes::RenderPoints << QgsUnitTypes::RenderInches );
 
   spinOffset->setClearValue( 0.0 );
@@ -1719,22 +1729,26 @@ QgsSvgMarkerSymbolLayerWidget::QgsSvgMarkerSymbolLayerWidget( const QgsVectorLay
   mLayer = nullptr;
 
   setupUi( this );
-  mSizeUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderMapUnits << QgsUnitTypes::RenderPixels
+  mSizeUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderMetersInMapUnits << QgsUnitTypes::RenderMapUnits << QgsUnitTypes::RenderPixels
                              << QgsUnitTypes::RenderPoints << QgsUnitTypes::RenderInches );
-  mStrokeWidthUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderMapUnits << QgsUnitTypes::RenderPixels
+  mStrokeWidthUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderMetersInMapUnits << QgsUnitTypes::RenderMapUnits << QgsUnitTypes::RenderPixels
                                     << QgsUnitTypes::RenderPoints << QgsUnitTypes::RenderInches );
-  mOffsetUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderMapUnits << QgsUnitTypes::RenderPixels
+  mOffsetUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderMetersInMapUnits << QgsUnitTypes::RenderMapUnits << QgsUnitTypes::RenderPixels
                                << QgsUnitTypes::RenderPoints << QgsUnitTypes::RenderInches );
   viewGroups->setHeaderHidden( true );
-  mChangeColorButton->setAllowAlpha( true );
-  mChangeColorButton->setColorDialogTitle( tr( "Select fill color" ) );
+  mChangeColorButton->setAllowOpacity( true );
+  mChangeColorButton->setColorDialogTitle( tr( "Select Fill color" ) );
   mChangeColorButton->setContext( QStringLiteral( "symbology" ) );
-  mChangeStrokeColorButton->setAllowAlpha( true );
-  mChangeStrokeColorButton->setColorDialogTitle( tr( "Select stroke color" ) );
+  mChangeStrokeColorButton->setAllowOpacity( true );
+  mChangeStrokeColorButton->setColorDialogTitle( tr( "Select Stroke Color" ) );
   mChangeStrokeColorButton->setContext( QStringLiteral( "symbology" ) );
 
   spinOffsetX->setClearValue( 0.0 );
   spinOffsetY->setClearValue( 0.0 );
+  spinAngle->setClearValue( 0.0 );
+
+  mIconSize = qMax( 30, qRound( Qgis::UI_SCALE_FACTOR * fontMetrics().width( QStringLiteral( "XXXX" ) ) ) );
+  viewImages->setGridSize( QSize( mIconSize * 1.2, mIconSize * 1.2 ) );
 
   populateList();
 
@@ -1775,7 +1789,7 @@ void QgsSvgMarkerSymbolLayerWidget::populateList()
 
   // Initially load the icons in the List view without any grouping
   oldModel = viewImages->model();
-  QgsSvgSelectorListModel *m = new QgsSvgSelectorListModel( viewImages );
+  QgsSvgSelectorListModel *m = new QgsSvgSelectorListModel( viewImages, mIconSize );
   viewImages->setModel( m );
   delete oldModel;
 }
@@ -1810,9 +1824,9 @@ void QgsSvgMarkerSymbolLayerWidget::setGuiForSvg( const QgsSvgMarkerSymbolLayer 
       hasStrokeWidthParam, hasDefaultStrokeWidth, defaultStrokeWidth,
       hasStrokeOpacityParam, hasDefaultStrokeOpacity, defaultStrokeOpacity );
   mChangeColorButton->setEnabled( hasFillParam );
-  mChangeColorButton->setAllowAlpha( hasFillOpacityParam );
+  mChangeColorButton->setAllowOpacity( hasFillOpacityParam );
   mChangeStrokeColorButton->setEnabled( hasStrokeParam );
-  mChangeStrokeColorButton->setAllowAlpha( hasStrokeOpacityParam );
+  mChangeStrokeColorButton->setAllowOpacity( hasStrokeOpacityParam );
   mStrokeWidthSpinBox->setEnabled( hasStrokeWidthParam );
 
   if ( hasFillParam )
@@ -2107,16 +2121,18 @@ QgsSVGFillSymbolLayerWidget::QgsSVGFillSymbolLayerWidget( const QgsVectorLayer *
 {
   mLayer = nullptr;
   setupUi( this );
-  mTextureWidthUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderMapUnits << QgsUnitTypes::RenderPixels
+  mTextureWidthUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderMetersInMapUnits << QgsUnitTypes::RenderMapUnits << QgsUnitTypes::RenderPixels
                                      << QgsUnitTypes::RenderPoints << QgsUnitTypes::RenderInches );
-  mSvgStrokeWidthUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderMapUnits << QgsUnitTypes::RenderPixels
+  mSvgStrokeWidthUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderMetersInMapUnits << QgsUnitTypes::RenderMapUnits << QgsUnitTypes::RenderPixels
                                        << QgsUnitTypes::RenderPoints << QgsUnitTypes::RenderInches );
   mSvgTreeView->setHeaderHidden( true );
   insertIcons();
 
-  mChangeColorButton->setColorDialogTitle( tr( "Select fill color" ) );
+  mRotationSpinBox->setClearValue( 0.0 );
+
+  mChangeColorButton->setColorDialogTitle( tr( "Select Fill Color" ) );
   mChangeColorButton->setContext( QStringLiteral( "symbology" ) );
-  mChangeStrokeColorButton->setColorDialogTitle( tr( "Select stroke color" ) );
+  mChangeStrokeColorButton->setColorDialogTitle( tr( "Select Stroke Color" ) );
   mChangeStrokeColorButton->setContext( QStringLiteral( "symbology" ) );
 
   connect( mSvgListView->selectionModel(), &QItemSelectionModel::currentChanged, this, &QgsSVGFillSymbolLayerWidget::setFile );
@@ -2316,7 +2332,7 @@ void QgsSVGFillSymbolLayerWidget::updateParamGui( bool resetValues )
     mChangeColorButton->setColor( fill );
   }
   mChangeColorButton->setEnabled( hasFillParam );
-  mChangeColorButton->setAllowAlpha( hasFillOpacityParam );
+  mChangeColorButton->setAllowOpacity( hasFillOpacityParam );
   if ( resetValues )
   {
     QColor stroke = mChangeStrokeColorButton->color();
@@ -2329,7 +2345,7 @@ void QgsSVGFillSymbolLayerWidget::updateParamGui( bool resetValues )
     mChangeStrokeColorButton->setColor( stroke );
   }
   mChangeStrokeColorButton->setEnabled( hasStrokeParam );
-  mChangeStrokeColorButton->setAllowAlpha( hasStrokeOpacityParam );
+  mChangeStrokeColorButton->setAllowOpacity( hasStrokeOpacityParam );
   if ( hasDefaultStrokeWidth && resetValues )
   {
     mStrokeWidthSpinBox->setValue( defaultStrokeWidth );
@@ -2394,11 +2410,12 @@ QgsLinePatternFillSymbolLayerWidget::QgsLinePatternFillSymbolLayerWidget( const 
   QgsSymbolLayerWidget( parent, vl ), mLayer( nullptr )
 {
   setupUi( this );
-  mDistanceUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderMapUnits << QgsUnitTypes::RenderPixels
+  mDistanceUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderMetersInMapUnits << QgsUnitTypes::RenderMapUnits << QgsUnitTypes::RenderPixels
                                  << QgsUnitTypes::RenderPoints << QgsUnitTypes::RenderInches );
-  mOffsetUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderMapUnits << QgsUnitTypes::RenderPixels
+  mOffsetUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderMetersInMapUnits << QgsUnitTypes::RenderMapUnits << QgsUnitTypes::RenderPixels
                                << QgsUnitTypes::RenderPoints << QgsUnitTypes::RenderInches );
   mOffsetSpinBox->setClearValue( 0 );
+  mAngleSpinBox->setClearValue( 0 );
 }
 
 void QgsLinePatternFillSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer *layer )
@@ -2495,13 +2512,13 @@ QgsPointPatternFillSymbolLayerWidget::QgsPointPatternFillSymbolLayerWidget( cons
   QgsSymbolLayerWidget( parent, vl ), mLayer( nullptr )
 {
   setupUi( this );
-  mHorizontalDistanceUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderMapUnits << QgsUnitTypes::RenderPixels
+  mHorizontalDistanceUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderMetersInMapUnits << QgsUnitTypes::RenderMapUnits << QgsUnitTypes::RenderPixels
       << QgsUnitTypes::RenderPoints << QgsUnitTypes::RenderInches );
-  mVerticalDistanceUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderMapUnits << QgsUnitTypes::RenderPixels
+  mVerticalDistanceUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderMetersInMapUnits << QgsUnitTypes::RenderMapUnits << QgsUnitTypes::RenderPixels
                                          << QgsUnitTypes::RenderPoints << QgsUnitTypes::RenderInches );
-  mHorizontalDisplacementUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderMapUnits << QgsUnitTypes::RenderPixels
+  mHorizontalDisplacementUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderMetersInMapUnits << QgsUnitTypes::RenderMapUnits << QgsUnitTypes::RenderPixels
       << QgsUnitTypes::RenderPoints << QgsUnitTypes::RenderInches );
-  mVerticalDisplacementUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderMapUnits << QgsUnitTypes::RenderPixels
+  mVerticalDisplacementUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderMetersInMapUnits << QgsUnitTypes::RenderMapUnits << QgsUnitTypes::RenderPixels
       << QgsUnitTypes::RenderPoints << QgsUnitTypes::RenderInches );
 }
 
@@ -2639,24 +2656,25 @@ QgsFontMarkerSymbolLayerWidget::QgsFontMarkerSymbolLayerWidget( const QgsVectorL
   mLayer = nullptr;
 
   setupUi( this );
-  mSizeUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderMapUnits << QgsUnitTypes::RenderPixels
+  mSizeUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderMetersInMapUnits << QgsUnitTypes::RenderMapUnits << QgsUnitTypes::RenderPixels
                              << QgsUnitTypes::RenderPoints << QgsUnitTypes::RenderInches );
-  mStrokeWidthUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderMapUnits << QgsUnitTypes::RenderPixels
+  mStrokeWidthUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderMetersInMapUnits << QgsUnitTypes::RenderMapUnits << QgsUnitTypes::RenderPixels
                                     << QgsUnitTypes::RenderPoints << QgsUnitTypes::RenderInches );
-  mOffsetUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderMapUnits << QgsUnitTypes::RenderPixels
+  mOffsetUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderMetersInMapUnits << QgsUnitTypes::RenderMapUnits << QgsUnitTypes::RenderPixels
                                << QgsUnitTypes::RenderPoints << QgsUnitTypes::RenderInches );
   widgetChar = new CharacterWidget;
   scrollArea->setWidget( widgetChar );
 
-  btnColor->setAllowAlpha( true );
-  btnColor->setColorDialogTitle( tr( "Select symbol fill color" ) );
+  btnColor->setAllowOpacity( true );
+  btnColor->setColorDialogTitle( tr( "Select Symbol Fill Color" ) );
   btnColor->setContext( QStringLiteral( "symbology" ) );
-  btnStrokeColor->setAllowAlpha( true );
-  btnStrokeColor->setColorDialogTitle( tr( "Select symbol stroke color" ) );
+  btnStrokeColor->setAllowOpacity( true );
+  btnStrokeColor->setColorDialogTitle( tr( "Select Symbol Stroke Color" ) );
   btnStrokeColor->setContext( QStringLiteral( "symbology" ) );
 
   spinOffsetX->setClearValue( 0.0 );
   spinOffsetY->setClearValue( 0.0 );
+  spinAngle->setClearValue( 0.0 );
 
   //make a temporary symbol for the size assistant preview
   mAssistantPreviewSymbol.reset( new QgsMarkerSymbol() );
@@ -2911,18 +2929,21 @@ QgsRasterFillSymbolLayerWidget::QgsRasterFillSymbolLayerWidget( const QgsVectorL
   mLayer = nullptr;
   setupUi( this );
 
-  mWidthUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderPixels << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderMapUnits
+  mWidthUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderPixels << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderMetersInMapUnits << QgsUnitTypes::RenderMapUnits
                               << QgsUnitTypes::RenderPoints << QgsUnitTypes::RenderInches );
-  mOffsetUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderMapUnits << QgsUnitTypes::RenderPixels
+  mOffsetUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderMetersInMapUnits << QgsUnitTypes::RenderMapUnits << QgsUnitTypes::RenderPixels
                                << QgsUnitTypes::RenderPoints << QgsUnitTypes::RenderInches );
 
   mSpinOffsetX->setClearValue( 0.0 );
   mSpinOffsetY->setClearValue( 0.0 );
+  mRotationSpinBox->setClearValue( 0.0 );
 
   connect( cboCoordinateMode, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsRasterFillSymbolLayerWidget::setCoordinateMode );
   connect( mSpinOffsetX, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsRasterFillSymbolLayerWidget::offsetChanged );
   connect( mSpinOffsetY, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsRasterFillSymbolLayerWidget::offsetChanged );
+  connect( mOpacityWidget, &QgsOpacityWidget::opacityChanged, this, &QgsRasterFillSymbolLayerWidget::opacityChanged );
 }
+
 
 void QgsRasterFillSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer *layer )
 {
@@ -2958,12 +2979,9 @@ void QgsRasterFillSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer *layer )
       break;
   }
   cboCoordinateMode->blockSignals( false );
-  mSpinTransparency->blockSignals( true );
-  mSpinTransparency->setValue( mLayer->alpha() * 100.0 );
-  mSpinTransparency->blockSignals( false );
-  mSliderTransparency->blockSignals( true );
-  mSliderTransparency->setValue( mLayer->alpha() * 100.0 );
-  mSliderTransparency->blockSignals( false );
+  mOpacityWidget->blockSignals( true );
+  mOpacityWidget->setOpacity( mLayer->opacity() );
+  mOpacityWidget->blockSignals( false );
   mRotationSpinBox->blockSignals( true );
   mRotationSpinBox->setValue( mLayer->angle() );
   mRotationSpinBox->blockSignals( false );
@@ -2989,7 +3007,7 @@ void QgsRasterFillSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer *layer )
   updatePreviewImage();
 
   registerDataDefinedButton( mFilenameDDBtn, QgsSymbolLayer::PropertyFile );
-  registerDataDefinedButton( mOpacityDDBtn, QgsSymbolLayer::PropertyAlpha );
+  registerDataDefinedButton( mOpacityDDBtn, QgsSymbolLayer::PropertyOpacity );
   registerDataDefinedButton( mRotationDDBtn, QgsSymbolLayer::PropertyAngle );
   registerDataDefinedButton( mWidthDDBtn, QgsSymbolLayer::PropertyWidth );
 }
@@ -3075,14 +3093,14 @@ void QgsRasterFillSymbolLayerWidget::setCoordinateMode( int index )
   emit changed();
 }
 
-void QgsRasterFillSymbolLayerWidget::on_mSpinTransparency_valueChanged( int value )
+void QgsRasterFillSymbolLayerWidget::opacityChanged( double value )
 {
   if ( !mLayer )
   {
     return;
   }
 
-  mLayer->setAlpha( value / 100.0 );
+  mLayer->setOpacity( value );
   emit changed();
   updatePreviewImage();
 }
@@ -3171,9 +3189,9 @@ void QgsRasterFillSymbolLayerWidget::updatePreviewImage()
   checkerBrush.setTexture( pix );
   p.fillRect( imageRect, checkerBrush );
 
-  if ( mLayer->alpha() < 1.0 )
+  if ( mLayer->opacity() < 1.0 )
   {
-    p.setOpacity( mLayer->alpha() );
+    p.setOpacity( mLayer->opacity() );
   }
 
   p.drawImage( imageRect.left(), imageRect.top(), image );

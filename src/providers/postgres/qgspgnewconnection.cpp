@@ -17,6 +17,7 @@
 
 #include <QMessageBox>
 #include <QInputDialog>
+#include <QRegExpValidator>
 
 #include "qgspgnewconnection.h"
 #include "qgsauthmanager.h"
@@ -100,10 +101,16 @@ QgsPgNewConnection::QgsPgNewConnection( QWidget *parent, const QString &connName
       tabAuthentication->setCurrentIndex( tabAuthentication->indexOf( mAuthConfigSelect ) );
     }
 
-
     txtName->setText( connName );
   }
+  txtName->setValidator( new QRegExpValidator( QRegExp( "[^\\/]*" ), txtName ) );
 }
+
+QgsPgNewConnection::~QgsPgNewConnection()
+{
+
+}
+
 //! Autoconnected SLOTS *
 void QgsPgNewConnection::accept()
 {
@@ -201,17 +208,15 @@ void QgsPgNewConnection::testConnection()
   if ( conn )
   {
     // Database successfully opened; we can now issue SQL commands.
-    QMessageBox::information( this,
-                              tr( "Test connection" ),
-                              tr( "Connection to %1 was successful" ).arg( txtDatabase->text() ) );
+    bar->pushMessage( tr( "Connection to %1 was successful" ).arg( txtDatabase->text() ),
+                      QgsMessageBar::INFO );
 
     // free pg connection resources
     conn->unref();
   }
   else
   {
-    QMessageBox::information( this,
-                              tr( "Test connection" ),
-                              tr( "Connection failed - consult message log for details.\n\n" ) );
+    bar->pushMessage( tr( "Connection failed - consult message log for details." ),
+                      QgsMessageBar::WARNING );
   }
 }

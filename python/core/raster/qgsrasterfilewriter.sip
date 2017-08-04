@@ -53,6 +53,23 @@ class QgsRasterFileWriter
  :rtype: QgsRasterDataProvider
 %End
 
+    QgsRasterDataProvider *createMultiBandRaster( Qgis::DataType dataType,
+        int width, int height,
+        const QgsRectangle &extent,
+        const QgsCoordinateReferenceSystem &crs,
+        int nBands ) /Factory/;
+%Docstring
+ Create a raster file with given number of bands without initializing the pixel data.
+ Returned provider may be used to initialize the raster using writeBlock() calls.
+ Ownership of the returned provider is passed to the caller.
+.. note::
+
+   Does not work with tiled mode enabled.
+ :return: Instance of data provider in editing mode (on success) or None on error.
+.. versionadded:: 3.0
+ :rtype: QgsRasterDataProvider
+%End
+
     WriterError writeRaster( const QgsRasterPipe *pipe, int nCols, int nRows, const QgsRectangle &outputExtent,
                              const QgsCoordinateReferenceSystem &crs, QgsRasterBlockFeedback *feedback = 0 );
 %Docstring
@@ -137,6 +154,15 @@ class QgsRasterFileWriter
     QStringList pyramidsConfigOptions() const;
 %Docstring
  :rtype: list of str
+%End
+
+    static QString driverForExtension( const QString &extension );
+%Docstring
+ Returns the GDAL driver name for a specified file ``extension``. E.g. the
+ driver name for the ".tif" extension is "GTiff".
+ If no suitable drivers are found then an empty string is returned.
+.. versionadded:: 3.0
+ :rtype: str
 %End
 
 };

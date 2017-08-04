@@ -22,7 +22,7 @@
 #include <QTransform>
 
 #include "qgslogger.h"
-#include "qgspoint.h"
+#include "qgspointxy.h"
 
 
 QgsMapToPixel::QgsMapToPixel( double mapUnitsPerPixel,
@@ -61,7 +61,7 @@ QgsMapToPixel QgsMapToPixel::fromScale( double scale, QgsUnitTypes::DistanceUnit
 {
   double metersPerPixel = 25.4 / dpi / 1000.0;
   double mapUnitsPerPixel = metersPerPixel * QgsUnitTypes::fromUnitToUnitFactor( QgsUnitTypes::DistanceMeters, mapUnits );
-  return QgsMapToPixel( mapUnitsPerPixel / scale );
+  return QgsMapToPixel( mapUnitsPerPixel * scale );
 }
 
 QgsMapToPixel::QgsMapToPixel()
@@ -99,7 +99,7 @@ bool QgsMapToPixel::updateMatrix()
   return true;
 }
 
-QgsPoint QgsMapToPixel::toMapPoint( double x, double y ) const
+QgsPointXY QgsMapToPixel::toMapPoint( double x, double y ) const
 {
   bool invertible;
   QTransform matrix = mMatrix.inverted( &invertible );
@@ -108,21 +108,21 @@ QgsPoint QgsMapToPixel::toMapPoint( double x, double y ) const
   qreal x_qreal = x, y_qreal = y;
   matrix.map( x_qreal, y_qreal, &mx, &my );
   //QgsDebugMsg(QString("XXX toMapPoint x:%1 y:%2 -> x:%3 y:%4").arg(x).arg(y).arg(mx).arg(my));
-  return QgsPoint( mx, my );
+  return QgsPointXY( mx, my );
 }
 
-QgsPoint QgsMapToPixel::toMapCoordinates( QPoint p ) const
+QgsPointXY QgsMapToPixel::toMapCoordinates( QPoint p ) const
 {
-  QgsPoint mapPt = toMapPoint( p.x(), p.y() );
-  return QgsPoint( mapPt );
+  QgsPointXY mapPt = toMapPoint( p.x(), p.y() );
+  return QgsPointXY( mapPt );
 }
 
-QgsPoint QgsMapToPixel::toMapCoordinates( int x, int y ) const
+QgsPointXY QgsMapToPixel::toMapCoordinates( int x, int y ) const
 {
   return toMapPoint( x, y );
 }
 
-QgsPoint QgsMapToPixel::toMapCoordinatesF( double x, double y ) const
+QgsPointXY QgsMapToPixel::toMapCoordinatesF( double x, double y ) const
 {
   return toMapPoint( x, y );
 }
@@ -220,21 +220,21 @@ QString QgsMapToPixel::showParameters() const
   return rep;
 }
 
-QgsPoint QgsMapToPixel::transform( qreal x, qreal y ) const
+QgsPointXY QgsMapToPixel::transform( qreal x, qreal y ) const
 {
   transformInPlace( x, y );
-  return QgsPoint( x, y );
+  return QgsPointXY( x, y );
 }
 
-QgsPoint QgsMapToPixel::transform( const QgsPoint &p ) const
+QgsPointXY QgsMapToPixel::transform( const QgsPointXY &p ) const
 {
   qreal x = p.x(), y = p.y();
   transformInPlace( x, y );
 // QgsDebugMsg(QString("Point to pixel...X : %1-->%2, Y: %3 -->%4").arg(p.x()).arg(dx).arg(p.y()).arg(dy));
-  return QgsPoint( x, y );
+  return QgsPointXY( x, y );
 }
 
-void QgsMapToPixel::transform( QgsPoint *p ) const
+void QgsMapToPixel::transform( QgsPointXY *p ) const
 {
   qreal x = p->x(), y = p->y();
   transformInPlace( x, y );

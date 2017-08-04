@@ -29,16 +29,17 @@ import plotly as plt
 import plotly.graph_objs as go
 
 from qgis.core import (QgsApplication,
+                       QgsFeatureSink,
                        QgsProcessingUtils)
 from processing.core.parameters import ParameterTable
 from processing.core.parameters import ParameterTableField
 from processing.core.parameters import ParameterSelection
-from processing.core.GeoAlgorithm import GeoAlgorithm
+from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 from processing.core.outputs import OutputHTML
 from processing.tools import vector
 
 
-class BoxPlot(GeoAlgorithm):
+class BoxPlot(QgisAlgorithm):
 
     INPUT = 'INPUT'
     OUTPUT = 'OUTPUT'
@@ -46,22 +47,13 @@ class BoxPlot(GeoAlgorithm):
     VALUE_FIELD = 'VALUE_FIELD'
     MSD = 'MSD'
 
-    def icon(self):
-        return QgsApplication.getThemeIcon("/providerQgis.svg")
-
-    def svgIconPath(self):
-        return QgsApplication.iconPath("providerQgis.svg")
-
     def group(self):
         return self.tr('Graphics')
 
-    def name(self):
-        return 'boxplot'
+    def __init__(self):
+        super().__init__()
 
-    def displayName(self):
-        return self.tr('Box plot')
-
-    def defineCharacteristics(self):
+    def initAlgorithm(self, config=None):
         self.addParameter(ParameterTable(self.INPUT, self.tr('Input table')))
         self.addParameter(ParameterTableField(self.NAME_FIELD,
                                               self.tr('Category name field'),
@@ -82,14 +74,20 @@ class BoxPlot(GeoAlgorithm):
 
         self.addOutput(OutputHTML(self.OUTPUT, self.tr('Box plot')))
 
-    def processAlgorithm(self, context, feedback):
+    def name(self):
+        return 'boxplot'
+
+    def displayName(self):
+        return self.tr('Box plot')
+
+    def processAlgorithm(self, parameters, context, feedback):
         layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT), context)
         namefieldname = self.getParameterValue(self.NAME_FIELD)
         valuefieldname = self.getParameterValue(self.VALUE_FIELD)
 
         output = self.getOutputValue(self.OUTPUT)
 
-        values = vector.values(layer, context, valuefieldname)
+        values = vector.values(layer, valuefieldname)
 
         x_var = [i[namefieldname] for i in layer.getFeatures()]
 

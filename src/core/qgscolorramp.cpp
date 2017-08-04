@@ -275,15 +275,15 @@ void QgsGradientColorRamp::setStops( const QgsGradientStopsList &stops )
   std::sort( mStops.begin(), mStops.end(), stopLessThan );
 }
 
-void QgsGradientColorRamp::addStopsToGradient( QGradient *gradient, double alpha )
+void QgsGradientColorRamp::addStopsToGradient( QGradient *gradient, double opacity )
 {
   //copy color ramp stops to a QGradient
   QColor color1 = mColor1;
   QColor color2 = mColor2;
-  if ( alpha < 1 )
+  if ( opacity < 1 )
   {
-    color1.setAlpha( color1.alpha() * alpha );
-    color2.setAlpha( color2.alpha() * alpha );
+    color1.setAlpha( color1.alpha() * opacity );
+    color2.setAlpha( color2.alpha() * opacity );
   }
   gradient->setColorAt( 0, color1 );
   gradient->setColorAt( 1, color2 );
@@ -292,9 +292,9 @@ void QgsGradientColorRamp::addStopsToGradient( QGradient *gradient, double alpha
         it != mStops.constEnd(); ++it )
   {
     QColor rampColor = it->color;
-    if ( alpha < 1 )
+    if ( opacity < 1 )
     {
-      rampColor.setAlpha( rampColor.alpha() * alpha );
+      rampColor.setAlpha( rampColor.alpha() * opacity );
     }
     gradient->setColorAt( it->offset, rampColor );
   }
@@ -453,7 +453,7 @@ void QgsRandomColorRamp::setTotalColorCount( const int colorCount )
   mPrecalculatedColors.clear();
   mTotalColorCount = colorCount;
 
-  //This works ok for low color counts, but for > 10 or so colors there's still a good chance of
+  //This works OK for low color counts, but for > 10 or so colors there's still a good chance of
   //similar colors being picked. TODO - investigate alternative "n-visually distinct color" routines
 
   //random offsets

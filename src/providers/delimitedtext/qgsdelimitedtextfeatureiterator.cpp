@@ -22,6 +22,7 @@
 #include "qgsmessagelog.h"
 #include "qgsproject.h"
 #include "qgsspatialindex.h"
+#include "qgsexception.h"
 
 #include <QtAlgorithms>
 #include <QTextStream>
@@ -38,7 +39,22 @@ QgsDelimitedTextFeatureIterator::QgsDelimitedTextFeatureIterator( QgsDelimitedTe
   // load it.
   bool hasGeometry = mSource->mGeomRep != QgsDelimitedTextProvider::GeomNone;
 
-  if ( !request.filterRect().isNull() && hasGeometry )
+  if ( mRequest.destinationCrs().isValid() && mRequest.destinationCrs() != mSource->mCrs )
+  {
+    mTransform = QgsCoordinateTransform( mSource->mCrs, mRequest.destinationCrs() );
+  }
+  try
+  {
+    mFilterRect = filterRectToSourceCrs( mTransform );
+  }
+  catch ( QgsCsException & )
+  {
+    // can't reproject mFilterRect
+    mClosed = true;
+    return;
+  }
+
+  if ( !mFilterRect.isNull() && hasGeometry )
   {
     QgsDebugMsg( "Configuring for rectangle select" );
     mTestGeometry = true;
@@ -46,10 +62,8 @@ QgsDelimitedTextFeatureIterator::QgsDelimitedTextFeatureIterator( QgsDelimitedTe
     mTestGeometryExact = mRequest.flags() & QgsFeatureRequest::ExactIntersect
                          && mSource->mGeomRep == QgsDelimitedTextProvider::GeomAsWkt;
 
-    QgsRectangle rect = request.filterRect();
-
     // If request doesn't overlap extents, then nothing to return
-    if ( ! rect.intersects( mSource->mExtent ) && !mTestSubset )
+    if ( ! mFilterRect.intersects( mSource->mExtent ) && !mTestSubset )
     {
       QgsDebugMsg( "Rectangle outside layer extents - no features to return" );
       mMode = FeatureIds;
@@ -57,7 +71,7 @@ QgsDelimitedTextFeatureIterator::QgsDelimitedTextFeatureIterator( QgsDelimitedTe
     // If the request extents include the entire layer, then revert to
     // a file scan
 
-    else if ( rect.contains( mSource->mExtent ) && !mTestSubset )
+    else if ( mFilterRect.contains( mSource->mExtent ) && !mTestSubset )
     {
       QgsDebugMsg( "Rectangle contains layer extents - bypass spatial filter" );
       mTestGeometry = false;
@@ -69,7 +83,7 @@ QgsDelimitedTextFeatureIterator::QgsDelimitedTextFeatureIterator( QgsDelimitedTe
 
     else if ( mSource->mUseSpatialIndex )
     {
-      mFeatureIds = mSource->mSpatialIndex->intersects( rect );
+      mFeatureIds = mSource->mSpatialIndex->intersects( mFilterRect );
       // Sort for efficient sequential retrieval
       std::sort( mFeatureIds.begin(), mFeatureIds.end() );
       QgsDebugMsg( QString( "Layer has spatial index - selected %1 features from index" ).arg( mFeatureIds.size() ) );
@@ -82,7 +96,7 @@ QgsDelimitedTextFeatureIterator::QgsDelimitedTextFeatureIterator( QgsDelimitedTe
   if ( request.filterType() == QgsFeatureRequest::FilterFid )
   {
     QgsDebugMsg( "Configuring for returning single id" );
-    if ( request.filterRect().isNull() || mFeatureIds.contains( request.filterFid() ) )
+    if ( mFilterRect.isNull() || mFeatureIds.contains( request.filterFid() ) )
     {
       mFeatureIds = QList<QgsFeatureId>() << request.filterFid();
     }
@@ -142,6 +156,18 @@ QgsDelimitedTextFeatureIterator::QgsDelimitedTextFeatureIterator( QgsDelimitedTe
     attributeIndexes += attrs.toSet();
     mRequest.setSubsetOfAttributes( attributeIndexes.toList() );
   }
+  // also need attributes required by order by
+  if ( mRequest.flags() & QgsFeatureRequest::SubsetOfAttributes && !mRequest.orderBy().isEmpty() )
+  {
+    QgsAttributeList attrs = request.subsetOfAttributes();
+    Q_FOREACH ( const QString &attr, mRequest.orderBy().usedAttributes() )
+    {
+      int attrIndex = mSource->mFields.lookupField( attr );
+      if ( !attrs.contains( attrIndex ) )
+        attrs << attrIndex;
+    }
+    mRequest.setSubsetOfAttributes( attrs );
+  }
 
   QgsDebugMsg( QString( "Iterator is scanning file: " ) + ( mMode == FileScan ? "Yes" : "No" ) );
   QgsDebugMsg( QString( "Iterator is loading geometries: " ) + ( mLoadGeometry ? "Yes" : "No" ) );
@@ -199,6 +225,8 @@ bool QgsDelimitedTextFeatureIterator::fetchFeature( QgsFeature &feature )
 
   if ( ! gotFeature ) close();
 
+  geometryToDestinationCrs( feature, mTransform );
+
   return gotFeature;
 }
 
@@ -234,10 +262,10 @@ bool QgsDelimitedTextFeatureIterator::close()
 /**
  * Check to see if the point is within the selection rectangle
  */
-bool QgsDelimitedTextFeatureIterator::wantGeometry( const QgsPoint &pt ) const
+bool QgsDelimitedTextFeatureIterator::wantGeometry( const QgsPointXY &pt ) const
 {
   if ( ! mTestGeometry ) return true;
-  return mRequest.filterRect().contains( pt );
+  return mFilterRect.contains( pt );
 }
 
 /**
@@ -248,9 +276,9 @@ bool QgsDelimitedTextFeatureIterator::wantGeometry( const QgsGeometry &geom ) co
   if ( ! mTestGeometry ) return true;
 
   if ( mTestGeometryExact )
-    return geom.intersects( mRequest.filterRect() );
+    return geom.intersects( mFilterRect );
   else
-    return geom.boundingBox().intersects( mRequest.filterRect() );
+    return geom.boundingBox().intersects( mFilterRect );
 }
 
 
@@ -291,7 +319,7 @@ bool QgsDelimitedTextFeatureIterator::nextFeatureInternal( QgsFeature &feature )
     QgsFeatureId fid = file->recordId();
 
     while ( tokens.size() < mSource->mFieldCount )
-      tokens.append( QString::null );
+      tokens.append( QString() );
 
     QgsGeometry geom;
 
@@ -403,7 +431,7 @@ QgsGeometry QgsDelimitedTextFeatureIterator::loadGeometryXY( const QStringList &
     return QgsGeometry();
   }
   isNull = false;
-  QgsPoint pt;
+  QgsPointXY pt;
   bool ok = QgsDelimitedTextProvider::pointFromXY( sX, sY, pt, mSource->mDecimalPoint, mSource->mXyDms );
 
   if ( ok && wantGeometry( pt ) )
@@ -488,6 +516,7 @@ QgsDelimitedTextFeatureSource::QgsDelimitedTextFeatureSource( const QgsDelimited
   , mDecimalPoint( p->mDecimalPoint )
   , mXyDms( p->mXyDms )
   , attributeColumns( p->attributeColumns )
+  , mCrs( p->mCrs )
 {
   QUrl url = p->mFile->url();
 

@@ -52,6 +52,7 @@ class TestQgsExpressionContext : public QObject
     void cache();
 
     void valuesAsMap();
+    void description();
 
   private:
 
@@ -114,7 +115,7 @@ class TestQgsExpressionContext : public QObject
         /**
          * This function is not static, it's value changes with every invocation.
          */
-        virtual bool isStatic( const QgsExpression::NodeFunction *node, QgsExpression *parent, const QgsExpressionContext *context ) const override
+        virtual bool isStatic( const QgsExpressionNodeFunction *node, QgsExpression *parent, const QgsExpressionContext *context ) const override
         {
           Q_UNUSED( node )
           Q_UNUSED( parent )
@@ -163,6 +164,7 @@ void TestQgsExpressionContext::contextScope()
   QVERIFY( !scope.variable( "test" ).isValid() );
   QCOMPARE( scope.variableNames().length(), 0 );
   QCOMPARE( scope.variableCount(), 0 );
+  QVERIFY( scope.description( "test" ).isEmpty() );
 
   scope.setVariable( QStringLiteral( "test" ), 5 );
   QVERIFY( scope.hasVariable( "test" ) );
@@ -171,15 +173,19 @@ void TestQgsExpressionContext::contextScope()
   QCOMPARE( scope.variableNames().length(), 1 );
   QCOMPARE( scope.variableCount(), 1 );
   QCOMPARE( scope.variableNames().at( 0 ), QString( "test" ) );
+  QVERIFY( scope.description( "test" ).isEmpty() );
 
-  scope.addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "readonly" ), QStringLiteral( "readonly_test" ), true ) );
+  scope.addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "readonly" ), QStringLiteral( "readonly_test" ), true, false, QStringLiteral( "readonly variable" ) ) );
   QVERIFY( scope.isReadOnly( "readonly" ) );
+  QCOMPARE( scope.description( "readonly" ), QStringLiteral( "readonly variable" ) );
   scope.addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "notreadonly" ), QStringLiteral( "not_readonly_test" ), false ) );
   QVERIFY( !scope.isReadOnly( "notreadonly" ) );
 
   //updating a read only variable should remain read only
   scope.setVariable( QStringLiteral( "readonly" ), "newvalue" );
   QVERIFY( scope.isReadOnly( "readonly" ) );
+  // and keep its description
+  QCOMPARE( scope.description( "readonly" ), QStringLiteral( "readonly variable" ) );
 
   //test retrieving filtered variable names
   scope.setVariable( QStringLiteral( "_hidden_" ), "hidden" );
@@ -245,6 +251,7 @@ void TestQgsExpressionContext::contextStack()
   QCOMPARE( context.scopeCount(), 0 );
   QVERIFY( !context.scope( 0 ) );
   QVERIFY( !context.lastScope() );
+  QVERIFY( context.description( "test" ).isEmpty() );
 
   //add a scope to the context
   QgsExpressionContextScope *testScope = new QgsExpressionContextScope();
@@ -305,10 +312,13 @@ void TestQgsExpressionContext::contextStack()
   QCOMPARE( scopes.at( 0 ), scope1 );
   QCOMPARE( scopes.at( 1 ), scope2 );
 
+  QVERIFY( context.description( "readonly" ).isEmpty() );
+
   //check isReadOnly
-  scope2->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "readonly" ), 5, true ) );
+  scope2->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "readonly" ), 5, true, false, QStringLiteral( "readonly variable" ) ) );
   QVERIFY( context.isReadOnly( "readonly" ) );
   QVERIFY( !context.isReadOnly( "test" ) );
+  QCOMPARE( context.description( "readonly" ), QStringLiteral( "readonly variable" ) );
 
   // Check scopes can be popped
   delete context.popScope();
@@ -733,6 +743,21 @@ void TestQgsExpressionContext::valuesAsMap()
   QCOMPARE( m.value( "v1" ).toString(), QString( "t1" ) );
   QCOMPARE( m.value( "v2" ).toString(), QString( "t2a" ) );
   QCOMPARE( m.value( "v3" ).toString(), QString( "t3" ) );
+}
+
+void TestQgsExpressionContext::description()
+{
+  // test that description falls back to default values if not set
+  QgsExpressionContext context;
+  QgsExpressionContextScope *scope = new QgsExpressionContextScope();
+  scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "project_title" ) ) );
+  context << scope;
+  QCOMPARE( context.description( "project_title" ), QgsExpression::variableHelpText( "project_title" ) );
+  // but if set, use that
+  scope = new QgsExpressionContextScope();
+  scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "project_title" ), QVariant(), true, true, QStringLiteral( "my desc" ) ) );
+  context << scope;
+  QCOMPARE( context.description( "project_title" ), QStringLiteral( "my desc" ) );
 }
 
 QGSTEST_MAIN( TestQgsExpressionContext )

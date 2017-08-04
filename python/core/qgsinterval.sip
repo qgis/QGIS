@@ -173,9 +173,6 @@ Seconds per minute
 %End
 
     bool operator==( QgsInterval other ) const;
-%Docstring
- :rtype: bool
-%End
 
     static QgsInterval fromString( const QString &string );
 %Docstring

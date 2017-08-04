@@ -28,7 +28,7 @@ QgsTriangle::QgsTriangle()
   mWkbType = QgsWkbTypes::Triangle;
 }
 
-QgsTriangle::QgsTriangle( const QgsPointV2 &p1, const QgsPointV2 &p2, const QgsPointV2 &p3 )
+QgsTriangle::QgsTriangle( const QgsPoint &p1, const QgsPoint &p2, const QgsPoint &p3 )
 {
   mWkbType = QgsWkbTypes::Triangle;
 
@@ -45,13 +45,13 @@ QgsTriangle::QgsTriangle( const QgsPointV2 &p1, const QgsPointV2 &p2, const QgsP
 
 }
 
-QgsTriangle::QgsTriangle( const QgsPoint &p1, const QgsPoint &p2, const QgsPoint &p3 )
+QgsTriangle::QgsTriangle( const QgsPointXY &p1, const QgsPointXY &p2, const QgsPointXY &p3 )
   : QgsPolygonV2()
 {
   mWkbType = QgsWkbTypes::Triangle;
-  QgsPointV2 pt1( p1 );
-  QgsPointV2 pt2( p2 );
-  QgsPointV2 pt3( p3 );
+  QgsPoint pt1( p1 );
+  QgsPoint pt2( p2 );
+  QgsPoint pt3( p3 );
 
   if ( !validateGeom( pt1, pt2, pt3 ) )
   {
@@ -69,9 +69,9 @@ QgsTriangle::QgsTriangle( const QPointF p1, const QPointF p2, const QPointF p3 )
   : QgsPolygonV2()
 {
   mWkbType = QgsWkbTypes::Triangle;
-  QgsPointV2 pt1( p1 );
-  QgsPointV2 pt2( p2 );
-  QgsPointV2 pt3( p3 );
+  QgsPoint pt1( p1 );
+  QgsPoint pt2( p2 );
+  QgsPoint pt3( p3 );
 
   if ( !validateGeom( pt1, pt2, pt3 ) )
   {
@@ -250,14 +250,14 @@ bool QgsTriangle::deleteVertex( QgsVertexId position )
   return false;
 }
 
-bool QgsTriangle::insertVertex( QgsVertexId position, const QgsPointV2 &vertex )
+bool QgsTriangle::insertVertex( QgsVertexId position, const QgsPoint &vertex )
 {
   Q_UNUSED( position );
   Q_UNUSED( vertex );
   return false;
 }
 #include <iostream>
-bool QgsTriangle::moveVertex( QgsVertexId vId, const QgsPointV2 &newPos )
+bool QgsTriangle::moveVertex( QgsVertexId vId, const QgsPoint &newPos )
 {
   if ( !mExteriorRing || vId.part != 0 || vId.ring != 0 || vId.vertex < 0 || vId.vertex > 4 )
   {
@@ -269,9 +269,9 @@ bool QgsTriangle::moveVertex( QgsVertexId vId, const QgsPointV2 &newPos )
     vId.vertex = 0;
   }
 
-  QgsPointV2 p1( vId.vertex == 0 ? newPos : vertexAt( 0 ) );
-  QgsPointV2 p2( vId.vertex == 1 ? newPos : vertexAt( 1 ) );
-  QgsPointV2 p3( vId.vertex == 2 ? newPos : vertexAt( 2 ) );
+  QgsPoint p1( vId.vertex == 0 ? newPos : vertexAt( 0 ) );
+  QgsPoint p2( vId.vertex == 1 ? newPos : vertexAt( 1 ) );
+  QgsPoint p3( vId.vertex == 2 ? newPos : vertexAt( 2 ) );
 
   if ( !validateGeom( p1, p2, p3 ) )
   {
@@ -354,7 +354,7 @@ QgsAbstractGeometry *QgsTriangle::boundary() const
   return mExteriorRing->clone();
 }
 
-QgsPointV2 QgsTriangle::vertexAt( int atVertex ) const
+QgsPoint QgsTriangle::vertexAt( int atVertex ) const
 {
   QgsVertexId id( 0, 0, atVertex );
   return mExteriorRing->vertexAt( id );
@@ -464,8 +464,8 @@ QVector<QgsLineString> QgsTriangle::bisectors( double lengthTolerance ) const
   QgsLineString bis1;
   QgsLineString bis2;
   QgsLineString bis3;
-  QgsPointV2 incenter = inscribedCenter();
-  QgsPointV2 out;
+  QgsPoint incenter = inscribedCenter();
+  QgsPoint out;
 
   QgsGeometryUtils::segmentIntersection( vertexAt( 0 ), incenter, vertexAt( 1 ), vertexAt( 2 ), out, lengthTolerance );
   bis1.setPoints( QgsPointSequence() <<  vertexAt( 0 ) << out );
@@ -485,27 +485,27 @@ QVector<QgsLineString> QgsTriangle::bisectors( double lengthTolerance ) const
 
 QgsTriangle QgsTriangle::medial() const
 {
-  QgsPointV2 p1, p2, p3;
+  QgsPoint p1, p2, p3;
   p1 = QgsGeometryUtils::midpoint( vertexAt( 0 ), vertexAt( 1 ) );
   p2 = QgsGeometryUtils::midpoint( vertexAt( 1 ), vertexAt( 2 ) );
   p3 = QgsGeometryUtils::midpoint( vertexAt( 2 ), vertexAt( 0 ) );
   return QgsTriangle( p1, p2, p3 );
 }
 
-QgsPointV2 QgsTriangle::orthocenter( double lengthTolerance ) const
+QgsPoint QgsTriangle::orthocenter( double lengthTolerance ) const
 {
   QVector<QgsLineString> alt = altitudes();
-  QgsPointV2 ortho;
+  QgsPoint ortho;
   QgsGeometryUtils::segmentIntersection( alt.at( 0 ).pointN( 0 ), alt.at( 0 ).pointN( 1 ), alt.at( 1 ).pointN( 0 ), alt.at( 1 ).pointN( 1 ), ortho, lengthTolerance );
 
   return ortho;
 }
 
-QgsPointV2 QgsTriangle::circumscribedCenter() const
+QgsPoint QgsTriangle::circumscribedCenter() const
 {
   double r, x, y;
   QgsGeometryUtils::circleCenterRadius( vertexAt( 0 ), vertexAt( 1 ), vertexAt( 2 ), r, x, y );
-  return QgsPointV2( x, y );
+  return QgsPoint( x, y );
 }
 
 double QgsTriangle::circumscribedRadius() const
@@ -520,7 +520,7 @@ QgsCircle QgsTriangle::circumscribedCircle() const
   return QgsCircle( circumscribedCenter(), circumscribedRadius() );
 }
 
-QgsPointV2 QgsTriangle::inscribedCenter() const
+QgsPoint QgsTriangle::inscribedCenter() const
 {
 
   QVector<double> l = lengths();
@@ -531,7 +531,7 @@ QgsPointV2 QgsTriangle::inscribedCenter() const
                l.at( 1 ) * vertexAt( 0 ).y() +
                l.at( 2 ) * vertexAt( 1 ).y() ) / perimeter();
 
-  return QgsPointV2( x, y );
+  return QgsPoint( x, y );
 }
 
 double QgsTriangle::inscribedRadius() const
@@ -539,7 +539,7 @@ double QgsTriangle::inscribedRadius() const
   return ( 2.0 * area() / perimeter() );
 }
 
-bool QgsTriangle::validateGeom( const QgsPointV2 &p1, const QgsPointV2 &p2, const QgsPointV2 &p3 )
+bool QgsTriangle::validateGeom( const QgsPoint &p1, const QgsPoint &p2, const QgsPoint &p3 )
 {
   if ( ( ( p1 == p2 ) || ( p1 == p3 ) || ( p2 == p3 ) ) || qgsDoubleNear( QgsGeometryUtils::leftOfLine( p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y() ), 0.0 ) )
   {

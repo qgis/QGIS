@@ -37,12 +37,15 @@ from copy import deepcopy
 import numbers
 
 from qgis.core import QgsProcessingUtils
-from qgis.utils import iface
+
 from qgis.PyQt.QtCore import QCoreApplication
 from qgis.core import (QgsRasterLayer, QgsVectorLayer, QgsMapLayer, QgsCoordinateReferenceSystem,
-                       QgsExpressionContext, QgsExpressionContextUtils, QgsExpression, QgsExpressionContextScope,
+                       QgsExpression,
                        QgsProject,
-                       QgsVectorFileWriter)
+                       QgsRectangle,
+                       QgsVectorFileWriter,
+                       QgsProcessingParameters,
+                       QgsProcessingParameterDefinition)
 
 from processing.tools.vector import resolveFieldIndex
 from processing.tools import dataobjects
@@ -66,41 +69,6 @@ def _splitParameterOptions(line):
     return isOptional, tokens[0], definition
 
 
-def _createDescriptiveName(s):
-    return s.replace('_', ' ')
-
-
-def _expressionContext():
-    context = QgsExpressionContext()
-    context.appendScope(QgsExpressionContextUtils.globalScope())
-    context.appendScope(QgsExpressionContextUtils.projectScope(QgsProject.instance()))
-
-    if iface.mapCanvas():
-        context.appendScope(QgsExpressionContextUtils.mapSettingsScope(iface.mapCanvas().mapSettings()))
-
-    processingScope = QgsExpressionContextScope()
-
-    extent = iface.mapCanvas().fullExtent()
-    processingScope.setVariable('fullextent_minx', extent.xMinimum())
-    processingScope.setVariable('fullextent_miny', extent.yMinimum())
-    processingScope.setVariable('fullextent_maxx', extent.xMaximum())
-    processingScope.setVariable('fullextent_maxy', extent.yMaximum())
-    context.appendScope(processingScope)
-    return context
-
-
-def _resolveLayers(value):
-    layers = QgsProcessingUtils.compatibleLayers(QgsProject.instance())
-    if value:
-        inputlayers = value.split(';')
-        for i, inputlayer in enumerate(inputlayers):
-            for layer in layers:
-                if layer.name() == inputlayer:
-                    inputlayers[i] = layer.source()
-                    break
-        return ";".join(inputlayers)
-
-
 class Parameter(object):
 
     """
@@ -108,65 +76,12 @@ class Parameter(object):
     take as input.
     """
 
-    default_metadata = {}
-
     def __init__(self, name='', description='', default=None, optional=False,
                  metadata={}):
-        self.name = name
-        self.description = description
-        self.default = default
         self.value = default
 
-        self.isAdvanced = False
-
-        # A hidden parameter can be used to set a hard-coded value.
-        # It can be used as any other parameter, but it will not be
-        # shown to the user
-        self.hidden = False
-
-        self.optional = parseBool(optional)
-
-        self.metadata = deepcopy(self.default_metadata)
-        self.metadata.update(deepcopy(metadata))
-
-    def setValue(self, obj):
-        """
-        Sets the value of the parameter.
-
-        Returns true if the value passed is correct for the type
-        of parameter.
-        """
-        if obj is None:
-            if not self.optional:
-                return False
-            self.value = None
-            return True
-
-        self.value = str(obj)
-        return True
-
-    def setDefaultValue(self):
-        """
-        Sets the value of the parameter to the default one
-
-        Returns true if the default value is correct for the type
-        of parameter.
-        """
-        return self.setValue(self.default)
-
     def __str__(self):
-        return u'{} <{}>'.format(self.name, self.__class__.__name__)
-
-    def getValueAsCommandLineParameter(self):
-        """
-        Returns the value of this parameter as it should have been
-        entered in the console if calling an algorithm using the
-        processing.run() method.
-        """
-        return str(self.value)
-
-    def typeName(self):
-        return self.__class__.__name__.replace('Parameter', '').lower()
+        return u'{} <{}>'.format(self.name(), self.__class__.__name__)
 
     def todict(self):
         o = deepcopy(self.__dict__)
@@ -178,81 +93,14 @@ class Parameter(object):
             context = 'Parameter'
         return QCoreApplication.translate(context, string)
 
-    def wrapper(self, dialog, row=0, col=0):
-        wrapper = self.metadata.get('widget_wrapper', None)
-        params = {}
-        # wrapper metadata should be a dict with class key
-        if isinstance(wrapper, dict):
-            params = deepcopy(wrapper)
-            wrapper = params.pop('class')
-        # wrapper metadata should be a class path
-        if isinstance(wrapper, str):
-            tokens = wrapper.split('.')
-            mod = __import__('.'.join(tokens[:-1]), fromlist=[tokens[-1]])
-            wrapper = getattr(mod, tokens[-1])
-        # or directly a class object
-        if isclass(wrapper):
-            wrapper = wrapper(self, dialog, row, col, **params)
-        # or a wrapper instance
-        return wrapper
-
-    def evaluate(self, alg):
-        pass
-
-    def evaluateForModeler(self, value, model):
-        return value
-
 
 class ParameterBoolean(Parameter):
-
-    default_metadata = {
-        'widget_wrapper': 'processing.gui.wrappers.BooleanWidgetWrapper'
-    }
 
     def __init__(self, name='', description='', default=None, optional=False, metadata={}):
         Parameter.__init__(self, name, description, parseBool(default), optional, metadata)
 
-    def setValue(self, value):
-        if value is None:
-            if not self.optional:
-                return False
-            self.value = None
-            return True
-
-        if isinstance(value, str):
-            self.value = str(value).lower() == str(True).lower()
-        else:
-            self.value = bool(value)
-        return True
-
-    def getAsScriptCode(self):
-        param_type = ''
-        if self.optional:
-            param_type += 'optional '
-        param_type += 'boolean '
-        return '##' + self.name + '=' + param_type + str(self.default)
-
-    @classmethod
-    def fromScriptCode(self, line):
-        isOptional, name, definition = _splitParameterOptions(line)
-        if definition.startswith("boolean"):
-            descName = _createDescriptiveName(name)
-            default = definition.strip()[len('boolean') + 1:] or None
-            if default == 'None':
-                default = None
-            if default:
-                param = ParameterBoolean(name, descName, default)
-            else:
-                param = ParameterBoolean(name, descName)
-            param.optional = isOptional
-            return param
-
 
 class ParameterCrs(Parameter):
-
-    default_metadata = {
-        'widget_wrapper': 'processing.gui.wrappers.CrsWidgetWrapper'
-    }
 
     def __init__(self, name='', description='', default=None, optional=False, metadata={}):
         '''The value is a string that uniquely identifies the
@@ -263,78 +111,8 @@ class ParameterCrs(Parameter):
         if self.value == 'ProjectCrs':
             self.value = QgsProject.instance().crs().authid()
 
-    def setValue(self, value):
-        context = dataobjects.createContext()
-        if not bool(value):
-            if not self.optional:
-                return False
-            self.value = None
-            return True
-
-        if isinstance(value, QgsCoordinateReferenceSystem):
-            self.value = value.authid()
-            return True
-        if isinstance(value, QgsMapLayer):
-            self.value = value.crs().authid()
-            return True
-        try:
-            layer = QgsProcessingUtils.mapLayerFromString(value, context)
-            if layer is not None:
-                self.value = layer.crs().authid()
-                return True
-        except:
-            pass
-        if value == 'ProjectCrs':
-            self.value = QgsProject.instance().crs().authid()
-            return True
-
-        # TODO: check it is a valid authid
-        self.value = value
-        return True
-
-    def getValueAsCommandLineParameter(self):
-        return '"' + str(self.value) + '"'
-
-    def getAsScriptCode(self):
-        param_type = ''
-        if self.optional:
-            param_type += 'optional '
-        param_type += 'crs '
-        return '##' + self.name + '=' + param_type + str(self.default)
-
-    @classmethod
-    def fromScriptCode(self, line):
-        isOptional, name, definition = _splitParameterOptions(line)
-        if definition.startswith("crs"):
-            descName = _createDescriptiveName(name)
-            default = definition.strip()[len('crs') + 1:]
-            if default == 'None':
-                default = None
-            if default:
-                return ParameterCrs(name, descName, default, isOptional)
-            else:
-                return ParameterCrs(name, descName, None, isOptional)
-
-
-class ParameterDataObject(Parameter):
-
-    def getValueAsCommandLineParameter(self):
-        if self.value is None:
-            return str(None)
-        else:
-            s = QgsProcessingUtils.normalizeLayerSource(str(self.value))
-            s = '"%s"' % s
-            return s
-
-    def evaluate(self, alg):
-        self.value = _resolveLayers(self.value)
-
 
 class ParameterExtent(Parameter):
-
-    default_metadata = {
-        'widget_wrapper': 'processing.gui.wrappers.ExtentWidgetWrapper'
-    }
 
     USE_MIN_COVERING_EXTENT = 'USE_MIN_COVERING_EXTENT'
 
@@ -343,206 +121,20 @@ class ParameterExtent(Parameter):
         # The value is a string in the form "xmin, xmax, ymin, ymax"
         self.skip_crs_check = False
 
-    def setValue(self, value):
-        context = dataobjects.createContext()
-        if not value:
-            if not self.optional:
-                return False
-            self.value = None
-            return True
-
-        if isinstance(value, QgsMapLayer):
-            rect = value.extent()
-            self.value = '{},{},{},{}'.format(
-                rect.xMinimum(), rect.xMaximum(), rect.yMinimum(), rect.yMaximum())
-            return True
-
-        try:
-            layer = QgsProcessingUtils.mapLayerFromString(value, context)
-            if layer is not None:
-                rect = layer.extent()
-                self.value = '{},{},{},{}'.format(
-                    rect.xMinimum(), rect.xMaximum(), rect.yMinimum(), rect.yMaximum())
-                return True
-        except:
-            pass
-
-        tokens = str(value).split(',')
-        if len(tokens) != 4:
-            return False
-        try:
-            float(tokens[0])
-            float(tokens[1])
-            float(tokens[2])
-            float(tokens[3])
-            self.value = value
-            return True
-        except:
-            return False
-
-    def getValueAsCommandLineParameter(self):
-        if self.value is not None:
-            return '"' + str(self.value) + '"'
-        else:
-            return str(None)
-
-    def getAsScriptCode(self):
-        param_type = ''
-        if self.optional:
-            param_type += 'optional '
-        param_type += 'extent'
-        return '##' + self.name + '=' + param_type
-
-    @classmethod
-    def fromScriptCode(self, line):
-        isOptional, name, definition = _splitParameterOptions(line)
-        if definition.startswith("extent"):
-            descName = _createDescriptiveName(name)
-            default = definition.strip()[len('extent') + 1:] or None
-            return ParameterExtent(name, descName, default, isOptional)
-
-    def evaluate(self, alg):
-        if self.optional and not bool(self.value):
-            self.value = self.getMinCoveringExtent(alg)
-
-    def getMinCoveringExtent(self, alg):
-        first = True
-        found = False
-        context = dataobjects.createContext()
-        for param in alg.parameters:
-            if param.value:
-                if isinstance(param, (ParameterRaster, ParameterVector)):
-                    if isinstance(param.value, (QgsRasterLayer,
-                                                QgsVectorLayer)):
-                        layer = param.value
-                    else:
-                        layer = QgsProcessingUtils.mapLayerFromString(param.value, context)
-                    if layer:
-                        found = True
-                        self.addToRegion(layer, first)
-                        first = False
-                elif isinstance(param, ParameterMultipleInput):
-                    layers = param.value.split(';')
-                    for layername in layers:
-                        layer = QgsProcessingUtils.mapLayerFromString(layername, context)
-                        if layer:
-                            found = True
-                            self.addToRegion(layer, first)
-                            first = False
-        if found:
-            return '{},{},{},{}'.format(
-                self.xmin, self.xmax, self.ymin, self.ymax)
-        else:
-            return None
-
-    def addToRegion(self, layer, first):
-        if first:
-            self.xmin = layer.extent().xMinimum()
-            self.xmax = layer.extent().xMaximum()
-            self.ymin = layer.extent().yMinimum()
-            self.ymax = layer.extent().yMaximum()
-        else:
-            self.xmin = min(self.xmin, layer.extent().xMinimum())
-            self.xmax = max(self.xmax, layer.extent().xMaximum())
-            self.ymin = min(self.ymin, layer.extent().yMinimum())
-            self.ymax = max(self.ymax, layer.extent().yMaximum())
-
 
 class ParameterPoint(Parameter):
-
-    default_metadata = {
-        'widget_wrapper': 'processing.gui.wrappers.PointWidgetWrapper'
-    }
 
     def __init__(self, name='', description='', default=None, optional=False):
         Parameter.__init__(self, name, description, default, optional)
         # The value is a string in the form "x, y"
 
-    def setValue(self, text):
-        if text is None:
-            if not self.optional:
-                return False
-            self.value = None
-            return True
-
-        tokens = str(text).split(',')
-        if len(tokens) != 2:
-            return False
-        try:
-            float(tokens[0])
-            float(tokens[1])
-            self.value = text
-            return True
-        except:
-            return False
-
-    def getValueAsCommandLineParameter(self):
-        return '"' + str(self.value) + '"'
-
-    def getAsScriptCode(self):
-        param_type = ''
-        if self.optional:
-            param_type += 'optional '
-        param_type += 'point'
-        return '##' + self.name + '=' + param_type
-
-    @classmethod
-    def fromScriptCode(self, line):
-        isOptional, name, definition = _splitParameterOptions(line)
-        if definition.startswith("point"):
-            descName = _createDescriptiveName(name)
-            default = definition.strip()[len('point') + 1:] or None
-            return ParameterPoint(name, descName, default, isOptional)
-
 
 class ParameterFile(Parameter):
-
-    default_metadata = {
-        'widget_wrapper': 'processing.gui.wrappers.FileWidgetWrapper'
-    }
 
     def __init__(self, name='', description='', isFolder=False, optional=True, ext=None):
         Parameter.__init__(self, name, description, None, parseBool(optional))
         self.ext = ext
         self.isFolder = parseBool(isFolder)
-
-    def getValueAsCommandLineParameter(self):
-        return '"' + str(self.value) + '"'
-
-    def setValue(self, obj):
-        if obj is None or obj.strip() == '':
-            if not self.optional:
-                return False
-            self.value = None if obj is None else obj.strip()
-            return True
-
-        if self.ext is not None and obj != '' and not obj.endswith(self.ext):
-            return False
-        self.value = str(obj)
-        return True
-
-    def typeName(self):
-        if self.isFolder:
-            return 'directory'
-        else:
-            return 'file'
-
-    def getAsScriptCode(self):
-        param_type = ''
-        if self.optional:
-            param_type += 'optional '
-        if self.isFolder:
-            param_type += 'folder'
-        else:
-            param_type += 'file'
-        return '##' + self.name + '=' + param_type
-
-    @classmethod
-    def fromScriptCode(self, line):
-        isOptional, name, definition = _splitParameterOptions(line)
-        if definition.startswith("file") or definition.startswith("folder"):
-            descName = _createDescriptiveName(name)
-            return ParameterFile(name, descName, definition.startswith("folder"), isOptional)
 
 
 class ParameterFixedTable(Parameter):
@@ -556,23 +148,6 @@ class ParameterFixedTable(Parameter):
         self.numRows = int(numRows)
         self.fixedNumOfRows = parseBool(fixedNumOfRows)
 
-    def setValue(self, obj):
-        if obj is None:
-            if not self.optional:
-                return False
-            self.value = None
-            return True
-
-        # TODO: check that it contains a correct number of elements
-        if isinstance(obj, str):
-            self.value = obj
-        else:
-            self.value = ParameterFixedTable.tableToString(obj)
-        return True
-
-    def getValueAsCommandLineParameter(self):
-        return '"' + str(self.value) + '"'
-
     @staticmethod
     def tableToString(table):
         tablestring = ''
@@ -582,22 +157,8 @@ class ParameterFixedTable(Parameter):
         tablestring = tablestring[:-1]
         return tablestring
 
-    def getAsScriptCode(self):
-        param_type = ''
-        if self.optional:
-            param_type += 'optional '
-        param_type += 'fixedtable'
-        return '##' + self.name + '=' + param_type
 
-    @classmethod
-    def fromScriptCode(self, line):
-        isOptional, name, definition = _splitParameterOptions(line)
-        if definition.startswith("fixedtable"):
-            descName = _createDescriptiveName(name)
-            return ParameterFixedTable(name, descName, optional=isOptional)
-
-
-class ParameterMultipleInput(ParameterDataObject):
+class ParameterMultipleInput(Parameter):
 
     """A parameter representing several data objects.
 
@@ -605,14 +166,10 @@ class ParameterMultipleInput(ParameterDataObject):
     each of which represents the data source location of each element.
     """
 
-    default_metadata = {
-        'widget_wrapper': 'processing.gui.wrappers.MultipleInputWidgetWrapper'
-    }
-
     exported = None
 
     def __init__(self, name='', description='', datatype=-1, optional=False, metadata={}):
-        ParameterDataObject.__init__(self, name, description, None, optional, metadata=metadata)
+        Parameter.__init__(self, name, description, None, optional, metadata=metadata)
         self.datatype = int(float(datatype))
         self.exported = None
         self.minNumInputs = 0
@@ -632,7 +189,7 @@ class ParameterMultipleInput(ParameterDataObject):
             self.minNumInputs = 0
             return True
 
-        if _minNumInputs < 1 and not self.optional:
+        if _minNumInputs < 1 and not self.flags() & QgsProcessingParameterDefinition.FlagOptional:
             # don't allow to set negative or null number of inputs if parameter isn't optional
             return False
 
@@ -647,31 +204,6 @@ class ParameterMultipleInput(ParameterDataObject):
 
     def getMinNumInputs(self):
         return self.minNumInputs
-
-    def setValue(self, obj):
-        self.exported = None
-        if obj is None:
-            if not self.optional:
-                return False
-            self.value = None
-            return True
-
-        if isinstance(obj, list):
-            if len(obj) == 0:
-                if self.optional:
-                    self.value = None
-                    return True
-                else:
-                    return False
-            # prevent setting value if we didn't provide required minimal number of inputs
-            elif len(obj) < self.minNumInputs:
-                return False
-
-            self.value = ";".join([self.getAsString(lay) for lay in obj])
-            return True
-        else:
-            self.value = str(obj)
-            return True
 
     def getSafeExportedLayers(self):
         """
@@ -752,17 +284,6 @@ class ParameterMultipleInput(ParameterDataObject):
                         return str(layer.source())
                 return s
 
-    def getFileFilter(self):
-        if self.datatype == dataobjects.TYPE_RASTER:
-            exts = dataobjects.getSupportedOutputRasterLayerExtensions()
-        elif self.datatype == dataobjects.TYPE_FILE:
-            return self.tr('All files (*.*)', 'ParameterMultipleInput')
-        else:
-            exts = QgsVectorFileWriter.supportedFormatExtensions()
-        for i in range(len(exts)):
-            exts[i] = self.tr('{0} files (*.{1})', 'ParameterMultipleInput').format(exts[i].upper(), exts[i].lower())
-        return ';;'.join(exts)
-
     def dataType(self):
         if self.datatype == dataobjects.TYPE_VECTOR_POINT:
             return 'points'
@@ -777,38 +298,8 @@ class ParameterMultipleInput(ParameterDataObject):
         else:
             return 'any vectors'
 
-    def getAsScriptCode(self):
-        param_type = ''
-        if self.optional:
-            param_type += 'optional '
-        if self.datatype == dataobjects.TYPE_RASTER:
-            param_type += 'multiple raster'
-        if self.datatype == dataobjects.TYPE_FILE:
-            param_type += 'multiple file'
-        else:
-            param_type += 'multiple vector'
-        return '##' + self.name + '=' + param_type
-
-    @classmethod
-    def fromScriptCode(self, line):
-        isOptional, name, definition = _splitParameterOptions(line)
-        descName = _createDescriptiveName(name)
-        if definition.lower().strip() == 'multiple raster':
-            return ParameterMultipleInput(name, descName,
-                                          dataobjects.TYPE_RASTER, isOptional)
-        elif definition.lower().strip() == 'multiple vector':
-            return ParameterMultipleInput(name, definition,
-                                          dataobjects.TYPE_VECTOR_ANY, isOptional)
-
-    def evaluate(self, alg):
-        self.value = _resolveLayers(self.value)
-
 
 class ParameterNumber(Parameter):
-
-    default_metadata = {
-        'widget_wrapper': 'processing.gui.wrappers.NumberWidgetWrapper'
-    }
 
     def __init__(self, name='', description='', minValue=None, maxValue=None,
                  default=None, optional=False, metadata={}):
@@ -834,80 +325,9 @@ class ParameterNumber(Parameter):
             self.max = None
         self.value = self.default
 
-    def setValue(self, n):
-        if n is None:
-            if not self.optional:
-                return False
-            self.value = None
-            return True
-
-        if isinstance(n, str):
-            try:
-                v = self._evaluate(n)
-                self.value = float(v)
-                if self.isInteger:
-                    self.value = int(math.floor(self.value))
-                return True
-            except:
-                return False
-        else:
-            try:
-                if float(n) - int(float(n)) == 0:
-                    value = int(float(n))
-                else:
-                    value = float(n)
-                if self.min is not None:
-                    if value < self.min:
-                        return False
-                if self.max is not None:
-                    if value > self.max:
-                        return False
-                self.value = value
-                return True
-            except:
-                raise
-                return False
-
-    def getAsScriptCode(self):
-        param_type = ''
-        if self.optional:
-            param_type += 'optional '
-        param_type += 'number'
-        code = '##' + self.name + '=' + param_type
-        if self.default:
-            code += str(self.default)
-        return code
-
-    @classmethod
-    def fromScriptCode(self, line):
-
-        isOptional, name, definition = _splitParameterOptions(line)
-        descName = _createDescriptiveName(name)
-        if definition.lower().strip().startswith('number'):
-            default = definition.strip()[len('number'):] or None
-            if default == 'None':
-                default = None
-            return ParameterNumber(name, descName, default=default, optional=isOptional)
-
-    def _evaluate(self, value):
-        exp = QgsExpression(value)
-        if exp.hasParserError():
-            raise ValueError(self.tr("Error in parameter expression: ") + exp.parserErrorString())
-        result = exp.evaluate(_expressionContext())
-        if exp.hasEvalError():
-            raise ValueError("Error evaluating parameter expression: " + exp.evalErrorString())
-        if self.isInteger:
-            return math.floor(result)
-        else:
-            return result
-
-    def evaluate(self, alg):
-        if isinstance(self.value, str) and bool(self.value):
-            self.value = self._evaluate(self.value)
-
     def _layerVariables(self, element, alg=None):
         variables = {}
-        context = dataobjects.createContext()
+        context = createContext()
         layer = QgsProcessingUtils.mapLayerFromString(element.value, context)
         if layer is not None:
             name = element.name if alg is None else "%s_%s" % (alg.name, element.name)
@@ -922,37 +342,6 @@ class ParameterNumber(Parameter):
                 variables['@%s_min' % name] = stats.minimumValue
                 variables['@%s_max' % name] = stats.maximumValue
         return variables
-
-    def evaluateForModeler(self, value, model):
-        if isinstance(value, numbers.Number):
-            return value
-        variables = {}
-        for param in model.parameters:
-            if isinstance(param, ParameterNumber):
-                variables["@" + param.name] = param.value
-            if isinstance(param, (ParameterRaster, ParameterVector)):
-                variables.update(self._layerVariables(param))
-
-        for alg in list(model.algs.values()):
-            for out in alg.algorithm.outputs:
-                if isinstance(out, OutputNumber):
-                    variables["@%s_%s" % (alg.name(), out.name)] = out.value
-                if isinstance(out, (OutputRaster, OutputVector)):
-                    variables.update(self._layerVariables(out, alg))
-        for k, v in list(variables.items()):
-            value = value.replace(k, str(v))
-
-        return value
-
-    def expressionContext(self):
-        return _expressionContext()
-
-    def getValueAsCommandLineParameter(self):
-        if self.value is None:
-            return str(None)
-        if isinstance(self.value, str):
-            return '"%s"' + self.value
-        return str(self.value)
 
 
 class ParameterRange(Parameter):
@@ -971,109 +360,15 @@ class ParameterRange(Parameter):
         else:
             self.isInteger = False
 
-    def setValue(self, text):
-        if text is None:
-            if not self.optional:
-                return False
-            self.value = None
-            return True
 
-        tokens = text.split(',')
-        if len(tokens) != 2:
-            return False
-        try:
-            float(tokens[0])
-            float(tokens[1])
-            self.value = text
-            return True
-        except:
-            return False
-
-    def getValueAsCommandLineParameter(self):
-        return '"' + str(self.value) + '"' if self.value is not None else str(None)
-
-
-class ParameterRaster(ParameterDataObject):
-
-    default_metadata = {
-        'widget_wrapper': 'processing.gui.wrappers.RasterWidgetWrapper'
-    }
+class ParameterRaster(Parameter):
 
     def __init__(self, name='', description='', optional=False, showSublayersDialog=True):
-        ParameterDataObject.__init__(self, name, description, None, optional)
+        Parameter.__init__(self, name, description, None, optional)
         self.showSublayersDialog = parseBool(showSublayersDialog)
-        self.exported = None
-
-    def getSafeExportedLayer(self):
-        """Returns not the value entered by the user, but a string with
-        a filename which contains the data of this layer, but saved in
-        a standard format (currently always a geotiff file) so that it
-        can be opened by most external applications.
-
-        Works only if the layer represented by the parameter value is
-        currently loaded in QGIS. Otherwise, it will not perform any
-        export and return the current value string.
-
-        If the current value represents a layer in a suitable format,
-        it does not export at all and returns that value.
-
-        The layer is exported just the first time the method is called.
-        The method can be called several times and it will always
-        return the same file, performing the export only the first
-        time.
-        """
-        context = dataobjects.createContext()
-
-        if self.exported:
-            return self.exported
-        layer = QgsProcessingUtils.mapLayerFromString(self.value, context, False)
-        if layer:
-            self.exported = dataobjects.exportRasterLayer(layer)
-        else:
-            self.exported = self.value
-        return self.exported
-
-    def setValue(self, obj):
-        self.exported = None
-        if obj is None:
-            if not self.optional:
-                return False
-            self.value = None
-            return True
-
-        if isinstance(obj, QgsRasterLayer):
-            self.value = str(obj.dataProvider().dataSourceUri())
-            return True
-        else:
-            self.value = str(obj)
-            return True
-
-    def getFileFilter(self):
-        exts = dataobjects.getSupportedOutputRasterLayerExtensions()
-        for i in range(len(exts)):
-            exts[i] = self.tr('{0} files (*.{1})', 'ParameterRaster').format(exts[i].upper(), exts[i].lower())
-        return ';;'.join(exts)
-
-    def getAsScriptCode(self):
-        param_type = ''
-        if self.optional:
-            param_type += 'optional '
-        param_type += 'raster'
-        return '##' + self.name + '=' + param_type
-
-    @classmethod
-    def fromScriptCode(self, line):
-        isOptional, name, definition = _splitParameterOptions(line)
-        descName = _createDescriptiveName(name)
-        if definition.lower().strip().startswith('raster'):
-            return ParameterRaster(name, descName, optional=isOptional)
 
 
 class ParameterSelection(Parameter):
-
-    default_metadata = {
-        'widget_wrapper': 'processing.gui.wrappers.SelectionWidgetWrapper'
-    }
 
     def __init__(self, name='', description='', options=[], default=None, isSource=False,
                  multiple=False, optional=False):
@@ -1106,52 +401,11 @@ class ParameterSelection(Parameter):
         self.values = [option[0] for option in options]
 
         self.value = None
-        if default is not None:
-            self.setValue(self.default)
-
-    def setValue(self, value):
-        if value is None:
-            if not self.optional:
-                return False
-            self.value = None
-            return True
-
-        if isinstance(value, list):
-            if not self.multiple:
-                return False
-            values = []
-            for v in value:
-                if v in self.values:
-                    values.append(v)
-                    continue
-                try:
-                    v = int(v)
-                except:
-                    pass
-                if v not in self.values:
-                    return False
-                values.append(v)
-            if not self.optional and len(values) == 0:
-                return False
-            self.value = values
-            return True
-        else:
-            if value in self.values:
-                self.value = value
-                return True
-            try:
-                value = int(value)
-            except:
-                pass
-            if value not in self.values:
-                return False
-            self.value = value
-            return True
 
     @classmethod
     def fromScriptCode(self, line):
         isOptional, name, definition = _splitParameterOptions(line)
-        descName = _createDescriptiveName(name)
+        descName = QgsProcessingParameters.descriptionFromName(name)
         if definition.lower().strip().startswith('selectionfromfile'):
             options = definition.strip()[len('selectionfromfile '):].split(';')
             return ParameterSelection(name, descName, options, isSource=True, optional=isOptional)
@@ -1176,164 +430,24 @@ class ParameterEvaluationException(Exception):
 
 class ParameterString(Parameter):
 
-    default_metadata = {
-        'widget_wrapper': 'processing.gui.wrappers.StringWidgetWrapper'
-    }
-
-    NEWLINE = '\n'
-    ESCAPED_NEWLINE = '\\n'
-
     def __init__(self, name='', description='', default=None, multiline=False,
                  optional=False, evaluateExpressions=False, metadata={}):
         Parameter.__init__(self, name, description, default, optional, metadata)
         self.multiline = parseBool(multiline)
-        self.evaluateExpressions = parseBool(evaluateExpressions)
-
-    def setValue(self, obj):
-        if not bool(obj):
-            if not self.optional:
-                return False
-            self.value = None
-            return True
-
-        self.value = str(obj).replace(
-            ParameterString.ESCAPED_NEWLINE,
-            ParameterString.NEWLINE
-        )
-        return True
-
-    def getValueAsCommandLineParameter(self):
-        return ('"' + str(self.value.replace(ParameterString.NEWLINE,
-                                             ParameterString.ESCAPED_NEWLINE)) + '"'
-                if self.value is not None else str(None))
-
-    def getAsScriptCode(self):
-        param_type = ''
-        if self.optional:
-            param_type += 'optional '
-        param_type += 'string '
-        return '##' + self.name + '=' + param_type + repr(self.default)
-
-    @classmethod
-    def fromScriptCode(self, line):
-        isOptional, name, definition = _splitParameterOptions(line)
-        descName = _createDescriptiveName(name)
-        if definition.lower().strip().startswith('string'):
-            default = definition.strip()[len('string') + 1:] or None
-            if default == 'None':
-                default = None
-            elif default.startswith('"') or default.startswith('\''):
-                default = eval(default)
-            if default:
-                return ParameterString(name, descName, default, optional=isOptional)
-            else:
-                return ParameterString(name, descName, optional=isOptional)
-        elif definition.lower().strip().startswith('longstring'):
-            default = definition.strip()[len('longstring') + 1:]
-            if default:
-                return ParameterString(name, descName, default, multiline=True, optional=isOptional)
-            else:
-                return ParameterString(name, descName, multiline=True, optional=isOptional)
-
-    def evaluate(self, alg):
-        if isinstance(self.value, str) and bool(self.value) and self.evaluateExpressions:
-            exp = QgsExpression(self.value)
-            if exp.hasParserError():
-                raise ValueError(self.tr("Error in parameter expression: ") + exp.parserErrorString())
-            result = exp.evaluate(_expressionContext())
-            if exp.hasEvalError():
-                raise ValueError("Error evaluating parameter expression: " + exp.evalErrorString())
-            self.value = result
-
-    def expressionContext(self):
-        return _expressionContext()
 
 
 class ParameterExpression(Parameter):
-
-    default_metadata = {
-        'widget_wrapper': 'processing.gui.wrappers.ExpressionWidgetWrapper'
-    }
-
-    NEWLINE = '\n'
-    ESCAPED_NEWLINE = '\\n'
 
     def __init__(self, name='', description='', default=None, optional=False, parent_layer=None):
         Parameter.__init__(self, name, description, default, optional)
         self.parent_layer = parent_layer
 
-    def setValue(self, obj):
-        if not bool(obj):
-            if not self.optional:
-                return False
-            self.value = None
-            return True
 
-        self.value = str(obj).replace(
-            ParameterString.ESCAPED_NEWLINE,
-            ParameterString.NEWLINE
-        )
-        return True
-
-    def getValueAsCommandLineParameter(self):
-        return ('"' + str(self.value.replace(ParameterExpression.NEWLINE,
-                                             ParameterExpression.ESCAPED_NEWLINE)) + '"'
-                if self.value is not None else str(None))
-
-    def getAsScriptCode(self):
-        param_type = ''
-        if self.optional:
-            param_type += 'optional '
-        param_type += 'expression '
-        return '##' + self.name + '=' + param_type + str(self.default)
-
-    @classmethod
-    def fromScriptCode(self, line):
-        isOptional, name, definition = _splitParameterOptions(line)
-        if definition.lower().strip().startswith('expression'):
-            descName = _createDescriptiveName(name)
-            default = definition.strip()[len('expression') + 1:] or None
-            if default == 'None':
-                default = None
-            if default:
-                return ParameterExpression(name, descName, default, optional=isOptional)
-            else:
-                return ParameterExpression(name, descName, optional=isOptional)
-
-
-class ParameterTable(ParameterDataObject):
-
-    default_metadata = {
-        'widget_wrapper': 'processing.gui.wrappers.TableWidgetWrapper'
-    }
+class ParameterTable(Parameter):
 
     def __init__(self, name='', description='', optional=False):
-        ParameterDataObject.__init__(self, name, description, None, optional)
+        Parameter.__init__(self, name, description, None, optional)
         self.exported = None
-
-    def setValue(self, obj):
-        self.exported = None
-        if obj is None:
-            if not self.optional:
-                return False
-            self.value = None
-            return True
-
-        if isinstance(obj, QgsVectorLayer):
-            source = str(obj.source())
-            self.value = source
-            return True
-        else:
-            self.value = str(obj)
-            layers = QgsProcessingUtils.compatibleVectorLayers(QgsProject.instance())
-            for layer in layers:
-                if layer.name() == self.value or layer.source() == self.value:
-                    source = str(layer.source())
-                    self.value = source
-                    return True
-            val = str(obj)
-            self.value = val
-            return os.path.exists(self.value)
 
     def getSafeExportedTable(self):
         """Returns not the value entered by the user, but a string with
@@ -1363,36 +477,12 @@ class ParameterTable(ParameterDataObject):
             self.exported = self.value
         return self.exported
 
-    def getFileFilter(self):
-        exts = ['csv', 'dbf']
-        for i in range(len(exts)):
-            exts[i] = self.tr('{0} files (*.{1})', 'ParameterTable').format(exts[i].upper(), exts[i].lower())
-        return ';;'.join(exts)
-
-    def getAsScriptCode(self):
-        param_type = ''
-        if self.optional:
-            param_type += 'optional '
-        param_type += 'table'
-        return '##' + self.name + '=' + param_type
-
-    @classmethod
-    def fromScriptCode(self, line):
-        isOptional, name, definition = _splitParameterOptions(line)
-        descName = _createDescriptiveName(name)
-        if definition.lower().strip().startswith('table'):
-            return ParameterTable(name, descName, isOptional)
-
 
 class ParameterTableField(Parameter):
 
     """A parameter representing a table field.
     Its value is a string that represents the name of the field.
     """
-
-    default_metadata = {
-        'widget_wrapper': 'processing.gui.wrappers.TableFieldWidgetWrapper'
-    }
 
     DATA_TYPE_NUMBER = 0
     DATA_TYPE_STRING = 1
@@ -1406,27 +496,8 @@ class ParameterTableField(Parameter):
         self.multiple = multiple
         self.datatype = int(datatype)
 
-    def getValueAsCommandLineParameter(self):
-        return '"' + str(self.value) + '"' if self.value is not None else str(None)
-
-    def setValue(self, value):
-        if not bool(value):
-            if not self.optional:
-                return False
-            self.value = None
-            return True
-
-        if isinstance(value, list):
-            if not self.multiple and len(value) > 1:
-                return False
-            self.value = ";".join(value)
-            return True
-        else:
-            self.value = str(value)
-        return True
-
     def __str__(self):
-        return self.name + ' <' + self.__module__.split('.')[-1] + ' from ' \
+        return self.name() + ' <' + self.__module__.split('.')[-1] + ' from ' \
             + self.parent + '>'
 
     def dataType(self):
@@ -1439,43 +510,12 @@ class ParameterTableField(Parameter):
         else:
             return 'any'
 
-    def getAsScriptCode(self):
-        param_type = ''
-        if self.optional:
-            param_type += 'optional '
-        param_type += 'field'
-        return '##' + self.name + '=' + param_type + str(self.parent)
 
-    @classmethod
-    def fromScriptCode(self, line):
-        isOptional, name, definition = _splitParameterOptions(line)
-        descName = _createDescriptiveName(name)
-        if definition.lower().strip().startswith('field'):
-            if definition.lower().strip().startswith('field number'):
-                parent = definition.strip()[len('field number') + 1:]
-                datatype = ParameterTableField.DATA_TYPE_NUMBER
-            elif definition.lower().strip().startswith('field string'):
-                parent = definition.strip()[len('field string') + 1:]
-                datatype = ParameterTableField.DATA_TYPE_STRING
-            elif definition.lower().strip().startswith('field datetime'):
-                parent = definition.strip()[len('field datetime') + 1:]
-                datatype = ParameterTableField.DATA_TYPE_DATETIME
-            else:
-                parent = definition.strip()[len('field') + 1:]
-                datatype = ParameterTableField.DATA_TYPE_ANY
-
-            return ParameterTableField(name, descName, parent, datatype, isOptional)
-
-
-class ParameterVector(ParameterDataObject):
-
-    default_metadata = {
-        'widget_wrapper': 'processing.gui.wrappers.VectorWidgetWrapper'
-    }
+class ParameterVector(Parameter):
 
     def __init__(self, name='', description='', datatype=[-1],
                  optional=False):
-        ParameterDataObject.__init__(self, name, description, None, optional)
+        Parameter.__init__(self, name, description, None, optional)
         if isinstance(datatype, int):
             datatype = [datatype]
         elif isinstance(datatype, str):
@@ -1483,21 +523,6 @@ class ParameterVector(ParameterDataObject):
         self.datatype = datatype
         self.exported = None
         self.allowOnlyOpenedLayers = False
-
-    def setValue(self, obj):
-        self.exported = None
-        if obj is None:
-            if not self.optional:
-                return False
-            self.value = None
-            return True
-
-        if isinstance(obj, QgsVectorLayer):
-            self.value = str(obj.source())
-            return True
-        else:
-            self.value = str(obj)
-            return True
 
     def getSafeExportedLayer(self):
         """Returns not the value entered by the user, but a string with
@@ -1532,38 +557,8 @@ class ParameterVector(ParameterDataObject):
             self.exported = self.value
         return self.exported
 
-    def getFileFilter(self):
-        exts = QgsVectorFileWriter.supportedFormatExtensions()
-        for i in range(len(exts)):
-            exts[i] = self.tr('{0} files (*.{1})', 'ParameterVector').format(exts[i].upper(), exts[i].lower())
-        return ';;'.join(exts)
-
     def dataType(self):
         return dataobjects.vectorDataType(self)
-
-    def getAsScriptCode(self):
-        param_type = ''
-        if self.optional:
-            param_type += 'optional '
-        param_type += 'vector'
-        return '##' + self.name + '=' + param_type
-
-    @classmethod
-    def fromScriptCode(self, line):
-        isOptional, name, definition = _splitParameterOptions(line)
-        descName = _createDescriptiveName(name)
-        if definition.lower().strip() == 'vector':
-            return ParameterVector(name, descName,
-                                   [dataobjects.TYPE_VECTOR_ANY], isOptional)
-        elif definition.lower().strip() == 'vector point':
-            return ParameterVector(name, descName,
-                                   [dataobjects.TYPE_VECTOR_POINT], isOptional)
-        elif definition.lower().strip() == 'vector line':
-            return ParameterVector(name, descName,
-                                   [dataobjects.TYPE_VECTOR_LINE], isOptional)
-        elif definition.lower().strip() == 'vector polygon':
-            return ParameterVector(name, descName,
-                                   [dataobjects.TYPE_VECTOR_POLYGON], isOptional)
 
 
 paramClasses = [c for c in list(sys.modules[__name__].__dict__.values()) if isclass(c) and issubclass(c, Parameter)]
@@ -1581,11 +576,19 @@ def getParameterFromString(s):
         try:
             clazz = getattr(sys.modules[__name__], tokens[0])
             param = clazz(*params)
-            param.isAdvanced = isAdvanced
+            if isAdvanced:
+                param.setFlags(param.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
             return param
         except:
             return None
     else:  # try script syntax
+
+        # try native method
+        param = QgsProcessingParameters.parameterFromScriptCode(s)
+        if param:
+            return param
+
+        # try Python duck-typed method
         for paramClass in paramClasses:
             try:
                 param = paramClass.fromScriptCode(s)

@@ -38,7 +38,7 @@ class APP_EXPORT QgsPointRotationItem: public QgsMapCanvasItem
     void paint( QPainter *painter ) override;
 
     //! Sets the center point of the rotation symbol (in map coordinates)
-    void setPointLocation( const QgsPoint &p );
+    void setPointLocation( const QgsPointXY &p );
 
     /** Sets the rotation of the symbol and displays the new rotation number.
     Units are degrees, starting from north direction, clockwise direction*/

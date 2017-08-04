@@ -79,6 +79,20 @@ class QgsProcessingUtils
  :rtype: QgsMapLayer
 %End
 
+    static QgsProcessingFeatureSource *variantToSource( const QVariant &value, QgsProcessingContext &context, const QVariant &fallbackValue = QVariant() ) /Factory/;
+%Docstring
+ Converts a variant ``value`` to a new feature source.
+
+ Sources will either be taken from ``context``'s active project, or loaded from external
+ sources and stored temporarily in the ``context``.
+
+ The optional ``fallbackValue`` can be used to specify a "default" value which is used
+ if ``value`` cannot be successfully converted to a source.
+
+ This function creates a new object and the caller takes responsibility for deleting the returned object.
+ :rtype: QgsProcessingFeatureSource
+%End
+
     static QString normalizeLayerSource( const QString &source );
 %Docstring
  Normalizes a layer ``source`` string for safe comparison across different
@@ -86,59 +100,26 @@ class QgsProcessingUtils
  :rtype: str
 %End
 
-    static QgsFeatureIterator getFeatures( QgsVectorLayer *layer, const QgsProcessingContext &context, const QgsFeatureRequest &request = QgsFeatureRequest() );
-%Docstring
- Returns an iterator for the features in a ``layer``, respecting
- the settings from the supplied ``context``.
- An optional base ``request`` can be used to optimise the returned
- iterator, eg by restricting the returned attributes or geometry.
- :rtype: QgsFeatureIterator
-%End
-
-    static long featureCount( QgsVectorLayer *layer, const QgsProcessingContext &context );
-%Docstring
- Returns an approximate feature count for a ``layer``, when
- the settings from the supplied ``context`` are respected. E.g. if the
- context is set to only use selected features, then calling this will
- return the count of selected features in the layer.
- :rtype: long
-%End
-
-    static QgsSpatialIndex createSpatialIndex( QgsVectorLayer *layer, const QgsProcessingContext &context );
-%Docstring
- Creates a spatial index for a layer, when
- the settings from the supplied ``context`` are respected. E.g. if the
- context is set to only use selected features, then calling this will
- return an index containing only selected features in the layer.
- :rtype: QgsSpatialIndex
-%End
-
-    static QList< QVariant > uniqueValues( QgsVectorLayer *layer, int fieldIndex, const QgsProcessingContext &context );
-%Docstring
- Returns a list of unique values contained in a single field in a ``layer``, when
- the settings from the supplied ``context`` are respected. E.g. if the
- context is set to only use selected features, then calling this will
- return unique values from selected features in the layer.
- :rtype: list of QVariant
-%End
-
 
     static void createFeatureSinkPython(
       QgsFeatureSink **sink /Out,TransferBack/,
       QString &destination /In,Out/,
-      const QString &encoding,
+      QgsProcessingContext &context,
       const QgsFields &fields,
       QgsWkbTypes::Type geometryType,
       const QgsCoordinateReferenceSystem &crs,
-      QgsProcessingContext &context ) /PyName=createFeatureSink/;
+      const QVariantMap &createOptions = QVariantMap() ) /PyName=createFeatureSink/;
 %Docstring
  Creates a feature sink ready for adding features. The ``destination`` specifies a destination
  URI for the resultant layer. It may be updated in place to reflect the actual destination
  for the layer.
 
- Sink parameters such as desired ``encoding``, ``fields``, ``geometryType`` and ``crs`` must be specified.
+ Sink parameters such as desired ``fields``, ``geometryType`` and ``crs`` must be specified.
 
- If the ``encoding`` is not specified, the default encoding from the ``context`` will be used.
+ The ``createOptions`` map can be used to specify additional sink creation options, which
+ are passed to the underlying provider when creating new layers. Known options also
+ include 'fileEncoding', which is used to specify a file encoding to use for created
+ files. If 'fileEncoding' is not specified, the default encoding from the ``context`` will be used.
 
  If a layer is created for the feature sink, the layer will automatically be added to the ``context``'s
  temporary layer store.
@@ -151,6 +132,125 @@ class QgsProcessingUtils
 
    available in Python bindings as createFeatureSink()
 %End
+
+    static QgsRectangle combineLayerExtents( const QList< QgsMapLayer *> layers, const QgsCoordinateReferenceSystem &crs = QgsCoordinateReferenceSystem() );
+%Docstring
+ Combines the extent of several map ``layers``. If specified, the target ``crs``
+ will be used to transform the layer's extent to the desired output reference system.
+ :rtype: QgsRectangle
+%End
+
+    static QVariant generateIteratingDestination( const QVariant &input, const QVariant &id, QgsProcessingContext &context );
+%Docstring
+ Converts an ``input`` parameter value for use in source iterating mode, where one individual sink
+ is created per input feature.
+ The ``id`` parameter represents the unique ID for this output, which is embedded into the resulting
+ parameter value.
+ :rtype: QVariant
+%End
+
+    static QString tempFolder();
+%Docstring
+ Returns a session specific processing temporary folder for use in processing algorithms.
+.. seealso:: generateTempFileName()
+ :rtype: str
+%End
+
+    static QString generateTempFilename( const QString &basename );
+%Docstring
+ Returns a temporary filename for a given file, putting it into
+ a temporary folder (creating that folder in the process),
+ but not changing the ``basename``.
+.. seealso:: tempFolder()
+ :rtype: str
+%End
+
+    static QString formatHelpMapAsHtml( const QVariantMap &map, const QgsProcessingAlgorithm *algorithm );
+%Docstring
+ Returns a HTML formatted version of the help text encoded in a variant ``map`` for
+ a specified ``algorithm``.
+ :rtype: str
+%End
+
+    static QString convertToCompatibleFormat( const QgsVectorLayer *layer,
+        bool selectedFeaturesOnly,
+        const QString &baseName,
+        const QStringList &compatibleFormats,
+        const QString &preferredFormat,
+        QgsProcessingContext &context,
+        QgsProcessingFeedback *feedback );
+%Docstring
+ Converts a source vector ``layer`` to a file path to a vector layer of compatible format.
+
+ If the specified ``layer`` is not of the format listed in the
+ ``compatibleFormats`` argument, then the layer will first be exported to a compatible format
+ in a temporary location using ``baseName``. The function will then return the path to that temporary file.
+
+ ``compatibleFormats`` should consist entirely of lowercase file extensions, e.g. 'shp'.
+
+ The ``preferredFormat`` argument is used to specify to desired file extension to use when a temporary
+ layer export is required. This defaults to shapefiles.
+ :rtype: str
+%End
+
+};
+
+class QgsProcessingFeatureSource : QgsFeatureSource
+{
+%Docstring
+ QgsFeatureSource subclass which proxies methods to an underlying QgsFeatureSource, modifying
+ results according to the settings in a QgsProcessingContext.
+.. versionadded:: 3.0
+%End
+
+%TypeHeaderCode
+#include "qgsprocessingutils.h"
+%End
+  public:
+
+    enum Flag
+    {
+      FlagSkipGeometryValidityChecks,
+    };
+    typedef QFlags<QgsProcessingFeatureSource::Flag> Flags;
+
+
+    QgsProcessingFeatureSource( QgsFeatureSource *originalSource, const QgsProcessingContext &context, bool ownsOriginalSource = false );
+%Docstring
+ Constructor for QgsProcessingFeatureSource, accepting an original feature source ``originalSource``
+ and processing ``context``.
+ Ownership of ``originalSource`` is dictated by ``ownsOriginalSource``. If ``ownsOriginalSource`` is false,
+ ownership is not transferred, and callers must ensure that ``originalSource`` exists for the lifetime of this object.
+ If ``ownsOriginalSource`` is true, then this object will take ownership of ``originalSource``.
+%End
+
+    ~QgsProcessingFeatureSource();
+
+    QgsFeatureIterator getFeatures( const QgsFeatureRequest &request, Flags flags ) const;
+%Docstring
+ Returns an iterator for the features in the source, respecting the supplied feature ``flags``.
+ An optional ``request`` can be used to optimise the returned
+ iterator, eg by restricting the returned attributes or geometry.
+ :rtype: QgsFeatureIterator
+%End
+
+    virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest &request = QgsFeatureRequest() ) const;
+
+    virtual QgsCoordinateReferenceSystem sourceCrs() const;
+
+    virtual QgsFields fields() const;
+
+    virtual QgsWkbTypes::Type wkbType() const;
+
+    virtual long featureCount() const;
+
+    virtual QString sourceName() const;
+
+    virtual QSet<QVariant> uniqueValues( int fieldIndex, int limit = -1 ) const;
+
+    virtual QVariant minimumValue( int fieldIndex ) const;
+
+    virtual QVariant maximumValue( int fieldIndex ) const;
 
 
 };

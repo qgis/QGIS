@@ -188,7 +188,7 @@ class GUI_EXPORT QgsProjectionSelectionTreeWidget : public QWidget, private Ui::
      *          does not scroll the list to the selection if the widget is not visible.
      *          Therefore you will typically want to use this in a showEvent().
      */
-    void applySelection( int column = QgsProjectionSelectionTreeWidget::None, QString value = QString::null );
+    void applySelection( int column = QgsProjectionSelectionTreeWidget::None, QString value = QString() );
 
     /**
        * \brief gets an arbitrary sqlite3 expression from the selection
@@ -256,7 +256,7 @@ class GUI_EXPORT QgsProjectionSelectionTreeWidget : public QWidget, private Ui::
     //! get list of authorities
     QStringList authorities();
 
-    //! Apply projection on double click
+    //! Apply projection on double-click
     void on_lstCoordinateSystems_itemDoubleClicked( QTreeWidgetItem *current, int column );
     void on_lstRecent_itemDoubleClicked( QTreeWidgetItem *current, int column );
     void on_lstCoordinateSystems_currentItemChanged( QTreeWidgetItem *current, QTreeWidgetItem *prev );

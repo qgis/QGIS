@@ -27,7 +27,7 @@ email                : tim@linfiniti.com
 #include "qgisapp.h"
 #include "qgsbearingutils.h"
 #include "qgscoordinatetransform.h"
-#include "qgscsexception.h"
+#include "qgsexception.h"
 #include "qgslogger.h"
 #include "qgsmaplayer.h"
 #include "qgsproject.h"
@@ -105,7 +105,7 @@ void QgsDecorationNorthArrow::run()
 void QgsDecorationNorthArrow::render( const QgsMapSettings &mapSettings, QgsRenderContext &context )
 {
 
-  //Large IF statement controlled by enable check box
+  //Large IF statement controlled by enable checkbox
   if ( enabled() )
   {
     QSize size( 64, 64 );

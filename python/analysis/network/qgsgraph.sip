@@ -71,7 +71,7 @@ class QgsGraphVertex
 %End
 
 
-    QgsGraphVertex( const QgsPoint &point );
+    QgsGraphVertex( const QgsPointXY &point );
 %Docstring
  This constructor initializes QgsGraphVertex object and associates a vertex with a point
 %End
@@ -88,10 +88,10 @@ class QgsGraphVertex
  :rtype: QgsGraphEdgeIds
 %End
 
-    QgsPoint point() const;
+    QgsPointXY point() const;
 %Docstring
  Returns point associated with graph vertex
- :rtype: QgsPoint
+ :rtype: QgsPointXY
 %End
 
 };
@@ -110,7 +110,7 @@ class QgsGraph
     QgsGraph();
 
 
-    int addVertex( const QgsPoint &pt );
+    int addVertex( const QgsPointXY &pt );
 %Docstring
  Add a vertex to the graph
  :rtype: int
@@ -146,7 +146,7 @@ class QgsGraph
  :rtype: QgsGraphEdge
 %End
 
-    int findVertex( const QgsPoint &pt ) const;
+    int findVertex( const QgsPointXY &pt ) const;
 %Docstring
  Find vertex by associated point
  :return: vertex index

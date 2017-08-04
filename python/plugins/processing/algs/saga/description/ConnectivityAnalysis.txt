@@ -1,0 +1,10 @@
+Connectivity Analysis
+grid_filter
+ParameterRaster|INPUT_GRID|Input Binary Grid|False
+OutputRaster|FILTERED_MASK|Filtered Image
+ParameterBoolean|FILTER|Apply Filter?|True
+ParameterNumber|SIZE|Filter Size (Radius)|None|None| 3
+OutputRaster|SYMBOLIC_IMAGE|Symbolic Image
+OutputVector|OUTLINES|Outlines
+ParameterBoolean|BORDER_PIXEL_CENTERS|Pixel Centers?|False
+ParameterBoolean|REMOVE_MARGINAL_REGIONS|Remove Border Regions?|False

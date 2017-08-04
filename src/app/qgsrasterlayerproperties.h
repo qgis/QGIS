@@ -21,12 +21,12 @@
 
 #include "qgsoptionsdialogbase.h"
 #include "ui_qgsrasterlayerpropertiesbase.h"
-#include "qgisgui.h"
+#include "qgsguiutils.h"
 #include "qgshelp.h"
 #include "qgsmaplayerstylemanager.h"
 #include "qgis_app.h"
 
-class QgsPoint;
+class QgsPointXY;
 class QgsMapLayer;
 class QgsMapCanvas;
 class QgsRasterLayer;
@@ -46,7 +46,7 @@ class APP_EXPORT QgsRasterLayerProperties : public QgsOptionsDialogBase, private
     /** \brief Constructor
      * \param ml Map layer for which properties will be displayed
      */
-    QgsRasterLayerProperties( QgsMapLayer *lyr, QgsMapCanvas *canvas, QWidget *parent = nullptr, Qt::WindowFlags = QgisGui::ModalDialogFlags );
+    QgsRasterLayerProperties( QgsMapLayer *lyr, QgsMapCanvas *canvas, QWidget *parent = nullptr, Qt::WindowFlags = QgsGuiUtils::ModalDialogFlags );
 
     ~QgsRasterLayerProperties();
 
@@ -83,9 +83,7 @@ class APP_EXPORT QgsRasterLayerProperties : public QgsOptionsDialogBase, private
     //! \brief slot executed when the reset null value to file default icon is selected
     //void on_btnResetNull_clicked();
 
-    void pixelSelected( const QgsPoint & );
-    //! \brief slot executed when the transparency level changes.
-    void sliderTransparency_valueChanged( int );
+    void pixelSelected( const QgsPointXY & );
 
   private slots:
     void on_mRenderTypeComboBox_currentIndexChanged( int index );
@@ -194,5 +192,7 @@ class APP_EXPORT QgsRasterLayerProperties : public QgsOptionsDialogBase, private
     QgsMapLayerStyle mOldStyle;
 
     bool mDisableRenderTypeComboBoxCurrentIndexChanged = false;
+
+    bool mMetadataFilled;
 };
 #endif

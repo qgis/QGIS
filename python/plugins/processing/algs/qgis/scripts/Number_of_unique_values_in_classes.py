@@ -1,26 +1,34 @@
 ##Vector table tools=group
-##input=vector
+
+# inputs
+
+
+##input=source
 ##class_field=field input
 ##value_field=field input
-##N_unique_values=output vector
+##N_unique_values=sink
+
 
 from qgis.PyQt.QtCore import QVariant
 from qgis.core import QgsFeature, QgsField, QgsProcessingUtils
 
-layer = QgsProcessingUtils.mapLayerFromString(input, context)
-fields = layer.fields()
+fields = input.fields()
 fields.append(QgsField('UNIQ_COUNT', QVariant.Int))
-writer, writer_dest = QgsProcessingUtils.createFeatureSink(N_unique_values, None, fields, layer.wkbType(), layer.crs(),
-                                                           context)
 
-class_field_index = layer.fields().lookupField(class_field)
-value_field_index = layer.fields().lookupField(value_field)
+(sink, N_unique_values) = self.parameterAsSink(parameters, 'N_unique_values', context,
+                                               fields, input.wkbType(), input.sourceCrs())
+
+
+class_field_index = input.fields().lookupField(class_field)
+value_field_index = input.fields().lookupField(value_field)
 
 outFeat = QgsFeature()
 classes = {}
-feats = QgsProcessingUtils.getFeatures(layer, context)
-nFeat = QgsProcessingUtils.featureCount(layer, context)
+feats = input.getFeatures()
+nFeat = input.featureCount()
 for n, inFeat in enumerate(feats):
+    if feedback.isCanceled():
+        break
     feedback.setProgress(int(100 * n / nFeat))
     attrs = inFeat.attributes()
     clazz = attrs[class_field_index]
@@ -30,8 +38,10 @@ for n, inFeat in enumerate(feats):
     if value not in classes[clazz]:
         classes[clazz].append(value)
 
-feats = processing.features(layer)
+feats = input.getFeatures()
 for n, inFeat in enumerate(feats):
+    if feedback.isCanceled():
+        break
     feedback.setProgress(int(100 * n / nFeat))
     inGeom = inFeat.geometry()
     outFeat.setGeometry(inGeom)
@@ -39,6 +49,4 @@ for n, inFeat in enumerate(feats):
     clazz = attrs[class_field_index]
     attrs.append(len(classes[clazz]))
     outFeat.setAttributes(attrs)
-    writer.addFeature(outFeat)
-
-del writer
+    sink.addFeature(outFeat)

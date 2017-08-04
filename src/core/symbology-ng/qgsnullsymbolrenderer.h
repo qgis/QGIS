@@ -43,16 +43,17 @@ class CORE_EXPORT QgsNullSymbolRenderer : public QgsFeatureRenderer
 
     virtual QSet<QString> usedAttributes( const QgsRenderContext &context ) const override;
     virtual QString dump() const override;
-    virtual QgsFeatureRenderer *clone() const override;
+    virtual QgsFeatureRenderer *clone() const override SIP_FACTORY;
     virtual QgsSymbolList symbols( QgsRenderContext &context ) override;
 
     /** Creates a null renderer from XML element.
      * \param element DOM element
+     * \param context reading context
      * \returns new null symbol renderer
      */
-    static QgsFeatureRenderer *create( QDomElement &element ) SIP_FACTORY;
+    static QgsFeatureRenderer *create( QDomElement &element, const QgsReadWriteContext &context ) SIP_FACTORY;
 
-    virtual QDomElement save( QDomDocument &doc ) override;
+    virtual QDomElement save( QDomDocument &doc, const QgsReadWriteContext &context ) override;
 
     /** Creates a QgsNullSymbolRenderer from an existing renderer.
      * \param renderer renderer to convert from

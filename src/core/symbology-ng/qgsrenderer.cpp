@@ -33,14 +33,14 @@
 #include "qgseffectstack.h"
 #include "qgspainteffectregistry.h"
 #include "qgswkbptr.h"
-#include "qgspointv2.h"
+#include "qgspoint.h"
 #include "qgsproperty.h"
 
 #include <QDomElement>
 #include <QDomDocument>
 #include <QPolygonF>
 
-QPointF QgsFeatureRenderer::_getPoint( QgsRenderContext &context, const QgsPointV2 &point )
+QPointF QgsFeatureRenderer::_getPoint( QgsRenderContext &context, const QgsPoint &point )
 {
   return QgsSymbol::_getPoint( context, point );
 }
@@ -115,7 +115,7 @@ QString QgsFeatureRenderer::dump() const
   return QStringLiteral( "UNKNOWN RENDERER\n" );
 }
 
-QgsFeatureRenderer *QgsFeatureRenderer::load( QDomElement &element )
+QgsFeatureRenderer *QgsFeatureRenderer::load( QDomElement &element, const QgsReadWriteContext &context )
 {
   // <renderer-v2 type=""> ... </renderer-v2>
 
@@ -129,7 +129,7 @@ QgsFeatureRenderer *QgsFeatureRenderer::load( QDomElement &element )
   if ( !m )
     return nullptr;
 
-  QgsFeatureRenderer *r = m->createRenderer( element );
+  QgsFeatureRenderer *r = m->createRenderer( element, context );
   if ( r )
   {
     r->setUsingSymbolLevels( element.attribute( QStringLiteral( "symbollevels" ), QStringLiteral( "0" ) ).toInt() );
@@ -150,8 +150,9 @@ QgsFeatureRenderer *QgsFeatureRenderer::load( QDomElement &element )
   return r;
 }
 
-QDomElement QgsFeatureRenderer::save( QDomDocument &doc )
+QDomElement QgsFeatureRenderer::save( QDomDocument &doc, const QgsReadWriteContext &context )
 {
+  Q_UNUSED( context );
   // create empty renderer element
   QDomElement rendererElem = doc.createElement( RENDERER_TAG_NAME );
   rendererElem.setAttribute( QStringLiteral( "forceraster" ), ( mForceRaster ? "1" : "0" ) );
@@ -273,13 +274,6 @@ QDomElement QgsFeatureRenderer::writeSld( QDomDocument &doc, const QString &styl
   return userStyleElem;
 }
 
-QgsLegendSymbologyList QgsFeatureRenderer::legendSymbologyItems( QSize iconSize )
-{
-  Q_UNUSED( iconSize );
-  // empty list by default
-  return QgsLegendSymbologyList();
-}
-
 bool QgsFeatureRenderer::legendSymbolItemsCheckable() const
 {
   return false;
@@ -303,23 +297,9 @@ void QgsFeatureRenderer::setLegendSymbolItem( const QString &key, QgsSymbol *sym
   delete symbol;
 }
 
-QgsLegendSymbolList QgsFeatureRenderer::legendSymbolItems( double scaleDenominator, const QString &rule )
+QgsLegendSymbolList QgsFeatureRenderer::legendSymbolItems() const
 {
-  Q_UNUSED( scaleDenominator );
-  Q_UNUSED( rule );
   return QgsLegendSymbolList();
-}
-
-QgsLegendSymbolListV2 QgsFeatureRenderer::legendSymbolItemsV2() const
-{
-  QgsLegendSymbolList lst = const_cast<QgsFeatureRenderer *>( this )->legendSymbolItems();
-  QgsLegendSymbolListV2 lst2;
-  int i = 0;
-  for ( QgsLegendSymbolList::const_iterator it = lst.begin(); it != lst.end(); ++it, ++i )
-  {
-    lst2 << QgsLegendSymbolItem( it->second, it->first, QString::number( i ), legendSymbolItemsCheckable() );
-  }
-  return lst2;
 }
 
 void QgsFeatureRenderer::setVertexMarkerAppearance( int type, int size )

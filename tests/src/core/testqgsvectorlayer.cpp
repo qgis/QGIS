@@ -44,11 +44,11 @@ class TestSignalReceiver : public QObject
       : QObject( 0 )
       , rendererChanged( false )
       , featureBlendMode( QPainter::CompositionMode( 0 ) )
-      , transparency( 0 )
+      , opacity( 1.0 )
     {}
     bool rendererChanged;
     QPainter::CompositionMode featureBlendMode;
-    int transparency;
+    double opacity;
   public slots:
     void onRendererChanged()
     {
@@ -58,9 +58,9 @@ class TestSignalReceiver : public QObject
     {
       featureBlendMode = blendMode;
     }
-    void onLayerTransparencyChanged( int layerTransparency )
+    void onLayerOpacityChanged( double layerOpacity )
     {
-      transparency = layerTransparency;
+      opacity = layerOpacity;
     }
 };
 
@@ -296,13 +296,13 @@ void TestQgsVectorLayer::QgsVectorLayersetLayerTransparency()
 {
   QgsVectorLayer *vLayer = static_cast< QgsVectorLayer * >( mpPointsLayer );
   TestSignalReceiver receiver;
-  QObject::connect( vLayer, SIGNAL( layerTransparencyChanged( int ) ),
-                    &receiver, SLOT( onLayerTransparencyChanged( int ) ) );
+  QObject::connect( vLayer, &QgsVectorLayer::opacityChanged,
+                    &receiver, &TestSignalReceiver::onLayerOpacityChanged );
 
-  QCOMPARE( receiver.transparency, 0 );
-  vLayer->setLayerTransparency( 50 );
-  QCOMPARE( receiver.transparency, 50 );
-  QCOMPARE( vLayer->layerTransparency(), 50 );
+  QCOMPARE( receiver.opacity, 1.0 );
+  vLayer->setOpacity( 0.5 );
+  QCOMPARE( receiver.opacity, 0.5 );
+  QCOMPARE( vLayer->opacity(), 0.5 );
 }
 
 void TestQgsVectorLayer::uniqueValues()
@@ -310,9 +310,8 @@ void TestQgsVectorLayer::uniqueValues()
   QgsVectorLayer *vLayer = static_cast< QgsVectorLayer * >( mpPointsLayer );
 
   //test with invalid field
-  QList<QVariant> values;
-  vLayer->uniqueValues( 1000, values );
-  QCOMPARE( values.length(), 0 );
+  QSet<QVariant> values = vLayer->uniqueValues( 1000 );
+  QCOMPARE( values.count(), 0 );
 }
 
 void TestQgsVectorLayer::minimumValue()
@@ -347,7 +346,7 @@ void TestQgsVectorLayer::testAddTopologicalPoints()
   QVERIFY( layerLine->isValid() );
 
   QgsPolyline line1;
-  line1 << QgsPoint( 2, 1 ) << QgsPoint( 1, 1 ) << QgsPoint( 1, 3 );
+  line1 << QgsPointXY( 2, 1 ) << QgsPointXY( 1, 1 ) << QgsPointXY( 1, 3 );
   QgsFeature lineF1;
   lineF1.setGeometry( QgsGeometry::fromPolyline( line1 ) );
 
@@ -359,19 +358,19 @@ void TestQgsVectorLayer::testAddTopologicalPoints()
   QCOMPARE( layerLine->undoStack()->index(), 1 );
 
   // outside of the linestring - nothing should happen
-  layerLine->addTopologicalPoints( QgsPoint( 2, 2 ) );
+  layerLine->addTopologicalPoints( QgsPointXY( 2, 2 ) );
 
   QCOMPARE( layerLine->undoStack()->index(), 1 );
   QCOMPARE( layerLine->getFeature( fidLineF1 ).geometry(), QgsGeometry::fromWkt( "LINESTRING(2 1, 1 1, 1 3)" ) );
 
   // add point at an existing vertex
-  layerLine->addTopologicalPoints( QgsPoint( 1, 1 ) );
+  layerLine->addTopologicalPoints( QgsPointXY( 1, 1 ) );
 
   QCOMPARE( layerLine->undoStack()->index(), 1 );
   QCOMPARE( layerLine->getFeature( fidLineF1 ).geometry(), QgsGeometry::fromWkt( "LINESTRING(2 1, 1 1, 1 3)" ) );
 
   // add point on segment of linestring
-  layerLine->addTopologicalPoints( QgsPoint( 1, 2 ) );
+  layerLine->addTopologicalPoints( QgsPointXY( 1, 2 ) );
 
   QCOMPARE( layerLine->undoStack()->index(), 2 );
   QCOMPARE( layerLine->getFeature( fidLineF1 ).geometry(), QgsGeometry::fromWkt( "LINESTRING(2 1, 1 1, 1 2, 1 3)" ) );

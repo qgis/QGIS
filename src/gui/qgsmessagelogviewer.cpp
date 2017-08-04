@@ -75,9 +75,26 @@ void QgsMessageLogViewer::logMessage( const QString &message, const QString &tag
     tabWidget->setTabsClosable( true );
   }
 
+  QString levelString;
+  switch ( level )
+  {
+    case QgsMessageLog::INFO:
+      levelString = "INFO";
+      break;
+    case QgsMessageLog::WARNING:
+      levelString = "WARNING";
+      break;
+    case QgsMessageLog::CRITICAL:
+      levelString = "CRITICAL";
+      break;
+    case QgsMessageLog::NONE:
+      levelString = "NONE";
+      break;
+  }
+
   QString prefix = QStringLiteral( "%1\t%2\t" )
                    .arg( QDateTime::currentDateTime().toString( Qt::ISODate ) )
-                   .arg( level );
+                   .arg( levelString );
   QString cleanedMessage = message;
   cleanedMessage = cleanedMessage.prepend( prefix ).replace( '\n', QLatin1String( "\n\t\t\t" ) );
   w->appendPlainText( cleanedMessage );

@@ -126,7 +126,7 @@ class QgsPostgresProvider : public QgsVectorDataProvider
     QString dataComment() const override;
     QVariant minimumValue( int index ) const override;
     QVariant maximumValue( int index ) const override;
-    virtual void uniqueValues( int index, QList<QVariant> &uniqueValues, int limit = -1 ) const override;
+    virtual QSet< QVariant > uniqueValues( int index, int limit = -1 ) const override;
     virtual QStringList uniqueStringsMatching( int index, const QString &substring, int limit = -1,
         QgsFeedback *feedback = nullptr ) const override;
     virtual void enumValues( int index, QStringList &enumList ) const override;
@@ -138,7 +138,7 @@ class QgsPostgresProvider : public QgsVectorDataProvider
     QString defaultValueClause( int fieldId ) const override;
     QVariant defaultValue( int fieldId ) const override;
     bool skipConstraintCheck( int fieldIndex, QgsFieldConstraints::Constraint constraint, const QVariant &value = QVariant() ) const override;
-    bool addFeatures( QgsFeatureList &flist ) override;
+    bool addFeatures( QgsFeatureList &flist, QgsFeatureSink::Flags flags = 0 ) override;
     bool deleteFeatures( const QgsFeatureIds &id ) override;
     bool truncate() override;
     bool addAttributes( const QList<QgsField> &attributes ) override;

@@ -44,7 +44,7 @@ QgsColorButton::QgsColorButton( QWidget *parent, const QString &cdt, QgsColorSch
   , mColorDialogTitle( cdt.isEmpty() ? tr( "Select Color" ) : cdt )
   , mColor( QColor() )
   , mDefaultColor( QColor() ) //default to invalid color
-  , mAllowAlpha( false )
+  , mAllowOpacity( false )
   , mAcceptLiveUpdates( true )
   , mColorSet( false )
   , mShowNoColorOption( false )
@@ -61,21 +61,31 @@ QgsColorButton::QgsColorButton( QWidget *parent, const QString &cdt, QgsColorSch
   setMinimumSize( QSize( 24, 16 ) );
   connect( this, &QAbstractButton::clicked, this, &QgsColorButton::buttonClicked );
 
-  //setup dropdown menu
+  //setup drop-down menu
   mMenu = new QMenu( this );
   connect( mMenu, &QMenu::aboutToShow, this, &QgsColorButton::prepareMenu );
   setMenu( mMenu );
   setPopupMode( QToolButton::MenuButtonPopup );
+
+#ifdef Q_OS_WIN
+  mMinimumSize = QSize( 120, 22 );
+#else
+  mMinimumSize = QSize( 120, 28 );
+#endif
+
+  mMinimumSize.setHeight( qMax( static_cast<int>( fontMetrics().height() * 1.1 ), mMinimumSize.height() ) );
+}
+
+
+
+QSize QgsColorButton::minimumSizeHint() const
+{
+  return mMinimumSize;
 }
 
 QSize QgsColorButton::sizeHint() const
 {
-  //make sure height of button looks good under different platforms
-#ifdef Q_OS_WIN
-  return QSize( 120, 22 );
-#else
-  return QSize( 120, 28 );
-#endif
+  return mMinimumSize;
 }
 
 const QPixmap &QgsColorButton::transparentBackground()
@@ -96,7 +106,7 @@ void QgsColorButton::showColorDialog()
     QColor currentColor = color();
     QgsCompoundColorWidget *colorWidget = new QgsCompoundColorWidget( panel, currentColor, QgsCompoundColorWidget::LayoutVertical );
     colorWidget->setPanelTitle( mColorDialogTitle );
-    colorWidget->setAllowAlpha( mAllowAlpha );
+    colorWidget->setAllowOpacity( mAllowOpacity );
 
     if ( currentColor.isValid() )
     {
@@ -116,7 +126,7 @@ void QgsColorButton::showColorDialog()
     // live updating dialog - QgsColorDialog will automatically use native dialog if option is set
     newColor = QgsColorDialog::getLiveColor(
                  color(), this, SLOT( setValidColor( const QColor & ) ),
-                 this, mColorDialogTitle, mAllowAlpha );
+                 this, mColorDialogTitle, mAllowOpacity );
   }
   else
   {
@@ -125,13 +135,13 @@ void QgsColorButton::showColorDialog()
     if ( useNative )
     {
       // why would anyone want this? who knows.... maybe the limited nature of native dialogs helps ease the transition for MapInfo users?
-      newColor = QColorDialog::getColor( color(), this, mColorDialogTitle, mAllowAlpha ? QColorDialog::ShowAlphaChannel : ( QColorDialog::ColorDialogOption )0 );
+      newColor = QColorDialog::getColor( color(), this, mColorDialogTitle, mAllowOpacity ? QColorDialog::ShowAlphaChannel : ( QColorDialog::ColorDialogOption )0 );
     }
     else
     {
       QgsColorDialog dialog( this, 0, color() );
       dialog.setTitle( mColorDialogTitle );
-      dialog.setAllowAlpha( mAllowAlpha );
+      dialog.setAllowOpacity( mAllowOpacity );
 
       if ( dialog.exec() )
       {
@@ -184,7 +194,7 @@ bool QgsColorButton::event( QEvent *e )
 
 void QgsColorButton::setToNoColor()
 {
-  if ( mAllowAlpha )
+  if ( mAllowOpacity )
   {
     QColor noColor = QColor( mColor );
     noColor.setAlpha( 0 );
@@ -220,7 +230,7 @@ bool QgsColorButton::colorFromMimeData( const QMimeData *mimeData, QColor &resul
 
   if ( mimeColor.isValid() )
   {
-    if ( !mAllowAlpha )
+    if ( !mAllowOpacity )
     {
       //remove alpha channel
       mimeColor.setAlpha( 255 );
@@ -445,7 +455,7 @@ void QgsColorButton::prepareMenu()
     connect( defaultColorAction, &QAction::triggered, this, &QgsColorButton::setToDefaultColor );
   }
 
-  if ( mShowNoColorOption && mAllowAlpha )
+  if ( mShowNoColorOption && mAllowOpacity )
   {
     QAction *noColorAction = new QAction( mNoColorString, this );
     noColorAction->setIcon( createMenuIcon( Qt::transparent, false ) );
@@ -460,7 +470,7 @@ void QgsColorButton::prepareMenu()
   colorAction->setDismissOnColorSelection( false );
   connect( colorAction, &QgsColorWidgetAction::colorChanged, this, &QgsColorButton::setColor );
   mMenu->addAction( colorAction );
-  if ( mAllowAlpha )
+  if ( mAllowOpacity )
   {
     QgsColorRampWidget *alphaRamp = new QgsColorRampWidget( mMenu, QgsColorWidget::Alpha, QgsColorRampWidget::Horizontal );
     alphaRamp->setColor( color() );
@@ -597,7 +607,7 @@ void QgsColorButton::setButtonBackground( const QColor &color )
   {
     if ( !mIconSize.isValid() )
     {
-      //calculate size of push button part of widget (ie, without the menu dropdown button part)
+      //calculate size of push button part of widget (ie, without the menu drop-down button part)
       QStyleOptionToolButton opt;
       initStyleOption( &opt );
       QRect buttonSize = QApplication::style()->subControlRect( QStyle::CC_ToolButton, &opt, QStyle::SC_ToolButton,
@@ -637,7 +647,7 @@ void QgsColorButton::setButtonBackground( const QColor &color )
     p.begin( &pixmap );
     p.setRenderHint( QPainter::Antialiasing );
     p.setPen( Qt::NoPen );
-    if ( mAllowAlpha && backgroundColor.alpha() < 255 )
+    if ( mAllowOpacity && backgroundColor.alpha() < 255 )
     {
       //start with checkboard pattern
       QBrush checkBrush = QBrush( transparentBackground() );
@@ -687,9 +697,9 @@ QColor QgsColorButton::color() const
   return mColor;
 }
 
-void QgsColorButton::setAllowAlpha( const bool allowAlpha )
+void QgsColorButton::setAllowOpacity( const bool allow )
 {
-  mAllowAlpha = allowAlpha;
+  mAllowOpacity = allow;
 }
 
 void QgsColorButton::setColorDialogTitle( const QString &title )

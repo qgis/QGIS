@@ -22,7 +22,7 @@ ELSE(TXT2TAGS_EXECUTABLE)
   )
 ENDIF(TXT2TAGS_EXECUTABLE)
 
-SET(QGIS_DOC_FILES ${QGIS_DOC_FILES} index.html news.html developersmap.html nohelp.html contributors.json favicon.ico style.css release-sponsors.html AUTHORS CONTRIBUTORS SPONSORS DONORS TRANSLATORS LICENSE)
+SET(QGIS_DOC_FILES ${QGIS_DOC_FILES} index.html news.html developersmap.html nohelp.html contributors.json favicon.ico style.css AUTHORS CONTRIBUTORS SPONSORS DONORS TRANSLATORS LICENSE)
 
 INSTALL(FILES ${QGIS_DOC_FILES} DESTINATION ${QGIS_DATA_DIR}/doc)
 INSTALL(FILES ../images/icons/qgis-icon-60x60.png DESTINATION ${QGIS_DATA_DIR}/doc/images)
@@ -53,7 +53,7 @@ IF(WITH_APIDOC)
     SET(DOXYGEN_INPUT
       ${CMAKE_SOURCE_DIR}/doc
       ${CMAKE_SOURCE_DIR}/src/core
-      ${CMAKE_SOURCE_DIR}/src/core/annotations      
+      ${CMAKE_SOURCE_DIR}/src/core/annotations
       ${CMAKE_SOURCE_DIR}/src/core/auth
       ${CMAKE_SOURCE_DIR}/src/core/composer
       ${CMAKE_SOURCE_DIR}/src/core/diagram
@@ -63,6 +63,7 @@ IF(WITH_APIDOC)
       ${CMAKE_SOURCE_DIR}/src/core/geometry
       ${CMAKE_SOURCE_DIR}/src/core/gps
       ${CMAKE_SOURCE_DIR}/src/core/layertree
+      ${CMAKE_SOURCE_DIR}/src/core/layout
       ${CMAKE_SOURCE_DIR}/src/core/metadata
       ${CMAKE_SOURCE_DIR}/src/core/pal
       ${CMAKE_SOURCE_DIR}/src/core/processing
@@ -78,6 +79,7 @@ IF(WITH_APIDOC)
       ${CMAKE_SOURCE_DIR}/src/gui/editorwidgets/core
       ${CMAKE_SOURCE_DIR}/src/gui/effects
       ${CMAKE_SOURCE_DIR}/src/gui/layertree
+      ${CMAKE_SOURCE_DIR}/src/gui/locator
       ${CMAKE_SOURCE_DIR}/src/gui/raster
       ${CMAKE_SOURCE_DIR}/src/gui/symbology-ng
       ${CMAKE_SOURCE_DIR}/src/analysis

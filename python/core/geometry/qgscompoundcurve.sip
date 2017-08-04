@@ -47,8 +47,8 @@ class QgsCompoundCurve: QgsCurve
 
 
     virtual double length() const;
-    virtual QgsPointV2 startPoint() const;
-    virtual QgsPointV2 endPoint() const;
+    virtual QgsPoint startPoint() const;
+    virtual QgsPoint endPoint() const;
     virtual void points( QgsPointSequence &pts /Out/ ) const;
     virtual int numPoints() const;
     virtual bool isEmpty() const;
@@ -77,7 +77,7 @@ class QgsCompoundCurve: QgsCurve
 
     void addCurve( QgsCurve *c /Transfer/ );
 %Docstring
- Adds a curve to the geometr (takes ownership)
+ Adds a curve to the geometry (takes ownership)
 %End
 
     void removeCurve( int i );
@@ -86,7 +86,7 @@ class QgsCompoundCurve: QgsCurve
  \param i index of curve to remove
 %End
 
-    void addVertex( const QgsPointV2 &pt );
+    void addVertex( const QgsPoint &pt );
 %Docstring
  Adds a vertex to the end of the geometry.
 %End
@@ -102,15 +102,15 @@ class QgsCompoundCurve: QgsCurve
     virtual void drawAsPolygon( QPainter &p ) const;
 
 
-    virtual bool insertVertex( QgsVertexId position, const QgsPointV2 &vertex );
-    virtual bool moveVertex( QgsVertexId position, const QgsPointV2 &newPos );
+    virtual bool insertVertex( QgsVertexId position, const QgsPoint &vertex );
+    virtual bool moveVertex( QgsVertexId position, const QgsPoint &newPos );
     virtual bool deleteVertex( QgsVertexId position );
 
-    virtual double closestSegment( const QgsPointV2 &pt, QgsPointV2 &segmentPt /Out/,
+    virtual double closestSegment( const QgsPoint &pt, QgsPoint &segmentPt /Out/,
                                    QgsVertexId &vertexAfter /Out/, bool *leftOf /Out/,
                                    double epsilon ) const;
 
-    virtual bool pointAt( int node, QgsPointV2 &point, QgsVertexId::VertexType &type ) const;
+    virtual bool pointAt( int node, QgsPoint &point, QgsVertexId::VertexType &type ) const;
 
 
     virtual void sumUpArea( double &sum /Out/ ) const;

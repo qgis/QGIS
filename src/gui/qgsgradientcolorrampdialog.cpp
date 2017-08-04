@@ -53,13 +53,13 @@ QgsGradientColorRampDialog::QgsGradientColorRampDialog( const QgsGradientColorRa
 #endif
 
   mPositionSpinBox->setShowClearButton( false );
-  btnColor1->setAllowAlpha( true );
-  btnColor1->setColorDialogTitle( tr( "Select ramp color" ) );
+  btnColor1->setAllowOpacity( true );
+  btnColor1->setColorDialogTitle( tr( "Select Ramp Color" ) );
   btnColor1->setContext( QStringLiteral( "symbology" ) );
   btnColor1->setShowNoColor( true );
   btnColor1->setNoColorString( tr( "Transparent" ) );
-  btnColor2->setAllowAlpha( true );
-  btnColor2->setColorDialogTitle( tr( "Select ramp color" ) );
+  btnColor2->setAllowOpacity( true );
+  btnColor2->setColorDialogTitle( tr( "Select Ramp Color" ) );
   btnColor2->setContext( QStringLiteral( "symbology" ) );
   btnColor2->setShowNoColor( true );
   btnColor2->setNoColorString( tr( "Transparent" ) );
@@ -125,7 +125,7 @@ QgsGradientColorRampDialog::QgsGradientColorRampDialog( const QgsGradientColorRa
   mSaturationCurve->attach( mPlot );
 
   mAlphaCurve = new QwtPlotCurve();
-  mAlphaCurve->setTitle( QStringLiteral( "Alpha" ) );
+  mAlphaCurve->setTitle( QStringLiteral( "Opacity" ) );
   mAlphaCurve->setPen( QPen( QColor( 50, 50, 50 ), 0.0 ) ),
               mAlphaCurve->setRenderHint( QwtPlotItem::RenderAntialiased, true );
   mAlphaCurve->attach( mPlot );

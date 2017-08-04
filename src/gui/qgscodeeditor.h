@@ -24,6 +24,9 @@
 #include "qgis_gui.h"
 
 
+SIP_IF_MODULE( HAVE_QSCI_SIP )
+
+
 class QWidget;
 
 /** \ingroup gui
@@ -46,7 +49,7 @@ class GUI_EXPORT QgsCodeEditor : public QsciScintilla
      * \param margin false: Enable margin for code editor
      * \since QGIS 2.6
      */
-    QgsCodeEditor( QWidget *parent = nullptr, const QString &title = "", bool folding = false, bool margin = false );
+    QgsCodeEditor( QWidget *parent SIP_TRANSFERTHIS = nullptr, const QString &title = "", bool folding = false, bool margin = false );
 
     /** Set the widget title
      * \param title widget title

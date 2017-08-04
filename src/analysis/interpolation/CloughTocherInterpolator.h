@@ -18,7 +18,7 @@
 #define CLOUGHTOCHERINTERPOLATOR_H
 
 #include "TriangleInterpolator.h"
-#include "Point3D.h"
+#include "qgspoint.h"
 #include "qgis_analysis.h"
 
 class NormVecDecorator;
@@ -33,27 +33,27 @@ class ANALYSIS_EXPORT CloughTocherInterpolator : public TriangleInterpolator
     //! Tolerance of the barycentric coordinates at the borders of the triangles (to prevent errors because of very small negativ baricentric coordinates)
     double mEdgeTolerance;
     //! First point of the triangle in x-,y-,z-coordinates
-    Point3D point1;
+    QgsPoint point1;
     //! Second point of the triangle in x-,y-,z-coordinates
-    Point3D point2;
+    QgsPoint point2;
     //! Third point of the triangle in x-,y-,z-coordinates
-    Point3D point3;
-    Point3D cp1;
-    Point3D cp2;
-    Point3D cp3;
-    Point3D cp4;
-    Point3D cp5;
-    Point3D cp6;
-    Point3D cp7;
-    Point3D cp8;
-    Point3D cp9;
-    Point3D cp10;
-    Point3D cp11;
-    Point3D cp12;
-    Point3D cp13;
-    Point3D cp14;
-    Point3D cp15;
-    Point3D cp16;
+    QgsPoint point3;
+    QgsPoint cp1;
+    QgsPoint cp2;
+    QgsPoint cp3;
+    QgsPoint cp4;
+    QgsPoint cp5;
+    QgsPoint cp6;
+    QgsPoint cp7;
+    QgsPoint cp8;
+    QgsPoint cp9;
+    QgsPoint cp10;
+    QgsPoint cp11;
+    QgsPoint cp12;
+    QgsPoint cp13;
+    QgsPoint cp14;
+    QgsPoint cp15;
+    QgsPoint cp16;
     //! Derivative in x-direction at point1
     double der1X;
     //! Derivative in y-direction at point1
@@ -67,11 +67,11 @@ class ANALYSIS_EXPORT CloughTocherInterpolator : public TriangleInterpolator
     //! Derivative in y-direction at point3
     double der3Y;
     //! Stores point1 of the last run
-    Point3D lpoint1;
+    QgsPoint lpoint1;
     //! Stores point2 of the last run
-    Point3D lpoint2;
+    QgsPoint lpoint2;
     //! Stores point3 of the last run
-    Point3D lpoint3;
+    QgsPoint lpoint3;
     //! Finds out, in which triangle the point with the coordinates x and y is
     void init( double x, double y );
     //! Calculates the Bernsteinpolynomials to calculate the Beziertriangle. 'n' is three in the cubical case, 'i', 'j', 'k' are the indices of the controllpoint and 'u', 'v', 'w' are the barycentric coordinates of the point
@@ -84,9 +84,9 @@ class ANALYSIS_EXPORT CloughTocherInterpolator : public TriangleInterpolator
     CloughTocherInterpolator( NormVecDecorator *tin );
     virtual ~CloughTocherInterpolator();
     //! Calculates the normal vector and assigns it to vec (not implemented at the moment)
-    virtual bool calcNormVec( double x, double y, Vector3D *result ) override;
+    virtual bool calcNormVec( double x, double y, Vector3D *result SIP_OUT ) override;
     //! Performs a linear interpolation in a triangle and assigns the x-,y- and z-coordinates to point
-    virtual bool calcPoint( double x, double y, Point3D *result ) override;
+    virtual bool calcPoint( double x, double y, QgsPoint *result SIP_OUT ) override;
     virtual void setTriangulation( NormVecDecorator *tin );
 };
 

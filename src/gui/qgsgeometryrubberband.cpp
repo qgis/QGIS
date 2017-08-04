@@ -18,7 +18,7 @@
 #include "qgsgeometryrubberband.h"
 #include "qgsabstractgeometry.h"
 #include "qgsmapcanvas.h"
-#include "qgspointv2.h"
+#include "qgspoint.h"
 #include <QPainter>
 
 QgsGeometryRubberBand::QgsGeometryRubberBand( QgsMapCanvas *mapCanvas, QgsWkbTypes::GeometryType geomType ): QgsMapCanvasItem( mapCanvas ),
@@ -61,7 +61,7 @@ void QgsGeometryRubberBand::paint( QPainter *painter )
 
   //draw vertices
   QgsVertexId vertexId;
-  QgsPointV2 vertex;
+  QgsPoint vertex;
   while ( paintGeom->nextVertex( vertexId, vertex ) )
   {
     drawVertex( painter, vertex.x(), vertex.y() );
@@ -118,7 +118,7 @@ void QgsGeometryRubberBand::setGeometry( QgsAbstractGeometry *geom )
   }
 }
 
-void QgsGeometryRubberBand::moveVertex( QgsVertexId id, const QgsPointV2 &newPos )
+void QgsGeometryRubberBand::moveVertex( QgsVertexId id, const QgsPoint &newPos )
 {
   if ( mGeometry )
   {

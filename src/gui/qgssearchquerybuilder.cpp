@@ -40,7 +40,7 @@ QgsSearchQueryBuilder::QgsSearchQueryBuilder( QgsVectorLayer *layer,
   setupUi( this );
   setupListViews();
 
-  setWindowTitle( tr( "Search query builder" ) );
+  setWindowTitle( tr( "Search Query Builder" ) );
 
   QPushButton *pbn = new QPushButton( tr( "&Test" ) );
   buttonBox->addButton( pbn, QDialogButtonBox::ActionRole );
@@ -236,7 +236,7 @@ long QgsSearchQueryBuilder::countRecords( const QString &searchString )
 
 void QgsSearchQueryBuilder::on_btnOk_clicked()
 {
-  // if user hits Ok and there is no query, skip the validation
+  // if user hits OK and there is no query, skip the validation
   if ( txtSQL->text().trimmed().length() > 0 )
   {
     accept();

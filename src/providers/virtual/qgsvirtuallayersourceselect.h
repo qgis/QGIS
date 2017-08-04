@@ -21,22 +21,29 @@ email                : hugo dot mercier at oslandia dot com
 
 #include "ui_qgsvirtuallayersourceselectbase.h"
 #include <qgis.h>
-#include <qgisgui.h>
+#include "qgsguiutils.h"
 #include <qgsvirtuallayerdefinition.h>
+#include "qgsproviderregistry.h"
+#include "qgsabstractdatasourcewidget.h"
 
 class QgsVectorLayer;
 class QMainWindow;
 class QgsEmbeddedLayerSelectDialog;
+class QgsLayerTreeView;
 
-class QgsVirtualLayerSourceSelect : public QDialog, private Ui::QgsVirtualLayerSourceSelectBase
+class QgsVirtualLayerSourceSelect : public QgsAbstractDataSourceWidget, private Ui::QgsVirtualLayerSourceSelectBase
 {
     Q_OBJECT
 
   public:
-    QgsVirtualLayerSourceSelect( QWidget *parent, Qt::WindowFlags fl = QgisGui::ModalDialogFlags );
+    QgsVirtualLayerSourceSelect( QWidget *parent = nullptr, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::None );
+
+  public slots:
+    //! Triggered when the provider's connections need to be refreshed
+    void refresh() override;
+    void addButtonClicked() override;
 
   private slots:
-    void on_buttonBox_accepted();
     void onTestQuery();
     void onBrowseCRS();
     void onLayerComboChanged( int );
@@ -44,6 +51,7 @@ class QgsVirtualLayerSourceSelect : public QDialog, private Ui::QgsVirtualLayerS
     void onRemoveLayer();
     void onImportLayer();
     void onTableRowChanged( const QModelIndex &current, const QModelIndex &previous );
+    void updateLayersList();
 
   signals:
     //! Source, name, provider
@@ -57,6 +65,7 @@ class QgsVirtualLayerSourceSelect : public QDialog, private Ui::QgsVirtualLayerS
     QStringList mProviderList;
     QgsEmbeddedLayerSelectDialog *mEmbeddedSelectionDialog = nullptr;
     void addEmbeddedLayer( const QString &name, const QString &provider, const QString &encoding, const QString &source );
+    QgsLayerTreeView *mTreeView  = nullptr;
 };
 
 #endif

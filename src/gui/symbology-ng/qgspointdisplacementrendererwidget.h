@@ -21,6 +21,7 @@
 #include "ui_qgspointdisplacementrendererwidgetbase.h"
 #include "qgis.h"
 #include "qgsrendererwidget.h"
+#include "qgsexpressioncontextgenerator.h"
 #include "qgis_gui.h"
 
 class QgsPointDisplacementRenderer;
@@ -28,7 +29,7 @@ class QgsPointDisplacementRenderer;
 /** \ingroup gui
  * \class QgsPointDisplacementRendererWidget
  */
-class GUI_EXPORT QgsPointDisplacementRendererWidget: public QgsRendererWidget, private Ui::QgsPointDisplacementRendererWidgetBase
+class GUI_EXPORT QgsPointDisplacementRendererWidget: public QgsRendererWidget, public QgsExpressionContextGenerator, private Ui::QgsPointDisplacementRendererWidgetBase
 {
     Q_OBJECT
   public:
@@ -39,18 +40,19 @@ class GUI_EXPORT QgsPointDisplacementRendererWidget: public QgsRendererWidget, p
     QgsFeatureRenderer *renderer() override;
     void setContext( const QgsSymbolWidgetContext &context ) override;
 
+    QgsExpressionContext createExpressionContext() const override;
+
   private:
     QgsPointDisplacementRenderer *mRenderer = nullptr;
 
     void blockAllSignals( bool block );
-    void updateCenterIcon();
     void setupBlankUi( const QString &layerName );
 
   private slots:
     void on_mLabelFieldComboBox_currentIndexChanged( const QString &text );
     void on_mRendererComboBox_currentIndexChanged( int index );
     void on_mPlacementComboBox_currentIndexChanged( int index );
-    void on_mLabelFontButton_clicked();
+    void labelFontChanged();
     void on_mCircleWidthSpinBox_valueChanged( double d );
     void on_mCircleColorButton_colorChanged( const QColor &newColor );
     void on_mDistanceSpinBox_valueChanged( double d );
@@ -58,11 +60,9 @@ class GUI_EXPORT QgsPointDisplacementRendererWidget: public QgsRendererWidget, p
     void on_mLabelColorButton_colorChanged( const QColor &newColor );
     void on_mCircleModificationSpinBox_valueChanged( double d );
     void on_mScaleDependentLabelsCheckBox_stateChanged( int state );
-    void on_mMaxScaleDenominatorEdit_textChanged( const QString &text );
-    void on_mCenterSymbolPushButton_clicked();
+    void minLabelScaleChanged( double scale );
     void on_mRendererSettingsButton_clicked();
-    void updateCenterSymbolFromWidget();
-    void cleanUpSymbolSelector( QgsPanelWidget *container );
+    void centerSymbolChanged();
     void updateRendererFromWidget();
 };
 

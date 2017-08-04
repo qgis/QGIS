@@ -17,13 +17,12 @@
 #define QGSPAINTEFFECTREGISTRY_H
 
 #include "qgis_core.h"
-#include "qgis_sip.h"
 #include "qgis.h"
 #include <QDomElement>
 #include <QDomDocument>
 
 class QgsPaintEffect;
-class QgsPaintEffectWidget;
+class QgsPaintEffectWidget SIP_EXTERNAL;
 
 /** \ingroup core
  * \class QgsPaintEffectAbstractMetadata
@@ -69,7 +68,7 @@ class CORE_EXPORT QgsPaintEffectAbstractMetadata
      * if there's no GUI for the paint effect class.
      * \returns configuration widget
      */
-    virtual QgsPaintEffectWidget *createWidget() { return nullptr; }
+    virtual QgsPaintEffectWidget *createWidget() SIP_FACTORY { return nullptr; }
 
   protected:
     QString mName;
@@ -77,16 +76,17 @@ class CORE_EXPORT QgsPaintEffectAbstractMetadata
 
 };
 
-typedef QgsPaintEffect *( *QgsPaintEffectCreateFunc )( const QgsStringMap & );
-typedef QgsPaintEffectWidget *( *QgsPaintEffectWidgetFunc )();
+typedef QgsPaintEffect *( *QgsPaintEffectCreateFunc )( const QgsStringMap & ) SIP_SKIP;
+typedef QgsPaintEffectWidget *( *QgsPaintEffectWidgetFunc )() SIP_SKIP;
 
 /** \ingroup core
  * \class QgsPaintEffectMetadata
  * \brief Convenience metadata class that uses static functions to create an effect and its widget.
  *
  * \since QGIS 2.9
+ * \note not available in Python bindings
  */
-class CORE_EXPORT QgsPaintEffectMetadata : public QgsPaintEffectAbstractMetadata
+class CORE_EXPORT QgsPaintEffectMetadata : public QgsPaintEffectAbstractMetadata SIP_SKIP
 {
 
   public:
@@ -139,7 +139,7 @@ class CORE_EXPORT QgsPaintEffectMetadata : public QgsPaintEffectAbstractMetadata
      * \note not available in Python bindings
      * \see createWidget
      */
-    virtual QgsPaintEffectWidget *createWidget() override { return mWidgetFunc ? mWidgetFunc() : nullptr; } SIP_SKIP
+    virtual QgsPaintEffectWidget *createWidget() override SIP_FACTORY { return mWidgetFunc ? mWidgetFunc() : nullptr; } SIP_SKIP
 
   protected:
     QgsPaintEffectCreateFunc mCreateFunc;
@@ -218,6 +218,9 @@ class CORE_EXPORT QgsPaintEffectRegistry
     static bool isDefaultStack( QgsPaintEffect *effect );
 
   private:
+#ifdef SIP_RUN
+    QgsPaintEffectRegistry( const QgsPaintEffectRegistry &rh );
+#endif
 
     QMap<QString, QgsPaintEffectAbstractMetadata *> mMetadata;
 };

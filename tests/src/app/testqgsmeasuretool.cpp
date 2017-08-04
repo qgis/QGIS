@@ -103,8 +103,8 @@ void TestQgsMeasureTool::testLengthCalculation()
   std::unique_ptr< QgsMeasureDialog > dlg( new QgsMeasureDialog( tool.get() ) );
 
   tool->restart();
-  tool->addPoint( QgsPoint( 2484588, 2425722 ) );
-  tool->addPoint( QgsPoint( 2482767, 2398853 ) );
+  tool->addPoint( QgsPointXY( 2484588, 2425722 ) );
+  tool->addPoint( QgsPointXY( 2482767, 2398853 ) );
   //force dialog recalculation
   dlg->addPoint();
 
@@ -120,8 +120,8 @@ void TestQgsMeasureTool::testLengthCalculation()
   std::unique_ptr< QgsMeasureDialog > dlg2( new QgsMeasureDialog( tool2.get() ) );
 
   tool2->restart();
-  tool2->addPoint( QgsPoint( 2484588, 2425722 ) );
-  tool2->addPoint( QgsPoint( 2482767, 2398853 ) );
+  tool2->addPoint( QgsPointXY( 2484588, 2425722 ) );
+  tool2->addPoint( QgsPointXY( 2482767, 2398853 ) );
   //force dialog recalculation
   dlg2->addPoint();
 
@@ -136,13 +136,13 @@ void TestQgsMeasureTool::testLengthCalculation()
 
   QgsCoordinateTransform ct( srs, srs2 );
 
-  QgsPoint p0 = ct.transform( tool2->points()[0] );
-  QgsPoint p1 = ct.transform( tool2->points()[1] );
+  QgsPointXY p0 = ct.transform( tool2->points()[0] );
+  QgsPointXY p1 = ct.transform( tool2->points()[1] );
 
   mCanvas->setDestinationCrs( srs2 );
 
-  QgsPoint n0 = tool2->points()[0];
-  QgsPoint n1 = tool2->points()[1];
+  QgsPointXY n0 = tool2->points()[0];
+  QgsPointXY n1 = tool2->points()[1];
 
   QGSCOMPARENEAR( p0.x(), n0.x(), 0.001 );
   QGSCOMPARENEAR( p0.y(), n0.y(), 0.001 );
@@ -165,8 +165,8 @@ void TestQgsMeasureTool::testLengthCalculationNoCrs()
   std::unique_ptr< QgsMeasureDialog > dlg( new QgsMeasureDialog( tool.get() ) );
 
   tool->restart();
-  tool->addPoint( QgsPoint( 2484588, 2425722 ) );
-  tool->addPoint( QgsPoint( 2482767, 2398853 ) );
+  tool->addPoint( QgsPointXY( 2484588, 2425722 ) );
+  tool->addPoint( QgsPointXY( 2482767, 2398853 ) );
   //force dialog recalculation
   dlg->addPoint();
 
@@ -195,10 +195,10 @@ void TestQgsMeasureTool::testAreaCalculation()
   std::unique_ptr< QgsMeasureDialog > dlg( new QgsMeasureDialog( tool.get() ) );
 
   tool->restart();
-  tool->addPoint( QgsPoint( 2484588, 2425722 ) );
-  tool->addPoint( QgsPoint( 2482767, 2398853 ) );
-  tool->addPoint( QgsPoint( 2520109, 2397715 ) );
-  tool->addPoint( QgsPoint( 2520792, 2425494 ) );
+  tool->addPoint( QgsPointXY( 2484588, 2425722 ) );
+  tool->addPoint( QgsPointXY( 2482767, 2398853 ) );
+  tool->addPoint( QgsPointXY( 2520109, 2397715 ) );
+  tool->addPoint( QgsPointXY( 2520792, 2425494 ) );
   //force dialog recalculation
   dlg->addPoint();
 
@@ -214,10 +214,10 @@ void TestQgsMeasureTool::testAreaCalculation()
   std::unique_ptr< QgsMeasureDialog > dlg2( new QgsMeasureDialog( tool2.get() ) );
 
   tool2->restart();
-  tool2->addPoint( QgsPoint( 2484588, 2425722 ) );
-  tool2->addPoint( QgsPoint( 2482767, 2398853 ) );
-  tool2->addPoint( QgsPoint( 2520109, 2397715 ) );
-  tool2->addPoint( QgsPoint( 2520792, 2425494 ) );
+  tool2->addPoint( QgsPointXY( 2484588, 2425722 ) );
+  tool2->addPoint( QgsPointXY( 2482767, 2398853 ) );
+  tool2->addPoint( QgsPointXY( 2520109, 2397715 ) );
+  tool2->addPoint( QgsPointXY( 2520792, 2425494 ) );
   //force dialog recalculation
   dlg2->addPoint();
 

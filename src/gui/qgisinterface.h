@@ -32,6 +32,8 @@ class QgsCustomDropHandler;
 class QgsFeature;
 class QgsLayerTreeMapCanvasBridge;
 class QgsLayerTreeView;
+class QgsLayout;
+class QgsLayoutDesignerInterface;
 class QgsMapCanvas;
 class QgsMapLayer;
 class QgsMapLayerConfigWidgetFactory;
@@ -42,6 +44,8 @@ class QgsSnappingUtils;
 class QgsVectorLayer;
 class QgsVectorLayerTools;
 class QgsOptionsWidgetFactory;
+class QgsLocatorFilter;
+class QgsStatusBar;
 
 #include <QObject>
 #include <QFont>
@@ -294,6 +298,21 @@ class GUI_EXPORT QgisInterface : public QObject
     virtual void closeComposer( QgsComposition *composition ) = 0;
 
     /**
+     * Returns all currently open layout designers.
+     * \since QGIS 3.0
+     */
+    virtual QList<QgsLayoutDesignerInterface *> openLayoutDesigners() = 0;
+
+    /**
+     * Opens a new layout designer dialog for the specified \a layout, or
+     * brings an already open designer window to the foreground if one
+     * is already created for the layout.
+     * \since QGIS 3.0
+     * \see closeComposer()
+     */
+    virtual QgsLayoutDesignerInterface *openLayoutDesigner( QgsLayout *layout ) = 0;
+
+    /**
      * Opens the options dialog. The \a currentPage argument can be used to force
      * the dialog to open at a specific page.
      * \since QGIS 3.0
@@ -432,7 +451,7 @@ class GUI_EXPORT QgisInterface : public QObject
 #ifndef Q_MOC_RUN
     Q_DECL_DEPRECATED
 #endif
-    virtual void openURL( const QString &url, bool useQgisDocDirectory = true ) = 0;
+    virtual void openURL( const QString &url, bool useQgisDocDirectory = true ) = 0 SIP_DEPRECATED;
 
 
     /** Accessors for inserting items into menus and toolbars.
@@ -651,6 +670,37 @@ class GUI_EXPORT QgisInterface : public QObject
     //! Get timeout for timed messages: default of 5 seconds
     virtual int messageTimeout() = 0;
 
+    /**
+     * Returns a pointer to the app's status bar interface. This should be
+     * used for interacting and adding widgets and messages to the app's
+     * status bar (do not use the native Qt statusBar() method).
+     * \since QGIS 3.0
+     */
+    virtual QgsStatusBar *statusBarIface() = 0;
+
+    /**
+     * Registers a locator \a filter for the app's locator bar. Ownership of the filter is transferred to the
+     * locator.
+     * \warning Plugins which register filters to the locator bar must take care to correctly call
+     * deregisterLocatorFilter() and deregister their filters upon plugin unload to avoid crashes.
+     * \see deregisterLocatorFilter()
+     * \since QGIS 3.0
+     */
+    virtual void registerLocatorFilter( QgsLocatorFilter *filter SIP_TRANSFER ) = 0;
+
+    /**
+     * Deregisters a locator \a filter from the app's locator bar and deletes it. Calling this will block whilst
+     * any currently running query is terminated.
+     *
+     * Plugins which register filters to the locator bar must take care to correctly call
+     * deregisterLocatorFilter() to deregister their filters upon plugin unload to avoid crashes.
+     *
+     * \see registerLocatorFilter()
+     * \since QGIS 3.0
+     */
+    virtual void deregisterLocatorFilter( QgsLocatorFilter *filter ) = 0;
+
+
   signals:
 
     /** Emitted whenever current (selected) layer changes.
@@ -687,6 +737,30 @@ class GUI_EXPORT QgisInterface : public QObject
      * \see composerOpened()
      */
     void composerClosed( QgsComposerInterface *composer );
+
+    /**
+     * This signal is emitted when a new layout \a designer has been opened.
+     * \since QGIS 3.0
+     * \see layoutDesignerWillBeClosed()
+     */
+    void layoutDesignerOpened( QgsLayoutDesignerInterface *designer );
+
+    /**
+     * This signal is emitted before a layout \a designer is going to be closed
+     * and deleted.
+     * \since QGIS 3.0
+     * \see layoutDesignerClosed()
+     * \see layoutDesignerOpened()
+     */
+    void layoutDesignerWillBeClosed( QgsLayoutDesignerInterface *designer );
+
+    /**
+     * This signal is emitted after a layout designer window is closed.
+     * \since QGIS 3.0
+     * \see layoutDesignerWillBeClosed()
+     * \see layoutDesignerOpened()
+     */
+    void layoutDesignerClosed();
 
     /**
      * This signal is emitted when the initialization is complete

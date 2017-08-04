@@ -30,23 +30,11 @@ email                : hugo dot mercier at oslandia dot com
 #include <qgsvectordataprovider.h>
 
 QgsEmbeddedLayerSelectDialog::QgsEmbeddedLayerSelectDialog( QWidget *parent, QgsLayerTreeView *tv )
-  : QDialog( parent )
+  : QDialog( parent ),
+    mTreeView( tv )
 {
   setupUi( this );
-
-  // populate list
-  QList<QgsLayerTreeLayer *> layers = tv->layerTreeModel()->rootGroup()->findLayers();
-  Q_FOREACH ( const QgsLayerTreeLayer *l, layers )
-  {
-    if ( l->layer() && l->layer()->type() == QgsMapLayer::VectorLayer )
-    {
-      // display layer name and store its pointer
-      QListWidgetItem *item = new QListWidgetItem();
-      item->setText( l->layer()->name() );
-      item->setData( Qt::UserRole, QVariant::fromValue( static_cast<void *>( l->layer() ) ) );
-      mLayers->insertItem( mLayers->count(), item );
-    }
-  }
+  updateLayersList();
 }
 
 QStringList QgsEmbeddedLayerSelectDialog::layers() const
@@ -59,4 +47,22 @@ QStringList QgsEmbeddedLayerSelectDialog::layers() const
     ids << l->id();
   }
   return ids;
+}
+
+void QgsEmbeddedLayerSelectDialog::updateLayersList()
+{
+  // populate list
+  mLayers->clear();
+  QList<QgsLayerTreeLayer *> layers = mTreeView->layerTreeModel()->rootGroup()->findLayers();
+  Q_FOREACH ( const QgsLayerTreeLayer *l, layers )
+  {
+    if ( l->layer() && l->layer()->type() == QgsMapLayer::VectorLayer )
+    {
+      // display layer name and store its pointer
+      QListWidgetItem *item = new QListWidgetItem();
+      item->setText( l->layer()->name() );
+      item->setData( Qt::UserRole, QVariant::fromValue( static_cast<void *>( l->layer() ) ) );
+      mLayers->insertItem( mLayers->count(), item );
+    }
+  }
 }

@@ -40,6 +40,7 @@
 #include "qgsprojectproperty.h"
 #include "qgsmaplayer.h"
 #include "qgsmaplayerstore.h"
+#include "qgsarchive.h"
 
 class QFileInfo;
 class QDomDocument;
@@ -273,7 +274,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      */
     QStringList readListEntry( const QString &scope, const QString &key, const QStringList &def = QStringList(), bool *ok = nullptr ) const;
 
-    QString readEntry( const QString &scope, const QString &key, const QString &def = QString::null, bool *ok = nullptr ) const;
+    QString readEntry( const QString &scope, const QString &key, const QString &def = QString(), bool *ok = nullptr ) const;
     int readNumEntry( const QString &scope, const QString &key, int def = 0, bool *ok = nullptr ) const;
     double readDoubleEntry( const QString &scope, const QString &key, double def = 0, bool *ok = nullptr ) const;
     bool readBoolEntry( const QString &scope, const QString &key, bool def = false, bool *ok = nullptr ) const;
@@ -377,7 +378,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     void setAreaUnits( QgsUnitTypes::AreaUnit unit );
 
     /** Return project's home path
-      \returns home path of project (or QString::null if not set) */
+      \returns home path of project (or null QString if not set) */
     QString homePath() const;
 
     QgsRelationManager *relationManager() const;
@@ -386,8 +387,9 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * Returns the project's layout manager, which manages compositions within
      * the project.
      * \since QGIS 3.0
+     * \note not available in Python bindings
      */
-    const QgsLayoutManager *layoutManager() const;
+    const QgsLayoutManager *layoutManager() const SIP_SKIP;
 
     /**
      * Returns the project's layout manager, which manages compositions within
@@ -417,6 +419,12 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * \since QGIS 3.0
      */
     QgsAnnotationManager *annotationManager();
+
+    /**
+     * Returns a const pointer to the project's annotation manager.
+     * \since QGIS 3.0
+     */
+    const QgsAnnotationManager *annotationManager() const SIP_SKIP;
 
     /**
      * Set a list of layers which should not be taken into account on map identification
@@ -568,6 +576,13 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      */
     QMap<QString, QgsMapLayer *> mapLayers() const;
 
+    /**
+     * Returns true if the project comes from a zip archive, false otherwise.
+     */
+    bool isZipped() const;
+
+#ifndef SIP_RUN
+
     /** Returns a list of registered map layers with a specified layer type.
      *
      * Example:
@@ -578,11 +593,12 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * \since QGIS 2.16
      * \see mapLayers()
      */
-    template <typename T> SIP_SKIP
+    template <typename T>
     QVector<T> layers() const
     {
       return mLayerStore->layers<T>();
     }
+#endif
 
     /**
      * \brief
@@ -609,9 +625,9 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * \since QGIS 1.8
      * \see addMapLayer()
      */
-    QList<QgsMapLayer *> addMapLayers( const QList<QgsMapLayer *> &mapLayers,
+    QList<QgsMapLayer *> addMapLayers( const QList<QgsMapLayer *> &mapLayers SIP_TRANSFER,
                                        bool addToLegend = true,
-                                       bool takeOwnership = true );
+                                       bool takeOwnership SIP_PYARGREMOVE = true );
 
     /**
      * \brief
@@ -640,7 +656,9 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * take ownership
      * \see addMapLayers()
      */
-    QgsMapLayer *addMapLayer( QgsMapLayer *mapLayer, bool addToLegend = true, bool takeOwnership = true );
+    QgsMapLayer *addMapLayer( QgsMapLayer *mapLayer SIP_TRANSFER,
+                              bool addToLegend = true,
+                              bool takeOwnership SIP_PYARGREMOVE = true );
 
     /**
      * \brief
@@ -996,13 +1014,25 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
 
     //! Creates layer and adds it to maplayer registry
     //! \note not available in Python bindings
-    bool addLayer( const QDomElement &layerElem, QList<QDomNode> &brokenNodes ) SIP_SKIP;
+    bool addLayer( const QDomElement &layerElem, QList<QDomNode> &brokenNodes, const QgsReadWriteContext &context ) SIP_SKIP;
 
     //! \note not available in Python bindings
     void initializeEmbeddedSubtree( const QString &projectFilePath, QgsLayerTreeGroup *group ) SIP_SKIP;
 
     //! \note not available in Python bindings
     void loadEmbeddedNodes( QgsLayerTreeGroup *group ) SIP_SKIP;
+
+    //! Read .qgs file
+    bool readProjectFile( const QString &filename );
+
+    //! Write .qgs file
+    bool writeProjectFile( const QString &filename );
+
+    //! Unzip .qgz file then read embedded .qgs file
+    bool unzip( const QString &filename );
+
+    //! Zip project
+    bool zip( const QString &filename );
 
     std::unique_ptr< QgsMapLayerStore > mLayerStore;
 
@@ -1036,6 +1066,8 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
 
     QVariantMap mCustomVariables;
 
+    std::unique_ptr<QgsProjectArchive> mArchive;
+
     QFile mFile;                 // current physical project file
     mutable QgsProjectPropertyKey mProperties;  // property hierarchy, TODO: this shouldn't be mutable
     QString mTitle;              // project title
@@ -1047,7 +1079,8 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
 
 /** Return the version string found in the given DOM document
    \returns the version string or an empty string if none found
+   \note not available in Python bindings.
  */
-CORE_EXPORT QgsProjectVersion getVersion( QDomDocument const &doc );
+CORE_EXPORT QgsProjectVersion getVersion( QDomDocument const &doc ) SIP_SKIP;
 
 #endif

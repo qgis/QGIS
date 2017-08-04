@@ -58,9 +58,9 @@ class CORE_EXPORT QgsSnappingUtils : public QObject
     //! Get a point locator for the given layer. If such locator does not exist, it will be created
     QgsPointLocator *locatorForLayer( QgsVectorLayer *vl );
 
-    //! Snap to map according to the current configuration (mode). Optional filter allows discarding unwanted matches.
+    //! Snap to map according to the current configuration. Optional filter allows discarding unwanted matches.
     QgsPointLocator::Match snapToMap( QPoint point, QgsPointLocator::MatchFilter *filter = nullptr );
-    QgsPointLocator::Match snapToMap( const QgsPoint &pointMap, QgsPointLocator::MatchFilter *filter = nullptr );
+    QgsPointLocator::Match snapToMap( const QgsPointXY &pointMap, QgsPointLocator::MatchFilter *filter = nullptr );
 
     //! Snap to current layer
     QgsPointLocator::Match snapToCurrentLayer( QPoint point, int type, QgsPointLocator::MatchFilter *filter = nullptr );
@@ -77,14 +77,6 @@ class CORE_EXPORT QgsSnappingUtils : public QObject
     QgsVectorLayer *currentLayer() const { return mCurrentLayer; }
 
     // configuration
-
-    //! modes for "snap to background"
-    enum SnapToMapMode
-    {
-      SnapCurrentLayer,    //!< Snap just to current layer (tolerance and type from defaultSettings())
-      SnapAllLayers,       //!< Snap to all rendered layers (tolerance and type from defaultSettings())
-      SnapAdvanced,        //!< Snap according to the configuration set in setLayers()
-    };
 
     enum IndexingStrategy
     {
@@ -115,7 +107,6 @@ class CORE_EXPORT QgsSnappingUtils : public QObject
         snapping_layer2 = QgsSnappingUtils.LayerConfig(layer2, QgsPointLocator.Vertex and QgsPointLocator.Edge, 10, QgsTolerance.Pixels)
 
         snapper.setLayers([snapping_layer1, snapping_layer2])
-        snapper.setSnapToMapMode(QgsSnappingUtils.SnapAdvanced)
         ```
 
        * \param l   The vector layer for which this configuration is
@@ -130,11 +121,11 @@ class CORE_EXPORT QgsSnappingUtils : public QObject
         , unit( u )
       {}
 
-      bool operator==( const LayerConfig &other ) const
+      bool operator==( const QgsSnappingUtils::LayerConfig &other ) const
       {
         return layer == other.layer && type == other.type && tolerance == other.tolerance && unit == other.unit;
       }
-      bool operator!=( const LayerConfig &other ) const
+      bool operator!=( const QgsSnappingUtils::LayerConfig &other ) const
       {
         return !operator==( other );
       }
@@ -150,7 +141,7 @@ class CORE_EXPORT QgsSnappingUtils : public QObject
     };
 
     //! Query layers used for snapping
-    QList<LayerConfig> layers() const { return mLayers; }
+    QList<QgsSnappingUtils::LayerConfig> layers() const { return mLayers; }
 
     /** Get extra information about the instance
      * \since QGIS 2.14
@@ -198,9 +189,9 @@ class CORE_EXPORT QgsSnappingUtils : public QObject
     void clearAllLocators();
 
     //! return a locator (temporary or not) according to the indexing strategy
-    QgsPointLocator *locatorForLayerUsingStrategy( QgsVectorLayer *vl, const QgsPoint &pointMap, double tolerance );
+    QgsPointLocator *locatorForLayerUsingStrategy( QgsVectorLayer *vl, const QgsPointXY &pointMap, double tolerance );
     //! return a temporary locator with index only for a small area (will be replaced by another one on next request)
-    QgsPointLocator *temporaryLocatorForLayer( QgsVectorLayer *vl, const QgsPoint &pointMap, double tolerance );
+    QgsPointLocator *temporaryLocatorForLayer( QgsVectorLayer *vl, const QgsPointXY &pointMap, double tolerance );
 
     typedef QPair< QgsVectorLayer *, QgsRectangle > LayerAndAreaOfInterest;
 

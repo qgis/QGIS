@@ -29,13 +29,13 @@ import os
 
 from qgis.PyQt.QtGui import QIcon
 
+from qgis.core import QgsProcessingUtils
 from processing.algs.gdal.GdalAlgorithm import GdalAlgorithm
 from processing.core.outputs import OutputRaster
 from processing.core.parameters import ParameterBoolean
 from processing.core.parameters import ParameterMultipleInput
 from processing.core.parameters import ParameterSelection
 from processing.algs.gdal.GdalUtils import GdalUtils
-from processing.tools.system import tempFolder
 from processing.tools import dataobjects
 
 pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
@@ -51,6 +51,18 @@ class buildvrt(GdalAlgorithm):
 
     RESOLUTION_OPTIONS = ['average', 'highest', 'lowest']
 
+    def __init__(self):
+        super().__init__()
+        self.addParameter(ParameterMultipleInput(self.INPUT,
+                                                 self.tr('Input layers'), dataobjects.TYPE_RASTER))
+        self.addParameter(ParameterSelection(self.RESOLUTION,
+                                             self.tr('Resolution'), self.RESOLUTION_OPTIONS, 0))
+        self.addParameter(ParameterBoolean(self.SEPARATE,
+                                           self.tr('Layer stack'), True))
+        self.addParameter(ParameterBoolean(self.PROJ_DIFFERENCE,
+                                           self.tr('Allow projection difference'), False))
+        self.addOutput(OutputRaster(buildvrt.OUTPUT, self.tr('Virtual')))
+
     def name(self):
         return 'buildvirtualraster'
 
@@ -63,18 +75,7 @@ class buildvrt(GdalAlgorithm):
     def group(self):
         return self.tr('Raster miscellaneous')
 
-    def defineCharacteristics(self):
-        self.addParameter(ParameterMultipleInput(self.INPUT,
-                                                 self.tr('Input layers'), dataobjects.TYPE_RASTER))
-        self.addParameter(ParameterSelection(self.RESOLUTION,
-                                             self.tr('Resolution'), self.RESOLUTION_OPTIONS, 0))
-        self.addParameter(ParameterBoolean(self.SEPARATE,
-                                           self.tr('Layer stack'), True))
-        self.addParameter(ParameterBoolean(self.PROJ_DIFFERENCE,
-                                           self.tr('Allow projection difference'), False))
-        self.addOutput(OutputRaster(buildvrt.OUTPUT, self.tr('Virtual')))
-
-    def getConsoleCommands(self):
+    def getConsoleCommands(self, parameters):
         arguments = []
         arguments.append('-resolution')
         arguments.append(self.RESOLUTION_OPTIONS[self.getParameterValue(self.RESOLUTION)])
@@ -84,7 +85,7 @@ class buildvrt(GdalAlgorithm):
             arguments.append('-allow_projection_difference')
         # Always write input files to a text file in case there are many of them and the
         # length of the command will be longer then allowed in command prompt
-        listFile = os.path.join(tempFolder(), 'buildvrtInputFiles.txt')
+        listFile = os.path.join(QgsProcessingUtils.tempFolder(), 'buildvrtInputFiles.txt')
         with open(listFile, 'w') as f:
             f.write(self.getParameterValue(buildvrt.INPUT).replace(';', '\n'))
         arguments.append('-input_file_list')

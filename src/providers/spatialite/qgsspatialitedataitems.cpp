@@ -16,7 +16,10 @@
 
 #include "qgsspatialiteprovider.h"
 #include "qgsspatialiteconnection.h"
+
+#ifdef HAVE_GUI
 #include "qgsspatialitesourceselect.h"
+#endif
 
 #include "qgslogger.h"
 #include "qgsmimedatautils.h"
@@ -26,6 +29,7 @@
 #include "qgssettings.h"
 
 #include <QAction>
+#include <QFileDialog>
 #include <QMessageBox>
 
 QGISEXTERN bool deleteLayer( const QString &dbPath, const QString &tableName, QString &errCause );
@@ -36,6 +40,7 @@ QgsSLLayerItem::QgsSLLayerItem( QgsDataItem *parent, QString name, QString path,
   setState( Populated ); // no children are expected
 }
 
+#ifdef HAVE_GUI
 QList<QAction *> QgsSLLayerItem::actions()
 {
   QList<QAction *> lst;
@@ -67,6 +72,7 @@ void QgsSLLayerItem::deleteLayer()
     mParent->refresh();
   }
 }
+#endif
 
 // ------
 
@@ -75,6 +81,7 @@ QgsSLConnectionItem::QgsSLConnectionItem( QgsDataItem *parent, QString name, QSt
 {
   mDbPath = QgsSpatiaLiteConnection::connectionPath( name );
   mToolTip = mDbPath;
+  mCapabilities |= Collapse;
 }
 
 static QgsLayerItem::LayerType _layerTypeFromDb( const QString &dbType )
@@ -157,6 +164,7 @@ bool QgsSLConnectionItem::equal( const QgsDataItem *other )
   return o && mPath == o->mPath && mName == o->mName;
 }
 
+#ifdef HAVE_GUI
 QList<QAction *> QgsSLConnectionItem::actions()
 {
   QList<QAction *> lst;
@@ -185,8 +193,9 @@ void QgsSLConnectionItem::deleteConnection()
 
   QgsSpatiaLiteConnection::deleteConnection( mName );
   // the parent should be updated
-  mParent->refresh();
+  mParent->refreshConnections();
 }
+#endif
 
 bool QgsSLConnectionItem::handleDrop( const QMimeData *data, Qt::DropAction )
 {
@@ -204,22 +213,23 @@ bool QgsSLConnectionItem::handleDrop( const QMimeData *data, Qt::DropAction )
   QgsMimeDataUtils::UriList lst = QgsMimeDataUtils::decodeUriList( data );
   Q_FOREACH ( const QgsMimeDataUtils::Uri &u, lst )
   {
-    if ( u.layerType != QLatin1String( "vector" ) )
+    // open the source layer
+    bool owner;
+    QString error;
+    QgsVectorLayer *srcLayer = u.vectorLayer( owner, error );
+    if ( !srcLayer )
     {
-      importResults.append( tr( "%1: Not a vector layer!" ).arg( u.name ) );
-      hasError = true; // only vectors can be imported
+      importResults.append( tr( "%1: %2" ).arg( u.name ).arg( error ) );
+      hasError = true;
       continue;
     }
-
-    // open the source layer
-    QgsVectorLayer *srcLayer = new QgsVectorLayer( u.uri, u.name, u.providerKey );
 
     if ( srcLayer->isValid() )
     {
       destUri.setDataSource( QString(), u.name, srcLayer->geometryType() != QgsWkbTypes::NullGeometry ? QStringLiteral( "geom" ) : QString() );
       QgsDebugMsg( "URI " + destUri.uri() );
 
-      std::unique_ptr< QgsVectorLayerExporterTask > exportTask( QgsVectorLayerExporterTask::withLayerOwnership( srcLayer, destUri.uri(), QStringLiteral( "spatialite" ), srcLayer->crs() ) );
+      std::unique_ptr< QgsVectorLayerExporterTask > exportTask( new QgsVectorLayerExporterTask( srcLayer, destUri.uri(), QStringLiteral( "spatialite" ), srcLayer->crs(), nullptr, owner ) );
 
       // when export is successful:
       connect( exportTask.get(), &QgsVectorLayerExporterTask::exportComplete, this, [ = ]()
@@ -284,6 +294,7 @@ QVector<QgsDataItem *> QgsSLRootItem::createChildren()
   return connections;
 }
 
+#ifdef HAVE_GUI
 QList<QAction *> QgsSLRootItem::actions()
 {
   QList<QAction *> lst;
@@ -301,7 +312,7 @@ QList<QAction *> QgsSLRootItem::actions()
 
 QWidget *QgsSLRootItem::paramWidget()
 {
-  QgsSpatiaLiteSourceSelect *select = new QgsSpatiaLiteSourceSelect( nullptr, 0, true );
+  QgsSpatiaLiteSourceSelect *select = new QgsSpatiaLiteSourceSelect( nullptr, 0, QgsProviderRegistry::WidgetMode::Manager );
   connect( select, &QgsSpatiaLiteSourceSelect::connectionsChanged, this, &QgsSLRootItem::connectionsChanged );
   return select;
 }
@@ -315,9 +326,10 @@ void QgsSLRootItem::newConnection()
 {
   if ( QgsSpatiaLiteSourceSelect::newConnection( nullptr ) )
   {
-    refresh();
+    refreshConnections();
   }
 }
+#endif
 
 QGISEXTERN bool createDb( const QString &dbPath, QString &errCause );
 
@@ -348,11 +360,13 @@ void QgsSLRootItem::createDatabase()
 
 // ---------------------------------------------------------------------------
 
-QGISEXTERN QgsSpatiaLiteSourceSelect *selectWidget( QWidget *parent, Qt::WindowFlags fl )
+#ifdef HAVE_GUI
+QGISEXTERN QgsSpatiaLiteSourceSelect *selectWidget( QWidget *parent, Qt::WindowFlags fl, QgsProviderRegistry::WidgetMode widgetMode )
 {
   // TODO: this should be somewhere else
-  return new QgsSpatiaLiteSourceSelect( parent, fl, false );
+  return new QgsSpatiaLiteSourceSelect( parent, fl, widgetMode );
 }
+#endif
 
 QGISEXTERN int dataCapabilities()
 {

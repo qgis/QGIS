@@ -20,7 +20,7 @@
 // includes
 
 #include <qgisinterface.h>
-#include <qgisgui.h>
+#include "qgsguiutils.h"
 #include <qgsapplication.h>
 #include "qgscompassplugin.h"
 

@@ -54,26 +54,16 @@
 #include <QNetworkRequest>
 #include <QNetworkReply>
 
-QgsOWSSourceSelect::QgsOWSSourceSelect( const QString &service, QWidget *parent, Qt::WindowFlags fl, bool managerMode, bool embeddedMode )
-  : QDialog( parent, fl )
+QgsOWSSourceSelect::QgsOWSSourceSelect( const QString &service, QWidget *parent, Qt::WindowFlags fl, QgsProviderRegistry::WidgetMode theWidgetMode )
+  : QgsAbstractDataSourceWidget( parent, fl, theWidgetMode )
   , mService( service )
-  , mManagerMode( managerMode )
-  , mEmbeddedMode( embeddedMode )
   , mCurrentTileset( nullptr )
 {
   setupUi( this );
+  setupButtons( buttonBox );
 
-  if ( mEmbeddedMode )
-  {
-    mDialogButtonBox->button( QDialogButtonBox::Close )->hide();
-  }
 
   setWindowTitle( tr( "Add Layer(s) from a %1 Server" ).arg( service ) );
-
-  mAddButton = mDialogButtonBox->button( QDialogButtonBox::Apply );
-  mAddButton->setText( tr( "&Add" ) );
-  mAddButton->setToolTip( tr( "Add selected layers to map" ) );
-  mAddButton->setEnabled( false );
 
   clearCrs();
 
@@ -89,9 +79,8 @@ QgsOWSSourceSelect::QgsOWSSourceSelect( const QString &service, QWidget *parent,
   // 'Prefer network' is the default noted in the combobox's tool tip
   mCacheComboBox->setCurrentIndex( mCacheComboBox->findData( QNetworkRequest::PreferNetwork ) );
 
-  if ( !mManagerMode )
+  if ( widgetMode() != QgsProviderRegistry::WidgetMode::Manager )
   {
-    connect( mAddButton, &QAbstractButton::clicked, this, &QgsOWSSourceSelect::addClicked );
     //set the current project CRS if available
     QgsCoordinateReferenceSystem currentRefSys = QgsProject::instance()->crs();
     //convert CRS id to epsg
@@ -107,7 +96,6 @@ QgsOWSSourceSelect::QgsOWSSourceSelect( const QString &service, QWidget *parent,
     mTimeWidget->hide();
     mFormatWidget->hide();
     mCRSWidget->hide();
-    mAddButton->hide();
     mCacheWidget->hide();
   }
 
@@ -124,6 +112,11 @@ QgsOWSSourceSelect::~QgsOWSSourceSelect()
   QgsSettings settings;
   QgsDebugMsg( "saving geometry" );
   settings.setValue( QStringLiteral( "Windows/WMSSourceSelect/geometry" ), saveGeometry() );
+}
+
+void QgsOWSSourceSelect::refresh()
+{
+  populateConnectionList();
 }
 
 void QgsOWSSourceSelect::clearFormats()
@@ -355,10 +348,6 @@ void QgsOWSSourceSelect::on_mConnectButton_clicked()
   populateLayerList();
 
   QApplication::restoreOverrideCursor();
-}
-
-void QgsOWSSourceSelect::addClicked()
-{
 }
 
 void QgsOWSSourceSelect::enableLayersForCrs( QTreeWidgetItem * )

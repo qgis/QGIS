@@ -66,7 +66,7 @@ QgsAttributeDialog *QgsFeatureAction::newDialog( bool cloneFeature )
 
   QgsAttributeDialog *dialog = new QgsAttributeDialog( mLayer, f, cloneFeature, parentWidget(), true, context );
   dialog->setWindowFlags( dialog->windowFlags() | Qt::Tool );
-  dialog->setObjectName( QString( "featureactiondlg:%1:%2" ).arg( mLayer->id(), f->id() ) );
+  dialog->setObjectName( QString( "featureactiondlg:%1:%2" ).arg( mLayer->id() ).arg( f->id() ) );
 
   QList<QgsAction> actions = mLayer->actions()->actions( QStringLiteral( "Feature" ) );
   if ( !actions.isEmpty() )
@@ -101,7 +101,7 @@ bool QgsFeatureAction::viewFeatureForm( QgsHighlight *h )
   if ( !mLayer || !mFeature )
     return false;
 
-  QString name( QString( "featureactiondlg:%1:%2" ).arg( mLayer->id(), mFeature->id() ) );
+  QString name( QString( "featureactiondlg:%1:%2" ).arg( mLayer->id() ).arg( mFeature->id() ) );
 
   QgsAttributeDialog *dialog = QgisApp::instance()->findChild<QgsAttributeDialog *>( name );
   if ( dialog )
@@ -139,7 +139,7 @@ bool QgsFeatureAction::editFeature( bool showModal )
   }
   else
   {
-    QString name( QString( "featureactiondlg:%1:%2" ).arg( mLayer->id(), mFeature->id() ) );
+    QString name( QString( "featureactiondlg:%1:%2" ).arg( mLayer->id() ).arg( mFeature->id() ) );
 
     QgsAttributeDialog *dialog = QgisApp::instance()->findChild<QgsAttributeDialog *>( name );
     if ( dialog )
@@ -161,7 +161,7 @@ bool QgsFeatureAction::editFeature( bool showModal )
   return true;
 }
 
-bool QgsFeatureAction::addFeature( const QgsAttributeMap &defaultAttributes, bool showModal )
+bool QgsFeatureAction::addFeature( const QgsAttributeMap &defaultAttributes, bool showModal, QgsExpressionContextScope *scope SIP_TRANSFER )
 {
   if ( !mLayer || !mLayer->isEditable() )
     return false;
@@ -175,8 +175,6 @@ bool QgsFeatureAction::addFeature( const QgsAttributeMap &defaultAttributes, boo
 
   for ( int idx = 0; idx < fields.count(); ++idx )
   {
-    QVariant v;
-
     if ( defaultAttributes.contains( idx ) )
     {
       initialAttributeValues.insert( idx, defaultAttributes.value( idx ) );
@@ -190,6 +188,9 @@ bool QgsFeatureAction::addFeature( const QgsAttributeMap &defaultAttributes, boo
   // create new feature template - this will initialize the attributes to valid values, handling default
   // values and field constraints
   QgsExpressionContext context = mLayer->createExpressionContext();
+  if ( scope )
+    context.appendScope( scope );
+
   QgsFeature newFeature = QgsVectorLayerUtils::createFeature( mLayer, mFeature->geometry(), initialAttributeValues,
                           &context );
   *mFeature = newFeature;

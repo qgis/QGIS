@@ -116,34 +116,26 @@ void QgsDb2SourceSelectDelegate::setModelData( QWidget *editor, QAbstractItemMod
     model->setData( index, le->text() );
 }
 
-QgsDb2SourceSelect::QgsDb2SourceSelect( QWidget *parent, Qt::WindowFlags fl, bool managerMode, bool embeddedMode )
-  : QDialog( parent, fl )
-  , mManagerMode( managerMode )
-  , mEmbeddedMode( embeddedMode )
+QgsDb2SourceSelect::QgsDb2SourceSelect( QWidget *parent, Qt::WindowFlags fl, QgsProviderRegistry::WidgetMode theWidgetMode )
+  : QgsAbstractDataSourceWidget( parent, fl, theWidgetMode )
   , mColumnTypeThread( NULL )
   , mUseEstimatedMetadata( false )
 {
   setupUi( this );
-
+  setupButtons( buttonBox );
   setWindowTitle( tr( "Add Db2 Table(s)" ) );
 
-  if ( mEmbeddedMode )
+  if ( widgetMode() != QgsProviderRegistry::WidgetMode::None )
   {
-    buttonBox->button( QDialogButtonBox::Close )->hide();
+    mHoldDialogOpen->hide();
   }
-
-  mAddButton = new QPushButton( tr( "&Add" ) );
-  mAddButton->setEnabled( false );
 
   mBuildQueryButton = new QPushButton( tr( "&Set Filter" ) );
   mBuildQueryButton->setToolTip( tr( "Set Filter" ) );
   mBuildQueryButton->setDisabled( true );
 
-  if ( !mManagerMode )
+  if ( widgetMode() != QgsProviderRegistry::WidgetMode::Manager )
   {
-    buttonBox->addButton( mAddButton, QDialogButtonBox::ActionRole );
-    connect( mAddButton, &QAbstractButton::clicked, this, &QgsDb2SourceSelect::addTables );
-
     buttonBox->addButton( mBuildQueryButton, QDialogButtonBox::ActionRole );
     connect( mBuildQueryButton, &QAbstractButton::clicked, this, &QgsDb2SourceSelect::buildQuery );
   }
@@ -305,6 +297,11 @@ void QgsDb2SourceSelect::buildQuery()
   setSql( mTablesTreeView->currentIndex() );
 }
 
+void QgsDb2SourceSelect::refresh()
+{
+  populateConnectionList();
+}
+
 void QgsDb2SourceSelect::on_mTablesTreeView_clicked( const QModelIndex &index )
 {
   mBuildQueryButton->setEnabled( index.parent().isValid() );
@@ -315,7 +312,7 @@ void QgsDb2SourceSelect::on_mTablesTreeView_doubleClicked( const QModelIndex &in
   QgsSettings settings;
   if ( settings.value( QStringLiteral( "qgis/addDb2DC" ), false ).toBool() )
   {
-    addTables();
+    addButtonClicked();
   }
   else
   {
@@ -430,7 +427,7 @@ void QgsDb2SourceSelect::populateConnectionList()
 }
 
 // Slot for performing action when the Add button is clicked
-void QgsDb2SourceSelect::addTables()
+void QgsDb2SourceSelect::addButtonClicked()
 {
   QgsDebugMsg( QString( "mConnInfo:%1" ).arg( mConnInfo ) );
   mSelectedTables.clear();
@@ -454,7 +451,7 @@ void QgsDb2SourceSelect::addTables()
   else
   {
     emit addDatabaseLayers( mSelectedTables, QStringLiteral( "DB2" ) );
-    if ( !mHoldDialogOpen->isChecked() )
+    if ( !mHoldDialogOpen->isChecked() && widgetMode() == QgsProviderRegistry::WidgetMode::None )
     {
       accept();
     }
@@ -660,7 +657,7 @@ void QgsDb2SourceSelect::setSearchExpression( const QString &regexp )
 void QgsDb2SourceSelect::treeWidgetSelectionChanged( const QItemSelection &selected, const QItemSelection &deselected )
 {
   Q_UNUSED( deselected )
-  mAddButton->setEnabled( !selected.isEmpty() );
+  emit enableButtons( !selected.isEmpty() );
 }
 
 

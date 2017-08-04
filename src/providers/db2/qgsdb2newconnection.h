@@ -18,7 +18,7 @@
 #ifndef QGSDB2NEWCONNECTION_H
 #define QGSDB2NEWCONNECTION_H
 #include "ui_qgsdb2newconnectionbase.h"
-#include "qgisgui.h"
+#include "qgsguiutils.h"
 #include "qgshelp.h"
 #include "qgsauthconfigselect.h"
 
@@ -31,7 +31,7 @@ class QgsDb2NewConnection : public QDialog, private Ui::QgsDb2NewConnectionBase
     Q_OBJECT
   public:
     //! Constructor
-    QgsDb2NewConnection( QWidget *parent = 0, const QString &connName = QString::null, Qt::WindowFlags fl = QgisGui::ModalDialogFlags );
+    QgsDb2NewConnection( QWidget *parent = 0, const QString &connName = QString(), Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags );
 
 
     ~QgsDb2NewConnection();

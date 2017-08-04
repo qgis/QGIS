@@ -267,7 +267,7 @@ QString QgsProjectionSelectionTreeWidget::selectedName()
 {
   // return the selected wkt name from the list view
   QTreeWidgetItem *lvi = lstCoordinateSystems->currentItem();
-  return lvi ? lvi->text( NameColumn ) : QString::null;
+  return lvi ? lvi->text( NameColumn ) : QString();
 }
 
 void QgsProjectionSelectionTreeWidget::setCrs( const QgsCoordinateReferenceSystem &crs )

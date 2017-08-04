@@ -779,7 +779,7 @@ QgsFeatureIterator QgsWFSProvider::getFeatures( const QgsFeatureRequest &request
   return QgsFeatureIterator( new QgsWFSFeatureIterator( new QgsWFSFeatureSource( this ), true, request ) );
 }
 
-bool QgsWFSProvider::addFeatures( QgsFeatureList &flist )
+bool QgsWFSProvider::addFeatures( QgsFeatureList &flist, Flags flags )
 {
   //create <Transaction> xml
   QDomDocument transactionDoc;
@@ -825,11 +825,11 @@ bool QgsWFSProvider::addFeatures( QgsFeatureList &flist )
       QDomElement geomElem = transactionDoc.createElementNS( mApplicationNamespace, mShared->mGeometryAttribute );
       QgsGeometry the_geom( geometry );
       // convert to multi if the layer geom type is multi and the geom is not
-      if ( QgsWkbTypes::isMultiType( this->wkbType( ) ) && ! the_geom.isMultipart( ) )
+      if ( QgsWkbTypes::isMultiType( this->wkbType() ) && ! the_geom.isMultipart() )
       {
         the_geom.convertToMultiType();
       }
-      QDomElement gmlElem = QgsOgcUtils::geometryToGML( &the_geom, transactionDoc );
+      QDomElement gmlElem = QgsOgcUtils::geometryToGML( the_geom, transactionDoc );
       if ( !gmlElem.isNull() )
       {
         gmlElem.setAttribute( QStringLiteral( "srsName" ), crs().authid() );
@@ -872,17 +872,20 @@ bool QgsWFSProvider::addFeatures( QgsFeatureList &flist )
     }
     mShared->serializeFeatures( serializedFeatureList );
 
-    // And now set the feature id from the one got from the database
-    QMap< QString, QgsFeatureId > map;
-    for ( int idx = 0; idx < serializedFeatureList.size(); idx++ )
-      map[ serializedFeatureList[idx].second ] = serializedFeatureList[idx].first.id();
-
-    idIt = idList.constBegin();
-    featureIt = flist.begin();
-    for ( ; idIt != idList.constEnd() && featureIt != flist.end(); ++idIt, ++featureIt )
+    if ( !( flags & QgsFeatureSink::FastInsert ) )
     {
-      if ( map.find( *idIt ) != map.end() )
-        featureIt->setId( map[*idIt] );
+      // And now set the feature id from the one got from the database
+      QMap< QString, QgsFeatureId > map;
+      for ( int idx = 0; idx < serializedFeatureList.size(); idx++ )
+        map[ serializedFeatureList[idx].second ] = serializedFeatureList[idx].first.id();
+
+      idIt = idList.constBegin();
+      featureIt = flist.begin();
+      for ( ; idIt != idList.constEnd() && featureIt != flist.end(); ++idIt, ++featureIt )
+      {
+        if ( map.find( *idIt ) != map.end() )
+          featureIt->setId( map[*idIt] );
+      }
     }
 
     return true;
@@ -987,7 +990,7 @@ bool QgsWFSProvider::changeGeometryValues( const QgsGeometryMap &geometry_map )
     nameElem.appendChild( nameText );
     propertyElem.appendChild( nameElem );
     QDomElement valueElem = transactionDoc.createElementNS( QgsWFSConstants::WFS_NAMESPACE, QStringLiteral( "Value" ) );
-    QDomElement gmlElem = QgsOgcUtils::geometryToGML( &geomIt.value(), transactionDoc );
+    QDomElement gmlElem = QgsOgcUtils::geometryToGML( geomIt.value(), transactionDoc );
     gmlElem.setAttribute( QStringLiteral( "srsName" ), crs().authid() );
     valueElem.appendChild( gmlElem );
     propertyElem.appendChild( valueElem );
@@ -1325,7 +1328,12 @@ bool QgsWFSProvider::readAttributesFromSchema( QDomDocument &schemaDoc,
       }
     }
 
+    // attribute ref
+    QString ref = attributeElement.attribute( QStringLiteral( "ref" ) );
+
     QRegExp gmlPT( "gml:(.*)PropertyType" );
+    QRegExp gmlRefProperty( "gml:(.*)Property" );
+
     // gmgml: is Geomedia Web Server
     if ( type == QLatin1String( "gmgml:Polygon_Surface_MultiSurface_CompositeSurfacePropertyType" ) )
     {
@@ -1333,16 +1341,32 @@ bool QgsWFSProvider::readAttributesFromSchema( QDomDocument &schemaDoc,
       geometryAttribute = name;
       geomType = QgsWkbTypes::MultiPolygon;
     }
+    else if ( type == QLatin1String( "gmgml:LineString_Curve_MultiCurve_CompositeCurvePropertyType" ) )
+    {
+      foundGeometryAttribute = true;
+      geometryAttribute = name;
+      geomType = QgsWkbTypes::MultiLineString;
+    }
     //is it a geometry attribute?
-    //MH 090428: sometimes the <element> tags for geometry attributes have only attribute ref="gml:polygonProperty" and no name
     // the GeometryAssociationType has been seen in #11785
-    else if ( type.indexOf( gmlPT ) == 0 || type == QLatin1String( "gml:GeometryAssociationType" ) || name.isEmpty() )
+    else if ( type.indexOf( gmlPT ) == 0 || type == QLatin1String( "gml:GeometryAssociationType" ) )
     {
       foundGeometryAttribute = true;
       geometryAttribute = name;
       geomType = geomTypeFromPropertyType( geometryAttribute, gmlPT.cap( 1 ) );
     }
-    else //todo: distinguish between numerical and non-numerical types
+    //MH 090428: sometimes the <element> tags for geometry attributes have only attribute ref="gml:polygonProperty"
+    //Note: this was deprecated with GML3.
+    else if ( ref.indexOf( gmlRefProperty ) == 0 )
+    {
+      foundGeometryAttribute = true;
+      geometryAttribute = ref.mid( 4 ); // Strip gml: prefix
+      QString propertyType( gmlRefProperty.cap( 1 ) );
+      // Set the first character in upper case
+      propertyType = propertyType.left( 1 ).toUpper() + propertyType.mid( 1 );
+      geomType = geomTypeFromPropertyType( geometryAttribute, propertyType );
+    }
+    else if ( !name.isEmpty() ) //todo: distinguish between numerical and non-numerical types
     {
       QVariant::Type  attributeType = QVariant::String; //string is default type
       if ( type.contains( QLatin1String( "double" ), Qt::CaseInsensitive ) || type.contains( QLatin1String( "float" ), Qt::CaseInsensitive ) || type.contains( QLatin1String( "decimal" ), Qt::CaseInsensitive ) )

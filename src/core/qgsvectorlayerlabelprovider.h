@@ -16,6 +16,8 @@
 #ifndef QGSVECTORLAYERLABELPROVIDER_H
 #define QGSVECTORLAYERLABELPROVIDER_H
 
+#define SIP_NO_FILE
+
 #include "qgis_core.h"
 #include "qgslabelingengine.h"
 #include "qgsrenderer.h"
@@ -40,8 +42,8 @@ class CORE_EXPORT QgsVectorLayerLabelProvider : public QgsAbstractLabelProvider
     //! Convenience constructor to initialize the provider from given vector layer
     explicit QgsVectorLayerLabelProvider( QgsVectorLayer *layer,
                                           const QString &providerId,
-                                          bool withFeatureLoop = true,
-                                          const QgsPalLayerSettings *settings = nullptr,
+                                          bool withFeatureLoop,
+                                          const QgsPalLayerSettings *settings,
                                           const QString &layerName = QString() );
 
     ~QgsVectorLayerLabelProvider();
@@ -71,7 +73,7 @@ class CORE_EXPORT QgsVectorLayerLabelProvider : public QgsAbstractLabelProvider
      * symbol, the obstacle geometry should represent the bounds of the offset symbol). If not set,
      * the feature's original geometry will be used as an obstacle for labels.
      */
-    virtual void registerFeature( QgsFeature &feature, QgsRenderContext &context, QgsGeometry *obstacleGeometry = nullptr );
+    virtual void registerFeature( QgsFeature &feature, QgsRenderContext &context, const QgsGeometry &obstacleGeometry = QgsGeometry() );
 
     /** Returns the geometry for a point feature which should be used as an obstacle for labels. This
      * obstacle geometry will respect the dimensions and offsets of the symbol used to render the
@@ -81,7 +83,7 @@ class CORE_EXPORT QgsVectorLayerLabelProvider : public QgsAbstractLabelProvider
      * \param symbols symbols rendered for point feature
      * \since QGIS 2.14
      */
-    static QgsGeometry *getPointObstacleGeometry( QgsFeature &fet, QgsRenderContext &context, const QgsSymbolList &symbols );
+    static QgsGeometry getPointObstacleGeometry( QgsFeature &fet, QgsRenderContext &context, const QgsSymbolList &symbols );
 
   protected:
     //! initialization method - called from constructors

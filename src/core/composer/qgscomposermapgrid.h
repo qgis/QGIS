@@ -509,7 +509,7 @@ class CORE_EXPORT QgsComposerMapGrid : public QgsComposerMapItem
      * \see setLineSymbol
      * \see setStyle
      */
-    void setMarkerSymbol( QgsMarkerSymbol *symbol );
+    void setMarkerSymbol( QgsMarkerSymbol *symbol SIP_TRANSFER );
 
     /** Gets the marker symbol used for drawing grid points. This is only used for grids with a
      * QgsComposerMapGrid::Markers style.
@@ -931,7 +931,7 @@ class CORE_EXPORT QgsComposerMapGrid : public QgsComposerMapItem
 
     QList< QPair< double, QPolygonF > > mTransformedXLines;
     QList< QPair< double, QPolygonF > > mTransformedYLines;
-    QList< QgsPoint > mTransformedIntersections;
+    QList< QgsPointXY > mTransformedIntersections;
     QRectF mPrevPaintRect;
     QPolygonF mPrevMapPolygon;
 

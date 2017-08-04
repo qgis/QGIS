@@ -590,7 +590,7 @@ def startServerPlugin(packageName):
 
 
 def spatialite_connect(*args, **kwargs):
-    """returns a dbapi2.Connection to a spatialite db
+    """returns a dbapi2.Connection to a SpatiaLite db
 either using pyspatialite if it is present
 or using the "mod_spatialite" extension (python3)"""
     try:
@@ -601,11 +601,11 @@ or using the "mod_spatialite" extension (python3)"""
         con.enable_load_extension(True)
         cur = con.cursor()
         libs = [
-            # Spatialite >= 4.2 and Sqlite >= 3.7.17, should work on all platforms
+            # SpatiaLite >= 4.2 and Sqlite >= 3.7.17, should work on all platforms
             ("mod_spatialite", "sqlite3_modspatialite_init"),
-            # Spatialite >= 4.2 and Sqlite < 3.7.17 (Travis)
+            # SpatiaLite >= 4.2 and Sqlite < 3.7.17 (Travis)
             ("mod_spatialite.so", "sqlite3_modspatialite_init"),
-            # Spatialite < 4.2 (linux)
+            # SpatiaLite < 4.2 (linux)
             ("libspatialite.so", "sqlite3_extension_init")
         ]
         found = False
@@ -625,8 +625,31 @@ or using the "mod_spatialite" extension (python3)"""
     return dbapi2.connect(*args, **kwargs)
 
 
+class OverrideCursor():
+    """
+    Executes a code block with a different cursor set and makes sure the cursor
+    is restored even if exceptions are raised or an intermediate ``return``
+    statement is hit.
+
+    Example:
+    ```
+    with OverrideCursor(Qt.WaitCursor):
+        do_a_slow(operation)
+    ```
+    """
+
+    def __init__(self, cursor):
+        self.cursor = cursor
+
+    def __enter__(self):
+        QApplication.setOverrideCursor(self.cursor)
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        QApplication.restoreOverrideCursor()
+
 #######################
 # IMPORT wrapper
+
 
 _uses_builtins = True
 try:

@@ -33,11 +33,12 @@ from qgis.PyQt import uic
 from qgis.PyQt.QtCore import pyqtSignal
 from qgis.PyQt.QtWidgets import QDialog
 
-from qgis.core import QgsExpression
+from qgis.core import (QgsExpression,
+                       QgsProcessingParameterNumber,
+                       QgsProcessingOutputNumber,
+                       QgsProcessingModelChildParameterSource)
 from qgis.gui import QgsExpressionBuilderDialog
-from processing.core.parameters import ParameterNumber, ParameterVector, ParameterRaster
-from processing.core.outputs import OutputNumber, OutputVector, OutputRaster
-from processing.modeler.ModelerAlgorithm import ValueFromInput, ValueFromOutput, CompoundValue
+from processing.tools.dataobjects import createExpressionContext, createContext
 
 pluginPath = os.path.split(os.path.dirname(__file__))[0]
 NUMBER_WIDGET, NUMBER_BASE = uic.loadUiType(
@@ -47,6 +48,7 @@ WIDGET, BASE = uic.loadUiType(
 
 
 class ModellerNumberInputPanel(BASE, WIDGET):
+
     """
     Number input panel for use inside the modeller - this input panel
     is based off the base input panel and includes a text based line input
@@ -63,52 +65,21 @@ class ModellerNumberInputPanel(BASE, WIDGET):
 
         self.param = param
         self.modelParametersDialog = modelParametersDialog
-        if param.default:
-            self.setValue(param.default)
+        if param.defaultValue():
+            self.setValue(param.defaultValue())
         self.btnSelect.clicked.connect(self.showExpressionsBuilder)
         self.leText.textChanged.connect(lambda: self.hasChanged.emit())
 
     def showExpressionsBuilder(self):
-        context = self.param.expressionContext()
-        dlg = QgsExpressionBuilderDialog(None, str(self.leText.text()), self, 'generic', context)
+        context = createExpressionContext()
+        processing_context = createContext()
+        scope = self.modelParametersDialog.model.createExpressionContextScopeForChildAlgorithm(self.modelParametersDialog.childId, processing_context)
+        context.appendScope(scope)
 
-        context.popScope()
-        values = self.modelParametersDialog.getAvailableValuesOfType(ParameterNumber, OutputNumber)
-        variables = {}
-        for value in values:
-            if isinstance(value, ValueFromInput):
-                name = value.name
-                element = self.modelParametersDialog.model.inputs[name].param
-                desc = element.description
-            else:
-                name = "%s_%s" % (value.alg, value.output)
-                alg = self.modelParametersDialog.model.algs[value.alg]
-                out = alg.algorithm.getOutputFromName(value.output)
-                desc = self.tr("Output '{0}' from algorithm '{1}'").format(out.description, alg.description)
-            variables[name] = desc
-        values = self.modelParametersDialog.getAvailableValuesOfType(ParameterVector, OutputVector)
-        values.extend(self.modelParametersDialog.getAvailableValuesOfType(ParameterRaster, OutputRaster))
-        for value in values:
-            if isinstance(value, ValueFromInput):
-                name = value.name
-                element = self.modelParametersDialog.model.inputs[name].param
-                desc = element.description
-            else:
-                name = "%s_%s" % (value.alg, value.output)
-                alg = self.modelParametersDialog.model.algs[value.alg]
-                element = alg.algorithm.getOutputFromName(value.output)
-                desc = self.tr("Output '{0}' from algorithm '{1}'").format(element.description, alg.description)
-            variables['%s_minx' % name] = self.tr("Minimum X of {0}").format(desc)
-            variables['%s_miny' % name] = self.tr("Minimum Y of {0}").format(desc)
-            variables['%s_maxx' % name] = self.tr("Maximum X of {0}").format(desc)
-            variables['%s_maxy' % name] = self.tr("Maximum Y of {0}").format(desc)
-            if isinstance(element, (ParameterRaster, OutputRaster)):
-                variables['%s_min' % name] = self.tr("Minimum value of {0}").format(desc)
-                variables['%s_max' % name] = self.tr("Maximum value of {0}").format(desc)
-                variables['%s_avg' % name] = self.tr("Mean value of {0}").format(desc)
-                variables['%s_stddev' % name] = self.tr("Standard deviation of {0}").format(desc)
-        for variable, desc in variables.items():
-            dlg.expressionBuilder().registerItem("Modeler", variable, "@" + variable, desc, highlightedItem=True)
+        highlighted = scope.variableNames()
+        context.setHighlightedVariables(highlighted)
+
+        dlg = QgsExpressionBuilderDialog(None, str(self.leText.text()), self, 'generic', context)
 
         dlg.setWindowTitle(self.tr('Expression based input'))
         if dlg.exec_() == QDialog.Accepted:
@@ -118,25 +89,38 @@ class ModellerNumberInputPanel(BASE, WIDGET):
 
     def getValue(self):
         value = self.leText.text()
-        values = []
-        for param in self.modelParametersDialog.model.parameters:
-            if isinstance(param, ParameterNumber):
-                if "@" + param.name in value:
-                    values.append(ValueFromInput(param.name))
-        for alg in list(self.modelParametersDialog.model.algs.values()):
-            for out in alg.algorithm.outputs:
-                if isinstance(out, OutputNumber) and "@%s_%s" % (alg.name(), out.name) in value:
-                    values.append(ValueFromOutput(alg.name(), out.name))
-        if values:
-            return CompoundValue(values, value)
-        else:
-            return value
+        for param in self.modelParametersDialog.model.parameterDefinitions():
+            if isinstance(param, QgsProcessingParameterNumber):
+                if "@" + param.name() == value.strip():
+                    return QgsProcessingModelChildParameterSource.fromModelParameter(param.name())
+
+        for alg in list(self.modelParametersDialog.model.childAlgorithms().values()):
+            for out in alg.algorithm().outputDefinitions():
+                if isinstance(out, QgsProcessingOutputNumber) and "@%s_%s" % (alg.childId(), out.name()) == value.strip():
+                    return QgsProcessingModelChildParameterSource.fromChildOutput(alg.childId(), out.outputName())
+
+        try:
+            return float(value.strip())
+        except:
+            return QgsProcessingModelChildParameterSource.fromExpression(self.leText.text())
 
     def setValue(self, value):
-        self.leText.setText(str(value))
+        if isinstance(value, QgsProcessingModelChildParameterSource):
+            if value.source() == QgsProcessingModelChildParameterSource.ModelParameter:
+                self.leText.setText('@' + value.parameterName())
+            elif value.source() == QgsProcessingModelChildParameterSource.ChildOutput:
+                name = "%s_%s" % (value.outputChildId(), value.outputName())
+                self.leText.setText(name)
+            elif value.source() == QgsProcessingModelChildParameterSource.Expression:
+                self.leText.setText(value.expression())
+            else:
+                self.leText.setText(str(value.staticValue()))
+        else:
+            self.leText.setText(str(value))
 
 
 class NumberInputPanel(NUMBER_BASE, NUMBER_WIDGET):
+
     """
     Number input panel for use outside the modeller - this input panel
     contains a user friendly spin box for entering values. It also
@@ -153,36 +137,36 @@ class NumberInputPanel(NUMBER_BASE, NUMBER_WIDGET):
         self.spnValue.setExpressionsEnabled(True)
 
         self.param = param
-        if self.param.isInteger:
+        if self.param.dataType() == QgsProcessingParameterNumber.Integer:
             self.spnValue.setDecimals(0)
         else:
             # Guess reasonable step value
-            if self.param.max is not None and self.param.min is not None:
+            if self.param.maximum() is not None and self.param.minimum() is not None:
                 try:
-                    self.spnValue.setSingleStep(self.calculateStep(float(self.param.min), float(self.param.max)))
+                    self.spnValue.setSingleStep(self.calculateStep(float(self.param.minimum()), float(self.param.maximum())))
                 except:
                     pass
 
-        if self.param.max is not None:
-            self.spnValue.setMaximum(self.param.max)
+        if self.param.maximum() is not None:
+            self.spnValue.setMaximum(self.param.maximum())
         else:
             self.spnValue.setMaximum(999999999)
-        if self.param.min is not None:
-            self.spnValue.setMinimum(self.param.min)
+        if self.param.minimum() is not None:
+            self.spnValue.setMinimum(self.param.minimum())
         else:
             self.spnValue.setMinimum(-999999999)
 
         # set default value
-        if param.default is not None:
-            self.setValue(param.default)
+        if param.defaultValue() is not None:
+            self.setValue(param.defaultValue())
             try:
-                self.spnValue.setClearValue(float(param.default))
+                self.spnValue.setClearValue(float(param.defaultValue()))
             except:
                 pass
-        elif self.param.min is not None:
+        elif self.param.minimum() is not None:
             try:
-                self.setValue(float(self.param.min))
-                self.spnValue.setClearValue(float(self.param.min))
+                self.setValue(float(self.param.minimum()))
+                self.spnValue.setClearValue(float(self.param.minimum()))
             except:
                 pass
         else:
@@ -194,7 +178,7 @@ class NumberInputPanel(NUMBER_BASE, NUMBER_WIDGET):
         self.spnValue.valueChanged.connect(lambda: self.hasChanged.emit())
 
     def showExpressionsBuilder(self):
-        context = self.param.expressionContext()
+        context = createExpressionContext()
         dlg = QgsExpressionBuilderDialog(None, str(self.spnValue.value()), self, 'generic', context)
 
         dlg.setWindowTitle(self.tr('Expression based input'))

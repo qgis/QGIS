@@ -1,32 +1,51 @@
-/** \ingroup gui
- * Widget allowing to edit a QVariantMap, using a table.
- * @note added in QGIS 3.0
- */
-class QgsKeyValueWidget : public QgsTableWidgetBase
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgskeyvaluewidget.h                                          *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+class QgsKeyValueWidget: QgsTableWidgetBase
 {
+%Docstring
+ Widget allowing to edit a QVariantMap, using a table.
+.. versionadded:: 3.0
+%End
+
 %TypeHeaderCode
 #include "qgskeyvaluewidget.h"
 %End
   public:
-    /**
-     * Constructor.
-     */
+
     explicit QgsKeyValueWidget( QWidget *parent /TransferThis/ = 0 );
+%Docstring
+ Constructor.
+%End
 
-    /**
-     * Set the initial value of the widget.
-     */
     void setMap( const QVariantMap &map );
+%Docstring
+ Set the initial value of the widget.
+%End
 
-    /**
-     * Get the edit value.
-     * @return the QVariantMap
-     */
     QVariantMap map() const;
+%Docstring
+ Get the edit value.
+ :return: the QVariantMap
+ :rtype: QVariantMap
+%End
 
-  signals:
-    /**
-     * Emitted each time a key or a value is changed.
-     */
-    void valueChanged();
 };
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgskeyvaluewidget.h                                          *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

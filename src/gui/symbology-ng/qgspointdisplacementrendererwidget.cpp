@@ -23,7 +23,7 @@
 #include "qgssymbolselectordialog.h"
 #include "qgssymbollayerutils.h"
 #include "qgsvectorlayer.h"
-#include "qgisgui.h"
+#include "qgsguiutils.h"
 
 QgsRendererWidget *QgsPointDisplacementRendererWidget::create( QgsVectorLayer *layer, QgsStyle *style, QgsFeatureRenderer *renderer )
 {
@@ -50,8 +50,10 @@ QgsPointDisplacementRendererWidget::QgsPointDisplacementRendererWidget( QgsVecto
   setupUi( this );
   this->layout()->setContentsMargins( 0, 0, 0, 0 );
 
-  mDistanceUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderMapUnits << QgsUnitTypes::RenderPixels
+  mLabelFontButton->setMode( QgsFontButton::ModeQFont );
+  mDistanceUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderMetersInMapUnits << QgsUnitTypes::RenderMapUnits << QgsUnitTypes::RenderPixels
                                  << QgsUnitTypes::RenderPoints << QgsUnitTypes::RenderInches );
+  mCenterSymbolToolButton->setSymbolType( QgsSymbol::Marker );
 
   if ( renderer )
   {
@@ -99,37 +101,38 @@ QgsPointDisplacementRendererWidget::QgsPointDisplacementRendererWidget( QgsVecto
     }
   }
 
-  mCircleColorButton->setColorDialogTitle( tr( "Select color" ) );
+  mCircleColorButton->setColorDialogTitle( tr( "Select Color" ) );
   mCircleColorButton->setContext( QStringLiteral( "symbology" ) );
-  mCircleColorButton->setAllowAlpha( true );
+  mCircleColorButton->setAllowOpacity( true );
   mCircleColorButton->setShowNoColor( true );
   mCircleColorButton->setNoColorString( tr( "No stroke" ) );
   mLabelColorButton->setContext( QStringLiteral( "symbology" ) );
-  mLabelColorButton->setColorDialogTitle( tr( "Select color" ) );
-  mLabelColorButton->setAllowAlpha( true );
+  mLabelColorButton->setColorDialogTitle( tr( "Select Color" ) );
+  mLabelColorButton->setAllowOpacity( true );
 
   mCircleWidthSpinBox->setValue( mRenderer->circleWidth() );
   mCircleColorButton->setColor( mRenderer->circleColor() );
   mLabelColorButton->setColor( mRenderer->labelColor() );
+  mLabelFontButton->setCurrentFont( mRenderer->labelFont() );
   mCircleModificationSpinBox->setClearValue( 0.0 );
   mCircleModificationSpinBox->setValue( mRenderer->circleRadiusAddition() );
   mDistanceSpinBox->setValue( mRenderer->tolerance() );
   mDistanceUnitWidget->setUnit( mRenderer->toleranceUnit() );
   mDistanceUnitWidget->setMapUnitScale( mRenderer->toleranceMapUnitScale() );
+  mCenterSymbolToolButton->setSymbol( mRenderer->centerSymbol()->clone() );
 
   mPlacementComboBox->setCurrentIndex( mPlacementComboBox->findData( mRenderer->placement() ) );
 
   //scale dependent labeling
-  mMaxScaleDenominatorEdit->setText( QString::number( mRenderer->maxLabelScaleDenominator() ) );
-  mMaxScaleDenominatorEdit->setValidator( new QDoubleValidator( mMaxScaleDenominatorEdit ) );
-  if ( mRenderer->maxLabelScaleDenominator() > 0 )
+  mMinLabelScaleWidget->setScale( qMax( mRenderer->minimumLabelScale(), 0.0 ) );
+  if ( mRenderer->minimumLabelScale() > 0 )
   {
     mScaleDependentLabelsCheckBox->setCheckState( Qt::Checked );
   }
   else
   {
     mScaleDependentLabelsCheckBox->setCheckState( Qt::Unchecked );
-    mMaxScaleDenominatorEdit->setEnabled( false );
+    mMinLabelScaleWidget->setEnabled( false );
   }
 
 
@@ -147,7 +150,12 @@ QgsPointDisplacementRendererWidget::QgsPointDisplacementRendererWidget( QgsVecto
     }
   }
 
-  updateCenterIcon();
+  connect( mMinLabelScaleWidget, &QgsScaleWidget::scaleChanged, this, &QgsPointDisplacementRendererWidget::minLabelScaleChanged );
+  connect( mLabelFontButton, &QgsFontButton::changed, this, &QgsPointDisplacementRendererWidget::labelFontChanged );
+  connect( mCenterSymbolToolButton, &QgsSymbolButton::changed, this, &QgsPointDisplacementRendererWidget::centerSymbolChanged );
+  mCenterSymbolToolButton->setDialogTitle( tr( "Center symbol" ) );
+  mCenterSymbolToolButton->setLayer( mLayer );
+  mCenterSymbolToolButton->registerExpressionContextGenerator( this );
 }
 
 QgsPointDisplacementRendererWidget::~QgsPointDisplacementRendererWidget()
@@ -165,6 +173,34 @@ void QgsPointDisplacementRendererWidget::setContext( const QgsSymbolWidgetContex
   QgsRendererWidget::setContext( context );
   if ( mDistanceUnitWidget )
     mDistanceUnitWidget->setMapCanvas( context.mapCanvas() );
+  if ( mMinLabelScaleWidget )
+  {
+    mMinLabelScaleWidget->setMapCanvas( context.mapCanvas() );
+    mMinLabelScaleWidget->setShowCurrentScaleButton( true );
+  }
+  if ( mCenterSymbolToolButton )
+  {
+    mCenterSymbolToolButton->setMapCanvas( context.mapCanvas() );
+  }
+}
+
+QgsExpressionContext QgsPointDisplacementRendererWidget::createExpressionContext() const
+{
+  QgsExpressionContext context;
+  if ( mContext.expressionContext() )
+    context = *mContext.expressionContext();
+  else
+    context.appendScopes( mContext.globalProjectAtlasMapLayerScopes( mLayer ) );
+  QgsExpressionContextScope scope;
+  scope.addVariable( QgsExpressionContextScope::StaticVariable( QgsExpressionContext::EXPR_CLUSTER_COLOR, "", true ) );
+  scope.addVariable( QgsExpressionContextScope::StaticVariable( QgsExpressionContext::EXPR_CLUSTER_SIZE, 0, true ) );
+  QList< QgsExpressionContextScope > scopes = mContext.additionalExpressionContextScopes();
+  scopes << scope;
+  Q_FOREACH ( const QgsExpressionContextScope &s, scopes )
+  {
+    context << new QgsExpressionContextScope( s );
+  }
+  return context;
 }
 
 void QgsPointDisplacementRendererWidget::on_mLabelFieldComboBox_currentIndexChanged( const QString &text )
@@ -232,20 +268,15 @@ void QgsPointDisplacementRendererWidget::on_mRendererSettingsButton_clicked()
   }
 }
 
-void QgsPointDisplacementRendererWidget::on_mLabelFontButton_clicked()
+void QgsPointDisplacementRendererWidget::labelFontChanged()
 {
   if ( !mRenderer )
   {
     return;
   }
 
-  bool ok;
-  QFont newFont = QgisGui::getFont( ok, mRenderer->labelFont(), tr( "Label Font" ) );
-  if ( ok )
-  {
-    mRenderer->setLabelFont( newFont );
-    emit widgetChanged();
-  }
+  mRenderer->setLabelFont( mLabelFontButton->currentFont() );
+  emit widgetChanged();
 }
 
 void QgsPointDisplacementRendererWidget::on_mCircleWidthSpinBox_valueChanged( double d )
@@ -313,29 +344,24 @@ void QgsPointDisplacementRendererWidget::on_mScaleDependentLabelsCheckBox_stateC
 {
   if ( state == Qt::Unchecked )
   {
-    mMaxScaleDenominatorEdit->setText( QStringLiteral( "-1" ) );
-    mMaxScaleDenominatorEdit->setEnabled( false );
+    mMinLabelScaleWidget->setScale( 0 );
+    mMinLabelScaleWidget->setEnabled( false );
   }
   else
   {
-    mMaxScaleDenominatorEdit->setEnabled( true );
+    mMinLabelScaleWidget->setEnabled( true );
   }
 }
 
-void QgsPointDisplacementRendererWidget::on_mMaxScaleDenominatorEdit_textChanged( const QString &text )
+void QgsPointDisplacementRendererWidget::minLabelScaleChanged( double scale )
 {
   if ( !mRenderer )
   {
     return;
   }
 
-  bool ok;
-  double scaleDenominator = text.toDouble( &ok );
-  if ( ok )
-  {
-    mRenderer->setMaxLabelScaleDenominator( scaleDenominator );
-    emit widgetChanged();
-  }
+  mRenderer->setMinimumLabelScale( scale );
+  emit widgetChanged();
 }
 
 void QgsPointDisplacementRendererWidget::blockAllSignals( bool block )
@@ -348,54 +374,17 @@ void QgsPointDisplacementRendererWidget::blockAllSignals( bool block )
   mLabelColorButton->blockSignals( block );
   mCircleModificationSpinBox->blockSignals( block );
   mScaleDependentLabelsCheckBox->blockSignals( block );
-  mMaxScaleDenominatorEdit->blockSignals( block );
-  mCenterSymbolPushButton->blockSignals( block );
+  mMinLabelScaleWidget->blockSignals( block );
+  mCenterSymbolToolButton->blockSignals( block );
   mDistanceSpinBox->blockSignals( block );
   mDistanceUnitWidget->blockSignals( block );
   mPlacementComboBox->blockSignals( block );
 }
 
-void QgsPointDisplacementRendererWidget::on_mCenterSymbolPushButton_clicked()
+void QgsPointDisplacementRendererWidget::centerSymbolChanged()
 {
-  if ( !mRenderer || !mRenderer->centerSymbol() )
-  {
-    return;
-  }
-  QgsMarkerSymbol *markerSymbol = mRenderer->centerSymbol()->clone();
-  QgsSymbolSelectorWidget *dlg = new QgsSymbolSelectorWidget( markerSymbol, QgsStyle::defaultStyle(), mLayer, this );
-  dlg->setPanelTitle( tr( "Center symbol" ) );
-
-  QgsSymbolWidgetContext context = mContext;
-
-  QgsExpressionContextScope scope;
-  scope.addVariable( QgsExpressionContextScope::StaticVariable( QgsExpressionContext::EXPR_CLUSTER_COLOR, "", true ) );
-  scope.addVariable( QgsExpressionContextScope::StaticVariable( QgsExpressionContext::EXPR_CLUSTER_SIZE, 0, true ) );
-  QList< QgsExpressionContextScope > scopes = context.additionalExpressionContextScopes();
-  scopes << scope;
-  context.setAdditionalExpressionContextScopes( scopes );
-  dlg->setContext( context );
-
-  connect( dlg, &QgsPanelWidget::widgetChanged, this, &QgsPointDisplacementRendererWidget::updateCenterSymbolFromWidget );
-  connect( dlg, &QgsPanelWidget::panelAccepted, this, &QgsPointDisplacementRendererWidget::cleanUpSymbolSelector );
-  openPanel( dlg );
-}
-
-void QgsPointDisplacementRendererWidget::updateCenterSymbolFromWidget()
-{
-  QgsSymbolSelectorWidget *dlg = qobject_cast<QgsSymbolSelectorWidget *>( sender() );
-  QgsSymbol *symbol = dlg->symbol()->clone();
-  mRenderer->setCenterSymbol( static_cast< QgsMarkerSymbol * >( symbol ) );
-  updateCenterIcon();
+  mRenderer->setCenterSymbol( mCenterSymbolToolButton->clonedSymbol< QgsMarkerSymbol >() );
   emit widgetChanged();
-}
-
-void QgsPointDisplacementRendererWidget::cleanUpSymbolSelector( QgsPanelWidget *container )
-{
-  if ( container )
-  {
-    QgsSymbolSelectorWidget *dlg = qobject_cast<QgsSymbolSelectorWidget *>( container );
-    delete dlg->symbol();
-  }
 }
 
 void QgsPointDisplacementRendererWidget::updateRendererFromWidget()
@@ -406,17 +395,6 @@ void QgsPointDisplacementRendererWidget::updateRendererFromWidget()
 
   mRenderer->setEmbeddedRenderer( w->renderer()->clone() );
   emit widgetChanged();
-}
-
-void QgsPointDisplacementRendererWidget::updateCenterIcon()
-{
-  QgsMarkerSymbol *symbol = mRenderer->centerSymbol();
-  if ( !symbol )
-  {
-    return;
-  }
-  QIcon icon = QgsSymbolLayerUtils::symbolPreviewIcon( symbol, mCenterSymbolPushButton->iconSize() );
-  mCenterSymbolPushButton->setIcon( icon );
 }
 
 void QgsPointDisplacementRendererWidget::setupBlankUi( const QString &layerName )

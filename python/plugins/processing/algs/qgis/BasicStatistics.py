@@ -35,18 +35,18 @@ from qgis.core import (QgsStatisticalSummary,
                        QgsStringStatisticalSummary,
                        QgsDateTimeStatisticalSummary,
                        QgsFeatureRequest,
-                       QgsProcessingUtils)
+                       QgsProcessingParameterFeatureSource,
+                       QgsProcessingParameterField,
+                       QgsProcessingParameterFileDestination,
+                       QgsProcessingOutputHtml,
+                       QgsProcessingOutputNumber)
 
-from processing.core.GeoAlgorithm import GeoAlgorithm
-from processing.core.parameters import ParameterTable
-from processing.core.parameters import ParameterTableField
-from processing.core.outputs import OutputHTML
-from processing.core.outputs import OutputNumber
+from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 
 pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
 
-class BasicStatisticsForField(GeoAlgorithm):
+class BasicStatisticsForField(QgisAlgorithm):
 
     INPUT_LAYER = 'INPUT_LAYER'
     FIELD_NAME = 'FIELD_NAME'
@@ -83,94 +83,107 @@ class BasicStatisticsForField(GeoAlgorithm):
     def group(self):
         return self.tr('Vector table tools')
 
+    def __init__(self):
+        super().__init__()
+
+    def initAlgorithm(self, config=None):
+        self.addParameter(QgsProcessingParameterFeatureSource(self.INPUT_LAYER,
+                                                              self.tr('Input layer')))
+
+        self.addParameter(QgsProcessingParameterField(self.FIELD_NAME,
+                                                      self.tr('Field to calculate statistics on'),
+                                                      None, self.INPUT_LAYER, QgsProcessingParameterField.Any))
+
+        self.addParameter(QgsProcessingParameterFileDestination(self.OUTPUT_HTML_FILE, self.tr('Statistics'), self.tr('HTML files (*.html)'), None, True))
+        self.addOutput(QgsProcessingOutputHtml(self.OUTPUT_HTML_FILE, self.tr('Statistics')))
+
+        self.addOutput(QgsProcessingOutputNumber(self.COUNT, self.tr('Count')))
+        self.addOutput(QgsProcessingOutputNumber(self.UNIQUE, self.tr('Number of unique values')))
+        self.addOutput(QgsProcessingOutputNumber(self.EMPTY, self.tr('Number of empty (null) values')))
+        self.addOutput(QgsProcessingOutputNumber(self.FILLED, self.tr('Number of non-empty values')))
+        self.addOutput(QgsProcessingOutputNumber(self.MIN, self.tr('Minimum value')))
+        self.addOutput(QgsProcessingOutputNumber(self.MAX, self.tr('Maximum value')))
+        self.addOutput(QgsProcessingOutputNumber(self.MIN_LENGTH, self.tr('Minimum length')))
+        self.addOutput(QgsProcessingOutputNumber(self.MAX_LENGTH, self.tr('Maximum length')))
+        self.addOutput(QgsProcessingOutputNumber(self.MEAN_LENGTH, self.tr('Mean length')))
+        self.addOutput(QgsProcessingOutputNumber(self.CV, self.tr('Coefficient of Variation')))
+        self.addOutput(QgsProcessingOutputNumber(self.SUM, self.tr('Sum')))
+        self.addOutput(QgsProcessingOutputNumber(self.MEAN, self.tr('Mean value')))
+        self.addOutput(QgsProcessingOutputNumber(self.STD_DEV, self.tr('Standard deviation')))
+        self.addOutput(QgsProcessingOutputNumber(self.RANGE, self.tr('Range')))
+        self.addOutput(QgsProcessingOutputNumber(self.MEDIAN, self.tr('Median')))
+        self.addOutput(QgsProcessingOutputNumber(self.MINORITY, self.tr('Minority (rarest occurring value)')))
+        self.addOutput(QgsProcessingOutputNumber(self.MAJORITY, self.tr('Majority (most frequently occurring value)')))
+        self.addOutput(QgsProcessingOutputNumber(self.FIRSTQUARTILE, self.tr('First quartile')))
+        self.addOutput(QgsProcessingOutputNumber(self.THIRDQUARTILE, self.tr('Third quartile')))
+        self.addOutput(QgsProcessingOutputNumber(self.IQR, self.tr('Interquartile Range (IQR)')))
+
     def name(self):
         return 'basicstatisticsforfields'
 
     def displayName(self):
         return self.tr('Basic statistics for fields')
 
-    def defineCharacteristics(self):
-        self.addParameter(ParameterTable(self.INPUT_LAYER,
-                                         self.tr('Input table')))
-        self.addParameter(ParameterTableField(self.FIELD_NAME,
-                                              self.tr('Field to calculate statistics on'),
-                                              self.INPUT_LAYER))
+    def processAlgorithm(self, parameters, context, feedback):
+        source = self.parameterAsSource(parameters, self.INPUT_LAYER, context)
+        field_name = self.parameterAsString(parameters, self.FIELD_NAME, context)
+        field = source.fields().at(source.fields().lookupField(field_name))
 
-        self.addOutput(OutputHTML(self.OUTPUT_HTML_FILE,
-                                  self.tr('Statistics')))
+        output_file = self.parameterAsFileOutput(parameters, self.OUTPUT_HTML_FILE, context)
 
-        self.addOutput(OutputNumber(self.COUNT, self.tr('Count')))
-        self.addOutput(OutputNumber(self.UNIQUE, self.tr('Number of unique values')))
-        self.addOutput(OutputNumber(self.EMPTY, self.tr('Number of empty (null) values')))
-        self.addOutput(OutputNumber(self.FILLED, self.tr('Number of non-empty values')))
-        self.addOutput(OutputNumber(self.MIN, self.tr('Minimum value')))
-        self.addOutput(OutputNumber(self.MAX, self.tr('Maximum value')))
-        self.addOutput(OutputNumber(self.MIN_LENGTH, self.tr('Minimum length')))
-        self.addOutput(OutputNumber(self.MAX_LENGTH, self.tr('Maximum length')))
-        self.addOutput(OutputNumber(self.MEAN_LENGTH, self.tr('Mean length')))
-        self.addOutput(OutputNumber(self.CV, self.tr('Coefficient of Variation')))
-        self.addOutput(OutputNumber(self.SUM, self.tr('Sum')))
-        self.addOutput(OutputNumber(self.MEAN, self.tr('Mean value')))
-        self.addOutput(OutputNumber(self.STD_DEV, self.tr('Standard deviation')))
-        self.addOutput(OutputNumber(self.RANGE, self.tr('Range')))
-        self.addOutput(OutputNumber(self.MEDIAN, self.tr('Median')))
-        self.addOutput(OutputNumber(self.MINORITY, self.tr('Minority (rarest occurring value)')))
-        self.addOutput(OutputNumber(self.MAJORITY, self.tr('Majority (most frequently occurring value)')))
-        self.addOutput(OutputNumber(self.FIRSTQUARTILE, self.tr('First quartile')))
-        self.addOutput(OutputNumber(self.THIRDQUARTILE, self.tr('Third quartile')))
-        self.addOutput(OutputNumber(self.IQR, self.tr('Interquartile Range (IQR)')))
-
-    def processAlgorithm(self, context, feedback):
-        layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT_LAYER), context)
-        field_name = self.getParameterValue(self.FIELD_NAME)
-        field = layer.fields().at(layer.fields().lookupField(field_name))
-
-        output_file = self.getOutputValue(self.OUTPUT_HTML_FILE)
-
-        request = QgsFeatureRequest().setFlags(QgsFeatureRequest.NoGeometry).setSubsetOfAttributes([field_name], layer.fields())
-        features = QgsProcessingUtils.getFeatures(layer, context, request)
-        count = QgsProcessingUtils.featureCount(layer, context)
+        request = QgsFeatureRequest().setFlags(QgsFeatureRequest.NoGeometry).setSubsetOfAttributes([field_name], source.fields())
+        features = source.getFeatures(request)
+        count = source.featureCount()
 
         data = []
-        data.append(self.tr('Analyzed layer: {}').format(layer.name()))
         data.append(self.tr('Analyzed field: {}').format(field_name))
+        results = {}
 
         if field.isNumeric():
-            data.extend(self.calcNumericStats(features, feedback, field, count))
+            d, results = self.calcNumericStats(features, feedback, field, count)
+            data.extend(d)
         elif field.type() in (QVariant.Date, QVariant.Time, QVariant.DateTime):
-            data.extend(self.calcDateTimeStats(features, feedback, field, count))
+            d, results = self.calcDateTimeStats(features, feedback, field, count)
+            data.extend(d)
         else:
-            data.extend(self.calcStringStats(features, feedback, field, count))
+            d, results = self.calcStringStats(features, feedback, field, count)
+            data.extend(d)
 
-        self.createHTML(output_file, data)
+        if output_file:
+            self.createHTML(output_file, data)
+            results[self.OUTPUT_HTML_FILE] = output_file
+
+        return results
 
     def calcNumericStats(self, features, feedback, field, count):
-        total = 100.0 / float(count)
+        total = 100.0 / count if count else 0
         stat = QgsStatisticalSummary()
         for current, ft in enumerate(features):
+            if feedback.isCanceled():
+                break
             stat.addVariant(ft[field.name()])
             feedback.setProgress(int(current * total))
         stat.finalize()
 
         cv = stat.stDev() / stat.mean() if stat.mean() != 0 else 0
 
-        self.setOutputValue(self.COUNT, stat.count())
-        self.setOutputValue(self.UNIQUE, stat.variety())
-        self.setOutputValue(self.EMPTY, stat.countMissing())
-        self.setOutputValue(self.FILLED, count - stat.countMissing())
-        self.setOutputValue(self.MIN, stat.min())
-        self.setOutputValue(self.MAX, stat.max())
-        self.setOutputValue(self.RANGE, stat.range())
-        self.setOutputValue(self.SUM, stat.sum())
-        self.setOutputValue(self.MEAN, stat.mean())
-        self.setOutputValue(self.MEDIAN, stat.median())
-        self.setOutputValue(self.STD_DEV, stat.stDev())
-        self.setOutputValue(self.CV, cv)
-        self.setOutputValue(self.MINORITY, stat.minority())
-        self.setOutputValue(self.MAJORITY, stat.majority())
-        self.setOutputValue(self.FIRSTQUARTILE, stat.firstQuartile())
-        self.setOutputValue(self.THIRDQUARTILE, stat.thirdQuartile())
-        self.setOutputValue(self.IQR, stat.interQuartileRange())
+        results = {self.COUNT: stat.count(),
+                   self.UNIQUE: stat.variety(),
+                   self.EMPTY: stat.countMissing(),
+                   self.FILLED: count - stat.countMissing(),
+                   self.MIN: stat.min(),
+                   self.MAX: stat.max(),
+                   self.RANGE: stat.range(),
+                   self.SUM: stat.sum(),
+                   self.MEAN: stat.mean(),
+                   self.MEDIAN: stat.median(),
+                   self.STD_DEV: stat.stDev(),
+                   self.CV: cv,
+                   self.MINORITY: stat.minority(),
+                   self.MAJORITY: stat.majority(),
+                   self.FIRSTQUARTILE: stat.firstQuartile(),
+                   self.THIRDQUARTILE: stat.thirdQuartile(),
+                   self.IQR: stat.interQuartileRange()}
 
         data = []
         data.append(self.tr('Count: {}').format(stat.count()))
@@ -189,25 +202,27 @@ class BasicStatisticsForField(GeoAlgorithm):
         data.append(self.tr('First quartile: {}').format(stat.firstQuartile()))
         data.append(self.tr('Third quartile: {}').format(stat.thirdQuartile()))
         data.append(self.tr('Interquartile Range (IQR): {}').format(stat.interQuartileRange()))
-        return data
+        return data, results
 
     def calcStringStats(self, features, feedback, field, count):
-        total = 100.0 / float(count)
+        total = 100.0 / count if count else 1
         stat = QgsStringStatisticalSummary()
         for current, ft in enumerate(features):
+            if feedback.isCanceled():
+                break
             stat.addValue(ft[field.name()])
             feedback.setProgress(int(current * total))
         stat.finalize()
 
-        self.setOutputValue(self.COUNT, stat.count())
-        self.setOutputValue(self.UNIQUE, stat.countDistinct())
-        self.setOutputValue(self.EMPTY, stat.countMissing())
-        self.setOutputValue(self.FILLED, stat.count() - stat.countMissing())
-        self.setOutputValue(self.MIN, stat.min())
-        self.setOutputValue(self.MAX, stat.max())
-        self.setOutputValue(self.MIN_LENGTH, stat.minLength())
-        self.setOutputValue(self.MAX_LENGTH, stat.maxLength())
-        self.setOutputValue(self.MEAN_LENGTH, stat.meanLength())
+        results = {self.COUNT: stat.count(),
+                   self.UNIQUE: stat.countDistinct(),
+                   self.EMPTY: stat.countMissing(),
+                   self.FILLED: stat.count() - stat.countMissing(),
+                   self.MIN: stat.min(),
+                   self.MAX: stat.max(),
+                   self.MIN_LENGTH: stat.minLength(),
+                   self.MAX_LENGTH: stat.maxLength(),
+                   self.MEAN_LENGTH: stat.meanLength()}
 
         data = []
         data.append(self.tr('Count: {}').format(count))
@@ -219,22 +234,24 @@ class BasicStatisticsForField(GeoAlgorithm):
         data.append(self.tr('Maximum length: {}').format(stat.maxLength()))
         data.append(self.tr('Mean length: {}').format(stat.meanLength()))
 
-        return data
+        return data, results
 
     def calcDateTimeStats(self, features, feedback, field, count):
-        total = 100.0 / float(count)
+        total = 100.0 / count if count else 1
         stat = QgsDateTimeStatisticalSummary()
         for current, ft in enumerate(features):
+            if feedback.isCanceled():
+                break
             stat.addValue(ft[field.name()])
             feedback.setProgress(int(current * total))
         stat.finalize()
 
-        self.setOutputValue(self.COUNT, stat.count())
-        self.setOutputValue(self.UNIQUE, stat.countDistinct())
-        self.setOutputValue(self.EMPTY, stat.countMissing())
-        self.setOutputValue(self.FILLED, stat.count() - stat.countMissing())
-        self.setOutputValue(self.MIN, stat.statistic(QgsDateTimeStatisticalSummary.Min))
-        self.setOutputValue(self.MAX, stat.statistic(QgsDateTimeStatisticalSummary.Max))
+        results = {self.COUNT: stat.count(),
+                   self.UNIQUE: stat.countDistinct(),
+                   self.EMPTY: stat.countMissing(),
+                   self.FILLED: stat.count() - stat.countMissing(),
+                   self.MIN: stat.statistic(QgsDateTimeStatisticalSummary.Min),
+                   self.MAX: stat.statistic(QgsDateTimeStatisticalSummary.Max)}
 
         data = []
         data.append(self.tr('Count: {}').format(count))
@@ -243,7 +260,7 @@ class BasicStatisticsForField(GeoAlgorithm):
         data.append(self.tr('Minimum value: {}').format(field.displayString(stat.statistic(QgsDateTimeStatisticalSummary.Min))))
         data.append(self.tr('Maximum value: {}').format(field.displayString(stat.statistic(QgsDateTimeStatisticalSummary.Max))))
 
-        return data
+        return data, results
 
     def createHTML(self, outputFile, algData):
         with codecs.open(outputFile, 'w', encoding='utf-8') as f:

@@ -25,6 +25,10 @@
 #include <qgslogger.h>
 #include "qgscredentials.h"
 
+#ifdef HAVE_GUI
+#include "qgsdb2sourceselect.h"
+#endif
+
 static const QString PROVIDER_KEY = QStringLiteral( "DB2" );
 static const QString PROVIDER_DESCRIPTION = QStringLiteral( "DB2 Spatial Extender provider" );
 
@@ -897,7 +901,7 @@ bool QgsDb2Provider::changeAttributeValues( const QgsChangedAttributesMap &attr_
   return true;
 }
 
-bool QgsDb2Provider::addFeatures( QgsFeatureList &flist )
+bool QgsDb2Provider::addFeatures( QgsFeatureList &flist, Flags flags )
 {
   QgsDebugMsg( "mGeometryColType: " + mGeometryColType );
   int writeCount = 0;
@@ -948,7 +952,7 @@ bool QgsDb2Provider::addFeatures( QgsFeatureList &flist )
   {
     copyOperation = true; // FID is first field but no attribute in attrs
   }
-  else if ( mAttributeFields.count() !=  attrs.count() )
+  else if ( mAttributeFields.count() != attrs.count() )
   {
     QgsDebugMsg( "Count mismatch - failing" );
     return false;
@@ -1122,31 +1126,34 @@ bool QgsDb2Provider::addFeatures( QgsFeatureList &flist )
       }
     }
 
-    statement = QString( "select IDENTITY_VAL_LOCAL() AS IDENTITY "
-                         "FROM SYSIBM.SYSDUMMY1" );
+    if ( !( flags & QgsFeatureSink::FastInsert ) )
+    {
+      statement = QString( "select IDENTITY_VAL_LOCAL() AS IDENTITY "
+                           "FROM SYSIBM.SYSDUMMY1" );
 //    QgsDebugMsg( statement );
-    if ( !queryFid.exec( statement ) )
-    {
-      QString msg = query.lastError().text();
-      QgsDebugMsg( msg );
-      if ( !mSkipFailures )
+      if ( !queryFid.exec( statement ) )
       {
-        pushError( msg );
-        return false;
+        QString msg = query.lastError().text();
+        QgsDebugMsg( msg );
+        if ( !mSkipFailures )
+        {
+          pushError( msg );
+          return false;
+        }
       }
-    }
 
-    if ( !queryFid.next() )
-    {
-      QString msg = query.lastError().text();
-      QgsDebugMsg( msg );
-      if ( !mSkipFailures )
+      if ( !queryFid.next() )
       {
-        pushError( msg );
-        return false;
+        QString msg = query.lastError().text();
+        QgsDebugMsg( msg );
+        if ( !mSkipFailures )
+        {
+          pushError( msg );
+          return false;
+        }
       }
+      it->setId( queryFid.value( 0 ).toLongLong() );
     }
-    it->setId( queryFid.value( 0 ).toLongLong() );
     writeCount++;
 //    QgsDebugMsg( QString( "count: %1; featureId: %2" ).arg( writeCount ).arg( queryFid.value( 0 ).toLongLong() ) );
   }
@@ -1711,10 +1718,12 @@ QGISEXTERN int dataCapabilities()
   return QgsDataProvider::Database;
 }
 
-QGISEXTERN void *selectWidget( QWidget *parent, Qt::WindowFlags fl )
+#ifdef HAVE_GUI
+QGISEXTERN void *selectWidget( QWidget *parent, Qt::WindowFlags fl, QgsProviderRegistry::WidgetMode widgetMode )
 {
-  return new QgsDb2SourceSelect( parent, fl );
+  return new QgsDb2SourceSelect( parent, fl, widgetMode );
 }
+#endif
 
 QGISEXTERN QgsDataItem *dataItem( QString path, QgsDataItem *parentItem )
 {

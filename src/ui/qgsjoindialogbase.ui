@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Add vector join</string>
+   <string>Add Vector join</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
    <item row="0" column="0">
@@ -44,10 +44,10 @@
    <item row="2" column="1">
     <widget class="QgsFieldComboBox" name="mTargetFieldComboBox"/>
    </item>
-   <item row="5" column="0" colspan="2">
+   <item row="6" column="0" colspan="2">
     <widget class="QgsCollapsibleGroupBox" name="mUseJoinFieldsSubset">
      <property name="title">
-      <string>Choose which fields are joined</string>
+      <string>Choose which fields are &amp;joined</string>
      </property>
      <property name="checkable">
       <bool>true</bool>
@@ -65,10 +65,10 @@
      </layout>
     </widget>
    </item>
-   <item row="6" column="0" colspan="2">
+   <item row="7" column="0" colspan="2">
     <widget class="QgsCollapsibleGroupBox" name="mUseCustomPrefix">
      <property name="title">
-      <string>Custom field name prefix</string>
+      <string>Custom field &amp;name prefix</string>
      </property>
      <property name="checkable">
       <bool>true</bool>
@@ -86,7 +86,7 @@
      </layout>
     </widget>
    </item>
-   <item row="7" column="0">
+   <item row="8" column="0">
     <spacer name="verticalSpacer">
      <property name="orientation">
       <enum>Qt::Vertical</enum>
@@ -116,13 +116,20 @@
      </property>
     </widget>
    </item>
-   <item row="8" column="0" colspan="2">
+   <item row="9" column="0" colspan="2">
     <widget class="QDialogButtonBox" name="buttonBox">
      <property name="orientation">
       <enum>Qt::Horizontal</enum>
      </property>
      <property name="standardButtons">
       <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
+     </property>
+    </widget>
+   </item>
+   <item row="5" column="0">
+    <widget class="QCheckBox" name="mDynamicFormCheckBox">
+     <property name="text">
+      <string>Dynamic form</string>
      </property>
     </widget>
    </item>

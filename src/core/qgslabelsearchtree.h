@@ -28,10 +28,11 @@
 #include "qgspallabeling.h"
 #include "rtree.hpp"
 
-class QgsPoint;
+class QgsPointXY;
 
 /** \ingroup core
- * A class to query the labeling structure at a given point (small wraper around pal RTree class)*/
+ * A class to query the labeling structure at a given point (small wraper around pal RTree class)
+ */
 class CORE_EXPORT QgsLabelSearchTree
 {
   public:
@@ -50,7 +51,7 @@ class CORE_EXPORT QgsLabelSearchTree
      * \note not available in Python bindings
      * TODO: why does this break bindings with QList<QgsLabelPosition>?
      */
-    void label( const QgsPoint &p, QList<QgsLabelPosition *> &posList ) const SIP_SKIP;
+    void label( const QgsPointXY &p, QList<QgsLabelPosition *> &posList ) const SIP_SKIP;
 
     /** Returns label position(s) in given rectangle. QgsLabelSearchTree keeps ownership, don't delete the LabelPositions
      * \note not available in Python bindings
@@ -69,6 +70,12 @@ class CORE_EXPORT QgsLabelSearchTree
     mutable pal::RTree<QgsLabelPosition *, double, 2, double> mSpatialIndex;
     QList< QgsLabelPosition * > mOwnedPositions;
 
+#ifdef SIP_RUN
+    //! QgsLabelSearchTree cannot be copied.
+    QgsLabelSearchTree( const QgsLabelSearchTree &rh );
+    //! QgsLabelSearchTree cannot be copied.
+    QgsLabelSearchTree &operator=( const QgsLabelSearchTree & );
+#endif
 };
 
 #endif // QGSLABELTREE_H

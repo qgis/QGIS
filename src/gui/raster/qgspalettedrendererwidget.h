@@ -19,6 +19,7 @@
 #define QGSPALETTEDRENDERERWIDGET_H
 
 #include "qgsrasterrendererwidget.h"
+#include "qgis_sip.h"
 #include "qgspalettedrasterrenderer.h"
 #include "qgscolorschemelist.h"
 #include "qgsrasterlayer.h"
@@ -28,6 +29,7 @@
 
 class QgsRasterLayer;
 
+#ifndef SIP_RUN
 /// @cond PRIVATE
 
 /** \class QgsPalettedRendererClassGatherer
@@ -158,7 +160,11 @@ class QgsPalettedRendererModel : public QAbstractItemModel
     QMimeData *mimeData( const QModelIndexList &indexes ) const override;
     bool dropMimeData( const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent ) override;
 
-    void addEntry( const QColor &color );
+    QModelIndex addEntry( const QColor &color );
+
+  public slots:
+
+    void deleteAll();
 
   signals:
 
@@ -171,6 +177,7 @@ class QgsPalettedRendererModel : public QAbstractItemModel
 
 };
 ///@endcond PRIVATE
+#endif
 
 /** \ingroup gui
  * \class QgsPalettedRendererWidget
@@ -183,7 +190,7 @@ class GUI_EXPORT QgsPalettedRendererWidget: public QgsRasterRendererWidget, priv
 
     QgsPalettedRendererWidget( QgsRasterLayer *layer, const QgsRectangle &extent = QgsRectangle() );
     ~QgsPalettedRendererWidget();
-    static QgsRasterRendererWidget *create( QgsRasterLayer *layer, const QgsRectangle &extent ) { return new QgsPalettedRendererWidget( layer, extent ); }
+    static QgsRasterRendererWidget *create( QgsRasterLayer *layer, const QgsRectangle &extent ) SIP_FACTORY { return new QgsPalettedRendererWidget( layer, extent ); }
 
     QgsRasterRenderer *renderer() override;
 
@@ -191,12 +198,16 @@ class GUI_EXPORT QgsPalettedRendererWidget: public QgsRasterRendererWidget, priv
 
   private:
 
-    QMenu *contextMenu = nullptr;
+    QMenu *mContextMenu = nullptr;
+    QMenu *mAdvancedMenu = nullptr;
+    QAction *mLoadFromLayerAction = nullptr;
     QgsPalettedRendererModel *mModel = nullptr;
     QgsColorSwatchDelegate *mSwatchDelegate = nullptr;
 
     //! Background class gatherer thread
     QgsPalettedRendererClassGatherer *mGatherer = nullptr;
+
+    int mBand = -1;
 
     void setSelectionColor( const QItemSelection &selection, const QColor &color );
 
@@ -212,6 +223,7 @@ class GUI_EXPORT QgsPalettedRendererWidget: public QgsRasterRendererWidget, priv
     void saveColorTable();
     void classify();
     void loadFromLayer();
+    void bandChanged( int band );
 
     void gatheredClasses();
     void gathererThreadFinished();

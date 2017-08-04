@@ -113,9 +113,6 @@ Gradient color at stop
 %End
 
     bool operator==( const QgsGradientStop &other ) const;
-%Docstring
- :rtype: bool
-%End
 };
 
 typedef QList<QgsGradientStop> QgsGradientStopsList;
@@ -147,7 +144,7 @@ class QgsGradientColorRamp : QgsColorRamp
  \param stops optional list of additional color stops
 %End
 
-    static QgsColorRamp *create( const QgsStringMap &properties = QgsStringMap() );
+    static QgsColorRamp *create( const QgsStringMap &properties = QgsStringMap() ) /Factory/;
 %Docstring
 Creates a new QgsColorRamp from a map of properties
  :rtype: QgsColorRamp
@@ -158,7 +155,7 @@ Creates a new QgsColorRamp from a map of properties
     virtual QColor color( double value ) const;
     virtual QString type() const;
     virtual void invert();
-    virtual QgsGradientColorRamp *clone() const;
+    virtual QgsGradientColorRamp *clone() const /Factory/;
     virtual QgsStringMap properties() const;
 
     QColor color1() const;
@@ -249,17 +246,18 @@ Creates a new QgsColorRamp from a map of properties
 .. seealso:: info()
 %End
 
-    void addStopsToGradient( QGradient *gradient, double alpha = 1 );
+    void addStopsToGradient( QGradient *gradient, double opacity = 1 );
 %Docstring
  Copy color ramp stops to a QGradient
  \param gradient gradient to copy stops into
- \param alpha alpha multiplier. Opacity of colors will be multiplied
+ \param opacity opacity multiplier. Opacity of colors will be multiplied
  by this factor before adding to the gradient.
 .. versionadded:: 2.1
 %End
 
   protected:
 };
+
 
 
 class QgsLimitedRandomColorRamp : QgsColorRamp
@@ -479,7 +477,7 @@ class QgsPresetSchemeColorRamp : QgsColorRamp, QgsColorScheme
    not available in Python bindings - use setColors instead
 %End
 
-    static QgsColorRamp *create( const QgsStringMap &properties = QgsStringMap() );
+    static QgsColorRamp *create( const QgsStringMap &properties = QgsStringMap() ) /Factory/;
 %Docstring
  Returns a new QgsPresetSchemeColorRamp color ramp created using the properties encoded in a string
  map.
@@ -543,7 +541,7 @@ class QgsColorBrewerColorRamp : QgsColorRamp
  \param inverted invert ramp ordering
 %End
 
-    static QgsColorRamp *create( const QgsStringMap &properties = QgsStringMap() );
+    static QgsColorRamp *create( const QgsStringMap &properties = QgsStringMap() ) /Factory/;
 %Docstring
  Returns a new QgsColorBrewerColorRamp color ramp created using the properties encoded in a string
  map.
@@ -649,7 +647,7 @@ class QgsCptCityColorRamp : QgsGradientColorRamp
  \param doLoadFile load cpt-city ramp from file
 %End
 
-    static QgsColorRamp *create( const QgsStringMap &properties = QgsStringMap() );
+    static QgsColorRamp *create( const QgsStringMap &properties = QgsStringMap() ) /Factory/;
 %Docstring
  :rtype: QgsColorRamp
 %End

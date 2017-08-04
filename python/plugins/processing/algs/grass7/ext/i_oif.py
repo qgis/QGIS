@@ -33,7 +33,7 @@ def checkParameterValuesBeforeExecuting(alg):
     return verifyRasterNum(alg, 'input', 4)
 
 
-def processCommand(alg):
+def processCommand(alg, parameters):
     # Transform output file in string parameter
     oifFile = file2Output(alg, 'output')
 

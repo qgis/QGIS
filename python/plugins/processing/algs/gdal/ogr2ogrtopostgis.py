@@ -78,16 +78,8 @@ class Ogr2OgrToPostGis(GdalAlgorithm):
     PROMOTETOMULTI = 'PROMOTETOMULTI'
     OPTIONS = 'OPTIONS'
 
-    def name(self):
-        return 'importvectorintopostgisdatabasenewconnection'
-
-    def displayName(self):
-        return self.tr('Import Vector into PostGIS database (new connection)')
-
-    def group(self):
-        return self.tr('Vector miscellaneous')
-
-    def defineCharacteristics(self):
+    def __init__(self):
+        super().__init__()
         self.addParameter(ParameterVector(self.INPUT_LAYER,
                                           self.tr('Input layer')))
         self.addParameter(ParameterString(self.SHAPE_ENCODING,
@@ -161,7 +153,16 @@ class Ogr2OgrToPostGis(GdalAlgorithm):
         self.addParameter(ParameterString(self.OPTIONS,
                                           self.tr('Additional creation options'), '', optional=True))
 
-    def getConnectionString(self):
+    def name(self):
+        return 'importvectorintopostgisdatabasenewconnection'
+
+    def displayName(self):
+        return self.tr('Import Vector into PostGIS database (new connection)')
+
+    def group(self):
+        return self.tr('Vector miscellaneous')
+
+    def getConnectionString(self, parameters):
         host = self.getParameterValue(self.HOST)
         port = self.getParameterValue(self.PORT)
         user = self.getParameterValue(self.USER)
@@ -183,7 +184,7 @@ class Ogr2OgrToPostGis(GdalAlgorithm):
             arguments.append('user=' + user)
         return GdalUtils.escapeAndJoin(arguments)
 
-    def getConsoleCommands(self):
+    def getConsoleCommands(self, parameters):
         inLayer = self.getParameterValue(self.INPUT_LAYER)
         ogrLayer = ogrConnectionString(inLayer)[1:-1]
         shapeEncoding = self.getParameterValue(self.SHAPE_ENCODING)
@@ -202,6 +203,8 @@ class Ogr2OgrToPostGis(GdalAlgorithm):
         simplify = str(self.getParameterValue(self.SIMPLIFY))
         segmentize = str(self.getParameterValue(self.SEGMENTIZE))
         spat = self.getParameterValue(self.SPAT)
+        if not spat:
+            spat = QgsProcessingUtils.combineLayerExtents([inLayer])
         clip = self.getParameterValue(self.CLIP)
         where = str(self.getParameterValue(self.WHERE))
         wherestring = '-where "' + where + '"'
@@ -228,7 +231,7 @@ class Ogr2OgrToPostGis(GdalAlgorithm):
         arguments.append('-f')
         arguments.append('PostgreSQL')
         arguments.append('PG:"')
-        arguments.append(self.getConnectionString())
+        arguments.append(self.getConnectionString(parameters))
         arguments.append('"')
         arguments.append(dimstring)
         arguments.append(ogrLayer)

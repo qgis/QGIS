@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Download OpenStreetMap data</string>
+   <string>Download OpenStreetMap Data</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout_2">
    <item>
@@ -134,7 +134,7 @@
       <item>
        <widget class="QToolButton" name="btnBrowse">
         <property name="text">
-         <string>...</string>
+         <string>…</string>
         </property>
        </widget>
       </item>

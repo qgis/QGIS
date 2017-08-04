@@ -21,7 +21,7 @@ email                : marco.hugentobler at sourcepole dot com
 #include "qgscompoundcurve.h"
 #include "qgslinestring.h"
 #include "qgsmultilinestring.h"
-#include "qgspointv2.h"
+#include "qgspoint.h"
 #include "qgsmultipoint.h"
 #include "qgspolygon.h"
 #include "qgsmultipolygon.h"
@@ -160,6 +160,11 @@ int QgsGeometryCollection::dimension() const
   return maxDim;
 }
 
+QString QgsGeometryCollection::geometryType() const
+{
+  return QStringLiteral( "GeometryCollection" );
+}
+
 void QgsGeometryCollection::transform( const QgsCoordinateTransform &ct, QgsCoordinateTransform::TransformDirection d, bool transformZ )
 {
   Q_FOREACH ( QgsAbstractGeometry *g, mGeometries )
@@ -234,7 +239,7 @@ bool QgsGeometryCollection::fromWkb( QgsConstWkbPtr &wkbPtr )
 
 bool QgsGeometryCollection::fromWkt( const QString &wkt )
 {
-  return fromCollectionWkt( wkt, QList<QgsAbstractGeometry *>() << new QgsPointV2 << new QgsLineString << new QgsPolygonV2
+  return fromCollectionWkt( wkt, QList<QgsAbstractGeometry *>() << new QgsPoint << new QgsLineString << new QgsPolygonV2
                             << new QgsCircularString << new QgsCompoundCurve
                             << new QgsCurvePolygon
                             << new QgsMultiPointV2 << new QgsMultiLineString
@@ -353,6 +358,13 @@ QgsRectangle QgsGeometryCollection::calculateBoundingBox() const
   return bbox;
 }
 
+void QgsGeometryCollection::clearCache() const
+{
+  mBoundingBox = QgsRectangle();
+  mCoordinateSequence.clear();
+  QgsAbstractGeometry::clearCache();
+}
+
 QgsCoordinateSequence QgsGeometryCollection::coordinateSequence() const
 {
   if ( !mCoordinateSequence.isEmpty() )
@@ -389,12 +401,12 @@ int QgsGeometryCollection::nCoordinates() const
   return count;
 }
 
-double QgsGeometryCollection::closestSegment( const QgsPointV2 &pt, QgsPointV2 &segmentPt,  QgsVertexId &vertexAfter, bool *leftOf, double epsilon ) const
+double QgsGeometryCollection::closestSegment( const QgsPoint &pt, QgsPoint &segmentPt,  QgsVertexId &vertexAfter, bool *leftOf, double epsilon ) const
 {
   return QgsGeometryUtils::closestSegmentFromComponents( mGeometries, QgsGeometryUtils::Part, pt, segmentPt, vertexAfter, leftOf, epsilon );
 }
 
-bool QgsGeometryCollection::nextVertex( QgsVertexId &id, QgsPointV2 &vertex ) const
+bool QgsGeometryCollection::nextVertex( QgsVertexId &id, QgsPoint &vertex ) const
 {
   if ( id.part < 0 )
   {
@@ -422,7 +434,7 @@ bool QgsGeometryCollection::nextVertex( QgsVertexId &id, QgsPointV2 &vertex ) co
   return mGeometries.at( id.part )->nextVertex( id, vertex );
 }
 
-bool QgsGeometryCollection::insertVertex( QgsVertexId position, const QgsPointV2 &vertex )
+bool QgsGeometryCollection::insertVertex( QgsVertexId position, const QgsPoint &vertex )
 {
   if ( position.part >= mGeometries.size() )
   {
@@ -437,7 +449,7 @@ bool QgsGeometryCollection::insertVertex( QgsVertexId position, const QgsPointV2
   return success;
 }
 
-bool QgsGeometryCollection::moveVertex( QgsVertexId position, const QgsPointV2 &newPos )
+bool QgsGeometryCollection::moveVertex( QgsVertexId position, const QgsPoint &newPos )
 {
   if ( position.part >= mGeometries.size() )
   {
@@ -617,6 +629,16 @@ double QgsGeometryCollection::vertexAngle( QgsVertexId vertex ) const
   return geom->vertexAngle( vertex );
 }
 
+int QgsGeometryCollection::vertexCount( int part, int ring ) const
+{
+  return mGeometries[part]->vertexCount( 0, ring );
+}
+
+int QgsGeometryCollection::ringCount( int part ) const
+{
+  return mGeometries[part]->ringCount();
+}
+
 bool QgsGeometryCollection::addZValue( double zValue )
 {
   if ( QgsWkbTypes::hasZ( mWkbType ) )
@@ -674,4 +696,9 @@ bool QgsGeometryCollection::dropMValue()
   }
   clearCache();
   return true;
+}
+
+bool QgsGeometryCollection::wktOmitChildType() const
+{
+  return false;
 }

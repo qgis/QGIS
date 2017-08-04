@@ -22,17 +22,19 @@
 
 #include <QFile>
 #include <QTextStream>
+#include <QPrinter>
 
-QgsMapRendererTask::QgsMapRendererTask( const QgsMapSettings &ms, const QString &fileName, const QString &fileFormat )
+QgsMapRendererTask::QgsMapRendererTask( const QgsMapSettings &ms, const QString &fileName, const QString &fileFormat, const bool forceRaster )
   : QgsTask( tr( "Saving as image" ) )
   , mMapSettings( ms )
   , mFileName( fileName )
   , mFileFormat( fileFormat )
+  , mForceRaster( forceRaster )
 {
 }
 
 QgsMapRendererTask::QgsMapRendererTask( const QgsMapSettings &ms, QPainter *p )
-  : QgsTask( tr( "Saving as image" ) )
+  : QgsTask( tr( "Rendering to painter" ) )
   , mMapSettings( ms )
   , mPainter( p )
 {
@@ -70,8 +72,27 @@ bool QgsMapRendererTask::run()
   QImage img;
   std::unique_ptr< QPainter > tempPainter;
   QPainter *destPainter = mPainter;
+  std::unique_ptr< QPrinter > printer;
 
-  if ( !mPainter )
+  if ( mFileFormat == QStringLiteral( "PDF" ) )
+  {
+    printer.reset( new QPrinter() );
+    printer->setOutputFileName( mFileName );
+    printer->setOutputFormat( QPrinter::PdfFormat );
+    printer->setOrientation( QPrinter::Portrait );
+    // paper size needs to be given in millimeters in order to be able to set a resolution to pass onto the map renderer
+    printer->setPaperSize( mMapSettings.outputSize()  * 25.4 / mMapSettings.outputDpi(), QPrinter::Millimeter );
+    printer->setPageMargins( 0, 0, 0, 0, QPrinter::Millimeter );
+    printer->setResolution( mMapSettings.outputDpi() );
+
+    if ( !mForceRaster )
+    {
+      tempPainter.reset( new QPainter( printer.get() ) );
+      destPainter = tempPainter.get();
+    }
+  }
+
+  if ( !destPainter )
   {
     // save rendered map to an image file
     img = QImage( mMapSettings.outputSize(), QImage::Format_ARGB32 );
@@ -145,33 +166,43 @@ bool QgsMapRendererTask::run()
     annotation->render( context );
     context.painter()->restore();
   }
-  qDeleteAll( mAnnotations );
-  mAnnotations.clear();
 
   if ( !mFileName.isEmpty() )
   {
     destPainter->end();
-    bool success = img.save( mFileName, mFileFormat.toLocal8Bit().data() );
-    if ( !success )
+
+    if ( mForceRaster && mFileFormat == QStringLiteral( "PDF" ) )
     {
-      mError = ImageSaveFail;
-      return false;
+      QPainter pp;
+      pp.begin( printer.get() );
+      QRectF rect( 0, 0, img.width(), img.height() );
+      pp.drawImage( rect, img, rect );
+      pp.end();
     }
-
-    if ( mSaveWorldFile )
+    else if ( mFileFormat != QStringLiteral( "PDF" ) )
     {
-      QFileInfo info  = QFileInfo( mFileName );
-
-      // build the world file name
-      QString outputSuffix = info.suffix();
-      QString worldFileName = info.absolutePath() + '/' + info.baseName() + '.'
-                              + outputSuffix.at( 0 ) + outputSuffix.at( info.suffix().size() - 1 ) + 'w';
-      QFile worldFile( worldFileName );
-
-      if ( worldFile.open( QIODevice::WriteOnly | QIODevice::Truncate ) ) //don't use QIODevice::Text
+      bool success = img.save( mFileName, mFileFormat.toLocal8Bit().data() );
+      if ( !success )
       {
-        QTextStream stream( &worldFile );
-        stream << QgsMapSettingsUtils::worldFileContent( mMapSettings );
+        mError = ImageSaveFail;
+        return false;
+      }
+
+      if ( mSaveWorldFile )
+      {
+        QFileInfo info  = QFileInfo( mFileName );
+
+        // build the world file name
+        QString outputSuffix = info.suffix();
+        QString worldFileName = info.absolutePath() + '/' + info.baseName() + '.'
+                                + outputSuffix.at( 0 ) + outputSuffix.at( info.suffix().size() - 1 ) + 'w';
+        QFile worldFile( worldFileName );
+
+        if ( worldFile.open( QIODevice::WriteOnly | QIODevice::Truncate ) ) //don't use QIODevice::Text
+        {
+          QTextStream stream( &worldFile );
+          stream << QgsMapSettingsUtils::worldFileContent( mMapSettings );
+        }
       }
     }
   }
@@ -181,6 +212,9 @@ bool QgsMapRendererTask::run()
 
 void QgsMapRendererTask::finished( bool result )
 {
+  qDeleteAll( mAnnotations );
+  mAnnotations.clear();
+
   if ( result )
     emit renderingComplete();
   else

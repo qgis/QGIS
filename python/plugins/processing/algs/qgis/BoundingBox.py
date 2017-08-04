@@ -27,23 +27,19 @@ __revision__ = '$Format:%H$'
 
 import os
 
-from qgis.core import QgsGeometry, QgsWkbTypes, QgsProcessingUtils
+from qgis.core import (QgsGeometry,
+                       QgsWkbTypes,
+                       QgsProcessingException)
+
 
 from qgis.PyQt.QtGui import QIcon
 
-from processing.core.GeoAlgorithm import GeoAlgorithm
-from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
-from processing.core.parameters import ParameterVector
-from processing.core.outputs import OutputVector
-from processing.tools import dataobjects
+from processing.algs.qgis.QgisAlgorithm import QgisFeatureBasedAlgorithm
 
 pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
 
-class BoundingBox(GeoAlgorithm):
-
-    INPUT_LAYER = 'INPUT_LAYER'
-    OUTPUT_LAYER = 'OUTPUT_LAYER'
+class BoundingBox(QgisFeatureBasedAlgorithm):
 
     def icon(self):
         return QIcon(os.path.join(pluginPath, 'images', 'ftools', 'matrix.png'))
@@ -51,38 +47,29 @@ class BoundingBox(GeoAlgorithm):
     def group(self):
         return self.tr('Vector geometry tools')
 
+    def __init__(self):
+        super().__init__()
+
     def name(self):
         return 'boundingboxes'
 
     def displayName(self):
         return self.tr('Bounding boxes')
 
-    def defineCharacteristics(self):
-        self.addParameter(ParameterVector(self.INPUT_LAYER,
-                                          self.tr('Input layer')))
-        self.addOutput(OutputVector(self.OUTPUT_LAYER, self.tr('Bounds'), datatype=[dataobjects.TYPE_VECTOR_POLYGON]))
+    def outputName(self):
+        return self.tr('Bounds')
 
-    def processAlgorithm(self, context, feedback):
-        layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT_LAYER), context)
+    def outputWkbType(self, inputWkb):
+        return QgsWkbTypes.Polygon
 
-        writer = self.getOutputFromName(
-            self.OUTPUT_LAYER).getVectorWriter(layer.fields(), QgsWkbTypes.Polygon, layer.crs(), context)
+    def processFeature(self, feature, feedback):
+        input_geometry = feature.geometry()
+        if input_geometry:
+            output_geometry = QgsGeometry.fromRect(input_geometry.boundingBox())
+            if not output_geometry:
+                raise QgsProcessingException(
+                    self.tr('Error calculating bounding box'))
 
-        features = QgsProcessingUtils.getFeatures(layer, context)
-        total = 100.0 / QgsProcessingUtils.featureCount(layer, context)
+            feature.setGeometry(output_geometry)
 
-        for current, input_feature in enumerate(features):
-            output_feature = input_feature
-            input_geometry = input_feature.geometry()
-            if input_geometry:
-                output_geometry = QgsGeometry.fromRect(input_geometry.boundingBox())
-                if not output_geometry:
-                    raise GeoAlgorithmExecutionException(
-                        self.tr('Error calculating bounding box'))
-
-                output_feature.setGeometry(output_geometry)
-
-            writer.addFeature(output_feature)
-            feedback.setProgress(int(current * total))
-
-        del writer
+        return feature

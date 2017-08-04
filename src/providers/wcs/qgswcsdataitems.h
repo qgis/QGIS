@@ -29,14 +29,18 @@ class QgsWCSConnectionItem : public QgsDataCollectionItem
     QVector<QgsDataItem *> createChildren() override;
     virtual bool equal( const QgsDataItem *other ) override;
 
+#ifdef HAVE_GUI
     virtual QList<QAction *> actions() override;
+#endif
 
-    QgsWcsCapabilities mCapabilities;
+    QgsWcsCapabilities mWcsCapabilities;
     QVector<QgsWcsCoverageSummary> mLayerProperties;
 
   public slots:
+#ifdef HAVE_GUI
     void editConnection();
     void deleteConnection();
+#endif
 
   private:
     QString mUri;
@@ -69,14 +73,16 @@ class QgsWCSRootItem : public QgsDataCollectionItem
 
     QVector<QgsDataItem *> createChildren() override;
 
+#ifdef HAVE_GUI
     virtual QList<QAction *> actions() override;
-
     virtual QWidget *paramWidget() override;
+#endif
 
   public slots:
+#ifdef HAVE_GUI
     void connectionsChanged();
-
     void newConnection();
+#endif
 };
 
 #endif // QGSWCSDATAITEMS_H

@@ -1,43 +1,83 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgsmaplayerdependency.h                                     *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
 class QgsMapLayerDependency
 {
+%Docstring
+ This class models dependencies with or between map layers.
+ A dependency is defined by a layer ID, a type and an origin.
+ The two combinations of type/origin that are currently supported are:
+  - PresenceDependency && FromProvider: virtual layers for instance which may depend on other layers already loaded to work
+  - DataDependency && FromUser: dependencies given by the user, mainly to represent database triggers
+
+.. versionadded:: 3.0
+%End
+
 %TypeHeaderCode
 #include "qgsmaplayerdependency.h"
 %End
- public:
-  //! Type of dependency
-  enum Type
-  {
-    PresenceDependency = 1, // The layer must be already present (in the registry) for this dependency to be resolved
-    DataDependency     = 2  // The layer may be invalidated by data changes on another layer
-  };
+  public:
+    enum Type
+    {
+      PresenceDependency,
+      DataDependency
+    };
 
-  //! Origin of the dependency
-  enum Origin
-  {
-    FromProvider = 0,  // Dependency given by the provider, the user cannot change it
-    FromUser     = 1   // Dependency given by the user
-  };
+    enum Origin
+    {
+      FromProvider,
+      FromUser
+    };
 
-  //! Standard constructor
-  QgsMapLayerDependency( const QString &layerId, Type type = DataDependency, Origin origin = FromUser );
+    QgsMapLayerDependency( const QString &layerId, Type type = DataDependency, Origin origin = FromUser );
+%Docstring
+Standard constructor
+%End
 
-  //! Return the dependency type
-  Type type() const;
+    Type type() const;
+%Docstring
+Return the dependency type
+ :rtype: Type
+%End
 
-  //! Return the dependency origin
-  Origin origin() const;
+    Origin origin() const;
+%Docstring
+Return the dependency origin
+ :rtype: Origin
+%End
 
-  //! Return the ID of the layer this dependency depends on
-  QString layerId() const;
+    QString layerId() const;
+%Docstring
+Return the ID of the layer this dependency depends on
+ :rtype: str
+%End
 
-  //! Comparison operator
-  bool operator==( const QgsMapLayerDependency &other ) const;
+    bool operator==( const QgsMapLayerDependency &other ) const;
 
-  //! hash operator
-  long __hash__() const;
+    //! hash operator
+    long __hash__() const;
+%Docstring
+ :rtype: long
+%End
 %MethodCode
-  sipRes = qHash( *sipCpp );
+    sipRes = qHash( *sipCpp );
 %End
 };
 
 
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgsmaplayerdependency.h                                     *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

@@ -280,20 +280,20 @@ double QgsCompoundCurve::length() const
   return length;
 }
 
-QgsPointV2 QgsCompoundCurve::startPoint() const
+QgsPoint QgsCompoundCurve::startPoint() const
 {
   if ( mCurves.size() < 1 )
   {
-    return QgsPointV2();
+    return QgsPoint();
   }
   return mCurves.at( 0 )->startPoint();
 }
 
-QgsPointV2 QgsCompoundCurve::endPoint() const
+QgsPoint QgsCompoundCurve::endPoint() const
 {
   if ( mCurves.size() < 1 )
   {
-    return QgsPointV2();
+    return QgsPoint();
   }
   return mCurves.at( mCurves.size() - 1 )->endPoint();
 }
@@ -404,7 +404,7 @@ void QgsCompoundCurve::removeCurve( int i )
   clearCache();
 }
 
-void QgsCompoundCurve::addVertex( const QgsPointV2 &pt )
+void QgsCompoundCurve::addVertex( const QgsPoint &pt )
 {
   if ( mWkbType == QgsWkbTypes::Unknown )
   {
@@ -486,7 +486,7 @@ void QgsCompoundCurve::drawAsPolygon( QPainter &p ) const
   p.drawPath( pp );
 }
 
-bool QgsCompoundCurve::insertVertex( QgsVertexId position, const QgsPointV2 &vertex )
+bool QgsCompoundCurve::insertVertex( QgsVertexId position, const QgsPoint &vertex )
 {
   QList< QPair<int, QgsVertexId> > curveIds = curveVertexId( position );
   if ( curveIds.size() < 1 )
@@ -507,7 +507,7 @@ bool QgsCompoundCurve::insertVertex( QgsVertexId position, const QgsPointV2 &ver
   return success;
 }
 
-bool QgsCompoundCurve::moveVertex( QgsVertexId position, const QgsPointV2 &newPos )
+bool QgsCompoundCurve::moveVertex( QgsVertexId position, const QgsPoint &newPos )
 {
   QList< QPair<int, QgsVertexId> > curveIds = curveVertexId( position );
   QList< QPair<int, QgsVertexId> >::const_iterator idIt = curveIds.constBegin();
@@ -544,13 +544,13 @@ bool QgsCompoundCurve::deleteVertex( QgsVertexId position )
     Q_ASSERT( curveIds.at( 1 ).first == curveIds.at( 0 ).first + 1 );
     Q_ASSERT( curveIds.at( 0 ).second.vertex == mCurves.at( curveIds.at( 0 ).first )->numPoints() - 1 );
     Q_ASSERT( curveIds.at( 1 ).second.vertex == 0 );
-    QgsPointV2 startPoint = mCurves.at( curveIds.at( 0 ).first ) ->startPoint();
-    QgsPointV2 endPoint = mCurves.at( curveIds.at( 1 ).first ) ->endPoint();
+    QgsPoint startPoint = mCurves.at( curveIds.at( 0 ).first ) ->startPoint();
+    QgsPoint endPoint = mCurves.at( curveIds.at( 1 ).first ) ->endPoint();
     if ( QgsWkbTypes::flatType( mCurves.at( curveIds.at( 0 ).first )->wkbType() ) == QgsWkbTypes::LineString &&
          QgsWkbTypes::flatType( mCurves.at( curveIds.at( 1 ).first )->wkbType() ) == QgsWkbTypes::CircularString &&
          mCurves.at( curveIds.at( 1 ).first )->numPoints() > 3 )
     {
-      QgsPointV2 intermediatePoint;
+      QgsPoint intermediatePoint;
       QgsVertexId::VertexType type;
       mCurves.at( curveIds.at( 1 ).first ) ->pointAt( 2, intermediatePoint, type );
       mCurves.at( curveIds.at( 0 ).first )->moveVertex(
@@ -565,7 +565,7 @@ bool QgsCompoundCurve::deleteVertex( QgsVertexId position )
          mCurves.at( curveIds.at( 0 ).first )->numPoints() > 0 &&
          QgsWkbTypes::flatType( mCurves.at( curveIds.at( 1 ).first )->wkbType() ) == QgsWkbTypes::LineString )
     {
-      QgsPointV2 intermediatePoint = mCurves.at( curveIds.at( 0 ).first ) ->endPoint();
+      QgsPoint intermediatePoint = mCurves.at( curveIds.at( 0 ).first ) ->endPoint();
       mCurves.at( curveIds.at( 1 ).first )->moveVertex( QgsVertexId( 0, 0, 0 ), intermediatePoint );
     }
     else if ( !mCurves.at( curveIds.at( 1 ).first )->deleteVertex( curveIds.at( 1 ).second ) )
@@ -598,8 +598,8 @@ bool QgsCompoundCurve::deleteVertex( QgsVertexId position )
     }
     else
     {
-      QgsPointV2 endPointOfFirst = mCurves.at( curveIds.at( 0 ).first ) ->endPoint();
-      QgsPointV2 startPointOfSecond = mCurves.at( curveIds.at( 1 ).first ) ->startPoint();
+      QgsPoint endPointOfFirst = mCurves.at( curveIds.at( 0 ).first ) ->endPoint();
+      QgsPoint startPointOfSecond = mCurves.at( curveIds.at( 1 ).first ) ->startPoint();
       if ( endPointOfFirst != startPointOfSecond )
       {
         QgsLineString *line = new QgsLineString();
@@ -647,12 +647,12 @@ QList< QPair<int, QgsVertexId> > QgsCompoundCurve::curveVertexId( QgsVertexId id
   return curveIds;
 }
 
-double QgsCompoundCurve::closestSegment( const QgsPointV2 &pt, QgsPointV2 &segmentPt,  QgsVertexId &vertexAfter, bool *leftOf, double epsilon ) const
+double QgsCompoundCurve::closestSegment( const QgsPoint &pt, QgsPoint &segmentPt,  QgsVertexId &vertexAfter, bool *leftOf, double epsilon ) const
 {
   return QgsGeometryUtils::closestSegmentFromComponents( mCurves, QgsGeometryUtils::Vertex, pt, segmentPt, vertexAfter, leftOf, epsilon );
 }
 
-bool QgsCompoundCurve::pointAt( int node, QgsPointV2 &point, QgsVertexId::VertexType &type ) const
+bool QgsCompoundCurve::pointAt( int node, QgsPoint &point, QgsVertexId::VertexType &type ) const
 {
   int currentVertexId = 0;
   for ( int j = 0; j < mCurves.size(); ++j )

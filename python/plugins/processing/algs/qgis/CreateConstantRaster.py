@@ -25,31 +25,49 @@ __copyright__ = '(C) 2012, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
-from osgeo import gdal
+import os
+import math
+import struct
 
-from qgis.core import (QgsApplication,
-                       QgsProcessingUtils)
-from processing.core.GeoAlgorithm import GeoAlgorithm
-from processing.core.parameters import ParameterRaster
-from processing.core.parameters import ParameterNumber
-from processing.core.outputs import OutputRaster
-from processing.tools.raster import RasterWriter
+from qgis.core import (Qgis,
+                       QgsRasterBlock,
+                       QgsRasterFileWriter,
+                       QgsProcessingParameterExtent,
+                       QgsProcessingParameterNumber,
+                       QgsProcessingParameterCrs,
+                       QgsProcessingParameterRasterDestination)
+from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 
 
-class CreateConstantRaster(GeoAlgorithm):
+class CreateConstantRaster(QgisAlgorithm):
 
-    INPUT = 'INPUT'
-    OUTPUT = 'OUTPUT'
+    EXTENT = 'EXTENT'
+    TARGET_CRS = 'TARGET_CRS'
+    PIXEL_SIZE = 'PIXEL_SIZE'
     NUMBER = 'NUMBER'
-
-    def icon(self):
-        return QgsApplication.getThemeIcon("/providerQgis.svg")
-
-    def svgIconPath(self):
-        return QgsApplication.iconPath("providerQgis.svg")
+    OUTPUT = 'OUTPUT'
 
     def group(self):
         return self.tr('Raster tools')
+
+    def __init__(self):
+        super().__init__()
+
+    def initAlgorithm(self, config=None):
+        self.addParameter(QgsProcessingParameterExtent(self.EXTENT,
+                                                       self.tr('Desired extent')))
+        self.addParameter(QgsProcessingParameterCrs(self.TARGET_CRS,
+                                                    self.tr('Target CRS'),
+                                                    'ProjectCrs'))
+        self.addParameter(QgsProcessingParameterNumber(self.PIXEL_SIZE,
+                                                       self.tr('Pixel size'),
+                                                       QgsProcessingParameterNumber.Double,
+                                                       0.1, False, 0.01, 999))
+        self.addParameter(QgsProcessingParameterNumber(self.NUMBER,
+                                                       self.tr('Constant value'),
+                                                       QgsProcessingParameterNumber.Double,
+                                                       defaultValue=1))
+        self.addParameter(QgsProcessingParameterRasterDestination(self.OUTPUT, self.tr('Constant')))
 
     def name(self):
         return 'createconstantrasterlayer'
@@ -57,37 +75,36 @@ class CreateConstantRaster(GeoAlgorithm):
     def displayName(self):
         return self.tr('Create constant raster layer')
 
-    def defineCharacteristics(self):
-        self.addParameter(ParameterRaster(self.INPUT,
-                                          self.tr('Reference layer')))
-        self.addParameter(ParameterNumber(self.NUMBER,
-                                          self.tr('Constant value'),
-                                          default=1.0))
+    def processAlgorithm(self, parameters, context, feedback):
+        extent = self.parameterAsExtent(parameters, self.EXTENT, context)
+        crs = self.parameterAsCrs(parameters, self.TARGET_CRS, context)
+        value = self.parameterAsDouble(parameters, self.NUMBER, context)
+        pixelSize = self.parameterAsDouble(parameters, self.PIXEL_SIZE, context)
 
-        self.addOutput(OutputRaster(self.OUTPUT,
-                                    self.tr('Constant')))
+        outputFile = self.parameterAsOutputLayer(parameters, self.OUTPUT, context)
+        outputFormat = QgsRasterFileWriter.driverForExtension(os.path.splitext(outputFile)[1])
 
-    def processAlgorithm(self, context, feedback):
-        layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT), context)
-        value = self.getParameterValue(self.NUMBER)
+        rows = max([math.ceil(extent.height() / pixelSize) + 1, 1.0])
+        cols = max([math.ceil(extent.width() / pixelSize) + 1, 1.0])
 
-        output = self.getOutputFromName(self.OUTPUT)
+        writer = QgsRasterFileWriter(outputFile)
+        writer.setOutputProviderKey('gdal')
+        writer.setOutputFormat(outputFormat)
+        provider = writer.createOneBandRaster(Qgis.Float32, cols, rows, extent, crs)
+        provider.setNoDataValue(1, -9999)
 
-        raster = gdal.Open(layer.source(), gdal.GA_ReadOnly)
-        geoTransform = raster.GetGeoTransform()
+        data = [value] * cols
+        block = QgsRasterBlock(Qgis.Float32, cols, 1)
+        block.setData(struct.pack('{}f'.format(len(data)), *data))
 
-        cellsize = (layer.extent().xMaximum() - layer.extent().xMinimum()) \
-            / layer.width()
+        total = 100.0 / rows if rows else 0
+        for i in range(rows):
+            if feedback.isCanceled():
+                break
 
-        w = RasterWriter(output.getCompatibleFileName(self),
-                         layer.extent().xMinimum(),
-                         layer.extent().yMinimum(),
-                         layer.extent().xMaximum(),
-                         layer.extent().yMaximum(),
-                         cellsize,
-                         1,
-                         layer.crs(),
-                         geoTransform
-                         )
-        w.matrix.fill(value)
-        w.close()
+            provider.writeBlock(block, 1, 0, i)
+            feedback.setProgress(int(i * rows))
+
+        provider.setEditable(False)
+
+        return {self.OUTPUT: outputFile}

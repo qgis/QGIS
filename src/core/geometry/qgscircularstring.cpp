@@ -21,7 +21,7 @@
 #include "qgsgeometryutils.h"
 #include "qgslinestring.h"
 #include "qgsmaptopixel.h"
-#include "qgspointv2.h"
+#include "qgspoint.h"
 #include "qgswkbptr.h"
 #include <QPainter>
 #include <QPainterPath>
@@ -68,11 +68,11 @@ QgsRectangle QgsCircularString::calculateBoundingBox() const
   {
     if ( i == 0 )
     {
-      bbox = segmentBoundingBox( QgsPointV2( mX[i], mY[i] ), QgsPointV2( mX[i + 1], mY[i + 1] ), QgsPointV2( mX[i + 2], mY[i + 2] ) );
+      bbox = segmentBoundingBox( QgsPoint( mX[i], mY[i] ), QgsPoint( mX[i + 1], mY[i + 1] ), QgsPoint( mX[i + 2], mY[i + 2] ) );
     }
     else
     {
-      QgsRectangle segmentBox = segmentBoundingBox( QgsPointV2( mX[i], mY[i] ), QgsPointV2( mX[i + 1], mY[i + 1] ), QgsPointV2( mX[i + 2], mY[i + 2] ) );
+      QgsRectangle segmentBox = segmentBoundingBox( QgsPoint( mX[i], mY[i] ), QgsPoint( mX[i + 1], mY[i + 1] ), QgsPoint( mX[i + 2], mY[i + 2] ) );
       bbox.combineExtentWith( segmentBox );
     }
   }
@@ -88,7 +88,7 @@ QgsRectangle QgsCircularString::calculateBoundingBox() const
   return bbox;
 }
 
-QgsRectangle QgsCircularString::segmentBoundingBox( const QgsPointV2 &pt1, const QgsPointV2 &pt2, const QgsPointV2 &pt3 )
+QgsRectangle QgsCircularString::segmentBoundingBox( const QgsPoint &pt1, const QgsPoint &pt2, const QgsPoint &pt3 )
 {
   double centerX, centerY, radius;
   QgsGeometryUtils::circleCenterRadius( pt1, pt2, pt3, radius, centerX, centerY );
@@ -126,10 +126,10 @@ QgsPointSequence QgsCircularString::compassPointsOnSegment( double p1Angle, doub
 {
   QgsPointSequence pointList;
 
-  QgsPointV2 nPoint( centerX, centerY + radius );
-  QgsPointV2 ePoint( centerX + radius, centerY );
-  QgsPointV2 sPoint( centerX, centerY - radius );
-  QgsPointV2 wPoint( centerX - radius, centerY );
+  QgsPoint nPoint( centerX, centerY + radius );
+  QgsPoint ePoint( centerX + radius, centerY );
+  QgsPoint sPoint( centerX, centerY - radius );
+  QgsPoint wPoint( centerX - radius, centerY );
 
   if ( p3Angle >= p1Angle )
   {
@@ -329,20 +329,20 @@ double QgsCircularString::length() const
   return length;
 }
 
-QgsPointV2 QgsCircularString::startPoint() const
+QgsPoint QgsCircularString::startPoint() const
 {
   if ( numPoints() < 1 )
   {
-    return QgsPointV2();
+    return QgsPoint();
   }
   return pointN( 0 );
 }
 
-QgsPointV2 QgsCircularString::endPoint() const
+QgsPoint QgsCircularString::endPoint() const
 {
   if ( numPoints() < 1 )
   {
-    return QgsPointV2();
+    return QgsPoint();
   }
   return pointN( numPoints() - 1 );
 }
@@ -367,11 +367,11 @@ int QgsCircularString::numPoints() const
   return qMin( mX.size(), mY.size() );
 }
 
-QgsPointV2 QgsCircularString::pointN( int i ) const
+QgsPoint QgsCircularString::pointN( int i ) const
 {
   if ( qMin( mX.size(), mY.size() ) <= i )
   {
-    return QgsPointV2();
+    return QgsPoint();
   }
 
   double x = mX.at( i );
@@ -401,7 +401,7 @@ QgsPointV2 QgsCircularString::pointN( int i ) const
   {
     t = QgsWkbTypes::PointM;
   }
-  return QgsPointV2( t, x, y, z, m );
+  return QgsPoint( t, x, y, z, m );
 }
 
 double QgsCircularString::xAt( int index ) const
@@ -445,7 +445,7 @@ void QgsCircularString::setPoints( const QgsPointSequence &points )
   }
 
   //get wkb type from first point
-  const QgsPointV2 &firstPt = points.at( 0 );
+  const QgsPoint &firstPt = points.at( 0 );
   bool hasZ = firstPt.is3D();
   bool hasM = firstPt.isMeasure();
 
@@ -553,7 +553,7 @@ void QgsCircularString::addToPainterPath( QPainterPath &path ) const
   for ( int i = 0; i < ( nPoints - 2 ) ; i += 2 )
   {
     QgsPointSequence pt;
-    QgsGeometryUtils::segmentizeArc( QgsPointV2( mX[i], mY[i] ), QgsPointV2( mX[i + 1], mY[i + 1] ), QgsPointV2( mX[i + 2], mY[i + 2] ), pt );
+    QgsGeometryUtils::segmentizeArc( QgsPoint( mX[i], mY[i] ), QgsPoint( mX[i + 1], mY[i + 1] ), QgsPoint( mX[i + 2], mY[i + 2] ), pt );
     for ( int j = 1; j < pt.size(); ++j )
     {
       path.lineTo( pt.at( j ).x(), pt.at( j ).y() );
@@ -571,7 +571,7 @@ void QgsCircularString::addToPainterPath( QPainterPath &path ) const
 void QgsCircularString::arcTo( QPainterPath &path, QPointF pt1, QPointF pt2, QPointF pt3 )
 {
   double centerX, centerY, radius;
-  QgsGeometryUtils::circleCenterRadius( QgsPointV2( pt1.x(), pt1.y() ), QgsPointV2( pt2.x(), pt2.y() ), QgsPointV2( pt3.x(), pt3.y() ),
+  QgsGeometryUtils::circleCenterRadius( QgsPoint( pt1.x(), pt1.y() ), QgsPoint( pt2.x(), pt2.y() ), QgsPoint( pt3.x(), pt3.y() ),
                                         radius, centerX, centerY );
 
   double p1Angle = QgsGeometryUtils::ccwAngle( pt1.y() - centerY, pt1.x() - centerX );
@@ -586,7 +586,7 @@ void QgsCircularString::drawAsPolygon( QPainter &p ) const
   draw( p );
 }
 
-bool QgsCircularString::insertVertex( QgsVertexId position, const QgsPointV2 &vertex )
+bool QgsCircularString::insertVertex( QgsVertexId position, const QgsPoint &vertex )
 {
   if ( position.vertex > mX.size() || position.vertex < 1 )
   {
@@ -617,7 +617,7 @@ bool QgsCircularString::insertVertex( QgsVertexId position, const QgsPointV2 &ve
   return true;
 }
 
-bool QgsCircularString::moveVertex( QgsVertexId position, const QgsPointV2 &newPos )
+bool QgsCircularString::moveVertex( QgsVertexId position, const QgsPoint &newPos )
 {
   if ( position.vertex < 0 || position.vertex >= mX.size() )
   {
@@ -682,11 +682,11 @@ void QgsCircularString::deleteVertex( int i )
   clearCache();
 }
 
-double QgsCircularString::closestSegment( const QgsPointV2 &pt, QgsPointV2 &segmentPt,  QgsVertexId &vertexAfter, bool *leftOf, double epsilon ) const
+double QgsCircularString::closestSegment( const QgsPoint &pt, QgsPoint &segmentPt,  QgsVertexId &vertexAfter, bool *leftOf, double epsilon ) const
 {
   Q_UNUSED( epsilon );
   double minDist = std::numeric_limits<double>::max();
-  QgsPointV2 minDistSegmentPoint;
+  QgsPoint minDistSegmentPoint;
   QgsVertexId minDistVertexAfter;
   bool minDistLeftOf = false;
 
@@ -722,7 +722,7 @@ double QgsCircularString::closestSegment( const QgsPointV2 &pt, QgsPointV2 &segm
   return minDist;
 }
 
-bool QgsCircularString::pointAt( int node, QgsPointV2 &point, QgsVertexId::VertexType &type ) const
+bool QgsCircularString::pointAt( int node, QgsPoint &point, QgsVertexId::VertexType &type ) const
 {
   if ( node >= numPoints() )
   {
@@ -739,9 +739,9 @@ void QgsCircularString::sumUpArea( double &sum ) const
 
   for ( int i = 0; i < maxIndex; i += 2 )
   {
-    QgsPointV2 p1( mX[i], mY[i] );
-    QgsPointV2 p2( mX[i + 1], mY[i + 1] );
-    QgsPointV2 p3( mX[i + 2], mY[i + 2] );
+    QgsPoint p1( mX[i], mY[i] );
+    QgsPoint p2( mX[i + 1], mY[i + 1] );
+    QgsPoint p3( mX[i + 2], mY[i + 2] );
 
     //segment is a full circle, p2 is the center point
     if ( p1 == p3 )
@@ -760,7 +760,7 @@ void QgsCircularString::sumUpArea( double &sum ) const
     double radius, centerX, centerY;
     QgsGeometryUtils::circleCenterRadius( p1, p2, p3, radius, centerX, centerY );
 
-    double d = sqrt( QgsGeometryUtils::sqrDistance2D( QgsPointV2( centerX, centerY ), QgsPointV2( midPointX, midPointY ) ) );
+    double d = sqrt( QgsGeometryUtils::sqrDistance2D( QgsPoint( centerX, centerY ), QgsPoint( midPointX, midPointY ) ) );
     double r2 = radius * radius;
 
     if ( d > radius )
@@ -795,12 +795,12 @@ void QgsCircularString::sumUpArea( double &sum ) const
 }
 
 double QgsCircularString::closestPointOnArc( double x1, double y1, double x2, double y2, double x3, double y3,
-    const QgsPointV2 &pt, QgsPointV2 &segmentPt,  QgsVertexId &vertexAfter, bool *leftOf, double epsilon )
+    const QgsPoint &pt, QgsPoint &segmentPt,  QgsVertexId &vertexAfter, bool *leftOf, double epsilon )
 {
   double radius, centerX, centerY;
-  QgsPointV2 pt1( x1, y1 );
-  QgsPointV2 pt2( x2, y2 );
-  QgsPointV2 pt3( x3, y3 );
+  QgsPoint pt1( x1, y1 );
+  QgsPoint pt2( x2, y2 );
+  QgsPoint pt3( x3, y3 );
 
   QgsGeometryUtils::circleCenterRadius( pt1, pt2, pt3, radius, centerX, centerY );
   double angle = QgsGeometryUtils::ccwAngle( pt.y() - centerY, pt.x() - centerX );
@@ -813,7 +813,7 @@ double QgsCircularString::closestPointOnArc( double x1, double y1, double x2, do
   if ( QgsGeometryUtils::angleOnCircle( angle, angle1, angle2, angle3 ) )
   {
     //get point on line center -> pt with distance radius
-    segmentPt = QgsGeometryUtils::pointOnLineWithDistance( QgsPointV2( centerX, centerY ), pt, radius );
+    segmentPt = QgsGeometryUtils::pointOnLineWithDistance( QgsPoint( centerX, centerY ), pt, radius );
 
     //vertexAfter
     vertexAfter.vertex = QgsGeometryUtils::circleAngleBetween( angle, angle1, angle2, clockwise ) ? 1 : 2;
@@ -853,12 +853,12 @@ void QgsCircularString::insertVertexBetween( int after, int before, int pointOnC
   double yOnCircle = mY.at( pointOnCircle );
 
   double radius, centerX, centerY;
-  QgsGeometryUtils::circleCenterRadius( QgsPointV2( xAfter, yAfter ), QgsPointV2( xBefore, yBefore ), QgsPointV2( xOnCircle, yOnCircle ), radius, centerX, centerY );
+  QgsGeometryUtils::circleCenterRadius( QgsPoint( xAfter, yAfter ), QgsPoint( xBefore, yBefore ), QgsPoint( xOnCircle, yOnCircle ), radius, centerX, centerY );
 
   double x = ( xAfter + xBefore ) / 2.0;
   double y = ( yAfter + yBefore ) / 2.0;
 
-  QgsPointV2 newVertex = QgsGeometryUtils::pointOnLineWithDistance( QgsPointV2( centerX, centerY ), QgsPointV2( x, y ), radius );
+  QgsPoint newVertex = QgsGeometryUtils::pointOnLineWithDistance( QgsPoint( centerX, centerY ), QgsPoint( x, y ), radius );
   mX.insert( before, newVertex.x() );
   mY.insert( before, newVertex.y() );
 
@@ -883,16 +883,16 @@ double QgsCircularString::vertexAngle( QgsVertexId vId ) const
   {
     if ( vId.vertex >= 1 && vId.vertex < numPoints() - 1 )
     {
-      return QgsGeometryUtils::circleTangentDirection( QgsPointV2( mX[vertex], mY[vertex] ), QgsPointV2( mX[before], mY[before] ),
-             QgsPointV2( mX[vertex], mY[vertex] ), QgsPointV2( mX[after], mY[after] ) );
+      return QgsGeometryUtils::circleTangentDirection( QgsPoint( mX[vertex], mY[vertex] ), QgsPoint( mX[before], mY[before] ),
+             QgsPoint( mX[vertex], mY[vertex] ), QgsPoint( mX[after], mY[after] ) );
     }
   }
   else //a point vertex
   {
     if ( vId.vertex == 0 )
     {
-      return QgsGeometryUtils::circleTangentDirection( QgsPointV2( mX[0], mY[0] ), QgsPointV2( mX[0], mY[0] ),
-             QgsPointV2( mX[1], mY[1] ), QgsPointV2( mX[2], mY[2] ) );
+      return QgsGeometryUtils::circleTangentDirection( QgsPoint( mX[0], mY[0] ), QgsPoint( mX[0], mY[0] ),
+             QgsPoint( mX[1], mY[1] ), QgsPoint( mX[2], mY[2] ) );
     }
     if ( vId.vertex >= numPoints() - 1 )
     {
@@ -903,8 +903,8 @@ double QgsCircularString::vertexAngle( QgsVertexId vId ) const
       int a = numPoints() - 3;
       int b = numPoints() - 2;
       int c = numPoints() - 1;
-      return QgsGeometryUtils::circleTangentDirection( QgsPointV2( mX[c], mY[c] ), QgsPointV2( mX[a], mY[a] ),
-             QgsPointV2( mX[b], mY[b] ), QgsPointV2( mX[c], mY[c] ) );
+      return QgsGeometryUtils::circleTangentDirection( QgsPoint( mX[c], mY[c] ), QgsPoint( mX[a], mY[a] ),
+             QgsPoint( mX[b], mY[b] ), QgsPoint( mX[c], mY[c] ) );
     }
     else
     {
@@ -916,12 +916,12 @@ double QgsCircularString::vertexAngle( QgsVertexId vId ) const
       int vertex1 = vId.vertex - 2;
       int vertex2 = vId.vertex - 1;
       int vertex3 = vId.vertex;
-      double angle1 = QgsGeometryUtils::circleTangentDirection( QgsPointV2( mX[vertex3], mY[vertex3] ),
-                      QgsPointV2( mX[vertex1], mY[vertex1] ), QgsPointV2( mX[vertex2], mY[vertex2] ), QgsPointV2( mX[vertex3], mY[vertex3] ) );
+      double angle1 = QgsGeometryUtils::circleTangentDirection( QgsPoint( mX[vertex3], mY[vertex3] ),
+                      QgsPoint( mX[vertex1], mY[vertex1] ), QgsPoint( mX[vertex2], mY[vertex2] ), QgsPoint( mX[vertex3], mY[vertex3] ) );
       int vertex4 = vId.vertex + 1;
       int vertex5 = vId.vertex + 2;
-      double angle2 = QgsGeometryUtils::circleTangentDirection( QgsPointV2( mX[vertex3], mY[vertex3] ),
-                      QgsPointV2( mX[vertex3], mY[vertex3] ), QgsPointV2( mX[vertex4], mY[vertex4] ), QgsPointV2( mX[vertex5], mY[vertex5] ) );
+      double angle2 = QgsGeometryUtils::circleTangentDirection( QgsPoint( mX[vertex3], mY[vertex3] ),
+                      QgsPoint( mX[vertex3], mY[vertex3] ), QgsPoint( mX[vertex4], mY[vertex4] ), QgsPoint( mX[vertex5], mY[vertex5] ) );
       return QgsGeometryUtils::averageAngle( angle1, angle2 );
     }
   }

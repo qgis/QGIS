@@ -31,12 +31,13 @@ from qgis.core import (QgsField,
                        QgsGeometry,
                        QgsDistanceArea,
                        QgsFeature,
+                       QgsFeatureSink,
                        QgsFeatureRequest,
                        QgsWkbTypes,
                        QgsApplication,
                        QgsProject,
                        QgsProcessingUtils)
-from processing.core.GeoAlgorithm import GeoAlgorithm
+from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterTableField
@@ -48,7 +49,7 @@ from processing.tools import dataobjects
 from math import sqrt
 
 
-class HubDistanceLines(GeoAlgorithm):
+class HubDistanceLines(QgisAlgorithm):
     POINTS = 'POINTS'
     HUBS = 'HUBS'
     FIELD = 'FIELD'
@@ -62,22 +63,13 @@ class HubDistanceLines(GeoAlgorithm):
              'Layer units'
              ]
 
-    def icon(self):
-        return QgsApplication.getThemeIcon("/providerQgis.svg")
-
-    def svgIconPath(self):
-        return QgsApplication.iconPath("providerQgis.svg")
-
     def group(self):
         return self.tr('Vector analysis tools')
 
-    def name(self):
-        return 'distancetonearesthublinetohub'
+    def __init__(self):
+        super().__init__()
 
-    def displayName(self):
-        return self.tr('Distance to nearest hub (line to hub)')
-
-    def defineCharacteristics(self):
+    def initAlgorithm(self, config=None):
         self.units = [self.tr('Meters'),
                       self.tr('Feet'),
                       self.tr('Miles'),
@@ -95,7 +87,13 @@ class HubDistanceLines(GeoAlgorithm):
 
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Hub distance'), datatype=[dataobjects.TYPE_VECTOR_LINE]))
 
-    def processAlgorithm(self, context, feedback):
+    def name(self):
+        return 'distancetonearesthublinetohub'
+
+    def displayName(self):
+        return self.tr('Distance to nearest hub (line to hub)')
+
+    def processAlgorithm(self, parameters, context, feedback):
         layerPoints = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.POINTS), context)
         layerHubs = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.HUBS), context)
         fieldName = self.getParameterValue(self.FIELD)
@@ -117,11 +115,11 @@ class HubDistanceLines(GeoAlgorithm):
 
         distance = QgsDistanceArea()
         distance.setSourceCrs(layerPoints.crs())
-        distance.setEllipsoid(QgsProject.instance().ellipsoid())
+        distance.setEllipsoid(context.project().ellipsoid())
 
         # Scan source points, find nearest hub, and write to output file
         features = QgsProcessingUtils.getFeatures(layerPoints, context)
-        total = 100.0 / QgsProcessingUtils.featureCount(layerPoints, context)
+        total = 100.0 / layerPoints.featureCount() if layerPoints.featureCount() else 0
         for current, f in enumerate(features):
             src = f.geometry().boundingBox().center()
 
@@ -150,7 +148,7 @@ class HubDistanceLines(GeoAlgorithm):
 
             feat.setGeometry(QgsGeometry.fromPolyline([src, closest]))
 
-            writer.addFeature(feat)
+            writer.addFeature(feat, QgsFeatureSink.FastInsert)
             feedback.setProgress(int(current * total))
 
         del writer

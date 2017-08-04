@@ -17,22 +17,23 @@
 
 #include "qgssqliteexpressioncompiler.h"
 #include "qgssqlexpressioncompiler.h"
+#include "qgsexpressionnodeimpl.h"
 
 QgsSQLiteExpressionCompiler::QgsSQLiteExpressionCompiler( const QgsFields &fields )
   : QgsSqlExpressionCompiler( fields, QgsSqlExpressionCompiler::LikeIsCaseInsensitive | QgsSqlExpressionCompiler::IntegerDivisionResultsInInteger )
 {
 }
 
-QgsSqlExpressionCompiler::Result QgsSQLiteExpressionCompiler::compileNode( const QgsExpression::Node *node, QString &result )
+QgsSqlExpressionCompiler::Result QgsSQLiteExpressionCompiler::compileNode( const QgsExpressionNode *node, QString &result )
 {
   switch ( node->nodeType() )
   {
-    case QgsExpression::ntBinaryOperator:
+    case QgsExpressionNode::ntBinaryOperator:
     {
-      switch ( static_cast<const QgsExpression::NodeBinaryOperator *>( node )->op() )
+      switch ( static_cast<const QgsExpressionNodeBinaryOperator *>( node )->op() )
       {
-        case QgsExpression::boPow:
-        case QgsExpression::boRegexp:
+        case QgsExpressionNodeBinaryOperator::boPow:
+        case QgsExpressionNodeBinaryOperator::boRegexp:
           return Fail; //not supported by SQLite
 
         default:

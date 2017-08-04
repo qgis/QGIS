@@ -17,6 +17,8 @@
 #ifndef QGSTEXTRENDERER_PRIVATE_H
 #define QGSTEXTRENDERER_PRIVATE_H
 
+#define SIP_NO_FILE
+
 #include "qgis_core.h"
 #include "qgstextrenderer.h"
 #include "qgsmapunitscale.h"
@@ -151,7 +153,7 @@ class CORE_EXPORT QgsTextBackgroundSettingsPrivate : public QSharedData
 
     bool enabled;
     QgsTextBackgroundSettings::ShapeType type;
-    QString svgFile;
+    QString svgFile;   //!< Absolute path to SVG file
     QgsTextBackgroundSettings::SizeType sizeType;
     QSizeF size;
     QgsUnitTypes::RenderUnit sizeUnits;

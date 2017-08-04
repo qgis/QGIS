@@ -90,10 +90,10 @@ class CORE_EXPORT QgsTracer : public QObject
     //! Given two points, find the shortest path and return points on the way.
     //! The optional "error" argument may receive error code (PathError enum) if it is not null
     //! \returns array of points - trace of linestrings of other features (empty array one error)
-    QVector<QgsPoint> findShortestPath( const QgsPoint &p1, const QgsPoint &p2, PathError *error = nullptr );
+    QVector<QgsPointXY> findShortestPath( const QgsPointXY &p1, const QgsPointXY &p2, PathError *error SIP_OUT = nullptr );
 
     //! Find out whether the point is snapped to a vertex or edge (i.e. it can be used for tracing start/stop)
-    bool isPointSnapped( const QgsPoint &pt );
+    bool isPointSnapped( const QgsPointXY &pt );
 
   protected:
     //! Allows derived classes to setup the settings just before the tracer is initialized.

@@ -279,51 +279,51 @@ QgsSimpleMarkerSymbolLayerBase::Shape QgsSimpleMarkerSymbolLayerBase::decodeShap
     *ok = true;
   QString cleaned = name.toLower().trimmed();
 
-  if ( cleaned ==  QLatin1String( "square" ) || cleaned ==  QLatin1String( "rectangle" ) )
+  if ( cleaned == QLatin1String( "square" ) || cleaned == QLatin1String( "rectangle" ) )
     return Square;
-  else if ( cleaned ==  QLatin1String( "diamond" ) )
+  else if ( cleaned == QLatin1String( "diamond" ) )
     return Diamond;
-  else if ( cleaned ==  QLatin1String( "pentagon" ) )
+  else if ( cleaned == QLatin1String( "pentagon" ) )
     return Pentagon;
-  else if ( cleaned ==  QLatin1String( "hexagon" ) )
+  else if ( cleaned == QLatin1String( "hexagon" ) )
     return Hexagon;
-  else if ( cleaned ==  QLatin1String( "triangle" ) )
+  else if ( cleaned == QLatin1String( "triangle" ) )
     return Triangle;
-  else if ( cleaned ==  QLatin1String( "equilateral_triangle" ) )
+  else if ( cleaned == QLatin1String( "equilateral_triangle" ) )
     return EquilateralTriangle;
-  else if ( cleaned ==  QLatin1String( "star" ) || cleaned == QLatin1String( "regular_star" ) )
+  else if ( cleaned == QLatin1String( "star" ) || cleaned == QLatin1String( "regular_star" ) )
     return Star;
-  else if ( cleaned ==  QLatin1String( "arrow" ) )
+  else if ( cleaned == QLatin1String( "arrow" ) )
     return Arrow;
-  else if ( cleaned ==  QLatin1String( "circle" ) )
+  else if ( cleaned == QLatin1String( "circle" ) )
     return Circle;
-  else if ( cleaned ==  QLatin1String( "cross" ) )
+  else if ( cleaned == QLatin1String( "cross" ) )
     return Cross;
-  else if ( cleaned ==  QLatin1String( "cross_fill" ) )
+  else if ( cleaned == QLatin1String( "cross_fill" ) )
     return CrossFill;
-  else if ( cleaned ==  QLatin1String( "cross2" ) || cleaned == QLatin1String( "x" ) )
+  else if ( cleaned == QLatin1String( "cross2" ) || cleaned == QLatin1String( "x" ) )
     return Cross2;
-  else if ( cleaned ==  QLatin1String( "line" ) )
+  else if ( cleaned == QLatin1String( "line" ) )
     return Line;
-  else if ( cleaned ==  QLatin1String( "arrowhead" ) )
+  else if ( cleaned == QLatin1String( "arrowhead" ) )
     return ArrowHead;
-  else if ( cleaned ==  QLatin1String( "filled_arrowhead" ) )
+  else if ( cleaned == QLatin1String( "filled_arrowhead" ) )
     return ArrowHeadFilled;
-  else if ( cleaned ==  QLatin1String( "semi_circle" ) )
+  else if ( cleaned == QLatin1String( "semi_circle" ) )
     return SemiCircle;
-  else if ( cleaned ==  QLatin1String( "third_circle" ) )
+  else if ( cleaned == QLatin1String( "third_circle" ) )
     return ThirdCircle;
-  else if ( cleaned ==  QLatin1String( "quarter_circle" ) )
+  else if ( cleaned == QLatin1String( "quarter_circle" ) )
     return QuarterCircle;
-  else if ( cleaned ==  QLatin1String( "quarter_square" ) )
+  else if ( cleaned == QLatin1String( "quarter_square" ) )
     return QuarterSquare;
-  else if ( cleaned ==  QLatin1String( "half_square" ) )
+  else if ( cleaned == QLatin1String( "half_square" ) )
     return HalfSquare;
-  else if ( cleaned ==  QLatin1String( "diagonal_half_square" ) )
+  else if ( cleaned == QLatin1String( "diagonal_half_square" ) )
     return DiagonalHalfSquare;
-  else if ( cleaned ==  QLatin1String( "right_half_triangle" ) )
+  else if ( cleaned == QLatin1String( "right_half_triangle" ) )
     return RightHalfTriangle;
-  else if ( cleaned ==  QLatin1String( "left_half_triangle" ) )
+  else if ( cleaned == QLatin1String( "left_half_triangle" ) )
     return LeftHalfTriangle;
 
   if ( ok )
@@ -802,8 +802,8 @@ void QgsSimpleMarkerSymbolLayer::startRender( QgsSymbolRenderContext &context )
   QColor brushColor = mColor;
   QColor penColor = mStrokeColor;
 
-  brushColor.setAlphaF( mColor.alphaF() * context.alpha() );
-  penColor.setAlphaF( mStrokeColor.alphaF() * context.alpha() );
+  brushColor.setAlphaF( mColor.alphaF() * context.opacity() );
+  penColor.setAlphaF( mStrokeColor.alphaF() * context.opacity() );
 
   mBrush = QBrush( brushColor );
   mPen = QPen( penColor );
@@ -813,10 +813,10 @@ void QgsSimpleMarkerSymbolLayer::startRender( QgsSymbolRenderContext &context )
 
   QColor selBrushColor = context.renderContext().selectionColor();
   QColor selPenColor = selBrushColor == mColor ? selBrushColor : mStrokeColor;
-  if ( context.alpha() < 1 )
+  if ( context.opacity() < 1 )
   {
-    selBrushColor.setAlphaF( context.alpha() );
-    selPenColor.setAlphaF( context.alpha() );
+    selBrushColor.setAlphaF( context.opacity() );
+    selPenColor.setAlphaF( context.opacity() );
   }
   mSelBrush = QBrush( selBrushColor );
   mSelPen = QPen( selPenColor );
@@ -1194,7 +1194,13 @@ QgsSymbolLayer *QgsSimpleMarkerSymbolLayer::createFromSld( QDomElement &element 
 
   Shape shape = decodeShape( name );
 
+  QString uom = element.attribute( QStringLiteral( "uom" ), "" );
+  size = QgsSymbolLayerUtils::sizeInPixelsFromSldUom( uom, size );
+  offset.setX( QgsSymbolLayerUtils::sizeInPixelsFromSldUom( uom, offset.x() ) );
+  offset.setY( QgsSymbolLayerUtils::sizeInPixelsFromSldUom( uom, offset.y() ) );
+
   QgsSimpleMarkerSymbolLayer *m = new QgsSimpleMarkerSymbolLayer( shape, size );
+  m->setOutputUnit( QgsUnitTypes::RenderUnit::RenderPixels );
   m->setColor( color );
   m->setStrokeColor( strokeColor );
   m->setAngle( angle );
@@ -1331,7 +1337,7 @@ bool QgsSimpleMarkerSymbolLayer::writeDxf( QgsDxfExport &e, double mmMapUnitScal
     QgsPointSequence p;
     p.reserve( polygon.size() );
     for ( int i = 0; i < polygon.size(); i++ )
-      p << QgsPointV2( polygon[i] );
+      p << QgsPoint( polygon[i] );
     p << p[0];
 
     if ( mBrush.style() != Qt::NoBrush )
@@ -1342,9 +1348,9 @@ bool QgsSimpleMarkerSymbolLayer::writeDxf( QgsDxfExport &e, double mmMapUnitScal
   else if ( shape == Circle )
   {
     if ( mBrush.style() != Qt::NoBrush )
-      e.writeFilledCircle( layerName, bc, QgsPointV2( shift ), halfSize );
+      e.writeFilledCircle( layerName, bc, QgsPoint( shift ), halfSize );
     if ( mPen.style() != Qt::NoPen )
-      e.writeCircle( layerName, pc, QgsPointV2( shift ), halfSize, QStringLiteral( "CONTINUOUS" ), strokeWidth );
+      e.writeCircle( layerName, pc, QgsPoint( shift ), halfSize, QStringLiteral( "CONTINUOUS" ), strokeWidth );
   }
   else if ( shape == Line )
   {
@@ -1352,7 +1358,7 @@ bool QgsSimpleMarkerSymbolLayer::writeDxf( QgsDxfExport &e, double mmMapUnitScal
     QPointF pt2 = t.map( QPointF( 0, halfSize ) );
 
     if ( mPen.style() != Qt::NoPen )
-      e.writeLine( QgsPointV2( pt1 ), QgsPointV2( pt2 ), layerName, QStringLiteral( "CONTINUOUS" ), pc, strokeWidth );
+      e.writeLine( QgsPoint( pt1 ), QgsPoint( pt2 ), layerName, QStringLiteral( "CONTINUOUS" ), pc, strokeWidth );
   }
   else if ( shape == Cross )
   {
@@ -1363,8 +1369,8 @@ bool QgsSimpleMarkerSymbolLayer::writeDxf( QgsDxfExport &e, double mmMapUnitScal
       QPointF pt3 = t.map( QPointF( 0, -halfSize ) );
       QPointF pt4 = t.map( QPointF( 0, halfSize ) );
 
-      e.writeLine( QgsPointV2( pt1 ), QgsPointV2( pt2 ), layerName, QStringLiteral( "CONTINUOUS" ), pc, strokeWidth );
-      e.writeLine( QgsPointV2( pt3 ), QgsPointV2( pt4 ), layerName, QStringLiteral( "CONTINUOUS" ), pc, strokeWidth );
+      e.writeLine( QgsPoint( pt1 ), QgsPoint( pt2 ), layerName, QStringLiteral( "CONTINUOUS" ), pc, strokeWidth );
+      e.writeLine( QgsPoint( pt3 ), QgsPoint( pt4 ), layerName, QStringLiteral( "CONTINUOUS" ), pc, strokeWidth );
     }
   }
   else if ( shape == Cross2 )
@@ -1376,8 +1382,8 @@ bool QgsSimpleMarkerSymbolLayer::writeDxf( QgsDxfExport &e, double mmMapUnitScal
       QPointF pt3 = t.map( QPointF( halfSize, -halfSize ) );
       QPointF pt4 = t.map( QPointF( -halfSize, halfSize ) );
 
-      e.writeLine( QgsPointV2( pt1 ), QgsPointV2( pt2 ), layerName, QStringLiteral( "CONTINUOUS" ), pc, strokeWidth );
-      e.writeLine( QgsPointV2( pt3 ), QgsPointV2( pt4 ), layerName, QStringLiteral( "CONTINUOUS" ), pc, strokeWidth );
+      e.writeLine( QgsPoint( pt1 ), QgsPoint( pt2 ), layerName, QStringLiteral( "CONTINUOUS" ), pc, strokeWidth );
+      e.writeLine( QgsPoint( pt3 ), QgsPoint( pt4 ), layerName, QStringLiteral( "CONTINUOUS" ), pc, strokeWidth );
     }
   }
   else if ( shape == ArrowHead )
@@ -1388,8 +1394,8 @@ bool QgsSimpleMarkerSymbolLayer::writeDxf( QgsDxfExport &e, double mmMapUnitScal
       QPointF pt2 = t.map( QPointF( 0, 0 ) );
       QPointF pt3 = t.map( QPointF( -halfSize, -halfSize ) );
 
-      e.writeLine( QgsPointV2( pt1 ), QgsPointV2( pt2 ), layerName, QStringLiteral( "CONTINUOUS" ), pc, strokeWidth );
-      e.writeLine( QgsPointV2( pt3 ), QgsPointV2( pt2 ), layerName, QStringLiteral( "CONTINUOUS" ), pc, strokeWidth );
+      e.writeLine( QgsPoint( pt1 ), QgsPoint( pt2 ), layerName, QStringLiteral( "CONTINUOUS" ), pc, strokeWidth );
+      e.writeLine( QgsPoint( pt3 ), QgsPoint( pt2 ), layerName, QStringLiteral( "CONTINUOUS" ), pc, strokeWidth );
     }
   }
   else
@@ -1687,9 +1693,9 @@ void QgsFilledMarkerSymbolLayer::draw( QgsSymbolRenderContext &context, QgsSimpl
 //////////
 
 
-QgsSvgMarkerSymbolLayer::QgsSvgMarkerSymbolLayer( const QString &name, double size, double angle, QgsSymbol::ScaleMethod scaleMethod )
+QgsSvgMarkerSymbolLayer::QgsSvgMarkerSymbolLayer( const QString &path, double size, double angle, QgsSymbol::ScaleMethod scaleMethod )
 {
-  mPath = QgsSymbolLayerUtils::symbolNameToPath( name );
+  mPath = path;
   mSize = size;
   mAngle = angle;
   mOffset = QPointF( 0, 0 );
@@ -1703,7 +1709,7 @@ QgsSvgMarkerSymbolLayer::QgsSvgMarkerSymbolLayer( const QString &name, double si
 
 QgsSymbolLayer *QgsSvgMarkerSymbolLayer::create( const QgsStringMap &props )
 {
-  QString name = DEFAULT_SVGMARKER_NAME;
+  QString name;
   double size = DEFAULT_SVGMARKER_SIZE;
   double angle = DEFAULT_SVGMARKER_ANGLE;
   QgsSymbol::ScaleMethod scaleMethod = DEFAULT_SCALE_METHOD;
@@ -1830,6 +1836,18 @@ QgsSymbolLayer *QgsSvgMarkerSymbolLayer::create( const QgsStringMap &props )
   m->restoreOldDataDefinedProperties( props );
 
   return m;
+}
+
+void QgsSvgMarkerSymbolLayer::resolvePaths( QgsStringMap &properties, const QgsPathResolver &pathResolver, bool saving )
+{
+  QgsStringMap::iterator it = properties.find( QStringLiteral( "name" ) );
+  if ( it != properties.end() )
+  {
+    if ( saving )
+      it.value() = QgsSymbolLayerUtils::svgSymbolPathToName( it.value(), pathResolver );
+    else
+      it.value() = QgsSymbolLayerUtils::svgSymbolNameToPath( it.value(), pathResolver );
+  }
 }
 
 void QgsSvgMarkerSymbolLayer::setPath( const QString &path )
@@ -1961,10 +1979,10 @@ void QgsSvgMarkerSymbolLayer::renderPoint( QPointF point, QgsSymbolRenderContext
     if ( fitsInCache && img.width() > 1 )
     {
       //consider transparency
-      if ( !qgsDoubleNear( context.alpha(), 1.0 ) )
+      if ( !qgsDoubleNear( context.opacity(), 1.0 ) )
       {
         QImage transparentImage = img.copy();
-        QgsSymbolLayerUtils::multiplyImageOpacity( &transparentImage, context.alpha() );
+        QgsSymbolLayerUtils::multiplyImageOpacity( &transparentImage, context.opacity() );
         p->drawImage( -transparentImage.width() / 2.0, -transparentImage.height() / 2.0, transparentImage );
         hwRatio = static_cast< double >( transparentImage.height() ) / static_cast< double >( transparentImage.width() );
       }
@@ -1978,7 +1996,7 @@ void QgsSvgMarkerSymbolLayer::renderPoint( QPointF point, QgsSymbolRenderContext
 
   if ( usePict || !fitsInCache )
   {
-    p->setOpacity( context.alpha() );
+    p->setOpacity( context.opacity() );
     const QPicture &pct = QgsApplication::svgCache()->svgAsPicture( path, size, fillColor, strokeColor, strokeWidth,
                           context.renderContext().scaleFactor(), context.renderContext().forceVectorOutput() );
 
@@ -2089,7 +2107,7 @@ void QgsSvgMarkerSymbolLayer::calculateOffsetAndRotation( QgsSymbolRenderContext
 QgsStringMap QgsSvgMarkerSymbolLayer::properties() const
 {
   QgsStringMap map;
-  map[QStringLiteral( "name" )] = QgsSymbolLayerUtils::symbolPathToName( mPath );
+  map[QStringLiteral( "name" )] = mPath;
   map[QStringLiteral( "size" )] = QString::number( mSize );
   map[QStringLiteral( "size_unit" )] = QgsUnitTypes::encodeUnit( mSizeUnit );
   map[QStringLiteral( "size_map_unit_scale" )] = QgsSymbolLayerUtils::encodeMapUnitScale( mSizeMapUnitScale );
@@ -2205,6 +2223,9 @@ QgsSymbolLayer *QgsSvgMarkerSymbolLayer::createFromSld( QDomElement &element )
   if ( !QgsSymbolLayerUtils::externalGraphicFromSld( graphicElem, path, mimeType, fillColor, size ) )
     return nullptr;
 
+  QString uom = element.attribute( QStringLiteral( "uom" ), "" );
+  size = QgsSymbolLayerUtils::sizeInPixelsFromSldUom( uom, size );
+
   if ( mimeType != QLatin1String( "image/svg+xml" ) )
     return nullptr;
 
@@ -2222,6 +2243,7 @@ QgsSymbolLayer *QgsSvgMarkerSymbolLayer::createFromSld( QDomElement &element )
   QgsSymbolLayerUtils::displacementFromSldElement( graphicElem, offset );
 
   QgsSvgMarkerSymbolLayer *m = new QgsSvgMarkerSymbolLayer( path, size );
+  m->setOutputUnit( QgsUnitTypes::RenderUnit::RenderPixels );
   m->setFillColor( fillColor );
   //m->setStrokeColor( strokeColor );
   //m->setStrokeWidth( strokeWidth );
@@ -2518,8 +2540,8 @@ void QgsFontMarkerSymbolLayer::startRender( QgsSymbolRenderContext &context )
   QColor brushColor = mColor;
   QColor penColor = mStrokeColor;
 
-  brushColor.setAlphaF( mColor.alphaF() * context.alpha() );
-  penColor.setAlphaF( mStrokeColor.alphaF() * context.alpha() );
+  brushColor.setAlphaF( mColor.alphaF() * context.opacity() );
+  penColor.setAlphaF( mStrokeColor.alphaF() * context.opacity() );
 
   mBrush = QBrush( brushColor );
   mPen = QPen( penColor );
@@ -2645,7 +2667,7 @@ void QgsFontMarkerSymbolLayer::renderPoint( QPointF point, QgsSymbolRenderContex
     brushColor = mDataDefinedProperties.valueAsColor( QgsSymbolLayer::PropertyFillColor, context.renderContext().expressionContext(), brushColor );
   }
   brushColor = context.selected() ? context.renderContext().selectionColor() : brushColor;
-  brushColor.setAlphaF( brushColor.alphaF() * context.alpha() );
+  brushColor.setAlphaF( brushColor.alphaF() * context.opacity() );
   mBrush.setColor( brushColor );
 
   QColor penColor = mStrokeColor;
@@ -2654,7 +2676,7 @@ void QgsFontMarkerSymbolLayer::renderPoint( QPointF point, QgsSymbolRenderContex
     context.setOriginalValueVariable( QgsSymbolLayerUtils::encodeColor( mStrokeColor ) );
     penColor = mDataDefinedProperties.valueAsColor( QgsSymbolLayer::PropertyStrokeColor, context.renderContext().expressionContext(), penColor );
   }
-  penColor.setAlphaF( penColor.alphaF() * context.alpha() );
+  penColor.setAlphaF( penColor.alphaF() * context.opacity() );
 
   double penWidth = context.renderContext().convertToPainterUnits( mStrokeWidth, mStrokeWidthUnit, mStrokeWidthMapUnitScale );
   if ( mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyStrokeWidth ) )
@@ -2862,7 +2884,13 @@ QgsSymbolLayer *QgsFontMarkerSymbolLayer::createFromSld( QDomElement &element )
   QPointF offset;
   QgsSymbolLayerUtils::displacementFromSldElement( graphicElem, offset );
 
+  QString uom = element.attribute( QStringLiteral( "uom" ), "" );
+  offset.setX( QgsSymbolLayerUtils::sizeInPixelsFromSldUom( uom, offset.x() ) );
+  offset.setY( QgsSymbolLayerUtils::sizeInPixelsFromSldUom( uom, offset.y() ) );
+  size = QgsSymbolLayerUtils::sizeInPixelsFromSldUom( uom, size );
+
   QgsMarkerSymbolLayer *m = new QgsFontMarkerSymbolLayer( fontFamily, chr, size, color );
+  m->setOutputUnit( QgsUnitTypes::RenderUnit::RenderPixels );
   m->setAngle( angle );
   m->setOffset( offset );
   return m;

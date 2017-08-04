@@ -53,10 +53,10 @@ class ANALYSIS_EXPORT QgsInterpolator
       QgsVectorLayer *vectorLayer = nullptr;
       bool zCoordInterpolation;
       int interpolationAttribute;
-      InputType mInputType;
+      QgsInterpolator::InputType mInputType;
     };
 
-    QgsInterpolator( const QList<LayerData> &layerData );
+    QgsInterpolator( const QList<QgsInterpolator::LayerData> &layerData );
 
     virtual ~QgsInterpolator() = default;
 

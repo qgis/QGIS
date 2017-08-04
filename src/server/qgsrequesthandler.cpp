@@ -76,7 +76,7 @@ QString QgsRequestHandler::responseHeader( const QString &name ) const
 
 QMap<QString, QString> QgsRequestHandler::responseHeaders() const
 {
-  return mResponse.headers( );
+  return mResponse.headers();
 }
 
 void QgsRequestHandler::setRequestHeader( const QString &name, const QString &value )
@@ -97,7 +97,7 @@ QString QgsRequestHandler::requestHeader( const QString &name ) const
 
 QMap<QString, QString> QgsRequestHandler::requestHeaders() const
 {
-  return mRequest.headers( );
+  return mRequest.headers();
 }
 
 
@@ -119,6 +119,16 @@ void QgsRequestHandler::clearBody()
 QByteArray QgsRequestHandler::body() const
 {
   return mResponse.data();
+}
+
+QByteArray QgsRequestHandler::data() const
+{
+  return mRequest.data();
+}
+
+QString QgsRequestHandler::url() const
+{
+  return mRequest.url().toString();
 }
 
 void QgsRequestHandler::setStatusCode( int code )
@@ -214,7 +224,7 @@ void QgsRequestHandler::parseInput()
     if ( !doc.setContent( inputString, true, &errorMsg, &line, &column ) )
     {
       // XXX Output error but continue processing request ?
-      QgsMessageLog::logMessage( QStringLiteral( "Error parsing post data: at line %1, column %2: %3." )
+      QgsMessageLog::logMessage( QStringLiteral( "Warning: error parsing post data as XML: at line %1, column %2: %3. Assuming urlencoded query string sent in the post body." )
                                  .arg( line ).arg( column ).arg( errorMsg ) );
 
       // Process input string as a simple query text

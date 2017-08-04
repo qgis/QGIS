@@ -16,7 +16,7 @@
 #include "qgsmaptooladdfeature.h"
 #include "qgsapplication.h"
 #include "qgsattributedialog.h"
-#include "qgscsexception.h"
+#include "qgsexception.h"
 #include "qgscurvepolygon.h"
 #include "qgsfields.h"
 #include "qgsgeometry.h"
@@ -48,8 +48,9 @@ QgsMapToolAddFeature::~QgsMapToolAddFeature()
 
 bool QgsMapToolAddFeature::addFeature( QgsVectorLayer *vlayer, QgsFeature *f, bool showModal )
 {
+  QgsExpressionContextScope *scope = QgsExpressionContextUtils::mapToolCaptureScope( snappingMatches() );
   QgsFeatureAction *action = new QgsFeatureAction( tr( "add feature" ), *f, vlayer, QString(), -1, this );
-  bool res = action->addFeature( QgsAttributeMap(), showModal );
+  bool res = action->addFeature( QgsAttributeMap(), showModal, scope );
   if ( showModal )
     delete action;
   return res;
@@ -66,6 +67,16 @@ void QgsMapToolAddFeature::activate()
   }
 
   QgsMapToolCapture::activate();
+}
+
+bool QgsMapToolAddFeature::checkGeometryType() const
+{
+  return mCheckGeometryType;
+}
+
+void QgsMapToolAddFeature::setCheckGeometryType( bool checkGeometryType )
+{
+  mCheckGeometryType = checkGeometryType;
 }
 
 void QgsMapToolAddFeature::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
@@ -109,15 +120,15 @@ void QgsMapToolAddFeature::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
 
 
 
-    QgsPoint savePoint; //point in layer coordinates
+    QgsPointXY savePoint; //point in layer coordinates
     try
     {
-      QgsPointV2 fetchPoint;
+      QgsPoint fetchPoint;
       int res;
       res = fetchLayerPoint( e->mapPointMatch(), fetchPoint );
       if ( res == 0 )
       {
-        savePoint = QgsPoint( fetchPoint.x(), fetchPoint.y() );
+        savePoint = QgsPointXY( fetchPoint.x(), fetchPoint.y() );
       }
       else
       {
@@ -146,7 +157,7 @@ void QgsMapToolAddFeature::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
       }
       else if ( layerWKBType == QgsWkbTypes::Point25D )
       {
-        g = QgsGeometry( new QgsPointV2( QgsWkbTypes::PointZ, savePoint.x(), savePoint.y(), defaultZValue() ) );
+        g = QgsGeometry( new QgsPoint( QgsWkbTypes::PointZ, savePoint.x(), savePoint.y(), defaultZValue() ) );
       }
       else if ( layerWKBType == QgsWkbTypes::MultiPoint )
       {
@@ -155,7 +166,7 @@ void QgsMapToolAddFeature::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
       else if ( layerWKBType == QgsWkbTypes::MultiPoint25D )
       {
         QgsMultiPointV2 *mp = new QgsMultiPointV2();
-        mp->addGeometry( new QgsPointV2( QgsWkbTypes::PointZ, savePoint.x(), savePoint.y(), defaultZValue() ) );
+        mp->addGeometry( new QgsPoint( QgsWkbTypes::PointZ, savePoint.x(), savePoint.y(), defaultZValue() ) );
         g = QgsGeometry( mp );
       }
       else
@@ -240,6 +251,7 @@ void QgsMapToolAddFeature::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
       bool hasCurvedSegments = captureCurve()->hasCurvedSegments();
       bool providerSupportsCurvedSegments = vlayer->dataProvider()->capabilities() & QgsVectorDataProvider::CircularGeometries;
 
+      QList<QgsPointLocator::Match> snappingMatchesList;
       QgsCurve *curveToAdd = nullptr;
       if ( hasCurvedSegments && providerSupportsCurvedSegments )
       {
@@ -248,13 +260,13 @@ void QgsMapToolAddFeature::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
       else
       {
         curveToAdd = captureCurve()->curveToLine();
+        snappingMatchesList = snappingMatches();
       }
 
       if ( mode() == CaptureLine )
       {
-        QgsGeometry *g = new QgsGeometry( curveToAdd );
-        f->setGeometry( *g );
-        delete g;
+        QgsGeometry g( curveToAdd );
+        f->setGeometry( g );
       }
       else
       {
@@ -268,9 +280,8 @@ void QgsMapToolAddFeature::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
           poly = new QgsPolygonV2();
         }
         poly->setExteriorRing( curveToAdd );
-        QgsGeometry *g = new QgsGeometry( poly );
-        f->setGeometry( *g );
-        delete g;
+        QgsGeometry g( poly );
+        f->setGeometry( g );
 
         QgsGeometry featGeom = f->geometry();
         int avoidIntersectionsReturn = featGeom.avoidIntersections( QgsProject::instance()->avoidIntersectionsLayers() );

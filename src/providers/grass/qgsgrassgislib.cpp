@@ -65,17 +65,9 @@ extern "C"
 }
 #endif
 
-#if !defined(GRASS_VERSION_MAJOR) || \
-    !defined(GRASS_VERSION_MINOR) || \
-    GRASS_VERSION_MAJOR<6 || \
-    (GRASS_VERSION_MAJOR == 6 && GRASS_VERSION_MINOR <= 2)
-#define G__setenv(name,value) G__setenv( ( char * ) (name), (char *) (value) )
-#endif
-
 #ifdef Q_OS_WIN
 #include <windows.h>
 #endif
-
 
 QgsGrassGisLib *QgsGrassGisLib::_instance = 0;
 
@@ -205,10 +197,6 @@ int GRASS_LIB_EXPORT QgsGrassGisLib::G__gisinit( const char *version, const char
   G_setenv( "OVERWRITE", "1" );  // avoid checking if map exists
 
   G_suppress_masking();
-
-#if GRASS_VERSION_MAJOR<6 || (GRASS_VERSION_MAJOR == 6 && GRASS_VERSION_MINOR <= 4)
-  G__init_null_patterns();
-#endif
 
   // Read projection if set
   //mCrs.createFromOgcWmsCrs( "EPSG:900913" );
@@ -1089,7 +1077,7 @@ double QgsGrassGisLib::G_area_of_polygon( const double *x, const double *y, int 
   QgsPolyline polyline;
   for ( int i = 0; i < n; i++ )
   {
-    polyline.append( QgsPoint( x[i], y[i] ) );
+    polyline.append( QgsPointXY( x[i], y[i] ) );
   }
   QgsPolygon polygon;
   polygon.append( polyline );
@@ -1147,7 +1135,7 @@ double QgsGrassGisLib::distance( double e1, double n1, double e2, double n2 )
 {
   // QgsDistanceArea states that results are in meters, but it does not
   // seem to be true,
-  double dist = mDistanceArea.measureLine( QgsPoint( e1, n1 ), QgsPoint( e2, n2 ) );
+  double dist = mDistanceArea.measureLine( QgsPointXY( e1, n1 ), QgsPointXY( e2, n2 ) );
   if ( !mCrs.isGeographic() )
   {
     dist *= G_database_units_to_meters_factor();
@@ -1198,7 +1186,7 @@ int GRASS_LIB_EXPORT G_set_geodesic_distance_lat2( double lat2 )
 
 double QgsGrassGisLib::G_geodesic_distance_lon_to_lon( double lon1, double lon2 )
 {
-  double dist = mDistanceArea.measureLine( QgsPoint( lon1, mLat1 ), QgsPoint( lon2, mLat2 ) );
+  double dist = mDistanceArea.measureLine( QgsPointXY( lon1, mLat1 ), QgsPointXY( lon2, mLat2 ) );
   // TODO: not sure about this
   if ( !mCrs.isGeographic() )
   {

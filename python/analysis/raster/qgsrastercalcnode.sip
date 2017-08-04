@@ -1,10 +1,22 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/analysis/raster/qgsrastercalcnode.h                              *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
 class QgsRasterCalcNode
 {
+
 %TypeHeaderCode
-#include <qgsrastercalcnode.h>
+#include "qgsrastercalcnode.h"
 %End
   public:
-    //! defines possible types of node
     enum Type
     {
       tOperator,
@@ -13,7 +25,6 @@ class QgsRasterCalcNode
       tMatrix
     };
 
-    //! possible operators
     enum Operator
     {
       opPLUS,
@@ -28,15 +39,17 @@ class QgsRasterCalcNode
       opASIN,
       opACOS,
       opATAN,
-      opEQ,         // =
-      opNE,         //!=
-      opGT,         // >
-      opLT,         // <
-      opGE,         // >=
-      opLE,         // <=
+      opEQ,
+      opNE,
+      opGT,
+      opLT,
+      opGE,
+      opLE,
       opAND,
       opOR,
-      opSIGN,       // change sign
+      opSIGN,
+      opLOG,
+      opLOG10,
       opNONE,
     };
 
@@ -47,29 +60,31 @@ class QgsRasterCalcNode
     QgsRasterCalcNode( const QString &rasterName );
     ~QgsRasterCalcNode();
 
-    Type type() const;
 
-    //set left node
+    Type type() const;
+%Docstring
+QgsRasterCalcNode cannot be copied
+ :rtype: Type
+%End
+
     void setLeft( QgsRasterCalcNode *left );
     void setRight( QgsRasterCalcNode *right );
 
-    /** Calculates result (might be real matrix or single number)*/
-   // bool calculate( QMap<QString, QgsRasterCalculateInputMatrix*> &rasterData, QgsRasterMatrix &result ) const;
-
-    /** Calculates result of raster calculation (might be real matrix or single number).
-     * @param rasterData input raster data references, map of raster name to raster data block
-     * @param result destination raster matrix for calculation results
-     * @param row optional row number to calculate for calculating result by rows, or -1 to
-     * calculate entire result
-     * @note added in QGIS 2.10
-     * @note not available in Python bindings
-     */
-    //bool calculate( QMap<QString, QgsRasterBlock* > &rasterData, QgsRasterMatrix &result, int row = -1 ) const;
 
     static QgsRasterCalcNode *parseRasterCalcString( const QString &str, QString &parserErrorMsg ) /Factory/;
+%Docstring
+ :rtype: QgsRasterCalcNode
+%End
 
   private:
-
     QgsRasterCalcNode( const QgsRasterCalcNode &rh );
-
 };
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/analysis/raster/qgsrastercalcnode.h                              *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

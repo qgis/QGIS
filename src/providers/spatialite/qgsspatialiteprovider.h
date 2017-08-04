@@ -96,13 +96,13 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
     QgsFields fields() const override;
     QVariant minimumValue( int index ) const override;
     QVariant maximumValue( int index ) const override;
-    virtual void uniqueValues( int index, QList < QVariant > &uniqueValues, int limit = -1 ) const override;
+    virtual QSet<QVariant> uniqueValues( int index, int limit = -1 ) const override;
     virtual QStringList uniqueStringsMatching( int index, const QString &substring, int limit = -1,
         QgsFeedback *feedback = nullptr ) const override;
 
     bool isValid() const override;
     virtual bool isSaveAndLoadStyleToDatabaseSupported() const override { return true; }
-    bool addFeatures( QgsFeatureList &flist ) override;
+    bool addFeatures( QgsFeatureList &flist, QgsFeatureSink::Flags flags = 0 ) override;
     bool deleteFeatures( const QgsFeatureIds &id ) override;
     bool truncate() override;
     bool addAttributes( const QList<QgsField> &attributes ) override;

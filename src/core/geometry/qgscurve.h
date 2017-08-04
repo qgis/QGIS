@@ -44,12 +44,12 @@ class CORE_EXPORT QgsCurve: public QgsAbstractGeometry
     /** Returns the starting point of the curve.
      * \see endPoint
      */
-    virtual QgsPointV2 startPoint() const = 0;
+    virtual QgsPoint startPoint() const = 0;
 
     /** Returns the end point of the curve.
      * \see startPoint
      */
-    virtual QgsPointV2 endPoint() const = 0;
+    virtual QgsPoint endPoint() const = 0;
 
     /** Returns true if the curve is closed.
      */
@@ -87,7 +87,7 @@ class CORE_EXPORT QgsCurve: public QgsAbstractGeometry
     virtual void sumUpArea( double &sum SIP_OUT ) const = 0;
 
     virtual QgsCoordinateSequence coordinateSequence() const override;
-    virtual bool nextVertex( QgsVertexId &id, QgsPointV2 &vertex SIP_OUT ) const override;
+    virtual bool nextVertex( QgsVertexId &id, QgsPoint &vertex SIP_OUT ) const override;
 
     /** Returns the point and vertex id of a point within the curve.
      * \param node node number, where the first node is 0
@@ -95,7 +95,7 @@ class CORE_EXPORT QgsCurve: public QgsAbstractGeometry
      * \param type will be set to the vertex type of the node
      * \returns true if node exists within the curve
      */
-    virtual bool pointAt( int node, QgsPointV2 &point SIP_OUT, QgsVertexId::VertexType &type SIP_OUT ) const = 0;
+    virtual bool pointAt( int node, QgsPoint &point SIP_OUT, QgsVertexId::VertexType &type SIP_OUT ) const = 0;
 
     /** Returns a reversed copy of the curve, where the direction of the curve has been flipped.
      * \since QGIS 2.14
@@ -109,10 +109,10 @@ class CORE_EXPORT QgsCurve: public QgsAbstractGeometry
      * \param toleranceType maximum segmentation angle or maximum difference between approximation and curve*/
     QgsCurve *segmentize( double tolerance = M_PI_2 / 90, SegmentationToleranceType toleranceType = MaximumAngle ) const override SIP_FACTORY;
 
-    virtual int vertexCount( int part = 0, int ring = 0 ) const override { Q_UNUSED( part );  Q_UNUSED( ring ); return numPoints(); }
-    virtual int ringCount( int part = 0 ) const override { Q_UNUSED( part ); return numPoints() > 0 ? 1 : 0; }
-    virtual int partCount() const override { return numPoints() > 0 ? 1 : 0; }
-    virtual QgsPointV2 vertexAt( QgsVertexId id ) const override;
+    virtual int vertexCount( int part = 0, int ring = 0 ) const override;
+    virtual int ringCount( int part = 0 ) const override;
+    virtual int partCount() const override;
+    virtual QgsPoint vertexAt( QgsVertexId id ) const override;
 
     virtual QgsRectangle boundingBox() const override;
 
@@ -137,7 +137,7 @@ class CORE_EXPORT QgsCurve: public QgsAbstractGeometry
 
   protected:
 
-    virtual void clearCache() const override { mBoundingBox = QgsRectangle(); mCoordinateSequence.clear(); QgsAbstractGeometry::clearCache(); }
+    virtual void clearCache() const override;
 
   private:
 

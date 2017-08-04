@@ -29,10 +29,11 @@ __revision__ = '$Format:%H$'
 import os
 
 from qgis.core import (QgsFeature,
+                       QgsFeatureSink,
                        QgsApplication,
                        QgsProcessingUtils)
 
-from processing.core.GeoAlgorithm import GeoAlgorithm
+from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterTable
 from processing.core.parameters import ParameterTableField
@@ -42,7 +43,7 @@ from processing.tools import vector
 pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
 
-class JoinAttributes(GeoAlgorithm):
+class JoinAttributes(QgisAlgorithm):
 
     OUTPUT_LAYER = 'OUTPUT_LAYER'
     INPUT_LAYER = 'INPUT_LAYER'
@@ -50,22 +51,13 @@ class JoinAttributes(GeoAlgorithm):
     TABLE_FIELD = 'TABLE_FIELD'
     TABLE_FIELD_2 = 'TABLE_FIELD_2'
 
-    def icon(self):
-        return QgsApplication.getThemeIcon("/providerQgis.svg")
-
-    def svgIconPath(self):
-        return QgsApplication.iconPath("providerQgis.svg")
-
     def group(self):
         return self.tr('Vector general tools')
 
-    def name(self):
-        return 'joinattributestable'
+    def __init__(self):
+        super().__init__()
 
-    def displayName(self):
-        return self.tr('Join attributes table')
-
-    def defineCharacteristics(self):
+    def initAlgorithm(self, config=None):
         self.addParameter(ParameterVector(self.INPUT_LAYER,
                                           self.tr('Input layer')))
         self.addParameter(ParameterTable(self.INPUT_LAYER_2,
@@ -77,7 +69,13 @@ class JoinAttributes(GeoAlgorithm):
         self.addOutput(OutputVector(self.OUTPUT_LAYER,
                                     self.tr('Joined layer')))
 
-    def processAlgorithm(self, context, feedback):
+    def name(self):
+        return 'joinattributestable'
+
+    def displayName(self):
+        return self.tr('Join attributes table')
+
+    def processAlgorithm(self, parameters, context, feedback):
         input = self.getParameterValue(self.INPUT_LAYER)
         input2 = self.getParameterValue(self.INPUT_LAYER_2)
         output = self.getOutputFromName(self.OUTPUT_LAYER)
@@ -96,7 +94,7 @@ class JoinAttributes(GeoAlgorithm):
         # Cache attributes of Layer 2
         cache = {}
         features = QgsProcessingUtils.getFeatures(layer2, context)
-        total = 100.0 / QgsProcessingUtils.featureCount(layer2, context)
+        total = 100.0 / layer2.featureCount() if layer2.featureCount() else 0
         for current, feat in enumerate(features):
             attrs = feat.attributes()
             joinValue2 = str(attrs[joinField2Index])
@@ -107,13 +105,13 @@ class JoinAttributes(GeoAlgorithm):
         # Create output vector layer with additional attribute
         outFeat = QgsFeature()
         features = QgsProcessingUtils.getFeatures(layer, context)
-        total = 100.0 / QgsProcessingUtils.featureCount(layer, context)
+        total = 100.0 / layer.featureCount() if layer.featureCount() else 0
         for current, feat in enumerate(features):
             outFeat.setGeometry(feat.geometry())
             attrs = feat.attributes()
             joinValue1 = str(attrs[joinField1Index])
             attrs.extend(cache.get(joinValue1, []))
             outFeat.setAttributes(attrs)
-            writer.addFeature(outFeat)
+            writer.addFeature(outFeat, QgsFeatureSink.FastInsert)
             feedback.setProgress(int(current * total))
         del writer

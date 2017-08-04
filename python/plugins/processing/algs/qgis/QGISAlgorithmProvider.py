@@ -38,151 +38,139 @@ from qgis.core import (QgsApplication,
 
 from processing.script.ScriptUtils import ScriptUtils
 
-from .RegularPoints import RegularPoints
-from .SymmetricalDifference import SymmetricalDifference
-from .VectorSplit import VectorSplit
-from .VectorGridLines import VectorGridLines
-from .VectorGridPolygons import VectorGridPolygons
+from .QgisAlgorithm import QgisAlgorithm
+
+from .AddTableField import AddTableField
+from .Aspect import Aspect
+from .AutoincrementalField import AutoincrementalField
+from .BasicStatistics import BasicStatisticsForField
+from .Boundary import Boundary
+from .BoundingBox import BoundingBox
+from .CheckValidity import CheckValidity
+from .ConcaveHull import ConcaveHull
+from .ConvexHull import ConvexHull
+from .CreateAttributeIndex import CreateAttributeIndex
+from .CreateConstantRaster import CreateConstantRaster
+from .Delaunay import Delaunay
+from .DeleteColumn import DeleteColumn
+from .DeleteDuplicateGeometries import DeleteDuplicateGeometries
+from .DeleteHoles import DeleteHoles
+from .DensifyGeometries import DensifyGeometries
+from .DensifyGeometriesInterval import DensifyGeometriesInterval
+from .Difference import Difference
+from .DropGeometry import DropGeometry
+from .DropMZValues import DropMZValues
+from .EquivalentNumField import EquivalentNumField
+from .Explode import Explode
+from .ExportGeometryInfo import ExportGeometryInfo
+from .ExtendLines import ExtendLines
+from .ExtentFromLayer import ExtentFromLayer
+from .ExtractNodes import ExtractNodes
+from .ExtractSpecificNodes import ExtractSpecificNodes
+from .FixedDistanceBuffer import FixedDistanceBuffer
+from .FixGeometry import FixGeometry
+from .GeometryByExpression import GeometryByExpression
+from .GridPolygon import GridPolygon
+from .Heatmap import Heatmap
+from .Hillshade import Hillshade
+from .ImportIntoPostGIS import ImportIntoPostGIS
+from .ImportIntoSpatialite import ImportIntoSpatialite
+from .Intersection import Intersection
+from .LinesIntersection import LinesIntersection
+from .LinesToPolygons import LinesToPolygons
+from .MeanCoords import MeanCoords
+from .Merge import Merge
+from .MergeLines import MergeLines
+from .NearestNeighbourAnalysis import NearestNeighbourAnalysis
+from .OffsetLine import OffsetLine
+from .Orthogonalize import Orthogonalize
+from .PointDistance import PointDistance
+from .PointOnSurface import PointOnSurface
+from .PointsAlongGeometry import PointsAlongGeometry
+from .PointsInPolygon import PointsInPolygon
+from .PointsLayerFromTable import PointsLayerFromTable
+from .PoleOfInaccessibility import PoleOfInaccessibility
+from .Polygonize import Polygonize
+from .PolygonsToLines import PolygonsToLines
+from .PostGISExecuteSQL import PostGISExecuteSQL
 from .RandomExtract import RandomExtract
 from .RandomExtractWithinSubsets import RandomExtractWithinSubsets
-from .ExtractByLocation import ExtractByLocation
-from .ExtractByExpression import ExtractByExpression
-from .PointsInPolygon import PointsInPolygon
-from .PointsInPolygonUnique import PointsInPolygonUnique
-from .PointsInPolygonWeighted import PointsInPolygonWeighted
-from .SumLines import SumLines
-from .BasicStatisticsNumbers import BasicStatisticsNumbers
-from .BasicStatisticsStrings import BasicStatisticsStrings
-from .NearestNeighbourAnalysis import NearestNeighbourAnalysis
-from .LinesIntersection import LinesIntersection
-from .MeanCoords import MeanCoords
-from .PointDistance import PointDistance
-from .UniqueValues import UniqueValues
-from .ReprojectLayer import ReprojectLayer
-from .ExportGeometryInfo import ExportGeometryInfo
-from .Centroids import Centroids
-from .Delaunay import Delaunay
-from .VoronoiPolygons import VoronoiPolygons
-from .DensifyGeometries import DensifyGeometries
-from .MultipartToSingleparts import MultipartToSingleparts
-from .SimplifyGeometries import SimplifyGeometries
-from .LinesToPolygons import LinesToPolygons
-from .PolygonsToLines import PolygonsToLines
-from .SinglePartsToMultiparts import SinglePartsToMultiparts
-from .ExtractNodes import ExtractNodes
-from .ConvexHull import ConvexHull
-from .FixedDistanceBuffer import FixedDistanceBuffer
-from .VariableDistanceBuffer import VariableDistanceBuffer
-from .Clip import Clip
-from .Difference import Difference
-from .Dissolve import Dissolve
-from .Intersection import Intersection
-from .ExtentFromLayer import ExtentFromLayer
-from .RandomSelection import RandomSelection
-from .RandomSelectionWithinSubsets import RandomSelectionWithinSubsets
-from .SelectByLocation import SelectByLocation
-from .Union import Union
-from .DensifyGeometriesInterval import DensifyGeometriesInterval
-from .SpatialJoin import SpatialJoin
-from .DeleteColumn import DeleteColumn
-from .DeleteHoles import DeleteHoles
-from .DeleteDuplicateGeometries import DeleteDuplicateGeometries
-from .TextToFloat import TextToFloat
-from .ExtractByAttribute import ExtractByAttribute
-from .SelectByAttribute import SelectByAttribute
-from .GridPolygon import GridPolygon
-from .GridLine import GridLine
-from .Gridify import Gridify
-from .HubDistancePoints import HubDistancePoints
-from .HubDistanceLines import HubDistanceLines
-from .HubLines import HubLines
-from .Merge import Merge
-from .GeometryConvert import GeometryConvert
-from .ConcaveHull import ConcaveHull
-from .RasterLayerStatistics import RasterLayerStatistics
-from .StatisticsByCategories import StatisticsByCategories
-from .EquivalentNumField import EquivalentNumField
-from .AddTableField import AddTableField
-from .FieldsCalculator import FieldsCalculator
-from .SaveSelectedFeatures import SaveSelectedFeatures
-from .Explode import Explode
-from .AutoincrementalField import AutoincrementalField
-from .FieldPyculator import FieldsPyculator
-from .JoinAttributes import JoinAttributes
-from .CreateConstantRaster import CreateConstantRaster
-from .PointsLayerFromTable import PointsLayerFromTable
-from .PointsDisplacement import PointsDisplacement
-from .ZonalStatistics import ZonalStatistics
-from .PointsFromPolygons import PointsFromPolygons
-from .PointsFromLines import PointsFromLines
+from .RandomPointsAlongLines import RandomPointsAlongLines
 from .RandomPointsExtent import RandomPointsExtent
 from .RandomPointsLayer import RandomPointsLayer
-from .RandomPointsPolygonsFixed import RandomPointsPolygonsFixed
-from .RandomPointsPolygonsVariable import RandomPointsPolygonsVariable
-from .RandomPointsAlongLines import RandomPointsAlongLines
-from .PointsToPaths import PointsToPaths
-from .SpatialiteExecuteSQL import SpatialiteExecuteSQL
-from .PostGISExecuteSQL import PostGISExecuteSQL
-from .ImportIntoSpatialite import ImportIntoSpatialite
-from .ImportIntoPostGIS import ImportIntoPostGIS
-from .SetVectorStyle import SetVectorStyle
-from .SetRasterStyle import SetRasterStyle
-from .SelectByExpression import SelectByExpression
-from .SelectByAttributeSum import SelectByAttributeSum
-from .HypsometricCurves import HypsometricCurves
-from .SplitWithLines import SplitWithLines
-from .SplitLinesWithLines import SplitLinesWithLines
-from .FieldsMapper import FieldsMapper
-from .Datasources2Vrt import Datasources2Vrt
-from .CheckValidity import CheckValidity
-from .OrientedMinimumBoundingBox import OrientedMinimumBoundingBox
-from .Smooth import Smooth
+from .RandomPointsPolygons import RandomPointsPolygons
+from .RasterLayerStatistics import RasterLayerStatistics
+from .RegularPoints import RegularPoints
 from .ReverseLineDirection import ReverseLineDirection
-from .SpatialIndex import SpatialIndex
-from .DefineProjection import DefineProjection
-from .RectanglesOvalsDiamondsVariable import RectanglesOvalsDiamondsVariable
-from .RectanglesOvalsDiamondsFixed import RectanglesOvalsDiamondsFixed
-from .MergeLines import MergeLines
-from .BoundingBox import BoundingBox
-from .Boundary import Boundary
-from .PointOnSurface import PointOnSurface
-from .OffsetLine import OffsetLine
-from .PolygonCentroids import PolygonCentroids
-from .Translate import Translate
-from .SingleSidedBuffer import SingleSidedBuffer
-from .PointsAlongGeometry import PointsAlongGeometry
-from .Aspect import Aspect
-from .Slope import Slope
 from .Ruggedness import Ruggedness
-from .Hillshade import Hillshade
-from .Relief import Relief
-from .IdwInterpolation import IdwInterpolation
-from .TinInterpolation import TinInterpolation
-from .ZonalStatisticsQgis import ZonalStatisticsQgis
-from .RemoveNullGeometry import RemoveNullGeometry
-from .ExtendLines import ExtendLines
-from .ExtractSpecificNodes import ExtractSpecificNodes
-from .GeometryByExpression import GeometryByExpression
-from .SnapGeometries import SnapGeometriesToLayer
-from .PoleOfInaccessibility import PoleOfInaccessibility
-from .RasterCalculator import RasterCalculator
-from .CreateAttributeIndex import CreateAttributeIndex
-from .DropGeometry import DropGeometry
-from .BasicStatistics import BasicStatisticsForField
-from .Heatmap import Heatmap
-from .Orthogonalize import Orthogonalize
-from .ShortestPathPointToPoint import ShortestPathPointToPoint
-from .ShortestPathPointToLayer import ShortestPathPointToLayer
-from .ShortestPathLayerToPoint import ShortestPathLayerToPoint
-from .ServiceAreaFromPoint import ServiceAreaFromPoint
+from .SaveSelectedFeatures import SaveSelectedFeatures
+from .SelectByAttribute import SelectByAttribute
+from .SelectByExpression import SelectByExpression
 from .ServiceAreaFromLayer import ServiceAreaFromLayer
+from .ServiceAreaFromPoint import ServiceAreaFromPoint
+from .SetMValue import SetMValue
+from .SetZValue import SetZValue
+from .ShortestPathLayerToPoint import ShortestPathLayerToPoint
+from .ShortestPathPointToLayer import ShortestPathPointToLayer
+from .ShortestPathPointToPoint import ShortestPathPointToPoint
+from .SimplifyGeometries import SimplifyGeometries
+from .SinglePartsToMultiparts import SinglePartsToMultiparts
+from .SingleSidedBuffer import SingleSidedBuffer
+from .Slope import Slope
+from .Smooth import Smooth
+from .SnapGeometries import SnapGeometriesToLayer
+from .SpatialiteExecuteSQL import SpatialiteExecuteSQL
+from .SpatialIndex import SpatialIndex
+from .SplitWithLines import SplitWithLines
+from .SumLines import SumLines
+from .SymmetricalDifference import SymmetricalDifference
+from .TextToFloat import TextToFloat
+from .Translate import Translate
 from .TruncateTable import TruncateTable
-from .Polygonize import Polygonize
-from .FixGeometry import FixGeometry
-from .ExecuteSQL import ExecuteSQL
-from .FindProjection import FindProjection
-from .TopoColors import TopoColor
-from .EliminateSelection import EliminateSelection
+from .Union import Union
+from .UniqueValues import UniqueValues
+from .VariableDistanceBuffer import VariableDistanceBuffer
+from .VectorSplit import VectorSplit
+from .VoronoiPolygons import VoronoiPolygons
+from .ZonalStatistics import ZonalStatistics
+
+# from .ExtractByLocation import ExtractByLocation
+# from .RandomSelection import RandomSelection
+# from .RandomSelectionWithinSubsets import RandomSelectionWithinSubsets
+# from .SelectByLocation import SelectByLocation
+# from .SpatialJoin import SpatialJoin
+# from .GridLine import GridLine
+# from .Gridify import Gridify
+# from .HubDistancePoints import HubDistancePoints
+# from .HubDistanceLines import HubDistanceLines
+# from .HubLines import HubLines
+# from .GeometryConvert import GeometryConvert
+# from .StatisticsByCategories import StatisticsByCategories
+# from .FieldsCalculator import FieldsCalculator
+# from .FieldPyculator import FieldsPyculator
+# from .JoinAttributes import JoinAttributes
+# from .PointsDisplacement import PointsDisplacement
+# from .PointsFromPolygons import PointsFromPolygons
+# from .PointsFromLines import PointsFromLines
+# from .PointsToPaths import PointsToPaths
+# from .SetVectorStyle import SetVectorStyle
+# from .SetRasterStyle import SetRasterStyle
+# from .SelectByAttributeSum import SelectByAttributeSum
+# from .HypsometricCurves import HypsometricCurves
+# from .FieldsMapper import FieldsMapper
+# from .Datasources2Vrt import Datasources2Vrt
+# from .OrientedMinimumBoundingBox import OrientedMinimumBoundingBox
+# from .DefineProjection import DefineProjection
+# from .RectanglesOvalsDiamondsVariable import RectanglesOvalsDiamondsVariable
+# from .RectanglesOvalsDiamondsFixed import RectanglesOvalsDiamondsFixed
+# from .Relief import Relief
+# from .IdwInterpolation import IdwInterpolation
+# from .TinInterpolation import TinInterpolation
+# from .RasterCalculator import RasterCalculator
+# from .ExecuteSQL import ExecuteSQL
+# from .FindProjection import FindProjection
+# from .TopoColors import TopoColor
+# from .EliminateSelection import EliminateSelection
 
 pluginPath = os.path.normpath(os.path.join(
     os.path.split(os.path.dirname(__file__))[0], os.pardir))
@@ -196,82 +184,143 @@ class QGISAlgorithmProvider(QgsProcessingProvider):
         self.externalAlgs = []
 
     def getAlgs(self):
-        algs = [SumLines(), PointsInPolygon(),
-                PointsInPolygonWeighted(), PointsInPolygonUnique(),
-                BasicStatisticsStrings(), BasicStatisticsNumbers(),
-                NearestNeighbourAnalysis(), MeanCoords(),
-                LinesIntersection(), UniqueValues(), PointDistance(),
-                ReprojectLayer(), ExportGeometryInfo(), Centroids(),
-                Delaunay(), VoronoiPolygons(), SimplifyGeometries(),
-                DensifyGeometries(), DensifyGeometriesInterval(),
-                MultipartToSingleparts(), SinglePartsToMultiparts(),
-                PolygonsToLines(), LinesToPolygons(), ExtractNodes(),
-                ConvexHull(), FixedDistanceBuffer(),
-                VariableDistanceBuffer(), Dissolve(), Difference(),
-                Intersection(), Union(), Clip(), ExtentFromLayer(),
-                RandomSelection(), RandomSelectionWithinSubsets(),
-                SelectByLocation(), RandomExtract(), DeleteHoles(),
-                RandomExtractWithinSubsets(), ExtractByLocation(),
-                SpatialJoin(), RegularPoints(), SymmetricalDifference(),
-                VectorSplit(), VectorGridLines(), VectorGridPolygons(),
-                DeleteColumn(), DeleteDuplicateGeometries(), TextToFloat(),
-                ExtractByAttribute(), SelectByAttribute(), GridPolygon(),
-                GridLine(), Gridify(), HubDistancePoints(),
-                HubDistanceLines(), HubLines(), Merge(),
-                GeometryConvert(), AddTableField(), FieldsCalculator(),
-                SaveSelectedFeatures(), JoinAttributes(),
-                AutoincrementalField(), Explode(), FieldsPyculator(),
-                EquivalentNumField(), PointsLayerFromTable(),
-                StatisticsByCategories(), ConcaveHull(),
-                RasterLayerStatistics(), PointsDisplacement(),
-                ZonalStatistics(), PointsFromPolygons(),
-                PointsFromLines(), RandomPointsExtent(),
-                RandomPointsLayer(), RandomPointsPolygonsFixed(),
-                RandomPointsPolygonsVariable(),
-                RandomPointsAlongLines(), PointsToPaths(),
-                SpatialiteExecuteSQL(), ImportIntoSpatialite(),
-                PostGISExecuteSQL(), ImportIntoPostGIS(),
-                SetVectorStyle(), SetRasterStyle(),
-                SelectByExpression(), HypsometricCurves(),
-                SplitWithLines(), SplitLinesWithLines(), CreateConstantRaster(),
-                FieldsMapper(), SelectByAttributeSum(), Datasources2Vrt(),
-                CheckValidity(), OrientedMinimumBoundingBox(), Smooth(),
-                ReverseLineDirection(), SpatialIndex(), DefineProjection(),
-                RectanglesOvalsDiamondsVariable(),
-                RectanglesOvalsDiamondsFixed(), MergeLines(),
-                BoundingBox(), Boundary(), PointOnSurface(),
-                OffsetLine(), PolygonCentroids(), Translate(),
-                SingleSidedBuffer(), PointsAlongGeometry(),
-                Aspect(), Slope(), Ruggedness(), Hillshade(),
-                Relief(), ZonalStatisticsQgis(),
-                IdwInterpolation(), TinInterpolation(),
-                RemoveNullGeometry(), ExtractByExpression(),
-                ExtendLines(), ExtractSpecificNodes(),
-                GeometryByExpression(), SnapGeometriesToLayer(),
-                PoleOfInaccessibility(), CreateAttributeIndex(),
-                DropGeometry(), BasicStatisticsForField(),
-                RasterCalculator(), Heatmap(), Orthogonalize(),
-                ShortestPathPointToPoint(), ShortestPathPointToLayer(),
-                ShortestPathLayerToPoint(), ServiceAreaFromPoint(),
-                ServiceAreaFromLayer(), TruncateTable(), Polygonize(),
-                FixGeometry(), ExecuteSQL(), FindProjection(),
-                TopoColor(), EliminateSelection()
+        # algs = [
+        #         RandomSelection(), RandomSelectionWithinSubsets(),
+        #         SelectByLocation(),
+        #         ExtractByLocation(),
+        #         SpatialJoin(),
+        #         GridLine(), Gridify(), HubDistancePoints(),
+        #         HubDistanceLines(), HubLines(),
+        #         GeometryConvert(), FieldsCalculator(),
+        #          JoinAttributes(),
+        #         FieldsPyculator(),
+        #         StatisticsByCategories(),
+        #         RasterLayerStatistics(), PointsDisplacement(),
+        #         PointsFromPolygons(),
+        #         PointsFromLines(), PointsToPaths(),
+        #         SetVectorStyle(), SetRasterStyle(),
+        #          HypsometricCurves(),
+        #         FieldsMapper(), SelectByAttributeSum(), Datasources2Vrt(),
+        #         OrientedMinimumBoundingBox(),
+        #         DefineProjection(),
+        #         RectanglesOvalsDiamondsVariable(),
+        #         RectanglesOvalsDiamondsFixed(),
+        #         Relief(),
+        #         IdwInterpolation(), TinInterpolation(),
+        #         RasterCalculator(),
+        #          ExecuteSQL(), FindProjection(),
+        #         TopoColor(), EliminateSelection()
+        #         ]
+        algs = [AddTableField(),
+                Aspect(),
+                AutoincrementalField(),
+                BasicStatisticsForField(),
+                Boundary(),
+                BoundingBox(),
+                CheckValidity(),
+                ConcaveHull(),
+                ConvexHull(),
+                CreateAttributeIndex(),
+                CreateConstantRaster(),
+                Delaunay(),
+                DeleteColumn(),
+                DeleteDuplicateGeometries(),
+                DeleteHoles(),
+                DensifyGeometries(),
+                DensifyGeometriesInterval(),
+                Difference(),
+                DropGeometry(),
+                DropMZValues(),
+                EquivalentNumField(),
+                Explode(),
+                ExportGeometryInfo(),
+                ExtendLines(),
+                ExtentFromLayer(),
+                ExtractNodes(),
+                ExtractSpecificNodes(),
+                FixedDistanceBuffer(),
+                FixGeometry(),
+                GeometryByExpression(),
+                GridPolygon(),
+                Heatmap(),
+                Hillshade(),
+                ImportIntoPostGIS(),
+                ImportIntoSpatialite(),
+                Intersection(),
+                LinesIntersection(),
+                LinesToPolygons(),
+                MeanCoords(),
+                Merge(),
+                MergeLines(),
+                NearestNeighbourAnalysis(),
+                OffsetLine(),
+                Orthogonalize(),
+                PointDistance(),
+                PointOnSurface(),
+                PointsAlongGeometry(),
+                PointsInPolygon(),
+                PointsLayerFromTable(),
+                PoleOfInaccessibility(),
+                Polygonize(),
+                PolygonsToLines(),
+                PostGISExecuteSQL(),
+                RandomExtract(),
+                RandomExtractWithinSubsets(),
+                RandomPointsAlongLines(),
+                RandomPointsExtent(),
+                RandomPointsLayer(),
+                RandomPointsPolygons(),
+                RasterLayerStatistics(),
+                RegularPoints(),
+                ReverseLineDirection(),
+                Ruggedness(),
+                SaveSelectedFeatures(),
+                SelectByAttribute(),
+                SelectByExpression(),
+                ServiceAreaFromLayer(),
+                ServiceAreaFromPoint(),
+                SetMValue(),
+                SetZValue(),
+                ShortestPathLayerToPoint(),
+                ShortestPathPointToLayer(),
+                ShortestPathPointToPoint(),
+                SimplifyGeometries(),
+                SinglePartsToMultiparts(),
+                SingleSidedBuffer(),
+                Slope(),
+                Smooth(),
+                SnapGeometriesToLayer(),
+                SpatialiteExecuteSQL(),
+                SpatialIndex(),
+                SplitWithLines(),
+                SumLines(),
+                SymmetricalDifference(),
+                TextToFloat(),
+                Translate(),
+                TruncateTable(),
+                Union(),
+                UniqueValues(),
+                VariableDistanceBuffer(),
+                VectorSplit(),
+                VoronoiPolygons(),
+                ZonalStatistics()
                 ]
 
         if hasPlotly:
-            from .VectorLayerHistogram import VectorLayerHistogram
-            from .RasterLayerHistogram import RasterLayerHistogram
-            from .VectorLayerScatterplot import VectorLayerScatterplot
-            from .MeanAndStdDevPlot import MeanAndStdDevPlot
+            #     from .VectorLayerHistogram import VectorLayerHistogram
+            #     from .RasterLayerHistogram import RasterLayerHistogram
+            #     from .VectorLayerScatterplot import VectorLayerScatterplot
+            #     from .MeanAndStdDevPlot import MeanAndStdDevPlot
             from .BarPlot import BarPlot
-            from .PolarPlot import PolarPlot
-            from .BoxPlot import BoxPlot
-            from .VectorLayerScatterplot3D import VectorLayerScatterplot3D
-
-            algs.extend([VectorLayerHistogram(), RasterLayerHistogram(),
-                         VectorLayerScatterplot(), MeanAndStdDevPlot(),
-                         BarPlot(), PolarPlot(), BoxPlot(),
-                         VectorLayerScatterplot3D()])
+        #     from .PolarPlot import PolarPlot
+        #     from .BoxPlot import BoxPlot
+        #     from .VectorLayerScatterplot3D import VectorLayerScatterplot3D
+        #
+            algs.extend([BarPlot()])
+            #[VectorLayerHistogram(), RasterLayerHistogram(),
+        #                  VectorLayerScatterplot(), MeanAndStdDevPlot(),
+        #                  BarPlot(), PolarPlot(), BoxPlot(),
+        #                  VectorLayerScatterplot3D()])
 
         # to store algs added by 3rd party plugins as scripts
         folder = os.path.join(os.path.dirname(__file__), 'scripts')

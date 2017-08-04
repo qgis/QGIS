@@ -1,28 +1,51 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/symbology-ng/qgssymbolslistwidget.h                          *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+
+
 class QgsSymbolsListWidget : QWidget
 {
+
 %TypeHeaderCode
-#include <qgssymbolslistwidget.h>
+#include "qgssymbolslistwidget.h"
 %End
   public:
-    QgsSymbolsListWidget( QgsSymbol *symbol, QgsStyle *style, QMenu *menu, QWidget *parent /TransferThis/ = 0, const QgsVectorLayer *layer = 0 );
+    QgsSymbolsListWidget( QgsSymbol *symbol, QgsStyle *style, QMenu *menu, QWidget *parent /TransferThis/, const QgsVectorLayer *layer = 0 );
 
-    /** Sets the context in which the symbol widget is shown, e.g., the associated map canvas and expression contexts.
-     * @param context symbol widget context
-     * @see context()
-     * @note added in QGIS 3.0
-     */
+
+    virtual ~QgsSymbolsListWidget();
+
     void setContext( const QgsSymbolWidgetContext &context );
+%Docstring
+ Sets the context in which the symbol widget is shown, e.g., the associated map canvas and expression contexts.
+ \param context symbol widget context
+.. seealso:: context()
+.. versionadded:: 3.0
+%End
 
-    /** Returns the context in which the symbol widget is shown, e.g., the associated map canvas and expression contexts.
-     * @see setContext()
-     * @note added in QGIS 3.0
-     */
     QgsSymbolWidgetContext context() const;
+%Docstring
+ Returns the context in which the symbol widget is shown, e.g., the associated map canvas and expression contexts.
+.. seealso:: setContext()
+.. versionadded:: 3.0
+ :rtype: QgsSymbolWidgetContext
+%End
 
-    /** Returns the vector layer associated with the widget.
-     * @note added in QGIS 2.12
-     */
     const QgsVectorLayer *layer() const;
+%Docstring
+ Returns the vector layer associated with the widget.
+.. versionadded:: 2.12
+ :rtype: QgsVectorLayer
+%End
 
   public slots:
 
@@ -33,12 +56,15 @@ class QgsSymbolsListWidget : QWidget
     void setLineWidth( double width );
     void addSymbolToStyle();
     void saveSymbol();
-    void symbolAddedToStyle( const QString &name, QgsSymbol *symbol );
-    void on_mSymbolUnitWidget_changed();
-    void on_mTransparencySlider_valueChanged( int value );
 
-    //! Pupulates the groups combo box with available tags and smartgroups
+    void symbolAddedToStyle( const QString &name, QgsSymbol *symbol );
+
+    void on_mSymbolUnitWidget_changed();
+
     void populateGroups();
+%Docstring
+Pupulates the groups combo box with available tags and smartgroups
+%End
     void on_groupsCombo_currentIndexChanged( int index );
 
     void openStyleManager();
@@ -50,4 +76,16 @@ class QgsSymbolsListWidget : QWidget
 
   signals:
     void changed();
+
 };
+
+
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/symbology-ng/qgssymbolslistwidget.h                          *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

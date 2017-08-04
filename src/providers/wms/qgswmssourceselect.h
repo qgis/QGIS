@@ -19,10 +19,11 @@
 #define QGSWMSSOURCESELECT_H
 #include "ui_qgswmssourceselectbase.h"
 #include "qgsdatasourceuri.h"
-#include "qgisgui.h"
+#include "qgsguiutils.h"
 #include "qgshelp.h"
-
+#include "qgsproviderregistry.h"
 #include "qgswmsprovider.h"
+#include "qgsabstractdatasourcewidget.h"
 
 #include <QStringList>
 #include <QPushButton>
@@ -42,17 +43,20 @@ class QgsWmsCapabilities;
  * The user can then connect and add
  * layers from the WMS server to the map canvas.
  */
-class QgsWMSSourceSelect : public QDialog, private Ui::QgsWMSSourceSelectBase
+class QgsWMSSourceSelect : public QgsAbstractDataSourceWidget, private Ui::QgsWMSSourceSelectBase
 {
     Q_OBJECT
 
   public:
     //! Constructor
-    QgsWMSSourceSelect( QWidget *parent = nullptr, Qt::WindowFlags fl = QgisGui::ModalDialogFlags, bool managerMode = false, bool embeddedMode = false );
+    QgsWMSSourceSelect( QWidget *parent = nullptr, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::None );
 
     ~QgsWMSSourceSelect();
 
   public slots:
+
+    //! Triggered when the provider's connections need to be refreshed
+    void refresh() override;
 
     //! Opens the create connection dialog to build a new connection
     void on_btnNew_clicked();
@@ -71,7 +75,7 @@ class QgsWMSSourceSelect : public QDialog, private Ui::QgsWMSSourceSelectBase
     void on_btnConnect_clicked();
 
     //! Determines the layers the user selected
-    void addClicked();
+    void addButtonClicked() override;
 
     void searchFinished();
 
@@ -107,12 +111,6 @@ class QgsWMSSourceSelect : public QDialog, private Ui::QgsWMSSourceSelectBase
 
     //! Add a few example servers to the list.
     void addDefaultServers();
-
-    //! Connections manager mode
-    bool mManagerMode;
-
-    //! Embedded mode, without 'Close'
-    bool mEmbeddedMode;
 
     //! Selected CRS
     QString mCRS;
@@ -171,8 +169,6 @@ class QgsWMSSourceSelect : public QDialog, private Ui::QgsWMSSourceSelectBase
     //! The widget that controls the image format radio buttons
     QButtonGroup *mImageFormatGroup = nullptr;
 
-    QPushButton *mAddButton = nullptr;
-
     QMap<QString, QString> mCrsNames;
 
     void addWMSListRow( const QDomElement &item, int row );
@@ -190,11 +186,6 @@ class QgsWMSSourceSelect : public QDialog, private Ui::QgsWMSSourceSelectBase
 
     QList<QgsWmtsTileLayer> mTileLayers;
 
-  signals:
-    void addRasterLayer( QString const &rasterLayerPath,
-                         QString const &baseName,
-                         QString const &providerKey );
-    void connectionsChanged();
   private slots:
     void on_btnSearch_clicked();
     void on_btnAddWMS_clicked();

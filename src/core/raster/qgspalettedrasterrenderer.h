@@ -55,7 +55,7 @@ class CORE_EXPORT QgsPalettedRasterRenderer: public QgsRasterRenderer
     };
 
     //! Map of value to class properties
-    typedef QList< Class > ClassData;
+    typedef QList< QgsPalettedRasterRenderer::Class > ClassData;
 
     /**
      * Constructor for QgsPalettedRasterRenderer.
@@ -67,10 +67,10 @@ class CORE_EXPORT QgsPalettedRasterRenderer: public QgsRasterRenderer
     //! QgsPalettedRasterRenderer cannot be copied. Use clone() instead.
     const QgsPalettedRasterRenderer &operator=( const QgsPalettedRasterRenderer & ) = delete;
 
-    QgsPalettedRasterRenderer *clone() const override;
+    QgsPalettedRasterRenderer *clone() const override SIP_FACTORY;
     static QgsRasterRenderer *create( const QDomElement &elem, QgsRasterInterface *input ) SIP_FACTORY;
 
-    QgsRasterBlock *block( int bandNo, const QgsRectangle &extent, int width, int height, QgsRasterBlockFeedback *feedback = nullptr ) override;
+    QgsRasterBlock *block( int bandNo, const QgsRectangle &extent, int width, int height, QgsRasterBlockFeedback *feedback = nullptr ) override SIP_FACTORY;
 
     //! Returns number of colors
     int nColors() const { return mClassData.size(); }
@@ -88,9 +88,15 @@ class CORE_EXPORT QgsPalettedRasterRenderer: public QgsRasterRenderer
      *  \since QGIS 2.1 */
     void setLabel( int idx, const QString &label );
 
+    /**
+     * Returns the raster band used for rendering the raster.
+     * \since QGIS 3.0
+     */
+    int band() const { return mBand; }
+
     void writeXml( QDomDocument &doc, QDomElement &parentElem ) const override;
 
-    void legendSymbologyItems( QList< QPair< QString, QColor > > &symbolItems ) const override;
+    void legendSymbologyItems( QList< QPair< QString, QColor > > &symbolItems SIP_OUT ) const override;
 
     QList<int> usesBands() const override;
 
@@ -144,6 +150,11 @@ class CORE_EXPORT QgsPalettedRasterRenderer: public QgsRasterRenderer
         QgsRasterBlockFeedback *feedback = nullptr );
 
   private:
+#ifdef SIP_RUN
+    QgsPalettedRasterRenderer( const QgsPalettedRasterRenderer & );
+    const QgsPalettedRasterRenderer &operator=( const QgsPalettedRasterRenderer & );
+#endif
+
 
     int mBand;
     ClassData mClassData;

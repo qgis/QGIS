@@ -47,7 +47,7 @@ class QgsWFSSharedData;
  * QgsWFSSharedData class purpose:
  * - contains logic shared by QgsWFSProvider, QgsWFSFeatureIterator and QgsWFSFeatureDownloader.
  * - one of its main function is to maintain a on-disk cache of the features retrieved
- *   from the server. This cache is a Spatialite database.
+ *   from the server. This cache is a SpatiaLite database.
  *
  * QgsWFSRequest class purpose: abstract base class to create WFS network requests,
  * such as QgsWFSCapabilities, QgsWFSDescribeFeatureType, QgsWFSFeatureDownloader,
@@ -102,7 +102,7 @@ class QgsWFSProvider : public QgsVectorDataProvider
 
     //Editing operations
 
-    virtual bool addFeatures( QgsFeatureList &flist ) override;
+    virtual bool addFeatures( QgsFeatureList &flist, QgsFeatureSink::Flags flags = 0 ) override;
     virtual bool deleteFeatures( const QgsFeatureIds &id ) override;
     virtual bool changeGeometryValues( const QgsGeometryMap &geometry_map ) override;
     virtual bool changeAttributeValues( const QgsChangedAttributesMap &attr_map ) override;

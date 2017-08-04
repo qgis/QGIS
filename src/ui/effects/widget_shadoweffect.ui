@@ -101,7 +101,7 @@
         <item row="3" column="0">
          <widget class="QLabel" name="label_28">
           <property name="text">
-           <string>Transparency</string>
+           <string>Opacity</string>
           </property>
          </widget>
         </item>
@@ -139,60 +139,6 @@
           </property>
          </widget>
         </item>
-        <item row="3" column="1" colspan="2">
-         <layout class="QHBoxLayout" name="horizontalLayout_28">
-          <item>
-           <widget class="QSlider" name="mShadowTranspSlider">
-            <property name="enabled">
-             <bool>true</bool>
-            </property>
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="minimumSize">
-             <size>
-              <width>50</width>
-              <height>0</height>
-             </size>
-            </property>
-            <property name="maximum">
-             <number>1000</number>
-            </property>
-            <property name="singleStep">
-             <number>10</number>
-            </property>
-            <property name="pageStep">
-             <number>100</number>
-            </property>
-            <property name="orientation">
-             <enum>Qt::Horizontal</enum>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QgsDoubleSpinBox" name="mShadowTranspSpnBx">
-            <property name="enabled">
-             <bool>true</bool>
-            </property>
-            <property name="alignment">
-             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-            </property>
-            <property name="suffix">
-             <string> %</string>
-            </property>
-            <property name="decimals">
-             <number>1</number>
-            </property>
-            <property name="maximum">
-             <double>100.000000000000000</double>
-            </property>
-           </widget>
-          </item>
-         </layout>
-        </item>
         <item row="0" column="1" colspan="2">
          <layout class="QHBoxLayout" name="horizontalLayout_24">
           <item>
@@ -228,14 +174,17 @@
           </item>
           <item>
            <widget class="QgsSpinBox" name="mShadowOffsetAngleSpnBx">
+            <property name="wrapping">
+             <bool>true</bool>
+            </property>
             <property name="suffix">
              <string>˚</string>
             </property>
             <property name="minimum">
-             <number>-180</number>
+             <number>-360</number>
             </property>
             <property name="maximum">
-             <number>180</number>
+             <number>360</number>
             </property>
             <property name="showClearButton" stdset="0">
              <bool>false</bool>
@@ -251,6 +200,13 @@
          <widget class="QLabel" name="label">
           <property name="text">
            <string>Draw mode</string>
+          </property>
+         </widget>
+        </item>
+        <item row="3" column="1" colspan="2">
+         <widget class="QgsOpacityWidget" name="mOpacityWidget" native="true">
+          <property name="focusPolicy">
+           <enum>Qt::StrongFocus</enum>
           </property>
          </widget>
         </item>
@@ -297,15 +253,21 @@
    <header>qgsblendmodecombobox.h</header>
   </customwidget>
   <customwidget>
-   <class>QgsEffectDrawModeComboBox</class>
-   <extends>QComboBox</extends>
-   <header>qgseffectdrawmodecombobox.h</header>
-  </customwidget>
-  <customwidget>
    <class>QgsUnitSelectionWidget</class>
    <extends>QWidget</extends>
    <header>qgsunitselectionwidget.h</header>
    <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsOpacityWidget</class>
+   <extends>QWidget</extends>
+   <header>qgsopacitywidget.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsEffectDrawModeComboBox</class>
+   <extends>QComboBox</extends>
+   <header>qgseffectdrawmodecombobox.h</header>
   </customwidget>
  </customwidgets>
  <tabstops>
@@ -314,8 +276,7 @@
   <tabstop>mShadowOffsetSpnBx</tabstop>
   <tabstop>mOffsetUnitWidget</tabstop>
   <tabstop>mShadowRadiuSpnBx</tabstop>
-  <tabstop>mShadowTranspSlider</tabstop>
-  <tabstop>mShadowTranspSpnBx</tabstop>
+  <tabstop>mOpacityWidget</tabstop>
   <tabstop>mShadowColorBtn</tabstop>
   <tabstop>mShadowBlendCmbBx</tabstop>
   <tabstop>mDrawModeComboBox</tabstop>

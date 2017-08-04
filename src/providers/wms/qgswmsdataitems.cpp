@@ -20,11 +20,14 @@
 #include "qgsdatasourceuri.h"
 #include "qgswmscapabilities.h"
 #include "qgswmsconnection.h"
+#include "qgsxyzconnection.h"
+
+#ifdef HAVE_GUI
 #include "qgswmssourceselect.h"
 #include "qgsnewhttpconnection.h"
 #include "qgstilescalewidget.h"
-#include "qgsxyzconnection.h"
 #include "qgsxyzconnectiondialog.h"
+#endif
 
 #include <QInputDialog>
 
@@ -35,6 +38,7 @@ QgsWMSConnectionItem::QgsWMSConnectionItem( QgsDataItem *parent, QString name, Q
   , mCapabilitiesDownload( nullptr )
 {
   mIconName = QStringLiteral( "mIconConnect.png" );
+  mCapabilities |= Collapse;
   mCapabilitiesDownload = new QgsWmsCapabilitiesDownload( false );
 }
 
@@ -214,6 +218,7 @@ bool QgsWMSConnectionItem::equal( const QgsDataItem *other )
   return ( mPath == o->mPath && mName == o->mName );
 }
 
+#ifdef HAVE_GUI
 QList<QAction *> QgsWMSConnectionItem::actions()
 {
   QList<QAction *> lst;
@@ -236,7 +241,7 @@ void QgsWMSConnectionItem::editConnection()
   if ( nc.exec() )
   {
     // the parent should be updated
-    mParent->refresh();
+    mParent->refreshConnections();
   }
 }
 
@@ -244,8 +249,9 @@ void QgsWMSConnectionItem::deleteConnection()
 {
   QgsWMSConnection::deleteConnection( mName );
   // the parent should be updated
-  mParent->refresh();
+  mParent->refreshConnections();
 }
+#endif
 
 
 // ---------------------------------------------------------------------------
@@ -396,6 +402,7 @@ QVector<QgsDataItem *> QgsWMSRootItem::createChildren()
   return connections;
 }
 
+#ifdef HAVE_GUI
 QList<QAction *> QgsWMSRootItem::actions()
 {
   QList<QAction *> lst;
@@ -410,14 +417,8 @@ QList<QAction *> QgsWMSRootItem::actions()
 
 QWidget *QgsWMSRootItem::paramWidget()
 {
-  QgsWMSSourceSelect *select = new QgsWMSSourceSelect( nullptr, 0, true, true );
-  connect( select, &QgsWMSSourceSelect::connectionsChanged, this, &QgsWMSRootItem::connectionsChanged );
+  QgsWMSSourceSelect *select = new QgsWMSSourceSelect( nullptr, 0, QgsProviderRegistry::WidgetMode::Manager );
   return select;
-}
-
-void QgsWMSRootItem::connectionsChanged()
-{
-  refresh();
 }
 
 void QgsWMSRootItem::newConnection()
@@ -426,23 +427,25 @@ void QgsWMSRootItem::newConnection()
 
   if ( nc.exec() )
   {
-    refresh();
+    refreshConnections();
   }
 }
+#endif
 
 
 // ---------------------------------------------------------------------------
 
+#ifdef HAVE_GUI
 QGISEXTERN void registerGui( QMainWindow *mainWindow )
 {
   QgsTileScaleWidget::showTileScale( mainWindow );
 }
 
-QGISEXTERN QgsWMSSourceSelect *selectWidget( QWidget *parent, Qt::WindowFlags fl )
+QGISEXTERN QgsWMSSourceSelect *selectWidget( QWidget *parent, Qt::WindowFlags fl, QgsProviderRegistry::WidgetMode widgetMode )
 {
-  return new QgsWMSSourceSelect( parent, fl );
+  return new QgsWMSSourceSelect( parent, fl, widgetMode );
 }
-
+#endif
 
 QgsDataItem *QgsWmsDataItemProvider::createDataItem( const QString &path, QgsDataItem *parentItem )
 {
@@ -496,6 +499,7 @@ QVector<QgsDataItem *> QgsXyzTileRootItem::createChildren()
   return connections;
 }
 
+#ifdef HAVE_GUI
 QList<QAction *> QgsXyzTileRootItem::actions()
 {
   QAction *actionNew = new QAction( tr( "New Connection..." ), this );
@@ -513,6 +517,7 @@ void QgsXyzTileRootItem::newConnection()
 
   refresh();
 }
+#endif
 
 
 // ---------------------------------------------------------------------------
@@ -524,6 +529,7 @@ QgsXyzLayerItem::QgsXyzLayerItem( QgsDataItem *parent, QString name, QString pat
   setState( Populated );
 }
 
+#ifdef HAVE_GUI
 QList<QAction *> QgsXyzLayerItem::actions()
 {
   QList<QAction *> lst = QgsLayerItem::actions();
@@ -558,3 +564,4 @@ void QgsXyzLayerItem::deleteConnection()
 
   mParent->refresh();
 }
+#endif

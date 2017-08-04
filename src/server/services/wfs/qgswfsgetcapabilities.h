@@ -50,13 +50,13 @@ namespace QgsWfs
       const QgsServerRequest &request );
 
   /**
-   * Output WFS  GetCapabilities response
+   * Output WFS GetCapabilities response
    */
   void writeGetCapabilities( QgsServerInterface *serverIface, const QgsProject *project,
                              const QString &version, const QgsServerRequest &request,
                              QgsServerResponse &response );
 
-} // samespace QgsWfs
+} // namespace QgsWfs
 
 #endif
 

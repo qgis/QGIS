@@ -31,28 +31,31 @@ from qgis.PyQt.QtXml import QDomDocument
 
 from qgis.core import (QgsApplication,
                        QgsProcessingUtils)
-from processing.core.GeoAlgorithm import GeoAlgorithm
+from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 from processing.core.parameters import ParameterFile
 from processing.core.parameters import ParameterRaster
 from processing.core.outputs import OutputRaster
 from processing.tools import dataobjects
-from qgis.utils import iface
 
 
-class SetRasterStyle(GeoAlgorithm):
+class SetRasterStyle(QgisAlgorithm):
 
     INPUT = 'INPUT'
     STYLE = 'STYLE'
     OUTPUT = 'OUTPUT'
 
-    def icon(self):
-        return QgsApplication.getThemeIcon("/providerQgis.svg")
-
-    def svgIconPath(self):
-        return QgsApplication.iconPath("providerQgis.svg")
-
     def group(self):
         return self.tr('Raster general tools')
+
+    def __init__(self):
+        super().__init__()
+
+    def initAlgorithm(self, config=None):
+        self.addParameter(ParameterRaster(self.INPUT,
+                                          self.tr('Raster layer')))
+        self.addParameter(ParameterFile(self.STYLE,
+                                        self.tr('Style file'), False, False, 'qml'))
+        self.addOutput(OutputRaster(self.OUTPUT, self.tr('Styled'), True))
 
     def name(self):
         return 'setstyleforrasterlayer'
@@ -60,21 +63,13 @@ class SetRasterStyle(GeoAlgorithm):
     def displayName(self):
         return self.tr('Set style for raster layer')
 
-    def defineCharacteristics(self):
-        self.addParameter(ParameterRaster(self.INPUT,
-                                          self.tr('Raster layer')))
-        self.addParameter(ParameterFile(self.STYLE,
-                                        self.tr('Style file'), False, False, 'qml'))
-        self.addOutput(OutputRaster(self.OUTPUT, self.tr('Styled'), True))
-
-    def processAlgorithm(self, context, feedback):
+    def processAlgorithm(self, parameters, context, feedback):
         filename = self.getParameterValue(self.INPUT)
         layer = QgsProcessingUtils.mapLayerFromString(filename, context)
 
         style = self.getParameterValue(self.STYLE)
         if layer is None:
             dataobjects.load(filename, os.path.basename(filename), style=style)
-            self.getOutputFromName(self.OUTPUT).open = False
         else:
             with open(style) as f:
                 xml = "".join(f.readlines())
@@ -82,5 +77,6 @@ class SetRasterStyle(GeoAlgorithm):
             d.setContent(xml)
             n = d.firstChild()
             layer.readSymbology(n, '')
+            context.addLayerToLoadOnCompletion(self.getOutputFromName(self.OUTPUT).value)
             self.setOutputValue(self.OUTPUT, filename)
-            iface.mapCanvas().refresh()
+            layer.triggerRepaint()

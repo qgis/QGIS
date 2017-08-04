@@ -33,7 +33,7 @@ from osgeo import ogr
 from qgis.core import (QgsProcessingFeedback,
                        QgsApplication)
 from processing.tools import dataobjects
-from processing.core.GeoAlgorithm import GeoAlgorithm
+from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from processing.core.parameters import ParameterMultipleInput
 from processing.core.parameters import ParameterBoolean
@@ -41,29 +41,20 @@ from processing.core.outputs import OutputFile
 from processing.core.outputs import OutputString
 
 
-class Datasources2Vrt(GeoAlgorithm):
+class Datasources2Vrt(QgisAlgorithm):
     DATASOURCES = 'DATASOURCES'
     UNIONED = 'UNIONED'
 
     VRT_FILE = 'VRT_FILE'
     VRT_STRING = 'VRT_STRING'
 
-    def icon(self):
-        return QgsApplication.getThemeIcon("/providerQgis.svg")
-
-    def svgIconPath(self):
-        return QgsApplication.iconPath("providerQgis.svg")
-
     def group(self):
         return self.tr('Vector general tools')
 
-    def name(self):
-        return 'buildvirtualvector'
+    def __init__(self):
+        super().__init__()
 
-    def displayName(self):
-        return self.tr('Build virtual vector')
-
-    def defineCharacteristics(self):
+    def initAlgorithm(self, config=None):
         self.addParameter(ParameterMultipleInput(self.DATASOURCES,
                                                  self.tr('Input datasources'),
                                                  dataobjects.TYPE_TABLE))
@@ -76,7 +67,13 @@ class Datasources2Vrt(GeoAlgorithm):
         self.addOutput(OutputString(self.VRT_STRING,
                                     self.tr('Virtual string')))
 
-    def processAlgorithm(self, context, feedback):
+    def name(self):
+        return 'buildvirtualvector'
+
+    def displayName(self):
+        return self.tr('Build virtual vector')
+
+    def processAlgorithm(self, parameters, context, feedback):
         input_layers = self.getParameterValue(self.DATASOURCES)
         unioned = self.getParameterValue(self.UNIONED)
         vrtPath = self.getOutputValue(self.VRT_FILE)
@@ -109,7 +106,7 @@ class Datasources2Vrt(GeoAlgorithm):
         if union:
             vrt += '<OGRVRTUnionLayer name="UnionedLayer">'
 
-        total = 100.0 / len(dataSources)
+        total = 100.0 / len(dataSources) if dataSources else 1
         for current, inFile in enumerate(dataSources):
             feedback.setProgress(int(current * total))
 

@@ -44,17 +44,18 @@ QgsSymbolLevelsDialog::QgsSymbolLevelsDialog( const QgsLegendSymbolList &list, b
 
   connect( chkEnable, &QAbstractButton::clicked, this, &QgsSymbolLevelsDialog::updateUi );
 
-  if ( mList.count() > 0 && !mList[0].second )
+  // only consider entries with symbols
+  Q_FOREACH ( const QgsLegendSymbolItem &item, list )
   {
-    // remove symbolless entry (probably classifier of categorized renderer)
-    mList.removeFirst();
+    if ( item.symbol() )
+      mList << item;
   }
 
   int maxLayers = 0;
   tableLevels->setRowCount( mList.count() );
   for ( int i = 0; i < mList.count(); i++ )
   {
-    QgsSymbol *sym = mList.at( i ).second;
+    QgsSymbol *sym = mList.at( i ).symbol();
 
     // set icons for the rows
     QIcon icon = QgsSymbolLayerUtils::symbolPreviewIcon( sym, QSize( 16, 16 ) );
@@ -96,8 +97,8 @@ void QgsSymbolLevelsDialog::populateTable()
 {
   for ( int row = 0; row < mList.count(); row++ )
   {
-    QgsSymbol *sym = mList.at( row ).second;
-    QString label = mList.at( row ).first;
+    QgsSymbol *sym = mList.at( row ).symbol();
+    QString label = mList.at( row ).label();
     QTableWidgetItem *itemLabel = new QTableWidgetItem( label );
     itemLabel->setFlags( itemLabel->flags() ^ Qt::ItemIsEditable );
     tableLevels->setItem( row, 0, itemLabel );
@@ -131,7 +132,7 @@ void QgsSymbolLevelsDialog::setDefaultLevels()
 {
   for ( int i = 0; i < mList.count(); i++ )
   {
-    QgsSymbol *sym = mList.at( i ).second;
+    QgsSymbol *sym = mList.at( i ).symbol();
     for ( int layer = 0; layer < sym->symbolLayerCount(); layer++ )
     {
       sym->symbolLayer( layer )->setRenderingPass( layer );
@@ -148,7 +149,7 @@ void QgsSymbolLevelsDialog::renderingPassChanged( int row, int column )
 {
   if ( row < 0 || row >= mList.count() )
     return;
-  QgsSymbol *sym = mList.at( row ).second;
+  QgsSymbol *sym = mList.at( row ).symbol();
   if ( column < 0 || column > sym->symbolLayerCount() )
     return;
   sym->symbolLayer( column - 1 )->setRenderingPass( tableLevels->item( row, column )->text().toInt() );

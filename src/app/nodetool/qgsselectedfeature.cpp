@@ -17,7 +17,7 @@
 #include "nodetool/qgsvertexentry.h"
 
 #include "qgsfeatureiterator.h"
-#include "qgspointv2.h"
+#include "qgspoint.h"
 #include "qgssettings.h"
 #include "qgslogger.h"
 #include "qgsvertexmarker.h"
@@ -27,6 +27,7 @@
 #include "qgisapp.h"
 #include "qgslayertreeview.h"
 #include "qgsproject.h"
+#include "qgsstatusbar.h"
 
 QgsSelectedFeature::QgsSelectedFeature( QgsFeatureId featureId,
                                         QgsVectorLayer *vlayer,
@@ -184,12 +185,15 @@ void QgsSelectedFeature::validateGeometry( QgsGeometry *g )
     delete vm;
   }
 
-  mValidator = new QgsGeometryValidator( g );
+  QgsGeometry::ValidationMethod method = QgsGeometry::ValidatorQgisInternal;
+  if ( settings.value( QStringLiteral( "qgis/digitizing/validate_geometries" ), 1 ).toInt() == 2 )
+    method = QgsGeometry::ValidatorGeos;
+  mValidator = new QgsGeometryValidator( *g, nullptr, method );
   connect( mValidator, &QgsGeometryValidator::errorFound, this, &QgsSelectedFeature::addError );
   connect( mValidator, &QThread::finished, this, &QgsSelectedFeature::validationFinished );
   mValidator->start();
 
-  QStatusBar *sb = QgisApp::instance()->statusBar();
+  QgsStatusBar *sb = QgisApp::instance()->statusBarIface();
   sb->showMessage( tr( "Validation started." ) );
 }
 
@@ -212,14 +216,14 @@ void QgsSelectedFeature::addError( QgsGeometry::Error e )
     mGeomErrorMarkers << marker;
   }
 
-  QStatusBar *sb = QgisApp::instance()->statusBar();
+  QgsStatusBar *sb = QgisApp::instance()->statusBarIface();
   sb->showMessage( e.what() );
   sb->setToolTip( mTip );
 }
 
 void QgsSelectedFeature::validationFinished()
 {
-  QStatusBar *sb = QgisApp::instance()->statusBar();
+  QgsStatusBar *sb = QgisApp::instance()->statusBarIface();
   sb->showMessage( tr( "Validation finished (%n error(s) found).", "number of geometry errors", mGeomErrorMarkers.size() ) );
 }
 
@@ -279,7 +283,7 @@ void QgsSelectedFeature::createVertexMap()
   }
 
   QgsVertexId vertexId;
-  QgsPointV2 pt;
+  QgsPoint pt;
   while ( geom->nextVertex( vertexId, pt ) )
   {
     mVertexMap.append( new QgsVertexEntry( mCanvas, mVlayer, pt, vertexId, tr( "ring %1, vertex %2" ).arg( vertexId.ring ).arg( vertexId.vertex ) ) );

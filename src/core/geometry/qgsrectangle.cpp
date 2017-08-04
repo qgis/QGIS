@@ -25,7 +25,7 @@
 #include <QRegExp>
 #include <qnumeric.h>
 
-#include "qgspoint.h"
+#include "qgspointxy.h"
 #include "qgsrectangle.h"
 #include "qgslogger.h"
 #include "qgsbox3d.h"
@@ -39,7 +39,7 @@ QgsRectangle::QgsRectangle( double xMin, double yMin, double xMax, double yMax )
   normalize();
 }
 
-QgsRectangle::QgsRectangle( const QgsPoint &p1, const QgsPoint &p2 )
+QgsRectangle::QgsRectangle( const QgsPointXY &p1, const QgsPointXY &p2 )
 {
   set( p1, p2 );
 }
@@ -60,7 +60,7 @@ QgsRectangle::QgsRectangle( const QgsRectangle &r )
   mYmax = r.yMaximum();
 }
 
-void QgsRectangle::set( const QgsPoint &p1, const QgsPoint &p2 )
+void QgsRectangle::set( const QgsPointXY &p1, const QgsPointXY &p2 )
 {
   mXmin = p1.x();
   mXmax = p2.x();
@@ -101,7 +101,7 @@ void QgsRectangle::setMinimal()
   mYmax = -std::numeric_limits<double>::max();
 }
 
-void QgsRectangle::scale( double scaleFactor, const QgsPoint *cp )
+void QgsRectangle::scale( double scaleFactor, const QgsPointXY *cp )
 {
   // scale from the center
   double centerX, centerY;
@@ -136,7 +136,7 @@ void QgsRectangle::grow( double delta )
   mYmax += delta;
 }
 
-void QgsRectangle::include( const QgsPoint &p )
+void QgsRectangle::include( const QgsPointXY &p )
 {
   if ( p.x() < xMinimum() )
     setXMinimum( p.x() );
@@ -187,7 +187,7 @@ bool QgsRectangle::contains( const QgsRectangle &rect ) const
   return ( rect.mXmin >= mXmin && rect.mXmax <= mXmax && rect.mYmin >= mYmin && rect.mYmax <= mYmax );
 }
 
-bool QgsRectangle::contains( const QgsPoint &p ) const
+bool QgsRectangle::contains( const QgsPointXY &p ) const
 {
   return mXmin <= p.x() && p.x() <= mXmax &&
          mYmin <= p.y() && p.y() <= mYmax;
@@ -220,6 +220,42 @@ void QgsRectangle::combineExtentWith( double x, double y )
     mYmin = ( ( mYmin < y ) ? mYmin : y );
     mYmax = ( ( mYmax > y ) ? mYmax : y );
   }
+}
+
+QgsRectangle QgsRectangle::operator-( const QgsVector v ) const
+{
+  double xmin = mXmin - v.x();
+  double xmax = mXmax - v.x();
+  double ymin = mYmin - v.y();
+  double ymax = mYmax - v.y();
+  return QgsRectangle( xmin, ymin, xmax, ymax );
+}
+
+QgsRectangle QgsRectangle::operator+( const QgsVector v ) const
+{
+  double xmin = mXmin + v.x();
+  double xmax = mXmax + v.x();
+  double ymin = mYmin + v.y();
+  double ymax = mYmax + v.y();
+  return QgsRectangle( xmin, ymin, xmax, ymax );
+}
+
+QgsRectangle &QgsRectangle::operator-=( const QgsVector v )
+{
+  mXmin -= v.x();
+  mXmax -= v.x();
+  mYmin -= v.y();
+  mYmax -= v.y();
+  return *this;
+}
+
+QgsRectangle &QgsRectangle::operator+=( const QgsVector v )
+{
+  mXmin += v.x();
+  mXmax += v.x();
+  mYmin += v.y();
+  mYmax += v.y();
+  return *this;
 }
 
 bool QgsRectangle::isEmpty() const
@@ -340,18 +376,6 @@ QgsRectangle &QgsRectangle::operator=( const QgsRectangle &r )
   }
 
   return *this;
-}
-
-void QgsRectangle::unionRect( const QgsRectangle &r )
-{
-  if ( r.xMinimum() < xMinimum() )
-    setXMinimum( r.xMinimum() );
-  if ( r.xMaximum() > xMaximum() )
-    setXMaximum( r.xMaximum() );
-  if ( r.yMinimum() < yMinimum() )
-    setYMinimum( r.yMinimum() );
-  if ( r.yMaximum() > yMaximum() )
-    setYMaximum( r.yMaximum() );
 }
 
 bool QgsRectangle::isFinite() const

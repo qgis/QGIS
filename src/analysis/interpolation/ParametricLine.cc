@@ -37,7 +37,7 @@ void ParametricLine::calcSecDer( float t, Vector3D *v )
   QgsDebugMsg( "warning, derive a class from ParametricLine" );
 }
 
-void ParametricLine::calcPoint( float t, Point3D *p )
+void ParametricLine::calcPoint( float t, QgsPoint *p )
 {
   Q_UNUSED( t );
   Q_UNUSED( p );
@@ -56,7 +56,7 @@ void ParametricLine::remove( int i )
   QgsDebugMsg( "warning, derive a class from ParametricLine" );
 }
 
-void ParametricLine::setControlPoly( QVector<Point3D *> *cp )
+void ParametricLine::setControlPoly( QVector<QgsPoint *> *cp )
 {
   Q_UNUSED( cp );
   QgsDebugMsg( "warning, derive a class from ParametricLine" );
@@ -74,14 +74,14 @@ int ParametricLine::getDegree() const
   return mDegree;
 }
 
-const Point3D *ParametricLine::getControlPoint( int number ) const
+const QgsPoint *ParametricLine::getControlPoint( int number ) const
 {
   Q_UNUSED( number );
   QgsDebugMsg( "warning, derive a class from ParametricLine" );
   return nullptr;
 }
 
-const QVector<Point3D *> *ParametricLine::getControlPoly() const
+const QVector<QgsPoint *> *ParametricLine::getControlPoly() const
 {
   QgsDebugMsg( "warning, derive a class from ParametricLine" );
   return nullptr;

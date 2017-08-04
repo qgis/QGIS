@@ -299,7 +299,7 @@ const QString QgsPkiBundle::certId() const
 {
   if ( mCert.isNull() )
   {
-    return QString::null;
+    return QString();
   }
   return QString( mCert.digest( QCryptographicHash::Sha1 ).toHex() );
 }

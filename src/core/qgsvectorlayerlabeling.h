@@ -15,46 +15,53 @@
 #ifndef QGSVECTORLAYERLABELING_H
 #define QGSVECTORLAYERLABELING_H
 
+#include <memory>
+
 #include <QString>
 #include <QStringList>
+#include <QDomNode>
 
-#include "qgis_core.h"
+#include "qgis.h"
 
 class QDomDocument;
 class QDomElement;
 
 class QgsPalLayerSettings;
+class QgsReadWriteContext;
 class QgsVectorLayer;
 class QgsVectorLayerLabelProvider;
 
 /** \ingroup core
  * Abstract base class - its implementations define different approaches to the labeling of a vector layer.
  *
- * \since QGIS 2.12
- * \note not available in Python bindings
- * \note this class is not a part of public API yet. See notes in QgsLabelingEngine
+ * \since QGIS 3.0
  */
 class CORE_EXPORT QgsAbstractVectorLayerLabeling
 {
   public:
-
+    //! Default constructor
+    QgsAbstractVectorLayerLabeling() = default;
     virtual ~QgsAbstractVectorLayerLabeling() = default;
 
     //! Unique type string of the labeling configuration implementation
     virtual QString type() const = 0;
 
+    //! Return a new copy of the object
+    virtual QgsAbstractVectorLayerLabeling *clone() const = 0 SIP_FACTORY;
+
     //! Factory for label provider implementation
-    virtual QgsVectorLayerLabelProvider *provider( QgsVectorLayer *layer ) const = 0;
+    //! \note not available in Python bindings
+    virtual QgsVectorLayerLabelProvider *provider( QgsVectorLayer *layer ) const SIP_SKIP { Q_UNUSED( layer ); return nullptr; }
 
     //! Return labeling configuration as XML element
-    virtual QDomElement save( QDomDocument &doc ) const = 0;
+    virtual QDomElement save( QDomDocument &doc, const QgsReadWriteContext &context ) const = 0;
 
     //! Get list of sub-providers within the layer's labeling.
     virtual QStringList subProviders() const { return QStringList( QString() ); }
 
     //! Get associated label settings. In case of multiple sub-providers with different settings,
     //! they are identified by their ID (e.g. in case of rule-based labeling, provider ID == rule key)
-    virtual QgsPalLayerSettings settings( QgsVectorLayer *layer, const QString &providerId = QString() ) const = 0;
+    virtual QgsPalLayerSettings settings( const QString &providerId = QString() ) const = 0;
 
     /**
      * Returns true if drawing labels requires advanced effects like composition
@@ -62,12 +69,31 @@ class CORE_EXPORT QgsAbstractVectorLayerLabeling
      * or exported to a vector format.
      * \since QGIS 3.0
      */
-    virtual bool requiresAdvancedEffects( QgsVectorLayer *layer ) const = 0;
+    virtual bool requiresAdvancedEffects() const = 0;
 
     // static stuff
 
     //! Try to create instance of an implementation based on the XML data
-    static QgsAbstractVectorLayerLabeling *create( const QDomElement &element );
+    static QgsAbstractVectorLayerLabeling *create( const QDomElement &element, const QgsReadWriteContext &context ) SIP_FACTORY;
+
+    /**
+     * Writes the SE 1.1 TextSymbolizer element based on the current layer labeling settings
+     */
+    virtual void toSld( QDomNode &parent, const QgsStringMap &props ) const
+    {
+      Q_UNUSED( parent )
+      Q_UNUSED( props )
+      QDomDocument doc = parent.ownerDocument();
+      parent.appendChild( doc.createComment( QStringLiteral( "SE Export for %1 not implemented yet" ).arg( type() ) ) );
+    }
+
+  private:
+    Q_DISABLE_COPY( QgsAbstractVectorLayerLabeling )
+
+#ifdef SIP_RUN
+    QgsAbstractVectorLayerLabeling( const QgsAbstractVectorLayerLabeling &rhs );
+#endif
+
 };
 
 /** \ingroup core
@@ -75,19 +101,28 @@ class CORE_EXPORT QgsAbstractVectorLayerLabeling
  *
  * The configuration is kept in layer's custom properties for backward compatibility.
  *
- * \since QGIS 2.12
- * \note not available in Python bindings
- * \note this class is not a part of public API yet. See notes in QgsLabelingEngine
+ * \since QGIS 3.0
  */
 class CORE_EXPORT QgsVectorLayerSimpleLabeling : public QgsAbstractVectorLayerLabeling
 {
   public:
+    //! Constructs simple labeling configuration with given initial settings
+    explicit QgsVectorLayerSimpleLabeling( const QgsPalLayerSettings &settings );
 
     virtual QString type() const override;
-    virtual QgsVectorLayerLabelProvider *provider( QgsVectorLayer *layer ) const override;
-    virtual QDomElement save( QDomDocument &doc ) const override;
-    virtual QgsPalLayerSettings settings( QgsVectorLayer *layer, const QString &providerId = QString() ) const override;
-    bool requiresAdvancedEffects( QgsVectorLayer *layer ) const override;
+    virtual QgsAbstractVectorLayerLabeling *clone() const override SIP_FACTORY;
+    //! \note not available in Python bindings
+    virtual QgsVectorLayerLabelProvider *provider( QgsVectorLayer *layer ) const override SIP_SKIP;
+    virtual QDomElement save( QDomDocument &doc, const QgsReadWriteContext &context ) const override;
+    virtual QgsPalLayerSettings settings( const QString &providerId = QString() ) const override;
+    bool requiresAdvancedEffects() const override;
+    virtual void toSld( QDomNode &parent, const QgsStringMap &props ) const override;
+
+    //! Create the instance from a DOM element with saved configuration
+    static QgsVectorLayerSimpleLabeling *create( const QDomElement &element, const QgsReadWriteContext &context );
+
+  private:
+    std::unique_ptr<QgsPalLayerSettings> mSettings;
 };
 
 #endif // QGSVECTORLAYERLABELING_H

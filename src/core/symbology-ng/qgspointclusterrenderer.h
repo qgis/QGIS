@@ -33,14 +33,14 @@ class CORE_EXPORT QgsPointClusterRenderer: public QgsPointDistanceRenderer
 
     QgsPointClusterRenderer();
 
-    QgsPointClusterRenderer *clone() const override;
+    QgsPointClusterRenderer *clone() const override SIP_FACTORY;
     virtual void startRender( QgsRenderContext &context, const QgsFields &fields ) override;
     void stopRender( QgsRenderContext &context ) override;
-    QDomElement save( QDomDocument &doc ) override;
+    QDomElement save( QDomDocument &doc, const QgsReadWriteContext &context ) override;
     virtual QSet<QString> usedAttributes( const QgsRenderContext &context ) const override;
 
     //! Creates a renderer from XML element
-    static QgsFeatureRenderer *create( QDomElement &symbologyElem ) SIP_FACTORY;
+    static QgsFeatureRenderer *create( QDomElement &symbologyElem, const QgsReadWriteContext &context ) SIP_FACTORY;
 
     /** Returns the symbol used for rendering clustered groups (but not ownership of the symbol).
      * \see setClusterSymbol()
@@ -59,11 +59,15 @@ class CORE_EXPORT QgsPointClusterRenderer: public QgsPointDistanceRenderer
     static QgsPointClusterRenderer *convertFromRenderer( const QgsFeatureRenderer *renderer ) SIP_FACTORY;
 
   private:
+#ifdef SIP_RUN
+    QgsPointClusterRenderer( const QgsPointClusterRenderer & );
+    QgsPointClusterRenderer &operator=( const QgsPointClusterRenderer & );
+#endif
 
     //! Symbol for point clusters
     std::unique_ptr< QgsMarkerSymbol > mClusterSymbol;
 
-    void drawGroup( QPointF centerPoint, QgsRenderContext &context, const QgsPointDistanceRenderer::ClusteredGroup &group ) override;
+    void drawGroup( QPointF centerPoint, QgsRenderContext &context, const QgsPointDistanceRenderer::ClusteredGroup &group ) override SIP_FORCE;
 
 };
 

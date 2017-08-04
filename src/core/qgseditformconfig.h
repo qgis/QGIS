@@ -26,6 +26,7 @@
 
 #include "qgsattributeeditorelement.h"
 
+class QgsReadWriteContext;
 class QgsRelationManager;
 class QgsEditFormConfigPrivate;
 
@@ -58,14 +59,14 @@ class CORE_EXPORT QgsEditFormConfig
     struct TabData
     {
       TabData() {}
-      TabData( const QString &name, const QList<QString> &fields, const QList<GroupData> &groups )
+      TabData( const QString &name, const QList<QString> &fields, const QList<QgsEditFormConfig::GroupData> &groups )
         : mName( name )
         , mFields( fields )
         , mGroups( groups )
       {}
       QString mName;
       QList<QString> mFields;
-      QList<GroupData> mGroups;
+      QList<QgsEditFormConfig::GroupData> mGroups;
     };
 
     /**
@@ -268,13 +269,13 @@ class CORE_EXPORT QgsEditFormConfig
      * Read XML information
      * Deserialize on project load
      */
-    void readXml( const QDomNode &node );
+    void readXml( const QDomNode &node, const QgsReadWriteContext &context );
 
     /**
      * Write XML information
      * Serialize on project save
      */
-    void writeXml( QDomNode &node ) const;
+    void writeXml( QDomNode &node, const QgsReadWriteContext &context ) const;
 
     /**
      * Deserialize drag and drop designer elements.

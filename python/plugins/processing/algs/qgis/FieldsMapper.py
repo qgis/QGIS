@@ -32,18 +32,19 @@ from qgis.core import (QgsField,
                        QgsFields,
                        QgsExpression,
                        QgsDistanceArea,
+                       QgsFeatureSink,
                        QgsProject,
                        QgsFeature,
                        QgsApplication,
                        QgsProcessingUtils)
-from processing.core.GeoAlgorithm import GeoAlgorithm
+from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from processing.core.parameters import ParameterTable
 from processing.core.parameters import Parameter
 from processing.core.outputs import OutputVector
 
 
-class FieldsMapper(GeoAlgorithm):
+class FieldsMapper(QgisAlgorithm):
 
     INPUT_LAYER = 'INPUT_LAYER'
     FIELDS_MAPPING = 'FIELDS_MAPPING'
@@ -53,22 +54,13 @@ class FieldsMapper(GeoAlgorithm):
         GeoAlgorithm.__init__(self)
         self.mapping = None
 
-    def icon(self):
-        return QgsApplication.getThemeIcon("/providerQgis.svg")
-
-    def svgIconPath(self):
-        return QgsApplication.iconPath("providerQgis.svg")
-
     def group(self):
         return self.tr('Vector table tools')
 
-    def name(self):
-        return 'refactorfields'
+    def __init__(self):
+        super().__init__()
 
-    def displayName(self):
-        return self.tr('Refactor fields')
-
-    def defineCharacteristics(self):
+    def initAlgorithm(self, config=None):
         self.addParameter(ParameterTable(self.INPUT_LAYER,
                                          self.tr('Input layer'),
                                          False))
@@ -110,7 +102,13 @@ class FieldsMapper(GeoAlgorithm):
                                     self.tr('Refactored'),
                                     base_input=self.INPUT_LAYER))
 
-    def processAlgorithm(self, context, feedback):
+    def name(self):
+        return 'refactorfields'
+
+    def displayName(self):
+        return self.tr('Refactor fields')
+
+    def processAlgorithm(self, parameters, context, feedback):
         layer = self.getParameterValue(self.INPUT_LAYER)
         mapping = self.getParameterValue(self.FIELDS_MAPPING)
         output = self.getOutputFromName(self.OUTPUT_LAYER)
@@ -121,7 +119,7 @@ class FieldsMapper(GeoAlgorithm):
 
         da = QgsDistanceArea()
         da.setSourceCrs(layer.crs())
-        da.setEllipsoid(QgsProject.instance().ellipsoid())
+        da.setEllipsoid(context.project().ellipsoid())
 
         exp_context = layer.createExpressionContext()
 
@@ -133,8 +131,8 @@ class FieldsMapper(GeoAlgorithm):
 
             expression = QgsExpression(field_def['expression'])
             expression.setGeomCalculator(da)
-            expression.setDistanceUnits(QgsProject.instance().distanceUnits())
-            expression.setAreaUnits(QgsProject.instance().areaUnits())
+            expression.setDistanceUnits(context.project().distanceUnits())
+            expression.setAreaUnits(context.project().areaUnits())
             expression.prepare(exp_context)
             if expression.hasParserError():
                 raise GeoAlgorithmExecutionException(
@@ -173,7 +171,7 @@ class FieldsMapper(GeoAlgorithm):
                     attrs.append(value)
                 outFeat.setAttributes(attrs)
 
-                writer.addFeature(outFeat)
+                writer.addFeature(outFeat, QgsFeatureSink.FastInsert)
 
                 feedback.setProgress(int(current * total))
         else:

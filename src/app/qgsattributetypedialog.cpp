@@ -27,6 +27,7 @@
 #include "qgsfieldformatter.h"
 #include "qgseditorwidgetfactory.h"
 #include "qgseditorwidgetregistry.h"
+#include "qgsgui.h"
 
 #include <QTableWidgetItem>
 #include <QFile>
@@ -46,7 +47,7 @@ QgsAttributeTypeDialog::QgsAttributeTypeDialog( QgsVectorLayer *vl, int fieldIdx
   setupUi( this );
   setWindowTitle( tr( "Edit Widget Properties - %1 (%2)" ).arg( vl->fields().at( fieldIdx ).name(), vl->name() ) );
 
-  QMapIterator<QString, QgsEditorWidgetFactory *> it( QgsEditorWidgetRegistry::instance()->factories() );
+  QMapIterator<QString, QgsEditorWidgetFactory *> it( QgsGui::editorWidgetRegistry()->factories() );
   while ( it.hasNext() )
   {
     it.next();
@@ -69,6 +70,8 @@ QgsAttributeTypeDialog::QgsAttributeTypeDialog( QgsVectorLayer *vl, int fieldIdx
   {
     isFieldEditableCheckBox->setEnabled( false );
   }
+
+  mExpressionWidget->registerExpressionContextGenerator( this );
 
   connect( mExpressionWidget, &QgsExpressionLineEdit::expressionChanged, this, &QgsAttributeTypeDialog::defaultExpressionChanged );
   connect( mUniqueCheckBox, &QCheckBox::toggled, this, [ = ]( bool checked )
@@ -160,7 +163,7 @@ void QgsAttributeTypeDialog::setEditorWidgetType( const QString &type )
   }
   else
   {
-    QgsEditorConfigWidget *cfgWdg = QgsEditorWidgetRegistry::instance()->createConfigWidget( type, mLayer, mFieldIdx, this );
+    QgsEditorConfigWidget *cfgWdg = QgsGui::editorWidgetRegistry()->createConfigWidget( type, mLayer, mFieldIdx, this );
 
     if ( cfgWdg )
     {
@@ -290,6 +293,18 @@ QString QgsAttributeTypeDialog::defaultValueExpression() const
 void QgsAttributeTypeDialog::setDefaultValueExpression( const QString &expression )
 {
   mExpressionWidget->setExpression( expression );
+}
+
+QgsExpressionContext QgsAttributeTypeDialog::createExpressionContext() const
+{
+  QgsExpressionContext context;
+  context
+      << QgsExpressionContextUtils::globalScope()
+      << QgsExpressionContextUtils::projectScope( QgsProject::instance() )
+      << QgsExpressionContextUtils::layerScope( mLayer )
+      << QgsExpressionContextUtils::mapToolCaptureScope( QList<QgsPointLocator::Match>() );
+
+  return context;
 }
 
 QString QgsAttributeTypeDialog::constraintExpression() const

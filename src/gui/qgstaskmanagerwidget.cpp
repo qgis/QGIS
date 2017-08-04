@@ -529,7 +529,7 @@ void QgsTaskManagerStatusBarWidget::overallProgressChanged( double progress )
   mProgressBar->setValue( progress );
   if ( qgsDoubleNear( progress, 0.0 ) )
     mProgressBar->setMaximum( 0 );
-  else if ( mProgressBar->maximum( ) == 0 )
+  else if ( mProgressBar->maximum() == 0 )
     mProgressBar->setMaximum( 100 );
   setToolTip( mManager->activeTasks().at( 0 )->description() );
 }

@@ -142,7 +142,7 @@ ELSE(WIN32)
     # also get other frameworks' headers folders on OS X
     IF (APPLE)
       FIND_PATH(QGIS_GUI_INCLUDE_DIR
-        NAMES qgisgui.h
+        NAMES qgsguiutils.h
         PATHS
           ${QGIS_BUILD_PATH}/output/lib
           ${QGIS_MAC_PATH}/Frameworks

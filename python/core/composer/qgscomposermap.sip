@@ -40,18 +40,8 @@ Return correct graphics item type.
     {
       Fixed,
 
-      /**
-       * A
-       * the
-       * \see
-       * \note
-       */
       Predefined,
 
-      /** The
-       * A
-       * \note
-      */
       Auto
     };
 
@@ -117,13 +107,17 @@ Sets new scene rectangle bounds and recalculates hight and extent
 
     double scale() const;
 %Docstring
- Scale
+ Returns the map scale.
+ The scale value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
+.. seealso:: setNewScale()
  :rtype: float
 %End
 
     void setNewScale( double scaleDenominator, bool forceUpdate = true );
 %Docstring
-Sets new scale and changes only mExtent
+ Sets new map ``scale`` and changes only the map extent.
+ The ``scale`` value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
+.. seealso:: scale()
 %End
 
     void setNewExtent( const QgsRectangle &extent );
@@ -383,20 +377,21 @@ In case of annotations, the bounding rectangle can be larger than the map item r
  reimplement setFrameStrokeWidth, so that updateBoundingRect() is called after setting the frame width */
 %End
 
-    void setMapRotation( double r );
+    void setMapRotation( double rotation );
 %Docstring
- Sets rotation for the map - this does not affect the composer item shape, only the
- way the map is drawn within the item
+ Sets the ``rotation`` for the map - this does not affect the composer item shape, only the
+ way the map is drawn within the item. Rotation is in degrees, clockwise.
 .. versionadded:: 2.1
+.. seealso:: mapRotation()
 %End
 
     double mapRotation( QgsComposerObject::PropertyValueType valueType = QgsComposerObject::EvaluatedValue ) const;
 %Docstring
- Returns the rotation used for drawing the map within the composer item
- :return: rotation for map
+ Returns the rotation used for drawing the map within the composer item, in degrees clockwise.
  \param valueType controls whether the returned value is the user specified rotation,
  or the current evaluated rotation (which may be affected by data driven rotation
  settings).
+.. seealso:: setMapRotation()
  :rtype: float
 %End
 

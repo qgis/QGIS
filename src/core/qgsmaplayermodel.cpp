@@ -311,54 +311,7 @@ QVariant QgsMapLayerModel::data( const QModelIndex &index, int role ) const
       if ( !layer )
         return QVariant();
 
-      QgsMapLayer::LayerType type = layer->type();
-      if ( role == Qt::DecorationRole )
-      {
-        switch ( type )
-        {
-          case QgsMapLayer::RasterLayer:
-          {
-            return QgsLayerItem::iconRaster();
-          }
-
-          case QgsMapLayer::VectorLayer:
-          {
-            QgsVectorLayer *vl = dynamic_cast<QgsVectorLayer *>( layer );
-            if ( !vl )
-            {
-              return QIcon();
-            }
-            QgsWkbTypes::GeometryType geomType = vl->geometryType();
-            switch ( geomType )
-            {
-              case QgsWkbTypes::PointGeometry:
-              {
-                return QgsLayerItem::iconPoint();
-              }
-              case QgsWkbTypes::PolygonGeometry :
-              {
-                return QgsLayerItem::iconPolygon();
-              }
-              case QgsWkbTypes::LineGeometry :
-              {
-                return QgsLayerItem::iconLine();
-              }
-              case QgsWkbTypes::NullGeometry :
-              {
-                return QgsLayerItem::iconTable();
-              }
-              default:
-              {
-                return QIcon();
-              }
-            }
-          }
-          default:
-          {
-            return QIcon();
-          }
-        }
-      }
+      return iconForLayer( layer );
     }
   }
 
@@ -390,6 +343,54 @@ Qt::ItemFlags QgsMapLayerModel::flags( const QModelIndex &index ) const
     flags |= Qt::ItemIsUserCheckable;
   }
   return flags;
+}
+
+QIcon QgsMapLayerModel::iconForLayer( QgsMapLayer *layer )
+{
+  switch ( layer->type() )
+  {
+    case QgsMapLayer::RasterLayer:
+    {
+      return QgsLayerItem::iconRaster();
+    }
+
+    case QgsMapLayer::VectorLayer:
+    {
+      QgsVectorLayer *vl = dynamic_cast<QgsVectorLayer *>( layer );
+      if ( !vl )
+      {
+        return QIcon();
+      }
+      QgsWkbTypes::GeometryType geomType = vl->geometryType();
+      switch ( geomType )
+      {
+        case QgsWkbTypes::PointGeometry:
+        {
+          return QgsLayerItem::iconPoint();
+        }
+        case QgsWkbTypes::PolygonGeometry :
+        {
+          return QgsLayerItem::iconPolygon();
+        }
+        case QgsWkbTypes::LineGeometry :
+        {
+          return QgsLayerItem::iconLine();
+        }
+        case QgsWkbTypes::NullGeometry :
+        {
+          return QgsLayerItem::iconTable();
+        }
+        default:
+        {
+          return QIcon();
+        }
+      }
+    }
+    default:
+    {
+      return QIcon();
+    }
+  }
 }
 
 

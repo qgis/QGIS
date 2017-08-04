@@ -26,6 +26,40 @@
    <property name="bottomMargin">
     <number>3</number>
    </property>
+   <item row="0" column="0">
+    <widget class="QgsCollapsibleGroupBox" name="gboxGlobalTransp">
+     <property name="title">
+      <string>Global opacity</string>
+     </property>
+     <property name="flat">
+      <bool>true</bool>
+     </property>
+     <property name="syncGroup" stdset="0">
+      <string notr="true">rastertransp</string>
+     </property>
+     <layout class="QGridLayout" name="_3">
+      <property name="leftMargin">
+       <number>3</number>
+      </property>
+      <property name="topMargin">
+       <number>3</number>
+      </property>
+      <property name="rightMargin">
+       <number>3</number>
+      </property>
+      <property name="bottomMargin">
+       <number>3</number>
+      </property>
+      <item row="0" column="0">
+       <widget class="QgsOpacityWidget" name="mOpacityWidget" native="true">
+        <property name="focusPolicy">
+         <enum>Qt::StrongFocus</enum>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
    <item row="1" column="0">
     <widget class="QgsCollapsibleGroupBox" name="gboxNoDataValue">
      <property name="title">
@@ -91,93 +125,6 @@
          </widget>
         </item>
        </layout>
-      </item>
-     </layout>
-    </widget>
-   </item>
-   <item row="0" column="0">
-    <widget class="QgsCollapsibleGroupBox" name="gboxGlobalTransp">
-     <property name="title">
-      <string>Global transparency</string>
-     </property>
-     <property name="flat">
-      <bool>true</bool>
-     </property>
-     <property name="syncGroup" stdset="0">
-      <string notr="true">rastertransp</string>
-     </property>
-     <layout class="QGridLayout" name="_3">
-      <item row="1" column="4">
-       <widget class="QLabel" name="textLabel4">
-        <property name="text">
-         <string>&lt;p align=&quot;right&quot;&gt;Full&lt;/p&gt;</string>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="0">
-       <widget class="QLabel" name="textLabel3">
-        <property name="text">
-         <string>None</string>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="1">
-       <spacer>
-        <property name="orientation">
-         <enum>Qt::Horizontal</enum>
-        </property>
-        <property name="sizeHint" stdset="0">
-         <size>
-          <width>40</width>
-          <height>20</height>
-         </size>
-        </property>
-       </spacer>
-      </item>
-      <item row="0" column="0" colspan="5">
-       <widget class="QSlider" name="sliderTransparency">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-        <property name="maximum">
-         <number>255</number>
-        </property>
-        <property name="orientation">
-         <enum>Qt::Horizontal</enum>
-        </property>
-        <property name="tickInterval">
-         <number>25</number>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="2">
-       <widget class="QLabel" name="lblTransparencyPercent">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-        <property name="text">
-         <string> 00%</string>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="3">
-       <spacer>
-        <property name="orientation">
-         <enum>Qt::Horizontal</enum>
-        </property>
-        <property name="sizeHint" stdset="0">
-         <size>
-          <width>40</width>
-          <height>20</height>
-         </size>
-        </property>
-       </spacer>
       </item>
      </layout>
     </widget>
@@ -294,7 +241,7 @@
            <string>Export to file</string>
           </property>
           <property name="text">
-           <string>...</string>
+           <string>…</string>
           </property>
           <property name="icon">
            <iconset resource="../../../images/images.qrc">
@@ -321,7 +268,7 @@
            <string>Import from file</string>
           </property>
           <property name="text">
-           <string>...</string>
+           <string>…</string>
           </property>
           <property name="icon">
            <iconset resource="../../../images/images.qrc">
@@ -335,7 +282,7 @@
            <string>Default values</string>
           </property>
           <property name="text">
-           <string>...</string>
+           <string>…</string>
           </property>
           <property name="icon">
            <iconset resource="../../../images/images.qrc">
@@ -349,7 +296,7 @@
            <string>Remove selected row</string>
           </property>
           <property name="text">
-           <string>...</string>
+           <string>…</string>
           </property>
           <property name="icon">
            <iconset resource="../../../images/images.qrc">
@@ -366,7 +313,7 @@
            <string>Add values from display</string>
           </property>
           <property name="text">
-           <string>...</string>
+           <string>…</string>
           </property>
           <property name="icon">
            <iconset resource="../../../images/images.qrc">
@@ -380,7 +327,7 @@
            <string>Add values manually</string>
           </property>
           <property name="text">
-           <string>...</string>
+           <string>…</string>
           </property>
           <property name="icon">
            <iconset resource="../../../images/images.qrc">
@@ -407,14 +354,17 @@
    <header>qgscollapsiblegroupbox.h</header>
    <container>1</container>
   </customwidget>
+  <customwidget>
+   <class>QgsOpacityWidget</class>
+   <extends>QWidget</extends>
+   <header>qgsopacitywidget.h</header>
+   <container>1</container>
+  </customwidget>
  </customwidgets>
  <tabstops>
-  <tabstop>gboxGlobalTransp</tabstop>
-  <tabstop>sliderTransparency</tabstop>
-  <tabstop>gboxNoDataValue</tabstop>
+  <tabstop>mOpacityWidget</tabstop>
   <tabstop>mSrcNoDataValueCheckBox</tabstop>
   <tabstop>leNoDataValue</tabstop>
-  <tabstop>gboxCustomTransparency</tabstop>
   <tabstop>cboxTransparencyBand</tabstop>
   <tabstop>pbnExportTransparentPixelValues</tabstop>
   <tabstop>pbnImportTransparentPixelValues</tabstop>

@@ -26,7 +26,7 @@
       <item>
        <widget class="QToolButton" name="btnBrowseXml">
         <property name="text">
-         <string>...</string>
+         <string>…</string>
         </property>
        </widget>
       </item>
@@ -45,7 +45,7 @@
       <item>
        <widget class="QToolButton" name="btnBrowseDb">
         <property name="text">
-         <string>...</string>
+         <string>…</string>
         </property>
        </widget>
       </item>

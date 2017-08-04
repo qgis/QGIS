@@ -26,9 +26,10 @@ __copyright__ = '(C) 2012, Victor Olaya'
 __revision__ = '$Format:%H$'
 
 from qgis.core import (QgsFeatureRequest,
+                       QgsFeatureSink,
                        QgsApplication,
                        QgsProcessingUtils)
-from processing.core.GeoAlgorithm import GeoAlgorithm
+from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterSelection
 from processing.core.parameters import ParameterNumber
@@ -36,7 +37,7 @@ from processing.core.outputs import OutputVector
 from processing.tools import vector
 
 
-class ExtractByLocation(GeoAlgorithm):
+class ExtractByLocation(QgisAlgorithm):
 
     INPUT = 'INPUT'
     INTERSECT = 'INTERSECT'
@@ -44,25 +45,16 @@ class ExtractByLocation(GeoAlgorithm):
     PRECISION = 'PRECISION'
     OUTPUT = 'OUTPUT'
 
-    def icon(self):
-        return QgsApplication.getThemeIcon("/providerQgis.svg")
-
-    def svgIconPath(self):
-        return QgsApplication.iconPath("providerQgis.svg")
-
     def tags(self):
         return self.tr('extract,filter,location,intersects,contains,within').split(',')
 
     def group(self):
         return self.tr('Vector selection tools')
 
-    def name(self):
-        return 'extractbylocation'
+    def __init__(self):
+        super().__init__()
 
-    def displayName(self):
-        return self.tr('Extract by location')
-
-    def defineCharacteristics(self):
+    def initAlgorithm(self, config=None):
         self.predicates = (
             ('intersects', self.tr('intersects')),
             ('contains', self.tr('contains')),
@@ -86,7 +78,13 @@ class ExtractByLocation(GeoAlgorithm):
                                           0.0, None, 0.0))
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Extracted (location)')))
 
-    def processAlgorithm(self, context, feedback):
+    def name(self):
+        return 'extractbylocation'
+
+    def displayName(self):
+        return self.tr('Extract by location')
+
+    def processAlgorithm(self, parameters, context, feedback):
         filename = self.getParameterValue(self.INPUT)
         layer = QgsProcessingUtils.mapLayerFromString(filename, context)
         filename = self.getParameterValue(self.INTERSECT)
@@ -106,7 +104,7 @@ class ExtractByLocation(GeoAlgorithm):
 
         selectedSet = []
         features = QgsProcessingUtils.getFeatures(selectLayer, context)
-        total = 100.0 / QgsProcessingUtils.featureCount(selectLayer, context)
+        total = 100.0 / selectLayer.featureCount() if selectLayer.featureCount() else 0
         for current, f in enumerate(features):
             geom = vector.snapToPrecision(f.geometry(), precision)
             bbox = geom.boundingBox()
@@ -135,9 +133,9 @@ class ExtractByLocation(GeoAlgorithm):
             selectedSet = selectedSet + disjoinSet
 
         features = QgsProcessingUtils.getFeatures(layer, context)
-        total = 100.0 / QgsProcessingUtils.featureCount(layer, context)
+        total = 100.0 / layer.featureCount() if layer.featureCount() else 0
         for current, f in enumerate(features):
             if f.id() in selectedSet:
-                writer.addFeature(f)
+                writer.addFeature(f, QgsFeatureSink.FastInsert)
             feedback.setProgress(int(current * total))
         del writer

@@ -1,154 +1,199 @@
-/** \class QgsTextFormatWidget
- * \ingroup gui
- * A widget for customising text formatting settings.
- *
- * QgsTextFormatWidget provides a widget for controlling the appearance of text rendered
- * using QgsTextRenderer. The preview includes all settings contained within
- * a QgsTextFormat, including shadow, background and buffer.
- *
- * Additionally, the widget can handle labeling settings due to the large overlap between
- * the text renderer settings and the labeling settings. This mode is possible by
- * subclassing QgsTextFormatWidget and calling the protected constructor with a mode
- * of Labeling.
- *
- * @note Added in QGIS 3.0
- */
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgstextformatwidget.h                                        *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
 
-class QgsTextFormatWidget : QWidget
+
+
+
+
+
+
+class QgsTextFormatWidget : QWidget, protected Ui::QgsTextFormatWidgetBase
 {
-%TypeHeaderCode
-  #include <qgstextformatwidget.h>
+%Docstring
+ A widget for customising text formatting settings.
+
+ QgsTextFormatWidget provides a widget for controlling the appearance of text rendered
+ using QgsTextRenderer. The widget includes all settings contained within
+ a QgsTextFormat, including shadow, background and buffer.
+
+ Additionally, the widget can handle labeling settings due to the large overlap between
+ the text renderer settings and the labeling settings. This mode is possible by
+ subclassing QgsTextFormatWidget and calling the protected constructor with a mode
+ of Labeling.
+
+.. versionadded:: 3.0
 %End
 
+%TypeHeaderCode
+#include "qgstextformatwidget.h"
+%End
   public:
 
-     /** Constructor for QgsTextFormatWidget.
-     * @param format initial formatting settings to show in widget
-     * @param mapCanvas associated map canvas
-     * @param parent parent widget
-     */
     QgsTextFormatWidget( const QgsTextFormat &format = QgsTextFormat(), QgsMapCanvas *mapCanvas = 0, QWidget *parent /TransferThis/ = 0 );
+%Docstring
+ Constructor for QgsTextFormatWidget.
+ \param format initial formatting settings to show in widget
+ \param mapCanvas associated map canvas
+ \param parent parent widget
+%End
 
     ~QgsTextFormatWidget();
 
-    /** Returns the current formatting settings defined by the widget.
-     */
     QgsTextFormat format() const;
+%Docstring
+ Returns the current formatting settings defined by the widget.
+ :rtype: QgsTextFormat
+%End
 
   public slots:
 
-    /** Sets whether the widget should be shown in a compact dock mode.
-     * @param enabled set to true to show in dock mode.
-     */
     void setDockMode( bool enabled );
+%Docstring
+ Sets whether the widget should be shown in a compact dock mode.
+ \param enabled set to true to show in dock mode.
+%End
 
   signals:
 
-    //! Emitted when the text format defined by the widget changes
     void widgetChanged();
+%Docstring
+Emitted when the text format defined by the widget changes
+%End
 
   protected:
 
-    //! Widget mode
     enum Mode
     {
-      Text, //!< Default mode, show text formatting settings only
-      Labeling, //!< Show labeling settings in addition to text formatting settings
+      Text,
+      Labeling,
     };
 
-    /** Constructor for QgsTextFormatWidget.
-     * @param mapCanvas associated map canvas
-     * @param parent parent widget
-     * @param mode widget mode
-     */
     QgsTextFormatWidget( QgsMapCanvas *mapCanvas, QWidget *parent /TransferThis/, Mode mode );
+%Docstring
+ Constructor for QgsTextFormatWidget.
+ \param mapCanvas associated map canvas
+ \param parent parent widget
+ \param mode widget mode
+%End
 
-    /** Updates the widget's state to reflect the settings in a QgsTextFormat.
-     * @param format source format
-     */
     void updateWidgetForFormat( const QgsTextFormat &format );
+%Docstring
+ Updates the widget's state to reflect the settings in a QgsTextFormat.
+ \param format source format
+%End
 
-    /** Sets the background color for the text preview widget.
-     * @param color background color
-     */
     void setPreviewBackground( const QColor &color );
+%Docstring
+ Sets the background color for the text preview widget.
+ \param color background color
+%End
 
-    /** Controls whether data defined alignment buttons are enabled.
-     * @param enable set to true to enable alignment controls
-     */
     void enableDataDefinedAlignment( bool enable );
+%Docstring
+ Controls whether data defined alignment buttons are enabled.
+ \param enable set to true to enable alignment controls
+%End
+
 
   protected slots:
 
-    //! Updates line placement options to reflect current state of widget
     void updateLinePlacementOptions();
+%Docstring
+Updates line placement options to reflect current state of widget
+%End
 
-    //! Updates label placement options to reflect current state of widget
     void updatePlacementWidgets();
+%Docstring
+Updates label placement options to reflect current state of widget
+%End
+
 };
 
-/** \class QgsTextFormatDialog
- * \ingroup gui
- * A simple dialog for customising text formatting settings.
- *
- * QgsTextFormatDialog provides a dialog for controlling the appearance of text rendered
- * using QgsTextRenderer. The dialog includes all settings contained within
- * a QgsTextFormat, including shadow, background and buffer.
- *
- * @note Added in QGIS 3.0
- */
+
 
 class QgsTextFormatDialog : QDialog
 {
+%Docstring
+ A simple dialog for customising text formatting settings.
+
+ QgsTextFormatDialog provides a dialog for controlling the appearance of text rendered
+ using QgsTextRenderer. The dialog includes all settings contained within
+ a QgsTextFormat, including shadow, background and buffer.
+
+.. versionadded:: 3.0
+%End
+
 %TypeHeaderCode
-  #include <qgstextformatwidget.h>
+#include "qgstextformatwidget.h"
 %End
   public:
 
-    /** Constructor for QgsTextFormatDialog.
-     * @param format initial format settings to show in dialog
-     * @param mapCanvas optional associated map canvas
-     * @param parent parent widget
-     * @param fl window flags for dialog
-     */
-    QgsTextFormatDialog( const QgsTextFormat &format, QgsMapCanvas *mapCanvas = 0, QWidget *parent /TransferThis/ = 0, Qt::WindowFlags fl = QgisGui::ModalDialogFlags );
+    QgsTextFormatDialog( const QgsTextFormat &format, QgsMapCanvas *mapCanvas = 0, QWidget *parent /TransferThis/ = 0, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags );
+%Docstring
+ Constructor for QgsTextFormatDialog.
+ \param format initial format settings to show in dialog
+ \param mapCanvas optional associated map canvas
+ \param parent parent widget
+ \param fl window flags for dialog
+%End
 
     virtual ~QgsTextFormatDialog();
 
-    /** Returns the current formatting settings defined by the widget.
-     */
     QgsTextFormat format() const;
+%Docstring
+ Returns the current formatting settings defined by the widget.
+ :rtype: QgsTextFormat
+%End
+
 };
 
-/** \class QgsTextFormatPanelWidget
- * \ingroup gui
- * A panel widget for customising text formatting settings.
- *
- * QgsTextFormatPanelWidget provides a panel widget for controlling the appearance of text rendered
- * using QgsTextRenderer. The dialog includes all settings contained within
- * a QgsTextFormat, including shadow, background and buffer.
- *
- * @note Added in QGIS 3.0
- */
 
 class QgsTextFormatPanelWidget : QgsPanelWidgetWrapper
 {
+%Docstring
+ A panel widget for customising text formatting settings.
+
+ QgsTextFormatPanelWidget provides a panel widget for controlling the appearance of text rendered
+ using QgsTextRenderer. The dialog includes all settings contained within
+ a QgsTextFormat, including shadow, background and buffer.
+
+.. versionadded:: 3.0
+%End
+
 %TypeHeaderCode
-  #include <qgstextformatwidget.h>
+#include "qgstextformatwidget.h"
 %End
   public:
 
-    /** Constructor for QgsTextFormatPanelWidget.
-     * @param format initial format settings to show in dialog
-     * @param mapCanvas optional associated map canvas
-     * @param parent parent widget
-     */
     QgsTextFormatPanelWidget( const QgsTextFormat &format, QgsMapCanvas *mapCanvas = 0, QWidget *parent /TransferThis/ = 0 );
+%Docstring
+ Constructor for QgsTextFormatPanelWidget.
+ \param format initial format settings to show in dialog
+ \param mapCanvas optional associated map canvas
+ \param parent parent widget
+%End
 
-    /** Returns the current formatting settings defined by the widget.
-     */
     QgsTextFormat format() const;
+%Docstring
+ Returns the current formatting settings defined by the widget.
+ :rtype: QgsTextFormat
+%End
 
     virtual void setDockMode( bool dockMode );
 
 };
+
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgstextformatwidget.h                                        *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

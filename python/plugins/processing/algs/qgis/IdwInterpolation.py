@@ -30,25 +30,25 @@ import os
 from qgis.PyQt.QtGui import QIcon
 
 from qgis.core import (QgsRectangle,
-                       QgsProcessingUtils)
+                       QgsProcessingUtils,
+                       QgsProcessingParameterDefinition)
 from qgis.analysis import (QgsInterpolator,
                            QgsIDWInterpolator,
                            QgsGridFileWriter
                            )
 
-from processing.core.GeoAlgorithm import GeoAlgorithm
+from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from processing.core.parameters import (Parameter,
                                         ParameterNumber,
                                         ParameterExtent,
-                                        _splitParameterOptions,
-                                        _createDescriptiveName)
+                                        _splitParameterOptions)
 from processing.core.outputs import OutputRaster
 
 pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
 
-class IdwInterpolation(GeoAlgorithm):
+class IdwInterpolation(QgisAlgorithm):
 
     INTERPOLATION_DATA = 'INTERPOLATION_DATA'
     DISTANCE_COEFFICIENT = 'DISTANCE_COEFFICIENT'
@@ -65,13 +65,10 @@ class IdwInterpolation(GeoAlgorithm):
     def group(self):
         return self.tr('Interpolation')
 
-    def name(self):
-        return 'idwinterpolation'
+    def __init__(self):
+        super().__init__()
 
-    def displayName(self):
-        return self.tr('IDW interpolation')
-
-    def defineCharacteristics(self):
+    def initAlgorithm(self, config=None):
         class ParameterInterpolationData(Parameter):
             default_metadata = {
                 'widget_wrapper': 'processing.algs.qgis.ui.InterpolationDataWidget.InterpolationDataWidgetWrapper'
@@ -82,13 +79,13 @@ class IdwInterpolation(GeoAlgorithm):
 
             def setValue(self, value):
                 if value is None:
-                    if not self.optional:
+                    if not self.flags() & QgsProcessingParameterDefinition.FlagOptional:
                         return False
                     self.value = None
                     return True
 
                 if value == '':
-                    if not self.optional:
+                    if not self.flags() & QgsProcessingParameterDefinition.FlagOptional:
                         return False
 
                 if isinstance(value, str):
@@ -108,7 +105,7 @@ class IdwInterpolation(GeoAlgorithm):
             @classmethod
             def fromScriptCode(self, line):
                 isOptional, name, definition = _splitParameterOptions(line)
-                descName = _createDescriptiveName(name)
+                descName = QgsProcessingParameters.descriptionFromName(name)
                 parent = definition.lower().strip()[len('interpolation data') + 1:]
                 return ParameterInterpolationData(name, descName, parent)
 
@@ -145,7 +142,13 @@ class IdwInterpolation(GeoAlgorithm):
         self.addOutput(OutputRaster(self.OUTPUT_LAYER,
                                     self.tr('Interpolated')))
 
-    def processAlgorithm(self, context, feedback):
+    def name(self):
+        return 'idwinterpolation'
+
+    def displayName(self):
+        return self.tr('IDW interpolation')
+
+    def processAlgorithm(self, parameters, context, feedback):
         interpolationData = self.getParameterValue(self.INTERPOLATION_DATA)
         coefficient = self.getParameterValue(self.DISTANCE_COEFFICIENT)
         columns = self.getParameterValue(self.COLUMNS)

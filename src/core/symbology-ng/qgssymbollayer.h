@@ -51,6 +51,70 @@ class QgsPaintEffect;
  */
 class CORE_EXPORT QgsSymbolLayer
 {
+#ifdef SIP_RUN
+#include <qgslinesymbollayer.h>
+#endif
+
+
+#ifdef SIP_RUN
+    SIP_CONVERT_TO_SUBCLASS_CODE
+    switch ( sipCpp->type() )
+    {
+      case QgsSymbol::Marker:
+        if ( sipCpp->layerType() == "EllipseMarker" )
+          sipType = sipType_QgsEllipseSymbolLayer;
+        else if ( sipCpp->layerType() == "FontMarker" )
+          sipType = sipType_QgsFontMarkerSymbolLayer;
+        else if ( sipCpp->layerType() == "SimpleMarker" )
+          sipType = sipType_QgsSimpleMarkerSymbolLayer;
+        else if ( sipCpp->layerType() == "FilledMarker" )
+          sipType = sipType_QgsFilledMarkerSymbolLayer;
+        else if ( sipCpp->layerType() == "SvgMarker" )
+          sipType = sipType_QgsSvgMarkerSymbolLayer;
+        else if ( sipCpp->layerType() == "VectorField" )
+          sipType = sipType_QgsVectorFieldSymbolLayer;
+        else
+          sipType = sipType_QgsMarkerSymbolLayer;
+        break;
+
+      case QgsSymbol::Line:
+        if ( sipCpp->layerType() == "MarkerLine" )
+          sipType = sipType_QgsMarkerLineSymbolLayer;
+        else if ( sipCpp->layerType() == "SimpleLine" )
+          sipType = sipType_QgsSimpleLineSymbolLayer;
+        else if ( sipCpp->layerType() == "ArrowLine" )
+          sipType = sipType_QgsArrowSymbolLayer;
+        else
+          sipType = sipType_QgsLineSymbolLayer;
+        break;
+
+      case QgsSymbol::Fill:
+        if ( sipCpp->layerType() == "SimpleFill" )
+          sipType = sipType_QgsSimpleFillSymbolLayer;
+        else if ( sipCpp->layerType() == "LinePatternFill" )
+          sipType = sipType_QgsLinePatternFillSymbolLayer;
+        else if ( sipCpp->layerType() == "PointPatternFill" )
+          sipType = sipType_QgsPointPatternFillSymbolLayer;
+        else if ( sipCpp->layerType() == "SVGFill" )
+          sipType = sipType_QgsSVGFillSymbolLayer;
+        else if ( sipCpp->layerType() == "RasterFill" )
+          sipType = sipType_QgsRasterFillSymbolLayer;
+        else if ( sipCpp->layerType() == "CentroidFill" )
+          sipType = sipType_QgsCentroidFillSymbolLayer;
+        else if ( sipCpp->layerType() == "GradientFill" )
+          sipType = sipType_QgsGradientFillSymbolLayer;
+        else if ( sipCpp->layerType() == "ShapeburstFill" )
+          sipType = sipType_QgsShapeburstFillSymbolLayer;
+        else
+          sipType = sipType_QgsFillSymbolLayer;
+        break;
+
+      case QgsSymbol::Hybrid:
+        sipType = sipType_QgsGeometryGeneratorSymbolLayer;
+        break;
+    }
+    SIP_END
+#endif
   public:
 
     /**
@@ -93,7 +157,7 @@ class CORE_EXPORT QgsSymbolLayer
       PropertyDistanceY, //!< Vertical distance between points
       PropertyDisplacementX, //!< Horizontal displacement
       PropertyDisplacementY, //!< Vertical displacement
-      PropertyAlpha, //!< Alpha (opacity)
+      PropertyOpacity, //!< Opacity
       PropertyCustomDash, //!< Custom dash pattern
       PropertyCapStyle, //!< Line cap style
       PropertyPlacement, //!< Line marker placement
@@ -188,9 +252,13 @@ class CORE_EXPORT QgsSymbolLayer
 
     virtual void drawPreviewIcon( QgsSymbolRenderContext &context, QSize size ) = 0;
 
+    /**
+     * Returns the symbol's sub symbol, if present.
+     */
     virtual QgsSymbol *subSymbol() { return nullptr; }
+
     //! set layer's subsymbol. takes ownership of the passed symbol
-    virtual bool setSubSymbol( QgsSymbol *symbol ) { delete symbol; return false; }
+    virtual bool setSubSymbol( QgsSymbol *symbol SIP_TRANSFER ) { delete symbol; return false; }
 
     QgsSymbol::SymbolType type() const { return mType; }
 
@@ -284,7 +352,7 @@ class CORE_EXPORT QgsSymbolLayer
      * \since QGIS 2.9
      * \see paintEffect
      */
-    void setPaintEffect( QgsPaintEffect *effect );
+    void setPaintEffect( QgsPaintEffect *effect SIP_TRANSFER );
 
     /** Prepares all data defined property expressions for evaluation. This should
      * be called prior to evaluating data defined properties.
@@ -303,7 +371,7 @@ class CORE_EXPORT QgsSymbolLayer
      * \since QGIS 3.0
      * \see setProperties()
      */
-    const QgsPropertyCollection &dataDefinedProperties() const { return mDataDefinedProperties; }
+    const QgsPropertyCollection &dataDefinedProperties() const { return mDataDefinedProperties; } SIP_SKIP
 
     /** Sets the symbol layer's property collection, used for data defined overrides.
      * \param collection property collection. Existing properties will be replaced.

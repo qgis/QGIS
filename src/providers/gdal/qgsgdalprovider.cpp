@@ -32,7 +32,7 @@
 #include "qgsrasteridentifyresult.h"
 #include "qgsrasterlayer.h"
 #include "qgsrasterpyramid.h"
-#include "qgspoint.h"
+#include "qgspointxy.h"
 #include "qgssettings.h"
 
 #include <QImage>
@@ -149,6 +149,16 @@ QgsGdalProvider::QgsGdalProvider( const QString &uri, bool update )
     // and confusing values shown to users, force Float64
     CPLSetConfigOption( "AAIGRID_DATATYPE", "Float64" );
   }
+
+#if !(GDAL_VERSION_MAJOR > 2 || (GDAL_VERSION_MAJOR == 2 && GDAL_VERSION_MINOR >= 3))
+  if ( !CPLGetConfigOption( "VRT_SHARED_SOURCE", nullptr ) )
+  {
+    // GDAL < 2.3 has issues with use of VRT in multi-threaded
+    // scenarios. See https://issues.qgis.org/issues/16507 /
+    // https://trac.osgeo.org/gdal/ticket/6939
+    CPLSetConfigOption( "VRT_SHARED_SOURCE", "NO" );
+  }
+#endif
 
   // To get buildSupportedRasterFileFilter the provider is called with empty uri
   if ( uri.isEmpty() )
@@ -957,7 +967,7 @@ QString QgsGdalProvider::generateBandName( int bandNumber ) const
   return QgsRasterDataProvider::generateBandName( bandNumber );
 }
 
-QgsRasterIdentifyResult QgsGdalProvider::identify( const QgsPoint &point, QgsRaster::IdentifyFormat format, const QgsRectangle &boundingBox, int width, int height, int /*dpi*/ )
+QgsRasterIdentifyResult QgsGdalProvider::identify( const QgsPointXY &point, QgsRaster::IdentifyFormat format, const QgsRectangle &boundingBox, int width, int height, int /*dpi*/ )
 {
   QgsDebugMsg( QString( "thePoint =  %1 %2" ).arg( point.x(), 0, 'g', 10 ).arg( point.y(), 0, 'g', 10 ) );
 

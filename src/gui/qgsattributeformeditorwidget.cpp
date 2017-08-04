@@ -21,6 +21,7 @@
 #include "qgssearchwidgetwrapper.h"
 #include "qgsattributeeditorcontext.h"
 #include "qgseditorwidgetregistry.h"
+#include "qgsgui.h"
 #include <QLayout>
 #include <QLabel>
 #include <QStackedWidget>
@@ -96,14 +97,14 @@ QgsAttributeFormEditorWidget::~QgsAttributeFormEditorWidget()
 
 void QgsAttributeFormEditorWidget::createSearchWidgetWrappers( const QString &widgetId, int fieldIdx, const QVariantMap &config,  const QgsAttributeEditorContext &context )
 {
-  QgsSearchWidgetWrapper *sww = QgsEditorWidgetRegistry::instance()->createSearchWidget( widgetId, layer(), fieldIdx, config,
+  QgsSearchWidgetWrapper *sww = QgsGui::editorWidgetRegistry()->createSearchWidget( widgetId, layer(), fieldIdx, config,
                                 mSearchFrame, context );
   setSearchWidgetWrapper( sww );
   if ( sww->supportedFlags() & QgsSearchWidgetWrapper::Between ||
        sww->supportedFlags() & QgsSearchWidgetWrapper::IsNotBetween )
   {
     // create secondary widget for between type searches
-    QgsSearchWidgetWrapper *sww2 = QgsEditorWidgetRegistry::instance()->createSearchWidget( widgetId, layer(), fieldIdx, config,
+    QgsSearchWidgetWrapper *sww2 = QgsGui::editorWidgetRegistry()->createSearchWidget( widgetId, layer(), fieldIdx, config,
                                    mSearchFrame, context );
     mSearchWidgets << sww2;
     mSearchFrame->layout()->addWidget( sww2->widget() );
@@ -142,7 +143,7 @@ void QgsAttributeFormEditorWidget::setMode( QgsAttributeFormEditorWidget::Mode m
 void QgsAttributeFormEditorWidget::setIsMixed( bool mixed )
 {
   if ( mWidget && mixed )
-    mWidget->showIndeterminateState( );
+    mWidget->showIndeterminateState();
   mMultiEditButton->setIsMixed( mixed );
   mIsMixed = mixed;
 }

@@ -19,6 +19,7 @@
 #define QGSVECTORFIELDSYMBOLLAYER_H
 
 #include "qgis_core.h"
+#include "qgis.h"
 #include "qgssymbollayer.h"
 
 /** \ingroup core
@@ -52,7 +53,7 @@ class CORE_EXPORT QgsVectorFieldSymbolLayer: public QgsMarkerSymbolLayer
 
     QString layerType() const override { return QStringLiteral( "VectorField" ); }
 
-    bool setSubSymbol( QgsSymbol *symbol ) override;
+    bool setSubSymbol( QgsSymbol *symbol SIP_TRANSFER ) override;
     QgsSymbol *subSymbol() override { return mLineSymbol.get(); }
 
     void setColor( const QColor &color ) override;
@@ -62,7 +63,7 @@ class CORE_EXPORT QgsVectorFieldSymbolLayer: public QgsMarkerSymbolLayer
     void startRender( QgsSymbolRenderContext &context ) override;
     void stopRender( QgsSymbolRenderContext &context ) override;
 
-    QgsVectorFieldSymbolLayer *clone() const override;
+    QgsVectorFieldSymbolLayer *clone() const override SIP_FACTORY;
     QgsStringMap properties() const override;
 
     void toSld( QDomDocument &doc, QDomElement &element, const QgsStringMap &props ) const override;
@@ -109,6 +110,10 @@ class CORE_EXPORT QgsVectorFieldSymbolLayer: public QgsMarkerSymbolLayer
     virtual QRectF bounds( QPointF, QgsSymbolRenderContext & ) override { return QRectF(); }
 
   private:
+#ifdef SIP_RUN
+    QgsVectorFieldSymbolLayer( const QgsVectorFieldSymbolLayer &other );
+#endif
+
     QString mXAttribute;
     QString mYAttribute;
     QgsUnitTypes::RenderUnit mDistanceUnit;
@@ -124,7 +129,7 @@ class CORE_EXPORT QgsVectorFieldSymbolLayer: public QgsMarkerSymbolLayer
     int mXIndex;
     int mYIndex;
 
-    //Converts length/angle to cartesian x/y
+    //Converts length/angle to Cartesian x/y
     void convertPolarToCartesian( double length, double angle, double &x, double &y ) const;
 };
 

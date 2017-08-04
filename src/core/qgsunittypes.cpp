@@ -1696,6 +1696,8 @@ QString QgsUnitTypes::encodeUnit( RenderUnit unit )
   {
     case RenderMillimeters:
       return QStringLiteral( "MM" );
+    case RenderMetersInMapUnits:
+      return QStringLiteral( "RenderMetersInMapUnits" );
     case RenderMapUnits:
       return QStringLiteral( "MapUnit" );
     case RenderPixels:
@@ -1721,6 +1723,10 @@ QgsUnitTypes::RenderUnit QgsUnitTypes::decodeRenderUnit( const QString &string, 
 
   if ( normalized == encodeUnit( RenderMillimeters ).toLower() )
     return RenderMillimeters;
+  if ( normalized == encodeUnit( RenderMetersInMapUnits ).toLower() )
+    return RenderMetersInMapUnits;
+  if ( normalized == QLatin1String( "meters" ) )
+    return RenderMetersInMapUnits;
   if ( normalized == encodeUnit( RenderMapUnits ).toLower() )
     return RenderMapUnits;
   if ( normalized == QLatin1String( "mapunits" ) )
@@ -1743,4 +1749,161 @@ QgsUnitTypes::RenderUnit QgsUnitTypes::decodeRenderUnit( const QString &string, 
 
   // millimeters are default
   return RenderMillimeters;
+}
+
+QString QgsUnitTypes::toString( QgsUnitTypes::RenderUnit unit )
+{
+  switch ( unit )
+  {
+    case RenderMillimeters:
+      return QObject::tr( "millimeters", "render" );
+
+    case RenderMetersInMapUnits:
+      return QObject::tr( "meters (at map scale)", "render" );
+
+    case RenderMapUnits:
+      return QObject::tr( "map units", "render" );
+
+    case RenderPixels:
+      return QObject::tr( "pixels", "render" );
+
+    case RenderPercentage:
+      return QObject::tr( "percent", "render" );
+
+    case RenderPoints:
+      return QObject::tr( "points", "render" );
+
+    case RenderInches:
+      return QObject::tr( "inches", "render" );
+
+    case RenderUnknownUnit:
+      return QObject::tr( "<unknown>", "render" );
+
+  }
+  return QString();
+}
+
+
+
+QString QgsUnitTypes::encodeUnit( QgsUnitTypes::LayoutUnit unit )
+{
+  switch ( unit )
+  {
+    case LayoutCentimeters:
+      return QStringLiteral( "cm" );
+    case LayoutMeters:
+      return QStringLiteral( "m" );
+    case LayoutInches:
+      return QStringLiteral( "in" );
+    case LayoutFeet:
+      return QStringLiteral( "ft" );
+    case LayoutPoints:
+      return QStringLiteral( "pt" );
+    case LayoutPicas:
+      return QStringLiteral( "pi" );
+    case LayoutPixels:
+      return QStringLiteral( "px" );
+    case  LayoutMillimeters:
+      return QStringLiteral( "mm" );
+  }
+  return QString();
+}
+
+QgsUnitTypes::LayoutUnit QgsUnitTypes::decodeLayoutUnit( const QString &string, bool *ok )
+{
+  QString normalized = string.trimmed().toLower();
+
+  if ( ok )
+    *ok = true;
+
+  if ( normalized == encodeUnit( LayoutMillimeters ).toLower() )
+    return LayoutMillimeters;
+  if ( normalized == encodeUnit( LayoutCentimeters ).toLower() )
+    return LayoutCentimeters;
+  if ( normalized == encodeUnit( LayoutMeters ).toLower() )
+    return LayoutMeters;
+  if ( normalized == encodeUnit( LayoutInches ).toLower() )
+    return LayoutInches;
+  if ( normalized == encodeUnit( LayoutFeet ).toLower() )
+    return LayoutFeet;
+  if ( normalized == encodeUnit( LayoutPoints ).toLower() )
+    return LayoutPoints;
+  if ( normalized == encodeUnit( LayoutPicas ).toLower() )
+    return LayoutPicas;
+  if ( normalized == encodeUnit( LayoutPixels ).toLower() )
+    return LayoutPixels;
+
+  if ( ok )
+    *ok = false;
+
+  // millimeters are default
+  return LayoutMillimeters;
+}
+
+QgsUnitTypes::LayoutUnitType QgsUnitTypes::unitType( const QgsUnitTypes::LayoutUnit units )
+{
+  switch ( units )
+  {
+    case LayoutPixels:
+      return LayoutScreenUnits;
+    case  LayoutMillimeters:
+    case LayoutCentimeters:
+    case LayoutMeters:
+    case LayoutInches:
+    case LayoutFeet:
+    case LayoutPoints:
+    case LayoutPicas:
+      return LayoutPaperUnits;
+  }
+
+  // avoid warnings
+  return LayoutPaperUnits;
+}
+
+QString QgsUnitTypes::toAbbreviatedString( QgsUnitTypes::LayoutUnit unit )
+{
+  switch ( unit )
+  {
+    case LayoutPixels:
+      return QObject::tr( "px" );
+    case  LayoutMillimeters:
+      return QObject::tr( "mm" );
+    case LayoutCentimeters:
+      return QObject::tr( "cm" );
+    case LayoutMeters:
+      return QObject::tr( "m" );
+    case LayoutInches:
+      return QObject::tr( "in" );
+    case LayoutFeet:
+      return QObject::tr( "ft" );
+    case LayoutPoints:
+      return QObject::tr( "pt" );
+    case LayoutPicas:
+      return QObject::tr( "pica" );
+  }
+  return QString(); // no warnings
+}
+
+QString QgsUnitTypes::toString( QgsUnitTypes::LayoutUnit unit )
+{
+  switch ( unit )
+  {
+    case LayoutPixels:
+      return QObject::tr( "pixels" );
+    case  LayoutMillimeters:
+      return QObject::tr( "millimeters" );
+    case LayoutCentimeters:
+      return QObject::tr( "centimeters" );
+    case LayoutMeters:
+      return QObject::tr( "meters" );
+    case LayoutInches:
+      return QObject::tr( "inches" );
+    case LayoutFeet:
+      return QObject::tr( "feet" );
+    case LayoutPoints:
+      return QObject::tr( "points" );
+    case LayoutPicas:
+      return QObject::tr( "picas" );
+  }
+  return QString(); // no warnings
 }

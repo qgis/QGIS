@@ -82,6 +82,7 @@ class CORE_EXPORT QgsVectorFileWriterTask : public QgsTask
     QString mErrorMessage;
 
     QgsVectorFileWriter::SaveVectorOptions mOptions;
+    std::unique_ptr< QgsVectorFileWriter::FieldValueConverter > mFieldValueConverter;
 };
 
 #endif

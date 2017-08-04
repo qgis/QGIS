@@ -34,6 +34,7 @@ QgsOracleConnectionItem::QgsOracleConnectionItem( QgsDataItem *parent, QString n
   , mColumnTypeThread( nullptr )
 {
   mIconName = "mIconConnect.png";
+  mCapabilities |= Collapse;
 }
 
 QgsOracleConnectionItem::~QgsOracleConnectionItem()
@@ -198,7 +199,7 @@ void QgsOracleConnectionItem::editConnection()
   if ( nc.exec() )
   {
     // the parent should be updated
-    mParent->refresh();
+    mParent->refreshConnections();
   }
 }
 
@@ -213,7 +214,7 @@ void QgsOracleConnectionItem::deleteConnection()
 
   // the parent should be updated
   if ( mParent )
-    mParent->refresh();
+    mParent->refreshConnections();
 }
 
 void QgsOracleConnectionItem::refreshConnection()
@@ -358,11 +359,11 @@ QString QgsOracleLayerItem::createUri()
   if ( !connItem )
   {
     QgsDebugMsg( "connection item not found." );
-    return QString::null;
+    return QString();
   }
 
   QgsDataSourceUri uri = QgsOracleConn::connUri( connItem->name() );
-  uri.setDataSource( mLayerProperty.ownerName, mLayerProperty.tableName, mLayerProperty.geometryColName, mLayerProperty.sql, QString::null );
+  uri.setDataSource( mLayerProperty.ownerName, mLayerProperty.tableName, mLayerProperty.geometryColName, mLayerProperty.sql, QString() );
   uri.setSrid( QString::number( mLayerProperty.srids.at( 0 ) ) );
   uri.setWkbType( mLayerProperty.types.at( 0 ) );
   if ( mLayerProperty.isView && mLayerProperty.pkCols.size() > 0 )
@@ -471,7 +472,7 @@ QList<QAction *> QgsOracleRootItem::actions()
 
 QWidget *QgsOracleRootItem::paramWidget()
 {
-  QgsOracleSourceSelect *select = new QgsOracleSourceSelect( 0, 0, true, true );
+  QgsOracleSourceSelect *select = new QgsOracleSourceSelect();
   connect( select, SIGNAL( connectionsChanged() ), this, SLOT( connectionsChanged() ) );
   return select;
 }
@@ -486,7 +487,7 @@ void QgsOracleRootItem::newConnection()
   QgsOracleNewConnection nc( NULL );
   if ( nc.exec() )
   {
-    refresh();
+    refreshConnections();
   }
 }
 

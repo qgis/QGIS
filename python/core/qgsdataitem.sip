@@ -176,7 +176,8 @@ Create new data item.
       NoCapabilities,
       SetCrs,
       Fertile,
-      Fast
+      Fast,
+      Collapse
     };
     typedef QFlags<QgsDataItem::Capability> Capabilities;
 
@@ -303,6 +304,11 @@ Remove children recursively and set as not populated. This is used when refreshi
 
     virtual void refresh();
 
+    virtual void refreshConnections();
+%Docstring
+Refresh connections: update GUI and emit signal
+%End
+
     virtual void childrenCreated();
 
   signals:
@@ -312,6 +318,10 @@ Remove children recursively and set as not populated. This is used when refreshi
     void endRemoveItems();
     void dataChanged( QgsDataItem *item );
     void stateChanged( QgsDataItem *item, QgsDataItem::State oldState );
+    void connectionsChanged();
+%Docstring
+open browsers
+%End
 
   protected slots:
 
@@ -447,7 +457,7 @@ class QgsDataCollectionItem : QgsDataItem
 #include "qgsdataitem.h"
 %End
   public:
-    QgsDataCollectionItem( QgsDataItem *parent, const QString &name, const QString &path = QString::null );
+    QgsDataCollectionItem( QgsDataItem *parent, const QString &name, const QString &path = QString() );
     ~QgsDataCollectionItem();
 
     void addChild( QgsDataItem *item /Transfer/ );

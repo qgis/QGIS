@@ -19,7 +19,7 @@
 // includes
 
 #include "qgisinterface.h"
-#include "qgisgui.h"
+#include "qgsguiutils.h"
 #include "qgsapplication.h"
 #include "qgsproject.h"
 #include "qgsmaplayer.h"
@@ -137,7 +137,7 @@ void QgsGPSPlugin::run()
 
   QgsGPSPluginGui *myPluginGui =
     new QgsGPSPluginGui( mImporters, mDevices, gpxLayers, mQGisInterface->mainWindow(),
-                         QgisGui::ModalDialogFlags );
+                         QgsGuiUtils::ModalDialogFlags );
   myPluginGui->setAttribute( Qt::WA_DeleteOnClose );
   //listen for when the layer has been made so we can draw it
   connect( myPluginGui, &QgsGPSPluginGui::drawVectorLayer,

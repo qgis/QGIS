@@ -17,6 +17,8 @@
 #ifndef QGSAUTHMETHODREGISTRY_H
 #define QGSAUTHMETHODREGISTRY_H
 
+#define SIP_NO_FILE
+
 #include <QDir>
 #include <QLibrary>
 #include <QMap>
@@ -44,7 +46,7 @@ class CORE_EXPORT QgsAuthMethodRegistry
 
   public:
     //! Means of accessing canonical single instance
-    static QgsAuthMethodRegistry *instance( const QString &pluginPath = QString::null );
+    static QgsAuthMethodRegistry *instance( const QString &pluginPath = QString() );
 
     //! Virtual dectructor
     virtual ~QgsAuthMethodRegistry();

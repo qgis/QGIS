@@ -23,7 +23,7 @@ class QgsColorDialog : QDialog
 %End
   public:
 
-    QgsColorDialog( QWidget *parent /TransferThis/ = 0, Qt::WindowFlags fl = QgisGui::ModalDialogFlags,
+    QgsColorDialog( QWidget *parent /TransferThis/ = 0, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags,
                     const QColor &color = QColor() );
 %Docstring
  Create a new color picker dialog
@@ -45,17 +45,18 @@ class QgsColorDialog : QDialog
  \param title title for dialog box
 %End
 
-    void setAllowAlpha( const bool allowAlpha );
+    void setAllowOpacity( const bool allowOpacity );
 %Docstring
- Sets whether alpha modification (transparency) is permitted
+ Sets whether opacity modification (transparency) is permitted
  for the color dialog. Defaults to true.
- \param allowAlpha set to false to disable alpha modification
+ \param allowOpacity set to false to disable opacity modification
+.. versionadded:: 3.0
 %End
 
     static QColor getLiveColor( const QColor &initialColor, QObject *updateObject, const char *updateSlot,
                                 QWidget *parent = 0,
                                 const QString &title = QString(),
-                                const bool allowAlpha = true );
+                                const bool allowOpacity = true );
 %Docstring
  Return a color selection from a color dialog, with live updating of interim selections.
  \param initialColor the initial color of the selection dialog.
@@ -63,20 +64,20 @@ class QgsColorDialog : QDialog
  \param updateSlot the receiver object's slot for live updating (e.g. SLOT( setValidColor( const QColor& ) ) ).
  \param parent parent widget
  \param title the title of the dialog.
- \param allowAlpha set to true to allow modification of color alpha value (transparency)
+ \param allowOpacity set to true to allow modification of color opacity value (transparency)
  :return: Selected color on accepted() or initialColor on rejected().
 .. seealso:: getColor
  :rtype: QColor
 %End
 
     static QColor getColor( const QColor &initialColor, QWidget *parent, const QString &title = QString(),
-                            const bool allowAlpha = false );
+                            const bool allowOpacity = false );
 %Docstring
  Return a color selection from a color dialog.
  \param initialColor the initial color of the selection dialog.
  \param parent parent widget
  \param title the title of the dialog.
- \param allowAlpha set to true to allow modification of color alpha value (transparency)
+ \param allowOpacity set to true to allow modification of color opacity value (transparency)
  :return: Selected color on accepted() or initialColor on rejected().
 .. seealso:: getLiveColor
  :rtype: QColor

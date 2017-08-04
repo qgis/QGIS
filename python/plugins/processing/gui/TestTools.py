@@ -36,7 +36,8 @@ from osgeo.gdalconst import GA_ReadOnly
 
 from numpy import nan_to_num
 
-from qgis.core import QgsApplication
+from qgis.core import (QgsApplication,
+                       QgsProcessingParameterDefinition)
 from qgis.PyQt.QtCore import QCoreApplication, QMetaObject
 from qgis.PyQt.QtWidgets import QDialog, QVBoxLayout, QTextEdit, QMessageBox
 
@@ -136,7 +137,7 @@ def createTest(text):
 
     tokens = list(parseParameters(text[len('processing.run('):-1]))
     cmdname = tokens[0]
-    alg = QgsApplication.processingRegistry().algorithmById(cmdname)
+    alg = QgsApplication.processingRegistry().createAlgorithmById(cmdname)
 
     definition['name'] = 'Test ({})'.format(cmdname)
     definition['algorithm'] = cmdname
@@ -145,14 +146,14 @@ def createTest(text):
     results = {}
 
     i = 0
-    for param in alg.parameters:
-        if param.hidden:
+    for param in alg.parameterDefinitions():
+        if param.flags() & QgsProcessingParameterDefinition.FlagHidden or param.isDestination():
             continue
 
         i += 1
         token = tokens[i]
         # Handle empty parameters that are optionals
-        if param.optional and token is None:
+        if param.flags() & QgsProcessingParameterDefinition.FlagOptional and token is None:
             continue
 
         if isinstance(param, ParameterVector):
@@ -164,7 +165,7 @@ def createTest(text):
             if not schema:
                 p['location'] = '[The source data is not in the testdata directory. Please use data in the processing/tests/testdata folder.]'
 
-            params[param.name] = p
+            params[param.name()] = p
         elif isinstance(param, ParameterRaster):
             schema, filepath = extractSchemaPath(token)
             p = {
@@ -174,7 +175,7 @@ def createTest(text):
             if not schema:
                 p['location'] = '[The source data is not in the testdata directory. Please use data in the processing/tests/testdata folder.]'
 
-            params[param.name] = p
+            params[param.name()] = p
         elif isinstance(param, ParameterTable):
             schema, filepath = extractSchemaPath(token)
             p = {
@@ -184,7 +185,7 @@ def createTest(text):
             if not schema:
                 p['location'] = '[The source data is not in the testdata directory. Please use data in the processing/tests/testdata folder.]'
 
-            params[param.name] = p
+            params[param.name()] = p
         elif isinstance(param, ParameterMultipleInput):
             multiparams = token.split(';')
             newparam = []
@@ -209,7 +210,7 @@ def createTest(text):
             if not schema:
                 p['location'] = '[The source data is not in the testdata directory. Please use data in the processing/tests/testdata folder.]'
 
-            params[param.name] = p
+            params[param.name()] = p
         elif isinstance(param, ParameterFile):
             schema, filepath = extractSchemaPath(token)
             p = {
@@ -219,16 +220,16 @@ def createTest(text):
             if not schema:
                 p['location'] = '[The source data is not in the testdata directory. Please use data in the processing/tests/testdata folder.]'
 
-            params[param.name] = p
+            params[param.name()] = p
         elif isinstance(param, ParameterString):
-            params[param.name] = token
+            params[param.name()] = token
         elif isinstance(param, ParameterBoolean):
-            params[param.name] = token
+            params[param.name()] = token
         elif isinstance(param, ParameterNumber):
             if param.isInteger:
-                params[param.name] = int(token)
+                params[param.name()] = int(token)
             else:
-                params[param.name] = float(token)
+                params[param.name()] = float(token)
         else:
             if token[0] == '"':
                 token = token[1:]
@@ -238,8 +239,8 @@ def createTest(text):
 
     definition['params'] = params
 
-    for i, out in enumerate([out for out in alg.outputs if not out.hidden]):
-        token = tokens[i - alg.getVisibleOutputsCount()]
+    for i, out in enumerate([out for out in alg.destinationParameterDefinitions() if not out.flags() & QgsProcessingParameterDefinition.FlagHidden]):
+        token = tokens[i - len(alg.destinationParameterDefinitions())]
 
         if isinstance(out, (OutputNumber, OutputString)):
             results[out.name] = str(out)

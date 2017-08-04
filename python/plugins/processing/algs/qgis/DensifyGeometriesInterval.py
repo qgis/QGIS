@@ -27,33 +27,26 @@ __copyright__ = '(C) 2012, Anita Graser'
 
 __revision__ = '$Format:%H$'
 
-from math import sqrt
+from qgis.core import (QgsProcessingParameterNumber)
 
-from qgis.core import (QgsWkbTypes,
-                       QgsApplication,
-                       QgsProcessingUtils)
-
-from processing.core.GeoAlgorithm import GeoAlgorithm
-from processing.core.parameters import ParameterVector
-from processing.core.parameters import ParameterNumber
-from processing.core.outputs import OutputVector
-from processing.tools import dataobjects
+from processing.algs.qgis.QgisAlgorithm import QgisFeatureBasedAlgorithm
 
 
-class DensifyGeometriesInterval(GeoAlgorithm):
+class DensifyGeometriesInterval(QgisFeatureBasedAlgorithm):
 
-    INPUT = 'INPUT'
     INTERVAL = 'INTERVAL'
-    OUTPUT = 'OUTPUT'
-
-    def icon(self):
-        return QgsApplication.getThemeIcon("/providerQgis.svg")
-
-    def svgIconPath(self):
-        return QgsApplication.iconPath("providerQgis.svg")
 
     def group(self):
         return self.tr('Vector geometry tools')
+
+    def __init__(self):
+        super().__init__()
+        self.interval = None
+
+    def initParameters(self, config=None):
+        self.addParameter(QgsProcessingParameterNumber(self.INTERVAL,
+                                                       self.tr('Interval between vertices to add'), QgsProcessingParameterNumber.Double,
+                                                       1, False, 0, 10000000))
 
     def name(self):
         return 'densifygeometriesgivenaninterval'
@@ -61,33 +54,15 @@ class DensifyGeometriesInterval(GeoAlgorithm):
     def displayName(self):
         return self.tr('Densify geometries given an interval')
 
-    def defineCharacteristics(self):
-        self.addParameter(ParameterVector(self.INPUT,
-                                          self.tr('Input layer'),
-                                          [dataobjects.TYPE_VECTOR_POLYGON, dataobjects.TYPE_VECTOR_LINE]))
-        self.addParameter(ParameterNumber(self.INTERVAL,
-                                          self.tr('Interval between vertices to add'), 0.0, 10000000.0, 1.0))
+    def outputName(self):
+        return self.tr('Densified')
 
-        self.addOutput(OutputVector(self.OUTPUT, self.tr('Densified')))
+    def prepareAlgorithm(self, parameters, context, feedback):
+        interval = self.parameterAsDouble(parameters, self.INTERVAL, context)
+        return True
 
-    def processAlgorithm(self, context, feedback):
-        layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT), context)
-        interval = self.getParameterValue(self.INTERVAL)
-
-        isPolygon = layer.geometryType() == QgsWkbTypes.PolygonGeometry
-
-        writer = self.getOutputFromName(
-            self.OUTPUT).getVectorWriter(layer.fields(), layer.wkbType(), layer.crs(), context)
-
-        features = QgsProcessingUtils.getFeatures(layer, context)
-        total = 100.0 / QgsProcessingUtils.featureCount(layer, context)
-        for current, f in enumerate(features):
-            feature = f
-            if feature.hasGeometry():
-                new_geometry = feature.geometry().densifyByCount(float(interval))
-                feature.setGeometry(new_geometry)
-            writer.addFeature(feature)
-
-            feedback.setProgress(int(current * total))
-
-        del writer
+    def processFeature(self, feature, feedback):
+        if feature.hasGeometry():
+            new_geometry = feature.geometry().densifyByDistance(float(interval))
+            feature.setGeometry(new_geometry)
+        return feature

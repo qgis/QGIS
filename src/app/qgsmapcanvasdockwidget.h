@@ -18,7 +18,7 @@
 #include <ui_qgsmapcanvasdockwidgetbase.h>
 
 #include "qgsdockwidget.h"
-#include "qgspoint.h"
+#include "qgspointxy.h"
 #include "qgis_app.h"
 #include <QWidgetAction>
 #include <QTimer>
@@ -145,7 +145,7 @@ class APP_EXPORT QgsMapCanvasDockWidget : public QgsDockWidget, private Ui::QgsM
     void mapCrsChanged();
     void menuAboutToShow();
     void settingsMenuAboutToShow();
-    void syncMarker( const QgsPoint &p );
+    void syncMarker( const QgsPointXY &p );
     void mapScaleChanged();
     void updateExtentRect();
     void showLabels( bool show );

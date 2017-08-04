@@ -42,7 +42,7 @@ class QgsMapLayer : QObject
           sipType = sipType_QgsPluginLayer;
           break;
         default:
-          sipType = 0;
+          sipType = nullptr;
           break;
       }
     }
@@ -67,6 +67,15 @@ class QgsMapLayer : QObject
     virtual ~QgsMapLayer();
 
 
+    virtual QgsMapLayer *clone() const = 0;
+%Docstring
+ Returns a new instance equivalent to this one except for the id which
+  is still unique.
+ :return: a new layer instance
+.. versionadded:: 3.0
+ :rtype: QgsMapLayer
+%End
+
     QgsMapLayer::LayerType type() const;
 %Docstring
  Returns the type of the layer.
@@ -81,8 +90,7 @@ Returns the layer's unique ID, which is used to access this layer from QgsProjec
 
     void setName( const QString &name );
 %Docstring
- Set the display name of the layer
- \param name new name for the layer
+ Set the display ``name`` of the layer.
 .. versionadded:: 2.16
 .. seealso:: name()
 %End
@@ -105,7 +113,6 @@ Returns the layer's unique ID, which is used to access this layer from QgsProjec
     QString originalName() const;
 %Docstring
  Returns the original name of the layer.
- :return: the original layer name
  :rtype: str
 %End
 
@@ -121,7 +128,6 @@ Returns the layer's unique ID, which is used to access this layer from QgsProjec
 %Docstring
  Returns the short name of the layer
   used by QGIS Server to identify the layer.
- :return: the layer short name
 .. seealso:: setShortName()
  :rtype: str
 %End
@@ -130,7 +136,6 @@ Returns the layer's unique ID, which is used to access this layer from QgsProjec
 %Docstring
  Sets the title of the layer
   used by QGIS Server in GetCapabilities request.
- :return: the layer title
 .. seealso:: title()
 %End
 
@@ -409,11 +414,11 @@ Returns true if the layer can be edited.
  :rtype: bool
 %End
 
-    bool readLayerXml( const QDomElement &layerElement, const QgsPathResolver &pathResolver );
+    bool readLayerXml( const QDomElement &layerElement, const QgsReadWriteContext &context );
 %Docstring
  Sets state from Dom document
 \param layerElement The Dom element corresponding to ``maplayer'' tag
-\param pathResolver object for conversion between relative and absolute paths
+\param context writing context (e.g. for conversion between relative and absolute paths)
 \note
 
 The Dom node corresponds to a Dom document project file XML element read
@@ -428,12 +433,12 @@ Invoked by QgsProject.read().
  :rtype: bool
 %End
 
-    bool writeLayerXml( QDomElement &layerElement, QDomDocument &document, const QgsPathResolver &pathResolver ) const;
+    bool writeLayerXml( QDomElement &layerElement, QDomDocument &document, const QgsReadWriteContext &context ) const;
 %Docstring
  Stores state in Dom node
  \param layerElement is a Dom element corresponding to ``maplayer'' tag
  \param document is a the dom document being written
- \param pathResolver object for conversion between relative and absolute paths
+ \param context reading context (e.g. for conversion between relative and absolute paths)
  \note
 
  The Dom node corresponds to a Dom document project file XML element to be
@@ -448,6 +453,14 @@ Invoked by QgsProject.read().
  :rtype: bool
 %End
 
+    QStringList customPropertyKeys() const;
+%Docstring
+ Returns list of all keys within custom properties. Properties are stored in a map and saved in project file.
+.. seealso:: customProperty()
+.. versionadded:: 3.0
+ :rtype: list of str
+%End
+
     void setCustomProperty( const QString &key, const QVariant &value );
 %Docstring
  Set a custom property for layer. Properties are stored in a map and saved in project file.
@@ -460,6 +473,12 @@ Invoked by QgsProject.read().
  Read a custom property from layer. Properties are stored in a map and saved in project file.
 .. seealso:: setCustomProperty()
  :rtype: QVariant
+%End
+
+    void setCustomProperties( const QgsObjectCustomProperties &properties );
+%Docstring
+ Set custom properties for layer. Current properties are dropped.
+.. versionadded:: 3.0
 %End
 
     void removeCustomProperty( const QString &key );
@@ -629,20 +648,22 @@ A convenience function to (un)capitalize the layer name
 
 
 
-    virtual bool readSymbology( const QDomNode &node, QString &errorMessage ) = 0;
+    virtual bool readSymbology( const QDomNode &node, QString &errorMessage, const QgsReadWriteContext &context ) = 0;
 %Docstring
  Read the symbology for the current layer from the Dom node supplied.
  \param node node that will contain the symbology definition for this layer.
  \param errorMessage reference to string that will be updated with any error messages
+ \param context reading context (used for transform from relative to absolute paths)
  :return: true in case of success.
  :rtype: bool
 %End
 
-    virtual bool readStyle( const QDomNode &node, QString &errorMessage );
+    virtual bool readStyle( const QDomNode &node, QString &errorMessage, const QgsReadWriteContext &context );
 %Docstring
  Read the style for the current layer from the Dom node supplied.
  \param node node that will contain the style definition for this layer.
  \param errorMessage reference to string that will be updated with any error messages
+ \param context reading context (used for transform from relative to absolute paths)
  :return: true in case of success.
 .. versionadded:: 2.16
 .. note::
@@ -651,22 +672,24 @@ A convenience function to (un)capitalize the layer name
  :rtype: bool
 %End
 
-    virtual bool writeSymbology( QDomNode &node, QDomDocument &doc, QString &errorMessage ) const = 0;
+    virtual bool writeSymbology( QDomNode &node, QDomDocument &doc, QString &errorMessage, const QgsReadWriteContext &context ) const = 0;
 %Docstring
  Write the symbology for the layer into the docment provided.
   \param node the node that will have the style element added to it.
   \param doc the document that will have the QDomNode added.
   \param errorMessage reference to string that will be updated with any error messages
+  \param context writing context (used for transform from absolute to relative paths)
   :return: true in case of success.
  :rtype: bool
 %End
 
-    virtual bool writeStyle( QDomNode &node, QDomDocument &doc, QString &errorMessage ) const;
+    virtual bool writeStyle( QDomNode &node, QDomDocument &doc, QString &errorMessage, const QgsReadWriteContext &context ) const;
 %Docstring
  Write just the style information for the layer into the document
   \param node the node that will have the style element added to it.
   \param doc the document that will have the QDomNode added.
   \param errorMessage reference to string that will be updated with any error messages
+  \param context writing context (used for transform from absolute to relative paths)
   :return: true in case of success.
 .. versionadded:: 2.16
 .. note::
@@ -733,8 +756,8 @@ Return pointer to layer's undo stack
 
     bool isInScaleRange( double scale ) const;
 %Docstring
- Tests whether the layer should be visible at the specified scale.
- \param scale scale denominator to test
+ Tests whether the layer should be visible at the specified ``scale``.
+  The ``scale`` value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
  :return: true if the layer is visible at the given scale.
 .. versionadded:: 2.16
 .. seealso:: minimumScale()
@@ -745,9 +768,12 @@ Return pointer to layer's undo stack
 
     double minimumScale() const;
 %Docstring
- Returns the minimum scale denominator at which the layer is visible.
- Scale based visibility is only used if hasScaleBasedVisibility is true.
- :return: minimum scale denominator at which the layer will render
+ Returns the minimum map scale (i.e. most "zoomed out" scale) at which the layer will be visible.
+ The scale value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
+ A scale of 0 indicates no minimum scale visibility.
+.. note::
+
+   Scale based visibility is only used if setScaleBasedVisibility() is set to true.
 .. seealso:: setMinimumScale()
 .. seealso:: maximumScale()
 .. seealso:: hasScaleBasedVisibility()
@@ -757,9 +783,12 @@ Return pointer to layer's undo stack
 
     double maximumScale() const;
 %Docstring
- Returns the maximum scale denominator at which the layer is visible.
- Scale based visibility is only used if hasScaleBasedVisibility is true.
- :return: minimum scale denominator at which the layer will render
+ Returns the maximum map scale (i.e. most "zoomed in" scale) at which the layer will be visible.
+ The scale value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
+ A scale of 0 indicates no maximum scale visibility.
+.. note::
+
+   Scale based visibility is only used if setScaleBasedVisibility() is set to true.
 .. seealso:: setMaximumScale()
 .. seealso:: minimumScale()
 .. seealso:: hasScaleBasedVisibility()
@@ -862,22 +891,28 @@ Time stamp of data source in the moment when data/metadata were loaded by provid
 
     void setMinimumScale( double scale );
 %Docstring
- Sets the minimum scale denominator at which the layer will be visible.
- Scale based visibility is only used if setScaleBasedVisibility is set to true.
- \param scale minimum scale denominator at which the layer should render
-.. seealso:: minimumScale
-.. seealso:: setMaximumScale
-.. seealso:: setScaleBasedVisibility
+ Sets the minimum map ``scale`` (i.e. most "zoomed out" scale) at which the layer will be visible.
+ The ``scale`` value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
+ A ``scale`` of 0 indicates no minimum scale visibility.
+.. note::
+
+   Scale based visibility is only used if setScaleBasedVisibility() is set to true.
+.. seealso:: minimumScale()
+.. seealso:: setMaximumScale()
+.. seealso:: setScaleBasedVisibility()
 %End
 
     void setMaximumScale( double scale );
 %Docstring
- Sets the maximum scale denominator at which the layer will be visible.
- Scale based visibility is only used if setScaleBasedVisibility is set to true.
- \param scale maximum scale denominator at which the layer should render
-.. seealso:: maximumScale
-.. seealso:: setMinimumScale
-.. seealso:: setScaleBasedVisibility
+ Sets the maximum map ``scale`` (i.e. most "zoomed in" scale) at which the layer will be visible.
+ The ``scale`` value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
+ A ``scale`` of 0 indicates no maximum scale visibility.
+.. note::
+
+   Scale based visibility is only used if setScaleBasedVisibility() is set to true.
+.. seealso:: maximumScale()
+.. seealso:: setMinimumScale()
+.. seealso:: setScaleBasedVisibility()
 %End
 
     void setScaleBasedVisibility( const bool enabled );
@@ -1016,6 +1051,14 @@ Signal emitted when the blend mode is changed, through QgsMapLayer.setBlendMode(
 %End
 
   protected:
+
+    void clone( QgsMapLayer *layer ) const;
+%Docstring
+ Copies attributes like name, short name, ... into another layer.
+ \param layer The copy recipient
+.. versionadded:: 3.0
+%End
+
     virtual void setExtent( const QgsRectangle &rect );
 %Docstring
 Set the extent
@@ -1026,14 +1069,14 @@ Set the extent
 Set whether layer is valid or not - should be used in constructor.
 %End
 
-    virtual bool readXml( const QDomNode &layer_node );
+    virtual bool readXml( const QDomNode &layer_node, const QgsReadWriteContext &context );
 %Docstring
  Called by readLayerXML(), used by children to read state specific to them from
   project files.
  :rtype: bool
 %End
 
-    virtual bool writeXml( QDomNode &layer_node, QDomDocument &document ) const;
+    virtual bool writeXml( QDomNode &layer_node, QDomDocument &document, const QgsReadWriteContext &context ) const;
 %Docstring
  Called by writeLayerXML(), used by children to write state specific to them to
   project files.

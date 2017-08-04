@@ -719,7 +719,7 @@ class OracleDBConnector(DBConnector):
         res = self._fetchall(c)
         c.close()
 
-        # Analyse return values
+        # Analyze return values
         if not res:
             return False
         else:

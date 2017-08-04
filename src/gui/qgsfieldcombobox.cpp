@@ -62,7 +62,7 @@ void QgsFieldComboBox::setField( const QString &fieldName )
     QModelIndex proxyIdx = mFieldProxyModel->mapFromSource( idx );
     if ( proxyIdx.isValid() )
     {
-      setCurrentIndex( idx.row() );
+      setCurrentIndex( proxyIdx.row() );
       emit fieldChanged( currentField() );
       return;
     }

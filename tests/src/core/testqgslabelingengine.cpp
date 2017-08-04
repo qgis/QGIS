@@ -19,6 +19,7 @@
 #include <qgslabelingengine.h>
 #include <qgsproject.h>
 #include <qgsmaprenderersequentialjob.h>
+#include <qgsreadwritecontext.h>
 #include <qgsrulebasedlabeling.h>
 #include <qgsvectorlayer.h>
 #include <qgsvectorlayerdiagramprovider.h>
@@ -46,13 +47,14 @@ class TestQgsLabelingEngine : public QObject
     void testSubstitutions();
     void testCapitalization();
     void testParticipatingLayers();
+    void testRegisterFeatureUnprojectible();
 
   private:
     QgsVectorLayer *vl = nullptr;
 
     QString mReport;
 
-    void setDefaultLabelParams( QgsVectorLayer *layer );
+    void setDefaultLabelParams( QgsPalLayerSettings &settings );
     bool imageCheck( const QString &testName, QImage &image, int mismatchCount );
 
 };
@@ -94,14 +96,14 @@ void TestQgsLabelingEngine::cleanup()
   vl = 0;
 }
 
-void TestQgsLabelingEngine::setDefaultLabelParams( QgsVectorLayer *layer )
+void TestQgsLabelingEngine::setDefaultLabelParams( QgsPalLayerSettings &settings )
 {
-  layer->setCustomProperty( QStringLiteral( "labeling/fontFamily" ), QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) ).family() );
-  layer->setCustomProperty( QStringLiteral( "labeling/fontSize" ), 12 );
-  layer->setCustomProperty( QStringLiteral( "labeling/namedStyle" ), "Bold" );
-  layer->setCustomProperty( QStringLiteral( "labeling/textColorR" ), "200" );
-  layer->setCustomProperty( QStringLiteral( "labeling/textColorG" ), "0" );
-  layer->setCustomProperty( QStringLiteral( "labeling/textColorB" ), "200" );
+  QgsTextFormat format;
+  format.setFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) ).family() );
+  format.setSize( 12 );
+  format.setNamedStyle( "Bold" );
+  format.setColor( QColor( 200, 0, 200 ) );
+  settings.setFormat( format );
 }
 
 void TestQgsLabelingEngine::testBasic()
@@ -125,14 +127,15 @@ void TestQgsLabelingEngine::testBasic()
   QgsRenderContext context = QgsRenderContext::fromMapSettings( mapSettings );
   context.setPainter( &p );
 
-  vl->setCustomProperty( QStringLiteral( "labeling" ), "pal" );
-  vl->setCustomProperty( QStringLiteral( "labeling/enabled" ), true );
-  vl->setCustomProperty( QStringLiteral( "labeling/fieldName" ), "Class" );
-  setDefaultLabelParams( vl );
+  QgsPalLayerSettings settings;
+  settings.fieldName = "Class";
+  setDefaultLabelParams( settings );
+
+  vl->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );  // TODO: this should not be necessary!
 
   QgsLabelingEngine engine;
   engine.setMapSettings( mapSettings );
-  engine.addProvider( new QgsVectorLayerLabelProvider( vl, QString() ) );
+  engine.addProvider( new QgsVectorLayerLabelProvider( vl, QString(), true, &settings ) );
   //engine.setFlags( QgsLabelingEngine::RenderOutlineLabels | QgsLabelingEngine::DrawLabelRectOnly );
   engine.run( context );
 
@@ -147,7 +150,7 @@ void TestQgsLabelingEngine::testBasic()
   job.waitForFinished();
   QImage img2 = job.renderedImage();
 
-  vl->setCustomProperty( QStringLiteral( "labeling/enabled" ), false );
+  vl->setLabeling( nullptr );
 
   QVERIFY( imageCheck( "labeling_basic", img2, 20 ) );
 }
@@ -210,11 +213,9 @@ void TestQgsLabelingEngine::testRuleBased()
   QgsRuleBasedLabeling::Rule *root = new QgsRuleBasedLabeling::Rule( 0 );
 
   QgsPalLayerSettings s1;
-  s1.enabled = true;
   s1.fieldName = QStringLiteral( "Class" );
   s1.obstacle = false;
   s1.dist = 2;
-  s1.distInMapUnits = false;
   QgsTextFormat format = s1.format();
   format.setColor( QColor( 200, 0, 200 ) );
   format.setFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) ) );
@@ -227,7 +228,6 @@ void TestQgsLabelingEngine::testRuleBased()
   root->appendChild( new QgsRuleBasedLabeling::Rule( new QgsPalLayerSettings( s1 ) ) );
 
   QgsPalLayerSettings s2;
-  s2.enabled = true;
   s2.fieldName = QStringLiteral( "Class" );
   s2.obstacle = false;
   s2.dist = 2;
@@ -244,7 +244,7 @@ void TestQgsLabelingEngine::testRuleBased()
   root->appendChild( new QgsRuleBasedLabeling::Rule( new QgsPalLayerSettings( s2 ), 0, 0, QStringLiteral( "Class = 'Jet'" ) ) );
 
   vl->setLabeling( new QgsRuleBasedLabeling( root ) );
-  setDefaultLabelParams( vl );
+  //setDefaultLabelParams( vl );
 
   QgsMapRendererSequentialJob job( mapSettings );
   job.start();
@@ -254,19 +254,19 @@ void TestQgsLabelingEngine::testRuleBased()
 
   // test read/write rules
   QDomDocument doc, doc2, doc3;
-  QDomElement e = vl->labeling()->save( doc );
+  QDomElement e = vl->labeling()->save( doc, QgsReadWriteContext() );
   doc.appendChild( e );
   // read saved rules
   doc2.setContent( doc.toString() );
   QDomElement e2 = doc2.documentElement();
-  QgsRuleBasedLabeling *rl2 = QgsRuleBasedLabeling::create( e2 );
+  QgsRuleBasedLabeling *rl2 = QgsRuleBasedLabeling::create( e2, QgsReadWriteContext() );
   QVERIFY( rl2 );
   // check that another save will keep the data the same
-  QDomElement e3 = rl2->save( doc3 );
+  QDomElement e3 = rl2->save( doc3, QgsReadWriteContext() );
   doc3.appendChild( e3 );
   QCOMPARE( doc.toString(), doc3.toString() );
 
-  vl->setLabeling( new QgsVectorLayerSimpleLabeling );
+  vl->setLabeling( nullptr );
 
   delete rl2;
 
@@ -302,7 +302,6 @@ void TestQgsLabelingEngine::zOrder()
   context.setPainter( &p );
 
   QgsPalLayerSettings pls1;
-  pls1.enabled = true;
   pls1.fieldName = QStringLiteral( "Class" );
   pls1.placement = QgsPalLayerSettings::OverPoint;
   pls1.quadOffset = QgsPalLayerSettings::QuadrantAboveRight;
@@ -442,7 +441,7 @@ void TestQgsLabelingEngine::testSubstitutions()
 
   QgsVectorLayerLabelProvider *provider = new QgsVectorLayerLabelProvider( vl, QStringLiteral( "test" ), true, &settings );
   QgsFeature f( vl->fields(), 1 );
-  f.setGeometry( QgsGeometry::fromPoint( QgsPoint( 1, 2 ) ) );
+  f.setGeometry( QgsGeometry::fromPoint( QgsPointXY( 1, 2 ) ) );
 
   // make a fake render context
   QSize size( 640, 480 );
@@ -474,7 +473,7 @@ void TestQgsLabelingEngine::testSubstitutions()
 void TestQgsLabelingEngine::testCapitalization()
 {
   QgsFeature f( vl->fields(), 1 );
-  f.setGeometry( QgsGeometry::fromPoint( QgsPoint( 1, 2 ) ) );
+  f.setGeometry( QgsGeometry::fromPoint( QgsPointXY( 1, 2 ) ) );
 
   // make a fake render context
   QSize size( 640, 480 );
@@ -585,6 +584,43 @@ bool TestQgsLabelingEngine::imageCheck( const QString &testName, QImage &image, 
   bool resultFlag = checker.compareImages( testName, mismatchCount );
   mReport += checker.report();
   return resultFlag;
+}
+
+// See https://issues.qgis.org/issues/15507
+void TestQgsLabelingEngine::testRegisterFeatureUnprojectible()
+{
+  QgsPalLayerSettings settings;
+  settings.fieldName = QString( "'aa label'" );
+  settings.isExpression = true;
+  settings.fitInPolygonOnly = true;
+
+  std::unique_ptr< QgsVectorLayer> vl2( new QgsVectorLayer( "polygon?crs=epsg:4326&field=id:integer", "vl", "memory" ) );
+  QgsVectorLayerLabelProvider *provider = new QgsVectorLayerLabelProvider( vl2.get(), "test", true, &settings );
+  QgsFeature f( vl2->fields(), 1 );
+
+  QString wkt1 = "POLYGON((0 0,8 0,8 -90,0 0))";
+  f.setGeometry( QgsGeometry().fromWkt( wkt1 ) );
+
+  // make a fake render context
+  QSize size( 640, 480 );
+  QgsMapSettings mapSettings;
+  QgsCoordinateReferenceSystem tgtCrs;
+  tgtCrs.createFromString( "EPSG:3857" );
+  mapSettings.setDestinationCrs( tgtCrs );
+
+  mapSettings.setOutputSize( size );
+  mapSettings.setExtent( vl2->extent() );
+  mapSettings.setLayers( QList<QgsMapLayer *>() << vl2.get() );
+  mapSettings.setOutputDpi( 96 );
+  QgsRenderContext context = QgsRenderContext::fromMapSettings( mapSettings );
+  QSet<QString> attributes;
+  QgsLabelingEngine engine;
+  engine.setMapSettings( mapSettings );
+  engine.addProvider( provider );
+  provider->prepare( context, attributes );
+
+  provider->registerFeature( f, context );
+  QCOMPARE( provider->mLabels.size(), 0 );
 }
 
 QGSTEST_MAIN( TestQgsLabelingEngine )

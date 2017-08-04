@@ -19,6 +19,7 @@
 
 #include "qgswmsconfigparser.h"
 #include "qgsmaplayer.h"
+#include "qgspallabeling.h"
 #include "qgsproject.h"
 #include "qgsmapserviceexception.h"
 
@@ -38,6 +39,7 @@
 #include "qgsrenderer.h"
 #include "qgsvectordataprovider.h"
 #include "qgsvectorlayer.h"
+#include "qgsvectorlayerlabeling.h"
 
 
 QgsWmsConfigParser::QgsWmsConfigParser()
@@ -386,6 +388,22 @@ QgsVectorLayer *QgsWmsConfigParser::createHighlightLayer( int i, const QString &
     return 0;
   }
 
+  QgsPalLayerSettings settings;
+  settings.fieldName = "label";
+
+  //give highest priority to highlight layers and make sure the labels are always drawn
+  settings.priority = 10;
+  settings.displayAll = true;
+
+  QgsTextFormat textFormat;
+  QgsTextBufferSettings bufferSettings;
+
+  QString fontFamily;
+  int fontSize = 12;
+  int fontWeight = -1;
+
+  QgsPropertyCollection &ddp = settings.dataDefinedProperties();
+
   QgsFeature fet( layer->pendingFields() );
   if ( !labelString.isEmpty() )
   {
@@ -395,7 +413,7 @@ QgsVectorLayer *QgsWmsConfigParser::createHighlightLayer( int i, const QString &
       QgsGeometry point = geom.pointOnSurface();
       if ( point )
       {
-        QgsPoint pt = point.asPoint();
+        QgsPointXY pt = point.asPoint();
         fet.setAttribute( 1, pt.x() );
         fet.setAttribute( 2, pt.y() );
         fet.setAttribute( 3, "Center" );
@@ -403,75 +421,69 @@ QgsVectorLayer *QgsWmsConfigParser::createHighlightLayer( int i, const QString &
       }
     }
 
-    layer->setCustomProperty( QStringLiteral( "labeling/fieldName" ), "label" );
-    layer->setCustomProperty( QStringLiteral( "labeling/enabled" ), "true" );
-    layer->setCustomProperty( QStringLiteral( "labeling" ), "pal" );
-    //give highest priority to highlight layers and make sure the labels are always drawn
-    layer->setCustomProperty( QStringLiteral( "labeling/priority" ), "10" );
-    layer->setCustomProperty( QStringLiteral( "labeling/displayAll" ), "true" );
-
     //fontsize?
     if ( i < labelSizeSplit.size() )
     {
-      layer->setCustomProperty( QStringLiteral( "labeling/fontSize" ), labelSizeSplit.at( i ) );
+      fontSize = labelSizeSplit.at( i ).toInt();
     }
     //font color
     if ( i < labelColorSplit.size() )
     {
       QColor c( labelColorSplit.at( i ) );
-      layer->setCustomProperty( QStringLiteral( "labeling/textColorR" ), c.red() );
-      layer->setCustomProperty( QStringLiteral( "labeling/textColorG" ), c.green() );
-      layer->setCustomProperty( QStringLiteral( "labeling/textColorB" ), c.blue() );
+      textFormat.setColor( c );
     }
     //font weight
     if ( i < labelWeightSplit.size() )
     {
-      layer->setCustomProperty( QStringLiteral( "labeling/fontWeight" ), labelWeightSplit.at( i ) );
+      fontWeight = labelWeightSplit.at( i ).toInt();
     }
 
     //font family list
     if ( i < labelFontSplit.size() )
     {
-      layer->setCustomProperty( QStringLiteral( "labeling/fontFamily" ), labelFontSplit.at( i ) );
+      fontFamily = labelFontSplit.at( i );
     }
 
     //buffer
     if ( i < labelBufferSizeSplit.size() )
     {
-      layer->setCustomProperty( QStringLiteral( "labeling/bufferSize" ), labelBufferSizeSplit.at( i ) );
+      bufferSettings.setSize( labelBufferSizeSplit.at( i ).toInt() );
     }
 
     //buffer color
     if ( i <  labelBufferColorSplit.size() )
     {
       QColor c( labelBufferColorSplit.at( i ) );
-      layer->setCustomProperty( QStringLiteral( "labeling/bufferColorR" ), c.red() );
-      layer->setCustomProperty( QStringLiteral( "labeling/bufferColorG" ), c.green() );
-      layer->setCustomProperty( QStringLiteral( "labeling/bufferColorB" ), c.blue() );
+      bufferSettings.setColor( c );
     }
 
     //placement
-    int placement = 0;
     switch ( geomType )
     {
       case QgsWkbTypes::PointGeometry:
-        placement = 0;
-        layer->setCustomProperty( QStringLiteral( "labeling/dist" ), 2 );
-        layer->setCustomProperty( QStringLiteral( "labeling/placementFlags" ), 0 );
+        settings.placement = QgsPalLayerSettings::AroundPoint;
+        settings.dist = 2;
+        settings.placementFlags = 0;
         break;
       case QgsWkbTypes::PolygonGeometry:
-        layer->setCustomProperty( QStringLiteral( "labeling/dataDefinedProperty9" ), 1 );
-        layer->setCustomProperty( QStringLiteral( "labeling/dataDefinedProperty10" ), 2 );
-        layer->setCustomProperty( QStringLiteral( "labeling/dataDefinedProperty11" ), 3 );
-        layer->setCustomProperty( QStringLiteral( "labeling/dataDefinedProperty12" ), 4 );
+        settings.placement = QgsPalLayerSettings::AroundPoint;
+        ddp.setProperty( QgsPalLayerSettings::PositionX, QgsProperty::fromField( "x" ) );
+        ddp.setProperty( QgsPalLayerSettings::PositionY, QgsProperty::fromField( "y" ) );
+        ddp.setProperty( QgsPalLayerSettings::Hali, QgsProperty::fromField( "hali" ) );
+        ddp.setProperty( QgsPalLayerSettings::Vali, QgsProperty::fromValue( "vali" ) );
         break;
       default:
-        placement = 2; //parallel placement for line
-        layer->setCustomProperty( QStringLiteral( "labeling/dist" ), 2 );
-        layer->setCustomProperty( QStringLiteral( "labeling/placementFlags" ), 10 );
+        settings.placement = QgsPalLayerSettings::Line; //parallel placement for line
+        settings.dist = 2;
+        settings.placementFlags = 10;
     }
-    layer->setCustomProperty( QStringLiteral( "labeling/placement" ), placement );
   }
+
+  textFormat.setFont( QFont( fontFamily, fontSize, fontWeight ) );
+  textFormat.setSize( fontSize );
+  textFormat.setBuffer( bufferSettings );
+  settings.setFormat( textFormat );
+  layer->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );
 
   fet.setGeometry( geom );
   layer->dataProvider()->addFeatures( QgsFeatureList() << fet );
@@ -576,12 +588,9 @@ void QgsWmsConfigParser::setLayerIdsToLegendModel( QgsLegendModel *model, const 
     else
     {
       QgsMapLayer *layer = nodeLayer->layer();
-      if ( layer->hasScaleBasedVisibility() )
+      if ( !layer->isInScaleRange( scale ) )
       {
-        if ( layer->minimumScale() > scale )
-          qobject_cast<QgsLayerTreeGroup *>( nodeLayer->parent() )->removeChildNode( nodeLayer );
-        else if ( layer->maximumScale() < scale )
-          qobject_cast<QgsLayerTreeGroup *>( nodeLayer->parent() )->removeChildNode( nodeLayer );
+        qobject_cast<QgsLayerTreeGroup *>( nodeLayer->parent() )->removeChildNode( nodeLayer );
       }
     }
   }

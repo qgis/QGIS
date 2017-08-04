@@ -33,7 +33,7 @@
       <item row="0" column="3">
        <widget class="QToolButton" name="btnChooseInputFile">
         <property name="text">
-         <string>...</string>
+         <string>…</string>
         </property>
        </widget>
       </item>

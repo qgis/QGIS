@@ -25,7 +25,7 @@
 #include <QHeaderView>
 #include "ui_qgspluginmanagerbase.h"
 #include "qgsoptionsdialogbase.h"
-#include "qgisgui.h"
+#include "qgsguiutils.h"
 #include "qgshelp.h"
 #include "qgsmessagebar.h"
 
@@ -47,7 +47,7 @@ class QgsPluginManager : public QgsOptionsDialogBase, private Ui::QgsPluginManag
     Q_OBJECT
   public:
     //! Constructor; set pluginsAreEnabled to false in --noplugins mode
-    QgsPluginManager( QWidget *parent = nullptr, bool pluginsAreEnabled = true, Qt::WindowFlags fl = QgisGui::ModalDialogFlags );
+    QgsPluginManager( QWidget *parent = nullptr, bool pluginsAreEnabled = true, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags );
 
     ~QgsPluginManager();
 
@@ -112,7 +112,7 @@ class QgsPluginManager : public QgsOptionsDialogBase, private Ui::QgsPluginManag
     //! Display details of inactive item too
     void on_vwPlugins_clicked( const QModelIndex &index );
 
-    //! Load/unload plugin by double click
+    //! Load/unload plugin by double-click
     void on_vwPlugins_doubleClicked( const QModelIndex &index );
 
     //! Handle click in the web view

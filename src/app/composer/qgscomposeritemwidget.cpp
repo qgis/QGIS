@@ -20,7 +20,7 @@
 #include "qgscomposermap.h"
 #include "qgsatlascomposition.h"
 #include "qgscomposition.h"
-#include "qgspoint.h"
+#include "qgspointxy.h"
 #include "qgspropertyoverridebutton.h"
 #include "qgsexpressioncontext.h"
 #include "qgsproject.h"
@@ -150,6 +150,8 @@ QgsComposerItemWidget::QgsComposerItemWidget( QWidget *parent, QgsComposerItem *
 
   setupUi( this );
 
+  mItemRotationSpinBox->setClearValue( 0 );
+
   //make button exclusive
   QButtonGroup *buttonGroup = new QButtonGroup( this );
   buttonGroup->addButton( mUpperLeftCheckBox );
@@ -169,8 +171,7 @@ QgsComposerItemWidget::QgsComposerItemWidget( QWidget *parent, QgsComposerItem *
   connect( mItem->composition(), &QgsComposition::paperSizeChanged, this, &QgsComposerItemWidget::setValuesForGuiPositionElements );
   connect( mItem, &QgsComposerItem::sizeChanged, this, &QgsComposerItemWidget::setValuesForGuiPositionElements );
   connect( mItem, &QgsComposerObject::itemChanged, this, &QgsComposerItemWidget::setValuesForGuiNonPositionElements );
-
-  connect( mTransparencySlider, &QAbstractSlider::valueChanged, mTransparencySpnBx, &QSpinBox::setValue );
+  connect( mOpacityWidget, &QgsOpacityWidget::opacityChanged, this, &QgsComposerItemWidget::opacityChanged );
 
   updateVariables();
   connect( mVariableEditor, &QgsVariableEditorWidget::scopeChanged, this, &QgsComposerItemWidget::variablesChanged );
@@ -504,8 +505,7 @@ void QgsComposerItemWidget::setValuesForGuiNonPositionElements()
   mBackgroundGroupBox->blockSignals( true );
   mItemIdLineEdit->blockSignals( true );
   mBlendModeCombo->blockSignals( true );
-  mTransparencySlider->blockSignals( true );
-  mTransparencySpnBx->blockSignals( true );
+  mOpacityWidget->blockSignals( true );
   mFrameColorButton->blockSignals( true );
   mFrameJoinStyleCombo->blockSignals( true );
   mBackgroundColorButton->blockSignals( true );
@@ -520,8 +520,7 @@ void QgsComposerItemWidget::setValuesForGuiNonPositionElements()
   mFrameGroupBox->setChecked( mItem->hasFrame() );
   mBackgroundGroupBox->setChecked( mItem->hasBackground() );
   mBlendModeCombo->setBlendMode( mItem->blendMode() );
-  mTransparencySlider->setValue( mItem->transparency() );
-  mTransparencySpnBx->setValue( mItem->transparency() );
+  mOpacityWidget->setOpacity( mItem->itemOpacity() );
   mItemRotationSpinBox->setValue( mItem->itemRotation( QgsComposerObject::OriginalValue ) );
   mExcludeFromPrintsCheckBox->setChecked( mItem->excludeFromExports( QgsComposerObject::OriginalValue ) );
 
@@ -533,8 +532,7 @@ void QgsComposerItemWidget::setValuesForGuiNonPositionElements()
   mBackgroundGroupBox->blockSignals( false );
   mItemIdLineEdit->blockSignals( false );
   mBlendModeCombo->blockSignals( false );
-  mTransparencySlider->blockSignals( false );
-  mTransparencySpnBx->blockSignals( false );
+  mOpacityWidget->blockSignals( false );
   mItemRotationSpinBox->blockSignals( false );
   mExcludeFromPrintsCheckBox->blockSignals( false );
 }
@@ -546,7 +544,7 @@ void QgsComposerItemWidget::initializeDataDefinedButtons()
   mConfigObject->initializeDataDefinedButton( mWidthDDBtn, QgsComposerObject::ItemWidth );
   mConfigObject->initializeDataDefinedButton( mHeightDDBtn, QgsComposerObject::ItemHeight );
   mConfigObject->initializeDataDefinedButton( mItemRotationDDBtn, QgsComposerObject::ItemRotation );
-  mConfigObject->initializeDataDefinedButton( mTransparencyDDBtn, QgsComposerObject::Transparency );
+  mConfigObject->initializeDataDefinedButton( mOpacityDDBtn, QgsComposerObject::Opacity );
   mConfigObject->initializeDataDefinedButton( mBlendModeDDBtn, QgsComposerObject::BlendMode );
   mConfigObject->initializeDataDefinedButton( mExcludePrintsDDBtn, QgsComposerObject::ExcludeFromExports );
   mConfigObject->initializeDataDefinedButton( mItemFrameColorDDBtn, QgsComposerObject::FrameColor );
@@ -568,11 +566,11 @@ void QgsComposerItemWidget::setValuesForGuiElements()
     return;
   }
 
-  mBackgroundColorButton->setColorDialogTitle( tr( "Select background color" ) );
-  mBackgroundColorButton->setAllowAlpha( true );
+  mBackgroundColorButton->setColorDialogTitle( tr( "Select Background Color" ) );
+  mBackgroundColorButton->setAllowOpacity( true );
   mBackgroundColorButton->setContext( QStringLiteral( "composer" ) );
-  mFrameColorButton->setColorDialogTitle( tr( "Select frame color" ) );
-  mFrameColorButton->setAllowAlpha( true );
+  mFrameColorButton->setColorDialogTitle( tr( "Select Frame Color" ) );
+  mFrameColorButton->setAllowOpacity( true );
   mFrameColorButton->setContext( QStringLiteral( "composer" ) );
 
   setValuesForGuiPositionElements();
@@ -591,15 +589,12 @@ void QgsComposerItemWidget::on_mBlendModeCombo_currentIndexChanged( int index )
   }
 }
 
-void QgsComposerItemWidget::on_mTransparencySpnBx_valueChanged( int value )
+void QgsComposerItemWidget::opacityChanged( double value )
 {
-  mTransparencySlider->blockSignals( true );
-  mTransparencySlider->setValue( value );
-  mTransparencySlider->blockSignals( false );
   if ( mItem )
   {
-    mItem->beginCommand( tr( "Item transparency changed" ), QgsComposerMergeCommand::ItemTransparency );
-    mItem->setTransparency( value );
+    mItem->beginCommand( tr( "Item opacity changed" ), QgsComposerMergeCommand::ItemOpacity );
+    mItem->setItemOpacity( value );
     mItem->endCommand();
   }
 }

@@ -27,7 +27,7 @@ class QgsEllipse
   public:
     QgsEllipse();
 
-    QgsEllipse( const QgsPointV2 &center, const double semiMajorAxis, const double semiMinorAxis, const double azimuth = 90 );
+    QgsEllipse( const QgsPoint &center, const double semiMajorAxis, const double semiMinorAxis, const double azimuth = 90 );
 %Docstring
  Constructs an ellipse by defining all the members.
  \param center The center of the ellipse.
@@ -36,7 +36,7 @@ class QgsEllipse
  \param azimuth Angle in degrees started from the North to the first quadrant.
 %End
 
-    static QgsEllipse fromFoci( const QgsPointV2 &pt1, const QgsPointV2 &pt2, const QgsPointV2 &pt3 );
+    static QgsEllipse fromFoci( const QgsPoint &pt1, const QgsPoint &pt2, const QgsPoint &pt3 );
 %Docstring
  Constructs an ellipse by foci (``pt1`` and ``pt2``) and a point ``pt3``.
  The center point can have z and m values which are the result from the midpoint operation between ``pt1`` and ``pt2``.
@@ -48,7 +48,7 @@ class QgsEllipse
  :rtype: QgsEllipse
 %End
 
-    static QgsEllipse fromExtent( const QgsPointV2 &pt1, const QgsPointV2 &pt2 );
+    static QgsEllipse fromExtent( const QgsPoint &pt1, const QgsPoint &pt2 );
 %Docstring
  Constructs an ellipse by an extent (aka bounding box / QgsRectangle).
  The center point can have z and m values which are the result from the midpoint operation between ``pt1`` and ``pt2``.
@@ -59,7 +59,7 @@ class QgsEllipse
  :rtype: QgsEllipse
 %End
 
-    static QgsEllipse fromCenterPoint( const QgsPointV2 &ptc, const QgsPointV2 &pt1 );
+    static QgsEllipse fromCenterPoint( const QgsPoint &ptc, const QgsPoint &pt1 );
 %Docstring
  Constructs an ellipse by a center point and a another point.
  The center point keeps z and m values from ``ptc``.
@@ -70,7 +70,7 @@ class QgsEllipse
  :rtype: QgsEllipse
 %End
 
-    static QgsEllipse fromCenter2Points( const QgsPointV2 &ptc, const QgsPointV2 &pt1, const QgsPointV2 &pt2 );
+    static QgsEllipse fromCenter2Points( const QgsPoint &ptc, const QgsPoint &pt1, const QgsPoint &pt2 );
 %Docstring
  Constructs an ellipse by a central point and two other points.
  The center point keeps z and m values from ``ptc``.
@@ -91,12 +91,12 @@ An ellipse is empty if axes are equal to 0
  :rtype: bool
 %End
 
-    QgsPointV2 center() const;
+    QgsPoint center() const;
 %Docstring
  Returns the center point.
 .. seealso:: setCenter()
 .. seealso:: rcenter()
- :rtype: QgsPointV2
+ :rtype: QgsPoint
 %End
 
     double semiMajorAxis() const;
@@ -121,7 +121,7 @@ An ellipse is empty if axes are equal to 0
 %End
 
 
-    void setCenter( const QgsPointV2 &center );
+    void setCenter( const QgsPoint &center );
 %Docstring
  Sets the center point.
 .. seealso:: center()
@@ -155,13 +155,13 @@ An ellipse is empty if axes are equal to 0
  :rtype: float
 %End
 
-    virtual QVector<QgsPointV2> foci() const;
+    virtual QVector<QgsPoint> foci() const;
 %Docstring
  Two foci of the ellipse. The axes are oriented by the azimuth and are on the semi-major axis.
 .. seealso:: fromFoci()
 .. seealso:: focusDistance()
  :return: the two foci.
- :rtype: list of QgsPointV2
+ :rtype: list of QgsPoint
 %End
 
     virtual double eccentricity() const;
@@ -181,12 +181,12 @@ The circumference of the ellipse using first approximation of Ramanujan.
  :rtype: float
 %End
 
-    virtual QVector<QgsPointV2> quadrant() const;
+    virtual QVector<QgsPoint> quadrant() const;
 %Docstring
  The four quadrants of the ellipse.
  They are oriented and started always from semi-major axis.
  :return: quadrants defined by four points.
- :rtype: list of QgsPointV2
+ :rtype: list of QgsPoint
 %End
 
     virtual QgsPointSequence points( unsigned int segments = 36 ) const;

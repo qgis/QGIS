@@ -123,10 +123,10 @@ void QgsVectorLayerDiagramProvider::drawLabel( QgsRenderContext &context, pal::L
     centerX += label->getX( i );
     centerY += label->getY( i );
   }
-  QgsPoint outPt( centerX / 4.0, centerY / 4.0 );
+  QgsPointXY outPt( centerX / 4.0, centerY / 4.0 );
   //then, calculate the top left point for the diagram with this center position
-  QgsPoint centerPt = xform.transform( outPt.x() - label->getWidth() / 2,
-                                       outPt.y() - label->getHeight() / 2 );
+  QgsPointXY centerPt = xform.transform( outPt.x() - label->getWidth() / 2,
+                                         outPt.y() - label->getHeight() / 2 );
 
   mSettings.renderer()->renderDiagram( feature, context, centerPt.toQPointF(), mSettings.dataDefinedProperties() );
 
@@ -159,7 +159,7 @@ bool QgsVectorLayerDiagramProvider::prepare( const QgsRenderContext &context, QS
 }
 
 
-void QgsVectorLayerDiagramProvider::registerFeature( QgsFeature &feature, QgsRenderContext &context, QgsGeometry *obstacleGeometry )
+void QgsVectorLayerDiagramProvider::registerFeature( QgsFeature &feature, QgsRenderContext &context, const QgsGeometry &obstacleGeometry )
 {
   QgsLabelFeature *label = registerDiagram( feature, context, obstacleGeometry );
   if ( label )
@@ -167,7 +167,7 @@ void QgsVectorLayerDiagramProvider::registerFeature( QgsFeature &feature, QgsRen
 }
 
 
-QgsLabelFeature *QgsVectorLayerDiagramProvider::registerDiagram( QgsFeature &feat, QgsRenderContext &context, QgsGeometry *obstacleGeometry )
+QgsLabelFeature *QgsVectorLayerDiagramProvider::registerDiagram( QgsFeature &feat, QgsRenderContext &context, const QgsGeometry &obstacleGeometry )
 {
   const QgsMapSettings &mapSettings = mEngine->mapSettings();
 
@@ -177,14 +177,14 @@ QgsLabelFeature *QgsVectorLayerDiagramProvider::registerDiagram( QgsFeature &fea
     QList<QgsDiagramSettings> settingList = dr->diagramSettings();
     if ( !settingList.isEmpty() && settingList.at( 0 ).scaleBasedVisibility )
     {
-      double minScale = settingList.at( 0 ).minScaleDenominator;
-      if ( minScale > 0 && context.rendererScale() < minScale )
+      double maxScale = settingList.at( 0 ).maximumScale;
+      if ( maxScale > 0 && context.rendererScale() < maxScale )
       {
         return nullptr;
       }
 
-      double maxScale = settingList.at( 0 ).maxScaleDenominator;
-      if ( maxScale > 0 && context.rendererScale() > maxScale )
+      double minScale = settingList.at( 0 ).minimumScale;
+      if ( minScale > 0 && context.rendererScale() > minScale )
       {
         return nullptr;
       }
@@ -209,9 +209,9 @@ QgsLabelFeature *QgsVectorLayerDiagramProvider::registerDiagram( QgsFeature &fea
 
   GEOSGeometry *geomCopy = nullptr;
   std::unique_ptr<QgsGeometry> scopedPreparedGeom;
-  if ( QgsPalLabeling::geometryRequiresPreparation( geom, context, mSettings.coordinateTransform(), &extentGeom ) )
+  if ( QgsPalLabeling::geometryRequiresPreparation( geom, context, mSettings.coordinateTransform(), extentGeom ) )
   {
-    scopedPreparedGeom.reset( new QgsGeometry( QgsPalLabeling::prepareGeometry( geom, context, mSettings.coordinateTransform(), &extentGeom ) ) );
+    scopedPreparedGeom.reset( new QgsGeometry( QgsPalLabeling::prepareGeometry( geom, context, mSettings.coordinateTransform(), extentGeom ) ) );
     QgsGeometry *preparedGeom = scopedPreparedGeom.get();
     if ( preparedGeom->isNull() )
       return nullptr;
@@ -227,14 +227,14 @@ QgsLabelFeature *QgsVectorLayerDiagramProvider::registerDiagram( QgsFeature &fea
 
   GEOSGeometry *geosObstacleGeomClone = nullptr;
   std::unique_ptr<QgsGeometry> scopedObstacleGeom;
-  if ( isObstacle && obstacleGeometry && QgsPalLabeling::geometryRequiresPreparation( *obstacleGeometry, context, mSettings.coordinateTransform(), &extentGeom ) )
+  if ( isObstacle && obstacleGeometry && QgsPalLabeling::geometryRequiresPreparation( obstacleGeometry, context, mSettings.coordinateTransform(), extentGeom ) )
   {
-    QgsGeometry preparedObstacleGeom = QgsPalLabeling::prepareGeometry( *obstacleGeometry, context, mSettings.coordinateTransform(), &extentGeom );
+    QgsGeometry preparedObstacleGeom = QgsPalLabeling::prepareGeometry( obstacleGeometry, context, mSettings.coordinateTransform(), extentGeom );
     geosObstacleGeomClone = preparedObstacleGeom.exportToGeos();
   }
-  else if ( mSettings.isObstacle() && obstacleGeometry )
+  else if ( mSettings.isObstacle() && !obstacleGeometry.isNull() )
   {
-    geosObstacleGeomClone = obstacleGeometry->exportToGeos();
+    geosObstacleGeomClone = obstacleGeometry.exportToGeos();
   }
 
   double diagramWidth = 0;
@@ -284,7 +284,7 @@ QgsLabelFeature *QgsVectorLayerDiagramProvider::registerDiagram( QgsFeature &fea
 
   QgsDiagramLabelFeature *lf = new QgsDiagramLabelFeature( feat.id(), geomCopy, QSizeF( diagramWidth, diagramHeight ) );
   lf->setHasFixedPosition( ddPos );
-  lf->setFixedPosition( QgsPoint( ddPosX, ddPosY ) );
+  lf->setFixedPosition( QgsPointXY( ddPosX, ddPosY ) );
   lf->setHasFixedAngle( true );
   lf->setFixedAngle( 0 );
   lf->setAlwaysShow( alwaysShow );
@@ -322,8 +322,8 @@ QgsLabelFeature *QgsVectorLayerDiagramProvider::registerDiagram( QgsFeature &fea
   lf->setZIndex( zIndex );
 
   // label distance
-  QgsPoint ptZero = mapSettings.mapToPixel().toMapCoordinates( 0, 0 );
-  QgsPoint ptOne = mapSettings.mapToPixel().toMapCoordinates( 1, 0 );
+  QgsPointXY ptZero = mapSettings.mapToPixel().toMapCoordinates( 0, 0 );
+  QgsPointXY ptOne = mapSettings.mapToPixel().toMapCoordinates( 1, 0 );
   double dist = mSettings.distance();
 
   if ( mSettings.dataDefinedProperties().hasProperty( QgsDiagramLayerSettings::Distance )

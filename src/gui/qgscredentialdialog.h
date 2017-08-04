@@ -18,7 +18,7 @@
 #define QGSCREDENTIALDIALOG_H
 
 #include <ui_qgscredentialdialog.h>
-#include <qgisgui.h>
+#include "qgsguiutils.h"
 #include "qgscredentials.h"
 
 #include <QString>
@@ -35,7 +35,7 @@ class GUI_EXPORT QgsCredentialDialog : public QDialog, public QgsCredentials, pr
     Q_OBJECT
   public:
     //! QgsCredentialDialog constructor
-    QgsCredentialDialog( QWidget *parent SIP_TRANSFERTHIS = nullptr, Qt::WindowFlags fl = QgisGui::ModalDialogFlags );
+    QgsCredentialDialog( QWidget *parent SIP_TRANSFERTHIS = nullptr, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags );
 
 #ifndef SIP_RUN
   signals:
@@ -57,7 +57,7 @@ class GUI_EXPORT QgsCredentialDialog : public QDialog, public QgsCredentials, pr
     void on_chkbxEraseAuthDb_toggled( bool checked );
 
   protected:
-    virtual bool request( const QString &realm, QString &username SIP_INOUT, QString &password SIP_INOUT, const QString &message = QString::null ) override;
+    virtual bool request( const QString &realm, QString &username SIP_INOUT, QString &password SIP_INOUT, const QString &message = QString() ) override;
 
     virtual bool requestMasterPassword( QString &password SIP_INOUT, bool stored = false ) override;
 

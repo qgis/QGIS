@@ -1,56 +1,90 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/symbology-ng/qgsgraduatedsymbolrenderer.h                   *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
 class QgsRendererRange
 {
-%TypeHeaderCode
-#include <qgsgraduatedsymbolrenderer.h>
-%End
 
+%TypeHeaderCode
+#include "qgsgraduatedsymbolrenderer.h"
+%End
   public:
     QgsRendererRange();
     QgsRendererRange( double lowerValue, double upperValue, QgsSymbol *symbol /Transfer/, const QString &label, bool render = true );
     QgsRendererRange( const QgsRendererRange &range );
 
-    ~QgsRendererRange();
+
+    bool operator<( const QgsRendererRange &other ) const;
+%Docstring
+ :rtype: bool
+%End
 
     double lowerValue() const;
+%Docstring
+ :rtype: float
+%End
     double upperValue() const;
+%Docstring
+ :rtype: float
+%End
 
     QgsSymbol *symbol() const;
+%Docstring
+ :rtype: QgsSymbol
+%End
     QString label() const;
+%Docstring
+ :rtype: str
+%End
 
     void setSymbol( QgsSymbol *s /Transfer/ );
     void setLabel( const QString &label );
     void setLowerValue( double lowerValue );
     void setUpperValue( double upperValue );
 
-    // @note added in 2.5
     bool renderState() const;
+%Docstring
+ :rtype: bool
+%End
     void setRenderState( bool render );
 
-    // debugging
     QString dump() const;
+%Docstring
+ :rtype: str
+%End
 
-    /** Creates a DOM element representing the range in SLD format.
-     * @param doc DOM document
-     * @param element destination DOM element
-     * @param props graduated renderer properties
-     * @param firstRange set to true if the range is the first range, where the lower value uses a <= test
-     * rather than a < test.
-     */
-    void toSld( QDomDocument &doc, QDomElement &element, const QgsStringMap &props, bool firstRange = false ) const;
+    void toSld( QDomDocument &doc, QDomElement &element, QgsStringMap props, bool firstRange = false ) const;
+%Docstring
+ Creates a DOM element representing the range in SLD format.
+ \param doc DOM document
+ \param element destination DOM element
+ \param props graduated renderer properties
+ \param firstRange set to true if the range is the first range, where the lower value uses a <= test
+ rather than a < test.
+%End
 
   protected:
-    // for cpy+swap idiom
+
     void swap( QgsRendererRange &other );
 };
 
 typedef QList<QgsRendererRange> QgsRangeList;
 
 
-// @note added in 2.6
 class QgsRendererRangeLabelFormat
 {
+%Docstring
+.. versionadded:: 2.6
+%End
+
 %TypeHeaderCode
-#include <qgsgraduatedsymbolrenderer.h>
+#include "qgsgraduatedsymbolrenderer.h"
 %End
   public:
     QgsRendererRangeLabelFormat();
@@ -58,20 +92,43 @@ class QgsRendererRangeLabelFormat
 
     bool operator==( const QgsRendererRangeLabelFormat &other ) const;
     bool operator!=( const QgsRendererRangeLabelFormat &other ) const;
+%Docstring
+ :rtype: bool
+%End
 
     QString format() const;
+%Docstring
+ :rtype: str
+%End
     void setFormat( const QString &format );
 
-    int precision();
+    int precision() const;
+%Docstring
+ :rtype: int
+%End
     void setPrecision( int precision );
 
     bool trimTrailingZeroes() const;
+%Docstring
+ :rtype: bool
+%End
     void setTrimTrailingZeroes( bool trimTrailingZeroes );
 
-    //! @note labelForLowerUpper in python bindings
     QString labelForRange( double lower, double upper ) const /PyName=labelForLowerUpper/;
+%Docstring
+.. note::
+
+   labelForLowerUpper in Python bindings
+ :rtype: str
+%End
     QString labelForRange( const QgsRendererRange &range ) const;
+%Docstring
+ :rtype: str
+%End
     QString formatNumber( double value ) const;
+%Docstring
+ :rtype: str
+%End
 
     void setFromDomElement( QDomElement &element );
     void saveToDomElement( QDomElement &element );
@@ -79,13 +136,15 @@ class QgsRendererRangeLabelFormat
     static const int MAX_PRECISION;
     static const int MIN_PRECISION;
 
+  protected:
 };
 
 
 class QgsGraduatedSymbolRenderer : QgsFeatureRenderer
 {
+
 %TypeHeaderCode
-#include <qgsgraduatedsymbolrenderer.h>
+#include "qgsgraduatedsymbolrenderer.h"
 %End
   public:
 
@@ -93,73 +152,97 @@ class QgsGraduatedSymbolRenderer : QgsFeatureRenderer
 
     virtual ~QgsGraduatedSymbolRenderer();
 
-    //! @note labelForLowerUpper in python bindings
     virtual QgsSymbol *symbolForFeature( QgsFeature &feature, QgsRenderContext &context );
-    //! @note originalSymbolForFeature2 in python bindings
     virtual QgsSymbol *originalSymbolForFeature( QgsFeature &feature, QgsRenderContext &context );
-
     virtual void startRender( QgsRenderContext &context, const QgsFields &fields );
-
     virtual void stopRender( QgsRenderContext &context );
-
     virtual QSet<QString> usedAttributes( const QgsRenderContext &context ) const;
-
     virtual QString dump() const;
-
     virtual QgsGraduatedSymbolRenderer *clone() const /Factory/;
-
-    virtual void toSld( QDomDocument &doc, QDomElement &element ) const;
-
-    //! returns bitwise OR-ed capabilities of the renderer
+    virtual void toSld( QDomDocument &doc, QDomElement &element, const QgsStringMap &props = QgsStringMap() ) const;
     virtual QgsFeatureRenderer::Capabilities capabilities();
-
-    //! @note symbol2 in python bindings
     virtual QgsSymbolList symbols( QgsRenderContext &context );
 
     QString classAttribute() const;
+%Docstring
+ :rtype: str
+%End
     void setClassAttribute( const QString &attr );
 
-    const QgsRangeList &ranges();
+    const QgsRangeList &ranges() const;
+%Docstring
+ :rtype: QgsRangeList
+%End
 
     bool updateRangeSymbol( int rangeIndex, QgsSymbol *symbol /Transfer/ );
+%Docstring
+ :rtype: bool
+%End
     bool updateRangeLabel( int rangeIndex, const QString &label );
+%Docstring
+ :rtype: bool
+%End
     bool updateRangeUpperValue( int rangeIndex, double value );
+%Docstring
+ :rtype: bool
+%End
     bool updateRangeLowerValue( int rangeIndex, double value );
-    //! @note added in 2.5
+%Docstring
+ :rtype: bool
+%End
     bool updateRangeRenderState( int rangeIndex, bool render );
+%Docstring
+.. versionadded:: 2.5
+ :rtype: bool
+%End
 
     void addClass( QgsSymbol *symbol );
-    //! @note available in python bindings as addClassRange
     void addClass( const QgsRendererRange &range ) /PyName=addClassRange/;
-    //! @note available in python bindings as addClassLowerUpper
-    void addClass( double lower, double upper ) /PyName=addClassLowerUpper/;
+%Docstring
+.. note::
 
-    /** Add a breakpoint by splitting existing classes so that the specified
-     * value becomes a break between two classes.
-     * @param breakValue position to insert break
-     * @param updateSymbols set to true to reapply ramp colors to the new
-     * symbol ranges
-     * @note added in QGIS 2.9
-     */
+   available in Python bindings as addClassRange
+%End
+    void addClass( double lower, double upper ) /PyName=addClassLowerUpper/;
+%Docstring
+.. note::
+
+   available in Python bindings as addClassLowerUpper
+%End
+
     void addBreak( double breakValue, bool updateSymbols = true );
+%Docstring
+ Add a breakpoint by splitting existing classes so that the specified
+ value becomes a break between two classes.
+ \param breakValue position to insert break
+ \param updateSymbols set to true to reapply ramp colors to the new
+ symbol ranges
+.. versionadded:: 2.9
+%End
 
     void deleteClass( int idx );
     void deleteAllClasses();
 
-    //! Moves the category at index position from to index position to.
     void moveClass( int from, int to );
+%Docstring
+Moves the category at index position from to index position to.
+%End
 
-    /** Tests whether classes assigned to the renderer have ranges which overlap.
-     * @returns true if ranges overlap
-     * @note added in QGIS 2.10
-     */
     bool rangesOverlap() const;
+%Docstring
+ Tests whether classes assigned to the renderer have ranges which overlap.
+ :return: true if ranges overlap
+.. versionadded:: 2.10
+ :rtype: bool
+%End
 
-    /** Tests whether classes assigned to the renderer have gaps between the ranges.
-     * @returns true if ranges have gaps
-     * @note added in QGIS 2.10
-     */
     bool rangesHaveGaps() const;
+%Docstring
+ Tests whether classes assigned to the renderer have gaps between the ranges.
+ :return: true if ranges have gaps
+.. versionadded:: 2.10
+ :rtype: bool
+%End
 
     void sortByValue( Qt::SortOrder order = Qt::AscendingOrder );
     void sortByLabel( Qt::SortOrder order = Qt::AscendingOrder );
@@ -175,160 +258,203 @@ class QgsGraduatedSymbolRenderer : QgsFeatureRenderer
     };
 
     Mode mode() const;
+%Docstring
+ :rtype: Mode
+%End
     void setMode( Mode mode );
-    //! Recalculate classes for a layer
-    //! @param vlayer  The layer being rendered (from which data values are calculated)
-    //! @param mode    The calculation mode
-    //! @param nclasses The number of classes to calculate (approximate for some modes)
-    //! @note Added in 2.6
     void updateClasses( QgsVectorLayer *vlayer, Mode mode, int nclasses );
+%Docstring
+.. versionadded:: 2.6
+%End
 
-    //! Return the label format used to generate default classification labels
-    //! @note Added in 2.6
     const QgsRendererRangeLabelFormat &labelFormat() const;
-    //! Set the label format used to generate default classification labels
-    //! @param labelFormat The string appended to classification labels
-    //! @param updateRanges If true then ranges ending with the old unit string are updated to the new.
-    //! @note Added in 2.6
+%Docstring
+.. versionadded:: 2.6
+ :rtype: QgsRendererRangeLabelFormat
+%End
     void setLabelFormat( const QgsRendererRangeLabelFormat &labelFormat, bool updateRanges = false );
+%Docstring
+.. versionadded:: 2.6
+%End
 
-    //! Reset the label decimal places to a numberbased on the minimum class interval
-    //! @param updateRanges if true then ranges currently using the default label will be updated
-    //! @note Added in 2.6
     void calculateLabelPrecision( bool updateRanges = true );
+%Docstring
+.. versionadded:: 2.6
+%End
 
-    /** Creates a new graduated renderer.
-     * @param vlayer vector layer
-     * @param attrName attribute to classify
-     * @param classes number of classes
-     * @param mode classification mode
-     * @param symbol base symbol
-     * @param ramp color ramp for classes
-     * @param legendFormat
-     * @returns new QgsGraduatedSymbolRenderer object
-     */
-    static QgsGraduatedSymbolRenderer* createRenderer(
-      QgsVectorLayer* vlayer,
-      const QString& attrName,
-      int classes,
-      Mode mode,
-      QgsSymbol* symbol /Transfer/,
-      QgsColorRamp* ramp /Transfer/,
-      const QgsRendererRangeLabelFormat& legendFormat = QgsRendererRangeLabelFormat()
-    );
+    static QgsGraduatedSymbolRenderer *createRenderer( QgsVectorLayer *vlayer,
+        const QString &attrName,
+        int classes,
+        Mode mode,
+        QgsSymbol *symbol /Transfer/,
+        QgsColorRamp *ramp /Transfer/,
+        const QgsRendererRangeLabelFormat &legendFormat = QgsRendererRangeLabelFormat() );
+%Docstring
+ Creates a new graduated renderer.
+ \param vlayer vector layer
+ \param attrName attribute to classify
+ \param classes number of classes
+ \param mode classification mode
+ \param symbol base symbol
+ \param ramp color ramp for classes
+ \param legendFormat
+ :return: new QgsGraduatedSymbolRenderer object
+ :rtype: QgsGraduatedSymbolRenderer
+%End
 
-    //! create renderer from XML element
-    static QgsFeatureRenderer *create( QDomElement &element ) /Factory/;
+    static QgsFeatureRenderer *create( QDomElement &element, const QgsReadWriteContext &context ) /Factory/;
+%Docstring
+create renderer from XML element
+ :rtype: QgsFeatureRenderer
+%End
 
-    //! store renderer info to XML element
-    virtual QDomElement save( QDomDocument &doc );
-
-    //! return a list of symbology items for the legend
-    virtual QgsLegendSymbologyList legendSymbologyItems( QSize iconSize );
-
-    //! return a list of item text / symbol
-    //! @note not available in python bindings
-    // virtual QgsLegendSymbolList legendSymbolItems( double scaleDenominator = -1, const QString &rule = QString() );
-
-    //! @note added in 2.10
-    QgsLegendSymbolListV2 legendSymbolItemsV2() const;
+    virtual QDomElement save( QDomDocument &doc, const QgsReadWriteContext &context );
+    virtual QgsLegendSymbolList legendSymbolItems() const;
 
     virtual QSet< QString > legendKeysForFeature( QgsFeature &feature, QgsRenderContext &context );
 
-    /** Returns the renderer's source symbol, which is the base symbol used for the each classes' symbol before applying
-     * the classes' color.
-     * @see setSourceSymbol()
-     * @see sourceColorRamp()
-     */
     QgsSymbol *sourceSymbol();
+%Docstring
+ Returns the renderer's source symbol, which is the base symbol used for the each classes' symbol before applying
+ the classes' color.
+.. seealso:: setSourceSymbol()
+.. seealso:: sourceColorRamp()
+ :rtype: QgsSymbol
+%End
 
-    /** Sets the source symbol for the renderer, which is the base symbol used for the each classes' symbol before applying
-     * the classes' color.
-     * @param sym source symbol, ownership is transferred to the renderer
-     * @see sourceSymbol()
-     * @see setSourceColorRamp()
-     */
     void setSourceSymbol( QgsSymbol *sym /Transfer/ );
+%Docstring
+ Sets the source symbol for the renderer, which is the base symbol used for the each classes' symbol before applying
+ the classes' color.
+ \param sym source symbol, ownership is transferred to the renderer
+.. seealso:: sourceSymbol()
+.. seealso:: setSourceColorRamp()
+%End
 
-    /** Returns the source color ramp, from which each classes' color is derived.
-     * @see setSourceColorRamp()
-     * @see sourceSymbol()
-     */
     QgsColorRamp *sourceColorRamp();
+%Docstring
+ Returns the source color ramp, from which each classes' color is derived.
+.. seealso:: setSourceColorRamp()
+.. seealso:: sourceSymbol()
+ :rtype: QgsColorRamp
+%End
 
-    /** Sets the source color ramp.
-     * @param ramp color ramp. Ownership is transferred to the renderer
-     */
     void setSourceColorRamp( QgsColorRamp *ramp /Transfer/ );
+%Docstring
+ Sets the source color ramp.
+ \param ramp color ramp. Ownership is transferred to the renderer
+%End
 
-    /** Update the color ramp used. Also updates all symbols colors.
-     * Doesn't alter current breaks.
-     * @param ramp color ramp. Ownership is transferred to the renderer
-     */
     void updateColorRamp( QgsColorRamp *ramp /Transfer/ = 0 );
+%Docstring
+ Update the color ramp used. Also updates all symbols colors.
+ Doesn't alter current breaks.
+ \param ramp color ramp. Ownership is transferred to the renderer
+%End
 
-    /** Update all the symbols but leave breaks and colors. This method also sets the source
-     * symbol for the renderer.
-     * @param sym source symbol to use for classes. Ownership is not transferred.
-     * @see setSourceSymbol()
-     */
     void updateSymbols( QgsSymbol *sym );
+%Docstring
+ Update all the symbols but leave breaks and colors. This method also sets the source
+ symbol for the renderer.
+ \param sym source symbol to use for classes. Ownership is not transferred.
+.. seealso:: setSourceSymbol()
+%End
 
-    //! set varying symbol size for classes
-    //! @note the classes must already be set so that symbols exist
-    //! @note added in 2.10
     void setSymbolSizes( double minSize, double maxSize );
+%Docstring
+.. versionadded:: 2.10
+%End
 
-    //! return the min symbol size when graduated by size
-    //! @note added in 2.10
     double minSymbolSize() const;
+%Docstring
+.. versionadded:: 2.10
+ :rtype: float
+%End
 
-    //! return the max symbol size when graduated by size
-    //! @note added in 2.10
     double maxSymbolSize() const;
+%Docstring
+.. versionadded:: 2.10
+ :rtype: float
+%End
 
-    enum GraduatedMethod {GraduatedColor = 0, GraduatedSize = 1 };
+    enum GraduatedMethod
+    {
+      GraduatedColor,
+      GraduatedSize
+    };
 
-    //! return the method used for graduation (either size or color)
-    //! @note added in 2.10
     GraduatedMethod graduatedMethod() const;
+%Docstring
+.. versionadded:: 2.10
+ :rtype: GraduatedMethod
+%End
 
-    //! set the method used for graduation (either size or color)
-    //! @note added in 2.10
     void setGraduatedMethod( GraduatedMethod method );
+%Docstring
+.. versionadded:: 2.10
+%End
 
-    //! items of symbology items in legend should be checkable
-    //! @note added in 2.5
     virtual bool legendSymbolItemsCheckable() const;
-
-    //! item in symbology was checked
-    //! @note added in 2.6
     virtual bool legendSymbolItemChecked( const QString &key );
-
-    //! item in symbology was checked
-    //! @note added in 2.6
     virtual void checkLegendSymbolItem( const QString &key, bool state = true );
-
     virtual void setLegendSymbolItem( const QString &key, QgsSymbol *symbol /Transfer/ );
+    virtual QString legendClassificationAttribute() const;
 
-    //! If supported by the renderer, return classification attribute for the use in legend
-    //! @note added in 2.6
-    virtual QString legendClassificationAttribute();
-
-    //! creates a QgsGraduatedSymbolRenderer from an existing renderer.
-    //! @note added in 2.6
-    //! @returns a new renderer if the conversion was possible, otherwise 0.
     static QgsGraduatedSymbolRenderer *convertFromRenderer( const QgsFeatureRenderer *renderer ) /Factory/;
+%Docstring
+:return: a new renderer if the conversion was possible, otherwise 0.
+ :rtype: QgsGraduatedSymbolRenderer
+%End
+
+    void setDataDefinedSizeLegend( QgsDataDefinedSizeLegend *settings /Transfer/ );
+%Docstring
+ Configures appearance of legend when renderer is configured to use data-defined size for marker symbols.
+ This allows to configure for what values (symbol sizes) should be shown in the legend, whether to display
+ different symbol sizes collapsed in one legend node or separated across multiple legend nodes etc.
+
+ When renderer does not use data-defined size or does not use marker symbols, these settings will be ignored.
+ Takes ownership of the passed settings objects. Null pointer is a valid input that disables data-defined
+ size legend.
+.. versionadded:: 3.0
+%End
+
+    QgsDataDefinedSizeLegend *dataDefinedSizeLegend() const;
+%Docstring
+ Returns configuration of appearance of legend when using data-defined size for marker symbols.
+ Will return null if the functionality is disabled.
+.. versionadded:: 3.0
+ :rtype: QgsDataDefinedSizeLegend
+%End
 
   protected:
-    QgsSymbol *symbolForValue( double value );
 
-    /** Returns the matching legend key for a value.
-     */
+
+
+    QgsSymbol *symbolForValue( double value );
+%Docstring
+attribute index (derived from attribute name in startRender)
+ :rtype: QgsSymbol
+%End
+
     QString legendKeyForValue( double value ) const;
+%Docstring
+ Returns the matching legend key for a value.
+ :rtype: str
+%End
 
 
   private:
     QgsGraduatedSymbolRenderer( const QgsGraduatedSymbolRenderer & );
     QgsGraduatedSymbolRenderer &operator=( const QgsGraduatedSymbolRenderer & );
+%Docstring
+ :rtype: QgsGraduatedSymbolRenderer
+%End
 };
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/symbology-ng/qgsgraduatedsymbolrenderer.h                   *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

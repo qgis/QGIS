@@ -58,6 +58,12 @@ bool QgsAttributeTableFilterModel::lessThan( const QModelIndex &left, const QMod
     }
   }
 
+  if ( mTableModel->sortCacheExpression().isEmpty() )
+  {
+    //shortcut when no sort order set
+    return false;
+  }
+
   return qgsVariantLessThan( left.data( QgsAttributeTableModel::SortRole ),
                              right.data( QgsAttributeTableModel::SortRole ) );
 }
@@ -93,7 +99,7 @@ QVariant QgsAttributeTableFilterModel::data( const QModelIndex &index, int role 
 
 QVariant QgsAttributeTableFilterModel::headerData( int section, Qt::Orientation orientation, int role ) const
 {
-  if ( orientation ==  Qt::Horizontal )
+  if ( orientation == Qt::Horizontal )
   {
     if ( mColumnMapping.at( section ) == -1 && role == Qt::DisplayRole )
       return tr( "Actions" );
@@ -191,7 +197,8 @@ void QgsAttributeTableFilterModel::setAttributeTableConfig( const QgsAttributeTa
     {
       if ( newColumnMapping.size() == mColumnMapping.size() - removedColumnCount )
       {
-        beginRemoveColumns( QModelIndex(), firstRemovedColumn, firstRemovedColumn );
+        //the amount of removed column in the model need to be equal removedColumnCount
+        beginRemoveColumns( QModelIndex(), firstRemovedColumn, firstRemovedColumn + removedColumnCount - 1 );
         mColumnMapping = newColumnMapping;
         endRemoveColumns();
       }
@@ -209,7 +216,8 @@ void QgsAttributeTableFilterModel::setAttributeTableConfig( const QgsAttributeTa
     }
   }
 
-  sort( config.sortExpression(), config.sortOrder() );
+  if ( !config.sortExpression().isEmpty() )
+    sort( config.sortExpression(), config.sortOrder() );
 }
 
 void QgsAttributeTableFilterModel::sort( const QString &expression, Qt::SortOrder order )

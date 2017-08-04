@@ -32,14 +32,16 @@ from datetime import datetime
 from qgis.PyQt.QtCore import QVariant
 from qgis.core import (QgsApplication,
                        QgsFeature,
+                       QgsFeatureSink,
                        QgsFields,
                        QgsField,
                        QgsGeometry,
                        QgsDistanceArea,
+                       QgsProject,
                        QgsWkbTypes,
                        QgsProcessingUtils)
 
-from processing.core.GeoAlgorithm import GeoAlgorithm
+from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterTableField
 from processing.core.parameters import ParameterString
@@ -48,7 +50,7 @@ from processing.core.outputs import OutputDirectory
 from processing.tools import dataobjects
 
 
-class PointsToPaths(GeoAlgorithm):
+class PointsToPaths(QgisAlgorithm):
 
     VECTOR = 'VECTOR'
     GROUP_FIELD = 'GROUP_FIELD'
@@ -58,22 +60,13 @@ class PointsToPaths(GeoAlgorithm):
     OUTPUT_LINES = 'OUTPUT_LINES'
     OUTPUT_TEXT = 'OUTPUT_TEXT'
 
-    def icon(self):
-        return QgsApplication.getThemeIcon("/providerQgis.svg")
-
-    def svgIconPath(self):
-        return QgsApplication.iconPath("providerQgis.svg")
-
     def group(self):
         return self.tr('Vector creation tools')
 
-    def name(self):
-        return 'pointstopath'
+    def __init__(self):
+        super().__init__()
 
-    def displayName(self):
-        return self.tr('Points to path')
-
-    def defineCharacteristics(self):
+    def initAlgorithm(self, config=None):
         self.addParameter(ParameterVector(self.VECTOR,
                                           self.tr('Input point layer'), [dataobjects.TYPE_VECTOR_POINT]))
         self.addParameter(ParameterTableField(self.GROUP_FIELD,
@@ -88,7 +81,13 @@ class PointsToPaths(GeoAlgorithm):
         self.addOutput(OutputVector(self.OUTPUT_LINES, self.tr('Paths'), datatype=[dataobjects.TYPE_VECTOR_LINE]))
         self.addOutput(OutputDirectory(self.OUTPUT_TEXT, self.tr('Directory')))
 
-    def processAlgorithm(self, context, feedback):
+    def name(self):
+        return 'pointstopath'
+
+    def displayName(self):
+        return self.tr('Points to path')
+
+    def processAlgorithm(self, parameters, context, feedback):
         layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.VECTOR), context)
         groupField = self.getParameterValue(self.GROUP_FIELD)
         orderField = self.getParameterValue(self.ORDER_FIELD)
@@ -105,7 +104,7 @@ class PointsToPaths(GeoAlgorithm):
 
         points = dict()
         features = QgsProcessingUtils.getFeatures(layer, context)
-        total = 100.0 / QgsProcessingUtils.featureCount(layer, context)
+        total = 100.0 / layer.featureCount() if layer.featureCount() else 0
         for current, f in enumerate(features):
             point = f.geometry().asPoint()
             group = f[groupField]
@@ -122,9 +121,11 @@ class PointsToPaths(GeoAlgorithm):
         feedback.setProgress(0)
 
         da = QgsDistanceArea()
+        da.setSourceCrs(layer.sourceCrs())
+        da.setEllipsoid(context.project().ellipsoid())
 
         current = 0
-        total = 100.0 / len(points)
+        total = 100.0 / len(points) if points else 1
         for group, vertices in list(points.items()):
             vertices.sort()
             f = QgsFeature()
@@ -158,7 +159,7 @@ class PointsToPaths(GeoAlgorithm):
                     i += 1
 
             f.setGeometry(QgsGeometry.fromPolyline(line))
-            writer.addFeature(f)
+            writer.addFeature(f, QgsFeatureSink.FastInsert)
             current += 1
             feedback.setProgress(int(current * total))
 

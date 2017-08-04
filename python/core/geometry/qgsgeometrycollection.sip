@@ -96,14 +96,14 @@ Adds a geometry and takes ownership. Returns true in case of success.
     virtual QgsCoordinateSequence coordinateSequence() const;
     virtual int nCoordinates() const;
 
-    virtual double closestSegment( const QgsPointV2 &pt, QgsPointV2 &segmentPt /Out/,
+    virtual double closestSegment( const QgsPoint &pt, QgsPoint &segmentPt /Out/,
                                    QgsVertexId &vertexAfter /Out/, bool *leftOf /Out/,
                                    double epsilon ) const;
-    virtual bool nextVertex( QgsVertexId &id, QgsPointV2 &vertex /Out/ ) const;
+    virtual bool nextVertex( QgsVertexId &id, QgsPoint &vertex /Out/ ) const;
 
 
-    virtual bool insertVertex( QgsVertexId position, const QgsPointV2 &vertex );
-    virtual bool moveVertex( QgsVertexId position, const QgsPointV2 &newPos );
+    virtual bool insertVertex( QgsVertexId position, const QgsPoint &vertex );
+    virtual bool moveVertex( QgsVertexId position, const QgsPoint &newPos );
     virtual bool deleteVertex( QgsVertexId position );
 
     virtual double length() const;
@@ -134,7 +134,7 @@ Adds a geometry and takes ownership. Returns true in case of success.
     virtual int vertexCount( int part = 0, int ring = 0 ) const;
     virtual int ringCount( int part = 0 ) const;
     virtual int partCount() const;
-    virtual QgsPointV2 vertexAt( QgsVertexId id ) const;
+    virtual QgsPoint vertexAt( QgsVertexId id ) const;
 
     virtual bool addZValue( double zValue = 0 );
     virtual bool addMValue( double mValue = 0 );

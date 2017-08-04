@@ -182,16 +182,8 @@ class QgsTextBufferSettings
 
     void readFromLayer( QgsVectorLayer *layer );
 %Docstring
- Reads settings from a layer's custom properties.
+ Reads settings from a layer's custom properties (for QGIS 2.x projects).
  \param layer source vector layer
-.. seealso:: writeToLayer()
-%End
-
-    void writeToLayer( QgsVectorLayer *layer ) const;
-%Docstring
- Writes settings to a layer's custom properties.
- \param layer target vector layer
-.. seealso:: readFromLayer()
 %End
 
     void readXml( const QDomElement &elem );
@@ -304,7 +296,7 @@ class QgsTextBackgroundSettings
 
     QString svgFile() const;
 %Docstring
- Returns the path to the background SVG file, if set.
+ Returns the absolute path to the background SVG file, if set.
 .. seealso:: setSvgFile()
  :rtype: str
 %End
@@ -312,8 +304,8 @@ class QgsTextBackgroundSettings
     void setSvgFile( const QString &file );
 %Docstring
  Sets the path to the background SVG file. This is only used if type() is set to
- QgsTextBackgroundSettings.ShapeSVG.
- \param file SVG file path
+ QgsTextBackgroundSettings.ShapeSVG. The path must be absolute.
+ \param file Absolute SVG file path
 .. seealso:: svgFile()
 %End
 
@@ -413,7 +405,7 @@ class QgsTextBackgroundSettings
 
     double rotation() const;
 %Docstring
- Returns the rotation for the background shape.
+ Returns the rotation for the background shape, in degrees clockwise.
 .. seealso:: rotationType()
 .. seealso:: setRotation()
  :rtype: float
@@ -421,8 +413,7 @@ class QgsTextBackgroundSettings
 
     void setRotation( double rotation );
 %Docstring
- Sets the rotation for the background shape.
- \param rotation angle in degrees to rotate
+ Sets the ``rotation`` for the background shape, in degrees clockwise.
 .. seealso:: rotation()
 .. seealso:: setRotationType()
 %End
@@ -676,25 +667,17 @@ class QgsTextBackgroundSettings
 
     void readFromLayer( QgsVectorLayer *layer );
 %Docstring
- Reads settings from a layer's custom properties.
+ Reads settings from a layer's custom properties (for QGIS 2.x projects).
  \param layer source vector layer
-.. seealso:: writeToLayer()
 %End
 
-    void writeToLayer( QgsVectorLayer *layer ) const;
-%Docstring
- Writes settings to a layer's custom properties.
- \param layer target vector layer
-.. seealso:: readFromLayer()
-%End
-
-    void readXml( const QDomElement &elem );
+    void readXml( const QDomElement &elem, const QgsReadWriteContext &context );
 %Docstring
  Read settings from a DOM element.
 .. seealso:: writeXml()
 %End
 
-    QDomElement writeXml( QDomDocument &doc ) const;
+    QDomElement writeXml( QDomDocument &doc, const QgsReadWriteContext &context ) const;
 %Docstring
  Write settings into a DOM element.
 .. seealso:: readXml()
@@ -976,16 +959,8 @@ class QgsTextShadowSettings
 
     void readFromLayer( QgsVectorLayer *layer );
 %Docstring
- Reads settings from a layer's custom properties.
+ Reads settings from a layer's custom properties (for QGIS 2.x projects).
  \param layer source vector layer
-.. seealso:: writeToLayer()
-%End
-
-    void writeToLayer( QgsVectorLayer *layer ) const;
-%Docstring
- Writes settings to a layer's custom properties.
- \param layer target vector layer
-.. seealso:: readFromLayer()
 %End
 
     void readXml( const QDomElement &elem );
@@ -1239,29 +1214,37 @@ class QgsTextFormat
 
     void readFromLayer( QgsVectorLayer *layer );
 %Docstring
- Reads settings from a layer's custom properties.
+ Reads settings from a layer's custom properties (for QGIS 2.x projects).
  \param layer source vector layer
-.. seealso:: writeToLayer()
 %End
 
-    void writeToLayer( QgsVectorLayer *layer ) const;
-%Docstring
- Writes settings to a layer's custom properties.
- \param layer target vector layer
-.. seealso:: readFromLayer()
-%End
-
-    void readXml( const QDomElement &elem );
+    void readXml( const QDomElement &elem, const QgsReadWriteContext &context );
 %Docstring
  Read settings from a DOM element.
 .. seealso:: writeXml()
 %End
 
-    QDomElement writeXml( QDomDocument &doc ) const;
+    QDomElement writeXml( QDomDocument &doc, const QgsReadWriteContext &context ) const;
 %Docstring
  Write settings into a DOM element.
 .. seealso:: readXml()
  :rtype: QDomElement
+%End
+
+    QMimeData *toMimeData() const /Factory/;
+%Docstring
+ Returns new mime data representing the text format settings.
+ Caller takes responsibility for deleting the returned object.
+.. seealso:: fromMimeData()
+ :rtype: QMimeData
+%End
+
+    static QgsTextFormat fromMimeData( const QMimeData *data, bool *ok /Out/ = 0 );
+%Docstring
+ Attempts to parse the provided mime ``data`` as a QgsTextFormat.
+ If data can be parsed as a text format, ``ok`` will be set to true.
+.. seealso:: toMimeData()
+ :rtype: QgsTextFormat
 %End
 
     bool containsAdvancedEffects() const;

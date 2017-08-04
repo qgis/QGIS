@@ -60,7 +60,7 @@ QgsManageConnectionsDialog::QgsManageConnectionsDialog( QWidget *parent, Mode mo
     QApplication::postEvent( this, new QCloseEvent() );
   }
 
-  // use Ok button for starting import and export operations
+  // use OK button for starting import and export operations
   disconnect( buttonBox, &QDialogButtonBox::accepted, this, &QDialog::accept );
   connect( buttonBox, &QDialogButtonBox::accepted, this, &QgsManageConnectionsDialog::doExportImport );
 
@@ -280,7 +280,7 @@ bool QgsManageConnectionsDialog::populateConnections()
         if ( root.tagName() != QLatin1String( "qgsWMSConnections" ) )
         {
           QMessageBox::information( this, tr( "Loading connections" ),
-                                    tr( "The file is not an WMS connections exchange file." ) );
+                                    tr( "The file is not a WMS connections exchange file." ) );
           return false;
         }
         break;
@@ -289,7 +289,7 @@ bool QgsManageConnectionsDialog::populateConnections()
         if ( root.tagName() != QLatin1String( "qgsWFSConnections" ) )
         {
           QMessageBox::information( this, tr( "Loading connections" ),
-                                    tr( "The file is not an WFS connections exchange file." ) );
+                                    tr( "The file is not a WFS connections exchange file." ) );
           return false;
         }
         break;
@@ -298,7 +298,7 @@ bool QgsManageConnectionsDialog::populateConnections()
         if ( root.tagName() != QLatin1String( "qgsWCSConnections" ) )
         {
           QMessageBox::information( this, tr( "Loading connections" ),
-                                    tr( "The file is not an WCS connections exchange file." ) );
+                                    tr( "The file is not a WCS connections exchange file." ) );
           return false;
         }
         break;
@@ -307,7 +307,7 @@ bool QgsManageConnectionsDialog::populateConnections()
         if ( root.tagName() != QLatin1String( "qgsPgConnections" ) )
         {
           QMessageBox::information( this, tr( "Loading connections" ),
-                                    tr( "The file is not an PostGIS connections exchange file." ) );
+                                    tr( "The file is not a PostGIS connections exchange file." ) );
           return false;
         }
         break;
@@ -316,7 +316,7 @@ bool QgsManageConnectionsDialog::populateConnections()
         if ( root.tagName() != QLatin1String( "qgsMssqlConnections" ) )
         {
           QMessageBox::information( this, tr( "Loading connections" ),
-                                    tr( "The file is not an MSSQL connections exchange file." ) );
+                                    tr( "The file is not a MSSQL connections exchange file." ) );
           return false;
         }
         break;
@@ -332,7 +332,7 @@ bool QgsManageConnectionsDialog::populateConnections()
         if ( root.tagName() != QLatin1String( "qgsDb2Connections" ) )
         {
           QMessageBox::information( this, tr( "Loading connections" ),
-                                    tr( "The file is not an DB2 connections exchange file." ) );
+                                    tr( "The file is not a DB2 connections exchange file." ) );
           return false;
         }
         break;
@@ -586,7 +586,7 @@ void QgsManageConnectionsDialog::loadOWSConnections( const QDomDocument &doc, co
   if ( root.tagName() != "qgs" + service.toUpper() + "Connections" )
   {
     QMessageBox::information( this, tr( "Loading connections" ),
-                              tr( "The file is not an %1 connections exchange file." ).arg( service ) );
+                              tr( "The file is not a %1 connections exchange file." ).arg( service ) );
     return;
   }
 
@@ -673,7 +673,7 @@ void QgsManageConnectionsDialog::loadWfsConnections( const QDomDocument &doc, co
   if ( root.tagName() != QLatin1String( "qgsWFSConnections" ) )
   {
     QMessageBox::information( this, tr( "Loading connections" ),
-                              tr( "The file is not an WFS connections exchange file." ) );
+                              tr( "The file is not a WFS connections exchange file." ) );
     return;
   }
 
@@ -755,7 +755,7 @@ void QgsManageConnectionsDialog::loadPgConnections( const QDomDocument &doc, con
   {
     QMessageBox::information( this,
                               tr( "Loading connections" ),
-                              tr( "The file is not an PostGIS connections exchange file." ) );
+                              tr( "The file is not a PostGIS connections exchange file." ) );
     return;
   }
 
@@ -845,7 +845,7 @@ void QgsManageConnectionsDialog::loadMssqlConnections( const QDomDocument &doc, 
   {
     QMessageBox::information( this,
                               tr( "Loading connections" ),
-                              tr( "The file is not an MSSQL connections exchange file." ) );
+                              tr( "The file is not a MSSQL connections exchange file." ) );
     return;
   }
 
@@ -1021,7 +1021,7 @@ void QgsManageConnectionsDialog::loadDb2Connections( const QDomDocument &doc, co
   {
     QMessageBox::information( this,
                               tr( "Loading connections" ),
-                              tr( "The file is not an DB2 connections exchange file." ) );
+                              tr( "The file is not a DB2 connections exchange file." ) );
     return;
   }
 

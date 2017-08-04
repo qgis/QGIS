@@ -171,7 +171,7 @@ class QgsWcsProvider : public QgsRasterDataProvider, QgsGdalProviderBase
     int xSize() const override;
     int ySize() const override;
     QString metadata() override;
-    QgsRasterIdentifyResult identify( const QgsPoint &point, QgsRaster::IdentifyFormat format, const QgsRectangle &boundingBox = QgsRectangle(), int width = 0, int height = 0, int dpi = 96 ) override;
+    QgsRasterIdentifyResult identify( const QgsPointXY &point, QgsRaster::IdentifyFormat format, const QgsRectangle &boundingBox = QgsRectangle(), int width = 0, int height = 0, int dpi = 96 ) override;
     QString lastErrorTitle() override;
     QString lastError() override;
     QString lastErrorFormat() override;
@@ -198,7 +198,7 @@ class QgsWcsProvider : public QgsRasterDataProvider, QgsGdalProviderBase
 
   private:
     // case insensitive attribute value lookup
-    static QString nodeAttribute( const QDomElement &e, const QString &name, const QString &defValue = QString::null );
+    static QString nodeAttribute( const QDomElement &e, const QString &name, const QString &defValue = QString() );
 
     //! parse the WCS ServiceException XML element
     static void parseServiceException( QDomElement const &e, const QString &wcsVersion, QString &errorTitle, QString &errorText );

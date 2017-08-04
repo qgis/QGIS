@@ -56,7 +56,7 @@ class PostGisDBConnector(DBConnector):
         password = uri.password() or os.environ.get('PGPASSWORD')
 
         # Do not get db and user names from the env if service is used
-        if uri.service() is None:
+        if not uri.service():
             if username is None:
                 username = os.environ.get('USER')
             self.dbname = uri.database() or os.environ.get('PGDATABASE') or username
@@ -193,7 +193,7 @@ class PostGisDBConnector(DBConnector):
         return res
 
     def getSpatialInfo(self):
-        """ returns tuple about postgis support:
+        """ returns tuple about PostGIS support:
                 - lib version
                 - geos version
                 - proj version
@@ -732,7 +732,7 @@ class PostGisDBConnector(DBConnector):
         sql = u"ALTER TABLE %s RENAME TO %s" % (self.quoteId(table), self.quoteId(new_table))
         self._execute(c, sql)
 
-        # update geometry_columns if postgis is enabled
+        # update geometry_columns if PostGIS is enabled
         if self.has_geometry_columns and not self.is_geometry_columns_view:
             schema_where = u" AND f_table_schema=%s " % self.quoteString(schema) if schema is not None else ""
             sql = u"UPDATE geometry_columns SET f_table_name=%s WHERE f_table_name=%s %s" % (
@@ -751,7 +751,7 @@ class PostGisDBConnector(DBConnector):
         sql = u"ALTER TABLE %s SET SCHEMA %s" % (self.quoteId(table), self.quoteId(new_schema))
         self._execute(c, sql)
 
-        # update geometry_columns if postgis is enabled
+        # update geometry_columns if PostGIS is enabled
         if self.has_geometry_columns and not self.is_geometry_columns_view:
             schema, tablename = self.getSchemaTableName(table)
             schema_where = u" AND f_table_schema=%s " % self.quoteString(schema) if schema is not None else ""
@@ -782,7 +782,7 @@ class PostGisDBConnector(DBConnector):
         sql = u"ALTER TABLE %s RENAME TO %s" % (self.quoteId((new_schema, t)), self.quoteId(table))
         self._execute(c, sql)
 
-        # update geometry_columns if postgis is enabled
+        # update geometry_columns if PostGIS is enabled
         if self.has_geometry_columns and not self.is_geometry_columns_view:
             schema, tablename = self.getSchemaTableName(table)
             schema_where = u" f_table_schema=%s AND " % self.quoteString(schema) if schema is not None else ""
@@ -847,7 +847,7 @@ class PostGisDBConnector(DBConnector):
     def deleteTableColumn(self, table, column):
         """ delete column from a table """
         if self.isGeometryColumn(table, column):
-            # use postgis function to delete geometry column correctly
+            # use PostGIS function to delete geometry column correctly
             schema, tablename = self.getSchemaTableName(table)
             schema_part = u"%s, " % self._quote_unicode(schema) if schema else ""
             sql = u"SELECT DropGeometryColumn(%s%s, %s)" % (
@@ -886,7 +886,7 @@ class PostGisDBConnector(DBConnector):
                 self.quoteId(table), self.quoteId(column), self.quoteId(new_name))
             self._execute(c, sql)
 
-            # update geometry_columns if postgis is enabled
+            # update geometry_columns if PostGIS is enabled
             if self.has_geometry_columns and not self.is_geometry_columns_view:
                 schema, tablename = self.getSchemaTableName(table)
                 schema_where = u" f_table_schema=%s AND " % self.quoteString(schema) if schema is not None else ""

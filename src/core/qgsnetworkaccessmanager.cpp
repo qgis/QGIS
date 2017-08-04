@@ -76,24 +76,24 @@ class QgsNetworkProxyFactory : public QNetworkProxyFactory
       {
         if ( url.startsWith( exclude ) )
         {
-          QgsDebugMsg( QString( "using default proxy for %1 [exclude %2]" ).arg( url, exclude ) );
+          QgsDebugMsgLevel( QString( "using default proxy for %1 [exclude %2]" ).arg( url, exclude ), 4 );
           return QList<QNetworkProxy>() << QNetworkProxy();
         }
       }
 
       if ( nam->useSystemProxy() )
       {
-        QgsDebugMsg( QString( "requesting system proxy for query %1" ).arg( url ) );
+        QgsDebugMsgLevel( QString( "requesting system proxy for query %1" ).arg( url ), 4 );
         QList<QNetworkProxy> proxies = QNetworkProxyFactory::systemProxyForQuery( query );
         if ( !proxies.isEmpty() )
         {
-          QgsDebugMsg( QString( "using system proxy %1:%2 for query" )
-                       .arg( proxies.first().hostName() ).arg( proxies.first().port() ) );
+          QgsDebugMsgLevel( QString( "using system proxy %1:%2 for query" )
+                            .arg( proxies.first().hostName() ).arg( proxies.first().port() ), 4 );
           return proxies;
         }
       }
 
-      QgsDebugMsg( QString( "using fallback proxy for %1" ).arg( url ) );
+      QgsDebugMsgLevel( QString( "using fallback proxy for %1" ).arg( url ), 4 );
       return QList<QNetworkProxy>() << nam->fallbackProxy();
     }
 };

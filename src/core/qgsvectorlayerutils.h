@@ -51,7 +51,7 @@ class CORE_EXPORT QgsVectorLayerUtils
      * Returns true if the attribute value is valid for the field. Any constraint failures will be reported in the errors argument.
      * If the strength or origin parameter is set then only constraints with a matching strength/origin will be checked.
      */
-    static bool validateAttribute( const QgsVectorLayer *layer, const QgsFeature &feature, int attributeIndex, QStringList &errors,
+    static bool validateAttribute( const QgsVectorLayer *layer, const QgsFeature &feature, int attributeIndex, QStringList &errors SIP_OUT,
                                    QgsFieldConstraints::ConstraintStrength strength = QgsFieldConstraints::ConstraintStrengthNotSet,
                                    QgsFieldConstraints::ConstraintOrigin origin = QgsFieldConstraints::ConstraintOriginNotSet );
 

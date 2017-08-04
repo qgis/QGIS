@@ -27,9 +27,10 @@
 
 #include <QWidget>
 
-QgsWCSSourceSelect::QgsWCSSourceSelect( QWidget *parent, Qt::WindowFlags fl, bool managerMode, bool embeddedMode )
-  : QgsOWSSourceSelect( QStringLiteral( "WCS" ), parent, fl, managerMode, embeddedMode )
+QgsWCSSourceSelect::QgsWCSSourceSelect( QWidget *parent, Qt::WindowFlags fl, QgsProviderRegistry::WidgetMode widgetMode )
+  : QgsOWSSourceSelect( QStringLiteral( "WCS" ), parent, fl, widgetMode )
 {
+
   // Hide irrelevant widgets
   mWMSGroupBox->hide();
   mLayersTab->layout()->removeWidget( mWMSGroupBox );
@@ -112,7 +113,7 @@ QString QgsWCSSourceSelect::selectedIdentifier()
   return identifier;
 }
 
-void QgsWCSSourceSelect::addClicked()
+void QgsWCSSourceSelect::addButtonClicked()
 {
   QgsDataSourceUri uri = mUri;
 
@@ -151,6 +152,7 @@ void QgsWCSSourceSelect::addClicked()
   emit addRasterLayer( uri.encodedUri(), identifier, QStringLiteral( "wcs" ) );
 }
 
+
 void QgsWCSSourceSelect::on_mLayersTreeWidget_itemSelectionChanged()
 {
 
@@ -167,7 +169,7 @@ void QgsWCSSourceSelect::on_mLayersTreeWidget_itemSelectionChanged()
 
   updateButtons();
 
-  mAddButton->setEnabled( true );
+  emit enableButtons( true );
 }
 
 void QgsWCSSourceSelect::updateButtons()
@@ -185,7 +187,7 @@ void QgsWCSSourceSelect::updateButtons()
     }
   }
 
-  mAddButton->setEnabled( !mLayersTreeWidget->selectedItems().isEmpty() && !selectedCrs().isEmpty() && !selectedFormat().isEmpty() );
+  emit enableButtons( !mLayersTreeWidget->selectedItems().isEmpty() && !selectedCrs().isEmpty() && !selectedFormat().isEmpty() );
 }
 
 QList<QgsWCSSourceSelect::SupportedFormat> QgsWCSSourceSelect::providerFormats()

@@ -115,7 +115,7 @@ class ANALYSIS_EXPORT QgsGeometryAnalyzer
      * \param memoryProvider memory provider to write output to (can be 0 if output is written to a file)
      * \param p progress dialog or 0 if no progress dialog should be shown
      */
-    bool eventLayer( QgsVectorLayer *lineLayer, QgsVectorLayer *eventLayer, int lineField, int eventField, QgsFeatureIds &unlocatedFeatureIds, const QString &outputLayer,
+    bool eventLayer( QgsVectorLayer *lineLayer, QgsVectorLayer *eventLayer, int lineField, int eventField, QgsFeatureIds &unlocatedFeatureIds SIP_OUT, const QString &outputLayer,
                      const QString &outputFormat, int locationField1, int locationField2 = -1, int offsetField = -1, double offsetScale = 1.0,
                      bool forceSingleGeometry = false, QgsVectorDataProvider *memoryProvider = nullptr, QProgressDialog *p = nullptr );
 
@@ -152,10 +152,10 @@ class ANALYSIS_EXPORT QgsGeometryAnalyzer
         \param lineGeom the line geometry to which the feature is referenced
         \param offset the offset value in layer unit. Negative values mean offset towards left, positive values offset to the right side*/
     QgsGeometry createOffsetGeometry( const QgsGeometry &geom, const QgsGeometry &lineGeom, double offset );
-    QgsPoint createPointOffset( double x, double y, double dist, const QgsGeometry &lineGeom ) const;
+    QgsPointXY createPointOffset( double x, double y, double dist, const QgsGeometry &lineGeom ) const;
     QgsConstWkbPtr locateBetweenWkbString( QgsConstWkbPtr ptr, QgsMultiPolyline &result, double fromMeasure, double toMeasure );
     QgsConstWkbPtr locateAlongWkbString( QgsConstWkbPtr ptr, QgsMultiPoint &result, double measure );
-    static bool clipSegmentByRange( double x1, double y1, double m1, double x2, double y2, double m2, double range1, double range2, QgsPoint &pt1, QgsPoint &pt2, bool &secondPointClipped );
-    static void locateAlongSegment( double x1, double y1, double m1, double x2, double y2, double m2, double measure, bool &pt1Ok, QgsPoint &pt1, bool &pt2Ok, QgsPoint &pt2 );
+    static bool clipSegmentByRange( double x1, double y1, double m1, double x2, double y2, double m2, double range1, double range2, QgsPointXY &pt1, QgsPointXY &pt2, bool &secondPointClipped );
+    static void locateAlongSegment( double x1, double y1, double m1, double x2, double y2, double m2, double measure, bool &pt1Ok, QgsPointXY &pt1, bool &pt2Ok, QgsPointXY &pt2 );
 };
 #endif //QGSVECTORANALYZER

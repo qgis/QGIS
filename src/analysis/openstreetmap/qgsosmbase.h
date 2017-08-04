@@ -17,7 +17,7 @@
 
 #include <QString>
 
-#include "qgspoint.h"
+#include "qgspointxy.h"
 
 #include <sqlite3.h>
 #include "qgis_analysis.h"
@@ -26,7 +26,7 @@ typedef qint64 QgsOSMId;
 
 class QgsOSMDatabase;
 
-struct QgsOSMElementID
+struct ANALYSIS_EXPORT QgsOSMElementID
 {
   enum Type { Invalid, Node, Way, Relation };
 
@@ -72,15 +72,15 @@ class ANALYSIS_EXPORT QgsOSMNode : public QgsOSMElement
 {
   public:
     QgsOSMNode() : mPoint() {}
-    QgsOSMNode( QgsOSMId id, const QgsPoint &point )
+    QgsOSMNode( QgsOSMId id, const QgsPointXY &point )
       : QgsOSMElement( QgsOSMElementID::Node, id )
       , mPoint( point )
     {}
 
-    QgsPoint point() const { return mPoint; }
+    QgsPointXY point() const { return mPoint; }
 
   private:
-    QgsPoint mPoint;
+    QgsPointXY mPoint;
 };
 
 

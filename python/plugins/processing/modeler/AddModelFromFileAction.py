@@ -30,10 +30,9 @@ import shutil
 from qgis.PyQt.QtWidgets import QFileDialog, QMessageBox
 from qgis.PyQt.QtCore import QFileInfo
 
-from qgis.core import QgsApplication, QgsSettings
+from qgis.core import QgsApplication, QgsSettings, QgsProcessingModelAlgorithm
 
 from processing.gui.ToolboxAction import ToolboxAction
-from processing.modeler.ModelerAlgorithm import ModelerAlgorithm
 from processing.modeler.WrongModelException import WrongModelException
 from processing.modeler.ModelerUtils import ModelerUtils
 
@@ -54,23 +53,17 @@ class AddModelFromFileAction(ToolboxAction):
         lastDir = settings.value('Processing/lastModelsDir', '')
         filename, selected_filter = QFileDialog.getOpenFileName(self.toolbox,
                                                                 self.tr('Open model', 'AddModelFromFileAction'), lastDir,
-                                                                self.tr('Processing model files (*.model *.MODEL)', 'AddModelFromFileAction'))
+                                                                self.tr('Processing model files (*.model3 *.MODEL3)', 'AddModelFromFileAction'))
         if filename:
-            try:
-                settings.setValue('Processing/lastModelsDir',
-                                  QFileInfo(filename).absoluteDir().absolutePath())
+            settings.setValue('Processing/lastModelsDir',
+                              QFileInfo(filename).absoluteDir().absolutePath())
 
-                ModelerAlgorithm.fromFile(filename)
-            except WrongModelException:
+            alg = QgsProcessingModelAlgorithm()
+            if not alg.fromFile(filename):
                 QMessageBox.warning(
                     self.toolbox,
                     self.tr('Error reading model', 'AddModelFromFileAction'),
                     self.tr('The selected file does not contain a valid model', 'AddModelFromFileAction'))
-                return
-            except:
-                QMessageBox.warning(self.toolbox,
-                                    self.tr('Error reading model', 'AddModelFromFileAction'),
-                                    self.tr('Cannot read file', 'AddModelFromFileAction'))
                 return
             destFilename = os.path.join(ModelerUtils.modelsFolders()[0], os.path.basename(filename))
             shutil.copyfile(filename, destFilename)

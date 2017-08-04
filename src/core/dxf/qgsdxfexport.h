@@ -30,12 +30,12 @@
 #include <QTextStream>
 
 class QgsMapLayer;
-class QgsPoint;
+class QgsPointXY;
 class QgsSymbolLayer;
 class QIODevice;
 class QgsPalLayerSettings;
 
-namespace pal
+namespace pal SIP_SKIP
 {
   class LabelPosition;
 }
@@ -54,7 +54,7 @@ class CORE_EXPORT QgsDxfExport
     };
 
     QgsDxfExport();
-    QgsDxfExport( const QgsDxfExport &dxfExport );
+    QgsDxfExport( const QgsDxfExport &dxfExport ) SIP_SKIP;
     QgsDxfExport &operator=( const QgsDxfExport &dxfExport );
 
     /**
@@ -79,17 +79,20 @@ class CORE_EXPORT QgsDxfExport
     int writeToFile( QIODevice *d, const QString &codec );  //maybe add progress dialog? other parameters (e.g. scale, dpi)?
 
     /**
-     * Set reference scale for output
-     * \param d scale denominator
+     * Set reference \a scale for output.
+     * The \a scale value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
+     * \since QGIS 3.0
+     * \see symbologyScale()
      */
-    void setSymbologyScaleDenominator( double d ) { mSymbologyScaleDenominator = d; }
+    void setSymbologyScale( double scale ) { mSymbologyScale = scale; }
 
     /**
-     * Retrieve reference scale for output
-     * \returns reference scale
-     * \see setSymbologyScaleDenominator
+     * Returns the reference scale for output.
+     * The  scale value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
+     * \since QGIS 3.0
+     * \see setSymbologyScale()
      */
-    double symbologyScaleDenominator() const { return mSymbologyScaleDenominator; }
+    double symbologyScale() const { return mSymbologyScale; }
 
     /**
      * Retrieve map units
@@ -115,14 +118,14 @@ class CORE_EXPORT QgsDxfExport
      * Set symbology export mode
      * \param e the mode
      */
-    void setSymbologyExport( SymbologyExport e ) { mSymbologyExport = e; }
+    void setSymbologyExport( QgsDxfExport::SymbologyExport e ) { mSymbologyExport = e; }
 
     /**
      * Get symbology export mode
      * \returns mode
      * \see setSymbologyExport
      */
-    SymbologyExport symbologyExport() const { return mSymbologyExport; }
+    QgsDxfExport::SymbologyExport symbologyExport() const { return mSymbologyExport; }
 
     /**
      * Set extent of area to export
@@ -204,7 +207,7 @@ class CORE_EXPORT QgsDxfExport
      * \note available in Python bindings as writeGroupPointV2
      * \since QGIS 2.15
      */
-    void writeGroup( int code, const QgsPointV2 &p ) SIP_PYNAME( writeGroupPointV2 );
+    void writeGroup( int code, const QgsPoint &p ) SIP_PYNAME( writeGroupPointV2 );
 
     /**
      * Write a group code with color value
@@ -273,35 +276,38 @@ class CORE_EXPORT QgsDxfExport
 
     //! Write line (as a polyline)
     //! \since QGIS 2.15
-    void writeLine( const QgsPointV2 &pt1, const QgsPointV2 &pt2, const QString &layer, const QString &lineStyleName, const QColor &color, double width = -1 );
+    void writeLine( const QgsPoint &pt1, const QgsPoint &pt2, const QString &layer, const QString &lineStyleName, const QColor &color, double width = -1 );
 
     //! Write point
     //! \note available in Python bindings as writePointV2
     //! \since QGIS 2.15
-    void writePoint( const QString &layer, const QColor &color, const QgsPointV2 &pt ) SIP_PYNAME( writePointV2 );
+    void writePoint( const QString &layer, const QColor &color, const QgsPoint &pt ) SIP_PYNAME( writePointV2 );
 
     //! Write filled circle (as hatch)
     //! \note available in Python bindings as writePointV2
     //! \since QGIS 2.15
-    void writeFilledCircle( const QString &layer, const QColor &color, const QgsPointV2 &pt, double radius ) SIP_PYNAME( writeFillCircleV2 );
+    void writeFilledCircle( const QString &layer, const QColor &color, const QgsPoint &pt, double radius ) SIP_PYNAME( writeFillCircleV2 );
 
     //! Write circle (as polyline)
     //! \note available in Python bindings as writeCircleV2
     //! \since QGIS 2.15
-    void writeCircle( const QString &layer, const QColor &color, const QgsPointV2 &pt, double radius, const QString &lineStyleName, double width ) SIP_PYNAME( writeCircleV2 );
+    void writeCircle( const QString &layer, const QColor &color, const QgsPoint &pt, double radius, const QString &lineStyleName, double width ) SIP_PYNAME( writeCircleV2 );
 
     //! Write text (TEXT)
     //! \note available in Python bindings as writeTextV2
     //! \since QGIS 2.15
-    void writeText( const QString &layer, const QString &text, const QgsPointV2 &pt, double size, double angle, const QColor &color ) SIP_PYNAME( writeTextV2 );
+    void writeText( const QString &layer, const QString &text, const QgsPoint &pt, double size, double angle, const QColor &color ) SIP_PYNAME( writeTextV2 );
 
     //! Write mtext (MTEXT)
     //! \note available in Python bindings as writeMTextV2
     //! \since QGIS 2.15
-    void writeMText( const QString &layer, const QString &text, const QgsPointV2 &pt, double width, double angle, const QColor &color );
+    void writeMText( const QString &layer, const QString &text, const QgsPoint &pt, double width, double angle, const QColor &color );
 
-    //! Calculates a scaling factor to convert from map units to a specified symbol unit.
-    static double mapUnitScaleFactor( double scaleDenominator, QgsUnitTypes::RenderUnit symbolUnits, QgsUnitTypes::DistanceUnit mapUnits );
+    /**
+     * Calculates a scaling factor to convert from map units to a specified symbol unit.
+     * The \a scale parameter indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
+     */
+    static double mapUnitScaleFactor( double scale, QgsUnitTypes::RenderUnit symbolUnits, QgsUnitTypes::DistanceUnit mapUnits );
 
     //! Return cleaned layer name for use in DXF
     static QString dxfLayerName( const QString &name );
@@ -332,7 +338,7 @@ class CORE_EXPORT QgsDxfExport
     //! Extent for export, only intersecting features are exported. If the extent is an empty rectangle, all features are exported
     QgsRectangle mExtent;
     //! Scale for symbology export (used if symbols units are mm)
-    double mSymbologyScaleDenominator;
+    double mSymbologyScale;
     SymbologyExport mSymbologyExport;
     QgsUnitTypes::DistanceUnit mMapUnits;
     bool mLayerTitleAsName;
@@ -360,7 +366,7 @@ class CORE_EXPORT QgsDxfExport
     void startSection();
     void endSection();
 
-    void writePoint( const QgsPointV2 &pt, const QString &layer, const QColor &color, QgsSymbolRenderContext &ctx, const QgsSymbolLayer *symbolLayer, const QgsSymbol *symbol, double angle );
+    void writePoint( const QgsPoint &pt, const QString &layer, const QColor &color, QgsSymbolRenderContext &ctx, const QgsSymbolLayer *symbolLayer, const QgsSymbol *symbol, double angle );
     void writeDefaultLinetypes();
     void writeSymbolLayerLinetype( const QgsSymbolLayer *symbolLayer );
     void writeLinetype( const QString &styleName, const QVector<qreal> &pattern, QgsUnitTypes::RenderUnit u );

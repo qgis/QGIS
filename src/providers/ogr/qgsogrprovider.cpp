@@ -30,6 +30,9 @@ email                : sherman at mrcc.com
 #include "qgsgeometry.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgsvectorlayerexporter.h"
+#include "qgswkbtypes.h"
+#include "qgis.h"
+
 
 #define CPL_SUPRESS_CPLUSPLUS  //#spellok
 #include <gdal.h>         // to collect version information
@@ -352,8 +355,8 @@ static QString AnalyzeURI( QString const &uri,
 {
   isSubLayer = false;
   layerIndex = 0;
-  layerName = QString::null;
-  subsetString = QString::null;
+  layerName = QString();
+  subsetString = QString();
   ogrGeometryTypeFilter = wkbUnknown;
 
   QgsDebugMsg( "Data source uri is [" + uri + ']' );
@@ -1173,7 +1176,12 @@ size_t QgsOgrProvider::layerCount() const
  */
 QgsWkbTypes::Type QgsOgrProvider::wkbType() const
 {
-  return static_cast<QgsWkbTypes::Type>( mOGRGeomType );
+  QgsWkbTypes::Type wkb = static_cast<QgsWkbTypes::Type>( mOGRGeomType );
+  if ( ogrDriverName == QLatin1String( "ESRI Shapefile" ) && ( wkb == QgsWkbTypes::LineString || wkb == QgsWkbTypes::Polygon ) )
+  {
+    wkb = QgsWkbTypes::multiType( wkb );
+  }
+  return wkb;
 }
 
 /**
@@ -1226,7 +1234,7 @@ OGRGeometryH QgsOgrProvider::ConvertGeometryIfNecessary( OGRGeometryH hGeom )
   return OGR_G_ForceTo( hGeom, layerGeomType, nullptr );
 }
 
-bool QgsOgrProvider::addFeaturePrivate( QgsFeature &f )
+bool QgsOgrProvider::addFeaturePrivate( QgsFeature &f, Flags flags )
 {
   bool returnValue = true;
   OGRFeatureDefnH fdef = OGR_L_GetLayerDefn( ogrLayer );
@@ -1287,7 +1295,18 @@ bool QgsOgrProvider::addFeaturePrivate( QgsFeature &f )
     QVariant attrVal = attrs.at( qgisAttId );
     if ( attrVal.isNull() || ( type != OFTString && attrVal.toString().isEmpty() ) )
     {
+// Starting with GDAL 2.2, there are 2 concepts: unset fields and null fields
+// whereas previously there was only unset fields. For a GeoJSON output,
+// leaving a field unset will cause it to not appear at all in the output
+// feature.
+// When all features of a layer have a field unset, this would cause the
+// field to not be present at all in the output, and thus on reading to
+// have disappeared. #16812
+#ifdef OGRNullMarker
+      OGR_F_SetFieldNull( feature, ogrAttId );
+#else
       OGR_F_UnsetField( feature, ogrAttId );
+#endif
     }
     else
     {
@@ -1355,7 +1374,7 @@ bool QgsOgrProvider::addFeaturePrivate( QgsFeature &f )
     pushError( tr( "OGR error creating feature %1: %2" ).arg( f.id() ).arg( CPLGetLastErrorMsg() ) );
     returnValue = false;
   }
-  else
+  else if ( !( flags & QgsFeatureSink::FastInsert ) )
   {
     QgsFeatureId id = static_cast<QgsFeatureId>( OGR_F_GetFID( feature ) );
     if ( id >= 0 )
@@ -1374,7 +1393,7 @@ bool QgsOgrProvider::addFeaturePrivate( QgsFeature &f )
 }
 
 
-bool QgsOgrProvider::addFeatures( QgsFeatureList &flist )
+bool QgsOgrProvider::addFeatures( QgsFeatureList &flist, Flags flags )
 {
   if ( !doInitialActionsForEdition() )
     return false;
@@ -1386,7 +1405,7 @@ bool QgsOgrProvider::addFeatures( QgsFeatureList &flist )
   bool returnvalue = true;
   for ( QgsFeatureList::iterator it = flist.begin(); it != flist.end(); ++it )
   {
-    if ( !addFeaturePrivate( *it ) )
+    if ( !addFeaturePrivate( *it, flags ) )
     {
       returnvalue = false;
     }
@@ -1682,7 +1701,18 @@ bool QgsOgrProvider::changeAttributeValues( const QgsChangedAttributesMap &attr_
 
       if ( it2->isNull() || ( type != OFTString && it2->toString().isEmpty() ) )
       {
+// Starting with GDAL 2.2, there are 2 concepts: unset fields and null fields
+// whereas previously there was only unset fields. For a GeoJSON output,
+// leaving a field unset will cause it to not appear at all in the output
+// feature.
+// When all features of a layer have a field unset, this would cause the
+// field to not be present at all in the output, and thus on reading to
+// have disappeared. #16812
+#ifdef OGRNullMarker
+        OGR_F_SetFieldNull( of, f );
+#else
         OGR_F_UnsetField( of, f );
+#endif
       }
       else
       {
@@ -1781,7 +1811,7 @@ bool QgsOgrProvider::changeGeometryValues( const QgsGeometryMap &geometry_map )
 
     OGRGeometryH newGeometry = nullptr;
     QByteArray wkb = it->exportToWkb();
-    // We might receive null geometries. It is ok, but don't go through the
+    // We might receive null geometries. It is OK, but don't go through the
     // OGR_G_CreateFromWkb() route then
     if ( !wkb.isEmpty() )
     {
@@ -2949,17 +2979,17 @@ QgsCoordinateReferenceSystem QgsOgrProvider::crs() const
   return srs;
 }
 
-void QgsOgrProvider::uniqueValues( int index, QList<QVariant> &uniqueValues, int limit ) const
+QSet<QVariant> QgsOgrProvider::uniqueValues( int index, int limit ) const
 {
-  uniqueValues.clear();
+  QSet<QVariant> uniqueValues;
 
   if ( !mValid || index < 0 || index >= mAttributeFields.count() )
-    return;
+    return uniqueValues;
 
   QgsField fld = mAttributeFields.at( index );
   if ( fld.name().isNull() )
   {
-    return; //not a provider field
+    return uniqueValues; //not a provider field
   }
 
   QByteArray sql = "SELECT DISTINCT " + quotedIdentifier( textEncoding()->fromUnicode( fld.name() ) );
@@ -2977,7 +3007,7 @@ void QgsOgrProvider::uniqueValues( int index, QList<QVariant> &uniqueValues, int
   if ( !l )
   {
     QgsDebugMsg( "Failed to execute SQL" );
-    return QgsVectorDataProvider::uniqueValues( index, uniqueValues, limit );
+    return QgsVectorDataProvider::uniqueValues( index, limit );
   }
 
   OGRFeatureH f;
@@ -2991,6 +3021,7 @@ void QgsOgrProvider::uniqueValues( int index, QList<QVariant> &uniqueValues, int
   }
 
   OGR_DS_ReleaseResultSet( ogrDataSource, l );
+  return uniqueValues;
 }
 
 QStringList QgsOgrProvider::uniqueStringsMatching( int index, const QString &substring, int limit, QgsFeedback *feedback ) const
@@ -3819,7 +3850,7 @@ QGISEXTERN bool saveStyle( const QString &uri, const QString &qmlStyle, const QS
   if ( !hLayer )
   {
     // if not create it
-    // Note: we use the same schema as in the spatialite and postgre providers
+    // Note: we use the same schema as in the SpatiaLite and postgre providers
     //for cross interoperability
 
     char **options = nullptr;

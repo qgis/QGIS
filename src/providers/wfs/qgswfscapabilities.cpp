@@ -297,8 +297,8 @@ void QgsWfsCapabilities::capabilitiesReplyFinished()
     QDomNodeList operationNodes = doc.elementsByTagName( "Operation" );
     for ( int i = 0; i < operationNodes.count(); i++ )
     {
-      QDomElement operationElement = operationNodes.at( i ).toElement( );
-      if ( operationElement.isElement( ) && "Transaction" == operationElement.attribute( "name" ) )
+      QDomElement operationElement = operationNodes.at( i ).toElement();
+      if ( operationElement.isElement() && "Transaction" == operationElement.attribute( "name" ) )
       {
         insertCap = true;
         updateCap = true;
@@ -394,10 +394,10 @@ void QgsWfsCapabilities::capabilitiesReplyFinished()
           QgsCoordinateReferenceSystem crsWGS84 = QgsCoordinateReferenceSystem::fromOgcWmsCrs( QStringLiteral( "CRS:84" ) );
           QgsCoordinateTransform ct( crsWGS84, crs );
 
-          QgsPoint ptMin( featureType.bbox.xMinimum(), featureType.bbox.yMinimum() );
-          QgsPoint ptMinBack( ct.transform( ct.transform( ptMin, QgsCoordinateTransform::ForwardTransform ), QgsCoordinateTransform::ReverseTransform ) );
-          QgsPoint ptMax( featureType.bbox.xMaximum(), featureType.bbox.yMaximum() );
-          QgsPoint ptMaxBack( ct.transform( ct.transform( ptMax, QgsCoordinateTransform::ForwardTransform ), QgsCoordinateTransform::ReverseTransform ) );
+          QgsPointXY ptMin( featureType.bbox.xMinimum(), featureType.bbox.yMinimum() );
+          QgsPointXY ptMinBack( ct.transform( ct.transform( ptMin, QgsCoordinateTransform::ForwardTransform ), QgsCoordinateTransform::ReverseTransform ) );
+          QgsPointXY ptMax( featureType.bbox.xMaximum(), featureType.bbox.yMaximum() );
+          QgsPointXY ptMaxBack( ct.transform( ct.transform( ptMax, QgsCoordinateTransform::ForwardTransform ), QgsCoordinateTransform::ReverseTransform ) );
 
           QgsDebugMsg( featureType.bbox.toString() );
           QgsDebugMsg( ptMinBack.toString() );

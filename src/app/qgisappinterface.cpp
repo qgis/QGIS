@@ -31,11 +31,13 @@
 #include "qgsapplayertreeviewmenuprovider.h"
 #include "qgscomposer.h"
 #include "qgscomposerview.h"
+#include "qgsgui.h"
 #include "qgsmaplayer.h"
 #include "qgsmaptooladvanceddigitizing.h"
 #include "qgsmapcanvas.h"
 #include "qgsproject.h"
 #include "qgslayertreeview.h"
+#include "qgslayoutdesignerdialog.h"
 #include "qgsshortcutsmanager.h"
 #include "qgsattributedialog.h"
 #include "qgsfields.h"
@@ -43,6 +45,8 @@
 #include "qgsfeatureaction.h"
 #include "qgsactionmanager.h"
 #include "qgsattributetabledialog.h"
+#include "qgslocatorwidget.h"
+#include "qgslocator.h"
 
 
 QgisAppInterface::QgisAppInterface( QgisApp *_qgis )
@@ -58,6 +62,11 @@ QgisAppInterface::QgisAppInterface( QgisApp *_qgis )
   connect( qgis, &QgisApp::composerOpened, this, &QgisAppInterface::composerOpened );
   connect( qgis, &QgisApp::composerWillBeClosed, this, &QgisAppInterface::composerWillBeClosed );
   connect( qgis, &QgisApp::composerClosed, this, &QgisAppInterface::composerClosed );
+
+  connect( qgis, &QgisApp::layoutDesignerOpened, this, &QgisAppInterface::layoutDesignerOpened );
+  connect( qgis, &QgisApp::layoutDesignerWillBeClosed, this, &QgisAppInterface::layoutDesignerWillBeClosed );
+  connect( qgis, &QgisApp::layoutDesignerClosed, this, &QgisAppInterface::layoutDesignerClosed );
+
   connect( qgis, &QgisApp::initializationCompleted,
            this, &QgisInterface::initializationCompleted );
   connect( qgis, &QgisApp::newProject,
@@ -139,13 +148,13 @@ QgsVectorLayer *QgisAppInterface::addVectorLayer( const QString &vectorLayerPath
 
 QgsRasterLayer *QgisAppInterface::addRasterLayer( const QString &rasterLayerPath, const QString &baseName )
 {
-  QString nonNullBaseBame = baseName;
-  if ( nonNullBaseBame.isEmpty() )
+  QString nonNullBaseName = baseName;
+  if ( nonNullBaseName.isEmpty() )
   {
     QFileInfo fi( rasterLayerPath );
-    nonNullBaseBame = fi.completeBaseName();
+    nonNullBaseName = fi.completeBaseName();
   }
-  return qgis->addRasterLayer( rasterLayerPath, nonNullBaseBame );
+  return qgis->addRasterLayer( rasterLayerPath, nonNullBaseName );
 }
 
 QgsRasterLayer *QgisAppInterface::addRasterLayer( const QString &url, const QString &baseName, const QString &providerKey )
@@ -418,6 +427,38 @@ void QgisAppInterface::closeComposer( QgsComposition *composition )
   }
 }
 
+QList<QgsLayoutDesignerInterface *> QgisAppInterface::openLayoutDesigners()
+{
+  QList<QgsLayoutDesignerInterface *> designerInterfaceList;
+  if ( qgis )
+  {
+    const QSet<QgsLayoutDesignerDialog *> designerList = qgis->layoutDesigners();
+    QSet<QgsLayoutDesignerDialog *>::const_iterator it = designerList.constBegin();
+    for ( ; it != designerList.constEnd(); ++it )
+    {
+      if ( *it )
+      {
+        QgsLayoutDesignerInterface *v = ( *it )->iface();
+        if ( v )
+        {
+          designerInterfaceList << v;
+        }
+      }
+    }
+  }
+  return designerInterfaceList;
+}
+
+QgsLayoutDesignerInterface *QgisAppInterface::openLayoutDesigner( QgsLayout *layout )
+{
+  QgsLayoutDesignerDialog *designer = qgis->openLayoutDesignerDialog( layout );
+  if ( designer )
+  {
+    return designer->iface();
+  }
+  return nullptr;
+}
+
 void QgisAppInterface::showOptionsDialog( QWidget *parent, const QString &currentPage )
 {
   return qgis->showOptionsDialog( parent, currentPage );
@@ -491,12 +532,12 @@ void QgisAppInterface::removeWindow( QAction *action )
 
 bool QgisAppInterface::registerMainWindowAction( QAction *action, const QString &defaultShortcut )
 {
-  return QgsShortcutsManager::instance()->registerAction( action, defaultShortcut );
+  return QgsGui::shortcutsManager()->registerAction( action, defaultShortcut );
 }
 
 bool QgisAppInterface::unregisterMainWindowAction( QAction *action )
 {
-  return QgsShortcutsManager::instance()->unregisterAction( action );
+  return QgsGui::shortcutsManager()->unregisterAction( action );
 }
 
 void QgisAppInterface::registerMapLayerConfigWidgetFactory( QgsMapLayerConfigWidgetFactory *factory )
@@ -731,4 +772,19 @@ QList<QgsMapLayer *> QgisAppInterface::editableLayers( bool modified ) const
 int QgisAppInterface::messageTimeout()
 {
   return qgis->messageTimeout();
+}
+
+QgsStatusBar *QgisAppInterface::statusBarIface()
+{
+  return qgis->statusBarIface();
+}
+
+void QgisAppInterface::registerLocatorFilter( QgsLocatorFilter *filter )
+{
+  qgis->mLocatorWidget->locator()->registerFilter( filter );
+}
+
+void QgisAppInterface::deregisterLocatorFilter( QgsLocatorFilter *filter )
+{
+  qgis->mLocatorWidget->locator()->deregisterFilter( filter );
 }

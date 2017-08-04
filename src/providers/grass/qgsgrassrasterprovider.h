@@ -30,9 +30,7 @@ extern "C"
 {
 #include <grass/version.h>
 #include <grass/gis.h>
-#if GRASS_VERSION_MAJOR > 6
 #include <grass/raster.h>
-#endif
 }
 
 #include <QString>
@@ -64,7 +62,7 @@ class GRASS_LIB_EXPORT QgsGrassRasterValue
     void set( const QString &gisdbase, const QString &location, const QString &mapset, const QString &map );
     void stop();
     // returns raster value, NaN for no data
-    // ok is set to true if ok or false on error
+    // OK is set to true if OK or false on error
     double value( double x, double y, bool *ok );
   private:
 
@@ -144,7 +142,7 @@ class GRASS_LIB_EXPORT QgsGrassRasterProvider : public QgsRasterDataProvider
 
     bool isValid() const override;
 
-    QgsRasterIdentifyResult identify( const QgsPoint &point, QgsRaster::IdentifyFormat format, const QgsRectangle &boundingBox = QgsRectangle(), int width = 0, int height = 0, int dpi = 96 ) override;
+    QgsRasterIdentifyResult identify( const QgsPointXY &point, QgsRaster::IdentifyFormat format, const QgsRectangle &boundingBox = QgsRectangle(), int width = 0, int height = 0, int dpi = 96 ) override;
 
     /**
      * \brief   Returns the caption error text for the last error in this provider

@@ -31,9 +31,9 @@ import random
 
 from qgis.PyQt.QtGui import QIcon
 
-from qgis.core import QgsFeature, QgsProcessingUtils
+from qgis.core import QgsFeature, QgsFeatureSink, QgsProcessingUtils
 
-from processing.core.GeoAlgorithm import GeoAlgorithm
+from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from processing.core.parameters import ParameterSelection
 from processing.core.parameters import ParameterVector
@@ -44,7 +44,7 @@ from processing.core.outputs import OutputVector
 pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
 
-class RandomSelectionWithinSubsets(GeoAlgorithm):
+class RandomSelectionWithinSubsets(QgisAlgorithm):
 
     INPUT = 'INPUT'
     METHOD = 'METHOD'
@@ -58,13 +58,10 @@ class RandomSelectionWithinSubsets(GeoAlgorithm):
     def group(self):
         return self.tr('Vector selection tools')
 
-    def name(self):
-        return 'randomselectionwithinsubsets'
+    def __init__(self):
+        super().__init__()
 
-    def displayName(self):
-        return self.tr('Random selection within subsets')
-
-    def defineCharacteristics(self):
+    def initAlgorithm(self, config=None):
         self.methods = [self.tr('Number of selected features'),
                         self.tr('Percentage of selected features')]
 
@@ -79,7 +76,13 @@ class RandomSelectionWithinSubsets(GeoAlgorithm):
 
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Selection stratified'), True))
 
-    def processAlgorithm(self, context, feedback):
+    def name(self):
+        return 'randomselectionwithinsubsets'
+
+    def displayName(self):
+        return self.tr('Random selection within subsets')
+
+    def processAlgorithm(self, parameters, context, feedback):
         filename = self.getParameterValue(self.INPUT)
 
         layer = QgsProcessingUtils.mapLayerFromString(filename, context)
@@ -109,7 +112,7 @@ class RandomSelectionWithinSubsets(GeoAlgorithm):
         inFeat = QgsFeature()
 
         current = 0
-        total = 100.0 / (featureCount * len(unique))
+        total = 100.0 / (featureCount * len(unique)) if featureCount else 1
 
         if not len(unique) == featureCount:
             for i in unique:

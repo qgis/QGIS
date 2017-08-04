@@ -30,6 +30,9 @@
 #ifndef PAL_PRIORITYQUEUE_H
 #define PAL_PRIORITYQUEUE_H
 
+#define SIP_NO_FILE
+
+
 #include <iostream>
 
 #define LEFT(x) (2*x+1)

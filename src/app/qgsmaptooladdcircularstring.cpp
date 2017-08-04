@@ -21,7 +21,7 @@
 #include "qgsgeometryutils.h"
 #include "qgslinestring.h"
 #include "qgsmapcanvas.h"
-#include "qgspointv2.h"
+#include "qgspoint.h"
 #include "qgisapp.h"
 
 QgsMapToolAddCircularString::QgsMapToolAddCircularString( QgsMapToolCapture *parentTool, QgsMapCanvas *canvas, CaptureMode mode )
@@ -152,9 +152,9 @@ void QgsMapToolAddCircularString::activate()
         if ( curve )
         {
           //mParentTool->captureCurve() is in layer coordinates, but we need map coordinates
-          QgsPointV2 endPointLayerCoord = curve->endPoint();
-          QgsPoint mapPoint = toMapCoordinates( mCanvas->currentLayer(), QgsPoint( endPointLayerCoord.x(), endPointLayerCoord.y() ) );
-          mPoints.append( QgsPointV2( mapPoint ) );
+          QgsPoint endPointLayerCoord = curve->endPoint();
+          QgsPointXY mapPoint = toMapCoordinates( mCanvas->currentLayer(), QgsPointXY( endPointLayerCoord.x(), endPointLayerCoord.y() ) );
+          mPoints.append( QgsPoint( mapPoint ) );
           if ( !mTempRubberBand )
           {
             mTempRubberBand = createGeometryRubberBand( ( mode() == CapturePolygon ) ? QgsWkbTypes::PolygonGeometry : QgsWkbTypes::LineGeometry, true );
@@ -162,7 +162,7 @@ void QgsMapToolAddCircularString::activate()
           }
           QgsCircularString *c = new QgsCircularString();
           QgsPointSequence rubberBandPoints = mPoints;
-          rubberBandPoints.append( QgsPointV2( mapPoint ) );
+          rubberBandPoints.append( QgsPoint( mapPoint ) );
           c->setPoints( rubberBandPoints );
           mTempRubberBand->setGeometry( c );
         }
@@ -188,13 +188,13 @@ void QgsMapToolAddCircularString::createCenterPointRubberBand()
     if ( rubberBandGeom )
     {
       QgsVertexId idx( 0, 0, 2 );
-      QgsPointV2 pt = rubberBandGeom->vertexAt( idx );
+      QgsPoint pt = rubberBandGeom->vertexAt( idx );
       updateCenterPointRubberBand( pt );
     }
   }
 }
 
-void QgsMapToolAddCircularString::updateCenterPointRubberBand( const QgsPointV2 &pt )
+void QgsMapToolAddCircularString::updateCenterPointRubberBand( const QgsPoint &pt )
 {
   if ( !mShowCenterPointRubberBand || !mCenterPointRubberBand || mPoints.size() < 2 )
   {
@@ -214,7 +214,7 @@ void QgsMapToolAddCircularString::updateCenterPointRubberBand( const QgsPointV2 
   csPoints.append( pt );
   cs->setPoints( csPoints );
 
-  QgsPointV2 center;
+  QgsPoint center;
   double radius;
   QgsGeometryUtils::circleCenterRadius( csPoints.at( 0 ), csPoints.at( 1 ), csPoints.at( 2 ), radius, center.rx(), center.ry() );
 

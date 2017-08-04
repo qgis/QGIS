@@ -27,6 +27,8 @@ class QgsRendererCategory;
 #include "ui_qgscategorizedsymbolrendererv2widget.h"
 #include "qgis_gui.h"
 
+
+#ifndef SIP_RUN
 ///@cond PRIVATE
 
 class GUI_EXPORT QgsCategorizedSymbolRendererModel : public QAbstractItemModel
@@ -78,6 +80,8 @@ class QgsCategorizedSymbolRendererViewStyle: public QProxyStyle
 };
 
 ///@endcond
+
+#endif
 
 /** \ingroup gui
  * \class QgsCategorizedSymbolRendererWidget
@@ -141,6 +145,7 @@ class GUI_EXPORT QgsCategorizedSymbolRendererWidget : public QgsRendererWidget, 
 
     void cleanUpSymbolSelector( QgsPanelWidget *container );
     void updateSymbolsFromWidget();
+    void dataDefinedSizeLegend();
 
   protected:
 

@@ -48,6 +48,7 @@ class QgsSpatiaLiteFeatureSource : public QgsAbstractFeatureSource
     bool mSpatialIndexRTree;
     bool mSpatialIndexMbrCache;
     QString mSqlitePath;
+    QgsCoordinateReferenceSystem mCrs;
 
     friend class QgsSpatiaLiteFeatureIterator;
     friend class QgsSpatiaLiteExpressionCompiler;
@@ -101,6 +102,9 @@ class QgsSpatiaLiteFeatureIterator : public QgsAbstractFeatureIteratorFromSource
 
     bool mOrderByCompiled;
     bool mExpressionCompiled;
+
+    QgsRectangle mFilterRect;
+    QgsCoordinateTransform mTransform;
 };
 
 #endif // QGSSPATIALITEFEATUREITERATOR_H

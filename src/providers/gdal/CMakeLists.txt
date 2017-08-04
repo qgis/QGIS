@@ -9,19 +9,20 @@ SET(GDAL_MOC_HDRS
 )
 
 INCLUDE_DIRECTORIES (
-  ../../core
-  ../../core/raster
-  ../../core/geometry
-  ../../core/metadata
-  ../../gui
-  ${CMAKE_CURRENT_BINARY_DIR}/../../ui
+  ${CMAKE_SOURCE_DIR}/src/core
+  ${CMAKE_SOURCE_DIR}/src/core/expression
+  ${CMAKE_SOURCE_DIR}/src/core/raster
+  ${CMAKE_SOURCE_DIR}/src/core/geometry
+  ${CMAKE_SOURCE_DIR}/src/core/metadata
+  ${CMAKE_SOURCE_DIR}/src/gui
+
   ${CMAKE_BINARY_DIR}/src/core
   ${CMAKE_BINARY_DIR}/src/gui
+  ${CMAKE_BINARY_DIR}/src/ui
 )
 INCLUDE_DIRECTORIES (SYSTEM
   ${GDAL_INCLUDE_DIR}
-#  ${PROJ_INCLUDE_DIR}
-#  ${GEOS_INCLUDE_DIR}
+  ${GEOS_INCLUDE_DIR}
 )
 
 QT5_WRAP_CPP(GDAL_MOC_SRCS ${GDAL_MOC_HDRS})
@@ -29,8 +30,13 @@ ADD_LIBRARY (gdalprovider MODULE ${GDAL_SRCS} ${GDAL_MOC_SRCS})
 
 TARGET_LINK_LIBRARIES (gdalprovider
   qgis_core
-  qgis_gui
 )
+
+IF (WITH_GUI)
+  TARGET_LINK_LIBRARIES (gdalprovider
+    qgis_gui
+  )
+ENDIF ()
 
 # clang-tidy
 IF(CLANG_TIDY_EXE)

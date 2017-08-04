@@ -25,6 +25,7 @@
 #include "qgisapp.h"
 #include "qgsdwgimporter.h"
 #include "qgsvectorlayer.h"
+#include "qgsvectorlayerlabeling.h"
 #include "qgsvectordataprovider.h"
 #include "qgsproject.h"
 #include "qgsfeatureiterator.h"
@@ -355,7 +356,6 @@ void QgsDwgImportDialog::createGroup( QgsLayerTreeGroup *group, QString name, QS
     QgsPalLayerSettings pls;
     pls.setFormat( tf );
 
-    pls.enabled = true;
     pls.drawLabels = true;
     pls.fieldName = "text";
     pls.wrapChar = "\\P";
@@ -396,10 +396,10 @@ void QgsDwgImportDialog::createGroup( QgsLayerTreeGroup *group, QString name, QS
         " WHEN alignv=3 THEN 'Top'"
         " END"
         " END" ).arg( DRW::MTEXT ) ) );
-    pls.dataDefinedProperties().setProperty( QgsPalLayerSettings::Rotation, QgsProperty::fromExpression( QStringLiteral( "angle*180.0/pi()" ) ) );
+    pls.dataDefinedProperties().setProperty( QgsPalLayerSettings::LabelRotation, QgsProperty::fromExpression( QStringLiteral( "360-angle*180.0/pi()" ) ) );
 
     pls.placement = QgsPalLayerSettings::OrderedPositionsAroundPoint;
-    pls.writeToLayer( l );
+    l->setLabeling( new QgsVectorLayerSimpleLabeling( pls ) );
   }
 
   l = layer( layerGroup, layerFilter, "points" );

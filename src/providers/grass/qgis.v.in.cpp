@@ -27,12 +27,7 @@ extern "C"
 #include <grass/version.h>
 #include <grass/gis.h>
 #include <grass/dbmi.h>
-
-#if GRASS_VERSION_MAJOR < 7
-#include <grass/Vect.h>
-#else
 #include <grass/vector.h>
-#endif
 }
 
 #include <QByteArray>
@@ -50,7 +45,7 @@ extern "C"
 
 static struct line_pnts *line = Vect_new_line_struct();
 
-void writePoint( struct Map_info *map, int type, const QgsPoint &point, struct line_cats *cats )
+void writePoint( struct Map_info *map, int type, const QgsPointXY &point, struct line_cats *cats )
 {
   Vect_reset_line( line );
   Vect_append_point( line, point.x(), point.y(), 0 );
@@ -60,7 +55,7 @@ void writePoint( struct Map_info *map, int type, const QgsPoint &point, struct l
 void writePolyline( struct Map_info *map, int type, const QgsPolyline &polyline, struct line_cats *cats )
 {
   Vect_reset_line( line );
-  Q_FOREACH ( const QgsPoint &point, polyline )
+  Q_FOREACH ( const QgsPointXY &point, polyline )
   {
     Vect_append_point( line, point.x(), point.y(), 0 );
   }
@@ -258,13 +253,13 @@ int main( int argc, char **argv )
 
       if ( geometryType == QgsWkbTypes::Point )
       {
-        QgsPoint point = geometry.asPoint();
+        QgsPointXY point = geometry.asPoint();
         writePoint( map, GV_POINT, point, cats );
       }
       else if ( geometryType == QgsWkbTypes::MultiPoint )
       {
         QgsMultiPoint multiPoint = geometry.asMultiPoint();
-        Q_FOREACH ( const QgsPoint &point, multiPoint )
+        Q_FOREACH ( const QgsPointXY &point, multiPoint )
         {
           writePoint( map, GV_POINT, point, cats );
         }
@@ -379,12 +374,8 @@ int main( int argc, char **argv )
     G_message( "Merging lines" );
     Vect_merge_lines( map, GV_BOUNDARY, nullptr, nullptr );
     G_message( "Removing bridges" );
-#if GRASS_VERSION_MAJOR < 7
-    Vect_remove_bridges( map, nullptr );
-#else
     int linesRemoved, bridgesRemoved;
     Vect_remove_bridges( map, nullptr, &linesRemoved, &bridgesRemoved );
-#endif
     G_message( "Attaching islands" );
     Vect_build_partial( map, GV_BUILD_ATTACH_ISLES );
 
@@ -400,7 +391,7 @@ int main( int argc, char **argv )
         // TODO: send warning
         continue;
       }
-      QgsPoint point( x, y );
+      QgsPointXY point( x, y );
       QgsFeature feature( area );
       feature.setGeometry( QgsGeometry::fromPoint( point ) );
       feature.setValid( true );
@@ -455,7 +446,7 @@ int main( int argc, char **argv )
     count = 0;
     Q_FOREACH ( const QgsFeature &centroid, centroids.values() )
     {
-      QgsPoint point = centroid.geometry().asPoint();
+      QgsPointXY point = centroid.geometry().asPoint();
 
       if ( centroid.attributes().size() > 0 )
       {

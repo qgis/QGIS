@@ -166,38 +166,31 @@ void QgsOracleSourceSelectDelegate::setModelData( QWidget *editor, QAbstractItem
   }
 }
 
-QgsOracleSourceSelect::QgsOracleSourceSelect( QWidget *parent, Qt::WindowFlags fl, bool managerMode, bool embeddedMode )
-  : QDialog( parent, fl )
-  , mManagerMode( managerMode )
-  , mEmbeddedMode( embeddedMode )
+QgsOracleSourceSelect::QgsOracleSourceSelect( QWidget *parent, Qt::WindowFlags fl, QgsProviderRegistry::WidgetMode theWidgetMode )
+  : QgsAbstractDataSourceWidget( parent, fl, theWidgetMode )
   , mColumnTypeThread( 0 )
   , mIsConnected( false )
 {
   setupUi( this );
+  setupButton( buttonBox );
 
-  if ( mEmbeddedMode )
+  if ( widgetMode() != QgsProviderRegistry::WidgetMode::None )
   {
-    buttonBox->button( QDialogButtonBox::Close )->hide();
+    mHoldDialogOpen->hide();
   }
   else
   {
     setWindowTitle( tr( "Add Oracle Table(s)" ) );
   }
 
-  mAddButton = new QPushButton( tr( "&Add" ) );
-  mAddButton->setEnabled( false );
-
   mBuildQueryButton = new QPushButton( tr( "&Set Filter" ) );
   mBuildQueryButton->setToolTip( tr( "Set Filter" ) );
   mBuildQueryButton->setDisabled( true );
 
-  if ( !mManagerMode )
+  if ( widgetMode() != QgsProviderRegistry::WidgetMode::Manager )
   {
-    buttonBox->addButton( mAddButton, QDialogButtonBox::ActionRole );
-    connect( mAddButton, SIGNAL( clicked() ), this, SLOT( addTables() ) );
-
     buttonBox->addButton( mBuildQueryButton, QDialogButtonBox::ActionRole );
-    connect( mBuildQueryButton, SIGNAL( clicked() ), this, SLOT( buildQuery() ) );
+    connect( mBuildQueryButton, &QAbstractButton::clicked, this, &QgsOracleSourceSelect::buildQuery );
   }
 
   mSearchModeComboBox->addItem( tr( "Wildcard" ) );
@@ -224,7 +217,7 @@ QgsOracleSourceSelect::QgsOracleSourceSelect( QWidget *parent, Qt::WindowFlags f
   mTablesTreeView->setEditTriggers( QAbstractItemView::CurrentChanged );
   mTablesTreeView->setItemDelegate( mTablesTreeDelegate );
 
-  connect( mTablesTreeView->selectionModel(), SIGNAL( selectionChanged( const QItemSelection &, const QItemSelection & ) ), this, SLOT( treeWidgetSelectionChanged( const QItemSelection &, const QItemSelection & ) ) );
+  connect( mTablesTreeView->selectionModel(), &QItemSelectionModel::selectionChanged, this, &QgsOracleSourceSelect::treeWidgetSelectionChanged );
 
   QgsSettings settings;
   mTablesTreeView->setSelectionMode( settings.value( "qgis/addOracleDC", false ).toBool() ?
@@ -358,9 +351,9 @@ void QgsOracleSourceSelect::on_mTablesTreeView_clicked( const QModelIndex &index
 void QgsOracleSourceSelect::on_mTablesTreeView_doubleClicked( const QModelIndex &index )
 {
   QgsSettings settings;
-  if ( settings.value( "qgis/addOracleDC", false ).toBool() )
+  if ( settings.value( QStringLiteral( "qgis/addOracleDC" ), false ).toBool() )
   {
-    addTables();
+    addClicked();
   }
   else
   {
@@ -444,12 +437,12 @@ QgsOracleSourceSelect::~QgsOracleSourceSelect()
   }
 
   QgsSettings settings;
-  settings.setValue( "/Windows/OracleSourceSelect/geometry", saveGeometry() );
-  settings.setValue( "/Windows/OracleSourceSelect/HoldDialogOpen", mHoldDialogOpen->isChecked() );
+  settings.setValue( QStringLiteral( "/Windows/OracleSourceSelect/geometry" ), saveGeometry() );
+  settings.setValue( QStringLiteral( "/Windows/OracleSourceSelect/HoldDialogOpen" ), mHoldDialogOpen->isChecked() );
 
   for ( int i = 0; i < mTableModel.columnCount(); i++ )
   {
-    settings.setValue( QString( "/Windows/OracleSourceSelect/columnWidths/%1" ).arg( i ), mTablesTreeView->columnWidth( i ) );
+    settings.setValue( QStringLiteral( "Windows/OracleSourceSelect/columnWidths/%1" ).arg( i ), mTablesTreeView->columnWidth( i ) );
   }
 }
 
@@ -471,7 +464,7 @@ void QgsOracleSourceSelect::populateConnectionList()
 }
 
 // Slot for performing action when the Add button is clicked
-void QgsOracleSourceSelect::addTables()
+void QgsOracleSourceSelect::addClicked()
 {
   mSelectedTables.clear();
 
@@ -493,8 +486,8 @@ void QgsOracleSourceSelect::addTables()
   }
   else
   {
-    emit addDatabaseLayers( mSelectedTables, "oracle" );
-    if ( !mHoldDialogOpen->isChecked() )
+    emit addDatabaseLayers( mSelectedTables, QStringLiteral( "oracle" ) );
+    if ( !mHoldDialogOpen->isChecked() && widgetMode() == QgsProviderRegistry::WidgetMode::None )
     {
       accept();
     }
@@ -541,11 +534,6 @@ void QgsOracleSourceSelect::on_btnConnect_clicked()
 void QgsOracleSourceSelect::finishList()
 {
   QApplication::restoreOverrideCursor();
-
-#if 0
-  for ( int i = 0; i < QgsOracleTableModel::DbtmColumns; i++ )
-    mTablesTreeView->resizeColumnToContents( i );
-#endif
 
   mTablesTreeView->sortByColumn( QgsOracleTableModel::DbtmTable, Qt::AscendingOrder );
   mTablesTreeView->sortByColumn( QgsOracleTableModel::DbtmOwner, Qt::AscendingOrder );
@@ -680,5 +668,5 @@ void QgsOracleSourceSelect::loadTableFromCache()
 void QgsOracleSourceSelect::treeWidgetSelectionChanged( const QItemSelection &selected, const QItemSelection &deselected )
 {
   Q_UNUSED( deselected )
-  mAddButton->setEnabled( !selected.isEmpty() );
+  emit enableButtons( !selected.isEmpty() );
 }

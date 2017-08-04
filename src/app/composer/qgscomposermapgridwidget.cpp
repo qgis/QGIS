@@ -35,6 +35,8 @@ QgsComposerMapGridWidget::QgsComposerMapGridWidget( QgsComposerMapGrid *mapGrid,
   setupUi( this );
   setPanelTitle( tr( "Map grid properties" ) );
 
+  mAnnotationFontButton->setMode( QgsFontButton::ModeQFont );
+
   blockAllSignals( true );
 
   mGridTypeComboBox->insertItem( 0, tr( "Solid" ) );
@@ -57,8 +59,8 @@ QgsComposerMapGridWidget::QgsComposerMapGridWidget( QgsComposerMapGrid *mapGrid,
   mAnnotationFormatComboBox->addItem( tr( "Degree, minute, second aligned" ), QgsComposerMapGrid::DegreeMinuteSecondPadded );
   mAnnotationFormatComboBox->addItem( tr( "Custom" ), QgsComposerMapGrid::CustomFormat );
 
-  mAnnotationFontColorButton->setColorDialogTitle( tr( "Select font color" ) );
-  mAnnotationFontColorButton->setAllowAlpha( true );
+  mAnnotationFontColorButton->setColorDialogTitle( tr( "Select Font Color" ) );
+  mAnnotationFontColorButton->setAllowOpacity( true );
   mAnnotationFontColorButton->setContext( QStringLiteral( "composer" ) );
 
   insertAnnotationDisplayEntries( mAnnotationDisplayLeftComboBox );
@@ -76,20 +78,20 @@ QgsComposerMapGridWidget::QgsComposerMapGridWidget( QgsComposerMapGrid *mapGrid,
   insertAnnotationDirectionEntries( mAnnotationDirectionComboBoxTop );
   insertAnnotationDirectionEntries( mAnnotationDirectionComboBoxBottom );
 
-  mGridFramePenColorButton->setColorDialogTitle( tr( "Select grid frame color" ) );
-  mGridFramePenColorButton->setAllowAlpha( true );
+  mGridFramePenColorButton->setColorDialogTitle( tr( "Select Grid Frame Color" ) );
+  mGridFramePenColorButton->setAllowOpacity( true );
   mGridFramePenColorButton->setContext( QStringLiteral( "composer" ) );
   mGridFramePenColorButton->setNoColorString( tr( "Transparent frame" ) );
   mGridFramePenColorButton->setShowNoColor( true );
 
-  mGridFrameFill1ColorButton->setColorDialogTitle( tr( "Select grid frame fill color" ) );
-  mGridFrameFill1ColorButton->setAllowAlpha( true );
+  mGridFrameFill1ColorButton->setColorDialogTitle( tr( "Select Grid Frame Fill Color" ) );
+  mGridFrameFill1ColorButton->setAllowOpacity( true );
   mGridFrameFill1ColorButton->setContext( QStringLiteral( "composer" ) );
   mGridFrameFill1ColorButton->setNoColorString( tr( "Transparent fill" ) );
   mGridFrameFill1ColorButton->setShowNoColor( true );
 
-  mGridFrameFill2ColorButton->setColorDialogTitle( tr( "Select grid frame fill color" ) );
-  mGridFrameFill2ColorButton->setAllowAlpha( true );
+  mGridFrameFill2ColorButton->setColorDialogTitle( tr( "Select Grid Frame Fill Color" ) );
+  mGridFrameFill2ColorButton->setAllowOpacity( true );
   mGridFrameFill2ColorButton->setContext( QStringLiteral( "composer" ) );
   mGridFrameFill2ColorButton->setNoColorString( tr( "Transparent fill" ) );
   mGridFrameFill2ColorButton->setShowNoColor( true );
@@ -100,6 +102,7 @@ QgsComposerMapGridWidget::QgsComposerMapGridWidget( QgsComposerMapGrid *mapGrid,
   updateGuiElements();
 
   blockAllSignals( false );
+  connect( mAnnotationFontButton, &QgsFontButton::changed, this, &QgsComposerMapGridWidget::annotationFontChanged );
 }
 
 QgsComposerMapGridWidget::~QgsComposerMapGridWidget()
@@ -576,6 +579,7 @@ void QgsComposerMapGridWidget::setGridItems()
   initAnnotationDirectionBox( mAnnotationDirectionComboBoxBottom, mComposerMapGrid->annotationDirection( QgsComposerMapGrid::Bottom ) );
 
   mAnnotationFontColorButton->setColor( mComposerMapGrid->annotationFontColor() );
+  mAnnotationFontButton->setCurrentFont( mComposerMapGrid->annotationFont() );
 
   mAnnotationFormatComboBox->setCurrentIndex( mAnnotationFormatComboBox->findData( mComposerMapGrid->annotationFormat() ) );
   mAnnotationFormatButton->setEnabled( mComposerMapGrid->annotationFormat() == QgsComposerMapGrid::CustomFormat );
@@ -1071,7 +1075,7 @@ void QgsComposerMapGridWidget::on_mAnnotationFormatButton_clicked()
   QgsExpressionContext expressionContext = mComposerMapGrid->createExpressionContext();
 
   QgsExpressionBuilderDialog exprDlg( nullptr, mComposerMapGrid->annotationExpression(), this, QStringLiteral( "generic" ), expressionContext );
-  exprDlg.setWindowTitle( tr( "Expression based annotation" ) );
+  exprDlg.setWindowTitle( tr( "Expression Based Annotation" ) );
 
   if ( exprDlg.exec() == QDialog::Accepted )
   {
@@ -1158,23 +1162,18 @@ void QgsComposerMapGridWidget::on_mDistanceToMapFrameSpinBox_valueChanged( doubl
   mComposerMap->endCommand();
 }
 
-void QgsComposerMapGridWidget::on_mAnnotationFontButton_clicked()
+void QgsComposerMapGridWidget::annotationFontChanged()
 {
   if ( !mComposerMapGrid || !mComposerMap )
   {
     return;
   }
 
-  bool ok;
-  QFont newFont = QgisGui::getFont( ok, mComposerMapGrid->annotationFont() );
-  if ( ok )
-  {
-    mComposerMap->beginCommand( tr( "Annotation font changed" ) );
-    mComposerMapGrid->setAnnotationFont( newFont );
-    mComposerMap->updateBoundingRect();
-    mComposerMap->update();
-    mComposerMap->endCommand();
-  }
+  mComposerMap->beginCommand( tr( "Annotation font changed" ) );
+  mComposerMapGrid->setAnnotationFont( mAnnotationFontButton->currentFont() );
+  mComposerMap->updateBoundingRect();
+  mComposerMap->update();
+  mComposerMap->endCommand();
 }
 
 void QgsComposerMapGridWidget::on_mAnnotationFontColorButton_colorChanged( const QColor &color )

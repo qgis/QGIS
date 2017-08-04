@@ -28,7 +28,7 @@ __copyright__ = '(C) 2016, Victor Olaya'
 __revision__ = '$Format:%H$'
 
 import math
-from processing.core.GeoAlgorithm import GeoAlgorithm
+from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 from processing.core.parameters import ParameterMultipleInput, ParameterExtent, ParameterString, ParameterRaster, ParameterNumber
 from processing.core.outputs import OutputRaster
 from processing.tools import dataobjects
@@ -42,7 +42,7 @@ from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecution
 from processing.algs.qgis.ui.RasterCalculatorWidgets import LayersListWidgetWrapper, ExpressionWidgetWrapper
 
 
-class RasterCalculator(GeoAlgorithm):
+class RasterCalculator(QgisAlgorithm):
 
     LAYERS = 'LAYERS'
     EXTENT = 'EXTENT'
@@ -50,22 +50,13 @@ class RasterCalculator(GeoAlgorithm):
     EXPRESSION = 'EXPRESSION'
     OUTPUT = 'OUTPUT'
 
-    def icon(self):
-        return QgsApplication.getThemeIcon("/providerQgis.svg")
-
-    def svgIconPath(self):
-        return QgsApplication.iconPath("providerQgis.svg")
-
     def group(self):
         return self.tr('Raster')
 
-    def name(self):
-        return 'rastercalculator'
+    def __init__(self):
+        super().__init__()
 
-    def displayName(self):
-        return self.tr('Raster calculator')
-
-    def defineCharacteristics(self):
+    def initAlgorithm(self, config=None):
         self.addParameter(ParameterMultipleInput(self.LAYERS,
                                                  self.tr('Input layers'),
                                                  datatype=dataobjects.TYPE_RASTER,
@@ -79,7 +70,7 @@ class RasterCalculator(GeoAlgorithm):
                     param = i.param
                     if isinstance(param, ParameterRaster):
                         new = "{}@".format(os.path.basename(param.value))
-                        old = "{}@".format(param.name)
+                        old = "{}@".format(param.name())
                         value = value.replace(old, new)
 
                     for alg in list(model.algs.values()):
@@ -102,7 +93,13 @@ class RasterCalculator(GeoAlgorithm):
                                           optional=True))
         self.addOutput(OutputRaster(self.OUTPUT, self.tr('Output')))
 
-    def processAlgorithm(self, context, feedback):
+    def name(self):
+        return 'rastercalculator'
+
+    def displayName(self):
+        return self.tr('Raster calculator')
+
+    def processAlgorithm(self, parameters, context, feedback):
         expression = self.getParameterValue(self.EXPRESSION)
         layersValue = self.getParameterValue(self.LAYERS)
         layersDict = {}
@@ -110,7 +107,7 @@ class RasterCalculator(GeoAlgorithm):
             layers = [QgsProcessingUtils.mapLayerFromString(f, context) for f in layersValue.split(";")]
             layersDict = {os.path.basename(lyr.source().split(".")[0]): lyr for lyr in layers}
 
-        for lyr in QgsProcessingUtils.compatibleRasterLayers(QgsProject.instance()):
+        for lyr in QgsProcessingUtils.compatibleRasterLayers(context.project()):
             name = lyr.name()
             if (name + "@") in expression:
                 layersDict[name] = lyr
@@ -126,6 +123,8 @@ class RasterCalculator(GeoAlgorithm):
 
         output = self.getOutputValue(self.OUTPUT)
         extentValue = self.getParameterValue(self.EXTENT)
+        if not extentValue:
+            extentValue = QgsProcessingUtils.combineLayerExtents(layersValue)
 
         if extentValue:
             extent = extentValue.split(',')
@@ -163,7 +162,7 @@ class RasterCalculator(GeoAlgorithm):
         for i in list(model.inputs.values()):
             param = i.param
             if isinstance(param, ParameterRaster) and "{}@".format(param.name) in expression:
-                values.append(ValueFromInput(param.name))
+                values.append(ValueFromInput(param.name()))
 
         if algorithm.name:
             dependent = model.getDependentAlgorithms(algorithm.name)

@@ -43,8 +43,8 @@ def checkParameterValuesBeforeExecuting(alg):
     return alg.tr("You need to set at least source/sink_where or source/sink_cats parameters for each set!")
 
 
-def processCommand(alg):
-    incorporatePoints(alg)
+def processCommand(alg, parameters):
+    incorporatePoints(alg, parameters)
 
 
 def processOutputs(alg):

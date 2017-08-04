@@ -15,15 +15,15 @@
 
 
 
-typedef QVector<QgsPoint> QgsPolyline;
+typedef QVector<QgsPointXY> QgsPolyline;
 
-typedef QVector<QVector<QgsPoint>> QgsPolygon;
+typedef QVector<QVector<QgsPointXY>> QgsPolygon;
 
-typedef QVector<QgsPoint> QgsMultiPoint;
+typedef QVector<QgsPointXY> QgsMultiPoint;
 
-typedef QVector<QVector<QgsPoint>> QgsMultiPolyline;
+typedef QVector<QVector<QgsPointXY>> QgsMultiPolyline;
 
-typedef QVector<QVector<QVector<QgsPoint>>> QgsMultiPolygon;
+typedef QVector<QVector<QVector<QgsPointXY>>> QgsMultiPolygon;
 
 
 
@@ -95,9 +95,9 @@ Copy constructor will prompt a deep copy of the object
 Creates a new geometry from a WKT string
  :rtype: QgsGeometry
 %End
-    static QgsGeometry fromPoint( const QgsPoint &point );
+    static QgsGeometry fromPoint( const QgsPointXY &point );
 %Docstring
-Creates a new geometry from a QgsPoint object
+Creates a new geometry from a QgsPointXY object
  :rtype: QgsGeometry
 %End
     static QgsGeometry fromMultiPoint( const QgsMultiPoint &multipoint );
@@ -188,6 +188,19 @@ Returns true if WKB of the geometry is of WKBMulti* type
  :rtype: bool
 %End
 
+    bool isSimple() const;
+%Docstring
+ Determines whether the geometry is simple (according to OGC definition),
+ i.e. it has no anomalous geometric points, such as self-intersection or self-tangency.
+ Uses GEOS library for the test.
+.. note::
+
+   This is useful mainly for linestrings and linear rings. Polygons are simple by definition,
+ for checking anomalies in polygon geometries one can use isGeosValid().
+.. versionadded:: 3.0
+ :rtype: bool
+%End
+
     double area() const;
 %Docstring
  Returns the area of the geometry using GEOS
@@ -211,9 +224,9 @@ Returns true if WKB of the geometry is of WKBMulti* type
  :rtype: float
 %End
 
-    QgsPoint closestVertex( const QgsPoint &point, int &atVertex /Out/, int &beforeVertex /Out/, int &afterVertex /Out/, double &sqrDist /Out/ ) const;
+    QgsPointXY closestVertex( const QgsPointXY &point, int &atVertex /Out/, int &beforeVertex /Out/, int &afterVertex /Out/, double &sqrDist /Out/ ) const;
 %Docstring
- :rtype: QgsPoint
+ :rtype: QgsPointXY
 %End
 
     double distanceToVertex( int vertex ) const;
@@ -264,7 +277,7 @@ Returns true if WKB of the geometry is of WKBMulti* type
  :rtype: bool
 %End
 
-    bool insertVertex( const QgsPointV2 &point, int beforeVertex );
+    bool insertVertex( const QgsPoint &point, int beforeVertex );
 %Docstring
  Insert a new vertex before the given vertex index,
   ring and item (first number is index 0)
@@ -289,7 +302,7 @@ Returns true if WKB of the geometry is of WKBMulti* type
  :rtype: bool
 %End
 
-    bool moveVertex( const QgsPointV2 &p, int atVertex );
+    bool moveVertex( const QgsPoint &p, int atVertex );
 %Docstring
  Moves the vertex at the given position number
   and item (first number is index 0)
@@ -321,9 +334,9 @@ Returns true if WKB of the geometry is of WKBMulti* type
  :rtype: QgsPoint
 %End
 
-    double sqrDistToVertexAt( QgsPoint &point /In/, int atVertex ) const;
+    double sqrDistToVertexAt( QgsPointXY &point /In/, int atVertex ) const;
 %Docstring
-  Returns the squared cartesian distance between the given point
+  Returns the squared Cartesian distance between the given point
   to the given vertex index (vertex at the given position number,
   ring and item (first number is index 0))
  :rtype: float
@@ -345,16 +358,16 @@ Returns true if WKB of the geometry is of WKBMulti* type
  :rtype: QgsGeometry
 %End
 
-    double closestVertexWithContext( const QgsPoint &point, int &atVertex /Out/ ) const;
+    double closestVertexWithContext( const QgsPointXY &point, int &atVertex /Out/ ) const;
 %Docstring
  Searches for the closest vertex in this geometry to the given point.
  \param point Specifiest the point for search
  \param atVertex Receives index of the closest vertex
- :return: The squared cartesian distance is also returned in sqrDist, negative number on error
+ :return: The squared Cartesian distance is also returned in sqrDist, negative number on error
  :rtype: float
 %End
 
-    double closestSegmentWithContext( const QgsPoint &point, QgsPoint &minDistPoint /Out/, int &afterVertex /Out/ ) const;
+    double closestSegmentWithContext( const QgsPointXY &point, QgsPointXY &minDistPoint /Out/, int &afterVertex /Out/ ) const;
 %Docstring
  Searches for the closest segment of geometry to the given point
  \param point Specifies the point for search
@@ -363,11 +376,11 @@ Returns true if WKB of the geometry is of WKBMulti* type
  before the closest segment is always afterVertex - 1
  \param leftOf Out: Returns if the point lies on the left of right side of the segment ( < 0 means left, > 0 means right )
  \param epsilon epsilon for segment snapping
- :return: The squared cartesian distance is also returned in sqrDist, negative number on error
+ :return: The squared Cartesian distance is also returned in sqrDist, negative number on error
  :rtype: float
 %End
 
-    int addRing( const QList<QgsPoint> &ring );
+    int addRing( const QList<QgsPointXY> &ring );
 %Docstring
  Adds a new ring to this geometry. This makes only sense for polygon and multipolygons.
 :return: 0 in case of success (ring added), 1 problem with geometry type, 2 ring not closed,
@@ -383,7 +396,7 @@ Returns true if WKB of the geometry is of WKBMulti* type
  :rtype: int
 %End
 
-    int addPart( const QList<QgsPoint> &points, QgsWkbTypes::GeometryType geomType = QgsWkbTypes::UnknownGeometry ) /PyName=addPoints/;
+    int addPart( const QList<QgsPointXY> &points, QgsWkbTypes::GeometryType geomType = QgsWkbTypes::UnknownGeometry ) /PyName=addPoints/;
 %Docstring
  Adds a new part to a the geometry.
  \param points points describing part to add
@@ -457,7 +470,7 @@ not disjoint with existing polygons of the feature
  :rtype: int
 %End
 
-    int rotate( double rotation, const QgsPoint &center );
+    int rotate( double rotation, const QgsPointXY &center );
 %Docstring
  Rotate this geometry around the Z axis
 .. versionadded:: 2.8
@@ -467,15 +480,15 @@ not disjoint with existing polygons of the feature
  :rtype: int
 %End
 
-    int splitGeometry( const QList<QgsPoint> &splitLine,
+    int splitGeometry( const QList<QgsPointXY> &splitLine,
                        QList<QgsGeometry> &newGeometries /Out/,
                        bool topological,
-                       QList<QgsPoint> &topologyTestPoints /Out/ );
+                       QList<QgsPointXY> &topologyTestPoints /Out/ );
 %Docstring
  :rtype: int
 %End
 
-    int reshapeGeometry( const QList<QgsPoint> &reshapeWithLine );
+    int reshapeGeometry( const QgsLineString &reshapeLineString );
 %Docstring
  Replaces a part of this geometry with another line
  :return: 0 in case of success
@@ -483,13 +496,6 @@ not disjoint with existing polygons of the feature
  :rtype: int
 %End
 
-    int makeDifference( const QgsGeometry *other );
-%Docstring
- Changes this geometry such that it does not intersect the other geometry
- \param other geometry that should not be intersect
- :return: 0 in case of success
- :rtype: int
-%End
 
     QgsGeometry makeDifference( const QgsGeometry &other ) const;
 %Docstring
@@ -541,7 +547,7 @@ Test for intersection with a geometry (uses GEOS)
  :rtype: bool
 %End
 
-    bool contains( const QgsPoint *p ) const;
+    bool contains( const QgsPointXY *p ) const;
 %Docstring
 Test for containment of a point (uses GEOS)
  :rtype: bool
@@ -710,6 +716,12 @@ Returns a simplified version of this geometry using a specified tolerance value
     QgsGeometry centroid() const;
 %Docstring
  Returns the center of mass of a geometry.
+
+ If the input is a NULL geometry, the output will also be a NULL geometry.
+
+ If an error was encountered while creating the result, more information can be retrieved
+ by calling `error()` on the returned geometry.
+
 .. note::
 
    for line based geometries, the center point of the line is returned,
@@ -724,6 +736,12 @@ Returns a simplified version of this geometry using a specified tolerance value
  Returns a point guaranteed to lie on the surface of a geometry. While the centroid()
  of a geometry may be located outside of the geometry itself (e.g., for concave shapes),
  the point on surface will always be inside the geometry.
+
+ If the input is a NULL geometry, the output will also be a NULL geometry.
+
+ If an error was encountered while creating the result, more information can be retrieved
+ by calling `error()` on the returned geometry.
+
 .. seealso:: centroid()
 .. seealso:: poleOfInaccessibility()
  :rtype: QgsGeometry
@@ -746,7 +764,12 @@ Returns a simplified version of this geometry using a specified tolerance value
 
     QgsGeometry convexHull() const;
 %Docstring
-Returns the smallest convex polygon that contains all the points in the geometry.
+ Returns the smallest convex polygon that contains all the points in the geometry.
+
+ If the input is a NULL geometry, the output will also be a NULL geometry.
+
+ If an error was encountered while creating the result, more information can be retrieved
+ by calling `error()` on the returned geometry.
  :rtype: QgsGeometry
 %End
 
@@ -780,10 +803,38 @@ Returns the smallest convex polygon that contains all the points in the geometry
  :rtype: QgsGeometry
 %End
 
+    QgsGeometry subdivide( int maxNodes = 256 ) const;
+%Docstring
+ Subdivides the geometry. The returned geometry will be a collection containing subdivided parts
+ from the original geometry, where no part has more then the specified maximum number of nodes (``maxNodes``).
+
+ This is useful for dividing a complex geometry into less complex parts, which are better able to be spatially
+ indexed and faster to perform further operations such as intersects on. The returned geometry parts may
+ not be valid and may contain self-intersections.
+
+ The minimum allowed value for ``maxNodes`` is 8.
+
+ Curved geometries will be segmentized before subdivision.
+
+ If the input is a NULL geometry, the output will also be a NULL geometry.
+
+ If an error was encountered while creating the result, more information can be retrieved
+ by calling `error()` on the returned geometry.
+
+.. versionadded:: 3.0
+ :rtype: QgsGeometry
+%End
+
     QgsGeometry interpolate( double distance ) const;
 %Docstring
- Return interpolated point on line at distance
-.. versionadded:: 1.9
+ Return interpolated point on line at distance.
+
+ If the input is a NULL geometry, the output will also be a NULL geometry.
+
+ If an error was encountered while creating the result, more information can be retrieved
+ by calling `error()` on the returned geometry.
+
+.. versionadded:: 2.0
 .. seealso:: lineLocatePoint()
  :rtype: QgsGeometry
 %End
@@ -818,7 +869,22 @@ Returns the smallest convex polygon that contains all the points in the geometry
 
     QgsGeometry intersection( const QgsGeometry &geometry ) const;
 %Docstring
-Returns a geometry representing the points shared by this geometry and other.
+ Returns a geometry representing the points shared by this geometry and other.
+
+ If the input is a NULL geometry, the output will also be a NULL geometry.
+
+ If an error was encountered while creating the result, more information can be retrieved
+ by calling `error()` on the returned geometry.
+ :rtype: QgsGeometry
+%End
+
+    QgsGeometry clipped( const QgsRectangle &rectangle );
+%Docstring
+ Clips the geometry using the specified ``rectangle``.
+
+ Performs a fast, non-robust intersection between the geometry and
+ a ``rectangle``. The returned geometry may be invalid.
+.. versionadded:: 3.0
  :rtype: QgsGeometry
 %End
 
@@ -826,6 +892,12 @@ Returns a geometry representing the points shared by this geometry and other.
 %Docstring
  Returns a geometry representing all the points in this geometry and other (a
  union geometry operation).
+
+ If the input is a NULL geometry, the output will also be a NULL geometry.
+
+ If an error was encountered while creating the result, more information can be retrieved
+ by calling `error()` on the returned geometry.
+
 .. note::
 
    this operation is not called union since its a reserved word in C++.
@@ -845,13 +917,23 @@ Returns a geometry representing the points shared by this geometry and other.
 
     QgsGeometry difference( const QgsGeometry &geometry ) const;
 %Docstring
-Returns a geometry representing the points making up this geometry that do not make up other.
+ Returns a geometry representing the points making up this geometry that do not make up other.
+
+ If the input is a NULL geometry, the output will also be a NULL geometry.
+
+ If an error was encountered while creating the result, more information can be retrieved
+ by calling `error()` on the returned geometry.
  :rtype: QgsGeometry
 %End
 
     QgsGeometry symDifference( const QgsGeometry &geometry ) const;
 %Docstring
-Returns a geometry representing the points making up this geometry that do not make up other.
+ Returns a geometry representing the points making up this geometry that do not make up other.
+
+ If the input is a NULL geometry, the output will also be a NULL geometry.
+
+ If an error was encountered while creating the result, more information can be retrieved
+ by calling `error()` on the returned geometry.
  :rtype: QgsGeometry
 %End
 
@@ -903,11 +985,11 @@ Returns an extruded version of this geometry.
 %End
 
 
-    QgsPoint asPoint() const;
+    QgsPointXY asPoint() const;
 %Docstring
  Return contents of the geometry as a point
  if wkbType is WKBPoint, otherwise returns [0,0]
- :rtype: QgsPoint
+ :rtype: QgsPointXY
 %End
 
     QgsPolyline asPolyline() const;
@@ -1049,14 +1131,14 @@ Ring 0 is outer ring and can't be deleted.
       public:
         Error();
         explicit Error( const QString &m );
-        Error( const QString &m, const QgsPoint &p );
+        Error( const QString &m, const QgsPointXY &p );
         QString what();
 %Docstring
  :rtype: str
 %End
-        QgsPoint where();
+        QgsPointXY where();
 %Docstring
- :rtype: QgsPoint
+ :rtype: QgsPointXY
 %End
         bool hasWhere();
 %Docstring
@@ -1064,9 +1146,16 @@ Ring 0 is outer ring and can't be deleted.
 %End
     };
 
-    void validateGeometry( QList<QgsGeometry::Error> &errors /Out/ );
+    enum ValidationMethod
+    {
+      ValidatorQgisInternal,
+      ValidatorGeos,
+    };
+
+    void validateGeometry( QList<QgsGeometry::Error> &errors /Out/, ValidationMethod method = ValidatorQgisInternal );
 %Docstring
- Validate geometry and produce a list of geometry errors
+ Validate geometry and produce a list of geometry errors.
+ The ``method`` argument dictates which validator to utilize.
 .. versionadded:: 1.5
 .. note::
 
@@ -1116,7 +1205,6 @@ Ring 0 is outer ring and can't be deleted.
 .. versionadded:: 2.10
 %End
 
-
     void draw( QPainter &p ) const;
 %Docstring
  Draws the geometry onto a QPainter
@@ -1143,6 +1231,15 @@ Ring 0 is outer ring and can't be deleted.
 .. versionadded:: 2.10
 .. seealso:: vertexIdFromVertexNr
  :rtype: int
+%End
+
+    QString error() const;
+%Docstring
+ Returns an error string referring to an error that was produced
+ when this geometry was created.
+
+.. versionadded:: 3.0
+ :rtype: str
 %End
 
 
@@ -1218,19 +1315,19 @@ Ring 0 is outer ring and can't be deleted.
         if ( o0 && o1 )
         {
           // compare polyline - polyline
-          if ( sipCanConvertToType( o0, sipType_QgsPoint, SIP_NOT_NONE ) &&
-               sipCanConvertToType( o1, sipType_QgsPoint, SIP_NOT_NONE ) &&
-               sipCanConvertToType( a0, sipType_QVector_0100QgsPoint, SIP_NOT_NONE ) &&
-               sipCanConvertToType( a1, sipType_QVector_0100QgsPoint, SIP_NOT_NONE ) )
+          if ( sipCanConvertToType( o0, sipType_QgsPointXY, SIP_NOT_NONE ) &&
+               sipCanConvertToType( o1, sipType_QgsPointXY, SIP_NOT_NONE ) &&
+               sipCanConvertToType( a0, sipType_QVector_0100QgsPointXY, SIP_NOT_NONE ) &&
+               sipCanConvertToType( a1, sipType_QVector_0100QgsPointXY, SIP_NOT_NONE ) )
           {
             QgsPolyline *p0;
             QgsPolyline *p1;
-            p0 = reinterpret_cast<QgsPolyline *>( sipConvertToType( a0, sipType_QVector_0100QgsPoint, 0, SIP_NOT_NONE, &state0, &sipIsErr ) );
-            p1 = reinterpret_cast<QgsPolyline *>( sipConvertToType( a1, sipType_QVector_0100QgsPoint, 0, SIP_NOT_NONE, &state1, &sipIsErr ) );
+            p0 = reinterpret_cast<QgsPolyline *>( sipConvertToType( a0, sipType_QVector_0100QgsPointXY, 0, SIP_NOT_NONE, &state0, &sipIsErr ) );
+            p1 = reinterpret_cast<QgsPolyline *>( sipConvertToType( a1, sipType_QVector_0100QgsPointXY, 0, SIP_NOT_NONE, &state1, &sipIsErr ) );
             if ( sipIsErr )
             {
-              sipReleaseType( p0, sipType_QVector_0100QgsPoint, state0 );
-              sipReleaseType( p1, sipType_QVector_0100QgsPoint, state1 );
+              sipReleaseType( p0, sipType_QVector_0100QgsPointXY, state0 );
+              sipReleaseType( p1, sipType_QVector_0100QgsPointXY, state1 );
             }
             else
             {
@@ -1245,19 +1342,19 @@ Ring 0 is outer ring and can't be deleted.
             if ( oo0 && oo1 )
             {
               // compare polygon - polygon
-              if ( sipCanConvertToType( oo0, sipType_QgsPoint, SIP_NOT_NONE ) &&
-                   sipCanConvertToType( oo1, sipType_QgsPoint, SIP_NOT_NONE ) &&
-                   sipCanConvertToType( a0, sipType_QVector_0600QVector_0100QgsPoint, SIP_NOT_NONE ) &&
-                   sipCanConvertToType( a1, sipType_QVector_0600QVector_0100QgsPoint, SIP_NOT_NONE ) )
+              if ( sipCanConvertToType( oo0, sipType_QgsPointXY, SIP_NOT_NONE ) &&
+                   sipCanConvertToType( oo1, sipType_QgsPointXY, SIP_NOT_NONE ) &&
+                   sipCanConvertToType( a0, sipType_QVector_0600QVector_0100QgsPointXY, SIP_NOT_NONE ) &&
+                   sipCanConvertToType( a1, sipType_QVector_0600QVector_0100QgsPointXY, SIP_NOT_NONE ) )
               {
                 QgsPolygon *p0;
                 QgsPolygon *p1;
-                p0 = reinterpret_cast<QgsPolygon *>( sipConvertToType( a0, sipType_QVector_0600QVector_0100QgsPoint, 0, SIP_NOT_NONE, &state0, &sipIsErr ) );
-                p1 = reinterpret_cast<QgsPolygon *>( sipConvertToType( a1, sipType_QVector_0600QVector_0100QgsPoint, 0, SIP_NOT_NONE, &state1, &sipIsErr ) );
+                p0 = reinterpret_cast<QgsPolygon *>( sipConvertToType( a0, sipType_QVector_0600QVector_0100QgsPointXY, 0, SIP_NOT_NONE, &state0, &sipIsErr ) );
+                p1 = reinterpret_cast<QgsPolygon *>( sipConvertToType( a1, sipType_QVector_0600QVector_0100QgsPointXY, 0, SIP_NOT_NONE, &state1, &sipIsErr ) );
                 if ( sipIsErr )
                 {
-                  sipReleaseType( p0, sipType_QVector_0600QVector_0100QgsPoint, state0 );
-                  sipReleaseType( p1, sipType_QVector_0600QVector_0100QgsPoint, state1 );
+                  sipReleaseType( p0, sipType_QVector_0600QVector_0100QgsPointXY, state0 );
+                  sipReleaseType( p1, sipType_QVector_0600QVector_0100QgsPointXY, state1 );
                 }
                 else
                 {
@@ -1272,19 +1369,19 @@ Ring 0 is outer ring and can't be deleted.
                 if ( ooo0 && ooo1 )
                 {
                   // compare multipolygon - multipolygon
-                  if ( sipCanConvertToType( ooo0, sipType_QgsPoint, SIP_NOT_NONE ) &&
-                       sipCanConvertToType( ooo1, sipType_QgsPoint, SIP_NOT_NONE ) &&
-                       sipCanConvertToType( a0, sipType_QVector_0600QVector_0600QVector_0100QgsPoint, SIP_NOT_NONE ) &&
-                       sipCanConvertToType( a1, sipType_QVector_0600QVector_0600QVector_0100QgsPoint, SIP_NOT_NONE ) )
+                  if ( sipCanConvertToType( ooo0, sipType_QgsPointXY, SIP_NOT_NONE ) &&
+                       sipCanConvertToType( ooo1, sipType_QgsPointXY, SIP_NOT_NONE ) &&
+                       sipCanConvertToType( a0, sipType_QVector_0600QVector_0600QVector_0100QgsPointXY, SIP_NOT_NONE ) &&
+                       sipCanConvertToType( a1, sipType_QVector_0600QVector_0600QVector_0100QgsPointXY, SIP_NOT_NONE ) )
                   {
                     QgsMultiPolygon *p0;
                     QgsMultiPolygon *p1;
-                    p0 = reinterpret_cast<QgsMultiPolygon *>( sipConvertToType( a0, sipType_QVector_0600QVector_0600QVector_0100QgsPoint, 0, SIP_NOT_NONE, &state0, &sipIsErr ) );
-                    p1 = reinterpret_cast<QgsMultiPolygon *>( sipConvertToType( a1, sipType_QVector_0600QVector_0600QVector_0100QgsPoint, 0, SIP_NOT_NONE, &state1, &sipIsErr ) );
+                    p0 = reinterpret_cast<QgsMultiPolygon *>( sipConvertToType( a0, sipType_QVector_0600QVector_0600QVector_0100QgsPointXY, 0, SIP_NOT_NONE, &state0, &sipIsErr ) );
+                    p1 = reinterpret_cast<QgsMultiPolygon *>( sipConvertToType( a1, sipType_QVector_0600QVector_0600QVector_0100QgsPointXY, 0, SIP_NOT_NONE, &state1, &sipIsErr ) );
                     if ( sipIsErr )
                     {
-                      sipReleaseType( p0, sipType_QVector_0600QVector_0600QVector_0100QgsPoint, state0 );
-                      sipReleaseType( p1, sipType_QVector_0600QVector_0600QVector_0100QgsPoint, state1 );
+                      sipReleaseType( p0, sipType_QVector_0600QVector_0600QVector_0100QgsPointXY, state0 );
+                      sipReleaseType( p1, sipType_QVector_0600QVector_0600QVector_0100QgsPointXY, state1 );
                     }
                     else
                     {
@@ -1322,17 +1419,17 @@ Ring 0 is outer ring and can't be deleted.
  :rtype: QgsGeometryEngine
 %End
 
-    static void convertPointList( const QList<QgsPoint> &input, QgsPointSequence &output );
+    static void convertPointList( const QList<QgsPointXY> &input, QgsPointSequence &output );
 %Docstring
- Upgrades a point list from QgsPoint to QgsPointV2
- \param input list of QgsPoint objects to be upgraded
+ Upgrades a point list from QgsPointXY to QgsPointV2
+ \param input list of QgsPointXY objects to be upgraded
  \param output destination for list of points converted to QgsPointV2
 %End
 
-    static void convertPointList( const QgsPointSequence &input, QList<QgsPoint> &output );
+    static void convertPointList( const QgsPointSequence &input, QList<QgsPointXY> &output );
 %Docstring
- Downgrades a point list from QgsPointV2 to QgsPoint
- \param input list of QgsPointV2 objects to be downgraded
+ Downgrades a point list from QgsPoint to QgsPoint
+ \param input list of QgsPoint objects to be downgraded
  \param output destination for list of points converted to QgsPoint
 %End
 

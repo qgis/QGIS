@@ -419,7 +419,7 @@ QList<QgsAuthMethodConfig> TestQgsAuthManager::registerAuthConfigs()
 void TestQgsAuthManager::doSync()
 {
   QgsAuthManager *authm = QgsAuthManager::instance();
-  QVERIFY( authm->passwordHelperSync( ) );
+  QVERIFY( authm->passwordHelperSync() );
 }
 
 void TestQgsAuthManager::testPasswordHelper()
@@ -441,7 +441,7 @@ void TestQgsAuthManager::testPasswordHelper()
 
   // Sync with wallet
   QVERIFY( authm->setMasterPassword( mPass, true ) );
-  QVERIFY( authm->masterPasswordIsSet( ) );
+  QVERIFY( authm->masterPasswordIsSet() );
   QObject::connect( authm, &QgsAuthManager::passwordHelperSuccess,
                     QApplication::instance(), &QCoreApplication::quit );
   QObject::connect( authm, &QgsAuthManager::passwordHelperFailure,
@@ -449,22 +449,22 @@ void TestQgsAuthManager::testPasswordHelper()
   QMetaObject::invokeMethod( this, "doSync", Qt::QueuedConnection );
   qApp->exec();
   authm->clearMasterPassword();
-  QVERIFY( authm->setMasterPassword( ) );
-  QVERIFY( authm->masterPasswordIsSet( ) );
+  QVERIFY( authm->setMasterPassword() );
+  QVERIFY( authm->masterPasswordIsSet() );
 
   // Delete from wallet
   authm->clearMasterPassword();
-  QVERIFY( authm->passwordHelperDelete( ) );
-  QVERIFY( ! authm->setMasterPassword( ) );
-  QVERIFY( ! authm->masterPasswordIsSet( ) );
+  QVERIFY( authm->passwordHelperDelete() );
+  QVERIFY( ! authm->setMasterPassword() );
+  QVERIFY( ! authm->masterPasswordIsSet() );
 
   // Re-sync
   QVERIFY( authm->setMasterPassword( mPass, true ) );
   QMetaObject::invokeMethod( this, "doSync", Qt::QueuedConnection );
   qApp->exec();
   authm->clearMasterPassword();
-  QVERIFY( authm->setMasterPassword( ) );
-  QVERIFY( authm->masterPasswordIsSet( ) );
+  QVERIFY( authm->setMasterPassword() );
+  QVERIFY( authm->masterPasswordIsSet() );
 
 }
 

@@ -30,6 +30,7 @@ import os
 from qgis.core import (QgsProcessingAlgorithm,
                        QgsApplication)
 from processing.core.GeoAlgorithm import GeoAlgorithm
+from copy import deepcopy
 import json
 
 
@@ -40,8 +41,9 @@ class PreconfiguredAlgorithm(GeoAlgorithm):
         with open(self.descriptionFile) as f:
             self.description = json.load(f)
         GeoAlgorithm.__init__(self)
-        self._group = ''
-        self._name = ''
+
+        self._name = self.description["name"]
+        self._group = self.description["group"]
 
     def group(self):
         return self._group
@@ -55,22 +57,12 @@ class PreconfiguredAlgorithm(GeoAlgorithm):
     def flags(self):
         return QgsProcessingAlgorithm.FlagHideFromModeler
 
-    def getCopy(self):
-        newone = self
-        newone.outputs = []
-        newone._name = self._name
-        newone._group = self._group
-        return newone
-
-    def defineCharacteristics(self):
-        self._name = self.description["name"]
-        self._group = self.description["group"]
-
-    def execute(self, context=None, feedback=None, model=None):
-        self.alg = QgsApplication.processingRegistry().algorithmById(self.description["algname"]).getCopy()
+    def execute(self, parameters, context=None, feedback=None, model=None):
+        new_parameters = deepcopy(parameters)
+        self.alg = QgsApplication.processingRegistry().createAlgorithmById(self.description["algname"])
         for name, value in list(self.description["parameters"].items()):
-            self.alg.setParameterValue(name, value)
+            new_parameters[name] = value
         for name, value in list(self.description["outputs"].items()):
             self.alg.setOutputValue(name, value)
-        self.alg.execute(feedback)
+        self.alg.execute(new_parameters, feedback)
         self.outputs = self.alg.outputs

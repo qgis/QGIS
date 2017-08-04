@@ -349,9 +349,9 @@ void QgsRasterLayerSaveAsDialog::setResolution( double xRes, double yRes, const 
     // close to margins are higher resolutions (even very, too high)
     // TODO: consider more precise resolution calculation
 
-    QgsPoint center = outputRectangle().center();
+    QgsPointXY center = outputRectangle().center();
     QgsCoordinateTransform ct( srcCrs, outputCrs() );
-    QgsPoint srsCenter = ct.transform( center, QgsCoordinateTransform::ReverseTransform );
+    QgsPointXY srsCenter = ct.transform( center, QgsCoordinateTransform::ReverseTransform );
 
     QgsRectangle srcExtent( srsCenter.x() - xRes / 2, srsCenter.y() - yRes / 2, srsCenter.x() + xRes / 2, srsCenter.y() + yRes / 2 );
 
@@ -436,23 +436,6 @@ void QgsRasterLayerSaveAsDialog::crsChanged()
   if ( outputCrs() != mPreviousCrs )
   {
     mExtentGroupBox->setOutputCrs( outputCrs() );
-    QgsExtentGroupBox::ExtentState state = mExtentGroupBox->extentState();
-
-    // Reset extent
-    // We could reproject previous but that would add additional space also if
-    // it is was not necessary or at leas it could decrease accuracy
-    if ( state == QgsExtentGroupBox::OriginalExtent )
-    {
-      mExtentGroupBox->setOutputExtentFromOriginal();
-    }
-    else if ( state == QgsExtentGroupBox::CurrentExtent )
-    {
-      mExtentGroupBox->setOutputExtentFromCurrent();
-    }
-    else
-    {
-      mExtentGroupBox->setOutputExtentFromUser( mExtentGroupBox->outputExtent(), mPreviousCrs );
-    }
 
     // Reset resolution
     if ( mResolutionRadioButton->isChecked() )

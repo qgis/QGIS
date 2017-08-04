@@ -45,11 +45,11 @@ class CORE_EXPORT QgsSingleBandGrayRenderer: public QgsRasterRenderer
     //! QgsSingleBandGrayRenderer cannot be copied. Use clone() instead.
     const QgsSingleBandGrayRenderer &operator=( const QgsSingleBandGrayRenderer & ) = delete;
 
-    QgsSingleBandGrayRenderer *clone() const override;
+    QgsSingleBandGrayRenderer *clone() const override SIP_FACTORY;
 
-    static QgsRasterRenderer *create( const QDomElement &elem, QgsRasterInterface *input );
+    static QgsRasterRenderer *create( const QDomElement &elem, QgsRasterInterface *input ) SIP_FACTORY;
 
-    QgsRasterBlock *block( int bandNo, QgsRectangle  const &extent, int width, int height, QgsRasterBlockFeedback *feedback = nullptr ) override;
+    QgsRasterBlock *block( int bandNo, const QgsRectangle &extent, int width, int height, QgsRasterBlockFeedback *feedback = nullptr ) override SIP_FACTORY;
 
     int grayBand() const { return mGrayBand; }
     void setGrayBand( int band ) { mGrayBand = band; }
@@ -62,11 +62,16 @@ class CORE_EXPORT QgsSingleBandGrayRenderer: public QgsRasterRenderer
 
     void writeXml( QDomDocument &doc, QDomElement &parentElem ) const override;
 
-    void legendSymbologyItems( QList< QPair< QString, QColor > > &symbolItems ) const override;
+    void legendSymbologyItems( QList< QPair< QString, QColor > > &symbolItems SIP_OUT ) const override;
 
     QList<int> usesBands() const override;
 
   private:
+#ifdef SIP_RUN
+    QgsSingleBandGrayRenderer( const QgsSingleBandGrayRenderer & );
+    const QgsSingleBandGrayRenderer &operator=( const QgsSingleBandGrayRenderer & );
+#endif
+
     int mGrayBand;
     Gradient mGradient;
     std::unique_ptr< QgsContrastEnhancement > mContrastEnhancement;

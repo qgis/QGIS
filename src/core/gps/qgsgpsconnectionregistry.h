@@ -51,6 +51,9 @@ class CORE_EXPORT QgsGPSConnectionRegistry
     QList< QgsGPSConnection *> connectionList() const;
 
   private:
+#ifdef SIP_RUN
+    QgsGPSConnectionRegistry( const QgsGPSConnectionRegistry &rh );
+#endif
 
     QSet<QgsGPSConnection *> mConnections;
 };

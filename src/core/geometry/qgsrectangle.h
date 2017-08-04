@@ -25,7 +25,7 @@
 class QString;
 class QRectF;
 class QgsBox3d;
-#include "qgspoint.h"
+#include "qgspointxy.h"
 
 
 /** \ingroup core
@@ -41,7 +41,7 @@ class CORE_EXPORT QgsRectangle
     //! Constructor
     QgsRectangle( double xMin = 0, double yMin = 0, double xMax = 0, double yMax = 0 );
     //! Construct a rectangle from two points. The rectangle is normalized after construction.
-    QgsRectangle( const QgsPoint &p1, const QgsPoint &p2 );
+    QgsRectangle( const QgsPointXY &p1, const QgsPointXY &p2 );
     //! Construct a rectangle from a QRectF. The rectangle is normalized after construction.
     QgsRectangle( const QRectF &qRectF );
     //! Copy constructor
@@ -51,7 +51,7 @@ class CORE_EXPORT QgsRectangle
      * Sets the rectangle from two QgsPoints. The rectangle is
      * normalised after construction.
      */
-    void set( const QgsPoint &p1, const QgsPoint &p2 );
+    void set( const QgsPointXY &p1, const QgsPointXY &p2 );
 
     /**
      * Sets the rectangle from four points. The rectangle is
@@ -143,12 +143,12 @@ class CORE_EXPORT QgsRectangle
     /**
      * Returns the center point of the rectangle.
      */
-    QgsPoint center() const { return QgsPoint( mXmin + width() / 2, mYmin + height() / 2 ); }
+    QgsPointXY center() const { return QgsPointXY( mXmin + width() / 2, mYmin + height() / 2 ); }
 
     /**
      * Scale the rectangle around its center point.
      */
-    void scale( double scaleFactor, const QgsPoint *c = nullptr );
+    void scale( double scaleFactor, const QgsPointXY *c = nullptr );
 
     /**
      * Scale the rectangle around its center point.
@@ -163,7 +163,7 @@ class CORE_EXPORT QgsRectangle
     /**
      * Updates the rectangle to include the specified point.
      */
-    void include( const QgsPoint &p );
+    void include( const QgsPointXY &p );
 
     /**
      * Get rectangle enlarged by buffer.
@@ -189,7 +189,7 @@ class CORE_EXPORT QgsRectangle
     /**
      * Return true when rectangle contains a point.
      */
-    bool contains( const QgsPoint &p ) const;
+    bool contains( const QgsPointXY &p ) const;
 
     /**
      * Expand the rectangle so that covers both the original rectangle and the given rectangle.
@@ -200,6 +200,30 @@ class CORE_EXPORT QgsRectangle
      * Expand the rectangle so that covers both the original rectangle and the given point.
      */
     void combineExtentWith( double x, double y );
+
+    /**
+     * Returns a rectangle offset from this one in the direction of the reversed vector.
+     * \since QGIS 3.0
+     */
+    QgsRectangle operator-( const QgsVector v ) const;
+
+    /**
+     * Returns a rectangle offset from this one in the direction of the vector.
+     * \since QGIS 3.0
+     */
+    QgsRectangle operator+( const QgsVector v ) const;
+
+    /**
+     * Moves this rectangle in the direction of the reversed vector.
+     * \since QGIS 3.0
+     */
+    QgsRectangle &operator-=( const QgsVector v );
+
+    /**
+     * Moves this rectangle in the direction of the vector.
+     * \since QGIS 3.0
+     */
+    QgsRectangle &operator+=( const QgsVector v );
 
     /**
      * Returns true if the rectangle is empty.
@@ -258,11 +282,6 @@ class CORE_EXPORT QgsRectangle
      * \param r1 QgsRectangle to assign from
      */
     QgsRectangle &operator=( const QgsRectangle &r1 );
-
-    /**
-     * Updates the rectangle to include another rectangle.
-     */
-    void unionRect( const QgsRectangle &rect );
 
     /**
      * Returns true if the rectangle has finite boundaries. Will

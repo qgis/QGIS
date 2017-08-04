@@ -121,7 +121,7 @@ namespace QgsWfs
       QString name = layer->name();
       if ( !layer->shortName().isEmpty() )
         name = layer->shortName();
-      name = name.replace( QLatin1String( " " ), QLatin1String( "_" ) );
+      name = name.replace( ' ', '_' );
 
       if ( typeNameList.contains( name ) )
       {
@@ -387,7 +387,7 @@ namespace QgsWfs
     // parse FEATUREID
     if ( parameters.contains( QStringLiteral( "FEATUREID" ) ) )
     {
-      QStringList fidList = parameters.value( QStringLiteral( "FEATUREID" ) ).split( QStringLiteral( "," ) );
+      QStringList fidList = parameters.value( QStringLiteral( "FEATUREID" ) ).split( ',' );
       // Verifying the 1:1 mapping between FEATUREID and PROPERTYNAME
       if ( !propertyNameList.isEmpty() && propertyNameList.size() != fidList.size() )
       {
@@ -417,13 +417,13 @@ namespace QgsWfs
           propertyName = *propertyNameIt;
         }
         // testing typename in the WFS featureID
-        if ( !fid.contains( QLatin1String( "." ) ) )
+        if ( !fid.contains( '.' ) )
         {
           throw QgsRequestNotWellFormedException( QStringLiteral( "FEATUREID has to have TYPENAME in the values" ) );
         }
 
-        QString typeName = fid.section( QStringLiteral( "." ), 0, 0 );
-        fid = fid.section( QStringLiteral( "." ), 1, 1 );
+        QString typeName = fid.section( '.', 0, 0 );
+        fid = fid.section( '.', 1, 1 );
         if ( !typeNameList.contains( typeName ) )
         {
           typeNameList << typeName;
@@ -467,23 +467,23 @@ namespace QgsWfs
         {
           QStringList propertyList;
 
-          QStringList attrList = propertyName.split( QStringLiteral( "," ) );
+          QStringList attrList = propertyName.split( ',' );
           QStringList::const_iterator alstIt;
           for ( alstIt = attrList.begin(); alstIt != attrList.end(); ++alstIt )
           {
             QString fieldName = *alstIt;
             fieldName = fieldName.trimmed();
-            if ( fieldName.contains( QLatin1String( ":" ) ) )
+            if ( fieldName.contains( ':' ) )
             {
-              fieldName = fieldName.section( QStringLiteral( ":" ), 1, 1 );
+              fieldName = fieldName.section( ':', 1, 1 );
             }
-            if ( fieldName.contains( QLatin1String( "/" ) ) )
+            if ( fieldName.contains( '/' ) )
             {
-              if ( fieldName.section( QStringLiteral( "/" ), 0, 0 ) != typeName )
+              if ( fieldName.section( '/', 0, 0 ) != typeName )
               {
                 throw QgsRequestNotWellFormedException( QStringLiteral( "PropertyName text '%1' has to contain TypeName '%2'" ).arg( fieldName ).arg( typeName ) );
               }
-              fieldName = fieldName.section( QStringLiteral( "/" ), 1, 1 );
+              fieldName = fieldName.section( '/', 1, 1 );
             }
             propertyList.append( fieldName );
           }
@@ -513,7 +513,7 @@ namespace QgsWfs
       throw QgsRequestNotWellFormedException( QStringLiteral( "TYPENAME is mandatory except if FEATUREID is used" ) );
     }
 
-    typeNameList = parameters.value( QStringLiteral( "TYPENAME" ) ).split( QStringLiteral( "," ) );
+    typeNameList = parameters.value( QStringLiteral( "TYPENAME" ) ).split( ',' );
     // Verifying the 1:1 mapping between TYPENAME and PROPERTYNAME
     if ( !propertyNameList.isEmpty() && typeNameList.size() != propertyNameList.size() )
     {
@@ -549,23 +549,23 @@ namespace QgsWfs
       {
         QStringList propertyList;
 
-        QStringList attrList = propertyName.split( QStringLiteral( "," ) );
+        QStringList attrList = propertyName.split( ',' );
         QStringList::const_iterator alstIt;
         for ( alstIt = attrList.begin(); alstIt != attrList.end(); ++alstIt )
         {
           QString fieldName = *alstIt;
           fieldName = fieldName.trimmed();
-          if ( fieldName.contains( QLatin1String( ":" ) ) )
+          if ( fieldName.contains( ':' ) )
           {
-            fieldName = fieldName.section( QStringLiteral( ":" ), 1, 1 );
+            fieldName = fieldName.section( ':', 1, 1 );
           }
-          if ( fieldName.contains( QLatin1String( "/" ) ) )
+          if ( fieldName.contains( '/' ) )
           {
-            if ( fieldName.section( QStringLiteral( "/" ), 0, 0 ) != typeName )
+            if ( fieldName.section( '/', 0, 0 ) != typeName )
             {
               throw QgsRequestNotWellFormedException( QStringLiteral( "PropertyName text '%1' has to contain TypeName '%2'" ).arg( fieldName ).arg( typeName ) );
             }
-            fieldName = fieldName.section( QStringLiteral( "/" ), 1, 1 );
+            fieldName = fieldName.section( '/', 1, 1 );
           }
           propertyList.append( fieldName );
         }
@@ -660,7 +660,7 @@ namespace QgsWfs
       bool ok;
       for ( int i = 0; i < 4; i++ )
       {
-        corners[i].replace( QLatin1String( " " ), QLatin1String( "+" ) );
+        corners[i].replace( ' ', '+' );
         d[i] = corners[i].toDouble( &ok );
         if ( !ok )
         {
@@ -769,9 +769,9 @@ namespace QgsWfs
   getFeatureQuery parseQueryElement( QDomElement &queryElem )
   {
     QString typeName = queryElem.attribute( QStringLiteral( "typeName" ), QLatin1String( "" ) );
-    if ( typeName.contains( QLatin1String( ":" ) ) )
+    if ( typeName.contains( ':' ) )
     {
-      typeName = typeName.section( QStringLiteral( ":" ), 1, 1 );
+      typeName = typeName.section( ':', 1, 1 );
     }
 
     QgsFeatureRequest featureRequest;
@@ -785,17 +785,17 @@ namespace QgsWfs
         if ( queryChildElem.tagName() == QLatin1String( "PropertyName" ) )
         {
           QString fieldName = queryChildElem.text().trimmed();
-          if ( fieldName.contains( QLatin1String( ":" ) ) )
+          if ( fieldName.contains( ':' ) )
           {
-            fieldName = fieldName.section( QStringLiteral( ":" ), 1, 1 );
+            fieldName = fieldName.section( ':', 1, 1 );
           }
-          if ( fieldName.contains( QLatin1String( "/" ) ) )
+          if ( fieldName.contains( '/' ) )
           {
-            if ( fieldName.section( QStringLiteral( "/" ), 0, 0 ) != typeName )
+            if ( fieldName.section( '/', 0, 0 ) != typeName )
             {
               throw QgsRequestNotWellFormedException( QStringLiteral( "PropertyName text '%1' has to contain TypeName '%2'" ).arg( fieldName ).arg( typeName ) );
             }
-            fieldName = fieldName.section( QStringLiteral( "/" ), 1, 1 );
+            fieldName = fieldName.section( '/', 1, 1 );
           }
           propertyList.append( fieldName );
         }
@@ -878,7 +878,7 @@ namespace QgsWfs
         query.removeAllQueryItems( QStringLiteral( "_DC" ) );
 
         query.addQueryItem( QStringLiteral( "REQUEST" ), QStringLiteral( "DescribeFeatureType" ) );
-        query.addQueryItem( QStringLiteral( "TYPENAME" ), typeNames.join( QStringLiteral( "," ) ) );
+        query.addQueryItem( QStringLiteral( "TYPENAME" ), typeNames.join( ',' ) );
         query.addQueryItem( QStringLiteral( "OUTPUTFORMAT" ), QStringLiteral( "XMLSCHEMA" ) );
 
         mapUrl.setQuery( query );
@@ -993,9 +993,9 @@ namespace QgsWfs
     {
       QString id = QStringLiteral( "%1.%2" ).arg( typeName, FID_TO_STRING( feat->id() ) );
 
-      QgsJSONExporter exporter;
+      QgsJsonExporter exporter;
       exporter.setSourceCrs( crs );
-      //QgsJSONExporter force transform geometry to ESPG:4326
+      //QgsJsonExporter force transform geometry to ESPG:4326
       //and the RFC 7946 GeoJSON specification recommends limiting coordinate precision to 6
       Q_UNUSED( prec );
       //exporter.setPrecision( prec );
@@ -1064,12 +1064,12 @@ namespace QgsWfs
         if ( geometryName == QLatin1String( "EXTENT" ) )
         {
           QgsGeometry bbox = QgsGeometry::fromRect( geom.boundingBox() );
-          gmlElem = QgsOgcUtils::geometryToGML( &bbox, doc, prec );
+          gmlElem = QgsOgcUtils::geometryToGML( bbox, doc, prec );
         }
         else if ( geometryName == QLatin1String( "CENTROID" ) )
         {
           QgsGeometry centroid = geom.centroid();
-          gmlElem = QgsOgcUtils::geometryToGML( &centroid, doc, prec );
+          gmlElem = QgsOgcUtils::geometryToGML( centroid, doc, prec );
         }
         else
         {
@@ -1146,12 +1146,12 @@ namespace QgsWfs
         if ( geometryName == QLatin1String( "EXTENT" ) )
         {
           QgsGeometry bbox = QgsGeometry::fromRect( geom.boundingBox() );
-          gmlElem = QgsOgcUtils::geometryToGML( &bbox, doc, QStringLiteral( "GML3" ), prec );
+          gmlElem = QgsOgcUtils::geometryToGML( bbox, doc, QStringLiteral( "GML3" ), prec );
         }
         else if ( geometryName == QLatin1String( "CENTROID" ) )
         {
           QgsGeometry centroid = geom.centroid();
-          gmlElem = QgsOgcUtils::geometryToGML( &centroid, doc, QStringLiteral( "GML3" ), prec );
+          gmlElem = QgsOgcUtils::geometryToGML( centroid, doc, QStringLiteral( "GML3" ), prec );
         }
         else
         {

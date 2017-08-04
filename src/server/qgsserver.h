@@ -31,6 +31,7 @@
 #include "qgsrequesthandler.h"
 #include "qgsapplication.h"
 #include "qgsconfigcache.h"
+#include "qgsconfigparserutils.h"
 #include "qgscapabilitiescache.h"
 #include "qgsmapsettings.h"
 #include "qgsmessagelog.h"
@@ -75,15 +76,19 @@ class SERVER_EXPORT QgsServer
 
 
     //! Returns a pointer to the server interface
-    QgsServerInterfaceImpl *serverInterface() { return sServerInterface; }
+    QgsServerInterfaceImpl SIP_PYALTERNATIVETYPE( QgsServerInterface ) *serverInterface() { return sServerInterface; }
 
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
     //! Initialize Python
     //! Note: not in Python bindings
-    void initPython( );
+    void initPython();
 #endif
 
   private:
+#ifdef SIP_RUN
+    QgsServer( const QgsServer & );
+    QgsServer &operator=( const QgsServer & );
+#endif
 
     //! Server initialization
     static bool init();
@@ -123,8 +128,8 @@ class SERVER_EXPORT QgsServer
 
     static QgsServerSettings sSettings;
 
-    // map of QgsProject
-    QMap<QString, const QgsProject *> mProjectRegistry;
+    //! cache
+    QgsConfigCache *mConfigCache;
 };
 #endif // QGSSERVER_H
 

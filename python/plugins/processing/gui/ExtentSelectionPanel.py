@@ -35,9 +35,11 @@ from qgis.PyQt.QtGui import QCursor
 from qgis.gui import QgsMessageBar
 from qgis.utils import iface
 from qgis.core import (QgsProcessingUtils,
+                       QgsProcessingParameterDefinition,
                        QgsProject)
 from processing.gui.RectangleMapTool import RectangleMapTool
 from processing.core.ProcessingConfig import ProcessingConfig
+from processing.tools.dataobjects import createContext
 
 pluginPath = os.path.split(os.path.dirname(__file__))[0]
 WIDGET, BASE = uic.loadUiType(
@@ -52,7 +54,7 @@ class ExtentSelectionPanel(BASE, WIDGET):
 
         self.dialog = dialog
         self.param = param
-        if self.param.optional:
+        if self.param.flags() & QgsProcessingParameterDefinition.FlagOptional:
             if hasattr(self.leText, 'setPlaceholderText'):
                 self.leText.setPlaceholderText(
                     self.tr('[Leave blank to use min covering extent]'))
@@ -64,15 +66,14 @@ class ExtentSelectionPanel(BASE, WIDGET):
         self.tool = RectangleMapTool(canvas)
         self.tool.rectangleCreated.connect(self.updateExtent)
 
-        if param.default:
-            tokens = param.default.split(',')
-            if len(tokens) == 4:
+        if param.defaultValue() is not None:
+            context = createContext()
+            rect = QgsProcessingParameters.parameterAsExtent(param, {param.name(): param.defaultValue()}, context)
+            if not rect.isNull():
                 try:
-                    float(tokens[0])
-                    float(tokens[1])
-                    float(tokens[2])
-                    float(tokens[3])
-                    self.leText.setText(param.default)
+                    s = '{},{},{},{}'.format(
+                        rect.xMinimum(), rect.xMaximum(), rect.yMinimum(), rect.yMaximum())
+                    self.leText.setText(s)
                 except:
                     pass
 
@@ -89,7 +90,7 @@ class ExtentSelectionPanel(BASE, WIDGET):
         selectOnCanvasAction.triggered.connect(self.selectOnCanvas)
         useLayerExtentAction.triggered.connect(self.useLayerExtent)
 
-        if self.param.optional:
+        if self.param.flags() & QgsProcessingParameterDefinition.FlagOptional:
             useMincoveringExtentAction = QAction(
                 self.tr('Use min covering extent from input layers'),
                 self.btnSelect)

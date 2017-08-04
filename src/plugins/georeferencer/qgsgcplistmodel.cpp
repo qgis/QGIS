@@ -79,7 +79,7 @@ void QgsGCPListModel::updateModel()
 
   bool bTransformUpdated = false;
 
-  QVector<QgsPoint> mapCoords, pixelCoords;
+  QVector<QgsPointXY> mapCoords, pixelCoords;
   mGCPList->createGCPVectors( mapCoords, pixelCoords );
 
   //  // Setup table header
@@ -148,8 +148,8 @@ void QgsGCPListModel::updateModel()
     // Calculate residual if transform is available and up-to-date
     if ( mGeorefTransform && bTransformUpdated && mGeorefTransform->parametersInitialized() )
     {
-      QgsPoint dst;
-      QgsPoint pixel = mGeorefTransform->hasCrs() ? mGeorefTransform->toColumnLine( p->pixelCoords() ) : p->pixelCoords();
+      QgsPointXY dst;
+      QgsPointXY pixel = mGeorefTransform->hasCrs() ? mGeorefTransform->toColumnLine( p->pixelCoords() ) : p->pixelCoords();
       if ( unitType == tr( "pixels" ) )
       {
         // Transform from world to raster coordinate:

@@ -31,6 +31,7 @@
  */
 class CORE_EXPORT QgsRasterMinMaxOrigin
 {
+
   public:
 
     //! \brief Default cumulative cut lower limit
@@ -45,14 +46,10 @@ class CORE_EXPORT QgsRasterMinMaxOrigin
     //! \brief This enumerator describes the limits used to compute min/max values
     enum Limits
     {
-      //! User defined.
-      None SIP_PYNAME( None_ ),
-      //! Real min-max values
-      MinMax,
-      //! Range is [ mean - stdDevFactor() * stddev, mean + stdDevFactor() * stddev ]
-      StdDev,
-      //! Range is [ min + cumulativeCutLower() * (max - min), min + cumulativeCutUpper() * (max - min) ]
-      CumulativeCut
+      None SIP_PYNAME( None_ ), //!< User defined.
+      MinMax, //!< Real min-max values
+      StdDev, //!< Range is [ mean - stdDevFactor() * stddev, mean + stdDevFactor() * stddev ]
+      CumulativeCut //!< Range is [ min + cumulativeCutLower() * (max - min), min + cumulativeCutUpper() * (max - min) ]
     };
 
     //! \brief This enumerator describes the extent used to compute min/max values
@@ -84,13 +81,13 @@ class CORE_EXPORT QgsRasterMinMaxOrigin
     //////// Getter methods /////////////////////
 
     //! \brief Return limits.
-    Limits limits() const { return mLimits; }
+    QgsRasterMinMaxOrigin::Limits limits() const { return mLimits; }
 
     //! \brief Return extent.
-    Extent extent() const { return mExtent; }
+    QgsRasterMinMaxOrigin::Extent extent() const { return mExtent; }
 
     //! \brief Return statistic accuracy.
-    StatAccuracy statAccuracy() const { return mAccuracy; }
+    QgsRasterMinMaxOrigin::StatAccuracy statAccuracy() const { return mAccuracy; }
 
     //! \brief Return lower bound of cumulative cut method (between 0 and 1).
     double cumulativeCutLower() const { return mCumulativeCutLower; }
@@ -104,13 +101,13 @@ class CORE_EXPORT QgsRasterMinMaxOrigin
     //////// Setter methods /////////////////////
 
     //! \brief Set limits.
-    void setLimits( Limits limits ) { mLimits = limits; }
+    void setLimits( QgsRasterMinMaxOrigin::Limits limits ) { mLimits = limits; }
 
     //! \brief Set extent.
-    void setExtent( Extent extent ) { mExtent = extent; }
+    void setExtent( QgsRasterMinMaxOrigin::Extent extent ) { mExtent = extent; }
 
     //! \brief Set statistics accuracy.
-    void setStatAccuracy( StatAccuracy accuracy ) { mAccuracy = accuracy; }
+    void setStatAccuracy( QgsRasterMinMaxOrigin::StatAccuracy accuracy ) { mAccuracy = accuracy; }
 
     //! \brief Set lower bound of cumulative cut method (between 0 and 1).
     void setCumulativeCutLower( double val ) { mCumulativeCutLower = val; }
@@ -138,16 +135,16 @@ class CORE_EXPORT QgsRasterMinMaxOrigin
     static Limits limitsFromString( const QString &limits );
 
     //! \brief Return a string to serialize Extent
-    static QString extentString( Extent extent );
+    static QString extentString( QgsRasterMinMaxOrigin::Extent extent );
 
     //! \brief Deserialize Extent
-    static Extent extentFromString( const QString &extent );
+    static QgsRasterMinMaxOrigin::Extent extentFromString( const QString &extent );
 
     //! \brief Return a string to serialize StatAccuracy
-    static QString statAccuracyString( StatAccuracy accuracy );
+    static QString statAccuracyString( QgsRasterMinMaxOrigin::StatAccuracy accuracy );
 
     //! \brief Deserialize StatAccuracy
-    static StatAccuracy statAccuracyFromString( const QString &accuracy );
+    static QgsRasterMinMaxOrigin::StatAccuracy statAccuracyFromString( const QString &accuracy );
 
   private:
 

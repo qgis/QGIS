@@ -66,7 +66,7 @@ class CORE_EXPORT QgsMultiRenderChecker
     void setControlPathPrefix( const QString &prefix );
 
     /**
-     * Set the path to the rendered image. If this is not set or set to QString::Null, an image
+     * Set the path to the rendered image. If this is not set or set to null QString, an image
      * will be rendered based on the provided mapsettings
      *
      * \param renderedImagePath A path to the rendered image with which control images will be compared
@@ -117,7 +117,7 @@ class CORE_EXPORT QgsMultiRenderChecker
      */
     QString controlImagePath() const;
 
-    /** Draws a checkboard pattern for image backgrounds, so that transparency is visible
+    /** Draws a checkboard pattern for image backgrounds, so that opacity is visible
      * without requiring a transparent background for the image
      */
     static void drawBackground( QImage *image ) { QgsRenderChecker::drawBackground( image ); }
@@ -132,6 +132,9 @@ class CORE_EXPORT QgsMultiRenderChecker
 };
 
 #ifdef ENABLE_TESTS
+SIP_FEATURE( TESTS )
+SIP_IF_FEATURE( TESTS )
+
 ///@cond PRIVATE
 
 /** \ingroup core
@@ -156,6 +159,8 @@ class CORE_EXPORT QgsCompositionChecker : public QgsMultiRenderChecker
     int mDotsPerMeter;
 };
 ///@endcond
+
+SIP_END
 #endif
 
 

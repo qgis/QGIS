@@ -25,7 +25,7 @@ email                : jpalmer at linz dot govt dot nz
 #include "qgsgeometry.h"
 #include "qgsrenderer.h"
 #include "qgsrubberband.h"
-#include "qgscsexception.h"
+#include "qgsexception.h"
 #include "qgslogger.h"
 #include "qgis.h"
 
@@ -49,10 +49,10 @@ QgsVectorLayer *QgsMapToolSelectUtils::getCurrentVectorLayer( QgsMapCanvas *canv
 void QgsMapToolSelectUtils::setRubberBand( QgsMapCanvas *canvas, QRect &selectRect, QgsRubberBand *rubberBand )
 {
   const QgsMapToPixel *transform = canvas->getCoordinateTransform();
-  QgsPoint ll = transform->toMapCoordinates( selectRect.left(), selectRect.bottom() );
-  QgsPoint lr = transform->toMapCoordinates( selectRect.right(), selectRect.bottom() );
-  QgsPoint ul = transform->toMapCoordinates( selectRect.left(), selectRect.top() );
-  QgsPoint ur = transform->toMapCoordinates( selectRect.right(), selectRect.top() );
+  QgsPointXY ll = transform->toMapCoordinates( selectRect.left(), selectRect.bottom() );
+  QgsPointXY lr = transform->toMapCoordinates( selectRect.right(), selectRect.bottom() );
+  QgsPointXY ul = transform->toMapCoordinates( selectRect.left(), selectRect.top() );
+  QgsPointXY ur = transform->toMapCoordinates( selectRect.right(), selectRect.top() );
 
   if ( rubberBand )
   {

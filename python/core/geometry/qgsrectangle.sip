@@ -29,7 +29,7 @@ class QgsRectangle
 %Docstring
 Constructor
 %End
-    QgsRectangle( const QgsPoint &p1, const QgsPoint &p2 );
+    QgsRectangle( const QgsPointXY &p1, const QgsPointXY &p2 );
 %Docstring
 Construct a rectangle from two points. The rectangle is normalized after construction.
 %End
@@ -42,7 +42,7 @@ Construct a rectangle from a QRectF. The rectangle is normalized after construct
 Copy constructor
 %End
 
-    void set( const QgsPoint &p1, const QgsPoint &p2 );
+    void set( const QgsPointXY &p1, const QgsPointXY &p2 );
 %Docstring
  Sets the rectangle from two QgsPoints. The rectangle is
  normalised after construction.
@@ -143,13 +143,13 @@ Copy constructor
  :rtype: float
 %End
 
-    QgsPoint center() const;
+    QgsPointXY center() const;
 %Docstring
  Returns the center point of the rectangle.
- :rtype: QgsPoint
+ :rtype: QgsPointXY
 %End
 
-    void scale( double scaleFactor, const QgsPoint *c = 0 );
+    void scale( double scaleFactor, const QgsPointXY *c = 0 );
 %Docstring
  Scale the rectangle around its center point.
 %End
@@ -164,7 +164,7 @@ Copy constructor
  Grows the rectangle by the specified amount.
 %End
 
-    void include( const QgsPoint &p );
+    void include( const QgsPointXY &p );
 %Docstring
  Updates the rectangle to include the specified point.
 %End
@@ -194,7 +194,7 @@ Copy constructor
  :rtype: bool
 %End
 
-    bool contains( const QgsPoint &p ) const;
+    bool contains( const QgsPointXY &p ) const;
 %Docstring
  Return true when rectangle contains a point.
  :rtype: bool
@@ -208,6 +208,34 @@ Copy constructor
     void combineExtentWith( double x, double y );
 %Docstring
  Expand the rectangle so that covers both the original rectangle and the given point.
+%End
+
+    QgsRectangle operator-( const QgsVector v ) const;
+%Docstring
+ Returns a rectangle offset from this one in the direction of the reversed vector.
+.. versionadded:: 3.0
+ :rtype: QgsRectangle
+%End
+
+    QgsRectangle operator+( const QgsVector v ) const;
+%Docstring
+ Returns a rectangle offset from this one in the direction of the vector.
+.. versionadded:: 3.0
+ :rtype: QgsRectangle
+%End
+
+    QgsRectangle &operator-=( const QgsVector v );
+%Docstring
+ Moves this rectangle in the direction of the reversed vector.
+.. versionadded:: 3.0
+ :rtype: QgsRectangle
+%End
+
+    QgsRectangle &operator+=( const QgsVector v );
+%Docstring
+ Moves this rectangle in the direction of the vector.
+.. versionadded:: 3.0
+ :rtype: QgsRectangle
 %End
 
     bool isEmpty() const;
@@ -258,11 +286,6 @@ Copy constructor
 %End
 
     bool operator==( const QgsRectangle &r1 ) const;
-%Docstring
- Comparison operator
- :return: True if rectangles are equal
- :rtype: bool
-%End
 
     bool operator!=( const QgsRectangle &r1 ) const;
 %Docstring
@@ -271,11 +294,6 @@ Copy constructor
  :rtype: bool
 %End
 
-
-    void unionRect( const QgsRectangle &rect );
-%Docstring
- Updates the rectangle to include another rectangle.
-%End
 
     bool isFinite() const;
 %Docstring

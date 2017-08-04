@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Add PostGIS layers</string>
+   <string>Add PostGIS Layers</string>
   </property>
   <property name="windowIcon">
    <iconset>
@@ -250,7 +250,7 @@
    <item row="4" column="0">
     <widget class="QDialogButtonBox" name="buttonBox">
      <property name="standardButtons">
-      <set>QDialogButtonBox::Close|QDialogButtonBox::Help</set>
+      <set>QDialogButtonBox::Help</set>
      </property>
     </widget>
    </item>

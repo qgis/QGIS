@@ -61,7 +61,7 @@ class CORE_EXPORT QgsComposerPicture: public QgsComposerItem
       TrueNorth, //!< Align to true north
     };
 
-    QgsComposerPicture( QgsComposition *composition );
+    QgsComposerPicture( QgsComposition *composition SIP_TRANSFERTHIS );
 
     //! Return correct graphics item type.
     virtual int type() const override { return ComposerPicture; }
@@ -105,11 +105,12 @@ class CORE_EXPORT QgsComposerPicture: public QgsComposerItem
      */
     bool readXml( const QDomElement &itemElem, const QDomDocument &doc ) override;
 
-    /** Returns the rotation used for drawing the picture within the item's frame
-     * \returns picture rotation in degrees
+    /**
+     * Returns the rotation used for drawing the picture within the item's frame,
+     * in degrees clockwise.
      * \since QGIS 2.2
-     * \see setPictureRotation
-     * \see rotationMap
+     * \see setPictureRotation()
+     * \see rotationMap()
      */
     double pictureRotation() const { return mPictureRotation; }
 
@@ -254,13 +255,13 @@ class CORE_EXPORT QgsComposerPicture: public QgsComposerItem
 
   public slots:
 
-    /** Sets the picture rotation within the item bounds. This does not affect
+    /**
+     * Sets the picture \a rotation within the item bounds, in degrees clockwise. This does not affect
      * the item's frame, only the way the picture is drawn within the item.
-     * \param r rotation in degrees clockwise
-     * \see pictureRotation
+     * \see pictureRotation()
      * \since QGIS 2.2
      */
-    virtual void setPictureRotation( double r );
+    virtual void setPictureRotation( double rotation );
 
     /** Sets the resize mode used for drawing the picture within the item bounds.
      * \param mode ResizeMode to use for image file
@@ -301,6 +302,7 @@ class CORE_EXPORT QgsComposerPicture: public QgsComposerItem
 
     QImage mImage;
     QSvgRenderer mSVG;
+    //! Absolute path to the image (may be also HTTP URL)
     QString mSourcePath;
     Mode mMode;
 

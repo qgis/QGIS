@@ -25,7 +25,7 @@
 #include <cpl_conv.h>
 #include "qgis_analysis.h"
 
-class QgsVectorLayer;
+class QgsFeatureSource;
 class QProgressDialog;
 class QgsFeature;
 
@@ -70,8 +70,8 @@ class ANALYSIS_EXPORT QgsKernelDensityEstimation
     //! KDE parameters
     struct Parameters
     {
-      //! Vector point layer
-      QgsVectorLayer *vectorLayer = nullptr;
+      //! Point feature source
+      QgsFeatureSource *source = nullptr;
 
       //! Fixed radius, in map units
       double radius;
@@ -86,13 +86,13 @@ class ANALYSIS_EXPORT QgsKernelDensityEstimation
       double pixelSize;
 
       //! Kernel shape
-      KernelShape shape;
+      QgsKernelDensityEstimation::KernelShape shape;
 
       //! Decay ratio (Triangular kernels only)
       double decayRatio;
 
       //! Type of output value
-      OutputValues outputValues;
+      QgsKernelDensityEstimation::OutputValues outputValues;
     };
 
     /**
@@ -146,7 +146,7 @@ class ANALYSIS_EXPORT QgsKernelDensityEstimation
 
     QgsRectangle calculateBounds() const;
 
-    QgsVectorLayer *mInputLayer = nullptr;
+    QgsFeatureSource *mSource = nullptr;
 
     QString mOutputFile;
     QString mOutputFormat;

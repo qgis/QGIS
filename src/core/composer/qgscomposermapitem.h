@@ -68,7 +68,7 @@ class CORE_EXPORT QgsComposerMapItem : public QgsComposerObject
      * \returns composer map
      * \see setComposerMap
      */
-    virtual const QgsComposerMap *composerMap() const { return mComposerMap; }
+    virtual const QgsComposerMap *composerMap() const;
 
     /** Get the unique id for the map item
      * \returns unique id
@@ -79,30 +79,30 @@ class CORE_EXPORT QgsComposerMapItem : public QgsComposerObject
      * \param name display name
      * \see name
      */
-    virtual void setName( const QString &name ) { mName = name; }
+    virtual void setName( const QString &name );
 
     /** Get friendly display name for the item
      * \returns display name
      * \see setName
      */
-    virtual QString name() const { return mName; }
+    virtual QString name() const;
 
     /** Controls whether the item will be drawn
      * \param enabled set to true to enable drawing of the item
      * \see enabled
      */
-    virtual void setEnabled( const bool enabled ) { mEnabled = enabled; }
+    virtual void setEnabled( const bool enabled );
 
     /** Returns whether the item will be drawn
      * \returns true if item will be drawn on the map
      * \see setEnabled
      */
-    virtual bool enabled() const { return mEnabled; }
+    virtual bool enabled() const;
 
     /** Returns true if the item is drawn using advanced effects, such as blend modes.
      * \returns true if item uses advanced effects
      */
-    virtual bool usesAdvancedEffects() const { return false; }
+    virtual bool usesAdvancedEffects() const;
 
   protected:
 
@@ -183,7 +183,7 @@ class CORE_EXPORT QgsComposerMapItemStack
      * should be called for the QgsComposerMap to prevent rendering artifacts
      * \see removeItem
      */
-    void addItem( QgsComposerMapItem *item );
+    void addItem( QgsComposerMapItem *item SIP_TRANSFER );
 
     /** Removes an item from the stack and deletes the corresponding QgsComposerMapItem
      * \param itemId id for the QgsComposerMapItem to remove

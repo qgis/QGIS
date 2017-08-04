@@ -5,12 +5,11 @@ debian/build.*/
 debian/build*/
 debian/.*/usr/
 i18n/
+external/astyle
 ms-windows/osgeo4w/
 python/ext-libs/
-python/plugins/processing/algs/otb/
 python/plugins/processing/algs/saga/
 python/qsci_apis/
-src/astyle
 src/app/gps/qwtpolar-1.0/
 src/app/gps/qwtpolar-1.1.1/
 src/core/pal
@@ -40,6 +39,7 @@ images/themes/default/propertyicons/diagram.svg
 images/themes/default/propertyicons/general.svg
 images/themes/default/svgbase/hammer.svg
 LexerR.py
+python/plugins/MetaSearch/resources/connections-default.xml
 python/plugins/processing/algs/grass7/description/i.landsat.toar.txt
 python/plugins/processing/gui/algnames.txt
 python/plugins/processing/tests/testdata/expected/orthagonal_lines.gfs

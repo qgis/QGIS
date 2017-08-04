@@ -291,16 +291,16 @@ QDomElement QgsCurvePolygon::asGML2( QDomDocument &doc, int precision, const QSt
   elemOuterBoundaryIs.appendChild( outerRing );
   delete exteriorLineString;
   elemPolygon.appendChild( elemOuterBoundaryIs );
-  QDomElement elemInnerBoundaryIs = doc.createElementNS( ns, QStringLiteral( "innerBoundaryIs" ) );
   for ( int i = 0, n = numInteriorRings(); i < n; ++i )
   {
+    QDomElement elemInnerBoundaryIs = doc.createElementNS( ns, QStringLiteral( "innerBoundaryIs" ) );
     QgsLineString *interiorLineString = interiorRing( i )->curveToLine();
     QDomElement innerRing = interiorLineString->asGML2( doc, precision, ns );
     innerRing.toElement().setTagName( QStringLiteral( "LinearRing" ) );
     elemInnerBoundaryIs.appendChild( innerRing );
     delete interiorLineString;
+    elemPolygon.appendChild( elemInnerBoundaryIs );
   }
-  elemPolygon.appendChild( elemInnerBoundaryIs );
   return elemPolygon;
 }
 
@@ -316,7 +316,6 @@ QDomElement QgsCurvePolygon::asGML3( QDomDocument &doc, int precision, const QSt
   elemExterior.appendChild( curveElem );
   elemCurvePolygon.appendChild( elemExterior );
 
-  elemCurvePolygon.appendChild( elemExterior );
   for ( int i = 0, n = numInteriorRings(); i < n; ++i )
   {
     QDomElement elemInterior = doc.createElementNS( ns, QStringLiteral( "interior" ) );
@@ -675,7 +674,7 @@ bool QgsCurvePolygon::isEmpty() const
   return mExteriorRing->isEmpty();
 }
 
-double QgsCurvePolygon::closestSegment( const QgsPointV2 &pt, QgsPointV2 &segmentPt, QgsVertexId &vertexAfter, bool *leftOf, double epsilon ) const
+double QgsCurvePolygon::closestSegment( const QgsPoint &pt, QgsPoint &segmentPt, QgsVertexId &vertexAfter, bool *leftOf, double epsilon ) const
 {
   if ( !mExteriorRing )
   {
@@ -687,7 +686,7 @@ double QgsCurvePolygon::closestSegment( const QgsPointV2 &pt, QgsPointV2 &segmen
   return QgsGeometryUtils::closestSegmentFromComponents( segmentList, QgsGeometryUtils::Ring, pt, segmentPt,  vertexAfter, leftOf, epsilon );
 }
 
-bool QgsCurvePolygon::nextVertex( QgsVertexId &vId, QgsPointV2 &vertex ) const
+bool QgsCurvePolygon::nextVertex( QgsVertexId &vId, QgsPoint &vertex ) const
 {
   if ( !mExteriorRing || vId.ring >= 1 + mInteriorRings.size() )
   {
@@ -723,7 +722,7 @@ bool QgsCurvePolygon::nextVertex( QgsVertexId &vId, QgsPointV2 &vertex ) const
   }
 }
 
-bool QgsCurvePolygon::insertVertex( QgsVertexId vId, const QgsPointV2 &vertex )
+bool QgsCurvePolygon::insertVertex( QgsVertexId vId, const QgsPoint &vertex )
 {
   if ( !mExteriorRing || vId.ring < 0 || vId.ring >= 1 + mInteriorRings.size() )
   {
@@ -749,7 +748,7 @@ bool QgsCurvePolygon::insertVertex( QgsVertexId vId, const QgsPointV2 &vertex )
   return true;
 }
 
-bool QgsCurvePolygon::moveVertex( QgsVertexId vId, const QgsPointV2 &newPos )
+bool QgsCurvePolygon::moveVertex( QgsVertexId vId, const QgsPoint &newPos )
 {
   if ( !mExteriorRing || vId.ring < 0 || vId.ring >= 1 + mInteriorRings.size() )
   {
@@ -855,7 +854,7 @@ int QgsCurvePolygon::vertexCount( int /*part*/, int ring ) const
   return ring == 0 ? mExteriorRing->vertexCount() : mInteriorRings[ring - 1]->vertexCount();
 }
 
-QgsPointV2 QgsCurvePolygon::vertexAt( QgsVertexId id ) const
+QgsPoint QgsCurvePolygon::vertexAt( QgsVertexId id ) const
 {
   return id.ring == 0 ? mExteriorRing->vertexAt( id ) : mInteriorRings[id.ring - 1]->vertexAt( id );
 }

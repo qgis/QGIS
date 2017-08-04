@@ -25,12 +25,13 @@
 
 #include "qgsabstractgeometry.h"
 #include "qgscoordinatetransform.h"
-#include "qgsmaptopixel.h"
-#include "qgsrectangle.h"
-#include "qgsvectorsimplifymethod.h"
 #include "qgsexpressioncontext.h"
 #include "qgsfeaturefilterprovider.h"
+#include "qgsmaptopixel.h"
 #include "qgsmapunitscale.h"
+#include "qgsrectangle.h"
+#include "qgsvectorsimplifymethod.h"
+#include "qgsdistancearea.h"
 
 class QPainter;
 class QgsAbstractGeometry;
@@ -41,8 +42,8 @@ class QgsMapSettings;
 /** \ingroup core
  * Contains information about the context of a rendering operation.
  * The context of a rendering operation defines properties such as
- * the conversion ratio between screen and map units, the extents /
- * bounding box to be rendered etc.
+ * the conversion ratio between screen and map units, the extents
+ * to be rendered etc.
  **/
 class CORE_EXPORT QgsRenderContext
 {
@@ -59,7 +60,7 @@ class CORE_EXPORT QgsRenderContext
     {
       DrawEditingInfo          = 0x01,  //!< Enable drawing of vertex markers for layers in editing mode
       ForceVectorOutput        = 0x02,  //!< Vector graphics should not be cached and drawn as raster images
-      UseAdvancedEffects       = 0x04,  //!< Enable layer transparency and blending effects
+      UseAdvancedEffects       = 0x04,  //!< Enable layer opacity and blending effects
       UseRenderingOptimization = 0x08,  //!< Enable vector simplification and other rendering optimizations
       DrawSelection            = 0x10,  //!< Whether vector selections should be shown in the rendered map
       DrawSymbolBounds         = 0x20,  //!< Draw bounds of symbols (for debugging/testing)
@@ -113,6 +114,12 @@ class CORE_EXPORT QgsRenderContext
      * transform is no coordinate transformation is required.
      */
     QgsCoordinateTransform coordinateTransform() const {return mCoordTransform;}
+
+    /**
+     * A general purpose distance and area calculator, capable of performing ellipsoid based calculations.
+     * \since QGIS 3.0
+     */
+    const QgsDistanceArea &distanceArea() const { return mDistanceArea; }
 
     const QgsRectangle &extent() const {return mExtent;}
 
@@ -171,6 +178,13 @@ class CORE_EXPORT QgsRenderContext
     void setDrawEditingInformation( bool b );
 
     void setRenderingStopped( bool stopped ) {mRenderingStopped = stopped;}
+
+    /**
+     * A general purpose distance and area calculator, capable of performing ellipsoid based calculations.
+     * Will be used to convert meter distances to active MapUnit values for QgsUnitTypes::RenderMetersInMapUnits
+     * \since QGIS 3.0
+     */
+    void setDistanceArea( const QgsDistanceArea distanceArea ) {mDistanceArea = distanceArea ;}
 
     /**
      * Sets the scaling factor for the render to convert painter units
@@ -298,6 +312,14 @@ class CORE_EXPORT QgsRenderContext
      */
     double convertFromMapUnits( double sizeInMapUnits, QgsUnitTypes::RenderUnit outputUnit ) const;
 
+    /**
+     * Convert meter distances to active MapUnit values for QgsUnitTypes::RenderMetersInMapUnits
+     * \note
+      * When the sourceCrs() is geographic, the center of the Extent will be used
+     * \since QGIS 3.0
+     */
+    double convertMetersToMapUnits( double meters ) const;
+
   private:
 
     Flags mFlags;
@@ -307,6 +329,13 @@ class CORE_EXPORT QgsRenderContext
 
     //! For transformation between coordinate systems. Can be invalid if on-the-fly reprojection is not used
     QgsCoordinateTransform mCoordTransform;
+
+    /**
+     * A general purpose distance and area calculator, capable of performing ellipsoid based calculations.
+     * Will be used to convert meter distances to active MapUnit values for QgsUnitTypes::RenderMetersInMapUnits
+     * \since QGIS 3.0
+     */
+    QgsDistanceArea mDistanceArea;
 
     QgsRectangle mExtent;
 

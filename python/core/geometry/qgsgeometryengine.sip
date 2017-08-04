@@ -66,11 +66,11 @@ class QgsGeometryEngine
 %Docstring
  :rtype: QgsAbstractGeometry
 %End
-    virtual bool centroid( QgsPointV2 &pt, QString *errorMsg = 0 ) const = 0;
+    virtual bool centroid( QgsPoint &pt, QString *errorMsg = 0 ) const = 0;
 %Docstring
  :rtype: bool
 %End
-    virtual bool pointOnSurface( QgsPointV2 &pt, QString *errorMsg = 0 ) const = 0;
+    virtual bool pointOnSurface( QgsPoint &pt, QString *errorMsg = 0 ) const = 0;
 %Docstring
  :rtype: bool
 %End
@@ -152,6 +152,13 @@ class QgsGeometryEngine
 %End
     virtual bool isEmpty( QString *errorMsg ) const = 0;
 %Docstring
+ :rtype: bool
+%End
+
+    virtual bool isSimple( QString *errorMsg = 0 ) const = 0;
+%Docstring
+ Determines whether the geometry is simple (according to OGC definition).
+.. versionadded:: 3.0
  :rtype: bool
 %End
 

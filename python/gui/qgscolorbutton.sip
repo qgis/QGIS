@@ -12,7 +12,7 @@ class QgsColorButton : QToolButton
 {
 %Docstring
  A cross platform button subclass for selecting colors. Will open a color chooser dialog when clicked.
- Offers live updates to button from color chooser dialog. An attached drop down menu allows for copying
+ Offers live updates to button from color chooser dialog. An attached drop-down menu allows for copying
  and pasting colors, picking colors from the screen, and selecting colors from color swatch grids.
 .. versionadded:: 2.5
 %End
@@ -40,10 +40,11 @@ class QgsColorButton : QToolButton
  Construct a new color ramp button.
  Use ``parent`` to attach a parent QWidget to the dialog.
  Use ``cdt`` string to define the title to show in the color ramp dialog
- Use a color scheme ``registry`` for color swatch grids to show in the drop down menu. If not specified,
+ Use a color scheme ``registry`` for color swatch grids to show in the drop-down menu. If not specified,
  the button will use the global color scheme registry instead
 %End
 
+    virtual QSize minimumSizeHint() const;
     virtual QSize sizeHint() const;
 
     QColor color() const;
@@ -54,20 +55,22 @@ class QgsColorButton : QToolButton
  :rtype: QColor
 %End
 
-    void setAllowAlpha( const bool allowAlpha );
+    void setAllowOpacity( const bool allowOpacity );
 %Docstring
- Sets whether alpha modification (transparency) is permitted
+ Sets whether opacity modification (transparency) is permitted
  for the color. Defaults to false.
- \param allowAlpha set to true to allow alpha modification
-.. seealso:: allowAlpha
+ \param allowOpacity set to true to allow opacity modification
+.. seealso:: allowOpacity()
+.. versionadded:: 3.0
 %End
 
-    bool allowAlpha() const;
+    bool allowOpacity() const;
 %Docstring
- Returns whether alpha modification (transparency) is permitted
+ Returns whether opacity modification (transparency) is permitted
  for the color.
- :return: true if alpha modification is allowed
-.. seealso:: setAllowAlpha
+ :return: true if opacity modification is allowed
+.. seealso:: setAllowOpacity()
+.. versionadded:: 3.0
  :rtype: bool
 %End
 
@@ -104,16 +107,16 @@ class QgsColorButton : QToolButton
 
     void setShowMenu( const bool showMenu );
 %Docstring
- Sets whether the drop down menu should be shown for the button. The default behavior is to
+ Sets whether the drop-down menu should be shown for the button. The default behavior is to
  show the menu.
- \param showMenu set to false to hide the drop down menu
+ \param showMenu set to false to hide the drop-down menu
 .. seealso:: showMenu
 %End
 
     bool showMenu() const;
 %Docstring
- Returns whether the drop down menu is shown for the button.
- :return: true if drop down menu is shown
+ Returns whether the drop-down menu is shown for the button.
+ :return: true if drop-down menu is shown
 .. seealso:: setShowMenu
  :rtype: bool
 %End
@@ -136,7 +139,7 @@ class QgsColorButton : QToolButton
 
     void setDefaultColor( const QColor &color );
 %Docstring
- Sets the default color for the button, which is shown in the button's drop down menu for the
+ Sets the default color for the button, which is shown in the button's drop-down menu for the
  "default color" option.
  \param color default color for the button. Set to an invalid QColor to disable the default color
  option.
@@ -145,7 +148,7 @@ class QgsColorButton : QToolButton
 
     QColor defaultColor() const;
 %Docstring
- Returns the default color for the button, which is shown in the button's drop down menu for the
+ Returns the default color for the button, which is shown in the button's drop-down menu for the
  "default color" option.
  :return: default color for the button. Returns an invalid QColor if the default color
  option is disabled.
@@ -155,7 +158,7 @@ class QgsColorButton : QToolButton
 
     void setShowNoColor( const bool showNoColorOption );
 %Docstring
- Sets whether the "no color" option should be shown in the button's drop down menu. If selected,
+ Sets whether the "no color" option should be shown in the button's drop-down menu. If selected,
  the "no color" option sets the color button's color to a totally transparent color.
  \param showNoColorOption set to true to show the no color option. This is disabled by default.
 .. seealso:: showNoColor
@@ -168,7 +171,7 @@ class QgsColorButton : QToolButton
 
     bool showNoColor() const;
 %Docstring
- Returns whether the "no color" option is shown in the button's drop down menu. If selected,
+ Returns whether the "no color" option is shown in the button's drop-down menu. If selected,
  the "no color" option sets the color button's color to a totally transparent color.
  :return: true if the no color option is shown.
 .. seealso:: setShowNoColor
@@ -182,7 +185,7 @@ class QgsColorButton : QToolButton
 
     void setNoColorString( const QString &noColorString );
 %Docstring
- Sets the string to use for the "no color" option in the button's drop down menu.
+ Sets the string to use for the "no color" option in the button's drop-down menu.
  \param noColorString string to use for the "no color" menu option
 .. seealso:: noColorString
 .. seealso:: setShowNoColor
@@ -194,7 +197,7 @@ class QgsColorButton : QToolButton
 
     void setShowNull( bool showNull );
 %Docstring
- Sets whether a set to null (clear) option is shown in the button's drop down menu.
+ Sets whether a set to null (clear) option is shown in the button's drop-down menu.
  \param showNull set to true to show a null option
 .. versionadded:: 2.16
 .. seealso:: showNull()
@@ -203,7 +206,7 @@ class QgsColorButton : QToolButton
 
     bool showNull() const;
 %Docstring
- Returns whether the set to null (clear) option is shown in the button's drop down menu.
+ Returns whether the set to null (clear) option is shown in the button's drop-down menu.
 .. versionadded:: 2.16
 .. seealso:: setShowNull()
 .. seealso:: isNull()
@@ -221,7 +224,7 @@ class QgsColorButton : QToolButton
 
     QString noColorString() const;
 %Docstring
- Returns the string used for the "no color" option in the button's drop down menu.
+ Returns the string used for the "no color" option in the button's drop-down menu.
  :return: string used for the "no color" menu option
 .. seealso:: setNoColorString
 .. seealso:: showNoColor
@@ -235,7 +238,7 @@ class QgsColorButton : QToolButton
     void setContext( const QString &context );
 %Docstring
  Sets the context string for the color button. The context string is passed to all color swatch
- grids shown in the button's drop down menu, to allow them to customise their display colors
+ grids shown in the button's drop-down menu, to allow them to customise their display colors
  based on the context.
  \param context context string for the color button's color swatch grids
 .. seealso:: context
@@ -244,7 +247,7 @@ class QgsColorButton : QToolButton
     QString context() const;
 %Docstring
  Returns the context string for the color button. The context string is passed to all color swatch
- grids shown in the button's drop down menu, to allow them to customise their display colors
+ grids shown in the button's drop-down menu, to allow them to customise their display colors
  based on the context.
  :return: context string for the color button's color swatch grids
 .. seealso:: setContext
@@ -254,18 +257,18 @@ class QgsColorButton : QToolButton
     void setColorSchemeRegistry( QgsColorSchemeRegistry *registry );
 %Docstring
  Sets the color scheme registry for the button, which controls the color swatch grids
- that are shown in the button's drop down menu.
+ that are shown in the button's drop-down menu.
  \param registry color scheme registry for the button. Set to 0 to hide all color
- swatch grids from the button's drop down menu.
+ swatch grids from the button's drop-down menu.
 .. seealso:: colorSchemeRegistry
 %End
 
     QgsColorSchemeRegistry *colorSchemeRegistry();
 %Docstring
  Returns the color scheme registry for the button, which controls the color swatch grids
- that are shown in the button's drop down menu.
+ that are shown in the button's drop-down menu.
  :return: color scheme registry for the button. If returned value is 0 then all color
- swatch grids are hidden from the button's drop down menu.
+ swatch grids are hidden from the button's drop-down menu.
 .. seealso:: setColorSchemeRegistry
  :rtype: QgsColorSchemeRegistry
 %End
@@ -313,7 +316,7 @@ class QgsColorButton : QToolButton
  Sets color to a totally transparent color.
 .. note::
 
-   If the color button is not set to show an alpha channel in the color
+   If the color button is not set to show an opacity channel in the color
  dialog (see setColorDialogOptions) then the color will not be changed.
 .. seealso:: setToNull()
 %End

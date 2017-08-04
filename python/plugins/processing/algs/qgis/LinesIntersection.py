@@ -30,24 +30,27 @@ import os
 from qgis.PyQt.QtGui import QIcon
 
 from qgis.core import (QgsFeatureRequest, QgsFeature, QgsGeometry,
-                       QgsWkbTypes, QgsFields,
-                       QgsProcessingUtils)
+                       QgsFeatureSink,
+                       QgsWkbTypes,
+                       QgsFields,
+                       QgsSpatialIndex,
+                       QgsProcessing,
+                       QgsProcessingParameterFeatureSource,
+                       QgsProcessingParameterField,
+                       QgsProcessingParameterFeatureSink)
 
-from processing.core.GeoAlgorithm import GeoAlgorithm
-from processing.core.parameters import ParameterVector
-from processing.core.parameters import ParameterTableField
-from processing.core.outputs import OutputVector
+from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 from processing.tools import dataobjects, vector
 
 pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
 
-class LinesIntersection(GeoAlgorithm):
+class LinesIntersection(QgisAlgorithm):
 
-    INPUT_A = 'INPUT_A'
-    INPUT_B = 'INPUT_B'
-    FIELD_A = 'FIELD_A'
-    FIELD_B = 'FIELD_B'
+    INPUT = 'INPUT'
+    INTERSECT = 'INTERSECT'
+    INPUT_FIELDS = 'INPUT_FIELDS'
+    INTERSECT_FIELDS = 'INTERSECT_FIELDS'
 
     OUTPUT = 'OUTPUT'
 
@@ -57,92 +60,111 @@ class LinesIntersection(GeoAlgorithm):
     def group(self):
         return self.tr('Vector overlay tools')
 
+    def __init__(self):
+        super().__init__()
+
+    def initAlgorithm(self, config=None):
+        self.addParameter(QgsProcessingParameterFeatureSource(self.INPUT,
+                                                              self.tr('Input layer'), [QgsProcessing.TypeVectorLine]))
+        self.addParameter(QgsProcessingParameterFeatureSource(self.INTERSECT,
+                                                              self.tr('Intersect layer'), [QgsProcessing.TypeVectorLine]))
+
+        self.addParameter(QgsProcessingParameterField(
+            self.INPUT_FIELDS,
+            self.tr('Input fields to keep (leave empty to keep all fields)'),
+            parentLayerParameterName=self.INPUT,
+            optional=True, allowMultiple=True))
+        self.addParameter(QgsProcessingParameterField(
+            self.INTERSECT_FIELDS,
+            self.tr('Intersect fields to keep (leave empty to keep all fields)'),
+            parentLayerParameterName=self.INTERSECT,
+            optional=True, allowMultiple=True))
+
+        self.addParameter(QgsProcessingParameterFeatureSink(self.OUTPUT, self.tr('Intersections'), QgsProcessing.TypeVectorPoint))
+
     def name(self):
         return 'lineintersections'
 
     def displayName(self):
         return self.tr('Line intersections')
 
-    def defineCharacteristics(self):
-        self.addParameter(ParameterVector(self.INPUT_A,
-                                          self.tr('Input layer'), [dataobjects.TYPE_VECTOR_LINE]))
-        self.addParameter(ParameterVector(self.INPUT_B,
-                                          self.tr('Intersect layer'), [dataobjects.TYPE_VECTOR_LINE]))
-        self.addParameter(ParameterTableField(
-            self.FIELD_A,
-            self.tr('Input field to keep (leave as [not set] to keep all fields)'),
-            self.INPUT_A,
-            optional=True))
-        self.addParameter(ParameterTableField(
-            self.FIELD_B,
-            self.tr('Intersect field to keep (leave as [not set] to keep all fields)'),
-            self.INPUT_B,
-            optional=True))
+    def processAlgorithm(self, parameters, context, feedback):
+        sourceA = self.parameterAsSource(parameters, self.INPUT, context)
+        sourceB = self.parameterAsSource(parameters, self.INTERSECT, context)
 
-        self.addOutput(OutputVector(self.OUTPUT, self.tr('Intersections'), datatype=[dataobjects.TYPE_VECTOR_POINT]))
+        fieldsA = self.parameterAsFields(parameters, self.INPUT_FIELDS, context)
+        fieldsB = self.parameterAsFields(parameters, self.INTERSECT_FIELDS, context)
 
-    def processAlgorithm(self, context, feedback):
-        layerA = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT_A), context)
-        layerB = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT_B), context)
-        fieldA = self.getParameterValue(self.FIELD_A)
-        fieldB = self.getParameterValue(self.FIELD_B)
-
-        idxA = layerA.fields().lookupField(fieldA)
-        idxB = layerB.fields().lookupField(fieldB)
-
-        if idxA != -1:
-            fieldListA = QgsFields()
-            fieldListA.append(layerA.fields()[idxA])
+        fieldListA = QgsFields()
+        field_indices_a = []
+        if len(fieldsA) > 0:
+            for f in fieldsA:
+                idxA = sourceA.fields().lookupField(f)
+                if idxA >= 0:
+                    field_indices_a.append(idxA)
+                    fieldListA.append(sourceA.fields()[idxA])
         else:
-            fieldListA = layerA.fields()
+            fieldListA = sourceA.fields()
+            field_indices_a = [i for i in range(0, fieldListA.count())]
 
-        if idxB != -1:
-            fieldListB = QgsFields()
-            fieldListB.append(layerB.fields()[idxB])
+        fieldListB = QgsFields()
+        field_indices_b = []
+        if len(fieldsB) > 0:
+            for f in fieldsB:
+                idxB = sourceB.fields().lookupField(f)
+                if idxB >= 0:
+                    field_indices_b.append(idxB)
+                    fieldListB.append(sourceB.fields()[idxB])
         else:
-            fieldListB = layerB.fields()
+            fieldListB = sourceB.fields()
+            field_indices_b = [i for i in range(0, fieldListB.count())]
 
         fieldListB = vector.testForUniqueness(fieldListA, fieldListB)
         for b in fieldListB:
             fieldListA.append(b)
 
-        writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(fieldListA, QgsWkbTypes.Point, layerA.crs(),
-                                                                     context)
+        (sink, dest_id) = self.parameterAsSink(parameters, self.OUTPUT, context,
+                                               fieldListA, QgsWkbTypes.Point, sourceA.sourceCrs())
 
-        spatialIndex = QgsProcessingUtils.createSpatialIndex(layerB, context)
+        spatialIndex = QgsSpatialIndex(sourceB.getFeatures(QgsFeatureRequest().setSubsetOfAttributes([]).setDestinationCrs(sourceA.sourceCrs())), feedback)
 
         outFeat = QgsFeature()
-        features = QgsProcessingUtils.getFeatures(layerA, context)
-        total = 100.0 / QgsProcessingUtils.featureCount(layerA, context)
-        hasIntersections = False
-
+        features = sourceA.getFeatures(QgsFeatureRequest().setSubsetOfAttributes(field_indices_a))
+        total = 100.0 / sourceA.featureCount() if sourceA.featureCount() else 0
         for current, inFeatA in enumerate(features):
+            if feedback.isCanceled():
+                break
+
+            if not inFeatA.hasGeometry():
+                continue
+
             inGeom = inFeatA.geometry()
-            hasIntersections = False
+            has_intersections = False
             lines = spatialIndex.intersects(inGeom.boundingBox())
 
             engine = None
             if len(lines) > 0:
-                hasIntersections = True
+                has_intersections = True
                 # use prepared geometries for faster intersection tests
                 engine = QgsGeometry.createGeometryEngine(inGeom.geometry())
                 engine.prepareGeometry()
 
-            if hasIntersections:
+            if has_intersections:
                 request = QgsFeatureRequest().setFilterFids(lines)
-                for inFeatB in layerB.getFeatures(request):
+                request.setDestinationCrs(sourceA.sourceCrs())
+                request.setSubsetOfAttributes(field_indices_b)
+
+                for inFeatB in sourceB.getFeatures(request):
+                    if feedback.isCanceled():
+                        break
+
                     tmpGeom = inFeatB.geometry()
 
                     points = []
-                    attrsA = inFeatA.attributes()
-                    if idxA != -1:
-                        attrsA = [attrsA[idxA]]
-                    attrsB = inFeatB.attributes()
-                    if idxB != -1:
-                        attrsB = [attrsB[idxB]]
-
                     if engine.intersects(tmpGeom.geometry()):
                         tempGeom = inGeom.intersection(tmpGeom)
+                        out_attributes = [inFeatA.attributes()[i] for i in field_indices_a]
+                        out_attributes.extend([inFeatB.attributes()[i] for i in field_indices_b])
                         if tempGeom.type() == QgsWkbTypes.PointGeometry:
                             if tempGeom.isMultipart():
                                 points = tempGeom.asMultiPoint()
@@ -151,10 +173,9 @@ class LinesIntersection(GeoAlgorithm):
 
                             for j in points:
                                 outFeat.setGeometry(tempGeom.fromPoint(j))
-                                attrsA.extend(attrsB)
-                                outFeat.setAttributes(attrsA)
-                                writer.addFeature(outFeat)
+                                outFeat.setAttributes(out_attributes)
+                                sink.addFeature(outFeat, QgsFeatureSink.FastInsert)
 
             feedback.setProgress(int(current * total))
 
-        del writer
+        return {self.OUTPUT: dest_id}

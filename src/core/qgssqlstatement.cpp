@@ -546,6 +546,15 @@ QgsSQLStatement::Node *QgsSQLStatement::NodeTableDef::clone() const
 
 //
 
+QgsSQLStatement::NodeSelect::~NodeSelect()
+{
+  qDeleteAll( mTableList );
+  qDeleteAll( mColumns );
+  qDeleteAll( mJoins );
+  delete mWhere;
+  qDeleteAll( mOrderBy );
+}
+
 QString QgsSQLStatement::NodeSelect::dump() const
 {
   QString ret = QStringLiteral( "SELECT " );

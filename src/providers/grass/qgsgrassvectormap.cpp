@@ -19,7 +19,7 @@
 
 #include "qgslinestring.h"
 #include "qgspolygon.h"
-#include "qgspointv2.h"
+#include "qgspoint.h"
 
 #include "qgslogger.h"
 #include "qgsgeometry.h"
@@ -38,12 +38,7 @@ extern "C"
 #include <grass/gprojects.h>
 #include <grass/gis.h>
 #include <grass/dbmi.h>
-#if GRASS_VERSION_MAJOR < 7
-#include <grass/Vect.h>
-#else
 #include <grass/vector.h>
-#define BOUND_BOX bound_box
-#endif
 }
 
 QgsGrassVectorMap::QgsGrassVectorMap( const QgsGrassObject &grassObject )
@@ -187,12 +182,7 @@ bool QgsGrassVectorMap::openMap()
   {
     G_TRY
     {
-#if defined(GRASS_VERSION_MAJOR) && defined(GRASS_VERSION_MINOR) && \
-    ( ( GRASS_VERSION_MAJOR == 6 && GRASS_VERSION_MINOR >= 4 ) || GRASS_VERSION_MAJOR > 6 )
       Vect_build( mMap );
-#else
-      Vect_build( mMap, stderr );
-#endif
     }
     G_CATCH( QgsGrass::Exception & e )
     {
@@ -323,14 +313,8 @@ bool QgsGrassVectorMap::closeEdit( bool newMap )
   // Mapset must be set before Vect_close()
   QgsGrass::setMapset( mGrassObject.gisdbase(), mGrassObject.location(), mGrassObject.mapset() );
 
-#if defined(GRASS_VERSION_MAJOR) && defined(GRASS_VERSION_MINOR) && \
-    ( ( GRASS_VERSION_MAJOR == 6 && GRASS_VERSION_MINOR >= 4 ) || GRASS_VERSION_MAJOR > 6 )
   Vect_build_partial( mMap, GV_BUILD_NONE );
   Vect_build( mMap );
-#else
-  Vect_build_partial( mMap, GV_BUILD_NONE, NULL );
-  Vect_build( mMap, stderr );
-#endif
 
   // TODO?
 #if 0
@@ -640,7 +624,7 @@ QgsAbstractGeometry *QgsGrassVectorMap::lineGeometry( int id )
   pointList.reserve( points->n_points );
   for ( int i = 0; i < points->n_points; i++ )
   {
-    pointList << QgsPointV2( is3d() ? QgsWkbTypes::PointZ : QgsWkbTypes::Point, points->x[i], points->y[i], points->z[i] );
+    pointList << QgsPoint( is3d() ? QgsWkbTypes::PointZ : QgsWkbTypes::Point, points->x[i], points->y[i], points->z[i] );
   }
 
   Vect_destroy_line_struct( points );
@@ -673,7 +657,7 @@ QgsAbstractGeometry *QgsGrassVectorMap::nodeGeometry( int id )
   QgsDebugMsgLevel( QString( "id = %1" ).arg( id ), 3 );
   double x, y, z;
   Vect_get_node_coor( mMap, id, &x, &y, &z );
-  return new QgsPointV2( is3d() ? QgsWkbTypes::PointZ : QgsWkbTypes::Point, x, y, z );
+  return new QgsPoint( is3d() ? QgsWkbTypes::PointZ : QgsWkbTypes::Point, x, y, z );
 }
 
 QgsAbstractGeometry *QgsGrassVectorMap::areaGeometry( int id )
@@ -692,7 +676,7 @@ QgsAbstractGeometry *QgsGrassVectorMap::areaGeometry( int id )
   pointList.reserve( points->n_points );
   for ( int i = 0; i < points->n_points; i++ )
   {
-    pointList << QgsPointV2( is3d() ? QgsWkbTypes::PointZ : QgsWkbTypes::Point, points->x[i], points->y[i], points->z[i] );
+    pointList << QgsPoint( is3d() ? QgsWkbTypes::PointZ : QgsWkbTypes::Point, points->x[i], points->y[i], points->z[i] );
   }
 
   QgsLineString *ring = new QgsLineString();
@@ -709,7 +693,7 @@ QgsAbstractGeometry *QgsGrassVectorMap::areaGeometry( int id )
     pointList.reserve( points->n_points );
     for ( int i = 0; i < points->n_points; i++ )
     {
-      pointList <<  QgsPointV2( is3d() ? QgsWkbTypes::PointZ : QgsWkbTypes::Point, points->x[i], points->y[i], points->z[i] );
+      pointList <<  QgsPoint( is3d() ? QgsWkbTypes::PointZ : QgsWkbTypes::Point, points->x[i], points->y[i], points->z[i] );
     }
     ring = new QgsLineString();
     ring->setPoints( pointList );

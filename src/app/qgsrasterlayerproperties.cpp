@@ -82,6 +82,7 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer *lyr, QgsMapCanv
   , mGradientWidth( 0.0 )
   , mMapCanvas( canvas )
   , mHistogramWidget( nullptr )
+  , mMetadataFilled( false )
 {
   mGrayMinimumMaximumEstimated = true;
   mRGBMinimumMaximumEstimated = true;
@@ -112,8 +113,6 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer *lyr, QgsMapCanv
 
   connect( mOptionsStackedWidget, &QStackedWidget::currentChanged, this, &QgsRasterLayerProperties::mOptionsStackedWidget_CurrentChanged );
 
-  connect( sliderTransparency, &QAbstractSlider::valueChanged, this, &QgsRasterLayerProperties::sliderTransparency_valueChanged );
-
   // brightness/contrast controls
   connect( mSliderBrightness, &QAbstractSlider::valueChanged, mBrightnessSpinBox, &QSpinBox::setValue );
   connect( mBrightnessSpinBox, static_cast < void ( QSpinBox::* )( int ) > ( &QSpinBox::valueChanged ), mSliderBrightness, &QAbstractSlider::setValue );
@@ -143,7 +142,7 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer *lyr, QgsMapCanv
   // set up the scale based layer visibility stuff....
   mScaleRangeWidget->setMapCanvas( mMapCanvas );
   chkUseScaleDependentRendering->setChecked( lyr->hasScaleBasedVisibility() );
-  mScaleRangeWidget->setScaleRange( 1.0 / lyr->maximumScale(), 1.0 / lyr->minimumScale() ); // caution: layer uses scale denoms, widget uses true scales
+  mScaleRangeWidget->setScaleRange( lyr->minimumScale(), lyr->maximumScale() );
 
   leNoDataValue->setValidator( new QDoubleValidator( -std::numeric_limits<double>::max(), std::numeric_limits<double>::max(), 1000, this ) );
 
@@ -298,7 +297,7 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer *lyr, QgsMapCanv
     mMaximumOversamplingSpinBox->setValue( resampleFilter->maxOversampling() );
   }
 
-  btnColorizeColor->setColorDialogTitle( tr( "Select color" ) );
+  btnColorizeColor->setColorDialogTitle( tr( "Select Color" ) );
   btnColorizeColor->setContext( QStringLiteral( "symbology" ) );
 
   // Hue and saturation color control
@@ -651,10 +650,7 @@ void QgsRasterLayerProperties::sync()
   QgsRasterRenderer *renderer = mRasterLayer->renderer();
   if ( renderer )
   {
-    sliderTransparency->setValue( ( 1.0 - renderer->opacity() ) * 255 );
-    //update the transparency percentage label
-    sliderTransparency_valueChanged( ( 1.0 - renderer->opacity() ) * 255 );
-
+    mOpacityWidget->setOpacity( renderer->opacity() );
     cboxTransparencyBand->setBand( renderer->alphaBand() );
   }
 
@@ -705,40 +701,8 @@ void QgsRasterLayerProperties::sync()
    */
 
   //these properties (layer name and label) are provided by the qgsmaplayer superclass
-  leLayerSource->setText( mRasterLayer->source() );
   mLayerOrigNameLineEd->setText( mRasterLayer->originalName() );
   leDisplayName->setText( mRasterLayer->name() );
-
-  //display the raster dimensions and no data value
-  if ( mRasterLayer->dataProvider()->capabilities() & QgsRasterDataProvider::Size )
-  {
-    lblColumns->setText( tr( "Columns: %1" ).arg( mRasterLayer->width() ) );
-    lblRows->setText( tr( "Rows: %1" ).arg( mRasterLayer->height() ) );
-  }
-  else
-  {
-    // TODO: Account for fixedWidth and fixedHeight WMS layers
-    lblColumns->setText( tr( "Columns: " ) + tr( "n/a" ) );
-    lblRows->setText( tr( "Rows: " ) + tr( "n/a" ) );
-  }
-
-  if ( mRasterLayer->dataProvider()->dataType( 1 ) == Qgis::ARGB32
-       || mRasterLayer->dataProvider()->dataType( 1 ) == Qgis::ARGB32_Premultiplied )
-  {
-    lblNoData->setText( tr( "No-Data Value: " ) + tr( "n/a" ) );
-  }
-  else
-  {
-    // TODO: all bands
-    if ( mRasterLayer->dataProvider()->sourceHasNoDataValue( 1 ) )
-    {
-      lblNoData->setText( tr( "No-Data Value: %1" ).arg( mRasterLayer->dataProvider()->sourceNoDataValue( 1 ) ) );
-    }
-    else
-    {
-      lblNoData->setText( tr( "No-Data Value: " ) + tr( "n/a" ) );
-    }
-  }
 
   //get the thumbnail for the layer
   QPixmap thumbnail = QPixmap::fromImage( mRasterLayer->previewAsImage( pixmapThumbnail->size() ) );
@@ -764,8 +728,10 @@ void QgsRasterLayerProperties::sync()
    */
   //populate the metadata tab's text browser widget with gdal metadata info
   QString myStyle = QgsApplication::reportStyleSheet();
-  txtbMetadata->document()->setDefaultStyleSheet( myStyle );
-  txtbMetadata->setHtml( mRasterLayer->htmlMetadata() );
+  myStyle.append( QStringLiteral( "body { margin: 10px; }\n " ) );
+  teMetadataViewer->document()->setDefaultStyleSheet( myStyle );
+  teMetadataViewer->setHtml( mRasterLayer->htmlMetadata() );
+  mMetadataFilled = true;
 
   // WMS Name as layer short name
   mLayerShortNameLineEdit->setText( mRasterLayer->shortName() );
@@ -904,7 +870,7 @@ void QgsRasterLayerProperties::apply()
     rasterRenderer->setRasterTransparency( rasterTransparency );
 
     //set global transparency
-    rasterRenderer->setOpacity( ( 255 - sliderTransparency->value() ) / 255.0 );
+    rasterRenderer->setOpacity( mOpacityWidget->opacity() );
   }
 
   QgsDebugMsg( "processing general tab" );
@@ -915,9 +881,8 @@ void QgsRasterLayerProperties::apply()
 
   // set up the scale based layer visibility stuff....
   mRasterLayer->setScaleBasedVisibility( chkUseScaleDependentRendering->isChecked() );
-  // caution: layer uses scale denoms, widget uses true scales
-  mRasterLayer->setMaximumScale( 1.0 / mScaleRangeWidget->minimumScale() );
-  mRasterLayer->setMinimumScale( 1.0 / mScaleRangeWidget->maximumScale() );
+  mRasterLayer->setMinimumScale( mScaleRangeWidget->minimumScale() );
+  mRasterLayer->setMaximumScale( mScaleRangeWidget->maximumScale() );
 
   mRasterLayer->setAutoRefreshInterval( mRefreshLayerIntervalSpinBox->value() * 1000.0 );
   mRasterLayer->setAutoRefreshEnabled( mRefreshLayerCheckBox->isChecked() );
@@ -974,19 +939,57 @@ void QgsRasterLayerProperties::apply()
   QPixmap thumbnail = QPixmap::fromImage( mRasterLayer->previewAsImage( pixmapThumbnail->size() ) );
   pixmapThumbnail->setPixmap( thumbnail );
 
+  if ( mRasterLayer->shortName() != mLayerShortNameLineEdit->text() )
+    mMetadataFilled = false;
   mRasterLayer->setShortName( mLayerShortNameLineEdit->text() );
+
+  if ( mRasterLayer->title() != mLayerTitleLineEdit->text() )
+    mMetadataFilled = false;
   mRasterLayer->setTitle( mLayerTitleLineEdit->text() );
+
+  if ( mRasterLayer->abstract() != mLayerAbstractTextEdit->toPlainText() )
+    mMetadataFilled = false;
   mRasterLayer->setAbstract( mLayerAbstractTextEdit->toPlainText() );
+
+  if ( mRasterLayer->keywordList() != mLayerKeywordListLineEdit->text() )
+    mMetadataFilled = false;
   mRasterLayer->setKeywordList( mLayerKeywordListLineEdit->text() );
+
+  if ( mRasterLayer->dataUrl() != mLayerDataUrlLineEdit->text() )
+    mMetadataFilled = false;
   mRasterLayer->setDataUrl( mLayerDataUrlLineEdit->text() );
+
+  if ( mRasterLayer->dataUrlFormat() != mLayerDataUrlFormatComboBox->currentText() )
+    mMetadataFilled = false;
   mRasterLayer->setDataUrlFormat( mLayerDataUrlFormatComboBox->currentText() );
+
   //layer attribution and metadataUrl
+  if ( mRasterLayer->attribution() != mLayerAttributionLineEdit->text() )
+    mMetadataFilled = false;
   mRasterLayer->setAttribution( mLayerAttributionLineEdit->text() );
+
+  if ( mRasterLayer->attributionUrl() != mLayerAttributionUrlLineEdit->text() )
+    mMetadataFilled = false;
   mRasterLayer->setAttributionUrl( mLayerAttributionUrlLineEdit->text() );
+
+  if ( mRasterLayer->metadataUrl() != mLayerMetadataUrlLineEdit->text() )
+    mMetadataFilled = false;
   mRasterLayer->setMetadataUrl( mLayerMetadataUrlLineEdit->text() );
+
+  if ( mRasterLayer->metadataUrlType() != mLayerMetadataUrlTypeComboBox->currentText() )
+    mMetadataFilled = false;
   mRasterLayer->setMetadataUrlType( mLayerMetadataUrlTypeComboBox->currentText() );
+
+  if ( mRasterLayer->metadataUrlFormat() != mLayerMetadataUrlFormatComboBox->currentText() )
+    mMetadataFilled = false;
   mRasterLayer->setMetadataUrlFormat( mLayerMetadataUrlFormatComboBox->currentText() );
+
+  if ( mRasterLayer->legendUrl() != mLayerLegendUrlLineEdit->text() )
+    mMetadataFilled = false;
   mRasterLayer->setLegendUrl( mLayerLegendUrlLineEdit->text() );
+
+  if ( mRasterLayer->legendUrlFormat() != mLayerLegendUrlFormatComboBox->currentText() )
+    mMetadataFilled = false;
   mRasterLayer->setLegendUrlFormat( mLayerLegendUrlFormatComboBox->currentText() );
 
   // update symbology
@@ -1113,8 +1116,8 @@ void QgsRasterLayerProperties::on_buttonBuildPyramids_clicked()
 
   //populate the metadata tab's text browser widget with gdal metadata info
   QString myStyle = QgsApplication::reportStyleSheet();
-  txtbMetadata->setHtml( mRasterLayer->htmlMetadata() );
-  txtbMetadata->document()->setDefaultStyleSheet( myStyle );
+  teMetadataViewer->setHtml( mRasterLayer->htmlMetadata() );
+  teMetadataViewer->document()->setDefaultStyleSheet( myStyle );
 }
 
 void QgsRasterLayerProperties::on_mRenderTypeComboBox_currentIndexChanged( int index )
@@ -1444,6 +1447,12 @@ void QgsRasterLayerProperties::mOptionsStackedWidget_CurrentChanged( int indx )
   {
     mHistogramWidget->setActive( false );
   }
+
+  if ( indx == mOptStackedWidget->indexOf( mOptsPage_Information ) || !mMetadataFilled )
+    //set the metadata contents (which can be expensive)
+    teMetadataViewer->clear();
+  teMetadataViewer->setHtml( mRasterLayer->htmlMetadata() );
+  mMetadataFilled = true;
 }
 
 void QgsRasterLayerProperties::on_pbnImportTransparentPixelValues_clicked()
@@ -1551,7 +1560,7 @@ void QgsRasterLayerProperties::on_pbnRemoveSelectedRow_clicked()
   }
 }
 
-void QgsRasterLayerProperties::pixelSelected( const QgsPoint &canvasPoint )
+void QgsRasterLayerProperties::pixelSelected( const QgsPointXY &canvasPoint )
 {
   QgsRasterRenderer *renderer = mRendererWidget->renderer();
   if ( !renderer )
@@ -1569,7 +1578,7 @@ void QgsRasterLayerProperties::pixelSelected( const QgsPoint &canvasPoint )
     mMapCanvas->unsetMapTool( mPixelSelectorTool );
 
     const QgsMapSettings &ms = mMapCanvas->mapSettings();
-    QgsPoint myPoint = ms.mapToLayerCoordinates( mRasterLayer, canvasPoint );
+    QgsPointXY myPoint = ms.mapToLayerCoordinates( mRasterLayer, canvasPoint );
 
     QgsRectangle myExtent = ms.mapToLayerCoordinates( mRasterLayer, mMapCanvas->extent() );
     double mapUnitsPerPixel = mMapCanvas->mapUnitsPerPixel();
@@ -1612,13 +1621,6 @@ void QgsRasterLayerProperties::pixelSelected( const QgsPoint &canvasPoint )
   tableTransparency->resizeColumnsToContents();
   tableTransparency->resizeRowsToContents();
 }
-
-void QgsRasterLayerProperties::sliderTransparency_valueChanged( int value )
-{
-  //set the transparency percentage label to a suitable value
-  int myInt = static_cast < int >( ( value / 255.0 ) * 100 ); //255.0 to prevent integer division
-  lblTransparencyPercent->setText( QString::number( myInt ) + '%' );
-}//sliderTransparency_valueChanged
 
 void QgsRasterLayerProperties::toggleSaturationControls( int grayscaleMode )
 {
@@ -1706,7 +1708,7 @@ void QgsRasterLayerProperties::loadDefaultStyle_clicked()
 {
   bool defaultLoadedFlag = false;
   QString myMessage = mRasterLayer->loadDefaultStyle( defaultLoadedFlag );
-  //reset if the default style was loaded ok only
+  //reset if the default style was loaded OK only
   if ( defaultLoadedFlag )
   {
     syncToLayer();

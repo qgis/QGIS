@@ -37,6 +37,16 @@
 #include "qgis_core.h"
 #include "qgis_sip.h"
 
+#ifdef SIP_RUN
+% ModuleHeaderCode
+#include <qgis.h>
+% End
+
+% ModuleCode
+int QgisEvent = QEvent::User + 1;
+% End
+#endif
+
 
 /** \ingroup core
  * The Qgis class provides global constants for use throughout the application.
@@ -110,6 +120,13 @@ class CORE_EXPORT Qgis
      *  \since QGIS 3.0 */
     static const double DEFAULT_Z_COORDINATE;
 
+    /**
+     * UI scaling factor. This should be applied to all widget sizes obtained from font metrics,
+     * to account for differences in the default font sizes across different platforms.
+     *  \since QGIS 3.0
+    */
+    static const double UI_SCALE_FACTOR;
+
 };
 
 // hack to workaround warnings when casting void pointers
@@ -173,7 +190,7 @@ template<class Object> inline QgsSignalBlocker<Object> whileBlocking( Object *ob
 }
 
 //! Hash for QVariant
-uint qHash( const QVariant &variant );
+CORE_EXPORT uint qHash( const QVariant &variant );
 
 //! Returns a string representation of a double
 //! \param a double value
@@ -277,7 +294,7 @@ CORE_EXPORT QString qgsVsiPrefix( const QString &path );
     Works like C malloc() but prints debug message by QgsLogger if allocation fails.
     \param size size in bytes
  */
-void CORE_EXPORT *qgsMalloc( size_t size );
+void CORE_EXPORT *qgsMalloc( size_t size ) SIP_SKIP;
 
 /** Allocates  memory for an array of nmemb elements of size bytes each and returns
     a pointer to the allocated memory. Works like C calloc() but prints debug message
@@ -285,12 +302,12 @@ void CORE_EXPORT *qgsMalloc( size_t size );
     \param nmemb number of elements
     \param size size of element in bytes
  */
-void CORE_EXPORT *qgsCalloc( size_t nmemb, size_t size );
+void CORE_EXPORT *qgsCalloc( size_t nmemb, size_t size ) SIP_SKIP;
 
 /** Frees the memory space  pointed  to  by  ptr. Works like C free().
     \param ptr pointer to memory space
  */
-void CORE_EXPORT qgsFree( void *ptr );
+void CORE_EXPORT qgsFree( void *ptr ) SIP_SKIP;
 
 /** Wkt string that represents a geographic coord sys
  * \since QGIS GEOWkt
@@ -327,7 +344,7 @@ const double DEFAULT_LINE_WIDTH = 0.26;
 //! Default snapping tolerance for segments
 const double DEFAULT_SEGMENT_EPSILON = 1e-8;
 
-typedef QMap<QString, QString> QgsStringMap;
+typedef QMap<QString, QString> QgsStringMap SIP_SKIP;
 
 /** Qgssize is used instead of size_t, because size_t is stdlib type, unknown
  *  by SIP, and it would be hard to define size_t correctly in SIP.
@@ -337,6 +354,7 @@ typedef QMap<QString, QString> QgsStringMap;
  *  KEEP IN SYNC WITH qgssize defined in SIP! */
 typedef unsigned long long qgssize;
 
+#ifndef SIP_RUN
 #if (__GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 6)) || defined(__clang__)
 #define Q_NOWARN_DEPRECATED_PUSH \
   _Pragma("GCC diagnostic push") \
@@ -352,6 +370,7 @@ typedef unsigned long long qgssize;
 #else
 #define Q_NOWARN_DEPRECATED_PUSH
 #define Q_NOWARN_DEPRECATED_POP
+#endif
 #endif
 
 #ifndef QGISEXTERN
@@ -373,6 +392,8 @@ typedef unsigned long long qgssize;
 
 #if defined(__clang__)
 #define FALLTHROUGH //[[clang::fallthrough]]
+#elif defined(__GNUC__)
+#define FALLTHROUGH [[gnu::fallthrough]];
 #else
 #define FALLTHROUGH
 #endif

@@ -21,7 +21,7 @@
 #include <QStandardItem>
 #include <QModelIndex>
 #include "ui_qgsquerybuilderbase.h"
-#include "qgisgui.h"
+#include "qgsguiutils.h"
 #include "qgshelp.h"
 #include "qgis_gui.h"
 
@@ -50,7 +50,7 @@ class GUI_EXPORT QgsQueryBuilder : public QDialog, private Ui::QgsQueryBuilderBa
      * \param fl dialog flags
      */
     QgsQueryBuilder( QgsVectorLayer *layer, QWidget *parent SIP_TRANSFERTHIS = 0,
-                     Qt::WindowFlags fl = QgisGui::ModalDialogFlags );
+                     Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags );
 
     ~QgsQueryBuilder();
 

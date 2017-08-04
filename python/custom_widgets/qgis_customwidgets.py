@@ -20,7 +20,7 @@
 """
 This file is used by pyuic to redirect includes
 in custom widgets to the correct QGIS python packages.
-It is copied on installation in /pythonX/dist-packages/PyQt4/uic/widget-plugins/
+It is copied on installation in /pythonX/dist-packages/PyQt5/uic/widget-plugins/
 """
 
 # solution with CW_FILTER not fully working due to include of other files
@@ -50,6 +50,8 @@ pluginType = MODULE
 def moduleInformation():
     try:
         import qgis.gui
-        return "qgis.gui", dir(qgis.gui)
+        widget_list = dir(qgis.gui)
+        widget_list.remove('QgsScrollArea')
+        return "qgis.gui", widget_list
     except ImportError:
         return "", []

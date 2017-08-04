@@ -1,22 +1,48 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/layertree/qgslayertreeembeddedconfigwidget.h                 *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
 
-/** \ingroup gui
- * \class QgsLayerTreeEmbeddedConfigWidget
- * A widget to configure layer tree embedded widgets for a particular map layer.
- * @note introduced in QGIS 2.16
- */
-class QgsLayerTreeEmbeddedConfigWidget : public QWidget
+
+
+
+class QgsLayerTreeEmbeddedConfigWidget : QWidget, protected Ui::QgsLayerTreeEmbeddedConfigWidgetBase
 {
-%TypeHeaderCode
-#include <qgslayertreeembeddedconfigwidget.h>
+%Docstring
+ A widget to configure layer tree embedded widgets for a particular map layer.
+.. versionadded:: 2.16
 %End
 
+%TypeHeaderCode
+#include "qgslayertreeembeddedconfigwidget.h"
+%End
   public:
+
     QgsLayerTreeEmbeddedConfigWidget( QWidget *parent /TransferThis/ = 0 );
+%Docstring
+ A widget to configure layer tree embedded widgets for a particular map layer.
+ \param parent The parent of the widget.
+%End
 
-    //! Initialize widget with a map layer
     void setLayer( QgsMapLayer *layer );
+%Docstring
+Initialize widget with a map layer
+%End
 
-    //! Store changes made in the widget to the layer
     void applyToLayer();
+%Docstring
+Store changes made in the widget to the layer
+%End
 
 };
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/layertree/qgslayertreeembeddedconfigwidget.h                 *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

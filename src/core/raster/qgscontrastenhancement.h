@@ -117,6 +117,10 @@ class CORE_EXPORT QgsContrastEnhancement
     void readXml( const QDomElement &elem );
 
   private:
+#ifdef SIP_RUN
+    const QgsContrastEnhancement &operator=( const QgsContrastEnhancement & );
+#endif
+
     //! \brief Current contrast enhancement algorithm
     ContrastEnhancementAlgorithm mContrastEnhancementAlgorithm;
 

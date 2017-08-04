@@ -1324,19 +1324,19 @@ void QgsWmsProjectParser::addLayers( QDomDocument &doc,
           double SCALE_TO_SCALEHINT = OGC_PX_M * sqrt( 2.0 );
 
           QDomElement scaleHintElem = doc.createElement( QStringLiteral( "ScaleHint" ) );
-          scaleHintElem.setAttribute( QStringLiteral( "min" ), QString::number( currentLayer->minimumScale() * SCALE_TO_SCALEHINT ) );
-          scaleHintElem.setAttribute( QStringLiteral( "max" ), QString::number( currentLayer->maximumScale() * SCALE_TO_SCALEHINT ) );
+          scaleHintElem.setAttribute( QStringLiteral( "min" ), QString::number( currentLayer->maximumScale() * SCALE_TO_SCALEHINT ) );
+          scaleHintElem.setAttribute( QStringLiteral( "max" ), QString::number( currentLayer->minimumScale() * SCALE_TO_SCALEHINT ) );
           layerElem.appendChild( scaleHintElem );
         }
         else
         {
-          QString minScaleString = QString::number( currentLayer->minimumScale() );
+          QString minScaleString = QString::number( currentLayer->maximumScale() );
           QDomElement minScaleElem = doc.createElement( QStringLiteral( "MinScaleDenominator" ) );
           QDomText minScaleText = doc.createTextNode( minScaleString );
           minScaleElem.appendChild( minScaleText );
           layerElem.appendChild( minScaleElem );
 
-          QString maxScaleString = QString::number( currentLayer->maximumScale() );
+          QString maxScaleString = QString::number( currentLayer->minimumScale() );
           QDomElement maxScaleElem = doc.createElement( QStringLiteral( "MaxScaleDenominator" ) );
           QDomText maxScaleText = doc.createTextNode( maxScaleString );
           maxScaleElem.appendChild( maxScaleText );
@@ -1638,8 +1638,8 @@ void QgsWmsProjectParser::addOWSLayers( QDomDocument &doc,
       //min/max scale denominatormScaleBasedVisibility
       if ( currentLayer->hasScaleBasedVisibility() )
       {
-        QString minScaleString = QString::number( currentLayer->minimumScale() );
-        QString maxScaleString = QString::number( currentLayer->maximumScale() );
+        QString minScaleString = QString::number( currentLayer->maximumScale() );
+        QString maxScaleString = QString::number( currentLayer->minimumScale() );
         QDomElement minScaleElem = doc.createElement( QStringLiteral( "sld:MinScaleDenominator" ) );
         QDomText minScaleText = doc.createTextNode( minScaleString );
         minScaleElem.appendChild( minScaleText );
@@ -1746,25 +1746,9 @@ void QgsWmsProjectParser::addOWSLayers( QDomDocument &doc,
 
 int QgsWmsProjectParser::layersAndStyles( QStringList &layers, QStringList &styles ) const
 {
-  layers.clear();
+  layers = mProjectParser->layersNames();
   styles.clear();
-
-  const QList<QDomElement> &projectLayerElements = mProjectParser->projectLayerElements();
-  QList<QDomElement>::const_iterator elemIt = projectLayerElements.constBegin();
-
-  QString currentLayerName;
-
-  for ( ; elemIt != projectLayerElements.constEnd(); ++elemIt )
-  {
-    currentLayerName = mProjectParser->layerShortName( *elemIt );
-    if ( currentLayerName.isEmpty() )
-      currentLayerName = mProjectParser->layerName( *elemIt );
-    if ( !currentLayerName.isEmpty() )
-    {
-      layers << currentLayerName;
-      styles << QString();
-    }
-  }
+  styles.reserve( layers.size() );
   return 0;
 }
 
@@ -1822,7 +1806,7 @@ QDomDocument QgsWmsProjectParser::getStyles( QStringList &layerList ) const
 
       Q_FOREACH ( QString styleName, layer->styleManager()->styles() )
       {
-        if ( layer->hasGeometryType() )
+        if ( layer->isSpatial() )
         {
           layer->styleManager()->setCurrentStyle( styleName );
           if ( styleName.isEmpty() )

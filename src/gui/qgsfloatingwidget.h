@@ -128,6 +128,9 @@ class GUI_EXPORT QgsFloatingWidget: public QWidget
 
 };
 
+
+#ifndef SIP_RUN
+
 /// @cond PRIVATE
 
 class QgsFloatingWidgetEventFilter: public QObject
@@ -148,5 +151,7 @@ class QgsFloatingWidgetEventFilter: public QObject
 };
 
 /// @endcond
+
+#endif
 
 #endif // QGSFLOATINGWIDGET_H

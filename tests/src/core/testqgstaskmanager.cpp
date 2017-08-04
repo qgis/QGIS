@@ -22,6 +22,12 @@
 #include <QObject>
 #include "qgstest.h"
 
+// some of these tests have intermittent failure on Travis, probably due
+// to inconsistent availability to multiple threads on the platform.
+// These tests are disabled unless WITH_FLAKY is 1.
+
+#define WITH_FLAKY 0 //TODO - disable only for Travis?
+
 class TestTask : public QgsTask
 {
     Q_OBJECT
@@ -194,13 +200,15 @@ class TestQgsTaskManager : public QObject
     void task();
     void taskResult();
     void taskFinished();
-#if 0 //flaky
+#if WITH_FLAKY
     void subTask();
 #endif
     void addTask();
     void taskTerminationBeforeDelete();
     void taskId();
+#if WITH_FLAKY
     void waitForFinished();
+#endif
     void progressChanged();
     void statusChanged();
     void allTasksFinished();
@@ -434,7 +442,7 @@ void TestQgsTaskManager::taskFinished()
   QCOMPARE( *resultObtained, false );
 }
 
-#if 0 //flaky
+#if WITH_FLAKY
 void TestQgsTaskManager::subTask()
 {
   QgsTaskManager manager;
@@ -657,6 +665,7 @@ void TestQgsTaskManager::taskId()
   delete task3;
 }
 
+#if WITH_FLAKY
 void TestQgsTaskManager::waitForFinished()
 {
   QgsTaskManager manager;
@@ -696,6 +705,7 @@ void TestQgsTaskManager::waitForFinished()
   QCOMPARE( timeoutTooShortTask->waitForFinished( 20 ), false );
   QCOMPARE( timeoutTooShortTask->status(), QgsTask::Running );
 }
+#endif
 
 void TestQgsTaskManager::progressChanged()
 {
@@ -1115,7 +1125,7 @@ void TestQgsTaskManager::managerWithSubTasks()
   QCOMPARE( manager->activeTasks().count(), 1 );
   QVERIFY( manager->activeTasks().contains( parent ) );
   QCOMPARE( spy.count(), 1 );
-#if 0 // flaky
+#if WITH_FLAKY
   //manager should not directly listen to progress reports from subtasks
   //(only parent tasks, which themselves include their subtask progress)
   QCOMPARE( spyProgress.count(), 0 );

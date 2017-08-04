@@ -21,13 +21,15 @@ email                : even.rouault at spatialys.com
 
 #include "ui_qgssqlcomposerdialogbase.h"
 #include <qgis.h>
-#include <qgisgui.h>
+#include "qgsguiutils.h"
 #include "qgscontexthelp.h"
 
 #include <QPair>
 #include <QStringList>
 #include <QSet>
 #include "qgis_gui.h"
+
+SIP_NO_FILE
 
 /** \ingroup gui
  * SQL composer dialog
@@ -104,7 +106,7 @@ class GUI_EXPORT QgsSQLComposerDialog : public QDialog, private Ui::QgsSQLCompos
     };
 
     //! constructor
-    explicit QgsSQLComposerDialog( QWidget *parent = nullptr, Qt::WindowFlags fl = QgisGui::ModalDialogFlags );
+    explicit QgsSQLComposerDialog( QWidget *parent = nullptr, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags );
     virtual ~QgsSQLComposerDialog();
 
     //! initialize the SQL statement

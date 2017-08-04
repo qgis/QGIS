@@ -38,8 +38,13 @@ from qgis.PyQt.QtGui import QCursor
 from qgis.utils import iface
 from qgis.core import (QgsMessageLog,
                        QgsApplication,
+                       QgsMapLayer,
                        QgsProcessingProvider,
-                       QgsProcessingUtils)
+                       QgsProcessingAlgorithm,
+                       QgsProcessingException,
+                       QgsProcessingParameterDefinition,
+                       QgsProcessingOutputVectorLayer,
+                       QgsProcessingOutputRasterLayer)
 
 import processing
 from processing.script.ScriptUtils import ScriptUtils
@@ -51,13 +56,15 @@ from processing.gui.Postprocessing import handleAlgorithmResults
 from processing.gui.AlgorithmExecutor import execute
 from processing.tools import dataobjects
 
-from processing.modeler.ModelerAlgorithmProvider import ModelerAlgorithmProvider  # NOQA
 from processing.algs.qgis.QGISAlgorithmProvider import QGISAlgorithmProvider  # NOQA
-from processing.algs.grass7.Grass7AlgorithmProvider import Grass7AlgorithmProvider  # NOQA
-from processing.algs.gdal.GdalAlgorithmProvider import GdalAlgorithmProvider  # NOQA
-from processing.algs.saga.SagaAlgorithmProvider import SagaAlgorithmProvider  # NOQA
+#from processing.algs.grass7.Grass7AlgorithmProvider import Grass7AlgorithmProvider  # NOQA
+#from processing.algs.gdal.GdalAlgorithmProvider import GdalAlgorithmProvider  # NOQA
+#from processing.algs.saga.SagaAlgorithmProvider import SagaAlgorithmProvider  # NOQA
 from processing.script.ScriptAlgorithmProvider import ScriptAlgorithmProvider  # NOQA
-from processing.preconfigured.PreconfiguredAlgorithmProvider import PreconfiguredAlgorithmProvider  # NOQA
+#from processing.preconfigured.PreconfiguredAlgorithmProvider import PreconfiguredAlgorithmProvider  # NOQA
+
+# should be loaded last - ensures that all dependent algorithms are available when loading models
+from processing.modeler.ModelerAlgorithmProvider import ModelerAlgorithmProvider  # NOQA
 
 
 class Processing(object):
@@ -119,137 +126,73 @@ class Processing(object):
         provider.refreshAlgorithms()
 
     @staticmethod
-    def runAlgorithm(algOrName, onFinish, *args, **kwargs):
-        if isinstance(algOrName, GeoAlgorithm):
+    def runAlgorithm(algOrName, parameters, onFinish=None, feedback=None, context=None):
+        if isinstance(algOrName, QgsProcessingAlgorithm):
             alg = algOrName
         else:
-            alg = QgsApplication.processingRegistry().algorithmById(algOrName)
+            alg = QgsApplication.processingRegistry().createAlgorithmById(algOrName)
+
+        if feedback is None:
+            feedback = MessageBarProgress(alg.displayName() if alg else Processing.tr('Processing'))
+
         if alg is None:
             # fix_print_with_import
             print('Error: Algorithm not found\n')
-            QgsMessageLog.logMessage(Processing.tr('Error: Algorithm {0} not found\n').format(algOrName),
-                                     Processing.tr("Processing"))
-            return
-        # hack - remove when getCopy is removed
-        provider = alg.provider()
-        alg = alg.getCopy()
-        #hack pt2
-        alg.setProvider(provider)
+            msg = Processing.tr('Error: Algorithm {0} not found\n').format(algOrName)
+            feedback.reportError(msg)
+            raise QgsProcessingException(msg)
 
-        if len(args) == 1 and isinstance(args[0], dict):
-            # Set params by name and try to run the alg even if not all parameter values are provided,
-            # by using the default values instead.
-            setParams = []
-            for (name, value) in list(args[0].items()):
-                param = alg.getParameterFromName(name)
-                if param and param.setValue(value):
-                    setParams.append(name)
-                    continue
-                output = alg.getOutputFromName(name)
-                if output and output.setValue(value):
-                    continue
-                # fix_print_with_import
-                print('Error: Wrong parameter value %s for parameter %s.' % (value, name))
-                QgsMessageLog.logMessage(
-                    Processing.tr('Error: Wrong parameter value {0} for parameter {1}.').format(value, name),
-                    Processing.tr("Processing"))
-                QgsMessageLog.logMessage(Processing.tr('Error in {0}. Wrong parameter value {1} for parameter {2}.').format(
-                    alg.name(), value, name
-                ), Processing.tr("Processing"),
-                    QgsMessageLog.CRITICAL
-                )
-                return
-            # fill any missing parameters with default values if allowed
-            for param in alg.parameters:
-                if param.name not in setParams:
-                    if not param.setDefaultValue():
-                        # fix_print_with_import
-                        print('Error: Missing parameter value for parameter %s.' % param.name)
-                        QgsMessageLog.logMessage(
-                            Processing.tr('Error: Missing parameter value for parameter {0}.').format(param.name),
-                            Processing.tr("Processing"))
-                        return
-        else:
-            if len(args) != alg.getVisibleParametersCount() + alg.getVisibleOutputsCount():
-                # fix_print_with_import
-                print('Error: Wrong number of parameters')
-                QgsMessageLog.logMessage(Processing.tr('Error: Wrong number of parameters'),
-                                         Processing.tr("Processing"))
-                processing.algorithmHelp(algOrName)
-                return
-            i = 0
-            for param in alg.parameters:
-                if not param.hidden:
-                    if not param.setValue(args[i]):
-                        # fix_print_with_import
-                        print('Error: Wrong parameter value: ' + str(args[i]))
-                        QgsMessageLog.logMessage(Processing.tr('Error: Wrong parameter value: ') + str(args[i]),
-                                                 Processing.tr("Processing"))
-                        return
-                    i = i + 1
+        # check for any mandatory parameters which were not specified
+        for param in alg.parameterDefinitions():
+            if param.name() not in parameters:
+                if not param.flags() & QgsProcessingParameterDefinition.FlagOptional:
+                    # fix_print_with_import
+                    msg = Processing.tr('Error: Missing parameter value for parameter {0}.').format(param.name())
+                    print('Error: Missing parameter value for parameter %s.' % param.name())
+                    feedback.reportError(msg)
+                    raise QgsProcessingException(msg)
 
-            for output in alg.outputs:
-                if not output.hidden:
-                    if not output.setValue(args[i]):
-                        # fix_print_with_import
-                        print('Error: Wrong output value: ' + str(args[i]))
-                        QgsMessageLog.logMessage(Processing.tr('Error: Wrong output value: ') + str(args[i]),
-                                                 Processing.tr("Processing"))
-                        return
-                    i = i + 1
+        if context is None:
+            context = dataobjects.createContext(feedback)
 
-        context = None
-        if kwargs is not None and 'context' in list(kwargs.keys()):
-            context = kwargs["context"]
-        else:
-            context = dataobjects.createContext()
-
-        msg = alg._checkParameterValuesBeforeExecuting(context)
-        if msg:
+        ok, msg = alg.checkParameterValues(parameters, context)
+        if not ok:
             # fix_print_with_import
             print('Unable to execute algorithm\n' + str(msg))
-            QgsMessageLog.logMessage(Processing.tr('Unable to execute algorithm\n{0}').format(msg),
-                                     Processing.tr("Processing"))
-            return
+            msg = Processing.tr('Unable to execute algorithm\n{0}').format(msg)
+            feedback.reportError(msg)
+            raise QgsProcessingException(msg)
 
-        if not alg.checkInputCRS(context):
+        if not alg.validateInputCrs(parameters, context):
             print('Warning: Not all input layers use the same CRS.\n' +
                   'This can cause unexpected results.')
-            QgsMessageLog.logMessage(
-                Processing.tr('Warning: Not all input layers use the same CRS.\nThis can cause unexpected results.'),
-                Processing.tr("Processing"))
+            feedback.pushInfo(
+                Processing.tr('Warning: Not all input layers use the same CRS.\nThis can cause unexpected results.'))
 
-        # Don't set the wait cursor twice, because then when you
-        # restore it, it will still be a wait cursor.
-        overrideCursor = False
-        if iface is not None:
-            cursor = QApplication.overrideCursor()
-            if cursor is None or cursor == 0:
-                QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
-                overrideCursor = True
-            elif cursor.shape() != Qt.WaitCursor:
-                QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
-                overrideCursor = True
-
-        feedback = None
-        if kwargs is not None and "feedback" in list(kwargs.keys()):
-            feedback = kwargs["feedback"]
-        elif iface is not None:
-            feedback = MessageBarProgress(alg.displayName())
-
-        ret = execute(alg, context, feedback)
+        ret, results = execute(alg, parameters, context, feedback)
         if ret:
+            feedback.pushInfo(
+                Processing.tr('Results: {}').format(results))
+
             if onFinish is not None:
                 onFinish(alg, context, feedback)
+            else:
+                # auto convert layer references in results to map layers
+                for out in alg.outputDefinitions():
+                    if isinstance(out, (QgsProcessingOutputVectorLayer, QgsProcessingOutputRasterLayer)):
+                        result = results[out.name()]
+                        if not isinstance(result, QgsMapLayer):
+                            layer = context.takeResultLayer(result) # transfer layer ownership out of context
+                            if layer:
+                                results[out.name()] = layer # replace layer string ref with actual layer (+ownership)
         else:
-            QgsMessageLog.logMessage(Processing.tr("There were errors executing the algorithm."),
-                                     Processing.tr("Processing"))
+            msg = Processing.tr("There were errors executing the algorithm.")
+            feedback.reportError(msg)
+            raise QgsProcessingException(msg)
 
-        if overrideCursor:
-            QApplication.restoreOverrideCursor()
         if isinstance(feedback, MessageBarProgress):
             feedback.close()
-        return alg
+        return results
 
     @staticmethod
     def tr(string, context=''):

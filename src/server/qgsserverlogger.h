@@ -18,6 +18,9 @@
 #ifndef QGSSERVERLOGGER_H
 #define QGSSERVERLOGGER_H
 
+#define SIP_NO_FILE
+
+
 #include "qgsmessagelog.h"
 
 #include <QFile>

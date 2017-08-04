@@ -21,6 +21,7 @@
 #include "ui_qgspointclusterrendererwidgetbase.h"
 #include "qgis.h"
 #include "qgsrendererwidget.h"
+#include "qgsexpressioncontextgenerator.h"
 #include "qgis_gui.h"
 
 class QgsPointClusterRenderer;
@@ -31,9 +32,10 @@ class QgsPointClusterRenderer;
  * \since QGIS 3.0
  */
 
-class GUI_EXPORT QgsPointClusterRendererWidget: public QgsRendererWidget, private Ui::QgsPointClusterRendererWidgetBase
+class GUI_EXPORT QgsPointClusterRendererWidget: public QgsRendererWidget, public QgsExpressionContextGenerator, private Ui::QgsPointClusterRendererWidgetBase
 {
     Q_OBJECT
+
   public:
 
     /** Returns a new QgsPointClusterRendererWidget.
@@ -56,11 +58,12 @@ class GUI_EXPORT QgsPointClusterRendererWidget: public QgsRendererWidget, privat
     QgsFeatureRenderer *renderer() override;
     void setContext( const QgsSymbolWidgetContext &context ) override;
 
+    QgsExpressionContext createExpressionContext() const override;
+
   private:
     QgsPointClusterRenderer *mRenderer = nullptr;
 
     void blockAllSignals( bool block );
-    void updateCenterIcon();
     void setupBlankUi( const QString &layerName );
 
   private slots:
@@ -68,10 +71,8 @@ class GUI_EXPORT QgsPointClusterRendererWidget: public QgsRendererWidget, privat
     void on_mRendererComboBox_currentIndexChanged( int index );
     void on_mDistanceSpinBox_valueChanged( double d );
     void on_mDistanceUnitWidget_changed();
-    void on_mCenterSymbolPushButton_clicked();
     void on_mRendererSettingsButton_clicked();
-    void updateCenterSymbolFromWidget();
-    void cleanUpSymbolSelector( QgsPanelWidget *container );
+    void centerSymbolChanged();
     void updateRendererFromWidget();
 };
 

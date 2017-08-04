@@ -20,6 +20,7 @@
 #include "qgsdelimitedtextprovider.h"
 #include "qgsdelimitedtextfile.h"
 #include "qgssettings.h"
+#include "qgsproviderregistry.h"
 
 #include <QButtonGroup>
 #include <QFile>
@@ -33,8 +34,8 @@
 
 const int MAX_SAMPLE_LENGTH = 200;
 
-QgsDelimitedTextSourceSelect::QgsDelimitedTextSourceSelect( QWidget *parent, Qt::WindowFlags fl, bool embedded )
-  : QDialog( parent, fl )
+QgsDelimitedTextSourceSelect::QgsDelimitedTextSourceSelect( QWidget *parent, Qt::WindowFlags fl, QgsProviderRegistry::WidgetMode theWidgetMode )
+  : QgsAbstractDataSourceWidget( parent, fl, theWidgetMode )
   , mFile( new QgsDelimitedTextFile() )
   , mExampleRowCount( 20 )
   , mBadRowCount( 0 )
@@ -43,15 +44,10 @@ QgsDelimitedTextSourceSelect::QgsDelimitedTextSourceSelect( QWidget *parent, Qt:
 {
 
   setupUi( this );
+  setupButtons( buttonBox );
 
   QgsSettings settings;
   restoreGeometry( settings.value( mPluginKey + "/geometry" ).toByteArray() );
-
-  if ( embedded )
-  {
-    buttonBox->button( QDialogButtonBox::Cancel )->hide();
-    buttonBox->button( QDialogButtonBox::Ok )->hide();
-  }
 
   bgFileFormat = new QButtonGroup( this );
   bgFileFormat->addButton( delimiterCSV, swFileFormat->indexOf( swpCSVOptions ) );
@@ -113,7 +109,7 @@ void QgsDelimitedTextSourceSelect::on_btnBrowseForFile_clicked()
   getOpenFileName();
 }
 
-void QgsDelimitedTextSourceSelect::on_buttonBox_accepted()
+void QgsDelimitedTextSourceSelect::addButtonClicked()
 {
   // The following conditions should not be hit! OK will not be enabled...
   if ( txtLayerName->text().isEmpty() )
@@ -198,14 +194,12 @@ void QgsDelimitedTextSourceSelect::on_buttonBox_accepted()
 
   // add the layer to the map
   emit addVectorLayer( QString::fromAscii( url.toEncoded() ), txtLayerName->text(), QStringLiteral( "delimitedtext" ) );
-
-  accept();
+  if ( widgetMode() == QgsProviderRegistry::WidgetMode::None )
+  {
+    accept();
+  }
 }
 
-void QgsDelimitedTextSourceSelect::on_buttonBox_rejected()
-{
-  reject();
-}
 
 QString QgsDelimitedTextSourceSelect::selectedChars()
 {
@@ -375,7 +369,7 @@ bool QgsDelimitedTextSourceSelect::loadDelimitedFileDefinition()
 
 void QgsDelimitedTextSourceSelect::updateFieldLists()
 {
-  // Update the x and y field dropdown boxes
+  // Update the x and y field drop-down boxes
   QgsDebugMsg( "Updating field lists" );
 
   disconnect( cmbXField, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsDelimitedTextSourceSelect::enableAccept );
@@ -444,7 +438,7 @@ void QgsDelimitedTextSourceSelect::updateFieldLists()
     for ( int i = 0; i < tblSample->columnCount(); i++ )
     {
       QString value = i < nv ? values[i] : QLatin1String( "" );
-      if ( value.length() > MAX_SAMPLE_LENGTH ) value = value.mid( 0, MAX_SAMPLE_LENGTH ) + "...";
+      if ( value.length() > MAX_SAMPLE_LENGTH ) value = value.mid( 0, MAX_SAMPLE_LENGTH ) + "…";
       QTableWidgetItem *item = new QTableWidgetItem( value );
       tblSample->setItem( counter - 1, i, item );
       if ( ! value.isEmpty() )
@@ -739,8 +733,8 @@ bool QgsDelimitedTextSourceSelect::validate()
   return enabled;
 }
 
+
 void QgsDelimitedTextSourceSelect::enableAccept()
 {
-  bool enabled = validate();
-  buttonBox->button( QDialogButtonBox::Ok )->setEnabled( enabled );
+  emit enableButtons( validate() );
 }

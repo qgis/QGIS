@@ -79,15 +79,40 @@ bool QgsExternalResourceWidgetWrapper::valid() const
 
 void QgsExternalResourceWidgetWrapper::setFeature( const QgsFeature &feature )
 {
-  if ( mQgsWidget && mPropertyCollection.isActive( QgsEditorWidgetWrapper::RootPath ) )
+  if ( mQgsWidget && mPropertyCollection.hasActiveProperties() )
   {
     QgsExpressionContext expressionContext( QgsExpressionContextUtils::globalProjectLayerScopes( layer() ) );
     expressionContext.setFeature( feature );
     bool ok = false;
-    QString path = mPropertyCollection.valueAsString( QgsEditorWidgetWrapper::RootPath, expressionContext, QString(), &ok );
-    if ( ok )
+
+    if ( mPropertyCollection.isActive( QgsEditorWidgetWrapper::RootPath ) )
     {
-      mQgsWidget->setDefaultRoot( path );
+      QString path = mPropertyCollection.valueAsString( QgsEditorWidgetWrapper::RootPath, expressionContext, QString(), &ok );
+      if ( ok )
+      {
+        mQgsWidget->setDefaultRoot( path );
+      }
+    }
+    if ( mPropertyCollection.isActive( QgsEditorWidgetWrapper::DocumentViewerContent ) )
+    {
+      QString dvcString = mPropertyCollection.valueAsString( QgsEditorWidgetWrapper::DocumentViewerContent, expressionContext, "NoContent", &ok );
+      if ( ok )
+      {
+        QgsExternalResourceWidget::DocumentViewerContent dvc;
+        if ( dvcString.compare( QLatin1String( "image" ), Qt::CaseInsensitive ) == 0 )
+        {
+          dvc = QgsExternalResourceWidget::Image;
+        }
+        else if ( dvcString.compare( QLatin1String( "web" ), Qt::CaseInsensitive ) == 0 )
+        {
+          dvc = QgsExternalResourceWidget::Web;
+        }
+        else
+        {
+          dvc = QgsExternalResourceWidget::NoContent;
+        }
+        mQgsWidget->setDocumentViewerContent( dvc );
+      }
     }
   }
 

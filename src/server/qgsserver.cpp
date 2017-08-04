@@ -33,7 +33,6 @@
 #include "qgsmapserviceexception.h"
 #include "qgsnetworkaccessmanager.h"
 #include "qgsserverlogger.h"
-#include "qgseditorwidgetregistry.h"
 #include "qgsserverrequest.h"
 #include "qgsbufferserverresponse.h"
 #include "qgsbufferserverrequest.h"
@@ -66,7 +65,7 @@ QgsServerSettings QgsServer::sSettings;
 
 QgsServiceRegistry QgsServer::sServiceRegistry;
 
-QgsServer::QgsServer( )
+QgsServer::QgsServer()
 {
   // QgsApplication must exist
   if ( qobject_cast<QgsApplication *>( qApp ) == nullptr )
@@ -75,6 +74,7 @@ QgsServer::QgsServer( )
     abort();
   }
   init();
+  mConfigCache = QgsConfigCache::instance();
 }
 
 QString &QgsServer::serverName()
@@ -122,7 +122,7 @@ QFileInfo QgsServer::defaultProjectFile()
   {
     QgsMessageLog::logMessage( projectFiles.at( x ).absoluteFilePath(), QStringLiteral( "Server" ), QgsMessageLog::INFO );
   }
-  if ( projectFiles.size() < 1 )
+  if ( projectFiles.isEmpty() )
   {
     return QFileInfo();
   }
@@ -183,7 +183,7 @@ QString QgsServer::configPath( const QString &defaultConfigPath, const QMap<QStr
 /**
  * Server initialization
  */
-bool QgsServer::init( )
+bool QgsServer::init()
 {
   if ( sInitialized )
   {
@@ -271,8 +271,6 @@ bool QgsServer::init( )
   QgsFontUtils::loadStandardTestFonts( QStringList() << QStringLiteral( "Roman" ) << QStringLiteral( "Bold" ) );
 #endif
 
-  QgsEditorWidgetRegistry::initEditors();
-
   sServerInterface = new QgsServerInterfaceImpl( sCapabilitiesCache, &sServiceRegistry, &sSettings );
 
   // Load service module
@@ -352,20 +350,10 @@ void QgsServer::handleRequest( QgsServerRequest &request, QgsServerResponse &res
       QString configFilePath = configPath( *sConfigFilePath, parameterMap );
 
       // load the project if needed and not empty
-      auto projectIt = mProjectRegistry.find( configFilePath );
-      if ( projectIt == mProjectRegistry.constEnd() )
+      const QgsProject *project = mConfigCache->project( configFilePath );
+      if ( ! project )
       {
-        // load the project
-        QgsProject *project = new QgsProject();
-        project->setFileName( configFilePath );
-        if ( project->read() )
-        {
-          projectIt = mProjectRegistry.insert( configFilePath, project );
-        }
-        else
-        {
-          throw QgsServerException( QStringLiteral( "Project file error" ) );
-        }
+        throw QgsServerException( QStringLiteral( "Project file error" ) );
       }
 
       sServerInterface->setConfigFilePath( configFilePath );
@@ -396,7 +384,7 @@ void QgsServer::handleRequest( QgsServerRequest &request, QgsServerResponse &res
       QgsService *service = sServiceRegistry.getService( serviceString, versionString );
       if ( service )
       {
-        service->executeRequest( request, responseDecorator, projectIt.value() );
+        service->executeRequest( request, responseDecorator, project );
       }
       else
       {

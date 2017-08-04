@@ -21,6 +21,7 @@
 #include "qgslayertreemodellegendnode.h"
 #include "qgslayertreeviewdefaultactions.h"
 #include "qgsmaplayer.h"
+#include "qgsgui.h"
 
 #include <QMenu>
 #include <QContextMenuEvent>
@@ -142,7 +143,7 @@ void QgsLayerTreeView::modelRowsInserted( const QModelIndex &index, int start, i
       for ( int i = 0; i < widgetsCount; ++i )
       {
         QString providerId = layer->customProperty( QStringLiteral( "embeddedWidgets/%1/id" ).arg( i ) ).toString();
-        if ( QgsLayerTreeEmbeddedWidgetProvider *provider = QgsLayerTreeEmbeddedWidgetRegistry::instance()->provider( providerId ) )
+        if ( QgsLayerTreeEmbeddedWidgetProvider *provider = QgsGui::layerTreeEmbeddedWidgetRegistry()->provider( providerId ) )
         {
           QModelIndex index = layerTreeModel()->legendNode2index( legendNodes[i] );
           setIndexWidget( index, provider->createWidget( layer, i ) );
@@ -254,7 +255,7 @@ void QgsLayerTreeView::updateExpandedStateFromNode( QgsLayerTreeNode *node )
 QgsMapLayer *QgsLayerTreeView::layerForIndex( const QModelIndex &index ) const
 {
   // Check if model has been set and index is valid
-  if ( layerTreeModel() && index.isValid( ) )
+  if ( layerTreeModel() && index.isValid() )
   {
     QgsLayerTreeNode *node = layerTreeModel()->index2node( index );
     if ( node )
@@ -406,4 +407,13 @@ void QgsLayerTreeView::keyPressEvent( QKeyEvent *event )
     layerTreeModel()->setFlags( oldFlags & ~QgsLayerTreeModel::ActionHierarchical );
   QTreeView::keyPressEvent( event );
   layerTreeModel()->setFlags( oldFlags );
+}
+
+void QgsLayerTreeView::dropEvent( QDropEvent *event )
+{
+  if ( event->keyboardModifiers() & Qt::AltModifier )
+  {
+    event->accept();
+  }
+  QTreeView::dropEvent( event );
 }

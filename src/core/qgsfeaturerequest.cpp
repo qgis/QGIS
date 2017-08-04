@@ -83,6 +83,8 @@ QgsFeatureRequest &QgsFeatureRequest::operator=( const QgsFeatureRequest &rh )
   mSimplifyMethod = rh.mSimplifyMethod;
   mLimit = rh.mLimit;
   mOrderBy = rh.mOrderBy;
+  mCrs = rh.mCrs;
+  mTransformErrorCallback = rh.mTransformErrorCallback;
   return *this;
 }
 
@@ -231,6 +233,24 @@ QgsFeatureRequest &QgsFeatureRequest::setSubsetOfAttributes( const QSet<QString>
 QgsFeatureRequest &QgsFeatureRequest::setSimplifyMethod( const QgsSimplifyMethod &simplifyMethod )
 {
   mSimplifyMethod = simplifyMethod;
+  return *this;
+}
+
+
+QgsCoordinateReferenceSystem QgsFeatureRequest::destinationCrs() const
+{
+  return mCrs;
+}
+
+QgsFeatureRequest &QgsFeatureRequest::setDestinationCrs( const QgsCoordinateReferenceSystem &crs )
+{
+  mCrs = crs;
+  return *this;
+}
+
+QgsFeatureRequest &QgsFeatureRequest::setTransformErrorCallback( std::function<void ( const QgsFeature & )> callback )
+{
+  mTransformErrorCallback = callback;
   return *this;
 }
 

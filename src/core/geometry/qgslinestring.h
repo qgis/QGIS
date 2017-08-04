@@ -43,6 +43,14 @@ class CORE_EXPORT QgsLineString: public QgsCurve
     QgsLineString();
 
     /**
+     * Construct a linestring from a vector of points.
+     * Z and M type will be set based on the type of the first point
+     * in the vector.
+     * \since QGIS 3.0
+     */
+    QgsLineString( const QVector<QgsPoint> &points );
+
+    /**
      * Construct a linestring from arrays of coordinates. If the z or m
      * arrays are non-empty then the resultant linestring will have
      * z and m types accordingly.
@@ -60,7 +68,7 @@ class CORE_EXPORT QgsLineString: public QgsCurve
      * or repeatedly calling addVertex()
      * \since QGIS 3.0
      */
-    QgsLineString( const QList<QgsPoint> &points );
+    QgsLineString( const QList<QgsPointXY> &points );
 
     bool operator==( const QgsCurve &other ) const override;
     bool operator!=( const QgsCurve &other ) const override;
@@ -68,14 +76,14 @@ class CORE_EXPORT QgsLineString: public QgsCurve
     /** Returns the specified point from inside the line string.
      * \param i index of point, starting at 0 for the first point
      */
-    QgsPointV2 pointN( int i ) const;
+    QgsPoint pointN( int i ) const;
 
     double xAt( int index ) const override;
     double yAt( int index ) const override;
 
     /** Returns the z-coordinate of the specified node in the line string.
      * \param index index of node, where the first node in the line is 0
-     * \returns z-coordinate of node, or 0.0 if index is out of bounds or the line
+     * \returns z-coordinate of node, or ``nan`` if index is out of bounds or the line
      * does not have a z dimension
      * \see setZAt()
      */
@@ -83,7 +91,7 @@ class CORE_EXPORT QgsLineString: public QgsCurve
 
     /** Returns the m value of the specified node in the line string.
      * \param index index of node, where the first node in the line is 0
-     * \returns m value of node, or 0.0 if index is out of bounds or the line
+     * \returns m value of node, or ``nan`` if index is out of bounds or the line
      * does not have m values
      * \see setMAt()
      */
@@ -135,7 +143,7 @@ class CORE_EXPORT QgsLineString: public QgsCurve
     /** Adds a new vertex to the end of the line string.
      * \param pt vertex to add
      */
-    void addVertex( const QgsPointV2 &pt );
+    void addVertex( const QgsPoint &pt );
 
     //! Closes the line string by appending the first point to the end of the line, if it is not already closed.
     void close();
@@ -171,8 +179,8 @@ class CORE_EXPORT QgsLineString: public QgsCurve
 
     //curve interface
     virtual double length() const override;
-    virtual QgsPointV2 startPoint() const override;
-    virtual QgsPointV2 endPoint() const override;
+    virtual QgsPoint startPoint() const override;
+    virtual QgsPoint endPoint() const override;
 
     /** Returns a new line string geometry corresponding to a segmentized approximation
      * of the curve.
@@ -193,18 +201,18 @@ class CORE_EXPORT QgsLineString: public QgsCurve
     void addToPainterPath( QPainterPath &path ) const override;
     void drawAsPolygon( QPainter &p ) const override;
 
-    virtual bool insertVertex( QgsVertexId position, const QgsPointV2 &vertex ) override;
-    virtual bool moveVertex( QgsVertexId position, const QgsPointV2 &newPos ) override;
+    virtual bool insertVertex( QgsVertexId position, const QgsPoint &vertex ) override;
+    virtual bool moveVertex( QgsVertexId position, const QgsPoint &newPos ) override;
     virtual bool deleteVertex( QgsVertexId position ) override;
 
     virtual QgsLineString *reversed() const override SIP_FACTORY;
 
-    virtual double closestSegment( const QgsPointV2 &pt, QgsPointV2 &segmentPt SIP_OUT,
+    virtual double closestSegment( const QgsPoint &pt, QgsPoint &segmentPt SIP_OUT,
                                    QgsVertexId &vertexAfter SIP_OUT, bool *leftOf SIP_OUT,
                                    double epsilon ) const override;
-    bool pointAt( int node, QgsPointV2 &point, QgsVertexId::VertexType &type ) const override;
+    bool pointAt( int node, QgsPoint &point, QgsVertexId::VertexType &type ) const override;
 
-    virtual QgsPointV2 centroid() const override;
+    virtual QgsPoint centroid() const override;
 
     void sumUpArea( double &sum SIP_OUT ) const override;
     double vertexAngle( QgsVertexId vertex ) const override;

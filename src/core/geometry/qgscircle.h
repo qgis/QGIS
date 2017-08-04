@@ -22,7 +22,7 @@
 
 #include "qgis_core.h"
 #include "qgsellipse.h"
-#include "qgspointv2.h"
+#include "qgspoint.h"
 #include "qgspolygon.h"
 #include "qgsrectangle.h"
 #include "qgscircularstring.h"
@@ -48,7 +48,7 @@ class CORE_EXPORT QgsCircle : public QgsEllipse
      * \param radius The radius of the circle.
      * \param azimuth Angle in degrees started from the North to the first quadrant.
      */
-    QgsCircle( const QgsPointV2 &center, double radius, double azimuth = 0 );
+    QgsCircle( const QgsPoint &center, double radius, double azimuth = 0 );
 
     /**
      * Constructs a circle by 2 points on the circle.
@@ -58,7 +58,7 @@ class CORE_EXPORT QgsCircle : public QgsEllipse
      * \param pt1 First point.
      * \param pt2 Second point.
      */
-    static QgsCircle from2Points( const QgsPointV2 &pt1, const QgsPointV2 &pt2 );
+    static QgsCircle from2Points( const QgsPoint &pt1, const QgsPoint &pt2 );
 
     /**
      * Constructs a circle by 3 points on the circle.
@@ -70,7 +70,7 @@ class CORE_EXPORT QgsCircle : public QgsEllipse
      * \param pt3 Third point.
      * \param epsilon Value used to compare point.
      */
-    static QgsCircle from3Points( const QgsPointV2 &pt1, const QgsPointV2 &pt2, const QgsPointV2 &pt3, double epsilon = 1E-8 );
+    static QgsCircle from3Points( const QgsPoint &pt1, const QgsPoint &pt2, const QgsPoint &pt3, double epsilon = 1E-8 );
 
     /**
      * Constructs a circle by a center point and a diameter.
@@ -79,7 +79,7 @@ class CORE_EXPORT QgsCircle : public QgsEllipse
      * \param diameter Diameter of the circle.
      * \param azimuth Azimuth of the circle.
      */
-    static QgsCircle fromCenterDiameter( const QgsPointV2 &center, double diameter, double azimuth = 0 );
+    static QgsCircle fromCenterDiameter( const QgsPoint &center, double diameter, double azimuth = 0 );
 
 
     /**
@@ -90,7 +90,7 @@ class CORE_EXPORT QgsCircle : public QgsEllipse
      * \param center Center point.
      * \param pt1 A point on the circle.
      */
-    static QgsCircle fromCenterPoint( const QgsPointV2 &center, const QgsPointV2 &pt1 );
+    static QgsCircle fromCenterPoint( const QgsPoint &center, const QgsPoint &pt1 );
 
 
     /**
@@ -105,9 +105,9 @@ class CORE_EXPORT QgsCircle : public QgsEllipse
      * \param pt2_tg3 Second point of the third tangent.
      * \param epsilon Value used to compare point.
      */
-    static QgsCircle from3Tangents( const QgsPointV2 &pt1_tg1, const QgsPointV2 &pt2_tg1,
-                                    const QgsPointV2 &pt1_tg2, const QgsPointV2 &pt2_tg2,
-                                    const QgsPointV2 &pt1_tg3, const QgsPointV2 &pt2_tg3, double epsilon = 1E-8 );
+    static QgsCircle from3Tangents( const QgsPoint &pt1_tg1, const QgsPoint &pt2_tg1,
+                                    const QgsPoint &pt1_tg2, const QgsPoint &pt2_tg2,
+                                    const QgsPoint &pt1_tg3, const QgsPoint &pt2_tg3, double epsilon = 1E-8 );
 
     /**
      * Constructs a circle by an extent (aka bounding box / QgsRectangle).
@@ -117,7 +117,7 @@ class CORE_EXPORT QgsCircle : public QgsEllipse
      * \param pt1 First corner.
      * \param pt2 Second corner.
      */
-    static QgsCircle fromExtent( const QgsPointV2 &pt1, const QgsPointV2 &pt2 );
+    static QgsCircle fromExtent( const QgsPoint &pt1, const QgsPoint &pt2 );
 
     double area() const override;
     double perimeter() const override;
@@ -161,7 +161,7 @@ class CORE_EXPORT QgsCircle : public QgsEllipse
      * \return quadrants defined by four points.
      * \see quadrant()
      */
-    QVector<QgsPointV2> northQuadrant() const SIP_FACTORY;
+    QVector<QgsPoint> northQuadrant() const SIP_FACTORY;
 
     /** Returns a circular string from the circle.
      * \param oriented If oriented is true the start point is from azimuth instead from north.

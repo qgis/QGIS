@@ -8,7 +8,7 @@ from builtins import range
 #
 # CSW Client
 # ---------------------------------------------------------
-# QGIS Catalogue Service client.
+# QGIS Catalog Service client.
 #
 # Copyright (C) 2010 NextGIS (http://nextgis.org),
 #                    Alexander Bruy (alexander.bruy@gmail.com),
@@ -43,11 +43,12 @@ from qgis.PyQt.QtWidgets import (QApplication, QDialog, QComboBox,
 from qgis.PyQt.QtGui import QColor, QCursor
 
 from qgis.core import (QgsApplication, QgsCoordinateReferenceSystem,
-                       QgsCoordinateTransform, QgsGeometry, QgsPoint,
+                       QgsCoordinateTransform, QgsGeometry, QgsPointXY,
                        QgsProviderRegistry, QgsSettings)
 from qgis.gui import QgsRubberBand
+from qgis.utils import OverrideCursor
 
-from owslib.csw import CatalogueServiceWeb
+from owslib.csw import CatalogueServiceWeb # spellok
 from owslib.fes import BBox, PropertyIsLike
 from owslib.ows import ExceptionReport
 
@@ -281,8 +282,6 @@ class MetaSearchDialog(QDialog, BASE_CLASS):
         if not self._get_csw():
             return
 
-        QApplication.restoreOverrideCursor()
-
         if self.catalog:  # display service metadata
             self.btnCapabilities.setEnabled(True)
             metadata = render_template('en', self.context,
@@ -297,7 +296,7 @@ class MetaSearchDialog(QDialog, BASE_CLASS):
         """add new service"""
 
         conn_new = NewConnectionDialog()
-        conn_new.setWindowTitle(self.tr('New Catalogue service'))
+        conn_new.setWindowTitle(self.tr('New Catalog service'))
         if conn_new.exec_() == QDialog.Accepted:  # add to service list
             self.populate_connection_list()
         self.textMetadata.clear()
@@ -310,7 +309,7 @@ class MetaSearchDialog(QDialog, BASE_CLASS):
         url = self.settings.value('/MetaSearch/%s/url' % current_text)
 
         conn_edit = NewConnectionDialog(current_text)
-        conn_edit.setWindowTitle(self.tr('Edit Catalogue service'))
+        conn_edit.setWindowTitle(self.tr('Edit Catalog service'))
         conn_edit.leName.setText(current_text)
         conn_edit.leURL.setText(url)
         conn_edit.leUsername.setText(self.settings.value('/MetaSearch/%s/username' % current_text))
@@ -407,10 +406,10 @@ class MetaSearchDialog(QDialog, BASE_CLASS):
             src = QgsCoordinateReferenceSystem(crsid)
             dest = QgsCoordinateReferenceSystem(4326)
             xform = QgsCoordinateTransform(src, dest)
-            minxy = xform.transform(QgsPoint(extent.xMinimum(),
-                                             extent.yMinimum()))
-            maxxy = xform.transform(QgsPoint(extent.xMaximum(),
-                                             extent.yMaximum()))
+            minxy = xform.transform(QgsPointXY(extent.xMinimum(),
+                                               extent.yMinimum()))
+            maxxy = xform.transform(QgsPointXY(extent.xMaximum(),
+                                               extent.yMaximum()))
             minx, miny = minxy
             maxx, maxy = maxxy
         else:  # 4326
@@ -447,7 +446,7 @@ class MetaSearchDialog(QDialog, BASE_CLASS):
         self.settings.setValue('/MetaSearch/returnRecords',
                                self.spnRecords.cleanText())
 
-        # set current catalogue
+        # set current catalog
         current_text = self.cmbConnectionsSearch.currentText()
         key = '/MetaSearch/%s' % current_text
         self.catalog_url = self.settings.value('%s/url' % key)
@@ -490,25 +489,22 @@ class MetaSearchDialog(QDialog, BASE_CLASS):
         # TODO: allow users to select resources types
         # to find ('service', 'dataset', etc.)
         try:
-            self.catalog.getrecords2(constraints=self.constraints,
-                                     maxrecords=self.maxrecords, esn='full')
+            with OverrideCursor(Qt.WaitCursor):
+                self.catalog.getrecords2(constraints=self.constraints,
+                                         maxrecords=self.maxrecords, esn='full')
         except ExceptionReport as err:
-            QApplication.restoreOverrideCursor()
             QMessageBox.warning(self, self.tr('Search error'),
                                 self.tr('Search error: {0}').format(err))
             return
         except Exception as err:
-            QApplication.restoreOverrideCursor()
             QMessageBox.warning(self, self.tr('Connection error'),
                                 self.tr('Connection error: {0}').format(err))
             return
 
         if self.catalog.results['matches'] == 0:
-            QApplication.restoreOverrideCursor()
             self.lblResults.setText(self.tr('0 results'))
             return
 
-        QApplication.restoreOverrideCursor()
         self.display_results()
 
     def display_results(self):
@@ -675,24 +671,19 @@ class MetaSearchDialog(QDialog, BASE_CLASS):
                 else:
                     return
 
-        QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
-
         try:
-            self.catalog.getrecords2(constraints=self.constraints,
-                                     maxrecords=self.maxrecords,
-                                     startposition=self.startfrom, esn='full')
+            with OverrideCursor(Qt.WaitCursor):
+                self.catalog.getrecords2(constraints=self.constraints,
+                                         maxrecords=self.maxrecords,
+                                         startposition=self.startfrom, esn='full')
         except ExceptionReport as err:
-            QApplication.restoreOverrideCursor()
             QMessageBox.warning(self, self.tr('Search error'),
                                 self.tr('Search error: {0}').format(err))
             return
         except Exception as err:
-            QApplication.restoreOverrideCursor()
             QMessageBox.warning(self, self.tr('Connection error'),
                                 self.tr('Connection error: {0}').format(err))
             return
-
-        QApplication.restoreOverrideCursor()
 
         self.display_results()
 
@@ -726,8 +717,6 @@ class MetaSearchDialog(QDialog, BASE_CLASS):
         elif caller == 'mActionAddAfs':
             stype = ['ESRI:ArcGIS:FeatureServer', 'afs', 'arcgisfeatureserver']
             data_url = item_data['afs'].split('FeatureServer')[0] + 'FeatureServer'
-
-        QApplication.restoreOverrideCursor()
 
         sname = '%s from MetaSearch' % stype[1]
 
@@ -820,14 +809,13 @@ class MetaSearchDialog(QDialog, BASE_CLASS):
         identifier = get_item_data(item, 'identifier')
 
         try:
-            QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
-            cat = CatalogueServiceWeb(self.catalog_url, timeout=self.timeout,
-                                      username=self.catalog_username,
-                                      password=self.catalog_password)
-            cat.getrecordbyid(
-                [self.catalog.records[identifier].identifier])
+            with OverrideCursor(Qt.WaitCursor):
+                cat = CatalogueServiceWeb(self.catalog_url, timeout=self.timeout, # spellok
+                                          username=self.catalog_username,
+                                          password=self.catalog_password)
+                cat.getrecordbyid(
+                    [self.catalog.records[identifier].identifier])
         except ExceptionReport as err:
-            QApplication.restoreOverrideCursor()
             QMessageBox.warning(self, self.tr('GetRecords error'),
                                 self.tr('Error getting response: {0}').format(err))
             return
@@ -835,10 +823,7 @@ class MetaSearchDialog(QDialog, BASE_CLASS):
             QMessageBox.warning(self,
                                 self.tr('Record parsing error'),
                                 self.tr('Unable to locate record identifier'))
-            QApplication.restoreOverrideCursor()
             return
-
-        QApplication.restoreOverrideCursor()
 
         record = cat.records[identifier]
         record.xml_url = cat.request
@@ -899,24 +884,23 @@ class MetaSearchDialog(QDialog, BASE_CLASS):
         self.rubber_band.reset()
 
     def _get_csw(self):
-        """convenience function to init owslib.csw.CatalogueServiceWeb"""
+        """convenience function to init owslib.csw.CatalogueServiceWeb""" # spellok
 
         # connect to the server
-        try:
-            QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
-            self.catalog = CatalogueServiceWeb(self.catalog_url,
-                                               timeout=self.timeout,
-                                               username=self.catalog_username,
-                                               password=self.catalog_password)
-            return True
-        except ExceptionReport as err:
-            msg = self.tr('Error connecting to service: {0}').format(err)
-        except ValueError as err:
-            msg = self.tr('Value Error: {0}').format(err)
-        except Exception as err:
-            msg = self.tr('Unknown Error: {0}').format(err)
+        with OverrideCursor(Qt.WaitCursor):
+            try:
+                self.catalog = CatalogueServiceWeb(self.catalog_url, # spellok
+                                                   timeout=self.timeout,
+                                                   username=self.catalog_username,
+                                                   password=self.catalog_password)
+                return True
+            except ExceptionReport as err:
+                msg = self.tr('Error connecting to service: {0}').format(err)
+            except ValueError as err:
+                msg = self.tr('Value Error: {0}').format(err)
+            except Exception as err:
+                msg = self.tr('Unknown Error: {0}').format(err)
 
-        QApplication.restoreOverrideCursor()
         QMessageBox.warning(self, self.tr('CSW Connection error'), msg)
         return False
 
@@ -980,7 +964,7 @@ def _get_field_value(field):
 
 
 def bbox_to_polygon(bbox):
-    """converts OWSLib bbox object to list of QgsPoint objects"""
+    """converts OWSLib bbox object to list of QgsPointXY objects"""
 
     if all([bbox.minx is not None,
             bbox.maxx is not None,

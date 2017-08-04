@@ -18,7 +18,7 @@
 
 #include "qgsmapcanvasitem.h"
 #include "qgscoordinatereferencesystem.h"
-#include "qgspoint.h"
+#include "qgspointxy.h"
 #include <QSvgRenderer>
 
 class QPainter;
@@ -31,7 +31,7 @@ class QgsGpsMarker : public QgsMapCanvasItem
   public:
     explicit QgsGpsMarker( QgsMapCanvas *mapCanvas );
 
-    void setCenter( const QgsPoint &point );
+    void setCenter( const QgsPointXY &point );
 
     void paint( QPainter *p ) override;
 
@@ -44,7 +44,7 @@ class QgsGpsMarker : public QgsMapCanvasItem
   protected:
 
     //! coordinates of the point in the center
-    QgsPoint mCenter;
+    QgsPointXY mCenter;
     //! Size of the marker - e.g. 8 will draw it as 8x8
     int mSize;
 

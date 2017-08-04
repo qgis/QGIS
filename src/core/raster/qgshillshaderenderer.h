@@ -46,7 +46,7 @@ class CORE_EXPORT QgsHillshadeRenderer : public QgsRasterRenderer
      */
     QgsHillshadeRenderer( QgsRasterInterface *input, int band, double lightAzimuth, double lightAltitude );
 
-    QgsHillshadeRenderer *clone() const override;
+    QgsHillshadeRenderer *clone() const override SIP_FACTORY;
 
     /**
      * \brief Factory method to create a new renderer
@@ -58,7 +58,7 @@ class CORE_EXPORT QgsHillshadeRenderer : public QgsRasterRenderer
 
     void writeXml( QDomDocument &doc, QDomElement &parentElem ) const override;
 
-    QgsRasterBlock *block( int bandNo, QgsRectangle  const &extent, int width, int height, QgsRasterBlockFeedback *feedback = nullptr ) override;
+    QgsRasterBlock *block( int bandNo, const QgsRectangle &extent, int width, int height, QgsRasterBlockFeedback *feedback = nullptr ) override;
 
     QList<int> usesBands() const override;
 

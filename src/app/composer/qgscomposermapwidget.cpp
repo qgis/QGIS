@@ -36,8 +36,8 @@
 #include "qgsproject.h"
 #include "qgsmapthemecollection.h"
 #include "qgsmapthemes.h"
-#include "qgisgui.h"
-#include "qgscsexception.h"
+#include "qgsguiutils.h"
+#include "qgsexception.h"
 
 #include <QMessageBox>
 
@@ -47,6 +47,7 @@ QgsComposerMapWidget::QgsComposerMapWidget( QgsComposerMap *composerMap )
 {
   setupUi( this );
   setPanelTitle( tr( "Map properties" ) );
+  mMapRotationSpinBox->setClearValue( 0 );
 
   //add widget for general composer item properties
   QgsComposerItemWidget *itemPropertiesWidget = new QgsComposerItemWidget( this, composerMap );
@@ -116,7 +117,7 @@ QgsComposerMapWidget::QgsComposerMapWidget( QgsComposerMap *composerMap )
   loadGridEntries();
   loadOverviewEntries();
 
-  connect( mMapRotationSpinBox, &QgsDoubleSpinBox::editingFinished, this, &QgsComposerMapWidget::rotationChanged );
+  connect( mMapRotationSpinBox, static_cast < void ( QgsDoubleSpinBox::* )( double ) > ( &QgsDoubleSpinBox::valueChanged ), this, &QgsComposerMapWidget::rotationChanged );
 
   blockAllSignals( false );
 }
@@ -451,7 +452,7 @@ void QgsComposerMapWidget::on_mScaleLineEdit_editingFinished()
   mComposerMap->endCommand();
 }
 
-void QgsComposerMapWidget::rotationChanged()
+void QgsComposerMapWidget::rotationChanged( double value )
 {
   if ( !mComposerMap )
   {
@@ -459,7 +460,7 @@ void QgsComposerMapWidget::rotationChanged()
   }
 
   mComposerMap->beginCommand( tr( "Map rotation changed" ), QgsComposerMergeCommand::ComposerMapRotation );
-  mComposerMap->setMapRotation( mMapRotationSpinBox->value() );
+  mComposerMap->setMapRotation( value );
   mComposerMap->endCommand();
   mComposerMap->invalidateCache();
 }
@@ -595,13 +596,13 @@ void QgsComposerMapWidget::updateGuiElements()
 
   mMapRotationSpinBox->setValue( mComposerMap->mapRotation( QgsComposerObject::OriginalValue ) );
 
-  // follow preset check box
+  // follow preset checkbox
   mFollowVisibilityPresetCheckBox->setCheckState(
     mComposerMap->followVisibilityPreset() ? Qt::Checked : Qt::Unchecked );
   int presetModelIndex = mFollowVisibilityPresetCombo->findText( mComposerMap->followVisibilityPresetName() );
   mFollowVisibilityPresetCombo->setCurrentIndex( presetModelIndex != -1 ? presetModelIndex : 0 ); // 0 == none
 
-  //keep layer list check box
+  //keep layer list checkbox
   if ( mComposerMap->keepLayerSet() )
   {
     mKeepLayerListCheckBox->setCheckState( Qt::Checked );
@@ -1184,7 +1185,7 @@ void QgsComposerMapWidget::on_mGridListWidget_itemChanged( QListWidgetItem *item
   grid->setName( item->text() );
   if ( item->isSelected() )
   {
-    //update check box title if item is current item
+    //update checkbox title if item is current item
     mDrawGridCheckBox->setText( QString( tr( "Draw \"%1\" grid" ) ).arg( grid->name() ) );
   }
 }
@@ -1396,7 +1397,7 @@ void QgsComposerMapWidget::on_mOverviewListWidget_itemChanged( QListWidgetItem *
   overview->setName( item->text() );
   if ( item->isSelected() )
   {
-    //update check box title if item is current item
+    //update checkbox title if item is current item
     mOverviewCheckBox->setTitle( QString( tr( "Draw \"%1\" overview" ) ).arg( overview->name() ) );
   }
 }

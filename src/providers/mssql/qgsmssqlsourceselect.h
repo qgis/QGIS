@@ -18,20 +18,21 @@
 #define QGSMSSQLSOURCESELECT_H
 
 #include "ui_qgsdbsourceselectbase.h"
-#include "qgisgui.h"
+#include "qgsguiutils.h"
 #include "qgsdbfilterproxymodel.h"
 #include "qgsmssqltablemodel.h"
 #include "qgshelp.h"
+#include "qgsproviderregistry.h"
+#include "qgsabstractdatasourcewidget.h"
 
 #include <QMap>
 #include <QPair>
 #include <QIcon>
 #include <QItemDelegate>
-#include <QThread>
 
 class QPushButton;
 class QStringList;
-class QgsGeomColumnTypeThread;
+class QgsMssqlGeomColumnTypeThread;
 class QgisApp;
 
 class QgsMssqlSourceSelectDelegate : public QItemDelegate
@@ -47,35 +48,7 @@ class QgsMssqlSourceSelectDelegate : public QItemDelegate
     void setModelData( QWidget *editor, QAbstractItemModel *model, const QModelIndex &index ) const override;
 };
 
-// A class that determines the geometry type of a given database
-// schema.table.column, with the option of doing so in a separate
-// thread.
 
-class QgsMssqlGeomColumnTypeThread : public QThread
-{
-    Q_OBJECT
-  public:
-    QgsMssqlGeomColumnTypeThread( const QString &connectionName, bool useEstimatedMetadata );
-
-    // These functions get the layer types and pass that information out
-    // by emitting the setLayerType() signal.
-    virtual void run() override;
-
-  signals:
-    void setLayerType( const QgsMssqlLayerProperty &layerProperty );
-
-  public slots:
-    void addGeometryColumn( const QgsMssqlLayerProperty &layerProperty );
-    void stop();
-
-  private:
-    QgsMssqlGeomColumnTypeThread() {}
-
-    QString mConnectionName;
-    bool mUseEstimatedMetadata;
-    bool mStopped;
-    QList<QgsMssqlLayerProperty> layerProperties;
-};
 
 
 /** \class QgsMssqlSourceSelect
@@ -85,7 +58,7 @@ class QgsMssqlGeomColumnTypeThread : public QThread
  * for MSSQL databases. The user can then connect and add
  * tables from the database to the map canvas.
  */
-class QgsMssqlSourceSelect : public QDialog, private Ui::QgsDbSourceSelectBase
+class QgsMssqlSourceSelect : public QgsAbstractDataSourceWidget, private Ui::QgsDbSourceSelectBase
 {
     Q_OBJECT
 
@@ -95,7 +68,7 @@ class QgsMssqlSourceSelect : public QDialog, private Ui::QgsDbSourceSelectBase
     static void deleteConnection( const QString &key );
 
     //! Constructor
-    QgsMssqlSourceSelect( QWidget *parent = nullptr, Qt::WindowFlags fl = QgisGui::ModalDialogFlags, bool managerMode = false, bool embeddedMode = false );
+    QgsMssqlSourceSelect( QWidget *parent = nullptr, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::None );
 
     ~QgsMssqlSourceSelect();
     //! Populate the connection list combo box
@@ -106,13 +79,15 @@ class QgsMssqlSourceSelect : public QDialog, private Ui::QgsDbSourceSelectBase
     QString connectionInfo();
 
   signals:
-    void addDatabaseLayers( QStringList const &layerPathList, QString const &providerKey );
-    void connectionsChanged();
     void addGeometryColumn( const QgsMssqlLayerProperty & );
 
   public slots:
+
+    //! Triggered when the provider's connections need to be refreshed
+    void refresh() override;
+
     //! Determines the tables the user selected and closes the dialog
-    void addTables();
+    void addButtonClicked() override;
     void buildQuery();
 
     /** Connects to the database using the stored connection parameters.
@@ -148,15 +123,10 @@ class QgsMssqlSourceSelect : public QDialog, private Ui::QgsDbSourceSelectBase
 
     void columnThreadFinished();
 
+
   private:
     typedef QPair<QString, QString> geomPair;
     typedef QList<geomPair> geomCol;
-
-    //! Connections manager mode
-    bool mManagerMode;
-
-    //! Embedded mode, without 'Close'
-    bool mEmbeddedMode;
 
     // queue another query for the thread
     void addSearchGeometryColumn( const QString &connectionName, const QgsMssqlLayerProperty &layerProperty, bool estimateMetadata );
@@ -182,7 +152,6 @@ class QgsMssqlSourceSelect : public QDialog, private Ui::QgsDbSourceSelectBase
     QgsDatabaseFilterProxyModel mProxyModel;
 
     QPushButton *mBuildQueryButton = nullptr;
-    QPushButton *mAddButton = nullptr;
 
     void finishList();
 };

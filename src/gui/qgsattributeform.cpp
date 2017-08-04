@@ -32,6 +32,9 @@
 #include "qgstabwidget.h"
 #include "qgssettings.h"
 #include "qgsscrollarea.h"
+#include "qgsgui.h"
+#include "qgsvectorlayerjoinbuffer.h"
+#include "qgsvectorlayerutils.h"
 
 #include <QDir>
 #include <QTextStream>
@@ -220,7 +223,7 @@ void QgsAttributeForm::setMode( QgsAttributeForm::Mode mode )
   emit modeChanged( mMode );
 }
 
-void QgsAttributeForm::changeAttribute( const QString &field, const QVariant &value )
+void QgsAttributeForm::changeAttribute( const QString &field, const QVariant &value, const QString &hintText )
 {
   Q_FOREACH ( QgsWidgetWrapper *ww, mWidgets )
   {
@@ -228,6 +231,7 @@ void QgsAttributeForm::changeAttribute( const QString &field, const QVariant &va
     if ( eww && eww->field().name() == field )
     {
       eww->setValue( value );
+      eww->setHint( hintText );
     }
   }
 }
@@ -658,6 +662,9 @@ void QgsAttributeForm::onAttributeChanged( const QVariant &value )
       {
         emit attributeChanged( eww->field().name(), value );
       }
+
+      updateJoinedFields( *eww );
+
       break;
     }
     case MultiEditMode:
@@ -713,19 +720,17 @@ void QgsAttributeForm::updateConstraints( QgsEditorWidgetWrapper *eww )
     // to test, but they are unlikely to have any control over provider-side constraints
     // 2. the provider has already accepted the value, so presumably it doesn't violate the constraint
     // and there's no point rechecking!
-    QgsFieldConstraints::ConstraintOrigin constraintOrigin = mLayer->isEditable() ? QgsFieldConstraints::ConstraintOriginNotSet
-        : QgsFieldConstraints::ConstraintOriginLayer;
 
     // update eww constraint
-    eww->updateConstraint( ft, constraintOrigin );
+    updateConstraint( ft, eww );
 
     // update eww dependencies constraint
     QList<QgsEditorWidgetWrapper *> deps = constraintDependencies( eww );
 
     Q_FOREACH ( QgsEditorWidgetWrapper *depsEww, deps )
-      depsEww->updateConstraint( ft, constraintOrigin );
+      updateConstraint( ft, depsEww );
 
-    // sync ok button status
+    // sync OK button status
     synchronizeEnabledState();
 
     mExpressionContext.setFeature( ft );
@@ -736,6 +741,34 @@ void QgsAttributeForm::updateConstraints( QgsEditorWidgetWrapper *eww )
       info->apply( &mExpressionContext );
     }
   }
+}
+
+void QgsAttributeForm::updateConstraint( const QgsFeature &ft, QgsEditorWidgetWrapper *eww )
+{
+  QgsFieldConstraints::ConstraintOrigin constraintOrigin = mLayer->isEditable() ? QgsFieldConstraints::ConstraintOriginNotSet : QgsFieldConstraints::ConstraintOriginLayer;
+
+  if ( eww->layer()->fields().fieldOrigin( eww->fieldIdx() ) == QgsFields::OriginJoin )
+  {
+    int srcFieldIdx;
+    const QgsVectorLayerJoinInfo *info = eww->layer()->joinBuffer()->joinForFieldIndex( eww->fieldIdx(), eww->layer()->fields(), srcFieldIdx );
+
+    if ( info && info->joinLayer() && info->isDynamicFormEnabled() )
+    {
+      if ( mJoinedFeatures.contains( info ) )
+      {
+        eww->updateConstraint( info->joinLayer(), srcFieldIdx, mJoinedFeatures[info], constraintOrigin );
+        return;
+      }
+      else // if we are here, it means there's not joined field for this feature
+      {
+        eww->updateConstraint( QgsFeature() );
+        return;
+      }
+    }
+  }
+
+  // default constraint update
+  eww->updateConstraint( ft, constraintOrigin );
 }
 
 bool QgsAttributeForm::currentFormFeature( QgsFeature &feature )
@@ -758,7 +791,7 @@ bool QgsAttributeForm::currentFormFeature( QgsFeature &feature )
       QVariant srcVar = eww->value();
       // need to check dstVar.isNull() != srcVar.isNull()
       // otherwise if dstVar=NULL and scrVar=0, then dstVar = srcVar
-      if ( ( dstVar != srcVar || dstVar.isNull() != srcVar.isNull() ) && srcVar.isValid() && !mLayer->editFormConfig().readOnly( eww->fieldIdx() ) )
+      if ( ( dstVar != srcVar || dstVar.isNull() != srcVar.isNull() ) && srcVar.isValid() )
         dst[eww->fieldIdx()] = srcVar;
     }
     else
@@ -1011,7 +1044,7 @@ void QgsAttributeForm::synchronizeEnabledState()
     isEditable = isEditable & validConstraint;
   }
 
-  // change ok button status
+  // change OK button status
   QPushButton *okButton = mButtonBox->button( QDialogButtonBox::Ok );
   if ( okButton )
     okButton->setEnabled( isEditable );
@@ -1233,7 +1266,7 @@ void QgsAttributeForm::init()
       //show attribute alias if available
       QString fieldName = mLayer->attributeDisplayName( idx );
 
-      const QgsEditorWidgetSetup widgetSetup = QgsEditorWidgetRegistry::instance()->findBest( mLayer, field.name() );
+      const QgsEditorWidgetSetup widgetSetup = QgsGui::editorWidgetRegistry()->findBest( mLayer, field.name() );
 
       if ( widgetSetup.type() == QLatin1String( "Hidden" ) )
         continue;
@@ -1242,7 +1275,7 @@ void QgsAttributeForm::init()
 
       // This will also create the widget
       QLabel *l = new QLabel( fieldName );
-      QgsEditorWidgetWrapper *eww = QgsEditorWidgetRegistry::instance()->create( widgetSetup.type(), mLayer, idx, widgetSetup.config(), nullptr, this, mContext );
+      QgsEditorWidgetWrapper *eww = QgsGui::editorWidgetRegistry()->create( widgetSetup.type(), mLayer, idx, widgetSetup.config(), nullptr, this, mContext );
 
       QWidget *w = nullptr;
       if ( eww )
@@ -1281,7 +1314,7 @@ void QgsAttributeForm::init()
     Q_FOREACH ( const QgsRelation &rel, QgsProject::instance()->relationManager()->referencedRelations( mLayer ) )
     {
       QgsRelationWidgetWrapper *rww = new QgsRelationWidgetWrapper( mLayer, rel, nullptr, this );
-      const QgsEditorWidgetSetup setup = QgsEditorWidgetRegistry::instance()->findBest( mLayer, rel.id() );
+      const QgsEditorWidgetSetup setup = QgsGui::editorWidgetRegistry()->findBest( mLayer, rel.id() );
       rww->setConfig( setup.config() );
       rww->setContext( mContext );
       gridLayout->addWidget( rww->widget(), row++, 0, 1, 2 );
@@ -1406,7 +1439,7 @@ void QgsAttributeForm::cleanPython()
 {
   if ( !mPyFormVarName.isNull() )
   {
-    QString expr = QStringLiteral( "if locals().has_key('%1'): del %1\n" ).arg( mPyFormVarName );
+    QString expr = QStringLiteral( "if '%1' in locals(): del %1\n" ).arg( mPyFormVarName );
     QgsPythonRunner::run( expr );
   }
 }
@@ -1534,9 +1567,9 @@ QgsAttributeForm::WidgetInfo QgsAttributeForm::createWidgetFromDef( const QgsAtt
       int fldIdx = vl->fields().lookupField( fieldDef->name() );
       if ( fldIdx < vl->fields().count() && fldIdx >= 0 )
       {
-        const QgsEditorWidgetSetup widgetSetup = QgsEditorWidgetRegistry::instance()->findBest( mLayer, fieldDef->name() );
+        const QgsEditorWidgetSetup widgetSetup = QgsGui::editorWidgetRegistry()->findBest( mLayer, fieldDef->name() );
 
-        QgsEditorWidgetWrapper *eww = QgsEditorWidgetRegistry::instance()->create( widgetSetup.type(), mLayer, fldIdx, widgetSetup.config(), nullptr, this, mContext );
+        QgsEditorWidgetWrapper *eww = QgsGui::editorWidgetRegistry()->create( widgetSetup.type(), mLayer, fldIdx, widgetSetup.config(), nullptr, this, mContext );
         QgsAttributeFormEditorWidget *w = new QgsAttributeFormEditorWidget( eww, this );
         mFormEditorWidgets.insert( fldIdx, w );
 
@@ -1560,7 +1593,7 @@ QgsAttributeForm::WidgetInfo QgsAttributeForm::createWidgetFromDef( const QgsAtt
       const QgsAttributeEditorRelation *relDef = static_cast<const QgsAttributeEditorRelation *>( widgetDef );
 
       QgsRelationWidgetWrapper *rww = new QgsRelationWidgetWrapper( mLayer, relDef->relation(), nullptr, this );
-      const QgsEditorWidgetSetup widgetSetup = QgsEditorWidgetRegistry::instance()->findBest( mLayer, relDef->relation().id() );
+      const QgsEditorWidgetSetup widgetSetup = QgsGui::editorWidgetRegistry()->findBest( mLayer, relDef->relation().id() );
       rww->setConfig( widgetSetup.config() );
       rww->setContext( context );
       newWidgetInfo.widget = rww->widget();
@@ -1568,7 +1601,7 @@ QgsAttributeForm::WidgetInfo QgsAttributeForm::createWidgetFromDef( const QgsAtt
       rww->setShowLinkButton( relDef->showLinkButton() );
       rww->setShowUnlinkButton( relDef->showUnlinkButton() );
       mWidgets.append( rww );
-      newWidgetInfo.labelText = QString::null;
+      newWidgetInfo.labelText = QString();
       newWidgetInfo.labelOnTop = true;
       break;
     }
@@ -1673,7 +1706,7 @@ QgsAttributeForm::WidgetInfo QgsAttributeForm::createWidgetFromDef( const QgsAtt
       gbLayout->addWidget( spacer, ++row, 0 );
       gbLayout->setRowStretch( row, 1 );
 
-      newWidgetInfo.labelText = QString::null;
+      newWidgetInfo.labelText = QString();
       newWidgetInfo.labelOnTop = true;
       break;
     }
@@ -1723,7 +1756,7 @@ void QgsAttributeForm::createWrappers()
       if ( relation.isValid() )
       {
         QgsRelationWidgetWrapper *rww = new QgsRelationWidgetWrapper( mLayer, relation, myWidget, this );
-        const QgsEditorWidgetSetup widgetSetup = QgsEditorWidgetRegistry::instance()->findBest( mLayer, relation.id() );
+        const QgsEditorWidgetSetup widgetSetup = QgsGui::editorWidgetRegistry()->findBest( mLayer, relation.id() );
         rww->setConfig( widgetSetup.config() );
         rww->setContext( mContext );
         rww->widget(); // Will initialize the widget
@@ -1738,7 +1771,7 @@ void QgsAttributeForm::createWrappers()
         {
           int idx = mLayer->fields().lookupField( field.name() );
 
-          QgsEditorWidgetWrapper *eww = QgsEditorWidgetRegistry::instance()->create( mLayer, idx, myWidget, this, mContext );
+          QgsEditorWidgetWrapper *eww = QgsGui::editorWidgetRegistry()->create( mLayer, idx, myWidget, this, mContext );
           addWidgetWrapper( eww );
         }
       }
@@ -1927,5 +1960,62 @@ void QgsAttributeForm::ContainerInformation::apply( QgsExpressionContext *expres
     }
 
     isVisible = newVisibility;
+  }
+}
+
+void QgsAttributeForm::updateJoinedFields( const QgsEditorWidgetWrapper &eww )
+{
+  QgsFeature formFeature;
+  QgsField field = eww.layer()->fields().field( eww.fieldIdx() );
+  QList<const QgsVectorLayerJoinInfo *> infos = eww.layer()->joinBuffer()->joinsWhereFieldIsId( field );
+
+  if ( infos.count() == 0 || !currentFormFeature( formFeature ) )
+    return;
+
+  const QString hint = tr( "No feature joined" );
+  Q_FOREACH ( const QgsVectorLayerJoinInfo *info, infos )
+  {
+    if ( !info->isDynamicFormEnabled() )
+      continue;
+
+    QgsFeature joinFeature = mLayer->joinBuffer()->joinedFeatureOf( info, formFeature );
+
+    mJoinedFeatures[info] = joinFeature;
+
+    QStringList *subsetFields = info->joinFieldNamesSubset();
+    if ( subsetFields )
+    {
+      Q_FOREACH ( const QString &field, *subsetFields )
+      {
+        QString prefixedName = info->prefixedFieldName( field );
+        QVariant val;
+        QString hintText = hint;
+
+        if ( joinFeature.isValid() )
+        {
+          val = joinFeature.attribute( field );
+          hintText.clear();
+        }
+
+        changeAttribute( prefixedName, val, hintText );
+      }
+    }
+    else
+    {
+      Q_FOREACH ( const QgsField &field, joinFeature.fields() )
+      {
+        QString prefixedName = info->prefixedFieldName( field );
+        QVariant val;
+        QString hintText = hint;
+
+        if ( joinFeature.isValid() )
+        {
+          val = joinFeature.attribute( field.name() );
+          hintText.clear();
+        }
+
+        changeAttribute( prefixedName, val, hintText );
+      }
+    }
   }
 }

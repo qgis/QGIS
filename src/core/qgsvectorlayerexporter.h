@@ -133,17 +133,17 @@ class CORE_EXPORT QgsVectorLayerExporter : public QgsFeatureSink
      */
     int errorCount() const { return mErrorCount; }
 
-    bool addFeatures( QgsFeatureList &features ) override;
-    bool addFeature( QgsFeature &feature ) override;
+    bool addFeatures( QgsFeatureList &features, QgsFeatureSink::Flags flags = 0 ) override;
+    bool addFeature( QgsFeature &feature, QgsFeatureSink::Flags flags = 0 ) override;
 
     /**
      * Finalizes the export and closes the new created layer.
      */
     ~QgsVectorLayerExporter();
 
+    bool flushBuffer() override;
+
   private:
-    //! Flush the buffer writing the features to the new layer
-    bool flushBuffer();
 
     //! Create index
     bool createSpatialIndex();
@@ -188,13 +188,15 @@ class CORE_EXPORT QgsVectorLayerExporterTask : public QgsTask
     /**
      * Constructor for QgsVectorLayerExporterTask. Takes a source \a layer, destination \a uri
      * and \a providerKey, and various export related parameters such as destination CRS
-     * and export \a options.
+     * and export \a options. \a ownsLayer has to be set to true if the task should take ownership
+     * of the layer and delete it after export.
     */
     QgsVectorLayerExporterTask( QgsVectorLayer *layer,
                                 const QString &uri,
                                 const QString &providerKey,
                                 const QgsCoordinateReferenceSystem &destinationCrs,
-                                QMap<QString, QVariant> *options = nullptr );
+                                QMap<QString, QVariant> *options = nullptr,
+                                bool ownsLayer = false );
 
     /**
      * Creates a new QgsVectorLayerExporterTask which has ownership over a source \a layer.

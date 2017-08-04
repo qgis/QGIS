@@ -25,20 +25,18 @@ __copyright__ = '(C) 2010, Michael Minn'
 
 __revision__ = '$Format:%H$'
 
-from qgis.core import (QgsApplication)
 from qgis.PyQt.QtCore import QVariant
 from qgis.core import (QgsExpression,
-                       QgsProcessingUtils)
-from processing.core.GeoAlgorithm import GeoAlgorithm
-from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
-from processing.core.parameters import ParameterVector
-from processing.core.parameters import ParameterTableField
-from processing.core.parameters import ParameterSelection
-from processing.core.parameters import ParameterString
-from processing.core.outputs import OutputVector
+                       QgsProcessingException,
+                       QgsProcessingParameterVectorLayer,
+                       QgsProcessingParameterField,
+                       QgsProcessingParameterEnum,
+                       QgsProcessingParameterString,
+                       QgsProcessingOutputVectorLayer)
+from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 
 
-class SelectByAttribute(GeoAlgorithm):
+class SelectByAttribute(QgisAlgorithm):
     INPUT = 'INPUT'
     FIELD = 'FIELD'
     OPERATOR = 'OPERATOR'
@@ -61,25 +59,16 @@ class SelectByAttribute(GeoAlgorithm):
                         'contains',
                         'does not contain']
 
-    def icon(self):
-        return QgsApplication.getThemeIcon("/providerQgis.svg")
-
-    def svgIconPath(self):
-        return QgsApplication.iconPath("providerQgis.svg")
-
     def tags(self):
         return self.tr('select,attribute,value,contains,null,field').split(',')
 
     def group(self):
         return self.tr('Vector selection tools')
 
-    def name(self):
-        return 'selectbyattribute'
+    def __init__(self):
+        super().__init__()
 
-    def displayName(self):
-        return self.tr('Select by attribute')
-
-    def defineCharacteristics(self):
+    def initAlgorithm(self, config=None):
         self.i18n_operators = ['=',
                                '!=',
                                '>',
@@ -93,22 +82,28 @@ class SelectByAttribute(GeoAlgorithm):
                                self.tr('does not contain')
                                ]
 
-        self.addParameter(ParameterVector(self.INPUT,
-                                          self.tr('Input Layer')))
-        self.addParameter(ParameterTableField(self.FIELD,
-                                              self.tr('Selection attribute'), self.INPUT))
-        self.addParameter(ParameterSelection(self.OPERATOR,
-                                             self.tr('Operator'), self.i18n_operators))
-        self.addParameter(ParameterString(self.VALUE, self.tr('Value')))
+        self.addParameter(QgsProcessingParameterVectorLayer(self.INPUT, self.tr('Input layer')))
 
-        self.addOutput(OutputVector(self.OUTPUT, self.tr('Selected (attribute)'), True))
+        self.addParameter(QgsProcessingParameterField(self.FIELD,
+                                                      self.tr('Selection attribute'), parentLayerParameterName=self.INPUT))
+        self.addParameter(QgsProcessingParameterEnum(self.OPERATOR,
+                                                     self.tr('Operator'), self.i18n_operators))
+        self.addParameter(QgsProcessingParameterString(self.VALUE, self.tr('Value')))
 
-    def processAlgorithm(self, context, feedback):
-        fileName = self.getParameterValue(self.INPUT)
-        layer = QgsProcessingUtils.mapLayerFromString(fileName, context)
-        fieldName = self.getParameterValue(self.FIELD)
-        operator = self.OPERATORS[self.getParameterValue(self.OPERATOR)]
-        value = self.getParameterValue(self.VALUE)
+        self.addOutput(QgsProcessingOutputVectorLayer(self.OUTPUT, self.tr('Selected (attribute)')))
+
+    def name(self):
+        return 'selectbyattribute'
+
+    def displayName(self):
+        return self.tr('Select by attribute')
+
+    def processAlgorithm(self, parameters, context, feedback):
+        layer = self.parameterAsVectorLayer(parameters, self.INPUT, context)
+
+        fieldName = self.parameterAsString(parameters, self.FIELD, context)
+        operator = self.OPERATORS[self.parameterAsEnum(parameters, self.OPERATOR, context)]
+        value = self.parameterAsString(parameters, self.VALUE, context)
 
         fields = layer.fields()
 
@@ -117,7 +112,7 @@ class SelectByAttribute(GeoAlgorithm):
 
         if fieldType != QVariant.String and operator in self.STRING_OPERATORS:
             op = ''.join(['"%s", ' % o for o in self.STRING_OPERATORS])
-            raise GeoAlgorithmExecutionException(
+            raise QgsProcessingException(
                 self.tr('Operators {0} can be used only with string fields.').format(op))
 
         field_ref = QgsExpression.quotedColumnRef(fieldName)
@@ -137,7 +132,7 @@ class SelectByAttribute(GeoAlgorithm):
 
         expression = QgsExpression(expression_string)
         if expression.hasParserError():
-            raise GeoAlgorithmExecutionException(expression.parserErrorString())
+            raise QgsProcessingException(expression.parserErrorString())
 
         layer.selectByExpression(expression_string)
-        self.setOutputValue(self.OUTPUT, fileName)
+        return {self.OUTPUT: parameters[self.INPUT]}

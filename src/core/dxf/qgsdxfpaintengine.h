@@ -18,10 +18,12 @@
 #ifndef QGSDXFPAINTENGINE_H
 #define QGSDXFPAINTENGINE_H
 
+#define SIP_NO_FILE
+
 #include "qgis_core.h"
 #include <QPaintEngine>
 #include "qgsabstractgeometry.h"
-#include "qgspointv2.h"
+#include "qgspoint.h"
 
 class QgsDxfExport;
 class QgsDxfPaintDevice;
@@ -67,7 +69,7 @@ class CORE_EXPORT QgsDxfPaintEngine: public QPaintEngine
     QPolygonF mCurrentPolygon;
     QList<QPointF> mCurrentCurve;
 
-    QgsPointV2 toDxfCoordinates( QPointF pt ) const;
+    QgsPoint toDxfCoordinates( QPointF pt ) const;
     double currentWidth() const;
 
     void moveTo( double dx, double dy );

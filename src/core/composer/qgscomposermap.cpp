@@ -28,9 +28,11 @@
 #include "qgsmaptopixel.h"
 #include "qgsmapsettingsutils.h"
 #include "qgspainting.h"
+#include "qgspathresolver.h"
 #include "qgsproject.h"
 #include "qgsrasterdataprovider.h"
 #include "qgsrasterlayer.h"
+#include "qgsreadwritecontext.h"
 #include "qgsrendercontext.h"
 #include "qgsscalecalculator.h"
 #include "qgsvectorlayer.h"
@@ -162,6 +164,7 @@ QgsMapSettings QgsComposerMap::mapSettings( const QgsRectangle &extent, QSizeF s
   jobMapSettings.setOutputDpi( dpi );
   jobMapSettings.setBackgroundColor( Qt::transparent );
   jobMapSettings.setRotation( mEvaluatedMapRotation );
+  jobMapSettings.setEllipsoid( mComposition->project()->ellipsoid() );
 
   //set layers to render
   QList<QgsMapLayer *> layers = layersToRender( &expressionContext );
@@ -899,12 +902,12 @@ void QgsComposerMap::setOffset( double xOffset, double yOffset )
   mYOffset = yOffset;
 }
 
-void QgsComposerMap::setMapRotation( double r )
+void QgsComposerMap::setMapRotation( double rotation )
 {
-  mMapRotation = r;
+  mMapRotation = rotation;
   mEvaluatedMapRotation = mMapRotation;
   invalidateCache();
-  emit mapRotationChanged( r );
+  emit mapRotationChanged( rotation );
   emit itemChanged();
 }
 
@@ -1246,6 +1249,9 @@ bool QgsComposerMap::readXml( const QDomElement &itemElem, const QDomDocument &d
     updateToolTip();
   }
 
+  QgsReadWriteContext context;
+  context.setPathResolver( mComposition->project()->pathResolver() );
+
   //extent
   QDomNodeList extentNodeList = itemElem.elementsByTagName( QStringLiteral( "Extent" ) );
   if ( !extentNodeList.isEmpty() )
@@ -1393,7 +1399,7 @@ bool QgsComposerMap::readXml( const QDomElement &itemElem, const QDomDocument &d
     }
     else
     {
-      lineSymbol = QgsSymbolLayerUtils::loadSymbol<QgsLineSymbol>( gridSymbolElem );
+      lineSymbol = QgsSymbolLayerUtils::loadSymbol<QgsLineSymbol>( gridSymbolElem, context );
     }
     mapGrid->setLineSymbol( lineSymbol );
 
@@ -1438,7 +1444,7 @@ bool QgsComposerMap::readXml( const QDomElement &itemElem, const QDomDocument &d
     QDomElement overviewFrameSymbolElem = overviewFrameElem.firstChildElement( QStringLiteral( "symbol" ) );
     if ( !overviewFrameSymbolElem.isNull() )
     {
-      fillSymbol = QgsSymbolLayerUtils::loadSymbol<QgsFillSymbol>( overviewFrameSymbolElem );
+      fillSymbol = QgsSymbolLayerUtils::loadSymbol<QgsFillSymbol>( overviewFrameSymbolElem, context );
       mapOverview->setFrameSymbol( fillSymbol );
     }
     mOverviewStack->addOverview( mapOverview );
@@ -1639,7 +1645,7 @@ void QgsComposerMap::mapPolygon( const QgsRectangle &extent, QPolygonF &poly ) c
   }
 
   //there is rotation
-  QgsPoint rotationPoint( ( extent.xMaximum() + extent.xMinimum() ) / 2.0, ( extent.yMaximum() + extent.yMinimum() ) / 2.0 );
+  QgsPointXY rotationPoint( ( extent.xMaximum() + extent.xMinimum() ) / 2.0, ( extent.yMaximum() + extent.yMinimum() ) / 2.0 );
   double dx, dy; //x-, y- shift from rotation point to corner point
 
   //top left point
@@ -1798,11 +1804,11 @@ QPointF QgsComposerMap::mapToItemCoords( QPointF mapCoords ) const
   }
 
   QgsRectangle tExtent = transformedExtent();
-  QgsPoint rotationPoint( ( tExtent.xMaximum() + tExtent.xMinimum() ) / 2.0, ( tExtent.yMaximum() + tExtent.yMinimum() ) / 2.0 );
+  QgsPointXY rotationPoint( ( tExtent.xMaximum() + tExtent.xMinimum() ) / 2.0, ( tExtent.yMaximum() + tExtent.yMinimum() ) / 2.0 );
   double dx = mapCoords.x() - rotationPoint.x();
   double dy = mapCoords.y() - rotationPoint.y();
   QgsComposerUtils::rotate( -mEvaluatedMapRotation, dx, dy );
-  QgsPoint backRotatedCoords( rotationPoint.x() + dx, rotationPoint.y() + dy );
+  QgsPointXY backRotatedCoords( rotationPoint.x() + dx, rotationPoint.y() + dy );
 
   QgsRectangle unrotatedExtent = transformedExtent();
   double xItem = rect().width() * ( backRotatedCoords.x() - unrotatedExtent.xMinimum() ) / unrotatedExtent.width();

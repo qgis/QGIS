@@ -33,6 +33,7 @@
 #include <qgis.h> //defines GEOWkt
 #include "qgsmaprenderersequentialjob.h"
 #include <qgsmaplayer.h>
+#include <qgsreadwritecontext.h>
 #include <qgsvectorlayer.h>
 #include <qgsapplication.h>
 #include <qgsproviderregistry.h>
@@ -135,10 +136,10 @@ void TestQgsMapRendererJob::initTestCase()
         // Create a polygon feature
         //
         QgsPolyline myPolyline;
-        QgsPoint myPoint1 = QgsPoint( i, j );
-        QgsPoint myPoint2 = QgsPoint( i + myInterval, j );
-        QgsPoint myPoint3 = QgsPoint( i + myInterval, j + myInterval );
-        QgsPoint myPoint4 = QgsPoint( i, j + myInterval );
+        QgsPointXY myPoint1 = QgsPointXY( i, j );
+        QgsPointXY myPoint2 = QgsPointXY( i + myInterval, j );
+        QgsPointXY myPoint3 = QgsPointXY( i + myInterval, j + myInterval );
+        QgsPointXY myPoint4 = QgsPointXY( i, j + myInterval );
         myPolyline << myPoint1 << myPoint2 << myPoint3 << myPoint4 << myPoint1;
         QgsPolygon myPolygon;
         myPolygon << myPolyline;
@@ -280,7 +281,7 @@ void TestQgsMapRendererJob::testFourAdjacentTiles()
   }
 
   QString errorMsg;
-  if ( !vectorLayer->readSymbology( qmlDoc.documentElement(), errorMsg ) )
+  if ( !vectorLayer->readSymbology( qmlDoc.documentElement(), errorMsg, QgsReadWriteContext() ) )
   {
     QFAIL( errorMsg.toLocal8Bit().data() );
   }

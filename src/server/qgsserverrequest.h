@@ -46,7 +46,11 @@ class SERVER_EXPORT QgsServerRequest
      */
     enum Method
     {
-      HeadMethod, PutMethod, GetMethod, PostMethod, DeleteMethod
+      HeadMethod,
+      PutMethod,
+      GetMethod,
+      PostMethod,
+      DeleteMethod
     };
 
 
@@ -62,7 +66,7 @@ class SERVER_EXPORT QgsServerRequest
      * \param method the request method
      * \param headers
      */
-    QgsServerRequest( const QString &url, Method method = GetMethod, const Headers &headers = Headers( ) );
+    QgsServerRequest( const QString &url, QgsServerRequest::Method method = QgsServerRequest::GetMethod, const QgsServerRequest::Headers &headers = QgsServerRequest::Headers() );
 
     /**
      * Constructor
@@ -71,7 +75,7 @@ class SERVER_EXPORT QgsServerRequest
      * \param method the request method
      * \param headers
      */
-    QgsServerRequest( const QUrl &url, Method method = GetMethod, const Headers &headers = Headers( ) );
+    QgsServerRequest( const QUrl &url, QgsServerRequest::Method method = QgsServerRequest::GetMethod, const QgsServerRequest::Headers &headers = QgsServerRequest::Headers() );
 
     //! destructor
     virtual ~QgsServerRequest() = default;
@@ -84,13 +88,13 @@ class SERVER_EXPORT QgsServerRequest
     /**
      * \returns the request method
       */
-    Method method() const;
+    QgsServerRequest::Method method() const;
 
     /**
      * Return a map of query parameters with keys converted
      * to uppercase
      */
-    Parameters parameters() const;
+    QgsServerRequest::Parameters parameters() const;
 
     /**
      * Set a parameter
@@ -125,7 +129,7 @@ class SERVER_EXPORT QgsServerRequest
      * Return the header map
      * @return the headers map
      */
-    QMap<QString, QString> headers( ) const;
+    QMap<QString, QString> headers() const;
 
     /**
     * Remove an header
@@ -148,7 +152,7 @@ class SERVER_EXPORT QgsServerRequest
     /**
      * Set the request method
      */
-    void setMethod( Method method );
+    void setMethod( QgsServerRequest::Method method );
 
   private:
     QUrl       mUrl;

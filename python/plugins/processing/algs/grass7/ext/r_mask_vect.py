@@ -29,7 +29,7 @@ __revision__ = '$Format:%H$'
 from . import r_mask
 
 
-def processCommand(alg):
+def processCommand(alg, parameters):
     r_mask.processCommand(alg)
 
 

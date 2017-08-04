@@ -1,152 +1,236 @@
-/** \ingroup core
- * \class QgsArrowSymbolLayer
- * \brief Line symbol layer used for representing lines as arrows.
- * \note Added in version 2.16
- */
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/symbology-ng/qgsarrowsymbollayer.h                          *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
 
-class QgsArrowSymbolLayer : public QgsLineSymbolLayer
+
+
+
+
+class QgsArrowSymbolLayer : QgsLineSymbolLayer
 {
+%Docstring
+ Line symbol layer used for representing lines as arrows.
+.. versionadded:: 2.16
+%End
+
 %TypeHeaderCode
-#include <qgsarrowsymbollayer.h>
+#include "qgsarrowsymbollayer.h"
 %End
   public:
-    /** Simple constructor */
     QgsArrowSymbolLayer();
+%Docstring
+Simple constructor
+%End
 
-    /**
-     * Create a new QgsArrowSymbolLayer
-     *
-     * @param properties A property map to deserialize saved information from properties()
-     *
-     * @return A new QgsArrowSymbolLayer
-     */
     static QgsSymbolLayer *create( const QgsStringMap &properties = QgsStringMap() ) /Factory/;
+%Docstring
+ Create a new QgsArrowSymbolLayer
 
-    /** Virtual constructor */
+ \param properties A property map to deserialize saved information from properties()
+
+ :return: A new QgsArrowSymbolLayer
+ :rtype: QgsSymbolLayer
+%End
+
     virtual QgsArrowSymbolLayer *clone() const /Factory/;
-
-    /** Get the sub symbol used for filling */
     virtual QgsSymbol *subSymbol();
-
-    /** Set the sub symbol used for filling */
     virtual bool setSubSymbol( QgsSymbol *symbol /Transfer/ );
-
-    /** Return a list of attributes required to render this feature */
     virtual QSet<QString> usedAttributes( const QgsRenderContext &context ) const;
 
-    /** Get current arrow width */
     double arrowWidth() const;
-    /** Set the arrow width */
+%Docstring
+Get current arrow width
+ :rtype: float
+%End
     void setArrowWidth( double width );
-    /** Get the unit for the arrow width */
+%Docstring
+Set the arrow width
+%End
     QgsUnitTypes::RenderUnit arrowWidthUnit() const;
-    /** Set the unit for the arrow width */
+%Docstring
+Get the unit for the arrow width
+ :rtype: QgsUnitTypes.RenderUnit
+%End
     void setArrowWidthUnit( QgsUnitTypes::RenderUnit unit );
-    /** Get the scale for the arrow width */
+%Docstring
+Set the unit for the arrow width
+%End
     QgsMapUnitScale arrowWidthUnitScale() const;
-    /** Set the scale for the arrow width */
+%Docstring
+Get the scale for the arrow width
+ :rtype: QgsMapUnitScale
+%End
     void setArrowWidthUnitScale( const QgsMapUnitScale &scale );
+%Docstring
+Set the scale for the arrow width
+%End
 
-    /** Get current arrow start width. Only meaningfull for single headed arrows */
     double arrowStartWidth() const;
-    /** Set the arrow start width */
+%Docstring
+Get current arrow start width. Only meaningfull for single headed arrows
+ :rtype: float
+%End
     void setArrowStartWidth( double width );
-    /** Get the unit for the arrow start width */
+%Docstring
+Set the arrow start width
+%End
     QgsUnitTypes::RenderUnit arrowStartWidthUnit() const;
-    /** Set the unit for the arrow start width */
+%Docstring
+Get the unit for the arrow start width
+ :rtype: QgsUnitTypes.RenderUnit
+%End
     void setArrowStartWidthUnit( QgsUnitTypes::RenderUnit unit );
-    /** Get the scale for the arrow start width */
+%Docstring
+Set the unit for the arrow start width
+%End
     QgsMapUnitScale arrowStartWidthUnitScale() const;
-    /** Set the scale for the arrow start width */
+%Docstring
+Get the scale for the arrow start width
+ :rtype: QgsMapUnitScale
+%End
     void setArrowStartWidthUnitScale( const QgsMapUnitScale &scale );
+%Docstring
+Set the scale for the arrow start width
+%End
 
-    /** Get the current arrow head length */
     double headLength() const;
-    /** Set the arrow head length */
+%Docstring
+Get the current arrow head length
+ :rtype: float
+%End
     void setHeadLength( double length );
-    /** Get the unit for the head length */
+%Docstring
+Set the arrow head length
+%End
     QgsUnitTypes::RenderUnit headLengthUnit() const;
-    /** Set the unit for the head length */
+%Docstring
+Get the unit for the head length
+ :rtype: QgsUnitTypes.RenderUnit
+%End
     void setHeadLengthUnit( QgsUnitTypes::RenderUnit unit );
-    /** Get the scale for the head length */
+%Docstring
+Set the unit for the head length
+%End
     QgsMapUnitScale headLengthUnitScale() const;
-    /** Set the scale for the head length */
+%Docstring
+Get the scale for the head length
+ :rtype: QgsMapUnitScale
+%End
     void setHeadLengthUnitScale( const QgsMapUnitScale &scale );
+%Docstring
+Set the scale for the head length
+%End
 
-    /** Get the current arrow head height */
     double headThickness() const;
-    /** Set the arrow head height */
+%Docstring
+Get the current arrow head height
+ :rtype: float
+%End
     void setHeadThickness( double thickness );
-    /** Get the unit for the head height */
+%Docstring
+Set the arrow head height
+%End
     QgsUnitTypes::RenderUnit headThicknessUnit() const;
-    /** Set the unit for the head height */
+%Docstring
+Get the unit for the head height
+ :rtype: QgsUnitTypes.RenderUnit
+%End
     void setHeadThicknessUnit( QgsUnitTypes::RenderUnit unit );
-    /** Get the scale for the head height */
+%Docstring
+Set the unit for the head height
+%End
     QgsMapUnitScale headThicknessUnitScale() const;
-    /** Set the scale for the head height */
+%Docstring
+Get the scale for the head height
+ :rtype: QgsMapUnitScale
+%End
     void setHeadThicknessUnitScale( const QgsMapUnitScale &scale );
+%Docstring
+Set the scale for the head height
+%End
 
-    /** Return whether it is a curved arrow or a straight one */
     bool isCurved() const;
-    /** Set whether it is a curved arrow or a straight one */
+%Docstring
+Return whether it is a curved arrow or a straight one
+ :rtype: bool
+%End
     void setIsCurved( bool isCurved );
+%Docstring
+Set whether it is a curved arrow or a straight one
+%End
 
-    /** Return whether the arrow is repeated along the line or not */
     bool isRepeated() const;
-    /** Set whether the arrow is repeated along the line */
+%Docstring
+Return whether the arrow is repeated along the line or not
+ :rtype: bool
+%End
     void setIsRepeated( bool isRepeated );
+%Docstring
+Set whether the arrow is repeated along the line
+%End
 
-    /** Possible head types */
     enum HeadType
     {
-      HeadSingle,   //< One single head at the end
-      HeadReversed, //< One single head at the beginning
-      HeadDouble    //< Two heads
+      HeadSingle,
+      HeadReversed,
+      HeadDouble
     };
 
-    /** Get the current head type */
     HeadType headType() const;
-    /** Set the head type */
+%Docstring
+Get the current head type
+ :rtype: HeadType
+%End
     void setHeadType( HeadType type );
+%Docstring
+Set the head type
+%End
 
-    /** Possible arrow types */
     enum ArrowType
     {
-      ArrowPlain,     //< Regular arrow
-      ArrowLeftHalf,  //< Halved arrow, only the left side of the arrow is rendered (for straight arrows) or the side toward the exterior (for curved arrows)
-      ArrowRightHalf  //< Halved arrow, only the right side of the arrow is rendered (for straight arrows) or the side toward the interior (for curved arrows)
+      ArrowPlain,
+      ArrowLeftHalf,
+      ArrowRightHalf
     };
 
-    /** Get the current arrow type */
     ArrowType arrowType() const;
-    /** Set the arrow type */
+%Docstring
+Get the current arrow type
+ :rtype: ArrowType
+%End
     void setArrowType( ArrowType type );
+%Docstring
+Set the arrow type
+%End
 
-    /**
-     * Should be reimplemented by subclasses to return a string map that
-     * contains the configuration information for the symbol layer. This
-     * is used to serialize a symbol layer perstistently.
-     */
-    QgsStringMap properties() const;
+    virtual QgsStringMap properties() const;
 
-    /**
-     * Returns a string that represents this layer type. Used for serialization.
-     * Should match with the string used to register this symbol layer in the registry.
-     */
-    QString layerType() const;
+    virtual QString layerType() const;
 
-    /** Prepare the rendering */
-    void startRender( QgsSymbolRenderContext &context );
+    virtual void startRender( QgsSymbolRenderContext &context );
 
-    /** End of the rendering */
-    void stopRender( QgsSymbolRenderContext &context );
+    virtual void stopRender( QgsSymbolRenderContext &context );
 
-    /** Main drawing method */
-    void renderPolyline( const QPolygonF &points, QgsSymbolRenderContext &context );
+    virtual void renderPolyline( const QPolygonF &points, QgsSymbolRenderContext &context );
 
-    void setColor( const QColor &c );
+    virtual void setColor( const QColor &c );
+
     virtual QColor color() const;
 
   private:
-    QgsArrowSymbolLayer( const QgsArrowSymbolLayer& );
+    QgsArrowSymbolLayer( const QgsArrowSymbolLayer & );
 };
+
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/symbology-ng/qgsarrowsymbollayer.h                          *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

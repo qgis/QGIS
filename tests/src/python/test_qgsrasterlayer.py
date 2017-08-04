@@ -23,11 +23,12 @@ from qgis.PyQt.QtXml import QDomDocument
 
 from qgis.core import (QgsRaster,
                        QgsRasterLayer,
+                       QgsReadWriteContext,
                        QgsColorRampShader,
                        QgsContrastEnhancement,
                        QgsProject,
                        QgsMapSettings,
-                       QgsPoint,
+                       QgsPointXY,
                        QgsRasterMinMaxOrigin,
                        QgsRasterShader,
                        QgsRasterTransparency,
@@ -54,7 +55,7 @@ class TestQgsRasterLayer(unittest.TestCase):
         myRasterLayer = QgsRasterLayer(myPath, myBaseName)
         myMessage = 'Raster not loaded: %s' % myPath
         assert myRasterLayer.isValid(), myMessage
-        myPoint = QgsPoint(786690, 3345803)
+        myPoint = QgsPointXY(786690, 3345803)
         # print 'Extents: %s' % myRasterLayer.extent().toString()
         #myResult, myRasterValues = myRasterLayer.identify(myPoint)
         #assert myResult
@@ -654,6 +655,44 @@ class TestQgsRasterLayer(unittest.TestCase):
 
         self.assertEqual(renderer.nColors(), 2)
         self.assertEqual(renderer.usesBands(), [1])
+
+    def testClone(self):
+        myPath = os.path.join(unitTestDataPath('raster'),
+                              'band1_float32_noct_epsg4326.tif')
+        myFileInfo = QFileInfo(myPath)
+        myBaseName = myFileInfo.baseName()
+        layer = QgsRasterLayer(myPath, myBaseName)
+
+        renderer = layer.renderer().clone()
+        renderer.setOpacity(33.3)
+        layer.setRenderer(renderer)
+
+        # clone layer
+        clone = layer.clone()
+
+        # generate xml from layer
+        layer_doc = QDomDocument("doc")
+        layer_elem = layer_doc.createElement("maplayer")
+        layer.writeLayerXml(layer_elem, layer_doc, QgsReadWriteContext())
+
+        # generate xml from clone
+        clone_doc = QDomDocument("doc")
+        clone_elem = clone_doc.createElement("maplayer")
+        clone.writeLayerXml(clone_elem, clone_doc, QgsReadWriteContext())
+
+        # replace id within xml of clone
+        clone_id_elem = clone_elem.firstChildElement("id")
+        clone_id_elem_patch = clone_doc.createElement("id")
+        clone_id_elem_patch_value = clone_doc.createTextNode(layer.id())
+        clone_id_elem_patch.appendChild(clone_id_elem_patch_value)
+        clone_elem.replaceChild(clone_id_elem_patch, clone_id_elem)
+
+        # update doc
+        clone_doc.appendChild(clone_elem)
+        layer_doc.appendChild(layer_elem)
+
+        # compare xml documents
+        self.assertEqual(layer_doc.toString(), clone_doc.toString())
 
 
 if __name__ == '__main__':

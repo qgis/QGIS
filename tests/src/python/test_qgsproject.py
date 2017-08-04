@@ -28,7 +28,7 @@ from qgis.gui import (QgsLayerTreeMapCanvasBridge,
                       QgsMapCanvas)
 
 from qgis.PyQt.QtTest import QSignalSpy
-from qgis.PyQt.QtCore import QT_VERSION_STR
+from qgis.PyQt.QtCore import QT_VERSION_STR, QTemporaryFile, QTemporaryDir
 import sip
 
 from qgis.testing import start_app, unittest
@@ -683,6 +683,73 @@ class TestQgsProject(unittest.TestCase):
         # destroy project
         p = None
         self.assertTrue(l1.isValid())
+
+    def test_zip_new_project(self):
+        tmpDir = QTemporaryDir()
+        tmpFile = "{}/project.qgz".format(tmpDir.path())
+
+        # zip with existing file
+        open(tmpFile, 'a').close()
+
+        project = QgsProject()
+        self.assertTrue(project.write(tmpFile))
+
+        # zip with non existing file
+        os.remove(tmpFile)
+
+        project = QgsProject()
+        self.assertTrue(project.write(tmpFile))
+        self.assertTrue(os.path.isfile(tmpFile))
+
+    def test_zip_invalid_path(self):
+        project = QgsProject()
+        self.assertFalse(project.write())
+        self.assertFalse(project.write(""))
+        self.assertFalse(project.write("/fake/test.zip"))
+
+    def test_zip_filename(self):
+        tmpDir = QTemporaryDir()
+        tmpFile = "{}/project.qgz".format(tmpDir.path())
+
+        project = QgsProject()
+        self.assertFalse(project.write())
+
+        project.setFileName(tmpFile)
+        self.assertTrue(project.write())
+        self.assertTrue(os.path.isfile(tmpFile))
+
+    def test_unzip_invalid_path(self):
+        project = QgsProject()
+        self.assertFalse(project.read())
+        self.assertFalse(project.read(""))
+        self.assertFalse(project.read("/fake/test.zip"))
+
+    def test_zip_unzip(self):
+        tmpDir = QTemporaryDir()
+        tmpFile = "{}/project.qgz".format(tmpDir.path())
+
+        project = QgsProject()
+
+        l0 = QgsVectorLayer(os.path.join(TEST_DATA_DIR, "points.shp"), "points", "ogr")
+        l1 = QgsVectorLayer(os.path.join(TEST_DATA_DIR, "lines.shp"), "lines", "ogr")
+        project.addMapLayers([l0, l1])
+
+        self.assertTrue(project.write(tmpFile))
+
+        project2 = QgsProject()
+        self.assertFalse(project2.isZipped())
+        self.assertTrue(project2.fileName() == "")
+        self.assertTrue(project2.read(tmpFile))
+        self.assertTrue(project2.isZipped())
+        self.assertTrue(project2.fileName() == tmpFile)
+        layers = project2.mapLayers()
+
+        self.assertEqual(len(layers.keys()), 2)
+        self.assertTrue(layers[l0.id()].isValid(), True)
+        self.assertTrue(layers[l1.id()].isValid(), True)
+
+        project2.clear()
+        self.assertFalse(project2.isZipped())
 
 
 if __name__ == '__main__':

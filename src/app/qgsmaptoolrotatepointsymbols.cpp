@@ -73,14 +73,10 @@ void QgsMapToolRotatePointSymbols::canvasPressEvent( QgsMapMouseEvent *e )
   QgsMapToolPointSymbol::canvasPressEvent( e );
 }
 
-void QgsMapToolRotatePointSymbols::canvasPressOnFeature( QgsMapMouseEvent *e, const QgsFeature &feature, const QgsPoint &snappedPoint )
+void QgsMapToolRotatePointSymbols::canvasPressOnFeature( QgsMapMouseEvent *e, const QgsFeature &feature, const QgsPointXY &snappedPoint )
 {
   //find out initial arrow direction
   QVariant attrVal = feature.attribute( mCurrentRotationAttributes.toList().at( 0 ) );
-  if ( !attrVal.isValid() )
-  {
-    return;
-  }
 
   mCurrentRotationFeature = attrVal.toDouble();
   createPixmapItem( mMarkerSymbol.get() );

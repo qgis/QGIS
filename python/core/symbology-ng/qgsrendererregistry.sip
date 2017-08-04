@@ -1,135 +1,185 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/symbology-ng/qgsrendererregistry.h                          *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
 class QgsRendererWidget /External/;
 
-/**
- Stores metadata about one renderer class.
-
- @note It's necessary to implement createRenderer() function.
-   In C++ you can use QgsRendererMetadata convenience class.
- */
 class QgsRendererAbstractMetadata
 {
-%TypeHeaderCode
-#include <qgsrendererregistry.h>
+%Docstring
+Stores metadata about one renderer class.
+
+.. note::
+
+   It's necessary to implement createRenderer() function.
+In C++ you can use QgsRendererMetadata convenience class.
 %End
 
+%TypeHeaderCode
+#include "qgsrendererregistry.h"
+%End
   public:
 
-
-    //! Layer types the renderer is compatible with
-    //! @note added in QGIS 2.16
     enum LayerType
     {
-      PointLayer, //!< Compatible with point layers
-      LineLayer, //!< Compatible with line layers
-      PolygonLayer, //!< Compatible with polygon layers
-      All, //!< Compatible with all vector layers
+      PointLayer,
+      LineLayer,
+      PolygonLayer,
+      All,
     };
     typedef QFlags<QgsRendererAbstractMetadata::LayerType> LayerTypes;
+
 
     QgsRendererAbstractMetadata( const QString &name, const QString &visibleName, const QIcon &icon = QIcon() );
     virtual ~QgsRendererAbstractMetadata();
 
     QString name() const;
+%Docstring
+ :rtype: str
+%End
     QString visibleName() const;
+%Docstring
+ :rtype: str
+%End
 
     QIcon icon() const;
+%Docstring
+ :rtype: QIcon
+%End
     void setIcon( const QIcon &icon );
 
-    /** Returns flags indicating the types of layer the renderer is compatible with.
-     * @note added in QGIS 2.16
-     */
     virtual QgsRendererAbstractMetadata::LayerTypes compatibleLayerTypes() const;
+%Docstring
+ Returns flags indicating the types of layer the renderer is compatible with.
+.. versionadded:: 2.16
+ :rtype: QgsRendererAbstractMetadata.LayerTypes
+%End
 
-    /** Return new instance of the renderer given the DOM element. Returns NULL on error.
-     * Pure virtual function: must be implemented in derived classes.  */
-    virtual QgsFeatureRenderer *createRenderer( QDomElement &elem ) = 0 /Factory/;
-    /** Return new instance of settings widget for the renderer. Returns NULL on error.
-     *
-     * The \a oldRenderer argument may refer to previously used renderer (or it is null).
-     * If not null, it may be used to initialize GUI of the widget from the previous settings.
-     * The old renderer does not have to be of the same type as returned by createRenderer().
-     * When using \a oldRenderer make sure to make a copy of it - it will be deleted afterwards.
-     */
+    virtual QgsFeatureRenderer *createRenderer( QDomElement &elem, const QgsReadWriteContext &context ) = 0 /Factory/;
+%Docstring
+ Return new instance of the renderer given the DOM element. Returns NULL on error.
+ Pure virtual function: must be implemented in derived classes.  *
+ :rtype: QgsFeatureRenderer
+%End
+
     virtual QgsRendererWidget *createRendererWidget( QgsVectorLayer *layer, QgsStyle *style, QgsFeatureRenderer *oldRenderer ) /Factory/;
+%Docstring
+ Return new instance of settings widget for the renderer. Returns NULL on error.
 
-    /**
-     * Create a renderer from the SLD provided in ele and for the specified geometry type.
-     * This is done on a best effort basis.
-     */
+ The ``oldRenderer`` argument may refer to previously used renderer (or it is null).
+ If not null, it may be used to initialize GUI of the widget from the previous settings.
+ The old renderer does not have to be of the same type as returned by createRenderer().
+ When using ``oldRenderer`` make sure to make a copy of it - it will be deleted afterwards.
+ :rtype: QgsRendererWidget
+%End
+
     virtual QgsFeatureRenderer *createRendererFromSld( QDomElement &elem, QgsWkbTypes::GeometryType geomType ) /Factory/;
+%Docstring
+ :rtype: QgsFeatureRenderer
+%End
+
+  protected:
 };
+
 
 QFlags<QgsRendererAbstractMetadata::LayerType> operator|(QgsRendererAbstractMetadata::LayerType f1, QFlags<QgsRendererAbstractMetadata::LayerType> f2);
 
-/**
- Convenience metadata class that uses static functions to create renderer and its widget.
- */
+
+
+
 class QgsRendererMetadata : QgsRendererAbstractMetadata
 {
+%Docstring
+Convenience metadata class that uses static functions to create renderer and its widget.
+%End
+
 %TypeHeaderCode
-#include <qgsrendererregistry.h>
+#include "qgsrendererregistry.h"
 %End
   public:
-    virtual QgsFeatureRenderer *createRenderer( QDomElement &elem ) /Factory/;
+
+
+
+    virtual ~QgsRendererMetadata();
+
+    virtual QgsFeatureRenderer *createRenderer( QDomElement &elem, const QgsReadWriteContext &context ) /Factory/;
     virtual QgsRendererWidget *createRendererWidget( QgsVectorLayer *layer, QgsStyle *style, QgsFeatureRenderer *renderer ) /Factory/;
     virtual QgsFeatureRenderer *createRendererFromSld( QDomElement &elem, QgsWkbTypes::GeometryType geomType ) /Factory/;
 
-    // QgsRendererCreateFunc createFunction() const;
-    // QgsRendererWidgetFunc widgetFunction() const;
-    // QgsFeatureRenderer* (*)( QDomElement&, QgsWkbTypes::GeometryType geomType ) createFromSldFunction() const;
-    // void setWidgetFunction( QgsRendererWidgetFunc f );
+
 
     virtual QgsRendererAbstractMetadata::LayerTypes compatibleLayerTypes() const;
 
+  protected:
+
   private:
-    QgsRendererMetadata(); // pretend this is private
+    QgsRendererMetadata();
 };
 
-/** \ingroup core
- * \class QgsRendererRegistry
- * \brief Registry of renderers.
- *
- * This is a singleton, renderers can be added / removed at any time
- */
+
 
 class QgsRendererRegistry
 {
-%TypeHeaderCode
-#include <qgsrendererregistry.h>
+%Docstring
+ Registry of renderers.
+
+ QgsRendererRegistry is not usually directly created, but rather accessed through
+ QgsApplication.rendererRegistry().
 %End
 
+%TypeHeaderCode
+#include "qgsrendererregistry.h"
+%End
   public:
 
     QgsRendererRegistry();
     ~QgsRendererRegistry();
 
-    //! Adds a renderer to the registry. Takes ownership of the metadata object.
-    //! @param metadata renderer metadata
-    //! @returns true if renderer was added successfully, or false if renderer could not
-    //! be added (e.g., a renderer with a duplicate name already exists)
+
     bool addRenderer( QgsRendererAbstractMetadata *metadata /Transfer/ );
+%Docstring
+be added (e.g., a renderer with a duplicate name already exists)
+ :rtype: bool
+%End
 
-    //! Removes a renderer from registry.
-    //! @param rendererName name of renderer to remove from registry
-    //! @returns true if renderer was successfully removed, or false if matching
-    //! renderer could not be found
     bool removeRenderer( const QString &rendererName );
+%Docstring
+renderer could not be found
+ :rtype: bool
+%End
 
-    //! Returns the metadata for a specified renderer. Returns NULL if a matching
-    //! renderer was not found in the registry.
     QgsRendererAbstractMetadata *rendererMetadata( const QString &rendererName );
+%Docstring
+renderer was not found in the registry.
+ :rtype: QgsRendererAbstractMetadata
+%End
 
-    //! Returns a list of available renderers.
-    //! @param layerTypes flags to filter the renderers by compatible layer types
     QStringList renderersList( QgsRendererAbstractMetadata::LayerTypes layerTypes = QgsRendererAbstractMetadata::All ) const;
+%Docstring
+\param layerTypes flags to filter the renderers by compatible layer types
+ :rtype: list of str
+%End
 
-    //! Returns a list of available renderers which are compatible with a specified layer.
-    //! @param layer vector layer
-    //! @note added in QGIS 2.16
     QStringList renderersList( const QgsVectorLayer *layer ) const;
+%Docstring
+.. versionadded:: 2.16
+ :rtype: list of str
+%End
 
   private:
     QgsRendererRegistry( const QgsRendererRegistry &rh );
-    //QgsRendererRegistry &operator=( const QgsRendererRegistry &rh );
-
 };
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/symbology-ng/qgsrendererregistry.h                          *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

@@ -59,7 +59,7 @@ class CORE_EXPORT QgsComposerLegend : public QgsComposerItem
     Q_OBJECT
 
   public:
-    QgsComposerLegend( QgsComposition *composition );
+    QgsComposerLegend( QgsComposition *composition SIP_TRANSFERTHIS );
 
     //! Return correct graphics item type.
     virtual int type() const override { return ComposerLegend; }

@@ -21,8 +21,8 @@ class QgsBrowserModel : QAbstractItemModel
 
     enum ItemDataRole
     {
-      PathRole
-      CommentRole
+      PathRole,
+      CommentRole,
     };
 
     virtual Qt::ItemFlags flags( const QModelIndex &index ) const;
@@ -138,6 +138,10 @@ Refresh item children
     void stateChanged( const QModelIndex &index, QgsDataItem::State oldState );
 %Docstring
 Emitted when item children fetch was finished
+%End
+    void connectionsChanged();
+%Docstring
+notify the provider dialogs of a changed connection
 %End
 
   public slots:

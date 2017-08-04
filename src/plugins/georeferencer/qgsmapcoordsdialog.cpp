@@ -20,7 +20,7 @@
 #include "qgsmapcoordsdialog.h"
 #include "qgssettings.h"
 
-QgsMapCoordsDialog::QgsMapCoordsDialog( QgsMapCanvas *qgisCanvas, const QgsPoint &pixelCoords, QWidget *parent )
+QgsMapCoordsDialog::QgsMapCoordsDialog( QgsMapCanvas *qgisCanvas, const QgsPointXY &pixelCoords, QWidget *parent )
   : QDialog( parent, Qt::Dialog )
   , mPrevMapTool( nullptr )
   , mQgisCanvas( qgisCanvas )
@@ -87,16 +87,16 @@ void QgsMapCoordsDialog::on_buttonBox_accepted()
   if ( !ok )
     y = dmsToDD( leYCoord->text() );
 
-  emit pointAdded( mPixelCoords, QgsPoint( x, y ) );
+  emit pointAdded( mPixelCoords, QgsPointXY( x, y ) );
   close();
 }
 
-void QgsMapCoordsDialog::maybeSetXY( const QgsPoint &xy, Qt::MouseButton button )
+void QgsMapCoordsDialog::maybeSetXY( const QgsPointXY &xy, Qt::MouseButton button )
 {
   // Only LeftButton should set point
   if ( Qt::LeftButton == button )
   {
-    QgsPoint mapCoordPoint = xy;
+    QgsPointXY mapCoordPoint = xy;
 
     leXCoord->clear();
     leYCoord->clear();

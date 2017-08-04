@@ -59,7 +59,7 @@ void QgsSnappingUtils::clearAllLocators()
 }
 
 
-QgsPointLocator *QgsSnappingUtils::locatorForLayerUsingStrategy( QgsVectorLayer *vl, const QgsPoint &pointMap, double tolerance )
+QgsPointLocator *QgsSnappingUtils::locatorForLayerUsingStrategy( QgsVectorLayer *vl, const QgsPointXY &pointMap, double tolerance )
 {
   QgsRectangle aoi( pointMap.x() - tolerance, pointMap.y() - tolerance,
                     pointMap.x() + tolerance, pointMap.y() + tolerance );
@@ -69,7 +69,7 @@ QgsPointLocator *QgsSnappingUtils::locatorForLayerUsingStrategy( QgsVectorLayer 
     return temporaryLocatorForLayer( vl, pointMap, tolerance );
 }
 
-QgsPointLocator *QgsSnappingUtils::temporaryLocatorForLayer( QgsVectorLayer *vl, const QgsPoint &pointMap, double tolerance )
+QgsPointLocator *QgsSnappingUtils::temporaryLocatorForLayer( QgsVectorLayer *vl, const QgsPointXY &pointMap, double tolerance )
 {
   if ( mTemporaryLocators.contains( vl ) )
     delete mTemporaryLocators.take( vl );
@@ -100,12 +100,12 @@ bool QgsSnappingUtils::isIndexPrepared( QgsVectorLayer *vl, const QgsRectangle &
 }
 
 
-static QgsPointLocator::Match _findClosestSegmentIntersection( const QgsPoint &pt, const QgsPointLocator::MatchList &segments )
+static QgsPointLocator::Match _findClosestSegmentIntersection( const QgsPointXY &pt, const QgsPointLocator::MatchList &segments )
 {
   if ( segments.isEmpty() )
     return QgsPointLocator::Match();
 
-  QSet<QgsPoint> endpoints;
+  QSet<QgsPointXY> endpoints;
 
   // make a geometry
   QList<QgsGeometry> geoms;
@@ -123,10 +123,10 @@ static QgsPointLocator::Match _findClosestSegmentIntersection( const QgsPoint &p
   QgsGeometry g = QgsGeometry::unaryUnion( geoms );
 
   // get intersection points
-  QList<QgsPoint> newPoints;
+  QList<QgsPointXY> newPoints;
   if ( g.wkbType() == QgsWkbTypes::LineString )
   {
-    Q_FOREACH ( const QgsPoint &p, g.asPolyline() )
+    Q_FOREACH ( const QgsPointXY &p, g.asPolyline() )
     {
       if ( !endpoints.contains( p ) )
         newPoints << p;
@@ -136,7 +136,7 @@ static QgsPointLocator::Match _findClosestSegmentIntersection( const QgsPoint &p
   {
     Q_FOREACH ( const QgsPolyline &pl, g.asMultiPolyline() )
     {
-      Q_FOREACH ( const QgsPoint &p, pl )
+      Q_FOREACH ( const QgsPointXY &p, pl )
       {
         if ( !endpoints.contains( p ) )
           newPoints << p;
@@ -148,9 +148,9 @@ static QgsPointLocator::Match _findClosestSegmentIntersection( const QgsPoint &p
     return QgsPointLocator::Match();
 
   // find the closest points
-  QgsPoint minP;
+  QgsPointXY minP;
   double minSqrDist = 1e20;  // "infinity"
-  Q_FOREACH ( const QgsPoint &p, newPoints )
+  Q_FOREACH ( const QgsPointXY &p, newPoints )
   {
     double sqrDist = pt.sqrDist( p.x(), p.y() );
     if ( sqrDist < minSqrDist )
@@ -164,25 +164,25 @@ static QgsPointLocator::Match _findClosestSegmentIntersection( const QgsPoint &p
 }
 
 
-static void _replaceIfBetter( QgsPointLocator::Match &mBest, const QgsPointLocator::Match &mNew, double maxDistance )
+static void _replaceIfBetter( QgsPointLocator::Match &bestMatch, const QgsPointLocator::Match &candidateMatch, double maxDistance )
 {
-  // is other match relevant?
-  if ( !mNew.isValid() || mNew.distance() > maxDistance )
+  // is candidate match relevant?
+  if ( !candidateMatch.isValid() || candidateMatch.distance() > maxDistance )
     return;
 
-  // is other match actually better?
-  if ( mBest.isValid() && mBest.type() == mNew.type() && mBest.distance() - 10e-6 < mNew.distance() )
+  // is candidate match actually better?
+  if ( bestMatch.isValid() && bestMatch.type() == candidateMatch.type() && bestMatch.distance() - 10e-6 < candidateMatch.distance() )
     return;
 
-  // prefer vertex matches to edge matches (even if they are closer)
-  if ( mBest.type() == QgsPointLocator::Vertex && mNew.type() == QgsPointLocator::Edge )
+  // prefer vertex matches over edge matches (even if they are closer)
+  if ( bestMatch.type() == QgsPointLocator::Vertex && candidateMatch.type() == QgsPointLocator::Edge )
     return;
 
-  mBest = mNew; // the other match is better!
+  bestMatch = candidateMatch; // the other match is better!
 }
 
 
-static void _updateBestMatch( QgsPointLocator::Match &bestMatch, const QgsPoint &pointMap, QgsPointLocator *loc, int type, double tolerance, QgsPointLocator::MatchFilter *filter )
+static void _updateBestMatch( QgsPointLocator::Match &bestMatch, const QgsPointXY &pointMap, QgsPointLocator *loc, int type, double tolerance, QgsPointLocator::MatchFilter *filter )
 {
   if ( type & QgsPointLocator::Vertex )
   {
@@ -200,13 +200,13 @@ QgsPointLocator::Match QgsSnappingUtils::snapToMap( QPoint point, QgsPointLocato
   return snapToMap( mMapSettings.mapToPixel().toMapCoordinates( point ), filter );
 }
 
-inline QgsRectangle _areaOfInterest( const QgsPoint &point, double tolerance )
+inline QgsRectangle _areaOfInterest( const QgsPointXY &point, double tolerance )
 {
   return QgsRectangle( point.x() - tolerance, point.y() - tolerance,
                        point.x() + tolerance, point.y() + tolerance );
 }
 
-QgsPointLocator::Match QgsSnappingUtils::snapToMap( const QgsPoint &pointMap, QgsPointLocator::MatchFilter *filter )
+QgsPointLocator::Match QgsSnappingUtils::snapToMap( const QgsPointXY &pointMap, QgsPointLocator::MatchFilter *filter )
 {
   if ( !mMapSettings.hasValidSettings() || !mSnappingConfig.enabled() )
   {
@@ -379,7 +379,7 @@ void QgsSnappingUtils::prepareIndex( const QList<LayerAndAreaOfInterest> &layers
         else
         {
           // use area as big as we think may fit into our limit
-          QgsPoint c = entry.second.center();
+          QgsPointXY c = entry.second.center();
           double halfSide = sqrt( indexReasonableArea ) / 2;
           QgsRectangle rect( c.x() - halfSide, c.y() - halfSide,
                              c.x() + halfSide, c.y() + halfSide );
@@ -435,7 +435,7 @@ QgsPointLocator::Match QgsSnappingUtils::snapToCurrentLayer( QPoint point, int t
   if ( !mCurrentLayer )
     return QgsPointLocator::Match();
 
-  QgsPoint pointMap = mMapSettings.mapToPixel().toMapCoordinates( point );
+  QgsPointXY pointMap = mMapSettings.mapToPixel().toMapCoordinates( point );
   double tolerance = QgsTolerance::vertexSearchRadius( mMapSettings );
 
   QgsPointLocator *loc = locatorForLayerUsingStrategy( mCurrentLayer, pointMap, tolerance );

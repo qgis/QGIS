@@ -59,7 +59,7 @@ class CORE_EXPORT QgsRasterPipe
     };
 
     QgsRasterPipe();
-    QgsRasterPipe( const QgsRasterPipe &pipe );
+    QgsRasterPipe( const QgsRasterPipe &pipe ) SIP_SKIP;
 
     ~QgsRasterPipe();
 
@@ -68,6 +68,18 @@ class CORE_EXPORT QgsRasterPipe
     /** Try to insert interface at specified index and connect
      * if connection would fail, the interface is not inserted and false is returned */
     bool insert( int idx, QgsRasterInterface *interface SIP_TRANSFER );
+#ifdef SIP_RUN
+    % MethodCode
+    sipRes = sipCpp->insert( a0, a1 );
+    if ( !sipRes )
+    {
+      // if insertion failed transfer ownership back to python
+      PyObject *o = sipGetPyObject( a1, sipType_QgsRasterInterface );
+      if ( o )
+        sipTransferBreak( o );
+    }
+    % End
+#endif
 
     /** Try to replace interface at specified index and connect
      * if connection would fail, the interface is not inserted and false is returned */
@@ -108,6 +120,10 @@ class CORE_EXPORT QgsRasterPipe
     QgsRasterNuller *nuller() const;
 
   private:
+#ifdef SIP_RUN
+    QgsRasterPipe( const QgsRasterPipe &pipe );
+#endif
+
     //! Get known parent type_info of interface parent
     Role interfaceRole( QgsRasterInterface *iface ) const;
 

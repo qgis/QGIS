@@ -36,7 +36,7 @@ class QgsGlobeLayerPropertiesFactory;
 class QgsGlobePluginDialog;
 class QgsGlobeWidget;
 class QgsMapLayer;
-class QgsPoint;
+class QgsPointXY;
 class QgsRectangle;
 class QgsGlobeFrustumHighlightCallback;
 class QgsGlobeFeatureIdentifyCallback;
@@ -171,9 +171,9 @@ class GLOBE_EXPORT GlobePlugin : public QObject, public QgisPlugin
 
   signals:
     //! emits current mouse position
-    void xyCoordinates( const QgsPoint &p );
+    void xyCoordinates( const QgsPointXY &p );
     //! emits position of right click on globe
-    void newCoordinatesSelected( const QgsPoint &p );
+    void newCoordinatesSelected( const QgsPointXY &p );
 };
 
 #endif // QGS_GLOBE_PLUGIN_H

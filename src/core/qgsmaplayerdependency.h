@@ -49,10 +49,10 @@ class CORE_EXPORT QgsMapLayerDependency
     };
 
     //! Standard constructor
-    QgsMapLayerDependency( const QString &layerId, Type type = DataDependency, Origin origin = FromUser ) :
-      mType( type ),
-      mOrigin( origin ),
-      mLayerId( layerId )
+    QgsMapLayerDependency( const QString &layerId, Type type = DataDependency, Origin origin = FromUser )
+      : mType( type )
+      , mOrigin( origin )
+      , mLayerId( layerId )
     {}
 
     //! Return the dependency type
@@ -69,11 +69,21 @@ class CORE_EXPORT QgsMapLayerDependency
     {
       return layerId() == other.layerId() && origin() == other.origin() && type() == other.type();
     }
+
+#ifdef SIP_RUN
+    //! hash operator
+    long __hash__() const;
+    % MethodCode
+    sipRes = qHash( *sipCpp );
+    % End
+#endif
   private:
     Type mType;
     Origin mOrigin;
     QString mLayerId;
 };
+
+#ifndef SIP_RUN
 
 /**
  * global qHash function for QgsMapLayerDependency, so that it can be used in a QSet
@@ -82,5 +92,6 @@ inline uint qHash( const QgsMapLayerDependency &dep )
 {
   return qHash( dep.layerId() ) + dep.origin() + dep.type();
 }
+#endif
 
 #endif

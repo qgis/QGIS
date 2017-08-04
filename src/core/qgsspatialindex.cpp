@@ -20,6 +20,8 @@
 #include "qgsfeatureiterator.h"
 #include "qgsrectangle.h"
 #include "qgslogger.h"
+#include "qgsfeaturesource.h"
+#include "qgsfeedback.h"
 
 #include "SpatialIndex.h"
 
@@ -91,9 +93,10 @@ class QgsFeatureIteratorDataStream : public IDataStream
 {
   public:
     //! constructor - needs to load all data to a vector for later access when bulk loading
-    explicit QgsFeatureIteratorDataStream( const QgsFeatureIterator &fi )
+    explicit QgsFeatureIteratorDataStream( const QgsFeatureIterator &fi, QgsFeedback *feedback = nullptr )
       : mFi( fi )
       , mNextData( nullptr )
+      , mFeedback( feedback )
     {
       readNextEntry();
     }
@@ -106,6 +109,9 @@ class QgsFeatureIteratorDataStream : public IDataStream
     //! returns a pointer to the next entry in the stream or 0 at the end of the stream.
     IData *getNext() override
     {
+      if ( mFeedback && mFeedback->isCanceled() )
+        return nullptr;
+
       RTree::Data *ret = mNextData;
       mNextData = nullptr;
       readNextEntry();
@@ -140,6 +146,7 @@ class QgsFeatureIteratorDataStream : public IDataStream
   private:
     QgsFeatureIterator mFi;
     RTree::Data *mNextData = nullptr;
+    QgsFeedback *mFeedback = nullptr;
 };
 
 
@@ -156,9 +163,17 @@ class QgsSpatialIndexData : public QSharedData
       initTree();
     }
 
-    explicit QgsSpatialIndexData( const QgsFeatureIterator &fi )
+    /**
+     * Constructor for QgsSpatialIndexData which bulk loads features from the specified feature iterator
+     * \a fi.
+     *
+     * The optional \a feedback object can be used to allow cancelation of bulk feature loading. Ownership
+     * of \a feedback is not transferred, and callers must take care that the lifetime of feedback exceeds
+     * that of the spatial index construction.
+     */
+    explicit QgsSpatialIndexData( const QgsFeatureIterator &fi, QgsFeedback *feedback = nullptr )
     {
-      QgsFeatureIteratorDataStream fids( fi );
+      QgsFeatureIteratorDataStream fids( fi, feedback );
       initTree( &fids );
     }
 
@@ -223,9 +238,14 @@ QgsSpatialIndex::QgsSpatialIndex()
   d = new QgsSpatialIndexData;
 }
 
-QgsSpatialIndex::QgsSpatialIndex( const QgsFeatureIterator &fi )
+QgsSpatialIndex::QgsSpatialIndex( const QgsFeatureIterator &fi, QgsFeedback *feedback )
 {
-  d = new QgsSpatialIndexData( fi );
+  d = new QgsSpatialIndexData( fi, feedback );
+}
+
+QgsSpatialIndex::QgsSpatialIndex( const QgsFeatureSource &source, QgsFeedback *feedback )
+{
+  d = new QgsSpatialIndexData( source.getFeatures( QgsFeatureRequest().setSubsetOfAttributes( QgsAttributeList() ) ), feedback );
 }
 
 QgsSpatialIndex::QgsSpatialIndex( const QgsSpatialIndex &other ) //NOLINT
@@ -253,23 +273,37 @@ SpatialIndex::Region QgsSpatialIndex::rectToRegion( const QgsRectangle &rect )
 
 bool QgsSpatialIndex::featureInfo( const QgsFeature &f, SpatialIndex::Region &r, QgsFeatureId &id )
 {
-  if ( !f.hasGeometry() )
+  QgsRectangle rect;
+  if ( !featureInfo( f, rect, id ) )
     return false;
 
-  QgsGeometry g = f.geometry();
-
-  id = f.id();
-  r = rectToRegion( g.boundingBox() );
+  r = rectToRegion( rect );
   return true;
 }
 
+bool QgsSpatialIndex::featureInfo( const QgsFeature &f, QgsRectangle &rect, QgsFeatureId &id )
+{
+  if ( !f.hasGeometry() )
+    return false;
+
+  id = f.id();
+  rect = f.geometry().boundingBox();
+  return true;
+}
 
 bool QgsSpatialIndex::insertFeature( const QgsFeature &f )
 {
-  SpatialIndex::Region r;
+  QgsRectangle rect;
   QgsFeatureId id;
-  if ( !featureInfo( f, r, id ) )
+  if ( !featureInfo( f, rect, id ) )
     return false;
+
+  return insertFeature( id, rect );
+}
+
+bool QgsSpatialIndex::insertFeature( QgsFeatureId id, const QgsRectangle &rect )
+{
+  SpatialIndex::Region r( rectToRegion( rect ) );
 
   // TODO: handle possible exceptions correctly
   try
@@ -318,7 +352,7 @@ QList<QgsFeatureId> QgsSpatialIndex::intersects( const QgsRectangle &rect ) cons
   return list;
 }
 
-QList<QgsFeatureId> QgsSpatialIndex::nearestNeighbor( const QgsPoint &point, int neighbors ) const
+QList<QgsFeatureId> QgsSpatialIndex::nearestNeighbor( const QgsPointXY &point, int neighbors ) const
 {
   QList<QgsFeatureId> list;
   QgisVisitor visitor( list );

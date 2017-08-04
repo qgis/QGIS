@@ -33,15 +33,16 @@ class CORE_EXPORT Qgs25DRenderer : public QgsFeatureRenderer
      * Create a new 2.5D renderer from XML
      *
      * \param element XML information
+     * \param context reading context
      */
-    static QgsFeatureRenderer *create( QDomElement &element );
-    QDomElement save( QDomDocument &doc ) override;
+    static QgsFeatureRenderer *create( QDomElement &element, const QgsReadWriteContext &context ) SIP_FACTORY;
+    QDomElement save( QDomDocument &doc, const QgsReadWriteContext &context ) override;
 
     void startRender( QgsRenderContext &context, const QgsFields &fields ) override;
     void stopRender( QgsRenderContext &context ) override;
 
     QSet<QString> usedAttributes( const QgsRenderContext &context ) const override;
-    QgsFeatureRenderer *clone() const override;
+    QgsFeatureRenderer *clone() const override SIP_FACTORY;
 
     virtual QgsSymbol *symbolForFeature( QgsFeature &feature, QgsRenderContext &context ) override;
     virtual QgsSymbolList symbols( QgsRenderContext &context ) override;
@@ -101,7 +102,7 @@ class CORE_EXPORT Qgs25DRenderer : public QgsFeatureRenderer
      * we assume that the internals are not compatible and create a new default
      * 2.5D renderer.
      */
-    static Qgs25DRenderer *convertFromRenderer( QgsFeatureRenderer *renderer );
+    static Qgs25DRenderer *convertFromRenderer( QgsFeatureRenderer *renderer ) SIP_FACTORY;
 
     /**
      * Is the shadow enabled

@@ -629,7 +629,7 @@ class HistoryDialog(QDialog, Ui_HistoryDialogPythonConsole):
         self.setWindowTitle(QCoreApplication.translate("PythonConsole",
                                                        "Python Console - Command History"))
         self.listView.setToolTip(QCoreApplication.translate("PythonConsole",
-                                                            "Double click on item to execute"))
+                                                            "Double-click on item to execute"))
         self.model = QStandardItemModel(self.listView)
 
         self._reloadHistory()

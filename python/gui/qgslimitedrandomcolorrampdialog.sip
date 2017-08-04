@@ -1,91 +1,133 @@
-/** \ingroup gui
- * \class QgsLimitedRandomColorRampWidget
- * A widget which allows users to modify the properties of a QgsLimitedRandomColorRamp.
- * \note added in QGIS 3.0
- */
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgslimitedrandomcolorrampdialog.h                            *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
 
 class QgsLimitedRandomColorRampWidget : QgsPanelWidget
 {
-%TypeHeaderCode
-#include <qgslimitedrandomcolorrampdialog.h>
+%Docstring
+ A widget which allows users to modify the properties of a QgsLimitedRandomColorRamp.
+.. versionadded:: 3.0
 %End
 
+%TypeHeaderCode
+#include "qgslimitedrandomcolorrampdialog.h"
+%End
   public:
 
-    /** Constructor for QgsLimitedRandomColorRampWidget.
-     * @param ramp initial ramp to show in dialog
-     * @param parent parent widget
-     */
     QgsLimitedRandomColorRampWidget( const QgsLimitedRandomColorRamp &ramp, QWidget *parent /TransferThis/ = 0 );
+%Docstring
+ Constructor for QgsLimitedRandomColorRampWidget.
+ \param ramp initial ramp to show in dialog
+ \param parent parent widget
+%End
 
-    /** Returns a color ramp representing the current settings from the dialog.
-     * @see setRamp()
-     */
     QgsLimitedRandomColorRamp ramp() const;
+%Docstring
+ Returns a color ramp representing the current settings from the dialog.
+.. seealso:: setRamp()
+ :rtype: QgsLimitedRandomColorRamp
+%End
 
-    /** Sets the color ramp to show in the dialog.
-     * @param ramp color ramp
-     * @see ramp()
-     */
     void setRamp( const QgsLimitedRandomColorRamp &ramp );
+%Docstring
+ Sets the color ramp to show in the dialog.
+ \param ramp color ramp
+.. seealso:: ramp()
+%End
 
   signals:
 
-    //! Emitted when the dialog settings change
     void changed();
+%Docstring
+Emitted when the dialog settings change
+%End
 
   public slots:
 
-    //! Sets the number of colors to create in the ramp
     void setCount( int val );
-    //! Sets the minimum hue for colors in the ramp
+%Docstring
+Sets the number of colors to create in the ramp
+%End
     void setHue1( int val );
-    //! Sets the maximum hue for colors in the ramp
+%Docstring
+Sets the minimum hue for colors in the ramp
+%End
     void setHue2( int val );
-    //! Sets the minimum saturation for colors in the ramp
+%Docstring
+Sets the maximum hue for colors in the ramp
+%End
     void setSat1( int val );
-    //! Sets the maximum saturation for colors in the ramp
+%Docstring
+Sets the minimum saturation for colors in the ramp
+%End
     void setSat2( int val );
-    //! Sets the minimum value for colors in the ramp
+%Docstring
+Sets the maximum saturation for colors in the ramp
+%End
     void setVal1( int val );
-    //! Sets the maximum value for colors in the ramp
+%Docstring
+Sets the minimum value for colors in the ramp
+%End
     void setVal2( int val );
+%Docstring
+Sets the maximum value for colors in the ramp
+%End
+
 };
 
-/** \ingroup gui
- * \class QgsLimitedRandomColorRampDialog
- * A dialog which allows users to modify the properties of a QgsLimitedRandomColorRamp.
- * \note added in QGIS 3.0
- */
 
 class QgsLimitedRandomColorRampDialog : QDialog
 {
-%TypeHeaderCode
-#include <qgslimitedrandomcolorrampdialog.h>
+%Docstring
+ A dialog which allows users to modify the properties of a QgsLimitedRandomColorRamp.
+.. versionadded:: 3.0
 %End
 
+%TypeHeaderCode
+#include "qgslimitedrandomcolorrampdialog.h"
+%End
   public:
 
-    /** Constructor for QgsLimitedRandomColorRampDialog.
-     * @param ramp initial ramp to show in dialog
-     * @param parent parent widget
-     */
     QgsLimitedRandomColorRampDialog( const QgsLimitedRandomColorRamp &ramp, QWidget *parent /TransferThis/ = 0 );
+%Docstring
+ Constructor for QgsLimitedRandomColorRampDialog.
+ \param ramp initial ramp to show in dialog
+ \param parent parent widget
+%End
 
-    /** Returns a color ramp representing the current settings from the dialog.
-     * @see setRamp()
-     */
     QgsLimitedRandomColorRamp ramp() const;
+%Docstring
+ Returns a color ramp representing the current settings from the dialog.
+.. seealso:: setRamp()
+ :rtype: QgsLimitedRandomColorRamp
+%End
 
-    /** Sets the color ramp to show in the dialog.
-     * @param ramp color ramp
-     * @see ramp()
-     */
     void setRamp( const QgsLimitedRandomColorRamp &ramp );
+%Docstring
+ Sets the color ramp to show in the dialog.
+ \param ramp color ramp
+.. seealso:: ramp()
+%End
 
   signals:
 
-    //! Emitted when the dialog settings change
     void changed();
+%Docstring
+Emitted when the dialog settings change
+%End
 
 };
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgslimitedrandomcolorrampdialog.h                            *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

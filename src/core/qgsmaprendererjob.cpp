@@ -31,7 +31,7 @@
 #include "qgspallabeling.h"
 #include "qgsvectorlayerrenderer.h"
 #include "qgsvectorlayer.h"
-#include "qgscsexception.h"
+#include "qgsexception.h"
 #include "qgslabelingengine.h"
 #include "qgsmaplayerlistutils.h"
 #include "qgsvectorlayerlabeling.h"
@@ -82,7 +82,7 @@ bool QgsMapRendererJob::prepareLabelCache() const
     QgsVectorLayer *vl = const_cast< QgsVectorLayer * >( qobject_cast<const QgsVectorLayer *>( ml ) );
     if ( vl && QgsPalLabeling::staticWillUseLayer( vl ) )
       labeledLayers << vl;
-    if ( vl && vl->labeling() && vl->labeling()->requiresAdvancedEffects( vl ) )
+    if ( vl && vl->labeling() && vl->labeling()->requiresAdvancedEffects() )
     {
       canCache = false;
       break;
@@ -151,12 +151,12 @@ bool QgsMapRendererJob::reprojectToLayerExtent( const QgsMapLayer *ml, const Qgs
       else
       {
         // Note: ll = lower left point
-        QgsPoint ll = ct.transform( extent.xMinimum(), extent.yMinimum(),
-                                    QgsCoordinateTransform::ReverseTransform );
+        QgsPointXY ll = ct.transform( extent.xMinimum(), extent.yMinimum(),
+                                      QgsCoordinateTransform::ReverseTransform );
 
         //   and ur = upper right point
-        QgsPoint ur = ct.transform( extent.xMaximum(), extent.yMaximum(),
-                                    QgsCoordinateTransform::ReverseTransform );
+        QgsPointXY ur = ct.transform( extent.xMaximum(), extent.yMaximum(),
+                                      QgsCoordinateTransform::ReverseTransform );
 
         QgsDebugMsg( QString( "in:%1 (ll:%2 ur:%3)" ).arg( extent.toString(), ll.toString(), ur.toString() ) );
 
@@ -280,7 +280,7 @@ LayerRenderJobs QgsMapRendererJob::prepareJobs( QPainter *painter, QgsLabelingEn
     job.opacity = 1.0;
     if ( QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( ml ) )
     {
-      job.opacity = 1.0 - vl->layerTransparency() / 100.0;
+      job.opacity = vl->opacity();
     }
     job.layer = ml;
     job.renderingTime = -1;

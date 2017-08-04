@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Enter class bounds</string>
+   <string>Enter Class Bounds</string>
   </property>
   <property name="modal">
    <bool>true</bool>

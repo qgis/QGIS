@@ -317,7 +317,7 @@ struct QgsWmtsTileMatrix
   QString title, abstract;
   QStringList keywords;
   double scaleDenom;
-  QgsPoint topLeft;  //!< Top-left corner of the tile matrix in map units
+  QgsPointXY topLeft;  //!< Top-left corner of the tile matrix in map units
   int tileWidth;     //!< Width of a tile in pixels
   int tileHeight;    //!< Height of a tile in pixels
   int matrixWidth;   //!< Number of tiles horizontally
@@ -691,7 +691,7 @@ class QgsWmsCapabilities
     void parseKeywords( const QDomNode &e, QStringList &keywords );
     void parseTheme( const QDomElement &e, QgsWmtsTheme &t );
 
-    QString nodeAttribute( const QDomElement &e, const QString &name, const QString &defValue = QString::null );
+    QString nodeAttribute( const QDomElement &e, const QString &name, const QString &defValue = QString() );
 
     /**
      * In case no bounding box is present in WMTS capabilities, try to estimate it from tile matrix sets.

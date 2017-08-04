@@ -27,10 +27,12 @@
  * Often it is used for configuration options which can be enabled or disabled but also have
  * more internal configuration information that should not be lost when disabling and re-enabling.
  *
- * \since QGIS 3.0
  * \note For Python you need to use implementations for specific template classes
+ * \note Not available in Python bindings (although SIP file is present for specific implementations).
+ *
+ * \since QGIS 3.0
  */
-template<class T>
+template<typename T>
 class CORE_EXPORT QgsOptional
 {
   public:

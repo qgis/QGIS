@@ -761,7 +761,7 @@ bool QgsColorSwatchDelegate::editorEvent( QEvent *event, QAbstractItemModel *mod
     {
       QgsCompoundColorWidget *colorWidget = new QgsCompoundColorWidget( panel, color, QgsCompoundColorWidget::LayoutVertical );
       colorWidget->setPanelTitle( tr( "Select color" ) );
-      colorWidget->setAllowAlpha( true );
+      colorWidget->setAllowOpacity( true );
       colorWidget->setProperty( "index", index );
       connect( colorWidget, &QgsCompoundColorWidget::currentColorChanged, this, &QgsColorSwatchDelegate::colorChanged );
       panel->openPanel( colorWidget );

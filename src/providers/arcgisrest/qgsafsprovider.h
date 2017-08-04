@@ -18,8 +18,10 @@
 #ifndef QGSAFSPROVIDER_H
 #define QGSAFSPROVIDER_H
 
+#include <memory>
 #include "qgsvectordataprovider.h"
 #include "qgsdatasourceuri.h"
+#include "qgsafsshareddata.h"
 #include "qgscoordinatereferencesystem.h"
 #include "geometry/qgswkbtypes.h"
 #include "qgsfields.h"
@@ -35,15 +37,13 @@ class QgsAfsProvider : public QgsVectorDataProvider
 
     QgsAfsProvider( const QString &uri );
 
-    bool getFeature( QgsFeatureId id, QgsFeature &f, bool fetchGeometry, const QList<int> &fetchAttributes, const QgsRectangle &filterRect = QgsRectangle() );
-
     /* Inherited from QgsVectorDataProvider */
     QgsAbstractFeatureSource *featureSource() const override;
     QString storageType() const override { return QStringLiteral( "ESRI ArcGIS Feature Server" ); }
     QgsFeatureIterator getFeatures( const QgsFeatureRequest &request = QgsFeatureRequest() ) const override;
-    QgsWkbTypes::Type wkbType() const override { return static_cast<QgsWkbTypes::Type>( mGeometryType ); }
-    long featureCount() const override { return mObjectIds.size(); }
-    QgsFields fields() const override { return mFields; }
+    QgsWkbTypes::Type wkbType() const override;
+    long featureCount() const override;
+    QgsFields fields() const override;
     /* Read only for the moment
     bool addFeatures( QgsFeatureList &flist ) override{ return false; }
     bool deleteFeatures( const QgsFeatureIds &id ) override{ return false; }
@@ -57,30 +57,23 @@ class QgsAfsProvider : public QgsVectorDataProvider
     QgsAttrPalIndexNameHash palAttributeIndexNames() const override { return QgsAttrPalIndexNameHash(); }
 
     /* Inherited from QgsDataProvider */
-    QgsCoordinateReferenceSystem crs() const override { return mSourceCRS; }
+    QgsCoordinateReferenceSystem crs() const override;
     void setDataSourceUri( const QString &uri ) override;
-    QgsRectangle extent() const override { return mExtent; }
+    QgsRectangle extent() const override;
     bool isValid() const override { return mValid; }
     /* Read only for the moment
     void updateExtents() override{}
     */
     QString name() const override { return mLayerName; }
     QString description() const override { return mLayerDescription; }
-    void reloadData() override { mCache.clear(); }
+    void reloadData() override;
 
   private:
     bool mValid;
-    QgsDataSourceUri mDataSource;
-    QgsRectangle mExtent;
-    QgsWkbTypes::Type mGeometryType;
-    QgsFields mFields;
+    std::shared_ptr<QgsAfsSharedData> mSharedData;
     int mObjectIdFieldIdx;
-    QString mObjectIdFieldName;
     QString mLayerName;
     QString mLayerDescription;
-    QList<quint32> mObjectIds;
-    QgsCoordinateReferenceSystem mSourceCRS;
-    QMap<QgsFeatureId, QgsFeature> mCache;
 };
 
 #endif // QGSAFSPROVIDER_H

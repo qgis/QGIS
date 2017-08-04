@@ -182,7 +182,7 @@ Files: src/app/qtmain_android.cpp
 Copyright: 2009-2011, BogDan Vatra <bog_dan_ro@yahoo.com>
 License: BSD-3-Clause
 
-Files: src/astyle/*
+Files: external/astyle/*
 Copyright: Jim Pattee <jimp03@email.com>
            Tal Davidson
 Comment: Artistic Style is maintained and updated by Jim Pattee.
@@ -2343,4 +2343,3 @@ License: Zlib
         misrepresented as being the original software.
  .
      3. This notice may not be removed or altered from any source distribution.
-

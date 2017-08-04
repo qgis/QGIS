@@ -31,7 +31,8 @@ import inspect
 import os
 import sys
 
-from qgis.core import QgsApplication
+from qgis.core import (QgsApplication,
+                       QgsProcessingUtils)
 from qgis.gui import QgsOptionsWidgetFactory
 from qgis.PyQt.QtCore import Qt, QCoreApplication, QDir
 from qgis.PyQt.QtWidgets import QMenu, QAction
@@ -42,8 +43,9 @@ from processing.gui.ProcessingToolbox import ProcessingToolbox
 from processing.gui.HistoryDialog import HistoryDialog
 from processing.gui.ConfigDialog import ConfigOptionsPage
 from processing.gui.ResultsDock import ResultsDock
+from processing.gui.AlgorithmLocatorFilter import AlgorithmLocatorFilter
 from processing.modeler.ModelerDialog import ModelerDialog
-from processing.tools.system import tempFolder
+from processing.tools.system import tempHelpFolder
 from processing.gui.menus import removeMenus, initializeMenus, createMenus
 from processing.core.ProcessingResults import resultsList
 
@@ -71,6 +73,8 @@ class ProcessingPlugin(object):
         self.options_factory = ProcessingOptionsFactory()
         self.options_factory.setTitle(self.tr('Processing'))
         iface.registerOptionsWidgetFactory(self.options_factory)
+        self.locator_filter = AlgorithmLocatorFilter()
+        iface.registerLocatorFilter(self.locator_filter)
         Processing.initialize()
 
     def initGui(self):
@@ -139,7 +143,12 @@ class ProcessingPlugin(object):
         self.menu.deleteLater()
 
         # delete temporary output files
-        folder = tempFolder()
+        folder = QgsProcessingUtils.tempFolder()
+        if QDir(folder).exists():
+            shutil.rmtree(folder, True)
+
+        # also delete temporary help files
+        folder = tempHelpFolder()
         if QDir(folder).exists():
             shutil.rmtree(folder, True)
 
@@ -149,6 +158,7 @@ class ProcessingPlugin(object):
         self.iface.unregisterMainWindowAction(self.resultsAction)
 
         self.iface.unregisterOptionsWidgetFactory(self.options_factory)
+        self.iface.deregisterLocatorFilter(self.locator_filter)
 
         removeMenus()
         Processing.deinitialize()

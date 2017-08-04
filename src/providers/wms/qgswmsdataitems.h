@@ -32,11 +32,15 @@ class QgsWMSConnectionItem : public QgsDataCollectionItem
     QVector<QgsDataItem *> createChildren() override;
     virtual bool equal( const QgsDataItem *other ) override;
 
+#ifdef HAVE_GUI
     virtual QList<QAction *> actions() override;
+#endif
 
   public slots:
+#ifdef HAVE_GUI
     void editConnection();
     void deleteConnection();
+#endif
     virtual void deleteLater() override;
 
   private:
@@ -96,14 +100,16 @@ class QgsWMSRootItem : public QgsDataCollectionItem
 
     QVector<QgsDataItem *> createChildren() override;
 
+#ifdef HAVE_GUI
     virtual QList<QAction *> actions() override;
-
     virtual QWidget *paramWidget() override;
+#endif
 
   public slots:
-    void connectionsChanged();
-
+#ifdef HAVE_GUI
     void newConnection();
+#endif
+
 };
 
 
@@ -128,10 +134,14 @@ class QgsXyzTileRootItem : public QgsDataCollectionItem
 
     QVector<QgsDataItem *> createChildren() override;
 
+#ifdef HAVE_GUI
     virtual QList<QAction *> actions() override;
+#endif
 
   private slots:
+#ifdef HAVE_GUI
     void newConnection();
+#endif
 };
 
 //! Item implementation for XYZ tile layers
@@ -141,11 +151,15 @@ class QgsXyzLayerItem : public QgsLayerItem
   public:
     QgsXyzLayerItem( QgsDataItem *parent, QString name, QString path, const QString &encodedUri );
 
+#ifdef HAVE_GUI
     virtual QList<QAction *> actions() override;
+#endif
 
   public slots:
+#ifdef HAVE_GUI
     void editConnection();
     void deleteConnection();
+#endif
 };
 
 

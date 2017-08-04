@@ -144,6 +144,21 @@ QgsRasterLayer::~QgsRasterLayer()
   // Note: provider and other interfaces are owned and deleted by pipe
 }
 
+QgsRasterLayer *QgsRasterLayer::clone() const
+{
+  QgsRasterLayer *layer = new QgsRasterLayer( source(), originalName(), mProviderKey );
+  QgsMapLayer::clone( layer );
+
+  // do not clone data provider which is the first element in pipe
+  for ( int i = 1; i < mPipe.size(); i++ )
+  {
+    if ( mPipe.at( i ) )
+      layer->pipe()->set( mPipe.at( i )->clone() );
+  }
+
+  return layer;
+}
+
 //////////////////////////////////////////////////////////
 //
 // Static Methods and members
@@ -289,38 +304,84 @@ QgsLegendColorList QgsRasterLayer::legendSymbologyItems() const
 
 QString QgsRasterLayer::htmlMetadata() const
 {
-  QgsRasterDataProvider *provider = const_cast< QgsRasterDataProvider * >( mDataProvider );
-  QString myMetadata;
-  myMetadata += "<p class=\"glossy\">" + tr( "Driver" ) + "</p>\n";
-  myMetadata += QLatin1String( "<p>" );
-  myMetadata += mDataProvider->description();
-  myMetadata += QLatin1String( "</p>\n" );
+  QString myMetadata = QStringLiteral( "<html>\n<body>\n" );
 
-  // Insert provider-specific (e.g. WMS-specific) metadata
-  // crashing
-  myMetadata += mDataProvider->metadata();
+  // Identification section
+  myMetadata += QLatin1String( "<h1>" ) % tr( "Identification" ) % QLatin1String( "</h1>\n<hr>\n<table class=\"list-view\">\n" );
 
-  myMetadata += QLatin1String( "<p class=\"glossy\">" );
-  myMetadata += tr( "No Data Value" );
-  myMetadata += QLatin1String( "</p>\n" );
-  myMetadata += QLatin1String( "<p>" );
-  // TODO: all bands
-  if ( mDataProvider->sourceHasNoDataValue( 1 ) )
-  {
-    myMetadata += QString::number( mDataProvider->sourceNoDataValue( 1 ) );
-  }
+  // ID
+  myMetadata += QLatin1String( "<tr><td class=\"highlight\">" ) % tr( "ID" ) % QLatin1String( "</td><td>" ) % id() % QLatin1String( "</td></tr>\n" );
+
+  // original name
+  myMetadata += QLatin1String( "<tr><td class=\"highlight\">" ) % tr( "Original" ) % QLatin1String( "</td><td>" ) % originalName() % QLatin1String( "</td></tr>\n" );
+
+  // name
+  myMetadata += QLatin1String( "<tr><td class=\"highlight\">" ) % tr( "Name" ) % QLatin1String( "</td><td>" ) % name() % QLatin1String( "</td></tr>\n" );
+
+  // short
+  myMetadata += QLatin1String( "<tr><td class=\"highlight\">" ) % tr( "Short" ) % QLatin1String( "</td><td>" ) % shortName() % QLatin1String( "</td></tr>\n" );
+
+  // title
+  myMetadata += QLatin1String( "<tr><td class=\"highlight\">" ) % tr( "Title" ) % QLatin1String( "</td><td>" ) % title() % QLatin1String( "</td></tr>\n" );
+
+  // abstract
+  myMetadata += QLatin1String( "<tr><td class=\"highlight\">" ) % tr( "Abstract" ) % QLatin1String( "</td><td>" ) % abstract() % QLatin1String( "</td></tr>\n" );
+
+  // keywords
+  myMetadata += QLatin1String( "<tr><td class=\"highlight\">" ) % tr( "Keywords" ) % QLatin1String( "</td><td>" ) % keywordList() % QLatin1String( "</td></tr>\n" );
+
+  // lang, waiting for the proper metadata implementation QEP #91 Work package 2
+  // myMetadata += QLatin1String( "<tr><td class=\"highlight\">" ) % tr( "Language" ) % QLatin1String( "</td><td>en-CA</td></tr>\n" );
+
+  // comment, not existing for rasters for now
+  // myMetadata += QLatin1String( "<tr><td class=\"highlight\">" ) % tr( "Comment" ) % QLatin1String( "</td><td>" ) % dataComment() % QLatin1String( "</td></tr>\n" );
+
+  // date, waiting for the proper metadata implementation QEP #91 Work package 2
+  // myMetadata += QLatin1String( "<tr><td class=\"highlight\">" ) % tr( "Date" ) % QLatin1String( "</td><td>28/03/17</td></tr>\n" );
+
+  // storage type
+  myMetadata += QLatin1String( "<tr><td class=\"highlight\">" ) % tr( "Provider" ) % QLatin1String( "</td><td>" ) % providerType() % QLatin1String( "</td></tr>\n" );
+
+  // data source
+  myMetadata += QLatin1String( "<tr><td class=\"highlight\">" ) % tr( "Source" ) % QLatin1String( "</td><td>" ) % publicSource() % QLatin1String( "</td></tr>\n" );
+
+  // Section spatial
+  myMetadata += QLatin1String( "</table>\n<br><br><h1>" ) % tr( "Spatial" ) % QLatin1String( "</h1>\n<hr>\n<table class=\"list-view\">\n" );
+
+  // EPSG
+  myMetadata += QLatin1String( "<tr><td class=\"highlight\">" ) % tr( "CRS" ) % QLatin1String( "</td><td>" ) % crs().authid() % QLatin1String( " - " );
+  myMetadata += crs().description() % QLatin1String( " - " );
+  if ( crs().isGeographic() )
+    myMetadata += tr( "Geographic" );
   else
-  {
-    myMetadata += '*' + tr( "NoDataValue not set" ) + '*';
-  }
-  myMetadata += QLatin1String( "</p>\n" );
+    myMetadata += tr( "Projected" );
+  myMetadata += QLatin1String( "</td></tr>\n" );
 
-  myMetadata += QLatin1String( "</p>\n" );
-  myMetadata += QLatin1String( "<p class=\"glossy\">" );
-  myMetadata += tr( "Data Type" );
-  myMetadata += QLatin1String( "</p>\n" );
-  myMetadata += QLatin1String( "<p>" );
-  //just use the first band
+  // Extent
+  myMetadata += QLatin1String( "<tr><td class=\"highlight\">" ) % tr( "Extent" ) % QLatin1String( "</td><td>" ) % extent().toString() % QLatin1String( "</td></tr>\n" );
+
+  // unit
+  myMetadata += QLatin1String( "<tr><td class=\"highlight\">" ) % tr( "Unit" ) % QLatin1String( "</td><td>" ) % QgsUnitTypes::toString( crs().mapUnits() ) % QLatin1String( "</td></tr>\n" );
+
+  // Raster Width
+  myMetadata += QLatin1String( "<tr><td class=\"highlight\">" ) % tr( "Width" ) % QLatin1String( "</td><td>" );
+  if ( dataProvider()->capabilities() & QgsRasterDataProvider::Size )
+    myMetadata += QString::number( width() );
+  else
+    myMetadata += tr( "n/a" );
+  myMetadata += QLatin1String( "</td></tr>\n" );
+
+  // Raster height
+  myMetadata += QLatin1String( "<tr><td class=\"highlight\">" ) % tr( "Height" ) % QLatin1String( "</td><td>" );
+  if ( dataProvider()->capabilities() & QgsRasterDataProvider::Size )
+    myMetadata += QString::number( height() );
+  else
+    myMetadata += tr( "n/a" );
+  myMetadata += QLatin1String( "</td></tr>\n" );
+
+  // Data type
+  myMetadata += QLatin1String( "<tr><td class=\"highlight\">" ) % tr( "Data type" ) % QLatin1String( "</td><td>" );
+  // Just use the first band
   switch ( mDataProvider->sourceDataType( 1 ) )
   {
     case Qgis::Byte:
@@ -359,146 +420,70 @@ QString QgsRasterLayer::htmlMetadata() const
     default:
       myMetadata += tr( "Could not determine raster data type." );
   }
-  myMetadata += QLatin1String( "</p>\n" );
+  myMetadata += QLatin1String( "</td></tr>\n" );
 
-  myMetadata += QLatin1String( "<p class=\"glossy\">" );
-  myMetadata += tr( "Pyramid overviews" );
-  myMetadata += QLatin1String( "</p>\n" );
-  myMetadata += QLatin1String( "<p>" );
+  // Bands section
+  myMetadata += QLatin1String( "</table>\n<br><br><h1>" ) % tr( "Bands" ) % QLatin1String( "</h1>\n<hr>\n<table class=\"list-view\">\n" );
 
-  myMetadata += QLatin1String( "<p class=\"glossy\">" );
-  myMetadata += tr( "Layer Spatial Reference System" );
-  myMetadata += QLatin1String( "</p>\n" );
-  myMetadata += QLatin1String( "<p>" );
-  myMetadata += crs().toProj4();
-  myMetadata += QLatin1String( "</p>\n" );
+  // Band count
+  myMetadata += QLatin1String( "<tr><td class=\"highlight\">" ) % tr( "Band count" ) % QLatin1String( "</td><td>" ) % QString::number( bandCount() ) % QLatin1String( "</td></tr>\n" );
 
-  myMetadata += QLatin1String( "<p class=\"glossy\">" );
-  myMetadata += tr( "Layer Extent (layer original source projection)" );
-  myMetadata += QLatin1String( "</p>\n" );
-  myMetadata += QLatin1String( "<p>" );
-  myMetadata += mDataProvider->extent().toString();
-  myMetadata += QLatin1String( "</p>\n" );
+  // Band table
+  myMetadata += "</table>\n<br><table width=\"100%\" class=\"tabular-view\">\n";
+  myMetadata += "<tr><th>" % tr( "Number" ) % "</th><th>" % tr( "Band" ) % "</th><th>" % tr( "No-Data" ) % "</th><th>" % tr( "Min" ) % "</th><th>" % tr( "Max" ) % "</th></tr>\n";
 
-  // output coordinate system
-  // TODO: this is not related to layer, to be removed? [MD]
-#if 0
-  myMetadata += "<tr><td class=\"glossy\">";
-  myMetadata += tr( "Project Spatial Reference System" );
-  myMetadata += "</p>\n";
-  myMetadata += "<p>";
-  myMetadata +=  mCoordinateTransform->destCRS().toProj4();
-  myMetadata += "</p>\n";
-#endif
-
-  //
-  // Add the stats for each band to the output table
-  //
-  int myBandCountInt = bandCount();
-  for ( int myIteratorInt = 1; myIteratorInt <= myBandCountInt; ++myIteratorInt )
+  QgsRasterDataProvider *provider = const_cast< QgsRasterDataProvider * >( mDataProvider );
+  for ( int i = 1; i <= bandCount(); i++ )
   {
-    QgsDebugMsgLevel( "Raster properties : checking if band " + QString::number( myIteratorInt ) + " has stats? ", 4 );
-    //band name
-    myMetadata += QLatin1String( "<p class=\"glossy\">\n" );
-    myMetadata += tr( "Band" );
-    myMetadata += QLatin1String( "</p>\n" );
-    myMetadata += QLatin1String( "<p>" );
-    myMetadata += bandName( myIteratorInt );
-    myMetadata += QLatin1String( "</p>\n" );
-    //band number
-    myMetadata += QLatin1String( "<p>" );
-    myMetadata += tr( "Band No" );
-    myMetadata += QLatin1String( "</p>\n" );
-    myMetadata += QLatin1String( "<p>\n" );
-    myMetadata += QString::number( myIteratorInt );
-    myMetadata += QLatin1String( "</p>\n" );
+    QString rowClass = QString( "" );
+    if ( i % 2 )
+      rowClass = QString( "class=\"odd-row\"" );
+    myMetadata += "<tr " % rowClass % "><td>" % QString::number( i ) % "</td><td>" % bandName( i ) % "</td><td>";
 
-    //check if full stats for this layer have already been collected
-    if ( !provider->hasStatistics( myIteratorInt ) )  //not collected
+    if ( dataProvider()->sourceHasNoDataValue( i ) )
+      myMetadata += QString::number( dataProvider()->sourceNoDataValue( i ) );
+    else
+      myMetadata += tr( "n/a" );
+    myMetadata += "</td>";
+
+    if ( provider->hasStatistics( i ) )
     {
-      QgsDebugMsgLevel( ".....no", 4 );
-
-      myMetadata += QLatin1String( "<p>" );
-      myMetadata += tr( "No Stats" );
-      myMetadata += QLatin1String( "</p>\n" );
-      myMetadata += QLatin1String( "<p>\n" );
-      myMetadata += tr( "No stats collected yet" );
-      myMetadata += QLatin1String( "</p>\n" );
+      QgsRasterBandStats myRasterBandStats = provider->bandStatistics( i );
+      myMetadata += "<td>" % QString::number( myRasterBandStats.minimumValue, 'f', 10 ) % "</td>";
+      myMetadata += "<td>" % QString::number( myRasterBandStats.maximumValue, 'f', 10 ) % "</td>";
     }
-    else                    // collected - show full detail
+    else
     {
-      QgsDebugMsgLevel( ".....yes", 4 );
-
-      QgsRasterBandStats myRasterBandStats = provider->bandStatistics( myIteratorInt );
-      //Min Val
-      myMetadata += QLatin1String( "<p>" );
-      myMetadata += tr( "Min Val" );
-      myMetadata += QLatin1String( "</p>\n" );
-      myMetadata += QLatin1String( "<p>\n" );
-      myMetadata += QString::number( myRasterBandStats.minimumValue, 'f', 10 );
-      myMetadata += QLatin1String( "</p>\n" );
-
-      // Max Val
-      myMetadata += QLatin1String( "<p>" );
-      myMetadata += tr( "Max Val" );
-      myMetadata += QLatin1String( "</p>\n" );
-      myMetadata += QLatin1String( "<p>\n" );
-      myMetadata += QString::number( myRasterBandStats.maximumValue, 'f', 10 );
-      myMetadata += QLatin1String( "</p>\n" );
-
-      // Range
-      myMetadata += QLatin1String( "<p>" );
-      myMetadata += tr( "Range" );
-      myMetadata += QLatin1String( "</p>\n" );
-      myMetadata += QLatin1String( "<p>\n" );
-      myMetadata += QString::number( myRasterBandStats.range, 'f', 10 );
-      myMetadata += QLatin1String( "</p>\n" );
-
-      // Mean
-      myMetadata += QLatin1String( "<p>" );
-      myMetadata += tr( "Mean" );
-      myMetadata += QLatin1String( "</p>\n" );
-      myMetadata += QLatin1String( "<p>\n" );
-      myMetadata += QString::number( myRasterBandStats.mean, 'f', 10 );
-      myMetadata += QLatin1String( "</p>\n" );
-
-      //sum of squares
-      myMetadata += QLatin1String( "<p>" );
-      myMetadata += tr( "Sum of squares" );
-      myMetadata += QLatin1String( "</p>\n" );
-      myMetadata += QLatin1String( "<p>\n" );
-      myMetadata += QString::number( myRasterBandStats.sumOfSquares, 'f', 10 );
-      myMetadata += QLatin1String( "</p>\n" );
-
-      //standard deviation
-      myMetadata += QLatin1String( "<p>" );
-      myMetadata += tr( "Standard Deviation" );
-      myMetadata += QLatin1String( "</p>\n" );
-      myMetadata += QLatin1String( "<p>\n" );
-      myMetadata += QString::number( myRasterBandStats.stdDev, 'f', 10 );
-      myMetadata += QLatin1String( "</p>\n" );
-
-      //sum of all cells
-      myMetadata += QLatin1String( "<p>" );
-      myMetadata += tr( "Sum of all cells" );
-      myMetadata += QLatin1String( "</p>\n" );
-      myMetadata += QLatin1String( "<p>\n" );
-      myMetadata += QString::number( myRasterBandStats.sum, 'f', 10 );
-      myMetadata += QLatin1String( "</p>\n" );
-
-      //number of cells
-      myMetadata += QLatin1String( "<p>" );
-      myMetadata += tr( "Cell Count" );
-      myMetadata += QLatin1String( "</p>\n" );
-      myMetadata += QLatin1String( "<p>\n" );
-      myMetadata += QString::number( myRasterBandStats.elementCount );
-      myMetadata += QLatin1String( "</p>\n" );
+      myMetadata += "<td>" % tr( "n/a" ) % "</td><td>" % tr( "n/a" ) % "</td>";
     }
+
+    myMetadata += "</tr>\n";
   }
 
-  QgsDebugMsgLevel( myMetadata, 4 );
+  //close previous bands table and start references
+  myMetadata += QLatin1String( "</table>\n<br><br><h1>" ) % tr( "References" ) % QLatin1String( "</h1>\n<hr>\n<table class=\"list-view\">\n" );
+
+  // data URL
+  myMetadata += QLatin1String( "<tr><td class=\"highlight\">" ) % tr( "Data URL" ) % QLatin1String( "</td><td>" ) % dataUrl() % QLatin1String( "</td></tr>\n" );
+  myMetadata += QLatin1String( "<tr><td class=\"highlight\">" ) % tr( "Data Format" ) % QLatin1String( "</td><td>" ) % dataUrlFormat() % QLatin1String( "</td></tr>\n" );
+
+  // attribution
+  myMetadata += QLatin1String( "<tr><td class=\"highlight\">" ) % tr( "Attribution" ) % QLatin1String( "</td><td>" ) % attribution() % QLatin1String( "</td></tr>\n" );
+  myMetadata += QLatin1String( "<tr><td class=\"highlight\">" ) % tr( "Attribution URL" ) % QLatin1String( "</td><td>" ) % attributionUrl() % QLatin1String( "</td></tr>\n" );
+
+  // metadata URL
+  myMetadata += QLatin1String( "<tr><td class=\"highlight\">" ) % tr( "Metadata URL" ) % QLatin1String( "</td><td>" ) % metadataUrl() % QLatin1String( "</td></tr>\n" );
+  myMetadata += QLatin1String( "<tr><td class=\"highlight\">" ) % tr( "Metadata Type" ) % QLatin1String( "</td><td>" ) % metadataUrlType() % QLatin1String( "</td></tr>\n" );
+  myMetadata += QLatin1String( "<tr><td class=\"highlight\">" ) % tr( "Metadata Format" ) % QLatin1String( "</td><td>" ) % metadataUrlFormat() % QLatin1String( "</td></tr>\n" );
+
+  // legend URL
+  myMetadata += QLatin1String( "<tr><td class=\"highlight\">" ) % tr( "Legend URL" ) % QLatin1String( "</td><td>" ) % legendUrl() % QLatin1String( "</td></tr>\n" );
+  myMetadata += QLatin1String( "<tr><td class=\"highlight\">" ) % tr( "Legend Format" ) % QLatin1String( "</td><td>" ) % legendUrlFormat() % QLatin1String( "</td></tr>\n" );
+
+  myMetadata += QStringLiteral( "</table>\n</body>\n</html>\n" );
   return myMetadata;
 }
+
 
 /**
  * @param bandNumber the number of the band to use for generating a pixmap of the associated palette
@@ -1282,8 +1267,8 @@ QImage QgsRasterLayer::previewAsImage( QSize size, const QColor &bgColor, QImage
   double myPixelWidth = myExtent.width() / myMapUnitsPerPixel;
   double myPixelHeight = myExtent.height() / myMapUnitsPerPixel;
 
-  myRasterViewPort->mTopLeftPoint = QgsPoint( myX, myY );
-  myRasterViewPort->mBottomRightPoint = QgsPoint( myPixelWidth, myPixelHeight );
+  myRasterViewPort->mTopLeftPoint = QgsPointXY( myX, myY );
+  myRasterViewPort->mBottomRightPoint = QgsPointXY( myPixelWidth, myPixelHeight );
   myRasterViewPort->mWidth = myQImage.width();
   myRasterViewPort->mHeight = myQImage.height();
 
@@ -1315,9 +1300,10 @@ QImage QgsRasterLayer::previewAsImage( QSize size, const QColor &bgColor, QImage
  * @param errorMessage reference to string that will be updated with any error messages
  * @return true in case of success.
  */
-bool QgsRasterLayer::readSymbology( const QDomNode &layer_node, QString &errorMessage )
+bool QgsRasterLayer::readSymbology( const QDomNode &layer_node, QString &errorMessage, const QgsReadWriteContext &context )
 {
   Q_UNUSED( errorMessage );
+  Q_UNUSED( context );
   QDomElement rasterRendererElem;
 
   // pipe element was introduced in the end of 1.9 development when there were
@@ -1404,9 +1390,9 @@ bool QgsRasterLayer::readSymbology( const QDomNode &layer_node, QString &errorMe
   return true;
 }
 
-bool QgsRasterLayer::readStyle( const QDomNode &node, QString &errorMessage )
+bool QgsRasterLayer::readStyle( const QDomNode &node, QString &errorMessage, const QgsReadWriteContext &context )
 {
-  return readSymbology( node, errorMessage );
+  return readSymbology( node, errorMessage, context );
 } //readSymbology
 
 /**
@@ -1415,7 +1401,7 @@ bool QgsRasterLayer::readStyle( const QDomNode &node, QString &errorMessage )
 
   @note Called by QgsMapLayer::readXml().
 */
-bool QgsRasterLayer::readXml( const QDomNode &layer_node )
+bool QgsRasterLayer::readXml( const QDomNode &layer_node, const QgsReadWriteContext &context )
 {
   QgsDebugMsgLevel( "Entered", 4 );
   // Make sure to read the file first so stats etc are initialized properly!
@@ -1484,7 +1470,7 @@ bool QgsRasterLayer::readXml( const QDomNode &layer_node )
   if ( !mValid ) return false;
 
   QString error;
-  bool res = readSymbology( layer_node, error );
+  bool res = readSymbology( layer_node, error, context );
 
   // old wms settings we need to correct
   if ( res && mProviderKey == QLatin1String( "wms" ) && ( !renderer() || renderer()->type() != QLatin1String( "singlebandcolordata" ) ) )
@@ -1556,10 +1542,10 @@ bool QgsRasterLayer::readXml( const QDomNode &layer_node )
  * @param errorMessage reference to string that will be updated with any error messages
  * @return true in case of success.
  */
-bool QgsRasterLayer::writeSymbology( QDomNode &layer_node, QDomDocument &document, QString &errorMessage ) const
+bool QgsRasterLayer::writeSymbology( QDomNode &layer_node, QDomDocument &document, QString &errorMessage, const QgsReadWriteContext &context ) const
 {
   Q_UNUSED( errorMessage );
-  QDomElement layerElem = layer_node.toElement();
+  Q_UNUSED( context );
 
   // Store pipe members (except provider) into pipe element, in future, it will be
   // possible to add custom filters into the pipe
@@ -1583,9 +1569,9 @@ bool QgsRasterLayer::writeSymbology( QDomNode &layer_node, QDomDocument &documen
   return true;
 }
 
-bool QgsRasterLayer::writeStyle( QDomNode &node, QDomDocument &doc, QString &errorMessage ) const
+bool QgsRasterLayer::writeStyle( QDomNode &node, QDomDocument &doc, QString &errorMessage, const QgsReadWriteContext &context ) const
 {
-  return writeSymbology( node, doc, errorMessage );
+  return writeSymbology( node, doc, errorMessage, context );
 
 } // bool QgsRasterLayer::writeSymbology
 
@@ -1594,7 +1580,8 @@ bool QgsRasterLayer::writeStyle( QDomNode &node, QDomDocument &doc, QString &err
  *  @note Called by QgsMapLayer::writeXml().
  */
 bool QgsRasterLayer::writeXml( QDomNode &layer_node,
-                               QDomDocument &document ) const
+                               QDomDocument &document,
+                               const QgsReadWriteContext &context ) const
 {
   // first get the layer element so that we can append the type attribute
 
@@ -1645,7 +1632,7 @@ bool QgsRasterLayer::writeXml( QDomNode &layer_node,
 
   //write out the symbology
   QString errorMsg;
-  return writeSymbology( layer_node, document, errorMsg );
+  return writeSymbology( layer_node, document, errorMsg, context );
 }
 
 int QgsRasterLayer::width() const

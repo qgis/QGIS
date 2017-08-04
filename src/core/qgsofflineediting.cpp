@@ -68,10 +68,10 @@ QgsOfflineEditing::QgsOfflineEditing()
  * returns offline project file path
  *
  * Workflow:
- *  - copy layers to spatialite
- *  - create spatialite db at offlineDataPath
+ *  - copy layers to SpatiaLite
+ *  - create SpatiaLite db at offlineDataPath
  *  - create table for each layer
- *  - add new spatialite layer
+ *  - add new SpatiaLite layer
  *  - copy features
  *  - save as offline project
  *  - mark offline layers
@@ -91,7 +91,7 @@ bool QgsOfflineEditing::convertToOfflineProject( const QString &offlineDataPath,
     int rc = QgsSLConnect::sqlite3_open( dbPath.toUtf8().constData(), &db );
     if ( rc != SQLITE_OK )
     {
-      showWarning( tr( "Could not open the spatialite database" ) );
+      showWarning( tr( "Could not open the SpatiaLite database" ) );
     }
     else
     {
@@ -152,7 +152,7 @@ bool QgsOfflineEditing::convertToOfflineProject( const QString &offlineDataPath,
         }
       }
 
-      // restore join info on new spatialite layer
+      // restore join info on new SpatiaLite layer
       QMap<QString, QgsVectorJoinList >::ConstIterator it;
       for ( it = joinInfoBuffer.constBegin(); it != joinInfoBuffer.constEnd(); ++it )
       {
@@ -526,7 +526,7 @@ QgsVectorLayer *QgsOfflineEditing::copyVectorLayer( QgsVectorLayer *layer, sqlit
   int rc = sqlExec( db, sql );
 
   // add geometry column
-  if ( layer->hasGeometryType() )
+  if ( layer->isSpatial() )
   {
     QString geomType = QLatin1String( "" );
     switch ( layer->wkbType() )
@@ -576,7 +576,7 @@ QgsVectorLayer *QgsOfflineEditing::copyVectorLayer( QgsVectorLayer *layer, sqlit
     // add new layer
     QString connectionString = QStringLiteral( "dbname='%1' table='%2'%3 sql=" )
                                .arg( offlineDbPath,
-                                     tableName, layer->hasGeometryType() ? "(Geometry)" : "" );
+                                     tableName, layer->isSpatial() ? "(Geometry)" : "" );
     QgsVectorLayer *newLayer = new QgsVectorLayer( connectionString,
         layer->name() + " (offline)", QStringLiteral( "spatialite" ) );
     if ( newLayer->isValid() )
@@ -650,7 +650,7 @@ QgsVectorLayer *QgsOfflineEditing::copyVectorLayer( QgsVectorLayer *layer, sqlit
       {
         remoteFeatureIds << f.id();
 
-        // NOTE: Spatialite provider ignores position of geometry column
+        // NOTE: SpatiaLite provider ignores position of geometry column
         // fill gap in QgsAttributeMap if geometry column is not last (WORKAROUND)
         int column = 0;
         QgsAttributes attrs = f.attributes();
@@ -774,7 +774,7 @@ void QgsOfflineEditing::applyFeaturesAdded( QgsVectorLayer *offlineLayer, QgsVec
   int newAttrsCount = remoteLayer->fields().count();
   for ( QgsFeatureList::iterator it = features.begin(); it != features.end(); ++it )
   {
-    // NOTE: Spatialite provider ignores position of geometry column
+    // NOTE: SpatiaLite provider ignores position of geometry column
     // restore gap in QgsAttributeMap if geometry column is not last (WORKAROUND)
     QMap<int, int> attrLookup = attributeLookup( offlineLayer, remoteLayer );
     QgsAttributes newAttrs( newAttrsCount );
@@ -1010,8 +1010,8 @@ sqlite3 *QgsOfflineEditing::openLoggingDb()
     int rc = sqlite3_open( absoluteDbPath.toUtf8().constData(), &db );
     if ( rc != SQLITE_OK )
     {
-      QgsDebugMsg( "Could not open the spatialite logging database" );
-      showWarning( tr( "Could not open the spatialite logging database" ) );
+      QgsDebugMsg( "Could not open the SpatiaLite logging database" );
+      showWarning( tr( "Could not open the SpatiaLite logging database" ) );
       sqlite3_close( db );
       db = nullptr;
     }

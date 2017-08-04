@@ -24,7 +24,7 @@
 #include "qgis_core.h"
 
 class QgsMessageOutput;
-typedef QgsMessageOutput *( *MESSAGE_OUTPUT_CREATOR )();
+typedef QgsMessageOutput *( *MESSAGE_OUTPUT_CREATOR )() SIP_SKIP;
 
 
 /** \ingroup core

@@ -154,7 +154,18 @@ class CORE_EXPORT QgsLegendSettings
     bool useAdvancedEffects() const { return mUseAdvancedEffects; }
     void setUseAdvancedEffects( bool use ) { mUseAdvancedEffects = use; }
 
+    /**
+     * Returns the legend map scale.
+     * The scale value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
+     * \see setMapScale()
+     */
     double mapScale() const { return mMapScale; }
+
+    /**
+     * Sets the legend map \a scale.
+     * The \a scale value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
+     * \see mapScale()
+     */
     void setMapScale( double scale ) { mMapScale = scale; }
 
     int dpi() const { return mDpi; }
@@ -245,7 +256,7 @@ class CORE_EXPORT QgsLegendSettings
     //! Conversion ratio between millimeters and map units - for symbols with size given in map units
     double mMmPerMapUnit;
 
-    //! Whether to use advanced effects like transparency for symbols - may require their rasterization
+    //! Whether to use advanced effects like opacity for symbols - may require their rasterization
     bool mUseAdvancedEffects;
 
     //! Denominator of map's scale

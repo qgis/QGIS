@@ -60,9 +60,6 @@ class QgsField
     virtual ~QgsField();
 
     bool operator==( const QgsField &other ) const;
-%Docstring
- :rtype: bool
-%End
     bool operator!=( const QgsField &other ) const;
 %Docstring
  :rtype: bool
@@ -294,7 +291,7 @@ Formats string for display
     // Raise an exception if the arguments couldn't be parsed.
     sipNoMethod( sipParseErr, sipName_QgsField, sipName_convertCompatible, doc_QgsField_convertCompatible );
 
-    return 0;
+    return nullptr;
 %End
 
     operator QVariant() const;

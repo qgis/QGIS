@@ -359,7 +359,7 @@ void TestQgsLayerTree::testFindLegendNode()
   QVERIFY( !m->findLegendNode( QString( "id" ), QString( "rule" ) ) );
   QVERIFY( !m->findLegendNode( QString( "vl" ), QString( "rule" ) ) );
 
-  QgsLegendSymbolListV2 symbolList = renderer->legendSymbolItemsV2();
+  QgsLegendSymbolList symbolList = renderer->legendSymbolItems();
   Q_FOREACH ( const QgsLegendSymbolItem &symbol, symbolList )
   {
     QgsLayerTreeModelLegendNode *found = m->findLegendNode( vl->id(), symbol.ruleKey() );
@@ -488,7 +488,7 @@ void TestQgsLayerTree::testRendererLegend( QgsFeatureRenderer *renderer )
   m->refreshLayerLegend( n );
 
   //test initial symbol
-  QgsLegendSymbolListV2 symbolList = renderer->legendSymbolItemsV2();
+  QgsLegendSymbolList symbolList = renderer->legendSymbolItems();
   Q_FOREACH ( const QgsLegendSymbolItem &symbol, symbolList )
   {
     QgsSymbolLegendNode *symbolNode = dynamic_cast< QgsSymbolLegendNode * >( m->findLegendNode( vl->id(), symbol.ruleKey() ) );
@@ -503,7 +503,7 @@ void TestQgsLayerTree::testRendererLegend( QgsFeatureRenderer *renderer )
   symbolNode->setSymbol( newSymbol );
   QCOMPARE( symbolNode->symbol()->color(), QColor( 255, 255, 0 ) );
   //test that symbol change was sent to renderer
-  symbolList = renderer->legendSymbolItemsV2();
+  symbolList = renderer->legendSymbolItems();
   QCOMPARE( symbolList.at( 1 ).symbol()->color(), QColor( 255, 255, 0 ) );
 
   //another test - check directly setting symbol at renderer

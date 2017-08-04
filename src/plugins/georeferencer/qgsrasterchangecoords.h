@@ -18,7 +18,7 @@
 
 #include <QVector>
 
-#include "qgspoint.h"
+#include "qgspointxy.h"
 #include "qgsrectangle.h"
 
 class QgsRasterChangeCoords
@@ -27,10 +27,10 @@ class QgsRasterChangeCoords
     QgsRasterChangeCoords();
     void setRaster( const QString &fileRaster );
     bool hasCrs() const { return mHasCrs; }
-    QVector<QgsPoint> getPixelCoords( const QVector<QgsPoint> &mapCoords );
+    QVector<QgsPointXY> getPixelCoords( const QVector<QgsPointXY> &mapCoords );
     QgsRectangle getBoundingBox( const QgsRectangle &rect, bool toPixel );
-    QgsPoint toColumnLine( const QgsPoint &pntMap );
-    QgsPoint toXY( const QgsPoint &pntPixel );
+    QgsPointXY toColumnLine( const QgsPointXY &pntMap );
+    QgsPointXY toXY( const QgsPointXY &pntPixel );
 
   private:
     bool mHasCrs;

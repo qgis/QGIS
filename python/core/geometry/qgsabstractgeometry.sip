@@ -10,9 +10,9 @@
 
 
 
-typedef QList< QgsPointV2 > QgsPointSequence;
-typedef QList< QList< QgsPointV2 > > QgsRingSequence;
-typedef QList< QList< QList< QgsPointV2 > > > QgsCoordinateSequence;
+typedef QList< QgsPoint > QgsPointSequence;
+typedef QList< QList< QgsPoint > > QgsRingSequence;
+typedef QList< QList< QList< QgsPoint > > > QgsCoordinateSequence;
 
 class QgsAbstractGeometry
 {
@@ -26,8 +26,8 @@ class QgsAbstractGeometry
 %End
 
 %ConvertToSubClassCode
-    if ( dynamic_cast<QgsPointV2 *>( sipCpp ) != NULL )
-      sipType = sipType_QgsPointV2;
+    if ( dynamic_cast<QgsPoint *>( sipCpp ) != NULL )
+      sipType = sipType_QgsPoint;
     else if ( dynamic_cast<QgsLineString *>( sipCpp ) != NULL )
       sipType = sipType_QgsLineString;
     else if ( dynamic_cast<QgsCircularString *>( sipCpp ) != NULL )
@@ -59,7 +59,9 @@ class QgsAbstractGeometry
 
     enum SegmentationToleranceType
     {
+
       MaximumAngle,
+
       MaximumDifference
     };
 
@@ -242,7 +244,7 @@ class QgsAbstractGeometry
  \param p destination QPainter
 %End
 
-    virtual bool nextVertex( QgsVertexId &id, QgsPointV2 &vertex /Out/ ) const = 0;
+    virtual bool nextVertex( QgsVertexId &id, QgsPoint &vertex /Out/ ) const = 0;
 %Docstring
  Returns next vertex id and coordinates
  \param id initial value should be the starting vertex id. The next vertex id will be stored
@@ -265,13 +267,13 @@ class QgsAbstractGeometry
  :rtype: int
 %End
 
-    virtual QgsPointV2 vertexAt( QgsVertexId id ) const = 0;
+    virtual QgsPoint vertexAt( QgsVertexId id ) const = 0;
 %Docstring
  Returns the point corresponding to a specified vertex id
- :rtype: QgsPointV2
+ :rtype: QgsPoint
 %End
 
-    virtual double closestSegment( const QgsPointV2 &pt, QgsPointV2 &segmentPt /Out/,
+    virtual double closestSegment( const QgsPoint &pt, QgsPoint &segmentPt /Out/,
                                    QgsVertexId &vertexAfter /Out/,
                                    bool *leftOf /Out/, double epsilon ) const = 0;
 %Docstring
@@ -287,7 +289,7 @@ class QgsAbstractGeometry
 %End
 
 
-    virtual bool insertVertex( QgsVertexId position, const QgsPointV2 &vertex ) = 0;
+    virtual bool insertVertex( QgsVertexId position, const QgsPoint &vertex ) = 0;
 %Docstring
  Inserts a vertex into the geometry
  \param position vertex id for position of inserted vertex
@@ -298,7 +300,7 @@ class QgsAbstractGeometry
  :rtype: bool
 %End
 
-    virtual bool moveVertex( QgsVertexId position, const QgsPointV2 &newPos ) = 0;
+    virtual bool moveVertex( QgsVertexId position, const QgsPoint &newPos ) = 0;
 %Docstring
  Moves a vertex within the geometry
  \param position vertex id for vertex to move
@@ -343,10 +345,10 @@ class QgsAbstractGeometry
  :rtype: float
 %End
 
-    virtual QgsPointV2 centroid() const;
+    virtual QgsPoint centroid() const;
 %Docstring
 Returns the centroid of the geometry
- :rtype: QgsPointV2
+ :rtype: QgsPoint
 %End
 
     virtual bool isEmpty() const;
@@ -498,9 +500,6 @@ struct QgsVertexId
 %End
 
   bool operator==( QgsVertexId other ) const;
-%Docstring
- :rtype: bool
-%End
   bool operator!=( QgsVertexId other ) const;
 %Docstring
  :rtype: bool

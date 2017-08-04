@@ -1,7 +1,24 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgsmapcanvassnappingutils.h                                  *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
 class QgsMapCanvasSnappingUtils : QgsSnappingUtils
 {
+%Docstring
+ Snapping utils instance that is connected to a canvas and updates the configuration
+  (map settings + current layer) whenever that is changed in the canvas.
+.. versionadded:: 2.8
+%End
+
 %TypeHeaderCode
-#include <qgsmapcanvassnappingutils.h>
+#include "qgsmapcanvassnappingutils.h"
 %End
   public:
     QgsMapCanvasSnappingUtils( QgsMapCanvas *canvas, QObject *parent = 0 );
@@ -9,4 +26,14 @@ class QgsMapCanvasSnappingUtils : QgsSnappingUtils
   protected:
     virtual void prepareIndexStarting( int count );
     virtual void prepareIndexProgress( int index );
+
 };
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgsmapcanvassnappingutils.h                                  *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

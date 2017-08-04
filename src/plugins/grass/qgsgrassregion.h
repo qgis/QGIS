@@ -21,7 +21,7 @@
 #include "qgscoordinatetransform.h"
 #include "qgsmaptool.h"
 #include "qgsrubberband.h"
-#include "qgspoint.h"
+#include "qgspointxy.h"
 
 class QgsGrassPlugin;
 class QgsGrassRegionEdit;
@@ -61,10 +61,10 @@ class QgsGrassRegion: public QWidget, private Ui::QgsGrassRegionBase
     void reloadRegion();
 
     //! Mouse event receiver
-    //void mouseEventReceiverMove ( QgsPoint & );
+    //void mouseEventReceiverMove ( QgsPointXY & );
 
     //! Mouse event receiver
-    //void mouseEventReceiverClick ( QgsPoint & );
+    //void mouseEventReceiverClick ( QgsPointXY & );
 
     //! Calculate region, called if any value is changed
     void adjust( void );
@@ -154,12 +154,12 @@ class QgsGrassRegionEdit : public QgsMapTool
     QgsRectangle getRegion();
 
     //! refresh the rectangle displayed in canvas
-    void setRegion( const QgsPoint &, const QgsPoint & );
+    void setRegion( const QgsPointXY &, const QgsPointXY & );
     void setSrcRegion( const QgsRectangle &rect );
 
     static void drawRegion( QgsMapCanvas *canvas, QgsRubberBand *rubberBand, const QgsRectangle &rect, const QgsCoordinateTransform &coordinateTransform = QgsCoordinateTransform(), bool isPolygon = false );
     void calcSrcRegion();
-    static void transform( QgsMapCanvas *canvas, QVector<QgsPoint> &points, const QgsCoordinateTransform &coordinateTransform, QgsCoordinateTransform::TransformDirection direction = QgsCoordinateTransform::ForwardTransform );
+    static void transform( QgsMapCanvas *canvas, QVector<QgsPointXY> &points, const QgsCoordinateTransform &coordinateTransform, QgsCoordinateTransform::TransformDirection direction = QgsCoordinateTransform::ForwardTransform );
 
   signals:
     void captureStarted();
@@ -177,9 +177,9 @@ class QgsGrassRegionEdit : public QgsMapTool
     bool mDraw;
 
     //! First rectangle point
-    QgsPoint mStartPoint;
+    QgsPointXY mStartPoint;
     //! Last rectangle point
-    QgsPoint mEndPoint;
+    QgsPointXY mEndPoint;
 
     //! Region rectangle in source CRS
     QgsRectangle mSrcRectangle;

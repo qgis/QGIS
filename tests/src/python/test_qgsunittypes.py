@@ -181,6 +181,7 @@ class TestQgsUnitTypes(unittest.TestCase):
     def testEncodeDecodeRenderUnits(self):
         """Test encoding and decoding render units"""
         units = [QgsUnitTypes.RenderMillimeters,
+                 QgsUnitTypes.RenderMetersInMapUnits,
                  QgsUnitTypes.RenderMapUnits,
                  QgsUnitTypes.RenderPixels,
                  QgsUnitTypes.RenderPercentage,
@@ -204,6 +205,8 @@ class TestQgsUnitTypes(unittest.TestCase):
         self.assertEqual(res, QgsUnitTypes.RenderPixels)
 
         # check some aliases - used in data defined labeling
+        res, ok = QgsUnitTypes.decodeRenderUnit('Meters')
+        assert ok
         res, ok = QgsUnitTypes.decodeRenderUnit('MapUnits')
         assert ok
         self.assertEqual(res, QgsUnitTypes.RenderMapUnits)
@@ -213,6 +216,18 @@ class TestQgsUnitTypes(unittest.TestCase):
         res, ok = QgsUnitTypes.decodeRenderUnit('Points')
         assert ok
         self.assertEqual(res, QgsUnitTypes.RenderPoints)
+
+    def testRenderUnitsString(self):
+        """Test converting render units to strings"""
+        units = [QgsUnitTypes.RenderMillimeters,
+                 QgsUnitTypes.RenderMapUnits,
+                 QgsUnitTypes.RenderPixels,
+                 QgsUnitTypes.RenderPercentage,
+                 QgsUnitTypes.RenderPoints,
+                 QgsUnitTypes.RenderInches]
+
+        for u in units:
+            self.assertTrue(QgsUnitTypes.toString(u))
 
     def testFromUnitToUnitFactor(self):
         """Test calculation of conversion factor between units"""
@@ -617,6 +632,51 @@ class TestQgsUnitTypes(unittest.TestCase):
         self.assertEqual(QgsUnitTypes.formatAngle(1.99999999, 2, QgsUnitTypes.AngleSecondsOfArc), '2.00″')
         self.assertEqual(QgsUnitTypes.formatAngle(1, 2, QgsUnitTypes.AngleTurn), '1.00 tr')
         self.assertEqual(QgsUnitTypes.formatAngle(1, 2, QgsUnitTypes.AngleUnknownUnit), '1.00')
+
+    def testEncodeDecodeLayoutUnits(self):
+        """Test encoding and decoding layout units"""
+        units = [QgsUnitTypes.LayoutMillimeters,
+                 QgsUnitTypes.LayoutCentimeters,
+                 QgsUnitTypes.LayoutMeters,
+                 QgsUnitTypes.LayoutInches,
+                 QgsUnitTypes.LayoutFeet,
+                 QgsUnitTypes.LayoutPoints,
+                 QgsUnitTypes.LayoutPicas,
+                 QgsUnitTypes.LayoutPixels]
+
+        for u in units:
+            res, ok = QgsUnitTypes.decodeLayoutUnit(QgsUnitTypes.encodeUnit(u))
+            assert ok
+            self.assertEqual(res, u)
+
+        # Test decoding bad units
+        res, ok = QgsUnitTypes.decodeLayoutUnit('bad')
+        self.assertFalse(ok)
+        # default units should be MM
+        self.assertEqual(res, QgsUnitTypes.LayoutMillimeters)
+
+        # Test that string is cleaned before decoding
+        res, ok = QgsUnitTypes.decodeLayoutUnit(' px  ')
+        assert ok
+        self.assertEqual(res, QgsUnitTypes.LayoutPixels)
+
+    def testAbbreviateLayoutUnits(self):
+        """Test abbreviating layout units"""
+        units = [QgsUnitTypes.LayoutMillimeters,
+                 QgsUnitTypes.LayoutCentimeters,
+                 QgsUnitTypes.LayoutMeters,
+                 QgsUnitTypes.LayoutInches,
+                 QgsUnitTypes.LayoutFeet,
+                 QgsUnitTypes.LayoutPoints,
+                 QgsUnitTypes.LayoutPicas,
+                 QgsUnitTypes.LayoutPixels]
+
+        used = set()
+        for u in units:
+            self.assertTrue(QgsUnitTypes.toString(u))
+            self.assertTrue(QgsUnitTypes.toAbbreviatedString(u))
+            self.assertFalse(QgsUnitTypes.toAbbreviatedString(u) in used)
+            used.add(QgsUnitTypes.toAbbreviatedString(u))
 
 
 if __name__ == "__main__":

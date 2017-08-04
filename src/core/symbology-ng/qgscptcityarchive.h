@@ -90,6 +90,11 @@ class CORE_EXPORT QgsCptCityArchive
     // mapping of copyinginfo, key is fileName
     static QMap< QString, QMap< QString, QString > > sCopyingInfoMap;
 
+  private:
+#ifdef SIP_RUN
+    QgsCptCityArchive( const QgsCptCityArchive &rh );
+#endif
+
 };
 
 /** Base class for all items in the model
@@ -141,7 +146,7 @@ class CORE_EXPORT QgsCptCityDataItem : public QObject
 
     virtual bool equal( const QgsCptCityDataItem *other );
 
-    virtual QWidget *paramWidget() { return nullptr; }
+    virtual QWidget *paramWidget() SIP_FACTORY { return nullptr; }
 
     // list of actions provided by this item - usually used for popup menu on right-click
     virtual QList<QAction *> actions() { return QList<QAction *>(); }
@@ -245,7 +250,7 @@ class CORE_EXPORT QgsCptCityCollectionItem : public QgsCptCityDataItem
     ~QgsCptCityCollectionItem();
 
     void setPopulated() { mPopulated = true; }
-    void addChild( QgsCptCityDataItem *item ) { mChildren.append( item ); }
+    void addChild( QgsCptCityDataItem *item SIP_TRANSFER ) { mChildren.append( item ); }
     QVector<QgsCptCityDataItem *> childrenRamps( bool recursive );
 
   protected:
@@ -327,7 +332,7 @@ class CORE_EXPORT QgsCptCityBrowserModel : public QAbstractItemModel
       List = 2 // not used anymore
     };
 
-    QgsCptCityBrowserModel( QObject *parent = nullptr,
+    QgsCptCityBrowserModel( QObject *parent SIP_TRANSFERTHIS = nullptr,
                             QgsCptCityArchive *archive = QgsCptCityArchive::defaultArchive(),
                             ViewType Type = Authors );
     ~QgsCptCityBrowserModel();

@@ -101,6 +101,27 @@ class CORE_EXPORT QgsUnitTypes
       RenderPoints, //! points (e.g., for font sizes)
       RenderInches, //! Inches
       RenderUnknownUnit, //!< Mixed or unknown units
+      RenderMetersInMapUnits, //!< Meters value as Map units
+    };
+
+    //! Layout measurement units
+    enum LayoutUnit
+    {
+      LayoutMillimeters = 0, //!< Millimeters
+      LayoutCentimeters, //!< Centimeters
+      LayoutMeters, //!< Meters
+      LayoutInches, //!< Inches
+      LayoutFeet, //!< Feet
+      LayoutPoints, //!< Typographic points
+      LayoutPicas, //!< Typographic picas
+      LayoutPixels //!< Pixels
+    };
+
+    //! Types of layout units
+    enum LayoutUnitType
+    {
+      LayoutPaperUnits = 0, //!< Unit is a paper based measurement unit
+      LayoutScreenUnits //!< Unit is a screen based measurement unit
     };
 
     /**
@@ -142,13 +163,13 @@ class CORE_EXPORT QgsUnitTypes
     };
 
     //! List of render units
-    typedef QList<RenderUnit> RenderUnitList;
+    typedef QList<QgsUnitTypes::RenderUnit> RenderUnitList;
 
     // DISTANCE UNITS
 
     /** Returns the type for a distance unit.
      */
-    Q_INVOKABLE static DistanceUnitType unitType( DistanceUnit unit );
+    Q_INVOKABLE static DistanceUnitType unitType( QgsUnitTypes::DistanceUnit unit );
 
     /** Encodes a distance unit to a string.
      * \param unit unit to encode
@@ -295,7 +316,7 @@ class CORE_EXPORT QgsUnitTypes
      *
      * \since QGIS 3.0
      */
-    Q_INVOKABLE static DistanceValue scaledDistance( double distance, QgsUnitTypes::DistanceUnit unit, int decimals, bool keepBaseUnit = false );
+    Q_INVOKABLE static QgsUnitTypes::DistanceValue scaledDistance( double distance, QgsUnitTypes::DistanceUnit unit, int decimals, bool keepBaseUnit = false );
 
     /**
      * Will convert an \a area with a given \a unit to an area value which is nice to display.
@@ -306,7 +327,7 @@ class CORE_EXPORT QgsUnitTypes
      *
      * \since QGIS 3.0
      */
-    Q_INVOKABLE static AreaValue scaledArea( double area, QgsUnitTypes::AreaUnit unit, int decimals, bool keepBaseUnit = false );
+    Q_INVOKABLE static QgsUnitTypes::AreaValue scaledArea( double area, QgsUnitTypes::AreaUnit unit, int decimals, bool keepBaseUnit = false );
 
     /** Returns an distance formatted as a friendly string.
      * \param distance distance to format
@@ -348,6 +369,54 @@ class CORE_EXPORT QgsUnitTypes
      * \see encodeUnit()
      */
     Q_INVOKABLE static RenderUnit decodeRenderUnit( const QString &string, bool *ok SIP_OUT = 0 );
+
+    /**
+     * Returns a translated string representing a render \a unit.
+     * \since QGIS 3.0
+     */
+    Q_INVOKABLE static QString toString( RenderUnit unit );
+
+
+    // LAYOUT UNITS
+
+    /**
+     * Encodes a layout unit to a string.
+     * \param unit unit to encode
+     * \returns encoded string
+     * \see decodeLayoutUnit()
+     * \since QGIS 3.0
+     */
+    Q_INVOKABLE static QString encodeUnit( LayoutUnit unit );
+
+    /** Decodes a layout unit from a string.
+     * \param string string to decode
+     * \param ok optional boolean, will be set to true if string was converted successfully
+     * \returns decoded units
+     * \see encodeUnit()
+     * \since QGIS 3.0
+     */
+    Q_INVOKABLE static LayoutUnit decodeLayoutUnit( const QString &string, bool *ok SIP_OUT = 0 );
+
+    /**
+     * Returns the type for a unit of measurement.
+     *
+     * \since QGIS 3.0
+    */
+    Q_INVOKABLE static LayoutUnitType unitType( const LayoutUnit units );
+
+    /**
+     * Returns a translated abbreviation representing a layout \a unit (e.g. "mm").
+     *
+     * \since QGIS 3.0
+     */
+    Q_INVOKABLE static QString toAbbreviatedString( LayoutUnit unit );
+
+    /**
+     * Returns a translated string representing a layout \a unit.
+     *
+     * \since QGIS 3.0
+     */
+    Q_INVOKABLE static QString toString( LayoutUnit unit );
 
 };
 

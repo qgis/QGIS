@@ -48,7 +48,7 @@ class CORE_EXPORT QgsTransformEffect : public QgsPaintEffect
     virtual QString type() const override { return QStringLiteral( "transform" ); }
     virtual QgsStringMap properties() const override;
     virtual void readProperties( const QgsStringMap &props ) override;
-    virtual QgsTransformEffect *clone() const override;
+    virtual QgsTransformEffect *clone() const override SIP_FACTORY;
 
     /** Sets the transform x translation.
      * \param translateX distance to translate along the x axis
@@ -149,15 +149,15 @@ class CORE_EXPORT QgsTransformEffect : public QgsPaintEffect
      */
     double scaleY() const { return mScaleY; }
 
-    /** Sets the transform rotation.
-     * \param rotation degrees to rotate, clockwise
-     * \see rotation
+    /**
+     * Sets the transform \a rotation, in degrees clockwise.
+     * \see rotation()
      */
     void setRotation( const double rotation ) { mRotation = rotation; }
 
-    /** Returns the transform rotation.
-     * \returns rotation in degrees clockwise
-     * \see setRotation
+    /**
+     * Returns the transform rotation, in degrees clockwise.
+     * \see setRotation()
      */
     double rotation() const { return mRotation; }
 

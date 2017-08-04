@@ -48,7 +48,7 @@ defaultMenuEntries.update({'qgis:convexhull': geoprocessingToolsMenu,
                            'qgis:intersection': geoprocessingToolsMenu,
                            'qgis:union': geoprocessingToolsMenu,
                            'qgis:symmetricaldifference': geoprocessingToolsMenu,
-                           'qgis:clip': geoprocessingToolsMenu,
+                           'native:clip': geoprocessingToolsMenu,
                            'qgis:difference': geoprocessingToolsMenu,
                            'qgis:dissolve': geoprocessingToolsMenu,
                            'qgis:eliminateselectedpolygons': geoprocessingToolsMenu})
@@ -193,8 +193,8 @@ def removeAlgorithmEntry(alg, menuName, submenuName, actionText=None, delButton=
 
 
 def _executeAlgorithm(alg):
-    message = alg.checkBeforeOpeningParametersDialog()
-    if message:
+    ok, message = alg.canExecute()
+    if not ok:
         dlg = MessageDialog()
         dlg.setTitle(Processing.tr('Missing dependency'))
         dlg.setMessage(
@@ -203,21 +203,17 @@ def _executeAlgorithm(alg):
         dlg.exec_()
         return
 
-    # hack - remove when getCopy is removed
-    provider = alg.provider()
-    alg = alg.getCopy()
-    #hack pt 2
-    alg.setProvider(provider)
-
-    context = dataobjects.createContext()
-    if (alg.getVisibleParametersCount() + alg.getVisibleOutputsCount()) > 0:
-        dlg = alg.getCustomParametersDialog()
+    if (alg.countVisibleParameters()) > 0:
+        dlg = alg.createCustomParametersWidget(None)
         if not dlg:
             dlg = AlgorithmDialog(alg)
         canvas = iface.mapCanvas()
         prevMapTool = canvas.mapTool()
         dlg.show()
         dlg.exec_()
+        # have to manually delete the dialog - otherwise it's owned by the
+        # iface mainWindow and never deleted
+        del dlg
         if canvas.mapTool() != prevMapTool:
             try:
                 canvas.mapTool().reset()
@@ -226,7 +222,9 @@ def _executeAlgorithm(alg):
             canvas.setMapTool(prevMapTool)
     else:
         feedback = MessageBarProgress()
-        execute(alg, context, feedback)
+        context = dataobjects.createContext(feedback)
+        parameters = {}
+        ret, results = execute(alg, parameters, context, feedback)
         handleAlgorithmResults(alg, context, feedback)
         feedback.close()
 

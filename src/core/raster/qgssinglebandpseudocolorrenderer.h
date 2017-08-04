@@ -37,18 +37,18 @@ class CORE_EXPORT QgsSingleBandPseudoColorRenderer: public QgsRasterRenderer
   public:
 
     //! Note: takes ownership of QgsRasterShader
-    QgsSingleBandPseudoColorRenderer( QgsRasterInterface *input, int band = -1, QgsRasterShader *shader = nullptr );
+    QgsSingleBandPseudoColorRenderer( QgsRasterInterface *input, int band = -1, QgsRasterShader *shader SIP_TRANSFER = nullptr );
 
     //! QgsSingleBandPseudoColorRenderer cannot be copied. Use clone() instead.
     QgsSingleBandPseudoColorRenderer( const QgsSingleBandPseudoColorRenderer & ) = delete;
     //! QgsSingleBandPseudoColorRenderer cannot be copied. Use clone() instead.
     const QgsSingleBandPseudoColorRenderer &operator=( const QgsSingleBandPseudoColorRenderer & ) = delete;
 
-    QgsSingleBandPseudoColorRenderer *clone() const override;
+    QgsSingleBandPseudoColorRenderer *clone() const override SIP_FACTORY;
 
-    static QgsRasterRenderer *create( const QDomElement &elem, QgsRasterInterface *input );
+    static QgsRasterRenderer *create( const QDomElement &elem, QgsRasterInterface *input ) SIP_FACTORY;
 
-    QgsRasterBlock *block( int bandNo, const QgsRectangle &extent, int width, int height, QgsRasterBlockFeedback *feedback = nullptr ) override;
+    QgsRasterBlock *block( int bandNo, const QgsRectangle &extent, int width, int height, QgsRasterBlockFeedback *feedback = nullptr ) override SIP_FACTORY;
 
     //! Takes ownership of the shader
     void setShader( QgsRasterShader *shader SIP_TRANSFER );
@@ -57,7 +57,7 @@ class CORE_EXPORT QgsSingleBandPseudoColorRenderer: public QgsRasterRenderer
     QgsRasterShader *shader() { return mShader.get(); }
 
     //! \note available in Python as constShader
-    const QgsRasterShader *shader() const { return mShader.get(); }
+    const QgsRasterShader *shader() const SIP_PYNAME( constShader ) { return mShader.get(); }
 
     /** Creates a color ramp shader
      * \param colorRamp vector color ramp
@@ -67,11 +67,16 @@ class CORE_EXPORT QgsSingleBandPseudoColorRenderer: public QgsRasterRenderer
      * \param clip clip out of range values
      * \param extent extent used in classification (only used in quantile mode)
      */
-    void createShader( QgsColorRamp *colorRamp = nullptr, QgsColorRampShader::Type colorRampType  = QgsColorRampShader::Interpolated, QgsColorRampShader::ClassificationMode classificationMode = QgsColorRampShader::Continuous, int classes = 0, bool clip = false, const QgsRectangle &extent = QgsRectangle() );
+    void createShader( QgsColorRamp *colorRamp = nullptr,
+                       QgsColorRampShader::Type colorRampType  = QgsColorRampShader::Interpolated,
+                       QgsColorRampShader::ClassificationMode classificationMode = QgsColorRampShader::Continuous,
+                       int classes = 0,
+                       bool clip = false,
+                       const QgsRectangle &extent = QgsRectangle() );
 
     void writeXml( QDomDocument &doc, QDomElement &parentElem ) const override;
 
-    void legendSymbologyItems( QList< QPair< QString, QColor > > &symbolItems ) const override;
+    void legendSymbologyItems( QList< QPair< QString, QColor > > &symbolItems SIP_OUT ) const override;
 
     QList<int> usesBands() const override;
 
@@ -92,6 +97,10 @@ class CORE_EXPORT QgsSingleBandPseudoColorRenderer: public QgsRasterRenderer
     void setClassificationMax( double max );
 
   private:
+#ifdef SIP_RUN
+    QgsSingleBandPseudoColorRenderer( const QgsSingleBandPseudoColorRenderer & );
+    const QgsSingleBandPseudoColorRenderer &operator=( const QgsSingleBandPseudoColorRenderer & );
+#endif
 
     std::unique_ptr< QgsRasterShader > mShader;
     int mBand;

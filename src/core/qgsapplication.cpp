@@ -18,6 +18,7 @@
 #include "qgsdataitemproviderregistry.h"
 #include "qgsexception.h"
 #include "qgsgeometry.h"
+#include "qgslayoutitemregistry.h"
 #include "qgslogger.h"
 #include "qgsproject.h"
 #include "qgsnetworkaccessmanager.h"
@@ -37,9 +38,15 @@
 #include "qgsmessagelog.h"
 #include "qgsannotationregistry.h"
 #include "qgssettings.h"
+#include "qgsunittypes.h"
+#include "qgsuserprofile.h"
+#include "qgsuserprofilemanager.h"
 
 #include "gps/qgsgpsconnectionregistry.h"
 #include "processing/qgsprocessingregistry.h"
+#include "processing/qgsnativealgorithms.h"
+
+#include "layout/qgspagesizeregistry.h"
 
 #include <QDir>
 #include <QFile>
@@ -104,31 +111,42 @@ const char *QgsApplication::QGIS_APPLICATION_NAME = "QGIS3";
 
 QgsApplication::ApplicationMembers *QgsApplication::sApplicationMembers = nullptr;
 
-QgsApplication::QgsApplication( int &argc, char **argv, bool GUIenabled, const QString &customConfigPath, const QString &platformName )
+QgsApplication::QgsApplication( int &argc, char **argv, bool GUIenabled, const QString &profileFolder, const QString &platformName )
   : QApplication( argc, argv, GUIenabled )
 {
   sPlatformName = platformName;
 
   mApplicationMembers = new ApplicationMembers();
 
-  init( customConfigPath ); // init can also be called directly by e.g. unit tests that don't inherit QApplication.
+  init( profileFolder ); // init can also be called directly by e.g. unit tests that don't inherit QApplication.
 }
 
-void QgsApplication::init( QString customConfigPath )
+void QgsApplication::init( QString profileFolder )
 {
-  if ( customConfigPath.isEmpty() )
+  if ( profileFolder.isEmpty() )
   {
     if ( getenv( "QGIS_CUSTOM_CONFIG_PATH" ) )
     {
-      customConfigPath = getenv( "QGIS_CUSTOM_CONFIG_PATH" );
+      QString envProfileFolder = getenv( "QGIS_CUSTOM_CONFIG_PATH" );
+      profileFolder = envProfileFolder + QDir::separator() + "profiles";
     }
     else
     {
-      customConfigPath = QStringLiteral( "%1/.qgis3/" ).arg( QDir::homePath() );
+      profileFolder = QStandardPaths::standardLocations( QStandardPaths::AppDataLocation ).value( 0 );
     }
+    // This will normally get here for custom scripts that use QgsApplication.
+    // This doesn't get this hit for QGIS Desktop because we setup the profile via main
+    QString rootProfileFolder = QgsUserProfileManager::resolveProfilesFolder( profileFolder );
+    QgsUserProfileManager manager( rootProfileFolder );
+    QgsUserProfile *profile = manager.getProfile();
+    profileFolder = profile->folder();
+    delete profile;
   }
 
   qRegisterMetaType<QgsGeometry::Error>( "QgsGeometry::Error" );
+  qRegisterMetaType<QgsProcessingFeatureSourceDefinition>( "QgsProcessingFeatureSourceDefinition" );
+  qRegisterMetaType<QgsProcessingOutputLayerDefinition>( "QgsProcessingOutputLayerDefinition" );
+  qRegisterMetaType<QgsUnitTypes::LayoutUnit>( "QgsUnitTypes::LayoutUnit" );
 
   QString prefixPath( getenv( "QGIS_PREFIX_PATH" ) ? getenv( "QGIS_PREFIX_PATH" ) : applicationDirPath() );
   // QgsDebugMsg( QString( "prefixPath(): %1" ).arg( prefixPath ) );
@@ -199,11 +217,7 @@ void QgsApplication::init( QString customConfigPath )
     }
   }
 
-  if ( !customConfigPath.isEmpty() )
-  {
-    ABISYM( mConfigPath ) = customConfigPath + '/'; // make sure trailing slash is included
-  }
-
+  ABISYM( mConfigPath ) = profileFolder + '/'; // make sure trailing slash is included
   ABISYM( mDefaultSvgPaths ) << qgisSettingsDirPath() + QStringLiteral( "svg/" );
 
   ABISYM( mAuthDbDirPath ) = qgisSettingsDirPath();
@@ -1308,6 +1322,7 @@ void QgsApplication::setCustomVariable( const QString &name, const QVariant &val
   emit instance()->customVariablesChanged();
 }
 
+
 QString QgsApplication::nullRepresentation()
 {
   ApplicationMembers *appMembers = members();
@@ -1529,6 +1544,11 @@ QgsSymbolLayerRegistry *QgsApplication::symbolLayerRegistry()
   return members()->mSymbolLayerRegistry;
 }
 
+QgsLayoutItemRegistry *QgsApplication::layoutItemRegistry()
+{
+  return members()->mLayoutItemRegistry;
+}
+
 QgsGPSConnectionRegistry *QgsApplication::gpsConnectionRegistry()
 {
   return members()->mGpsConnectionRegistry;
@@ -1547,6 +1567,11 @@ QgsMessageLog *QgsApplication::messageLog()
 QgsProcessingRegistry *QgsApplication::processingRegistry()
 {
   return members()->mProcessingRegistry;
+}
+
+QgsPageSizeRegistry *QgsApplication::pageSizeRegistry()
+{
+  return members()->mPageSizeRegistry;
 }
 
 QgsAnnotationRegistry *QgsApplication::annotationRegistry()
@@ -1578,6 +1603,10 @@ QgsApplication::ApplicationMembers::ApplicationMembers()
   mGpsConnectionRegistry = new QgsGPSConnectionRegistry();
   mPluginLayerRegistry = new QgsPluginLayerRegistry();
   mProcessingRegistry = new QgsProcessingRegistry();
+  mPageSizeRegistry = new QgsPageSizeRegistry();
+  mLayoutItemRegistry = new QgsLayoutItemRegistry();
+  mLayoutItemRegistry->populate();
+  mProcessingRegistry->addProvider( new QgsNativeAlgorithms( mProcessingRegistry ) );
   mAnnotationRegistry = new QgsAnnotationRegistry();
 }
 
@@ -1592,6 +1621,8 @@ QgsApplication::ApplicationMembers::~ApplicationMembers()
   delete mPaintEffectRegistry;
   delete mPluginLayerRegistry;
   delete mProcessingRegistry;
+  delete mPageSizeRegistry;
+  delete mLayoutItemRegistry;
   delete mProfiler;
   delete mRasterRendererRegistry;
   delete mRendererRegistry;

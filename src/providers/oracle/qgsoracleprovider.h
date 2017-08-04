@@ -24,6 +24,7 @@
 #include "qgsoracletablemodel.h"
 #include "qgsdatasourceuri.h"
 #include "qgsfields.h"
+#include "qgsproviderregistry.h"
 
 #include <QVector>
 #include <QQueue>
@@ -127,12 +128,12 @@ class QgsOracleProvider : public QgsVectorDataProvider
 
     QVariant minimumValue( int index ) const override;
     QVariant maximumValue( int index ) const override;
-    virtual void uniqueValues( int index, QList<QVariant> &uniqueValues, int limit = -1 ) const override;
+    virtual QSet<QVariant> uniqueValues( int index, int limit = -1 ) const override;
     bool isValid() const override;
     QgsAttributeList pkAttributeIndexes() const override { return mPrimaryKeyAttrs; }
-    QVariant defaultValue( QString fieldName, QString tableName = QString::null, QString schemaName = QString::null );
+    QVariant defaultValue( QString fieldName, QString tableName = QString(), QString schemaName = QString() );
     QVariant defaultValue( int fieldId ) const override;
-    bool addFeatures( QgsFeatureList &flist ) override;
+    bool addFeatures( QgsFeatureList &flist, QgsFeatureSink::Flags flags = 0 ) override;
     bool deleteFeatures( const QgsFeatureIds &id ) override;
     bool addAttributes( const QList<QgsField> &attributes ) override;
     bool deleteAttributes( const QgsAttributeIds &ids ) override;
@@ -300,7 +301,7 @@ class QgsOracleProvider : public QgsVectorDataProvider
     bool mHasSpatialIndex;                   //! Geometry column is indexed
     QString mSpatialIndexName;               //! name of spatial index of geometry column
 
-    QSharedPointer<QgsOracleSharedData> mShared;
+    std::shared_ptr<QgsOracleSharedData> mShared;
 
     friend class QgsOracleFeatureIterator;
     friend class QgsOracleFeatureSource;
@@ -315,14 +316,14 @@ class QgsOracleUtils
                                 const QgsFields &fields,
                                 QgsOraclePrimaryKeyType primaryKeyType,
                                 const QList<int> &primaryKeyAttrs,
-                                QSharedPointer<QgsOracleSharedData> sharedData,
+                                std::shared_ptr<QgsOracleSharedData> sharedData,
                                 QVariantList &params );
 
     static QString whereClause( QgsFeatureIds featureIds,
                                 const QgsFields &fields,
                                 QgsOraclePrimaryKeyType primaryKeyType,
                                 const QList<int> &primaryKeyAttrs,
-                                QSharedPointer<QgsOracleSharedData> sharedData,
+                                std::shared_ptr<QgsOracleSharedData> sharedData,
                                 QVariantList &params );
 
     static QString andWhereClauses( const QString &c1, const QString &c2 );

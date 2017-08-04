@@ -66,7 +66,7 @@ class QgsMssqlProvider : public QgsVectorDataProvider
     virtual QStringList subLayers() const override;
     virtual QVariant minimumValue( int index ) const override;
     virtual QVariant maximumValue( int index ) const override;
-    virtual void uniqueValues( int index, QList<QVariant> &uniqueValues, int limit = -1 ) const override;
+    virtual QSet<QVariant> uniqueValues( int index, int limit = -1 ) const override;
     virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest &request ) const override;
 
     virtual QgsWkbTypes::Type wkbType() const override;
@@ -101,7 +101,7 @@ class QgsMssqlProvider : public QgsVectorDataProvider
 
     virtual bool isSaveAndLoadStyleToDatabaseSupported() const override { return true; }
 
-    virtual bool addFeatures( QgsFeatureList &flist ) override;
+    virtual bool addFeatures( QgsFeatureList &flist, QgsFeatureSink::Flags flags = 0 ) override;
 
     virtual bool deleteFeatures( const QgsFeatureIds &id ) override;
 
@@ -150,6 +150,7 @@ class QgsMssqlProvider : public QgsVectorDataProvider
     //! Fields
     QgsFields mAttributeFields;
     QMap<int, QString> mDefaultValues;
+    QList<QString> mComputedColumns;
 
     mutable QgsMssqlGeometryParser mParser;
 
@@ -212,7 +213,7 @@ class QgsMssqlProvider : public QgsVectorDataProvider
     }
 
     static void mssqlWkbTypeAndDimension( QgsWkbTypes::Type wkbType, QString &geometryType, int &dim );
-    static QgsWkbTypes::Type getWkbType( const QString &wkbType, int dim );
+    static QgsWkbTypes::Type getWkbType( const QString &wkbType );
 
     friend class QgsMssqlFeatureSource;
 

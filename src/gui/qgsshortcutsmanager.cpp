@@ -19,16 +19,6 @@
 
 #include <QShortcut>
 
-QgsShortcutsManager *QgsShortcutsManager::sInstance = nullptr;
-
-
-QgsShortcutsManager *QgsShortcutsManager::instance()
-{
-  if ( !sInstance )
-    sInstance = new QgsShortcutsManager( nullptr );
-  return sInstance;
-}
-
 QgsShortcutsManager::QgsShortcutsManager( QObject *parent, const QString &settingsRoot )
   : QObject( parent )
   , mSettingsPath( settingsRoot )

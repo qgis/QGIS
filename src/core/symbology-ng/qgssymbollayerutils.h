@@ -31,11 +31,13 @@
 #include "qgscolorramp.h"
 
 class QgsExpression;
+class QgsPathResolver;
+class QgsReadWriteContext;
 class QgsSymbolLayer;
 
 typedef QMap<QString, QString> QgsStringMap;
 typedef QMap<QString, QgsSymbol * > QgsSymbolMap;
-typedef QList< QPair< QColor, QString > > QgsNamedColorList;
+typedef QList< QPair< QColor, QString > > QgsNamedColorList SIP_SKIP;
 
 class QDomDocument;
 class QDomElement;
@@ -135,6 +137,14 @@ class CORE_EXPORT QgsSymbolLayerUtils
      */
     static QgsUnitTypes::RenderUnit decodeSldUom( const QString &str, double *scaleFactor );
 
+    /** Returns the size scaled in pixels according to the uom attribute.
+     * \param uom The uom attribute from SLD 1.1 version
+     * \param size The original size
+     * \returns the size in pixels
+     * \since QGIS 3.0
+     */
+    static double sizeInPixelsFromSldUom( const QString &uom, double size );
+
     static QString encodeScaleMethod( QgsSymbol::ScaleMethod scaleMethod );
     static QgsSymbol::ScaleMethod decodeScaleMethod( const QString &str );
 
@@ -202,19 +212,21 @@ class CORE_EXPORT QgsSymbolLayerUtils
 
     /** Attempts to load a symbol from a DOM element
      * \param element DOM element representing symbol
+     * \param context object to transform relative to absolute paths
      * \returns decoded symbol, if possible
      */
-    static QgsSymbol *loadSymbol( const QDomElement &element ) SIP_FACTORY;
+    static QgsSymbol *loadSymbol( const QDomElement &element, const QgsReadWriteContext &context ) SIP_FACTORY;
 
     /** Attempts to load a symbol from a DOM element and cast it to a particular symbol
      * type.
      * \param element DOM element representing symbol
+     * \param context object to transform relative to absolute paths
      * \returns decoded symbol cast to specified type, if possible
      * \note not available in Python bindings
      */
-    template <class SymbolType> static SymbolType *loadSymbol( const QDomElement &element ) SIP_SKIP
+    template <class SymbolType> static SymbolType *loadSymbol( const QDomElement &element, const QgsReadWriteContext &context ) SIP_SKIP
     {
-      QgsSymbol *tmpSymbol = QgsSymbolLayerUtils::loadSymbol( element );
+      QgsSymbol *tmpSymbol = QgsSymbolLayerUtils::loadSymbol( element, context );
       SymbolType *symbolCastToType = dynamic_cast<SymbolType *>( tmpSymbol );
 
       if ( symbolCastToType )
@@ -229,8 +241,10 @@ class CORE_EXPORT QgsSymbolLayerUtils
       }
     }
 
-    static QgsSymbolLayer *loadSymbolLayer( QDomElement &element ) SIP_FACTORY;
-    static QDomElement saveSymbol( const QString &symbolName, QgsSymbol *symbol, QDomDocument &doc );
+    //! Reads and returns symbol layer from XML. Caller is responsible for deleting the returned object
+    static QgsSymbolLayer *loadSymbolLayer( QDomElement &element, const QgsReadWriteContext &context ) SIP_FACTORY;
+    //! Writes a symbol definition to XML
+    static QDomElement saveSymbol( const QString &symbolName, QgsSymbol *symbol, QDomDocument &doc, const QgsReadWriteContext &context );
 
     /** Returns a string representing the symbol. Can be used to test for equality
      * between symbols.
@@ -240,9 +254,9 @@ class CORE_EXPORT QgsSymbolLayerUtils
 
     static bool createSymbolLayerListFromSld( QDomElement &element, QgsWkbTypes::GeometryType geomType, QgsSymbolLayerList &layers );
 
-    static QgsSymbolLayer *createFillLayerFromSld( QDomElement &element );
-    static QgsSymbolLayer *createLineLayerFromSld( QDomElement &element );
-    static QgsSymbolLayer *createMarkerLayerFromSld( QDomElement &element );
+    static QgsSymbolLayer *createFillLayerFromSld( QDomElement &element ) SIP_FACTORY;
+    static QgsSymbolLayer *createLineLayerFromSld( QDomElement &element ) SIP_FACTORY;
+    static QgsSymbolLayer *createMarkerLayerFromSld( QDomElement &element ) SIP_FACTORY;
 
     static bool convertPolygonSymbolizerToPointMarker( QDomElement &element, QgsSymbolLayerList &layerList );
     static bool hasExternalGraphic( QDomElement &element );
@@ -318,6 +332,14 @@ class CORE_EXPORT QgsSymbolLayerUtils
     static void createDisplacementElement( QDomDocument &doc, QDomElement &element, QPointF offset );
     static bool displacementFromSldElement( QDomElement &element, QPointF &offset );
 
+    /**
+     * \brief Creates a SE 1.1 anchor point element as a child of the specified element
+     * \param doc The document
+     * \param element The parent element
+     * \param anchor An anchor specification, with values between 0 and 1
+     */
+    static void createAnchorPointElement( QDomDocument &doc, QDomElement &element, QPointF anchor );
+
     static void createOnlineResourceElement( QDomDocument &doc, QDomElement &element, const QString &path, const QString &format );
     static bool onlineResourceFromSldElement( QDomElement &element, QString &path, QString &format );
 
@@ -344,10 +366,29 @@ class CORE_EXPORT QgsSymbolLayerUtils
     static QgsStringMap parseProperties( QDomElement &element );
     static void saveProperties( QgsStringMap props, QDomDocument &doc, QDomElement &element );
 
-    static QgsSymbolMap loadSymbols( QDomElement &element ) SIP_FACTORY;
-    static QDomElement saveSymbols( QgsSymbolMap &symbols, const QString &tagName, QDomDocument &doc );
+    //! Reads a collection of symbols from XML and returns them in a map. Caller is responsible for deleting returned symbols.
+    static QgsSymbolMap loadSymbols( QDomElement &element, const QgsReadWriteContext &context ) SIP_FACTORY;
+    //! Writes a collection of symbols to XML with specified tagName for the top-level element
+    static QDomElement saveSymbols( QgsSymbolMap &symbols, const QString &tagName, QDomDocument &doc, const QgsReadWriteContext &context );
 
     static void clearSymbolMap( QgsSymbolMap &symbols );
+
+    /**
+     * Creates new mime data from a \a symbol.
+     * This also sets the mime color data to match the symbol's color, so that copied symbols
+     * can be paste in places where a color is expected.
+     * \see symbolFromMimeData()
+     * \since QGIS 3.0
+     */
+    static QMimeData *symbolToMimeData( QgsSymbol *symbol ) SIP_FACTORY;
+
+    /**
+     * Attempts to parse \a mime data as a symbol. A new symbol instance will be returned
+     * if the data was successfully converted to a symbol.
+     * \see symbolToMimeData()
+     * \since QGIS 3.0
+     */
+    static QgsSymbol *symbolFromMimeData( const QMimeData *data ) SIP_FACTORY;
 
     /** Creates a color ramp from the settings encoded in an XML element
      * \param element DOM element
@@ -379,7 +420,7 @@ class CORE_EXPORT QgsSymbolLayerUtils
      *
      * \see colorRampToVariant()
      */
-    static QgsColorRamp *loadColorRamp( const QVariant &value );
+    static QgsColorRamp *loadColorRamp( const QVariant &value ) SIP_FACTORY;
 
     /**
      * Returns a friendly display name for a color
@@ -405,7 +446,7 @@ class CORE_EXPORT QgsSymbolLayerUtils
      * \see colorFromMimeData
      * \since QGIS 2.5
      */
-    static QMimeData *colorToMimeData( const QColor &color );
+    static QMimeData *colorToMimeData( const QColor &color ) SIP_FACTORY;
 
     /**
      * Attempts to parse mime data as a color
@@ -433,7 +474,7 @@ class CORE_EXPORT QgsSymbolLayerUtils
      * \returns mime data containing encoded colors
      * \since QGIS 2.5
      */
-    static QMimeData *colorListToMimeData( const QgsNamedColorList &colorList, const bool allFormats = true );
+    static QMimeData *colorListToMimeData( const QgsNamedColorList &colorList, const bool allFormats = true ) SIP_FACTORY;
 
     /**
      * Exports colors to a gpl GIMP palette file
@@ -476,8 +517,10 @@ class CORE_EXPORT QgsSymbolLayerUtils
      */
     static QColor parseColorWithAlpha( const QString &colorStr, bool &containsAlpha, bool strictEval = false );
 
-    //! Multiplies opacity of image pixel values with a (global) transparency value
-    static void multiplyImageOpacity( QImage *image, qreal alpha );
+    /**
+     * Multiplies opacity of image pixel values with a (global) transparency value.
+     */
+    static void multiplyImageOpacity( QImage *image, qreal opacity );
 
     //! Blurs an image in place, e.g. creating Qt-independent drop shadows
     static void blurImageInPlace( QImage &image, QRect rect, int radius, bool alphaOnly );
@@ -498,14 +541,14 @@ class CORE_EXPORT QgsSymbolLayerUtils
     //! Return a list of svg files at the specified directory
     static QStringList listSvgFilesAt( const QString &directory );
 
-    /** Get symbol's path from its name.
+    /** Get SVG symbol's path from its name.
      *  If the name is not absolute path the file is searched in SVG paths specified
      *  in settings svg/searchPathsForSVG.
      */
-    static QString symbolNameToPath( QString name );
+    static QString svgSymbolNameToPath( QString name, const QgsPathResolver &pathResolver );
 
-    //! Get symbols's name from its path
-    static QString symbolPathToName( QString path );
+    //! Get SVG symbols's name from its path
+    static QString svgSymbolPathToName( QString path, const QgsPathResolver &pathResolver );
 
     //! Calculate the centroid point of a QPolygonF
     static QPointF polygonCentroid( const QPolygonF &points );
@@ -590,7 +633,7 @@ class CORE_EXPORT QgsSymbolLayerUtils
 class QPolygonF;
 
 //! calculate geometry shifted by a specified distance
-QList<QPolygonF> offsetLine( QPolygonF polyline, double dist, QgsWkbTypes::GeometryType geometryType );
+QList<QPolygonF> offsetLine( QPolygonF polyline, double dist, QgsWkbTypes::GeometryType geometryType ) SIP_SKIP;
 
 #endif
 

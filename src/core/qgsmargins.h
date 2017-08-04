@@ -168,6 +168,7 @@ class CORE_EXPORT QgsMargins
     double mBottom = 0.0;
 };
 
+
 /**
  * Returns \c true if \a lhs and \a rhs are equal; otherwise returns \c false.
  */
@@ -264,17 +265,17 @@ inline QgsMargins operator/( const QgsMargins &margins, double divisor )
                      margins.right() / divisor, margins.bottom() / divisor );
 }
 
-inline QgsMargins &QgsMargins::operator+=( const QgsMargins &margins )
+inline QgsMargins &QgsMargins::operator+=( const QgsMargins &margins ) SIP_SKIP
 {
   return *this = *this + margins;
 }
 
-inline QgsMargins &QgsMargins::operator-=( const QgsMargins &margins )
+inline QgsMargins &QgsMargins::operator-=( const QgsMargins &margins ) SIP_SKIP
 {
   return *this = *this - margins;
 }
 
-inline QgsMargins &QgsMargins::operator+=( double addend )
+inline QgsMargins &QgsMargins::operator+=( double addend ) SIP_SKIP
 {
   mLeft += addend;
   mTop += addend;
@@ -283,7 +284,7 @@ inline QgsMargins &QgsMargins::operator+=( double addend )
   return *this;
 }
 
-inline QgsMargins &QgsMargins::operator-=( double subtrahend )
+inline QgsMargins &QgsMargins::operator-=( double subtrahend ) SIP_SKIP
 {
   mLeft -= subtrahend;
   mTop -= subtrahend;
@@ -292,12 +293,12 @@ inline QgsMargins &QgsMargins::operator-=( double subtrahend )
   return *this;
 }
 
-inline QgsMargins &QgsMargins::operator*=( double factor )
+inline QgsMargins &QgsMargins::operator*=( double factor ) SIP_SKIP
 {
   return *this = *this * factor;
 }
 
-inline QgsMargins &QgsMargins::operator/=( double divisor )
+inline QgsMargins &QgsMargins::operator/=( double divisor ) SIP_SKIP
 {
   return *this = *this / divisor;
 }

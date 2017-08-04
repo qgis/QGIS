@@ -26,26 +26,31 @@ __copyright__ = '(C) 2012, Victor Olaya, Carterix Geomatics'
 
 __revision__ = '$Format:%H$'
 
-from qgis.core import (QgsApplication)
-from processing.core.GeoAlgorithm import GeoAlgorithm
-from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
-from processing.core.parameters import ParameterString
+from qgis.core import (QgsProcessingException, QgsProcessingParameterString)
+from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 from processing.tools import postgis
 
 
-class PostGISExecuteSQL(GeoAlgorithm):
+class PostGISExecuteSQL(QgisAlgorithm):
 
     DATABASE = 'DATABASE'
     SQL = 'SQL'
 
-    def icon(self):
-        return QgsApplication.getThemeIcon("/providerQgis.svg")
-
-    def svgIconPath(self):
-        return QgsApplication.iconPath("providerQgis.svg")
-
     def group(self):
         return self.tr('Database')
+
+    def __init__(self):
+        super().__init__()
+
+    def initAlgorithm(self, config=None):
+        db_param = QgsProcessingParameterString(
+            self.DATABASE,
+            self.tr('Database (connection name)'))
+        db_param.setMetadata({
+            'widget_wrapper': {
+                'class': 'processing.gui.wrappers_postgis.ConnectionWidgetWrapper'}})
+        self.addParameter(db_param)
+        self.addParameter(QgsProcessingParameterString(self.SQL, self.tr('SQL query')))
 
     def name(self):
         return 'postgisexecutesql'
@@ -53,21 +58,14 @@ class PostGISExecuteSQL(GeoAlgorithm):
     def displayName(self):
         return self.tr('PostGIS execute SQL')
 
-    def defineCharacteristics(self):
-        self.addParameter(ParameterString(
-            self.DATABASE,
-            self.tr('Database'),
-            metadata={
-                'widget_wrapper': {
-                    'class': 'processing.gui.wrappers_postgis.ConnectionWidgetWrapper'}}))
-        self.addParameter(ParameterString(self.SQL, self.tr('SQL query'), '', True))
+    def processAlgorithm(self, parameters, context, feedback):
+        connection = self.parameterAsString(parameters, self.DATABASE, context)
+        db = postgis.GeoDB.from_name(connection)
 
-    def processAlgorithm(self, context, feedback):
-        connection = self.getParameterValue(self.DATABASE)
-        self.db = postgis.GeoDB.from_name(connection)
-        sql = self.getParameterValue(self.SQL).replace('\n', ' ')
+        sql = self.parameterAsString(parameters, self.SQL, context).replace('\n', ' ')
         try:
-            self.db._exec_sql_and_commit(str(sql))
+            db._exec_sql_and_commit(str(sql))
         except postgis.DbError as e:
-            raise GeoAlgorithmExecutionException(
+            raise QgsProcessingException(
                 self.tr('Error executing SQL:\n{0}').format(str(e)))
+        return {}

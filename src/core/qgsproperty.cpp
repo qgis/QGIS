@@ -79,7 +79,7 @@ QgsPropertyDefinition::QgsPropertyDefinition( const QString &name, const QString
       mHelpText = QObject::tr( "string of variable length" );
       break;
 
-    case Transparency:
+    case Opacity:
       mTypes = DataTypeNumeric;
       mHelpText = QObject::tr( "int [0-100]" );
       break;
@@ -175,10 +175,10 @@ QgsPropertyDefinition::QgsPropertyDefinition( const QString &name, const QString
   }
 }
 
-QgsPropertyDefinition::QgsPropertyDefinition( const QString &name, DataType dataTypes, const QString &description, const QString &helpText )
+QgsPropertyDefinition::QgsPropertyDefinition( const QString &name, DataType dataType, const QString &description, const QString &helpText )
   : mName( name )
   , mDescription( description )
-  , mTypes( dataTypes )
+  , mTypes( dataType )
   , mHelpText( helpText )
 {}
 

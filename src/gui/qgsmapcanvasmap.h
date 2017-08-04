@@ -21,6 +21,8 @@
 class QgsMapSettings;
 class QgsMapCanvas;
 
+#define SIP_NO_FILE
+
 /// @cond PRIVATE
 
 /** \ingroup gui
@@ -43,9 +45,16 @@ class QgsMapCanvasMap : public QgsMapCanvasItem
 
     virtual void paint( QPainter *painter ) override;
 
+    void addPreviewImage( const QImage &image, const QgsRectangle &rect );
+
+    QRectF boundingRect() const override;
+
   private:
 
     QImage mImage;
+
+    //! Preview images for panning. Usually cover area around the rendered image
+    QList< QPair< QImage, QgsRectangle > > mPreviewImages;
 };
 
 /// @endcond

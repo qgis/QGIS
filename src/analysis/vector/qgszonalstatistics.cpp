@@ -17,19 +17,20 @@
 
 #include "qgszonalstatistics.h"
 #include "qgsfeatureiterator.h"
+#include "qgsfeedback.h"
 #include "qgsgeometry.h"
 #include "qgsvectordataprovider.h"
 #include "qgsvectorlayer.h"
 #include "qgsrasterdataprovider.h"
 #include "qgsrasterlayer.h"
 #include "qgsrasterblock.h"
-#include "qmath.h"
 #include "qgslogger.h"
 
-#include <QProgressDialog>
+#include "qmath.h"
+
 #include <QFile>
 
-QgsZonalStatistics::QgsZonalStatistics( QgsVectorLayer *polygonLayer, QgsRasterLayer *rasterLayer, const QString &attributePrefix, int rasterBand, Statistics stats )
+QgsZonalStatistics::QgsZonalStatistics( QgsVectorLayer *polygonLayer, QgsRasterLayer *rasterLayer, const QString &attributePrefix, int rasterBand, QgsZonalStatistics::Statistics stats )
   : mRasterLayer( rasterLayer )
   , mRasterBand( rasterBand )
   , mPolygonLayer( polygonLayer )
@@ -37,7 +38,7 @@ QgsZonalStatistics::QgsZonalStatistics( QgsVectorLayer *polygonLayer, QgsRasterL
   , mStatistics( stats )
 {}
 
-int QgsZonalStatistics::calculateStatistics( QProgressDialog *p )
+int QgsZonalStatistics::calculateStatistics( QgsFeedback *feedback )
 {
   if ( !mPolygonLayer || mPolygonLayer->geometryType() != QgsWkbTypes::PolygonGeometry )
   {
@@ -157,6 +158,13 @@ int QgsZonalStatistics::calculateStatistics( QProgressDialog *p )
     QgsField varietyField( varietyFieldName, QVariant::Int, QStringLiteral( "int" ) );
     newFieldList.push_back( varietyField );
   }
+  QString varianceFieldName;
+  if ( mStatistics & QgsZonalStatistics::Variance )
+  {
+    varianceFieldName = getUniqueFieldName( mAttributePrefix + "variance", newFieldList );
+    QgsField varianceField( varianceFieldName, QVariant::Double, QStringLiteral( "double precision" ) );
+    newFieldList.push_back( varianceField );
+  }
   vectorProvider->addAttributes( newFieldList );
 
   //index of the new fields
@@ -171,6 +179,7 @@ int QgsZonalStatistics::calculateStatistics( QProgressDialog *p )
   int minorityIndex = mStatistics & QgsZonalStatistics::Minority ? vectorProvider->fieldNameIndex( minorityFieldName ) : -1;
   int majorityIndex = mStatistics & QgsZonalStatistics::Majority ? vectorProvider->fieldNameIndex( majorityFieldName ) : -1;
   int varietyIndex = mStatistics & QgsZonalStatistics::Variety ? vectorProvider->fieldNameIndex( varietyFieldName ) : -1;
+  int varianceIndex = mStatistics & QgsZonalStatistics::Variance ? vectorProvider->fieldNameIndex( varianceFieldName ) : -1;
 
   if ( ( mStatistics & QgsZonalStatistics::Count && countIndex == -1 )
        || ( mStatistics & QgsZonalStatistics::Sum && sumIndex == -1 )
@@ -183,6 +192,7 @@ int QgsZonalStatistics::calculateStatistics( QProgressDialog *p )
        || ( mStatistics & QgsZonalStatistics::Minority && minorityIndex == -1 )
        || ( mStatistics & QgsZonalStatistics::Majority && majorityIndex == -1 )
        || ( mStatistics & QgsZonalStatistics::Variety && varietyIndex == -1 )
+       || ( mStatistics & QgsZonalStatistics::Variance && varianceIndex == -1 )
      )
   {
     //failed to create a required field
@@ -191,10 +201,6 @@ int QgsZonalStatistics::calculateStatistics( QProgressDialog *p )
 
   //progress dialog
   long featureCount = vectorProvider->featureCount();
-  if ( p )
-  {
-    p->setMaximum( featureCount );
-  }
 
   //iterate over each polygon
   QgsFeatureRequest request;
@@ -203,7 +209,8 @@ int QgsZonalStatistics::calculateStatistics( QProgressDialog *p )
   QgsFeature f;
 
   bool statsStoreValues = ( mStatistics & QgsZonalStatistics::Median ) ||
-                          ( mStatistics & QgsZonalStatistics::StDev );
+                          ( mStatistics & QgsZonalStatistics::StDev ) ||
+                          ( mStatistics & QgsZonalStatistics::Variance );
   bool statsStoreValueCount = ( mStatistics & QgsZonalStatistics::Minority ) ||
                               ( mStatistics & QgsZonalStatistics::Majority );
 
@@ -213,14 +220,14 @@ int QgsZonalStatistics::calculateStatistics( QProgressDialog *p )
   QgsChangedAttributesMap changeMap;
   while ( fi.nextFeature( f ) )
   {
-    if ( p )
-    {
-      p->setValue( featureCounter );
-    }
-
-    if ( p && p->wasCanceled() )
+    if ( feedback && feedback->isCanceled() )
     {
       break;
+    }
+
+    if ( feedback )
+    {
+      feedback->setProgress( 100.0 * static_cast< double >( featureCounter ) / featureCount );
     }
 
     if ( !f.hasGeometry() )
@@ -291,7 +298,7 @@ int QgsZonalStatistics::calculateStatistics( QProgressDialog *p )
         }
         changeAttributeMap.insert( medianIndex, QVariant( medianValue ) );
       }
-      if ( mStatistics & QgsZonalStatistics::StDev )
+      if ( mStatistics & QgsZonalStatistics::StDev || mStatistics & QgsZonalStatistics::Variance )
       {
         double sumSquared = 0;
         for ( int i = 0; i < featureStats.values.count(); ++i )
@@ -299,8 +306,14 @@ int QgsZonalStatistics::calculateStatistics( QProgressDialog *p )
           double diff = featureStats.values.at( i ) - mean;
           sumSquared += diff * diff;
         }
-        double stdev = qPow( sumSquared / featureStats.values.count(), 0.5 );
-        changeAttributeMap.insert( stdevIndex, QVariant( stdev ) );
+        double variance = sumSquared / featureStats.values.count();
+        if ( mStatistics & QgsZonalStatistics::StDev )
+        {
+          double stdev = qPow( variance, 0.5 );
+          changeAttributeMap.insert( stdevIndex, QVariant( stdev ) );
+        }
+        if ( mStatistics & QgsZonalStatistics::Variance )
+          changeAttributeMap.insert( varianceIndex, QVariant( variance ) );
       }
       if ( mStatistics & QgsZonalStatistics::Min )
         changeAttributeMap.insert( minIndex, QVariant( featureStats.min ) );
@@ -333,14 +346,14 @@ int QgsZonalStatistics::calculateStatistics( QProgressDialog *p )
 
   vectorProvider->changeAttributeValues( changeMap );
 
-  if ( p )
+  if ( feedback )
   {
-    p->setValue( featureCount );
+    feedback->setProgress( 100 );
   }
 
   mPolygonLayer->updateFields();
 
-  if ( p && p->wasCanceled() )
+  if ( feedback && feedback->isCanceled() )
   {
     return 9;
   }

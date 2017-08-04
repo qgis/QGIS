@@ -15,6 +15,7 @@
 #include "qgseditorwidgetautoconf.h"
 #include "qgseditorwidgetregistry.h"
 #include "qgsvectordataprovider.h"
+#include "qgsgui.h"
 
 /** \ingroup gui
  * Widget auto conf plugin that guesses what widget type to use in function of what the widgets support.
@@ -29,7 +30,7 @@ class FromFactoriesPlugin: public QgsEditorWidgetAutoConfPlugin
     {
       int bestScore = 0;
       QString bestType;
-      const QMap<QString, QgsEditorWidgetFactory *> factories = QgsEditorWidgetRegistry::instance()->factories();
+      const QMap<QString, QgsEditorWidgetFactory *> factories = QgsGui::editorWidgetRegistry()->factories();
       for ( QMap<QString, QgsEditorWidgetFactory *>::const_iterator i = factories.begin(); i != factories.end(); ++i )
       {
         const int index = vl->fields().lookupField( fieldName );

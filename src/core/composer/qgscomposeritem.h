@@ -39,6 +39,107 @@ class QgsComposerEffect;
  */
 class CORE_EXPORT QgsComposerItem: public QgsComposerObject, public QGraphicsRectItem
 {
+#ifdef SIP_RUN
+#include <qgscomposerarrow.h>
+#include <qgscomposerframe.h>
+#include <qgscomposeritemgroup.h>
+#include <qgscomposerlabel.h>
+#include <qgscomposerlegend.h>
+#include <qgscomposermap.h>
+#include <qgspaperitem.h>
+#include <qgscomposerpicture.h>
+#include <qgscomposerscalebar.h>
+#include <qgscomposershape.h>
+#include <qgscomposerpolygon.h>
+#include <qgscomposerpolyline.h>
+#include <qgscomposertexttable.h>
+#include <qgslayoutitemshape.h>
+#include <qgslayoutitempage.h>
+#endif
+
+
+#ifdef SIP_RUN
+    SIP_CONVERT_TO_SUBCLASS_CODE
+    // the conversions have to be static, because they're using multiple inheritance
+    // (seen in PyQt4 .sip files for some QGraphicsItem classes)
+    if ( dynamic_cast< QgsComposerItem * >( sipCpp ) )
+    {
+      switch ( sipCpp->type() )
+      {
+        case QgsComposerItem::ComposerItem:
+          sipType = sipType_QgsComposerItem;
+          *sipCppRet = static_cast<QgsComposerItem *>( sipCpp );
+          break;
+        case QgsComposerItem::ComposerArrow:
+          sipType = sipType_QgsComposerArrow;
+          *sipCppRet = static_cast<QgsComposerArrow *>( sipCpp );
+          break;
+        case QgsComposerItem::ComposerItemGroup:
+          sipType = sipType_QgsComposerItemGroup;
+          *sipCppRet = static_cast<QgsComposerItemGroup *>( sipCpp );
+          break;
+        case QgsComposerItem::ComposerLabel:
+          sipType = sipType_QgsComposerLabel;
+          *sipCppRet = static_cast<QgsComposerLabel *>( sipCpp );
+          break;
+        case QgsComposerItem::ComposerLegend:
+          sipType = sipType_QgsComposerLegend;
+          *sipCppRet = static_cast<QgsComposerLegend *>( sipCpp );
+          break;
+        case QgsComposerItem::ComposerMap:
+          sipType = sipType_QgsComposerMap;
+          *sipCppRet = static_cast<QgsComposerMap *>( sipCpp );
+          break;
+        case QgsComposerItem::ComposerPaper:
+          sipType = sipType_QgsPaperItem;
+          *sipCppRet = static_cast<QgsPaperItem *>( sipCpp );
+          break;
+        case QgsComposerItem::ComposerPicture:
+          sipType = sipType_QgsComposerPicture;
+          *sipCppRet = static_cast<QgsComposerPicture *>( sipCpp );
+          break;
+        case QgsComposerItem::ComposerScaleBar:
+          sipType = sipType_QgsComposerScaleBar;
+          *sipCppRet = static_cast<QgsComposerScaleBar *>( sipCpp );
+          break;
+        case QgsComposerItem::ComposerShape:
+          sipType = sipType_QgsComposerShape;
+          *sipCppRet = static_cast<QgsComposerShape *>( sipCpp );
+          break;
+        case QgsComposerItem::ComposerPolygon:
+          sipType = sipType_QgsComposerPolygon;
+          *sipCppRet = static_cast<QgsComposerPolygon *>( sipCpp );
+          break;
+        case QgsComposerItem::ComposerPolyline:
+          sipType = sipType_QgsComposerPolyline;
+          *sipCppRet = static_cast<QgsComposerPolyline *>( sipCpp );
+          break;
+        case QgsComposerItem::ComposerFrame:
+          sipType = sipType_QgsComposerFrame;
+          *sipCppRet = static_cast<QgsComposerFrame *>( sipCpp );
+          break;
+        default:
+          sipType = 0;
+      }
+    }
+    else
+    {
+      switch ( sipCpp->type() )
+      {
+        // really, these *should* use the constants from QgsLayoutItemRegistry, but sip doesn't like that!
+        case QGraphicsItem::UserType + 101:
+          sipType = sipType_QgsLayoutItemPage;
+          *sipCppRet = static_cast<QgsLayoutItemPage *>( sipCpp );
+          break;
+        default:
+          sipType = 0;
+      }
+    }
+
+    SIP_END
+#endif
+
+
     Q_OBJECT
   public:
 
@@ -364,22 +465,26 @@ class CORE_EXPORT QgsComposerItem: public QgsComposerObject, public QGraphicsRec
      */
     void setBlendMode( const QPainter::CompositionMode blendMode );
 
-    /** Returns the item's transparency
-     * \returns transparency as integer between 0 (transparent) and 255 (opaque)
-     * \see setTransparency
+    /** Returns the item's opacity. This method should be used instead of
+     * QGraphicsItem::opacity() as any data defined overrides will be
+     * respected.
+     * \returns opacity as double between 1.0 (opaque) and 0 (transparent).
+     * \see setItemOpacity()
      */
-    int transparency() const { return mTransparency; }
+    double itemOpacity() const { return mOpacity; }
 
-    /** Sets the item's transparency
-     * \param transparency integer between 0 (transparent) and 255 (opaque)
-     * \see transparency
+    /** Sets the item's \a opacity. This method should be used instead of
+     * QGraphicsItem::setOpacity() as any data defined overrides will be
+     * respected.
+     * \param opacity double between 1.0 (opaque) and 0 (transparent).
+     * \see itemOpacity()
      */
-    void setTransparency( const int transparency );
+    void setItemOpacity( const double opacity );
 
     /** Returns whether effects (e.g., blend modes) are enabled for the item
      * \returns true if effects are enabled
      * \see setEffectsEnabled
-     * \see transparency
+     * \see itemOpacity()
      * \see blendMode
      */
     bool effectsEnabled() const { return mEffectsEnabled; }
@@ -387,7 +492,7 @@ class CORE_EXPORT QgsComposerItem: public QgsComposerObject, public QGraphicsRec
     /** Sets whether effects (e.g., blend modes) are enabled for the item
      * \param effectsEnabled set to true to enable effects
      * \see effectsEnabled
-     * \see setTransparency
+     * \see setItemOpacity()
      * \see setBlendMode
      */
     void setEffectsEnabled( const bool effectsEnabled );
@@ -423,13 +528,13 @@ class CORE_EXPORT QgsComposerItem: public QgsComposerObject, public QGraphicsRec
      */
     bool positionLock() const { return mItemPositionLocked; }
 
-    /** Returns the current rotation for the composer item.
-     * \returns rotation for composer item
+    /**
+     * Returns the current rotation for the composer item, in degrees clockwise.
      * \param valueType controls whether the returned value is the user specified rotation,
      * or the current evaluated rotation (which may be affected by data driven rotation
      * settings).
      * \since QGIS 2.1
-     * \see setItemRotation
+     * \see setItemRotation()
      */
     double itemRotation( const QgsComposerObject::PropertyValueType valueType = QgsComposerObject::EvaluatedValue ) const;
 
@@ -551,14 +656,15 @@ class CORE_EXPORT QgsComposerItem: public QgsComposerObject, public QGraphicsRec
 
   public slots:
 
-    /** Sets the item rotation
-     * \param r item rotation in degrees
+    /**
+     * Sets the item \a rotation, in degrees clockwise.
+     * \param rotation item rotation in degrees
      * \param adjustPosition set to true if item should be shifted so that rotation occurs
      * around item center. If false, rotation occurs around item origin
      * \since QGIS 2.1
      * \see itemRotation
      */
-    virtual void setItemRotation( const double r, const bool adjustPosition = false );
+    virtual void setItemRotation( const double rotation, const bool adjustPosition = false );
 
     void repaint() override;
 
@@ -621,8 +727,8 @@ class CORE_EXPORT QgsComposerItem: public QgsComposerObject, public QGraphicsRec
     bool mEffectsEnabled;
     QgsComposerEffect *mEffect = nullptr;
 
-    //! Item transparency
-    int mTransparency;
+    //! Item opacity, between 0 and 1
+    double mOpacity = 1.0;
 
     //! Whether item should be excluded in exports
     bool mExcludeFromExports;
@@ -734,25 +840,25 @@ class CORE_EXPORT QgsComposerItem: public QgsComposerObject, public QGraphicsRec
      */
     void refreshRotation( const bool updateItem = true, const bool rotateAroundCenter = false, const QgsExpressionContext &context = QgsExpressionContext() );
 
-    /** Refresh item's transparency, considering data defined transparency
+    /** Refresh item's opacity, considering data defined opacity
       * \param updateItem set to false to prevent the item being automatically updated
-      * after the transparency is set
-      * \param context expression context for evaulating data defined transparency
+      * after the opacity is set
+      * \param context expression context for evaulating data defined opacity
       * \since QGIS 2.5
      */
-    void refreshTransparency( const bool updateItem = true, const QgsExpressionContext &context = QgsExpressionContext() );
+    void refreshOpacity( const bool updateItem = true, const QgsExpressionContext &context = QgsExpressionContext() );
 
-    /** Refresh item's frame color, considering data defined transparency
+    /** Refresh item's frame color, considering data defined colors
       * \param updateItem set to false to prevent the item being automatically updated
       * after the frame color is set
-      * \param context expression context for evaulating data defined transparency
+      * \param context expression context for evaulating data defined color
      */
     void refreshFrameColor( const bool updateItem = true, const QgsExpressionContext &context = QgsExpressionContext() );
 
-    /** Refresh item's transparency, considering data defined transparency
+    /** Refresh item's background color, considering data defined colors
       * \param updateItem set to false to prevent the item being automatically updated
       * after the background color is set
-      * \param context expression context for evaulating data defined transparency
+      * \param context expression context for evaulating data defined color
      */
     void refreshBackgroundColor( const bool updateItem = true, const QgsExpressionContext &context = QgsExpressionContext() );
 

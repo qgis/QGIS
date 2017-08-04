@@ -27,6 +27,7 @@
 #include <QPicture>
 #include <QDomElement>
 
+class QgsReadWriteContext;
 class QgsTextBufferSettingsPrivate;
 class QgsTextBackgroundSettingsPrivate;
 class QgsTextShadowSettingsPrivate;
@@ -171,17 +172,10 @@ class CORE_EXPORT QgsTextBufferSettings
      */
     void setBlendMode( QPainter::CompositionMode mode );
 
-    /** Reads settings from a layer's custom properties.
+    /** Reads settings from a layer's custom properties (for QGIS 2.x projects).
      * \param layer source vector layer
-     * \see writeToLayer()
      */
     void readFromLayer( QgsVectorLayer *layer );
-
-    /** Writes settings to a layer's custom properties.
-     * \param layer target vector layer
-     * \see readFromLayer()
-     */
-    void writeToLayer( QgsVectorLayer *layer ) const;
 
     /** Read settings from a DOM element.
      * \see writeXml()
@@ -284,14 +278,14 @@ class CORE_EXPORT QgsTextBackgroundSettings
      */
     void setType( ShapeType type );
 
-    /** Returns the path to the background SVG file, if set.
+    /** Returns the absolute path to the background SVG file, if set.
      * \see setSvgFile()
      */
     QString svgFile() const;
 
     /** Sets the path to the background SVG file. This is only used if type() is set to
-     * QgsTextBackgroundSettings::ShapeSVG.
-     * \param file SVG file path
+     * QgsTextBackgroundSettings::ShapeSVG. The path must be absolute.
+     * \param file Absolute SVG file path
      * \see svgFile()
      */
     void setSvgFile( const QString &file );
@@ -375,14 +369,15 @@ class CORE_EXPORT QgsTextBackgroundSettings
      */
     void setRotationType( RotationType type );
 
-    /** Returns the rotation for the background shape.
+    /**
+     * Returns the rotation for the background shape, in degrees clockwise.
      * \see rotationType()
      * \see setRotation()
      */
     double rotation() const;
 
-    /** Sets the rotation for the background shape.
-     * \param rotation angle in degrees to rotate
+    /**
+     * Sets the \a rotation for the background shape, in degrees clockwise.
      * \see rotation()
      * \see setRotationType()
      */
@@ -590,27 +585,20 @@ class CORE_EXPORT QgsTextBackgroundSettings
      */
     void setPaintEffect( QgsPaintEffect *effect SIP_TRANSFER );
 
-    /** Reads settings from a layer's custom properties.
+    /** Reads settings from a layer's custom properties (for QGIS 2.x projects).
      * \param layer source vector layer
-     * \see writeToLayer()
      */
     void readFromLayer( QgsVectorLayer *layer );
-
-    /** Writes settings to a layer's custom properties.
-     * \param layer target vector layer
-     * \see readFromLayer()
-     */
-    void writeToLayer( QgsVectorLayer *layer ) const;
 
     /** Read settings from a DOM element.
      * \see writeXml()
      */
-    void readXml( const QDomElement &elem );
+    void readXml( const QDomElement &elem, const QgsReadWriteContext &context );
 
     /** Write settings into a DOM element.
      * \see readXml()
      */
-    QDomElement writeXml( QDomDocument &doc ) const;
+    QDomElement writeXml( QDomDocument &doc, const QgsReadWriteContext &context ) const;
 
   private:
 
@@ -841,17 +829,10 @@ class CORE_EXPORT QgsTextShadowSettings
      */
     void setBlendMode( QPainter::CompositionMode mode );
 
-    /** Reads settings from a layer's custom properties.
+    /** Reads settings from a layer's custom properties (for QGIS 2.x projects).
      * \param layer source vector layer
-     * \see writeToLayer()
      */
     void readFromLayer( QgsVectorLayer *layer );
-
-    /** Writes settings to a layer's custom properties.
-     * \param layer target vector layer
-     * \see readFromLayer()
-     */
-    void writeToLayer( QgsVectorLayer *layer ) const;
 
     /** Read settings from a DOM element.
      * \see writeXml()
@@ -1072,27 +1053,34 @@ class CORE_EXPORT QgsTextFormat
      */
     void setLineHeight( double height );
 
-    /** Reads settings from a layer's custom properties.
+    /** Reads settings from a layer's custom properties (for QGIS 2.x projects).
      * \param layer source vector layer
-     * \see writeToLayer()
      */
     void readFromLayer( QgsVectorLayer *layer );
-
-    /** Writes settings to a layer's custom properties.
-     * \param layer target vector layer
-     * \see readFromLayer()
-     */
-    void writeToLayer( QgsVectorLayer *layer ) const;
 
     /** Read settings from a DOM element.
      * \see writeXml()
      */
-    void readXml( const QDomElement &elem );
+    void readXml( const QDomElement &elem, const QgsReadWriteContext &context );
 
     /** Write settings into a DOM element.
      * \see readXml()
      */
-    QDomElement writeXml( QDomDocument &doc ) const;
+    QDomElement writeXml( QDomDocument &doc, const QgsReadWriteContext &context ) const;
+
+    /**
+     * Returns new mime data representing the text format settings.
+     * Caller takes responsibility for deleting the returned object.
+     * \see fromMimeData()
+     */
+    QMimeData *toMimeData() const SIP_FACTORY;
+
+    /**
+     * Attempts to parse the provided mime \a data as a QgsTextFormat.
+     * If data can be parsed as a text format, \a ok will be set to true.
+     * \see toMimeData()
+     */
+    static QgsTextFormat fromMimeData( const QMimeData *data, bool *ok SIP_OUT = nullptr );
 
     /** Returns true if any component of the font format requires advanced effects
      * such as blend modes, which require output in raster formats to be fully respected.

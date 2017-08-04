@@ -33,7 +33,7 @@ class CORE_EXPORT QgsRasterResampleFilter : public QgsRasterInterface
   public:
     QgsRasterResampleFilter( QgsRasterInterface *input = nullptr );
 
-    QgsRasterResampleFilter *clone() const override;
+    QgsRasterResampleFilter *clone() const override SIP_FACTORY;
 
     int bandCount() const override;
 
@@ -41,7 +41,7 @@ class CORE_EXPORT QgsRasterResampleFilter : public QgsRasterInterface
 
     bool setInput( QgsRasterInterface *input ) override;
 
-    QgsRasterBlock *block( int bandNo, const QgsRectangle &extent, int width, int height, QgsRasterBlockFeedback *feedback = nullptr ) override;
+    QgsRasterBlock *block( int bandNo, const QgsRectangle &extent, int width, int height, QgsRasterBlockFeedback *feedback = nullptr ) override SIP_FACTORY;
 
     //! Set resampler for zoomed in scales. Takes ownership of the object
     void setZoomedInResampler( QgsRasterResampler *r SIP_TRANSFER );

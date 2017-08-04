@@ -19,6 +19,9 @@
 #ifndef QGSFCGISERVERREQUEST_H
 #define QGSFCGISERVERREQUEST_H
 
+#define SIP_NO_FILE
+
+
 #include "qgsserverrequest.h"
 
 #include <QBuffer>

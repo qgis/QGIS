@@ -26,6 +26,7 @@ email                : a.furieri@lqt.it
 #include "qgsdatasourceuri.h"
 #include "qgsvectorlayer.h"
 #include "qgssettings.h"
+#include "qgsproviderregistry.h"
 
 #include <QInputDialog>
 #include <QMessageBox>
@@ -39,10 +40,11 @@ email                : a.furieri@lqt.it
 #define strcasecmp(a,b) stricmp(a,b)
 #endif
 
-QgsSpatiaLiteSourceSelect::QgsSpatiaLiteSourceSelect( QWidget *parent, Qt::WindowFlags fl, bool embedded ):
-  QDialog( parent, fl )
+QgsSpatiaLiteSourceSelect::QgsSpatiaLiteSourceSelect( QWidget *parent, Qt::WindowFlags fl, QgsProviderRegistry::WidgetMode theWidgetMode ):
+  QgsAbstractDataSourceWidget( parent, fl, theWidgetMode )
 {
   setupUi( this );
+  setupButtons( buttonBox );
 
   QgsSettings settings;
   restoreGeometry( settings.value( QStringLiteral( "Windows/SpatiaLiteSourceSelect/geometry" ) ).toByteArray() );
@@ -57,24 +59,18 @@ QgsSpatiaLiteSourceSelect::QgsSpatiaLiteSourceSelect( QWidget *parent, Qt::Windo
   connect( mStatsButton, &QAbstractButton::clicked, this, &QgsSpatiaLiteSourceSelect::updateStatistics );
   mStatsButton->setEnabled( false );
 
-  mAddButton = new QPushButton( tr( "&Add" ) );
-  connect( mAddButton, &QAbstractButton::clicked, this, &QgsSpatiaLiteSourceSelect::addClicked );
-  mAddButton->setEnabled( false );
 
   mBuildQueryButton = new QPushButton( tr( "&Set Filter" ) );
   connect( mBuildQueryButton, &QAbstractButton::clicked, this, &QgsSpatiaLiteSourceSelect::buildQuery );
   mBuildQueryButton->setEnabled( false );
 
-  if ( embedded )
+  if ( widgetMode() != QgsProviderRegistry::WidgetMode::None )
   {
-    buttonBox->button( QDialogButtonBox::Close )->hide();
+    mHoldDialogOpen->hide();
   }
-  else
-  {
-    buttonBox->addButton( mAddButton, QDialogButtonBox::ActionRole );
-    buttonBox->addButton( mBuildQueryButton, QDialogButtonBox::ActionRole );
-    buttonBox->addButton( mStatsButton, QDialogButtonBox::ActionRole );
-  }
+
+  buttonBox->addButton( mBuildQueryButton, QDialogButtonBox::ActionRole );
+  buttonBox->addButton( mStatsButton, QDialogButtonBox::ActionRole );
 
   populateConnectionList();
 
@@ -121,13 +117,6 @@ QgsSpatiaLiteSourceSelect::~QgsSpatiaLiteSourceSelect()
   settings.setValue( QStringLiteral( "Windows/SpatiaLiteSourceSelect/HoldDialogOpen" ), mHoldDialogOpen->isChecked() );
 }
 
-// Slot for performing action when the Add button is clicked
-void QgsSpatiaLiteSourceSelect::addClicked()
-{
-  addTables();
-}
-
-//! End Autoconnected SLOTS *
 
 // Remember which database is selected
 void QgsSpatiaLiteSourceSelect::on_cmbConnections_activated( int )
@@ -375,7 +364,7 @@ void QgsSpatiaLiteSourceSelect::on_btnDelete_clicked()
   emit connectionsChanged();
 }
 
-void QgsSpatiaLiteSourceSelect::addTables()
+void QgsSpatiaLiteSourceSelect::addButtonClicked()
 {
   m_selectedTables.clear();
 
@@ -417,7 +406,7 @@ void QgsSpatiaLiteSourceSelect::addTables()
   else
   {
     emit addDatabaseLayers( m_selectedTables, QStringLiteral( "spatialite" ) );
-    if ( !mHoldDialogOpen->isChecked() )
+    if ( widgetMode() == QgsProviderRegistry::WidgetMode::None && ! mHoldDialogOpen->isChecked() )
     {
       accept();
     }
@@ -554,6 +543,11 @@ void QgsSpatiaLiteSourceSelect::dbChanged()
   settings.setValue( QStringLiteral( "SpatiaLite/connections/selected" ), cmbConnections->currentText() );
 }
 
+void QgsSpatiaLiteSourceSelect::refresh()
+{
+  populateConnectionList();
+}
+
 void QgsSpatiaLiteSourceSelect::setConnectionListPosition()
 {
   QgsSettings settings;
@@ -581,5 +575,5 @@ void QgsSpatiaLiteSourceSelect::setSearchExpression( const QString &regexp )
 void QgsSpatiaLiteSourceSelect::treeWidgetSelectionChanged( const QItemSelection &selected, const QItemSelection &deselected )
 {
   Q_UNUSED( deselected )
-  mAddButton->setEnabled( !selected.isEmpty() );
+  emit enableButtons( !selected.isEmpty() );
 }

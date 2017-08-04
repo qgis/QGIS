@@ -30,11 +30,11 @@ QgsStyleSaveDialog::QgsStyleSaveDialog( QWidget *parent, QgsStyle::StyleEntity t
 
   if ( type == QgsStyle::SymbolEntity )
   {
-    this->setWindowTitle( tr( "Save new symbol" ) );
+    this->setWindowTitle( tr( "Save New Symbol" ) );
   }
   else if ( type == QgsStyle::ColorrampEntity )
   {
-    this->setWindowTitle( tr( "Save new color ramp" ) );
+    this->setWindowTitle( tr( "Save New Color Ramp" ) );
   }
 }
 

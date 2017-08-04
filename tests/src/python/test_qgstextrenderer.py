@@ -24,6 +24,7 @@ from qgis.core import (QgsTextBufferSettings,
                        QgsVectorLayer,
                        QgsTextRenderer,
                        QgsMapSettings,
+                       QgsReadWriteContext,
                        QgsRenderContext,
                        QgsRectangle,
                        QgsRenderChecker,
@@ -91,15 +92,6 @@ class PyQgsTextRenderer(unittest.TestCase):
         self.assertFalse(s.fillBufferInterior())
         s.setFillBufferInterior(True)
         self.assertTrue(s.fillBufferInterior())
-
-    def testBufferReadWriteLayer(self):
-        """test writing and retrieving settings from a layer"""
-        layer = createEmptyLayer()
-        s = self.createBufferSettings()
-        s.writeToLayer(layer)
-        t = QgsTextBufferSettings()
-        t.readFromLayer(layer)
-        self.checkBufferSettings(t)
 
     def testBufferReadWriteXml(self):
         """test saving and restoring state of a buffer to xml"""
@@ -189,24 +181,15 @@ class PyQgsTextRenderer(unittest.TestCase):
         s3 = QgsTextBackgroundSettings(s)
         self.checkBackgroundSettings(s3)
 
-    def testBackgroundReadWriteLayer(self):
-        """test writing and retrieving settings from a layer"""
-        layer = createEmptyLayer()
-        s = self.createBackgroundSettings()
-        s.writeToLayer(layer)
-        t = QgsTextBackgroundSettings()
-        t.readFromLayer(layer)
-        self.checkBackgroundSettings(t)
-
     def testBackgroundReadWriteXml(self):
         """test saving and restoring state of a background to xml"""
         doc = QDomDocument("testdoc")
         s = self.createBackgroundSettings()
-        elem = s.writeXml(doc)
+        elem = s.writeXml(doc, QgsReadWriteContext())
         parent = doc.createElement("settings")
         parent.appendChild(elem)
         t = QgsTextBackgroundSettings()
-        t.readXml(parent)
+        t.readXml(parent, QgsReadWriteContext())
         self.checkBackgroundSettings(t)
 
     def createShadowSettings(self):
@@ -271,15 +254,6 @@ class PyQgsTextRenderer(unittest.TestCase):
         s3 = QgsTextShadowSettings(s)
         self.checkShadowSettings(s3)
 
-    def testShadowReadWriteLayer(self):
-        """test writing and retrieving settings from a layer"""
-        layer = createEmptyLayer()
-        s = self.createShadowSettings()
-        s.writeToLayer(layer)
-        t = QgsTextShadowSettings()
-        t.readFromLayer(layer)
-        self.checkShadowSettings(t)
-
     def testShadowReadWriteXml(self):
         """test saving and restoring state of a shadow to xml"""
         doc = QDomDocument("testdoc")
@@ -339,25 +313,26 @@ class PyQgsTextRenderer(unittest.TestCase):
         s3 = QgsTextFormat(s)
         self.checkTextFormat(s3)
 
-    def testFormatReadWriteLayer(self):
-        """test writing and retrieving settings from a layer"""
-        layer = createEmptyLayer()
-        s = self.createFormatSettings()
-        s.writeToLayer(layer)
-        t = QgsTextFormat()
-        t.readFromLayer(layer)
-        self.checkTextFormat(t)
-
     def testFormatReadWriteXml(self):
         """test saving and restoring state of a shadow to xml"""
         doc = QDomDocument("testdoc")
         s = self.createFormatSettings()
-        elem = s.writeXml(doc)
+        elem = s.writeXml(doc, QgsReadWriteContext())
         parent = doc.createElement("settings")
         parent.appendChild(elem)
         t = QgsTextFormat()
-        t.readXml(parent)
+        t.readXml(parent, QgsReadWriteContext())
         self.checkTextFormat(t)
+
+    def testFormatToFromMimeData(self):
+        """Test converting format to and from mime data"""
+        s = self.createFormatSettings()
+        md = s.toMimeData()
+        from_mime, ok = QgsTextFormat.fromMimeData(None)
+        self.assertFalse(ok)
+        from_mime, ok = QgsTextFormat.fromMimeData(md)
+        self.assertTrue(ok)
+        self.checkTextFormat(from_mime)
 
     def containsAdvancedEffects(self):
         t = QgsTextFormat()
@@ -404,17 +379,17 @@ class PyQgsTextRenderer(unittest.TestCase):
     def testFontFoundFromXml(self):
         doc = QDomDocument("testdoc")
         f = QgsTextFormat()
-        elem = f.writeXml(doc)
+        elem = f.writeXml(doc, QgsReadWriteContext())
         elem.setAttribute('fontFamily', 'asdfasdfsadf')
         parent = doc.createElement("parent")
         parent.appendChild(elem)
 
-        f.readXml(parent)
+        f.readXml(parent, QgsReadWriteContext())
         self.assertFalse(f.fontFound())
 
         font = getTestFont()
         elem.setAttribute('fontFamily', font.family())
-        f.readXml(parent)
+        f.readXml(parent, QgsReadWriteContext())
         self.assertTrue(f.fontFound())
 
     def imageCheck(self, name, reference_image, image):

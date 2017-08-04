@@ -27,7 +27,7 @@
 #include "qgsexpressioncontext.h"
 #include "qgssimplifymethod.h"
 
-typedef QList<int> QgsAttributeList;
+
 
 /** \ingroup core
  * This class wraps a request for features to a vector layer (or directly its vector data provider).
@@ -208,13 +208,14 @@ class CORE_EXPORT QgsFeatureRequest
         bool mNullsFirst;
     };
 
+
     /** \ingroup core
      * Represents a list of OrderByClauses, with the most important first and the least
      * important last.
      *
      * \since QGIS 2.14
      */
-    class OrderBy : public QList<OrderByClause>
+    class OrderBy : public QList<QgsFeatureRequest::OrderByClause>
     {
       public:
 
@@ -222,13 +223,13 @@ class CORE_EXPORT QgsFeatureRequest
          * Create a new empty order by
          */
         CORE_EXPORT OrderBy()
-          : QList<OrderByClause>()
+          : QList<QgsFeatureRequest::OrderByClause>()
         {}
 
         /**
          * Create a new order by from a list of clauses
          */
-        CORE_EXPORT OrderBy( const QList<OrderByClause> &other );
+        CORE_EXPORT OrderBy( const QList<QgsFeatureRequest::OrderByClause> &other );
 
         /**
          * Get a copy as a list of OrderByClauses
@@ -236,7 +237,7 @@ class CORE_EXPORT QgsFeatureRequest
          * This is only required in Python where the inheritance
          * is not properly propagated and this makes it usable.
          */
-        QList<OrderByClause> CORE_EXPORT list() const;
+        QList<QgsFeatureRequest::OrderByClause> CORE_EXPORT list() const;
 
         /**
          * Serialize to XML
@@ -270,8 +271,16 @@ class CORE_EXPORT QgsFeatureRequest
     explicit QgsFeatureRequest( QgsFeatureId fid );
     //! construct a request with feature ID filter
     explicit QgsFeatureRequest( const QgsFeatureIds &fids );
-    //! construct a request with rectangle filter
-    explicit QgsFeatureRequest( const QgsRectangle &rect );
+
+    /**
+     * Construct a request with \a rectangle bounding box filter.
+     *
+     * When a destination CRS is set using setDestinationCrs(), \a rectangle
+     * is expected to be in the same CRS as the destinationCrs(). Otherwise, \a rectangle
+     * should use the same CRS as the source layer/provider.
+     */
+    explicit QgsFeatureRequest( const QgsRectangle &rectangle );
+
     //! construct a request with a filter expression
     explicit QgsFeatureRequest( const QgsExpression &expr, const QgsExpressionContext &context = QgsExpressionContext() );
     //! copy constructor
@@ -287,13 +296,25 @@ class CORE_EXPORT QgsFeatureRequest
     FilterType filterType() const { return mFilter; }
 
     /**
-     * Set rectangle from which features will be taken. Empty rectangle removes the filter.
+     * Sets the \a rectangle from which features will be taken. An empty rectangle removes the filter.
+     *
+     * When a destination CRS is set using setDestinationCrs(), \a rectangle
+     * is expected to be in the same CRS as the destinationCrs(). Otherwise, \a rectangle
+     * should use the same CRS as the source layer/provider.
+     *
+     * \see filterRect()
      */
-    QgsFeatureRequest &setFilterRect( const QgsRectangle &rect );
+    QgsFeatureRequest &setFilterRect( const QgsRectangle &rectangle );
 
     /**
-     * Get the rectangle from which features will be taken. If the returned
+     * Returns the rectangle from which features will be taken. If the returned
      * rectangle is null, then no filter rectangle is set.
+     *
+     * When a destination CRS is set using setDestinationCrs(), the rectangle
+     * will be in the same CRS as the destinationCrs(). Otherwise, the rectangle
+     * will use the same CRS as the source layer/provider.
+     *
+     * \see setFilterRect()
      */
     const QgsRectangle &filterRect() const { return mFilterRect; }
 
@@ -325,16 +346,34 @@ class CORE_EXPORT QgsFeatureRequest
 
     /**
      * Sets a callback function to use when encountering an invalid geometry and
-     * invalidGeometryCheck() is set to GeometryAbortOnInvalid. This function will be
+     * invalidGeometryCheck() is set to GeometryAbortOnInvalid or GeometrySkipInvalid. This function will be
      * called using the feature with invalid geometry as a parameter.
      * \since QGIS 3.0
      * \see invalidGeometryCallback()
      */
+#ifndef SIP_RUN
     QgsFeatureRequest &setInvalidGeometryCallback( std::function< void( const QgsFeature & ) > callback );
+#else
+    QgsFeatureRequest &setInvalidGeometryCallback( SIP_PYCALLABLE / AllowNone / );
+    % MethodCode
+    Py_BEGIN_ALLOW_THREADS
+
+    sipCpp->setInvalidGeometryCallback( [a0]( const QgsFeature &arg )
+    {
+      SIP_BLOCK_THREADS
+      Py_XDECREF( sipCallMethod( NULL, a0, "D", &arg, sipType_QgsFeature, NULL ) );
+      SIP_UNBLOCK_THREADS
+    } );
+
+    sipRes = sipCpp;
+
+    Py_END_ALLOW_THREADS
+    % End
+#endif
 
     /**
      * Returns the callback function to use when encountering an invalid geometry and
-     * invalidGeometryCheck() is set to GeometryAbortOnInvalid.
+     * invalidGeometryCheck() is set to GeometryAbortOnInvalid or GeometrySkipInvalid.
      * \since QGIS 3.0
      * \note not available in Python bindings
      * \see setInvalidGeometryCallback()
@@ -464,6 +503,79 @@ class CORE_EXPORT QgsFeatureRequest
     const QgsSimplifyMethod &simplifyMethod() const { return mSimplifyMethod; }
 
     /**
+     * Returns the destination coordinate reference system for feature's geometries,
+     * or an invalid QgsCoordinateReferenceSystem if no reprojection will be done
+     * and all features will be left with their original geometry.
+     * \see setDestinationCrs()
+     * \since QGIS 3.0
+     */
+    QgsCoordinateReferenceSystem destinationCrs() const;
+
+    /**
+     * Sets the destination \a crs for feature's geometries. If set, all
+     * geometries will be reprojected from their original coordinate reference
+     * system to this desired reference system. If \a crs is an invalid
+     * QgsCoordinateReferenceSystem then no reprojection will be done
+     * and all features will be left with their original geometry.
+     *
+     * When a \a crs is set using setDestinationCrs(), then any filterRect()
+     * set on the request is expected to be in the same CRS as the destination
+     * CRS.
+     *
+     * The feature geometry transformation to the destination CRS is performed
+     * after all filter expressions are tested and any virtual fields are
+     * calculated. Accordingly, any geometric expressions used in
+     * filterExpression() will be performed in the original
+     * source CRS. This ensures consistent results are returned regardless of the
+     * destination CRS. Similarly, virtual field values will be calculated using the
+     * original geometry in the source CRS, so these values are not affected by
+     * any destination CRS transform present in the feature request.
+     *
+     * \see destinationCrs()
+     * \since QGIS 3.0
+     */
+    QgsFeatureRequest &setDestinationCrs( const QgsCoordinateReferenceSystem &crs );
+
+    /**
+     * Sets a callback function to use when encountering a transform error when iterating
+     * features and a destinationCrs() is set. This function will be
+     * called using the feature which encountered the transform error as a parameter.
+     * \since QGIS 3.0
+     * \see transformErrorCallback()
+     * \see setDestinationCrs()
+     */
+#ifndef SIP_RUN
+    QgsFeatureRequest &setTransformErrorCallback( std::function< void( const QgsFeature & ) > callback );
+#else
+    QgsFeatureRequest &setTransformErrorCallback( SIP_PYCALLABLE / AllowNone / );
+    % MethodCode
+    Py_BEGIN_ALLOW_THREADS
+
+    sipCpp->setTransformErrorCallback( [a0]( const QgsFeature &arg )
+    {
+      SIP_BLOCK_THREADS
+      Py_XDECREF( sipCallMethod( NULL, a0, "D", &arg, sipType_QgsFeature, NULL ) );
+      SIP_UNBLOCK_THREADS
+    } );
+
+    sipRes = sipCpp;
+
+    Py_END_ALLOW_THREADS
+    % End
+#endif
+
+    /**
+     * Returns the callback function to use when encountering a transform error when iterating
+     * features and a destinationCrs() is set.
+     * \since QGIS 3.0
+     * \note not available in Python bindings
+     * \see setTransformErrorCallback()
+     * \see destinationCrs()
+     */
+    std::function< void( const QgsFeature & ) > transformErrorCallback() const { return mTransformErrorCallback; } SIP_SKIP
+
+
+    /**
      * Check if a feature is accepted by this requests filter
      *
      * \param feature  The feature which will be tested
@@ -488,6 +600,8 @@ class CORE_EXPORT QgsFeatureRequest
     OrderBy mOrderBy;
     InvalidGeometryCheck mInvalidGeometryFilter = GeometryNoCheck;
     std::function< void( const QgsFeature & ) > mInvalidGeometryCallback;
+    std::function< void( const QgsFeature & ) > mTransformErrorCallback;
+    QgsCoordinateReferenceSystem mCrs;
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS( QgsFeatureRequest::Flags )

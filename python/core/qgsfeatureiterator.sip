@@ -8,6 +8,8 @@
 
 
 
+
+
 class QgsAbstractFeatureIterator
 {
 %Docstring
@@ -100,6 +102,29 @@ end of iterating: free the resources / lock
  :rtype: bool
 %End
 
+    void geometryToDestinationCrs( QgsFeature &feature, const QgsCoordinateTransform &transform ) const;
+%Docstring
+ Transforms ``feature``'s geometry according to the specified coordinate ``transform``.
+ If ``feature`` has no geometry or ``transform`` is invalid then calling this method
+ has no effect and will be shortcut.
+ Iterators should call this method before returning features to ensure that any
+ QgsFeatureRequest.destinationCrs() set on the request is respected.
+.. versionadded:: 3.0
+%End
+
+
+    QgsRectangle filterRectToSourceCrs( const QgsCoordinateTransform &transform ) const;
+%Docstring
+ Returns a rectangle representing the original request's QgsFeatureRequest.filterRect().
+ If ``transform`` is a valid coordinate transform, the return rectangle will represent
+ the requested filterRect() transformed to the source's coordinate reference system.
+ Iterators should call this method and use the returned rectangle for filtering
+ features to ensure that any QgsFeatureRequest.destinationCrs() set on the request is respected.
+ Will throw a QgsCsException if the rect cannot be transformed from the destination CRS.
+.. versionadded:: 3.0
+ :rtype: QgsRectangle
+%End
+
 
 
 
@@ -118,6 +143,33 @@ Remove reference, delete if refs == 0
 %Docstring
 Setup the simplification of geometries to fetch using the specified simplify method
  :rtype: bool
+%End
+
+};
+
+
+template<T>
+class QgsAbstractFeatureIteratorFromSource : QgsAbstractFeatureIterator
+{
+%Docstring
+ Helper template that cares of two things: 1. automatic deletion of source if owned by iterator, 2. notification of open/closed iterator.
+.. note::
+
+   not available in Python bindings (although present in SIP file)
+%End
+
+%TypeHeaderCode
+#include "qgsfeatureiterator.h"
+%End
+  public:
+    QgsAbstractFeatureIteratorFromSource( T *source, bool ownSource, const QgsFeatureRequest &request );
+
+    ~QgsAbstractFeatureIteratorFromSource();
+
+  protected:
+    void iteratorClosed();
+%Docstring
+to be called by from subclass in close()
 %End
 
 };
@@ -194,6 +246,9 @@ find out whether the iterator is still valid or closed already
 .. versionadded:: 2.16
  :rtype: QgsAbstractFeatureIterator.CompileStatus
 %End
+
+
+  protected:
 
 
 };

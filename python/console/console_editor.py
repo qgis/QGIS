@@ -27,6 +27,7 @@ from qgis.PyQt.QtWidgets import QShortcut, QMenu, QApplication, QWidget, QGridLa
 from qgis.PyQt.Qsci import QsciScintilla, QsciLexerPython, QsciAPIs, QsciStyle
 from qgis.core import QgsApplication, QgsSettings
 from qgis.gui import QgsMessageBar
+from qgis.utils import OverrideCursor
 import sys
 import os
 import subprocess
@@ -726,10 +727,9 @@ class Editor(QsciScintilla):
             file = open(pathfile, "r")
             fileLines = file.readlines()
             file.close()
-            QApplication.setOverrideCursor(Qt.WaitCursor)
-            for line in reversed(fileLines):
-                self.insert(line)
-            QApplication.restoreOverrideCursor()
+            with OverrideCursor(Qt.WaitCursor):
+                for line in reversed(fileLines):
+                    self.insert(line)
             self.setModified(False)
             self.endUndoAction()
 
@@ -785,11 +785,10 @@ class EditorTab(QWidget):
         fn = codecs.open(filename, "rb", encoding='utf-8')
         txt = fn.read()
         fn.close()
-        QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
-        self.newEditor.setText(txt)
-        if self.readOnly:
-            self.newEditor.setReadOnly(self.readOnly)
-        QApplication.restoreOverrideCursor()
+        with OverrideCursor(Qt.WaitCursor):
+            self.newEditor.setText(txt)
+            if self.readOnly:
+                self.newEditor.setReadOnly(self.readOnly)
         self.newEditor.setModified(modified)
         self.newEditor.recolor()
 
@@ -1259,9 +1258,8 @@ class EditorTabWidget(QTabWidget):
         if objInspectorEnabled:
             cW = self.currentWidget()
             if cW and not self.parent.listClassMethod.isVisible():
-                QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
-                self.listObject(cW)
-                QApplication.restoreOverrideCursor()
+                with OverrideCursor(Qt.WaitCursor):
+                    self.listObject(cW)
 
     def changeLastDirPath(self, tab):
         tabWidget = self.widget(tab)

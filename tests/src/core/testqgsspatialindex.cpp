@@ -27,7 +27,7 @@
 static QgsFeature _pointFeature( QgsFeatureId id, qreal x, qreal y )
 {
   QgsFeature f( id );
-  QgsGeometry g = QgsGeometry::fromPoint( QgsPoint( x, y ) );
+  QgsGeometry g = QgsGeometry::fromPoint( QgsPointXY( x, y ) );
   f.setGeometry( g );
   return f;
 }
@@ -82,6 +82,23 @@ class TestQgsSpatialIndex : public QObject
       QVERIFY( fids2.contains( 3 ) );
     }
 
+    void testQueryManualInsert()
+    {
+      QgsSpatialIndex index;
+      index.insertFeature( 1, QgsRectangle( 2, 3, 2, 3 ) );
+      index.insertFeature( 2, QgsRectangle( 12, 13, 12, 13 ) );
+      index.insertFeature( 3, QgsRectangle( 14, 13, 14, 13 ) );
+
+      QList<QgsFeatureId> fids = index.intersects( QgsRectangle( 1, 2, 3, 4 ) );
+      QVERIFY( fids.count() == 1 );
+      QVERIFY( fids.at( 0 ) == 1 );
+
+      QList<QgsFeatureId> fids2 = index.intersects( QgsRectangle( 10, 12, 15, 14 ) );
+      QVERIFY( fids2.count() == 2 );
+      QVERIFY( fids2.contains( 2 ) );
+      QVERIFY( fids2.contains( 3 ) );
+    }
+
     void testCopy()
     {
       QgsSpatialIndex *index = new QgsSpatialIndex;
@@ -128,7 +145,7 @@ class TestQgsSpatialIndex : public QObject
         for ( int k = 0; k < 500; ++k )
         {
           QgsFeature f( i * 1000 + k );
-          QgsGeometry g = QgsGeometry::fromPoint( QgsPoint( i / 10, i % 10 ) );
+          QgsGeometry g = QgsGeometry::fromPoint( QgsPointXY( i / 10, i % 10 ) );
           f.setGeometry( g );
           index.insertFeature( f );
         }
@@ -150,7 +167,7 @@ class TestQgsSpatialIndex : public QObject
         for ( int k = 0; k < 500; ++k )
         {
           QgsFeature f( i * 1000 + k );
-          QgsGeometry g = QgsGeometry::fromPoint( QgsPoint( i / 10, i % 10 ) );
+          QgsGeometry g = QgsGeometry::fromPoint( QgsPointXY( i / 10, i % 10 ) );
           f.setGeometry( g );
           flist << f;
         }

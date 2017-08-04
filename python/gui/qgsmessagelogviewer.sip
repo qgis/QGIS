@@ -21,7 +21,7 @@ class QgsMessageLogViewer: QDialog
 %End
   public:
 
-    QgsMessageLogViewer( QWidget *parent /TransferThis/ = 0, Qt::WindowFlags fl = QgisGui::ModalDialogFlags );
+    QgsMessageLogViewer( QWidget *parent /TransferThis/ = 0, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags );
 %Docstring
  Create a new message log viewer. The viewer will automatically connect to the system's
  QgsApplication.messageLog() instance.

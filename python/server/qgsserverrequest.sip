@@ -1,30 +1,18 @@
-/***************************************************************************
-                          qgsserverrequest.h
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/server/qgsserverrequest.h                                        *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
 
-  Define request class for getting request contents
-  -------------------
-  begin                : 2016-12-05
-  copyright            : (C) 2016 by David Marteau
-  email                : david dot marteau at 3liz dot com
- ***************************************************************************/
 
-/***************************************************************************
- *                                                                         *
- *   This program is free software; you can redistribute it and/or modify  *
- *   it under the terms of the GNU General Public License as published by  *
- *   the Free Software Foundation; either version 2 of the License, or     *
- *   (at your option) any later version.                                   *
- *                                                                         *
- ***************************************************************************/
 
-/**
- * \ingroup server
- * QgsServerRequest
- * Class defining request interface passed to services QgsService::executeRequest() method
- */
+
 
 class QgsServerRequest
 {
+
 %TypeHeaderCode
 #include "qgsserverrequest.h"
 %End
@@ -35,118 +23,129 @@ class QgsServerRequest
 
     enum Method
     {
-      HeadMethod, PutMethod, GetMethod, PostMethod, DeleteMethod
+      HeadMethod,
+      PutMethod,
+      GetMethod,
+      PostMethod,
+      DeleteMethod
     };
 
-    /**
-     * Constructor
-     */
+
     QgsServerRequest();
+%Docstring
+ Constructor
+%End
 
-    /**
-     * Constructor
-     *
-     * @param url the url string
-     * @param method the request method
-     */
-    QgsServerRequest( const QString &url, Method method );
+    QgsServerRequest( const QString &url, QgsServerRequest::Method method = QgsServerRequest::GetMethod, const QgsServerRequest::Headers &headers = QgsServerRequest::Headers() );
+%Docstring
+ Constructor
 
+ \param url the url string
+ \param method the request method
+ \param headers
+%End
 
-    /**
-     * Constructor
-     *
-     * \param url the url string
-     * \param method the request method
-     * \param headers
-     */
-    QgsServerRequest( const QString &url, Method method = GetMethod, const QgsServerRequest::Headers &headers = QgsServerRequest::Headers( ) );
+    QgsServerRequest( const QUrl &url, QgsServerRequest::Method method = QgsServerRequest::GetMethod, const QgsServerRequest::Headers &headers = QgsServerRequest::Headers() );
+%Docstring
+ Constructor
 
-    /**
-     * Constructor
-     *
-     * \param url QUrl
-     * \param method the request method
-     * \param headers
-     */
-    QgsServerRequest( const QUrl &url, Method method = GetMethod, const QgsServerRequest::Headers &headers = QgsServerRequest::Headers( ) );
+ \param url QUrl
+ \param method the request method
+ \param headers
+%End
 
-
-    //! destructor
     virtual ~QgsServerRequest();
+%Docstring
+destructor
+%End
 
-
-    /**
-     * Return the header value
-     * @param name of the header
-     * @return the header value or an empty string
-     */
-    QString header( const QString &name ) const;
-
-    /**
-     * Set an header
-     * @param name
-     * @param value
-     */
-    void setHeader( const QString &name, const QString &value );
-
-    /**
-     * Return the header map
-     * @return the headers map
-     */
-    QMap<QString, QString> headers( ) const;
-
-    /**
-     * Remove an header
-     * @param name
-     */
-    void removeHeader( const QString &name );
-
-    /**
-     * @return the request url
-     */
     QUrl url() const;
+%Docstring
+ :return:  the request url
+ :rtype: QUrl
+%End
 
-    /**
-     * @return the request method
-     */
-    Method method() const;
+    QgsServerRequest::Method method() const;
+%Docstring
+ :return: the request method
+ :rtype: QgsServerRequest.Method
+%End
 
-    /**
-     * @return query params
-     */
-    QMap<QString, QString> parameters() const;
+    QgsServerRequest::Parameters parameters() const;
+%Docstring
+ Return a map of query parameters with keys converted
+ to uppercase
+ :rtype: QgsServerRequest.Parameters
+%End
 
-    /**
-     * Set a parameter
-     */
     void setParameter( const QString &key, const QString &value );
+%Docstring
+ Set a parameter
+%End
 
-    /**
-     * Get a parameter value
-     */
-    QString parameter( const QString& key ) const;
+    QString parameter( const QString &key ) const;
+%Docstring
+ Get a parameter value
+ :rtype: str
+%End
 
-    /**
-     * Remove a parameter
-     */
     void removeParameter( const QString &key );
+%Docstring
+ Remove a parameter
+%End
 
-    /**
-     * Return post/put data
-     * Check for QByteArray::isNull() to check if data
-     * is available.
-     */
+    QString header( const QString &name ) const;
+%Docstring
+ Return the header value
+ @param name of the header
+ @return the header value or an empty string
+ :rtype: str
+%End
+
+    void setHeader( const QString &name, const QString &value );
+%Docstring
+ Set an header
+ @param name
+ @param value
+%End
+
+    QMap<QString, QString> headers() const;
+%Docstring
+ Return the header map
+ @return the headers map
+ :rtype: QMap<str, QString>
+%End
+
+    void removeHeader( const QString &name );
+%Docstring
+ Remove an header
+ @param name
+%End
+
     virtual QByteArray data() const;
+%Docstring
+ Return post/put data
+ Check for QByteArray.isNull() to check if data
+ is available.
+ :rtype: QByteArray
+%End
 
-    /**
-     * Set the request url
-     */
     void setUrl( const QUrl &url );
+%Docstring
+ Set the request url
+%End
 
-    /**
-     * Set the request method
-     */
-    void setMethod( Method method );
+    void setMethod( QgsServerRequest::Method method );
+%Docstring
+ Set the request method
+%End
 
 };
 
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/server/qgsserverrequest.h                                        *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

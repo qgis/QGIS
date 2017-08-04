@@ -19,6 +19,7 @@
 #define QGSSINGLEBANDCOLORRENDERERWIDGET_H
 
 #include "qgsrasterrendererwidget.h"
+#include "qgis_sip.h"
 #include "qgscolorrampshader.h"
 #include "qgsrasterrenderer.h"
 #include "ui_qgssinglebandpseudocolorrendererwidgetbase.h"
@@ -29,8 +30,7 @@ class QgsRasterMinMaxWidget;
 /** \ingroup gui
  * \class QgsSingleBandPseudoColorRendererWidget
  */
-class GUI_EXPORT QgsSingleBandPseudoColorRendererWidget: public QgsRasterRendererWidget,
-  private Ui::QgsSingleBandPseudoColorRendererWidgetBase
+class GUI_EXPORT QgsSingleBandPseudoColorRendererWidget: public QgsRasterRendererWidget, private Ui::QgsSingleBandPseudoColorRendererWidgetBase
 {
 
     Q_OBJECT
@@ -39,7 +39,7 @@ class GUI_EXPORT QgsSingleBandPseudoColorRendererWidget: public QgsRasterRendere
 
     QgsSingleBandPseudoColorRendererWidget( QgsRasterLayer *layer, const QgsRectangle &extent = QgsRectangle() );
 
-    static QgsRasterRendererWidget *create( QgsRasterLayer *layer, const QgsRectangle &extent ) { return new QgsSingleBandPseudoColorRendererWidget( layer, extent ); }
+    static QgsRasterRendererWidget *create( QgsRasterLayer *layer, const QgsRectangle &extent ) SIP_FACTORY { return new QgsSingleBandPseudoColorRendererWidget( layer, extent ); }
     QgsRasterRenderer *renderer() override;
     void setMapCanvas( QgsMapCanvas *canvas ) override;
     void doComputations() override;

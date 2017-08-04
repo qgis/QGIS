@@ -19,7 +19,7 @@
 #include "qgsfeaturerequest.h"
 #include "qgsindexedfeature.h"
 
-#ifndef SIP_RUN
+
 
 /** \ingroup core
  * Interface that can be optionally attached to an iterator so its
@@ -27,14 +27,12 @@
  * \since QGIS 2.16
  * \note not available in Python bindings
  */
-class CORE_EXPORT QgsInterruptionChecker
+class CORE_EXPORT QgsInterruptionChecker SIP_SKIP
 {
   public:
     //! return true if the iterator must stop as soon as possible
     virtual bool mustStop() const = 0;
 };
-
-#endif
 
 /** \ingroup core
  * Internal feature iterator to be implemented within data providers
@@ -65,8 +63,6 @@ class CORE_EXPORT QgsAbstractFeatureIterator
     //! end of iterating: free the resources / lock
     virtual bool close() = 0;
 
-#ifndef SIP_RUN
-
     /** Attach an object that can be queried regularly by the iterator to check
      * if it must stopped. This is mostly useful for iterators where a single
      * nextFeature()/fetchFeature() iteration might be very long. A typical use case is the
@@ -75,8 +71,7 @@ class CORE_EXPORT QgsAbstractFeatureIterator
      * \since QGIS 2.16
      * \note not available in Python bindings
      */
-    virtual void setInterruptionChecker( QgsInterruptionChecker *interruptionChecker );
-#endif
+    virtual void setInterruptionChecker( QgsInterruptionChecker *interruptionChecker ) SIP_SKIP;
 
     /** Returns the status of expression compilation for filter expression requests.
      * \since QGIS 2.16
@@ -118,6 +113,28 @@ class CORE_EXPORT QgsAbstractFeatureIterator
      * \returns  true if a feature was written to f
      */
     virtual bool nextFeatureFilterFids( QgsFeature &f );
+
+    /**
+     * Transforms \a feature's geometry according to the specified coordinate \a transform.
+     * If \a feature has no geometry or \a transform is invalid then calling this method
+     * has no effect and will be shortcut.
+     * Iterators should call this method before returning features to ensure that any
+     * QgsFeatureRequest::destinationCrs() set on the request is respected.
+     * \since QGIS 3.0
+     */
+    void geometryToDestinationCrs( QgsFeature &feature, const QgsCoordinateTransform &transform ) const;
+
+
+    /**
+     * Returns a rectangle representing the original request's QgsFeatureRequest::filterRect().
+     * If \a transform is a valid coordinate transform, the return rectangle will represent
+     * the requested filterRect() transformed to the source's coordinate reference system.
+     * Iterators should call this method and use the returned rectangle for filtering
+     * features to ensure that any QgsFeatureRequest::destinationCrs() set on the request is respected.
+     * Will throw a QgsCsException if the rect cannot be transformed from the destination CRS.
+     * \since QGIS 3.0
+     */
+    QgsRectangle filterRectToSourceCrs( const QgsCoordinateTransform &transform ) const;
 
     //! A copy of the feature request.
     QgsFeatureRequest mRequest;
@@ -179,11 +196,10 @@ class CORE_EXPORT QgsAbstractFeatureIterator
     void setupOrderBy( const QList<QgsFeatureRequest::OrderByClause> &orderBys );
 };
 
-#ifndef SIP_RUN
 
 /** \ingroup core
  * Helper template that cares of two things: 1. automatic deletion of source if owned by iterator, 2. notification of open/closed iterator.
- * \note not available in Python bindings
+ * \note not available in Python bindings (although present in SIP file)
 */
 template<typename T>
 class QgsAbstractFeatureIteratorFromSource : public QgsAbstractFeatureIterator
@@ -211,7 +227,6 @@ class QgsAbstractFeatureIteratorFromSource : public QgsAbstractFeatureIterator
     bool mOwnSource;
 };
 
-#endif
 
 /**
  * \ingroup core
@@ -260,8 +275,6 @@ class CORE_EXPORT QgsFeatureIterator
     //! find out whether the iterator is still valid or closed already
     bool isClosed() const;
 
-#ifndef SIP_RUN
-
     /** Attach an object that can be queried regularly by the iterator to check
      * if it must stopped. This is mostly useful for iterators where a single
      * nextFeature()/fetchFeature() iteration might be very long. A typical use case is the
@@ -269,24 +282,19 @@ class CORE_EXPORT QgsFeatureIterator
      * \since QGIS 2.16
      * \note not available in Python bindings
      */
-    void setInterruptionChecker( QgsInterruptionChecker *interruptionChecker );
-
-#endif
+    void setInterruptionChecker( QgsInterruptionChecker *interruptionChecker ) SIP_SKIP;
 
     /** Returns the status of expression compilation for filter expression requests.
      * \since QGIS 2.16
      */
     QgsAbstractFeatureIterator::CompileStatus compileStatus() const { return mIter->compileStatus(); }
 
-#ifndef SIP_RUN
-
-    friend bool operator== ( const QgsFeatureIterator &fi1, const QgsFeatureIterator &fi2 );
-    friend bool operator!= ( const QgsFeatureIterator &fi1, const QgsFeatureIterator &fi2 );
+    friend bool operator== ( const QgsFeatureIterator &fi1, const QgsFeatureIterator &fi2 ) SIP_SKIP;
+    friend bool operator!= ( const QgsFeatureIterator &fi1, const QgsFeatureIterator &fi2 ) SIP_SKIP;
 
   protected:
     QgsAbstractFeatureIterator *mIter = nullptr;
 
-#endif
 
 };
 

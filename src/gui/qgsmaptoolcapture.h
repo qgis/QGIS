@@ -56,6 +56,13 @@ class GUI_EXPORT QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
      */
     const QgsCompoundCurve *captureCurve() const { return &mCaptureCurve; }
 
+    /**
+     * Return a list of matches for each point on the captureCurve.
+     *
+     * \since QGIS 3.0
+     */
+    QList<QgsPointLocator::Match> snappingMatches() const;
+
     virtual void cadCanvasMoveEvent( QgsMapMouseEvent *e ) override;
 
     /**
@@ -90,7 +97,7 @@ class GUI_EXPORT QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
      *   2 if the transformation failed
      */
     // TODO QGIS 3.0 returns an enum instead of a magic constant
-    int nextPoint( const QgsPointV2 &mapPoint, QgsPointV2 &layerPoint );
+    int nextPoint( const QgsPoint &mapPoint, QgsPoint &layerPoint );
 
     /** Converts a point to map coordinates and layer coordinates
      * \param p the input point
@@ -102,7 +109,7 @@ class GUI_EXPORT QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
      *  2 if the transformation failed
      */
     // TODO QGIS 3.0 returns an enum instead of a magic constant
-    int nextPoint( QPoint p, QgsPointV2 &layerPoint, QgsPointV2 &mapPoint );
+    int nextPoint( QPoint p, QgsPoint &layerPoint, QgsPoint &mapPoint );
 
     /** Fetches the original point from the source layer if it has the same
      * CRS as the current layer.
@@ -110,20 +117,20 @@ class GUI_EXPORT QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
      * \since QGIS 2.14
      */
     // TODO QGIS 3.0 returns an enum instead of a magic constant
-    int fetchLayerPoint( const QgsPointLocator::Match &match, QgsPointV2 &layerPoint );
+    int fetchLayerPoint( const QgsPointLocator::Match &match, QgsPoint &layerPoint );
 
     /** Adds a point to the rubber band (in map coordinates) and to the capture list (in layer coordinates)
      * \returns 0 in case of success, 1 if current layer is not a vector layer, 2 if coordinate transformation failed
      */
     // TODO QGIS 3.0 returns an enum instead of a magic constant
-    int addVertex( const QgsPoint &point );
+    int addVertex( const QgsPointXY &point );
 
     /** Variant to supply more information in the case of snapping
      * \param mapPoint The vertex to add in map coordinates
      * \param match Data about the snapping match. Can be an invalid match, if point not snapped.
      * \since QGIS 2.14
      */
-    int addVertex( const QgsPoint &mapPoint, const QgsPointLocator::Match &match );
+    int addVertex( const QgsPointXY &mapPoint, const QgsPointLocator::Match &match );
 
     //! Removes the last vertex from mRubberBand and mCaptureList
     void undo();
@@ -156,14 +163,14 @@ class GUI_EXPORT QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
      * List of digitized points
      * \returns List of points
      */
-    QList<QgsPoint> points();
+    QList<QgsPointXY> points();
 
     /**
      * Set the points on which to work
      *
      * \param pointList A list of points
      */
-    void setPoints( const QList<QgsPoint> &pointList );
+    void setPoints( const QList<QgsPointXY> &pointList );
 
     /**
      * Close an open polygon
@@ -174,11 +181,11 @@ class GUI_EXPORT QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
     //! whether tracing has been requested by the user
     bool tracingEnabled();
     //! first point that will be used as a start of the trace
-    QgsPoint tracingStartPoint();
+    QgsPointXY tracingStartPoint();
     //! handle of mouse movement when tracing enabled and capturing has started
     bool tracingMouseMove( QgsMapMouseEvent *e );
     //! handle of addition of clicked point (with the rest of the trace) when tracing enabled
-    bool tracingAddVertex( const QgsPoint &point );
+    bool tracingAddVertex( const QgsPointXY &point );
 
   private:
     //! Flag to indicate a map canvas capture operation is taking place
@@ -192,6 +199,8 @@ class GUI_EXPORT QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
 
     //! List to store the points of digitized lines and polygons (in layer coordinates)
     QgsCompoundCurve mCaptureCurve;
+
+    QList<QgsPointLocator::Match> mSnappingMatches;
 
     void validateGeometry();
     QStringList mValidationWarnings;

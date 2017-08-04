@@ -1,69 +1,78 @@
-/***************************************************************************
-                          qgsservice.h
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/server/qgsservice.h                                              *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
 
-  Class defining the service interface for QGIS server services.
-  -------------------
-  begin                : 2016-12-05
-  copyright            : (C) 2016 by David Marteau
-  email                : david dot marteau at 3liz dot com
- ***************************************************************************/
 
-/***************************************************************************
- *                                                                         *
- *   This program is free software; you can redistribute it and/or modify  *
- *   it under the terms of the GNU General Public License as published by  *
- *   the Free Software Foundation; either version 2 of the License, or     *
- *   (at your option) any later version.                                   *
- *                                                                         *
- ***************************************************************************/
 
-/**
- * \ingroup server
- * QgsService
- * Class defining interfaces for QGIS server services
- *
- * This class provides methods for executing server requests
- * They are registered at runtime for a given service name.
- *
- */
+
+
+
 class QgsService
 {
+%Docstring
+ QgsService
+ Class defining interfaces for QGIS server services
+
+ This class provides methods for executing server requests
+ They are registered at runtime for a given service name.
+
+.. versionadded:: 3.0
+%End
+
 %TypeHeaderCode
 #include "qgsservice.h"
+
 #include "qgsserverrequest.h"
 #include "qgsserverresponse.h"
 %End
-
   public:
 
-    //! Constructor
     QgsService();
+%Docstring
+Constructor
+%End
 
-    //! Destructor
     virtual ~QgsService();
+%Docstring
+Destructor
+%End
 
-    /**
-     * @return the name of the service
-     */
     virtual QString name() const = 0;
+%Docstring
+ :return: the name of the service
+ :rtype: str
+%End
 
-    /**
-     * @return the version of the service
-     */
     virtual QString version() const = 0;
+%Docstring
+ :return: the version of the service
+ :rtype: str
+%End
 
-    /**
-     * Return true if the given method is supported for that
-     * service.
-     * @param method QGSMethodType the
-     * @return QString containing the configuration file path
-     */
     virtual bool allowMethod( QgsServerRequest::Method ) const = 0;
+%Docstring
+ Return true if the given method is supported for that
+ service.
+ :rtype: bool
+%End
 
-    /**
-     * Execute the requests and set result in QgsServerRequest
-     */
-    virtual void executeRequest( const QgsServerRequest& request, QgsServerResponse& response,
+    virtual void executeRequest( const QgsServerRequest &request,
+                                 QgsServerResponse &response,
                                  const QgsProject *project ) = 0;
+%Docstring
+ Execute the requests and set result in QgsServerRequest
+%End
 };
 
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/server/qgsservice.h                                              *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

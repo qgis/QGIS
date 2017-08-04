@@ -46,16 +46,8 @@ class OffsetCurve(GdalAlgorithm):
     RADIUS = 'RADIUS'
     OPTIONS = 'OPTIONS'
 
-    def name(self):
-        return 'offsetlinesforlines'
-
-    def displayName(self):
-        return self.tr('Offset lines for lines')
-
-    def group(self):
-        return self.tr('Vector geoprocessing')
-
-    def defineCharacteristics(self):
+    def __init__(self):
+        super().__init__()
         self.addParameter(ParameterVector(self.INPUT_LAYER,
                                           self.tr('Input layer'), [dataobjects.TYPE_VECTOR_LINE], False))
         self.addParameter(ParameterString(self.GEOMETRY,
@@ -71,7 +63,16 @@ class OffsetCurve(GdalAlgorithm):
 
         self.addOutput(OutputVector(self.OUTPUT_LAYER, self.tr('Offset line')))
 
-    def getConsoleCommands(self):
+    def name(self):
+        return 'offsetlinesforlines'
+
+    def displayName(self):
+        return self.tr('Offset lines for lines')
+
+    def group(self):
+        return self.tr('Vector geoprocessing')
+
+    def getConsoleCommands(self, parameters):
         inLayer = self.getParameterValue(self.INPUT_LAYER)
         geometry = self.getParameterValue(self.GEOMETRY)
         distance = self.getParameterValue(self.RADIUS)

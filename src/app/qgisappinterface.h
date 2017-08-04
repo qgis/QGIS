@@ -208,6 +208,10 @@ class APP_EXPORT QgisAppInterface : public QgisInterface
     QList<QgsComposerInterface *> openComposers() override;
     QgsComposerInterface *openComposer( QgsComposition *composition ) override;
     void closeComposer( QgsComposition *composition ) override;
+
+    QList<QgsLayoutDesignerInterface *> openLayoutDesigners() override;
+    QgsLayoutDesignerInterface *openLayoutDesigner( QgsLayout *layout ) override;
+
     virtual void showOptionsDialog( QWidget *parent = nullptr, const QString &currentPage = QString() ) override;
 
     //! Return changeable options built from settings and/or defaults
@@ -493,6 +497,11 @@ class APP_EXPORT QgisAppInterface : public QgisInterface
 
     //! Get timeout for timed messages: default of 5 seconds
     virtual int messageTimeout() override;
+
+    QgsStatusBar *statusBarIface() override;
+
+    void registerLocatorFilter( QgsLocatorFilter *filter ) override;
+    void deregisterLocatorFilter( QgsLocatorFilter *filter ) override;
 
   private slots:
 

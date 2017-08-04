@@ -26,26 +26,27 @@ __copyright__ = '(C) 2010, Michael Minn'
 __revision__ = '$Format:%H$'
 
 from qgis.core import (QgsFeatureRequest,
-                       QgsApplication,
-                       QgsProcessingUtils)
-from processing.core.GeoAlgorithm import GeoAlgorithm
-from processing.core.parameters import ParameterVector
-from processing.core.outputs import OutputVector
+                       QgsFeatureSink,
+                       QgsProcessingParameterFeatureSource,
+                       QgsProcessingParameterFeatureSink)
+from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 
 
-class DeleteDuplicateGeometries(GeoAlgorithm):
+class DeleteDuplicateGeometries(QgisAlgorithm):
 
     INPUT = 'INPUT'
     OUTPUT = 'OUTPUT'
 
-    def icon(self):
-        return QgsApplication.getThemeIcon("/providerQgis.svg")
-
-    def svgIconPath(self):
-        return QgsApplication.iconPath("providerQgis.svg")
-
     def group(self):
         return self.tr('Vector general tools')
+
+    def __init__(self):
+        super().__init__()
+
+    def initAlgorithm(self, config=None):
+        self.addParameter(QgsProcessingParameterFeatureSource(self.INPUT,
+                                                              self.tr('Input layer')))
+        self.addParameter(QgsProcessingParameterFeatureSink(self.OUTPUT, self.tr('Cleaned')))
 
     def name(self):
         return 'deleteduplicategeometries'
@@ -53,39 +54,40 @@ class DeleteDuplicateGeometries(GeoAlgorithm):
     def displayName(self):
         return self.tr('Delete duplicate geometries')
 
-    def defineCharacteristics(self):
-        self.addParameter(ParameterVector(self.INPUT,
-                                          self.tr('Input layer')))
-        self.addOutput(OutputVector(self.OUTPUT, self.tr('Cleaned')))
+    def processAlgorithm(self, parameters, context, feedback):
+        source = self.parameterAsSource(parameters, self.INPUT, context)
+        (sink, dest_id) = self.parameterAsSink(parameters, self.OUTPUT, context,
+                                               source.fields(), source.wkbType(), source.sourceCrs())
 
-    def processAlgorithm(self, context, feedback):
-        layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT), context)
-
-        fields = layer.fields()
-
-        writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(fields, layer.wkbType(), layer.crs(), context)
-
-        features = QgsProcessingUtils.getFeatures(layer, context)
-
-        total = 100.0 / QgsProcessingUtils.featureCount(layer, context)
+        features = source.getFeatures(QgsFeatureRequest().setSubsetOfAttributes([]))
+        total = 100.0 / source.featureCount() if source.featureCount() else 0
         geoms = dict()
         for current, f in enumerate(features):
+            if feedback.isCanceled():
+                break
+
             geoms[f.id()] = f.geometry()
             feedback.setProgress(int(current * total))
 
         cleaned = dict(geoms)
 
         for i, g in list(geoms.items()):
+            if feedback.isCanceled():
+                break
+
             for j in list(cleaned.keys()):
                 if i == j or i not in cleaned:
                     continue
                 if g.isGeosEqual(cleaned[j]):
                     del cleaned[j]
 
-        total = 100.0 / len(cleaned)
+        total = 100.0 / len(cleaned) if cleaned else 1
         request = QgsFeatureRequest().setFilterFids(list(cleaned.keys()))
-        for current, f in enumerate(layer.getFeatures(request)):
-            writer.addFeature(f)
+        for current, f in enumerate(source.getFeatures(request)):
+            if feedback.isCanceled():
+                break
+
+            sink.addFeature(f, QgsFeatureSink.FastInsert)
             feedback.setProgress(int(current * total))
 
-        del writer
+        return {self.OUTPUT: dest_id}

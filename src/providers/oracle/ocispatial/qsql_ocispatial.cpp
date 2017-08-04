@@ -663,7 +663,7 @@ int QOCISpatialResultPrivate::bindValue( OCIStmt *sql, OCIBind **hbnd, OCIError 
         const QOCISpatialRowIdPointer rptr = qvariant_cast<QOCISpatialRowIdPointer>( val );
         r = OCIBindByPos( sql, hbnd, err,
                           pos + 1,
-                          // it's an IN value, so const_cast is ok
+                          // it's an IN value, so const_cast is OK
                           const_cast<OCIRowid **>( &rptr->id ),
                           -1,
                           SQLT_RDD, indPtr, 0, 0, 0, 0, OCI_DEFAULT );

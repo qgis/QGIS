@@ -34,29 +34,51 @@ class CORE_EXPORT QgsFeatureSink
 {
   public:
 
+    //! Flags controlling how features are added to a sink.
+    enum Flag
+    {
+
+      /**
+        * Use faster inserts, at the cost of updating the passed features to reflect changes made at the provider.
+        * This includes skipping the update of the passed feature IDs to match the resulting feature IDs for the
+        * feature within the data provider.
+        * Individual sink subclasses may or may not choose to respect this flag, depending on whether or not
+        * skipping this update represents a significant speed boost for the operation.
+        */
+      FastInsert = 1 << 1,
+    };
+    Q_DECLARE_FLAGS( Flags, Flag )
+
     virtual ~QgsFeatureSink() = default;
 
     /**
-     * Adds a single \a feature to the sink.
+     * Adds a single \a feature to the sink. Feature addition behavior is controlled by the specified \a flags.
      * \see addFeatures()
      * \returns true in case of success and false in case of failure
      */
-    virtual bool addFeature( QgsFeature &feature );
+    virtual bool addFeature( QgsFeature &feature, QgsFeatureSink::Flags flags = 0 );
 
     /**
-     * Adds a list of \a features to the sink.
+     * Adds a list of \a features to the sink. Feature addition behavior is controlled by the specified \a flags.
      * \see addFeature()
      * \returns true in case of success and false in case of failure
      */
-    virtual bool addFeatures( QgsFeatureList &features ) = 0;
+    virtual bool addFeatures( QgsFeatureList &features, QgsFeatureSink::Flags flags = 0 ) = 0;
 
     /**
-     * Adds all features from the specified \a iterator to the sink.
+     * Adds all features from the specified \a iterator to the sink. Feature addition behavior is controlled by the specified \a flags.
      * \returns true if all features were added successfully, or false if any feature could not be added
      */
-    virtual bool addFeatures( QgsFeatureIterator &iterator );
+    virtual bool addFeatures( QgsFeatureIterator &iterator, QgsFeatureSink::Flags flags = 0 );
 
+    /**
+     * Flushes any internal buffer which may exist in the sink, causing any buffered features to be added to the sink's destination.
+     * \returns false if any buffered features could not be added to the sink.
+     */
+    virtual bool flushBuffer() { return true; }
 };
+
+Q_DECLARE_OPERATORS_FOR_FLAGS( QgsFeatureSink::Flags )
 
 
 /**
@@ -80,9 +102,9 @@ class CORE_EXPORT QgsProxyFeatureSink : public QgsFeatureSink
      * Constructs a new QgsProxyFeatureSink which forwards features onto a destination \a sink.
      */
     QgsProxyFeatureSink( QgsFeatureSink *sink );
-    bool addFeature( QgsFeature &feature ) override { return mSink->addFeature( feature ); }
-    bool addFeatures( QgsFeatureList &features ) override { return mSink->addFeatures( features ); }
-    bool addFeatures( QgsFeatureIterator &iterator ) override { return mSink->addFeatures( iterator ); }
+    bool addFeature( QgsFeature &feature, QgsFeatureSink::Flags flags = 0 ) override { return mSink->addFeature( feature, flags ); }
+    bool addFeatures( QgsFeatureList &features, QgsFeatureSink::Flags flags = 0 ) override { return mSink->addFeatures( features, flags ); }
+    bool addFeatures( QgsFeatureIterator &iterator, QgsFeatureSink::Flags flags = 0 ) override { return mSink->addFeatures( iterator, flags ); }
 
     /**
      * Returns the destination QgsFeatureSink which the proxy will forward features to.
@@ -94,5 +116,6 @@ class CORE_EXPORT QgsProxyFeatureSink : public QgsFeatureSink
     QgsFeatureSink *mSink;
 };
 
+Q_DECLARE_METATYPE( QgsFeatureSink * )
 
 #endif // QGSFEATURESINK_H

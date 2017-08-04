@@ -31,6 +31,7 @@
 #include "qgspathresolver.h"
 #include "qgsprojectversion.h"
 #include "qgsrasterlayer.h"
+#include "qgsreadwritecontext.h"
 #include "qgsrectangle.h"
 #include "qgsrelationmanager.h"
 #include "qgsannotationmanager.h"
@@ -47,6 +48,7 @@
 #include "qgsmaplayerlistutils.h"
 #include "qgslayoutmanager.h"
 #include "qgsmaplayerstore.h"
+#include "qgsziputils.h"
 
 #include <QApplication>
 #include <QFileInfo>
@@ -96,7 +98,7 @@ QStringList makeKeyTokens_( const QString &scope, const QString &key )
     {
 
       QString errorString = QObject::tr( "Entry token invalid : '%1'. The token will not be saved to file." ).arg( keyToken );
-      QgsMessageLog::logMessage( errorString, QString::null, QgsMessageLog::CRITICAL );
+      QgsMessageLog::logMessage( errorString, QString(), QgsMessageLog::CRITICAL );
 
     }
 
@@ -331,6 +333,7 @@ QgsProject::QgsProject( QObject *parent )
   , mLayoutManager( new QgsLayoutManager( this ) )
   , mRootGroup( new QgsLayerTree )
   , mLabelingEngineSettings( new QgsLabelingEngineSettings )
+  , mArchive( new QgsProjectArchive() )
   , mAutoTransaction( false )
   , mEvaluateDefaultValues( false )
   , mDirty( false )
@@ -423,6 +426,8 @@ void QgsProject::setFileName( const QString &name )
   if ( newHomePath != oldHomePath )
     emit homePathChanged();
 
+  mArchive->clear();
+
   setDirty( true );
 }
 
@@ -490,6 +495,9 @@ void QgsProject::clear()
   mRootGroup->clear();
 
   mLabelingEngineSettings->clear();
+
+  mArchive->clear();
+
   emit labelingEngineSettingsChanged();
 
   // reset some default project properties
@@ -585,7 +593,7 @@ static void _getTitle( const QDomDocument &doc, QString &title )
     return;
   }
 
-  QDomNode titleNode = nl.item( 0 );  // there should only be one, so zeroth element ok
+  QDomNode titleNode = nl.item( 0 );  // there should only be one, so zeroth element OK
 
   if ( !titleNode.hasChildNodes() ) // if not, then there's no actual text
   {
@@ -617,7 +625,7 @@ QgsProjectVersion getVersion( const QDomDocument &doc )
     return QgsProjectVersion( 0, 0, 0, QString() );
   }
 
-  QDomNode qgisNode = nl.item( 0 );  // there should only be one, so zeroth element ok
+  QDomNode qgisNode = nl.item( 0 );  // there should only be one, so zeroth element OK
 
   QDomElement qgisElement = qgisNode.toElement(); // qgis node should be element
   QgsProjectVersion projectVersion( qgisElement.attribute( QStringLiteral( "version" ) ) );
@@ -686,7 +694,9 @@ bool QgsProject::_getMapLayers( const QDomDocument &doc, QList<QDomNode> &broken
     }
     else
     {
-      if ( !addLayer( element, brokenNodes ) )
+      QgsReadWriteContext context;
+      context.setPathResolver( pathResolver() );
+      if ( !addLayer( element, brokenNodes, context ) )
       {
         returnStatus = false;
       }
@@ -698,7 +708,7 @@ bool QgsProject::_getMapLayers( const QDomDocument &doc, QList<QDomNode> &broken
   return returnStatus;
 }
 
-bool QgsProject::addLayer( const QDomElement &layerElem, QList<QDomNode> &brokenNodes )
+bool QgsProject::addLayer( const QDomElement &layerElem, QList<QDomNode> &brokenNodes, const QgsReadWriteContext &context )
 {
   QString type = layerElem.attribute( QStringLiteral( "type" ) );
   QgsDebugMsgLevel( "Layer type is " + type, 4 );
@@ -728,7 +738,7 @@ bool QgsProject::addLayer( const QDomElement &layerElem, QList<QDomNode> &broken
   Q_CHECK_PTR( mapLayer ); // NOLINT
 
   // have the layer restore state that is stored in Dom node
-  if ( mapLayer->readLayerXml( layerElem, pathResolver() ) && mapLayer->isValid() )
+  if ( mapLayer->readLayerXml( layerElem, context ) && mapLayer->isValid() )
   {
     emit readMapLayer( mapLayer, layerElem );
 
@@ -757,15 +767,30 @@ bool QgsProject::read( const QString &filename )
 
 bool QgsProject::read()
 {
+  QString filename = mFile.fileName();
+  bool rc;
+
+  if ( QgsZipUtils::isZipFile( mFile.fileName() ) )
+    rc = unzip( mFile.fileName() );
+  else
+    rc = readProjectFile( mFile.fileName() );
+
+  mFile.setFileName( filename );
+  return rc;
+}
+
+bool QgsProject::readProjectFile( const QString &filename )
+{
+  QFile projectFile( filename );
   clearError();
 
   std::unique_ptr<QDomDocument> doc( new QDomDocument( QStringLiteral( "qgis" ) ) );
 
-  if ( !mFile.open( QIODevice::ReadOnly | QIODevice::Text ) )
+  if ( !projectFile.open( QIODevice::ReadOnly | QIODevice::Text ) )
   {
-    mFile.close();
+    projectFile.close();
 
-    setError( tr( "Unable to open %1" ).arg( mFile.fileName() ) );
+    setError( tr( "Unable to open %1" ).arg( projectFile.fileName() ) );
 
     return false;
   }
@@ -774,7 +799,7 @@ bool QgsProject::read()
   int line, column;
   QString errorMsg;
 
-  if ( !doc->setContent( &mFile, &errorMsg, &line, &column ) )
+  if ( !doc->setContent( &projectFile, &errorMsg, &line, &column ) )
   {
     // want to make this class as GUI independent as possible; so commented out
 #if 0
@@ -783,21 +808,21 @@ bool QgsProject::read()
 #endif
 
     QString errorString = tr( "Project file read error in file %1: %2 at line %3 column %4" )
-                          .arg( mFile.fileName() ).arg( errorMsg ).arg( line ).arg( column );
+                          .arg( projectFile.fileName() ).arg( errorMsg ).arg( line ).arg( column );
 
     QgsDebugMsg( errorString );
 
-    mFile.close();
+    projectFile.close();
 
-    setError( tr( "%1 for file %2" ).arg( errorString, mFile.fileName() ) );
+    setError( tr( "%1 for file %2" ).arg( errorString, projectFile.fileName() ) );
 
     return false;
   }
 
-  mFile.close();
+  projectFile.close();
 
 
-  QgsDebugMsg( "Opened document " + mFile.fileName() );
+  QgsDebugMsg( "Opened document " + projectFile.fileName() );
   QgsDebugMsg( "Project title: " + mTitle );
 
   // get project version string, if any
@@ -835,9 +860,12 @@ bool QgsProject::read()
   // now get project title
   _getTitle( *doc, mTitle );
 
+  QgsReadWriteContext context;
+  context.setPathResolver( pathResolver() );
+
   //crs
   QgsCoordinateReferenceSystem projectCrs;
-  if ( QgsProject::instance()->readNumEntry( QStringLiteral( "SpatialRefSys" ), QStringLiteral( "/ProjectionsEnabled" ), 0 ) )
+  if ( readNumEntry( QStringLiteral( "SpatialRefSys" ), QStringLiteral( "/ProjectionsEnabled" ), 0 ) )
   {
     long currentCRS = readNumEntry( QStringLiteral( "SpatialRefSys" ), QStringLiteral( "/ProjectCRSID" ), -1 );
     if ( currentCRS != -1 )
@@ -940,7 +968,7 @@ bool QgsProject::read()
   mLabelingEngineSettings->readSettingsFromProject( this );
   emit labelingEngineSettingsChanged();
 
-  mAnnotationManager->readXml( doc->documentElement(), *doc );
+  mAnnotationManager->readXml( doc->documentElement(), context );
   mLayoutManager->readXml( doc->documentElement(), *doc );
 
   // reassign change dependencies now that all layers are loaded
@@ -1189,8 +1217,10 @@ void QgsProject::cleanTransactionGroups( bool force )
 
 bool QgsProject::readLayer( const QDomNode &layerNode )
 {
+  QgsReadWriteContext context;
+  context.setPathResolver( pathResolver() );
   QList<QDomNode> brokenNodes;
-  if ( addLayer( layerNode.toElement(), brokenNodes ) )
+  if ( addLayer( layerNode.toElement(), brokenNodes, context ) )
   {
     // have to try to update joins for all layers now - a previously added layer may be dependent on this newly
     // added layer for joins
@@ -1215,18 +1245,30 @@ bool QgsProject::write( const QString &filename )
 
 bool QgsProject::write()
 {
+  if ( QgsZipUtils::isZipFile( mFile.fileName() ) )
+    return zip( mFile.fileName() );
+  else
+    return writeProjectFile( mFile.fileName() );
+}
+
+bool QgsProject::writeProjectFile( const QString &filename )
+{
+  QFile projectFile( filename );
   clearError();
 
   // if we have problems creating or otherwise writing to the project file,
   // let's find out up front before we go through all the hand-waving
   // necessary to create all the Dom objects
-  QFileInfo myFileInfo( mFile );
+  QFileInfo myFileInfo( projectFile );
   if ( myFileInfo.exists() && !myFileInfo.isWritable() )
   {
     setError( tr( "%1 is not writable. Please adjust permissions (if possible) and try again." )
-              .arg( mFile.fileName() ) );
+              .arg( projectFile.fileName() ) );
     return false;
   }
+
+  QgsReadWriteContext context;
+  context.setPathResolver( pathResolver() );
 
   QDomImplementation DomImplementation;
   DomImplementation.setInvalidDataPolicy( QDomImplementation::DropInvalidChars );
@@ -1289,7 +1331,7 @@ bool QgsProject::write()
         // general layer metadata
         QDomElement maplayerElem = doc->createElement( QStringLiteral( "maplayer" ) );
 
-        ml->writeLayerXml( maplayerElem, *doc, pathResolver() );
+        ml->writeLayerXml( maplayerElem, *doc, context );
 
         emit writeMapLayer( ml, maplayerElem, *doc );
 
@@ -1340,7 +1382,7 @@ bool QgsProject::write()
 
   mLabelingEngineSettings->writeSettingsToProject( this );
 
-  QDomElement annotationsElem = mAnnotationManager->writeXml( *doc );
+  QDomElement annotationsElem = mAnnotationManager->writeXml( *doc, context );
   qgisNode.appendChild( annotationsElem );
 
   QDomElement layoutElem = mLayoutManager->writeXml( *doc );
@@ -1352,19 +1394,19 @@ bool QgsProject::write()
   // Create backup file
   if ( QFile::exists( fileName() ) )
   {
-    QFile backupFile( fileName() + '~' );
+    QFile backupFile( QString( "%1~" ).arg( filename ) );
     bool ok = true;
     ok &= backupFile.open( QIODevice::WriteOnly | QIODevice::Truncate );
-    ok &= mFile.open( QIODevice::ReadOnly );
+    ok &= projectFile.open( QIODevice::ReadOnly );
 
     QByteArray ba;
-    while ( ok && !mFile.atEnd() )
+    while ( ok && !projectFile.atEnd() )
     {
-      ba = mFile.read( 10240 );
+      ba = projectFile.read( 10240 );
       ok &= backupFile.write( ba ) == ba.size();
     }
 
-    mFile.close();
+    projectFile.close();
     backupFile.close();
 
     if ( !ok )
@@ -1378,12 +1420,12 @@ bool QgsProject::write()
     utime( backupFile.fileName().toUtf8().constData(), &tb );
   }
 
-  if ( !mFile.open( QIODevice::WriteOnly | QIODevice::Truncate ) )
+  if ( !projectFile.open( QIODevice::WriteOnly | QIODevice::Truncate ) )
   {
-    mFile.close();         // even though we got an error, let's make
+    projectFile.close();         // even though we got an error, let's make
     // sure it's closed anyway
 
-    setError( tr( "Unable to save to file %1" ).arg( mFile.fileName() ) );
+    setError( tr( "Unable to save to file %1" ).arg( projectFile.fileName() ) );
     return false;
   }
 
@@ -1401,12 +1443,12 @@ bool QgsProject::write()
     while ( ok && !tempFile.atEnd() )
     {
       ba = tempFile.read( 10240 );
-      ok &= mFile.write( ba ) == ba.size();
+      ok &= projectFile.write( ba ) == ba.size();
     }
 
-    ok &= mFile.error() == QFile::NoError;
+    ok &= projectFile.error() == QFile::NoError;
 
-    mFile.close();
+    projectFile.close();
   }
 
   tempFile.close();
@@ -1416,7 +1458,7 @@ bool QgsProject::write()
     setError( tr( "Unable to save to file %1. Your project "
                   "may be corrupted on disk. Try clearing some space on the volume and "
                   "check file permissions before pressing save again." )
-              .arg( mFile.fileName() ) );
+              .arg( projectFile.fileName() ) );
     return false;
   }
 
@@ -1720,6 +1762,10 @@ bool QgsProject::createEmbeddedLayer( const QString &layerId, const QString &pro
     }
   }
 
+  QgsReadWriteContext embeddedContext;
+  if ( !useAbsolutePaths )
+    embeddedContext.setPathResolver( QgsPathResolver( projectFilePath ) );
+
   QDomElement projectLayersElem = sProjectDocument.documentElement().firstChildElement( QStringLiteral( "projectlayers" ) );
   if ( projectLayersElem.isNull() )
   {
@@ -1742,76 +1788,7 @@ bool QgsProject::createEmbeddedLayer( const QString &layerId, const QString &pro
 
       mEmbeddedLayers.insert( layerId, qMakePair( projectFilePath, saveFlag ) );
 
-      // change datasource path from relative to absolute if necessary
-      // see also QgsMapLayer::readLayerXML
-      if ( !useAbsolutePaths )
-      {
-        QString provider( mapLayerElem.firstChildElement( QStringLiteral( "provider" ) ).text() );
-        QDomElement dsElem( mapLayerElem.firstChildElement( QStringLiteral( "datasource" ) ) );
-        QString datasource( dsElem.text() );
-        if ( provider == QLatin1String( "spatialite" ) )
-        {
-          QgsDataSourceUri uri( datasource );
-          QFileInfo absoluteDs( QFileInfo( projectFilePath ).absolutePath() + '/' + uri.database() );
-          if ( absoluteDs.exists() )
-          {
-            uri.setDatabase( absoluteDs.absoluteFilePath() );
-            datasource = uri.uri();
-          }
-        }
-        else if ( provider == QLatin1String( "ogr" ) )
-        {
-          QStringList theURIParts( datasource.split( '|' ) );
-          QFileInfo absoluteDs( QFileInfo( projectFilePath ).absolutePath() + '/' + theURIParts[0] );
-          if ( absoluteDs.exists() )
-          {
-            theURIParts[0] = absoluteDs.absoluteFilePath();
-            datasource = theURIParts.join( QStringLiteral( "|" ) );
-          }
-        }
-        else if ( provider == QLatin1String( "gpx" ) )
-        {
-          QStringList theURIParts( datasource.split( '?' ) );
-          QFileInfo absoluteDs( QFileInfo( projectFilePath ).absolutePath() + '/' + theURIParts[0] );
-          if ( absoluteDs.exists() )
-          {
-            theURIParts[0] = absoluteDs.absoluteFilePath();
-            datasource = theURIParts.join( QStringLiteral( "?" ) );
-          }
-        }
-        else if ( provider == QLatin1String( "delimitedtext" ) )
-        {
-          QUrl urlSource( QUrl::fromEncoded( datasource.toLatin1() ) );
-
-          if ( !datasource.startsWith( QLatin1String( "file:" ) ) )
-          {
-            QUrl file( QUrl::fromLocalFile( datasource.left( datasource.indexOf( '?' ) ) ) );
-            urlSource.setScheme( QStringLiteral( "file" ) );
-            urlSource.setPath( file.path() );
-          }
-
-          QFileInfo absoluteDs( QFileInfo( projectFilePath ).absolutePath() + '/' + urlSource.toLocalFile() );
-          if ( absoluteDs.exists() )
-          {
-            QUrl urlDest = QUrl::fromLocalFile( absoluteDs.absoluteFilePath() );
-            urlDest.setQueryItems( urlSource.queryItems() );
-            datasource = QString::fromAscii( urlDest.toEncoded() );
-          }
-        }
-        else
-        {
-          QFileInfo absoluteDs( QFileInfo( projectFilePath ).absolutePath() + '/' + datasource );
-          if ( absoluteDs.exists() )
-          {
-            datasource = absoluteDs.absoluteFilePath();
-          }
-        }
-
-        dsElem.removeChild( dsElem.childNodes().at( 0 ) );
-        dsElem.appendChild( sProjectDocument.createTextNode( datasource ) );
-      }
-
-      if ( addLayer( mapLayerElem, brokenNodes ) )
+      if ( addLayer( mapLayerElem, brokenNodes, embeddedContext ) )
       {
         return true;
       }
@@ -1999,7 +1976,7 @@ QString QgsProject::homePath() const
 {
   QFileInfo pfi( fileName() );
   if ( !pfi.exists() )
-    return QString::null;
+    return QString();
 
   return pfi.canonicalPath();
 }
@@ -2030,6 +2007,11 @@ QgsMapThemeCollection *QgsProject::mapThemeCollection()
 }
 
 QgsAnnotationManager *QgsProject::annotationManager()
+{
+  return mAnnotationManager.get();
+}
+
+const QgsAnnotationManager *QgsProject::annotationManager() const
 {
   return mAnnotationManager.get();
 }
@@ -2111,6 +2093,82 @@ QgsMapLayer *QgsProject::mapLayer( const QString &layerId ) const
 QList<QgsMapLayer *> QgsProject::mapLayersByName( const QString &layerName ) const
 {
   return mLayerStore->mapLayersByName( layerName );
+}
+
+bool QgsProject::unzip( const QString &filename )
+{
+  clearError();
+  std::unique_ptr<QgsProjectArchive> archive( new QgsProjectArchive() );
+
+  // unzip the archive
+  if ( !archive->unzip( filename ) )
+  {
+    setError( tr( "Unable to unzip file '%1'" ).arg( filename ) );
+    return false;
+  }
+
+  // test if zip provides a .qgs file
+  if ( archive->projectFile().isEmpty() )
+  {
+    setError( tr( "Zip archive does not provide a project file" ) );
+    return false;
+  }
+
+  // read the project file
+  if ( ! readProjectFile( archive->projectFile() ) )
+  {
+    setError( tr( "Cannot read unzipped qgs project file" ) );
+    return false;
+  }
+
+  // keep the archive and remove the temporary .qgs file
+  mArchive.reset( archive.release() );
+  mArchive->clearProjectFile();
+
+  return true;
+}
+
+bool QgsProject::zip( const QString &filename )
+{
+  clearError();
+
+  // save the current project in a temporary .qgs file
+  std::unique_ptr<QgsProjectArchive> archive( new QgsProjectArchive() );
+  const QString baseName = QFileInfo( filename ).baseName();
+  const QString qgsFileName = QString( "%1.qgs" ).arg( baseName );
+  QFile qgsFile( QDir( archive->dir() ).filePath( qgsFileName ) );
+
+  bool writeOk = false;
+  if ( qgsFile.open( QIODevice::WriteOnly | QIODevice::Truncate ) )
+  {
+    writeOk = writeProjectFile( qgsFile.fileName() );
+    qgsFile.close();
+  }
+
+  // stop here with an error message
+  if ( ! writeOk )
+  {
+    setError( tr( "Unable to write temporary qgs file" ) );
+    return false;
+  }
+
+  // create the archive
+  archive->addFile( qgsFile.fileName() );
+
+  // zip
+  QString errMsg;
+  if ( !archive->zip( filename ) )
+  {
+    setError( tr( "Unable to perform zip" ) );
+    return false;
+  }
+
+  return true;
+}
+
+bool QgsProject::isZipped() const
+{
+  return QgsZipUtils::isZipFile( mFile.fileName() );
 }
 
 QList<QgsMapLayer *> QgsProject::addMapLayers(

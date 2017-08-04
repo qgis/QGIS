@@ -33,21 +33,25 @@ import codecs
 
 from qgis.PyQt.QtGui import QIcon
 
-from qgis.core import QgsFeatureRequest, QgsFeature, QgsDistanceArea, QgsProcessingUtils
+from qgis.core import (QgsFeatureRequest,
+                       QgsDistanceArea,
+                       QgsProject,
+                       QgsProcessing,
+                       QgsProcessingParameterFeatureSource,
+                       QgsProcessingParameterFileDestination,
+                       QgsProcessingOutputHtml,
+                       QgsProcessingOutputNumber,
+                       QgsSpatialIndex)
 
-from processing.core.GeoAlgorithm import GeoAlgorithm
-from processing.core.parameters import ParameterVector
-from processing.core.outputs import OutputHTML
-from processing.core.outputs import OutputNumber
-from processing.tools import dataobjects
+from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 
 pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
 
-class NearestNeighbourAnalysis(GeoAlgorithm):
+class NearestNeighbourAnalysis(QgisAlgorithm):
 
-    POINTS = 'POINTS'
-    OUTPUT = 'OUTPUT'
+    INPUT = 'INPUT'
+    OUTPUT_HTML_FILE = 'OUTPUT_HTML_FILE'
     OBSERVED_MD = 'OBSERVED_MD'
     EXPECTED_MD = 'EXPECTED_MD'
     NN_INDEX = 'NN_INDEX'
@@ -60,49 +64,57 @@ class NearestNeighbourAnalysis(GeoAlgorithm):
     def group(self):
         return self.tr('Vector analysis tools')
 
+    def __init__(self):
+        super().__init__()
+
+    def initAlgorithm(self, config=None):
+        self.addParameter(QgsProcessingParameterFeatureSource(self.INPUT,
+                                                              self.tr('Input layer'), [QgsProcessing.TypeVectorPoint]))
+
+        self.addParameter(QgsProcessingParameterFileDestination(self.OUTPUT_HTML_FILE, self.tr('Nearest neighbour'), self.tr('HTML files (*.html)'), None, True))
+        self.addOutput(QgsProcessingOutputHtml(self.OUTPUT_HTML_FILE, self.tr('Nearest neighbour')))
+
+        self.addOutput(QgsProcessingOutputNumber(self.OBSERVED_MD,
+                                                 self.tr('Observed mean distance')))
+        self.addOutput(QgsProcessingOutputNumber(self.EXPECTED_MD,
+                                                 self.tr('Expected mean distance')))
+        self.addOutput(QgsProcessingOutputNumber(self.NN_INDEX,
+                                                 self.tr('Nearest neighbour index')))
+        self.addOutput(QgsProcessingOutputNumber(self.POINT_COUNT,
+                                                 self.tr('Number of points')))
+        self.addOutput(QgsProcessingOutputNumber(self.Z_SCORE, self.tr('Z-Score')))
+
     def name(self):
         return 'nearestneighbouranalysis'
 
     def displayName(self):
         return self.tr('Nearest neighbour analysis')
 
-    def defineCharacteristics(self):
-        self.addParameter(ParameterVector(self.POINTS,
-                                          self.tr('Points'), [dataobjects.TYPE_VECTOR_POINT]))
+    def processAlgorithm(self, parameters, context, feedback):
+        source = self.parameterAsSource(parameters, self.INPUT, context)
+        output_file = self.parameterAsFileOutput(parameters, self.OUTPUT_HTML_FILE, context)
 
-        self.addOutput(OutputHTML(self.OUTPUT, self.tr('Nearest neighbour')))
+        spatialIndex = QgsSpatialIndex(source, feedback)
 
-        self.addOutput(OutputNumber(self.OBSERVED_MD,
-                                    self.tr('Observed mean distance')))
-        self.addOutput(OutputNumber(self.EXPECTED_MD,
-                                    self.tr('Expected mean distance')))
-        self.addOutput(OutputNumber(self.NN_INDEX,
-                                    self.tr('Nearest neighbour index')))
-        self.addOutput(OutputNumber(self.POINT_COUNT,
-                                    self.tr('Number of points')))
-        self.addOutput(OutputNumber(self.Z_SCORE, self.tr('Z-Score')))
-
-    def processAlgorithm(self, context, feedback):
-        layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.POINTS), context)
-        output = self.getOutputValue(self.OUTPUT)
-
-        spatialIndex = QgsProcessingUtils.createSpatialIndex(layer, context)
-
-        neighbour = QgsFeature()
         distance = QgsDistanceArea()
+        distance.setSourceCrs(source.sourceCrs())
+        distance.setEllipsoid(context.project().ellipsoid())
 
         sumDist = 0.00
-        A = layer.extent()
+        A = source.sourceExtent()
         A = float(A.width() * A.height())
 
-        features = QgsProcessingUtils.getFeatures(layer, context)
-        count = QgsProcessingUtils.featureCount(layer, context)
-        total = 100.0 / count
+        features = source.getFeatures()
+        count = source.featureCount()
+        total = 100.0 / count if count else 1
         for current, feat in enumerate(features):
+            if feedback.isCanceled():
+                break
+
             neighbourID = spatialIndex.nearestNeighbor(
                 feat.geometry().asPoint(), 2)[1]
             request = QgsFeatureRequest().setFilterFid(neighbourID).setSubsetOfAttributes([])
-            neighbour = next(layer.getFeatures(request))
+            neighbour = next(source.getFeatures(request))
             sumDist += distance.measureLine(neighbour.geometry().asPoint(),
                                             feat.geometry().asPoint())
 
@@ -114,20 +126,24 @@ class NearestNeighbourAnalysis(GeoAlgorithm):
         SE = float(0.26136 / math.sqrt(count ** 2 / A))
         zscore = float((do - de) / SE)
 
-        data = []
-        data.append('Observed mean distance: ' + str(do))
-        data.append('Expected mean distance: ' + str(de))
-        data.append('Nearest neighbour index: ' + str(d))
-        data.append('Number of points: ' + str(count))
-        data.append('Z-Score: ' + str(zscore))
+        results = {}
+        results[self.OBSERVED_MD] = do
+        results[self.EXPECTED_MD] = de
+        results[self.NN_INDEX] = d
+        results[self.POINT_COUNT] = count
+        results[self.Z_SCORE] = zscore
 
-        self.createHTML(output, data)
+        if output_file:
+            data = []
+            data.append('Observed mean distance: ' + str(do))
+            data.append('Expected mean distance: ' + str(de))
+            data.append('Nearest neighbour index: ' + str(d))
+            data.append('Number of points: ' + str(count))
+            data.append('Z-Score: ' + str(zscore))
+            self.createHTML(output_file, data)
+            results[self.OUTPUT_HTML_FILE] = output_file
 
-        self.setOutputValue(self.OBSERVED_MD, float(data[0].split(': ')[1]))
-        self.setOutputValue(self.EXPECTED_MD, float(data[1].split(': ')[1]))
-        self.setOutputValue(self.NN_INDEX, float(data[2].split(': ')[1]))
-        self.setOutputValue(self.POINT_COUNT, float(data[3].split(': ')[1]))
-        self.setOutputValue(self.Z_SCORE, float(data[4].split(': ')[1]))
+        return results
 
     def createHTML(self, outputFile, algData):
         with codecs.open(outputFile, 'w', encoding='utf-8') as f:

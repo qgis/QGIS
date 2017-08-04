@@ -39,7 +39,7 @@ import email
 
 from io import StringIO
 from qgis.server import QgsServer, QgsServerRequest, QgsBufferServerRequest, QgsBufferServerResponse
-from qgis.core import QgsRenderChecker, QgsApplication
+from qgis.core import QgsRenderChecker, QgsApplication, QgsFontUtils
 from qgis.testing import unittest
 from qgis.PyQt.QtCore import QSize
 from utilities import unitTestDataPath
@@ -55,6 +55,7 @@ RE_ATTRIBUTES = b'[^>\s]+=[^>\s]+'
 
 
 class QgsServerTestBase(unittest.TestCase):
+
     """Base class for QGIS server tests"""
 
     # Set to True in child classes to re-generate reference files for this class
@@ -65,7 +66,7 @@ class QgsServerTestBase(unittest.TestCase):
         response_lines = response.splitlines()
         expected_lines = expected.splitlines()
         line_no = 1
-        self.assertEqual(len(expected_lines), len(response_lines), "Expected and response have different number of lines!")
+        self.assertEqual(len(expected_lines), len(response_lines), "Expected and response have different number of lines!\n{}".format(msg))
         for expected_line in expected_lines:
             expected_line = expected_line.strip()
             response_line = response_lines[line_no - 1].strip()
@@ -93,10 +94,16 @@ class QgsServerTestBase(unittest.TestCase):
 
     def setUp(self):
         """Create the server instance"""
+        self.fontFamily = QgsFontUtils.standardTestFontFamily()
+        QgsFontUtils.loadStandardTestFonts(['All'])
+
         self.testdata_path = unitTestDataPath('qgis_server') + '/'
 
         d = unitTestDataPath('qgis_server_accesscontrol') + '/'
         self.projectPath = os.path.join(d, "project.qgs")
+        self.projectAnnotationPath = os.path.join(d, "project_with_annotations.qgs")
+        self.projectStatePath = os.path.join(d, "project_state.qgs")
+        self.projectUseLayerIdsPath = os.path.join(d, "project_use_layerids.qgs")
 
         # Clean env just to be sure
         env_vars = ['QUERY_STRING', 'QGIS_PROJECT_FILE']
@@ -187,14 +194,14 @@ class QgsServerTestBase(unittest.TestCase):
         self.server.handleRequest(request, response)
         headers = []
         rh = response.headers()
-        rk = list(rh.keys())
-        rk.sort()
+        rk = sorted(rh.keys())
         for k in rk:
             headers.append(("%s: %s" % (k, rh[k])).encode('utf-8'))
         return b"\n".join(headers) + b"\n\n", bytes(response.body())
 
 
 class TestQgsServer(QgsServerTestBase):
+
     """Tests container"""
 
     # Set to True to re-generate reference files for this class

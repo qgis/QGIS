@@ -1,17 +1,13 @@
-/***************************************************************************
-    qgsfeatureselectiondlg.sip
-     --------------------------------------
-    Date                 : 30.11.2015
-    Copyright            : (C) 2015 Matthias Kuhn
-    Email                : matthias at opengis dot ch
- ***************************************************************************
- *                                                                         *
- *   This program is free software; you can redistribute it and/or modify  *
- *   it under the terms of the GNU General Public License as published by  *
- *   the Free Software Foundation; either version 2 of the License, or     *
- *   (at your option) any later version.                                   *
- *                                                                         *
- ***************************************************************************/
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgsfeatureselectiondlg.h                                     *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
 
 // This is required for the ConvertToSubClassCode to work properly
 // so RTTI for casting is available in the whole module.
@@ -21,30 +17,40 @@
 
 class QgsFeatureSelectionDlg : QDialog
 {
+
 %TypeHeaderCode
 #include "qgsfeatureselectiondlg.h"
 %End
 
 %ConvertToSubClassCode
-  if ( qobject_cast<QgsFeatureSelectionDlg*>( sipCpp ) )
-    sipType = sipType_QgsFeatureSelectionDlg;
-  else
-    sipType = 0;
+    if ( qobject_cast<QgsFeatureSelectionDlg *>( sipCpp ) )
+      sipType = sipType_QgsFeatureSelectionDlg;
+    else
+      sipType = 0;
 %End
-
   public:
     explicit QgsFeatureSelectionDlg( QgsVectorLayer *vl, QgsAttributeEditorContext &context, QWidget *parent /TransferThis/ = 0 );
 
-    /**
-     * Get the selected features
-     *
-     * @return The selected feature ids
-     */
     const QgsFeatureIds &selectedFeatures();
+%Docstring
+ Get the selected features
 
-    /**
-     * Set the selected features
-     * @param ids The feature ids to select
-     */
+ :return: The selected feature ids
+ :rtype: QgsFeatureIds
+%End
+
     void setSelectedFeatures( const QgsFeatureIds &ids );
+%Docstring
+ Set the selected features
+ \param ids The feature ids to select
+%End
+
 };
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgsfeatureselectiondlg.h                                     *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

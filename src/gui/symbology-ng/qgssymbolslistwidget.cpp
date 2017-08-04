@@ -51,8 +51,9 @@ QgsSymbolsListWidget::QgsSymbolsListWidget( QgsSymbol *symbol, QgsStyle *style, 
   , mMapCanvas( nullptr )
 {
   setupUi( this );
+  spinAngle->setClearValue( 0 );
 
-  mSymbolUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderMapUnits << QgsUnitTypes::RenderPixels
+  mSymbolUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderMetersInMapUnits << QgsUnitTypes::RenderMapUnits << QgsUnitTypes::RenderPixels
                                << QgsUnitTypes::RenderPoints << QgsUnitTypes::RenderInches );
 
   btnAdvanced->hide(); // advanced button is hidden by default
@@ -108,11 +109,12 @@ QgsSymbolsListWidget::QgsSymbolsListWidget( QgsSymbol *symbol, QgsStyle *style, 
 
   // Live color updates are not undoable to child symbol layers
   btnColor->setAcceptLiveUpdates( false );
-  btnColor->setAllowAlpha( true );
-  btnColor->setColorDialogTitle( tr( "Select color" ) );
+  btnColor->setAllowOpacity( true );
+  btnColor->setColorDialogTitle( tr( "Select Color" ) );
   btnColor->setContext( QStringLiteral( "symbology" ) );
-
   connect( btnSaveSymbol, &QPushButton::clicked, this, &QgsSymbolsListWidget::saveSymbol );
+
+  connect( mOpacityWidget, &QgsOpacityWidget::opacityChanged, this, &QgsSymbolsListWidget::opacityChanged );
 }
 
 QgsSymbolsListWidget::~QgsSymbolsListWidget()
@@ -453,21 +455,13 @@ void QgsSymbolsListWidget::on_mSymbolUnitWidget_changed()
   }
 }
 
-void QgsSymbolsListWidget::on_mTransparencySlider_valueChanged( int value )
+void QgsSymbolsListWidget::opacityChanged( double opacity )
 {
   if ( mSymbol )
   {
-    double alpha = 1 - ( value / 255.0 );
-    mSymbol->setAlpha( alpha );
-    displayTransparency( alpha );
+    mSymbol->setOpacity( opacity );
     emit changed();
   }
-}
-
-void QgsSymbolsListWidget::displayTransparency( double alpha )
-{
-  double transparencyPercent = ( 1 - alpha ) * 100;
-  mTransparencyLabel->setText( tr( "Transparency %1%" ).arg( ( int ) transparencyPercent ) );
 }
 
 void QgsSymbolsListWidget::updateSymbolColor()
@@ -551,11 +545,7 @@ void QgsSymbolsListWidget::updateSymbolInfo()
   mSymbolUnitWidget->setMapUnitScale( mSymbol->mapUnitScale() );
   mSymbolUnitWidget->blockSignals( false );
 
-  mTransparencySlider->blockSignals( true );
-  double transparency = 1 - mSymbol->alpha();
-  mTransparencySlider->setValue( transparency * 255 );
-  displayTransparency( mSymbol->alpha() );
-  mTransparencySlider->blockSignals( false );
+  mOpacityWidget->setOpacity( mSymbol->opacity() );
 
   if ( mSymbol->type() == QgsSymbol::Line || mSymbol->type() == QgsSymbol::Fill )
   {
@@ -588,7 +578,7 @@ void QgsSymbolsListWidget::setSymbolFromStyle( const QModelIndex &index )
     QgsSymbolLayer *sl = s->takeSymbolLayer( 0 );
     mSymbol->appendSymbolLayer( sl );
   }
-  mSymbol->setAlpha( s->alpha() );
+  mSymbol->setOpacity( s->opacity() );
 
   // delete the temporary symbol
   delete s;

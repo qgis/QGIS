@@ -102,7 +102,7 @@
            <item>
             <widget class="QToolButton" name="mSchemeToolButton">
              <property name="text">
-              <string>...</string>
+              <string>…</string>
              </property>
              <property name="popupMode">
               <enum>QToolButton::InstantPopup</enum>

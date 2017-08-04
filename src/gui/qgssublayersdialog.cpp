@@ -20,6 +20,26 @@
 #include <QTableWidgetItem>
 #include <QPushButton>
 
+//! @cond
+class SubLayerItem : public QTreeWidgetItem
+{
+  public:
+    SubLayerItem( const QStringList &strings, int type = QTreeWidgetItem::Type )
+      :  QTreeWidgetItem( strings, type )
+    {}
+
+    bool operator <( const QTreeWidgetItem &other ) const
+    {
+      QgsSublayersDialog *d = qobject_cast<QgsSublayersDialog *>( treeWidget()->parent() );
+      int col = treeWidget()->sortColumn();
+
+      if ( col == 0 || ( col > 0 && d->countColumn() == col ) )
+        return text( col ).toInt() < other.text( col ).toInt();
+      else
+        return text( col ) < other.text( col );
+    }
+};
+//! @endcond
 
 QgsSublayersDialog::QgsSublayersDialog( ProviderType providerType, const QString &name,
                                         QWidget *parent, Qt::WindowFlags fl )
@@ -30,7 +50,7 @@ QgsSublayersDialog::QgsSublayersDialog( ProviderType providerType, const QString
 
   if ( providerType == QgsSublayersDialog::Ogr )
   {
-    setWindowTitle( tr( "Select vector layers to add..." ) );
+    setWindowTitle( tr( "Select Vector Layers to Add..." ) );
     layersTable->setHeaderLabels( QStringList() << tr( "Layer ID" ) << tr( "Layer name" )
                                   << tr( "Number of features" ) << tr( "Geometry type" ) );
     mShowCount = true;
@@ -38,12 +58,12 @@ QgsSublayersDialog::QgsSublayersDialog( ProviderType providerType, const QString
   }
   else if ( providerType == QgsSublayersDialog::Gdal )
   {
-    setWindowTitle( tr( "Select raster layers to add..." ) );
+    setWindowTitle( tr( "Select Raster Layers to Add..." ) );
     layersTable->setHeaderLabels( QStringList() << tr( "Layer ID" ) << tr( "Layer name" ) );
   }
   else
   {
-    setWindowTitle( tr( "Select layers to add..." ) );
+    setWindowTitle( tr( "Select Layers to Add..." ) );
     layersTable->setHeaderLabels( QStringList() << tr( "Layer ID" ) << tr( "Layer name" )
                                   << tr( "Type" ) );
     mShowType = true;
@@ -123,7 +143,7 @@ void QgsSublayersDialog::populateLayerTable( const QgsSublayersDialog::LayerDefi
       elements << QString::number( item.count );
     if ( mShowType )
       elements << item.type;
-    layersTable->addTopLevelItem( new QTreeWidgetItem( elements ) );
+    layersTable->addTopLevelItem( new SubLayerItem( elements ) );
   }
 
   // resize columns

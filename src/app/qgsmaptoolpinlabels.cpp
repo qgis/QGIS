@@ -142,11 +142,11 @@ void QgsMapToolPinLabels::highlightLabel( const QgsLabelPosition &labelpos,
 {
   QgsRectangle rect = labelpos.labelRect;
   QgsRubberBand *rb = new QgsRubberBand( mCanvas, QgsWkbTypes::PolygonGeometry );
-  rb->addPoint( QgsPoint( rect.xMinimum(), rect.yMinimum() ) );
-  rb->addPoint( QgsPoint( rect.xMinimum(), rect.yMaximum() ) );
-  rb->addPoint( QgsPoint( rect.xMaximum(), rect.yMaximum() ) );
-  rb->addPoint( QgsPoint( rect.xMaximum(), rect.yMinimum() ) );
-  rb->addPoint( QgsPoint( rect.xMinimum(), rect.yMinimum() ) );
+  rb->addPoint( QgsPointXY( rect.xMinimum(), rect.yMinimum() ) );
+  rb->addPoint( QgsPointXY( rect.xMinimum(), rect.yMaximum() ) );
+  rb->addPoint( QgsPointXY( rect.xMaximum(), rect.yMaximum() ) );
+  rb->addPoint( QgsPointXY( rect.xMaximum(), rect.yMinimum() ) );
+  rb->addPoint( QgsPointXY( rect.xMinimum(), rect.yMinimum() ) );
   rb->setColor( color );
   rb->setWidth( 0 );
   rb->show();
@@ -349,9 +349,9 @@ bool QgsMapToolPinLabels::pinUnpinCurrentLabel( bool pin )
   if ( pin )
   {
 
-//     QgsPoint labelpoint = labelpos.cornerPoints.at( 0 );
+//     QgsPointXY labelpoint = labelpos.cornerPoints.at( 0 );
 
-    QgsPoint referencePoint;
+    QgsPointXY referencePoint;
     if ( !currentLabelRotationPoint( referencePoint, !preserveRot, false ) )
     {
       referencePoint.setX( labelpos.labelRect.xMinimum() );
@@ -363,7 +363,7 @@ bool QgsMapToolPinLabels::pinUnpinCurrentLabel( bool pin )
     double labelR = labelpos.rotation * 180 / M_PI;
 
     // transform back to layer crs
-    QgsPoint transformedPoint = mCanvas->mapSettings().mapToLayerCoordinates( vlayer, referencePoint );
+    QgsPointXY transformedPoint = mCanvas->mapSettings().mapToLayerCoordinates( vlayer, referencePoint );
     labelX = transformedPoint.x();
     labelY = transformedPoint.y();
 
@@ -381,12 +381,12 @@ bool QgsMapToolPinLabels::pinUnpinCurrentLabel( bool pin )
   else
   {
     vlayer->beginEditCommand( tr( "Unpinned label" ) + QStringLiteral( " '%1'" ).arg( labelText ) );
-    writeFailed = !vlayer->changeAttributeValue( fid, xCol, QVariant( QString::null ) );
-    if ( !vlayer->changeAttributeValue( fid, yCol, QVariant( QString::null ) ) )
+    writeFailed = !vlayer->changeAttributeValue( fid, xCol, QVariant( QString() ) );
+    if ( !vlayer->changeAttributeValue( fid, yCol, QVariant( QString() ) ) )
       writeFailed = true;
     if ( hasRCol && !preserveRot )
     {
-      if ( !vlayer->changeAttributeValue( fid, rCol, QVariant( QString::null ) ) )
+      if ( !vlayer->changeAttributeValue( fid, rCol, QVariant( QString() ) ) )
         writeFailed = true;
     }
     vlayer->endEditCommand();
@@ -449,12 +449,12 @@ bool QgsMapToolPinLabels::pinUnpinCurrentDiagram( bool pin )
 
   if ( pin )
   {
-    QgsPoint referencePoint = mCurrentLabel.pos.labelRect.center();
+    QgsPointXY referencePoint = mCurrentLabel.pos.labelRect.center();
     double labelX = referencePoint.x();
     double labelY = referencePoint.y();
 
     // transform back to layer crs
-    QgsPoint transformedPoint = mCanvas->mapSettings().mapToLayerCoordinates( vlayer, referencePoint );
+    QgsPointXY transformedPoint = mCanvas->mapSettings().mapToLayerCoordinates( vlayer, referencePoint );
     labelX = transformedPoint.x();
     labelY = transformedPoint.y();
 
@@ -467,8 +467,8 @@ bool QgsMapToolPinLabels::pinUnpinCurrentDiagram( bool pin )
   else
   {
     vlayer->beginEditCommand( tr( "Unpinned diagram" ) + QStringLiteral( " '%1'" ).arg( labelText ) );
-    writeFailed = !vlayer->changeAttributeValue( fid, xCol, QVariant( QString::null ) );
-    if ( !vlayer->changeAttributeValue( fid, yCol, QVariant( QString::null ) ) )
+    writeFailed = !vlayer->changeAttributeValue( fid, xCol, QVariant( QString() ) );
+    if ( !vlayer->changeAttributeValue( fid, yCol, QVariant( QString() ) ) )
       writeFailed = true;
     vlayer->endEditCommand();
   }

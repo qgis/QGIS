@@ -38,11 +38,7 @@
 #if 0
 extern "C"
 {
-#if GRASS_VERSION_MAJOR < 7
-#include <grass/Vect.h>
-#else
 #include <grass/vector.h>
-#endif
 }
 #endif
 
@@ -175,17 +171,10 @@ QList<QDomNode> QgsGrassModuleParam::nodesByType( QDomElement descDomElement, ST
 
   // Not all options have prompt set, for example G_OPT_V_TYPE and G_OPT_V_FIELD, which would be useful, don't have prompt
   QMap<QString, STD_OPT> typeMap;
-#if GRASS_VERSION_MAJOR < 7
-  typeMap.insert( "dbtable", G_OPT_TABLE );
-  typeMap.insert( "dbdriver", G_OPT_DRIVER );
-  typeMap.insert( "dbname", G_OPT_DATABASE );
-  typeMap.insert( "dbcolumn", G_OPT_COLUMN );
-#else
   typeMap.insert( QStringLiteral( "dbtable" ), G_OPT_DB_TABLE );
   typeMap.insert( QStringLiteral( "dbdriver" ), G_OPT_DB_DRIVER );
   typeMap.insert( QStringLiteral( "dbname" ), G_OPT_DB_DATABASE );
   typeMap.insert( QStringLiteral( "dbcolumn" ), G_OPT_DB_COLUMN );
-#endif
   typeMap.insert( QStringLiteral( "vector" ), G_OPT_V_INPUT );
 
   QDomNode n = descDomElement.firstChild();
@@ -1476,7 +1465,7 @@ QgsGrassModuleFile::QgsGrassModuleFile(
 
   QHBoxLayout *l = new QHBoxLayout( this );
   mLineEdit = new QLineEdit();
-  mBrowseButton = new QPushButton( QStringLiteral( "..." ) );
+  mBrowseButton = new QPushButton( QStringLiteral( "…" ) );
   l->addWidget( mLineEdit );
   l->addWidget( mBrowseButton );
 

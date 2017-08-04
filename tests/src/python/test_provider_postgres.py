@@ -30,7 +30,7 @@ from qgis.core import (
     QgsSettings,
     QgsTransactionGroup
 )
-from qgis.gui import QgsEditorWidgetRegistry
+from qgis.gui import QgsGui
 from qgis.PyQt.QtCore import QDate, QTime, QDateTime, QVariant, QDir
 from qgis.testing import start_app, unittest
 from utilities import unitTestDataPath
@@ -51,11 +51,11 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
         # Create test layers
         cls.vl = QgsVectorLayer(cls.dbconn + ' sslmode=disable key=\'pk\' srid=4326 type=POINT table="qgis_test"."someData" (geom) sql=', 'test', 'postgres')
         assert cls.vl.isValid()
-        cls.provider = cls.vl.dataProvider()
+        cls.source = cls.vl.dataProvider()
         cls.poly_vl = QgsVectorLayer(cls.dbconn + ' sslmode=disable key=\'pk\' srid=4326 type=POLYGON table="qgis_test"."some_poly_data" (geom) sql=', 'test', 'postgres')
         assert cls.poly_vl.isValid()
         cls.poly_provider = cls.poly_vl.dataProvider()
-        QgsEditorWidgetRegistry.instance().initEditors()
+        QgsGui.editorWidgetRegistry().initEditors()
         cls.con = psycopg2.connect(cls.dbconn)
 
     @classmethod
@@ -70,7 +70,7 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
         cur.close()
         self.con.commit()
 
-    def getEditableLayer(self):
+    def getSource(self):
         # create temporary table for edit tests
         self.execSQLCommand('DROP TABLE IF EXISTS qgis_test."editData" CASCADE')
         self.execSQLCommand('CREATE TABLE qgis_test."editData" ( pk SERIAL NOT NULL PRIMARY KEY, cnt integer, name text, name2 text, num_char text, geom public.geometry(Point, 4326))')
@@ -84,6 +84,9 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
             self.dbconn + ' sslmode=disable key=\'pk\' srid=4326 type=POINT table="qgis_test"."editData" (geom) sql=',
             'test', 'postgres')
         return vl
+
+    def getEditableLayer(self):
+        return self.getSource()
 
     def enableCompiler(self):
         QgsSettings().setValue('/qgis/compileExpressions', True)
@@ -99,17 +102,17 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
 
     # HERE GO THE PROVIDER SPECIFIC TESTS
     def testDefaultValue(self):
-        self.provider.setProviderProperty(QgsDataProvider.EvaluateDefaultValues, True)
-        self.assertIsInstance(self.provider.defaultValue(0), int)
-        self.assertEqual(self.provider.defaultValue(1), NULL)
-        self.assertEqual(self.provider.defaultValue(2), 'qgis')
-        self.provider.setProviderProperty(QgsDataProvider.EvaluateDefaultValues, False)
+        self.source.setProviderProperty(QgsDataProvider.EvaluateDefaultValues, True)
+        self.assertIsInstance(self.source.defaultValue(0), int)
+        self.assertEqual(self.source.defaultValue(1), NULL)
+        self.assertEqual(self.source.defaultValue(2), 'qgis')
+        self.source.setProviderProperty(QgsDataProvider.EvaluateDefaultValues, False)
 
     def testDefaultValueClause(self):
-        self.provider.setProviderProperty(QgsDataProvider.EvaluateDefaultValues, False)
-        self.assertEqual(self.provider.defaultValueClause(0), 'nextval(\'qgis_test."someData_pk_seq"\'::regclass)')
-        self.assertFalse(self.provider.defaultValueClause(1))
-        self.assertEqual(self.provider.defaultValueClause(2), '\'qgis\'::text')
+        self.source.setProviderProperty(QgsDataProvider.EvaluateDefaultValues, False)
+        self.assertEqual(self.source.defaultValueClause(0), 'nextval(\'qgis_test."someData_pk_seq"\'::regclass)')
+        self.assertFalse(self.source.defaultValueClause(1))
+        self.assertEqual(self.source.defaultValueClause(2), '\'qgis\'::text')
 
     def testDateTimeTypes(self):
         vl = QgsVectorLayer('%s table="qgis_test"."date_times" sql=' % (self.dbconn), "testdatetimes", "postgres")
@@ -379,13 +382,13 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
         self.assertEqual(setup1.type(), "FooEdit")
         self.assertEqual(setup1.config(), {"param1": "value1", "param2": "2"})
 
-        best1 = QgsEditorWidgetRegistry.instance().findBest(vl, "fld1")
+        best1 = QgsGui.editorWidgetRegistry().findBest(vl, "fld1")
         self.assertEqual(best1.type(), "FooEdit")
         self.assertEqual(best1.config(), setup1.config())
 
         self.assertTrue(fields.field("fld2").editorWidgetSetup().isNull())
 
-        best2 = QgsEditorWidgetRegistry.instance().findBest(vl, "fld2")
+        best2 = QgsGui.editorWidgetRegistry().findBest(vl, "fld2")
         self.assertEqual(best2.type(), "TextEdit")
 
     def testHstore(self):
@@ -727,7 +730,7 @@ class TestPyQgsPostgresProviderCompoundKey(unittest.TestCase, ProviderTestCase):
         # Create test layers
         cls.vl = QgsVectorLayer(cls.dbconn + ' sslmode=disable key=\'"key1","key2"\' srid=4326 type=POINT table="qgis_test"."someDataCompound" (geom) sql=', 'test', 'postgres')
         assert cls.vl.isValid()
-        cls.provider = cls.vl.dataProvider()
+        cls.source = cls.vl.dataProvider()
 
     @classmethod
     def tearDownClass(cls):

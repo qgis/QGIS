@@ -200,7 +200,7 @@ class QgsWmsProvider : public QgsRasterDataProvider
     Qgis::DataType sourceDataType( int bandNo ) const override;
     int bandCount() const override;
     QString metadata() override;
-    QgsRasterIdentifyResult identify( const QgsPoint &point, QgsRaster::IdentifyFormat format, const QgsRectangle &boundingBox = QgsRectangle(), int width = 0, int height = 0, int dpi = 96 ) override;
+    QgsRasterIdentifyResult identify( const QgsPointXY &point, QgsRaster::IdentifyFormat format, const QgsRectangle &boundingBox = QgsRectangle(), int width = 0, int height = 0, int dpi = 96 ) override;
     QString lastErrorTitle() override;
     QString lastError() override;
     QString lastErrorFormat() override;
@@ -276,7 +276,7 @@ class QgsWmsProvider : public QgsRasterDataProvider
     bool extentForNonTiledLayer( const QString &layerName, const QString &crs, QgsRectangle &extent ) const;
 
     // case insensitive attribute value lookup
-    static QString nodeAttribute( const QDomElement &e, const QString &name, const QString &defValue = QString::null );
+    static QString nodeAttribute( const QDomElement &e, const QString &name, const QString &defValue = QString() );
 
     /**
      * Add the list of WMS layer names to be rendered by this server
@@ -350,7 +350,7 @@ class QgsWmsProvider : public QgsRasterDataProvider
      */
     QUrl getLegendGraphicFullURL( double scale, const QgsRectangle &visibleExtent );
 
-    //QStringList identifyAs( const QgsPoint &point, QString format );
+    //QStringList identifyAs( const QgsPointXY &point, QString format );
 
     QString layerMetadata( QgsWmsLayerProperty &layer );
 

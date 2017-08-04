@@ -1,541 +1,1261 @@
-/** \ingroup gui
- * QgisInterface
- * Abstract base class defining interfaces exposed by QgisApp and
- * made available to plugins.
- *
- * Only functionality exposed by QgisInterface can be used in plugins.
- * This interface has to be implemented with application specific details.
- *
- * QGIS implements it in QgisAppInterface class, 3rd party applications
- * could provide their own implementation to be able to use plugins.
- */
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgisinterface.h                                              *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+
+
 
 class QgisInterface : QObject
 {
-%TypeHeaderCode
-#include <qgisinterface.h>
+%Docstring
+ QgisInterface
+ Abstract base class defining interfaces exposed by QgisApp and
+ made available to plugins.
+
+ Only functionality exposed by QgisInterface can be used in plugins.
+ This interface has to be implemented with application specific details.
+
+ QGIS implements it in QgisAppInterface class, 3rd party applications
+ could provide their own implementation to be able to use plugins.
 %End
 
+%TypeHeaderCode
+#include "qgisinterface.h"
+%End
   public:
 
-    /** Constructor */
     QgisInterface();
-
-    /** Virtual destructor */
-    virtual ~QgisInterface();
+%Docstring
+Constructor
+%End
 
     virtual QgsPluginManagerInterface *pluginManagerInterface() = 0;
+%Docstring
+ :rtype: QgsPluginManagerInterface
+%End
 
     virtual QgsLayerTreeView *layerTreeView() = 0;
+%Docstring
+ :rtype: QgsLayerTreeView
+%End
 
-    /** Add action to context menu for layers in the layer tree.
-     * If allLayers is true, then the action will be available for all layers of given type,
-     * otherwise the action will be available only for specific layers added with addCustomActionForLayer()
-     * after this call.
-     *
-     * If menu argument is not empty, the action will be also added to a menu within the main window,
-     * creating menu with the given name if it does not exist yet.
-     *
-     * @see removeCustomActionForLayerType()
-     * @see addCustomActionForLayer()
-     */
-    virtual void addCustomActionForLayerType( QAction* action, QString menu,
-                                              QgsMapLayer::LayerType type, bool allLayers ) = 0;
+    virtual void addCustomActionForLayerType( QAction *action, QString menu,
+        QgsMapLayer::LayerType type, bool allLayers ) = 0;
+%Docstring
+ Add action to context menu for layers in the layer tree.
+ If allLayers is true, then the action will be available for all layers of given type,
+ otherwise the action will be available only for specific layers added with addCustomActionForLayer()
+ after this call.
 
-    /** Add action to context menu for a specific layer in the layer tree.
-     * It is necessary to first call addCustomActionForLayerType() with allLayers=false
-     * in order for this method to have any effect.
-     * @see addCustomActionForLayerType()
-     */
+ If menu argument is not empty, the action will be also added to a menu within the main window,
+ creating menu with the given name if it does not exist yet.
+
+.. seealso:: removeCustomActionForLayerType()
+.. seealso:: addCustomActionForLayer()
+%End
+
     virtual void addCustomActionForLayer( QAction *action, QgsMapLayer *layer ) = 0;
+%Docstring
+ Add action to context menu for a specific layer in the layer tree.
+ It is necessary to first call addCustomActionForLayerType() with allLayers=false
+ in order for this method to have any effect.
+.. seealso:: addCustomActionForLayerType()
+%End
 
-    /** Remove action for layers in the layer tree previously added with addCustomActionForLayerType()
-     * @see addCustomActionForLayerType()
-     */
     virtual bool removeCustomActionForLayerType( QAction *action ) = 0;
+%Docstring
+ Remove action for layers in the layer tree previously added with addCustomActionForLayerType()
+.. seealso:: addCustomActionForLayerType()
+ :rtype: bool
+%End
+
+    virtual QList< QgsMapCanvas * > mapCanvases() = 0;
+%Docstring
+ Returns a list of all map canvases open in the app.
+.. versionadded:: 3.0
+ :rtype: list of QgsMapCanvas
+%End
+
+    virtual QgsMapCanvas *createNewMapCanvas( const QString &name ) = 0;
+%Docstring
+ Create a new map canvas with the specified unique ``name``.
+.. versionadded:: 3.0
+.. seealso:: closeMapCanvas()
+ :rtype: QgsMapCanvas
+%End
+
+    virtual void closeMapCanvas( const QString &name ) = 0;
+%Docstring
+ Closes the additional map canvas with matching ``name``.
+.. versionadded:: 3.0
+.. seealso:: createNewMapCanvas()
+%End
 
   public slots: // TODO: do these functions really need to be slots?
 
-    /* Exposed functions */
-
-    virtual QList< QgsMapCanvas* > mapCanvases() = 0;
-
-    virtual QgsMapCanvas *createNewMapCanvas( const QString &name ) = 0;
-
-    virtual void closeMapCanvas( const QString &name ) = 0;
-
-  public slots:
-
-
-
 
     virtual void zoomFull() = 0;
+%Docstring
+Zoom to full extent of map layers
+%End
 
-    //! Zoom to previous view extent
     virtual void zoomToPrevious() = 0;
+%Docstring
+Zoom to previous view extent
+%End
 
-    //! Zoom to next view extent
     virtual void zoomToNext() = 0;
+%Docstring
+Zoom to next view extent
+%End
 
-    //! Zoom to extent of the active layer
     virtual void zoomToActiveLayer() = 0;
+%Docstring
+Zoom to extent of the active layer
+%End
 
-    //! Add a vector layer
     virtual QgsVectorLayer *addVectorLayer( const QString &vectorLayerPath, const QString &baseName, const QString &providerKey ) = 0;
+%Docstring
+Add a vector layer
+ :rtype: QgsVectorLayer
+%End
 
-    //! Add a raster layer given a raster layer file name
     virtual QgsRasterLayer *addRasterLayer( const QString &rasterLayerPath, const QString &baseName = QString() ) = 0;
+%Docstring
+Add a raster layer given a raster layer file name
+ :rtype: QgsRasterLayer
+%End
 
-    //! Add a WMS layer
     virtual QgsRasterLayer *addRasterLayer( const QString &url, const QString &layerName, const QString &providerKey ) = 0;
+%Docstring
+Add a WMS layer
+ :rtype: QgsRasterLayer
+%End
 
-    //! Add a project
     virtual bool addProject( const QString &project ) = 0;
-    //! Start a blank project
+%Docstring
+Add a project
+ :rtype: bool
+%End
     virtual void newProject( bool promptToSaveFlag = false ) = 0;
+%Docstring
+Start a blank project
+%End
 
-    //! Get pointer to the active layer (layer selected in the legend)
     virtual QgsMapLayer *activeLayer() = 0;
+%Docstring
+Get pointer to the active layer (layer selected in the legend)
+ :rtype: QgsMapLayer
+%End
 
-    //! Set the active layer (layer gets selected in the legend)
-    //! returns true if the layer exists, false otherwise
     virtual bool setActiveLayer( QgsMapLayer * ) = 0;
+%Docstring
+returns true if the layer exists, false otherwise
+ :rtype: bool
+%End
 
-    //! Add an icon to the plugins toolbar
     virtual int addToolBarIcon( QAction *qAction ) = 0;
+%Docstring
+Add an icon to the plugins toolbar
+ :rtype: int
+%End
 
-    /**
-     * Add a widget to the plugins toolbar.
-     * To remove this widget again, call {@link removeToolBarIcon}
-     * with the returned QAction.
-     *
-     * @param widget widget to add. The toolbar will take ownership of this widget
-     * @return the QAction you can use to remove this widget from the toolbar
-     */
     virtual QAction *addToolBarWidget( QWidget *widget /Transfer/ ) = 0;
+%Docstring
+ Add a widget to the plugins toolbar.
+ To remove this widget again, call removeToolBarIcon()
+ with the returned QAction.
 
-    //! Remove an action (icon) from the plugin toolbar
+ \param widget widget to add. The toolbar will take ownership of this widget
+ :return: the QAction you can use to remove this widget from the toolbar
+ :rtype: QAction
+%End
+
     virtual void removeToolBarIcon( QAction *qAction ) = 0;
+%Docstring
+Remove an action (icon) from the plugin toolbar
+%End
 
-    /**
-     * Add a widget to the raster toolbar.
-     * To remove this widget again, call {@link removeRasterToolBarIcon}
-     * with the returned QAction.
-     *
-     * @param widget widget to add. The toolbar will take ownership of this widget
-     * @return the QAction you can use to remove this widget from the toolbar
-     */
     virtual QAction *addRasterToolBarWidget( QWidget *widget /Transfer/ ) = 0;
+%Docstring
+ Add a widget to the raster toolbar.
+ To remove this widget again, call removeRasterToolBarIcon()
+ with the returned QAction.
 
-    //! Add an icon to the Raster toolbar
+ \param widget widget to add. The toolbar will take ownership of this widget
+ :return: the QAction you can use to remove this widget from the toolbar
+ :rtype: QAction
+%End
+
     virtual int addRasterToolBarIcon( QAction *qAction ) = 0;
+%Docstring
+Add an icon to the Raster toolbar
+ :rtype: int
+%End
 
-    //! Remove an action (icon) from the Raster toolbar
     virtual void removeRasterToolBarIcon( QAction *qAction ) = 0;
+%Docstring
+Remove an action (icon) from the Raster toolbar
+%End
 
-    //! Add an icon to the Vector toolbar
     virtual int addVectorToolBarIcon( QAction *qAction ) = 0;
+%Docstring
+Add an icon to the Vector toolbar
+ :rtype: int
+%End
 
-    /**
-     * Add a widget to the vector toolbar.
-     * To remove this widget again, call {@link removeVectorToolBarIcon}
-     * with the returned QAction.
-     *
-     * @param widget widget to add. The toolbar will take ownership of this widget
-     * @return the QAction you can use to remove this widget from the toolbar
-     */
     virtual QAction *addVectorToolBarWidget( QWidget *widget /Transfer/ ) = 0;
+%Docstring
+ Add a widget to the vector toolbar.
+ To remove this widget again, call removeVectorToolBarIcon()
+ with the returned QAction.
 
-    //! Remove an action (icon) from the Vector toolbar
+ \param widget widget to add. The toolbar will take ownership of this widget
+ :return: the QAction you can use to remove this widget from the toolbar
+ :rtype: QAction
+%End
+
     virtual void removeVectorToolBarIcon( QAction *qAction ) = 0;
+%Docstring
+Remove an action (icon) from the Vector toolbar
+%End
 
-    //! Add an icon to the Database toolbar
     virtual int addDatabaseToolBarIcon( QAction *qAction ) = 0;
+%Docstring
+Add an icon to the Database toolbar
+ :rtype: int
+%End
 
-    /**
-     * Add a widget to the database toolbar.
-     * To remove this widget again, call {@link removeDatabaseToolBarIcon}
-     * with the returned QAction.
-     *
-     * @param widget widget to add. The toolbar will take ownership of this widget
-     * @return the QAction you can use to remove this widget from the toolbar
-     */
     virtual QAction *addDatabaseToolBarWidget( QWidget *widget /Transfer/ ) = 0;
+%Docstring
+ Add a widget to the database toolbar.
+ To remove this widget again, call removeDatabaseToolBarIcon()
+ with the returned QAction.
 
-    //! Remove an action (icon) from the Database toolbar
+ \param widget widget to add. The toolbar will take ownership of this widget
+ :return: the QAction you can use to remove this widget from the toolbar
+ :rtype: QAction
+%End
+
     virtual void removeDatabaseToolBarIcon( QAction *qAction ) = 0;
+%Docstring
+Remove an action (icon) from the Database toolbar
+%End
 
-    //! Add an icon to the Web toolbar
     virtual int addWebToolBarIcon( QAction *qAction ) = 0;
+%Docstring
+Add an icon to the Web toolbar
+ :rtype: int
+%End
 
-    /**
-     * Add a widget to the web toolbar.
-     * To remove this widget again, call {@link removeWebToolBarIcon}
-     * with the returned QAction.
-     *
-     * @param widget widget to add. The toolbar will take ownership of this widget
-     * @return the QAction you can use to remove this widget from the toolbar
-     */
     virtual QAction *addWebToolBarWidget( QWidget *widget /Transfer/ ) = 0;
+%Docstring
+ Add a widget to the web toolbar.
+ To remove this widget again, call removeWebToolBarIcon()
+ with the returned QAction.
 
-    //! Remove an action (icon) from the Web toolbar
+ \param widget widget to add. The toolbar will take ownership of this widget
+ :return: the QAction you can use to remove this widget from the toolbar
+ :rtype: QAction
+%End
+
     virtual void removeWebToolBarIcon( QAction *qAction ) = 0;
+%Docstring
+Remove an action (icon) from the Web toolbar
+%End
 
-    //! Add toolbar with specified name
     virtual QToolBar *addToolBar( const QString &name ) = 0 /Factory/;
+%Docstring
+Add toolbar with specified name
+ :rtype: QToolBar
+%End
 
-    //! Add a toolbar
-    //! @note added in 2.3
     virtual void addToolBar( QToolBar *toolbar /Transfer/, Qt::ToolBarArea area = Qt::TopToolBarArea ) = 0;
+%Docstring
+.. versionadded:: 2.3
+%End
 
-    /** Return a pointer to the map canvas */
     virtual QgsMapCanvas *mapCanvas() = 0;
+%Docstring
+Return a pointer to the map canvas
+ :rtype: QgsMapCanvas
+%End
 
-    /**
-     * Returns a pointer to the layer tree canvas bridge
-     *
-     * @note added in 2.12
-     */
     virtual QgsLayerTreeMapCanvasBridge *layerTreeCanvasBridge() = 0;
+%Docstring
+ Returns a pointer to the layer tree canvas bridge
 
-    /** Return a pointer to the main window (instance of QgisApp in case of QGIS) */
+.. versionadded:: 2.12
+ :rtype: QgsLayerTreeMapCanvasBridge
+%End
+
     virtual QWidget *mainWindow() = 0;
+%Docstring
+Return a pointer to the main window (instance of QgisApp in case of QGIS)
+ :rtype: QWidget
+%End
 
-    /** Return the message bar of the main app */
     virtual QgsMessageBar *messageBar() = 0;
+%Docstring
+Return the message bar of the main app
+ :rtype: QgsMessageBar
+%End
 
-    /** Open the message log dock widget **/
     virtual void openMessageLog() = 0;
+%Docstring
+Open the message log dock widget *
+%End
 
-    /** Adds a widget to the user input tool bar.*/
     virtual void addUserInputWidget( QWidget *widget ) = 0;
+%Docstring
+Adds a widget to the user input tool bar.
+%End
 
     virtual QList<QgsComposerInterface *> openComposers() = 0;
+%Docstring
+ Returns all currently open composer windows.
+.. versionadded:: 3.0
+ :rtype: list of QgsComposerInterface
+%End
+
     virtual QgsComposerInterface *openComposer( QgsComposition *composition ) = 0;
+%Docstring
+ Opens a new composer window for the specified ``composition``, or
+ brings an already open composer window to the foreground if one
+ is already created for the composition.
+.. versionadded:: 3.0
+.. seealso:: closeComposer()
+ :rtype: QgsComposerInterface
+%End
+
     virtual void closeComposer( QgsComposition *composition ) = 0;
+%Docstring
+ Closes an open composer window showing the specified ``composition``.
+ The composition remains unaffected.
+.. versionadded:: 3.0
+.. seealso:: openComposer()
+%End
+
+    virtual QList<QgsLayoutDesignerInterface *> openLayoutDesigners() = 0;
+%Docstring
+ Returns all currently open layout designers.
+.. versionadded:: 3.0
+ :rtype: list of QgsLayoutDesignerInterface
+%End
+
+    virtual QgsLayoutDesignerInterface *openLayoutDesigner( QgsLayout *layout ) = 0;
+%Docstring
+ Opens a new layout designer dialog for the specified ``layout``, or
+ brings an already open designer window to the foreground if one
+ is already created for the layout.
+.. versionadded:: 3.0
+.. seealso:: closeComposer()
+ :rtype: QgsLayoutDesignerInterface
+%End
+
     virtual void showOptionsDialog( QWidget *parent = 0, const QString &currentPage = QString() ) = 0;
+%Docstring
+ Opens the options dialog. The ``currentPage`` argument can be used to force
+ the dialog to open at a specific page.
+.. versionadded:: 3.0
+%End
 
     virtual QMap<QString, QVariant> defaultStyleSheetOptions() = 0;
+%Docstring
+Return changeable options built from settings and/or defaults
+ :rtype: QMap<str, QVariant>
+%End
 
-    /** Generate stylesheet
-     * @param opts generated default option values, or a changed copy of them
-     */
     virtual void buildStyleSheet( const QMap<QString, QVariant> &opts ) = 0;
+%Docstring
+ Generate stylesheet
+ \param opts generated default option values, or a changed copy of them
+%End
 
-    /** Save changed default option keys/values to user settings */
     virtual void saveStyleSheetOptions( const QMap<QString, QVariant> &opts ) = 0;
+%Docstring
+Save changed default option keys/values to user settings
+%End
 
-    /** Get reference font for initial qApp (may not be same as QgisApp) */
     virtual QFont defaultStyleSheetFont() = 0;
+%Docstring
+Get reference font for initial qApp (may not be same as QgisApp)
+ :rtype: QFont
+%End
 
-    /** Add action to the plugins menu */
     virtual void addPluginToMenu( const QString &name, QAction *action ) = 0;
+%Docstring
+Add action to the plugins menu
+%End
 
-    /** Remove action from the plugins menu */
     virtual void removePluginMenu( const QString &name, QAction *action ) = 0;
+%Docstring
+Remove action from the plugins menu
+%End
 
-    /** Add "add layer" action to layer menu */
     virtual void insertAddLayerAction( QAction *action ) = 0;
+%Docstring
+Add "add layer" action to layer menu
+%End
 
-    /** Remove "add layer" action from layer menu */
     virtual void removeAddLayerAction( QAction *action ) = 0;
+%Docstring
+Remove "add layer" action from layer menu
+%End
 
-    /** Add action to the Database menu */
     virtual void addPluginToDatabaseMenu( const QString &name, QAction *action ) = 0;
+%Docstring
+Add action to the Database menu
+%End
 
-    /** Remove action from the Database menu */
     virtual void removePluginDatabaseMenu( const QString &name, QAction *action ) = 0;
+%Docstring
+Remove action from the Database menu
+%End
 
-    /** Add action to the Raster menu */
     virtual void addPluginToRasterMenu( const QString &name, QAction *action ) = 0;
+%Docstring
+Add action to the Raster menu
+%End
 
-    /** Remove action from the Raster menu */
     virtual void removePluginRasterMenu( const QString &name, QAction *action ) = 0;
+%Docstring
+Remove action from the Raster menu
+%End
 
-    /** Add action to the Vector menu */
     virtual void addPluginToVectorMenu( const QString &name, QAction *action ) = 0;
+%Docstring
+Add action to the Vector menu
+%End
 
-    /** Remove action from the Vector menu */
     virtual void removePluginVectorMenu( const QString &name, QAction *action ) = 0;
+%Docstring
+Remove action from the Vector menu
+%End
 
-    /** Add action to the Web menu */
     virtual void addPluginToWebMenu( const QString &name, QAction *action ) = 0;
+%Docstring
+Add action to the Web menu
+%End
 
-    /** Remove action from the Web menu */
     virtual void removePluginWebMenu( const QString &name, QAction *action ) = 0;
+%Docstring
+Remove action from the Web menu
+%End
 
-    /** Add a dock widget to the main window */
     virtual void addDockWidget( Qt::DockWidgetArea area, QDockWidget *dockwidget ) = 0;
+%Docstring
+Add a dock widget to the main window
+%End
 
-    /** Remove specified dock widget from main window (doesn't delete it). */
     virtual void removeDockWidget( QDockWidget *dockwidget ) = 0;
+%Docstring
+Remove specified dock widget from main window (doesn't delete it).
+%End
 
-    /** Advanced digitizing dock widget
-     *  @note Added in 2.12
-     */
     virtual QgsAdvancedDigitizingDockWidget *cadDockWidget() = 0;
+%Docstring
+ Advanced digitizing dock widget
+.. versionadded:: 2.12
+ :rtype: QgsAdvancedDigitizingDockWidget
+%End
 
-    /** Open layer properties dialog */
     virtual void showLayerProperties( QgsMapLayer *l ) = 0;
+%Docstring
+Open layer properties dialog
+%End
 
-    /** Open attribute table dialog */
     virtual QDialog *showAttributeTable( QgsVectorLayer *l, const QString &filterExpression = QString() ) = 0;
+%Docstring
+Open attribute table dialog
+ :rtype: QDialog
+%End
 
-    /** Add window to Window menu. The action title is the window title
-     * and the action should raise, unminimize and activate the window. */
     virtual void addWindow( QAction *action ) = 0;
+%Docstring
+ Add window to Window menu. The action title is the window title
+ and the action should raise, unminimize and activate the window. *
+%End
 
-    /** Remove window from Window menu. Calling this is necessary only for
-     * windows which are hidden rather than deleted when closed. */
     virtual void removeWindow( QAction *action ) = 0;
+%Docstring
+ Remove window from Window menu. Calling this is necessary only for
+ windows which are hidden rather than deleted when closed. *
+%End
 
     virtual bool registerMainWindowAction( QAction *action, const QString &defaultShortcut ) = 0;
+%Docstring
+Register action to the shortcuts manager so its shortcut can be changed in GUI
+ :rtype: bool
+%End
+
     virtual bool unregisterMainWindowAction( QAction *action ) = 0;
+%Docstring
+Unregister a previously registered action. (e.g. when plugin is going to be unloaded)
+ :rtype: bool
+%End
+
     virtual void registerMapLayerConfigWidgetFactory( QgsMapLayerConfigWidgetFactory *factory ) = 0;
+%Docstring
+ Register a new tab in the vector layer properties dialog.
+.. versionadded:: 2.16
+.. note::
+
+   Ownership of the factory is not transferred, and the factory must
+       be unregistered when plugin is unloaded.
+.. seealso:: unregisterMapLayerPropertiesFactory() *
+%End
+
     virtual void unregisterMapLayerConfigWidgetFactory( QgsMapLayerConfigWidgetFactory *factory ) = 0;
+%Docstring
+ Unregister a previously registered tab in the vector layer properties dialog.
+.. versionadded:: 2.16
+.. seealso:: registerMapLayerPropertiesFactory()
+%End
+
     virtual void registerOptionsWidgetFactory( QgsOptionsWidgetFactory *factory ) = 0;
+%Docstring
+ Register a new tab in the options dialog.
+.. versionadded:: 3.0
+.. note::
+
+   Ownership of the factory is not transferred, and the factory must
+       be unregistered when plugin is unloaded.
+.. seealso:: unregisterOptionsWidgetFactory() *
+%End
+
     virtual void unregisterOptionsWidgetFactory( QgsOptionsWidgetFactory *factory ) = 0;
+%Docstring
+ Unregister a previously registered tab in the options dialog.
+.. versionadded:: 3.0
+.. seealso:: registerOptionsWidgetFactory()
+%End
+
     virtual void registerCustomDropHandler( QgsCustomDropHandler *handler ) = 0;
+%Docstring
+ Register a new custom drop handler.
+.. versionadded:: 3.0
+.. note::
+
+   Ownership of the factory is not transferred, and the factory must
+       be unregistered when plugin is unloaded.
+.. seealso:: unregisterCustomDropHandler() *
+%End
+
     virtual void unregisterCustomDropHandler( QgsCustomDropHandler *handler ) = 0;
+%Docstring
+ Unregister a previously registered custom drop handler.
+.. versionadded:: 3.0
+.. seealso:: registerCustomDropHandler() *
+%End
+
+
     virtual void openURL( const QString &url, bool useQgisDocDirectory = true ) = 0 /Deprecated/;
+%Docstring
+ Open a url in the users browser. By default the QGIS doc directory is used
+ as the base for the URL. To open a URL that is not relative to the installed
+ QGIS documentation, set useQgisDocDirectory to false.
+ \param url URL to open
+ \param useQgisDocDirectory If true, the URL will be formed by concatenating
+ url to the QGIS documentation directory path (prefix/share/doc)
+ \deprecated
+%End
+
+
 
     virtual QMenu *projectMenu() = 0;
+%Docstring
+ :rtype: QMenu
+%End
     virtual QMenu *editMenu() = 0;
+%Docstring
+ :rtype: QMenu
+%End
     virtual QMenu *viewMenu() = 0;
+%Docstring
+ :rtype: QMenu
+%End
     virtual QMenu *layerMenu() = 0;
+%Docstring
+ :rtype: QMenu
+%End
     virtual QMenu *newLayerMenu() = 0;
-    /** @note added in 2.5 */
+%Docstring
+ :rtype: QMenu
+%End
     virtual QMenu *addLayerMenu() = 0;
+%Docstring
+.. versionadded:: 2.5
+ :rtype: QMenu
+%End
     virtual QMenu *settingsMenu() = 0;
+%Docstring
+ :rtype: QMenu
+%End
     virtual QMenu *pluginMenu() = 0;
+%Docstring
+ :rtype: QMenu
+%End
     virtual QMenu *rasterMenu() = 0;
+%Docstring
+ :rtype: QMenu
+%End
     virtual QMenu *databaseMenu() = 0;
+%Docstring
+ :rtype: QMenu
+%End
     virtual QMenu *vectorMenu() = 0;
+%Docstring
+ :rtype: QMenu
+%End
     virtual QMenu *webMenu() = 0;
+%Docstring
+ :rtype: QMenu
+%End
     virtual QMenu *firstRightStandardMenu() = 0;
+%Docstring
+ :rtype: QMenu
+%End
     virtual QMenu *windowMenu() = 0;
+%Docstring
+ :rtype: QMenu
+%End
     virtual QMenu *helpMenu() = 0;
+%Docstring
+ :rtype: QMenu
+%End
 
-    // ToolBars
     virtual QToolBar *fileToolBar() = 0;
+%Docstring
+ :rtype: QToolBar
+%End
     virtual QToolBar *layerToolBar() = 0;
+%Docstring
+ :rtype: QToolBar
+%End
     virtual QToolBar *mapNavToolToolBar() = 0;
+%Docstring
+ :rtype: QToolBar
+%End
     virtual QToolBar *digitizeToolBar() = 0;
+%Docstring
+ :rtype: QToolBar
+%End
     virtual QToolBar *advancedDigitizeToolBar() = 0;
+%Docstring
+ :rtype: QToolBar
+%End
     virtual QToolBar *attributesToolBar() = 0;
+%Docstring
+ :rtype: QToolBar
+%End
     virtual QToolBar *pluginToolBar() = 0;
+%Docstring
+ :rtype: QToolBar
+%End
     virtual QToolBar *helpToolBar() = 0;
+%Docstring
+ :rtype: QToolBar
+%End
     virtual QToolBar *rasterToolBar() = 0;
+%Docstring
+ :rtype: QToolBar
+%End
     virtual QToolBar *vectorToolBar() = 0;
+%Docstring
+ :rtype: QToolBar
+%End
     virtual QToolBar *databaseToolBar() = 0;
+%Docstring
+ :rtype: QToolBar
+%End
     virtual QToolBar *webToolBar() = 0;
+%Docstring
+ :rtype: QToolBar
+%End
 
-    // Project menu actions
     virtual QAction *actionNewProject() = 0;
+%Docstring
+ :rtype: QAction
+%End
     virtual QAction *actionOpenProject() = 0;
+%Docstring
+ :rtype: QAction
+%End
     virtual QAction *actionSaveProject() = 0;
+%Docstring
+ :rtype: QAction
+%End
     virtual QAction *actionSaveProjectAs() = 0;
+%Docstring
+ :rtype: QAction
+%End
     virtual QAction *actionSaveMapAsImage() = 0;
+%Docstring
+ :rtype: QAction
+%End
     virtual QAction *actionProjectProperties() = 0;
+%Docstring
+ :rtype: QAction
+%End
     virtual QAction *actionPrintComposer() = 0;
+%Docstring
+ :rtype: QAction
+%End
     virtual QAction *actionShowComposerManager() = 0;
+%Docstring
+ :rtype: QAction
+%End
     virtual QAction *actionExit() = 0;
+%Docstring
+ :rtype: QAction
+%End
 
-    // Edit menu actions
     virtual QAction *actionCutFeatures() = 0;
+%Docstring
+ :rtype: QAction
+%End
     virtual QAction *actionCopyFeatures() = 0;
+%Docstring
+ :rtype: QAction
+%End
     virtual QAction *actionPasteFeatures() = 0;
+%Docstring
+ :rtype: QAction
+%End
     virtual QAction *actionAddFeature() = 0;
+%Docstring
+ :rtype: QAction
+%End
     virtual QAction *actionDeleteSelected() = 0;
+%Docstring
+ :rtype: QAction
+%End
     virtual QAction *actionMoveFeature() = 0;
+%Docstring
+ :rtype: QAction
+%End
     virtual QAction *actionSplitFeatures() = 0;
+%Docstring
+ :rtype: QAction
+%End
     virtual QAction *actionSplitParts() = 0;
+%Docstring
+ :rtype: QAction
+%End
     virtual QAction *actionAddRing() = 0;
+%Docstring
+ :rtype: QAction
+%End
     virtual QAction *actionAddPart() = 0;
+%Docstring
+ :rtype: QAction
+%End
     virtual QAction *actionSimplifyFeature() = 0;
+%Docstring
+ :rtype: QAction
+%End
     virtual QAction *actionDeleteRing() = 0;
+%Docstring
+ :rtype: QAction
+%End
     virtual QAction *actionDeletePart() = 0;
+%Docstring
+ :rtype: QAction
+%End
     virtual QAction *actionNodeTool() = 0;
+%Docstring
+ :rtype: QAction
+%End
 
-    // View menu actions
-    //! Get access to the native pan action. Call trigger() on it to set the default pan map tool.
     virtual QAction *actionPan() = 0;
-    //! Get access to the native pan to selected action. Call trigger() on it to pan the map canvas to the selection.
+%Docstring
+Get access to the native pan action. Call trigger() on it to set the default pan map tool.
+ :rtype: QAction
+%End
     virtual QAction *actionPanToSelected() = 0;
-    //! Get access to the native zoom in action. Call trigger() on it to set the default zoom in map tool.
+%Docstring
+Get access to the native pan to selected action. Call trigger() on it to pan the map canvas to the selection.
+ :rtype: QAction
+%End
     virtual QAction *actionZoomIn() = 0;
-    //! Get access to the native zoom out action. Call trigger() on it to set the default zoom out map tool.
+%Docstring
+Get access to the native zoom in action. Call trigger() on it to set the default zoom in map tool.
+ :rtype: QAction
+%End
     virtual QAction *actionZoomOut() = 0;
-    //! Get access to the native select action. Call trigger() on it to set the default select map tool.
+%Docstring
+Get access to the native zoom out action. Call trigger() on it to set the default zoom out map tool.
+ :rtype: QAction
+%End
     virtual QAction *actionSelect() = 0;
-    //! Get access to the native select rectangle action. Call trigger() on it to set the default select rectangle map tool.
+%Docstring
+Get access to the native select action. Call trigger() on it to set the default select map tool.
+ :rtype: QAction
+%End
     virtual QAction *actionSelectRectangle() = 0;
-    //! Get access to the native select polygon action. Call trigger() on it to set the default select polygon map tool.
+%Docstring
+Get access to the native select rectangle action. Call trigger() on it to set the default select rectangle map tool.
+ :rtype: QAction
+%End
     virtual QAction *actionSelectPolygon() = 0;
-    //! Get access to the native select freehand action. Call trigger() on it to set the default select freehand map tool.
+%Docstring
+Get access to the native select polygon action. Call trigger() on it to set the default select polygon map tool.
+ :rtype: QAction
+%End
     virtual QAction *actionSelectFreehand() = 0;
-    //! Get access to the native select radius action. Call trigger() on it to set the default select radius map tool.
+%Docstring
+Get access to the native select freehand action. Call trigger() on it to set the default select freehand map tool.
+ :rtype: QAction
+%End
     virtual QAction *actionSelectRadius() = 0;
-    //! Get access to the native identify action. Call trigger() on it to set the default identify map tool.
+%Docstring
+Get access to the native select radius action. Call trigger() on it to set the default select radius map tool.
+ :rtype: QAction
+%End
     virtual QAction *actionIdentify() = 0;
-    //! Get access to the native run action feature action. Call trigger() on it to set the default run feature action map tool.
+%Docstring
+Get access to the native identify action. Call trigger() on it to set the default identify map tool.
+ :rtype: QAction
+%End
     virtual QAction *actionFeatureAction() = 0;
-    //! Get access to the native measure action. Call trigger() on it to set the default measure map tool.
+%Docstring
+Get access to the native run action feature action. Call trigger() on it to set the default run feature action map tool.
+ :rtype: QAction
+%End
     virtual QAction *actionMeasure() = 0;
-    //! Get access to the native measure area action. Call trigger() on it to set the default measure area map tool.
+%Docstring
+Get access to the native measure action. Call trigger() on it to set the default measure map tool.
+ :rtype: QAction
+%End
     virtual QAction *actionMeasureArea() = 0;
-    //! Get access to the native zoom full extent action. Call trigger() on it to zoom to the full extent.
+%Docstring
+Get access to the native measure area action. Call trigger() on it to set the default measure area map tool.
+ :rtype: QAction
+%End
     virtual QAction *actionZoomFullExtent() = 0;
-    //! Get access to the native zoom to layer action. Call trigger() on it to zoom to the active layer.
+%Docstring
+Get access to the native zoom full extent action. Call trigger() on it to zoom to the full extent.
+ :rtype: QAction
+%End
     virtual QAction *actionZoomToLayer() = 0;
-    //! Get access to the native zoom to selected action. Call trigger() on it to zoom to the current selection.
+%Docstring
+Get access to the native zoom to layer action. Call trigger() on it to zoom to the active layer.
+ :rtype: QAction
+%End
     virtual QAction *actionZoomToSelected() = 0;
-    //! Get access to the native zoom last action. Call trigger() on it to zoom to last.
+%Docstring
+Get access to the native zoom to selected action. Call trigger() on it to zoom to the current selection.
+ :rtype: QAction
+%End
     virtual QAction *actionZoomLast() = 0;
-    //! Get access to the native zoom next action. Call trigger() on it to zoom to next.
+%Docstring
+Get access to the native zoom last action. Call trigger() on it to zoom to last.
+ :rtype: QAction
+%End
     virtual QAction *actionZoomNext() = 0;
-    //! Get access to the native zoom resolution (100%) action. Call trigger() on it to zoom to actual size.
+%Docstring
+Get access to the native zoom next action. Call trigger() on it to zoom to next.
+ :rtype: QAction
+%End
     virtual QAction *actionZoomActualSize() = 0;
-    //! Get access to the native map tips action. Call trigger() on it to toggle map tips.
+%Docstring
+Get access to the native zoom resolution (100%) action. Call trigger() on it to zoom to actual size.
+ :rtype: QAction
+%End
     virtual QAction *actionMapTips() = 0;
-    //! Get access to the native new bookmark action. Call trigger() on it to open the new bookmark dialog.
+%Docstring
+Get access to the native map tips action. Call trigger() on it to toggle map tips.
+ :rtype: QAction
+%End
     virtual QAction *actionNewBookmark() = 0;
-    //! Get access to the native show bookmarks action. Call trigger() on it to open the bookmarks dialog.
+%Docstring
+Get access to the native new bookmark action. Call trigger() on it to open the new bookmark dialog.
+ :rtype: QAction
+%End
     virtual QAction *actionShowBookmarks() = 0;
-    //! Get access to the native draw action.
+%Docstring
+Get access to the native show bookmarks action. Call trigger() on it to open the bookmarks dialog.
+ :rtype: QAction
+%End
     virtual QAction *actionDraw() = 0;
+%Docstring
+Get access to the native draw action.
+ :rtype: QAction
+%End
 
-    // Layer menu actions
     virtual QAction *actionNewVectorLayer() = 0;
+%Docstring
+ :rtype: QAction
+%End
     virtual QAction *actionAddOgrLayer() = 0;
+%Docstring
+ :rtype: QAction
+%End
     virtual QAction *actionAddRasterLayer() = 0;
+%Docstring
+ :rtype: QAction
+%End
     virtual QAction *actionAddPgLayer() = 0;
+%Docstring
+ :rtype: QAction
+%End
     virtual QAction *actionAddWmsLayer() = 0;
-    /** Get access to the native Add ArcGIS FeatureServer action. */
+%Docstring
+ :rtype: QAction
+%End
     virtual QAction *actionAddAfsLayer() = 0;
-    /** Get access to the native Add ArcGIS MapServer action. */
+%Docstring
+Get access to the native Add ArcGIS FeatureServer action.
+ :rtype: QAction
+%End
     virtual QAction *actionAddAmsLayer() = 0;
+%Docstring
+Get access to the native Add ArcGIS MapServer action.
+ :rtype: QAction
+%End
     virtual QAction *actionCopyLayerStyle() = 0;
+%Docstring
+ :rtype: QAction
+%End
     virtual QAction *actionPasteLayerStyle() = 0;
+%Docstring
+ :rtype: QAction
+%End
     virtual QAction *actionOpenTable() = 0;
+%Docstring
+ :rtype: QAction
+%End
     virtual QAction *actionOpenFieldCalculator() = 0;
+%Docstring
+ :rtype: QAction
+%End
     virtual QAction *actionToggleEditing() = 0;
+%Docstring
+ :rtype: QAction
+%End
     virtual QAction *actionSaveActiveLayerEdits() = 0;
+%Docstring
+ :rtype: QAction
+%End
     virtual QAction *actionAllEdits() = 0;
+%Docstring
+ :rtype: QAction
+%End
     virtual QAction *actionSaveEdits() = 0;
+%Docstring
+ :rtype: QAction
+%End
     virtual QAction *actionSaveAllEdits() = 0;
+%Docstring
+ :rtype: QAction
+%End
     virtual QAction *actionRollbackEdits() = 0;
+%Docstring
+ :rtype: QAction
+%End
     virtual QAction *actionRollbackAllEdits() = 0;
+%Docstring
+ :rtype: QAction
+%End
     virtual QAction *actionCancelEdits() = 0;
+%Docstring
+ :rtype: QAction
+%End
     virtual QAction *actionCancelAllEdits() = 0;
+%Docstring
+ :rtype: QAction
+%End
     virtual QAction *actionLayerSaveAs() = 0;
+%Docstring
+ :rtype: QAction
+%End
     virtual QAction *actionDuplicateLayer() = 0;
+%Docstring
+ :rtype: QAction
+%End
     virtual QAction *actionLayerProperties() = 0;
+%Docstring
+ :rtype: QAction
+%End
     virtual QAction *actionAddToOverview() = 0;
+%Docstring
+ :rtype: QAction
+%End
     virtual QAction *actionAddAllToOverview() = 0;
+%Docstring
+ :rtype: QAction
+%End
     virtual QAction *actionRemoveAllFromOverview() = 0;
+%Docstring
+ :rtype: QAction
+%End
     virtual QAction *actionHideAllLayers() = 0;
+%Docstring
+ :rtype: QAction
+%End
     virtual QAction *actionShowAllLayers() = 0;
+%Docstring
+ :rtype: QAction
+%End
     virtual QAction *actionHideSelectedLayers() = 0;
-    /**
-     * Returns the Hide Deselected Layers action.
-     * @note added in QGIS 3.0
-     */
+%Docstring
+ :rtype: QAction
+%End
+
     virtual QAction *actionHideDeselectedLayers() = 0;
+%Docstring
+ Returns the Hide Deselected Layers action.
+.. versionadded:: 3.0
+ :rtype: QAction
+%End
     virtual QAction *actionShowSelectedLayers() = 0;
+%Docstring
+ :rtype: QAction
+%End
 
-    // Plugin menu actions
     virtual QAction *actionManagePlugins() = 0;
+%Docstring
+ :rtype: QAction
+%End
     virtual QAction *actionPluginListSeparator() = 0;
+%Docstring
+ :rtype: QAction
+%End
     virtual QAction *actionShowPythonDialog() = 0;
+%Docstring
+ :rtype: QAction
+%End
 
-    // Settings menu actions
     virtual QAction *actionToggleFullScreen() = 0;
+%Docstring
+ :rtype: QAction
+%End
     virtual QAction *actionOptions() = 0;
+%Docstring
+ :rtype: QAction
+%End
     virtual QAction *actionCustomProjection() = 0;
+%Docstring
+ :rtype: QAction
+%End
 
-    // Help menu actions
     virtual QAction *actionHelpContents() = 0;
+%Docstring
+ :rtype: QAction
+%End
     virtual QAction *actionQgisHomePage() = 0;
+%Docstring
+ :rtype: QAction
+%End
     virtual QAction *actionCheckQgisVersion() = 0;
+%Docstring
+ :rtype: QAction
+%End
     virtual QAction *actionAbout() = 0;
+%Docstring
+ :rtype: QAction
+%End
 
-    /**
-     * Open feature form
-     * @param l vector layer
-     * @param f feature to show/modify
-     * @param updateFeatureOnly only update the feature update (don't change any attributes of the layer) [UNUSED]
-     * @param showModal if true, will wait for the dialog to be executed (only shown otherwise)
-     */
     virtual bool openFeatureForm( QgsVectorLayer *l, QgsFeature &f, bool updateFeatureOnly = false, bool showModal = true ) = 0;
+%Docstring
+ Open feature form
+ \param l vector layer
+ \param f feature to show/modify
+ \param updateFeatureOnly only update the feature update (don't change any attributes of the layer) [UNUSED]
+ \param showModal if true, will wait for the dialog to be executed (only shown otherwise)
+ :rtype: bool
+%End
 
-    /**
-     * Returns a feature form for a given feature
-     *
-     * @param l The layer for which the dialog will be created
-     * @param f The feature for which the dialog will be created
-     *
-     * @return A feature form
-     */
     virtual QgsAttributeDialog *getFeatureForm( QgsVectorLayer *l, QgsFeature &f ) = 0;
+%Docstring
+ Returns a feature form for a given feature
 
-    /**
-     * Access the vector layer tools instance.
-     * With the help of this you can access methods like addFeature, startEditing
-     * or stopEditing while giving the user the appropriate dialogs.
-     *
-     * @return An instance of the vector layer tools
-     */
+ \param l The layer for which the dialog will be created
+ \param f The feature for which the dialog will be created
+
+ :return: A feature form
+ :rtype: QgsAttributeDialog
+%End
+
     virtual QgsVectorLayerTools *vectorLayerTools() = 0;
+%Docstring
+ Access the vector layer tools instance.
+ With the help of this you can access methods like addFeature, startEditing
+ or stopEditing while giving the user the appropriate dialogs.
 
-    /** This method is only needed when using a UI form with a custom widget plugin and calling
-     * openFeatureForm or getFeatureForm from Python (PyQt4) and you haven't used the info tool first.
-     * Python will crash bringing QGIS with it
-     * if the custom form is not loaded from a C++ method call.
-     *
-     * This method uses a QTimer to call QUiLoader in order to load the form via C++
-     * you only need to call this once after that you can call openFeatureForm/getFeatureForm
-     * like normal
-     *
-     * More information here: http://qt-project.org/forums/viewthread/27098/
-     */
+ :return: An instance of the vector layer tools
+ :rtype: QgsVectorLayerTools
+%End
+
     virtual void preloadForm( const QString &uifile ) = 0;
+%Docstring
+ This method is only needed when using a UI form with a custom widget plugin and calling
+ openFeatureForm or getFeatureForm from Python (PyQt4) and you haven't used the info tool first.
+ Python will crash bringing QGIS with it
+ if the custom form is not loaded from a C++ method call.
 
-    /** Return vector layers in edit mode
-     * @param modified whether to return only layers that have been modified
-     * @returns list of layers in legend order, or empty list */
+ This method uses a QTimer to call QUiLoader in order to load the form via C++
+ you only need to call this once after that you can call openFeatureForm/getFeatureForm
+ like normal
+
+ More information here: http://qt-project.org/forums/viewthread/27098
+%End
+
     virtual QList<QgsMapLayer *> editableLayers( bool modified = false ) const = 0;
+%Docstring
+ Return vector layers in edit mode
+ \param modified whether to return only layers that have been modified
+ :return: list of layers in legend order, or empty list *
+ :rtype: list of QgsMapLayer
+%End
 
-    /** Get timeout for timed messages: default of 5 seconds */
     virtual int messageTimeout() = 0;
+%Docstring
+Get timeout for timed messages: default of 5 seconds
+ :rtype: int
+%End
+
+    virtual QgsStatusBar *statusBarIface() = 0;
+%Docstring
+ Returns a pointer to the app's status bar interface. This should be
+ used for interacting and adding widgets and messages to the app's
+ status bar (do not use the native Qt statusBar() method).
+.. versionadded:: 3.0
+ :rtype: QgsStatusBar
+%End
+
+    virtual void registerLocatorFilter( QgsLocatorFilter *filter /Transfer/ ) = 0;
+%Docstring
+ Registers a locator ``filter`` for the app's locator bar. Ownership of the filter is transferred to the
+ locator.
+ \warning Plugins which register filters to the locator bar must take care to correctly call
+ deregisterLocatorFilter() and deregister their filters upon plugin unload to avoid crashes.
+.. seealso:: deregisterLocatorFilter()
+.. versionadded:: 3.0
+%End
+
+    virtual void deregisterLocatorFilter( QgsLocatorFilter *filter ) = 0;
+%Docstring
+ Deregisters a locator ``filter`` from the app's locator bar and deletes it. Calling this will block whilst
+ any currently running query is terminated.
+
+ Plugins which register filters to the locator bar must take care to correctly call
+ deregisterLocatorFilter() to deregister their filters upon plugin unload to avoid crashes.
+
+.. seealso:: registerLocatorFilter()
+.. versionadded:: 3.0
+%End
+
 
   signals:
-    void currentLayerChanged( QgsMapLayer *layer );
-    void currentThemeChanged( const QString &theme );
-    void composerOpened( QgsComposerInterface *composer );
-    void composerWillBeClosed( QgsComposerInterface *composer );
-    void composerClosed( QgsComposerInterface *composer );
-    void initializationCompleted();
-    /** Emitted when a project file is successfully read
-     * @note
-     * This is useful for plug-ins that store properties with project files.  A
-     * plug-in can connect to this signal.  When it is emitted, the plug-in
-     * knows to then check the project properties for any relevant state.
-     */
-    void projectRead();
-    /** Emitted when starting an entirely new project
-     * @note
-     * This is similar to projectRead(); plug-ins might want to be notified
-     * that they're in a new project.  Yes, projectRead() could have been
-     * overloaded to be used in the case of new projects instead.  However,
-     * it's probably more semantically correct to have an entirely separate
-     * signal for when this happens.
-     */
-    void newProjectCreated();
 
-    /** This signal is emitted when a layer has been saved using save as
-     * @note
-     * added in version 2.7
-     */
+    void currentLayerChanged( QgsMapLayer *layer );
+%Docstring
+ Emitted whenever current (selected) layer changes.
+  The pointer to layer can be null if no layer is selected
+%End
+
+    void currentThemeChanged( const QString &theme );
+%Docstring
+ Signal emitted when the current ``theme`` is changed so plugins
+ can change their tool button icons.
+.. versionadded:: 3.0
+%End
+
+    void composerOpened( QgsComposerInterface *composer );
+%Docstring
+ This signal is emitted when a new composer window has been opened.
+.. versionadded:: 3.0
+.. seealso:: composerWillBeClosed()
+%End
+
+    void composerWillBeClosed( QgsComposerInterface *composer );
+%Docstring
+ This signal is emitted before a composer window is going to be closed
+ and deleted.
+.. versionadded:: 3.0
+.. seealso:: composerClosed()
+.. seealso:: composerOpened()
+%End
+
+    void composerClosed( QgsComposerInterface *composer );
+%Docstring
+ This signal is emitted after a composer window is closed.
+.. versionadded:: 3.0
+.. seealso:: composerWillBeClosed()
+.. seealso:: composerOpened()
+%End
+
+    void layoutDesignerOpened( QgsLayoutDesignerInterface *designer );
+%Docstring
+ This signal is emitted when a new layout ``designer`` has been opened.
+.. versionadded:: 3.0
+.. seealso:: layoutDesignerWillBeClosed()
+%End
+
+    void layoutDesignerWillBeClosed( QgsLayoutDesignerInterface *designer );
+%Docstring
+ This signal is emitted before a layout ``designer`` is going to be closed
+ and deleted.
+.. versionadded:: 3.0
+.. seealso:: layoutDesignerClosed()
+.. seealso:: layoutDesignerOpened()
+%End
+
+    void layoutDesignerClosed();
+%Docstring
+ This signal is emitted after a layout designer window is closed.
+.. versionadded:: 3.0
+.. seealso:: layoutDesignerWillBeClosed()
+.. seealso:: layoutDesignerOpened()
+%End
+
+    void initializationCompleted();
+%Docstring
+ This signal is emitted when the initialization is complete
+%End
+
+    void projectRead();
+%Docstring
+ Emitted when a project file is successfully read
+ \note
+ This is useful for plug-ins that store properties with project files.  A
+ plug-in can connect to this signal.  When it is emitted, the plug-in
+ knows to then check the project properties for any relevant state.
+%End
+
+    void newProjectCreated();
+%Docstring
+ Emitted when starting an entirely new project
+ \note
+ This is similar to projectRead(); plug-ins might want to be notified
+ that they're in a new project.  Yes, projectRead() could have been
+ overloaded to be used in the case of new projects instead.  However,
+ it's probably more semantically correct to have an entirely separate
+ signal for when this happens.
+%End
+
     void layerSavedAs( QgsMapLayer *l, const QString &path );
+%Docstring
+ This signal is emitted when a layer has been saved using save as
+ \note
+ added in version 2.7
+%End
 };
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgisinterface.h                                              *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

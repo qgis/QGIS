@@ -26,7 +26,7 @@
 #include "qgsmaptoolcapture.h"
 #include "qgsmaptooladvanceddigitizing.h"
 #include "qgsmessagebaritem.h"
-#include "qgspoint.h"
+#include "qgspointxy.h"
 #include "qgslinestring.h"
 #include "qgsfocuswatcher.h"
 #include "qgssettings.h"
@@ -37,7 +37,7 @@ struct EdgesOnlyFilter : public QgsPointLocator::MatchFilter
   bool acceptMatch( const QgsPointLocator::Match &m ) override { return m.hasEdge(); }
 };
 
-bool QgsAdvancedDigitizingDockWidget::lineCircleIntersection( const QgsPoint &center, const double radius, const QList<QgsPoint> &segment, QgsPoint &intersection )
+bool QgsAdvancedDigitizingDockWidget::lineCircleIntersection( const QgsPointXY &center, const double radius, const QList<QgsPointXY> &segment, QgsPointXY &intersection )
 {
   Q_ASSERT( segment.count() == 2 );
 
@@ -67,11 +67,11 @@ bool QgsAdvancedDigitizingDockWidget::lineCircleIntersection( const QgsPoint &ce
 
     const double ax = center.x() + ( d * dy + sgnDy * dx * sqrt( pow( radius, 2 ) * pow( dr, 2 ) - pow( d, 2 ) ) ) / ( pow( dr, 2 ) );
     const double ay = center.y() + ( -d * dx + qAbs( dy ) * sqrt( pow( radius, 2 ) * pow( dr, 2 ) - pow( d, 2 ) ) ) / ( pow( dr, 2 ) );
-    const QgsPoint p1( ax, ay );
+    const QgsPointXY p1( ax, ay );
 
     const double bx = center.x() + ( d * dy - sgnDy * dx * sqrt( pow( radius, 2 ) * pow( dr, 2 ) - pow( d, 2 ) ) ) / ( pow( dr, 2 ) );
     const double by = center.y() + ( -d * dx - qAbs( dy ) * sqrt( pow( radius, 2 ) * pow( dr, 2 ) - pow( d, 2 ) ) ) / ( pow( dr, 2 ) );
-    const QgsPoint p2( bx, by );
+    const QgsPointXY p2( bx, by );
 
     // snap to nearest intersection
 
@@ -140,10 +140,10 @@ QgsAdvancedDigitizingDockWidget::QgsAdvancedDigitizingDockWidget( QgsMapCanvas *
   connect( mRepeatingLockAngleButton, &QAbstractButton::clicked, this, &QgsAdvancedDigitizingDockWidget::setConstraintRepeatingLock );
   connect( mRepeatingLockXButton, &QAbstractButton::clicked, this, &QgsAdvancedDigitizingDockWidget::setConstraintRepeatingLock );
   connect( mRepeatingLockYButton, &QAbstractButton::clicked, this, &QgsAdvancedDigitizingDockWidget::setConstraintRepeatingLock );
-  connect( mAngleLineEdit, SIGNAL( returnPressed() ), this, SLOT( lockConstraint() ) );
-  connect( mDistanceLineEdit, SIGNAL( returnPressed() ), this, SLOT( lockConstraint() ) );
-  connect( mXLineEdit, SIGNAL( returnPressed() ), this, SLOT( lockConstraint() ) );
-  connect( mYLineEdit, SIGNAL( returnPressed() ), this, SLOT( lockConstraint() ) );
+  connect( mAngleLineEdit, &QLineEdit::returnPressed, this, [ = ]() { lockConstraint(); } );
+  connect( mDistanceLineEdit, &QLineEdit::returnPressed, this, [ = ]() { lockConstraint(); } );
+  connect( mXLineEdit, &QLineEdit::returnPressed, this, [ = ]() { lockConstraint(); } );
+  connect( mYLineEdit, &QLineEdit::returnPressed, this, [ = ]() { lockConstraint(); } );
   connect( mAngleLineEdit, &QLineEdit::textEdited, this, &QgsAdvancedDigitizingDockWidget::constraintTextEdited );
   connect( mDistanceLineEdit, &QLineEdit::textEdited, this, &QgsAdvancedDigitizingDockWidget::constraintTextEdited );
   connect( mXLineEdit, &QLineEdit::textEdited, this, &QgsAdvancedDigitizingDockWidget::constraintTextEdited );
@@ -274,7 +274,6 @@ void QgsAdvancedDigitizingDockWidget::additionalConstraintClicked( bool activate
     lockAdditionalConstraint( Perpendicular );
   }
 }
-
 
 void QgsAdvancedDigitizingDockWidget::setConstraintRelative( bool activate )
 {
@@ -599,13 +598,13 @@ bool QgsAdvancedDigitizingDockWidget::applyConstraints( QgsMapMouseEvent *e )
   QgsDebugMsgLevel( QString( "X:        %1 %2 %3" ).arg( mXConstraint->isLocked() ).arg( mXConstraint->relative() ).arg( mXConstraint->value() ), 4 );
   QgsDebugMsgLevel( QString( "Y:        %1 %2 %3" ).arg( mYConstraint->isLocked() ).arg( mYConstraint->relative() ).arg( mYConstraint->value() ), 4 );
 
-  QgsPoint point = e->snapPoint( mSnappingMode );
+  QgsPointXY point = e->snapPoint( mSnappingMode );
 
   mSnappedSegment = e->snapSegment( mSnappingMode );
 
   bool previousPointExist, penulPointExist;
-  QgsPoint previousPt = previousPoint( &previousPointExist );
-  QgsPoint penultimatePt = penultimatePoint( &penulPointExist );
+  QgsPointXY previousPt = previousPoint( &previousPointExist );
+  QgsPointXY penultimatePt = penultimatePoint( &penulPointExist );
 
   // *****************************
   // ---- X constraint
@@ -790,16 +789,16 @@ bool QgsAdvancedDigitizingDockWidget::applyConstraints( QgsMapMouseEvent *e )
       // perform both to detect errors in constraints
       if ( mXConstraint->isLocked() )
       {
-        const QList<QgsPoint> verticalSegment = QList<QgsPoint>()
-                                                << QgsPoint( mXConstraint->value(), point.y() )
-                                                << QgsPoint( mXConstraint->value(), point.y() + 1 );
+        const QList<QgsPointXY> verticalSegment = QList<QgsPointXY>()
+            << QgsPointXY( mXConstraint->value(), point.y() )
+            << QgsPointXY( mXConstraint->value(), point.y() + 1 );
         res &= lineCircleIntersection( previousPt, mDistanceConstraint->value(), verticalSegment, point );
       }
       if ( mYConstraint->isLocked() )
       {
-        const QList<QgsPoint> horizontalSegment = QList<QgsPoint>()
-            << QgsPoint( point.x(), mYConstraint->value() )
-            << QgsPoint( point.x() + 1, mYConstraint->value() );
+        const QList<QgsPointXY> horizontalSegment = QList<QgsPointXY>()
+            << QgsPointXY( point.x(), mYConstraint->value() )
+            << QgsPointXY( point.x() + 1, mYConstraint->value() );
         res &= lineCircleIntersection( previousPt, mDistanceConstraint->value(), horizontalSegment, point );
       }
     }
@@ -902,9 +901,9 @@ bool QgsAdvancedDigitizingDockWidget::alignToSegment( QgsMapMouseEvent *e, CadCo
   }
 
   bool previousPointExist, penulPointExist, mSnappedSegmentExist;
-  QgsPoint previousPt = previousPoint( &previousPointExist );
-  QgsPoint penultimatePt = penultimatePoint( &penulPointExist );
-  QList<QgsPoint> mSnappedSegment = e->snapSegment( mSnappingMode, &mSnappedSegmentExist, true );
+  QgsPointXY previousPt = previousPoint( &previousPointExist );
+  QgsPointXY penultimatePt = penultimatePoint( &penulPointExist );
+  QList<QgsPointXY> mSnappedSegment = e->snapSegment( mSnappingMode, &mSnappedSegmentExist, true );
 
   if ( !previousPointExist || !mSnappedSegmentExist )
   {
@@ -1250,7 +1249,7 @@ void QgsAdvancedDigitizingDockWidget::disable()
   setCadEnabled( false );
 }
 
-void QgsAdvancedDigitizingDockWidget::addPoint( const QgsPoint &point )
+void QgsAdvancedDigitizingDockWidget::addPoint( const QgsPointXY &point )
 {
   if ( !pointsCount() )
   {
@@ -1283,7 +1282,7 @@ void QgsAdvancedDigitizingDockWidget::clearPoints()
   updateCapacity();
 }
 
-void QgsAdvancedDigitizingDockWidget::updateCurrentPoint( const QgsPoint &point )
+void QgsAdvancedDigitizingDockWidget::updateCurrentPoint( const QgsPointXY &point )
 {
   if ( !pointsCount() )
   {
@@ -1353,32 +1352,32 @@ void QgsAdvancedDigitizingDockWidget::CadConstraint::toggleRelative()
   setRelative( mRelative ? false : true );
 }
 
-QgsPoint QgsAdvancedDigitizingDockWidget::currentPoint( bool *exist ) const
+QgsPointXY QgsAdvancedDigitizingDockWidget::currentPoint( bool *exist ) const
 {
   if ( exist )
     *exist = pointsCount() > 0;
   if ( pointsCount() > 0 )
     return mCadPointList.value( 0 );
   else
-    return QgsPoint();
+    return QgsPointXY();
 }
 
-QgsPoint QgsAdvancedDigitizingDockWidget::previousPoint( bool *exist ) const
+QgsPointXY QgsAdvancedDigitizingDockWidget::previousPoint( bool *exist ) const
 {
   if ( exist )
     *exist = pointsCount() > 1;
   if ( pointsCount() > 1 )
     return mCadPointList.value( 1 );
   else
-    return QgsPoint();
+    return QgsPointXY();
 }
 
-QgsPoint QgsAdvancedDigitizingDockWidget::penultimatePoint( bool *exist ) const
+QgsPointXY QgsAdvancedDigitizingDockWidget::penultimatePoint( bool *exist ) const
 {
   if ( exist )
     *exist = pointsCount() > 2;
   if ( pointsCount() > 2 )
     return mCadPointList.value( 2 );
   else
-    return QgsPoint();
+    return QgsPointXY();
 }

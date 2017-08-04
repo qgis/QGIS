@@ -21,7 +21,7 @@
 #include "qgscomposeritemwidget.h"
 #include "qgscomposermap.h"
 #include "qgscomposition.h"
-#include "qgisgui.h"
+#include "qgsguiutils.h"
 
 #include "qgisapp.h"
 #include "qgsapplication.h"
@@ -63,6 +63,11 @@ QgsComposerLegendWidget::QgsComposerLegendWidget( QgsComposerLegend *legend )
   setupUi( this );
   setPanelTitle( tr( "Legend properties" ) );
 
+  mTitleFontButton->setMode( QgsFontButton::ModeQFont );
+  mGroupFontButton->setMode( QgsFontButton::ModeQFont );
+  mLayerFontButton->setMode( QgsFontButton::ModeQFont );
+  mItemFontButton->setMode( QgsFontButton::ModeQFont );
+
   // setup icons
   mAddToolButton->setIcon( QIcon( QgsApplication::iconPath( "symbologyAdd.svg" ) ) );
   mEditPushButton->setIcon( QIcon( QgsApplication::iconPath( "symbologyEdit.png" ) ) );
@@ -71,11 +76,11 @@ QgsComposerLegendWidget::QgsComposerLegendWidget( QgsComposerLegend *legend )
   mMoveDownToolButton->setIcon( QIcon( QgsApplication::iconPath( "mActionArrowDown.svg" ) ) );
   mCountToolButton->setIcon( QIcon( QgsApplication::iconPath( "mActionSum.svg" ) ) );
 
-  mFontColorButton->setColorDialogTitle( tr( "Select font color" ) );
+  mFontColorButton->setColorDialogTitle( tr( "Select Font Color" ) );
   mFontColorButton->setContext( QStringLiteral( "composer" ) );
 
-  mRasterStrokeColorButton->setColorDialogTitle( tr( "Select stroke color" ) );
-  mRasterStrokeColorButton->setAllowAlpha( true );
+  mRasterStrokeColorButton->setColorDialogTitle( tr( "Select Stroke Color" ) );
+  mRasterStrokeColorButton->setAllowOpacity( true );
   mRasterStrokeColorButton->setContext( QStringLiteral( "composer " ) );
 
   if ( legend )
@@ -108,6 +113,10 @@ QgsComposerLegendWidget::QgsComposerLegendWidget( QgsComposerLegend *legend )
 
   connect( mItemTreeView->selectionModel(), &QItemSelectionModel::currentChanged,
            this, &QgsComposerLegendWidget::selectedChanged );
+  connect( mTitleFontButton, &QgsFontButton::changed, this, &QgsComposerLegendWidget::titleFontChanged );
+  connect( mGroupFontButton, &QgsFontButton::changed, this, &QgsComposerLegendWidget::groupFontChanged );
+  connect( mLayerFontButton, &QgsFontButton::changed, this, &QgsComposerLegendWidget::layerFontChanged );
+  connect( mItemFontButton, &QgsFontButton::changed, this, &QgsComposerLegendWidget::itemFontChanged );
 }
 
 QgsComposerLegendWidget::QgsComposerLegendWidget(): QgsComposerItemBaseWidget( nullptr, nullptr ), mLegend( nullptr )
@@ -157,10 +166,16 @@ void QgsComposerLegendWidget::setGuiElements()
   mCheckBoxAutoUpdate->setChecked( mLegend->autoUpdateModel() );
 
   mCheckboxResizeContents->setChecked( mLegend->resizeToContents() );
+  mFilterLegendByAtlasCheckBox->setChecked( mLegend->legendFilterOutAtlas() );
 
   const QgsComposerMap *map = mLegend->composerMap();
   mMapComboBox->setItem( map );
   mFontColorButton->setColor( mLegend->fontColor() );
+  mTitleFontButton->setCurrentFont( mLegend->style( QgsLegendStyle::Title ).font() );
+  mGroupFontButton->setCurrentFont( mLegend->style( QgsLegendStyle::Group ).font() );
+  mLayerFontButton->setCurrentFont( mLegend->style( QgsLegendStyle::Subgroup ).font() );
+  mItemFontButton->setCurrentFont( mLegend->style( QgsLegendStyle::SymbolLabel ).font() );
+
   blockAllSignals( false );
 
   on_mCheckBoxAutoUpdate_stateChanged( mLegend->autoUpdateModel() ? Qt::Checked : Qt::Unchecked );
@@ -352,71 +367,51 @@ void QgsComposerLegendWidget::on_mIconLabelSpaceSpinBox_valueChanged( double d )
   }
 }
 
-void QgsComposerLegendWidget::on_mTitleFontButton_clicked()
+void QgsComposerLegendWidget::titleFontChanged()
 {
   if ( mLegend )
   {
-    bool ok;
-    QFont newFont = QgisGui::getFont( ok, mLegend->style( QgsLegendStyle::Title ).font() );
-    if ( ok )
-    {
-      mLegend->beginCommand( tr( "Title font changed" ) );
-      mLegend->setStyleFont( QgsLegendStyle::Title, newFont );
-      mLegend->adjustBoxSize();
-      mLegend->update();
-      mLegend->endCommand();
-    }
+    mLegend->beginCommand( tr( "Title font changed" ) );
+    mLegend->setStyleFont( QgsLegendStyle::Title, mTitleFontButton->currentFont() );
+    mLegend->adjustBoxSize();
+    mLegend->update();
+    mLegend->endCommand();
   }
 }
 
-void QgsComposerLegendWidget::on_mGroupFontButton_clicked()
+void QgsComposerLegendWidget::groupFontChanged()
 {
   if ( mLegend )
   {
-    bool ok;
-    QFont newFont = QgisGui::getFont( ok, mLegend->style( QgsLegendStyle::Group ).font() );
-    if ( ok )
-    {
-      mLegend->beginCommand( tr( "Legend group font changed" ) );
-      mLegend->setStyleFont( QgsLegendStyle::Group, newFont );
-      mLegend->adjustBoxSize();
-      mLegend->update();
-      mLegend->endCommand();
-    }
+    mLegend->beginCommand( tr( "Legend group font changed" ) );
+    mLegend->setStyleFont( QgsLegendStyle::Group, mGroupFontButton->currentFont() );
+    mLegend->adjustBoxSize();
+    mLegend->update();
+    mLegend->endCommand();
   }
 }
 
-void QgsComposerLegendWidget::on_mLayerFontButton_clicked()
+void QgsComposerLegendWidget::layerFontChanged()
 {
   if ( mLegend )
   {
-    bool ok;
-    QFont newFont = QgisGui::getFont( ok, mLegend->style( QgsLegendStyle::Subgroup ).font() );
-    if ( ok )
-    {
-      mLegend->beginCommand( tr( "Legend layer font changed" ) );
-      mLegend->setStyleFont( QgsLegendStyle::Subgroup, newFont );
-      mLegend->adjustBoxSize();
-      mLegend->update();
-      mLegend->endCommand();
-    }
+    mLegend->beginCommand( tr( "Legend layer font changed" ) );
+    mLegend->setStyleFont( QgsLegendStyle::Subgroup, mLayerFontButton->currentFont() );
+    mLegend->adjustBoxSize();
+    mLegend->update();
+    mLegend->endCommand();
   }
 }
 
-void QgsComposerLegendWidget::on_mItemFontButton_clicked()
+void QgsComposerLegendWidget::itemFontChanged()
 {
   if ( mLegend )
   {
-    bool ok;
-    QFont newFont = QgisGui::getFont( ok, mLegend->style( QgsLegendStyle::SymbolLabel ).font() );
-    if ( ok )
-    {
-      mLegend->beginCommand( tr( "Legend item font changed" ) );
-      mLegend->setStyleFont( QgsLegendStyle::SymbolLabel, newFont );
-      mLegend->adjustBoxSize();
-      mLegend->update();
-      mLegend->endCommand();
-    }
+    mLegend->beginCommand( tr( "Legend item font changed" ) );
+    mLegend->setStyleFont( QgsLegendStyle::SymbolLabel, mItemFontButton->currentFont() );
+    mLegend->adjustBoxSize();
+    mLegend->update();
+    mLegend->endCommand();
   }
 }
 
@@ -937,6 +932,11 @@ void QgsComposerLegendWidget::blockAllSignals( bool b )
   mWmsLegendHeightSpinBox->blockSignals( b );
   mCheckboxResizeContents->blockSignals( b );
   mTitleSpaceBottomSpinBox->blockSignals( b );
+  mFilterLegendByAtlasCheckBox->blockSignals( b );
+  mTitleFontButton->blockSignals( b );
+  mGroupFontButton->blockSignals( b );
+  mLayerFontButton->blockSignals( b );
+  mItemFontButton->blockSignals( b );
 }
 
 void QgsComposerLegendWidget::selectedChanged( const QModelIndex &current, const QModelIndex &previous )

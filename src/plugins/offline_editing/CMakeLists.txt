@@ -50,17 +50,19 @@ INCLUDE_DIRECTORIES(SYSTEM
 )
 
 INCLUDE_DIRECTORIES(
-  ${CMAKE_CURRENT_BINARY_DIR}
-  ../../core
-  ../../core/geometry
-  ../../core/metadata
-  ../../core/layertree
-  ../../core/raster
-  ../../gui
-  ../../gui/layertree
-  ..
+  ${CMAKE_SOURCE_DIR}/src/core
+  ${CMAKE_SOURCE_DIR}/src/core/expression
+  ${CMAKE_SOURCE_DIR}/src/core/geometry
+  ${CMAKE_SOURCE_DIR}/src/core/metadata
+  ${CMAKE_SOURCE_DIR}/src/core/layertree
+  ${CMAKE_SOURCE_DIR}/src/core/raster
+  ${CMAKE_SOURCE_DIR}/src/gui
+  ${CMAKE_SOURCE_DIR}/src/gui/layertree
+  ${CMAKE_SOURCE_DIR}/src/plugins
+
   ${CMAKE_BINARY_DIR}/src/core
   ${CMAKE_BINARY_DIR}/src/gui
+  ${CMAKE_CURRENT_BINARY_DIR}
 )
 
 ########################################################

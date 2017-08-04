@@ -397,7 +397,8 @@ QgsColorWheel::~QgsColorWheel()
 
 QSize QgsColorWheel::sizeHint() const
 {
-  return QSize( 200, 200 );
+  int size = Qgis::UI_SCALE_FACTOR * fontMetrics().width( QStringLiteral( "XXXXXXXXXXXXXXXXXXXXXX" ) );
+  return QSize( size, size );
 }
 
 void QgsColorWheel::paintEvent( QPaintEvent *event )
@@ -757,7 +758,8 @@ QgsColorBox::~QgsColorBox()
 
 QSize QgsColorBox::sizeHint() const
 {
-  return QSize( 200, 200 );
+  int size = Qgis::UI_SCALE_FACTOR * fontMetrics().width( QStringLiteral( "XXXXXXXXXXXXXXXXXXXXXX" ) );
+  return QSize( size, size );
 }
 
 void QgsColorBox::paintEvent( QPaintEvent *event )
@@ -989,12 +991,12 @@ QSize QgsColorRampWidget::sizeHint() const
   if ( mOrientation == QgsColorRampWidget::Horizontal )
   {
     //horizontal
-    return QSize( 200, 28 );
+    return QSize( Qgis::UI_SCALE_FACTOR * fontMetrics().width( QStringLiteral( "XXXXXXXXXXXXXXXXXXXXXX" ) ), Qgis::UI_SCALE_FACTOR * fontMetrics().height() * 1.3 );
   }
   else
   {
     //vertical
-    return QSize( 18, 200 );
+    return QSize( Qgis::UI_SCALE_FACTOR * fontMetrics().height() * 1.3, Qgis::UI_SCALE_FACTOR * fontMetrics().width( QStringLiteral( "XXXXXXXXXXXXXXXXXXXXXX" ) ) );
   }
 }
 
@@ -1183,6 +1185,8 @@ void QgsColorRampWidget::wheelEvent( QWheelEvent *event )
     emit colorChanged( mCurrentColor );
     emit valueChanged( componentValue() );
   }
+
+  event->accept();
 }
 
 void QgsColorRampWidget::mousePressEvent( QMouseEvent *event )
@@ -1594,7 +1598,7 @@ void QgsColorPreviewWidget::paintEvent( QPaintEvent *event )
 
 QSize QgsColorPreviewWidget::sizeHint() const
 {
-  return QSize( 200, 150 );
+  return QSize( Qgis::UI_SCALE_FACTOR *  fontMetrics().width( QStringLiteral( "XXXXXXXXXXXXXXXXXXXXXX" ) ), Qgis::UI_SCALE_FACTOR * fontMetrics().width( QStringLiteral( "XXXXXXXXXXXXXXXXXXXXXX" ) ) * 0.75 );
 }
 
 void QgsColorPreviewWidget::setColor2( const QColor &color )

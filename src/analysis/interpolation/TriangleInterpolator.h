@@ -17,7 +17,7 @@
 #ifndef TINTERPOLATOR_H
 #define TINTERPOLATOR_H
 
-#include <Point3D.h>
+#include <qgspoint.h>
 #include <Vector3D.h>
 #include "qgis_analysis.h"
 
@@ -28,9 +28,9 @@ class ANALYSIS_EXPORT TriangleInterpolator
   public:
     virtual ~TriangleInterpolator() = default;
     //! Calculates the normal vector and assigns it to vec
-    virtual bool calcNormVec( double x, double y, Vector3D *result ) = 0;
+    virtual bool calcNormVec( double x, double y, Vector3D *result SIP_OUT ) = 0;
     //! Performs a linear interpolation in a triangle and assigns the x-,y- and z-coordinates to point
-    virtual bool calcPoint( double x, double y, Point3D *result ) = 0;
+    virtual bool calcPoint( double x, double y, QgsPoint *result SIP_OUT ) = 0;
 };
 
 #endif

@@ -66,7 +66,7 @@ class GUI_EXPORT QgsDefaultSearchWidgetWrapper : public QgsSearchWidgetWrapper
      */
     QgsFilterLineEdit *lineEdit();
 
-    /** Returns a pointer to the case sensitivity check box in the widget.
+    /** Returns a pointer to the case sensitivity checkbox in the widget.
      * \note this method is in place for unit testing only, and is not considered
      * stable API
      */

@@ -26,7 +26,7 @@ class QgsRasterLayer;
 class QgsRasterRenderer;
 class QgsMapCanvas;
 class QgsMapToolEmitPoint;
-class QgsPoint;
+class QgsPointXY;
 
 
 /** \ingroup gui
@@ -56,13 +56,10 @@ class GUI_EXPORT QgsRasterTransparencyWidget : public QgsMapLayerConfigWidget, p
 
   private slots:
 
-    void pixelSelected( const QgsPoint &canvasPoint );
+    void pixelSelected( const QgsPointXY &canvasPoint );
 
     //! Transparency cell changed
     void transparencyCellTextEdited( const QString &text );
-
-    //! \brief slot executed when the transparency level changes.
-    void sliderTransparency_valueChanged( int value );
 
     //! \brief slot executed when user presses "Add Values From Display" button on the transparency page
     void on_pbnAddValuesFromDisplay_clicked();

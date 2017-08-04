@@ -28,13 +28,14 @@ __revision__ = '$Format:%H$'
 from qgis.PyQt.QtCore import QVariant
 from qgis.core import (QgsField,
                        QgsFields,
+                       QgsFeatureSink,
                        QgsGeometry,
                        QgsFeature,
                        QgsWkbTypes,
                        QgsFeatureRequest,
                        QgsApplication,
                        QgsProcessingUtils)
-from processing.core.GeoAlgorithm import GeoAlgorithm
+from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterBoolean
@@ -42,29 +43,20 @@ from processing.core.outputs import OutputVector
 from processing.tools import dataobjects
 
 
-class OrientedMinimumBoundingBox(GeoAlgorithm):
+class OrientedMinimumBoundingBox(QgisAlgorithm):
 
     INPUT_LAYER = 'INPUT_LAYER'
     BY_FEATURE = 'BY_FEATURE'
 
     OUTPUT = 'OUTPUT'
 
-    def icon(self):
-        return QgsApplication.getThemeIcon("/providerQgis.svg")
-
-    def svgIconPath(self):
-        return QgsApplication.iconPath("providerQgis.svg")
-
     def group(self):
         return self.tr('Vector general tools')
 
-    def name(self):
-        return 'orientedminimumboundingbox'
+    def __init__(self):
+        super().__init__()
 
-    def displayName(self):
-        return self.tr('Oriented minimum bounding box')
-
-    def defineCharacteristics(self):
+    def initAlgorithm(self, config=None):
         self.addParameter(ParameterVector(self.INPUT_LAYER,
                                           self.tr('Input layer')))
         self.addParameter(ParameterBoolean(self.BY_FEATURE,
@@ -72,7 +64,13 @@ class OrientedMinimumBoundingBox(GeoAlgorithm):
 
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Oriented_MBBox'), datatype=[dataobjects.TYPE_VECTOR_POLYGON]))
 
-    def processAlgorithm(self, context, feedback):
+    def name(self):
+        return 'orientedminimumboundingbox'
+
+    def displayName(self):
+        return self.tr('Oriented minimum bounding box')
+
+    def processAlgorithm(self, parameters, context, feedback):
         layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT_LAYER), context)
         byFeature = self.getParameterValue(self.BY_FEATURE)
 
@@ -101,7 +99,7 @@ class OrientedMinimumBoundingBox(GeoAlgorithm):
     def layerOmmb(self, layer, context, writer, feedback):
         req = QgsFeatureRequest().setSubsetOfAttributes([])
         features = QgsProcessingUtils.getFeatures(layer, context, req)
-        total = 100.0 / QgsProcessingUtils.featureCount(layer, context)
+        total = 100.0 / layer.featureCount() if layer.featureCount() else 0
         newgeometry = QgsGeometry()
         first = True
         for current, inFeat in enumerate(features):
@@ -123,11 +121,11 @@ class OrientedMinimumBoundingBox(GeoAlgorithm):
                                    angle,
                                    width,
                                    height])
-            writer.addFeature(outFeat)
+            writer.addFeature(outFeat, QgsFeatureSink.FastInsert)
 
     def featureOmbb(self, layer, context, writer, feedback):
         features = QgsProcessingUtils.getFeatures(layer, context)
-        total = 100.0 / QgsProcessingUtils.featureCount(layer, context)
+        total = 100.0 / layer.featureCount() if layer.featureCount() else 0
         outFeat = QgsFeature()
         for current, inFeat in enumerate(features):
             geometry, area, angle, width, height = inFeat.geometry().orientedMinimumBoundingBox()
@@ -140,7 +138,7 @@ class OrientedMinimumBoundingBox(GeoAlgorithm):
                               width,
                               height])
                 outFeat.setAttributes(attrs)
-                writer.addFeature(outFeat)
+                writer.addFeature(outFeat, QgsFeatureSink.FastInsert)
             else:
                 feedback.pushInfo(self.tr("Can't calculate an OMBB for feature {0}.").format(inFeat.id()))
             feedback.setProgress(int(current * total))

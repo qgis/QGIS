@@ -17,6 +17,7 @@
 
 #include <QMessageBox>
 #include <QInputDialog>
+#include <QRegExpValidator>
 
 #include "qgssettings.h"
 #include "qgsoraclenewconnection.h"
@@ -80,6 +81,7 @@ QgsOracleNewConnection::QgsOracleNewConnection( QWidget *parent, const QString &
 
     txtName->setText( connName );
   }
+  txtName->setValidator( new QRegExpValidator( QRegExp( "[^\\/]+" ), txtName ) );
 }
 //! Autoconnected SLOTS *
 void QgsOracleNewConnection::accept()
@@ -150,18 +152,15 @@ void QgsOracleNewConnection::on_btnConnect_clicked()
   if ( conn )
   {
     // Database successfully opened; we can now issue SQL commands.
-    QMessageBox::information( this,
-                              tr( "Test connection" ),
-                              tr( "Connection to %1 was successful" ).arg( txtDatabase->text() ) );
-
+    bar->pushMessage( tr( "Connection to %1 was successful" ).arg( txtDatabase->text() ),
+                      QgsMessageBar::INFO );
     // free connection resources
     QgsOracleConnPool::instance()->releaseConnection( conn );
   }
   else
   {
-    QMessageBox::information( this,
-                              tr( "Test connection" ),
-                              tr( "Connection failed - consult message log for details.\n\n" ) );
+    bar->pushMessage( tr( "Connection failed - consult message log for details." ),
+                      QgsMessageBar::WARNING );
   }
 }
 

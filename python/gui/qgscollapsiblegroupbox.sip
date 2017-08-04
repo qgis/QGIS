@@ -213,6 +213,9 @@ Returns the name of the setting group in which the collapsed state will be saved
     virtual void showEvent( QShowEvent *event );
 
     QString saveKey() const;
+%Docstring
+ :rtype: str
+%End
 
 
 };

@@ -53,14 +53,19 @@ class GUI_EXPORT QgsSymbolLevelsDialog : public QDialog, private Ui::QgsSymbolLe
     //! \note not available in Python bindings
     void setDefaultLevels() SIP_SKIP;
 
-  protected:
     //! maximal number of layers from all symbols
     int mMaxLayers;
     QgsLegendSymbolList mList;
     //! whether symbol layers always should be used (default false)
     bool mForceOrderingEnabled;
+
+  private:
+#ifdef SIP_RUN
+    QgsSymbolLevelsDialog();
+#endif
 };
 
+#ifndef SIP_RUN
 ///@cond PRIVATE
 
 // delegate used from Qt Spin Box example
@@ -82,5 +87,6 @@ class SpinBoxDelegate : public QItemDelegate
 };
 
 ///@endcond
+#endif
 
 #endif // QGSSYMBOLLEVELSDIALOG_H

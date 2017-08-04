@@ -28,30 +28,14 @@ __revision__ = '$Format:%H$'
 
 import os
 
-from qgis.core import (QgsWkbTypes,
-                       QgsApplication,
-                       QgsProcessingUtils)
+from qgis.core import (QgsProcessingParameterNumber)
 
-from processing.core.GeoAlgorithm import GeoAlgorithm
-from processing.core.parameters import ParameterVector
-from processing.core.parameters import ParameterNumber
-from processing.core.outputs import OutputVector
-from processing.tools import dataobjects
-
-pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
+from processing.algs.qgis.QgisAlgorithm import QgisFeatureBasedAlgorithm
 
 
-class DensifyGeometries(GeoAlgorithm):
+class DensifyGeometries(QgisFeatureBasedAlgorithm):
 
-    INPUT = 'INPUT'
     VERTICES = 'VERTICES'
-    OUTPUT = 'OUTPUT'
-
-    def icon(self):
-        return QgsApplication.getThemeIcon("/providerQgis.svg")
-
-    def svgIconPath(self):
-        return QgsApplication.iconPath("providerQgis.svg")
 
     def tags(self):
         return self.tr('add,vertices,points').split(',')
@@ -59,39 +43,30 @@ class DensifyGeometries(GeoAlgorithm):
     def group(self):
         return self.tr('Vector geometry tools')
 
+    def __init__(self):
+        super().__init__()
+        self.vertices = None
+
+    def initParameters(self, config=None):
+        self.addParameter(QgsProcessingParameterNumber(self.VERTICES,
+                                                       self.tr('Vertices to add'), QgsProcessingParameterNumber.Integer,
+                                                       1, False, 1, 10000000))
+
     def name(self):
         return 'densifygeometries'
 
     def displayName(self):
         return self.tr('Densify geometries')
 
-    def defineCharacteristics(self):
-        self.addParameter(ParameterVector(self.INPUT,
-                                          self.tr('Input layer'),
-                                          [dataobjects.TYPE_VECTOR_POLYGON, dataobjects.TYPE_VECTOR_LINE]))
-        self.addParameter(ParameterNumber(self.VERTICES,
-                                          self.tr('Vertices to add'), 1, 10000000, 1))
+    def outputName(self):
+        return self.tr('Densified')
 
-        self.addOutput(OutputVector(self.OUTPUT,
-                                    self.tr('Densified')))
+    def prepareAlgorithm(self, parameters, context, feedback):
+        self.vertices = self.parameterAsInt(parameters, self.VERTICES, context)
+        return True
 
-    def processAlgorithm(self, context, feedback):
-        layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT), context)
-        vertices = self.getParameterValue(self.VERTICES)
-
-        isPolygon = layer.geometryType() == QgsWkbTypes.PolygonGeometry
-
-        writer = self.getOutputFromName(
-            self.OUTPUT).getVectorWriter(layer.fields(), layer.wkbType(), layer.crs(), context)
-
-        features = QgsProcessingUtils.getFeatures(layer, context)
-        total = 100.0 / QgsProcessingUtils.featureCount(layer, context)
-        for current, f in enumerate(features):
-            feature = f
-            if feature.hasGeometry():
-                new_geometry = feature.geometry().densifyByCount(int(vertices))
-                feature.setGeometry(new_geometry)
-            writer.addFeature(feature)
-            feedback.setProgress(int(current * total))
-
-        del writer
+    def processFeature(self, feature, feedback):
+        if feature.hasGeometry():
+            new_geometry = feature.geometry().densifyByCount(self.vertices)
+            feature.setGeometry(new_geometry)
+        return feature

@@ -27,19 +27,18 @@ __revision__ = '$Format:%H$'
 
 from qgis.core import (QgsApplication,
                        QgsWkbTypes,
-                       QgsPointV2,
-                       QgsCoordinateReferenceSystem,
+                       QgsPoint,
+                       QgsFeatureRequest,
                        QgsGeometry,
-                       QgsProcessingUtils)
-from processing.core.GeoAlgorithm import GeoAlgorithm
-from processing.core.parameters import ParameterTable
-from processing.core.parameters import ParameterTableField
-from processing.core.parameters import ParameterCrs
-from processing.core.outputs import OutputVector
-from processing.tools import dataobjects
+                       QgsProcessing,
+                       QgsProcessingParameterFeatureSink,
+                       QgsProcessingParameterFeatureSource,
+                       QgsProcessingParameterCrs,
+                       QgsProcessingParameterField)
+from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 
 
-class PointsLayerFromTable(GeoAlgorithm):
+class PointsLayerFromTable(QgisAlgorithm):
 
     INPUT = 'INPUT'
     XFIELD = 'XFIELD'
@@ -61,58 +60,63 @@ class PointsLayerFromTable(GeoAlgorithm):
     def group(self):
         return self.tr('Vector creation tools')
 
+    def __init__(self):
+        super().__init__()
+
+    def initAlgorithm(self, config=None):
+        self.addParameter(QgsProcessingParameterFeatureSource(self.INPUT, self.tr('Input layer'), types=[QgsProcessing.TypeTable]))
+
+        self.addParameter(QgsProcessingParameterField(self.XFIELD,
+                                                      self.tr('X field'), parentLayerParameterName=self.INPUT, type=QgsProcessingParameterField.Any))
+        self.addParameter(QgsProcessingParameterField(self.YFIELD,
+                                                      self.tr('Y field'), parentLayerParameterName=self.INPUT, type=QgsProcessingParameterField.Any))
+        self.addParameter(QgsProcessingParameterField(self.ZFIELD,
+                                                      self.tr('Z field'), parentLayerParameterName=self.INPUT, type=QgsProcessingParameterField.Any, optional=True))
+        self.addParameter(QgsProcessingParameterField(self.MFIELD,
+                                                      self.tr('M field'), parentLayerParameterName=self.INPUT, type=QgsProcessingParameterField.Any, optional=True))
+        self.addParameter(QgsProcessingParameterCrs(self.TARGET_CRS,
+                                                    self.tr('Target CRS'), defaultValue='EPSG:4326'))
+
+        self.addParameter(QgsProcessingParameterFeatureSink(self.OUTPUT, self.tr('Points from table'), type=QgsProcessing.TypeVectorPoint))
+
     def name(self):
         return 'createpointslayerfromtable'
 
     def displayName(self):
         return self.tr('Create points layer from table')
 
-    def defineCharacteristics(self):
-        self.addParameter(ParameterTable(self.INPUT,
-                                         self.tr('Input layer')))
-        self.addParameter(ParameterTableField(self.XFIELD,
-                                              self.tr('X field'), self.INPUT, ParameterTableField.DATA_TYPE_ANY))
-        self.addParameter(ParameterTableField(self.YFIELD,
-                                              self.tr('Y field'), self.INPUT, ParameterTableField.DATA_TYPE_ANY))
-        self.addParameter(ParameterTableField(self.ZFIELD,
-                                              self.tr('Z field'), self.INPUT, datatype=ParameterTableField.DATA_TYPE_ANY, optional=True))
-        self.addParameter(ParameterTableField(self.MFIELD,
-                                              self.tr('M field'), self.INPUT, datatype=ParameterTableField.DATA_TYPE_ANY, optional=True))
-        self.addParameter(ParameterCrs(self.TARGET_CRS,
-                                       self.tr('Target CRS'), 'EPSG:4326'))
-        self.addOutput(OutputVector(self.OUTPUT, self.tr('Points from table'), datatype=[dataobjects.TYPE_VECTOR_POINT]))
+    def processAlgorithm(self, parameters, context, feedback):
+        source = self.parameterAsSource(parameters, self.INPUT, context)
 
-    def processAlgorithm(self, context, feedback):
-        source = self.getParameterValue(self.INPUT)
-        vlayer = QgsProcessingUtils.mapLayerFromString(source, context)
-        output = self.getOutputFromName(self.OUTPUT)
-
-        fields = vlayer.fields()
-        x_field_index = fields.lookupField(self.getParameterValue(self.XFIELD))
-        y_field_index = fields.lookupField(self.getParameterValue(self.YFIELD))
-        z_field_index = None
-        if self.getParameterValue(self.ZFIELD):
-            z_field_index = fields.lookupField(self.getParameterValue(self.ZFIELD))
-        m_field_index = None
-        if self.getParameterValue(self.MFIELD):
-            m_field_index = fields.lookupField(self.getParameterValue(self.MFIELD))
+        fields = source.fields()
+        x_field_index = fields.lookupField(self.parameterAsString(parameters, self.XFIELD, context))
+        y_field_index = fields.lookupField(self.parameterAsString(parameters, self.YFIELD, context))
+        z_field_index = -1
+        if self.parameterAsString(parameters, self.ZFIELD, context):
+            z_field_index = fields.lookupField(self.parameterAsString(parameters, self.ZFIELD, context))
+        m_field_index = -1
+        if self.parameterAsString(parameters, self.MFIELD, context):
+            m_field_index = fields.lookupField(self.parameterAsString(parameters, self.MFIELD, context))
 
         wkb_type = QgsWkbTypes.Point
-        if z_field_index is not None:
+        if z_field_index >= 0:
             wkb_type = QgsWkbTypes.addZ(wkb_type)
-        if m_field_index is not None:
+        if m_field_index >= 0:
             wkb_type = QgsWkbTypes.addM(wkb_type)
 
-        crsId = self.getParameterValue(self.TARGET_CRS)
-        target_crs = QgsCoordinateReferenceSystem()
-        target_crs.createFromUserInput(crsId)
+        target_crs = self.parameterAsCrs(parameters, self.TARGET_CRS, context)
 
-        writer = output.getVectorWriter(fields, wkb_type, target_crs, context)
+        (sink, dest_id) = self.parameterAsSink(parameters, self.OUTPUT, context,
+                                               fields, wkb_type, target_crs)
 
-        features = QgsProcessingUtils.getFeatures(vlayer, context)
-        total = 100.0 / QgsProcessingUtils.featureCount(vlayer, context)
+        request = QgsFeatureRequest().setFlags(QgsFeatureRequest.NoGeometry)
+        features = source.getFeatures()
+        total = 100.0 / source.featureCount() if source.featureCount() else 0
 
         for current, feature in enumerate(features):
+            if feedback.isCanceled():
+                break
+
             feedback.setProgress(int(current * total))
             attrs = feature.attributes()
 
@@ -120,15 +124,15 @@ class PointsLayerFromTable(GeoAlgorithm):
                 x = float(attrs[x_field_index])
                 y = float(attrs[y_field_index])
 
-                point = QgsPointV2(x, y)
+                point = QgsPoint(x, y)
 
-                if z_field_index is not None:
+                if z_field_index >= 0:
                     try:
                         point.addZValue(float(attrs[z_field_index]))
                     except:
                         point.addZValue(0.0)
 
-                if m_field_index is not None:
+                if m_field_index >= 0:
                     try:
                         point.addMValue(float(attrs[m_field_index]))
                     except:
@@ -138,6 +142,6 @@ class PointsLayerFromTable(GeoAlgorithm):
             except:
                 pass  # no geometry
 
-            writer.addFeature(feature)
+            sink.addFeature(feature)
 
-        del writer
+        return {self.OUTPUT: dest_id}

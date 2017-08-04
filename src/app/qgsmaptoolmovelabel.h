@@ -39,7 +39,7 @@ class APP_EXPORT QgsMapToolMoveLabel: public QgsMapToolLabel
   protected:
 
     //! Start point of the move in map coordinates
-    QgsPoint mStartPointMapCoords;
+    QgsPointXY mStartPointMapCoords;
 
     double mClickOffsetX;
     double mClickOffsetY;

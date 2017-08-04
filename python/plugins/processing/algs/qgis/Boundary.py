@@ -27,23 +27,20 @@ __revision__ = '$Format:%H$'
 
 import os
 
-from qgis.core import QgsGeometry, QgsWkbTypes, QgsProcessingUtils
+from qgis.core import (QgsGeometry,
+                       QgsWkbTypes)
 
 from qgis.PyQt.QtGui import QIcon
 
-from processing.core.GeoAlgorithm import GeoAlgorithm
-from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
-from processing.core.parameters import ParameterVector
-from processing.core.outputs import OutputVector
-from processing.tools import dataobjects
+from processing.algs.qgis.QgisAlgorithm import QgisFeatureBasedAlgorithm
 
 pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
 
-class Boundary(GeoAlgorithm):
+class Boundary(QgisFeatureBasedAlgorithm):
 
-    INPUT_LAYER = 'INPUT_LAYER'
-    OUTPUT_LAYER = 'OUTPUT_LAYER'
+    def __init__(self):
+        super().__init__()
 
     def icon(self):
         return QIcon(os.path.join(pluginPath, 'images', 'ftools', 'convex_hull.png'))
@@ -57,16 +54,10 @@ class Boundary(GeoAlgorithm):
     def displayName(self):
         return self.tr('Boundary')
 
-    def defineCharacteristics(self):
-        self.addParameter(ParameterVector(self.INPUT_LAYER,
-                                          self.tr('Input layer'), [dataobjects.TYPE_VECTOR_LINE,
-                                                                   dataobjects.TYPE_VECTOR_POLYGON]))
-        self.addOutput(OutputVector(self.OUTPUT_LAYER, self.tr('Boundary')))
+    def outputName(self):
+        return self.tr('Boundary')
 
-    def processAlgorithm(self, context, feedback):
-        layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT_LAYER), context)
-
-        input_wkb = layer.wkbType()
+    def outputWkbType(self, input_wkb):
         if QgsWkbTypes.geometryType(input_wkb) == QgsWkbTypes.LineGeometry:
             output_wkb = QgsWkbTypes.MultiPoint
         elif QgsWkbTypes.geometryType(input_wkb) == QgsWkbTypes.PolygonGeometry:
@@ -76,24 +67,15 @@ class Boundary(GeoAlgorithm):
         if QgsWkbTypes.hasM(input_wkb):
             output_wkb = QgsWkbTypes.addM(output_wkb)
 
-        writer = self.getOutputFromName(
-            self.OUTPUT_LAYER).getVectorWriter(layer.fields(), output_wkb, layer.crs(), context)
+        return output_wkb
 
-        features = QgsProcessingUtils.getFeatures(layer, context)
-        total = 100.0 / QgsProcessingUtils.featureCount(layer, context)
-
-        for current, input_feature in enumerate(features):
-            output_feature = input_feature
-            input_geometry = input_feature.geometry()
-            if input_geometry:
-                output_geometry = QgsGeometry(input_geometry.geometry().boundary())
-                if not output_geometry:
-                    raise GeoAlgorithmExecutionException(
-                        self.tr('Error calculating boundary'))
-
-                output_feature.setGeometry(output_geometry)
-
-            writer.addFeature(output_feature)
-            feedback.setProgress(int(current * total))
-
-        del writer
+    def processFeature(self, feature, feedback):
+        input_geometry = feature.geometry()
+        if input_geometry:
+            output_geometry = QgsGeometry(input_geometry.geometry().boundary())
+            if not output_geometry:
+                feedback.reportError(self.tr('No boundary for feature {} (possibly a closed linestring?)').format(feature.id()))
+                feature.clearGeometry()
+            else:
+                feature.setGeometry(output_geometry)
+        return feature

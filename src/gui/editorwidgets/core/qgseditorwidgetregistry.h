@@ -36,7 +36,10 @@ class QgsVectorLayer;
 
 
 /** \ingroup gui
- * This class manages all known edit widget factories
+ * This class manages all known edit widget factories.
+ *
+ * QgsEditorWidgetRegistry is not usually directly created, but rather accessed through
+ * QgsGui::editorWidgetRegistry().
  */
 class GUI_EXPORT QgsEditorWidgetRegistry : public QObject
 {
@@ -45,12 +48,10 @@ class GUI_EXPORT QgsEditorWidgetRegistry : public QObject
   public:
 
     /**
-     * This class is a singleton and has therefore to be accessed with this method instead
-     * of a constructor.
-     *
-     * \returns The one and only instance of the editor widget registry
+     * Constructor for QgsEditorWidgetRegistry. QgsEditorWidgetRegistry is not usually directly created, but rather accessed through
+     * QgsGui::editorWidgetRegistry().
      */
-    static QgsEditorWidgetRegistry *instance();
+    QgsEditorWidgetRegistry();
 
     /**
      * Registers all the default widgets.
@@ -62,7 +63,7 @@ class GUI_EXPORT QgsEditorWidgetRegistry : public QObject
      * \since QGIS 2.8
      * \note Not required for plugins, the QGIS application does that already
      */
-    static void initEditors( QgsMapCanvas *mapCanvas = nullptr, QgsMessageBar *messageBar = nullptr );
+    void initEditors( QgsMapCanvas *mapCanvas = nullptr, QgsMessageBar *messageBar = nullptr );
 
     /**
      * Destructor
@@ -179,9 +180,6 @@ class GUI_EXPORT QgsEditorWidgetRegistry : public QObject
      * \param plugin The plugin (ownership is transferred)
      */
     void registerAutoConfPlugin( QgsEditorWidgetAutoConfPlugin *plugin ) { mAutoConf.registerPlugin( plugin ); }
-
-  protected:
-    QgsEditorWidgetRegistry();
 
   private:
     QString findSuitableWrapper( QWidget *editor, const QString &defaultWidget );

@@ -16,12 +16,12 @@
 #ifndef QGSPOINTLOCATOR_H
 #define QGSPOINTLOCATOR_H
 
-class QgsPoint;
+class QgsPointXY;
 class QgsVectorLayer;
 
 #include "qgis_core.h"
 #include "qgsfeature.h"
-#include "qgspoint.h"
+#include "qgspointxy.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgscoordinatetransform.h"
 
@@ -30,7 +30,7 @@ class QgsPointLocator_VisitorNearestEdge;
 class QgsPointLocator_VisitorArea;
 class QgsPointLocator_VisitorEdgesInRect;
 
-namespace SpatialIndex
+namespace SpatialIndex SIP_SKIP
 {
   class IStorageManager;
   class ISpatialIndex;
@@ -109,7 +109,7 @@ class CORE_EXPORT QgsPointLocator : public QObject
           , mVertexIndex( 0 )
         {}
 
-        Match( Type t, QgsVectorLayer *vl, QgsFeatureId fid, double dist, const QgsPoint &pt, int vertexIndex = 0, QgsPoint *edgePoints = nullptr )
+        Match( QgsPointLocator::Type t, QgsVectorLayer *vl, QgsFeatureId fid, double dist, const QgsPointXY &pt, int vertexIndex = 0, QgsPointXY *edgePoints = nullptr )
           : mType( t )
           , mDist( dist )
           , mPoint( pt )
@@ -124,7 +124,7 @@ class CORE_EXPORT QgsPointLocator : public QObject
           }
         }
 
-        Type type() const { return mType; }
+        QgsPointLocator::Type type() const { return mType; }
 
         bool isValid() const { return mType != Invalid; }
         bool hasVertex() const { return mType == Vertex; }
@@ -137,7 +137,7 @@ class CORE_EXPORT QgsPointLocator : public QObject
 
         //! for vertex / edge match
         //! coords depending on what class returns it (geom.cache: layer coords, map canvas snapper: dest coords)
-        QgsPoint point() const { return mPoint; }
+        QgsPointXY point() const { return mPoint; }
 
         //! for vertex / edge match (first vertex of the edge)
         int vertexIndex() const { return mVertexIndex; }
@@ -154,13 +154,13 @@ class CORE_EXPORT QgsPointLocator : public QObject
         QgsFeatureId featureId() const { return mFid; }
 
         //! Only for a valid edge match - obtain endpoints of the edge
-        void edgePoints( QgsPoint &pt1, QgsPoint &pt2 ) const
+        void edgePoints( QgsPointXY &pt1 SIP_OUT, QgsPointXY &pt2 SIP_OUT ) const
         {
           pt1 = mEdgePoints[0];
           pt2 = mEdgePoints[1];
         }
 
-        bool operator==( const Match &other ) const
+        bool operator==( const QgsPointLocator::Match &other ) const
         {
           return mType == other.mType &&
                  mDist == other.mDist &&
@@ -174,14 +174,18 @@ class CORE_EXPORT QgsPointLocator : public QObject
       protected:
         Type mType;
         double mDist;
-        QgsPoint mPoint;
+        QgsPointXY mPoint;
         QgsVectorLayer *mLayer = nullptr;
         QgsFeatureId mFid;
         int mVertexIndex; // e.g. vertex index
-        QgsPoint mEdgePoints[2];
+        QgsPointXY mEdgePoints[2];
     };
 
-    typedef class QList<Match> MatchList;
+#ifndef SIP_RUN
+    typedef class QList<QgsPointLocator::Match> MatchList;
+#else
+    typedef QList<QgsPointLocator::Match> MatchList;
+#endif
 
     //! Interface that allows rejection of some matches in intersection queries
     //! (e.g. a match can only belong to a particular feature / match must not be a particular point).
@@ -189,28 +193,28 @@ class CORE_EXPORT QgsPointLocator : public QObject
     struct MatchFilter
     {
       virtual ~MatchFilter() = default;
-      virtual bool acceptMatch( const Match &match ) = 0;
+      virtual bool acceptMatch( const QgsPointLocator::Match &match ) = 0;
     };
 
     // intersection queries
 
     //! Find nearest vertex to the specified point - up to distance specified by tolerance
     //! Optional filter may discard unwanted matches.
-    Match nearestVertex( const QgsPoint &point, double tolerance, MatchFilter *filter = nullptr );
+    Match nearestVertex( const QgsPointXY &point, double tolerance, QgsPointLocator::MatchFilter *filter = nullptr );
     //! Find nearest edge to the specified point - up to distance specified by tolerance
     //! Optional filter may discard unwanted matches.
-    Match nearestEdge( const QgsPoint &point, double tolerance, MatchFilter *filter = nullptr );
+    Match nearestEdge( const QgsPointXY &point, double tolerance, QgsPointLocator::MatchFilter *filter = nullptr );
     //! Find edges within a specified recangle
     //! Optional filter may discard unwanted matches.
-    MatchList edgesInRect( const QgsRectangle &rect, MatchFilter *filter = nullptr );
+    MatchList edgesInRect( const QgsRectangle &rect, QgsPointLocator::MatchFilter *filter = nullptr );
     //! Override of edgesInRect that construct rectangle from a center point and tolerance
-    MatchList edgesInRect( const QgsPoint &point, double tolerance, MatchFilter *filter = nullptr );
+    MatchList edgesInRect( const QgsPointXY &point, double tolerance, QgsPointLocator::MatchFilter *filter = nullptr );
 
     // point-in-polygon query
 
     // TODO: function to return just the first match?
     //! find out if the point is in any polygons
-    MatchList pointInPolygon( const QgsPoint &point );
+    MatchList pointInPolygon( const QgsPointXY &point );
 
     //
 

@@ -45,8 +45,17 @@ def start_fold(tag):
 
 
 def end_fold():
-    tag = fold_stack.pop()
-    sys.stdout.write('travis_fold:end:{}\n'.format(tag))
+    try:
+        tag = fold_stack.pop()
+        sys.stdout.write('travis_fold:end:{}\n'.format(tag))
+    except IndexError:
+        updated_line = colored("======================", 'magenta')
+        updated_line += colored("ctest2travis error when processing the following line:", 'magenta')
+        updated_line += colored("----------------------", 'magenta')
+        updated_line += colored(updated_line, 'magenta')
+        updated_line += colored("----------------------", 'magenta')
+        updated_line += colored("Tried to end fold, but fold was never started.", 'magenta')
+        updated_line += colored("======================", 'magenta')
 
 
 test_count = 0
@@ -95,7 +104,7 @@ for line in p.stdout:
             end_fold()
 
         else:
-            if re.match('FAIL[:\!].*', updated_line):
+            if re.match('(FAIL|ERROR)[:\!].*', updated_line):
                 updated_line = colored(updated_line, 'yellow')
                 in_failure = True
 

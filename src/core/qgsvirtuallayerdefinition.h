@@ -107,10 +107,10 @@ class CORE_EXPORT QgsVirtualLayerDefinition
     void addSource( const QString &name, const QString &source, const QString &provider, const QString &encoding = "" );
 
     //! List of source layers
-    typedef QList<SourceLayer> SourceLayers;
+    typedef QList<QgsVirtualLayerDefinition::SourceLayer> SourceLayers;
 
     //! Get access to the source layers
-    const SourceLayers &sourceLayers() const { return mSourceLayers; }
+    const QgsVirtualLayerDefinition::SourceLayers &sourceLayers() const { return mSourceLayers; }
 
     //! Get the SQL query
     QString query() const { return mQuery; }

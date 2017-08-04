@@ -1,129 +1,203 @@
-/** \ingroup core
- * A label that can be placed onto a map composition.
- */
-class QgsComposerLabel : QgsComposerItem
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/composer/qgscomposerlabel.h                                 *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+class QgsComposerLabel: QgsComposerItem
 {
+%Docstring
+ A label that can be placed onto a map composition.
+%End
+
 %TypeHeaderCode
 #include "qgscomposerlabel.h"
 %End
   public:
-    QgsComposerLabel( QgsComposition *composition /TransferThis/);
+    QgsComposerLabel( QgsComposition *composition /TransferThis/ );
     ~QgsComposerLabel();
 
-    /** Return correct graphics item type. */
     virtual int type() const;
+%Docstring
+Return correct graphics item type.
+ :rtype: int
+%End
 
-    /** \brief Reimplementation of QCanvasItem::paint*/
-    void paint( QPainter *painter, const QStyleOptionGraphicsItem *itemStyle, QWidget *pWidget );
+    virtual void paint( QPainter *painter, const QStyleOptionGraphicsItem *itemStyle, QWidget *pWidget );
 
-    /** Resizes the widget such that the text fits to the item. Keeps top left point*/
+%Docstring
+ Reimplementation of QCanvasItem.paint
+%End
+
     void adjustSizeToText();
+%Docstring
+Resizes the widget such that the text fits to the item. Keeps top left point
+%End
 
     QString text();
+%Docstring
+ :rtype: str
+%End
     void setText( const QString &text );
 
     int htmlState();
+%Docstring
+ :rtype: int
+%End
     void setHtmlState( int state );
 
-    /** Returns the text as it appears on screen (with replaced data field) */
     QString displayText() const;
+%Docstring
+Returns the text as it appears on screen (with replaced data field)
+ :rtype: str
+%End
 
     QFont font() const;
+%Docstring
+ :rtype: QFont
+%End
     void setFont( const QFont &f );
-    /** Accessor for the vertical alignment of the label
-     * @returns Qt::AlignmentFlag
-     */
+
     Qt::AlignmentFlag vAlign() const;
-    /** Accessor for the horizontal alignment of the label
-     * @returns Qt::AlignmentFlag
-     */
+%Docstring
+ Accessor for the vertical alignment of the label
+ :return: Qt.AlignmentFlag
+ :rtype: Qt.AlignmentFlag
+%End
+
     Qt::AlignmentFlag hAlign() const;
-    /** Mutator for the horizontal alignment of the label
-     * @param a alignment
-     * @returns void
-     */
+%Docstring
+ Accessor for the horizontal alignment of the label
+ :return: Qt.AlignmentFlag
+ :rtype: Qt.AlignmentFlag
+%End
+
     void setHAlign( Qt::AlignmentFlag a );
-    /** Mutator for the vertical alignment of the label
-     * @param a alignment
-     * @returns void
-     */
+%Docstring
+ Mutator for the horizontal alignment of the label
+ \param a alignment
+ :return: void
+%End
+
     void setVAlign( Qt::AlignmentFlag a );
+%Docstring
+ Mutator for the vertical alignment of the label
+ \param a alignment
+ :return: void
+%End
 
-    /** Returns the horizontal margin between the edge of the frame and the label
-     * contents.
-     * @returns horizontal margin in mm
-     * @note added in QGIS 2.7
-     */
     double marginX() const;
+%Docstring
+ Returns the horizontal margin between the edge of the frame and the label
+ contents.
+ :return: horizontal margin in mm
+.. versionadded:: 2.7
+ :rtype: float
+%End
 
-    /** Returns the vertical margin between the edge of the frame and the label
-     * contents.
-     * @returns vertical margin in mm
-     * @note added in QGIS 2.7
-     */
     double marginY() const;
+%Docstring
+ Returns the vertical margin between the edge of the frame and the label
+ contents.
+ :return: vertical margin in mm
+.. versionadded:: 2.7
+ :rtype: float
+%End
 
-    /** Sets the margin between the edge of the frame and the label contents.
-     * This method sets both the horizontal and vertical margins to the same
-     * value. The margins can be individually controlled using the setMarginX
-     * and setMarginY methods.
-     * @param m margin in mm
-     * @see setMarginX
-     * @see setMarginY
-     */
     void setMargin( const double m );
+%Docstring
+ Sets the margin between the edge of the frame and the label contents.
+ This method sets both the horizontal and vertical margins to the same
+ value. The margins can be individually controlled using the setMarginX
+ and setMarginY methods.
+ \param m margin in mm
+.. seealso:: setMarginX
+.. seealso:: setMarginY
+%End
 
-    /** Sets the horizontal margin between the edge of the frame and the label
-     * contents.
-     * @param margin horizontal margin in mm
-     * @see setMargin
-     * @see setMarginY
-     * @note added in QGIS 2.7
-     */
     void setMarginX( const double margin );
+%Docstring
+ Sets the horizontal margin between the edge of the frame and the label
+ contents.
+ \param margin horizontal margin in mm
+.. seealso:: setMargin
+.. seealso:: setMarginY
+.. versionadded:: 2.7
+%End
 
-    /** Sets the vertical margin between the edge of the frame and the label
-     * contents.
-     * @param margin vertical margin in mm
-     * @see setMargin
-     * @see setMarginX
-     * @note added in QGIS 2.7
-     */
     void setMarginY( const double margin );
+%Docstring
+ Sets the vertical margin between the edge of the frame and the label
+ contents.
+ \param margin vertical margin in mm
+.. seealso:: setMargin
+.. seealso:: setMarginX
+.. versionadded:: 2.7
+%End
 
-    /** Sets text color */
     void setFontColor( const QColor &c );
-    /** Get font color */
+%Docstring
+Sets text color
+%End
     QColor fontColor() const;
+%Docstring
+Get font color
+ :rtype: QColor
+%End
 
-    /** Stores state in Dom element
-     * @param elem is Dom element corresponding to 'Composer' tag
-     * @param doc document
-     */
-    bool writeXml( QDomElement &elem, QDomDocument &doc ) const;
+    virtual bool writeXml( QDomElement &elem, QDomDocument &doc ) const;
 
-    /** Sets state from Dom document
-     * @param itemElem is Dom element corresponding to 'ComposerLabel' tag
-     * @param doc document
-     */
-    bool readXml( const QDomElement &itemElem, const QDomDocument &doc );
+%Docstring
+ Stores state in Dom element
+ \param elem is Dom element corresponding to 'Composer' tag
+ \param doc document
+ :rtype: bool
+%End
 
-    //Overridden to contain part of label's text
+    virtual bool readXml( const QDomElement &itemElem, const QDomDocument &doc );
+
+%Docstring
+ Sets state from Dom document
+ \param itemElem is Dom element corresponding to 'ComposerLabel' tag
+ \param doc document
+ :rtype: bool
+%End
+
     virtual QString displayName() const;
 
-    /** In case of negative margins, the bounding rect may be larger than the
-     * label's frame
-     */
-    QRectF boundingRect() const;
+    virtual QRectF boundingRect() const;
 
-    /** Reimplemented to call prepareGeometryChange after toggling frame
-     */
+%Docstring
+ In case of negative margins, the bounding rect may be larger than the
+ label's frame
+ :rtype: QRectF
+%End
+
     virtual void setFrameEnabled( const bool drawFrame );
+%Docstring
+ Reimplemented to call prepareGeometryChange after toggling frame
+%End
 
-    /** Reimplemented to call prepareGeometryChange after changing stroke width
-     */
     virtual void setFrameStrokeWidth( const double strokeWidth );
+%Docstring
+ Reimplemented to call prepareGeometryChange after changing stroke width
+%End
 
   public slots:
     void refreshExpressionContext();
+
+
 };
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/composer/qgscomposerlabel.h                                 *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

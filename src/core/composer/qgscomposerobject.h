@@ -57,7 +57,8 @@ class CORE_EXPORT QgsComposerObject: public QObject, public QgsExpressionContext
       ItemWidth, //!< Width of item
       ItemHeight, //!< Height of item
       ItemRotation, //!< Rotation of item
-      Transparency, //!< Item transparency
+      Transparency, //!< Item transparency (deprecated)
+      Opacity, //!< Item opacity
       BlendMode, //!< Item blend mode
       ExcludeFromExports, //!< Exclude item from exports
       FrameColor, //!< Item frame color
@@ -141,7 +142,7 @@ class CORE_EXPORT QgsComposerObject: public QObject, public QgsExpressionContext
      * \since QGIS 3.0
      * \see setDataDefinedProperties()
      */
-    const QgsPropertyCollection &dataDefinedProperties() const { return mDataDefinedProperties; }
+    const QgsPropertyCollection &dataDefinedProperties() const { return mDataDefinedProperties; } SIP_SKIP
 
     /** Sets the objects's property collection, used for data defined overrides.
      * \param collection property collection. Existing properties will be replaced.

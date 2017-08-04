@@ -53,7 +53,8 @@ from processing.core.outputs import (getOutputFromString,
                                      OutputVector,
                                      OutputRaster)
 from processing.tools import dataobjects
-from processing.tools.system import getTempFilename, getTempFilenameInTempFolder
+from processing.algs.help import shortHelp
+from processing.tools.system import getTempFilename
 from processing.algs.saga.SagaNameDecorator import decoratedAlgorithmName, decoratedGroupName
 from . import SagaUtils
 
@@ -78,9 +79,6 @@ class SagaAlgorithm(GeoAlgorithm):
         self._display_name = ''
         self._group = ''
 
-    def getCopy(self):
-        return self
-
     def icon(self):
         if self._icon is None:
             self._icon = QIcon(os.path.join(pluginPath, 'images', 'saga.png'))
@@ -94,6 +92,9 @@ class SagaAlgorithm(GeoAlgorithm):
 
     def group(self):
         return self._group
+
+    def shortHelpString(self):
+        return shortHelp.get(self.id(), None)
 
     def defineCharacteristicsFromFile(self):
         with open(self.descriptionFile) as lines:
@@ -136,7 +137,7 @@ class SagaAlgorithm(GeoAlgorithm):
                     self.addOutput(getOutputFromString(line))
                 line = lines.readline().strip('\n').strip()
 
-    def processAlgorithm(self, context, feedback):
+    def processAlgorithm(self, parameters, context, feedback):
         commands = list()
         self.exportedLayers = {}
 
@@ -144,43 +145,43 @@ class SagaAlgorithm(GeoAlgorithm):
 
         # 1: Export rasters to sgrd and vectors to shp
         # Tables must be in dbf format. We check that.
-        for param in self.parameters:
+        for param in self.parameterDefinitions():
             if isinstance(param, ParameterRaster):
-                if param.value is None:
+                if param.name() not in parameters or parameters[param.name()] is None:
                     continue
-                if param.value.endswith('sdat'):
-                    param.value = param.value[:-4] + "sgrd"
-                elif not param.value.endswith('sgrd'):
-                    exportCommand = self.exportRasterLayer(param.value)
+                if parameters[param.name()].endswith('sdat'):
+                    parameters[param.name()] = parameters[param.name()][:-4] + "sgrd"
+                elif not parameters[param.name()].endswith('sgrd'):
+                    exportCommand = self.exportRasterLayer(parameters[param.name()])
                     if exportCommand is not None:
                         commands.append(exportCommand)
             if isinstance(param, ParameterVector):
-                if param.value is None:
+                if param.name() not in parameters or parameters[param.name()] is None:
                     continue
-                layer = QgsProcessingUtils.mapLayerFromString(param.value, context, False)
+                layer = QgsProcessingUtils.mapLayerFromString(parameters[param.name()], context, False)
                 if layer:
                     filename = dataobjects.exportVectorLayer(layer)
                     self.exportedLayers[param.value] = filename
-                elif not param.value.endswith('shp'):
+                elif not parameteres[param.name()].endswith('shp'):
                     raise GeoAlgorithmExecutionException(
                         self.tr('Unsupported file format'))
             if isinstance(param, ParameterTable):
-                if param.value is None:
+                if param.name() not in parameters or parameters[param.name()] is None:
                     continue
-                table = QgsProcessingUtils.mapLayerFromString(param.value, context, False)
+                table = QgsProcessingUtils.mapLayerFromString(parameters[param.name()], context, False)
                 if table:
                     filename = dataobjects.exportTable(table)
-                    self.exportedLayers[param.value] = filename
-                elif not param.value.endswith('shp'):
+                    self.exportedLayers[parameters[param.name()]] = filename
+                elif not parameters[param.name()].endswith('shp'):
                     raise GeoAlgorithmExecutionException(
                         self.tr('Unsupported file format'))
             if isinstance(param, ParameterMultipleInput):
-                if param.value is None:
+                if param.name() not in parameters or parameters[param.name()] is None:
                     continue
                 layers = param.value.split(';')
                 if layers is None or len(layers) == 0:
                     continue
-                if param.datatype == dataobjects.TYPE_RASTER:
+                if param.datatype == ParameterMultipleInput.TYPE_RASTER:
                     for i, layerfile in enumerate(layers):
                         if layerfile.endswith('sdat'):
                             layerfile = param.value[:-4] + "sgrd"
@@ -203,52 +204,56 @@ class SagaAlgorithm(GeoAlgorithm):
                             raise GeoAlgorithmExecutionException(
                                 self.tr('Unsupported file format'))
 
+        # TODO - set minimum extent
+        if not extent:
+            extent = QgsProcessingUtils.combineLayerExtents([layer])
+
         # 2: Set parameters and outputs
         command = self.undecoratedGroup + ' "' + self.cmdname + '"'
         command += ' ' + ' '.join(self.hardcodedStrings)
 
-        for param in self.parameters:
-            if param.value is None:
+        for param in self.parameterDefinitions():
+            if not param.name() in parameters or parameters[param.name()] is None:
                 continue
             if isinstance(param, (ParameterRaster, ParameterVector, ParameterTable)):
-                value = param.value
+                value = parameters[param.name()]
                 if value in list(self.exportedLayers.keys()):
-                    command += ' -' + param.name + ' "' \
+                    command += ' -' + param.name() + ' "' \
                         + self.exportedLayers[value] + '"'
                 else:
-                    command += ' -' + param.name + ' "' + value + '"'
+                    command += ' -' + param.name() + ' "' + value + '"'
             elif isinstance(param, ParameterMultipleInput):
-                s = param.value
+                s = parameters[param.name()]
                 for layer in list(self.exportedLayers.keys()):
                     s = s.replace(layer, self.exportedLayers[layer])
-                command += ' -' + param.name + ' "' + s + '"'
+                command += ' -' + param.name() + ' "' + s + '"'
             elif isinstance(param, ParameterBoolean):
-                if param.value:
-                    command += ' -' + param.name.strip() + " true"
+                if parameters[param.name()]:
+                    command += ' -' + param.name().strip() + " true"
                 else:
-                    command += ' -' + param.name.strip() + " false"
+                    command += ' -' + param.name().strip() + " false"
             elif isinstance(param, ParameterFixedTable):
                 tempTableFile = getTempFilename('txt')
                 with open(tempTableFile, 'w') as f:
                     f.write('\t'.join([col for col in param.cols]) + '\n')
-                    values = param.value.split(',')
+                    values = parameters[param.name()].split(',')
                     for i in range(0, len(values), 3):
                         s = values[i] + '\t' + values[i + 1] + '\t' + values[i + 2] + '\n'
                         f.write(s)
-                command += ' -' + param.name + ' "' + tempTableFile + '"'
+                command += ' -' + param.name() + ' "' + tempTableFile + '"'
             elif isinstance(param, ParameterExtent):
                 # 'We have to substract/add half cell size, since SAGA is
                 # center based, not corner based
-                halfcell = self.getOutputCellsize() / 2
+                halfcell = self.getOutputCellsize(parameters) / 2
                 offset = [halfcell, -halfcell, halfcell, -halfcell]
-                values = param.value.split(',')
+                values = parameters[param.name()].split(',')
                 for i in range(4):
                     command += ' -' + self.extentParamNames[i] + ' ' \
                         + str(float(values[i]) + offset[i])
             elif isinstance(param, (ParameterNumber, ParameterSelection)):
-                command += ' -' + param.name + ' ' + str(param.value)
+                command += ' -' + param.name() + ' ' + str(param.value)
             else:
-                command += ' -' + param.name + ' "' + str(param.value) + '"'
+                command += ' -' + param.name() + ' "' + str(param.value) + '"'
 
         for out in self.outputs:
             command += ' -' + out.name + ' "' + out.getCompatibleFileName(self) + '"'
@@ -305,15 +310,16 @@ class SagaAlgorithm(GeoAlgorithm):
         else:
             return commands
 
-    def getOutputCellsize(self):
+    def getOutputCellsize(self, parameters):
         """Tries to guess the cell size of the output, searching for
         a parameter with an appropriate name for it.
+        :param parameters:
         """
 
         cellsize = 0
-        for param in self.parameters:
-            if param.value is not None and param.name == 'USER_SIZE':
-                cellsize = float(param.value)
+        for param in self.parameterDefinitions():
+            if param.name() in parameters and param.name() == 'USER_SIZE':
+                cellsize = float(parameters[param.name()])
                 break
         return cellsize
 
@@ -336,24 +342,23 @@ class SagaAlgorithm(GeoAlgorithm):
         filename = ''.join(c for c in filename if c in validChars)
         if len(filename) == 0:
             filename = 'layer'
-        destFilename = getTempFilenameInTempFolder(filename + '.sgrd')
+        destFilename = QgsProcessingUtils.generateTempFilename(filename + '.sgrd')
         self.exportedLayers[source] = destFilename
         sessionExportedLayers[source] = destFilename
-        return 'io_gdal 0 -TRANSFORM 1 -RESAMPLING 0 -GRIDS "' + destFilename + '" -FILES "' + source + '"'
+        return 'io_gdal 0 -TRANSFORM 1 -RESAMPLING 3 -GRIDS "' + destFilename + '" -FILES "' + source + '"'
 
-    def checkParameterValuesBeforeExecuting(self):
+    def checkParameterValues(self, parameters, context):
         """
         We check that there are no multiband layers, which are not
         supported by SAGA, and that raster layers have the same grid extent
         """
         extent = None
-        context = dataobjects.createContext()
-        for param in self.parameters:
+        for param in self.parameterDefinitions():
             files = []
             if isinstance(param, ParameterRaster):
-                files = [param.value]
+                files = [parameters[param.name()]]
             elif (isinstance(param, ParameterMultipleInput) and
-                    param.datatype == dataobjects.TYPE_RASTER):
+                    param.datatype == ParameterMultipleInput.TYPE_RASTER):
                 if param.value is not None:
                     files = param.value.split(";")
             for f in files:
@@ -361,12 +366,13 @@ class SagaAlgorithm(GeoAlgorithm):
                 if layer is None:
                     continue
                 if layer.bandCount() > 1:
-                    return self.tr('Input layer {0} has more than one band.\n'
-                                   'Multiband layers are not supported by SAGA').format(layer.name())
+                    return False, self.tr('Input layer {0} has more than one band.\n'
+                                          'Multiband layers are not supported by SAGA').format(layer.name())
                 if not self.allowUnmatchingGridExtents:
                     if extent is None:
                         extent = (layer.extent(), layer.height(), layer.width())
                     else:
                         extent2 = (layer.extent(), layer.height(), layer.width())
                         if extent != extent2:
-                            return self.tr("Input layers do not have the same grid extent.")
+                            return False, self.tr("Input layers do not have the same grid extent.")
+        return super(SagaAlgorithm, self).checkParameterValues(parameters, context)

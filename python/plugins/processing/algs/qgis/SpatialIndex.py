@@ -27,30 +27,32 @@ __revision__ = '$Format:%H$'
 
 import os
 
-from qgis.core import (QgsApplication,
-                       QgsVectorDataProvider,
-                       QgsProcessingUtils)
+from qgis.core import (QgsVectorDataProvider,
+                       QgsProcessingParameterVectorLayer,
+                       QgsProcessingOutputVectorLayer,
+                       QgsProcessing)
 
-from processing.core.GeoAlgorithm import GeoAlgorithm
-from processing.core.parameters import ParameterVector
-from processing.core.outputs import OutputVector
+from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 
 pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
 
-class SpatialIndex(GeoAlgorithm):
+class SpatialIndex(QgisAlgorithm):
 
     INPUT = 'INPUT'
     OUTPUT = 'OUTPUT'
 
-    def icon(self):
-        return QgsApplication.getThemeIcon("/providerQgis.svg")
-
-    def svgIconPath(self):
-        return QgsApplication.iconPath("providerQgis.svg")
-
     def group(self):
         return self.tr('Vector general tools')
+
+    def __init__(self):
+        super().__init__()
+
+    def initAlgorithm(self, config=None):
+        self.addParameter(QgsProcessingParameterVectorLayer(self.INPUT,
+                                                            self.tr('Input Layer'),
+                                                            [QgsProcessing.TypeVectorPolygon, QgsProcessing.TypeVectorPoint, QgsProcessing.TypeVectorLine]))
+        self.addOutput(QgsProcessingOutputVectorLayer(self.OUTPUT, self.tr('Indexed layer')))
 
     def name(self):
         return 'createspatialindex'
@@ -58,15 +60,8 @@ class SpatialIndex(GeoAlgorithm):
     def displayName(self):
         return self.tr('Create spatial index')
 
-    def defineCharacteristics(self):
-        self.addParameter(ParameterVector(self.INPUT,
-                                          self.tr('Input Layer')))
-        self.addOutput(OutputVector(self.OUTPUT,
-                                    self.tr('Indexed layer'), True))
-
-    def processAlgorithm(self, context, feedback):
-        fileName = self.getParameterValue(self.INPUT)
-        layer = QgsProcessingUtils.mapLayerFromString(fileName, context)
+    def processAlgorithm(self, parameters, context, feedback):
+        layer = self.parameterAsVectorLayer(parameters, self.INPUT, context)
         provider = layer.dataProvider()
 
         if provider.capabilities() & QgsVectorDataProvider.CreateSpatialIndex:
@@ -76,4 +71,4 @@ class SpatialIndex(GeoAlgorithm):
             feedback.pushInfo(self.tr("Layer's data provider does not support "
                                       "spatial indexes"))
 
-        self.setOutputValue(self.OUTPUT, fileName)
+        return {self.OUTPUT: layer.id()}

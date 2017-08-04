@@ -17,7 +17,7 @@
 #ifndef QGSOPTIONSDIALOGBASE_H
 #define QGSOPTIONSDIALOGBASE_H
 
-#include "qgisgui.h"
+#include "qgsguiutils.h"
 #include "qgssettings.h"
 #include "qgis_gui.h"
 
@@ -119,7 +119,7 @@ class GUI_EXPORT QgsOptionsDialogBase : public QDialog
      * \param fl widget flags
      * \param settings custom QgsSettings pointer
      */
-    QgsOptionsDialogBase( const QString &settingsKey, QWidget *parent = nullptr, Qt::WindowFlags fl = 0, QgsSettings *settings = nullptr );
+    QgsOptionsDialogBase( const QString &settingsKey, QWidget *parent SIP_TRANSFERTHIS = nullptr, Qt::WindowFlags fl = 0, QgsSettings *settings = nullptr );
     ~QgsOptionsDialogBase();
 
     /** Set up the base ui connections for vertical tabs.

@@ -6,31 +6,38 @@ SET (DTEXT_SRCS
   qgsdelimitedtextfeatureiterator.cpp
   qgsdelimitedtextprovider.cpp
   qgsdelimitedtextfile.cpp
-  qgsdelimitedtextsourceselect.cpp
 )
 
 SET (DTEXT_MOC_HDRS
   qgsdelimitedtextfile.h
   qgsdelimitedtextprovider.h
-  qgsdelimitedtextsourceselect.h
 )
+
+IF (WITH_GUI)
+  SET(DTEXT_SRCS ${DTEXT_SRCS}
+    qgsdelimitedtextsourceselect.cpp
+  )
+  SET(DTEXT_MOC_HDRS ${DTEXT_MOC_HDRS}
+    qgsdelimitedtextsourceselect.h
+  )
+ENDIF ()
 
 ########################################################
 # Build
 
 INCLUDE_DIRECTORIES(
-  ../../core
-  ../../core/geometry
-  ../../core/metadata
-  ../../gui
+  ${CMAKE_SOURCE_DIR}/src/core
+  ${CMAKE_SOURCE_DIR}/src/core/expression
+  ${CMAKE_SOURCE_DIR}/src/core/geometry
+  ${CMAKE_SOURCE_DIR}/src/core/metadata
+  ${CMAKE_SOURCE_DIR}/src/gui
+
   ${CMAKE_BINARY_DIR}/src/core
   ${CMAKE_BINARY_DIR}/src/gui
+  ${CMAKE_BINARY_DIR}/src/ui
 )
 INCLUDE_DIRECTORIES (SYSTEM
   ${GEOS_INCLUDE_DIR}
-)
-INCLUDE_DIRECTORIES (
-  ${CMAKE_CURRENT_BINARY_DIR}/../../ui
 )
 
 QT5_WRAP_CPP(DTEXT_MOC_SRCS ${DTEXT_MOC_HDRS})
@@ -39,8 +46,13 @@ ADD_LIBRARY(delimitedtextprovider MODULE ${DTEXT_SRCS} ${DTEXT_MOC_SRCS})
 
 TARGET_LINK_LIBRARIES(delimitedtextprovider
   qgis_core
-  qgis_gui
 )
+
+IF (WITH_GUI)
+  TARGET_LINK_LIBRARIES (delimitedtextprovider
+    qgis_gui
+  )
+ENDIF ()
 
 # clang-tidy
 IF(CLANG_TIDY_EXE)

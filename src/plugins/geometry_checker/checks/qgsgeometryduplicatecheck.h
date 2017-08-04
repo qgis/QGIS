@@ -23,7 +23,7 @@ class QgsGeometryDuplicateCheckError : public QgsGeometryCheckError
   public:
     QgsGeometryDuplicateCheckError( const QgsGeometryCheck *check,
                                     QgsFeatureId featureId,
-                                    const QgsPointV2 &errorLocation,
+                                    const QgsPoint &errorLocation,
                                     const QList<QgsFeatureId> &duplicates )
       : QgsGeometryCheckError( check, featureId, errorLocation, QgsVertexId(), duplicatesString( duplicates ) )
       , mDuplicates( duplicates )

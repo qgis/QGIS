@@ -47,9 +47,9 @@
       <property name="geometry">
        <rect>
         <x>0</x>
-        <y>-108</y>
-        <width>387</width>
-        <height>1348</height>
+        <y>-361</y>
+        <width>386</width>
+        <height>1095</height>
        </rect>
       </property>
       <property name="sizePolicy">
@@ -554,7 +554,7 @@
             <item>
              <widget class="QToolButton" name="mAnnotationFormatButton">
               <property name="text">
-               <string>...</string>
+               <string>…</string>
               </property>
               <property name="icon">
                <iconset resource="../../../images/images.qrc">
@@ -647,13 +647,6 @@
             </property>
            </widget>
           </item>
-          <item row="13" column="1">
-           <widget class="QPushButton" name="mAnnotationFontButton">
-            <property name="text">
-             <string>Font...</string>
-            </property>
-           </widget>
-          </item>
           <item row="14" column="0">
            <widget class="QLabel" name="mFontColorLabel">
             <property name="text">
@@ -725,6 +718,19 @@
             </item>
            </layout>
           </item>
+          <item row="13" column="1">
+           <widget class="QgsFontButton" name="mAnnotationFontButton">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="text">
+             <string>Font</string>
+            </property>
+           </widget>
+          </item>
          </layout>
         </widget>
        </item>
@@ -758,6 +764,11 @@
    <class>QgsDoubleSpinBox</class>
    <extends>QDoubleSpinBox</extends>
    <header>qgsdoublespinbox.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsFontButton</class>
+   <extends>QToolButton</extends>
+   <header>qgsfontbutton.h</header>
   </customwidget>
   <customwidget>
    <class>QgsSpinBox</class>
@@ -819,6 +830,29 @@
   <tabstop>mCoordinatePrecisionSpinBox</tabstop>
  </tabstops>
  <resources>
+  <include location="../../../images/images.qrc"/>
+  <include location="../../../images/images.qrc"/>
+  <include location="../../../images/images.qrc"/>
+  <include location="../../../images/images.qrc"/>
+  <include location="../../../images/images.qrc"/>
+  <include location="../../../images/images.qrc"/>
+  <include location="../../../images/images.qrc"/>
+  <include location="../../../images/images.qrc"/>
+  <include location="../../../images/images.qrc"/>
+  <include location="../../../images/images.qrc"/>
+  <include location="../../../images/images.qrc"/>
+  <include location="../../../images/images.qrc"/>
+  <include location="../../../images/images.qrc"/>
+  <include location="../../../images/images.qrc"/>
+  <include location="../../../images/images.qrc"/>
+  <include location="../../../images/images.qrc"/>
+  <include location="../../../images/images.qrc"/>
+  <include location="../../../images/images.qrc"/>
+  <include location="../../../images/images.qrc"/>
+  <include location="../../../images/images.qrc"/>
+  <include location="../../../images/images.qrc"/>
+  <include location="../../../images/images.qrc"/>
+  <include location="../../../images/images.qrc"/>
   <include location="../../../images/images.qrc"/>
  </resources>
  <connections/>

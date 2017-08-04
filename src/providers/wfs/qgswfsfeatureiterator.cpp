@@ -26,6 +26,7 @@
 #include "qgswfsutils.h"
 #include "qgslogger.h"
 #include "qgssettings.h"
+#include "qgsexception.h"
 
 #include <QDir>
 #include <QProgressDialog>
@@ -174,7 +175,11 @@ void QgsWFSFeatureDownloader::createProgressDialog()
   connect( mProgressDialog, &QProgressDialog::canceled, this, &QgsWFSFeatureDownloader::stop );
   connect( mProgressDialog, &QWidget::hide, this, &QgsWFSFeatureDownloader::hideProgressDialog );
 
-  connect( this, &QgsWFSFeatureDownloader::updateProgress, mProgressDialog, &QProgressDialog::setValue );
+  // Make sure the progress dialog has not been deleted by another thread
+  if ( mProgressDialog )
+  {
+    connect( this, &QgsWFSFeatureDownloader::updateProgress, mProgressDialog, &QProgressDialog::setValue );
+  }
 }
 
 QString QgsWFSFeatureDownloader::sanitizeFilter( QString filter )
@@ -785,13 +790,28 @@ QgsWFSFeatureIterator::QgsWFSFeatureIterator( QgsWFSFeatureSource *source,
   , mReaderStream( nullptr )
   , mFetchGeometry( false )
 {
+  if ( mRequest.destinationCrs().isValid() && mRequest.destinationCrs() != mSource->mCrs )
+  {
+    mTransform = QgsCoordinateTransform( mSource->mCrs, mRequest.destinationCrs() );
+  }
+  try
+  {
+    mFilterRect = filterRectToSourceCrs( mTransform );
+  }
+  catch ( QgsCsException & )
+  {
+    // can't reproject mFilterRect
+    mClosed = true;
+    return;
+  }
+
   // Configurable for the purpose of unit tests
   QString threshold( getenv( "QGIS_WFS_ITERATOR_TRANSFER_THRESHOLD" ) );
   if ( !threshold.isEmpty() )
     mWriteTransferThreshold = threshold.toInt();
 
-  int genCounter = ( mShared->mURI.isRestrictedToRequestBBOX() && !request.filterRect().isNull() ) ?
-                   mShared->registerToCache( this, request.filterRect() ) : mShared->registerToCache( this );
+  int genCounter = ( mShared->mURI.isRestrictedToRequestBBOX() && !mFilterRect.isNull() ) ?
+                   mShared->registerToCache( this, mFilterRect ) : mShared->registerToCache( this );
   mDownloadFinished = genCounter < 0;
   if ( !mShared->mCacheDataProvider )
     return;
@@ -814,7 +834,7 @@ QgsWFSFeatureIterator::QgsWFSFeatureIterator( QgsWFSFeatureSource *source,
     }
   }
 
-  requestCache.setFilterRect( mRequest.filterRect() );
+  requestCache.setFilterRect( mFilterRect );
 
   if ( !( mRequest.flags() & QgsFeatureRequest::NoGeometry ) ||
        ( mRequest.filterType() == QgsFeatureRequest::FilterExpression && mRequest.filterExpression()->needsGeometry() ) )
@@ -845,6 +865,21 @@ QgsWFSFeatureIterator::QgsWFSFeatureIterator( QgsWFSFeatureSource *source,
         if ( idx >= 0 && !cacheSubSet.contains( idx ) )
           cacheSubSet.append( idx );
         idx = mShared->mFields.indexFromName( field );
+        if ( idx >= 0  && !mSubSetAttributes.contains( idx ) )
+          mSubSetAttributes.append( idx );
+      }
+    }
+
+    // also need attributes required by order by
+    if ( mRequest.flags() & QgsFeatureRequest::SubsetOfAttributes && !mRequest.orderBy().isEmpty() )
+    {
+      Q_FOREACH ( const QString &attr, mRequest.orderBy().usedAttributes() )
+      {
+        int idx = dataProviderFields.indexFromName( attr );
+        if ( idx >= 0 && !cacheSubSet.contains( idx ) )
+          cacheSubSet.append( idx );
+
+        idx = mShared->mFields.indexFromName( attr );
         if ( idx >= 0  && !mSubSetAttributes.contains( idx ) )
           mSubSetAttributes.append( idx );
       }
@@ -1019,13 +1054,14 @@ bool QgsWFSFeatureIterator::fetchFeature( QgsFeature &f )
     }
 
     QgsGeometry constGeom = cachedFeature.geometry();
-    if ( !mRequest.filterRect().isNull() &&
-         ( constGeom.isNull() || !constGeom.intersects( mRequest.filterRect() ) ) )
+    if ( !mFilterRect.isNull() &&
+         ( constGeom.isNull() || !constGeom.intersects( mFilterRect ) ) )
     {
       continue;
     }
 
     copyFeature( cachedFeature, f );
+    geometryToDestinationCrs( f, mTransform );
     return true;
   }
 
@@ -1099,8 +1135,8 @@ bool QgsWFSFeatureIterator::fetchFeature( QgsFeature &f )
         }
 
         QgsGeometry constGeom = feat.geometry();
-        if ( !mRequest.filterRect().isNull() &&
-             ( constGeom.isNull() || !constGeom.intersects( mRequest.filterRect() ) ) )
+        if ( !mFilterRect.isNull() &&
+             ( constGeom.isNull() || !constGeom.intersects( mFilterRect ) ) )
         {
           continue;
         }
@@ -1251,6 +1287,7 @@ void QgsWFSFeatureIterator::copyFeature( const QgsFeature &srcFeature, QgsFeatur
 
 QgsWFSFeatureSource::QgsWFSFeatureSource( const QgsWFSProvider *p )
   : mShared( p->mShared )
+  , mCrs( p->crs() )
 {
 }
 

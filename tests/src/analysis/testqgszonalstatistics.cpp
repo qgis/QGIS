@@ -94,6 +94,7 @@ void TestQgsZonalStatistics::testStatistics()
   QCOMPARE( f.attribute( "minority" ).toDouble(), 0.0 );
   QCOMPARE( f.attribute( "majority" ).toDouble(), 1.0 );
   QCOMPARE( f.attribute( "variety" ).toDouble(), 2.0 );
+  QCOMPARE( f.attribute( "variance" ).toDouble(), 0.222222222222222 );
 
   request.setFilterFid( 1 );
   fetched = mVectorLayer->getFeatures( request ).nextFeature( f );
@@ -109,6 +110,7 @@ void TestQgsZonalStatistics::testStatistics()
   QCOMPARE( f.attribute( "minority" ).toDouble(), 0.0 );
   QCOMPARE( f.attribute( "majority" ).toDouble(), 1.0 );
   QCOMPARE( f.attribute( "variety" ).toDouble(), 2.0 );
+  QCOMPARE( f.attribute( "variance" ).toDouble(), 0.24691358024691 );
 
   request.setFilterFid( 2 );
   fetched = mVectorLayer->getFeatures( request ).nextFeature( f );
@@ -124,6 +126,7 @@ void TestQgsZonalStatistics::testStatistics()
   QCOMPARE( f.attribute( "minority" ).toDouble(), 0.0 );
   QCOMPARE( f.attribute( "majority" ).toDouble(), 1.0 );
   QCOMPARE( f.attribute( "variety" ).toDouble(), 2.0 );
+  QCOMPARE( f.attribute( "variance" ).toDouble(), 0.13888888888889 );
 
   // same with long prefix to ensure that field name truncation handled correctly
   QgsZonalStatistics zsl( mVectorLayer, mRasterLayer, QStringLiteral( "myqgis2_" ), 1, QgsZonalStatistics::All );
@@ -143,6 +146,7 @@ void TestQgsZonalStatistics::testStatistics()
   QCOMPARE( f.attribute( "myqgis2__2" ).toDouble(), 0.0 );
   QCOMPARE( f.attribute( "myqgis2__3" ).toDouble(), 1.0 );
   QCOMPARE( f.attribute( "myqgis2_va" ).toDouble(), 2.0 );
+  QCOMPARE( f.attribute( "myqgis2__4" ).toDouble(), 0.222222222222222 );
 
   request.setFilterFid( 1 );
   fetched = mVectorLayer->getFeatures( request ).nextFeature( f );
@@ -158,6 +162,7 @@ void TestQgsZonalStatistics::testStatistics()
   QCOMPARE( f.attribute( "myqgis2__2" ).toDouble(), 0.0 );
   QCOMPARE( f.attribute( "myqgis2__3" ).toDouble(), 1.0 );
   QCOMPARE( f.attribute( "myqgis2_va" ).toDouble(), 2.0 );
+  QCOMPARE( f.attribute( "myqgis2__4" ).toDouble(), 0.24691358024691 );
 
   request.setFilterFid( 2 );
   fetched = mVectorLayer->getFeatures( request ).nextFeature( f );
@@ -173,6 +178,7 @@ void TestQgsZonalStatistics::testStatistics()
   QCOMPARE( f.attribute( "myqgis2__2" ).toDouble(), 0.0 );
   QCOMPARE( f.attribute( "myqgis2__3" ).toDouble(), 1.0 );
   QCOMPARE( f.attribute( "myqgis2_va" ).toDouble(), 2.0 );
+  QCOMPARE( f.attribute( "myqgis2__4" ).toDouble(), 0.13888888888889 );
 }
 
 QGSTEST_MAIN( TestQgsZonalStatistics )

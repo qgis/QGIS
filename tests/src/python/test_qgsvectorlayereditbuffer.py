@@ -19,7 +19,7 @@ from qgis.PyQt.QtCore import QVariant
 from qgis.core import (QgsVectorLayer,
                        QgsFeature,
                        QgsGeometry,
-                       QgsPoint,
+                       QgsPointXY,
                        QgsField)
 from qgis.testing import start_app, unittest
 start_app()
@@ -38,9 +38,16 @@ def createLayerWithOnePoint():
     pr = layer.dataProvider()
     f = QgsFeature()
     f.setAttributes(["test", 123])
-    f.setGeometry(QgsGeometry.fromPoint(QgsPoint(100, 200)))
+    f.setGeometry(QgsGeometry.fromPoint(QgsPointXY(100, 200)))
     assert pr.addFeatures([f])
     assert layer.pendingFeatureCount() == 1
+    return layer
+
+
+def createEmptyLinestringLayer():
+    layer = QgsVectorLayer("Linestring?field=fldtxt:string&field=fldint:integer",
+                           "addfeat", "memory")
+    assert layer.isValid()
     return layer
 
 
@@ -57,12 +64,12 @@ class TestQgsVectorLayerEditBuffer(unittest.TestCase):
 
         # add two features
         f1 = QgsFeature(layer.fields(), 1)
-        f1.setGeometry(QgsGeometry.fromPoint(QgsPoint(1, 2)))
+        f1.setGeometry(QgsGeometry.fromPoint(QgsPointXY(1, 2)))
         f1.setAttributes(["test", 123])
         self.assertTrue(layer.addFeature(f1))
 
         f2 = QgsFeature(layer.fields(), 2)
-        f2.setGeometry(QgsGeometry.fromPoint(QgsPoint(2, 4)))
+        f2.setGeometry(QgsGeometry.fromPoint(QgsPointXY(2, 4)))
         f2.setAttributes(["test2", 246])
 
         self.assertTrue(layer.addFeature(f2))
@@ -78,6 +85,27 @@ class TestQgsVectorLayerEditBuffer(unittest.TestCase):
         self.assertTrue(layer.editBuffer().isFeatureAdded(new_feature_ids[0]))
         self.assertTrue(layer.editBuffer().isFeatureAdded(new_feature_ids[1]))
 
+        # check if error in case adding not adaptable geometry
+        # eg. a Multiline in a Line
+        layer = createEmptyLinestringLayer()
+        self.assertTrue(layer.startEditing())
+
+        self.assertEqual(layer.editBuffer().addedFeatures(), {})
+        self.assertFalse(layer.editBuffer().isFeatureAdded(1))
+        self.assertFalse(layer.editBuffer().isFeatureAdded(3))
+
+        # add a features with a multi line geometry of not touched lines =>
+        # cannot be forced to be linestring
+        multiline = [
+            [QgsPointXY(1, 1), QgsPointXY(2, 2)],
+            [QgsPointXY(3, 3), QgsPointXY(4, 4)],
+        ]
+        f1 = QgsFeature(layer.fields(), 1)
+        f1.setGeometry(QgsGeometry.fromMultiPolyline(multiline))
+        f1.setAttributes(["test", 123])
+        self.assertTrue(layer.addFeatures([f1]))
+        self.assertFalse(layer.commitChanges())
+
     def testAddMultipleFeatures(self):
         # test adding multiple features to an edit buffer
         layer = createEmptyLayer()
@@ -89,10 +117,10 @@ class TestQgsVectorLayerEditBuffer(unittest.TestCase):
 
         # add two features
         f1 = QgsFeature(layer.fields(), 1)
-        f1.setGeometry(QgsGeometry.fromPoint(QgsPoint(1, 2)))
+        f1.setGeometry(QgsGeometry.fromPoint(QgsPointXY(1, 2)))
         f1.setAttributes(["test", 123])
         f2 = QgsFeature(layer.fields(), 2)
-        f2.setGeometry(QgsGeometry.fromPoint(QgsPoint(2, 4)))
+        f2.setGeometry(QgsGeometry.fromPoint(QgsPointXY(2, 4)))
         f2.setAttributes(["test2", 246])
 
         self.assertTrue(layer.addFeatures([f1, f2]))
@@ -117,12 +145,12 @@ class TestQgsVectorLayerEditBuffer(unittest.TestCase):
 
         # add two features
         f1 = QgsFeature(layer.fields(), 1)
-        f1.setGeometry(QgsGeometry.fromPoint(QgsPoint(1, 2)))
+        f1.setGeometry(QgsGeometry.fromPoint(QgsPointXY(1, 2)))
         f1.setAttributes(["test", 123])
         self.assertTrue(layer.addFeature(f1))
 
         f2 = QgsFeature(layer.fields(), 2)
-        f2.setGeometry(QgsGeometry.fromPoint(QgsPoint(2, 4)))
+        f2.setGeometry(QgsGeometry.fromPoint(QgsPointXY(2, 4)))
         f2.setAttributes(["test2", 246])
         self.assertTrue(layer.addFeature(f2))
 
@@ -158,12 +186,12 @@ class TestQgsVectorLayerEditBuffer(unittest.TestCase):
 
         # add two features
         f1 = QgsFeature(layer.fields(), 1)
-        f1.setGeometry(QgsGeometry.fromPoint(QgsPoint(1, 2)))
+        f1.setGeometry(QgsGeometry.fromPoint(QgsPointXY(1, 2)))
         f1.setAttributes(["test", 123])
         self.assertTrue(layer.addFeature(f1))
 
         f2 = QgsFeature(layer.fields(), 2)
-        f2.setGeometry(QgsGeometry.fromPoint(QgsPoint(2, 4)))
+        f2.setGeometry(QgsGeometry.fromPoint(QgsPointXY(2, 4)))
         f2.setAttributes(["test2", 246])
         self.assertTrue(layer.addFeature(f2))
 
@@ -191,12 +219,12 @@ class TestQgsVectorLayerEditBuffer(unittest.TestCase):
 
         # add two features
         f1 = QgsFeature(layer.fields(), 1)
-        f1.setGeometry(QgsGeometry.fromPoint(QgsPoint(1, 2)))
+        f1.setGeometry(QgsGeometry.fromPoint(QgsPointXY(1, 2)))
         f1.setAttributes(["test", 123])
         self.assertTrue(layer.addFeature(f1))
 
         f2 = QgsFeature(layer.fields(), 2)
-        f2.setGeometry(QgsGeometry.fromPoint(QgsPoint(2, 4)))
+        f2.setGeometry(QgsGeometry.fromPoint(QgsPointXY(2, 4)))
         f2.setAttributes(["test2", 246])
         self.assertTrue(layer.addFeature(f2))
 
@@ -234,12 +262,12 @@ class TestQgsVectorLayerEditBuffer(unittest.TestCase):
 
         # add two features
         f1 = QgsFeature(layer.fields(), 1)
-        f1.setGeometry(QgsGeometry.fromPoint(QgsPoint(1, 2)))
+        f1.setGeometry(QgsGeometry.fromPoint(QgsPointXY(1, 2)))
         f1.setAttributes(["test", 123])
         self.assertTrue(layer.addFeature(f1))
 
         f2 = QgsFeature(layer.fields(), 2)
-        f2.setGeometry(QgsGeometry.fromPoint(QgsPoint(2, 4)))
+        f2.setGeometry(QgsGeometry.fromPoint(QgsPointXY(2, 4)))
         f2.setAttributes(["test2", 246])
         self.assertTrue(layer.addFeature(f2))
 
@@ -251,7 +279,7 @@ class TestQgsVectorLayerEditBuffer(unittest.TestCase):
         self.assertFalse(layer.editBuffer().isFeatureGeometryChanged(2))
 
         # change attribute values
-        layer.changeGeometry(1, QgsGeometry.fromPoint(QgsPoint(10, 20)))
+        layer.changeGeometry(1, QgsGeometry.fromPoint(QgsPointXY(10, 20)))
 
         # test contents of buffer
         self.assertEqual(list(layer.editBuffer().changedGeometries().keys()), [1])
@@ -259,7 +287,7 @@ class TestQgsVectorLayerEditBuffer(unittest.TestCase):
         self.assertTrue(layer.editBuffer().isFeatureGeometryChanged(1))
         self.assertFalse(layer.editBuffer().isFeatureGeometryChanged(2))
 
-        layer.changeGeometry(2, QgsGeometry.fromPoint(QgsPoint(20, 40)))
+        layer.changeGeometry(2, QgsGeometry.fromPoint(QgsPointXY(20, 40)))
 
         # test contents of buffer
         self.assertEqual(set(layer.editBuffer().changedGeometries().keys()), set([1, 2]))

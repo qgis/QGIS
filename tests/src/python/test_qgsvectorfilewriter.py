@@ -21,7 +21,7 @@ from qgis.core import (QgsVectorLayer,
                        QgsFeature,
                        QgsField,
                        QgsGeometry,
-                       QgsPoint,
+                       QgsPointXY,
                        QgsCoordinateReferenceSystem,
                        QgsVectorFileWriter,
                        QgsFeatureRequest,
@@ -85,7 +85,7 @@ class TestQgsVectorFileWriter(unittest.TestCase):
         self.assertIsNotNone(myProvider)
 
         ft = QgsFeature()
-        ft.setGeometry(QgsGeometry.fromPoint(QgsPoint(10, 10)))
+        ft.setGeometry(QgsGeometry.fromPoint(QgsPointXY(10, 10)))
         ft.setAttributes(['Johny', 20, 0.3])
         myResult, myFeatures = myProvider.addFeatures([ft])
         self.assertTrue(myResult)
@@ -106,7 +106,7 @@ class TestQgsVectorFileWriter(unittest.TestCase):
         self.assertIsNotNone(provider)
 
         ft = QgsFeature()
-        ft.setGeometry(QgsGeometry.fromPoint(QgsPoint(10, 10)))
+        ft.setGeometry(QgsGeometry.fromPoint(QgsPointXY(10, 10)))
         ft.setAttributes([1, QDate(2014, 3, 5), QTime(13, 45, 22), QDateTime(QDate(2014, 3, 5), QTime(13, 45, 22))])
         res, features = provider.addFeatures([ft])
         self.assertTrue(res)
@@ -211,7 +211,7 @@ class TestQgsVectorFileWriter(unittest.TestCase):
         self.assertIsNotNone(provider)
 
         ft = QgsFeature()
-        ft.setGeometry(QgsGeometry.fromPoint(QgsPoint(10, 10)))
+        ft.setGeometry(QgsGeometry.fromPoint(QgsPointXY(10, 10)))
         ft.setAttributes([1, QDate(2014, 3, 5), QTime(13, 45, 22), QDateTime(QDate(2014, 3, 5), QTime(13, 45, 22))])
         res, features = provider.addFeatures([ft])
         self.assertTrue(res)
@@ -703,10 +703,17 @@ class TestQgsVectorFileWriter(unittest.TestCase):
         self.assertIsNotNone(lyr)
         f = lyr.GetNextFeature()
         self.assertEqual(f['firstfield'], 3)
-        self.assertFalse(f.IsFieldSet('secondfield'))
+        if hasattr(f, "IsFieldSetAndNotNull"):
+            # GDAL >= 2.2
+            self.assertFalse(f.IsFieldSetAndNotNull('secondfield'))
+        else:
+            self.assertFalse(f.IsFieldSet('secondfield'))
         f = lyr.GetNextFeature()
         self.assertEqual(f['firstfield'], 4)
-        self.assertFalse(f.IsFieldSet('secondfield'))
+        if hasattr(f, "IsFieldSetAndNotNull"):
+            self.assertFalse(f.IsFieldSetAndNotNull('secondfield'))
+        else:
+            self.assertFalse(f.IsFieldSet('secondfield'))
         f = lyr.GetNextFeature()
         self.assertEqual(f['firstfield'], 5)
         self.assertEqual(f['secondfield'], -1)

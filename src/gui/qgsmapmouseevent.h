@@ -18,7 +18,7 @@
 
 #include <QMouseEvent>
 
-#include "qgspoint.h"
+#include "qgspointxy.h"
 #include "qgspointlocator.h"
 #include "qgis_gui.h"
 
@@ -28,11 +28,21 @@ class QgsMapToolAdvancedDigitizing;
 /** \ingroup gui
  * A QgsMapMouseEvent is the result of a user interaction with the mouse on a QgsMapCanvas.
  * It is sent whenever the user moves, clicks, releases or double clicks the mouse.
- * In addition to the coordiantes in pixel space it also knows the coordinates in the mapcanvas' CRS
+ * In addition to the coordinates in pixel space it also knows the coordinates in the mapcanvas' CRS
  * as well as it knows the concept of snapping.
  */
 class GUI_EXPORT QgsMapMouseEvent : public QMouseEvent
 {
+
+#ifdef SIP_RUN
+    SIP_CONVERT_TO_SUBCLASS_CODE
+    if ( dynamic_cast<QgsMapMouseEvent *>( sipCpp ) )
+      sipType = sipType_QgsMapMouseEvent;
+    else
+      sipType = 0;
+    SIP_END
+#endif
+
   public:
 
     enum SnappingMode
@@ -67,7 +77,7 @@ class GUI_EXPORT QgsMapMouseEvent : public QMouseEvent
      * \brief snapPoint will snap the points using the map canvas snapping utils configuration
      * \note if snapping did not succeeded, the map point will be reset to its original position
      */
-    QgsPoint snapPoint( SnappingMode snappingMode );
+    QgsPointXY snapPoint( SnappingMode snappingMode );
 
     /**
      * Returns the first snapped segment. If the cached snapped match is a segment, it will simply return it.
@@ -77,7 +87,7 @@ class GUI_EXPORT QgsMapMouseEvent : public QMouseEvent
      * \param snapped if given, determines if a segment has been snapped
      * \param allLayers if true, override snapping mode
      */
-    QList<QgsPoint> snapSegment( SnappingMode snappingMode, bool *snapped = nullptr, bool allLayers = false ) const;
+    QList<QgsPointXY> snapSegment( SnappingMode snappingMode, bool *snapped = nullptr, bool allLayers = false ) const;
 
     /**
      * Returns true if there is a snapped point cached.
@@ -91,7 +101,7 @@ class GUI_EXPORT QgsMapMouseEvent : public QMouseEvent
      * \brief mapPoint returns the point in coordinates
      * \returns the point in map coordinates, after snapping if requested in the event.
      */
-    inline QgsPoint mapPoint() const { return mMapPoint; }
+    inline QgsPointXY mapPoint() const { return mMapPoint; }
 
     /**
       * Returns the matching data from the most recently snapped point.
@@ -106,14 +116,14 @@ class GUI_EXPORT QgsMapMouseEvent : public QMouseEvent
      *
      * \param point The point in map coordinates
      */
-    void setMapPoint( const QgsPoint &point );
+    void setMapPoint( const QgsPointXY &point );
 
     /**
      * Returns the original, unmodified map point of the mouse cursor.
      *
      * \returns The cursor position in map coordinates.
      */
-    QgsPoint originalMapPoint() const { return mMapPoint; }
+    QgsPointXY originalMapPoint() const { return mMapPoint; }
 
     /**
      * The snapped mouse cursor in pixel coordinates.
@@ -132,15 +142,15 @@ class GUI_EXPORT QgsMapMouseEvent : public QMouseEvent
 
   private:
 
-    QPoint mapToPixelCoordinates( const QgsPoint &point );
+    QPoint mapToPixelCoordinates( const QgsPointXY &point );
 
     SnappingMode mSnappingMode;
 
     //! Unsnapped point in map coordinates.
-    QgsPoint mOriginalMapPoint;
+    QgsPointXY mOriginalMapPoint;
 
     //! Location in map coordinates. May be snapped.
-    QgsPoint mMapPoint;
+    QgsPointXY mMapPoint;
 
     //! Location in pixel coordinates. May be snapped.
     //! Original pixel point available through the parent QMouseEvent.

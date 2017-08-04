@@ -104,11 +104,17 @@ class SERVER_EXPORT QgsRequestHandler
     //! Return response body data
     QByteArray body() const;
 
+    //! Return request POST data (can be null)
+    QByteArray data() const;
+
+    //! Return request url
+    QString url() const;
+
     //! Set response http status code
     void setStatusCode( int code );
 
     //! Return response http status code
-    int statusCode( ) const;
+    int statusCode() const;
 
     /** Return the parsed parameters as a key-value pair, to modify
      * a parameter setParameter( const QString &key, const QString &value)

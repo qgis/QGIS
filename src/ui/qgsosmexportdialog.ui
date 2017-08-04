@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Export OpenStreetMap topology to SpatiaLite</string>
+   <string>Export OpenStreetMap Topology to SpatiaLite</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout_3">
    <item>
@@ -26,7 +26,7 @@
       <item>
        <widget class="QToolButton" name="btnBrowseDb">
         <property name="text">
-         <string>...</string>
+         <string>…</string>
         </property>
        </widget>
       </item>

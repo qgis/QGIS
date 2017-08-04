@@ -1,60 +1,118 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgsspatialindex.h                                           *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+
+
+
 
 class QgsSpatialIndex
 {
+
 %TypeHeaderCode
 #include "qgsspatialindex.h"
 %End
-
   public:
 
-    /* creation of spatial index */
 
-    /** Constructor - creates R-tree */
     QgsSpatialIndex();
+%Docstring
+Constructor - creates R-tree
+%End
 
-    /** Constructor - creates R-tree and bulk loads it with features from the iterator.
-     * This is much faster approach than creating an empty index and then inserting features one by one.
-     *
-     * @note added in 2.8
-     */
-    explicit QgsSpatialIndex( const QgsFeatureIterator &fi );
+    explicit QgsSpatialIndex( const QgsFeatureIterator &fi, QgsFeedback *feedback = 0 );
+%Docstring
+ Constructor - creates R-tree and bulk loads it with features from the iterator.
+ This is much faster approach than creating an empty index and then inserting features one by one.
 
-    /** Copy constructor */
+ The optional ``feedback`` object can be used to allow cancelation of bulk feature loading. Ownership
+ of ``feedback`` is not transferred, and callers must take care that the lifetime of feedback exceeds
+ that of the spatial index construction.
+
+.. versionadded:: 2.8
+%End
+
+    explicit QgsSpatialIndex( const QgsFeatureSource &source, QgsFeedback *feedback = 0 );
+%Docstring
+ Constructor - creates R-tree and bulk loads it with features from the source.
+ This is much faster approach than creating an empty index and then inserting features one by one.
+
+ The optional ``feedback`` object can be used to allow cancelation of bulk feature loading. Ownership
+ of ``feedback`` is not transferred, and callers must take care that the lifetime of feedback exceeds
+ that of the spatial index construction.
+
+
+.. versionadded:: 3.0
+%End
+
     QgsSpatialIndex( const QgsSpatialIndex &other );
+%Docstring
+Copy constructor
+%End
 
-    /** Destructor finalizes work with spatial index */
     ~QgsSpatialIndex();
+%Docstring
+Destructor finalizes work with spatial index
+%End
 
-    /** Implement assignment operator */
-    // QgsSpatialIndex &operator=( const QgsSpatialIndex &other );
 
-    /* operations */
 
-    /** Add feature to index */
     bool insertFeature( const QgsFeature &f );
+%Docstring
+Add feature to index
+ :rtype: bool
+%End
 
-    /** Remove feature from index */
+    bool insertFeature( QgsFeatureId id, const QgsRectangle &bounds );
+%Docstring
+ Add a feature ``id`` to the index with a specified bounding box.
+ :return: true if feature was successfully added to index.
+.. versionadded:: 3.0
+ :rtype: bool
+%End
+
     bool deleteFeature( const QgsFeature &f );
+%Docstring
+Remove feature from index
+ :rtype: bool
+%End
 
 
-    /* queries */
 
-    /** Returns features that intersect the specified rectangle */
-    QList<qint64> intersects( const QgsRectangle &rect ) const;
+    QList<QgsFeatureId> intersects( const QgsRectangle &rect ) const;
+%Docstring
+Returns features that intersect the specified rectangle
+ :rtype: list of QgsFeatureId
+%End
 
-    /** Returns nearest neighbors (their count is specified by second parameter) */
-    QList<qint64> nearestNeighbor( const QgsPoint &point, int neighbors ) const;
+    QList<QgsFeatureId> nearestNeighbor( const QgsPointXY &point, int neighbors ) const;
+%Docstring
+Returns nearest neighbors (their count is specified by second parameter)
+ :rtype: list of QgsFeatureId
+%End
 
-    /* debugging */
 
-    //! get reference count - just for debugging!
-    int refs() const;
-
-  protected:
-    // @note not available in python bindings
-    // static SpatialIndex::Region rectToRegion( const QgsRectangle &rect );
-    // @note not available in python bindings
-    // bool featureInfo( const QgsFeature &f, SpatialIndex::Region &r, QgsFeatureId &id );
-
+    int  refs() const;
+%Docstring
+get reference count - just for debugging!
+ :rtype: QAtomicInt
+%End
 
 };
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgsspatialindex.h                                           *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

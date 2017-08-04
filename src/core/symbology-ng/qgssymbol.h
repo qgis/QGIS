@@ -21,7 +21,7 @@
 #include <QList>
 #include <QMap>
 #include "qgsmapunitscale.h"
-#include "qgspointv2.h"
+#include "qgspoint.h"
 #include "qgsfeature.h"
 #include "qgsfields.h"
 #include "qgsrendercontext.h"
@@ -59,6 +59,19 @@ typedef QList<QgsSymbolLayer *> QgsSymbolLayerList;
  */
 class CORE_EXPORT QgsSymbol
 {
+
+#ifdef SIP_RUN
+    SIP_CONVERT_TO_SUBCLASS_CODE
+    switch ( sipCpp->type() )
+    {
+      case QgsSymbol::Marker: sipType = sipType_QgsMarkerSymbol; break;
+      case QgsSymbol::Line: sipType = sipType_QgsLineSymbol; break;
+      case QgsSymbol::Fill: sipType = sipType_QgsFillSymbol; break;
+      default: sipType = 0; break;
+    }
+    SIP_END
+#endif
+
     friend class QgsFeatureRenderer;
 
   public:
@@ -123,7 +136,7 @@ class CORE_EXPORT QgsSymbol
      * \see symbolLayers
      * \see symbolLayer
      */
-    int symbolLayerCount() { return mLayers.count(); }
+    int symbolLayerCount() const { return mLayers.count(); }
 
     /**
      * Insert symbol layer to specified index
@@ -225,10 +238,19 @@ class CORE_EXPORT QgsSymbol
     QgsMapUnitScale mapUnitScale() const;
     void setMapUnitScale( const QgsMapUnitScale &scale );
 
-    //! Get alpha transparency 1 for opaque, 0 for invisible
-    qreal alpha() const { return mAlpha; }
-    //! Set alpha transparency 1 for opaque, 0 for invisible
-    void setAlpha( qreal alpha ) { mAlpha = alpha; }
+    /**
+     * Returns the opacity for the symbol.
+     * \returns opacity value between 0 (fully transparent) and 1 (fully opaque)
+     * \see setOpacity()
+     */
+    qreal opacity() const { return mOpacity; }
+
+    /**
+     * Sets the \a opacity for the symbol.
+     * \param opacity opacity value between 0 (fully transparent) and 1 (fully opaque)
+     * \see opacity()
+     */
+    void setOpacity( qreal opacity ) { mOpacity = opacity; }
 
     /** Sets rendering hint flags for the symbol.
      * \see renderHints()
@@ -293,9 +315,9 @@ class CORE_EXPORT QgsSymbol
     QgsSymbol( SymbolType type, const QgsSymbolLayerList &layers SIP_TRANSFER ); // can't be instantiated
 
     /**
-     * Creates a point in screen coordinates from a QgsPointV2 in map coordinates
+     * Creates a point in screen coordinates from a QgsPoint in map coordinates
      */
-    static inline QPointF _getPoint( QgsRenderContext &context, const QgsPointV2 &point )
+    static inline QPointF _getPoint( QgsRenderContext &context, const QgsPoint &point )
     {
       QPointF pt;
       if ( context.coordinateTransform().isValid() )
@@ -354,7 +376,7 @@ class CORE_EXPORT QgsSymbol
     QgsSymbolLayerList mLayers;
 
     //! Symbol opacity (in the range 0 - 1)
-    qreal mAlpha;
+    qreal mOpacity = 1.0;
 
     RenderHints mRenderHints;
     bool mClipFeaturesToExtent;
@@ -362,6 +384,14 @@ class CORE_EXPORT QgsSymbol
     const QgsVectorLayer *mLayer; //current vectorlayer
 
   private:
+#ifdef SIP_RUN
+    QgsSymbol( const QgsSymbol & );
+#endif
+
+    //! True if render has already been started - guards against multiple calls to
+    //! startRender() (usually a result of not cloning a shared symbol instance before rendering).
+    bool mStarted = false;
+
     //! Initialized in startRender, destroyed in stopRender
     std::unique_ptr< QgsSymbolRenderContext > mSymbolRenderContext;
 
@@ -383,17 +413,17 @@ class CORE_EXPORT QgsSymbolRenderContext
     /** Constructor for QgsSymbolRenderContext
      * \param c
      * \param u
-     * \param alpha
+     * \param opacity value between 0 (fully transparent) and 1 (fully opaque)
      * \param selected set to true if symbol should be drawn in a "selected" state
      * \param renderHints flags controlling rendering behavior
      * \param f
      * \param fields
      * \param mapUnitScale
      */
-    QgsSymbolRenderContext( QgsRenderContext &c, QgsUnitTypes::RenderUnit u, qreal alpha = 1.0, bool selected = false, QgsSymbol::RenderHints renderHints = 0, const QgsFeature *f = nullptr, const QgsFields &fields = QgsFields(), const QgsMapUnitScale &mapUnitScale = QgsMapUnitScale() );
+    QgsSymbolRenderContext( QgsRenderContext &c, QgsUnitTypes::RenderUnit u, qreal opacity = 1.0, bool selected = false, QgsSymbol::RenderHints renderHints = 0, const QgsFeature *f = nullptr, const QgsFields &fields = QgsFields(), const QgsMapUnitScale &mapUnitScale = QgsMapUnitScale() );
 
     QgsRenderContext &renderContext() { return mRenderContext; }
-    const QgsRenderContext &renderContext() const { return mRenderContext; }
+    const QgsRenderContext &renderContext() const { return mRenderContext; } SIP_SKIP
 
     /** Sets the original value variable value for data defined symbology
      * \param value value for original value variable. This usually represents the symbol property value
@@ -411,10 +441,19 @@ class CORE_EXPORT QgsSymbolRenderContext
     QgsMapUnitScale mapUnitScale() const { return mMapUnitScale; }
     void setMapUnitScale( const QgsMapUnitScale &scale ) { mMapUnitScale = scale; }
 
-    //! Get alpha transparency 1 for opaque, 0 for invisible
-    qreal alpha() const { return mAlpha; }
-    //! Set alpha transparency 1 for opaque, 0 for invisible
-    void setAlpha( qreal alpha ) { mAlpha = alpha; }
+    /**
+     * Returns the opacity for the symbol.
+     * \returns opacity value between 0 (fully transparent) and 1 (fully opaque)
+     * \see setOpacity()
+     */
+    qreal opacity() const { return mOpacity; }
+
+    /**
+     * Sets the \a opacity for the symbol.
+     * \param opacity opacity value between 0 (fully transparent) and 1 (fully opaque)
+     * \see opacity()
+     */
+    void setOpacity( qreal opacity ) { mOpacity = opacity; }
 
     bool selected() const { return mSelected; }
     void setSelected( bool selected ) { mSelected = selected; }
@@ -499,11 +538,13 @@ class CORE_EXPORT QgsSymbolRenderContext
     void setExpressionContextScope( QgsExpressionContextScope *contextScope SIP_TRANSFER );
 
   private:
+    QgsSymbolRenderContext( const QgsSymbolRenderContext &rh ) SIP_FORCE;
+
     QgsRenderContext &mRenderContext;
     std::unique_ptr< QgsExpressionContextScope > mExpressionContextScope;
     QgsUnitTypes::RenderUnit mOutputUnit;
     QgsMapUnitScale mMapUnitScale;
-    qreal mAlpha;
+    qreal mOpacity = 1.0;
     bool mSelected;
     QgsSymbol::RenderHints mRenderHints;
     const QgsFeature *mFeature; //current feature
@@ -511,9 +552,6 @@ class CORE_EXPORT QgsSymbolRenderContext
     int mGeometryPartCount;
     int mGeometryPartNum;
     QgsWkbTypes::GeometryType mOriginalGeometryType = QgsWkbTypes::UnknownGeometry;
-
-
-    QgsSymbolRenderContext( const QgsSymbolRenderContext &rh );
 };
 
 
@@ -657,7 +695,7 @@ class CORE_EXPORT QgsMarkerSymbol : public QgsSymbol
     */
     QRectF bounds( QPointF point, QgsRenderContext &context, const QgsFeature &feature = QgsFeature() ) const;
 
-    virtual QgsMarkerSymbol *clone() const override;
+    virtual QgsMarkerSymbol *clone() const override SIP_FACTORY;
 
   private:
 
@@ -699,7 +737,7 @@ class CORE_EXPORT QgsLineSymbol : public QgsSymbol
 
     void renderPolyline( const QPolygonF &points, const QgsFeature *f, QgsRenderContext &context, int layer = -1, bool selected = false );
 
-    virtual QgsLineSymbol *clone() const override;
+    virtual QgsLineSymbol *clone() const override SIP_FACTORY;
 
   private:
 
@@ -724,7 +762,7 @@ class CORE_EXPORT QgsFillSymbol : public QgsSymbol
     void setAngle( double angle );
     void renderPolygon( const QPolygonF &points, QList<QPolygonF> *rings, const QgsFeature *f, QgsRenderContext &context, int layer = -1, bool selected = false );
 
-    virtual QgsFillSymbol *clone() const override;
+    virtual QgsFillSymbol *clone() const override SIP_FACTORY;
 
   private:
 

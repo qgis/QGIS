@@ -1,114 +1,207 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgssnappingutils.h                                          *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
 
 class QgsSnappingUtils : QObject
 {
-%TypeHeaderCode
-#include <qgssnappingutils.h>
+%Docstring
+ This class has all the configuration of snapping and can return answers to snapping queries.
+ Internally, it keeps a cache of QgsPointLocator instances for multiple layers.
+
+ Currently it supports the following queries:
+ - snapToMap() - has multiple modes of operation
+ - snapToCurrentLayer()
+ For more complex queries it is possible to use locatorForLayer() method that returns
+ point locator instance with layer's indexed data.
+
+ Indexing strategy determines how fast the queries will be and how much memory will be used.
+
+ When working with map canvas, it may be useful to use derived class QgsMapCanvasSnappingUtils
+ which keeps the configuration in sync with map canvas (e.g. current view, active layer).
+
+.. versionadded:: 2.8
 %End
 
+%TypeHeaderCode
+#include "qgssnappingutils.h"
+%End
   public:
     QgsSnappingUtils( QObject *parent /TransferThis/ = 0 );
     ~QgsSnappingUtils();
 
-    // main actions
 
-    /** Get a point locator for the given layer. If such locator does not exist, it will be created */
     QgsPointLocator *locatorForLayer( QgsVectorLayer *vl );
+%Docstring
+Get a point locator for the given layer. If such locator does not exist, it will be created
+ :rtype: QgsPointLocator
+%End
 
-    /** Snap to map according to the current configuration (mode). Optional filter allows discarding unwanted matches. */
     QgsPointLocator::Match snapToMap( QPoint point, QgsPointLocator::MatchFilter *filter = 0 );
-    QgsPointLocator::Match snapToMap( const QgsPoint &pointMap, QgsPointLocator::MatchFilter *filter = 0 );
+%Docstring
+Snap to map according to the current configuration. Optional filter allows discarding unwanted matches.
+ :rtype: QgsPointLocator.Match
+%End
+    QgsPointLocator::Match snapToMap( const QgsPointXY &pointMap, QgsPointLocator::MatchFilter *filter = 0 );
+%Docstring
+ :rtype: QgsPointLocator.Match
+%End
 
-    /** Snap to current layer */
     QgsPointLocator::Match snapToCurrentLayer( QPoint point, int type, QgsPointLocator::MatchFilter *filter = 0 );
+%Docstring
+Snap to current layer
+ :rtype: QgsPointLocator.Match
+%End
 
-    // environment setup
 
-    /** Assign current map settings to the utils - used for conversion between screen coords to map coords */
     void setMapSettings( const QgsMapSettings &settings );
+%Docstring
+Assign current map settings to the utils - used for conversion between screen coords to map coords
+%End
     QgsMapSettings mapSettings() const;
+%Docstring
+ :rtype: QgsMapSettings
+%End
 
-    /** Set current layer so that if mode is SnapCurrentLayer we know which layer to use */
     void setCurrentLayer( QgsVectorLayer *layer );
-    /** The current layer used if mode is SnapCurrentLayer */
+%Docstring
+Set current layer so that if mode is SnapCurrentLayer we know which layer to use
+%End
     QgsVectorLayer *currentLayer() const;
+%Docstring
+The current layer used if mode is SnapCurrentLayer
+ :rtype: QgsVectorLayer
+%End
 
-
-    // configuration
-
-    //! modes for "snap to background"
-    enum SnapToMapMode
-    {
-      SnapCurrentLayer,    //!< snap just to current layer (tolerance and type from defaultSettings())
-      SnapAllLayers,       //!< snap to all rendered layers (tolerance and type from defaultSettings())
-      SnapAdvanced,        //!< snap according to the configuration set in setLayers()
-    };
 
     enum IndexingStrategy
     {
-      IndexAlwaysFull,    //!< For all layers build index of full extent. Uses more memory, but queries are faster.
-      IndexNeverFull,     //!< For all layers only create temporary indexes of small extent. Low memory usage, slower queries.
-      IndexHybrid,        //!< For "big" layers using IndexNeverFull, for the rest IndexAlwaysFull. Compromise between speed and memory usage.
-      IndexExtent         //!< For all layer build index of extent given in map settings
+      IndexAlwaysFull,
+      IndexNeverFull,
+      IndexHybrid,
+      IndexExtent
     };
 
-    /** Set a strategy for indexing geometry data - determines how fast and memory consuming the data structures will be */
     void setIndexingStrategy( IndexingStrategy strategy );
-    /** Find out which strategy is used for indexing - by default hybrid indexing is used */
+%Docstring
+Set a strategy for indexing geometry data - determines how fast and memory consuming the data structures will be
+%End
     IndexingStrategy indexingStrategy() const;
+%Docstring
+Find out which strategy is used for indexing - by default hybrid indexing is used
+ :rtype: IndexingStrategy
+%End
 
-    /**
-     * Configures how a certain layer should be handled in a snapping operation
-     */
     struct LayerConfig
     {
+
       LayerConfig( QgsVectorLayer *l, QgsPointLocator::Types t, double tol, QgsTolerance::UnitType u );
+%Docstring
+ Create a new configuration for a snapping layer.
+
+```py
+snapper = QgsMapCanvasSnappingUtils(mapCanvas)
+
+snapping_layer1 = QgsSnappingUtils.LayerConfig(layer1, QgsPointLocator.Vertex, 10, QgsTolerance.Pixels)
+snapping_layer2 = QgsSnappingUtils.LayerConfig(layer2, QgsPointLocator.Vertex and QgsPointLocator.Edge, 10, QgsTolerance.Pixels)
+
+snapper.setLayers([snapping_layer1, snapping_layer2])
+```
+
+ \param l   The vector layer for which this configuration is
+ \param t   Which parts of the geometry should be snappable
+ \param tol The tolerance radius in which the snapping will trigger
+ \param u   The unit in which the tolerance is specified
+%End
 
       bool operator==( const QgsSnappingUtils::LayerConfig &other ) const;
       bool operator!=( const QgsSnappingUtils::LayerConfig &other ) const;
+%Docstring
+ :rtype: bool
+%End
 
-      //! The layer to configure.
       QgsVectorLayer *layer;
-      //! To which geometry properties of this layers a snapping should happen.
+%Docstring
+The layer to configure.
+%End
       QgsPointLocator::Types type;
-      //! The range around snapping targets in which snapping should occur.
+%Docstring
+To which geometry properties of this layers a snapping should happen.
+%End
       double tolerance;
-      //! The units in which the tolerance is specified.
+%Docstring
+The range around snapping targets in which snapping should occur.
+%End
       QgsTolerance::UnitType unit;
+%Docstring
+The units in which the tolerance is specified.
+%End
     };
 
-    /** Query layers used for snapping */
     QList<QgsSnappingUtils::LayerConfig> layers() const;
+%Docstring
+Query layers used for snapping
+ :rtype: list of QgsSnappingUtils.LayerConfig
+%End
 
-    /** Get extra information about the instance
-     * @note added in QGIS 2.14
-     */
     QString dump();
+%Docstring
+ Get extra information about the instance
+.. versionadded:: 2.14
+ :rtype: str
+%End
 
-    /**
-     * The snapping configuration controls the behavior of this object
-     */
     QgsSnappingConfig config() const;
+%Docstring
+ The snapping configuration controls the behavior of this object
+ :rtype: QgsSnappingConfig
+%End
 
   public slots:
-    /**
-     * The snapping configuration controls the behavior of this object
-     */
-    void setConfig( const QgsSnappingConfig &snappingConfig );
 
-    /**
-     * Toggles the state of snapping
-     */
+    void setConfig( const QgsSnappingConfig &snappingConfig );
+%Docstring
+ The snapping configuration controls the behavior of this object
+%End
+
     void toggleEnabled();
+%Docstring
+ Toggles the state of snapping
+
+.. versionadded:: 3.0
+%End
 
   signals:
-    /**
-     * Emitted when the snapping settings object changes.
-     */
+
     void configChanged( const QgsSnappingConfig &snappingConfig );
+%Docstring
+ Emitted when the snapping settings object changes.
+%End
 
   protected:
-    //! Called when starting to index - can be overridden and e.g. progress dialog can be provided
     virtual void prepareIndexStarting( int count );
-    //! Called when finished indexing a layer. When index == count the indexing is complete
+%Docstring
+Called when starting to index - can be overridden and e.g. progress dialog can be provided
+%End
     virtual void prepareIndexProgress( int index );
+%Docstring
+Called when finished indexing a layer. When index == count the indexing is complete
+%End
+
 };
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgssnappingutils.h                                          *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

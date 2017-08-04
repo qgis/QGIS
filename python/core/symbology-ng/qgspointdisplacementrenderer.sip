@@ -1,107 +1,150 @@
-/** \class QgsPointDisplacementRenderer
- * \ingroup core
- * A renderer that automatically displaces points with the same geographic location.
-*/
-class QgsPointDisplacementRenderer : QgsPointDistanceRenderer
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/symbology-ng/qgspointdisplacementrenderer.h                 *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+class QgsPointDisplacementRenderer: QgsPointDistanceRenderer
 {
+%Docstring
+ A renderer that automatically displaces points with the same geographic location.
+%End
+
 %TypeHeaderCode
-#include <qgspointdisplacementrenderer.h>
+#include "qgspointdisplacementrenderer.h"
 %End
   public:
 
-    /** Placement methods for dispersing points
-     */
     enum Placement
     {
-      Ring, /*!< Place points in a single ring around group*/
-      ConcentricRings /*!< Place points in concentric rings around group*/
+      Ring,
+      ConcentricRings
     };
 
-    /** Constructor for QgsPointDisplacementRenderer.
-     * @param labelAttributeName optional attribute name for labeling points
-     */
     QgsPointDisplacementRenderer( const QString &labelAttributeName = QString() );
+%Docstring
+ Constructor for QgsPointDisplacementRenderer.
+ \param labelAttributeName optional attribute name for labeling points
+%End
 
     virtual QgsPointDisplacementRenderer *clone() const /Factory/;
+
     virtual void startRender( QgsRenderContext &context, const QgsFields &fields );
-    void stopRender( QgsRenderContext &context );
-    QDomElement save( QDomDocument &doc );
+    virtual void stopRender( QgsRenderContext &context );
+
+    virtual QDomElement save( QDomDocument &doc, const QgsReadWriteContext &context );
+
     virtual QSet<QString> usedAttributes( const QgsRenderContext &context ) const;
 
-    //! Create a renderer from XML element
-    static QgsFeatureRenderer *create( QDomElement &symbologyElem ) /Factory/;
+    static QgsFeatureRenderer *create( QDomElement &symbologyElem, const QgsReadWriteContext &context ) /Factory/;
+%Docstring
+Create a renderer from XML element
+ :rtype: QgsFeatureRenderer
+%End
 
-    /** Sets the line width for the displacement group circle.
-     * @param width line width in mm
-     * @see circleWidth()
-     * @see setCircleColor()
-     */
     void setCircleWidth( double width );
+%Docstring
+ Sets the line width for the displacement group circle.
+ \param width line width in mm
+.. seealso:: circleWidth()
+.. seealso:: setCircleColor()
+%End
 
-    /** Returns the line width for the displacement group circle in mm.
-     * @see setCircleWidth()
-     * @see circleColor()
-     */
     double circleWidth() const;
+%Docstring
+ Returns the line width for the displacement group circle in mm.
+.. seealso:: setCircleWidth()
+.. seealso:: circleColor()
+ :rtype: float
+%End
 
-    /** Sets the color used for drawing the displacement group circle.
-     * @param color circle color
-     * @see circleColor()
-     * @see setCircleWidth()
-     */
     void setCircleColor( const QColor &color );
+%Docstring
+ Sets the color used for drawing the displacement group circle.
+ \param color circle color
+.. seealso:: circleColor()
+.. seealso:: setCircleWidth()
+%End
 
-    /** Returns the color used for drawing the displacement group circle.
-     * @see setCircleColor()
-     * @see circleWidth()
-     */
     QColor circleColor() const;
+%Docstring
+ Returns the color used for drawing the displacement group circle.
+.. seealso:: setCircleColor()
+.. seealso:: circleWidth()
+ :rtype: QColor
+%End
 
-    /** Sets a factor for increasing the ring size of displacement groups.
-     * @param distance addition factor
-     * @see circleRadiusAddition()
-     */
     void setCircleRadiusAddition( double distance );
+%Docstring
+ Sets a factor for increasing the ring size of displacement groups.
+ \param distance addition factor
+.. seealso:: circleRadiusAddition()
+%End
 
-    /** Returns the factor for increasing the ring size of displacement groups.
-     * @see setCircleRadiusAddition()
-     */
     double circleRadiusAddition() const;
+%Docstring
+ Returns the factor for increasing the ring size of displacement groups.
+.. seealso:: setCircleRadiusAddition()
+ :rtype: float
+%End
 
-    /** Returns the placement method used for dispersing the points.
-     * @see setPlacement()
-     * @note added in QGIS 2.12
-     */
     Placement placement() const;
+%Docstring
+ Returns the placement method used for dispersing the points.
+.. seealso:: setPlacement()
+.. versionadded:: 2.12
+ :rtype: Placement
+%End
 
-    /** Sets the placement method used for dispersing the points.
-     * @param placement placement method
-     * @see placement()
-     * @note added in QGIS 2.12
-     */
     void setPlacement( Placement placement );
+%Docstring
+ Sets the placement method used for dispersing the points.
+ \param placement placement method
+.. seealso:: placement()
+.. versionadded:: 2.12
+%End
 
-    /** Returns the symbol for the center of a displacement group (but not ownership of the symbol).
-     * @see setCenterSymbol()
-    */
     QgsMarkerSymbol *centerSymbol();
+%Docstring
+ Returns the symbol for the center of a displacement group (but not ownership of the symbol).
+.. seealso:: setCenterSymbol()
+ :rtype: QgsMarkerSymbol
+%End
 
-    /** Sets the center symbol for a displacement group.
-     * @param symbol new center symbol. Ownership is transferred to the renderer.
-     * @see centerSymbol()
-    */
     void setCenterSymbol( QgsMarkerSymbol *symbol /Transfer/ );
+%Docstring
+ Sets the center symbol for a displacement group.
+ \param symbol new center symbol. Ownership is transferred to the renderer.
+.. seealso:: centerSymbol()
+%End
 
-    /** Creates a QgsPointDisplacementRenderer from an existing renderer.
-     * @note added in 2.5
-     * @returns a new renderer if the conversion was possible, otherwise nullptr.
-     */
     static QgsPointDisplacementRenderer *convertFromRenderer( const QgsFeatureRenderer *renderer ) /Factory/;
+%Docstring
+ Creates a QgsPointDisplacementRenderer from an existing renderer.
+.. versionadded:: 2.5
+ :return: a new renderer if the conversion was possible, otherwise None.
+ :rtype: QgsPointDisplacementRenderer
+%End
 
   private:
     QgsPointDisplacementRenderer( const QgsPointDisplacementRenderer & );
     QgsPointDisplacementRenderer &operator=( const QgsPointDisplacementRenderer & );
-
-    void drawGroup( QPointF centerPoint, QgsRenderContext &context, const QgsPointDistanceRenderer::ClusteredGroup &group );
-
+%Docstring
+ :rtype: QgsPointDisplacementRenderer
+%End
+  private:
+    virtual void drawGroup( QPointF centerPoint, QgsRenderContext &context, const QgsPointDistanceRenderer::ClusteredGroup &group ) ;
 };
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/symbology-ng/qgspointdisplacementrenderer.h                 *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

@@ -24,7 +24,7 @@
 #include "qgscoordinatereferencesystem.h"
 
 class QgsCoordinateTransformPrivate;
-class QgsPoint;
+class QgsPointXY;
 class QgsRectangle;
 class QPolygonF;
 
@@ -120,7 +120,7 @@ class CORE_EXPORT QgsCoordinateTransform
      * \param direction transform direction (defaults to ForwardTransform)
      * \returns transformed point
      */
-    QgsPoint transform( const QgsPoint &point, TransformDirection direction = ForwardTransform ) const;
+    QgsPointXY transform( const QgsPointXY &point, TransformDirection direction = ForwardTransform ) const;
 
     /** Transform the point specified by x,y from the source CRS to the destination CRS.
      * If the direction is ForwardTransform then coordinates are transformed from source to destination,
@@ -130,7 +130,7 @@ class CORE_EXPORT QgsCoordinateTransform
      * \param direction transform direction (defaults to ForwardTransform)
      * \returns transformed point
      */
-    QgsPoint transform( const double x, const double y, TransformDirection direction = ForwardTransform ) const;
+    QgsPointXY transform( const double x, const double y, TransformDirection direction = ForwardTransform ) const;
 
     /** Transforms a rectangle from the source CRS to the destination CRS.
      * If the direction is ForwardTransform then coordinates are transformed from source to destination,
@@ -280,7 +280,7 @@ class CORE_EXPORT QgsCoordinateTransform
 
     static void searchDatumTransform( const QString &sql, QList< int > &transforms );
 
-    QExplicitlySharedDataPointer<QgsCoordinateTransformPrivate> d;
+    mutable QExplicitlySharedDataPointer<QgsCoordinateTransformPrivate> d;
 };
 
 //! Output stream operator

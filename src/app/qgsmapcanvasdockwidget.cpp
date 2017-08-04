@@ -14,7 +14,7 @@
  ***************************************************************************/
 #include "qgsmapcanvasdockwidget.h"
 #include "qgsmapcanvas.h"
-#include "qgscsexception.h"
+#include "qgsexception.h"
 #include "qgsprojectionselectiondialog.h"
 #include "qgsscalecombobox.h"
 #include "qgsdoublespinbox.h"
@@ -133,7 +133,7 @@ QgsMapCanvasDockWidget::QgsMapCanvasDockWidget( const QString &name, QWidget *pa
     if ( !mBlockScaleUpdate )
     {
       mBlockScaleUpdate = true;
-      mMapCanvas->zoomScale( 1.0 / scale );
+      mMapCanvas->zoomScale( scale );
       mBlockScaleUpdate = false;
     }
   } );
@@ -142,7 +142,7 @@ QgsMapCanvasDockWidget::QgsMapCanvasDockWidget( const QString &name, QWidget *pa
     if ( !mBlockScaleUpdate )
     {
       mBlockScaleUpdate = true;
-      mScaleCombo->setScale( 1.0 / scale );
+      mScaleCombo->setScale( scale );
       mBlockScaleUpdate = false;
     }
   } );
@@ -402,7 +402,7 @@ void QgsMapCanvasDockWidget::settingsMenuAboutToShow()
   whileBlocking( mActionShowAnnotations )->setChecked( mMapCanvas->annotationsVisible() );
 }
 
-void QgsMapCanvasDockWidget::syncMarker( const QgsPoint &p )
+void QgsMapCanvasDockWidget::syncMarker( const QgsPointXY &p )
 {
   if ( !mXyMarker->isVisible() )
     return;
@@ -410,7 +410,7 @@ void QgsMapCanvasDockWidget::syncMarker( const QgsPoint &p )
   // reproject point
   QgsCoordinateTransform ct( mMainCanvas->mapSettings().destinationCrs(),
                              mMapCanvas->mapSettings().destinationCrs() );
-  QgsPoint t = p;
+  QgsPointXY t = p;
   try
   {
     t = ct.transform( p );
@@ -497,8 +497,8 @@ QgsMapSettingsAction::QgsMapSettingsAction( QWidget *parent )
   gLayout->addWidget( mRotationWidget, 1, 1 );
 
   QgsSettings settings;
-  int minimumFactor = 100 * QgisGui::CANVAS_MAGNIFICATION_MIN;
-  int maximumFactor = 100 * QgisGui::CANVAS_MAGNIFICATION_MAX;
+  int minimumFactor = 100 * QgsGuiUtils::CANVAS_MAGNIFICATION_MIN;
+  int maximumFactor = 100 * QgsGuiUtils::CANVAS_MAGNIFICATION_MAX;
   int defaultFactor = 100 * settings.value( QStringLiteral( "/qgis/magnifier_factor_default" ), 1.0 ).toDouble();
 
   mMagnifierWidget = new QgsDoubleSpinBox();

@@ -1,52 +1,87 @@
-/** Item representing a grid. This is drawn separately to the underlying paper item since the grid needs to be
- * drawn above all other composer items, while the paper item is drawn below all others.*/
-class QgsPaperGrid : QGraphicsRectItem
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/composer/qgspaperitem.h                                     *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+class QgsPaperGrid: QGraphicsRectItem
 {
+%Docstring
+ Item representing a grid. This is drawn separately to the underlying paper item since the grid needs to be
+ drawn above all other composer items, while the paper item is drawn below all others.
+%End
+
 %TypeHeaderCode
-#include <qgspaperitem.h>
+#include "qgspaperitem.h"
 %End
   public:
     QgsPaperGrid( double x, double y, double width, double height, QgsComposition *composition );
-    ~QgsPaperGrid();
 
-    /** \brief Reimplementation of QCanvasItem::paint*/
-    void paint( QPainter *painter, const QStyleOptionGraphicsItem *itemStyle, QWidget *pWidget );
+    virtual void paint( QPainter *painter, const QStyleOptionGraphicsItem *itemStyle, QWidget *pWidget );
+
+%Docstring
+ Reimplementation of QCanvasItem.paint
+%End
 
 };
 
-/** Item representing the paper.*/
 class QgsPaperItem : QgsComposerItem
 {
+%Docstring
+ Item representing the paper.*
+%End
+
 %TypeHeaderCode
-#include <qgspaperitem.h>
+#include "qgspaperitem.h"
 %End
   public:
     QgsPaperItem( QgsComposition *c /TransferThis/ );
     QgsPaperItem( qreal x, qreal y, qreal width, qreal height, QgsComposition *composition /TransferThis/ );
     ~QgsPaperItem();
 
-    /** Return correct graphics item type. */
     virtual int type() const;
+%Docstring
+Return correct graphics item type.
+ :rtype: int
+%End
 
-    /** \brief Reimplementation of QCanvasItem::paint*/
-    void paint( QPainter *painter, const QStyleOptionGraphicsItem *itemStyle, QWidget *pWidget );
+    virtual void paint( QPainter *painter, const QStyleOptionGraphicsItem *itemStyle, QWidget *pWidget );
 
-    /** Stores state in Dom element
-       * @param elem is Dom element corresponding to 'Composer' tag
-       * @param doc Dom document
-       */
-    bool writeXml( QDomElement &elem, QDomDocument &doc ) const;
+%Docstring
+ Reimplementation of QCanvasItem.paint
+%End
 
-    /** Sets state from Dom document
-     * @param itemElem is Dom node corresponding to item tag
-     * @param doc is the Dom document
-     */
-    bool readXml( const QDomElement &itemElem, const QDomDocument &doc );
+    virtual bool writeXml( QDomElement &elem, QDomDocument &doc ) const;
+
+%Docstring
+ Stores state in Dom element
+ \param elem is Dom element corresponding to 'Composer' tag
+ \param doc Dom document
+ :rtype: bool
+%End
+
+    virtual bool readXml( const QDomElement &itemElem, const QDomDocument &doc );
+
+%Docstring
+ Sets state from Dom document
+ \param itemElem is Dom node corresponding to item tag
+ \param doc is the Dom document
+ :rtype: bool
+%End
 
     virtual void setSceneRect( const QRectF &rectangle );
 
-  private:
-    QgsPaperItem();
-    /** Set flags and z-value*/
-    void initialize();
 };
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/composer/qgspaperitem.h                                     *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

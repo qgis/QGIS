@@ -40,6 +40,7 @@ from qgis.core import (QgsExpressionContextUtils,
                        QgsMapLayerProxyModel,
                        QgsMessageLog)
 from qgis.gui import QgsEncodingFileDialog
+from qgis.utils import OverrideCursor
 
 from processing.core.ProcessingConfig import ProcessingConfig
 from processing.core.ProcessingLog import ProcessingLog
@@ -53,6 +54,7 @@ WIDGET, BASE = uic.loadUiType(
 
 
 class FieldCalculatorFeedback(QgsProcessingFeedback):
+
     """
     Directs algorithm feedback to an algorithm dialog
     """
@@ -116,10 +118,8 @@ class FieldsCalculatorDialog(BASE, WIDGET):
 
     def updateLayer(self, layer):
         self.layer = layer
-
-        self.initContext()
         self.builder.setLayer(self.layer)
-        self.builder.loadFieldNames()
+        self.initContext()
         self.populateFields()
 
     def setupSpinboxes(self, index):
@@ -192,7 +192,7 @@ class FieldsCalculatorDialog(BASE, WIDGET):
         for f in fields:
             self.mExistingFieldComboBox.addItem(f.name())
 
-    def setParamValues(self):
+    def getParamValues(self):
         if self.mUpdateExistingGroupBox.isChecked():
             fieldName = self.mExistingFieldComboBox.currentText()
         else:
@@ -200,35 +200,34 @@ class FieldsCalculatorDialog(BASE, WIDGET):
 
         layer = self.cmbInputLayer.currentLayer()
 
-        self.alg.setParameterValue('INPUT_LAYER', layer)
-        self.alg.setParameterValue('FIELD_NAME', fieldName)
-        self.alg.setParameterValue('FIELD_TYPE',
-                                   self.mOutputFieldTypeComboBox.currentIndex())
-        self.alg.setParameterValue('FIELD_LENGTH',
-                                   self.mOutputFieldWidthSpinBox.value())
-        self.alg.setParameterValue('FIELD_PRECISION',
-                                   self.mOutputFieldPrecisionSpinBox.value())
-        self.alg.setParameterValue('NEW_FIELD',
-                                   self.mNewFieldGroupBox.isChecked())
-        self.alg.setParameterValue('FORMULA', self.builder.expressionText())
-        self.alg.setOutputValue('OUTPUT_LAYER', self.leOutputFile.text().strip() or None)
+        parameters = {}
+        parameters['INPUT_LAYER'] = layer
+        parameters['FIELD_NAME'] = fieldName
+        parameters['FIELD_TYPE'] = self.mOutputFieldTypeComboBox.currentIndex()
+        parameters['FIELD_LENGTH'] = self.mOutputFieldWidthSpinBox.value()
+        parameters['FIELD_PRECISION'] = self.mOutputFieldPrecisionSpinBox.value()
+        parameters['NEW_FIELD'] = self.mNewFieldGroupBox.isChecked()
+        parameters['FORMULA'] = self.builder.expressionText()
+        parameters['OUTPUT_LAYER'] = self.leOutputFile.text().strip() or None
 
-        msg = self.alg.checkParameterValuesBeforeExecuting()
-        if msg:
+        context = dataobjects.createContext()
+
+        ok, msg = self.alg.checkParameterValues(parameters, context)
+        if not ok:
             QMessageBox.warning(
                 self, self.tr('Unable to execute algorithm'), msg)
-            return False
-        return True
+            return {}
+        return parameters
 
     def accept(self):
         keepOpen = ProcessingConfig.getSetting(ProcessingConfig.KEEP_DIALOG_OPEN)
-        try:
-            if self.setParamValues():
-                QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
-                ProcessingLog.addToLog(self.alg.getAsCommand())
-
+        parameters = self.getParamValues()
+        if parameters:
+            with OverrideCursor(Qt.WaitCursor):
                 context = dataobjects.createContext()
-                self.executed = execute(self.alg, context, self.feedback)
+                ProcessingLog.addToLog(self.alg.asPythonCommand(parameters, context))
+
+                self.executed, results = execute(self.alg, parameters, context, self.feedback)
                 if self.executed:
                     handleAlgorithmResults(self.alg,
                                            context,
@@ -236,8 +235,6 @@ class FieldsCalculatorDialog(BASE, WIDGET):
                                            not keepOpen)
                 if not keepOpen:
                     QDialog.reject(self)
-        finally:
-            QApplication.restoreOverrideCursor()
 
     def reject(self):
         self.executed = False

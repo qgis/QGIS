@@ -19,6 +19,9 @@
 #ifndef QGSFCGISERVERRESPONSE_H
 #define QGSFCGISERVERRESPONSE_H
 
+#define SIP_NO_FILE
+
+
 #include "qgsserverrequest.h"
 #include "qgsserverresponse.h"
 
@@ -48,7 +51,7 @@ class SERVER_EXPORT QgsFcgiServerResponse: public QgsServerResponse
 
     void setStatusCode( int code ) override;
 
-    int statusCode( ) const override { return mStatusCode; }
+    int statusCode() const override { return mStatusCode; }
 
     void sendError( int code,  const QString &message ) override;
 

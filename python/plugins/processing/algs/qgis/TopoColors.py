@@ -33,15 +33,16 @@ from collections import defaultdict
 
 from qgis.core import (QgsApplication,
                        QgsField,
+                       QgsFeatureSink,
                        QgsGeometry,
                        QgsSpatialIndex,
-                       QgsPointV2,
+                       QgsPointXY,
                        NULL,
                        QgsProcessingUtils)
 
 from qgis.PyQt.QtCore import (QVariant)
 
-from processing.core.GeoAlgorithm import GeoAlgorithm
+from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 from processing.core.parameters import (ParameterVector,
                                         ParameterSelection,
                                         ParameterNumber)
@@ -51,18 +52,12 @@ from processing.tools import dataobjects
 pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
 
-class TopoColor(GeoAlgorithm):
+class TopoColor(QgisAlgorithm):
     INPUT_LAYER = 'INPUT_LAYER'
     MIN_COLORS = 'MIN_COLORS'
     MIN_DISTANCE = 'MIN_DISTANCE'
     BALANCE = 'BALANCE'
     OUTPUT_LAYER = 'OUTPUT_LAYER'
-
-    def icon(self):
-        return QgsApplication.getThemeIcon("/providerQgis.svg")
-
-    def svgIconPath(self):
-        return QgsApplication.iconPath("providerQgis.svg")
 
     def tags(self):
         return self.tr('topocolor,colors,graph,adjacent,assign').split(',')
@@ -70,13 +65,10 @@ class TopoColor(GeoAlgorithm):
     def group(self):
         return self.tr('Cartographic tools')
 
-    def name(self):
-        return 'topologicalcoloring'
+    def __init__(self):
+        super().__init__()
 
-    def displayName(self):
-        return self.tr('Topological coloring')
-
-    def defineCharacteristics(self):
+    def initAlgorithm(self, config=None):
         self.addParameter(ParameterVector(self.INPUT_LAYER,
                                           self.tr('Input layer'), [dataobjects.TYPE_VECTOR_POLYGON]))
         self.addParameter(ParameterNumber(self.MIN_COLORS,
@@ -93,7 +85,13 @@ class TopoColor(GeoAlgorithm):
 
         self.addOutput(OutputVector(self.OUTPUT_LAYER, self.tr('Colored'), datatype=[dataobjects.TYPE_VECTOR_POLYGON]))
 
-    def processAlgorithm(self, context, feedback):
+    def name(self):
+        return 'topologicalcoloring'
+
+    def displayName(self):
+        return self.tr('Topological coloring')
+
+    def processAlgorithm(self, parameters, context, feedback):
         layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT_LAYER), context)
         min_colors = self.getParameterValue(self.MIN_COLORS)
         balance_by = self.getParameterValue(self.BALANCE)
@@ -128,7 +126,7 @@ class TopoColor(GeoAlgorithm):
                 attributes.append(NULL)
             output_feature.setAttributes(attributes)
 
-            writer.addFeature(output_feature)
+            writer.addFeature(output_feature, QgsFeatureSink.FastInsert)
             current += 1
             feedback.setProgress(80 + int(current * total))
 
@@ -234,7 +232,7 @@ class ColoringAlgorithm:
                     color_areas[feature_color] += features[feature_id].geometry().area()
                 elif balance == 2:
                     min_distances = {c: sys.float_info.max for c in available_colors}
-                    this_feature_centroid = QgsPointV2(features[feature_id].geometry().centroid().geometry())
+                    this_feature_centroid = QgsPointXY(features[feature_id].geometry().centroid().geometry())
 
                     # find features for all available colors
                     other_features = {f_id: c for (f_id, c) in feature_colors.items() if c in available_colors}
@@ -243,7 +241,7 @@ class ColoringAlgorithm:
                     # feature with each assigned color
                     for other_feature_id, c in other_features.items():
                         other_geometry = features[other_feature_id].geometry()
-                        other_centroid = QgsPointV2(other_geometry.centroid().geometry())
+                        other_centroid = QgsPointXY(other_geometry.centroid().geometry())
 
                         distance = this_feature_centroid.distanceSquared(other_centroid)
                         if distance < min_distances[c]:

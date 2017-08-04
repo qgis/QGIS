@@ -267,7 +267,7 @@
           <item>
            <widget class="QStackedWidget" name="mDiagramStackedWidget">
             <property name="currentIndex">
-             <number>0</number>
+             <number>1</number>
             </property>
             <widget class="QWidget" name="mDiagramPage_Attributes">
              <layout class="QVBoxLayout" name="verticalLayout_9">
@@ -303,8 +303,8 @@
                   <rect>
                    <x>0</x>
                    <y>0</y>
-                   <width>644</width>
-                   <height>417</height>
+                   <width>640</width>
+                   <height>428</height>
                   </rect>
                  </property>
                  <layout class="QHBoxLayout" name="horizontalLayout_6">
@@ -539,8 +539,8 @@
                   <rect>
                    <x>0</x>
                    <y>0</y>
-                   <width>340</width>
-                   <height>484</height>
+                   <width>640</width>
+                   <height>428</height>
                   </rect>
                  </property>
                  <layout class="QVBoxLayout" name="verticalLayout" stretch="0,0,0,1">
@@ -595,57 +595,9 @@
                           </size>
                          </property>
                          <property name="text">
-                          <string>Transparency</string>
+                          <string>Opacity</string>
                          </property>
                         </widget>
-                       </item>
-                       <item row="0" column="1" colspan="2">
-                        <layout class="QHBoxLayout" name="horizontalLayout_5">
-                         <item>
-                          <widget class="QSlider" name="mTransparencySlider">
-                           <property name="enabled">
-                            <bool>true</bool>
-                           </property>
-                           <property name="minimumSize">
-                            <size>
-                             <width>0</width>
-                             <height>0</height>
-                            </size>
-                           </property>
-                           <property name="maximumSize">
-                            <size>
-                             <width>16777215</width>
-                             <height>16777215</height>
-                            </size>
-                           </property>
-                           <property name="maximum">
-                            <number>100</number>
-                           </property>
-                           <property name="orientation">
-                            <enum>Qt::Horizontal</enum>
-                           </property>
-                          </widget>
-                         </item>
-                         <item>
-                          <widget class="QgsSpinBox" name="mTransparencySpinBox">
-                           <property name="enabled">
-                            <bool>true</bool>
-                           </property>
-                           <property name="sizePolicy">
-                            <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
-                             <horstretch>0</horstretch>
-                             <verstretch>0</verstretch>
-                            </sizepolicy>
-                           </property>
-                           <property name="suffix">
-                            <string> %</string>
-                           </property>
-                           <property name="maximum">
-                            <number>100</number>
-                           </property>
-                          </widget>
-                         </item>
-                        </layout>
                        </item>
                        <item row="1" column="0">
                         <widget class="QLabel" name="mBarWidthLabel">
@@ -705,13 +657,6 @@
                          </property>
                         </spacer>
                        </item>
-                       <item row="6" column="1">
-                        <widget class="QPushButton" name="mDiagramFontButton">
-                         <property name="text">
-                          <string>Font...</string>
-                         </property>
-                        </widget>
-                       </item>
                        <item row="2" column="1">
                         <layout class="QHBoxLayout" name="horizontalLayout_7">
                          <item>
@@ -736,7 +681,7 @@
                          <item>
                           <widget class="QgsPropertyOverrideButton" name="mBackgroundColorDDBtn">
                            <property name="text">
-                            <string>...</string>
+                            <string>…</string>
                            </property>
                           </widget>
                          </item>
@@ -779,7 +724,7 @@
                          <item>
                           <widget class="QgsPropertyOverrideButton" name="mLineColorDDBtn">
                            <property name="text">
-                            <string>...</string>
+                            <string>…</string>
                            </property>
                           </widget>
                          </item>
@@ -823,7 +768,7 @@
                          <item>
                           <widget class="QgsPropertyOverrideButton" name="mLineWidthDDBtn">
                            <property name="text">
-                            <string>...</string>
+                            <string>…</string>
                            </property>
                           </widget>
                          </item>
@@ -850,11 +795,31 @@
                          <item>
                           <widget class="QgsPropertyOverrideButton" name="mStartAngleDDBtn">
                            <property name="text">
-                            <string>...</string>
+                            <string>…</string>
                            </property>
                           </widget>
                          </item>
                         </layout>
+                       </item>
+                       <item row="0" column="1" colspan="2">
+                        <widget class="QgsOpacityWidget" name="mOpacityWidget" native="true">
+                         <property name="focusPolicy">
+                          <enum>Qt::StrongFocus</enum>
+                         </property>
+                        </widget>
+                       </item>
+                       <item row="6" column="1">
+                        <widget class="QgsFontButton" name="mDiagramFontButton">
+                         <property name="sizePolicy">
+                          <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                           <horstretch>0</horstretch>
+                           <verstretch>0</verstretch>
+                          </sizepolicy>
+                         </property>
+                         <property name="text">
+                          <string>Font</string>
+                         </property>
+                        </widget>
                        </item>
                       </layout>
                      </widget>
@@ -973,7 +938,7 @@
                      <item row="1" column="2">
                       <widget class="QgsPropertyOverrideButton" name="mShowDiagramDDBtn">
                        <property name="text">
-                        <string>...</string>
+                        <string>…</string>
                        </property>
                       </widget>
                      </item>
@@ -1000,7 +965,7 @@
                      <item row="1" column="5">
                       <widget class="QgsPropertyOverrideButton" name="mAlwaysShowDDBtn">
                        <property name="text">
-                        <string>...</string>
+                        <string>…</string>
                        </property>
                       </widget>
                      </item>
@@ -1052,7 +1017,7 @@
                        <item>
                         <widget class="QgsPropertyOverrideButton" name="mIsObstacleDDBtn">
                          <property name="text">
-                          <string>...</string>
+                          <string>…</string>
                          </property>
                         </widget>
                        </item>
@@ -1130,8 +1095,8 @@
                   <rect>
                    <x>0</x>
                    <y>0</y>
-                   <width>511</width>
-                   <height>294</height>
+                   <width>413</width>
+                   <height>238</height>
                   </rect>
                  </property>
                  <layout class="QGridLayout" name="gridLayout_11">
@@ -1446,8 +1411,8 @@
                   <rect>
                    <x>0</x>
                    <y>0</y>
-                   <width>280</width>
-                   <height>288</height>
+                   <width>213</width>
+                   <height>220</height>
                   </rect>
                  </property>
                  <layout class="QGridLayout" name="gridLayout_12">
@@ -1532,7 +1497,7 @@
                        <item>
                         <widget class="QgsPropertyOverrideButton" name="mDistanceDDBtn">
                          <property name="text">
-                          <string>...</string>
+                          <string>…</string>
                          </property>
                         </widget>
                        </item>
@@ -1589,7 +1554,7 @@
                     <item>
                      <widget class="QgsPropertyOverrideButton" name="mPriorityDDBtn">
                       <property name="text">
-                       <string>...</string>
+                       <string>…</string>
                       </property>
                      </widget>
                     </item>
@@ -1633,7 +1598,7 @@
                     <item>
                      <widget class="QgsPropertyOverrideButton" name="mZOrderDDBtn">
                       <property name="text">
-                       <string>...</string>
+                       <string>…</string>
                       </property>
                      </widget>
                     </item>
@@ -1787,7 +1752,7 @@
                        <item>
                         <widget class="QgsPropertyOverrideButton" name="mCoordXDDBtn">
                          <property name="text">
-                          <string>...</string>
+                          <string>…</string>
                          </property>
                         </widget>
                        </item>
@@ -1807,7 +1772,7 @@
                        <item>
                         <widget class="QgsPropertyOverrideButton" name="mCoordYDDBtn">
                          <property name="text">
-                          <string>...</string>
+                          <string>…</string>
                          </property>
                         </widget>
                        </item>
@@ -1872,8 +1837,8 @@
                   <rect>
                    <x>0</x>
                    <y>0</y>
-                   <width>100</width>
-                   <height>180</height>
+                   <width>98</width>
+                   <height>137</height>
                   </rect>
                  </property>
                  <layout class="QVBoxLayout" name="verticalLayout_3">
@@ -2091,8 +2056,8 @@
                   <rect>
                    <x>0</x>
                    <y>0</y>
-                   <width>324</width>
-                   <height>131</height>
+                   <width>246</width>
+                   <height>72</height>
                   </rect>
                  </property>
                  <layout class="QVBoxLayout" name="verticalLayout_12">
@@ -2107,36 +2072,28 @@
                    </widget>
                   </item>
                   <item>
-                   <widget class="QgsCollapsibleGroupBox" name="mCheckBoxSizeLegend">
-                    <property name="title">
-                     <string>Show legend entries for diagram size</string>
-                    </property>
-                    <property name="checkable">
-                     <bool>true</bool>
-                    </property>
-                    <layout class="QHBoxLayout" name="horizontalLayout_71">
-                     <item>
-                      <widget class="QPushButton" name="mButtonSizeLegendSymbol">
-                       <property name="text">
-                        <string>Legend symbol...</string>
-                       </property>
-                      </widget>
-                     </item>
-                     <item>
-                      <spacer name="horizontalSpacer_111">
-                       <property name="orientation">
-                        <enum>Qt::Horizontal</enum>
-                       </property>
-                       <property name="sizeHint" stdset="0">
-                        <size>
-                         <width>40</width>
-                         <height>20</height>
-                        </size>
-                       </property>
-                      </spacer>
-                     </item>
-                    </layout>
-                   </widget>
+                   <layout class="QHBoxLayout" name="horizontalLayout_5">
+                    <item>
+                     <widget class="QPushButton" name="mButtonSizeLegendSettings">
+                      <property name="text">
+                       <string>Legend entries for diagram size...</string>
+                      </property>
+                     </widget>
+                    </item>
+                    <item>
+                     <spacer name="horizontalSpacer_111">
+                      <property name="orientation">
+                       <enum>Qt::Horizontal</enum>
+                      </property>
+                      <property name="sizeHint" stdset="0">
+                       <size>
+                        <width>40</width>
+                        <height>20</height>
+                       </size>
+                      </property>
+                     </spacer>
+                    </item>
+                   </layout>
                   </item>
                   <item>
                    <spacer name="verticalSpacer_7">
@@ -2176,9 +2133,41 @@
    <container>1</container>
   </customwidget>
   <customwidget>
+   <class>QgsColorButton</class>
+   <extends>QToolButton</extends>
+   <header>qgscolorbutton.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsDoubleSpinBox</class>
+   <extends>QDoubleSpinBox</extends>
+   <header>qgsdoublespinbox.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsFontButton</class>
+   <extends>QToolButton</extends>
+   <header>qgsfontbutton.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsSpinBox</class>
+   <extends>QSpinBox</extends>
+   <header>qgsspinbox.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsPropertyOverrideButton</class>
+   <extends>QToolButton</extends>
+   <header>qgspropertyoverridebutton.h</header>
+  </customwidget>
+  <customwidget>
    <class>QgsCollapsibleGroupBox</class>
    <extends>QGroupBox</extends>
    <header>qgscollapsiblegroupbox.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsUnitSelectionWidget</class>
+   <extends>QWidget</extends>
+   <header>qgsunitselectionwidget.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
@@ -2193,30 +2182,9 @@
    <header>qgsscalerangewidget.h</header>
   </customwidget>
   <customwidget>
-   <class>QgsColorButton</class>
-   <extends>QToolButton</extends>
-   <header>qgscolorbutton.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>QgsDoubleSpinBox</class>
-   <extends>QDoubleSpinBox</extends>
-   <header>qgsdoublespinbox.h</header>
-  </customwidget>
-  <customwidget>
-   <class>QgsSpinBox</class>
-   <extends>QSpinBox</extends>
-   <header>qgsspinbox.h</header>
-  </customwidget>
-  <customwidget>
-   <class>QgsPropertyOverrideButton</class>
-   <extends>QToolButton</extends>
-   <header>qgspropertyoverridebutton.h</header>
-  </customwidget>
-  <customwidget>
-   <class>QgsUnitSelectionWidget</class>
+   <class>QgsOpacityWidget</class>
    <extends>QWidget</extends>
-   <header>qgsunitselectionwidget.h</header>
+   <header>qgsopacitywidget.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>
@@ -2231,8 +2199,7 @@
   <tabstop>mRemoveCategoryPushButton</tabstop>
   <tabstop>mDiagramAttributesTreeWidget</tabstop>
   <tabstop>scrollArea_4</tabstop>
-  <tabstop>mTransparencySlider</tabstop>
-  <tabstop>mTransparencySpinBox</tabstop>
+  <tabstop>mOpacityWidget</tabstop>
   <tabstop>mBarWidthSpinBox</tabstop>
   <tabstop>mBackgroundColorButton</tabstop>
   <tabstop>mDiagramPenColorButton</tabstop>
@@ -2268,8 +2235,6 @@
   <tabstop>mOrientationLeftButton</tabstop>
   <tabstop>scrollArea_2</tabstop>
   <tabstop>mCheckBoxAttributeLegend</tabstop>
-  <tabstop>mCheckBoxSizeLegend</tabstop>
-  <tabstop>mButtonSizeLegendSymbol</tabstop>
   <tabstop>mBackgroundColorDDBtn</tabstop>
   <tabstop>mLineColorDDBtn</tabstop>
   <tabstop>mDiagramLineUnitComboBox</tabstop>
@@ -2285,6 +2250,29 @@
   <tabstop>mCoordYDDBtn</tabstop>
  </tabstops>
  <resources>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
   <include location="../../images/images.qrc"/>
  </resources>
  <connections>

@@ -22,6 +22,7 @@
 
 class QgsLayerItem;
 class QgsLayerTreeNode;
+class QgsVectorLayer;
 
 /** \ingroup core
  * \class QgsMimeDataUtils
@@ -44,6 +45,12 @@ class CORE_EXPORT QgsMimeDataUtils
       //! Returns encoded representation of the object
       QString data() const;
 
+      /** Get vector layer from uri if possible, otherwise returns 0 and error is set
+       * \param owner set to true if caller becomes owner
+       * \param error set to error message if cannot get vector
+       */
+      QgsVectorLayer *vectorLayer( bool &owner, QString &error ) const;
+
       //! Type of URI. Recognized types: "vector" / "raster" / "plugin" / "custom"
       QString layerType;
       //! For "vector" / "raster" type: provider id.
@@ -57,7 +64,7 @@ class CORE_EXPORT QgsMimeDataUtils
       QStringList supportedCrs;
       QStringList supportedFormats;
     };
-    typedef QList<Uri> UriList;
+    typedef QList<QgsMimeDataUtils::Uri> UriList;
 
     static QMimeData *encodeUriList( const UriList &layers );
 
@@ -78,7 +85,7 @@ class CORE_EXPORT QgsMimeDataUtils
 
 };
 
-Q_DECLARE_METATYPE( QgsMimeDataUtils::UriList );
+Q_DECLARE_METATYPE( QgsMimeDataUtils::UriList )
 
 #endif // QGSMIMEDATAUTILS_H
 

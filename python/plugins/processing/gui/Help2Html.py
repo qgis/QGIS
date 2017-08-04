@@ -27,10 +27,13 @@ __copyright__ = '(C) 2012, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
-from qgis.PyQt.QtCore import QCoreApplication
 import os
 import re
 import json
+
+from qgis.PyQt.QtCore import QCoreApplication, QUrl
+
+from processing.tools import system
 
 ALG_DESC = 'ALG_DESC'
 ALG_CREATOR = 'ALG_CREATOR'
@@ -63,7 +66,13 @@ def getHtmlFromHelpFile(alg, helpFile):
     try:
         with open(helpFile) as f:
             descriptions = json.load(f)
-            return getHtmlFromDescriptionsDict(alg, descriptions)
+
+        content = getHtmlFromDescriptionsDict(alg, descriptions)
+        algGroup, algName = alg.id().split(':')
+        filePath = os.path.join(system.tempHelpFolder(), "{}_{}.html".format(algGroup, algName))
+        with open(filePath, 'w', encoding='utf-8') as f:
+            f.write(content)
+        return QUrl.fromLocalFile(filePath).toString()
     except:
         return None
 
@@ -72,13 +81,13 @@ def getHtmlFromDescriptionsDict(alg, descriptions):
     s = tr('<html><body><h2>Algorithm description</h2>\n')
     s += '<p>' + getDescription(ALG_DESC, descriptions) + '</p>\n'
     s += tr('<h2>Input parameters</h2>\n')
-    for param in alg.parameters:
-        s += '<h3>' + param.description + '</h3>\n'
-        s += '<p>' + getDescription(param.name, descriptions) + '</p>\n'
+    for param in alg.parameterDefinitions():
+        s += '<h3>' + param.description() + '</h3>\n'
+        s += '<p>' + getDescription(param.name(), descriptions) + '</p>\n'
     s += tr('<h2>Outputs</h2>\n')
     for out in alg.outputs:
-        s += '<h3>' + out.description + '</h3>\n'
-        s += '<p>' + getDescription(out.name, descriptions) + '</p>\n'
+        s += '<h3>' + out.description() + '</h3>\n'
+        s += '<p>' + getDescription(out.name(), descriptions) + '</p>\n'
     s += '<br>'
     s += tr('<p align="right">Algorithm author: {0}</p>').format(getDescription(ALG_CREATOR, descriptions))
     s += tr('<p align="right">Help author: {0}</p>').format(getDescription(ALG_HELP_CREATOR, descriptions))

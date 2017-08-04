@@ -145,15 +145,15 @@ class TestQgsDiagram : public QObject
       col2.setAlphaF( 0.5 );
       ds.categoryColors = QList<QColor>() << col1 << col2;
       ds.categoryAttributes = QList<QString>() << QStringLiteral( "\"Pilots\"" ) << QStringLiteral( "\"Cabin Crew\"" );
-      ds.maxScaleDenominator = -1;
-      ds.minScaleDenominator = -1;
+      ds.minimumScale = -1;
+      ds.maximumScale = -1;
       ds.minimumSize = 0;
       ds.penColor = Qt::green;
       ds.penWidth = .5;
       ds.scaleByArea = true;
       ds.sizeType = QgsUnitTypes::RenderMillimeters;
       ds.size = QSizeF( 5, 5 );
-      ds.angleOffset = 0;
+      ds.rotationOffset = 0;
 
       QgsLinearlyInterpolatedDiagramRenderer *dr = new QgsLinearlyInterpolatedDiagramRenderer();
       dr->setLowerValue( 0.0 );
@@ -182,15 +182,15 @@ class TestQgsDiagram : public QObject
       col2.setAlphaF( 0.5 );
       ds.categoryColors = QList<QColor>() << col1 << col2;
       ds.categoryAttributes = QList<QString>() << QStringLiteral( "ln(Pilots + 1)" ) << QStringLiteral( "ln(\"Cabin Crew\" + 1)" );
-      ds.maxScaleDenominator = -1;
-      ds.minScaleDenominator = -1;
+      ds.minimumScale = -1;
+      ds.maximumScale = -1;
       ds.minimumSize = 0;
       ds.penColor = Qt::green;
       ds.penWidth = .5;
       ds.scaleByArea = true;
       ds.sizeType = QgsUnitTypes::RenderMillimeters;
       ds.size = QSizeF( 5, 5 );
-      ds.angleOffset = 0;
+      ds.rotationOffset = 0;
 
       QgsLinearlyInterpolatedDiagramRenderer *dr = new QgsLinearlyInterpolatedDiagramRenderer();
       dr->setLowerValue( 0.0 );
@@ -224,15 +224,15 @@ class TestQgsDiagram : public QObject
       col2.setAlphaF( 0.5 );
       ds.categoryColors = QList<QColor>() << col1 << col2;
       ds.categoryAttributes = QList<QString>() << "\"Pilots\"" << "\"Cabin Crew\"";
-      ds.maxScaleDenominator = -1;
-      ds.minScaleDenominator = -1;
+      ds.minimumScale = -1;
+      ds.maximumScale = -1;
       ds.minimumSize = 0;
       ds.penColor = Qt::green;
       ds.penWidth = .5;
       ds.scaleByArea = true;
       ds.sizeType = QgsUnitTypes::RenderMillimeters;
       ds.size = QSizeF( 15, 15 );
-      ds.angleOffset = 0;
+      ds.rotationOffset = 0;
 
       QgsSingleCategoryDiagramRenderer *dr = new QgsSingleCategoryDiagramRenderer();
       dr->setDiagram( new QgsPieDiagram() );
@@ -261,15 +261,15 @@ class TestQgsDiagram : public QObject
       col2.setAlphaF( 0.5 );
       ds.categoryColors = QList<QColor>() << col1 << col2;
       ds.categoryAttributes = QList<QString>() << "\"Pilots\"" << "\"Cabin Crew\"";
-      ds.maxScaleDenominator = -1;
-      ds.minScaleDenominator = -1;
+      ds.minimumScale = -1;
+      ds.maximumScale = -1;
       ds.minimumSize = 0;
       ds.penColor = Qt::green;
       ds.penWidth = .5;
       ds.scaleByArea = true;
       ds.sizeType = QgsUnitTypes::RenderMillimeters;
       ds.size = QSizeF( 15, 15 );
-      ds.angleOffset = 0;
+      ds.rotationOffset = 0;
 
       QgsSingleCategoryDiagramRenderer *dr = new QgsSingleCategoryDiagramRenderer();
       dr->setDiagram( new QgsPieDiagram() );
@@ -298,15 +298,15 @@ class TestQgsDiagram : public QObject
       col2.setAlphaF( 0.5 );
       ds.categoryColors = QList<QColor>() << col1 << col2;
       ds.categoryAttributes = QList<QString>() << "\"Pilots\"" << "\"Cabin Crew\"";
-      ds.maxScaleDenominator = -1;
-      ds.minScaleDenominator = -1;
+      ds.minimumScale = -1;
+      ds.maximumScale = -1;
       ds.minimumSize = 0;
       ds.penColor = Qt::green;
       ds.penWidth = .5;
       ds.scaleByArea = true;
       ds.sizeType = QgsUnitTypes::RenderMillimeters;
       ds.size = QSizeF( 15, 15 );
-      ds.angleOffset = 0;
+      ds.rotationOffset = 0;
 
       QgsSingleCategoryDiagramRenderer *dr = new QgsSingleCategoryDiagramRenderer();
       dr->setDiagram( new QgsPieDiagram() );
@@ -318,7 +318,7 @@ class TestQgsDiagram : public QObject
       dls.setShowAllDiagrams( true );
 
       //setup data defined start angle
-      dls.dataDefinedProperties().setProperty( QgsDiagramLayerSettings::StartAngle, QgsProperty::fromExpression( "\"Importance\"/20.0 * 360.0", true ) );
+      dls.dataDefinedProperties().setProperty( QgsDiagramLayerSettings::StartAngle, QgsProperty::fromExpression( "360.0-\"Importance\"/20.0 * 360.0", true ) );
 
       mPointsLayer->setDiagramLayerSettings( dls );
 
@@ -334,15 +334,15 @@ class TestQgsDiagram : public QObject
       col2.setAlphaF( 0.5 );
       ds.categoryColors = QList<QColor>() << col1 << col2;
       ds.categoryAttributes = QList<QString>() << "\"Pilots\"" << "\"Cabin Crew\"";
-      ds.maxScaleDenominator = -1;
-      ds.minScaleDenominator = -1;
+      ds.minimumScale = -1;
+      ds.maximumScale = -1;
       ds.minimumSize = 0;
       ds.penColor = Qt::green;
       ds.penWidth = .5;
       ds.scaleByArea = true;
       ds.sizeType = QgsUnitTypes::RenderMillimeters;
       ds.size = QSizeF( 15, 15 );
-      ds.angleOffset = 0;
+      ds.rotationOffset = 0;
 
       QgsSingleCategoryDiagramRenderer *dr = new QgsSingleCategoryDiagramRenderer();
       dr->setDiagram( new QgsPieDiagram() );
@@ -370,15 +370,15 @@ class TestQgsDiagram : public QObject
       col2.setAlphaF( 0.5 );
       ds.categoryColors = QList<QColor>() << col1 << col2;
       ds.categoryAttributes = QList<QString>() << "\"Pilots\"" << "\"Cabin Crew\"";
-      ds.maxScaleDenominator = -1;
-      ds.minScaleDenominator = -1;
+      ds.minimumScale = -1;
+      ds.maximumScale = -1;
       ds.minimumSize = 0;
       ds.penColor = Qt::green;
       ds.penWidth = .5;
       ds.scaleByArea = true;
       ds.sizeType = QgsUnitTypes::RenderMillimeters;
       ds.size = QSizeF( 15, 15 );
-      ds.angleOffset = 0;
+      ds.rotationOffset = 0;
 
       QgsSingleCategoryDiagramRenderer *dr = new QgsSingleCategoryDiagramRenderer();
       dr->setDiagram( new QgsPieDiagram() );
@@ -406,15 +406,15 @@ class TestQgsDiagram : public QObject
       col2.setAlphaF( 0.5 );
       ds.categoryColors = QList<QColor>() << col1 << col2;
       ds.categoryAttributes = QList<QString>() << "\"Pilots\"" << "\"Cabin Crew\"";
-      ds.maxScaleDenominator = -1;
-      ds.minScaleDenominator = -1;
+      ds.minimumScale = -1;
+      ds.maximumScale = -1;
       ds.minimumSize = 0;
       ds.penColor = Qt::green;
       ds.penWidth = .5;
       ds.scaleByArea = true;
       ds.sizeType = QgsUnitTypes::RenderMillimeters;
       ds.size = QSizeF( 50, 50 );
-      ds.angleOffset = 0;
+      ds.rotationOffset = 0;
 
       QgsSingleCategoryDiagramRenderer *dr = new QgsSingleCategoryDiagramRenderer();
       dr->setDiagram( new QgsPieDiagram() );
@@ -440,15 +440,15 @@ class TestQgsDiagram : public QObject
       QColor col2 = Qt::yellow;
       ds.categoryColors = QList<QColor>() << col1 << col2;
       ds.categoryAttributes = QList<QString>() << "\"Pilots\"" << "\"Cabin Crew\"";
-      ds.maxScaleDenominator = -1;
-      ds.minScaleDenominator = -1;
+      ds.minimumScale = -1;
+      ds.maximumScale = -1;
       ds.minimumSize = 0;
       ds.penColor = Qt::green;
       ds.penWidth = .5;
       ds.scaleByArea = true;
       ds.sizeType = QgsUnitTypes::RenderMillimeters;
       ds.size = QSizeF( 50, 50 );
-      ds.angleOffset = 0;
+      ds.rotationOffset = 0;
 
       QgsSingleCategoryDiagramRenderer *dr = new QgsSingleCategoryDiagramRenderer();
       dr->setDiagram( new QgsPieDiagram() );
@@ -476,15 +476,15 @@ class TestQgsDiagram : public QObject
       col2.setAlphaF( 0.5 );
       ds.categoryColors = QList<QColor>() << col1 << col2;
       ds.categoryAttributes = QList<QString>() << "\"Pilots\"" << "\"Cabin Crew\"";
-      ds.maxScaleDenominator = -1;
-      ds.minScaleDenominator = -1;
+      ds.minimumScale = -1;
+      ds.maximumScale = -1;
       ds.minimumSize = 0;
       ds.penColor = Qt::green;
       ds.penWidth = .5;
       ds.scaleByArea = true;
       ds.sizeType = QgsUnitTypes::RenderMillimeters;
       ds.size = QSizeF( 50, 50 );
-      ds.angleOffset = 0;
+      ds.rotationOffset = 0;
 
       QgsSingleCategoryDiagramRenderer *dr = new QgsSingleCategoryDiagramRenderer();
       dr->setDiagram( new QgsPieDiagram() );
@@ -517,15 +517,15 @@ class TestQgsDiagram : public QObject
       col2.setAlphaF( 0 );
       ds.categoryColors = QList<QColor>() << col1 << col2;
       ds.categoryAttributes = QList<QString>() << "\"Pilots\"" << "\"Cabin Crew\"";
-      ds.maxScaleDenominator = -1;
-      ds.minScaleDenominator = -1;
+      ds.minimumScale = -1;
+      ds.maximumScale = -1;
       ds.minimumSize = 0;
       ds.penColor = Qt::green;
       ds.penWidth = .5;
       ds.scaleByArea = true;
       ds.sizeType = QgsUnitTypes::RenderMillimeters;
       ds.size = QSizeF( 15, 15 );
-      ds.angleOffset = 0;
+      ds.rotationOffset = 0;
 
       QgsSingleCategoryDiagramRenderer *dr = new QgsSingleCategoryDiagramRenderer();
       dr->setDiagram( new QgsTextDiagram() );

@@ -33,7 +33,8 @@ from qgis.PyQt.QtWidgets import (QWidget,
                                  QLineEdit,
                                  QComboBox,
                                  QCheckBox,
-                                 QSizePolicy)
+                                 QSizePolicy,
+                                 QDialogButtonBox)
 
 from qgis.gui import QgsMessageBar
 
@@ -57,15 +58,9 @@ class GdalAlgorithmDialog(AlgorithmDialog):
 
         self.setMainWidget(GdalParametersPanel(self, alg))
 
-        cornerWidget = QWidget()
-        layout = QVBoxLayout()
-        layout.setContentsMargins(0, 0, 0, 5)
-        self.tabWidget.setStyleSheet("QTabBar::tab { height: 30px; }")
-        runAsBatchButton = QPushButton(self.tr("Run as batch process..."))
-        runAsBatchButton.clicked.connect(self.runAsBatch)
-        layout.addWidget(runAsBatchButton)
-        cornerWidget.setLayout(layout)
-        self.tabWidget.setCornerWidget(cornerWidget)
+        self.runAsBatchButton = QPushButton(self.tr("Run as Batch Process…"))
+        self.runAsBatchButton.clicked.connect(self.runAsBatch)
+        self.buttonBox.addButton(self.runAsBatchButton, QDialogButtonBox.ResetRole) # reset role to ensure left alignment
 
         self.mainWidget.parametersHaveChanged()
 
@@ -107,14 +102,14 @@ class GdalParametersPanel(ParametersPanel):
 
     def parametersHaveChanged(self):
         try:
-            self.parent.setParamValues()
-            for output in self.alg.outputs:
-                if output.value is None:
-                    output.value = self.tr("[temporary file]")
-            commands = self.alg.getConsoleCommands()
+            parameters = self.parent.getParamValues()
+            for output in self.alg.destinationParameterDefinitions():
+                if parameters[output.name()] is None:
+                    parameters[output.name()] = self.tr("[temporary file]")
+            commands = self.alg.getConsoleCommands(parameters)
             commands = [c for c in commands if c not in ['cmd.exe', '/C ']]
             self.text.setPlainText(" ".join(commands))
         except AlgorithmDialogBase.InvalidParameterValue as e:
-            self.text.setPlainText(self.tr("Invalid value for parameter '{0}'").format(e.parameter.description))
+            self.text.setPlainText(self.tr("Invalid value for parameter '{0}'").format(e.parameter.description()))
         except:
             self.text.setPlainText("")

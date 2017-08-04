@@ -23,7 +23,7 @@
 #include <QString>
 #include <QStringList>
 
-#include <qgsbabelformat.h>
+#include "qgsbabelformat.h"
 
 
 class QgsGPSDevice : public QgsBabelFormat

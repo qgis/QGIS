@@ -28,30 +28,44 @@ __revision__ = '$Format:%H$'
 
 import os
 
-from qgis.PyQt.QtGui import QIcon
-from qgis.core import QgsProcessingUtils
+from qgis.core import (QgsProcessingUtils,
+                       QgsFeatureSink,
+                       QgsProcessingParameterFeatureSource,
+                       QgsProcessingParameterField,
+                       QgsProcessingParameterFolderDestination,
+                       QgsProcessingOutputFolder,
+                       QgsExpression,
+                       QgsFeatureRequest)
 
-from processing.core.GeoAlgorithm import GeoAlgorithm
-from processing.core.parameters import ParameterVector
-from processing.core.parameters import ParameterTableField
-from processing.core.outputs import OutputDirectory
-from processing.tools import vector
+from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 from processing.tools.system import mkdir
 
 pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
 
-class VectorSplit(GeoAlgorithm):
+class VectorSplit(QgisAlgorithm):
 
     INPUT = 'INPUT'
     FIELD = 'FIELD'
     OUTPUT = 'OUTPUT'
 
-    def icon(self):
-        return QIcon(os.path.join(pluginPath, 'images', 'ftools', 'split_layer.png'))
-
     def group(self):
         return self.tr('Vector general tools')
+
+    def __init__(self):
+        super().__init__()
+
+    def initAlgorithm(self, config=None):
+        self.addParameter(QgsProcessingParameterFeatureSource(self.INPUT,
+                                                              self.tr('Input layer')))
+
+        self.addParameter(QgsProcessingParameterField(self.FIELD,
+                                                      self.tr('Unique ID field'), None, self.INPUT))
+
+        self.addParameter(QgsProcessingParameterFolderDestination(self.OUTPUT,
+                                                                  self.tr('Output directory')))
+
+        self.addOutput(QgsProcessingOutputFolder(self.OUTPUT, self.tr('Output directory')))
 
     def name(self):
         return 'splitvectorlayer'
@@ -59,37 +73,43 @@ class VectorSplit(GeoAlgorithm):
     def displayName(self):
         return self.tr('Split vector layer')
 
-    def defineCharacteristics(self):
-        self.addParameter(ParameterVector(self.INPUT,
-                                          self.tr('Input layer')))
-        self.addParameter(ParameterTableField(self.FIELD,
-                                              self.tr('Unique ID field'), self.INPUT))
-        self.addOutput(OutputDirectory(self.OUTPUT, self.tr('Output directory')))
-
-    def processAlgorithm(self, context, feedback):
-        layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT), context)
-        fieldName = self.getParameterValue(self.FIELD)
-        directory = self.getOutputValue(self.OUTPUT)
+    def processAlgorithm(self, parameters, context, feedback):
+        source = self.parameterAsSource(parameters, self.INPUT, context)
+        fieldName = self.parameterAsString(parameters, self.FIELD, context)
+        directory = self.parameterAsString(parameters, self.OUTPUT, context)
 
         mkdir(directory)
 
-        fieldIndex = layer.fields().lookupField(fieldName)
-        uniqueValues = QgsProcessingUtils.uniqueValues(layer, fieldIndex, context)
-        baseName = os.path.join(directory, '{0}_{1}'.format(layer.name(), fieldName))
+        fieldIndex = source.fields().lookupField(fieldName)
+        uniqueValues = source.uniqueValues(fieldIndex)
+        baseName = os.path.join(directory, '{0}'.format(fieldName))
 
-        fields = layer.fields()
-        crs = layer.crs()
-        geomType = layer.wkbType()
+        fields = source.fields()
+        crs = source.sourceCrs()
+        geomType = source.wkbType()
 
-        total = 100.0 / len(uniqueValues)
+        total = 100.0 / len(uniqueValues) if uniqueValues else 1
 
         for current, i in enumerate(uniqueValues):
+            if feedback.isCanceled():
+                break
             fName = u'{0}_{1}.shp'.format(baseName, str(i).strip())
+            feedback.pushInfo(self.tr('Creating layer: {}').format(fName))
 
-            writer, dest = QgsProcessingUtils.createFeatureSink(fName, None, fields, geomType, crs, context)
-            for f in QgsProcessingUtils.getFeatures(layer, context):
-                if f[fieldName] == i:
-                    writer.addFeature(f)
-            del writer
+            sink, dest = QgsProcessingUtils.createFeatureSink(fName, context, fields, geomType, crs)
+
+            filter = '{} = {}'.format(QgsExpression.quotedColumnRef(fieldName), QgsExpression.quotedValue(i))
+            req = QgsFeatureRequest().setFilterExpression(filter)
+
+            count = 0
+            for f in source.getFeatures(req):
+                if feedback.isCanceled():
+                    break
+                sink.addFeature(f, QgsFeatureSink.FastInsert)
+                count += 1
+            feedback.pushInfo(self.tr('Added {} features to layer').format(count))
+            del sink
 
             feedback.setProgress(int(current * total))
+
+        return {self.OUTPUT: directory}

@@ -18,6 +18,7 @@
 #define DIAGRAM_NAME_PIE "Pie"
 
 #include "qgis_core.h"
+#include "qgis.h"
 #include "qgsdiagram.h"
 #include <QPen>
 #include <QBrush>
@@ -37,7 +38,7 @@ class CORE_EXPORT QgsPieDiagram: public QgsDiagram
   public:
     QgsPieDiagram();
 
-    virtual QgsPieDiagram *clone() const override;
+    virtual QgsPieDiagram *clone() const override SIP_FACTORY;
 
     void renderDiagram( const QgsFeature &feature, QgsRenderContext &c, const QgsDiagramSettings &s, QPointF position ) override;
 

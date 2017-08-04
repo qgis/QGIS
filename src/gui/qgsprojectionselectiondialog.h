@@ -19,7 +19,7 @@
 #define QGSGENERICPROJECTIONSELECTOR_H
 #include <ui_qgsgenericprojectionselectorbase.h>
 #include "qgis.h"
-#include <qgisgui.h>
+#include "qgsguiutils.h"
 
 #include <QSet>
 
@@ -58,7 +58,7 @@ class GUI_EXPORT QgsProjectionSelectionDialog : public QDialog, private Ui::QgsG
      * Constructor for QgsProjectionSelectionDialog.
      */
     QgsProjectionSelectionDialog( QWidget *parent SIP_TRANSFERTHIS = 0,
-                                  Qt::WindowFlags fl = QgisGui::ModalDialogFlags );
+                                  Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags );
 
 
     ~QgsProjectionSelectionDialog();

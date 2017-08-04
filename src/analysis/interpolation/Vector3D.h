@@ -22,7 +22,7 @@
 
 /** \ingroup analysis
  * Class Vector3D represents a 3D-Vector, capable to store x-,y- and
- * z-coordinates in double values. In fact, the class is the same as Point3D.
+ * z-coordinates in double values. In fact, the class is the same as QgsPoint.
  * The name 'vector' makes it easier to understand the programs.
  */
 
@@ -60,7 +60,14 @@ class ANALYSIS_EXPORT Vector3D
     void setZ( double z );
     //! Standardises the vector
     void standardise();
+
+  private:
+#ifdef SIP_RUN
+    Vector3D( const Vector3D &v );
+#endif
 };
+
+#ifndef SIP_RUN
 
 //------------------------------------------constructors------------------------------------
 
@@ -112,4 +119,5 @@ inline void Vector3D::setZ( double z )
   mZ = z;
 }
 
+#endif
 #endif

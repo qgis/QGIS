@@ -342,6 +342,12 @@ void QgsDataItem::refresh()
   }
 }
 
+void QgsDataItem::refreshConnections()
+{
+  refresh();
+  emit connectionsChanged();
+}
+
 void QgsDataItem::refresh( const QVector<QgsDataItem *> &children )
 {
   QgsDebugMsgLevel( "mPath = " + mPath, 2 );
@@ -1114,7 +1120,7 @@ void QgsZipItem::init()
     {
       QString k( *i );
       QgsDebugMsgLevel( "provider " + k, 3 );
-      // some providers hangs with empty uri (Postgis) etc...
+      // some providers hangs with empty uri (PostGIS) etc...
       // -> using libraries directly
       std::unique_ptr< QLibrary > library( QgsProviderRegistry::instance()->createProviderLibrary( k ) );
       if ( library )

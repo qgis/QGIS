@@ -40,32 +40,24 @@
 #include "qgsvaluemapwidgetfactory.h"
 #include "qgsvaluerelationwidgetfactory.h"
 
-
-QgsEditorWidgetRegistry *QgsEditorWidgetRegistry::instance()
-{
-  static QgsEditorWidgetRegistry sInstance;
-  return &sInstance;
-}
-
 void QgsEditorWidgetRegistry::initEditors( QgsMapCanvas *mapCanvas, QgsMessageBar *messageBar )
 {
-  QgsEditorWidgetRegistry *reg = instance();
-  reg->registerWidget( QStringLiteral( "TextEdit" ), new QgsTextEditWidgetFactory( tr( "Text Edit" ) ) );
-  reg->registerWidget( QStringLiteral( "Classification" ), new QgsClassificationWidgetWrapperFactory( tr( "Classification" ) ) );
-  reg->registerWidget( QStringLiteral( "Range" ), new QgsRangeWidgetFactory( tr( "Range" ) ) );
-  reg->registerWidget( QStringLiteral( "UniqueValues" ), new QgsUniqueValueWidgetFactory( tr( "Unique Values" ) ) );
-  reg->registerWidget( QStringLiteral( "ValueMap" ), new QgsValueMapWidgetFactory( tr( "Value Map" ) ) );
-  reg->registerWidget( QStringLiteral( "Enumeration" ), new QgsEnumerationWidgetFactory( tr( "Enumeration" ) ) );
-  reg->registerWidget( QStringLiteral( "Hidden" ), new QgsHiddenWidgetFactory( tr( "Hidden" ) ) );
-  reg->registerWidget( QStringLiteral( "CheckBox" ), new QgsCheckboxWidgetFactory( tr( "Check Box" ) ) );
-  reg->registerWidget( QStringLiteral( "ValueRelation" ), new QgsValueRelationWidgetFactory( tr( "Value Relation" ) ) );
-  reg->registerWidget( QStringLiteral( "UuidGenerator" ), new QgsUuidWidgetFactory( tr( "Uuid Generator" ) ) );
-  reg->registerWidget( QStringLiteral( "Color" ), new QgsColorWidgetFactory( tr( "Color" ) ) );
-  reg->registerWidget( QStringLiteral( "RelationReference" ), new QgsRelationReferenceFactory( tr( "Relation Reference" ), mapCanvas, messageBar ) );
-  reg->registerWidget( QStringLiteral( "DateTime" ), new QgsDateTimeEditFactory( tr( "Date/Time" ) ) );
-  reg->registerWidget( QStringLiteral( "ExternalResource" ), new QgsExternalResourceWidgetFactory( tr( "Attachment" ) ) );
-  reg->registerWidget( QStringLiteral( "KeyValue" ), new QgsKeyValueWidgetFactory( tr( "Key/Value" ) ) );
-  reg->registerWidget( QStringLiteral( "List" ), new QgsListWidgetFactory( tr( "List" ) ) );
+  registerWidget( QStringLiteral( "TextEdit" ), new QgsTextEditWidgetFactory( tr( "Text Edit" ) ) );
+  registerWidget( QStringLiteral( "Classification" ), new QgsClassificationWidgetWrapperFactory( tr( "Classification" ) ) );
+  registerWidget( QStringLiteral( "Range" ), new QgsRangeWidgetFactory( tr( "Range" ) ) );
+  registerWidget( QStringLiteral( "UniqueValues" ), new QgsUniqueValueWidgetFactory( tr( "Unique Values" ) ) );
+  registerWidget( QStringLiteral( "ValueMap" ), new QgsValueMapWidgetFactory( tr( "Value Map" ) ) );
+  registerWidget( QStringLiteral( "Enumeration" ), new QgsEnumerationWidgetFactory( tr( "Enumeration" ) ) );
+  registerWidget( QStringLiteral( "Hidden" ), new QgsHiddenWidgetFactory( tr( "Hidden" ) ) );
+  registerWidget( QStringLiteral( "CheckBox" ), new QgsCheckboxWidgetFactory( tr( "Checkbox" ) ) );
+  registerWidget( QStringLiteral( "ValueRelation" ), new QgsValueRelationWidgetFactory( tr( "Value Relation" ) ) );
+  registerWidget( QStringLiteral( "UuidGenerator" ), new QgsUuidWidgetFactory( tr( "Uuid Generator" ) ) );
+  registerWidget( QStringLiteral( "Color" ), new QgsColorWidgetFactory( tr( "Color" ) ) );
+  registerWidget( QStringLiteral( "RelationReference" ), new QgsRelationReferenceFactory( tr( "Relation Reference" ), mapCanvas, messageBar ) );
+  registerWidget( QStringLiteral( "DateTime" ), new QgsDateTimeEditFactory( tr( "Date/Time" ) ) );
+  registerWidget( QStringLiteral( "ExternalResource" ), new QgsExternalResourceWidgetFactory( tr( "Attachment" ) ) );
+  registerWidget( QStringLiteral( "KeyValue" ), new QgsKeyValueWidgetFactory( tr( "Key/Value" ) ) );
+  registerWidget( QStringLiteral( "List" ), new QgsListWidgetFactory( tr( "List" ) ) );
 }
 
 QgsEditorWidgetRegistry::QgsEditorWidgetRegistry()
@@ -194,7 +186,7 @@ bool QgsEditorWidgetRegistry::registerWidget( const QString &widgetId, QgsEditor
   {
     mWidgetFactories.insert( widgetId, widgetFactory );
 
-    // Use this factory as default where it provides the heighest priority
+    // Use this factory as default where it provides the highest priority
     QHash<const char *, int> types = widgetFactory->supportedWidgetTypes();
     QHash<const char *, int>::ConstIterator it;
     it = types.constBegin();

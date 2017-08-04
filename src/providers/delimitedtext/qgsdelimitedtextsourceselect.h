@@ -17,7 +17,9 @@
 
 #include <QTextStream>
 #include "qgshelp.h"
-#include "qgisgui.h"
+#include "qgsguiutils.h"
+#include "qgsproviderregistry.h"
+#include "qgsabstractdatasourcewidget.h"
 
 class QButtonGroup;
 class QgisInterface;
@@ -26,12 +28,12 @@ class QgsDelimitedTextFile;
 /**
  * \class QgsDelimitedTextSourceSelect
  */
-class QgsDelimitedTextSourceSelect : public QDialog, private Ui::QgsDelimitedTextSourceSelectBase
+class QgsDelimitedTextSourceSelect : public QgsAbstractDataSourceWidget, private Ui::QgsDelimitedTextSourceSelectBase
 {
     Q_OBJECT
 
   public:
-    QgsDelimitedTextSourceSelect( QWidget *parent, Qt::WindowFlags fl = QgisGui::ModalDialogFlags, bool embedded = false );
+    QgsDelimitedTextSourceSelect( QWidget *parent = nullptr, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::None );
     ~QgsDelimitedTextSourceSelect();
 
     QStringList splitLine( QString line );
@@ -58,8 +60,6 @@ class QgsDelimitedTextSourceSelect : public QDialog, private Ui::QgsDelimitedTex
     QButtonGroup *bgGeomType = nullptr;
 
   private slots:
-    void on_buttonBox_accepted();
-    void on_buttonBox_rejected();
     void on_buttonBox_helpRequested()
     {
       QgsHelp::openHelp( QStringLiteral( "working_with_vector/supported_data.html#delimited-text-files" ) );
@@ -67,6 +67,7 @@ class QgsDelimitedTextSourceSelect : public QDialog, private Ui::QgsDelimitedTex
     void on_btnBrowseForFile_clicked();
 
   public slots:
+    void addButtonClicked() override;
     void updateFileName();
     void updateFieldsAndEnable();
     void enableAccept();

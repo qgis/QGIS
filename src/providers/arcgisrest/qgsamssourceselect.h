@@ -18,16 +18,17 @@
 #ifndef QGSAMSSOURCESELECT_H
 #define QGSAMSSOURCESELECT_H
 
-#include "qgssourceselectdialog.h"
+#include "qgsarcgisservicesourceselect.h"
+#include "qgsproviderregistry.h"
 
 class QCheckBox;
 
-class QgsAmsSourceSelect: public QgsSourceSelectDialog
+class QgsAmsSourceSelect: public QgsArcGisServiceSourceSelect
 {
     Q_OBJECT
 
   public:
-    QgsAmsSourceSelect( QWidget *parent, Qt::WindowFlags fl, bool embeddedMode = false );
+    QgsAmsSourceSelect( QWidget *parent, Qt::WindowFlags fl, QgsProviderRegistry::WidgetMode widgetMode =  QgsProviderRegistry::WidgetMode::None );
 
   protected:
     bool connectToService( const QgsOwsConnection &connection ) override;

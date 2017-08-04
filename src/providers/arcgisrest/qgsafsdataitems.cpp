@@ -13,12 +13,15 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgslogger.h"
-#include "qgsnewhttpconnection.h"
 #include "qgsowsconnection.h"
 #include "qgsafsdataitems.h"
 #include "qgsafsprovider.h"
 #include "qgsarcgisrestutils.h"
+
+#ifdef HAVE_GUI
+#include "qgsnewhttpconnection.h"
 #include "qgsafssourceselect.h"
+#endif
 
 #include <QCoreApplication>
 #include <QSettings>
@@ -46,6 +49,7 @@ QVector<QgsDataItem *> QgsAfsRootItem::createChildren()
   return connections;
 }
 
+#ifdef HAVE_GUI
 QList<QAction *> QgsAfsRootItem::actions()
 {
   QAction *actionNew = new QAction( tr( "New Connection..." ), this );
@@ -55,8 +59,8 @@ QList<QAction *> QgsAfsRootItem::actions()
 
 QWidget *QgsAfsRootItem::paramWidget()
 {
-  QgsAfsSourceSelect *select = new QgsAfsSourceSelect( 0, 0, true );
-  connect( select, &QgsSourceSelectDialog::connectionsChanged, this, &QgsAfsRootItem::connectionsChanged );
+  QgsAfsSourceSelect *select = new QgsAfsSourceSelect( 0, 0, QgsProviderRegistry::WidgetMode::Manager );
+  connect( select, &QgsArcGisServiceSourceSelect::connectionsChanged, this, &QgsAfsRootItem::connectionsChanged );
   return select;
 }
 
@@ -68,13 +72,14 @@ void QgsAfsRootItem::connectionsChanged()
 void QgsAfsRootItem::newConnection()
 {
   QgsNewHttpConnection nc( 0, QStringLiteral( "qgis/connections-arcgisfeatureserver/" ) );
-  nc.setWindowTitle( tr( "Create a new ArcGisFeatureServer connection" ) );
+  nc.setWindowTitle( tr( "Create a New ArcGisFeatureServer Connection" ) );
 
   if ( nc.exec() )
   {
     refresh();
   }
 }
+#endif
 
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -83,6 +88,7 @@ QgsAfsConnectionItem::QgsAfsConnectionItem( QgsDataItem *parent, const QString &
   , mUrl( url )
 {
   mIconName = QStringLiteral( "mIconConnect.png" );
+  mCapabilities |= Collapse;
 }
 
 QVector<QgsDataItem *> QgsAfsConnectionItem::createChildren()
@@ -113,6 +119,7 @@ bool QgsAfsConnectionItem::equal( const QgsDataItem *other )
   return ( type() == other->type() && o != 0 && mPath == o->mPath && mName == o->mName );
 }
 
+#ifdef HAVE_GUI
 QList<QAction *> QgsAfsConnectionItem::actions()
 {
   QList<QAction *> lst;
@@ -131,7 +138,7 @@ QList<QAction *> QgsAfsConnectionItem::actions()
 void QgsAfsConnectionItem::editConnection()
 {
   QgsNewHttpConnection nc( 0, QStringLiteral( "qgis/connections-arcgisfeatureserver/" ), mName );
-  nc.setWindowTitle( tr( "Modify ArcGisFeatureServer connection" ) );
+  nc.setWindowTitle( tr( "Modify ArcGisFeatureServer Connection" ) );
 
   if ( nc.exec() )
   {
@@ -144,6 +151,7 @@ void QgsAfsConnectionItem::deleteConnection()
   QgsOwsConnection::deleteConnection( QStringLiteral( "arcgisfeatureserver" ), mName );
   mParent->refresh();
 }
+#endif
 
 ///////////////////////////////////////////////////////////////////////////////
 

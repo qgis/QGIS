@@ -18,7 +18,11 @@
 #include "qgslogger.h"
 #include "qgsdatasourceuri.h"
 #include "qgsowsconnection.h"
+
+#ifdef HAVE_GUI
 #include "qgsnewhttpconnection.h"
+#include "qgsowssourceselect.h"
+#endif
 
 #include "qgsapplication.h"
 
@@ -29,6 +33,7 @@ QgsOWSConnectionItem::QgsOWSConnectionItem( QgsDataItem *parent, QString name, Q
   : QgsDataCollectionItem( parent, name, path )
 {
   mIconName = QStringLiteral( "mIconConnect.png" );
+  mCapabilities |= Collapse;
 }
 
 QgsOWSConnectionItem::~QgsOWSConnectionItem()
@@ -128,6 +133,7 @@ bool QgsOWSConnectionItem::equal( const QgsDataItem *other )
   return ( o && mPath == o->mPath && mName == o->mName );
 }
 
+#ifdef HAVE_GUI
 QList<QAction *> QgsOWSConnectionItem::actions()
 {
   QList<QAction *> lst;
@@ -151,7 +157,7 @@ void QgsOWSConnectionItem::editConnection()
   if ( nc.exec() )
   {
     // the parent should be updated
-    mParent->refresh();
+    mParent->refreshConnections();
   }
 #endif
 }
@@ -161,9 +167,10 @@ void QgsOWSConnectionItem::deleteConnection()
 #if 0
   QgsOWSConnection::deleteConnection( "OWS", mName );
   // the parent should be updated
-  mParent->refresh();
+  mParent->refreshConnections();
 #endif
 }
+#endif
 
 
 // ---------------------------------------------------------------------------
@@ -204,6 +211,7 @@ QVector<QgsDataItem *> QgsOWSRootItem::createChildren()
   return connections;
 }
 
+#ifdef HAVE_GUI
 QList<QAction *> QgsOWSRootItem::actions()
 {
   QList<QAction *> lst;
@@ -239,10 +247,11 @@ void QgsOWSRootItem::newConnection()
 
   if ( nc.exec() )
   {
-    refresh();
+    refreshConnections();
   }
 #endif
 }
+#endif
 
 
 // ---------------------------------------------------------------------------
@@ -265,10 +274,11 @@ QGISEXTERN QgsDataItem *dataItem( QString path, QgsDataItem *parentItem )
 }
 
 //QGISEXTERN QgsOWSSourceSelect * selectWidget( QWidget * parent, Qt::WindowFlags fl )
-QGISEXTERN QDialog *selectWidget( QWidget *parent, Qt::WindowFlags fl )
+QGISEXTERN QDialog *selectWidget( QWidget *parent, Qt::WindowFlags fl, QgsProviderRegistry::WidgetMode widgetMode )
 {
   Q_UNUSED( parent );
   Q_UNUSED( fl );
-  //return new QgsOWSSourceSelect( parent, fl );
+  Q_UNUSED( widgetMode );
+  //return new QgsOWSSourceSelect( parent, fl, widgetMode );
   return nullptr;
 }

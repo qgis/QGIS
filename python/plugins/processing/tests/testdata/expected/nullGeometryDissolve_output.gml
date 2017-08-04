@@ -13,7 +13,7 @@
                                                                                                  
   <gml:featureMember>
     <ogr:nullGeometryDissolve_output fid="nullGeometryDissolve.0">
-      <ogr:geometryProperty><gml:Polygon srsName="EPSG:3003"><gml:outerBoundaryIs><gml:LinearRing><gml:coordinates>1756812.050985608249903,5080657.52322755753994 1758058.328737602569163,5080656.446172921918333 1758032.602247689384967,5078868.455123908817768 1756869.935587913962081,5078877.136755040846765 1755007.051325645996258,5078864.273510087281466 1754831.111262238584459,5080811.882167040370405 1756812.050985608249903,5080657.52322755753994</gml:coordinates></gml:LinearRing></gml:outerBoundaryIs></gml:Polygon></ogr:geometryProperty>
+      <ogr:geometryProperty><gml:MultiPolygon srsName="EPSG:3003"><gml:polygonMember><gml:Polygon><gml:outerBoundaryIs><gml:LinearRing><gml:coordinates>1756812.050985608249903,5080657.52322755753994 1758058.328737602569163,5080656.446172921918333 1758032.602247689384967,5078868.455123908817768 1756869.935587913962081,5078877.136755040846765 1755007.051325645996258,5078864.273510087281466 1754831.111262238584459,5080811.882167040370405 1756812.050985608249903,5080657.52322755753994</gml:coordinates></gml:LinearRing></gml:outerBoundaryIs></gml:Polygon></gml:polygonMember></gml:MultiPolygon></ogr:geometryProperty>
     </ogr:nullGeometryDissolve_output>
   </gml:featureMember>
 </ogr:FeatureCollection>

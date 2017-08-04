@@ -16,7 +16,6 @@ SET(QGIS_ANALYSIS_SRCS
   interpolation/NormVecDecorator.cc
   interpolation/Node.cc
   interpolation/ParametricLine.cc
-  interpolation/Point3D.cc
   interpolation/TriangleInterpolator.cc
   interpolation/Triangulation.cc
   interpolation/TriDecorator.cc
@@ -118,8 +117,10 @@ SET(QGIS_ANALYSIS_HDRS
   raster/qgstotalcurvaturefilter.h
 
   vector/qgsgeometryanalyzer.h
-  vector/qgszonalstatistics.h
   vector/qgsoverlayanalyzer.h
+  vector/qgspointsample.h
+  vector/qgstransectsample.h
+  vector/qgszonalstatistics.h
 
   interpolation/qgsinterpolator.h
   interpolation/qgsgridfilewriter.h
@@ -129,7 +130,6 @@ SET(QGIS_ANALYSIS_HDRS
   interpolation/ParametricLine.h
   interpolation/CloughTocherInterpolator.h
   interpolation/TriangleInterpolator.h
-  interpolation/Point3D.h
   interpolation/Vector3D.h
   interpolation/DualEdgeTriangulation.h
   interpolation/Node.h
@@ -142,8 +142,6 @@ SET(QGIS_ANALYSIS_HDRS
 
   openstreetmap/qgsosmbase.h
   openstreetmap/qgsosmdatabase.h
-  openstreetmap/qgsosmdownload.h
-  openstreetmap/qgsosmimport.h
 
   network/qgsgraph.h
   network/qgsgraphbuilderinterface.h
@@ -151,18 +149,17 @@ SET(QGIS_ANALYSIS_HDRS
   network/qgsnetworkstrategy.h
   network/qgsnetworkspeedstrategy.h
   network/qgsnetworkdistancestrategy.h
-  network/qgsgraphdirector.h
-  network/qgsvectorlayerdirector.h
   network/qgsgraphanalyzer.h
 )
 
 INCLUDE_DIRECTORIES(
   ${CMAKE_CURRENT_SOURCE_DIR}
-  ${CMAKE_CURRENT_SOURCE_DIR}/../core/
-  ${CMAKE_CURRENT_SOURCE_DIR}/../core/geometry
-  ${CMAKE_CURRENT_SOURCE_DIR}/../core/raster
-  ${CMAKE_CURRENT_SOURCE_DIR}/../core/symbology-ng
-  ${CMAKE_CURRENT_SOURCE_DIR}/../core/metadata
+  ${CMAKE_SOURCE_DIR}/src/core/
+  ${CMAKE_SOURCE_DIR}/src/core/geometry
+  ${CMAKE_SOURCE_DIR}/src/core/raster
+  ${CMAKE_SOURCE_DIR}/src/core/symbology-ng
+  ${CMAKE_SOURCE_DIR}/src/core/metadata
+  ${CMAKE_SOURCE_DIR}/src/core/expression
   ${CMAKE_BINARY_DIR}/src/core
   ${CMAKE_BINARY_DIR}/src/analysis
   interpolation

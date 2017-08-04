@@ -140,7 +140,7 @@ QVariant QgsNodeEditorModel::data( const QModelIndex &index, int role ) const
     return vertex->point().y();
   else if ( index.column() == mZCol )
     return vertex->point().z();
-  else if ( index.column() ==  mMCol )
+  else if ( index.column() == mMCol )
     return vertex->point().m();
   else if ( index.column() == mRCol )
   {
@@ -175,7 +175,7 @@ QVariant QgsNodeEditorModel::headerData( int section, Qt::Orientation orientatio
         return QVariant( tr( "y" ) );
       else if ( section == mZCol )
         return QVariant( tr( "z" ) );
-      else if ( section ==  mMCol )
+      else if ( section == mMCol )
         return QVariant( tr( "m" ) );
       else if ( section == mRCol )
         return QVariant( tr( "r" ) );
@@ -216,8 +216,8 @@ bool QgsNodeEditorModel::setData( const QModelIndex &index, const QVariant &valu
     double x3 = mSelectedFeature->vertexMap().at( index.row() + 1 )->point().x();
     double y3 = mSelectedFeature->vertexMap().at( index.row() + 1 )->point().y();
 
-    QgsPointV2 result;
-    if ( QgsGeometryUtils::segmentMidPoint( QgsPointV2( x1, y1 ), QgsPointV2( x3, y3 ), result, r, QgsPointV2( x2, y2 ) ) )
+    QgsPoint result;
+    if ( QgsGeometryUtils::segmentMidPoint( QgsPoint( x1, y1 ), QgsPoint( x3, y3 ), result, r, QgsPoint( x2, y2 ) ) )
     {
       x = result.x();
       y = result.y();
@@ -225,7 +225,7 @@ bool QgsNodeEditorModel::setData( const QModelIndex &index, const QVariant &valu
   }
   double z = ( index.column() == mZCol ? value.toDouble() : mSelectedFeature->vertexMap().at( index.row() )->point().z() );
   double m = ( index.column() == mMCol ? value.toDouble() : mSelectedFeature->vertexMap().at( index.row() )->point().m() );
-  QgsPointV2 p( QgsWkbTypes::PointZM, x, y, z, m );
+  QgsPoint p( QgsWkbTypes::PointZM, x, y, z, m );
 
   mLayer->beginEditCommand( QObject::tr( "Moved vertices" ) );
   mLayer->moveVertex( p, mSelectedFeature->featureId(), index.row() );
@@ -260,9 +260,9 @@ bool QgsNodeEditorModel::calcR( int row, double &r, double &minRadius ) const
   if ( !curvePoint )
     return false;
 
-  const QgsPointV2 &p1 = mSelectedFeature->vertexMap().at( row - 1 )->point();
-  const QgsPointV2 &p2 = mSelectedFeature->vertexMap().at( row )->point();
-  const QgsPointV2 &p3 = mSelectedFeature->vertexMap().at( row + 1 )->point();
+  const QgsPoint &p1 = mSelectedFeature->vertexMap().at( row - 1 )->point();
+  const QgsPoint &p2 = mSelectedFeature->vertexMap().at( row )->point();
+  const QgsPoint &p3 = mSelectedFeature->vertexMap().at( row + 1 )->point();
 
   double cx, cy;
   QgsGeometryUtils::circleCenterRadius( p1, p2, p3, r, cx, cy );
@@ -365,10 +365,10 @@ void QgsNodeEditor::zoomToNode( int idx )
 {
   double x = mSelectedFeature->vertexMap().at( idx )->point().x();
   double y = mSelectedFeature->vertexMap().at( idx )->point().y();
-  QgsPoint newCenter( x, y );
+  QgsPointXY newCenter( x, y );
 
   QgsCoordinateTransform t( mLayer->crs(), mCanvas->mapSettings().destinationCrs() );
-  QgsPoint tCenter = t.transform( newCenter );
+  QgsPointXY tCenter = t.transform( newCenter );
 
   QPolygonF ext = mCanvas->mapSettings().visiblePolygon();
   //close polygon

@@ -53,7 +53,7 @@ if [ -z "$MODIFIED" ]; then
   exit 0
 fi
 
-${TOPLEVEL}/scripts/spell_check/check_spelling.sh $MODIFIED
+[ -x ${TOPLEVEL}/scripts/spell_check/check_spelling.sh ] && ${TOPLEVEL}/scripts/spell_check/check_spelling.sh $MODIFIED
 
 # save original changes
 REV=$(git log -n1 --pretty=%H)
@@ -111,24 +111,19 @@ for f in $MODIFIED; do
   # if cpp header
   if [[ $f =~ ^src\/(core|gui|analysis|server)\/.*\.h$ ]]; then
     # look if corresponding SIP file
-    #echo $f
     sip_include=$(${GP}sed -r 's/^src\/(\w+)\/.*$/python\/\1\/\1.sip/' <<< $f )
     sip_file=$(${GP}sed -r 's/^src\/(core|gui|analysis|server)\///; s/\.h$/.sip/' <<<$f )
-    if grep -Exq "^\s*%Include $sip_file" ${TOPLEVEL}/$sip_include ; then
-      #echo "in SIP"
+    module=$(${GP}sed -r 's/^src\/(core|gui|analysis|server)\/.*$/\1/' <<<$f )
+    if grep -Fq "$sip_file" ${TOPLEVEL}/python/${module}/${module}_auto.sip; then
       sip_file=$(${GP}sed -r 's/^src\///; s/\.h$/.sip/' <<<$f )
-      # check it is not blacklisted (i.e. manualy SIP)
-      if ! grep -Fxq "$sip_file" python/auto_sip.blacklist; then
-        #echo "automatic file"
-        m=python/$sip_file.$REV.prepare
-        touch python/$sip_file
-        cp python/$sip_file $m
-        ${TOPLEVEL}/scripts/sipify.pl $f > python/$sip_file
-        if ! diff -u $m python/$sip_file >>$SIPIFYDIFF; then
-          echo "python/$sip_file is not up to date"
-        fi
-        rm $m
+      m=python/$sip_file.$REV.prepare
+      touch python/$sip_file
+      cp python/$sip_file $m
+      ${TOPLEVEL}/scripts/sipify.pl $f > python/$sip_file
+      if ! diff -u $m python/$sip_file >>$SIPIFYDIFF; then
+        echo "python/$sip_file is not up to date"
       fi
+      rm $m
     fi
   fi
 done
@@ -152,4 +147,4 @@ exec git diff-index --check --cached HEAD --
 
 exit 0
 
-# vim: set ts=8 noexpandtab :
+# vim: set ts=2 expandtab :

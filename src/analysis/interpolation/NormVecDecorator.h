@@ -38,13 +38,13 @@ class ANALYSIS_EXPORT NormVecDecorator: public TriDecorator
     NormVecDecorator( Triangulation *tin );
     virtual ~NormVecDecorator();
     //! Adds a point to the triangulation
-    int addPoint( Point3D *p ) override;
+    int addPoint( QgsPoint *p ) override;
     //! Calculates the normal at a point on the surface and assigns it to 'result'. Returns true in case of success and false in case of failure
-    bool calcNormal( double x, double y, Vector3D *result ) override;
+    bool calcNormal( double x, double y, Vector3D *result SIP_OUT ) override;
     //! Calculates the normal of a triangle-point for the point with coordinates x and y. This is needed, if a point is on a break line and there is no unique normal stored in 'mNormVec'. Returns false, it something went wrong and true otherwise
-    bool calcNormalForPoint( double x, double y, int point, Vector3D *result );
+    bool calcNormalForPoint( double x, double y, int point, Vector3D *result SIP_OUT );
     //! Calculates x-, y and z-value of the point on the surface and assigns it to 'result'. Returns true in case of success and flase in case of failure
-    bool calcPoint( double x, double y, Point3D *result ) override;
+    bool calcPoint( double x, double y, QgsPoint *result SIP_OUT ) override;
     //! Eliminates the horizontal triangles by swapping or by insertion of new points. If alreadyestimated is true, a re-estimation of the normals will be done
     virtual void eliminateHorizontalTriangles() override;
     //! Estimates the first derivative a point. Return true in case of succes and false otherwise
@@ -54,12 +54,9 @@ class ANALYSIS_EXPORT NormVecDecorator: public TriDecorator
     //! Returns a pointer to the normal vector for the point with the number n
     Vector3D *getNormal( int n ) const;
     //! Finds out, in which triangle a point with coordinates x and y is and assigns the triangle points to p1, p2, p3 and the estimated normals to v1, v2, v3. The vectors are normally taken from 'mNormVec', except if p1, p2 or p3 is a point on a breakline. In this case, the normal is calculated on-the-fly. Returns false, if something went wrong and true otherwise
-    bool getTriangle( double x, double y, Point3D *p1 SIP_OUT, Vector3D *v1 SIP_OUT, Point3D *p2 SIP_OUT, Vector3D *v2 SIP_OUT, Point3D *p3 SIP_OUT, Vector3D *v3 SIP_OUT );
-
-    /** This function behaves similar to the one above. Additionally, the numbers of the points are returned (ptn1, ptn2, ptn3) as well as the PointStates of the triangle points (state1, state2, state3)
-      * \note not available in Python bindings
-     */
-    bool getTriangle( double x, double y, Point3D *p1, int *ptn1, Vector3D *v1, PointState *state1, Point3D *p2, int *ptn2, Vector3D *v2, PointState *state2, Point3D *p3, int *ptn3, Vector3D *v3, PointState *state3 ) SIP_SKIP;
+    bool getTriangle( double x, double y, QgsPoint *p1 SIP_OUT, Vector3D *v1 SIP_OUT, QgsPoint *p2 SIP_OUT, Vector3D *v2 SIP_OUT, QgsPoint *p3 SIP_OUT, Vector3D *v3 SIP_OUT )  SIP_PYNAME( getTriangleVertices );
+    //! This function behaves similar to the one above. Additionally, the numbers of the points are returned (ptn1, ptn2, ptn3) as well as the PointStates of the triangle points (state1, state2, state3)
+    bool getTriangle( double x, double y, QgsPoint *p1 SIP_OUT, int *ptn1 SIP_OUT, Vector3D *v1 SIP_OUT, PointState *state1 SIP_OUT, QgsPoint *p2 SIP_OUT, int *ptn2 SIP_OUT, Vector3D *v2 SIP_OUT, PointState *state2 SIP_OUT, QgsPoint *p3 SIP_OUT, int *ptn3 SIP_OUT, Vector3D *v3 SIP_OUT, PointState *state3 SIP_OUT );
     //! Returns the state of the point with the number 'pointno'
     PointState getState( int pointno ) const;
     //! Sets an interpolator
@@ -84,6 +81,8 @@ class ANALYSIS_EXPORT NormVecDecorator: public TriDecorator
     //! Sets the state (BreakLine, Normal, EndPoint) of a point
     void setState( int pointno, PointState s );
 };
+
+#ifndef SIP_RUN
 
 inline NormVecDecorator::NormVecDecorator(): TriDecorator(), mInterpolator( nullptr ), mNormVec( new QVector<Vector3D*>( DEFAULT_STORAGE_FOR_NORMALS ) ), mPointState( new QVector<PointState>( DEFAULT_STORAGE_FOR_NORMALS ) )
 {
@@ -112,5 +111,7 @@ inline Vector3D *NormVecDecorator::getNormal( int n ) const
     return nullptr;
   }
 }
+
+#endif
 
 #endif

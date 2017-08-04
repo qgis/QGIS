@@ -16,6 +16,8 @@
 #ifndef QGSCONNECTIONPOOL_H
 #define QGSCONNECTIONPOOL_H
 
+#define SIP_NO_FILE
+
 #include <QCoreApplication>
 #include <QMap>
 #include <QMutex>
@@ -47,7 +49,7 @@
  * - having handleConnectionExpired() slot that calls onConnectionExpired()
  * - having startExpirationTimer(), stopExpirationTimer() slots to start/stop the expiration timer
  *
- * For an example on how to use the template class, have a look at the implementation in postgres/spatialite providers.
+ * For an example on how to use the template class, have a look at the implementation in Postgres/SpatiaLite providers.
  * \note not available in Python bindings
  */
 template <typename T>

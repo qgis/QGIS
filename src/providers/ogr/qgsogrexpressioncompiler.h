@@ -16,9 +16,11 @@
 #ifndef QGSOGREXPRESSIONCOMPILER_H
 #define QGSOGREXPRESSIONCOMPILER_H
 
-#include "qgsexpression.h"
 #include "qgsogrfeatureiterator.h"
 #include "qgssqlexpressioncompiler.h"
+
+class QgsExpressionNode;
+class QgsExpression;
 
 class QgsOgrExpressionCompiler : public QgsSqlExpressionCompiler
 {
@@ -30,7 +32,7 @@ class QgsOgrExpressionCompiler : public QgsSqlExpressionCompiler
 
   protected:
 
-    virtual Result compileNode( const QgsExpression::Node *node, QString &str ) override;
+    virtual Result compileNode( const QgsExpressionNode *node, QString &str ) override;
     virtual QString quotedIdentifier( const QString &identifier ) override;
     virtual QString quotedValue( const QVariant &value, bool &ok ) override;
     virtual QString castToReal( const QString &value ) const override;

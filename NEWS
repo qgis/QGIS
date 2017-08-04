@@ -1,6 +1,6 @@
 QGIS News
 Change history for the QGIS Project
-Saturday April 29, 2017
+Friday July 14, 2017
 
 
 ------------------------------------------------------------------------
@@ -39,8 +39,8 @@ Saturday April 29, 2017
 ------------------------------------------------------------------------
 
 
-Last Updated: Saturday April 29, 2017
-Last Change : Saturday April 29, 2017
+Last Updated: Friday July 14, 2017
+Last Change : Friday July 14, 2017
 
 
   1. What's new in Version 2.16 'Nødebo'?
@@ -511,7 +511,7 @@ key new features.
       normal map view as well as in print composer.
 - HTML support has been added map composer label item to give you even
       more control over your final maps. HTML labels support full css styles
-      sheets, html, and even javascript if you are that way inclined.
+      sheets, html, and even JavaScript if you are that way inclined.
 - The labeling system has been totally overhauled - it now includes many
       new features such as drop shadows, 'highway shields', many more data bound
       options, and various performance enhancements. We are slowly doing away
@@ -800,7 +800,7 @@ changed so we will just provide a bullet list of key new features here.
  - Make NULL value string representation configurable.
  - Fix feature updates in feature form from attribute table.
  - Add support for NULL values in value maps (comboboxes).
- - Use layer names instead of ids in drop down list when loading value maps from layers.
+ - Use layer names instead of ids in drop-down list when loading value maps from layers.
  - Support feature form expression fields: line edits on the form which
       name prefix "expr_" are evaluated. Their value is interpreted as field
       calculator string and replaced with the calculated value.
@@ -1526,7 +1526,7 @@ under construction.
     in ogr provider
 - 2004-12-05 [gsherman] 0.6.0rc2 Fixed bug 1079392 that caused QGIS to crash when a query was entered that
  resulted in the layer being created with no records. Additional validation
- of the SQL query was added to the query builder.  When Ok is clicked on
+ of the SQL query was added to the query builder.  When OK is clicked on
  the builder dialog, the query is sent to the database and the result
  checked to ensure that it will create a valid PostreSQL layer.  Added tr
  to a number of strings that weren't prepared for translation in the vector
@@ -1695,7 +1695,7 @@ Added Simon splash screen
 Fixed command line loading bug to eliminate bogus warning for vector layers
 Modified splashscreen.cpp to allow specification of x,y for text drawing on
    the splash image
-Imperfectly fixed problem where postgis attributes aren't displayed if the
+Imperfectly fixed problem where PostGIS attributes aren't displayed if the
    primary key is not of type int4 (bug 1042706).
 Added Latvian translation file (untranslated at present)
 
@@ -2128,7 +2128,7 @@ not need src parameter (this can be obtained from painter->device()).
 More work on print system - still only works well on A4 landscape.
 
 Northarrow and copyright label plugins now hidethemselves before emitting
-  update signals when ok is pressed.
+  update signals when OK is pressed.
 
 QGSMapCanvas can now return the (last calculated) scale using getScale
 
@@ -2540,7 +2540,7 @@ Added QgsRasterLayer::filterLayer which gets called near the end of each of
 
 2004-03-06 [didge] 0.1.0devel6
 Changed configure stuff to write DEFINES in config.h.
-   Postgresql stuff needs testing as I commented the compileflags in src/Makefile.am
+   PostgreSQL stuff needs testing as I commented the compileflags in src/Makefile.am
 Infos will be posted on the devel mailinglist
 
 2004-03-04 [ts] 0.1.0devel5

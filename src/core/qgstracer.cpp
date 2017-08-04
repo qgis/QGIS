@@ -22,7 +22,7 @@
 #include "qgsgeos.h"
 #include "qgslogger.h"
 #include "qgsvectorlayer.h"
-#include "qgscsexception.h"
+#include "qgsexception.h"
 
 #include <queue>
 #include <vector>
@@ -62,10 +62,10 @@ double distance2D( const QgsPolyline &coords )
 
 
 // TODO: move to geometry utils
-double closestSegment( const QgsPolyline &pl, const QgsPoint &pt, int &vertexAfter, double epsilon )
+double closestSegment( const QgsPolyline &pl, const QgsPointXY &pt, int &vertexAfter, double epsilon )
 {
   double sqrDist = std::numeric_limits<double>::max();
-  const QgsPoint *pldata = pl.constData();
+  const QgsPointXY *pldata = pl.constData();
   int plcount = pl.count();
   double prevX = pldata[0].x(), prevY = pldata[0].y();
   double segmentPtX, segmentPtY;
@@ -97,7 +97,7 @@ struct QgsTracerGraph
     //! vertices that the edge connects
     int v1, v2;
     //! coordinates of the edge (including endpoints)
-    QVector<QgsPoint> coords;
+    QVector<QgsPointXY> coords;
 
     int otherVertex( int v0 ) const { return v1 == v0 ? v2 : v1; }
     double weight() const { return distance2D( coords ); }
@@ -106,7 +106,7 @@ struct QgsTracerGraph
   struct V
   {
     //! location of the vertex
-    QgsPoint pt;
+    QgsPointXY pt;
     //! indices of adjacent edges (used in Dijkstra algorithm)
     QVector<int> edges;
   };
@@ -127,12 +127,12 @@ QgsTracerGraph *makeGraph( const QVector<QgsPolyline> &edges )
 {
   QgsTracerGraph *g = new QgsTracerGraph();
   g->joinedVertices = 0;
-  QHash<QgsPoint, int> point2vertex;
+  QHash<QgsPointXY, int> point2vertex;
 
   Q_FOREACH ( const QgsPolyline &line, edges )
   {
-    QgsPoint p1( line[0] );
-    QgsPoint p2( line[line.count() - 1] );
+    QgsPointXY p1( line[0] );
+    QgsPointXY p2( line[line.count() - 1] );
 
     int v1 = -1, v2 = -1;
     // get or add vertex 1
@@ -176,10 +176,10 @@ QgsTracerGraph *makeGraph( const QVector<QgsPolyline> &edges )
 }
 
 
-QVector<QgsPoint> shortestPath( const QgsTracerGraph &g, int v1, int v2 )
+QVector<QgsPointXY> shortestPath( const QgsTracerGraph &g, int v1, int v2 )
 {
   if ( v1 == -1 || v2 == -1 )
-    return QVector<QgsPoint>(); // invalid input
+    return QVector<QgsPointXY>(); // invalid input
 
   // priority queue to drive Dijkstra:
   // first of the pair is vertex index, second is distance
@@ -229,17 +229,17 @@ QVector<QgsPoint> shortestPath( const QgsTracerGraph &g, int v1, int v2 )
   }
 
   if ( u != v2 ) // there's no path to the end vertex
-    return QVector<QgsPoint>();
+    return QVector<QgsPointXY>();
 
   //qDebug("dist %f", D[u]);
 
-  QVector<QgsPoint> points;
+  QVector<QgsPointXY> points;
   QList<int> path;
   while ( S[u] != -1 )
   {
     path << S[u];
     const QgsTracerGraph::E &e = g.e[S[u]];
-    QVector<QgsPoint> edgePoints = e.coords;
+    QVector<QgsPointXY> edgePoints = e.coords;
     if ( edgePoints[0] != g.v[u].pt )
       std::reverse( edgePoints.begin(), edgePoints.end() );
     if ( !points.isEmpty() )
@@ -257,7 +257,7 @@ QVector<QgsPoint> shortestPath( const QgsTracerGraph &g, int v1, int v2 )
 }
 
 
-int point2vertex( const QgsTracerGraph &g, const QgsPoint &pt, double epsilon = 1e-6 )
+int point2vertex( const QgsTracerGraph &g, const QgsPointXY &pt, double epsilon = 1e-6 )
 {
   // TODO: use spatial index
 
@@ -272,7 +272,7 @@ int point2vertex( const QgsTracerGraph &g, const QgsPoint &pt, double epsilon = 
 }
 
 
-int point2edge( const QgsTracerGraph &g, const QgsPoint &pt, int &lineVertexAfter, double epsilon = 1e-6 )
+int point2edge( const QgsTracerGraph &g, const QgsPointXY &pt, int &lineVertexAfter, double epsilon = 1e-6 )
 {
   int vertexAfter;
 
@@ -293,7 +293,7 @@ int point2edge( const QgsTracerGraph &g, const QgsPoint &pt, int &lineVertexAfte
 }
 
 
-void splitLinestring( const QgsPolyline &points, const QgsPoint &pt, int lineVertexAfter, QgsPolyline &pts1, QgsPolyline &pts2 )
+void splitLinestring( const QgsPolyline &points, const QgsPointXY &pt, int lineVertexAfter, QgsPolyline &pts1, QgsPolyline &pts2 )
 {
   int count1 = lineVertexAfter;
   int count2 = points.count() - lineVertexAfter;
@@ -310,7 +310,7 @@ void splitLinestring( const QgsPolyline &points, const QgsPoint &pt, int lineVer
 }
 
 
-int joinVertexToGraph( QgsTracerGraph &g, const QgsPoint &pt )
+int joinVertexToGraph( QgsTracerGraph &g, const QgsPointXY &pt )
 {
   // find edge where the point is
   int lineVertexAfter;
@@ -363,7 +363,7 @@ int joinVertexToGraph( QgsTracerGraph &g, const QgsPoint &pt )
 }
 
 
-int pointInGraph( QgsTracerGraph &g, const QgsPoint &pt )
+int pointInGraph( QgsTracerGraph &g, const QgsPointXY &pt )
 {
   // try to use existing vertex in the graph
   int v = point2vertex( g, pt );
@@ -663,13 +663,13 @@ void QgsTracer::onLayerDestroyed( QObject *obj )
   invalidateGraph();
 }
 
-QVector<QgsPoint> QgsTracer::findShortestPath( const QgsPoint &p1, const QgsPoint &p2, PathError *error )
+QVector<QgsPointXY> QgsTracer::findShortestPath( const QgsPointXY &p1, const QgsPointXY &p2, PathError *error )
 {
   init();  // does nothing if the graph exists already
   if ( !mGraph )
   {
     if ( error ) *error = ErrTooManyFeatures;
-    return QVector<QgsPoint>();
+    return QVector<QgsPointXY>();
   }
 
   QTime t;
@@ -681,12 +681,12 @@ QVector<QgsPoint> QgsTracer::findShortestPath( const QgsPoint &p1, const QgsPoin
   if ( v1 == -1 )
   {
     if ( error ) *error = ErrPoint1;
-    return QVector<QgsPoint>();
+    return QVector<QgsPointXY>();
   }
   if ( v2 == -1 )
   {
     if ( error ) *error = ErrPoint2;
-    return QVector<QgsPoint>();
+    return QVector<QgsPointXY>();
   }
 
   QTime t2;
@@ -706,7 +706,7 @@ QVector<QgsPoint> QgsTracer::findShortestPath( const QgsPoint &p1, const QgsPoin
   return points;
 }
 
-bool QgsTracer::isPointSnapped( const QgsPoint &pt )
+bool QgsTracer::isPointSnapped( const QgsPointXY &pt )
 {
   init();  // does nothing if the graph exists already
   if ( !mGraph )

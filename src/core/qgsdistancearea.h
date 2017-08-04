@@ -36,7 +36,7 @@ class QgsCurve;
  *
  * If a valid ellipsoid() has been set for the QgsDistanceArea, all calculations will be
  * performed using ellipsoidal algorithms (e.g. using Vincenty's formulas). If no
- * ellipsoid has been set, all calculations will be performed using cartesian
+ * ellipsoid has been set, all calculations will be performed using Cartesian
  * formulas only. The behavior can be determined by calling willUseEllipsoid().
  *
  * In order to perform accurate calculations, the source coordinate reference system
@@ -167,7 +167,7 @@ class CORE_EXPORT QgsDistanceArea
      * \returns length of line. The units for the returned length can be retrieved by calling lengthUnits().
      * \see lengthUnits()
      */
-    double measureLine( const QList<QgsPoint> &points ) const;
+    double measureLine( const QList<QgsPointXY> &points ) const;
 
     /**
      * Measures the distance between two points.
@@ -176,7 +176,7 @@ class CORE_EXPORT QgsDistanceArea
      * \returns distance between points. The units for the returned distance can be retrieved by calling lengthUnits().
      * \see lengthUnits()
      */
-    double measureLine( const QgsPoint &p1, const QgsPoint &p2 ) const;
+    double measureLine( const QgsPointXY &p1, const QgsPointXY &p2 ) const;
 
     /**
      * Calculates the distance from one point with distance in meters and azimuth (direction)
@@ -193,7 +193,7 @@ class CORE_EXPORT QgsDistanceArea
      * \see sourceCrs()
      * \see computeSpheroidProject()
      */
-    double measureLineProjected( const QgsPoint &p1, double distance = 1, double azimuth = M_PI / 2, QgsPoint *projectedPoint SIP_OUT = nullptr ) const;
+    double measureLineProjected( const QgsPointXY &p1, double distance = 1, double azimuth = M_PI / 2, QgsPointXY *projectedPoint SIP_OUT = nullptr ) const;
 
     /**
      * Returns the units of distance for length calculations made by this object.
@@ -212,12 +212,12 @@ class CORE_EXPORT QgsDistanceArea
     /**
      * Measures the area of the polygon described by a set of points.
      */
-    double measurePolygon( const QList<QgsPoint> &points ) const;
+    double measurePolygon( const QList<QgsPointXY> &points ) const;
 
     /**
      * Computes the bearing (in radians) between two points.
      */
-    double bearing( const QgsPoint &p1, const QgsPoint &p2 ) const;
+    double bearing( const QgsPointXY &p1, const QgsPointXY &p2 ) const;
 
     /**
      * Returns an distance formatted as a friendly string.
@@ -277,13 +277,16 @@ class CORE_EXPORT QgsDistanceArea
      * \note code (and documentation) taken from rttopo project
      * https://git.osgeo.org/gogs/rttopo/librttopo
      * - spheroid_project.spheroid_project(...)
+     * -  Valid bounds checking for degrees (latitude=+- 85.05115) is based values used for
+     * -> 'WGS84 Web Mercator (Auxiliary Sphere)' calculations
+     * --> latitudes outside these bounds cause the calculations to become unstable and can return invalid results
      * \since QGIS 3.0
      * \param p1 - location of first geographic (latitude/longitude) point as degrees.
      * \param distance - distance in meters.
      * \param azimuth - azimuth in radians, clockwise from North
      * \return p2 - location of projected point as longitude/latitude.
      */
-    QgsPoint computeSpheroidProject( const QgsPoint &p1, double distance = 1, double azimuth = M_PI / 2 ) const;
+    QgsPointXY computeSpheroidProject( const QgsPointXY &p1, double distance = 1, double azimuth = M_PI / 2 ) const;
 
   private:
 
@@ -297,16 +300,16 @@ class CORE_EXPORT QgsDistanceArea
      * (the same for course2)
      * \returns distance in meters
      */
-    double computeDistanceBearing( const QgsPoint &p1, const QgsPoint &p2,
+    double computeDistanceBearing( const QgsPointXY &p1, const QgsPointXY &p2,
                                    double *course1 = nullptr, double *course2 = nullptr ) const;
 
     /**
      * Calculates area of polygon on ellipsoid
      * algorithm has been taken from GRASS: gis/area_poly1.c
      */
-    double computePolygonArea( const QList<QgsPoint> &points ) const;
+    double computePolygonArea( const QList<QgsPointXY> &points ) const;
 
-    double computePolygonFlatArea( const QList<QgsPoint> &points ) const;
+    double computePolygonFlatArea( const QList<QgsPointXY> &points ) const;
 
     /**
      * Precalculates some values

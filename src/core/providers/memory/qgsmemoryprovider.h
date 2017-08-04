@@ -13,6 +13,8 @@
  *                                                                         *
  ***************************************************************************/
 
+#define SIP_NO_FILE
+
 #include "qgsvectordataprovider.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgsfields.h"
@@ -50,7 +52,7 @@ class QgsMemoryProvider : public QgsVectorDataProvider
     virtual QgsWkbTypes::Type wkbType() const override;
     virtual long featureCount() const override;
     virtual QgsFields fields() const override;
-    virtual bool addFeatures( QgsFeatureList &flist ) override;
+    virtual bool addFeatures( QgsFeatureList &flist, QgsFeatureSink::Flags flags = 0 ) override;
     virtual bool deleteFeatures( const QgsFeatureIds &id ) override;
     virtual bool addAttributes( const QList<QgsField> &attributes ) override;
     virtual bool renameAttributes( const QgsFieldNameMap &renamedAttributes ) override;
@@ -68,13 +70,9 @@ class QgsMemoryProvider : public QgsVectorDataProvider
     QString name() const override;
     QString description() const override;
     virtual QgsRectangle extent() const override;
+    void updateExtents() override;
     bool isValid() const override;
     virtual QgsCoordinateReferenceSystem crs() const override;
-
-  protected:
-
-    // called when added / removed features or geometries has been changed
-    void updateExtent();
 
   private:
     // Coordinate reference system
@@ -83,7 +81,7 @@ class QgsMemoryProvider : public QgsVectorDataProvider
     // fields
     QgsFields mFields;
     QgsWkbTypes::Type mWkbType;
-    QgsRectangle mExtent;
+    mutable QgsRectangle mExtent;
 
     // features
     QgsFeatureMap mFeatures;

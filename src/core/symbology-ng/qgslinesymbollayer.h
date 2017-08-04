@@ -61,7 +61,7 @@ class CORE_EXPORT QgsSimpleLineSymbolLayer : public QgsLineSymbolLayer
 
     QgsStringMap properties() const override;
 
-    QgsSimpleLineSymbolLayer *clone() const override;
+    QgsSimpleLineSymbolLayer *clone() const override SIP_FACTORY;
 
     void toSld( QDomDocument &doc, QDomElement &element, const QgsStringMap &props ) const override;
 
@@ -201,7 +201,7 @@ class CORE_EXPORT QgsMarkerLineSymbolLayer : public QgsLineSymbolLayer
 
     QgsStringMap properties() const override;
 
-    QgsMarkerLineSymbolLayer *clone() const override;
+    QgsMarkerLineSymbolLayer *clone() const override SIP_FACTORY;
 
     void toSld( QDomDocument &doc, QDomElement &element, const QgsStringMap &props ) const override;
 
@@ -209,7 +209,7 @@ class CORE_EXPORT QgsMarkerLineSymbolLayer : public QgsLineSymbolLayer
     virtual QColor color() const override;
 
     QgsSymbol *subSymbol() override;
-    bool setSubSymbol( QgsSymbol *symbol ) override;
+    bool setSubSymbol( QgsSymbol *symbol SIP_TRANSFER ) override;
 
     virtual void setWidth( double width ) override;
     virtual double width() const override;
@@ -328,7 +328,7 @@ class CORE_EXPORT QgsMarkerLineSymbolLayer : public QgsLineSymbolLayer
 
     QSet<QString> usedAttributes( const QgsRenderContext &context ) const override;
 
-    void setDataDefinedProperty( Property key, const QgsProperty &property ) override;
+    void setDataDefinedProperty( QgsSymbolLayer::Property key, const QgsProperty &property ) override;
 
 
   protected:
@@ -349,6 +349,10 @@ class CORE_EXPORT QgsMarkerLineSymbolLayer : public QgsLineSymbolLayer
     QgsMapUnitScale mOffsetAlongLineMapUnitScale;
 
   private:
+
+#ifdef SIP_RUN
+    QgsMarkerLineSymbolLayer( const QgsMarkerLineSymbolLayer &other );
+#endif
 
     /** Renders a marker by offsetting a vertex along the line by a specified distance.
      * \param points vertices making up the line

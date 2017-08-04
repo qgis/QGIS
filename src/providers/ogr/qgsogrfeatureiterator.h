@@ -43,6 +43,8 @@ class QgsOgrFeatureSource : public QgsAbstractFeatureSource
     QgsFields mFieldsWithoutFid;
     OGRwkbGeometryType mOgrGeometryTypeFilter;
     QString mDriverName;
+    QgsCoordinateReferenceSystem mCrs;
+    QgsWkbTypes::Type mWkbType = QgsWkbTypes::Unknown;
 
     friend class QgsOgrFeatureIterator;
     friend class QgsOgrExpressionCompiler;
@@ -80,6 +82,9 @@ class QgsOgrFeatureIterator : public QgsAbstractFeatureIteratorFromSource<QgsOgr
     bool mExpressionCompiled;
     QgsFeatureIds mFilterFids;
     QgsFeatureIds::const_iterator mFilterFidsIt;
+
+    QgsRectangle mFilterRect;
+    QgsCoordinateTransform mTransform;
 
     bool fetchFeatureWithId( QgsFeatureId id, QgsFeature &feature ) const;
 };

@@ -19,46 +19,50 @@ ADD_SUBDIRECTORY(services)
 ########################################################
 # Files
 
-SET(qgis_mapserv_SRCS
+SET(QGIS_SERVER_SRCS
+  qgsbufferserverrequest.cpp
+  qgsbufferserverresponse.cpp
   qgscapabilitiescache.cpp
   qgsconfigcache.cpp
-  qgsrequesthandler.cpp
-  qgsserversettings.cpp
-  qgsserverexception.cpp
-  qgsmslayercache.cpp
-  qgsmslayerbuilder.cpp
+  qgsconfigparserutils.cpp
+  qgsfcgiserverrequest.cpp
+  qgsfcgiserverresponse.cpp
+  qgsfilterresponsedecorator.cpp
+  qgsfilterrestorer.cpp
+  qgshostedrdsbuilder.cpp
   qgshostedvdsbuilder.cpp
   qgsinterpolationlayerbuilder.cpp
-  qgsremoteowsbuilder.cpp
-  qgshostedrdsbuilder.cpp
+  qgsmslayerbuilder.cpp
+  qgsmslayercache.cpp
   qgsremotedatasourcebuilder.cpp
+  qgsremoteowsbuilder.cpp
+  qgsrequesthandler.cpp
   qgssentdatasourcebuilder.cpp
+  qgsserver.cpp
+  qgsserverexception.cpp
+  qgsserverinterface.cpp
+  qgsserverinterfaceimpl.cpp
   qgsserverlogger.cpp
-  qgswmsconfigparser.cpp
-  qgswmsprojectparser.cpp
   qgsserverprojectparser.cpp
   qgsserverprojectutils.cpp
-  qgssldconfigparser.cpp
-  qgsconfigparserutils.cpp
-  qgsserver.cpp
+  qgsserverrequest.cpp
+  qgsserverresponse.cpp
+  qgsserversettings.cpp
   qgsservice.cpp
   qgsservicemodule.cpp
   qgsservicenativeloader.cpp
   qgsserviceregistry.cpp
-  qgsserverrequest.cpp
-  qgsserverresponse.cpp
-  qgsfcgiserverresponse.cpp
-  qgsfcgiserverrequest.cpp
-  qgsbufferserverresponse.cpp
-  qgsbufferserverrequest.cpp
-  qgsfilterresponsedecorator.cpp
-  qgsserverinterface.cpp
-  qgsserverinterfaceimpl.cpp
-  qgsfilterrestorer.cpp
+  qgssldconfigparser.cpp
+  qgswmsconfigparser.cpp
+  qgswmsprojectparser.cpp
+)
+
+SET (QGIS_SERVER_HDRS
+  qgsmapserviceexception.h
 )
 
 
-SET (qgis_mapserv_MOC_HDRS
+SET (QGIS_SERVER_MOC_HDRS
   qgscapabilitiescache.h
   qgsconfigcache.h
   # qgshttptransaction.h
@@ -73,10 +77,10 @@ SET (qgis_mapserv_MOC_HDRS
 # qgis_server library
 
 
-SET(qgis_mapserv_MOC_HDRS ${qgis_mapserv_MOC_HDRS})
+SET(QGIS_SERVER_MOC_HDRS ${QGIS_SERVER_MOC_HDRS})
 
 IF (WITH_SERVER_PLUGINS)
-  SET(qgis_mapserv_SRCS ${qgis_mapserv_SRCS}
+  SET(QGIS_SERVER_SRCS ${QGIS_SERVER_SRCS}
     qgsserverplugins.cpp
     qgsserverfilter.cpp
     qgsaccesscontrolfilter.cpp
@@ -84,12 +88,12 @@ IF (WITH_SERVER_PLUGINS)
   )
 ENDIF (WITH_SERVER_PLUGINS)
 
-QT5_WRAP_CPP(qgis_mapserv_MOC_SRCS ${qgis_mapserv_MOC_HDRS})
+QT5_WRAP_CPP(QGIS_SERVER_MOC_SRCS ${QGIS_SERVER_MOC_HDRS})
 
 IF(MSVC)
-  SET_SOURCE_FILES_PROPERTIES(${qgis_mapserv_MOC_SRCS} PROPERTIES COMPILE_FLAGS "/wd4512 /wd4996" )
+  SET_SOURCE_FILES_PROPERTIES(${QGIS_SERVER_MOC_SRCS} PROPERTIES COMPILE_FLAGS "/wd4512 /wd4996" )
 ELSE(MSVC)
-  SET_SOURCE_FILES_PROPERTIES(${qgis_mapserv_MOC_SRCS} PROPERTIES COMPILE_FLAGS "-Wno-deprecated-declarations" )
+  SET_SOURCE_FILES_PROPERTIES(${QGIS_SERVER_MOC_SRCS} PROPERTIES COMPILE_FLAGS "-Wno-deprecated-declarations" )
 ENDIF(MSVC)
 
 INCLUDE_DIRECTORIES(SYSTEM
@@ -109,30 +113,27 @@ INCLUDE_DIRECTORIES(SYSTEM
   ${QTKEYCHAIN_INCLUDE_DIR}
 )
 INCLUDE_DIRECTORIES(
+  ${CMAKE_SOURCE_DIR}/src/core
+  ${CMAKE_SOURCE_DIR}/src/core/auth
+  ${CMAKE_SOURCE_DIR}/src/core/dxf
+  ${CMAKE_SOURCE_DIR}/src/core/expression
+  ${CMAKE_SOURCE_DIR}/src/core/geometry
+  ${CMAKE_SOURCE_DIR}/src/core/metadata
+  ${CMAKE_SOURCE_DIR}/src/core/raster
+  ${CMAKE_SOURCE_DIR}/src/core/symbology-ng
+  ${CMAKE_SOURCE_DIR}/src/core/composer
+  ${CMAKE_SOURCE_DIR}/src/core/layertree
+  ${CMAKE_SOURCE_DIR}/src/analysis/interpolation
+  ${CMAKE_SOURCE_DIR}/src/plugins/diagram_overlay
+  ${CMAKE_SOURCE_DIR}/src/python
+
   ${CMAKE_BINARY_DIR}/src/core
-  ${CMAKE_BINARY_DIR}/src/gui
   ${CMAKE_BINARY_DIR}/src/python
   ${CMAKE_BINARY_DIR}/src/analysis
   ${CMAKE_BINARY_DIR}/src/server
-  ../core
-  ../core/auth
-  ../core/dxf
-  ../core/geometry
-  ../core/metadata
-  ../core/raster
-  ../core/symbology-ng
-  ../core/composer
-  ../core/layertree
-  ../gui
-  ../gui/editorwidgets
-  ../gui/editorwidgets/core
-  ../analysis/interpolation
-  ../plugins/diagram_overlay
-  ../python
-  .
 )
 
-ADD_LIBRARY(qgis_server SHARED ${qgis_mapserv_SRCS} ${qgis_mapserv_MOC_SRCS} ${qgis_mapserv_HDRS} ${qgis_mapserv_MOC_HDRS})
+ADD_LIBRARY(qgis_server SHARED ${QGIS_SERVER_SRCS} ${QGIS_SERVER_MOC_SRCS} ${QGIS_SERVER_HDRS} ${QGIS_SERVER_MOC_HDRS})
 
 GENERATE_EXPORT_HEADER(
   qgis_server
@@ -150,7 +151,6 @@ ENDIF (NOT ANDROID)
 
 TARGET_LINK_LIBRARIES(qgis_server
   qgis_core
-  qgis_gui
   qgis_analysis
   ${PROJ_LIBRARY}
   ${FCGI_LIBRARY}
@@ -181,10 +181,10 @@ INSTALL(TARGETS qgis_server
 # end qgis_server library
 
 # add test resources, e.g. standard test font
-SET(qgis_mapserv_TESTRCCS ../../tests/testdata/testdata.qrc)
-QT5_ADD_RESOURCES(qgis_mapserv_TESTRCC_SRCS ${qgis_mapserv_TESTRCCS})
+SET(QGIS_SERVER_TESTRCCS ../../tests/testdata/testdata.qrc)
+QT5_ADD_RESOURCES(QGIS_SERVER_TESTRCC_SRCS ${QGIS_SERVER_TESTRCCS})
 
-ADD_EXECUTABLE(qgis_mapserv.fcgi qgis_map_serv.cpp ${qgis_mapserv_TESTRCC_SRCS})
+ADD_EXECUTABLE(qgis_mapserv.fcgi qgis_map_serv.cpp ${QGIS_SERVER_TESTRCC_SRCS})
 
 TARGET_LINK_LIBRARIES(qgis_mapserv.fcgi qgis_server)
 

@@ -48,11 +48,7 @@
 
 extern "C"
 {
-#if GRASS_VERSION_MAJOR < 7
-#include <grass/Vect.h>
-#else
 #include <grass/vector.h>
-#endif
 #include <grass/version.h>
 }
 
@@ -607,12 +603,7 @@ void QgsGrassPlugin::newVector()
     Map = QgsGrass::vectNewMapStruct();
     Vect_open_new( Map, name.toUtf8().data(), 0 );
 
-#if defined(GRASS_VERSION_MAJOR) && defined(GRASS_VERSION_MINOR) && \
-  ( ( GRASS_VERSION_MAJOR == 6 && GRASS_VERSION_MINOR >= 4 ) || GRASS_VERSION_MAJOR > 6 )
     Vect_build( Map );
-#else
-    Vect_build( Map, stderr );
-#endif
     Vect_set_release_support( Map );
     Vect_close( Map );
     QgsGrass::vectDestroyMapStruct( Map );
@@ -687,7 +678,7 @@ void QgsGrassPlugin::displayRegion()
     return;
   }
 
-  QgsRectangle rect( QgsPoint( window.west, window.north ), QgsPoint( window.east, window.south ) );
+  QgsRectangle rect( QgsPointXY( window.west, window.north ), QgsPointXY( window.east, window.south ) );
 
   QPen regionPen = QgsGrass::regionPen();
   mRegionBand->setColor( regionPen.color() );

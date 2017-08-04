@@ -14,17 +14,24 @@ SET (wms_SRCS
   qgswmsgetmap.cpp
   qgswmsgetprint.cpp
   qgswmsgetschemaextension.cpp
-  qgswmsgetstyle.cpp
   qgswmsgetstyles.cpp
   qgsmaprendererjobproxy.cpp
   qgsmediancut.cpp
   qgswmsrenderer.cpp
+  qgswmsparameters.cpp
+  qgslayerrestorer.cpp
+)
+
+SET (wms_MOC_HDRS
+  qgswmsparameters.h
 )
 
 ########################################################
 # Build
 
-ADD_LIBRARY (wms MODULE ${wms_SRCS})
+QT5_WRAP_CPP(wms_MOC_SRCS ${wms_MOC_HDRS})
+
+ADD_LIBRARY (wms MODULE ${wms_SRCS} ${wms_MOC_SRCS} ${wms_MOC_HDRS})
 
 
 INCLUDE_DIRECTORIES(SYSTEM
@@ -35,26 +42,30 @@ INCLUDE_DIRECTORIES(SYSTEM
 )
 
 INCLUDE_DIRECTORIES(
+  ${CMAKE_SOURCE_DIR}/src/core
+  ${CMAKE_SOURCE_DIR}/src/core/annotations
+  ${CMAKE_SOURCE_DIR}/src/core/expression
+  ${CMAKE_SOURCE_DIR}/src/core/dxf
+  ${CMAKE_SOURCE_DIR}/src/core/expression
+  ${CMAKE_SOURCE_DIR}/src/core/geometry
+  ${CMAKE_SOURCE_DIR}/src/core/metadata
+  ${CMAKE_SOURCE_DIR}/src/core/raster
+  ${CMAKE_SOURCE_DIR}/src/core/symbology-ng
+  ${CMAKE_SOURCE_DIR}/src/core/composer
+  ${CMAKE_SOURCE_DIR}/src/core/layertree
+  ${CMAKE_SOURCE_DIR}/src/gui
+  ${CMAKE_SOURCE_DIR}/src/gui/editorwidgets
+  ${CMAKE_SOURCE_DIR}/src/gui/editorwidgets/core
+  ../..
+  ..
+  .
+
   ${CMAKE_BINARY_DIR}/src/core
   ${CMAKE_BINARY_DIR}/src/gui
   ${CMAKE_BINARY_DIR}/src/python
   ${CMAKE_BINARY_DIR}/src/analysis
   ${CMAKE_BINARY_DIR}/src/server
   ${CMAKE_CURRENT_BINARY_DIR}
-  ../../../core
-  ../../../core/dxf
-  ../../../core/geometry
-  ../../../core/metadata
-  ../../../core/raster
-  ../../../core/symbology-ng
-  ../../../core/composer
-  ../../../core/layertree
-  ../../../gui
-  ../../../gui/editorwidgets
-  ../../../gui/editorwidgets/core
-  ../..
-  ..
-  .
 )
 
 

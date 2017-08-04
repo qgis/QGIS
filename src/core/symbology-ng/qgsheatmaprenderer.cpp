@@ -153,7 +153,7 @@ bool QgsHeatmapRenderer::renderFeature( QgsFeature &feature, QgsRenderContext &c
   //loop through all points in multipoint
   for ( QgsMultiPoint::const_iterator pointIt = multiPoint.constBegin(); pointIt != multiPoint.constEnd(); ++pointIt )
   {
-    QgsPoint pixel = context.mapToPixel().transform( *pointIt );
+    QgsPointXY pixel = context.mapToPixel().transform( *pointIt );
     int pointX = pixel.x() / mRenderQuality;
     int pointY = pixel.y() / mRenderQuality;
     for ( int x = qMax( pointX - mRadiusPixels, 0 ); x < qMin( pointX + mRadiusPixels, width ); ++x )
@@ -306,8 +306,9 @@ void QgsHeatmapRenderer::modifyRequestExtent( QgsRectangle &extent, QgsRenderCon
   extent.setYMaximum( extent.yMaximum() + extension );
 }
 
-QgsFeatureRenderer *QgsHeatmapRenderer::create( QDomElement &element )
+QgsFeatureRenderer *QgsHeatmapRenderer::create( QDomElement &element, const QgsReadWriteContext &context )
 {
+  Q_UNUSED( context );
   QgsHeatmapRenderer *r = new QgsHeatmapRenderer();
   r->setRadius( element.attribute( QStringLiteral( "radius" ), QStringLiteral( "50.0" ) ).toFloat() );
   r->setRadiusUnit( static_cast< QgsUnitTypes::RenderUnit >( element.attribute( QStringLiteral( "radius_unit" ), QStringLiteral( "0" ) ).toInt() ) );
@@ -324,8 +325,9 @@ QgsFeatureRenderer *QgsHeatmapRenderer::create( QDomElement &element )
   return r;
 }
 
-QDomElement QgsHeatmapRenderer::save( QDomDocument &doc )
+QDomElement QgsHeatmapRenderer::save( QDomDocument &doc, const QgsReadWriteContext &context )
 {
+  Q_UNUSED( context );
   QDomElement rendererElem = doc.createElement( RENDERER_TAG_NAME );
   rendererElem.setAttribute( QStringLiteral( "type" ), QStringLiteral( "heatmapRenderer" ) );
   rendererElem.setAttribute( QStringLiteral( "radius" ), QString::number( mRadius ) );

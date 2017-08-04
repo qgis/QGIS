@@ -190,7 +190,7 @@ Constructs an invalid CRS object
 
     explicit QgsCoordinateReferenceSystem( const long id, CrsType type = PostgisCrsId );
 %Docstring
- Constructor a CRS object using a postgis SRID, an EPSG code or an internal QGIS CRS ID.
+ Constructor a CRS object using a PostGIS SRID, an EPSG code or an internal QGIS CRS ID.
 .. note::
 
    We encourage you to use EPSG code, WKT or Proj4 to describe CRS's in your code
@@ -304,7 +304,7 @@ Allows direct construction of QVariants from QgsCoordinateReferenceSystem.
     bool createFromSrid( const long srid );
 %Docstring
  Sets this CRS by lookup of the given PostGIS SRID in the CRS database.
- \param srid The postgis SRID for the desired spatial reference system.
+ \param srid The PostGIS SRID for the desired spatial reference system.
  :return: True on success else false
 /     // TODO QGIS 3: remove unless really necessary - let's use EPSG codes instead
  :rtype: bool
@@ -463,12 +463,6 @@ Returns whether this CRS is correctly initialized and usable
 %End
 
     bool operator==( const QgsCoordinateReferenceSystem &srs ) const;
-%Docstring
- Overloaded == operator used to compare to CRS's.
-
-  Internally it will use authid() for comparison.
- :rtype: bool
-%End
 
     bool operator!=( const QgsCoordinateReferenceSystem &srs ) const;
 %Docstring

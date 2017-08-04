@@ -32,7 +32,7 @@
 #include "qgsmapcanvas.h"
 #include "qgsgeometry.h"
 #include "qgslogger.h"
-#include "qgspoint.h"
+#include "qgspointxy.h"
 #include "qgsfields.h"
 #include "qgsrectangle.h"
 
@@ -303,7 +303,7 @@ bool eVisGenericEventBrowserGui::initBrowser()
     pbtnNext->setEnabled( true );
   }
 
-  setWindowTitle( tr( "Event Browser - Displaying records 01 of %1" ).arg( mFeatureIds.size(), 2, 10, QChar( '0' ) ) );
+  setWindowTitle( tr( "Event Browser - Displaying Records 01 of %1" ).arg( mFeatureIds.size(), 2, 10, QChar( '0' ) ) );
 
   //Set Options tab gui items
   initOptionsTab();
@@ -533,7 +533,7 @@ void eVisGenericEventBrowserGui::displayImage()
       if ( !myFeature )
         return;
 
-      QgsPoint myPoint = myFeature->geometry().asPoint();
+      QgsPointXY myPoint = myFeature->geometry().asPoint();
       myPoint = mCanvas->mapSettings().layerToMapCoordinates( mVectorLayer, myPoint );
       //keep the extent the same just center the map canvas in the display so our feature is in the middle
       QgsRectangle myRect( myPoint.x() - ( mCanvas->extent().width() / 2 ), myPoint.y() - ( mCanvas->extent().height() / 2 ), myPoint.x() + ( mCanvas->extent().width() / 2 ), myPoint.y() + ( mCanvas->extent().height() / 2 ) );
@@ -806,7 +806,7 @@ void eVisGenericEventBrowserGui::on_buttonboxOptions_clicked( QAbstractButton *b
 }
 
 /**
- * Slot called when the state changes for the chkboxApplyPathRulesToDocs check box.
+ * Slot called when the state changes for the chkboxApplyPathRulesToDocs checkbox.
  * @param state - The new state of the checkbox
  */
 void eVisGenericEventBrowserGui::on_chkboxApplyPathRulesToDocs_stateChanged( int state )
@@ -911,7 +911,7 @@ void eVisGenericEventBrowserGui::on_chkboxDisplayCompassBearing_stateChanged( in
 }
 
 /**
- * Slot called when the state changes for the chkboxEventImagePathRelative check box.
+ * Slot called when the state changes for the chkboxEventImagePathRelative checkbox.
  * @param state - The new state of the checkbox
  */
 void eVisGenericEventBrowserGui::on_chkboxEventImagePathRelative_stateChanged( int state )
@@ -927,7 +927,7 @@ void eVisGenericEventBrowserGui::on_chkboxEventImagePathRelative_stateChanged( i
 }
 
 /**
- * Slot called when the state changes for the chkboxUseOnlyFilename check box.
+ * Slot called when the state changes for the chkboxUseOnlyFilename checkbox.
  * @param state - The new state of the checkbox
  */
 void eVisGenericEventBrowserGui::on_chkboxUseOnlyFilename_stateChanged( int state )
@@ -997,7 +997,7 @@ void eVisGenericEventBrowserGui::on_pbtnNext_clicked()
     pbtnPrevious->setEnabled( true );
     mCurrentFeatureIndex++;
 
-    setWindowTitle( tr( "Event Browser - Displaying records %1 of %2" )
+    setWindowTitle( tr( "Event Browser - Displaying Records %1 of %2" )
                     .arg( mCurrentFeatureIndex + 1, 2, 10, QChar( '0' ) ).arg( mFeatureIds.size(), 2, 10, QChar( '0' ) ) );
 
     loadRecord();
@@ -1019,7 +1019,7 @@ void eVisGenericEventBrowserGui::on_pbtnPrevious_clicked()
     pbtnNext->setEnabled( true );
     mCurrentFeatureIndex--;
 
-    setWindowTitle( tr( "Event Browser - Displaying records %1 of %2" )
+    setWindowTitle( tr( "Event Browser - Displaying Records %1 of %2" )
                     .arg( mCurrentFeatureIndex + 1, 2, 10, QChar( '0' ) ).arg( mFeatureIds.size(), 2, 10, QChar( '0' ) ) );
 
     loadRecord();
@@ -1116,7 +1116,7 @@ void eVisGenericEventBrowserGui::renderSymbol( QPainter *painter )
     if ( !myFeature )
       return;
 
-    QgsPoint myPoint = myFeature->geometry().asPoint();
+    QgsPointXY myPoint = myFeature->geometry().asPoint();
     myPoint = mCanvas->mapSettings().layerToMapCoordinates( mVectorLayer, myPoint );
 
     mCanvas->getCoordinateTransform()->transform( &myPoint );

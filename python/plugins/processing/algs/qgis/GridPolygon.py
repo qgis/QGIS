@@ -30,28 +30,27 @@ import math
 
 from qgis.PyQt.QtGui import QIcon
 from qgis.PyQt.QtCore import QVariant
-from qgis.core import (QgsRectangle,
-                       QgsCoordinateReferenceSystem,
-                       QgsField,
+from qgis.core import (QgsField,
+                       QgsFeatureSink,
                        QgsFeature,
                        QgsGeometry,
-                       QgsPoint,
+                       QgsPointXY,
                        QgsWkbTypes,
+                       QgsProcessing,
+                       QgsProcessingException,
+                       QgsProcessingParameterEnum,
+                       QgsProcessingParameterExtent,
+                       QgsProcessingParameterNumber,
+                       QgsProcessingParameterCrs,
+                       QgsProcessingParameterFeatureSink,
                        QgsFields)
 
-from processing.core.GeoAlgorithm import GeoAlgorithm
-from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
-from processing.core.parameters import ParameterExtent
-from processing.core.parameters import ParameterNumber
-from processing.core.parameters import ParameterSelection
-from processing.core.parameters import ParameterCrs
-from processing.core.outputs import OutputVector
-from processing.tools import dataobjects
+from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 
 pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
 
-class GridPolygon(GeoAlgorithm):
+class GridPolygon(QgisAlgorithm):
     TYPE = 'TYPE'
     EXTENT = 'EXTENT'
     HSPACING = 'HSPACING'
@@ -70,44 +69,52 @@ class GridPolygon(GeoAlgorithm):
     def group(self):
         return self.tr('Vector creation tools')
 
+    def __init__(self):
+        super().__init__()
+
+    def initAlgorithm(self, config=None):
+        self.types = [self.tr('Rectangle (polygon)'),
+                      self.tr('Diamond (polygon)'),
+                      self.tr('Hexagon (polygon)')]
+
+        self.addParameter(QgsProcessingParameterEnum(self.TYPE,
+                                                     self.tr('Grid type'), self.types))
+
+        self.addParameter(QgsProcessingParameterExtent(self.EXTENT, self.tr('Grid extent')))
+
+        self.addParameter(QgsProcessingParameterNumber(self.HSPACING,
+                                                       self.tr('Horizontal spacing'), QgsProcessingParameterNumber.Double,
+                                                       0.0001, False, 0, 1000000000.0))
+        self.addParameter(QgsProcessingParameterNumber(self.VSPACING,
+                                                       self.tr('Vertical spacing'), QgsProcessingParameterNumber.Double,
+                                                       0.0001, False, 0, 1000000000.0))
+        self.addParameter(QgsProcessingParameterNumber(self.HOVERLAY,
+                                                       self.tr('Horizontal overlay'), QgsProcessingParameterNumber.Double,
+                                                       0.0, False, 0, 1000000000.0))
+        self.addParameter(QgsProcessingParameterNumber(self.VOVERLAY,
+                                                       self.tr('Vertical overlay'), QgsProcessingParameterNumber.Double,
+                                                       0.0, False, 0, 1000000000.0))
+
+        self.addParameter(QgsProcessingParameterCrs(self.CRS, 'Grid CRS', 'ProjectCrs'))
+
+        self.addParameter(QgsProcessingParameterFeatureSink(self.OUTPUT, self.tr('Grid'), type=QgsProcessing.TypeVectorPolygon))
+
     def name(self):
         return 'creategridpolygon'
 
     def displayName(self):
         return self.tr('Create grid (polygon)')
 
-    def defineCharacteristics(self):
-        self.types = [self.tr('Rectangle (polygon)'),
-                      self.tr('Diamond (polygon)'),
-                      self.tr('Hexagon (polygon)')]
+    def processAlgorithm(self, parameters, context, feedback):
+        idx = self.parameterAsEnum(parameters, self.TYPE, context)
 
-        self.addParameter(ParameterSelection(self.TYPE,
-                                             self.tr('Grid type'), self.types))
-        self.addParameter(ParameterExtent(self.EXTENT,
-                                          self.tr('Grid extent'), optional=False))
-        self.addParameter(ParameterNumber(self.HSPACING,
-                                          self.tr('Horizontal spacing'), 0.0, 1000000000.0, 0.0001))
-        self.addParameter(ParameterNumber(self.VSPACING,
-                                          self.tr('Vertical spacing'), 0.0, 1000000000.0, 0.0001))
-        self.addParameter(ParameterNumber(self.HOVERLAY,
-                                          self.tr('Horizontal overlay'), 0.0, 1000000000.0, 0.0))
-        self.addParameter(ParameterNumber(self.VOVERLAY,
-                                          self.tr('Vertical overlay'), 0.0, 1000000000.0, 0.0))
-        self.addParameter(ParameterCrs(self.CRS, 'Grid CRS', 'EPSG:4326'))
+        hSpacing = self.parameterAsDouble(parameters, self.HSPACING, context)
+        vSpacing = self.parameterAsDouble(parameters, self.VSPACING, context)
+        hOverlay = self.parameterAsDouble(parameters, self.HOVERLAY, context)
+        vOverlay = self.parameterAsDouble(parameters, self.VOVERLAY, context)
 
-        self.addOutput(OutputVector(self.OUTPUT, self.tr('Grid'), datatype=[dataobjects.TYPE_VECTOR_POLYGON]))
-
-    def processAlgorithm(self, context, feedback):
-        idx = self.getParameterValue(self.TYPE)
-        extent = self.getParameterValue(self.EXTENT).split(',')
-        hSpacing = self.getParameterValue(self.HSPACING)
-        vSpacing = self.getParameterValue(self.VSPACING)
-        hOverlay = self.getParameterValue(self.HOVERLAY)
-        vOverlay = self.getParameterValue(self.VOVERLAY)
-        crs = QgsCoordinateReferenceSystem(self.getParameterValue(self.CRS))
-
-        bbox = QgsRectangle(float(extent[0]), float(extent[2]),
-                            float(extent[1]), float(extent[3]))
+        bbox = self.parameterAsExtent(parameters, self.EXTENT, context)
+        crs = self.parameterAsCrs(parameters, self.CRS, context)
 
         width = bbox.width()
         height = bbox.height()
@@ -115,19 +122,19 @@ class GridPolygon(GeoAlgorithm):
         originY = bbox.yMaximum()
 
         if hSpacing <= 0 or vSpacing <= 0:
-            raise GeoAlgorithmExecutionException(
+            raise QgsProcessingException(
                 self.tr('Invalid grid spacing: {0}/{1}').format(hSpacing, vSpacing))
 
         if width < hSpacing:
-            raise GeoAlgorithmExecutionException(
+            raise QgsProcessingException(
                 self.tr('Horizontal spacing is too small for the covered area'))
 
         if hSpacing <= hOverlay or vSpacing <= vOverlay:
-            raise GeoAlgorithmExecutionException(
+            raise QgsProcessingException(
                 self.tr('Invalid overlay: {0}/{1}').format(hOverlay, vOverlay))
 
         if height < vSpacing:
-            raise GeoAlgorithmExecutionException(
+            raise QgsProcessingException(
                 self.tr('Vertical spacing is too small for the covered area'))
 
         fields = QgsFields()
@@ -137,21 +144,22 @@ class GridPolygon(GeoAlgorithm):
         fields.append(QgsField('bottom', QVariant.Double, '', 24, 16))
         fields.append(QgsField('id', QVariant.Int, '', 10, 0))
 
-        writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(fields, QgsWkbTypes.Polygon, crs, context)
+        (sink, dest_id) = self.parameterAsSink(parameters, self.OUTPUT, context,
+                                               fields, QgsWkbTypes.Polygon, crs)
 
         if idx == 0:
             self._rectangleGrid(
-                writer, width, height, originX, originY, hSpacing, vSpacing, hOverlay, vOverlay, feedback)
+                sink, width, height, originX, originY, hSpacing, vSpacing, hOverlay, vOverlay, feedback)
         elif idx == 1:
             self._diamondGrid(
-                writer, width, height, originX, originY, hSpacing, vSpacing, hOverlay, vOverlay, feedback)
+                sink, width, height, originX, originY, hSpacing, vSpacing, hOverlay, vOverlay, feedback)
         elif idx == 2:
             self._hexagonGrid(
-                writer, width, height, originX, originY, hSpacing, vSpacing, hOverlay, vOverlay, feedback)
+                sink, width, height, originX, originY, hSpacing, vSpacing, hOverlay, vOverlay, feedback)
 
-        del writer
+        return {self.OUTPUT: dest_id}
 
-    def _rectangleGrid(self, writer, width, height, originX, originY,
+    def _rectangleGrid(self, sink, width, height, originX, originY,
                        hSpacing, vSpacing, hOverlay, vOverlay, feedback):
         ft = QgsFeature()
 
@@ -165,6 +173,9 @@ class GridPolygon(GeoAlgorithm):
         count = 0
 
         for col in range(columns):
+            if feedback.isCanceled():
+                break
+
             x1 = originX + (col * hSpacing - col * hOverlay)
             x2 = x1 + hSpacing
 
@@ -173,22 +184,22 @@ class GridPolygon(GeoAlgorithm):
                 y2 = y1 - vSpacing
 
                 polyline = []
-                polyline.append(QgsPoint(x1, y1))
-                polyline.append(QgsPoint(x2, y1))
-                polyline.append(QgsPoint(x2, y2))
-                polyline.append(QgsPoint(x1, y2))
-                polyline.append(QgsPoint(x1, y1))
+                polyline.append(QgsPointXY(x1, y1))
+                polyline.append(QgsPointXY(x2, y1))
+                polyline.append(QgsPointXY(x2, y2))
+                polyline.append(QgsPointXY(x1, y2))
+                polyline.append(QgsPointXY(x1, y1))
 
                 ft.setGeometry(QgsGeometry.fromPolygon([polyline]))
                 ft.setAttributes([x1, y1, x2, y2, id])
-                writer.addFeature(ft)
+                sink.addFeature(ft, QgsFeatureSink.FastInsert)
 
                 id += 1
                 count += 1
                 if int(math.fmod(count, count_update)) == 0:
                     feedback.setProgress(int(count / cells * 100))
 
-    def _diamondGrid(self, writer, width, height, originX, originY,
+    def _diamondGrid(self, sink, width, height, originX, originY,
                      hSpacing, vSpacing, hOverlay, vOverlay, feedback):
         ft = QgsFeature()
 
@@ -208,6 +219,9 @@ class GridPolygon(GeoAlgorithm):
         count = 0
 
         for col in range(columns):
+            if feedback.isCanceled():
+                break
+
             x = originX - (col * halfHOverlay)
             x1 = x + ((col + 0) * halfHSpacing)
             x2 = x + ((col + 1) * halfHSpacing)
@@ -225,21 +239,21 @@ class GridPolygon(GeoAlgorithm):
                     y3 = y - (((row * 2) + 3) * halfVSpacing)
 
                 polyline = []
-                polyline.append(QgsPoint(x1, y2))
-                polyline.append(QgsPoint(x2, y1))
-                polyline.append(QgsPoint(x3, y2))
-                polyline.append(QgsPoint(x2, y3))
-                polyline.append(QgsPoint(x1, y2))
+                polyline.append(QgsPointXY(x1, y2))
+                polyline.append(QgsPointXY(x2, y1))
+                polyline.append(QgsPointXY(x3, y2))
+                polyline.append(QgsPointXY(x2, y3))
+                polyline.append(QgsPointXY(x1, y2))
 
                 ft.setGeometry(QgsGeometry.fromPolygon([polyline]))
                 ft.setAttributes([x1, y1, x3, y3, id])
-                writer.addFeature(ft)
+                sink.addFeature(ft, QgsFeatureSink.FastInsert)
                 id += 1
                 count += 1
                 if int(math.fmod(count, count_update)) == 0:
                     feedback.setProgress(int(count / cells * 100))
 
-    def _hexagonGrid(self, writer, width, height, originX, originY,
+    def _hexagonGrid(self, sink, width, height, originX, originY,
                      hSpacing, vSpacing, hOverlay, vOverlay, feedback):
         ft = QgsFeature()
 
@@ -250,7 +264,7 @@ class GridPolygon(GeoAlgorithm):
 
         hOverlay = hSpacing - hOverlay
         if hOverlay < 0:
-            raise GeoAlgorithmExecutionException(
+            raise QgsProcessingException(
                 self.tr('To preserve symmetry, hspacing is fixed relative to vspacing\n \
                         hspacing is fixed at: {0} and hoverlay is fixed at: {1}\n \
                         hoverlay cannot be negative. Increase hoverlay.').format(hSpacing, hOverlay)
@@ -268,6 +282,9 @@ class GridPolygon(GeoAlgorithm):
         count = 0
 
         for col in range(columns):
+            if feedback.isCanceled():
+                break
+
             # (column + 1) and (row + 1) calculation is used to maintain
             # topology between adjacent shapes and avoid overlaps/holes
             # due to rounding errors
@@ -287,17 +304,17 @@ class GridPolygon(GeoAlgorithm):
                     y3 = originY + (row * vOverlay) - (((row * 2) + 3) * halfVSpacing)  # lo
 
                 polyline = []
-                polyline.append(QgsPoint(x1, y2))
-                polyline.append(QgsPoint(x2, y1))
-                polyline.append(QgsPoint(x3, y1))
-                polyline.append(QgsPoint(x4, y2))
-                polyline.append(QgsPoint(x3, y3))
-                polyline.append(QgsPoint(x2, y3))
-                polyline.append(QgsPoint(x1, y2))
+                polyline.append(QgsPointXY(x1, y2))
+                polyline.append(QgsPointXY(x2, y1))
+                polyline.append(QgsPointXY(x3, y1))
+                polyline.append(QgsPointXY(x4, y2))
+                polyline.append(QgsPointXY(x3, y3))
+                polyline.append(QgsPointXY(x2, y3))
+                polyline.append(QgsPointXY(x1, y2))
 
                 ft.setGeometry(QgsGeometry.fromPolygon([polyline]))
                 ft.setAttributes([x1, y1, x4, y3, id])
-                writer.addFeature(ft)
+                sink.addFeature(ft, QgsFeatureSink.FastInsert)
                 id += 1
                 count += 1
                 if int(math.fmod(count, count_update)) == 0:

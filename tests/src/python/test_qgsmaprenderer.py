@@ -18,12 +18,15 @@ from qgis.core import (QgsMapRendererCache,
                        QgsMapRendererParallelJob,
                        QgsMapRendererSequentialJob,
                        QgsMapRendererCustomPainterJob,
+                       QgsPalLayerSettings,
                        QgsRectangle,
+                       QgsTextFormat,
                        QgsVectorLayer,
+                       QgsVectorLayerSimpleLabeling,
                        QgsFeature,
                        QgsGeometry,
                        QgsMapSettings,
-                       QgsPoint)
+                       QgsPointXY)
 from qgis.testing import start_app, unittest
 from qgis.PyQt.QtCore import QSize, QThreadPool
 from qgis.PyQt.QtGui import QPainter, QImage
@@ -123,9 +126,9 @@ class TestQgsMapRenderer(unittest.TestCase):
         layer = QgsVectorLayer("Point?field=fldtxt:string",
                                "layer1", "memory")
 
-        layer.setCustomProperty("labeling", "pal")
-        layer.setCustomProperty("labeling/enabled", True)
-        layer.setCustomProperty("labeling/fieldName", "fldtxt")
+        labelSettings = QgsPalLayerSettings()
+        labelSettings.fieldName = "fldtxt"
+        layer.setLabeling(QgsVectorLayerSimpleLabeling(labelSettings))
 
         settings = QgsMapSettings()
         settings.setExtent(QgsRectangle(5, 25, 25, 45))
@@ -164,9 +167,9 @@ class TestQgsMapRenderer(unittest.TestCase):
         layer = QgsVectorLayer("Point?field=fldtxt:string",
                                "layer1", "memory")
 
-        layer.setCustomProperty("labeling", "pal")
-        layer.setCustomProperty("labeling/enabled", True)
-        layer.setCustomProperty("labeling/fieldName", "fldtxt")
+        labelSettings = QgsPalLayerSettings()
+        labelSettings.fieldName = "fldtxt"
+        layer.setLabeling(QgsVectorLayerSimpleLabeling(labelSettings))
 
         settings = QgsMapSettings()
         settings.setExtent(QgsRectangle(5, 25, 25, 45))
@@ -188,9 +191,7 @@ class TestQgsMapRenderer(unittest.TestCase):
         # add another labeled layer
         layer2 = QgsVectorLayer("Point?field=fldtxt:string",
                                 "layer2", "memory")
-        layer2.setCustomProperty("labeling", "pal")
-        layer2.setCustomProperty("labeling/enabled", True)
-        layer2.setCustomProperty("labeling/fieldName", "fldtxt")
+        layer2.setLabeling(QgsVectorLayerSimpleLabeling(labelSettings))
         settings.setLayers([layer, layer2])
 
         # second job should not be able to use label cache, since a new layer was added
@@ -210,9 +211,9 @@ class TestQgsMapRenderer(unittest.TestCase):
         layer = QgsVectorLayer("Point?field=fldtxt:string",
                                "layer1", "memory")
 
-        layer.setCustomProperty("labeling", "pal")
-        layer.setCustomProperty("labeling/enabled", True)
-        layer.setCustomProperty("labeling/fieldName", "fldtxt")
+        labelSettings = QgsPalLayerSettings()
+        labelSettings.fieldName = "fldtxt"
+        layer.setLabeling(QgsVectorLayerSimpleLabeling(labelSettings))
 
         settings = QgsMapSettings()
         settings.setExtent(QgsRectangle(5, 25, 25, 45))
@@ -253,15 +254,13 @@ class TestQgsMapRenderer(unittest.TestCase):
         layer = QgsVectorLayer("Point?field=fldtxt:string",
                                "layer1", "memory")
 
-        layer.setCustomProperty("labeling", "pal")
-        layer.setCustomProperty("labeling/enabled", True)
-        layer.setCustomProperty("labeling/fieldName", "fldtxt")
+        labelSettings = QgsPalLayerSettings()
+        labelSettings.fieldName = "fldtxt"
+        layer.setLabeling(QgsVectorLayerSimpleLabeling(labelSettings))
 
         layer2 = QgsVectorLayer("Point?field=fldtxt:string",
                                 "layer2", "memory")
-        layer2.setCustomProperty("labeling", "pal")
-        layer2.setCustomProperty("labeling/enabled", True)
-        layer2.setCustomProperty("labeling/fieldName", "fldtxt")
+        layer2.setLabeling(QgsVectorLayerSimpleLabeling(labelSettings))
 
         settings = QgsMapSettings()
         settings.setExtent(QgsRectangle(5, 25, 25, 45))
@@ -300,9 +299,9 @@ class TestQgsMapRenderer(unittest.TestCase):
         layer = QgsVectorLayer("Point?field=fldtxt:string",
                                "layer1", "memory")
 
-        layer.setCustomProperty("labeling", "pal")
-        layer.setCustomProperty("labeling/enabled", True)
-        layer.setCustomProperty("labeling/fieldName", "fldtxt")
+        labelSettings = QgsPalLayerSettings()
+        labelSettings.fieldName = "fldtxt"
+        layer.setLabeling(QgsVectorLayerSimpleLabeling(labelSettings))
 
         layer2 = QgsVectorLayer("Point?field=fldtxt:string",
                                 "layer2", "memory")
@@ -344,16 +343,18 @@ class TestQgsMapRenderer(unittest.TestCase):
         layer = QgsVectorLayer("Point?field=fldtxt:string",
                                "layer1", "memory")
 
-        layer.setCustomProperty("labeling", "pal")
-        layer.setCustomProperty("labeling/enabled", True)
-        layer.setCustomProperty("labeling/fieldName", "fldtxt")
+        labelSettings = QgsPalLayerSettings()
+        labelSettings.fieldName = "fldtxt"
+        layer.setLabeling(QgsVectorLayerSimpleLabeling(labelSettings))
 
         layer2 = QgsVectorLayer("Point?field=fldtxt:string",
                                 "layer2", "memory")
-        layer2.setCustomProperty("labeling", "pal")
-        layer2.setCustomProperty("labeling/enabled", True)
-        layer2.setCustomProperty("labeling/fieldName", "fldtxt")
-        layer2.setCustomProperty("labeling/blendMode", 5)
+        labelSettings2 = QgsPalLayerSettings()
+        labelSettings2.fieldName = "fldtxt"
+        format2 = QgsTextFormat()
+        format2.setBlendMode(QPainter.CompositionMode_SourceIn)
+        labelSettings2.setFormat(format2)
+        layer2.setLabeling(QgsVectorLayerSimpleLabeling(labelSettings2))
 
         settings = QgsMapSettings()
         settings.setExtent(QgsRectangle(5, 25, 25, 45))
@@ -390,7 +391,7 @@ class TestQgsMapRenderer(unittest.TestCase):
         for i in range(2000):
             x = uniform(5, 25)
             y = uniform(25, 45)
-            g = QgsGeometry.fromPoint(QgsPoint(x, y))
+            g = QgsGeometry.fromPoint(QgsPointXY(x, y))
             f = QgsFeature()
             f.setGeometry(g)
             f.initAttributes(1)

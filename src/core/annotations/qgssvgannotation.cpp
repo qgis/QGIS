@@ -16,7 +16,11 @@
  ***************************************************************************/
 
 #include "qgssvgannotation.h"
+
+#include "qgsreadwritecontext.h"
 #include "qgsproject.h"
+#include "qgssymbollayerutils.h"
+
 #include <QDomDocument>
 #include <QDomElement>
 
@@ -35,22 +39,23 @@ QgsSvgAnnotation *QgsSvgAnnotation::clone() const
   return c.release();
 }
 
-void QgsSvgAnnotation::writeXml( QDomElement &elem, QDomDocument &doc ) const
+void QgsSvgAnnotation::writeXml( QDomElement &elem, QDomDocument &doc, const QgsReadWriteContext &context ) const
 {
+  QString filePath = QgsSymbolLayerUtils::svgSymbolPathToName( mFilePath, context.pathResolver() );
   QDomElement svgAnnotationElem = doc.createElement( QStringLiteral( "SVGAnnotationItem" ) );
-  svgAnnotationElem.setAttribute( QStringLiteral( "file" ), QgsProject::instance()->writePath( mFilePath ) );
-  _writeXml( svgAnnotationElem, doc );
+  svgAnnotationElem.setAttribute( QStringLiteral( "file" ), filePath );
+  _writeXml( svgAnnotationElem, doc, context );
   elem.appendChild( svgAnnotationElem );
 }
 
-void QgsSvgAnnotation::readXml( const QDomElement &itemElem, const QDomDocument &doc )
+void QgsSvgAnnotation::readXml( const QDomElement &itemElem, const QgsReadWriteContext &context )
 {
-  QString filePath = QgsProject::instance()->readPath( itemElem.attribute( QStringLiteral( "file" ) ) );
+  QString filePath = QgsSymbolLayerUtils::svgSymbolNameToPath( itemElem.attribute( QStringLiteral( "file" ) ), context.pathResolver() );
   setFilePath( filePath );
   QDomElement annotationElem = itemElem.firstChildElement( QStringLiteral( "AnnotationItem" ) );
   if ( !annotationElem.isNull() )
   {
-    _readXml( annotationElem, doc );
+    _readXml( annotationElem, context );
   }
 }
 

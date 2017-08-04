@@ -17,7 +17,7 @@
 
 #include "qgsmaptoolemitpoint.h"
 #include "qgssnappingutils.h"
-#include "qgspoint.h"
+#include "qgspointxy.h"
 #include "qgsvertexmarker.h"
 #include "qgsmapcanvas.h"
 
@@ -32,7 +32,6 @@ class QgsGeorefMapToolEmitPoint : public QgsMapTool
   public:
     explicit QgsGeorefMapToolEmitPoint( QgsMapCanvas *canvas )
       : QgsMapTool( canvas )
-      , mSnappingMarker( nullptr )
     {
     }
 
@@ -85,20 +84,20 @@ class QgsGeorefMapToolEmitPoint : public QgsMapTool
     }
 
   signals:
-    void canvasClicked( const QgsPoint &point, Qt::MouseButton button );
+    void canvasClicked( const QgsPointXY &point, Qt::MouseButton button );
     void mouseReleased();
 
   private:
     struct MappedPoint
     {
       MappedPoint() : snapped( false ) {}
-      QgsPoint point;
+      QgsPointXY point;
       bool snapped;
     };
 
     MappedPoint mapPoint( QMouseEvent *e )
     {
-      QgsPoint pnt = toMapCoordinates( e->pos() );
+      QgsPointXY pnt = toMapCoordinates( e->pos() );
       QgsSnappingUtils *snappingUtils = canvas()->snappingUtils();
       QgsPointLocator::Match match = snappingUtils->snapToMap( pnt );
 
@@ -116,7 +115,7 @@ class QgsMapCoordsDialog : public QDialog, private Ui::QgsMapCoordsDialogBase
     Q_OBJECT
 
   public:
-    QgsMapCoordsDialog( QgsMapCanvas *qgisCanvas, const QgsPoint &pixelCoords, QWidget *parent = nullptr );
+    QgsMapCoordsDialog( QgsMapCanvas *qgisCanvas, const QgsPointXY &pixelCoords, QWidget *parent = nullptr );
     ~QgsMapCoordsDialog();
 
   private slots:
@@ -124,12 +123,12 @@ class QgsMapCoordsDialog : public QDialog, private Ui::QgsMapCoordsDialogBase
 
     void setToolEmitPoint( bool isEnable );
 
-    void maybeSetXY( const QgsPoint &, Qt::MouseButton );
+    void maybeSetXY( const QgsPointXY &, Qt::MouseButton );
     void updateOK();
     void setPrevTool();
 
   signals:
-    void pointAdded( const QgsPoint &, const QgsPoint & );
+    void pointAdded( const QgsPointXY &, const QgsPointXY & );
 
   private:
     double dmsToDD( const QString &dms );
@@ -140,7 +139,7 @@ class QgsMapCoordsDialog : public QDialog, private Ui::QgsMapCoordsDialogBase
     QgsMapTool *mPrevMapTool = nullptr;
     QgsMapCanvas *mQgisCanvas = nullptr;
 
-    QgsPoint mPixelCoords;
+    QgsPointXY mPixelCoords;
 };
 
 #endif

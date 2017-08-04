@@ -38,7 +38,6 @@ QgsPointDistanceRenderer::QgsPointDistanceRenderer( const QString &rendererName,
   , mTolerance( 3 )
   , mToleranceUnit( QgsUnitTypes::RenderMillimeters )
   , mDrawLabels( true )
-  , mMaxLabelScaleDenominator( -1 )
   , mSpatialIndex( nullptr )
 {
   mRenderer.reset( QgsFeatureRenderer::defaultRenderer( QgsWkbTypes::PointGeometry ) );
@@ -90,14 +89,14 @@ bool QgsPointDistanceRenderer::renderFeature( QgsFeature &feature, QgsRenderCont
   }
 
   double searchDistance = context.convertToMapUnits( mTolerance, mToleranceUnit, mToleranceMapUnitScale );
-  QgsPoint point = transformedFeature.geometry().asPoint();
+  QgsPointXY point = transformedFeature.geometry().asPoint();
   QList<QgsFeatureId> intersectList = mSpatialIndex->intersects( searchRect( point, searchDistance ) );
   if ( intersectList.empty() )
   {
     mSpatialIndex->insertFeature( transformedFeature );
     // create new group
     ClusteredGroup newGroup;
-    newGroup << GroupedFeature( transformedFeature, symbol, selected, label );
+    newGroup << GroupedFeature( transformedFeature, symbol->clone(), selected, label );
     mClusteredGroups.push_back( newGroup );
     // add to group index
     mGroupIndex.insert( transformedFeature.id(), mClusteredGroups.count() - 1 );
@@ -123,12 +122,12 @@ bool QgsPointDistanceRenderer::renderFeature( QgsFeature &feature, QgsRenderCont
     ClusteredGroup &group = mClusteredGroups[groupIdx];
 
     // calculate new centroid of group
-    QgsPoint oldCenter = mGroupLocations.value( minDistFeatureId );
-    mGroupLocations[ minDistFeatureId ] = QgsPoint( ( oldCenter.x() * group.size() + point.x() ) / ( group.size() + 1.0 ),
+    QgsPointXY oldCenter = mGroupLocations.value( minDistFeatureId );
+    mGroupLocations[ minDistFeatureId ] = QgsPointXY( ( oldCenter.x() * group.size() + point.x() ) / ( group.size() + 1.0 ),
                                           ( oldCenter.y() * group.size() + point.y() ) / ( group.size() + 1.0 ) );
 
     // add to a group
-    group << GroupedFeature( transformedFeature, symbol, selected, label );
+    group << GroupedFeature( transformedFeature, symbol->clone(), selected, label );
     // add to group index
     mGroupIndex.insert( transformedFeature.id(), groupIdx );
   }
@@ -303,13 +302,13 @@ void QgsPointDistanceRenderer::startRender( QgsRenderContext &context, const Qgs
     mLabelIndex = fields.lookupField( mLabelAttributeName );
   }
 
-  if ( mMaxLabelScaleDenominator > 0 && context.rendererScale() > mMaxLabelScaleDenominator )
+  if ( mMinLabelScale <= 0 || context.rendererScale() < mMinLabelScale )
   {
-    mDrawLabels = false;
+    mDrawLabels = true;
   }
   else
   {
-    mDrawLabels = true;
+    mDrawLabels = false;
   }
 }
 
@@ -331,26 +330,16 @@ void QgsPointDistanceRenderer::stopRender( QgsRenderContext &context )
   mRenderer->stopRender( context );
 }
 
-QgsLegendSymbologyList QgsPointDistanceRenderer::legendSymbologyItems( QSize iconSize )
+QgsLegendSymbolList QgsPointDistanceRenderer::legendSymbolItems() const
 {
   if ( mRenderer )
   {
-    return mRenderer->legendSymbologyItems( iconSize );
-  }
-  return QgsLegendSymbologyList();
-}
-
-QgsLegendSymbolList QgsPointDistanceRenderer::legendSymbolItems( double scaleDenominator, const QString &rule )
-{
-  if ( mRenderer )
-  {
-    return mRenderer->legendSymbolItems( scaleDenominator, rule );
+    return mRenderer->legendSymbolItems();
   }
   return QgsLegendSymbolList();
 }
 
-
-QgsRectangle QgsPointDistanceRenderer::searchRect( const QgsPoint &p, double distance ) const
+QgsRectangle QgsPointDistanceRenderer::searchRect( const QgsPointXY &p, double distance ) const
 {
   return QgsRectangle( p.x() - distance, p.y() - distance, p.x() + distance, p.y() + distance );
 }
@@ -436,16 +425,16 @@ QgsExpressionContextScope *QgsPointDistanceRenderer::createGroupScope( const Clu
     ClusteredGroup::const_iterator groupIt = group.constBegin();
     for ( ; groupIt != group.constEnd(); ++groupIt )
     {
-      if ( !groupIt->symbol )
+      if ( !groupIt->symbol() )
         continue;
 
       if ( !groupColor.isValid() )
       {
-        groupColor = groupIt->symbol->color();
+        groupColor = groupIt->symbol()->color();
       }
       else
       {
-        if ( groupColor != groupIt->symbol->color() )
+        if ( groupColor != groupIt->symbol()->color() )
         {
           groupColor = QColor();
           break;

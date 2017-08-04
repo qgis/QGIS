@@ -49,7 +49,7 @@ QgsDxfRuleBasedLabelProvider::QgsDxfRuleBasedLabelProvider( const QgsRuleBasedLa
 void QgsDxfRuleBasedLabelProvider::reinit( QgsVectorLayer *layer )
 {
   QgsDebugMsg( "Entering." );
-  mRules.rootRule()->createSubProviders( layer, mSubProviders, this );
+  mRules->rootRule()->createSubProviders( layer, mSubProviders, this );
 }
 
 QgsVectorLayerLabelProvider *QgsDxfRuleBasedLabelProvider::createProvider( QgsVectorLayer *layer, const QString &providerId, bool withFeatureLoop, const QgsPalLayerSettings *settings )

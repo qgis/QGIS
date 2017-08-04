@@ -44,12 +44,12 @@ void QgsGeometrySegmentLengthCheck::collectErrors( QList<QgsGeometryCheckError *
         }
         for ( int iVert = 0, jVert = nVerts - 1; iVert < nVerts; jVert = iVert++ )
         {
-          QgsPointV2 pi = geom->vertexAt( QgsVertexId( iPart, iRing, iVert ) );
-          QgsPointV2 pj = geom->vertexAt( QgsVertexId( iPart, iRing, jVert ) );
+          QgsPoint pi = geom->vertexAt( QgsVertexId( iPart, iRing, iVert ) );
+          QgsPoint pj = geom->vertexAt( QgsVertexId( iPart, iRing, jVert ) );
           double dist = qSqrt( QgsGeometryUtils::sqrDistance2D( pi, pj ) );
           if ( dist < mMinLength )
           {
-            errors.append( new QgsGeometryCheckError( this, featureid, QgsPointV2( 0.5 * ( pi.x() + pj.x() ), 0.5 * ( pi.y() + pj.y() ) ), QgsVertexId( iPart, iRing, iVert ), dist, QgsGeometryCheckError::ValueLength ) );
+            errors.append( new QgsGeometryCheckError( this, featureid, QgsPoint( 0.5 * ( pi.x() + pj.x() ), 0.5 * ( pi.y() + pj.y() ) ), QgsVertexId( iPart, iRing, iVert ), dist, QgsGeometryCheckError::ValueLength ) );
           }
         }
       }
@@ -79,8 +79,14 @@ void QgsGeometrySegmentLengthCheck::fixError( QgsGeometryCheckError *error, int 
 
   // Check if error still applies
   int nVerts = QgsGeometryCheckerUtils::polyLineSize( geom, vidx.part, vidx.ring );
-  QgsPointV2 pi = geom->vertexAt( error->vidx() );
-  QgsPointV2 pj = geom->vertexAt( QgsVertexId( vidx.part, vidx.ring, ( vidx.vertex - 1 + nVerts ) % nVerts ) );
+  if ( nVerts == 0 )
+  {
+    error->setObsolete();
+    return;
+  }
+
+  QgsPoint pi = geom->vertexAt( error->vidx() );
+  QgsPoint pj = geom->vertexAt( QgsVertexId( vidx.part, vidx.ring, ( vidx.vertex - 1 + nVerts ) % nVerts ) );
   double dist = qSqrt( QgsGeometryUtils::sqrDistance2D( pi, pj ) );
   if ( dist >= mMinLength )
   {

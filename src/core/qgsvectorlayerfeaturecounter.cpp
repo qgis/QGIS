@@ -1,7 +1,8 @@
 #include "qgsvectorlayerfeaturecounter.h"
 
 QgsVectorLayerFeatureCounter::QgsVectorLayerFeatureCounter( QgsVectorLayer *layer, const QgsExpressionContext &context )
-  : mSource( new QgsVectorLayerFeatureSource( layer ) )
+  : QgsTask( tr( "Counting features in %1" ).arg( layer->name() ), QgsTask::CanCancel )
+  , mSource( new QgsVectorLayerFeatureSource( layer ) )
   , mRenderer( layer->renderer()->clone() )
   , mExpressionContext( context )
   , mFeatureCount( layer->featureCount() )
@@ -19,7 +20,7 @@ bool QgsVectorLayerFeatureCounter::run()
 
   for ( ; symbolIt != symbolList.constEnd(); ++symbolIt )
   {
-    mSymbolFeatureCountMap.insert( symbolIt->first, 0 );
+    mSymbolFeatureCountMap.insert( symbolIt->label(), 0 );
   }
 
   // If there are no features to be counted, we can spare us the trouble
@@ -55,7 +56,7 @@ bool QgsVectorLayerFeatureCounter::run()
       }
       ++featuresCounted;
 
-      double p = ( featuresCounted / mFeatureCount ) * 100;
+      double p = ( static_cast< double >( featuresCounted ) / mFeatureCount ) * 100;
       if ( p - progress > 1 )
       {
         progress = p;

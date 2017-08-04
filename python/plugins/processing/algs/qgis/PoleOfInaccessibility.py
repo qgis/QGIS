@@ -27,25 +27,29 @@ __revision__ = '$Format:%H$'
 
 import os
 
-from qgis.core import QgsWkbTypes, QgsField, NULL, QgsProcessingUtils
+from qgis.core import (QgsWkbTypes,
+                       QgsField,
+                       NULL,
+                       QgsFeatureSink,
+                       QgsProcessing,
+                       QgsProcessingException,
+                       QgsProcessingParameterFeatureSource,
+                       QgsProcessingParameterNumber,
+                       QgsProcessingParameterFeatureSink)
 
 from qgis.PyQt.QtCore import QVariant
 from qgis.PyQt.QtGui import QIcon
 
-from processing.core.GeoAlgorithm import GeoAlgorithm
-from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
-from processing.core.parameters import ParameterVector, ParameterNumber
-from processing.core.outputs import OutputVector
-from processing.tools import dataobjects
+from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 
 pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
 
-class PoleOfInaccessibility(GeoAlgorithm):
+class PoleOfInaccessibility(QgisAlgorithm):
 
-    INPUT_LAYER = 'INPUT_LAYER'
+    INPUT = 'INPUT'
     TOLERANCE = 'TOLERANCE'
-    OUTPUT_LAYER = 'OUTPUT_LAYER'
+    OUTPUT = 'OUTPUT'
 
     def icon(self):
         return QIcon(os.path.join(pluginPath, 'images', 'ftools', 'centroids.png'))
@@ -56,40 +60,48 @@ class PoleOfInaccessibility(GeoAlgorithm):
     def group(self):
         return self.tr('Vector geometry tools')
 
+    def __init__(self):
+        super().__init__()
+
+    def initAlgorithm(self, config=None):
+        self.addParameter(QgsProcessingParameterFeatureSource(self.INPUT, self.tr('Input layer'),
+                                                              [QgsProcessing.TypeVectorPolygon]))
+        self.addParameter(QgsProcessingParameterNumber(self.TOLERANCE,
+                                                       self.tr('Tolerance (layer units)'),
+                                                       type=QgsProcessingParameterNumber.Double,
+                                                       defaultValue=1.0, minValue=0.0))
+
+        self.addParameter(
+            QgsProcessingParameterFeatureSink(self.OUTPUT, self.tr('Point'), QgsProcessing.TypeVectorPoint))
+
     def name(self):
         return 'poleofinaccessibility'
 
     def displayName(self):
         return self.tr('Pole of Inaccessibility')
 
-    def defineCharacteristics(self):
-        self.addParameter(ParameterVector(self.INPUT_LAYER,
-                                          self.tr('Input layer'),
-                                          [dataobjects.TYPE_VECTOR_POLYGON]))
-        self.addParameter(ParameterNumber(self.TOLERANCE,
-                                          self.tr('Tolerance (layer units)'), default=1.0, minValue=0.0))
-        self.addOutput(OutputVector(self.OUTPUT_LAYER, self.tr('Point'), datatype=[dataobjects.TYPE_VECTOR_POINT]))
+    def processAlgorithm(self, parameters, context, feedback):
+        source = self.parameterAsSource(parameters, self.INPUT, context)
+        tolerance = self.parameterAsDouble(parameters, self.TOLERANCE, context)
 
-    def processAlgorithm(self, context, feedback):
-        layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT_LAYER), context)
-        tolerance = self.getParameterValue(self.TOLERANCE)
-
-        fields = layer.fields()
+        fields = source.fields()
         fields.append(QgsField('dist_pole', QVariant.Double))
+        (sink, dest_id) = self.parameterAsSink(parameters, self.OUTPUT, context,
+                                               fields, QgsWkbTypes.Point, source.sourceCrs())
 
-        writer = self.getOutputFromName(
-            self.OUTPUT_LAYER).getVectorWriter(fields, QgsWkbTypes.Point, layer.crs(), context)
-
-        features = QgsProcessingUtils.getFeatures(layer, context)
-        total = 100.0 / QgsProcessingUtils.featureCount(layer, context)
+        features = source.getFeatures()
+        total = 100.0 / source.featureCount() if source.featureCount() else 0
 
         for current, input_feature in enumerate(features):
+            if feedback.isCanceled():
+                break
+
             output_feature = input_feature
             input_geometry = input_feature.geometry()
             if input_geometry:
                 output_geometry, distance = input_geometry.poleOfInaccessibility(tolerance)
                 if not output_geometry:
-                    raise GeoAlgorithmExecutionException(
+                    raise QgsProcessingException(
                         self.tr('Error calculating pole of inaccessibility'))
                 attrs = input_feature.attributes()
                 attrs.append(distance)
@@ -101,7 +113,7 @@ class PoleOfInaccessibility(GeoAlgorithm):
                 attrs.append(NULL)
                 output_feature.setAttributes(attrs)
 
-            writer.addFeature(output_feature)
+            sink.addFeature(output_feature, QgsFeatureSink.FastInsert)
             feedback.setProgress(int(current * total))
 
-        del writer
+        return {self.OUTPUT: dest_id}

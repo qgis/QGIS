@@ -29,7 +29,7 @@ class QgsMapLayer;
 class QDomElement;
 
 /** \ingroup core
- * Stores style information (renderer, transparency, labeling, diagrams etc.) applicable to a map layer.
+ * Stores style information (renderer, opacity, labeling, diagrams etc.) applicable to a map layer.
  *
  * Stored data are considered as opaque - it is not possible to access them directly or modify them - it is
  * only possible to read or write layer's current style.
@@ -75,7 +75,7 @@ class CORE_EXPORT QgsMapLayerStyle
  * the new style is applied to the associated layer.
  *
  * The class takes care of updating itself when the layer's current style configuration changes.
- * When some of layer style's properties change (e.g. transparency / colors), the style manager will
+ * When some of layer style's properties change (e.g. opacity / colors), the style manager will
  * record them in the currently active style without any extra effort required.
  *
  * When an instance is created, it creates "default" style (with empty name) recorded from the associated map layer
@@ -110,6 +110,13 @@ class CORE_EXPORT QgsMapLayerStyleManager : public QObject
 
     //! Return list of all defined style names
     QStringList styles() const;
+
+    /** Gets available styles for the associated map layer.
+     * \returns A map of map layer style by style name
+     * \since QGIS 3.0
+     */
+    QMap<QString, QgsMapLayerStyle> mapLayerStyles() const;
+
     //! Return data of a stored style - accessed by its unique name
     QgsMapLayerStyle style( const QString &name ) const;
 

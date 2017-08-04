@@ -18,7 +18,7 @@
 #define QGSNEWSPATIALITELAYERDIALOG_H
 
 #include "ui_qgsnewspatialitelayerdialogbase.h"
-#include "qgisgui.h"
+#include "qgsguiutils.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgshelp.h"
 
@@ -36,7 +36,7 @@ class APP_EXPORT QgsNewSpatialiteLayerDialog: public QDialog, private Ui::QgsNew
     Q_OBJECT
 
   public:
-    QgsNewSpatialiteLayerDialog( QWidget *parent = nullptr, Qt::WindowFlags fl = QgisGui::ModalDialogFlags, const QgsCoordinateReferenceSystem &defaultCrs = QgsCoordinateReferenceSystem() );
+    QgsNewSpatialiteLayerDialog( QWidget *parent = nullptr, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags, const QgsCoordinateReferenceSystem &defaultCrs = QgsCoordinateReferenceSystem() );
     ~QgsNewSpatialiteLayerDialog();
 
   protected slots:

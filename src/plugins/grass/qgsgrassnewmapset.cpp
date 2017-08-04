@@ -27,7 +27,7 @@
 #include "qgsproject.h"
 #include "qgsprojectionselectiontreewidget.h"
 #include "qgslocalec.h"
-#include "qgscsexception.h"
+#include "qgsexception.h"
 #include "qgssettings.h"
 
 #include "cpl_conv.h"
@@ -504,11 +504,11 @@ void QgsGrassNewMapset::setRegionPage()
     double e = mEastLineEdit->text().toDouble();
     double w = mWestLineEdit->text().toDouble();
 
-    std::vector<QgsPoint> points;
+    std::vector<QgsPointXY> points;
 
     // TODO: this is not perfect
-    points.push_back( QgsPoint( w, s ) );
-    points.push_back( QgsPoint( e, n ) );
+    points.push_back( QgsPointXY( w, s ) );
+    points.push_back( QgsPointXY( e, n ) );
 
     bool ok = true;
     for ( int i = 0; i < 2; i++ )
@@ -784,9 +784,9 @@ void QgsGrassNewMapset::loadRegions()
     // Add region
     mRegionsComboBox->addItem( nameElem.text() );
 
-    QgsPoint llp( ll[0].toDouble(), ll[1].toDouble() );
+    QgsPointXY llp( ll[0].toDouble(), ll[1].toDouble() );
     mRegionsPoints.push_back( llp );
-    QgsPoint urp( ur[0].toDouble(), ur[1].toDouble() );
+    QgsPointXY urp( ur[0].toDouble(), ur[1].toDouble() );
     mRegionsPoints.push_back( urp );
   }
   mRegionsComboBox->setCurrentIndex( -1 );
@@ -800,14 +800,14 @@ void QgsGrassNewMapset::setSelectedRegion()
   // mRegionsPoints are in EPSG 4326 = LL WGS84
   int index = 2 * mRegionsComboBox->currentIndex();
 
-  std::vector<QgsPoint> points;
+  std::vector<QgsPointXY> points;
   // corners ll lr ur ul
-  points.push_back( QgsPoint( mRegionsPoints[index] ) );
-  points.push_back( QgsPoint( mRegionsPoints[index + 1].x(),
-                              mRegionsPoints[index].y() ) );
-  points.push_back( QgsPoint( mRegionsPoints[index + 1] ) );
-  points.push_back( QgsPoint( mRegionsPoints[index].x(),
-                              mRegionsPoints[index + 1].y() ) );
+  points.push_back( QgsPointXY( mRegionsPoints[index] ) );
+  points.push_back( QgsPointXY( mRegionsPoints[index + 1].x(),
+                                mRegionsPoints[index].y() ) );
+  points.push_back( QgsPointXY( mRegionsPoints[index + 1] ) );
+  points.push_back( QgsPointXY( mRegionsPoints[index].x(),
+                                mRegionsPoints[index + 1].y() ) );
 
   // Convert to currently selected coordinate system
 
@@ -913,11 +913,11 @@ void QgsGrassNewMapset::setCurrentRegion()
   QgsCoordinateReferenceSystem srs = mIface->mapCanvas()->mapSettings().destinationCrs();
   QgsDebugMsg( "srs = " + srs.toWkt() );
 
-  std::vector<QgsPoint> points;
+  std::vector<QgsPointXY> points;
 
   // TODO: this is not perfect
-  points.push_back( QgsPoint( ext.xMinimum(), ext.yMinimum() ) );
-  points.push_back( QgsPoint( ext.xMaximum(), ext.yMaximum() ) );
+  points.push_back( QgsPointXY( ext.xMinimum(), ext.yMinimum() ) );
+  points.push_back( QgsPointXY( ext.xMaximum(), ext.yMaximum() ) );
 
   // TODO add a method, this code is copy-paste from setSelectedRegion
   if ( srs.isValid() && mCrs.isValid()
@@ -996,17 +996,17 @@ void QgsGrassNewMapset::drawRegion()
     }
   }
 
-  QList<QgsPoint> tpoints; // ll lr ur ul ll
-  tpoints << QgsPoint( w, s );
-  tpoints << QgsPoint( e, s );
-  tpoints << QgsPoint( e, n );
-  tpoints << QgsPoint( w, n );
-  tpoints << QgsPoint( w, s );
+  QList<QgsPointXY> tpoints; // ll lr ur ul ll
+  tpoints << QgsPointXY( w, s );
+  tpoints << QgsPointXY( e, s );
+  tpoints << QgsPointXY( e, n );
+  tpoints << QgsPointXY( w, n );
+  tpoints << QgsPointXY( w, s );
 
 
   // Because of possible shift +/- 360 in LL we have to split
   // the lines at least in 3 parts
-  QList<QgsPoint> points; //
+  QList<QgsPointXY> points; //
   for ( int i = 0; i < 4; i++ )
   {
     for ( int j = 0; j < 3; j++ )
@@ -1016,7 +1016,7 @@ void QgsGrassNewMapset::drawRegion()
       double dx = ( tpoints[i + 1].x() - x ) / 3;
       double dy = ( tpoints[i + 1].y() - y ) / 3;
       QgsDebugMsg( QString( "dx = %1 x = %2" ).arg( dx ).arg( x + j * dx ) );
-      points << QgsPoint( x + j * dx, y + j * dy );
+      points << QgsPointXY( x + j * dx, y + j * dy );
 
     }
   }
@@ -1235,11 +1235,7 @@ void QgsGrassNewMapset::createMapset()
     QString error;
     G_TRY
     {
-#if GRASS_VERSION_MAJOR < 7
-      ret = G_make_location( location.toUtf8().data(), &mCellHead, mProjInfo, mProjUnits, stdout );
-#else
       ret = G_make_location( location.toUtf8().data(), &mCellHead, mProjInfo, mProjUnits );
-#endif
     }
     G_CATCH( QgsGrass::Exception & e )
     {

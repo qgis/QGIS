@@ -31,12 +31,12 @@
 class QgsGlobeFeatureUtils
 {
   public:
-    static inline QgsPointV2 qgsPointFromPoint( const osg::Vec3d &pt )
+    static inline QgsPoint qgsPointFromPoint( const osg::Vec3d &pt )
     {
-      return QgsPointV2( QgsWkbTypes::PointZ, pt.x(), pt.y(), pt.z() );
+      return QgsPoint( QgsWkbTypes::PointZ, pt.x(), pt.y(), pt.z() );
     }
 
-    static inline osg::Vec3d pointFromQgsPoint( const QgsPointV2 &pt )
+    static inline osg::Vec3d pointFromQgsPointXY( const QgsPoint &pt )
     {
       return osg::Vec3d( pt.x(), pt.y(), pt.z() );
     }
@@ -47,7 +47,7 @@ class QgsGlobeFeatureUtils
       osgEarth::Features::LineString *retLineString = new osgEarth::Features::LineString();
       for ( int iVtx = 0, nVtx = linearString->vertexCount(); iVtx < nVtx; ++iVtx )
       {
-        retLineString->push_back( pointFromQgsPoint( linearString->vertexAt( QgsVertexId( 0, 0, iVtx ) ) ) );
+        retLineString->push_back( pointFromQgsPointXY( linearString->vertexAt( QgsVertexId( 0, 0, iVtx ) ) ) );
       }
       delete linearString;
       return retLineString;
@@ -63,7 +63,7 @@ class QgsGlobeFeatureUtils
       // the outer ring
       for ( int iVtx = 0, nVtx = linearPolygon->vertexCount( 0, 0 ); iVtx < nVtx; ++iVtx )
       {
-        retPoly->push_back( pointFromQgsPoint( linearPolygon->vertexAt( QgsVertexId( 0, 0, iVtx ) ) ) );
+        retPoly->push_back( pointFromQgsPointXY( linearPolygon->vertexAt( QgsVertexId( 0, 0, iVtx ) ) ) );
       }
       retPoly->rewind( osgEarth::Symbology::Ring::ORIENTATION_CCW );
 
@@ -72,7 +72,7 @@ class QgsGlobeFeatureUtils
         osgEarth::Features::Ring *innerRing = new osgEarth::Features::Ring();
         for ( int iVtx = 0, nVtx = linearPolygon->vertexCount( 0, iRing ); iVtx < nVtx; ++iVtx )
         {
-          innerRing->push_back( pointFromQgsPoint( linearPolygon->vertexAt( QgsVertexId( 0, iRing, iVtx ) ) ) );
+          innerRing->push_back( pointFromQgsPointXY( linearPolygon->vertexAt( QgsVertexId( 0, iRing, iVtx ) ) ) );
         }
         innerRing->rewind( osgEarth::Symbology::Ring::ORIENTATION_CW );
         retPoly->getHoles().push_back( osg::ref_ptr<osgEarth::Features::Ring>( innerRing ) );
@@ -97,7 +97,7 @@ class QgsGlobeFeatureUtils
         case QgsWkbTypes::Point:
         {
           osgEarth::Features::PointSet *pointSet = new osgEarth::Features::PointSet();
-          pointSet->push_back( pointFromQgsPoint( *static_cast<QgsPointV2 *>( geom.geometry() ) ) );
+          pointSet->push_back( pointFromQgsPointXY( *static_cast<QgsPoint *>( geom.geometry() ) ) );
           return pointSet;
         }
 
@@ -107,7 +107,7 @@ class QgsGlobeFeatureUtils
           QgsMultiPointV2 *multiPoint = static_cast<QgsMultiPointV2 *>( geom.geometry() );
           for ( int i = 0, n = multiPoint->numGeometries(); i < n; ++i )
           {
-            pointSet->push_back( pointFromQgsPoint( *static_cast<QgsPointV2 *>( multiPoint->geometryN( i ) ) ) );
+            pointSet->push_back( pointFromQgsPointXY( *static_cast<QgsPoint *>( multiPoint->geometryN( i ) ) ) );
           }
           return pointSet;
         }

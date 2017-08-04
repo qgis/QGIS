@@ -51,6 +51,47 @@ class QgsRenderContext;
 class CORE_EXPORT QgsPaintEffect
 {
 
+#ifdef SIP_RUN
+    SIP_CONVERT_TO_SUBCLASS_CODE
+    if ( sipCpp->type() == "drawSource" && dynamic_cast<QgsDrawSourceEffect *>( sipCpp ) != NULL )
+    {
+      sipType = sipType_QgsDrawSourceEffect;
+    }
+    else if ( sipCpp->type() == "effectStack" && dynamic_cast<QgsEffectStack *>( sipCpp ) != NULL )
+    {
+      sipType = sipType_QgsEffectStack;
+    }
+    else if ( sipCpp->type() == "blur" && dynamic_cast<QgsBlurEffect *>( sipCpp ) != NULL )
+    {
+      sipType = sipType_QgsBlurEffect;
+    }
+    else if ( sipCpp->type() == "dropShadow" && dynamic_cast<QgsDropShadowEffect *>( sipCpp ) != NULL )
+    {
+      sipType = sipType_QgsDropShadowEffect;
+    }
+    else if ( sipCpp->type() == "outerGlow" && dynamic_cast<QgsOuterGlowEffect *>( sipCpp ) != NULL )
+    {
+      sipType = sipType_QgsOuterGlowEffect;
+    }
+    else if ( sipCpp->type() == "innerGlow" && dynamic_cast<QgsInnerGlowEffect *>( sipCpp ) != NULL )
+    {
+      sipType = sipType_QgsInnerGlowEffect;
+    }
+    else if ( sipCpp->type() == "transform" && dynamic_cast<QgsTransformEffect *>( sipCpp ) != NULL )
+    {
+      sipType = sipType_QgsTransformEffect;
+    }
+    else if ( sipCpp->type() == "color" && dynamic_cast<QgsColorEffect *>( sipCpp ) != NULL )
+    {
+      sipType = sipType_QgsColorEffect;
+    }
+    else
+    {
+      sipType = 0;
+    }
+    SIP_END
+#endif
+
   public:
 
     /** Drawing modes for effects. These modes are used only when effects are
@@ -267,23 +308,23 @@ class CORE_EXPORT QgsDrawSourceEffect : public QgsPaintEffect
     static QgsPaintEffect *create( const QgsStringMap &map ) SIP_FACTORY;
 
     virtual QString type() const override { return QStringLiteral( "drawSource" ); }
-    virtual QgsDrawSourceEffect *clone() const override;
+    virtual QgsDrawSourceEffect *clone() const override SIP_FACTORY;
     virtual QgsStringMap properties() const override;
     virtual void readProperties( const QgsStringMap &props ) override;
 
-    /** Sets the transparency for the effect
-     * \param transparency double between 0 and 1 inclusive, where 0 is fully opaque
-     * and 1 is fully transparent
-     * \see transparency
+    /** Sets the \a opacity for the effect.
+     * \param opacity double between 0 and 1 inclusive, where 0 is fully transparent
+     * and 1 is fully opaque
+     * \see opacity()
      */
-    void setTransparency( const double transparency ) { mTransparency = transparency; }
+    void setOpacity( const double opacity ) { mOpacity = opacity; }
 
-    /** Returns the transparency for the effect
-     * \returns transparency value between 0 and 1 inclusive, where 0 is fully opaque
-     * and 1 is fully transparent
-     * \see setTransparency
+    /** Returns the opacity for the effect
+     * \returns opacity value between 0 and 1 inclusive, where 0 is fully transparent
+     * and 1 is fully opaque
+     * \see setOpacity()
      */
-    double transparency() const { return mTransparency; }
+    double opacity() const { return mOpacity; }
 
     /** Sets the blend mode for the effect
      * \param mode blend mode used for drawing the source on to a destination
@@ -305,7 +346,7 @@ class CORE_EXPORT QgsDrawSourceEffect : public QgsPaintEffect
 
   private:
 
-    double mTransparency;
+    double mOpacity = 1.0;
     QPainter::CompositionMode mBlendMode;
 };
 

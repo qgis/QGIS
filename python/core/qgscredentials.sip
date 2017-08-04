@@ -31,7 +31,7 @@ class QgsCredentials
 
     virtual ~QgsCredentials();
 
-    bool get( const QString &realm, QString &username /In,Out/, QString &password /In,Out/, const QString &message = QString::null );
+    bool get( const QString &realm, QString &username /In,Out/, QString &password /In,Out/, const QString &message = QString() );
 %Docstring
  :rtype: bool
 %End
@@ -72,7 +72,7 @@ retrieves instance
   protected:
     QgsCredentials();
 
-    virtual bool request( const QString &realm, QString &username /In,Out/, QString &password /In,Out/, const QString &message = QString::null ) = 0;
+    virtual bool request( const QString &realm, QString &username /In,Out/, QString &password /In,Out/, const QString &message = QString() ) = 0;
 %Docstring
 request a password
  :rtype: bool
@@ -115,7 +115,7 @@ signals that object will be destroyed and shouldn't be used anymore
 %End
 
   protected:
-    virtual bool request( const QString &realm, QString &username /In,Out/, QString &password /In,Out/, const QString &message = QString::null );
+    virtual bool request( const QString &realm, QString &username /In,Out/, QString &password /In,Out/, const QString &message = QString() );
     virtual bool requestMasterPassword( QString &password /In,Out/, bool stored = false );
 };
 
@@ -143,7 +143,7 @@ signals that object will be destroyed and shouldn't be used anymore
 %End
 
   protected:
-    virtual bool request( const QString &realm, QString &username /In,Out/, QString &password /In,Out/, const QString &message = QString::null );
+    virtual bool request( const QString &realm, QString &username /In,Out/, QString &password /In,Out/, const QString &message = QString() );
     virtual bool requestMasterPassword( QString &password /In,Out/, bool stored = false );
 };
 

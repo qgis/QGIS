@@ -24,6 +24,14 @@ struct QgsXyzConnection
   QString url;
   int zMin = -1;
   int zMax = -1;
+  // Authentication configuration id
+  QString authCfg;
+  // HTTP Basic username
+  QString username;
+  // HTTP Basic password
+  QString password;
+  // Referer
+  QString referer;
 
   QString encodedUri() const;
 };

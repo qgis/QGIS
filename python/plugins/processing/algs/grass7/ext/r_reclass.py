@@ -37,7 +37,7 @@ def checkParameterValuesBeforeExecuting(alg):
     return None
 
 
-def processCommand(alg):
+def processCommand(alg, parameters):
     """ Handle inline rules """
     txtRules = alg.getParameterValue(u'txtrules')
     if txtRules:

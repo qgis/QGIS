@@ -161,10 +161,10 @@ void QgsAuthEditorWidgets::setupUtilitiesMenu()
   mActionPasswordHelperLoggingEnable = new QAction( tr( "Enable password helper debug log" ), this );
 
   mActionPasswordHelperEnable->setCheckable( true );
-  mActionPasswordHelperEnable->setChecked( QgsAuthManager::instance()->passwordHelperEnabled( ) );
+  mActionPasswordHelperEnable->setChecked( QgsAuthManager::instance()->passwordHelperEnabled() );
 
   mActionPasswordHelperLoggingEnable->setCheckable( true );
-  mActionPasswordHelperLoggingEnable->setChecked( QgsAuthManager::instance()->passwordHelperLoggingEnabled( ) );
+  mActionPasswordHelperLoggingEnable->setChecked( QgsAuthManager::instance()->passwordHelperLoggingEnabled() );
 
   connect( mActionSetMasterPassword, &QAction::triggered, this, &QgsAuthEditorWidgets::setMasterPassword );
   connect( mActionClearCachedMasterPassword, &QAction::triggered, this, &QgsAuthEditorWidgets::clearCachedMasterPassword );

@@ -30,23 +30,23 @@ import os
 from qgis.PyQt.QtGui import QIcon
 
 from qgis.analysis import QgsHillshadeFilter
-
-from processing.core.GeoAlgorithm import GeoAlgorithm
-from processing.core.parameters import ParameterRaster
-from processing.core.parameters import ParameterNumber
-from processing.core.outputs import OutputRaster
-from processing.tools import raster
+from qgis.core import (QgsRasterFileWriter,
+                       QgsProcessingParameterRasterLayer,
+                       QgsProcessingParameterNumber,
+                       QgsProcessingParameterRasterDestination)
+from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
+from processing.tools.dataobjects import exportRasterLayer
 
 pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
 
-class Hillshade(GeoAlgorithm):
+class Hillshade(QgisAlgorithm):
 
-    INPUT_LAYER = 'INPUT_LAYER'
+    INPUT = 'INPUT'
     Z_FACTOR = 'Z_FACTOR'
     AZIMUTH = 'AZIMUTH'
     V_ANGLE = 'V_ANGLE'
-    OUTPUT_LAYER = 'OUTPUT_LAYER'
+    OUTPUT = 'OUTPUT'
 
     def icon(self):
         return QIcon(os.path.join(pluginPath, 'images', 'dem.png'))
@@ -54,33 +54,40 @@ class Hillshade(GeoAlgorithm):
     def group(self):
         return self.tr('Raster terrain analysis')
 
+    def __init__(self):
+        super().__init__()
+
+    def initAlgorithm(self, config=None):
+        self.addParameter(QgsProcessingParameterRasterLayer(self.INPUT,
+                                                            self.tr('Elevation layer')))
+        self.addParameter(QgsProcessingParameterNumber(self.Z_FACTOR,
+                                                       self.tr('Z factor'), QgsProcessingParameterNumber.Double,
+                                                       1, False, 1, 999999.99))
+        self.addParameter(QgsProcessingParameterNumber(self.AZIMUTH,
+                                                       self.tr('Azimuth (horizontal angle)'), QgsProcessingParameterNumber.Double,
+                                                       300, False, 0, 360))
+        self.addParameter(QgsProcessingParameterNumber(self.V_ANGLE,
+                                                       self.tr('Vertical angle'), QgsProcessingParameterNumber.Double,
+                                                       40, False, 1, 90))
+        self.addParameter(QgsProcessingParameterRasterDestination(self.OUTPUT, self.tr('Hillshade')))
+
     def name(self):
         return 'hillshade'
 
     def displayName(self):
         return self.tr('Hillshade')
 
-    def defineCharacteristics(self):
-        self.addParameter(ParameterRaster(self.INPUT_LAYER,
-                                          self.tr('Elevation layer')))
-        self.addParameter(ParameterNumber(self.Z_FACTOR,
-                                          self.tr('Z factor'), 1.0, 999999.99, 1.0))
-        self.addParameter(ParameterNumber(self.AZIMUTH,
-                                          self.tr('Azimuth (horizontal angle)'), 0.00, 360.00, 300.00))
-        self.addParameter(ParameterNumber(self.V_ANGLE,
-                                          self.tr('Vertical angle'), 1.00, 90.00, 40.00))
-        self.addOutput(OutputRaster(self.OUTPUT_LAYER,
-                                    self.tr('Hillshade')))
+    def processAlgorithm(self, parameters, context, feedback):
+        inputFile = exportRasterLayer(self.parameterAsRasterLayer(parameters, self.INPUT, context))
+        zFactor = self.parameterAsDouble(parameters, self.Z_FACTOR, context)
+        azimuth = self.parameterAsDouble(parameters, self.AZIMUTH, context)
+        vAngle = self.parameterAsDouble(parameters, self.V_ANGLE, context)
 
-    def processAlgorithm(self, context, feedback):
-        inputFile = self.getParameterValue(self.INPUT_LAYER)
-        zFactor = self.getParameterValue(self.Z_FACTOR)
-        azimuth = self.getParameterValue(self.AZIMUTH)
-        vAngle = self.getParameterValue(self.V_ANGLE)
-        outputFile = self.getOutputValue(self.OUTPUT_LAYER)
-
-        outputFormat = raster.formatShortNameFromFileName(outputFile)
+        outputFile = self.parameterAsOutputLayer(parameters, self.OUTPUT, context)
+        outputFormat = QgsRasterFileWriter.driverForExtension(os.path.splitext(outputFile)[1])
 
         hillshade = QgsHillshadeFilter(inputFile, outputFile, outputFormat, azimuth, vAngle)
         hillshade.setZFactor(zFactor)
-        hillshade.processRaster(None)
+        hillshade.processRaster(feedback)
+
+        return {self.OUTPUT: outputFile}

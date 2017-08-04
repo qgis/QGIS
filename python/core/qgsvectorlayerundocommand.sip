@@ -1,166 +1,193 @@
-/** \ingroup core
- * \class QgsVectorLayerUndoCommand
- * \brief Base class for undo commands within a QgsVectorLayerEditBuffer.
- */
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgsvectorlayerundocommand.h                                 *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+
+
 
 class QgsVectorLayerUndoCommand : QUndoCommand
 {
+%Docstring
+ Base class for undo commands within a QgsVectorLayerEditBuffer.
+%End
+
 %TypeHeaderCode
 #include "qgsvectorlayerundocommand.h"
 %End
   public:
 
-    /** Constructor for QgsVectorLayerUndoCommand
-     * @param buffer associated edit buffer
-     */
     QgsVectorLayerUndoCommand( QgsVectorLayerEditBuffer *buffer /Transfer/ );
+%Docstring
+ Constructor for QgsVectorLayerUndoCommand
+ \param buffer associated edit buffer
+%End
 
-    //! Returns the layer associated with the undo command
     QgsVectorLayer *layer();
+%Docstring
+Returns the layer associated with the undo command
+ :rtype: QgsVectorLayer
+%End
 
     virtual int id() const;
-    virtual bool mergeWith( QUndoCommand * );
+    virtual bool mergeWith( const QUndoCommand * );
+
+  protected:
 };
 
 
-/** \ingroup core
- * \class QgsVectorLayerUndoCommandAddFeature
- * \brief Undo command for adding a feature to a vector layer.
- */
 
 class QgsVectorLayerUndoCommandAddFeature : QgsVectorLayerUndoCommand
 {
+%Docstring
+ Undo command for adding a feature to a vector layer.
+%End
+
 %TypeHeaderCode
 #include "qgsvectorlayerundocommand.h"
 %End
   public:
 
-    /** Constructor for QgsVectorLayerUndoCommandAddFeature
-     * @param buffer associated edit buffer
-     * @param f feature to add to layer
-     */
     QgsVectorLayerUndoCommandAddFeature( QgsVectorLayerEditBuffer *buffer /Transfer/, QgsFeature &f );
+%Docstring
+ Constructor for QgsVectorLayerUndoCommandAddFeature
+ \param buffer associated edit buffer
+ \param f feature to add to layer
+%End
 
     virtual void undo();
     virtual void redo();
+
 };
 
 
-/** \ingroup core
- * \class QgsVectorLayerUndoCommandDeleteFeature
- * \brief Undo command for deleting a feature from a vector layer.
- */
 
 class QgsVectorLayerUndoCommandDeleteFeature : QgsVectorLayerUndoCommand
 {
+%Docstring
+ Undo command for deleting a feature from a vector layer.
+%End
+
 %TypeHeaderCode
 #include "qgsvectorlayerundocommand.h"
 %End
   public:
 
-    /** Constructor for QgsVectorLayerUndoCommandDeleteFeature
-     * @param buffer associated edit buffer
-     * @param fid feature ID of feature to delete from layer
-     */
     QgsVectorLayerUndoCommandDeleteFeature( QgsVectorLayerEditBuffer *buffer /Transfer/, QgsFeatureId fid );
+%Docstring
+ Constructor for QgsVectorLayerUndoCommandDeleteFeature
+ \param buffer associated edit buffer
+ \param fid feature ID of feature to delete from layer
+%End
 
     virtual void undo();
     virtual void redo();
+
 };
 
 
-/** \ingroup core
- * \class QgsVectorLayerUndoCommandChangeGeometry
- * \brief Undo command for modifying the geometry of a feature from a vector layer.
- */
-
 class QgsVectorLayerUndoCommandChangeGeometry : QgsVectorLayerUndoCommand
 {
+%Docstring
+ Undo command for modifying the geometry of a feature from a vector layer.
+%End
+
 %TypeHeaderCode
 #include "qgsvectorlayerundocommand.h"
 %End
   public:
 
-    /** Constructor for QgsVectorLayerUndoCommandChangeGeometry
-     * @param buffer associated edit buffer
-     * @param fid feature ID of feature to modify geometry of
-     * @param newGeom new geometry for feature
-     */
     QgsVectorLayerUndoCommandChangeGeometry( QgsVectorLayerEditBuffer *buffer /Transfer/, QgsFeatureId fid, const QgsGeometry &newGeom );
-    ~QgsVectorLayerUndoCommandChangeGeometry();
+%Docstring
+ Constructor for QgsVectorLayerUndoCommandChangeGeometry
+ \param buffer associated edit buffer
+ \param fid feature ID of feature to modify geometry of
+ \param newGeom new geometry for feature
+%End
 
     virtual void undo();
     virtual void redo();
     virtual int id() const;
     virtual bool mergeWith( const QUndoCommand * );
+
 };
 
 
-/** \ingroup core
- * \class QgsVectorLayerUndoCommandChangeAttribute
- * \brief Undo command for modifying an attribute of a feature from a vector layer.
- */
 
 class QgsVectorLayerUndoCommandChangeAttribute : QgsVectorLayerUndoCommand
 {
+%Docstring
+ Undo command for modifying an attribute of a feature from a vector layer.
+%End
+
 %TypeHeaderCode
 #include "qgsvectorlayerundocommand.h"
 %End
   public:
 
-    /** Constructor for QgsVectorLayerUndoCommandChangeAttribute
-     * @param buffer associated edit buffer
-     * @param fid feature ID of feature to modify
-     * @param fieldIndex index of field to modify
-     * @param newValue new value of attribute
-     * @param oldValue previous value of attribute
-     */
     QgsVectorLayerUndoCommandChangeAttribute( QgsVectorLayerEditBuffer *buffer /Transfer/, QgsFeatureId fid, int fieldIndex, const QVariant &newValue, const QVariant &oldValue );
+%Docstring
+ Constructor for QgsVectorLayerUndoCommandChangeAttribute
+ \param buffer associated edit buffer
+ \param fid feature ID of feature to modify
+ \param fieldIndex index of field to modify
+ \param newValue new value of attribute
+ \param oldValue previous value of attribute
+%End
     virtual void undo();
     virtual void redo();
+
 };
 
-
-/** \ingroup core
- * \class QgsVectorLayerUndoCommandAddAttribute
- * \brief Undo command for adding a new attribute to a vector layer.
- */
 
 class QgsVectorLayerUndoCommandAddAttribute : QgsVectorLayerUndoCommand
 {
+%Docstring
+ Undo command for adding a new attribute to a vector layer.
+%End
+
 %TypeHeaderCode
 #include "qgsvectorlayerundocommand.h"
 %End
   public:
 
-    /** Constructor for QgsVectorLayerUndoCommandAddAttribute
-     * @param buffer associated edit buffer
-     * @param field definition of new field to add
-     */
     QgsVectorLayerUndoCommandAddAttribute( QgsVectorLayerEditBuffer *buffer /Transfer/, const QgsField &field );
+%Docstring
+ Constructor for QgsVectorLayerUndoCommandAddAttribute
+ \param buffer associated edit buffer
+ \param field definition of new field to add
+%End
 
     virtual void undo();
     virtual void redo();
+
 };
 
-
-/** \ingroup core
- * \class QgsVectorLayerUndoCommandDeleteAttribute
- * \brief Undo command for removing an existing attribute from a vector layer.
- */
 
 class QgsVectorLayerUndoCommandDeleteAttribute : QgsVectorLayerUndoCommand
 {
+%Docstring
+ Undo command for removing an existing attribute from a vector layer.
+%End
+
 %TypeHeaderCode
 #include "qgsvectorlayerundocommand.h"
 %End
   public:
 
-    /** Constructor for QgsVectorLayerUndoCommandDeleteAttribute
-     * @param buffer associated edit buffer
-     * @param fieldIndex index of field to delete
-     */
     QgsVectorLayerUndoCommandDeleteAttribute( QgsVectorLayerEditBuffer *buffer /Transfer/, int fieldIndex );
+%Docstring
+ Constructor for QgsVectorLayerUndoCommandDeleteAttribute
+ \param buffer associated edit buffer
+ \param fieldIndex index of field to delete
+%End
 
     virtual void undo();
     virtual void redo();
@@ -168,27 +195,37 @@ class QgsVectorLayerUndoCommandDeleteAttribute : QgsVectorLayerUndoCommand
 };
 
 
-/** \ingroup core
- * \class QgsVectorLayerUndoCommandRenameAttribute
- * \brief Undo command for renaming an existing attribute of a vector layer.
- * \note added in QGIS 2.16
- */
 
 class QgsVectorLayerUndoCommandRenameAttribute : QgsVectorLayerUndoCommand
 {
+%Docstring
+ Undo command for renaming an existing attribute of a vector layer.
+.. versionadded:: 2.16
+%End
+
 %TypeHeaderCode
 #include "qgsvectorlayerundocommand.h"
 %End
   public:
 
-    /** Constructor for QgsVectorLayerUndoCommandRenameAttribute
-     * @param buffer associated edit buffer
-     * @param fieldIndex index of field to rename
-     * @param newName new name for field
-     */
     QgsVectorLayerUndoCommandRenameAttribute( QgsVectorLayerEditBuffer *buffer /Transfer/, int fieldIndex, const QString &newName );
+%Docstring
+ Constructor for QgsVectorLayerUndoCommandRenameAttribute
+ \param buffer associated edit buffer
+ \param fieldIndex index of field to rename
+ \param newName new name for field
+%End
 
     virtual void undo();
     virtual void redo();
 
 };
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgsvectorlayerundocommand.h                                 *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

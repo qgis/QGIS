@@ -255,12 +255,12 @@ QColor QgsCompoundColorWidget::color() const
   return mColorPreview->color();
 }
 
-void QgsCompoundColorWidget::setAllowAlpha( const bool allowAlpha )
+void QgsCompoundColorWidget::setAllowOpacity( const bool allowOpacity )
 {
-  mAllowAlpha = allowAlpha;
-  mAlphaLabel->setVisible( allowAlpha );
-  mAlphaSlider->setVisible( allowAlpha );
-  if ( !allowAlpha )
+  mAllowAlpha = allowOpacity;
+  mAlphaLabel->setVisible( allowOpacity );
+  mAlphaSlider->setVisible( allowOpacity );
+  if ( !allowOpacity )
   {
     mAlphaLayout->setContentsMargins( 0, 0, 0, 0 );
     mAlphaLayout->setSpacing( 0 );
@@ -629,7 +629,7 @@ void QgsCompoundColorWidget::setColor( const QColor &color )
   QColor fixedColor = QColor( color );
   if ( !mAllowAlpha )
   {
-    //alpha disallowed, so don't permit transparent colors
+    //opacity disallowed, so don't permit transparent colors
     fixedColor.setAlpha( 255 );
   }
   QList<QgsColorWidget *> colorWidgets = this->findChildren<QgsColorWidget *>();

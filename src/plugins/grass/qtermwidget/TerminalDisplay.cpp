@@ -1922,7 +1922,7 @@ void TerminalDisplay::mouseMoveEvent(QMouseEvent* ev)
         ev->y() > dragInfo.start.y() + distance || ev->y() < dragInfo.start.y() - distance)
    {
       // we've left the drag square, we can start a real drag operation now
-      emit isBusySelecting(false); // Ok.. we can breath again.
+      emit isBusySelecting(false); // OK.. we can breath again.
 
        _screenWindow->clearSelection();
       doDrag();
@@ -2263,10 +2263,10 @@ void TerminalDisplay::mouseDoubleClickEvent(QMouseEvent* ev)
 
   QPoint pos(charColumn,charLine);
 
-  // pass on double click as two clicks.
+  // pass on double-click as two clicks.
   if (!_mouseMarks && !(ev->modifiers() & Qt::ShiftModifier))
   {
-    // Send just _ONE_ click event, since the first click of the double click
+    // Send just _ONE_ click event, since the first click of the double-click
     // was already sent by the click handler
     emit mouseSignal( 0,
                       pos.x()+1,

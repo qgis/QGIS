@@ -42,10 +42,10 @@ class CORE_EXPORT QgsMapHitTest
     //! \param settings Map settings used to evaluate symbols
     //! \param polygon Polygon geometry to refine the hit test
     //! \param layerFilterExpression Expression string for each layer id to evaluate in order to refine the symbol selection
-    QgsMapHitTest( const QgsMapSettings &settings, const QgsGeometry &polygon = QgsGeometry(), const LayerFilterExpression &layerFilterExpression = LayerFilterExpression() );
+    QgsMapHitTest( const QgsMapSettings &settings, const QgsGeometry &polygon = QgsGeometry(), const QgsMapHitTest::LayerFilterExpression &layerFilterExpression = QgsMapHitTest::LayerFilterExpression() );
 
     //! Constructor version used with only expressions to filter symbols (no extent or polygon intersection)
-    QgsMapHitTest( const QgsMapSettings &settings, const LayerFilterExpression &layerFilterExpression );
+    QgsMapHitTest( const QgsMapSettings &settings, const QgsMapHitTest::LayerFilterExpression &layerFilterExpression );
 
     //! Runs the map hit test
     void run();
@@ -66,13 +66,13 @@ class CORE_EXPORT QgsMapHitTest
      */
     bool legendKeyVisible( const QString &ruleKey, QgsVectorLayer *layer ) const;
 
-  protected:
+  private:
 
     //! \note not available in Python bindings
-    typedef QSet<QString> SymbolSet SIP_SKIP;
+    typedef QSet<QString> SymbolSet;
 
     //! \note not available in Python bindings
-    typedef QMap<QgsVectorLayer *, SymbolSet> HitTest SIP_SKIP;
+    typedef QMap<QgsVectorLayer *, SymbolSet> HitTest;
 
     /** Runs test for visible symbols within a layer
      * \param vl vector layer
@@ -82,7 +82,7 @@ class CORE_EXPORT QgsMapHitTest
      * \since QGIS 2.12
      * \note not available in Python bindings
      */
-    void runHitTestLayer( QgsVectorLayer *vl, SymbolSet &usedSymbols, SymbolSet &usedSymbolsRuleKey, QgsRenderContext &context ) SIP_SKIP;
+    void runHitTestLayer( QgsVectorLayer *vl, SymbolSet &usedSymbols, SymbolSet &usedSymbolsRuleKey, QgsRenderContext &context );
 
     //! The initial map settings
     QgsMapSettings mSettings;
@@ -94,7 +94,7 @@ class CORE_EXPORT QgsMapHitTest
     HitTest mHitTestRuleKey;
 
     //! List of expression filter for each layer
-    LayerFilterExpression mLayerFilterExpression;
+    QgsMapHitTest::LayerFilterExpression mLayerFilterExpression;
 
     //! Polygon used for filtering items. May be empty
     QgsGeometry mPolygon;

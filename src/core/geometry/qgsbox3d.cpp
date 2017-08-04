@@ -24,7 +24,7 @@ QgsBox3d::QgsBox3d( double xmin, double ymin, double zmin, double xmax, double y
   , mZmax( zmax )
 {}
 
-QgsBox3d::QgsBox3d( const QgsPointV2 &p1, const QgsPointV2 &p2 )
+QgsBox3d::QgsBox3d( const QgsPoint &p1, const QgsPoint &p2 )
   : mBounds2d( p1.x(), p1.y(), p2.x(), p2.y() )
   , mZmin( qMin( p1.z(), p2.z() ) )
   , mZmax( qMax( p1.z(), p2.z() ) )
@@ -106,9 +106,9 @@ bool QgsBox3d::contains( const QgsBox3d &other ) const
   return ( other.mZmin >= mZmin && other.mZmax <= mZmax );
 }
 
-bool QgsBox3d::contains( const QgsPointV2 &p ) const
+bool QgsBox3d::contains( const QgsPoint &p ) const
 {
-  if ( !mBounds2d.contains( QgsPoint( p.x(), p.y() ) ) )
+  if ( !mBounds2d.contains( QgsPointXY( p.x(), p.y() ) ) )
     return false;
 
   if ( p.is3D() )

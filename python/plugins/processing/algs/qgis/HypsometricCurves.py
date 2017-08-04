@@ -32,11 +32,12 @@ import numpy
 from osgeo import gdal, ogr, osr
 
 from qgis.core import (QgsRectangle,
+                       QgsFeatureSink,
                        QgsGeometry,
                        QgsApplication,
                        QgsProcessingUtils)
 
-from processing.core.GeoAlgorithm import GeoAlgorithm
+from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 from processing.core.parameters import ParameterRaster
 from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterNumber
@@ -46,7 +47,7 @@ from processing.core.outputs import OutputDirectory
 from processing.tools import raster, vector, dataobjects
 
 
-class HypsometricCurves(GeoAlgorithm):
+class HypsometricCurves(QgisAlgorithm):
 
     INPUT_DEM = 'INPUT_DEM'
     BOUNDARY_LAYER = 'BOUNDARY_LAYER'
@@ -54,22 +55,13 @@ class HypsometricCurves(GeoAlgorithm):
     USE_PERCENTAGE = 'USE_PERCENTAGE'
     OUTPUT_DIRECTORY = 'OUTPUT_DIRECTORY'
 
-    def icon(self):
-        return QgsApplication.getThemeIcon("/providerQgis.svg")
-
-    def svgIconPath(self):
-        return QgsApplication.iconPath("providerQgis.svg")
-
     def group(self):
         return self.tr('Raster tools')
 
-    def name(self):
-        return 'hypsometriccurves'
+    def __init__(self):
+        super().__init__()
 
-    def displayName(self):
-        return self.tr('Hypsometric curves')
-
-    def defineCharacteristics(self):
+    def initAlgorithm(self, config=None):
         self.addParameter(ParameterRaster(self.INPUT_DEM,
                                           self.tr('DEM to analyze')))
         self.addParameter(ParameterVector(self.BOUNDARY_LAYER,
@@ -82,7 +74,13 @@ class HypsometricCurves(GeoAlgorithm):
         self.addOutput(OutputDirectory(self.OUTPUT_DIRECTORY,
                                        self.tr('Hypsometric curves')))
 
-    def processAlgorithm(self, context, feedback):
+    def name(self):
+        return 'hypsometriccurves'
+
+    def displayName(self):
+        return self.tr('Hypsometric curves')
+
+    def processAlgorithm(self, parameters, context, feedback):
         rasterPath = self.getParameterValue(self.INPUT_DEM)
         layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.BOUNDARY_LAYER), context)
         step = self.getParameterValue(self.STEP)
@@ -113,7 +111,7 @@ class HypsometricCurves(GeoAlgorithm):
         memRasterDriver = gdal.GetDriverByName('MEM')
 
         features = QgsProcessingUtils.getFeatures(layer, context)
-        total = 100.0 / QgsProcessingUtils.featureCount(layer, context)
+        total = 100.0 / layer.featureCount() if layer.featureCount() else 0
 
         for current, f in enumerate(features):
             geom = f.geometry()

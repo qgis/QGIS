@@ -1,12 +1,26 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgsmessageviewer.h                                           *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
 
-class QgsMessageViewer: QDialog, QgsMessageOutput //, Ui::QgsMessageViewer
+
+
+
+
+class QgsMessageViewer: QDialog, QgsMessageOutput
 {
-%TypeHeaderCode
-#include <qgsmessageviewer.h>
+%Docstring
+ A generic message view for displaying QGIS messages.
 %End
 
+%TypeHeaderCode
+#include "qgsmessageviewer.h"
+%End
   public:
-    QgsMessageViewer( QWidget *parent /TransferThis/ = 0, const Qt::WindowFlags &fl = QgisGui::ModalDialogFlags );
+    QgsMessageViewer( QWidget *parent /TransferThis/ = 0, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags, bool deleteOnClose = true );
     ~QgsMessageViewer();
 
     virtual void setMessage( const QString &message, MessageType msgType );
@@ -17,25 +31,24 @@ class QgsMessageViewer: QDialog, QgsMessageOutput //, Ui::QgsMessageViewer
 
     virtual void setTitle( const QString &title );
 
-    // Call one of the setMessage...() functions first.
-    // Subsequent calls to appendMessage use the format as determined
-    // by the call to setMessage...()
 
-    // Treats the given text as html.
     void setMessageAsHtml( const QString &msg );
-    // Treats the given text as plain text
     void setMessageAsPlainText( const QString &msg );
-    // A checkbox that can be used for something like
-    // "don't show this message again"
     void setCheckBoxText( const QString &text );
-    // Make the check box visible/invisible
     void setCheckBoxVisible( bool visible );
-    // Sets the check state
     void setCheckBoxState( Qt::CheckState state );
-    // Get checkbox state
     Qt::CheckState checkBoxState();
-    // Specifies a QgsSettings tag to store/retrieve the checkbox
-    // state to/from. Use an empty QString to disable this feature.
+%Docstring
+ :rtype: Qt.CheckState
+%End
     void setCheckBoxQgsSettingsLabel( const QString &label );
+
 };
 
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgsmessageviewer.h                                           *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

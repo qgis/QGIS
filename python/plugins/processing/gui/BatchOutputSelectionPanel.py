@@ -31,18 +31,20 @@ __revision__ = '$Format:%H$'
 import os
 import re
 
-from qgis.core import QgsMapLayer, QgsSettings
+from qgis.core import (QgsMapLayer,
+                       QgsSettings,
+                       QgsProcessingParameterFolderDestination,
+                       QgsProcessingParameterRasterLayer,
+                       QgsProcessingParameterFeatureSource,
+                       QgsProcessingParameterVectorLayer,
+                       QgsProcessingParameterMultipleLayers,
+                       QgsProcessingParameterBoolean,
+                       QgsProcessingParameterEnum,
+                       QgsProcessingParameterMatrix)
 from qgis.PyQt.QtWidgets import QWidget, QPushButton, QLineEdit, QHBoxLayout, QSizePolicy, QFileDialog
 
 from processing.gui.AutofillDialog import AutofillDialog
-from processing.core.parameters import ParameterMultipleInput
-from processing.core.parameters import ParameterRaster
-from processing.core.parameters import ParameterTable
-from processing.core.parameters import ParameterVector
-from processing.core.parameters import ParameterBoolean
-from processing.core.parameters import ParameterSelection
-from processing.core.parameters import ParameterFixedTable
-from processing.core.outputs import OutputDirectory
+from processing.gui.ParameterGuiUtils import getFileFilter
 
 
 class BatchOutputSelectionPanel(QWidget):
@@ -71,11 +73,11 @@ class BatchOutputSelectionPanel(QWidget):
         self.setLayout(self.horizontalLayout)
 
     def showSelectionDialog(self):
-        if isinstance(self.output, OutputDirectory):
+        if isinstance(self.output, QgsProcessingParameterFolderDestination):
             self.selectDirectory()
             return
 
-        filefilter = self.output.getFileFilter(self.alg)
+        filefilter = getFileFilter(self.output)
         settings = QgsSettings()
         if settings.contains('/Processing/LastBatchOutputPath'):
             path = str(settings.value('/Processing/LastBatchOutputPath'))
@@ -108,22 +110,23 @@ class BatchOutputSelectionPanel(QWidget):
                         n = self.table.rowCount() - self.row
                         for i in range(n):
                             widget = self.table.cellWidget(i + self.row,
-                                                           dlg.param)
-                            param = self.alg.parameters[dlg.param]
-                            if isinstance(param, (ParameterRaster,
-                                                  ParameterVector, ParameterTable,
-                                                  ParameterMultipleInput)):
+                                                           dlg.param_index)
+                            param = self.alg.parameterDefinitions()[dlg.param_index]
+                            if isinstance(param, (QgsProcessingParameterRasterLayer,
+                                                  QgsProcessingParameterFeatureSource,
+                                                  QgsProcessingParameterVectorLayer,
+                                                  QgsProcessingParameterMultipleLayers)):
                                 v = widget.value()
                                 if isinstance(v, QgsMapLayer):
                                     s = v.name()
                                 else:
                                     s = os.path.basename(v)
                                     s = os.path.splitext(s)[0]
-                            elif isinstance(param, ParameterBoolean):
+                            elif isinstance(param, QgsProcessingParameterBoolean):
                                 s = str(widget.currentIndex() == 0)
-                            elif isinstance(param, ParameterSelection):
+                            elif isinstance(param, QgsProcessingParameterEnum):
                                 s = str(widget.currentText())
-                            elif isinstance(param, ParameterFixedTable):
+                            elif isinstance(param, QgsProcessingParameterMatrix):
                                 s = str(widget.table)
                             else:
                                 s = str(widget.text())

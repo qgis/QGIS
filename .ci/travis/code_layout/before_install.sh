@@ -13,4 +13,4 @@
 #                                                                         #
 ###########################################################################
 
-pip install autopep8
+pip install autopep8 nose2 mock termcolor

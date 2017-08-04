@@ -17,8 +17,7 @@
 
 #include "qgsmssqldataitems.h"
 
-#include "qgsmssqlsourceselect.h"
-#include "qgsmssqlnewconnection.h"
+#include "qgsmssqlgeomcolumntypethread.h"
 #include "qgslogger.h"
 #include "qgsmimedatautils.h"
 #include "qgsvectorlayer.h"
@@ -27,6 +26,11 @@
 #include "qgsmssqlprovider.h"
 #include "qgssettings.h"
 #include "qgsmessageoutput.h"
+
+#ifdef HAVE_GUI
+#include "qgsmssqlsourceselect.h"
+#include "qgsmssqlnewconnection.h"
+#endif
 
 #include <QMessageBox>
 #include <QSqlDatabase>
@@ -41,7 +45,7 @@ QgsMssqlConnectionItem::QgsMssqlConnectionItem( QgsDataItem *parent, QString nam
   , mAllowGeometrylessTables( true )
   , mColumnTypeThread( nullptr )
 {
-  mCapabilities |= Fast;
+  mCapabilities |= Fast | Collapse;
   mIconName = QStringLiteral( "mIconConnect.png" );
 }
 
@@ -71,7 +75,7 @@ void QgsMssqlConnectionItem::readConnectionSettings()
   mUseEstimatedMetadata = settings.value( key + "/estimatedMetadata", false ).toBool();
   mAllowGeometrylessTables = settings.value( key + "/allowGeometrylessTables", true ).toBool();
 
-  mConnInfo =  "dbname='" + mDatabase + "' host=" + mHost + " user='" + mUsername + "' password='" + mPassword + '\'';
+  mConnInfo =  "dbname='" + mDatabase + "' host='" + mHost + "' user='" + mUsername + "' password='" + mPassword + '\'';
   if ( !mService.isEmpty() )
     mConnInfo += " service='" + mService + '\'';
   if ( mUseEstimatedMetadata )
@@ -326,10 +330,10 @@ bool QgsMssqlConnectionItem::equal( const QgsDataItem *other )
   return ( mPath == o->mPath && mName == o->mName );
 }
 
+#ifdef HAVE_GUI
 QList<QAction *> QgsMssqlConnectionItem::actions()
 {
   QList<QAction *> lst;
-
   QAction *actionShowNoGeom = new QAction( tr( "Show Non-Spatial Tables" ), this );
   actionShowNoGeom->setCheckable( true );
   actionShowNoGeom->setChecked( mAllowGeometrylessTables );
@@ -362,7 +366,7 @@ void QgsMssqlConnectionItem::editConnection()
   if ( nc.exec() )
   {
     // the parent should be updated
-    mParent->refresh();
+    mParent->refreshConnections();
   }
 }
 
@@ -370,8 +374,9 @@ void QgsMssqlConnectionItem::deleteConnection()
 {
   QgsMssqlSourceSelect::deleteConnection( mName );
   // the parent should be updated
-  mParent->refresh();
+  mParent->refreshConnections();
 }
+#endif
 
 bool QgsMssqlConnectionItem::handleDrop( const QMimeData *data, Qt::DropAction )
 {
@@ -480,13 +485,13 @@ QgsMssqlLayerItem *QgsMssqlLayerItem::createClone()
 
 QString QgsMssqlLayerItem::createUri()
 {
-  QString pkColName = !mLayerProperty.pkCols.isEmpty() ? mLayerProperty.pkCols.at( 0 ) : QString::null;
+  QString pkColName = !mLayerProperty.pkCols.isEmpty() ? mLayerProperty.pkCols.at( 0 ) : QString();
   QgsMssqlConnectionItem *connItem = qobject_cast<QgsMssqlConnectionItem *>( parent() ? parent()->parent() : nullptr );
 
   if ( !connItem )
   {
     QgsDebugMsg( "connection item not found." );
-    return QString::null;
+    return QString();
   }
 
   QgsDataSourceUri uri = QgsDataSourceUri( connItem->connInfo() );
@@ -542,24 +547,19 @@ QgsMssqlLayerItem *QgsMssqlSchemaItem::addLayer( const QgsMssqlLayerProperty &la
   QString tip = tr( "%1 as %2 in %3" ).arg( layerProperty.geometryColName, QgsWkbTypes::displayString( wkbType ), layerProperty.srid );
 
   QgsLayerItem::LayerType layerType;
-  switch ( wkbType )
+  QgsWkbTypes::Type flatType = QgsWkbTypes::flatType( wkbType );
+  switch ( flatType )
   {
     case QgsWkbTypes::Point:
-    case QgsWkbTypes::Point25D:
     case QgsWkbTypes::MultiPoint:
-    case QgsWkbTypes::MultiPoint25D:
       layerType = QgsLayerItem::Point;
       break;
     case QgsWkbTypes::LineString:
-    case QgsWkbTypes::LineString25D:
     case QgsWkbTypes::MultiLineString:
-    case QgsWkbTypes::MultiLineString25D:
       layerType = QgsLayerItem::Line;
       break;
     case QgsWkbTypes::Polygon:
-    case QgsWkbTypes::Polygon25D:
     case QgsWkbTypes::MultiPolygon:
-    case QgsWkbTypes::MultiPolygon25D:
       layerType = QgsLayerItem::Polygon;
       break;
     default:
@@ -604,6 +604,7 @@ QVector<QgsDataItem *> QgsMssqlRootItem::createChildren()
   return connections;
 }
 
+#ifdef HAVE_GUI
 QList<QAction *> QgsMssqlRootItem::actions()
 {
   QList<QAction *> lst;
@@ -617,7 +618,7 @@ QList<QAction *> QgsMssqlRootItem::actions()
 
 QWidget *QgsMssqlRootItem::paramWidget()
 {
-  QgsMssqlSourceSelect *select = new QgsMssqlSourceSelect( nullptr, 0, true, true );
+  QgsMssqlSourceSelect *select = new QgsMssqlSourceSelect( nullptr, 0, QgsProviderRegistry::WidgetMode::Manager );
   connect( select, &QgsMssqlSourceSelect::connectionsChanged, this, &QgsMssqlRootItem::connectionsChanged );
   return select;
 }
@@ -632,6 +633,7 @@ void QgsMssqlRootItem::newConnection()
   QgsMssqlNewConnection nc( nullptr );
   if ( nc.exec() )
   {
-    refresh();
+    refreshConnections();
   }
 }
+#endif

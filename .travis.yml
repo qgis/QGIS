@@ -7,6 +7,7 @@ matrix:
       env:
         - LLVM_VERSION=3.8
         - TRAVIS_CONFIG=linux
+      dist: precise
       sudo: false
       cache:
         apt: true
@@ -22,47 +23,48 @@ matrix:
         apt:
           sources:
             - llvm-toolchain-precise-3.8
-            - george-edison55-precise-backports # doxygen 1.8.3
             - ubuntu-toolchain-r-test
           packages:
-            - doxygen
             - bison
             - flex
-            - graphviz
             - libpq-dev
             - libfcgi-dev
             - libfftw3-3
             - libgsl0-dev
             - pkg-config
             - poppler-utils
-            - txt2tags
             - xvfb
             - clang-3.8
+            - libzip-dev
 
 
     - os: linux
-      language: python # This lets us use newer python versions from virtualenv
+      language: python
+      python: "3.5"
       env:
         - TRAVIS_CONFIG=code_layout
       dist: trusty
       sudo: false
       cache:
         apt: true
-      #compiler: clang
-      #python: "3.3"
       addons:
         apt:
           sources:
             - sourceline: 'ppa:jonathonf/backports'  # silversearcher-ag backport
+            - sourceline: 'ppa:sergey-dryabzhinsky/packages' # doxygen
           packages:
+            - doxygen
+            - graphviz
+            - txt2tags
             - pkg-config
             - xvfb
             - flip
             # used for spell checks
-            - perl  # lookahead regex in spell check script
+            - perl  # sipify, lookahead regex in spell check script
             - silversearcher-ag
             - expect-dev  # unbuffer
             - coreutils
+            - libyaml-tiny-perl
     # OSX based build with QT4 and Python 2
     - os: osx
       osx_image: xcode8.3 # MacOS 10.12: Sierra
@@ -73,6 +75,9 @@ matrix:
       env:
         - TRAVIS_CONFIG=macos
         - IGNORE_BUILD_FAILURES=YES
+
+  allow_failures:
+    - os: osx
 
 git:
   depth: 30

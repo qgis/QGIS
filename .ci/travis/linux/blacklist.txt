@@ -1,5 +1,5 @@
 # black list
-PyQgsJSONUtils
+PyQgsJsonUtils
 PyQgsLocalServer
 PyQgsPalLabelingServer
 qgis_composermapgridtest
@@ -7,10 +7,17 @@ qgis_composerutils
 ProcessingGrass7AlgorithmsImageryTest
 ProcessingGrass7AlgorithmsRasterTest
 PyQgsDBManagerGpkg
+PyQgsAppStartup
 
-# layout tests are run on separate build
-qgis_indentation
+# temporary during processing refactoring
+ProcessingParametersTest
+ProcessingGdalAlgorithmsTest
+
+# code layout tests are run on separate build
 qgis_spelling
+qgis_sipify
+qgis_sip_include
+qgis_sip_uptodate
 
 # flacky
 qgis_filedownloader

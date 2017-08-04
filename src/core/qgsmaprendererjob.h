@@ -19,7 +19,6 @@
 #include "qgis_core.h"
 #include "qgis_sip.h"
 #include "qgis.h"
-#include <QtConcurrentRun>
 #include <QFutureWatcher>
 #include <QImage>
 #include <QPainter>
@@ -37,6 +36,7 @@ class QgsMapLayerRenderer;
 class QgsMapRendererCache;
 class QgsFeatureFilterProvider;
 
+#ifndef SIP_RUN
 /// @cond PRIVATE
 
 /** \ingroup core
@@ -83,6 +83,7 @@ struct LabelRenderJob
 };
 
 ///@endcond PRIVATE
+#endif
 
 /** \ingroup core
  * Abstract base class for map rendering implementations.
@@ -175,7 +176,7 @@ class CORE_EXPORT QgsMapRendererJob : public QObject
       QString message;
     };
 
-    typedef QList<Error> Errors;
+    typedef QList<QgsMapRendererJob::Error> Errors;
 
     //! List of errors that happened during the rendering job - available when the rendering has been finished
     Errors errors() const;

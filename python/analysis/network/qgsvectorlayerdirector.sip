@@ -29,7 +29,7 @@ class QgsVectorLayerDirector : QgsGraphDirector
       DirectionBoth,
     };
 
-    QgsVectorLayerDirector( QgsVectorLayer *myLayer,
+    QgsVectorLayerDirector( QgsFeatureSource *source,
                             int directionFieldId,
                             const QString &directDirectionValue,
                             const QString &reverseDirectionValue,
@@ -38,7 +38,7 @@ class QgsVectorLayerDirector : QgsGraphDirector
                           );
 %Docstring
  Default constructor
- \param myLayer source vector layer
+ \param source feature source representing network
  \param directionFieldId field containing direction value
  \param directDirectionValue value for direct one-way road
  \param reverseDirectionValue value for reversed one-way road
@@ -50,8 +50,9 @@ class QgsVectorLayerDirector : QgsGraphDirector
     virtual ~QgsVectorLayerDirector();
 
      virtual void makeGraph( QgsGraphBuilderInterface *builder,
-                    const QVector< QgsPoint > &additionalPoints,
-                    QVector< QgsPoint> &snappedPoints /Out/ ) const;
+                    const QVector< QgsPointXY > &additionalPoints,
+                    QVector< QgsPointXY> &snappedPoints /Out/,
+                    QgsFeedback *feedback = 0 ) const;
 %Docstring
  MANDATORY DIRECTOR PROPERTY DECLARATION
 %End

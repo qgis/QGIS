@@ -17,7 +17,7 @@
 #ifndef QGSORACLENEWCONNECTION_H
 #define QGSORACLENEWCONNECTION_H
 #include "ui_qgsoraclenewconnectionbase.h"
-#include "qgisgui.h"
+#include "qgsguiutils.h"
 #include "qgshelp.h"
 
 /** \class QgsOracleNewConnection
@@ -29,7 +29,7 @@ class QgsOracleNewConnection : public QDialog, private Ui::QgsOracleNewConnectio
     Q_OBJECT
   public:
     //! Constructor
-    QgsOracleNewConnection( QWidget *parent = 0, const QString &connName = QString::null, Qt::WindowFlags fl = QgisGui::ModalDialogFlags );
+    QgsOracleNewConnection( QWidget *parent = 0, const QString &connName = QString(), Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags );
     //! Destructor
     ~QgsOracleNewConnection();
 

@@ -46,7 +46,7 @@ class CORE_EXPORT QgsMapLayerLegend : public QObject
      * Return list of legend nodes to be used for a particular layer tree layer node.
      * Ownership is transferred to the caller.
      */
-    virtual QList<QgsLayerTreeModelLegendNode *> createLayerTreeModelLegendNodes( QgsLayerTreeLayer *nodeLayer ) = 0;
+    virtual QList<QgsLayerTreeModelLegendNode *> createLayerTreeModelLegendNodes( QgsLayerTreeLayer *nodeLayer ) = 0 SIP_FACTORY;
 
     // TODO: support for layer tree view delegates
 
@@ -55,9 +55,6 @@ class CORE_EXPORT QgsMapLayerLegend : public QObject
 
     //! Create new legend implementation for raster layer
     static QgsMapLayerLegend *defaultRasterLegend( QgsRasterLayer *rl ) SIP_FACTORY;
-
-    //! Create new legend implementation for raster layer
-    static QgsMapLayerLegend *defaultPluginLegend( QgsPluginLayer *pl ) SIP_FACTORY;
 
   signals:
     //! Emitted when existing items/nodes got invalid and should be replaced by new ones
@@ -99,7 +96,7 @@ class CORE_EXPORT QgsDefaultVectorLayerLegend : public QgsMapLayerLegend
   public:
     explicit QgsDefaultVectorLayerLegend( QgsVectorLayer *vl );
 
-    virtual QList<QgsLayerTreeModelLegendNode *> createLayerTreeModelLegendNodes( QgsLayerTreeLayer *nodeLayer ) override;
+    virtual QList<QgsLayerTreeModelLegendNode *> createLayerTreeModelLegendNodes( QgsLayerTreeLayer *nodeLayer ) SIP_FACTORY override;
 
   private:
     QgsVectorLayer *mLayer = nullptr;
@@ -117,28 +114,11 @@ class CORE_EXPORT QgsDefaultRasterLayerLegend : public QgsMapLayerLegend
   public:
     explicit QgsDefaultRasterLayerLegend( QgsRasterLayer *rl );
 
-    virtual QList<QgsLayerTreeModelLegendNode *> createLayerTreeModelLegendNodes( QgsLayerTreeLayer *nodeLayer ) override;
+    virtual QList<QgsLayerTreeModelLegendNode *> createLayerTreeModelLegendNodes( QgsLayerTreeLayer *nodeLayer ) SIP_FACTORY override;
 
   private:
     QgsRasterLayer *mLayer = nullptr;
 };
 
-
-/** \ingroup core
- * Default legend implementation for plugin layers
- * \since QGIS 2.6
- */
-class CORE_EXPORT QgsDefaultPluginLayerLegend : public QgsMapLayerLegend
-{
-    Q_OBJECT
-
-  public:
-    explicit QgsDefaultPluginLayerLegend( QgsPluginLayer *pl );
-
-    virtual QList<QgsLayerTreeModelLegendNode *> createLayerTreeModelLegendNodes( QgsLayerTreeLayer *nodeLayer ) override;
-
-  private:
-    QgsPluginLayer *mLayer = nullptr;
-};
 
 #endif // QGSMAPLAYERLEGEND_H

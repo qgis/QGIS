@@ -19,6 +19,7 @@
 #define QGSRASTERNULLER_H
 
 #include "qgis_core.h"
+#include "qgis_sip.h"
 #include "qgsrasterrange.h"
 #include "qgsrasterinterface.h"
 
@@ -38,13 +39,13 @@ class CORE_EXPORT QgsRasterNuller : public QgsRasterInterface
       double max;
     };
 
-    QgsRasterNuller *clone() const override;
+    QgsRasterNuller *clone() const override SIP_FACTORY;
 
     int bandCount() const override;
 
     Qgis::DataType dataType( int bandNo ) const override;
 
-    QgsRasterBlock *block( int bandNo, const QgsRectangle &extent, int width, int height, QgsRasterBlockFeedback *feedback = nullptr ) override;
+    QgsRasterBlock *block( int bandNo, const QgsRectangle &extent, int width, int height, QgsRasterBlockFeedback *feedback = nullptr ) override SIP_FACTORY;
 
     void setNoData( int bandNo, const QgsRasterRangeList &noData );
 

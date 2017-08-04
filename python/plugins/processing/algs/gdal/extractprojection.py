@@ -44,6 +44,12 @@ class ExtractProjection(GdalAlgorithm):
     INPUT = 'INPUT'
     PRJ_FILE = 'PRJ_FILE'
 
+    def __init__(self):
+        super().__init__()
+        self.addParameter(ParameterRaster(self.INPUT, self.tr('Input file')))
+        self.addParameter(ParameterBoolean(self.PRJ_FILE,
+                                           self.tr('Create also .prj file'), False))
+
     def name(self):
         return 'extractprojection'
 
@@ -56,15 +62,10 @@ class ExtractProjection(GdalAlgorithm):
     def group(self):
         return self.tr('Raster projections')
 
-    def defineCharacteristics(self):
-        self.addParameter(ParameterRaster(self.INPUT, self.tr('Input file')))
-        self.addParameter(ParameterBoolean(self.PRJ_FILE,
-                                           self.tr('Create also .prj file'), False))
-
-    def getConsoleCommands(self):
+    def getConsoleCommands(self, parameters):
         return ["extractprojection"]
 
-    def processAlgorithm(self, context, feedback):
+    def processAlgorithm(self, parameters, context, feedback):
         rasterPath = self.getParameterValue(self.INPUT)
         createPrj = self.getParameterValue(self.PRJ_FILE)
 

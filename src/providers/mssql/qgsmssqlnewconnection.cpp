@@ -19,6 +19,7 @@
 #include <QMessageBox>
 #include <QSqlDatabase>
 #include <QSqlError>
+#include <QRegExpValidator>
 
 #include "qgsmssqlnewconnection.h"
 #include "qgsmssqlprovider.h"
@@ -63,6 +64,7 @@ QgsMssqlNewConnection::QgsMssqlNewConnection( QWidget *parent, const QString &co
 
     txtName->setText( connName );
   }
+  txtName->setValidator( new QRegExpValidator( QRegExp( "[^\\/]+" ), txtName ) );
   on_cb_trustedConnection_clicked();
 }
 //! Autoconnected SLOTS *
@@ -143,7 +145,6 @@ void QgsMssqlNewConnection::on_cb_trustedConnection_clicked()
 
 QgsMssqlNewConnection::~QgsMssqlNewConnection()
 {
-  delete bar;
 }
 
 bool QgsMssqlNewConnection::testConnection( const QString &testDatabase )

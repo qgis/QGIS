@@ -328,7 +328,7 @@ QString TestQgsCoordinateReferenceSystem::testESRIWkt( int i, QgsCoordinateRefer
   if ( myCrs.toProj4().indexOf( myTOWGS84Strings[i] ) == -1 )
     return QStringLiteral( "test %1 [%2] not found, PROJ.4 = [%3] expecting [%4]"
                          ).arg( i ).arg( myTOWGS84Strings[i], myCrs.toProj4(), myProj4Strings[i] );
-  if ( myCrs.authid() !=  myAuthIdStrings[i] )
+  if ( myCrs.authid() != myAuthIdStrings[i] )
     return QStringLiteral( "test %1 AUTHID = [%2] expecting [%3]"
                          ).arg( i ).arg( myCrs.authid(), myAuthIdStrings[i] );
 
@@ -390,7 +390,7 @@ void TestQgsCoordinateReferenceSystem::createFromESRIWkt()
     CPLSetConfigOption( "GDAL_FIX_ESRI_WKT", configOld );
     if ( myFiles[i] != QLatin1String( "" ) )
     {
-      // use ogr to open file, make sure CRS is ok
+      // use ogr to open file, make sure CRS is OK
       // this probably could be in another test, but leaving it here since it deals with CRS
       QString fileStr = QStringLiteral( TEST_DATA_DIR ) + '/' + myFiles[i];
       QgsDebugMsg( QString( "i=%1 file=%2" ).arg( i ).arg( fileStr ) );

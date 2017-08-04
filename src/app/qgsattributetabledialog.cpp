@@ -49,6 +49,7 @@
 #include "qgsfields.h"
 #include "qgseditorwidgetregistry.h"
 #include "qgsfieldproxymodel.h"
+#include "qgsgui.h"
 
 QgsExpressionContext QgsAttributeTableDialog::createExpressionContext() const
 {
@@ -341,7 +342,7 @@ QgsAttributeTableDialog::~QgsAttributeTableDialog()
 void QgsAttributeTableDialog::updateTitle()
 {
   QWidget *w = mDock ? qobject_cast<QWidget *>( mDock ) : qobject_cast<QWidget *>( this );
-  w->setWindowTitle( tr( " %1 :: Features total: %2, filtered: %3, selected: %4" )
+  w->setWindowTitle( tr( " %1 :: Features Total: %2, Filtered: %3, Selected: %4" )
                      .arg( mLayer->name() )
                      .arg( qMax( static_cast< long >( mMainView->featureCount() ), mLayer->featureCount() ) ) // layer count may be estimated, so use larger of the two
                      .arg( mMainView->filteredFeatureCount() )
@@ -396,7 +397,7 @@ void QgsAttributeTableDialog::columnBoxInit()
 
   mFilterButton->addAction( mActionShowAllFilter );
   mFilterButton->addAction( mActionSelectedFilter );
-  if ( mLayer->hasGeometryType() )
+  if ( mLayer->isSpatial() )
   {
     mFilterButton->addAction( mActionVisibleFilter );
   }
@@ -412,7 +413,7 @@ void QgsAttributeTableDialog::columnBoxInit()
     if ( idx < 0 )
       continue;
 
-    if ( QgsEditorWidgetRegistry::instance()->findBest( mLayer, field.name() ).type() != QLatin1String( "Hidden" ) )
+    if ( QgsGui::editorWidgetRegistry()->findBest( mLayer, field.name() ).type() != QLatin1String( "Hidden" ) )
     {
       QIcon icon = mLayer->fields().iconForField( idx );
       QString alias = mLayer->attributeDisplayName( idx );
@@ -560,8 +561,8 @@ void QgsAttributeTableDialog::filterColumnChanged( QObject *filterAction )
   int fldIdx = mLayer->fields().lookupField( fieldName );
   if ( fldIdx < 0 )
     return;
-  const QgsEditorWidgetSetup setup = QgsEditorWidgetRegistry::instance()->findBest( mLayer, fieldName );
-  mCurrentSearchWidgetWrapper = QgsEditorWidgetRegistry::instance()->
+  const QgsEditorWidgetSetup setup = QgsGui::editorWidgetRegistry()->findBest( mLayer, fieldName );
+  mCurrentSearchWidgetWrapper = QgsGui::editorWidgetRegistry()->
                                 createSearchWidget( setup.type(), mLayer, fldIdx, setup.config(), mFilterContainer, mEditorContext );
   if ( mCurrentSearchWidgetWrapper->applyDirectly() )
   {
@@ -583,7 +584,7 @@ void QgsAttributeTableDialog::filterExpressionBuilder()
   QgsExpressionContext context( QgsExpressionContextUtils::globalProjectLayerScopes( mLayer ) );
 
   QgsExpressionBuilderDialog dlg( mLayer, mFilterQuery->text(), this, QStringLiteral( "generic" ), context );
-  dlg.setWindowTitle( tr( "Expression based filter" ) );
+  dlg.setWindowTitle( tr( "Expression Based Filter" ) );
 
   QgsDistanceArea myDa;
   myDa.setSourceCrs( mLayer->crs() );
@@ -621,7 +622,7 @@ void QgsAttributeTableDialog::filterSelected()
 
 void QgsAttributeTableDialog::filterVisible()
 {
-  if ( !mLayer->hasGeometryType() )
+  if ( !mLayer->isSpatial() )
   {
     filterShowAll();
     return;

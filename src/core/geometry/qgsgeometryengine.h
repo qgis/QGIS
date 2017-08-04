@@ -46,8 +46,8 @@ class CORE_EXPORT QgsGeometryEngine
     virtual QgsAbstractGeometry *simplify( double tolerance, QString *errorMsg = nullptr ) const = 0 SIP_FACTORY;
     virtual QgsAbstractGeometry *interpolate( double distance, QString *errorMsg = nullptr ) const = 0 SIP_FACTORY;
     virtual QgsAbstractGeometry *envelope( QString *errorMsg = nullptr ) const = 0 SIP_FACTORY;
-    virtual bool centroid( QgsPointV2 &pt, QString *errorMsg = nullptr ) const = 0;
-    virtual bool pointOnSurface( QgsPointV2 &pt, QString *errorMsg = nullptr ) const = 0;
+    virtual bool centroid( QgsPoint &pt, QString *errorMsg = nullptr ) const = 0;
+    virtual bool pointOnSurface( QgsPoint &pt, QString *errorMsg = nullptr ) const = 0;
     virtual QgsAbstractGeometry *convexHull( QString *errorMsg = nullptr ) const = 0 SIP_FACTORY;
     virtual double distance( const QgsAbstractGeometry &geom, QString *errorMsg = nullptr ) const = 0;
     virtual bool intersects( const QgsAbstractGeometry &geom, QString *errorMsg = nullptr ) const = 0;
@@ -82,6 +82,11 @@ class CORE_EXPORT QgsGeometryEngine
     virtual bool isValid( QString *errorMsg = nullptr ) const = 0;
     virtual bool isEqual( const QgsAbstractGeometry &geom, QString *errorMsg = nullptr ) const = 0;
     virtual bool isEmpty( QString *errorMsg ) const = 0;
+
+    /** Determines whether the geometry is simple (according to OGC definition).
+     * \since QGIS 3.0
+     */
+    virtual bool isSimple( QString *errorMsg = nullptr ) const = 0;
 
     virtual int splitGeometry( const QgsLineString &splitLine,
                                QList<QgsAbstractGeometry *> &newGeometries,

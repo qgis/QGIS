@@ -243,7 +243,7 @@ namespace QgsWfs
       QString name = layer->name();
       if ( !layer->shortName().isEmpty() )
         name = layer->shortName();
-      name = name.replace( QLatin1String( " " ), QLatin1String( "_" ) );
+      name = name.replace( ' ', '_' );
 
       if ( !typeNameList.contains( name ) )
       {
@@ -779,7 +779,7 @@ namespace QgsWfs
     // parse FEATUREID
     if ( parameters.contains( QStringLiteral( "FEATUREID" ) ) )
     {
-      QStringList fidList = parameters.value( QStringLiteral( "FEATUREID" ) ).split( QStringLiteral( "," ) );
+      QStringList fidList = parameters.value( QStringLiteral( "FEATUREID" ) ).split( ',' );
 
       QMap<QString, QgsFeatureIds> fidsMap;
 
@@ -790,13 +790,13 @@ namespace QgsWfs
         QString fid = *fidIt;
         fid = fid.trimmed();
         // testing typename in the WFS featureID
-        if ( !fid.contains( QLatin1String( "." ) ) )
+        if ( !fid.contains( '.' ) )
         {
           throw QgsRequestNotWellFormedException( QStringLiteral( "FEATUREID has to have TYPENAME in the values" ) );
         }
 
-        QString typeName = fid.section( QStringLiteral( "." ), 0, 0 );
-        fid = fid.section( QStringLiteral( "." ), 1, 1 );
+        QString typeName = fid.section( '.', 0, 0 );
+        fid = fid.section( '.', 1, 1 );
         if ( !typeNameList.contains( typeName ) )
         {
           typeNameList << typeName;
@@ -830,7 +830,7 @@ namespace QgsWfs
       throw QgsRequestNotWellFormedException( QStringLiteral( "TYPENAME is mandatory except if FEATUREID is used" ) );
     }
 
-    typeNameList = parameters.value( QStringLiteral( "TYPENAME" ) ).split( QStringLiteral( "," ) );
+    typeNameList = parameters.value( QStringLiteral( "TYPENAME" ) ).split( ',' );
 
     // Create actions based on TypeName
     QStringList::const_iterator typeNameIt = typeNameList.constBegin();
@@ -925,7 +925,7 @@ namespace QgsWfs
       bool ok;
       for ( int i = 0; i < 4; i++ )
       {
-        corners[i].replace( QLatin1String( " " ), QLatin1String( "+" ) );
+        corners[i].replace( ' ', '+' );
         d[i] = corners[i].toDouble( &ok );
         if ( !ok )
         {
@@ -1038,8 +1038,8 @@ namespace QgsWfs
   transactionDelete parseDeleteActionElement( QDomElement &actionElem )
   {
     QString typeName = actionElem.attribute( QStringLiteral( "typeName" ) );
-    if ( typeName.contains( QLatin1String( ":" ) ) )
-      typeName = typeName.section( QStringLiteral( ":" ), 1, 1 );
+    if ( typeName.contains( ':' ) )
+      typeName = typeName.section( ':', 1, 1 );
 
     QDomElement filterElem = actionElem.firstChild().toElement();
     if ( filterElem.tagName() != QLatin1String( "Filter" ) )
@@ -1065,8 +1065,8 @@ namespace QgsWfs
   transactionUpdate parseUpdateActionElement( QDomElement &actionElem )
   {
     QString typeName = actionElem.attribute( QStringLiteral( "typeName" ) );
-    if ( typeName.contains( QLatin1String( ":" ) ) )
-      typeName = typeName.section( QStringLiteral( ":" ), 1, 1 );
+    if ( typeName.contains( ':' ) )
+      typeName = typeName.section( ':', 1, 1 );
 
     QDomNodeList propertyNodeList = actionElem.elementsByTagName( QStringLiteral( "Property" ) );
     if ( propertyNodeList.size() != 1 )
@@ -1130,8 +1130,8 @@ namespace QgsWfs
     for ( int i = 0; i < featureNodeList.count(); ++i )
     {
       QString tempTypeName = featureNodeList.at( i ).toElement().localName();
-      if ( tempTypeName.contains( QLatin1String( ":" ) ) )
-        tempTypeName = tempTypeName.section( QStringLiteral( ":" ), 1, 1 );
+      if ( tempTypeName.contains( ':' ) )
+        tempTypeName = tempTypeName.section( ':', 1, 1 );
 
       if ( typeName.isEmpty() )
       {

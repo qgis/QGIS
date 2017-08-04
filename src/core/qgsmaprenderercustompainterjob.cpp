@@ -24,6 +24,8 @@
 #include "qgsrenderer.h"
 #include "qgsmaplayerlistutils.h"
 
+#include <QtConcurrentRun>
+
 QgsMapRendererCustomPainterJob::QgsMapRendererCustomPainterJob( const QgsMapSettings &settings, QPainter *painter )
   : QgsMapRendererJob( settings )
   , mPainter( painter )
@@ -354,7 +356,7 @@ bool QgsMapRendererJob::needTemporaryImage( QgsMapLayer *ml )
     if ( mSettings.testFlag( QgsMapSettings::UseAdvancedEffects ) &&
          ( ( vl->blendMode() != QPainter::CompositionMode_SourceOver )
            || ( vl->featureBlendMode() != QPainter::CompositionMode_SourceOver )
-           || ( vl->layerTransparency() != 0 ) ) )
+           || ( !qgsDoubleNear( vl->opacity(), 1.0 ) ) ) )
     {
       //layer properties require rasterization
       return true;

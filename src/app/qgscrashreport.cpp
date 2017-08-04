@@ -48,15 +48,18 @@ const QString QgsCrashReport::toHtml() const
     }
     else
     {
+      reportData.append( "<pre>" );
       Q_FOREACH ( const QgsStackTrace::StackLine &line, mStackTrace )
       {
         QFileInfo fileInfo( line.fileName );
         QString filename( fileInfo.fileName() );
         reportData.append( QString( "(%1) %2 %3:%4" ).arg( line.moduleName, line.symbolName, filename, line.lineNumber ) );
       }
+      reportData.append( "</pre>" );
     }
   }
 
+#if 0
   if ( flags().testFlag( QgsCrashReport::Plugins ) )
   {
     reportData.append( "<br>" );
@@ -70,6 +73,7 @@ const QString QgsCrashReport::toHtml() const
     reportData.append( "<b>Project Info</b>" );
     // TODO Get project details
   }
+#endif
 
   if ( flags().testFlag( QgsCrashReport::QgisInfo ) )
   {
@@ -116,7 +120,7 @@ const QString QgsCrashReport::crashID() const
   if ( mStackTrace.isEmpty() )
     return "ID not generated due to missing information\n\n Your version of QGIS install might not have debug information included.";
 
-  QString data = QString::null;
+  QString data = QString();
 
   // Hashes the full stack.
   Q_FOREACH ( const QgsStackTrace::StackLine &line, mStackTrace )

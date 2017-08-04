@@ -76,14 +76,19 @@ class CORE_EXPORT QgsMapSettings
     //! Set the size of the resulting map image
     void setOutputSize( QSize size );
 
-    //! Return the rotation of the resulting map image
-    //! Units are clockwise degrees
-    //! \since QGIS 2.8
+    /**
+     * Returns the rotation of the resulting map image, in degrees clockwise.
+     * \since QGIS 2.8
+     * \see setRotation()
+     */
     double rotation() const;
-    //! Set the rotation of the resulting map image
-    //! Units are clockwise degrees
-    //! \since QGIS 2.8
-    void setRotation( double degrees );
+
+    /**
+     * Sets the \a rotation of the resulting map image, in degrees clockwise.
+     * \since QGIS 2.8
+     * \see rotation()
+     */
+    void setRotation( double rotation );
 
     //! Return DPI used for conversion between real world units (e.g. mm) and pixels
     //! Default value is 96
@@ -143,6 +148,23 @@ class CORE_EXPORT QgsMapSettings
     //! Get units of map's geographical coordinates - used for scale calculation
     QgsUnitTypes::DistanceUnit mapUnits() const;
 
+    /**
+     * Sets the \a ellipsoid by its acronym. Known ellipsoid acronyms can be
+     * retrieved using QgsEllipsoidUtils::acronyms().
+     * Calculations will only use the ellipsoid if a valid ellipsoid has been set.
+     * \returns true if ellipsoid was successfully set
+     * \since QGIS 3.0
+     * \see ellipsoid()
+     */
+    bool setEllipsoid( const QString &ellipsoid );
+
+    /** Returns ellipsoid's acronym. Calculations will only use the
+     * ellipsoid if a valid ellipsoid has been set.
+     * \since QGIS 3.0
+     * \see setEllipsoid()
+     */
+    QString ellipsoid() const { return mEllipsoid; }
+
     //! Set the background color of the map
     void setBackgroundColor( const QColor &color ) { mBackgroundColor = color; }
     //! Get the background color of the map
@@ -159,7 +181,7 @@ class CORE_EXPORT QgsMapSettings
       Antialiasing             = 0x01,  //!< Enable anti-aliasing for map rendering
       DrawEditingInfo          = 0x02,  //!< Enable drawing of vertex markers for layers in editing mode
       ForceVectorOutput        = 0x04,  //!< Vector graphics should not be cached and drawn as raster images
-      UseAdvancedEffects       = 0x08,  //!< Enable layer transparency and blending effects
+      UseAdvancedEffects       = 0x08,  //!< Enable layer opacity and blending effects
       DrawLabeling             = 0x10,  //!< Enable drawing of labels on top of the map
       UseRenderingOptimization = 0x20,  //!< Enable vector simplification and other rendering optimizations
       DrawSelection            = 0x40,  //!< Whether vector selections should be shown in the rendered map
@@ -193,7 +215,11 @@ class CORE_EXPORT QgsMapSettings
     QPolygonF visiblePolygon() const;
     //! Return the distance in geographical coordinates that equals to one pixel in the map
     double mapUnitsPerPixel() const;
-    //! Return the calculated scale of the map
+
+    /**
+     * Returns the calculated map scale.
+     * The scale value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
+     */
     double scale() const;
 
     /** Sets the expression context. This context is used for all expression evaluation
@@ -243,7 +269,7 @@ class CORE_EXPORT QgsMapSettings
      * \brief transform point coordinates from layer's CRS to output CRS
      * \returns the transformed point
      */
-    QgsPoint layerToMapCoordinates( const QgsMapLayer *layer, QgsPoint point ) const;
+    QgsPointXY layerToMapCoordinates( const QgsMapLayer *layer, QgsPointXY point ) const;
 
     /**
      * \brief transform rectangle from layer's CRS to output CRS
@@ -256,7 +282,7 @@ class CORE_EXPORT QgsMapSettings
      * \brief transform point coordinates from output CRS to layer's CRS
      * \returns the transformed point
      */
-    QgsPoint mapToLayerCoordinates( const QgsMapLayer *layer, QgsPoint point ) const;
+    QgsPointXY mapToLayerCoordinates( const QgsMapLayer *layer, QgsPointXY point ) const;
 
     /**
      * \brief transform rectangle from output CRS to layer's CRS
@@ -323,6 +349,8 @@ class CORE_EXPORT QgsMapSettings
     QgsExpressionContext mExpressionContext;
 
     QgsCoordinateReferenceSystem mDestCRS;
+    //! ellipsoid acronym (from table tbl_ellipsoids)
+    QString mEllipsoid;
     QgsDatumTransformStore mDatumTransformStore;
 
     QColor mBackgroundColor;

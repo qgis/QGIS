@@ -26,28 +26,29 @@ __copyright__ = '(C) 2010, Michael Minn'
 __revision__ = '$Format:%H$'
 
 from qgis.PyQt.QtCore import QVariant
-from qgis.core import (QgsApplication,
-                       QgsField,
-                       QgsProcessingUtils)
-from processing.core.GeoAlgorithm import GeoAlgorithm
-from processing.core.parameters import ParameterVector
-from processing.core.parameters import ParameterTableField
-from processing.core.outputs import OutputVector
+from qgis.core import (QgsField,
+                       QgsProcessingParameterField)
+from processing.algs.qgis.QgisAlgorithm import QgisFeatureBasedAlgorithm
 
 
-class TextToFloat(GeoAlgorithm):
-    INPUT = 'INPUT'
+class TextToFloat(QgisFeatureBasedAlgorithm):
+
     FIELD = 'FIELD'
-    OUTPUT = 'OUTPUT'
-
-    def icon(self):
-        return QgsApplication.getThemeIcon("/providerQgis.svg")
-
-    def svgIconPath(self):
-        return QgsApplication.iconPath("providerQgis.svg")
 
     def group(self):
         return self.tr('Vector table tools')
+
+    def __init__(self):
+        super().__init__()
+        self.field_name = None
+        self.field_idx = -1
+
+    def initParameters(self, config=None):
+        self.addParameter(QgsProcessingParameterField(self.FIELD,
+                                                      self.tr('Text attribute to convert to float'),
+                                                      parentLayerParameterName='INPUT',
+                                                      type=QgsProcessingParameterField.String
+                                                      ))
 
     def name(self):
         return 'texttofloat'
@@ -55,38 +56,26 @@ class TextToFloat(GeoAlgorithm):
     def displayName(self):
         return self.tr('Text to float')
 
-    def defineCharacteristics(self):
-        self.addParameter(ParameterVector(self.INPUT,
-                                          self.tr('Input Layer')))
-        self.addParameter(ParameterTableField(self.FIELD,
-                                              self.tr('Text attribute to convert to float'),
-                                              self.INPUT, ParameterTableField.DATA_TYPE_STRING))
-        self.addOutput(OutputVector(self.OUTPUT, self.tr('Float from text')))
+    def outputName(self):
+        return self.tr('Float from text')
 
-    def processAlgorithm(self, context, feedback):
-        layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT), context)
-        fieldName = self.getParameterValue(self.FIELD)
-        idx = layer.fields().lookupField(fieldName)
+    def outputFields(self, inputFields):
+        self.field_idx = inputFields.lookupField(self.field_name)
+        if self.field_idx >= 0:
+            inputFields[self.field_idx] = QgsField(self.field_name, QVariant.Double, '', 24, 15)
+        return inputFields
 
-        fields = layer.fields()
-        fields[idx] = QgsField(fieldName, QVariant.Double, '', 24, 15)
+    def prepareAlgorithm(self, parameters, context, feedback):
+        self.field_name = self.parameterAsString(parameters, self.FIELD, context)
+        return True
 
-        writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(fields, layer.wkbType(), layer.crs(), context)
-
-        features = QgsProcessingUtils.getFeatures(layer, context)
-
-        total = 100.0 / QgsProcessingUtils.featureCount(layer, context)
-        for current, f in enumerate(features):
-            value = f[idx]
-            try:
-                if '%' in value:
-                    f[idx] = float(value.replace('%', '')) / 100.0
-                else:
-                    f[idx] = float(value)
-            except:
-                f[idx] = None
-
-            writer.addFeature(f)
-            feedback.setProgress(int(current * total))
-
-        del writer
+    def processFeature(self, feature, feedback):
+        value = feature[self.field_idx]
+        try:
+            if '%' in value:
+                feature[self.field_idx] = float(value.replace('%', '')) / 100.0
+            else:
+                feature[self.field_idx] = float(value)
+        except:
+            feature[self.field_idx] = None
+        return feature

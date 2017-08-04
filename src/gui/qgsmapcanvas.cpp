@@ -40,7 +40,7 @@ email                : sherman at mrcc.com
 #include "qgssettings.h"
 #include "qgsmapcanvasannotationitem.h"
 #include "qgsapplication.h"
-#include "qgscsexception.h"
+#include "qgsexception.h"
 #include "qgsdatumtransformdialog.h"
 #include "qgsfeatureiterator.h"
 #include "qgslogger.h"
@@ -133,6 +133,10 @@ QgsMapCanvas::QgsMapCanvas( QWidget *parent )
   mResizeTimer->setSingleShot( true );
   connect( mResizeTimer, &QTimer::timeout, this, &QgsMapCanvas::refresh );
 
+  mRefreshTimer = new QTimer( this );
+  mRefreshTimer->setSingleShot( true );
+  connect( mRefreshTimer, &QTimer::timeout, this, &QgsMapCanvas::refreshMap );
+
   // create map canvas item which will show the map
   mMap = new QgsMapCanvasMap( this );
 
@@ -148,6 +152,12 @@ QgsMapCanvas::QgsMapCanvas( QWidget *parent )
   mSettings.setFlag( QgsMapSettings::DrawEditingInfo );
   mSettings.setFlag( QgsMapSettings::UseRenderingOptimization );
   mSettings.setFlag( QgsMapSettings::RenderPartialOutput );
+  mSettings.setEllipsoid( QgsProject::instance()->ellipsoid() );
+  connect( QgsProject::instance(), &QgsProject::ellipsoidChanged,
+           this, [ = ]
+  {
+    mSettings.setEllipsoid( QgsProject::instance()->ellipsoid() );
+  } );
 
   //segmentation parameters
   QgsSettings settings;
@@ -182,6 +192,8 @@ QgsMapCanvas::QgsMapCanvas( QWidget *parent )
   mZoomCursor = QCursor( zoomPixmap, 7, 7 );
 
   connect( &mAutoRefreshTimer, &QTimer::timeout, this, &QgsMapCanvas::autoRefreshTriggered );
+
+  connect( this, &QgsMapCanvas::extentsChanged, this, &QgsMapCanvas::updateCanvasItemPositions );
 
   setInteractive( false );
 
@@ -233,8 +245,8 @@ QgsMapCanvas::~QgsMapCanvas()
 void QgsMapCanvas::setMagnificationFactor( double factor )
 {
   // do not go higher or lower than min max magnification ratio
-  double magnifierMin = QgisGui::CANVAS_MAGNIFICATION_MIN;
-  double magnifierMax = QgisGui::CANVAS_MAGNIFICATION_MAX;
+  double magnifierMin = QgsGuiUtils::CANVAS_MAGNIFICATION_MIN;
+  double magnifierMax = QgsGuiUtils::CANVAS_MAGNIFICATION_MAX;
   factor = qBound( magnifierMin, factor, magnifierMax );
 
   // the magnifier widget is in integer percent
@@ -277,10 +289,10 @@ void QgsMapCanvas::setCurrentLayer( QgsMapLayer *layer )
   emit currentLayerChanged( layer );
 }
 
-double QgsMapCanvas::scale()
+double QgsMapCanvas::scale() const
 {
   return mapSettings().scale();
-} // scale
+}
 
 bool QgsMapCanvas::isDrawing()
 {
@@ -485,7 +497,7 @@ void QgsMapCanvas::refresh()
   QgsDebugMsg( "CANVAS refresh scheduling" );
 
   // schedule a refresh
-  QTimer::singleShot( 1, this, SLOT( refreshMap() ) );
+  mRefreshTimer->start( 1 );
 } // refresh
 
 void QgsMapCanvas::refreshMap()
@@ -495,6 +507,7 @@ void QgsMapCanvas::refreshMap()
   QgsDebugMsgLevel( "CANVAS refresh!", 3 );
 
   stopRendering(); // if any...
+  stopPreviewJobs();
 
   //build the expression context
   QgsExpressionContext expressionContext;
@@ -616,6 +629,7 @@ void QgsMapCanvas::rendererJobFinished()
     p.end();
 
     mMap->setContent( img, imageRect( img, mSettings ) );
+    startPreviewJobs();
   }
 
   // now we are in a slot called from mJob - do not delete it immediately
@@ -626,12 +640,25 @@ void QgsMapCanvas::rendererJobFinished()
   emit mapCanvasRefreshed();
 }
 
+void QgsMapCanvas::previewJobFinished()
+{
+  QgsMapRendererQImageJob *job = qobject_cast<QgsMapRendererQImageJob *>( sender() );
+  Q_ASSERT( job );
+
+  if ( mMap )
+  {
+    mMap->addPreviewImage( job->renderedImage(), job->mapSettings().extent() );
+    mPreviewJobs.removeAll( job );
+    delete job;
+  }
+}
+
 QgsRectangle QgsMapCanvas::imageRect( const QImage &img, const QgsMapSettings &mapSettings )
 {
   // This is a hack to pass QgsMapCanvasItem::setRect what it
   // expects (encoding of position and size of the item)
   const QgsMapToPixel &m2p = mapSettings.mapToPixel();
-  QgsPoint topLeft = m2p.toMapPoint( 0, 0 );
+  QgsPointXY topLeft = m2p.toMapPoint( 0, 0 );
   double res = m2p.mapUnitsPerPixel();
   QgsRectangle rect( topLeft.x(), topLeft.y(), topLeft.x() + img.width()*res, topLeft.y() - img.height()*res );
   return rect;
@@ -790,12 +817,9 @@ void QgsMapCanvas::setExtent( const QgsRectangle &r, bool magnified )
   // update controls' enabled state
   emit zoomLastStatusChanged( mLastExtentIndex > 0 );
   emit zoomNextStatusChanged( mLastExtentIndex < mLastExtent.size() - 1 );
-  // notify canvas items of change
-  updateCanvasItemPositions();
-
 } // setExtent
 
-void QgsMapCanvas::setCenter( const QgsPoint &center )
+void QgsMapCanvas::setCenter( const QgsPointXY &center )
 {
   QgsRectangle r = mapSettings().extent();
   double x = center.x();
@@ -809,7 +833,7 @@ void QgsMapCanvas::setCenter( const QgsPoint &center )
   );
 } // setCenter
 
-QgsPoint QgsMapCanvas::center() const
+QgsPointXY QgsMapCanvas::center() const
 {
   QgsRectangle r = mapSettings().extent();
   return r.center();
@@ -831,10 +855,6 @@ void QgsMapCanvas::setRotation( double degrees )
   mSettings.setRotation( degrees );
   emit rotationChanged( degrees );
   emit extentsChanged(); // visible extent changes with rotation
-
-  // notify canvas items of change (needed?)
-  updateCanvasItemPositions();
-
 } // setRotation
 
 
@@ -872,8 +892,6 @@ void QgsMapCanvas::zoomToPreviousExtent()
     // update controls' enabled state
     emit zoomLastStatusChanged( mLastExtentIndex > 0 );
     emit zoomNextStatusChanged( mLastExtentIndex < mLastExtent.size() - 1 );
-    // notify canvas items of change
-    updateCanvasItemPositions();
   }
 
 } // zoomToPreviousExtent
@@ -890,8 +908,6 @@ void QgsMapCanvas::zoomToNextExtent()
     // update controls' enabled state
     emit zoomLastStatusChanged( mLastExtentIndex > 0 );
     emit zoomNextStatusChanged( mLastExtentIndex < mLastExtent.size() - 1 );
-    // notify canvas items of change
-    updateCanvasItemPositions();
   }
 }// zoomToNextExtent
 
@@ -913,10 +929,17 @@ void QgsMapCanvas::zoomToSelected( QgsVectorLayer *layer )
     layer = qobject_cast<QgsVectorLayer *>( mCurrentLayer );
   }
 
-  if ( !layer || layer->selectedFeatureCount() == 0 )
+  if ( !layer || !layer->isSpatial() || layer->selectedFeatureCount() == 0 )
     return;
 
-  QgsRectangle rect = mapSettings().layerExtentToOutputExtent( layer, layer->boundingBoxOfSelected() );
+  QgsRectangle rect = layer->boundingBoxOfSelected();
+  if ( rect.isNull() )
+  {
+    emit messageEmitted( tr( "Cannot zoom to selected feature(s)" ), tr( "No extent could be determined." ), QgsMessageBar::WARNING );
+    return;
+  }
+
+  rect = mapSettings().layerExtentToOutputExtent( layer, rect );
   zoomToFeatureExtent( rect );
 } // zoomToSelected
 
@@ -927,7 +950,7 @@ void QgsMapCanvas::zoomToFeatureExtent( QgsRectangle &rect )
   if ( rect.isEmpty() )
   {
     // zoom in
-    QgsPoint c = rect.center();
+    QgsPointXY c = rect.center();
     rect = extent();
     rect.scale( 1.0, &c );
   }
@@ -1029,20 +1052,20 @@ void QgsMapCanvas::panToSelected( QgsVectorLayer *layer )
     layer = qobject_cast<QgsVectorLayer *>( mCurrentLayer );
   }
 
-  if ( !layer || layer->selectedFeatureCount() == 0 )
+  if ( !layer || !layer->isSpatial() || layer->selectedFeatureCount() == 0 )
     return;
 
-  QgsRectangle rect = mapSettings().layerExtentToOutputExtent( layer, layer->boundingBoxOfSelected() );
-  if ( !rect.isNull() )
+  QgsRectangle rect = layer->boundingBoxOfSelected();
+  if ( rect.isNull() )
   {
-    setCenter( rect.center() );
-    refresh();
+    emit messageEmitted( tr( "Cannot pan to selected feature(s)" ), tr( "No extent could be determined." ), QgsMessageBar::WARNING );
+    return;
   }
-  else
-  {
-    emit messageEmitted( tr( "Cannot pan to selected feature(s)" ), tr( "Geometry is NULL" ), QgsMessageBar::WARNING );
-  }
-} // panToSelected
+
+  rect = mapSettings().layerExtentToOutputExtent( layer, rect );
+  setCenter( rect.center() );
+  refresh();
+}
 
 void QgsMapCanvas::keyPressEvent( QKeyEvent *e )
 {
@@ -1219,7 +1242,7 @@ void QgsMapCanvas::endZoomRect( QPoint pos )
   double sfy = ( double )zoomRectSize.height() / canvasSize.height();
   double sf = qMax( sfx, sfy );
 
-  QgsPoint c = mSettings.mapToPixel().toMapCoordinates( mZoomRect.center() );
+  QgsPointXY c = mSettings.mapToPixel().toMapCoordinates( mZoomRect.center() );
 
   zoomByFactor( sf, &c );
   refresh();
@@ -1337,9 +1360,6 @@ void QgsMapCanvas::resizeEvent( QResizeEvent *e )
 
   moveCanvasContents( true );
 
-  // notify canvas items of change
-  updateCanvasItemPositions();
-
   updateScale();
 
   //refresh();
@@ -1400,10 +1420,10 @@ void QgsMapCanvas::wheelEvent( QWheelEvent *e )
   double signedWheelFactor = e->angleDelta().y() > 0 ? 1 / zoomFactor : zoomFactor;
 
   // zoom map to mouse cursor by scaling
-  QgsPoint oldCenter = center();
-  QgsPoint mousePos( getCoordinateTransform()->toMapPoint( e->x(), e->y() ) );
-  QgsPoint newCenter( mousePos.x() + ( ( oldCenter.x() - mousePos.x() ) * signedWheelFactor ),
-                      mousePos.y() + ( ( oldCenter.y() - mousePos.y() ) * signedWheelFactor ) );
+  QgsPointXY oldCenter = center();
+  QgsPointXY mousePos( getCoordinateTransform()->toMapPoint( e->x(), e->y() ) );
+  QgsPointXY newCenter( mousePos.x() + ( ( oldCenter.x() - mousePos.x() ) * signedWheelFactor ),
+                        mousePos.y() + ( ( oldCenter.y() - mousePos.y() ) * signedWheelFactor ) );
 
   zoomByFactor( signedWheelFactor, &newCenter );
 }
@@ -1441,7 +1461,7 @@ void QgsMapCanvas::zoomWithCenter( int x, int y, bool zoomIn )
   else
   {
     // transform the mouse pos to map coordinates
-    QgsPoint center  = getCoordinateTransform()->toMapPoint( x, y );
+    QgsPointXY center  = getCoordinateTransform()->toMapPoint( x, y );
     QgsRectangle r = mapSettings().visibleExtent();
     r.scale( scaleFactor, &center );
     setExtent( r, true );
@@ -1480,7 +1500,7 @@ void QgsMapCanvas::mouseMoveEvent( QMouseEvent *e )
 
   // show x y on status bar
   QPoint xy = e->pos();
-  QgsPoint coord = getCoordinateTransform()->toMapCoordinates( xy );
+  QgsPointXY coord = getCoordinateTransform()->toMapCoordinates( xy );
   emit xyCoordinates( coord );
 }
 
@@ -1752,13 +1772,13 @@ void QgsMapCanvas::panActionEnd( QPoint releasePoint )
   moveCanvasContents( true ); // true means reset
 
   // use start and end box points to calculate the extent
-  QgsPoint start = getCoordinateTransform()->toMapCoordinates( mCanvasProperties->rubberStartPoint );
-  QgsPoint end = getCoordinateTransform()->toMapCoordinates( releasePoint );
+  QgsPointXY start = getCoordinateTransform()->toMapCoordinates( mCanvasProperties->rubberStartPoint );
+  QgsPointXY end = getCoordinateTransform()->toMapCoordinates( releasePoint );
 
   // modify the center
   double dx = end.x() - start.x();
   double dy = end.y() - start.y();
-  QgsPoint c = center();
+  QgsPointXY c = center();
   c.set( c.x() - dx, c.y() - dy );
   setCenter( c );
 
@@ -1905,7 +1925,7 @@ void QgsMapCanvas::writeProject( QDomDocument &doc )
     QgsDebugMsg( "Unable to find qgis element in project file" );
     return;
   }
-  QDomNode qgisNode = nl.item( 0 );  // there should only be one, so zeroth element ok
+  QDomNode qgisNode = nl.item( 0 );  // there should only be one, so zeroth element OK
 
   QDomElement mapcanvasNode = doc.createElement( QStringLiteral( "mapcanvas" ) );
   mapcanvasNode.setAttribute( QStringLiteral( "name" ), objectName() );
@@ -1982,7 +2002,7 @@ void QgsMapCanvas::getDatumTransformInfo( const QgsMapLayer *ml, const QString &
   }
 }
 
-void QgsMapCanvas::zoomByFactor( double scaleFactor, const QgsPoint *center )
+void QgsMapCanvas::zoomByFactor( double scaleFactor, const QgsPointXY *center )
 {
   if ( mScaleLocked )
   {
@@ -2107,4 +2127,57 @@ void QgsMapCanvas::setLabelingEngineSettings( const QgsLabelingEngineSettings &s
 const QgsLabelingEngineSettings &QgsMapCanvas::labelingEngineSettings() const
 {
   return mSettings.labelingEngineSettings();
+}
+
+void QgsMapCanvas::startPreviewJobs()
+{
+  stopPreviewJobs(); //just in case still running
+
+  QgsRectangle mapRect = mSettings.visibleExtent();
+
+  for ( int j = 0; j < 3; ++j )
+  {
+    for ( int i = 0; i < 3; ++i )
+    {
+      if ( i == 1 && j == 1 )
+      {
+        continue;
+      }
+
+
+      //copy settings, only update extent
+      QgsMapSettings jobSettings = mSettings;
+
+      double dx = ( i - 1 ) * mapRect.width();
+      double dy = ( 1 - j ) * mapRect.height();
+      QgsRectangle jobExtent = mapRect;
+      jobExtent.setXMaximum( jobExtent.xMaximum() + dx );
+      jobExtent.setXMinimum( jobExtent.xMinimum() + dx );
+      jobExtent.setYMaximum( jobExtent.yMaximum() + dy );
+      jobExtent.setYMinimum( jobExtent.yMinimum() + dy );
+
+      jobSettings.setExtent( jobExtent );
+      jobSettings.setFlag( QgsMapSettings::DrawLabeling, false );
+
+      QgsMapRendererQImageJob *job = new QgsMapRendererParallelJob( jobSettings );
+      mPreviewJobs.append( job );
+      connect( job, &QgsMapRendererJob::finished, this, &QgsMapCanvas::previewJobFinished );
+      job->start();
+    }
+  }
+}
+
+void QgsMapCanvas::stopPreviewJobs()
+{
+  QList< QgsMapRendererQImageJob * >::const_iterator it = mPreviewJobs.constBegin();
+  for ( ; it != mPreviewJobs.constEnd(); ++it )
+  {
+    if ( *it )
+    {
+      disconnect( *it, &QgsMapRendererJob::finished, this, &QgsMapCanvas::previewJobFinished );
+      connect( *it, &QgsMapRendererQImageJob::finished, *it, &QgsMapRendererQImageJob::deleteLater );
+      ( *it )->cancelWithoutBlocking();
+    }
+  }
+  mPreviewJobs.clear();
 }

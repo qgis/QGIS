@@ -1,4 +1,8 @@
+# layout tests are run on separate build
 qgis_spelling
+qgis_sipify
+qgis_sip_uptodate
+
 qgis_openstreetmaptest
 qgis_wcsprovidertest
 PyQgsServer
@@ -48,4 +52,5 @@ PyQgsDBManagerGpkg
 PyQgsFileDownloader
 PyQgsSettings
 PyQgsConsole
-PyQgsAuthManagerPasswordOWSTest 
+PyQgsLocator
+PyQgsAuthManagerPasswordOWSTest

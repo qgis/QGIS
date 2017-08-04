@@ -188,6 +188,13 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
 
     ~QgsRasterLayer();
 
+    /** Returns a new instance equivalent to this one. A new provider is
+     *  created for the same data source and renderer is cloned too.
+     * \returns a new layer instance
+     * \since QGIS 3.0
+     */
+    virtual QgsRasterLayer *clone() const override SIP_FACTORY;
+
     //! \brief This enumerator describes the types of shading that can be used
     enum ColorShadingAlgorithm
     {
@@ -254,7 +261,7 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
     /** Returns the data provider in a const-correct manner
       \note available in Python bindings as constDataProvider()
      */
-    const QgsRasterDataProvider *dataProvider() const override;
+    const QgsRasterDataProvider *dataProvider() const SIP_PYNAME( constDataProvider ) override;
 
     //! Synchronises with changes in the datasource
     virtual void reload() override;
@@ -262,7 +269,7 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
     /** Return new instance of QgsMapLayerRenderer that will be used for rendering of given context
      * \since QGIS 2.4
      */
-    virtual QgsMapLayerRenderer *createMapRenderer( QgsRenderContext &rendererContext ) override;
+    virtual QgsMapLayerRenderer *createMapRenderer( QgsRenderContext &rendererContext ) override SIP_FACTORY;
 
     //! \brief This is an overloaded version of the draw() function that is called by both draw() and thumbnailAsPixmap
     void draw( QPainter *theQPainter,
@@ -298,7 +305,7 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
     void setContrastEnhancement( QgsContrastEnhancement::ContrastEnhancementAlgorithm algorithm,
                                  QgsRasterMinMaxOrigin::Limits limits = QgsRasterMinMaxOrigin::MinMax,
                                  const QgsRectangle &extent = QgsRectangle(),
-                                 int sampleSize = SAMPLE_SIZE,
+                                 int sampleSize = QgsRasterLayer::SAMPLE_SIZE,
                                  bool generateLookupTableFlag = true );
 
     /** \brief Refresh contrast enhancement with new extent.
@@ -352,22 +359,22 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
 
   protected:
     //! \brief Read the symbology for the current layer from the Dom node supplied
-    bool readSymbology( const QDomNode &node, QString &errorMessage ) override;
+    bool readSymbology( const QDomNode &node, QString &errorMessage, const QgsReadWriteContext &context ) override;
 
     //! \brief Read the style information for the current layer from the Dom node supplied
-    bool readStyle( const QDomNode &node, QString &errorMessage ) override;
+    bool readStyle( const QDomNode &node, QString &errorMessage, const QgsReadWriteContext &context ) override;
 
     //! \brief Reads layer specific state from project file Dom node
-    bool readXml( const QDomNode &layer_node ) override;
+    bool readXml( const QDomNode &layer_node, const QgsReadWriteContext &context ) override;
 
     //! \brief Write the symbology for the layer into the docment provided
-    bool writeSymbology( QDomNode &, QDomDocument &doc, QString &errorMessage ) const override;
+    bool writeSymbology( QDomNode &, QDomDocument &doc, QString &errorMessage, const QgsReadWriteContext &context ) const override;
 
     //! \brief Write the style for the layer into the docment provided
-    bool writeStyle( QDomNode &node, QDomDocument &doc, QString &errorMessage ) const override;
+    bool writeStyle( QDomNode &node, QDomDocument &doc, QString &errorMessage, const QgsReadWriteContext &context ) const override;
 
     //! \brief Write layer specific state to project file Dom node
-    bool writeXml( QDomNode &layer_node, QDomDocument &doc ) const override;
+    bool writeXml( QDomNode &layer_node, QDomDocument &doc, const QgsReadWriteContext &context ) const override;
 
   private:
     //! \brief Initialize default values

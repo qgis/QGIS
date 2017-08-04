@@ -27,37 +27,29 @@ __copyright__ = '(C) 2012, Victor Olaya'
 __revision__ = '$Format:%H$'
 
 from qgis.core import (QgsApplication,
+                       QgsFeatureSink,
                        QgsStatisticalSummary,
                        QgsProcessingUtils)
 from processing.core.outputs import OutputTable
-from processing.core.GeoAlgorithm import GeoAlgorithm
+from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterTableField
 
 
-class StatisticsByCategories(GeoAlgorithm):
+class StatisticsByCategories(QgisAlgorithm):
 
     INPUT_LAYER = 'INPUT_LAYER'
     VALUES_FIELD_NAME = 'VALUES_FIELD_NAME'
     CATEGORIES_FIELD_NAME = 'CATEGORIES_FIELD_NAME'
     OUTPUT = 'OUTPUT'
 
-    def icon(self):
-        return QgsApplication.getThemeIcon("/providerQgis.svg")
-
-    def svgIconPath(self):
-        return QgsApplication.iconPath("providerQgis.svg")
-
     def group(self):
         return self.tr('Vector table tools')
 
-    def name(self):
-        return 'statisticsbycategories'
+    def __init__(self):
+        super().__init__()
 
-    def displayName(self):
-        return self.tr('Statistics by categories')
-
-    def defineCharacteristics(self):
+    def initAlgorithm(self, config=None):
         self.addParameter(ParameterVector(self.INPUT_LAYER,
                                           self.tr('Input vector layer')))
         self.addParameter(ParameterTableField(self.VALUES_FIELD_NAME,
@@ -69,7 +61,13 @@ class StatisticsByCategories(GeoAlgorithm):
 
         self.addOutput(OutputTable(self.OUTPUT, self.tr('Statistics by category')))
 
-    def processAlgorithm(self, context, feedback):
+    def name(self):
+        return 'statisticsbycategories'
+
+    def displayName(self):
+        return self.tr('Statistics by categories')
+
+    def processAlgorithm(self, parameters, context, feedback):
         layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT_LAYER), context)
         valuesFieldName = self.getParameterValue(self.VALUES_FIELD_NAME)
         categoriesFieldName = self.getParameterValue(self.CATEGORIES_FIELD_NAME)
@@ -79,7 +77,7 @@ class StatisticsByCategories(GeoAlgorithm):
         categoriesField = layer.fields().lookupField(categoriesFieldName)
 
         features = QgsProcessingUtils.getFeatures(layer, context)
-        total = 100.0 / QgsProcessingUtils.featureCount(layer, context)
+        total = 100.0 / layer.featureCount() if layer.featureCount() else 0
         values = {}
         for current, feat in enumerate(features):
             feedback.setProgress(int(current * total))

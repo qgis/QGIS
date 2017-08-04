@@ -39,6 +39,7 @@ RE_ATTRIBUTES = b'[^>\s]+=[^>\s]+'
 
 
 class TestQgsServerWMS(QgsServerTestBase):
+
     """QGIS Server WMS Tests"""
 
     # Set to True to re-generate reference files for this class
@@ -61,14 +62,23 @@ class TestQgsServerWMS(QgsServerTestBase):
         response = re.sub(RE_STRIP_UNCHECKABLE, b'*****', response)
         expected = re.sub(RE_STRIP_UNCHECKABLE, b'*****', expected)
 
-        self.assertXMLEqual(response, expected, msg="request %s failed.\n Query: %s\n Expected:\n%s\n\n Response:\n%s" % (query_string, request, expected.decode('utf-8'), response.decode('utf-8')))
+        self.assertXMLEqual(response, expected, msg="request %s failed.\nQuery: %s\nExpected file: %s\nResponse:\n%s" % (query_string, request, reference_path, response.decode('utf-8')))
 
     def test_project_wms(self):
         """Test some WMS request"""
-        for request in ('GetCapabilities', 'GetProjectSettings'):
+        for request in ('GetCapabilities', 'GetProjectSettings', 'GetContext'):
             self.wms_request_compare(request)
 
-        # Test getfeatureinfo response
+        # Test getfeatureinfo response xml
+        self.wms_request_compare('GetFeatureInfo',
+                                 '&layers=testlayer%20%C3%A8%C3%A9&styles=&' +
+                                 'info_format=text%2Fxml&transparent=true&' +
+                                 'width=600&height=400&srs=EPSG%3A3857&bbox=913190.6389747962%2C' +
+                                 '5606005.488876367%2C913235.426296057%2C5606035.347090538&' +
+                                 'query_layers=testlayer%20%C3%A8%C3%A9&X=190&Y=320',
+                                 'wms_getfeatureinfo-text-xml')
+
+        # Test getfeatureinfo response html
         self.wms_request_compare('GetFeatureInfo',
                                  '&layers=testlayer%20%C3%A8%C3%A9&styles=&' +
                                  'info_format=text%2Fhtml&transparent=true&' +
@@ -125,6 +135,25 @@ class TestQgsServerWMS(QgsServerTestBase):
                                  'FEATURE_COUNT=10&FILTER=testlayer%20%C3%A8%C3%A9' + urllib.parse.quote(':"NAME" = \'two\' OR "utf8nameè" = \'three èé↓\''),
                                  'wms_getfeatureinfo_filter_or_utf8')
 
+        # Test feature info request with filter geometry
+        self.wms_request_compare('GetFeatureInfo',
+                                 '&layers=testlayer%20%C3%A8%C3%A9&' +
+                                 'INFO_FORMAT=text%2Fxml&' +
+                                 'width=600&height=400&srs=EPSG%3A3857&' +
+                                 'query_layers=testlayer%20%C3%A8%C3%A9&' +
+                                 'FEATURE_COUNT=10&FILTER_GEOM=POLYGON((8.2035381 44.901459,8.2035562 44.901459,8.2035562 44.901418,8.2035381 44.901418,8.2035381 44.901459))',
+                                 'wms_getfeatureinfo_geometry_filter')
+
+        # Test DescribeLayer
+        self.wms_request_compare('DescribeLayer',
+                                 '&layers=testlayer%20%C3%A8%C3%A9&' +
+                                 'SLD_VERSION=1.1.0',
+                                 'describelayer')
+        # Test GetStyles
+        self.wms_request_compare('GetStyles',
+                                 '&layers=testlayer%20%C3%A8%C3%A9&',
+                                 'getstyles')
+
     def wms_inspire_request_compare(self, request):
         """WMS INSPIRE tests"""
         project = self.testdata_path + "test_project_inspire.qgs"
@@ -140,7 +169,7 @@ class TestQgsServerWMS(QgsServerTestBase):
         f.close()
         response = re.sub(RE_STRIP_UNCHECKABLE, b'', response)
         expected = re.sub(RE_STRIP_UNCHECKABLE, b'', expected)
-        self.assertXMLEqual(response, expected, msg="request %s failed.\n Query: %s\n Expected:\n%s\n\n Response:\n%s" % (query_string, request, expected.decode('utf-8'), response.decode('utf-8')))
+        self.assertXMLEqual(response, expected, msg="request %s failed.\nQuery: %s\nExpected file: %s\nResponse:\n%s" % (query_string, request, reference_path, response.decode('utf-8')))
 
     def test_project_wms_inspire(self):
         """Test some WMS request"""
@@ -164,6 +193,310 @@ class TestQgsServerWMS(QgsServerTestBase):
 
         r, h = self._result(self._execute_request(qs))
         self._img_diff_error(r, h, "WMS_GetMap_Basic")
+
+        qs = "?" + "&".join(["%s=%s" % i for i in list({
+            "MAP": urllib.parse.quote(self.projectPath),
+            "SERVICE": "WMS",
+            "VERSION": "1.1.1",
+            "REQUEST": "GetMap",
+            "LAYERS": "Country,dem",
+            "STYLES": "",
+            "FORMAT": "image/png",
+            "BBOX": "-16817707,-4710778,5696513,14587125",
+            "HEIGHT": "500",
+            "WIDTH": "500",
+            "CRS": "EPSG:3857"
+        }.items())])
+
+        r, h = self._result(self._execute_request(qs))
+        self._img_diff_error(r, h, "WMS_GetMap_Basic2")
+
+        qs = "?" + "&".join(["%s=%s" % i for i in list({
+            "MAP": urllib.parse.quote(self.projectUseLayerIdsPath),
+            "SERVICE": "WMS",
+            "VERSION": "1.1.1",
+            "REQUEST": "GetMap",
+            "LAYERS": "country20131022151106556",
+            "STYLES": "",
+            "FORMAT": "image/png",
+            "BBOX": "-16817707,-4710778,5696513,14587125",
+            "HEIGHT": "500",
+            "WIDTH": "500",
+            "CRS": "EPSG:3857"
+        }.items())])
+
+        r, h = self._result(self._execute_request(qs))
+        self._img_diff_error(r, h, "WMS_GetMap_Basic3")
+
+        qs = "?" + "&".join(["%s=%s" % i for i in list({
+            "MAP": urllib.parse.quote(self.projectPath),
+            "SERVICE": "WMS",
+            "VERSION": "1.1.1",
+            "REQUEST": "GetMap",
+            "LAYERS": "Country,db_point",
+            "STYLES": "",
+            "FORMAT": "image/png",
+            "BBOX": "-16817707,-4710778,5696513,14587125",
+            "HEIGHT": "500",
+            "WIDTH": "500",
+            "CRS": "EPSG:3857"
+        }.items())])
+
+        r, h = self._result(self._execute_request(qs))
+        self._img_diff_error(r, h, "WMS_GetMap_Basic4")
+
+        qs = "?" + "&".join(["%s=%s" % i for i in list({
+            "MAP": urllib.parse.quote(self.projectPath),
+            "sERVICE": "WMS",
+            "VeRSION": "1.1.1",
+            "REqUEST": "GetMap",
+            "LAYeRS": "Country,db_point",
+            "STYLeS": "",
+            "FORMAt": "image/png",
+            "bBOX": "-16817707,-4710778,5696513,14587125",
+            "HeIGHT": "500",
+            "WIDTH": "500",
+            "CRs": "EPSG:3857"
+        }.items())])
+
+        r, h = self._result(self._execute_request(qs))
+        self._img_diff_error(r, h, "WMS_GetMap_Basic4")
+
+    def test_wms_getmap_invalid_parameters(self):
+        # height should be an int
+        qs = "?" + "&".join(["%s=%s" % i for i in list({
+            "MAP": urllib.parse.quote(self.projectPath),
+            "SERVICE": "WMS",
+            "VERSION": "1.1.1",
+            "REQUEST": "GetMap",
+            "LAYERS": "Country",
+            "STYLES": "",
+            "FORMAT": "image/png",
+            "BBOX": "-16817707,-4710778,5696513,14587125",
+            "HEIGHT": "FOO",
+            "WIDTH": "500",
+            "CRS": "EPSG:3857"
+        }.items())])
+
+        r, h = self._result(self._execute_request(qs))
+        err = b"HEIGHT (\'FOO\') cannot be converted into int" in r
+        self.assertTrue(err)
+
+        # width should be an int
+        qs = "?" + "&".join(["%s=%s" % i for i in list({
+            "MAP": urllib.parse.quote(self.projectPath),
+            "SERVICE": "WMS",
+            "VERSION": "1.1.1",
+            "REQUEST": "GetMap",
+            "LAYERS": "Country",
+            "STYLES": "",
+            "FORMAT": "image/png",
+            "BBOX": "-16817707,-4710778,5696513,14587125",
+            "HEIGHT": "500",
+            "WIDTH": "FOO",
+            "CRS": "EPSG:3857"
+        }.items())])
+
+        r, h = self._result(self._execute_request(qs))
+        err = b"WIDTH (\'FOO\') cannot be converted into int" in r
+        self.assertTrue(err)
+
+        # bbox should be formatted like "double,double,double,double"
+        qs = "?" + "&".join(["%s=%s" % i for i in list({
+            "MAP": urllib.parse.quote(self.projectPath),
+            "SERVICE": "WMS",
+            "VERSION": "1.1.1",
+            "REQUEST": "GetMap",
+            "LAYERS": "Country",
+            "STYLES": "",
+            "FORMAT": "image/png",
+            "BBOX": "-16817707,-4710778,5696513",
+            "HEIGHT": "500",
+            "WIDTH": "500",
+            "CRS": "EPSG:3857"
+        }.items())])
+
+        r, h = self._result(self._execute_request(qs))
+        err = b"BBOX (\'-16817707,-4710778,5696513\') cannot be converted into a rectangle" in r
+        self.assertTrue(err)
+
+        qs = "?" + "&".join(["%s=%s" % i for i in list({
+            "MAP": urllib.parse.quote(self.projectPath),
+            "SERVICE": "WMS",
+            "VERSION": "1.1.1",
+            "REQUEST": "GetMap",
+            "LAYERS": "Country",
+            "STYLES": "",
+            "FORMAT": "image/png",
+            "BBOX": "-16817707,-4710778,5696513,FOO",
+            "HEIGHT": "500",
+            "WIDTH": "500",
+            "CRS": "EPSG:3857"
+        }.items())])
+
+        r, h = self._result(self._execute_request(qs))
+        err = b"BBOX (\'-16817707,-4710778,5696513,FOO\') cannot be converted into a rectangle" in r
+        self.assertTrue(err)
+
+        # opacities should be a list of int
+        qs = "?" + "&".join(["%s=%s" % i for i in list({
+            "MAP": urllib.parse.quote(self.projectPath),
+            "SERVICE": "WMS",
+            "VERSION": "1.1.1",
+            "REQUEST": "GetMap",
+            "LAYERS": "Country",
+            "STYLES": "",
+            "FORMAT": "image/png",
+            "BBOX": "-16817707,-4710778,5696513,14587125",
+            "HEIGHT": "500",
+            "WIDTH": "500",
+            "OPACITIES": "253,FOO",
+            "CRS": "EPSG:3857"
+        }.items())])
+
+        r, h = self._result(self._execute_request(qs))
+        err = b"OPACITIES (\'253,FOO\') cannot be converted into a list of int" in r
+        self.assertTrue(err)
+
+        # filters should be formatted like "layer0:filter0;layer1:filter1"
+        qs = "?" + "&".join(["%s=%s" % i for i in list({
+            "MAP": urllib.parse.quote(self.projectPath),
+            "SERVICE": "WMS",
+            "VERSION": "1.1.1",
+            "REQUEST": "GetMap",
+            "LAYERS": "Country,Hello",
+            "STYLES": "",
+            "FORMAT": "image/png",
+            "BBOX": "-16817707,-4710778,5696513,14587125",
+            "HEIGHT": "500",
+            "WIDTH": "500",
+            "CRS": "EPSG:3857",
+            "FILTER": "Country \"name\" = 'eurasia'"
+        }.items())])
+
+        r, h = self._result(self._execute_request(qs))
+        err = b"FILTER (\'Country \"name\" = \'eurasia\'\') is not properly formatted" in r
+        self.assertTrue(err)
+
+        # selections should be formatted like "layer0:id0,id1;layer1:id0"
+        qs = "?" + "&".join(["%s=%s" % i for i in list({
+            "MAP": urllib.parse.quote(self.projectPath),
+            "SERVICE": "WMS",
+            "VERSION": "1.1.1",
+            "REQUEST": "GetMap",
+            "LAYERS": "Country,Hello",
+            "STYLES": "",
+            "FORMAT": "image/png",
+            "BBOX": "-16817707,-4710778,5696513,14587125",
+            "HEIGHT": "500",
+            "WIDTH": "500",
+            "SRS": "EPSG:3857",
+            "SELECTION": "Country=4"
+        }.items())])
+
+        r, h = self._result(self._execute_request(qs))
+        err = b"SELECTION (\'Country=4\') is not properly formatted" in r
+        self.assertTrue(err)
+
+        # invalid highlight geometries
+        qs = "?" + "&".join(["%s=%s" % i for i in list({
+            "MAP": urllib.parse.quote(self.projectPath),
+            "SERVICE": "WMS",
+            "VERSION": "1.1.1",
+            "REQUEST": "GetMap",
+            "LAYERS": "Country_Labels",
+            "HIGHLIGHT_GEOM": "POLYGONN((-15000000 10000000, -15000000 6110620, 2500000 6110620, 2500000 10000000, -15000000 10000000))",
+            "STYLES": "",
+            "FORMAT": "image/png",
+            "BBOX": "-16817707,-4710778,5696513,14587125",
+            "HEIGHT": "500",
+            "WIDTH": "500",
+            "CRS": "EPSG:3857"
+        }.items())])
+
+        r, h = self._result(self._execute_request(qs))
+        err = b"HIGHLIGHT_GEOM (\'POLYGONN((-15000000 10000000, -15000000 6110620, 2500000 6110620, 2500000 10000000, -15000000 10000000))\') cannot be converted into a list of geometries" in r
+        self.assertTrue(err)
+
+        # invalid highlight label colors
+        qs = "?" + "&".join(["%s=%s" % i for i in list({
+            "MAP": urllib.parse.quote(self.projectPath),
+            "SERVICE": "WMS",
+            "VERSION": "1.1.1",
+            "REQUEST": "GetMap",
+            "LAYERS": "Country_Labels",
+            "HIGHLIGHT_LABELCOLOR": "%2300230000;%230023000",
+            "STYLES": "",
+            "FORMAT": "image/png",
+            "BBOX": "-16817707,-4710778,5696513,14587125",
+            "HEIGHT": "500",
+            "WIDTH": "500",
+            "CRS": "EPSG:3857"
+        }.items())])
+
+        r, h = self._result(self._execute_request(qs))
+        err = b"HIGHLIGHT_LABELCOLOR (\'#00230000;#0023000\') cannot be converted into a list of colors" in r
+        self.assertTrue(err)
+
+        # invalid list of label sizes
+        qs = "?" + "&".join(["%s=%s" % i for i in list({
+            "MAP": urllib.parse.quote(self.projectPath),
+            "SERVICE": "WMS",
+            "VERSION": "1.1.1",
+            "REQUEST": "GetMap",
+            "LAYERS": "Country_Labels",
+            "HIGHLIGHT_LABELSIZE": "16;17;FOO",
+            "STYLES": "",
+            "FORMAT": "image/png",
+            "BBOX": "-16817707,-4710778,5696513,14587125",
+            "HEIGHT": "500",
+            "WIDTH": "500",
+            "CRS": "EPSG:3857"
+        }.items())])
+
+        r, h = self._result(self._execute_request(qs))
+        err = b"HIGHLIGHT_LABELSIZE (\'16;17;FOO\') cannot be converted into a list of int" in r
+        self.assertTrue(err)
+
+        # invalid list of label buffer size
+        qs = "?" + "&".join(["%s=%s" % i for i in list({
+            "MAP": urllib.parse.quote(self.projectPath),
+            "SERVICE": "WMS",
+            "VERSION": "1.1.1",
+            "REQUEST": "GetMap",
+            "LAYERS": "Country_Labels",
+            "HIGHLIGHT_LABELBUFFERSIZE": "1.5;2;FF",
+            "STYLES": "",
+            "FORMAT": "image/png",
+            "BBOX": "-16817707,-4710778,5696513,14587125",
+            "HEIGHT": "500",
+            "WIDTH": "500",
+            "CRS": "EPSG:3857"
+        }.items())])
+
+        r, h = self._result(self._execute_request(qs))
+        err = b"HIGHLIGHT_LABELBUFFERSIZE (\'1.5;2;FF\') cannot be converted into a list of float" in r
+        self.assertTrue(err)
+
+        # invalid buffer color
+        qs = "?" + "&".join(["%s=%s" % i for i in list({
+            "MAP": urllib.parse.quote(self.projectPath),
+            "SERVICE": "WMS",
+            "VERSION": "1.1.1",
+            "REQUEST": "GetMap",
+            "LAYERS": "Country_Labels",
+            "HIGHLIGHT_LABELBUFFERCOLOR": "%232300FF00;%232300FF0",
+            "STYLES": "",
+            "FORMAT": "image/png",
+            "BBOX": "-16817707,-4710778,5696513,14587125",
+            "HEIGHT": "500",
+            "WIDTH": "500",
+            "CRS": "EPSG:3857"
+        }.items())])
+
+        r, h = self._result(self._execute_request(qs))
+        err = b"HIGHLIGHT_LABELBUFFERCOLOR (\'#2300FF00;#2300FF0\') cannot be converted into a list of colors" in r
+        self.assertTrue(err)
 
     def test_wms_getmap_transparent(self):
         qs = "?" + "&".join(["%s=%s" % i for i in list({
@@ -274,8 +607,7 @@ class TestQgsServerWMS(QgsServerTestBase):
 
         item_found = False
         for item in str(r).split("\\n"):
-            if "OnlineResource" in item:
-                self.assertEqual("xlink:href=\"my_wms_advertised_url?" in item, True)
+            if "OnlineResource" in item and "xlink:href=\"my_wms_advertised_url?" in item:
                 item_found = True
         self.assertTrue(item_found)
 
@@ -317,6 +649,23 @@ class TestQgsServerWMS(QgsServerTestBase):
         self._img_diff_error(r, h, "WMS_GetMap_LayerOrder")
 
     def test_wms_getmap_srs(self):
+        qs = "?" + "&".join(["%s=%s" % i for i in list({
+            "MAP": urllib.parse.quote(self.projectPath),
+            "SERVICE": "WMS",
+            "VERSION": "1.1.1",
+            "REQUEST": "GetMap",
+            "LAYERS": "Country,Hello",
+            "STYLES": "",
+            "FORMAT": "image/png",
+            "BBOX": "-151.7,-38.9,51.0,78.0",
+            "HEIGHT": "500",
+            "WIDTH": "500",
+            "SRS": "EPSG:4326"
+        }.items())])
+
+        r, h = self._result(self._execute_request(qs))
+        self._img_diff_error(r, h, "WMS_GetMap_SRS")
+
         qs = "?" + "&".join(["%s=%s" % i for i in list({
             "MAP": urllib.parse.quote(self.projectPath),
             "SERVICE": "WMS",
@@ -390,6 +739,43 @@ class TestQgsServerWMS(QgsServerTestBase):
         r, h = self._result(self._execute_request(qs))
         self._img_diff_error(r, h, "WMS_GetMap_Filter")
 
+        # try to display a feature yet filtered by the project
+        qs = "?" + "&".join(["%s=%s" % i for i in list({
+            "MAP": urllib.parse.quote(self.projectStatePath),
+            "SERVICE": "WMS",
+            "VERSION": "1.1.1",
+            "REQUEST": "GetMap",
+            "LAYERS": "Country,Hello",
+            "STYLES": "",
+            "FORMAT": "image/png",
+            "BBOX": "-16817707,-4710778,5696513,14587125",
+            "HEIGHT": "500",
+            "WIDTH": "500",
+            "CRS": "EPSG:3857",
+            "FILTER": "Country:\"name\" = 'africa'"
+        }.items())])
+
+        r, h = self._result(self._execute_request(qs))
+        self._img_diff_error(r, h, "WMS_GetMap_Filter2")
+
+        # display all features to check that initial filter is restored
+        qs = "?" + "&".join(["%s=%s" % i for i in list({
+            "MAP": urllib.parse.quote(self.projectStatePath),
+            "SERVICE": "WMS",
+            "VERSION": "1.1.1",
+            "REQUEST": "GetMap",
+            "LAYERS": "Country,Hello",
+            "STYLES": "",
+            "FORMAT": "image/png",
+            "BBOX": "-16817707,-4710778,5696513,14587125",
+            "HEIGHT": "500",
+            "WIDTH": "500",
+            "CRS": "EPSG:3857",
+        }.items())])
+
+        r, h = self._result(self._execute_request(qs))
+        self._img_diff_error(r, h, "WMS_GetMap_Filter3")
+
     def test_wms_getmap_selection(self):
         qs = "?" + "&".join(["%s=%s" % i for i in list({
             "MAP": urllib.parse.quote(self.projectPath),
@@ -409,6 +795,24 @@ class TestQgsServerWMS(QgsServerTestBase):
         r, h = self._result(self._execute_request(qs))
         self._img_diff_error(r, h, "WMS_GetMap_Selection")
 
+    def test_wms_getmap_diagrams(self):
+        qs = "?" + "&".join(["%s=%s" % i for i in list({
+            "MAP": urllib.parse.quote(self.projectPath),
+            "SERVICE": "WMS",
+            "VERSION": "1.1.1",
+            "REQUEST": "GetMap",
+            "LAYERS": "Country_Diagrams,Hello",
+            "STYLES": "",
+            "FORMAT": "image/png",
+            "BBOX": "-16817707,-4710778,5696513,14587125",
+            "HEIGHT": "500",
+            "WIDTH": "500",
+            "CRS": "EPSG:3857"
+        }.items())])
+
+        r, h = self._result(self._execute_request(qs))
+        self._img_diff_error(r, h, "WMS_GetMap_Diagrams")
+
     def test_wms_getmap_opacities(self):
         qs = "?" + "&".join(["%s=%s" % i for i in list({
             "MAP": urllib.parse.quote(self.projectPath),
@@ -427,6 +831,121 @@ class TestQgsServerWMS(QgsServerTestBase):
 
         r, h = self._result(self._execute_request(qs))
         self._img_diff_error(r, h, "WMS_GetMap_Opacities")
+
+        qs = "?" + "&".join(["%s=%s" % i for i in list({
+            "MAP": urllib.parse.quote(self.projectPath),
+            "SERVICE": "WMS",
+            "VERSION": "1.1.1",
+            "REQUEST": "GetMap",
+            "LAYERS": "Country,Hello,dem",
+            "STYLES": "",
+            "FORMAT": "image/png",
+            "BBOX": "-16817707,-4710778,5696513,14587125",
+            "HEIGHT": "500",
+            "WIDTH": "500",
+            "CRS": "EPSG:3857",
+            "OPACITIES": "125,50,150"
+        }.items())])
+
+        r, h = self._result(self._execute_request(qs))
+        self._img_diff_error(r, h, "WMS_GetMap_Opacities2")
+
+    def test_wms_getmap_highlight(self):
+        # highlight layer with color separated from sld
+        qs = "?" + "&".join(["%s=%s" % i for i in list({
+            "MAP": urllib.parse.quote(self.projectPath),
+            "SERVICE": "WMS",
+            "VERSION": "1.1.1",
+            "REQUEST": "GetMap",
+            "LAYERS": "Country_Labels",
+            "HIGHLIGHT_GEOM": "POLYGON((-15000000 10000000, -15000000 6110620, 2500000 6110620, 2500000 10000000, -15000000 10000000))",
+            "HIGHLIGHT_SYMBOL": "<StyledLayerDescriptor><UserStyle><Name>Highlight</Name><FeatureTypeStyle><Rule><Name>Symbol</Name><LineSymbolizer><Stroke><SvgParameter name=\"stroke\">%23ea1173</SvgParameter><SvgParameter name=\"stroke-opacity\">1</SvgParameter><SvgParameter name=\"stroke-width\">1.6</SvgParameter></Stroke></LineSymbolizer></Rule></FeatureTypeStyle></UserStyle></StyledLayerDescriptor>",
+            "HIGHLIGHT_LABELSTRING": "Highlight Layer!",
+            "HIGHLIGHT_LABELSIZE": "16",
+            "HIGHLIGHT_LABELCOLOR": "%2300FF0000",
+            "HIGHLIGHT_LABELBUFFERCOLOR": "%232300FF00",
+            "HIGHLIGHT_LABELBUFFERSIZE": "1.5",
+            "STYLES": "",
+            "FORMAT": "image/png",
+            "BBOX": "-16817707,-4710778,5696513,14587125",
+            "HEIGHT": "500",
+            "WIDTH": "500",
+            "CRS": "EPSG:3857"
+        }.items())])
+
+        r, h = self._result(self._execute_request(qs))
+        self._img_diff_error(r, h, "WMS_GetMap_Highlight")
+
+    def test_wms_getmap_annotations(self):
+        qs = "?" + "&".join(["%s=%s" % i for i in list({
+            "MAP": urllib.parse.quote(self.projectAnnotationPath),
+            "SERVICE": "WMS",
+            "VERSION": "1.1.1",
+            "REQUEST": "GetMap",
+            "LAYERS": "Country,Hello",
+            "STYLES": "",
+            "FORMAT": "image/png",
+            "BBOX": "-16817707,-4710778,5696513,14587125",
+            "HEIGHT": "500",
+            "WIDTH": "500",
+            "CRS": "EPSG:3857"
+        }.items())])
+
+        r, h = self._result(self._execute_request(qs))
+        self._img_diff_error(r, h, "WMS_GetMap_Annotations")
+
+    def test_wms_getmap_sld(self):
+        qs = "?" + "&".join(["%s=%s" % i for i in list({
+            "MAP": urllib.parse.quote(self.projectPath),
+            "SERVICE": "WMS",
+            "VERSION": "1.1.1",
+            "REQUEST": "GetMap",
+            "LAYERS": "Country,db_point",
+            "STYLES": "",
+            "FORMAT": "image/png",
+            "BBOX": "-16817707,-4710778,5696513,14587125",
+            "HEIGHT": "500",
+            "WIDTH": "500",
+            "CRS": "EPSG:3857"
+        }.items())])
+
+        r, h = self._result(self._execute_request(qs))
+        self._img_diff_error(r, h, "WMS_GetMap_SLDRestored")
+
+        qs = "?" + "&".join(["%s=%s" % i for i in list({
+            "MAP": urllib.parse.quote(self.projectPath),
+            "REQUEST": "GetMap",
+            "VERSION": "1.1.1",
+            "SERVICE": "WMS",
+            "SLD": "<?xml version=\"1.0\" encoding=\"UTF-8\"?><StyledLayerDescriptor xmlns=\"http://www.opengis.net/sld\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:ogc=\"http://www.opengis.net/ogc\" xsi:schemaLocation=\"http://www.opengis.net/sld http://schemas.opengis.net/sld/1.1.0/StyledLayerDescriptor.xsd\" version=\"1.1.0\" xmlns:se=\"http://www.opengis.net/se\" xmlns:xlink=\"http://www.w3.org/1999/xlink\"> <NamedLayer> <se:Name>db_point</se:Name> <UserStyle> <se:Name>db_point_style</se:Name> <se:FeatureTypeStyle> <se:Rule> <se:Name>Single symbol</se:Name> <ogc:Filter xmlns:ogc=\"http://www.opengis.net/ogc\"> <ogc:PropertyIsEqualTo> <ogc:PropertyName>gid</ogc:PropertyName> <ogc:Literal>1</ogc:Literal> </ogc:PropertyIsEqualTo> </ogc:Filter> <se:PointSymbolizer uom=\"http://www.opengeospatial.org/se/units/metre\"> <se:Graphic> <se:Mark> <se:WellKnownName>square</se:WellKnownName> <se:Fill> <se:SvgParameter name=\"fill\">5e86a1</se:SvgParameter> </se:Fill> <se:Stroke> <se:SvgParameter name=\"stroke\">000000</se:SvgParameter> </se:Stroke> </se:Mark> <se:Size>0.007</se:Size> </se:Graphic> </se:PointSymbolizer> </se:Rule> </se:FeatureTypeStyle> </UserStyle> </NamedLayer> </StyledLayerDescriptor>",
+            "BBOX": "-16817707,-4710778,5696513,14587125",
+            "WIDTH": "500",
+            "HEIGHT": "500",
+            "LAYERS": "db_point",
+            "STYLES": "",
+            "FORMAT": "image/png",
+            "CRS": "EPSG:3857"
+        }.items())])
+
+        r, h = self._result(self._execute_request(qs))
+        self._img_diff_error(r, h, "WMS_GetMap_SLD")
+
+        qs = "?" + "&".join(["%s=%s" % i for i in list({
+            "MAP": urllib.parse.quote(self.projectPath),
+            "SERVICE": "WMS",
+            "VERSION": "1.1.1",
+            "REQUEST": "GetMap",
+            "LAYERS": "Country,db_point",
+            "STYLES": "",
+            "FORMAT": "image/png",
+            "BBOX": "-16817707,-4710778,5696513,14587125",
+            "HEIGHT": "500",
+            "WIDTH": "500",
+            "CRS": "EPSG:3857"
+        }.items())])
+
+        r, h = self._result(self._execute_request(qs))
+        self._img_diff_error(r, h, "WMS_GetMap_SLDRestored")
 
     def test_wms_getprint_basic(self):
         qs = "?" + "&".join(["%s=%s" % i for i in list({
@@ -559,8 +1078,80 @@ class TestQgsServerWMS(QgsServerTestBase):
         self.assertEqual(-1, h.find(b'Content-Type: text/xml; charset=utf-8'), "Header: %s\nResponse:\n%s" % (h, r))
         self.assertNotEqual(-1, h.find(b'Content-Type: image/png'), "Header: %s\nResponse:\n%s" % (h, r))
 
+    def test_getLegendGraphics_invalid_parameters(self):
+        """Test that does return an exception"""
+        qs = "?" + "&".join(["%s=%s" % i for i in list({
+            "MAP": urllib.parse.quote(self.projectPath),
+            "SERVICE": "WMS",
+            "VERSION": "1.1.1",
+            "REQUEST": "GetLegendGraphic",
+            "LAYER": "Country,Hello,db_point",
+            "LAYERTITLE": "FALSE",
+            "FORMAT": "image/png",
+            "HEIGHT": "500",
+            "WIDTH": "500",
+            "RULE": "1",
+            "BBOX": "-151.7,-38.9,51.0,78.0",
+            "CRS": "EPSG:4326"
+        }.items())])
+
+        r, h = self._result(self._execute_request(qs))
+        err = b"BBOX parameter cannot be combined with RULE" in r
+        self.assertTrue(err)
+
+    def test_wms_GetLegendGraphic_LayerSpace(self):
+        qs = "?" + "&".join(["%s=%s" % i for i in list({
+            "MAP": urllib.parse.quote(self.projectPath),
+            "SERVICE": "WMS",
+            "VERSION": "1.1.1",
+            "REQUEST": "GetLegendGraphic",
+            "LAYER": "Country,Hello",
+            "FORMAT": "image/png",
+            # "HEIGHT": "500",
+            # "WIDTH": "500",
+            "LAYERSPACE": "50.0",
+            "LAYERFONTBOLD": "TRUE",
+            "LAYERFONTSIZE": "30",
+            "ITEMFONTBOLD": "TRUE",
+            "ITEMFONTSIZE": "20",
+            "LAYERFONTFAMILY": self.fontFamily,
+            "ITEMFONTFAMILY": self.fontFamily,
+            "LAYERTITLE": "TRUE",
+            "CRS": "EPSG:3857"
+        }.items())])
+
+        r, h = self._result(self._execute_request(qs))
+        self._img_diff_error(r, h, "WMS_GetLegendGraphic_LayerSpace")
+
+    def test_wms_GetLegendGraphic_ShowFeatureCount(self):
+        qs = "?" + "&".join(["%s=%s" % i for i in list({
+            "MAP": urllib.parse.quote(self.projectPath),
+            "SERVICE": "WMS",
+            "VERSION": "1.1.1",
+            "REQUEST": "GetLegendGraphic",
+            "LAYER": "Country,Hello",
+            "FORMAT": "image/png",
+            # "HEIGHT": "500",
+            # "WIDTH": "500",
+            "LAYERTITLE": "TRUE",
+            "LAYERFONTBOLD": "TRUE",
+            "LAYERFONTSIZE": "30",
+            "LAYERFONTFAMILY": self.fontFamily,
+            "ITEMFONTFAMILY": self.fontFamily,
+            "ITEMFONTBOLD": "TRUE",
+            "ITEMFONTSIZE": "20",
+            "SHOWFEATURECOUNT": "TRUE",
+            "CRS": "EPSG:3857"
+        }.items())])
+
+        r, h = self._result(self._execute_request(qs))
+        self._img_diff_error(r, h, "WMS_GetLegendGraphic_ShowFeatureCount", max_size_diff=QSize(1, 1))
+
     def test_getLegendGraphics_layertitle(self):
         """Test that does not return an exception but an image"""
+
+        print("TEST FONT FAMILY: ", self.fontFamily)
+
         parms = {
             'MAP': self.testdata_path + "test_project.qgs",
             'SERVICE': 'WMS',
@@ -570,6 +1161,12 @@ class TestQgsServerWMS(QgsServerTestBase):
             # 'WIDTH': '20', # optional
             # 'HEIGHT': '20', # optional
             'LAYER': u'testlayer%20èé',
+            'LAYERFONTBOLD': 'TRUE',
+            'LAYERFONTSIZE': '30',
+            'ITEMFONTBOLD': 'TRUE',
+            'LAYERFONTFAMILY': self.fontFamily,
+            'ITEMFONTFAMILY': self.fontFamily,
+            'ITEMFONTSIZE': '20',
             'LAYERTITLE': 'TRUE',
         }
         qs = '?' + '&'.join([u"%s=%s" % (k, v) for k, v in parms.items()])
@@ -590,6 +1187,78 @@ class TestQgsServerWMS(QgsServerTestBase):
         qs = '?' + '&'.join([u"%s=%s" % (k, v) for k, v in parms.items()])
         r, h = self._result(self._execute_request(qs))
         self._img_diff_error(r, h, "WMS_GetLegendGraphic_test_layertitle_false", 250, QSize(15, 15))
+
+    def test_getLegendGraphics_rulelabel(self):
+        """Test that does not return an exception but an image"""
+        parms = {
+            'MAP': self.testdata_path + "test_project.qgs",
+            'SERVICE': 'WMS',
+            'VERSION': '1.3.0',
+            'REQUEST': 'GetLegendGraphic',
+            'FORMAT': 'image/png',
+            'LAYER': u'testlayer%20èé',
+            'LAYERFONTBOLD': 'TRUE',
+            'LAYERFONTSIZE': '30',
+            'LAYERFONTFAMILY': self.fontFamily,
+            'ITEMFONTFAMILY': self.fontFamily,
+            'ITEMFONTBOLD': 'TRUE',
+            'ITEMFONTSIZE': '20',
+            'RULELABEL': 'TRUE',
+        }
+        qs = '?' + '&'.join([u"%s=%s" % (k, v) for k, v in parms.items()])
+        r, h = self._result(self._execute_request(qs))
+        self._img_diff_error(r, h, "WMS_GetLegendGraphic_test", 250, QSize(15, 15))
+
+        parms = {
+            'MAP': self.testdata_path + "test_project.qgs",
+            'SERVICE': 'WMS',
+            'VERSION': '1.3.0',
+            'REQUEST': 'GetLegendGraphic',
+            'FORMAT': 'image/png',
+            'LAYER': u'testlayer%20èé',
+            'LAYERFONTBOLD': 'TRUE',
+            'LAYERFONTSIZE': '30',
+            'ITEMFONTBOLD': 'TRUE',
+            'ITEMFONTSIZE': '20',
+            'LAYERFONTFAMILY': self.fontFamily,
+            'ITEMFONTFAMILY': self.fontFamily,
+            'RULELABEL': 'FALSE',
+        }
+        qs = '?' + '&'.join([u"%s=%s" % (k, v) for k, v in parms.items()])
+        r, h = self._result(self._execute_request(qs))
+        self._img_diff_error(r, h, "WMS_GetLegendGraphic_rulelabel_false", 250, QSize(15, 15))
+
+    def test_getLegendGraphics_rule(self):
+        """Test that does not return an exception but an image"""
+        parms = {
+            'MAP': self.testdata_path + "test_project_legend_rule.qgs",
+            'SERVICE': 'WMS',
+            'VERSION': '1.3.0',
+            'REQUEST': 'GetLegendGraphic',
+            'FORMAT': 'image/png',
+            'LAYER': u'testlayer%20èé',
+            'WIDTH': '20',
+            'HEIGHT': '20',
+            'RULE': 'rule0',
+        }
+        qs = '?' + '&'.join([u"%s=%s" % (k, v) for k, v in parms.items()])
+        r, h = self._result(self._execute_request(qs))
+        self._img_diff_error(r, h, "WMS_GetLegendGraphic_rule0", 250, QSize(15, 15))
+
+        parms = {
+            'MAP': self.testdata_path + "test_project_legend_rule.qgs",
+            'SERVICE': 'WMS',
+            'VERSION': '1.3.0',
+            'REQUEST': 'GetLegendGraphic',
+            'FORMAT': 'image/png',
+            'LAYER': u'testlayer%20èé',
+            'WIDTH': '20',
+            'HEIGHT': '20',
+            'RULE': 'rule1',
+        }
+        qs = '?' + '&'.join([u"%s=%s" % (k, v) for k, v in parms.items()])
+        r, h = self._result(self._execute_request(qs))
+        self._img_diff_error(r, h, "WMS_GetLegendGraphic_rule1", 250, QSize(15, 15))
 
     def test_wms_GetLegendGraphic_Basic(self):
         qs = "?" + "&".join(["%s=%s" % i for i in list({
@@ -733,6 +1402,54 @@ class TestQgsServerWMS(QgsServerTestBase):
 
         r, h = self._result(self._execute_request(qs))
         self._img_diff_error(r, h, "WMS_GetLegendGraphic_SymbolSize")
+
+    def test_wms_GetLegendGraphic_LayerFont(self):
+        qs = "?" + "&".join(["%s=%s" % i for i in list({
+            "MAP": urllib.parse.quote(self.projectPath),
+            "SERVICE": "WMS",
+            "VERSION": "1.1.1",
+            "REQUEST": "GetLegendGraphic",
+            "LAYER": "Country,Hello",
+            "LAYERTITLE": "TRUE",
+            "LAYERFONTBOLD": "TRUE",
+            "LAYERFONTITALIC": "TRUE",
+            "LAYERFONTSIZE": "30",
+            "ITEMFONTBOLD": "TRUE",
+            "ITEMFONTSIZE": "20",
+            "LAYERFONTFAMILY": self.fontFamily,
+            "ITEMFONTFAMILY": self.fontFamily,
+            "FORMAT": "image/png",
+            "HEIGHT": "500",
+            "WIDTH": "500",
+            "CRS": "EPSG:3857"
+        }.items())])
+
+        r, h = self._result(self._execute_request(qs))
+        self._img_diff_error(r, h, "WMS_GetLegendGraphic_LayerFont", max_size_diff=QSize(1, 1))
+
+    def test_wms_GetLegendGraphic_ItemFont(self):
+        qs = "?" + "&".join(["%s=%s" % i for i in list({
+            "MAP": urllib.parse.quote(self.projectPath),
+            "SERVICE": "WMS",
+            "VERSION": "1.1.1",
+            "REQUEST": "GetLegendGraphic",
+            "LAYER": "Country,Hello",
+            "LAYERTITLE": "TRUE",
+            "LAYERFONTBOLD": "TRUE",
+            "LAYERFONTSIZE": "30",
+            "ITEMFONTBOLD": "TRUE",
+            "ITEMFONTITALIC": "TRUE",
+            "ITEMFONTSIZE": "20",
+            "LAYERFONTFAMILY": self.fontFamily,
+            "ITEMFONTFAMILY": self.fontFamily,
+            "FORMAT": "image/png",
+            "HEIGHT": "500",
+            "WIDTH": "500",
+            "CRS": "EPSG:3857"
+        }.items())])
+
+        r, h = self._result(self._execute_request(qs))
+        self._img_diff_error(r, h, "WMS_GetLegendGraphic_ItemFont", max_size_diff=QSize(1, 1))
 
     def test_wms_GetLegendGraphic_BBox(self):
         qs = "?" + "&".join(["%s=%s" % i for i in list({

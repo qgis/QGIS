@@ -1,6 +1,8 @@
 #ifndef QGSLABELFEATURE_H
 #define QGSLABELFEATURE_H
 
+#define SIP_NO_FILE
+
 #include "qgis_core.h"
 #include "qgspallabeling.h"
 #include "geos_c.h"
@@ -158,9 +160,9 @@ class CORE_EXPORT QgsLabelFeature
     //! Set whether the label should use a fixed position instead of being automatically placed
     void setHasFixedPosition( bool enabled ) { mHasFixedPosition = enabled; }
     //! Coordinates of the fixed position (relevant only if hasFixedPosition() returns true)
-    QgsPoint fixedPosition() const { return mFixedPosition; }
+    QgsPointXY fixedPosition() const { return mFixedPosition; }
     //! Set coordinates of the fixed position (relevant only if hasFixedPosition() returns true)
-    void setFixedPosition( const QgsPoint &point ) { mFixedPosition = point; }
+    void setFixedPosition( const QgsPointXY &point ) { mFixedPosition = point; }
 
     //! Whether the label should use a fixed angle instead of using angle from automatic placement
     bool hasFixedAngle() const { return mHasFixedAngle; }
@@ -194,10 +196,10 @@ class CORE_EXPORT QgsLabelFeature
     void setQuadOffset( QPointF quadOffset ) { mQuadOffset = quadOffset; }
     //! Applies only to "offset from point" placement strategy.
     //! What offset (in map units) to use from the point
-    QgsPoint positionOffset() const { return mPositionOffset; }
+    QgsPointXY positionOffset() const { return mPositionOffset; }
     //! Applies only to "offset from point" placement strategy.
     //! Set what offset (in map units) to use from the point
-    void setPositionOffset( const QgsPoint &offset ) { mPositionOffset = offset; }
+    void setPositionOffset( const QgsPointXY &offset ) { mPositionOffset = offset; }
 
     /** Returns the offset type, which determines how offsets and distance to label
      * behaves. Support depends on which placement mode is used for generating
@@ -318,7 +320,7 @@ class CORE_EXPORT QgsLabelFeature
     //! whether mFixedPosition should be respected
     bool mHasFixedPosition;
     //! fixed position for the label (instead of automatic placement)
-    QgsPoint mFixedPosition;
+    QgsPointXY mFixedPosition;
     //! whether mFixedAngle should be respected
     bool mHasFixedAngle;
     //! fixed rotation for the label (instead of automatic choice)
@@ -328,7 +330,7 @@ class CORE_EXPORT QgsLabelFeature
     //! whether the side of the label is fixed (only for "around point" placement)
     QPointF mQuadOffset;
     //! offset of label from the feature (only for "offset from point" placement)
-    QgsPoint mPositionOffset;
+    QgsPointXY mPositionOffset;
     //! distance of label from the feature (only for "around point" placement or linestrings)
     double mDistLabel;
     //! Offset type for certain placement modes

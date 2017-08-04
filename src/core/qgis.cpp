@@ -84,6 +84,12 @@ const double Qgis::SCALE_PRECISION = 0.9999999999;
 
 const double Qgis::DEFAULT_Z_COORDINATE = 0.0;
 
+#ifdef Q_OS_WIN
+const double Qgis::UI_SCALE_FACTOR = 1.5;
+#else
+const double Qgis::UI_SCALE_FACTOR = 1;
+#endif
+
 double qgsPermissiveToDouble( QString string, bool &ok )
 {
   //remove any thousands separators
@@ -247,9 +253,30 @@ uint qHash( const QVariant &variant )
     case QVariant::Char:
       return qHash( variant.toChar() );
     case QVariant::List:
+
+#if QT_VERSION >= 0x050600
       return qHash( variant.toList() );
+#else
+      {
+        QVariantList list = variant.toList();
+        if ( list.isEmpty() )
+          return -1;
+        else
+          return qHash( list.at( 0 ) );
+      }
+#endif
     case QVariant::StringList:
+#if QT_VERSION >= 0x050600
       return qHash( variant.toStringList() );
+#else
+      {
+        QStringList list = variant.toStringList();
+        if ( list.isEmpty() )
+          return -1;
+        else
+          return qHash( list.at( 0 ) );
+      }
+#endif
     case QVariant::ByteArray:
       return qHash( variant.toByteArray() );
     case QVariant::Date:

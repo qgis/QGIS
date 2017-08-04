@@ -271,6 +271,15 @@
          </item>
          <item>
           <property name="text">
+           <string>Locator</string>
+          </property>
+          <property name="icon">
+           <iconset resource="../../images/images.qrc">
+            <normaloff>:/images/themes/default/search.svg</normaloff>:/images/themes/default/search.svg</iconset>
+          </property>
+         </item>
+         <item>
+          <property name="text">
            <string>Advanced</string>
           </property>
           <property name="icon">
@@ -311,7 +320,7 @@
        <item>
         <widget class="QStackedWidget" name="mOptionsStackedWidget">
          <property name="currentIndex">
-          <number>2</number>
+          <number>0</number>
          </property>
          <widget class="QWidget" name="mOptionsPageGeneral">
           <layout class="QVBoxLayout" name="verticalLayout_3">
@@ -340,8 +349,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>691</width>
-                <height>702</height>
+                <width>857</width>
+                <height>678</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_28">
@@ -657,6 +666,13 @@
                   </item>
                   <item>
                    <layout class="QHBoxLayout" name="horizontalLayout_30">
+                    <item>
+                     <widget class="QCheckBox" name="mDataSourceManagerNonModal">
+                      <property name="text">
+                       <string>Modeless data source manager dialog</string>
+                      </property>
+                     </widget>
+                    </item>
                     <item>
                      <widget class="QCheckBox" name="mCustomGroupBoxChkBx">
                       <property name="text">
@@ -1026,8 +1042,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>579</width>
-                <height>1110</height>
+                <width>561</width>
+                <height>1079</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_22">
@@ -1174,7 +1190,7 @@
                   <item row="0" column="5">
                    <widget class="QToolButton" name="mBtnMoveHelpDown">
                     <property name="text">
-                     <string>...</string>
+                     <string>…</string>
                     </property>
                     <property name="icon">
                      <iconset resource="../../images/images.qrc">
@@ -1251,7 +1267,7 @@
                   <item row="0" column="4">
                    <widget class="QToolButton" name="mBtnMoveHelpUp">
                     <property name="text">
-                     <string>...</string>
+                     <string>…</string>
                     </property>
                     <property name="icon">
                      <iconset resource="../../images/images.qrc">
@@ -1556,8 +1572,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>843</width>
-                <height>787</height>
+                <width>511</width>
+                <height>719</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_27">
@@ -1791,14 +1807,14 @@
                   <item>
                    <widget class="QCheckBox" name="cbxAddPostgisDC">
                     <property name="text">
-                     <string>Add PostGIS layers with double click and select in extended mode</string>
+                     <string>Add PostGIS layers with double-click and select in extended mode</string>
                     </property>
                    </widget>
                   </item>
                   <item>
                    <widget class="QCheckBox" name="cbxAddOracleDC">
                     <property name="text">
-                     <string>Add Oracle layers with double click and select in extended mode</string>
+                     <string>Add Oracle layers with double-click and select in extended mode</string>
                     </property>
                    </widget>
                   </item>
@@ -1924,8 +1940,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>713</width>
-                <height>1110</height>
+                <width>692</width>
+                <height>994</height>
                </rect>
               </property>
               <layout class="QGridLayout" name="gridLayout_22">
@@ -2675,8 +2691,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>151</width>
-                <height>239</height>
+                <width>146</width>
+                <height>241</height>
                </rect>
               </property>
               <layout class="QHBoxLayout" name="horizontalLayout_46">
@@ -2826,8 +2842,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>523</width>
-                <height>370</height>
+                <width>514</width>
+                <height>334</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_25">
@@ -2946,7 +2962,7 @@
                     <item>
                      <widget class="QLabel" name="label_15">
                       <property name="text">
-                       <string>Double click action in legend</string>
+                       <string>Double-click action in legend</string>
                       </property>
                      </widget>
                     </item>
@@ -3169,8 +3185,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>640</width>
-                <height>660</height>
+                <width>625</width>
+                <height>612</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_30">
@@ -3485,7 +3501,7 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
                        <string>Add predefined scale</string>
                       </property>
                       <property name="text">
-                       <string>...</string>
+                       <string>…</string>
                       </property>
                       <property name="icon">
                        <iconset resource="../../images/images.qrc">
@@ -3499,7 +3515,7 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
                        <string>Remove selected</string>
                       </property>
                       <property name="text">
-                       <string>...</string>
+                       <string>…</string>
                       </property>
                       <property name="icon">
                        <iconset resource="../../images/images.qrc">
@@ -3513,7 +3529,7 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
                        <string>Reset to default scales</string>
                       </property>
                       <property name="text">
-                       <string>...</string>
+                       <string>…</string>
                       </property>
                       <property name="icon">
                        <iconset resource="../../images/images.qrc">
@@ -3540,7 +3556,7 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
                        <string>Import from file</string>
                       </property>
                       <property name="text">
-                       <string>...</string>
+                       <string>…</string>
                       </property>
                       <property name="icon">
                        <iconset resource="../../images/images.qrc">
@@ -3554,7 +3570,7 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
                        <string>Export to file</string>
                       </property>
                       <property name="text">
-                       <string>...</string>
+                       <string>…</string>
                       </property>
                       <property name="icon">
                        <iconset resource="../../images/images.qrc">
@@ -3613,8 +3629,8 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>509</width>
-                <height>623</height>
+                <width>487</width>
+                <height>588</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_39">
@@ -3882,8 +3898,8 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>572</width>
-                <height>828</height>
+                <width>556</width>
+                <height>740</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_31">
@@ -4460,8 +4476,8 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>435</width>
-                <height>402</height>
+                <width>427</width>
+                <height>380</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_6">
@@ -4599,8 +4615,8 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>437</width>
-                <height>584</height>
+                <width>429</width>
+                <height>549</height>
                </rect>
               </property>
               <layout class="QGridLayout" name="gridLayout_15">
@@ -4812,8 +4828,8 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>292</width>
-                <height>258</height>
+                <width>282</width>
+                <height>234</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_32">
@@ -4921,8 +4937,8 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>534</width>
-                <height>790</height>
+                <width>509</width>
+                <height>723</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_33">
@@ -5336,6 +5352,17 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
            </item>
           </layout>
          </widget>
+         <widget class="QWidget" name="mOptionsLocatorSettings">
+          <layout class="QHBoxLayout" name="horizontalLayout_6">
+           <item>
+            <widget class="QGroupBox" name="mOptionsLocatorGroupBox">
+             <property name="title">
+              <string>Locator Filters</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </widget>
          <widget class="QWidget" name="mOptionsPageSettingsEditor">
           <layout class="QVBoxLayout" name="verticalLayout_43">
            <item>
@@ -5350,7 +5377,7 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
                  <item>
                   <widget class="QLabel" name="label_44">
                    <property name="text">
-                    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Changes on this page are dangerous and can break your QGIS installation in various ways. Any change you make is applied immediately, without clicking the &lt;span style=&quot; font-style:italic;&quot;&gt;ok&lt;/span&gt; button.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Changes on this page are dangerous and can break your QGIS installation in various ways. Any change you make is applied immediately, without clicking the &lt;span style=&quot; font-style:italic;&quot;&gt;OK&lt;/span&gt; button.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                    </property>
                    <property name="wordWrap">
                     <bool>true</bool>

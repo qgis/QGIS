@@ -15,29 +15,30 @@
 
 #include "qgsoracleexpressioncompiler.h"
 #include "qgssqlexpressioncompiler.h"
+#include "qgsexpressionnodeimpl.h"
 
 QgsOracleExpressionCompiler::QgsOracleExpressionCompiler( QgsOracleFeatureSource *source )
   : QgsSqlExpressionCompiler( source->mFields )
 {
 }
 
-QgsSqlExpressionCompiler::Result QgsOracleExpressionCompiler::compileNode( const QgsExpression::Node *node, QString &result )
+QgsSqlExpressionCompiler::Result QgsOracleExpressionCompiler::compileNode( const QgsExpressionNode *node, QString &result )
 {
-  if ( node->nodeType() == QgsExpression::ntBinaryOperator )
+  if ( node->nodeType() == QgsExpressionNode::ntBinaryOperator )
   {
-    const QgsExpression::NodeBinaryOperator *bin( static_cast<const QgsExpression::NodeBinaryOperator *>( node ) );
+    const QgsExpressionNodeBinaryOperator *bin( static_cast<const QgsExpressionNodeBinaryOperator *>( node ) );
 
     switch ( bin->op() )
     {
-      case QgsExpression::boConcat:
+      case QgsExpressionNodeBinaryOperator::boConcat:
         // oracle's handling of || WRT null is not standards compliant
         return Fail;
 
-      case QgsExpression::boPow:
-      case QgsExpression::boRegexp:
-      case QgsExpression::boILike:
-      case QgsExpression::boNotILike:
-      case QgsExpression::boMod:
+      case QgsExpressionNodeBinaryOperator::boPow:
+      case QgsExpressionNodeBinaryOperator::boRegexp:
+      case QgsExpressionNodeBinaryOperator::boILike:
+      case QgsExpressionNodeBinaryOperator::boNotILike:
+      case QgsExpressionNodeBinaryOperator::boMod:
       {
         QString op1, op2;
 
@@ -47,23 +48,23 @@ QgsSqlExpressionCompiler::Result QgsOracleExpressionCompiler::compileNode( const
 
         switch ( bin->op() )
         {
-          case QgsExpression::boPow:
+          case QgsExpressionNodeBinaryOperator::boPow:
             result = QString( "power(%1,%2)" ).arg( op1, op2 );
             return Complete;
 
-          case QgsExpression::boRegexp:
+          case QgsExpressionNodeBinaryOperator::boRegexp:
             result = QString( "regexp_like(%1,%2)" ).arg( op1, op2 );
             return Complete;
 
-          case QgsExpression::boILike:
+          case QgsExpressionNodeBinaryOperator::boILike:
             result = QString( "lower(%1) LIKE lower(%2)" ).arg( op1, op2 );
             return Complete;
 
-          case QgsExpression::boNotILike:
+          case QgsExpressionNodeBinaryOperator::boNotILike:
             result = QString( "NOT lower(%1) LIKE lower(%2)" ).arg( op1, op2 );
             return Complete;
 
-          case QgsExpression::boMod  :
+          case QgsExpressionNodeBinaryOperator::boMod  :
             result = QString( "MOD(%1,%2)" ).arg( op1, op2 );
             return Complete;
 

@@ -80,10 +80,10 @@ void QgsMapToolAddPart::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
   {
     case CapturePoint:
     {
-      QgsPointV2 layerPoint;
-      QgsPoint mapPoint = e->mapPoint();
+      QgsPoint layerPoint;
+      QgsPointXY mapPoint = e->mapPoint();
 
-      if ( nextPoint( QgsPointV2( mapPoint ), layerPoint ) != 0 )
+      if ( nextPoint( QgsPoint( mapPoint ), layerPoint ) != 0 )
       {
         QgsDebugMsg( "nextPoint failed" );
         return;

@@ -33,5 +33,5 @@ def checkParameterValuesBeforeExecuting(alg):
     return checkMovingWindow(alg)
 
 
-def processCommand(alg):
-    configFile(alg)
+def processCommand(alg, parameters):
+    configFile(alg, parameters)

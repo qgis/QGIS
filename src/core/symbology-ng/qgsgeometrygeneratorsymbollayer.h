@@ -27,7 +27,7 @@ class CORE_EXPORT QgsGeometryGeneratorSymbolLayer : public QgsSymbolLayer
   public:
     ~QgsGeometryGeneratorSymbolLayer();
 
-    static QgsSymbolLayer *create( const QgsStringMap &properties );
+    static QgsSymbolLayer *create( const QgsStringMap &properties ) SIP_FACTORY;
 
     QString layerType() const override;
 
@@ -51,7 +51,7 @@ class CORE_EXPORT QgsGeometryGeneratorSymbolLayer : public QgsSymbolLayer
 
     void stopRender( QgsSymbolRenderContext &context ) override;
 
-    QgsSymbolLayer *clone() const override;
+    QgsSymbolLayer *clone() const override SIP_FACTORY;
 
     QgsStringMap properties() const override;
 
@@ -69,7 +69,7 @@ class CORE_EXPORT QgsGeometryGeneratorSymbolLayer : public QgsSymbolLayer
 
     virtual QgsSymbol *subSymbol() override { return mSymbol; }
 
-    virtual bool setSubSymbol( QgsSymbol *symbol ) override;
+    virtual bool setSubSymbol( QgsSymbol *symbol SIP_TRANSFER ) override;
 
     virtual QSet<QString> usedAttributes( const QgsRenderContext &context ) const override;
 
@@ -94,6 +94,10 @@ class CORE_EXPORT QgsGeometryGeneratorSymbolLayer : public QgsSymbolLayer
 
   private:
     QgsGeometryGeneratorSymbolLayer( const QString &expression );
+
+#ifdef SIP_RUN
+    QgsGeometryGeneratorSymbolLayer( const QgsGeometryGeneratorSymbolLayer &copy );
+#endif
 
     std::unique_ptr<QgsExpression> mExpression;
     QgsFillSymbol *mFillSymbol = nullptr;

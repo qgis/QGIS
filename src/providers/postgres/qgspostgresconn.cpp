@@ -84,7 +84,7 @@ QString QgsPostgresResult::PQgetvalue( int row, int col )
 {
   Q_ASSERT( mRes );
   return PQgetisnull( row, col )
-         ? QString::null
+         ? QString()
          : QString::fromUtf8( ::PQgetvalue( mRes, row, col ) );
 }
 
@@ -145,6 +145,13 @@ QgsPostgresConn *QgsPostgresConn::connectDb( const QString &conninfo, bool reado
 {
   QMap<QString, QgsPostgresConn *> &connections =
     readonly ? QgsPostgresConn::sConnectionsRO : QgsPostgresConn::sConnectionsRW;
+
+  // This is called from may places where shared parameter cannot be forced to false (QgsVectorLayerExporter)
+  // and which is run in a different thread (drag and drop in browser)
+  if ( QApplication::instance()->thread() != QThread::currentThread() )
+  {
+    shared = false;
+  }
 
   if ( shared )
   {
@@ -333,7 +340,7 @@ void QgsPostgresConn::unref()
   {
     QMap<QString, QgsPostgresConn *> &connections = mReadOnly ? sConnectionsRO : sConnectionsRW;
 
-    QString key = connections.key( this, QString::null );
+    QString key = connections.key( this, QString() );
 
     Q_ASSERT( !key.isNull() );
     connections.remove( key );
@@ -613,7 +620,7 @@ bool QgsPostgresConn::getTableInfo( bool searchGeometryColumnsOnly, bool searchP
     for ( int i = 0; i < result.PQntuples(); i++ )
     {
       // Have the column name, schema name and the table name. The concept of a
-      // catalog doesn't exist in postgresql so we ignore that, but we
+      // catalog doesn't exist in PostgreSQL so we ignore that, but we
       // do need to get the geometry type.
 
       QString tableName  = result.PQgetvalue( i, 0 ); // relname
@@ -717,7 +724,7 @@ bool QgsPostgresConn::getTableInfo( bool searchGeometryColumnsOnly, bool searchP
       layerProperty.srids = QList<int>() << INT_MIN;
       layerProperty.schemaName = schema;
       layerProperty.tableName = table;
-      layerProperty.geometryColName = QString::null;
+      layerProperty.geometryColName = QString();
       layerProperty.geometryColType = SctNone;
       layerProperty.relKind = relkind;
       layerProperty.isView = isView;
@@ -837,7 +844,7 @@ QString QgsPostgresConn::postgisVersion()
   {
     QgsMessageLog::logMessage( tr( "No PostGIS support in the database." ), tr( "PostGIS" ) );
     mGotPostgisVersion = true;
-    return QString::null;
+    return QString();
   }
 
   mPostgisVersionInfo = result.PQgetvalue( 0, 0 );
@@ -851,7 +858,7 @@ QString QgsPostgresConn::postgisVersion()
   if ( postgisVersionParts.size() < 2 )
   {
     QgsMessageLog::logMessage( tr( "Could not parse postgis version string '%1'" ).arg( mPostgisVersionInfo ), tr( "PostGIS" ) );
-    return QString::null;
+    return QString();
   }
 
   mPostgisVersionMajor = postgisVersionParts[0].toInt();
@@ -859,7 +866,7 @@ QString QgsPostgresConn::postgisVersion()
 
   mUseWkbHex = mPostgisVersionMajor < 1;
 
-  // apparently postgis 1.5.2 doesn't report capabilities in postgis_version() anymore
+  // apparently PostGIS 1.5.2 doesn't report capabilities in postgis_version() anymore
   if ( mPostgisVersionMajor > 1 || ( mPostgisVersionMajor == 1 && mPostgisVersionMinor >= 5 ) )
   {
     result = PQexec( QStringLiteral( "SELECT postgis_geos_version(),postgis_proj_version()" ) );
@@ -1520,46 +1527,29 @@ void QgsPostgresConn::retrieveLayerTypes( QgsPostgresLayerProperty &layerPropert
 void QgsPostgresConn::postgisWkbType( QgsWkbTypes::Type wkbType, QString &geometryType, int &dim )
 {
   dim = 2;
-  switch ( wkbType )
+  QgsWkbTypes::Type flatType = QgsWkbTypes::flatType( wkbType );
+  switch ( flatType )
   {
-    case QgsWkbTypes::Point25D:
-      dim = 3;
-      FALLTHROUGH;
     case QgsWkbTypes::Point:
       geometryType = QStringLiteral( "POINT" );
       break;
 
-    case QgsWkbTypes::LineString25D:
-      dim = 3;
-      FALLTHROUGH;
     case QgsWkbTypes::LineString:
       geometryType = QStringLiteral( "LINESTRING" );
       break;
 
-    case QgsWkbTypes::Polygon25D:
-      dim = 3;
-      FALLTHROUGH;
     case QgsWkbTypes::Polygon:
       geometryType = QStringLiteral( "POLYGON" );
       break;
 
-    case QgsWkbTypes::MultiPoint25D:
-      dim = 3;
-      FALLTHROUGH;
     case QgsWkbTypes::MultiPoint:
       geometryType = QStringLiteral( "MULTIPOINT" );
       break;
 
-    case QgsWkbTypes::MultiLineString25D:
-      dim = 3;
-      FALLTHROUGH;
     case QgsWkbTypes::MultiLineString:
       geometryType = QStringLiteral( "MULTILINESTRING" );
       break;
 
-    case QgsWkbTypes::MultiPolygon25D:
-      dim = 3;
-      FALLTHROUGH;
     case QgsWkbTypes::MultiPolygon:
       geometryType = QStringLiteral( "MULTIPOLYGON" );
       break;
@@ -1572,6 +1562,26 @@ void QgsPostgresConn::postgisWkbType( QgsWkbTypes::Type wkbType, QString &geomet
     default:
       dim = 0;
       break;
+  }
+
+  if ( QgsWkbTypes::hasZ( wkbType ) && QgsWkbTypes::hasM( wkbType ) )
+  {
+    geometryType += "ZM";
+    dim = 4;
+  }
+  else if ( QgsWkbTypes::hasZ( wkbType ) )
+  {
+    geometryType += "Z";
+    dim = 3;
+  }
+  else if ( QgsWkbTypes::hasM( wkbType ) )
+  {
+    geometryType += "M";
+    dim = 3;
+  }
+  else if ( wkbType >= QgsWkbTypes::Point25D && wkbType <= QgsWkbTypes::MultiPolygon25D )
+  {
+    dim = 3;
   }
 }
 
@@ -1603,7 +1613,7 @@ QString QgsPostgresConn::postgisTypeFilter( QString geomCol, QgsWkbTypes::Type w
     case QgsWkbTypes::NullGeometry:
       return QStringLiteral( "geometrytype(%1) IS NULL" ).arg( geomCol );
     default: //unknown geometry
-      return QString::null;
+      return QString();
   }
 }
 
@@ -1670,7 +1680,7 @@ QString QgsPostgresConn::displayStringForGeomType( QgsPostgresGeometryColumnType
   }
 
   Q_ASSERT( !"unexpected geometry column type" );
-  return QString::null;
+  return QString();
 }
 
 QgsWkbTypes::Type QgsPostgresConn::wkbTypeFromGeomType( QgsWkbTypes::GeometryType geomType )

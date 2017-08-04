@@ -42,6 +42,8 @@ QgsJoinDialog::QgsJoinDialog( QgsVectorLayer *layer, QList<QgsMapLayer *> alread
 
   mTargetFieldComboBox->setLayer( mLayer );
 
+  mDynamicFormCheckBox->setToolTip( tr( "This option allows values of the joined fields to be automatically reloaded when the \"Target Field\" is changed" ) );
+
   mJoinLayerComboBox->setFilters( QgsMapLayerProxyModel::VectorLayer );
   mJoinLayerComboBox->setExceptedLayerList( alreadyJoinedLayers );
   connect( mJoinLayerComboBox, &QgsMapLayerComboBox::layerChanged, mJoinFieldComboBox, &QgsFieldComboBox::setLayer );
@@ -73,6 +75,7 @@ void QgsJoinDialog::setJoinInfo( const QgsVectorLayerJoinInfo &joinInfo )
   mJoinFieldComboBox->setField( joinInfo.joinFieldName() );
   mTargetFieldComboBox->setField( joinInfo.targetFieldName() );
   mCacheInMemoryCheckBox->setChecked( joinInfo.isUsingMemoryCache() );
+  mDynamicFormCheckBox->setChecked( joinInfo.isDynamicFormEnabled() );
   if ( joinInfo.prefix().isNull() )
   {
     mUseCustomPrefix->setChecked( false );
@@ -110,11 +113,12 @@ QgsVectorLayerJoinInfo QgsJoinDialog::joinInfo() const
   info.setJoinFieldName( mJoinFieldComboBox->currentField() );
   info.setTargetFieldName( mTargetFieldComboBox->currentField() );
   info.setUsingMemoryCache( mCacheInMemoryCheckBox->isChecked() );
+  info.setDynamicFormEnabled( mDynamicFormCheckBox->isChecked() );
 
   if ( mUseCustomPrefix->isChecked() )
     info.setPrefix( mCustomPrefix->text() );
   else
-    info.setPrefix( QString::null );
+    info.setPrefix( QString() );
 
   if ( mUseJoinFieldsSubset->isChecked() )
   {

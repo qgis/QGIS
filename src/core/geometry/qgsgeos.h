@@ -16,6 +16,8 @@ email                : marco.hugentobler at sourcepole dot com
 #ifndef QGSGEOS_H
 #define QGSGEOS_H
 
+#define SIP_NO_FILE
+
 #include "qgis_core.h"
 #include "qgsgeometryengine.h"
 #include <geos_c.h>
@@ -23,6 +25,7 @@ email                : marco.hugentobler at sourcepole dot com
 class QgsLineString;
 class QgsPolygonV2;
 class QgsGeometry;
+class QgsGeometryCollection;
 
 /** \ingroup core
  * Does vector analysis using the geos library and handles import, export, exception handling*
@@ -45,6 +48,29 @@ class CORE_EXPORT QgsGeos: public QgsGeometryEngine
 
     QgsAbstractGeometry *intersection( const QgsAbstractGeometry &geom, QString *errorMsg = nullptr ) const override;
     QgsAbstractGeometry *difference( const QgsAbstractGeometry &geom, QString *errorMsg = nullptr ) const override;
+
+    /**
+     * Performs a fast, non-robust intersection between the geometry and
+     * a \a rectangle. The returned geometry may be invalid.
+     */
+    QgsAbstractGeometry *clip( const QgsRectangle &rectangle, QString *errorMsg = nullptr ) const;
+
+    /**
+     * Subdivides the geometry. The returned geometry will be a collection containing subdivided parts
+     * from the original geometry, where no part has more then the specified maximum number of nodes (\a maxNodes).
+     *
+     * This is useful for dividing a complex geometry into less complex parts, which are better able to be spatially
+     * indexed and faster to perform further operations such as intersects on. The returned geometry parts may
+     * not be valid and may contain self-intersections.
+     *
+     * The minimum allowed value for \a maxNodes is 8.
+     *
+     * Curved geometries are not supported.
+     *
+     * \since QGIS 3.0
+     */
+    QgsAbstractGeometry *subdivide( int maxNodes, QString *errorMsg = nullptr ) const;
+
     QgsAbstractGeometry *combine( const QgsAbstractGeometry &geom, QString *errorMsg = nullptr ) const override;
     QgsAbstractGeometry *combine( const QList< QgsAbstractGeometry *> &, QString *errorMsg = nullptr ) const override;
     QgsAbstractGeometry *symDifference( const QgsAbstractGeometry &geom, QString *errorMsg = nullptr ) const override;
@@ -53,8 +79,8 @@ class CORE_EXPORT QgsGeos: public QgsGeometryEngine
     QgsAbstractGeometry *simplify( double tolerance, QString *errorMsg = nullptr ) const override;
     QgsAbstractGeometry *interpolate( double distance, QString *errorMsg = nullptr ) const override;
     QgsAbstractGeometry *envelope( QString *errorMsg = nullptr ) const override;
-    bool centroid( QgsPointV2 &pt, QString *errorMsg = nullptr ) const override;
-    bool pointOnSurface( QgsPointV2 &pt, QString *errorMsg = nullptr ) const override;
+    bool centroid( QgsPoint &pt, QString *errorMsg = nullptr ) const override;
+    bool pointOnSurface( QgsPoint &pt, QString *errorMsg = nullptr ) const override;
     QgsAbstractGeometry *convexHull( QString *errorMsg = nullptr ) const override;
     double distance( const QgsAbstractGeometry &geom, QString *errorMsg = nullptr ) const override;
     bool intersects( const QgsAbstractGeometry &geom, QString *errorMsg = nullptr ) const override;
@@ -71,6 +97,7 @@ class CORE_EXPORT QgsGeos: public QgsGeometryEngine
     bool isValid( QString *errorMsg = nullptr ) const override;
     bool isEqual( const QgsAbstractGeometry &geom, QString *errorMsg = nullptr ) const override;
     bool isEmpty( QString *errorMsg = nullptr ) const override;
+    bool isSimple( QString *errorMsg = nullptr ) const override;
 
     /** Splits this geometry according to a given line.
     \param splitLine the line that splits the geometry
@@ -138,7 +165,7 @@ class CORE_EXPORT QgsGeos: public QgsGeometryEngine
      * \note only valid for linestring geometries
      * \returns distance along line, or -1 on error
      */
-    double lineLocatePoint( const QgsPointV2 &point, QString *errorMsg = nullptr ) const;
+    double lineLocatePoint( const QgsPoint &point, QString *errorMsg = nullptr ) const;
 
     /**
      * Creates a GeometryCollection geometry containing possible polygons formed from the constituent
@@ -185,7 +212,7 @@ class CORE_EXPORT QgsGeos: public QgsGeometryEngine
     static QgsAbstractGeometry *fromGeos( const GEOSGeometry *geos );
     static QgsPolygonV2 *fromGeosPolygon( const GEOSGeometry *geos );
     static GEOSGeometry *asGeos( const QgsAbstractGeometry *geom, double precision = 0 );
-    static QgsPointV2 coordSeqPoint( const GEOSCoordSequence *cs, int i, bool hasZ, bool hasM );
+    static QgsPoint coordSeqPoint( const GEOSCoordSequence *cs, int i, bool hasZ, bool hasM );
 
     static GEOSContextHandle_t getGEOSHandler();
 
@@ -245,6 +272,7 @@ class CORE_EXPORT QgsGeos: public QgsGeometryEngine
     static int lineContainedInLine( const GEOSGeometry *line1, const GEOSGeometry *line2 );
     static int pointContainedInLine( const GEOSGeometry *point, const GEOSGeometry *line );
     static int geomDigits( const GEOSGeometry *geom );
+    void subdivideRecursive( const GEOSGeometry *currentPart, int maxNodes, int depth, QgsGeometryCollection *parts, const QgsRectangle &clipRect ) const;
 };
 
 /// @cond PRIVATE

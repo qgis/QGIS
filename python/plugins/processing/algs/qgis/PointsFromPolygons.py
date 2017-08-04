@@ -32,33 +32,38 @@ from qgis.core import (QgsApplication,
                        QgsFields,
                        QgsField,
                        QgsFeature,
+                       QgsFeatureSink,
                        QgsGeometry,
                        QgsWkbTypes,
-                       QgsPointV2,
+                       QgsPointXY,
                        QgsProcessingUtils)
 from qgis.PyQt.QtCore import QVariant
-from processing.core.GeoAlgorithm import GeoAlgorithm
+from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 from processing.core.parameters import ParameterRaster
 from processing.core.parameters import ParameterVector
 from processing.core.outputs import OutputVector
 from processing.tools import dataobjects, raster
 
 
-class PointsFromPolygons(GeoAlgorithm):
+class PointsFromPolygons(QgisAlgorithm):
 
     INPUT_RASTER = 'INPUT_RASTER'
     RASTER_BAND = 'RASTER_BAND'
     INPUT_VECTOR = 'INPUT_VECTOR'
     OUTPUT_LAYER = 'OUTPUT_LAYER'
 
-    def icon(self):
-        return QgsApplication.getThemeIcon("/providerQgis.svg")
-
-    def svgIconPath(self):
-        return QgsApplication.iconPath("providerQgis.svg")
-
     def group(self):
         return self.tr('Vector analysis tools')
+
+    def __init__(self):
+        super().__init__()
+
+    def initAlgorithm(self, config=None):
+        self.addParameter(ParameterRaster(self.INPUT_RASTER,
+                                          self.tr('Raster layer')))
+        self.addParameter(ParameterVector(self.INPUT_VECTOR,
+                                          self.tr('Vector layer'), [dataobjects.TYPE_VECTOR_POLYGON]))
+        self.addOutput(OutputVector(self.OUTPUT_LAYER, self.tr('Points from polygons'), datatype=[dataobjects.TYPE_VECTOR_POINT]))
 
     def name(self):
         return 'generatepointspixelcentroidsinsidepolygons'
@@ -66,14 +71,7 @@ class PointsFromPolygons(GeoAlgorithm):
     def displayName(self):
         return self.tr('Generate points (pixel centroids) inside polygons')
 
-    def defineCharacteristics(self):
-        self.addParameter(ParameterRaster(self.INPUT_RASTER,
-                                          self.tr('Raster layer')))
-        self.addParameter(ParameterVector(self.INPUT_VECTOR,
-                                          self.tr('Vector layer'), [dataobjects.TYPE_VECTOR_POLYGON]))
-        self.addOutput(OutputVector(self.OUTPUT_LAYER, self.tr('Points from polygons'), datatype=[dataobjects.TYPE_VECTOR_POINT]))
-
-    def processAlgorithm(self, context, feedback):
+    def processAlgorithm(self, parameters, context, feedback):
         layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT_VECTOR), context)
 
         rasterPath = str(self.getParameterValue(self.INPUT_RASTER))
@@ -98,7 +96,7 @@ class PointsFromPolygons(GeoAlgorithm):
         pointId = 0
 
         features = QgsProcessingUtils.getFeatures(layer, context)
-        total = 100.0 / QgsProcessingUtils.featureCount(layer, context)
+        total = 100.0 / layer.featureCount() if layer.featureCount() else 0
         for current, f in enumerate(features):
             geom = f.geometry()
             bbox = geom.boundingBox()
@@ -118,7 +116,7 @@ class PointsFromPolygons(GeoAlgorithm):
             for row in range(startRow, endRow + 1):
                 for col in range(startColumn, endColumn + 1):
                     (x, y) = raster.pixelToMap(row, col, geoTransform)
-                    point = QgsPointV2()
+                    point = QgsPointXY()
                     point.setX(x)
                     point.setY(y)
 
@@ -131,7 +129,7 @@ class PointsFromPolygons(GeoAlgorithm):
                         fid += 1
                         pointId += 1
 
-                        writer.addFeature(outFeature)
+                        writer.addFeature(outFeature, QgsFeatureSink.FastInsert)
 
             pointId = 0
             polyId += 1

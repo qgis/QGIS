@@ -24,26 +24,22 @@ __copyright__ = '(C) 2015, Etienne Trimaille'
 
 __revision__ = '$Format:%H$'
 
-from qgis.core import (QgsApplication,
-                       QgsProcessingUtils)
-from processing.core.GeoAlgorithm import GeoAlgorithm
-from processing.core.parameters import (ParameterVector,
-                                        ParameterNumber)
-from processing.core.outputs import OutputVector
-from processing.tools import dataobjects
+from qgis.core import (QgsProcessingParameterNumber)
+from processing.algs.qgis.QgisAlgorithm import QgisFeatureBasedAlgorithm
 
 
-class DeleteHoles(GeoAlgorithm):
+class DeleteHoles(QgisFeatureBasedAlgorithm):
 
-    INPUT = 'INPUT'
     MIN_AREA = 'MIN_AREA'
-    OUTPUT = 'OUTPUT'
 
-    def icon(self):
-        return QgsApplication.getThemeIcon("/providerQgis.svg")
+    def __init__(self):
+        super().__init__()
+        self.min_area = None
 
-    def svgIconPath(self):
-        return QgsApplication.iconPath("providerQgis.svg")
+    def initParameters(self, config=None):
+        self.addParameter(QgsProcessingParameterNumber(self.MIN_AREA,
+                                                       self.tr('Remove holes with area less than'), QgsProcessingParameterNumber.Double,
+                                                       0, True, 0.0, 10000000.0))
 
     def tags(self):
         return self.tr('remove,delete,drop,holes,rings,fill').split(',')
@@ -57,38 +53,16 @@ class DeleteHoles(GeoAlgorithm):
     def displayName(self):
         return self.tr('Delete holes')
 
-    def defineCharacteristics(self):
-        self.addParameter(ParameterVector(self.INPUT,
-                                          self.tr('Input layer'), [dataobjects.TYPE_VECTOR_POLYGON]))
-        self.addParameter(ParameterNumber(self.MIN_AREA,
-                                          self.tr('Remove holes with area less than'), 0, 10000000.0, default=0.0, optional=True))
+    def outputName(self):
+        return self.tr('Cleaned')
 
-        self.addOutput(OutputVector(self.OUTPUT, self.tr('Cleaned'), datatype=[dataobjects.TYPE_VECTOR_POLYGON]))
+    def prepareAlgorithm(self, parameters, context, feedback):
+        self.min_area = self.parameterAsDouble(parameters, self.MIN_AREA, context)
+        if self.min_area == 0.0:
+            self.min_area = -1.0
+        return True
 
-    def processAlgorithm(self, context, feedback):
-        layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT), context)
-        min_area = self.getParameterValue(self.MIN_AREA)
-        if min_area is not None:
-            try:
-                min_area = float(min_area)
-            except:
-                pass
-        if min_area == 0.0:
-            min_area = -1.0
-
-        writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(layer.fields(), layer.wkbType(), layer.crs(),
-                                                                     context)
-
-        features = QgsProcessingUtils.getFeatures(layer, context)
-        total = 100.0 / QgsProcessingUtils.featureCount(layer, context)
-
-        for current, f in enumerate(features):
-            if f.hasGeometry():
-                if min_area is not None:
-                    f.setGeometry(f.geometry().removeInteriorRings(min_area))
-                else:
-                    f.setGeometry(f.geometry().removeInteriorRings())
-            writer.addFeature(f)
-            feedback.setProgress(int(current * total))
-
-        del writer
+    def processFeature(self, feature, feedback):
+        if feature.hasGeometry():
+            feature.setGeometry(feature.geometry().removeInteriorRings(self.min_area))
+        return feature

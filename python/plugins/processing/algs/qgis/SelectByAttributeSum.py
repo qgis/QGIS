@@ -30,7 +30,7 @@ from qgis.core import (QgsApplication,
                        QgsFeatureRequest,
                        QgsProcessingUtils)
 
-from processing.core.GeoAlgorithm import GeoAlgorithm
+from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterTableField
@@ -38,28 +38,19 @@ from processing.core.parameters import ParameterNumber
 from processing.core.outputs import OutputVector
 
 
-class SelectByAttributeSum(GeoAlgorithm):
+class SelectByAttributeSum(QgisAlgorithm):
     INPUT = 'INPUT'
     FIELD = 'FIELD'
     VALUE = 'VALUE'
     OUTPUT = 'OUTPUT'
 
-    def icon(self):
-        return QgsApplication.getThemeIcon("/providerQgis.svg")
-
-    def svgIconPath(self):
-        return QgsApplication.iconPath("providerQgis.svg")
-
     def group(self):
         return self.tr('Vector selection tools')
 
-    def name(self):
-        return 'selectbyattributesum'
+    def __init__(self):
+        super().__init__()
 
-    def displayName(self):
-        return self.tr('Select by attribute sum')
-
-    def defineCharacteristics(self):
+    def initAlgorithm(self, config=None):
         self.addParameter(ParameterVector(self.INPUT,
                                           self.tr('Input Layer')))
         self.addParameter(ParameterTableField(self.FIELD,
@@ -70,7 +61,13 @@ class SelectByAttributeSum(GeoAlgorithm):
 
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Selected (attribute sum)'), True))
 
-    def processAlgorithm(self, context, feedback):
+    def name(self):
+        return 'selectbyattributesum'
+
+    def displayName(self):
+        return self.tr('Select by attribute sum')
+
+    def processAlgorithm(self, parameters, context, feedback):
         fileName = self.getParameterValue(self.INPUT)
         layer = QgsProcessingUtils.mapLayerFromString(fileName, context)
         fieldName = self.getParameterValue(self.FIELD)
@@ -86,7 +83,7 @@ class SelectByAttributeSum(GeoAlgorithm):
         geom = ft.geometry()
         attrSum = ft[fieldName]
 
-        idx = QgsSpatialIndex(layer.getFeatures(QgsFeatureRequest.setSubsetOfAttributes([])))
+        idx = QgsSpatialIndex(layer.getFeatures(QgsFeatureRequest.setSubsetOfAttributes([])), feedback)
         req = QgsFeatureRequest()
         completed = False
         while not completed:

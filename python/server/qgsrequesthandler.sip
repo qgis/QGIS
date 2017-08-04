@@ -1,100 +1,189 @@
-/***************************************************************************
-                          qgsrequesthandler.sip
-
-  This class is an interface hiding the details of reading input and
-  writing output from/to a wms request mechanism
-  -------------------
-  begin                : 2014-09-10
-  copyright            : (C) 2014 by Alessandro Pasotti
-  email                : a dot pasotti at itopen dot it
- ***************************************************************************/
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/server/qgsrequesthandler.h                                       *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
 
 
-/**
- * \ingroup server
- * This class is an interface hiding the details of reading input and writing
- * output from/to a wms request mechanism.
- * Examples of possible mechanisms are cgi Get, cgi Post, SOAP or the usage
- * as a standalone command line executable
- */
-class QgsRequestHandler  /Abstract/
+
+
+
+
+typedef QList< QPair<QRgb, int> > QgsColorBox; //Color / number of pixels
+typedef QMultiMap< int, QgsColorBox > QgsColorBoxMap; // sum of pixels / color box
+
+class QgsRequestHandler
 {
-%TypeHeaderCode
-#include "qgsserverexception.h"
-#include "qgsrequesthandler.h"
+%Docstring
+ This class is an interface hiding the details of reading input and writing
+ output from/to a wms request mechanism.
 %End
 
+%TypeHeaderCode
+#include "qgsrequesthandler.h"
+%End
   public:
 
-    /** Allow plugins to return a QgsServerException*/
+    explicit QgsRequestHandler( QgsServerRequest &request, QgsServerResponse &response );
+%Docstring
+ Constructor
+
+ Note that QgsServerRequest and QgsServerResponse MUST live in the same scope
+%End
+    ~QgsRequestHandler();
+
     void setServiceException( const QgsServerException &ex );
+%Docstring
+Allow plugins to return a QgsMapServiceException
+%End
 
-    //! Set an HTTP response header
-    void setResponseHeader( const QString &name, const QString &value );
-
-    //! Remove an HTTP response header
-    void removeResponseHeader( const QString &name );
-
-    //! Retrieve response header value
-    QString responseHeader( const QString &name ) const;
-
-    //! Return the response headers
-    QMap<QString, QString> responseHeaders() const;
-
-    //! Set an HTTP request header
-    void setRequestHeader( const QString &name, const QString &value );
-
-    //! Remove an HTTP request header
-    void removeRequestHeader( const QString &name );
-
-    //! Retrieve request header value
-    QString requestHeader( const QString &name ) const;
-
-    //! Return the Request headers
-    QMap<QString, QString> requestHeaders() const;
-
-    /** Append the bytestream to response body*/
-    void appendBody( const QByteArray &body );
-
-    /** Send out HTTP headers and flush output buffer*/
     void sendResponse();
+%Docstring
+ Send out HTTP headers and flush output buffer
 
-    //! Set response http status code
-    void setStatusCode( int code );
+  This method is intended only for streaming
+  partial content.
+%End
 
-    //! Return response http status code
-    int statusCode(  ) const;
+    void setResponseHeader( const QString &name, const QString &value );
+%Docstring
+Set an HTTP response header
+%End
 
-    /** Pointer to last raised exception*/
-    bool exceptionRaised() const;
+    void removeResponseHeader( const QString &name );
+%Docstring
+Remove an HTTP response header
+%End
 
-    /** Clear response buffer */
-    void clearBody();
+    QString responseHeader( const QString &name ) const;
+%Docstring
+Retrieve response header value
+ :rtype: str
+%End
 
-    //! Clears the response body and headers
+    QMap<QString, QString> responseHeaders() const;
+%Docstring
+Return the response headers
+ :rtype: QMap<str, QString>
+%End
+
+    void setRequestHeader( const QString &name, const QString &value );
+%Docstring
+Set an HTTP request header
+%End
+
+    void removeRequestHeader( const QString &name );
+%Docstring
+Remove an HTTP request header
+%End
+
+    QString requestHeader( const QString &name ) const;
+%Docstring
+Retrieve request header value
+ :rtype: str
+%End
+
+    QMap<QString, QString> requestHeaders() const;
+%Docstring
+Return the Request headers
+ :rtype: QMap<str, QString>
+%End
+
     void clear();
+%Docstring
+Clears the response body and headers
+%End
 
-    /** Return body data */
+    void appendBody( const QByteArray &body );
+%Docstring
+Set the info format string such as "text/xml"
+%End
+
+    bool exceptionRaised() const;
+%Docstring
+Pointer to last raised exception
+ :rtype: bool
+%End
+
+    void clearBody();
+%Docstring
+Clear response buffer
+%End
+
     QByteArray body() const;
+%Docstring
+Return response body data
+ :rtype: QByteArray
+%End
 
-    /** Return a copy of the parsed parameters as a key-value pair, to modify
-     * a parameter setParameter( const QString &key, const QString &value)
-     * and removeParameter(const QString &key) must be used
-     */
+    QByteArray data() const;
+%Docstring
+Return request POST data (can be null)
+ :rtype: QByteArray
+%End
+
+    QString url() const;
+%Docstring
+Return request url
+ :rtype: str
+%End
+
+    void setStatusCode( int code );
+%Docstring
+Set response http status code
+%End
+
+    int statusCode() const;
+%Docstring
+Return response http status code
+ :rtype: int
+%End
+
     QMap<QString, QString> parameterMap() const;
+%Docstring
+ Return the parsed parameters as a key-value pair, to modify
+ a parameter setParameter( const QString &key, const QString &value)
+ and removeParameter(const QString &key) must be used
+ :rtype: QMap<str, QString>
+%End
 
-    /** Set a request parameter*/
     void setParameter( const QString &key, const QString &value );
+%Docstring
+Set a request parameter
+%End
 
-    /** Remove a request parameter*/
-    void removeParameter( const QString &key );
-
-    /** Return a request parameter*/
     QString parameter( const QString &key ) const;
+%Docstring
+Return a request parameter
+ :rtype: str
+%End
 
-    /** Return the requested format string*/
+    void removeParameter( const QString &key );
+%Docstring
+Remove a request parameter
+%End
+
+
     QString format() const;
+%Docstring
+Return the requested format string
+ :rtype: str
+%End
 
-    /** Return true if the HTTP headers were already sent to the client*/
     bool headersSent() const;
+%Docstring
+Return true if the HTTP headers were already sent to the client
+ :rtype: bool
+%End
+
 };
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/server/qgsrequesthandler.h                                       *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

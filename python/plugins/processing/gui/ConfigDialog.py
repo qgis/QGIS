@@ -51,6 +51,7 @@ from qgis.gui import (QgsDoubleSpinBox,
                       QgsSpinBox,
                       QgsOptionsPageWidget)
 from qgis.core import NULL, QgsApplication, QgsSettings
+from qgis.utils import OverrideCursor
 
 from processing.core.ProcessingConfig import (ProcessingConfig,
                                               settingsWatcher,
@@ -158,6 +159,9 @@ class ConfigDialog(BASE, WIDGET):
             emptyItem.setEditable(False)
 
             rootItem.insertRow(0, [groupItem, emptyItem])
+            if not group in settings:
+                continue
+
             # add menu item only if it has any search matches
             for setting in settings[group]:
                 if setting.hidden or setting.name.startswith("MENU_"):
@@ -290,10 +294,9 @@ class ConfigDialog(BASE, WIDGET):
                         return
                 setting.save(qsettings)
 
-        QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
-        for p in QgsApplication.processingRegistry().providers():
-            p.refreshAlgorithms()
-        QApplication.restoreOverrideCursor()
+        with OverrideCursor(Qt.WaitCursor):
+            for p in QgsApplication.processingRegistry().providers():
+                p.refreshAlgorithms()
 
         settingsWatcher.settingsChanged.emit()
 

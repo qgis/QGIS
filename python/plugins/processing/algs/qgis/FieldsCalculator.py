@@ -30,12 +30,13 @@ from qgis.core import (QgsExpression,
                        QgsExpressionContext,
                        QgsExpressionContextUtils,
                        QgsFeature,
+                       QgsFeatureSink,
                        QgsField,
                        QgsDistanceArea,
                        QgsProject,
                        QgsApplication,
                        QgsProcessingUtils)
-from processing.core.GeoAlgorithm import GeoAlgorithm
+from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterString
@@ -47,7 +48,7 @@ from processing.core.outputs import OutputVector
 from .ui.FieldsCalculatorDialog import FieldsCalculatorDialog
 
 
-class FieldsCalculator(GeoAlgorithm):
+class FieldsCalculator(QgisAlgorithm):
 
     INPUT_LAYER = 'INPUT_LAYER'
     NEW_FIELD = 'NEW_FIELD'
@@ -60,22 +61,13 @@ class FieldsCalculator(GeoAlgorithm):
 
     TYPES = [QVariant.Double, QVariant.Int, QVariant.String, QVariant.Date]
 
-    def icon(self):
-        return QgsApplication.getThemeIcon("/providerQgis.svg")
-
-    def svgIconPath(self):
-        return QgsApplication.iconPath("providerQgis.svg")
-
     def group(self):
         return self.tr('Vector table tools')
 
-    def name(self):
-        return 'fieldcalculator'
+    def __init__(self):
+        super().__init__()
 
-    def displayName(self):
-        return self.tr('Field calculator')
-
-    def defineCharacteristics(self):
+    def initAlgorithm(self, config=None):
         self.type_names = [self.tr('Float'),
                            self.tr('Integer'),
                            self.tr('String'),
@@ -96,7 +88,13 @@ class FieldsCalculator(GeoAlgorithm):
         self.addParameter(ParameterString(self.FORMULA, self.tr('Formula')))
         self.addOutput(OutputVector(self.OUTPUT_LAYER, self.tr('Calculated')))
 
-    def processAlgorithm(self, context, feedback):
+    def name(self):
+        return 'fieldcalculator'
+
+    def displayName(self):
+        return self.tr('Field calculator')
+
+    def processAlgorithm(self, parameters, context, feedback):
         layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT_LAYER), context)
         fieldName = self.getParameterValue(self.FIELD_NAME)
         fieldType = self.TYPES[self.getParameterValue(self.FIELD_TYPE)]
@@ -117,10 +115,10 @@ class FieldsCalculator(GeoAlgorithm):
 
         da = QgsDistanceArea()
         da.setSourceCrs(layer.crs())
-        da.setEllipsoid(QgsProject.instance().ellipsoid())
+        da.setEllipsoid(context.project().ellipsoid())
         exp.setGeomCalculator(da)
-        exp.setDistanceUnits(QgsProject.instance().distanceUnits())
-        exp.setAreaUnits(QgsProject.instance().areaUnits())
+        exp.setDistanceUnits(context.project().distanceUnits())
+        exp.setAreaUnits(context.project().areaUnits())
 
         exp_context = QgsExpressionContext(QgsExpressionContextUtils.globalProjectLayerScopes(layer))
 
@@ -136,7 +134,7 @@ class FieldsCalculator(GeoAlgorithm):
         calculationSuccess = True
 
         features = QgsProcessingUtils.getFeatures(layer, context)
-        total = 100.0 / QgsProcessingUtils.featureCount(layer, context)
+        total = 100.0 / layer.featureCount() if layer.featureCount() else 0
 
         rownum = 1
         for current, f in enumerate(features):
@@ -153,7 +151,7 @@ class FieldsCalculator(GeoAlgorithm):
                 for fld in f.fields():
                     outFeature[fld.name()] = f[fld.name()]
                 outFeature[fieldName] = value
-                writer.addFeature(outFeature)
+                writer.addFeature(outFeature, QgsFeatureSink.FastInsert)
 
             feedback.setProgress(int(current * total))
         del writer
@@ -163,11 +161,12 @@ class FieldsCalculator(GeoAlgorithm):
                 self.tr('An error occurred while evaluating the calculation '
                         'string:\n{0}').format(error))
 
-    def checkParameterValuesBeforeExecuting(self):
+    def checkParameterValues(self, parameters, context):
         newField = self.getParameterValue(self.NEW_FIELD)
         fieldName = self.getParameterValue(self.FIELD_NAME).strip()
         if newField and len(fieldName) == 0:
             return self.tr('Field name is not set. Please enter a field name')
+        return super(FieldsCalculator, self).checkParameterValues(parameters, context)
 
-    def getCustomParametersDialog(self):
+    def createCustomParametersWidget(self, parent):
         return FieldsCalculatorDialog(self)

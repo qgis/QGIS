@@ -17,12 +17,12 @@ class QgsErrorDialog: QDialog
 %End
   public:
 
-    QgsErrorDialog( const QgsError &error, const QString &title, QWidget *parent /TransferThis/ = 0, Qt::WindowFlags fl = QgisGui::ModalDialogFlags );
+    QgsErrorDialog( const QgsError &error, const QString &title, QWidget *parent /TransferThis/ = 0, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags );
 %Docstring
  QgsErrorDialog constructor for QgsErrorDialog
 %End
 
-    static void show( const QgsError &error, const QString &title, QWidget *parent = 0, Qt::WindowFlags fl = QgisGui::ModalDialogFlags );
+    static void show( const QgsError &error, const QString &title, QWidget *parent = 0, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags );
 %Docstring
  Show dialog with error
  \param error error

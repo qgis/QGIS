@@ -30,20 +30,20 @@ import os
 from qgis.PyQt.QtGui import QIcon
 
 from qgis.core import (QgsRectangle,
-                       QgsProcessingUtils)
+                       QgsProcessingUtils,
+                       QgsProcessingParameterDefinition)
 from qgis.analysis import (QgsInterpolator,
                            QgsTINInterpolator,
                            QgsGridFileWriter
                            )
 
-from processing.core.GeoAlgorithm import GeoAlgorithm
+from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from processing.core.parameters import (Parameter,
                                         ParameterNumber,
                                         ParameterExtent,
                                         ParameterSelection,
-                                        _splitParameterOptions,
-                                        _createDescriptiveName
+                                        _splitParameterOptions
                                         )
 from processing.core.outputs import (OutputRaster,
                                      OutputVector
@@ -52,7 +52,7 @@ from processing.core.outputs import (OutputRaster,
 pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
 
-class TinInterpolation(GeoAlgorithm):
+class TinInterpolation(QgisAlgorithm):
 
     INTERPOLATION_DATA = 'INTERPOLATION_DATA'
     METHOD = 'METHOD'
@@ -70,13 +70,10 @@ class TinInterpolation(GeoAlgorithm):
     def group(self):
         return self.tr('Interpolation')
 
-    def name(self):
-        return 'tininterpolation'
+    def __init__(self):
+        super().__init__()
 
-    def displayName(self):
-        return self.tr('TIN interpolation')
-
-    def defineCharacteristics(self):
+    def initAlgorithm(self, config=None):
         self.METHODS = [self.tr('Linear'),
                         self.tr('Clough-Toucher (cubic)')
                         ]
@@ -91,13 +88,13 @@ class TinInterpolation(GeoAlgorithm):
 
             def setValue(self, value):
                 if value is None:
-                    if not self.optional:
+                    if not self.flags() & QgsProcessingParameterDefinition.FlagOptional:
                         return False
                     self.value = None
                     return True
 
                 if value == '':
-                    if not self.optional:
+                    if not self.flags() & QgsProcessingParameterDefinition.FlagOptional:
                         return False
 
                 if isinstance(value, str):
@@ -117,7 +114,7 @@ class TinInterpolation(GeoAlgorithm):
             @classmethod
             def fromScriptCode(self, line):
                 isOptional, name, definition = _splitParameterOptions(line)
-                descName = _createDescriptiveName(name)
+                descName = QgsProcessingParameters.descriptionFromName(name)
                 parent = definition.lower().strip()[len('interpolation data') + 1:]
                 return ParameterInterpolationData(name, descName, parent)
 
@@ -158,7 +155,13 @@ class TinInterpolation(GeoAlgorithm):
                                     self.tr('Triangulation'),
                                     ))  # datatype=dataobjects.TYPE_VECTOR_LINE))
 
-    def processAlgorithm(self, context, feedback):
+    def name(self):
+        return 'tininterpolation'
+
+    def displayName(self):
+        return self.tr('TIN interpolation')
+
+    def processAlgorithm(self, parameters, context, feedback):
         interpolationData = self.getParameterValue(self.INTERPOLATION_DATA)
         method = self.getParameterValue(self.METHOD)
         columns = self.getParameterValue(self.COLUMNS)

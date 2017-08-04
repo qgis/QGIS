@@ -126,7 +126,7 @@ void QgsOptionsDialogBase::initOptionsBase( bool restoreUi, const QString &title
     buttonBoxFrame->layout()->setContentsMargins( 0, 0, 0, 0 );
     layout->insertWidget( layout->count() + 1, buttonBoxFrame );
   }
-  else
+  else if ( mOptButtonBox )
   {
     layout->insertWidget( layout->count() + 1, mOptButtonBox );
   }
@@ -391,7 +391,7 @@ void QgsOptionsDialogBase::warnAboutMissingObjects()
   QMessageBox::warning( nullptr, tr( "Missing objects" ),
                         tr( "Base options dialog could not be initialized.\n\n"
                             "Missing some of the .ui template objects:\n" )
-                        + " mOptionsListWidget,\n mOptionsStackedWidget,\n mOptionsSplitter",
+                        + " mOptionsListWidget,\n mOptionsStackedWidget,\n mOptionsSplitter,\n mOptionsListFrame",
                         QMessageBox::Ok,
                         QMessageBox::Ok );
 }

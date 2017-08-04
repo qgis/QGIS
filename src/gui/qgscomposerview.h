@@ -51,6 +51,15 @@ class QgsMapCanvas;
  */
 class GUI_EXPORT QgsComposerView: public QGraphicsView
 {
+
+#ifdef SIP_RUN
+    SIP_CONVERT_TO_SUBCLASS_CODE
+    if ( sipCpp->inherits( "QgsComposerView" ) )
+      sipType = sipType_QgsComposerView;
+    else
+      sipType = NULL;
+    SIP_END
+#endif
     Q_OBJECT
 
   public:
@@ -99,7 +108,7 @@ class GUI_EXPORT QgsComposerView: public QGraphicsView
       ActiveUntilMouseRelease
     };
 
-    QgsComposerView( QWidget *parent = nullptr, const char *name = nullptr, Qt::WindowFlags f = 0 );
+    QgsComposerView( QWidget *parent SIP_TRANSFERTHIS = nullptr, const char *name = nullptr, Qt::WindowFlags f = 0 );
 
     //! Add an item group containing the selected items
     void groupItems();

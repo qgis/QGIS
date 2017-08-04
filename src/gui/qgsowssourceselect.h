@@ -23,8 +23,10 @@
 #include "qgis_sip.h"
 #include "qgis.h"
 #include "qgsdatasourceuri.h"
-#include "qgisgui.h"
+#include "qgsguiutils.h"
 #include "qgscontexthelp.h"
+#include "qgsproviderregistry.h"
+#include "qgsabstractdatasourcewidget.h"
 
 #include <QStringList>
 #include <QPushButton>
@@ -39,15 +41,15 @@ class QDomElement;
 
 
 /** \ingroup gui
- * \brief  Dialog to create connections and add layers from WMS, WFS, WCS etc.
+ * \brief  Dialog to create connections and add layers WCS etc.
  *
  * This dialog allows the user to define and save connection information
  * for WMS servers, etc.
  *
  * The user can then connect and add
- * layers from the WMS server to the map canvas.
+ * layers from the WCS server to the map canvas.
  */
-class GUI_EXPORT QgsOWSSourceSelect : public QDialog, public Ui::QgsOWSSourceSelectBase
+class GUI_EXPORT QgsOWSSourceSelect : public QgsAbstractDataSourceWidget, protected Ui::QgsOWSSourceSelectBase
 {
     Q_OBJECT
 
@@ -60,11 +62,14 @@ class GUI_EXPORT QgsOWSSourceSelect : public QDialog, public Ui::QgsOWSSourceSel
     };
 
     //! Constructor
-    QgsOWSSourceSelect( const QString &service, QWidget *parent = nullptr, Qt::WindowFlags fl = QgisGui::ModalDialogFlags, bool managerMode = false, bool embeddedMode = false );
+    QgsOWSSourceSelect( const QString &service, QWidget *parent SIP_TRANSFERTHIS = nullptr, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::None );
 
     ~QgsOWSSourceSelect();
 
   public slots:
+
+    //! Triggered when the provider's connections need to be refreshed
+    void refresh() override;
 
     //! Opens the create connection dialog to build a new connection
     void on_mNewButton_clicked();
@@ -81,9 +86,6 @@ class GUI_EXPORT QgsOWSSourceSelect : public QDialog, public Ui::QgsOWSSourceSel
      * Once connected, available layers are displayed.
      */
     void on_mConnectButton_clicked();
-
-    //! Determines the layers the user selected
-    virtual void addClicked();
 
     void searchFinished();
 
@@ -105,21 +107,13 @@ class GUI_EXPORT QgsOWSSourceSelect : public QDialog, public Ui::QgsOWSSourceSel
     //! Add some default wms servers to the list
     void on_mAddDefaultButton_clicked();
 
-    void on_mDialogButtonBox_helpRequested() { QgsContextHelp::run( metaObject()->className() ); }
-
-  signals:
-    void addRasterLayer( const QString &rasterLayerPath,
-                         const QString &baseName,
-                         const QString &providerKey );
-    void connectionsChanged();
-
   protected:
 
     /**
      * List of image formats (encodings) supported by provider
      * \returns list of format/label pairs
      */
-    virtual QList<SupportedFormat> providerFormats();
+    virtual QList<QgsOWSSourceSelect::SupportedFormat> providerFormats();
 
     //! List of formats supported for currently selected layer item(s)
     virtual QStringList selectedLayersFormats();
@@ -168,13 +162,6 @@ class GUI_EXPORT QgsOWSSourceSelect : public QDialog, public Ui::QgsOWSSourceSel
     //! Service name
     QString mService;
 
-    //! Connections manager mode
-    bool mManagerMode;
-
-    //! Embedded mode, without 'Close'
-    bool mEmbeddedMode;
-
-
     /**
      * \brief Populate the layer list.
      *
@@ -196,8 +183,6 @@ class GUI_EXPORT QgsOWSSourceSelect : public QDialog, public Ui::QgsOWSSourceSel
 
     //! layer name derived from latest layer selection (updated as long it's not edited manually)
     QString mLastLayerName;
-
-    QPushButton *mAddButton = nullptr;
 
     QMap<QString, QString> mCrsNames;
 
@@ -229,6 +214,7 @@ class GUI_EXPORT QgsOWSSourceSelect : public QDialog, public Ui::QgsOWSSourceSel
 
     //! URI for selected connection
     QgsDataSourceUri mUri;
+
 
   private:
     //! Selected CRS

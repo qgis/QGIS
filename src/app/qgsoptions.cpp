@@ -47,6 +47,8 @@
 #include "qgsclipboard.h"
 #include "qgssettings.h"
 #include "qgsoptionswidgetfactory.h"
+#include "qgslocatorwidget.h"
+#include "qgslocatoroptionswidget.h"
 
 #include <QInputDialog>
 #include <QFileDialog>
@@ -123,8 +125,8 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
 
   connect( cmbUITheme, static_cast<void ( QComboBox::* )( const QString & )>( &QComboBox::currentIndexChanged ), this, &QgsOptions::uiThemeChanged );
 
-  mIdentifyHighlightColorButton->setColorDialogTitle( tr( "Identify highlight color" ) );
-  mIdentifyHighlightColorButton->setAllowAlpha( true );
+  mIdentifyHighlightColorButton->setColorDialogTitle( tr( "Identify Highlight Color" ) );
+  mIdentifyHighlightColorButton->setAllowOpacity( true );
   mIdentifyHighlightColorButton->setContext( QStringLiteral( "gui" ) );
   mIdentifyHighlightColorButton->setDefaultColor( Qgis::DEFAULT_HIGHLIGHT_COLOR );
 
@@ -600,11 +602,11 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
   QStringList myScalesList = PROJECT_SCALES.split( ',' );
   myScalesList.append( QStringLiteral( "1:1" ) );
   mSimplifyMaximumScaleComboBox->updateScales( myScalesList );
-  mSimplifyMaximumScaleComboBox->setScale( 1.0 / mSettings->value( QStringLiteral( "/qgis/simplifyMaxScale" ), 1 ).toFloat() );
+  mSimplifyMaximumScaleComboBox->setScale( mSettings->value( QStringLiteral( "/qgis/simplifyMaxScale" ), 1 ).toFloat() );
 
   // Magnifier
-  double magnifierMin = 100 * QgisGui::CANVAS_MAGNIFICATION_MIN;
-  double magnifierMax = 100 * QgisGui::CANVAS_MAGNIFICATION_MAX;
+  double magnifierMin = 100 * QgsGuiUtils::CANVAS_MAGNIFICATION_MIN;
+  double magnifierMax = 100 * QgsGuiUtils::CANVAS_MAGNIFICATION_MAX;
   double magnifierVal = 100 * mSettings->value( QStringLiteral( "/qgis/magnifier_factor_default" ), 1.0 ).toDouble();
   doubleSpinBoxMagnifierDefault->setRange( magnifierMin, magnifierMax );
   doubleSpinBoxMagnifierDefault->setSingleStep( 50 );
@@ -626,6 +628,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
   mLegendGroupsBoldChkBx->setChecked( mSettings->value( QStringLiteral( "/qgis/legendGroupsBold" ), false ).toBool() );
   cbxHideSplash->setChecked( mSettings->value( QStringLiteral( "/qgis/hideSplash" ), false ).toBool() );
   cbxShowTips->setChecked( mSettings->value( QStringLiteral( "/qgis/showTips%1" ).arg( Qgis::QGIS_VERSION_INT / 100 ), true ).toBool() );
+  mDataSourceManagerNonModal->setChecked( mSettings->value( "/qgis/dataSourceManagerNonModal", false ).toBool() );
   cbxCheckVersion->setChecked( mSettings->value( QStringLiteral( "/qgis/checkVersion" ), true ).toBool() );
   cbxAttributeTableDocked->setChecked( mSettings->value( QStringLiteral( "/qgis/dockAttributeTable" ), false ).toBool() );
   cbxAddPostgisDC->setChecked( mSettings->value( QStringLiteral( "/qgis/addPostgisDC" ), false ).toBool() );
@@ -681,8 +684,8 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
   int myBlue = mSettings->value( QStringLiteral( "/qgis/default_selection_color_blue" ), 0 ).toInt();
   int myAlpha = mSettings->value( QStringLiteral( "/qgis/default_selection_color_alpha" ), 255 ).toInt();
   pbnSelectionColor->setColor( QColor( myRed, myGreen, myBlue, myAlpha ) );
-  pbnSelectionColor->setColorDialogTitle( tr( "Set selection color" ) );
-  pbnSelectionColor->setAllowAlpha( true );
+  pbnSelectionColor->setColorDialogTitle( tr( "Set Selection Color" ) );
+  pbnSelectionColor->setAllowOpacity( true );
   pbnSelectionColor->setContext( QStringLiteral( "gui" ) );
   pbnSelectionColor->setDefaultColor( QColor( 255, 255, 0, 255 ) );
 
@@ -691,7 +694,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
   myGreen = mSettings->value( QStringLiteral( "/qgis/default_canvas_color_green" ), 255 ).toInt();
   myBlue = mSettings->value( QStringLiteral( "/qgis/default_canvas_color_blue" ), 255 ).toInt();
   pbnCanvasColor->setColor( QColor( myRed, myGreen, myBlue ) );
-  pbnCanvasColor->setColorDialogTitle( tr( "Set canvas color" ) );
+  pbnCanvasColor->setColorDialogTitle( tr( "Set Canvas Color" ) );
   pbnCanvasColor->setContext( QStringLiteral( "gui" ) );
   pbnCanvasColor->setDefaultColor( Qt::white );
 
@@ -700,7 +703,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
   myGreen = mSettings->value( QStringLiteral( "/qgis/default_measure_color_green" ), 155 ).toInt();
   myBlue = mSettings->value( QStringLiteral( "/qgis/default_measure_color_blue" ), 67 ).toInt();
   pbnMeasureColor->setColor( QColor( myRed, myGreen, myBlue ) );
-  pbnMeasureColor->setColorDialogTitle( tr( "Set measuring tool color" ) );
+  pbnMeasureColor->setColorDialogTitle( tr( "Set Measuring Tool Color" ) );
   pbnMeasureColor->setContext( QStringLiteral( "gui" ) );
   pbnMeasureColor->setDefaultColor( QColor( 222, 155, 67 ) );
 
@@ -787,8 +790,8 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
   gridAlpha = mSettings->value( QStringLiteral( "/Composer/gridAlpha" ), 100 ).toInt();
   QColor gridColor = QColor( gridRed, gridGreen, gridBlue, gridAlpha );
   mGridColorButton->setColor( gridColor );
-  mGridColorButton->setColorDialogTitle( tr( "Select grid color" ) );
-  mGridColorButton->setAllowAlpha( true );
+  mGridColorButton->setColorDialogTitle( tr( "Select Grid Color" ) );
+  mGridColorButton->setAllowOpacity( true );
   mGridColorButton->setContext( QStringLiteral( "gui" ) );
   mGridColorButton->setDefaultColor( QColor( 190, 190, 190, 100 ) );
 
@@ -842,7 +845,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
   myBlue = mSettings->value( QStringLiteral( "/qgis/digitizing/line_color_blue" ), 0 ).toInt();
   myAlpha = mSettings->value( QStringLiteral( "/qgis/digitizing/line_color_alpha" ), 200 ).toInt();
   mLineColorToolButton->setColor( QColor( myRed, myGreen, myBlue, myAlpha ) );
-  mLineColorToolButton->setAllowAlpha( true );
+  mLineColorToolButton->setAllowOpacity( true );
   mLineColorToolButton->setContext( QStringLiteral( "gui" ) );
   mLineColorToolButton->setDefaultColor( QColor( 255, 0, 0, 200 ) );
 
@@ -851,7 +854,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
   myBlue = mSettings->value( QStringLiteral( "/qgis/digitizing/fill_color_blue" ), 0 ).toInt();
   myAlpha = mSettings->value( QStringLiteral( "/qgis/digitizing/fill_color_alpha" ), 30 ).toInt();
   mFillColorToolButton->setColor( QColor( myRed, myGreen, myBlue, myAlpha ) );
-  mFillColorToolButton->setAllowAlpha( true );
+  mFillColorToolButton->setAllowOpacity( true );
   mFillColorToolButton->setContext( QStringLiteral( "gui" ) );
   mFillColorToolButton->setDefaultColor( QColor( 255, 0, 0, 30 ) );
 
@@ -939,6 +942,12 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
   mVariableEditor->context()->appendScope( QgsExpressionContextUtils::globalScope() );
   mVariableEditor->reloadContext();
   mVariableEditor->setEditableScopeIndex( 0 );
+
+  // locator
+  mLocatorOptionsWidget = new QgsLocatorOptionsWidget( QgisApp::instance()->locatorWidget(), this );
+  QVBoxLayout *locatorLayout = new QVBoxLayout();
+  locatorLayout->addWidget( mLocatorOptionsWidget );
+  mOptionsLocatorGroupBox->setLayout( locatorLayout );
 
   mAdvancedSettingsEditor->setSettingsObject( mSettings );
 
@@ -1200,6 +1209,7 @@ void QgsOptions::saveOptions()
   mSettings->setValue( QStringLiteral( "/qgis/legendGroupsBold" ), mLegendGroupsBoldChkBx->isChecked() );
   mSettings->setValue( QStringLiteral( "/qgis/hideSplash" ), cbxHideSplash->isChecked() );
   mSettings->setValue( QStringLiteral( "/qgis/showTips%1" ).arg( Qgis::QGIS_VERSION_INT / 100 ), cbxShowTips->isChecked() );
+  mSettings->setValue( QStringLiteral( "/qgis/dataSourceManagerNonModal" ), mDataSourceManagerNonModal->isChecked() );
   mSettings->setValue( QStringLiteral( "/qgis/checkVersion" ), cbxCheckVersion->isChecked() );
   mSettings->setValue( QStringLiteral( "/qgis/dockAttributeTable" ), cbxAttributeTableDocked->isChecked() );
   mSettings->setValue( QStringLiteral( "/qgis/attributeTableBehavior" ), cmbAttrTableBehavior->currentData() );
@@ -1245,7 +1255,7 @@ void QgsOptions::saveOptions()
   mSettings->setValue( QStringLiteral( "/qgis/simplifyAlgorithm" ), mSimplifyAlgorithmComboBox->currentData().toInt() );
   mSettings->setValue( QStringLiteral( "/qgis/simplifyDrawingTol" ), mSimplifyDrawingSpinBox->value() );
   mSettings->setValue( QStringLiteral( "/qgis/simplifyLocal" ), !mSimplifyDrawingAtProvider->isChecked() );
-  mSettings->setValue( QStringLiteral( "/qgis/simplifyMaxScale" ), 1.0 / mSimplifyMaximumScaleComboBox->scale() );
+  mSettings->setValue( QStringLiteral( "/qgis/simplifyMaxScale" ), mSimplifyMaximumScaleComboBox->scale() );
 
   // magnification
   mSettings->setValue( QStringLiteral( "/qgis/magnifier_factor_default" ), doubleSpinBoxMagnifierDefault->value() / 100 );
@@ -1506,6 +1516,8 @@ void QgsOptions::saveOptions()
   }
 
   saveDefaultDatumTransformations();
+
+  mLocatorOptionsWidget->commitChanges();
 
   Q_FOREACH ( QgsOptionsPageWidget *widget, mAdditionalOptionWidgets )
   {

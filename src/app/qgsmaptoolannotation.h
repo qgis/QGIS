@@ -57,7 +57,7 @@ class APP_EXPORT QgsMapToolAnnotation: public QgsMapTool
     //! Switches visibility states of text items
     void toggleTextItemVisibilities();
 
-    QgsPoint transformCanvasToAnnotation( QgsPoint p, QgsAnnotation *annotation ) const;
+    QgsPointXY transformCanvasToAnnotation( QgsPointXY p, QgsAnnotation *annotation ) const;
 
     QgsMapCanvasAnnotationItem::MouseMoveAction mCurrentMoveAction = QgsMapCanvasAnnotationItem::NoAction;
     QPointF mLastMousePosition = QPointF( 0, 0 );

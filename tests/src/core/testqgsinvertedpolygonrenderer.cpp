@@ -140,7 +140,7 @@ void TestQgsInvertedPolygon::projectionTest()
 {
   mReport += QLatin1String( "<h2>Inverted polygon renderer, projection test</h2>\n" );
   mMapSettings.setDestinationCrs( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:2154" ) ) );
-  QgsRectangle extent( QgsPoint( -8639421, 8382691 ), QgsPoint( -3969110, 12570905 ) );
+  QgsRectangle extent( QgsPointXY( -8639421, 8382691 ), QgsPointXY( -3969110, 12570905 ) );
   QVERIFY( setQml( mpPolysLayer, "inverted_polys_single.qml" ) );
   QVERIFY( imageCheck( "inverted_polys_projection", &extent ) );
   QVERIFY( setQml( mpPolysLayer, "inverted_polys_preprocess.qml" ) );

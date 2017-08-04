@@ -79,7 +79,7 @@ void QgsMapToolDeleteRing::canvasPressEvent( QgsMapMouseEvent *e )
     return;
   }
 
-  QgsPoint p = toLayerCoordinates( vlayer, e->pos() );
+  QgsPointXY p = toLayerCoordinates( vlayer, e->pos() );
 
   QgsGeometry ringGeom = ringUnderPoint( p, mPressedFid, mPressedPartNum, mPressedRingNum );
 
@@ -118,7 +118,7 @@ void QgsMapToolDeleteRing::canvasReleaseEvent( QgsMapMouseEvent *e )
   }
 }
 
-QgsGeometry QgsMapToolDeleteRing::ringUnderPoint( const QgsPoint &p, QgsFeatureId &fid, int &partNum, int &ringNum )
+QgsGeometry QgsMapToolDeleteRing::ringUnderPoint( const QgsPointXY &p, QgsFeatureId &fid, int &partNum, int &ringNum )
 {
   //There is no clean way to find if we are inside the ring of a feature,
   //so we iterate over all the features visible in the canvas

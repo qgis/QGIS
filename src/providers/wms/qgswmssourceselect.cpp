@@ -51,27 +51,18 @@
 #include <QPicture>
 #include <QUrl>
 #include <QValidator>
-
 #include <QNetworkRequest>
 #include <QNetworkReply>
 
-QgsWMSSourceSelect::QgsWMSSourceSelect( QWidget *parent, Qt::WindowFlags fl, bool managerMode, bool embeddedMode )
-  : QDialog( parent, fl )
-  , mManagerMode( managerMode )
-  , mEmbeddedMode( embeddedMode )
+QgsWMSSourceSelect::QgsWMSSourceSelect( QWidget *parent, Qt::WindowFlags fl, QgsProviderRegistry::WidgetMode theWidgetMode )
+  : QgsAbstractDataSourceWidget( parent, fl, theWidgetMode )
   , mDefaultCRS( GEO_EPSG_CRS_AUTHID )
   , mCurrentTileset( nullptr )
 {
   setupUi( this );
 
-  if ( mEmbeddedMode )
-  {
-    buttonBox->button( QDialogButtonBox::Close )->hide();
-  }
-
-  mAddButton = new QPushButton( tr( "&Add" ) );
-  mAddButton->setToolTip( tr( "Add selected layers to map" ) );
-  mAddButton->setEnabled( false );
+  // Creates and connects standard ok/apply buttons
+  setupButtons( buttonBox );
 
   mTileWidth->setValidator( new QIntValidator( 0, 9999, this ) );
   mTileHeight->setValidator( new QIntValidator( 0, 9999, this ) );
@@ -81,14 +72,8 @@ QgsWMSSourceSelect::QgsWMSSourceSelect( QWidget *parent, Qt::WindowFlags fl, boo
 
   mImageFormatGroup = new QButtonGroup;
 
-  if ( !mManagerMode )
+  if ( widgetMode() != QgsProviderRegistry::WidgetMode::Manager )
   {
-    buttonBox->addButton( mAddButton, QDialogButtonBox::ActionRole );
-    connect( mAddButton, &QAbstractButton::clicked, this, &QgsWMSSourceSelect::addClicked );
-
-    // TODO: do it without QgisApp
-    //mLayerUpButton->setIcon( QgisApp::getThemeIcon( "/mActionArrowUp.svg" ) );
-    //mLayerDownButton->setIcon( QgisApp::getThemeIcon( "/mActionArrowDown.svg" ) );
 
     QHBoxLayout *layout = new QHBoxLayout;
 
@@ -156,6 +141,13 @@ QgsWMSSourceSelect::~QgsWMSSourceSelect()
   settings.setValue( QStringLiteral( "Windows/WMSSourceSelect/geometry" ), saveGeometry() );
 }
 
+void QgsWMSSourceSelect::refresh()
+{
+  // Reload WMS connections and update the GUI
+  QgsDebugMsg( "Refreshing WMS connections ..." );
+  populateConnectionList();
+}
+
 
 void QgsWMSSourceSelect::populateConnectionList()
 {
@@ -164,6 +156,7 @@ void QgsWMSSourceSelect::populateConnectionList()
 
   setConnectionListPosition();
 }
+
 void QgsWMSSourceSelect::on_btnNew_clicked()
 {
   QgsNewHttpConnection *nc = new QgsNewHttpConnection( this );
@@ -478,7 +471,7 @@ void QgsWMSSourceSelect::on_btnConnect_clicked()
   populateLayerList( caps );
 }
 
-void QgsWMSSourceSelect::addClicked()
+void QgsWMSSourceSelect::addButtonClicked()
 {
   QStringList layers;
   QStringList styles;
@@ -914,12 +907,12 @@ void QgsWMSSourceSelect::updateButtons()
       labelStatus->setText( tr( "Select layer(s)" ) );
     else
       labelStatus->setText( tr( "Select layer(s) or a tileset" ) );
-    mAddButton->setEnabled( false );
+    emit enableButtons( false );
   }
   else if ( !lstTilesets->selectedItems().isEmpty() && mLayerOrderTreeWidget->topLevelItemCount() > 0 )
   {
     labelStatus->setText( tr( "Select either layer(s) or a tileset" ) );
-    mAddButton->setEnabled( false );
+    emit enableButtons( false );
   }
   else
   {
@@ -931,34 +924,34 @@ void QgsWMSSourceSelect::updateButtons()
       if ( mCRSs.isEmpty() )
       {
         labelStatus->setText( tr( "No common CRS for selected layers." ) );
-        mAddButton->setEnabled( false );
+        emit enableButtons( false );
       }
       else if ( mCRS.isEmpty() )
       {
         labelStatus->setText( tr( "No CRS selected" ) );
-        mAddButton->setEnabled( false );
+        emit enableButtons( false );
       }
       else if ( mImageFormatGroup->checkedId() == -1 )
       {
         labelStatus->setText( tr( "No image encoding selected" ) );
-        mAddButton->setEnabled( false );
+        emit enableButtons( false );
       }
       else
       {
         labelStatus->setText( tr( "%n Layer(s) selected", "selected layer count", mLayerOrderTreeWidget->topLevelItemCount() ) );
-        mAddButton->setEnabled( true );
+        emit enableButtons( true );
       }
     }
     else
     {
       labelStatus->setText( tr( "Tileset selected" ) );
-      mAddButton->setEnabled( true );
+      emit enableButtons( true );
     }
   }
 
   if ( leLayerName->text().isEmpty() || leLayerName->text() == mLastLayerName )
   {
-    if ( mAddButton->isEnabled() )
+    if ( addButton()->isEnabled() )
     {
       if ( !lstTilesets->selectedItems().isEmpty() )
       {

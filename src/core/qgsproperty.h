@@ -59,7 +59,7 @@ class CORE_EXPORT QgsPropertyDefinition
       Double0To1, //!< Double value between 0-1 (inclusive)
       Rotation, //!< Rotation (value between 0-360 degrees)
       String, //!< Any string value
-      Transparency, //!< Transparency (0-100)
+      Opacity, //!< Opacity (0-100)
       RenderUnits, //!< Render units (eg mm/pixels/map units)
       ColorWithAlpha, //!< Color with alpha channel
       ColorNoAlpha, //!< Color with no alpha channel
@@ -112,19 +112,21 @@ class CORE_EXPORT QgsPropertyDefinition
 
     /**
      * Constructor for QgsPropertyDefinition, using a standard property template.
-     * The name is used internally and should be a unique, alphanumeric string.
-     * Description can be any localised string describing what the property is used for.
+     * \param name is used internally and should be a unique, alphanumeric string.
+     * \param description can be any localised string describing what the property is used for.
+     * \param type one of the predefined standard property template
      */
     QgsPropertyDefinition( const QString &name, const QString &description, StandardPropertyTemplate type );
 
     /**
      * Constructor for custom QgsPropertyDefinitions.
-     * The name is used internally and should be a unique, alphanumeric string.
-     * Description can be any localised string describing what the property is used for.
-     * The helpText parameter should specify a descriptive string for users outlining the types
+     * \param name is used internally and should be a unique, alphanumeric string.
+     * \param dataType the data type for the property
+     * \param description can be any localised string describing what the property is used for.
+     * \param helpText parameter should specify a descriptive string for users outlining the types
      * of value acceptable by the property (eg 'dashed' or 'solid' for a line style property).
      */
-    QgsPropertyDefinition( const QString &name, DataType dataTypes, const QString &description, const QString &helpText );
+    QgsPropertyDefinition( const QString &name, DataType dataType, const QString &description, const QString &helpText );
 
     /**
      * Returns the name of the property. This is used internally and should be a unique, alphanumeric string.

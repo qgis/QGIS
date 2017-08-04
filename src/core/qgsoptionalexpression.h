@@ -21,6 +21,7 @@
 
 #include "qgis_core.h"
 
+
 /**
  * \ingroup core
  *
@@ -32,6 +33,8 @@
  *
  * \since QGIS 2.18
  */
+
+
 
 class CORE_EXPORT QgsOptionalExpression : public QgsOptional<QgsExpression>
 {
@@ -54,6 +57,7 @@ class CORE_EXPORT QgsOptionalExpression : public QgsOptional<QgsExpression>
      */
     QgsOptionalExpression( const QgsExpression &expression, bool enabled );
 
+
     /**
      * Save the optional expression to the provided QDomElement.
      *
@@ -72,8 +76,10 @@ class CORE_EXPORT QgsOptionalExpression : public QgsOptional<QgsExpression>
     void readXml( const QDomElement &element );
 };
 
+
 #if defined(Q_OS_WIN)
 template CORE_EXPORT QgsOptional<QgsExpression>;
 #endif
+
 
 #endif // QGSOPTIONALEXPRESSION_H

@@ -14,8 +14,8 @@ __revision__ = '$Format:%H$'
 
 import qgis  # NOQA
 
-from qgis.core import (QgsProject, QgsFeature, QgsGeometry, QgsPoint, QgsVectorLayer, NULL, QgsField)
-from qgis.gui import QgsEditorWidgetRegistry
+from qgis.core import (QgsProject, QgsFeature, QgsGeometry, QgsPointXY, QgsVectorLayer, NULL, QgsField)
+from qgis.gui import QgsGui
 
 from qgis.testing import start_app, unittest
 from qgis.PyQt.QtCore import QVariant
@@ -30,7 +30,7 @@ class TestQgsTextEditWidget(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
-        QgsEditorWidgetRegistry.initEditors()
+        QgsGui.editorWidgetRegistry().initEditors()
 
     def createLayerWithOnePoint(self):
         self.layer = QgsVectorLayer("Point?field=fldtxt:string&field=fldint:integer",
@@ -38,13 +38,13 @@ class TestQgsTextEditWidget(unittest.TestCase):
         pr = self.layer.dataProvider()
         f = QgsFeature()
         f.setAttributes(["test", 123])
-        f.setGeometry(QgsGeometry.fromPoint(QgsPoint(100, 200)))
+        f.setGeometry(QgsGeometry.fromPoint(QgsPointXY(100, 200)))
         assert pr.addFeatures([f])
         assert self.layer.pendingFeatureCount() == 1
         return self.layer
 
     def doAttributeTest(self, idx, expected):
-        reg = QgsEditorWidgetRegistry.instance()
+        reg = QgsGui.editorWidgetRegistry()
         configWdg = reg.createConfigWidget('TextEdit', self.layer, idx, None)
         config = configWdg.config()
         editwidget = reg.create('TextEdit', self.layer, idx, config, None, None)
@@ -76,7 +76,7 @@ class TestQgsTextEditWidget(unittest.TestCase):
         layer.updateFields()
         QgsProject.instance().addMapLayer(layer)
 
-        reg = QgsEditorWidgetRegistry.instance()
+        reg = QgsGui.editorWidgetRegistry()
         config = {'IsMultiline': 'True'}
 
         # first test for field without character limit
@@ -98,7 +98,7 @@ class TestQgsTextEditWidget(unittest.TestCase):
         layer = QgsVectorLayer("none?field=number:integer", "layer", "memory")
         assert layer.isValid()
         QgsProject.instance().addMapLayer(layer)
-        reg = QgsEditorWidgetRegistry.instance()
+        reg = QgsGui.editorWidgetRegistry()
         configWdg = reg.createConfigWidget('ValueMap', layer, 0, None)
 
         config = {'map': {'two': '2', 'twoandhalf': '2.5', 'NULL text': 'NULL',

@@ -36,14 +36,12 @@
 class QgsFeature;
 class QgsVectorLayer;
 class QgsPaintEffect;
+class QgsReadWriteContext;
 
-typedef QMap<QString, QString> QgsStringMap;
+typedef QMap<QString, QString> QgsStringMap SIP_SKIP;
 
 typedef QList<QgsSymbol *> QgsSymbolList;
-typedef QMap<QString, QgsSymbol * > QgsSymbolMap;
-
-typedef QList< QPair<QString, QPixmap> > QgsLegendSymbologyList;
-typedef QList< QPair<QString, QgsSymbol *> > QgsLegendSymbolList;
+typedef QMap<QString, QgsSymbol * > QgsSymbolMap SIP_SKIP;
 
 #include "qgslegendsymbolitem.h"
 
@@ -74,7 +72,11 @@ class CORE_EXPORT QgsSymbolLevelItem
 typedef QList< QgsSymbolLevelItem > QgsSymbolLevel;
 
 // this is a list of levels
+#ifndef SIP_RUN
 typedef QList< QgsSymbolLevel > QgsSymbolLevelOrder;
+#else
+typedef QList< QList< QgsSymbolLevelItem > > QgsSymbolLevelOrder;
+#endif
 
 
 //////////////
@@ -85,6 +87,34 @@ typedef QList< QgsSymbolLevel > QgsSymbolLevelOrder;
  */
 class CORE_EXPORT QgsFeatureRenderer
 {
+
+#ifdef SIP_RUN
+    SIP_CONVERT_TO_SUBCLASS_CODE
+    if ( sipCpp->type() == "singleSymbol" )
+      sipType = sipType_QgsSingleSymbolRenderer;
+    else if ( sipCpp->type() == "categorizedSymbol" )
+      sipType = sipType_QgsCategorizedSymbolRenderer;
+    else if ( sipCpp->type() == "graduatedSymbol" )
+      sipType = sipType_QgsGraduatedSymbolRenderer;
+    else if ( sipCpp->type() == "RuleRenderer" )
+      sipType = sipType_QgsRuleBasedRenderer;
+    else if ( sipCpp->type() == "heatmapRenderer" )
+      sipType = sipType_QgsHeatmapRenderer;
+    else if ( sipCpp->type() == "invertedPolygonRenderer" )
+      sipType = sipType_QgsInvertedPolygonRenderer;
+    else if ( sipCpp->type() == "pointCluster" )
+      sipType = sipType_QgsPointClusterRenderer;
+    else if ( sipCpp->type() == "pointDisplacement" )
+      sipType = sipType_QgsPointDisplacementRenderer;
+    else if ( sipCpp->type() == "25dRenderer" )
+      sipType = sipType_Qgs25DRenderer;
+    else if ( sipCpp->type() == "nullSymbol" )
+      sipType = sipType_QgsNullSymbolRenderer;
+    else
+      sipType = 0;
+    SIP_END
+#endif
+
   public:
     // renderer takes ownership of its symbols!
 
@@ -142,7 +172,7 @@ class CORE_EXPORT QgsFeatureRenderer
      *
      * \returns An expression used as where clause
      */
-    virtual QString filter( const QgsFields &fields = QgsFields() ) { Q_UNUSED( fields ); return QString::null; }
+    virtual QString filter( const QgsFields &fields = QgsFields() ) { Q_UNUSED( fields ); return QString(); }
 
     /**
      * Return a list of attributes required by this renderer. Attributes not listed in here may
@@ -208,7 +238,7 @@ class CORE_EXPORT QgsFeatureRenderer
      *     skip_the_curren_feature()
      * ~~~
      */
-    virtual Capabilities capabilities() { return 0; }
+    virtual QgsFeatureRenderer::Capabilities capabilities() { return 0; }
 
     /** Returns list of symbols used by the renderer.
      * \param context render context
@@ -220,10 +250,10 @@ class CORE_EXPORT QgsFeatureRenderer
     void setUsingSymbolLevels( bool usingSymbolLevels ) { mUsingSymbolLevels = usingSymbolLevels; }
 
     //! create a renderer from XML element
-    static QgsFeatureRenderer *load( QDomElement &symbologyElem ) SIP_FACTORY;
+    static QgsFeatureRenderer *load( QDomElement &symbologyElem, const QgsReadWriteContext &context ) SIP_FACTORY;
 
     //! store renderer info to XML element
-    virtual QDomElement save( QDomDocument &doc );
+    virtual QDomElement save( QDomDocument &doc, const QgsReadWriteContext &context );
 
     //! create the SLD UserStyle element following the SLD v1.1 specs with the given name
     //! \since QGIS 2.8
@@ -248,9 +278,6 @@ class CORE_EXPORT QgsFeatureRenderer
       ( void ) props; // warning avoidance
     }
 
-    //! return a list of symbology items for the legend
-    virtual QgsLegendSymbologyList legendSymbologyItems( QSize iconSize );
-
     //! items of symbology items in legend should be checkable
     //! \since QGIS 2.5
     virtual bool legendSymbolItemsCheckable() const;
@@ -270,14 +297,9 @@ class CORE_EXPORT QgsFeatureRenderer
      */
     virtual void setLegendSymbolItem( const QString &key, QgsSymbol *symbol SIP_TRANSFER );
 
-    //! return a list of item text / symbol
-    //! \note not available in Python bindings
-    virtual QgsLegendSymbolList legendSymbolItems( double scaleDenominator = -1, const QString &rule = "" ) SIP_SKIP;
-
-    //! Return a list of symbology items for the legend. Better choice than legendSymbolItems().
-    //! Default fallback implementation just uses legendSymbolItems() implementation
+    //! Returns a list of symbology items for the legend
     //! \since QGIS 2.6
-    virtual QgsLegendSymbolListV2 legendSymbolItemsV2() const;
+    virtual QgsLegendSymbolList legendSymbolItems() const;
 
     //! If supported by the renderer, return classification attribute for the use in legend
     //! \since QGIS 2.6
@@ -382,7 +404,7 @@ class CORE_EXPORT QgsFeatureRenderer
      * \see embeddedRenderer()
      * \since QGIS 2.16
      */
-    virtual void setEmbeddedRenderer( QgsFeatureRenderer *subRenderer ) { delete subRenderer; }
+    virtual void setEmbeddedRenderer( QgsFeatureRenderer *subRenderer SIP_TRANSFER ) { delete subRenderer; }
 
     /** Returns the current embedded renderer (subrenderer) for this feature renderer. The base class
      * implementation does not use subrenderers and will always return null.
@@ -412,7 +434,7 @@ class CORE_EXPORT QgsFeatureRenderer
      * Creates a point in screen coordinates from a wkb string in map
      * coordinates
      */
-    static QPointF _getPoint( QgsRenderContext &context, const QgsPointV2 &point );
+    static QPointF _getPoint( QgsRenderContext &context, const QgsPoint &point );
 
     /**
      * Clones generic renderer data to another renderer.
@@ -452,6 +474,11 @@ class CORE_EXPORT QgsFeatureRenderer
     bool mOrderByEnabled;
 
   private:
+#ifdef SIP_RUN
+    QgsFeatureRenderer( const QgsFeatureRenderer & );
+    QgsFeatureRenderer &operator=( const QgsFeatureRenderer & );
+#endif
+
     Q_DISABLE_COPY( QgsFeatureRenderer )
 };
 

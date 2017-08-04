@@ -44,7 +44,7 @@
 #include "qgsgml.h"
 #include "qgsgmlschema.h"
 #include "qgswmscapabilities.h"
-#include "qgscsexception.h"
+#include "qgsexception.h"
 #include "qgssettings.h"
 
 #include <QNetworkRequest>
@@ -83,7 +83,7 @@ QMap<QString, QgsWmsStatistics::Stat> QgsWmsStatistics::sData;
 //! a helper class for ordering tile requests according to the distance from view center
 struct LessThanTileRequest
 {
-  QgsPoint center;
+  QgsPointXY center;
   bool operator()( const QgsWmsProvider::TileRequest &req1, const QgsWmsProvider::TileRequest &req2 )
   {
     QPointF p1 = req1.rect.center();
@@ -226,7 +226,7 @@ QString QgsWmsProvider::getTileUrl() const
        ( !mCaps.mCapabilities.capability.request.getTile.allowedEncodings.isEmpty() &&
          !mCaps.mCapabilities.capability.request.getTile.allowedEncodings.contains( QStringLiteral( "KVP" ) ) ) )
   {
-    return QString::null;
+    return QString();
   }
   else
   {
@@ -656,7 +656,7 @@ QImage *QgsWmsProvider::draw( QgsRectangle const &viewExtent, int pixelWidth, in
       // this is an ordinary WMS server, but the user requested tiled approach
       // so we will pretend it is a WMS-C server with just one tile matrix
       tempTm.reset( new QgsWmtsTileMatrix );
-      tempTm->topLeft      = QgsPoint( mLayerExtent.xMinimum(), mLayerExtent.yMaximum() );
+      tempTm->topLeft      = QgsPointXY( mLayerExtent.xMinimum(), mLayerExtent.yMaximum() );
       tempTm->tileWidth    = mSettings.mMaxWidth;
       tempTm->tileHeight   = mSettings.mMaxHeight;
       tempTm->matrixWidth  = ceil( mLayerExtent.width() / mSettings.mMaxWidth / vres );
@@ -1130,7 +1130,15 @@ void QgsWmsProvider::createTileRequestsXYZ( const QgsWmtsTileMatrix *tm, const Q
       turl.replace( QLatin1String( "{q}" ), _tile2quadkey( tile.col, tile.row, z ) );
 
     turl.replace( QLatin1String( "{x}" ), QString::number( tile.col ), Qt::CaseInsensitive );
-    turl.replace( QLatin1String( "{y}" ), QString::number( tile.row ), Qt::CaseInsensitive );
+    // inverted Y axis
+    if ( turl.contains( QLatin1String( "{-y}" ) ) )
+    {
+      turl.replace( QLatin1String( "{-y}" ), QString::number( tm->matrixHeight - tile.row - 1 ), Qt::CaseInsensitive );
+    }
+    else
+    {
+      turl.replace( QLatin1String( "{y}" ), QString::number( tile.row ), Qt::CaseInsensitive );
+    }
     turl.replace( QLatin1String( "{z}" ), QString::number( z ), Qt::CaseInsensitive );
 
     QgsDebugMsgLevel( QString( "tileRequest %1 %2/%3 (%4,%5): %6" ).arg( mTileReqNo ).arg( i ).arg( tiles.count() ).arg( tile.row ).arg( tile.col ).arg( turl ), 2 );
@@ -1181,10 +1189,10 @@ void QgsWmsProvider::setupXyzCapabilities( const QString &uri )
   // the whole world is projected to a square:
   // X going from 180 W to 180 E
   // Y going from ~85 N to ~85 S  (=atan(sinh(pi)) ... to get a square)
-  QgsPoint topLeftLonLat( -180, 180.0 / M_PI * atan( sinh( M_PI ) ) );
-  QgsPoint bottomRightLonLat( 180, 180.0 / M_PI * atan( sinh( -M_PI ) ) );
-  QgsPoint topLeft = ct.transform( topLeftLonLat );
-  QgsPoint bottomRight = ct.transform( bottomRightLonLat );
+  QgsPointXY topLeftLonLat( -180, 180.0 / M_PI * atan( sinh( M_PI ) ) );
+  QgsPointXY bottomRightLonLat( 180, 180.0 / M_PI * atan( sinh( -M_PI ) ) );
+  QgsPointXY topLeft = ct.transform( topLeftLonLat );
+  QgsPointXY bottomRight = ct.transform( bottomRightLonLat );
   double xspan = ( bottomRight.x() - topLeft.x() );
 
   QgsWmsBoundingBoxProperty bbox;
@@ -2364,7 +2372,7 @@ QString QgsWmsProvider::metadata()
   return metadata;
 }
 
-QgsRasterIdentifyResult QgsWmsProvider::identify( const QgsPoint &point, QgsRaster::IdentifyFormat format, const QgsRectangle &boundingBox, int width, int height, int /*dpi*/ )
+QgsRasterIdentifyResult QgsWmsProvider::identify( const QgsPointXY &point, QgsRaster::IdentifyFormat format, const QgsRectangle &boundingBox, int width, int height, int /*dpi*/ )
 {
   QgsDebugMsg( QString( "format = %1" ).arg( format ) );
 
@@ -2462,7 +2470,7 @@ QgsRasterIdentifyResult QgsWmsProvider::identify( const QgsPoint &point, QgsRast
   QgsDebugMsg( QString( "theWidth = %1 height = %2" ).arg( width ).arg( height ) );
   QgsDebugMsg( QString( "xRes = %1 yRes = %2" ).arg( xRes ).arg( yRes ) );
 
-  QgsPoint finalPoint;
+  QgsPointXY finalPoint;
   finalPoint.setX( floor( ( finalPoint.x() - myExtent.xMinimum() ) / xRes ) );
   finalPoint.setY( floor( ( myExtent.yMaximum() - finalPoint.y() ) / yRes ) );
 
@@ -3413,6 +3421,12 @@ QgsImageFetcher *QgsWmsProvider::getLegendGraphicFetcher( const QgsMapSettings *
     mapExtent = extent();
   }
 
+  if ( mSettings.mXyz )
+  {
+    // we are working with XYZ tiles: no legend graphics available
+    return nullptr;
+  }
+
   QUrl url = getLegendGraphicFullURL( scale, mapExtent );
   if ( !url.isValid() )
     return nullptr;
@@ -4150,7 +4164,7 @@ QgsWmsLegendDownloadHandler::finished()
   // or ::errored() should have been called before ::finished
   Q_ASSERT( mReply->error() == QNetworkReply::NoError );
 
-  QgsDebugMsg( "reply ok" );
+  QgsDebugMsg( "reply OK" );
   QVariant redirect = mReply->attribute( QNetworkRequest::RedirectionTargetAttribute );
   if ( !redirect.isNull() )
   {

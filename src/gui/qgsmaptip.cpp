@@ -44,7 +44,7 @@ QgsMapTip::QgsMapTip()
 }
 
 void QgsMapTip::showMapTip( QgsMapLayer *pLayer,
-                            QgsPoint &mapPosition,
+                            QgsPointXY &mapPosition,
                             QPoint &pixelPosition,
                             QgsMapCanvas *pMapCanvas )
 {
@@ -66,7 +66,7 @@ void QgsMapTip::showMapTip( QgsMapLayer *pLayer,
 #if WITH_QTWEBKIT
   mWebView->page()->setLinkDelegationPolicy( QWebPage::DelegateAllLinks );//Handle link clicks by yourself
   mWebView->setContextMenuPolicy( Qt::NoContextMenu ); //No context menu is allowed if you don't need it
-  connect( mWebView, SIGNAL( linkClicked( QUrl ) ), this, SLOT( onLinkClicked( QUrl ) ) );
+  connect( mWebView, &QWebView::linkClicked, this, &QgsMapTip::onLinkClicked );
 #endif
 
   mWebView->page()->settings()->setAttribute(
@@ -165,7 +165,7 @@ void QgsMapTip::clear( QgsMapCanvas * )
   mMapTipVisible = false;
 }
 
-QString QgsMapTip::fetchFeature( QgsMapLayer *layer, QgsPoint &mapPosition, QgsMapCanvas *mapCanvas )
+QString QgsMapTip::fetchFeature( QgsMapLayer *layer, QgsPointXY &mapPosition, QgsMapCanvas *mapCanvas )
 {
   QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer );
   if ( !vlayer )

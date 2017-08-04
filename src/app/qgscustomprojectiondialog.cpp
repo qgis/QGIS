@@ -453,8 +453,8 @@ void QgsCustomProjectionDialog::on_pbnCalculate_clicked()
   //
   // We must check the prj def is valid!
   //
-
-  projPJ myProj = pj_init_plus( teParameters->toPlainText().toLocal8Bit().data() );
+  projCtx pContext = pj_ctx_alloc();
+  projPJ myProj = pj_init_plus_ctx( pContext, teParameters->toPlainText().toLocal8Bit().data() );
 
   QgsDebugMsg( QString( "My proj: %1" ).arg( teParameters->toPlainText() ) );
 
@@ -465,6 +465,7 @@ void QgsCustomProjectionDialog::on_pbnCalculate_clicked()
     projectedX->setText( QLatin1String( "" ) );
     projectedY->setText( QLatin1String( "" ) );
     pj_free( myProj );
+    pj_ctx_free( pContext );
     return;
 
   }
@@ -480,10 +481,11 @@ void QgsCustomProjectionDialog::on_pbnCalculate_clicked()
     projectedX->setText( QLatin1String( "" ) );
     projectedY->setText( QLatin1String( "" ) );
     pj_free( myProj );
+    pj_ctx_free( pContext );
     return;
   }
 
-  projPJ wgs84Proj = pj_init_plus( GEOPROJ4.toLocal8Bit().data() ); //defined in qgis.h
+  projPJ wgs84Proj = pj_init_plus_ctx( pContext, GEOPROJ4.toLocal8Bit().data() ); //defined in qgis.h
 
   if ( !wgs84Proj )
   {
@@ -492,6 +494,7 @@ void QgsCustomProjectionDialog::on_pbnCalculate_clicked()
     projectedX->setText( QLatin1String( "" ) );
     projectedY->setText( QLatin1String( "" ) );
     pj_free( wgs84Proj );
+    pj_ctx_free( pContext );
     return;
   }
 
@@ -517,6 +520,7 @@ void QgsCustomProjectionDialog::on_pbnCalculate_clicked()
   //
   pj_free( myProj );
   pj_free( wgs84Proj );
+  pj_ctx_free( pContext );
 
 }
 

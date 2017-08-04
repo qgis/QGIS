@@ -67,7 +67,7 @@ QgsStyleExportImportDialog::QgsStyleExportImportDialog( QgsStyle *style, QWidget
 
   if ( mDialogMode == Import )
   {
-    setWindowTitle( tr( "Import symbol(s)" ) );
+    setWindowTitle( tr( "Import Symbol(s)" ) );
     // populate the import types
     importTypeCombo->addItem( tr( "file specified below" ), QVariant( "file" ) );
     // importTypeCombo->addItem( "official QGIS repo online", QVariant( "official" ) );
@@ -84,7 +84,7 @@ QgsStyleExportImportDialog::QgsStyleExportImportDialog( QgsStyle *style, QWidget
   }
   else
   {
-    setWindowTitle( tr( "Export symbol(s)" ) );
+    setWindowTitle( tr( "Export Symbol(s)" ) );
     // hide import specific controls when exporting
     btnBrowse->setHidden( true );
     fromLabel->setHidden( true );
@@ -439,7 +439,7 @@ void QgsStyleExportImportDialog::selectByGroup()
   if ( ! mGroupSelectionDlg )
   {
     mGroupSelectionDlg = new QgsStyleGroupSelectionDialog( mStyle, this );
-    mGroupSelectionDlg->setWindowTitle( tr( "Select symbols by group" ) );
+    mGroupSelectionDlg->setWindowTitle( tr( "Select Symbols by Group" ) );
     connect( mGroupSelectionDlg, &QgsStyleGroupSelectionDialog::tagSelected, this, &QgsStyleExportImportDialog::selectTag );
     connect( mGroupSelectionDlg, &QgsStyleGroupSelectionDialog::tagDeselected, this, &QgsStyleExportImportDialog::deselectTag );
     connect( mGroupSelectionDlg, &QgsStyleGroupSelectionDialog::allSelected, this, &QgsStyleExportImportDialog::selectAll );

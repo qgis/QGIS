@@ -31,34 +31,39 @@ from osgeo import gdal
 from qgis.PyQt.QtCore import QVariant
 from qgis.core import (QgsApplication,
                        QgsFeature,
+                       QgsFeatureSink,
                        QgsFields,
                        QgsField,
                        QgsGeometry,
-                       QgsPoint,
+                       QgsPointXY,
                        QgsWkbTypes,
                        QgsProcessingUtils)
 from processing.tools import raster, dataobjects
-from processing.core.GeoAlgorithm import GeoAlgorithm
+from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 from processing.core.parameters import ParameterRaster
 from processing.core.parameters import ParameterVector
 from processing.core.outputs import OutputVector
 
 
-class PointsFromLines(GeoAlgorithm):
+class PointsFromLines(QgisAlgorithm):
 
     INPUT_RASTER = 'INPUT_RASTER'
     RASTER_BAND = 'RASTER_BAND'
     INPUT_VECTOR = 'INPUT_VECTOR'
     OUTPUT_LAYER = 'OUTPUT_LAYER'
 
-    def icon(self):
-        return QgsApplication.getThemeIcon("/providerQgis.svg")
-
-    def svgIconPath(self):
-        return QgsApplication.iconPath("providerQgis.svg")
-
     def group(self):
         return self.tr('Vector analysis tools')
+
+    def __init__(self):
+        super().__init__()
+
+    def initAlgorithm(self, config=None):
+        self.addParameter(ParameterRaster(self.INPUT_RASTER,
+                                          self.tr('Raster layer')))
+        self.addParameter(ParameterVector(self.INPUT_VECTOR,
+                                          self.tr('Vector layer'), [dataobjects.TYPE_VECTOR_LINE]))
+        self.addOutput(OutputVector(self.OUTPUT_LAYER, self.tr('Points along line'), datatype=[dataobjects.TYPE_VECTOR_POINT]))
 
     def name(self):
         return 'generatepointspixelcentroidsalongline'
@@ -66,14 +71,7 @@ class PointsFromLines(GeoAlgorithm):
     def displayName(self):
         return self.tr('Generate points (pixel centroids) along line')
 
-    def defineCharacteristics(self):
-        self.addParameter(ParameterRaster(self.INPUT_RASTER,
-                                          self.tr('Raster layer')))
-        self.addParameter(ParameterVector(self.INPUT_VECTOR,
-                                          self.tr('Vector layer'), [dataobjects.TYPE_VECTOR_LINE]))
-        self.addOutput(OutputVector(self.OUTPUT_LAYER, self.tr('Points along line'), datatype=[dataobjects.TYPE_VECTOR_POINT]))
-
-    def processAlgorithm(self, context, feedback):
+    def processAlgorithm(self, parameters, context, feedback):
         layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT_VECTOR), context)
 
         rasterPath = str(self.getParameterValue(self.INPUT_RASTER))
@@ -98,7 +96,7 @@ class PointsFromLines(GeoAlgorithm):
         self.pointId = 0
 
         features = QgsProcessingUtils.getFeatures(layer, context)
-        total = 100.0 / QgsProcessingUtils.featureCount(layer, context)
+        total = 100.0 / layer.featureCount() if layer.featureCount() else 0
         for current, f in enumerate(features):
             geom = f.geometry()
             if geom.isMultipart():
@@ -190,7 +188,7 @@ class PointsFromLines(GeoAlgorithm):
     def createPoint(self, pX, pY, geoTransform, writer, feature):
         (x, y) = raster.pixelToMap(pX, pY, geoTransform)
 
-        feature.setGeometry(QgsGeometry.fromPoint(QgsPoint(x, y)))
+        feature.setGeometry(QgsGeometry.fromPoint(QgsPointXY(x, y)))
         feature['id'] = self.fid
         feature['line_id'] = self.lineId
         feature['point_id'] = self.pointId
@@ -198,4 +196,4 @@ class PointsFromLines(GeoAlgorithm):
         self.fid += 1
         self.pointId += 1
 
-        writer.addFeature(feature)
+        writer.addFeature(feature, QgsFeatureSink.FastInsert)

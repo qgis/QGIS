@@ -27,7 +27,8 @@ from qgis.core import (QgsLabelingEngineSettings,
                        QgsPalLayerSettings,
                        QgsSingleSymbolRenderer,
                        QgsMarkerSymbol,
-                       QgsProperty)
+                       QgsProperty,
+                       QgsVectorLayerSimpleLabeling)
 from utilities import getTempfilePath, renderMapToImage, mapSettingsString
 
 from test_qgspallabeling_base import TestQgsPalLabeling, runSuite
@@ -65,7 +66,8 @@ class TestPlacementBase(TestQgsPalLabeling):
         self._MapSettings.setLabelingEngineSettings(engine_settings)
 
     def checkTest(self, **kwargs):
-        self.lyr.writeToLayer(self.layer)
+        if kwargs.get('apply_simple_labeling', True):
+            self.layer.setLabeling(QgsVectorLayerSimpleLabeling(self.lyr))
 
         ms = self._MapSettings  # class settings
         settings_type = 'Class'
@@ -171,8 +173,7 @@ class TestPointPlacement(TestPlacementBase):
         # is INSIDE the polygon
         self.layer = TestQgsPalLabeling.loadFeatureLayer('polygon_rule_based')
         self._TestMapSettings = self.cloneMapSettings(self._MapSettings)
-        self.lyr.placement = QgsPalLayerSettings.Horizontal
-        self.checkTest()
+        self.checkTest(apply_simple_labeling=False)
         self.removeMapLayer(self.layer)
         self.layer = None
 

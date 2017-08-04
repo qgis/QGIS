@@ -33,13 +33,14 @@ from qgis.PyQt.QtCore import QVariant
 from qgis.core import (QgsRectangle,
                        QgsCoordinateReferenceSystem,
                        QgsField,
+                       QgsFeatureSink,
                        QgsFeature,
                        QgsGeometry,
-                       QgsPointV2,
+                       QgsPoint,
                        QgsLineString,
                        QgsWkbTypes,
                        QgsFields)
-from processing.core.GeoAlgorithm import GeoAlgorithm
+from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from processing.core.parameters import ParameterExtent
 from processing.core.parameters import ParameterNumber
@@ -50,7 +51,7 @@ from processing.tools import dataobjects
 pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
 
-class GridLine(GeoAlgorithm):
+class GridLine(QgisAlgorithm):
     EXTENT = 'EXTENT'
     HSPACING = 'HSPACING'
     VSPACING = 'VSPACING'
@@ -68,13 +69,10 @@ class GridLine(GeoAlgorithm):
     def group(self):
         return self.tr('Vector creation tools')
 
-    def name(self):
-        return 'creategridlines'
+    def __init__(self):
+        super().__init__()
 
-    def displayName(self):
-        return self.tr('Create grid (lines)')
-
-    def defineCharacteristics(self):
+    def initAlgorithm(self, config=None):
         self.addParameter(ParameterExtent(self.EXTENT,
                                           self.tr('Grid extent'), optional=False))
         self.addParameter(ParameterNumber(self.HSPACING,
@@ -89,7 +87,13 @@ class GridLine(GeoAlgorithm):
 
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Grid'), datatype=[dataobjects.TYPE_VECTOR_LINE]))
 
-    def processAlgorithm(self, context, feedback):
+    def name(self):
+        return 'creategridlines'
+
+    def displayName(self):
+        return self.tr('Create grid (lines)')
+
+    def processAlgorithm(self, parameters, context, feedback):
         extent = self.getParameterValue(self.EXTENT).split(',')
         hSpacing = self.getParameterValue(self.HSPACING)
         vSpacing = self.getParameterValue(self.VSPACING)
@@ -150,8 +154,8 @@ class GridLine(GeoAlgorithm):
         count_update = count_max * 0.10
         y = bbox.yMaximum()
         while y >= bbox.yMinimum():
-            pt1 = QgsPointV2(bbox.xMinimum(), y)
-            pt2 = QgsPointV2(bbox.xMaximum(), y)
+            pt1 = QgsPoint(bbox.xMinimum(), y)
+            pt2 = QgsPoint(bbox.xMaximum(), y)
             line = QgsLineString()
             line.setPoints([pt1, pt2])
             feat.setGeometry(QgsGeometry(line))
@@ -161,7 +165,7 @@ class GridLine(GeoAlgorithm):
                                 y,
                                 id,
                                 y])
-            writer.addFeature(feat)
+            writer.addFeature(feat, QgsFeatureSink.FastInsert)
             y = y - vSpace[count % 2]
             id += 1
             count += 1
@@ -177,8 +181,8 @@ class GridLine(GeoAlgorithm):
         count_update = count_max * 0.10
         x = bbox.xMinimum()
         while x <= bbox.xMaximum():
-            pt1 = QgsPointV2(x, bbox.yMaximum())
-            pt2 = QgsPointV2(x, bbox.yMinimum())
+            pt1 = QgsPoint(x, bbox.yMaximum())
+            pt2 = QgsPoint(x, bbox.yMinimum())
             line = QgsLineString()
             line.setPoints([pt1, pt2])
             feat.setGeometry(QgsGeometry(line))
@@ -188,7 +192,7 @@ class GridLine(GeoAlgorithm):
                                 bbox.yMinimum(),
                                 id,
                                 x])
-            writer.addFeature(feat)
+            writer.addFeature(feat, QgsFeatureSink.FastInsert)
             x = x + hSpace[count % 2]
             id += 1
             count += 1

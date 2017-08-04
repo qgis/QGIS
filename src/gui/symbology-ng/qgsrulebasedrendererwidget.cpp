@@ -24,6 +24,7 @@
 #include "qgsexpression.h"
 #include "qgssymbolselectordialog.h"
 #include "qgslogger.h"
+#include "qgsreadwritecontext.h"
 #include "qstring.h"
 #include "qgssinglesymbolrenderer.h"
 #include "qgspanelwidget.h"
@@ -395,9 +396,7 @@ void QgsRuleBasedRendererWidget::keyPressEvent( QKeyEvent *event )
 
 void QgsRuleBasedRendererWidget::setRenderingOrder()
 {
-  QgsLegendSymbolList lst = mRenderer->legendSymbolItems();
-
-  QgsSymbolLevelsDialog dlg( lst, true, this );
+  QgsSymbolLevelsDialog dlg( mRenderer->legendSymbolItems(), true, this );
   dlg.setForceOrderingEnabled( true );
 
   dlg.exec();
@@ -620,11 +619,8 @@ QgsRendererRulePropsWidget::QgsRendererRulePropsWidget( QgsRuleBasedRenderer::Ru
   if ( mRule->dependsOnScale() )
   {
     groupScale->setChecked( true );
-    // caution: rule uses scale denom, scale widget uses true scales
-    if ( rule->scaleMinDenom() > 0 )
-      mScaleRangeWidget->setMaximumScale( 1.0 / rule->scaleMinDenom() );
-    if ( rule->scaleMaxDenom() > 0 )
-      mScaleRangeWidget->setMinimumScale( 1.0 / rule->scaleMaxDenom() );
+    mScaleRangeWidget->setMaximumScale( qMax( rule->maximumScale(), 0.0 ) );
+    mScaleRangeWidget->setMinimumScale( qMax( rule->minimumScale(), 0.0 ) );
   }
   mScaleRangeWidget->setMapCanvas( mContext.mapCanvas() );
 
@@ -769,8 +765,8 @@ void QgsRendererRulePropsWidget::apply()
   mRule->setLabel( editLabel->text() );
   mRule->setDescription( editDescription->text() );
   // caution: rule uses scale denom, scale widget uses true scales
-  mRule->setScaleMinDenom( groupScale->isChecked() ? mScaleRangeWidget->minimumScaleDenom() : 0 );
-  mRule->setScaleMaxDenom( groupScale->isChecked() ? mScaleRangeWidget->maximumScaleDenom() : 0 );
+  mRule->setMinimumScale( groupScale->isChecked() ? mScaleRangeWidget->minimumScale() : 0 );
+  mRule->setMaximumScale( groupScale->isChecked() ? mScaleRangeWidget->maximumScale() : 0 );
   mRule->setSymbol( groupSymbol->isChecked() ? mSymbol->clone() : nullptr );
 }
 
@@ -788,17 +784,6 @@ void QgsRendererRulePropsWidget::setDockMode( bool dockMode )
   setDropIndicatorShown(true);
   setDragDropMode(QAbstractItemView::InternalMove);
 */
-
-static QString _formatScale( int denom )
-{
-  if ( denom != 0 )
-  {
-    QString txt = QStringLiteral( "1:%L1" ).arg( denom );
-    return txt;
-  }
-  else
-    return QString();
-}
 
 /////
 
@@ -845,9 +830,9 @@ QVariant QgsRuleBasedRendererModel::data( const QModelIndex &index, int role ) c
           return rule->filterExpression().isEmpty() ? tr( "(no filter)" ) : rule->filterExpression();
         }
       case 2:
-        return rule->dependsOnScale() ? _formatScale( rule->scaleMaxDenom() ) : QVariant();
+        return rule->dependsOnScale() ? QgsScaleComboBox::toString( rule->minimumScale() ) : QVariant();
       case 3:
-        return rule->dependsOnScale() ? _formatScale( rule->scaleMinDenom() ) : QVariant();
+        return rule->dependsOnScale() ? QgsScaleComboBox::toString( rule->maximumScale() ) : QVariant();
       case 4:
         if ( mFeatureCountMap.count( rule ) == 1 )
         {
@@ -912,9 +897,9 @@ QVariant QgsRuleBasedRendererModel::data( const QModelIndex &index, int role ) c
       case 1:
         return rule->filterExpression();
       case 2:
-        return rule->scaleMaxDenom();
+        return rule->minimumScale();
       case 3:
-        return rule->scaleMinDenom();
+        return rule->maximumScale();
       default:
         return QVariant();
     }
@@ -1021,10 +1006,10 @@ bool QgsRuleBasedRendererModel::setData( const QModelIndex &index, const QVarian
       rule->setFilterExpression( value.toString() );
       break;
     case 2: // scale min
-      rule->setScaleMaxDenom( value.toInt() );
+      rule->setMinimumScale( value.toDouble() );
       break;
     case 3: // scale max
-      rule->setScaleMinDenom( value.toInt() );
+      rule->setMaximumScale( value.toDouble() );
       break;
     default:
       return false;
@@ -1069,7 +1054,7 @@ QMimeData *QgsRuleBasedRendererModel::mimeData( const QModelIndexList &indexes )
     rootElem.setAttribute( QStringLiteral( "type" ), QStringLiteral( "renderer" ) ); // for determining whether rules are from renderer or labeling
     QDomElement rulesElem = rule->save( doc, symbols );
     rootElem.appendChild( rulesElem );
-    QDomElement symbolsElem = QgsSymbolLayerUtils::saveSymbols( symbols, QStringLiteral( "symbols" ), doc );
+    QDomElement symbolsElem = QgsSymbolLayerUtils::saveSymbols( symbols, QStringLiteral( "symbols" ), doc, QgsReadWriteContext() );
     rootElem.appendChild( symbolsElem );
     doc.appendChild( rootElem );
 
@@ -1140,7 +1125,7 @@ bool QgsRuleBasedRendererModel::dropMimeData( const QMimeData *data,
     QDomElement symbolsElem = rootElem.firstChildElement( QStringLiteral( "symbols" ) );
     if ( symbolsElem.isNull() )
       continue;
-    QgsSymbolMap symbolMap = QgsSymbolLayerUtils::loadSymbols( symbolsElem );
+    QgsSymbolMap symbolMap = QgsSymbolLayerUtils::loadSymbols( symbolsElem, QgsReadWriteContext() );
     QDomElement ruleElem = rootElem.firstChildElement( QStringLiteral( "rule" ) );
     if ( rootElem.attribute( QStringLiteral( "type" ) ) == QLatin1String( "labeling" ) )
       _labeling2rendererRules( ruleElem );

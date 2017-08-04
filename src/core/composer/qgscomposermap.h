@@ -126,10 +126,18 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
     //! Sets new scene rectangle bounds and recalculates hight and extent
     void setSceneRect( const QRectF &rectangle ) override;
 
-    //! \brief Scale
+    /**
+     * Returns the map scale.
+     * The scale value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
+     * \see setNewScale()
+     */
     double scale() const;
 
-    //! Sets new scale and changes only mExtent
+    /**
+     * Sets new map \a scale and changes only the map extent.
+     * The \a scale value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
+     * \see scale()
+     */
     void setNewScale( double scaleDenominator, bool forceUpdate = true );
 
     /** Sets new extent for the map. This method may change the width or height of the map
@@ -329,17 +337,20 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
     /* reimplement setFrameStrokeWidth, so that updateBoundingRect() is called after setting the frame width */
     virtual void setFrameStrokeWidth( const double strokeWidth ) override;
 
-    /** Sets rotation for the map - this does not affect the composer item shape, only the
-     * way the map is drawn within the item
+    /**
+     * Sets the \a rotation for the map - this does not affect the composer item shape, only the
+     * way the map is drawn within the item. Rotation is in degrees, clockwise.
      * \since QGIS 2.1
+     * \see mapRotation()
      */
-    void setMapRotation( double r );
+    void setMapRotation( double rotation );
 
-    /** Returns the rotation used for drawing the map within the composer item
-     * \returns rotation for map
+    /**
+     * Returns the rotation used for drawing the map within the composer item, in degrees clockwise.
      * \param valueType controls whether the returned value is the user specified rotation,
      * or the current evaluated rotation (which may be affected by data driven rotation
      * settings).
+     * \see setMapRotation()
      */
     double mapRotation( QgsComposerObject::PropertyValueType valueType = QgsComposerObject::EvaluatedValue ) const;
 

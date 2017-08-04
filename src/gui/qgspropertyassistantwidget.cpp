@@ -454,9 +454,9 @@ QgsPropertyColorAssistantWidget::QgsPropertyColorAssistantWidget( QWidget *paren
   layout()->setMargin( 0 );
 
   bool supportsAlpha = definition.standardTemplate() == QgsPropertyDefinition::ColorWithAlpha;
-  mNullColorButton->setAllowAlpha( supportsAlpha );
+  mNullColorButton->setAllowOpacity( supportsAlpha );
   mNullColorButton->setShowNoColor( true );
-  mNullColorButton->setColorDialogTitle( tr( "Color for null values" ) );
+  mNullColorButton->setColorDialogTitle( tr( "Color For Null Values" ) );
   mNullColorButton->setContext( QStringLiteral( "symbology" ) );
   mNullColorButton->setNoColorString( tr( "Transparent" ) );
 

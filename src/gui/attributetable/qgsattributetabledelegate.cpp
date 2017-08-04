@@ -29,7 +29,7 @@
 #include "qgslogger.h"
 #include "qgsvectordataprovider.h"
 #include "qgsactionmanager.h"
-
+#include "qgsgui.h"
 
 QgsVectorLayer *QgsAttributeTableDelegate::layer( const QAbstractItemModel *model )
 {
@@ -67,7 +67,7 @@ QWidget *QgsAttributeTableDelegate::createEditor( QWidget *parent, const QStyleO
   int fieldIdx = index.model()->data( index, QgsAttributeTableModel::FieldIndexRole ).toInt();
 
   QgsAttributeEditorContext context( masterModel( index.model() )->editorContext(), QgsAttributeEditorContext::Popup );
-  QgsEditorWidgetWrapper *eww = QgsEditorWidgetRegistry::instance()->create( vl, fieldIdx, nullptr, parent, context );
+  QgsEditorWidgetWrapper *eww = QgsGui::editorWidgetRegistry()->create( vl, fieldIdx, nullptr, parent, context );
   QWidget *w = eww->widget();
 
   w->setAutoFillBackground( true );
@@ -100,10 +100,10 @@ void QgsAttributeTableDelegate::setModelData( QWidget *editor, QAbstractItemMode
     // This fixes https://issues.qgis.org/issues/16492
     QgsFeatureRequest request( fid );
     request.setFlags( QgsFeatureRequest::NoGeometry );
-    request.setSubsetOfAttributes( QgsAttributeList( ) );
+    request.setSubsetOfAttributes( QgsAttributeList() );
     QgsFeature feature;
     vl->getFeatures( request ).nextFeature( feature );
-    if ( feature.isValid( ) )
+    if ( feature.isValid() )
     {
       vl->beginEditCommand( tr( "Attribute changed" ) );
       vl->changeAttributeValue( fid, fieldIdx, newValue, oldValue );

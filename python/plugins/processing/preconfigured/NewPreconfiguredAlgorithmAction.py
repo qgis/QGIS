@@ -42,6 +42,6 @@ class NewPreconfiguredAlgorithmAction(ContextAction):
                 not isinstance(self.itemData, PreconfiguredAlgorithm))
 
     def execute(self):
-        alg = self.itemData.getCopy()  # make copy so we do not taint the original one in the dialog
+        alg = self.itemData
         dlg = PreconfiguredAlgorithmDialog(alg, self.toolbox)
         dlg.exec_()

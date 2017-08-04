@@ -94,8 +94,8 @@ static QgsGeometry generalizeWkbGeometryByBoundingBox(
   if ( geometryType == QgsWkbTypes::LineString )
   {
     QgsLineString *lineString = new QgsLineString();
-    lineString->addVertex( QgsPointV2( x1, y1 ) );
-    lineString->addVertex( QgsPointV2( x2, y2 ) );
+    lineString->addVertex( QgsPoint( x1, y1 ) );
+    lineString->addVertex( QgsPoint( x2, y2 ) );
     return QgsGeometry( lineString );
   }
   else
@@ -179,7 +179,7 @@ QgsGeometry QgsMapToPixelSimplifier::simplifyGeometry(
                !equalSnapToGrid( x, y, lastX, lastY, gridOriginX, gridOriginY, gridInverseSizeXY ) ||
                ( !isaLinearRing && ( i == 1 || i >= numPoints - 2 ) ) )
           {
-            output->insertVertex( QgsVertexId( 0, 0, output->numPoints() ), QgsPointV2( x, y ) );
+            output->insertVertex( QgsVertexId( 0, 0, output->numPoints() ), QgsPoint( x, y ) );
             lastX = x;
             lastY = y;
           }
@@ -224,7 +224,7 @@ QgsGeometry QgsMapToPixelSimplifier::simplifyGeometry(
                ( isLongSegment = ( calculateLengthSquared2D( x, y, lastX, lastY ) > map2pixelTol ) ) ||
                ( !isaLinearRing && ( i == 1 || i >= numPoints - 2 ) ) )
           {
-            output->insertVertex( QgsVertexId( 0, 0, output->numPoints() ), QgsPointV2( x, y ) );
+            output->insertVertex( QgsVertexId( 0, 0, output->numPoints() ), QgsPoint( x, y ) );
             lastX = x;
             lastY = y;
 
@@ -259,7 +259,7 @@ QgsGeometry QgsMapToPixelSimplifier::simplifyGeometry(
       // make sure we keep the linear ring closed
       if ( !qgsDoubleNear( lastX, output->xAt( 0 ) ) || !qgsDoubleNear( lastY, output->yAt( 0 ) ) )
       {
-        output->insertVertex( QgsVertexId( 0, 0, output->numPoints() ), QgsPointV2( output->xAt( 0 ), output->yAt( 0 ) ) );
+        output->insertVertex( QgsVertexId( 0, 0, output->numPoints() ), QgsPoint( output->xAt( 0 ), output->yAt( 0 ) ) );
       }
     }
 

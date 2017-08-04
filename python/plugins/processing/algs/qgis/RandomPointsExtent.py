@@ -31,29 +31,35 @@ import random
 
 from qgis.PyQt.QtGui import QIcon
 from qgis.PyQt.QtCore import QVariant
-from qgis.core import (QgsGeometry, QgsRectangle, QgsFeature, QgsFields, QgsWkbTypes,
-                       QgsField, QgsSpatialIndex, QgsPoint,
-                       QgsCoordinateReferenceSystem,
-                       QgsMessageLog,
-                       QgsProcessingUtils)
+from qgis.core import (QgsField,
+                       QgsFeatureSink,
+                       QgsFeature,
+                       QgsFields,
+                       QgsGeometry,
+                       QgsPointXY,
+                       QgsWkbTypes,
+                       QgsSpatialIndex,
+                       QgsProcessing,
+                       QgsProcessingException,
+                       QgsProcessingParameterExtent,
+                       QgsProcessingParameterNumber,
+                       QgsProcessingParameterCrs,
+                       QgsProcessingParameterFeatureSink,
+                       QgsProcessingParameterDefinition)
 
-from processing.core.GeoAlgorithm import GeoAlgorithm
-from processing.core.parameters import ParameterExtent
-from processing.core.parameters import ParameterNumber
-from processing.core.parameters import ParameterCrs
-from processing.core.outputs import OutputVector
-from processing.tools import vector, dataobjects
+from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
+from processing.tools import vector
 
 pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
 
-class RandomPointsExtent(GeoAlgorithm):
+class RandomPointsExtent(QgisAlgorithm):
 
     EXTENT = 'EXTENT'
-    POINT_NUMBER = 'POINT_NUMBER'
+    POINTS_NUMBER = 'POINTS_NUMBER'
     MIN_DISTANCE = 'MIN_DISTANCE'
+    TARGET_CRS = 'TARGET_CRS'
     OUTPUT = 'OUTPUT'
-    CRS = 'CRS'
 
     def icon(self):
         return QIcon(os.path.join(pluginPath, 'images', 'ftools', 'random_points.png'))
@@ -61,47 +67,50 @@ class RandomPointsExtent(GeoAlgorithm):
     def group(self):
         return self.tr('Vector creation tools')
 
+    def __init__(self):
+        super().__init__()
+
+    def initAlgorithm(self, config=None):
+        self.addParameter(QgsProcessingParameterExtent(self.EXTENT, self.tr('Input extent')))
+        self.addParameter(QgsProcessingParameterNumber(self.POINTS_NUMBER,
+                                                       self.tr('Number of points'),
+                                                       QgsProcessingParameterNumber.Integer,
+                                                       1, False, 1, 1000000000))
+        self.addParameter(QgsProcessingParameterNumber(self.MIN_DISTANCE,
+                                                       self.tr('Minimum distance between points'),
+                                                       QgsProcessingParameterNumber.Double,
+                                                       0, False, 0, 1000000000))
+        self.addParameter(QgsProcessingParameterCrs(self.TARGET_CRS,
+                                                    self.tr('Target CRS'),
+                                                    'ProjectCrs'))
+        self.addParameter(QgsProcessingParameterFeatureSink(self.OUTPUT,
+                                                            self.tr('Random points'),
+                                                            type=QgsProcessing.TypeVectorPoint))
+
     def name(self):
         return 'randompointsinextent'
 
     def displayName(self):
         return self.tr('Random points in extent')
 
-    def defineCharacteristics(self):
-        self.addParameter(ParameterExtent(self.EXTENT,
-                                          self.tr('Input extent'), optional=False))
-        self.addParameter(ParameterNumber(self.POINT_NUMBER,
-                                          self.tr('Points number'), 1, None, 1))
-        self.addParameter(ParameterNumber(self.MIN_DISTANCE,
-                                          self.tr('Minimum distance'), 0.0, None, 0.0))
-        self.addParameter(ParameterCrs(self.CRS,
-                                       self.tr('Output layer CRS'), 'ProjectCrs'))
-        self.addOutput(OutputVector(self.OUTPUT, self.tr('Random points'), datatype=[dataobjects.TYPE_VECTOR_POINT]))
+    def processAlgorithm(self, parameters, context, feedback):
+        bbox = self.parameterAsExtent(parameters, self.EXTENT, context)
+        pointCount = self.parameterAsDouble(parameters, self.POINTS_NUMBER, context)
+        minDistance = self.parameterAsDouble(parameters, self.MIN_DISTANCE, context)
+        crs = self.parameterAsCrs(parameters, self.TARGET_CRS, context)
 
-    def processAlgorithm(self, context, feedback):
-        pointCount = int(self.getParameterValue(self.POINT_NUMBER))
-        minDistance = float(self.getParameterValue(self.MIN_DISTANCE))
-        extent = str(self.getParameterValue(self.EXTENT)).split(',')
-
-        crsId = self.getParameterValue(self.CRS)
-        crs = QgsCoordinateReferenceSystem()
-        crs.createFromUserInput(crsId)
-
-        xMin = float(extent[0])
-        xMax = float(extent[1])
-        yMin = float(extent[2])
-        yMax = float(extent[3])
-        extent = QgsGeometry().fromRect(
-            QgsRectangle(xMin, yMin, xMax, yMax))
+        extent = QgsGeometry().fromRect(bbox)
 
         fields = QgsFields()
         fields.append(QgsField('id', QVariant.Int, '', 10, 0))
-        writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(fields, QgsWkbTypes.Point, crs, context)
+
+        (sink, dest_id) = self.parameterAsSink(parameters, self.OUTPUT, context,
+                                               fields, QgsWkbTypes.Point, crs)
 
         nPoints = 0
         nIterations = 0
         maxIterations = pointCount * 200
-        total = 100.0 / pointCount
+        total = 100.0 / pointCount if pointCount else 1
 
         index = QgsSpatialIndex()
         points = dict()
@@ -109,27 +118,30 @@ class RandomPointsExtent(GeoAlgorithm):
         random.seed()
 
         while nIterations < maxIterations and nPoints < pointCount:
-            rx = xMin + (xMax - xMin) * random.random()
-            ry = yMin + (yMax - yMin) * random.random()
+            if feedback.isCanceled():
+                break
 
-            pnt = QgsPoint(rx, ry)
-            geom = QgsGeometry.fromPoint(pnt)
+            rx = bbox.xMinimum() + bbox.width() * random.random()
+            ry = bbox.yMinimum() + bbox.height() * random.random()
+
+            p = QgsPointXY(rx, ry)
+            geom = QgsGeometry.fromPoint(p)
             if geom.within(extent) and \
-                    vector.checkMinDistance(pnt, index, minDistance, points):
+                    vector.checkMinDistance(p, index, minDistance, points):
                 f = QgsFeature(nPoints)
                 f.initAttributes(1)
                 f.setFields(fields)
                 f.setAttribute('id', nPoints)
                 f.setGeometry(geom)
-                writer.addFeature(f)
+                sink.addFeature(f, QgsFeatureSink.FastInsert)
                 index.insertFeature(f)
-                points[nPoints] = pnt
+                points[nPoints] = p
                 nPoints += 1
                 feedback.setProgress(int(nPoints * total))
             nIterations += 1
 
         if nPoints < pointCount:
-            QgsMessageLog.logMessage(self.tr('Can not generate requested number of random points. '
-                                             'Maximum number of attempts exceeded.'), self.tr('Processing'), QgsMessageLog.INFO)
+            feedback.pushInfo(self.tr('Could not generate requested number of random points. '
+                                      'Maximum number of attempts exceeded.'))
 
-        del writer
+        return {self.OUTPUT: dest_id}

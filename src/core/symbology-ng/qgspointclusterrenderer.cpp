@@ -51,7 +51,7 @@ QgsPointClusterRenderer *QgsPointClusterRenderer::clone() const
     r->setEmbeddedRenderer( mRenderer->clone() );
   r->setLabelFont( mLabelFont );
   r->setLabelColor( mLabelColor );
-  r->setMaxLabelScaleDenominator( mMaxLabelScaleDenominator );
+  r->setMinimumLabelScale( mMinLabelScale );
   r->setTolerance( mTolerance );
   r->setToleranceUnit( mToleranceUnit );
   r->setToleranceMapUnitScale( mToleranceMapUnitScale );
@@ -72,8 +72,10 @@ void QgsPointClusterRenderer::drawGroup( QPointF centerPoint, QgsRenderContext &
   else
   {
     //single isolated symbol, draw it untouched
-    QgsMarkerSymbol *symbol = group.at( 0 ).symbol;
+    QgsMarkerSymbol *symbol = group.at( 0 ).symbol();
+    symbol->startRender( context );
     symbol->renderPoint( centerPoint, &( group.at( 0 ).feature ), context, -1, group.at( 0 ).isSelected );
+    symbol->stopRender( context );
   }
 }
 
@@ -95,7 +97,7 @@ void QgsPointClusterRenderer::stopRender( QgsRenderContext &context )
   }
 }
 
-QgsFeatureRenderer *QgsPointClusterRenderer::create( QDomElement &symbologyElem )
+QgsFeatureRenderer *QgsPointClusterRenderer::create( QDomElement &symbologyElem, const QgsReadWriteContext &context )
 {
   QgsPointClusterRenderer *r = new QgsPointClusterRenderer();
   r->setTolerance( symbologyElem.attribute( QStringLiteral( "tolerance" ), QStringLiteral( "0.00001" ) ).toDouble() );
@@ -106,14 +108,14 @@ QgsFeatureRenderer *QgsPointClusterRenderer::create( QDomElement &symbologyElem 
   QDomElement embeddedRendererElem = symbologyElem.firstChildElement( QStringLiteral( "renderer-v2" ) );
   if ( !embeddedRendererElem.isNull() )
   {
-    r->setEmbeddedRenderer( QgsFeatureRenderer::load( embeddedRendererElem ) );
+    r->setEmbeddedRenderer( QgsFeatureRenderer::load( embeddedRendererElem, context ) );
   }
 
   //center symbol
   QDomElement centerSymbolElem = symbologyElem.firstChildElement( QStringLiteral( "symbol" ) );
   if ( !centerSymbolElem.isNull() )
   {
-    r->setClusterSymbol( QgsSymbolLayerUtils::loadSymbol<QgsMarkerSymbol>( centerSymbolElem ) );
+    r->setClusterSymbol( QgsSymbolLayerUtils::loadSymbol<QgsMarkerSymbol>( centerSymbolElem, context ) );
   }
   return r;
 }
@@ -123,7 +125,7 @@ QgsMarkerSymbol *QgsPointClusterRenderer::clusterSymbol()
   return mClusterSymbol.get();
 }
 
-QDomElement QgsPointClusterRenderer::save( QDomDocument &doc )
+QDomElement QgsPointClusterRenderer::save( QDomDocument &doc, const QgsReadWriteContext &context )
 {
   QDomElement rendererElement = doc.createElement( RENDERER_TAG_NAME );
   rendererElement.setAttribute( QStringLiteral( "forceraster" ), ( mForceRaster ? "1" : "0" ) );
@@ -134,12 +136,12 @@ QDomElement QgsPointClusterRenderer::save( QDomDocument &doc )
 
   if ( mRenderer )
   {
-    QDomElement embeddedRendererElem = mRenderer->save( doc );
+    QDomElement embeddedRendererElem = mRenderer->save( doc, context );
     rendererElement.appendChild( embeddedRendererElem );
   }
   if ( mClusterSymbol )
   {
-    QDomElement centerSymbolElem = QgsSymbolLayerUtils::saveSymbol( QStringLiteral( "centerSymbol" ), mClusterSymbol.get(), doc );
+    QDomElement centerSymbolElem = QgsSymbolLayerUtils::saveSymbol( QStringLiteral( "centerSymbol" ), mClusterSymbol.get(), doc, context );
     rendererElement.appendChild( centerSymbolElem );
   }
 

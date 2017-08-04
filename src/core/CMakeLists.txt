@@ -87,10 +87,26 @@ SET(QGIS_CORE_SRCS
   annotations/qgssvgannotation.cpp
   annotations/qgstextannotation.cpp
 
+  expression/qgsexpression.cpp
+  expression/qgsexpressionnode.cpp
+  expression/qgsexpressionnodeimpl.cpp
+  expression/qgsexpressionfunction.cpp
+  expression/qgsexpressionutils.cpp
+
+  processing/qgsnativealgorithms.cpp
   processing/qgsprocessingalgorithm.cpp
+  processing/qgsprocessingalgrunnertask.cpp
+  processing/qgsprocessingoutputs.cpp
+  processing/qgsprocessingparameters.cpp
   processing/qgsprocessingprovider.cpp
   processing/qgsprocessingregistry.cpp
   processing/qgsprocessingutils.cpp
+  processing/models/qgsprocessingmodelalgorithm.cpp
+  processing/models/qgsprocessingmodelchildalgorithm.cpp
+  processing/models/qgsprocessingmodelchildparametersource.cpp
+  processing/models/qgsprocessingmodelcomponent.cpp
+  processing/models/qgsprocessingmodelparameter.cpp
+  processing/models/qgsprocessingmodeloutput.cpp
 
   providers/memory/qgsmemoryfeatureiterator.cpp
   providers/memory/qgsmemoryprovider.cpp
@@ -126,10 +142,12 @@ SET(QGIS_CORE_SRCS
   qgscontexthelp.cpp
   qgscoordinatereferencesystem.cpp
   qgscoordinatetransform.cpp
+  qgscoordinatetransform_p.cpp
   qgscoordinateutils.cpp
   qgscredentials.cpp
   qgscrscache.cpp
   qgsdartmeasurement.cpp
+  qgsdatadefinedsizelegend.cpp
   qgsdataitem.cpp
   qgsdataitemprovider.cpp
   qgsdataitemproviderregistry.cpp
@@ -143,13 +161,13 @@ SET(QGIS_CORE_SRCS
   qgseditformconfig.cpp
   qgsellipsoidutils.cpp
   qgserror.cpp
-  qgsexpression.cpp
   qgsexpressioncontext.cpp
   qgsexpressionfieldbuffer.cpp
   qgsfeature.cpp
   qgsfeatureiterator.cpp
   qgsfeaturerequest.cpp
   qgsfeaturesink.cpp
+  qgsfeaturesource.cpp
   qgsfeaturestore.cpp
   qgsfield.cpp
   qgsfieldconstraints.cpp
@@ -216,7 +234,7 @@ SET(QGIS_CORE_SRCS
   qgspathresolver.cpp
   qgspluginlayer.cpp
   qgspluginlayerregistry.cpp
-  qgspoint.cpp
+  qgspointxy.cpp
   qgspointlocator.cpp
   qgsproject.cpp
   qgsprojectbadlayerhandler.cpp
@@ -230,6 +248,7 @@ SET(QGIS_CORE_SRCS
   qgsprovidermetadata.cpp
   qgsproviderregistry.cpp
   qgspythonrunner.cpp
+  qgsreadwritecontext.cpp
   qgsrelation.cpp
   qgsrelationmanager.cpp
   qgsrenderchecker.cpp
@@ -272,6 +291,7 @@ SET(QGIS_CORE_SRCS
   qgsvectorlayerfeatureiterator.cpp
   qgsvectorlayerexporter.cpp
   qgsvectorlayerjoinbuffer.cpp
+  qgsvectorlayerjoininfo.cpp
   qgsvectorlayerlabeling.cpp
   qgsvectorlayerlabelprovider.cpp
   qgsvectorlayerrenderer.cpp
@@ -285,6 +305,8 @@ SET(QGIS_CORE_SRCS
   qgsxmlutils.cpp
   qgssettings.cpp
   qgsstacktrace.cpp
+  qgsarchive.cpp
+  qgsziputils.cpp
 
   composer/qgsaddremoveitemcommand.cpp
   composer/qgsaddremovemultiframecommand.cpp
@@ -328,6 +350,22 @@ SET(QGIS_CORE_SRCS
   dxf/qgsdxfpaintdevice.cpp
   dxf/qgsdxfpaintengine.cpp
   dxf/qgsdxfpallabeling.cpp
+
+  layout/qgslayout.cpp
+  layout/qgslayoutcontext.cpp
+  layout/qgslayoutitem.cpp
+  layout/qgslayoutitemmap.cpp
+  layout/qgslayoutitempage.cpp
+  layout/qgslayoutitemregistry.cpp
+  layout/qgslayoutitemshape.cpp
+  layout/qgslayoutmeasurement.cpp
+  layout/qgslayoutmeasurementconverter.cpp
+  layout/qgslayoutobject.cpp
+  layout/qgslayoutpagecollection.cpp
+  layout/qgslayoututils.cpp
+  layout/qgspagesizeregistry.cpp
+  layout/qgslayoutpoint.cpp
+  layout/qgslayoutsize.cpp
 
   pal/costcalculator.cpp
   pal/feature.cpp
@@ -404,7 +442,7 @@ SET(QGIS_CORE_SRCS
   geometry/qgsmultipoint.cpp
   geometry/qgsmultipolygon.cpp
   geometry/qgsmultisurface.cpp
-  geometry/qgspointv2.cpp
+  geometry/qgspoint.cpp
   geometry/qgspolygon.cpp
   geometry/qgsrectangle.cpp
   geometry/qgsregularpolygon.cpp
@@ -423,6 +461,9 @@ SET(QGIS_CORE_SRCS
 
   ${CMAKE_CURRENT_BINARY_DIR}/qgscontexthelp_texts.cpp
   ${CMAKE_CURRENT_BINARY_DIR}/qgsexpression_texts.cpp
+
+  qgsuserprofile.cpp
+  qgsuserprofilemanager.cpp
 )
 
 
@@ -550,7 +591,7 @@ SET(QGIS_CORE_MOC_HDRS
   qgsofflineediting.h
   qgsowsconnection.h
   qgspluginlayer.h
-  qgspoint.h
+  qgspointxy.h
   qgspointlocator.h
   qgsproject.h
   qgsrelationmanager.h
@@ -622,6 +663,7 @@ SET(QGIS_CORE_MOC_HDRS
   composer/qgslayoutmanager.h
   composer/qgspaperitem.h
 
+  processing/qgsprocessingalgrunnertask.h
   processing/qgsprocessingfeedback.h
   processing/qgsprocessingprovider.h
   processing/qgsprocessingregistry.h
@@ -632,10 +674,21 @@ SET(QGIS_CORE_MOC_HDRS
   raster/qgsrasterlayer.h
   raster/qgsrasterdataprovider.h
 
+  geometry/qgspoint.h
+
   gps/qgsgpsconnection.h
   gps/qgsgpsdetector.h
   gps/qgsnmeaconnection.h
   gps/qgsgpsdconnection.h
+
+  layout/qgslayout.h
+  layout/qgslayoutitem.h
+  layout/qgslayoutitemmap.h
+  layout/qgslayoutitempage.h
+  layout/qgslayoutitemregistry.h
+  layout/qgslayoutitemshape.h
+  layout/qgslayoutpagecollection.h
+  layout/qgslayoutobject.h
 
   symbology-ng/qgscptcityarchive.h
   symbology-ng/qgssvgcache.h
@@ -648,6 +701,7 @@ SET(QGIS_CORE_MOC_HDRS
   layertree/qgslayertreemodellegendnode.h
   layertree/qgslayertreenode.h
   layertree/qgslayertreeregistrybridge.h
+  qgsuserprofilemanager.h
 )
 
 IF (NOT WITH_QTWEBKIT)
@@ -693,6 +747,11 @@ SET(QGIS_CORE_HDRS
   ${CMAKE_BINARY_DIR}/qgsconfig.h
   ../plugins/qgisplugin.h
 
+  expression/qgsexpression.h
+  expression/qgsexpressionnode.h
+  expression/qgsexpressionnodeimpl.h
+  expression/qgsexpressionfunction.h
+
   qgis.h
   qgis_sip.h
   qgsaction.h
@@ -716,9 +775,8 @@ SET(QGIS_CORE_HDRS
   qgscoordinatetransform.h
   qgscoordinateutils.h
   qgscrscache.h
-  qgscsexception.h
   qgsdartmeasurement.h
-  qgsdataitem.h
+  qgsdatadefinedsizelegend.h
   qgsdataitemprovider.h
   qgsdataitemproviderregistry.h
   qgsdatasourceuri.h
@@ -732,7 +790,6 @@ SET(QGIS_CORE_HDRS
   qgsellipsoidutils.h
   qgserror.h
   qgsexception.h
-  qgsexpression.h
   qgsexpressioncontext.h
   qgsexpressioncontextgenerator.h
   qgsexpressionfieldbuffer.h
@@ -740,11 +797,13 @@ SET(QGIS_CORE_HDRS
   qgsfeatureiterator.h
   qgsfeaturerequest.h
   qgsfeaturesink.h
+  qgsfeaturesource.h
   qgsfeaturestore.h
   qgsfieldformatter.h
   qgsfield_p.h
   qgsfields.h
   qgsfontutils.h
+  qgsgeometrysimplifier.h
   qgshistogram.h
   qgsindexedfeature.h
   qgsinterval.h
@@ -795,8 +854,10 @@ SET(QGIS_CORE_HDRS
   qgsproviderregistry.h
   qgspythonrunner.h
   qgsrange.h
+  qgsreadwritecontext.h
   qgsrenderchecker.h
   qgsrendercontext.h
+  qgsrulebasedlabeling.h
   qgsruntimeprofiler.h
   qgsscalecalculator.h
   qgsscaleutils.h
@@ -804,6 +865,7 @@ SET(QGIS_CORE_HDRS
   qgssnappingutils.h
   qgsspatialindex.h
   qgssqlexpressioncompiler.h
+  qgssqlstatement.h
   qgsstatisticalsummary.h
   qgsstringstatisticalsummary.h
   qgsstringutils.h
@@ -823,16 +885,18 @@ SET(QGIS_CORE_HDRS
   qgsvectorlayerexporter.h
   qgsvectorlayerjoininfo.h
   qgsvectorlayerlabelprovider.h
+  qgsvectorlayerlabeling.h
   qgsvectorlayerrenderer.h
   qgsvectorlayerundocommand.h
   qgsvectorlayerutils.h
   qgsvectorsimplifymethod.h
+  qgsvirtuallayerdefinition.h
+  qgsvirtuallayerdefinitionutils.h
   qgsmapthemecollection.h
   qgsxmlutils.h
+  qgsarchive.h
+  qgsziputils.h
   qgsvector.h
-  qgswebpage.h
-  qgswebframe.h
-  qgswebview.h
   qgslocalec.h
 
   annotations/qgsannotationregistry.h
@@ -849,6 +913,8 @@ SET(QGIS_CORE_HDRS
   diagram/qgspiediagram.h
   diagram/qgstextdiagram.h
   diagram/qgshistogramdiagram.h
+
+  dxf/qgsdxfexport.h
 
   effects/qgsimageoperation.h
   effects/qgspainteffect.h
@@ -868,12 +934,30 @@ SET(QGIS_CORE_HDRS
   composer/qgscomposertexttable.h
   composer/qgspaperitem.h
 
+  layout/qgslayoutcontext.h
+  layout/qgslayoutmeasurement.h
+  layout/qgslayoutmeasurementconverter.h
+  layout/qgspagesizeregistry.h
+  layout/qgslayoutpoint.h
+  layout/qgslayoutsize.h
+  layout/qgslayoututils.h
+
   metadata/qgslayermetadata.h
   metadata/qgslayermetadatavalidator.h
 
+  processing/qgsnativealgorithms.h
+  processing/qgsprocessing.h
   processing/qgsprocessingalgorithm.h
   processing/qgsprocessingcontext.h
+  processing/qgsprocessingoutputs.h
+  processing/qgsprocessingparameters.h
   processing/qgsprocessingutils.h
+  processing/models/qgsprocessingmodelalgorithm.h
+  processing/models/qgsprocessingmodelchildalgorithm.h
+  processing/models/qgsprocessingmodelchildparametersource.h
+  processing/models/qgsprocessingmodelcomponent.h
+  processing/models/qgsprocessingmodeloutput.h
+  processing/models/qgsprocessingmodelparameter.h
 
   providers/memory/qgsmemoryfeatureiterator.h
   providers/memory/qgsmemoryproviderutils.h
@@ -975,7 +1059,6 @@ SET(QGIS_CORE_HDRS
   geometry/qgsmultipoint.h
   geometry/qgsmultipolygon.h
   geometry/qgsmultisurface.h
-  geometry/qgspointv2.h
   geometry/qgspolygon.h
   geometry/qgsrectangle.h
   geometry/qgsregularpolygon.h
@@ -1011,12 +1094,15 @@ INCLUDE_DIRECTORIES(
   composer
   dxf
   effects
+  ${CMAKE_SOURCE_DIR}/src/core/expression
   fieldformatter
   geometry
   layertree
+  layout
   metadata
   pal
   processing
+  processing/models
   providers
   providers/memory
   raster
@@ -1037,6 +1123,7 @@ INCLUDE_DIRECTORIES(SYSTEM
   ${QCA_INCLUDE_DIR}
   ${QTKEYCHAIN_INCLUDE_DIR}
 )
+
 
 #for PAL classes
 IF (WIN32)
@@ -1106,9 +1193,9 @@ IF (WIN32)
   TARGET_LINK_LIBRARIES(qgis_core wsock32 ${SETUPAPI_LIBRARY} DbgHelp)
 ENDIF (WIN32)
 
-IF(APPLE)
-  TARGET_LINK_LIBRARIES(qgis_core "-framework CoreFoundation -framework IOKit")
-ENDIF(APPLE)
+IF (APPLE)
+  TARGET_LINK_LIBRARIES(qgis_core qgis_native)
+ENDIF (APPLE)
 
 IF (NOT WITH_INTERNAL_QEXTSERIALPORT)
   TARGET_LINK_LIBRARIES(qgis_core ${QEXTSERIALPORT_LIBRARY})
@@ -1135,6 +1222,7 @@ TARGET_LINK_LIBRARIES(qgis_core
   ${EXPAT_LIBRARY}
   ${SQLITE3_LIBRARY}
   ${SPATIALITE_LIBRARY}
+  ${LIBZIP_LIBRARY}
 )
 
 IF (Qt5Positioning_FOUND)

@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>400</width>
-    <height>513</height>
+    <height>529</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -17,7 +17,7 @@
    </sizepolicy>
   </property>
   <property name="windowTitle">
-   <string>Create a New Oracle connection</string>
+   <string>Create a New Oracle Connection</string>
   </property>
   <property name="sizeGripEnabled">
    <bool>true</bool>
@@ -41,14 +41,14 @@
    <property name="spacing">
     <number>6</number>
    </property>
-   <item row="1" column="0">
+   <item row="2" column="0">
     <widget class="QDialogButtonBox" name="buttonBox">
      <property name="standardButtons">
       <set>QDialogButtonBox::Cancel|QDialogButtonBox::Help|QDialogButtonBox::Ok</set>
      </property>
     </widget>
    </item>
-   <item row="0" column="0">
+   <item row="1" column="0">
     <widget class="QGroupBox" name="GroupBox1">
      <property name="title">
       <string>Connection Information</string>
@@ -277,6 +277,9 @@
      </layout>
     </widget>
    </item>
+   <item row="0" column="0">
+    <widget class="QgsMessageBar" name="bar" native="true"/>
+   </item>
   </layout>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
@@ -285,6 +288,12 @@
    <class>QgsPasswordLineEdit</class>
    <extends>QLineEdit</extends>
    <header>qgspasswordlineedit.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsMessageBar</class>
+   <extends>QWidget</extends>
+   <header>qgsmessagebar.h</header>
+   <container>1</container>
   </customwidget>
  </customwidgets>
  <tabstops>

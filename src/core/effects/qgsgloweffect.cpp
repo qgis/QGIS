@@ -27,7 +27,6 @@ QgsGlowEffect::QgsGlowEffect()
   , mSpreadUnit( QgsUnitTypes::RenderMillimeters )
   , mRamp( nullptr )
   , mBlurLevel( 3 )
-  , mTransparency( 0.5 )
   , mColor( Qt::white )
   , mBlendMode( QPainter::CompositionMode_SourceOver )
   , mColorType( SingleColor )
@@ -42,7 +41,7 @@ QgsGlowEffect::QgsGlowEffect( const QgsGlowEffect &other )
   , mSpreadMapUnitScale( other.spreadMapUnitScale() )
   , mRamp( nullptr )
   , mBlurLevel( other.blurLevel() )
-  , mTransparency( other.transparency() )
+  , mOpacity( other.opacity() )
   , mColor( other.color() )
   , mBlendMode( other.blendMode() )
   , mColorType( other.colorType() )
@@ -92,7 +91,7 @@ void QgsGlowEffect::draw( QgsRenderContext &context )
     QgsImageOperation::stackBlur( im, mBlurLevel );
   }
 
-  QgsImageOperation::multiplyOpacity( im, 1.0 - mTransparency );
+  QgsImageOperation::multiplyOpacity( im, mOpacity );
 
   if ( !shadeExterior() )
   {
@@ -117,7 +116,7 @@ QgsStringMap QgsGlowEffect::properties() const
   props.insert( QStringLiteral( "enabled" ), mEnabled ? "1" : "0" );
   props.insert( QStringLiteral( "draw_mode" ), QString::number( int( mDrawMode ) ) );
   props.insert( QStringLiteral( "blend_mode" ), QString::number( int( mBlendMode ) ) );
-  props.insert( QStringLiteral( "transparency" ), QString::number( mTransparency ) );
+  props.insert( QStringLiteral( "opacity" ), QString::number( mOpacity ) );
   props.insert( QStringLiteral( "blur_level" ), QString::number( mBlurLevel ) );
   props.insert( QStringLiteral( "spread" ), QString::number( mSpread ) );
   props.insert( QStringLiteral( "spread_unit" ), QgsUnitTypes::encodeUnit( mSpreadUnit ) );
@@ -141,10 +140,21 @@ void QgsGlowEffect::readProperties( const QgsStringMap &props )
   {
     mBlendMode = mode;
   }
-  double transparency = props.value( QStringLiteral( "transparency" ) ).toDouble( &ok );
-  if ( ok )
+  if ( props.contains( QStringLiteral( "transparency" ) ) )
   {
-    mTransparency = transparency;
+    double transparency = props.value( QStringLiteral( "transparency" ) ).toDouble( &ok );
+    if ( ok )
+    {
+      mOpacity = 1.0 - transparency;
+    }
+  }
+  else
+  {
+    double opacity = props.value( QStringLiteral( "opacity" ) ).toDouble( &ok );
+    if ( ok )
+    {
+      mOpacity = opacity;
+    }
   }
   mEnabled = props.value( QStringLiteral( "enabled" ), QStringLiteral( "1" ) ).toInt();
   mDrawMode = static_cast< QgsPaintEffect::DrawMode >( props.value( QStringLiteral( "draw_mode" ), QStringLiteral( "2" ) ).toInt() );
@@ -170,7 +180,7 @@ void QgsGlowEffect::readProperties( const QgsStringMap &props )
     mColor = QgsSymbolLayerUtils::decodeColor( props.value( QStringLiteral( "single_color" ) ) );
   }
 
-  //attempt to create color ramp from props
+//attempt to create color ramp from props
   delete mRamp;
   if ( props.contains( QStringLiteral( "rampType" ) ) && props[QStringLiteral( "rampType" )] == QStringLiteral( "cpt-city" ) )
   {
@@ -198,7 +208,7 @@ QgsGlowEffect &QgsGlowEffect::operator=( const QgsGlowEffect &rhs )
   mSpread = rhs.spread();
   mRamp = rhs.ramp() ? rhs.ramp()->clone() : nullptr;
   mBlurLevel = rhs.blurLevel();
-  mTransparency = rhs.transparency();
+  mOpacity = rhs.opacity();
   mColor = rhs.color();
   mBlendMode = rhs.blendMode();
   mColorType = rhs.colorType();

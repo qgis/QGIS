@@ -192,7 +192,7 @@ class GUI_EXPORT QgsRubberBand: public QgsMapCanvasItem
      *  \param doUpdate      Should the map canvas be updated immediately?
      *  \param geometryIndex The index of the feature part (in case of multipart geometries)
      */
-    void addPoint( const QgsPoint &p, bool doUpdate = true, int geometryIndex = 0 );
+    void addPoint( const QgsPointXY &p, bool doUpdate = true, int geometryIndex = 0 );
 
     /** Ensures that a polygon geometry is closed and that the last vertex equals the
      * first vertex.
@@ -219,13 +219,13 @@ class GUI_EXPORT QgsRubberBand: public QgsMapCanvasItem
      * Moves the rubber band point specified by index. Note that if the rubber band is
      * not used to track the last mouse position, the first point of the rubber band has two vertices
      */
-    void movePoint( const QgsPoint &p, int geometryIndex = 0 );
+    void movePoint( const QgsPointXY &p, int geometryIndex = 0 );
 
     /**
      * Moves the rubber band point specified by index. Note that if the rubber band is
      * not used to track the last mouse position, the first point of the rubber band has two vertices
      */
-    void movePoint( int index, const QgsPoint &p, int geometryIndex = 0 );
+    void movePoint( int index, const QgsPointXY &p, int geometryIndex = 0 );
 
     /**
      * Returns number of vertices in feature part
@@ -287,7 +287,7 @@ class GUI_EXPORT QgsRubberBand: public QgsMapCanvasItem
      *  \param i   The geometry index
      *  \param j   The vertex index within geometry i
      */
-    const QgsPoint *getPoint( int i, int j = 0 ) const;
+    const QgsPointXY *getPoint( int i, int j = 0 ) const;
 
     /**
      * Returns the rubberband as a Geometry
@@ -329,14 +329,14 @@ class GUI_EXPORT QgsRubberBand: public QgsMapCanvasItem
     /**
      * Nested lists used for multitypes
      */
-    QList< QList <QgsPoint> > mPoints;
+    QList< QList <QgsPointXY> > mPoints;
     QgsWkbTypes::GeometryType mGeometryType;
     double mTranslationOffsetX;
     double mTranslationOffsetY;
 
     QgsRubberBand();
 
-    static QgsPolyline getPolyline( const QList<QgsPoint> &points );
+    static QgsPolyline getPolyline( const QList<QgsPointXY> &points );
 
 };
 

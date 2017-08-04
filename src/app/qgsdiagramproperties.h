@@ -46,17 +46,15 @@ class APP_EXPORT QgsDiagramProperties : public QWidget, private Ui::QgsDiagramPr
     void on_mAttributesTreeWidget_itemDoubleClicked( QTreeWidgetItem *item, int column );
     void on_mFindMaximumValueButton_clicked();
     void on_mRemoveCategoryPushButton_clicked();
-    void on_mDiagramFontButton_clicked();
     void on_mDiagramAttributesTreeWidget_itemDoubleClicked( QTreeWidgetItem *item, int column );
     void on_mEngineSettingsButton_clicked();
     void showAddAttributeExpressionDialog();
     void on_mDiagramStackedWidget_currentChanged( int index );
     void on_mPlacementComboBox_currentIndexChanged( int index );
-    void on_mButtonSizeLegendSymbol_clicked();
     void scalingTypeChanged();
+    void showSizeLegendDialog();
 
   protected:
-    QFont mDiagramFont;
 
     QgsVectorLayer *mLayer = nullptr;
 
@@ -80,7 +78,7 @@ class APP_EXPORT QgsDiagramProperties : public QWidget, private Ui::QgsDiagramPr
 
     // Keeps track of the diagram type to properly save / restore settings when the diagram type combo box is set to no diagram.
     QString mDiagramType;
-    std::unique_ptr< QgsMarkerSymbol > mSizeLegendSymbol;
+    std::unique_ptr< QgsDataDefinedSizeLegend > mSizeLegend;
 
     QString guessLegendText( const QString &expression );
     QgsMapCanvas *mMapCanvas = nullptr;

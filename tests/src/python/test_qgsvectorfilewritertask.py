@@ -20,7 +20,7 @@ from qgis.core import (
     QgsVectorLayer,
     QgsFeature,
     QgsGeometry,
-    QgsPoint,
+    QgsPointXY,
     QgsVectorFileWriter,
     QgsVectorFileWriterTask
 )
@@ -58,7 +58,7 @@ class TestQgsVectorFileWriterTask(unittest.TestCase):
         self.assertIsNotNone(provider)
 
         ft = QgsFeature()
-        ft.setGeometry(QgsGeometry.fromPoint(QgsPoint(10, 10)))
+        ft.setGeometry(QgsGeometry.fromPoint(QgsPointXY(10, 10)))
         ft.setAttributes(['Johny', 20, 0.3])
         provider.addFeatures([ft])
         return layer
@@ -115,6 +115,27 @@ class TestQgsVectorFileWriterTask(unittest.TestCase):
 
         self.assertFalse(self.success)
         self.assertTrue(self.fail)
+
+    def testFieldValueConverter(self):
+        """test no crash when fieldValueConverter is used"""
+        self.layer = self.createLayer()
+        options = QgsVectorFileWriter.SaveVectorOptions()
+        converter = QgsVectorFileWriter.FieldValueConverter()
+        options.fieldValueConverter = converter
+        tmp = create_temp_filename('converter.shp')
+        task = QgsVectorFileWriterTask(self.layer, tmp, options)
+
+        task.writeComplete.connect(self.onSuccess)
+        task.errorOccurred.connect(self.onFail)
+
+        del converter
+
+        QgsApplication.taskManager().addTask(task)
+        while not self.success and not self.fail:
+            QCoreApplication.processEvents()
+
+        self.assertTrue(self.success)
+        self.assertFalse(self.fail)
 
 
 if __name__ == '__main__':

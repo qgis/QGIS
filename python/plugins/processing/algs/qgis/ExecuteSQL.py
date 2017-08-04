@@ -33,7 +33,7 @@ from qgis.core import (QgsFeature,
                        QgsApplication,
                        QgsProcessingUtils)
 
-from processing.core.GeoAlgorithm import GeoAlgorithm
+from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from processing.core.parameters import ParameterString
 from processing.core.parameters import ParameterMultipleInput
@@ -42,7 +42,7 @@ from processing.core.parameters import ParameterSelection
 from processing.core.outputs import OutputVector
 
 
-class ExecuteSQL(GeoAlgorithm):
+class ExecuteSQL(QgisAlgorithm):
 
     """ This algorithm allows executing an SQL query on a set of input
     vector layers thanks to the virtual layer provider
@@ -56,22 +56,13 @@ class ExecuteSQL(GeoAlgorithm):
     INPUT_GEOMETRY_CRS = 'INPUT_GEOMETRY_CRS'
     OUTPUT_LAYER = 'OUTPUT_LAYER'
 
-    def icon(self):
-        return QgsApplication.getThemeIcon("/providerQgis.svg")
-
-    def svgIconPath(self):
-        return QgsApplication.iconPath("providerQgis.svg")
-
     def group(self):
         return self.tr('Vector general tools')
 
-    def name(self):
-        return 'executesql'
+    def __init__(self):
+        super().__init__()
 
-    def displayName(self):
-        return self.tr('Execute SQL')
-
-    def defineCharacteristics(self):
+    def initAlgorithm(self, config=None):
         self.addParameter(ParameterMultipleInput(name=self.INPUT_DATASOURCES,
                                                  description=self.tr('Additional input datasources (called input1, .., inputN in the query)'),
                                                  optional=True))
@@ -103,7 +94,13 @@ class ExecuteSQL(GeoAlgorithm):
 
         self.addOutput(OutputVector(self.OUTPUT_LAYER, self.tr('SQL Output')))
 
-    def processAlgorithm(self, context, feedback):
+    def name(self):
+        return 'executesql'
+
+    def displayName(self):
+        return self.tr('Execute SQL')
+
+    def processAlgorithm(self, parameters, context, feedback):
         layers = self.getParameterValue(self.INPUT_DATASOURCES)
         query = self.getParameterValue(self.INPUT_QUERY)
         uid_field = self.getParameterValue(self.INPUT_UID_FIELD)
@@ -150,12 +147,12 @@ class ExecuteSQL(GeoAlgorithm):
                                                                            vLayer.crs(), context)
 
         features = QgsProcessingUtils.getFeatures(vLayer, context)
-        total = 100.0 / QgsProcessingUtils.featureCount(vLayer, context)
+        total = 100.0 / vLayer.featureCount() if vLayer.featureCount() else 0
         outFeat = QgsFeature()
         for current, inFeat in enumerate(features):
             outFeat.setAttributes(inFeat.attributes())
             if geometry_type != 1:
                 outFeat.setGeometry(inFeat.geometry())
-            writer.addFeature(outFeat)
+            writer.addFeature(outFeat, QgsFeatureSink.FastInsert)
             feedback.setProgress(int(current * total))
         del writer

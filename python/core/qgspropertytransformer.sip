@@ -42,7 +42,7 @@ class QgsCurveTransform
  between 0 and 1 unchanged. I.e. y == x.
 %End
 
-    QgsCurveTransform( const QList< QgsPoint > &controlPoints );
+    QgsCurveTransform( const QList< QgsPointXY > &controlPoints );
 %Docstring
  Constructs a QgsCurveTransform using a specified list of ``controlPoints``.
  Behavior is undefined if duplicate x values exist in the control points
@@ -57,14 +57,14 @@ class QgsCurveTransform
 %End
 
 
-    QList< QgsPoint > controlPoints() const;
+    QList< QgsPointXY > controlPoints() const;
 %Docstring
  Returns a list of the control points for the transform.
 .. seealso:: setControlPoints()
- :rtype: list of QgsPoint
+ :rtype: list of QgsPointXY
 %End
 
-    void setControlPoints( const QList< QgsPoint > &points );
+    void setControlPoints( const QList< QgsPointXY > &points );
 %Docstring
  Sets the list of control points for the transform. Any existing
  points are removed.
@@ -196,7 +196,7 @@ class QgsPropertyTransformer
  :rtype: Type
 %End
 
-    virtual QgsPropertyTransformer *clone() = 0 /Factory/;
+    virtual QgsPropertyTransformer *clone() const = 0 /Factory/;
 %Docstring
  Returns a clone of the transformer.
  :rtype: QgsPropertyTransformer
@@ -205,9 +205,9 @@ class QgsPropertyTransformer
     virtual bool loadVariant( const QVariant &transformer );
 %Docstring
  Loads this transformer from a QVariantMap, wrapped in a QVariant.
- You can use QgsXmlUtils.writeVariant to save it to an XML document.
+ You can use QgsXmlUtils.readVariant to read it from an XML document.
 
-.. seealso:: loadVariant()
+.. seealso:: toVariant()
  :rtype: bool
 %End
 
@@ -216,7 +216,7 @@ class QgsPropertyTransformer
  Saves this transformer to a QVariantMap, wrapped in a QVariant.
  You can use QgsXmlUtils.writeVariant to save it to an XML document.
 
-.. seealso:: toVariant()
+.. seealso:: loadVariant()
  :rtype: QVariant
 %End
 
@@ -345,7 +345,7 @@ class QgsGenericNumericTransformer : QgsPropertyTransformer
 %End
 
     virtual Type transformerType() const;
-    virtual QgsGenericNumericTransformer *clone();
+    virtual QgsGenericNumericTransformer *clone() const /Factory/;
     virtual QVariant toVariant() const;
     virtual bool loadVariant( const QVariant &definition );
     virtual QVariant transform( const QgsExpressionContext &context, const QVariant &value ) const;
@@ -481,7 +481,7 @@ class QgsSizeScaleTransformer : QgsPropertyTransformer
 %End
 
     virtual Type transformerType() const;
-    virtual QgsSizeScaleTransformer *clone() /Factory/;
+    virtual QgsSizeScaleTransformer *clone() const /Factory/;
     virtual QVariant toVariant() const;
     virtual bool loadVariant( const QVariant &definition );
     virtual QVariant transform( const QgsExpressionContext &context, const QVariant &value ) const;
@@ -621,7 +621,7 @@ Copy constructor
 
 
     virtual Type transformerType() const;
-    virtual QgsColorRampTransformer *clone() /Factory/;
+    virtual QgsColorRampTransformer *clone() const /Factory/;
     virtual QVariant toVariant() const;
     virtual bool loadVariant( const QVariant &definition );
     virtual QVariant transform( const QgsExpressionContext &context, const QVariant &value ) const;

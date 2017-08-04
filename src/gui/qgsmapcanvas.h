@@ -72,6 +72,16 @@ class QgsMapCanvasAnnotationItem;
 
 class GUI_EXPORT QgsMapCanvas : public QGraphicsView
 {
+
+#ifdef SIP_RUN
+    SIP_CONVERT_TO_SUBCLASS_CODE
+    if ( dynamic_cast<QgsMapCanvas *>( sipCpp ) != NULL )
+      sipType = sipType_QgsMapCanvas;
+    else
+      sipType = NULL;
+    SIP_END
+#endif
+
     Q_OBJECT
     Q_PROPERTY( QString theme READ theme WRITE setTheme NOTIFY themeChanged )
 
@@ -162,8 +172,11 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     //! \since QGIS 2.4
     int mapUpdateInterval() const;
 
-    //! Get the last reported scale of the canvas
-    double scale();
+    /**
+     * Returns the last reported scale of the canvas.
+     * The \a scale value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
+     */
+    double scale() const;
 
     //! Returns the mapUnitsPerPixel (map units per pixel) for the canvas
     double mapUnitsPerPixel() const;
@@ -186,11 +199,11 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
 
     //! Set the center of the map canvas, in geographical coordinates
     //! \since QGIS 2.8
-    void setCenter( const QgsPoint &center );
+    void setCenter( const QgsPointXY &center );
 
     //! Get map center, in geographical coordinates
     //! \since QGIS 2.8
-    QgsPoint center() const;
+    QgsPointXY center() const;
 
     //! Zoom to the full extent of all layers
     void zoomToFullExtent();
@@ -229,7 +242,7 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
      *
      * This is called from destructor of map tools to make sure
      * that this map tool won't be used any more.
-     * You don't have to call it manualy, QgsMapTool takes care of it.
+     * You don't have to call it manually, QgsMapTool takes care of it.
      */
     void unsetMapTool( QgsMapTool *mapTool );
 
@@ -355,12 +368,15 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     //! set wheel zoom factor (should be greater than 1)
     void setWheelFactor( double factor );
 
-    //! Zoom to a specific scale
+    /**
+     * Zooms the canvas to a specific \a scale.
+     * The scale value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
+     */
     void zoomScale( double scale );
 
     //! Zoom with the factor supplied. Factor > 1 zooms out, interval (0,1) zooms in
     //! If point is given, re-center on it
-    void zoomByFactor( double scaleFactor, const QgsPoint *center = nullptr );
+    void zoomByFactor( double scaleFactor, const QgsPointXY *center = nullptr );
 
     //! Zooms in/out with a given center
     void zoomWithCenter( int x, int y, bool zoomIn );
@@ -570,6 +586,9 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     //! called when a renderer job has finished successfully or when it was canceled
     void rendererJobFinished();
 
+    //! called when a preview job has been finished
+    void previewJobFinished();
+
     void mapUpdateTimeout();
 
     void refreshMap();
@@ -580,7 +599,7 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
 
     /** Emits current mouse position
         \note changed in 1.3 */
-    void xyCoordinates( const QgsPoint &p );
+    void xyCoordinates( const QgsPointXY &p );
 
     //! Emitted when the scale of the map changes
     void scaleChanged( double );
@@ -673,7 +692,7 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     //! Overridden key release event
     void keyReleaseEvent( QKeyEvent *e ) override;
 
-    //! Overridden mouse double click event
+    //! Overridden mouse double-click event
     void mouseDoubleClickEvent( QMouseEvent *e ) override;
 
     //! Overridden mouse move event
@@ -700,9 +719,6 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     //! called when panning is in action, reset indicates end of panning
     void moveCanvasContents( bool reset = false );
 
-    //! called on resize or changed extent to notify canvas items to change their rectangle
-    void updateCanvasItemPositions();
-
     /// implementation struct
     class CanvasProperties;
 
@@ -716,8 +732,13 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
      */
     void connectNotify( const char *signal ) override;
 #endif
+
     //! Make sure the datum transform store is properly populated
     void updateDatumTransformEntries();
+
+  protected slots:
+    //! called on resize or changed extent to notify canvas items to change their rectangle
+    void updateCanvasItemPositions();
 
   private slots:
 
@@ -796,12 +817,15 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     QgsMapRendererCache *mCache = nullptr;
 
     QTimer *mResizeTimer = nullptr;
+    QTimer *mRefreshTimer = nullptr;
 
     QgsPreviewEffect *mPreviewEffect = nullptr;
 
     QgsRectangle imageRect( const QImage &img, const QgsMapSettings &mapSettings );
 
     QgsSnappingUtils *mSnappingUtils = nullptr;
+
+    QList< QgsMapRendererQImageJob * > mPreviewJobs;
 
     //! lock the scale, so zooming can be performed using magnication
     bool mScaleLocked;
@@ -850,6 +874,9 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     bool boundingBoxOfFeatureIds( const QgsFeatureIds &ids, QgsVectorLayer *layer, QgsRectangle &bbox, QString &errorMsg ) const;
 
     void setLayersPrivate( const QList<QgsMapLayer *> &layers );
+
+    void startPreviewJobs();
+    void stopPreviewJobs();
 
     friend class TestQgsMapCanvas;
 

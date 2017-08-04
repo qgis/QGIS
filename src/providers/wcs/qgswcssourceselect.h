@@ -22,10 +22,10 @@
 
 #include "qgsowssourceselect.h"
 #include "qgsdatasourceuri.h"
-#include "qgisgui.h"
+#include "qgsguiutils.h"
 #include "qgscontexthelp.h"
 #include "qgswcscapabilities.h"
-
+#include "qgsproviderregistry.h"
 #include "qgsdataprovider.h"
 
 #include <QStringList>
@@ -53,7 +53,7 @@ class QgsWCSSourceSelect : public QgsOWSSourceSelect
 
   public:
     //! Constructor
-    QgsWCSSourceSelect( QWidget *parent = nullptr, Qt::WindowFlags fl = QgisGui::ModalDialogFlags, bool managerMode = false, bool embeddedMode = false );
+    QgsWCSSourceSelect( QWidget *parent = nullptr, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::None );
 
     ~QgsWCSSourceSelect();
 
@@ -71,7 +71,7 @@ class QgsWCSSourceSelect : public QgsOWSSourceSelect
 
     // QgsWcsCapabilities virtual methods
     void populateLayerList() override;
-    void addClicked() override;
+    void addButtonClicked() override;
     void on_mLayersTreeWidget_itemSelectionChanged() override;
     void enableLayersForCrs( QTreeWidgetItem *item ) override;
     void updateButtons() override;

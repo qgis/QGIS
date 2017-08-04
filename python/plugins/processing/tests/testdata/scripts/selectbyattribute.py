@@ -1,16 +1,19 @@
 ##Select by attribute=name
 ##Tests=group
+
+#inputs
+
 ##INPUT_LAYER=vector
-##OUTPUT_LAYER=output vector
+##OUTPUT_LAYER=vectorDestination
 
 import processing
 
 result = processing.run("qgis:selectbyattribute",
-                        INPUT_LAYER,
-                        "id2",
-                        0,
-                        "2")
-
-processing.run("qgis:saveselectedfeatures",
-               result["OUTPUT"],
-               OUTPUT_LAYER)
+                        {'INPUT': INPUT_LAYER,
+                         'FIELD': "id2",
+                         'OPERATOR': 0,
+                         'VALUE': "2"}, context=context, feedback=feedback)
+result = processing.run("qgis:saveselectedfeatures",
+                        {'INPUT': result["OUTPUT"],
+                         'OUTPUT': parameters['OUTPUT_LAYER']}, context=context, feedback=feedback)
+OUTPUT_LAYER = result['OUTPUT']

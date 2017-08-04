@@ -36,12 +36,12 @@ void TestQgsMapToPixel::rotation()
 {
   QgsMapToPixel m2p( 1, 5, 5, 10, 10, 90 );
 
-  QgsPoint p( 5, 5 ); // in geographical units
-  QgsPoint d = m2p.transform( p ); // to device pixels
+  QgsPointXY p( 5, 5 ); // in geographical units
+  QgsPointXY d = m2p.transform( p ); // to device pixels
   QCOMPARE( d.x(), 5.0 ); // center doesn't move
   QCOMPARE( d.y(), 5.0 );
 
-  QgsPoint b = m2p.toMapCoordinatesF( d.x(), d.y() ); // transform back
+  QgsPointXY b = m2p.toMapCoordinatesF( d.x(), d.y() ); // transform back
   QCOMPARE( p, b );
 
   m2p.transform( &p ); // in place transform
@@ -52,27 +52,27 @@ void TestQgsMapToPixel::rotation()
   QCOMPARE( p.x(), 5.0 ); // center doesn't move
   QCOMPARE( p.y(), 5.0 );
   d = m2p.transform( p );
-  QCOMPARE( d, QgsPoint( 5, 5 ) );
+  QCOMPARE( d, QgsPointXY( 5, 5 ) );
 
   p = m2p.toMapCoordinates( 10, 0 );
   QCOMPARE( p.x(), 5.5 ); // corner scales and rotates
   QCOMPARE( p.y(), 4.5 );
   d = m2p.transform( p );
-  QCOMPARE( d, QgsPoint( 10, 0 ) );
+  QCOMPARE( d, QgsPointXY( 10, 0 ) );
 
   m2p.setParameters( 0.1, 5, 5, 10, 10, 360 );
   p = m2p.toMapCoordinates( 10, 0 );
   QCOMPARE( p.x(), 5.5 ); // corner scales
   QCOMPARE( p.y(), 5.5 );
   d = m2p.transform( p );
-  QCOMPARE( d, QgsPoint( 10, 0 ) );
+  QCOMPARE( d, QgsPointXY( 10, 0 ) );
 
   m2p.setParameters( 0.1, 5, 5, 10, 10, 0 );
   p = m2p.toMapCoordinates( 10, 0 );
   QCOMPARE( p.x(), 5.5 ); // corner scales
   QCOMPARE( p.y(), 5.5 );
   d = m2p.transform( p );
-  QCOMPARE( d, QgsPoint( 10, 0 ) );
+  QCOMPARE( d, QgsPointXY( 10, 0 ) );
 
 }
 
@@ -97,27 +97,27 @@ void TestQgsMapToPixel::getters()
 
 void TestQgsMapToPixel::fromScale()
 {
-  QgsMapToPixel m2p = QgsMapToPixel::fromScale( 0.001, QgsUnitTypes::DistanceMeters, 96.0 );
+  QgsMapToPixel m2p = QgsMapToPixel::fromScale( 1000, QgsUnitTypes::DistanceMeters, 96.0 );
   QGSCOMPARENEAR( m2p.mapUnitsPerPixel(), 0.264583, 0.000001 );
-  m2p = QgsMapToPixel::fromScale( 0.0001, QgsUnitTypes::DistanceMeters, 96.0 );
+  m2p = QgsMapToPixel::fromScale( 10000, QgsUnitTypes::DistanceMeters, 96.0 );
   QGSCOMPARENEAR( m2p.mapUnitsPerPixel(), 2.645833, 0.000001 );
-  m2p = QgsMapToPixel::fromScale( 0.001, QgsUnitTypes::DistanceMeters, 72.0 );
+  m2p = QgsMapToPixel::fromScale( 1000, QgsUnitTypes::DistanceMeters, 72.0 );
   QGSCOMPARENEAR( m2p.mapUnitsPerPixel(), 0.352778, 0.000001 );
-  m2p = QgsMapToPixel::fromScale( 0.001, QgsUnitTypes::DistanceKilometers, 96.0 );
+  m2p = QgsMapToPixel::fromScale( 1000, QgsUnitTypes::DistanceKilometers, 96.0 );
   QGSCOMPARENEAR( m2p.mapUnitsPerPixel(), 0.000265, 0.000001 );
 }
 
 void TestQgsMapToPixel::toMapPoint()
 {
   QgsMapToPixel m2p( 1, 5, 5, 10, 10, 90 );
-  QgsPoint p = m2p.toMapPoint( 5, 5 );
-  QCOMPARE( p, QgsPoint( 5, 5 ) );
+  QgsPointXY p = m2p.toMapPoint( 5, 5 );
+  QCOMPARE( p, QgsPointXY( 5, 5 ) );
 
   p = m2p.toMapPoint( 10, 10 );
-  QCOMPARE( p, QgsPoint( 10, 10 ) );
+  QCOMPARE( p, QgsPointXY( 10, 10 ) );
 
   p = m2p.toMapPoint( 20, 20 );
-  QCOMPARE( p, QgsPoint( 20, 20 ) );
+  QCOMPARE( p, QgsPointXY( 20, 20 ) );
 }
 
 QGSTEST_MAIN( TestQgsMapToPixel )

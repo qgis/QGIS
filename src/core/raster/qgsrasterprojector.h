@@ -24,6 +24,7 @@
 #define QGSRASTERPROJECTOR_H
 
 #include "qgis_core.h"
+#include "qgis_sip.h"
 #include <QVector>
 #include <QList>
 
@@ -34,7 +35,7 @@
 
 #include <cmath>
 
-class QgsPoint;
+class QgsPointXY;
 
 /** \ingroup core
  * \brief QgsRasterProjector implements approximate projection support for
@@ -57,7 +58,7 @@ class CORE_EXPORT QgsRasterProjector : public QgsRasterInterface
 
     QgsRasterProjector();
 
-    QgsRasterProjector *clone() const override;
+    QgsRasterProjector *clone() const override SIP_FACTORY;
 
     int bandCount() const override;
 
@@ -78,16 +79,16 @@ class CORE_EXPORT QgsRasterProjector : public QgsRasterInterface
     // Translated precision mode, for use in ComboBox etc.
     static QString precisionLabel( Precision precision );
 
-    QgsRasterBlock *block( int bandNo, const QgsRectangle &extent, int width, int height, QgsRasterBlockFeedback *feedback = nullptr ) override;
+    QgsRasterBlock *block( int bandNo, const QgsRectangle &extent, int width, int height, QgsRasterBlockFeedback *feedback = nullptr ) override SIP_FACTORY;
 
     //! Calculate destination extent and size from source extent and size
     bool destExtentSize( const QgsRectangle &srcExtent, int srcXSize, int srcYSize,
-                         QgsRectangle &destExtent, int &destXSize, int &destYSize );
+                         QgsRectangle &destExtent SIP_OUT, int &destXSize SIP_OUT, int &destYSize SIP_OUT );
 
     //! Calculate destination extent and size from source extent and size
     static bool extentSize( const QgsCoordinateTransform &ct,
                             const QgsRectangle &srcExtent, int srcXSize, int srcYSize,
-                            QgsRectangle &destExtent, int &destXSize, int &destYSize );
+                            QgsRectangle &destExtent SIP_OUT, int &destXSize SIP_OUT, int &destYSize SIP_OUT );
 
   private:
 
@@ -108,6 +109,8 @@ class CORE_EXPORT QgsRasterProjector : public QgsRasterInterface
 
 };
 
+
+#ifndef SIP_RUN
 /// @cond PRIVATE
 
 /**
@@ -180,7 +183,7 @@ class ProjectorData
     bool checkRows( const QgsCoordinateTransform &ct );
 
     //! Calculate array of src helper points
-    void calcHelper( int matrixRow, QgsPoint *points );
+    void calcHelper( int matrixRow, QgsPointXY *points );
 
     //! Calc / switch helper
     void nextHelper();
@@ -235,7 +238,7 @@ class ProjectorData
     double mDestColsPerMatrixCol;
 
     //! Grid of source control points
-    QList< QList<QgsPoint> > mCPMatrix;
+    QList< QList<QgsPointXY> > mCPMatrix;
 
     //! Grid of source control points transformation possible indicator
     /* Same size as mCPMatrix */
@@ -243,11 +246,11 @@ class ProjectorData
 
     //! Array of source points for each destination column on top of current CPMatrix grid row
     /* Warning: using QList is slow on access */
-    QgsPoint *pHelperTop = nullptr;
+    QgsPointXY *pHelperTop = nullptr;
 
     //! Array of source points for each destination column on bottom of current CPMatrix grid row
     /* Warning: using QList is slow on access */
-    QgsPoint *pHelperBottom = nullptr;
+    QgsPointXY *pHelperBottom = nullptr;
 
     //! Current mHelperTop matrix row
     int mHelperTopRow;
@@ -267,6 +270,7 @@ class ProjectorData
 };
 
 /// @endcond
+#endif
 
 #endif
 

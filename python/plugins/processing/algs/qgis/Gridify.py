@@ -27,40 +27,32 @@ __revision__ = '$Format:%H$'
 
 from qgis.core import (QgsGeometry,
                        QgsFeature,
-                       QgsPoint,
+                       QgsFeatureSink,
+                       QgsPointXY,
                        QgsWkbTypes,
                        QgsApplication,
                        QgsMessageLog,
                        QgsProcessingUtils)
-from processing.core.GeoAlgorithm import GeoAlgorithm
+from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterNumber
 from processing.core.outputs import OutputVector
 
 
-class Gridify(GeoAlgorithm):
+class Gridify(QgisAlgorithm):
     INPUT = 'INPUT'
     HSPACING = 'HSPACING'
     VSPACING = 'VSPACING'
     OUTPUT = 'OUTPUT'
 
-    def icon(self):
-        return QgsApplication.getThemeIcon("/providerQgis.svg")
-
-    def svgIconPath(self):
-        return QgsApplication.iconPath("providerQgis.svg")
-
     def group(self):
         return self.tr('Vector general tools')
 
-    def name(self):
-        return 'snappointstogrid'
+    def __init__(self):
+        super().__init__()
 
-    def displayName(self):
-        return self.tr('Snap points to grid')
-
-    def defineCharacteristics(self):
+    def initAlgorithm(self, config=None):
         self.addParameter(ParameterVector(self.INPUT,
                                           self.tr('Input Layer')))
         self.addParameter(ParameterNumber(self.HSPACING,
@@ -70,7 +62,13 @@ class Gridify(GeoAlgorithm):
 
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Snapped')))
 
-    def processAlgorithm(self, context, feedback):
+    def name(self):
+        return 'snappointstogrid'
+
+    def displayName(self):
+        return self.tr('Snap points to grid')
+
+    def processAlgorithm(self, parameters, context, feedback):
         layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT), context)
         hSpacing = self.getParameterValue(self.HSPACING)
         vSpacing = self.getParameterValue(self.VSPACING)
@@ -83,7 +81,7 @@ class Gridify(GeoAlgorithm):
                                                                      context)
 
         features = QgsProcessingUtils.getFeatures(layer, context)
-        total = 100.0 / QgsProcessingUtils.featureCount(layer, context)
+        total = 100.0 / layer.featureCount() if layer.featureCount() else 0
 
         for current, f in enumerate(features):
             geom = f.geometry()
@@ -147,7 +145,7 @@ class Gridify(GeoAlgorithm):
                 feat = QgsFeature()
                 feat.setGeometry(newGeom)
                 feat.setAttributes(f.attributes())
-                writer.addFeature(feat)
+                writer.addFeature(feat, QgsFeatureSink.FastInsert)
 
             feedback.setProgress(int(current * total))
 
@@ -156,8 +154,8 @@ class Gridify(GeoAlgorithm):
     def _gridify(self, points, hSpacing, vSpacing):
         nPoints = []
         for p in points:
-            nPoints.append(QgsPoint(round(p.x() / hSpacing, 0) * hSpacing,
-                                    round(p.y() / vSpacing, 0) * vSpacing))
+            nPoints.append(QgsPointXY(round(p.x() / hSpacing, 0) * hSpacing,
+                                      round(p.y() / vSpacing, 0) * vSpacing))
 
         i = 0
         # Delete overlapping points

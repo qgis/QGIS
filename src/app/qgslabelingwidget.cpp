@@ -20,6 +20,7 @@
 
 #include "qgslabelengineconfigdialog.h"
 #include "qgslabelinggui.h"
+#include "qgsreadwritecontext.h"
 #include "qgsrulebasedlabelingwidget.h"
 #include "qgsvectorlayer.h"
 #include "qgsvectorlayerlabeling.h"
@@ -36,11 +37,8 @@ QgsLabelingWidget::QgsLabelingWidget( QgsVectorLayer *layer, QgsMapCanvas *canva
   connect( mEngineSettingsButton, &QAbstractButton::clicked, this, &QgsLabelingWidget::showEngineConfigDialog );
 
   mLabelModeComboBox->setCurrentIndex( -1 );
-  mLabelGui = new QgsLabelingGui( nullptr, mCanvas, nullptr, this );
-  mStackedWidget->addWidget( mLabelGui );
 
   connect( mLabelModeComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsLabelingWidget::labelModeChanged );
-  connect( mLabelGui, &QgsTextFormatWidget::widgetChanged, this, &QgsLabelingWidget::widgetChanged );
   setLayer( layer );
 }
 
@@ -48,10 +46,6 @@ void QgsLabelingWidget::resetSettings()
 {
   if ( mOldSettings )
   {
-    if ( mOldSettings->type() == QLatin1String( "simple" ) )
-    {
-      mOldPalSettings.writeToLayer( mLayer );
-    }
     mLayer->setLabeling( mOldSettings.release() );
   }
   setLayer( mLayer );
@@ -74,10 +68,7 @@ void QgsLabelingWidget::setLayer( QgsMapLayer *mapLayer )
   mLayer = layer;
   if ( mLayer->labeling() )
   {
-    QDomDocument doc;
-    QDomElement oldSettings = mLayer->labeling()->save( doc );
-    mOldSettings.reset( QgsAbstractVectorLayerLabeling::create( oldSettings ) );
-    mOldPalSettings.readFromLayer( mLayer );
+    mOldSettings.reset( mLayer->labeling()->clone() );
   }
   else
     mOldSettings.reset();
@@ -85,51 +76,44 @@ void QgsLabelingWidget::setLayer( QgsMapLayer *mapLayer )
   adaptToLayer();
 }
 
-void QgsLabelingWidget::setDockMode( bool enabled )
-{
-  QgsPanelWidget::setDockMode( enabled );
-  mLabelGui->setDockMode( enabled );
-}
-
 void QgsLabelingWidget::adaptToLayer()
 {
   if ( !mLayer )
     return;
-
-  mLabelModeComboBox->setCurrentIndex( -1 );
 
   // pick the right mode of the layer
   if ( mLayer->labeling() && mLayer->labeling()->type() == QLatin1String( "rule-based" ) )
   {
     mLabelModeComboBox->setCurrentIndex( 2 );
   }
+  else if ( mLayer->labeling() && mLayer->labeling()->type() == QLatin1String( "simple" ) )
+  {
+    QgsPalLayerSettings lyr = mLayer->labeling()->settings();
+
+    mLabelModeComboBox->setCurrentIndex( lyr.drawLabels ? 1 : 3 );
+  }
   else
   {
-    // load labeling settings from layer
-    QgsPalLayerSettings lyr;
-    lyr.readFromLayer( mLayer );
-
-    // enable/disable main options based upon whether layer is being labeled
-    if ( !lyr.enabled )
-    {
-      mLabelModeComboBox->setCurrentIndex( 0 );
-    }
-    else
-    {
-      mLabelModeComboBox->setCurrentIndex( lyr.drawLabels ? 1 : 3 );
-    }
+    mLabelModeComboBox->setCurrentIndex( 0 );
   }
 }
 
 void QgsLabelingWidget::writeSettingsToLayer()
 {
-  if ( mLabelModeComboBox->currentIndex() == 2 )
+  int index = mLabelModeComboBox->currentIndex();
+  if ( index == 2 )
   {
-    qobject_cast<QgsRuleBasedLabelingWidget *>( mWidget )->writeSettingsToLayer();
+    const QgsRuleBasedLabeling::Rule *rootRule = qobject_cast<QgsRuleBasedLabelingWidget *>( mWidget )->rootRule();
+
+    mLayer->setLabeling( new QgsRuleBasedLabeling( rootRule->clone() ) );
+  }
+  else if ( index == 1 || index == 3 )
+  {
+    mLayer->setLabeling( new QgsVectorLayerSimpleLabeling( qobject_cast<QgsLabelingGui *>( mWidget )->layerSettings() ) );
   }
   else
   {
-    mLabelGui->writeSettingsToLayer();
+    mLayer->setLabeling( nullptr );
   }
 }
 
@@ -143,17 +127,17 @@ void QgsLabelingWidget::apply()
 
 void QgsLabelingWidget::labelModeChanged( int index )
 {
+  if ( mWidget )
+    mStackedWidget->removeWidget( mWidget );
+
+  delete mWidget;
+  mWidget = nullptr;
+
   if ( index < 0 )
     return;
 
   if ( index == 2 )
   {
-    if ( mWidget )
-      mStackedWidget->removeWidget( mWidget );
-
-    delete mWidget;
-    mWidget = nullptr;
-
     QgsRuleBasedLabelingWidget *ruleWidget = new QgsRuleBasedLabelingWidget( mLayer, mCanvas, this );
     ruleWidget->setDockMode( dockMode() );
     connect( ruleWidget, &QgsPanelWidget::showPanel, this, &QgsPanelWidget::openPanel );
@@ -162,16 +146,25 @@ void QgsLabelingWidget::labelModeChanged( int index )
     mStackedWidget->addWidget( mWidget );
     mStackedWidget->setCurrentWidget( mWidget );
   }
-  else
+  else if ( index == 1 || index == 3 )
   {
+    if ( mLayer->labeling() && mLayer->labeling()->type() == QLatin1String( "simple" ) )
+      mSimpleSettings.reset( new QgsPalLayerSettings( mLayer->labeling()->settings() ) );
+    else
+      mSimpleSettings.reset( new QgsPalLayerSettings() );
+
+    QgsLabelingGui *simpleWidget = new QgsLabelingGui( mLayer, mCanvas, *mSimpleSettings, this );
+    simpleWidget->setDockMode( dockMode() );
+    connect( simpleWidget, &QgsTextFormatWidget::widgetChanged, this, &QgsLabelingWidget::widgetChanged );
 
     if ( index == 3 )
-      mLabelGui->setLabelMode( QgsLabelingGui::ObstaclesOnly );
+      simpleWidget->setLabelMode( QgsLabelingGui::ObstaclesOnly );
     else
-      mLabelGui->setLabelMode( static_cast< QgsLabelingGui::LabelMode >( index ) );
+      simpleWidget->setLabelMode( static_cast< QgsLabelingGui::LabelMode >( index ) );
 
-    mLabelGui->setLayer( mLayer );
-    mStackedWidget->setCurrentWidget( mLabelGui );
+    mWidget = simpleWidget;
+    mStackedWidget->addWidget( mWidget );
+    mStackedWidget->setCurrentWidget( mWidget );
   }
   emit widgetChanged();
 }

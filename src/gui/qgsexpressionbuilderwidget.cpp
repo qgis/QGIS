@@ -16,6 +16,7 @@
 #include "qgsexpressionbuilderwidget.h"
 #include "qgslogger.h"
 #include "qgsexpression.h"
+#include "qgsexpressionfunction.h"
 #include "qgsmessageviewer.h"
 #include "qgsapplication.h"
 #include "qgspythonrunner.h"
@@ -24,6 +25,9 @@
 #include "qgsfeatureiterator.h"
 #include "qgsvectorlayer.h"
 #include "qgssettings.h"
+#include "qgsproject.h"
+#include "qgsrelationmanager.h"
+#include "qgsrelation.h"
 
 #include <QMenu>
 #include <QFile>
@@ -41,6 +45,7 @@ QgsExpressionBuilderWidget::QgsExpressionBuilderWidget( QWidget *parent )
   , mLayer( nullptr )
   , highlighter( nullptr )
   , mExpressionValid( false )
+  , mProject( QgsProject::instance() )
 {
   setupUi( this );
 
@@ -274,7 +279,7 @@ void QgsExpressionBuilderWidget::on_expressionTree_doubleClicked( const QModelIn
   if ( !item )
     return;
 
-  // Don't handle the double click it we are on a header node.
+  // Don't handle the double-click if we are on a header node.
   if ( item->getItemType() == QgsExpressionItem::Header )
     return;
 
@@ -335,9 +340,8 @@ void QgsExpressionBuilderWidget::fillFieldValues( const QString &fieldName, int 
   if ( fieldIndex < 0 )
     return;
 
-  QList<QVariant> values;
   QStringList strValues;
-  mLayer->uniqueValues( fieldIndex, values, countLimit );
+  QSet<QVariant> values = mLayer->uniqueValues( fieldIndex, countLimit );
   Q_FOREACH ( const QVariant &value, values )
   {
     QString strValue;
@@ -440,6 +444,32 @@ void QgsExpressionBuilderWidget::loadRecent( const QString &collection )
   }
 }
 
+void QgsExpressionBuilderWidget::loadLayers()
+{
+  if ( !mProject )
+    return;
+
+  QMap<QString, QgsMapLayer *> layers = mProject->mapLayers();
+  QMap<QString, QgsMapLayer *>::const_iterator layerIt = layers.constBegin();
+  for ( ; layerIt != layers.constEnd(); ++layerIt )
+  {
+    registerItemForAllGroups( QStringList() << tr( "Map Layers" ), layerIt.value()->name(), QStringLiteral( "'%1'" ).arg( layerIt.key() ), formatLayerHelp( layerIt.value() ) );
+  }
+}
+
+void QgsExpressionBuilderWidget::loadRelations()
+{
+  if ( !mProject )
+    return;
+
+  QMap<QString, QgsRelation> relations = mProject->relationManager()->relations();
+  QMap<QString, QgsRelation>::const_iterator relIt = relations.constBegin();
+  for ( ; relIt != relations.constEnd(); ++relIt )
+  {
+    registerItemForAllGroups( QStringList() << tr( "Relations" ), relIt->name(), QStringLiteral( "'%1'" ).arg( relIt->id() ), formatRelationHelp( relIt.value() ) );
+  }
+}
+
 void QgsExpressionBuilderWidget::updateFunctionTree()
 {
   mModel->clear();
@@ -476,7 +506,7 @@ void QgsExpressionBuilderWidget::updateFunctionTree()
   int count = QgsExpression::functionCount();
   for ( int i = 0; i < count; i++ )
   {
-    QgsExpression::Function *func = QgsExpression::Functions()[i];
+    QgsExpressionFunction *func = QgsExpression::Functions()[i];
     QString name = func->name();
     if ( name.startsWith( '_' ) ) // do not display private functions
       continue;
@@ -494,6 +524,12 @@ void QgsExpressionBuilderWidget::updateFunctionTree()
       name += QLatin1String( "()" );
     registerItemForAllGroups( func->groups(), func->name(), ' ' + name + ' ', func->helpText() );
   }
+
+  // load relation names
+  loadRelations();
+
+  // load layer IDs
+  loadLayers();
 
   loadExpressionContext();
 }
@@ -587,7 +623,7 @@ void QgsExpressionBuilderWidget::loadExpressionContext()
   Q_FOREACH ( const QString &variable, variableNames )
   {
     registerItem( QStringLiteral( "Variables" ), variable, " @" + variable + ' ',
-                  QgsExpression::variableHelpText( variable, true, mExpressionContext.variable( variable ) ),
+                  QgsExpression::formatVariableHelp( mExpressionContext.description( variable ), true, mExpressionContext.variable( variable ) ),
                   QgsExpressionItem::ExpressionNode,
                   mExpressionContext.isHighlightedVariable( variable ) );
   }
@@ -596,7 +632,7 @@ void QgsExpressionBuilderWidget::loadExpressionContext()
   QStringList contextFunctions = mExpressionContext.functionNames();
   Q_FOREACH ( const QString &functionName, contextFunctions )
   {
-    QgsExpression::Function *func = mExpressionContext.function( functionName );
+    QgsExpressionFunction *func = mExpressionContext.function( functionName );
     QString name = func->name();
     if ( name.startsWith( '_' ) ) // do not display private functions
       continue;
@@ -612,6 +648,36 @@ void QgsExpressionBuilderWidget::registerItemForAllGroups( const QStringList &gr
   {
     registerItem( group, label, expressionText, helpText, type, highlightedItem, sortOrder );
   }
+}
+
+QString QgsExpressionBuilderWidget::formatRelationHelp( const QgsRelation &relation ) const
+{
+  QString text = QStringLiteral( "<p>%1</p>" ).arg( tr( "Inserts the relation ID for the relation named '%1'." ).arg( relation.name() ) );
+  text.append( QStringLiteral( "<p>%1</p>" ).arg( tr( "Current value: '%1'" ).arg( relation.id() ) ) );
+  return text;
+}
+
+QString QgsExpressionBuilderWidget::formatLayerHelp( const QgsMapLayer *layer ) const
+{
+  QString text = QStringLiteral( "<p>%1</p>" ).arg( tr( "Inserts the layer ID for the layer named '%1'." ).arg( layer->name() ) );
+  text.append( QStringLiteral( "<p>%1</p>" ).arg( tr( "Current value: '%1'" ).arg( layer->id() ) ) );
+  return text;
+}
+
+QStandardItemModel *QgsExpressionBuilderWidget::model()
+{
+  return mModel;
+}
+
+QgsProject *QgsExpressionBuilderWidget::project()
+{
+  return mProject;
+}
+
+void QgsExpressionBuilderWidget::setProject( QgsProject *project )
+{
+  mProject = project;
+  updateFunctionTree();
 }
 
 void QgsExpressionBuilderWidget::showEvent( QShowEvent *e )
@@ -649,7 +715,7 @@ void QgsExpressionBuilderWidget::on_lblPreview_linkActivated( const QString &lin
 {
   Q_UNUSED( link );
   QgsMessageViewer *mv = new QgsMessageViewer( this );
-  mv->setWindowTitle( tr( "More info on expression error" ) );
+  mv->setWindowTitle( tr( "More Info on Expression Error" ) );
   mv->setMessageAsHtml( txtExpressionString->toolTip() );
   mv->exec();
 }

@@ -17,7 +17,6 @@
  ***************************************************************************/
 
 #include "qgsdb2dataitems.h"
-#include "qgsdb2newconnection.h"
 #include "qgsdb2geometrycolumns.h"
 #include "qgslogger.h"
 #include "qgsmimedatautils.h"
@@ -25,6 +24,11 @@
 #include "qgsvectorlayer.h"
 #include "qgssettings.h"
 #include "qgsmessageoutput.h"
+
+#ifdef HAVE_GUI
+#include "qgsdb2newconnection.h"
+#include "qgsdb2sourceselect.h"
+#endif
 
 #include <QMessageBox>
 #include <QProgressDialog>
@@ -35,6 +39,7 @@ QgsDb2ConnectionItem::QgsDb2ConnectionItem( QgsDataItem *parent, const QString n
   : QgsDataCollectionItem( parent, name, path )
 {
   mIconName = QStringLiteral( "mIconConnect.png" );
+  mCapabilities |= Collapse;
   populate();
 }
 
@@ -244,6 +249,7 @@ bool QgsDb2ConnectionItem::equal( const QgsDataItem *other )
   return ( mPath == o->mPath && mName == o->mName );
 }
 
+#ifdef HAVE_GUI
 QList<QAction *> QgsDb2ConnectionItem::actions()
 {
   QList<QAction *> lst;
@@ -269,7 +275,7 @@ void QgsDb2ConnectionItem::editConnection()
   if ( nc.exec() )
   {
     // the parent should be updated
-    mParent->refresh();
+    mParent->refreshConnections();
   }
 }
 
@@ -286,7 +292,7 @@ void QgsDb2ConnectionItem::deleteConnection()
   settings.remove( key + "/password" );
   settings.remove( key + "/environment" );
   settings.remove( key );
-  mParent->refresh();
+  mParent->refreshConnections();
 }
 
 void QgsDb2ConnectionItem::refreshConnection()
@@ -304,6 +310,7 @@ void QgsDb2ConnectionItem::refreshConnection()
   }
   refresh();
 }
+#endif
 
 
 bool QgsDb2ConnectionItem::handleDrop( const QMimeData *data, Qt::DropAction )
@@ -422,6 +429,7 @@ QVector<QgsDataItem *> QgsDb2RootItem::createChildren()
   return connections;
 }
 
+#ifdef HAVE_GUI
 QList<QAction *> QgsDb2RootItem::actions()
 {
   QList<QAction *> actionList;
@@ -445,10 +453,11 @@ void QgsDb2RootItem::newConnection()
   QgsDb2NewConnection newConnection( NULL, mName );
   if ( newConnection.exec() )
   {
-    refresh();
+    refreshConnections();
   }
 
 }
+#endif
 
 // ---------------------------------------------------------------------------
 QgsDb2LayerItem::QgsDb2LayerItem( QgsDataItem *parent, QString name, QString path, QgsLayerItem::LayerType layerType, QgsDb2LayerProperty layerProperty )
@@ -477,7 +486,7 @@ QString QgsDb2LayerItem::createUri()
   if ( !connItem )
   {
     QgsDebugMsg( "connection item not found." );
-    return QString::null;
+    return QString();
   }
   QgsDebugMsg( "connInfo: '" + connItem->connInfo() + "'" );
   QgsDataSourceUri uri = QgsDataSourceUri( connItem->connInfo() );

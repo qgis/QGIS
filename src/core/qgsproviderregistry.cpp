@@ -202,7 +202,7 @@ void QgsProviderRegistry::init()
       if ( !fileVectorFilters.isEmpty() )
         mVectorFileFilters += fileVectorFilters;
 
-      QgsDebugMsg( QString( "Checking %1: ...loaded ok (%2 file filters)" ).arg( myLib.fileName() ).arg( fileVectorFilters.split( ";;" ).count() ) );
+      QgsDebugMsg( QString( "Checking %1: ...loaded OK (%2 file filters)" ).arg( myLib.fileName() ).arg( fileVectorFilters.split( ";;" ).count() ) );
     }
 
     // now get raster file filters, if any
@@ -218,7 +218,7 @@ void QgsProviderRegistry::init()
       if ( !fileRasterFilters.isEmpty() )
         mRasterFileFilters += fileRasterFilters;
 
-      QgsDebugMsg( QString( "Checking %1: ...loaded ok (%2 file filters)" ).arg( myLib.fileName() ).arg( fileRasterFilters.split( ";;" ).count() ) );
+      QgsDebugMsg( QString( "Checking %1: ...loaded OK (%2 file filters)" ).arg( myLib.fileName() ).arg( fileRasterFilters.split( ";;" ).count() ) );
     }
   }
 } // QgsProviderRegistry ctor
@@ -438,10 +438,10 @@ int QgsProviderRegistry::providerCapabilities( const QString &providerKey ) cons
 }
 
 // This should be QWidget, not QDialog
-typedef QWidget *selectFactoryFunction_t( QWidget *parent, Qt::WindowFlags fl );
+typedef QWidget *selectFactoryFunction_t( QWidget *parent, Qt::WindowFlags fl, QgsProviderRegistry::WidgetMode widgetMode );
 
 QWidget *QgsProviderRegistry::createSelectionWidget( const QString &providerKey,
-    QWidget *parent, Qt::WindowFlags fl )
+    QWidget *parent, Qt::WindowFlags fl, QgsProviderRegistry::WidgetMode widgetMode )
 {
   selectFactoryFunction_t *selectFactory =
     reinterpret_cast< selectFactoryFunction_t * >( cast_to_fptr( function( providerKey, "selectWidget" ) ) );
@@ -449,7 +449,7 @@ QWidget *QgsProviderRegistry::createSelectionWidget( const QString &providerKey,
   if ( !selectFactory )
     return nullptr;
 
-  return selectFactory( parent, fl );
+  return selectFactory( parent, fl, widgetMode );
 }
 
 QFunctionPointer QgsProviderRegistry::function( QString const &providerKey,

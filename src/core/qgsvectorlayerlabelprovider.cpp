@@ -36,7 +36,7 @@ using namespace pal;
 
 QgsVectorLayerLabelProvider::QgsVectorLayerLabelProvider( QgsVectorLayer *layer, const QString &providerId, bool withFeatureLoop, const QgsPalLayerSettings *settings, const QString &layerName )
   : QgsAbstractLabelProvider( layer, providerId )
-  , mSettings( settings ? * settings : QgsPalLayerSettings::fromLayer( layer ) )
+  , mSettings( settings ? * settings : QgsPalLayerSettings() ) // TODO: all providers should have valid settings?
   , mLayerGeometryType( layer->geometryType() )
   , mRenderer( layer->renderer() )
   , mFields( layer->fields() )
@@ -226,14 +226,14 @@ QList<QgsLabelFeature *> QgsVectorLayerLabelProvider::labelFeatures( QgsRenderCo
   QgsFeature fet;
   while ( fit.nextFeature( fet ) )
   {
-    std::unique_ptr<QgsGeometry> obstacleGeometry;
+    QgsGeometry obstacleGeometry;
     if ( mRenderer )
     {
       QgsSymbolList symbols = mRenderer->originalSymbolsForFeature( fet, ctx );
       if ( !symbols.isEmpty() && fet.geometry().type() == QgsWkbTypes::PointGeometry )
       {
         //point feature, use symbol bounds as obstacle
-        obstacleGeometry.reset( QgsVectorLayerLabelProvider::getPointObstacleGeometry( fet, ctx, symbols ) );
+        obstacleGeometry = QgsVectorLayerLabelProvider::getPointObstacleGeometry( fet, ctx, symbols );
       }
       if ( !symbols.isEmpty() )
       {
@@ -241,7 +241,7 @@ QList<QgsLabelFeature *> QgsVectorLayerLabelProvider::labelFeatures( QgsRenderCo
       }
     }
     ctx.expressionContext().setFeature( fet );
-    registerFeature( fet, ctx, obstacleGeometry.get() );
+    registerFeature( fet, ctx, obstacleGeometry );
   }
 
   if ( ctx.expressionContext().lastScope() == symbolScope )
@@ -253,7 +253,7 @@ QList<QgsLabelFeature *> QgsVectorLayerLabelProvider::labelFeatures( QgsRenderCo
   return mLabels;
 }
 
-void QgsVectorLayerLabelProvider::registerFeature( QgsFeature &feature, QgsRenderContext &context, QgsGeometry *obstacleGeometry )
+void QgsVectorLayerLabelProvider::registerFeature( QgsFeature &feature, QgsRenderContext &context, const QgsGeometry &obstacleGeometry )
 {
   QgsLabelFeature *label = nullptr;
   mSettings.registerFeature( feature, context, &label, obstacleGeometry );
@@ -261,10 +261,10 @@ void QgsVectorLayerLabelProvider::registerFeature( QgsFeature &feature, QgsRende
     mLabels << label;
 }
 
-QgsGeometry *QgsVectorLayerLabelProvider::getPointObstacleGeometry( QgsFeature &fet, QgsRenderContext &context, const QgsSymbolList &symbols )
+QgsGeometry QgsVectorLayerLabelProvider::getPointObstacleGeometry( QgsFeature &fet, QgsRenderContext &context, const QgsSymbolList &symbols )
 {
   if ( !fet.hasGeometry() || fet.geometry().type() != QgsWkbTypes::PointGeometry )
-    return nullptr;
+    return QgsGeometry();
 
   bool isMultiPoint = fet.geometry().geometry()->nCoordinates() > 1;
   QgsAbstractGeometry *obstacleGeom = nullptr;
@@ -275,7 +275,7 @@ QgsGeometry *QgsVectorLayerLabelProvider::getPointObstacleGeometry( QgsFeature &
   for ( int i = 0; i < fet.geometry().geometry()->nCoordinates(); ++i )
   {
     QRectF bounds;
-    QgsPointV2 p =  fet.geometry().geometry()->vertexAt( QgsVertexId( i, 0, 0 ) );
+    QgsPoint p =  fet.geometry().geometry()->vertexAt( QgsVertexId( i, 0, 0 ) );
     double x = p.x();
     double y = p.y();
     double z = 0; // dummy variable for coordinate transforms
@@ -310,7 +310,7 @@ QgsGeometry *QgsVectorLayerLabelProvider::getPointObstacleGeometry( QgsFeature &
     //TODO - remove when labeling is refactored to use screen units
     for ( int i = 0; i < boundLineString->numPoints(); ++i )
     {
-      QgsPoint point = context.mapToPixel().toMapCoordinates( boundLineString->xAt( i ), boundLineString->yAt( i ) );
+      QgsPointXY point = context.mapToPixel().toMapCoordinates( boundLineString->xAt( i ), boundLineString->yAt( i ) );
       boundLineString->setXAt( i, point.x() );
       boundLineString->setYAt( i, point.y() );
     }
@@ -333,7 +333,7 @@ QgsGeometry *QgsVectorLayerLabelProvider::getPointObstacleGeometry( QgsFeature &
     }
   }
 
-  return new QgsGeometry( obstacleGeom );
+  return QgsGeometry( obstacleGeom );
 }
 
 void QgsVectorLayerLabelProvider::drawLabel( QgsRenderContext &context, pal::LabelPosition *label ) const
@@ -464,7 +464,7 @@ void QgsVectorLayerLabelProvider::drawLabelPrivate( pal::LabelPosition *label, Q
     if ( drawType != QgsTextRenderer::Text )
       return;
 
-    QgsPoint outPt2 = xform.transform( label->getX() + label->getWidth(), label->getY() + label->getHeight() );
+    QgsPointXY outPt2 = xform.transform( label->getX() + label->getWidth(), label->getY() + label->getHeight() );
     QRectF rect( 0, 0, outPt2.x() - outPt.x(), outPt2.y() - outPt.y() );
     painter->save();
     painter->setRenderHint( QPainter::Antialiasing, false );
@@ -502,8 +502,8 @@ void QgsVectorLayerLabelProvider::drawLabelPrivate( pal::LabelPosition *label, Q
   {
     // get rotated label's center point
     QPointF centerPt( outPt );
-    QgsPoint outPt2 = xform.transform( label->getX() + label->getWidth() / 2,
-                                       label->getY() + label->getHeight() / 2 );
+    QgsPointXY outPt2 = xform.transform( label->getX() + label->getWidth() / 2,
+                                         label->getY() + label->getHeight() / 2 );
 
     double xc = outPt2.x() - outPt.x();
     double yc = outPt2.y() - outPt.y();

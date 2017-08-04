@@ -69,7 +69,14 @@ class CORE_EXPORT QgsFeedback : public QObject
      * \see progressChanged()
      * \since QGIS 3.0
      */
-    void setProgress( double progress ) { mProgress = progress; emit progressChanged( mProgress ); }
+    void setProgress( double progress )
+    {
+      // avoid flooding with too many events
+      if ( static_cast< int >( mProgress * 10 ) != static_cast< int >( progress * 10 ) )
+        emit progressChanged( progress );
+
+      mProgress = progress;
+    }
 
     /**
      * Returns the current progress reported by the feedback object. Depending on how the

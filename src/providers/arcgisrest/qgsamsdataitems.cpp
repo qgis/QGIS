@@ -15,17 +15,21 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsamsdataitems.h"
-#include "qgsamssourceselect.h"
 #include "qgsarcgisrestutils.h"
-#include "qgsnewhttpconnection.h"
 #include "qgsowsconnection.h"
+#include "qgsproviderregistry.h"
+
+#ifdef HAVE_GUI
+#include "qgsamssourceselect.h"
+#include "qgsnewhttpconnection.h"
+#endif
 
 #include <QImageReader>
 
 QgsAmsRootItem::QgsAmsRootItem( QgsDataItem *parent, QString name, QString path )
   : QgsDataCollectionItem( parent, name, path )
 {
-  mCapabilities |= Fast;
+  mCapabilities |= Fast | Collapse;
   mIconName = QStringLiteral( "mIconAms.svg" );
   populate();
 }
@@ -43,6 +47,7 @@ QVector<QgsDataItem *> QgsAmsRootItem::createChildren()
   return connections;
 }
 
+#ifdef HAVE_GUI
 QList<QAction *> QgsAmsRootItem::actions()
 {
   QAction *actionNew = new QAction( tr( "New Connection..." ), this );
@@ -53,8 +58,8 @@ QList<QAction *> QgsAmsRootItem::actions()
 
 QWidget *QgsAmsRootItem::paramWidget()
 {
-  QgsAmsSourceSelect *select = new QgsAmsSourceSelect( 0, 0, true );
-  connect( select, &QgsSourceSelectDialog::connectionsChanged, this, &QgsAmsRootItem::connectionsChanged );
+  QgsAmsSourceSelect *select = new QgsAmsSourceSelect( 0, 0, QgsProviderRegistry::WidgetMode::Manager );
+  connect( select, &QgsArcGisServiceSourceSelect::connectionsChanged, this, &QgsAmsRootItem::connectionsChanged );
   return select;
 }
 
@@ -66,13 +71,14 @@ void QgsAmsRootItem::connectionsChanged()
 void QgsAmsRootItem::newConnection()
 {
   QgsNewHttpConnection nc( 0, QStringLiteral( "qgis/connections-arcgismapserver/" ) );
-  nc.setWindowTitle( tr( "Create a new ArcGisMapServer connection" ) );
+  nc.setWindowTitle( tr( "Create a New ArcGisMapServer Connection" ) );
 
   if ( nc.exec() )
   {
-    refresh();
+    refreshConnections();
   }
 }
+#endif
 
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -129,6 +135,7 @@ bool QgsAmsConnectionItem::equal( const QgsDataItem *other )
   return ( type() == other->type() && o != 0 && mPath == o->mPath && mName == o->mName );
 }
 
+#ifdef HAVE_GUI
 QList<QAction *> QgsAmsConnectionItem::actions()
 {
   QList<QAction *> lst;
@@ -147,19 +154,20 @@ QList<QAction *> QgsAmsConnectionItem::actions()
 void QgsAmsConnectionItem::editConnection()
 {
   QgsNewHttpConnection nc( 0, QStringLiteral( "qgis/connections-arcgismapserver/" ), mName );
-  nc.setWindowTitle( tr( "Modify ArcGisMapServer connection" ) );
+  nc.setWindowTitle( tr( "Modify ArcGisMapServer Connection" ) );
 
   if ( nc.exec() )
   {
-    mParent->refresh();
+    mParent->refreshConnections();
   }
 }
 
 void QgsAmsConnectionItem::deleteConnection()
 {
   QgsOwsConnection::deleteConnection( QStringLiteral( "arcgismapserver" ), mName );
-  mParent->refresh();
+  mParent->refreshConnections();
 }
+#endif
 
 ///////////////////////////////////////////////////////////////////////////////
 

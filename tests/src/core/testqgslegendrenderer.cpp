@@ -18,6 +18,7 @@
 
 #include "qgsapplication.h"
 #include "qgscategorizedsymbolrenderer.h"
+#include "qgsdatadefinedsizelegend.h"
 #include "qgsfontutils.h"
 #include "qgslayertree.h"
 #include "qgslayertreeutils.h"
@@ -126,6 +127,7 @@ class TestQgsLegendRenderer : public QObject
     void testFilterByExpression();
     void testDiagramAttributeLegend();
     void testDiagramSizeLegend();
+    void testDataDefinedSizeCollapsed();
 
   private:
     QgsLayerTree *mRoot = nullptr;
@@ -189,15 +191,15 @@ void TestQgsLegendRenderer::init()
     QList<QgsFeature> features;
     QgsFeature f1( fields, 1 );
     f1.setAttribute( 0, 1 );
-    QgsGeometry f1G = QgsGeometry::fromPoint( QgsPoint( 1.0, 1.0 ) );
+    QgsGeometry f1G = QgsGeometry::fromPoint( QgsPointXY( 1.0, 1.0 ) );
     f1.setGeometry( f1G );
     QgsFeature f2( fields, 2 );
     f2.setAttribute( 0, 2 );
-    QgsGeometry f2G = QgsGeometry::fromPoint( QgsPoint( 9.0, 1.0 ) );
+    QgsGeometry f2G = QgsGeometry::fromPoint( QgsPointXY( 9.0, 1.0 ) );
     f2.setGeometry( f2G );
     QgsFeature f3( fields, 3 );
     f3.setAttribute( 0, 3 );
-    QgsGeometry f3G = QgsGeometry::fromPoint( QgsPoint( 5.0, 5.0 ) ) ;
+    QgsGeometry f3G = QgsGeometry::fromPoint( QgsPointXY( 5.0, 5.0 ) ) ;
     f3.setGeometry( f3G );
     features << f1 << f2 << f3;
     pr->addFeatures( features );
@@ -449,15 +451,15 @@ void TestQgsLegendRenderer::testFilterByMapSameSymbol()
     QList<QgsFeature> features;
     QgsFeature f1( fields, 1 );
     f1.setAttribute( 0, 1 );
-    QgsGeometry f1G = QgsGeometry::fromPoint( QgsPoint( 1.0, 1.0 ) );
+    QgsGeometry f1G = QgsGeometry::fromPoint( QgsPointXY( 1.0, 1.0 ) );
     f1.setGeometry( f1G );
     QgsFeature f2( fields, 2 );
     f2.setAttribute( 0, 2 );
-    QgsGeometry f2G =  QgsGeometry::fromPoint( QgsPoint( 9.0, 1.0 ) );
+    QgsGeometry f2G =  QgsGeometry::fromPoint( QgsPointXY( 9.0, 1.0 ) );
     f2.setGeometry( f2G );
     QgsFeature f3( fields, 3 );
     f3.setAttribute( 0, 3 );
-    QgsGeometry f3G = QgsGeometry::fromPoint( QgsPoint( 5.0, 5.0 ) );
+    QgsGeometry f3G = QgsGeometry::fromPoint( QgsPointXY( 5.0, 5.0 ) );
     f3.setGeometry( f3G );
     features << f1 << f2 << f3;
     pr->addFeatures( features );
@@ -664,7 +666,7 @@ void TestQgsLegendRenderer::testDiagramAttributeLegend()
   dr->setClassificationField( QString() );
   dr->setDiagram( new QgsPieDiagram() );
   dr->setDiagramSettings( ds );
-  dr->setSizeLegend( false );
+  dr->setDataDefinedSizeLegend( nullptr );
   dr->setAttributeLegend( true );
   vl4->setDiagramRenderer( dr );
 
@@ -704,7 +706,7 @@ void TestQgsLegendRenderer::testDiagramSizeLegend()
   dr->setClassificationField( QString( "a" ) );
   dr->setDiagram( new QgsPieDiagram() );
   dr->setDiagramSettings( ds );
-  dr->setSizeLegend( true );
+  dr->setDataDefinedSizeLegend( new QgsDataDefinedSizeLegend() );
   dr->setAttributeLegend( false );
   vl4->setDiagramRenderer( dr );
 
@@ -724,6 +726,69 @@ void TestQgsLegendRenderer::testDiagramSizeLegend()
 
   QgsProject::instance()->removeMapLayer( vl4 );
 }
+
+
+void TestQgsLegendRenderer::testDataDefinedSizeCollapsed()
+{
+  QString testName = QStringLiteral( "legend_data_defined_size_collapsed" );
+
+  QgsVectorLayer *vlDataDefinedSize = new QgsVectorLayer( QStringLiteral( "Point" ), QStringLiteral( "Point Layer" ), QStringLiteral( "memory" ) );
+  {
+    QgsVectorDataProvider *pr = vlDataDefinedSize->dataProvider();
+    QList<QgsField> attrs;
+    attrs << QgsField( QStringLiteral( "test_attr" ), QVariant::Int );
+    pr->addAttributes( attrs );
+
+    QgsFields fields;
+    fields.append( attrs.back() );
+
+    QgsGeometry g = QgsGeometry::fromPoint( QgsPointXY( 1.0, 1.0 ) );
+
+    QList<QgsFeature> features;
+    QgsFeature f1( fields, 1 );
+    f1.setAttribute( 0, 100 );
+    f1.setGeometry( g );
+    QgsFeature f2( fields, 2 );
+    f2.setAttribute( 0, 200 );
+    f2.setGeometry( g );
+    QgsFeature f3( fields, 3 );
+    f3.setAttribute( 0, 300 );
+    f3.setGeometry( g );
+    features << f1 << f2 << f3;
+    pr->addFeatures( features );
+    vlDataDefinedSize->updateFields();
+  }
+
+  QgsStringMap props;
+  props["name"] = "circle";
+  props["color"] = "200,200,200";
+  props["outline_color"] = "0,0,0";
+  QgsMarkerSymbol *symbol = QgsMarkerSymbol::createSimple( props );
+  QgsProperty ddsProperty = QgsProperty::fromField( "test_attr" );
+  ddsProperty.setTransformer( new QgsSizeScaleTransformer( QgsSizeScaleTransformer::Linear, 100, 300, 10, 30 ) );  // takes ownership
+  symbol->setDataDefinedSize( ddsProperty );
+
+  QgsDataDefinedSizeLegend *ddsLegend = new QgsDataDefinedSizeLegend();
+  ddsLegend->setLegendType( QgsDataDefinedSizeLegend::LegendCollapsed );
+  ddsLegend->setFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) ) );
+
+  QgsSingleSymbolRenderer *r = new QgsSingleSymbolRenderer( symbol );   // takes ownership
+  r->setDataDefinedSizeLegend( ddsLegend );
+  vlDataDefinedSize->setRenderer( r );
+
+  QgsLayerTree *root = new QgsLayerTree();
+  root->addLayer( vlDataDefinedSize );
+
+  QgsLayerTreeModel legendModel( root );
+
+  QgsLegendSettings settings;
+  _setStandardTestFont( settings );
+  _renderLegend( testName, &legendModel, settings );
+  QVERIFY( _verifyImage( testName, mReport ) );
+
+  delete root;
+}
+
 
 QGSTEST_MAIN( TestQgsLegendRenderer )
 #include "testqgslegendrenderer.moc"

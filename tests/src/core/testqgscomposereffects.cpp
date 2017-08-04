@@ -111,7 +111,7 @@ void TestQgsComposerEffects::blend_modes()
 
 void TestQgsComposerEffects::transparency()
 {
-  mComposerRect2->setTransparency( 50 );
+  mComposerRect2->setItemOpacity( 0.5 );
 
   QgsCompositionChecker checker( QStringLiteral( "composereffects_transparency" ), mComposition );
   checker.setControlPathPrefix( QStringLiteral( "composer_effects" ) );

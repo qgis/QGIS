@@ -18,6 +18,9 @@
 #ifndef QGSMSLAYERCACHE_H
 #define QGSMSLAYERCACHE_H
 
+#define SIP_NO_FILE
+
+
 #include <time.h>
 #include <QFileSystemWatcher>
 #include <QMultiHash>

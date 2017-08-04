@@ -207,7 +207,7 @@ class CORE_EXPORT QgsPkiBundle
      */
     static const QgsPkiBundle fromPemPaths( const QString &certPath,
                                             const QString &keyPath,
-                                            const QString &keyPass = QString::null,
+                                            const QString &keyPass = QString(),
                                             const QList<QSslCertificate> &caChain = QList<QSslCertificate>() );
 
     /**
@@ -216,7 +216,7 @@ class CORE_EXPORT QgsPkiBundle
      * \param bundlepass Optional bundle passphrase
      */
     static const QgsPkiBundle fromPkcs12Paths( const QString &bundlepath,
-        const QString &bundlepass = QString::null );
+        const QString &bundlepass = QString() );
 
     //! Whether the bundle, either its certificate or private key, is null
     bool isNull() const;
@@ -289,6 +289,58 @@ class CORE_EXPORT QgsPkiConfigBundle
     QSslCertificate mCert;
     QSslKey mCertKey;
 };
+
+
+
+#ifdef SIP_RUN
+% MappedType QList<QSslError::SslError>
+{
+  % TypeHeaderCode
+#include <QList>
+  % End
+
+  % ConvertFromTypeCode
+  // Create the list.
+  PyObject *l;
+
+  if ( ( l = PyList_New( sipCpp->size() ) ) == NULL )
+    return NULL;
+
+  // Set the list elements.
+  QList<QSslError::SslError>::iterator it = sipCpp->begin();
+  for ( int i = 0; it != sipCpp->end(); ++it, ++i )
+  {
+    PyObject *tobj;
+
+    if ( ( tobj = sipConvertFromEnum( *it, sipType_QSslError_SslError ) ) == NULL )
+    {
+      Py_DECREF( l );
+      return NULL;
+    }
+    PyList_SET_ITEM( l, i, tobj );
+  }
+
+  return l;
+  % End
+
+  % ConvertToTypeCode
+  // Check the type if that is all that is required.
+  if ( sipIsErr == NULL )
+    return PyList_Check( sipPy );
+
+  QList<QSslError::SslError> *qlist = new QList<QSslError::SslError>;
+
+  for ( int i = 0; i < PyList_GET_SIZE( sipPy ); ++i )
+  {
+    *qlist << ( QSslError::SslError )SIPLong_AsLong( PyList_GET_ITEM( sipPy, i ) );
+  }
+
+  *sipCppPtr = qlist;
+  return sipGetState( sipTransferObj );
+  % End
+};
+#endif
+
 
 
 /** \ingroup core

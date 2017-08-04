@@ -43,7 +43,13 @@ class CORE_EXPORT QgsDartMeasurement
 
     void send() const;
 
-    static const QString typeToString( Type type );
+    /**
+     * Convert a QgsDartMeasurement::Type enum to a string that is understood
+     * by the system.
+     *
+     * \since QGIS 2.something
+     */
+    static const QString typeToString( QgsDartMeasurement::Type type );
 
   private:
     QString mName;

@@ -23,6 +23,8 @@
 #include "qgsexpression.h"
 #include <QRegExp>
 
+class QgsDataDefinedSizeLegend;
+
 /** \ingroup core
  * \class QgsRendererRange
  */
@@ -33,7 +35,7 @@ class CORE_EXPORT QgsRendererRange
     QgsRendererRange( double lowerValue, double upperValue, QgsSymbol *symbol SIP_TRANSFER, const QString &label, bool render = true );
     QgsRendererRange( const QgsRendererRange &range );
 
-    // default dtor is ok
+    // default dtor is OK
     QgsRendererRange &operator=( QgsRendererRange range );
 
     bool operator<( const QgsRendererRange &other ) const;
@@ -142,9 +144,9 @@ class CORE_EXPORT QgsGraduatedSymbolRenderer : public QgsFeatureRenderer
     virtual void stopRender( QgsRenderContext &context ) override;
     virtual QSet<QString> usedAttributes( const QgsRenderContext &context ) const override;
     virtual QString dump() const override;
-    virtual QgsGraduatedSymbolRenderer *clone() const override;
+    virtual QgsGraduatedSymbolRenderer *clone() const override SIP_FACTORY;
     virtual void toSld( QDomDocument &doc, QDomElement &element, const QgsStringMap &props = QgsStringMap() ) const override;
-    virtual Capabilities capabilities() override { return SymbolLevels | Filter; }
+    virtual QgsFeatureRenderer::Capabilities capabilities() override { return SymbolLevels | Filter; }
     virtual QgsSymbolList symbols( QgsRenderContext &context ) override;
 
     QString classAttribute() const { return mAttrName; }
@@ -238,23 +240,19 @@ class CORE_EXPORT QgsGraduatedSymbolRenderer : public QgsFeatureRenderer
      * \param legendFormat
      * \returns new QgsGraduatedSymbolRenderer object
      */
-    static QgsGraduatedSymbolRenderer *createRenderer(
-      QgsVectorLayer *vlayer,
-      const QString &attrName,
-      int classes,
-      Mode mode,
-      QgsSymbol *symbol,
-      QgsColorRamp *ramp,
-      const QgsRendererRangeLabelFormat &legendFormat = QgsRendererRangeLabelFormat()
-    );
+    static QgsGraduatedSymbolRenderer *createRenderer( QgsVectorLayer *vlayer,
+        const QString &attrName,
+        int classes,
+        Mode mode,
+        QgsSymbol *symbol SIP_TRANSFER,
+        QgsColorRamp *ramp SIP_TRANSFER,
+        const QgsRendererRangeLabelFormat &legendFormat = QgsRendererRangeLabelFormat() );
 
     //! create renderer from XML element
-    static QgsFeatureRenderer *create( QDomElement &element ) SIP_FACTORY;
+    static QgsFeatureRenderer *create( QDomElement &element, const QgsReadWriteContext &context ) SIP_FACTORY;
 
-    virtual QDomElement save( QDomDocument &doc ) override;
-    virtual QgsLegendSymbologyList legendSymbologyItems( QSize iconSize ) override;
-    virtual QgsLegendSymbolList legendSymbolItems( double scaleDenominator = -1, const QString &rule = QString() ) override;
-    QgsLegendSymbolListV2 legendSymbolItemsV2() const override;
+    virtual QDomElement save( QDomDocument &doc, const QgsReadWriteContext &context ) override;
+    QgsLegendSymbolList legendSymbolItems() const override;
     virtual QSet< QString > legendKeysForFeature( QgsFeature &feature, QgsRenderContext &context ) override;
 
     /** Returns the renderer's source symbol, which is the base symbol used for the each classes' symbol before applying
@@ -309,7 +307,11 @@ class CORE_EXPORT QgsGraduatedSymbolRenderer : public QgsFeatureRenderer
     //! \since QGIS 2.10
     double maxSymbolSize() const;
 
-    enum GraduatedMethod {GraduatedColor = 0, GraduatedSize = 1 };
+    enum GraduatedMethod
+    {
+      GraduatedColor = 0,
+      GraduatedSize = 1
+    };
 
     //! return the method used for graduation (either size or color)
     //! \since QGIS 2.10
@@ -322,13 +324,32 @@ class CORE_EXPORT QgsGraduatedSymbolRenderer : public QgsFeatureRenderer
     virtual bool legendSymbolItemsCheckable() const override;
     virtual bool legendSymbolItemChecked( const QString &key ) override;
     virtual void checkLegendSymbolItem( const QString &key, bool state = true ) override;
-    virtual void setLegendSymbolItem( const QString &key, QgsSymbol *symbol ) override;
+    virtual void setLegendSymbolItem( const QString &key, QgsSymbol *symbol SIP_TRANSFER ) override;
     virtual QString legendClassificationAttribute() const override { return classAttribute(); }
 
     //! creates a QgsGraduatedSymbolRenderer from an existing renderer.
     //! \since QGIS 2.6
     //! \returns a new renderer if the conversion was possible, otherwise 0.
     static QgsGraduatedSymbolRenderer *convertFromRenderer( const QgsFeatureRenderer *renderer ) SIP_FACTORY;
+
+    /**
+     * Configures appearance of legend when renderer is configured to use data-defined size for marker symbols.
+     * This allows to configure for what values (symbol sizes) should be shown in the legend, whether to display
+     * different symbol sizes collapsed in one legend node or separated across multiple legend nodes etc.
+     *
+     * When renderer does not use data-defined size or does not use marker symbols, these settings will be ignored.
+     * Takes ownership of the passed settings objects. Null pointer is a valid input that disables data-defined
+     * size legend.
+     * \since QGIS 3.0
+     */
+    void setDataDefinedSizeLegend( QgsDataDefinedSizeLegend *settings SIP_TRANSFER );
+
+    /**
+     * Returns configuration of appearance of legend when using data-defined size for marker symbols.
+     * Will return null if the functionality is disabled.
+     * \since QGIS 3.0
+     */
+    QgsDataDefinedSizeLegend *dataDefinedSizeLegend() const;
 
   protected:
     QString mAttrName;
@@ -344,6 +365,8 @@ class CORE_EXPORT QgsGraduatedSymbolRenderer : public QgsFeatureRenderer
     int mAttrNum;
     bool mCounting;
 
+    std::unique_ptr<QgsDataDefinedSizeLegend> mDataDefinedSizeLegend;
+
     QgsSymbol *symbolForValue( double value );
 
     /** Returns the matching legend key for a value.
@@ -358,6 +381,14 @@ class CORE_EXPORT QgsGraduatedSymbolRenderer : public QgsFeatureRenderer
     /** Returns calculated value used for classifying a feature.
      */
     QVariant valueForFeature( QgsFeature &feature, QgsRenderContext &context ) const;
+
+    //! Returns list of legend symbol items from individual ranges
+    QgsLegendSymbolList baseLegendSymbolItems() const;
+
+#ifdef SIP_RUN
+    QgsGraduatedSymbolRenderer( const QgsGraduatedSymbolRenderer & );
+    QgsGraduatedSymbolRenderer &operator=( const QgsGraduatedSymbolRenderer & );
+#endif
 
 };
 

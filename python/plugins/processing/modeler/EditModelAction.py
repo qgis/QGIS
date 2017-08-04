@@ -25,9 +25,8 @@ __copyright__ = '(C) 2012, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
-from qgis.core import QgsApplication
+from qgis.core import QgsApplication, QgsProcessingModelAlgorithm
 from processing.gui.ContextAction import ContextAction
-from processing.modeler.ModelerAlgorithm import ModelerAlgorithm
 from processing.modeler.ModelerDialog import ModelerDialog
 
 
@@ -37,12 +36,10 @@ class EditModelAction(ContextAction):
         self.name = self.tr('Edit model', 'EditModelAction')
 
     def isEnabled(self):
-        return isinstance(self.itemData, ModelerAlgorithm)
+        return isinstance(self.itemData, QgsProcessingModelAlgorithm)
 
     def execute(self):
-        alg = self.itemData.getCopy()
-        #hack - remove when getCopy is removed
-        alg.setProvider(self.itemData.provider())
+        alg = self.itemData
         dlg = ModelerDialog(alg)
         dlg.update_model.connect(self.updateModel)
         dlg.show()

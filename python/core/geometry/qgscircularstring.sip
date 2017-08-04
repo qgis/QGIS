@@ -51,10 +51,10 @@ class QgsCircularString: QgsCurve
     virtual int numPoints() const;
 
 
-    QgsPointV2 pointN( int i ) const;
+    QgsPoint pointN( int i ) const;
 %Docstring
  Returns the point at index i within the circular string.
- :rtype: QgsPointV2
+ :rtype: QgsPoint
 %End
 
     virtual void points( QgsPointSequence &pts /Out/ ) const;
@@ -66,15 +66,18 @@ class QgsCircularString: QgsCurve
 %End
 
     virtual double length() const;
-    virtual QgsPointV2 startPoint() const;
-    virtual QgsPointV2 endPoint() const;
+    virtual QgsPoint startPoint() const;
+    virtual QgsPoint endPoint() const;
 
     virtual QgsLineString *curveToLine( double tolerance = M_PI_2 / 90, SegmentationToleranceType toleranceType = MaximumAngle ) const /Factory/;
 %Docstring
  Returns a new line string geometry corresponding to a segmentized approximation
  of the curve.
  \param tolerance segmentation tolerance
- \param toleranceType maximum segmentation angle or maximum difference between approximation and curve*
+ \param toleranceType maximum segmentation angle or maximum difference between approximation and curve
+
+ Uses a MaximumAngle tolerance of 1 degrees by default (360
+ segments in a full circle)
  :rtype: QgsLineString
 %End
 
@@ -90,15 +93,15 @@ class QgsCircularString: QgsCurve
     virtual void drawAsPolygon( QPainter &p ) const;
 
 
-    virtual bool insertVertex( QgsVertexId position, const QgsPointV2 &vertex );
-    virtual bool moveVertex( QgsVertexId position, const QgsPointV2 &newPos );
+    virtual bool insertVertex( QgsVertexId position, const QgsPoint &vertex );
+    virtual bool moveVertex( QgsVertexId position, const QgsPoint &newPos );
     virtual bool deleteVertex( QgsVertexId position );
 
-    virtual double closestSegment( const QgsPointV2 &pt, QgsPointV2 &segmentPt /Out/,
+    virtual double closestSegment( const QgsPoint &pt, QgsPoint &segmentPt /Out/,
                                    QgsVertexId &vertexAfter /Out/,
                                    bool *leftOf /Out/, double epsilon ) const;
 
-    virtual bool pointAt( int node, QgsPointV2 &point, QgsVertexId::VertexType &type ) const;
+    virtual bool pointAt( int node, QgsPoint &point, QgsVertexId::VertexType &type ) const;
 
     virtual void sumUpArea( double &sum /Out/ ) const;
 

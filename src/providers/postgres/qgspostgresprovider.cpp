@@ -32,12 +32,15 @@
 #include "qgspostgresprovider.h"
 #include "qgspostgresconn.h"
 #include "qgspostgresconnpool.h"
-#include "qgspgsourceselect.h"
 #include "qgspostgresdataitems.h"
 #include "qgspostgresfeatureiterator.h"
 #include "qgspostgrestransaction.h"
 #include "qgslogger.h"
 #include "qgsfeedback.h"
+
+#ifdef HAVE_GUI
+#include "qgspgsourceselect.h"
+#endif
 
 const QString POSTGRES_KEY = QStringLiteral( "postgres" );
 const QString POSTGRES_DESCRIPTION = QStringLiteral( "PostgreSQL/PostGIS data provider" );
@@ -192,7 +195,7 @@ QgsPostgresProvider::QgsPostgresProvider( QString const &uri )
     return;
   }
 
-  // Set the postgresql message level so that we don't get the
+  // Set the PostgreSQL message level so that we don't get the
   // 'there is no transaction in progress' warning.
 #ifndef QGISDEBUG
   mConnectionRO->PQexecNR( "set client_min_messages to error" );
@@ -351,7 +354,7 @@ QgsFeatureIterator QgsPostgresProvider::getFeatures( const QgsFeatureRequest &re
 {
   if ( !mValid )
   {
-    QgsMessageLog::logMessage( tr( "Read attempt on an invalid postgresql data source" ), tr( "PostGIS" ) );
+    QgsMessageLog::logMessage( tr( "Read attempt on an invalid PostgreSQL data source" ), tr( "PostGIS" ) );
     return QgsFeatureIterator();
   }
 
@@ -1548,14 +1551,14 @@ QVariant QgsPostgresProvider::minimumValue( int index ) const
   }
   catch ( PGFieldNotFound )
   {
-    return QVariant( QString::null );
+    return QVariant( QString() );
   }
 }
 
 // Returns the list of unique values of an attribute
-void QgsPostgresProvider::uniqueValues( int index, QList<QVariant> &uniqueValues, int limit ) const
+QSet<QVariant> QgsPostgresProvider::uniqueValues( int index, int limit ) const
 {
-  uniqueValues.clear();
+  QSet<QVariant> uniqueValues;
 
   try
   {
@@ -1583,12 +1586,13 @@ void QgsPostgresProvider::uniqueValues( int index, QList<QVariant> &uniqueValues
     if ( res.PQresultStatus() == PGRES_TUPLES_OK )
     {
       for ( int i = 0; i < res.PQntuples(); i++ )
-        uniqueValues.append( convertValue( fld.type(), fld.subType(), res.PQgetvalue( i, 0 ) ) );
+        uniqueValues.insert( convertValue( fld.type(), fld.subType(), res.PQgetvalue( i, 0 ) ) );
     }
   }
   catch ( PGFieldNotFound )
   {
   }
+  return uniqueValues;
 }
 
 QStringList QgsPostgresProvider::uniqueStringsMatching( int index, const QString &substring, int limit, QgsFeedback *feedback ) const
@@ -1713,7 +1717,7 @@ bool QgsPostgresProvider::parseDomainCheckConstraint( QStringList &enumValues, c
 
       //we assume that the constraint is of the following form:
       //(VALUE = ANY (ARRAY['a'::text, 'b'::text, 'c'::text, 'd'::text]))
-      //normally, postgresql creates that if the contstraint has been specified as 'VALUE in ('a', 'b', 'c', 'd')
+      //normally, PostgreSQL creates that if the contstraint has been specified as 'VALUE in ('a', 'b', 'c', 'd')
 
       int anyPos = checkDefinition.indexOf( QRegExp( "VALUE\\s*=\\s*ANY\\s*\\(\\s*ARRAY\\s*\\[" ) );
       int arrayPosition = checkDefinition.lastIndexOf( QLatin1String( "ARRAY[" ) );
@@ -1770,7 +1774,7 @@ QVariant QgsPostgresProvider::maximumValue( int index ) const
   }
   catch ( PGFieldNotFound )
   {
-    return QVariant( QString::null );
+    return QVariant( QString() );
   }
 }
 
@@ -1831,7 +1835,7 @@ bool QgsPostgresProvider::skipConstraintCheck( int fieldIndex, QgsFieldConstrain
 QString QgsPostgresProvider::paramValue( const QString &fieldValue, const QString &defaultValue ) const
 {
   if ( fieldValue.isNull() )
-    return QString::null;
+    return QString();
 
   if ( fieldValue == defaultValue && !defaultValue.isNull() )
   {
@@ -1934,7 +1938,7 @@ QString QgsPostgresProvider::geomParam( int offset ) const
   return geometry;
 }
 
-bool QgsPostgresProvider::addFeatures( QgsFeatureList &flist )
+bool QgsPostgresProvider::addFeatures( QgsFeatureList &flist, Flags flags )
 {
   if ( flist.isEmpty() )
     return true;
@@ -2083,15 +2087,18 @@ bool QgsPostgresProvider::addFeatures( QgsFeatureList &flist )
 
     insert += values + ')';
 
-    if ( mPrimaryKeyType == PktFidMap || mPrimaryKeyType == PktInt || mPrimaryKeyType == PktUint64 )
+    if ( !( flags & QgsFeatureSink::FastInsert ) )
     {
-      insert += QLatin1String( " RETURNING " );
-
-      QString delim;
-      Q_FOREACH ( int idx, mPrimaryKeyAttrs )
+      if ( mPrimaryKeyType == PktFidMap || mPrimaryKeyType == PktInt || mPrimaryKeyType == PktUint64 )
       {
-        insert += delim + quotedIdentifier( mAttributeFields.at( idx ).name() );
-        delim = ',';
+        insert += QLatin1String( " RETURNING " );
+
+        QString delim;
+        Q_FOREACH ( int idx, mPrimaryKeyAttrs )
+        {
+          insert += delim + quotedIdentifier( mAttributeFields.at( idx ).name() );
+          delim = ',';
+        }
       }
     }
 
@@ -2140,7 +2147,7 @@ bool QgsPostgresProvider::addFeatures( QgsFeatureList &flist )
 
       QgsPostgresResult result( conn->PQexecPrepared( QStringLiteral( "addfeatures" ), params ) );
 
-      if ( result.PQresultStatus() == PGRES_TUPLES_OK )
+      if ( !( flags & QgsFeatureSink::FastInsert ) && result.PQresultStatus() == PGRES_TUPLES_OK )
       {
         for ( int i = 0; i < mPrimaryKeyAttrs.size(); ++i )
         {
@@ -2152,40 +2159,43 @@ bool QgsPostgresProvider::addFeatures( QgsFeatureList &flist )
       else if ( result.PQresultStatus() != PGRES_COMMAND_OK )
         throw PGException( result );
 
-      if ( mPrimaryKeyType == PktOid )
+      if ( !( flags & QgsFeatureSink::FastInsert ) && mPrimaryKeyType == PktOid )
       {
         features->setId( result.PQoidValue() );
         QgsDebugMsgLevel( QString( "new fid=%1" ).arg( features->id() ), 4 );
       }
     }
 
-    // update feature ids
-    if ( mPrimaryKeyType == PktInt || mPrimaryKeyType == PktFidMap || mPrimaryKeyType == PktUint64 )
+    if ( !( flags & QgsFeatureSink::FastInsert ) )
     {
-      for ( QgsFeatureList::iterator features = flist.begin(); features != flist.end(); ++features )
+      // update feature ids
+      if ( mPrimaryKeyType == PktInt || mPrimaryKeyType == PktFidMap || mPrimaryKeyType == PktUint64 )
       {
-        QgsAttributes attrs = features->attributes();
+        for ( QgsFeatureList::iterator features = flist.begin(); features != flist.end(); ++features )
+        {
+          QgsAttributes attrs = features->attributes();
 
-        if ( mPrimaryKeyType == PktUint64 )
-        {
-          features->setId( STRING_TO_FID( attrs.at( mPrimaryKeyAttrs.at( 0 ) ) ) );
-        }
-        else if ( mPrimaryKeyType == PktInt )
-        {
-          features->setId( PKINT2FID( STRING_TO_FID( attrs.at( mPrimaryKeyAttrs.at( 0 ) ) ) ) );
-        }
-        else
-        {
-          QVariantList primaryKeyVals;
-
-          Q_FOREACH ( int idx, mPrimaryKeyAttrs )
+          if ( mPrimaryKeyType == PktUint64 )
           {
-            primaryKeyVals << attrs.at( idx );
+            features->setId( STRING_TO_FID( attrs.at( mPrimaryKeyAttrs.at( 0 ) ) ) );
           }
+          else if ( mPrimaryKeyType == PktInt )
+          {
+            features->setId( PKINT2FID( STRING_TO_FID( attrs.at( mPrimaryKeyAttrs.at( 0 ) ) ) ) );
+          }
+          else
+          {
+            QVariantList primaryKeyVals;
 
-          features->setId( mShared->lookupFid( primaryKeyVals ) );
+            Q_FOREACH ( int idx, mPrimaryKeyAttrs )
+            {
+              primaryKeyVals << attrs.at( idx );
+            }
+
+            features->setId( mShared->lookupFid( primaryKeyVals ) );
+          }
+          QgsDebugMsgLevel( QString( "new fid=%1" ).arg( features->id() ), 4 );
         }
-        QgsDebugMsgLevel( QString( "new fid=%1" ).arg( features->id() ), 4 );
       }
     }
 
@@ -2626,14 +2636,14 @@ void QgsPostgresProvider::appendGeomParam( const QgsGeometry &geom, QStringList 
 {
   if ( geom.isNull() )
   {
-    params << QString::null;
+    params << QString();
     return;
   }
 
   QString param;
 
-  std::unique_ptr<QgsGeometry> convertedGeom( convertToProviderType( geom ) );
-  QByteArray wkb( convertedGeom ? convertedGeom->exportToWkb() : geom.exportToWkb() );
+  QgsGeometry convertedGeom( convertToProviderType( geom ) );
+  QByteArray wkb( convertedGeom ? convertedGeom.exportToWkb() : geom.exportToWkb() );
   const unsigned char *buf = reinterpret_cast< const unsigned char * >( wkb.constData() );
   int wkbSize = wkb.length();
 
@@ -3117,7 +3127,7 @@ QgsRectangle QgsPostgresProvider::extent() const
             {
               ext = result.PQgetvalue( 0, 0 );
 
-              // fix for what might be a postgis bug: when the extent crosses the
+              // fix for what might be a PostGIS bug: when the extent crosses the
               // dateline extent() returns -180 to 180 (which appears right), but
               // estimated_extent() returns eastern bound of data (>-180) and
               // 180 degrees.
@@ -3530,18 +3540,6 @@ bool QgsPostgresProvider::getGeometryDetails()
 
   if ( !mValid )
     return false;
-
-  // store whether the geometry includes measure value
-  if ( detectedType == QLatin1String( "POINTM" ) || detectedType == QLatin1String( "MULTIPOINTM" ) ||
-       detectedType == QLatin1String( "LINESTRINGM" ) || detectedType == QLatin1String( "MULTILINESTRINGM" ) ||
-       detectedType == QLatin1String( "POLYGONM" ) || detectedType == QLatin1String( "MULTIPOLYGONM" ) ||
-       mForce2d )
-  {
-    // explicitly disable adding new features and editing of geometries
-    // as this would lead to corruption of measures
-    QgsMessageLog::logMessage( tr( "Editing and adding disabled for 2D+ layer (%1; %2)" ).arg( mGeometryColumn, mQuery ) );
-    mEnabledCapabilities &= ~( QgsVectorDataProvider::AddFeatures );
-  }
 
   QgsDebugMsg( QString( "Spatial column type is %1" ).arg( QgsPostgresConn::displayStringForGeomType( mSpatialColType ) ) );
 
@@ -4025,14 +4023,14 @@ static QString getNextString( const QString &txt, int &i, const QString &sep )
     if ( !stringRe.exactMatch( cur ) )
     {
       QgsLogger::warning( "Cannot find end of double quoted string: " + txt );
-      return QString::null;
+      return QString();
     }
     i += stringRe.cap( 1 ).length() + 2;
     jumpSpace( txt, i );
     if ( !txt.midRef( i ).startsWith( sep ) && i < txt.length() )
     {
       QgsLogger::warning( "Cannot find separator: " + txt.mid( i ) );
-      return QString::null;
+      return QString();
     }
     i += sep.length();
     return stringRe.cap( 1 ).replace( QLatin1String( "\\\"" ), QLatin1String( "\"" ) ).replace( QLatin1String( "\\\\" ), QLatin1String( "\\" ) );
@@ -4267,10 +4265,12 @@ QGISEXTERN bool isProvider()
   return true;
 }
 
-QGISEXTERN QgsPgSourceSelect *selectWidget( QWidget *parent, Qt::WindowFlags fl )
+#ifdef HAVE_GUI
+QGISEXTERN QgsPgSourceSelect *selectWidget( QWidget *parent, Qt::WindowFlags fl, QgsProviderRegistry::WidgetMode widgetMode )
 {
-  return new QgsPgSourceSelect( parent, fl );
+  return new QgsPgSourceSelect( parent, fl, widgetMode );
 }
+#endif
 
 QGISEXTERN int dataCapabilities()
 {

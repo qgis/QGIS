@@ -61,7 +61,7 @@ bool QgsPluginSortFilterProxyModel::filterByStatus( QModelIndex &index ) const
   if ( mAcceptedStatuses.contains( QStringLiteral( "invalid" ) )
        && sourceModel()->data( index, PLUGIN_ERROR_ROLE ).toString().isEmpty() )
   {
-    // Don't accept if the "invalid" filter is set and the plugin is ok
+    // Don't accept if the "invalid" filter is set and the plugin is OK
     return false;
   }
 

@@ -1,7 +1,18 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgssublayersdialog.h                                         *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
 class QgsSublayersDialog : QDialog
 {
+
 %TypeHeaderCode
-#include <qgssublayersdialog.h>
+#include "qgssublayersdialog.h"
 %End
   public:
 
@@ -12,46 +23,74 @@ class QgsSublayersDialog : QDialog
       Vsifile
     };
 
-    //! A structure that defines layers for the purpose of this dialog
-    //! @note added in 2.16
     struct LayerDefinition
     {
       LayerDefinition();
 
-      int layerId;        //!< identifier of the layer (one unique layer id may have multiple types though)
-      QString layerName;  //!< name of the layer (not necessarily unique)
-      int count;          //!< number of features (might be unused)
-      QString type;       //!< extra type depending on the use (e.g. geometry type for vector sublayers)
+      int layerId;        //!< Identifier of the layer (one unique layer id may have multiple types though)
+      QString layerName;  //!< Name of the layer (not necessarily unique)
+      int count;          //!< Number of features (might be unused)
+      QString type;       //!< Extra type depending on the use (e.g. geometry type for vector sublayers)
     };
 
-    //! List of layer definitions for the purpose of this dialog
-    //! @note added in 2.16
     typedef QList<QgsSublayersDialog::LayerDefinition> LayerDefinitionList;
 
-    QgsSublayersDialog( ProviderType providerType, const QString &name, QWidget *parent /TransferThis/ = 0, const Qt::WindowFlags &fl = 0 );
+    QgsSublayersDialog( ProviderType providerType,
+                        const QString &name,
+                        QWidget *parent /TransferThis/ = 0,
+                        Qt::WindowFlags fl = 0 );
+
     ~QgsSublayersDialog();
 
-    //! Populate the table with layers
-    //! @note added in 2.16
-    void populateLayerTable( const QgsSublayersDialog::LayerDefinitionList &list );
+    void populateLayerTable( const LayerDefinitionList &list );
+%Docstring
+.. versionadded:: 2.16
+%End
 
-    //! Returns list of selected layers
-    //! @note added in 2.16
-    QgsSublayersDialog::LayerDefinitionList selection();
+    LayerDefinitionList selection();
+%Docstring
+.. versionadded:: 2.16
+ :rtype: LayerDefinitionList
+%End
 
-    //! Set if we should display the add to group checkbox
-    //! @note added in 3.0
     void setShowAddToGroupCheckbox( bool showAddToGroupCheckbox );
+%Docstring
+.. versionadded:: 3.0
+%End
 
-    //! If we should display the add to group checkbox
-    //! @note added in 3.0
     bool showAddToGroupCheckbox() const;
+%Docstring
+.. versionadded:: 3.0
+ :rtype: bool
+%End
 
-    //! If we should add layers in a group
-    //! @note added in 3.0
     bool addToGroupCheckbox() const;
+%Docstring
+.. versionadded:: 3.0
+ :rtype: bool
+%End
+
+    int countColumn() const;
+%Docstring
+.. versionadded:: 3.0
+ :rtype: int
+%End
 
   public slots:
     void on_buttonBox_helpRequested();
     int exec();
+%Docstring
+ :rtype: int
+%End
+
+  protected:
+
 };
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgssublayersdialog.h                                         *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

@@ -81,7 +81,7 @@ class QgsAnnotationManager : QObject
  :rtype: list of QgsAnnotation
 %End
 
-    bool readXml( const QDomElement &element, const QDomDocument &doc );
+    bool readXml( const QDomElement &element, const QgsReadWriteContext &context );
 %Docstring
  Reads the manager's state from a DOM element, restoring all annotations
  present in the XML document.
@@ -89,7 +89,7 @@ class QgsAnnotationManager : QObject
  :rtype: bool
 %End
 
-    QDomElement writeXml( QDomDocument &doc ) const;
+    QDomElement writeXml( QDomDocument &doc, const QgsReadWriteContext &context ) const;
 %Docstring
  Returns a DOM element representing the state of the manager.
 .. seealso:: readXml()

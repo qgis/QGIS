@@ -29,11 +29,13 @@ class QString;
 
 class QgsExpression;
 class QgsGeometry;
-class QgsPoint;
+class QgsPointXY;
 class QgsRectangle;
 
 #include "qgsgeometry.h"
 #include "qgsexpression.h"
+#include "qgsexpressionnode.h"
+#include "qgsexpressionnodeimpl.h"
 #include "qgssqlstatement.h"
 
 /** \ingroup core
@@ -47,15 +49,15 @@ class CORE_EXPORT QgsOgcUtils
 {
   public:
 
-    /** GML version
-     *  \note not available in Python bindings
+    /**
+     *GML version
      */
-    typedef enum SIP_SKIP
+    enum GMLVersion
     {
       GML_2_1_2,
       GML_3_1_0,
       GML_3_2_1,
-    } GMLVersion;
+    };
 
     /** Static method that creates geometry from GML
      \param xmlString xml representation of the geometry. GML elements are expected to be
@@ -78,8 +80,8 @@ class CORE_EXPORT QgsOgcUtils
         \returns QDomElement
         \since QGIS 2.16
      */
-    static QDomElement geometryToGML( const QgsGeometry *geometry, QDomDocument &doc,
-                                      GMLVersion gmlVersion,
+    static QDomElement geometryToGML( const QgsGeometry &geometry, QDomDocument &doc,
+                                      QgsOgcUtils::GMLVersion gmlVersion,
                                       const QString &srsName,
                                       bool invertAxisOrientation,
                                       const QString &gmlIdBase,
@@ -88,12 +90,12 @@ class CORE_EXPORT QgsOgcUtils
     /** Exports the geometry to GML2 or GML3
         \returns QDomElement
      */
-    static QDomElement geometryToGML( const QgsGeometry *geometry, QDomDocument &doc, const QString &format, int precision = 17 );
+    static QDomElement geometryToGML( const QgsGeometry &geometry, QDomDocument &doc, const QString &format, int precision = 17 );
 
     /** Exports the geometry to GML2
         \returns QDomElement
      */
-    static QDomElement geometryToGML( const QgsGeometry *geometry, QDomDocument &doc, int precision = 17 );
+    static QDomElement geometryToGML( const QgsGeometry &geometry, QDomDocument &doc, int precision = 17 );
 
     /** Exports the rectangle to GML2 Box
         \returns QDomElement
@@ -138,14 +140,13 @@ class CORE_EXPORT QgsOgcUtils
     static QDomElement expressionToOgcFilter( const QgsExpression &exp, QDomDocument &doc, QString *errorMessage = nullptr );
 
     /** OGC filter version
-     * \note not available in Python bindings
      */
-    typedef enum SIP_SKIP
+    enum FilterVersion
     {
       FILTER_OGC_1_0,
       FILTER_OGC_1_1,
       FILTER_FES_2_0
-    } FilterVersion;
+    };
 
     /** Creates OGC filter XML element. Supports minimum standard filter
      * according to the OGC filter specs (=,!=,<,>,<=,>=,AND,OR,NOT)
@@ -156,7 +157,7 @@ class CORE_EXPORT QgsOgcUtils
      */
     static QDomElement expressionToOgcFilter( const QgsExpression &exp,
         QDomDocument &doc,
-        GMLVersion gmlVersion,
+        QgsOgcUtils::GMLVersion gmlVersion,
         FilterVersion filterVersion,
         const QString &geometryName,
         const QString &srsName,
@@ -176,13 +177,15 @@ class CORE_EXPORT QgsOgcUtils
      */
     static QDomElement expressionToOgcExpression( const QgsExpression &exp,
         QDomDocument &doc,
-        GMLVersion gmlVersion,
+        QgsOgcUtils::GMLVersion gmlVersion,
         FilterVersion filterVersion,
         const QString &geometryName,
         const QString &srsName,
         bool honourAxisOrientation,
         bool invertAxisOrientation,
         QString *errorMessage = nullptr );
+
+#ifndef SIP_RUN
 
     /** \ingroup core
      * Layer properties. Used by SQLStatementToOgcFilter().
@@ -202,6 +205,7 @@ class CORE_EXPORT QgsOgcUtils
         //! SRS name
         QString mSRSName;
     };
+#endif
 
     /** Creates OGC filter XML element from the WHERE and JOIN clauses of a SQL
      * statement. Supports minimum standard filter
@@ -222,7 +226,7 @@ class CORE_EXPORT QgsOgcUtils
      */
     static QDomElement SQLStatementToOgcFilter( const QgsSQLStatement &statement,
         QDomDocument &doc,
-        GMLVersion gmlVersion,
+        QgsOgcUtils::GMLVersion gmlVersion,
         FilterVersion filterVersion,
         const QList<LayerProperties> &layerProperties,
         bool honourAxisOrientation,
@@ -273,24 +277,26 @@ class CORE_EXPORT QgsOgcUtils
     static QDomElement createGMLPositions( const QgsPolyline &points, QDomDocument &doc );
 
     //! handle a generic sub-expression
-    static QgsExpression::Node *nodeFromOgcFilter( QDomElement &element, QString &errorMessage );
+    static QgsExpressionNode *nodeFromOgcFilter( QDomElement &element, QString &errorMessage );
     //! handle a generic binary operator
-    static QgsExpression::NodeBinaryOperator *nodeBinaryOperatorFromOgcFilter( QDomElement &element, QString &errorMessage );
+    static QgsExpressionNodeBinaryOperator *nodeBinaryOperatorFromOgcFilter( QDomElement &element, QString &errorMessage );
     //! handles various spatial operation tags (\verbatim <Intersects> \endverbatim, \verbatim <Touches> \endverbatim etc.)
-    static QgsExpression::NodeFunction *nodeSpatialOperatorFromOgcFilter( QDomElement &element, QString &errorMessage );
+    static QgsExpressionNodeFunction *nodeSpatialOperatorFromOgcFilter( QDomElement &element, QString &errorMessage );
     //! handle \verbatim <Not> \endverbatim tag
-    static QgsExpression::NodeUnaryOperator *nodeNotFromOgcFilter( QDomElement &element, QString &errorMessage );
+    static QgsExpressionNodeUnaryOperator *nodeNotFromOgcFilter( QDomElement &element, QString &errorMessage );
     //! handles \verbatim <Function> \endverbatim tag
-    static QgsExpression::NodeFunction *nodeFunctionFromOgcFilter( QDomElement &element, QString &errorMessage );
+    static QgsExpressionNodeFunction *nodeFunctionFromOgcFilter( QDomElement &element, QString &errorMessage );
     //! handles \verbatim <Literal> \endverbatim tag
-    static QgsExpression::Node *nodeLiteralFromOgcFilter( QDomElement &element, QString &errorMessage );
+    static QgsExpressionNode *nodeLiteralFromOgcFilter( QDomElement &element, QString &errorMessage );
     //! handles \verbatim <PropertyName> \endverbatim tag
-    static QgsExpression::NodeColumnRef *nodeColumnRefFromOgcFilter( QDomElement &element, QString &errorMessage );
+    static QgsExpressionNodeColumnRef *nodeColumnRefFromOgcFilter( QDomElement &element, QString &errorMessage );
     //! handles \verbatim <PropertyIsBetween> \endverbatim tag
-    static QgsExpression::Node *nodeIsBetweenFromOgcFilter( QDomElement &element, QString &errorMessage );
+    static QgsExpressionNode *nodeIsBetweenFromOgcFilter( QDomElement &element, QString &errorMessage );
     //! handles \verbatim <PropertyIsNull> \endverbatim tag
-    static QgsExpression::NodeBinaryOperator *nodePropertyIsNullFromOgcFilter( QDomElement &element, QString &errorMessage );
+    static QgsExpressionNodeBinaryOperator *nodePropertyIsNullFromOgcFilter( QDomElement &element, QString &errorMessage );
 };
+
+#ifndef SIP_RUN
 
 /** \ingroup core
  * Internal use by QgsOgcUtils
@@ -309,7 +315,7 @@ class QgsOgcUtilsExprToFilter
                              bool invertAxisOrientation );
 
     //! Convert an expression to a OGC filter
-    QDomElement expressionNodeToOgcFilter( const QgsExpression::Node *node );
+    QDomElement expressionNodeToOgcFilter( const QgsExpressionNode *node );
 
     //! Return whether the gml: namespace is used
     bool GMLNamespaceUsed() const { return mGMLUsed; }
@@ -330,12 +336,12 @@ class QgsOgcUtilsExprToFilter
     QString mPropertyName;
     int mGeomId;
 
-    QDomElement expressionUnaryOperatorToOgcFilter( const QgsExpression::NodeUnaryOperator *node );
-    QDomElement expressionBinaryOperatorToOgcFilter( const QgsExpression::NodeBinaryOperator *node );
-    QDomElement expressionLiteralToOgcFilter( const QgsExpression::NodeLiteral *node );
-    QDomElement expressionColumnRefToOgcFilter( const QgsExpression::NodeColumnRef *node );
-    QDomElement expressionInOperatorToOgcFilter( const QgsExpression::NodeInOperator *node );
-    QDomElement expressionFunctionToOgcFilter( const QgsExpression::NodeFunction *node );
+    QDomElement expressionUnaryOperatorToOgcFilter( const QgsExpressionNodeUnaryOperator *node );
+    QDomElement expressionBinaryOperatorToOgcFilter( const QgsExpressionNodeBinaryOperator *node );
+    QDomElement expressionLiteralToOgcFilter( const QgsExpressionNodeLiteral *node );
+    QDomElement expressionColumnRefToOgcFilter( const QgsExpressionNodeColumnRef *node );
+    QDomElement expressionInOperatorToOgcFilter( const QgsExpressionNodeInOperator *node );
+    QDomElement expressionFunctionToOgcFilter( const QgsExpressionNodeFunction *node );
 };
 
 /** \ingroup core
@@ -397,5 +403,6 @@ class QgsOgcUtilsSQLStatementToFilter
                          QString &srsName,
                          bool &axisInversion );
 };
+#endif // #ifndef SIP_RUN
 
 #endif // QGSOGCUTILS_H

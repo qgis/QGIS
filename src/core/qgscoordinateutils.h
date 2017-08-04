@@ -18,11 +18,13 @@
 #ifndef QGSCOORDINATEUTILS_H
 #define QGSCOORDINATEUTILS_H
 
+#define SIP_NO_FILE
+
 #include <QString>
 
 #include "qgis_core.h"
 
-class QgsPoint;
+class QgsPointXY;
 class QgsCoordinateReferenceSystem;
 
 //not stable api - I plan on reworking this when QgsCoordinateFormatter lands in 2.16
@@ -49,7 +51,7 @@ class CORE_EXPORT QgsCoordinateUtils
      */
     static int calculateCoordinatePrecision( double mapUnitsPerPixel, const QgsCoordinateReferenceSystem &mapCrs );
 
-    static QString formatCoordinateForProject( const QgsPoint &point, const QgsCoordinateReferenceSystem &destCrs, int precision );
+    static QString formatCoordinateForProject( const QgsPointXY &point, const QgsCoordinateReferenceSystem &destCrs, int precision );
 
 };
 

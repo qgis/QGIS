@@ -121,7 +121,7 @@ QString QgsWkbTypes::displayString( Type type )
   QMap< Type, wkbEntry >::const_iterator it = ENTRIES.constFind( type );
   if ( it == ENTRIES.constEnd() )
   {
-    return QString::null;
+    return QString();
   }
   return it->mName;
 }

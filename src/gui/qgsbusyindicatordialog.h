@@ -18,11 +18,12 @@
 #ifndef QGSBUSYINDICATORDIALOG_H
 #define QGSBUSYINDICATORDIALOG_H
 
-#include "qgisgui.h"
+#include "qgsguiutils.h"
 
 #include <QDialog>
 #include <QLabel>
 #include "qgis_gui.h"
+#include "qgis_sip.h"
 
 
 /** \ingroup gui
@@ -40,7 +41,7 @@ class GUI_EXPORT QgsBusyIndicatorDialog : public QDialog
      * \param parent parent object (owner)
      * \param fl widget flags
      */
-    QgsBusyIndicatorDialog( const QString &message = "", QWidget *parent = nullptr, Qt::WindowFlags fl = QgisGui::ModalDialogFlags );
+    QgsBusyIndicatorDialog( const QString &message = "", QWidget *parent SIP_TRANSFERTHIS = nullptr, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags );
 
     QString message() const { return mMessage; }
     void setMessage( const QString &message );

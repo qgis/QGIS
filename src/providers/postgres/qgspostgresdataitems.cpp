@@ -16,14 +16,18 @@
 
 #include "qgspostgresconn.h"
 #include "qgspostgresconnpool.h"
-#include "qgspgnewconnection.h"
 #include "qgscolumntypethread.h"
 #include "qgslogger.h"
 #include "qgsdatasourceuri.h"
 #include "qgsapplication.h"
 #include "qgsmessageoutput.h"
-#include "qgsnewnamedialog.h"
 #include "qgsvectorlayer.h"
+
+#ifdef HAVE_GUI
+#include "qgspgnewconnection.h"
+#include "qgsnewnamedialog.h"
+#include "qgspgsourceselect.h"
+#endif
 
 #include <QMessageBox>
 #include <QInputDialog>
@@ -39,6 +43,7 @@ QgsPGConnectionItem::QgsPGConnectionItem( QgsDataItem *parent, QString name, QSt
   : QgsDataCollectionItem( parent, name, path )
 {
   mIconName = QStringLiteral( "mIconConnect.png" );
+  mCapabilities |= Collapse;
 }
 
 QVector<QgsDataItem *> QgsPGConnectionItem::createChildren()
@@ -90,6 +95,7 @@ bool QgsPGConnectionItem::equal( const QgsDataItem *other )
   return ( mPath == o->mPath && mName == o->mName );
 }
 
+#ifdef HAVE_GUI
 QList<QAction *> QgsPGConnectionItem::actions()
 {
   QList<QAction *> lst;
@@ -128,7 +134,7 @@ void QgsPGConnectionItem::editConnection()
   {
     // the parent should be updated
     if ( mParent )
-      mParent->refresh();
+      mParent->refreshConnections();
   }
 }
 
@@ -142,13 +148,15 @@ void QgsPGConnectionItem::deleteConnection()
   QgsPostgresConn::deleteConnection( mName );
   // the parent should be updated
   if ( mParent )
-    mParent->refresh();
+    mParent->refreshConnections();
 }
 
 void QgsPGConnectionItem::refreshConnection()
 {
-  // the parent should be updated
   refresh();
+  // the parent should be updated
+  if ( mParent )
+    mParent->refreshConnections();
 }
 
 void QgsPGConnectionItem::createSchema()
@@ -179,11 +187,26 @@ void QgsPGConnectionItem::createSchema()
 
   conn->unref();
   refresh();
+  // the parent should be updated
+  if ( mParent )
+    mParent->refreshConnections();
+}
+#endif
+
+void QgsPGConnectionItem::refreshSchema( const QString &schema )
+{
+  Q_FOREACH ( QgsDataItem *child, mChildren )
+  {
+    if ( child->name() == schema || schema.isEmpty() )
+    {
+      child->refresh();
+    }
+  }
 }
 
 bool QgsPGConnectionItem::handleDrop( const QMimeData *data, Qt::DropAction )
 {
-  return handleDrop( data, QString::null );
+  return handleDrop( data, QString() );
 }
 
 bool QgsPGConnectionItem::handleDrop( const QMimeData *data, const QString &toSchema )
@@ -200,15 +223,16 @@ bool QgsPGConnectionItem::handleDrop( const QMimeData *data, const QString &toSc
   QgsMimeDataUtils::UriList lst = QgsMimeDataUtils::decodeUriList( data );
   Q_FOREACH ( const QgsMimeDataUtils::Uri &u, lst )
   {
-    if ( u.layerType != QLatin1String( "vector" ) )
+    // open the source layer
+    bool owner;
+    QString error;
+    QgsVectorLayer *srcLayer = u.vectorLayer( owner, error );
+    if ( !srcLayer )
     {
-      importResults.append( tr( "%1: Not a vector layer!" ).arg( u.name ) );
-      hasError = true; // only vectors can be imported
+      importResults.append( tr( "%1: %2" ).arg( u.name ).arg( error ) );
+      hasError = true;
       continue;
     }
-
-    // open the source layer
-    QgsVectorLayer *srcLayer = new QgsVectorLayer( u.uri, u.name, u.providerKey );
 
     if ( srcLayer->isValid() )
     {
@@ -220,14 +244,14 @@ bool QgsPGConnectionItem::handleDrop( const QMimeData *data, const QString &toSc
         uri.setSchema( toSchema );
       }
 
-      std::unique_ptr< QgsVectorLayerExporterTask > exportTask( QgsVectorLayerExporterTask::withLayerOwnership( srcLayer, uri.uri( false ), QStringLiteral( "postgres" ), srcLayer->crs() ) );
+      std::unique_ptr< QgsVectorLayerExporterTask > exportTask( new QgsVectorLayerExporterTask( srcLayer, uri.uri( false ), QStringLiteral( "postgres" ), srcLayer->crs(), nullptr, owner ) );
 
       // when export is successful:
       connect( exportTask.get(), &QgsVectorLayerExporterTask::exportComplete, this, [ = ]()
       {
         // this is gross - TODO - find a way to get access to messageBar from data items
         QMessageBox::information( nullptr, tr( "Import to PostGIS database" ), tr( "Import was successful." ) );
-        refresh();
+        refreshSchema( toSchema );
       } );
 
       // when an error occurs:
@@ -240,7 +264,7 @@ bool QgsPGConnectionItem::handleDrop( const QMimeData *data, const QString &toSc
           output->setMessage( tr( "Failed to import some layers!\n\n" ) + errorMessage, QgsMessageOutput::MessageText );
           output->showMessage();
         }
-        refresh();
+        refreshSchema( toSchema );
       } );
 
       QgsApplication::taskManager()->addTask( exportTask.release() );
@@ -278,6 +302,7 @@ QString QgsPGLayerItem::comments() const
   return mLayerProperty.tableComment;
 }
 
+#ifdef HAVE_GUI
 QList<QAction *> QgsPGLayerItem::actions()
 {
   QList<QAction *> lst;
@@ -415,16 +440,17 @@ void QgsPGLayerItem::truncateTable()
   conn->unref();
   QMessageBox::information( nullptr, tr( "Truncate Table" ), tr( "Table truncated successfully." ) );
 }
+#endif
 
 QString QgsPGLayerItem::createUri()
 {
-  QString pkColName = !mLayerProperty.pkCols.isEmpty() ? mLayerProperty.pkCols.at( 0 ) : QString::null;
+  QString pkColName = !mLayerProperty.pkCols.isEmpty() ? mLayerProperty.pkCols.at( 0 ) : QString();
   QgsPGConnectionItem *connItem = qobject_cast<QgsPGConnectionItem *>( parent() ? parent()->parent() : nullptr );
 
   if ( !connItem )
   {
     QgsDebugMsg( "connection item not found." );
-    return QString::null;
+    return QString();
   }
 
   QgsDataSourceUri uri( QgsPostgresConn::connUri( connItem->name() ).connectionInfo( false ) );
@@ -446,11 +472,11 @@ QgsPGSchemaItem::QgsPGSchemaItem( QgsDataItem *parent, const QString &connection
 
 QVector<QgsDataItem *> QgsPGSchemaItem::createChildren()
 {
-
   QVector<QgsDataItem *>items;
 
   QgsDataSourceUri uri = QgsPostgresConn::connUri( mConnectionName );
   QgsPostgresConn *conn = QgsPostgresConnPool::instance()->acquireConnection( uri.connectionInfo( false ) );
+
   if ( !conn )
   {
     items.append( new QgsErrorItem( this, tr( "Connection failed" ), mPath + "/error" ) );
@@ -502,6 +528,7 @@ QVector<QgsDataItem *> QgsPGSchemaItem::createChildren()
   return items;
 }
 
+#ifdef HAVE_GUI
 QList<QAction *> QgsPGSchemaItem::actions()
 {
   QList<QAction *> lst;
@@ -627,6 +654,7 @@ void QgsPGSchemaItem::renameSchema()
   if ( mParent )
     mParent->refresh();
 }
+#endif
 
 QgsPGLayerItem *QgsPGSchemaItem::createLayer( QgsPostgresLayerProperty layerProperty )
 {
@@ -696,6 +724,7 @@ QVector<QgsDataItem *> QgsPGRootItem::createChildren()
   return connections;
 }
 
+#ifdef HAVE_GUI
 QList<QAction *> QgsPGRootItem::actions()
 {
   QList<QAction *> lst;
@@ -709,7 +738,7 @@ QList<QAction *> QgsPGRootItem::actions()
 
 QWidget *QgsPGRootItem::paramWidget()
 {
-  QgsPgSourceSelect *select = new QgsPgSourceSelect( nullptr, 0, true, true );
+  QgsPgSourceSelect *select = new QgsPgSourceSelect( nullptr, 0, QgsProviderRegistry::WidgetMode::Manager );
   connect( select, &QgsPgSourceSelect::connectionsChanged, this, &QgsPGRootItem::connectionsChanged );
   return select;
 }
@@ -727,6 +756,7 @@ void QgsPGRootItem::newConnection()
     refresh();
   }
 }
+#endif
 
 QMainWindow *QgsPGRootItem::sMainWindow = nullptr;
 

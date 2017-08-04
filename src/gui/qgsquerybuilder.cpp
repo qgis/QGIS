@@ -117,29 +117,27 @@ void QgsQueryBuilder::fillValues( int idx, int limit )
   mModelValues->clear();
 
   // determine the field type
-  QList<QVariant> values;
-  mLayer->uniqueValues( idx, values, limit );
+  QSet<QVariant> values = mLayer->uniqueValues( idx, limit );
 
-  QgsSettings settings;
   QString nullValue = QgsApplication::nullRepresentation();
 
   QgsDebugMsg( QString( "nullValue: %1" ).arg( nullValue ) );
 
-  for ( int i = 0; i < values.size(); i++ )
+  Q_FOREACH ( const QVariant &var, values )
   {
     QString value;
-    if ( values[i].isNull() )
+    if ( var.isNull() )
       value = nullValue;
-    else if ( values[i].type() == QVariant::Date && mLayer->providerType() == QLatin1String( "ogr" ) && mLayer->storageType() == QLatin1String( "ESRI Shapefile" ) )
-      value = values[i].toDate().toString( QStringLiteral( "yyyy/MM/dd" ) );
+    else if ( var.type() == QVariant::Date && mLayer->providerType() == QLatin1String( "ogr" ) && mLayer->storageType() == QLatin1String( "ESRI Shapefile" ) )
+      value = var.toDate().toString( QStringLiteral( "yyyy/MM/dd" ) );
     else
-      value = values[i].toString();
+      value = var.toString();
 
     QStandardItem *myItem = new QStandardItem( value );
     myItem->setEditable( false );
-    myItem->setData( values[i], Qt::UserRole + 1 );
+    myItem->setData( var, Qt::UserRole + 1 );
     mModelValues->insertRow( mModelValues->rowCount(), myItem );
-    QgsDebugMsg( QString( "Value is null: %1\nvalue: %2" ).arg( values[i].isNull() ).arg( values[i].isNull() ? nullValue : values[i].toString() ) );
+    QgsDebugMsg( QString( "Value is null: %1\nvalue: %2" ).arg( var.isNull() ).arg( var.isNull() ? nullValue : var.toString() ) );
   }
 }
 

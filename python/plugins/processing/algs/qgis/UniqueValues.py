@@ -31,25 +31,32 @@ import codecs
 
 from qgis.PyQt.QtGui import QIcon
 
-from qgis.core import QgsProcessingUtils
+from qgis.core import (QgsCoordinateReferenceSystem,
+                       QgsWkbTypes,
+                       QgsFeature,
+                       QgsFeatureSink,
+                       QgsFields,
+                       QgsProcessingParameterField,
+                       QgsProcessingParameterFeatureSource,
+                       QgsProcessingParameterFeatureSink,
+                       QgsProcessingOutputNumber,
+                       QgsProcessingOutputString,
+                       QgsProcessingParameterFileDestination,
+                       QgsProcessingOutputHtml)
 
-from processing.core.GeoAlgorithm import GeoAlgorithm
-from processing.core.parameters import ParameterVector
-from processing.core.parameters import ParameterTableField
-from processing.core.outputs import OutputHTML
-from processing.core.outputs import OutputNumber
-from processing.core.outputs import OutputString
+from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 
 pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
 
-class UniqueValues(GeoAlgorithm):
+class UniqueValues(QgisAlgorithm):
 
-    INPUT_LAYER = 'INPUT_LAYER'
+    INPUT = 'INPUT'
     FIELD_NAME = 'FIELD_NAME'
     TOTAL_VALUES = 'TOTAL_VALUES'
     UNIQUE_VALUES = 'UNIQUE_VALUES'
     OUTPUT = 'OUTPUT'
+    OUTPUT_HTML_FILE = 'OUTPUT_HTML_FILE'
 
     def icon(self):
         return QIcon(os.path.join(pluginPath, 'images', 'ftools', 'unique.png'))
@@ -57,31 +64,60 @@ class UniqueValues(GeoAlgorithm):
     def group(self):
         return self.tr('Vector table tools')
 
+    def __init__(self):
+        super().__init__()
+
+    def initAlgorithm(self, config=None):
+        self.addParameter(QgsProcessingParameterFeatureSource(self.INPUT,
+                                                              self.tr('Input layer')))
+        self.addParameter(QgsProcessingParameterField(self.FIELD_NAME,
+                                                      self.tr('Target field'),
+                                                      parentLayerParameterName=self.INPUT, type=QgsProcessingParameterField.Any))
+
+        self.addParameter(QgsProcessingParameterFeatureSink(self.OUTPUT, self.tr('Unique values'), optional=True, defaultValue=''))
+
+        self.addParameter(QgsProcessingParameterFileDestination(self.OUTPUT_HTML_FILE, self.tr('HTML report'), self.tr('HTML files (*.html)'), None, True))
+        self.addOutput(QgsProcessingOutputHtml(self.OUTPUT_HTML_FILE, self.tr('HTML report')))
+        self.addOutput(QgsProcessingOutputNumber(self.TOTAL_VALUES, self.tr('Total unique values')))
+        self.addOutput(QgsProcessingOutputString(self.UNIQUE_VALUES, self.tr('Unique values')))
+
     def name(self):
         return 'listuniquevalues'
 
     def displayName(self):
         return self.tr('List unique values')
 
-    def defineCharacteristics(self):
-        self.addParameter(ParameterVector(self.INPUT_LAYER,
-                                          self.tr('Input layer')))
-        self.addParameter(ParameterTableField(self.FIELD_NAME,
-                                              self.tr('Target field'),
-                                              self.INPUT_LAYER, ParameterTableField.DATA_TYPE_ANY))
-        self.addOutput(OutputHTML(self.OUTPUT, self.tr('Unique values')))
-        self.addOutput(OutputNumber(self.TOTAL_VALUES, self.tr('Total unique values')))
-        self.addOutput(OutputString(self.UNIQUE_VALUES, self.tr('Unique values')))
+    def processAlgorithm(self, parameters, context, feedback):
+        source = self.parameterAsSource(parameters, self.INPUT, context)
+        field_name = self.parameterAsString(parameters, self.FIELD_NAME, context)
+        values = source.uniqueValues(source.fields().lookupField(field_name))
 
-    def processAlgorithm(self, context, feedback):
-        layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT_LAYER), context)
-        fieldName = self.getParameterValue(self.FIELD_NAME)
-        outputFile = self.getOutputValue(self.OUTPUT)
-        values = QgsProcessingUtils.uniqueValues(layer, layer.fields().lookupField(fieldName), context)
-        self.createHTML(outputFile, values)
-        self.setOutputValue(self.TOTAL_VALUES, len(values))
-        self.setOutputValue(self.UNIQUE_VALUES, ';'.join([str(v) for v in
-                                                          values]))
+        fields = QgsFields()
+        field = source.fields()[source.fields().lookupField(field_name)]
+        field.setName('VALUES')
+        fields.append(field)
+        (sink, dest_id) = self.parameterAsSink(parameters, self.OUTPUT, context,
+                                               fields, QgsWkbTypes.NoGeometry, QgsCoordinateReferenceSystem())
+        results = {}
+        if sink:
+            for value in values:
+                if feedback.isCanceled():
+                    break
+
+                f = QgsFeature()
+                f.setAttributes([value])
+                sink.addFeature(f, QgsFeatureSink.FastInsert)
+            results[self.OUTPUT] = dest_id
+
+        output_file = self.parameterAsFileOutput(parameters, self.OUTPUT_HTML_FILE, context)
+        if output_file:
+            self.createHTML(output_file, values)
+            results[self.OUTPUT_HTML_FILE] = output_file
+
+        results[self.TOTAL_VALUES] = len(values)
+        results[self.UNIQUE_VALUES] = ';'.join([str(v) for v in
+                                                values])
+        return results
 
     def createHTML(self, outputFile, algData):
         with codecs.open(outputFile, 'w', encoding='utf-8') as f:

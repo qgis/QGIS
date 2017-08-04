@@ -67,6 +67,19 @@ class CORE_EXPORT QgsRasterFileWriter
         const QgsRectangle &extent,
         const QgsCoordinateReferenceSystem &crs ) SIP_FACTORY;
 
+    /** Create a raster file with given number of bands without initializing the pixel data.
+     * Returned provider may be used to initialize the raster using writeBlock() calls.
+     * Ownership of the returned provider is passed to the caller.
+     * \note Does not work with tiled mode enabled.
+     * \returns Instance of data provider in editing mode (on success) or nullptr on error.
+     * \since QGIS 3.0
+     */
+    QgsRasterDataProvider *createMultiBandRaster( Qgis::DataType dataType,
+        int width, int height,
+        const QgsRectangle &extent,
+        const QgsCoordinateReferenceSystem &crs,
+        int nBands ) SIP_FACTORY;
+
     /** Write raster file
         \param pipe raster pipe
         \param nCols number of output columns
@@ -116,6 +129,14 @@ class CORE_EXPORT QgsRasterFileWriter
 
     void setPyramidsConfigOptions( const QStringList &list ) { mPyramidsConfigOptions = list; }
     QStringList pyramidsConfigOptions() const { return mPyramidsConfigOptions; }
+
+    /**
+     * Returns the GDAL driver name for a specified file \a extension. E.g. the
+     * driver name for the ".tif" extension is "GTiff".
+     * If no suitable drivers are found then an empty string is returned.
+     * \since QGIS 3.0
+     */
+    static QString driverForExtension( const QString &extension );
 
   private:
     QgsRasterFileWriter(); //forbidden

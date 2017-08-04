@@ -10,9 +10,6 @@
 
 
 
-%Feature ANDROID
-
-
 class QgsApplication : QApplication
 {
 %Docstring
@@ -83,7 +80,7 @@ to change due to centralization.
     static const char *QGIS_ORGANIZATION_NAME;
     static const char *QGIS_ORGANIZATION_DOMAIN;
     static const char *QGIS_APPLICATION_NAME;
-    QgsApplication( SIP_PYLIST argv, bool GUIenabled, QString customConfigPath = QString() ) / PostHook = __pyQtQAppHook__ / [( int &argc, char **argv, bool GUIenabled, const QString &customConfigPath = QString() )];
+    QgsApplication( SIP_PYLIST argv, bool GUIenabled, QString profileFolder = QString(), QString platformName = "desktop" ) / PostHook = __pyQtQAppHook__ / [( int &argc, char **argv, bool GUIenabled, const QString &profileFolder = QString(), const QString &platformName = "desktop" )];
 %MethodCode
     // The Python interface is a list of argument strings that is modified.
 
@@ -98,7 +95,7 @@ to change due to centralization.
       // Create it now the arguments are right.
       static int nargc = argc;
 
-      sipCpp = new sipQgsApplication( nargc, argv, a1, *a2 );
+      sipCpp = new sipQgsApplication( nargc, argv, a1, *a2, *a3 );
 
       // Now modify the original list.
       qtgui_UpdatePyArgv( a0, argc, argv );
@@ -648,6 +645,13 @@ Returns path to the build output directory. Valid only when running from build d
  :rtype: QgsSymbolLayerRegistry
 %End
 
+    static QgsLayoutItemRegistry *layoutItemRegistry();
+%Docstring
+ Returns the application's layout item registry, used for layout item types.
+.. versionadded:: 3.0
+ :rtype: QgsLayoutItemRegistry
+%End
+
     static QgsGPSConnectionRegistry *gpsConnectionRegistry();
 %Docstring
  Returns the application's GPS connection registry, used for managing GPS connections.
@@ -675,6 +679,13 @@ Returns path to the build output directory. Valid only when running from build d
  algorithms, and various parameters and outputs.
 .. versionadded:: 3.0
  :rtype: QgsProcessingRegistry
+%End
+
+    static QgsPageSizeRegistry *pageSizeRegistry();
+%Docstring
+ Returns the application's page size registry, used for managing layout page sizes.
+.. versionadded:: 3.0
+ :rtype: QgsPageSizeRegistry
 %End
 
 

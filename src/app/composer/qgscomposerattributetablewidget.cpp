@@ -29,7 +29,7 @@
 #include "qgsexpressionbuilderdialog.h"
 #include "qgsproject.h"
 #include "qgsrelationmanager.h"
-#include "qgisgui.h"
+#include "qgsguiutils.h"
 #include "qgscomposertablebackgroundcolorsdialog.h"
 
 QgsComposerAttributeTableWidget::QgsComposerAttributeTableWidget( QgsComposerAttributeTableV2 *table, QgsComposerFrame *frame )
@@ -39,6 +39,9 @@ QgsComposerAttributeTableWidget::QgsComposerAttributeTableWidget( QgsComposerAtt
 {
   setupUi( this );
   setPanelTitle( tr( "Table properties" ) );
+
+  mContentFontToolButton->setMode( QgsFontButton::ModeQFont );
+  mHeaderFontToolButton->setMode( QgsFontButton::ModeQFont );
 
   blockAllSignals( true );
 
@@ -67,18 +70,18 @@ QgsComposerAttributeTableWidget::QgsComposerAttributeTableWidget( QgsComposerAtt
   mComposerMapComboBox->setItemType( QgsComposerItem::ComposerMap );
   connect( mComposerMapComboBox, &QgsComposerItemComboBox::itemChanged, this, &QgsComposerAttributeTableWidget::composerMapChanged );
 
-  mHeaderFontColorButton->setColorDialogTitle( tr( "Select header font color" ) );
-  mHeaderFontColorButton->setAllowAlpha( true );
+  mHeaderFontColorButton->setColorDialogTitle( tr( "Select Header Font Color" ) );
+  mHeaderFontColorButton->setAllowOpacity( true );
   mHeaderFontColorButton->setContext( QStringLiteral( "composer" ) );
-  mContentFontColorButton->setColorDialogTitle( tr( "Select content font color" ) );
-  mContentFontColorButton->setAllowAlpha( true );
+  mContentFontColorButton->setColorDialogTitle( tr( "Select Content Font Color" ) );
+  mContentFontColorButton->setAllowOpacity( true );
   mContentFontColorButton->setContext( QStringLiteral( "composer" ) );
-  mGridColorButton->setColorDialogTitle( tr( "Select grid color" ) );
-  mGridColorButton->setAllowAlpha( true );
+  mGridColorButton->setColorDialogTitle( tr( "Select Grid Color" ) );
+  mGridColorButton->setAllowOpacity( true );
   mGridColorButton->setContext( QStringLiteral( "composer" ) );
   mGridColorButton->setDefaultColor( Qt::black );
-  mBackgroundColorButton->setColorDialogTitle( tr( "Select background color" ) );
-  mBackgroundColorButton->setAllowAlpha( true );
+  mBackgroundColorButton->setColorDialogTitle( tr( "Select Background Color" ) );
+  mBackgroundColorButton->setAllowOpacity( true );
   mBackgroundColorButton->setContext( QStringLiteral( "composer" ) );
   mBackgroundColorButton->setShowNoColor( true );
   mBackgroundColorButton->setNoColorString( tr( "No background" ) );
@@ -106,6 +109,9 @@ QgsComposerAttributeTableWidget::QgsComposerAttributeTableWidget( QgsComposerAtt
     QgsComposerItemWidget *itemPropertiesWidget = new QgsComposerItemWidget( this, mFrame );
     mainLayout->addWidget( itemPropertiesWidget );
   }
+
+  connect( mHeaderFontToolButton, &QgsFontButton::changed, this, &QgsComposerAttributeTableWidget::headerFontChanged );
+  connect( mContentFontToolButton, &QgsFontButton::changed, this, &QgsComposerAttributeTableWidget::contentFontChanged );
 }
 
 QgsComposerAttributeTableWidget::~QgsComposerAttributeTableWidget()
@@ -238,24 +244,19 @@ void QgsComposerAttributeTableWidget::on_mMarginSpinBox_valueChanged( double d )
   }
 }
 
-void QgsComposerAttributeTableWidget::on_mHeaderFontPushButton_clicked()
+void QgsComposerAttributeTableWidget::headerFontChanged()
 {
   if ( !mComposerTable )
     return;
 
-  bool ok;
-  QFont newFont = QgisGui::getFont( ok, mComposerTable->headerFont(), tr( "Select Font" ) );
-  if ( ok )
-  {
-    QgsComposition *composition = mComposerTable->composition();
-    if ( composition )
-      composition->beginMultiFrameCommand( mComposerTable, tr( "Table header font" ) );
+  QgsComposition *composition = mComposerTable->composition();
+  if ( composition )
+    composition->beginMultiFrameCommand( mComposerTable, tr( "Table header font" ) );
 
-    mComposerTable->setHeaderFont( newFont );
+  mComposerTable->setHeaderFont( mHeaderFontToolButton->currentFont() );
 
-    if ( composition )
-      composition->endMultiFrameCommand();
-  }
+  if ( composition )
+    composition->endMultiFrameCommand();
 }
 
 void QgsComposerAttributeTableWidget::on_mHeaderFontColorButton_colorChanged( const QColor &newColor )
@@ -277,26 +278,21 @@ void QgsComposerAttributeTableWidget::on_mHeaderFontColorButton_colorChanged( co
   }
 }
 
-void QgsComposerAttributeTableWidget::on_mContentFontPushButton_clicked()
+void QgsComposerAttributeTableWidget::contentFontChanged()
 {
   if ( !mComposerTable )
   {
     return;
   }
 
-  bool ok;
-  QFont newFont = QgisGui::getFont( ok, mComposerTable->contentFont(), tr( "Select Font" ) );
-  if ( ok )
-  {
-    QgsComposition *composition = mComposerTable->composition();
-    if ( composition )
-      composition->beginMultiFrameCommand( mComposerTable, tr( "Table content font" ) );
+  QgsComposition *composition = mComposerTable->composition();
+  if ( composition )
+    composition->beginMultiFrameCommand( mComposerTable, tr( "Table content font" ) );
 
-    mComposerTable->setContentFont( newFont );
+  mComposerTable->setContentFont( mContentFontToolButton->currentFont() );
 
-    if ( composition )
-      composition->endMultiFrameCommand();
-  }
+  if ( composition )
+    composition->endMultiFrameCommand();
 }
 
 void QgsComposerAttributeTableWidget::on_mContentFontColorButton_colorChanged( const QColor &newColor )
@@ -479,6 +475,8 @@ void QgsComposerAttributeTableWidget::updateGuiElements()
 
   mHeaderFontColorButton->setColor( mComposerTable->headerFontColor() );
   mContentFontColorButton->setColor( mComposerTable->contentFontColor() );
+  mHeaderFontToolButton->setCurrentFont( mComposerTable->headerFont() );
+  mContentFontToolButton->setCurrentFont( mComposerTable->contentFont() );
 
   if ( mComposerTable->displayOnlyVisibleFeatures() && mShowOnlyVisibleFeaturesCheckBox->isEnabled() )
   {
@@ -628,6 +626,8 @@ void QgsComposerAttributeTableWidget::blockAllSignals( bool b )
   mDrawEmptyCheckBox->blockSignals( b );
   mWrapStringLineEdit->blockSignals( b );
   mWrapBehaviorComboBox->blockSignals( b );
+  mContentFontToolButton->blockSignals( b );
+  mHeaderFontToolButton->blockSignals( b );
 }
 
 void QgsComposerAttributeTableWidget::setMaximumNumberOfFeatures( int n )
@@ -785,7 +785,7 @@ void QgsComposerAttributeTableWidget::on_mFeatureFilterButton_clicked()
 
   QgsExpressionContext context = mComposerTable->createExpressionContext();
   QgsExpressionBuilderDialog exprDlg( mComposerTable->sourceLayer(), mFeatureFilterEdit->text(), this, QStringLiteral( "generic" ), context );
-  exprDlg.setWindowTitle( tr( "Expression based filter" ) );
+  exprDlg.setWindowTitle( tr( "Expression Based Filter" ) );
   if ( exprDlg.exec() == QDialog::Accepted )
   {
     QString expression =  exprDlg.expressionText();

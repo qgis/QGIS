@@ -17,7 +17,7 @@
 
 #include "qgscurve.h"
 #include "qgslinestring.h"
-#include "qgspointv2.h"
+#include "qgspoint.h"
 #include "qgsmultipoint.h"
 
 QgsCurve::QgsCurve(): QgsAbstractGeometry()
@@ -29,11 +29,14 @@ bool QgsCurve::isClosed() const
     return false;
 
   //don't consider M-coordinates when testing closedness
-  QgsPointV2 start = startPoint();
-  QgsPointV2 end = endPoint();
-  return ( qgsDoubleNear( start.x(), end.x(), 1E-8 ) &&
-           qgsDoubleNear( start.y(), end.y(), 1E-8 ) &&
-           qgsDoubleNear( start.z(), end.z(), 1E-8 ) );
+  QgsPoint start = startPoint();
+  QgsPoint end = endPoint();
+
+  bool closed = qgsDoubleNear( start.x(), end.x(), 1E-8 ) &&
+                qgsDoubleNear( start.y(), end.y(), 1E-8 );
+  if ( is3D() && closed )
+    closed &= qgsDoubleNear( start.z(), end.z(), 1E-8 ) || ( qIsNaN( start.z() ) && qIsNaN( end.z() ) );
+  return closed;
 }
 
 bool QgsCurve::isRing() const
@@ -53,7 +56,7 @@ QgsCoordinateSequence QgsCurve::coordinateSequence() const
   return mCoordinateSequence;
 }
 
-bool QgsCurve::nextVertex( QgsVertexId &id, QgsPointV2 &vertex ) const
+bool QgsCurve::nextVertex( QgsVertexId &id, QgsPoint &vertex ) const
 {
   if ( id.vertex < 0 )
   {
@@ -87,8 +90,8 @@ QgsAbstractGeometry *QgsCurve::boundary() const
     return nullptr;
 
   QgsMultiPointV2 *multiPoint = new QgsMultiPointV2();
-  multiPoint->addGeometry( new QgsPointV2( startPoint() ) );
-  multiPoint->addGeometry( new QgsPointV2( endPoint() ) );
+  multiPoint->addGeometry( new QgsPoint( startPoint() ) );
+  multiPoint->addGeometry( new QgsPoint( endPoint() ) );
   return multiPoint;
 }
 
@@ -97,9 +100,27 @@ QgsCurve *QgsCurve::segmentize( double tolerance, SegmentationToleranceType tole
   return curveToLine( tolerance, toleranceType );
 }
 
-QgsPointV2 QgsCurve::vertexAt( QgsVertexId id ) const
+int QgsCurve::vertexCount( int part, int ring ) const
 {
-  QgsPointV2 v;
+  Q_UNUSED( part );
+  Q_UNUSED( ring );
+  return numPoints();
+}
+
+int QgsCurve::ringCount( int part ) const
+{
+  Q_UNUSED( part );
+  return numPoints() > 0 ? 1 : 0;
+}
+
+int QgsCurve::partCount() const
+{
+  return numPoints() > 0 ? 1 : 0;
+}
+
+QgsPoint QgsCurve::vertexAt( QgsVertexId id ) const
+{
+  QgsPoint v;
   QgsVertexId::VertexType type;
   pointAt( id.vertex, v, type );
   return v;
@@ -124,5 +145,12 @@ QPolygonF QgsCurve::asQPolygonF() const
     points << QPointF( xAt( i ), yAt( i ) );
   }
   return points;
+}
+
+void QgsCurve::clearCache() const
+{
+  mBoundingBox = QgsRectangle();
+  mCoordinateSequence.clear();
+  QgsAbstractGeometry::clearCache();
 }
 

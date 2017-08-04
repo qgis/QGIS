@@ -20,7 +20,7 @@
 //
 
 #include <qgisinterface.h>
-#include <qgisgui.h>
+#include "qgsguiutils.h"
 #include "qgsapplication.h"
 #include <qgspoint.h>
 #include <qgsmapcanvas.h>
@@ -200,14 +200,14 @@ void CoordinateCapture::setSourceCrs()
   mCanvasDisplayPrecision = ( mQGisIface->mapCanvas()->mapSettings().destinationCrs().mapUnits() == QgsUnitTypes::DistanceDegrees ) ? 5 : 3; // for the map canvas coordinate display
 }
 
-void CoordinateCapture::mouseClicked( const QgsPoint &point )
+void CoordinateCapture::mouseClicked( const QgsPointXY &point )
 {
   //clicking on the canvas will update the widgets and then disable
   //tracking so the user can copy the click point coords
   mpTrackMouseButton->setChecked( false );
   update( point );
 }
-void CoordinateCapture::mouseMoved( const QgsPoint &point )
+void CoordinateCapture::mouseMoved( const QgsPointXY &point )
 {
   //mouse movements will only update the widgets if the
   //tracking button is checked
@@ -216,10 +216,10 @@ void CoordinateCapture::mouseMoved( const QgsPoint &point )
     update( point );
   }
 }
-void CoordinateCapture::update( const QgsPoint &point )
+void CoordinateCapture::update( const QgsPointXY &point )
 {
   //this is the coordinate resolved back to lat / lon
-  QgsPoint myUserCrsPoint = mTransform.transform( point );
+  QgsPointXY myUserCrsPoint = mTransform.transform( point );
   mpUserCrsEdit->setText( QString::number( myUserCrsPoint.x(), 'f', mUserCrsDisplayPrecision ) + ',' +
                           QString::number( myUserCrsPoint.y(), 'f', mUserCrsDisplayPrecision ) );
   // This is the coordinate space of the map canvas

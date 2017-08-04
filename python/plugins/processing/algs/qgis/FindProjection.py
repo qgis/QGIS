@@ -30,12 +30,13 @@ import codecs
 
 from qgis.core import (QgsApplication,
                        QgsGeometry,
+                       QgsFeatureSink,
                        QgsRectangle,
                        QgsCoordinateReferenceSystem,
                        QgsCoordinateTransform,
                        QgsProcessingUtils)
 
-from processing.core.GeoAlgorithm import GeoAlgorithm
+from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterCrs
 from processing.core.parameters import ParameterExtent
@@ -44,18 +45,12 @@ from processing.core.outputs import OutputHTML
 pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
 
-class FindProjection(GeoAlgorithm):
+class FindProjection(QgisAlgorithm):
 
     INPUT_LAYER = 'INPUT_LAYER'
     TARGET_AREA = 'TARGET_AREA'
     TARGET_AREA_CRS = 'TARGET_AREA_CRS'
     OUTPUT_HTML_FILE = 'OUTPUT_HTML_FILE'
-
-    def icon(self):
-        return QgsApplication.getThemeIcon("/providerQgis.svg")
-
-    def svgIconPath(self):
-        return QgsApplication.iconPath("providerQgis.svg")
 
     def tags(self):
         return self.tr('crs,srs,coordinate,reference,system,guess,estimate,finder,determine').split(',')
@@ -63,13 +58,10 @@ class FindProjection(GeoAlgorithm):
     def group(self):
         return self.tr('Vector general tools')
 
-    def name(self):
-        return 'findprojection'
+    def __init__(self):
+        super().__init__()
 
-    def displayName(self):
-        return self.tr('Find projection')
-
-    def defineCharacteristics(self):
+    def initAlgorithm(self, config=None):
         self.addParameter(ParameterVector(self.INPUT_LAYER,
                                           self.tr('Input layer')))
         extent_parameter = ParameterExtent(self.TARGET_AREA,
@@ -82,10 +74,18 @@ class FindProjection(GeoAlgorithm):
         self.addOutput(OutputHTML(self.OUTPUT_HTML_FILE,
                                   self.tr('Candidates')))
 
-    def processAlgorithm(self, context, feedback):
+    def name(self):
+        return 'findprojection'
+
+    def displayName(self):
+        return self.tr('Find projection')
+
+    def processAlgorithm(self, parameters, context, feedback):
         layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT_LAYER), context)
 
         extent = self.getParameterValue(self.TARGET_AREA).split(',')
+        if not extent:
+            extent = QgsProcessingUtils.combineLayerExtents([layer])
         target_crs = QgsCoordinateReferenceSystem(self.getParameterValue(self.TARGET_AREA_CRS))
 
         target_geom = QgsGeometry.fromRect(QgsRectangle(float(extent[0]), float(extent[2]),

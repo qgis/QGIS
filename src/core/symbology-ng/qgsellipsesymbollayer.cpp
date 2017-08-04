@@ -451,6 +451,10 @@ QgsSymbolLayer *QgsEllipseSymbolLayer::createFromSld( QDomElement &element )
   if ( !QgsSymbolLayerUtils::wellKnownMarkerFromSld( graphicElem, name, fillColor, strokeColor, strokeStyle, strokeWidth, size ) )
     return nullptr;
 
+  QString uom = element.attribute( QStringLiteral( "uom" ), "" );
+  size = QgsSymbolLayerUtils::sizeInPixelsFromSldUom( uom, size );
+  strokeWidth = QgsSymbolLayerUtils::sizeInPixelsFromSldUom( uom, strokeWidth );
+
   double angle = 0.0;
   QString angleFunc;
   if ( QgsSymbolLayerUtils::rotationFromSldElement( graphicElem, angleFunc ) )
@@ -462,6 +466,7 @@ QgsSymbolLayer *QgsEllipseSymbolLayer::createFromSld( QDomElement &element )
   }
 
   QgsEllipseSymbolLayer *m = new QgsEllipseSymbolLayer();
+  m->setOutputUnit( QgsUnitTypes::RenderUnit::RenderPixels );
   m->setSymbolName( name );
   m->setFillColor( fillColor );
   m->setStrokeColor( strokeColor );
@@ -789,7 +794,7 @@ bool QgsEllipseSymbolLayer::writeDxf( QgsDxfExport &e, double mmMapUnitScaleFact
   {
     if ( qgsDoubleNear( halfWidth, halfHeight ) )
     {
-      QgsPointV2 pt( t.map( QPointF( 0, 0 ) ) );
+      QgsPoint pt( t.map( QPointF( 0, 0 ) ) );
       e.writeFilledCircle( layerName, oc, pt, halfWidth );
     }
     else
@@ -802,7 +807,7 @@ bool QgsEllipseSymbolLayer::writeDxf( QgsDxfExport &e, double mmMapUnitScaleFact
         double angle = stepsize * i;
         double x = halfWidth * cos( angle );
         double y = halfHeight * sin( angle );
-        line << QgsPointV2( t.map( QPointF( x, y ) ) );
+        line << QgsPoint( t.map( QPointF( x, y ) ) );
       }
       //close ellipse with first point
       line << line.at( 0 );
@@ -816,10 +821,10 @@ bool QgsEllipseSymbolLayer::writeDxf( QgsDxfExport &e, double mmMapUnitScaleFact
   else if ( symbolName == QLatin1String( "rectangle" ) )
   {
     QgsPointSequence p;
-    p << QgsPointV2( t.map( QPointF( -halfWidth, -halfHeight ) ) )
-      << QgsPointV2( t.map( QPointF( halfWidth, -halfHeight ) ) )
-      << QgsPointV2( t.map( QPointF( halfWidth, halfHeight ) ) )
-      << QgsPointV2( t.map( QPointF( -halfWidth, halfHeight ) ) );
+    p << QgsPoint( t.map( QPointF( -halfWidth, -halfHeight ) ) )
+      << QgsPoint( t.map( QPointF( halfWidth, -halfHeight ) ) )
+      << QgsPoint( t.map( QPointF( halfWidth, halfHeight ) ) )
+      << QgsPoint( t.map( QPointF( -halfWidth, halfHeight ) ) );
     p << p[0];
 
     if ( mBrush.style() != Qt::NoBrush )
@@ -831,21 +836,21 @@ bool QgsEllipseSymbolLayer::writeDxf( QgsDxfExport &e, double mmMapUnitScaleFact
   else if ( symbolName == QLatin1String( "cross" ) && mPen.style() != Qt::NoPen )
   {
     e.writePolyline( QgsPointSequence()
-                     << QgsPointV2( t.map( QPointF( -halfWidth, 0 ) ) )
-                     << QgsPointV2( t.map( QPointF( halfWidth, 0 ) ) ),
+                     << QgsPoint( t.map( QPointF( -halfWidth, 0 ) ) )
+                     << QgsPoint( t.map( QPointF( halfWidth, 0 ) ) ),
                      layerName, QStringLiteral( "CONTINUOUS" ), oc, strokeWidth );
     e.writePolyline( QgsPointSequence()
-                     << QgsPointV2( t.map( QPointF( 0, halfHeight ) ) )
-                     << QgsPointV2( t.map( QPointF( 0, -halfHeight ) ) ),
+                     << QgsPoint( t.map( QPointF( 0, halfHeight ) ) )
+                     << QgsPoint( t.map( QPointF( 0, -halfHeight ) ) ),
                      layerName, QStringLiteral( "CONTINUOUS" ), oc, strokeWidth );
     return true;
   }
   else if ( symbolName == QLatin1String( "triangle" ) )
   {
     QgsPointSequence p;
-    p << QgsPointV2( t.map( QPointF( -halfWidth, -halfHeight ) ) )
-      << QgsPointV2( t.map( QPointF( halfWidth, -halfHeight ) ) )
-      << QgsPointV2( t.map( QPointF( 0, halfHeight ) ) );
+    p << QgsPoint( t.map( QPointF( -halfWidth, -halfHeight ) ) )
+      << QgsPoint( t.map( QPointF( halfWidth, -halfHeight ) ) )
+      << QgsPoint( t.map( QPointF( 0, halfHeight ) ) );
     p << p[0];
     if ( mBrush.style() != Qt::NoBrush )
       e.writePolygon( QgsRingSequence() << p, layerName, QStringLiteral( "SOLID" ), fc );

@@ -119,13 +119,13 @@ void QgsComposerTableBackgroundColorsDialog::setGuiElementValues()
       continue;
     button->setEnabled( mComposerTable->cellStyle( styleGroup )->enabled );
     button->setColor( mComposerTable->cellStyle( styleGroup )->cellBackgroundColor );
-    button->setAllowAlpha( true );
-    button->setColorDialogTitle( tr( "Select background color" ) );
+    button->setAllowOpacity( true );
+    button->setColorDialogTitle( tr( "Select Background Color" ) );
   }
 
   mDefaultColorButton->setColor( mComposerTable->backgroundColor() );
-  mDefaultColorButton->setAllowAlpha( true );
-  mDefaultColorButton->setColorDialogTitle( tr( "Select background color" ) );
+  mDefaultColorButton->setAllowOpacity( true );
+  mDefaultColorButton->setColorDialogTitle( tr( "Select Background Color" ) );
   mDefaultColorButton->setShowNoColor( true );
   mDefaultColorButton->setNoColorString( tr( "No background" ) );
 }

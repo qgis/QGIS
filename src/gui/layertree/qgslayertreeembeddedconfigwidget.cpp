@@ -17,7 +17,7 @@
 
 #include "qgsmaplayer.h"
 #include "qgslayertreeembeddedwidgetregistry.h"
-
+#include "qgsgui.h"
 #include <QStringListModel>
 #include <QStandardItemModel>
 
@@ -39,9 +39,9 @@ void QgsLayerTreeEmbeddedConfigWidget::setLayer( QgsMapLayer *layer )
   QStandardItemModel *modelUsed = new QStandardItemModel( this );
 
   // populate available
-  Q_FOREACH ( const QString &providerId, QgsLayerTreeEmbeddedWidgetRegistry::instance()->providers() )
+  Q_FOREACH ( const QString &providerId, QgsGui::layerTreeEmbeddedWidgetRegistry()->providers() )
   {
-    QgsLayerTreeEmbeddedWidgetProvider *provider = QgsLayerTreeEmbeddedWidgetRegistry::instance()->provider( providerId );
+    QgsLayerTreeEmbeddedWidgetProvider *provider = QgsGui::layerTreeEmbeddedWidgetRegistry()->provider( providerId );
     QStandardItem *item = new QStandardItem( provider->name() );
     item->setFlags( Qt::ItemIsEnabled | Qt::ItemIsSelectable );
     item->setData( provider->id(), Qt::UserRole + 1 );
@@ -54,7 +54,7 @@ void QgsLayerTreeEmbeddedConfigWidget::setLayer( QgsMapLayer *layer )
   for ( int i = 0; i < widgetsCount; ++i )
   {
     QString providerId = layer->customProperty( QStringLiteral( "embeddedWidgets/%1/id" ).arg( i ) ).toString();
-    if ( QgsLayerTreeEmbeddedWidgetProvider *provider = QgsLayerTreeEmbeddedWidgetRegistry::instance()->provider( providerId ) )
+    if ( QgsLayerTreeEmbeddedWidgetProvider *provider = QgsGui::layerTreeEmbeddedWidgetRegistry()->provider( providerId ) )
     {
       QStandardItem *item = new QStandardItem( provider->name() );
       item->setFlags( Qt::ItemIsEnabled | Qt::ItemIsSelectable );
@@ -71,7 +71,7 @@ void QgsLayerTreeEmbeddedConfigWidget::onAddClicked()
     return;
 
   QString providerId = mListAvailable->model()->data( mListAvailable->currentIndex(), Qt::UserRole + 1 ).toString();
-  QgsLayerTreeEmbeddedWidgetProvider *provider = QgsLayerTreeEmbeddedWidgetRegistry::instance()->provider( providerId );
+  QgsLayerTreeEmbeddedWidgetProvider *provider = QgsGui::layerTreeEmbeddedWidgetRegistry()->provider( providerId );
   if ( !provider )
     return;
 

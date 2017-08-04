@@ -142,14 +142,14 @@ class CORE_EXPORT QgsGradientColorRamp : public QgsColorRamp
                           const QgsGradientStopsList &stops = QgsGradientStopsList() );
 
     //! Creates a new QgsColorRamp from a map of properties
-    static QgsColorRamp *create( const QgsStringMap &properties = QgsStringMap() );
+    static QgsColorRamp *create( const QgsStringMap &properties = QgsStringMap() ) SIP_FACTORY;
 
     virtual int count() const override { return mStops.count() + 2; }
     virtual double value( int index ) const override;
     virtual QColor color( double value ) const override;
     virtual QString type() const override { return QStringLiteral( "gradient" ); }
     virtual void invert() override;
-    virtual QgsGradientColorRamp *clone() const override;
+    virtual QgsGradientColorRamp *clone() const override SIP_FACTORY;
     virtual QgsStringMap properties() const override;
 
     /** Returns the gradient start color.
@@ -226,11 +226,11 @@ class CORE_EXPORT QgsGradientColorRamp : public QgsColorRamp
 
     /** Copy color ramp stops to a QGradient
      * \param gradient gradient to copy stops into
-     * \param alpha alpha multiplier. Opacity of colors will be multiplied
+     * \param opacity opacity multiplier. Opacity of colors will be multiplied
      * by this factor before adding to the gradient.
      * \since QGIS 2.1
      */
-    void addStopsToGradient( QGradient *gradient, double alpha = 1 );
+    void addStopsToGradient( QGradient *gradient, double opacity = 1 );
 
   protected:
     QColor mColor1;
@@ -239,6 +239,8 @@ class CORE_EXPORT QgsGradientColorRamp : public QgsColorRamp
     QgsGradientStopsList mStops;
     QgsStringMap mInfo;
 };
+
+Q_DECLARE_METATYPE( QgsGradientColorRamp )
 
 #define DEFAULT_RANDOM_COUNT   10
 #define DEFAULT_RANDOM_HUE_MIN 0
@@ -437,7 +439,7 @@ class CORE_EXPORT QgsPresetSchemeColorRamp : public QgsColorRamp, public QgsColo
      * \param properties color ramp properties
      * \see properties()
      */
-    static QgsColorRamp *create( const QgsStringMap &properties = QgsStringMap() );
+    static QgsColorRamp *create( const QgsStringMap &properties = QgsStringMap() ) SIP_FACTORY;
 
     /** Sets the list of colors used by the ramp.
      * \param colors list of colors
@@ -494,7 +496,7 @@ class CORE_EXPORT QgsColorBrewerColorRamp : public QgsColorRamp
      * \param properties color ramp properties
      * \see properties()
      */
-    static QgsColorRamp *create( const QgsStringMap &properties = QgsStringMap() );
+    static QgsColorRamp *create( const QgsStringMap &properties = QgsStringMap() ) SIP_FACTORY;
 
     virtual double value( int index ) const override;
     virtual QColor color( double value ) const override;
@@ -584,7 +586,7 @@ class CORE_EXPORT QgsCptCityColorRamp : public QgsGradientColorRamp
                          const QString &variantName = QString(), bool inverted = false,
                          bool doLoadFile = true );
 
-    static QgsColorRamp *create( const QgsStringMap &properties = QgsStringMap() );
+    static QgsColorRamp *create( const QgsStringMap &properties = QgsStringMap() ) SIP_FACTORY;
 
     virtual QString type() const override { return QStringLiteral( "cpt-city" ); }
 

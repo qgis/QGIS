@@ -43,14 +43,14 @@ class CORE_EXPORT QgsPointDisplacementRenderer: public QgsPointDistanceRenderer
      */
     QgsPointDisplacementRenderer( const QString &labelAttributeName = QString() );
 
-    QgsPointDisplacementRenderer *clone() const override;
+    QgsPointDisplacementRenderer *clone() const override SIP_FACTORY;
     virtual void startRender( QgsRenderContext &context, const QgsFields &fields ) override;
     void stopRender( QgsRenderContext &context ) override;
-    QDomElement save( QDomDocument &doc ) override;
+    QDomElement save( QDomDocument &doc, const QgsReadWriteContext &context ) override;
     virtual QSet<QString> usedAttributes( const QgsRenderContext &context ) const override;
 
     //! Create a renderer from XML element
-    static QgsFeatureRenderer *create( QDomElement &symbologyElem ) SIP_FACTORY;
+    static QgsFeatureRenderer *create( QDomElement &symbologyElem, const QgsReadWriteContext &context ) SIP_FACTORY;
 
     /** Sets the line width for the displacement group circle.
      * \param width line width in mm
@@ -120,6 +120,10 @@ class CORE_EXPORT QgsPointDisplacementRenderer: public QgsPointDistanceRenderer
     static QgsPointDisplacementRenderer *convertFromRenderer( const QgsFeatureRenderer *renderer ) SIP_FACTORY;
 
   private:
+#ifdef SIP_RUN
+    QgsPointDisplacementRenderer( const QgsPointDisplacementRenderer & );
+    QgsPointDisplacementRenderer &operator=( const QgsPointDisplacementRenderer & );
+#endif
 
     //! Center symbol for a displacement group
     std::unique_ptr< QgsMarkerSymbol > mCenterSymbol;
@@ -134,7 +138,7 @@ class CORE_EXPORT QgsPointDisplacementRenderer: public QgsPointDistanceRenderer
     //! Addition to the default circle radius
     double mCircleRadiusAddition;
 
-    virtual void drawGroup( QPointF centerPoint, QgsRenderContext &context, const QgsPointDistanceRenderer::ClusteredGroup &group ) override;
+    virtual void drawGroup( QPointF centerPoint, QgsRenderContext &context, const QgsPointDistanceRenderer::ClusteredGroup &group ) override SIP_FORCE;
 
     //helper functions
     void calculateSymbolAndLabelPositions( QgsSymbolRenderContext &symbolContext, QPointF centerPoint, int nPosition, double symbolDiagonal, QList<QPointF> &symbolPositions, QList<QPointF> &labelShifts, double &circleRadius ) const;

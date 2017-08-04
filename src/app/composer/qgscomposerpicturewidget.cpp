@@ -39,11 +39,11 @@ QgsComposerPictureWidget::QgsComposerPictureWidget( QgsComposerPicture *picture 
   setupUi( this );
   setPanelTitle( tr( "Picture properties" ) );
 
-  mFillColorButton->setAllowAlpha( true );
-  mFillColorButton->setColorDialogTitle( tr( "Select fill color" ) );
+  mFillColorButton->setAllowOpacity( true );
+  mFillColorButton->setColorDialogTitle( tr( "Select Fill Color" ) );
   mFillColorButton->setContext( QStringLiteral( "composer" ) );
-  mStrokeColorButton->setAllowAlpha( true );
-  mStrokeColorButton->setColorDialogTitle( tr( "Select stroke color" ) );
+  mStrokeColorButton->setAllowOpacity( true );
+  mStrokeColorButton->setColorDialogTitle( tr( "Select Stroke Color" ) );
   mStrokeColorButton->setContext( QStringLiteral( "composer" ) );
 
   mNorthTypeComboBox->blockSignals( true );
@@ -481,7 +481,7 @@ void QgsComposerPictureWidget::updateSvgParamGui( bool resetValues )
     mFillColorButton->setColor( fill );
   }
   mFillColorButton->setEnabled( hasFillParam );
-  mFillColorButton->setAllowAlpha( hasFillOpacityParam );
+  mFillColorButton->setAllowOpacity( hasFillOpacityParam );
   if ( resetValues )
   {
     QColor stroke = mStrokeColorButton->color();
@@ -494,7 +494,7 @@ void QgsComposerPictureWidget::updateSvgParamGui( bool resetValues )
     mStrokeColorButton->setColor( stroke );
   }
   mStrokeColorButton->setEnabled( hasStrokeParam );
-  mStrokeColorButton->setAllowAlpha( hasStrokeOpacityParam );
+  mStrokeColorButton->setAllowOpacity( hasStrokeOpacityParam );
   if ( hasDefaultStrokeWidth && resetValues )
   {
     mStrokeWidthSpinBox->setValue( defaultStrokeWidth );

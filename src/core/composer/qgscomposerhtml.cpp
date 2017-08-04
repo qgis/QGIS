@@ -210,7 +210,7 @@ void QgsComposerHtml::loadHtml( const bool useCache, const QgsExpressionContext 
   if ( !mAtlasFeatureJSON.isEmpty() )
   {
     mWebPage->mainFrame()->evaluateJavaScript( QStringLiteral( "if ( typeof setFeature === \"function\" ) { setFeature(%1); }" ).arg( mAtlasFeatureJSON ) );
-    //needs an extra process events here to give javascript a chance to execute
+    //needs an extra process events here to give JavaScript a chance to execute
     qApp->processEvents();
   }
 
@@ -408,7 +408,7 @@ double QgsComposerHtml::findNearbyPageBreak( double yPos )
   std::sort( candidates.begin(), candidates.end(), candidateSort );
   //first candidate is now the largest row with smallest number of changes
 
-  //ok, now take the mid point of the best candidate position
+  //OK, now take the mid point of the best candidate position
   //we do this so that the spacing between text lines is likely to be split in half
   //otherwise the html will be broken immediately above a line of text, which
   //looks a little messy
@@ -551,7 +551,7 @@ void QgsComposerHtml::setExpressionContext( const QgsFeature &feature, QgsVector
   }
 
   // create JSON representation of feature
-  QgsJSONExporter exporter( layer );
+  QgsJsonExporter exporter( layer );
   exporter.setIncludeRelated( true );
   mAtlasFeatureJSON = exporter.exportFeature( feature );
 }

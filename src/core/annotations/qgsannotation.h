@@ -20,7 +20,7 @@
 
 #include "qgis_core.h"
 #include "qgis.h"
-#include "qgspoint.h"
+#include "qgspointxy.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgsrendercontext.h"
 #include "qgssymbol.h"
@@ -45,10 +45,25 @@
 
 class CORE_EXPORT QgsAnnotation : public QObject
 {
+
+#ifdef SIP_RUN
+    SIP_CONVERT_TO_SUBCLASS_CODE
+    if ( dynamic_cast< QgsTextAnnotation * >( sipCpp ) )
+      sipType = sipType_QgsTextAnnotation;
+    else if ( dynamic_cast< QgsSvgAnnotation * >( sipCpp ) )
+      sipType = sipType_QgsSvgAnnotation;
+    else if ( dynamic_cast< QgsHtmlAnnotation * >( sipCpp ) )
+      sipType = sipType_QgsHtmlAnnotation;
+    else
+      sipType = NULL;
+    SIP_END
+#endif
+
+
     Q_OBJECT
     Q_PROPERTY( bool visible READ isVisible WRITE setVisible )
     Q_PROPERTY( bool hasFixedMapPosition READ hasFixedMapPosition WRITE setHasFixedMapPosition )
-    Q_PROPERTY( QgsPoint mapPosition READ mapPosition WRITE setMapPosition )
+    Q_PROPERTY( QgsPointXY mapPosition READ mapPosition WRITE setMapPosition )
     Q_PROPERTY( QSizeF frameSize READ frameSize WRITE setFrameSize )
 
   public:
@@ -100,14 +115,14 @@ class CORE_EXPORT QgsAnnotation : public QObject
      * \see hasFixedMapPosition()
      * \see mapPositionCrs()
      */
-    QgsPoint mapPosition() const { return mMapPosition; }
+    QgsPointXY mapPosition() const { return mMapPosition; }
 
     /**
      * Sets the map position of the annotation, if it is attached to a fixed map
      * position.
      * \see mapPosition()
      */
-    void setMapPosition( const QgsPoint &position );
+    void setMapPosition( const QgsPointXY &position );
 
     /**
      * Returns the CRS of the map position, or an invalid CRS if the annotation does
@@ -202,7 +217,7 @@ class CORE_EXPORT QgsAnnotation : public QObject
      * \see readXml()
      * \see _writeXml()
      */
-    virtual void writeXml( QDomElement &elem, QDomDocument &doc ) const = 0;
+    virtual void writeXml( QDomElement &elem, QDomDocument &doc, const QgsReadWriteContext &context ) const = 0;
 
     /**
      * Restores the annotation's state from a DOM element. Derived classes should
@@ -210,7 +225,7 @@ class CORE_EXPORT QgsAnnotation : public QObject
      * \see writeXml()
      * \see _readXml()
      */
-    virtual void readXml( const QDomElement &itemElem, const QDomDocument &doc ) = 0;
+    virtual void readXml( const QDomElement &itemElem, const QgsReadWriteContext &context ) = 0;
 
     /**
      * Sets the symbol that is drawn at the annotation's map position. Ownership
@@ -252,7 +267,7 @@ class CORE_EXPORT QgsAnnotation : public QObject
      * Sets the feature associated with the annotation.
      * \see associatedFeature()
      */
-    virtual void setAssociatedFeature( const QgsFeature &feature ) { mFeature = feature; }
+    virtual void setAssociatedFeature( const QgsFeature &feature );
 
   signals:
 
@@ -282,7 +297,7 @@ class CORE_EXPORT QgsAnnotation : public QObject
      * Returns the minimum frame size for the annotation. Subclasses should implement this if they
      * cannot be resized smaller than a certain minimum size.
      */
-    virtual QSizeF minimumFrameSize() const { return QSizeF( 0, 0 ); }
+    virtual QSizeF minimumFrameSize() const;
 
     /**
      * Writes common annotation properties to a DOM element.
@@ -290,7 +305,7 @@ class CORE_EXPORT QgsAnnotation : public QObject
      * \see writeXml()
      * \see _readXml()
      */
-    void _writeXml( QDomElement &itemElem, QDomDocument &doc ) const;
+    void _writeXml( QDomElement &itemElem, QDomDocument &doc, const QgsReadWriteContext &context ) const;
 
     /**
      * Reads common annotation properties from a DOM element.
@@ -298,7 +313,7 @@ class CORE_EXPORT QgsAnnotation : public QObject
      * \see readXml()
      * \see _writeXml()
      */
-    void _readXml( const QDomElement &annotationElem, const QDomDocument &doc );
+    void _readXml( const QDomElement &annotationElem, const QgsReadWriteContext &context );
 
     /**
      * Copies common annotation properties to the \a targe
@@ -331,7 +346,7 @@ class CORE_EXPORT QgsAnnotation : public QObject
     bool mHasFixedMapPosition = true;
 
     //! Map position (for fixed position items)
-    QgsPoint mMapPosition;
+    QgsPointXY mMapPosition;
 
     //! CRS of the map position
     QgsCoordinateReferenceSystem mMapPositionCrs;

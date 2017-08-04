@@ -294,7 +294,7 @@ bool QgsPythonUtilsImpl::runStringUnsafe( const QString &command, bool single )
   PyGILState_STATE gstate;
   gstate = PyGILState_Ensure();
 
-  // TODO: convert special characters from unicode strings u"..." to \uXXXX
+  // TODO: convert special characters from unicode strings u"…" to \uXXXX
   // so that they're not mangled to utf-8
   // (non-unicode strings can be mangled)
   PyObject *obj = PyRun_String( command.toUtf8().data(), single ? Py_single_input : Py_file_input, mMainDict, mMainDict );

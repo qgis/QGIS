@@ -1,5 +1,11 @@
 
-SET (OGR_SRCS qgsogrprovider.cpp qgsogrdataitems.cpp qgsogrfeatureiterator.cpp qgsogrconnpool.cpp qgsogrexpressioncompiler.cpp)
+SET (OGR_SRCS
+    qgsogrprovider.cpp
+    qgsogrdataitems.cpp
+    qgsogrfeatureiterator.cpp
+    qgsogrconnpool.cpp
+    qgsogrexpressioncompiler.cpp
+)
 
 SET(OGR_MOC_HDRS qgsogrprovider.h qgsogrdataitems.h qgsogrconnpool.h)
 
@@ -9,11 +15,12 @@ SET(OGR_MOC_HDRS qgsogrprovider.h qgsogrdataitems.h qgsogrconnpool.h)
 QT5_WRAP_CPP(OGR_MOC_SRCS ${OGR_MOC_HDRS})
 
 INCLUDE_DIRECTORIES(
-  .
-  ../../core
-  ../../core/geometry
-  ../../core/metadata
-  ${CMAKE_CURRENT_SOURCE_DIR}/../../core/symbology-ng
+  ${CMAKE_SOURCE_DIR}/src/core
+  ${CMAKE_SOURCE_DIR}/src/core/geometry
+  ${CMAKE_SOURCE_DIR}/src/core/metadata
+  ${CMAKE_SOURCE_DIR}/src/core/symbology-ng
+  ${CMAKE_SOURCE_DIR}/src/core/expression
+
   ${CMAKE_BINARY_DIR}/src/core
   ${CMAKE_BINARY_DIR}/src/gui
 )

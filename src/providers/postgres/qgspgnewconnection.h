@@ -17,7 +17,7 @@
 #ifndef QGSPGNEWCONNECTION_H
 #define QGSPGNEWCONNECTION_H
 #include "ui_qgspgnewconnectionbase.h"
-#include "qgisgui.h"
+#include "qgsguiutils.h"
 #include "qgshelp.h"
 #include "qgsauthconfigselect.h"
 
@@ -30,7 +30,9 @@ class QgsPgNewConnection : public QDialog, private Ui::QgsPgNewConnectionBase
     Q_OBJECT
   public:
     //! Constructor
-    QgsPgNewConnection( QWidget *parent = nullptr, const QString &connName = QString::null, Qt::WindowFlags fl = QgisGui::ModalDialogFlags );
+    QgsPgNewConnection( QWidget *parent = nullptr, const QString &connName = QString(), Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags );
+
+    ~QgsPgNewConnection();
 
     //! Tests the connection using the parameters supplied
     void testConnection();

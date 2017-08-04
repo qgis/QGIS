@@ -49,16 +49,8 @@ class SplitRGBBands(GeoAlgorithm):
     def icon(self):
         return QIcon(os.path.join(pluginPath, 'images', 'saga.png'))
 
-    def name(self):
-        return 'splitrgbbands'
-
-    def displayName(self):
-        return self.tr('Split RGB bands')
-
-    def group(self):
-        return self.tr('Image tools')
-
-    def defineCharacteristics(self):
+    def __init__(self):
+        super().__init__()
         self.addParameter(ParameterRaster(SplitRGBBands.INPUT,
                                           self.tr('Input layer'), False))
         self.addOutput(OutputRaster(SplitRGBBands.R,
@@ -68,7 +60,16 @@ class SplitRGBBands(GeoAlgorithm):
         self.addOutput(OutputRaster(SplitRGBBands.B,
                                     self.tr('Output B band layer')))
 
-    def processAlgorithm(self, context, feedback):
+    def name(self):
+        return 'splitrgbbands'
+
+    def displayName(self):
+        return self.tr('Split RGB bands')
+
+    def group(self):
+        return self.tr('Image tools')
+
+    def processAlgorithm(self, parameters, context, feedback):
         # TODO: check correct num of bands
         input = self.getParameterValue(SplitRGBBands.INPUT)
         temp = getTempFilename(None).replace('.', '')

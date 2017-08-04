@@ -21,6 +21,7 @@
 #include "qgslogger.h"
 #include "qgsmessagelog.h"
 #include "qgssettings.h"
+#include "qgsexception.h"
 
 #include <QElapsedTimer>
 #include <QObject>
@@ -53,6 +54,21 @@ QgsPostgresFeatureIterator::QgsPostgresFeatureIterator( QgsPostgresFeatureSource
     return;
   }
 
+  if ( mRequest.destinationCrs().isValid() && mRequest.destinationCrs() != mSource->mCrs )
+  {
+    mTransform = QgsCoordinateTransform( mSource->mCrs, mRequest.destinationCrs() );
+  }
+  try
+  {
+    mFilterRect = filterRectToSourceCrs( mTransform );
+  }
+  catch ( QgsCsException & )
+  {
+    // can't reproject mFilterRect
+    mClosed = true;
+    return;
+  }
+
   mCursorName = mConn->uniqueCursorName();
   QString whereClause;
 
@@ -61,7 +77,7 @@ QgsPostgresFeatureIterator::QgsPostgresFeatureIterator( QgsPostgresFeatureSource
   bool useFallbackWhereClause = false;
   QString fallbackWhereClause;
 
-  if ( !request.filterRect().isNull() && !mSource->mGeometryColumn.isNull() )
+  if ( !mFilterRect.isNull() && !mSource->mGeometryColumn.isNull() )
   {
     whereClause = whereClauseRect();
   }
@@ -161,6 +177,19 @@ QgsPostgresFeatureIterator::QgsPostgresFeatureIterator( QgsPostgresFeatureSource
 #endif
   {
     mOrderByCompiled = false;
+  }
+
+  // ensure that all attributes required for order by are fetched
+  if ( !mOrderByCompiled && mRequest.flags() & QgsFeatureRequest::SubsetOfAttributes )
+  {
+    QgsAttributeList attrs = mRequest.subsetOfAttributes();
+    Q_FOREACH ( const QString &attr, mRequest.orderBy().usedAttributes() )
+    {
+      int attrIndex = mSource->mFields.lookupField( attr );
+      if ( !attrs.contains( attrIndex ) )
+        attrs << attrIndex;
+    }
+    mRequest.setSubsetOfAttributes( attrs );
   }
 
   if ( !mOrderByCompiled )
@@ -284,6 +313,7 @@ bool QgsPostgresFeatureIterator::fetchFeature( QgsFeature &feature )
 
   feature.setValid( true );
   feature.setFields( mSource->mFields ); // allow name-based attribute lookups
+  geometryToDestinationCrs( feature, mTransform );
 
   return true;
 }
@@ -388,7 +418,7 @@ bool QgsPostgresFeatureIterator::close()
 
 QString QgsPostgresFeatureIterator::whereClauseRect()
 {
-  QgsRectangle rect = mRequest.filterRect();
+  QgsRectangle rect = mFilterRect;
   if ( mSource->mSpatialColType == SctGeography )
   {
     rect = QgsRectangle( -180.0, -90.0, 180.0, 90.0 ).intersect( &rect );
@@ -427,7 +457,7 @@ QString QgsPostgresFeatureIterator::whereClauseRect()
 
   if ( mRequest.flags() & QgsFeatureRequest::ExactIntersect )
   {
-    QString curveToLineFn; // in postgis < 1.5 the st_curvetoline function does not exist
+    QString curveToLineFn; // in PostGIS < 1.5 the st_curvetoline function does not exist
     if ( mConn->majorVersion() >= 2 || ( mConn->majorVersion() == 1 && mConn->minorVersion() >= 5 ) )
       curveToLineFn = QStringLiteral( "st_curvetoline" ); // st_ prefix is always used
     whereClause += QStringLiteral( " AND %1(%2(%3%4),%5)" )
@@ -504,7 +534,7 @@ bool QgsPostgresFeatureIterator::declareCursor( const QString &whereClause, long
 
       // Simplify again with st_simplify after first simplification ?
       bool postSimplification;
-      postSimplification = false; // default to false. Set to true only for postgis >= 2.2 when using st_removerepeatedpoints
+      postSimplification = false; // default to false. Set to true only for PostGIS >= 2.2 when using st_removerepeatedpoints
 
       if ( mRequest.simplifyMethod().methodType() == QgsSimplifyMethod::OptimizeForRendering )
       {
@@ -810,6 +840,7 @@ QgsPostgresFeatureSource::QgsPostgresFeatureSource( const QgsPostgresProvider *p
   , mPrimaryKeyType( p->mPrimaryKeyType )
   , mPrimaryKeyAttrs( p->mPrimaryKeyAttrs )
   , mQuery( p->mQuery )
+  , mCrs( p->crs() )
   , mShared( p->mShared )
 {
   if ( mSqlWhereClause.startsWith( QLatin1String( " WHERE " ) ) )

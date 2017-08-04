@@ -59,10 +59,6 @@ class QgsComposerLegendWidget: public QgsComposerItemBaseWidget, private Ui::Qgs
     void on_mLayerSpaceSpinBox_valueChanged( double d );
     void on_mSymbolSpaceSpinBox_valueChanged( double d );
     void on_mIconLabelSpaceSpinBox_valueChanged( double d );
-    void on_mTitleFontButton_clicked();
-    void on_mGroupFontButton_clicked();
-    void on_mLayerFontButton_clicked();
-    void on_mItemFontButton_clicked();
     void on_mFontColorButton_colorChanged( const QColor &newFontColor );
     void on_mBoxSpaceSpinBox_valueChanged( double d );
     void on_mColumnSpaceSpinBox_valueChanged( double d );
@@ -102,6 +98,10 @@ class QgsComposerLegendWidget: public QgsComposerItemBaseWidget, private Ui::Qgs
     void updateFilterLegendByAtlasButton();
 
     void on_mItemTreeView_doubleClicked( const QModelIndex &index );
+    void titleFontChanged();
+    void groupFontChanged();
+    void layerFontChanged();
+    void itemFontChanged();
 
   private:
     QgsComposerLegendWidget();

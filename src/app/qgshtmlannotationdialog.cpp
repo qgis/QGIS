@@ -22,6 +22,7 @@
 #include <QFileDialog>
 #include <QFileInfo>
 #include <QGraphicsScene>
+#include <QPushButton>
 
 QgsHtmlAnnotationDialog::QgsHtmlAnnotationDialog( QgsMapCanvasAnnotationItem *item, QWidget *parent, Qt::WindowFlags f )
   : QDialog( parent, f )
@@ -29,7 +30,7 @@ QgsHtmlAnnotationDialog::QgsHtmlAnnotationDialog( QgsMapCanvasAnnotationItem *it
   , mEmbeddedWidget( nullptr )
 {
   setupUi( this );
-  setWindowTitle( tr( "HTML annotation" ) );
+  setWindowTitle( tr( "HTML Annotation" ) );
   mEmbeddedWidget = new QgsAnnotationWidget( mItem );
   mStackedWidget->addWidget( mEmbeddedWidget );
   mStackedWidget->setCurrentWidget( mEmbeddedWidget );

@@ -40,10 +40,14 @@
 #include "qgsrectangle.h"
 #include "qgsspatialindex.h"
 #include "qgis.h"
+#include "qgsproviderregistry.h"
 
-#include "qgsdelimitedtextsourceselect.h"
 #include "qgsdelimitedtextfeatureiterator.h"
 #include "qgsdelimitedtextfile.h"
+
+#ifdef HAVE_GUI
+#include "qgsdelimitedtextsourceselect.h"
+#endif
 
 static const QString TEXT_PROVIDER_KEY = QStringLiteral( "delimitedtext" );
 static const QString TEXT_PROVIDER_DESCRIPTION = QStringLiteral( "Delimited text data provider" );
@@ -303,7 +307,7 @@ bool QgsDelimitedTextProvider::createSpatialIndex()
   if ( mBuildSpatialIndex ) return true; // Already built
   if ( mGeomRep == GeomNone ) return false; // Cannot build index - no geometries
 
-  // Ok, set the spatial index option, set the Uri parameter so that the index is
+  // OK, set the spatial index option, set the Uri parameter so that the index is
   // rebuilt when theproject is reloaded, and rescan the file to populate the index
 
   mBuildSpatialIndex = true;
@@ -507,7 +511,7 @@ void QgsDelimitedTextProvider::scanFile( bool buildIndexes )
       }
       else
       {
-        QgsPoint pt;
+        QgsPointXY pt;
         bool ok = pointFromXY( sX, sY, pt, mDecimalPoint, mXyDms );
 
         if ( ok )
@@ -860,7 +864,7 @@ double QgsDelimitedTextProvider::dmsStringToDouble( const QString &sX, bool *xOk
   return x;
 }
 
-bool QgsDelimitedTextProvider::pointFromXY( QString &sX, QString &sY, QgsPoint &pt, const QString &decimalPoint, bool xyDms )
+bool QgsDelimitedTextProvider::pointFromXY( QString &sX, QString &sY, QgsPointXY &pt, const QString &decimalPoint, bool xyDms )
 {
   if ( ! decimalPoint.isEmpty() )
   {
@@ -981,7 +985,7 @@ bool QgsDelimitedTextProvider::setSubsetString( const QString &subset, bool upda
 {
   QString nonNullSubset = subset.isNull() ? QLatin1String( "" ) : subset;
 
-  // If not changing string, then oll ok, nothing to do
+  // If not changing string, then all OK, nothing to do
   if ( nonNullSubset == mSubsetString )
     return true;
 
@@ -1187,7 +1191,9 @@ QGISEXTERN bool isProvider()
   return true;
 }
 
-QGISEXTERN QgsDelimitedTextSourceSelect *selectWidget( QWidget *parent, Qt::WindowFlags fl )
+#ifdef HAVE_GUI
+QGISEXTERN QgsDelimitedTextSourceSelect *selectWidget( QWidget *parent, Qt::WindowFlags fl, QgsProviderRegistry::WidgetMode widgetMode )
 {
-  return new QgsDelimitedTextSourceSelect( parent, fl );
+  return new QgsDelimitedTextSourceSelect( parent, fl, widgetMode );
 }
+#endif

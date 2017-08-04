@@ -17,7 +17,7 @@ typedef QList<int> QgsAttributeList;
 typedef QSet<int> QgsAttributeIds;
 
 
-class QgsVectorLayer : QgsMapLayer, QgsExpressionContextGenerator, QgsFeatureSink
+class QgsVectorLayer : QgsMapLayer, QgsExpressionContextGenerator, QgsFeatureSink, QgsFeatureSource
 {
 %Docstring
  Represents a vector layer which manages a vector based data sets.
@@ -25,10 +25,10 @@ class QgsVectorLayer : QgsMapLayer, QgsExpressionContextGenerator, QgsFeatureSin
  The QgsVectorLayer is instantiated by specifying the name of a data provider,
  such as postgres or wfs, and url defining the specific data set to connect to.
  The vector layer constructor in turn instantiates a QgsVectorDataProvider subclass
- corresponding to the provider type, and passes it the url.  The data provider
+ corresponding to the provider type, and passes it the url. The data provider
  connects to the data source.
 
- The QgsVectorLayer provides a common interface to the different data types.  It also
+ The QgsVectorLayer provides a common interface to the different data types. It also
  manages editing transactions.
 
   Sample usage of the QgsVectorLayer class:
@@ -45,8 +45,8 @@ class QgsVectorLayer : QgsMapLayer, QgsExpressionContextGenerator, QgsFeatureSin
  \subsection memory Memory data providerType (memory)
 
  The memory data provider is used to construct in memory data, for example scratch
- data or data generated from spatial operations such as contouring.  There is no
- inherent persistent storage of the data.  The data source uri is constructed.  The
+ data or data generated from spatial operations such as contouring. There is no
+ inherent persistent storage of the data. The data source uri is constructed. The
  url specifies the geometry type ("point", "linestring", "polygon",
  "multipoint","multilinestring","multipolygon"), optionally followed by url parameters
  as follows:
@@ -59,35 +59,35 @@ class QgsVectorLayer : QgsMapLayer, QgsExpressionContextGenerator, QgsFeatureSin
    Specifies that the layer will be constructed with a spatial index
 
  - field=name:type(length,precision)
-   Defines an attribute of the layer.  Multiple field parameters can be added
-   to the data provider definition.  type is one of "integer", "double", "string".
+   Defines an attribute of the layer. Multiple field parameters can be added
+   to the data provider definition. type is one of "integer", "double", "string".
 
  An example url is "Point?crs=epsg:4326&field=id:integer&field=name:string(20)&index=yes"
 
  \subsection ogr OGR data provider (ogr)
 
  Accesses data using the OGR drivers (http://www.gdal.org/ogr/ogr_formats.html). The url
- is the OGR connection string.  A wide variety of data formats can be accessed using this
+ is the OGR connection string. A wide variety of data formats can be accessed using this
  driver, including file based formats used by many GIS systems, database formats, and
- web services.  Some of these formats are also supported by custom data providers listed
+ web services. Some of these formats are also supported by custom data providers listed
  below.
 
- \subsection spatialite Spatialite data provider (spatialite)
+ \subsection spatialite SpatiaLite data provider (spatialite)
 
- Access data in a spatialite database. The url defines the connection parameters, table,
- geometry column, and other attributes.  The url can be constructed using the
+ Access data in a SpatiaLite database. The url defines the connection parameters, table,
+ geometry column, and other attributes. The url can be constructed using the
  QgsDataSourceUri class.
 
- \subsection postgres Postgresql data provider (postgres)
+ \subsection postgres PostgreSQL data provider (postgres)
 
- Connects to a postgresql database.  The url defines the connection parameters, table,
- geometry column, and other attributes.  The url can be constructed using the
+ Connects to a PostgreSQL database. The url defines the connection parameters, table,
+ geometry column, and other attributes. The url can be constructed using the
  QgsDataSourceUri class.
 
  \subsection mssql Microsoft SQL server data provider (mssql)
 
- Connects to a Microsoft SQL server database.  The url defines the connection parameters, table,
- geometry column, and other attributes.  The url can be constructed using the
+ Connects to a Microsoft SQL server database. The url defines the connection parameters, table,
+ geometry column, and other attributes. The url can be constructed using the
  QgsDataSourceUri class.
 
  \subsection wfs WFS (web feature service) data provider (wfs)
@@ -334,6 +334,17 @@ class QgsVectorLayer : QgsMapLayer, QgsExpressionContextGenerator, QgsFeatureSin
     virtual ~QgsVectorLayer();
 
 
+    virtual QgsVectorLayer *clone() const /Factory/;
+%Docstring
+ Returns a new instance equivalent to this one. A new provider is
+  created for the same data source and renderers for features and diagrams
+  are cloned too. Moreover, each attributes (transparency, extent, selected
+  features and so on) are identicals.
+ :return: a new layer instance
+.. versionadded:: 3.0
+ :rtype: QgsVectorLayer
+%End
+
     QString storageType() const;
 %Docstring
 Returns the permanent storage type for this layer as a friendly name.
@@ -495,6 +506,7 @@ Setup the coordinate system transformation for the layer
  which is used by the layer, so any changes are immediately applied.
  :rtype: QgsActionManager
 %End
+
 
     int selectedFeatureCount() const;
 %Docstring
@@ -667,13 +679,8 @@ Returns point, line or polygon
  :rtype: QgsWkbTypes.GeometryType
 %End
 
-    bool hasGeometryType() const;
-%Docstring
-Returns true if this is a geometry layer and false in case of NoGeometry (table only) or UnknownGeometry
- :rtype: bool
-%End
+    virtual QgsWkbTypes::Type wkbType() const;
 
-    QgsWkbTypes::Type wkbType() const;
 %Docstring
 Returns the WKBType or WKBUnknown in case of error
  :rtype: QgsWkbTypes.Type
@@ -685,7 +692,12 @@ Return the provider type for this layer
  :rtype: str
 %End
 
-    virtual bool readXml( const QDomNode &layer_node );
+    virtual QgsCoordinateReferenceSystem sourceCrs() const;
+
+    virtual QString sourceName() const;
+
+
+    virtual bool readXml( const QDomNode &layer_node, const QgsReadWriteContext &context );
 %Docstring
  Reads vector layer specific state from project file Dom node.
 .. note::
@@ -694,7 +706,7 @@ Return the provider type for this layer
  :rtype: bool
 %End
 
-    virtual bool writeXml( QDomNode &layer_node, QDomDocument &doc ) const;
+    virtual bool writeXml( QDomNode &layer_node, QDomDocument &doc, const QgsReadWriteContext &context ) const;
 %Docstring
  Write vector layer specific state to project file Dom node.
 .. note::
@@ -765,44 +777,48 @@ Return the provider type for this layer
  :rtype: str
 %End
 
-    virtual bool readSymbology( const QDomNode &layerNode, QString &errorMessage );
+    virtual bool readSymbology( const QDomNode &layerNode, QString &errorMessage, const QgsReadWriteContext &context );
 
 %Docstring
  Read the symbology for the current layer from the Dom node supplied.
  \param layerNode node that will contain the symbology definition for this layer.
  \param errorMessage reference to string that will be updated with any error messages
+ \param context reading context (used for transform from relative to absolute paths)
  :return: true in case of success.
  :rtype: bool
 %End
 
-    virtual bool readStyle( const QDomNode &node, QString &errorMessage );
+    virtual bool readStyle( const QDomNode &node, QString &errorMessage, const QgsReadWriteContext &context );
 
 %Docstring
  Read the style for the current layer from the Dom node supplied.
  \param node node that will contain the style definition for this layer.
  \param errorMessage reference to string that will be updated with any error messages
+ \param context reading context (used for transform from relative to absolute paths)
  :return: true in case of success.
  :rtype: bool
 %End
 
-    virtual bool writeSymbology( QDomNode &node, QDomDocument &doc, QString &errorMessage ) const;
+    virtual bool writeSymbology( QDomNode &node, QDomDocument &doc, QString &errorMessage, const QgsReadWriteContext &context ) const;
 
 %Docstring
  Write the symbology for the layer into the docment provided.
   \param node the node that will have the style element added to it.
   \param doc the document that will have the QDomNode added.
   \param errorMessage reference to string that will be updated with any error messages
+  \param context writing context (used for transform from absolute to relative paths)
   :return: true in case of success.
  :rtype: bool
 %End
 
-    virtual bool writeStyle( QDomNode &node, QDomDocument &doc, QString &errorMessage ) const;
+    virtual bool writeStyle( QDomNode &node, QDomDocument &doc, QString &errorMessage, const QgsReadWriteContext &context ) const;
 
 %Docstring
  Write just the style information for the layer into the document
   \param node the node that will have the style element added to it.
   \param doc the document that will have the QDomNode added.
   \param errorMessage reference to string that will be updated with any error messages
+  \param context writing context (used for transform from absolute to relative paths)
   :return: true in case of success.
  :rtype: bool
 %End
@@ -870,11 +886,12 @@ Return the provider type for this layer
     virtual QString subsetString() const;
 %Docstring
  Get the string (typically sql) used to define a subset of the layer
- :return: The subset string or QString.null if not implemented by the provider
+ :return: The subset string or null QString if not implemented by the provider
  :rtype: str
 %End
 
-    QgsFeatureIterator getFeatures( const QgsFeatureRequest &request = QgsFeatureRequest() ) const;
+    virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest &request = QgsFeatureRequest() ) const;
+
 %Docstring
  Query the layer for features specified in request.
  \param request feature request describing parameters of features to return
@@ -907,7 +924,7 @@ Return the provider type for this layer
  :rtype: QgsFeatureIterator
 %End
 
-    virtual bool addFeature( QgsFeature &feature );
+    virtual bool addFeature( QgsFeature &feature, QgsFeatureSink::Flags flags = 0 );
 
 
     bool updateFeature( QgsFeature &f );
@@ -928,7 +945,7 @@ changeGeometry() instead.
  :rtype: bool
 %End
 
-    bool insertVertex( const QgsPointV2 &point, QgsFeatureId atFeatureId, int beforeVertex );
+    bool insertVertex( const QgsPoint &point, QgsFeatureId atFeatureId, int beforeVertex );
 %Docstring
  Insert a new vertex before the given vertex number,
   in the given ring, item (first number is index 0), and feature
@@ -944,7 +961,7 @@ changeGeometry() instead.
  :rtype: bool
 %End
 
-    bool moveVertex( const QgsPointV2 &p, QgsFeatureId atFeatureId, int atVertex ) /PyName=moveVertexV2/;
+    bool moveVertex( const QgsPoint &p, QgsFeatureId atFeatureId, int atVertex ) /PyName=moveVertexV2/;
 %Docstring
  Moves the vertex at the given position number,
  ring and item (first number is index 0), and feature
@@ -971,7 +988,7 @@ changeGeometry() instead.
  :rtype: bool
 %End
 
-    int addRing( const QList<QgsPoint> &ring, QgsFeatureId *featureId = 0 );
+    int addRing( const QList<QgsPointXY> &ring, QgsFeatureId *featureId = 0 );
 %Docstring
  :rtype: int
 %End
@@ -981,7 +998,7 @@ changeGeometry() instead.
  :rtype: int
 %End
 
-    int addPart( const QList<QgsPoint> &ring );
+    int addPart( const QList<QgsPointXY> &ring );
 %Docstring
  :rtype: int
 %End
@@ -1009,12 +1026,12 @@ changeGeometry() instead.
  :rtype: int
 %End
 
-    int splitParts( const QList<QgsPoint> &splitLine, bool topologicalEditing = false );
+    int splitParts( const QList<QgsPointXY> &splitLine, bool topologicalEditing = false );
 %Docstring
  :rtype: int
 %End
 
-    int splitFeatures( const QList<QgsPoint> &splitLine, bool topologicalEditing = false );
+    int splitFeatures( const QList<QgsPointXY> &splitLine, bool topologicalEditing = false );
 %Docstring
  :rtype: int
 %End
@@ -1030,7 +1047,7 @@ changeGeometry() instead.
  :rtype: int
 %End
 
-    int addTopologicalPoints( const QgsPoint &p );
+    int addTopologicalPoints( const QgsPointXY &p );
 %Docstring
  Adds a vertex to segments which intersect point p but don't
  already have a vertex there. If a feature already has a vertex at position p,
@@ -1041,7 +1058,18 @@ changeGeometry() instead.
  :rtype: int
 %End
 
+    const QgsAbstractVectorLayerLabeling *labeling() const;
+%Docstring
+ Access to labeling configuration. May be null if labeling is not used.
+.. versionadded:: 3.0
+ :rtype: QgsAbstractVectorLayerLabeling
+%End
 
+    void setLabeling( QgsAbstractVectorLayerLabeling *labeling /Transfer/ );
+%Docstring
+ Set labeling configuration. Takes ownership of the object.
+.. versionadded:: 3.0
+%End
 
     virtual bool isEditable() const;
 %Docstring
@@ -1050,6 +1078,10 @@ Returns true if the provider is in editing mode
 %End
 
     virtual bool isSpatial() const;
+%Docstring
+Returns true if this is a geometry layer and false in case of NoGeometry (table only) or UnknownGeometry
+ :rtype: bool
+%End
 
     virtual bool isModified() const;
 %Docstring
@@ -1071,12 +1103,10 @@ Synchronises with changes in the datasource
 
     virtual QgsRectangle extent() const;
 
-%Docstring
-Return the extent of the layer
- :rtype: QgsRectangle
-%End
+    virtual QgsRectangle sourceExtent() const;
 
-    QgsFields fields() const;
+
+    virtual QgsFields fields() const;
 %Docstring
  Returns the list of fields of this layer.
  This also includes fields which have not yet been saved to the provider.
@@ -1129,7 +1159,8 @@ Returns list of attributes making up the primary key
  :rtype: long
 %End
 
-    long featureCount() const;
+    virtual long featureCount() const;
+
 %Docstring
  Returns feature count including changes which have not yet been committed
  If you need only the count of committed features call this method on this layer's provider.
@@ -1250,7 +1281,7 @@ Delete an attribute field (but does not commit it)
  :rtype: bool
 %End
 
-    virtual bool addFeatures( QgsFeatureList &features );
+    virtual bool addFeatures( QgsFeatureList &features, QgsFeatureSink::Flags flags = 0 );
 
 
     bool deleteFeature( QgsFeatureId fid );
@@ -1301,17 +1332,6 @@ Delete a feature from the layer (but does not commit it)
  Stop editing and discard the edits
  \param deleteBuffer whether to delete editing buffer
  :rtype: bool
-%End
-
-    QString annotationForm() const;
-%Docstring
-Get annotation form
- :rtype: str
-%End
-
-    void setAnnotationForm( const QString &ui );
-%Docstring
-Set annotation form for layer
 %End
 
     QList<QgsRelation> referencingRelations( int idx ) const;
@@ -1414,6 +1434,14 @@ Assembles mUpdatedFields considering provider fields, joined fields and added fi
  :rtype: QgsFieldConstraints.Constraints
 %End
 
+    QMap< QgsFieldConstraints::Constraint, QgsFieldConstraints::ConstraintStrength> fieldConstraintsAndStrength( int fieldIndex ) const;
+%Docstring
+ Returns a map of constraint with their strength for a specific field of the layer.
+ \param fieldIndex field index
+.. versionadded:: 3.0
+ :rtype: QMap< QgsFieldConstraints.Constraint, QgsFieldConstraints.ConstraintStrength>
+%End
+
     void setFieldConstraint( int index, QgsFieldConstraints::Constraint constraint, QgsFieldConstraints::ConstraintStrength strength = QgsFieldConstraints::ConstraintStrengthHard );
 %Docstring
  Sets a constraint for a specified field index. Any constraints inherited from the layer's
@@ -1477,18 +1505,19 @@ Assembles mUpdatedFields considering provider fields, joined fields and added fi
  :rtype: QgsEditorWidgetSetup
 %End
 
-    void uniqueValues( int index, QList<QVariant> &uniqueValues /Out/, int limit = -1 ) const;
+    virtual QSet<QVariant> uniqueValues( int fieldIndex, int limit = -1 ) const;
+
 %Docstring
  Calculates a list of unique values contained within an attribute in the layer. Note that
  in some circumstances when unsaved changes are present for the layer then the returned list
  may contain outdated values (for instance when the attribute value in a saved feature has
  been changed inside the edit buffer then the previous saved value will be included in the
  returned list).
- \param index column index for attribute
- \param uniqueValues out: result list
+ \param fieldIndex column index for attribute
  \param limit maximum number of values to return (or -1 if unlimited)
 .. seealso:: minimumValue()
 .. seealso:: maximumValue()
+ :rtype: set of QVariant
 %End
 
     QStringList uniqueStringsMatching( int index, const QString &substring, int limit = -1,
@@ -1508,7 +1537,8 @@ Assembles mUpdatedFields considering provider fields, joined fields and added fi
  :rtype: list of str
 %End
 
-    QVariant minimumValue( int index ) const;
+    virtual QVariant minimumValue( int index ) const;
+
 %Docstring
  Returns the minimum value for an attribute column or an invalid variant in case of error.
  Note that in some circumstances when unsaved changes are present for the layer then the
@@ -1519,7 +1549,8 @@ Assembles mUpdatedFields considering provider fields, joined fields and added fi
  :rtype: QVariant
 %End
 
-    QVariant maximumValue( int index ) const;
+    virtual QVariant maximumValue( int index ) const;
+
 %Docstring
  Returns the maximum value for an attribute column or an invalid variant in case of error.
  Note that in some circumstances when unsaved changes are present for the layer then the
@@ -1585,14 +1616,23 @@ Returns the current blending mode for features
  :rtype: QPainter.CompositionMode
 %End
 
-    void setLayerTransparency( int layerTransparency );
+    void setOpacity( double opacity );
 %Docstring
-Set the transparency for the vector layer
+ Sets the ``opacity`` for the vector layer, where ``opacity`` is a value between 0 (totally transparent)
+ and 1.0 (fully opaque).
+.. seealso:: opacity()
+.. seealso:: opacityChanged()
+.. versionadded:: 3.0
 %End
-    int layerTransparency() const;
+
+    double opacity() const;
 %Docstring
-Returns the current transparency for the vector layer
- :rtype: int
+ Returns the opacity for the vector layer, where opacity is a value between 0 (totally transparent)
+ and 1.0 (fully opaque).
+.. seealso:: setOpacity()
+.. seealso:: opacityChanged()
+.. versionadded:: 3.0
+ :rtype: float
 %End
 
     virtual QString htmlMetadata() const;
@@ -1922,9 +1962,13 @@ Emitted when the font family defined for labeling layer is not found on system
 Signal emitted when setFeatureBlendMode() is called
 %End
 
-    void layerTransparencyChanged( int layerTransparency );
+    void opacityChanged( double opacity );
 %Docstring
-Signal emitted when setLayerTransparency() is called
+ Emitted when the layer's opacity is changed, where ``opacity`` is a value between 0 (transparent)
+ and 1 (opaque).
+.. versionadded:: 3.0
+.. seealso:: setOpacity()
+.. seealso:: opacity()
 %End
 
     void editCommandStarted( const QString &text );

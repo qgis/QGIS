@@ -21,6 +21,8 @@
 #include "ui_qgswfssourceselectbase.h"
 #include "qgscontexthelp.h"
 #include "qgswfscapabilities.h"
+#include "qgsproviderregistry.h"
+#include "qgsabstractdatasourcewidget.h"
 
 #include <QItemDelegate>
 #include <QStandardItemModel>
@@ -41,18 +43,14 @@ class QgsWFSItemDelegate : public QItemDelegate
 
 };
 
-class QgsWFSSourceSelect: public QDialog, private Ui::QgsWFSSourceSelectBase
+class QgsWFSSourceSelect: public QgsAbstractDataSourceWidget, private Ui::QgsWFSSourceSelectBase
 {
     Q_OBJECT
 
   public:
 
-    QgsWFSSourceSelect( QWidget *parent, Qt::WindowFlags fl, bool embeddedMode = false );
+    QgsWFSSourceSelect( QWidget *parent = nullptr, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::None );
     ~QgsWFSSourceSelect();
-
-  signals:
-    void addWfsLayer( const QString &uri, const QString &layerName );
-    void connectionsChanged();
 
   private:
     QgsWFSSourceSelect(); //default constructor is forbidden
@@ -68,7 +66,6 @@ class QgsWFSSourceSelect: public QDialog, private Ui::QgsWFSSourceSelectBase
     QStandardItemModel *mModel = nullptr;
     QSortFilterProxyModel *mModelProxy = nullptr;
     QPushButton *mBuildQueryButton = nullptr;
-    QPushButton *mAddButton = nullptr;
     QgsWfsCapabilities::Capabilities mCaps;
     QModelIndex mSQLIndex;
     QgsSQLComposerDialog *mSQLComposerDialog = nullptr;
@@ -80,12 +77,17 @@ class QgsWFSSourceSelect: public QDialog, private Ui::QgsWFSSourceSelectBase
     \returns the authority id of the crs or an empty string in case of error*/
     QString getPreferredCrs( const QSet<QString> &crsSet ) const;
 
+  public slots:
+
+    //! Triggered when the provider's connections need to be refreshed
+    void refresh() override;
+    void addButtonClicked() override;
+
   private slots:
     void addEntryToServerList();
     void modifyEntryOfServerList();
     void deleteEntryOfServerList();
     void connectToServer();
-    void addLayer();
     void buildQuery( const QModelIndex &index );
     void changeCRS();
     void changeCRSFilter();

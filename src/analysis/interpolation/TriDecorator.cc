@@ -29,7 +29,7 @@ void TriDecorator::addLine( Line3D *line, bool breakline )
   }
 }
 
-int TriDecorator::addPoint( Point3D *p )
+int TriDecorator::addPoint( QgsPoint *p )
 {
   if ( mTIN )
   {
@@ -69,7 +69,7 @@ bool TriDecorator::calcNormal( double x, double y, Vector3D *result )
   }
 }
 
-bool TriDecorator::calcPoint( double x, double y, Point3D *result )
+bool TriDecorator::calcPoint( double x, double y, QgsPoint *result )
 {
   if ( mTIN )
   {
@@ -83,11 +83,11 @@ bool TriDecorator::calcPoint( double x, double y, Point3D *result )
   }
 }
 
-Point3D *TriDecorator::getPoint( unsigned int i ) const
+QgsPoint *TriDecorator::getPoint( unsigned int i ) const
 {
   if ( mTIN )
   {
-    Point3D *p = mTIN->getPoint( i );
+    QgsPoint *p = mTIN->getPoint( i );
     return p;
   }
   else
@@ -97,7 +97,7 @@ Point3D *TriDecorator::getPoint( unsigned int i ) const
   }
 }
 
-bool TriDecorator::getTriangle( double x, double y, Point3D *p1, int *n1, Point3D *p2, int *n2, Point3D *p3, int *n3 )
+bool TriDecorator::getTriangle( double x, double y, QgsPoint *p1, int *n1, QgsPoint *p2, int *n2, QgsPoint *p3, int *n3 )
 {
   if ( mTIN )
   {
@@ -111,7 +111,7 @@ bool TriDecorator::getTriangle( double x, double y, Point3D *p1, int *n1, Point3
   }
 }
 
-bool TriDecorator::getTriangle( double x, double y, Point3D *p1, Point3D *p2, Point3D *p3 )
+bool TriDecorator::getTriangle( double x, double y, QgsPoint *p1, QgsPoint *p2, QgsPoint *p3 )
 {
   if ( mTIN )
   {

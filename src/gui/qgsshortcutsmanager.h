@@ -20,13 +20,17 @@
 #include <QList>
 #include <QAction>
 #include "qgis_gui.h"
+#include "qgis_sip.h"
 
 class QShortcut;
 
 /** \ingroup gui
  * \class QgsShortcutsManager
  * Shortcuts manager is a class that contains a list of QActions and QShortcuts
-  that have been registered and their shortcuts can be changed.
+ * that have been registered and their shortcuts can be changed.
+ *
+ * QgsShortcutsManager is not usually directly created, but rather accessed through
+ * QgsGui::shortcutsManager().
  * \since QGIS 2.16
  */
 class GUI_EXPORT QgsShortcutsManager : public QObject
@@ -35,16 +39,13 @@ class GUI_EXPORT QgsShortcutsManager : public QObject
 
   public:
 
-    //! Return the singleton instance of the manager.
-    static QgsShortcutsManager *instance();
-
     /** Constructor for QgsShortcutsManager.
      * \param parent parent object
      * \param settingsRoot root QgsSettings path for storing settings, e.g., "/myplugin/shortcuts". Leave
      * as the default value to store settings alongside built in QGIS shortcuts, but care must be
      * taken to not register actions which conflict with the built in QGIS actions.
      */
-    QgsShortcutsManager( QObject *parent = nullptr, const QString &settingsRoot = "/shortcuts/" );
+    QgsShortcutsManager( QObject *parent SIP_TRANSFERTHIS = nullptr, const QString &settingsRoot = "/shortcuts/" );
 
     /** Automatically registers all QActions and QShortcuts which are children of the
      * passed object.
@@ -230,7 +231,6 @@ class GUI_EXPORT QgsShortcutsManager : public QObject
     ActionsHash mActions;
     ShortcutsHash mShortcuts;
     QString mSettingsPath;
-    static QgsShortcutsManager *sInstance;
 
     /**
      * Updates the action to include the shortcut keys. Shortcut keys are

@@ -27,7 +27,7 @@
 #include "qgsmessagelog.h"
 #include "qgsnetworkaccessmanager.h"
 #include "qgsunittypes.h"
-#include "qgscsexception.h"
+#include "qgsexception.h"
 #include "qgsapplication.h"
 
 // %%% copied from qgswmsprovider.cpp
@@ -132,7 +132,7 @@ bool QgsWmsSettings::parseUri( const QString &uriString )
       QStringList kv = param.split( '=' );
       if ( kv.size() == 1 )
       {
-        mTileDimensionValues.insert( kv[0], QString::null );
+        mTileDimensionValues.insert( kv[0], QString() );
       }
       else if ( kv.size() == 2 )
       {
@@ -750,9 +750,9 @@ void QgsWmsCapabilities::parseLayer( QDomElement const &e, QgsWmsLayerProperty &
 // TODO: Delete this stanza completely, depending on success of "Inherit things into the sublayer" below.
 #if 0
   // enforce WMS non-inheritance rules
-  layerProperty.name =        QString::null;
-  layerProperty.title =       QString::null;
-  layerProperty.abstract =    QString::null;
+  layerProperty.name =        QString();
+  layerProperty.title =       QString();
+  layerProperty.abstract =    QString();
   layerProperty.keywordList.clear();
 #endif
 
@@ -1288,7 +1288,7 @@ void QgsWmsCapabilities::parseTileSetProfile( QDomElement const &e )
     Q_ASSERT( l.boundingBoxes.size() == 1 );
     m.matrixWidth  = ceil( l.boundingBoxes.at( 0 ).box.width() / m.tileWidth / r );
     m.matrixHeight = ceil( l.boundingBoxes.at( 0 ).box.height() / m.tileHeight / r );
-    m.topLeft = QgsPoint( l.boundingBoxes.at( 0 ).box.xMinimum(), l.boundingBoxes.at( 0 ).box.yMinimum() + m.matrixHeight * m.tileHeight * r );
+    m.topLeft = QgsPointXY( l.boundingBoxes.at( 0 ).box.xMinimum(), l.boundingBoxes.at( 0 ).box.yMinimum() + m.matrixHeight * m.tileHeight * r );
     m.tres = r;
     ms.tileMatrices.insert( r, m );
     i++;
@@ -1422,8 +1422,8 @@ void QgsWmsCapabilities::parseWMTSContents( QDomElement const &e )
       if ( ll.size() == 2 && ur.size() == 2 )
       {
         bb.crs = DEFAULT_LATLON_CRS;
-        bb.box = QgsRectangle( QgsPoint( ll[0].toDouble(), ll[1].toDouble() ),
-                               QgsPoint( ur[0].toDouble(), ur[1].toDouble() ) );
+        bb.box = QgsRectangle( QgsPointXY( ll[0].toDouble(), ll[1].toDouble() ),
+                               QgsPointXY( ur[0].toDouble(), ur[1].toDouble() ) );
 
         l.boundingBoxes << bb;
       }
@@ -1438,8 +1438,8 @@ void QgsWmsCapabilities::parseWMTSContents( QDomElement const &e )
 
       if ( ll.size() == 2 && ur.size() == 2 )
       {
-        bb.box = QgsRectangle( QgsPoint( ll[0].toDouble(), ll[1].toDouble() ),
-                               QgsPoint( ur[0].toDouble(), ur[1].toDouble() ) );
+        bb.box = QgsRectangle( QgsPointXY( ll[0].toDouble(), ll[1].toDouble() ),
+                               QgsPointXY( ur[0].toDouble(), ur[1].toDouble() ) );
 
         if ( bbox.hasAttribute( QStringLiteral( "SRS" ) ) )
           bb.crs = bbox.attribute( QStringLiteral( "SRS" ) );
@@ -1834,8 +1834,8 @@ bool QgsWmsCapabilities::detectTileLayerBoundingBox( QgsWmtsTileLayer &l )
   // the magic number below is "standardized rendering pixel size" defined
   // in WMTS (and WMS 1.3) standard, being 0.28 pixel
   double res = tm.scaleDenom * 0.00028 / metersPerUnit;
-  QgsPoint bottomRight( tm.topLeft.x() + res * tm.tileWidth * tm.matrixWidth,
-                        tm.topLeft.y() - res * tm.tileHeight * tm.matrixHeight );
+  QgsPointXY bottomRight( tm.topLeft.x() + res * tm.tileWidth * tm.matrixWidth,
+                          tm.topLeft.y() - res * tm.tileHeight * tm.matrixHeight );
 
   QgsDebugMsg( QString( "detecting WMTS layer bounding box: tileset %1 matrix %2 crs %3 res %4" )
                .arg( tmsIt->identifier, tm.identifier, tmsIt->crs ).arg( res ) );
@@ -1996,7 +1996,7 @@ void QgsWmsCapabilitiesDownload::capabilitiesReplyFinished()
   {
     if ( mCapabilitiesReply->error() == QNetworkReply::NoError )
     {
-      QgsDebugMsg( "reply ok" );
+      QgsDebugMsg( "reply OK" );
       QVariant redirect = mCapabilitiesReply->attribute( QNetworkRequest::RedirectionTargetAttribute );
       if ( !redirect.isNull() )
       {

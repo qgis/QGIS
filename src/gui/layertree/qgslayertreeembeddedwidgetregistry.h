@@ -57,6 +57,9 @@ class GUI_EXPORT QgsLayerTreeEmbeddedWidgetProvider
  * Embedded widgets are assigned per individual map layers and they are shown before any legend entries.
  * Layer tree must have UseEmbeddedWidgets flag enabled in order to show assigned widgets.
  *
+ * QgsLayerTreeEmbeddedWidgetRegistry is not usually directly created, but rather accessed through
+ * QgsGui::layerTreeEmbeddedWidgetRegistry().
+ *
  * \see QgsLayerTreeEmbeddedWidgetRegistry
  * \since QGIS 2.16
  */
@@ -64,8 +67,13 @@ class GUI_EXPORT QgsLayerTreeEmbeddedWidgetRegistry
 {
   public:
 
-    //! Means of accessing canonical single instance
-    static QgsLayerTreeEmbeddedWidgetRegistry *instance();
+    /**
+     * Constructor for QgsLayerTreeEmbeddedWidgetRegistry/
+     *
+     * QgsLayerTreeEmbeddedWidgetRegistry is not usually directly created, but rather accessed through
+     * QgsGui::layerTreeEmbeddedWidgetRegistry().
+     */
+    QgsLayerTreeEmbeddedWidgetRegistry();
 
     ~QgsLayerTreeEmbeddedWidgetRegistry();
 
@@ -89,11 +97,14 @@ class GUI_EXPORT QgsLayerTreeEmbeddedWidgetRegistry
     bool removeProvider( const QString &providerId );
 
   protected:
-    //! Protected constructor - use instance() to access the registry.
-    QgsLayerTreeEmbeddedWidgetRegistry();
 
     //! storage of all the providers
     QMap<QString, QgsLayerTreeEmbeddedWidgetProvider *> mProviders;
+
+  private:
+#ifdef SIP_RUN
+    QgsLayerTreeEmbeddedWidgetRegistry( const QgsLayerTreeEmbeddedWidgetRegistry &other );
+#endif
 
 };
 

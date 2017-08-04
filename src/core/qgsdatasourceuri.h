@@ -245,7 +245,7 @@ class CORE_EXPORT QgsDataSourceUri
     //! password
     QString mPassword;
     //! ssl mode
-    enum SslMode mSSLmode;
+    SslMode mSSLmode;
     //! key column
     QString mKeyColumn;
     //! Use estimated metadata flag

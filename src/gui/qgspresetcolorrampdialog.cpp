@@ -74,7 +74,7 @@ void QgsPresetColorRampWidget::on_mButtonAddColor_clicked()
 
     QgsCompoundColorWidget *colorWidget = new QgsCompoundColorWidget( this, QgsRecentColorScheme::lastUsedColor(), QgsCompoundColorWidget::LayoutVertical );
     colorWidget->setPanelTitle( tr( "Select Color" ) );
-    colorWidget->setAllowAlpha( true );
+    colorWidget->setAllowOpacity( true );
     connect( colorWidget, &QgsCompoundColorWidget::currentColorChanged, this, &QgsPresetColorRampWidget::newColorChanged );
     openPanel( colorWidget );
   }

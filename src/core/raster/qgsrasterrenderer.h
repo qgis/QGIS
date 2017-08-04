@@ -19,6 +19,7 @@
 #define QGSRASTERRENDERER_H
 
 #include "qgis_core.h"
+#include "qgis_sip.h"
 #include <QPair>
 
 #include "qgsrasterinterface.h"
@@ -49,7 +50,7 @@ class CORE_EXPORT QgsRasterRenderer : public QgsRasterInterface
     //! QgsRasterRenderer cannot be copied. Use clone() instead.
     const QgsRasterRenderer &operator=( const QgsRasterRenderer & ) = delete;
 
-    QgsRasterRenderer *clone() const override = 0;
+    QgsRasterRenderer *clone() const override = 0 SIP_FACTORY;
 
     virtual int bandCount() const override;
 
@@ -59,21 +60,36 @@ class CORE_EXPORT QgsRasterRenderer : public QgsRasterInterface
 
     virtual bool setInput( QgsRasterInterface *input ) override;
 
-    virtual QgsRasterBlock *block( int bandNo, const QgsRectangle &extent, int width, int height, QgsRasterBlockFeedback *feedback = nullptr ) override = 0;
+    virtual QgsRasterBlock *block( int bandNo,
+                                   const QgsRectangle &extent,
+                                   int width,
+                                   int height,
+                                   QgsRasterBlockFeedback *feedback = nullptr ) override = 0 SIP_FACTORY;
 
     bool usesTransparency() const;
 
+    /**
+     * Sets the \a opacity for the renderer, where \a opacity is a value between 0 (totally transparent)
+     * and 1.0 (fully opaque).
+     * \see opacity()
+     */
     void setOpacity( double opacity ) { mOpacity = opacity; }
+
+    /**
+     * Returns the opacity for the renderer, where opacity is a value between 0 (totally transparent)
+     * and 1.0 (fully opaque).
+     * \see setOpacity()
+     */
     double opacity() const { return mOpacity; }
 
-    void setRasterTransparency( QgsRasterTransparency *t );
+    void setRasterTransparency( QgsRasterTransparency *t SIP_TRANSFER );
     const QgsRasterTransparency *rasterTransparency() const { return mRasterTransparency; }
 
     void setAlphaBand( int band ) { mAlphaBand = band; }
     int alphaBand() const { return mAlphaBand; }
 
     //! Get symbology items if provided by renderer
-    virtual void legendSymbologyItems( QList< QPair< QString, QColor > > &symbolItems ) const { Q_UNUSED( symbolItems ); }
+    virtual void legendSymbologyItems( QList< QPair< QString, QColor > > &symbolItems SIP_OUT ) const { Q_UNUSED( symbolItems ); }
 
     //! Sets base class members from xml. Usually called from create() methods of subclasses
     void readXml( const QDomElement &rendererElem ) override;
@@ -100,7 +116,7 @@ class CORE_EXPORT QgsRasterRenderer : public QgsRasterInterface
     QString mType;
 
     //! Global alpha value (0-1)
-    double mOpacity;
+    double mOpacity = 1.0;
     //! Raster transparency per color or value. Overwrites global alpha value
     QgsRasterTransparency *mRasterTransparency = nullptr;
 
@@ -110,6 +126,12 @@ class CORE_EXPORT QgsRasterRenderer : public QgsRasterInterface
 
     //! Origin of min/max values
     QgsRasterMinMaxOrigin mMinMaxOrigin;
+
+  private:
+#ifdef SIP_RUN
+    QgsRasterRenderer( const QgsRasterRenderer & );
+    const QgsRasterRenderer &operator=( const QgsRasterRenderer & );
+#endif
 
 };
 

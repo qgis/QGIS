@@ -32,17 +32,18 @@
 QgsAfsProvider::QgsAfsProvider( const QString &uri )
   : QgsVectorDataProvider( uri )
   , mValid( false )
-  , mGeometryType( QgsWkbTypes::Unknown )
   , mObjectIdFieldIdx( -1 )
 {
-  mDataSource = QgsDataSourceUri( uri );
+  mSharedData.reset( new QgsAfsSharedData() );
+  mSharedData->mGeometryType = QgsWkbTypes::Unknown;
+  mSharedData->mDataSource = QgsDataSourceUri( uri );
 
   // Set CRS
-  mSourceCRS = QgsCoordinateReferenceSystem::fromOgcWmsCrs( mDataSource.param( QStringLiteral( "crs" ) ) );
+  mSharedData->mSourceCRS = QgsCoordinateReferenceSystem::fromOgcWmsCrs( mSharedData->mDataSource.param( QStringLiteral( "crs" ) ) );
 
   // Get layer info
   QString errorTitle, errorMessage;
-  QVariantMap layerData = QgsArcGisRestUtils::getLayerInfo( mDataSource.param( QStringLiteral( "url" ) ), errorTitle, errorMessage );
+  QVariantMap layerData = QgsArcGisRestUtils::getLayerInfo( mSharedData->mDataSource.param( QStringLiteral( "url" ) ), errorTitle, errorMessage );
   if ( layerData.isEmpty() )
   {
     pushError( errorTitle + ": " + errorMessage );
@@ -53,25 +54,25 @@ QgsAfsProvider::QgsAfsProvider( const QString &uri )
   mLayerDescription = layerData[QStringLiteral( "description" )].toString();
 
   // Set extent
-  QStringList coords = mDataSource.param( QStringLiteral( "bbox" ) ).split( QStringLiteral( "," ) );
+  QStringList coords = mSharedData->mDataSource.param( QStringLiteral( "bbox" ) ).split( QStringLiteral( "," ) );
   if ( coords.size() == 4 )
   {
     bool xminOk = false, yminOk = false, xmaxOk = false, ymaxOk = false;
-    mExtent.setXMinimum( coords[0].toDouble( &xminOk ) );
-    mExtent.setYMinimum( coords[1].toDouble( &yminOk ) );
-    mExtent.setXMaximum( coords[2].toDouble( &xmaxOk ) );
-    mExtent.setYMaximum( coords[3].toDouble( &ymaxOk ) );
+    mSharedData->mExtent.setXMinimum( coords[0].toDouble( &xminOk ) );
+    mSharedData->mExtent.setYMinimum( coords[1].toDouble( &yminOk ) );
+    mSharedData->mExtent.setXMaximum( coords[2].toDouble( &xmaxOk ) );
+    mSharedData->mExtent.setYMaximum( coords[3].toDouble( &ymaxOk ) );
     if ( !xminOk || !yminOk || !xmaxOk || !ymaxOk )
-      mExtent = QgsRectangle();
+      mSharedData->mExtent = QgsRectangle();
   }
-  if ( mExtent.isEmpty() )
+  if ( mSharedData->mExtent.isEmpty() )
   {
     QVariantMap layerExtentMap = layerData[QStringLiteral( "extent" )].toMap();
     bool xminOk = false, yminOk = false, xmaxOk = false, ymaxOk = false;
-    mExtent.setXMinimum( layerExtentMap[QStringLiteral( "xmin" )].toDouble( &xminOk ) );
-    mExtent.setYMinimum( layerExtentMap[QStringLiteral( "ymin" )].toDouble( &yminOk ) );
-    mExtent.setXMaximum( layerExtentMap[QStringLiteral( "xmax" )].toDouble( &xmaxOk ) );
-    mExtent.setYMaximum( layerExtentMap[QStringLiteral( "ymax" )].toDouble( &ymaxOk ) );
+    mSharedData->mExtent.setXMinimum( layerExtentMap[QStringLiteral( "xmin" )].toDouble( &xminOk ) );
+    mSharedData->mExtent.setYMinimum( layerExtentMap[QStringLiteral( "ymin" )].toDouble( &yminOk ) );
+    mSharedData->mExtent.setXMaximum( layerExtentMap[QStringLiteral( "xmax" )].toDouble( &xmaxOk ) );
+    mSharedData->mExtent.setYMaximum( layerExtentMap[QStringLiteral( "ymax" )].toDouble( &ymaxOk ) );
     if ( !xminOk || !yminOk || !xmaxOk || !ymaxOk )
     {
       appendError( QgsErrorMessage( tr( "Could not retrieve layer extent" ), QStringLiteral( "AFSProvider" ) ) );
@@ -83,7 +84,7 @@ QgsAfsProvider::QgsAfsProvider( const QString &uri )
       appendError( QgsErrorMessage( tr( "Could not parse spatial reference" ), QStringLiteral( "AFSProvider" ) ) );
       return;
     }
-    mExtent = QgsCoordinateTransform( extentCrs, mSourceCRS ).transformBoundingBox( mExtent );
+    mSharedData->mExtent = QgsCoordinateTransform( extentCrs, mSharedData->mSourceCRS ).transformBoundingBox( mSharedData->mExtent );
   }
 
   // Read fields
@@ -98,24 +99,24 @@ QgsAfsProvider::QgsAfsProvider( const QString &uri )
       continue;
     }
     QgsField field( fieldName, type, fieldDataMap[QStringLiteral( "type" )].toString(), fieldDataMap[QStringLiteral( "length" )].toInt() );
-    mFields.append( field );
+    mSharedData->mFields.append( field );
   }
 
   // Determine geometry type
   bool hasM = layerData[QStringLiteral( "hasM" )].toBool();
   bool hasZ = layerData[QStringLiteral( "hasZ" )].toBool();
-  mGeometryType = QgsArcGisRestUtils::mapEsriGeometryType( layerData[QStringLiteral( "geometryType" )].toString() );
-  if ( mGeometryType == QgsWkbTypes::Unknown )
+  mSharedData->mGeometryType = QgsArcGisRestUtils::mapEsriGeometryType( layerData[QStringLiteral( "geometryType" )].toString() );
+  if ( mSharedData->mGeometryType == QgsWkbTypes::Unknown )
   {
     appendError( QgsErrorMessage( tr( "Failed to determine geometry type" ), QStringLiteral( "AFSProvider" ) ) );
     return;
   }
-  mGeometryType = QgsWkbTypes::zmType( mGeometryType, hasZ, hasM );
+  mSharedData->mGeometryType = QgsWkbTypes::zmType( mSharedData->mGeometryType, hasZ, hasM );
 
   // Read OBJECTIDs of all features: these may not be a continuous sequence,
   // and we need to store these to iterate through the features. This query
   // also returns the name of the ObjectID field.
-  QVariantMap objectIdData = QgsArcGisRestUtils::getObjectIds( mDataSource.param( QStringLiteral( "url" ) ), errorTitle, errorMessage );
+  QVariantMap objectIdData = QgsArcGisRestUtils::getObjectIds( mSharedData->mDataSource.param( QStringLiteral( "url" ) ), errorTitle, errorMessage );
   if ( objectIdData.isEmpty() )
   {
     appendError( QgsErrorMessage( tr( "getObjectIds failed: %1 - %2" ).arg( errorTitle, errorMessage ), QStringLiteral( "AFSProvider" ) ) );
@@ -126,25 +127,25 @@ QgsAfsProvider::QgsAfsProvider( const QString &uri )
     appendError( QgsErrorMessage( tr( "Failed to determine objectIdFieldName and/or objectIds" ), QStringLiteral( "AFSProvider" ) ) );
     return;
   }
-  mObjectIdFieldName = objectIdData[QStringLiteral( "objectIdFieldName" )].toString();
-  for ( int idx = 0, nIdx = mFields.count(); idx < nIdx; ++idx )
+  QString objectIdFieldName = objectIdData[QStringLiteral( "objectIdFieldName" )].toString();
+  for ( int idx = 0, nIdx = mSharedData->mFields.count(); idx < nIdx; ++idx )
   {
-    if ( mFields.at( idx ).name() == mObjectIdFieldName )
+    if ( mSharedData->mFields.at( idx ).name() == objectIdFieldName )
     {
       mObjectIdFieldIdx = idx;
 
       // primary key is not null, unique
-      QgsFieldConstraints constraints = mFields.at( idx ).constraints();
+      QgsFieldConstraints constraints = mSharedData->mFields.at( idx ).constraints();
       constraints.setConstraint( QgsFieldConstraints::ConstraintNotNull, QgsFieldConstraints::ConstraintOriginProvider );
       constraints.setConstraint( QgsFieldConstraints::ConstraintUnique, QgsFieldConstraints::ConstraintOriginProvider );
-      mFields[ idx ].setConstraints( constraints );
+      mSharedData->mFields[ idx ].setConstraints( constraints );
 
       break;
     }
   }
   foreach ( const QVariant &objectId, objectIdData["objectIds"].toList() )
   {
-    mObjectIds.append( objectId.toInt() );
+    mSharedData->mObjectIds.append( objectId.toInt() );
   }
 
   mValid = true;
@@ -152,111 +153,46 @@ QgsAfsProvider::QgsAfsProvider( const QString &uri )
 
 QgsAbstractFeatureSource *QgsAfsProvider::featureSource() const
 {
-  return new QgsAfsFeatureSource( this );
+  return new QgsAfsFeatureSource( mSharedData );
 }
 
 QgsFeatureIterator QgsAfsProvider::getFeatures( const QgsFeatureRequest &request ) const
 {
-  return new QgsAfsFeatureIterator( new QgsAfsFeatureSource( this ), true, request );
+  return new QgsAfsFeatureIterator( new QgsAfsFeatureSource( mSharedData ), true, request );
 }
 
-bool QgsAfsProvider::getFeature( QgsFeatureId id, QgsFeature &f, bool fetchGeometry, const QList<int> & /*fetchAttributes*/, const QgsRectangle &filterRect )
+QgsWkbTypes::Type QgsAfsProvider::wkbType() const
 {
-  // If cached, return cached feature
-  QMap<QgsFeatureId, QgsFeature>::const_iterator it = mCache.find( id );
-  if ( it != mCache.end() )
-  {
-    f = it.value();
-    return filterRect.isNull() || f.geometry().intersects( filterRect );
-  }
+  return mSharedData->mGeometryType;
+}
 
-  // Determine attributes to fetch
-  /*QStringList fetchAttribNames;
-  foreach ( int idx, fetchAttributes )
-    fetchAttribNames.append( mFields.at( idx ).name() );
-  */
+long QgsAfsProvider::featureCount() const
+{
+  return mSharedData->mObjectIds.size();
+}
 
-  // When fetching from server, fetch all attributes and geometry by default so that we can cache them
-  QStringList fetchAttribNames;
-  QList<int> fetchAttribIdx;
-  fetchAttribIdx.reserve( mFields.size() );
-  for ( int idx = 0, n = mFields.size(); idx < n; ++idx )
-  {
-    fetchAttribNames.append( mFields.at( idx ).name() );
-    fetchAttribIdx.append( idx );
-  }
-  fetchGeometry = true;
-
-  // Fetch 100 features at the time
-  int startId = ( id / 100 ) * 100;
-  int stopId = qMin( startId + 100, mObjectIds.length() );
-  QList<quint32> objectIds;
-  objectIds.reserve( stopId );
-  for ( int i = startId; i < stopId; ++i )
-  {
-    objectIds.append( mObjectIds[i] );
-  }
-
-
-  // Query
-  QString errorTitle, errorMessage;
-  QVariantMap queryData = QgsArcGisRestUtils::getObjects(
-                            mDataSource.param( QStringLiteral( "url" ) ), objectIds, mDataSource.param( QStringLiteral( "crs" ) ), fetchGeometry,
-                            fetchAttribNames, QgsWkbTypes::hasM( mGeometryType ), QgsWkbTypes::hasZ( mGeometryType ),
-                            filterRect, errorTitle, errorMessage );
-  if ( queryData.isEmpty() )
-  {
-    const_cast<QgsAfsProvider *>( this )->pushError( errorTitle + ": " + errorMessage );
-    QgsDebugMsg( "Query returned empty result" );
-    return false;
-  }
-
-  QVariantList featuresData = queryData[QStringLiteral( "features" )].toList();
-  if ( featuresData.isEmpty() )
-  {
-    QgsDebugMsg( "Query returned no features" );
-    return false;
-  }
-  for ( int i = 0, n = featuresData.size(); i < n; ++i )
-  {
-    QVariantMap featureData = featuresData[i].toMap();
-    QgsFeature feature;
-
-    // Set FID
-    feature.setId( startId + i );
-
-    // Set attributes
-    if ( !fetchAttribIdx.isEmpty() )
-    {
-      QVariantMap attributesData = featureData[QStringLiteral( "attributes" )].toMap();
-      feature.setFields( mFields );
-      QgsAttributes attributes( mFields.size() );
-      foreach ( int idx, fetchAttribIdx )
-      {
-        attributes[idx] = attributesData[mFields.at( idx ).name()];
-      }
-      feature.setAttributes( attributes );
-    }
-
-    // Set geometry
-    if ( fetchGeometry )
-    {
-      QVariantMap geometryData = featureData[QStringLiteral( "geometry" )].toMap();
-      QgsAbstractGeometry *geometry = QgsArcGisRestUtils::parseEsriGeoJSON( geometryData, queryData[QStringLiteral( "geometryType" )].toString(),
-                                      QgsWkbTypes::hasM( mGeometryType ), QgsWkbTypes::hasZ( mGeometryType ) );
-      // Above might return 0, which is ok since in theory empty geometries are allowed
-      feature.setGeometry( QgsGeometry( geometry ) );
-    }
-    feature.setValid( true );
-    mCache.insert( feature.id(), feature );
-  }
-  f = mCache[id];
-  Q_ASSERT( f.isValid() );
-  return filterRect.isNull() || ( f.hasGeometry() && f.geometry().intersects( filterRect ) );
+QgsFields QgsAfsProvider::fields() const
+{
+  return mSharedData->mFields;
 }
 
 void QgsAfsProvider::setDataSourceUri( const QString &uri )
 {
-  mDataSource = QgsDataSourceUri( uri );
+  mSharedData->mDataSource = QgsDataSourceUri( uri );
   QgsDataProvider::setDataSourceUri( uri );
+}
+
+QgsCoordinateReferenceSystem QgsAfsProvider::crs() const
+{
+  return mSharedData->crs();
+}
+
+QgsRectangle QgsAfsProvider::extent() const
+{
+  return mSharedData->extent();
+}
+
+void QgsAfsProvider::reloadData()
+{
+  mSharedData->mCache.clear();
 }

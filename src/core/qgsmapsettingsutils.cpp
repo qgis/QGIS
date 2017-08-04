@@ -40,7 +40,7 @@ const QStringList QgsMapSettingsUtils::containsAdvancedEffects( const QgsMapSett
       QgsVectorLayer *currentVectorLayer = qobject_cast<QgsVectorLayer *>( layer );
       if ( currentVectorLayer )
       {
-        if ( currentVectorLayer->layerTransparency() != 0 )
+        if ( !qgsDoubleNear( currentVectorLayer->opacity(), 1.0 ) )
         {
           layers << layer->name();
         }

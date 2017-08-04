@@ -1,0 +1,31 @@
+Fuzzy Landform Element Classification
+ta_morphometry
+ParameterRaster|SLOPE|Slope|False
+ParameterRaster|MINCURV|Minimum Curvature|False
+ParameterRaster|MAXCURV|Maximum Curvature|False
+ParameterRaster|PCURV|Profile Curvature|False
+ParameterRaster|TCURV|Tangential Curvature|False
+OutputRaster|PLAIN|Plain
+OutputRaster|PIT|Pit
+OutputRaster|PEAK|Peak
+OutputRaster|RIDGE|Ridge
+OutputRaster|CHANNEL|Channel
+OutputRaster|SADDLE|Saddle
+OutputRaster|BSLOPE|Back Slope
+OutputRaster|FSLOPE|Foot Slope
+OutputRaster|SSLOPE|Shoulder Slope
+OutputRaster|HOLLOW|Hollow
+OutputRaster|FHOLLOW|Foot Hollow
+OutputRaster|SHOLLOW|Shoulder Hollow
+OutputRaster|SPUR|Spur
+OutputRaster|FSPUR|Foot Spur
+OutputRaster|SSPUR|Shoulder Spur
+OutputRaster|FORM|Landform
+OutputRaster|MEM|Maximum Membership
+OutputRaster|ENTROPY|Entropy
+OutputRaster|CI|Confusion Index
+ParameterSelection|SLOPETODEG|Slope Grid Units|[0] degree;[1] radians| 0
+ParameterNumber|T_SLOPE_MIN|Slope Thresholds [Degree] (Min)|None|None|None
+ParameterNumber|T_SLOPE_MAX|Slope Thresholds [Degree] (Max)|None|None|None
+ParameterNumber|T_CURVE_MIN|Curvature Thresholds [1 / m] (Min)|None|None|None
+ParameterNumber|T_CURVE_MAX|Curvature Thresholds [1 / m] (Max)|None|None|None

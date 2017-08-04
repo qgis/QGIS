@@ -38,7 +38,7 @@ from qgis.PyQt.QtWidgets import (QMessageBox,
                                  QApplication)
 
 from qgis.core import QgsApplication, QgsSettings
-from qgis.utils import iface
+from qgis.utils import iface, OverrideCursor
 
 from processing.gui.AlgorithmDialog import AlgorithmDialog
 from processing.gui.HelpEditionDialog import HelpEditionDialog
@@ -68,7 +68,7 @@ class ScriptEditorDialog(BASE, WIDGET):
         self.restoreState(settings.value("/Processing/stateScriptEditor", QByteArray()))
         self.restoreGeometry(settings.value("/Processing/geometryScriptEditor", QByteArray()))
 
-        iconSize = int(settings.value("iconsize", 24))
+        iconSize = int(settings.value("IconSize", 24))
         self.toolBar.setIconSize(QSize(iconSize, iconSize))
 
         self.actionOpenScript.setIcon(
@@ -207,15 +207,14 @@ class ScriptEditorDialog(BASE, WIDGET):
         if self.filename == '':
             return
 
-        QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
-        with codecs.open(self.filename, 'r', encoding='utf-8') as f:
-            txt = f.read()
+        with OverrideCursor(Qt.WaitCursor):
+            with codecs.open(self.filename, 'r', encoding='utf-8') as f:
+                txt = f.read()
 
-        self.editor.setText(txt)
-        self.hasChanged = False
-        self.editor.setModified(False)
-        self.editor.recolor()
-        QApplication.restoreOverrideCursor()
+            self.editor.setText(txt)
+            self.hasChanged = False
+            self.editor.setModified(False)
+            self.editor.recolor()
 
     def save(self):
         self.saveScript(False)
@@ -269,7 +268,7 @@ class ScriptEditorDialog(BASE, WIDGET):
         if self.algType == self.SCRIPT_PYTHON:
             alg = ScriptAlgorithm(None, self.editor.text())
 
-        dlg = alg.getCustomParametersDialog()
+        dlg = alg.createCustomParametersWidget(self)
         if not dlg:
             dlg = AlgorithmDialog(alg)
 
@@ -278,6 +277,10 @@ class ScriptEditorDialog(BASE, WIDGET):
 
         dlg.show()
         dlg.exec_()
+
+        # have to manually delete the dialog - otherwise it's owned by the
+        # iface mainWindow and never deleted
+        del dlg
 
         if canvas.mapTool() != prevMapTool:
             try:

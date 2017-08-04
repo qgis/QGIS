@@ -30,40 +30,32 @@ import math
 from qgis.core import (QgsApplication,
                        QgsFeatureRequest,
                        QgsFeature,
+                       QgsFeatureSink,
                        QgsGeometry,
-                       QgsPoint,
+                       QgsPointXY,
                        QgsProcessingUtils)
 from processing.tools import dataobjects
-from processing.core.GeoAlgorithm import GeoAlgorithm
+from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterNumber
 from processing.core.parameters import ParameterBoolean
 from processing.core.outputs import OutputVector
 
 
-class PointsDisplacement(GeoAlgorithm):
+class PointsDisplacement(QgisAlgorithm):
 
     INPUT_LAYER = 'INPUT_LAYER'
     DISTANCE = 'DISTANCE'
     HORIZONTAL = 'HORIZONTAL'
     OUTPUT_LAYER = 'OUTPUT_LAYER'
 
-    def icon(self):
-        return QgsApplication.getThemeIcon("/providerQgis.svg")
-
-    def svgIconPath(self):
-        return QgsApplication.iconPath("providerQgis.svg")
-
     def group(self):
         return self.tr('Vector geometry tools')
 
-    def name(self):
-        return 'pointsdisplacement'
+    def __init__(self):
+        super().__init__()
 
-    def displayName(self):
-        return self.tr('Points displacement')
-
-    def defineCharacteristics(self):
+    def initAlgorithm(self, config=None):
         self.addParameter(ParameterVector(self.INPUT_LAYER,
                                           self.tr('Input layer'), [dataobjects.TYPE_VECTOR_POINT]))
         self.addParameter(ParameterNumber(self.DISTANCE,
@@ -73,7 +65,13 @@ class PointsDisplacement(GeoAlgorithm):
                                            self.tr('Horizontal distribution for two point case')))
         self.addOutput(OutputVector(self.OUTPUT_LAYER, self.tr('Displaced'), datatype=[dataobjects.TYPE_VECTOR_POINT]))
 
-    def processAlgorithm(self, context, feedback):
+    def name(self):
+        return 'pointsdisplacement'
+
+    def displayName(self):
+        return self.tr('Points displacement')
+
+    def processAlgorithm(self, parameters, context, feedback):
         radius = self.getParameterValue(self.DISTANCE)
         horizontal = self.getParameterValue(self.HORIZONTAL)
         output = self.getOutputFromName(self.OUTPUT_LAYER)
@@ -84,7 +82,7 @@ class PointsDisplacement(GeoAlgorithm):
 
         features = QgsProcessingUtils.getFeatures(layer, context)
 
-        total = 100.0 / QgsProcessingUtils.featureCount(layer, context)
+        total = 100.0 / layer.featureCount() if layer.featureCount() else 0
 
         duplicates = dict()
         for current, f in enumerate(features):
@@ -97,7 +95,7 @@ class PointsDisplacement(GeoAlgorithm):
             feedback.setProgress(int(current * total))
 
         current = 0
-        total = 100.0 / len(duplicates)
+        total = 100.0 / len(duplicates) if duplicates else 1
         feedback.setProgress(0)
 
         fullPerimeter = 2 * math.pi
@@ -106,7 +104,7 @@ class PointsDisplacement(GeoAlgorithm):
             count = len(fids)
             if count == 1:
                 f = next(layer.getFeatures(QgsFeatureRequest().setFilterFid(fids[0])))
-                writer.addFeature(f)
+                writer.addFeature(f, QgsFeatureSink.FastInsert)
             else:
                 angleStep = fullPerimeter / count
                 if count == 2 and horizontal:
@@ -123,12 +121,12 @@ class PointsDisplacement(GeoAlgorithm):
                     dx = radius * sinusCurrentAngle
                     dy = radius * cosinusCurrentAngle
 
-                    new_point = QgsPoint(old_point.x() + dx, old_point.y() + dy)
+                    new_point = QgsPointXY(old_point.x() + dx, old_point.y() + dy)
                     out_feature = QgsFeature()
                     out_feature.setGeometry(QgsGeometry.fromPoint(new_point))
                     out_feature.setAttributes(f.attributes())
 
-                    writer.addFeature(out_feature)
+                    writer.addFeature(out_feature, QgsFeatureSink.FastInsert)
                     currentAngle += angleStep
 
             current += 1

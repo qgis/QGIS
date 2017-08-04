@@ -85,25 +85,28 @@ class SERVER_EXPORT QgsServerProjectParser
     QDomElement propertiesElem() const;
 
     QSet<QString> restrictedLayers() const { return mRestrictedLayers; }
-    bool useLayerIds() const { return mUseLayerIDs; }
+    bool useLayerIds() const;
 
     QHash< QString, QDomElement > projectLayerElementsByName() const { return mProjectLayerElementsByName; }
     QHash< QString, QDomElement > projectLayerElementsById() const { return mProjectLayerElementsById; }
 
-    void layerFromLegendLayer( const QDomElement &legendLayerElem, QMap< int, QgsMapLayer *> &layers, bool useCache = true ) const;
+    void layerFromLegendLayer( const QDomElement &legendLayerElem, QMap< int, QgsMapLayer *> &layers, bool useCache = true ) const SIP_SKIP;
 
     QStringList wfsLayerNames() const;
     QStringList wcsLayerNames() const;
+
+    /** Gets a list containing names of layers. If a layer has a short name,
+     *  then it's used instead of it's name.
+     * \returns A list of layers' names or short name if defined
+     * \since QGIS 3.0
+     */
+    QStringList layersNames() const;
 
     QDomElement firstComposerLegendElement() const;
 
     QList<QDomElement> publishedComposerElements() const;
 
-    QList< QPair< QString, QgsDatumTransformStore::Entry > > layerCoordinateTransforms() const;
-
-    /** Returns the text of the <layername> element for a layer element
-    \returns name or a null string in case of error*/
-    QString layerName( const QDomElement &layerElem ) const;
+    QList< QPair< QString, QgsDatumTransformStore::Entry > > layerCoordinateTransforms() const SIP_SKIP;
 
     QStringList wfsLayers() const;
     QStringList wcsLayers() const;
@@ -119,10 +122,6 @@ class SERVER_EXPORT QgsServerProjectParser
     \returns id or a null string in case of error*/
     QString layerId( const QDomElement &layerElem ) const;
 
-    /** Returns the text of the <id> element for a layer element
-    \returns id or a null string in case of error*/
-    QString layerShortName( const QDomElement &layerElem ) const;
-
     QgsRectangle projectExtent() const;
 
     int numberOfLayers() const;
@@ -137,6 +136,9 @@ class SERVER_EXPORT QgsServerProjectParser
 
     //! Content of project file
     QDomDocument *mXMLDoc = nullptr;
+
+    //! Project
+    const QgsProject *mProject = nullptr;
 
     //! Absolute project file path (including file name)
     QString mProjectPath;
@@ -156,16 +158,12 @@ class SERVER_EXPORT QgsServerProjectParser
     //! Names of layers and groups which should not be published
     QSet<QString> mRestrictedLayers;
 
-    bool mUseLayerIDs;
-
     QgsServerProjectParser(); //forbidden
 
     //! Returns a complete string set with all the restricted layer names (layers/groups that are not to be published)
     QSet<QString> findRestrictedLayers() const;
 
     QStringList mCustomLayerOrder;
-
-    bool findUseLayerIds() const;
 
     QList<QDomElement> findLegendGroupElements() const;
     QList<QDomElement> setLegendGroupElementsWithLayerTree( QgsLayerTreeGroup *layerTreeGroup, const QDomElement &legendElement ) const;

@@ -45,7 +45,7 @@ class APP_EXPORT QgsFieldCalculator: public QDialog, private Ui::QgsFieldCalcula
     void on_mButtonBox_helpRequested() { QgsContextHelp::run( metaObject()->className() ); }
 
   private slots:
-    //! Sets the ok button enabled / disabled
+    //! Sets the OK button enabled / disabled
     void setOkButtonState();
     void setPrecisionMinMax();
 
