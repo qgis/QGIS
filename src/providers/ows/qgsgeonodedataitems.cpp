@@ -119,11 +119,9 @@ QVector<QgsDataItem *> QgsGeoNodeServiceItem::createChildren()
   while ( !skipProvider )
   {
     const QString &key = mServiceName != QString( "WFS" ) ? QString( "WMS" ).toLower() : mServiceName;
-    QgsDebugMsg( "Add connection for provider " + key );
     std::unique_ptr< QLibrary > library( QgsProviderRegistry::instance()->createProviderLibrary( key ) );
     if ( !library )
     {
-      QgsDebugMsg( "Cannot get provider " + key );
       skipProvider = true;
       continue;
     }
@@ -132,13 +130,11 @@ QVector<QgsDataItem *> QgsGeoNodeServiceItem::createChildren()
     dataItem_t *dItem = ( dataItem_t * ) cast_to_fptr( library->resolve( "dataItem" ) );
     if ( !dItem && !dataItemProvidersFn )
     {
-      QgsDebugMsg( library->fileName() + " does not have dataItem" );
       skipProvider = true;
       continue;
     }
 
     QString path =  pathPrefix + mName;
-    QgsDebugMsg( "path = " + path );
 
     QVector<QgsDataItem *> items;
     Q_FOREACH ( QgsDataItemProvider *pr, dataItemProvidersFn() )
@@ -152,14 +148,12 @@ QVector<QgsDataItem *> QgsGeoNodeServiceItem::createChildren()
 
     if ( items.isEmpty() )
     {
-      QgsDebugMsg( "Connection not found by provider" );
       skipProvider = true;
       continue;
     }
 
     if ( mServiceName == QStringLiteral( "XYZ" ) )
     {
-      QgsDebugMsg( "Add new item : " + mServiceName );
       return items;
     }
 
@@ -170,7 +164,6 @@ QVector<QgsDataItem *> QgsGeoNodeServiceItem::createChildren()
       layerCount += item->rowCount();
       if ( item->rowCount() > 0 )
       {
-        QgsDebugMsg( "Add new item : " + item->name() );
         serviceItems.insert( item, key );
       }
       else
@@ -184,7 +177,6 @@ QVector<QgsDataItem *> QgsGeoNodeServiceItem::createChildren()
 
   Q_FOREACH ( QgsDataItem *item, serviceItems.keys() )
   {
-    QgsDebugMsg( QString( "serviceItems.size = %1 layerCount = %2 rowCount = %3" ).arg( serviceItems.size() ).arg( layerCount ).arg( item->rowCount() ) );
     QString providerKey = serviceItems.value( item );
 
     // Add layers directly to service item
@@ -219,13 +211,8 @@ void QgsGeoNodeServiceItem::replacePath( QgsDataItem *item, QString before, QStr
 QgsGeoNodeRootItem::QgsGeoNodeRootItem( QgsDataItem *parent, QString name, QString path ) : QgsDataCollectionItem( parent, name, path )
 {
   mCapabilities |= Fast;
-  if ( name == QString( "GeoNode" ) )
   {
     mIconName = QStringLiteral( "mIconGeonode.svg" );
-  }
-  else
-  {
-    mIconName = QStringLiteral( "mIconConnect.svg" );
   }
   populate();
 }
@@ -237,14 +224,7 @@ QVector<QgsDataItem *> QgsGeoNodeRootItem::createChildren()
   Q_FOREACH ( const QString &connName, QgsGeoNodeConnection::connectionList() )
   {
     QgsGeoNodeConnection *connection = nullptr;
-    if ( mName == QString( "GeoNode" ) )
-    {
-      connection = new QgsGeoNodeConnection( connName );
-    }
-    else
-    {
-      connection = new QgsGeoNodeConnection( connName );
-    }
+    connection = new QgsGeoNodeConnection( connName );
     QString path = mPath + "/" + connName;
     QgsDataItem *conn = new QgsGeoNodeConnectionItem( this, connName, path, connection );
     connections.append( conn );

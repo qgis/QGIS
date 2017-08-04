@@ -68,6 +68,9 @@ class CORE_EXPORT QgsGeoNodeRequest : public QObject
     //! Abort network request immediately
     void abort();
 
+    QString getProtocol() const;
+    void setProtocol( const QString &protocol );
+
   signals:
     //! \brief emit a signal to be caught by qgisapp and display a statusQString on status bar
     void statusChanged( const QString &statusQString );
@@ -80,6 +83,10 @@ class CORE_EXPORT QgsGeoNodeRequest : public QObject
     void replyProgress( qint64, qint64 );
 
   protected:
+
+    //! URL part of URI (httpuri)
+    QString mProtocol;
+
     //! URL part of URI (httpuri)
     QString mBaseUrl;
 

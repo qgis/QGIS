@@ -52,11 +52,15 @@ class CORE_EXPORT QgsGeoNodeConnection : public QObject
     //! Set selected connection
     static void setSelectedConnection( const QString &name );
 
-    // Path in QSetting
-    static const QString pathGeoNodeConnection;// = "qgis/connections-geonode/";
-    static const QString pathGeoNodeConnectionDetails;// = "qgis/GeoNode/";
+    static QString pathGeoNodeConnection();
+
+    static QString pathGeoNodeConnectionDetails();
 
   private:
+    // Path in QSetting
+    static const QString mPathGeoNodeConnection;
+    static const QString mPathGeoNodeConnectionDetails;
+
     //! The connection name
     QString mConnName;
 

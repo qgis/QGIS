@@ -73,6 +73,16 @@ void QgsGeoNodeRequest::replyProgress( qint64 bytesReceived, qint64 bytesTotal )
   emit statusChanged( msg );
 }
 
+QString QgsGeoNodeRequest::getProtocol() const
+{
+  return mProtocol;
+}
+
+void QgsGeoNodeRequest::setProtocol( const QString &protocol )
+{
+  mProtocol = protocol;
+}
+
 
 void QgsGeoNodeRequest::replyFinished()
 {
@@ -318,7 +328,7 @@ QStringList QgsGeoNodeRequest::serviceUrls( QString serviceType )
 
     if ( !url.contains( QLatin1String( "://" ) ) && url.length() > 0 )
     {
-      url.prepend( "http://" );
+      url.prepend( getProtocol() );
     }
     if ( !urls.contains( url ) && url.length() > 0 )
     {
@@ -365,8 +375,7 @@ QgsStringMap QgsGeoNodeRequest::serviceUrlData( QString serviceType )
     QString layerName = layer.name;
     if ( !url.contains( QLatin1String( "://" ) ) && url.length() > 0 )
     {
-      // Change this to https (?)
-      url.prepend( "http://" );
+      url.prepend( getProtocol() );
     }
     if ( !urls.contains( url ) && url.length() > 0 )
     {
@@ -385,9 +394,9 @@ bool QgsGeoNodeRequest::request( QString endPoint )
   QgsMessageLog::logMessage( mBaseUrl, tr( "GeoNode" ) );
   QString url = mBaseUrl + endPoint;
   QgsMessageLog::logMessage( url, tr( "GeoNode" ) );
-  QString protocol = url.split( "://" )[0];
+  setProtocol( url.split( "://" )[0] );
   QUrl layerUrl( url );
-  layerUrl.setScheme( protocol );
+  layerUrl.setScheme( getProtocol() );
 
   mError.clear();
 

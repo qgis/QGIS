@@ -594,7 +594,7 @@ QVector<QgsDataItem *> QgsWmsDataItemProvider::createDataItems( const QString &p
           QgsDebugMsg( encodedUri );
           QgsDataSourceUri uri;
           QgsSettings settings;
-          QString key( connection.pathGeoNodeConnection + "/" + connectionName );
+          QString key( connection.pathGeoNodeConnection() + "/" + connectionName );
 
           QString dpiMode = settings.value( key + "/wms/dpiMode", "all" ).toString();
           uri.setParam( QStringLiteral( "url" ), encodedUri );

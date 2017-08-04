@@ -1,7 +1,7 @@
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
- * src/core/geonode/qgsgeonoderequest.h                                  *
+ * src/core/geonode/qgsgeonoderequest.h                                 *
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/
@@ -79,6 +79,12 @@ class QgsGeoNodeRequest : QObject
 Abort network request immediately
 %End
 
+    QString getProtocol() const;
+%Docstring
+ :rtype: str
+%End
+    void setProtocol( const QString &protocol );
+
   signals:
     void statusChanged( const QString &statusQString );
 %Docstring
@@ -102,12 +108,14 @@ Abort network request immediately
 
 
 
+
+
 };
 
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
- * src/core/geonode/qgsgeonoderequest.h                                  *
+ * src/core/geonode/qgsgeonoderequest.h                                 *
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/

@@ -1,7 +1,7 @@
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
- * src/core/geonode/qgsgeonodeconnection.h                               *
+ * src/core/geonode/qgsgeonodeconnection.h                              *
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/
@@ -64,8 +64,15 @@ Get selected connection
 Set selected connection
 %End
 
-    static const QString pathGeoNodeConnection;
-    static const QString pathGeoNodeConnectionDetails;
+    static QString pathGeoNodeConnection();
+%Docstring
+ :rtype: str
+%End
+
+    static QString pathGeoNodeConnectionDetails();
+%Docstring
+ :rtype: str
+%End
 
 };
 
@@ -73,7 +80,7 @@ Set selected connection
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
- * src/core/geonode/qgsgeonodeconnection.h                               *
+ * src/core/geonode/qgsgeonodeconnection.h                              *
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/
