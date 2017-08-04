@@ -2305,13 +2305,34 @@ void QgisApp::refreshProfileMenu()
   QString activeName = profile->name();
   mConfigMenu->setTitle( tr( "&User Profiles" ) );
 
-  mConfigMenu->addAction( new QgsMenuHeaderWidgetAction( tr( "Active Profile" ), mConfigMenu ) );
+  QActionGroup *profileGroup = new QActionGroup( this );
+  profileGroup->setExclusive( true );
 
-  mConfigMenu->addAction( new QgsMenuHeaderWidgetAction( tr( "Profiles" ), mConfigMenu ) );
-  QAction *profileSection = mConfigMenu->actions().at( 1 );
+  Q_FOREACH ( const QString &name, userProfileManager()->allProfiles() )
+  {
+    profile = userProfileManager()->profileForName( name );
+    // Qt 5.5 has no parent default as nullptr
+    QAction *action = new QAction( profile->icon(), profile->alias(), nullptr );
+    action->setToolTip( profile->folder() );
+    action->setCheckable( true );
+    profileGroup->addAction( action );
+    mConfigMenu->addAction( action );
+    delete profile;
 
-  mConfigMenu->addAction( new QgsMenuHeaderWidgetAction( tr( "Config" ), mConfigMenu ) );
-  QAction *configSection = mConfigMenu->actions().at( 2 );
+    if ( name == activeName )
+    {
+      action->setChecked( true );
+    }
+    else
+    {
+      connect( action, &QAction::triggered, this, [this, name]()
+      {
+        userProfileManager()->loadUserProfile( name );
+      } );
+    }
+  }
+
+  mConfigMenu->addSeparator( );
 
   QAction *openProfileFolderAction = mConfigMenu->addAction( tr( "Open active profile folder" ) );
   connect( openProfileFolderAction, &QAction::triggered, this, [this]()
@@ -2321,33 +2342,6 @@ void QgisApp::refreshProfileMenu()
 
   QAction *newProfileAction = mConfigMenu->addAction( tr( "New profile" ) );
   connect( newProfileAction, &QAction::triggered, this, &QgisApp::newProfile );
-
-  Q_FOREACH ( const QString &name, userProfileManager()->allProfiles() )
-  {
-    profile = userProfileManager()->profileForName( name );
-    // Qt 5.5 has no parent default as nullptr
-    QAction *action = new QAction( profile->icon(), profile->alias(), nullptr );
-    action->setToolTip( profile->folder() );
-    delete profile;
-
-    if ( name == activeName )
-    {
-      mConfigMenu->insertAction( profileSection, action );
-    }
-    else
-    {
-      mConfigMenu->insertAction( configSection, action );
-    }
-    connect( action, &QAction::triggered, this, [this, name]()
-    {
-      userProfileManager()->loadUserProfile( name );
-    } );
-  }
-
-  if ( userProfileManager()->allProfiles().count() == 1 )
-  {
-    profileSection->setVisible( false );
-  }
 }
 
 void QgisApp::createProfileMenu()
