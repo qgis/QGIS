@@ -158,6 +158,11 @@ void QgsLayerMetadata::addKeywords( const QString &vocabulary, const QStringList
   mKeywords.insert( vocabulary, keywords );
 }
 
+bool QgsLayerMetadata::removeKeywords( const QString &vocabulary )
+{
+  return mKeywords.remove( vocabulary );
+}
+
 QStringList QgsLayerMetadata::keywordVocabularies() const
 {
   return mKeywords.keys();
@@ -166,6 +171,23 @@ QStringList QgsLayerMetadata::keywordVocabularies() const
 QStringList QgsLayerMetadata::keywords( const QString &vocabulary ) const
 {
   return mKeywords.value( vocabulary );
+}
+
+QStringList QgsLayerMetadata::categories() const
+{
+  if ( mKeywords.contains( "gmd:topicCategory" ) )
+  {
+    return mKeywords.value( "gmd:topicCategory" );
+  }
+  else
+  {
+    return QStringList();
+  }
+}
+
+void QgsLayerMetadata::setCategories( const QStringList &category )
+{
+  mKeywords.insert( "gmd:topicCategory", category );
 }
 
 QList<QgsLayerMetadata::Contact> QgsLayerMetadata::contacts() const

@@ -48,6 +48,9 @@ class TestQgsLayerMetadata(unittest.TestCase):
         m.setTitle('title')
         self.assertEqual(m.title(), 'title')
 
+        m.setCategories(['category'])
+        self.assertEqual(m.categories(), ['category'])
+
         m.setAbstract('abstract')
         self.assertEqual(m.abstract(), 'abstract')
 
@@ -101,6 +104,11 @@ class TestQgsLayerMetadata(unittest.TestCase):
 
     def testKeywords(self):
         m = QgsLayerMetadata()
+
+        m.setKeywords({'gmd:topicCategory': ['natural']})
+        self.assertEqual(m.keywords(), {'gmd:topicCategory': ['natural']})
+        self.assertEqual(m.categories(), ['natural'])
+        self.assertTrue(m.removeKeywords('gmd:topicCategory'))
 
         m.setKeywords({'vocab a': ['keyword a', 'other a'],
                        'vocab b': ['keyword b', 'other b']})
