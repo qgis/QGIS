@@ -78,6 +78,28 @@ Qt3DCore::QEntity *VectorLayer3DRenderer::createEntity( const Map3D &map ) const
     return nullptr;
 }
 
+QList<Qt3DCore::QEntity *> VectorLayer3DRenderer::createEntities( const Map3D &map ) const
+{
+  QList<Qt3DCore::QEntity *> entities;
+
+  QgsVectorLayer *vl = layer();
+
+  if ( !mSymbol || !vl )
+    return entities;
+
+  if ( mSymbol->type() == "polygon" )
+    entities.append( new PolygonEntity( map, vl, *static_cast<Polygon3DSymbol *>( mSymbol.get() ) ) );
+  else if ( mSymbol->type() == "point" )
+  {
+    entities.append( new PointEntity( map, vl, *static_cast<Point3DSymbol *>( mSymbol.get() ), false ) );
+    entities.append( new PointEntity( map, vl, *static_cast<Point3DSymbol *>( mSymbol.get() ), true ) );
+  }
+  else if ( mSymbol->type() == "line" )
+    entities.append( new LineEntity( map, vl, *static_cast<Line3DSymbol *>( mSymbol.get() ) ) );
+
+  return entities;
+}
+
 void VectorLayer3DRenderer::writeXml( QDomElement &elem, const QgsReadWriteContext &context ) const
 {
   QDomDocument doc = elem.ownerDocument();

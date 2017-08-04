@@ -3,9 +3,7 @@
 #include <Qt3DRender/QAttribute>
 #include <Qt3DRender/QBuffer>
 #include <Qt3DRender/QEffect>
-#include <Qt3DRender/QGeometryRenderer>
 #include <Qt3DRender/QGraphicsApiFilter>
-#include <Qt3DRender/QMaterial>
 #include <Qt3DRender/QParameter>
 #include <Qt3DRender/QTechnique>
 
@@ -34,33 +32,37 @@
 PointEntity::PointEntity( const Map3D &map, QgsVectorLayer *layer, const Point3DSymbol &symbol, Qt3DCore::QNode *parent )
   : Qt3DCore::QEntity( parent )
 {
-  //
-  // load features
-  //
-
-  QList<QVector3D> positions;
-  QgsFeature f;
   QgsFeatureRequest request;
   request.setDestinationCrs( map.crs );
-  QgsFeatureIterator fi = layer->getFeatures( request );
-  while ( fi.nextFeature( f ) )
-  {
-    if ( f.geometry().isNull() )
-      continue;
+  QList<QVector3D> pos = positions( map, layer, request );
 
-    QgsAbstractGeometry *g = f.geometry().geometry();
-    if ( QgsWkbTypes::flatType( g->wkbType() ) == QgsWkbTypes::Point )
-    {
-      QgsPoint *pt = static_cast<QgsPoint *>( g );
-      // TODO: use Z coordinates if the point is 3D
-      float h = map.terrainGenerator()->heightAt( pt->x(), pt->y(), map ) * map.terrainVerticalScale();
-      positions.append( QVector3D( pt->x() - map.originX, h, -( pt->y() - map.originY ) ) );
-      //qDebug() << positions.last();
-    }
-    else
-      qDebug() << "not a point";
+  addComponent( renderer( symbol, pos ) );
+  addComponent( material( map, symbol ) );
+}
+
+PointEntity::PointEntity( const Map3D &map, QgsVectorLayer *layer, const Point3DSymbol &symbol, bool sel, Qt3DCore::QNode *parent )
+  : Qt3DCore::QEntity( parent )
+{
+  QgsFeatureRequest request;
+  request.setDestinationCrs( map.crs );
+
+  if ( sel )
+    request.setFilterFids( layer->selectedFeatureIds() );
+  else
+  {
+    QgsFeatureIds notSelected = layer->allFeatureIds();
+    notSelected.subtract( layer->selectedFeatureIds() );
+    request.setFilterFids( notSelected );
   }
 
+  QList<QVector3D> pos = positions( map, layer, request );
+
+  addComponent( renderer( symbol, pos ) );
+  addComponent( material( map, symbol, sel ) );
+}
+
+Qt3DRender::QGeometryRenderer *PointEntity::renderer( const Point3DSymbol &symbol, const QList<QVector3D> &positions ) const
+{
   int count = positions.count();
 
   QByteArray ba;
@@ -72,10 +74,6 @@ PointEntity::PointEntity( const Map3D &map, QgsVectorLayer *layer, const Point3D
     ++posData;
   }
 
-  //
-  // geometry renderer
-  //
-
   Qt3DRender::QBuffer *instanceBuffer = new Qt3DRender::QBuffer( Qt3DRender::QBuffer::VertexBuffer );
   instanceBuffer->setData( ba );
 
@@ -86,8 +84,8 @@ PointEntity::PointEntity( const Map3D &map, QgsVectorLayer *layer, const Point3D
   instanceDataAttribute->setVertexSize( 3 );
   instanceDataAttribute->setDivisor( 1 );
   instanceDataAttribute->setBuffer( instanceBuffer );
-  instanceDataAttribute->setCount(count);
-  instanceDataAttribute->setByteStride(3 * sizeof(float));
+  instanceDataAttribute->setCount( count );
+  instanceDataAttribute->setByteStride( 3 * sizeof( float ) );
 
   Qt3DRender::QGeometry *geometry = nullptr;
   QString shape = symbol.shapeProperties["shape"].toString();
@@ -161,17 +159,17 @@ PointEntity::PointEntity( const Map3D &map, QgsVectorLayer *layer, const Point3D
   }
 
   geometry->addAttribute( instanceDataAttribute );
-  geometry->setBoundingVolumePositionAttribute(instanceDataAttribute);
+  geometry->setBoundingVolumePositionAttribute( instanceDataAttribute );
 
   Qt3DRender::QGeometryRenderer *renderer = new Qt3DRender::QGeometryRenderer;
   renderer->setGeometry( geometry );
   renderer->setInstanceCount( count );
-  addComponent( renderer );
 
-  //
-  // material
-  //
+  return renderer;
+}
 
+Qt3DRender::QMaterial *PointEntity::material( const Map3D &map, const Point3DSymbol &symbol, bool sel ) const
+{
   Qt3DRender::QFilterKey *filterKey = new Qt3DRender::QFilterKey;
   filterKey->setName( "renderingStyle" );
   filterKey->setValue( "forward" );
@@ -204,6 +202,12 @@ PointEntity::PointEntity( const Map3D &map, QgsVectorLayer *layer, const Point3D
   specularParameter->setValue( symbol.material.specular() );
   shininessParameter->setValue( symbol.material.shininess() );
 
+  if ( sel )
+  {
+    diffuseParameter->setValue( map.selectionColor() );
+    ambientParameter->setValue( map.selectionColor().darker() );
+  }
+
   QMatrix4x4 transformMatrix = symbol.transform;
   QMatrix3x3 normalMatrix = transformMatrix.normalMatrix();  // transponed inverse of 3x3 sub-matrix
 
@@ -235,5 +239,32 @@ PointEntity::PointEntity( const Map3D &map, QgsVectorLayer *layer, const Point3D
 
   Qt3DRender::QMaterial *material = new Qt3DRender::QMaterial;
   material->setEffect( effect );
-  addComponent( material );
+
+  return material;
+}
+
+QList<QVector3D> PointEntity::positions( const Map3D &map, const QgsVectorLayer *layer, const QgsFeatureRequest &request ) const
+{
+  QList<QVector3D> positions;
+  QgsFeature f;
+  QgsFeatureIterator fi = layer->getFeatures( request );
+  while ( fi.nextFeature( f ) )
+  {
+    if ( f.geometry().isNull() )
+      continue;
+
+    QgsAbstractGeometry *g = f.geometry().geometry();
+    if ( QgsWkbTypes::flatType( g->wkbType() ) == QgsWkbTypes::Point )
+    {
+      QgsPoint *pt = static_cast<QgsPoint *>( g );
+      // TODO: use Z coordinates if the point is 3D
+      float h = map.terrainGenerator()->heightAt( pt->x(), pt->y(), map ) * map.terrainVerticalScale();
+      positions.append( QVector3D( pt->x() - map.originX, h, -( pt->y() - map.originY ) ) );
+      //qDebug() << positions.last();
+    }
+    else
+      qDebug() << "not a point";
+  }
+
+  return positions;
 }

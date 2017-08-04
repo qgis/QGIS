@@ -223,6 +223,20 @@ QColor Map3D::backgroundColor() const
   return mBackgroundColor;
 }
 
+void Map3D::setSelectionColor( const QColor &color )
+{
+  if ( color == mSelectionColor )
+    return;
+
+  mSelectionColor = color;
+  emit selectionColorChanged();
+}
+
+QColor Map3D::selectionColor() const
+{
+  return mSelectionColor;
+}
+
 void Map3D::setTerrainVerticalScale( double zScale )
 {
   if ( zScale == mTerrainVerticalScale )

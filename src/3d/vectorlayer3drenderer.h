@@ -48,6 +48,7 @@ class _3D_EXPORT VectorLayer3DRenderer : public QgsAbstract3DRenderer
     QString type() const override { return "vector"; }
     VectorLayer3DRenderer *clone() const override;
     Qt3DCore::QEntity *createEntity( const Map3D &map ) const override;
+    QList<Qt3DCore::QEntity *> createEntities( const Map3D &map ) const override;
 
     void writeXml( QDomElement &elem, const QgsReadWriteContext &context ) const override;
     void readXml( const QDomElement &elem, const QgsReadWriteContext &context ) override;

@@ -43,6 +43,9 @@ class _3D_EXPORT Map3D : public QObject
     void setBackgroundColor( const QColor &color );
     QColor backgroundColor() const;
 
+    void setSelectionColor( const QColor &color );
+    QColor selectionColor() const;
+
     //
     // terrain related config
     //
@@ -83,6 +86,7 @@ class _3D_EXPORT Map3D : public QObject
 
   signals:
     void backgroundColorChanged();
+    void selectionColorChanged();
     void layersChanged();
     void terrainGeneratorChanged();
     void terrainVerticalScaleChanged();
@@ -94,6 +98,7 @@ class _3D_EXPORT Map3D : public QObject
 
   private:
     QColor mBackgroundColor;   //!< Background color of the scene
+    QColor mSelectionColor;
     double mTerrainVerticalScale;   //!< Multiplier of terrain heights to make the terrain shape more pronounced
     std::unique_ptr<TerrainGenerator> mTerrainGenerator;  //!< Implementation of the terrain generation
     int mMapTileResolution;   //!< Size of map textures of tiles in pixels (width/height)

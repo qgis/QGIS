@@ -62,7 +62,7 @@ class _3D_EXPORT Scene : public Qt3DCore::QEntity
     Qt3DExtras::QForwardRenderer *mForwardRenderer;
     QList<ChunkedEntity *> chunkEntities;
     //! Keeps track of entities that belong to a particular layer
-    QMap<QgsMapLayer *, Qt3DCore::QEntity *> mLayerEntities;
+    QMultiMap<QgsMapLayer *, Qt3DCore::QEntity *> mLayerEntities;
     bool mTerrainUpdateScheduled = false;
 };
 
