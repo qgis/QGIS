@@ -337,6 +337,7 @@ class TestQgsProcessing: public QObject
     void parameterRasterOut();
     void parameterFileOut();
     void parameterFolderOut();
+    void parameterBand();
     void checkParamValues();
     void combineLayerExtent();
     void processingFeatureSource();
@@ -3968,6 +3969,76 @@ void TestQgsProcessing::parameterFolderOut()
   QCOMPARE( fromCode->description(), QStringLiteral( "optional" ) );
   QCOMPARE( fromCode->flags(), def->flags() );
   QCOMPARE( fromCode->defaultValue(), def->defaultValue() );
+}
+
+void TestQgsProcessing::parameterBand()
+{
+  QgsProcessingContext context;
+
+  // not optional!
+  std::unique_ptr< QgsProcessingParameterBand > def( new QgsProcessingParameterBand( "non_optional", QString(), QVariant(), QString(), false ) );
+  QVERIFY( def->checkValueIsAcceptable( 1 ) );
+  QVERIFY( def->checkValueIsAcceptable( "1" ) );
+  QVERIFY( !def->checkValueIsAcceptable( "" ) );
+  QVERIFY( !def->checkValueIsAcceptable( QVariant() ) );
+
+  // string representing a band
+  QVariantMap params;
+  params.insert( "non_optional", "1" );
+  int band = QgsProcessingParameters::parameterAsInt( def.get(), params, context );
+  QCOMPARE( band, 1 );
+
+  QCOMPARE( def->valueAsPythonString( 5, context ), QStringLiteral( "5" ) );
+
+  QString code = def->asScriptCode();
+  QCOMPARE( code, QStringLiteral( "##non_optional=band" ) );
+  std::unique_ptr< QgsProcessingParameterBand > fromCode( dynamic_cast< QgsProcessingParameterBand * >( QgsProcessingParameters::parameterFromScriptCode( code ) ) );
+  QVERIFY( fromCode.get() );
+  QCOMPARE( fromCode->name(), def->name() );
+  QCOMPARE( fromCode->description(), QStringLiteral( "non optional" ) );
+  QCOMPARE( fromCode->flags(), def->flags() );
+  QCOMPARE( fromCode->defaultValue(), def->defaultValue() );
+  QCOMPARE( fromCode->parentLayerParameter(), def->parentLayerParameter() );
+
+  QVERIFY( def->dependsOnOtherParameters().isEmpty() );
+  def->setParentLayerParameter( "my_parent" );
+  QCOMPARE( def->dependsOnOtherParameters(), QStringList() << QStringLiteral( "my_parent" ) );
+
+  code = def->asScriptCode();
+  fromCode.reset( dynamic_cast< QgsProcessingParameterBand * >( QgsProcessingParameters::parameterFromScriptCode( code ) ) );
+  QVERIFY( fromCode.get() );
+  QCOMPARE( fromCode->name(), def->name() );
+  QCOMPARE( fromCode->description(), QStringLiteral( "non optional" ) );
+  QCOMPARE( fromCode->flags(), def->flags() );
+  QCOMPARE( fromCode->defaultValue(), def->defaultValue() );
+  QCOMPARE( fromCode->parentLayerParameter(), def->parentLayerParameter() );
+
+  // optional
+  def.reset( new QgsProcessingParameterBand( "optional", QString(), 1, QString(), true ) );
+  QVERIFY( def->checkValueIsAcceptable( 1 ) );
+  QVERIFY( def->checkValueIsAcceptable( "1" ) );
+  QVERIFY( def->checkValueIsAcceptable( "" ) );
+  QVERIFY( def->checkValueIsAcceptable( QVariant() ) );
+
+  params.insert( "optional",  QVariant() );
+  band = QgsProcessingParameters::parameterAsInt( def.get(), params, context );
+  QCOMPARE( band, 1 );
+
+  // optional, no default
+  def.reset( new QgsProcessingParameterBand( "optional", QString(), QVariant(), QString(), true ) );
+  params.insert( "optional",  QVariant() );
+  band = QgsProcessingParameters::parameterAsInt( def.get(), params, context );
+  QCOMPARE( band, 0 );
+
+  code = def->asScriptCode();
+  QCOMPARE( code, QStringLiteral( "##optional=optional band" ) );
+  fromCode.reset( dynamic_cast< QgsProcessingParameterBand * >( QgsProcessingParameters::parameterFromScriptCode( code ) ) );
+  QVERIFY( fromCode.get() );
+  QCOMPARE( fromCode->name(), def->name() );
+  QCOMPARE( fromCode->description(), QStringLiteral( "optional" ) );
+  QCOMPARE( fromCode->flags(), def->flags() );
+  QCOMPARE( fromCode->defaultValue(), def->defaultValue() );
+  QCOMPARE( fromCode->parentLayerParameter(), def->parentLayerParameter() );
 }
 
 void TestQgsProcessing::checkParamValues()
