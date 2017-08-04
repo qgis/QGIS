@@ -80,11 +80,11 @@
     </spacer>
    </item>
    <item row="2" column="0">
-    <widget class="QgsCollapsibleGroupBox" name="mLayerRenderingBox">
+    <widget class="QgsCollapsibleGroupBox" name="mColorRenderingBox">
      <property name="title">
-      <string>Layer rendering</string>
+      <string>Color rendering</string>
      </property>
-     <property name="saveCollapsedState" stdset="0">
+     <property name="saveCollapsedState">
       <bool>true</bool>
      </property>
      <layout class="QGridLayout" name="gridLayout_3">
@@ -412,7 +412,7 @@
      <property name="title">
       <string>Resampling</string>
      </property>
-     <property name="saveCollapsedState" stdset="0">
+     <property name="saveCollapsedState">
       <bool>true</bool>
      </property>
      <layout class="QGridLayout" name="gridLayout">
@@ -496,7 +496,7 @@
  </customwidgets>
  <tabstops>
   <tabstop>cboRenderers</tabstop>
-  <tabstop>mLayerRenderingBox</tabstop>
+  <tabstop>mColorRenderingBox</tabstop>
   <tabstop>mBlendModeComboBox</tabstop>
   <tabstop>mSliderBrightness</tabstop>
   <tabstop>mBrightnessSpinBox</tabstop>
