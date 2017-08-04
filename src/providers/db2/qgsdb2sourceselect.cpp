@@ -312,7 +312,7 @@ void QgsDb2SourceSelect::on_mTablesTreeView_doubleClicked( const QModelIndex &in
   QgsSettings settings;
   if ( settings.value( QStringLiteral( "qgis/addDb2DC" ), false ).toBool() )
   {
-    addClicked();
+    addButtonClicked();
   }
   else
   {
@@ -427,7 +427,7 @@ void QgsDb2SourceSelect::populateConnectionList()
 }
 
 // Slot for performing action when the Add button is clicked
-void QgsDb2SourceSelect::addClicked()
+void QgsDb2SourceSelect::addButtonClicked()
 {
   QgsDebugMsg( QString( "mConnInfo:%1" ).arg( mConnInfo ) );
   mSelectedTables.clear();

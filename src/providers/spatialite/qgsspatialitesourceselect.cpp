@@ -364,7 +364,7 @@ void QgsSpatiaLiteSourceSelect::on_btnDelete_clicked()
   emit connectionsChanged();
 }
 
-void QgsSpatiaLiteSourceSelect::addClicked()
+void QgsSpatiaLiteSourceSelect::addButtonClicked()
 {
   m_selectedTables.clear();
 

@@ -75,7 +75,7 @@ class QgsWMSSourceSelect : public QgsAbstractDataSourceWidget, private Ui::QgsWM
     void on_btnConnect_clicked();
 
     //! Determines the layers the user selected
-    void addClicked() override;
+    void addButtonClicked() override;
 
     void searchFinished();
 

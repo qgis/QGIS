@@ -74,7 +74,7 @@ class QgsSpatiaLiteSourceSelect: public QgsAbstractDataSourceWidget, private Ui:
      */
     void on_btnConnect_clicked();
     void buildQuery();
-    void addClicked() override;
+    void addButtonClicked() override;
     void updateStatistics();
     //! Opens the create connection dialog to build a new connection
     void on_btnNew_clicked();

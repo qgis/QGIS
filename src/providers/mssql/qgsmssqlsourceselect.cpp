@@ -311,7 +311,7 @@ void QgsMssqlSourceSelect::on_mTablesTreeView_doubleClicked( const QModelIndex &
   QgsSettings settings;
   if ( settings.value( QStringLiteral( "qgis/addMSSQLDC" ), false ).toBool() )
   {
-    addClicked();
+    addButtonClicked();
   }
   else
   {
@@ -426,7 +426,7 @@ void QgsMssqlSourceSelect::populateConnectionList()
 }
 
 // Slot for performing action when the Add button is clicked
-void QgsMssqlSourceSelect::addClicked()
+void QgsMssqlSourceSelect::addButtonClicked()
 {
   QgsDebugMsg( QString( "mConnInfo:%1" ).arg( mConnInfo ) );
   mSelectedTables.clear();

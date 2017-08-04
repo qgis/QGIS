@@ -104,7 +104,7 @@ class QgsArcGisServiceSourceSelect : public QgsAbstractDataSourceWidget, protect
     void addEntryToServerList();
     void deleteEntryOfServerList();
     void modifyEntryOfServerList();
-    void addClicked() override;
+    void addButtonClicked() override;
     void buildQueryButtonClicked();
     void changeCrs();
     void changeCrsFilter();

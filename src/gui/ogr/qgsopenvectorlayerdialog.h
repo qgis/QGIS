@@ -23,6 +23,7 @@
 #include <QDialog>
 #include "qgshelp.h"
 #include "qgsproviderregistry.h"
+#include "qgsabstractdatasourcewidget.h"
 #include "qgis_gui.h"
 
 #define SIP_NO_FILE
@@ -32,7 +33,7 @@
  *  file, database, directory and protocol sources.
  *  \note not available in Python bindings
  */
-class GUI_EXPORT QgsOpenVectorLayerDialog : public QDialog, private Ui::QgsOpenVectorLayerDialogBase
+class GUI_EXPORT QgsOpenVectorLayerDialog : public QgsAbstractDataSourceWidget, private Ui::QgsOpenVectorLayerDialogBase
 {
     Q_OBJECT
 
@@ -60,8 +61,9 @@ class GUI_EXPORT QgsOpenVectorLayerDialog : public QDialog, private Ui::QgsOpenV
     QString mDataSourceType;
     //! Embedded dialog (do not call parent's accept) and emit signals
     QgsProviderRegistry::WidgetMode mWidgetMode = QgsProviderRegistry::WidgetMode::None;
-    //! Add layer button
-    QPushButton *mAddButton = nullptr;
+
+  public slots:
+    void addButtonClicked() override;
 
   private slots:
     //! Opens the create connection dialog to build a new connection
@@ -80,8 +82,6 @@ class GUI_EXPORT QgsOpenVectorLayerDialog : public QDialog, private Ui::QgsOpenV
     void setSelectedConnectionType();
     //! Sets the selected connection
     void setSelectedConnection();
-
-    void accept() override;
 
     void on_buttonSelectSrc_clicked();
     void on_radioSrcFile_toggled( bool checked );

@@ -344,7 +344,7 @@ void QgsVirtualLayerSourceSelect::onImportLayer()
   }
 }
 
-void QgsVirtualLayerSourceSelect::addClicked()
+void QgsVirtualLayerSourceSelect::addButtonClicked()
 {
   QString layerName = QStringLiteral( "virtual_layer" );
   QString id;

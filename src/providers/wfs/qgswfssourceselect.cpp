@@ -360,7 +360,7 @@ void QgsWFSSourceSelect::connectToServer()
 }
 
 
-void QgsWFSSourceSelect::addClicked()
+void QgsWFSSourceSelect::addButtonClicked()
 {
   //get selected entry in treeview
   QModelIndex currentIndex = treeView->selectionModel()->currentIndex();

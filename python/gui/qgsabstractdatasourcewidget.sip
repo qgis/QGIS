@@ -46,16 +46,17 @@ Destructor
  The default implementation does nothing
 %End
 
-    virtual void addClicked();
+    virtual void addButtonClicked();
 %Docstring
  Triggered when the add button is clicked, the add layer signal is emitted
  Concrete classes should implement the right behavior depending on the layer
  being added.
 %End
 
-    virtual void okClicked();
+    virtual void okButtonClicked();
 %Docstring
- Triggered when the dialog is accepted, call addClicked() and emit the accepted() signal
+ Triggered when the dialog is accepted, call addButtonClicked() and
+ emit the accepted() signal
 %End
 
   signals:
@@ -121,7 +122,7 @@ Return the map canvas (can be null)
 Connect the ok and apply/add buttons to the slots
 %End
 
-    const QPushButton *addButton( );
+    QPushButton *addButton( ) const;
 %Docstring
 Return the add Button
  :rtype: QPushButton

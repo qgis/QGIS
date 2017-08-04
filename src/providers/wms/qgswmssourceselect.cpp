@@ -471,7 +471,7 @@ void QgsWMSSourceSelect::on_btnConnect_clicked()
   populateLayerList( caps );
 }
 
-void QgsWMSSourceSelect::addClicked()
+void QgsWMSSourceSelect::addButtonClicked()
 {
   QStringList layers;
   QStringList styles;

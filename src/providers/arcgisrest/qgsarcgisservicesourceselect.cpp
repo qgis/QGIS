@@ -57,7 +57,6 @@ QgsArcGisServiceSourceSelect::QgsArcGisServiceSourceSelect( const QString &servi
   mImageEncodingGroup( 0 )
 {
   setupUi( this );
-  // Creates and connects standard ok/apply buttons
   setupButtons( buttonBox );
   setWindowTitle( QStringLiteral( "Add %1 Layer from a Server" ).arg( mServiceName ) );
 
@@ -306,7 +305,7 @@ void QgsArcGisServiceSourceSelect::connectToServer()
   btnChangeSpatialRefSys->setEnabled( haveLayers );
 }
 
-void QgsArcGisServiceSourceSelect::addClicked()
+void QgsArcGisServiceSourceSelect::addButtonClicked()
 {
   if ( treeView->selectionModel()->selectedRows().isEmpty() )
   {

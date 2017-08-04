@@ -113,7 +113,7 @@ class QgsDb2SourceSelect : public QgsAbstractDataSourceWidget, private Ui::QgsDb
 
   public slots:
     //! Determines the tables the user selected and closes the dialog
-    void addClicked() override;
+    void addButtonClicked() override;
     void buildQuery();
     //! Triggered when the provider's connections need to be refreshed
     void refresh() override;

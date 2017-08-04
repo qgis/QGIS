@@ -113,7 +113,7 @@ QString QgsWCSSourceSelect::selectedIdentifier()
   return identifier;
 }
 
-void QgsWCSSourceSelect::addClicked()
+void QgsWCSSourceSelect::addButtonClicked()
 {
   QgsDataSourceUri uri = mUri;
 

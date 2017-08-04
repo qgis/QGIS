@@ -109,7 +109,7 @@ void QgsDelimitedTextSourceSelect::on_btnBrowseForFile_clicked()
   getOpenFileName();
 }
 
-void QgsDelimitedTextSourceSelect::addClicked()
+void QgsDelimitedTextSourceSelect::addButtonClicked()
 {
   // The following conditions should not be hit! OK will not be enabled...
   if ( txtLayerName->text().isEmpty() )

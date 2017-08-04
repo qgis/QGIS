@@ -81,7 +81,7 @@ class QgsWFSSourceSelect: public QgsAbstractDataSourceWidget, private Ui::QgsWFS
 
     //! Triggered when the provider's connections need to be refreshed
     void refresh() override;
-    void addClicked() override;
+    void addButtonClicked() override;
 
   private slots:
     void addEntryToServerList();

@@ -365,7 +365,7 @@ void QgsPgSourceSelect::on_mTablesTreeView_doubleClicked( const QModelIndex &ind
   QgsSettings settings;
   if ( settings.value( QStringLiteral( "qgis/addPostgisDC" ), false ).toBool() )
   {
-    addClicked();
+    addButtonClicked();
   }
   else
   {
@@ -479,7 +479,7 @@ void QgsPgSourceSelect::populateConnectionList()
 }
 
 // Slot for performing action when the Add button is clicked
-void QgsPgSourceSelect::addClicked()
+void QgsPgSourceSelect::addButtonClicked()
 {
   mSelectedTables.clear();
 

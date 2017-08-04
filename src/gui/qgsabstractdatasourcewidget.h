@@ -63,11 +63,12 @@ class GUI_EXPORT QgsAbstractDataSourceWidget : public QDialog
      * Concrete classes should implement the right behavior depending on the layer
      * being added.
      */
-    virtual void addClicked() { }
+    virtual void addButtonClicked() { }
 
-    /** Triggered when the dialog is accepted, call addClicked() and emit the accepted() signal
+    /** Triggered when the dialog is accepted, call addButtonClicked() and
+     * emit the accepted() signal
      */
-    virtual void okClicked();
+    virtual void okButtonClicked();
 
   signals:
 
@@ -110,7 +111,7 @@ class GUI_EXPORT QgsAbstractDataSourceWidget : public QDialog
     void setupButtons( QDialogButtonBox *buttonBox );
 
     //! Return the add Button
-    const QPushButton *addButton( ) { return mAddButton; }
+    QPushButton *addButton( ) const { return mAddButton; }
 
   private:
     QPushButton *mAddButton  = nullptr;

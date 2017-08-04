@@ -41,7 +41,7 @@ class QgsVirtualLayerSourceSelect : public QgsAbstractDataSourceWidget, private 
   public slots:
     //! Triggered when the provider's connections need to be refreshed
     void refresh() override;
-    void addClicked() override;
+    void addButtonClicked() override;
 
   private slots:
     void onTestQuery();
