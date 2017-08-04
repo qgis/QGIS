@@ -439,9 +439,6 @@ namespace QgsWms
     {
       Q_FOREACH ( QString styleName, currentLayer->styleManager()->styles() )
       {
-        if ( styleName.isEmpty() )
-          styleName = EMPTY_STYLE_NAME;
-
         QDomElement styleListElem = doc.createElement( QStringLiteral( "StyleList" ) );
         //only one default style in project file mode
         QDomElement styleElem = doc.createElement( QStringLiteral( "Style" ) );
