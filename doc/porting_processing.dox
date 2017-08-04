@@ -11,6 +11,8 @@
 
 - The input parameters and outputs classes have been replaced with new c++ versions, which must be used when calling addParameter and addOuput.
 
+    - When constructing parameters, be aware that some argument names have changed. E.g. default has been replaced with 'defaultValue'.
+    
     - ParameterField has been replaced with QgsProcessingParameterField.
       - When constructing, QgsProcessingParameterField uses QgsProcessingParameterField.DataType to specify valid data types. The parent layer for the field should be indicated by passing the parent layer parameter name as the parentLayerParameterName argument in the constructor.
       - Retrieving field parameter values should be done with self.parameterAsString( parameters, PARAM_NAME, context) for single field values or self.parameterAsFields(parameters, PARAM_NAME, context) if allowMultiple was set to True when the parameter was constructed. parameterAsFields will return a list of all selected field names, or an empty list if no fields were selected.
@@ -21,12 +23,24 @@
     - ParameterNumber has been replaced with QgsProcessingParameterNumber.
       - Be careful when constructing QgsProcessingParameterNumber - the arguments are in a different order to ParameterNumber.
       - When constructing a QgsProcessingParameterNumber the number type (integer or double) must be specified explicitly via the type argument.
-       - Retrieving the parameter value should be done with self.parameterAsInt( parameters, PARAM_NAME, context) for integer parameters or self.parameterAsDouble(parameters, PARAM_NAME, context) for double value parameters.
-      
-   
-Map parameters from old classes to new classes
- 	 - ParameterBoolean -> QgsProcessingParameterBoolean
-   - ParameterCrs -> QgsProcessingParameterCrs
+      - Retrieving the parameter value should be done with self.parameterAsInt( parameters, PARAM_NAME, context) for integer parameters or self.parameterAsDouble(parameters, PARAM_NAME, context) for double value parameters.
+    
+    - ParameterMultipleInput has been replaced with QgsProcessingParameterMultipleLayers.
+      - Retrieving the parameter value should be done with self.parameterAsLayerList( parameters, PARAM_NAME, context). This will return a python list of all selected map layers.
+
+    - ParameterBoolean has been replaced with QgsProcessingParameterBoolean.
+      - Retrieving the parameter value should be done with self.parameterAsBool( parameters, PARAM_NAME, context). This will return a True or False value depending on the input parameter.
+    
+    - ParameterCrs has been replaced with QgsProcessingParameterCrs.
+      - Retrieving the parameter value should be done with self.parameterAsCrs( parameters, PARAM_NAME, context). CRS parameters are returned as QgsCoordinateReferenceSystem objects. In 2.x crs parameters were returned as a string, leaving the algorithm
+responsible for interpreting this string and working out how to convert it to a suitable CRS object. In 3.0 this is automatically handled
+and a QgsCoordinateReferenceSystem object is returned, ready for use. If you require a string version of the CRS, use the
+QgsCoordinateReferenceSystem methods like authid() to obtain a string representation of the CRS in the desired format.
+
+    - ParameterExtent has been replaced with QgsProcessingParameterExtent.
+      - Retrieving the parameter value should be done with self.parameterAsExtent( parameters, PARAM_NAME, context). Extent parameters are returned as QgsRectangle. In 2.x extent parameters were returned as a delimited string, leaving the algorithm
+responsible for parsing the string and validating it. In 3.0 this is automatically handled and a QgsRectangle returned, ready for use.
+
 
 - Use featuresources and sinks wherever possible
 
@@ -38,17 +52,6 @@ Update outputs
 - OutputVector -> 
 
 - processAlgorithm has a new signature....
-
-Update retrieval of parameters
-
-- Extent parameters now returned as QgsRectangle. In 2.x extent parameters were returned as a delimited string, leaving the algorithm
-responsible for parsing the string and validating it. In 3.0 this is automatically handled and a QgsRectangle returned, ready for use.
-
-- Crs parameters now returned as QgsCoordinateReferenceSystem objects. In 2.x crs parameters were returned as a string, leaving the algorithm
-responsible for interpreting this string and working out how to convert it to a suitable CRS object. In 3.0 this is automatically handled
-and a QgsCoordinateReferenceSystem object is returned, ready for use. If you require a string version of the CRS, use the
-QgsCoordinateReferenceSystem methods like authid() to obtain a string representation of the CRS in the desired format.
-
 
 Use parameterAsSink instead of getOutputFromName
 
@@ -81,8 +84,13 @@ outputs like this available from an algorithm aids in user debugging (they are r
 a clear picture of what's happening at each step in their models), and also adds more power to models (as these outputs
 can be used in expressions or custom python code in later steps in a model.
 
-Return a dict with output values
+- Algorithm's processAlgorithm methods should return a dict with output values. In the case of output feature sinks, the sink's ID string should be included in this dictionary.
 
-Dont’ use tablewriter - use a sink instead
+- Don't write outputs using TableWriter or by directly creating a CSV file. Wherever possible use a feature sink instead so that the
+output is created as a proper vector layer. This allows other algorithms in a multi-step model to easily use the tabular outputs from the algorithm. 
+
+- A new API contract for exists for Processing. Now, only the c++ base class (e.g. those prefixed with "Qgs") and the methods from processing.tools
+are considered stable, public API. All other Processing classes and methods are considered private and may change between QGIS versions. These
+should not be relied on by custom algorithms.
 
 
