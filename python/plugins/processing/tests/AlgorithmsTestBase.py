@@ -279,7 +279,10 @@ class AlgorithmsTest(object):
                 dataArray = nan_to_num(dataset.ReadAsArray(0))
                 strhash = hashlib.sha224(dataArray.data).hexdigest()
 
-                self.assertEqual(strhash, expected_result['hash'])
+                if not isinstance(expected_result['hash'], str):
+                    self.assertTrue(strhash in expected_result['hash'])
+                else:
+                    self.assertEqual(strhash, expected_result['hash'])
             elif 'file' == expected_result['type']:
                 expected_filepath = self.filepath_from_param(expected_result)
                 result_filepath = results[id]
