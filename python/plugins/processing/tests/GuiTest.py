@@ -38,7 +38,7 @@ class AlgorithmDialogTest(unittest.TestCase):
     def testCreation(self):
         alg = QgsApplication.processingRegistry().algorithmById('native:centroids')
         a = AlgorithmDialog(alg)
-        self.assertEqual(a.mainWidget().alg, alg)
+        self.assertEqual(a.mainWidget.alg, alg)
 
 
 if __name__ == '__main__':
