@@ -42,6 +42,7 @@ and from OSGeo4W (select //Advanced Installation//):
 - grass
 - gsl-devel
 - iconv
+- libzip-devel
 - libspatialindex-devel
 - pyqt5
 - python3-devel
