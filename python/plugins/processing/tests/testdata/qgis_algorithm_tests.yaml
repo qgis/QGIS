@@ -2265,21 +2265,21 @@ tests:
         - expected/points_to_path_grouped2.gml
         type: vector
 
-#  - algorithm: qgis:joinattributestable
-#    name: join the attribute table by common field
-#    params:
-#      INPUT_LAYER:
-#        name: points.gml
-#        type: vector
-#      INPUT_LAYER_2:
-#        name: table.dbf
-#        type: table
-#      TABLE_FIELD: id
-#      TABLE_FIELD_2: ID
-#    results:
-#      OUTPUT_LAYER:
-#        name: expected/join_attribute_table.gml
-#        type: vector
+  - algorithm: qgis:joinattributestable
+    name: join the attribute table by common field
+    params:
+      INPUT:
+        name: points.gml
+        type: vector
+      INPUT_2:
+        name: table.dbf
+        type: table
+      FIELD: id
+      FIELD_2: ID
+    results:
+      OUTPUT:
+        name: expected/join_attribute_table.gml
+        type: vector
 
   - algorithm: qgis:convexhull
     name: Simple convex hull

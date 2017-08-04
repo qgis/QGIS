@@ -82,6 +82,7 @@ from .HubLines import HubLines
 from .ImportIntoPostGIS import ImportIntoPostGIS
 from .ImportIntoSpatialite import ImportIntoSpatialite
 from .Intersection import Intersection
+from .JoinAttributes import JoinAttributes
 from .LinesIntersection import LinesIntersection
 from .LinesToPolygons import LinesToPolygons
 from .MeanCoords import MeanCoords
@@ -151,7 +152,6 @@ from .ZonalStatistics import ZonalStatistics
 # from .StatisticsByCategories import StatisticsByCategories
 # from .FieldsCalculator import FieldsCalculator
 # from .FieldPyculator import FieldsPyculator
-# from .JoinAttributes import JoinAttributes
 # from .PointsDisplacement import PointsDisplacement
 # from .PointsFromPolygons import PointsFromPolygons
 # from .PointsFromLines import PointsFromLines
@@ -189,7 +189,6 @@ class QGISAlgorithmProvider(QgsProcessingProvider):
         #         ExtractByLocation(),
         #         SpatialJoin(),
         #         GeometryConvert(), FieldsCalculator(),
-        #          JoinAttributes(),
         #         FieldsPyculator(),
         #         StatisticsByCategories(),
         #         RasterLayerStatistics(), PointsDisplacement(),
@@ -249,6 +248,7 @@ class QGISAlgorithmProvider(QgsProcessingProvider):
                 ImportIntoPostGIS(),
                 ImportIntoSpatialite(),
                 Intersection(),
+                JoinAttributes(),
                 LinesIntersection(),
                 LinesToPolygons(),
                 MeanCoords(),
