@@ -50,25 +50,91 @@
    <property name="spacing">
     <number>0</number>
    </property>
-   <item row="1" column="0">
-    <widget class="QDialogButtonBox" name="buttonBox">
-     <property name="orientation">
-      <enum>Qt::Horizontal</enum>
+   <item row="0" column="0" rowspan="2">
+    <widget class="QListWidget" name="mOptionsListWidget">
+     <property name="minimumSize">
+      <size>
+       <width>58</width>
+       <height>0</height>
+      </size>
      </property>
-     <property name="standardButtons">
-      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
+     <property name="maximumSize">
+      <size>
+       <width>150</width>
+       <height>16777215</height>
+      </size>
      </property>
+     <property name="styleSheet">
+      <string notr="true">background: #5C5C5C; color: white;</string>
+     </property>
+     <property name="frameShape">
+      <enum>QFrame::NoFrame</enum>
+     </property>
+     <property name="horizontalScrollBarPolicy">
+      <enum>Qt::ScrollBarAlwaysOff</enum>
+     </property>
+     <property name="editTriggers">
+      <set>QAbstractItemView::NoEditTriggers</set>
+     </property>
+     <property name="iconSize">
+      <size>
+       <width>32</width>
+       <height>32</height>
+      </size>
+     </property>
+     <property name="textElideMode">
+      <enum>Qt::ElideNone</enum>
+     </property>
+     <property name="resizeMode">
+      <enum>QListView::Adjust</enum>
+     </property>
+     <property name="wordWrap">
+      <bool>true</bool>
+     </property>
+     <item>
+      <property name="text">
+       <string>Console</string>
+      </property>
+      <property name="toolTip">
+       <string>General</string>
+      </property>
+      <property name="icon">
+       <iconset>
+        <normaloff>:/images/themes/default/propertyicons/system.svg</normaloff>:/images/themes/default/propertyicons/system.svg</iconset>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Editor</string>
+      </property>
+      <property name="toolTip">
+       <string>System</string>
+      </property>
+      <property name="icon">
+       <iconset>
+        <normaloff>:/images/themes/default/propertyicons/system.svg</normaloff>:/images/themes/default/propertyicons/system.svg</iconset>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>APIs</string>
+      </property>
+      <property name="toolTip">
+       <string>Data sources</string>
+      </property>
+      <property name="icon">
+       <iconset>
+        <normaloff>:/images/themes/default/propertyicons/attributes.png</normaloff>:/images/themes/default/propertyicons/attributes.png</iconset>
+      </property>
+     </item>
     </widget>
    </item>
-   <item row="0" column="0">
-    <widget class="QTabWidget" name="tabWidget">
+   <item row="0" column="1">
+    <widget class="QStackedWidget" name="stackedWidget">
      <property name="currentIndex">
       <number>0</number>
      </property>
-     <widget class="QWidget" name="consoleTab">
-      <attribute name="title">
-       <string>Console</string>
-      </attribute>
+     <widget class="QWidget" name="page">
       <layout class="QGridLayout" name="gridLayout_18">
        <item row="0" column="0" rowspan="2">
         <widget class="QScrollArea" name="scrollArea">
@@ -83,8 +149,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>812</width>
-            <height>493</height>
+            <width>690</width>
+            <height>525</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_9">
@@ -545,10 +611,7 @@
        </item>
       </layout>
      </widget>
-     <widget class="QWidget" name="tabEditor">
-      <attribute name="title">
-       <string>Editor</string>
-      </attribute>
+     <widget class="QWidget" name="page_2">
       <layout class="QGridLayout" name="gridLayout_6">
        <item row="0" column="0">
         <widget class="QScrollArea" name="scrollArea_2">
@@ -563,8 +626,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>665</width>
-            <height>491</height>
+            <width>690</width>
+            <height>525</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_10">
@@ -1028,10 +1091,7 @@
        </item>
       </layout>
      </widget>
-     <widget class="QWidget" name="tabAPI">
-      <attribute name="title">
-       <string>API</string>
-      </attribute>
+     <widget class="QWidget" name="page_3">
       <layout class="QGridLayout" name="gridLayout_16">
        <item row="0" column="0">
         <widget class="QGroupBox" name="groupBox_2">
@@ -1233,6 +1293,16 @@
      </widget>
     </widget>
    </item>
+   <item row="1" column="1">
+    <widget class="QDialogButtonBox" name="buttonBox">
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+     <property name="standardButtons">
+      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
+     </property>
+    </widget>
+   </item>
   </layout>
  </widget>
  <customwidgets>
@@ -1280,6 +1350,22 @@
     <hint type="destinationlabel">
      <x>286</x>
      <y>274</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>mOptionsListWidget</sender>
+   <signal>currentRowChanged(int)</signal>
+   <receiver>stackedWidget</receiver>
+   <slot>setCurrentIndex(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>86</x>
+     <y>299</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>530</x>
+     <y>299</y>
     </hint>
    </hints>
   </connection>

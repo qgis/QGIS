@@ -20,44 +20,16 @@ Some portions of code were taken from https://code.google.com/p/pydee/
 """
 from builtins import range
 
-import os
-from qgis.PyQt.QtCore import QCoreApplication, QSize, Qt
-from qgis.PyQt.QtWidgets import QDialog, QTableWidgetItem
+from qgis.PyQt.QtCore import QCoreApplication, QSize, QFileInfo, Qt
+from qgis.PyQt.QtWidgets import QDialog, QFileDialog, QMessageBox, QTableWidgetItem
 from qgis.PyQt.QtGui import QIcon, QFont, QColor, QFontDatabase
-from qgis.PyQt import uic
-from qgis.gui import QgsOptionsPageWidget
-from qgis.core import QgsSettings
 from .console_compile_apis import PrepareAPIDialog
-from qgis.PyQt.QtWidgets import (
-    QFileDialog,
-    QMessageBox,
-    QHBoxLayout)
+
+from .ui_console_settings import Ui_SettingsDialogPythonConsole
+from qgis.core import QgsSettings
 
 
-ui_path = os.path.split(os.path.dirname(__file__))[0]
-WIDGET, BASE = uic.loadUiType(
-    os.path.abspath((
-        os.path.join(
-            ui_path, '..', 'python', 'console', 'console_settings.ui'))))
-
-
-class ConsoleOptionsPage(QgsOptionsPageWidget):
-
-    def __init__(self, parent):
-        super(ConsoleOptionsPage, self).__init__(parent)
-        self.config_widget = optionsDialog()
-        layout = QHBoxLayout()
-        layout.setContentsMargins(0, 0, 0, 0)
-        layout.setMargin(0)
-        self.setLayout(layout)
-        layout.addWidget(self.config_widget)
-        self.setObjectName('processingOptions')
-
-    def apply(self):
-        self.config_widget.accept()
-
-
-class optionsDialog(BASE, WIDGET):
+class optionsDialog(QDialog, Ui_SettingsDialogPythonConsole):
     def __init__(self, parent):
         QDialog.__init__(self, parent)
         self.setWindowTitle(QCoreApplication.translate(
