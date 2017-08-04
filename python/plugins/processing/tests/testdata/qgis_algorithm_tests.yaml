@@ -2614,8 +2614,10 @@ tests:
       MIN_COLORS: 4
     results:
       OUTPUT:
-        name: expected/topocolor_polys.gml
         type: vector
+        name:
+        - expected/topocolor_polys.gml
+        - expected/topocolor_polys2.gml
 
   - algorithm: qgis:topologicalcoloring
     name: Topological coloring w/ min distance
