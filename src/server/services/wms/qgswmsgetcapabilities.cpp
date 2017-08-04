@@ -1122,9 +1122,6 @@ namespace QgsWms
       hrefString.append( href.hasQuery() ? "&" : "?" );
       Q_FOREACH ( QString styleName, currentLayer->styleManager()->styles() )
       {
-        if ( styleName.isEmpty() )
-          styleName = EMPTY_STYLE_NAME;
-
         QDomElement styleElem = doc.createElement( QStringLiteral( "Style" ) );
         QDomElement styleNameElem = doc.createElement( QStringLiteral( "Name" ) );
         QDomText styleNameText = doc.createTextNode( styleName );

@@ -161,6 +161,7 @@ class CORE_EXPORT QgsMapLayerStyleManager : public QObject
     QMap<QString, QgsMapLayerStyle> mStyles;
     QString mCurrentStyle;
     QgsMapLayerStyle *mOverriddenOriginalStyle = nullptr;
+    QString defaultStyleName() const;
 };
 
 #endif // QGSMAPLAYERSTYLEMANAGER_H

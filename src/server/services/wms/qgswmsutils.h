@@ -37,10 +37,6 @@ class QgsRectangle;
 //! WMS implementation
 namespace QgsWms
 {
-  // style name to use for the unnamed style of layers (must not be empty name in WMS)
-  // this implies that a layer style called "default" will not be usable in WMS server
-  const QString EMPTY_STYLE_NAME = QStringLiteral( "default" );
-
   //! Supported image output format
   enum ImageOutputFormat
   {

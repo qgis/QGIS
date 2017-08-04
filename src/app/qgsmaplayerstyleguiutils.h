@@ -38,9 +38,6 @@ class QgsMapLayerStyleGuiUtils : public QObject
     //! Add actions for the given map layer to the menu
     void addStyleManagerActions( QMenu *m, QgsMapLayer *layer );
 
-  private:
-    QString defaultStyleName();
-
   private slots:
     void addStyle();
     void useStyle();

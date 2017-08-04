@@ -28,21 +28,37 @@ QgsMapLayerStyleManager::QgsMapLayerStyleManager( QgsMapLayer *layer )
   reset();
 }
 
+QString QgsMapLayerStyleManager::defaultStyleName() const
+{
+  return tr( "default" );
+}
+
+
 void QgsMapLayerStyleManager::reset()
 {
-  mStyles.insert( QString(), QgsMapLayerStyle() ); // insert entry for the default current style
-  mCurrentStyle.clear();
+  mStyles.insert( defaultStyleName(), QgsMapLayerStyle() ); // insert entry for the default current style
+  mCurrentStyle = defaultStyleName();
 }
 
 void QgsMapLayerStyleManager::readXml( const QDomElement &mgrElement )
 {
   mCurrentStyle = mgrElement.attribute( QStringLiteral( "current" ) );
+  if ( mCurrentStyle.isEmpty() )
+  {
+    // For old project made with QGIS 2, we migrate to "default".
+    mCurrentStyle = defaultStyleName();
+  }
 
   mStyles.clear();
   QDomElement ch = mgrElement.firstChildElement( QStringLiteral( "map-layer-style" ) );
   while ( !ch.isNull() )
   {
     QString name = ch.attribute( QStringLiteral( "name" ) );
+    if ( name.isEmpty() )
+    {
+      // For old project made with QGIS 2, we migrate to "default".
+      name = defaultStyleName();
+    }
     QgsMapLayerStyle style;
     style.readXml( ch );
     mStyles.insert( name, style );
