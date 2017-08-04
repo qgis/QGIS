@@ -85,7 +85,7 @@ class AlgorithmDialogFeedback(QgsProcessingFeedback):
 class AlgorithmDialogBase(BASE, WIDGET):
 
     def __init__(self, alg):
-        super(AlgorithmDialogBase, self).__init__(iface.mainWindow())
+        super(AlgorithmDialogBase, self).__init__(iface.mainWindow() if iface else None)
         self.setupUi(self)
 
         # don't collapse parameters panel
