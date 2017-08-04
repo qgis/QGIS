@@ -199,10 +199,10 @@ QgsPgSourceSelect::QgsPgSourceSelect( QWidget *parent, Qt::WindowFlags fl, QgsPr
   , mUseEstimatedMetadata( false )
 {
   setupUi( this );
+  setupButtons( buttonBox );
 
   if ( widgetMode() != QgsProviderRegistry::WidgetMode::None )
   {
-    buttonBox->removeButton( buttonBox->button( QDialogButtonBox::Close ) );
     mHoldDialogOpen->hide();
   }
   else
@@ -210,18 +210,12 @@ QgsPgSourceSelect::QgsPgSourceSelect( QWidget *parent, Qt::WindowFlags fl, QgsPr
     setWindowTitle( tr( "Add PostGIS Table(s)" ) );
   }
 
-  mAddButton = new QPushButton( tr( "&Add" ) );
-  mAddButton->setEnabled( false );
-
   mBuildQueryButton = new QPushButton( tr( "&Set Filter" ) );
   mBuildQueryButton->setToolTip( tr( "Set Filter" ) );
   mBuildQueryButton->setDisabled( true );
 
   if ( widgetMode() != QgsProviderRegistry::WidgetMode::Manager )
   {
-    buttonBox->addButton( mAddButton, QDialogButtonBox::ActionRole );
-    connect( mAddButton, &QAbstractButton::clicked, this, &QgsPgSourceSelect::addTables );
-
     buttonBox->addButton( mBuildQueryButton, QDialogButtonBox::ActionRole );
     connect( mBuildQueryButton, &QAbstractButton::clicked, this, &QgsPgSourceSelect::buildQuery );
   }
@@ -371,7 +365,7 @@ void QgsPgSourceSelect::on_mTablesTreeView_doubleClicked( const QModelIndex &ind
   QgsSettings settings;
   if ( settings.value( QStringLiteral( "qgis/addPostgisDC" ), false ).toBool() )
   {
-    addTables();
+    addButtonClicked();
   }
   else
   {
@@ -485,7 +479,7 @@ void QgsPgSourceSelect::populateConnectionList()
 }
 
 // Slot for performing action when the Add button is clicked
-void QgsPgSourceSelect::addTables()
+void QgsPgSourceSelect::addButtonClicked()
 {
   mSelectedTables.clear();
 
@@ -660,5 +654,5 @@ void QgsPgSourceSelect::treeWidgetSelectionChanged( const QItemSelection &select
 {
   Q_UNUSED( deselected )
   Q_UNUSED( selected )
-  mAddButton->setEnabled( !mTablesTreeView->selectionModel()->selection().isEmpty() );
+  emit enableButtons( !mTablesTreeView->selectionModel()->selection().isEmpty() );
 }

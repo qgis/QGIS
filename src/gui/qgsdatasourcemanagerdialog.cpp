@@ -192,6 +192,7 @@ QgsAbstractDataSourceWidget *QgsDataSourceManagerDialog::providerDialog( const Q
       dlg->setMapCanvas( mMapCanvas );
     }
     connect( dlg, &QgsAbstractDataSourceWidget::rejected, this, &QgsDataSourceManagerDialog::reject );
+    connect( dlg, &QgsAbstractDataSourceWidget::accepted, this, &QgsDataSourceManagerDialog::accept );
     return dlg;
   }
 }
@@ -208,7 +209,7 @@ void QgsDataSourceManagerDialog::addDbProviderDialog( const QString providerKey,
     connect( dlg, SIGNAL( progressMessage( QString ) ),
              this, SIGNAL( showStatusMessage( QString ) ) );
     connect( dlg, SIGNAL( connectionsChanged() ), this, SIGNAL( connectionsChanged() ) );
-    connect( this,  SIGNAL( providerDialogsRefreshRequested() ), dlg, SLOT( refresh() ) );
+    connect( this, SIGNAL( providerDialogsRefreshRequested() ), dlg, SLOT( refresh() ) );
   }
 }
 

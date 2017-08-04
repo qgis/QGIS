@@ -27,13 +27,8 @@
 
 
 QgsAfsSourceSelect::QgsAfsSourceSelect( QWidget *parent, Qt::WindowFlags fl, QgsProviderRegistry::WidgetMode widgetMode )
-  : QgsArcGisServiceSourceSelect( QStringLiteral( "ArcGisFeatureServer" ), QgsArcGisServiceSourceSelect::FeatureService, parent, fl )
+  : QgsArcGisServiceSourceSelect( QStringLiteral( "ArcGisFeatureServer" ), QgsArcGisServiceSourceSelect::FeatureService, parent, fl, widgetMode )
 {
-  if ( widgetMode == QgsProviderRegistry::WidgetMode::Embedded || widgetMode == QgsProviderRegistry::WidgetMode::Manager )
-  {
-    buttonBox->removeButton( buttonBox->button( QDialogButtonBox::Close ) );
-  }
-
   // import/export of connections not supported yet
   btnLoad->hide();
   btnSave->hide();

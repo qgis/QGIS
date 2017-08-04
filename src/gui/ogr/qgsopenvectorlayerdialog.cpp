@@ -32,22 +32,10 @@
 #include "qgsapplication.h"
 
 QgsOpenVectorLayerDialog::QgsOpenVectorLayerDialog( QWidget *parent, Qt::WindowFlags fl, QgsProviderRegistry::WidgetMode widgetMode )
-  : QDialog( parent, fl ),
-    mWidgetMode( widgetMode ),
-    mAddButton( nullptr )
+  : QgsAbstractDataSourceWidget( parent, fl, widgetMode )
 {
   setupUi( this );
-
-  if ( mWidgetMode != QgsProviderRegistry::WidgetMode::None )
-  {
-    this->layout()->setSizeConstraint( QLayout::SetNoConstraint );
-    buttonBox->removeButton( buttonBox->button( QDialogButtonBox::Cancel ) );
-  }
-
-  mAddButton = new QPushButton( tr( "&Add" ) );
-  // TODO: enable/disable according to valid selection
-  mAddButton->setEnabled( true );
-  buttonBox->addButton( mAddButton, QDialogButtonBox::AcceptRole );
+  setupButtons( buttonBox );
 
   cmbDatabaseTypes->blockSignals( true );
   cmbConnections->blockSignals( true );
@@ -287,7 +275,7 @@ void QgsOpenVectorLayerDialog::on_buttonSelectSrc_clicked()
     if ( !selected.isEmpty() )
     {
       inputSrcDataset->setText( selected.join( QStringLiteral( ";" ) ) );
-      mAddButton->setFocus();
+      addButton()->setFocus();
     }
   }
   else if ( radioSrcDirectory->isChecked() )
@@ -302,8 +290,7 @@ void QgsOpenVectorLayerDialog::on_buttonSelectSrc_clicked()
 
 
 
-//********************auto connected slots *****************/
-void QgsOpenVectorLayerDialog::accept()
+void QgsOpenVectorLayerDialog::addButtonClicked()
 {
   QgsSettings settings;
   QgsDebugMsg( "dialog button accepted" );
@@ -395,15 +382,14 @@ void QgsOpenVectorLayerDialog::accept()
   // Save the used encoding
   settings.setValue( QStringLiteral( "UI/encoding" ), encoding() );
 
-  if ( mWidgetMode == QgsProviderRegistry::WidgetMode::None )
-  {
-    QDialog::accept();
-  }
-  else if ( ! mDataSources.isEmpty() )
+  if ( ! mDataSources.isEmpty() )
   {
     emit addVectorLayers( mDataSources, encoding(), dataSourceType() );
   }
 }
+
+
+//********************auto connected slots *****************/
 
 void QgsOpenVectorLayerDialog::on_radioSrcFile_toggled( bool checked )
 {

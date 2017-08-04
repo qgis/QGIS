@@ -44,6 +44,7 @@ QgsSpatiaLiteSourceSelect::QgsSpatiaLiteSourceSelect( QWidget *parent, Qt::Windo
   QgsAbstractDataSourceWidget( parent, fl, theWidgetMode )
 {
   setupUi( this );
+  setupButtons( buttonBox );
 
   QgsSettings settings;
   restoreGeometry( settings.value( QStringLiteral( "Windows/SpatiaLiteSourceSelect/geometry" ) ).toByteArray() );
@@ -58,9 +59,6 @@ QgsSpatiaLiteSourceSelect::QgsSpatiaLiteSourceSelect( QWidget *parent, Qt::Windo
   connect( mStatsButton, &QAbstractButton::clicked, this, &QgsSpatiaLiteSourceSelect::updateStatistics );
   mStatsButton->setEnabled( false );
 
-  mAddButton = new QPushButton( tr( "&Add" ) );
-  connect( mAddButton, &QAbstractButton::clicked, this, &QgsSpatiaLiteSourceSelect::addClicked );
-  mAddButton->setEnabled( false );
 
   mBuildQueryButton = new QPushButton( tr( "&Set Filter" ) );
   connect( mBuildQueryButton, &QAbstractButton::clicked, this, &QgsSpatiaLiteSourceSelect::buildQuery );
@@ -68,11 +66,9 @@ QgsSpatiaLiteSourceSelect::QgsSpatiaLiteSourceSelect( QWidget *parent, Qt::Windo
 
   if ( widgetMode() != QgsProviderRegistry::WidgetMode::None )
   {
-    buttonBox->removeButton( buttonBox->button( QDialogButtonBox::Close ) );
     mHoldDialogOpen->hide();
   }
 
-  buttonBox->addButton( mAddButton, QDialogButtonBox::ActionRole );
   buttonBox->addButton( mBuildQueryButton, QDialogButtonBox::ActionRole );
   buttonBox->addButton( mStatsButton, QDialogButtonBox::ActionRole );
 
@@ -121,13 +117,6 @@ QgsSpatiaLiteSourceSelect::~QgsSpatiaLiteSourceSelect()
   settings.setValue( QStringLiteral( "Windows/SpatiaLiteSourceSelect/HoldDialogOpen" ), mHoldDialogOpen->isChecked() );
 }
 
-// Slot for performing action when the Add button is clicked
-void QgsSpatiaLiteSourceSelect::addClicked()
-{
-  addTables();
-}
-
-//! End Autoconnected SLOTS *
 
 // Remember which database is selected
 void QgsSpatiaLiteSourceSelect::on_cmbConnections_activated( int )
@@ -375,7 +364,7 @@ void QgsSpatiaLiteSourceSelect::on_btnDelete_clicked()
   emit connectionsChanged();
 }
 
-void QgsSpatiaLiteSourceSelect::addTables()
+void QgsSpatiaLiteSourceSelect::addButtonClicked()
 {
   m_selectedTables.clear();
 
@@ -586,5 +575,5 @@ void QgsSpatiaLiteSourceSelect::setSearchExpression( const QString &regexp )
 void QgsSpatiaLiteSourceSelect::treeWidgetSelectionChanged( const QItemSelection &selected, const QItemSelection &deselected )
 {
   Q_UNUSED( deselected )
-  mAddButton->setEnabled( !selected.isEmpty() );
+  emit enableButtons( !selected.isEmpty() );
 }

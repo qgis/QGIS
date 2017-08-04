@@ -172,10 +172,10 @@ QgsOracleSourceSelect::QgsOracleSourceSelect( QWidget *parent, Qt::WindowFlags f
   , mIsConnected( false )
 {
   setupUi( this );
+  setupButton( buttonBox );
 
   if ( widgetMode() != QgsProviderRegistry::WidgetMode::None )
   {
-    buttonBox->removeButton( buttonBox->button( QDialogButtonBox::Close ) );
     mHoldDialogOpen->hide();
   }
   else
@@ -183,18 +183,12 @@ QgsOracleSourceSelect::QgsOracleSourceSelect( QWidget *parent, Qt::WindowFlags f
     setWindowTitle( tr( "Add Oracle Table(s)" ) );
   }
 
-  mAddButton = new QPushButton( tr( "&Add" ) );
-  mAddButton->setEnabled( false );
-
   mBuildQueryButton = new QPushButton( tr( "&Set Filter" ) );
   mBuildQueryButton->setToolTip( tr( "Set Filter" ) );
   mBuildQueryButton->setDisabled( true );
 
   if ( widgetMode() != QgsProviderRegistry::WidgetMode::Manager )
   {
-    buttonBox->addButton( mAddButton, QDialogButtonBox::ActionRole );
-    connect( mAddButton, &QAbstractButton::clicked, this, &QgsOracleSourceSelect::addTables );
-
     buttonBox->addButton( mBuildQueryButton, QDialogButtonBox::ActionRole );
     connect( mBuildQueryButton, &QAbstractButton::clicked, this, &QgsOracleSourceSelect::buildQuery );
   }
@@ -359,7 +353,7 @@ void QgsOracleSourceSelect::on_mTablesTreeView_doubleClicked( const QModelIndex 
   QgsSettings settings;
   if ( settings.value( QStringLiteral( "qgis/addOracleDC" ), false ).toBool() )
   {
-    addTables();
+    addClicked();
   }
   else
   {
@@ -470,7 +464,7 @@ void QgsOracleSourceSelect::populateConnectionList()
 }
 
 // Slot for performing action when the Add button is clicked
-void QgsOracleSourceSelect::addTables()
+void QgsOracleSourceSelect::addClicked()
 {
   mSelectedTables.clear();
 
@@ -674,5 +668,5 @@ void QgsOracleSourceSelect::loadTableFromCache()
 void QgsOracleSourceSelect::treeWidgetSelectionChanged( const QItemSelection &selected, const QItemSelection &deselected )
 {
   Q_UNUSED( deselected )
-  mAddButton->setEnabled( !selected.isEmpty() );
+  emit enableButtons( !selected.isEmpty() );
 }

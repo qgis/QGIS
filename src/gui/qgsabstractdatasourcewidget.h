@@ -26,6 +26,7 @@
 #include "qgsproviderregistry.h"
 #include "qgsguiutils.h"
 #include <QDialog>
+#include <QDialogButtonBox>
 
 class QgsMapCanvas;
 
@@ -58,6 +59,17 @@ class GUI_EXPORT QgsAbstractDataSourceWidget : public QDialog
      */
     virtual void refresh() {}
 
+    /** Triggered when the add button is clicked, the add layer signal is emitted
+     * Concrete classes should implement the right behavior depending on the layer
+     * being added.
+     */
+    virtual void addButtonClicked() { }
+
+    /** Triggered when the dialog is accepted, call addButtonClicked() and
+     * emit the accepted() signal
+     */
+    virtual void okButtonClicked();
+
   signals:
 
     /** Emitted when the provider's connections have changed
@@ -80,6 +92,10 @@ class GUI_EXPORT QgsAbstractDataSourceWidget : public QDialog
     //! Emitted when a progress dialog is shown by the provider dialog
     void progressMessage( QString message );
 
+    //! Emitted when the ok/add buttons should be enabled/disabled
+    void enableButtons( bool enable );
+
+
   protected:
 
     //! Constructor
@@ -88,12 +104,17 @@ class GUI_EXPORT QgsAbstractDataSourceWidget : public QDialog
     //! Return the widget mode
     QgsProviderRegistry::WidgetMode widgetMode() const;
 
-    /** Return the map canvas (can be null)
-     */
+    //! Return the map canvas (can be null)
     const QgsMapCanvas *mapCanvas() const;
 
-  private:
+    //! Connect the ok and apply/add buttons to the slots
+    void setupButtons( QDialogButtonBox *buttonBox );
 
+    //! Return the add Button
+    QPushButton *addButton( ) const { return mAddButton; }
+
+  private:
+    QPushButton *mAddButton  = nullptr;
     QgsProviderRegistry::WidgetMode mWidgetMode;
     QgsMapCanvas const *mMapCanvas = nullptr;
 

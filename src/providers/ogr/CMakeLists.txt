@@ -1,5 +1,11 @@
 
-SET (OGR_SRCS qgsogrprovider.cpp qgsogrdataitems.cpp qgsogrfeatureiterator.cpp qgsogrconnpool.cpp qgsogrexpressioncompiler.cpp)
+SET (OGR_SRCS
+    qgsogrprovider.cpp
+    qgsogrdataitems.cpp
+    qgsogrfeatureiterator.cpp
+    qgsogrconnpool.cpp
+    qgsogrexpressioncompiler.cpp
+)
 
 SET(OGR_MOC_HDRS qgsogrprovider.h qgsogrdataitems.h qgsogrconnpool.h)
 

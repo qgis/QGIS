@@ -26,12 +26,8 @@
 
 
 QgsAmsSourceSelect::QgsAmsSourceSelect( QWidget *parent, Qt::WindowFlags fl, QgsProviderRegistry::WidgetMode widgetMode )
-  : QgsArcGisServiceSourceSelect( QStringLiteral( "ArcGisMapServer" ), QgsArcGisServiceSourceSelect::MapService, parent, fl )
+  : QgsArcGisServiceSourceSelect( QStringLiteral( "ArcGisMapServer" ), QgsArcGisServiceSourceSelect::MapService, parent, fl, widgetMode )
 {
-  if ( widgetMode == QgsProviderRegistry::WidgetMode::Embedded || widgetMode == QgsProviderRegistry::WidgetMode::Manager )
-  {
-    buttonBox->removeButton( buttonBox->button( QDialogButtonBox::Close ) );
-  }
 
   // import/export of connections not supported yet
   btnLoad->hide();

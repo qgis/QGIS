@@ -87,9 +87,6 @@ class GUI_EXPORT QgsOWSSourceSelect : public QgsAbstractDataSourceWidget, protec
      */
     void on_mConnectButton_clicked();
 
-    //! Determines the layers the user selected
-    virtual void addClicked();
-
     void searchFinished();
 
     //! Opens the Spatial Reference System dialog.
@@ -186,8 +183,6 @@ class GUI_EXPORT QgsOWSSourceSelect : public QgsAbstractDataSourceWidget, protec
 
     //! layer name derived from latest layer selection (updated as long it's not edited manually)
     QString mLastLayerName;
-
-    QPushButton *mAddButton = nullptr;
 
     QMap<QString, QString> mCrsNames;
 
