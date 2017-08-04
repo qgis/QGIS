@@ -2489,6 +2489,19 @@ tests:
         name: expected/single_to_multi.gml
         type: vector
 
+  - algorithm: qgis:statisticsbycategories
+    name: stats by category
+    params:
+      VALUES_FIELD_NAME: id
+      CATEGORIES_FIELD_NAME: id2
+      INPUT:
+        name: points.gml
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/stats_by_category.gml
+        type: vector
+
 #  - algorithm: qgis:zonalstatistics
 #    name: simple zonal statistics
 #    params:

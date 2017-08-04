@@ -132,6 +132,7 @@ from .SnapGeometries import SnapGeometriesToLayer
 from .SpatialiteExecuteSQL import SpatialiteExecuteSQL
 from .SpatialIndex import SpatialIndex
 from .SplitWithLines import SplitWithLines
+from .StatisticsByCategories import StatisticsByCategories
 from .SumLines import SumLines
 from .SymmetricalDifference import SymmetricalDifference
 from .TextToFloat import TextToFloat
@@ -149,7 +150,6 @@ from .ZonalStatistics import ZonalStatistics
 # from .SelectByLocation import SelectByLocation
 # from .SpatialJoin import SpatialJoin
 # from .GeometryConvert import GeometryConvert
-# from .StatisticsByCategories import StatisticsByCategories
 # from .FieldsCalculator import FieldsCalculator
 # from .FieldPyculator import FieldsPyculator
 # from .PointsDisplacement import PointsDisplacement
@@ -190,7 +190,7 @@ class QGISAlgorithmProvider(QgsProcessingProvider):
         #         SpatialJoin(),
         #         GeometryConvert(), FieldsCalculator(),
         #         FieldsPyculator(),
-        #         StatisticsByCategories(),
+        #
         #         RasterLayerStatistics(), PointsDisplacement(),
         #         PointsFromPolygons(),
         #         PointsFromLines(),
@@ -298,6 +298,7 @@ class QGISAlgorithmProvider(QgsProcessingProvider):
                 SpatialiteExecuteSQL(),
                 SpatialIndex(),
                 SplitWithLines(),
+                StatisticsByCategories(),
                 SumLines(),
                 SymmetricalDifference(),
                 TextToFloat(),
