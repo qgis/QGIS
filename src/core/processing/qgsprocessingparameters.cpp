@@ -787,6 +787,8 @@ QgsProcessingParameterDefinition *QgsProcessingParameters::parameterFromVariantM
     def.reset( new QgsProcessingParameterFileDestination( name ) );
   else if ( type == QgsProcessingParameterFolderDestination::typeName() )
     def.reset( new QgsProcessingParameterFolderDestination( name ) );
+  else if ( type == QgsProcessingParameterBand::typeName() )
+    def.reset( new QgsProcessingParameterBand( name ) );
 
   if ( !def )
     return nullptr;
@@ -859,6 +861,8 @@ QgsProcessingParameterDefinition *QgsProcessingParameters::parameterFromScriptCo
     return QgsProcessingParameterFileDestination::fromScriptCode( name, description, isOptional, definition );
   else if ( type == QStringLiteral( "folderdestination" ) )
     return QgsProcessingParameterFolderDestination::fromScriptCode( name, description, isOptional, definition );
+  else if ( type == QStringLiteral( "band" ) )
+    return QgsProcessingParameterBand::fromScriptCode( name, description, isOptional, definition );
 
   return nullptr;
 }
@@ -3144,4 +3148,104 @@ QgsProcessingParameterVectorDestination *QgsProcessingParameterVectorDestination
   }
 
   return new QgsProcessingParameterVectorDestination( name, description, type, definition, isOptional );
+}
+
+QgsProcessingParameterBand::QgsProcessingParameterBand( const QString &name, const QString &description, const QVariant &defaultValue, const QString &parentLayerParameterName, bool optional )
+  : QgsProcessingParameterDefinition( name, description, defaultValue, optional )
+  , mParentLayerParameter( parentLayerParameterName )
+{
+
+}
+
+bool QgsProcessingParameterBand::checkValueIsAcceptable( const QVariant &input, QgsProcessingContext * ) const
+{
+  if ( !input.isValid() )
+    return mFlags & FlagOptional;
+
+  if ( input.canConvert<QgsProperty>() )
+  {
+    return true;
+  }
+
+  bool ok = false;
+  double res = input.toInt( &ok );
+  Q_UNUSED( res );
+  if ( !ok )
+    return mFlags & FlagOptional;
+
+  return true;
+}
+
+QString QgsProcessingParameterBand::valueAsPythonString( const QVariant &value, QgsProcessingContext & ) const
+{
+  if ( value.canConvert<QgsProperty>() )
+    return QStringLiteral( "QgsProperty.fromExpression('%1')" ).arg( value.value< QgsProperty >().asExpression() );
+
+  return value.toString();
+}
+
+QString QgsProcessingParameterBand::asScriptCode() const
+{
+  QString code = QStringLiteral( "##%1=" ).arg( mName );
+  if ( mFlags & FlagOptional )
+    code += QStringLiteral( "optional " );
+  code += QStringLiteral( "band " );
+
+  code += mParentLayerParameter + ' ';
+
+  code += mDefault.toString();
+  return code.trimmed();
+}
+
+QStringList QgsProcessingParameterBand::dependsOnOtherParameters() const
+{
+  QStringList depends;
+  if ( !mParentLayerParameter.isEmpty() )
+    depends << mParentLayerParameter;
+  return depends;
+}
+
+QString QgsProcessingParameterBand::parentLayerParameter() const
+{
+  return mParentLayerParameter;
+}
+
+void QgsProcessingParameterBand::setParentLayerParameter( const QString &parentLayerParameter )
+{
+  mParentLayerParameter = parentLayerParameter;
+}
+
+QVariantMap QgsProcessingParameterBand::toVariantMap() const
+{
+  QVariantMap map = QgsProcessingParameterDefinition::toVariantMap();
+  map.insert( QStringLiteral( "parent_layer" ), mParentLayerParameter );
+  return map;
+}
+
+bool QgsProcessingParameterBand::fromVariantMap( const QVariantMap &map )
+{
+  QgsProcessingParameterDefinition::fromVariantMap( map );
+  mParentLayerParameter = map.value( QStringLiteral( "parent_layer" ) ).toString();
+  return true;
+}
+
+QgsProcessingParameterBand *QgsProcessingParameterBand::fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition )
+{
+  QString parent;
+  QString def = definition;
+
+  QRegularExpression re( "(.*?)\\s+(.*)$" );
+  QRegularExpressionMatch m = re.match( def );
+  if ( m.hasMatch() )
+  {
+    parent = m.captured( 1 ).trimmed();
+    def = m.captured( 2 );
+  }
+  else
+  {
+    parent = def;
+    def.clear();
+  }
+
+  return new QgsProcessingParameterBand( name, description, def.isEmpty() ? QVariant() : def, parent, isOptional );
 }

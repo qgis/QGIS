@@ -48,7 +48,8 @@ from qgis.core import (QgsSettings,
                        QgsProcessingParameterExpression,
                        QgsProcessingParameterVectorLayer,
                        QgsProcessingParameterField,
-                       QgsProcessingParameterFeatureSource)
+                       QgsProcessingParameterFeatureSource,
+                       QgsProcessingParameterBand)
 from qgis.PyQt.QtCore import (Qt,
                               QByteArray)
 from qgis.PyQt.QtWidgets import (QDialog,
@@ -76,6 +77,7 @@ class ModelerParameterDefinitionDialog(QDialog):
     PARAMETER_POINT = 'Point'
     PARAMETER_CRS = 'CRS'
     PARAMETER_MULTIPLE = 'Multiple Input'
+    PARAMETER_BAND = 'Raster band'
 
     paramTypes = [
         PARAMETER_BOOLEAN,
@@ -90,7 +92,8 @@ class ModelerParameterDefinitionDialog(QDialog):
         PARAMETER_VECTOR,
         PARAMETER_POINT,
         PARAMETER_CRS,
-        PARAMETER_MULTIPLE
+        PARAMETER_MULTIPLE,
+        PARAMETER_BAND
     ]
 
     def __init__(self, alg, paramType=None, param=None):
@@ -167,7 +170,20 @@ class ModelerParameterDefinitionDialog(QDialog):
             if self.param is not None:
                 self.multipleCheck.setChecked(self.param.allowMultiple())
             self.verticalLayout.addWidget(self.multipleCheck)
-
+        elif self.paramType == ModelerParameterDefinitionDialog.PARAMETER_BAND or \
+                isinstance(self.param, QgsProcessingParameterBand):
+            self.verticalLayout.addWidget(QLabel(self.tr('Parent layer')))
+            self.parentCombo = QComboBox()
+            idx = 0
+            for param in list(self.alg.parameterComponents().values()):
+                definition = self.alg.parameterDefinition(param.parameterName())
+                if isinstance(definition, (QgsProcessingParameterRasterLayer)):
+                    self.parentCombo.addItem(definition.description(), definition.name())
+                    if self.param is not None:
+                        if self.param.parentLayerParameter() == definition.name():
+                            self.parentCombo.setCurrentIndex(idx)
+                    idx += 1
+            self.verticalLayout.addWidget(self.parentCombo)
         elif (self.paramType == ModelerParameterDefinitionDialog.PARAMETER_VECTOR or
                 isinstance(self.param, QgsProcessingParameterFeatureSource)):
             self.verticalLayout.addWidget(QLabel(self.tr('Shape type')))
@@ -318,6 +334,14 @@ class ModelerParameterDefinitionDialog(QDialog):
             parent = self.parentCombo.currentData()
             datatype = self.datatypeCombo.currentData()
             self.param = QgsProcessingParameterField(name, description, None, parent, datatype, self.multipleCheck.isChecked())
+        elif (self.paramType == ModelerParameterDefinitionDialog.PARAMETER_BAND or
+              isinstance(self.param, QgsProcessingParameterBand)):
+            if self.parentCombo.currentIndex() < 0:
+                QMessageBox.warning(self, self.tr('Unable to define parameter'),
+                                    self.tr('Wrong or missing parameter values'))
+                return
+            parent = self.parentCombo.currentData()
+            self.param = QgsProcessingParameterBand(name, description, None, parent)
         elif (self.paramType == ModelerParameterDefinitionDialog.PARAMETER_RASTER or
                 isinstance(self.param, QgsProcessingParameterRasterLayer)):
             self.param = QgsProcessingParameterRasterLayer(

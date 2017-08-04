@@ -62,6 +62,7 @@ from qgis.core import (
     QgsProcessingParameterVectorLayer,
     QgsProcessingParameterField,
     QgsProcessingParameterFeatureSource,
+    QgsProcessingParameterBand,
     QgsProcessingFeatureSourceDefinition,
     QgsProcessingOutputRasterLayer,
     QgsProcessingOutputVectorLayer,
@@ -89,6 +90,7 @@ from qgis.gui import (
     QgsProjectionSelectionDialog,
     QgsMapLayerComboBox,
     QgsProjectionSelectionWidget,
+    QgsRasterBandComboBox,
 )
 from qgis.PyQt.QtCore import pyqtSignal, QObject, QVariant, Qt
 from qgis.utils import iface
@@ -1257,6 +1259,72 @@ class TableFieldWidgetWrapper(WidgetWrapper):
             return self.comboValue(validator)
 
 
+class BandWidgetWrapper(WidgetWrapper):
+
+    NOT_SET = '[Not set]'
+
+    def createWidget(self):
+        self._layer = None
+
+        if self.dialogType in (DIALOG_STANDARD, DIALOG_BATCH):
+            widget = QgsRasterBandComboBox()
+            widget.setShowNotSetOption(self.param.flags() & QgsProcessingParameterDefinition.FlagOptional)
+            widget.bandChanged.connect(lambda: self.widgetValueHasChanged.emit(self))
+            return widget
+        else:
+            widget = QComboBox()
+            widget.setEditable(True)
+            fields = self.dialog.getAvailableValuesOfType([QgsProcessingParameterBand, QgsProcessingParameterNumber], [QgsProcessingOutputNumber])
+            if self.param.flags() & QgsProcessingParameterDefinition.FlagOptional:
+                widget.addItem(self.NOT_SET, None)
+            for f in fields:
+                widget.addItem(self.dialog.resolveValueDescription(f), f)
+            return widget
+
+    def postInitialize(self, wrappers):
+        print(self.param)
+        print(self.param.parentLayerParameter)
+        for wrapper in wrappers:
+            if wrapper.param.name() == self.param.parentLayerParameter():
+                if self.dialogType in (DIALOG_STANDARD, DIALOG_BATCH):
+                    self.setLayer(wrapper.value())
+                    wrapper.widgetValueHasChanged.connect(self.parentValueChanged)
+                break
+
+    def parentValueChanged(self, wrapper):
+        self.setLayer(wrapper.value())
+
+    def setLayer(self, layer):
+        context = dataobjects.createContext()
+        if isinstance(layer, QgsProcessingParameterRasterLayer):
+            layer, ok = layer.source.valueAsString(context.expressionContext())
+        if isinstance(layer, str):
+            layer = QgsProcessingUtils.mapLayerFromString(layer, context)
+        self._layer = layer
+        self.refreshItems()
+
+    def refreshItems(self):
+        self.widget.setLayer(self._layer)
+        self.widget.setCurrentIndex(0)
+
+    def setValue(self, value):
+        if self.dialogType in (DIALOG_STANDARD, DIALOG_BATCH):
+            self.widget.setBand(value)
+        else:
+            self.setComboValue(value)
+
+    def value(self):
+        if self.dialogType in (DIALOG_STANDARD, DIALOG_BATCH):
+            f = self.widget.currentBand()
+            if self.param.flags() & QgsProcessingParameterDefinition.FlagOptional and not f:
+                return None
+            return f
+        else:
+            def validator(v):
+                return bool(v) or self.param.flags() & QgsProcessingParameterDefinition.FlagOptional
+            return self.comboValue(validator)
+
+
 class WidgetWrapperFactory:
 
     """
@@ -1292,6 +1360,7 @@ class WidgetWrapperFactory:
 
     @staticmethod
     def create_wrapper_from_class(param, dialog, row=0, col=0):
+        print("PARAM", param, param.name(), param.type())
         wrapper = None
         if param.type() == 'boolean':
             wrapper = BooleanWidgetWrapper
@@ -1321,6 +1390,8 @@ class WidgetWrapperFactory:
             wrapper = TableFieldWidgetWrapper
         elif param.type() == 'source':
             wrapper = VectorWidgetWrapper
+        elif param.type() == 'band':
+            wrapper = BandWidgetWrapper
         else:
             assert False, param.type()
         return wrapper(param, dialog, row, col)
