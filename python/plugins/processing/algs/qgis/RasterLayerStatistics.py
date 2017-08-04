@@ -30,7 +30,7 @@ import codecs
 from qgis.core import (QgsRectangle,
                        QgsRasterBandStats,
                        QgsProcessingParameterRasterLayer,
-                       QgsProcessingParameterNumber,
+                       QgsProcessingParameterBand,
                        QgsProcessingParameterFileDestination,
                        QgsProcessingOutputHtml,
                        QgsProcessingOutputNumber)
@@ -60,10 +60,10 @@ class RasterLayerStatistics(QgisAlgorithm):
     def initAlgorithm(self, config=None):
         self.addParameter(QgsProcessingParameterRasterLayer(self.INPUT,
                                                             self.tr('Input layer')))
-        self.addParameter(QgsProcessingParameterNumber(self.BAND,
-                                                       self.tr('Band number'),
-                                                       QgsProcessingParameterNumber.Integer,
-                                                       1, False, 1, 999))
+        self.addParameter(QgsProcessingParameterBand(self.BAND,
+                                                     self.tr('Band number'),
+                                                     1,
+                                                     self.INPUT))
         self.addParameter(QgsProcessingParameterFileDestination(self.OUTPUT_HTML_FILE, self.tr('Statistics'), self.tr('HTML files (*.html)'), None, True))
         self.addOutput(QgsProcessingOutputHtml(self.OUTPUT_HTML_FILE, self.tr('Statistics')))
 

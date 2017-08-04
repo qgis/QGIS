@@ -103,8 +103,8 @@ class ModelerScene(QGraphicsScene):
         for input_name in list(model.parameterComponents().keys()):
             idx = 0
             parameter_def = model.parameterDefinition(input_name)
-            if hasattr(parameter_def, 'parentLayerParameter') and parameter_def.parentLayerParameter():
-                parent_name = parameter_def.parentLayerParameter()
+            if hasattr(parameter_def, 'parentLayerParameterName') and parameter_def.parentLayerParameterName():
+                parent_name = parameter_def.parentLayerParameterName()
                 if input_name in self.paramItems and parent_name in self.paramItems:
                     input_item = self.paramItems[input_name]
                     parent_item = self.paramItems[parent_name]

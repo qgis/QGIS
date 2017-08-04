@@ -189,6 +189,8 @@ class QgsProcessingParameterDefinition
       sipType = sipType_QgsProcessingParameterFileDestination;
     else if ( sipCpp->type() == QgsProcessingParameterFolderDestination::typeName() )
       sipType = sipType_QgsProcessingParameterFolderDestination;
+    else if ( sipCpp->type() == QgsProcessingParameterBand::typeName() )
+      sipType = sipType_QgsProcessingParameterBand;
 %End
   public:
 
@@ -1356,17 +1358,17 @@ class QgsProcessingParameterExpression : QgsProcessingParameterDefinition
     virtual QStringList dependsOnOtherParameters() const;
 
 
-    QString parentLayerParameter() const;
+    QString parentLayerParameterName() const;
 %Docstring
  Returns the name of the parent layer parameter, or an empty string if this is not set.
-.. seealso:: setParentLayerParameter()
+.. seealso:: setParentLayerParameterName()
  :rtype: str
 %End
 
-    void setParentLayerParameter( const QString &parentLayerParameter );
+    void setParentLayerParameterName( const QString &parentLayerParameterName );
 %Docstring
  Sets the name of the parent layer parameter. Use an empty string if this is not required.
-.. seealso:: parentLayerParameter()
+.. seealso:: parentLayerParameterName()
 %End
 
     virtual QVariantMap toVariantMap() const;
@@ -1485,17 +1487,17 @@ class QgsProcessingParameterField : QgsProcessingParameterDefinition
     virtual QStringList dependsOnOtherParameters() const;
 
 
-    QString parentLayerParameter() const;
+    QString parentLayerParameterName() const;
 %Docstring
  Returns the name of the parent layer parameter, or an empty string if this is not set.
-.. seealso:: setParentLayerParameter()
+.. seealso:: setParentLayerParameterName()
  :rtype: str
 %End
 
-    void setParentLayerParameter( const QString &parentLayerParameter );
+    void setParentLayerParameterName( const QString &parentLayerParameterName );
 %Docstring
  Sets the name of the parent layer parameter. Use an empty string if this is not required.
-.. seealso:: parentLayerParameter()
+.. seealso:: parentLayerParameterName()
 %End
 
     DataType dataType() const;
@@ -1966,6 +1968,66 @@ class QgsProcessingParameterFolderDestination : QgsProcessingDestinationParamete
 %Docstring
  Creates a new parameter using the definition from a script code.
  :rtype: QgsProcessingParameterFolderDestination
+%End
+
+};
+
+class QgsProcessingParameterBand : QgsProcessingParameterDefinition
+{
+%Docstring
+ A raster band parameter for Processing algorithms.
+.. versionadded:: 3.0
+%End
+
+%TypeHeaderCode
+#include "qgsprocessingparameters.h"
+%End
+  public:
+
+    QgsProcessingParameterBand( const QString &name, const QString &description = QString(), const QVariant &defaultValue = QVariant(),
+                                const QString &parentLayerParameterName = QString(),
+                                bool optional = false );
+%Docstring
+ Constructor for QgsProcessingParameterBand.
+%End
+
+    static QString typeName();
+%Docstring
+ Returns the type name for the parameter class.
+ :rtype: str
+%End
+    virtual QString type() const;
+    virtual bool checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context = 0 ) const;
+
+    virtual QString valueAsPythonString( const QVariant &value, QgsProcessingContext &context ) const;
+
+    virtual QString asScriptCode() const;
+
+    virtual QStringList dependsOnOtherParameters() const;
+
+
+    QString parentLayerParameterName() const;
+%Docstring
+ Returns the name of the parent layer parameter, or an empty string if this is not set.
+.. seealso:: setParentLayerParameterName()
+ :rtype: str
+%End
+
+    void setParentLayerParameterName( const QString &parentLayerParameterName );
+%Docstring
+ Sets the name of the parent layer parameter. Use an empty string if this is not required.
+.. seealso:: parentLayerParameterName()
+%End
+
+    virtual QVariantMap toVariantMap() const;
+
+    virtual bool fromVariantMap( const QVariantMap &map );
+
+
+    static QgsProcessingParameterBand *fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition ) /Factory/;
+%Docstring
+ Creates a new parameter using the definition from a script code.
+ :rtype: QgsProcessingParameterBand
 %End
 
 };

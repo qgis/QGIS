@@ -231,6 +231,8 @@ class CORE_EXPORT QgsProcessingParameterDefinition
       sipType = sipType_QgsProcessingParameterFileDestination;
     else if ( sipCpp->type() == QgsProcessingParameterFolderDestination::typeName() )
       sipType = sipType_QgsProcessingParameterFolderDestination;
+    else if ( sipCpp->type() == QgsProcessingParameterBand::typeName() )
+      sipType = sipType_QgsProcessingParameterBand;
     SIP_END
 #endif
 
@@ -1303,15 +1305,15 @@ class CORE_EXPORT QgsProcessingParameterExpression : public QgsProcessingParamet
 
     /**
      * Returns the name of the parent layer parameter, or an empty string if this is not set.
-     * \see setParentLayerParameter()
+     * \see setParentLayerParameterName()
      */
-    QString parentLayerParameter() const;
+    QString parentLayerParameterName() const;
 
     /**
      * Sets the name of the parent layer parameter. Use an empty string if this is not required.
-     * \see parentLayerParameter()
+     * \see parentLayerParameterName()
      */
-    void setParentLayerParameter( const QString &parentLayerParameter );
+    void setParentLayerParameterName( const QString &parentLayerParameterName );
 
     QVariantMap toVariantMap() const override;
     bool fromVariantMap( const QVariantMap &map ) override;
@@ -1323,7 +1325,7 @@ class CORE_EXPORT QgsProcessingParameterExpression : public QgsProcessingParamet
 
   private:
 
-    QString mParentLayerParameter;
+    QString mParentLayerParameterName;
 
 };
 
@@ -1422,15 +1424,15 @@ class CORE_EXPORT QgsProcessingParameterField : public QgsProcessingParameterDef
 
     /**
      * Returns the name of the parent layer parameter, or an empty string if this is not set.
-     * \see setParentLayerParameter()
+     * \see setParentLayerParameterName()
      */
-    QString parentLayerParameter() const;
+    QString parentLayerParameterName() const;
 
     /**
      * Sets the name of the parent layer parameter. Use an empty string if this is not required.
-     * \see parentLayerParameter()
+     * \see parentLayerParameterName()
      */
-    void setParentLayerParameter( const QString &parentLayerParameter );
+    void setParentLayerParameterName( const QString &parentLayerParameterName );
 
     /**
      * Returns the acceptable data type for the field.
@@ -1466,7 +1468,7 @@ class CORE_EXPORT QgsProcessingParameterField : public QgsProcessingParameterDef
 
   private:
 
-    QString mParentLayerParameter;
+    QString mParentLayerParameterName;
     DataType mDataType = Any;
     bool mAllowMultiple = false;
 
@@ -1847,6 +1849,58 @@ class CORE_EXPORT QgsProcessingParameterFolderDestination : public QgsProcessing
      */
     static QgsProcessingParameterFolderDestination *fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition ) SIP_FACTORY;
 
+};
+
+/**
+ * \class QgsProcessingParameterBand
+ * \ingroup core
+ * A raster band parameter for Processing algorithms.
+  * \since QGIS 3.0
+ */
+class CORE_EXPORT QgsProcessingParameterBand : public QgsProcessingParameterDefinition
+{
+  public:
+
+    /**
+     * Constructor for QgsProcessingParameterBand.
+     */
+    QgsProcessingParameterBand( const QString &name, const QString &description = QString(), const QVariant &defaultValue = QVariant(),
+                                const QString &parentLayerParameterName = QString(),
+                                bool optional = false );
+
+    /**
+     * Returns the type name for the parameter class.
+     */
+    static QString typeName() { return QStringLiteral( "band" ); }
+    QString type() const override { return typeName(); }
+    bool checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context = nullptr ) const override;
+    QString valueAsPythonString( const QVariant &value, QgsProcessingContext &context ) const override;
+    QString asScriptCode() const override;
+    QStringList dependsOnOtherParameters() const override;
+
+    /**
+     * Returns the name of the parent layer parameter, or an empty string if this is not set.
+     * \see setParentLayerParameterName()
+     */
+    QString parentLayerParameterName() const;
+
+    /**
+     * Sets the name of the parent layer parameter. Use an empty string if this is not required.
+     * \see parentLayerParameterName()
+     */
+    void setParentLayerParameterName( const QString &parentLayerParameterName );
+
+    QVariantMap toVariantMap() const override;
+    bool fromVariantMap( const QVariantMap &map ) override;
+
+    /**
+     * Creates a new parameter using the definition from a script code.
+     */
+    static QgsProcessingParameterBand *fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition ) SIP_FACTORY;
+
+  private:
+
+    QString mParentLayerParameterName;
 };
 
 #endif // QGSPROCESSINGPARAMETERS_H
