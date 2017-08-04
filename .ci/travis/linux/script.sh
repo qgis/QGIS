@@ -13,21 +13,15 @@
 #                                                                         #
 ###########################################################################
 
-export PYTHONPATH=${HOME}/osgeo4travis/lib/python3.3/site-packages/
-export PATH=${HOME}/osgeo4travis/bin:${HOME}/osgeo4travis/sbin:${HOME}/OTB-5.6.0-Linux64/bin:${PATH}
-export LD_LIBRARY_PATH=${HOME}/osgeo4travis/lib
-export CTEST_PARALLEL_LEVEL=1
-export CCACHE_TEMPDIR=/tmp
-ccache -M 500M
-ccache -z
+set -e
 
-DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+DIR=$(git rev-parse --show-toplevel)/.docker
 
-# Set OTB application path (installed in before_install.sh script)
-export OTB_APPLICATION_PATH=${HOME}/OTB-5.6.0-Linux64/lib/otb/applications
-export LD_PRELOAD=/lib/x86_64-linux-gnu/libSegFault.so
+pushd $DIR
 
-export CTEST_BUILD_COMMAND="/usr/bin/make -j3 -i -k"
+ccachedir=${HOME}/.ccache
+mkdir -p $ccachedir
 
-python ${TRAVIS_BUILD_DIR}/.ci/travis/scripts/ctest2travis.py \
-  xvfb-run ctest -V -E "$(cat ${DIR}/blacklist.txt | sed -r '/^(#.*?)?$/d' | paste -sd '|' -)" -S ${DIR}/../travis.ctest --output-on-failure
+docker-compose -f $DOCKER_COMPOSE run --rm qgis-deps
+
+popd

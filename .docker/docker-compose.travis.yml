@@ -1,0 +1,12 @@
+version: '3'
+services:
+  postgres:
+    image: kartoza/postgis:9.5-2.2
+
+  qgis-deps:
+    image: qgis/qgis3-build-deps:${DOCKER_TAG}
+    volumes:
+      - ${TRAVIS_BUILD_DIR}:/root/QGIS
+      - $HOME/.ccache:/root/.ccache
+    links:
+      - postgres
