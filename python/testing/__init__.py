@@ -55,6 +55,21 @@ class TestCase(_TestCase):
                          { fields: { a: skip, b: { precision: 2 }, geometry: { precision: 5 } }
                          { fields: { __all__: cast( str ) } }
         """
+        self.checkLayersEqual(layer_expected, layer_result, True, **kwargs)
+
+    def checkLayersEqual(self, layer_expected, layer_result, use_asserts=False, **kwargs):
+        """
+        :param layer_expected: The first layer to compare
+        :param layer_result: The second layer to compare
+        :param use_asserts: If true, asserts are used to test conditions, if false, asserts
+        are not used and the function will only return False if the test fails
+        :param request: Optional, A feature request. This can be used to specify
+                        an order by clause to make sure features are compared in
+                        a given sequence if they don't match by default.
+        :keyword compare: A map of comparison options. e.g.
+                         { fields: { a: skip, b: { precision: 2 }, geometry: { precision: 5 } }
+                         { fields: { __all__: cast( str ) } }
+        """
 
         try:
             request = kwargs['request']
@@ -67,10 +82,16 @@ class TestCase(_TestCase):
             compare = {}
 
         # Compare CRS
-        _TestCase.assertEqual(self, layer_expected.dataProvider().crs().authid(), layer_result.dataProvider().crs().authid())
+        if use_asserts:
+            _TestCase.assertEqual(self, layer_expected.dataProvider().crs().authid(), layer_result.dataProvider().crs().authid())
+        elif not layer_expected.dataProvider().crs().authid() == layer_result.dataProvider().crs().authid():
+            return False
 
         # Compare features
-        _TestCase.assertEqual(self, layer_expected.featureCount(), layer_result.featureCount())
+        if use_asserts:
+            _TestCase.assertEqual(self, layer_expected.featureCount(), layer_result.featureCount())
+        elif layer_expected.featureCount() != layer_result.featureCount():
+            return False
 
         try:
             precision = compare['geometry']['precision']
@@ -89,17 +110,20 @@ class TestCase(_TestCase):
                 geom1 = feats[1].geometry().geometry().asWkt(precision)
             else:
                 geom1 = None
-            _TestCase.assertEqual(
-                self,
-                geom0,
-                geom1,
-                'Features {}/{} differ in geometry: \n\n {}\n\n vs \n\n {}'.format(
-                    feats[0].id(),
-                    feats[1].id(),
+            if use_asserts:
+                _TestCase.assertEqual(
+                    self,
                     geom0,
-                    geom1
+                    geom1,
+                    'Features {}/{} differ in geometry: \n\n {}\n\n vs \n\n {}'.format(
+                        feats[0].id(),
+                        feats[1].id(),
+                        geom0,
+                        geom1
+                    )
                 )
-            )
+            elif geom0 != geom1:
+                return False
 
             for attr_expected, field_expected in zip(feats[0].attributes(), layer_expected.fields().toList()):
                 try:
@@ -134,21 +158,26 @@ class TestCase(_TestCase):
                     attr_expected = round(attr_expected, cmp['precision'])
                     attr_result = round(attr_result, cmp['precision'])
 
-                _TestCase.assertEqual(
-                    self,
-                    attr_expected,
-                    attr_result,
-                    'Features {}/{} differ in attributes\n\n * Field1: {} ({})\n * Field2: {} ({})\n\n * {} != {}'.format(
-                        feats[0].id(),
-                        feats[1].id(),
-                        field_expected.name(),
-                        field_expected.typeName(),
-                        field_result.name(),
-                        field_result.typeName(),
-                        repr(attr_expected),
-                        repr(attr_result)
+                if use_asserts:
+                    _TestCase.assertEqual(
+                        self,
+                        attr_expected,
+                        attr_result,
+                        'Features {}/{} differ in attributes\n\n * Field1: {} ({})\n * Field2: {} ({})\n\n * {} != {}'.format(
+                            feats[0].id(),
+                            feats[1].id(),
+                            field_expected.name(),
+                            field_expected.typeName(),
+                            field_result.name(),
+                            field_result.typeName(),
+                            repr(attr_expected),
+                            repr(attr_result)
+                        )
                     )
-                )
+                elif attr_expected != attr_result:
+                    return False
+
+        return True
 
     def assertFilesEqual(self, filepath_expected, filepath_result):
         with open(filepath_expected, 'r') as file_expected:
