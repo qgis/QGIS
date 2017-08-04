@@ -1358,17 +1358,17 @@ class QgsProcessingParameterExpression : QgsProcessingParameterDefinition
     virtual QStringList dependsOnOtherParameters() const;
 
 
-    QString parentLayerParameter() const;
+    QString parentLayerParameterName() const;
 %Docstring
  Returns the name of the parent layer parameter, or an empty string if this is not set.
-.. seealso:: setParentLayerParameter()
+.. seealso:: setParentLayerParameterName()
  :rtype: str
 %End
 
-    void setParentLayerParameter( const QString &parentLayerParameter );
+    void setParentLayerParameterName( const QString &parentLayerParameterName );
 %Docstring
  Sets the name of the parent layer parameter. Use an empty string if this is not required.
-.. seealso:: parentLayerParameter()
+.. seealso:: parentLayerParameterName()
 %End
 
     virtual QVariantMap toVariantMap() const;
@@ -1487,17 +1487,17 @@ class QgsProcessingParameterField : QgsProcessingParameterDefinition
     virtual QStringList dependsOnOtherParameters() const;
 
 
-    QString parentLayerParameter() const;
+    QString parentLayerParameterName() const;
 %Docstring
  Returns the name of the parent layer parameter, or an empty string if this is not set.
-.. seealso:: setParentLayerParameter()
+.. seealso:: setParentLayerParameterName()
  :rtype: str
 %End
 
-    void setParentLayerParameter( const QString &parentLayerParameter );
+    void setParentLayerParameterName( const QString &parentLayerParameterName );
 %Docstring
  Sets the name of the parent layer parameter. Use an empty string if this is not required.
-.. seealso:: parentLayerParameter()
+.. seealso:: parentLayerParameterName()
 %End
 
     DataType dataType() const;
@@ -2006,17 +2006,17 @@ class QgsProcessingParameterBand : QgsProcessingParameterDefinition
     virtual QStringList dependsOnOtherParameters() const;
 
 
-    QString parentLayerParameter() const;
+    QString parentLayerParameterName() const;
 %Docstring
  Returns the name of the parent layer parameter, or an empty string if this is not set.
-.. seealso:: setParentLayerParameter()
+.. seealso:: setParentLayerParameterName()
  :rtype: str
 %End
 
-    void setParentLayerParameter( const QString &parentLayerParameter );
+    void setParentLayerParameterName( const QString &parentLayerParameterName );
 %Docstring
  Sets the name of the parent layer parameter. Use an empty string if this is not required.
-.. seealso:: parentLayerParameter()
+.. seealso:: parentLayerParameterName()
 %End
 
     virtual QVariantMap toVariantMap() const;

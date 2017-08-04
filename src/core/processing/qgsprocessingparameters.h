@@ -1305,15 +1305,15 @@ class CORE_EXPORT QgsProcessingParameterExpression : public QgsProcessingParamet
 
     /**
      * Returns the name of the parent layer parameter, or an empty string if this is not set.
-     * \see setParentLayerParameter()
+     * \see setParentLayerParameterName()
      */
-    QString parentLayerParameter() const;
+    QString parentLayerParameterName() const;
 
     /**
      * Sets the name of the parent layer parameter. Use an empty string if this is not required.
-     * \see parentLayerParameter()
+     * \see parentLayerParameterName()
      */
-    void setParentLayerParameter( const QString &parentLayerParameter );
+    void setParentLayerParameterName( const QString &parentLayerParameterName );
 
     QVariantMap toVariantMap() const override;
     bool fromVariantMap( const QVariantMap &map ) override;
@@ -1325,7 +1325,7 @@ class CORE_EXPORT QgsProcessingParameterExpression : public QgsProcessingParamet
 
   private:
 
-    QString mParentLayerParameter;
+    QString mParentLayerParameterName;
 
 };
 
@@ -1424,15 +1424,15 @@ class CORE_EXPORT QgsProcessingParameterField : public QgsProcessingParameterDef
 
     /**
      * Returns the name of the parent layer parameter, or an empty string if this is not set.
-     * \see setParentLayerParameter()
+     * \see setParentLayerParameterName()
      */
-    QString parentLayerParameter() const;
+    QString parentLayerParameterName() const;
 
     /**
      * Sets the name of the parent layer parameter. Use an empty string if this is not required.
-     * \see parentLayerParameter()
+     * \see parentLayerParameterName()
      */
-    void setParentLayerParameter( const QString &parentLayerParameter );
+    void setParentLayerParameterName( const QString &parentLayerParameterName );
 
     /**
      * Returns the acceptable data type for the field.
@@ -1468,7 +1468,7 @@ class CORE_EXPORT QgsProcessingParameterField : public QgsProcessingParameterDef
 
   private:
 
-    QString mParentLayerParameter;
+    QString mParentLayerParameterName;
     DataType mDataType = Any;
     bool mAllowMultiple = false;
 
@@ -1880,15 +1880,15 @@ class CORE_EXPORT QgsProcessingParameterBand : public QgsProcessingParameterDefi
 
     /**
      * Returns the name of the parent layer parameter, or an empty string if this is not set.
-     * \see setParentLayerParameter()
+     * \see setParentLayerParameterName()
      */
-    QString parentLayerParameter() const;
+    QString parentLayerParameterName() const;
 
     /**
      * Sets the name of the parent layer parameter. Use an empty string if this is not required.
-     * \see parentLayerParameter()
+     * \see parentLayerParameterName()
      */
-    void setParentLayerParameter( const QString &parentLayerParameter );
+    void setParentLayerParameterName( const QString &parentLayerParameterName );
 
     QVariantMap toVariantMap() const override;
     bool fromVariantMap( const QVariantMap &map ) override;
@@ -1900,7 +1900,7 @@ class CORE_EXPORT QgsProcessingParameterBand : public QgsProcessingParameterDefi
 
   private:
 
-    QString mParentLayerParameter;
+    QString mParentLayerParameterName;
 };
 
 #endif // QGSPROCESSINGPARAMETERS_H

@@ -144,7 +144,7 @@ class ModelerParameterDefinitionDialog(QDialog):
                 if isinstance(definition, (QgsProcessingParameterFeatureSource, QgsProcessingParameterVectorLayer)):
                     self.parentCombo.addItem(definition.description(), definition.name())
                     if self.param is not None:
-                        if self.param.parentLayerParameter() == definition.name():
+                        if self.param.parentLayerParameterName() == definition.name():
                             self.parentCombo.setCurrentIndex(idx)
                     idx += 1
             self.verticalLayout.addWidget(self.parentCombo)
@@ -180,7 +180,7 @@ class ModelerParameterDefinitionDialog(QDialog):
                 if isinstance(definition, (QgsProcessingParameterRasterLayer)):
                     self.parentCombo.addItem(definition.description(), definition.name())
                     if self.param is not None:
-                        if self.param.parentLayerParameter() == definition.name():
+                        if self.param.parentLayerParameterName() == definition.name():
                             self.parentCombo.setCurrentIndex(idx)
                     idx += 1
             self.verticalLayout.addWidget(self.parentCombo)
@@ -246,7 +246,7 @@ class ModelerParameterDefinitionDialog(QDialog):
                 if isinstance(definition, (QgsProcessingParameterFeatureSource, QgsProcessingParameterVectorLayer)):
                     self.parentCombo.addItem(definition.description(), definition.name())
                     if self.param is not None:
-                        if self.param.parentLayerParameter() == definition.name():
+                        if self.param.parentLayerParameterName() == definition.name():
                             self.parentCombo.setCurrentIndex(idx)
                     idx += 1
             self.verticalLayout.addWidget(self.parentCombo)

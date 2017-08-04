@@ -992,7 +992,7 @@ class ExpressionWidgetWrapper(WidgetWrapper):
 
     def createWidget(self):
         if self.dialogType in (DIALOG_STANDARD, DIALOG_BATCH):
-            if self.param.parentLayerParameter():
+            if self.param.parentLayerParameterName():
                 widget = QgsFieldExpressionWidget()
             else:
                 widget = QgsExpressionLineEdit()
@@ -1010,7 +1010,7 @@ class ExpressionWidgetWrapper(WidgetWrapper):
 
     def postInitialize(self, wrappers):
         for wrapper in wrappers:
-            if wrapper.param.name() == self.param.parentLayerParameter():
+            if wrapper.param.name() == self.param.parentLayerParameterName():
                 if self.dialogType in (DIALOG_STANDARD, DIALOG_BATCH):
                     self.setLayer(wrapper.value())
                     wrapper.widgetValueHasChanged.connect(self.parentLayerChanged)
@@ -1187,7 +1187,7 @@ class TableFieldWidgetWrapper(WidgetWrapper):
 
     def postInitialize(self, wrappers):
         for wrapper in wrappers:
-            if wrapper.param.name() == self.param.parentLayerParameter():
+            if wrapper.param.name() == self.param.parentLayerParameterName():
                 if self.dialogType in (DIALOG_STANDARD, DIALOG_BATCH):
                     self.setLayer(wrapper.value())
                     wrapper.widgetValueHasChanged.connect(self.parentValueChanged)
@@ -1282,10 +1282,8 @@ class BandWidgetWrapper(WidgetWrapper):
             return widget
 
     def postInitialize(self, wrappers):
-        print(self.param)
-        print(self.param.parentLayerParameter)
         for wrapper in wrappers:
-            if wrapper.param.name() == self.param.parentLayerParameter():
+            if wrapper.param.name() == self.param.parentLayerParameterName():
                 if self.dialogType in (DIALOG_STANDARD, DIALOG_BATCH):
                     self.setLayer(wrapper.value())
                     wrapper.widgetValueHasChanged.connect(self.parentValueChanged)

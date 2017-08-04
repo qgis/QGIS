@@ -3038,12 +3038,12 @@ void TestQgsProcessing::parameterExpression()
   QCOMPARE( fromMap.description(), def->description() );
   QCOMPARE( fromMap.flags(), def->flags() );
   QCOMPARE( fromMap.defaultValue(), def->defaultValue() );
-  QCOMPARE( fromMap.parentLayerParameter(), def->parentLayerParameter() );
+  QCOMPARE( fromMap.parentLayerParameterName(), def->parentLayerParameterName() );
   def.reset( dynamic_cast< QgsProcessingParameterExpression *>( QgsProcessingParameters::parameterFromVariantMap( map ) ) );
   QVERIFY( dynamic_cast< QgsProcessingParameterExpression *>( def.get() ) );
 
   QVERIFY( def->dependsOnOtherParameters().isEmpty() );
-  def->setParentLayerParameter( QStringLiteral( "test_layer" ) );
+  def->setParentLayerParameterName( QStringLiteral( "test_layer" ) );
   QCOMPARE( def->dependsOnOtherParameters(), QStringList() << QStringLiteral( "test_layer" ) );
 
   // optional
@@ -3102,12 +3102,12 @@ void TestQgsProcessing::parameterField()
   QCOMPARE( fromCode->description(), QStringLiteral( "non optional" ) );
   QCOMPARE( fromCode->flags(), def->flags() );
   QCOMPARE( fromCode->defaultValue(), def->defaultValue() );
-  QCOMPARE( fromCode->parentLayerParameter(), def->parentLayerParameter() );
+  QCOMPARE( fromCode->parentLayerParameterName(), def->parentLayerParameterName() );
   QCOMPARE( fromCode->dataType(), def->dataType() );
   QCOMPARE( fromCode->allowMultiple(), def->allowMultiple() );
 
   QVERIFY( def->dependsOnOtherParameters().isEmpty() );
-  def->setParentLayerParameter( "my_parent" );
+  def->setParentLayerParameterName( "my_parent" );
   QCOMPARE( def->dependsOnOtherParameters(), QStringList() << QStringLiteral( "my_parent" ) );
 
   code = def->asScriptCode();
@@ -3117,7 +3117,7 @@ void TestQgsProcessing::parameterField()
   QCOMPARE( fromCode->description(), QStringLiteral( "non optional" ) );
   QCOMPARE( fromCode->flags(), def->flags() );
   QCOMPARE( fromCode->defaultValue(), def->defaultValue() );
-  QCOMPARE( fromCode->parentLayerParameter(), def->parentLayerParameter() );
+  QCOMPARE( fromCode->parentLayerParameterName(), def->parentLayerParameterName() );
   QCOMPARE( fromCode->dataType(), def->dataType() );
   QCOMPARE( fromCode->allowMultiple(), def->allowMultiple() );
 
@@ -3129,7 +3129,7 @@ void TestQgsProcessing::parameterField()
   QCOMPARE( fromCode->description(), QStringLiteral( "non optional" ) );
   QCOMPARE( fromCode->flags(), def->flags() );
   QCOMPARE( fromCode->defaultValue(), def->defaultValue() );
-  QCOMPARE( fromCode->parentLayerParameter(), def->parentLayerParameter() );
+  QCOMPARE( fromCode->parentLayerParameterName(), def->parentLayerParameterName() );
   QCOMPARE( fromCode->dataType(), def->dataType() );
   QCOMPARE( fromCode->allowMultiple(), def->allowMultiple() );
 
@@ -3141,7 +3141,7 @@ void TestQgsProcessing::parameterField()
   QCOMPARE( fromCode->description(), QStringLiteral( "non optional" ) );
   QCOMPARE( fromCode->flags(), def->flags() );
   QCOMPARE( fromCode->defaultValue(), def->defaultValue() );
-  QCOMPARE( fromCode->parentLayerParameter(), def->parentLayerParameter() );
+  QCOMPARE( fromCode->parentLayerParameterName(), def->parentLayerParameterName() );
   QCOMPARE( fromCode->dataType(), def->dataType() );
   QCOMPARE( fromCode->allowMultiple(), def->allowMultiple() );
 
@@ -3153,7 +3153,7 @@ void TestQgsProcessing::parameterField()
   QCOMPARE( fromCode->description(), QStringLiteral( "non optional" ) );
   QCOMPARE( fromCode->flags(), def->flags() );
   QCOMPARE( fromCode->defaultValue(), def->defaultValue() );
-  QCOMPARE( fromCode->parentLayerParameter(), def->parentLayerParameter() );
+  QCOMPARE( fromCode->parentLayerParameterName(), def->parentLayerParameterName() );
   QCOMPARE( fromCode->dataType(), def->dataType() );
   QCOMPARE( fromCode->allowMultiple(), def->allowMultiple() );
 
@@ -3183,7 +3183,7 @@ void TestQgsProcessing::parameterField()
   QCOMPARE( fromMap.description(), def->description() );
   QCOMPARE( fromMap.flags(), def->flags() );
   QCOMPARE( fromMap.defaultValue(), def->defaultValue() );
-  QCOMPARE( fromMap.parentLayerParameter(), def->parentLayerParameter() );
+  QCOMPARE( fromMap.parentLayerParameterName(), def->parentLayerParameterName() );
   QCOMPARE( fromMap.dataType(), def->dataType() );
   QCOMPARE( fromMap.allowMultiple(), def->allowMultiple() );
   def.reset( dynamic_cast< QgsProcessingParameterField *>( QgsProcessingParameters::parameterFromVariantMap( map ) ) );
@@ -3196,7 +3196,7 @@ void TestQgsProcessing::parameterField()
   QCOMPARE( fromCode->description(), QStringLiteral( "non optional" ) );
   QCOMPARE( fromCode->flags(), def->flags() );
   QCOMPARE( fromCode->defaultValue(), def->defaultValue() );
-  QCOMPARE( fromCode->parentLayerParameter(), def->parentLayerParameter() );
+  QCOMPARE( fromCode->parentLayerParameterName(), def->parentLayerParameterName() );
   QCOMPARE( fromCode->dataType(), def->dataType() );
   QCOMPARE( fromCode->allowMultiple(), def->allowMultiple() );
 
@@ -3227,7 +3227,7 @@ void TestQgsProcessing::parameterField()
   QCOMPARE( fromCode->description(), QStringLiteral( "optional" ) );
   QCOMPARE( fromCode->flags(), def->flags() );
   QCOMPARE( fromCode->defaultValue(), def->defaultValue() );
-  QCOMPARE( fromCode->parentLayerParameter(), def->parentLayerParameter() );
+  QCOMPARE( fromCode->parentLayerParameterName(), def->parentLayerParameterName() );
   QCOMPARE( fromCode->dataType(), def->dataType() );
   QCOMPARE( fromCode->allowMultiple(), def->allowMultiple() );
 
@@ -3998,10 +3998,10 @@ void TestQgsProcessing::parameterBand()
   QCOMPARE( fromCode->description(), QStringLiteral( "non optional" ) );
   QCOMPARE( fromCode->flags(), def->flags() );
   QCOMPARE( fromCode->defaultValue(), def->defaultValue() );
-  QCOMPARE( fromCode->parentLayerParameter(), def->parentLayerParameter() );
+  QCOMPARE( fromCode->parentLayerParameterName(), def->parentLayerParameterName() );
 
   QVERIFY( def->dependsOnOtherParameters().isEmpty() );
-  def->setParentLayerParameter( "my_parent" );
+  def->setParentLayerParameterName( "my_parent" );
   QCOMPARE( def->dependsOnOtherParameters(), QStringList() << QStringLiteral( "my_parent" ) );
 
   code = def->asScriptCode();
@@ -4011,7 +4011,7 @@ void TestQgsProcessing::parameterBand()
   QCOMPARE( fromCode->description(), QStringLiteral( "non optional" ) );
   QCOMPARE( fromCode->flags(), def->flags() );
   QCOMPARE( fromCode->defaultValue(), def->defaultValue() );
-  QCOMPARE( fromCode->parentLayerParameter(), def->parentLayerParameter() );
+  QCOMPARE( fromCode->parentLayerParameterName(), def->parentLayerParameterName() );
 
   // optional
   def.reset( new QgsProcessingParameterBand( "optional", QString(), 1, QString(), true ) );
@@ -4038,7 +4038,7 @@ void TestQgsProcessing::parameterBand()
   QCOMPARE( fromCode->description(), QStringLiteral( "optional" ) );
   QCOMPARE( fromCode->flags(), def->flags() );
   QCOMPARE( fromCode->defaultValue(), def->defaultValue() );
-  QCOMPARE( fromCode->parentLayerParameter(), def->parentLayerParameter() );
+  QCOMPARE( fromCode->parentLayerParameterName(), def->parentLayerParameterName() );
 }
 
 void TestQgsProcessing::checkParamValues()

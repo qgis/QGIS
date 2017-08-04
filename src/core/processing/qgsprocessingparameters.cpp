@@ -2048,7 +2048,7 @@ QgsProcessingParameterString *QgsProcessingParameterString::fromScriptCode( cons
 
 QgsProcessingParameterExpression::QgsProcessingParameterExpression( const QString &name, const QString &description, const QVariant &defaultValue, const QString &parentLayerParameterName, bool optional )
   : QgsProcessingParameterDefinition( name, description, defaultValue, optional )
-  , mParentLayerParameter( parentLayerParameterName )
+  , mParentLayerParameterName( parentLayerParameterName )
 {
 
 }
@@ -2066,32 +2066,32 @@ QString QgsProcessingParameterExpression::valueAsPythonString( const QVariant &v
 QStringList QgsProcessingParameterExpression::dependsOnOtherParameters() const
 {
   QStringList depends;
-  if ( !mParentLayerParameter.isEmpty() )
-    depends << mParentLayerParameter;
+  if ( !mParentLayerParameterName.isEmpty() )
+    depends << mParentLayerParameterName;
   return depends;
 }
 
-QString QgsProcessingParameterExpression::parentLayerParameter() const
+QString QgsProcessingParameterExpression::parentLayerParameterName() const
 {
-  return mParentLayerParameter;
+  return mParentLayerParameterName;
 }
 
-void QgsProcessingParameterExpression::setParentLayerParameter( const QString &parentLayerParameter )
+void QgsProcessingParameterExpression::setParentLayerParameterName( const QString &parentLayerParameterName )
 {
-  mParentLayerParameter = parentLayerParameter;
+  mParentLayerParameterName = parentLayerParameterName;
 }
 
 QVariantMap QgsProcessingParameterExpression::toVariantMap() const
 {
   QVariantMap map = QgsProcessingParameterDefinition::toVariantMap();
-  map.insert( QStringLiteral( "parent_layer" ), mParentLayerParameter );
+  map.insert( QStringLiteral( "parent_layer" ), mParentLayerParameterName );
   return map;
 }
 
 bool QgsProcessingParameterExpression::fromVariantMap( const QVariantMap &map )
 {
   QgsProcessingParameterDefinition::fromVariantMap( map );
-  mParentLayerParameter = map.value( QStringLiteral( "parent_layer" ) ).toString();
+  mParentLayerParameterName = map.value( QStringLiteral( "parent_layer" ) ).toString();
   return true;
 }
 
@@ -2188,7 +2188,7 @@ QgsProcessingParameterVectorLayer *QgsProcessingParameterVectorLayer::fromScript
 
 QgsProcessingParameterField::QgsProcessingParameterField( const QString &name, const QString &description, const QVariant &defaultValue, const QString &parentLayerParameterName, DataType type, bool allowMultiple, bool optional )
   : QgsProcessingParameterDefinition( name, description, defaultValue, optional )
-  , mParentLayerParameter( parentLayerParameterName )
+  , mParentLayerParameterName( parentLayerParameterName )
   , mDataType( type )
   , mAllowMultiple( allowMultiple )
 {
@@ -2282,7 +2282,7 @@ QString QgsProcessingParameterField::asScriptCode() const
   if ( mAllowMultiple )
     code += QStringLiteral( "multiple " );
 
-  code += mParentLayerParameter + ' ';
+  code += mParentLayerParameterName + ' ';
 
   code += mDefault.toString();
   return code.trimmed();
@@ -2291,19 +2291,19 @@ QString QgsProcessingParameterField::asScriptCode() const
 QStringList QgsProcessingParameterField::dependsOnOtherParameters() const
 {
   QStringList depends;
-  if ( !mParentLayerParameter.isEmpty() )
-    depends << mParentLayerParameter;
+  if ( !mParentLayerParameterName.isEmpty() )
+    depends << mParentLayerParameterName;
   return depends;
 }
 
-QString QgsProcessingParameterField::parentLayerParameter() const
+QString QgsProcessingParameterField::parentLayerParameterName() const
 {
-  return mParentLayerParameter;
+  return mParentLayerParameterName;
 }
 
-void QgsProcessingParameterField::setParentLayerParameter( const QString &parentLayerParameter )
+void QgsProcessingParameterField::setParentLayerParameterName( const QString &parentLayerParameterName )
 {
-  mParentLayerParameter = parentLayerParameter;
+  mParentLayerParameterName = parentLayerParameterName;
 }
 
 QgsProcessingParameterField::DataType QgsProcessingParameterField::dataType() const
@@ -2329,7 +2329,7 @@ void QgsProcessingParameterField::setAllowMultiple( bool allowMultiple )
 QVariantMap QgsProcessingParameterField::toVariantMap() const
 {
   QVariantMap map = QgsProcessingParameterDefinition::toVariantMap();
-  map.insert( QStringLiteral( "parent_layer" ), mParentLayerParameter );
+  map.insert( QStringLiteral( "parent_layer" ), mParentLayerParameterName );
   map.insert( QStringLiteral( "data_type" ), mDataType );
   map.insert( QStringLiteral( "allow_multiple" ), mAllowMultiple );
   return map;
@@ -2338,7 +2338,7 @@ QVariantMap QgsProcessingParameterField::toVariantMap() const
 bool QgsProcessingParameterField::fromVariantMap( const QVariantMap &map )
 {
   QgsProcessingParameterDefinition::fromVariantMap( map );
-  mParentLayerParameter = map.value( QStringLiteral( "parent_layer" ) ).toString();
+  mParentLayerParameterName = map.value( QStringLiteral( "parent_layer" ) ).toString();
   mDataType = static_cast< DataType >( map.value( QStringLiteral( "data_type" ) ).toInt() );
   mAllowMultiple = map.value( QStringLiteral( "allow_multiple" ) ).toBool();
   return true;
@@ -3152,7 +3152,7 @@ QgsProcessingParameterVectorDestination *QgsProcessingParameterVectorDestination
 
 QgsProcessingParameterBand::QgsProcessingParameterBand( const QString &name, const QString &description, const QVariant &defaultValue, const QString &parentLayerParameterName, bool optional )
   : QgsProcessingParameterDefinition( name, description, defaultValue, optional )
-  , mParentLayerParameter( parentLayerParameterName )
+  , mParentLayerParameterName( parentLayerParameterName )
 {
 
 }
@@ -3191,7 +3191,7 @@ QString QgsProcessingParameterBand::asScriptCode() const
     code += QStringLiteral( "optional " );
   code += QStringLiteral( "band " );
 
-  code += mParentLayerParameter + ' ';
+  code += mParentLayerParameterName + ' ';
 
   code += mDefault.toString();
   return code.trimmed();
@@ -3200,32 +3200,32 @@ QString QgsProcessingParameterBand::asScriptCode() const
 QStringList QgsProcessingParameterBand::dependsOnOtherParameters() const
 {
   QStringList depends;
-  if ( !mParentLayerParameter.isEmpty() )
-    depends << mParentLayerParameter;
+  if ( !mParentLayerParameterName.isEmpty() )
+    depends << mParentLayerParameterName;
   return depends;
 }
 
-QString QgsProcessingParameterBand::parentLayerParameter() const
+QString QgsProcessingParameterBand::parentLayerParameterName() const
 {
-  return mParentLayerParameter;
+  return mParentLayerParameterName;
 }
 
-void QgsProcessingParameterBand::setParentLayerParameter( const QString &parentLayerParameter )
+void QgsProcessingParameterBand::setParentLayerParameterName( const QString &parentLayerParameterName )
 {
-  mParentLayerParameter = parentLayerParameter;
+  mParentLayerParameterName = parentLayerParameterName;
 }
 
 QVariantMap QgsProcessingParameterBand::toVariantMap() const
 {
   QVariantMap map = QgsProcessingParameterDefinition::toVariantMap();
-  map.insert( QStringLiteral( "parent_layer" ), mParentLayerParameter );
+  map.insert( QStringLiteral( "parent_layer" ), mParentLayerParameterName );
   return map;
 }
 
 bool QgsProcessingParameterBand::fromVariantMap( const QVariantMap &map )
 {
   QgsProcessingParameterDefinition::fromVariantMap( map );
-  mParentLayerParameter = map.value( QStringLiteral( "parent_layer" ) ).toString();
+  mParentLayerParameterName = map.value( QStringLiteral( "parent_layer" ) ).toString();
   return true;
 }
 
