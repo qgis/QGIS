@@ -280,7 +280,7 @@ class ScriptEditorDialog(BASE, WIDGET):
 
         # have to manually delete the dialog - otherwise it's owned by the
         # iface mainWindow and never deleted
-        del dlg
+        dlg.deleteLater()
 
         if canvas.mapTool() != prevMapTool:
             try:
