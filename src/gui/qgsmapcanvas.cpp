@@ -1595,6 +1595,11 @@ void QgsMapCanvas::setSelectionColor( const QColor &color )
   mSettings.setSelectionColor( color );
 }
 
+QColor QgsMapCanvas::selectionColor() const
+{
+  return mSettings.selectionColor();
+}
+
 int QgsMapCanvas::layerCount() const
 {
   return mapSettings().layers().size();

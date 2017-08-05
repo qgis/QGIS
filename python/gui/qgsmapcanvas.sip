@@ -269,6 +269,12 @@ Read property of QColor bgColor.
 .. versionadded:: 2.4
 %End
 
+    QColor selectionColor() const;
+%Docstring
+.. versionadded:: 3.0
+ :rtype: QColor
+%End
+
     void updateScale();
 %Docstring
 Emits signal scaleChanged to update scale in main window

@@ -9907,16 +9907,11 @@ void QgisApp::new3DMapCanvas()
   QgsProject *prj = QgsProject::instance();
   QgsRectangle fullExtent = mMapCanvas->fullExtent();
 
-  int r = prj->readNumEntry( QStringLiteral( "Gui" ), QStringLiteral( "/SelectionColorRedPart" ), 255 );
-  int g = prj->readNumEntry( QStringLiteral( "Gui" ), QStringLiteral( "/SelectionColorGreenPart" ), 255 );
-  int b = prj->readNumEntry( QStringLiteral( "Gui" ), QStringLiteral( "/SelectionColorBluePart" ), 255 );
-  int a = prj->readNumEntry( QStringLiteral( "Gui" ), QStringLiteral( "/SelectionColorAlphaPart" ), 255 );
-
   Map3D *map = new Map3D;
   map->crs = prj->crs();
   map->originX = fullExtent.center().x();
   map->originY = fullExtent.center().y();
-  map->setSelectionColor( QColor( r, g, b, a ) );
+  map->setSelectionColor( mMapCanvas->selectionColor() );
   map->setBackgroundColor( mMapCanvas->canvasColor() );
   map->setLayers( mMapCanvas->layers() );
 

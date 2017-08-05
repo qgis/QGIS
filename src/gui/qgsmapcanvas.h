@@ -259,6 +259,10 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     //! \since QGIS 2.4
     void setSelectionColor( const QColor &color );
 
+    //! Returns color for selected features
+    //! \since QGIS 3.0
+    QColor selectionColor() const;
+
     //! Emits signal scaleChanged to update scale in main window
     void updateScale();
 
