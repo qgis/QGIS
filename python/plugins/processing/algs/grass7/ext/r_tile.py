@@ -16,8 +16,6 @@
 *                                                                         *
 ***************************************************************************
 """
-from future import standard_library
-standard_library.install_aliases()
 
 __author__ = 'Médéric Ribreux'
 __date__ = 'February 2016'

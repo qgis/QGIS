@@ -34,9 +34,6 @@ the Free Software Foundation; either version 2 of the License, or
 (at your option) any later version.
 """
 
-from future import standard_library
-standard_library.install_aliases()
-
 __author__ = 'Alessandro Pasotti'
 __date__ = '05/15/2016'
 __copyright__ = 'Copyright 2016, The QGIS Project'

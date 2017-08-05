@@ -21,8 +21,6 @@ The content of this file is based on
  *                                                                         *
  ***************************************************************************/
 """
-from __future__ import absolute_import
-from builtins import range
 
 import functools
 
