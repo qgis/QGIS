@@ -1148,7 +1148,9 @@ tests:
       Z_FACTOR: 1.0
     results:
       OUTPUT:
-        hash: 762865ee485a6736d188402aa10e6fd38a812a9e45a7dd2d4885a63a
+        hash:
+        - 762865ee485a6736d188402aa10e6fd38a812a9e45a7dd2d4885a63a
+        - f6a8e64647ae93a94f2a4945add8986526a7a07bc85849f3690d15b2
         type: rasterhash
 
   - algorithm: qgis:slope
@@ -1160,7 +1162,9 @@ tests:
       Z_FACTOR: 1.0
     results:
       OUTPUT:
-        hash: 151ea76a21b286c16567eb6b4b692925a84145b65561a0017effb1a1
+        hash:
+        - 151ea76a21b286c16567eb6b4b692925a84145b65561a0017effb1a1
+        - 177475642c57428b395bc0a1e7e86fc1cfd4d86ffc19f31ff8bc964d
         type: rasterhash
 
   - algorithm: qgis:ruggednessindex
@@ -1186,7 +1190,9 @@ tests:
       Z_FACTOR: 1.0
     results:
       OUTPUT:
-        hash: 58365b3715b925d6286e7f082ebd9c2a20f09fa1c922176d3f238002
+        hash:
+        - 58365b3715b925d6286e7f082ebd9c2a20f09fa1c922176d3f238002
+        - 75cca4c1a870a1e21185a2d85b33b6d9958a69fc6ebb04e4d6ceb8a3
         type: rasterhash
 
 #  - algorithm: qgis:relief
@@ -1795,21 +1801,21 @@ tests:
         name: expected/dropped_geometry.csv
         type: vector
 
-#  - algorithm: qgis:creategridlines
-#    name: Create grid (lines)
-#    params:
-#      CRS: EPSG:4326
-#      EXTENT: -1,11.2,-4,6.5
-#      HSPACING: 5.0
-#      VSPACING: 3.0
-#    results:
-#      OUTPUT:
-#        name: expected/grid_lines.gml
-#        type: vector
-#        compare:
-#          geometry:
-#            precision: 7
-#
+  - algorithm: qgis:creategridlines
+    name: Create grid (lines)
+    params:
+      CRS: EPSG:4326
+      EXTENT: -1,11.2,-4,6.5
+      HSPACING: 5.0
+      VSPACING: 3.0
+    results:
+      OUTPUT:
+        name: expected/grid_lines.gml
+        type: vector
+        compare:
+          geometry:
+            precision: 7
+
   - algorithm: qgis:creategridpolygon
     name: Create grid (rectangles)
     params:
@@ -1858,20 +1864,20 @@ tests:
           geometry:
             precision: 7
 
-#  - algorithm: qgis:creategridlines
-#    name: Create grid (lines with overlay)
-#    params:
-#      CRS: EPSG:4326
-#      EXTENT: -1,11.2,-4,6.5
-#      HOVERLAY: 2.0
-#      HSPACING: 5.0
-#      VOVERLAY: 1.0
-#      VSPACING: 3.0
-#    results:
-#      OUTPUT:
-#        name: expected/grid_lines_overlay.gml
-#        type: vector
-#
+  - algorithm: qgis:creategridlines
+    name: Create grid (lines with overlay)
+    params:
+      CRS: EPSG:4326
+      EXTENT: -1,11.2,-4,6.5
+      HOVERLAY: 2.0
+      HSPACING: 5.0
+      VOVERLAY: 1.0
+      VSPACING: 3.0
+    results:
+      OUTPUT:
+        name: expected/grid_lines_overlay.gml
+        type: vector
+
   - algorithm: qgis:creategridpolygon
     name: Create grid (rectangle with overlay)
     params:
@@ -2158,21 +2164,122 @@ tests:
         name: expected/lines_to_polygon.gml
         type: vector
 
-#  - algorithm: qgis:joinattributestable
-#    name: join the attribute table by common field
-#    params:
-#      INPUT_LAYER:
-#        name: points.gml
-#        type: vector
-#      INPUT_LAYER_2:
-#        name: table.dbf
-#        type: table
-#      TABLE_FIELD: id
-#      TABLE_FIELD_2: ID
-#    results:
-#      OUTPUT_LAYER:
-#        name: expected/join_attribute_table.gml
-#        type: vector
+  - algorithm: qgis:snappointstogrid
+    name: Gridify polys
+    params:
+      INPUT:
+        name: polys.gml
+        type: vector
+      HSPACING: 2
+      VSPACING: 2
+    results:
+      OUTPUT:
+        name: expected/gridify_polys.gml
+        type: vector
+
+  - algorithm: qgis:snappointstogrid
+    name: Gridify lines
+    params:
+      INPUT:
+        name: lines.gml
+        type: vector
+      HSPACING: 2
+      VSPACING: 2
+    results:
+      OUTPUT:
+        name: expected/gridify_lines.gml
+        type: vector
+
+  - algorithm: qgis:distancetonearesthubpoints
+    name: Hub distance points
+    params:
+      INPUT:
+        name: points.gml
+        type: vector
+      HUBS:
+        name: custom/hub_points.gml
+        type: vector
+      FIELD: name
+      UNIT: 0
+    results:
+      OUTPUT:
+        name: expected/hub_distance_points.gml
+        type: vector
+
+  - algorithm: qgis:distancetonearesthublinetohub
+    name: Hub distance lines
+    params:
+      INPUT:
+        name: points.gml
+        type: vector
+      HUBS:
+        name: custom/hub_points.gml
+        type: vector
+      FIELD: name
+      UNIT: 0
+    results:
+      OUTPUT:
+        name: expected/hub_distance_lines.gml
+        type: vector
+
+  - algorithm: qgis:hublines
+    name: Hub lines
+    params:
+      HUBS:
+        name: points.gml
+        type: vector
+      SPOKES:
+        name: custom/spoke_points.gml
+        type: vector
+      HUB_FIELD: id
+      SPOKE_FIELD: id
+    results:
+      OUTPUT:
+        name: expected/hub_lines.gml
+        type: vector
+
+  - algorithm: qgis:pointstopath
+    name: Points to path (non grouped)
+    params:
+      INPUT:
+        name: points.gml
+        type: vector
+      ORDER_FIELD: id
+    results:
+      OUTPUT:
+        name: expected/points_to_path.gml
+        type: vector
+
+  - algorithm: qgis:pointstopath
+    name: Points to path (grouped)
+    params:
+      INPUT:
+        name: points.gml
+        type: vector
+      ORDER_FIELD: id
+      GROUP_FIELD: id2
+    results:
+      OUTPUT:
+        name:
+        - expected/points_to_path_grouped.gml
+        - expected/points_to_path_grouped2.gml
+        type: vector
+
+  - algorithm: qgis:joinattributestable
+    name: join the attribute table by common field
+    params:
+      INPUT:
+        name: points.gml
+        type: vector
+      INPUT_2:
+        name: table.dbf
+        type: table
+      FIELD: id
+      FIELD_2: ID
+    results:
+      OUTPUT:
+        name: expected/join_attribute_table.gml
+        type: vector
 
   - algorithm: qgis:convexhull
     name: Simple convex hull
@@ -2382,6 +2489,23 @@ tests:
         name: expected/single_to_multi.gml
         type: vector
 
+  - algorithm: qgis:statisticsbycategories
+    name: stats by category
+    params:
+      VALUES_FIELD_NAME: id
+      CATEGORIES_FIELD_NAME: id2
+      INPUT:
+        name: points.gml
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/stats_by_category.gml
+        type: vector
+        pk: id2
+        compare:
+          fields:
+            fid: skip
+
 #  - algorithm: qgis:zonalstatistics
 #    name: simple zonal statistics
 #    params:
@@ -2499,32 +2623,35 @@ tests:
         name: expected/polygon_from_extent.gml
         type: vector
 
-#  - algorithm: qgis:topologicalcoloring
-#    name: Topological coloring
-#    params:
-#      INPUT_LAYER:
-#        name: custom/adjacent_polys.gml
-#        type: vector
-#      MIN_COLORS: 4
-#    results:
-#      OUTPUT_LAYER:
-#        name: expected/topocolor_polys.gml
-#        type: vector
-#
-#  - algorithm: qgis:topologicalcoloring
-#    name: Topological coloring w/ min distance
-#    params:
-#      BALANCE: '0'
-#      INPUT_LAYER:
-#        name: custom/adjacent_polys.gml
-#        type: vector
-#      MIN_COLORS: 4
-#      MIN_DISTANCE: 4.0
-#    results:
-#      OUTPUT_LAYER:
-#        name: expected/topocolor_polys_min_dist.gml
-#        type: vector
-#
+  - algorithm: qgis:topologicalcoloring
+    name: Topological coloring
+    params:
+      BALANCE: 0
+      INPUT:
+        name: custom/adjacent_polys.gml
+        type: vector
+      MIN_COLORS: 4
+    results:
+      OUTPUT:
+        type: vector
+        name:
+        - expected/topocolor_polys.gml
+        - expected/topocolor_polys2.gml
+
+  - algorithm: qgis:topologicalcoloring
+    name: Topological coloring w/ min distance
+    params:
+      BALANCE: 0
+      INPUT:
+        name: custom/adjacent_polys.gml
+        type: vector
+      MIN_COLORS: 4
+      MIN_DISTANCE: 4.0
+    results:
+      OUTPUT:
+        name: expected/topocolor_polys_min_dist.gml
+        type: vector
+
   - algorithm: qgis:regularpoints
     name: Regular point with standard extent
     params:
@@ -2586,21 +2713,21 @@ tests:
 #      OUTPUT_LAYER:
 #        name: expected/buffer_ovals.gml
 #        type: vector
-#
-#  - algorithm: qgis:creategridlines
-#    name: Lines grid 0.1 degree spacing
-#    params:
-#      CRS: EPSG:4326
-#      EXTENT: -0.10453905405405395,8.808021567567568,-2.5010055337837844,4.058021763513514
-#      HOVERLAY: 0.0
-#      HSPACING: 0.1
-#      VOVERLAY: 0.0
-#      VSPACING: 0.1
-#    results:
-#      OUTPUT:
-#        name: expected/create_grid_lines.gml
-#        type: vector
-#
+
+  - algorithm: qgis:creategridlines
+    name: Lines grid 0.1 degree spacing
+    params:
+      CRS: EPSG:4326
+      EXTENT: -0.10453905405405395,8.808021567567568,-2.5010055337837844,4.058021763513514
+      HOVERLAY: 0.0
+      HSPACING: 0.1
+      VOVERLAY: 0.0
+      VSPACING: 0.1
+    results:
+      OUTPUT:
+        name: expected/create_grid_lines.gml
+        type: vector
+
 #  - algorithm: qgis:convertgeometrytype
 #    name: polygon to centroid
 #    params:

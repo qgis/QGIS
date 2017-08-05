@@ -238,7 +238,7 @@ class AlgorithmDialogBase(BASE, WIDGET):
         self._saveGeometry()
         super(AlgorithmDialogBase, self).reject()
 
-    def finish(self, context, feedback):
+    def finish(self, successful, result, context, feedback):
         pass
 
     def toggleCollapsed(self):
