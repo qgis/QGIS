@@ -54,6 +54,7 @@ from qgis.PyQt.QtWidgets import (
 from qgis.core import (
     QgsApplication,
     QgsExpression,
+    QgsMapLayerProxyModel,
     QgsProcessingFeatureSourceDefinition,
     QgsProcessingUtils,
     QgsProject,
@@ -66,7 +67,7 @@ from processing.tools import dataobjects
 
 pluginPath = os.path.dirname(__file__)
 WIDGET, BASE = uic.loadUiType(
-    os.path.join(pluginPath, 'widgetFieldsMapping.ui'))
+    os.path.join(pluginPath, 'fieldsmappingpanelbase.ui'))
 
 
 class FieldsMappingModel(QAbstractTableModel):
@@ -303,7 +304,8 @@ class FieldsMappingPanel(BASE, WIDGET):
         self.model.modelReset.connect(self.on_model_modelReset)
         self.model.rowsInserted.connect(self.on_model_rowsInserted)
 
-        self.updateLayerCombo()
+        self.layerCombo.setAllowEmptyLayer(True)
+        self.layerCombo.setFilters(QgsMapLayerProxyModel.VectorLayer)
 
     def configure(self):
         self.model = FieldsMappingModel()
@@ -458,14 +460,9 @@ class FieldsMappingPanel(BASE, WIDGET):
         for row in range(start, end + 1):
             self.openPersistentEditors(row)
 
-    def updateLayerCombo(self):
-        layers = QgsProcessingUtils.compatibleVectorLayers(QgsProject.instance())
-        for layer in layers:
-            self.layerCombo.addItem(layer.name(), layer)
-
     @pyqtSlot(bool, name='on_loadLayerFieldsButton_clicked')
     def on_loadLayerFieldsButton_clicked(self, checked=False):
-        layer = self.layerCombo.currentData()
+        layer = self.layerCombo.currentLayer()
         if layer is None:
             return
         self.model.loadLayerFields(layer)
