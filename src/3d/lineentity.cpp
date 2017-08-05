@@ -6,9 +6,6 @@
 #include "terraingenerator.h"
 #include "utils.h"
 
-#include <Qt3DExtras/QPhongMaterial>
-#include <Qt3DRender/QGeometryRenderer>
-
 #include "qgsvectorlayer.h"
 #include "qgsmultipolygon.h"
 #include "qgsgeos.h"
@@ -17,14 +14,70 @@
 LineEntity::LineEntity( const Map3D &map, QgsVectorLayer *layer, const Line3DSymbol &symbol, Qt3DCore::QNode *parent )
   : Qt3DCore::QEntity( parent )
 {
-  QgsPointXY origin( map.originX, map.originY );
+  addEntityForSelectedLines( map, layer, symbol );
+  addEntityForNotSelectedLines( map, layer, symbol );
+}
 
+Qt3DExtras::QPhongMaterial *LineEntity::material( const Line3DSymbol &symbol ) const
+{
   Qt3DExtras::QPhongMaterial *material = new Qt3DExtras::QPhongMaterial;
+
   material->setAmbient( symbol.material.ambient() );
   material->setDiffuse( symbol.material.diffuse() );
   material->setSpecular( symbol.material.specular() );
   material->setShininess( symbol.material.shininess() );
-  addComponent( material );
+
+  return material;
+}
+
+void LineEntity::addEntityForSelectedLines( const Map3D &map, QgsVectorLayer *layer, const Line3DSymbol &symbol )
+{
+  // build the default material
+  Qt3DExtras::QPhongMaterial *mat = material( symbol );
+
+  // update the material with selection colors
+  mat->setDiffuse( map.selectionColor() );
+  mat->setAmbient( map.selectionColor().darker() );
+
+  // build the feature request to select features
+  QgsFeatureRequest req;
+  req.setDestinationCrs( map.crs );
+  req.setFilterFids( layer->selectedFeatureIds() );
+
+  // build the entity
+  LineEntityNode *entity = new LineEntityNode( map, layer, symbol, req );
+  entity->addComponent( mat );
+  entity->setParent( this );
+}
+
+void LineEntity::addEntityForNotSelectedLines( const Map3D &map, QgsVectorLayer *layer, const Line3DSymbol &symbol )
+{
+  // build the default material
+  Qt3DExtras::QPhongMaterial *mat = material( symbol );
+
+  // build the feature request to select features
+  QgsFeatureRequest req;
+  req.setDestinationCrs( map.crs );
+
+  QgsFeatureIds notSelected = layer->allFeatureIds();
+  notSelected.subtract( layer->selectedFeatureIds() );
+  req.setFilterFids( notSelected );
+
+  // build the entity
+  LineEntityNode *entity = new LineEntityNode( map, layer, symbol, req );
+  entity->addComponent( mat );
+  entity->setParent( this );
+}
+
+LineEntityNode::LineEntityNode( const Map3D &map, QgsVectorLayer *layer, const Line3DSymbol &symbol, const QgsFeatureRequest &req, Qt3DCore::QNode *parent )
+  : Qt3DCore::QEntity( parent )
+{
+  addComponent( renderer( map, symbol, layer, req ) );
+}
+
+Qt3DRender::QGeometryRenderer *LineEntityNode::renderer( const Map3D &map, const Line3DSymbol &symbol, const QgsVectorLayer *layer, const QgsFeatureRequest &request )
+{
+  QgsPointXY origin( map.originX, map.originY );
 
   // TODO: configurable
   int nSegments = 4;
@@ -34,8 +87,6 @@ LineEntity::LineEntity( const Map3D &map, QgsVectorLayer *layer, const Line3DSym
 
   QList<QgsPolygonV2 *> polygons;
   QgsFeature f;
-  QgsFeatureRequest request;
-  request.setDestinationCrs( map.crs );
   QgsFeatureIterator fi = layer->getFeatures( request );
   while ( fi.nextFeature( f ) )
   {
@@ -68,10 +119,11 @@ LineEntity::LineEntity( const Map3D &map, QgsVectorLayer *layer, const Line3DSym
     }
   }
 
-  geometry = new PolygonGeometry;
-  geometry->setPolygons( polygons, origin, /*symbol.height,*/ symbol.extrusionHeight );
+  mGeometry = new PolygonGeometry;
+  mGeometry->setPolygons( polygons, origin, /*symbol.height,*/ symbol.extrusionHeight );
 
   Qt3DRender::QGeometryRenderer *renderer = new Qt3DRender::QGeometryRenderer;
-  renderer->setGeometry( geometry );
-  addComponent( renderer );
+  renderer->setGeometry( mGeometry );
+
+  return renderer;
 }
