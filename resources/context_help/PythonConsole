@@ -62,11 +62,11 @@ The history will be saved into the file ~/.qgis3/console_history.txt</li>
 <b><i>Toolbar:</i></b>
 <table width="100%" id='toolbarConsole'>
 <tr>
-<td><img src="qrc:/images/themes/default/console/iconClearConsole.png" /></td>
+<td><img src="qrc:/images/themes/default/console/iconClearConsole.svg" /></td>
 <td colspan="2">Clear python console</td>
 </tr>
 <tr>
-<td><img src="qrc:/images/themes/default/console/iconClassConsole.png" /></td>
+<td><img src="qrc:/images/themes/default/console/iconClassConsole.svg" /></td>
 <td><img src="qrc:/images/themes/default/console/iconProcessingConsole.png" /></td>
 <td>Import Processing class</td>
 </tr>
@@ -81,15 +81,15 @@ The history will be saved into the file ~/.qgis3/console_history.txt</li>
 <td>Tool to import PyQt4.QtGui class</td>
 </tr>
 <tr>
-<td><img src="qrc:/images/themes/default/console/iconRunConsole.png" /></td>
+<td><img src="qrc:/images/themes/default/console/iconRunConsole.svg" /></td>
 <td colspan="2">Run command (like Enter key pressed)</td>
 </tr>
 <tr>
-<td><img src="qrc:/images/themes/default/console/iconSettingsConsole.png" /></td>
+<td><img src="qrc:/images/themes/default/console/iconSettingsConsole.svg" /></td>
 <td colspan="2">Settings</td>
 </tr>
 <tr>
-<td><img src="qrc:/images/themes/default/console/iconHelpConsole.png" /></td>
+<td><img src="qrc:/images/themes/default/console/iconHelpConsole.svg" /></td>
 <td colspan="2">Help</td>
 </tr>
 </table>

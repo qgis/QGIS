@@ -17,7 +17,7 @@
     <file alias="warning">icons/warning-20px.png</file>
     <file>icons/plugged.png</file>
     <file>icons/unplugged.png</file>
-    <file alias="icon">icons/dbmanager.png</file>
+    <file alias="icon">icons/dbmanager.svg</file>
     <file>icons/about.png</file>
   </qresource>
   <qresource prefix="/db_manager/actions">
