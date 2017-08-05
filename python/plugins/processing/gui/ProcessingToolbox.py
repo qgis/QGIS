@@ -252,7 +252,7 @@ class ProcessingToolbox(BASE, WIDGET):
                 dlg.exec_()
                 # have to manually delete the dialog - otherwise it's owned by the
                 # iface mainWindow and never deleted
-                del dlg
+                dlg.deleteLater()
 
     def executeAlgorithm(self):
         item = self.algorithmTree.currentItem()
@@ -293,7 +293,7 @@ class ProcessingToolbox(BASE, WIDGET):
                         self.addRecentAlgorithms(True)
                 # have to manually delete the dialog - otherwise it's owned by the
                 # iface mainWindow and never deleted
-                del dlg
+                dlg.deleteLater()
             else:
                 feedback = MessageBarProgress()
                 context = dataobjects.createContext(feedback)
