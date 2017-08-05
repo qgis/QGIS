@@ -54,6 +54,10 @@ class TestCase(_TestCase):
         :keyword compare: A map of comparison options. e.g.
                          { fields: { a: skip, b: { precision: 2 }, geometry: { precision: 5 } }
                          { fields: { __all__: cast( str ) } }
+        :keyword pk: "Primary key" type field - used to match features
+        from the expected table to their corresponding features in the result table. If not specified
+        features are compared by their order in the layer (e.g. first feature compared with first feature,
+        etc)
         """
         self.checkLayersEqual(layer_expected, layer_result, True, **kwargs)
 
@@ -69,6 +73,10 @@ class TestCase(_TestCase):
         :keyword compare: A map of comparison options. e.g.
                          { fields: { a: skip, b: { precision: 2 }, geometry: { precision: 5 } }
                          { fields: { __all__: cast( str ) } }
+        :keyword pk: "Primary key" type field - used to match features
+        from the expected table to their corresponding features in the result table. If not specified
+        features are compared by their order in the layer (e.g. first feature compared with first feature,
+        etc)
         """
 
         try:
@@ -98,8 +106,14 @@ class TestCase(_TestCase):
         except KeyError:
             precision = 14
 
-        expected_features = sorted(layer_expected.getFeatures(request), key=lambda f: f.id())
-        result_features = sorted(layer_result.getFeatures(request), key=lambda f: f.id())
+        def sort_by_pk_or_fid(f):
+            if 'pk' in kwargs and kwargs['pk'] is not None:
+                return f[kwargs['pk']]
+            else:
+                return f.id()
+
+        expected_features = sorted(layer_expected.getFeatures(request), key=sort_by_pk_or_fid)
+        result_features = sorted(layer_result.getFeatures(request), key=sort_by_pk_or_fid)
 
         for feats in zip(expected_features, result_features):
             if feats[0].hasGeometry():

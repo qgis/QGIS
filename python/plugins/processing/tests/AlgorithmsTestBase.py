@@ -287,13 +287,14 @@ class AlgorithmsTest(object):
                     self.assertTrue(result_lyr, results[id])
 
                 compare = expected_result.get('compare', {})
+                pk = expected_result.get('pk', None)
 
                 if len(expected_lyrs) == 1:
-                    self.assertLayersEqual(expected_lyrs[0], result_lyr, compare=compare)
+                    self.assertLayersEqual(expected_lyrs[0], result_lyr, compare=compare, pk=pk)
                 else:
                     res = False
                     for l in expected_lyrs:
-                        if self.checkLayersEqual(l, result_lyr, compare=compare):
+                        if self.checkLayersEqual(l, result_lyr, compare=compare, pk=pk):
                             res = True
                             break
                     self.assertTrue(res, 'Could not find matching layer in expected results')

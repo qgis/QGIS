@@ -2501,6 +2501,10 @@ tests:
       OUTPUT:
         name: expected/stats_by_category.gml
         type: vector
+        pk: id2
+        compare:
+          fields:
+            fid: skip
 
 #  - algorithm: qgis:zonalstatistics
 #    name: simple zonal statistics
