@@ -172,7 +172,7 @@ QgsOracleSourceSelect::QgsOracleSourceSelect( QWidget *parent, Qt::WindowFlags f
   , mIsConnected( false )
 {
   setupUi( this );
-  setupButton( buttonBox );
+  setupButtons( buttonBox );
 
   if ( widgetMode() != QgsProviderRegistry::WidgetMode::None )
   {
@@ -353,7 +353,7 @@ void QgsOracleSourceSelect::on_mTablesTreeView_doubleClicked( const QModelIndex 
   QgsSettings settings;
   if ( settings.value( QStringLiteral( "qgis/addOracleDC" ), false ).toBool() )
   {
-    addClicked();
+    addButtonClicked();
   }
   else
   {
@@ -464,7 +464,7 @@ void QgsOracleSourceSelect::populateConnectionList()
 }
 
 // Slot for performing action when the Add button is clicked
-void QgsOracleSourceSelect::addClicked()
+void QgsOracleSourceSelect::addButtonClicked()
 {
   mSelectedTables.clear();
 

@@ -103,7 +103,7 @@ class QgsOracleSourceSelect : public QgsAbstractDataSourceWidget, private Ui::Qg
 
   public slots:
     //! Determines the tables the user selected and closes the dialog
-    void addClicked() override;
+    void addButtonClicked() override;
     void buildQuery();
 
     /** Connects to the database using the stored connection parameters.
