@@ -6,8 +6,6 @@
 #include "terraingenerator.h"
 #include "utils.h"
 
-#include <Qt3DExtras/QPhongMaterial>
-#include <Qt3DRender/QGeometryRenderer>
 #include <Qt3DCore/QTransform>
 
 #include "qgsvectorlayer.h"
@@ -18,19 +16,80 @@
 PolygonEntity::PolygonEntity( const Map3D &map, QgsVectorLayer *layer, const Polygon3DSymbol &symbol, Qt3DCore::QNode *parent )
   : Qt3DCore::QEntity( parent )
 {
-  QgsPointXY origin( map.originX, map.originY );
+  addEntityForSelectedPolygons( map, layer, symbol );
+  addEntityForNotSelectedPolygons( map, layer, symbol );
+}
 
+void PolygonEntity::addEntityForSelectedPolygons( const Map3D &map, QgsVectorLayer *layer, const Polygon3DSymbol &symbol )
+{
+  // build the default material
+  Qt3DExtras::QPhongMaterial *mat = material( symbol );
+
+  // update the material with selection colors
+  mat->setDiffuse( map.selectionColor() );
+  mat->setAmbient( map.selectionColor().darker() );
+
+  // build a transform function
+  Qt3DCore::QTransform *tform = new Qt3DCore::QTransform;
+  tform->setTranslation( QVector3D( 0, 0, 0 ) );
+
+  // build the feature request to select features
+  QgsFeatureRequest req;
+  req.setDestinationCrs( map.crs );
+  req.setFilterFids( layer->selectedFeatureIds() );
+
+  // build the entity
+  PolygonEntityNode *entity = new PolygonEntityNode( map, layer, symbol, req );
+  entity->addComponent( mat );
+  entity->addComponent( tform );
+  entity->setParent( this );
+}
+
+void PolygonEntity::addEntityForNotSelectedPolygons( const Map3D &map, QgsVectorLayer *layer, const Polygon3DSymbol &symbol )
+{
+  // build the default material
+  Qt3DExtras::QPhongMaterial *mat = material( symbol );
+
+  // build a transform function
+  Qt3DCore::QTransform *tform = new Qt3DCore::QTransform;
+  tform->setTranslation( QVector3D( 0, 0, 0 ) );
+
+  // build the feature request to select features
+  QgsFeatureRequest req;
+  req.setDestinationCrs( map.crs );
+
+  QgsFeatureIds notSelected = layer->allFeatureIds();
+  notSelected.subtract( layer->selectedFeatureIds() );
+  req.setFilterFids( notSelected );
+
+  // build the entity
+  PolygonEntityNode *entity = new PolygonEntityNode( map, layer, symbol, req );
+  entity->addComponent( mat );
+  entity->addComponent( tform );
+  entity->setParent( this );
+}
+
+Qt3DExtras::QPhongMaterial *PolygonEntity::material( const Polygon3DSymbol &symbol ) const
+{
   Qt3DExtras::QPhongMaterial *material = new Qt3DExtras::QPhongMaterial;
   material->setAmbient( symbol.material.ambient() );
   material->setDiffuse( symbol.material.diffuse() );
   material->setSpecular( symbol.material.specular() );
   material->setShininess( symbol.material.shininess() );
-  addComponent( material );
+  return material;
+}
 
+PolygonEntityNode::PolygonEntityNode( const Map3D &map, QgsVectorLayer *layer, const Polygon3DSymbol &symbol, const QgsFeatureRequest &req, Qt3DCore::QNode *parent )
+  : Qt3DCore::QEntity( parent )
+{
+  addComponent( renderer( map, symbol, layer, req ) );
+}
+
+Qt3DRender::QGeometryRenderer *PolygonEntityNode::renderer( const Map3D &map, const Polygon3DSymbol &symbol, const QgsVectorLayer *layer, const QgsFeatureRequest &request )
+{
+  QgsPointXY origin( map.originX, map.originY );
   QList<QgsPolygonV2 *> polygons;
   QgsFeature f;
-  QgsFeatureRequest request;
-  request.setDestinationCrs( map.crs );
   QgsFeatureIterator fi = layer->getFeatures( request );
   while ( fi.nextFeature( f ) )
   {
@@ -62,14 +121,11 @@ PolygonEntity::PolygonEntity( const Map3D &map, QgsVectorLayer *layer, const Pol
       qDebug() << "not a polygon";
   }
 
-  geometry = new PolygonGeometry;
-  geometry->setPolygons( polygons, origin, symbol.extrusionHeight );
+  mGeometry = new PolygonGeometry;
+  mGeometry->setPolygons( polygons, origin, symbol.extrusionHeight );
 
   Qt3DRender::QGeometryRenderer *renderer = new Qt3DRender::QGeometryRenderer;
-  renderer->setGeometry( geometry );
-  addComponent( renderer );
+  renderer->setGeometry( mGeometry );
 
-  Qt3DCore::QTransform *tform = new Qt3DCore::QTransform;
-  tform->setTranslation( QVector3D( 0, 0, 0 ) );
-  addComponent( tform );
+  return renderer;
 }
