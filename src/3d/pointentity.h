@@ -18,11 +18,20 @@ class PointEntity : public Qt3DCore::QEntity
   public:
     PointEntity( const Map3D &map, QgsVectorLayer *layer, const Point3DSymbol &symbol, Qt3DCore::QNode *parent = nullptr );
 
-    PointEntity( const Map3D &map, QgsVectorLayer *layer, const Point3DSymbol &symbol, bool sel, Qt3DCore::QNode *parent = nullptr );
+  private:
+    void addEntityForSelectedPoints( const Map3D &map, QgsVectorLayer *layer, const Point3DSymbol &symbol );
+    void addEntityForNotSelectedPoints( const Map3D &map, QgsVectorLayer *layer, const Point3DSymbol &symbol );
+
+    Qt3DRender::QMaterial *material( const Point3DSymbol &symbol ) const;
+};
+
+class PointEntityNode : public Qt3DCore::QEntity
+{
+  public:
+    PointEntityNode( const Map3D &map, QgsVectorLayer *layer, const Point3DSymbol &symbol, const QgsFeatureRequest &req, Qt3DCore::QNode *parent = nullptr );
 
   private:
     Qt3DRender::QGeometryRenderer *renderer( const Point3DSymbol &symbol, const QList<QVector3D> &positions ) const;
-    Qt3DRender::QMaterial *material( const Map3D &map, const Point3DSymbol &symbol, bool sel = false ) const;
     QList<QVector3D> positions( const Map3D &map, const QgsVectorLayer *layer, const QgsFeatureRequest &req ) const;
 };
 

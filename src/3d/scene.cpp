@@ -72,10 +72,8 @@ Scene::Scene( const Map3D &map, Qt3DExtras::QForwardRenderer *defaultFrameGraph,
 
   Q_FOREACH ( const QgsAbstract3DRenderer *renderer, map.renderers )
   {
-    QList<Qt3DCore::QEntity *> entities = renderer->createEntities( map );
-
-    Q_FOREACH ( Qt3DCore::QEntity *entity, entities )
-      entity->setParent( this );
+    Qt3DCore::QEntity *newEntity = renderer->createEntity( map );
+    newEntity->setParent( this );
   }
 
   // listen to changes of layers in order to add/remove 3D renderer entities
@@ -282,13 +280,9 @@ void Scene::addLayerEntity( QgsMapLayer *layer )
   QgsAbstract3DRenderer *renderer = layer->renderer3D();
   if ( renderer )
   {
-    QList<Qt3DCore::QEntity *> entities = renderer->createEntities( mMap );
-
-    Q_FOREACH ( Qt3DCore::QEntity *entity, entities )
-    {
-      entity->setParent( this );
-      mLayerEntities.insert( layer, entity );
-    }
+    Qt3DCore::QEntity *newEntity = renderer->createEntity( mMap );
+    newEntity->setParent( this );
+    mLayerEntities.insert( layer, newEntity );
   }
 
   connect( layer, &QgsMapLayer::renderer3DChanged, this, &Scene::onLayerRenderer3DChanged );
@@ -302,8 +296,8 @@ void Scene::addLayerEntity( QgsMapLayer *layer )
 
 void Scene::removeLayerEntity( QgsMapLayer *layer )
 {
-  Qt3DCore::QEntity *entity;
-  while ( ( entity = mLayerEntities.take( layer ) ) )
+  Qt3DCore::QEntity *entity = mLayerEntities.take( layer );
+  if ( entity )
     entity->deleteLater();
 
   disconnect( layer, &QgsMapLayer::renderer3DChanged, this, &Scene::onLayerRenderer3DChanged );
