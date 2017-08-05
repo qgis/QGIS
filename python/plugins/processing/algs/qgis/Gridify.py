@@ -83,7 +83,7 @@ class Gridify(QgisFeatureBasedAlgorithm):
                 points = self._gridify([geom.asPoint()], self.h_spacing, self.v_spacing)
                 newGeom = QgsGeometry.fromPoint(points[0])
             elif geomType == QgsWkbTypes.MultiPoint:
-                points = self._gridify(geom.aMultiPoint(), self.h_spacing, self.v_spacing)
+                points = self._gridify(geom.asMultiPoint(), self.h_spacing, self.v_spacing)
                 newGeom = QgsGeometry.fromMultiPoint(points)
             elif geomType == QgsWkbTypes.LineString:
                 points = self._gridify(geom.asPolyline(), self.h_spacing, self.v_spacing)
