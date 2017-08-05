@@ -465,7 +465,7 @@ goto end
 :usage
 echo usage: %0 version package packagename arch [sha [site]]
 echo sample: %0 2.0.1 3 qgis x86 f802808
-exit
+exit /b 1
 
 :error
 echo BUILD ERROR %ERRORLEVEL%: %DATE% %TIME%
