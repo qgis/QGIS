@@ -16,9 +16,6 @@
 *                                                                         *
 ***************************************************************************
 """
-from __future__ import print_function
-from builtins import str
-from builtins import range
 
 __author__ = 'Arnaud Morvan'
 __date__ = 'October 2014'

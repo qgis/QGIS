@@ -11,9 +11,7 @@ the Free Software Foundation; either version 2 of the License, or
 (at your option) any later version.
 """
 
-from future import standard_library
 import collections
-standard_library.install_aliases()
 
 __author__ = 'Larry Shaffer'
 __date__ = '07/09/2013'
