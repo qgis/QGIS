@@ -17,23 +17,21 @@
  ***************************************************************************/
 #include <iostream>
 #include <QLocale>
-#include <QSettings>
 #include <QTranslator>
 #include <QLibraryInfo>
+#include <qgssettings.h>
 
 #include "qgshelpviewer.h"
 #include "qgsapplication.h"
 #include "qgslogger.h"
-#include "qgsconfig.h"
 
 int main( int argc, char **argv )
 {
-  QgsApplication a( argc, argv, true );
+  QCoreApplication::setOrganizationName( QgsApplication::QGIS_ORGANIZATION_NAME );
+  QCoreApplication::setOrganizationDomain( QgsApplication::QGIS_ORGANIZATION_DOMAIN );
+  QCoreApplication::setApplicationName( QgsApplication::QGIS_APPLICATION_NAME );
 
-  // Set up the QSettings environment must be done after qapp is created
-  QCoreApplication::setOrganizationName( QStringLiteral( "QGIS" ) );
-  QCoreApplication::setOrganizationDomain( QStringLiteral( "qgis.org" ) );
-  QCoreApplication::setApplicationName( QStringLiteral( "QGIS3" ) );
+  QgsApplication a( argc, argv, true );
 
   QString myTranslationCode = QLatin1String( "" );
 
@@ -59,7 +57,7 @@ int main( int argc, char **argv )
   {
     myTranslationCode = QLocale::system().name();
 
-    QSettings settings;
+    QgsSettings settings;
     if ( settings.value( QStringLiteral( "locale/overrideFlag" ), false ).toBool() )
     {
       myTranslationCode = settings.value( QStringLiteral( "locale/userLocale" ), "en_US" ).toString();
