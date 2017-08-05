@@ -70,61 +70,43 @@ Returns the QgsProject singleton instance
 
     void setFileName( const QString &name );
 %Docstring
- Sets the file name associated with the project. This is the file which contains the project's XML
- representation.
- \param name project file name
-.. seealso:: fileName()
+ \copydoc fileName
 %End
 
     QString fileName() const;
 %Docstring
- Returns the project's file name. This is the file which contains the project's XML
- representation.
-.. seealso:: setFileName()
-.. seealso:: fileInfo()
+ \copydoc fileName
  :rtype: str
 %End
 
     QFileInfo fileInfo() const;
 %Docstring
  Returns QFileInfo object for the project's associated file.
-.. seealso:: fileName()
+.. seealso:: fileName
 .. versionadded:: 2.9
  :rtype: QFileInfo
 %End
 
     QgsCoordinateReferenceSystem crs() const;
 %Docstring
- Returns the project's native coordinate reference system.
-.. versionadded:: 3.0
-.. seealso:: setCrs()
-.. seealso:: ellipsoid()
+ \copydoc crs
  :rtype: QgsCoordinateReferenceSystem
 %End
 
     void setCrs( const QgsCoordinateReferenceSystem &crs );
 %Docstring
- Sets the project's native coordinate reference system.
-.. versionadded:: 3.0
-.. seealso:: crs()
-.. seealso:: setEllipsoid()
+ \copydoc crs
 %End
 
     QString ellipsoid() const;
 %Docstring
- Returns a proj string representing the project's ellipsoid setting, e.g., "WGS84".
-.. seealso:: setEllipsoid()
-.. seealso:: crs()
-.. versionadded:: 3.0
+ \copydoc ellipsoid
  :rtype: str
 %End
 
     void setEllipsoid( const QString &ellipsoid );
 %Docstring
- Sets the project's ellipsoid from a proj string representation, e.g., "WGS84".
-.. seealso:: ellipsoid()
-.. seealso:: setCrs()
-.. versionadded:: 3.0
+ \copydoc ellipsoid
 %End
 
     void clear();
@@ -143,7 +125,7 @@ Returns the QgsProject singleton instance
 
     bool read();
 %Docstring
- Reads the project from its currently associated file (see fileName() ).
+.. seealso:: fileName ).
  :return: true if project file has been read successfully
  :rtype: bool
 %End
@@ -417,6 +399,7 @@ Convenience function to query topological editing status
 
     QgsRelationManager *relationManager() const;
 %Docstring
+ \copydoc relationManager
  :rtype: QgsRelationManager
 %End
 
@@ -445,11 +428,7 @@ Convenience function to query topological editing status
 
     QgsMapThemeCollection *mapThemeCollection();
 %Docstring
- Returns pointer to the project's map theme collection.
-.. versionadded:: 2.12
-.. note::
-
-   renamed in QGIS 3.0, formerly QgsVisibilityPresetCollection
+ \copydoc mapThemeCollection
  :rtype: QgsMapThemeCollection
 %End
 
@@ -463,17 +442,17 @@ Convenience function to query topological editing status
 
     void setNonIdentifiableLayers( const QList<QgsMapLayer *> &layers );
 %Docstring
- Set a list of layers which should not be taken into account on map identification
+ \copydoc nonIdentifiableLayers
 %End
 
     void setNonIdentifiableLayers( const QStringList &layerIds );
 %Docstring
- Set a list of layers which should not be taken into account on map identification
+ \copydoc nonIdentifiableLayers
 %End
 
     QStringList nonIdentifiableLayers() const;
 %Docstring
- Get the list of layers which currently should not be taken into account on map identification
+ \copydoc nonIdentifiableLayers
  :rtype: list of str
 %End
 
@@ -520,25 +499,19 @@ Convenience function to query topological editing status
 
     QgsSnappingConfig snappingConfig() const;
 %Docstring
- The snapping configuration for this project.
-
-.. versionadded:: 3.0
+ \copydoc snappingConfig
  :rtype: QgsSnappingConfig
 %End
 
     QList<QgsVectorLayer *> avoidIntersectionsLayers() const;
 %Docstring
- A list of layers with which intersections should be avoided.
-
-.. versionadded:: 3.0
+ \copydoc avoidIntersectionsLayers()
  :rtype: list of QgsVectorLayer
 %End
 
     void setAvoidIntersectionsLayers( const QList<QgsVectorLayer *> &layers );
 %Docstring
- A list of layers with which intersections should be avoided.
-
-.. versionadded:: 3.0
+ \copydoc avoidIntersectionsLayers()
 %End
 
     QVariantMap customVariables() const;
@@ -830,12 +803,12 @@ emitted when an old project file is read.
 
     void nonIdentifiableLayersChanged( QStringList nonIdentifiableLayers );
 %Docstring
-Emitted when the list of layer which are excluded from map identification changes
+ \copydoc nonIdentifiableLayers
 %End
 
     void fileNameChanged();
 %Docstring
-Emitted when the file name of the project changes
+ \copydoc fileName
 %End
 
     void homePathChanged();
@@ -845,7 +818,7 @@ Emitted when the home path of the project changes
 
     void snappingConfigChanged( const QgsSnappingConfig &config );
 %Docstring
-emitted whenever the configuration for snapping has changed
+ \copydoc snappingConfig
 %End
 
     void customVariablesChanged();
@@ -856,18 +829,12 @@ emitted whenever the configuration for snapping has changed
 
     void crsChanged();
 %Docstring
- Emitted when the CRS of the project has changed.
-
-.. versionadded:: 3.0
+ \copydoc crs
 %End
 
     void ellipsoidChanged( const QString &ellipsoid );
 %Docstring
- Emitted when the project ``ellipsoid`` is changed.
-
-.. versionadded:: 3.0
-.. seealso:: setEllipsoid()
-.. seealso:: ellipsoid()
+ \copydoc ellipsoid
 %End
 
     void transactionGroupsChanged();
@@ -887,13 +854,14 @@ emitted whenever the configuration for snapping has changed
 
     void avoidIntersectionsLayersChanged();
 %Docstring
- Emitted whenever avoidIntersectionsLayers has changed.
-
-.. versionadded:: 3.0
+ \copydoc avoidIntersectionsLayers()
 %End
 
     void mapThemeCollectionChanged();
 %Docstring
+ \copydoc mapThemeCollection
+
+ \note
  Emitted when the map theme collection changes.
  This only happens when the map theme collection is reset.
  Any pointer previously received from mapThemeCollection()
@@ -901,8 +869,6 @@ emitted whenever the configuration for snapping has changed
  You must still connect to signals from the map theme collection
  if you want to be notified about new map themes being added and
  map themes being removed.
-
-.. versionadded:: 3.0
 %End
 
     void labelingEngineSettingsChanged();
@@ -1014,9 +980,7 @@ emitted whenever the configuration for snapping has changed
 
     void setSnappingConfig( const QgsSnappingConfig &snappingConfig );
 %Docstring
- The snapping configuration for this project.
-
-.. versionadded:: 3.0
+ \copydoc snappingConfig
 %End
 
     void setDirty( bool b = true );
