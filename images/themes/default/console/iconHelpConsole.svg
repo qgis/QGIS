@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="16"
+   height="16"
+   viewBox="0 0 4.2333332 4.2333335"
+   version="1.1"
+   id="svg5860"
+   inkscape:version="0.92.1 unknown"
+   sodipodi:docname="iconHelpConsole.svg">
+  <defs
+     id="defs5854">
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient5850"
+       id="linearGradient5852"
+       x1="2.0938995"
+       y1="2.1347175"
+       x2="0.027482806"
+       y2="0.076919183"
+       gradientUnits="userSpaceOnUse" />
+    <linearGradient
+       inkscape:collect="always"
+       id="linearGradient5850">
+      <stop
+         style="stop-color:#6d97c4;stop-opacity:1;"
+         offset="0"
+         id="stop5846" />
+      <stop
+         style="stop-color:#9db9d6;stop-opacity:1"
+         offset="1"
+         id="stop5848" />
+    </linearGradient>
+  </defs>
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="37.238139"
+     inkscape:cx="7.9325354"
+     inkscape:cy="6.6594124"
+     inkscape:document-units="mm"
+     inkscape:current-layer="svg5860"
+     showgrid="true"
+     units="px"
+     inkscape:window-width="1868"
+     inkscape:window-height="1059"
+     inkscape:window-x="52"
+     inkscape:window-y="21"
+     inkscape:window-maximized="1">
+    <inkscape:grid
+       type="xygrid"
+       id="grid6405" />
+  </sodipodi:namedview>
+  <metadata
+     id="metadata5857">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <circle
+     style="display:inline;opacity:1;fill:url(#linearGradient5852);fill-opacity:1;stroke:none;stroke-width:0.26458332;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+     id="path5729-6-7-3"
+     cx="2.1166666"
+     cy="2.1166666"
+     r="2.1166673" />
+  <path
+     inkscape:connector-curvature="0"
+     style="fill:#ffffff;stroke-width:0.26458332"
+     d="m 2.028756,3.6254017 c -0.070874,0 -0.1315259,-0.024101 -0.1819542,-0.0723 -0.049067,-0.0495 -0.0736,-0.1080601 -0.073599,-0.1757699 -1.1e-6,-0.069 0.024532,-0.1275903 0.073599,-0.1757701 0.050428,-0.0482 0.1110798,-0.0723 0.1819542,-0.0723 0.070872,0 0.1315236,0.024101 0.181954,0.0723 0.051791,0.0482 0.077687,0.1067697 0.077688,0.1757701 -1.4e-6,0.0664 -0.025215,0.1243497 -0.075644,0.1738199 -0.05043,0.0495 -0.1117634,0.0742 -0.1839984,0.0742 M 2.1207546,2.6214916 V 2.7757815 H 1.9531122 V 2.5004016 c -1.1e-6,-0.10155 0.013629,-0.18749 0.040888,-0.2578 0.027258,-0.0703 0.082457,-0.15624 0.1655988,-0.2578 0.00954,-0.013 0.023852,-0.0306 0.042933,-0.0527 0.1935377,-0.23566 0.2903072,-0.44985 0.2903088,-0.64255 -1.6e-6,-0.16926 -0.040209,-0.29554998 -0.1206211,-0.37887998 -0.079052,-0.0833 -0.1989924,-0.12499 -0.3598194,-0.125 -0.098133,10e-6 -0.1853623,0.0221 -0.2616866,0.0664 -0.076326,0.0443 -0.1144889,0.0924 -0.1144881,0.14452 -8e-7,0.0156 0.031347,0.0508 0.094044,0.10545998 0.062695,0.0547 0.094043,0.11979 0.094044,0.19531 -8e-7,0.069 -0.02249,0.12499 -0.067466,0.16796 -0.043615,0.0417 -0.1022218,0.0625 -0.1758204,0.0625 -0.080415,1e-5 -0.1451552,-0.028 -0.1942205,-0.084 -0.049067,-0.056 -0.0736,-0.1302 -0.0736,-0.22264 -5e-7,-0.17187 0.077006,-0.31703998 0.2310203,-0.43552998 0.1540126,-0.11848 0.3475516,-0.17772 0.5806175,-0.17772 0.2344262,0 0.4252392,0.0632 0.5724397,0.18944 0.1485596,0.1263 0.2228403,0.28904998 0.2228424,0.48825998 -2.1e-6,0.24478 -0.1615117,0.50388 -0.4845292,0.7773 -0.04089,0.0339 -0.071556,0.0599 -0.091999,0.0781 -0.088593,0.0768 -0.1478815,0.14973 -0.1778654,0.21873 -0.029986,0.0677 -0.044978,0.15495 -0.044977,0.26171"
+     id="path8-3" />
+</svg>
