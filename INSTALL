@@ -1,10 +1,10 @@
 QGIS
 Building QGIS from source - step by step
-Friday August 04, 2017
+Saturday August 05, 2017
 
 
-Last Updated: Friday August 04, 2017
-Last Change : Friday August 04, 2017
+Last Updated: Saturday August 05, 2017
+Last Change : Saturday August 05, 2017
 
 
   1. Introduction
@@ -185,6 +185,10 @@ Now update your local sources database:
   | sid | ``apt-get install bison ca-certificates cmake dh-python doxygen flex gdal-bin git graphviz grass-dev libexpat1-dev libfcgi-dev libgdal-dev libgeos-dev libgsl-dev libosgearth-dev libpq-dev libproj-dev libqca-qt5-2-dev libqca-qt5-2-plugins libqt5opengl5-dev libqt5scintilla2-dev libqt5sql5-sqlite libqt5svg5-dev libqt5webkit5-dev libqt5xmlpatterns5-dev libqwt-qt5-dev libspatialindex-dev libspatialite-dev libsqlite3-dev libsqlite3-mod-spatialite libzip-dev lighttpd locales ninja-build pkg-config poppler-utils pyqt5-dev pyqt5-dev-tools pyqt5.qsci-dev python3-all-dev python3-dev python3-future python3-gdal python3-mock python3-nose2 python3-psycopg2 python3-pyqt5 python3-pyqt5.qsci python3-pyqt5.qtsql python3-pyqt5.qtsvg python3-sip python3-sip-dev python3-termcolor python3-yaml qt5keychain-dev qtbase5-dev qtpositioning5-dev qtscript5-dev qttools5-dev qttools5-dev-tools spawn-fcgi txt2tags xauth xfonts-100dpi xfonts-75dpi xfonts-base xfonts-scalable xvfb cmake-curses-gui expect`` |
 
 (extracted from the control.in file in debian/)
+
+See http://qgis.org/en/site/forusers/alldownloads.html#debian-ubuntu for
+currently supported distributions (plain xenial's GDAL for instance is to old
+and we build with GDAL2 from ubuntugis).
 
 
   3.4. Setup ccache (Optional)
@@ -473,6 +477,9 @@ and from OSGeo4W (select Advanced Installation):
 - qwt-devel-qt5
 - sip-qt5
 - spatialite
+- oci
+- qtkeychain
+- libzip
 
 This will also select packages the above packages depend on.
 
@@ -499,19 +506,25 @@ variables create the following batch file (assuming the above packages were
 installed in the default locations):
 
   @echo off
-  set VS90COMNTOOLS=%PROGRAMFILES%\Microsoft Visual Studio 9.0\Common7\Tools\
-  call "%PROGRAMFILES%\Microsoft Visual Studio 9.0\VC\vcvarsall.bat" x86
-  
-  set INCLUDE=%INCLUDE%;%PROGRAMFILES%\Microsoft SDKs\Windows\v7.1\include
-  set LIB=%LIB%;%PROGRAMFILES%\Microsoft SDKs\Windows\v7.1\lib
-  
   set OSGEO4W_ROOT=C:\OSGeo4W
   call "%OSGEO4W_ROOT%\bin\o4w_env.bat"
-  path %PATH%;%PROGRAMFILES%\CMake\bin;c:\cygwin\bin
+  call "%OSGEO4W_ROOT%\bin\py3_env.bat"
+  call "%OSGEO4W_ROOT%\bin\qt5_env.bat"
   
-  @set GRASS_PREFIX=c:/OSGeo4W/apps/grass/grass-6.4.4
+  set O4W_ROOT=%OSGEO4W_ROOT:\=/%
+  set LIB_DIR=%O4W_ROOT%
+  
+  call "C:\Program Files\Microsoft Visual Studio 14.0\VC\vcvarsall.bat" amd64
+  path %path%;C:\Program Files\Microsoft Visual Studio 14.0\VC\bin
+  
+  path %PATH%;C:\Program Files\CMake\bin;c:\cygwin\bin
+  
+  @set GRASS_PREFIX=c:/OSGeo4W/apps/grass/grass-7.2.1
   @set INCLUDE=%INCLUDE%;%OSGEO4W_ROOT%\include
   @set LIB=%LIB%;%OSGEO4W_ROOT%\lib;%OSGEO4W_ROOT%\lib
+  
+  set LIB=%LIB%;%OSGEO4W_ROOT%\apps\Qt5\lib;%OSGEO4W_ROOT%\lib
+  set INCLUDE=%INCLUDE%;%OSGEO4W_ROOT%\apps\Qt5\include;%OSGEO4W_ROOT%\include
   
   @cmd
 

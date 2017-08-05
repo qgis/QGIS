@@ -52,6 +52,10 @@ sudo apt-get update
 
 (extracted from the control.in file in ``debian/``)
 
+See http://qgis.org/en/site/forusers/alldownloads.html#debian-ubuntu for
+currently supported distributions (plain xenial's GDAL for instance is to old
+and we build with GDAL2 from ubuntugis).
+
 
 == Setup ccache (Optional) ==
 
