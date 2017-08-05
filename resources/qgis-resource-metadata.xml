@@ -6,6 +6,9 @@
     <type>dataset</type>
     <title>roads</title>
     <abstract>my roads</abstract>
+    <keywords vocabulary="gmd:topicCategory">
+        <keyword>natural</keyword>
+    </keywords>
     <keywords vocabulary="GEMET">
         <keyword>kw1</keyword>
         <keyword>kw2</keyword>

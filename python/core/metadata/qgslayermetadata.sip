@@ -492,7 +492,7 @@ class QgsLayerMetadata
  CRS which is actually used to display and manipulate the layer within QGIS.
  This may be the case when a layer has an incorrect CRS within its metadata
  and a user has manually overridden the layer's CRS within QGIS.
-.. seealso:: setCrs()
+.. seealso:: crs()
 %End
 
     KeywordMap keywords() const;
@@ -535,6 +535,15 @@ class QgsLayerMetadata
 .. seealso:: setKeywords()
 %End
 
+    bool removeKeywords( const QString &vocabulary );
+%Docstring
+ Remove a vocabulary from the list.
+
+.. seealso:: setKeywords()
+.. seealso:: addKeywords()
+ :rtype: bool
+%End
+
     QStringList keywordVocabularies() const;
 %Docstring
  Returns a list of keyword vocabularies contained in the metadata.
@@ -557,6 +566,23 @@ class QgsLayerMetadata
 
 .. seealso:: keywordVocabularies()
  :rtype: list of str
+%End
+
+    QStringList categories() const;
+%Docstring
+ Returns categories of the resource.
+ Categories are stored using a special vocabulary 'gmd:topicCategory' in keywords.
+
+.. seealso:: keywords()
+ :rtype: list of str
+%End
+
+    void setCategories( const QStringList &categories );
+%Docstring
+ Sets categories of the resource.
+ Categories are stored using a special vocabulary 'gmd:topicCategory' in keywords.
+
+.. seealso:: keywords()
 %End
 
     QgsLayerMetadata::ContactList contacts() const;
