@@ -44,8 +44,8 @@ QgsFileWidget::QgsFileWidget( QWidget *parent )
   setBackgroundRole( QPalette::Window );
   setAutoFillBackground( true );
 
-  QGridLayout *layout = new QGridLayout();
-  layout->setMargin( 0 );
+  mLayout = new QHBoxLayout();
+  mLayout->setMargin( 0 );
 
   // If displaying a hyperlink, use a QLabel
   mLinkLabel = new QLabel( this );
@@ -56,20 +56,19 @@ QgsFileWidget::QgsFileWidget( QWidget *parent )
   mLinkLabel->setEnabled( true );
   mLinkLabel->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Preferred );
   mLinkLabel->setTextFormat( Qt::RichText );
-  layout->addWidget( mLinkLabel, 0, 0 );
   mLinkLabel->hide(); // do not show by default
 
   // otherwise, use the traditional QLineEdit
   mLineEdit = new QgsFilterLineEdit( this );
   connect( mLineEdit, &QLineEdit::textChanged, this, &QgsFileWidget::textEdited );
-  layout->addWidget( mLineEdit, 1, 0 );
+  mLayout->addWidget( mLineEdit );
 
   mFileWidgetButton = new QToolButton( this );
   mFileWidgetButton->setText( QStringLiteral( "…" ) );
   connect( mFileWidgetButton, &QAbstractButton::clicked, this, &QgsFileWidget::openFileDialog );
-  layout->addWidget( mFileWidgetButton, 0, 1, 2, 1 );
+  mLayout->addWidget( mFileWidgetButton );
 
-  setLayout( layout );
+  setLayout( mLayout );
 }
 
 QString QgsFileWidget::filePath()
@@ -142,6 +141,16 @@ void QgsFileWidget::setUseLink( bool useLink )
   mUseLink = useLink;
   mLinkLabel->setVisible( mUseLink );
   mLineEdit->setVisible( !mUseLink );
+  if ( mUseLink )
+  {
+    mLayout->removeWidget( mLineEdit );
+    mLayout->insertWidget( 0, mLinkLabel );
+  }
+  else
+  {
+    mLayout->removeWidget( mLinkLabel );
+    mLayout->insertWidget( 0, mLineEdit );
+  }
 }
 
 bool QgsFileWidget::fullUrl() const

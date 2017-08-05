@@ -159,6 +159,7 @@ class GUI_EXPORT QgsFileWidget : public QWidget
     QLabel *mLinkLabel = nullptr;
     QgsFilterLineEdit *mLineEdit = nullptr;
     QToolButton *mFileWidgetButton = nullptr;
+    QHBoxLayout *mLayout = nullptr;
 
     //! returns a HTML code with a link to the given file path
     QString toUrl( const QString &path ) const;
