@@ -1,4 +1,5 @@
 #include "abstract3dsymbol.h"
+#include "qgsreadwritecontext.h"
 
 #include "qgsxmlutils.h"
 
@@ -70,8 +71,11 @@ void Point3DSymbol::writeXml( QDomElement &elem, const QgsReadWriteContext &cont
   material.writeXml( elemMaterial );
   elem.appendChild( elemMaterial );
 
+  QVariantMap shapePropertiesCopy(shapeProperties);
+  shapePropertiesCopy["model"] = QVariant(context.pathResolver().writePath(shapePropertiesCopy["model"].toString()));
+
   QDomElement elemShapeProperties = doc.createElement( "shape-properties" );
-  elemShapeProperties.appendChild( QgsXmlUtils::writeVariant( shapeProperties, doc ) );
+  elemShapeProperties.appendChild( QgsXmlUtils::writeVariant( shapePropertiesCopy, doc ) );
   elem.appendChild( elemShapeProperties );
 
   QDomElement elemTransform = doc.createElement( "transform" );
@@ -88,6 +92,7 @@ void Point3DSymbol::readXml( const QDomElement &elem, const QgsReadWriteContext 
 
   QDomElement elemShapeProperties = elem.firstChildElement( "shape-properties" );
   shapeProperties = QgsXmlUtils::readVariant( elemShapeProperties.firstChildElement() ).toMap();
+  shapeProperties["model"] = QVariant(context.pathResolver().readPath(shapeProperties["model"].toString()));
 
   QDomElement elemTransform = elem.firstChildElement( "transform" );
   transform = Utils::stringToMatrix4x4( elemTransform.attribute( "matrix" ) );

@@ -13,6 +13,11 @@
 #include <Qt3DExtras/QPlaneGeometry>
 #include <Qt3DExtras/QSphereGeometry>
 #include <Qt3DExtras/QTorusGeometry>
+#include <Qt3DExtras/QPhongMaterial>
+#include <Qt3DRender/QSceneLoader>
+
+#include <Qt3DRender/QMesh>
+
 #if QT_VERSION >= 0x050900
 #include <Qt3DExtras/QExtrudedTextGeometry>
 #endif
@@ -26,17 +31,24 @@
 
 #include "qgsvectorlayer.h"
 #include "qgspoint.h"
-
+#include "utils.h"
 
 
 PointEntity::PointEntity( const Map3D &map, QgsVectorLayer *layer, const Point3DSymbol &symbol, Qt3DCore::QNode *parent )
   : Qt3DCore::QEntity( parent )
 {
-  addEntityForSelectedPoints( map, layer, symbol );
-  addEntityForNotSelectedPoints( map, layer, symbol );
+  if ( symbol.shapeProperties["shape"].toString() == "model" ) {
+      Model3DPointEntityFactory::addEntitiesForSelectedPoints(map, layer, symbol, this);
+      Model3DPointEntityFactory::addEntitiesForNotSelectedPoints(map, layer, symbol, this);
+  } else {
+      InstancedPointEntityFactory::addEntityForNotSelectedPoints(map, layer, symbol, this);
+      InstancedPointEntityFactory::addEntityForSelectedPoints(map, layer, symbol, this);
+  }
 }
 
-Qt3DRender::QMaterial *PointEntity::material( const Point3DSymbol &symbol ) const
+//* INSTANCED RENDERING *//
+
+Qt3DRender::QMaterial *InstancedPointEntityFactory::material( const Point3DSymbol &symbol )
 {
   Qt3DRender::QFilterKey *filterKey = new Qt3DRender::QFilterKey;
   filterKey->setName( "renderingStyle" );
@@ -105,7 +117,7 @@ Qt3DRender::QMaterial *PointEntity::material( const Point3DSymbol &symbol ) cons
   return material;
 }
 
-void PointEntity::addEntityForSelectedPoints( const Map3D &map, QgsVectorLayer *layer, const Point3DSymbol &symbol )
+void InstancedPointEntityFactory::addEntityForSelectedPoints( const Map3D &map, QgsVectorLayer *layer, const Point3DSymbol &symbol, PointEntity* parent )
 {
   // build the default material
   Qt3DRender::QMaterial *mat = material( symbol );
@@ -125,12 +137,12 @@ void PointEntity::addEntityForSelectedPoints( const Map3D &map, QgsVectorLayer *
   req.setFilterFids( layer->selectedFeatureIds() );
 
   // build the entity
-  PointEntityNode *entity = new PointEntityNode( map, layer, symbol, req );
+  InstancedPointEntityNode *entity = new InstancedPointEntityNode( map, layer, symbol, req );
   entity->addComponent( mat );
-  entity->setParent( this );
+  entity->setParent( parent );
 }
 
-void PointEntity::addEntityForNotSelectedPoints( const Map3D &map, QgsVectorLayer *layer, const Point3DSymbol &symbol )
+void InstancedPointEntityFactory::addEntityForNotSelectedPoints( const Map3D &map, QgsVectorLayer *layer, const Point3DSymbol &symbol, PointEntity* parent )
 {
   // build the default material
   Qt3DRender::QMaterial *mat = material( symbol );
@@ -144,19 +156,19 @@ void PointEntity::addEntityForNotSelectedPoints( const Map3D &map, QgsVectorLaye
   req.setFilterFids( notSelected );
 
   // build the entity
-  PointEntityNode *entity = new PointEntityNode( map, layer, symbol, req );
+  InstancedPointEntityNode *entity = new InstancedPointEntityNode( map, layer, symbol, req );
   entity->addComponent( mat );
-  entity->setParent( this );
+  entity->setParent( parent );
 }
 
-PointEntityNode::PointEntityNode( const Map3D &map, QgsVectorLayer *layer, const Point3DSymbol &symbol, const QgsFeatureRequest &req, Qt3DCore::QNode *parent )
+InstancedPointEntityNode::InstancedPointEntityNode( const Map3D &map, QgsVectorLayer *layer, const Point3DSymbol &symbol, const QgsFeatureRequest &req, Qt3DCore::QNode *parent )
   : Qt3DCore::QEntity( parent )
 {
-  QList<QVector3D> pos = positions( map, layer, req );
+  QList<QVector3D> pos = Utils::positions( map, layer, req );
   addComponent( renderer( symbol, pos ) );
 }
 
-Qt3DRender::QGeometryRenderer *PointEntityNode::renderer( const Point3DSymbol &symbol, const QList<QVector3D> &positions ) const
+Qt3DRender::QGeometryRenderer *InstancedPointEntityNode::renderer( const Point3DSymbol &symbol, const QList<QVector3D> &positions ) const
 {
   int count = positions.count();
 
@@ -263,28 +275,91 @@ Qt3DRender::QGeometryRenderer *PointEntityNode::renderer( const Point3DSymbol &s
   return renderer;
 }
 
-QList<QVector3D> PointEntityNode::positions( const Map3D &map, const QgsVectorLayer *layer, const QgsFeatureRequest &request ) const
+//* 3D MODEL RENDERING *//
+
+static Qt3DExtras::QPhongMaterial* phongMaterial(const Point3DSymbol &symbol) {
+    Qt3DExtras::QPhongMaterial* phong = new Qt3DExtras::QPhongMaterial;
+
+    phong->setAmbient(symbol.material.ambient());
+    phong->setDiffuse(symbol.material.diffuse());
+    phong->setSpecular(symbol.material.specular());
+    phong->setShininess(symbol.material.shininess());
+
+    return phong;
+}
+
+void Model3DPointEntityFactory::addEntitiesForSelectedPoints( const Map3D &map, QgsVectorLayer *layer, const Point3DSymbol &symbol, PointEntity* parent )
 {
-  QList<QVector3D> positions;
-  QgsFeature f;
-  QgsFeatureIterator fi = layer->getFeatures( request );
-  while ( fi.nextFeature( f ) )
-  {
-    if ( f.geometry().isNull() )
-      continue;
+  QgsFeatureRequest req;
+  req.setDestinationCrs( map.crs );
+  req.setFilterFids( layer->selectedFeatureIds() );
 
-    QgsAbstractGeometry *g = f.geometry().geometry();
-    if ( QgsWkbTypes::flatType( g->wkbType() ) == QgsWkbTypes::Point )
-    {
-      QgsPoint *pt = static_cast<QgsPoint *>( g );
-      // TODO: use Z coordinates if the point is 3D
-      float h = map.terrainGenerator()->heightAt( pt->x(), pt->y(), map ) * map.terrainVerticalScale();
-      positions.append( QVector3D( pt->x() - map.originX, h, -( pt->y() - map.originY ) ) );
-      //qDebug() << positions.last();
-    }
-    else
-      qDebug() << "not a point";
+  addMeshEntities(map, layer, req, symbol, parent, true);
+}
+
+
+
+void Model3DPointEntityFactory::addEntitiesForNotSelectedPoints( const Map3D &map, QgsVectorLayer *layer, const Point3DSymbol &symbol, PointEntity* parent )
+{
+  // build the feature request to select features
+  QgsFeatureRequest req;
+  req.setDestinationCrs( map.crs );
+  QgsFeatureIds notSelected = layer->allFeatureIds();
+  notSelected.subtract( layer->selectedFeatureIds() );
+  req.setFilterFids( notSelected );
+
+  if (symbol.shapeProperties["overwriteMaterial"].toBool()) {
+    addMeshEntities(map, layer, req, symbol, parent, false);
+  } else {
+    addSceneEntities(map, layer, req, symbol, parent);
   }
+}
 
-  return positions;
+void Model3DPointEntityFactory::addSceneEntities(const Map3D &map, QgsVectorLayer *layer, const QgsFeatureRequest &req, const Point3DSymbol &symbol, PointEntity* parent) {
+    QList<QVector3D> positions = Utils::positions( map, layer, req );
+    Q_FOREACH(const QVector3D& position, positions) {
+        // build the entity
+        Qt3DCore::QEntity *entity = new Qt3DCore::QEntity;
+
+        QUrl url = QUrl::fromLocalFile(symbol.shapeProperties["model"].toString());
+        Qt3DRender::QSceneLoader * modelLoader = new Qt3DRender::QSceneLoader;
+        modelLoader->setSource(url);
+
+        entity->addComponent( modelLoader );
+        entity->addComponent(transform(position, symbol));
+        entity->setParent( parent );
+    }
+}
+
+void Model3DPointEntityFactory::addMeshEntities(const Map3D &map, QgsVectorLayer *layer, const QgsFeatureRequest &req, const Point3DSymbol &symbol, PointEntity* parent, bool are_selected) {
+    // build the default material
+    Qt3DExtras::QPhongMaterial *mat = phongMaterial(symbol);
+
+    if (are_selected) {
+        mat->setDiffuse(map.selectionColor());
+        mat->setAmbient(map.selectionColor().darker());
+    }
+
+    // get nodes
+    QList<QVector3D> positions = Utils::positions( map, layer, req );
+    Q_FOREACH(const QVector3D& position, positions) {
+        // build the entity
+        Qt3DCore::QEntity *entity = new Qt3DCore::QEntity;
+
+        QUrl url = QUrl::fromLocalFile(symbol.shapeProperties["model"].toString());
+        Qt3DRender::QMesh * mesh = new Qt3DRender::QMesh;
+        mesh->setSource(url);
+
+        entity->addComponent( mesh );
+        entity->addComponent( mat );
+        entity->addComponent(transform(position, symbol));
+        entity->setParent( parent );
+    }
+}
+
+Qt3DCore::QTransform* Model3DPointEntityFactory::transform(const QVector3D& position, const Point3DSymbol &symbol) {
+    Qt3DCore::QTransform* tr = new Qt3DCore::QTransform;
+    tr->setMatrix(symbol.transform);
+    tr->setTranslation(position + tr->translation());
+    return tr;
 }

@@ -51,6 +51,11 @@ class _3D_EXPORT Utils
         This is used to perform object culling checks.
     */
     static bool isCullable(const AABB &bbox, const QMatrix4x4 &viewProjectionMatrix );
+
+    /*
+     * Calculates (x,y,z) position of point in the Point vector layers
+     */
+    static QList<QVector3D> positions(const Map3D &map, QgsVectorLayer *layer, const QgsFeatureRequest &req);
 };
 
 #endif // UTILS_H
