@@ -22,7 +22,6 @@
 #include "qgsbrowserdockwidget.h"
 #include "qgssettings.h"
 #include "qgsproviderregistry.h"
-#include "qgsopenvectorlayerdialog.h"
 #include "qgsabstractdatasourcewidget.h"
 #include "qgsmapcanvas.h"
 
@@ -56,25 +55,12 @@ QgsDataSourceManagerDialog::QgsDataSourceManagerDialog( QWidget *parent, QgsMapC
   connect( mBrowserWidget, &QgsBrowserDockWidget::connectionsChanged, this, &QgsDataSourceManagerDialog::connectionsChanged );
   connect( this, &QgsDataSourceManagerDialog::updateProjectHome, mBrowserWidget, &QgsBrowserDockWidget::updateProjectHome );
 
-  // VECTOR Layers (completely different interface: it's not a provider)
-  QgsOpenVectorLayerDialog *ovl = new QgsOpenVectorLayerDialog( this, Qt::Widget, QgsProviderRegistry::WidgetMode::Embedded );
-  ui->mOptionsStackedWidget->addWidget( ovl );
-  QListWidgetItem *ogrItem = new QListWidgetItem( tr( "Vector" ), ui->mOptionsListWidget );
-  ogrItem->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddOgrLayer.svg" ) ) );
-  ogrItem->setToolTip( tr( "Add Vector layer" ) );
-  connect( ovl, &QgsOpenVectorLayerDialog::addVectorLayers, this, &QgsDataSourceManagerDialog::vectorLayersAdded );
-  connect( ovl, &QgsOpenVectorLayerDialog::rejected, this, &QgsDataSourceManagerDialog::reject );
-  mPageNames.append( QStringLiteral( "ogr" ) );
-
-  // RASTER (forward to app)
-  ui->mOptionsStackedWidget->addWidget( new QWidget() );
-  QListWidgetItem *rasterItem = new QListWidgetItem( tr( "Raster" ), ui->mOptionsListWidget );
-  rasterItem->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddRasterLayer.svg" ) ) );
-  rasterItem->setToolTip( tr( "Open a GDAL Supported Raster Data Source" ) );
-  mPageNames.append( QStringLiteral( "raster" ) );
-
   // Add data provider dialogs
   QWidget *dlg = nullptr;
+
+  addVectorProviderDialog( QStringLiteral( "ogr" ), tr( "Vector" ), QStringLiteral( "/mActionAddOgrLayer.svg" ) );
+
+  addRasterProviderDialog( QStringLiteral( "gdal" ), tr( "Raster" ), QStringLiteral( "/mActionAddRasterLayer.svg" ) );
 
   addVectorProviderDialog( QStringLiteral( "delimitedtext" ), tr( "Delimited Text" ), QStringLiteral( "/mActionAddDelimitedTextLayer.svg" ) );
 
@@ -133,11 +119,6 @@ void QgsDataSourceManagerDialog::setCurrentPage( int index )
   mPreviousRow = ui->mOptionsStackedWidget->currentIndex();
   ui->mOptionsStackedWidget->setCurrentIndex( index );
   setWindowTitle( tr( "Data Source Manager | %1" ).arg( ui->mOptionsListWidget->currentItem()->text() ) );
-  if ( 0 <= index && index < mPageNames.size() && mPageNames.at( index ) == QStringLiteral( "raster" ) )
-  {
-    emit addRasterLayer();
-    QTimer::singleShot( 0, this, &QgsDataSourceManagerDialog::setPreviousPage );
-  }
 }
 
 void QgsDataSourceManagerDialog::setPreviousPage()
@@ -231,6 +212,7 @@ QgsAbstractDataSourceWidget *QgsDataSourceManagerDialog::addVectorProviderDialog
   {
     connect( dlg, &QgsAbstractDataSourceWidget::addVectorLayer, this, [ = ]( const QString & vectorLayerPath, const QString & baseName )
     { this->vectorLayerAdded( vectorLayerPath, baseName, providerKey ); } );
+    connect( dlg, &QgsAbstractDataSourceWidget::addVectorLayers, this, &QgsDataSourceManagerDialog::vectorLayersAdded );
     connect( this,  SIGNAL( providerDialogsRefreshRequested() ), dlg, SLOT( refresh() ) );
   }
   return dlg;

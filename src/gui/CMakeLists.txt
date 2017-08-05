@@ -179,10 +179,8 @@ SET(QGIS_GUI_SRCS
   locator/qgslocatorfilter.cpp
   locator/qgslocatorwidget.cpp
 
-  ogr/qgsopenvectorlayerdialog.cpp
   ogr/qgsogrhelperfunctions.cpp
   ogr/qgsnewogrconnection.cpp
-  ogr/qgsopenvectorlayerdialog.cpp
   ogr/qgsvectorlayersaveasdialog.cpp
 
   qgisinterface.cpp
@@ -508,7 +506,6 @@ SET(QGIS_GUI_MOC_HDRS
   qgsdatasourcemanagerdialog.h
   qgsabstractdatasourcewidget.h
 
-  ogr/qgsopenvectorlayerdialog.h
   ogr/qgsnewogrconnection.h
   ogr/qgsvectorlayersaveasdialog.h
 
@@ -718,7 +715,6 @@ SET(QGIS_GUI_HDRS
   qgsdatasourcemanagerdialog.h
   qgsabstractdatasourcewidget.h
 
-  ogr/qgsopenvectorlayerdialog.h
   ogr/qgsogrhelperfunctions.h
   ogr/qgsnewogrconnection.h
   ogr/qgsvectorlayersaveasdialog.h
@@ -816,7 +812,6 @@ SET(QGIS_GUI_UI_HDRS
   ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgssqlcomposerdialogbase.h
   ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgssublayersdialogbase.h
   ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgstablewidgetuibase.h
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsopenvectorlayerdialogbase.h
 )
 
 IF(ENABLE_MODELTEST)

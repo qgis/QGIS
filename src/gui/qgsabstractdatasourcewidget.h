@@ -86,6 +86,13 @@ class GUI_EXPORT QgsAbstractDataSourceWidget : public QDialog
     //! Emitted when a vector layer has been selected for addition
     void addVectorLayer( const QString &uri, const QString &layerName );
 
+    /** Emitted when one or more OGR supported layers are selected for addition
+     * \param layerQStringList list of layers protocol URIs
+     * \param enc encoding
+     * \param dataSourceType string (can be "file" or "database")
+     */
+    void addVectorLayers( const QStringList &layerQStringList, const QString &enc, const QString &dataSourceType );
+
     //! Emitted when a progress dialog is shown by the provider dialog
     void progress( int, int );
 
