@@ -61,7 +61,7 @@ class PrepareAPIDialog(QDialog):
             os.remove(self._pap_file)
         self.ui.label.setText(QCoreApplication.translate("PythonConsole", "Saving prepared file..."))
         prepd = self._api.savePrepared(self._pap_file)
-        rslt = self.trUtf8("Error")
+        rslt = self.tr("Error")
         if prepd:
             rslt = QCoreApplication.translate("PythonConsole", "Saved")
         self.ui.label.setText(u'{0} {1}'.format(self.ui.label.text(), rslt))
@@ -88,6 +88,5 @@ class PrepareAPIDialog(QDialog):
             self.ui.progressBar.setVisible(False)
             self.ui.plainTextEdit.setVisible(True)
             self.ui.plainTextEdit.insertPlainText(err)
-            self.ui.buttonBox.button(QDialogButtonBox.Cancel).setText(
-                self.trUtf8("Done"))
+            self.ui.buttonBox.button(QDialogButtonBox.Cancel).setText(self.tr("Done"))
             self.adjustSize()

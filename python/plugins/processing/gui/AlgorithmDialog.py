@@ -29,17 +29,14 @@ __revision__ = '$Format:%H$'
 from pprint import pformat
 import time
 
-from qgis.PyQt.QtCore import Qt
-from qgis.PyQt.QtWidgets import QMessageBox, QApplication, QPushButton, QWidget, QVBoxLayout, QSizePolicy, QDialogButtonBox
-from qgis.PyQt.QtGui import QCursor, QColor, QPalette
+from qgis.PyQt.QtCore import QCoreApplication
+from qgis.PyQt.QtWidgets import QMessageBox, QPushButton, QSizePolicy, QDialogButtonBox
+from qgis.PyQt.QtGui import QColor, QPalette
 
 from qgis.core import (QgsProject,
                        QgsApplication,
                        QgsProcessingUtils,
-                       QgsMessageLog,
                        QgsProcessingParameterDefinition,
-                       QgsProcessingOutputRasterLayer,
-                       QgsProcessingOutputVectorLayer,
                        QgsProcessingAlgRunnerTask,
                        QgsProcessingOutputHtml,
                        QgsProcessingParameterVectorDestination,
@@ -56,16 +53,13 @@ from processing.core.ProcessingResults import resultsList
 from processing.gui.ParametersPanel import ParametersPanel
 from processing.gui.BatchAlgorithmDialog import BatchAlgorithmDialog
 from processing.gui.AlgorithmDialogBase import AlgorithmDialogBase
-from processing.gui.AlgorithmExecutor import execute, executeIterating
+from processing.gui.AlgorithmExecutor import executeIterating
 from processing.gui.Postprocessing import handleAlgorithmResults
 
 from processing.core.parameters import ParameterRaster
 from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterExtent
 from processing.core.parameters import ParameterMultipleInput
-from processing.core.GeoAlgorithm import executeAlgorithm
-
-from processing.core.outputs import OutputTable
 
 from processing.tools import dataobjects
 
@@ -83,7 +77,7 @@ class AlgorithmDialog(AlgorithmDialogBase):
         self.bar.setSizePolicy(QSizePolicy.Minimum, QSizePolicy.Fixed)
         self.layout().insertWidget(0, self.bar)
 
-        self.runAsBatchButton = QPushButton(self.tr("Run as Batch Process…"))
+        self.runAsBatchButton = QPushButton(QCoreTranslation.translate("AlgorithmDialog", "Run as Batch Process…"))
         self.runAsBatchButton.clicked.connect(self.runAsBatch)
         self.buttonBox.addButton(self.runAsBatchButton, QDialogButtonBox.ResetRole) # reset role to ensure left alignment
 
@@ -179,7 +173,7 @@ class AlgorithmDialog(AlgorithmDialogBase):
                 if reply == QMessageBox.No:
                     return
             checkExtentCRS = ProcessingConfig.getSetting(ProcessingConfig.WARN_UNMATCHING_EXTENT_CRS)
-            #TODO
+            # TODO
             if False and checkExtentCRS and self.checkExtentCRS():
                 reply = QMessageBox.question(self, self.tr("Extent CRS"),
                                              self.tr('Extent parameters must use the same CRS as the input layers.\n'
