@@ -72,9 +72,6 @@ class QgsDelimitedTextSourceSelect : public QgsAbstractDataSourceWidget, private
     void updateFieldsAndEnable();
     void enableAccept();
     bool validate();
-
-  signals:
-    void addVectorLayer( const QString &, const QString &, const QString & );
 };
 
 #endif // QGSDELIMITEDTEXTSOURCESELECT_H

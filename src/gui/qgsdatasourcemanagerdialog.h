@@ -116,9 +116,9 @@ class GUI_EXPORT QgsDataSourceManagerDialog : public QgsOptionsDialogBase, priva
   private:
     // Return the dialog from the provider
     QgsAbstractDataSourceWidget *providerDialog( const QString providerKey, const QString providerName, const QString icon, QString title = QString() );
-    void addDbProviderDialog( QString const providerKey, QString const providerName, QString const icon, QString title = QString() );
-    void addRasterProviderDialog( QString const providerKey, QString const providerName, QString const icon, QString title = QString() );
-    void addVectorProviderDialog( QString const providerKey, QString const providerName, QString const icon, QString title = QString() );
+    QgsAbstractDataSourceWidget *addDbProviderDialog( QString const providerKey, QString const providerName, QString const icon, QString title = QString() );
+    QgsAbstractDataSourceWidget *addRasterProviderDialog( QString const providerKey, QString const providerName, QString const icon, QString title = QString() );
+    QgsAbstractDataSourceWidget *addVectorProviderDialog( QString const providerKey, QString const providerName, QString const icon, QString title = QString() );
     Ui::QgsDataSourceManagerDialog *ui;
     QgsBrowserDockWidget *mBrowserWidget = nullptr;
     int mPreviousRow;

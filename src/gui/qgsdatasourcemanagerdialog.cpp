@@ -76,12 +76,7 @@ QgsDataSourceManagerDialog::QgsDataSourceManagerDialog( QWidget *parent, QgsMapC
   // Add data provider dialogs
   QWidget *dlg = nullptr;
 
-  dlg = providerDialog( QStringLiteral( "delimitedtext" ), tr( "Delimited Text" ), QStringLiteral( "/mActionAddDelimitedTextLayer.svg" ) );
-
-  if ( dlg )
-  {
-    connect( dlg, SIGNAL( addVectorLayer( QString, QString, QString ) ), this, SLOT( vectorLayerAdded( QString, QString, QString ) ) );
-  }
+  addVectorProviderDialog( QStringLiteral( "delimitedtext" ), tr( "Delimited Text" ), QStringLiteral( "/mActionAddDelimitedTextLayer.svg" ) );
 
 #ifdef HAVE_POSTGRESQL
   addDbProviderDialog( QStringLiteral( "postgres" ), tr( "PostgreSQL" ), QStringLiteral( "/mActionAddPostgisLayer.svg" ) );
@@ -97,11 +92,13 @@ QgsDataSourceManagerDialog::QgsDataSourceManagerDialog( QWidget *parent, QgsMapC
   addDbProviderDialog( QStringLiteral( "oracle" ), tr( "Oracle" ), QStringLiteral( "/mActionAddOracleLayer.svg" ) );
 #endif
 
-  dlg = providerDialog( QStringLiteral( "virtual" ), tr( "Virtual Layer" ), QStringLiteral( "/mActionAddVirtualLayer.svg" ) );
+  dlg = addVectorProviderDialog( QStringLiteral( "virtual" ), tr( "Virtual Layer" ), QStringLiteral( "/mActionAddVirtualLayer.svg" ) );
 
+  // Apparently this is the only provider using replaceVectorLayer, we should
+  // move this in to the base abstract class when it is used by at least one
+  // additional provider.
   if ( dlg )
   {
-    connect( dlg, SIGNAL( addVectorLayer( QString, QString, QString ) ), this, SLOT( vectorLayerAdded( QString, QString, QString ) ) );
     connect( dlg, SIGNAL( replaceVectorLayer( QString, QString, QString, QString ) ), this, SIGNAL( replaceSelectedVectorLayer( QString, QString, QString, QString ) ) );
   }
 
@@ -197,7 +194,7 @@ QgsAbstractDataSourceWidget *QgsDataSourceManagerDialog::providerDialog( const Q
   }
 }
 
-void QgsDataSourceManagerDialog::addDbProviderDialog( const QString providerKey, const QString providerName, const QString icon, QString title )
+QgsAbstractDataSourceWidget *QgsDataSourceManagerDialog::addDbProviderDialog( const QString providerKey, const QString providerName, const QString icon, QString title )
 {
   QgsAbstractDataSourceWidget *dlg = providerDialog( providerKey, providerName, icon, title );
   if ( dlg )
@@ -211,9 +208,10 @@ void QgsDataSourceManagerDialog::addDbProviderDialog( const QString providerKey,
     connect( dlg, SIGNAL( connectionsChanged() ), this, SIGNAL( connectionsChanged() ) );
     connect( this, SIGNAL( providerDialogsRefreshRequested() ), dlg, SLOT( refresh() ) );
   }
+  return dlg;
 }
 
-void QgsDataSourceManagerDialog::addRasterProviderDialog( const QString providerKey, const QString providerName, const QString icon, QString title )
+QgsAbstractDataSourceWidget *QgsDataSourceManagerDialog::addRasterProviderDialog( const QString providerKey, const QString providerName, const QString icon, QString title )
 {
   QgsAbstractDataSourceWidget *dlg = providerDialog( providerKey, providerName, icon, title );
   if ( dlg )
@@ -223,9 +221,10 @@ void QgsDataSourceManagerDialog::addRasterProviderDialog( const QString provider
     connect( dlg, SIGNAL( connectionsChanged() ), this, SIGNAL( connectionsChanged() ) );
     connect( this,  SIGNAL( providerDialogsRefreshRequested() ), dlg, SLOT( refresh() ) );
   }
+  return dlg;
 }
 
-void QgsDataSourceManagerDialog::addVectorProviderDialog( const QString providerKey, const QString providerName, const QString icon, QString title )
+QgsAbstractDataSourceWidget *QgsDataSourceManagerDialog::addVectorProviderDialog( const QString providerKey, const QString providerName, const QString icon, QString title )
 {
   QgsAbstractDataSourceWidget *dlg = providerDialog( providerKey, providerName, icon, title );
   if ( dlg )
@@ -234,6 +233,7 @@ void QgsDataSourceManagerDialog::addVectorProviderDialog( const QString provider
     { this->vectorLayerAdded( vectorLayerPath, baseName, providerKey ); } );
     connect( this,  SIGNAL( providerDialogsRefreshRequested() ), dlg, SLOT( refresh() ) );
   }
+  return dlg;
 }
 
 void QgsDataSourceManagerDialog::showEvent( QShowEvent *e )
