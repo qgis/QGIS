@@ -131,7 +131,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      */
     bool isDirty() const;
 
-    /** 
+    /**
      * \copydoc fileName
      */
     void setFileName( const QString &name );
