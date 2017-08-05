@@ -68,6 +68,7 @@ from .ExtendLines import ExtendLines
 from .ExtentFromLayer import ExtentFromLayer
 from .ExtractNodes import ExtractNodes
 from .ExtractSpecificNodes import ExtractSpecificNodes
+from .FieldsMapper import FieldsMapper
 from .FixedDistanceBuffer import FixedDistanceBuffer
 from .FixGeometry import FixGeometry
 from .GeometryByExpression import GeometryByExpression
@@ -160,7 +161,6 @@ from .ZonalStatistics import ZonalStatistics
 # from .SetRasterStyle import SetRasterStyle
 # from .SelectByAttributeSum import SelectByAttributeSum
 # from .HypsometricCurves import HypsometricCurves
-from .FieldsMapper import FieldsMapper
 # from .Datasources2Vrt import Datasources2Vrt
 # from .OrientedMinimumBoundingBox import OrientedMinimumBoundingBox
 # from .DefineProjection import DefineProjection

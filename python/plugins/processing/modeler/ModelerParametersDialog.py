@@ -303,21 +303,19 @@ class ModelerParametersDialog(QDialog):
             if param.isDestination() or param.flags() & QgsProcessingParameterDefinition.FlagHidden:
                 continue
             val = self.wrappers[param.name()].value()
-            if (isinstance(val,
-                           QgsProcessingModelChildParameterSource) and val.source() == QgsProcessingModelChildParameterSource.StaticValue and not param.checkValueIsAcceptable(
-                    val.staticValue())) \
-                    or (val is None and not param.flags() & QgsProcessingParameterDefinition.FlagOptional):
-                self.bar.pushMessage("Error", "Wrong or missing value for parameter '%s'" % param.description(),
-                                     level=QgsMessageBar.WARNING)
-                return None
-            if val is None:
-                continue
-            elif isinstance(val, QgsProcessingModelChildParameterSource):
-                alg.addParameterSources(param.name(), [val])
-            elif isinstance(val, list):
-                alg.addParameterSources(param.name(), val)
-            else:
-                alg.addParameterSources(param.name(), [QgsProcessingModelChildParameterSource.fromStaticValue(val)])
+            if isinstance(val, QgsProcessingModelChildParameterSource):
+                val = [val]
+            elif not (isinstance(val, list) and all([isinstance(subval, QgsProcessingModelChildParameterSource) for subval in val])):
+                val = [QgsProcessingModelChildParameterSource.fromStaticValue(val)]
+            for subval in val:
+                if (isinstance(subval, QgsProcessingModelChildParameterSource) and
+                    subval.source() == QgsProcessingModelChildParameterSource.StaticValue and
+                    not param.checkValueIsAcceptable(subval.staticValue())) \
+                        or (subval is None and not param.flags() & QgsProcessingParameterDefinition.FlagOptional):
+                    self.bar.pushMessage("Error", "Wrong or missing value for parameter '%s'" % param.description(),
+                                         level=QgsMessageBar.WARNING)
+                    return None
+            alg.addParameterSources(param.name(), val)
 
         outputs = {}
         for dest in self._alg.destinationParameterDefinitions():

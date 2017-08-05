@@ -62,7 +62,7 @@ class FieldsMapper(QgisFeatureBasedAlgorithm):
             def type(self):
                 return 'fields_mapping'
 
-            def checkValueIsAcceptable(self, value, context):
+            def checkValueIsAcceptable(self, value, context=None):
                 if not isinstance(value, list):
                     return False
                 for field_def in value:
