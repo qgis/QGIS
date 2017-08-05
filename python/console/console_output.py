@@ -203,10 +203,10 @@ class ShellOutputScintilla(QsciScintilla):
 
     def contextMenuEvent(self, e):
         menu = QMenu(self)
-        iconRun = QgsApplication.getThemeIcon("console/iconRunConsole.png")
-        iconClear = QgsApplication.getThemeIcon("console/iconClearConsole.png")
+        iconRun = QgsApplication.getThemeIcon("console/iconRunConsole.svg")
+        iconClear = QgsApplication.getThemeIcon("console/iconClearConsole.svg")
         iconHideTool = QgsApplication.getThemeIcon("console/iconHideToolConsole.png")
-        iconSettings = QgsApplication.getThemeIcon("console/iconSettingsConsole.png")
+        iconSettings = QgsApplication.getThemeIcon("console/iconSettingsConsole.svg")
         menu.addAction(iconHideTool,
                        QCoreApplication.translate("PythonConsole", "Hide/Show Toolbar"),
                        self.hideToolBar)
