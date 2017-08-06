@@ -88,14 +88,16 @@ if [ -d "$2" ]; then
 	done
 	shift
 	shift
-	for t in i18n/qgis_*.ts; do
-		for l in "$@"; do
-			if [ "i18n/qgis_$l.ts" = "$t" ]; then
-				continue 2
-			fi
+	if [[ $# -gt 0 ]]; then
+		for t in i18n/qgis_*.ts; do
+			for l in "$@"; do
+				if [ "i18n/qgis_$l.ts" = "$t" ]; then
+					continue 2
+				fi
+			done
+			files="$files $t"
 		done
-		files="$files $t"
-	done
+	fi
 
 elif [ "$action" != "pull" ]; then
 	echo Build directory not found
