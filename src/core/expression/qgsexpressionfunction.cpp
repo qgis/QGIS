@@ -3605,24 +3605,28 @@ static QVariant fcnArrayCat( const QVariantList &values, const QgsExpressionCont
 static QVariant fcnArraySlice( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent )
 {
   QVariantList list = QgsExpressionUtils::getListValue( values.at( 0 ), parent );
-  qlonglong startPos = QgsExpressionUtils::getIntValue( values.at( 1 ), parent );
-  const qlonglong endPos = QgsExpressionUtils::getIntValue( values.at( 2 ), parent );
-  qlonglong sliceLength = 0;
+  qlonglong start_pos = QgsExpressionUtils::getIntValue( values.at( 1 ), parent );
+  const qlonglong end_pos = QgsExpressionUtils::getIntValue( values.at( 2 ), parent );
+  qlonglong slice_length = 0;
   // negative positions means positions taken relative to the end of the array
-  if( startPos < 0 ) {
-      startPos = list.length() + startPos;
+  if ( start_pos < 0 )
+  {
+    start_pos = list.length() + start_pos;
   }
-  if( endPos >= 0 ) {
-      sliceLength = endPos - startPos + 1;
+  if ( end_pos >= 0 )
+  {
+    slice_length = end_pos - start_pos + 1;
   }
-  else {
-      sliceLength = list.length() + endPos - startPos + 1;
+  else
+  {
+    slice_length = list.length() + end_pos - start_pos + 1;
   }
   //avoid negative lengths in QList.mid function
-  if (sliceLength < 0) {
-      sliceLength = 0;
+  if ( slice_length < 0 )
+  {
+    slice_length = 0;
   }
-  list = list.mid(startPos,sliceLength);
+  list = list.mid( start_pos, slice_length );
   return list;
 }
 
@@ -4287,7 +4291,7 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
         << new QgsStaticExpressionFunction( QStringLiteral( "array_remove_at" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "array" ) ) << QgsExpressionFunction::Parameter( QStringLiteral( "pos" ) ), fcnArrayRemoveAt, QStringLiteral( "Arrays" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "array_remove_all" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "array" ) ) << QgsExpressionFunction::Parameter( QStringLiteral( "value" ) ), fcnArrayRemoveAll, QStringLiteral( "Arrays" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "array_cat" ), -1, fcnArrayCat, QStringLiteral( "Arrays" ) )
-        << new QgsStaticExpressionFunction( QStringLiteral( "array_slice" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "array" ) ) << QgsExpressionFunction::Parameter( QStringLiteral( "startPos" ) ) << QgsExpressionFunction::Parameter( QStringLiteral( "endPos" ) ), fcnArraySlice, QStringLiteral( "Arrays" ) )
+        << new QgsStaticExpressionFunction( QStringLiteral( "array_slice" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "array" ) ) << QgsExpressionFunction::Parameter( QStringLiteral( "start_pos" ) ) << QgsExpressionFunction::Parameter( QStringLiteral( "end_pos" ) ), fcnArraySlice, QStringLiteral( "Arrays" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "array_reverse" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "array" ) ), fcnArrayReverse, QStringLiteral( "Arrays" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "array_intersect" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "array1" ) ) << QgsExpressionFunction::Parameter( QStringLiteral( "array2" ) ), fcnArrayIntersect, QStringLiteral( "Arrays" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "array_distinct" ), 1, fcnArrayDistinct, QStringLiteral( "Arrays" ) )

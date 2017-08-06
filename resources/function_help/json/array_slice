@@ -1,18 +1,18 @@
 {
         "name": "array_get",
         "type": "function",
-        "description": "Returns a portion of the array. The slice is defined by the startPos and endPos arguments. A slice that ",
+        "description": "Returns a portion of the array. The slice is defined by the start_pos and end_pos arguments.",
         "arguments": [{
                         "arg": "array",
                         "description": "an array"
                 },
                 {
-                        "arg": "startPos",
-                        "description": "the index of the start position of the slice (0 based). The startPos index is included in the slice. If you use a negative startPos, the index is counted from the end of the list (-1 based)."
+                        "arg": "start_pos",
+                        "description": "the index of the start position of the slice (0 based). The start_pos index is included in the slice. If you use a negative start_pos, the index is counted from the end of the list (-1 based)."
                 },
                 {
-                        "arg": "endPos",
-                        "description": "the index of the start position of the slice (0 based). The endPos index is included in the slice. If you use a negative endPos, the index is counted from the end of the list (-1 based)."
+                        "arg": "end_pos",
+                        "description": "the index of the end position of the slice (0 based). The end_pos index is included in the slice. If you use a negative end_pos, the index is counted from the end of the list (-1 based)."
                 }
         ],
         "examples": [{
