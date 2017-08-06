@@ -132,6 +132,7 @@ class DoxygenParser():
                         documented_members += documented
                         class_name = elem.find('compoundname').text
                         acceptable_missing = self.acceptable_missing.get(class_name, [])
+                        acceptable_missing = [v.strip() for v in acceptable_missing]
 
                         if not self.hasGroup(class_name) and class_name not in self.acceptable_missing_group:
                             self.classes_missing_group.append(class_name)
@@ -145,6 +146,11 @@ class DoxygenParser():
                         #     print('"%s": [%s],' % (class_name, ", ".join(['"%s"' % e.replace('"', '\\"') for e in undocumented])))
 
                         unacceptable_undocumented = undocumented - set(acceptable_missing)
+                        if unacceptable_undocumented:
+                            print("ACCEPTABLE IS")
+                            print(acceptable_missing)
+                            print("WHAT WE GOT WAS")
+                            print(undocumented)
 
                         # do a case insensitive check too
                         unacceptable_undocumented_insensitive = set([u.lower() for u in undocumented]) - set([u.lower() for u in acceptable_missing])
