@@ -4366,7 +4366,7 @@ methaphors:metaphors
 metres:meters
 Michagan:Michigan
 micoscopy:microscopy
-microprocesspr\>:microprocessor
+microprocesspr:microprocessor:*
 midwifes:midwives
 mileau:milieu
 milennia:millennia
@@ -5381,7 +5381,7 @@ proceses:processes
 processer:processor:*
 processess:processes
 processessing:processing
-processpr\>:processor
+processpr:processor:*
 processs:process:*
 processsed:processed
 processses:processes
