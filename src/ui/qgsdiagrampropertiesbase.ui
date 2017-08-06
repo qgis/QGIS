@@ -938,7 +938,7 @@
                          <item>
                           <widget class="QLabel" name="label_8">
                            <property name="text">
-                            <string>Discourage labels from covering features</string>
+                            <string>Discourage diagrams and labels from covering features</string>
                            </property>
                           </widget>
                          </item>
