@@ -20,13 +20,13 @@
 class QLabel;
 class QToolButton;
 class QVariant;
-
-class QgsFilterLineEdit;
-
+class QgsFileDropEdit;
+class QHBoxLayout;
 #include <QWidget>
 
 #include "qgis_gui.h"
 #include "qgis.h"
+#include "qgsfilterlineedit.h"
 
 /** \ingroup gui
  * \brief The QgsFileWidget class creates a widget for selecting a file or a folder.
@@ -137,6 +137,13 @@ class GUI_EXPORT QgsFileWidget : public QWidget
     //! determines if the relative path is with respect to the project path or the default path
     void setRelativeStorage( QgsFileWidget::RelativeStorage relativeStorage );
 
+    /**
+     * Returns a pointer to the widget's line edit, which can be used to customise
+     * the appearance and behavior of the line edit portion of the widget.
+     * \since QGIS 3.0
+     */
+    QLineEdit *lineEdit();
+
   signals:
     //! emitted as soon as the current file or directory is changed
     void fileChanged( const QString & );
@@ -157,7 +164,7 @@ class GUI_EXPORT QgsFileWidget : public QWidget
     RelativeStorage mRelativeStorage;
 
     QLabel *mLinkLabel = nullptr;
-    QgsFilterLineEdit *mLineEdit = nullptr;
+    QgsFileDropEdit *mLineEdit = nullptr;
     QToolButton *mFileWidgetButton = nullptr;
     QHBoxLayout *mLayout = nullptr;
 
@@ -169,5 +176,53 @@ class GUI_EXPORT QgsFileWidget : public QWidget
 
     friend class TestQgsFileWidget;
 };
+
+
+
+///@cond PRIVATE
+
+#ifndef SIP_RUN
+
+/** \ingroup gui
+ * A line edit for capturing file names that can have files dropped onto
+ * it via drag & drop.
+ *
+ * Dropping can be limited to files only, files with a specific extension
+ * or directories only. By default, dropping is limited to files only.
+ * \note not available in Python bindings
+ */
+class GUI_EXPORT QgsFileDropEdit: public QgsFilterLineEdit
+{
+    Q_OBJECT
+
+  public:
+    QgsFileDropEdit( QWidget *parent SIP_TRANSFERTHIS = 0 );
+
+    void setStorageMode( QgsFileWidget::StorageMode storageMode ) { mStorageMode = storageMode; }
+
+    void setFilters( const QString &filters );
+
+  protected:
+
+    virtual void dragEnterEvent( QDragEnterEvent *event ) override;
+    virtual void dragLeaveEvent( QDragLeaveEvent *event ) override;
+    virtual void dropEvent( QDropEvent *event ) override;
+    virtual void paintEvent( QPaintEvent *e ) override;
+
+  private:
+
+    /**
+      Return file name if object meets drop criteria.
+    */
+    QString acceptableFilePath( QDropEvent *event ) const;
+
+    QStringList mAcceptableExtensions;
+    QgsFileWidget::StorageMode mStorageMode = QgsFileWidget::GetFile;
+    bool mDragActive;
+    friend class TestQgsFileWidget;
+};
+
+#endif
+///@endcond
 
 #endif // QGSFILEWIDGET_H

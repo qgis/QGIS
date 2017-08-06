@@ -9,8 +9,6 @@
 
 
 
-
-
 class QgsFileWidget : QWidget
 {
 %Docstring
@@ -149,6 +147,14 @@ returns if the relative path is with respect to the project path or the default 
 determines if the relative path is with respect to the project path or the default path
 %End
 
+    QLineEdit *lineEdit();
+%Docstring
+ Returns a pointer to the widget's line edit, which can be used to customise
+ the appearance and behavior of the line edit portion of the widget.
+.. versionadded:: 3.0
+ :rtype: QLineEdit
+%End
+
   signals:
     void fileChanged( const QString & );
 %Docstring
@@ -156,6 +162,10 @@ emitted as soon as the current file or directory is changed
 %End
 
 };
+
+
+
+
 
 /************************************************************************
  * This file has been generated automatically from                      *

@@ -22,6 +22,7 @@
 #include <QFileDialog>
 #include <QGridLayout>
 #include <QUrl>
+#include <QDropEvent>
 
 #include "qgssettings.h"
 #include "qgsfilterlineedit.h"
@@ -58,8 +59,8 @@ QgsFileWidget::QgsFileWidget( QWidget *parent )
   mLinkLabel->setTextFormat( Qt::RichText );
   mLinkLabel->hide(); // do not show by default
 
-  // otherwise, use the traditional QLineEdit
-  mLineEdit = new QgsFilterLineEdit( this );
+  // otherwise, use the traditional QLineEdit subclass
+  mLineEdit = new QgsFileDropEdit( this );
   connect( mLineEdit, &QLineEdit::textChanged, this, &QgsFileWidget::textEdited );
   mLayout->addWidget( mLineEdit );
 
@@ -111,6 +112,7 @@ QString QgsFileWidget::filter() const
 void QgsFileWidget::setFilter( const QString &filters )
 {
   mFilter = filters;
+  mLineEdit->setFilters( filters );
 }
 
 bool QgsFileWidget::fileWidgetButtonVisible() const
@@ -181,6 +183,7 @@ QgsFileWidget::StorageMode QgsFileWidget::storageMode() const
 void QgsFileWidget::setStorageMode( QgsFileWidget::StorageMode storageMode )
 {
   mStorageMode = storageMode;
+  mLineEdit->setStorageMode( storageMode );
 }
 
 QgsFileWidget::RelativeStorage QgsFileWidget::relativeStorage() const
@@ -191,6 +194,11 @@ QgsFileWidget::RelativeStorage QgsFileWidget::relativeStorage() const
 void QgsFileWidget::setRelativeStorage( QgsFileWidget::RelativeStorage relativeStorage )
 {
   mRelativeStorage = relativeStorage;
+}
+
+QLineEdit *QgsFileWidget::lineEdit()
+{
+  return mLineEdit;
 }
 
 void QgsFileWidget::openFileDialog()
@@ -316,3 +324,101 @@ QString QgsFileWidget::toUrl( const QString &path ) const
 
   return rep;
 }
+
+
+
+
+///@cond PRIVATE
+
+
+QgsFileDropEdit::QgsFileDropEdit( QWidget *parent )
+  : QgsFilterLineEdit( parent )
+{
+  mDragActive = false;
+  setAcceptDrops( true );
+}
+
+void QgsFileDropEdit::setFilters( const QString &filters )
+{
+  mAcceptableExtensions.clear();
+
+  if ( filters.contains( QStringLiteral( "*.*" ) ) )
+    return; // everything is allowed!
+
+  QRegularExpression rx( "\\*\\.(\\w+)" );
+  QRegularExpressionMatchIterator i = rx.globalMatch( filters );
+  while ( i.hasNext() )
+  {
+    QRegularExpressionMatch match = i.next();
+    if ( match.hasMatch() )
+    {
+      mAcceptableExtensions << match.captured( 1 ).toLower();
+    }
+  }
+}
+
+QString QgsFileDropEdit::acceptableFilePath( QDropEvent *event ) const
+{
+  QString path;
+  if ( event->mimeData()->hasUrls() )
+  {
+    QFileInfo file( event->mimeData()->urls().first().toLocalFile() );
+    if ( ( mStorageMode == QgsFileWidget::GetFile && file.isFile() &&
+           ( mAcceptableExtensions.isEmpty() || mAcceptableExtensions.contains( file.suffix(), Qt::CaseInsensitive ) ) )
+         || ( mStorageMode == QgsFileWidget::GetDirectory && file.isDir() ) )
+      path = file.filePath();
+  }
+  return path;
+}
+
+void QgsFileDropEdit::dragEnterEvent( QDragEnterEvent *event )
+{
+  QString filePath = acceptableFilePath( event );
+  if ( !filePath.isEmpty() )
+  {
+    event->acceptProposedAction();
+    mDragActive = true;
+    update();
+  }
+  else
+  {
+    event->ignore();
+  }
+}
+
+void QgsFileDropEdit::dragLeaveEvent( QDragLeaveEvent *event )
+{
+  QgsFilterLineEdit::dragLeaveEvent( event );
+  event->accept();
+  mDragActive = false;
+  update();
+}
+
+void QgsFileDropEdit::dropEvent( QDropEvent *event )
+{
+  QString filePath = acceptableFilePath( event );
+  if ( !filePath.isEmpty() )
+  {
+    setText( filePath );
+    selectAll();
+    setFocus( Qt::MouseFocusReason );
+    event->acceptProposedAction();
+    mDragActive = false;
+    update();
+  }
+}
+
+void QgsFileDropEdit::paintEvent( QPaintEvent *e )
+{
+  QgsFilterLineEdit::paintEvent( e );
+  if ( mDragActive )
+  {
+    QPainter p( this );
+    int width = 2;  // width of highlight rectangle inside frame
+    p.setPen( QPen( palette().highlight(), width ) );
+    QRect r = rect().adjusted( width, width, -width, -width );
+    p.drawRect( r );
+  }
+}
+
+///@endcond

@@ -4,7 +4,6 @@
 %Include qgscustomdrophandler.sip
 %Include qgsdetaileditemdata.sip
 %Include qgsexpressionbuilderdialog.sip
-%Include qgsfiledropedit.sip
 %Include qgsgeometryrubberband.sip
 %Include qgsgui.sip
 %Include qgshelp.sip
