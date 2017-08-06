@@ -18,7 +18,6 @@
 
 #include "qgis_core.h"
 #include "qgis.h"
-#include "qgsdataitem.h"
 
 class QgsDataItem;
 
@@ -51,9 +50,6 @@ class CORE_EXPORT QgsDataItemProvider
     //! Caller takes responsibility of deleting created items.
     virtual QgsDataItem *createDataItem( const QString &path, QgsDataItem *parentItem ) = 0 SIP_FACTORY;
 
-    //! Create a vector of instances of QgsDataItem (or null) for given path and parent item.
-    //! Caller takes responsibility of deleting created items.
-    virtual QVector<QgsDataItem *> createDataItems( const QString &path, QgsDataItem *parentItem ) { Q_UNUSED( path ); Q_UNUSED( parentItem ); return QVector<QgsDataItem *>(); }
 };
 
 #endif // QGSDATAITEMPROVIDER_H

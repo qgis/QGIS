@@ -40,8 +40,6 @@
 %Include auth/qgsauthtrustedcasdialog.sip
 %Include editorwidgets/core/qgseditorwidgetfactory.sip
 %Include editorwidgets/core/qgseditorwidgetautoconf.sip
-%Include geonode/qgsgeonodenewconnection.sip
-%Include geonode/qgsgeonodesourceselect.sip
 %Include layertree/qgslayertreeembeddedconfigwidget.sip
 %Include layertree/qgslayertreeembeddedwidgetregistry.sip
 %Include layout/qgslayoutviewmouseevent.sip

@@ -31,7 +31,6 @@ class QgsManageConnectionsDialog : QDialog
       DB2,
       WCS,
       Oracle,
-      GeoNode
     };
 
     QgsManageConnectionsDialog( QWidget *parent /TransferThis/ = 0, Mode mode = Export, Type type = WMS, const QString &fileName = "" );
