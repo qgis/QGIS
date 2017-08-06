@@ -391,7 +391,7 @@ QString QgsProcessingParameters::parameterAsOutputLayer( const QgsProcessingPara
   {
     dest = val.value< QgsProperty >().valueAsString( context.expressionContext(), definition->defaultValue().toString() );
   }
-  else if ( !val.isValid() || val.toString().isEmpty() )
+  else if ( definition && ( !val.isValid() || val.toString().isEmpty() ) )
   {
     // fall back to default
     dest = definition->defaultValue().toString();
