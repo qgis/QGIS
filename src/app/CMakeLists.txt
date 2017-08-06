@@ -52,6 +52,7 @@ SET(QGIS_APP_SRCS
   qgsmapcanvasdockwidget.cpp
   qgsmaplayerstyleguiutils.cpp
   qgsmapsavedialog.cpp
+  qgsversionmigration.cpp
   qgsrulebasedlabelingwidget.cpp
   qgssavestyletodbdialog.cpp
   qgssnappinglayertreemodel.cpp

@@ -99,6 +99,7 @@ typedef SInt32 SRefCon;
 #include "qgis_app.h"
 #include "qgscrashhandler.h"
 #include "qgsziputils.h"
+#include "qgsversionmigration.h"
 
 #include "qgsuserprofilemanager.h"
 #include "qgsuserprofile.h"
@@ -139,6 +140,7 @@ void usage( const QString &appName )
       << QStringLiteral( "\t[--dxf-preset maptheme]\tmap theme to use for dxf output\n" )
       << QStringLiteral( "\t[--profile name]\tload a named profile from the users profiles folder.\n" )
       << QStringLiteral( "\t[--profiles-path path]\tpath to store user profile folders. Will create profiles inside a {path}\\profiles folder \n" )
+      << QStringLiteral( "\t[--version-migration]\tforce the settings migration from older version if found\n" )
       << QStringLiteral( "\t[--help]\t\tthis text\n" )
       << QStringLiteral( "\t[--]\t\ttreat all following arguments as FILEs\n\n" )
       << QStringLiteral( "  FILE:\n" )
@@ -501,6 +503,7 @@ int main( int argc, char *argv[] )
   int mySnapshotHeight = 600;
 
   bool myHideSplash = false;
+  bool mySettingsMigrationForce = false;
   bool mySkipVersionCheck = false;
 #if defined(ANDROID)
   QgsDebugMsg( QString( "Android: Splash hidden" ) );
@@ -569,6 +572,10 @@ int main( int argc, char *argv[] )
       else if ( arg == QLatin1String( "--nologo" ) || arg == QLatin1String( "-n" ) )
       {
         myHideSplash = true;
+      }
+      else if ( arg == QLatin1String( "--version-migration" ) )
+      {
+        mySettingsMigrationForce = true;
       }
       else if ( arg == QLatin1String( "--noversioncheck" ) || arg == QLatin1String( "-V" ) )
       {
@@ -846,6 +853,18 @@ int main( int argc, char *argv[] )
     else
     {
       QgsMessageLog::logMessage( QStringLiteral( "Successfully loaded globalsettingsfile path: %1" ).arg( globalsettingsfile ), QStringLiteral( "QGIS" ) );
+    }
+  }
+
+  // Settings migration is only supported on the default profile for now.
+  if ( profileName == "default" )
+  {
+    QgsVersionMigration *migration = QgsVersionMigration::canMigrate( 20000, Qgis::QGIS_VERSION_INT );
+    if ( migration && ( mySettingsMigrationForce || migration->requiresMigration() ) )
+    {
+      QgsDebugMsg( "RUNNING MIGRATION" );
+      migration->runMigration();
+      delete migration;
     }
   }
 
