@@ -751,6 +751,15 @@ class TestQgsProject(unittest.TestCase):
         project2.clear()
         self.assertFalse(project2.isZipped())
 
+    def testUpgradeOtfFrom2x(self):
+        """
+        Test that upgrading a 2.x project correctly brings across project CRS and OTF transformation settings
+        """
+        prj = QgsProject.instance()
+        prj.read(os.path.join(TEST_DATA_DIR, 'projects', 'test_memory_layer_proj.qgs'))
+        self.assertTrue(prj.crs().isValid())
+        self.assertEqual(prj.crs().authid(), 'EPSG:2056')
+
 
 if __name__ == '__main__':
     unittest.main()

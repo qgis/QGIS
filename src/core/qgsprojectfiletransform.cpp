@@ -656,14 +656,6 @@ void QgsProjectFileTransform::transform2990()
   if ( canvasNodes.count() > 0 )
   {
     QDomElement canvasElem = canvasNodes.at( 0 ).toElement();
-    QDomNodeList projectionsNodes = canvasElem.elementsByTagName( QStringLiteral( "projections" ) );
-    bool hasOtf = false;
-    if ( projectionsNodes.count() > 0 )
-    {
-      QDomElement projectionsElem = projectionsNodes.at( 0 ).toElement();
-      hasOtf = projectionsElem.text().toInt();
-    }
-
     QDomNodeList canvasSrsNodes = canvasElem.elementsByTagName( QStringLiteral( "spatialrefsys" ) );
     if ( canvasSrsNodes.count() > 0 )
     {
@@ -727,7 +719,7 @@ void QgsProjectFileTransform::transform2990()
       projectCrsIdElem.appendChild( srsidText );
       QDomElement projectionsEnabledElem = mDom.createElement( QStringLiteral( "ProjectionsEnabled" ) );
       projectionsEnabledElem.setAttribute( QStringLiteral( "type" ), QStringLiteral( "int" ) );
-      QDomText projectionsEnabledText = mDom.createTextNode( hasOtf ? QStringLiteral( "1" ) : QStringLiteral( "0" ) );
+      QDomText projectionsEnabledText = mDom.createTextNode( QStringLiteral( "1" ) );
       projectionsEnabledElem.appendChild( projectionsEnabledText );
       srsElem.appendChild( proj4Elem );
       srsElem.appendChild( projectCrsElem );
