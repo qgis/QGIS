@@ -716,7 +716,8 @@ QgsGeometry QgsGeometryAnalyzer::dissolveFeature( const QgsFeature &f, const Qgs
 }
 
 bool QgsGeometryAnalyzer::buffer( QgsVectorLayer *layer, const QString &shapefileName, double bufferDistance,
-                                  bool onlySelectedFeatures, bool dissolve, int bufferDistanceField, QProgressDialog *p )
+                                  bool onlySelectedFeatures, bool dissolve, int bufferDistanceField, QProgressDialog *p,
+                                  int segmentsToApproximate )
 {
   if ( !layer )
   {
@@ -767,7 +768,7 @@ bool QgsGeometryAnalyzer::buffer( QgsVectorLayer *layer, const QString &shapefil
       {
         continue;
       }
-      bufferFeature( currentFeature, processedFeatures, &vWriter, dissolve, dissolveGeometry, bufferDistance, bufferDistanceField );
+      bufferFeature( currentFeature, processedFeatures, &vWriter, dissolve, dissolveGeometry, bufferDistance, bufferDistanceField, segmentsToApproximate );
       ++processedFeatures;
     }
 
@@ -798,7 +799,7 @@ bool QgsGeometryAnalyzer::buffer( QgsVectorLayer *layer, const QString &shapefil
       {
         break;
       }
-      bufferFeature( currentFeature, processedFeatures, &vWriter, dissolve, dissolveGeometry, bufferDistance, bufferDistanceField );
+      bufferFeature( currentFeature, processedFeatures, &vWriter, dissolve, dissolveGeometry, bufferDistance, bufferDistanceField, segmentsToApproximate );
       ++processedFeatures;
     }
     if ( p )
@@ -822,7 +823,7 @@ bool QgsGeometryAnalyzer::buffer( QgsVectorLayer *layer, const QString &shapefil
 }
 
 void QgsGeometryAnalyzer::bufferFeature( QgsFeature &f, int nProcessedFeatures, QgsVectorFileWriter *vfw, bool dissolve,
-    QgsGeometry &dissolveGeometry, double bufferDistance, int bufferDistanceField )
+    QgsGeometry &dissolveGeometry, double bufferDistance, int bufferDistanceField, int segmentsToApproximate )
 {
   if ( !f.hasGeometry() )
   {
@@ -842,7 +843,7 @@ void QgsGeometryAnalyzer::bufferFeature( QgsFeature &f, int nProcessedFeatures, 
   {
     currentBufferDistance = f.attribute( bufferDistanceField ).toDouble();
   }
-  bufferGeometry = featureGeometry.buffer( currentBufferDistance, 5 );
+  bufferGeometry = featureGeometry.buffer( currentBufferDistance, segmentsToApproximate );
 
   if ( dissolve )
   {
