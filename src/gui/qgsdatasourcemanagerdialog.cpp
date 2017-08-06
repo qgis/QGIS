@@ -27,6 +27,7 @@
 #include "qgsmapcanvas.h"
 #include "qgsmessagelog.h"
 #include "qgsgui.h"
+#include "qgsgeonodesourceselect.h"
 
 QgsDataSourceManagerDialog::QgsDataSourceManagerDialog( QgsBrowserModel *browserModel, QWidget *parent, QgsMapCanvas *canvas, Qt::WindowFlags fl ) :
   QgsOptionsDialogBase( QStringLiteral( "Data Source Manager" ), parent, fl ),
@@ -71,6 +72,15 @@ QgsDataSourceManagerDialog::QgsDataSourceManagerDialog( QgsBrowserModel *browser
     addProviderDialog( dlg, provider->providerKey(), provider->text(), provider->icon( ), provider->toolTip( ) );
   }
 
+
+  QDialog *geonodeDialog = new QgsGeoNodeSourceSelect( this, Qt::Widget, QgsProviderRegistry::WidgetMode::Embedded );
+  dlg = addDialog( geonodeDialog, QStringLiteral( "geonode" ), tr( "GeoNode" ), QStringLiteral( "/mActionAddGeonodeLayer.svg" ) );
+
+  if ( dlg )
+  {
+    connect( dlg, SIGNAL( addRasterLayer( QString, QString, QString ) ), this, SLOT( rasterLayerAdded( QString, QString, QString ) ) );
+    connect( dlg, SIGNAL( addWfsLayer( QString, QString, QString ) ), this, SLOT( vectorLayerAdded( QString, QString, QString ) ) );
+  }
 }
 
 QgsDataSourceManagerDialog::~QgsDataSourceManagerDialog()
@@ -121,6 +131,15 @@ void QgsDataSourceManagerDialog::vectorLayersAdded( const QStringList &layerQStr
   emit addVectorLayers( layerQStringList, enc, dataSourceType );
 }
 
+QDialog *QgsDataSourceManagerDialog::addDialog( QDialog *dialog, QString const key, QString const name, QString const icon, QString title )
+{
+  mPageNames.append( key );
+  ui->mOptionsStackedWidget->addWidget( dialog );
+  QListWidgetItem *layerItem = new QListWidgetItem( name, ui->mOptionsListWidget );
+  layerItem->setToolTip( title.isEmpty() ? tr( "Add %1 layer" ).arg( name ) : title );
+  layerItem->setIcon( QgsApplication::getThemeIcon( icon ) );
+  return dialog;
+}
 
 void QgsDataSourceManagerDialog::addProviderDialog( QgsAbstractDataSourceWidget *dlg, const QString &providerKey, const QString &providerName, const QIcon &icon, const QString &toolTip )
 {

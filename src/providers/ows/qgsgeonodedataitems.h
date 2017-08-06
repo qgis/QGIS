@@ -1,9 +1,9 @@
 /***************************************************************************
-    qgsowsdataitems.h
+    qgsgeonodedataitems.h
     ---------------------
-    begin                : May 2012
-    copyright            : (C) 2012 by Radim Blazek
-    email                : radim dot blazek at gmail dot com
+    begin                : Feb 2017
+    copyright            : (C) 2017 by Muhammad Yarjuna Rohmat, Ismail Sunni
+    email                : rohmat at kartoza dot com, ismail at kartoza dot com
  ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -12,8 +12,9 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#ifndef QGSOWSDATAITEMS_H
-#define QGSOWSDATAITEMS_H
+
+#ifndef QGSGEONODEDATAITEMS_H
+#define QGSGEONODEDATAITEMS_H
 
 #include "qgsdataitem.h"
 #include "qgsdataitemprovider.h"
@@ -21,61 +22,66 @@
 #include "qgsdatasourceuri.h"
 #include "qgsgeonodeconnection.h"
 
-class QgsOWSConnectionItem : public QgsDataCollectionItem
+class QgsGeoNodeConnectionItem : public QgsDataCollectionItem
 {
     Q_OBJECT
   public:
-    QgsOWSConnectionItem( QgsDataItem *parent, QString name, QString path );
-    ~QgsOWSConnectionItem();
-
+    QgsGeoNodeConnectionItem( QgsDataItem *parent, QString name, QString path, QgsGeoNodeConnection *conn );
     QVector<QgsDataItem *> createChildren() override;
-    virtual bool equal( const QgsDataItem *other ) override;
-
-#ifdef HAVE_GUI
     virtual QList<QAction *> actions() override;
-#endif
 
-  public slots:
-#ifdef HAVE_GUI
+    QString mGeoNodeName;
+
+  private:
     void editConnection();
-    void deleteConnection();
-#endif
+    void deleteConnection()
+    {
+      QgsGeoNodeConnection::deleteConnection( mParent->name() );
+      mParent->refresh();
+    };
+
+    QString mUri;
+    QgsGeoNodeConnection *mConnection = nullptr;
+};
+
+class QgsGeoNodeServiceItem : public QgsDataCollectionItem
+{
+    Q_OBJECT
+  public:
+    QgsGeoNodeServiceItem( QgsDataItem *parent, QgsGeoNodeConnection *conn, QString serviceName, QString path );
+    QVector<QgsDataItem *> createChildren() override;
 
   private:
     void replacePath( QgsDataItem *item, QString before, QString after );
+    QString mName;
+    QString mServiceName;
+    QString mUri;
+    QgsGeoNodeConnection *mConnection = nullptr;
 };
 
-class QgsOWSRootItem : public QgsDataCollectionItem
+class QgsGeoNodeRootItem : public QgsDataCollectionItem
 {
     Q_OBJECT
   public:
-    QgsOWSRootItem( QgsDataItem *parent, QString name, QString path );
-    ~QgsOWSRootItem();
+    QgsGeoNodeRootItem( QgsDataItem *parent, QString name, QString path );
 
     QVector<QgsDataItem *> createChildren() override;
 
-#ifdef HAVE_GUI
     virtual QList<QAction *> actions() override;
-    virtual QWidget *paramWidget() override;
-#endif
 
-  public slots:
-#ifdef HAVE_GUI
-    void connectionsChanged();
-
+  private slots:
     void newConnection();
-#endif
 };
 
-//! Provider for ows root data item
-class QgsOwsDataItemProvider : public QgsDataItemProvider
+//! Provider for Geonode root data item
+class QgsGeoNodeDataItemProvider : public QgsDataItemProvider
 {
   public:
-    virtual QString name() override { return QStringLiteral( "OWS" ); }
+    virtual QString name() override { return QStringLiteral( "GeoNode" ); }
 
     virtual int capabilities() override { return QgsDataProvider::Net; }
 
     virtual QgsDataItem *createDataItem( const QString &path, QgsDataItem *parentItem ) override;
 };
 
-#endif // QGSOWSDATAITEMS_H
+#endif //QGSGEONODEDATAITEMS_H
