@@ -188,7 +188,7 @@ ACCEPTABLE_MISSING_DOCS = {
     "QgsComposerGroupItem": ["QgsComposerGroupItem(const QString &text)"],
     "QgsGraphDirector": ["buildProgress(int, int) const ", "buildMessage(const QString &) const ", "addProperter(QgsArcProperter *prop)"],
     "QgsScaleComboBox": ["QgsScaleComboBox(QWidget *parent=nullptr)", "updateScales(const QStringList &scales=QStringList())"],
-    "QgsLabelingEngine": ["processProvider(QgsAbstractLabelProvider *provider, QgsRenderContext &context, pal::Pal &p)", "Flag"],  # spellok
+    "QgsLabelingEngine": ["processProvider(QgsAbstractLabelProvider *provider, QgsRenderContext &context, pal::Pal &p)", "Flag"],
     "QgsSymbolSelectorDialog": ["moveLayerByOffset(int offset)", "QgsSymbolSelectorDialog(QgsSymbol *symbol, QgsStyle *style, const QgsVectorLayer *vl, QWidget *parent=nullptr, bool embedded=false)", "lockLayer()", "moveLayerUp()", "updateUi()", "addLayer()", "moveLayerDown()", "layerChanged()", "loadSymbol()", "loadSymbol(QgsSymbol *symbol, SymbolLayerItem *parent)", "setWidget(QWidget *widget)", "updateLayerPreview()", "symbolModified()", "updateLockButton()", "removeLayer()", "currentLayer()", "updatePreview()"],
     "QgsCacheIndexFeatureId": ["QgsCacheIndexFeatureId(QgsVectorLayerCache *)"],
     "QgsSymbolLayerWidget": ["setSymbolLayer(QgsSymbolLayer *layer)=0", "updateDataDefinedProperty()", "QgsSymbolLayerWidget(QWidget *parent, const QgsVectorLayer *vl=nullptr)", "symbolLayer()=0"],
@@ -615,7 +615,7 @@ ACCEPTABLE_MISSING_DOCS = {
     "QgsZipItem": ["QgsZipItem(QgsDataItem *parent, const QString &name, const QString &filePath, const QString &path)", "itemFromPath(QgsDataItem *parent, QString path, QString name)", "getZipFileList()", "QgsZipItem(QgsDataItem *parent, const QString &name, const QString &path)", "iconZip()", "vsiPrefix(const QString &uri)"],
     "NormVecDecorator": ["NormVecDecorator(Triangulation *tin)"],
     "QgsVectorLayerJoinBuffer": ["vectorJoins() const ", "QgsVectorLayerJoinBuffer(QgsVectorLayer *layer=nullptr)"],
-    "pal::Pal": ["solveProblem(Problem *prob, bool displayAll)", "extractProblem(double bbox[4])", "FnIsCancelled)(void *ctx)"],  # spellok
+    "pal::Pal": ["solveProblem(Problem *prob, bool displayAll)", "extractProblem(double bbox[4])", "FnIsCanceled)(void *ctx)"],
     "QgsSearchWidgetWrapper": ["setExpression(QString value)=0"],
     "QgsRasterFillSymbolLayer": ["create(const QgsStringMap &properties=QgsStringMap())", "QgsRasterFillSymbolLayer(const QString &imageFilePath=QString())", "FillCoordinateMode"],
     "QgsExpression::NodeInOperator": ["NodeInOperator(Node *node, NodeList *list, bool notin=false)", "node() const ", "isNotIn() const ", "list() const "],

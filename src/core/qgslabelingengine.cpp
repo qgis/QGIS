@@ -28,7 +28,7 @@
 
 
 // helper function for checking for job cancelation within PAL
-static bool _palIsCancelled( void *ctx )  //#spellok
+static bool _palIsCanceled( void *ctx )
 {
   return ( reinterpret_cast< QgsRenderContext * >( ctx ) )->renderingStopped();
 }
@@ -111,7 +111,7 @@ void QgsLabelingEngine::removeProvider( QgsAbstractLabelProvider *provider )
   }
 }
 
-void QgsLabelingEngine::processProvider( QgsAbstractLabelProvider *provider, QgsRenderContext &context, pal::Pal &p ) //#spellok
+void QgsLabelingEngine::processProvider( QgsAbstractLabelProvider *provider, QgsRenderContext &context, pal::Pal &p )
 {
   QgsAbstractLabelProvider::Flags flags = provider->flags();
 
@@ -179,7 +179,7 @@ void QgsLabelingEngine::processProvider( QgsAbstractLabelProvider *provider, Qgs
   Q_FOREACH ( QgsAbstractLabelProvider *subProvider, provider->subProviders() )
   {
     mSubProviders << subProvider;
-    processProvider( subProvider, context, p );  //#spellok
+    processProvider( subProvider, context, p );
   }
 }
 
@@ -230,7 +230,7 @@ void QgsLabelingEngine::run( QgsRenderContext &context )
       appendedLayerScope = true;
       context.expressionContext().appendScope( QgsExpressionContextUtils::layerScope( ml ) );
     }
-    processProvider( provider, context, p );  //#spellok
+    processProvider( provider, context, p );
     if ( appendedLayerScope )
       delete context.expressionContext().popScope();
   }
@@ -249,7 +249,7 @@ void QgsLabelingEngine::run( QgsRenderContext &context )
 
   QgsRectangle extent = extentGeom.boundingBox();
 
-  p.registerCancellationCallback( &_palIsCancelled, reinterpret_cast< void * >( &context ) ); //#spellok
+  p.registerCancelationCallback( &_palIsCanceled, reinterpret_cast< void * >( &context ) );
 
   QTime t;
   t.start();

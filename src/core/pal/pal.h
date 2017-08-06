@@ -141,13 +141,13 @@ namespace pal
        */
       QList<LabelPosition *> *labeller( double bbox[4], PalStat **stats, bool displayAll );
 
-      typedef bool ( *FnIsCancelled )( void *ctx );
+      typedef bool ( *FnIsCanceled )( void *ctx );
 
-      //! Register a function that returns whether this job has been cancelled - PAL calls it during the computation
-      void registerCancellationCallback( FnIsCancelled fnCancelled, void *context );
+      //! Register a function that returns whether this job has been canceled - PAL calls it during the computation
+      void registerCancelationCallback( FnIsCanceled fnCanceled, void *context );
 
-      //! Check whether the job has been cancelled
-      inline bool isCancelled() { return fnIsCancelled ? fnIsCancelled( fnIsCancelledContext ) : false; }
+      //! Check whether the job has been canceled
+      inline bool isCanceled() { return fnIsCanceled ? fnIsCanceled( fnIsCanceledContext ) : false; }
 
       Problem *extractProblem( double bbox[4] );
 
@@ -263,10 +263,10 @@ namespace pal
        */
       bool showPartial;
 
-      //! Callback that may be called from PAL to check whether the job has not been cancelled in meanwhile
-      FnIsCancelled fnIsCancelled;
-      //! Application-specific context for the cancellation check function
-      void *fnIsCancelledContext = nullptr;
+      //! Callback that may be called from PAL to check whether the job has not been canceled in meanwhile
+      FnIsCanceled fnIsCanceled;
+      //! Application-specific context for the cancelation check function
+      void *fnIsCanceledContext = nullptr;
 
       /**
        * \brief Problem factory

@@ -206,7 +206,7 @@ class CORE_EXPORT QgsLabelingEngine
     QgsLabelingResults *results() const { return mResults.get(); }
 
   protected:
-    void processProvider( QgsAbstractLabelProvider *provider, QgsRenderContext &context, pal::Pal &p );  //#spellok
+    void processProvider( QgsAbstractLabelProvider *provider, QgsRenderContext &context, pal::Pal &p );
 
   protected:
     //! Associated map settings instance
