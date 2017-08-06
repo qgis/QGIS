@@ -149,7 +149,7 @@ determines if the relative path is with respect to the project path or the defau
 
     QLineEdit *lineEdit();
 %Docstring
- Returns a pointer to the widget's line edit, which can be used to customise
+ Returns a pointer to the widget's line edit, which can be used to customize
  the appearance and behavior of the line edit portion of the widget.
 .. versionadded:: 3.0
  :rtype: QLineEdit

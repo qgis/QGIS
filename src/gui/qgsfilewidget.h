@@ -138,7 +138,7 @@ class GUI_EXPORT QgsFileWidget : public QWidget
     void setRelativeStorage( QgsFileWidget::RelativeStorage relativeStorage );
 
     /**
-     * Returns a pointer to the widget's line edit, which can be used to customise
+     * Returns a pointer to the widget's line edit, which can be used to customize
      * the appearance and behavior of the line edit portion of the widget.
      * \since QGIS 3.0
      */
