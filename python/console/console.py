@@ -277,7 +277,7 @@ class PythonConsoleWidget(QWidget):
         self.objectListButton.setCheckable(True)
         self.objectListButton.setEnabled(self.settings.value("pythonConsole/enableObjectInsp",
                                                              False, type=bool))
-        self.objectListButton.setIcon(QgsApplication.getThemeIcon("console/iconClassBrowserConsole.png"))
+        self.objectListButton.setIcon(QgsApplication.getThemeIcon("console/iconClassBrowserConsole.svg"))
         self.objectListButton.setMenuRole(QAction.PreferencesRole)
         self.objectListButton.setIconVisibleInMenu(True)
         self.objectListButton.setToolTip(objList)

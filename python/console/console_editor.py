@@ -292,7 +292,7 @@ class Editor(QsciScintilla):
         iconSettings = QgsApplication.getThemeIcon("console/iconSettingsConsole.svg")
         iconFind = QgsApplication.getThemeIcon("console/iconSearchEditorConsole.png")
         iconSyntaxCk = QgsApplication.getThemeIcon("console/iconSyntaxErrorConsole.png")
-        iconObjInsp = QgsApplication.getThemeIcon("console/iconClassBrowserConsole.png")
+        iconObjInsp = QgsApplication.getThemeIcon("console/iconClassBrowserConsole.svg")
         iconCut = QgsApplication.getThemeIcon("mActionEditCut.svg")
         iconCopy = QgsApplication.getThemeIcon("mActionEditCopy.svg")
         iconPaste = QgsApplication.getThemeIcon("mActionEditPaste.svg")

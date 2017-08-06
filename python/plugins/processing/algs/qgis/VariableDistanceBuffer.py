@@ -56,7 +56,7 @@ class VariableDistanceBuffer(QgisAlgorithm):
     MITRE_LIMIT = 'MITRE_LIMIT'
 
     def icon(self):
-        return QIcon(os.path.join(pluginPath, 'images', 'ftools', 'buffer.png'))
+        return QIcon(os.path.join(pluginPath, 'images', 'ftools', 'buffer.svg'))
 
     def group(self):
         return self.tr('Vector geometry tools')
