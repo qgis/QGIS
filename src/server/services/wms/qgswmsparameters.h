@@ -69,6 +69,7 @@ namespace QgsWms
     float mGridX = 0;
     float mGridY = 0;
     QList<QgsWmsParametersLayer> mLayers; // list of layers fr this composer map
+    QList<QgsWmsParametersHighlightLayer> mHighlightLayers; // list of highlight layers fr this composer map
   };
 
   class QgsWmsParameters
@@ -810,6 +811,10 @@ namespace QgsWms
        * \returns parameter as a string list
        */
       QStringList composerMapParamToStringList( int mapId, QString name, char delimiter ) const;
+      QList<QgsGeometry> composerMapParamToGeomList( int mapId, QString name, char delimiter ) const;
+      QList<QColor> composerMapParamToColorList( int mapId, QString name, char delimiter ) const;
+      QList<int> composerMapParamToIntList( int mapId, QString name, char delimiter ) const;
+      QList<float> composerMapParamToFloatList( int mapId, QString name, char delimiter ) const;
 
     private:
       QString name( ParameterName name ) const;

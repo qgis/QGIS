@@ -124,7 +124,7 @@ namespace QgsWms
       void initRestrictedLayers();
 
       // Build and returns highlight layers
-      QList<QgsMapLayer *> highlightLayers();
+      QList<QgsMapLayer *> highlightLayers( QList<QgsWmsParametersHighlightLayer> params );
 
       // Init a map with nickname for layers' project
       void initNicknameLayers();

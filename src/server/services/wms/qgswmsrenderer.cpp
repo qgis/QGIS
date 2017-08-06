@@ -349,7 +349,7 @@ namespace QgsWms
     }
 
     // add highlight layers above others
-    layers = layers << highlightLayers();
+    layers = layers << highlightLayers( mWmsParameters.highlightLayersParameters() );
 
     // add layers to map settings (revert order for the rendering)
     std::reverse( layers.begin(), layers.end() );
@@ -523,6 +523,7 @@ namespace QgsWms
                                               QStringLiteral( "Layer \"%1\" does not exist" ).arg( nickname ) );
               }
             }
+            layerSet << highlightLayers( cMapParams.mHighlightLayers );
             std::reverse( layerSet.begin(), layerSet.end() );
             map->setLayers( layerSet );
           }
@@ -754,7 +755,7 @@ namespace QgsWms
     }
 
     // add highlight layers above others
-    layers = layers << highlightLayers();
+    layers = layers << highlightLayers( mWmsParameters.highlightLayersParameters() );
 
     // create the output image and the painter
     std::unique_ptr<QPainter> painter;
@@ -2871,12 +2872,11 @@ namespace QgsWms
     return visible;
   }
 
-  QList<QgsMapLayer *> QgsRenderer::highlightLayers()
+  QList<QgsMapLayer *> QgsRenderer::highlightLayers( QList<QgsWmsParametersHighlightLayer> params )
   {
     QList<QgsMapLayer *> highlightLayers;
 
     // try to create highlight layer for each geometry
-    QList<QgsWmsParametersHighlightLayer> params = mWmsParameters.highlightLayersParameters();
     QString crs = mWmsParameters.crs();
     Q_FOREACH ( QgsWmsParametersHighlightLayer param, params )
     {

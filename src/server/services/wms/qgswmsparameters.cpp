@@ -1482,21 +1482,66 @@ namespace QgsWms
     }
 
     //layers
-    QList<QgsWmsParametersLayer> parameters;
-    QStringList layers = composerMapParamToStringList( mapId, "LAYERS", ',' );
-    QStringList styles = composerMapParamToStringList( mapId, "STYLES", ',' );
+    QList<QgsWmsParametersLayer> lParams;
+    QStringList layers = composerMapParamToStringList( mapId, name( ParameterName::LAYERS ), ',' );
+    QStringList styles = composerMapParamToStringList( mapId, name( ParameterName::STYLES ), ',' );
     for ( int i = 0; i < layers.size(); i++ )
     {
       QString layer = layers[i];
-      QgsWmsParametersLayer param;
-      param.mNickname = layer;
+      QgsWmsParametersLayer lParam;
+      lParam.mNickname = layer;
 
       if ( i < styles.count() )
-        param.mStyle = styles[i];
+        lParam.mStyle = styles[i];
 
-      parameters.append( param );
+      lParams.append( lParam );
     }
-    param.mLayers = parameters;
+    param.mLayers = lParams;
+
+    //highlight layers
+    QList<QgsWmsParametersHighlightLayer> hParams;
+    QList<QgsGeometry> geoms = composerMapParamToGeomList( mapId, name( ParameterName::HIGHLIGHT_GEOM ), ';' );
+    QStringList slds = composerMapParamToStringList( mapId, name( ParameterName::HIGHLIGHT_SYMBOL ), ';' );
+    QStringList labels = composerMapParamToStringList( mapId, name( ParameterName::HIGHLIGHT_LABELSTRING ), ';' );
+    QList<QColor> colors = composerMapParamToColorList( mapId, name( ParameterName::HIGHLIGHT_LABELCOLOR ), ';' );
+    QList<int> sizes = composerMapParamToIntList( mapId, name( ParameterName::HIGHLIGHT_LABELSIZE ), ';' );
+    QList<int> weights = composerMapParamToIntList( mapId, name( ParameterName::HIGHLIGHT_LABELWEIGHT ), ';' );
+    QStringList fonts = composerMapParamToStringList( mapId, name( ParameterName::HIGHLIGHT_LABELFONT ), ';' );
+    QList<QColor> bufferColors = composerMapParamToColorList( mapId, name( ParameterName::HIGHLIGHT_LABELBUFFERCOLOR ), ';' );
+    QList<float> bufferSizes = composerMapParamToFloatList( mapId, name( ParameterName::HIGHLIGHT_LABELBUFFERSIZE ), ';' );
+
+    int nHLayers = qMin( geoms.size(), slds.size() );
+    for ( int i = 0; i < nHLayers; i++ )
+    {
+      QgsWmsParametersHighlightLayer hParam;
+      hParam.mName = pMapId + "_highlight_" + QString::number( i );
+      hParam.mGeom = geoms[i];
+      hParam.mSld = slds[i];
+
+      if ( i < labels.count() )
+        hParam.mLabel = labels[i];
+
+      if ( i < colors.count() )
+        hParam.mColor = colors[i];
+
+      if ( i < sizes.count() )
+        hParam.mSize = sizes[i];
+
+      if ( i < weights.count() )
+        hParam.mWeight = weights[i];
+
+      if ( i < fonts.count() )
+        hParam.mFont = fonts[ i ];
+
+      if ( i < bufferColors.count() )
+        hParam.mBufferColor = bufferColors[i];
+
+      if ( i < bufferSizes.count() )
+        hParam.mBufferSize = bufferSizes[i];
+
+      hParams.append( hParam );
+    }
+    param.mHighlightLayers = hParams;
 
     return param;
   }
@@ -1543,6 +1588,112 @@ namespace QgsWms
     }
 
     return valStr.split( delimiter, QString::SkipEmptyParts );
+  }
+
+  QList<QgsGeometry> QgsWmsParameters::composerMapParamToGeomList( int mapId, QString name, char delimiter ) const
+  {
+    QStringList l = composerMapParamToStringList( mapId, name, delimiter );
+    QList<QgsGeometry> geometries;
+
+    Q_FOREACH ( QString wkt, l )
+    {
+      QgsGeometry g( QgsGeometry::fromWkt( wkt ) );
+
+      if ( g.isGeosValid() )
+      {
+        geometries.append( g );
+      }
+      else
+      {
+        QString pMapId = "MAP" + QString::number( mapId );
+        QString paramName = pMapId + ":" + name;
+        QString valStr = l.join( delimiter );
+        QString msg = paramName + " ('" + valStr + "') cannot be converted into a list of geometries";
+        raiseError( msg );
+      }
+    }
+
+    return geometries;
+  }
+
+  QList<QColor> QgsWmsParameters::composerMapParamToColorList( int mapId, QString name, char delimiter ) const
+  {
+    QStringList l = composerMapParamToStringList( mapId, name, delimiter );
+    QList<QColor> elements;
+
+    Q_FOREACH ( QString element, l )
+    {
+      QColor c = QColor( element );
+
+      if ( c.isValid() )
+      {
+        elements.append( c );
+      }
+      else
+      {
+        QString pMapId = "MAP" + QString::number( mapId );
+        QString paramName = pMapId + ":" + name;
+        QString valStr = l.join( delimiter );
+        QString msg = paramName + " ('" + valStr + "') cannot be converted into a list of colors";
+        raiseError( msg );
+      }
+    }
+
+    return elements;
+  }
+
+  QList<int> QgsWmsParameters::composerMapParamToIntList( int mapId, QString name, char delimiter ) const
+  {
+    QStringList l = composerMapParamToStringList( mapId, name, delimiter );
+    QList<int> elements;
+
+    Q_FOREACH ( QString element, l )
+    {
+      bool ok;
+      int e = element.toInt( &ok );
+
+      if ( ok )
+      {
+        elements.append( e );
+      }
+      else
+      {
+        QString pMapId = "MAP" + QString::number( mapId );
+        QString paramName = pMapId + ":" + name;
+        QString valStr = l.join( delimiter );
+        QString msg = paramName + " ('" + valStr + "') cannot be converted into a list of int";
+        raiseError( msg );
+      }
+    }
+
+    return elements;
+  }
+
+  QList<float> QgsWmsParameters::composerMapParamToFloatList( int mapId, QString name, char delimiter ) const
+  {
+    QStringList l = composerMapParamToStringList( mapId, name, delimiter );
+    QList<float> elements;
+
+    Q_FOREACH ( QString element, l )
+    {
+      bool ok;
+      float e = element.toFloat( &ok );
+
+      if ( ok )
+      {
+        elements.append( e );
+      }
+      else
+      {
+        QString pMapId = "MAP" + QString::number( mapId );
+        QString paramName = pMapId + ":" + name;
+        QString valStr = l.join( delimiter );
+        QString msg = paramName + " ('" + valStr + "') cannot be converted into a list of float";
+        raiseError( msg );
+      }
+    }
+
+    return elements;
   }
 
   QString QgsWmsParameters::name( ParameterName name ) const
