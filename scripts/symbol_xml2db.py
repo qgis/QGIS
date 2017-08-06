@@ -25,8 +25,8 @@ import sqlite3
 
 from xml.dom.minidom import parse, parseString
 
-xmlfile = "../resources/symbology-ng-style.xml"
-dbfile = "../resources/symbology-ng-style.db"
+xmlfile = "../resources/symbology-style.xml"
+dbfile = "../resources/symbology-style.db"
 
 _symbol = "CREATE TABLE symbol("\
           "id INTEGER PRIMARY KEY,"\

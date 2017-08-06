@@ -71,7 +71,7 @@ IF(WITH_APIDOC)
       ${CMAKE_SOURCE_DIR}/src/core/providers/memory
       ${CMAKE_SOURCE_DIR}/src/core/raster
       ${CMAKE_SOURCE_DIR}/src/core/scalebar
-      ${CMAKE_SOURCE_DIR}/src/core/symbology-ng
+      ${CMAKE_SOURCE_DIR}/src/core/symbology
       ${CMAKE_SOURCE_DIR}/src/gui
       ${CMAKE_SOURCE_DIR}/src/gui/auth
       ${CMAKE_SOURCE_DIR}/src/gui/attributetable
@@ -81,7 +81,7 @@ IF(WITH_APIDOC)
       ${CMAKE_SOURCE_DIR}/src/gui/layertree
       ${CMAKE_SOURCE_DIR}/src/gui/locator
       ${CMAKE_SOURCE_DIR}/src/gui/raster
-      ${CMAKE_SOURCE_DIR}/src/gui/symbology-ng
+      ${CMAKE_SOURCE_DIR}/src/gui/symbology
       ${CMAKE_SOURCE_DIR}/src/analysis
       ${CMAKE_SOURCE_DIR}/src/analysis/interpolation
       ${CMAKE_SOURCE_DIR}/src/analysis/network

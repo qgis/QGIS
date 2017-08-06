@@ -77,13 +77,13 @@ label{  background-color: #FFFFCC;
 <DIV CLASS="header" ID="header">
 <H1>QGIS</H1>
 <H2>Building QGIS from source - step by step</H2>
-<H3>Friday August 04, 2017</H3>
+<H3>Saturday August 05, 2017</H3>
 </DIV>
 
 <DIV CLASS="body" ID="body">
 <P>
-Last Updated: Friday August 04, 2017
-Last Change : Friday August 04, 2017
+Last Updated: Saturday August 05, 2017
+Last Change : Saturday August 05, 2017
 </P>
 <DIV CLASS="toc">
 
@@ -331,6 +331,11 @@ sudo apt-get update
 
 <P>
 (extracted from the control.in file in <CODE>debian/</CODE>)
+</P>
+<P>
+See <A HREF="http://qgis.org/en/site/forusers/alldownloads.html#debian-ubuntu">http://qgis.org/en/site/forusers/alldownloads.html#debian-ubuntu</A> for
+currently supported distributions (plain xenial's GDAL for instance is to old
+and we build with GDAL2 from ubuntugis).
 </P>
 
 <A NAME="toc7"></A>
@@ -752,6 +757,9 @@ and from OSGeo4W (select <I>Advanced Installation</I>):
 <LI>qwt-devel-qt5
 <LI>sip-qt5
 <LI>spatialite
+<LI>oci
+<LI>qtkeychain
+<LI>libzip
 </UL>
 
 <P>
@@ -785,19 +793,25 @@ installed in the default locations):
 
 <div class="code"><PRE>
 @echo off
-set VS90COMNTOOLS=%PROGRAMFILES%\Microsoft Visual Studio 9.0\Common7\Tools\
-call "%PROGRAMFILES%\Microsoft Visual Studio 9.0\VC\vcvarsall.bat" x86
-
-set INCLUDE=%INCLUDE%;%PROGRAMFILES%\Microsoft SDKs\Windows\v7.1\include
-set LIB=%LIB%;%PROGRAMFILES%\Microsoft SDKs\Windows\v7.1\lib
-
 set OSGEO4W_ROOT=C:\OSGeo4W
 call "%OSGEO4W_ROOT%\bin\o4w_env.bat"
-path %PATH%;%PROGRAMFILES%\CMake\bin;c:\cygwin\bin
+call "%OSGEO4W_ROOT%\bin\py3_env.bat"
+call "%OSGEO4W_ROOT%\bin\qt5_env.bat"
 
-@set GRASS_PREFIX=c:/OSGeo4W/apps/grass/grass-6.4.4
+set O4W_ROOT=%OSGEO4W_ROOT:\=/%
+set LIB_DIR=%O4W_ROOT%
+
+call "C:\Program Files\Microsoft Visual Studio 14.0\VC\vcvarsall.bat" amd64
+path %path%;C:\Program Files\Microsoft Visual Studio 14.0\VC\bin
+
+path %PATH%;C:\Program Files\CMake\bin;c:\cygwin\bin
+
+@set GRASS_PREFIX=c:/OSGeo4W/apps/grass/grass-7.2.1
 @set INCLUDE=%INCLUDE%;%OSGEO4W_ROOT%\include
 @set LIB=%LIB%;%OSGEO4W_ROOT%\lib;%OSGEO4W_ROOT%\lib
+
+set LIB=%LIB%;%OSGEO4W_ROOT%\apps\Qt5\lib;%OSGEO4W_ROOT%\lib
+set INCLUDE=%INCLUDE%;%OSGEO4W_ROOT%\apps\Qt5\include;%OSGEO4W_ROOT%\include
 
 @cmd
 </PRE></div>

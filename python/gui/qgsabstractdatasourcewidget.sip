@@ -82,6 +82,14 @@ Emitted when a raster layer has been selected for addition
 Emitted when a vector layer has been selected for addition
 %End
 
+    void addVectorLayers( const QStringList &layerList, const QString &encoding, const QString &dataSourceType );
+%Docstring
+ Emitted when one or more OGR supported layers are selected for addition
+ \param layerList list of layers protocol URIs
+ \param encoding encoding
+ \param dataSourceType string (can be "file" or "database")
+%End
+
     void progress( int, int );
 %Docstring
 Emitted when a progress dialog is shown by the provider dialog

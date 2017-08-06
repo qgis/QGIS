@@ -218,8 +218,7 @@ class WidgetWrapper(QObject):
             path = ''
 
         filename, selected_filter = QFileDialog.getOpenFileName(self.widget, self.tr('Select file'),
-                                                                path, self.tr(
-            'All files (*.*);;') + getFileFilter(self.param))
+                                                                path, getFileFilter(self.param))
         if filename:
             settings.setValue('/Processing/LastInputPath',
                               os.path.dirname(str(filename)))

@@ -11,40 +11,40 @@ SET(QGIS_GUI_SRCS
   raster/qgsrastertransparencywidget.cpp
   raster/qgshillshaderendererwidget.cpp
 
-  symbology-ng/qgs25drendererwidget.cpp
-  symbology-ng/characterwidget.cpp
-  symbology-ng/qgsarrowsymbollayerwidget.cpp
-  symbology-ng/qgsbrushstylecombobox.cpp
-  symbology-ng/qgscategorizedsymbolrendererwidget.cpp
-  symbology-ng/qgscptcitycolorrampdialog.cpp
-  symbology-ng/qgsdashspacedialog.cpp
-  symbology-ng/qgsdatadefinedsizelegendwidget.cpp
-  symbology-ng/qgsellipsesymbollayerwidget.cpp
-  symbology-ng/qgsgraduatedhistogramwidget.cpp
-  symbology-ng/qgsgraduatedsymbolrendererwidget.cpp
-  symbology-ng/qgsheatmaprendererwidget.cpp
-  symbology-ng/qgsinvertedpolygonrendererwidget.cpp
-  symbology-ng/qgslayerpropertieswidget.cpp
-  symbology-ng/qgsnullsymbolrendererwidget.cpp
-  symbology-ng/qgspenstylecombobox.cpp
-  symbology-ng/qgspointclusterrendererwidget.cpp
-  symbology-ng/qgspointdisplacementrendererwidget.cpp
-  symbology-ng/qgsrendererpropertiesdialog.cpp
-  symbology-ng/qgsrendererwidget.cpp
-  symbology-ng/qgsrulebasedrendererwidget.cpp
-  symbology-ng/qgssinglesymbolrendererwidget.cpp
-  symbology-ng/qgssmartgroupeditordialog.cpp
-  symbology-ng/qgsstyleexportimportdialog.cpp
-  symbology-ng/qgsstylegroupselectiondialog.cpp
-  symbology-ng/qgsstylemanagerdialog.cpp
-  symbology-ng/qgsstylesavedialog.cpp
-  symbology-ng/qgssvgselectorwidget.cpp
-  symbology-ng/qgssymbollayerwidget.cpp
-  symbology-ng/qgssymbollevelsdialog.cpp
-  symbology-ng/qgssymbolslistwidget.cpp
-  symbology-ng/qgssymbolselectordialog.cpp
-  symbology-ng/qgssymbolwidgetcontext.cpp
-  symbology-ng/qgsvectorfieldsymbollayerwidget.cpp
+  symbology/qgs25drendererwidget.cpp
+  symbology/characterwidget.cpp
+  symbology/qgsarrowsymbollayerwidget.cpp
+  symbology/qgsbrushstylecombobox.cpp
+  symbology/qgscategorizedsymbolrendererwidget.cpp
+  symbology/qgscptcitycolorrampdialog.cpp
+  symbology/qgsdashspacedialog.cpp
+  symbology/qgsdatadefinedsizelegendwidget.cpp
+  symbology/qgsellipsesymbollayerwidget.cpp
+  symbology/qgsgraduatedhistogramwidget.cpp
+  symbology/qgsgraduatedsymbolrendererwidget.cpp
+  symbology/qgsheatmaprendererwidget.cpp
+  symbology/qgsinvertedpolygonrendererwidget.cpp
+  symbology/qgslayerpropertieswidget.cpp
+  symbology/qgsnullsymbolrendererwidget.cpp
+  symbology/qgspenstylecombobox.cpp
+  symbology/qgspointclusterrendererwidget.cpp
+  symbology/qgspointdisplacementrendererwidget.cpp
+  symbology/qgsrendererpropertiesdialog.cpp
+  symbology/qgsrendererwidget.cpp
+  symbology/qgsrulebasedrendererwidget.cpp
+  symbology/qgssinglesymbolrendererwidget.cpp
+  symbology/qgssmartgroupeditordialog.cpp
+  symbology/qgsstyleexportimportdialog.cpp
+  symbology/qgsstylegroupselectiondialog.cpp
+  symbology/qgsstylemanagerdialog.cpp
+  symbology/qgsstylesavedialog.cpp
+  symbology/qgssvgselectorwidget.cpp
+  symbology/qgssymbollayerwidget.cpp
+  symbology/qgssymbollevelsdialog.cpp
+  symbology/qgssymbolslistwidget.cpp
+  symbology/qgssymbolselectordialog.cpp
+  symbology/qgssymbolwidgetcontext.cpp
+  symbology/qgsvectorfieldsymbollayerwidget.cpp
 
   effects/qgseffectdrawmodecombobox.cpp
   effects/qgseffectstackpropertieswidget.cpp
@@ -179,10 +179,8 @@ SET(QGIS_GUI_SRCS
   locator/qgslocatorfilter.cpp
   locator/qgslocatorwidget.cpp
 
-  ogr/qgsopenvectorlayerdialog.cpp
   ogr/qgsogrhelperfunctions.cpp
   ogr/qgsnewogrconnection.cpp
-  ogr/qgsopenvectorlayerdialog.cpp
   ogr/qgsvectorlayersaveasdialog.cpp
 
   qgisinterface.cpp
@@ -508,7 +506,6 @@ SET(QGIS_GUI_MOC_HDRS
   qgsdatasourcemanagerdialog.h
   qgsabstractdatasourcewidget.h
 
-  ogr/qgsopenvectorlayerdialog.h
   ogr/qgsnewogrconnection.h
   ogr/qgsvectorlayersaveasdialog.h
 
@@ -524,39 +521,39 @@ SET(QGIS_GUI_MOC_HDRS
   raster/qgsrastertransparencywidget.h
   raster/qgshillshaderendererwidget.h
 
-  symbology-ng/qgs25drendererwidget.h
-  symbology-ng/characterwidget.h
-  symbology-ng/qgsarrowsymbollayerwidget.h
-  symbology-ng/qgsbrushstylecombobox.h
-  symbology-ng/qgscategorizedsymbolrendererwidget.h
-  symbology-ng/qgscptcitycolorrampdialog.h
-  symbology-ng/qgsdashspacedialog.h
-  symbology-ng/qgsdatadefinedsizelegendwidget.h
-  symbology-ng/qgsellipsesymbollayerwidget.h
-  symbology-ng/qgsgraduatedhistogramwidget.h
-  symbology-ng/qgsgraduatedsymbolrendererwidget.h
-  symbology-ng/qgsheatmaprendererwidget.h
-  symbology-ng/qgsinvertedpolygonrendererwidget.h
-  symbology-ng/qgslayerpropertieswidget.h
-  symbology-ng/qgsnullsymbolrendererwidget.h
-  symbology-ng/qgspenstylecombobox.h
-  symbology-ng/qgspointclusterrendererwidget.h
-  symbology-ng/qgspointdisplacementrendererwidget.h
-  symbology-ng/qgsrendererpropertiesdialog.h
-  symbology-ng/qgsrendererwidget.h
-  symbology-ng/qgsrulebasedrendererwidget.h
-  symbology-ng/qgssinglesymbolrendererwidget.h
-  symbology-ng/qgssmartgroupeditordialog.h
-  symbology-ng/qgsstyleexportimportdialog.h
-  symbology-ng/qgsstylegroupselectiondialog.h
-  symbology-ng/qgsstylemanagerdialog.h
-  symbology-ng/qgsstylesavedialog.h
-  symbology-ng/qgssvgselectorwidget.h
-  symbology-ng/qgssymbollayerwidget.h
-  symbology-ng/qgssymbollevelsdialog.h
-  symbology-ng/qgssymbolslistwidget.h
-  symbology-ng/qgssymbolselectordialog.h
-  symbology-ng/qgsvectorfieldsymbollayerwidget.h
+  symbology/qgs25drendererwidget.h
+  symbology/characterwidget.h
+  symbology/qgsarrowsymbollayerwidget.h
+  symbology/qgsbrushstylecombobox.h
+  symbology/qgscategorizedsymbolrendererwidget.h
+  symbology/qgscptcitycolorrampdialog.h
+  symbology/qgsdashspacedialog.h
+  symbology/qgsdatadefinedsizelegendwidget.h
+  symbology/qgsellipsesymbollayerwidget.h
+  symbology/qgsgraduatedhistogramwidget.h
+  symbology/qgsgraduatedsymbolrendererwidget.h
+  symbology/qgsheatmaprendererwidget.h
+  symbology/qgsinvertedpolygonrendererwidget.h
+  symbology/qgslayerpropertieswidget.h
+  symbology/qgsnullsymbolrendererwidget.h
+  symbology/qgspenstylecombobox.h
+  symbology/qgspointclusterrendererwidget.h
+  symbology/qgspointdisplacementrendererwidget.h
+  symbology/qgsrendererpropertiesdialog.h
+  symbology/qgsrendererwidget.h
+  symbology/qgsrulebasedrendererwidget.h
+  symbology/qgssinglesymbolrendererwidget.h
+  symbology/qgssmartgroupeditordialog.h
+  symbology/qgsstyleexportimportdialog.h
+  symbology/qgsstylegroupselectiondialog.h
+  symbology/qgsstylemanagerdialog.h
+  symbology/qgsstylesavedialog.h
+  symbology/qgssvgselectorwidget.h
+  symbology/qgssymbollayerwidget.h
+  symbology/qgssymbollevelsdialog.h
+  symbology/qgssymbolslistwidget.h
+  symbology/qgssymbolselectordialog.h
+  symbology/qgsvectorfieldsymbollayerwidget.h
 
   attributetable/qgsattributetabledelegate.h
   attributetable/qgsattributetablefiltermodel.h
@@ -718,7 +715,6 @@ SET(QGIS_GUI_HDRS
   qgsdatasourcemanagerdialog.h
   qgsabstractdatasourcewidget.h
 
-  ogr/qgsopenvectorlayerdialog.h
   ogr/qgsogrhelperfunctions.h
   ogr/qgsnewogrconnection.h
   ogr/qgsvectorlayersaveasdialog.h
@@ -776,7 +772,7 @@ SET(QGIS_GUI_HDRS
 
   raster/qgsrasterrendererwidget.h
 
-  symbology-ng/qgssymbolwidgetcontext.h
+  symbology/qgssymbolwidgetcontext.h
 )
 SET_PROPERTY(GLOBAL PROPERTY QGIS_GUI_HDRS ${QGIS_GUI_HDRS})
 
@@ -816,7 +812,6 @@ SET(QGIS_GUI_UI_HDRS
   ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgssqlcomposerdialogbase.h
   ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgssublayersdialogbase.h
   ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgstablewidgetuibase.h
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsopenvectorlayerdialogbase.h
 )
 
 IF(ENABLE_MODELTEST)
@@ -828,7 +823,7 @@ INCLUDE_DIRECTORIES(SYSTEM
 )
 INCLUDE_DIRECTORIES(
   ${CMAKE_SOURCE_DIR}/src/gui
-  ${CMAKE_SOURCE_DIR}/src/gui/symbology-ng
+  ${CMAKE_SOURCE_DIR}/src/gui/symbology
   ${CMAKE_SOURCE_DIR}/src/gui/attributetable
   ${CMAKE_SOURCE_DIR}/src/gui/auth
   ${CMAKE_SOURCE_DIR}/src/gui/editorwidgets
@@ -850,7 +845,7 @@ INCLUDE_DIRECTORIES(
   ${CMAKE_SOURCE_DIR}/src/core/providers/memory
   ${CMAKE_SOURCE_DIR}/src/core/raster
   ${CMAKE_SOURCE_DIR}/src/core/scalebar
-  ${CMAKE_SOURCE_DIR}/src/core/symbology-ng
+  ${CMAKE_SOURCE_DIR}/src/core/symbology
   ${CMAKE_SOURCE_DIR}/src/core/effects
   ${CMAKE_SOURCE_DIR}/src/core/metadata
   ${CMAKE_SOURCE_DIR}/src/core/expression

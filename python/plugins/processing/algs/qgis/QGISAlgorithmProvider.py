@@ -60,6 +60,7 @@ from .DensifyGeometriesInterval import DensifyGeometriesInterval
 from .Difference import Difference
 from .DropGeometry import DropGeometry
 from .DropMZValues import DropMZValues
+from .EliminateSelection import EliminateSelection
 from .EquivalentNumField import EquivalentNumField
 from .Explode import Explode
 from .ExportGeometryInfo import ExportGeometryInfo
@@ -70,12 +71,18 @@ from .ExtractSpecificNodes import ExtractSpecificNodes
 from .FixedDistanceBuffer import FixedDistanceBuffer
 from .FixGeometry import FixGeometry
 from .GeometryByExpression import GeometryByExpression
+from .Gridify import Gridify
+from .GridLine import GridLine
 from .GridPolygon import GridPolygon
 from .Heatmap import Heatmap
 from .Hillshade import Hillshade
+from .HubDistanceLines import HubDistanceLines
+from .HubDistancePoints import HubDistancePoints
+from .HubLines import HubLines
 from .ImportIntoPostGIS import ImportIntoPostGIS
 from .ImportIntoSpatialite import ImportIntoSpatialite
 from .Intersection import Intersection
+from .JoinAttributes import JoinAttributes
 from .LinesIntersection import LinesIntersection
 from .LinesToPolygons import LinesToPolygons
 from .MeanCoords import MeanCoords
@@ -89,6 +96,7 @@ from .PointOnSurface import PointOnSurface
 from .PointsAlongGeometry import PointsAlongGeometry
 from .PointsInPolygon import PointsInPolygon
 from .PointsLayerFromTable import PointsLayerFromTable
+from .PointsToPaths import PointsToPaths
 from .PoleOfInaccessibility import PoleOfInaccessibility
 from .Polygonize import Polygonize
 from .PolygonsToLines import PolygonsToLines
@@ -99,6 +107,8 @@ from .RandomPointsAlongLines import RandomPointsAlongLines
 from .RandomPointsExtent import RandomPointsExtent
 from .RandomPointsLayer import RandomPointsLayer
 from .RandomPointsPolygons import RandomPointsPolygons
+from .RandomSelection import RandomSelection
+from .RandomSelectionWithinSubsets import RandomSelectionWithinSubsets
 from .RasterLayerStatistics import RasterLayerStatistics
 from .RegularPoints import RegularPoints
 from .ReverseLineDirection import ReverseLineDirection
@@ -122,9 +132,11 @@ from .SnapGeometries import SnapGeometriesToLayer
 from .SpatialiteExecuteSQL import SpatialiteExecuteSQL
 from .SpatialIndex import SpatialIndex
 from .SplitWithLines import SplitWithLines
+from .StatisticsByCategories import StatisticsByCategories
 from .SumLines import SumLines
 from .SymmetricalDifference import SymmetricalDifference
 from .TextToFloat import TextToFloat
+from .TopoColors import TopoColor
 from .Translate import Translate
 from .TruncateTable import TruncateTable
 from .Union import Union
@@ -135,24 +147,14 @@ from .VoronoiPolygons import VoronoiPolygons
 from .ZonalStatistics import ZonalStatistics
 
 # from .ExtractByLocation import ExtractByLocation
-# from .RandomSelection import RandomSelection
-# from .RandomSelectionWithinSubsets import RandomSelectionWithinSubsets
 # from .SelectByLocation import SelectByLocation
 # from .SpatialJoin import SpatialJoin
-# from .GridLine import GridLine
-# from .Gridify import Gridify
-# from .HubDistancePoints import HubDistancePoints
-# from .HubDistanceLines import HubDistanceLines
-# from .HubLines import HubLines
 # from .GeometryConvert import GeometryConvert
-# from .StatisticsByCategories import StatisticsByCategories
 # from .FieldsCalculator import FieldsCalculator
 # from .FieldPyculator import FieldsPyculator
-# from .JoinAttributes import JoinAttributes
 # from .PointsDisplacement import PointsDisplacement
 # from .PointsFromPolygons import PointsFromPolygons
 # from .PointsFromLines import PointsFromLines
-# from .PointsToPaths import PointsToPaths
 # from .SetVectorStyle import SetVectorStyle
 # from .SetRasterStyle import SetRasterStyle
 # from .SelectByAttributeSum import SelectByAttributeSum
@@ -169,8 +171,6 @@ from .ZonalStatistics import ZonalStatistics
 # from .RasterCalculator import RasterCalculator
 # from .ExecuteSQL import ExecuteSQL
 # from .FindProjection import FindProjection
-# from .TopoColors import TopoColor
-# from .EliminateSelection import EliminateSelection
 
 pluginPath = os.path.normpath(os.path.join(
     os.path.split(os.path.dirname(__file__))[0], os.pardir))
@@ -185,19 +185,15 @@ class QGISAlgorithmProvider(QgsProcessingProvider):
 
     def getAlgs(self):
         # algs = [
-        #         RandomSelection(), RandomSelectionWithinSubsets(),
         #         SelectByLocation(),
         #         ExtractByLocation(),
         #         SpatialJoin(),
-        #         GridLine(), Gridify(), HubDistancePoints(),
-        #         HubDistanceLines(), HubLines(),
         #         GeometryConvert(), FieldsCalculator(),
-        #          JoinAttributes(),
         #         FieldsPyculator(),
-        #         StatisticsByCategories(),
+        #
         #         RasterLayerStatistics(), PointsDisplacement(),
         #         PointsFromPolygons(),
-        #         PointsFromLines(), PointsToPaths(),
+        #         PointsFromLines(),
         #         SetVectorStyle(), SetRasterStyle(),
         #          HypsometricCurves(),
         #         FieldsMapper(), SelectByAttributeSum(), Datasources2Vrt(),
@@ -209,7 +205,6 @@ class QGISAlgorithmProvider(QgsProcessingProvider):
         #         IdwInterpolation(), TinInterpolation(),
         #         RasterCalculator(),
         #          ExecuteSQL(), FindProjection(),
-        #         TopoColor(), EliminateSelection()
         #         ]
         algs = [AddTableField(),
                 Aspect(),
@@ -231,6 +226,7 @@ class QGISAlgorithmProvider(QgsProcessingProvider):
                 Difference(),
                 DropGeometry(),
                 DropMZValues(),
+                EliminateSelection(),
                 EquivalentNumField(),
                 Explode(),
                 ExportGeometryInfo(),
@@ -241,12 +237,18 @@ class QGISAlgorithmProvider(QgsProcessingProvider):
                 FixedDistanceBuffer(),
                 FixGeometry(),
                 GeometryByExpression(),
+                Gridify(),
+                GridLine(),
                 GridPolygon(),
                 Heatmap(),
                 Hillshade(),
+                HubDistanceLines(),
+                HubDistancePoints(),
+                HubLines(),
                 ImportIntoPostGIS(),
                 ImportIntoSpatialite(),
                 Intersection(),
+                JoinAttributes(),
                 LinesIntersection(),
                 LinesToPolygons(),
                 MeanCoords(),
@@ -260,6 +262,7 @@ class QGISAlgorithmProvider(QgsProcessingProvider):
                 PointsAlongGeometry(),
                 PointsInPolygon(),
                 PointsLayerFromTable(),
+                PointsToPaths(),
                 PoleOfInaccessibility(),
                 Polygonize(),
                 PolygonsToLines(),
@@ -270,6 +273,8 @@ class QGISAlgorithmProvider(QgsProcessingProvider):
                 RandomPointsExtent(),
                 RandomPointsLayer(),
                 RandomPointsPolygons(),
+                RandomSelection(),
+                RandomSelectionWithinSubsets(),
                 RasterLayerStatistics(),
                 RegularPoints(),
                 ReverseLineDirection(),
@@ -293,9 +298,11 @@ class QGISAlgorithmProvider(QgsProcessingProvider):
                 SpatialiteExecuteSQL(),
                 SpatialIndex(),
                 SplitWithLines(),
+                StatisticsByCategories(),
                 SumLines(),
                 SymmetricalDifference(),
                 TextToFloat(),
+                TopoColor(),
                 Translate(),
                 TruncateTable(),
                 Union(),

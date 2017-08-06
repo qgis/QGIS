@@ -90,7 +90,7 @@ class AlgorithmLocatorFilter(QgsLocatorFilter):
             dlg.exec_()
             # have to manually delete the dialog - otherwise it's owned by the
             # iface mainWindow and never deleted
-            del dlg
+            dlg.deleteLater()
             if canvas.mapTool() != prevMapTool:
                 try:
                     canvas.mapTool().reset()

@@ -27,7 +27,7 @@ __copyright__ = '(C) 2017, Nyall Dawson'
 __revision__ = '$Format:%H$'
 
 from qgis.core import (QgsProcessing,
-                       QgsProcessingParameterDefinition,
+                       QgsProviderRegistry,
                        QgsProcessingFeatureSourceDefinition,
                        QgsVectorFileWriter)
 from qgis.PyQt.QtCore import QCoreApplication
@@ -55,22 +55,29 @@ def getFileFilter(param):
             exts = QgsVectorFileWriter.supportedFormatExtensions()
         for i in range(len(exts)):
             exts[i] = tr('{0} files (*.{1})', 'QgsProcessingParameterMultipleLayers').format(exts[i].upper(), exts[i].lower())
-        return ';;'.join(exts)
-    elif param.type() in ('raster', 'rasterDestination'):
+        return tr('All files (*.*)') + ';;' + ';;'.join(exts)
+    elif param.type() == 'raster':
+        return QgsProviderRegistry.instance().fileRasterFilters()
+    elif param.type() == 'rasterDestination':
         exts = dataobjects.getSupportedOutputRasterLayerExtensions()
         for i in range(len(exts)):
             exts[i] = tr('{0} files (*.{1})', 'QgsProcessingParameterRasterDestination').format(exts[i].upper(), exts[i].lower())
-        return ';;'.join(exts)
+        return tr('All files (*.*)') + ';;' + ';;'.join(exts)
     elif param.type() == 'table':
         exts = ['csv', 'dbf']
         for i in range(len(exts)):
             exts[i] = tr('{0} files (*.{1})', 'ParameterTable').format(exts[i].upper(), exts[i].lower())
-        return ';;'.join(exts)
+        return tr('All files (*.*)') + ';;' + ';;'.join(exts)
     elif param.type() == 'sink':
         exts = QgsVectorFileWriter.supportedFormatExtensions()
         for i in range(len(exts)):
             exts[i] = tr('{0} files (*.{1})', 'ParameterVector').format(exts[i].upper(), exts[i].lower())
-        return ';;'.join(exts)
+        return tr('All files (*.*)') + ';;' + ';;'.join(exts)
+    elif param.type() == 'source':
+        return QgsProviderRegistry.instance().fileVectorFilters()
+    elif param.type() == 'vector':
+        return QgsProviderRegistry.instance().fileVectorFilters()
     elif param.type() == 'fileOut':
-        return param.fileFilter()
+        return tr('All files (*.*)') + ';;' + param.fileFilter()
+
     return ''

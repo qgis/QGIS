@@ -25,6 +25,7 @@ __copyright__ = '(C) 2015, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
+from qgis.PyQt.QtCore import QCoreApplication
 from qgis.PyQt.QtWidgets import (QWidget,
                                  QVBoxLayout,
                                  QPushButton,
@@ -58,7 +59,7 @@ class GdalAlgorithmDialog(AlgorithmDialog):
 
         self.setMainWidget(GdalParametersPanel(self, alg))
 
-        self.runAsBatchButton = QPushButton(self.tr("Run as Batch Process…"))
+        self.runAsBatchButton = QPushButton(QCoreApplication.translate("AlgorithmDialog", "Run as Batch Process…"))
         self.runAsBatchButton.clicked.connect(self.runAsBatch)
         self.buttonBox.addButton(self.runAsBatchButton, QDialogButtonBox.ResetRole) # reset role to ensure left alignment
 

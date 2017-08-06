@@ -294,7 +294,6 @@ Q_GUI_EXPORT extern int qt_defaultDpiX();
 #include "qgsuserprofile.h"
 
 #include "qgssublayersdialog.h"
-#include "ogr/qgsopenvectorlayerdialog.h"
 #include "ogr/qgsvectorlayersaveasdialog.h"
 
 #include "qgsosmdownloaddialog.h"
@@ -2244,14 +2243,6 @@ void QgisApp::createMenus()
     mSettingsMenu->insertAction( before, mActionTogglePanelsVisibility );
     mSettingsMenu->insertSeparator( before );
   }
-
-
-#ifdef Q_OS_MAC
-  //disabled for OSX - see #10761
-  //also see http://qt-project.org/forums/viewthread/3630 QGraphicsEffects are not well supported on OSX
-  mMenuPreviewMode->menuAction()->setVisible( false );
-#endif
-
 
 #ifdef Q_OS_MAC
 

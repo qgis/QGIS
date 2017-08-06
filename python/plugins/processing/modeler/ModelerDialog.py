@@ -293,7 +293,7 @@ class ModelerDialog(BASE, WIDGET):
         dlg.exec_()
         # have to manually delete the dialog - otherwise it's owned by the
         # iface mainWindow and never deleted
-        del dlg
+        dlg.deleteLater()
 
     def save(self):
         self.saveModel(False)
