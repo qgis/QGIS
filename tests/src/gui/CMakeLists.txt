@@ -11,7 +11,7 @@ INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}
   ${CMAKE_SOURCE_DIR}/src/gui/editorwidgets
   ${CMAKE_SOURCE_DIR}/src/gui/editorwidgets/core
   ${CMAKE_SOURCE_DIR}/src/gui/layout
-  ${CMAKE_SOURCE_DIR}/src/gui/symbology-ng
+  ${CMAKE_SOURCE_DIR}/src/gui/symbology
   ${CMAKE_SOURCE_DIR}/src/gui/raster
   ${CMAKE_SOURCE_DIR}/src/core
   ${CMAKE_SOURCE_DIR}/src/core/expression
@@ -21,7 +21,7 @@ INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}
   ${CMAKE_SOURCE_DIR}/src/core/layout
   ${CMAKE_SOURCE_DIR}/src/core/metadata
   ${CMAKE_SOURCE_DIR}/src/core/raster
-  ${CMAKE_SOURCE_DIR}/src/core/symbology-ng
+  ${CMAKE_SOURCE_DIR}/src/core/symbology
   ${CMAKE_SOURCE_DIR}/src/core/fieldformatter
   ${CMAKE_SOURCE_DIR}/src/test
   ${CMAKE_SOURCE_DIR}/src/native
