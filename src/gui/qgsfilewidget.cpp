@@ -209,7 +209,7 @@ void QgsFileWidget::openFileDialog()
     {
       defPath = QDir::homePath();
     }
-    oldPath = settings.value( QStringLiteral( "UI/lastExternalResourceWidgetDefaultPath" ), defPath ).toString();
+    oldPath = settings.value( QStringLiteral( "UI/lastFileNameWidgetDir" ), defPath ).toString();
   }
 
   // Handle Storage
