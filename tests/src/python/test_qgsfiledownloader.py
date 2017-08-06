@@ -18,8 +18,6 @@ from qgis.PyQt.QtCore import QEventLoop, QUrl
 from qgis.gui import (QgsFileDownloader,)
 from qgis.testing import start_app, unittest
 
-standard_library.install_aliases()
-
 __author__ = 'Alessandro Pasotti'
 __date__ = '08/11/2016'
 __copyright__ = 'Copyright 2016, The QGIS Project'
