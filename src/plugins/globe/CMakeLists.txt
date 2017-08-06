@@ -66,7 +66,7 @@ INCLUDE_DIRECTORIES(
   ../../core/geometry
   ../../core/metadata
   ../../core/raster
-  ../../core/symbology-ng
+  ../../core/symbology
   ../../gui
   ..
   ${CMAKE_BINARY_DIR}/src/core

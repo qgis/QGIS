@@ -15,35 +15,35 @@ SET(QGIS_CORE_SRCS
   gps/time.c
   gps/tok.c
 
-  symbology-ng/qgs25drenderer.cpp
-  symbology-ng/qgsarrowsymbollayer.cpp
-  symbology-ng/qgscategorizedsymbolrenderer.cpp
-  symbology-ng/qgscolorbrewerpalette.cpp
-  symbology-ng/qgscptcityarchive.cpp
-  symbology-ng/qgsellipsesymbollayer.cpp
-  symbology-ng/qgsfillsymbollayer.cpp
-  symbology-ng/qgsgeometrygeneratorsymbollayer.cpp
-  symbology-ng/qgsgraduatedsymbolrenderer.cpp
-  symbology-ng/qgsheatmaprenderer.cpp
-  symbology-ng/qgsinvertedpolygonrenderer.cpp
-  symbology-ng/qgslegendsymbolitem.cpp
-  symbology-ng/qgslinesymbollayer.cpp
-  symbology-ng/qgsmarkersymbollayer.cpp
-  symbology-ng/qgsnullsymbolrenderer.cpp
-  symbology-ng/qgspointclusterrenderer.cpp
-  symbology-ng/qgspointdisplacementrenderer.cpp
-  symbology-ng/qgspointdistancerenderer.cpp
-  symbology-ng/qgsrenderer.cpp
-  symbology-ng/qgsrendererregistry.cpp
-  symbology-ng/qgsrulebasedrenderer.cpp
-  symbology-ng/qgssinglesymbolrenderer.cpp
-  symbology-ng/qgsstyle.cpp
-  symbology-ng/qgssvgcache.cpp
-  symbology-ng/qgssymbollayer.cpp
-  symbology-ng/qgssymbollayerregistry.cpp
-  symbology-ng/qgssymbollayerutils.cpp
-  symbology-ng/qgssymbol.cpp
-  symbology-ng/qgsvectorfieldsymbollayer.cpp
+  symbology/qgs25drenderer.cpp
+  symbology/qgsarrowsymbollayer.cpp
+  symbology/qgscategorizedsymbolrenderer.cpp
+  symbology/qgscolorbrewerpalette.cpp
+  symbology/qgscptcityarchive.cpp
+  symbology/qgsellipsesymbollayer.cpp
+  symbology/qgsfillsymbollayer.cpp
+  symbology/qgsgeometrygeneratorsymbollayer.cpp
+  symbology/qgsgraduatedsymbolrenderer.cpp
+  symbology/qgsheatmaprenderer.cpp
+  symbology/qgsinvertedpolygonrenderer.cpp
+  symbology/qgslegendsymbolitem.cpp
+  symbology/qgslinesymbollayer.cpp
+  symbology/qgsmarkersymbollayer.cpp
+  symbology/qgsnullsymbolrenderer.cpp
+  symbology/qgspointclusterrenderer.cpp
+  symbology/qgspointdisplacementrenderer.cpp
+  symbology/qgspointdistancerenderer.cpp
+  symbology/qgsrenderer.cpp
+  symbology/qgsrendererregistry.cpp
+  symbology/qgsrulebasedrenderer.cpp
+  symbology/qgssinglesymbolrenderer.cpp
+  symbology/qgsstyle.cpp
+  symbology/qgssvgcache.cpp
+  symbology/qgssymbollayer.cpp
+  symbology/qgssymbollayerregistry.cpp
+  symbology/qgssymbollayerutils.cpp
+  symbology/qgssymbol.cpp
+  symbology/qgsvectorfieldsymbollayer.cpp
 
   simplify/effectivearea.cpp
 
@@ -690,9 +690,9 @@ SET(QGIS_CORE_MOC_HDRS
   layout/qgslayoutpagecollection.h
   layout/qgslayoutobject.h
 
-  symbology-ng/qgscptcityarchive.h
-  symbology-ng/qgssvgcache.h
-  symbology-ng/qgsstyle.h
+  symbology/qgscptcityarchive.h
+  symbology/qgssvgcache.h
+  symbology/qgsstyle.h
 
   layertree/qgslayertree.h
   layertree/qgslayertreegroup.h
@@ -1009,31 +1009,31 @@ SET(QGIS_CORE_HDRS
   scalebar/qgssingleboxscalebarrenderer.h
   scalebar/qgsticksscalebarrenderer.h
 
-  symbology-ng/qgs25drenderer.h
-  symbology-ng/qgscategorizedsymbolrenderer.h
-  symbology-ng/qgscolorbrewerpalette.h
-  symbology-ng/qgsellipsesymbollayer.h
-  symbology-ng/qgsfillsymbollayer.h
-  symbology-ng/qgsgraduatedsymbolrenderer.h
-  symbology-ng/qgslegendsymbolitem.h
-  symbology-ng/qgslinesymbollayer.h
-  symbology-ng/qgsmarkersymbollayer.h
-  symbology-ng/qgspointclusterrenderer.h
-  symbology-ng/qgspointdisplacementrenderer.h
-  symbology-ng/qgspointdistancerenderer.h
-  symbology-ng/qgsrenderer.h
-  symbology-ng/qgsrendererregistry.h
-  symbology-ng/qgsrulebasedrenderer.h
-  symbology-ng/qgssinglesymbolrenderer.h
-  symbology-ng/qgsheatmaprenderer.h
-  symbology-ng/qgsinvertedpolygonrenderer.h
-  symbology-ng/qgsnullsymbolrenderer.h
-  symbology-ng/qgssymbollayer.h
-  symbology-ng/qgssymbollayerregistry.h
-  symbology-ng/qgssymbollayerutils.h
-  symbology-ng/qgssymbol.h
-  symbology-ng/qgsvectorfieldsymbollayer.h
-  symbology-ng/qgsgeometrygeneratorsymbollayer.h
+  symbology/qgs25drenderer.h
+  symbology/qgscategorizedsymbolrenderer.h
+  symbology/qgscolorbrewerpalette.h
+  symbology/qgsellipsesymbollayer.h
+  symbology/qgsfillsymbollayer.h
+  symbology/qgsgraduatedsymbolrenderer.h
+  symbology/qgslegendsymbolitem.h
+  symbology/qgslinesymbollayer.h
+  symbology/qgsmarkersymbollayer.h
+  symbology/qgspointclusterrenderer.h
+  symbology/qgspointdisplacementrenderer.h
+  symbology/qgspointdistancerenderer.h
+  symbology/qgsrenderer.h
+  symbology/qgsrendererregistry.h
+  symbology/qgsrulebasedrenderer.h
+  symbology/qgssinglesymbolrenderer.h
+  symbology/qgsheatmaprenderer.h
+  symbology/qgsinvertedpolygonrenderer.h
+  symbology/qgsnullsymbolrenderer.h
+  symbology/qgssymbollayer.h
+  symbology/qgssymbollayerregistry.h
+  symbology/qgssymbollayerutils.h
+  symbology/qgssymbol.h
+  symbology/qgsvectorfieldsymbollayer.h
+  symbology/qgsgeometrygeneratorsymbollayer.h
 
   layertree/qgslayertreeutils.h
 
@@ -1108,7 +1108,7 @@ INCLUDE_DIRECTORIES(
   raster
   renderer
   scalebar
-  symbology-ng
+  symbology
   gps/qextserialport
   metadata
 )

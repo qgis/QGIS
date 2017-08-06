@@ -232,7 +232,7 @@ License: public-domain
  LICENSE : Entirely free for all uses. Enjoy!
  This File is in the public domain
 
-Files: src/core/symbology-ng/qgscolorbrewerpalette.cpp
+Files: src/core/symbology/qgscolorbrewerpalette.cpp
 Copyright: 2002, Cynthia Brewer, Mark Harrower, and The Pennsylvania State University
            2009, by Martin Dobias
 License: Apache-2.0 and GPL-2+
@@ -242,8 +242,8 @@ Copyright: 1997, Josef Wilgen
            2002, Uwe Rathmann
 License: QWT-1.0
 
-Files: src/gui/symbology-ng/characterwidget.cpp
- src/gui/symbology-ng/characterwidget.h
+Files: src/gui/symbology/characterwidget.cpp
+ src/gui/symbology/characterwidget.h
 Copyright: 2009, Nokia Corporation and/or its subsidiary(-ies)
 License: QT-Commercial or LGPL-2.1 with Digia Qt LGPL Exception 1.1 or GPL-3
 

@@ -725,7 +725,7 @@ QStringList QgsApplication::composerTemplatePaths()
 
 QString QgsApplication::userStylePath()
 {
-  return qgisSettingsDirPath() + QStringLiteral( "symbology-ng-style.db" );
+  return qgisSettingsDirPath() + QStringLiteral( "symbology-style.db" );
 }
 
 QRegExp QgsApplication::shortNameRegExp()
@@ -843,7 +843,7 @@ QString QgsApplication::userThemesFolder()
 
 QString QgsApplication::defaultStylePath()
 {
-  return ABISYM( mPkgDataPath ) + QStringLiteral( "/resources/symbology-ng-style.xml" );
+  return ABISYM( mPkgDataPath ) + QStringLiteral( "/resources/symbology-style.xml" );
 }
 
 QString QgsApplication::defaultThemesFolder()

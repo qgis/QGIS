@@ -36,7 +36,7 @@ INCLUDE_DIRECTORIES(
   ../../../core/geometry 
   ../../../core/metadata
   ../../../core/raster
-  ../../../core/symbology-ng
+  ../../../core/symbology
   ../../../core/composer
   ../../../core/layertree
   ../..

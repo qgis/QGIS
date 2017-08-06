@@ -168,7 +168,7 @@ qgis (1.9.0) UNRELEASED; urgency=low
   * new development version 1.9 after branch of 1.8
   * include ows provider
   * include wcs provider
-  * symbology-ng-style now in sqlite3
+  * symbology-style now in sqlite3
   * include cpt-city files
   * support DEB_BUILD_OPTIONS' parallel=n
   * add python-unittest2 build dependency for maverick and squeeze
