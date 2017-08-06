@@ -77,14 +77,20 @@ class DoxygenParser():
             :param path: Path to Doxygen XML output
         """
 
+        found = False
         # find groups
         for f in glob.glob(os.path.join(path, 'group__*.xml')):
+            found = True
             group, members = self.parseGroup(f)
             self.groups[group] = members
 
+        assert found, "Could not find doxygen groups xml"
+        found = False
         # parse docs
         for f in glob.glob(os.path.join(path, '*.xml')):
+            found = True
             self.parseFile(f)
+        assert found, "Could not find doxygen files xml"
 
     def parseGroup(self, f):
         """ Parses a single Doxygen Group XML file

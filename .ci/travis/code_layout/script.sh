@@ -15,6 +15,10 @@
 set -e
 
 pushd build
+
 export CTEST_BUILD_COMMAND="/usr/bin/make -j3 -i -k"
-python ${TRAVIS_BUILD_DIR}/.ci/travis/scripts/ctest2travis.py xvfb-run ctest -V --output-on-failure -S ${TRAVIS_BUILD_DIR}/.ci/travis/travis.ctest
+python3 ${TRAVIS_BUILD_DIR}/.ci/travis/scripts/ctest2travis.py xvfb-run ctest -V --output-on-failure -S ${TRAVIS_BUILD_DIR}/.ci/travis/travis.ctest
+
+ctest -V -R PyQgsDocCoverage
+
 popd
