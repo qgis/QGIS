@@ -99,7 +99,9 @@ QVector<QgsDataItem *> QgsGdalLayerItem::createChildren()
 
       childItem = new QgsGdalLayerItem( this, name, mSublayers[i], mSublayers[i] );
       if ( childItem )
-        this->addChildItem( childItem );
+      {
+        children.append( childItem );
+      }
     }
   }
 
