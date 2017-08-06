@@ -37,6 +37,14 @@ class TestQgsFields(unittest.TestCase):
             fields.remove(111)
 
         fields = ml.fields()
+
+        # check no error
+        self.assertEqual("value", fields[1].name())
+        self.assertEqual("value", fields[-1].name())
+        # check exceptions raised
+        with self.assertRaises(IndexError):
+            fields[111]
+
         # check no error
         fields.at(1)
         # check exceptions raised
