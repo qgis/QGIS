@@ -821,6 +821,23 @@
           46.7963
         ]
       }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "Name": "Raymond Nijssen",
+        "Committer": "No",
+        "First Commit Message": "Sipify QgsPoint",
+        "First Commit Date": "30-04-2017",
+        "GIT Nickname": "raymondnijssen"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          5.2926,
+          51.6934
+        ]
+      }
     }
   ]
 }
