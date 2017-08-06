@@ -124,8 +124,6 @@ SET(QGIS_APP_SRCS
   qgstextannotationdialog.cpp
   qgssvgannotationdialog.cpp
   qgsundowidget.cpp
-  qgstipgui.cpp
-  qgstipfactory.cpp
   qgsvectorlayerproperties.cpp
   qgsmapthemes.cpp
   qgshandlebadlayers.cpp
@@ -306,8 +304,6 @@ SET (QGIS_APP_MOC_HDRS
   qgsstatisticalsummarydockwidget.h
   qgssvgannotationdialog.h
   qgstextannotationdialog.h
-  qgstipgui.h
-  qgstipfactory.h
   qgsundowidget.h
   qgsvectorlayerproperties.h
   qgsmapthemes.h

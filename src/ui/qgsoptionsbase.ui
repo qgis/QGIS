@@ -602,8 +602,32 @@
                    </layout>
                   </item>
                   <item>
-                   <layout class="QHBoxLayout" name="horizontalLayout_29">
-                    <item>
+                   <layout class="QGridLayout" name="gridLayout_16">
+                    <property name="topMargin">
+                     <number>0</number>
+                    </property>
+                    <item row="1" column="0">
+                     <widget class="QCheckBox" name="mDataSourceManagerNonModal">
+                      <property name="text">
+                       <string>Modeless data source manager dialog</string>
+                      </property>
+                     </widget>
+                    </item>
+                    <item row="1" column="1">
+                     <widget class="QCheckBox" name="mCustomGroupBoxChkBx">
+                      <property name="text">
+                       <string>QGIS-styled group boxes</string>
+                      </property>
+                     </widget>
+                    </item>
+                    <item row="0" column="1">
+                     <widget class="QCheckBox" name="cbxCheckVersion">
+                      <property name="text">
+                       <string>Check QGIS version at startup</string>
+                      </property>
+                     </widget>
+                    </item>
+                    <item row="0" column="0">
                      <widget class="QCheckBox" name="cbxHideSplash">
                       <property name="sizePolicy">
                        <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
@@ -616,82 +640,14 @@
                       </property>
                      </widget>
                     </item>
-                    <item>
-                     <widget class="Line" name="line_3">
-                      <property name="minimumSize">
-                       <size>
-                        <width>12</width>
-                        <height>0</height>
-                       </size>
-                      </property>
-                      <property name="orientation">
-                       <enum>Qt::Vertical</enum>
-                      </property>
-                     </widget>
-                    </item>
-                    <item>
-                     <widget class="QCheckBox" name="cbxShowTips">
-                      <property name="sizePolicy">
-                       <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
-                        <horstretch>0</horstretch>
-                        <verstretch>0</verstretch>
-                       </sizepolicy>
-                      </property>
-                      <property name="text">
-                       <string>Show tips at start up</string>
-                      </property>
-                     </widget>
-                    </item>
-                    <item>
-                     <widget class="Line" name="line_2">
-                      <property name="minimumSize">
-                       <size>
-                        <width>12</width>
-                        <height>0</height>
-                       </size>
-                      </property>
-                      <property name="orientation">
-                       <enum>Qt::Vertical</enum>
-                      </property>
-                     </widget>
-                    </item>
-                    <item>
-                     <widget class="QCheckBox" name="cbxCheckVersion">
-                      <property name="text">
-                       <string>Check QGIS version at startup</string>
-                      </property>
-                     </widget>
-                    </item>
-                   </layout>
-                  </item>
-                  <item>
-                   <layout class="QHBoxLayout" name="horizontalLayout_30">
-                    <item>
-                     <widget class="QCheckBox" name="mDataSourceManagerNonModal">
-                      <property name="text">
-                       <string>Modeless data source manager dialog</string>
-                      </property>
-                     </widget>
-                    </item>
-                    <item>
-                     <widget class="QCheckBox" name="mCustomGroupBoxChkBx">
-                      <property name="text">
-                       <string>QGIS-styled group boxes</string>
-                      </property>
-                     </widget>
-                    </item>
-                   </layout>
-                  </item>
-                  <item>
-                   <layout class="QHBoxLayout" name="horizontalLayout_31">
-                    <item>
+                    <item row="2" column="0">
                      <widget class="QCheckBox" name="mNativeColorDialogsChkBx">
                       <property name="text">
                        <string>Use native color chooser dialogs</string>
                       </property>
                      </widget>
                     </item>
-                    <item>
+                    <item row="2" column="1">
                      <widget class="QCheckBox" name="mLiveColorDialogsChkBx">
                       <property name="text">
                        <string>Use live-updating color chooser dialogs</string>
@@ -5543,12 +5499,6 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
   <tabstop>mFontFamilyComboBox</tabstop>
   <tabstop>spinFontSize</tabstop>
   <tabstop>mMessageTimeoutSpnBx</tabstop>
-  <tabstop>cbxHideSplash</tabstop>
-  <tabstop>cbxShowTips</tabstop>
-  <tabstop>cbxCheckVersion</tabstop>
-  <tabstop>mCustomGroupBoxChkBx</tabstop>
-  <tabstop>mNativeColorDialogsChkBx</tabstop>
-  <tabstop>mLiveColorDialogsChkBx</tabstop>
   <tabstop>groupBox_11</tabstop>
   <tabstop>mProjectOnLaunchCmbBx</tabstop>
   <tabstop>mProjectOnLaunchLineEdit</tabstop>
