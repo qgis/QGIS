@@ -35,12 +35,9 @@ SET(QGIS_ANALYSIS_SRCS
   raster/qgsrastercalculator.cpp
   raster/qgsrastermatrix.cpp
   vector/mersenne-twister.cpp
-  vector/qgsgeometryanalyzer.cpp
   vector/qgsgeometrysnapper.cpp
-  vector/qgspointsample.cpp
   vector/qgstransectsample.cpp
   vector/qgszonalstatistics.cpp
-  vector/qgsoverlayanalyzer.cpp
 
   openstreetmap/qgsosmbase.cpp
   openstreetmap/qgsosmdatabase.cpp
@@ -116,9 +113,6 @@ SET(QGIS_ANALYSIS_HDRS
   raster/qgsrastercalcnode.h
   raster/qgstotalcurvaturefilter.h
 
-  vector/qgsgeometryanalyzer.h
-  vector/qgsoverlayanalyzer.h
-  vector/qgspointsample.h
   vector/qgstransectsample.h
   vector/qgszonalstatistics.h
 

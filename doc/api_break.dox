@@ -269,6 +269,7 @@ should now call QgsCoordinateReferenceSystem::invalidateCache() and QgsCoordinat
 - QgsFileNameWidgetWrapper was removed. Use QgsExternalResourceWidgetWrapper instead.
 - QgsFileDropEdit was removed. Use QgsFileWidget instead.
 - QgsFormAnnotationItem. Use QgsFormAnnotation instead.
+- QgsGeometryAnalyzer. Use the equivalent Processing algorithms instead.
 - QgsHtmlAnnotationItem. Use QgsHtmlAnnotation instead.
 - QgsHttpTransaction. This class was outdated and code should be ported to native Qt or Python implementations.
 - QgsGenericProjectionSelector. Use QgsProjectionSelectionTreeWidget instead.
@@ -287,6 +288,7 @@ should now call QgsCoordinateReferenceSystem::invalidateCache() and QgsCoordinat
 - QgsMapRenderer. It has been replaced by QgsMapRendererJob with subclasses and QgsMapSettings.
 - QgsMapToolTouch. The touch navigation functionality is now built into the standard QgsMapToolPan tool.
 - QgsPhotoWidgetWrapper was removed. Use QgsExternalResourceWidgetWrapper instead.
+- QgsPointSample. Use the Processing "Random Points in Polygon" algorithm instead.
 - QgsPseudoColorShader. This shader has been broken for some time and was replaced by QgsSingleBandPseudoColorRenderer.
 - QgsProjectBadLayerGuiHandler was removed. It was unused in QGIS code and barely useful. Implement your own QgsProjectBadLayerHandler subclass if needed.
 - QgsRendererV2DataDefinedMenus was removed. Use QgsPropertyOverrideButton instead.
