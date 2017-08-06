@@ -3605,7 +3605,7 @@ static QVariant fcnArrayCat( const QVariantList &values, const QgsExpressionCont
 static QVariant fcnArrayReverse( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent )
 {
   QVariantList list = QgsExpressionUtils::getListValue( values.at( 0 ), parent );
-  for ( int k = 0, s = list.size(), max = ( s / 2 ); k < max; k++ ) list.swap( k, s - ( 1 + k ) );
+  std::reverse( list.begin(), list.end() );
   return list;
 }
 
