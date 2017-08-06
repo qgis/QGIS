@@ -162,6 +162,8 @@ class PythonConsoleWidget(QWidget):
         # Hide search widget on start up
         self.widgetFind.hide()
 
+        icon_size = iface.iconSize(dockedToolbar=True) if iface else QSize(16, 16)
+
         sizes = self.splitter.sizes()
         self.splitter.setSizes(sizes)
 
@@ -351,7 +353,7 @@ class PythonConsoleWidget(QWidget):
         self.toolBar.setFocusPolicy(Qt.NoFocus)
         self.toolBar.setContextMenuPolicy(Qt.DefaultContextMenu)
         self.toolBar.setLayoutDirection(Qt.LeftToRight)
-        self.toolBar.setIconSize(iface.iconSize(dockedToolbar=True))
+        self.toolBar.setIconSize(icon_size)
         self.toolBar.setMovable(False)
         self.toolBar.setFloatable(False)
         self.toolBar.addAction(self.clearButton)
@@ -367,7 +369,7 @@ class PythonConsoleWidget(QWidget):
         self.toolBarEditor.setFocusPolicy(Qt.NoFocus)
         self.toolBarEditor.setContextMenuPolicy(Qt.DefaultContextMenu)
         self.toolBarEditor.setLayoutDirection(Qt.LeftToRight)
-        self.toolBarEditor.setIconSize(iface.iconSize(dockedToolbar=True))
+        self.toolBarEditor.setIconSize(icon_size)
         self.toolBarEditor.setMovable(False)
         self.toolBarEditor.setFloatable(False)
         self.toolBarEditor.addAction(self.openFileButton)
