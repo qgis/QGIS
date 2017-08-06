@@ -183,6 +183,8 @@ class APP_EXPORT QgisAppInterface : public QgisInterface
     QgsMapCanvas *createNewMapCanvas( const QString &name ) override;
     virtual void closeMapCanvas( const QString &name ) override;
 
+    virtual QSize iconSize( bool dockedToolbar = false ) const override;
+
     /**
      * Returns a pointer to the layer tree canvas bridge
      *

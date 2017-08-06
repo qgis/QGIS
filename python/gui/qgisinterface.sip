@@ -99,6 +99,13 @@ Constructor
 .. seealso:: createNewMapCanvas()
 %End
 
+    virtual QSize iconSize( bool dockedToolbar = false ) const = 0;
+%Docstring
+ Returns the toolbar icon size. If ``dockedToolbar`` is true, the icon size
+ for toolbars contained within docks is returned.
+ :rtype: QSize
+%End
+
   public slots: // TODO: do these functions really need to be slots?
 
 
