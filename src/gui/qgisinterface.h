@@ -128,6 +128,12 @@ class GUI_EXPORT QgisInterface : public QObject
      */
     virtual void closeMapCanvas( const QString &name ) = 0;
 
+    /**
+     * Returns the toolbar icon size. If \a dockedToolbar is true, the icon size
+     * for toolbars contained within docks is returned.
+     */
+    virtual QSize iconSize( bool dockedToolbar = false ) const = 0;
+
   public slots: // TODO: do these functions really need to be slots?
 
     /* Exposed functions */

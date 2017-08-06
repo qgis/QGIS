@@ -1786,6 +1786,24 @@ int QgisApp::chooseReasonableDefaultIconSize() const
 
 }
 
+int QgisApp::dockedToolbarIconSize( int standardToolbarIconSize ) const
+{
+  int dockSize;
+  if ( standardToolbarIconSize > 32 )
+  {
+    dockSize = standardToolbarIconSize - 16;
+  }
+  else if ( standardToolbarIconSize == 32 )
+  {
+    dockSize = 24;
+  }
+  else
+  {
+    dockSize = 16;
+  }
+  return dockSize;
+}
+
 void QgisApp::readSettings()
 {
   QgsSettings settings;
@@ -2831,19 +2849,7 @@ void QgisApp::createStatusBar()
 
 void QgisApp::setIconSizes( int size )
 {
-  int dockSize;
-  if ( size > 32 )
-  {
-    dockSize = size - 16;
-  }
-  else if ( size == 32 )
-  {
-    dockSize = 24;
-  }
-  else
-  {
-    dockSize = 16;
-  }
+  int dockSize = dockedToolbarIconSize( size );
 
   //Set the icon size of for all the toolbars created in the future.
   setIconSize( QSize( size, size ) );
@@ -9734,6 +9740,19 @@ void QgisApp::unregisterOptionsWidgetFactory( QgsOptionsWidgetFactory *factory )
 QgsMapLayer *QgisApp::activeLayer()
 {
   return mLayerTreeView ? mLayerTreeView->currentLayer() : nullptr;
+}
+
+QSize QgisApp::iconSize( bool dockedToolbar ) const
+{
+  QgsSettings s;
+  int size = s.value( QStringLiteral( "/IconSize" ), 32 ).toInt();
+
+  if ( dockedToolbar )
+  {
+    size = dockedToolbarIconSize( size );
+  }
+
+  return QSize( size, size );
 }
 
 bool QgisApp::setActiveLayer( QgsMapLayer *layer )

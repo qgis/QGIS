@@ -621,6 +621,12 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     //! Returns the active map layer.
     QgsMapLayer *activeLayer();
 
+    /**
+     * Returns the toolbar icon size. If \a dockedToolbar is true, the icon size
+     * for toolbars contained within docks is returned.
+     */
+    QSize iconSize( bool dockedToolbar = false ) const;
+
   public slots:
     //! Process the list of URIs that have been dropped in QGIS
     void handleDropUriList( const QgsMimeDataUtils::UriList &lst );
@@ -1714,6 +1720,11 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
     //! Attempts to choose a reasonable default icon size based on the window's screen DPI
     int chooseReasonableDefaultIconSize() const;
+
+    /**
+     * Returns the size of docked toolbars for a given standard (non-docked) toolbar icon size.
+     */
+    int dockedToolbarIconSize( int standardToolbarIconSize ) const;
 
     QgisAppStyleSheet *mStyleSheetBuilder = nullptr;
 

@@ -52,6 +52,8 @@ from processing.modeler.ModelerParameterDefinitionDialog import ModelerParameter
 from processing.modeler.ModelerParametersDialog import ModelerParametersDialog
 from processing.modeler.ModelerUtils import ModelerUtils
 from processing.modeler.ModelerScene import ModelerScene
+from qgis.utils import iface
+
 from processing.modeler.WrongModelException import WrongModelException
 from qgis.PyQt.QtXml import QDomDocument
 
