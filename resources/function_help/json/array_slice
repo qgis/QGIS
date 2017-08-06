@@ -1,0 +1,51 @@
+{
+        "name": "array_get",
+        "type": "function",
+        "description": "Returns a portion of the array. The slice is defined by the startPos and endPos arguments. A slice that ",
+        "arguments": [{
+                        "arg": "array",
+                        "description": "an array"
+                },
+                {
+                        "arg": "startPos",
+                        "description": "the index of the start position of the slice (0 based). The startPos index is included in the slice. If you use a negative startPos, the index is counted from the end of the list (-1 based)."
+                },
+                {
+                        "arg": "endPos",
+                        "description": "the index of the start position of the slice (0 based). The endPos index is included in the slice. If you use a negative endPos, the index is counted from the end of the list (-1 based)."
+                }
+        ],
+        "examples": [{
+                        "expression": "array_slice(array(1,2,3,4,5),0,3)",
+                        "returns": "array: 1,2,3,4"
+                },
+                {
+                        "expression": "array_slice(array(1,2,3,4,5),0,-1)",
+                        "returns": "array: 1,2,3,4,5"
+                },
+                {
+                        "expression": "array_slice(array(1,2,3,4,5),-5,-1)",
+                        "returns": "array: 1,2,3,4,5"
+                },
+                {
+                        "expression": "array_slice(array(1,2,3,4,5),0,0)",
+                        "returns": "array: 1"
+                },
+                {
+                        "expression": "array_slice(array(1,2,3,4,5),-2,-1)",
+                        "returns": "array: 4,5"
+                },
+                {
+                        "expression": "array_slice(array(1,2,3,4,5),-1,-1)",
+                        "returns": "array: 5"
+                },
+                {
+                        "expression": "array_slice(array('Dufour','Valmiera','Chugiak','Brighton'),1,2)",
+                        "returns": "array: 'Valmiera','Chugiak'"
+                },
+                {
+                        "expression": "array_slice(array_slice(array('Dufour','Valmiera','Chugiak','Brighton'),-2,-1)",
+                        "returns": "array: 'Chugiak','Brighton'"
+                }
+        ]
+}
