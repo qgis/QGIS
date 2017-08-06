@@ -412,6 +412,10 @@ void QgsMarkerSymbolLayer::startRender( QgsSymbolRenderContext &context )
 
 void QgsMarkerSymbolLayer::drawPreviewIcon( QgsSymbolRenderContext &context, QSize size )
 {
+  QgsUnitTypes::RenderUnit save_outputUnit = outputUnit();
+  // Preview and Icons should not use MapUnits and others that cannot (often) be seen.
+  // Using RenderUnit from SymbolLayerItem,with QgsUnitTypes::RenderMillimeters, through QgsSymbolLayerUtils::symbolLayerPreviewIcon.
+  setOutputUnit( context.outputUnit() );
   startRender( context );
   QgsPaintEffect *effect = paintEffect();
   if ( effect && effect->enabled() )
@@ -424,6 +428,8 @@ void QgsMarkerSymbolLayer::drawPreviewIcon( QgsSymbolRenderContext &context, QSi
     renderPoint( QPointF( size.width() / 2, size.height() / 2 ), context );
   }
   stopRender( context );
+  // Restore original value
+  setOutputUnit( save_outputUnit );
 }
 
 void QgsMarkerSymbolLayer::markerOffset( QgsSymbolRenderContext &context, double &offsetX, double &offsetY ) const

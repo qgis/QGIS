@@ -449,6 +449,10 @@ void QgsSymbol::drawPreviewIcon( QPainter *painter, QSize size, QgsRenderContext
 {
   QgsRenderContext context = customContext ? *customContext : QgsRenderContext::fromQPainter( painter );
   context.setForceVectorOutput( true );
+  // TODO: replace this hack with something better
+  QgsUnitTypes::RenderUnit save_outputUnit = outputUnit();
+  // Preview and Icons should not use MapUnits and others that cannot (often) be seen.
+  setOutputUnit( QgsUnitTypes::RenderMillimeters );
   QgsSymbolRenderContext symbolContext( context, outputUnit(), mOpacity, false, mRenderHints, nullptr, QgsFields(), mapUnitScale() );
 
   Q_FOREACH ( QgsSymbolLayer *layer, mLayers )
@@ -474,6 +478,8 @@ void QgsSymbol::drawPreviewIcon( QPainter *painter, QSize size, QgsRenderContext
     else
       layer->drawPreviewIcon( symbolContext, size );
   }
+  // Restore original value
+  setOutputUnit( save_outputUnit );
 }
 
 void QgsSymbol::exportImage( const QString &path, const QString &format, QSize size )
@@ -527,6 +533,10 @@ QImage QgsSymbol::bigSymbolPreviewImage( QgsExpressionContext *expressionContext
   }
 
   QgsRenderContext context = QgsRenderContext::fromQPainter( &p );
+  // TODO: replace this hack with something better
+  QgsUnitTypes::RenderUnit save_outputUnit = outputUnit();
+  // Preview and Icons should not use MapUnits and others that cannot (often) be seen.
+  setOutputUnit( QgsUnitTypes::RenderMillimeters );
   if ( expressionContext )
     context.setExpressionContext( *expressionContext );
 
@@ -550,6 +560,8 @@ QImage QgsSymbol::bigSymbolPreviewImage( QgsExpressionContext *expressionContext
   }
 
   stopRender( context );
+  // Restore original value
+  setOutputUnit( save_outputUnit );
   return preview;
 }
 
