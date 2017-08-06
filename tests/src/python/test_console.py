@@ -34,9 +34,6 @@ class TestConsole(unittest.TestCase):
         my_console = console.show_console()
         my_console_widget = my_console.console
 
-        for action in my_console_widget.classMenu.actions():
-            action.trigger()
-
 
 if __name__ == "__main__":
     unittest.main()

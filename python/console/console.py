@@ -325,16 +325,6 @@ class PythonConsoleWidget(QWidget):
         self.optionsButton.setIconVisibleInMenu(True)
         self.optionsButton.setToolTip(optionsBt)
         self.optionsButton.setText(optionsBt)
-        # Action menu for class
-        actionClassBt = QCoreApplication.translate("PythonConsole", "Import Class")
-        self.actionClass = QAction(self)
-        self.actionClass.setCheckable(False)
-        self.actionClass.setEnabled(True)
-        self.actionClass.setIcon(QgsApplication.getThemeIcon("console/iconClassConsole.png"))
-        self.actionClass.setMenuRole(QAction.PreferencesRole)
-        self.actionClass.setIconVisibleInMenu(True)
-        self.actionClass.setToolTip(actionClassBt)
-        self.actionClass.setText(actionClassBt)
         # Action for Run script
         runBt = QCoreApplication.translate("PythonConsole", "Run Command")
         self.runButton = QAction(self)
@@ -365,7 +355,6 @@ class PythonConsoleWidget(QWidget):
         self.toolBar.setMovable(False)
         self.toolBar.setFloatable(False)
         self.toolBar.addAction(self.clearButton)
-        self.toolBar.addAction(self.actionClass)
         self.toolBar.addAction(self.runButton)
         self.toolBar.addSeparator()
         self.toolBar.addAction(self.showEditorButton)
@@ -399,28 +388,6 @@ class PythonConsoleWidget(QWidget):
         self.toolBarEditor.addAction(self.uncommentEditorButton)
         self.toolBarEditor.addSeparator()
         self.toolBarEditor.addAction(self.objectListButton)
-
-        # Menu Import Class
-        default_command = {
-            (QCoreApplication.translate("PythonConsole", "Import Processing Class"),
-             QgsApplication.getThemeIcon("console/iconProcessingConsole.png")):
-            ["import processing"],
-            (QCoreApplication.translate("PythonConsole", "Import PyQt.QtCore Class"),
-             QgsApplication.getThemeIcon("console/iconQtCoreConsole.png")):
-            ["from qgis.PyQt.QtCore import *"],
-            (QCoreApplication.translate("PythonConsole", "Import PyQt.QtGui Class"),
-             QgsApplication.getThemeIcon("console/iconQtGuiConsole.png")):
-            ["from qgis.PyQt.QtGui import *", "from qgis.PyQt.QtWidgets import *"]
-        }
-
-        self.classMenu = QMenu()
-        for (title, icon), commands in list(default_command.items()):
-            action = self.classMenu.addAction(icon, title)
-            action.triggered.connect(partial(self.shell.commandConsole, commands))
-
-        cM = self.toolBar.widgetForAction(self.actionClass)
-        cM.setMenu(self.classMenu)
-        cM.setPopupMode(QToolButton.InstantPopup)
 
         self.widgetButton = QWidget()
         sizePolicy = QSizePolicy(QSizePolicy.Fixed, QSizePolicy.Preferred)
