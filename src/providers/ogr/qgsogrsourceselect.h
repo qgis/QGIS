@@ -41,7 +41,7 @@
  *  file, database, directory and protocol sources.
  *  \note not available in Python bindings
  */
-class GUI_EXPORT QgsOgrSourceSelect : public QgsAbstractDataSourceWidget, private Ui::QgsOgrSourceSelectBase
+class QgsOgrSourceSelect : public QgsAbstractDataSourceWidget, private Ui::QgsOgrSourceSelectBase
 {
     Q_OBJECT
 
