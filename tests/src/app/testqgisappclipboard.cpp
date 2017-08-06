@@ -215,6 +215,31 @@ void TestQgisAppClipboard::pasteWkt()
   point = dynamic_cast< QgsPointV2* >( features.at( 1 ).constGeometry()->geometry() );
   QCOMPARE( point->x(), 111.0 );
   QCOMPARE( point->y(), 30.0 );
+
+  // be sure parsing does not consider attached parameters that
+  // can change geometryType as in https://issues.qgis.org/issues/16870
+  mQgisApp->clipboard()->setText( QStringLiteral( "POINT (111 30)\t GoodFieldValue\nPOINT (125 10)\t(WrongFieldValue)" ) );
+
+  features = mQgisApp->clipboard()->copyOf();
+  QCOMPARE( features.length(), 2 );
+
+  QVERIFY( features.at( 0 ).constGeometry() && !features.at( 0 ).constGeometry()->isEmpty() );
+  QCOMPARE( features.at( 0 ).constGeometry()->geometry()->wkbType(), QgsWKBTypes::Point );
+  const QgsGeometry *featureGeom = features.at( 0 ).constGeometry();
+  point = dynamic_cast< QgsPointV2 * >( featureGeom->geometry() );
+  QCOMPARE( point->x(), 111.0 );
+  QCOMPARE( point->y(), 30.0 );
+
+  QVERIFY( features.at( 1 ).constGeometry() && !features.at( 1 ).constGeometry()->isEmpty() );
+  QCOMPARE( features.at( 1 ).constGeometry()->geometry()->wkbType(), QgsWKBTypes::Point );
+  point = dynamic_cast< QgsPointV2 * >( features.at( 1 ).constGeometry()->geometry() );
+  QCOMPARE( point->x(), 125.0 );
+  QCOMPARE( point->y(), 10.0 );
+
+  // only fields => no geom so no feature list is returned
+  mQgisApp->clipboard()->setText( QStringLiteral( "MNL\t11\t282\tkm\t\nMNL\t11\t347.80000000000001\tkm\t" ) );
+  features = mQgisApp->clipboard()->copyOf();
+  QCOMPARE( features.length(), 0 );
 }
 
 void TestQgisAppClipboard::pasteGeoJson()
