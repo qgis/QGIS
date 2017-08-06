@@ -261,7 +261,6 @@ Q_GUI_EXPORT extern int qt_defaultDpiX();
 #include "qgstaskmanagerwidget.h"
 #include "qgssymbolselectordialog.h"
 #include "qgstextannotation.h"
-#include "qgstipgui.h"
 #include "qgsundowidget.h"
 #include "qgsuserinputdockwidget.h"
 #include "qgsvectordataprovider.h"
@@ -1167,18 +1166,6 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
   toggleSnapping->setWhatsThis( tr( "Toggle snapping" ) );
   toggleSnapping->setProperty( "Icon", QgsApplication::getThemeIcon( "/mIconSnapping.svg" ) );
   connect( toggleSnapping, &QShortcut::activated, mSnappingUtils, &QgsSnappingUtils::toggleEnabled );
-
-  // Show a nice tip of the day
-  if ( settings.value( QStringLiteral( "qgis/showTips%1" ).arg( Qgis::QGIS_VERSION_INT / 100 ), true ).toBool() )
-  {
-    mSplash->hide();
-    QgsTipGui myTip( this );
-    myTip.exec();
-  }
-  else
-  {
-    QgsDebugMsg( "Tips are disabled" );
-  }
 
   if ( ! QTouchDevice::devices().isEmpty() )
   {
