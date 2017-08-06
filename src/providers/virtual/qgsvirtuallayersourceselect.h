@@ -54,8 +54,6 @@ class QgsVirtualLayerSourceSelect : public QgsAbstractDataSourceWidget, private 
     void updateLayersList();
 
   signals:
-    //! Source, name, provider
-    void addVectorLayer( QString, QString, QString );
     //! Old_id, source, name, provider
     void replaceVectorLayer( QString, QString, QString, QString );
 

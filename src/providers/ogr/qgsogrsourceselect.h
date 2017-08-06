@@ -1,12 +1,20 @@
 /***************************************************************************
-                          qgsopenvectorlayerdialog.h
+                          qgsogrsourceselect.h
  Dialog to select the type and source for ogr vectors, supports
  file, database, directory and protocol sources.
                              -------------------
+    ---------------------
+    Adapted to source select:
+
+    date                 : Aug 5, 2017
+    copyright            : (C) 2017 by Alessandro Pasotti
+    email                : apasotti at itopen dot it
+
+    Original work done by:
     begin                : Mon Jan 2 2009
     copyright            : (C) 2009 by Godofredo Contreras Nava
     email                : frdcn at hotmail.com
- ***************************************************************************/
+  ***************************************************************************/
 
 /***************************************************************************
  *                                                                         *
@@ -16,10 +24,10 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#ifndef QGSOPENVECTORLAYERDIALOG_H
-#define QGSOPENVECTORLAYERDIALOG_H
+#ifndef QGSOGRSOURCESELECT_H
+#define QGSOGRSOURCESELECT_H
 
-#include <ui_qgsopenvectorlayerdialogbase.h>
+#include <ui_qgsogrsourceselectbase.h>
 #include <QDialog>
 #include "qgshelp.h"
 #include "qgsproviderregistry.h"
@@ -33,13 +41,13 @@
  *  file, database, directory and protocol sources.
  *  \note not available in Python bindings
  */
-class GUI_EXPORT QgsOpenVectorLayerDialog : public QgsAbstractDataSourceWidget, private Ui::QgsOpenVectorLayerDialogBase
+class GUI_EXPORT QgsOgrSourceSelect : public QgsAbstractDataSourceWidget, private Ui::QgsOgrSourceSelectBase
 {
     Q_OBJECT
 
   public:
-    QgsOpenVectorLayerDialog( QWidget *parent = nullptr, Qt::WindowFlags fl = 0, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::None );
-    ~QgsOpenVectorLayerDialog();
+    QgsOgrSourceSelect( QWidget *parent = nullptr, Qt::WindowFlags fl = 0, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::None );
+    ~QgsOgrSourceSelect();
     //! Opens a dialog to select a file datasource*/
     QStringList openFile();
     //! Opens a dialog to select a directory datasource*/
@@ -94,7 +102,6 @@ class GUI_EXPORT QgsOpenVectorLayerDialog : public QgsAbstractDataSourceWidget, 
     void on_cmbDatabaseTypes_currentIndexChanged( const QString &text );
     void on_cmbConnections_currentIndexChanged( const QString &text );
     void on_buttonBox_helpRequested() { QgsHelp::openHelp( QStringLiteral( "working_with_vector/supported_data.html#loading-a-layer-from-a-file" ) ); }
-
 };
 
-#endif // QGSOPENVECTORDIALOG_H
+#endif // QGSOGRSOURCESELECT_H

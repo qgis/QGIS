@@ -294,7 +294,6 @@ Q_GUI_EXPORT extern int qt_defaultDpiX();
 #include "qgsuserprofile.h"
 
 #include "qgssublayersdialog.h"
-#include "ogr/qgsopenvectorlayerdialog.h"
 #include "ogr/qgsvectorlayersaveasdialog.h"
 
 #include "qgsosmdownloaddialog.h"

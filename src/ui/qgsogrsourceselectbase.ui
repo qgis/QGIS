@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>QgsOpenVectorLayerDialogBase</class>
- <widget class="QDialog" name="QgsOpenVectorLayerDialogBase">
+ <class>QgsOgrSourceSelectBase</class>
+ <widget class="QDialog" name="QgsOgrSourceSelectBase">
   <property name="windowModality">
    <enum>Qt::WindowModal</enum>
   </property>
@@ -320,7 +320,7 @@
   <connection>
    <sender>buttonBox</sender>
    <signal>accepted()</signal>
-   <receiver>QgsOpenVectorLayerDialogBase</receiver>
+   <receiver>QgsOgrSourceSelectDialogBase</receiver>
    <slot>accept()</slot>
    <hints>
     <hint type="sourcelabel">
@@ -336,7 +336,7 @@
   <connection>
    <sender>buttonBox</sender>
    <signal>rejected()</signal>
-   <receiver>QgsOpenVectorLayerDialogBase</receiver>
+   <receiver>QgsOgrSourceSelectDialogBase</receiver>
    <slot>reject()</slot>
    <hints>
     <hint type="sourcelabel">
