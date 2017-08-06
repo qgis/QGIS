@@ -47,11 +47,6 @@ class GUI_EXPORT QgsTextEditWrapper : public QgsEditorWidgetWrapper
     QVariant value() const override;
     void showIndeterminateState() override;
 
-    /**
-     * Add a hint text on the widget
-     * \param hintText The hint text to display
-     * \since QGIS 3.0
-     */
     void setHint( const QString &hintText ) override;
 
   protected:

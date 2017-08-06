@@ -39,24 +39,10 @@ class GUI_EXPORT QgsAttributeDialog : public QDialog
 
   public:
 
-    /**
-     * Create an attribute dialog for a given layer and feature
-     *
-     * \param vl                The layer for which the dialog will be generated
-     * \param thepFeature       A feature for which the dialog will be generated
-     * \param featureOwner      Set to true, if the dialog should take ownership of the feature
-     * \param parent            A parent widget for the dialog
-     * \param showDialogButtons True: Show the dialog buttons accept/cancel
-     * \param context           The context in which this dialog is created
-     *
-     */
     QgsAttributeDialog( QgsVectorLayer *vl, QgsFeature *thepFeature, bool featureOwner, QWidget *parent SIP_TRANSFERTHIS = 0, bool showDialogButtons = true, const QgsAttributeEditorContext &context = QgsAttributeEditorContext() );
 
     ~QgsAttributeDialog();
 
-    /** Saves the size and position for the next time
-     *  this dialog box will be used.
-     */
     void saveGeometry();
 
     /** Restores the size and position from the last time
