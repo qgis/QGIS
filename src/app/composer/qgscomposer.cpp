@@ -326,16 +326,12 @@ QgsComposer::QgsComposer( QgsComposition *composition )
   QShortcut *ctrlEquals = new QShortcut( QKeySequence( QStringLiteral( "Ctrl+=" ) ), this );
   connect( ctrlEquals, &QShortcut::activated, mActionZoomIn, &QAction::trigger );
 
-#ifndef Q_OS_MAC
-  //disabled for OSX - see #10761
-  //also see http://qt-project.org/forums/viewthread/3630 QGraphicsEffects are not well supported on OSX
   QMenu *previewMenu = viewMenu->addMenu( QStringLiteral( "&Preview" ) );
   previewMenu->addAction( mActionPreviewModeOff );
   previewMenu->addAction( mActionPreviewModeGrayscale );
   previewMenu->addAction( mActionPreviewModeMono );
   previewMenu->addAction( mActionPreviewProtanope );
   previewMenu->addAction( mActionPreviewDeuteranope );
-#endif
 
   viewMenu->addSeparator();
   viewMenu->addAction( mActionZoomIn );
