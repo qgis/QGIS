@@ -293,6 +293,7 @@ Q_GUI_EXPORT extern int qt_defaultDpiX();
 #include "qgsuserprofile.h"
 
 #include "qgssublayersdialog.h"
+#include "geonode/qgsgeonodesourceselect.h"
 #include "ogr/qgsvectorlayersaveasdialog.h"
 
 #include "qgsosmdownloaddialog.h"
@@ -812,9 +813,9 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
 
   endProfile();
 
+  functionProfile( &QgisApp::createMenus, this, QStringLiteral( "Create menus" ) );
   functionProfile( &QgisApp::createActions, this, QStringLiteral( "Create actions" ) );
   functionProfile( &QgisApp::createActionGroups, this, QStringLiteral( "Create action group" ) );
-  functionProfile( &QgisApp::createMenus, this, QStringLiteral( "Create menus" ) );
   functionProfile( &QgisApp::createToolBars, this, QStringLiteral( "Toolbars" ) );
   functionProfile( &QgisApp::createStatusBar, this, QStringLiteral( "Status bar" ) );
   functionProfile( &QgisApp::createCanvasTools, this, QStringLiteral( "Create canvas tools" ) );
@@ -1049,6 +1050,11 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
     mActionShowPythonDialog = nullptr;
     mActionInstallFromZip = nullptr;
   }
+
+  // add geonode menu under web menu
+  addPluginToWebMenu( mGeonodeMenu->title(), mActionAddGeonodeLayer );
+  mActionAddGeonodeLayer = new QAction( tr( "Add GeoNode Layers..." ), this );
+  mGeonodeMenu->addAction( mActionAddGeonodeLayer );
 
   // Set icon size of toolbars
   if ( settings.contains( QStringLiteral( "IconSize" ) ) )
@@ -1894,6 +1900,8 @@ void QgisApp::createActions()
   connect( mActionLabeling, &QAction::triggered, this, &QgisApp::labeling );
   connect( mActionStatisticalSummary, &QAction::triggered, this, &QgisApp::showStatisticsDockWidget );
 
+  // Web Menu Items
+
   // Layer Menu Items
 
   connect( mActionDataSourceManager, &QAction::triggered, this, [ = ]() { dataSourceManager(); } );
@@ -1919,6 +1927,7 @@ void QgisApp::createActions()
   connect( mActionAddAmsLayer, &QAction::triggered, this, [ = ] { dataSourceManager( QStringLiteral( "arcgismapserver" ) ); } );
   connect( mActionAddDelimitedText, &QAction::triggered, this, [ = ] { dataSourceManager( QStringLiteral( "delimitedtext" ) ); } );
   connect( mActionAddVirtualLayer, &QAction::triggered, this, [ = ] { dataSourceManager( QStringLiteral( "virtual" ) ); } );
+  connect( mActionAddGeonodeLayer, &QAction::triggered, this, [ = ] { dataSourceManager( QStringLiteral( "geonode" ) ); } );
   connect( mActionOpenTable, &QAction::triggered, this, &QgisApp::attributeTable );
   connect( mActionOpenFieldCalc, &QAction::triggered, this, &QgisApp::fieldCalculator );
   connect( mActionToggleEditing, &QAction::triggered, this, [ = ] { toggleEditing(); } );
@@ -2193,6 +2202,12 @@ void QgisApp::createMenus()
   mPanelMenu->setObjectName( QStringLiteral( "mPanelMenu" ) );
   mToolbarMenu = new QMenu( tr( "Toolbars" ), this );
   mToolbarMenu->setObjectName( QStringLiteral( "mToolbarMenu" ) );
+
+  // Geonode Submenu
+  mGeonodeMenu = new QMenu( tr( "GeoNode" ), this );
+  mGeonodeMenu->setObjectName( QStringLiteral( "mGeonodeMenu" ) );
+  // Geonode Action
+  mActionAddGeonodeLayer = new QAction( tr( "Add GeoNode Layers..." ), this );
 
   // Get platform for menu layout customization (Gnome, Kde, Mac, Win)
   QDialogButtonBox::ButtonLayout layout =
@@ -4530,6 +4545,20 @@ void QgisApp::askUserForOGRSublayers( QgsVectorLayer *layer )
         group->addLayer( l );
     }
   }
+}
+
+void QgisApp::addGeonodeLayer()
+{
+  QgsGeoNodeSourceSelect *geonodes = new QgsGeoNodeSourceSelect( this, 0, true );
+  if ( !geonodes )
+  {
+    QMessageBox::warning( this, tr( "Geonode" ), tr( "Cannot get Geonode select dialog." ) );
+    return;
+  }
+  connect( geonodes, static_cast<void ( QgsGeoNodeSourceSelect::* )()>( &QgsGeoNodeSourceSelect::addRasterLayer ), this, static_cast<void ( QgisApp::* )()>( &QgisApp::addRasterLayer ) );
+  connect( geonodes, &QgsGeoNodeSourceSelect::addWfsLayer, this, &QgisApp::addVectorLayer );
+  geonodes->exec();
+  delete geonodes;
 }
 
 void QgisApp::addDatabaseLayer()

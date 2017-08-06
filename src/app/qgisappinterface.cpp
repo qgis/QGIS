@@ -653,6 +653,10 @@ QAction *QgisAppInterface::actionNewBookmark() { return qgis->actionNewBookmark(
 QAction *QgisAppInterface::actionShowBookmarks() { return qgis->actionShowBookmarks(); }
 QAction *QgisAppInterface::actionDraw() { return qgis->actionDraw(); }
 
+//! Web menu actions
+QAction *QgisAppInterface::actionAddGeonodeLayer() { return qgis->actionAddGeonodeLayer(); }
+
+//! Layer menu actions
 QAction *QgisAppInterface::actionNewVectorLayer() { return qgis->actionNewVectorLayer(); }
 QAction *QgisAppInterface::actionAddOgrLayer() { return qgis->actionAddOgrLayer(); }
 QAction *QgisAppInterface::actionAddRasterLayer() { return qgis->actionAddRasterLayer(); }
