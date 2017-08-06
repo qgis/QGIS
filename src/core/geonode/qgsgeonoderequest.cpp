@@ -143,8 +143,8 @@ void QgsGeoNodeRequest::replyFinished()
           QgsDebugMsg( QString( "expirationDate:%1" ).arg( cmd.expirationDate().toString() ) );
           if ( cmd.expirationDate().isNull() )
           {
-            QgsSettings s;
-            cmd.setExpirationDate( QDateTime::currentDateTime().addSecs( s.value( QStringLiteral( "qgis/defaultCapabilitiesExpiry" ), "24" ).toInt() * 60 * 60 ) );
+            QgsSettings settings;
+            cmd.setExpirationDate( QDateTime::currentDateTime().addSecs( settings.value( QStringLiteral( "qgis/defaultCapabilitiesExpiry" ), "24", QgsSettings::Providers ).toInt() * 60 * 60 ) );
           }
 
           nam->cache()->updateMetaData( cmd );

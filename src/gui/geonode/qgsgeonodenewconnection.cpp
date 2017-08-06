@@ -17,6 +17,7 @@
 
 #include <QMessageBox>
 #include <QUrl>
+#include "qgslogger.h"
 
 #include "qgsgeonodenewconnection.h"
 #include "qgsauthmanager.h"
@@ -60,18 +61,18 @@ QgsGeoNodeNewConnection::QgsGeoNodeNewConnection( QWidget *parent, const QString
     QString key = mBaseKey + '/' + connName;
     QString credentialsKey = mCredentialsBaseKey + '/' + connName;
     txtName->setText( connName );
-    txtUrl->setText( settings.value( key + "/url" ).toString() );
+    txtUrl->setText( settings.value( key + "/url", "", QgsSettings::Providers ).toString() );
 
-    cbxIgnoreGetMapURI->setChecked( settings.value( key + "/wms/ignoreGetMapURI", false ).toBool() );
-    cbxWfsIgnoreAxisOrientation->setChecked( settings.value( key + "/wfs/ignoreAxisOrientation", false ).toBool() );
-    cbxWmsIgnoreAxisOrientation->setChecked( settings.value( key + "/wms/ignoreAxisOrientation", false ).toBool() );
-    cbxWfsInvertAxisOrientation->setChecked( settings.value( key + "/wfs/invertAxisOrientation", false ).toBool() );
-    cbxWmsInvertAxisOrientation->setChecked( settings.value( key + "/wms/invertAxisOrientation", false ).toBool() );
-    cbxIgnoreGetFeatureInfoURI->setChecked( settings.value( key + "/wms/ignoreGetFeatureInfoURI", false ).toBool() );
-    cbxSmoothPixmapTransform->setChecked( settings.value( key + "/wms/smoothPixmapTransform", false ).toBool() );
+    cbxIgnoreGetMapURI->setChecked( settings.value( key + "/wms/ignoreGetMapURI", false, QgsSettings::Providers ).toBool() );
+    cbxWfsIgnoreAxisOrientation->setChecked( settings.value( key + "/wfs/ignoreAxisOrientation", false, QgsSettings::Providers ).toBool() );
+    cbxWmsIgnoreAxisOrientation->setChecked( settings.value( key + "/wms/ignoreAxisOrientation", false, QgsSettings::Providers ).toBool() );
+    cbxWfsInvertAxisOrientation->setChecked( settings.value( key + "/wfs/invertAxisOrientation", false, QgsSettings::Providers ).toBool() );
+    cbxWmsInvertAxisOrientation->setChecked( settings.value( key + "/wms/invertAxisOrientation", false, QgsSettings::Providers ).toBool() );
+    cbxIgnoreGetFeatureInfoURI->setChecked( settings.value( key + "/wms/ignoreGetFeatureInfoURI", false, QgsSettings::Providers ).toBool() );
+    cbxSmoothPixmapTransform->setChecked( settings.value( key + "/wms/smoothPixmapTransform", false, QgsSettings::Providers ).toBool() );
 
     int dpiIdx;
-    switch ( settings.value( key + "/dpiMode", 7 ).toInt() )
+    switch ( settings.value( key + "/dpiMode", 7, QgsSettings::Providers ).toInt() )
     {
       case 0: // off
         dpiIdx = 1;
@@ -91,7 +92,7 @@ QgsGeoNodeNewConnection::QgsGeoNodeNewConnection( QWidget *parent, const QString
     }
     cmbDpiMode->setCurrentIndex( dpiIdx );
 
-    QString version = settings.value( key + "/version" ).toString();
+    QString version = settings.value( key + "/version", QLatin1String( "1.0.0" ), QgsSettings::Providers ).toString();
     int versionIdx = 0; // AUTO
     if ( version == QLatin1String( "1.0.0" ) )
       versionIdx = 1;
@@ -101,13 +102,13 @@ QgsGeoNodeNewConnection::QgsGeoNodeNewConnection( QWidget *parent, const QString
       versionIdx = 3;
     cmbVersion->setCurrentIndex( versionIdx );
 
-    txtReferer->setText( settings.value( key + "/referer" ).toString() );
-    txtMaxNumFeatures->setText( settings.value( key + "/maxnumfeatures" ).toString() );
+    txtReferer->setText( settings.value( key + "/referer", "", QgsSettings::Providers ).toString() );
+    txtMaxNumFeatures->setText( settings.value( key + "/maxnumfeatures", QgsSettings::Providers ).toString() );
 
-    txtUserName->setText( settings.value( credentialsKey + "/username" ).toString() );
-    txtPassword->setText( settings.value( credentialsKey + "/password" ).toString() );
+    txtUserName->setText( settings.value( credentialsKey + "/username", "", QgsSettings::Providers ).toString() );
+    txtPassword->setText( settings.value( credentialsKey + "/password", "", QgsSettings::Providers ).toString() );
 
-    QString authcfg = settings.value( credentialsKey + "/authcfg" ).toString();
+    QString authcfg = settings.value( credentialsKey + "/authcfg", "", QgsSettings::Providers ).toString();
     mAuthConfigSelect->setConfigId( authcfg );
     if ( !authcfg.isEmpty() )
     {
@@ -134,7 +135,7 @@ void QgsGeoNodeNewConnection::accept()
 
   // warn if entry was renamed to an existing connection
   if ( ( mOriginalConnName.isNull() || mOriginalConnName.compare( txtName->text(), Qt::CaseInsensitive ) != 0 ) &&
-       settings.contains( key + "/url" ) &&
+       settings.contains( key + "/url", QgsSettings::Providers ) &&
        QMessageBox::question( this,
                               tr( "Save connection" ),
                               tr( "Should the existing connection %1 be overwritten?" ).arg( txtName->text() ),
@@ -155,8 +156,9 @@ void QgsGeoNodeNewConnection::accept()
   // on rename delete original entry first
   if ( !mOriginalConnName.isNull() && mOriginalConnName != key )
   {
-    settings.remove( mBaseKey + '/' + mOriginalConnName );
-    settings.remove( "qgis//" + mCredentialsBaseKey + '/' + mOriginalConnName );
+    // Manually add Section here
+    settings.remove( "providers/" + mBaseKey + '/' + mOriginalConnName );
+    settings.remove( "providers/qgis//" + mCredentialsBaseKey + '/' + mOriginalConnName );
     settings.sync();
   }
 
@@ -170,16 +172,16 @@ void QgsGeoNodeNewConnection::accept()
   }
   QUrl url( txtUrl->text() );
 
-  settings.setValue( key + "/url", url.toString() );
+  settings.setValue( key + "/url", url.toString(), QgsSettings::Providers );
 
-  settings.setValue( key + "/wfs/ignoreAxisOrientation", cbxWfsIgnoreAxisOrientation->isChecked() );
-  settings.setValue( key + "/wms/ignoreAxisOrientation", cbxWmsIgnoreAxisOrientation->isChecked() );
-  settings.setValue( key + "/wfs/invertAxisOrientation", cbxWfsInvertAxisOrientation->isChecked() );
-  settings.setValue( key + "/wms/invertAxisOrientation", cbxWmsInvertAxisOrientation->isChecked() );
+  settings.setValue( key + "/wfs/ignoreAxisOrientation", cbxWfsIgnoreAxisOrientation->isChecked(), QgsSettings::Providers );
+  settings.setValue( key + "/wms/ignoreAxisOrientation", cbxWmsIgnoreAxisOrientation->isChecked(), QgsSettings::Providers );
+  settings.setValue( key + "/wfs/invertAxisOrientation", cbxWfsInvertAxisOrientation->isChecked(), QgsSettings::Providers );
+  settings.setValue( key + "/wms/invertAxisOrientation", cbxWmsInvertAxisOrientation->isChecked(), QgsSettings::Providers );
 
-  settings.setValue( key + "/wms/ignoreGetMapURI", cbxIgnoreGetMapURI->isChecked() );
-  settings.setValue( key + "/wms/smoothPixmapTransform", cbxSmoothPixmapTransform->isChecked() );
-  settings.setValue( key + "/wms/ignoreGetFeatureInfoURI", cbxIgnoreGetFeatureInfoURI->isChecked() );
+  settings.setValue( key + "/wms/ignoreGetMapURI", cbxIgnoreGetMapURI->isChecked(), QgsSettings::Providers );
+  settings.setValue( key + "/wms/smoothPixmapTransform", cbxSmoothPixmapTransform->isChecked(), QgsSettings::Providers );
+  settings.setValue( key + "/wms/ignoreGetFeatureInfoURI", cbxIgnoreGetFeatureInfoURI->isChecked(), QgsSettings::Providers );
 
   int dpiMode = 0;
   switch ( cmbDpiMode->currentIndex() )
@@ -201,8 +203,8 @@ void QgsGeoNodeNewConnection::accept()
       break;
   }
 
-  settings.setValue( key + "/wms/dpiMode", dpiMode );
-  settings.setValue( key + "/wms/referer", txtReferer->text() );
+  settings.setValue( key + "/wms/dpiMode", dpiMode, QgsSettings::Providers );
+  settings.setValue( key + "/wms/referer", txtReferer->text(), QgsSettings::Providers );
 
   QString version = QStringLiteral( "auto" );
   switch ( cmbVersion->currentIndex() )
@@ -221,15 +223,15 @@ void QgsGeoNodeNewConnection::accept()
       break;
   }
 
-  settings.setValue( key + "/wfs/version", version );
-  settings.setValue( key + "/wfs/maxnumfeatures", txtMaxNumFeatures->text() );
+  settings.setValue( key + "/wfs/version", version, QgsSettings::Providers );
+  settings.setValue( key + "/wfs/maxnumfeatures", txtMaxNumFeatures->text(), QgsSettings::Providers );
 
-  settings.setValue( credentialsKey + "/username", txtUserName->text() );
-  settings.setValue( credentialsKey + "/password", txtPassword->text() );
+  settings.setValue( credentialsKey + "/username", txtUserName->text(), QgsSettings::Providers );
+  settings.setValue( credentialsKey + "/password", txtPassword->text(), QgsSettings::Providers );
 
-  settings.setValue( credentialsKey + "/authcfg", mAuthConfigSelect->configId() );
+  settings.setValue( credentialsKey + "/authcfg", mAuthConfigSelect->configId(), QgsSettings::Providers );
 
-  settings.setValue( mBaseKey + "/selected", txtName->text() );
+  settings.setValue( mBaseKey + "/selected", txtName->text(), QgsSettings::Providers );
 
   QDialog::accept();
 }

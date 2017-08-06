@@ -26,23 +26,25 @@ QgsGeoNodeConnection::QgsGeoNodeConnection( const QString &connName )
 {
   QgsSettings settings;
 
+
+//  settings.Section
   QString key = "qgis/connections-geonode/" + mConnName;
   QString credentialsKey = "qgis/geonode/" + mConnName;
 
   QStringList connStringParts;
 
-  mUri.setParam( QStringLiteral( "url" ), settings.value( key + "/url" ).toString() );
+  mUri.setParam( QStringLiteral( "url" ), settings.value( key + "/url", "", QgsSettings::Providers ).toString() );
 
   // Check for credentials and prepend to the connection info
-  QString username = settings.value( credentialsKey + "/username" ).toString();
-  QString password = settings.value( credentialsKey + "/password" ).toString();
+  QString username = settings.value( credentialsKey + "/username", "", QgsSettings::Providers ).toString();
+  QString password = settings.value( credentialsKey + "/password", "", QgsSettings::Providers ).toString();
   if ( !username.isEmpty() )
   {
     mUri.setParam( QStringLiteral( "username" ), username );
     mUri.setParam( QStringLiteral( "password" ), password );
   }
 
-  QString authcfg = settings.value( credentialsKey + "/authcfg" ).toString();
+  QString authcfg = settings.value( credentialsKey + "/authcfg", "", QgsSettings::Providers ).toString();
   if ( !authcfg.isEmpty() )
   {
     mUri.setParam( QStringLiteral( "authcfg" ), authcfg );
@@ -64,27 +66,29 @@ QgsDataSourceUri QgsGeoNodeConnection::uri()
 QStringList QgsGeoNodeConnection::connectionList()
 {
   QgsSettings settings;
-  settings.beginGroup( "qgis/connections-geonode" );
+  // Add Section manually
+  settings.beginGroup( "providers/qgis/connections-geonode" );
   return settings.childGroups();
 }
 
 void QgsGeoNodeConnection::deleteConnection( const QString &name )
 {
   QgsSettings settings;
-  settings.remove( "qgis/connections-geonode/" + name );
-  settings.remove( "qgis/geonode/" + name );
+  // Add Section manually
+  settings.remove( "providers/qgis/connections-geonode/" + name );
+  settings.remove( "providers/qgis/geonode/" + name );
 }
 
 QString QgsGeoNodeConnection::selectedConnection()
 {
   QgsSettings settings;
-  return settings.value( "qgis/connections-geonode/selected" ).toString();
+  return settings.value( "qgis/connections-geonode/selected", "", QgsSettings::Providers ).toString();
 }
 
 void QgsGeoNodeConnection::setSelectedConnection( const QString &name )
 {
   QgsSettings settings;
-  settings.setValue( "qgis/connections-geonode/selected", name );
+  settings.setValue( "qgis/connections-geonode/selected", name, QgsSettings::Providers );
 }
 
 QString QgsGeoNodeConnection::pathGeoNodeConnection()
