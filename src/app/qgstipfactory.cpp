@@ -19,276 +19,266 @@
 #include <cstdlib>
 
 
-QgsTipFactory::QgsTipFactory() : QObject()
+QgsTipFactory::QgsTipFactory()
 {
   // I'm just doing this in a simple way so
   // its easy for translators...later
   // it its worth the time I'll move this data
   // into a sqlite database...
   QgsTip myTip;
-  myTip.setTitle( tr( "QGIS is open source" ) );
-  myTip.setContent( tr( "QGIS is open source software."
-                        " This means that the software source code can be freely viewed"
-                        " and modified. The GPL places a restriction that any modifications"
-                        " you make must be made available in source form to whoever you give"
-                        " modified versions to, and that you can not create a new version of"
-                        " QGIS under a 'closed source' license. Visit"
-                        " <a href=\"https://qgis.org\"> the QGIS home page</a>"
-                        " for more information."
-                      ) );
+  myTip.setTitle( QObject::tr( "QGIS is open source" ) );
+  myTip.setContent( QObject::tr( "QGIS is open source software."
+                                 " This means that the software source code can be freely viewed"
+                                 " and modified. The GPL places a restriction that any modifications"
+                                 " you make must be made available in source form to whoever you give"
+                                 " modified versions to, and that you can not create a new version of"
+                                 " QGIS under a 'closed source' license. Visit"
+                                 " <a href=\"https://qgis.org\"> the QGIS home page</a>"
+                                 " for more information."
+                               ) );
   addGenericTip( myTip );
   //
-  myTip.setTitle( tr( "QGIS Publications" ) );
-  myTip.setContent( tr( "If you write a scientific paper or any other article"
-                        " that refers to QGIS we would love to include your work"
-                        " in the <a href=\"https://qgis.org/en/site/about/case_studies/index.html\">case studies section</a> of"
-                        " the QGIS home page."
-                      ) );
+  myTip.setTitle( QObject::tr( "QGIS Publications" ) );
+  myTip.setContent( QObject::tr( "If you write a scientific paper or any other article"
+                                 " that refers to QGIS we would love to include your work"
+                                 " in the <a href=\"https://qgis.org/en/site/about/case_studies/index.html\">case studies section</a> of"
+                                 " the QGIS home page."
+                               ) );
   addGenericTip( myTip );
-  myTip.setTitle( tr( "Become a QGIS translator" ) );
-  myTip.setContent( tr( "Would you like to see QGIS"
-                        " in your native language? We are looking for more translators"
-                        " and would appreciate your help! The translation process is"
-                        " fairly straight forward - instructions are available in the"
-                        " QGIS wiki"
-                        " <a href=\"https://qgis.org/en/site/getinvolved/translate.html#howto-translate-gui\">translator's page.</a>"
-                      ) );
+  myTip.setTitle( QObject::tr( "Become a QGIS translator" ) );
+  myTip.setContent( QObject::tr( "Would you like to see QGIS"
+                                 " in your native language? We are looking for more translators"
+                                 " and would appreciate your help! The translation process is"
+                                 " fairly straight forward - instructions are available in the"
+                                 " QGIS wiki"
+                                 " <a href=\"https://qgis.org/en/site/getinvolved/translate.html#howto-translate-gui\">translator's page.</a>"
+                               ) );
   addGuiTip( myTip );
-  myTip.setTitle( tr( "Getting Help With QGIS" ) );
-  myTip.setContent( tr( "If you need help using QGIS"
-                        " there is a 'users' mailing list where users help each other with issues"
-                        " related to using QGIS. We also have a 'developers' mailing list"
-                        " for those wanting help and discuss things relating to the QGIS code base."
-                        " Details on different means to get help are described in the"
-                        " <a href=\"https://qgis.org/en/site/forusers/support.html#mailing-lists\">community section</a> of the QGIS home page."
-                      ) );
+  myTip.setTitle( QObject::tr( "Getting Help With QGIS" ) );
+  myTip.setContent( QObject::tr( "If you need help using QGIS"
+                                 " there is a 'users' mailing list where users help each other with issues"
+                                 " related to using QGIS. We also have a 'developers' mailing list"
+                                 " for those wanting help and discuss things relating to the QGIS code base."
+                                 " Details on different means to get help are described in the"
+                                 " <a href=\"https://qgis.org/en/site/forusers/support.html#mailing-lists\">community section</a> of the QGIS home page."
+                               ) );
   addGuiTip( myTip );
-  myTip.setTitle( tr( "Is it 'QGIS' or 'Quantum GIS'?" ) );
-  myTip.setContent( tr( "Both used to be correct, but we recently decided to just use 'QGIS'. For articles we suggest you write 'QGIS is ....'"
-                      ) );
+  myTip.setTitle( QObject::tr( "Is it 'QGIS' or 'Quantum GIS'?" ) );
+  myTip.setContent( QObject::tr( "Both used to be correct, but we recently decided to just use 'QGIS'. For articles we suggest you write 'QGIS is ....'"
+                               ) );
   addGenericTip( myTip );
-  myTip.setTitle( tr( "How do I refer to QGIS?" ) );
-  myTip.setContent( tr( "QGIS is spelled in all caps."
-                        " We have various subprojects of the QGIS project"
-                        " and it will help to avoid confusion if you refer to each by"
-                        " its name:"
-                        "<ul>"
-                        "<li><strong>QGIS Library</strong> - this is the C++ library that contains"
-                        " the core logic that is used to build the QGIS user interface and other applications.</li>"
-                        "<li><strong>QGIS Desktop</strong> - this is the desktop application that you know and love so much :-).</li>"
-                        "<li><strong>QGIS Server</strong> - this is a server-side application based on the QGIS Library"
-                        " that will serve up your .qgs projects using OGC standard protocols.</li>"
-                        "</ul>"
-                      ) );
+  myTip.setTitle( QObject::tr( "How do I refer to QGIS?" ) );
+  myTip.setContent( QObject::tr( "QGIS is spelled in all caps."
+                                 " We have various subprojects of the QGIS project"
+                                 " and it will help to avoid confusion if you refer to each by"
+                                 " its name:"
+                                 "<ul>"
+                                 "<li><strong>QGIS Desktop</strong> - this is the desktop application that you know and love so much :-).</li>"
+                                 "<li><strong>QGIS Library</strong> - this is the C++ library that contains"
+                                 " the core logic that is used to build the QGIS user interface and other applications.</li>"
+                                 "<li><strong>QGIS Server</strong> - this is a server-side application based on the QGIS Library"
+                                 " that will serve up your .qgs projects using OGC standard protocols.</li>"
+                                 "</ul>"
+                               ) );
   addGenericTip( myTip );
   // This tip contributed by Andreas Neumann
-  myTip.setTitle( tr( "Add the current date to a map layout" ) );
-  myTip.setContent( tr( "You can add a current date variable to your map"
-                        " layout. Create a regular text label and add the string"
-                        " $CURRENT_DATE(yyyy-MM-dd) to the text box. See the"
-                        " <a href=\"https://doc.qt.io/qt-5.3/qdate.html#toString\">"
-                        "QDate::toString format documentation</a> for the possible date formats."
-                      ) );
+  myTip.setTitle( QObject::tr( "Add the current date to a map layout" ) );
+  myTip.setContent( QObject::tr( "You can add a current date variable to your map"
+                                 " layout. Create a regular text label and add the string"
+                                 " $CURRENT_DATE(yyyy-MM-dd) to the text box. See the"
+                                 " <a href=\"https://doc.qt.io/qt-5.3/qdate.html#toString\">"
+                                 "QDate::toString format documentation</a> for the possible date formats."
+                               ) );
   addGuiTip( myTip );
-  myTip.setTitle( tr( "Moving Elements and Maps in the Print Composer" ) );
-  myTip.setContent( tr( "In the print composer toolbar you can find two buttons for moving"
-                        " elements. The first one ( <img src=\":/images/themes/default/mActionSelect.svg\"/> )"
-                        " selects and moves elements in the layout. After selecting the element"
-                        " with this tool you can also move them around with the arrow keys."
-                        " For accurate positioning use the <strong>%1</strong> section,"
-                        " which can be found in the tab <strong>%2</strong>."
-                        " The other move tool ( <img src=\":/images/themes/default/mActionMoveItemContent.svg\"/> )"
-                        " allows you to move the map content within a map frame." )
-                    .arg( tr( "Position and Size" ) )
-                    .arg( tr( "Item Properties" ) )
+  myTip.setTitle( QObject::tr( "Moving Elements and Maps in the Print Composer" ) );
+  myTip.setContent( QObject::tr( "In the print composer toolbar you can find two buttons for moving"
+                                 " elements. The first one ( <img src=\":/images/themes/default/mActionSelect.svg\"/> )"
+                                 " selects and moves elements in the layout. After selecting the element"
+                                 " with this tool you can also move them around with the arrow keys."
+                                 " For accurate positioning use the <strong>%1</strong> section,"
+                                 " which can be found in the tab <strong>%2</strong>."
+                                 " The other move tool ( <img src=\":/images/themes/default/mActionMoveItemContent.svg\"/> )"
+                                 " allows you to move the map content within a map frame." )
+                    .arg( QObject::tr( "Position and Size" ) )
+                    .arg( QObject::tr( "Item Properties" ) )
                   );
   addGuiTip( myTip );
   addGuiTip( myTip );
   // This  tip contributed by Andreas Neumann
-  myTip.setTitle( tr( "Lock an item in the layout view" ) );
-  myTip.setContent( tr( "Locking an element in the layout view prevents you to select or accidentally"
-                        " move it with the mouse. Locking an item is done by checking its"
-                        " <img src=\":/images/themes/default/locked.svg\"/> state in the"
-                        " <strong>%1</strong> tab. While in a locked state, you can still get it"
-                        " selected from the <strong>%1</strong> tab, and configure any of its"
-                        " properties in the <strong>%2</strong> tab, including precisely setting"
-                        " its position and size." )
-                    .arg( tr( "Items" ) )
-                    .arg( tr( "Item Properties" ) )
+  myTip.setTitle( QObject::tr( "Lock an item in the layout view" ) );
+  myTip.setContent( QObject::tr( "Locking an element in the layout view prevents you to select or accidentally"
+                                 " move it with the mouse. Locking an item is done by checking its"
+                                 " <img src=\":/images/themes/default/locked.svg\"/> state in the"
+                                 " <strong>%1</strong> tab. While in a locked state, you can still get it"
+                                 " selected from the <strong>%1</strong> tab, and configure any of its"
+                                 " properties in the <strong>%2</strong> tab, including precisely setting"
+                                 " its position and size." )
+                    .arg( QObject::tr( "Items" ) )
+                    .arg( QObject::tr( "Item Properties" ) )
                   );
   addGuiTip( myTip );
   // This  tip contributed by Andreas Neumann
-  myTip.setTitle( tr( "Rotating a map and linking a north arrow" ) );
-  myTip.setContent( tr( "In the Print Composer you can rotate a map by setting its rotation value"
-                        " in the tab <strong>Item Properties -> Map -> Main properties</strong> section."
-                        " To place a north arrow in your layout you can use the"
-                        " <strong>%1</strong> tool. After the selection and"
-                        " placement of the north arrow in the layout you can link it"
-                        " with a specific map frame by activating the <strong>%2</strong>"
-                        " checkbox and selecting a map frame. Whenever you change the rotation"
-                        " value of a linked map, the north arrow will now automatically adjust"
-                        " its rotation." )
-                    .arg( tr( "Add Image" ) )
-                    .arg( tr( "Sync with map" ) )
+  myTip.setTitle( QObject::tr( "Rotating a map and linking a north arrow" ) );
+  myTip.setContent( QObject::tr( "In the Print Composer you can rotate a map by setting its rotation value"
+                                 " in the tab <strong>Item Properties -> Map -> Main properties</strong> section."
+                                 " To place a north arrow in your layout you can use the"
+                                 " <strong>%1</strong> tool. After the selection and"
+                                 " placement of the north arrow in the layout you can link it"
+                                 " with a specific map frame by activating the <strong>%2</strong>"
+                                 " checkbox and selecting a map frame. Whenever you change the rotation"
+                                 " value of a linked map, the north arrow will now automatically adjust"
+                                 " its rotation." )
+                    .arg( QObject::tr( "Add Image" ) )
+                    .arg( QObject::tr( "Sync with map" ) )
                   );
   addGuiTip( myTip );
   addGuiTip( myTip );
   // This  tip contributed by Andreas Neumann
-  myTip.setTitle( tr( "Numeric scale value in map layout linked to map frame" ) );
-  myTip.setContent( tr( "If you want to place a text label as a placeholder for the"
-                        " current scale, linked to a map frame, you need to place a scalebar and"
-                        " set the style to 'Numeric'. You also need to select the map frame, if there"
-                        " is more than one."
-                      ) );
+  myTip.setTitle( QObject::tr( "Numeric scale value in map layout linked to map frame" ) );
+  myTip.setContent( QObject::tr( "If you want to place a text label as a placeholder for the"
+                                 " current scale, linked to a map frame, you need to place a scalebar and"
+                                 " set the style to 'Numeric'. You also need to select the map frame if there"
+                                 " is more than one."
+                               ) );
   addGuiTip( myTip );
   // by Tim
-  myTip.setTitle( tr( "Using the mouse scroll wheel" ) );
-  myTip.setContent( tr( "You can use the scroll wheel on your mouse to zoom in,"
-                        " out and pan the map. Scroll forwards to zoom in, scroll backwards to"
-                        " zoom out and press and hold the scroll wheel down to pan the map. You"
-                        " can configure the zoom scale factor in the <strong> %1 -> %2 </strong> panel." )
-                    .arg( tr( "Options" ) )
-                    .arg( tr( "Map tools" ) )
+  myTip.setTitle( QObject::tr( "Using the mouse scroll wheel" ) );
+  myTip.setContent( QObject::tr( "You can use the scroll wheel on your mouse to zoom in,"
+                                 " out and pan the map. Scroll forwards to zoom in, scroll backwards to"
+                                 " zoom out and press and hold the scroll wheel down to pan the map. You"
+                                 " can configure the zoom scale factor in the <strong> %1 -> %2 </strong> panel." )
+                    .arg( QObject::tr( "Options" ) )
+                    .arg( QObject::tr( "Map tools" ) )
                   );
-  addGuiTip( myTip );
-  addGuiTip( myTip );
-  // by Tim
-  myTip.setTitle( tr( "Disabling rendering" ) );
-  myTip.setContent( tr( "Sometimes you have a very large dataset which takes ages"
-                        " to draw. If you are going to be performing several"
-                        " actions (e.g. modifying symbology options) and wish to temporarily"
-                        " disable map rendering while you do so, you can uncheck the 'Render'"
-                        " checkbox in the bottom right of the status bar. Don't forget to check"
-                        " it on again when you are ready to have the map draw itself again!"
-                      ) );
   addGuiTip( myTip );
   // Tip contributed by Alister Hood
-  myTip.setTitle( tr( "Join intersected polylines when rendering" ) );
-  myTip.setContent( tr( "When applying layered styles to a polyline layer, you can join"
-                        " intersecting lines together simply by enabling symbol levels."
-                        " The image below shows a before (left) and after (right) view of"
-                        " an intersection when symbol levels are enabled." ) +
+  myTip.setTitle( QObject::tr( "Join intersected polylines when rendering" ) );
+  myTip.setContent( QObject::tr( "When applying layered styles to a polyline layer, you can join"
+                                 " intersecting lines together simply by enabling symbol levels."
+                                 " The image below shows a before (left) and after (right) view of"
+                                 " an intersection when symbol levels are enabled." ) +
                     QStringLiteral( "<p><center><img src=\":/images/tips/symbol_levels.png\"/></center></p>" )
                   );
   addGuiTip( myTip );
   // by Tim
-  myTip.setTitle( tr( "Auto-enable on the fly projection" ) );
-  myTip.setContent( tr( "In the options dialog, under the CRS tab, you can set QGIS so that"
-                        " whenever you create a new project, 'on the fly projection' is enabled"
-                        " automatically and a pre-selected Coordinate Reference System of your"
-                        " choice is used."
-                      ) );
+  myTip.setTitle( QObject::tr( "Auto-enable your favorite coordinate reference system (CRS)" ) );
+  myTip.setContent( QObject::tr( "In the <strong>options</strong> dialog, under the <strong>CRS</strong> tab,"
+                                 " you can configure QGIS so that whenever you create a new project"
+                                 " your favorite CRS is predefined automatically."
+                               ) );
   addGuiTip( myTip );
   // by Tim
-  myTip.setTitle( tr( "Sponsor QGIS" ) );
-  myTip.setContent( tr( "If QGIS is saving you money or you like our work and"
-                        " have the financial ability to help, please consider sponsoring the"
-                        " development of QGIS. We use money from sponsors to pay for"
-                        " travel and costs related to our regular hackfest meetings, and to generally"
-                        " support the goals of our project. Please see the <a"
-                        " href=\"https://qgis.org/en/site/getinvolved/governance/sponsorship/sponsorship.html\">QGIS Sponsorship Web"
-                        " Page</a> for more details."
-                      ) );
+  myTip.setTitle( QObject::tr( "Sponsor QGIS" ) );
+  myTip.setContent( QObject::tr( "If QGIS is saving you money or you like our work and"
+                                 " have the financial ability to help, please consider sponsoring the"
+                                 " development of QGIS. We use money from sponsors to pay for"
+                                 " travel and costs related to our regular hackfest meetings and invest it into"
+                                 " stability enhancements and infrastructure maintenance expenses. Please see the <a"
+                                 " href=\"https://qgis.org/en/site/getinvolved/governance/sponsorship/sponsorship.html\">QGIS Sponsorship Web"
+                                 " Page</a> for more details."
+                               ) );
   addGenericTip( myTip );
   // by gsherman
-  myTip.setTitle( tr( "QGIS has Plugins!" ) );
-  myTip.setContent( tr( "QGIS has plugins that extend its functionality."
-                        " QGIS ships with some core plugins you can explore from the"
-                        " <strong> %1 -> %2</strong> menu. In addition there"
-                        " are a lot of <a href=\"https://plugins.qgis.org/\">Python plugins </a>"
-                        " contributed by the user community that can be"
-                        " installed via this same menu. Don't miss out on all QGIS has to offer!"
-                        " Check out the plugins and see what they can do for you." )
-                    .arg( tr( "Plugins" ) )
-                    .arg( tr( "Manage and Install Plugins..." ) )
+  myTip.setTitle( QObject::tr( "QGIS has Plugins!" ) );
+  myTip.setContent( QObject::tr( "QGIS has plugins that extend its functionality."
+                                 " QGIS ships with some core plugins which you can explore from the"
+                                 " <strong> %1 -> %2</strong> menu. In addition there"
+                                 " are a lot of <a href=\"https://plugins.qgis.org/\">Python plugins</a>"
+                                 " contributed by the user community that can be"
+                                 " installed via this same menu. Don't miss out on all QGIS has to offer!"
+                                 " Check out the plugins and see what they can do for you." )
+                    .arg( QObject::tr( "Plugins" ) )
+                    .arg( QObject::tr( "Manage and Install Plugins..." ) )
                   );
   addGuiTip( myTip );
   addGenericTip( myTip );
   // by yjacolin
-  myTip.setTitle( tr( "Add an action to layer" ) );
-  myTip.setContent( tr( "Action in a layer allows user to trigger action when clicking on a geometry"
-                        " with 'Run Feature Action' tools."
-                        "For example, you can open a HTML page using the field value of the geometry "
-                        "as a parameter. Look at the <a href=\"https://docs.qgis.org/latest/en/docs/user_manual/working_with_vector/vector_properties.html?#actions-menu\">documentation</a>."
-                      ) );
+  myTip.setTitle( QObject::tr( "Add an action to a layer" ) );
+  myTip.setContent( QObject::tr( "Actions on a layer allow users to trigger actions when clicking on a geometry"
+                                 " with the <strong>Run Feature Action</strong> tool"
+                                 " or from the feature form."
+                                 "For example, you can open a HTML page using a field value of the feature "
+                                 "as a parameter. Look at the <a href=\"https://docs.qgis.org/latest/en/docs/user_manual/working_with_vector/vector_properties.html?#actions-menu\">documentation</a>."
+                               ) );
   addGuiTip( myTip );
   // by yjacolin
-  myTip.setTitle( tr( "Copy, paste and cut in QGIS" ) );
-  myTip.setContent( tr( "Copy, paste, and cut work as in another applications in QGIS. Select a "
-                        "feature (a geometry or an attribute row in the attribute table) and use "
-                        "one of these shortcuts: Ctrl+C to copy, Ctrl+X to cut, and Ctrl+V to paste."
-                      ) );
+  myTip.setTitle( QObject::tr( "Copy, paste and cut in QGIS" ) );
+  myTip.setContent( QObject::tr( "Copy, paste, and cut work as in another applications in QGIS. Select a "
+                                 "feature (a geometry or an attribute row in the attribute table) and use "
+                                 "one of these shortcuts: Ctrl+C to copy, Ctrl+X to cut, and Ctrl+V to paste."
+                               ) );
   addGuiTip( myTip );
   // by yjacolin
-  myTip.setTitle( tr( "Right click with identify tools" ) );
-  myTip.setContent( tr( "Right click with the identify tool to show a context menu from which you can "
-                        "choose the layer in which to identify a feature. A sub-menu will list features "
-                        "identified and a third sub-menu will show the action link setup for the layer. "
-                        "If one of this sub-menu doesn't contain any information, the next sub-menu "
-                        "will appear instead. For example, if you have just one layer, and click "
-                        "somewhere with several features, the first menu will list the features "
-                        "instead of layer list."
-                      ) );
+  myTip.setTitle( QObject::tr( "Right click with identify tools" ) );
+  myTip.setContent( QObject::tr( "Right click with the identify tool to show a context menu from which you can "
+                                 "choose the layer in which to identify a feature. A sub-menu will list features "
+                                 "identified and a third sub-menu will show the action link setup for the layer. "
+                                 "If one of this sub-menu doesn't contain any information, the next sub-menu "
+                                 "will appear instead. For example, if you have just one layer, and click "
+                                 "somewhere with several features, the first menu will list the features "
+                                 "instead of layer list."
+                               ) );
   addGuiTip( myTip );
   // by Alister Hood
-  myTip.setTitle( tr( "Use VRT files" ) );
-  myTip.setContent( tr( "If you have a number of aerial photos spread across a wide area, instead of "
-                        "loading each file as a separate layer you can treat them all as a single layer "
-                        "by using a .vrt file. "
-                        "To create a .vrt, go to <strong> %1 -> %2 -> %3</strong>." )
-                    .arg( tr( "Raster" ) )
-                    .arg( tr( "Miscellaneous" ) )
-                    .arg( tr( "Build Virtual Raster (Catalog)" ) )
+  myTip.setTitle( QObject::tr( "Use VRT files" ) );
+  myTip.setContent( QObject::tr( "If you have a number of aerial photos spread across a wide area, instead of "
+                                 "loading each file as a separate layer you can treat them all as a single layer "
+                                 "by using a .vrt file. "
+                                 "To create a .vrt, go to <strong> %1 -> %2 -> %3</strong>." )
+                    .arg( QObject::tr( "Raster" ) )
+                    .arg( QObject::tr( "Miscellaneous" ) )
+                    .arg( QObject::tr( "Build Virtual Raster (Catalog)" ) )
                   );
   addGuiTip( myTip );
   // by Harrissou Sant-anna
-  myTip.setTitle( tr( "Switch quickly between different styles of the layer" ) );
-  myTip.setContent( tr( "From the Layer properties dialog, use the <strong>Styles -> Add</strong> combobox"
-                        " to create as many combinations of layer properties settings (symbology, labeling,"
-                        " diagram, fields form, actions...) as you want. Then, simply switch between styles"
-                        " from the context menu of the layer in <strong>%1</strong> to automatically"
-                        " get different custom representations of your data." )
-                    .arg( tr( "Layers Panel" ) )
+  myTip.setTitle( QObject::tr( "Switch quickly between different styles of a layer" ) );
+  myTip.setContent( QObject::tr( "From the layer properties dialog, use the <strong>Styles -> Add</strong> combobox"
+                                 " to create as many combinations of layer properties (symbology, labeling,"
+                                 " diagram, fields form, actions...) as you want. Then, simply switch between styles"
+                                 " in the context menu of the layer in the <strong>%1</strong>." )
+                    .arg( QObject::tr( "Layers Panel" ) )
                   );
   addGuiTip( myTip );
   // by Harrissou Sant-anna
-  myTip.setTitle( tr( "Live update rendering" ) );
-  myTip.setContent( tr( "Press F7 to activate the <strong>%1</strong> panel from which you can"
-                        " easily and quickly configure the layer rendering. Check the <strong>%2</strong>"
-                        " option to automatically apply to the map canvas each of your modifications." )
-                    .arg( tr( "Layer Styling" ) )
-                    .arg( tr( "Live update" ) )
+  myTip.setTitle( QObject::tr( "Live update rendering" ) );
+  myTip.setContent( QObject::tr( "Press F7 to activate the <strong>%1</strong> panel from which you can"
+                                 " easily and quickly configure the layer rendering. Check the <strong>%2</strong>"
+                                 " option to immediately see each of your modifications on the map canvas." )
+                    .arg( QObject::tr( "Layer Styling" ) )
+                    .arg( QObject::tr( "Live update" ) )
                   );
   addGuiTip( myTip );
   // by Harrissou Sant-anna
-  myTip.setTitle( tr( "Print or export a specific feature from an atlas composition" ) );
-  myTip.setContent( tr( "If you want to print or export the composition of only one feature of the atlas,"
-                        " start the atlas preview, select the desired feature in the drop-down list"
-                        " and click on <strong>Composer -> Print</strong> menu (or use <strong>Composer ->"
-                        " Export...</strong> to any supported file format)."
-                      ) );
+  myTip.setTitle( QObject::tr( "Print or export a specific feature from an atlas composition" ) );
+  myTip.setContent( QObject::tr( "If you want to print or export the composition for only one feature of the atlas,"
+                                 " start the atlas preview, select the desired feature in the drop-down list"
+                                 " and click the <strong>Composer -> Print</strong> menu (or use <strong>Composer ->"
+                                 " Export...</strong> for any supported file format).<br>"
+                                 "Atlas features can also be selected from the canvas by using the <strong>Run feature action</strong>"
+                                 " tool 'Set as atlas feature' from the attributes toolbar."
+                               ) );
   addGuiTip( myTip );
   // by Harrissou Sant-anna
-  myTip.setTitle( tr( "Start QGIS from command line" ) );
-  myTip.setContent( tr( "QGIS can be launched from command line and supports a number of options. This can be"
-                        " handy if you need to use QGIS with particular configurations such as custom"
-                        " user profile or, without plugins... To get the list of the options,"
-                        " enter qgis --help on the command line."
-                      ) );
+  myTip.setTitle( QObject::tr( "Start QGIS from command line" ) );
+  myTip.setContent( QObject::tr( "QGIS can be launched from command line and supports a number of options. This can be"
+                                 " handy if you need to use QGIS with particular configurations such as a custom"
+                                 " user profile or without plugins... To get the list of the options"
+                                 " enter <pre>qgis --help</pre> on the command line."
+                               ) );
   addGuiTip( myTip );
   // by Harrissou Sant-anna
-  myTip.setTitle( tr( "Set your own shortcuts for your actions" ) );
-  myTip.setContent( tr( "QGIS provides you with a list of predefined shortcuts you can use to speed"
-                        " your workflow. These are available under <strong> %1 -> %2 </strong>"
-                        "  menu and can be extended and customized for any dialog or tool." )
-                    .arg( tr( "Settings" ) )
-                    .arg( tr( "Keyboard Shortcuts" ) )
+  myTip.setTitle( QObject::tr( "Set your own shortcuts for your actions" ) );
+  myTip.setContent( QObject::tr( "QGIS provides you with a list of predefined shortcuts you can use to speed"
+                                 " your workflow. These are available under <strong> %1 -> %2 </strong>"
+                                 "  menu and can be extended and customized for any dialog or tool." )
+                    .arg( QObject::tr( "Settings" ) )
+                    .arg( QObject::tr( "Keyboard Shortcuts" ) )
                   );
   addGuiTip( myTip );
 
   /* Template for adding more tips
-  myTip.setTitle(tr(""));
-  myTip.setContent(tr(""
+  myTip.setTitle(QObject::tr(""));
+  myTip.setContent(QObject::tr(""
         ));
   addGuiTip(myTip);
   */
