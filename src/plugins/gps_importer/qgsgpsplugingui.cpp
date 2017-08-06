@@ -51,7 +51,7 @@ QgsGPSPluginGui::QgsGPSPluginGui( const BabelMap &importers,
   // click it
   pbnOK = buttonBox->button( QDialogButtonBox::Ok );
   pbnOK->setEnabled( false );
-  connect( leGPXFile, &QLineEdit::textChanged,
+  connect( mFileWidget, &QgsFileWidget::fileChanged,
            this, &QgsGPSPluginGui::enableRelevantControls );
   connect( leIMPInput, &QLineEdit::textChanged,
            this, &QgsGPSPluginGui::enableRelevantControls );
@@ -75,7 +75,7 @@ QgsGPSPluginGui::QgsGPSPluginGui( const BabelMap &importers,
            this, &QgsGPSPluginGui::enableRelevantControls );
 
   // drag and drop filter
-  leGPXFile->setSuffixFilter( QStringLiteral( "gpx" ) );
+  mFileWidget->setFilter( tr( "GPX files (*.gpx)" ) );
 }
 
 QgsGPSPluginGui::~QgsGPSPluginGui()
@@ -92,7 +92,7 @@ void QgsGPSPluginGui::on_buttonBox_accepted()
   {
     case 0:
       // add a GPX layer?
-      emit loadGPXFile( leGPXFile->text(), cbGPXWaypoints->isChecked(),
+      emit loadGPXFile( mFileWidget->filePath(), cbGPXWaypoints->isChecked(),
                         cbGPXRoutes->isChecked(), cbGPXTracks->isChecked() );
       break;
 
@@ -180,7 +180,7 @@ void QgsGPSPluginGui::enableRelevantControls()
   // load GPX
   if ( tabWidget->currentIndex() == 0 )
   {
-    if ( ( leGPXFile->text() == QLatin1String( "" ) ) )
+    if ( !mFileWidget->filePath().isEmpty() )
     {
       pbnOK->setEnabled( false );
       cbGPXWaypoints->setEnabled( false );
@@ -259,7 +259,7 @@ void QgsGPSPluginGui::on_pbnGPXSelectFile_clicked()
                                 tr( "GPS eXchange format" ) + " (*.gpx)" );
   if ( !myFileNameQString.isEmpty() )
   {
-    leGPXFile->setText( myFileNameQString );
+    mFileWidget->setFilePath( myFileNameQString );
     settings.setValue( QStringLiteral( "Plugin-GPS/gpxdirectory" ), QFileInfo( myFileNameQString ).absolutePath() );
   }
 }

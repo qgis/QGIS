@@ -243,7 +243,6 @@ SET(QGIS_GUI_SRCS
   qgsfieldexpressionwidget.cpp
   qgsfieldvalidator.cpp
   qgsfieldvalueslineedit.cpp
-  qgsfiledropedit.cpp
   qgsfilewidget.cpp
   qgsfilterlineedit.cpp
   qgsfloatingwidget.cpp
@@ -408,7 +407,6 @@ SET(QGIS_GUI_MOC_HDRS
   qgsfieldexpressionwidget.h
   qgsfieldvalidator.h
   qgsfieldvalueslineedit.h
-  qgsfiledropedit.h
   qgsfilewidget.h
   qgsfilterlineedit.h
   qgsfloatingwidget.h
@@ -691,7 +689,6 @@ SET(QGIS_GUI_HDRS
   qgscustomdrophandler.h
   qgsdetaileditemdata.h
   qgsexpressionbuilderdialog.h
-  qgsfiledropedit.h
   qgsgeometryrubberband.h
   qgsgui.h
   qgsguiutils.h
