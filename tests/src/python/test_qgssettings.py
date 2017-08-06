@@ -16,8 +16,6 @@ from qgis.core import (QgsSettings,)
 from qgis.testing import start_app, unittest
 from qgis.PyQt.QtCore import QSettings
 
-standard_library.install_aliases()
-
 __author__ = 'Alessandro Pasotti'
 __date__ = '02/02/2017'
 __copyright__ = 'Copyright 2017, The QGIS Project'
