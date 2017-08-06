@@ -47,7 +47,8 @@ class QgsAggregateCalculator
       StringMinimumLength,
       StringMaximumLength,
       StringConcatenate,
-      GeometryCollect
+      GeometryCollect,
+      ArrayAggregate
     };
 
     struct AggregateParameters
