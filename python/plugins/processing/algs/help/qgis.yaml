@@ -451,7 +451,7 @@ qgis:randomselectionwithinsubsets: >
   The percentage/count value is not applied to the whole layer, but instead to each category. Categories are defined according to a given attribute, which is also specified as an input parameter for the algorithm.
 
 qgis:rastercalculator: >
-  This algorithm allows to perform algebraic operations using raster layers.
+  This algorithm allows performing algebraic operations using raster layers.
 
   The resulting layer will have its values computed according to an expression. The expression can contain numerical values, operators and references to any of the layers in the current project. The following functions are also supported:
 

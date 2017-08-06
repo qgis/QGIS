@@ -354,7 +354,7 @@ class CORE_EXPORT QgsLayerTreeModel : public QAbstractItemModel
     LayerLegendTree *tryBuildLegendTree( const QList<QgsLayerTreeModelLegendNode *> &nodes ) SIP_SKIP;
 
     //! Overrides of map layers' styles: key = layer ID, value = style XML.
-    //! This allows to show legend that is different from the current style of layers
+    //! This allows showing a legend that is different from the current style of layers
     QMap<QString, QString> mLayerStyleOverrides;
 
     //! Per layer data about layer's legend nodes

@@ -54,7 +54,7 @@ Returns fill color for rubber bands (from global settings)
    the QGIS settings. The caller takes ownership of the
    returned object
    \param geometryType
-   \param alternativeBand if true, rubber band will be set with more transparency and a dash pattern. defaut is false.
+   \param alternativeBand if true, rubber band will be set with more transparency and a dash pattern. default is false.
  :rtype: QgsRubberBand
 %End
 

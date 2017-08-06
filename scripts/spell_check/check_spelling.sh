@@ -175,6 +175,10 @@ for I in $(seq -f '%02g' 0  $(($SPLIT-1)) ) ; do
         CORRECTION=$(ag --nonumbers --case-sensitive "^${ERRORSMALLCASE}:" ${DIR}/spelling.dat | cut -d: -f2)
 
         if [[ -z $CORRECTION ]]; then
+          CORRECTION=$(perl -e "use strict; use warnings; while(<>) { chop; my(\$a,\$b) = split /:/; \$a = qr(\$a); if( my @matches = '${ERRORSMALLCASE}' =~ /^\$a\$/i ) { print sprintf(\$b, @matches); last; }}" ${DIR}/spelling.dat)
+        fi
+
+        if [[ -z "$CORRECTION" ]]; then
           echo "could not find correction for $ERROR" >&2
         else
           # Match case

@@ -133,7 +133,7 @@ class QgsCheckableComboBox : QComboBox
 
     void showContextMenu( const QPoint &pos );
 %Docstring
- Display context menu which allows to select/deselect
+ Display context menu which allows selecting/deselecting
  all items at once.
 %End
 

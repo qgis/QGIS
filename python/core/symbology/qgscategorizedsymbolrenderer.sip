@@ -224,7 +224,7 @@ create renderer from XML element
     void setDataDefinedSizeLegend( QgsDataDefinedSizeLegend *settings /Transfer/ );
 %Docstring
  Configures appearance of legend when renderer is configured to use data-defined size for marker symbols.
- This allows to configure for what values (symbol sizes) should be shown in the legend, whether to display
+ This allows configuring for which values (symbol sizes) should be shown in the legend, whether to display
  different symbol sizes collapsed in one legend node or separated across multiple legend nodes etc.
 
  When renderer does not use data-defined size or does not use marker symbols, these settings will be ignored.
