@@ -81,6 +81,34 @@ class ModelerDialog(BASE, WIDGET):
         except:
             pass
 
+        self.mToolbar.setIconSize(iface.iconSize())
+        self.mActionOpen.setIcon(
+            QgsApplication.getThemeIcon('/mActionFileOpen.svg'))
+        self.mActionSave.setIcon(
+            QgsApplication.getThemeIcon('/mActionFileSave.svg'))
+        self.mActionSaveAs.setIcon(
+            QgsApplication.getThemeIcon('/mActionFileSaveAs.svg'))
+        self.mActionZoomActual.setIcon(
+            QgsApplication.getThemeIcon('/mActionZoomActual.svg'))
+        self.mActionZoomIn.setIcon(
+            QgsApplication.getThemeIcon('/mActionZoomIn.svg'))
+        self.mActionZoomOut.setIcon(
+            QgsApplication.getThemeIcon('/mActionZoomOut.svg'))
+        self.mActionExportImage.setIcon(
+            QgsApplication.getThemeIcon('/mActionSaveMapAsImage.svg'))
+        self.mActionZoomToItems.setIcon(
+            QgsApplication.getThemeIcon('/mActionZoomFullExtent.svg'))
+        self.mActionExportPdf.setIcon(
+            QgsApplication.getThemeIcon('/mActionSaveAsPDF.svg'))
+        self.mActionExportSvg.setIcon(
+            QgsApplication.getThemeIcon('/mActionSaveAsSVG.svg'))
+        self.mActionExportPython.setIcon(
+            QgsApplication.getThemeIcon('/mActionSaveAsPython.svg'))
+        self.mActionEditHelp.setIcon(
+            QgsApplication.getThemeIcon('/mActionEditHelpContent.svg'))
+        self.mActionRun.setIcon(
+            QgsApplication.getThemeIcon('/mActionStart.svg'))
+
         self.addDockWidget(Qt.LeftDockWidgetArea, self.propertiesDock)
         self.addDockWidget(Qt.LeftDockWidgetArea, self.inputsDock)
         self.addDockWidget(Qt.LeftDockWidgetArea, self.algorithmsDock)
@@ -219,11 +247,6 @@ class ModelerDialog(BASE, WIDGET):
         ctrlEquals = QShortcut(QKeySequence("Ctrl+="), self)
         ctrlEquals.activated.connect(self.zoomIn)
 
-        try:
-            iconSize = int(settings.value("IconSize", 24))
-        except:
-            iconSize = 24
-        self.mToolbar.setIconSize(QSize(iconSize, iconSize))
         self.mActionOpen.triggered.connect(self.openModel)
         self.mActionSave.triggered.connect(self.save)
         self.mActionSaveAs.triggered.connect(self.saveAs)
