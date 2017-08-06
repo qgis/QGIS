@@ -377,11 +377,15 @@ IF (PEDANTIC)
     SET(_warnings "${_warnings} /wd4244 ")  # conversion from '...' to '...' possible loss of data
     SET(_warnings "${_warnings} /wd4251 ")  # needs to have dll-interface to be used by clients of class (occurs in Qt template classes)
     SET(_warnings "${_warnings} /wd4275 ")  # non dll-interface class '...' used as base for dll-interface class '...'
+    SET(_warnings "${_warnings} /wd4456 ")  # declaration of '...' hides previous local declaration
+    SET(_warnings "${_warnings} /wd4457 ")  # declaration of '...' hides a function parameter
+    SET(_warnings "${_warnings} /wd4458 ")  # declaration of '...' hides class member
     SET(_warnings "${_warnings} /wd4505 ")  # unreferenced local function has been removed (QgsRasterDataProvider::extent)
     SET(_warnings "${_warnings} /wd4510 ")  # default constructor could not be generated (sqlite3_index_info, QMap)
     SET(_warnings "${_warnings} /wd4512 ")  # assignment operator could not be generated (sqlite3_index_info)
     SET(_warnings "${_warnings} /wd4610 ")  # user defined constructor required (sqlite3_index_info)
     SET(_warnings "${_warnings} /wd4706 ")  # assignment within conditional expression (pal)
+    SET(_warnings "${_warnings} /wd4714 ")  # function '...' marked as __forceinline not inlined (QString::toLower/toUpper/trimmed)
     SET(_warnings "${_warnings} /wd4800 ")  # 'int' : forcing value to bool 'true' or 'false' (performance warning)
     SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${_warnings}")
     SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${_warnings}")
