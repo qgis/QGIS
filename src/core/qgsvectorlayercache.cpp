@@ -22,6 +22,7 @@
 QgsVectorLayerCache::QgsVectorLayerCache( QgsVectorLayer* layer, int cacheSize, QObject* parent )
     : QObject( parent )
     , mLayer( layer )
+    , mCacheGeometry( true )
     , mFullCache( false )
 {
   mCache.setMaxCost( cacheSize );
