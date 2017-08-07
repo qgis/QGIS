@@ -103,4 +103,6 @@ ENV QT_SELECT=5
 # RUN ${CC} --version
 # RUN ${CXX} --version
 
+RUN apt-get install -y git
+
 CMD /root/QGIS/.ci/travis/linux/docker-build-test.sh
