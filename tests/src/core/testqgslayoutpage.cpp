@@ -35,6 +35,7 @@ class TestQgsLayoutPage : public QObject
     void itemType();
     void pageSize();
     void decodePageOrientation();
+    void grid();
 
   private:
     QString mReport;
@@ -123,6 +124,39 @@ void TestQgsLayoutPage::decodePageOrientation()
   //test bad string
   QgsLayoutItemPage::decodePageOrientation( QString(), &ok );
   QVERIFY( !ok );
+}
+
+void TestQgsLayoutPage::grid()
+{
+  // test that grid follows page around
+  QgsProject p;
+  QgsLayout l( &p );
+  QgsLayoutItemPage *page = new QgsLayoutItemPage( &l );
+
+  // should have a grid
+  QVERIFY( page->mGrid.get() );
+
+  // grid is parented to page, so while the grid should resize to match
+  // page size, it should always report pos() of 0,0 (origin of page)
+  page->attemptMove( QgsLayoutPoint( 5, 15 ) );
+  page->attemptResize( QgsLayoutSize( 100, 200 ) );
+  QCOMPARE( page->mGrid->rect().width(), 100.0 );
+  QCOMPARE( page->mGrid->rect().height(), 200.0 );
+  QCOMPARE( page->mGrid->pos().x(), 0.0 );
+  QCOMPARE( page->mGrid->pos().y(), 0.0 );
+
+  page->attemptMove( QgsLayoutPoint( 25, 35 ) );
+  QCOMPARE( page->mGrid->rect().width(), 100.0 );
+  QCOMPARE( page->mGrid->rect().height(), 200.0 );
+  QCOMPARE( page->mGrid->pos().x(), 0.0 );
+  QCOMPARE( page->mGrid->pos().y(), 0.0 );
+
+  page->attemptResize( QgsLayoutSize( 150, 250 ) );
+  QCOMPARE( page->mGrid->rect().width(), 150.0 );
+  QCOMPARE( page->mGrid->rect().height(), 250.0 );
+  QCOMPARE( page->mGrid->pos().x(), 0.0 );
+  QCOMPARE( page->mGrid->pos().y(), 0.0 );
+
 }
 
 QGSTEST_MAIN( TestQgsLayoutPage )

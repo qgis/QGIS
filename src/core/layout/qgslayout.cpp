@@ -16,14 +16,23 @@
 
 #include "qgslayout.h"
 #include "qgslayoutpagecollection.h"
+#include "qgslayoutguidecollection.h"
 
 QgsLayout::QgsLayout( QgsProject *project )
   : QGraphicsScene()
   , mProject( project )
+  , mSnapper( QgsLayoutSnapper( this ) )
   , mPageCollection( new QgsLayoutPageCollection( this ) )
+  , mGuideCollection( new QgsLayoutGuideCollection( this, mPageCollection.get() ) )
 {
   // just to make sure - this should be the default, but maybe it'll change in some future Qt version...
   setBackgroundBrush( Qt::NoBrush );
+}
+
+QgsLayout::~QgsLayout()
+{
+  // delete guide collection FIRST, since it depends on the page collection
+  mGuideCollection.reset();
 }
 
 void QgsLayout::initializeDefaults()
@@ -67,6 +76,16 @@ QgsLayoutSize QgsLayout::convertFromLayoutUnits( const QSizeF &size, const QgsUn
 QgsLayoutPoint QgsLayout::convertFromLayoutUnits( const QPointF &point, const QgsUnitTypes::LayoutUnit unit ) const
 {
   return mContext.measurementConverter().convert( QgsLayoutPoint( point.x(), point.y(), mUnits ), unit );
+}
+
+QgsLayoutGuideCollection &QgsLayout::guides()
+{
+  return *mGuideCollection;
+}
+
+const QgsLayoutGuideCollection &QgsLayout::guides() const
+{
+  return *mGuideCollection;
 }
 
 QgsExpressionContext QgsLayout::createExpressionContext() const
@@ -118,6 +137,11 @@ void QgsLayout::setReferenceMap( QgsLayoutItemMap *map )
 }
 
 QgsLayoutPageCollection *QgsLayout::pageCollection()
+{
+  return mPageCollection.get();
+}
+
+const QgsLayoutPageCollection *QgsLayout::pageCollection() const
 {
   return mPageCollection.get();
 }

@@ -59,6 +59,29 @@ class QgsLayoutPageCollection : QObject
  :rtype: QgsLayoutItemPage
 %End
 
+    int pageNumber( QgsLayoutItemPage *page ) const;
+%Docstring
+ Returns the page number for the specified ``page``, or -1 if the page
+ is not contained in the collection.
+ :rtype: int
+%End
+
+    QList< QgsLayoutItemPage * > visiblePages( QRectF region ) const;
+%Docstring
+ Returns a list of the pages which are visible within the specified
+ ``region`` (in layout coordinates).
+.. seealso:: visiblePageNumbers()
+ :rtype: list of QgsLayoutItemPage
+%End
+
+    QList< int > visiblePageNumbers( QRectF region ) const;
+%Docstring
+ Returns a list of the page numbers which are visible within the specified
+ ``region`` (in layout coordinates).
+.. seealso:: visiblePages()
+ :rtype: list of int
+%End
+
     void addPage( QgsLayoutItemPage *page /Transfer/ );
 %Docstring
  Adds a ``page`` to the collection. Ownership of the ``page`` is transferred
@@ -188,11 +211,26 @@ class QgsLayoutPageCollection : QObject
  :rtype: float
 %End
 
+  public slots:
+
+    void redraw();
+%Docstring
+ Triggers a redraw for all pages.
+%End
+
   signals:
 
     void changed();
 %Docstring
  Emitted when pages are added or removed from the collection.
+%End
+
+    void pageAboutToBeRemoved( int pageNumber );
+%Docstring
+ Emitted just before a page is removed from the collection.
+
+ Page numbers in collections begin at 0 - so a page number of 0 indicates the
+ first page.
 %End
 
 };

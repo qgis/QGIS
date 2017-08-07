@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>New Item Properties</string>
+   <string>Insert Pages</string>
   </property>
   <layout class="QGridLayout" name="gridLayout_2">
    <item row="3" column="0" colspan="4">

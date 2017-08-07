@@ -157,8 +157,10 @@ SET(QGIS_APP_SRCS
 
   layout/qgslayoutaddpagesdialog.cpp
   layout/qgslayoutdesignerdialog.cpp
+  layout/qgslayoutguidewidget.cpp
   layout/qgslayoutappmenuprovider.cpp
   layout/qgslayoutpagepropertieswidget.cpp
+  layout/qgslayoutpropertieswidget.cpp
 
   locator/qgsinbuiltlocatorfilters.cpp
   locator/qgslocatoroptionswidget.cpp
@@ -338,7 +340,9 @@ SET (QGIS_APP_MOC_HDRS
   layout/qgslayoutaddpagesdialog.h
   layout/qgslayoutappmenuprovider.h
   layout/qgslayoutdesignerdialog.h
+  layout/qgslayoutguidewidget.h
   layout/qgslayoutpagepropertieswidget.h
+  layout/qgslayoutpropertieswidget.h
 
   locator/qgsinbuiltlocatorfilters.h
   locator/qgslocatoroptionswidget.h

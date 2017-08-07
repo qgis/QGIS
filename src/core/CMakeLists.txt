@@ -353,6 +353,8 @@ SET(QGIS_CORE_SRCS
 
   layout/qgslayout.cpp
   layout/qgslayoutcontext.cpp
+  layout/qgslayoutgridsettings.cpp
+  layout/qgslayoutguidecollection.cpp
   layout/qgslayoutitem.cpp
   layout/qgslayoutitemmap.cpp
   layout/qgslayoutitempage.cpp
@@ -362,6 +364,7 @@ SET(QGIS_CORE_SRCS
   layout/qgslayoutmeasurementconverter.cpp
   layout/qgslayoutobject.cpp
   layout/qgslayoutpagecollection.cpp
+  layout/qgslayoutsnapper.cpp
   layout/qgslayoututils.cpp
   layout/qgspagesizeregistry.cpp
   layout/qgslayoutpoint.cpp
@@ -682,6 +685,7 @@ SET(QGIS_CORE_MOC_HDRS
   gps/qgsgpsdconnection.h
 
   layout/qgslayout.h
+  layout/qgslayoutguidecollection.h
   layout/qgslayoutitem.h
   layout/qgslayoutitemmap.h
   layout/qgslayoutitempage.h
@@ -935,11 +939,13 @@ SET(QGIS_CORE_HDRS
   composer/qgspaperitem.h
 
   layout/qgslayoutcontext.h
+  layout/qgslayoutgridsettings.h
   layout/qgslayoutmeasurement.h
   layout/qgslayoutmeasurementconverter.h
   layout/qgspagesizeregistry.h
   layout/qgslayoutpoint.h
   layout/qgslayoutsize.h
+  layout/qgslayoutsnapper.h
   layout/qgslayoututils.h
 
   metadata/qgslayermetadata.h

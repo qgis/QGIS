@@ -22,6 +22,29 @@
 #include "qgslayoutitemregistry.h"
 #include "qgis_sip.h"
 
+
+///@cond PRIVATE
+#ifndef SIP_RUN
+
+/**
+ * \ingroup core
+ * Item representing a grid. This is drawn separately to the underlying page item since the grid needs to be
+ * drawn above all other layout items, while the paper item is drawn below all others.
+ * \since QGIS 3.0
+ */
+class CORE_EXPORT QgsLayoutItemPageGrid: public QGraphicsRectItem
+{
+  public:
+    QgsLayoutItemPageGrid( double x, double y, double width, double height, QgsLayout *layout );
+
+    void paint( QPainter *painter, const QStyleOptionGraphicsItem *itemStyle, QWidget *pWidget ) override;
+
+  private:
+    QgsLayout *mLayout = nullptr;
+};
+#endif
+///@endcond
+
 /**
  * \ingroup core
  * \class QgsLayoutItemPage
@@ -85,6 +108,12 @@ class CORE_EXPORT QgsLayoutItemPage : public QgsLayoutItem
     */
     static QgsLayoutItemPage::Orientation decodePageOrientation( const QString &string, bool *ok SIP_OUT = nullptr );
 
+    void attemptResize( const QgsLayoutSize &size ) override;
+
+  public slots:
+
+    void redraw() override;
+
   protected:
 
     void draw( QgsRenderContext &context, const QStyleOptionGraphicsItem *itemStyle = nullptr ) override;
@@ -93,6 +122,9 @@ class CORE_EXPORT QgsLayoutItemPage : public QgsLayoutItem
 
     double mMaximumShadowWidth = -1;
 
+    std::unique_ptr< QgsLayoutItemPageGrid > mGrid;
+
+    friend class TestQgsLayoutPage;
 };
 
 #endif //QGSLAYOUTITEMPAGE_H

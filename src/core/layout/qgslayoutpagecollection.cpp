@@ -135,6 +135,14 @@ double QgsLayoutPageCollection::pageShadowWidth() const
   return spaceBetweenPages() / 2;
 }
 
+void QgsLayoutPageCollection::redraw()
+{
+  Q_FOREACH ( QgsLayoutItemPage *page, mPages )
+  {
+    page->redraw();
+  }
+}
+
 QgsLayout *QgsLayoutPageCollection::layout() const
 {
   return mLayout;
@@ -153,6 +161,35 @@ int QgsLayoutPageCollection::pageCount() const
 QgsLayoutItemPage *QgsLayoutPageCollection::page( int pageNumber )
 {
   return mPages.value( pageNumber );
+}
+
+int QgsLayoutPageCollection::pageNumber( QgsLayoutItemPage *page ) const
+{
+  return mPages.indexOf( page );
+}
+
+QList<QgsLayoutItemPage *> QgsLayoutPageCollection::visiblePages( QRectF region ) const
+{
+  QList<QgsLayoutItemPage *> pages;
+  Q_FOREACH ( QgsLayoutItemPage *page, mPages )
+  {
+    if ( page->mapToScene( page->rect() ).boundingRect().intersects( region ) )
+      pages << page;
+  }
+  return pages;
+}
+
+QList<int> QgsLayoutPageCollection::visiblePageNumbers( QRectF region ) const
+{
+  QList< int > pages;
+  int p = 0;
+  Q_FOREACH ( QgsLayoutItemPage *page, mPages )
+  {
+    if ( page->mapToScene( page->rect() ).boundingRect().intersects( region ) )
+      pages << p;
+    p++;
+  }
+  return pages;
 }
 
 void QgsLayoutPageCollection::addPage( QgsLayoutItemPage *page )
@@ -184,6 +221,7 @@ void QgsLayoutPageCollection::deletePage( int pageNumber )
   if ( pageNumber < 0 || pageNumber >= mPages.count() )
     return;
 
+  emit pageAboutToBeRemoved( pageNumber );
   QgsLayoutItemPage *page = mPages.takeAt( pageNumber );
   mLayout->removeItem( page );
   page->deleteLater();
@@ -195,6 +233,7 @@ void QgsLayoutPageCollection::deletePage( QgsLayoutItemPage *page )
   if ( !mPages.contains( page ) )
     return;
 
+  emit pageAboutToBeRemoved( mPages.indexOf( page ) );
   mPages.removeAll( page );
   page->deleteLater();
   reflow();

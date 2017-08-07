@@ -20,6 +20,7 @@
 QgsLayoutViewTool::QgsLayoutViewTool( QgsLayoutView *view, const QString &name )
   : QObject( view )
   , mView( view )
+  , mFlags( 0 )
   , mCursor( Qt::ArrowCursor )
   , mToolName( name )
 {
@@ -50,6 +51,16 @@ QgsLayout *QgsLayoutViewTool::layout() const
 QgsLayoutViewTool::~QgsLayoutViewTool()
 {
   mView->unsetTool( this );
+}
+
+QgsLayoutViewTool::Flags QgsLayoutViewTool::flags() const
+{
+  return mFlags;
+}
+
+void QgsLayoutViewTool::setFlags( QgsLayoutViewTool::Flags flags )
+{
+  mFlags = flags;
 }
 
 void QgsLayoutViewTool::layoutMoveEvent( QgsLayoutViewMouseEvent *event )

@@ -58,7 +58,20 @@ class GUI_EXPORT QgsLayoutViewTool : public QObject
 
   public:
 
+    //! Flags for controlling how a tool behaves
+    enum Flag
+    {
+      FlagSnaps = 1 << 1,  //!< Tool utilizes snapped coordinates.
+    };
+    Q_DECLARE_FLAGS( Flags, Flag )
+
     virtual ~QgsLayoutViewTool();
+
+    /**
+     * Returns the current combination of flags set for the tool.
+     * \see setFlags()
+     */
+    QgsLayoutViewTool::Flags flags() const;
 
     /**
      * Mouse move event for overriding. Default implementation does nothing.
@@ -168,6 +181,12 @@ class GUI_EXPORT QgsLayoutViewTool : public QObject
   protected:
 
     /**
+     * Sets the combination of \a flags that will be used for the tool.
+     * \see flags()
+     */
+    void setFlags( const QgsLayoutViewTool::Flags flags );
+
+    /**
      * Constructor for QgsLayoutViewTool, taking a layout \a view and
      * tool \a name as parameters.
      */
@@ -185,6 +204,8 @@ class GUI_EXPORT QgsLayoutViewTool : public QObject
 
     //! Pointer to layout view.
     QgsLayoutView *mView = nullptr;
+
+    QgsLayoutViewTool::Flags mFlags;
 
     //! Cursor used by tool
     QCursor mCursor;

@@ -17,11 +17,13 @@
 
 #include "qgscomposeritem.h"
 #include <QWidget>
+#include <QPointer>
 #include "qgis_gui.h"
 
 class QgsLayout;
 class QGraphicsLineItem;
 class QgsLayoutView;
+class QgsLayoutGuide;
 
 /**
  * \ingroup gui
@@ -69,6 +71,12 @@ class GUI_EXPORT QgsLayoutRuler: public QWidget
      */
     int rulerSize() const { return mRulerMinSize; }
 
+    /**
+     * Sets a context \a menu to show when right clicking occurs on the ruler.
+     * Ownership of \a menu is unchanged.
+     */
+    void setContextMenu( QMenu *menu );
+
   public slots:
 
     /**
@@ -78,9 +86,15 @@ class GUI_EXPORT QgsLayoutRuler: public QWidget
      */
     void setCursorPosition( QPointF position );
 
+  signals:
+    //! Is emitted when mouse cursor coordinates change
+    void cursorPosChanged( QPointF );
+
   protected:
     void paintEvent( QPaintEvent *event ) override;
     void mouseMoveEvent( QMouseEvent *event ) override;
+    void mousePressEvent( QMouseEvent *event ) override;
+    void mouseReleaseEvent( QMouseEvent *event ) override;
 
   private:
     static const int VALID_SCALE_MULTIPLES[];
@@ -101,6 +115,18 @@ class GUI_EXPORT QgsLayoutRuler: public QWidget
     int mPixelsBetweenLineAndText;
     int mTextBaseline;
     int mMinSpacingVerticalLabels;
+
+    int mDragGuideTolerance = 0;
+    QgsLayoutGuide *mDraggingGuide = nullptr;
+    QgsLayoutGuide *mHoverGuide = nullptr;
+
+    bool mCreatingGuide = false;
+    std::unique_ptr< QGraphicsLineItem > mGuideItem;
+
+    //! Polygon for drawing guide markers
+    QPolygonF mGuideMarker;
+
+    QPointer< QMenu > mMenu;
 
     //! Calculates the optimum labeled units for ruler so that labels are a good distance apart
     int optimumScale( double minPixelDiff, int &magnitude, int &multiple );
@@ -124,9 +150,22 @@ class GUI_EXPORT QgsLayoutRuler: public QWidget
     //! Draw current marker pos on ruler
     void drawMarkerPos( QPainter *painter );
 
-  signals:
-    //! Is emitted when mouse cursor coordinates change
-    void cursorPosChanged( QPointF );
+    void drawGuideMarkers( QPainter *painter, QgsLayout *layout );
+
+    //! Draw a guide marker on the ruler
+    void drawGuideAtPos( QPainter *painter, QPoint pos );
+
+    void createTemporaryGuideItem();
+
+    QPointF convertLocalPointToLayout( QPoint localPoint ) const;
+
+    QPoint convertLayoutPointToLocal( QPointF layoutPoint ) const;
+
+    /**
+     * Returns the closest guide to a local ruler point, or nullptr if no guides
+     * are within the acceptable tolerance of the point.
+     */
+    QgsLayoutGuide *guideAtPoint( QPoint localPoint ) const;
 
 };
 

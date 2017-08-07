@@ -125,6 +125,19 @@ class QgsLayoutContext
  :rtype: QgsLayoutMeasurementConverter
 %End
 
+    bool gridVisible() const;
+%Docstring
+ Returns true if the page grid should be drawn.
+.. seealso:: setGridVisible()
+ :rtype: bool
+%End
+
+    void setGridVisible( bool visible );
+%Docstring
+ Sets whether the page grid should be ``visible``.
+.. seealso:: gridVisible()
+%End
+
 };
 
 

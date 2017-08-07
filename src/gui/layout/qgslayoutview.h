@@ -20,8 +20,10 @@
 #include "qgis.h"
 #include "qgsprevieweffect.h" // for QgsPreviewEffect::PreviewMode
 #include "qgis_gui.h"
+#include "qgslayoutitempage.h"
 #include <QPointer>
 #include <QGraphicsView>
+#include <QGraphicsRectItem>
 #include <memory>
 
 class QMenu;
@@ -32,6 +34,7 @@ class QgsLayoutViewToolTemporaryKeyZoom;
 class QgsLayoutViewToolTemporaryMousePan;
 class QgsLayoutRuler;
 class QgsLayoutViewMenuProvider;
+class QgsLayoutViewSnapMarker;
 
 /**
  * \ingroup gui
@@ -62,6 +65,13 @@ class GUI_EXPORT QgsLayoutView: public QGraphicsView
      * \see layoutSet()
      */
     QgsLayout *currentLayout();
+
+    /**
+     * Returns the current layout associated with the view.
+     * \see setCurrentLayout()
+     * \see layoutSet()
+     */
+    SIP_SKIP const QgsLayout *currentLayout() const;
 
     /**
      * Sets the current \a layout to edit in the view.
@@ -127,6 +137,26 @@ class GUI_EXPORT QgsLayoutView: public QGraphicsView
     */
     QgsLayoutViewMenuProvider *menuProvider() const;
 
+    /**
+     * Returns the page visible in the view. This method
+     * considers the page at the center of the view as the current visible
+     * page.
+     * \see pageChanged()
+     */
+    int currentPage() const { return mCurrentPage; }
+
+    /**
+     * Returns a list of page items which are currently visible in the view.
+     * \see visiblePageNumbers()
+     */
+    QList< QgsLayoutItemPage * > visiblePages() const;
+
+    /**
+     * Returns a list of page numbers for pages which are currently visible in the view.
+     * \see visiblePages()
+     */
+    QList< int > visiblePageNumbers() const;
+
   public slots:
 
     /**
@@ -181,12 +211,12 @@ class GUI_EXPORT QgsLayoutView: public QGraphicsView
     void emitZoomLevelChanged();
 
     /**
-     * Updates associated rulers after view extent or zoom has changed.
+     * Updates associated rulers and other widgets after view extent or zoom has changed.
      * This should be called after calling any of the QGraphicsView
      * base class methods which alter the view's zoom level or extent,
      * i.e. QGraphicsView::fitInView().
      */
-    void updateRulers();
+    void viewChanged();
 
   signals:
 
@@ -214,6 +244,14 @@ class GUI_EXPORT QgsLayoutView: public QGraphicsView
      * the layout coordinate system.
      */
     void cursorPosChanged( QPointF layoutPoint );
+
+    /**
+     * Emitted when the page visible in the view is changed. This signal
+     * considers the page at the center of the view as the current visible
+     * page.
+     * \see currentPage()
+     */
+    void pageChanged( int page );
 
   protected:
     void mousePressEvent( QMouseEvent *event ) override;
@@ -245,6 +283,10 @@ class GUI_EXPORT QgsLayoutView: public QGraphicsView
     QgsLayoutRuler *mVerticalRuler = nullptr;
     std::unique_ptr< QgsLayoutViewMenuProvider > mMenuProvider;
 
+    std::unique_ptr< QgsLayoutViewSnapMarker > mSnapMarker;
+
+    int mCurrentPage = 0;
+
     friend class TestQgsLayoutView;
 
 };
@@ -269,5 +311,31 @@ class GUI_EXPORT QgsLayoutViewMenuProvider
     //! Return a newly created menu instance (or null pointer on error)
     virtual QMenu *createContextMenu( QWidget *parent SIP_TRANSFER, QgsLayout *layout, QPointF layoutPoint ) const = 0 SIP_FACTORY;
 };
+
+
+#ifndef SIP_RUN
+///@cond PRIVATE
+
+
+/**
+ * \ingroup gui
+ * A simple graphics item rendered as an 'x'.
+ */
+class GUI_EXPORT QgsLayoutViewSnapMarker : public QGraphicsRectItem
+{
+  public:
+
+    QgsLayoutViewSnapMarker();
+
+    void paint( QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget = nullptr ) override;
+
+  private:
+
+    int mSize = 0;
+
+};
+
+///@endcond
+#endif
 
 #endif // QGSLAYOUTVIEW_H

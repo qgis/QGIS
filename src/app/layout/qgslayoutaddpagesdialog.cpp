@@ -153,4 +153,6 @@ void QgsLayoutAddPagesDialog::setToCustomSize()
     return;
   whileBlocking( mPageSizeComboBox )->setCurrentIndex( mPageSizeComboBox->count() - 1 );
   mPageOrientationComboBox->setEnabled( false );
+  mLockAspectRatio->setEnabled( true );
+  mSizeUnitsComboBox->setEnabled( true );
 }
