@@ -213,7 +213,7 @@ class QgsGrassNewMapset : public QWizard, private Ui::QgsGrassNewMapsetBase
     //! Was the region page modified by user
     bool mRegionModified;
 
-    //! Check region seting
+    //! Check region setting
     void checkRegion();
 
     //! Region map
