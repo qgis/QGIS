@@ -55,7 +55,15 @@ __revision__ = '$Format:%H$'
 
 
 class RasterizeAlgorithm(QgisAlgorithm):
-    """
+    """Processing algorithm renders map canvas to a raster file.
+    It's possible to choose the following parameters:
+        - Map theme to render
+        - Layer to render
+        - The minimum extent to render
+        - The tile size
+        - Map unit per pixel
+        - The output (can be saved to a file or to a temporary file and
+          automatically opened as layer in qgis)
     """
 
     # Constants used to refer to parameters and outputs. They will be
@@ -150,7 +158,7 @@ class RasterizeAlgorithm(QgisAlgorithm):
 
 class TileSet():
     """
-    A set of tiles                   /home/mario/Dropbox/workspace/marioba/QGIS/python/plugins/processing/tests/testdata/
+    A set of tiles
     """
 
     def __init__(self, map_theme, layer, extent, tile_size, mupp, output,
@@ -171,7 +179,6 @@ class TileSet():
         self.mupp = mupp
         self.tile_size = tile_size
 
-        # TODO: Check if file exists and update instead?
         driver = self.getDriverForFile(output)
 
         if not driver:
