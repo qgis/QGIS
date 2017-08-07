@@ -38,9 +38,11 @@ cmake \
 
 export LD_PRELOAD=/lib/x86_64-linux-gnu/libSegFault.so
 
-export CTEST_BUILD_COMMAND=ninja
+export CTEST_BUILD_COMMAND="/usr/bin/ninja"
 
-python3 /root/QGIS/.ci/travis/scripts/ctest2travis.py xvfb-run ctest -V -E "$(cat /root/QGIS/.ci/travis/linux/blacklist.txt | sed -r '/^(#.*?)?$/d' | paste -sd '|' -)" -S /root/QGIS/.ci/travis/travis.ctest --output-on-failure
+ninja
+
+python3 /root/QGIS/.ci/travis/scripts/ctest2travis.py xvfb-run ctest -V -E "$(cat /root/QGIS/.ci/travis/linux/blacklist.txt | sed -r '/^(#.*?)?$/d' | paste -sd '|' -)" -S /root/QGIS/.ci/travis/travis.ctest
 
 ccache -s
 
