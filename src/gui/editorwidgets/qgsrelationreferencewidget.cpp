@@ -521,7 +521,7 @@ void QgsRelationReferenceWidget::init()
       attributes << mReferencedLayer->fieldNameIndex( attr );
 
     layerCache->setCacheSubsetOfAttributes( attributes );
-    mMasterModel = new QgsAttributeTableModel( layerCache );
+    mMasterModel = new QgsAttributeTableModel( layerCache, this );
     mMasterModel->setRequest( QgsFeatureRequest().setFlags( QgsFeatureRequest::NoGeometry ).setSubsetOfAttributes( requestedAttrs.toList(), mReferencedLayer->fields() ) );
     mFilterModel = new QgsAttributeTableFilterModel( mCanvas, mMasterModel, mMasterModel );
     mFeatureListModel = new QgsFeatureListModel( mFilterModel, this );
