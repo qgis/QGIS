@@ -609,7 +609,8 @@ void QgsSnappingUtils::readConfigFromProject()
   setSnapOnIntersections( QgsProject::instance()->readNumEntry( "Digitizing", "/IntersectionSnapping", 0 ) );
 
   //read snapping settings from project
-  bool snappingDefinedInProject, ok;
+  bool snappingDefinedInProject = false;
+  bool ok = false;
   QStringList layerIdList = QgsProject::instance()->readListEntry( "Digitizing", "/LayerSnappingList", QStringList(), &snappingDefinedInProject );
   QStringList enabledList = QgsProject::instance()->readListEntry( "Digitizing", "/LayerSnappingEnabledList", QStringList(), &ok );
   QStringList toleranceList = QgsProject::instance()->readListEntry( "Digitizing", "/LayerSnappingToleranceList", QStringList(), &ok );

@@ -6329,7 +6329,7 @@ void QgisApp::saveAsVectorFileGeneral( QgsVectorLayer* vlayer, bool symbologyOpt
 
 void QgisApp::checkForDeprecatedLabelsInProject()
 {
-  bool ok;
+  bool ok = false;
   QgsProject::instance()->readBoolEntry( "DeprecatedLabels", "/Enabled", false, &ok );
   if ( ok ) // project already flagged (regardless of project property value)
   {
