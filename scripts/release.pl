@@ -1,4 +1,4 @@
-#!/usr/bin/perl
+#!/usr/bin/env perl
 # creates a new release
 
 # Copyright (C) 2014 Jürgen E. Fischer <jef@norbit.de>
