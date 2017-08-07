@@ -69,7 +69,7 @@ class TestQgsServerTwoLayer(unittest.TestCase):
                                                     unicode(response, errors='replace')))
 
     def wfs_getfeature_post_compare(self, requestid, request):
-        project = os.path.join (self.testdata_path, "test_project_two_layers.qgs")
+        project = os.path.join(self.testdata_path, "test_project_two_layers.qgs")
         self.assertTrue(os.path.exists(project), msg=u"Project file not found: %s" % (project))
 
         query_string = 'MAP={}'.format(urllib.quote(project))
