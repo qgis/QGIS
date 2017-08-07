@@ -50,7 +50,7 @@ class QgsGeometryEngine
 %Docstring
  :rtype: QgsAbstractGeometry
 %End
-    virtual QgsAbstractGeometry *buffer( double distance, int segments, int endCapStyle, int joinStyle, double mitreLimit, QString *errorMsg = 0 ) const = 0 /Factory/;
+    virtual QgsAbstractGeometry *buffer( double distance, int segments, int endCapStyle, int joinStyle, double miterLimit, QString *errorMsg = 0 ) const = 0 /Factory/;
 %Docstring
  :rtype: QgsAbstractGeometry
 %End
@@ -170,7 +170,7 @@ class QgsGeometryEngine
  :rtype: int
 %End
 
-    virtual QgsAbstractGeometry *offsetCurve( double distance, int segments, int joinStyle, double mitreLimit, QString *errorMsg = 0 ) const = 0 /Factory/;
+    virtual QgsAbstractGeometry *offsetCurve( double distance, int segments, int joinStyle, double miterLimit, QString *errorMsg = 0 ) const = 0 /Factory/;
 %Docstring
  :rtype: QgsAbstractGeometry
 %End

@@ -1357,7 +1357,6 @@ class WidgetWrapperFactory:
 
     @staticmethod
     def create_wrapper_from_class(param, dialog, row=0, col=0):
-        print("PARAM", param, param.name(), param.type())
         wrapper = None
         if param.type() == 'boolean':
             wrapper = BooleanWidgetWrapper

@@ -3760,7 +3760,7 @@ void QgsDxfExport::addFeature( QgsSymbolRenderContext &ctx, const QgsCoordinateT
           QgsGeos geos( tempGeom );
           if ( tempGeom != geom.get() )
             delete tempGeom;
-          tempGeom = geos.offsetCurve( offset, 0, GEOSBUF_JOIN_MITRE, 2.0 );
+          tempGeom = geos.offsetCurve( offset, 0, GEOSBUF_JOIN_MITRE, 2.0 );  //#spellok  //#spellok
           if ( !tempGeom )
             tempGeom = geom.get();
         }
@@ -3781,7 +3781,7 @@ void QgsDxfExport::addFeature( QgsSymbolRenderContext &ctx, const QgsCoordinateT
           QgsGeos geos( tempGeom );
           if ( tempGeom != geom.get() )
             delete tempGeom;
-          tempGeom = geos.offsetCurve( offset, 0, GEOSBUF_JOIN_MITRE, 2.0 );
+          tempGeom = geos.offsetCurve( offset, 0, GEOSBUF_JOIN_MITRE, 2.0 );  //#spellok  //#spellok
           if ( !tempGeom )
             tempGeom = geom.get();
         }
@@ -3807,7 +3807,7 @@ void QgsDxfExport::addFeature( QgsSymbolRenderContext &ctx, const QgsCoordinateT
           QgsGeos geos( tempGeom );
           if ( tempGeom != geom.get() )
             delete tempGeom;
-          tempGeom = geos.buffer( offset, 0,  GEOSBUF_CAP_FLAT, GEOSBUF_JOIN_MITRE, 2.0 );
+          tempGeom = geos.buffer( offset, 0,  GEOSBUF_CAP_FLAT, GEOSBUF_JOIN_MITRE, 2.0 );  //#spellok  //#spellok
           if ( !tempGeom )
             tempGeom = geom.get();
         }
@@ -3828,7 +3828,7 @@ void QgsDxfExport::addFeature( QgsSymbolRenderContext &ctx, const QgsCoordinateT
           QgsGeos geos( tempGeom );
           if ( tempGeom != geom.get() )
             delete tempGeom;
-          tempGeom = geos.buffer( offset, 0,  GEOSBUF_CAP_FLAT, GEOSBUF_JOIN_MITRE, 2.0 );
+          tempGeom = geos.buffer( offset, 0,  GEOSBUF_CAP_FLAT, GEOSBUF_JOIN_MITRE, 2.0 );  //#spellok  //#spellok
           if ( !tempGeom )
             tempGeom = geom.get();
         }

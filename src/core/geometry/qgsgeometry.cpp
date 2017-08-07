@@ -1413,7 +1413,7 @@ QgsGeometry QgsGeometry::buffer( double distance, int segments ) const
   return QgsGeometry( geom );
 }
 
-QgsGeometry QgsGeometry::buffer( double distance, int segments, EndCapStyle endCapStyle, JoinStyle joinStyle, double mitreLimit ) const
+QgsGeometry QgsGeometry::buffer( double distance, int segments, EndCapStyle endCapStyle, JoinStyle joinStyle, double miterLimit ) const
 {
   if ( !d->geometry )
   {
@@ -1421,7 +1421,7 @@ QgsGeometry QgsGeometry::buffer( double distance, int segments, EndCapStyle endC
   }
 
   QgsGeos g( d->geometry );
-  QgsAbstractGeometry *geom = g.buffer( distance, segments, endCapStyle, joinStyle, mitreLimit );
+  QgsAbstractGeometry *geom = g.buffer( distance, segments, endCapStyle, joinStyle, miterLimit );
   if ( !geom )
   {
     return QgsGeometry();
@@ -1429,7 +1429,7 @@ QgsGeometry QgsGeometry::buffer( double distance, int segments, EndCapStyle endC
   return QgsGeometry( geom );
 }
 
-QgsGeometry QgsGeometry::offsetCurve( double distance, int segments, JoinStyle joinStyle, double mitreLimit ) const
+QgsGeometry QgsGeometry::offsetCurve( double distance, int segments, JoinStyle joinStyle, double miterLimit ) const
 {
   if ( !d->geometry || type() != QgsWkbTypes::LineGeometry )
   {
@@ -1442,7 +1442,7 @@ QgsGeometry QgsGeometry::offsetCurve( double distance, int segments, JoinStyle j
     QList<QgsGeometry> results;
     Q_FOREACH ( const QgsGeometry &part, parts )
     {
-      QgsGeometry result = part.offsetCurve( distance, segments, joinStyle, mitreLimit );
+      QgsGeometry result = part.offsetCurve( distance, segments, joinStyle, miterLimit );
       if ( result )
         results << result;
     }
@@ -1459,7 +1459,7 @@ QgsGeometry QgsGeometry::offsetCurve( double distance, int segments, JoinStyle j
   else
   {
     QgsGeos geos( d->geometry );
-    QgsAbstractGeometry *offsetGeom = geos.offsetCurve( distance, segments, joinStyle, mitreLimit );
+    QgsAbstractGeometry *offsetGeom = geos.offsetCurve( distance, segments, joinStyle, miterLimit );
     if ( !offsetGeom )
     {
       return QgsGeometry();
@@ -1468,7 +1468,7 @@ QgsGeometry QgsGeometry::offsetCurve( double distance, int segments, JoinStyle j
   }
 }
 
-QgsGeometry QgsGeometry::singleSidedBuffer( double distance, int segments, BufferSide side, JoinStyle joinStyle, double mitreLimit ) const
+QgsGeometry QgsGeometry::singleSidedBuffer( double distance, int segments, BufferSide side, JoinStyle joinStyle, double miterLimit ) const
 {
   if ( !d->geometry || type() != QgsWkbTypes::LineGeometry )
   {
@@ -1481,7 +1481,7 @@ QgsGeometry QgsGeometry::singleSidedBuffer( double distance, int segments, Buffe
     QList<QgsGeometry> results;
     Q_FOREACH ( const QgsGeometry &part, parts )
     {
-      QgsGeometry result = part.singleSidedBuffer( distance, segments, side, joinStyle, mitreLimit );
+      QgsGeometry result = part.singleSidedBuffer( distance, segments, side, joinStyle, miterLimit );
       if ( result )
         results << result;
     }
@@ -1499,7 +1499,7 @@ QgsGeometry QgsGeometry::singleSidedBuffer( double distance, int segments, Buffe
   {
     QgsGeos geos( d->geometry );
     QgsAbstractGeometry *bufferGeom = geos.singleSidedBuffer( distance, segments, side,
-                                      joinStyle, mitreLimit );
+                                      joinStyle, miterLimit );
     if ( !bufferGeom )
     {
       return QgsGeometry();

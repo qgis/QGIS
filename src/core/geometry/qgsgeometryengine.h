@@ -42,7 +42,7 @@ class CORE_EXPORT QgsGeometryEngine
     virtual QgsAbstractGeometry *combine( const QList< QgsAbstractGeometry * > &, QString *errorMsg = nullptr ) const = 0 SIP_FACTORY;
     virtual QgsAbstractGeometry *symDifference( const QgsAbstractGeometry &geom, QString *errorMsg = nullptr ) const = 0 SIP_FACTORY;
     virtual QgsAbstractGeometry *buffer( double distance, int segments, QString *errorMsg = nullptr ) const = 0 SIP_FACTORY;
-    virtual QgsAbstractGeometry *buffer( double distance, int segments, int endCapStyle, int joinStyle, double mitreLimit, QString *errorMsg = nullptr ) const = 0 SIP_FACTORY;
+    virtual QgsAbstractGeometry *buffer( double distance, int segments, int endCapStyle, int joinStyle, double miterLimit, QString *errorMsg = nullptr ) const = 0 SIP_FACTORY;
     virtual QgsAbstractGeometry *simplify( double tolerance, QString *errorMsg = nullptr ) const = 0 SIP_FACTORY;
     virtual QgsAbstractGeometry *interpolate( double distance, QString *errorMsg = nullptr ) const = 0 SIP_FACTORY;
     virtual QgsAbstractGeometry *envelope( QString *errorMsg = nullptr ) const = 0 SIP_FACTORY;
@@ -101,7 +101,7 @@ class CORE_EXPORT QgsGeometryEngine
       return 2;
     }
 
-    virtual QgsAbstractGeometry *offsetCurve( double distance, int segments, int joinStyle, double mitreLimit, QString *errorMsg = nullptr ) const = 0 SIP_FACTORY;
+    virtual QgsAbstractGeometry *offsetCurve( double distance, int segments, int joinStyle, double miterLimit, QString *errorMsg = nullptr ) const = 0 SIP_FACTORY;
 
   protected:
     const QgsAbstractGeometry *mGeometry = nullptr;

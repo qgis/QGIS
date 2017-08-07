@@ -1452,7 +1452,7 @@ QgsAbstractGeometry *QgsGeos::buffer( double distance, int segments, QString *er
   return fromGeos( geos.get() );
 }
 
-QgsAbstractGeometry *QgsGeos::buffer( double distance, int segments, int endCapStyle, int joinStyle, double mitreLimit, QString *errorMsg ) const
+QgsAbstractGeometry *QgsGeos::buffer( double distance, int segments, int endCapStyle, int joinStyle, double miterLimit, QString *errorMsg ) const
 {
   if ( !mGeos )
   {
@@ -1462,7 +1462,7 @@ QgsAbstractGeometry *QgsGeos::buffer( double distance, int segments, int endCapS
   GEOSGeomScopedPtr geos;
   try
   {
-    geos.reset( GEOSBufferWithStyle_r( geosinit.ctxt, mGeos, distance, segments, endCapStyle, joinStyle, mitreLimit ) );
+    geos.reset( GEOSBufferWithStyle_r( geosinit.ctxt, mGeos, distance, segments, endCapStyle, joinStyle, miterLimit ) );
   }
   CATCH_GEOS_WITH_ERRMSG( nullptr );
   return fromGeos( geos.get() );
@@ -1851,7 +1851,7 @@ GEOSGeometry *QgsGeos::createGeosPolygon( const QgsAbstractGeometry *poly, doubl
   return geosPolygon;
 }
 
-QgsAbstractGeometry *QgsGeos::offsetCurve( double distance, int segments, int joinStyle, double mitreLimit, QString *errorMsg ) const
+QgsAbstractGeometry *QgsGeos::offsetCurve( double distance, int segments, int joinStyle, double miterLimit, QString *errorMsg ) const
 {
   if ( !mGeos )
     return nullptr;
@@ -1859,7 +1859,7 @@ QgsAbstractGeometry *QgsGeos::offsetCurve( double distance, int segments, int jo
   GEOSGeometry *offset = nullptr;
   try
   {
-    offset = GEOSOffsetCurve_r( geosinit.ctxt, mGeos, distance, segments, joinStyle, mitreLimit );
+    offset = GEOSOffsetCurve_r( geosinit.ctxt, mGeos, distance, segments, joinStyle, miterLimit );
   }
   CATCH_GEOS_WITH_ERRMSG( nullptr )
   QgsAbstractGeometry *offsetGeom = fromGeos( offset );
@@ -1867,7 +1867,7 @@ QgsAbstractGeometry *QgsGeos::offsetCurve( double distance, int segments, int jo
   return offsetGeom;
 }
 
-QgsAbstractGeometry *QgsGeos::singleSidedBuffer( double distance, int segments, int side, int joinStyle, double mitreLimit, QString *errorMsg ) const
+QgsAbstractGeometry *QgsGeos::singleSidedBuffer( double distance, int segments, int side, int joinStyle, double miterLimit, QString *errorMsg ) const
 {
   if ( !mGeos )
   {
@@ -1881,7 +1881,7 @@ QgsAbstractGeometry *QgsGeos::singleSidedBuffer( double distance, int segments, 
     GEOSBufferParams_setSingleSided_r( geosinit.ctxt, bp, 1 );
     GEOSBufferParams_setQuadrantSegments_r( geosinit.ctxt, bp, segments );
     GEOSBufferParams_setJoinStyle_r( geosinit.ctxt, bp, joinStyle );
-    GEOSBufferParams_setMitreLimit_r( geosinit.ctxt, bp, mitreLimit );
+    GEOSBufferParams_setMitreLimit_r( geosinit.ctxt, bp, miterLimit );  //#spellok
 
     if ( side == 1 )
     {

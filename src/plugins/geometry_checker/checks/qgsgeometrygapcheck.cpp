@@ -67,7 +67,7 @@ void QgsGeometryGapCheck::collectErrors( QList<QgsGeometryCheckError *> &errors,
 
   // Buffer envelope
   geomEngine = QgsGeometryCheckerUtils::createGeomEngine( envelope, QgsGeometryCheckPrecision::tolerance() );
-  QgsAbstractGeometry *bufEnvelope = geomEngine->buffer( 2, 0, GEOSBUF_CAP_SQUARE, GEOSBUF_JOIN_MITRE, 4. );
+  QgsAbstractGeometry *bufEnvelope = geomEngine->buffer( 2, 0, GEOSBUF_CAP_SQUARE, GEOSBUF_JOIN_MITRE, 4. );  //#spellok  //#spellok
   delete geomEngine;
   delete envelope;
   envelope = bufEnvelope;

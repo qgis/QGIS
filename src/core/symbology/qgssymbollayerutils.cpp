@@ -198,7 +198,7 @@ QString QgsSymbolLayerUtils::encodeSldLineJoinStyle( Qt::PenJoinStyle style )
     case Qt::BevelJoin:
       return QStringLiteral( "bevel" );
     case Qt::MiterJoin:
-      return QStringLiteral( "mitre" );
+      return QStringLiteral( "mitre" );  //#spellok
     case Qt::RoundJoin:
       return QStringLiteral( "round" );
     default:
@@ -209,7 +209,7 @@ QString QgsSymbolLayerUtils::encodeSldLineJoinStyle( Qt::PenJoinStyle style )
 Qt::PenJoinStyle QgsSymbolLayerUtils::decodeSldLineJoinStyle( const QString &str )
 {
   if ( str == QLatin1String( "bevel" ) ) return Qt::BevelJoin;
-  if ( str == QLatin1String( "mitre" ) ) return Qt::MiterJoin;
+  if ( str == QLatin1String( "mitre" ) ) return Qt::MiterJoin;  //#spellok
   if ( str == QLatin1String( "round" ) ) return Qt::RoundJoin;
   return Qt::BevelJoin;
 }
@@ -764,14 +764,14 @@ QList<QPolygonF> offsetLine( QPolygonF polyline, double dist, QgsWkbTypes::Geome
   QgsGeometry tempGeometry = geometryType == QgsWkbTypes::PolygonGeometry ? QgsGeometry::fromPolygon( QgsPolygon() << tempPolyline ) : QgsGeometry::fromPolyline( tempPolyline );
   if ( !tempGeometry.isNull() )
   {
-    int quadSegments = 0; // we want mitre joins, not round joins
-    double mitreLimit = 2.0; // the default value in GEOS (5.0) allows for fairly sharp endings
+    int quadSegments = 0; // we want miter joins, not round joins
+    double miterLimit = 2.0; // the default value in GEOS (5.0) allows for fairly sharp endings
     QgsGeometry offsetGeom;
     if ( geometryType == QgsWkbTypes::PolygonGeometry )
       offsetGeom = tempGeometry.buffer( -dist, quadSegments, QgsGeometry::CapFlat,
-                                        QgsGeometry::JoinStyleMitre, mitreLimit );
+                                        QgsGeometry::JoinStyleMiter, miterLimit );
     else
-      offsetGeom = tempGeometry.offsetCurve( dist, quadSegments, QgsGeometry::JoinStyleMitre, mitreLimit );
+      offsetGeom = tempGeometry.offsetCurve( dist, quadSegments, QgsGeometry::JoinStyleMiter, miterLimit );
 
     if ( !offsetGeom.isNull() )
     {
