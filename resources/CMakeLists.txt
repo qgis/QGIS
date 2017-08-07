@@ -1,4 +1,6 @@
 INSTALL(FILES srs.db qgis.db symbology-style.xml spatialite.db customization.xml
         DESTINATION ${QGIS_DATA_DIR}/resources)
+INSTALL(FILES qgis_global_settings.ini
+        DESTINATION ${QGIS_DATA_DIR})
 INSTALL(DIRECTORY cpt-city-qgis-min DESTINATION ${QGIS_DATA_DIR}/resources)
 INSTALL(DIRECTORY themes DESTINATION ${QGIS_DATA_DIR}/resources)
