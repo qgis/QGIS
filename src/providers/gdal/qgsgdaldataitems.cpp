@@ -34,6 +34,7 @@ QgsGdalLayerItem::QgsGdalLayerItem( QgsDataItem *parent,
   if ( sublayers && !sublayers->isEmpty() )
   {
     mSublayers = *sublayers;
+    // We have sublayers: we are able to create children!
     mCapabilities |= Fertile;
     setState( NotPopulated );
   }
