@@ -25,7 +25,7 @@ from qgis.PyQt.QtCore import Qt
 from qgis.PyQt.QtWidgets import QAction, QApplication
 from qgis.PyQt.QtGui import QIcon
 
-from qgis.core import QgsProject, QgsMapLayer, QgsDataSourceUri
+from qgis.core import QgsProject, QgsMapLayer, QgsDataSourceUri, QgsApplication
 
 from . import resources_rc  # NOQA
 
@@ -37,7 +37,7 @@ class DBManagerPlugin(object):
         self.dlg = None
 
     def initGui(self):
-        self.action = QAction(QIcon(":/db_manager/icon"), QApplication.translate("DBManagerPlugin", "DB Manager"),
+        self.action = QAction(QgsApplication.getThemeIcon('dbmanager.svg'), QApplication.translate("DBManagerPlugin", "DB Manager"),
                               self.iface.mainWindow())
         self.action.setObjectName("dbManager")
         self.action.triggered.connect(self.run)
@@ -51,7 +51,7 @@ class DBManagerPlugin(object):
         else:
             self.iface.addPluginToMenu(QApplication.translate("DBManagerPlugin", "DB Manager"), self.action)
 
-        self.layerAction = QAction(QIcon(":/db_manager/icon"), QApplication.translate("DBManagerPlugin", "Update Sql Layer"),
+        self.layerAction = QAction(QgsApplication.getThemeIcon('dbmanager.svg'), QApplication.translate("DBManagerPlugin", "Update Sql Layer"),
                                    self.iface.mainWindow())
         self.layerAction.setObjectName("dbManagerUpdateSqlLayer")
         self.layerAction.triggered.connect(self.onUpdateSqlLayer)
