@@ -17,7 +17,10 @@
 #include "qgsgeopackageconnection.h"
 #include "qgslogger.h"
 #include "qgssettings.h"
+#include "qgsproject.h"
 #include "qgsvectorlayer.h"
+#include "qgsrasterlayer.h"
+#include "qgsnewgeopackagelayerdialog.h"
 
 #include <QAction>
 #include <QMessageBox>
@@ -117,7 +120,9 @@ void QgsGeoPackageRootItem::newConnection()
 
 void QgsGeoPackageRootItem::createDatabase()
 {
-// TODO
+  QgsNewGeoPackageLayerDialog dialog( nullptr );
+  dialog.setCrs( QgsProject::instance()->defaultCrsForNewLayers() );
+  dialog.exec();
 }
 
 
@@ -132,10 +137,11 @@ QVector<QgsDataItem *> QgsGeoPackageConnectionItem::createChildren()
 {
   QVector<QgsDataItem *> children;
 
+  // Vector layers
   QgsVectorLayer layer( mPath, QStringLiteral( "ogr_tmp" ), QStringLiteral( "ogr" ) );
   if ( ! layer.isValid( ) )
   {
-    children.append( new QgsErrorItem( this, tr( "Layer is not a valid GeoPackage layer" ), mPath + "/error" ) );
+    QgsDebugMsgLevel( tr( "Layer is not a valid GeoPackage Vector layer %1" ).arg( mPath ), 3 );
   }
   else
   {
@@ -146,22 +152,33 @@ QVector<QgsDataItem *> QgsGeoPackageConnectionItem::createChildren()
       QString name = pieces[1];
       QString featuresCount = pieces[2];
       QString geometryType = pieces[3];
-      QgsGeoPackageLayerItem::LayerType layerType;
+      QgsLayerItem::LayerType layerType;
       layerType = layerTypeFromDb( geometryType );
-      if ( layerType != QgsGeoPackageLayerItem::LayerType::NoType )
+      if ( layerType != QgsLayerItem::LayerType::NoType )
       {
-        // URI:    '/path/gdal_sample_v1.2_no_extensions.gpkg|layerid=7|geometrytype=Point'
-        QString uri = QStringLiteral( "%1|layerid=%2|geometrytype=%3" ).arg( mPath, layerId, QgsGeoPackageLayerItem::layerTypeAsString( layerTypeFromDb( geometryType ) ) );
-        QgsGeoPackageLayerItem *item = new QgsGeoPackageLayerItem( this, name, mPath, uri, layerType );
-        QgsDebugMsg( QStringLiteral( "Adding GPKG item %1 %2 %3" ).arg( name, uri, geometryType ) );
+        // example URI:    '/path/gdal_sample_v1.2_no_extensions.gpkg|layerid=7'
+        QString uri = QStringLiteral( "%1|layerid=%2" ).arg( mPath, layerId );
+        QgsGeoPackageVectorLayerItem *item = new QgsGeoPackageVectorLayerItem( this, name, mPath, uri, layerType );
+        QgsDebugMsg( QStringLiteral( "Adding GPKG Vector item %1 %2 %3" ).arg( name, uri, geometryType ) );
         children.append( item );
       }
       else
       {
-        children.append( new QgsErrorItem( this, tr( "Layer is not a supported GeoPackage layer geometry type: %1" ).arg( geometryType ), mPath + "/error" ) );
+        QgsDebugMsgLevel( QStringLiteral( "Layer type is not a supported GeoPackage Vector layer %1" ).arg( mPath ), 3 );
       }
 
     }
+  }
+  // Raster layers
+  QgsRasterLayer rlayer( mPath, QStringLiteral( "gdal_tmp" ), QStringLiteral( "gdal" ), false );
+  Q_FOREACH ( const QString &uri, rlayer.dataProvider()->subLayers( ) )
+  {
+    QStringList pieces = uri.split( ':' );
+    QString name = pieces.value( pieces.length() - 1 );
+    QgsDebugMsg( QStringLiteral( "Adding GPKG Raster item %1 %2 %3" ).arg( name, uri ) );
+    QgsGeoPackageRasterLayerItem *item = new QgsGeoPackageRasterLayerItem( this, name, mPath, uri );
+    children.append( item );
+
   }
   return children;
 
@@ -184,30 +201,39 @@ QList<QAction *> QgsGeoPackageConnectionItem::actions()
 {
   QList<QAction *> lst;
 
-  QAction *actionRemoveConnection = new QAction( tr( "Remove connection" ), this );
   // TODO: implement layer deletion
+
+  //QAction *actionRemoveConnection = new QAction( tr( "Remove connection" ), this );
   // connect( actionDeleteLayer, &QAction::triggered, this, &QgsGeoPackageLayerItem::deleteLayer );
-  lst.append( actionRemoveConnection );
+  //lst.append( actionRemoveConnection );
   return lst;
 }
 #endif
 
 QgsLayerItem::LayerType QgsGeoPackageConnectionItem::layerTypeFromDb( const QString &geometryType )
 {
-  if ( QString::compare( geometryType, QStringLiteral( "Point" ), Qt::CaseInsensitive ) == 0 || QString::compare( geometryType, QStringLiteral( "MultiPoint" ), Qt::CaseInsensitive ) == 0 )
+  if ( geometryType.contains( QStringLiteral( "Point" ), Qt::CaseInsensitive ) )
   {
     return QgsLayerItem::LayerType::Point;
   }
-  else if ( QString::compare( geometryType, QStringLiteral( "Polygon" ), Qt::CaseInsensitive ) == 0 || QString::compare( geometryType, QStringLiteral( "MultiPolygon" ), Qt::CaseInsensitive ) == 0 )
+  else if ( geometryType.contains( QStringLiteral( "Polygon" ), Qt::CaseInsensitive ) )
   {
     return QgsLayerItem::LayerType::Polygon;
   }
-  else if ( QString::compare( geometryType, QStringLiteral( "LineString" ), Qt::CaseInsensitive ) == 0 || QString::compare( geometryType, QStringLiteral( "MultiLineString" ), Qt::CaseInsensitive ) == 0 )
+  else if ( geometryType.contains( QStringLiteral( "LineString" ), Qt::CaseInsensitive ) )
   {
     return QgsLayerItem::LayerType::Line;
   }
+  else if ( geometryType.contains( QStringLiteral( "Collection" ), Qt::CaseInsensitive ) )
+  {
+    return QgsLayerItem::LayerType::Vector;
+  }
+  else if ( geometryType.contains( QStringLiteral( "Table" ), Qt::CaseInsensitive ) )
+  {
+    return QgsLayerItem::LayerType::Table;
+  }
   // To be moved in a parent class that would also work for gdal and rasters
-  else if ( QString::compare( geometryType, QStringLiteral( "Raster" ), Qt::CaseInsensitive ) == 0 )
+  else if ( geometryType.contains( QStringLiteral( "Raster" ), Qt::CaseInsensitive ) )
   {
     return QgsLayerItem::LayerType::Raster;
   }
@@ -215,7 +241,7 @@ QgsLayerItem::LayerType QgsGeoPackageConnectionItem::layerTypeFromDb( const QStr
 }
 
 #ifdef HAVE_GUI
-QList<QAction *> QgsGeoPackageLayerItem::actions()
+QList<QAction *> QgsGeoPackageAbstractLayerItem::actions()
 {
   QList<QAction *> lst;
 
@@ -227,8 +253,21 @@ QList<QAction *> QgsGeoPackageLayerItem::actions()
 }
 #endif
 
-QgsGeoPackageLayerItem::QgsGeoPackageLayerItem( QgsDataItem *parent, QString name, QString path, QString uri, QgsLayerItem::LayerType layerType )
-  : QgsLayerItem( parent, name, path, uri, layerType, QStringLiteral( "ogr" ) )
+QgsGeoPackageAbstractLayerItem::QgsGeoPackageAbstractLayerItem( QgsDataItem *parent, QString name, QString path, QString uri, QgsLayerItem::LayerType layerType, QString providerKey )
+  : QgsLayerItem( parent, name, path, uri, layerType, providerKey )
 {
   setState( Populated ); // no children are expected
+}
+
+
+QgsGeoPackageVectorLayerItem::QgsGeoPackageVectorLayerItem( QgsDataItem *parent, QString name, QString path, QString uri, LayerType layerType )
+  : QgsGeoPackageAbstractLayerItem( parent, name, path, uri, layerType, QStringLiteral( "ogr" ) )
+{
+
+}
+
+QgsGeoPackageRasterLayerItem::QgsGeoPackageRasterLayerItem( QgsDataItem *parent, QString name, QString path, QString uri )
+  : QgsGeoPackageAbstractLayerItem( parent, name, path, uri, QgsLayerItem::LayerType::Raster, QStringLiteral( "gdal" ) )
+{
+
 }

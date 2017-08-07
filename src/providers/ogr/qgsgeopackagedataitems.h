@@ -19,11 +19,15 @@
 #include "qgsdataitemprovider.h"
 #include "qgsdataprovider.h"
 
-class QgsGeoPackageLayerItem : public QgsLayerItem
+/**
+ * \brief The QgsGeoPackageAbstractLayerItem class is the base class for GeoPackage raster and vector layers
+ */
+class QgsGeoPackageAbstractLayerItem : public QgsLayerItem
 {
     Q_OBJECT
-  public:
-    QgsGeoPackageLayerItem( QgsDataItem *parent, QString name, QString path, QString uri, LayerType layerType );
+
+  protected:
+    QgsGeoPackageAbstractLayerItem( QgsDataItem *parent, QString name, QString path, QString uri, LayerType layerType, QString providerKey );
 
 #ifdef HAVE_GUI
     QList<QAction *> actions() override;
@@ -34,6 +38,23 @@ class QgsGeoPackageLayerItem : public QgsLayerItem
     void deleteLayer();
 #endif
 };
+
+
+class QgsGeoPackageRasterLayerItem : public QgsGeoPackageAbstractLayerItem
+{
+    Q_OBJECT
+  public:
+    QgsGeoPackageRasterLayerItem( QgsDataItem *parent, QString name, QString path, QString uri );
+};
+
+
+class QgsGeoPackageVectorLayerItem : public QgsGeoPackageAbstractLayerItem
+{
+    Q_OBJECT
+  public:
+    QgsGeoPackageVectorLayerItem( QgsDataItem *parent, QString name, QString path, QString uri, LayerType layerType );
+};
+
 
 class QgsGeoPackageConnectionItem : public QgsDataCollectionItem
 {
@@ -90,7 +111,7 @@ class QgsGeoPackageRootItem : public QgsDataCollectionItem
 };
 
 
-//! Provider for geopackage root data item
+//! Provider for geopackage data item
 class QgsGeoPackageDataItemProvider : public QgsDataItemProvider
 {
   public:
