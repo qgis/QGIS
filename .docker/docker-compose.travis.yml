@@ -13,7 +13,7 @@ services:
       - postgres
     environment:
       - CCACHE_DIR=/root/.ccache
-      - TRAVIS_BUILD_DIR=/root/QGIS
+      - CTEST_BUILD_DIR=/root/QGIS
       - TRAVIS_BRANCH=${TRAVIS_BRANCH}
       - TRAVIS_PULL_REQUEST=${TRAVIS_PULL_REQUEST}
       - TRAVIS_PULL_REQUEST_BRANCH=${TRAVIS_PULL_REQUEST_BRANCH}
