@@ -109,6 +109,7 @@ from .RandomPointsLayer import RandomPointsLayer
 from .RandomPointsPolygons import RandomPointsPolygons
 from .RandomSelection import RandomSelection
 from .RandomSelectionWithinSubsets import RandomSelectionWithinSubsets
+from .Rasterize import RasterizeAlgorithm
 from .RasterLayerStatistics import RasterLayerStatistics
 from .RegularPoints import RegularPoints
 from .ReverseLineDirection import ReverseLineDirection
@@ -275,6 +276,7 @@ class QGISAlgorithmProvider(QgsProcessingProvider):
                 RandomPointsPolygons(),
                 RandomSelection(),
                 RandomSelectionWithinSubsets(),
+                RasterizeAlgorithm(),
                 RasterLayerStatistics(),
                 RegularPoints(),
                 ReverseLineDirection(),
