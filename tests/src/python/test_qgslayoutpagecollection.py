@@ -26,6 +26,7 @@ from qgis.core import (QgsUnitTypes,
                        QgsSimpleFillSymbolLayer,
                        QgsFillSymbol)
 from qgis.PyQt.QtCore import Qt, QCoreApplication, QEvent, QPointF, QRectF
+from qgis.PyQt.QtTest import QSignalSpy
 
 from qgis.testing import start_app, unittest
 
@@ -152,9 +153,12 @@ class TestQgsLayoutPageCollection(unittest.TestCase):
         page2.setPageSize('A5')
         collection.addPage(page2)
 
+        page_about_to_be_removed_spy = QSignalSpy(collection.pageAboutToBeRemoved)
+
         # delete page
         collection.deletePage(None)
         self.assertEqual(collection.pageCount(), 2)
+        self.assertEqual(len(page_about_to_be_removed_spy), 0)
 
         page3 = QgsLayoutItemPage(l)
         # try deleting a page not in collection
@@ -162,18 +166,23 @@ class TestQgsLayoutPageCollection(unittest.TestCase):
         QCoreApplication.sendPostedEvents(None, QEvent.DeferredDelete)
         self.assertFalse(sip.isdeleted(page3))
         self.assertEqual(collection.pageCount(), 2)
+        self.assertEqual(len(page_about_to_be_removed_spy), 0)
 
         collection.deletePage(page)
         self.assertEqual(collection.pageCount(), 1)
         self.assertFalse(page in collection.pages())
         QCoreApplication.sendPostedEvents(None, QEvent.DeferredDelete)
         self.assertTrue(sip.isdeleted(page))
+        self.assertEqual(len(page_about_to_be_removed_spy), 1)
+        self.assertEqual(page_about_to_be_removed_spy[-1][0], 0)
 
         collection.deletePage(page2)
         self.assertEqual(collection.pageCount(), 0)
         self.assertFalse(collection.pages())
         QCoreApplication.sendPostedEvents(None, QEvent.DeferredDelete)
         self.assertTrue(sip.isdeleted(page2))
+        self.assertEqual(len(page_about_to_be_removed_spy), 2)
+        self.assertEqual(page_about_to_be_removed_spy[-1][0], 0)
 
     def testMaxPageWidth(self):
         """

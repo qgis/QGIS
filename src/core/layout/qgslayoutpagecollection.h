@@ -225,6 +225,14 @@ class CORE_EXPORT QgsLayoutPageCollection : public QObject
      */
     void changed();
 
+    /**
+     * Emitted just before a page is removed from the collection.
+     *
+     * Page numbers in collections begin at 0 - so a page number of 0 indicates the
+     * first page.
+     */
+    void pageAboutToBeRemoved( int pageNumber );
+
   private:
 
     QgsLayout *mLayout = nullptr;

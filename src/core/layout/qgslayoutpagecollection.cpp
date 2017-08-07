@@ -221,6 +221,7 @@ void QgsLayoutPageCollection::deletePage( int pageNumber )
   if ( pageNumber < 0 || pageNumber >= mPages.count() )
     return;
 
+  emit pageAboutToBeRemoved( pageNumber );
   QgsLayoutItemPage *page = mPages.takeAt( pageNumber );
   mLayout->removeItem( page );
   page->deleteLater();
@@ -232,6 +233,7 @@ void QgsLayoutPageCollection::deletePage( QgsLayoutItemPage *page )
   if ( !mPages.contains( page ) )
     return;
 
+  emit pageAboutToBeRemoved( mPages.indexOf( page ) );
   mPages.removeAll( page );
   page->deleteLater();
   reflow();

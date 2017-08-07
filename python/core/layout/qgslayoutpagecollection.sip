@@ -225,6 +225,14 @@ class QgsLayoutPageCollection : QObject
  Emitted when pages are added or removed from the collection.
 %End
 
+    void pageAboutToBeRemoved( int pageNumber );
+%Docstring
+ Emitted just before a page is removed from the collection.
+
+ Page numbers in collections begin at 0 - so a page number of 0 indicates the
+ first page.
+%End
+
 };
 
 /************************************************************************
