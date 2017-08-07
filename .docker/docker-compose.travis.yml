@@ -8,10 +8,11 @@ services:
     image: qgis/qgis3-build-deps:${DOCKER_TAG}
     volumes:
       - ${TRAVIS_BUILD_DIR}:/root/QGIS
-      - $HOME/.ccache:/root/.ccache
+      - $HOME/.ccache:/root/.ccache  # if changed, also change env var
     links:
       - postgres
     environment:
+      - CCACHE_DIR=/root/.ccache
       - TRAVIS_BUILD_DIR=${TRAVIS_BUILD_DIR}
       - TRAVIS_PULL_REQUEST=${TRAVIS_PULL_REQUEST}
       - TRAVIS_PULL_REQUEST_BRANCH=${TRAVIS_PULL_REQUEST_BRANCH}

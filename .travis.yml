@@ -10,7 +10,7 @@ matrix:
         - DOCKER_COMPOSE=${TRAVIS_BUILD_DIR}/.docker/docker-compose.travis.yml
         - DOCKER_TAG=$( [[ $TRAVIS_REPO_SLUG =~ qgis/QGIS ]] && echo $TRAVIS_BRANCH | sed 's/master/latest/' || echo "latest" )
         - DOCKER_PUSH=$( [[ $TRAVIS_REPO_SLUG =~ qgis/QGIS ]] && [[ $TRAVIS_PULL_REQUEST =~ false ]] && echo "true" || echo "false" )
-
+        - CCACHE_DIR=${HOME}/.ccache
       dist: trusty
       sudo: false
       cache:
