@@ -336,9 +336,17 @@ QGISEXTERN QgsDataItem *dataItem( QString path, QgsDataItem *parentItem )
         OGR_DS_Destroy( hDataSource );
       }
     }
-    // add the item
-    // TODO: how to handle collections?
-    QgsLayerItem *item = new QgsOgrLayerItem( parentItem, name, path, path, QgsLayerItem::Vector );
+    // Handle collections
+    // Check if the layer has sublayers by comparing the extension
+    QgsDataItem *item;
+    QStringList multipleLayersExtensions;
+    // TODO: add more formats here!
+    multipleLayersExtensions << QLatin1String( "gpkg" ) << QLatin1String( "sqlite" );
+    if ( ! multipleLayersExtensions.contains( suffix ) )
+      item = new QgsOgrLayerItem( parentItem, name, path, path, QgsLayerItem::Vector );
+    else
+      item = new QgsOgrDataCollectionItem( parentItem, name, path );
+
     if ( item )
       return item;
   }
