@@ -135,7 +135,7 @@ class TestQgsLayoutSnapper(unittest.TestCase):
         point, snapped = s.snapPointToGuides(0.5, QgsLayoutGuide.Vertical, 1)
         self.assertFalse(snapped)
 
-        guides.addGuide(QgsLayoutGuide(QgsLayoutGuide.Vertical, QgsLayoutMeasurement(1)))
+        guides.addGuide(QgsLayoutGuide(QgsLayoutGuide.Vertical, QgsLayoutMeasurement(1), page))
         point, snapped = s.snapPointToGuides(0.5, QgsLayoutGuide.Vertical, 1)
         self.assertTrue(snapped)
         self.assertEqual(point, 1)
@@ -153,7 +153,7 @@ class TestQgsLayoutSnapper(unittest.TestCase):
         # snap to hoz
         point, snapped = s.snapPointToGuides(0.5, QgsLayoutGuide.Horizontal, 1)
         self.assertFalse(snapped)
-        guides.addGuide(QgsLayoutGuide(QgsLayoutGuide.Horizontal, QgsLayoutMeasurement(1)))
+        guides.addGuide(QgsLayoutGuide(QgsLayoutGuide.Horizontal, QgsLayoutMeasurement(1), page))
         point, snapped = s.snapPointToGuides(0.5, QgsLayoutGuide.Horizontal, 1)
         self.assertTrue(snapped)
         self.assertEqual(point, 1)
@@ -188,7 +188,7 @@ class TestQgsLayoutSnapper(unittest.TestCase):
         # test that guide takes precedence
         s.setSnapToGrid(True)
         s.setSnapToGuides(True)
-        guides.addGuide(QgsLayoutGuide(QgsLayoutGuide.Horizontal, QgsLayoutMeasurement(0.5)))
+        guides.addGuide(QgsLayoutGuide(QgsLayoutGuide.Horizontal, QgsLayoutMeasurement(0.5), page))
         point, snapped = s.snapPoint(QPointF(1, 1), 1)
         self.assertTrue(snapped)
         self.assertEqual(point, QPointF(0, 0.5))
