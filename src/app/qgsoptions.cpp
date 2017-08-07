@@ -930,7 +930,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
   mSnappingMainDialogComboBox->setCurrentIndex( mSnappingMainDialogComboBox->findData( mSettings->value( QStringLiteral( "/qgis/mainSnappingWidgetMode" ), "dialog" ).toString() ) );
 
   mOffsetJoinStyleComboBox->addItem( tr( "Round" ), 0 );
-  mOffsetJoinStyleComboBox->addItem( tr( "Mitre" ), 1 );
+  mOffsetJoinStyleComboBox->addItem( tr( "Miter" ), 1 );
   mOffsetJoinStyleComboBox->addItem( tr( "Bevel" ), 2 );
   mOffsetJoinStyleComboBox->setCurrentIndex( mSettings->value( QStringLiteral( "/qgis/digitizing/offset_join_style" ), 0 ).toInt() );
   mOffsetQuadSegSpinBox->setValue( mSettings->value( QStringLiteral( "/qgis/digitizing/offset_quad_seg" ), 8 ).toInt() );

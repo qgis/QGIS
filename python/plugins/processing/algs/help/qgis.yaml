@@ -218,9 +218,9 @@ qgis:fixeddistancebuffer: >
 
   The end cap style parameter controls how line endings are handled in the buffer.
 
-  The join style parameter specifies whether round, mitre or beveled joins should be used when offsetting corners in a line.
+  The join style parameter specifies whether round, miter or beveled joins should be used when offsetting corners in a line.
 
-  The mitre limit parameter is only applicable for mitre join styles, and controls the maximum distance from the offset curve to use when creating a mitred join.
+  The miter limit parameter is only applicable for miter join styles, and controls the maximum distance from the offset curve to use when creating a mitered join.
 
 qgis:fixgeometries: >
   This algorithm attempts to create a valid representation of a given invalid geometry without losing any of the input vertices. Already-valid geometries are returned without further intervention. Always outputs multi-geometry layer.
@@ -334,9 +334,9 @@ qgis:offsetline: >
 
   The segments parameter controls the number of line segments to use to approximate a quarter circle when creating rounded offsets.
 
-  The join style parameter specifies whether round, mitre or beveled joins should be used when offsetting corners in a line.
+  The join style parameter specifies whether round, miter or beveled joins should be used when offsetting corners in a line.
 
-  The mitre limit parameter is only applicable for mitre join styles, and controls the maximum distance from the offset curve to use when creating a mitred join.
+  The miter limit parameter is only applicable for miter join styles, and controls the maximum distance from the offset curve to use when creating a mitered join.
 
 qgis:orientedminimumboundingbox: >
   This algorithm takes a vector layer and generate a new one with the minimum rectangle that covers all the input features.
@@ -537,9 +537,9 @@ qgis:singlesidedbuffer: >
 
   The segments parameter controls the number of line segments to use to approximate a quarter circle when creating rounded buffers.
 
-  The join style parameter specifies whether round, mitre or beveled joins should be used when buffering corners in a line.
+  The join style parameter specifies whether round, miter or beveled joins should be used when buffering corners in a line.
 
-  The mitre limit parameter is only applicable for mitre join styles, and controls the maximum distance from the buffer to use when creating a mitred join.
+  The miter limit parameter is only applicable for miter join styles, and controls the maximum distance from the buffer to use when creating a mitered join.
 
 qgis:smoothgeometry: >
   This algorithm smooths the geometries in a line or polygon layer. It creates a new layer with the same features as the ones in the input layer, but with geometries containing a higher number of vertices and corners in the geometries smoothed out.

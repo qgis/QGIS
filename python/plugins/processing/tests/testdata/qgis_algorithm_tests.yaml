@@ -645,7 +645,7 @@ tests:
         name: lines.gml
         type: vector
       JOIN_STYLE: '0'
-      MITRE_LIMIT: 2
+      MITER_LIMIT: 2
       SEGMENTS: 8
     results:
       OUTPUT:
@@ -663,7 +663,7 @@ tests:
         name: lines.gml
         type: vector
       JOIN_STYLE: '0'
-      MITRE_LIMIT: 2
+      MITER_LIMIT: 2
       SEGMENTS: 8
     results:
       OUTPUT:
@@ -674,18 +674,18 @@ tests:
             precision: 7
 
   - algorithm: qgis:offsetline
-    name: Offset line mitre
+    name: Offset line miter
     params:
       DISTANCE: 1.0
       INPUT:
         name: lines.gml
         type: vector
       JOIN_STYLE: '1'
-      MITRE_LIMIT: 2
+      MITER_LIMIT: 2
       SEGMENTS: 4
     results:
       OUTPUT:
-        name: expected/line_offset_mitre.gml
+        name: expected/line_offset_miter.gml
         type: vector
         compare:
           geometry:
@@ -699,7 +699,7 @@ tests:
         name: lines.gml
         type: vector
       JOIN_STYLE: '2'
-      MITRE_LIMIT: 2
+      MITER_LIMIT: 2
       SEGMENTS: 8
     results:
       OUTPUT:
@@ -717,7 +717,7 @@ tests:
         name: multilines.gml
         type: vector
       JOIN_STYLE: '0'
-      MITRE_LIMIT: 2
+      MITER_LIMIT: 2
       SEGMENTS: 8
     results:
       OUTPUT:
@@ -737,7 +737,7 @@ tests:
         name: polys.gml
         type: vector
       JOIN_STYLE: '2'
-      MITRE_LIMIT: 2
+      MITER_LIMIT: 2
       SEGMENTS: 5
     results:
       OUTPUT:
@@ -745,7 +745,7 @@ tests:
         type: vector
 
   - algorithm: qgis:fixeddistancebuffer
-    name: Buffer polygons using mitre
+    name: Buffer polygons using miter
     params:
       DISSOLVE: false
       DISTANCE: 1.0
@@ -754,11 +754,11 @@ tests:
         name: polys.gml
         type: vector
       JOIN_STYLE: '1'
-      MITRE_LIMIT: 2
+      MITER_LIMIT: 2
       SEGMENTS: 5
     results:
       OUTPUT:
-        name: expected/buffer_polys_mitre.gml
+        name: expected/buffer_polys_miter.gml
         type: vector
 
   - algorithm: qgis:fixeddistancebuffer
@@ -771,7 +771,7 @@ tests:
         name: lines.gml
         type: vector
       JOIN_STYLE: '0'
-      MITRE_LIMIT: 2
+      MITER_LIMIT: 2
       SEGMENTS: 5
     results:
       OUTPUT:
@@ -791,7 +791,7 @@ tests:
         name: lines.gml
         type: vector
       JOIN_STYLE: '0'
-      MITRE_LIMIT: 2
+      MITER_LIMIT: 2
       SEGMENTS: 5
     results:
       OUTPUT:
@@ -811,7 +811,7 @@ tests:
         name: lines.gml
         type: vector
       JOIN_STYLE: '0'
-      MITRE_LIMIT: 2
+      MITER_LIMIT: 2
       SEGMENTS: 5
     results:
       OUTPUT:
@@ -926,7 +926,7 @@ tests:
         name: lines.gml
         type: vector
       JOIN_STYLE: '0'
-      MITRE_LIMIT: 2
+      MITER_LIMIT: 2
       SEGMENTS: 8
       SIDE: '0'
     results:
@@ -938,19 +938,19 @@ tests:
             precision: 7
 
   - algorithm: qgis:singlesidedbuffer
-    name: Single sided buffer lines (Right, mitre)
+    name: Single sided buffer lines (Right, miter)
     params:
       DISTANCE: 1.0
       INPUT:
         name: lines.gml
         type: vector
       JOIN_STYLE: '1'
-      MITRE_LIMIT: 2
+      MITER_LIMIT: 2
       SEGMENTS: 8
       SIDE: '1'
     results:
       OUTPUT:
-        name: expected/single_sided_buffer_line_mitre.gml
+        name: expected/single_sided_buffer_line_miter.gml
         type: vector
         compare:
           geometry:
@@ -964,7 +964,7 @@ tests:
         name: multilines.gml
         type: vector
       JOIN_STYLE: '2'
-      MITRE_LIMIT: 2
+      MITER_LIMIT: 2
       SEGMENTS: 8
       SIDE: '0'
     results:

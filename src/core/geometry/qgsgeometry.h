@@ -589,7 +589,7 @@ class CORE_EXPORT QgsGeometry
     enum JoinStyle
     {
       JoinStyleRound = 1, //!< Use rounded joins
-      JoinStyleMitre, //!< Use mitred joins
+      JoinStyleMiter, //!< Use mitered joins
       JoinStyleBevel, //!< Use beveled joins
     };
 
@@ -602,19 +602,19 @@ class CORE_EXPORT QgsGeometry
      * \param segments    for round joins, number of segments to approximate quarter-circle
      * \param endCapStyle end cap style
      * \param joinStyle   join style for corners in geometry
-     * \param mitreLimit  limit on the mitre ratio used for very sharp corners (JoinStyleMitre only)
+     * \param miterLimit  limit on the miter ratio used for very sharp corners (JoinStyleMiter only)
      * \since QGIS 2.4
      */
-    QgsGeometry buffer( double distance, int segments, EndCapStyle endCapStyle, JoinStyle joinStyle, double mitreLimit ) const;
+    QgsGeometry buffer( double distance, int segments, EndCapStyle endCapStyle, JoinStyle joinStyle, double miterLimit ) const;
 
     /** Returns an offset line at a given distance and side from an input line.
      * \param distance    buffer distance
      * \param segments    for round joins, number of segments to approximate quarter-circle
      * \param joinStyle   join style for corners in geometry
-     * \param mitreLimit  limit on the mitre ratio used for very sharp corners (JoinStyleMitre only)
+     * \param miterLimit  limit on the miter ratio used for very sharp corners (JoinStyleMiter only)
      * \since QGIS 2.4
      */
-    QgsGeometry offsetCurve( double distance, int segments, JoinStyle joinStyle, double mitreLimit ) const;
+    QgsGeometry offsetCurve( double distance, int segments, JoinStyle joinStyle, double miterLimit ) const;
 
     /**
      * Returns a single sided buffer for a (multi)line geometry. The buffer is only
@@ -623,14 +623,14 @@ class CORE_EXPORT QgsGeometry
      * \param segments for round joins, number of segments to approximate quarter-circle
      * \param side side of geometry to buffer
      * \param joinStyle join style for corners
-     * \param mitreLimit limit on the mitre ratio used for very sharp corners
+     * \param miterLimit limit on the miter ratio used for very sharp corners
      * \returns buffered geometry, or an empty geometry if buffer could not be
      * calculated
      * \since QGIS 3.0
      */
     QgsGeometry singleSidedBuffer( double distance, int segments, BufferSide side,
                                    JoinStyle joinStyle = JoinStyleRound,
-                                   double mitreLimit = 2.0 ) const;
+                                   double miterLimit = 2.0 ) const;
 
     /**
      * Extends a (multi)line geometry by extrapolating out the start or end of the line

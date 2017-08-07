@@ -618,7 +618,7 @@ Test for containment of a point (uses GEOS)
     enum JoinStyle
     {
       JoinStyleRound,
-      JoinStyleMitre,
+      JoinStyleMiter,
       JoinStyleBevel,
     };
 
@@ -629,32 +629,32 @@ of segments used to approximate curves *
  :rtype: QgsGeometry
 %End
 
-    QgsGeometry buffer( double distance, int segments, EndCapStyle endCapStyle, JoinStyle joinStyle, double mitreLimit ) const;
+    QgsGeometry buffer( double distance, int segments, EndCapStyle endCapStyle, JoinStyle joinStyle, double miterLimit ) const;
 %Docstring
  Returns a buffer region around the geometry, with additional style options.
  \param distance    buffer distance
  \param segments    for round joins, number of segments to approximate quarter-circle
  \param endCapStyle end cap style
  \param joinStyle   join style for corners in geometry
- \param mitreLimit  limit on the mitre ratio used for very sharp corners (JoinStyleMitre only)
+ \param miterLimit  limit on the miter ratio used for very sharp corners (JoinStyleMiter only)
 .. versionadded:: 2.4
  :rtype: QgsGeometry
 %End
 
-    QgsGeometry offsetCurve( double distance, int segments, JoinStyle joinStyle, double mitreLimit ) const;
+    QgsGeometry offsetCurve( double distance, int segments, JoinStyle joinStyle, double miterLimit ) const;
 %Docstring
  Returns an offset line at a given distance and side from an input line.
  \param distance    buffer distance
  \param segments    for round joins, number of segments to approximate quarter-circle
  \param joinStyle   join style for corners in geometry
- \param mitreLimit  limit on the mitre ratio used for very sharp corners (JoinStyleMitre only)
+ \param miterLimit  limit on the miter ratio used for very sharp corners (JoinStyleMiter only)
 .. versionadded:: 2.4
  :rtype: QgsGeometry
 %End
 
     QgsGeometry singleSidedBuffer( double distance, int segments, BufferSide side,
                                    JoinStyle joinStyle = JoinStyleRound,
-                                   double mitreLimit = 2.0 ) const;
+                                   double miterLimit = 2.0 ) const;
 %Docstring
  Returns a single sided buffer for a (multi)line geometry. The buffer is only
  applied to one side of the line.
@@ -662,7 +662,7 @@ of segments used to approximate curves *
  \param segments for round joins, number of segments to approximate quarter-circle
  \param side side of geometry to buffer
  \param joinStyle join style for corners
- \param mitreLimit limit on the mitre ratio used for very sharp corners
+ \param miterLimit limit on the miter ratio used for very sharp corners
  :return: buffered geometry, or an empty geometry if buffer could not be
  calculated
 .. versionadded:: 3.0

@@ -3381,7 +3381,7 @@ class TestQgsGeometry(unittest.TestCase):
 
         wkt = "LineString( 0 0, 10 0, 10 10)"
         geom = QgsGeometry.fromWkt(wkt)
-        out = geom.singleSidedBuffer(1, 8, QgsGeometry.SideRight, QgsGeometry.JoinStyleMitre)
+        out = geom.singleSidedBuffer(1, 8, QgsGeometry.SideRight, QgsGeometry.JoinStyleMiter)
         result = out.exportToWkt()
         expected_wkt = "Polygon ((0 0, 10 0, 10 10, 11 10, 11 -1, 0 -1, 0 0))"
         self.assertTrue(compareWkt(result, expected_wkt, 0.00001), "Merge lines: mismatch Expected:\n{}\nGot:\n{}\n".format(expected_wkt, result))

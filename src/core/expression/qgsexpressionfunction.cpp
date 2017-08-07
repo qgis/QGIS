@@ -2452,9 +2452,9 @@ static QVariant fcnOffsetCurve( const QVariantList &values, const QgsExpressionC
   QgsGeometry::JoinStyle join = static_cast< QgsGeometry::JoinStyle >( QgsExpressionUtils::getIntValue( values.at( 3 ), parent ) );
   if ( join < QgsGeometry::JoinStyleRound || join > QgsGeometry::JoinStyleBevel )
     return QVariant();
-  double mitreLimit = QgsExpressionUtils::getDoubleValue( values.at( 3 ), parent );
+  double miterLimit = QgsExpressionUtils::getDoubleValue( values.at( 3 ), parent );
 
-  QgsGeometry geom = fGeom.offsetCurve( dist, segments, join, mitreLimit );
+  QgsGeometry geom = fGeom.offsetCurve( dist, segments, join, miterLimit );
   QVariant result = !geom.isNull() ? QVariant::fromValue( geom ) : QVariant();
   return result;
 }
@@ -2467,9 +2467,9 @@ static QVariant fcnSingleSidedBuffer( const QVariantList &values, const QgsExpre
   QgsGeometry::JoinStyle join = static_cast< QgsGeometry::JoinStyle >( QgsExpressionUtils::getIntValue( values.at( 3 ), parent ) );
   if ( join < QgsGeometry::JoinStyleRound || join > QgsGeometry::JoinStyleBevel )
     return QVariant();
-  double mitreLimit = QgsExpressionUtils::getDoubleValue( values.at( 3 ), parent );
+  double miterLimit = QgsExpressionUtils::getDoubleValue( values.at( 3 ), parent );
 
-  QgsGeometry geom = fGeom.singleSidedBuffer( dist, segments, QgsGeometry::SideLeft, join, mitreLimit );
+  QgsGeometry geom = fGeom.singleSidedBuffer( dist, segments, QgsGeometry::SideLeft, join, miterLimit );
   QVariant result = !geom.isNull() ? QVariant::fromValue( geom ) : QVariant();
   return result;
 }
@@ -4068,13 +4068,13 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
                                             << QgsExpressionFunction::Parameter( QStringLiteral( "distance" ) )
                                             << QgsExpressionFunction::Parameter( QStringLiteral( "segments" ), true, 8.0 )
                                             << QgsExpressionFunction::Parameter( QStringLiteral( "join" ), true, QgsGeometry::JoinStyleRound )
-                                            << QgsExpressionFunction::Parameter( QStringLiteral( "mitre_limit" ), true, 2.0 ),
+                                            << QgsExpressionFunction::Parameter( QStringLiteral( "miter_limit" ), true, 2.0 ),
                                             fcnOffsetCurve, QStringLiteral( "GeometryGroup" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "single_sided_buffer" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "geometry" ) )
                                             << QgsExpressionFunction::Parameter( QStringLiteral( "distance" ) )
                                             << QgsExpressionFunction::Parameter( QStringLiteral( "segments" ), true, 8.0 )
                                             << QgsExpressionFunction::Parameter( QStringLiteral( "join" ), true, QgsGeometry::JoinStyleRound )
-                                            << QgsExpressionFunction::Parameter( QStringLiteral( "mitre_limit" ), true, 2.0 ),
+                                            << QgsExpressionFunction::Parameter( QStringLiteral( "miter_limit" ), true, 2.0 ),
                                             fcnSingleSidedBuffer, QStringLiteral( "GeometryGroup" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "extend" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "geometry" ) )
                                             << QgsExpressionFunction::Parameter( QStringLiteral( "start_distance" ) )

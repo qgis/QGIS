@@ -22,6 +22,7 @@ src/plugins/grass/qtermwidget/
 *.*.sortinc
 *.*.png
 *.*.prepare
+*.sld
 .agignore
 
 

@@ -75,7 +75,7 @@ class CORE_EXPORT QgsGeos: public QgsGeometryEngine
     QgsAbstractGeometry *combine( const QList< QgsAbstractGeometry *> &, QString *errorMsg = nullptr ) const override;
     QgsAbstractGeometry *symDifference( const QgsAbstractGeometry &geom, QString *errorMsg = nullptr ) const override;
     QgsAbstractGeometry *buffer( double distance, int segments, QString *errorMsg = nullptr ) const override;
-    QgsAbstractGeometry *buffer( double distance, int segments, int endCapStyle, int joinStyle, double mitreLimit, QString *errorMsg = nullptr ) const override;
+    QgsAbstractGeometry *buffer( double distance, int segments, int endCapStyle, int joinStyle, double miterLimit, QString *errorMsg = nullptr ) const override;
     QgsAbstractGeometry *simplify( double tolerance, QString *errorMsg = nullptr ) const override;
     QgsAbstractGeometry *interpolate( double distance, QString *errorMsg = nullptr ) const override;
     QgsAbstractGeometry *envelope( QString *errorMsg = nullptr ) const override;
@@ -112,7 +112,7 @@ class CORE_EXPORT QgsGeos: public QgsGeometryEngine
                        QgsPointSequence &topologyTestPoints,
                        QString *errorMsg = nullptr ) const override;
 
-    QgsAbstractGeometry *offsetCurve( double distance, int segments, int joinStyle, double mitreLimit, QString *errorMsg = nullptr ) const override;
+    QgsAbstractGeometry *offsetCurve( double distance, int segments, int joinStyle, double miterLimit, QString *errorMsg = nullptr ) const override;
 
     /**
      * Returns a single sided buffer for a geometry. The buffer is only
@@ -120,15 +120,15 @@ class CORE_EXPORT QgsGeos: public QgsGeometryEngine
      * \param distance buffer distance
      * \param segments for round joins, number of segments to approximate quarter-circle
      * \param side side of geometry to buffer (0 = left, 1 = right)
-     * \param joinStyle join style for corners ( Round (1) / Mitre (2) / Bevel (3) )
-     * \param mitreLimit limit on the mitre ratio used for very sharp corners
+     * \param joinStyle join style for corners ( Round (1) / Miter (2) / Bevel (3) )
+     * \param miterLimit limit on the miter ratio used for very sharp corners
      * \param errorMsg error messages emitted, if any
      * \returns buffered geometry, or an nullptr if buffer could not be
      * calculated
      * \since QGIS 3.0
      */
     QgsAbstractGeometry *singleSidedBuffer( double distance, int segments, int side,
-                                            int joinStyle, double mitreLimit,
+                                            int joinStyle, double miterLimit,
                                             QString *errorMsg = nullptr ) const;
 
 

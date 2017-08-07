@@ -376,9 +376,9 @@ void QgsMapToolOffsetCurve::setOffsetForRubberBand( double offset )
     QgsSettings s;
     int joinStyle = s.value( QStringLiteral( "/qgis/digitizing/offset_join_style" ), 0 ).toInt();
     int quadSegments = s.value( QStringLiteral( "/qgis/digitizing/offset_quad_seg" ), 8 ).toInt();
-    double mitreLimit = s.value( QStringLiteral( "/qgis/digitizing/offset_miter_limit" ), 5.0 ).toDouble();
+    double miterLimit = s.value( QStringLiteral( "/qgis/digitizing/offset_miter_limit" ), 5.0 ).toDouble();
 
-    GEOSGeometry *offsetGeom = GEOSOffsetCurve_r( QgsGeometry::getGEOSHandler(), geosGeom, offset, quadSegments, joinStyle, mitreLimit );
+    GEOSGeometry *offsetGeom = GEOSOffsetCurve_r( QgsGeometry::getGEOSHandler(), geosGeom, offset, quadSegments, joinStyle, miterLimit );
     GEOSGeom_destroy_r( QgsGeometry::getGEOSHandler(), geosGeom );
     if ( !offsetGeom )
     {

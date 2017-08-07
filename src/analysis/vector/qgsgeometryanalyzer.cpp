@@ -1064,7 +1064,7 @@ QgsGeometry QgsGeometryAnalyzer::createOffsetGeometry( const QgsGeometry &geom, 
     if ( geom.type() == QgsWkbTypes::LineGeometry )
     {
       GEOSGeometry *inputGeomItGeos = inputGeomIt->exportToGeos();
-      GEOSGeometry *offsetGeom = GEOSOffsetCurve_r( geosctxt, inputGeomItGeos, -offset, 8 /*quadSegments*/, 0 /*joinStyle*/, 5.0 /*mitreLimit*/ );
+      GEOSGeometry *offsetGeom = GEOSOffsetCurve_r( geosctxt, inputGeomItGeos, -offset, 8 /*quadSegments*/, 0 /*joinStyle*/, 5.0 /*miterLimit*/ );
       GEOSGeom_destroy_r( geosctxt, inputGeomItGeos );
       if ( !offsetGeom || !GEOSisValid_r( geosctxt, offsetGeom ) )
       {

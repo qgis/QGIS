@@ -1,7 +1,7 @@
 <GMLFeatureClassList>
   <GMLFeatureClass>
-    <Name>line_offset_mitre</Name>
-    <ElementPath>line_offset_mitre</ElementPath>
+    <Name>line_offset_miter</Name>
+    <ElementPath>line_offset_miter</ElementPath>
     <GeometryType>2</GeometryType>
     <SRSName>EPSG:4326</SRSName>
     <DatasetSpecificInfo>
