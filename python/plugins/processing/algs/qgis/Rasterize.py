@@ -2,7 +2,7 @@
 
 """
 /***************************************************************************
- QFieldSync processing provider
+ Rasterize.py
                               -------------------
         begin                : 2016-10-05
         copyright            : (C) 2016 by OPENGIS.ch
