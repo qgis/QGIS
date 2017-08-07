@@ -897,6 +897,7 @@ if __name__ == "__main__":
     sl = SiteList(pts)
     voronoi(sl, c)
 
+
 def cmp(a, b):
     """Compare the two objects x and y and return an integer according to the
     outcome. The return value is negative if x < y, zero if x == y and strictly
