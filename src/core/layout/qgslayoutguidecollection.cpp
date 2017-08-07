@@ -23,20 +23,20 @@
 // QgsLayoutGuide
 //
 
-QgsLayoutGuide::QgsLayoutGuide( Orientation orientation, const QgsLayoutMeasurement &position )
+QgsLayoutGuide::QgsLayoutGuide( Orientation orientation, const QgsLayoutMeasurement &position, QgsLayoutItemPage *page )
   : QObject( nullptr )
   , mOrientation( orientation )
   , mPosition( position )
-  , mLineItem( new QGraphicsLineItem() )
+  , mPage( page )
+{}
+
+QgsLayoutGuide::~QgsLayoutGuide()
 {
-  mLineItem->hide();
-  mLineItem->setZValue( QgsLayout::ZGuide );
-  QPen linePen( Qt::DotLine );
-  linePen.setColor( Qt::red );
-  // use a pen width of 0, since this activates a cosmetic pen
-  // which doesn't scale with the composer and keeps a constant size
-  linePen.setWidthF( 0 );
-  mLineItem->setPen( linePen );
+  if ( mLayout && mLineItem )
+  {
+    mLayout->removeItem( mLineItem );
+    delete mLineItem;
+  }
 }
 
 QgsLayoutMeasurement QgsLayoutGuide::position() const
@@ -51,12 +51,12 @@ void QgsLayoutGuide::setPosition( const QgsLayoutMeasurement &position )
   emit positionChanged();
 }
 
-int QgsLayoutGuide::page() const
+QgsLayoutItemPage *QgsLayoutGuide::page()
 {
   return mPage;
 }
 
-void QgsLayoutGuide::setPage( int page )
+void QgsLayoutGuide::setPage( QgsLayoutItemPage *page )
 {
   mPage = page;
   update();
@@ -64,43 +64,45 @@ void QgsLayoutGuide::setPage( int page )
 
 void QgsLayoutGuide::update()
 {
-  if ( !mLayout )
+  if ( !mLayout || !mLineItem )
     return;
 
   // first find matching page
-  if ( mPage >= mLayout->pageCollection()->pageCount() )
+  if ( !mPage )
   {
     mLineItem->hide();
     return;
   }
 
-  QgsLayoutItemPage *page = mLayout->pageCollection()->page( mPage );
-  mLineItem->setParentItem( page );
+  if ( mLineItem->parentItem() != mPage )
+  {
+    mLineItem->setParentItem( mPage );
+  }
   double layoutPos = mLayout->convertToLayoutUnits( mPosition );
   bool showGuide = mLayout->guides().visible();
   switch ( mOrientation )
   {
     case Horizontal:
-      if ( layoutPos > page->rect().height() )
+      if ( layoutPos > mPage->rect().height() )
       {
         mLineItem->hide();
       }
       else
       {
-        mLineItem->setLine( 0, layoutPos, page->rect().width(), layoutPos );
+        mLineItem->setLine( 0, layoutPos, mPage->rect().width(), layoutPos );
         mLineItem->setVisible( showGuide );
       }
 
       break;
 
     case Vertical:
-      if ( layoutPos > page->rect().width() )
+      if ( layoutPos > mPage->rect().width() )
       {
         mLineItem->hide();
       }
       else
       {
-        mLineItem->setLine( layoutPos, 0, layoutPos, page->rect().height() );
+        mLineItem->setLine( layoutPos, 0, layoutPos, mPage->rect().height() );
         mLineItem->setVisible( showGuide );
       }
 
@@ -110,11 +112,14 @@ void QgsLayoutGuide::update()
 
 QGraphicsLineItem *QgsLayoutGuide::item()
 {
-  return mLineItem.get();
+  return mLineItem;
 }
 
 double QgsLayoutGuide::layoutPosition() const
 {
+  if ( !mLineItem )
+    return -999;
+
   switch ( mOrientation )
   {
     case Horizontal:
@@ -128,6 +133,9 @@ double QgsLayoutGuide::layoutPosition() const
 
 void QgsLayoutGuide::setLayoutPosition( double position )
 {
+  if ( !mLayout )
+    return;
+
   double p = 0;
   switch ( mOrientation )
   {
@@ -152,7 +160,21 @@ QgsLayout *QgsLayoutGuide::layout() const
 void QgsLayoutGuide::setLayout( QgsLayout *layout )
 {
   mLayout = layout;
-  mLayout->addItem( mLineItem.get() );
+
+  if ( !mLineItem )
+  {
+    mLineItem = new QGraphicsLineItem();
+    mLineItem->hide();
+    mLineItem->setZValue( QgsLayout::ZGuide );
+    QPen linePen( Qt::DotLine );
+    linePen.setColor( Qt::red );
+    // use a pen width of 0, since this activates a cosmetic pen
+    // which doesn't scale with the composer and keeps a constant size
+    linePen.setWidthF( 0 );
+    mLineItem->setPen( linePen );
+  }
+
+  mLayout->addItem( mLineItem );
   update();
 }
 
@@ -167,12 +189,15 @@ QgsLayoutGuide::Orientation QgsLayoutGuide::orientation() const
 // QgsLayoutGuideCollection
 //
 
-QgsLayoutGuideCollection::QgsLayoutGuideCollection( QgsLayout *layout )
+QgsLayoutGuideCollection::QgsLayoutGuideCollection( QgsLayout *layout, QgsLayoutPageCollection *pageCollection )
   : QAbstractTableModel( layout )
   , mLayout( layout )
+  , mPageCollection( pageCollection )
 {
   QFont f;
   mHeaderSize = QFontMetrics( f ).width( "XX" );
+
+  connect( mPageCollection, &QgsLayoutPageCollection::pageAboutToBeRemoved, this, &QgsLayoutGuideCollection::pageAboutToBeRemoved );
 }
 
 QgsLayoutGuideCollection::~QgsLayoutGuideCollection()
@@ -223,7 +248,7 @@ QVariant QgsLayoutGuideCollection::data( const QModelIndex &index, int role ) co
       return guide->position().units();
 
     case PageRole:
-      return guide->page();
+      return mPageCollection->pageNumber( guide->page() );
 
     case LayoutPositionRole:
       return guide->layoutPosition();
@@ -358,23 +383,23 @@ void QgsLayoutGuideCollection::clear()
 
 void QgsLayoutGuideCollection::applyGuidesToAllOtherPages( int sourcePage )
 {
+  QgsLayoutItemPage *page = mPageCollection->page( sourcePage );
   // remove other page's guides
   Q_FOREACH ( QgsLayoutGuide *guide, mGuides )
   {
-    if ( guide->page() != sourcePage )
+    if ( guide->page() != page )
       removeGuide( guide );
   }
 
   // remaining guides belong to source page - clone them to other pages
   Q_FOREACH ( QgsLayoutGuide *guide, mGuides )
   {
-    for ( int p = 0; p < mLayout->pageCollection()->pageCount(); ++p )
+    for ( int p = 0; p < mPageCollection->pageCount(); ++p )
     {
       if ( p == sourcePage )
         continue;
 
-      std::unique_ptr< QgsLayoutGuide> newGuide( new QgsLayoutGuide( guide->orientation(), guide->position() ) );
-      newGuide->setPage( p );
+      std::unique_ptr< QgsLayoutGuide> newGuide( new QgsLayoutGuide( guide->orientation(), guide->position(), mPageCollection->page( p ) ) );
       newGuide->setLayout( mLayout );
       if ( newGuide->item()->isVisible() )
       {
@@ -399,7 +424,18 @@ QList<QgsLayoutGuide *> QgsLayoutGuideCollection::guides( QgsLayoutGuide::Orient
   Q_FOREACH ( QgsLayoutGuide *guide, mGuides )
   {
     if ( guide->orientation() == orientation && guide->item()->isVisible() &&
-         ( page < 0 || page == guide->page() ) )
+         ( page < 0 || mPageCollection->page( page ) == guide->page() ) )
+      res << guide;
+  }
+  return res;
+}
+
+QList<QgsLayoutGuide *> QgsLayoutGuideCollection::guidesOnPage( int page )
+{
+  QList<QgsLayoutGuide *> res;
+  Q_FOREACH ( QgsLayoutGuide *guide, mGuides )
+  {
+    if ( mPageCollection->page( page ) == guide->page() )
       res << guide;
   }
   return res;
@@ -414,6 +450,14 @@ void QgsLayoutGuideCollection::setVisible( bool visible )
 {
   mGuidesVisible = visible;
   update();
+}
+
+void QgsLayoutGuideCollection::pageAboutToBeRemoved( int pageNumber )
+{
+  Q_FOREACH ( QgsLayoutGuide *guide, guidesOnPage( pageNumber ) )
+  {
+    removeGuide( guide );
+  }
 }
 
 

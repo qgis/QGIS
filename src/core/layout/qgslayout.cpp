@@ -22,11 +22,17 @@ QgsLayout::QgsLayout( QgsProject *project )
   : QGraphicsScene()
   , mProject( project )
   , mSnapper( QgsLayoutSnapper( this ) )
-  , mGuideCollection( new QgsLayoutGuideCollection( this ) )
   , mPageCollection( new QgsLayoutPageCollection( this ) )
+  , mGuideCollection( new QgsLayoutGuideCollection( this, mPageCollection.get() ) )
 {
   // just to make sure - this should be the default, but maybe it'll change in some future Qt version...
   setBackgroundBrush( Qt::NoBrush );
+}
+
+QgsLayout::~QgsLayout()
+{
+  // delete guide collection FIRST, since it depends on the page collection
+  mGuideCollection.reset();
 }
 
 void QgsLayout::initializeDefaults()

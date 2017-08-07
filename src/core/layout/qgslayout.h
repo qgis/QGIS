@@ -59,6 +59,8 @@ class CORE_EXPORT QgsLayout : public QGraphicsScene, public QgsExpressionContext
      */
     QgsLayout( QgsProject *project );
 
+    ~QgsLayout();
+
     /**
      * Initializes an empty layout, e.g. by adding a default page to the layout. This should be called after creating
      * a new layout.
@@ -309,9 +311,10 @@ class CORE_EXPORT QgsLayout : public QGraphicsScene, public QgsExpressionContext
     QgsLayoutContext mContext;
     QgsLayoutSnapper mSnapper;
     QgsLayoutGridSettings mGridSettings;
-    std::unique_ptr< QgsLayoutGuideCollection > mGuideCollection;
 
     std::unique_ptr< QgsLayoutPageCollection > mPageCollection;
+
+    std::unique_ptr< QgsLayoutGuideCollection > mGuideCollection;
 
 };
 

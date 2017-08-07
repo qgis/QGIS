@@ -26,7 +26,7 @@ class QgsLayoutGuide : QObject
       Vertical,
     };
 
-    QgsLayoutGuide( Orientation orientation, const QgsLayoutMeasurement &position );
+    QgsLayoutGuide( Orientation orientation, const QgsLayoutMeasurement &position, QgsLayoutItemPage *page );
 %Docstring
  Constructor for a new guide with the specified ``orientation`` and
  initial ``position``.
@@ -35,6 +35,8 @@ class QgsLayoutGuide : QObject
  Adding the guide to a QgsLayoutGuideCollection will automatically set
  the corresponding layout for you.
 %End
+
+    ~QgsLayoutGuide();
 
     QgsLayout *layout() const;
 %Docstring
@@ -82,21 +84,17 @@ class QgsLayoutGuide : QObject
 .. seealso:: position()
 %End
 
-    int page() const;
+    QgsLayoutItemPage *page();
 %Docstring
- Returns the page number of the guide.
-
- Page numbering begins at 0.
+ Returns the page the guide is contained within.
 
 .. seealso:: setPage()
- :rtype: int
+ :rtype: QgsLayoutItemPage
 %End
 
-    void setPage( int page );
+    void setPage( QgsLayoutItemPage *page );
 %Docstring
- Sets the ``page`` number of the guide.
-
- Page numbering begins at 0.
+ Sets the ``page`` the guide is contained within.
 
 .. seealso:: page()
 %End
@@ -155,9 +153,10 @@ class QgsLayoutGuideCollection : QAbstractTableModel
       LayoutPositionRole,
     };
 
-    QgsLayoutGuideCollection( QgsLayout *layout );
+    QgsLayoutGuideCollection( QgsLayout *layout, QgsLayoutPageCollection *pageCollection );
 %Docstring
- Constructor for QgsLayoutGuideCollection belonging to the specified layout.
+ Constructor for QgsLayoutGuideCollection belonging to the specified layout,
+ and linked to the specified ``pageCollection``.
 %End
     ~QgsLayoutGuideCollection();
 
@@ -210,9 +209,16 @@ class QgsLayoutGuideCollection : QAbstractTableModel
  Returns the list of guides contained in the collection with the specified
  ``orientation`` and on a matching ``page``.
  If ``page`` is -1, guides from all pages will be returned.
+.. seealso:: guidesOnPage()
  :rtype: list of QgsLayoutGuide
 %End
 
+    QList< QgsLayoutGuide * > guidesOnPage( int page );
+%Docstring
+ Returns the list of guides contained on a matching ``page``.
+.. seealso:: guides()
+ :rtype: list of QgsLayoutGuide
+%End
 
     bool visible() const;
 %Docstring

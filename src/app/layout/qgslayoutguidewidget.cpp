@@ -60,15 +60,13 @@ QgsLayoutGuideWidget::QgsLayoutGuideWidget( QWidget *parent, QgsLayout *layout, 
 
 void QgsLayoutGuideWidget::addHorizontalGuide()
 {
-  std::unique_ptr< QgsLayoutGuide > newGuide( new QgsLayoutGuide( QgsLayoutGuide::Horizontal, QgsLayoutMeasurement( 0 ) ) );
-  newGuide->setPage( mPage );
+  std::unique_ptr< QgsLayoutGuide > newGuide( new QgsLayoutGuide( QgsLayoutGuide::Horizontal, QgsLayoutMeasurement( 0 ), mLayout->pageCollection()->page( mPage ) ) );
   mLayout->guides().addGuide( newGuide.release() );
 }
 
 void QgsLayoutGuideWidget::addVerticalGuide()
 {
-  std::unique_ptr< QgsLayoutGuide > newGuide( new QgsLayoutGuide( QgsLayoutGuide::Vertical, QgsLayoutMeasurement( 0 ) ) );
-  newGuide->setPage( mPage );
+  std::unique_ptr< QgsLayoutGuide > newGuide( new QgsLayoutGuide( QgsLayoutGuide::Vertical, QgsLayoutMeasurement( 0 ), mLayout->pageCollection()->page( mPage ) ) );
   mLayout->guides().addGuide( newGuide.release() );
 }
 

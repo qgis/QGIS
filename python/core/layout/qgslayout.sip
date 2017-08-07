@@ -39,6 +39,8 @@ class QgsLayout : QGraphicsScene, QgsExpressionContextGenerator
  called on the new layout.
 %End
 
+    ~QgsLayout();
+
     void initializeDefaults();
 %Docstring
  Initializes an empty layout, e.g. by adding a default page to the layout. This should be called after creating

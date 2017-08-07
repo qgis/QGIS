@@ -19,6 +19,7 @@
 #include "qgis_core.h"
 #include "qgslayoutmeasurement.h"
 #include "qgslayoutpoint.h"
+#include "qgslayoutitempage.h"
 #include <QPen>
 #include <QAbstractListModel>
 #include <QSortFilterProxyModel>
@@ -26,6 +27,7 @@
 #include <memory>
 
 class QgsLayout;
+class QgsLayoutPageCollection;
 
 /**
  * \ingroup core
@@ -55,7 +57,9 @@ class CORE_EXPORT QgsLayoutGuide : public QObject
      * Adding the guide to a QgsLayoutGuideCollection will automatically set
      * the corresponding layout for you.
      */
-    QgsLayoutGuide( Orientation orientation, const QgsLayoutMeasurement &position );
+    QgsLayoutGuide( Orientation orientation, const QgsLayoutMeasurement &position, QgsLayoutItemPage *page );
+
+    ~QgsLayoutGuide();
 
     /**
      * Returns the layout the guide belongs to.
@@ -99,22 +103,18 @@ class CORE_EXPORT QgsLayoutGuide : public QObject
     void setPosition( const QgsLayoutMeasurement &position );
 
     /**
-     * Returns the page number of the guide.
-     *
-     * Page numbering begins at 0.
+     * Returns the page the guide is contained within.
      *
      * \see setPage()
      */
-    int page() const;
+    QgsLayoutItemPage *page();
 
     /**
-     * Sets the \a page number of the guide.
-     *
-     * Page numbering begins at 0.
+     * Sets the \a page the guide is contained within.
      *
      * \see page()
      */
-    void setPage( int page );
+    void setPage( QgsLayoutItemPage *page );
 
     /**
      * Updates the position of the guide's line item.
@@ -152,13 +152,13 @@ class CORE_EXPORT QgsLayoutGuide : public QObject
     //! Horizontal/vertical position of guide on page
     QgsLayoutMeasurement mPosition;
 
-    //! Page number, 0 index based
-    int mPage = 0;
+    //! Page
+    QPointer< QgsLayoutItemPage > mPage;
 
-    QgsLayout *mLayout = nullptr;
+    QPointer< QgsLayout > mLayout;
 
     //! Line item used in scene for guide
-    std::unique_ptr< QGraphicsLineItem > mLineItem;
+    QGraphicsLineItem *mLineItem = nullptr;
 
 };
 
@@ -186,9 +186,10 @@ class CORE_EXPORT QgsLayoutGuideCollection : public QAbstractTableModel
     };
 
     /**
-     * Constructor for QgsLayoutGuideCollection belonging to the specified layout.
+     * Constructor for QgsLayoutGuideCollection belonging to the specified layout,
+     * and linked to the specified \a pageCollection.
      */
-    QgsLayoutGuideCollection( QgsLayout *layout );
+    QgsLayoutGuideCollection( QgsLayout *layout, QgsLayoutPageCollection *pageCollection );
     ~QgsLayoutGuideCollection();
 
     int rowCount( const QModelIndex & ) const override;
@@ -233,9 +234,15 @@ class CORE_EXPORT QgsLayoutGuideCollection : public QAbstractTableModel
      * Returns the list of guides contained in the collection with the specified
      * \a orientation and on a matching \a page.
      * If \a page is -1, guides from all pages will be returned.
+     * \see guidesOnPage()
      */
     QList< QgsLayoutGuide * > guides( QgsLayoutGuide::Orientation orientation, int page = -1 );
 
+    /**
+     * Returns the list of guides contained on a matching \a page.
+     * \see guides()
+     */
+    QList< QgsLayoutGuide * > guidesOnPage( int page );
 
     /**
      * Returns true if the guide lines should be drawn.
@@ -249,9 +256,14 @@ class CORE_EXPORT QgsLayoutGuideCollection : public QAbstractTableModel
      */
     void setVisible( bool visible );
 
+  private slots:
+
+    void pageAboutToBeRemoved( int pageNumber );
+
   private:
 
     QgsLayout *mLayout = nullptr;
+    QgsLayoutPageCollection *mPageCollection = nullptr;
 
     QList< QgsLayoutGuide * > mGuides;
     int mHeaderSize = 0;

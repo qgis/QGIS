@@ -281,14 +281,14 @@ void QgsLayoutRuler::drawMarkerPos( QPainter *painter )
 
 void QgsLayoutRuler::drawGuideMarkers( QPainter *p, QgsLayout *layout )
 {
-  QList< int > visiblePageNumbers = mView->visiblePageNumbers();
+  QList< QgsLayoutItemPage * > visiblePages = mView->visiblePages();
   QList< QgsLayoutGuide * > guides = layout->guides().guides( mOrientation == Qt::Horizontal ? QgsLayoutGuide::Vertical : QgsLayoutGuide::Horizontal );
   p->save();
   p->setRenderHint( QPainter::Antialiasing, true );
   p->setPen( Qt::NoPen );
   Q_FOREACH ( QgsLayoutGuide *guide, guides )
   {
-    if ( visiblePageNumbers.contains( guide->page() ) )
+    if ( visiblePages.contains( guide->page() ) )
     {
       if ( guide == mHoverGuide )
       {
@@ -364,13 +364,13 @@ QPoint QgsLayoutRuler::convertLayoutPointToLocal( QPointF layoutPoint ) const
 QgsLayoutGuide *QgsLayoutRuler::guideAtPoint( QPoint localPoint ) const
 {
   QPointF layoutPoint = convertLocalPointToLayout( localPoint );
-  QList< int > visiblePageNumbers = mView->visiblePageNumbers();
+  QList< QgsLayoutItemPage * > visiblePages = mView->visiblePages();
   QList< QgsLayoutGuide * > guides = mView->currentLayout()->guides().guides( mOrientation == Qt::Horizontal ? QgsLayoutGuide::Vertical : QgsLayoutGuide::Horizontal );
   QgsLayoutGuide *closestGuide = nullptr;
   double minDelta = DBL_MAX;
   Q_FOREACH ( QgsLayoutGuide *guide, guides )
   {
-    if ( visiblePageNumbers.contains( guide->page() ) )
+    if ( visiblePages.contains( guide->page() ) )
     {
       double currentDelta = 0;
       switch ( mOrientation )
@@ -707,7 +707,7 @@ void QgsLayoutRuler::mouseReleaseEvent( QMouseEvent *event )
       QPointF layoutPoint = convertLocalPointToLayout( event->pos() );
 
       // delete guide if it ends outside of page
-      QgsLayoutItemPage *page = mView->currentLayout()->pageCollection()->page( mDraggingGuide->page() );
+      QgsLayoutItemPage *page = mDraggingGuide->page();
       bool deleteGuide = false;
       switch ( mDraggingGuide->orientation() )
       {
@@ -759,7 +759,6 @@ void QgsLayoutRuler::mouseReleaseEvent( QMouseEvent *event )
       if ( !page )
         return; // dragged outside of a page
 
-      int pageNumber = layout->pageCollection()->pageNumber( page );
       std::unique_ptr< QgsLayoutGuide > guide;
       switch ( mOrientation )
       {
@@ -767,17 +766,16 @@ void QgsLayoutRuler::mouseReleaseEvent( QMouseEvent *event )
         {
           //mouse is creating a horizontal guide
           double posOnPage = layout->pageCollection()->positionOnPage( scenePos ).y();
-          guide.reset( new QgsLayoutGuide( QgsLayoutGuide::Horizontal, QgsLayoutMeasurement( posOnPage, layout->units() ) ) );
+          guide.reset( new QgsLayoutGuide( QgsLayoutGuide::Horizontal, QgsLayoutMeasurement( posOnPage, layout->units() ), page ) );
           break;
         }
         case Qt::Vertical:
         {
           //mouse is creating a vertical guide
-          guide.reset( new QgsLayoutGuide( QgsLayoutGuide::Vertical, QgsLayoutMeasurement( scenePos.x(), layout->units() ) ) );
+          guide.reset( new QgsLayoutGuide( QgsLayoutGuide::Vertical, QgsLayoutMeasurement( scenePos.x(), layout->units() ), page ) );
           break;
         }
       }
-      guide->setPage( pageNumber );
       mView->currentLayout()->guides().addGuide( guide.release() );
     }
   }
