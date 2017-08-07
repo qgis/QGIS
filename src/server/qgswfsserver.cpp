@@ -445,7 +445,7 @@ int QgsWFSServer::getFeature( QgsRequestHandler& request, const QString& format 
     QDomElement queryElem;
     for ( int i = 0; i < queryNodes.size(); i++ )
     {
-      queryElem = queryNodes.at( 0 ).toElement();
+      queryElem = queryNodes.at( i ).toElement();
       mTypeName = queryElem.attribute( "typeName", "" );
       if ( mTypeName.contains( ":" ) )
       {
@@ -455,7 +455,7 @@ int QgsWFSServer::getFeature( QgsRequestHandler& request, const QString& format 
     }
     for ( int i = 0; i < queryNodes.size(); i++ )
     {
-      queryElem = queryNodes.at( 0 ).toElement();
+      queryElem = queryNodes.at( i ).toElement();
       mTypeName = queryElem.attribute( "typeName", "" );
       if ( mTypeName.contains( ":" ) )
       {
