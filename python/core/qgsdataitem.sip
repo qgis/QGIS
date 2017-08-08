@@ -525,6 +525,7 @@ Check if the given path is hidden from the browser model
  :rtype: bool
 %End
 
+
   public slots:
     virtual void childrenCreated();
     void directoryChanged();
