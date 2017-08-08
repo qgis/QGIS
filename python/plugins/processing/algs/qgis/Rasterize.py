@@ -186,9 +186,6 @@ class RasterizeAlgorithm(QgisAlgorithm):
             self.OUTPUT,
             context)
 
-        # This probably affects the whole system but it's a lot nicer
-        osgeo.gdal.UseExceptions()
-
         tile_set = TileSet(map_theme, layer, extent, tile_size, mupp,
                            output_layer,
                            qgis.utils.iface.mapCanvas().mapSettings())
