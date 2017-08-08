@@ -116,7 +116,7 @@ void dwgReader18::parseSysPage( duint8 *decompSec, duint32 decompSize )
   }
   DRW_DBG( "\n" );
 #endif
-  DRW_DBG( "decompresing " );
+  DRW_DBG( "decompressing " );
   DRW_DBG( compSize );
   DRW_DBG( " bytes in " );
   DRW_DBG( decompSize );
@@ -231,7 +231,7 @@ bool dwgReader18::parseDataPage( dwgSectionInfo si/*, duint8 *dData*/ )
 
     duint8* oData = objData + pi.startOffset;
     pi.uSize = si.maxSize;
-    DRW_DBG( "decompresing " );
+    DRW_DBG( "decompressing " );
     DRW_DBG( pi.cSize );
     DRW_DBG( " bytes in " );
     DRW_DBG( pi.uSize );
@@ -251,7 +251,7 @@ bool dwgReader18::readMetaData()
   if ( ! fileBuf->setPosition( 11 ) )
     return false;
   maintenanceVersion = fileBuf->getRawChar8();
-  DRW_DBG( "maintenance verion= " );
+  DRW_DBG( "maintenance version= " );
   DRW_DBGH( maintenanceVersion );
   DRW_DBG( "\nbyte at 0x0C= " );
   DRW_DBGH( fileBuf->getRawChar8() );

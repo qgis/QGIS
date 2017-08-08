@@ -1226,7 +1226,7 @@ bool QgsOracleProvider::addFeatures( QgsFeatureList &flist )
     return false;
 
   bool returnvalue = true;
-
+  bool fetchNewFid = getWorkspace().isEmpty() || getWorkspace().toUpper() == "LIVE";
 
   QSqlDatabase db( *mConnection );
 
@@ -1394,26 +1394,29 @@ bool QgsOracleProvider::addFeatures( QgsFeatureList &flist )
       if ( !ins.exec() )
         throw OracleException( tr( "Could not insert feature %1" ).arg( features->id() ), ins );
 
-      if ( mPrimaryKeyType == pktRowId )
+      if ( fetchNewFid )
       {
-        features->setFeatureId( mShared->lookupFid( QList<QVariant>() << QVariant( ins.lastInsertId() ) ) );
-        QgsDebugMsgLevel( QString( "new fid=%1" ).arg( features->id() ), 4 );
-      }
-      else if ( mPrimaryKeyType == pktInt || mPrimaryKeyType == pktFidMap )
-      {
-        getfid.addBindValue( QVariant( ins.lastInsertId() ) );
-        if ( !getfid.exec() || !getfid.next() )
-          throw OracleException( tr( "Could not retrieve feature id %1" ).arg( features->id() ), getfid );
-
-        int col = 0;
-        Q_FOREACH ( int idx, mPrimaryKeyAttrs )
+        if ( mPrimaryKeyType == pktRowId )
         {
-          const QgsField &fld = field( idx );
+          features->setFeatureId( mShared->lookupFid( QList<QVariant>() << QVariant( ins.lastInsertId() ) ) );
+          QgsDebugMsgLevel( QString( "new fid=%1" ).arg( features->id() ), 4 );
+        }
+        else if ( mPrimaryKeyType == pktInt || mPrimaryKeyType == pktFidMap )
+        {
+          getfid.addBindValue( QVariant( ins.lastInsertId() ) );
+          if ( !getfid.exec() || !getfid.next() )
+            throw OracleException( tr( "Could not retrieve feature id %1" ).arg( features->id() ), getfid );
 
-          QVariant v = getfid.value( col++ );
-          if ( v.type() != fld.type() )
-            v = QgsVectorDataProvider::convertValue( fld.type(), v.toString() );
-          features->setAttribute( idx, v );
+          int col = 0;
+          Q_FOREACH ( int idx, mPrimaryKeyAttrs )
+          {
+            const QgsField &fld = field( idx );
+
+            QVariant v = getfid.value( col++ );
+            if ( v.type() != fld.type() )
+              v = QgsVectorDataProvider::convertValue( fld.type(), v.toString() );
+            features->setAttribute( idx, v );
+          }
         }
       }
     }
