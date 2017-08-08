@@ -9,6 +9,14 @@ ccache -z
 
 cd /root/QGIS
 
+
+printf "[qgis_test]\nhost=postgres\nport=5432\ndbname=docker\nuser=docker\npassword=docker" > ~/.pg_service.conf
+export PGUSER=docker
+export PGHOST=postgres
+export PGPASSWORD=docker
+
+/root/QGIS/tests/testdata/provider/testdata_pg.sh
+
 mkdir -p build-docker &&
 
 pushd build-docker
@@ -28,13 +36,6 @@ cmake \
  -DWITH_BINDINGS=ON \
  -DDISABLE_DEPRECATED=ON \
  -DCXX_EXTRA_FLAGS=${CLANG_WARNINGS} ..
-
-# printf "[qgis_test]\nhost=postgres\nport=5432\ndbname=docker\nuser=docker\npassword=docker" > ~/.pg_service.conf
-# export PGUSER=docker
-# export PGHOST=postgres
-# export PGPASSWORD=docker
-#
-# /root/QGIS/tests/testdata/provider/testdata_pg.sh
 
 export LD_PRELOAD=/lib/x86_64-linux-gnu/libSegFault.so
 
