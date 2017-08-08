@@ -2433,7 +2433,7 @@ bool QgsProcessingParameterFeatureSource::checkValueIsAcceptable( const QVariant
   return false;
 }
 
-QString QgsProcessingParameterFeatureSource::valueAsPythonString( const QVariant &value, QgsProcessingContext & ) const
+QString QgsProcessingParameterFeatureSource::valueAsPythonString( const QVariant &value, QgsProcessingContext &context ) const
 {
   if ( value.canConvert<QgsProperty>() )
     return QStringLiteral( "QgsProperty.fromExpression('%1')" ).arg( value.value< QgsProperty >().asExpression() );
@@ -2443,13 +2443,29 @@ QString QgsProcessingParameterFeatureSource::valueAsPythonString( const QVariant
     QgsProcessingFeatureSourceDefinition fromVar = qvariant_cast<QgsProcessingFeatureSourceDefinition>( value );
     if ( fromVar.source.propertyType() == QgsProperty::StaticProperty )
     {
-      return QStringLiteral( "QgsProcessingFeatureSourceDefinition('%1', %2)" ).arg( fromVar.source.staticValue().toString(),
-             fromVar.selectedFeaturesOnly ? QStringLiteral( "True" ) : QStringLiteral( "False" ) );
+      if ( fromVar.selectedFeaturesOnly )
+      {
+        return QStringLiteral( "QgsProcessingFeatureSourceDefinition('%1', True)" ).arg( fromVar.source.staticValue().toString() );
+      }
+      else
+      {
+        QString layerString = fromVar.source.staticValue().toString();
+        // prefer to use layer source instead of id if possible (since it's persistent)
+        if ( QgsVectorLayer *layer = qobject_cast< QgsVectorLayer * >( QgsProcessingUtils::mapLayerFromString( layerString, context ) ) )
+          layerString = layer->source();
+        return layerString.prepend( '\'' ).append( '\'' );
+      }
     }
     else
     {
-      return QStringLiteral( "QgsProcessingFeatureSourceDefinition(QgsProperty.fromExpression('%1'), %2)" ).arg( fromVar.source.asExpression(),
-             fromVar.selectedFeaturesOnly ? QStringLiteral( "True" ) : QStringLiteral( "False" ) );
+      if ( fromVar.selectedFeaturesOnly )
+      {
+        return QStringLiteral( "QgsProcessingFeatureSourceDefinition(QgsProperty.fromExpression('%1'), True)" ).arg( fromVar.source.asExpression() );
+      }
+      else
+      {
+        return QStringLiteral( "QgsProperty.fromExpression('%1')" ).arg( fromVar.source.asExpression() );
+      }
     }
   }
 
@@ -2593,11 +2609,11 @@ QString QgsProcessingParameterFeatureSink::valueAsPythonString( const QVariant &
     QgsProcessingOutputLayerDefinition fromVar = qvariant_cast<QgsProcessingOutputLayerDefinition>( value );
     if ( fromVar.sink.propertyType() == QgsProperty::StaticProperty )
     {
-      return QStringLiteral( "QgsProcessingOutputLayerDefinition('%1')" ).arg( fromVar.sink.staticValue().toString() );
+      return QStringLiteral( "'%1'" ).arg( fromVar.sink.staticValue().toString() );
     }
     else
     {
-      return QStringLiteral( "QgsProcessingOutputLayerDefinition(QgsProperty.fromExpression('%1'))" ).arg( fromVar.sink.asExpression() );
+      return QStringLiteral( "QgsProperty.fromExpression('%1')" ).arg( fromVar.sink.asExpression() );
     }
   }
 
