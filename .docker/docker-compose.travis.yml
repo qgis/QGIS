@@ -2,9 +2,11 @@ version: '3'
 services:
   postgres:
     image: kartoza/postgis:9.5-2.2
-    command: sh -c "echo \"host all all 172.18.0.0/16 md5\" >> /etc/postgresql/9.5/main/pg_hba.conf && /start-postgis.sh"
+    environment:
+      - ALLOW_IP_RANGE="172.18.0.0/16"
 
   qgis-deps:
+    tty: true
     image: qgis/qgis3-build-deps:${DOCKER_TAG}
     volumes:
       - ${TRAVIS_BUILD_DIR}:/root/QGIS

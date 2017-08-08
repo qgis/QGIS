@@ -2,6 +2,11 @@
 
 set -e
 
+# locale-gen en_US.UTF-8
+# export LANG=en_US.UTF-8
+# export LANGUAGE=en_US:en
+# export LC_ALL=en_US.UTF-8
+
 export CTEST_PARALLEL_LEVEL=1
 export CCACHE_TEMPDIR=/tmp
 ccache -M 500M
@@ -9,10 +14,15 @@ ccache -z
 
 cd /root/QGIS
 
-printf "[qgis_test]\nhost=postgres\nport=5432\ndbname=docker\nuser=docker\npassword=docker" > ~/.pg_service.conf
+sleep 20
+
+printf "[qgis_test]\nhost=postgres\nport=5432\ndbname=qgis_test\nuser=docker\npassword=docker" > ~/.pg_service.conf
 export PGUSER=docker
 export PGHOST=postgres
 export PGPASSWORD=docker
+export PGDATABASE=qgis_test
+
+# export PYTHONIOENCODING="utf-8"
 
 /root/QGIS/tests/testdata/provider/testdata_pg.sh
 
@@ -37,7 +47,6 @@ cmake \
  -DCXX_EXTRA_FLAGS=${CLANG_WARNINGS} ..
 
 export LD_PRELOAD=/lib/x86_64-linux-gnu/libSegFault.so
-
 export CTEST_BUILD_COMMAND="/usr/bin/ninja"
 
 ninja

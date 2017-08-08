@@ -105,4 +105,9 @@ ENV QT_SELECT=5
 
 RUN apt-get install -y git
 
+# RUN locale-gen en_US.UTF-8
+# ENV LANG=en_US.UTF-8
+# ENV LANGUAGE=en_US:en
+# ENV LC_ALL=en_US.UTF-8
+
 CMD /root/QGIS/.ci/travis/linux/docker-build-test.sh
