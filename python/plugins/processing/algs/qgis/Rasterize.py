@@ -35,7 +35,7 @@ from qgis.core import (
     QgsProcessingParameterString,
     QgsProcessingParameterNumber,
     QgsProcessingParameterRasterLayer,
-    QgsProcessingOutputRasterLayer,
+    QgsProcessingParameterMapLayer,
     QgsProcessingParameterRasterDestination
 )
 
@@ -70,7 +70,7 @@ class RasterizeAlgorithm(QgisAlgorithm):
     # used when calling the algorithm from another algorithm, or when
     # calling from the QGIS console.
 
-    OUTPUT_LAYER = 'OUTPUT_LAYER'
+    OUTPUT = 'OUTPUT'
     MAP_THEME = 'MAP_THEME'
     LAYER = 'LAYER'
     EXTENT = 'EXTENT'
@@ -84,38 +84,54 @@ class RasterizeAlgorithm(QgisAlgorithm):
         """Here we define the inputs and output of the algorithm, along
         with some other properties.
         """
-
         # The parameters
-        self.addParameter(
-            QgsProcessingParameterString(self.MAP_THEME,
-                                         description=self.tr(
-                                             'Map theme to render.'),
-                                         defaultValue=None, optional=True))
+        map_theme_param = QgsProcessingParameterString(
+            self.MAP_THEME,
+            description=self.tr(
+                'Map theme to render.'),
+            defaultValue=None, optional=True)
+
+        map_theme_param.setMetadata(
+            {'widget_wrapper': {
+                'class':
+                    'processing.gui.wrappers_map_theme.MapThemeWrapper'}})
+        self.addParameter(map_theme_param)
 
         self.addParameter(
-            QgsProcessingParameterRasterLayer(self.LAYER, description=self.tr(
-                'Layer to render. Will only be used if the map theme is not '
-                'set. '
-                'If both, map theme and layer are not '
-                'set, the current map content will be rendered.'),
+            # TODO Why is this restricted to raster layers only? I think
+            # QgsProcessingParameterMapLayer makes more sense here so that
+            # users can choose to render single vector layers if desired.
+            QgsProcessingParameterRasterLayer(
+                self.LAYER,
+                description=self.tr(
+                    'Layer to render. Will only be used if the map theme '
+                    'is not set. '
+                    'If both, map theme and layer are not '
+                    'set, the current map content will be rendered.'),
                 optional=True))
         self.addParameter(
             QgsProcessingParameterExtent(self.EXTENT, description=self.tr(
                 'The minimum extent to render. Will internally be extended to '
-                'be '
-                'a multiple of the tile sizes.')))
+                'be a multiple of the tile sizes.')))
         self.addParameter(
-            QgsProcessingParameterNumber(self.TILE_SIZE, self.tr('Tile size'),
-                                         defaultValue=1024))
-        self.addParameter(QgsProcessingParameterNumber(self.MAP_UNITS_PER_PIXEL,
-                                                       self.tr(
-                                                           'Map units per '
-                                                           'pixel'),
-                                                       defaultValue=100))
+            QgsProcessingParameterNumber(
+                self.TILE_SIZE,
+                self.tr('Tile size'),
+                defaultValue=1024))
+
+        self.addParameter(QgsProcessingParameterNumber(
+            self.MAP_UNITS_PER_PIXEL,
+            self.tr(
+                'Map units per '
+                'pixel'),
+            defaultValue=100,
+            minValue=0,
+            type=QgsProcessingParameterNumber.Double
+        ))
 
         # We add a raster layer as output
         self.addParameter(QgsProcessingParameterRasterDestination(
-            self.OUTPUT_LAYER,
+            self.OUTPUT,
             self.tr(
                 'Output layer')))
 
@@ -130,30 +146,64 @@ class RasterizeAlgorithm(QgisAlgorithm):
     def group(self):
         return self.tr('Raster tools')
 
+    def tags(self):
+        return self.tr('layer,raster,convert,file,map themes,tiles').split(',')
+
     # def processAlgorithm(self, progress):
     def processAlgorithm(self, parameters, context, feedback):
         """Here is where the processing itself takes place."""
 
         # The first thing to do is retrieve the values of the parameters
         # entered by the user
-        map_theme = self.parameterAsString(parameters, self.MAP_THEME, context)
-        layer = self.parameterAsString(parameters, self.LAYER, context)
-        extent = self.parameterAsExtent(parameters, self.EXTENT,
-                                        context)
-        tile_size = self.parameterAsInt(parameters, self.TILE_SIZE, context)
-        mupp = self.parameterAsInt(parameters, self.MAP_UNITS_PER_PIXEL, context)
+        map_theme = self.parameterAsString(
+            parameters,
+            self.MAP_THEME,
+            context)
 
-        output_layer = self.parameterAsOutputLayer(parameters, self.OUTPUT_LAYER,
-                                                   context)
+        layer = self.parameterAsLayer(
+            parameters,
+            self.LAYER,
+            context)
+
+        extent = self.parameterAsExtent(
+            parameters,
+            self.EXTENT,
+            context)
+
+        tile_size = self.parameterAsInt(
+            parameters,
+            self.TILE_SIZE,
+            context)
+
+        mupp = self.parameterAsDouble(
+            parameters,
+            self.MAP_UNITS_PER_PIXEL,
+            context)
+
+        output_layer = self.parameterAsOutputLayer(
+            parameters,
+            self.OUTPUT,
+            context)
+
+        print('map_theme {}'.format(map_theme))
+        print('layer {}'.format(layer))
+        print('extent {}'.format(extent))
+        print('tile_size {}'.format(tile_size))
+        print('mupp {}'.format(mupp))
+        print('output_layer {}'.format(output_layer))
 
         # This probably affects the whole system but it's a lot nicer
         osgeo.gdal.UseExceptions()
 
-        tile_set = TileSet(map_theme, layer, extent, tile_size, mupp, output_layer,
+        tile_set = TileSet(map_theme, layer, extent, tile_size, mupp,
+                           output_layer,
                            qgis.utils.iface.mapCanvas().mapSettings())
+        # TODO Can you add feedback as a parameter to render and add
+        # appropriate hooks within render to check for feedback.isCanceled()
+        # and abort the render early?
         tile_set.render()
 
-        return {self.OUTPUT_LAYER: output_layer}
+        return {self.OUTPUT: output_layer}
 
 
 class TileSet():
@@ -268,7 +318,8 @@ class TileSet():
 
     def getDriverForFile(self, filename):
         """
-        Get the GDAL driver for a filename, based on its extension. (.gpkg, .mbtiles...)
+        Get the GDAL driver for a filename, based on its extension. (.gpkg,
+        .mbtiles...)
         """
         _, extension = os.path.splitext(filename)
 
@@ -276,6 +327,8 @@ class TileSet():
         if extension == '':
             extension = '.tif'
 
+        # TODO It should be removed and
+        # QgsRasterFileWriter::driverForExtension used instead.
         for i in range(osgeo.gdal.GetDriverCount()):
             driver = osgeo.gdal.GetDriver(i)
             if driver.GetMetadataItem('DMD_EXTENSION') == extension[1:]:

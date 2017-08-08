@@ -754,6 +754,11 @@ class SelectionWidgetWrapper(WidgetWrapper):
             return self.widget.currentData()
 
 
+class LayerWidgetWrapper(WidgetWrapper):
+    def __init__(self):
+        raise NotImplementedError('Layer widget is not implemented yet')
+
+
 class VectorWidgetWrapper(WidgetWrapper):
 
     NOT_SELECTED = '[Not selected]'
@@ -1388,6 +1393,8 @@ class WidgetWrapperFactory:
             wrapper = VectorWidgetWrapper
         elif param.type() == 'band':
             wrapper = BandWidgetWrapper
+        elif param.type() == 'layer':
+            wrapper = LayerWidgetWrapper
         else:
             assert False, param.type()
         return wrapper(param, dialog, row, col)
