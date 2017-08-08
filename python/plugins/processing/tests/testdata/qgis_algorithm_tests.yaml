@@ -2919,3 +2919,17 @@ tests:
       OUTPUT:
         name: expected/displaced_points.gml
         type: vector
+
+  - algorithm: qgis:generatepointspixelcentroidsinsidepolygons
+    name: Pixel centroids inside polygon
+    params:
+      INPUT_RASTER:
+        name: dem.tif
+        type: raster
+      INPUT_VECTOR:
+        name: custom/pixel_polygons.gml
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/pixel_centroids_polygon.gml
+        type: vector
