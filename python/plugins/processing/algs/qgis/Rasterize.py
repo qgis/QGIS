@@ -36,7 +36,9 @@ from qgis.core import (
     QgsProcessingParameterNumber,
     QgsProcessingParameterRasterLayer,
     QgsProcessingParameterMapLayer,
-    QgsProcessingParameterRasterDestination
+    QgsProcessingParameterRasterDestination,
+    QgsMessageLog,
+    QgsRasterFileWriter
 )
 
 import qgis
@@ -98,9 +100,8 @@ class RasterizeAlgorithm(QgisAlgorithm):
         self.addParameter(map_theme_param)
 
         self.addParameter(
-            # TODO Why is this restricted to raster layers only? I think
-            # QgsProcessingParameterMapLayer makes more sense here so that
-            # users can choose to render single vector layers if desired.
+            # TODO use QgsProcessingParameterMapLayer when
+            # the LayerWidgetWrapper class will be implemented
             QgsProcessingParameterRasterLayer(
                 self.LAYER,
                 description=self.tr(
@@ -185,23 +186,13 @@ class RasterizeAlgorithm(QgisAlgorithm):
             self.OUTPUT,
             context)
 
-        print('map_theme {}'.format(map_theme))
-        print('layer {}'.format(layer))
-        print('extent {}'.format(extent))
-        print('tile_size {}'.format(tile_size))
-        print('mupp {}'.format(mupp))
-        print('output_layer {}'.format(output_layer))
-
         # This probably affects the whole system but it's a lot nicer
         osgeo.gdal.UseExceptions()
 
         tile_set = TileSet(map_theme, layer, extent, tile_size, mupp,
                            output_layer,
                            qgis.utils.iface.mapCanvas().mapSettings())
-        # TODO Can you add feedback as a parameter to render and add
-        # appropriate hooks within render to check for feedback.isCanceled()
-        # and abort the render early?
-        tile_set.render()
+        tile_set.render(feedback)
 
         return {self.OUTPUT: output_layer}
 
@@ -274,14 +265,18 @@ class TileSet():
         else:
             self.settings.setLayers(map_settings.layers())
 
-    def render(self):
+    def render(self, feedback):
         for x in range(self.x_tile_count):
             for y in range(self.y_tile_count):
+                if feedback.isCanceled():
+                    return
                 cur_tile = x * self.y_tile_count + y
                 num_tiles = self.x_tile_count * self.y_tile_count
-                self.renderTile(x, y)
+                self.renderTile(x, y, feedback)
 
-    def renderTile(self, x, y):
+                feedback.setProgress(int((cur_tile / num_tiles) * 100))
+
+    def renderTile(self, x, y, feedback):
         """
         Render one tile
 
@@ -311,6 +306,8 @@ class TileSet():
                                      self.tile_size, self.tile_size,
                                      src_ds.ReadRaster(0, 0, self.tile_size,
                                                        self.tile_size))
+        except Exception as e:
+            feedback.reportError(str(e))
         finally:
             del src_ds
             tmpfile.close()
@@ -327,9 +324,5 @@ class TileSet():
         if extension == '':
             extension = '.tif'
 
-        # TODO It should be removed and
-        # QgsRasterFileWriter::driverForExtension used instead.
-        for i in range(osgeo.gdal.GetDriverCount()):
-            driver = osgeo.gdal.GetDriver(i)
-            if driver.GetMetadataItem('DMD_EXTENSION') == extension[1:]:
-                return driver
+        driver_name = QgsRasterFileWriter.driverForExtension(extension[1:])
+        return osgeo.gdal.GetDriverByName(driver_name)

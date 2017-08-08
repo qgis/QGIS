@@ -756,7 +756,7 @@ class SelectionWidgetWrapper(WidgetWrapper):
 
 class LayerWidgetWrapper(WidgetWrapper):
     def __init__(self):
-        raise NotImplementedError('Layer widget is not implemented yet')
+        raise NotImplementedError('Layer widget wrapper is not implemented yet')
 
 
 class VectorWidgetWrapper(WidgetWrapper):
