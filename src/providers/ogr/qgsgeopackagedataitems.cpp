@@ -41,7 +41,7 @@ QgsGeoPackageRootItem::QgsGeoPackageRootItem( QgsDataItem *parent, QString name,
   : QgsDataCollectionItem( parent, name, path )
 {
   mCapabilities |= Fast;
-  mIconName = QStringLiteral( "mGeoPackage.png" );
+  mIconName = QStringLiteral( "mGeoPackage.svg" );
   populate();
 }
 
