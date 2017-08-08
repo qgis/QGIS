@@ -2905,3 +2905,17 @@ tests:
           - 'Mean value: 147.17197994967066'
           - 'Standard deviation: 43.9618116337985'
           - 'Sum of the squares: 252304334.52061242'
+
+  - algorithm: qgis:pointsdisplacement
+    name: Point displacement
+    params:
+      DISTANCE: 1.0
+      HORIZONTAL: false
+      INPUT:
+        name: custom/displace_points.gml
+        type: vector
+      PROXIMITY: 2.0
+    results:
+      OUTPUT:
+        name: expected/displaced_points.gml
+        type: vector

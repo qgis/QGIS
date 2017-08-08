@@ -94,6 +94,7 @@ from .Orthogonalize import Orthogonalize
 from .PointDistance import PointDistance
 from .PointOnSurface import PointOnSurface
 from .PointsAlongGeometry import PointsAlongGeometry
+from .PointsDisplacement import PointsDisplacement
 from .PointsInPolygon import PointsInPolygon
 from .PointsLayerFromTable import PointsLayerFromTable
 from .PointsToPaths import PointsToPaths
@@ -153,7 +154,6 @@ from .ZonalStatistics import ZonalStatistics
 # from .GeometryConvert import GeometryConvert
 # from .FieldsCalculator import FieldsCalculator
 # from .FieldPyculator import FieldsPyculator
-# from .PointsDisplacement import PointsDisplacement
 # from .PointsFromPolygons import PointsFromPolygons
 # from .PointsFromLines import PointsFromLines
 # from .SetVectorStyle import SetVectorStyle
@@ -192,7 +192,7 @@ class QGISAlgorithmProvider(QgsProcessingProvider):
         #         GeometryConvert(), FieldsCalculator(),
         #         FieldsPyculator(),
         #
-        #         RasterLayerStatistics(), PointsDisplacement(),
+        #         RasterLayerStatistics(),
         #         PointsFromPolygons(),
         #         PointsFromLines(),
         #         SetVectorStyle(), SetRasterStyle(),
@@ -261,6 +261,7 @@ class QGISAlgorithmProvider(QgsProcessingProvider):
                 PointDistance(),
                 PointOnSurface(),
                 PointsAlongGeometry(),
+                PointsDisplacement(),
                 PointsInPolygon(),
                 PointsLayerFromTable(),
                 PointsToPaths(),
