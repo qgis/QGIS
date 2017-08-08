@@ -2933,3 +2933,17 @@ tests:
       OUTPUT:
         name: expected/pixel_centroids_polygon.gml
         type: vector
+
+  - algorithm: qgis:generatepointspixelcentroidsalongline
+    name: Pixel centroids along line
+    params:
+      INPUT_RASTER:
+        name: dem.tif
+        type: raster
+      INPUT_VECTOR:
+        name: custom/pixel_lines.gml
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/pixel_centroids_lines.gml
+        type: vector

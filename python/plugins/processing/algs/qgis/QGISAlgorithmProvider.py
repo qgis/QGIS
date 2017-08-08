@@ -95,6 +95,7 @@ from .PointDistance import PointDistance
 from .PointOnSurface import PointOnSurface
 from .PointsAlongGeometry import PointsAlongGeometry
 from .PointsDisplacement import PointsDisplacement
+from .PointsFromLines import PointsFromLines
 from .PointsFromPolygons import PointsFromPolygons
 from .PointsInPolygon import PointsInPolygon
 from .PointsLayerFromTable import PointsLayerFromTable
@@ -155,7 +156,6 @@ from .ZonalStatistics import ZonalStatistics
 # from .GeometryConvert import GeometryConvert
 # from .FieldsCalculator import FieldsCalculator
 # from .FieldPyculator import FieldsPyculator
-# from .PointsFromLines import PointsFromLines
 # from .SetVectorStyle import SetVectorStyle
 # from .SetRasterStyle import SetRasterStyle
 # from .SelectByAttributeSum import SelectByAttributeSum
@@ -191,7 +191,6 @@ class QGISAlgorithmProvider(QgsProcessingProvider):
         #         SpatialJoin(),
         #         GeometryConvert(), FieldsCalculator(),
         #         FieldsPyculator(),
-        #         PointsFromLines(),
         #         SetVectorStyle(), SetRasterStyle(),
         #          HypsometricCurves(),
         #         FieldsMapper(), SelectByAttributeSum(), Datasources2Vrt(),
@@ -259,6 +258,7 @@ class QGISAlgorithmProvider(QgsProcessingProvider):
                 PointOnSurface(),
                 PointsAlongGeometry(),
                 PointsDisplacement(),
+                PointsFromLines(),
                 PointsFromPolygons(),
                 PointsInPolygon(),
                 PointsLayerFromTable(),

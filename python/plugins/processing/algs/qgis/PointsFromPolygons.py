@@ -87,7 +87,7 @@ class PointsFromPolygons(QgisAlgorithm):
         fields.append(QgsField('point_id', QVariant.Int, '', 10, 0))
 
         (sink, dest_id) = self.parameterAsSink(parameters, self.OUTPUT, context,
-                                               fields, QgsWkbTypes.PointZ, raster_layer.crs())
+                                               fields, QgsWkbTypes.Point, raster_layer.crs())
 
         outFeature = QgsFeature()
         outFeature.setFields(fields)
