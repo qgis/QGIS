@@ -29,7 +29,8 @@ import os
 
 from qgis.PyQt.QtGui import QIcon
 
-from qgis.core import (QgsWkbTypes,
+from qgis.core import (QgsApplication,
+                       QgsWkbTypes,
                        QgsProcessing,
                        QgsProcessingParameterFeatureSource,
                        QgsProcessingParameterNumber,
@@ -57,7 +58,7 @@ class FixedDistanceBuffer(QgisAlgorithm):
     MITRE_LIMIT = 'MITRE_LIMIT'
 
     def icon(self):
-        return QIcon(os.path.join(pluginPath, 'images', 'ftools', 'buffer.svg'))
+        return QgsApplication.getThemeIcon('buffer.svg')
 
     def group(self):
         return self.tr('Vector geometry tools')
