@@ -89,8 +89,8 @@ QVector<QgsDataItem *> QgsGdalLayerItem::createChildren()
         name = name.mid( name.indexOf( mPath ) + mPath.length() + 1 );
       else
       {
-        // remove driver name and file name
-        name.remove( name.split( ':' )[0] );
+        // remove driver name and file name and initial ':'
+        name.remove( name.split( ':' )[0] + ':' );
         name.remove( mPath );
       }
       // remove any : or " left over
