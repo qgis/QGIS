@@ -22,6 +22,7 @@
 #include "qgsoptionsdialogbase.h"
 #include "ui_qgsrasterlayerpropertiesbase.h"
 #include "qgsguiutils.h"
+#include "qgsmetadatawidget.h"
 #include "qgshelp.h"
 #include "qgsmaplayerstylemanager.h"
 #include "qgis_app.h"
@@ -154,6 +155,7 @@ class APP_EXPORT QgsRasterLayerProperties : public QgsOptionsDialogBase, private
     //bool mRasterLayerIsInternal;
 
     QgsRasterRendererWidget *mRendererWidget = nullptr;
+    QgsMetadataWidget *mMetadataWidget = nullptr;
 
     bool rasterIsMultiBandColor();
 

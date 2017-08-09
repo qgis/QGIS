@@ -44,16 +44,12 @@ QgsMetadataWidget::QgsMetadataWidget( QWidget *parent, QgsMapLayer *layer )
   mDefaultCategoriesModel = new QStringListModel( mDefaultCategories );
   mDefaultCategoriesModel->sort( 0 );  // Sorting using translations
   listDefaultCategories->setModel( mDefaultCategoriesModel );
-//  listDefaultCategories->setEditTriggers(QAbstractItemView.NoEditTriggers);
-//  listCategories->setEditTriggers(QAbstractItemView.NoEditTriggers);
 
   // Categories
   mCategoriesModel = new QStringListModel();
   listCategories->setModel( mCategoriesModel );
 
   tabWidget->setCurrentIndex( 0 );
-//  backButton->setEnabled( false );
-//  nextButton->setEnabled( true );
 
   // Setup the link view
   mLinksModel = new QStandardItemModel();
@@ -65,10 +61,6 @@ QgsMetadataWidget::QgsMetadataWidget( QWidget *parent, QgsMapLayer *layer )
   tabLinks->setItemDelegate( new LinkItemDelegate() );
 
   connect( tabWidget, &QTabWidget::currentChanged, this, &QgsMetadataWidget::updatePanel );
-//  connect( cancelButton, &QPushButton::clicked, this, &QgsMetadataWidget::cancelClicked );
-//  connect( backButton, &QPushButton::clicked, this, &QgsMetadataWidget::backClicked );
-//  connect( nextButton, &QPushButton::clicked, this, &QgsMetadataWidget::nextClicked );
-//  connect( finishButton, &QPushButton::clicked, this, &QgsMetadataWidget::finishedClicked );
   connect( btnAutoSource, &QPushButton::clicked, this, &QgsMetadataWidget::setAutoSource );
   connect( btnAddVocabulary, &QPushButton::clicked, this, &QgsMetadataWidget::addVocabulary );
   connect( btnRemoveVocabulary, &QPushButton::clicked, this, &QgsMetadataWidget::removeVocabulary );
@@ -246,9 +238,8 @@ void QgsMetadataWidget::fillComboBox()
 void QgsMetadataWidget::setPropertiesFromLayer()
 {
   // Set all properties USING THE OLD API
-//  layerLabel->setText( mLayer->name() );
   lineEditTitle->setText( mLayer->name() );
-  textEditAbstract->setText( mLayer->abstract() );
+  textEditAbstract->setPlainText( mLayer->abstract() );
 
   // Set all properties USING THE NEW API
   // It will overwrite existing settings
@@ -284,6 +275,8 @@ void QgsMetadataWidget::setPropertiesFromLayer()
     }
     comboLanguage->setCurrentIndex( comboLanguage->findText( mMetadata.language() ) );
   }
+
+  textEditAbstract->setPlainText( mMetadata.abstract() );
 
   // Categories
   mCategoriesModel->setStringList( mMetadata.categories() );
@@ -480,28 +473,7 @@ QStringList QgsMetadataWidget::parseLinkTypes()
   return wordList;
 }
 
-void QgsMetadataWidget::cancelClicked()
-{
-  hide();
-}
-
-void QgsMetadataWidget::backClicked()
-{
-  int index = tabWidget->currentIndex();
-  if ( index > 0 )
-    tabWidget->setCurrentIndex( index - 1 );
-  updatePanel();
-}
-
-void QgsMetadataWidget::nextClicked()
-{
-  int index = tabWidget->currentIndex();
-  if ( index < tabWidget->count() )
-    tabWidget->setCurrentIndex( index + 1 );
-  updatePanel();
-}
-
-void QgsMetadataWidget::finishedClicked()
+void QgsMetadataWidget::saveMetadata()
 {
   // OLD API (to remove later)
   mLayer->setName( lineEditTitle->text() );
@@ -553,12 +525,8 @@ void QgsMetadataWidget::syncFromCategoriesTabToKeywordsTab()
 void QgsMetadataWidget::updatePanel()
 {
   int index = tabWidget->currentIndex();
-  if ( index == 0 )
-  {
-//    backButton->setEnabled( false );
-//    nextButton->setEnabled( true );
-  }
-  else if ( index == 1 )
+  QString currentTabText = tabWidget->widget( index )->objectName();
+  if ( currentTabText == "tabCategoriesDialog" )
   {
     // Categories tab
     // We need to take keywords and insert them into the list
@@ -573,23 +541,15 @@ void QgsMetadataWidget::updatePanel()
       mCategoriesModel->setStringList( QStringList() );
     }
   }
-  else if ( index == 2 )
+  else if ( currentTabText == "tabKeywordsDialog" )
   {
     // Keywords tab
     // We need to take categories and insert them into the table
     syncFromCategoriesTabToKeywordsTab();
   }
-  else if ( index == tabWidget->count() - 1 )
+  else if ( currentTabText == "tabValidationDialog" )
   {
-    // Validation tab
-//    backButton->setEnabled( true );
-//    nextButton->setEnabled( false );
     checkMetadata();
-  }
-  else
-  {
-//    backButton->setEnabled( true );
-//    nextButton->setEnabled( true );
   }
 }
 

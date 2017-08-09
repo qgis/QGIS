@@ -31,6 +31,7 @@
 #include "qgsmaplayerstyleguiutils.h"
 #include "qgsmaptoolemitpoint.h"
 #include "qgsmaptopixel.h"
+#include "qgsmetadatawidget.h"
 #include "qgsmultibandcolorrenderer.h"
 #include "qgsmultibandcolorrendererwidget.h"
 #include "qgspalettedrendererwidget.h"
@@ -230,6 +231,13 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer *lyr, QgsMapCanv
     // disable Histogram tab completely
     mOptsPage_Histogram->setEnabled( false );
   }
+
+  QVBoxLayout *layout = new QVBoxLayout( metadataFrame );
+  layout->setMargin( 0 );
+  mMetadataWidget = new QgsMetadataWidget( this, mRasterLayer );
+  mMetadataWidget->layout()->setContentsMargins( -1, 0, -1, 0 );
+  layout->addWidget( mMetadataWidget );
+  metadataFrame->setLayout( layout );
 
   QgsDebugMsg( "Setting crs to " + mRasterLayer->crs().toWkt() );
   QgsDebugMsg( "Setting crs to " + mRasterLayer->crs().authid() + " - " + mRasterLayer->crs().description() );
@@ -828,6 +836,8 @@ void QgsRasterLayerProperties::apply()
 
     mRasterLayer->setRenderer( rendererWidget->renderer() );
   }
+
+  mMetadataWidget->saveMetadata();
 
   //transparency settings
   QgsRasterRenderer *rasterRenderer = mRasterLayer->renderer();

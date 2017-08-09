@@ -136,11 +136,9 @@ class GUI_EXPORT QgsMetadataWidget : public QWidget, private Ui::QgsMetadataWidg
      */
     static QStringList parseLinkTypes();
 
+    void saveMetadata();
+
   private:
-    void cancelClicked();
-    void backClicked();
-    void nextClicked();
-    void finishedClicked();
     void updatePanel();
     void addDefaultCategory();
     void addNewCategory();
