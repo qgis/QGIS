@@ -17,7 +17,8 @@ import os
 
 from qgis.testing import unittest, start_app
 from console import console
-from qgis.PyQt.QtCore import QSettings, QCoreApplication
+from qgis.core import QgsSettings
+from qgis.PyQt.QtCore import QCoreApplication
 
 start_app()
 
@@ -29,7 +30,7 @@ class TestConsole(unittest.TestCase):
             QCoreApplication.setOrganizationName("QGIS")
             QCoreApplication.setOrganizationDomain("qgis.org")
             QCoreApplication.setApplicationName("QGIS-TEST")
-            QSettings().setValue('pythonConsole/contextHelpOnFirstLaunch', False)
+            QgsSettings().setValue('pythonConsole/contextHelpOnFirstLaunch', False)
 
         my_console = console.show_console()
         my_console_widget = my_console.console
