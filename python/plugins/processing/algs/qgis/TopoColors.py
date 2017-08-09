@@ -244,7 +244,7 @@ class ColoringAlgorithm:
                     color_areas[feature_color] += features[feature_id].geometry().area()
                 elif balance == 2:
                     min_distances = {c: sys.float_info.max for c in available_colors}
-                    this_feature_centroid = QgsPointXY(features[feature_id].geometry().centroid().geometry())
+                    this_feature_centroid = features[feature_id].geometry().centroid().geometry()
 
                     # find features for all available colors
                     other_features = {f_id: c for (f_id, c) in feature_colors.items() if c in available_colors}
@@ -256,7 +256,7 @@ class ColoringAlgorithm:
                             break
 
                         other_geometry = features[other_feature_id].geometry()
-                        other_centroid = QgsPointXY(other_geometry.centroid().geometry())
+                        other_centroid = other_geometry.centroid().geometry()
 
                         distance = this_feature_centroid.distanceSquared(other_centroid)
                         if distance < min_distances[c]:
