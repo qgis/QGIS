@@ -235,7 +235,7 @@ void QgsProviderRegistry::clean()
 
   while ( it != mProviders.end() )
   {
-    QgsDebugMsg( QString( "cleanup:%1" ).arg( it->first ) );
+    QgsDebugMsgLevel( QString( "cleanup:%1" ).arg( it->first ), 5 );
     QString lib = it->second->library();
     if ( !lib.isEmpty() )
     {
