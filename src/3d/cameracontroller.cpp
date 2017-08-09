@@ -135,7 +135,9 @@ void CameraController::setCameraData( float x, float y, float dist, float pitch,
   cd.yaw = yaw;
 
   if ( mCamera )
+  {
     cd.setCamera( mCamera );
+  }
 }
 
 
@@ -217,6 +219,13 @@ void CameraController::frameTriggered( float dt )
     }
   }
 
+  if ( qIsNaN( cd.x ) || qIsNaN( cd.y ) )
+  {
+    // something went horribly wrong but we need to at least try to fix it somehow
+    qDebug() << "camera position got NaN!";
+    cd.x = cd.y = 0;
+  }
+
   if ( cd.pitch > 80 )
     cd.pitch = 80;  // prevent going under the plane
   if ( cd.pitch < 0 )
@@ -234,6 +243,9 @@ void CameraController::frameTriggered( float dt )
 void CameraController::resetView()
 {
   setCameraData( 0, 0, 1000 );
+  // a basic setup to make frustum depth range long enough that it does not cull everything
+  mCamera->setNearPlane( 1 );
+  mCamera->setFarPlane( 10000 );
 
   emit cameraChanged();
 }

@@ -45,6 +45,9 @@ class ChunkedEntity : public Qt3DCore::QEntity
     //! update already loaded nodes (add to the queue)
     void updateNodes( const QList<ChunkNode *> &nodes, ChunkQueueJobFactory *updateJobFactory );
 
+    QList<ChunkNode *> getActiveNodes() const { return activeNodes; }
+    ChunkNode *getRootNode() const { return rootNode; }
+
   protected:
     void cancelActiveJob();
 

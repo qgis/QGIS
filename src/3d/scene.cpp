@@ -12,6 +12,7 @@
 #include "aabb.h"
 #include "qgsabstract3drenderer.h"
 #include "cameracontroller.h"
+#include "chunknode.h"
 #include "qgsvectorlayer.h"
 #include "map3d.h"
 #include "terrain.h"
@@ -164,6 +165,54 @@ void Scene::onCameraChanged()
   {
     if ( entity->isEnabled() )
       entity->update( _sceneState( mCameraController ) );
+  }
+
+  // Update near and far plane from the terrain.
+  // this needs to be done with great care as we have kind of circular dependency here:
+  // active nodes are culled based on the current frustum (which involves near + far plane)
+  // and then based on active nodes we set near and far plane.
+  //
+  // All of this is just heuristics assuming that all other stuff is being rendered somewhere
+  // around the area where the terrain is.
+  //
+  // Near/far plane is setup in order to make best use of the depth buffer to avoid:
+  // 1. precision errors - if the range is too great
+  // 2. unwanted clipping of scene - if the range is too small
+
+  if ( mTerrain )
+  {
+    Qt3DRender::QCamera *camera = cameraController()->camera();
+    QMatrix4x4 viewMatrix = camera->viewMatrix();
+    float near = 1e9;
+    float far = 0;
+
+    QList<ChunkNode *> activeNodes = mTerrain->getActiveNodes();
+    Q_FOREACH ( ChunkNode *node, activeNodes )
+    {
+      // project each corner of bbox to camera coordinates
+      // and determine closest and farthest point.
+      AABB bbox = node->bbox;
+      for ( int i = 0; i < 8; ++i )
+      {
+        QVector4D p( ( ( i >> 0 ) & 1 ) ? bbox.xMin : bbox.xMax,
+                     ( ( i >> 1 ) & 1 ) ? bbox.yMin : bbox.yMax,
+                     ( ( i >> 2 ) & 1 ) ? bbox.zMin : bbox.zMax, 1 );
+        QVector4D pc = viewMatrix * p;
+
+        float dst = -pc.z();  // in camera coordinates, x grows right, y grows down, z grows to the back
+        if ( dst < near )
+          near = dst;
+        if ( dst > far )
+          far = dst;
+      }
+    }
+    //qDebug() << "near/far" << near << far;
+    if ( near < 1 )
+      near = 1;  // does not really make sense to use negative far plane (behind camera)
+
+    // set near/far plane - with some tolerance in front/behind expected near/far planes
+    camera->setFarPlane( far * 2 );
+    camera->setNearPlane( near / 2 );
   }
 }
 
