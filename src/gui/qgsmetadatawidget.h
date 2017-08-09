@@ -1,5 +1,5 @@
 /***************************************************************************
-                          qgsmetadatawizard.h  -  description
+                          qgsmetadatawidget.h  -  description
                              -------------------
     begin                : 17/05/2017
     copyright            : (C) 2017 by Etienne Trimaille
@@ -14,26 +14,26 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#ifndef QGSMETADATAWIZARD_H
-#define QGSMETADATAWIZARD_H
+#ifndef QGSMETADATAWIDGET_H
+#define QGSMETADATAWIDGET_H
 
 #include "QStandardItemModel"
 #include "QStyledItemDelegate"
 
-#include "qgis_app.h"
+#include "qgis_gui.h"
 #include "qgsmaplayer.h"
 #include "qgslayermetadata.h"
-#include "ui_qgsmetadatawizard.h"
+#include "ui_qgsmetadatawidget.h"
 
 /**
- * \ingroup app
- * \class QgsMetadataWizard
+ * \ingroup gui
+ * \class QgsMetadataWidget
  * \brief A wizard to edit metadata on a map layer.
  *
  * \since QGIS 3.0
  */
 
-class APP_EXPORT QgsMetadataWizard : public QDialog, private Ui::QgsMetadataWizard
+class GUI_EXPORT QgsMetadataWidget : public QWidget, private Ui::QgsMetadataWidget
 {
     Q_OBJECT
 
@@ -42,8 +42,8 @@ class APP_EXPORT QgsMetadataWizard : public QDialog, private Ui::QgsMetadataWiza
     /**
      * Constructor for the wizard.
      */
-    QgsMetadataWizard( QWidget *parent, QgsMapLayer *layer = nullptr );
-    ~QgsMetadataWizard();
+    QgsMetadataWidget( QWidget *parent, QgsMapLayer *layer = nullptr );
+    ~QgsMetadataWidget();
 
     /**
      * Set the source field from the layer.

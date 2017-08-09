@@ -1,5 +1,5 @@
 /***************************************************************************
-                          qgsmetadatawizard.h  -  description
+                          qgsmetadatawidget.h  -  description
                              -------------------
     begin                : 17/05/2017
     copyright            : (C) 2017 by Etienne Trimaille
@@ -23,15 +23,13 @@
 #include <QInputDialog>
 #include <QStringListModel>
 
-//#include "qgsmetadatalinkdelegate.h"
-#include "qgsmetadatawizard.h"
+#include "qgsmetadatawidget.h"
 #include "qgslogger.h"
 #include "qgslayermetadatavalidator.h"
-#include "qgisapp.h"
 #include "qgsapplication.h"
 
-QgsMetadataWizard::QgsMetadataWizard( QWidget *parent, QgsMapLayer *layer )
-  : QDialog( parent ), mLayer( layer )
+QgsMetadataWidget::QgsMetadataWidget( QWidget *parent, QgsMapLayer *layer )
+  : QWidget( parent ), mLayer( layer )
 {
   setupUi( this );
   mMetadata = layer->metadata();
@@ -54,8 +52,8 @@ QgsMetadataWizard::QgsMetadataWizard( QWidget *parent, QgsMapLayer *layer )
   listCategories->setModel( mCategoriesModel );
 
   tabWidget->setCurrentIndex( 0 );
-  backButton->setEnabled( false );
-  nextButton->setEnabled( true );
+//  backButton->setEnabled( false );
+//  nextButton->setEnabled( true );
 
   // Setup the link view
   mLinksModel = new QStandardItemModel();
@@ -66,41 +64,41 @@ QgsMetadataWizard::QgsMetadataWizard( QWidget *parent, QgsMapLayer *layer )
   tabLinks->setModel( mLinksModel );
   tabLinks->setItemDelegate( new LinkItemDelegate() );
 
-  connect( tabWidget, &QTabWidget::currentChanged, this, &QgsMetadataWizard::updatePanel );
-  connect( cancelButton, &QPushButton::clicked, this, &QgsMetadataWizard::cancelClicked );
-  connect( backButton, &QPushButton::clicked, this, &QgsMetadataWizard::backClicked );
-  connect( nextButton, &QPushButton::clicked, this, &QgsMetadataWizard::nextClicked );
-  connect( finishButton, &QPushButton::clicked, this, &QgsMetadataWizard::finishedClicked );
-  connect( btnAutoSource, &QPushButton::clicked, this, &QgsMetadataWizard::setAutoSource );
-  connect( btnAddVocabulary, &QPushButton::clicked, this, &QgsMetadataWizard::addVocabulary );
-  connect( btnRemoveVocabulary, &QPushButton::clicked, this, &QgsMetadataWizard::removeVocabulary );
-  connect( btnAddLicence, &QPushButton::clicked, this, &QgsMetadataWizard::addLicence );
-  connect( btnRemoveLicence, &QPushButton::clicked, this, &QgsMetadataWizard::removeLicence );
-  connect( btnAutoCrs, &QPushButton::clicked, this, &QgsMetadataWizard::setAutoCrs );
-  connect( btnAddContact, &QPushButton::clicked, this, &QgsMetadataWizard::addContact );
-  connect( btnRemoveContact, &QPushButton::clicked, this, &QgsMetadataWizard::removeContact );
-  connect( tabContacts, &QTableWidget::itemSelectionChanged, this, &QgsMetadataWizard::updateContactDetails );
-  connect( btnAddLink, &QPushButton::clicked, this, &QgsMetadataWizard::addLink );
-  connect( btnRemoveLink, &QPushButton::clicked, this, &QgsMetadataWizard::removeLink );
-  connect( btnNewCategory, &QPushButton::clicked, this, &QgsMetadataWizard::addNewCategory );
-  connect( btnAddDefaultCategory, &QPushButton::clicked, this, &QgsMetadataWizard::addDefaultCategory );
-  connect( btnRemoveCategory, &QPushButton::clicked, this, &QgsMetadataWizard::removeCategory );
+  connect( tabWidget, &QTabWidget::currentChanged, this, &QgsMetadataWidget::updatePanel );
+//  connect( cancelButton, &QPushButton::clicked, this, &QgsMetadataWidget::cancelClicked );
+//  connect( backButton, &QPushButton::clicked, this, &QgsMetadataWidget::backClicked );
+//  connect( nextButton, &QPushButton::clicked, this, &QgsMetadataWidget::nextClicked );
+//  connect( finishButton, &QPushButton::clicked, this, &QgsMetadataWidget::finishedClicked );
+  connect( btnAutoSource, &QPushButton::clicked, this, &QgsMetadataWidget::setAutoSource );
+  connect( btnAddVocabulary, &QPushButton::clicked, this, &QgsMetadataWidget::addVocabulary );
+  connect( btnRemoveVocabulary, &QPushButton::clicked, this, &QgsMetadataWidget::removeVocabulary );
+  connect( btnAddLicence, &QPushButton::clicked, this, &QgsMetadataWidget::addLicence );
+  connect( btnRemoveLicence, &QPushButton::clicked, this, &QgsMetadataWidget::removeLicence );
+  connect( btnAutoCrs, &QPushButton::clicked, this, &QgsMetadataWidget::setAutoCrs );
+  connect( btnAddContact, &QPushButton::clicked, this, &QgsMetadataWidget::addContact );
+  connect( btnRemoveContact, &QPushButton::clicked, this, &QgsMetadataWidget::removeContact );
+  connect( tabContacts, &QTableWidget::itemSelectionChanged, this, &QgsMetadataWidget::updateContactDetails );
+  connect( btnAddLink, &QPushButton::clicked, this, &QgsMetadataWidget::addLink );
+  connect( btnRemoveLink, &QPushButton::clicked, this, &QgsMetadataWidget::removeLink );
+  connect( btnNewCategory, &QPushButton::clicked, this, &QgsMetadataWidget::addNewCategory );
+  connect( btnAddDefaultCategory, &QPushButton::clicked, this, &QgsMetadataWidget::addDefaultCategory );
+  connect( btnRemoveCategory, &QPushButton::clicked, this, &QgsMetadataWidget::removeCategory );
 
   fillComboBox();
   setPropertiesFromLayer();
   updateContactDetails();
 }
 
-QgsMetadataWizard::~QgsMetadataWizard()
+QgsMetadataWidget::~QgsMetadataWidget()
 {
 }
 
-void QgsMetadataWizard::setAutoSource()
+void QgsMetadataWidget::setAutoSource()
 {
   lineEditIdentifier->setText( mLayer->publicSource() );
 }
 
-void QgsMetadataWizard::addVocabulary()
+void QgsMetadataWidget::addVocabulary()
 {
   int row = tabKeywords->rowCount();
   tabKeywords->setRowCount( row + 1 );
@@ -115,7 +113,7 @@ void QgsMetadataWizard::addVocabulary()
   tabKeywords->setItem( row, 1, pCell );
 }
 
-void QgsMetadataWizard::removeVocabulary()
+void QgsMetadataWidget::removeVocabulary()
 {
   QItemSelectionModel *selectionModel = tabKeywords->selectionModel();
   QModelIndexList selectedRows = selectionModel->selectedRows();
@@ -127,7 +125,7 @@ void QgsMetadataWizard::removeVocabulary()
   }
 }
 
-void QgsMetadataWizard::addLicence()
+void QgsMetadataWidget::addLicence()
 {
   QString newLicence = QInputDialog::getItem( this, tr( "New Licence" ), tr( "New Licence" ), parseLicenses(), 0, true );
   if ( tabLicenses->findItems( newLicence, Qt::MatchExactly ).isEmpty() )
@@ -144,7 +142,7 @@ void QgsMetadataWizard::addLicence()
   }
 }
 
-void QgsMetadataWizard::removeLicence()
+void QgsMetadataWidget::removeLicence()
 {
   QItemSelectionModel *selectionModel = tabLicenses->selectionModel();
   QModelIndexList selectedRows = selectionModel->selectedRows();
@@ -156,12 +154,12 @@ void QgsMetadataWizard::removeLicence()
   }
 }
 
-void QgsMetadataWizard::setAutoCrs()
+void QgsMetadataWidget::setAutoCrs()
 {
   selectionCrs->setCrs( mLayer->crs() );
 }
 
-void QgsMetadataWizard::addContact()
+void QgsMetadataWidget::addContact()
 {
   int row = tabContacts->rowCount();
   tabContacts->setRowCount( row + 1 );
@@ -179,7 +177,7 @@ void QgsMetadataWizard::addContact()
   tabContacts->selectRow( row );
 }
 
-void QgsMetadataWizard::removeContact()
+void QgsMetadataWidget::removeContact()
 {
   QItemSelectionModel *selectionModel = tabContacts->selectionModel();
   QModelIndexList selectedRows = selectionModel->selectedRows();
@@ -191,7 +189,7 @@ void QgsMetadataWizard::removeContact()
   }
 }
 
-void QgsMetadataWizard::updateContactDetails()
+void QgsMetadataWidget::updateContactDetails()
 {
   QItemSelectionModel *selectionModel = tabContacts->selectionModel();
   QModelIndexList selectedRows = selectionModel->selectedRows();
@@ -210,7 +208,7 @@ void QgsMetadataWizard::updateContactDetails()
   }
 }
 
-void QgsMetadataWizard::addLink()
+void QgsMetadataWidget::addLink()
 {
   int row = mLinksModel->rowCount();
   mLinksModel->setItem( row, 0, new QStandardItem( QString( "undefined %1" ).arg( row + 1 ) ) );
@@ -222,13 +220,13 @@ void QgsMetadataWizard::addLink()
   mLinksModel->setItem( row, 6, new QStandardItem() );
 }
 
-void QgsMetadataWizard::removeLink()
+void QgsMetadataWidget::removeLink()
 {
   QModelIndexList selectedRows = tabLinks->selectionModel()->selectedRows();
   mLinksModel->removeRow( selectedRows[0].row() );
 }
 
-void QgsMetadataWizard::fillComboBox()
+void QgsMetadataWidget::fillComboBox()
 {
   // Set default values in type combobox
   // It is advised to use the ISO 19115 MD_ScopeCode values. E.g. 'dataset' or 'series'.
@@ -245,10 +243,10 @@ void QgsMetadataWizard::fillComboBox()
   comboLanguage->addItems( parseLanguages() );
 }
 
-void QgsMetadataWizard::setPropertiesFromLayer()
+void QgsMetadataWidget::setPropertiesFromLayer()
 {
   // Set all properties USING THE OLD API
-  layerLabel->setText( mLayer->name() );
+//  layerLabel->setText( mLayer->name() );
   lineEditTitle->setText( mLayer->name() );
   textEditAbstract->setText( mLayer->abstract() );
 
@@ -337,7 +335,7 @@ void QgsMetadataWizard::setPropertiesFromLayer()
   }
 }
 
-void QgsMetadataWizard::saveMetadata( QgsLayerMetadata &layerMetadata )
+void QgsMetadataWidget::saveMetadata( QgsLayerMetadata &layerMetadata )
 {
   layerMetadata.setIdentifier( lineEditIdentifier->text() );
   layerMetadata.setTitle( lineEditTitle->text() );
@@ -385,7 +383,7 @@ void QgsMetadataWizard::saveMetadata( QgsLayerMetadata &layerMetadata )
   layerMetadata.setLinks( links );
 }
 
-bool QgsMetadataWizard::checkMetadata()
+bool QgsMetadataWidget::checkMetadata()
 {
   QgsLayerMetadata metadata = QgsLayerMetadata();
   saveMetadata( metadata );
@@ -421,7 +419,7 @@ bool QgsMetadataWizard::checkMetadata()
   return results;
 }
 
-QStringList QgsMetadataWizard::parseLanguages()
+QStringList QgsMetadataWidget::parseLanguages()
 {
   QString path = QDir( QgsApplication::metadataPath() ).absoluteFilePath( QString( "country_code_ISO_3166.csv" ) );
   QFile file( path );
@@ -442,7 +440,7 @@ QStringList QgsMetadataWizard::parseLanguages()
   return wordList;
 }
 
-QStringList QgsMetadataWizard::parseLicenses()
+QStringList QgsMetadataWidget::parseLicenses()
 {
   QString path = QDir( QgsApplication::metadataPath() ).absoluteFilePath( QString( "licenses.csv" ) );
   QFile file( path );
@@ -462,7 +460,7 @@ QStringList QgsMetadataWizard::parseLicenses()
   return wordList;
 }
 
-QStringList QgsMetadataWizard::parseLinkTypes()
+QStringList QgsMetadataWidget::parseLinkTypes()
 {
   QString path = QDir( QgsApplication::metadataPath() ).absoluteFilePath( QString( "LinkPropertyLookupTable.csv" ) );
   QFile file( path );
@@ -482,12 +480,12 @@ QStringList QgsMetadataWizard::parseLinkTypes()
   return wordList;
 }
 
-void QgsMetadataWizard::cancelClicked()
+void QgsMetadataWidget::cancelClicked()
 {
   hide();
 }
 
-void QgsMetadataWizard::backClicked()
+void QgsMetadataWidget::backClicked()
 {
   int index = tabWidget->currentIndex();
   if ( index > 0 )
@@ -495,7 +493,7 @@ void QgsMetadataWizard::backClicked()
   updatePanel();
 }
 
-void QgsMetadataWizard::nextClicked()
+void QgsMetadataWidget::nextClicked()
 {
   int index = tabWidget->currentIndex();
   if ( index < tabWidget->count() )
@@ -503,7 +501,7 @@ void QgsMetadataWizard::nextClicked()
   updatePanel();
 }
 
-void QgsMetadataWizard::finishedClicked()
+void QgsMetadataWidget::finishedClicked()
 {
   // OLD API (to remove later)
   mLayer->setName( lineEditTitle->text() );
@@ -517,21 +515,21 @@ void QgsMetadataWizard::finishedClicked()
 
   QgsNativeMetadataValidator validator;
   QList<QgsMetadataValidator::ValidationResult> validationResults;
-  bool results = validator.validate( mMetadata, validationResults );
+  validator.validate( mMetadata, validationResults );
 
   hide();
 
-  if ( results )
-  {
-    QgisApp::instance()->messageBar()->pushInfo( tr( "Save metadata" ), tr( "Saving metadata successfull into the project" ) );
-  }
-  else
-  {
-    QgisApp::instance()->messageBar()->pushWarning( tr( "Save metadata" ), tr( "Saving metadata successfull but some fields were missing" ) );
-  }
+//  if ( results )
+//  {
+//    QgisApp::instance()->messageBar()->pushInfo( tr( "Save metadata" ), tr( "Saving metadata successfull into the project" ) );
+//  }
+//  else
+//  {
+//    QgisApp::instance()->messageBar()->pushWarning( tr( "Save metadata" ), tr( "Saving metadata successfull but some fields were missing" ) );
+//  }
 }
 
-void QgsMetadataWizard::syncFromCategoriesTabToKeywordsTab()
+void QgsMetadataWidget::syncFromCategoriesTabToKeywordsTab()
 {
   if ( mCategoriesModel->rowCount() > 0 )
   {
@@ -552,13 +550,13 @@ void QgsMetadataWizard::syncFromCategoriesTabToKeywordsTab()
   }
 }
 
-void QgsMetadataWizard::updatePanel()
+void QgsMetadataWidget::updatePanel()
 {
   int index = tabWidget->currentIndex();
   if ( index == 0 )
   {
-    backButton->setEnabled( false );
-    nextButton->setEnabled( true );
+//    backButton->setEnabled( false );
+//    nextButton->setEnabled( true );
   }
   else if ( index == 1 )
   {
@@ -584,18 +582,18 @@ void QgsMetadataWizard::updatePanel()
   else if ( index == tabWidget->count() - 1 )
   {
     // Validation tab
-    backButton->setEnabled( true );
-    nextButton->setEnabled( false );
+//    backButton->setEnabled( true );
+//    nextButton->setEnabled( false );
     checkMetadata();
   }
   else
   {
-    backButton->setEnabled( true );
-    nextButton->setEnabled( true );
+//    backButton->setEnabled( true );
+//    nextButton->setEnabled( true );
   }
 }
 
-void QgsMetadataWizard::addNewCategory()
+void QgsMetadataWidget::addNewCategory()
 {
   bool ok;
   QString text = QInputDialog::getText( this, tr( "New Category" ),
@@ -613,7 +611,7 @@ void QgsMetadataWizard::addNewCategory()
   }
 }
 
-void QgsMetadataWizard::addDefaultCategory()
+void QgsMetadataWidget::addDefaultCategory()
 {
   QItemSelectionModel *selection = listDefaultCategories->selectionModel();
   if ( selection->hasSelection() )
@@ -633,7 +631,7 @@ void QgsMetadataWizard::addDefaultCategory()
 }
 
 
-void QgsMetadataWizard::removeCategory()
+void QgsMetadataWidget::removeCategory()
 {
   QItemSelectionModel *selection = listCategories->selectionModel();
   if ( selection->hasSelection() )
@@ -662,7 +660,7 @@ QWidget *LinkItemDelegate::createEditor( QWidget *parent, const QStyleOptionView
     QComboBox *typeEditor = new QComboBox( parent );
     typeEditor->setEditable( true );
     QStringListModel *model = new QStringListModel( parent );
-    model->setStringList( QgsMetadataWizard::parseLinkTypes() );
+    model->setStringList( QgsMetadataWidget::parseLinkTypes() );
     typeEditor->setModel( model );
     return typeEditor;
   }
