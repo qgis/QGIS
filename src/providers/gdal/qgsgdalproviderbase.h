@@ -27,7 +27,7 @@
 #include <gdal.h>
 
 /**
-  \brief Base clasee for GDAL and WCS providers.
+  \brief Base class for GDAL and WCS providers.
 */
 class QgsGdalProviderBase
 {

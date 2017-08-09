@@ -238,6 +238,7 @@ void QgsDataItem::populate( bool foreground )
     {
       mFutureWatcher = new QFutureWatcher< QVector <QgsDataItem *> >( this );
     }
+
     connect( mFutureWatcher, &QFutureWatcherBase::finished, this, &QgsDataItem::childrenCreated );
     mFutureWatcher->setFuture( QtConcurrent::run( runCreateChildren, this ) );
   }
@@ -581,6 +582,12 @@ QgsMapLayer::LayerType QgsLayerItem::mapLayerType() const
   return QgsMapLayer::VectorLayer;
 }
 
+QString QgsLayerItem::layerTypeAsString( const QgsLayerItem::LayerType &layerType )
+{
+  static int enumIdx = staticMetaObject.indexOfEnumerator( "LayerType" );
+  return staticMetaObject.enumerator( enumIdx ).valueToKey( layerType );
+}
+
 bool QgsLayerItem::equal( const QgsDataItem *other )
 {
   //QgsDebugMsg ( mPath + " x " + other->mPath );
@@ -785,12 +792,22 @@ void QgsDirectoryItem::directoryChanged()
 {
   if ( state() == Populating )
   {
-    // schedule to refresh later, because refres() simply returns if Populating
+    // schedule to refresh later, because refresh() simply returns if Populating
     mRefreshLater = true;
   }
   else
   {
-    refresh();
+    // We definintely don't want the temporary files created by sqlite
+    // to re-trigger a refresh in an infinite loop.
+    disconnect( mFileSystemWatcher, &QFileSystemWatcher::directoryChanged, this, &QgsDirectoryItem::directoryChanged );
+    // QFileSystemWhatcher::directoryChanged is emitted when a
+    // file is created and not when it is closed/flushed.
+    //
+    // Delay to give to OS the time to complete writing the file
+    // this happens when a new file appears in the directory and
+    // the item's children thread will try to open the file with
+    // GDAL or OGR even if it is still being written.
+    QTimer::singleShot( 100, this, SLOT( refresh() ) );
   }
 }
 
@@ -802,6 +819,7 @@ bool QgsDirectoryItem::hiddenPath( const QString &path )
   int idx = hiddenItems.indexOf( path );
   return ( idx > -1 );
 }
+
 
 void QgsDirectoryItem::childrenCreated()
 {
@@ -818,6 +836,8 @@ void QgsDirectoryItem::childrenCreated()
   {
     QgsDataCollectionItem::childrenCreated();
   }
+  // Re-connect the file watcher after all children have been created
+  connect( mFileSystemWatcher, &QFileSystemWatcher::directoryChanged, this, &QgsDirectoryItem::directoryChanged );
 }
 
 bool QgsDirectoryItem::equal( const QgsDataItem *other )

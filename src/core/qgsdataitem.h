@@ -328,6 +328,7 @@ Q_DECLARE_OPERATORS_FOR_FLAGS( QgsDataItem::Capabilities )
 class CORE_EXPORT QgsLayerItem : public QgsDataItem
 {
     Q_OBJECT
+    Q_ENUMS( LayerType )
   public:
     enum LayerType
     {
@@ -342,6 +343,8 @@ class CORE_EXPORT QgsLayerItem : public QgsDataItem
       Table,
       Plugin     //!< Added in 2.10
     };
+
+    Q_ENUMS( LayerType )
 
     QgsLayerItem( QgsDataItem *parent, const QString &name, const QString &path, const QString &uri, LayerType layerType, const QString &providerKey );
 
@@ -378,6 +381,11 @@ class CORE_EXPORT QgsLayerItem : public QgsDataItem
      * \since QGIS 2.12
      */
     virtual QString comments() const { return QString(); }
+
+    /** Returns the string representatio of the given \a layerType
+     * \since QGIS 3
+     */
+    static QString layerTypeAsString( const LayerType &layerType );
 
   protected:
 
@@ -459,6 +467,7 @@ class CORE_EXPORT QgsDirectoryItem : public QgsDataCollectionItem
 
     //! Check if the given path is hidden from the browser model
     static bool hiddenPath( const QString &path );
+
 
   public slots:
     virtual void childrenCreated() override;

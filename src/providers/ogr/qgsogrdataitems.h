@@ -18,6 +18,7 @@
 
 #include "qgsdataitem.h"
 #include "qgsogrprovider.h"
+#include "qgsdataitemprovider.h"
 
 class QgsOgrLayerItem : public QgsLayerItem
 {
@@ -39,5 +40,6 @@ class QgsOgrDataCollectionItem : public QgsDataCollectionItem
 
     QVector<QgsDataItem *> createChildren() override;
 };
+
 
 #endif // QGSOGRDATAITEMS_H

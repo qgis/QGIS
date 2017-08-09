@@ -361,6 +361,7 @@ class QgsLayerItem : QgsDataItem
       Plugin
     };
 
+
     QgsLayerItem( QgsDataItem *parent, const QString &name, const QString &path, const QString &uri, LayerType layerType, const QString &providerKey );
 
 
@@ -407,6 +408,13 @@ Returns provider key
 %Docstring
  Returns comments of the layer
 .. versionadded:: 2.12
+ :rtype: str
+%End
+
+    static QString layerTypeAsString( const LayerType &layerType );
+%Docstring
+ Returns the string representatio of the given ``layerType``
+.. versionadded:: 3
  :rtype: str
 %End
 
@@ -516,6 +524,7 @@ class QgsDirectoryItem : QgsDataCollectionItem
 Check if the given path is hidden from the browser model
  :rtype: bool
 %End
+
 
   public slots:
     virtual void childrenCreated();

@@ -6,6 +6,8 @@ SET (OGR_SRCS
     qgsogrconnpool.cpp
     qgsogrexpressioncompiler.cpp
     qgsogrsourceselect.cpp
+    qgsgeopackagedataitems.cpp
+    qgsgeopackageconnection.cpp
 )
 
 SET(OGR_MOC_HDRS
@@ -13,6 +15,8 @@ SET(OGR_MOC_HDRS
     qgsogrdataitems.h
     qgsogrconnpool.h
     qgsogrsourceselect.h
+    qgsgeopackagedataitems.h
+    qgsgeopackageconnection.h
 )
 
 ########################################################
@@ -22,6 +26,7 @@ QT5_WRAP_CPP(OGR_MOC_SRCS ${OGR_MOC_HDRS})
 
 INCLUDE_DIRECTORIES(
   ${CMAKE_SOURCE_DIR}/src/core
+  ${CMAKE_SOURCE_DIR}/src/core/raster
   ${CMAKE_SOURCE_DIR}/src/core/geometry
   ${CMAKE_SOURCE_DIR}/src/core/metadata
   ${CMAKE_SOURCE_DIR}/src/core/symbology

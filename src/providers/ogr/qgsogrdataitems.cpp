@@ -21,6 +21,7 @@
 
 #include <QFileInfo>
 #include <QTextStream>
+#include <QAction>
 
 #include <ogr_srs_api.h>
 #include <cpl_error.h>
@@ -335,9 +336,17 @@ QGISEXTERN QgsDataItem *dataItem( QString path, QgsDataItem *parentItem )
         OGR_DS_Destroy( hDataSource );
       }
     }
-    // add the item
-    // TODO: how to handle collections?
-    QgsLayerItem *item = new QgsOgrLayerItem( parentItem, name, path, path, QgsLayerItem::Vector );
+    // Handle collections
+    // Check if the layer has sublayers by comparing the extension
+    QgsDataItem *item;
+    QStringList multipleLayersExtensions;
+    // TODO: add more OGR supported multiple layers formats here!
+    multipleLayersExtensions << QLatin1String( "gpkg" ) << QLatin1String( "sqlite" ) << QLatin1String( "db" );
+    if ( ! multipleLayersExtensions.contains( suffix ) )
+      item = new QgsOgrLayerItem( parentItem, name, path, path, QgsLayerItem::Vector );
+    else
+      item = new QgsOgrDataCollectionItem( parentItem, name, path );
+
     if ( item )
       return item;
   }
@@ -353,7 +362,7 @@ QGISEXTERN QgsDataItem *dataItem( QString path, QgsDataItem *parentItem )
 
   if ( ! hDataSource )
   {
-    QgsDebugMsg( QString( "OGROpen error # %1 : %2 " ).arg( CPLGetLastErrorNo() ).arg( CPLGetLastErrorMsg() ) );
+    QgsDebugMsg( QString( "OGROpen error # %1 : %2 on %3" ).arg( CPLGetLastErrorNo() ).arg( CPLGetLastErrorMsg() ).arg( path ) );
     return nullptr;
   }
 
