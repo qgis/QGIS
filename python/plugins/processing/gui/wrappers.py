@@ -230,7 +230,7 @@ class ExpressionWidgetWrapperMixin():
     def wrapWithExpressionButton(self, basewidget):
         expr_button = QToolButton()
         expr_button.clicked.connect(self.showExpressionsBuilder)
-        expr_button.setText('...')
+        expr_button.setText('…')
 
         layout = QHBoxLayout()
         layout.setContentsMargins(0, 0, 0, 0)
@@ -640,7 +640,7 @@ class RasterWidgetWrapper(WidgetWrapper):
             self.combo = QgsMapLayerComboBox()
             layout.addWidget(self.combo)
             btn = QToolButton()
-            btn.setText('...')
+            btn.setText('…')
             btn.setToolTip(self.tr("Select file"))
             btn.clicked.connect(self.selectFile)
             layout.addWidget(btn)
@@ -680,7 +680,7 @@ class RasterWidgetWrapper(WidgetWrapper):
             layout.setSpacing(2)
             layout.addWidget(self.combo)
             btn = QToolButton()
-            btn.setText('...')
+            btn.setText('…')
             btn.setToolTip(self.tr("Select file"))
             btn.clicked.connect(self.selectFile)
             layout.addWidget(btn)
@@ -755,6 +755,7 @@ class SelectionWidgetWrapper(WidgetWrapper):
 
 
 class LayerWidgetWrapper(WidgetWrapper):
+
     def __init__(self):
         raise NotImplementedError('Layer widget wrapper is not implemented yet')
 
@@ -774,7 +775,7 @@ class VectorWidgetWrapper(WidgetWrapper):
             layout.addWidget(self.combo)
             layout.setAlignment(self.combo, Qt.AlignTop)
             btn = QToolButton()
-            btn.setText('...')
+            btn.setText('…')
             btn.setToolTip(self.tr("Select file"))
             btn.clicked.connect(self.selectFile)
             layout.addWidget(btn)
@@ -843,7 +844,7 @@ class VectorWidgetWrapper(WidgetWrapper):
             layout.setSpacing(2)
             layout.addWidget(self.combo)
             btn = QToolButton()
-            btn.setText('...')
+            btn.setText('…')
             btn.setToolTip(self.tr("Select file"))
             btn.clicked.connect(self.selectFile)
             layout.addWidget(btn)
@@ -1063,7 +1064,7 @@ class TableWidgetWrapper(WidgetWrapper):
             self.combo = QgsMapLayerComboBox()
             layout.addWidget(self.combo)
             btn = QToolButton()
-            btn.setText('...')
+            btn.setText('…')
             btn.setToolTip(self.tr("Select file"))
             btn.clicked.connect(self.selectFile)
             layout.addWidget(btn)
@@ -1113,7 +1114,7 @@ class TableWidgetWrapper(WidgetWrapper):
             layout.setSpacing(2)
             layout.addWidget(self.combo)
             btn = QToolButton()
-            btn.setText('...')
+            btn.setText('…')
             btn.setToolTip(self.tr("Select file"))
             btn.clicked.connect(self.selectFile)
             layout.addWidget(btn)

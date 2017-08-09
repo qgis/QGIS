@@ -158,7 +158,7 @@ class CheckValidity(QgisAlgorithm):
 
                     reason = "\n".join(reasons)
                     if len(reason) > 255:
-                        reason = reason[:252] + '...'
+                        reason = reason[:252] + '…'
                     attrs.append(reason)
 
             outFeat = QgsFeature()
