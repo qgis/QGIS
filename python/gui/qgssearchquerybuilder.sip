@@ -78,7 +78,10 @@ change search string shown in text field
  are inserted into the values list box.
 %End
 
-    void on_buttonBox_helpRequested();
+    void helpRequest();
+%Docstring
+ Open the help in a browser
+%End
 
     void saveQuery();
     void loadQuery();

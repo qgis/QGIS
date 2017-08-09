@@ -23,7 +23,6 @@
 
 #include <QSet>
 
-#include "qgscontexthelp.h"
 #include "qgis_gui.h"
 #include "qgscoordinatereferencesystem.h"
 
@@ -118,7 +117,7 @@ class GUI_EXPORT QgsProjectionSelectionDialog : public QDialog, private Ui::QgsG
 
   private slots:
 
-    void on_mButtonBox_helpRequested() { QgsContextHelp::run( metaObject()->className() ); }
+    void helpRequest();
 };
 
 #endif // #ifndef QGSLAYERCRSSELECTOR_H

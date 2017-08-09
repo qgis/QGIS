@@ -20,7 +20,6 @@
 #define PLUGINGUI_H
 
 #include "ui_qgscompasspluginguibase.h"
-#include "qgscontexthelp.h"
 
 #include <QtGui/QDockWidget>
 #include "compass.h"
@@ -44,7 +43,6 @@ class QgsCompassPluginGui : public QWidget, private Ui::QgsCompassPluginGuiBase
     Compass *compass = nullptr;
 
   private slots:
-//    void on_buttonBox_helpRequested() { QgsContextHelp::run( metaObject()->className() ); }
     void handleVisibilityChanged( bool visible );
     void handleAzimuth( const QVariant &azimuth, const QVariant &calibrationLevel );
     void rotatePixmap( QLabel *pixmapLabel, QString myFileNameQString, int rotationInt );

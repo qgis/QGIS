@@ -10,7 +10,7 @@
  *   (at your option) any later version.                                   *
  ***************************************************************************/
 #include "[pluginlcasename]gui.h"
-#include "qgscontexthelp.h"
+#include "qgshelp.h"
 
 //qt includes
 
@@ -94,6 +94,6 @@ void [pluginname]Gui::on_buttonBox_rejected()
 
 void [pluginname]Gui::on_buttonBox_helpRequested()
 {
-  QgsContextHelp::run( context_id );
+  QgsHelp::openHelp( "plugins/plugins.html#[pluginname]" );
 }
 

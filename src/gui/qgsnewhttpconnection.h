@@ -14,11 +14,15 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+
+#define SIP_NO_FILE
+
 #ifndef QGSNEWHTTPCONNECTION_H
 #define QGSNEWHTTPCONNECTION_H
+
+#include <qgis_sip.h>
 #include "ui_qgsnewhttpconnectionbase.h"
 #include "qgsguiutils.h"
-#include "qgscontexthelp.h"
 #include "qgis_gui.h"
 
 class QgsAuthConfigSelect;
@@ -39,11 +43,12 @@ class GUI_EXPORT QgsNewHttpConnection : public QDialog, private Ui::QgsNewHttpCo
     // Saves the connection to ~/.qt/qgisrc
     void accept() override;
 
+    /**
+     * Open the help in a browser
+     */
+    void helpRequest();
     void on_txtName_textChanged( const QString & );
-
     void on_txtUrl_textChanged( const QString & );
-
-    void on_buttonBox_helpRequested() { QgsContextHelp::run( metaObject()->className() ); }
 
   private:
     QString mBaseKey;

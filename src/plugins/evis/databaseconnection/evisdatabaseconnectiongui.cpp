@@ -26,7 +26,6 @@
 **/
 #include "evisdatabaseconnectiongui.h"
 
-#include "qgscontexthelp.h"
 #include "qgsapplication.h"
 
 #include <QMessageBox>

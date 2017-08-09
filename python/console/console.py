@@ -31,8 +31,8 @@ from .console_sci import ShellScintilla
 from .console_output import ShellOutputScintilla
 from .console_editor import EditorTabWidget
 from .console_settings import optionsDialog
-from qgis.core import QgsApplication, QgsContextHelp, QgsSettings
-from qgis.gui import QgsFilterLineEdit
+from qgis.core import QgsApplication, QgsSettings
+from qgis.gui import QgsFilterLineEdit, QgsHelp
 from functools import partial
 
 import sys
@@ -59,7 +59,7 @@ def show_console():
     # Shows help on first launch of the console
     settings = QgsSettings()
     if settings.value('pythonConsole/contextHelpOnFirstLaunch', True, type=bool):
-        QgsContextHelp.run("PythonConsole")
+        QgsHelp.openHelp("../pyqgis_developer_cookbook/intro.html#python-console")
         settings.setValue('pythonConsole/contextHelpOnFirstLaunch', False)
 
     return _console
@@ -657,7 +657,7 @@ class PythonConsoleWidget(QWidget):
                 self.updateTabListScript(pathFileName, action='remove')
 
     def openHelp(self):
-        QgsContextHelp.run("PythonConsole")
+        QgsHelp.openHelp("../pyqgis_developer_cookbook/intro.html#python-console")
 
     def openSettings(self):
         if optionsDialog(self).exec_():

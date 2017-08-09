@@ -21,7 +21,6 @@
 
 #include "qgspgnewconnection.h"
 #include "qgsauthmanager.h"
-#include "qgscontexthelp.h"
 #include "qgsdatasourceuri.h"
 #include "qgspostgresconn.h"
 #include "qgssettings.h"

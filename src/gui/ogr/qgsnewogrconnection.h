@@ -22,7 +22,6 @@
 
 #include "ui_qgsnewogrconnectionbase.h"
 #include "qgsguiutils.h"
-#include "qgscontexthelp.h"
 #include "qgis_gui.h"
 
 
@@ -45,7 +44,7 @@ class GUI_EXPORT QgsNewOgrConnection : public QDialog, private Ui::QgsNewOgrConn
   public slots:
     void accept() override;
     void on_btnConnect_clicked();
-    void on_buttonBox_helpRequested() { QgsContextHelp::run( metaObject()->className() ); }
+    void helpRequest();
 
   private:
     QString mOriginalConnName;

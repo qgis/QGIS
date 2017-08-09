@@ -21,7 +21,6 @@
 
 #include "qgssettings.h"
 #include "qgsoraclenewconnection.h"
-#include "qgscontexthelp.h"
 #include "qgsdatasourceuri.h"
 #include "qgsoracletablemodel.h"
 #include "qgsoracleconnpool.h"

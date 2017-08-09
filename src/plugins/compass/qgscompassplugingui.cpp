@@ -18,7 +18,6 @@
  ***************************************************************************/
 
 #include "qgisinterface.h"
-//#include "qgscontexthelp.h"
 #include "qgslogger.h"
 #include <QPainter>
 

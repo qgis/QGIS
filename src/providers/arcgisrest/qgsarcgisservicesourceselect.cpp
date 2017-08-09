@@ -20,7 +20,6 @@
 #include "qgsnewhttpconnection.h"
 #include "qgsprojectionselectiondialog.h"
 #include "qgsexpressionbuilderdialog.h"
-#include "qgscontexthelp.h"
 #include "qgsproject.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgscoordinatetransform.h"
@@ -36,6 +35,7 @@
 #include <QFileDialog>
 #include <QRadioButton>
 #include <QImageReader>
+#include <qgshelp.h>
 
 /**
  * Item delegate with tweaked sizeHint.
@@ -58,6 +58,7 @@ QgsArcGisServiceSourceSelect::QgsArcGisServiceSourceSelect( const QString &servi
 {
   setupUi( this );
   setupButtons( buttonBox );
+  connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsArcGisServiceSourceSelect::helpRequest );
   setWindowTitle( QStringLiteral( "Add %1 Layer from a Server" ).arg( mServiceName ) );
 
   if ( mServiceType == FeatureService )
@@ -468,7 +469,7 @@ QSize QgsAbstractDataSourceWidgetItemDelegate::sizeHint( const QStyleOptionViewI
   return size;
 }
 
-void QgsArcGisServiceSourceSelect::on_buttonBox_helpRequested() const
+void QgsArcGisServiceSourceSelect::helpRequest()
 {
-  QgsContextHelp::run( metaObject()->className() );
+  QgsHelp::openHelp( "managing_data_source/index.html" );
 }

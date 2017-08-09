@@ -23,7 +23,6 @@
 #include "qgsdistancearea.h"
 #include "qgisapp.h"
 #include "qgscomposer.h"
-#include "qgscontexthelp.h"
 #include "qgscoordinatetransform.h"
 #include "qgslayoutmanager.h"
 #include "qgslogger.h"

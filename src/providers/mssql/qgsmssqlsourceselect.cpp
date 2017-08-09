@@ -20,7 +20,6 @@
 
 #include "qgslogger.h"
 #include "qgsapplication.h"
-#include "qgscontexthelp.h"
 #include "qgsmssqlgeomcolumntypethread.h"
 #include "qgsmssqlprovider.h"
 #include "qgsmssqlnewconnection.h"

@@ -19,7 +19,6 @@
 %Include qgscolorramp.sip
 %Include qgscolorscheme.sip
 %Include qgscolorschemeregistry.sip
-%Include qgscontexthelp.sip
 %Include qgsconditionalstyle.sip
 %Include qgscoordinatetransform.sip
 %Include qgscrscache.sip

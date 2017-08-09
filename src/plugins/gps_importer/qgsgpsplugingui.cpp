@@ -13,7 +13,6 @@
 #include "qgsgpsdevicedialog.h"
 #include "qgsmaplayer.h"
 #include "qgsdataprovider.h"
-#include "qgscontexthelp.h"
 #include "qgslogger.h"
 #include "qgsgpsdetector.h"
 #include "qgssettings.h"

@@ -22,7 +22,6 @@ email                : even.rouault at spatialys.com
 #include "ui_qgssqlcomposerdialogbase.h"
 #include <qgis.h>
 #include "qgsguiutils.h"
-#include "qgscontexthelp.h"
 
 #include <QPair>
 #include <QStringList>
@@ -162,9 +161,7 @@ class GUI_EXPORT QgsSQLComposerDialog : public QDialog, private Ui::QgsSQLCompos
     void on_mAddJoinButton_clicked();
     void on_mRemoveJoinButton_clicked();
     void on_mTableJoins_itemSelectionChanged();
-
-    void on_mButtonBox_helpRequested() { QgsContextHelp::run( metaObject()->className() ); }
-
+    void helpRequest();
     void reset();
     void buildSQLFromFields();
     void splitSQLIntoFields();

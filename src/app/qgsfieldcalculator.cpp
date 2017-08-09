@@ -53,6 +53,7 @@ QgsFieldCalculator::QgsFieldCalculator( QgsVectorLayer *vl, QWidget *parent )
 
   connect( builder, &QgsExpressionBuilderWidget::expressionParsed, this, &QgsFieldCalculator::setOkButtonState );
   connect( mOutputFieldWidthSpinBox, &QAbstractSpinBox::editingFinished, this, &QgsFieldCalculator::setPrecisionMinMax );
+  connect( mButtonBox, &QDialogButtonBox::helpRequested, this, &QgsFieldCalculator::helpRequest );
 
   QgsDistanceArea myDa;
   myDa.setSourceCrs( vl->crs() );
@@ -481,4 +482,9 @@ void QgsFieldCalculator::setPrecisionMinMax()
   mOutputFieldPrecisionSpinBox->setEnabled( minPrecType < maxPrecType );
   mOutputFieldPrecisionSpinBox->setMinimum( minPrecType );
   mOutputFieldPrecisionSpinBox->setMaximum( qMax( minPrecType, qMin( maxPrecType, mOutputFieldWidthSpinBox->value() ) ) );
+}
+
+void QgsFieldCalculator::helpRequest()
+{
+  QgsHelp::openHelp( "working_with_vector/attribute_table.html#field-calculator" );
 }

@@ -23,7 +23,6 @@
 #include "qgsowssourceselect.h"
 #include "qgsdatasourceuri.h"
 #include "qgsguiutils.h"
-#include "qgscontexthelp.h"
 #include "qgswcscapabilities.h"
 #include "qgsproviderregistry.h"
 #include "qgsdataprovider.h"

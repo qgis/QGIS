@@ -23,7 +23,6 @@
 
 #include "qgsmssqlnewconnection.h"
 #include "qgsmssqlprovider.h"
-#include "qgscontexthelp.h"
 #include "qgssettings.h"
 
 QgsMssqlNewConnection::QgsMssqlNewConnection( QWidget *parent, const QString &connName, Qt::WindowFlags fl )

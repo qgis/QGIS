@@ -22,6 +22,7 @@
 # name is reserved for the Windows qmake project file
 
 echo "deprecated - use push_ts.sh and pull_ts.sh" >&2
+echo "deprecated - src/core/qgscontexthelp_texts.cpp are no longer used" >&2
 
 set -e
 

@@ -23,7 +23,6 @@
 
 #include "ui_qgsquerybuilderbase.h"
 #include "qgsguiutils.h"
-#include "qgscontexthelp.h"
 #include "qgis_gui.h"
 
 class QgsField;
@@ -88,7 +87,10 @@ class GUI_EXPORT QgsSearchQueryBuilder : public QDialog, private Ui::QgsQueryBui
      */
     void on_btnSampleValues_clicked();
 
-    void on_buttonBox_helpRequested() { QgsContextHelp::run( metaObject()->className() ); }
+    /**
+     * Open the help in a browser
+     */
+    void helpRequest();
 
     void saveQuery();
     void loadQuery();

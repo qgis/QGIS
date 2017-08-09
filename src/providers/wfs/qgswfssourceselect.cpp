@@ -24,7 +24,6 @@
 #include "qgswfsutils.h"
 #include "qgsnewhttpconnection.h"
 #include "qgsprojectionselectiondialog.h"
-#include "qgscontexthelp.h"
 #include "qgsproject.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgscoordinatetransform.h"

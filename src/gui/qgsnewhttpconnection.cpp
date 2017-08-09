@@ -15,9 +15,9 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsnewhttpconnection.h"
-#include "qgscontexthelp.h"
 #include "qgsauthconfigselect.h"
 #include "qgssettings.h"
+#include "qgshelp.h"
 
 #include <QMessageBox>
 #include <QUrl>
@@ -33,6 +33,7 @@ QgsNewHttpConnection::QgsNewHttpConnection(
   , mAuthConfigSelect( nullptr )
 {
   setupUi( this );
+  connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsNewHttpConnection::helpRequest );
 
   QRegExp rx( "/connections-([^/]+)/" );
   rx.indexIn( baseKey );
@@ -329,4 +330,9 @@ void QgsNewHttpConnection::accept()
   settings.setValue( mBaseKey + "/selected", txtName->text() );
 
   QDialog::accept();
+}
+
+void QgsNewHttpConnection::helpRequest()
+{
+  QgsHelp::openHelp( "managing_data_source/opening_data.html#connecting-to-web-services" );
 }
