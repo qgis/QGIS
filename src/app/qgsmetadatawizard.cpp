@@ -36,6 +36,9 @@ QgsMetadataWizard::QgsMetadataWizard( QWidget *parent, QgsMapLayer *layer )
   setupUi( this );
   mMetadata = layer->metadata();
 
+  // Disable the encoding
+  encodingFrame->setHidden( true );
+
   // Default categories
   mDefaultCategories << tr( "Farming" ) << tr( "Climatology Meteorology Atmosphere" ) << tr( "Location" ) << tr( "Intelligence Military" ) << tr( "Transportation" ) << tr( "Structure" ) << tr( "Boundaries" );
   mDefaultCategories << tr( "Inland Waters" ) << tr( "Planning Cadastre" ) << tr( "Geoscientific Information" ) << tr( "Elevation" ) << tr( "Health" ) << tr( "Biota" ) << tr( "Oceans" ) << tr( "Environment" );
@@ -43,6 +46,8 @@ QgsMetadataWizard::QgsMetadataWizard( QWidget *parent, QgsMapLayer *layer )
   mDefaultCategoriesModel = new QStringListModel( mDefaultCategories );
   mDefaultCategoriesModel->sort( 0 );  // Sorting using translations
   listDefaultCategories->setModel( mDefaultCategoriesModel );
+//  listDefaultCategories->setEditTriggers(QAbstractItemView.NoEditTriggers);
+//  listCategories->setEditTriggers(QAbstractItemView.NoEditTriggers);
 
   // Categories
   mCategoriesModel = new QStringListModel();
