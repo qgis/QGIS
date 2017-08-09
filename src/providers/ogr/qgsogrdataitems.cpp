@@ -340,8 +340,8 @@ QGISEXTERN QgsDataItem *dataItem( QString path, QgsDataItem *parentItem )
     // Check if the layer has sublayers by comparing the extension
     QgsDataItem *item;
     QStringList multipleLayersExtensions;
-    // TODO: add more formats here!
-    multipleLayersExtensions << QLatin1String( "gpkg" ) << QLatin1String( "sqlite" );
+    // TODO: add more OGR supported multiple layers formats here!
+    multipleLayersExtensions << QLatin1String( "gpkg" ) << QLatin1String( "sqlite" ) << QLatin1String( "db" );
     if ( ! multipleLayersExtensions.contains( suffix ) )
       item = new QgsOgrLayerItem( parentItem, name, path, path, QgsLayerItem::Vector );
     else

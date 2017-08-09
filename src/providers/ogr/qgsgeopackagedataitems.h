@@ -1,9 +1,9 @@
 /***************************************************************************
     qgsgeopackagedataitems.h
     ---------------------
-    begin                : October 2011
-    copyright            : (C) 2011 by Martin Dobias
-    email                : wonder dot sk at gmail dot com
+    begin                : August 2017
+    copyright            : (C) 2017 by Alessandro Pasotti
+    email                : apasotti at boundlessgeo dot com
  ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
