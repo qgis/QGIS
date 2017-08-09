@@ -1234,6 +1234,7 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
   }
 #endif
 
+  connect( qApp, SIGNAL( focusChanged( QWidget*, QWidget* ) ), this, SLOT( onFocusChanged( QWidget*, QWidget* ) ) );
 } // QgisApp ctor
 
 QgisApp::QgisApp()
@@ -8789,6 +8790,15 @@ void QgisApp::userRotation()
   double degrees = mRotationEdit->value();
   mMapCanvas->setRotation( degrees );
   mMapCanvas->refresh();
+}
+
+void QgisApp::onFocusChanged( QWidget* /*old*/, QWidget* now )
+{
+  // If nothing has focus even though the window is active, ensure map canvas receives it
+  if ( !now && isActiveWindow() )
+  {
+    mapCanvas()->setFocus();
+  }
 }
 
 // toggle overview status
