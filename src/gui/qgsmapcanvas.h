@@ -848,6 +848,7 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     QTimer mAutoRefreshTimer;
 
     QTimer mPreviewTimer;
+    QMetaObject::Connection mPreviewTimerConnection;
 
     QString mTheme;
 

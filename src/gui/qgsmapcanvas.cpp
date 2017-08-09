@@ -2169,7 +2169,13 @@ void QgsMapCanvas::startPreviewJob( int number )
   {
     mPreviewTimer.setSingleShot( true );
     mPreviewTimer.setInterval( 10 );
-    connect( &mPreviewTimer, &QTimer::timeout, [ = ]() { startPreviewJob( number + 1 ); } );
+    disconnect( mPreviewTimerConnection );
+    mPreviewTimerConnection = connect( &mPreviewTimer, &QTimer::timeout, [ = ]()
+    {
+      startPreviewJob( number + 1 );
+    }
+                                     );
+    mPreviewTimer.start();
   }
 }
 
