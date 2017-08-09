@@ -21,6 +21,7 @@
 #include <QComboBox>
 #include <QString>
 #include <QInputDialog>
+#include <QStringListModel>
 
 //#include "qgsmetadatalinkdelegate.h"
 #include "qgsmetadatawizard.h"
@@ -35,8 +36,19 @@ QgsMetadataWizard::QgsMetadataWizard( QWidget *parent, QgsMapLayer *layer )
   setupUi( this );
   mMetadata = layer->metadata();
 
+  // Default categories
+  mDefaultCategories << tr( "Farming" ) << tr( "Climatology Meteorology Atmosphere" ) << tr( "Location" ) << tr( "Intelligence Military" ) << tr( "Transportation" ) << tr( "Structure" ) << tr( "Boundaries" );
+  mDefaultCategories << tr( "Inland Waters" ) << tr( "Planning Cadastre" ) << tr( "Geoscientific Information" ) << tr( "Elevation" ) << tr( "Health" ) << tr( "Biota" ) << tr( "Oceans" ) << tr( "Environment" );
+  mDefaultCategories << tr( "Utilities Communication" ) << tr( "Economy" ) << tr( "Society" ) << tr( "Imagery Base Maps Earth Cover" );
+  mDefaultCategoriesModel = new QStringListModel( mDefaultCategories );
+  mDefaultCategoriesModel->sort( 0 );  // Sorting using translations
+  listDefaultCategories->setModel( mDefaultCategoriesModel );
+
+  // Categories
+  mCategoriesModel = new QStringListModel();
+  listCategories->setModel( mCategoriesModel );
+
   tabWidget->setCurrentIndex( 0 );
-//  tabWidget->setItemDelegate(new TableDelegate());
   backButton->setEnabled( false );
   nextButton->setEnabled( true );
 
@@ -65,7 +77,9 @@ QgsMetadataWizard::QgsMetadataWizard( QWidget *parent, QgsMapLayer *layer )
   connect( tabContacts, &QTableWidget::itemSelectionChanged, this, &QgsMetadataWizard::updateContactDetails );
   connect( btnAddLink, &QPushButton::clicked, this, &QgsMetadataWizard::addLink );
   connect( btnRemoveLink, &QPushButton::clicked, this, &QgsMetadataWizard::removeLink );
-  connect( btnCheckMetadata, &QPushButton::clicked, this, &QgsMetadataWizard::checkMetadata );
+  connect( btnNewCategory, &QPushButton::clicked, this, &QgsMetadataWizard::addNewCategory );
+  connect( btnAddDefaultCategory, &QPushButton::clicked, this, &QgsMetadataWizard::addDefaultCategory );
+  connect( btnRemoveCategory, &QPushButton::clicked, this, &QgsMetadataWizard::removeCategory );
 
   fillComboBox();
   setPropertiesFromLayer();
@@ -268,6 +282,9 @@ void QgsMetadataWizard::setPropertiesFromLayer()
     comboLanguage->setCurrentIndex( comboLanguage->findText( mMetadata.language() ) );
   }
 
+  // Categories
+  mCategoriesModel->setStringList( mMetadata.categories() );
+
   // Keywords
   tabKeywords->setRowCount( 0 );
   QMapIterator<QString, QStringList> i( mMetadata.keywords() );
@@ -323,7 +340,8 @@ void QgsMetadataWizard::saveMetadata( QgsLayerMetadata &layerMetadata )
   layerMetadata.setLanguage( comboLanguage->currentText() );
   layerMetadata.setAbstract( textEditAbstract->toPlainText() );
 
-  // Keywords
+  // Keywords, it will save categories too.
+  syncFromCategoriesTabToKeywordsTab();
   QMap<QString, QStringList> keywords;
   for ( int i = 0 ; i < tabKeywords->rowCount() ; i++ )
   {
@@ -508,6 +526,27 @@ void QgsMetadataWizard::finishedClicked()
   }
 }
 
+void QgsMetadataWizard::syncFromCategoriesTabToKeywordsTab()
+{
+  if ( mCategoriesModel->rowCount() > 0 )
+  {
+    QList<QTableWidgetItem *> categories = tabKeywords->findItems( "gmd:topicCategory", Qt::MatchExactly );
+    int row;
+    if ( !categories.isEmpty() )
+    {
+      row = categories.at( 0 )->row();
+    }
+    else
+    {
+      // Create a new line with 'gmd:topicCategory'
+      addVocabulary();
+      row = tabKeywords->rowCount() - 1;
+      tabKeywords->item( row, 0 )->setText( "gmd:topicCategory" );
+    }
+    tabKeywords->item( row, 1 )->setText( mCategoriesModel->stringList().join( "," ) );
+  }
+}
+
 void QgsMetadataWizard::updatePanel()
 {
   int index = tabWidget->currentIndex();
@@ -516,15 +555,98 @@ void QgsMetadataWizard::updatePanel()
     backButton->setEnabled( false );
     nextButton->setEnabled( true );
   }
+  else if ( index == 1 )
+  {
+    // Categories tab
+    // We need to take keywords and insert them into the list
+    QList<QTableWidgetItem *> categories = tabKeywords->findItems( "gmd:topicCategory", Qt::MatchExactly );
+    if ( !categories.isEmpty() )
+    {
+      int row = categories.at( 0 )->row();
+      mCategoriesModel->setStringList( tabKeywords->item( row, 1 )->text().split( "," ) );
+    }
+    else
+    {
+      mCategoriesModel->setStringList( QStringList() );
+    }
+  }
+  else if ( index == 2 )
+  {
+    // Keywords tab
+    // We need to take categories and insert them into the table
+    syncFromCategoriesTabToKeywordsTab();
+  }
   else if ( index == tabWidget->count() - 1 )
   {
+    // Validation tab
     backButton->setEnabled( true );
     nextButton->setEnabled( false );
+    checkMetadata();
   }
   else
   {
     backButton->setEnabled( true );
     nextButton->setEnabled( true );
+  }
+}
+
+void QgsMetadataWizard::addNewCategory()
+{
+  bool ok;
+  QString text = QInputDialog::getText( this, tr( "New Category" ),
+                                        tr( "New Category:" ), QLineEdit::Normal,
+                                        QString( "" ), &ok );
+  if ( ok && !text.isEmpty() )
+  {
+    QStringList list = mCategoriesModel->stringList();
+    if ( ! list.contains( text ) )
+    {
+      list.append( text );
+      mCategoriesModel->setStringList( list );
+      mCategoriesModel->sort( 0 );
+    }
+  }
+}
+
+void QgsMetadataWizard::addDefaultCategory()
+{
+  QItemSelectionModel *selection = listDefaultCategories->selectionModel();
+  if ( selection->hasSelection() )
+  {
+    QModelIndex indexElementSelectionne = selection->currentIndex();
+
+    QVariant item = mDefaultCategoriesModel->data( indexElementSelectionne, Qt::DisplayRole );
+    QStringList list = mDefaultCategoriesModel->stringList();
+    list.removeOne( item.toString() );
+    mDefaultCategoriesModel->setStringList( list );
+
+    list = mCategoriesModel->stringList();
+    list.append( item.toString() );
+    mCategoriesModel->setStringList( list );
+    mCategoriesModel->sort( 0 );
+  }
+}
+
+
+void QgsMetadataWizard::removeCategory()
+{
+  QItemSelectionModel *selection = listCategories->selectionModel();
+  if ( selection->hasSelection() )
+  {
+    QModelIndex indexElementSelectionne = listCategories->selectionModel()->currentIndex();
+
+    QVariant item = mCategoriesModel->data( indexElementSelectionne, Qt::DisplayRole );
+    QStringList list = mCategoriesModel->stringList();
+    list.removeOne( item.toString() );
+    mCategoriesModel->setStringList( list );
+
+    if ( mDefaultCategories.contains( item.toString() ) )
+    {
+      list = mDefaultCategoriesModel->stringList();
+      list.append( item.toString() );
+      mDefaultCategoriesModel->setStringList( list );
+      mDefaultCategoriesModel->sort( 0 );
+    }
   }
 }
 

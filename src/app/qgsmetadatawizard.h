@@ -142,9 +142,16 @@ class APP_EXPORT QgsMetadataWizard : public QDialog, private Ui::QgsMetadataWiza
     void nextClicked();
     void finishedClicked();
     void updatePanel();
+    void addDefaultCategory();
+    void addNewCategory();
+    void removeCategory();
+    QStringList mDefaultCategories;
     QgsMapLayer *mLayer = nullptr;
     QgsLayerMetadata mMetadata;
     QStandardItemModel *mLinksModel = nullptr;
+    QStringListModel *mCategoriesModel = nullptr;
+    QStringListModel *mDefaultCategoriesModel = nullptr;
+    void syncFromCategoriesTabToKeywordsTab();
 };
 
 class LinkItemDelegate : public QStyledItemDelegate
