@@ -80,6 +80,11 @@ class CheckValidity(QgisAlgorithm):
                                                               self.tr('Input layer')))
         self.addParameter(QgsProcessingParameterEnum(self.METHOD,
                                                      self.tr('Method'), self.methods))
+        self.parameterDefinition(self.METHOD).setMetadata({
+            'widget_wrapper': {
+                'class': 'processing.gui.wrappers.SelectionWidgetWrapper',
+                'useCheckBoxes': True,
+                'columns': 3}})
 
         self.addParameter(QgsProcessingParameterFeatureSink(self.VALID_OUTPUT, self.tr('Valid output'), QgsProcessing.TypeVectorAny, '', True))
         self.addOutput(QgsProcessingOutputNumber(self.VALID_COUNT, self.tr('Count of valid features')))
