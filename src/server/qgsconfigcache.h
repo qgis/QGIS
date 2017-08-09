@@ -29,10 +29,10 @@
 #include "qgis_server.h"
 #include "qgis_sip.h"
 #include "qgswmsconfigparser.h"
+#include "qgsproject.h"
 
 class QgsServerProjectParser;
 class QgsAccessControl;
-class QgsProject;
 
 class SERVER_EXPORT QgsConfigCache : public QObject
 {

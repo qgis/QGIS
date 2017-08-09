@@ -33,6 +33,7 @@ class QgisApp;
  * plugin.
  */
 
+Q_NOWARN_DEPRECATED_PUSH
 class APP_EXPORT QgisAppInterface : public QgisInterface
 {
     Q_OBJECT
@@ -519,5 +520,6 @@ class APP_EXPORT QgisAppInterface : public QgisInterface
     //! Pointer to the PluginManagerInterface object
     QgsAppPluginManagerInterface pluginManagerIface;
 };
+Q_NOWARN_DEPRECATED_POP
 
 #endif //#define QGISAPPINTERFACE_H

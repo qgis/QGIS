@@ -139,8 +139,8 @@ bool QgsZipUtils::zip( const QString &zipFilename, const QStringList &files )
       {
         QString err = QObject::tr( "Error input file does not exist: '%1'" ).arg( file );
         QgsMessageLog::logMessage( err, QStringLiteral( "QgsZipUtils" ) );
-        return false;
         zip_close( z );
+        return false;
       }
 
       zip_source *src = zip_source_file( z, file.toStdString().c_str(), 0, 0 );

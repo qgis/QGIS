@@ -419,7 +419,7 @@ void QgsLayoutRuler::drawSmallDivisions( QPainter *painter, double startPos, int
   double smallMarkerPos = startPos;
   double smallDivisionSpacing = rulerScale / numDivisions;
 
-  double pixelCoord;
+  double pixelCoord = 0.0;
 
   //draw numDivisions small divisions
   for ( int i = 0; i < numDivisions; ++i )

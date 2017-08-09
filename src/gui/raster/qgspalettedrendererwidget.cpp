@@ -583,7 +583,7 @@ QVariant QgsPalettedRendererModel::data( const QModelIndex &index, int role ) co
     }
 
     default:
-      return QVariant();
+      break;
   }
 
   return QVariant();

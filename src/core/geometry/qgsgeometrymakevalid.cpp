@@ -159,8 +159,10 @@ static GEOSGeometry *LWGEOM_GEOS_buildArea( const GEOSGeometry *geom_in, QString
   }
   catch ( GEOSException &e )
   {
+    Q_NOWARN_UNREACHABLE_PUSH
     errorMessage = QString( "GEOSPolygonize(): %1" ).arg( e.what() );
     return nullptr;
+    Q_NOWARN_UNREACHABLE_POP
   }
 
   // We should now have a collection
@@ -505,9 +507,11 @@ static GEOSGeometry *LWGEOM_GEOS_makeValidPolygon( const GEOSGeometry *gin, QStr
     }
     catch ( GEOSException &e )
     {
+      Q_NOWARN_UNREACHABLE_PUSH
       GEOSGeom_destroy_r( handle, geos_bound );
       errorMessage = QString( "GEOSGeom_extractUniquePoints(): %1" ).arg( e.what() );
       return nullptr;
+      Q_NOWARN_UNREACHABLE_POP
     }
 
     try
@@ -516,10 +520,12 @@ static GEOSGeometry *LWGEOM_GEOS_makeValidPolygon( const GEOSGeometry *gin, QStr
     }
     catch ( GEOSException &e )
     {
+      Q_NOWARN_UNREACHABLE_PUSH
       GEOSGeom_destroy_r( handle, geos_bound );
       GEOSGeom_destroy_r( handle, pi );
       errorMessage = QString( "GEOSGeom_extractUniquePoints(): %1" ).arg( e.what() );
       return nullptr;
+      Q_NOWARN_UNREACHABLE_POP
     }
 
     try
@@ -528,11 +534,13 @@ static GEOSGeometry *LWGEOM_GEOS_makeValidPolygon( const GEOSGeometry *gin, QStr
     }
     catch ( GEOSException &e )
     {
+      Q_NOWARN_UNREACHABLE_PUSH
       GEOSGeom_destroy_r( handle, geos_bound );
       GEOSGeom_destroy_r( handle, pi );
       GEOSGeom_destroy_r( handle, po );
       errorMessage = QString( "GEOSDifference(): %1" ).arg( e.what() );
       return nullptr;
+      Q_NOWARN_UNREACHABLE_POP
     }
 
     GEOSGeom_destroy_r( handle, pi );
@@ -547,9 +555,11 @@ static GEOSGeometry *LWGEOM_GEOS_makeValidPolygon( const GEOSGeometry *gin, QStr
   }
   catch ( GEOSException &e )
   {
+    Q_NOWARN_UNREACHABLE_PUSH
     errorMessage = QString( "GEOSGeom_createEmptyPolygon(): %1" ).arg( e.what() );
     GEOSGeom_destroy_r( handle, geos_cut_edges );
     return nullptr;
+    Q_NOWARN_UNREACHABLE_POP
   }
 
   // See if an area can be build with the remaining edges
@@ -594,12 +604,14 @@ static GEOSGeometry *LWGEOM_GEOS_makeValidPolygon( const GEOSGeometry *gin, QStr
     }
     catch ( GEOSException &e )
     {
+      Q_NOWARN_UNREACHABLE_PUSH
       // We did check for empty area already so
       // this must be some other error
       errorMessage = QString( "GEOSBoundary() threw an error: %1" ).arg( e.what() );
       GEOSGeom_destroy_r( handle, new_area );
       GEOSGeom_destroy_r( handle, geos_area );
       return nullptr;
+      Q_NOWARN_UNREACHABLE_POP
     }
 
     // Now symdif new and old area
@@ -609,12 +621,14 @@ static GEOSGeometry *LWGEOM_GEOS_makeValidPolygon( const GEOSGeometry *gin, QStr
     }
     catch ( GEOSException &e )
     {
+      Q_NOWARN_UNREACHABLE_PUSH
       GEOSGeom_destroy_r( handle, geos_cut_edges );
       GEOSGeom_destroy_r( handle, new_area );
       GEOSGeom_destroy_r( handle, new_area_bound );
       GEOSGeom_destroy_r( handle, geos_area );
       errorMessage = QString( "GEOSSymDifference() threw an error: %1" ).arg( e.what() );
       return nullptr;
+      Q_NOWARN_UNREACHABLE_POP
     }
 
     GEOSGeom_destroy_r( handle, geos_area );
@@ -636,11 +650,13 @@ static GEOSGeometry *LWGEOM_GEOS_makeValidPolygon( const GEOSGeometry *gin, QStr
     }
     catch ( GEOSException &e )
     {
+      Q_NOWARN_UNREACHABLE_PUSH
       GEOSGeom_destroy_r( handle, geos_cut_edges );
       GEOSGeom_destroy_r( handle, new_area_bound );
       GEOSGeom_destroy_r( handle, geos_area );
       errorMessage = QString( "GEOSDifference() threw an error: %1" ).arg( e.what() );
       return nullptr;
+      Q_NOWARN_UNREACHABLE_POP
     }
     GEOSGeom_destroy_r( handle, geos_cut_edges );
     GEOSGeom_destroy_r( handle, new_area_bound );
@@ -688,9 +704,11 @@ static GEOSGeometry *LWGEOM_GEOS_makeValidPolygon( const GEOSGeometry *gin, QStr
     }
     catch ( GEOSException &e )
     {
+      Q_NOWARN_UNREACHABLE_PUSH
       errorMessage = QString( "GEOSGeom_createCollection() threw an error: %1" ).arg( e.what() );
       // TODO: cleanup!
       return nullptr;
+      Q_NOWARN_UNREACHABLE_POP
     }
   }
 
@@ -856,9 +874,11 @@ static GEOSGeometry *LWGEOM_GEOS_makeValid( const GEOSGeometry *gin, QString &er
   }
   catch ( GEOSException &e )
   {
+    Q_NOWARN_UNREACHABLE_PUSH
     // I don't think should ever happen
     errorMessage = QString( "GEOSisValid(): %1" ).arg( e.what() );
     return nullptr;
+    Q_NOWARN_UNREACHABLE_POP
   }
 
   // make what we got valid

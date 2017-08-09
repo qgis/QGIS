@@ -173,7 +173,7 @@ bool QgsFontButton::event( QEvent *e )
   {
     QHelpEvent *helpEvent = static_cast< QHelpEvent *>( e );
     QString toolTip;
-    double fontSize;
+    double fontSize = 0.0;
     switch ( mMode )
     {
       case ModeTextRenderer:

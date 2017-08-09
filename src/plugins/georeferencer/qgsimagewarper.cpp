@@ -361,7 +361,7 @@ GDALResampleAlg QgsImageWarper::toGDALResampleAlg( const QgsImageWarper::Resampl
     case Lanczos:
       return GRA_Lanczos;
     default:
-      return GRA_NearestNeighbour;
+      break;
   };
 
   //avoid warning

@@ -24,6 +24,16 @@
 
 #include "qgslogger.h"
 
+#if __cplusplus >= 201500
+#define FALLTHROUGH [[fallthrough]];
+#elif defined(__clang__)
+#define FALLTHROUGH //[[clang::fallthrough]]
+#elif defined(__GNUC__) && __GNUC__ >= 7
+#define FALLTHROUGH [[gnu::fallthrough]];
+#else
+#define FALLTHROUGH
+#endif
+
 #define FIRSTHANDLE 48
 
 #if 0
@@ -3047,6 +3057,8 @@ bool dxfRW::processPolyline()
         {
           processVertex( &pl );
         }
+
+        FALLTHROUGH
       }
       default:
         pl.parseCode( code, reader );
@@ -3079,6 +3091,8 @@ bool dxfRW::processVertex( DRW_Polyline *pl )
         {
           v = new DRW_Vertex(); //another vertex
         }
+
+        FALLTHROUGH
       }
       default:
         v->parseCode( code, reader );

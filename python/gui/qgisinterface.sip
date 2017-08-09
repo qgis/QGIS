@@ -577,7 +577,6 @@ Unregister a previously registered action. (e.g. when plugin is going to be unlo
 %End
 
 
-
     virtual QMenu *projectMenu() = 0;
 %Docstring
  :rtype: QMenu
