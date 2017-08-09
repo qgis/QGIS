@@ -173,7 +173,7 @@ class TestCase(_TestCase):
                         self,
                         attr_expected,
                         attr_result,
-                        'Features {}/{} differ in attributes\n\n * Field1: {} ({})\n * Field2: {} ({})\n\n * {} != {}'.format(
+                        'Features {}/{} differ in attributes\n\n * Field expected: {} ({})\n * result  : {} ({})\n\n * Expected: {} != Result  : {}'.format(
                             feats[0].id(),
                             feats[1].id(),
                             field_expected.name(),
