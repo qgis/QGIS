@@ -101,9 +101,7 @@ class RasterizeAlgorithm(QgisAlgorithm):
         self.addParameter(map_theme_param)
 
         self.addParameter(
-            # TODO use QgsProcessingParameterMapLayer when
-            # the LayerWidgetWrapper class will be implemented
-            QgsProcessingParameterRasterLayer(
+            QgsProcessingParameterMapLayer(
                 self.LAYER,
                 description=self.tr(
                     'Layer to render. Will only be used if the map theme '
