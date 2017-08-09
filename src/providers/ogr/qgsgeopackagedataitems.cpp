@@ -201,11 +201,10 @@ QList<QAction *> QgsGeoPackageConnectionItem::actions()
 {
   QList<QAction *> lst;
 
-  // TODO: implement layer deletion
 
-  //QAction *actionRemoveConnection = new QAction( tr( "Remove connection" ), this );
-  // connect( actionDeleteLayer, &QAction::triggered, this, &QgsGeoPackageLayerItem::deleteLayer );
-  //lst.append( actionRemoveConnection );
+  QAction *actiondeleteConnection = new QAction( tr( "Remove connection" ), this );
+  connect( actiondeleteConnection, &QAction::triggered, this, &QgsGeoPackageConnectionItem::deleteConnection );
+  lst.append( actiondeleteConnection );
   return lst;
 }
 #endif
@@ -240,15 +239,18 @@ QgsLayerItem::LayerType QgsGeoPackageConnectionItem::layerTypeFromDb( const QStr
   return QgsLayerItem::LayerType::NoType;
 }
 
+void QgsGeoPackageConnectionItem::deleteConnection()
+{
+  QgsGeoPackageConnection::deleteConnection( name() );
+  mParent->refreshConnections();
+}
+
 #ifdef HAVE_GUI
 QList<QAction *> QgsGeoPackageAbstractLayerItem::actions()
 {
   QList<QAction *> lst;
 
-  QAction *actionDeleteLayer = new QAction( tr( "Delete Layer" ), this );
-  // TODO connect( actionDeleteLayer, &QAction::triggered, this, &QgsGeoPackageLayerItem::deleteLayer );
-  lst.append( actionDeleteLayer );
-
+  // TODO: delete layer when the provider supports it (not currently implemented)
   return lst;
 }
 #endif
@@ -265,6 +267,7 @@ QgsGeoPackageVectorLayerItem::QgsGeoPackageVectorLayerItem( QgsDataItem *parent,
 {
 
 }
+
 
 QgsGeoPackageRasterLayerItem::QgsGeoPackageRasterLayerItem( QgsDataItem *parent, QString name, QString path, QString uri )
   : QgsGeoPackageAbstractLayerItem( parent, name, path, uri, QgsLayerItem::LayerType::Raster, QStringLiteral( "gdal" ) )

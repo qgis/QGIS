@@ -32,11 +32,6 @@ class QgsGeoPackageAbstractLayerItem : public QgsLayerItem
 #ifdef HAVE_GUI
     QList<QAction *> actions() override;
 #endif
-
-  public slots:
-#ifdef HAVE_GUI
-    void deleteLayer();
-#endif
 };
 
 
@@ -45,6 +40,7 @@ class QgsGeoPackageRasterLayerItem : public QgsGeoPackageAbstractLayerItem
     Q_OBJECT
   public:
     QgsGeoPackageRasterLayerItem( QgsDataItem *parent, QString name, QString path, QString uri );
+
 };
 
 
@@ -53,6 +49,7 @@ class QgsGeoPackageVectorLayerItem : public QgsGeoPackageAbstractLayerItem
     Q_OBJECT
   public:
     QgsGeoPackageVectorLayerItem( QgsDataItem *parent, QString name, QString path, QString uri, LayerType layerType );
+
 };
 
 
