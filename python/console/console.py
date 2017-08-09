@@ -657,7 +657,7 @@ class PythonConsoleWidget(QWidget):
                 self.updateTabListScript(pathFileName, action='remove')
 
     def openHelp(self):
-        QgsHelp.openHelp("../pyqgis_developer_cookbook/intro.html#python-console")
+        QgsHelp.openHelp("plugins/python_console.html")
 
     def openSettings(self):
         if optionsDialog(self).exec_():

@@ -486,5 +486,5 @@ void QgsFieldCalculator::setPrecisionMinMax()
 
 void QgsFieldCalculator::helpRequest()
 {
-  QgsHelp::openHelp( "working_with_vector/attribute_table.html#field-calculator" );
+  QgsHelp::openHelp( "working_with_vector/attribute_table.html#editing-attribute-values" );
 }

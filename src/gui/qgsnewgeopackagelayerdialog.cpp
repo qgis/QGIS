@@ -477,5 +477,5 @@ bool QgsNewGeoPackageLayerDialog::apply()
 
 void QgsNewGeoPackageLayerDialog::helpRequest()
 {
-  QgsHelp::openHelp( "managing_data_source/opening_data.html#loading-a-layer-from-a-file" );
+  QgsHelp::openHelp( "managing_data_source/create_layers.html#creating-a-new-geopackage-layer" );
 }

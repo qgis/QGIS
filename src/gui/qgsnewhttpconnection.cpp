@@ -334,5 +334,5 @@ void QgsNewHttpConnection::accept()
 
 void QgsNewHttpConnection::helpRequest()
 {
-  QgsHelp::openHelp( "managing_data_source/opening_data.html#connecting-to-web-services" );
+  QgsHelp::openHelp( "working_with_ogc/index.html" );
 }
