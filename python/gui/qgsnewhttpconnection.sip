@@ -10,7 +10,6 @@
 
 
 
-
 class QgsNewHttpConnection : QDialog
 {
 %Docstring

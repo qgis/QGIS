@@ -15,8 +15,6 @@
  *                                                                         *
  ***************************************************************************/
 
-#define SIP_NO_FILE
-
 #ifndef QGSNEWHTTPCONNECTION_H
 #define QGSNEWHTTPCONNECTION_H
 
