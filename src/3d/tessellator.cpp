@@ -105,15 +105,19 @@ void Tessellator::addPolygon( const QgsPolygonV2 &polygon, float extrusionHeight
   polyline.reserve( exterior->numPoints() );
 
   QgsVertexId::VertexType vt;
-  QgsPoint pt;
+  QgsPoint pt, ptPrev;
 
   for ( int i = 0; i < exterior->numPoints() - 1; ++i )
   {
     exterior->pointAt( i, pt, vt );
-    p2t::Point *pt2 = new p2t::Point( pt.x() - originX, pt.y() - originY );
-    polyline.push_back( pt2 );
-    float zPt = qIsNaN( pt.z() ) ? 0 : pt.z();
-    z[pt2] = zPt;
+    if ( i == 0 || pt != ptPrev )
+    {
+      p2t::Point *pt2 = new p2t::Point( pt.x() - originX, pt.y() - originY );
+      polyline.push_back( pt2 );
+      float zPt = qIsNaN( pt.z() ) ? 0 : pt.z();
+      z[pt2] = zPt;
+    }
+    ptPrev = pt;
   }
   polylinesToDelete << polyline;
 
@@ -128,16 +132,20 @@ void Tessellator::addPolygon( const QgsPolygonV2 &polygon, float extrusionHeight
     for ( int j = 0; j < hole->numPoints() - 1; ++j )
     {
       hole->pointAt( j, pt, vt );
-      p2t::Point *pt2 = new p2t::Point( pt.x() - originX, pt.y() - originY );
-      holePolyline.push_back( pt2 );
-      float zPt = qIsNaN( pt.z() ) ? 0 : pt.z();
-      z[pt2] = zPt;
+      if ( j == 0 || pt != ptPrev )
+      {
+        p2t::Point *pt2 = new p2t::Point( pt.x() - originX, pt.y() - originY );
+        holePolyline.push_back( pt2 );
+        float zPt = qIsNaN( pt.z() ) ? 0 : pt.z();
+        z[pt2] = zPt;
+      }
+      ptPrev = pt;
     }
     cdt->AddHole( holePolyline );
     polylinesToDelete << holePolyline;
   }
 
-  // TODO: robustness (no duplicate / nearly duplicate points, ...)
+  // TODO: robustness (no nearly duplicate points, invalid geometries ...)
 
   cdt->Triangulate();
 

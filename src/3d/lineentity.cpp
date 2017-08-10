@@ -93,7 +93,13 @@ Qt3DRender::QGeometryRenderer *LineEntityNode::renderer( const Map3D &map, const
     if ( f.geometry().isNull() )
       continue;
 
-    QgsAbstractGeometry *g = f.geometry().geometry();
+    QgsGeometry geom = f.geometry();
+
+    // segmentize curved geometries if necessary
+    if ( QgsWkbTypes::isCurvedType( geom.geometry()->wkbType() ) )
+      geom = QgsGeometry( geom.geometry()->segmentize() );
+
+    QgsAbstractGeometry *g = geom.geometry();
 
     QgsGeos engine( g );
     QgsAbstractGeometry *buffered = engine.buffer( symbol.width / 2., nSegments, endCapStyle, joinStyle, mitreLimit ); // factory
