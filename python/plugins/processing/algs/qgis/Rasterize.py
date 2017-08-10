@@ -57,6 +57,7 @@ __revision__ = '$Format:%H$'
 
 
 class RasterizeAlgorithm(QgisAlgorithm):
+
     """Processing algorithm renders map canvas to a raster file.
     It's possible to choose the following parameters:
         - Map theme to render
@@ -195,6 +196,7 @@ class RasterizeAlgorithm(QgisAlgorithm):
 
 
 class TileSet():
+
     """
     A set of tiles
     """
@@ -236,11 +238,11 @@ class TileSet():
         self.dataset.SetGeoTransform(
             [extent.xMinimum(), mupp, 0, extent.yMaximum(), 0, -mupp])
 
-        self.image = QImage(QSize(tile_size, tile_size), QImage.Format_RGB32)
+        self.image = QImage(QSize(tile_size, tile_size), QImage.Format_ARGB32)
 
         self.settings = QgsMapSettings()
         self.settings.setOutputDpi(self.image.logicalDpiX())
-        self.settings.setOutputImageFormat(QImage.Format_RGB32)
+        self.settings.setOutputImageFormat(QImage.Format_ARGB32)
         self.settings.setDestinationCrs(crs)
         self.settings.setOutputSize(self.image.size())
         self.settings.setFlag(QgsMapSettings.Antialiasing, True)
