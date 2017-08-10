@@ -2168,7 +2168,7 @@ void QgsMapCanvas::startPreviewJob( int number )
   if ( number < 8 )
   {
     mPreviewTimer.setSingleShot( true );
-    mPreviewTimer.setInterval( 10 );
+    mPreviewTimer.setInterval( 250 );
     disconnect( mPreviewTimerConnection );
     mPreviewTimerConnection = connect( &mPreviewTimer, &QTimer::timeout, [ = ]()
     {
