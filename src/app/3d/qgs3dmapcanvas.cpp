@@ -55,9 +55,11 @@ void Qgs3DMapCanvas::setMap( Map3D *map )
 
   delete mMap;
   mMap = map;
+
+  resetView();
 }
 
 void Qgs3DMapCanvas::resetView()
 {
-  mScene->cameraController()->resetView();
+  mScene->viewZoomFull();
 }

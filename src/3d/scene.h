@@ -39,6 +39,8 @@ class _3D_EXPORT Scene : public Qt3DCore::QEntity
     CameraController *cameraController() { return mCameraController; }
     Terrain *terrain() { return mTerrain; }
 
+    void viewZoomFull();
+
   private slots:
     void onCameraChanged();
     void onFrameTriggered( float dt );

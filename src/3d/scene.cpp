@@ -58,7 +58,7 @@ Scene::Scene( const Map3D &map, Qt3DExtras::QForwardRenderer *defaultFrameGraph,
   mCameraController = new CameraController( this ); // attaches to the scene
   mCameraController->setViewport( viewportRect );
   mCameraController->setCamera( camera );
-  mCameraController->resetView();
+  mCameraController->resetView( 1000 );
 
   // create terrain entity
 
@@ -147,6 +147,13 @@ Scene::Scene( const Map3D &map, Qt3DExtras::QForwardRenderer *defaultFrameGraph,
   onCameraChanged();
 }
 
+void Scene::viewZoomFull()
+{
+  QgsRectangle extent = mMap.terrainGenerator()->extent();
+  float side = qMax( extent.width(), extent.height() );
+  mCameraController->resetView( side );  // assuming FOV being 45 degrees
+}
+
 SceneState _sceneState( CameraController *cameraController )
 {
   Qt3DRender::QCamera *camera = cameraController->camera();
@@ -187,6 +194,13 @@ void Scene::onCameraChanged()
     float far = 0;
 
     QList<ChunkNode *> activeNodes = mTerrain->getActiveNodes();
+
+    // it could be that there are no active nodes - they could be all culled or because root node
+    // is not yet loaded - we still need at least something to understand bounds of our scene
+    // so lets use the root node
+    if ( activeNodes.isEmpty() )
+      activeNodes << mTerrain->getRootNode();
+
     Q_FOREACH ( ChunkNode *node, activeNodes )
     {
       // project each corner of bbox to camera coordinates
@@ -206,14 +220,26 @@ void Scene::onCameraChanged()
           far = dst;
       }
     }
-    //qDebug() << "near/far" << near << far;
     if ( near < 1 )
       near = 1;  // does not really make sense to use negative far plane (behind camera)
+
+    if ( near == 1e9 && far == 0 )
+    {
+      // the update didn't work out... this should not happen
+      // well at least temprarily use some conservative starting values
+      qDebug() << "oops... this should not happen! couldn't determine near/far plane. defaulting to 1...1e9";
+      near = 1;
+      far = 1e9;
+    }
 
     // set near/far plane - with some tolerance in front/behind expected near/far planes
     camera->setFarPlane( far * 2 );
     camera->setNearPlane( near / 2 );
   }
+  else
+    qDebug() << "no terrain - not setting near/far plane";
+
+  //qDebug() << "camera near/far" << mCameraController->camera()->nearPlane() << mCameraController->camera()->farPlane();
 }
 
 void Scene::onFrameTriggered( float dt )

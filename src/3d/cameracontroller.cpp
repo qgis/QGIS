@@ -240,12 +240,12 @@ void CameraController::frameTriggered( float dt )
   }
 }
 
-void CameraController::resetView()
+void CameraController::resetView( float distance )
 {
-  setCameraData( 0, 0, 1000 );
+  setCameraData( 0, 0, distance );
   // a basic setup to make frustum depth range long enough that it does not cull everything
-  mCamera->setNearPlane( 1 );
-  mCamera->setFarPlane( 10000 );
+  mCamera->setNearPlane( distance / 2 );
+  mCamera->setFarPlane( distance * 2 );
 
   emit cameraChanged();
 }
