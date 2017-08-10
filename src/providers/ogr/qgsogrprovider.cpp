@@ -2928,10 +2928,11 @@ QGISEXTERN bool createEmptyDataSource( const QString &uri,
 }
 
 
-QGISEXTERN QList<QgsDataItemProvider *> dataItemProviders()
+QGISEXTERN QList< QgsDataItemProvider * > *dataItemProviders()
 {
-  return QList<QgsDataItemProvider *>()
-         << new QgsGeoPackageDataItemProvider;
+  QList< QgsDataItemProvider * > *providers = new QList< QgsDataItemProvider * >();
+  *providers << new QgsGeoPackageDataItemProvider;
+  return providers;
 }
 
 QgsCoordinateReferenceSystem QgsOgrProvider::crs() const

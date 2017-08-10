@@ -469,11 +469,15 @@ QgsDataItem *QgsWmsDataItemProvider::createDataItem( const QString &path, QgsDat
   return nullptr;
 }
 
-QGISEXTERN QList<QgsDataItemProvider *> dataItemProviders()
+QGISEXTERN QList<QgsDataItemProvider *> *dataItemProviders()
 {
-  return QList<QgsDataItemProvider *>()
-         << new QgsWmsDataItemProvider
-         << new QgsXyzTileDataItemProvider;
+  QList<QgsDataItemProvider *> *providers = new QList<QgsDataItemProvider *>();
+
+  *providers
+      << new QgsWmsDataItemProvider
+      << new QgsXyzTileDataItemProvider;
+
+  return providers;
 }
 
 // ---------------------------------------------------------------------------
