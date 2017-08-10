@@ -141,7 +141,7 @@ void QgsNewOgrConnection::on_btnConnect_clicked()
 
 void QgsNewOgrConnection::helpRequest()
 {
-  QgsHelp::openHelp( "managing_data_source/opening_data.html#connecting-to-ogr" );
+  QgsHelp::openHelp( "managing_data_source/opening_data.html#creating-a-stored-connection" );
 }
 
 //! End  Autoconnected SLOTS *

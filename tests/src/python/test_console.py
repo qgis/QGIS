@@ -25,12 +25,14 @@ start_app()
 
 class TestConsole(unittest.TestCase):
 
+    def setUp(self):
+        QgsSettings().setValue('pythonConsole/contextHelpOnFirstLaunch', False)
+
     def test_show_console(self):
         if os.name == 'nt':
             QCoreApplication.setOrganizationName("QGIS")
             QCoreApplication.setOrganizationDomain("qgis.org")
             QCoreApplication.setApplicationName("QGIS-TEST")
-            QgsSettings().setValue('pythonConsole/contextHelpOnFirstLaunch', False)
 
         my_console = console.show_console()
         my_console_widget = my_console.console
