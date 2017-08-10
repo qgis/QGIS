@@ -29,5 +29,7 @@ export LD_PRELOAD=/lib/x86_64-linux-gnu/libSegFault.so
 
 export CTEST_BUILD_COMMAND="/usr/bin/make -j3 -i -k"
 
+$CTEST_BUILD_COMMAND
+
 python ${TRAVIS_BUILD_DIR}/.ci/travis/scripts/ctest2travis.py \
   xvfb-run ctest -V -E "$(cat ${DIR}/blacklist.txt | sed -r '/^(#.*?)?$/d' | paste -sd '|' -)" -S ${DIR}/../travis.ctest --output-on-failure
