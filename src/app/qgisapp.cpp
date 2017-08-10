@@ -9907,6 +9907,14 @@ void QgisApp::new3DMapCanvas()
   QgsProject *prj = QgsProject::instance();
   QgsRectangle fullExtent = mMapCanvas->fullExtent();
 
+  // some layers may go crazy and make full extent unusable
+  // we can't go any further - invalid extent would break everything
+  if ( fullExtent.isEmpty() || !fullExtent.isFinite() )
+  {
+    QMessageBox::warning( this, tr( "Error" ), tr( "Project extent is not valid." ) );
+    return;
+  }
+
   Map3D *map = new Map3D;
   map->crs = prj->crs();
   map->originX = fullExtent.center().x();
