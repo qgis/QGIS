@@ -113,7 +113,7 @@ class RasterizeAlgorithm(QgisAlgorithm):
             QgsProcessingParameterNumber(
                 self.TILE_SIZE,
                 self.tr('Tile size'),
-                defaultValue=1024, minValue=0))
+                defaultValue=1024, minValue=64))
 
         self.addParameter(QgsProcessingParameterNumber(
             self.MAP_UNITS_PER_PIXEL,
