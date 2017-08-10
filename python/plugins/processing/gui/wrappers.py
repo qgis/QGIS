@@ -62,6 +62,7 @@ from qgis.core import (
     QgsProcessingParameterVectorLayer,
     QgsProcessingParameterField,
     QgsProcessingParameterFeatureSource,
+    QgsProcessingParameterMapLayer,
     QgsProcessingParameterBand,
     QgsProcessingFeatureSourceDefinition,
     QgsProcessingOutputRasterLayer,
@@ -230,7 +231,7 @@ class ExpressionWidgetWrapperMixin():
     def wrapWithExpressionButton(self, basewidget):
         expr_button = QToolButton()
         expr_button.clicked.connect(self.showExpressionsBuilder)
-        expr_button.setText('...')
+        expr_button.setText('…')
 
         layout = QHBoxLayout()
         layout.setContentsMargins(0, 0, 0, 0)
@@ -626,7 +627,7 @@ class NumberWidgetWrapper(WidgetWrapper):
         return self.widget.getValue()
 
 
-class RasterWidgetWrapper(WidgetWrapper):
+class MapLayerWidgetWrapper(WidgetWrapper):
 
     NOT_SELECTED = '[Not selected]'
 
@@ -640,7 +641,7 @@ class RasterWidgetWrapper(WidgetWrapper):
             self.combo = QgsMapLayerComboBox()
             layout.addWidget(self.combo)
             btn = QToolButton()
-            btn.setText('...')
+            btn.setText('…')
             btn.setToolTip(self.tr("Select file"))
             btn.clicked.connect(self.selectFile)
             layout.addWidget(btn)
@@ -651,11 +652,10 @@ class RasterWidgetWrapper(WidgetWrapper):
             if ProcessingConfig.getSetting(ProcessingConfig.SHOW_CRS_DEF):
                 self.combo.setShowCrs(True)
 
-            self.combo.setFilters(QgsMapLayerProxyModel.RasterLayer)
-            self.combo.setExcludedProviders(['grass'])
+            self.setComboBoxFilters(self.combo)
+
             try:
-                if iface.activeLayer().type() == QgsMapLayer.RasterLayer:
-                    self.combo.setLayer(iface.activeLayer())
+                self.combo.setLayer(iface.activeLayer())
             except:
                 pass
 
@@ -666,7 +666,7 @@ class RasterWidgetWrapper(WidgetWrapper):
             return BatchInputSelectionPanel(self.param, self.row, self.col, self.dialog)
         else:
             self.combo = QComboBox()
-            layers = self.dialog.getAvailableValuesOfType(QgsProcessingParameterRasterLayer, QgsProcessingOutputRasterLayer)
+            layers = self.getAvailableLayers()
             self.combo.setEditable(True)
             for layer in layers:
                 self.combo.addItem(self.dialog.resolveValueDescription(layer), layer)
@@ -680,17 +680,23 @@ class RasterWidgetWrapper(WidgetWrapper):
             layout.setSpacing(2)
             layout.addWidget(self.combo)
             btn = QToolButton()
-            btn.setText('...')
+            btn.setText('…')
             btn.setToolTip(self.tr("Select file"))
             btn.clicked.connect(self.selectFile)
             layout.addWidget(btn)
             widget.setLayout(layout)
             return widget
 
+    def setComboBoxFilters(self, combo):
+        pass
+
+    def getAvailableLayers(self):
+        return self.dialog.getAvailableValuesOfType([QgsProcessingParameterRasterLayer, QgsProcessingParameterVectorLayer, QgsProcessingParameterMapLayer],
+                                                    [QgsProcessingOutputRasterLayer, QgsProcessingOutputVectorLayer])
+
     def selectFile(self):
         filename, selected_filter = self.getFileName(self.combo.currentText())
         if filename:
-            filename = dataobjects.getRasterSublayer(filename, self.param)
             if isinstance(self.combo, QgsMapLayerComboBox):
                 items = self.combo.additionalItems()
                 items.append(filename)
@@ -728,6 +734,28 @@ class RasterWidgetWrapper(WidgetWrapper):
             return self.comboValue(validator, combobox=self.combo)
 
 
+class RasterWidgetWrapper(MapLayerWidgetWrapper):
+
+    def getAvailableLayers(self):
+        return self.dialog.getAvailableValuesOfType(QgsProcessingParameterRasterLayer, QgsProcessingOutputRasterLayer)
+
+    def setComboBoxFilters(self, combo):
+        combo.setFilters(QgsMapLayerProxyModel.RasterLayer)
+        combo.setExcludedProviders(['grass'])
+
+    def selectFile(self):
+        filename, selected_filter = self.getFileName(self.combo.currentText())
+        if filename:
+            filename = dataobjects.getRasterSublayer(filename, self.param)
+            if isinstance(self.combo, QgsMapLayerComboBox):
+                items = self.combo.additionalItems()
+                items.append(filename)
+                self.combo.setAdditionalItems(items)
+                self.combo.setCurrentIndex(self.combo.findText(filename))
+            else:
+                self.combo.setEditText(filename)
+
+
 class SelectionWidgetWrapper(WidgetWrapper):
 
     def createWidget(self):
@@ -754,11 +782,6 @@ class SelectionWidgetWrapper(WidgetWrapper):
             return self.widget.currentData()
 
 
-class LayerWidgetWrapper(WidgetWrapper):
-    def __init__(self):
-        raise NotImplementedError('Layer widget wrapper is not implemented yet')
-
-
 class VectorWidgetWrapper(WidgetWrapper):
 
     NOT_SELECTED = '[Not selected]'
@@ -774,7 +797,7 @@ class VectorWidgetWrapper(WidgetWrapper):
             layout.addWidget(self.combo)
             layout.setAlignment(self.combo, Qt.AlignTop)
             btn = QToolButton()
-            btn.setText('...')
+            btn.setText('…')
             btn.setToolTip(self.tr("Select file"))
             btn.clicked.connect(self.selectFile)
             layout.addWidget(btn)
@@ -843,7 +866,7 @@ class VectorWidgetWrapper(WidgetWrapper):
             layout.setSpacing(2)
             layout.addWidget(self.combo)
             btn = QToolButton()
-            btn.setText('...')
+            btn.setText('…')
             btn.setToolTip(self.tr("Select file"))
             btn.clicked.connect(self.selectFile)
             layout.addWidget(btn)
@@ -1063,7 +1086,7 @@ class TableWidgetWrapper(WidgetWrapper):
             self.combo = QgsMapLayerComboBox()
             layout.addWidget(self.combo)
             btn = QToolButton()
-            btn.setText('...')
+            btn.setText('…')
             btn.setToolTip(self.tr("Select file"))
             btn.clicked.connect(self.selectFile)
             layout.addWidget(btn)
@@ -1113,7 +1136,7 @@ class TableWidgetWrapper(WidgetWrapper):
             layout.setSpacing(2)
             layout.addWidget(self.combo)
             btn = QToolButton()
-            btn.setText('...')
+            btn.setText('…')
             btn.setToolTip(self.tr("Select file"))
             btn.clicked.connect(self.selectFile)
             layout.addWidget(btn)
@@ -1394,7 +1417,7 @@ class WidgetWrapperFactory:
         elif param.type() == 'band':
             wrapper = BandWidgetWrapper
         elif param.type() == 'layer':
-            wrapper = LayerWidgetWrapper
+            wrapper = MapLayerWidgetWrapper
         else:
             assert False, param.type()
         return wrapper(param, dialog, row, col)

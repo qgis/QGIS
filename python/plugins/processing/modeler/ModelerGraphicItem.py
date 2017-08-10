@@ -260,10 +260,10 @@ class ModelerGraphicItem(QGraphicsItem):
         if w < self.BOX_WIDTH - 25 - FlatButtonGraphicItem.WIDTH:
             return text
 
-        text = text[0:-3] + '...'
+        text = text[0:-3] + '…'
         w = fm.width(text)
         while w > self.BOX_WIDTH - 25 - FlatButtonGraphicItem.WIDTH:
-            text = text[0:-4] + '...'
+            text = text[0:-4] + '…'
             w = fm.width(text)
         return text
 

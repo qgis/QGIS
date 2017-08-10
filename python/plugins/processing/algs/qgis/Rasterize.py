@@ -19,8 +19,6 @@
  ***************************************************************************/
 """
 
-from processing.core.outputs import OutputRaster
-
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 
 from qgis.PyQt.QtGui import QImage, QPainter
@@ -34,10 +32,8 @@ from qgis.core import (
     QgsProcessingParameterExtent,
     QgsProcessingParameterString,
     QgsProcessingParameterNumber,
-    QgsProcessingParameterRasterLayer,
     QgsProcessingParameterMapLayer,
     QgsProcessingParameterRasterDestination,
-    QgsMessageLog,
     QgsRasterFileWriter
 )
 
@@ -101,9 +97,7 @@ class RasterizeAlgorithm(QgisAlgorithm):
         self.addParameter(map_theme_param)
 
         self.addParameter(
-            # TODO use QgsProcessingParameterMapLayer when
-            # the LayerWidgetWrapper class will be implemented
-            QgsProcessingParameterRasterLayer(
+            QgsProcessingParameterMapLayer(
                 self.LAYER,
                 description=self.tr(
                     'Layer to render. Will only be used if the map theme '
@@ -119,7 +113,7 @@ class RasterizeAlgorithm(QgisAlgorithm):
             QgsProcessingParameterNumber(
                 self.TILE_SIZE,
                 self.tr('Tile size'),
-                defaultValue=1024))
+                defaultValue=1024, minValue=64))
 
         self.addParameter(QgsProcessingParameterNumber(
             self.MAP_UNITS_PER_PIXEL,
@@ -149,7 +143,7 @@ class RasterizeAlgorithm(QgisAlgorithm):
         return self.tr('Raster tools')
 
     def tags(self):
-        return self.tr('layer,raster,convert,file,map themes,tiles').split(',')
+        return self.tr('layer,raster,convert,file,map themes,tiles,render').split(',')
 
     # def processAlgorithm(self, progress):
     def processAlgorithm(self, parameters, context, feedback):
