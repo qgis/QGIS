@@ -287,7 +287,8 @@ namespace QgsWms
   QByteArray QgsRenderer::getPrint( const QString &formatString )
   {
     //GetPrint request needs a template parameter
-    if ( !mParameters.contains( QStringLiteral( "TEMPLATE" ) ) )
+    QString templateName = mWmsParameters.composerTemplate();
+    if ( templateName.isEmpty() )
     {
       throw QgsBadRequestException( QStringLiteral( "ParameterMissing" ),
                                     QStringLiteral( "The TEMPLATE parameter is required for the GetPrint request" ) );
@@ -356,7 +357,6 @@ namespace QgsWms
     mapSettings.setLayers( layers );
 
     //QgsComposition *c = mConfigParser->createPrintComposition( mParameters[ QStringLiteral( "TEMPLATE" )], mapSettings, QMap<QString, QString>( mParameters ), highlightLayers );
-    QString templateName = mParameters[ QStringLiteral( "TEMPLATE" ) ];
     const QgsLayoutManager *lManager = mProject->layoutManager();
     QDomDocument cDocument;
     if ( !lManager->saveAsTemplate( templateName, cDocument ) )
@@ -456,7 +456,6 @@ namespace QgsWms
 
         QgsWmsParametersComposerMap cMapParams = mWmsParameters.composerMapParameters( map->id() );
 
-        QString mapId = "MAP" + QString::number( map->id() );
         //map extent is mandatory
         if ( !cMapParams.mHasExtent )
         {
@@ -493,7 +492,7 @@ namespace QgsWms
 
         if ( !map->keepLayerSet() )
         {
-          if ( !mParameters.contains( mapId + ":LAYERS" ) )
+          if ( cMapParams.mLayers.isEmpty() )
           {
             map->setLayers( mapSettings.layers() );
           }
