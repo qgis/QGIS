@@ -1,3 +1,6 @@
+# append :* to avoid in word check_spelling
+# append :% to exclude script files
+#...:…:%
 abailable:available
 abandonded:abandoned
 abandonned:abandoned
