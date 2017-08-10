@@ -2067,7 +2067,7 @@ void QgsDwgImporter::addSpline( const DRW_Spline *data )
 
   size_t npts = cps.size();
   size_t k = data->degree + 1;
-  size_t p1 = mSplineSegs * npts;
+  int p1 = mSplineSegs * ( int ) npts;
 
   std::vector<double> h( npts + 1, 1. );
   std::vector<QgsPointXY> p( p1, QgsPointXY( 0., 0. ) );
