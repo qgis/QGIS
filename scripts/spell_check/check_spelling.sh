@@ -82,7 +82,7 @@ declare -A GLOBREP_IGNORE=()
 ERRORFOUND=NO
 
 for I in $(seq -f '%02g' 0  $(($SPLIT-1)) ) ; do
-  ( [[ "$INTERACTIVE" =~ YES ]] || [[ "$TRAVIS" =~ true ]] ) && printf "Progress: %d/%d\n" $(( I + 1 )) $SPLIT
+  ( [[ "$INTERACTIVE" =~ YES ]] || [[ "$TRAVIS" =~ true ]] ) && printf "Progress: %d/%d\r" $(( I + 1 )) $SPLIT
   SPELLFILE=spelling$I~
 
   # if correction contains an uppercase letter and is the same as the error character wise, this means that the error is searched as a full word and case sensitive (not incorporated in a bigger one)
@@ -174,7 +174,7 @@ for I in $(seq -f '%02g' 0  $(($SPLIT-1)) ) ; do
         # get correction from spelling.dat
         CORRECTION=$(ag --nonumbers --case-sensitive "^${ERRORSMALLCASE}:" ${DIR}/spelling.dat | cut -d: -f2)
 
-        if [[ -z $CORRECTION ]]; then
+        if [[ -z "$CORRECTION" ]]; then
           CORRECTION=$(perl -e "use strict; use warnings; while(<>) { chop; my(\$a,\$b) = split /:/; \$a = qr(\$a); if( my @matches = '${ERRORSMALLCASE}' =~ /^\$a\$/i ) { print sprintf(\$b, @matches); last; }}" ${DIR}/spelling.dat)
         fi
 
@@ -289,6 +289,8 @@ for I in $(seq -f '%02g' 0  $(($SPLIT-1)) ) ; do
 
   rm -f $SPELLFILE
 done
+
+( [[ "$INTERACTIVE" =~ YES ]] || [[ "$TRAVIS" =~ true ]] ) && echo
 
 if [[ "$ERRORFOUND" =~ YES ]]; then
   echo -e "\x1B[1msome errors have been found.\x1B[0m" >&2
