@@ -382,12 +382,12 @@ corresponding counterparts in QgsUnitTypes should be used instead.
 - singleType() has been removed. Use the equivalent QgsWkbTypes::singleType() instead
 - multiType() has been removed. Use the equivalent QgsWkbTypes::multiType() instead
 - flatType() has been removed. Use the equivalent QgsWkbTypes::flatType() instead
-- isSingleType() has been removed. Use the equivalent QgsWkbTypes::issingleType() instead
+- isSingleType() has been removed. Use the equivalent QgsWkbTypes::isSingleType() instead
 - isMultiType() has been removed. Use the equivalent QgsWkbTypes::isMultiType() instead
 - wkbDimensions() has been removed. Use the equivalent QgsWkbTypes::coordDimensions() instead
 - fromOldWkbType() has been removed. This is no longer required.
 - fromNewWkbType() has been removed. This is no longer required.
-- vectorGeometryType() has been removed. Use the equivalent QgsWkbTypes::geometrydisplayString() instead.
+- vectorGeometryType() has been removed. Use the equivalent QgsWkbTypes::geometryDisplayString() instead.
 - featureType() has been removed. Use the equivalent QgsWkbTypes::displayString() instead.
 
 
@@ -401,7 +401,7 @@ QgisInterface        {#qgis_api_break_3_0_QgisInterface}
 composerWillBeRemoved(), composerRemoved() were all removed. Composer windows are now only created
 on demand, and destroyed when the window is closed. The new interface methods openComposers(),
 openComposer(), closeComposer(), composerOpened(), composerWillBeClosed() and composerClosed()
-are similar, but only apply to composer windows when they are exist. To access all compositions
+are similar, but only apply to composer windows when they exist. To access all compositions
 from a project, the new QgsProject.instance().layoutManager() class should be used instead.
 Additionally, the new interface methods work with QgsComposerInterface objects instead
 of QgsComposerView objects.
