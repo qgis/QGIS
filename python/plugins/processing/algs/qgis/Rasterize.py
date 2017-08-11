@@ -84,31 +84,10 @@ class RasterizeAlgorithm(QgisAlgorithm):
         with some other properties.
         """
         # The parameters
-        map_theme_param = QgsProcessingParameterString(
-            self.MAP_THEME,
-            description=self.tr(
-                'Map theme to render.'),
-            defaultValue=None, optional=True)
-
-        map_theme_param.setMetadata(
-            {'widget_wrapper': {
-                'class':
-                    'processing.gui.wrappers_map_theme.MapThemeWrapper'}})
-        self.addParameter(map_theme_param)
-
-        self.addParameter(
-            QgsProcessingParameterMapLayer(
-                self.LAYER,
-                description=self.tr(
-                    'Layer to render. Will only be used if the map theme '
-                    'is not set. '
-                    'If both, map theme and layer are not '
-                    'set, the current map content will be rendered.'),
-                optional=True))
         self.addParameter(
             QgsProcessingParameterExtent(self.EXTENT, description=self.tr(
-                'The minimum extent to render. Will internally be extended to '
-                'be a multiple of the tile sizes.')))
+                'Minimum extent to render')))
+
         self.addParameter(
             QgsProcessingParameterNumber(
                 self.TILE_SIZE,
@@ -125,6 +104,25 @@ class RasterizeAlgorithm(QgisAlgorithm):
             type=QgsProcessingParameterNumber.Double
         ))
 
+        map_theme_param = QgsProcessingParameterString(
+            self.MAP_THEME,
+            description=self.tr(
+                'Map theme to render'),
+            defaultValue=None, optional=True)
+
+        map_theme_param.setMetadata(
+            {'widget_wrapper': {
+                'class':
+                    'processing.gui.wrappers_map_theme.MapThemeWrapper'}})
+        self.addParameter(map_theme_param)
+
+        self.addParameter(
+            QgsProcessingParameterMapLayer(
+                self.LAYER,
+                description=self.tr(
+                    'Single layer to render'),
+                optional=True))
+
         # We add a raster layer as output
         self.addParameter(QgsProcessingParameterRasterDestination(
             self.OUTPUT,
@@ -133,7 +131,7 @@ class RasterizeAlgorithm(QgisAlgorithm):
 
     def name(self):
         # Unique (non-user visible) name of algorithm
-        return 'Rasterize'
+        return 'rasterize'
 
     def displayName(self):
         # The name that the user will see in the toolbox
