@@ -84,8 +84,11 @@ class ParametersPanel(BASE, WIDGET):
             wrapper.refresh()
 
     def formatParameterTooltip(self, parameter):
-        return '<p><b>{}</b></p><p>{}</p>'.format(parameter.description(),
-                                                  self.tr('Python identifier: ‘{}’').format('<i>{}</i>'.format(parameter.name())))
+        return '<p><b>{}</b></p><p>{}</p>'.format(
+            parameter.description(),
+            QCoreApplication.translate('ParametersPanel', 'Python identifier: ‘{}’')
+            k.format('<i>{}</i>'.format(parameter.name()))
+        )
 
     def initWidgets(self):
         # If there are advanced parameters — show corresponding groupbox
