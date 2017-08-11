@@ -15,6 +15,8 @@ Qgs3DMapCanvasDockWidget::Qgs3DMapCanvasDockWidget( QWidget *parent )
   : QgsDockWidget( parent )
   , mMainCanvas( nullptr )
 {
+  setAttribute( Qt::WA_DeleteOnClose );  // removes the dock widget from main window when
+
   QWidget *contentsWidget = new QWidget( this );
 
   QToolBar *toolBar = new QToolBar( contentsWidget );
