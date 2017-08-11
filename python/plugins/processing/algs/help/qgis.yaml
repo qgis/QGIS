@@ -323,7 +323,7 @@ qgis:nearestneighbouranalysis: >
 
 
 qgis:numberofuniquevaluesinclasses: >
-  This algorithm  counts the different values that appear in a specified attributes for features of the same class.
+  This algorithm counts the different values that appear in a specified attributes for features of the same class.
 
   Classes are defined according to a given attribute. For all layers that share the same value of this attribute, the values of a second attribute are analyzed.
 
@@ -478,9 +478,9 @@ qgis:rasterize: >
 
   A map theme can be selected to render a predetermined set of layers with a defined style for each layer.
 
-  Alternatively, a single layer can be selected if not map theme is set.
+  Alternatively, a single layer can be selected if no map theme is set.
 
-  If neither map theme nor the layer is set, the current map content will be rendered.
+  If neither map theme nor layer is set, the current map content will be rendered.
 
   The minimum extent entered will internally be extended to be a multiple of the tile size.
 
