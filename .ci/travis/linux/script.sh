@@ -33,7 +33,7 @@ export CTEST_BUILD_COMMAND="/usr/bin/make -j3 -i -k"
 # when make is run inside ctest no output is generated. At the current time
 # nobody know why, but at least this workaround gets travis results for master
 # back. Better approaches VERY welcome.
-if [[ ${TRAVIS_BRANCH} == "master" ]];
+if [[ ${TRAVIS_PULL_REQUEST} == "false" ]];
 then
     pushd build
     $CTEST_BUILD_COMMAND
