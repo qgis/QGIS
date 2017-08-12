@@ -146,7 +146,7 @@ class CORE_EXPORT QgsGeometryCollection: public QgsAbstractGeometry
      */
     inline const QgsGeometryCollection *cast( const QgsAbstractGeometry *geom ) const
     {
-      if ( geom && QgsWkbTypes::flatType( geom->wkbType() ) == QgsWkbTypes::GeometryCollection )
+      if ( geom && QgsWkbTypes::isMultiType( geom->wkbType() ) )
         return static_cast<const QgsGeometryCollection *>( geom );
       return nullptr;
     }

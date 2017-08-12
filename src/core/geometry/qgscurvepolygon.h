@@ -151,7 +151,13 @@ class CORE_EXPORT QgsCurvePolygon: public QgsSurface
      */
     inline const QgsCurvePolygon *cast( const QgsAbstractGeometry *geom ) const
     {
-      if ( geom && QgsWkbTypes::flatType( geom->wkbType() ) == QgsWkbTypes::CurvePolygon )
+      if ( !geom )
+        return nullptr;
+
+      QgsWkbTypes::Type flatType = geom->wkbType();
+      if ( flatType == QgsWkbTypes::CurvePolygon
+           || flatType == QgsWkbTypes::Polygon
+           || flatType == QgsWkbTypes::Triangle )
         return static_cast<const QgsCurvePolygon *>( geom );
       return nullptr;
     }
