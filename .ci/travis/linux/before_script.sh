@@ -18,11 +18,11 @@ set -e
 pushd .docker
 
 docker --version
-docker-compose --version
-docker-compose -f $DOCKER_COMPOSE config
 #docker pull ubuntu:16.04
 docker pull "qgis/qgis3-build-deps:${DOCKER_TAG}" || true
-docker build --cache-from "qgis/qgis3-build-deps:${DOCKER_TAG}" -t "qgis/qgis3-build-deps:${DOCKER_TAG}" .
+docker build --file deps-Dockerfile \
+             --cache-from "qgis/qgis3-build-deps:${DOCKER_TAG}"\
+             --tag "qgis/qgis3-build-deps:${DOCKER_TAG}" .
 # image should be pushed even if QGIS build fails
 # but push is achieved only on branches (not for PRs)
 if [[ $DOCKER_PUSH =~ true ]]; then

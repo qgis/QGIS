@@ -5,15 +5,19 @@ services:
     environment:
       - ALLOW_IP_RANGE="172.18.0.0/16"
 
-  qgis-deps:
+  qgis-build-and-test:
+    build:
+      context: .
+      dockerfile: build-Dockerfile
     tty: true
-    image: qgis/qgis3-build-deps:${DOCKER_TAG}
+    image: qgis/qgis3-run:${DOCKER_TAG}
     volumes:
       - ${TRAVIS_BUILD_DIR}:/root/QGIS
       - $HOME/.ccache:/root/.ccache  # if changed, also change env var
     links:
       - postgres
     environment:
+      - DOCKER_TAG=${DOCKER_TAG}
       - CCACHE_DIR=/root/.ccache
       - CTEST_BUILD_DIR=/root/QGIS
       - TRAVIS_BRANCH=${TRAVIS_BRANCH}

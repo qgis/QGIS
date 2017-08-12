@@ -21,6 +21,8 @@ docker-compose -f $DOCKER_COMPOSE run --rm qgis-deps
 
 mkdir -p $CCACHE_DIR
 
-docker-compose -f $DOCKER_COMPOSE run --rm qgis-deps
+docker-compose --version
+docker-compose -f $DOCKER_COMPOSE config
+docker-compose -f $DOCKER_COMPOSE run --rm qgis-build-and-test
 
 popd
