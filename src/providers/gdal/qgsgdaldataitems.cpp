@@ -51,6 +51,7 @@ QgsGdalLayerItem::QgsGdalLayerItem( QgsDataItem *parent,
   }
 }
 
+
 bool QgsGdalLayerItem::setCrs( const QgsCoordinateReferenceSystem &crs )
 {
   GDALDatasetH hDS = GDALOpen( mPath.toUtf8().constData(), GA_Update );
@@ -71,14 +72,14 @@ bool QgsGdalLayerItem::setCrs( const QgsCoordinateReferenceSystem &crs )
 
 QVector<QgsDataItem *> QgsGdalLayerItem::createChildren()
 {
-  QgsDebugMsg( "Entered, path=" + path() );
+  QgsDebugMsgLevel( "Entered, path=" + path(), 3 );
   QVector<QgsDataItem *> children;
 
   // get children from sublayers
   if ( !mSublayers.isEmpty() )
   {
     QgsDataItem *childItem = nullptr;
-    QgsDebugMsg( QString( "got %1 sublayers" ).arg( mSublayers.count() ) );
+    QgsDebugMsgLevel( QString( "got %1 sublayers" ).arg( mSublayers.count() ), 3 );
     for ( int i = 0; i < mSublayers.count(); i++ )
     {
       QString name = mSublayers[i];
@@ -172,7 +173,7 @@ QGISEXTERN QgsDataItem *dataItem( QString path, QgsDataItem *parentItem )
   info.setFile( path );
   QString name = info.fileName();
 
-  QgsDebugMsgLevel( "thePath= " + path + " tmpPath= " + tmpPath + " name= " + name
+  QgsDebugMsgLevel( "path= " + path + " tmpPath= " + tmpPath + " name= " + name
                     + " suffix= " + suffix + " vsiPrefix= " + vsiPrefix, 3 );
 
   // allow only normal files or VSIFILE items to continue
