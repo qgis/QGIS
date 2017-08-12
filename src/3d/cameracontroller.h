@@ -102,6 +102,9 @@ class _3D_EXPORT CameraController : public Qt3DCore::QEntity
     Qt3DInput::QAction *mMiddleMouseButtonAction;
     Qt3DInput::QActionInput *mMiddleMouseButtonInput;
 
+    Qt3DInput::QAction *mRightMouseButtonAction;
+    Qt3DInput::QActionInput *mRightMouseButtonInput;
+
     Qt3DInput::QAction *mShiftAction;
     Qt3DInput::QActionInput *mShiftInput;
 

@@ -15,6 +15,8 @@ CameraController::CameraController( Qt3DCore::QNode *parent )
   , mLeftMouseButtonInput( new Qt3DInput::QActionInput() )
   , mMiddleMouseButtonAction( new Qt3DInput::QAction() )
   , mMiddleMouseButtonInput( new Qt3DInput::QActionInput() )
+  , mRightMouseButtonAction( new Qt3DInput::QAction() )
+  , mRightMouseButtonInput( new Qt3DInput::QActionInput() )
   , mShiftAction( new Qt3DInput::QAction() )
   , mShiftInput( new Qt3DInput::QActionInput() )
   , mWheelAxis( new Qt3DInput::QAxis() )
@@ -46,6 +48,11 @@ CameraController::CameraController( Qt3DCore::QNode *parent )
   mMiddleMouseButtonInput->setButtons( QVector<int>() << Qt::MiddleButton );
   mMiddleMouseButtonInput->setSourceDevice( mMouseDevice );
   mMiddleMouseButtonAction->addInput( mMiddleMouseButtonInput );
+
+  // right mouse button
+  mRightMouseButtonInput->setButtons( QVector<int>() << Qt::RightButton );
+  mRightMouseButtonInput->setSourceDevice( mMouseDevice );
+  mRightMouseButtonAction->addInput( mRightMouseButtonInput );
 
   // Mouse Wheel (Y)
   // TODO: zoom with mouse wheel in Qt < 5.8
@@ -86,6 +93,7 @@ CameraController::CameraController( Qt3DCore::QNode *parent )
 
   mLogicalDevice->addAction( mLeftMouseButtonAction );
   mLogicalDevice->addAction( mMiddleMouseButtonAction );
+  mLogicalDevice->addAction( mRightMouseButtonAction );
   mLogicalDevice->addAction( mShiftAction );
   mLogicalDevice->addAxis( mWheelAxis );
   mLogicalDevice->addAxis( mTxAxis );
@@ -178,7 +186,7 @@ void CameraController::frameTriggered( float dt )
 
   cd.dist -= cd.dist * mWheelAxis->value() * 10 * dt;
 
-  if ( mMiddleMouseButtonAction->isActive() )
+  if ( mRightMouseButtonAction->isActive() )
   {
     cd.dist -= cd.dist * dy * 0.01;
   }
@@ -197,26 +205,23 @@ void CameraController::frameTriggered( float dt )
     cd.y += dy;
   }
 
-  if ( mLeftMouseButtonAction->isActive() )
+  if ( ( mLeftMouseButtonAction->isActive() && mShiftAction->isActive() ) || mMiddleMouseButtonAction->isActive() )
   {
-    if ( mShiftAction->isActive() )
-    {
-      cd.pitch += dy;
-      cd.yaw -= dx / 2;
-    }
-    else
-    {
-      // translation works as if one grabbed a point on the plane and dragged it
-      // i.e. find out x,z of the previous mouse point, find out x,z of the current mouse point
-      // and use the difference
+    cd.pitch += dy;
+    cd.yaw -= dx / 2;
+  }
+  else if ( mLeftMouseButtonAction->isActive() && !mShiftAction->isActive() )
+  {
+    // translation works as if one grabbed a point on the plane and dragged it
+    // i.e. find out x,z of the previous mouse point, find out x,z of the current mouse point
+    // and use the difference
 
-      float z = mLastPressedHeight;
-      QPointF p1 = screen_point_to_point_on_plane( QPointF( mMousePos - QPoint( dx, dy ) ), mViewport, mCamera, z );
-      QPointF p2 = screen_point_to_point_on_plane( QPointF( mMousePos ), mViewport, mCamera, z );
+    float z = mLastPressedHeight;
+    QPointF p1 = screen_point_to_point_on_plane( QPointF( mMousePos - QPoint( dx, dy ) ), mViewport, mCamera, z );
+    QPointF p2 = screen_point_to_point_on_plane( QPointF( mMousePos ), mViewport, mCamera, z );
 
-      cd.x -= p2.x() - p1.x();
-      cd.y -= p2.y() - p1.y();
-    }
+    cd.x -= p2.x() - p1.x();
+    cd.y -= p2.y() - p1.y();
   }
 
   if ( qIsNaN( cd.x ) || qIsNaN( cd.y ) )
