@@ -43,7 +43,7 @@ class CORE_EXPORT QgsMultiSurface: public QgsGeometryCollection
 
 
     //! Adds a geometry and takes ownership. Returns true in case of success
-    virtual bool addGeometry( QgsAbstractGeometry *g ) override  SIP_TRANSFER;
+    virtual bool addGeometry( QgsAbstractGeometry *g SIP_TRANSFER ) override;
 
     virtual QgsAbstractGeometry *boundary() const override SIP_FACTORY;
 
