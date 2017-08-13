@@ -103,7 +103,7 @@ class GdalAlgorithm(QgsProcessingAlgorithm):
             if o.name() in parameters:
                 results[o.name()] = parameters[o.name()]
         for k, v in self.output_values.items():
-            results[k]=v
+            results[k] = v
 
         return results
 

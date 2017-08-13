@@ -65,7 +65,8 @@ class GdalAlgorithmDialog(AlgorithmDialog):
 
         self.runAsBatchButton = QPushButton(QCoreApplication.translate("AlgorithmDialog", "Run as Batch Process…"))
         self.runAsBatchButton.clicked.connect(self.runAsBatch)
-        self.buttonBox.addButton(self.runAsBatchButton, QDialogButtonBox.ResetRole) # reset role to ensure left alignment
+        self.buttonBox.addButton(self.runAsBatchButton,
+                                 QDialogButtonBox.ResetRole)  # reset role to ensure left alignment
 
         self.mainWidget.parametersHaveChanged()
 
@@ -99,18 +100,18 @@ class GdalParametersPanel(ParametersPanel):
                 self.connectWidgetChangedSignals(c)
 
     def connectWidgetChangedSignals(self, w):
-            if isinstance(w, QLineEdit):
-                w.textChanged.connect(self.parametersHaveChanged)
-            elif isinstance(w, QComboBox):
-                w.currentIndexChanged.connect(self.parametersHaveChanged)
-            elif isinstance(w, QgsProjectionSelectionWidget):
-                w.crsChanged.connect(self.parametersHaveChanged)
-            elif isinstance(w, QCheckBox):
-                w.stateChanged.connect(self.parametersHaveChanged)
-            elif isinstance(w, MultipleInputPanel):
-                w.selectionChanged.connect(self.parametersHaveChanged)
-            elif isinstance(w, NumberInputPanel):
-                w.hasChanged.connect(self.parametersHaveChanged)
+        if isinstance(w, QLineEdit):
+            w.textChanged.connect(self.parametersHaveChanged)
+        elif isinstance(w, QComboBox):
+            w.currentIndexChanged.connect(self.parametersHaveChanged)
+        elif isinstance(w, QgsProjectionSelectionWidget):
+            w.crsChanged.connect(self.parametersHaveChanged)
+        elif isinstance(w, QCheckBox):
+            w.stateChanged.connect(self.parametersHaveChanged)
+        elif isinstance(w, MultipleInputPanel):
+            w.selectionChanged.connect(self.parametersHaveChanged)
+        elif isinstance(w, NumberInputPanel):
+            w.hasChanged.connect(self.parametersHaveChanged)
 
     def parametersHaveChanged(self):
         context = createContext()
@@ -121,7 +122,7 @@ class GdalParametersPanel(ParametersPanel):
                 if not output.name() in parameters or parameters[output.name()] is None:
                     parameters[output.name()] = self.tr("[temporary file]")
             for p in self.alg.parameterDefinitions():
-                if ( not p.name() in parameters and not p.flags() & QgsProcessingParameterDefinition.FlagOptional) \
+                if (not p.name() in parameters and not p.flags() & QgsProcessingParameterDefinition.FlagOptional) \
                         or (not p.checkValueIsAcceptable(parameters[p.name()], context)):
                     # not ready yet
                     self.text.setPlainText('')

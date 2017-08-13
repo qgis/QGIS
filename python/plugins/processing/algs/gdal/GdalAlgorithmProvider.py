@@ -35,6 +35,7 @@ from .GdalUtils import GdalUtils
 
 from .AssignProjection import AssignProjection
 from .aspect import aspect
+from .ColorRelief import ColorRelief
 from .tri import tri
 from .warp import warp
 # from .nearblack import nearblack
@@ -59,7 +60,6 @@ from .warp import warp
 # from .slope import slope
 # from .tpi import tpi
 # from .roughness import roughness
-# from .ColorRelief import ColorRelief
 # from .GridInvDist import GridInvDist
 # from .GridAverage import GridAverage
 # from .GridNearest import GridNearest
@@ -144,6 +144,7 @@ class GdalAlgorithmProvider(QgsProcessingProvider):
             # information(),
             AssignProjection(),
             aspect(),
+            ColorRelief(),
             tri(),
             warp(),
             # translate(),
@@ -164,10 +165,8 @@ class GdalAlgorithmProvider(QgsProcessingProvider):
             # gdal2xyz(),
             # hillshade(),
             # slope(),
-            #
             # tpi(),
             # roughness(),
-            # ColorRelief(),
             # GridInvDist(),
             # GridAverage(),
             # GridNearest(),

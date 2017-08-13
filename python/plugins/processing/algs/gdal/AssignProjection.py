@@ -41,7 +41,6 @@ pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
 
 class AssignProjection(GdalAlgorithm):
-
     INPUT = 'INPUT'
     CRS = 'CRS'
     OUTPUT = 'OUTPUT'
@@ -52,7 +51,7 @@ class AssignProjection(GdalAlgorithm):
     def initAlgorithm(self, config=None):
         self.addParameter(QgsProcessingParameterRasterLayer(self.INPUT, self.tr('Input layer'), optional=False))
         self.addParameter(QgsProcessingParameterCrs(self.CRS,
-                                       self.tr('Desired CRS')))
+                                                    self.tr('Desired CRS')))
 
         self.addOutput(QgsProcessingOutputRasterLayer(self.OUTPUT, self.tr('Layer with projection')))
 
