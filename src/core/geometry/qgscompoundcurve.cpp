@@ -222,7 +222,7 @@ QString QgsCompoundCurve::asWkt( int precision ) const
   Q_FOREACH ( const QgsCurve *curve, mCurves )
   {
     QString childWkt = curve->asWkt( precision );
-    if ( dynamic_cast<const QgsLineString *>( curve ) )
+    if ( qgsgeometry_cast<const QgsLineString *>( curve ) )
     {
       // Type names of linear geometries are omitted
       childWkt = childWkt.mid( childWkt.indexOf( '(' ) );

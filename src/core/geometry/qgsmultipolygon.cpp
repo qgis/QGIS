@@ -115,7 +115,7 @@ QString QgsMultiPolygonV2::asJSON( int precision ) const
 
 bool QgsMultiPolygonV2::addGeometry( QgsAbstractGeometry *g )
 {
-  if ( !dynamic_cast<QgsPolygonV2 *>( g ) )
+  if ( !qgsgeometry_cast<QgsPolygonV2 *>( g ) )
   {
     delete g;
     return false;
@@ -144,11 +144,11 @@ QgsAbstractGeometry *QgsMultiPolygonV2::boundary() const
     {
       QgsAbstractGeometry *polygonBoundary = polygon->boundary();
 
-      if ( QgsLineString *lineStringBoundary = dynamic_cast< QgsLineString * >( polygonBoundary ) )
+      if ( QgsLineString *lineStringBoundary = qgsgeometry_cast< QgsLineString * >( polygonBoundary ) )
       {
         multiLine->addGeometry( lineStringBoundary );
       }
-      else if ( QgsMultiLineString *multiLineStringBoundary = dynamic_cast< QgsMultiLineString * >( polygonBoundary ) )
+      else if ( QgsMultiLineString *multiLineStringBoundary = qgsgeometry_cast< QgsMultiLineString * >( polygonBoundary ) )
       {
         for ( int j = 0; j < multiLineStringBoundary->numGeometries(); ++j )
         {

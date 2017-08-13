@@ -185,7 +185,7 @@ void QgsPolygonV2::addInteriorRing( QgsCurve *ring )
     ring = segmented;
   }
 
-  QgsLineString *lineString = dynamic_cast< QgsLineString *>( ring );
+  QgsLineString *lineString = qgsgeometry_cast< QgsLineString *>( ring );
   if ( lineString && !lineString->isClosed() )
   {
     lineString->close();
@@ -219,7 +219,7 @@ void QgsPolygonV2::setExteriorRing( QgsCurve *ring )
     ring = line;
   }
 
-  QgsLineString *lineString = dynamic_cast< QgsLineString *>( ring );
+  QgsLineString *lineString = qgsgeometry_cast< QgsLineString *>( ring );
   if ( lineString && !lineString->isClosed() )
   {
     lineString->close();

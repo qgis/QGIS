@@ -104,7 +104,7 @@ QString QgsMultiCurve::asJSON( int precision ) const
 
 bool QgsMultiCurve::addGeometry( QgsAbstractGeometry *g )
 {
-  if ( !dynamic_cast<QgsCurve *>( g ) )
+  if ( !qgsgeometry_cast<QgsCurve *>( g ) )
   {
     delete g;
     return false;

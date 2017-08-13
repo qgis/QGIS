@@ -1656,7 +1656,7 @@ bool QgsGeos::isSimple( QString *errorMsg ) const
 GEOSCoordSequence *QgsGeos::createCoordinateSequence( const QgsCurve *curve, double precision, bool forceClose )
 {
   bool segmentize = false;
-  const QgsLineString *line = dynamic_cast<const QgsLineString *>( curve );
+  const QgsLineString *line = qgsgeometry_cast<const QgsLineString *>( curve );
 
   if ( !line )
   {
@@ -1742,7 +1742,7 @@ GEOSCoordSequence *QgsGeos::createCoordinateSequence( const QgsCurve *curve, dou
 
 GEOSGeometry *QgsGeos::createGeosPoint( const QgsAbstractGeometry *point, int coordDims, double precision )
 {
-  const QgsPoint *pt = dynamic_cast<const QgsPoint *>( point );
+  const QgsPoint *pt = qgsgeometry_cast<const QgsPoint *>( point );
   if ( !pt )
     return nullptr;
 
@@ -1796,7 +1796,7 @@ GEOSGeometry *QgsGeos::createGeosPointXY( double x, double y, bool hasZ, double 
 
 GEOSGeometry *QgsGeos::createGeosLinestring( const QgsAbstractGeometry *curve, double precision )
 {
-  const QgsCurve *c = dynamic_cast<const QgsCurve *>( curve );
+  const QgsCurve *c = qgsgeometry_cast<const QgsCurve *>( curve );
   if ( !c )
     return nullptr;
 
@@ -1815,7 +1815,7 @@ GEOSGeometry *QgsGeos::createGeosLinestring( const QgsAbstractGeometry *curve, d
 
 GEOSGeometry *QgsGeos::createGeosPolygon( const QgsAbstractGeometry *poly, double precision )
 {
-  const QgsCurvePolygon *polygon = dynamic_cast<const QgsCurvePolygon *>( poly );
+  const QgsCurvePolygon *polygon = qgsgeometry_cast<const QgsCurvePolygon *>( poly );
   if ( !polygon )
     return nullptr;
 

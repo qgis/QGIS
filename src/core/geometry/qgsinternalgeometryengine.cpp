@@ -158,7 +158,7 @@ Cell *getCentroidCell( const QgsPolygonV2 *polygon )
 QgsPoint surfacePoleOfInaccessibility( const QgsSurface *surface, double precision, double &distanceFromBoundary )
 {
   std::unique_ptr< QgsPolygonV2 > segmentizedPoly;
-  const QgsPolygonV2 *polygon = dynamic_cast< const QgsPolygonV2 * >( surface );
+  const QgsPolygonV2 *polygon = qgsgeometry_cast< const QgsPolygonV2 * >( surface );
   if ( !polygon )
   {
     segmentizedPoly.reset( static_cast< QgsPolygonV2 *>( surface->segmentize() ) );

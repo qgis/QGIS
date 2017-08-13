@@ -123,7 +123,7 @@ int QgsGeometryEditUtils::addPart( QgsAbstractGeometry *geom, QgsAbstractGeometr
   if ( QgsWkbTypes::flatType( geom->wkbType() ) == QgsWkbTypes::MultiSurface
        || QgsWkbTypes::flatType( geom->wkbType() ) == QgsWkbTypes::MultiPolygon )
   {
-    QgsCurve *curve = dynamic_cast<QgsCurve *>( part );
+    QgsCurve *curve = qgsgeometry_cast<QgsCurve *>( part );
     if ( curve && curve->isClosed() && curve->numPoints() >= 4 )
     {
       QgsCurvePolygon *poly = nullptr;
@@ -199,7 +199,7 @@ bool QgsGeometryEditUtils::deleteRing( QgsAbstractGeometry *geom, int ringNum, i
     return false;
   }
 
-  QgsCurvePolygon *cpoly = dynamic_cast<QgsCurvePolygon *>( g );
+  QgsCurvePolygon *cpoly = qgsgeometry_cast<QgsCurvePolygon *>( g );
   if ( !cpoly )
   {
     return false;

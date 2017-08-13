@@ -97,7 +97,7 @@ QString QgsMultiPointV2::asJSON( int precision ) const
 
 bool QgsMultiPointV2::addGeometry( QgsAbstractGeometry *g )
 {
-  if ( !dynamic_cast<QgsPoint *>( g ) )
+  if ( !qgsgeometry_cast<QgsPoint *>( g ) )
   {
     delete g;
     return false;
