@@ -1585,16 +1585,16 @@ QgsGeometry QgsGeometry::centroid() const
   }
 
   QgsGeos geos( d->geometry );
-  QgsPoint centroid;
+  std::unique_ptr<QgsPoint> centroid( new QgsPoint() );
   QString error;
-  bool ok = geos.centroid( centroid, &error );
+  bool ok = geos.centroid( *centroid.get(), &error );
   if ( !ok )
   {
     QgsGeometry geom;
     geom.d->error = error;
     return geom;
   }
-  return QgsGeometry( centroid.clone() );
+  return QgsGeometry( centroid.release() );
 }
 
 QgsGeometry QgsGeometry::pointOnSurface() const
