@@ -798,7 +798,7 @@
                     <property name="syncGroup" stdset="0">
                      <string notr="true">labelrenderinggroup</string>
                     </property>
-                    <layout class="QHBoxLayout" name="horizontalLayout_9">
+                    <layout class="QHBoxLayout" name="horizontalLayout_91">
                      <property name="leftMargin">
                       <number>8</number>
                      </property>
