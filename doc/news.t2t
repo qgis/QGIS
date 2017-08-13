@@ -38,6 +38,36 @@ Change history for the QGIS Project
 Last Updated: %%date(%A %B %d, %Y)
 Last Change : %%mtime(%A %B %d, %Y)
 
+= What's new in Version 2.18 'Las Palmas'? =
+
+This release has following new features:
+
+- Symbology: Color picker is now embedded in layer style panel
+- Labelling: Substitution list support for labeling
+- Labelling: Improved line label placement algorithm
+- Labelling: Label polygons using curved labels along perimeter
+- Data Management: Add flag to only copy selected features
+- Forms and Widgets: Allow controlling labels for individual edit widgets
+- Forms and Widgets: Conditional visibility for tabs and group boxes
+- Forms and Widgets: Client side default field values
+- Map Composer: True North Arrows
+- Processing: Point on surface algorithm  added
+- Processing: New algorithm for geometry boundary
+- Processing: New algorithm for calculating feature bounding box
+- Processing: Processing dissolve algorithm accepts multiple fields
+- Processing: Optimised processing clip algorithm
+- Processing: New algorithm for merging connected lines
+- General: Automatic links in identify results
+- General: Mouse wheel over color dialog sliders
+- General: Add custom color schemes to color button drop down menu
+- Data Providers: Preview for WMTS + added XYZ tile layers
+- QGIS Server: Possibility to segmentize feature info geometry in server
+- Plugins: DB Manager: Add the ability to update SQL Layer
+- Programmability: New expression functions
+- Programmability: Expose GEOS linear referencing function to QgsGeometry
+-
+
+
 = What's new in Version 2.16 'Nødebo'? =
 
 This release has following new features:
