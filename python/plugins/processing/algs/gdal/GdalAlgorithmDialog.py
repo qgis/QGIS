@@ -37,7 +37,8 @@ from qgis.PyQt.QtWidgets import (QWidget,
                                  QSizePolicy,
                                  QDialogButtonBox)
 
-from qgis.core import QgsProcessingFeedback
+from qgis.core import (QgsProcessingFeedback,
+                       QgsProcessingParameterDefinition)
 from qgis.gui import QgsMessageBar
 
 from processing.gui.AlgorithmDialog import AlgorithmDialog
@@ -111,6 +112,13 @@ class GdalParametersPanel(ParametersPanel):
             for output in self.alg.destinationParameterDefinitions():
                 if not output.name() in parameters or parameters[output.name()] is None:
                     parameters[output.name()] = self.tr("[temporary file]")
+            for p in self.alg.parameterDefinitions():
+                if ( not p.name() in parameters and not p.flags() & QgsProcessingParameterDefinition.FlagOptional) \
+                        or (not p.checkValueIsAcceptable(parameters[p.name()], context)):
+                    # not ready yet
+                    self.text.setPlainText('')
+                    return
+
             commands = self.alg.getConsoleCommands(parameters, context, feedback)
             commands = [c for c in commands if c not in ['cmd.exe', '/C ']]
             self.text.setPlainText(" ".join(commands))
