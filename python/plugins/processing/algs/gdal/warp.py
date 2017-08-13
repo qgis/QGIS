@@ -168,10 +168,10 @@ class warp(GdalAlgorithm):
 
         if useRasterExtent:
             arguments.append('-te')
-            arguments.append(regionCoords.xMinimum())
-            arguments.append(regionCoords.yMinimum())
-            arguments.append(regionCoords.xMaximum())
-            arguments.append(regionCoords.yMaximum())
+            arguments.append(rasterExtent.xMinimum())
+            arguments.append(rasterExtent.yMinimum())
+            arguments.append(rasterExtent.xMaximum())
+            arguments.append(rasterExtent.yMaximum())
 
             if extentCrs:
                 arguments.append('-te_srs')
