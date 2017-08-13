@@ -189,9 +189,9 @@ class Ogr2OgrToPostGis(GdalAlgorithm):
         inLayer = self.parameterAsSource(parameters, self.INPUT, context)
         ogrLayer, layername = self.getOgrCompatibleSource(self.INPUT, parameters, context, feedback)
         shapeEncoding = self.parameterAsString(parameters, self.SHAPE_ENCODING, context)
-        ssrs = self.parameterAsCrs(parameters, self.S_SRS, context)
-        tsrs = self.parameterAsCrs(parameters, self.T_SRS, context)
-        asrs = self.parameterAsCrs(parameters, self.A_SRS, context)
+        ssrs = self.parameterAsCrs(parameters, self.S_SRS, context).authid()
+        tsrs = self.parameterAsCrs(parameters, self.T_SRS, context).authid()
+        asrs = self.parameterAsCrs(parameters, self.A_SRS, context).authid()
         table = self.parameterAsString(parameters, self.TABLE, context)
         schema = self.parameterAsString(parameters, self.SCHEMA, context)
         pk = self.parameterAsString(parameters, self.PK, context)
@@ -271,13 +271,12 @@ class Ogr2OgrToPostGis(GdalAlgorithm):
         if len(asrs) > 0:
             arguments.append('-a_srs')
             arguments.append(asrs)
-        if len(spat) > 0:
-            regionCoords = spat.split(',')
+        if not spat.isNull():
             arguments.append('-spat')
-            arguments.append(regionCoords[0])
-            arguments.append(regionCoords[2])
-            arguments.append(regionCoords[1])
-            arguments.append(regionCoords[3])
+            arguments.append(spat.xMinimum())
+            arguments.append(spat.yMinimum())
+            arguments.append(spat.xMaximum())
+            arguments.append(spat.yMaximum())
             if clip:
                 arguments.append('-clipsrc spat_extent')
         if skipfailures:
