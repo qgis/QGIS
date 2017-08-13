@@ -1581,16 +1581,8 @@ QgsGeometry QgsGeometry::centroid() const
   }
 
   QgsGeos geos( d->geometry );
-  std::unique_ptr<QgsPoint> centroid( new QgsPoint() );
-  QString error;
-  bool ok = geos.centroid( *centroid.get(), &error );
-  if ( !ok )
-  {
-    QgsGeometry geom;
-    geom.d->error = error;
-    return geom;
-  }
-  return QgsGeometry( centroid.release() );
+
+  return QgsGeometry( geos.centroid( &d->error ) );
 }
 
 QgsGeometry QgsGeometry::pointOnSurface() const
@@ -1601,17 +1593,8 @@ QgsGeometry QgsGeometry::pointOnSurface() const
   }
 
   QgsGeos geos( d->geometry );
-  std::unique_ptr<QgsPoint>pt( new QgsPoint() );
 
-  QString error;
-  bool ok = geos.pointOnSurface( *pt.get(), &error );
-  if ( !ok )
-  {
-    QgsGeometry geom;
-    geom.d->error = error;
-    return geom;
-  }
-  return QgsGeometry( pt.release() );
+  return QgsGeometry( geos.pointOnSurface( &d->error ) );
 }
 
 QgsGeometry QgsGeometry::poleOfInaccessibility( double precision, double *distanceToBoundary ) const

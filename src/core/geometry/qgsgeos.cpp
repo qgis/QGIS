@@ -1503,36 +1503,30 @@ QgsAbstractGeometry *QgsGeos::interpolate( double distance, QString *errorMsg ) 
   return fromGeos( geos.get() );
 }
 
-bool QgsGeos::centroid( QgsPoint &pt, QString *errorMsg ) const
+QgsPoint *QgsGeos::centroid( QString *errorMsg ) const
 {
   if ( !mGeos )
   {
-    return false;
+    return nullptr;
   }
 
   GEOSGeomScopedPtr geos;
+  double x;
+  double y;
+
   try
   {
     geos.reset( GEOSGetCentroid_r( geosinit.ctxt,  mGeos ) );
-  }
-  CATCH_GEOS_WITH_ERRMSG( false );
 
-  if ( !geos )
-  {
-    return false;
-  }
+    if ( !geos )
+      return nullptr;
 
-  try
-  {
-    double x, y;
     GEOSGeomGetX_r( geosinit.ctxt, geos.get(), &x );
     GEOSGeomGetY_r( geosinit.ctxt, geos.get(), &y );
-    pt.setX( x );
-    pt.setY( y );
   }
-  CATCH_GEOS_WITH_ERRMSG( false );
+  CATCH_GEOS_WITH_ERRMSG( nullptr );
 
-  return true;
+  return new QgsPoint( x, y );
 }
 
 QgsAbstractGeometry *QgsGeos::envelope( QString *errorMsg ) const
@@ -1550,12 +1544,15 @@ QgsAbstractGeometry *QgsGeos::envelope( QString *errorMsg ) const
   return fromGeos( geos.get() );
 }
 
-bool QgsGeos::pointOnSurface( QgsPoint &pt, QString *errorMsg ) const
+QgsPoint *QgsGeos::pointOnSurface( QString *errorMsg ) const
 {
   if ( !mGeos )
   {
-    return false;
+    return nullptr;
   }
+
+  double x;
+  double y;
 
   GEOSGeomScopedPtr geos;
   try
@@ -1564,19 +1561,15 @@ bool QgsGeos::pointOnSurface( QgsPoint &pt, QString *errorMsg ) const
 
     if ( !geos || GEOSisEmpty_r( geosinit.ctxt, geos.get() ) != 0 )
     {
-      return false;
+      return nullptr;
     }
 
-    double x, y;
     GEOSGeomGetX_r( geosinit.ctxt, geos.get(), &x );
     GEOSGeomGetY_r( geosinit.ctxt, geos.get(), &y );
-
-    pt.setX( x );
-    pt.setY( y );
   }
-  CATCH_GEOS_WITH_ERRMSG( false );
+  CATCH_GEOS_WITH_ERRMSG( nullptr );
 
-  return true;
+  return new QgsPoint( x, y );
 }
 
 QgsAbstractGeometry *QgsGeos::convexHull( QString *errorMsg ) const

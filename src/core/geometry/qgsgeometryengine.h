@@ -75,8 +75,26 @@ class CORE_EXPORT QgsGeometryEngine
     virtual QgsAbstractGeometry *simplify( double tolerance, QString *errorMsg = nullptr ) const = 0 SIP_FACTORY;
     virtual QgsAbstractGeometry *interpolate( double distance, QString *errorMsg = nullptr ) const = 0 SIP_FACTORY;
     virtual QgsAbstractGeometry *envelope( QString *errorMsg = nullptr ) const = 0 SIP_FACTORY;
-    virtual bool centroid( QgsPoint &pt, QString *errorMsg = nullptr ) const = 0;
-    virtual bool pointOnSurface( QgsPoint &pt, QString *errorMsg = nullptr ) const = 0;
+
+    /**
+     * Calculates the centroid of this.
+     * May return a `nullptr`.
+     *
+     * \since QGIS 3.0 the centroid is returned
+     */
+    virtual QgsPoint *centroid( QString *errorMsg = nullptr ) const = 0 SIP_FACTORY;
+
+    /**
+     * Calculate a point that is guaranteed to be on the surface of this.
+     * May return a `nullptr`.
+     *
+     * \since QGIS 3.0 the centroid is returned
+     */
+    virtual QgsPoint *pointOnSurface( QString *errorMsg = nullptr ) const = 0 SIP_FACTORY;
+
+    /**
+     * Calculate the convex hull of this.
+     */
     virtual QgsAbstractGeometry *convexHull( QString *errorMsg = nullptr ) const = 0 SIP_FACTORY;
 
     /**
