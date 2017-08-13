@@ -8,7 +8,9 @@ services:
   qgis-build-and-test:
     build:
       context: .
-      dockerfile: build-Dockerfile
+      dockerfile: Dockerfile-build-test
+      args:
+        DOCKER_TAG: ${DOCKER_TAG}
     tty: true
     image: qgis/qgis3-run:${DOCKER_TAG}
     volumes:

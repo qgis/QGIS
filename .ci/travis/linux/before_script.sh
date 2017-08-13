@@ -20,7 +20,7 @@ pushd .docker
 docker --version
 #docker pull ubuntu:16.04
 docker pull "qgis/qgis3-build-deps:${DOCKER_TAG}" || true
-docker build --file deps-Dockerfile \
+docker build --file Dockerfile-deps \
              --cache-from "qgis/qgis3-build-deps:${DOCKER_TAG}"\
              --tag "qgis/qgis3-build-deps:${DOCKER_TAG}" .
 # image should be pushed even if QGIS build fails
