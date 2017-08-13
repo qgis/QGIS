@@ -81,10 +81,12 @@ class Ogr2OgrPointsOnLines(GdalAlgorithm):
 
         outFile = self.parameterAsOutputLayer(parameters, self.OUTPUT, context)
 
-        output = GdalUtils.ogrConnectionString(outFile, context)
+        output, format = GdalUtils.ogrConnectionStringAndFormat(outFile, context)
         options = self.parameterAsString(parameters, self.OPTIONS, context)
 
         arguments = []
+        if format:
+            arguments.append('-f {}'.format(format))
         arguments.append(output)
         arguments.append(ogrLayer)
 

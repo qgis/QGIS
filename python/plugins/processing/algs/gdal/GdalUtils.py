@@ -229,13 +229,23 @@ class GdalUtils(object):
 
     @staticmethod
     def ogrConnectionString(uri, context):
-        """Generates OGR connection sting from layer source
+        """Generates OGR connection string from layer source
+        """
+        return GdalUtils.ogrConnectionStringAndFormat(uri, context)[0]
+
+    @staticmethod
+    def ogrConnectionStringAndFormat(uri, context):
+        """Generates OGR connection string and format string from layer source
+        Returned values are a tuple of the connection string and format string
         """
         ogrstr = None
+        format = None
 
         layer = QgsProcessingUtils.mapLayerFromString(uri, context, False)
         if layer is None:
-            return '"' + uri + '"'
+            path, ext = os.path.splitext(uri)
+            format = QgsVectorFileWriter.driverForExtension(ext)
+            return '"' + uri + '"', format
 
         provider = layer.dataProvider().name()
         if provider == 'spatialite':
@@ -243,6 +253,7 @@ class GdalUtils(object):
             regex = re.compile("dbname='(.+)'")
             r = regex.search(str(layer.source()))
             ogrstr = r.groups()[0]
+            format = 'SQLite'
         elif provider == 'postgres':
             # dbname='ktryjh_iuuqef' host=spacialdb.com port=9999
             # user='ktryjh_iuuqef' password='xyqwer' sslmode=disable
@@ -270,6 +281,7 @@ class GdalUtils(object):
                 QgsCredentials.instance().put(conninfo, user, passwd)
 
             ogrstr = "PG:%s" % dsUri.connectionInfo()
+            format = 'PostgreSQL'
         elif provider == "oracle":
             # OCI:user/password@host:port/service:table
             dsUri = QgsDataSourceUri(layer.dataProvider().dataSourceUri())
@@ -299,10 +311,13 @@ class GdalUtils(object):
                 ogrstr += dsUri.schema() + "."
 
             ogrstr += dsUri.table()
+            format = 'OCI'
         else:
             ogrstr = str(layer.source()).split("|")[0]
+            path, ext = os.path.splitext(ogrstr)
+            format = QgsVectorFileWriter.driverForExtension(ext)
 
-        return '"' + ogrstr + '"'
+        return '"' + ogrstr + '"', format
 
     @staticmethod
     def ogrLayerName(uri):
