@@ -81,12 +81,10 @@ class PointsInPolygonUnique(QgisAlgorithm):
         fieldName = self.getParameterValue(self.FIELD)
         classFieldName = self.getParameterValue(self.CLASSFIELD)
 
-        pointLayerFields=[field.name() for field in pointLayer.fields()]
-        
-        if classFieldName in pointLayerFields:
-            pass
-        else:
-            raise Exception("there is no field named '{}'in the point layer".format(classFieldName))
+        pointLayerFields = [field.name() for field in pointLayer.fields()]
+
+        if classFieldName not in pointLayerFields:
+            raise GeoAlgorithmExecutionException(self.tr("There is no field named '{}' in the point layer").format(classFieldName))
 
         fields = polyLayer.fields()
         fields.append(QgsField(fieldName, QVariant.Int))
