@@ -111,7 +111,7 @@ bool QgsMemoryFeatureIterator::nextFeatureUsingList( QgsFeature &feature )
     if ( !mFilterRect.isNull() && mRequest.flags() & QgsFeatureRequest::ExactIntersect )
     {
       // do exact check in case we're doing intersection
-      if ( mSource->mFeatures.value( *mFeatureIdListIterator ).hasGeometry() && mSelectRectEngine->intersects( *mSource->mFeatures.value( *mFeatureIdListIterator ).geometry().geometry() ) )
+      if ( mSource->mFeatures.value( *mFeatureIdListIterator ).hasGeometry() && mSelectRectEngine->intersects( mSource->mFeatures.value( *mFeatureIdListIterator ).geometry().geometry() ) )
         hasFeature = true;
     }
     else
@@ -166,7 +166,7 @@ bool QgsMemoryFeatureIterator::nextFeatureTraverseAll( QgsFeature &feature )
       if ( mRequest.flags() & QgsFeatureRequest::ExactIntersect )
       {
         // using exact test when checking for intersection
-        if ( mSelectIterator->hasGeometry() && mSelectRectEngine->intersects( *mSelectIterator->geometry().geometry() ) )
+        if ( mSelectIterator->hasGeometry() && mSelectRectEngine->intersects( mSelectIterator->geometry().geometry() ) )
           hasFeature = true;
       }
       else

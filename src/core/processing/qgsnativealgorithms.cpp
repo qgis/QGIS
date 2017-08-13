@@ -484,11 +484,11 @@ QVariantMap QgsClipAlgorithm::processAlgorithm( const QVariantMap &parameters, Q
       }
       testedFeatureIds.insert( inputFeature.id() );
 
-      if ( !engine->intersects( *inputFeature.geometry().geometry() ) )
+      if ( !engine->intersects( inputFeature.geometry().geometry() ) )
         continue;
 
       QgsGeometry newGeometry;
-      if ( !engine->contains( *inputFeature.geometry().geometry() ) )
+      if ( !engine->contains( inputFeature.geometry().geometry() ) )
       {
         QgsGeometry currentGeometry = inputFeature.geometry();
         newGeometry = combinedClipGeom.intersection( currentGeometry );

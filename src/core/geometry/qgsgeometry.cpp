@@ -845,7 +845,7 @@ int QgsGeometry::makeDifferenceInPlace( const QgsGeometry &other )
 
   QgsGeos geos( d->geometry );
 
-  QgsAbstractGeometry *diffGeom = geos.intersection( *other.geometry() );
+  QgsAbstractGeometry *diffGeom = geos.intersection( other.geometry() );
   if ( !diffGeom )
   {
     return 1;
@@ -867,7 +867,7 @@ QgsGeometry QgsGeometry::makeDifference( const QgsGeometry &other ) const
 
   QgsGeos geos( d->geometry );
 
-  QgsAbstractGeometry *diffGeom = geos.intersection( *other.geometry() );
+  QgsAbstractGeometry *diffGeom = geos.intersection( other.geometry() );
   if ( !diffGeom )
   {
     return QgsGeometry();
@@ -965,7 +965,7 @@ bool QgsGeometry::intersects( const QgsGeometry &geometry ) const
   }
 
   QgsGeos geos( d->geometry );
-  return geos.intersects( *geometry.d->geometry );
+  return geos.intersects( geometry.d->geometry );
 }
 
 bool QgsGeometry::contains( const QgsPointXY *p ) const
@@ -977,7 +977,7 @@ bool QgsGeometry::contains( const QgsPointXY *p ) const
 
   QgsPoint pt( p->x(), p->y() );
   QgsGeos geos( d->geometry );
-  return geos.contains( pt );
+  return geos.contains( &pt );
 }
 
 bool QgsGeometry::contains( const QgsGeometry &geometry ) const
@@ -988,7 +988,7 @@ bool QgsGeometry::contains( const QgsGeometry &geometry ) const
   }
 
   QgsGeos geos( d->geometry );
-  return geos.contains( *( geometry.d->geometry ) );
+  return geos.contains( geometry.d->geometry );
 }
 
 bool QgsGeometry::disjoint( const QgsGeometry &geometry ) const
@@ -999,7 +999,7 @@ bool QgsGeometry::disjoint( const QgsGeometry &geometry ) const
   }
 
   QgsGeos geos( d->geometry );
-  return geos.disjoint( *( geometry.d->geometry ) );
+  return geos.disjoint( geometry.d->geometry );
 }
 
 bool QgsGeometry::equals( const QgsGeometry &geometry ) const
@@ -1010,7 +1010,7 @@ bool QgsGeometry::equals( const QgsGeometry &geometry ) const
   }
 
   QgsGeos geos( d->geometry );
-  return geos.isEqual( *( geometry.d->geometry ) );
+  return geos.isEqual( geometry.d->geometry );
 }
 
 bool QgsGeometry::touches( const QgsGeometry &geometry ) const
@@ -1021,7 +1021,7 @@ bool QgsGeometry::touches( const QgsGeometry &geometry ) const
   }
 
   QgsGeos geos( d->geometry );
-  return geos.touches( *( geometry.d->geometry ) );
+  return geos.touches( geometry.d->geometry );
 }
 
 bool QgsGeometry::overlaps( const QgsGeometry &geometry ) const
@@ -1032,7 +1032,7 @@ bool QgsGeometry::overlaps( const QgsGeometry &geometry ) const
   }
 
   QgsGeos geos( d->geometry );
-  return geos.overlaps( *( geometry.d->geometry ) );
+  return geos.overlaps( geometry.d->geometry );
 }
 
 bool QgsGeometry::within( const QgsGeometry &geometry ) const
@@ -1043,7 +1043,7 @@ bool QgsGeometry::within( const QgsGeometry &geometry ) const
   }
 
   QgsGeos geos( d->geometry );
-  return geos.within( *( geometry.d->geometry ) );
+  return geos.within( geometry.d->geometry );
 }
 
 bool QgsGeometry::crosses( const QgsGeometry &geometry ) const
@@ -1054,7 +1054,7 @@ bool QgsGeometry::crosses( const QgsGeometry &geometry ) const
   }
 
   QgsGeos geos( d->geometry );
-  return geos.crosses( *( geometry.d->geometry ) );
+  return geos.crosses( geometry.d->geometry );
 }
 
 QString QgsGeometry::exportToWkt( int precision ) const
@@ -1394,7 +1394,7 @@ double QgsGeometry::distance( const QgsGeometry &geom ) const
   }
 
   QgsGeos g( d->geometry );
-  return g.distance( *( geom.d->geometry ) );
+  return g.distance( geom.d->geometry );
 }
 
 QgsGeometry QgsGeometry::buffer( double distance, int segments ) const
@@ -1405,12 +1405,8 @@ QgsGeometry QgsGeometry::buffer( double distance, int segments ) const
   }
 
   QgsGeos g( d->geometry );
-  QgsAbstractGeometry *geom = g.buffer( distance, segments );
-  if ( !geom )
-  {
-    return QgsGeometry();
-  }
-  return QgsGeometry( geom );
+  std::unique_ptr<QgsAbstractGeometry> geom( g.buffer( distance, segments ) );
+  return QgsGeometry( geom.release() );
 }
 
 QgsGeometry QgsGeometry::buffer( double distance, int segments, EndCapStyle endCapStyle, JoinStyle joinStyle, double miterLimit ) const
@@ -1797,7 +1793,7 @@ QgsGeometry QgsGeometry::intersection( const QgsGeometry &geometry ) const
   QgsGeos geos( d->geometry );
 
   QString error;
-  QgsAbstractGeometry *resultGeom = geos.intersection( *( geometry.d->geometry ), &error );
+  QgsAbstractGeometry *resultGeom = geos.intersection( geometry.d->geometry, &error );
 
   if ( !resultGeom )
   {
@@ -1819,7 +1815,7 @@ QgsGeometry QgsGeometry::combine( const QgsGeometry &geometry ) const
   QgsGeos geos( d->geometry );
   QString error;
 
-  QgsAbstractGeometry *resultGeom = geos.combine( *( geometry.d->geometry ), &error );
+  QgsAbstractGeometry *resultGeom = geos.combine( geometry.d->geometry, &error );
   if ( !resultGeom )
   {
     QgsGeometry geom;
@@ -1856,7 +1852,7 @@ QgsGeometry QgsGeometry::difference( const QgsGeometry &geometry ) const
   QgsGeos geos( d->geometry );
 
   QString error;
-  QgsAbstractGeometry *resultGeom = geos.difference( *( geometry.d->geometry ), &error );
+  QgsAbstractGeometry *resultGeom = geos.difference( geometry.d->geometry, &error );
   if ( !resultGeom )
   {
     QgsGeometry geom;
@@ -1877,7 +1873,7 @@ QgsGeometry QgsGeometry::symDifference( const QgsGeometry &geometry ) const
 
   QString error;
 
-  QgsAbstractGeometry *resultGeom = geos.symDifference( *( geometry.d->geometry ), &error );
+  QgsAbstractGeometry *resultGeom = geos.symDifference( geometry.d->geometry, &error );
   if ( !resultGeom )
   {
     QgsGeometry geom;
@@ -2051,7 +2047,7 @@ bool QgsGeometry::isGeosEqual( const QgsGeometry &g ) const
   }
 
   QgsGeos geos( d->geometry );
-  return geos.isEqual( *( g.d->geometry ) );
+  return geos.isEqual( g.d->geometry );
 }
 
 QgsGeometry QgsGeometry::unaryUnion( const QList<QgsGeometry> &geometries )

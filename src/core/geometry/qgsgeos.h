@@ -46,8 +46,8 @@ class CORE_EXPORT QgsGeos: public QgsGeometryEngine
     void geometryChanged() override;
     void prepareGeometry() override;
 
-    QgsAbstractGeometry *intersection( const QgsAbstractGeometry &geom, QString *errorMsg = nullptr ) const override;
-    QgsAbstractGeometry *difference( const QgsAbstractGeometry &geom, QString *errorMsg = nullptr ) const override;
+    QgsAbstractGeometry *intersection( const QgsAbstractGeometry *geom, QString *errorMsg = nullptr ) const override;
+    QgsAbstractGeometry *difference( const QgsAbstractGeometry *geom, QString *errorMsg = nullptr ) const override;
 
     /**
      * Performs a fast, non-robust intersection between the geometry and
@@ -71,9 +71,9 @@ class CORE_EXPORT QgsGeos: public QgsGeometryEngine
      */
     QgsAbstractGeometry *subdivide( int maxNodes, QString *errorMsg = nullptr ) const;
 
-    QgsAbstractGeometry *combine( const QgsAbstractGeometry &geom, QString *errorMsg = nullptr ) const override;
+    QgsAbstractGeometry *combine( const QgsAbstractGeometry *geom, QString *errorMsg = nullptr ) const override;
     QgsAbstractGeometry *combine( const QList< QgsAbstractGeometry *> &, QString *errorMsg = nullptr ) const override;
-    QgsAbstractGeometry *symDifference( const QgsAbstractGeometry &geom, QString *errorMsg = nullptr ) const override;
+    QgsAbstractGeometry *symDifference( const QgsAbstractGeometry *geom, QString *errorMsg = nullptr ) const override;
     QgsAbstractGeometry *buffer( double distance, int segments, QString *errorMsg = nullptr ) const override;
     QgsAbstractGeometry *buffer( double distance, int segments, int endCapStyle, int joinStyle, double miterLimit, QString *errorMsg = nullptr ) const override;
     QgsAbstractGeometry *simplify( double tolerance, QString *errorMsg = nullptr ) const override;
@@ -82,20 +82,20 @@ class CORE_EXPORT QgsGeos: public QgsGeometryEngine
     bool centroid( QgsPoint &pt, QString *errorMsg = nullptr ) const override;
     bool pointOnSurface( QgsPoint &pt, QString *errorMsg = nullptr ) const override;
     QgsAbstractGeometry *convexHull( QString *errorMsg = nullptr ) const override;
-    double distance( const QgsAbstractGeometry &geom, QString *errorMsg = nullptr ) const override;
-    bool intersects( const QgsAbstractGeometry &geom, QString *errorMsg = nullptr ) const override;
-    bool touches( const QgsAbstractGeometry &geom, QString *errorMsg = nullptr ) const override;
-    bool crosses( const QgsAbstractGeometry &geom, QString *errorMsg = nullptr ) const override;
-    bool within( const QgsAbstractGeometry &geom, QString *errorMsg = nullptr ) const override;
-    bool overlaps( const QgsAbstractGeometry &geom, QString *errorMsg = nullptr ) const override;
-    bool contains( const QgsAbstractGeometry &geom, QString *errorMsg = nullptr ) const override;
-    bool disjoint( const QgsAbstractGeometry &geom, QString *errorMsg = nullptr ) const override;
-    QString relate( const QgsAbstractGeometry &geom, QString *errorMsg = nullptr ) const override;
-    bool relatePattern( const QgsAbstractGeometry &geom, const QString &pattern, QString *errorMsg = nullptr ) const override;
+    double distance( const QgsAbstractGeometry *geom, QString *errorMsg = nullptr ) const override;
+    bool intersects( const QgsAbstractGeometry *geom, QString *errorMsg = nullptr ) const override;
+    bool touches( const QgsAbstractGeometry *geom, QString *errorMsg = nullptr ) const override;
+    bool crosses( const QgsAbstractGeometry *geom, QString *errorMsg = nullptr ) const override;
+    bool within( const QgsAbstractGeometry *geom, QString *errorMsg = nullptr ) const override;
+    bool overlaps( const QgsAbstractGeometry *geom, QString *errorMsg = nullptr ) const override;
+    bool contains( const QgsAbstractGeometry *geom, QString *errorMsg = nullptr ) const override;
+    bool disjoint( const QgsAbstractGeometry *geom, QString *errorMsg = nullptr ) const override;
+    QString relate( const QgsAbstractGeometry *geom, QString *errorMsg = nullptr ) const override;
+    bool relatePattern( const QgsAbstractGeometry *geom, const QString &pattern, QString *errorMsg = nullptr ) const override;
     double area( QString *errorMsg = nullptr ) const override;
     double length( QString *errorMsg = nullptr ) const override;
     bool isValid( QString *errorMsg = nullptr ) const override;
-    bool isEqual( const QgsAbstractGeometry &geom, QString *errorMsg = nullptr ) const override;
+    bool isEqual( const QgsAbstractGeometry *geom, QString *errorMsg = nullptr ) const override;
     bool isEmpty( QString *errorMsg = nullptr ) const override;
     bool isSimple( QString *errorMsg = nullptr ) const override;
 
@@ -243,8 +243,8 @@ class CORE_EXPORT QgsGeos: public QgsGeometryEngine
 
     //geos util functions
     void cacheGeos() const;
-    QgsAbstractGeometry *overlay( const QgsAbstractGeometry &geom, Overlay op, QString *errorMsg = nullptr ) const;
-    bool relation( const QgsAbstractGeometry &geom, Relation r, QString *errorMsg = nullptr ) const;
+    QgsAbstractGeometry *overlay( const QgsAbstractGeometry *geom, Overlay op, QString *errorMsg = nullptr ) const;
+    bool relation( const QgsAbstractGeometry *geom, Relation r, QString *errorMsg = nullptr ) const;
     static GEOSCoordSequence *createCoordinateSequence( const QgsCurve *curve, double precision, bool forceClose = false );
     static QgsLineString *sequenceToLinestring( const GEOSGeometry *geos, bool hasZ, bool hasM );
     static int numberOfGeometries( GEOSGeometry *g );
