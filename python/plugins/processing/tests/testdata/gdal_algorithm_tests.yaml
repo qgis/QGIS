@@ -102,6 +102,8 @@ tests:
       OUTPUT:
         name: expected/gdal/points_along_lines.gml
         type: vector
+        compare:
+          ignore_crs_check: true
 
 #  - algorithm: gdal:offsetlinesforlines
 #    name: Offset lines for lines (right-handed)

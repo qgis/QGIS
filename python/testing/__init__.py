@@ -86,10 +86,11 @@ class TestCase(_TestCase):
             compare = {}
 
         # Compare CRS
-        if use_asserts:
-            _TestCase.assertEqual(self, layer_expected.dataProvider().crs().authid(), layer_result.dataProvider().crs().authid())
-        elif not layer_expected.dataProvider().crs().authid() == layer_result.dataProvider().crs().authid():
-            return False
+        if 'ignore_crs_check' not in compare or not compare['ignore_crs_check']:
+            if use_asserts:
+                _TestCase.assertEqual(self, layer_expected.dataProvider().crs().authid(), layer_result.dataProvider().crs().authid())
+            elif not layer_expected.dataProvider().crs().authid() == layer_result.dataProvider().crs().authid():
+                return False
 
         # Compare features
         if use_asserts:
