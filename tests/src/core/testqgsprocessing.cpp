@@ -2978,6 +2978,8 @@ void TestQgsProcessing::parameterString()
 
   params.insert( "optional",  QVariant() );
   QCOMPARE( QgsProcessingParameters::parameterAsString( def.get(), params, context ), QString( "default" ) );
+  params.insert( "optional",  QString() ); //empty string should not result in default value
+  QCOMPARE( QgsProcessingParameters::parameterAsString( def.get(), params, context ), QString() );
 
   code = def->asScriptCode();
   QCOMPARE( code, QStringLiteral( "##optional=optional string default" ) );
