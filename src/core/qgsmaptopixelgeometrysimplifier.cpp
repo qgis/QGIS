@@ -137,7 +137,7 @@ QgsGeometry QgsMapToPixelSimplifier::simplifyGeometry(
   // Write the geometry
   if ( flatType == QgsWkbTypes::LineString || flatType == QgsWkbTypes::CircularString )
   {
-    const QgsCurve &srcCurve = qgsgeometry_cast<const QgsCurve &>( geometry );
+    const QgsCurve &srcCurve = dynamic_cast<const QgsCurve &>( geometry );
     std::unique_ptr<QgsCurve> output( createEmptySameTypeGeom( srcCurve ) );
     double x = 0.0, y = 0.0, lastX = 0.0, lastY = 0.0;
     QgsRectangle r;
@@ -267,7 +267,7 @@ QgsGeometry QgsMapToPixelSimplifier::simplifyGeometry(
   }
   else if ( flatType == QgsWkbTypes::Polygon )
   {
-    const QgsPolygonV2 &srcPolygon = qgsgeometry_cast<const QgsPolygonV2 &>( geometry );
+    const QgsPolygonV2 &srcPolygon = dynamic_cast<const QgsPolygonV2 &>( geometry );
     std::unique_ptr<QgsPolygonV2> polygon( new QgsPolygonV2() );
     polygon->setExteriorRing( qgsgeometry_cast<QgsCurve *>( simplifyGeometry( simplifyFlags, simplifyAlgorithm, srcPolygon.exteriorRing()->wkbType(), *srcPolygon.exteriorRing(), envelope, map2pixelTol, true ).geometry()->clone() ) );
     for ( int i = 0; i < srcPolygon.numInteriorRings(); ++i )
@@ -279,7 +279,7 @@ QgsGeometry QgsMapToPixelSimplifier::simplifyGeometry(
   }
   else if ( QgsWkbTypes::isMultiType( flatType ) )
   {
-    const QgsGeometryCollection &srcCollection = qgsgeometry_cast<const QgsGeometryCollection &>( geometry );
+    const QgsGeometryCollection &srcCollection = dynamic_cast<const QgsGeometryCollection &>( geometry );
     std::unique_ptr<QgsGeometryCollection> collection( createEmptySameTypeGeom( srcCollection ) );
     const int numGeoms = srcCollection.numGeometries();
     for ( int i = 0; i < numGeoms; ++i )
