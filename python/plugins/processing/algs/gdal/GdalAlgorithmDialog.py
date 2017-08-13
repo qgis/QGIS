@@ -37,6 +37,7 @@ from qgis.PyQt.QtWidgets import (QWidget,
                                  QSizePolicy,
                                  QDialogButtonBox)
 
+from qgis.core import QgsProcessingFeedback
 from qgis.gui import QgsMessageBar
 
 from processing.gui.AlgorithmDialog import AlgorithmDialog
@@ -44,6 +45,7 @@ from processing.gui.AlgorithmDialogBase import AlgorithmDialogBase
 from processing.gui.ParametersPanel import ParametersPanel
 from processing.gui.MultipleInputPanel import MultipleInputPanel
 from processing.gui.NumberInputPanel import NumberInputPanel
+from processing.tools.dataobjects import createContext
 
 
 class GdalAlgorithmDialog(AlgorithmDialog):
@@ -102,15 +104,15 @@ class GdalParametersPanel(ParametersPanel):
                 w.hasChanged.connect(self.parametersHaveChanged)
 
     def parametersHaveChanged(self):
+        context = createContext()
+        feedback = QgsProcessingFeedback()
         try:
             parameters = self.parent.getParamValues()
             for output in self.alg.destinationParameterDefinitions():
-                if parameters[output.name()] is None:
+                if not output.name() in parameters or parameters[output.name()] is None:
                     parameters[output.name()] = self.tr("[temporary file]")
-            commands = self.alg.getConsoleCommands(parameters)
+            commands = self.alg.getConsoleCommands(parameters, context, feedback)
             commands = [c for c in commands if c not in ['cmd.exe', '/C ']]
             self.text.setPlainText(" ".join(commands))
         except AlgorithmDialogBase.InvalidParameterValue as e:
             self.text.setPlainText(self.tr("Invalid value for parameter '{0}'").format(e.parameter.description()))
-        except:
-            self.text.setPlainText("")
