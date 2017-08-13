@@ -31,26 +31,19 @@ from qgis.core import (QgsProcessingParameterFeatureSource,
                        QgsProcessingParameterNumber,
                        QgsProcessingParameterVectorDestination,
                        QgsProcessingOutputVectorLayer,
-                       QgsProcessing,
-                       QgsVectorFileWriter,
-                       QgsVectorLayer)
-from processing.core.parameters import ParameterVector
-from processing.core.parameters import ParameterString
-from processing.core.parameters import ParameterNumber
-from processing.core.outputs import OutputVector
+                       QgsProcessing)
 
 from processing.algs.gdal.GdalAlgorithm import GdalAlgorithm
 from processing.algs.gdal.GdalUtils import GdalUtils
 
-from processing.tools import dataobjects
 from processing.tools.system import isWindows
-from processing.tools.vector import ogrConnectionString, ogrLayerName
+from processing.tools.vector import ogrConnectionString
 
 
 class Ogr2OgrPointsOnLines(GdalAlgorithm):
 
-    OUTPUT_LAYER = 'OUTPUT_LAYER'
-    INPUT_LAYER = 'INPUT_LAYER'
+    OUTPUT = 'OUTPUT'
+    INPUT = 'INPUT'
     DISTANCE = 'DISTANCE'
     GEOMETRY = 'GEOMETRY'
     OPTIONS = 'OPTIONS'
@@ -59,7 +52,7 @@ class Ogr2OgrPointsOnLines(GdalAlgorithm):
         super().__init__()
 
     def initAlgorithm(self, config=None):
-        self.addParameter(QgsProcessingParameterFeatureSource(self.INPUT_LAYER,
+        self.addParameter(QgsProcessingParameterFeatureSource(self.INPUT,
                                                               self.tr('Input layer'), [QgsProcessing.TypeVectorLine], optional=False))
         self.addParameter(QgsProcessingParameterString(self.GEOMETRY,
                                                        self.tr('Geometry column name ("geometry" for Shapefiles, may be different for other formats)'),
@@ -70,8 +63,7 @@ class Ogr2OgrPointsOnLines(GdalAlgorithm):
                                                        self.tr('Additional creation options (see ogr2ogr manual)'),
                                                        defaultValue='', optional=True))
 
-        self.addParameter(QgsProcessingParameterVectorDestination(self.OUTPUT_LAYER, self.tr('Points along lines'), QgsProcessing.TypeVectorPoint))
-        self.addOutput(QgsProcessingOutputVectorLayer(self.OUTPUT_LAYER, self.tr("Points along lines"), QgsProcessing.TypeVectorPoint))
+        self.addParameter(QgsProcessingParameterVectorDestination(self.OUTPUT, self.tr('Points along lines'), QgsProcessing.TypeVectorPoint))
 
     def name(self):
         return 'createpointsalonglines'
@@ -83,15 +75,15 @@ class Ogr2OgrPointsOnLines(GdalAlgorithm):
         return self.tr('Vector geoprocessing')
 
     def getConsoleCommands(self, parameters, context, feedback):
-        ogrLayer, layername = self.getOgrCompatibleSource(self.INPUT_LAYER, parameters, context, feedback)
+        ogrLayer, layername = self.getOgrCompatibleSource(self.INPUT, parameters, context, feedback)
 
         distance = str(self.parameterAsDouble(parameters, self.DISTANCE, context))
-        geometry = str(self.parameterAsString(parameters, self.GEOMETRY, context))
+        geometry = self.parameterAsString(parameters, self.GEOMETRY, context)
 
-        outFile = self.parameterAsOutputLayer(parameters, self.OUTPUT_LAYER, context)
+        outFile = self.parameterAsOutputLayer(parameters, self.OUTPUT, context)
 
         output = ogrConnectionString(outFile, context)
-        options = str(self.parameterAsString(parameters, self.OPTIONS, context))
+        options = self.parameterAsString(parameters, self.OPTIONS, context)
 
         arguments = []
         arguments.append(output)
