@@ -85,16 +85,28 @@ class QgsGeometryEngine
 %Docstring
  :rtype: QgsAbstractGeometry
 %End
-    virtual bool centroid( QgsPoint &pt, QString *errorMsg = 0 ) const = 0;
+
+    virtual QgsPoint *centroid( QString *errorMsg = 0 ) const = 0 /Factory/;
 %Docstring
- :rtype: bool
+ Calculates the centroid of this.
+ May return a `None`.
+
+.. versionadded:: 3.0
+ :rtype: QgsPoint
 %End
-    virtual bool pointOnSurface( QgsPoint &pt, QString *errorMsg = 0 ) const = 0;
+
+    virtual QgsPoint *pointOnSurface( QString *errorMsg = 0 ) const = 0 /Factory/;
 %Docstring
- :rtype: bool
+ Calculate a point that is guaranteed to be on the surface of this.
+ May return a `None`.
+
+.. versionadded:: 3.0
+ :rtype: QgsPoint
 %End
+
     virtual QgsAbstractGeometry *convexHull( QString *errorMsg = 0 ) const = 0 /Factory/;
 %Docstring
+ Calculate the convex hull of this.
  :rtype: QgsAbstractGeometry
 %End
 

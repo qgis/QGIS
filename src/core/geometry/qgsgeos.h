@@ -79,8 +79,8 @@ class CORE_EXPORT QgsGeos: public QgsGeometryEngine
     QgsAbstractGeometry *simplify( double tolerance, QString *errorMsg = nullptr ) const override;
     QgsAbstractGeometry *interpolate( double distance, QString *errorMsg = nullptr ) const override;
     QgsAbstractGeometry *envelope( QString *errorMsg = nullptr ) const override;
-    bool centroid( QgsPoint &pt, QString *errorMsg = nullptr ) const override;
-    bool pointOnSurface( QgsPoint &pt, QString *errorMsg = nullptr ) const override;
+    QgsPoint *centroid( QString *errorMsg = nullptr ) const override;
+    QgsPoint *pointOnSurface( QString *errorMsg = nullptr ) const override;
     QgsAbstractGeometry *convexHull( QString *errorMsg = nullptr ) const override;
     double distance( const QgsAbstractGeometry *geom, QString *errorMsg = nullptr ) const override;
     bool intersects( const QgsAbstractGeometry *geom, QString *errorMsg = nullptr ) const override;
