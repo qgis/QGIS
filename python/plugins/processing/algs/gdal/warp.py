@@ -37,7 +37,6 @@ from qgis.core import (QgsProcessingParameterRasterLayer,
                        QgsProcessingParameterBoolean,
                        QgsProcessingParameterExtent,
                        QgsProcessingParameterRasterDestination,
-                       QgsProcessingOutputRasterLayer,
                        QgsProcessingUtils)
 from processing.algs.gdal.GdalAlgorithm import GdalAlgorithm
 from processing.algs.gdal.GdalUtils import GdalUtils
@@ -113,7 +112,6 @@ class warp(GdalAlgorithm):
                                                      self.TYPE, defaultValue=5))
 
         self.addParameter(QgsProcessingParameterRasterDestination(self.OUTPUT, self.tr('Reprojected')))
-        self.addOutput(QgsProcessingOutputRasterLayer(self.OUTPUT, self.tr('Reprojected')))
 
     def name(self):
         return 'warpreproject'

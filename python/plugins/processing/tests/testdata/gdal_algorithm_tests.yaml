@@ -139,87 +139,87 @@ tests:
 #        compare:
 #          geometry:
 #            precision: 7
-#
-#  - algorithm: gdal:aspect
-#    name: Aspect with standard parameters
-#    params:
-#      BAND: 1
-#      COMPUTE_EDGES: false
-#      INPUT:
-#        name: dem.tif
-#        type: raster
-#      TRIG_ANGLE: false
-#      ZERO_FLAT: false
-#      ZEVENBERGEN: false
-#    results:
-#      OUTPUT:
-#        hash: 8436df662a44a00762aa29768e5d6ecfaf2d42e9a4da02d8afc6e3f6
-#        type: rasterhash
-#
-#  - algorithm: gdal:aspect
-#    name: Aspect without NULL (-9999) values (0 instead)
-#    params:
-#      BAND: 1
-#      COMPUTE_EDGES: false
-#      INPUT:
-#        name: dem.tif
-#        type: raster
-#      TRIG_ANGLE: false
-#      ZERO_FLAT: true
-#      ZEVENBERGEN: false
-#    results:
-#      OUTPUT:
-#        hash: 43cccb440c7febb0095103eee3509b740e9f1bf2b3ad3b8a4c25622e
-#        type: rasterhash
-#
-#  - algorithm: gdal:aspect
-#    name: Aspect with trigonometric angle
-#    params:
-#      BAND: 1
-#      COMPUTE_EDGES: false
-#      INPUT:
-#        name: dem.tif
-#        type: raster
-#      TRIG_ANGLE: true
-#      ZERO_FLAT: false
-#      ZEVENBERGEN: false
-#    results:
-#      OUTPUT:
-#        hash: a95e8a09a613b551d3f33dfb4975c430f599dc55f761063ae9529124
-#        type: rasterhash
-#
-#  - algorithm: gdal:aspect
-#    name: Aspect zevenbergen
-#    params:
-#      BAND: 1
-#      COMPUTE_EDGES: false
-#      INPUT:
-#        name: dem.tif
-#        type: raster
-#      TRIG_ANGLE: false
-#      ZERO_FLAT: false
-#      ZEVENBERGEN: true
-#    results:
-#      OUTPUT:
-#        hash: 2cd5868b21efbd286f4977795143c89df77ac8976f8bc2a2c4e310d8
-#        type: rasterhash
-#
-#  - algorithm: gdal:aspect
-#    name: Aspect with edges
-#    params:
-#      BAND: 1
-#      COMPUTE_EDGES: true
-#      INPUT:
-#        name: dem.tif
-#        type: raster
-#      TRIG_ANGLE: false
-#      ZERO_FLAT: false
-#      ZEVENBERGEN: false
-#    results:
-#      OUTPUT:
-#        hash: d3a354c6e5f207779bb58f9bd23fd89a9f90a77d81aafc661d0ae077
-#        type: rasterhash
-#
+
+  - algorithm: gdal:aspect
+    name: Aspect with standard parameters
+    params:
+      BAND: 1
+      COMPUTE_EDGES: false
+      INPUT:
+        name: dem.tif
+        type: raster
+      TRIG_ANGLE: false
+      ZERO_FLAT: false
+      ZEVENBERGEN: false
+    results:
+      OUTPUT:
+        hash: 8436df662a44a00762aa29768e5d6ecfaf2d42e9a4da02d8afc6e3f6
+        type: rasterhash
+
+  - algorithm: gdal:aspect
+    name: Aspect without NULL (-9999) values (0 instead)
+    params:
+      BAND: 1
+      COMPUTE_EDGES: false
+      INPUT:
+        name: dem.tif
+        type: raster
+      TRIG_ANGLE: false
+      ZERO_FLAT: true
+      ZEVENBERGEN: false
+    results:
+      OUTPUT:
+        hash: 43cccb440c7febb0095103eee3509b740e9f1bf2b3ad3b8a4c25622e
+        type: rasterhash
+
+  - algorithm: gdal:aspect
+    name: Aspect with trigonometric angle
+    params:
+      BAND: 1
+      COMPUTE_EDGES: false
+      INPUT:
+        name: dem.tif
+        type: raster
+      TRIG_ANGLE: true
+      ZERO_FLAT: false
+      ZEVENBERGEN: false
+    results:
+      OUTPUT:
+        hash: a95e8a09a613b551d3f33dfb4975c430f599dc55f761063ae9529124
+        type: rasterhash
+
+  - algorithm: gdal:aspect
+    name: Aspect zevenbergen
+    params:
+      BAND: 1
+      COMPUTE_EDGES: false
+      INPUT:
+        name: dem.tif
+        type: raster
+      TRIG_ANGLE: false
+      ZERO_FLAT: false
+      ZEVENBERGEN: true
+    results:
+      OUTPUT:
+        hash: 2cd5868b21efbd286f4977795143c89df77ac8976f8bc2a2c4e310d8
+        type: rasterhash
+
+  - algorithm: gdal:aspect
+    name: Aspect with edges
+    params:
+      BAND: 1
+      COMPUTE_EDGES: true
+      INPUT:
+        name: dem.tif
+        type: raster
+      TRIG_ANGLE: false
+      ZERO_FLAT: false
+      ZEVENBERGEN: false
+    results:
+      OUTPUT:
+        hash: d3a354c6e5f207779bb58f9bd23fd89a9f90a77d81aafc661d0ae077
+        type: rasterhash
+
 #  - algorithm: gdal:cliprasterbyextent
 #    name: Clip raster by extent
 #    params:
