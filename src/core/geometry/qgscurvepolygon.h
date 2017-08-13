@@ -140,6 +140,28 @@ class CORE_EXPORT QgsCurvePolygon: public QgsSurface
     virtual bool dropZValue() override;
     virtual bool dropMValue() override;
 
+#ifndef SIP_RUN
+
+    /**
+     * Cast the \a geom to a QgsCurvePolygon.
+     * Should be used by qgsgeometry_cast<QgsCurvePolygon *>( geometry ).
+     *
+     * \note Not available in Python. Objects will be automatically be converted to the appropriate target type.
+     * \since QGIS 3.0
+     */
+    inline const QgsCurvePolygon *cast( const QgsAbstractGeometry *geom ) const
+    {
+      if ( !geom )
+        return nullptr;
+
+      QgsWkbTypes::Type flatType = QgsWkbTypes::flatType( geom->wkbType() );
+      if ( flatType == QgsWkbTypes::CurvePolygon
+           || flatType == QgsWkbTypes::Polygon
+           || flatType == QgsWkbTypes::Triangle )
+        return static_cast<const QgsCurvePolygon *>( geom );
+      return nullptr;
+    }
+#endif
   protected:
 
     QgsCurve *mExteriorRing = nullptr;

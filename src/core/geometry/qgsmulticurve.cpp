@@ -46,7 +46,7 @@ QDomElement QgsMultiCurve::asGML2( QDomDocument &doc, int precision, const QStri
   QDomElement elemMultiLineString = doc.createElementNS( ns, QStringLiteral( "MultiLineString" ) );
   Q_FOREACH ( const QgsAbstractGeometry *geom, mGeometries )
   {
-    if ( dynamic_cast<const QgsCurve *>( geom ) )
+    if ( qgsgeometry_cast<const QgsCurve *>( geom ) )
     {
       QgsLineString *lineString = static_cast<const QgsCurve *>( geom )->curveToLine();
 
@@ -66,7 +66,7 @@ QDomElement QgsMultiCurve::asGML3( QDomDocument &doc, int precision, const QStri
   QDomElement elemMultiCurve = doc.createElementNS( ns, QStringLiteral( "MultiCurve" ) );
   Q_FOREACH ( const QgsAbstractGeometry *geom, mGeometries )
   {
-    if ( dynamic_cast<const QgsCurve *>( geom ) )
+    if ( qgsgeometry_cast<const QgsCurve *>( geom ) )
     {
       const QgsCurve *curve = static_cast<const QgsCurve *>( geom );
 
@@ -85,7 +85,7 @@ QString QgsMultiCurve::asJSON( int precision ) const
   QString json = QStringLiteral( "{\"type\": \"MultiLineString\", \"coordinates\": [" );
   Q_FOREACH ( const QgsAbstractGeometry *geom, mGeometries )
   {
-    if ( dynamic_cast<const QgsCurve *>( geom ) )
+    if ( qgsgeometry_cast<const QgsCurve *>( geom ) )
     {
       QgsLineString *lineString = static_cast<const QgsCurve *>( geom )->curveToLine();
       QgsPointSequence pts;
@@ -104,7 +104,7 @@ QString QgsMultiCurve::asJSON( int precision ) const
 
 bool QgsMultiCurve::addGeometry( QgsAbstractGeometry *g )
 {
-  if ( !dynamic_cast<QgsCurve *>( g ) )
+  if ( !qgsgeometry_cast<QgsCurve *>( g ) )
   {
     delete g;
     return false;
@@ -119,7 +119,7 @@ QgsMultiCurve *QgsMultiCurve::reversed() const
   QgsMultiCurve *reversedMultiCurve = new QgsMultiCurve();
   Q_FOREACH ( const QgsAbstractGeometry *geom, mGeometries )
   {
-    if ( dynamic_cast<const QgsCurve *>( geom ) )
+    if ( qgsgeometry_cast<const QgsCurve *>( geom ) )
     {
       reversedMultiCurve->addGeometry( static_cast<const QgsCurve *>( geom )->reversed() );
     }
@@ -132,7 +132,7 @@ QgsAbstractGeometry *QgsMultiCurve::boundary() const
   QgsMultiPointV2 *multiPoint = new QgsMultiPointV2();
   for ( int i = 0; i < mGeometries.size(); ++i )
   {
-    if ( QgsCurve *curve = dynamic_cast<QgsCurve *>( mGeometries.at( i ) ) )
+    if ( QgsCurve *curve = qgsgeometry_cast<QgsCurve *>( mGeometries.at( i ) ) )
     {
       if ( !curve->isClosed() )
       {

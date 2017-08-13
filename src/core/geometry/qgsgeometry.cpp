@@ -1105,7 +1105,7 @@ bool QgsGeometry::convertToMultiType()
     return true;
   }
 
-  QgsGeometryCollection *multiGeom = dynamic_cast<QgsGeometryCollection *>
+  QgsGeometryCollection *multiGeom = qgsgeometry_cast<QgsGeometryCollection *>
                                      ( QgsGeometryFactory::geomFromWkbType( QgsWkbTypes::multiType( d->geometry->wkbType() ) ) );
   if ( !multiGeom )
   {
@@ -1130,7 +1130,7 @@ bool QgsGeometry::convertToSingleType()
     return true;
   }
 
-  QgsGeometryCollection *multiGeom = dynamic_cast<QgsGeometryCollection *>( d->geometry );
+  QgsGeometryCollection *multiGeom = qgsgeometry_cast<QgsGeometryCollection *>( d->geometry );
   if ( !multiGeom || multiGeom->partCount() < 1 )
     return false;
 
@@ -1147,7 +1147,7 @@ QgsPointXY QgsGeometry::asPoint() const
   {
     return QgsPointXY();
   }
-  QgsPoint *pt = dynamic_cast<QgsPoint *>( d->geometry );
+  QgsPoint *pt = qgsgeometry_cast<QgsPoint *>( d->geometry );
   if ( !pt )
   {
     return QgsPointXY();
@@ -1169,7 +1169,7 @@ QgsPolyline QgsGeometry::asPolyline() const
   QgsLineString *line = nullptr;
   if ( doSegmentation )
   {
-    QgsCurve *curve = dynamic_cast<QgsCurve *>( d->geometry );
+    QgsCurve *curve = qgsgeometry_cast<QgsCurve *>( d->geometry );
     if ( !curve )
     {
       return polyLine;
@@ -1178,7 +1178,7 @@ QgsPolyline QgsGeometry::asPolyline() const
   }
   else
   {
-    line = dynamic_cast<QgsLineString *>( d->geometry );
+    line = qgsgeometry_cast<QgsLineString *>( d->geometry );
     if ( !line )
     {
       return polyLine;
@@ -1211,7 +1211,7 @@ QgsPolygon QgsGeometry::asPolygon() const
   QgsPolygonV2 *p = nullptr;
   if ( doSegmentation )
   {
-    QgsCurvePolygon *curvePoly = dynamic_cast<QgsCurvePolygon *>( d->geometry );
+    QgsCurvePolygon *curvePoly = qgsgeometry_cast<QgsCurvePolygon *>( d->geometry );
     if ( !curvePoly )
     {
       return QgsPolygon();
@@ -1220,7 +1220,7 @@ QgsPolygon QgsGeometry::asPolygon() const
   }
   else
   {
-    p = dynamic_cast<QgsPolygonV2 *>( d->geometry );
+    p = qgsgeometry_cast<QgsPolygonV2 *>( d->geometry );
   }
 
   if ( !p )
@@ -1245,7 +1245,7 @@ QgsMultiPoint QgsGeometry::asMultiPoint() const
     return QgsMultiPoint();
   }
 
-  const QgsMultiPointV2 *mp = dynamic_cast<QgsMultiPointV2 *>( d->geometry );
+  const QgsMultiPointV2 *mp = qgsgeometry_cast<QgsMultiPointV2 *>( d->geometry );
   if ( !mp )
   {
     return QgsMultiPoint();
@@ -1269,7 +1269,7 @@ QgsMultiPolyline QgsGeometry::asMultiPolyline() const
     return QgsMultiPolyline();
   }
 
-  QgsGeometryCollection *geomCollection = dynamic_cast<QgsGeometryCollection *>( d->geometry );
+  QgsGeometryCollection *geomCollection = qgsgeometry_cast<QgsGeometryCollection *>( d->geometry );
   if ( !geomCollection )
   {
     return QgsMultiPolyline();
@@ -1285,10 +1285,10 @@ QgsMultiPolyline QgsGeometry::asMultiPolyline() const
   for ( int i = 0; i < nLines; ++i )
   {
     bool deleteLine = false;
-    const QgsLineString *line = dynamic_cast<const QgsLineString *>( geomCollection->geometryN( i ) );
+    const QgsLineString *line = qgsgeometry_cast<const QgsLineString *>( geomCollection->geometryN( i ) );
     if ( !line )
     {
-      const QgsCurve *curve = dynamic_cast<const QgsCurve *>( geomCollection->geometryN( i ) );
+      const QgsCurve *curve = qgsgeometry_cast<const QgsCurve *>( geomCollection->geometryN( i ) );
       if ( !curve )
       {
         continue;
@@ -1318,7 +1318,7 @@ QgsMultiPolygon QgsGeometry::asMultiPolygon() const
     return QgsMultiPolygon();
   }
 
-  QgsGeometryCollection *geomCollection = dynamic_cast<QgsGeometryCollection *>( d->geometry );
+  QgsGeometryCollection *geomCollection = qgsgeometry_cast<QgsGeometryCollection *>( d->geometry );
   if ( !geomCollection )
   {
     return QgsMultiPolygon();
@@ -1333,10 +1333,10 @@ QgsMultiPolygon QgsGeometry::asMultiPolygon() const
   QgsMultiPolygon mp;
   for ( int i = 0; i < nPolygons; ++i )
   {
-    const QgsPolygonV2 *polygon = dynamic_cast<const QgsPolygonV2 *>( geomCollection->geometryN( i ) );
+    const QgsPolygonV2 *polygon = qgsgeometry_cast<const QgsPolygonV2 *>( geomCollection->geometryN( i ) );
     if ( !polygon )
     {
-      const QgsCurvePolygon *cPolygon = dynamic_cast<const QgsCurvePolygon *>( geomCollection->geometryN( i ) );
+      const QgsCurvePolygon *cPolygon = qgsgeometry_cast<const QgsCurvePolygon *>( geomCollection->geometryN( i ) );
       if ( cPolygon )
       {
         polygon = cPolygon->toPolygon();
@@ -1366,7 +1366,7 @@ double QgsGeometry::area() const
   //debug: compare geos area with calculation in QGIS
   double geosArea = g.area();
   double qgisArea = 0;
-  QgsSurface *surface = dynamic_cast<QgsSurface *>( d->geometry );
+  QgsSurface *surface = qgsgeometry_cast<QgsSurface *>( d->geometry );
   if ( surface )
   {
     qgisArea = surface->area();
@@ -1537,7 +1537,7 @@ QgsGeometry QgsGeometry::extendLine( double startDistance, double endDistance ) 
   }
   else
   {
-    QgsLineString *line = dynamic_cast< QgsLineString * >( d->geometry );
+    QgsLineString *line = qgsgeometry_cast< QgsLineString * >( d->geometry );
     if ( !line )
       return QgsGeometry();
 
@@ -1585,16 +1585,16 @@ QgsGeometry QgsGeometry::centroid() const
   }
 
   QgsGeos geos( d->geometry );
-  QgsPoint centroid;
+  std::unique_ptr<QgsPoint> centroid( new QgsPoint() );
   QString error;
-  bool ok = geos.centroid( centroid, &error );
+  bool ok = geos.centroid( *centroid.get(), &error );
   if ( !ok )
   {
     QgsGeometry geom;
     geom.d->error = error;
     return geom;
   }
-  return QgsGeometry( centroid.clone() );
+  return QgsGeometry( centroid.release() );
 }
 
 QgsGeometry QgsGeometry::pointOnSurface() const
@@ -1907,7 +1907,7 @@ QList<QgsGeometry> QgsGeometry::asGeometryCollection() const
     return geometryList;
   }
 
-  QgsGeometryCollection *gc = dynamic_cast<QgsGeometryCollection *>( d->geometry );
+  QgsGeometryCollection *gc = qgsgeometry_cast<QgsGeometryCollection *>( d->geometry );
   if ( gc )
   {
     int numGeom = gc->numGeometries();
@@ -2012,10 +2012,7 @@ QgsGeometry QgsGeometry::makeValid()
   if ( !d->geometry )
     return QgsGeometry();
 
-  QString errorMsg;
-  QgsAbstractGeometry *g = _qgis_lwgeom_make_valid( *d->geometry, errorMsg );
-  if ( !g )
-    return QgsGeometry();
+  QgsAbstractGeometry *g = _qgis_lwgeom_make_valid( d->geometry, d->error );
 
   return QgsGeometry( g );
 }
@@ -2173,7 +2170,7 @@ static bool vertexIndexInfo( const QgsAbstractGeometry *g, int vertexIndex, int 
   if ( vertexIndex < 0 )
     return false;  // clearly something wrong
 
-  if ( const QgsGeometryCollection *geomCollection = dynamic_cast<const QgsGeometryCollection *>( g ) )
+  if ( const QgsGeometryCollection *geomCollection = qgsgeometry_cast<const QgsGeometryCollection *>( g ) )
   {
     partIndex = 0;
     int offset = 0;
@@ -2196,7 +2193,7 @@ static bool vertexIndexInfo( const QgsAbstractGeometry *g, int vertexIndex, int 
       partIndex++;
     }
   }
-  else if ( const QgsCurvePolygon *curvePolygon = dynamic_cast<const QgsCurvePolygon *>( g ) )
+  else if ( const QgsCurvePolygon *curvePolygon = qgsgeometry_cast<const QgsCurvePolygon *>( g ) )
   {
     const QgsCurve *ring = curvePolygon->exteriorRing();
     if ( vertexIndex < ring->numPoints() )
@@ -2221,7 +2218,7 @@ static bool vertexIndexInfo( const QgsAbstractGeometry *g, int vertexIndex, int 
       ringIndex += 1;
     }
   }
-  else if ( const QgsCurve *curve = dynamic_cast<const QgsCurve *>( g ) )
+  else if ( const QgsCurve *curve = qgsgeometry_cast<const QgsCurve *>( g ) )
   {
     if ( vertexIndex < curve->numPoints() )
     {
@@ -2231,7 +2228,7 @@ static bool vertexIndexInfo( const QgsAbstractGeometry *g, int vertexIndex, int 
       return true;
     }
   }
-  else if ( dynamic_cast<const QgsPoint *>( g ) )
+  else if ( qgsgeometry_cast<const QgsPoint *>( g ) )
   {
     if ( vertexIndex == 0 )
     {
@@ -2260,17 +2257,17 @@ bool QgsGeometry::vertexIdFromVertexNr( int nr, QgsVertexId &id ) const
 
   // now let's find out if it is a straight or circular segment
   const QgsAbstractGeometry *g = d->geometry;
-  if ( const QgsGeometryCollection *geomCollection = dynamic_cast<const QgsGeometryCollection *>( g ) )
+  if ( const QgsGeometryCollection *geomCollection = qgsgeometry_cast<const QgsGeometryCollection *>( g ) )
   {
     g = geomCollection->geometryN( id.part );
   }
 
-  if ( const QgsCurvePolygon *curvePolygon = dynamic_cast<const QgsCurvePolygon *>( g ) )
+  if ( const QgsCurvePolygon *curvePolygon = qgsgeometry_cast<const QgsCurvePolygon *>( g ) )
   {
     g = id.ring == 0 ? curvePolygon->exteriorRing() : curvePolygon->interiorRing( id.ring - 1 );
   }
 
-  if ( const QgsCurve *curve = dynamic_cast<const QgsCurve *>( g ) )
+  if ( const QgsCurve *curve = qgsgeometry_cast<const QgsCurve *>( g ) )
   {
     QgsPoint p;
     res = curve->pointAt( id.vertex, p, id.type );

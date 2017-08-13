@@ -37,18 +37,18 @@ QList<QgsLineString *> QgsGeometryUtils::extractLineStrings( const QgsAbstractGe
   while ( ! geometries.isEmpty() )
   {
     const QgsAbstractGeometry *g = geometries.takeFirst();
-    if ( const QgsCurve *curve = dynamic_cast< const QgsCurve * >( g ) )
+    if ( const QgsCurve *curve = qgsgeometry_cast< const QgsCurve * >( g ) )
     {
       linestrings << static_cast< QgsLineString * >( curve->segmentize() );
     }
-    else if ( const QgsGeometryCollection *collection = dynamic_cast< const QgsGeometryCollection * >( g ) )
+    else if ( const QgsGeometryCollection *collection = qgsgeometry_cast< const QgsGeometryCollection * >( g ) )
     {
       for ( int i = 0; i < collection->numGeometries(); ++i )
       {
         geometries.append( collection->geometryN( i ) );
       }
     }
-    else if ( const QgsCurvePolygon *curvePolygon = dynamic_cast< const QgsCurvePolygon * >( g ) )
+    else if ( const QgsCurvePolygon *curvePolygon = qgsgeometry_cast< const QgsCurvePolygon * >( g ) )
     {
       if ( curvePolygon->exteriorRing() )
         linestrings << static_cast< QgsLineString * >( curvePolygon->exteriorRing()->segmentize() );

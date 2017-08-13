@@ -107,7 +107,7 @@ static QgsGeometry generalizeWkbGeometryByBoundingBox(
 template<class T>
 static T *createEmptySameTypeGeom( const T &geom )
 {
-  T *output( dynamic_cast<T *>( geom.clone() ) );
+  T *output( qgsgeometry_cast<T *>( geom.clone() ) );
   output->clear();
   return output;
 }
@@ -269,11 +269,11 @@ QgsGeometry QgsMapToPixelSimplifier::simplifyGeometry(
   {
     const QgsPolygonV2 &srcPolygon = dynamic_cast<const QgsPolygonV2 &>( geometry );
     std::unique_ptr<QgsPolygonV2> polygon( new QgsPolygonV2() );
-    polygon->setExteriorRing( dynamic_cast<QgsCurve *>( simplifyGeometry( simplifyFlags, simplifyAlgorithm, srcPolygon.exteriorRing()->wkbType(), *srcPolygon.exteriorRing(), envelope, map2pixelTol, true ).geometry()->clone() ) );
+    polygon->setExteriorRing( qgsgeometry_cast<QgsCurve *>( simplifyGeometry( simplifyFlags, simplifyAlgorithm, srcPolygon.exteriorRing()->wkbType(), *srcPolygon.exteriorRing(), envelope, map2pixelTol, true ).geometry()->clone() ) );
     for ( int i = 0; i < srcPolygon.numInteriorRings(); ++i )
     {
       const QgsCurve *sub = srcPolygon.interiorRing( i );
-      polygon->addInteriorRing( dynamic_cast<QgsCurve *>( simplifyGeometry( simplifyFlags, simplifyAlgorithm, sub->wkbType(), *sub, envelope, map2pixelTol, true ).geometry()->clone() ) );
+      polygon->addInteriorRing( qgsgeometry_cast<QgsCurve *>( simplifyGeometry( simplifyFlags, simplifyAlgorithm, sub->wkbType(), *sub, envelope, map2pixelTol, true ).geometry()->clone() ) );
     }
     return QgsGeometry( polygon.release() );
   }

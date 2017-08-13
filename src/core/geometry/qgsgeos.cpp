@@ -666,7 +666,7 @@ GEOSGeometry *QgsGeos::linePointDifference( GEOSGeometry *GEOSsplitPoint ) const
   QgsMultiCurve *multiCurve = nullptr;
   if ( type == GEOS_MULTILINESTRING )
   {
-    multiCurve = dynamic_cast<QgsMultiCurve *>( mGeometry->clone() );
+    multiCurve = qgsgeometry_cast<QgsMultiCurve *>( mGeometry->clone() );
   }
   else if ( type == GEOS_LINESTRING )
   {
@@ -685,7 +685,7 @@ GEOSGeometry *QgsGeos::linePointDifference( GEOSGeometry *GEOSsplitPoint ) const
 
 
   QgsAbstractGeometry *splitGeom = fromGeos( GEOSsplitPoint );
-  QgsPoint *splitPoint = dynamic_cast<QgsPoint *>( splitGeom );
+  QgsPoint *splitPoint = qgsgeometry_cast<QgsPoint *>( splitGeom );
   if ( !splitPoint )
   {
     delete splitGeom;
@@ -697,7 +697,7 @@ GEOSGeometry *QgsGeos::linePointDifference( GEOSGeometry *GEOSsplitPoint ) const
   //For each part
   for ( int i = 0; i < multiCurve->numGeometries(); ++i )
   {
-    const QgsLineString *line = dynamic_cast<const QgsLineString *>( multiCurve->geometryN( i ) );
+    const QgsLineString *line = qgsgeometry_cast<const QgsLineString *>( multiCurve->geometryN( i ) );
     if ( line )
     {
       //For each segment
@@ -1254,7 +1254,7 @@ GEOSGeometry *QgsGeos::asGeos( const QgsAbstractGeometry *geom, double precision
       }
     }
 
-    const QgsGeometryCollection *c = dynamic_cast<const QgsGeometryCollection *>( geom );
+    const QgsGeometryCollection *c = qgsgeometry_cast<const QgsGeometryCollection *>( geom );
     if ( !c )
       return nullptr;
 
@@ -1656,7 +1656,7 @@ bool QgsGeos::isSimple( QString *errorMsg ) const
 GEOSCoordSequence *QgsGeos::createCoordinateSequence( const QgsCurve *curve, double precision, bool forceClose )
 {
   bool segmentize = false;
-  const QgsLineString *line = dynamic_cast<const QgsLineString *>( curve );
+  const QgsLineString *line = qgsgeometry_cast<const QgsLineString *>( curve );
 
   if ( !line )
   {
@@ -1742,7 +1742,7 @@ GEOSCoordSequence *QgsGeos::createCoordinateSequence( const QgsCurve *curve, dou
 
 GEOSGeometry *QgsGeos::createGeosPoint( const QgsAbstractGeometry *point, int coordDims, double precision )
 {
-  const QgsPoint *pt = dynamic_cast<const QgsPoint *>( point );
+  const QgsPoint *pt = qgsgeometry_cast<const QgsPoint *>( point );
   if ( !pt )
     return nullptr;
 
@@ -1796,7 +1796,7 @@ GEOSGeometry *QgsGeos::createGeosPointXY( double x, double y, bool hasZ, double 
 
 GEOSGeometry *QgsGeos::createGeosLinestring( const QgsAbstractGeometry *curve, double precision )
 {
-  const QgsCurve *c = dynamic_cast<const QgsCurve *>( curve );
+  const QgsCurve *c = qgsgeometry_cast<const QgsCurve *>( curve );
   if ( !c )
     return nullptr;
 
@@ -1815,7 +1815,7 @@ GEOSGeometry *QgsGeos::createGeosLinestring( const QgsAbstractGeometry *curve, d
 
 GEOSGeometry *QgsGeos::createGeosPolygon( const QgsAbstractGeometry *poly, double precision )
 {
-  const QgsCurvePolygon *polygon = dynamic_cast<const QgsCurvePolygon *>( poly );
+  const QgsCurvePolygon *polygon = qgsgeometry_cast<const QgsCurvePolygon *>( poly );
   if ( !polygon )
     return nullptr;
 

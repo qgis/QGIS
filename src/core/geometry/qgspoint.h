@@ -416,6 +416,22 @@ class CORE_EXPORT QgsPoint: public QgsAbstractGeometry
     virtual bool dropMValue() override;
     bool convertTo( QgsWkbTypes::Type type ) override;
 
+#ifndef SIP_RUN
+
+    /**
+     * Cast the \a geom to a QgsPoint.
+     * Should be used by qgsgeometry_cast<QgsPoint *>( geometry ).
+     *
+     * \note Not available in Python. Objects will be automatically be converted to the appropriate target type.
+     * \since QGIS 3.0
+     */
+    inline const QgsPoint *cast( const QgsAbstractGeometry *geom ) const
+    {
+      if ( geom && QgsWkbTypes::flatType( geom->wkbType() ) == QgsWkbTypes::Point )
+        return static_cast<const QgsPoint *>( geom );
+      return nullptr;
+    }
+#endif
   private:
     double mX;
     double mY;

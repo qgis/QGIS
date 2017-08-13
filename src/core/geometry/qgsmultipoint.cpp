@@ -50,7 +50,7 @@ QDomElement QgsMultiPointV2::asGML2( QDomDocument &doc, int precision, const QSt
   QDomElement elemMultiPoint = doc.createElementNS( ns, QStringLiteral( "MultiPoint" ) );
   Q_FOREACH ( const QgsAbstractGeometry *geom, mGeometries )
   {
-    if ( dynamic_cast<const QgsPoint *>( geom ) )
+    if ( qgsgeometry_cast<const QgsPoint *>( geom ) )
     {
       QDomElement elemPointMember = doc.createElementNS( ns, QStringLiteral( "pointMember" ) );
       elemPointMember.appendChild( geom->asGML2( doc, precision, ns ) );
@@ -66,7 +66,7 @@ QDomElement QgsMultiPointV2::asGML3( QDomDocument &doc, int precision, const QSt
   QDomElement elemMultiPoint = doc.createElementNS( ns, QStringLiteral( "MultiPoint" ) );
   Q_FOREACH ( const QgsAbstractGeometry *geom, mGeometries )
   {
-    if ( dynamic_cast<const QgsPoint *>( geom ) )
+    if ( qgsgeometry_cast<const QgsPoint *>( geom ) )
     {
       QDomElement elemPointMember = doc.createElementNS( ns, QStringLiteral( "pointMember" ) );
       elemPointMember.appendChild( geom->asGML3( doc, precision, ns ) );
@@ -84,7 +84,7 @@ QString QgsMultiPointV2::asJSON( int precision ) const
   QgsPointSequence pts;
   Q_FOREACH ( const QgsAbstractGeometry *geom, mGeometries )
   {
-    if ( dynamic_cast<const QgsPoint *>( geom ) )
+    if ( qgsgeometry_cast<const QgsPoint *>( geom ) )
     {
       const QgsPoint *point = static_cast<const QgsPoint *>( geom );
       pts << *point;
@@ -97,7 +97,7 @@ QString QgsMultiPointV2::asJSON( int precision ) const
 
 bool QgsMultiPointV2::addGeometry( QgsAbstractGeometry *g )
 {
-  if ( !dynamic_cast<QgsPoint *>( g ) )
+  if ( !qgsgeometry_cast<QgsPoint *>( g ) )
   {
     delete g;
     return false;

@@ -725,14 +725,14 @@ QgsGeometry QgsVectorDataProvider::convertToProviderType( const QgsGeometry &geo
   QgsAbstractGeometry *outputGeom = nullptr;
 
   //convert compoundcurve to circularstring (possible if compoundcurve consists of one circular string)
-  if ( QgsWkbTypes::flatType( providerGeomType ) == QgsWkbTypes::CircularString && QgsWkbTypes::flatType( geometry->wkbType() ) == QgsWkbTypes::CompoundCurve )
+  if ( QgsWkbTypes::flatType( providerGeomType ) == QgsWkbTypes::CircularString )
   {
-    QgsCompoundCurve *compoundCurve = static_cast<QgsCompoundCurve *>( geometry );
+    QgsCompoundCurve *compoundCurve = qgsgeometry_cast<QgsCompoundCurve *>( geometry );
     if ( compoundCurve )
     {
       if ( compoundCurve->nCurves() == 1 )
       {
-        const QgsCircularString *circularString = dynamic_cast<const QgsCircularString *>( compoundCurve->curveAt( 0 ) );
+        const QgsCircularString *circularString = qgsgeometry_cast<const QgsCircularString *>( compoundCurve->curveAt( 0 ) );
         if ( circularString )
         {
           outputGeom = circularString->clone();
@@ -745,7 +745,7 @@ QgsGeometry QgsVectorDataProvider::convertToProviderType( const QgsGeometry &geo
   if ( QgsWkbTypes::isMultiType( providerGeomType ) && !QgsWkbTypes::isMultiType( geometry->wkbType() ) )
   {
     outputGeom = QgsGeometryFactory::geomFromWkbType( providerGeomType );
-    QgsGeometryCollection *geomCollection = dynamic_cast<QgsGeometryCollection *>( outputGeom );
+    QgsGeometryCollection *geomCollection = qgsgeometry_cast<QgsGeometryCollection *>( outputGeom );
     if ( geomCollection )
     {
       geomCollection->addGeometry( geometry->clone() );

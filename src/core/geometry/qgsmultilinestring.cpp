@@ -43,7 +43,7 @@ QDomElement QgsMultiLineString::asGML2( QDomDocument &doc, int precision, const 
   QDomElement elemMultiLineString = doc.createElementNS( ns, QStringLiteral( "MultiLineString" ) );
   Q_FOREACH ( const QgsAbstractGeometry *geom, mGeometries )
   {
-    if ( dynamic_cast<const QgsLineString *>( geom ) )
+    if ( qgsgeometry_cast<const QgsLineString *>( geom ) )
     {
       const QgsLineString *lineString = static_cast<const QgsLineString *>( geom );
 
@@ -63,7 +63,7 @@ QDomElement QgsMultiLineString::asGML3( QDomDocument &doc, int precision, const 
   QDomElement elemMultiCurve = doc.createElementNS( ns, QStringLiteral( "MultiCurve" ) );
   Q_FOREACH ( const QgsAbstractGeometry *geom, mGeometries )
   {
-    if ( dynamic_cast<const QgsLineString *>( geom ) )
+    if ( qgsgeometry_cast<const QgsLineString *>( geom ) )
     {
       const QgsLineString *lineString = static_cast<const QgsLineString *>( geom );
 
@@ -81,7 +81,7 @@ QString QgsMultiLineString::asJSON( int precision ) const
   QString json = QStringLiteral( "{\"type\": \"MultiLineString\", \"coordinates\": [" );
   Q_FOREACH ( const QgsAbstractGeometry *geom, mGeometries )
   {
-    if ( dynamic_cast<const QgsCurve *>( geom ) )
+    if ( qgsgeometry_cast<const QgsCurve *>( geom ) )
     {
       const QgsLineString *lineString = static_cast<const QgsLineString *>( geom );
       QgsPointSequence pts;

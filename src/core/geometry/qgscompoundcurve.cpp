@@ -37,7 +37,7 @@ QgsCompoundCurve::~QgsCompoundCurve()
 
 bool QgsCompoundCurve::operator==( const QgsCurve &other ) const
 {
-  const QgsCompoundCurve *otherCurve = dynamic_cast< const QgsCompoundCurve * >( &other );
+  const QgsCompoundCurve *otherCurve = qgsgeometry_cast< const QgsCompoundCurve * >( &other );
   if ( !otherCurve )
     return false;
 
@@ -222,7 +222,7 @@ QString QgsCompoundCurve::asWkt( int precision ) const
   Q_FOREACH ( const QgsCurve *curve, mCurves )
   {
     QString childWkt = curve->asWkt( precision );
-    if ( dynamic_cast<const QgsLineString *>( curve ) )
+    if ( qgsgeometry_cast<const QgsLineString *>( curve ) )
     {
       // Type names of linear geometries are omitted
       childWkt = childWkt.mid( childWkt.indexOf( '(' ) );

@@ -135,6 +135,23 @@ class CORE_EXPORT QgsGeometryCollection: public QgsAbstractGeometry
     virtual bool dropZValue() override;
     virtual bool dropMValue() override;
 
+#ifndef SIP_RUN
+
+    /**
+     * Cast the \a geom to a QgsGeometryCollection.
+     * Should be used by qgsgeometry_cast<QgsGeometryCollection *>( geometry ).
+     *
+     * \note Not available in Python. Objects will be automatically be converted to the appropriate target type.
+     * \since QGIS 3.0
+     */
+    inline const QgsGeometryCollection *cast( const QgsAbstractGeometry *geom ) const
+    {
+      if ( geom && QgsWkbTypes::isMultiType( geom->wkbType() ) )
+        return static_cast<const QgsGeometryCollection *>( geom );
+      return nullptr;
+    }
+#endif
+
   protected:
     QVector< QgsAbstractGeometry * > mGeometries;
 

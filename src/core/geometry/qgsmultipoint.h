@@ -48,6 +48,22 @@ class CORE_EXPORT QgsMultiPointV2: public QgsGeometryCollection
 
     virtual QgsAbstractGeometry *boundary() const override SIP_FACTORY;
 
+#ifndef SIP_RUN
+
+    /**
+     * Cast the \a geom to a QgsLineString.
+     * Should be used by qgsgeometry_cast<QgsLineString *>( geometry ).
+     *
+     * \note Not available in Python. Objects will be automatically be converted to the appropriate target type.
+     * \since QGIS 3.0
+     */
+    inline const QgsMultiPointV2 *cast( const QgsAbstractGeometry *geom ) const
+    {
+      if ( geom && QgsWkbTypes::flatType( geom->wkbType() ) == QgsWkbTypes::MultiPoint )
+        return static_cast<const QgsMultiPointV2 *>( geom );
+      return nullptr;
+    }
+#endif
   protected:
 
     virtual bool wktOmitChildType() const override { return true; }

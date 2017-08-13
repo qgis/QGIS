@@ -49,6 +49,22 @@ class CORE_EXPORT QgsMultiPolygonV2: public QgsMultiSurface
     QgsAbstractGeometry *toCurveType() const override SIP_FACTORY;
 
     virtual QgsAbstractGeometry *boundary() const override SIP_FACTORY;
+#ifndef SIP_RUN
+
+    /**
+     * Cast the \a geom to a QgsMultiPolygonV2.
+     * Should be used by qgsgeometry_cast<QgsMultiPolygonV2 *>( geometry ).
+     *
+     * \note Not available in Python. Objects will be automatically be converted to the appropriate target type.
+     * \since QGIS 3.0
+     */
+    inline const QgsMultiPolygonV2 *cast( const QgsAbstractGeometry *geom ) const
+    {
+      if ( geom && QgsWkbTypes::flatType( geom->wkbType() ) == QgsWkbTypes::MultiPolygon )
+        return static_cast<const QgsMultiPolygonV2 *>( geom );
+      return nullptr;
+    }
+#endif
 
   protected:
 

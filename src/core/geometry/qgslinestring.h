@@ -225,6 +225,22 @@ class CORE_EXPORT QgsLineString: public QgsCurve
 
     bool convertTo( QgsWkbTypes::Type type ) override;
 
+#ifndef SIP_RUN
+
+    /**
+     * Cast the \a geom to a QgsLineString.
+     * Should be used by qgsgeometry_cast<QgsLineString *>( geometry ).
+     *
+     * \note Not available in Python. Objects will be automatically be converted to the appropriate target type.
+     * \since QGIS 3.0
+     */
+    inline const QgsLineString *cast( const QgsAbstractGeometry *geom ) const
+    {
+      if ( geom && QgsWkbTypes::flatType( geom->wkbType() ) == QgsWkbTypes::LineString )
+        return static_cast<const QgsLineString *>( geom );
+      return nullptr;
+    }
+#endif
   protected:
 
     virtual QgsRectangle calculateBoundingBox() const override;

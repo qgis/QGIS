@@ -137,7 +137,7 @@ QgsLineString::QgsLineString( const QList<QgsPointXY> &points )
 
 bool QgsLineString::operator==( const QgsCurve &other ) const
 {
-  const QgsLineString *otherLine = dynamic_cast< const QgsLineString * >( &other );
+  const QgsLineString *otherLine = qgsgeometry_cast< const QgsLineString * >( &other );
   if ( !otherLine )
     return false;
 
