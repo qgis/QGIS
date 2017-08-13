@@ -40,7 +40,7 @@ class CORE_EXPORT QgsGeometryEngine
     enum EngineOperationResult
     {
       Success = 0, //!< Operation succeeded
-      NothingHappened, //!< Nothing happened, without any error
+      NothingHappened = 1000, //!< Nothing happened, without any error
       MethodNotImplemented, //!< Method not implemented in geometry engine
       EngineError, //!< Error occured in the geometry engine
       NodedGeometryError, //!< Error occured while creating a noded geometry

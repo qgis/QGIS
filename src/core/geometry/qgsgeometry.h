@@ -104,7 +104,7 @@ class CORE_EXPORT QgsGeometry
     enum OperationResult
     {
       Success = 0, //!< Operation succeeded
-      NothingHappened, //!< Nothing happened, without any error
+      NothingHappened = 1000, //!< Nothing happened, without any error
       InvalidBaseGeometry, //!< The base geometry on which the operation is done is invalid or empty
       InvalidInput, //!< The input geometry (ring, part, split line, etc.) has not the correct geometry type
       GeometryEngineError, //!< Geometry engine misses a method implemented or an error occured in the geometry engine
