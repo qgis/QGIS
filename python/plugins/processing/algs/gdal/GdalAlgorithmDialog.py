@@ -39,7 +39,8 @@ from qgis.PyQt.QtWidgets import (QWidget,
 
 from qgis.core import (QgsProcessingFeedback,
                        QgsProcessingParameterDefinition)
-from qgis.gui import QgsMessageBar
+from qgis.gui import (QgsMessageBar,
+                      QgsProjectionSelectionWidget)
 
 from processing.gui.AlgorithmDialog import AlgorithmDialog
 from processing.gui.AlgorithmDialogBase import AlgorithmDialogBase
@@ -93,10 +94,17 @@ class GdalParametersPanel(ParametersPanel):
     def connectParameterSignals(self):
         for wrapper in list(self.wrappers.values()):
             w = wrapper.widget
+            self.connectWidgetChangedSignals(w)
+            for c in w.children():
+                self.connectWidgetChangedSignals(c)
+
+    def connectWidgetChangedSignals(self, w):
             if isinstance(w, QLineEdit):
                 w.textChanged.connect(self.parametersHaveChanged)
             elif isinstance(w, QComboBox):
                 w.currentIndexChanged.connect(self.parametersHaveChanged)
+            elif isinstance(w, QgsProjectionSelectionWidget):
+                w.crsChanged.connect(self.parametersHaveChanged)
             elif isinstance(w, QCheckBox):
                 w.stateChanged.connect(self.parametersHaveChanged)
             elif isinstance(w, MultipleInputPanel):
