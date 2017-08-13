@@ -20,11 +20,10 @@
 
 #include <QString>
 #include <QApplication>
-#include <QSettings>
+#include <qgssettings.h>
 
 #include "qgshelpviewer.h"
 #include "qgsapplication.h"
-#include "qgslogger.h"
 
 QgsReaderThread::QgsReaderThread()
   : QThread()
@@ -111,12 +110,12 @@ void QgsHelpViewer::resizeEvent( QResizeEvent *event )
 
 void QgsHelpViewer::restorePosition()
 {
-  QSettings settings;
+  QgsSettings settings;
   restoreGeometry( settings.value( QStringLiteral( "HelpViewer/geometry" ) ).toByteArray() );
 }
 
 void QgsHelpViewer::saveWindowLocation()
 {
-  QSettings settings;
+  QgsSettings settings;
   settings.setValue( QStringLiteral( "HelpViewer/geometry" ), saveGeometry() );
 }
