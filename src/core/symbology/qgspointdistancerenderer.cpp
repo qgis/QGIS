@@ -55,6 +55,11 @@ bool QgsPointDistanceRenderer::renderFeature( QgsFeature &feature, QgsRenderCont
   Q_UNUSED( context );
   Q_UNUSED( layer );
 
+  /*
+   * IMPORTANT: This algorithm is ported to Python in the processing "Points Displacement" algorithm.
+   * Please port any changes/improvements to that algorithm too!
+   */
+
   //check if there is already a point at that position
   if ( !feature.hasGeometry() )
     return false;

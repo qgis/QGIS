@@ -2905,3 +2905,45 @@ tests:
           - 'Mean value: 147.17197994967066'
           - 'Standard deviation: 43.9618116337985'
           - 'Sum of the squares: 252304334.52061242'
+
+  - algorithm: qgis:pointsdisplacement
+    name: Point displacement
+    params:
+      DISTANCE: 1.0
+      HORIZONTAL: false
+      INPUT:
+        name: custom/displace_points.gml
+        type: vector
+      PROXIMITY: 2.0
+    results:
+      OUTPUT:
+        name: expected/displaced_points.gml
+        type: vector
+
+  - algorithm: qgis:generatepointspixelcentroidsinsidepolygons
+    name: Pixel centroids inside polygon
+    params:
+      INPUT_RASTER:
+        name: dem.tif
+        type: raster
+      INPUT_VECTOR:
+        name: custom/pixel_polygons.gml
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/pixel_centroids_polygon.gml
+        type: vector
+
+  - algorithm: qgis:generatepointspixelcentroidsalongline
+    name: Pixel centroids along line
+    params:
+      INPUT_RASTER:
+        name: dem.tif
+        type: raster
+      INPUT_VECTOR:
+        name: custom/pixel_lines.gml
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/pixel_centroids_lines.gml
+        type: vector

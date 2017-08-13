@@ -360,7 +360,7 @@ qgis:pointsalonglines: >
   An optional start and end offset can be specified, which controls how far from the start and end of the geometry the points should be created.
 
 qgis:pointsdisplacement:
-
+  Offsets nearby point features by moving nearby points by a preset amount to minimize overlapping features.
 
 qgis:pointslayerfromtable: >
   This algorithm generates a points layer based on the values from an input table.
