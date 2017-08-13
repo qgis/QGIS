@@ -34,8 +34,8 @@ int QgsGeometryEditUtils::addRing( QgsAbstractGeometry *geom, QgsCurve *ring )
   }
 
   QList< QgsCurvePolygon * > polygonList;
-  QgsCurvePolygon *curvePoly = dynamic_cast< QgsCurvePolygon * >( geom );
-  QgsGeometryCollection *multiGeom = dynamic_cast< QgsGeometryCollection * >( geom );
+  QgsCurvePolygon *curvePoly = qgsgeometry_cast< QgsCurvePolygon * >( geom );
+  QgsGeometryCollection *multiGeom = qgsgeometry_cast< QgsGeometryCollection * >( geom );
   if ( curvePoly )
   {
     polygonList.append( curvePoly );
@@ -45,7 +45,7 @@ int QgsGeometryEditUtils::addRing( QgsAbstractGeometry *geom, QgsCurve *ring )
     polygonList.reserve( multiGeom->numGeometries() );
     for ( int i = 0; i < multiGeom->numGeometries(); ++i )
     {
-      polygonList.append( dynamic_cast< QgsCurvePolygon * >( multiGeom->geometryN( i ) ) );
+      polygonList.append( qgsgeometry_cast< QgsCurvePolygon * >( multiGeom->geometryN( i ) ) );
     }
   }
   else
@@ -113,7 +113,7 @@ int QgsGeometryEditUtils::addPart( QgsAbstractGeometry *geom, QgsAbstractGeometr
   }
 
   //multitype?
-  QgsGeometryCollection *geomCollection = dynamic_cast<QgsGeometryCollection *>( geom );
+  QgsGeometryCollection *geomCollection = qgsgeometry_cast<QgsGeometryCollection *>( geom );
   if ( !geomCollection )
   {
     return 1;
@@ -188,7 +188,7 @@ bool QgsGeometryEditUtils::deleteRing( QgsAbstractGeometry *geom, int ringNum, i
   }
 
   QgsAbstractGeometry *g = geom;
-  QgsGeometryCollection *c = dynamic_cast<QgsGeometryCollection *>( geom );
+  QgsGeometryCollection *c = qgsgeometry_cast<QgsGeometryCollection *>( geom );
   if ( c )
   {
     g = c->geometryN( partNum );
@@ -215,7 +215,7 @@ bool QgsGeometryEditUtils::deletePart( QgsAbstractGeometry *geom, int partNum )
     return false;
   }
 
-  QgsGeometryCollection *c = dynamic_cast<QgsGeometryCollection *>( geom );
+  QgsGeometryCollection *c = qgsgeometry_cast<QgsGeometryCollection *>( geom );
   if ( !c )
   {
     return false;

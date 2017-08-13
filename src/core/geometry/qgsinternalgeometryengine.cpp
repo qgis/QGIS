@@ -44,7 +44,7 @@ QgsGeometry QgsInternalGeometryEngine::extrude( double x, double y ) const
 {
   QList<QgsLineString *> linesToProcess;
 
-  const QgsMultiCurve *multiCurve = dynamic_cast< const QgsMultiCurve * >( mGeometry );
+  const QgsMultiCurve *multiCurve = qgsgeometry_cast< const QgsMultiCurve * >( mGeometry );
   if ( multiCurve )
   {
     for ( int i = 0; i < multiCurve->partCount(); ++i )
@@ -53,7 +53,7 @@ QgsGeometry QgsInternalGeometryEngine::extrude( double x, double y ) const
     }
   }
 
-  const QgsCurve *curve = dynamic_cast< const QgsCurve * >( mGeometry );
+  const QgsCurve *curve = qgsgeometry_cast< const QgsCurve * >( mGeometry );
   if ( curve )
   {
     linesToProcess << static_cast<QgsLineString *>( curve->segmentize() );
@@ -241,7 +241,7 @@ QgsGeometry QgsInternalGeometryEngine::poleOfInaccessibility( double precision, 
   if ( precision <= 0 )
     return QgsGeometry();
 
-  if ( const QgsGeometryCollection *gc = dynamic_cast< const QgsGeometryCollection *>( mGeometry ) )
+  if ( const QgsGeometryCollection *gc = qgsgeometry_cast< const QgsGeometryCollection *>( mGeometry ) )
   {
     int numGeom = gc->numGeometries();
     double maxDist = 0;
@@ -249,7 +249,7 @@ QgsGeometry QgsInternalGeometryEngine::poleOfInaccessibility( double precision, 
     bool found = false;
     for ( int i = 0; i < numGeom; ++i )
     {
-      const QgsSurface *surface = dynamic_cast< const QgsSurface * >( gc->geometryN( i ) );
+      const QgsSurface *surface = qgsgeometry_cast< const QgsSurface * >( gc->geometryN( i ) );
       if ( !surface )
         continue;
 
@@ -272,7 +272,7 @@ QgsGeometry QgsInternalGeometryEngine::poleOfInaccessibility( double precision, 
   }
   else
   {
-    const QgsSurface *surface = dynamic_cast< const QgsSurface * >( mGeometry );
+    const QgsSurface *surface = qgsgeometry_cast< const QgsSurface * >( mGeometry );
     if ( !surface )
       return QgsGeometry();
 
@@ -494,7 +494,7 @@ QgsGeometry QgsInternalGeometryEngine::orthogonalize( double tolerance, int maxI
   double lowerThreshold = cos( ( 90 - angleThreshold ) * M_PI / 180.00 );
   double upperThreshold = cos( angleThreshold * M_PI / 180.0 );
 
-  if ( const QgsGeometryCollection *gc = dynamic_cast< const QgsGeometryCollection *>( mGeometry ) )
+  if ( const QgsGeometryCollection *gc = qgsgeometry_cast< const QgsGeometryCollection *>( mGeometry ) )
   {
     int numGeom = gc->numGeometries();
     QList< QgsAbstractGeometry * > geometryList;
@@ -652,7 +652,7 @@ QgsGeometry QgsInternalGeometryEngine::densifyByCount( int extraNodesPerSegment 
     return QgsGeometry( mGeometry->clone() ); // point geometry, nothing to do
   }
 
-  if ( const QgsGeometryCollection *gc = dynamic_cast< const QgsGeometryCollection *>( mGeometry ) )
+  if ( const QgsGeometryCollection *gc = qgsgeometry_cast< const QgsGeometryCollection *>( mGeometry ) )
   {
     int numGeom = gc->numGeometries();
     QList< QgsAbstractGeometry * > geometryList;
@@ -687,7 +687,7 @@ QgsGeometry QgsInternalGeometryEngine::densifyByDistance( double distance ) cons
     return QgsGeometry( mGeometry->clone() ); // point geometry, nothing to do
   }
 
-  if ( const QgsGeometryCollection *gc = dynamic_cast< const QgsGeometryCollection *>( mGeometry ) )
+  if ( const QgsGeometryCollection *gc = qgsgeometry_cast< const QgsGeometryCollection *>( mGeometry ) )
   {
     int numGeom = gc->numGeometries();
     QList< QgsAbstractGeometry * > geometryList;

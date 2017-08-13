@@ -357,18 +357,18 @@ static bool lwgeom_make_geos_friendly( QgsAbstractGeometry &geom )
 
     case QgsWkbTypes::LineString:
       // lines need at least 2 points
-      return lwline_make_geos_friendly( dynamic_cast<QgsLineString &>( geom ) );
+      return lwline_make_geos_friendly( qgsgeometry_cast<QgsLineString &>( geom ) );
       break;
 
     case QgsWkbTypes::Polygon:
       // polygons need all rings closed and with npoints > 3
-      return lwpoly_make_geos_friendly( dynamic_cast<QgsPolygonV2 &>( geom ) );
+      return lwpoly_make_geos_friendly( qgsgeometry_cast<QgsPolygonV2 &>( geom ) );
       break;
 
     case QgsWkbTypes::MultiLineString:
     case QgsWkbTypes::MultiPolygon:
     case QgsWkbTypes::GeometryCollection:
-      return lwcollection_make_geos_friendly( dynamic_cast<QgsGeometryCollection &>( geom ) );
+      return lwcollection_make_geos_friendly( qgsgeometry_cast<QgsGeometryCollection &>( geom ) );
       break;
 
     default:

@@ -44,7 +44,7 @@ QDomElement QgsMultiPolygonV2::asGML2( QDomDocument &doc, int precision, const Q
   QDomElement elemMultiPolygon = doc.createElementNS( ns, QStringLiteral( "MultiPolygon" ) );
   Q_FOREACH ( const QgsAbstractGeometry *geom, mGeometries )
   {
-    if ( dynamic_cast<const QgsPolygonV2 *>( geom ) )
+    if ( qgsgeometry_cast<const QgsPolygonV2 *>( geom ) )
     {
       QDomElement elemPolygonMember = doc.createElementNS( ns, QStringLiteral( "polygonMember" ) );
       elemPolygonMember.appendChild( geom->asGML2( doc, precision, ns ) );
@@ -60,7 +60,7 @@ QDomElement QgsMultiPolygonV2::asGML3( QDomDocument &doc, int precision, const Q
   QDomElement elemMultiSurface = doc.createElementNS( ns, QStringLiteral( "MultiPolygon" ) );
   Q_FOREACH ( const QgsAbstractGeometry *geom, mGeometries )
   {
-    if ( dynamic_cast<const QgsPolygonV2 *>( geom ) )
+    if ( qgsgeometry_cast<const QgsPolygonV2 *>( geom ) )
     {
       QDomElement elemSurfaceMember = doc.createElementNS( ns, QStringLiteral( "polygonMember" ) );
       elemSurfaceMember.appendChild( geom->asGML3( doc, precision, ns ) );
@@ -77,7 +77,7 @@ QString QgsMultiPolygonV2::asJSON( int precision ) const
   QString json = QStringLiteral( "{\"type\": \"MultiPolygon\", \"coordinates\": [" );
   Q_FOREACH ( const QgsAbstractGeometry *geom, mGeometries )
   {
-    if ( dynamic_cast<const QgsPolygonV2 *>( geom ) )
+    if ( qgsgeometry_cast<const QgsPolygonV2 *>( geom ) )
     {
       json += '[';
 
@@ -140,7 +140,7 @@ QgsAbstractGeometry *QgsMultiPolygonV2::boundary() const
   QgsMultiLineString *multiLine = new QgsMultiLineString();
   for ( int i = 0; i < mGeometries.size(); ++i )
   {
-    if ( QgsPolygonV2 *polygon = dynamic_cast<QgsPolygonV2 *>( mGeometries.at( i ) ) )
+    if ( QgsPolygonV2 *polygon = qgsgeometry_cast<QgsPolygonV2 *>( mGeometries.at( i ) ) )
     {
       QgsAbstractGeometry *polygonBoundary = polygon->boundary();
 

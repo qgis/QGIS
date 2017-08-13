@@ -63,7 +63,7 @@ static bool isEndpointAtVertexIndex( const QgsGeometry &geom, int vertexIndex )
   {
     for ( int i = 0; i < multiCurve->numGeometries(); ++i )
     {
-      QgsCurve *part = dynamic_cast<QgsCurve *>( multiCurve->geometryN( i ) );
+      QgsCurve *part = qgsgeometry_cast<QgsCurve *>( multiCurve->geometryN( i ) );
       Q_ASSERT( part );
       if ( vertexIndex < part->numPoints() )
         return vertexIndex == 0 || vertexIndex == part->numPoints() - 1;
@@ -93,7 +93,7 @@ int adjacentVertexIndexToEndpoint( const QgsGeometry &geom, int vertexIndex )
     int offset = 0;
     for ( int i = 0; i < multiCurve->numGeometries(); ++i )
     {
-      QgsCurve *part = dynamic_cast<QgsCurve *>( multiCurve->geometryN( i ) );
+      QgsCurve *part = qgsgeometry_cast<QgsCurve *>( multiCurve->geometryN( i ) );
       Q_ASSERT( part );
       if ( vertexIndex < part->numPoints() )
         return vertexIndex == 0 ? offset + 1 : offset + part->numPoints() - 2;

@@ -666,7 +666,7 @@ GEOSGeometry *QgsGeos::linePointDifference( GEOSGeometry *GEOSsplitPoint ) const
   QgsMultiCurve *multiCurve = nullptr;
   if ( type == GEOS_MULTILINESTRING )
   {
-    multiCurve = dynamic_cast<QgsMultiCurve *>( mGeometry->clone() );
+    multiCurve = qgsgeometry_cast<QgsMultiCurve *>( mGeometry->clone() );
   }
   else if ( type == GEOS_LINESTRING )
   {
@@ -685,7 +685,7 @@ GEOSGeometry *QgsGeos::linePointDifference( GEOSGeometry *GEOSsplitPoint ) const
 
 
   QgsAbstractGeometry *splitGeom = fromGeos( GEOSsplitPoint );
-  QgsPoint *splitPoint = dynamic_cast<QgsPoint *>( splitGeom );
+  QgsPoint *splitPoint = qgsgeometry_cast<QgsPoint *>( splitGeom );
   if ( !splitPoint )
   {
     delete splitGeom;
@@ -697,7 +697,7 @@ GEOSGeometry *QgsGeos::linePointDifference( GEOSGeometry *GEOSsplitPoint ) const
   //For each part
   for ( int i = 0; i < multiCurve->numGeometries(); ++i )
   {
-    const QgsLineString *line = dynamic_cast<const QgsLineString *>( multiCurve->geometryN( i ) );
+    const QgsLineString *line = qgsgeometry_cast<const QgsLineString *>( multiCurve->geometryN( i ) );
     if ( line )
     {
       //For each segment
@@ -1254,7 +1254,7 @@ GEOSGeometry *QgsGeos::asGeos( const QgsAbstractGeometry *geom, double precision
       }
     }
 
-    const QgsGeometryCollection *c = dynamic_cast<const QgsGeometryCollection *>( geom );
+    const QgsGeometryCollection *c = qgsgeometry_cast<const QgsGeometryCollection *>( geom );
     if ( !c )
       return nullptr;
 
