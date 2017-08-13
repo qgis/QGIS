@@ -27,7 +27,7 @@ __revision__ = ':%H$'
 
 import AlgorithmsTestBase
 from processing.algs.gdal.ogr2ogrtopostgis import Ogr2OgrToPostGis
-
+from qgis.core import QgsProcessingContext
 import nose2
 import shutil
 
@@ -71,36 +71,38 @@ class TestGdalOgr2OgrToPostgis(unittest.TestCase):
     def test_getConnectionString(self):
 
         obj = Ogr2OgrToPostGis()
+        obj.initAlgorithm({})
 
         parameters = {}
+        context = QgsProcessingContext()
 
         # NOTE: defaults are debatable, see
         # https://github.com/qgis/QGIS/pull/3607#issuecomment-253971020
-        self.assertEqual(obj.getConnectionString(parameters),
+        self.assertEqual(obj.getConnectionString(parameters, context),
                          "host=localhost port=5432 active_schema=public")
 
         parameters['HOST'] = 'remote'
-        self.assertEqual(obj.getConnectionString(parameters),
+        self.assertEqual(obj.getConnectionString(parameters, context),
                          "host=remote port=5432 active_schema=public")
 
         parameters['HOST'] = ''
-        self.assertEqual(obj.getConnectionString(parameters),
+        self.assertEqual(obj.getConnectionString(parameters, context),
                          "port=5432 active_schema=public")
 
         parameters['PORT'] = '5555'
-        self.assertEqual(obj.getConnectionString(parameters),
+        self.assertEqual(obj.getConnectionString(parameters, context),
                          "port=5555 active_schema=public")
 
         parameters['PORT'] = ''
-        self.assertEqual(obj.getConnectionString(parameters),
+        self.assertEqual(obj.getConnectionString(parameters, context),
                          "active_schema=public")
 
         parameters['USER'] = 'usr'
-        self.assertEqual(obj.getConnectionString(parameters),
+        self.assertEqual(obj.getConnectionString(parameters, context),
                          "active_schema=public user=usr")
 
         parameters['PASSWORD'] = 'pwd'
-        self.assertEqual(obj.getConnectionString(parameters),
+        self.assertEqual(obj.getConnectionString(parameters, context),
                          "password=pwd active_schema=public user=usr")
 
 
