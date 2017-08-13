@@ -67,7 +67,7 @@ class CORE_EXPORT QgsMultiCurve: public QgsGeometryCollection
 
       QgsWkbTypes::Type flatType = QgsWkbTypes::flatType( geom->wkbType() );
       if ( flatType == QgsWkbTypes::MultiCurve
-           ||  flatType == QgsWkbTypes::MultiLineString )
+           || flatType == QgsWkbTypes::MultiLineString )
         return static_cast<const QgsMultiCurve *>( geom );
       return nullptr;
     }
