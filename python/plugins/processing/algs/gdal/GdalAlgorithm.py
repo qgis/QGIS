@@ -45,6 +45,7 @@ class GdalAlgorithm(QgsProcessingAlgorithm):
 
     def __init__(self):
         super().__init__()
+        self.output_values = {}
 
     def icon(self):
         return QgsApplication.getThemeIcon("/providerGdal.svg")
@@ -89,6 +90,9 @@ class GdalAlgorithm(QgsProcessingAlgorithm):
             ogr_layer_name = GdalUtils.ogrLayerName(input_layer.dataProvider().dataSourceUri())
         return ogr_data_path, ogr_layer_name
 
+    def setOutputValue(self, name, value):
+        self.output_values[name] = value
+
     def processAlgorithm(self, parameters, context, feedback):
         commands = self.getConsoleCommands(parameters, context, feedback)
         GdalUtils.runGdal(commands, feedback)
@@ -96,7 +100,11 @@ class GdalAlgorithm(QgsProcessingAlgorithm):
         # auto generate outputs
         results = {}
         for o in self.outputDefinitions():
-            results[o.name()] = parameters[o.name()]
+            if o.name() in parameters:
+                results[o.name()] = parameters[o.name()]
+        for k, v in self.output_values.items():
+            results[k]=v
+
         return results
 
     def helpUrl(self):

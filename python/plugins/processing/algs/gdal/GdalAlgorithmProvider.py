@@ -33,6 +33,7 @@ from qgis.core import (QgsApplication,
 from processing.core.ProcessingConfig import ProcessingConfig, Setting
 from .GdalUtils import GdalUtils
 
+from .AssignProjection import AssignProjection
 from .aspect import aspect
 from .warp import warp
 # from .nearblack import nearblack
@@ -69,8 +70,7 @@ from .warp import warp
 # from .rasterize_over import rasterize_over
 # from .retile import retile
 # from .gdal2tiles import gdal2tiles
-# from .AssignProjection import AssignProjection
-#
+
 from .ogr2ogrpointsonlines import Ogr2OgrPointsOnLines
 from .ogr2ogrtopostgis import Ogr2OgrToPostGis
 
@@ -143,6 +143,7 @@ class GdalAlgorithmProvider(QgsProcessingProvider):
         self.algs = [
             # nearblack(),
             # information(),
+            AssignProjection(),
             aspect(),
             warp(),
             # translate(),
@@ -176,7 +177,6 @@ class GdalAlgorithmProvider(QgsProcessingProvider):
             # rasterize_over(),
             # retile(),
             # gdal2tiles(),
-            # AssignProjection(),
             # ----- OGR tools -----
             Ogr2OgrPointsOnLines(),
             Ogr2OgrToPostGis(),
