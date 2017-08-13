@@ -29,7 +29,7 @@ __revision__ = '$Format:%H$'
 import os
 
 from qgis.core import (QgsProcessingParameterRasterLayer,
-                       QgsProcessingParameterNumber,
+                       QgsProcessingParameterBand,
                        QgsProcessingParameterBoolean,
                        QgsProcessingParameterRasterDestination)
 from processing.algs.gdal.GdalAlgorithm import GdalAlgorithm
@@ -53,8 +53,8 @@ class aspect(GdalAlgorithm):
 
     def initAlgorithm(self, config=None):
         self.addParameter(QgsProcessingParameterRasterLayer(self.INPUT, self.tr('Input layer')))
-        self.addParameter(QgsProcessingParameterNumber(
-            self.BAND, self.tr('Band number'), minValue=1, maxValue=99, defaultValue=1))
+        self.addParameter(QgsProcessingParameterBand(
+            self.BAND, self.tr('Band number'), parentLayerParameterName=self.INPUT))
         self.addParameter(QgsProcessingParameterBoolean(
             self.COMPUTE_EDGES, self.tr('Compute edges'), defaultValue=False))
         self.addParameter(QgsProcessingParameterBoolean(self.ZEVENBERGEN,
