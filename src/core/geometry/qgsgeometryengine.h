@@ -36,11 +36,11 @@ class CORE_EXPORT QgsGeometryEngine
     virtual void geometryChanged() = 0;
     virtual void prepareGeometry() = 0;
 
-    virtual QgsAbstractGeometry *intersection( const QgsAbstractGeometry &geom, QString *errorMsg = nullptr ) const = 0 SIP_FACTORY;
-    virtual QgsAbstractGeometry *difference( const QgsAbstractGeometry &geom, QString *errorMsg = nullptr ) const = 0 SIP_FACTORY;
-    virtual QgsAbstractGeometry *combine( const QgsAbstractGeometry &geom, QString *errorMsg = nullptr ) const = 0 SIP_FACTORY;
+    virtual QgsAbstractGeometry *intersection( const QgsAbstractGeometry *geom, QString *errorMsg = nullptr ) const = 0 SIP_FACTORY;
+    virtual QgsAbstractGeometry *difference( const QgsAbstractGeometry *geom, QString *errorMsg = nullptr ) const = 0 SIP_FACTORY;
+    virtual QgsAbstractGeometry *combine( const QgsAbstractGeometry *geom, QString *errorMsg = nullptr ) const = 0 SIP_FACTORY;
     virtual QgsAbstractGeometry *combine( const QList< QgsAbstractGeometry * > &, QString *errorMsg = nullptr ) const = 0 SIP_FACTORY;
-    virtual QgsAbstractGeometry *symDifference( const QgsAbstractGeometry &geom, QString *errorMsg = nullptr ) const = 0 SIP_FACTORY;
+    virtual QgsAbstractGeometry *symDifference( const QgsAbstractGeometry *geom, QString *errorMsg = nullptr ) const = 0 SIP_FACTORY;
     virtual QgsAbstractGeometry *buffer( double distance, int segments, QString *errorMsg = nullptr ) const = 0 SIP_FACTORY;
     virtual QgsAbstractGeometry *buffer( double distance, int segments, int endCapStyle, int joinStyle, double miterLimit, QString *errorMsg = nullptr ) const = 0 SIP_FACTORY;
     virtual QgsAbstractGeometry *simplify( double tolerance, QString *errorMsg = nullptr ) const = 0 SIP_FACTORY;
@@ -49,14 +49,14 @@ class CORE_EXPORT QgsGeometryEngine
     virtual bool centroid( QgsPoint &pt, QString *errorMsg = nullptr ) const = 0;
     virtual bool pointOnSurface( QgsPoint &pt, QString *errorMsg = nullptr ) const = 0;
     virtual QgsAbstractGeometry *convexHull( QString *errorMsg = nullptr ) const = 0 SIP_FACTORY;
-    virtual double distance( const QgsAbstractGeometry &geom, QString *errorMsg = nullptr ) const = 0;
-    virtual bool intersects( const QgsAbstractGeometry &geom, QString *errorMsg = nullptr ) const = 0;
-    virtual bool touches( const QgsAbstractGeometry &geom, QString *errorMsg = nullptr ) const = 0;
-    virtual bool crosses( const QgsAbstractGeometry &geom, QString *errorMsg = nullptr ) const = 0;
-    virtual bool within( const QgsAbstractGeometry &geom, QString *errorMsg = nullptr ) const = 0;
-    virtual bool overlaps( const QgsAbstractGeometry &geom, QString *errorMsg = nullptr ) const = 0;
-    virtual bool contains( const QgsAbstractGeometry &geom, QString *errorMsg = nullptr ) const = 0;
-    virtual bool disjoint( const QgsAbstractGeometry &geom, QString *errorMsg = nullptr ) const = 0;
+    virtual double distance( const QgsAbstractGeometry *geom, QString *errorMsg = nullptr ) const = 0;
+    virtual bool intersects( const QgsAbstractGeometry *geom, QString *errorMsg = nullptr ) const = 0;
+    virtual bool touches( const QgsAbstractGeometry *geom, QString *errorMsg = nullptr ) const = 0;
+    virtual bool crosses( const QgsAbstractGeometry *geom, QString *errorMsg = nullptr ) const = 0;
+    virtual bool within( const QgsAbstractGeometry *geom, QString *errorMsg = nullptr ) const = 0;
+    virtual bool overlaps( const QgsAbstractGeometry *geom, QString *errorMsg = nullptr ) const = 0;
+    virtual bool contains( const QgsAbstractGeometry *geom, QString *errorMsg = nullptr ) const = 0;
+    virtual bool disjoint( const QgsAbstractGeometry *geom, QString *errorMsg = nullptr ) const = 0;
 
     /** Returns the Dimensional Extended 9 Intersection Model (DE-9IM) representation of the
      * relationship between the geometries.
@@ -65,7 +65,7 @@ class CORE_EXPORT QgsGeometryEngine
      * \returns DE-9IM string for relationship, or an empty string if an error occurred
      * \since QGIS 2.12
      */
-    virtual QString relate( const QgsAbstractGeometry &geom, QString *errorMsg = nullptr ) const = 0;
+    virtual QString relate( const QgsAbstractGeometry *geom, QString *errorMsg = nullptr ) const = 0;
 
     /** Tests whether two geometries are related by a specified Dimensional Extended 9 Intersection Model (DE-9IM)
      * pattern.
@@ -75,12 +75,12 @@ class CORE_EXPORT QgsGeometryEngine
      * \returns true if geometry relationship matches with pattern
      * \since QGIS 2.14
      */
-    virtual bool relatePattern( const QgsAbstractGeometry &geom, const QString &pattern, QString *errorMsg = nullptr ) const = 0;
+    virtual bool relatePattern( const QgsAbstractGeometry *geom, const QString &pattern, QString *errorMsg = nullptr ) const = 0;
 
     virtual double area( QString *errorMsg = nullptr ) const = 0;
     virtual double length( QString *errorMsg = nullptr ) const = 0;
     virtual bool isValid( QString *errorMsg = nullptr ) const = 0;
-    virtual bool isEqual( const QgsAbstractGeometry &geom, QString *errorMsg = nullptr ) const = 0;
+    virtual bool isEqual( const QgsAbstractGeometry *geom, QString *errorMsg = nullptr ) const = 0;
     virtual bool isEmpty( QString *errorMsg ) const = 0;
 
     /** Determines whether the geometry is simple (according to OGC definition).

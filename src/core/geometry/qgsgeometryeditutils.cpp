@@ -70,16 +70,16 @@ int QgsGeometryEditUtils::addRing( QgsAbstractGeometry *geom, QgsCurve *ring )
   ringGeom->prepareGeometry();
 
   //for each polygon, test if inside outer ring and no intersection with other interior ring
-  QList< QgsCurvePolygon * >::iterator polyIter = polygonList.begin();
-  for ( ; polyIter != polygonList.end(); ++polyIter )
+  QList< QgsCurvePolygon * >::const_iterator polyIter = polygonList.constBegin();
+  for ( ; polyIter != polygonList.constEnd(); ++polyIter )
   {
-    if ( ringGeom->within( **polyIter ) )
+    if ( ringGeom->within( *polyIter ) )
     {
       //check if disjoint with other interior rings
       int nInnerRings = ( *polyIter )->numInteriorRings();
       for ( int i = 0; i < nInnerRings; ++i )
       {
-        if ( !ringGeom->disjoint( *( *polyIter )->interiorRing( i ) ) )
+        if ( !ringGeom->disjoint( ( *polyIter )->interiorRing( i ) ) )
         {
           delete ring;
           return 4;
@@ -284,7 +284,7 @@ QgsAbstractGeometry *QgsGeometryEditUtils::avoidIntersections( const QgsAbstract
     return nullptr;
   }
 
-  QgsAbstractGeometry *diffGeom = geomEngine->difference( *combinedGeometries );
+  QgsAbstractGeometry *diffGeom = geomEngine->difference( combinedGeometries );
 
   delete combinedGeometries;
   return diffGeom;

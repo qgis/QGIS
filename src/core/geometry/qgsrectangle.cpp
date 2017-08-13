@@ -156,16 +156,13 @@ QgsRectangle QgsRectangle::buffer( double width )
 QgsRectangle QgsRectangle::intersect( const QgsRectangle *rect ) const
 {
   QgsRectangle intersection = QgsRectangle();
-  //If they don't actually intersect an empty QgsRectangle should be returned
-  if ( !rect || !intersects( *rect ) )
+  if ( rect && intersects( *rect ) )
   {
-    return intersection;
+    intersection.setXMinimum( mXmin > rect->xMinimum() ? mXmin : rect->xMinimum() );
+    intersection.setXMaximum( mXmax < rect->xMaximum() ? mXmax : rect->xMaximum() );
+    intersection.setYMinimum( mYmin > rect->yMinimum() ? mYmin : rect->yMinimum() );
+    intersection.setYMaximum( mYmax < rect->yMaximum() ? mYmax : rect->yMaximum() );
   }
-
-  intersection.setXMinimum( mXmin > rect->xMinimum() ? mXmin : rect->xMinimum() );
-  intersection.setXMaximum( mXmax < rect->xMaximum() ? mXmax : rect->xMaximum() );
-  intersection.setYMinimum( mYmin > rect->yMinimum() ? mYmin : rect->yMinimum() );
-  intersection.setYMaximum( mYmax < rect->yMaximum() ? mYmax : rect->yMaximum() );
   return intersection;
 }
 

@@ -453,7 +453,7 @@ void QgsSearchQueryBuilder::loadQuery()
   for ( ; attIt != attributes.constEnd(); ++attIt )
   {
     //test if attribute is there
-    if ( !mFieldMap.contains( *attIt ) )
+    if ( !mFieldMap.contains( attIt ) )
     {
       bool ok;
       QString replaceAttribute = QInputDialog::getItem( 0, tr( "Select attribute" ), tr( "There is no attribute '%1' in the current vector layer. Please select an existing attribute" ).arg( *attIt ),

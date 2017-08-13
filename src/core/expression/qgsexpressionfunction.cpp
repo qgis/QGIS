@@ -2373,14 +2373,14 @@ static QVariant fcnRelate( const QVariantList &values, const QgsExpressionContex
   if ( values.length() == 2 )
   {
     //two geometry arguments, return relation
-    QString result = engine->relate( *sGeom.geometry() );
+    QString result = engine->relate( sGeom.geometry() );
     return QVariant::fromValue( result );
   }
   else
   {
     //three arguments, test pattern
     QString pattern = QgsExpressionUtils::getStringValue( values.at( 2 ), parent );
-    bool result = engine->relatePattern( *sGeom.geometry(), pattern );
+    bool result = engine->relatePattern( sGeom.geometry(), pattern );
     return QVariant::fromValue( result );
   }
 }
