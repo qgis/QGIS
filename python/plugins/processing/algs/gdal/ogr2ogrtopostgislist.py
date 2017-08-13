@@ -39,7 +39,6 @@ from processing.algs.gdal.GdalUtils import GdalUtils
 
 from processing.tools.postgis import uri_from_name, GeoDB
 from processing.tools.system import isWindows
-from processing.tools.vector import ogrConnectionString, ogrLayerName
 
 
 class Ogr2OgrToPostGisList(GdalAlgorithm):
@@ -193,7 +192,7 @@ class Ogr2OgrToPostGisList(GdalAlgorithm):
             uri = GeoDB(uri=uri).uri
 
         inLayer = self.getParameterValue(self.INPUT_LAYER)
-        ogrLayer = ogrConnectionString(inLayer, context)[1:-1]
+        ogrLayer = GdalUtils.ogrConnectionString(inLayer, context)[1:-1]
         shapeEncoding = self.getParameterValue(self.SHAPE_ENCODING)
         ssrs = self.getParameterValue(self.S_SRS)
         tsrs = self.getParameterValue(self.T_SRS)
@@ -238,7 +237,7 @@ class Ogr2OgrToPostGisList(GdalAlgorithm):
         arguments.append('"')
         arguments.append("-lco DIM=" + dim)
         arguments.append(ogrLayer)
-        arguments.append(ogrLayerName(inLayer))
+        arguments.append(GdalUtils.ogrLayerName(inLayer))
         if index:
             arguments.append("-lco SPATIAL_INDEX=OFF")
         if launder:
@@ -259,7 +258,7 @@ class Ogr2OgrToPostGisList(GdalAlgorithm):
         elif primary_key is not None:
             arguments.append("-lco FID=" + primary_key)
         if not table:
-            table = ogrLayerName(inLayer).lower()
+            table = GdalUtils.ogrLayerName(inLayer).lower()
         if schema:
             table = '{}.{}'.format(schema, table)
         arguments.append('-nln')

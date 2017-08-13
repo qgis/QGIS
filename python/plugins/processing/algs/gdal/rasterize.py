@@ -41,8 +41,6 @@ from processing.core.outputs import OutputRaster
 from processing.algs.gdal.GdalAlgorithm import GdalAlgorithm
 from processing.algs.gdal.GdalUtils import GdalUtils
 
-from processing.tools.vector import ogrConnectionString, ogrLayerName
-
 pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
 
@@ -113,7 +111,7 @@ class rasterize(GdalAlgorithm):
         opts = self.getParameterValue(self.OPTIONS)
         out = self.getOutputValue(self.OUTPUT)
 
-        ogrLayer = ogrConnectionString(inLayer, context)[1:-1]
+        ogrLayer = GdalUtils.ogrConnectionString(inLayer, context)[1:-1]
 
         if noData is not None:
             noData = str(noData)
@@ -162,8 +160,8 @@ class rasterize(GdalAlgorithm):
 
         arguments.append('-l')
 
-        print(ogrLayerName(inLayer))
-        arguments.append(ogrLayerName(inLayer))
+        print(GdalUtils.ogrLayerName(inLayer))
+        arguments.append(GdalUtils.ogrLayerName(inLayer))
         arguments.append(ogrLayer)
 
         arguments.append(out)

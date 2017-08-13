@@ -37,7 +37,6 @@ from processing.algs.gdal.GdalUtils import GdalUtils
 
 from processing.tools import dataobjects
 from processing.tools.system import isWindows
-from processing.tools.vector import ogrConnectionString, ogrLayerName
 
 
 class Ogr2OgrBuffer(GdalAlgorithm):
@@ -94,13 +93,13 @@ class Ogr2OgrBuffer(GdalAlgorithm):
         multi = self.getParameterValue(self.MULTI)
         options = self.getParameterValue(self.OPTIONS)
 
-        ogrLayer = ogrConnectionString(inLayer, context)[1:-1]
-        layername = ogrLayerName(inLayer)
+        ogrLayer = GdalUtils.ogrConnectionString(inLayer, context)[1:-1]
+        layername = GdalUtils.ogrLayerName(inLayer)
 
         output = self.getOutputFromName(self.OUTPUT_LAYER)
         outFile = output.value
 
-        output = ogrConnectionString(outFile, context)
+        output = GdalUtils.ogrConnectionString(outFile, context)
 
         arguments = []
         arguments.append(output)

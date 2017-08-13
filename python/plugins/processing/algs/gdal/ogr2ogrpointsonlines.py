@@ -37,7 +37,6 @@ from processing.algs.gdal.GdalAlgorithm import GdalAlgorithm
 from processing.algs.gdal.GdalUtils import GdalUtils
 
 from processing.tools.system import isWindows
-from processing.tools.vector import ogrConnectionString
 
 
 class Ogr2OgrPointsOnLines(GdalAlgorithm):
@@ -82,7 +81,7 @@ class Ogr2OgrPointsOnLines(GdalAlgorithm):
 
         outFile = self.parameterAsOutputLayer(parameters, self.OUTPUT, context)
 
-        output = ogrConnectionString(outFile, context)
+        output = GdalUtils.ogrConnectionString(outFile, context)
         options = self.parameterAsString(parameters, self.OPTIONS, context)
 
         arguments = []

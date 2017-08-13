@@ -40,7 +40,6 @@ from processing.algs.gdal.GdalAlgorithm import GdalAlgorithm
 from processing.algs.gdal.GdalUtils import GdalUtils
 
 from processing.tools import dataobjects
-from processing.tools.vector import ogrConnectionString, ogrLayerName
 
 pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
@@ -78,15 +77,15 @@ class rasterize_over(GdalAlgorithm):
         inLayer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT), context)
         inRasterLayer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT_RASTER), context)
 
-        ogrLayer = ogrConnectionString(inLayer, context)[1:-1]
-        ogrRasterLayer = ogrConnectionString(inRasterLayer, context)[1:-1]
+        ogrLayer = GdalUtils.ogrConnectionString(inLayer, context)[1:-1]
+        ogrRasterLayer = GdalUtils.ogrConnectionString(inRasterLayer, context)[1:-1]
 
         arguments = []
         arguments.append('-a')
         arguments.append(str(self.getParameterValue(self.FIELD)))
 
         arguments.append('-l')
-        arguments.append(ogrLayerName(inLayer))
+        arguments.append(GdalUtils.ogrLayerName(inLayer))
         arguments.append(ogrLayer)
         arguments.append(ogrRasterLayer)
 

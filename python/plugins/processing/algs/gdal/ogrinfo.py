@@ -34,8 +34,6 @@ from processing.core.outputs import OutputHTML
 from processing.algs.gdal.GdalUtils import GdalUtils
 from processing.algs.gdal.GdalAlgorithm import GdalAlgorithm
 
-from processing.tools.vector import ogrConnectionString
-
 
 class OgrInfo(GdalAlgorithm):
 
@@ -69,7 +67,7 @@ class OgrInfo(GdalAlgorithm):
         if self.getParameterValue(self.SUMMARY_ONLY):
             arguments.append('-so')
         layer = self.getParameterValue(self.INPUT)
-        conn = ogrConnectionString(layer, context)
+        conn = GdalUtils.ogrConnectionString(layer, context)
         arguments.append(conn)
         return arguments
 

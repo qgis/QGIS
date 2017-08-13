@@ -32,14 +32,12 @@ from qgis.core import (QgsProcessingParameterFeatureSource,
                        QgsProcessingParameterCrs,
                        QgsProcessingParameterField,
                        QgsProcessingParameterExtent,
-                       QgsProcessingParameterBoolean,
-                       QgsProcessingUtils)
+                       QgsProcessingParameterBoolean)
 
 from processing.algs.gdal.GdalAlgorithm import GdalAlgorithm
 from processing.algs.gdal.GdalUtils import GdalUtils
 
 from processing.tools.system import isWindows
-from processing.tools.vector import ogrConnectionString, ogrLayerName
 
 
 class Ogr2OgrToPostGis(GdalAlgorithm):
@@ -238,7 +236,7 @@ class Ogr2OgrToPostGis(GdalAlgorithm):
         arguments.append('"')
         arguments.append(dimstring)
         arguments.append(ogrLayer)
-        arguments.append(ogrLayerName(inLayer))
+        arguments.append(GdalUtils.ogrLayerName(inLayer))
         if index:
             arguments.append(indexstring)
         if launder:
@@ -259,7 +257,7 @@ class Ogr2OgrToPostGis(GdalAlgorithm):
         elif primary_key is not None:
             arguments.append("-lco FID=" + primary_key)
         if len(table) == 0:
-            table = ogrLayerName(inLayer).lower()
+            table = GdalUtils.ogrLayerName(inLayer).lower()
         if schema:
             table = '{}.{}'.format(schema, table)
         arguments.append('-nln')

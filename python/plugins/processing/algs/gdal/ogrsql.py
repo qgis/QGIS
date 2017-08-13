@@ -34,8 +34,6 @@ from processing.core.outputs import OutputVector
 from processing.algs.gdal.GdalUtils import GdalUtils
 from processing.algs.gdal.GdalAlgorithm import GdalAlgorithm
 
-from processing.tools.vector import ogrConnectionString
-
 
 DIALECTS = [None, 'ogrsql', 'sqlite']
 
@@ -93,7 +91,7 @@ class OgrSql(GdalAlgorithm):
         arguments.append(outFile)
 
         layer = self.getParameterValue(self.INPUT)
-        conn = ogrConnectionString(layer, context)[1:-1]
+        conn = GdalUtils.ogrConnectionString(layer, context)[1:-1]
         arguments.append(conn)
 
         return ['ogr2ogr', GdalUtils.escapeAndJoin(arguments)]

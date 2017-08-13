@@ -32,16 +32,10 @@ from qgis.PyQt.QtCore import QUrl, QCoreApplication
 
 from qgis.core import (QgsApplication,
                        QgsVectorFileWriter,
-                       QgsProcessingUtils,
-                       QgsProcessingAlgorithm,
-                       QgsProject)
+                       QgsProcessingAlgorithm)
 
-from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.algs.gdal.GdalAlgorithmDialog import GdalAlgorithmDialog
 from processing.algs.gdal.GdalUtils import GdalUtils
-from processing.tools.vector import ogrConnectionString, ogrLayerName
-
-from processing.tools import dataobjects
 
 pluginPath = os.path.normpath(os.path.join(
     os.path.split(os.path.dirname(__file__))[0], os.pardir))
@@ -80,19 +74,19 @@ class GdalAlgorithm(QgsProcessingAlgorithm):
             ogr_data_path = self.parameterAsCompatibleSourceLayerPath(parameters, parameter_name, context,
                                                                       QgsVectorFileWriter.supportedFormatExtensions(),
                                                                       feedback=feedback)
-            ogr_layer_name = ogrLayerName(ogr_data_path)
+            ogr_layer_name = GdalUtils.ogrLayerName(ogr_data_path)
         elif input_layer.dataProvider().name() == 'ogr':
             # parameter is a vector layer, with OGR data provider
             # so extract selection if required
             ogr_data_path = self.parameterAsCompatibleSourceLayerPath(parameters, parameter_name, context,
                                                                       QgsVectorFileWriter.supportedFormatExtensions(),
                                                                       feedback=feedback)
-            ogr_layer_name = ogrLayerName(input_layer.dataProvider().dataSourceUri())
+            ogr_layer_name = GdalUtils.ogrLayerName(input_layer.dataProvider().dataSourceUri())
         else:
             # vector layer, but not OGR - get OGR compatible path
             # TODO - handle "selected features only" mode!!
-            ogr_data_path = ogrConnectionString(input_layer.dataProvider().dataSourceUri(), context)[1:-1]
-            ogr_layer_name = ogrLayerName(input_layer.dataProvider().dataSourceUri())
+            ogr_data_path = GdalUtils.ogrConnectionString(input_layer.dataProvider().dataSourceUri(), context)[1:-1]
+            ogr_layer_name = GdalUtils.ogrLayerName(input_layer.dataProvider().dataSourceUri())
         return ogr_data_path, ogr_layer_name
 
     def processAlgorithm(self, parameters, context, feedback):

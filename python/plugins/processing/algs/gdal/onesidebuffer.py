@@ -38,7 +38,6 @@ from processing.algs.gdal.GdalUtils import GdalUtils
 
 from processing.tools import dataobjects
 from processing.tools.system import isWindows
-from processing.tools.vector import ogrConnectionString, ogrLayerName
 
 
 class OneSideBuffer(GdalAlgorithm):
@@ -100,14 +99,14 @@ class OneSideBuffer(GdalAlgorithm):
         multi = self.getParameterValue(self.MULTI)
         options = self.getParameterValue(self.OPTIONS)
 
-        ogrLayer = ogrConnectionString(inLayer, context)[1:-1]
-        layername = ogrLayerName(inLayer)
+        ogrLayer = GdalUtils.ogrConnectionString(inLayer, context)[1:-1]
+        layername = GdalUtils.ogrLayerName(inLayer)
 
         output = self.getOutputFromName(self.OUTPUT_LAYER)
         outFile = output.value
-        output = ogrConnectionString(outFile, context)
+        output = GdalUtils.ogrConnectionString(outFile, context)
 
-        layername = ogrLayerName(inLayer)
+        layername = GdalUtils.ogrLayerName(inLayer)
 
         arguments = []
         arguments.append(output)
