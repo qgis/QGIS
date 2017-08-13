@@ -112,6 +112,9 @@ class TopoColor(QgisAlgorithm):
                                                     feedback=feedback,
                                                     min_colors=min_colors)
 
+        if len(feature_colors) == 0:
+            return {self.OUTPUT: dest_id}
+
         max_colors = max(feature_colors.values())
         feedback.pushInfo(self.tr('{} colors required').format(max_colors))
 
@@ -146,7 +149,7 @@ class TopoColor(QgisAlgorithm):
         # skip features without geometry
         features_with_geometry = {f_id: f for (f_id, f) in features.items() if f.hasGeometry()}
 
-        total = 70.0 / len(features_with_geometry)
+        total = 70.0 / len(features_with_geometry) if features_with_geometry else 1
         index = QgsSpatialIndex()
 
         i = 0
@@ -211,7 +214,7 @@ class ColoringAlgorithm:
             color_counts[c] = 0
             color_areas[c] = 0
 
-        total = 10.0 / len(sorted_by_count)
+        total = 10.0 / len(sorted_by_count) if sorted_by_count else 1
         i = 0
 
         for (feature_id, n) in sorted_by_count:
