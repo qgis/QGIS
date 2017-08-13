@@ -43,9 +43,9 @@ Last Change : %%mtime(%A %B %d, %Y)
 This release has following new features:
 
 - Symbology: Color picker is now embedded in layer style panel
-- Labelling: Substitution list support for labeling
-- Labelling: Improved line label placement algorithm
-- Labelling: Label polygons using curved labels along perimeter
+- Labeling: Substitution list support for labeling
+- Labeling: Improved line label placement algorithm
+- Labeling: Label polygons using curved labels along perimeter
 - Data Management: Add flag to only copy selected features
 - Forms and Widgets: Allow controlling labels for individual edit widgets
 - Forms and Widgets: Conditional visibility for tabs and group boxes
@@ -59,7 +59,7 @@ This release has following new features:
 - Processing: New algorithm for merging connected lines
 - General: Automatic links in identify results
 - General: Mouse wheel over color dialog sliders
-- General: Add custom color schemes to color button drop down menu
+- General: Add custom color schemes to color button drop-down menu
 - Data Providers: Preview for WMTS + added XYZ tile layers
 - QGIS Server: Possibility to segmentize feature info geometry in server
 - Plugins: DB Manager: Add the ability to update SQL Layer
