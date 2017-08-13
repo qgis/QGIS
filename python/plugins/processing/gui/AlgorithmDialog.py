@@ -93,6 +93,9 @@ class AlgorithmDialog(AlgorithmDialogBase):
     def getParamValues(self):
         parameters = {}
 
+        if not hasattr(self, 'mainWidget') or self.mainWidget is None:
+            return parameters
+
         for param in self.alg.parameterDefinitions():
             if param.flags() & QgsProcessingParameterDefinition.FlagHidden:
                 continue

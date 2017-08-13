@@ -67,6 +67,8 @@ class retile(GdalAlgorithm):
 
     def __init__(self):
         super().__init__()
+
+    def initAlgorithm(self, config=None):
         # Required parameters
         self.addParameter(ParameterMultipleInput(self.INPUT,
                                                  self.tr('Input layers'),
@@ -124,7 +126,7 @@ class retile(GdalAlgorithm):
     def group(self):
         return self.tr('Raster miscellaneous')
 
-    def getConsoleCommands(self, parameters):
+    def getConsoleCommands(self, parameters, context, feedback):
 
         arguments = []
 

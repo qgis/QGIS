@@ -34,8 +34,6 @@ from processing.core.outputs import OutputVector
 from processing.algs.gdal.GdalUtils import GdalUtils
 from processing.algs.gdal.GdalAlgorithm import GdalAlgorithm
 
-from processing.tools.vector import ogrConnectionString
-
 
 DIALECTS = [None, 'ogrsql', 'sqlite']
 
@@ -49,6 +47,8 @@ class OgrSql(GdalAlgorithm):
 
     def __init__(self):
         super().__init__()
+
+    def initAlgorithm(self, config=None):
         self.addParameter(ParameterTable(self.INPUT, self.tr('Input layer or table')))
         self.addParameter(ParameterString(self.SQL, self.tr('SQL'), ''))
 
@@ -69,7 +69,7 @@ class OgrSql(GdalAlgorithm):
     def group(self):
         return self.tr('Vector miscellaneous')
 
-    def getConsoleCommands(self, parameters):
+    def getConsoleCommands(self, parameters, context, feedback):
         sql = self.getParameterValue(self.SQL)
         if sql == '':
             raise GeoAlgorithmExecutionException(
@@ -91,7 +91,7 @@ class OgrSql(GdalAlgorithm):
         arguments.append(outFile)
 
         layer = self.getParameterValue(self.INPUT)
-        conn = ogrConnectionString(layer)[1:-1]
+        conn = GdalUtils.ogrConnectionString(layer, context)[1:-1]
         arguments.append(conn)
 
         return ['ogr2ogr', GdalUtils.escapeAndJoin(arguments)]

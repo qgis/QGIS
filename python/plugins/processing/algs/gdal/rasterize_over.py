@@ -40,7 +40,6 @@ from processing.algs.gdal.GdalAlgorithm import GdalAlgorithm
 from processing.algs.gdal.GdalUtils import GdalUtils
 
 from processing.tools import dataobjects
-from processing.tools.vector import ogrConnectionString, ogrLayerName
 
 pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
@@ -56,6 +55,8 @@ class rasterize_over(GdalAlgorithm):
 
     def __init__(self):
         super().__init__()
+
+    def initAlgorithm(self, config=None):
         self.addParameter(ParameterVector(self.INPUT, self.tr('Input layer')))
         self.addParameter(ParameterTableField(self.FIELD,
                                               self.tr('Attribute field'), self.INPUT))
@@ -71,20 +72,20 @@ class rasterize_over(GdalAlgorithm):
     def group(self):
         return self.tr('Vector conversion')
 
-    def getConsoleCommands(self, parameters):
+    def getConsoleCommands(self, parameters, context, feedback):
         context = dataobjects.createContext()
         inLayer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT), context)
         inRasterLayer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT_RASTER), context)
 
-        ogrLayer = ogrConnectionString(inLayer)[1:-1]
-        ogrRasterLayer = ogrConnectionString(inRasterLayer)[1:-1]
+        ogrLayer = GdalUtils.ogrConnectionString(inLayer, context)[1:-1]
+        ogrRasterLayer = GdalUtils.ogrConnectionString(inRasterLayer, context)[1:-1]
 
         arguments = []
         arguments.append('-a')
         arguments.append(str(self.getParameterValue(self.FIELD)))
 
         arguments.append('-l')
-        arguments.append(ogrLayerName(inLayer))
+        arguments.append(GdalUtils.ogrLayerName(inLayer))
         arguments.append(ogrLayer)
         arguments.append(ogrRasterLayer)
 

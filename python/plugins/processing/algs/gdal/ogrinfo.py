@@ -34,8 +34,6 @@ from processing.core.outputs import OutputHTML
 from processing.algs.gdal.GdalUtils import GdalUtils
 from processing.algs.gdal.GdalAlgorithm import GdalAlgorithm
 
-from processing.tools.vector import ogrConnectionString
-
 
 class OgrInfo(GdalAlgorithm):
 
@@ -45,6 +43,8 @@ class OgrInfo(GdalAlgorithm):
 
     def __init__(self):
         super().__init__()
+
+    def initAlgorithm(self, config=None):
         self.addParameter(ParameterVector(self.INPUT, self.tr('Input layer')))
         self.addParameter(ParameterBoolean(self.SUMMARY_ONLY,
                                            self.tr('Summary output only'),
@@ -61,13 +61,13 @@ class OgrInfo(GdalAlgorithm):
     def group(self):
         return self.tr('Vector miscellaneous')
 
-    def getConsoleCommands(self, parameters):
+    def getConsoleCommands(self, parameters, context, feedback):
         arguments = ["ogrinfo"]
         arguments.append('-al')
         if self.getParameterValue(self.SUMMARY_ONLY):
             arguments.append('-so')
         layer = self.getParameterValue(self.INPUT)
-        conn = ogrConnectionString(layer)
+        conn = GdalUtils.ogrConnectionString(layer, context)
         arguments.append(conn)
         return arguments
 

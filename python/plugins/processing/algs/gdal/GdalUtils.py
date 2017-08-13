@@ -31,15 +31,21 @@ __revision__ = '$Format:%H$'
 import os
 import subprocess
 import platform
+import re
+
+import psycopg2
 
 from osgeo import gdal
+from osgeo import ogr
 
 from qgis.core import (QgsApplication,
                        QgsVectorFileWriter,
                        QgsProcessingFeedback,
                        QgsProcessingUtils,
                        QgsMessageLog,
-                       QgsSettings)
+                       QgsSettings,
+                       QgsCredentials,
+                       QgsDataSourceUri)
 from processing.core.ProcessingConfig import ProcessingConfig
 from processing.tools.system import isWindows, isMac
 
@@ -192,7 +198,8 @@ class GdalUtils(object):
                           + '"'
             else:
                 escaped = s
-            joined += escaped + ' '
+            if escaped is not None:
+                joined += escaped + ' '
         return joined.strip()
 
     @staticmethod
@@ -220,3 +227,138 @@ class GdalUtils(object):
                         break
 
         return helpPath if helpPath is not None else 'http://www.gdal.org/'
+
+    @staticmethod
+    def ogrConnectionString(uri, context):
+        """Generates OGR connection string from layer source
+        """
+        return GdalUtils.ogrConnectionStringAndFormat(uri, context)[0]
+
+    @staticmethod
+    def ogrConnectionStringAndFormat(uri, context):
+        """Generates OGR connection string and format string from layer source
+        Returned values are a tuple of the connection string and format string
+        """
+        ogrstr = None
+        format = None
+
+        layer = QgsProcessingUtils.mapLayerFromString(uri, context, False)
+        if layer is None:
+            path, ext = os.path.splitext(uri)
+            format = QgsVectorFileWriter.driverForExtension(ext)
+            return '"' + uri + '"', '"' + format + '"'
+
+        provider = layer.dataProvider().name()
+        if provider == 'spatialite':
+            # dbname='/geodata/osm_ch.sqlite' table="places" (Geometry) sql=
+            regex = re.compile("dbname='(.+)'")
+            r = regex.search(str(layer.source()))
+            ogrstr = r.groups()[0]
+            format = 'SQLite'
+        elif provider == 'postgres':
+            # dbname='ktryjh_iuuqef' host=spacialdb.com port=9999
+            # user='ktryjh_iuuqef' password='xyqwer' sslmode=disable
+            # key='gid' estimatedmetadata=true srid=4326 type=MULTIPOLYGON
+            # table="t4" (geom) sql=
+            dsUri = QgsDataSourceUri(layer.dataProvider().dataSourceUri())
+            conninfo = dsUri.connectionInfo()
+            conn = None
+            ok = False
+            while not conn:
+                try:
+                    conn = psycopg2.connect(dsUri.connectionInfo())
+                except psycopg2.OperationalError:
+                    (ok, user, passwd) = QgsCredentials.instance().get(conninfo, dsUri.username(), dsUri.password())
+                    if not ok:
+                        break
+
+                    dsUri.setUsername(user)
+                    dsUri.setPassword(passwd)
+
+            if not conn:
+                raise RuntimeError('Could not connect to PostgreSQL database - check connection info')
+
+            if ok:
+                QgsCredentials.instance().put(conninfo, user, passwd)
+
+            ogrstr = "PG:%s" % dsUri.connectionInfo()
+            format = 'PostgreSQL'
+        elif provider == "oracle":
+            # OCI:user/password@host:port/service:table
+            dsUri = QgsDataSourceUri(layer.dataProvider().dataSourceUri())
+            ogrstr = "OCI:"
+            if dsUri.username() != "":
+                ogrstr += dsUri.username()
+                if dsUri.password() != "":
+                    ogrstr += "/" + dsUri.password()
+                delim = "@"
+
+            if dsUri.host() != "":
+                ogrstr += delim + dsUri.host()
+                delim = ""
+                if dsUri.port() != "" and dsUri.port() != '1521':
+                    ogrstr += ":" + dsUri.port()
+                ogrstr += "/"
+                if dsUri.database() != "":
+                    ogrstr += dsUri.database()
+            elif dsUri.database() != "":
+                ogrstr += delim + dsUri.database()
+
+            if ogrstr == "OCI:":
+                raise RuntimeError('Invalid oracle data source - check connection info')
+
+            ogrstr += ":"
+            if dsUri.schema() != "":
+                ogrstr += dsUri.schema() + "."
+
+            ogrstr += dsUri.table()
+            format = 'OCI'
+        else:
+            ogrstr = str(layer.source()).split("|")[0]
+            path, ext = os.path.splitext(ogrstr)
+            format = QgsVectorFileWriter.driverForExtension(ext)
+
+        return '"' + ogrstr + '"', '"' + format + '"'
+
+    @staticmethod
+    def ogrLayerName(uri):
+        if os.path.isfile(uri):
+            return os.path.basename(os.path.splitext(uri)[0])
+
+        if ' table=' in uri:
+            # table="schema"."table"
+            re_table_schema = re.compile(' table="([^"]*)"\\."([^"]*)"')
+            r = re_table_schema.search(uri)
+            if r:
+                return r.groups()[0] + '.' + r.groups()[1]
+            # table="table"
+            re_table = re.compile(' table="([^"]*)"')
+            r = re_table.search(uri)
+            if r:
+                return r.groups()[0]
+        elif 'layername' in uri:
+            regex = re.compile('(layername=)([^|]*)')
+            r = regex.search(uri)
+            return r.groups()[1]
+
+        fields = uri.split('|')
+        basePath = fields[0]
+        fields = fields[1:]
+        layerid = 0
+        for f in fields:
+            if f.startswith('layername='):
+                return f.split('=')[1]
+            if f.startswith('layerid='):
+                layerid = int(f.split('=')[1])
+
+        ds = ogr.Open(basePath)
+        if not ds:
+            return None
+
+        ly = ds.GetLayer(layerid)
+        if not ly:
+            return None
+
+        name = ly.GetName()
+        ds = None
+        return name

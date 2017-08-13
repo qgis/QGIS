@@ -27,10 +27,8 @@ __revision__ = '$Format:%H$'
 
 import os
 import shutil
-import tempfile
 
-from qgis.core import (QgsVectorLayer,
-                       QgsProcessingContext)
+from qgis.core import QgsVectorLayer
 from qgis.testing import start_app, unittest
 
 from processing.tests.TestData import points
@@ -78,45 +76,6 @@ class VectorTest(unittest.TestCase):
         res = vector.values(test_layer, 'id', 2)
         self.assertEqual(res['id'], [1, 2, 3, 4, 5, 6, 7, 8, 9])
         self.assertEqual(res[2], [2, 1, 0, 2, 1, 0, 0, 0, 0])
-
-    def testOgrLayerNameExtraction(self):
-        outdir = tempfile.mkdtemp()
-        self.cleanup_paths.append(outdir)
-
-        def _copyFile(dst):
-            shutil.copyfile(os.path.join(testDataPath, 'custom', 'grass7', 'weighted.csv'), dst)
-
-        # OGR provider - single layer
-        _copyFile(os.path.join(outdir, 'a.csv'))
-        name = vector.ogrLayerName(outdir)
-        self.assertEqual(name, 'a')
-
-        # OGR provider - multiple layers
-        _copyFile(os.path.join(outdir, 'b.csv'))
-        name1 = vector.ogrLayerName(outdir + '|layerid=0')
-        name2 = vector.ogrLayerName(outdir + '|layerid=1')
-        self.assertEqual(sorted([name1, name2]), ['a', 'b'])
-
-        name = vector.ogrLayerName(outdir + '|layerid=2')
-        self.assertIsNone(name)
-
-        # OGR provider - layername takes precedence
-        name = vector.ogrLayerName(outdir + '|layername=f')
-        self.assertEqual(name, 'f')
-
-        name = vector.ogrLayerName(outdir + '|layerid=0|layername=f')
-        self.assertEqual(name, 'f')
-
-        name = vector.ogrLayerName(outdir + '|layername=f|layerid=0')
-        self.assertEqual(name, 'f')
-
-        # SQLiite provider
-        name = vector.ogrLayerName('dbname=\'/tmp/x.sqlite\' table="t" (geometry) sql=')
-        self.assertEqual(name, 't')
-
-        # PostgreSQL provider
-        name = vector.ogrLayerName('port=5493 sslmode=disable key=\'edge_id\' srid=0 type=LineString table="city_data"."edge" (geom) sql=')
-        self.assertEqual(name, 'city_data.edge')
 
 
 if __name__ == '__main__':

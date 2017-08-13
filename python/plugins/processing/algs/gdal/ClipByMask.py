@@ -45,7 +45,6 @@ from processing.algs.gdal.GdalAlgorithm import GdalAlgorithm
 from processing.algs.gdal.GdalUtils import GdalUtils
 
 from processing.tools import dataobjects
-from processing.tools.vector import ogrConnectionString
 
 pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
@@ -65,6 +64,8 @@ class ClipByMask(GdalAlgorithm):
 
     def __init__(self):
         super().__init__()
+
+    def initAlgorithm(self, config=None):
         self.addParameter(ParameterRaster(self.INPUT, self.tr('Input layer'), False))
         self.addParameter(ParameterVector(self.MASK, self.tr('Mask layer'),
                                           [dataobjects.TYPE_VECTOR_POLYGON]))
@@ -102,12 +103,12 @@ class ClipByMask(GdalAlgorithm):
     def group(self):
         return self.tr('Raster extraction')
 
-    def getConsoleCommands(self, parameters):
+    def getConsoleCommands(self, parameters, context, feedback):
         out = self.getOutputValue(self.OUTPUT)
         mask = self.getParameterValue(self.MASK)
         context = dataobjects.createContext()
         maskLayer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.MASK), context)
-        ogrMask = ogrConnectionString(mask)[1:-1]
+        ogrMask = GdalUtils.ogrConnectionString(mask, context)[1:-1]
         noData = self.getParameterValue(self.NO_DATA)
         opts = self.getParameterValue(self.OPTIONS)
 

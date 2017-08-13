@@ -55,6 +55,8 @@ class ClipByExtent(GdalAlgorithm):
 
     def __init__(self):
         super().__init__()
+
+    def initAlgorithm(self, config=None):
         self.addParameter(ParameterRaster(self.INPUT, self.tr('Input layer')))
         self.addParameter(ParameterString(self.NO_DATA,
                                           self.tr("Nodata value, leave blank to take the nodata value from input"),
@@ -83,7 +85,7 @@ class ClipByExtent(GdalAlgorithm):
     def group(self):
         return self.tr('Raster extraction')
 
-    def getConsoleCommands(self, parameters):
+    def getConsoleCommands(self, parameters, context, feedback):
         out = self.getOutputValue(self.OUTPUT)
         noData = self.getParameterValue(self.NO_DATA)
         opts = self.getParameterValue(self.OPTIONS)

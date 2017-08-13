@@ -33,9 +33,13 @@ from qgis.core import (QgsApplication,
 from processing.core.ProcessingConfig import ProcessingConfig, Setting
 from .GdalUtils import GdalUtils
 
+from .AssignProjection import AssignProjection
+from .aspect import aspect
+from .ColorRelief import ColorRelief
+from .tri import tri
+from .warp import warp
 # from .nearblack import nearblack
 # from .information import information
-# from .warp import warp
 # from .rgb2pct import rgb2pct
 # from .translate import translate
 # from .pct2rgb import pct2rgb
@@ -54,11 +58,8 @@ from .GdalUtils import GdalUtils
 # from .gdal2xyz import gdal2xyz
 # from .hillshade import hillshade
 # from .slope import slope
-# from .aspect import aspect
-# from .tri import tri
 # from .tpi import tpi
 # from .roughness import roughness
-# from .ColorRelief import ColorRelief
 # from .GridInvDist import GridInvDist
 # from .GridAverage import GridAverage
 # from .GridNearest import GridNearest
@@ -68,14 +69,14 @@ from .GdalUtils import GdalUtils
 # from .rasterize_over import rasterize_over
 # from .retile import retile
 # from .gdal2tiles import gdal2tiles
-# from .AssignProjection import AssignProjection
-#
+
+from .ogr2ogrpointsonlines import Ogr2OgrPointsOnLines
+from .ogr2ogrtopostgis import Ogr2OgrToPostGis
+
 # from .ogr2ogr import Ogr2Ogr
 # from .ogr2ogrclip import Ogr2OgrClip
 # from .ogr2ogrclipextent import Ogr2OgrClipExtent
-# from .ogr2ogrtopostgis import Ogr2OgrToPostGis
 # from .ogr2ogrtopostgislist import Ogr2OgrToPostGisList
-# from .ogr2ogrpointsonlines import Ogr2OgrPointsOnLines
 # from .ogr2ogrbuffer import Ogr2OgrBuffer
 # from .ogr2ogrdissolve import Ogr2OgrDissolve
 # from .onesidebuffer import OneSideBuffer
@@ -141,7 +142,11 @@ class GdalAlgorithmProvider(QgsProcessingProvider):
         self.algs = [
             # nearblack(),
             # information(),
-            # warp(),
+            AssignProjection(),
+            aspect(),
+            ColorRelief(),
+            tri(),
+            warp(),
             # translate(),
             # rgb2pct(),
             # pct2rgb(),
@@ -160,11 +165,8 @@ class GdalAlgorithmProvider(QgsProcessingProvider):
             # gdal2xyz(),
             # hillshade(),
             # slope(),
-            # aspect(),
-            # tri(),
             # tpi(),
             # roughness(),
-            # ColorRelief(),
             # GridInvDist(),
             # GridAverage(),
             # GridNearest(),
@@ -174,15 +176,14 @@ class GdalAlgorithmProvider(QgsProcessingProvider):
             # rasterize_over(),
             # retile(),
             # gdal2tiles(),
-            # AssignProjection(),
             # ----- OGR tools -----
+            Ogr2OgrPointsOnLines(),
+            Ogr2OgrToPostGis(),
             # OgrInfo(),
             # Ogr2Ogr(),
             # Ogr2OgrClip(),
             # Ogr2OgrClipExtent(),
-            # Ogr2OgrToPostGis(),
             # Ogr2OgrToPostGisList(),
-            # Ogr2OgrPointsOnLines(),
             # Ogr2OgrBuffer(),
             # Ogr2OgrDissolve(),
             # OneSideBuffer(),

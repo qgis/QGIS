@@ -29,16 +29,16 @@ __revision__ = '$Format:%H$'
 import os
 
 from qgis.PyQt.QtGui import QIcon
-
+from qgis.core import (QgsProcessingParameterRasterLayer,
+                       QgsProcessingParameterCrs,
+                       QgsProcessingParameterString,
+                       QgsProcessingParameterNumber,
+                       QgsProcessingParameterEnum,
+                       QgsProcessingParameterBoolean,
+                       QgsProcessingParameterExtent,
+                       QgsProcessingParameterRasterDestination,
+                       QgsProcessingUtils)
 from processing.algs.gdal.GdalAlgorithm import GdalAlgorithm
-from processing.core.parameters import (ParameterRaster,
-                                        ParameterExtent,
-                                        ParameterSelection,
-                                        ParameterCrs,
-                                        ParameterNumber,
-                                        ParameterString,
-                                        ParameterBoolean)
-from processing.core.outputs import OutputRaster
 from processing.algs.gdal.GdalUtils import GdalUtils
 
 pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
@@ -71,46 +71,47 @@ class warp(GdalAlgorithm):
 
     def __init__(self):
         super().__init__()
-        self.addParameter(ParameterRaster(self.INPUT, self.tr('Input layer'), False))
-        self.addParameter(ParameterCrs(self.SOURCE_SRS,
-                                       self.tr('Source SRS'),
-                                       '',
-                                       optional=True))
-        self.addParameter(ParameterCrs(self.DEST_SRS,
-                                       self.tr('Destination SRS'),
-                                       'EPSG:4326'))
-        self.addParameter(ParameterString(self.NO_DATA,
-                                          self.tr("Nodata value, leave blank to take the nodata value from input"),
-                                          '', optional=True))
-        self.addParameter(ParameterNumber(self.TR,
-                                          self.tr('Output file resolution in target georeferenced units (leave 0 for no change)'),
-                                          0.0, None, 0.0))
-        self.addParameter(ParameterSelection(self.METHOD,
-                                             self.tr('Resampling method'),
-                                             self.METHOD_OPTIONS))
-        self.addParameter(ParameterBoolean(self.USE_RASTER_EXTENT,
-                                           self.tr('Set georeferenced extents of output file'),
-                                           False
-                                           ))
-        self.addParameter(ParameterExtent(self.RASTER_EXTENT,
-                                          self.tr('Raster extent'),
-                                          optional=True))
-        self.addParameter(ParameterCrs(self.EXTENT_CRS,
-                                       self.tr('CRS of the raster extent, leave blank for using Destination SRS'),
-                                       optional=True))
-        self.addParameter(ParameterString(self.OPTIONS,
-                                          self.tr('Additional creation options'),
-                                          optional=True,
-                                          metadata={'widget_wrapper': 'processing.algs.gdal.ui.RasterOptionsWidget.RasterOptionsWidgetWrapper'}))
-        self.addParameter(ParameterBoolean(self.MULTITHREADING,
-                                           self.tr('Use multithreaded warping implementation'),
-                                           False
-                                           ))
-        self.addParameter(ParameterSelection(self.RTYPE,
-                                             self.tr('Output raster type'),
-                                             self.TYPE, 5))
 
-        self.addOutput(OutputRaster(self.OUTPUT, self.tr('Reprojected')))
+    def initAlgorithm(self, config=None):
+        self.addParameter(QgsProcessingParameterRasterLayer(self.INPUT, self.tr('Input layer'), optional=False))
+        self.addParameter(QgsProcessingParameterCrs(self.SOURCE_SRS,
+                                                    self.tr('Source SRS'),
+                                                    optional=True))
+        self.addParameter(QgsProcessingParameterCrs(self.DEST_SRS,
+                                                    self.tr('Destination SRS'),
+                                                    'EPSG:4326'))
+        self.addParameter(QgsProcessingParameterString(self.NO_DATA,
+                                                       self.tr("Nodata value, leave blank to take the nodata value from input"), optional=True))
+        self.addParameter(QgsProcessingParameterNumber(self.TR,
+                                                       self.tr('Output file resolution in target georeferenced units (leave 0 for no change)'),
+                                                       minValue=0.0, defaultValue=0.0))
+        self.addParameter(QgsProcessingParameterEnum(self.METHOD,
+                                                     self.tr('Resampling method'),
+                                                     self.METHOD_OPTIONS))
+        self.addParameter(QgsProcessingParameterBoolean(self.USE_RASTER_EXTENT,
+                                                        self.tr('Set georeferenced extents of output file'),
+                                                        False
+                                                        ))
+        self.addParameter(QgsProcessingParameterExtent(self.RASTER_EXTENT,
+                                                       self.tr('Raster extent'),
+                                                       optional=True))
+        self.addParameter(QgsProcessingParameterCrs(self.EXTENT_CRS,
+                                                    self.tr('CRS of the raster extent, leave blank for using Destination SRS'),
+                                                    optional=True))
+        co = QgsProcessingParameterString(self.OPTIONS,
+                                          self.tr('Additional creation options'),
+                                          optional=True)
+        co.setMetadata({'widget_wrapper': 'processing.algs.gdal.ui.RasterOptionsWidget.RasterOptionsWidgetWrapper'})
+        self.addParameter(co)
+        self.addParameter(QgsProcessingParameterBoolean(self.MULTITHREADING,
+                                                        self.tr('Use multithreaded warping implementation'),
+                                                        False
+                                                        ))
+        self.addParameter(QgsProcessingParameterEnum(self.RTYPE,
+                                                     self.tr('Output raster type'),
+                                                     self.TYPE, defaultValue=5))
+
+        self.addParameter(QgsProcessingParameterRasterDestination(self.OUTPUT, self.tr('Reprojected')))
 
     def name(self):
         return 'warpreproject'
@@ -121,25 +122,25 @@ class warp(GdalAlgorithm):
     def group(self):
         return self.tr('Raster projections')
 
-    def getConsoleCommands(self, parameters):
-        inLayer = self.getParameterValue(self.INPUT)
-        srccrs = self.getParameterValue(self.SOURCE_SRS)
-        dstcrs = self.getParameterValue(self.DEST_SRS)
-        useRasterExtent = self.getParameterValue(self.USE_RASTER_EXTENT)
-        rasterExtent = self.getParameterValue(self.RASTER_EXTENT)
-        if not rasterExtent:
+    def getConsoleCommands(self, parameters, context, feedback):
+        inLayer = self.parameterAsRasterLayer(parameters, self.INPUT, context)
+        srccrs = self.parameterAsCrs(parameters, self.SOURCE_SRS, context).authid()
+        dstcrs = self.parameterAsCrs(parameters, self.DEST_SRS, context).authid()
+        useRasterExtent = self.parameterAsBool(parameters, self.USE_RASTER_EXTENT, context)
+        rasterExtent = self.parameterAsExtent(parameters, self.RASTER_EXTENT, context)
+        if rasterExtent.isNull():
             rasterExtent = QgsProcessingUtils.combineLayerExtents([inLayer])
-        extentCrs = self.getParameterValue(self.EXTENT_CRS)
-        opts = self.getParameterValue(self.OPTIONS)
-        noData = self.getParameterValue(self.NO_DATA)
-        multithreading = self.getParameterValue(self.MULTITHREADING)
+        extentCrs = self.parameterAsCrs(parameters, self.EXTENT_CRS, context).authid()
+        opts = self.parameterAsEnum(parameters, self.OPTIONS, context)
+        noData = self.parameterAsString(parameters, self.NO_DATA, context)
+        multithreading = self.parameterAsBool(parameters, self.MULTITHREADING, context)
 
         if noData is not None:
             noData = str(noData)
 
         arguments = []
         arguments.append('-ot')
-        arguments.append(self.TYPE[self.getParameterValue(self.RTYPE)])
+        arguments.append(self.TYPE[self.parameterAsEnum(parameters, self.RTYPE, context)])
         if srccrs:
             arguments.append('-s_srs')
             arguments.append(srccrs)
@@ -152,29 +153,27 @@ class warp(GdalAlgorithm):
 
         arguments.append('-r')
         arguments.append(
-            self.METHOD_OPTIONS[self.getParameterValue(self.METHOD)])
+            self.METHOD_OPTIONS[self.parameterAsEnum(parameters, self.METHOD, context)])
 
         arguments.append('-of')
-        out = self.getOutputValue(self.OUTPUT)
+        out = self.parameterAsOutputLayer(parameters, self.OUTPUT, context)
         arguments.append(GdalUtils.getFormatShortNameFromFilename(out))
 
-        if self.getParameterValue(self.TR) != 0:
+        if self.parameterAsDouble(parameters, self.TR, context) != 0:
             arguments.append('-tr')
-            arguments.append(str(self.getParameterValue(self.TR)))
-            arguments.append(str(self.getParameterValue(self.TR)))
+            arguments.append(str(self.parameterAsDouble(parameters, self.TR, context)))
+            arguments.append(str(self.parameterAsDouble(parameters, self.TR, context)))
 
         if useRasterExtent:
-            regionCoords = rasterExtent.split(',')
-            if len(regionCoords) >= 4:
-                arguments.append('-te')
-                arguments.append(regionCoords[0])
-                arguments.append(regionCoords[2])
-                arguments.append(regionCoords[1])
-                arguments.append(regionCoords[3])
+            arguments.append('-te')
+            arguments.append(rasterExtent.xMinimum())
+            arguments.append(rasterExtent.yMinimum())
+            arguments.append(rasterExtent.xMaximum())
+            arguments.append(rasterExtent.yMaximum())
 
-                if extentCrs:
-                    arguments.append('-te_srs')
-                    arguments.append(extentCrs)
+            if extentCrs:
+                arguments.append('-te_srs')
+                arguments.append(extentCrs)
 
         if opts:
             arguments.append('-co')
@@ -186,7 +185,7 @@ class warp(GdalAlgorithm):
         if GdalUtils.version() in [2010000, 2010100]:
             arguments.append("--config GDALWARP_IGNORE_BAD_CUTLINE YES")
 
-        arguments.append(self.getParameterValue(self.INPUT))
+        arguments.append(inLayer.source())
         arguments.append(out)
 
         return ['gdalwarp', GdalUtils.escapeAndJoin(arguments)]

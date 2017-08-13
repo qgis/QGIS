@@ -26,41 +26,43 @@ __copyright__ = '(C) 2015, Giovanni Manghi'
 
 __revision__ = '$Format:%H$'
 
-from processing.core.parameters import ParameterVector
-from processing.core.parameters import ParameterString
-from processing.core.parameters import ParameterNumber
-from processing.core.outputs import OutputVector
+from qgis.core import (QgsProcessingParameterFeatureSource,
+                       QgsProcessingParameterString,
+                       QgsProcessingParameterNumber,
+                       QgsProcessingParameterVectorDestination,
+                       QgsProcessingOutputVectorLayer,
+                       QgsProcessing)
 
 from processing.algs.gdal.GdalAlgorithm import GdalAlgorithm
 from processing.algs.gdal.GdalUtils import GdalUtils
 
-from processing.tools import dataobjects
 from processing.tools.system import isWindows
-from processing.tools.vector import ogrConnectionString, ogrLayerName
 
 
 class Ogr2OgrPointsOnLines(GdalAlgorithm):
 
-    OUTPUT_LAYER = 'OUTPUT_LAYER'
-    INPUT_LAYER = 'INPUT_LAYER'
+    OUTPUT = 'OUTPUT'
+    INPUT = 'INPUT'
     DISTANCE = 'DISTANCE'
     GEOMETRY = 'GEOMETRY'
     OPTIONS = 'OPTIONS'
 
     def __init__(self):
         super().__init__()
-        self.addParameter(ParameterVector(self.INPUT_LAYER,
-                                          self.tr('Input layer'), [dataobjects.TYPE_VECTOR_LINE], False))
-        self.addParameter(ParameterString(self.GEOMETRY,
-                                          self.tr('Geometry column name ("geometry" for Shapefiles, may be different for other formats)'),
-                                          'geometry', optional=False))
-        self.addParameter(ParameterNumber(self.DISTANCE,
-                                          self.tr('Distance from line start represented as fraction of line length'), 0, 1, 0.5))
-        self.addParameter(ParameterString(self.OPTIONS,
-                                          self.tr('Additional creation options (see ogr2ogr manual)'),
-                                          '', optional=True))
 
-        self.addOutput(OutputVector(self.OUTPUT_LAYER, self.tr('Points along lines'), datatype=[dataobjects.TYPE_VECTOR_POINT]))
+    def initAlgorithm(self, config=None):
+        self.addParameter(QgsProcessingParameterFeatureSource(self.INPUT,
+                                                              self.tr('Input layer'), [QgsProcessing.TypeVectorLine], optional=False))
+        self.addParameter(QgsProcessingParameterString(self.GEOMETRY,
+                                                       self.tr('Geometry column name ("geometry" for Shapefiles, may be different for other formats)'),
+                                                       defaultValue='geometry', optional=False))
+        self.addParameter(QgsProcessingParameterNumber(self.DISTANCE,
+                                                       self.tr('Distance from line start represented as fraction of line length'), type=QgsProcessingParameterNumber.Double, minValue=0, maxValue=1, defaultValue=0.5))
+        self.addParameter(QgsProcessingParameterString(self.OPTIONS,
+                                                       self.tr('Additional creation options (see ogr2ogr manual)'),
+                                                       defaultValue='', optional=True))
+
+        self.addParameter(QgsProcessingParameterVectorDestination(self.OUTPUT, self.tr('Points along lines'), QgsProcessing.TypeVectorPoint))
 
     def name(self):
         return 'createpointsalonglines'
@@ -71,20 +73,20 @@ class Ogr2OgrPointsOnLines(GdalAlgorithm):
     def group(self):
         return self.tr('Vector geoprocessing')
 
-    def getConsoleCommands(self, parameters):
-        inLayer = self.getParameterValue(self.INPUT_LAYER)
-        ogrLayer = ogrConnectionString(inLayer)[1:-1]
-        layername = "'" + ogrLayerName(inLayer) + "'"
-        distance = str(self.getParameterValue(self.DISTANCE))
-        geometry = str(self.getParameterValue(self.GEOMETRY))
+    def getConsoleCommands(self, parameters, context, feedback):
+        ogrLayer, layername = self.getOgrCompatibleSource(self.INPUT, parameters, context, feedback)
 
-        output = self.getOutputFromName(self.OUTPUT_LAYER)
-        outFile = output.value
+        distance = str(self.parameterAsDouble(parameters, self.DISTANCE, context))
+        geometry = self.parameterAsString(parameters, self.GEOMETRY, context)
 
-        output = ogrConnectionString(outFile)
-        options = str(self.getParameterValue(self.OPTIONS))
+        outFile = self.parameterAsOutputLayer(parameters, self.OUTPUT, context)
+
+        output, format = GdalUtils.ogrConnectionStringAndFormat(outFile, context)
+        options = self.parameterAsString(parameters, self.OPTIONS, context)
 
         arguments = []
+        if format:
+            arguments.append('-f {}'.format(format))
         arguments.append(output)
         arguments.append(ogrLayer)
 

@@ -28,26 +28,24 @@ __revision__ = '$Format:%H$'
 import os
 import re
 
-from qgis.PyQt.QtCore import QUrl
+from qgis.PyQt.QtCore import QUrl, QCoreApplication
 
 from qgis.core import (QgsApplication,
                        QgsVectorFileWriter,
-                       QgsProcessingUtils,
-                       QgsProject)
+                       QgsProcessingAlgorithm)
 
-from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.algs.gdal.GdalAlgorithmDialog import GdalAlgorithmDialog
 from processing.algs.gdal.GdalUtils import GdalUtils
-from processing.tools import dataobjects
 
 pluginPath = os.path.normpath(os.path.join(
     os.path.split(os.path.dirname(__file__))[0], os.pardir))
 
 
-class GdalAlgorithm(GeoAlgorithm):
+class GdalAlgorithm(QgsProcessingAlgorithm):
 
     def __init__(self):
-        GeoAlgorithm.__init__(self)
+        super().__init__()
+        self.output_values = {}
 
     def icon(self):
         return QgsApplication.getThemeIcon("/providerGdal.svg")
@@ -55,30 +53,59 @@ class GdalAlgorithm(GeoAlgorithm):
     def svgIconPath(self):
         return QgsApplication.iconPath("providerGdal.svg")
 
+    def createInstance(self, config={}):
+        return self.__class__()
+
     def createCustomParametersWidget(self, parent):
         return GdalAlgorithmDialog(self)
 
-    def getConsoleCommands(self, parameters):
+    def getConsoleCommands(self, parameters, context, feedback):
         return None
 
-    def processAlgorithm(self, parameters, context, feedback):
-        commands = self.getConsoleCommands(parameters)
-        layers = QgsProcessingUtils.compatibleVectorLayers(QgsProject.instance())
-        supported = QgsVectorFileWriter.supportedFormatExtensions()
-        for i, c in enumerate(commands):
-            for layer in layers:
-                if layer.source() in c:
-                    exported = dataobjects.exportVectorLayer(layer, supported)
-                    exportedFileName = os.path.splitext(os.path.split(exported)[1])[0]
-                    c = c.replace(layer.source(), exported)
-                    if os.path.isfile(layer.source()):
-                        fileName = os.path.splitext(os.path.split(layer.source())[1])[0]
-                        c = re.sub('[\s]{}[\s]'.format(fileName), ' ' + exportedFileName + ' ', c)
-                        c = re.sub('[\s]{}'.format(fileName), ' ' + exportedFileName, c)
-                        c = re.sub('["\']{}["\']'.format(fileName), "'" + exportedFileName + "'", c)
+    def getOgrCompatibleSource(self, parameter_name, parameters, context, feedback):
+        """
+        Interprets a parameter as an OGR compatible source and layer name
+        """
+        input_layer = self.parameterAsVectorLayer(parameters, parameter_name, context)
+        ogr_data_path = None
+        ogr_layer_name = None
+        if input_layer is None:
+            # parameter is not a vector layer - try to convert to a source compatible with OGR
+            # and extract selection if required
+            ogr_data_path = self.parameterAsCompatibleSourceLayerPath(parameters, parameter_name, context,
+                                                                      QgsVectorFileWriter.supportedFormatExtensions(),
+                                                                      feedback=feedback)
+            ogr_layer_name = GdalUtils.ogrLayerName(ogr_data_path)
+        elif input_layer.dataProvider().name() == 'ogr':
+            # parameter is a vector layer, with OGR data provider
+            # so extract selection if required
+            ogr_data_path = self.parameterAsCompatibleSourceLayerPath(parameters, parameter_name, context,
+                                                                      QgsVectorFileWriter.supportedFormatExtensions(),
+                                                                      feedback=feedback)
+            ogr_layer_name = GdalUtils.ogrLayerName(input_layer.dataProvider().dataSourceUri())
+        else:
+            # vector layer, but not OGR - get OGR compatible path
+            # TODO - handle "selected features only" mode!!
+            ogr_data_path = GdalUtils.ogrConnectionString(input_layer.dataProvider().dataSourceUri(), context)[1:-1]
+            ogr_layer_name = GdalUtils.ogrLayerName(input_layer.dataProvider().dataSourceUri())
+        return ogr_data_path, ogr_layer_name
 
-            commands[i] = c
+    def setOutputValue(self, name, value):
+        self.output_values[name] = value
+
+    def processAlgorithm(self, parameters, context, feedback):
+        commands = self.getConsoleCommands(parameters, context, feedback)
         GdalUtils.runGdal(commands, feedback)
+
+        # auto generate outputs
+        results = {}
+        for o in self.outputDefinitions():
+            if o.name() in parameters:
+                results[o.name()] = parameters[o.name()]
+        for k, v in self.output_values.items():
+            results[k] = v
+
+        return results
 
     def helpUrl(self):
         helpPath = GdalUtils.gdalHelpPath()
@@ -100,3 +127,8 @@ class GdalAlgorithm(GeoAlgorithm):
         if name.endswith(".py"):
             name = name[:-3]
         return name
+
+    def tr(self, string, context=''):
+        if context == '':
+            context = self.__class__.__name__
+        return QCoreApplication.translate(context, string)

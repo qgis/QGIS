@@ -26,13 +26,13 @@ __copyright__ = '(C) 2013, Alexander Bruy'
 
 __revision__ = '$Format:%H$'
 
+from qgis.core import (QgsProcessingParameterRasterLayer,
+                       QgsProcessingParameterBand,
+                       QgsProcessingParameterBoolean,
+                       QgsProcessingParameterEnum,
+                       QgsProcessingParameterFile,
+                       QgsProcessingParameterRasterDestination)
 from processing.algs.gdal.GdalAlgorithm import GdalAlgorithm
-from processing.core.parameters import ParameterRaster
-from processing.core.parameters import ParameterBoolean
-from processing.core.parameters import ParameterNumber
-from processing.core.parameters import ParameterFile
-from processing.core.parameters import ParameterSelection
-from processing.core.outputs import OutputRaster
 from processing.algs.gdal.GdalUtils import GdalUtils
 
 
@@ -49,17 +49,19 @@ class ColorRelief(GdalAlgorithm):
 
     def __init__(self):
         super().__init__()
-        self.addParameter(ParameterRaster(self.INPUT, self.tr('Input layer')))
-        self.addParameter(ParameterNumber(
-            self.BAND, self.tr('Band number'), 1, 99, 1))
-        self.addParameter(ParameterBoolean(self.COMPUTE_EDGES,
-                                           self.tr('Compute edges'), False))
-        self.addParameter(ParameterFile(self.COLOR_TABLE,
-                                        self.tr('Color configuration file'), optional=False))
-        self.addParameter(ParameterSelection(self.MATCH_MODE,
-                                             self.tr('Matching mode'), self.MATCHING_MODES, 0))
 
-        self.addOutput(OutputRaster(self.OUTPUT, self.tr('Color relief')))
+    def initAlgorithm(self, config=None):
+        self.addParameter(QgsProcessingParameterRasterLayer(self.INPUT, self.tr('Input layer')))
+        self.addParameter(QgsProcessingParameterBand(
+            self.BAND, self.tr('Band number'), parentLayerParameterName=self.INPUT))
+        self.addParameter(QgsProcessingParameterBoolean(self.COMPUTE_EDGES,
+                                                        self.tr('Compute edges'), defaultValue=False))
+        self.addParameter(QgsProcessingParameterFile(self.COLOR_TABLE,
+                                                     self.tr('Color configuration file'), optional=False))
+        self.addParameter(QgsProcessingParameterEnum(self.MATCH_MODE,
+                                                     self.tr('Matching mode'), options=self.MATCHING_MODES, defaultValue=0))
+
+        self.addParameter(QgsProcessingParameterRasterDestination(self.OUTPUT, self.tr('Color relief')))
 
     def name(self):
         return 'colorrelief'
@@ -70,23 +72,25 @@ class ColorRelief(GdalAlgorithm):
     def group(self):
         return self.tr('Raster analysis')
 
-    def getConsoleCommands(self, parameters):
+    def getConsoleCommands(self, parameters, context, feedback):
         arguments = ['color-relief']
-        arguments.append(str(self.getParameterValue(self.INPUT)))
-        arguments.append(str(self.getParameterValue(self.COLOR_TABLE)))
+        inLayer = self.parameterAsRasterLayer(parameters, self.INPUT, context)
+        arguments.append(inLayer.source())
+        arguments.append(self.parameterAsFile(parameters, self.COLOR_TABLE, context))
         #filePath = unicode(self.getParameterValue(self.COLOR_TABLE))
         #if filePath is None or filePath == '':
         #    filePath = os.path.join(os.path.dirname(__file__), 'terrain.txt')
         #arguments.append(filePath)
-        arguments.append(str(self.getOutputValue(self.OUTPUT)))
+        out = self.parameterAsOutputLayer(parameters, self.OUTPUT, context)
+        arguments.append(out)
 
         arguments.append('-b')
-        arguments.append(str(self.getParameterValue(self.BAND)))
+        arguments.append(str(self.parameterAsInt(parameters, self.BAND, context)))
 
-        if self.getParameterValue(self.COMPUTE_EDGES):
+        if self.parameterAsBool(parameters, self.COMPUTE_EDGES, context):
             arguments.append('-compute_edges')
 
-        mode = self.getParameterValue(self.MATCH_MODE)
+        mode = self.parameterAsEnum(parameters, self.MATCH_MODE, context)
         if mode == 1:
             arguments.append('-exact_color_entry')
         elif mode == 2:

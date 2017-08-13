@@ -35,7 +35,6 @@ from processing.algs.gdal.GdalUtils import GdalUtils
 
 from processing.tools import dataobjects
 from processing.tools.system import isWindows
-from processing.tools.vector import ogrConnectionString, ogrLayerName
 
 
 class OffsetCurve(GdalAlgorithm):
@@ -48,6 +47,8 @@ class OffsetCurve(GdalAlgorithm):
 
     def __init__(self):
         super().__init__()
+
+    def initAlgorithm(self, config=None):
         self.addParameter(ParameterVector(self.INPUT_LAYER,
                                           self.tr('Input layer'), [dataobjects.TYPE_VECTOR_LINE], False))
         self.addParameter(ParameterString(self.GEOMETRY,
@@ -72,20 +73,20 @@ class OffsetCurve(GdalAlgorithm):
     def group(self):
         return self.tr('Vector geoprocessing')
 
-    def getConsoleCommands(self, parameters):
+    def getConsoleCommands(self, parameters, context, feedback):
         inLayer = self.getParameterValue(self.INPUT_LAYER)
         geometry = self.getParameterValue(self.GEOMETRY)
         distance = self.getParameterValue(self.RADIUS)
         options = self.getParameterValue(self.OPTIONS)
 
-        ogrLayer = ogrConnectionString(inLayer)[1:-1]
-        layername = "'" + ogrLayerName(inLayer) + "'"
+        ogrLayer = GdalUtils.ogrConnectionString(inLayer, context)[1:-1]
+        layername = "'" + GdalUtils.ogrLayerName(inLayer) + "'"
 
         output = self.getOutputFromName(self.OUTPUT_LAYER)
         outFile = output.value
-        output = ogrConnectionString(outFile)
+        output = GdalUtils.ogrConnectionString(outFile, context)
 
-        layername = ogrLayerName(inLayer)
+        layername = GdalUtils.ogrLayerName(inLayer)
 
         arguments = []
         arguments.append(output)

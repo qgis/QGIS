@@ -68,6 +68,8 @@ class gdaladdo(GdalAlgorithm):
 
     def __init__(self):
         super().__init__()
+
+    def initAlgorithm(self, config=None):
         self.addParameter(ParameterRaster(
             self.INPUT, self.tr('Input layer'), False))
         self.addParameter(ParameterString(self.LEVELS,
@@ -89,7 +91,7 @@ class gdaladdo(GdalAlgorithm):
     def group(self):
         return self.tr('Raster miscellaneous')
 
-    def getConsoleCommands(self, parameters):
+    def getConsoleCommands(self, parameters, context, feedback):
         inFile = self.getParameterValue(self.INPUT)
         clearOverviews = self.getParameterValue(self.CLEAN)
         ovrFormat = self.getParameterValue(self.FORMAT)

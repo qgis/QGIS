@@ -41,7 +41,7 @@ QString QgsProcessingParameters::parameterAsString( const QgsProcessingParameter
   if ( val.canConvert<QgsProperty>() )
     return val.value< QgsProperty >().valueAsString( context.expressionContext(), definition->defaultValue().toString() );
 
-  if ( !val.isValid() || val.toString().isEmpty() )
+  if ( !val.isValid() )
   {
     // fall back to default
     val = definition->defaultValue();

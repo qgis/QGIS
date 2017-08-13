@@ -35,7 +35,6 @@ from processing.algs.gdal.GdalAlgorithm import GdalAlgorithm
 from processing.algs.gdal.GdalUtils import GdalUtils
 
 from processing.tools.system import isWindows
-from processing.tools.vector import ogrConnectionString, ogrLayerName
 
 
 class Ogr2OgrClipExtent(GdalAlgorithm):
@@ -47,6 +46,8 @@ class Ogr2OgrClipExtent(GdalAlgorithm):
 
     def __init__(self):
         super().__init__()
+
+    def initAlgorithm(self, config=None):
         self.addParameter(ParameterVector(self.INPUT_LAYER,
                                           self.tr('Input layer')))
         self.addParameter(ParameterExtent(self.CLIP_EXTENT,
@@ -65,9 +66,9 @@ class Ogr2OgrClipExtent(GdalAlgorithm):
     def group(self):
         return self.tr('Vector geoprocessing')
 
-    def getConsoleCommands(self, parameters):
+    def getConsoleCommands(self, parameters, context, feedback):
         inLayer = self.getParameterValue(self.INPUT_LAYER)
-        ogrLayer = ogrConnectionString(inLayer)[1:-1]
+        ogrLayer = GdalUtils.ogrConnectionString(inLayer, context)[1:-1]
         clipExtent = self.getParameterValue(self.CLIP_EXTENT)
         if not clipExtent:
             clipExtent = QgsProcessingUtils.combineLayerExtents([inLayer])
@@ -75,7 +76,7 @@ class Ogr2OgrClipExtent(GdalAlgorithm):
         output = self.getOutputFromName(self.OUTPUT_LAYER)
         outFile = output.value
 
-        output = ogrConnectionString(outFile)
+        output = GdalUtils.ogrConnectionString(outFile, context)
         options = str(self.getParameterValue(self.OPTIONS))
 
         arguments = []
@@ -92,7 +93,7 @@ class Ogr2OgrClipExtent(GdalAlgorithm):
 
         arguments.append(output)
         arguments.append(ogrLayer)
-        arguments.append(ogrLayerName(inLayer))
+        arguments.append(GdalUtils.ogrLayerName(inLayer))
 
         commands = []
         if isWindows():
