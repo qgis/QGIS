@@ -2012,8 +2012,7 @@ QgsGeometry QgsGeometry::makeValid()
   if ( !d->geometry )
     return QgsGeometry();
 
-  QString errorMsg;
-  QgsAbstractGeometry *g = _qgis_lwgeom_make_valid( d->geometry, errorMsg );
+  QgsAbstractGeometry *g = _qgis_lwgeom_make_valid( d->geometry, d->error );
 
   return QgsGeometry( g );
 }

@@ -1109,15 +1109,21 @@ Ring 0 is outer ring and can't be deleted.
 %Docstring
  Attempts to make an invalid geometry valid without losing vertices.
 
-.. note::
-
-   Ported from PostGIS ST_MakeValid() and it should return equivalent results.
  Already-valid geometries are returned without further intervention.
  In case of full or partial dimensional collapses, the output geometry may be a collection
  of lower-to-equal dimension geometries or a geometry of lower dimension.
  Single polygons may become multi-geometries in case of self-intersections.
  It preserves Z values, but M values will be dropped.
+
+ If an error was encountered during the process, more information can be retrieved
+ by calling `error()` on the returned geometry.
+
  :return: new valid QgsGeometry or null geometry on error
+
+.. note::
+
+   Ported from PostGIS ST_MakeValid() and it should return equivalent results.
+
 .. versionadded:: 3.0
  :rtype: QgsGeometry
 %End
