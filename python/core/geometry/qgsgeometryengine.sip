@@ -28,22 +28,41 @@ class QgsGeometryEngine
 
     virtual QgsAbstractGeometry *intersection( const QgsAbstractGeometry *geom, QString *errorMsg = 0 ) const = 0 /Factory/;
 %Docstring
+ Calculate the intersection of this and ``geom``.
+
+.. versionadded:: 3.0
  :rtype: QgsAbstractGeometry
 %End
+
     virtual QgsAbstractGeometry *difference( const QgsAbstractGeometry *geom, QString *errorMsg = 0 ) const = 0 /Factory/;
 %Docstring
+ Calculate the difference of this and ``geom``.
+
+.. versionadded:: 3.0
  :rtype: QgsAbstractGeometry
 %End
+
     virtual QgsAbstractGeometry *combine( const QgsAbstractGeometry *geom, QString *errorMsg = 0 ) const = 0 /Factory/;
 %Docstring
+ Calculate the combination of this and ``geom``.
+
+.. versionadded:: 3.0
  :rtype: QgsAbstractGeometry
 %End
-    virtual QgsAbstractGeometry *combine( const QList< QgsAbstractGeometry * > &, QString *errorMsg = 0 ) const = 0 /Factory/;
+
+    virtual QgsAbstractGeometry *combine( const QList< QgsAbstractGeometry * > &geometries, QString *errorMsg = 0 ) const = 0 /Factory/;
 %Docstring
+ Calculate the combination of this and ``geometries``.
+
+.. versionadded:: 3.0
  :rtype: QgsAbstractGeometry
 %End
+
     virtual QgsAbstractGeometry *symDifference( const QgsAbstractGeometry *geom, QString *errorMsg = 0 ) const = 0 /Factory/;
 %Docstring
+ Calculate the symmetric difference of this and ``geom``.
+
+.. versionadded:: 3.0
  :rtype: QgsAbstractGeometry
 %End
     virtual QgsAbstractGeometry *buffer( double distance, int segments, QString *errorMsg = 0 ) const = 0 /Factory/;
@@ -78,36 +97,68 @@ class QgsGeometryEngine
 %Docstring
  :rtype: QgsAbstractGeometry
 %End
+
     virtual double distance( const QgsAbstractGeometry *geom, QString *errorMsg = 0 ) const = 0;
 %Docstring
+ Calculates the distance between this and ``geom``.
+
+.. versionadded:: 3.0
  :rtype: float
 %End
+
     virtual bool intersects( const QgsAbstractGeometry *geom, QString *errorMsg = 0 ) const = 0;
 %Docstring
+ Checks if ``geom`` intersects this.
+
+.. versionadded:: 3.0
  :rtype: bool
 %End
+
     virtual bool touches( const QgsAbstractGeometry *geom, QString *errorMsg = 0 ) const = 0;
 %Docstring
+ Checks if ``geom`` touches this.
+
+.. versionadded:: 3.0
  :rtype: bool
 %End
+
     virtual bool crosses( const QgsAbstractGeometry *geom, QString *errorMsg = 0 ) const = 0;
 %Docstring
+ Checks if ``geom`` crosses this.
+
+.. versionadded:: 3.0
  :rtype: bool
 %End
+
     virtual bool within( const QgsAbstractGeometry *geom, QString *errorMsg = 0 ) const = 0;
 %Docstring
+ Checks if ``geom`` is within this.
+
+.. versionadded:: 3.0
  :rtype: bool
 %End
+
     virtual bool overlaps( const QgsAbstractGeometry *geom, QString *errorMsg = 0 ) const = 0;
 %Docstring
+ Checks if ``geom`` overlaps this.
+
+.. versionadded:: 3.0
  :rtype: bool
 %End
+
     virtual bool contains( const QgsAbstractGeometry *geom, QString *errorMsg = 0 ) const = 0;
 %Docstring
+ Checks if ``geom`` contains this.
+
+.. versionadded:: 3.0
  :rtype: bool
 %End
+
     virtual bool disjoint( const QgsAbstractGeometry *geom, QString *errorMsg = 0 ) const = 0;
 %Docstring
+ Checks if ``geom`` is disjoint from this.
+
+.. versionadded:: 3.0
  :rtype: bool
 %End
 
@@ -146,8 +197,13 @@ class QgsGeometryEngine
 %Docstring
  :rtype: bool
 %End
+
     virtual bool isEqual( const QgsAbstractGeometry *geom, QString *errorMsg = 0 ) const = 0;
 %Docstring
+ Checks if this is equal to ``geom``.
+ If both are Null geometries, `false` is returned.
+
+.. versionadded:: 3.0
  :rtype: bool
 %End
     virtual bool isEmpty( QString *errorMsg ) const = 0;

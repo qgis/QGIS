@@ -36,10 +36,39 @@ class CORE_EXPORT QgsGeometryEngine
     virtual void geometryChanged() = 0;
     virtual void prepareGeometry() = 0;
 
+    /**
+     * Calculate the intersection of this and \a geom.
+     *
+     * \since QGIS 3.0 \a geom is a pointer
+     */
     virtual QgsAbstractGeometry *intersection( const QgsAbstractGeometry *geom, QString *errorMsg = nullptr ) const = 0 SIP_FACTORY;
+
+    /**
+     * Calculate the difference of this and \a geom.
+     *
+     * \since QGIS 3.0 \a geom is a pointer
+     */
     virtual QgsAbstractGeometry *difference( const QgsAbstractGeometry *geom, QString *errorMsg = nullptr ) const = 0 SIP_FACTORY;
+
+    /**
+     * Calculate the combination of this and \a geom.
+     *
+     * \since QGIS 3.0 \a geom is a pointer
+     */
     virtual QgsAbstractGeometry *combine( const QgsAbstractGeometry *geom, QString *errorMsg = nullptr ) const = 0 SIP_FACTORY;
-    virtual QgsAbstractGeometry *combine( const QList< QgsAbstractGeometry * > &, QString *errorMsg = nullptr ) const = 0 SIP_FACTORY;
+
+    /**
+     * Calculate the combination of this and \a geometries.
+     *
+     * \since QGIS 3.0 \a geom is a pointer
+     */
+    virtual QgsAbstractGeometry *combine( const QList< QgsAbstractGeometry * > &geometries, QString *errorMsg = nullptr ) const = 0 SIP_FACTORY;
+
+    /**
+     * Calculate the symmetric difference of this and \a geom.
+     *
+     * \since QGIS 3.0 \a geom is a pointer
+     */
     virtual QgsAbstractGeometry *symDifference( const QgsAbstractGeometry *geom, QString *errorMsg = nullptr ) const = 0 SIP_FACTORY;
     virtual QgsAbstractGeometry *buffer( double distance, int segments, QString *errorMsg = nullptr ) const = 0 SIP_FACTORY;
     virtual QgsAbstractGeometry *buffer( double distance, int segments, int endCapStyle, int joinStyle, double miterLimit, QString *errorMsg = nullptr ) const = 0 SIP_FACTORY;
@@ -49,13 +78,61 @@ class CORE_EXPORT QgsGeometryEngine
     virtual bool centroid( QgsPoint &pt, QString *errorMsg = nullptr ) const = 0;
     virtual bool pointOnSurface( QgsPoint &pt, QString *errorMsg = nullptr ) const = 0;
     virtual QgsAbstractGeometry *convexHull( QString *errorMsg = nullptr ) const = 0 SIP_FACTORY;
+
+    /**
+     * Calculates the distance between this and \a geom.
+     *
+     * \since QGIS 3.0 \a geom is a pointer
+     */
     virtual double distance( const QgsAbstractGeometry *geom, QString *errorMsg = nullptr ) const = 0;
+
+    /**
+     * Checks if \a geom intersects this.
+     *
+     * \since QGIS 3.0 \a geom is a pointer
+     */
     virtual bool intersects( const QgsAbstractGeometry *geom, QString *errorMsg = nullptr ) const = 0;
+
+    /**
+     * Checks if \a geom touches this.
+     *
+     * \since QGIS 3.0 \a geom is a pointer
+     */
     virtual bool touches( const QgsAbstractGeometry *geom, QString *errorMsg = nullptr ) const = 0;
+
+    /**
+     * Checks if \a geom crosses this.
+     *
+     * \since QGIS 3.0 \a geom is a pointer
+     */
     virtual bool crosses( const QgsAbstractGeometry *geom, QString *errorMsg = nullptr ) const = 0;
+
+    /**
+     * Checks if \a geom is within this.
+     *
+     * \since QGIS 3.0 \a geom is a pointer
+     */
     virtual bool within( const QgsAbstractGeometry *geom, QString *errorMsg = nullptr ) const = 0;
+
+    /**
+     * Checks if \a geom overlaps this.
+     *
+     * \since QGIS 3.0 \a geom is a pointer
+     */
     virtual bool overlaps( const QgsAbstractGeometry *geom, QString *errorMsg = nullptr ) const = 0;
+
+    /**
+     * Checks if \a geom contains this.
+     *
+     * \since QGIS 3.0 \a geom is a pointer
+     */
     virtual bool contains( const QgsAbstractGeometry *geom, QString *errorMsg = nullptr ) const = 0;
+
+    /**
+     * Checks if \a geom is disjoint from this.
+     *
+     * \since QGIS 3.0 \a geom is a pointer
+     */
     virtual bool disjoint( const QgsAbstractGeometry *geom, QString *errorMsg = nullptr ) const = 0;
 
     /** Returns the Dimensional Extended 9 Intersection Model (DE-9IM) representation of the
@@ -80,6 +157,13 @@ class CORE_EXPORT QgsGeometryEngine
     virtual double area( QString *errorMsg = nullptr ) const = 0;
     virtual double length( QString *errorMsg = nullptr ) const = 0;
     virtual bool isValid( QString *errorMsg = nullptr ) const = 0;
+
+    /**
+     * Checks if this is equal to \a geom.
+     * If both are Null geometries, `false` is returned.
+     *
+     * \since QGIS 3.0 \a geom is a pointer
+     */
     virtual bool isEqual( const QgsAbstractGeometry *geom, QString *errorMsg = nullptr ) const = 0;
     virtual bool isEmpty( QString *errorMsg ) const = 0;
 
