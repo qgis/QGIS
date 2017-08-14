@@ -40,7 +40,6 @@ class SagaAlgorithmBase(QgsProcessingAlgorithm):
 
     def __init__(self):
         super().__init__()
-        self.output_values = {}
 
     def icon(self):
         return QIcon(os.path.join(pluginPath, 'images', 'saga.png'))
@@ -48,7 +47,5 @@ class SagaAlgorithmBase(QgsProcessingAlgorithm):
     def createInstance(self, config={}):
         return self.__class__()
 
-    def tr(self, string, context=''):
-        if context == '':
-            context = self.__class__.__name__
-        return QCoreApplication.translate(context, string)
+    def tr(self, string):
+        return QCoreApplication.translate("SAGAAlgorithm", string)
