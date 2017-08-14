@@ -120,9 +120,7 @@ QgsGeometry::OperationResult QgsGeometryEditUtils::addPart( QgsAbstractGeometry 
   if ( QgsWkbTypes::flatType( geom->wkbType() ) == QgsWkbTypes::MultiSurface
        || QgsWkbTypes::flatType( geom->wkbType() ) == QgsWkbTypes::MultiPolygon )
   {
-    std::unique_ptr<QgsCurve> curve( qgsgeometry_cast<QgsCurve *>( part.get() ) );
-    if ( curve )
-      part.release();
+    QgsCurve *curve = qgsgeometry_cast<QgsCurve *>( part.get() );
 
     if ( curve && curve->isClosed() && curve->numPoints() >= 4 )
     {
@@ -135,7 +133,10 @@ QgsGeometry::OperationResult QgsGeometryEditUtils::addPart( QgsAbstractGeometry 
       {
         poly.reset( new QgsCurvePolygon() );
       }
-      poly->setExteriorRing( curve.release() );
+      // Ownership is still with part, curve points to the same object and is transferred
+      // to poly here.
+      part.release();
+      poly->setExteriorRing( curve );
       added = geomCollection->addGeometry( poly.release() );
     }
     else if ( QgsWkbTypes::flatType( part->wkbType() ) == QgsWkbTypes::Polygon )
