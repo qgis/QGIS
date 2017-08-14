@@ -65,67 +65,95 @@ class CORE_EXPORT QgsVectorLayerEditUtils
     QgsVectorLayer::EditResult deleteVertex( QgsFeatureId featureId, int vertex );
 
     /** Adds a ring to polygon/multipolygon features
-     * @param ring ring to add
-     * @param targetFeatureIds if specified, only these features will be the candidates for adding a ring. Otherwise
+     * \param ring ring to add
+     * \param targetFeatureIds if specified, only these features will be the candidates for adding a ring. Otherwise
      * all intersecting features are tested and the ring is added to the first valid feature.
-     * @param modifiedFeatureId if specified, feature ID for feature that ring was added to will be stored in this parameter
-     * @return OperationResult result code: success or reason of failure
+     * \param modifiedFeatureId if specified, feature ID for feature that ring was added to will be stored in this parameter
+     * \return OperationResult result code: success or reason of failure
      */
     QgsGeometry::OperationResult addRing( const QList<QgsPointXY> &ring, const QgsFeatureIds &targetFeatureIds = QgsFeatureIds(), QgsFeatureId *modifiedFeatureId = nullptr );
 
     /**
      * Adds a ring to polygon/multipolygon features
-     * @param ring ring to add
-     * @param targetFeatureIds if specified, only these features will be the candidates for adding a ring. Otherwise
+     * \param ring ring to add
+     * \param targetFeatureIds if specified, only these features will be the candidates for adding a ring. Otherwise
      * all intersecting features are tested and the ring is added to the first valid feature.
-     * @param modifiedFeatureId if specified, feature ID for feature that ring was added to will be stored in this parameter
-     * @return OperationResult result code: success or reason of failure
-     * @note available in python bindings as addCurvedRing
+     * \param modifiedFeatureId if specified, feature ID for feature that ring was added to will be stored in this parameter
+     * \return OperationResult result code: success or reason of failure
+     * \note available in python bindings as addCurvedRing
      */
     QgsGeometry::OperationResult addRing( QgsCurve *ring, const QgsFeatureIds &targetFeatureIds = QgsFeatureIds(), QgsFeatureId *modifiedFeatureId = nullptr ) SIP_PYNAME( addCurvedRing );
 
     /**
      * Adds a new part polygon to a multipart feature
-     * @returns QgsGeometry::OperationResult a result code: success or reason of failure
+     * \return
+     * - QgsGeometry::Success
+     * - QgsGeometry::AddPartSelectedGeometryNotFound
+     * - QgsGeometry::AddPartNotMultiGeometry
+     * - QgsGeometry::InvalidBaseGeometry
+     * - QgsGeometry::InvalidInput
      */
     QgsGeometry::OperationResult addPart( const QList<QgsPointXY> &ring, QgsFeatureId featureId );
 
     /**
      * Adds a new part polygon to a multipart feature
-     * @returns QgsGeometry::OperationResult a result code: success or reason of failure
-     * @note available in python bindings as addPartV2
+     *
+     * \return
+     * - QgsGeometry::Success
+     * - QgsGeometry::AddPartSelectedGeometryNotFound
+     * - QgsGeometry::AddPartNotMultiGeometry
+     * - QgsGeometry::InvalidBaseGeometry
+     * - QgsGeometry::InvalidInput
+     * \note available in python bindings as addPartV2
      */
     QgsGeometry::OperationResult addPart( const QgsPointSequence &ring, QgsFeatureId featureId );
 
-    // @note available in python bindings as addCurvedPart
+    /**
+     * Add a new part polygon to a multipart feature
+     *
+     * \return
+     * - QgsGeometry::Success
+     * - QgsGeometry::AddPartSelectedGeometryNotFound
+     * - QgsGeometry::AddPartNotMultiGeometry
+     * - QgsGeometry::InvalidBaseGeometry
+     * - QgsGeometry::InvalidInput
+     *
+     * \note available in python bindings as addCurvedPart
+     */
     QgsGeometry::OperationResult addPart( QgsCurve *ring, QgsFeatureId featureId ) SIP_PYNAME( addCurvedPart );
 
-    /** Translates feature by dx, dy
+    /**
+     * Translates feature by dx, dy
      * \param featureId id of the feature to translate
      * \param dx translation of x-coordinate
      * \param dy translation of y-coordinate
-     * \returns 0 in case of success
+     * \return 0 in case of success
      */
     int translateFeature( QgsFeatureId featureId, double dx, double dy );
 
-    /** Splits parts cut by the given line
-     *  \param splitLine line that splits the layer feature parts
-     *  \param topologicalEditing true if topological editing is enabled
-     *  \returns
-     *   0 in case of success,
-     *   4 if there is a selection but no feature split
+    /**
+     * Split parts cut by the given line
+     * \param splitLine line that splits the layer feature parts
+     * \param topologicalEditing true if topological editing is enabled
+     * \return
+     *  - QgsGeometry::InvalidBaseGeometry
+     *  - QgsGeometry::Success
+     *  - QgsGeometry::InvalidInput
+     *  - QgsGeometry::NothingHappened if a selection is present but no feature has been split
+     *  - QgsGeometry::InvalidBaseGeometry
+     *  - QgsGeometry::GeometryEngineError
+     *  - QgsGeometry::SplitCannotSplitPoint
      */
-    // TODO QGIS 3.0 returns an enum instead of a magic constant
     QgsGeometry::OperationResult splitParts( const QList<QgsPointXY> &splitLine, bool topologicalEditing = false );
 
-    /** Splits features cut by the given line
-     *  \param splitLine line that splits the layer features
-     *  \param topologicalEditing true if topological editing is enabled
-     *  \returns
-     *   0 in case of success,
-     *   4 if there is a selection but no feature split
+    /**
+     * Splits features cut by the given line
+     * \param splitLine line that splits the layer features
+     * \param topologicalEditing true if topological editing is enabled
+     * \return
+     *  0 in case of success,
+     *  4 if there is a selection but no feature split
      */
-    // TODO QGIS 3.0 returns an enum instead of a magic constant
     QgsGeometry::OperationResult splitFeatures( const QList<QgsPointXY> &splitLine, bool topologicalEditing = false );
 
     /** Adds topological points for every vertex of the geometry.

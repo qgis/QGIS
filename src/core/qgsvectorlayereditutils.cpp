@@ -443,7 +443,7 @@ QgsGeometry::OperationResult QgsVectorLayerEditUtils::splitParts( const QList<Qg
     fit = mLayer->getFeatures( QgsFeatureRequest().setFilterRect( bBox ).setFlags( QgsFeatureRequest::ExactIntersect ) );
   }
 
-  int addPartRet = 0;
+  QgsGeometry::OperationResult addPartRet = QgsGeometry::Success;
 
   QgsFeature feat;
   while ( fit.nextFeature( feat ) )
@@ -472,25 +472,6 @@ QgsGeometry::OperationResult QgsVectorLayerEditUtils::splitParts( const QList<Qg
       {
         mLayer->editBuffer()->changeGeometry( feat.id(), featureGeom );
       }
-      else
-      {
-        // Test addPartRet
-        switch ( addPartRet )
-        {
-          case 1:
-            QgsDebugMsg( "Not a multipolygon" );
-            break;
-
-          case 2:
-            QgsDebugMsg( "Not a valid geometry" );
-            break;
-
-          case 3:
-            QgsDebugMsg( "New polygon ring" );
-            break;
-        }
-      }
-      mLayer->editBuffer()->changeGeometry( feat.id(), featureGeom );
 
       if ( topologicalEditing )
       {
@@ -502,13 +483,13 @@ QgsGeometry::OperationResult QgsVectorLayerEditUtils::splitParts( const QList<Qg
       }
       ++numberOfSplitParts;
     }
-    else if ( splitFunctionReturn > 1 ) //1 means no split but also no error
+    else if ( splitFunctionReturn != QgsGeometry::Success && splitFunctionReturn != QgsGeometry::NothingHappened )
     {
       returnCode = splitFunctionReturn;
     }
   }
 
-  if ( numberOfSplitParts == 0 && mLayer->selectedFeatureCount() > 0  && returnCode == 0 )
+  if ( numberOfSplitParts == 0 && mLayer->selectedFeatureCount() > 0  && returnCode == QgsGeometry::Success )
   {
     //There is a selection but no feature has been split.
     //Maybe user forgot that only the selected features are split

@@ -99,7 +99,7 @@ class CORE_EXPORT QgsGeometry
 
     /**
      * Success or failure of a geometry operation.
-     * This gived details about cause of failure.
+     * This gives details about cause of failure.
      */
     enum OperationResult
     {
