@@ -509,7 +509,7 @@ class CORE_EXPORT QgsGeometry
      * \param[out] topologyTestPoints points that need to be tested for topological completeness in the dataset
      * \returns OperationResult a result code: success or reason of failure
      */
-    OperationResult splitGeometry( const QList<QgsPointXY> &splitLine, QList<QgsGeometry> &newGeometries, bool topological, QList<QgsPointXY> &topologyTestPoints );
+    OperationResult splitGeometry( const QList<QgsPointXY> &splitLine, QList<QgsGeometry> &newGeometries SIP_OUT, bool topological, QList<QgsPointXY> &topologyTestPoints SIP_OUT );
 
     /**
      * Replaces a part of this geometry with another line

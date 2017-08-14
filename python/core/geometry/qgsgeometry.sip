@@ -490,7 +490,7 @@ Returns true if WKB of the geometry is of WKBMulti* type
  :rtype: OperationResult
 %End
 
-    OperationResult splitGeometry( const QList<QgsPointXY> &splitLine, QList<QgsGeometry> &newGeometries, bool topological, QList<QgsPointXY> &topologyTestPoints );
+    OperationResult splitGeometry( const QList<QgsPointXY> &splitLine, QList<QgsGeometry> &newGeometries /Out/, bool topological, QList<QgsPointXY> &topologyTestPoints /Out/ );
 %Docstring
  Splits this geometry according to a given line.
  \param splitLine the line that splits the geometry
