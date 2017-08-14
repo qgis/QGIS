@@ -156,11 +156,19 @@ QVector<QgsDataItem *> QgsGeoPackageConnectionItem::createChildren()
       layerType = layerTypeFromDb( geometryType );
       if ( layerType != QgsLayerItem::LayerType::NoType )
       {
-        // example URI:    '/path/gdal_sample_v1.2_no_extensions.gpkg|layerid=7'
-        QString uri = QStringLiteral( "%1|layerid=%2" ).arg( mPath, layerId );
-        QgsGeoPackageVectorLayerItem *item = new QgsGeoPackageVectorLayerItem( this, name, mPath, uri, layerType );
-        QgsDebugMsg( QStringLiteral( "Adding GPKG Vector item %1 %2 %3" ).arg( name, uri, geometryType ) );
-        children.append( item );
+        if ( geometryType.contains( QStringLiteral( "Collection" ), Qt::CaseInsensitive ) )
+        {
+          QgsDebugMsgLevel( QStringLiteral( "Layer %1 is a geometry collection: skipping %2" ).arg( name, mPath ), 3 );
+        }
+        else
+        {
+          // example URI:    '/path/gdal_sample_v1.2_no_extensions.gpkg|layerid=7|geometrytype=Point'
+          QString uri = QStringLiteral( "%1|layerid=%2|geometrytype=%3" ).arg( mPath, layerId, geometryType );
+          // TODO?: not sure, but if it's a collection, an expandable node would be better?
+          QgsGeoPackageVectorLayerItem *item = new QgsGeoPackageVectorLayerItem( this, name, mPath, uri, layerType );
+          QgsDebugMsgLevel( QStringLiteral( "Adding GPKG Vector item %1 %2 %3" ).arg( name, uri, geometryType ), 3 );
+          children.append( item );
+        }
       }
       else
       {
