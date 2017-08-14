@@ -1,7 +1,7 @@
 Concentration
 sim_hydrology
-ParameterRaster|MASK|Mask|False
-ParameterRaster|GRAD|Gradient|False
+QgsProcessingParameterRasterLayer|MASK|Mask|None|False
+QgsProcessingParameterRasterLayer|GRAD|Gradient|None|False
 OutputRaster|CONC|Concentration
 ParameterNumber|CONC_IN|Inlet Concentration| 0.000000|None| 5.000000
 ParameterNumber|CONC_OUT|Outlet Concentration| 0.000000|None| 3.000000

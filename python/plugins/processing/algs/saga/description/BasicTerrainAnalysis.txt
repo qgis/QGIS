@@ -1,6 +1,6 @@
 Basic Terrain Analysis
 ta_compound
-ParameterRaster|ELEVATION|Elevation|False
+QgsProcessingParameterRasterLayer|ELEVATION|Elevation|None|False
 OutputRaster|SHADE|Analytical Hillshading
 OutputRaster|SLOPE|Slope
 OutputRaster|ASPECT|Aspect

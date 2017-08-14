@@ -1,6 +1,6 @@
 Multiple Regression Analysis (Grid and Predictor Grids)
 statistics_regression
-ParameterRaster|DEPENDENT|Dependent Variable|False
+QgsProcessingParameterRasterLayer|DEPENDENT|Dependent Variable|None|False
 ParameterMultipleInput|PREDICTORS|Predictors|3|False
 OutputRaster|REGRESSION|Regression
 OutputRaster|RESIDUALS|Residuals

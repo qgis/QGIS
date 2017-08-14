@@ -1,6 +1,6 @@
 Sky View Factor
 ta_lighting
-ParameterRaster|DEM|Elevation|False
+QgsProcessingParameterRasterLayer|DEM|Elevation|None|False
 ParameterNumber|RADIUS|Maximum Search Radius|0.0|None|10000
 ParameterSelection|METHOD|Method|[0] multi scale;[1] sectors
 ParameterNumber|DLEVEL|Multi Scale Factor|1.25|None|3.00

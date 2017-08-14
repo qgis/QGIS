@@ -1,6 +1,6 @@
 Connectivity Analysis
 grid_filter
-ParameterRaster|INPUT_GRID|Input Binary Grid|False
+QgsProcessingParameterRasterLayer|INPUT_GRID|Input Binary Grid|None|False
 OutputRaster|FILTERED_MASK|Filtered Image
 ParameterBoolean|FILTER|Apply Filter?|True
 ParameterNumber|SIZE|Filter Size (Radius)|None|None| 3

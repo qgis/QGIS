@@ -1,6 +1,6 @@
 Diversity of Categories
 grid_analysis
-ParameterRaster|CATEGORIES|Categories|False
+QgsProcessingParameterRasterLayer|CATEGORIES|Categories|None|False
 ParameterSelection|SEARCH_MODE|Search Mode|[0] square;[1] circle|1
 ParameterNumber|SEARCH_RADIUS|Search Radius Distance|1.0|3|3
 ParameterSelection|NB_CASE|Connectivity Neighbourhood|[0] Rook's case;[1] Queen's case|1

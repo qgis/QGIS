@@ -1,6 +1,6 @@
 Laplacian Filter
 grid_filter
-ParameterRaster|INPUT|Grid|False
+QgsProcessingParameterRasterLayer|INPUT|Grid|None|False
 ParameterSelection|METHOD|Method|[0] standard kernel 1;[1] standard kernel 2;[2] Standard kernel 3;[3] user defined kernel
 ParameterNumber|SIGMA|Standard Deviation (Percent of Radius)|None|None|0
 ParameterNumber|RADIUS|Radius|None|None|1

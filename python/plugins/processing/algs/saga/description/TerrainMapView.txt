@@ -1,6 +1,6 @@
 Terrain Map View
 grid_visualisation
-ParameterRaster|DEM|DEM|False
+QgsProcessingParameterRasterLayer|DEM|DEM|None|False
 OutputRaster|SHADE|Shade
 OutputRaster|OPENNESS|Openness
 OutputRaster|SLOPE|Slope

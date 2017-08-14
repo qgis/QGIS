@@ -1,8 +1,8 @@
 Wind effect|Wind Effect (Windward / Leeward Index)
 ta_morphometry
-ParameterRaster|DEM|Elevation|False
-ParameterRaster|DIR|Wind Direction|True
-ParameterRaster|LEN|Wind Speed|True
+QgsProcessingParameterRasterLayer|DEM|Elevation|None|False
+QgsProcessingParameterRasterLayer|DIR|Wind Direction|None|True
+QgsProcessingParameterRasterLayer|LEN|Wind Speed|None|True
 ParameterNumber|DIR_CONST|Constant Wind Direction [Degree]|None|None|135
 ParameterBoolean|OLDVER         |Old Version|True
 ParameterNumber|MAXDIST|Search Distance [km]|0.0|None|300.0

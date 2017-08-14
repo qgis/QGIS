@@ -1,6 +1,6 @@
 Hypsometry
 ta_morphometry
-ParameterRaster|ELEVATION|Elevation|False
+QgsProcessingParameterRasterLayer|ELEVATION|Elevation|None|False
 ParameterNumber|COUNT|Number of Classes|None|None|100.0
 ParameterSelection|SORTING|Sort|[0] up;[1] down
 ParameterSelection|METHOD|Classification Constant|[0] height;[1] area

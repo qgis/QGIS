@@ -1,8 +1,8 @@
 PET (after Hargreaves, Grid)
 climate_tools
-ParameterRaster|T|Mean Temperature|False
-ParameterRaster|T_MIN|Minimum Temperature|False
-ParameterRaster|T_MAX|Maximum Temperature|False
+QgsProcessingParameterRasterLayer|T|Mean Temperature|None|False
+QgsProcessingParameterRasterLayer|T_MIN|Minimum Temperature|None|False
+QgsProcessingParameterRasterLayer|T_MAX|Maximum Temperature|None|False
 OutputRaster|PET|Potential Evapotranspiration
 ParameterNumber|LAT|Latitude [Degree]| -90.000000| 90.000000| 53.000000
 ParameterSelection|TIME|Time|[0] day;[1] month| 0

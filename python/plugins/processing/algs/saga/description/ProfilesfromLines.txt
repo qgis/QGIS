@@ -1,6 +1,6 @@
 Profiles from Lines
 ta_profiles
-ParameterRaster|DEM|DEM|False
+QgsProcessingParameterRasterLayer|DEM|DEM|None|False
 ParameterMultipleInput|VALUES|Values|3|True
 ParameterVector|LINES|Lines|1|False
 ParameterTableField|NAME|Name|LINES|-1|False

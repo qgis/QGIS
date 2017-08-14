@@ -1,10 +1,10 @@
 Diffuse Pollution Risk
 sim_hydrology
-ParameterRaster|DEM|Elevation|False
-ParameterRaster|CHANNEL|Channel Network|True
-ParameterRaster|WEIGHT|Land Cover Weights|True
+QgsProcessingParameterRasterLayer|DEM|Elevation|None|False
+QgsProcessingParameterRasterLayer|CHANNEL|Channel Network|None|True
+QgsProcessingParameterRasterLayer|WEIGHT|Land Cover Weights|None|True
 ParameterNumber|WEIGHT_DEFAULT|Default| 0.000000|None| 1.000000
-ParameterRaster|RAIN|Rainfall|True
+QgsProcessingParameterRasterLayer|RAIN|Rainfall|None|True
 ParameterNumber|RAIN_DEFAULT|Default| 0.000000|None| 500.000000
 OutputRaster|DELIVERY|Delivery Index
 OutputRaster|RISK_POINT|Locational Risk

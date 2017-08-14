@@ -1,6 +1,6 @@
 Multiresolution Index of Valley Bottom Flatness (MRVBF)
 ta_morphometry
-ParameterRaster|DEM|Elevation|False
+QgsProcessingParameterRasterLayer|DEM|Elevation|None|False
 ParameterNumber|T_SLOPE|Initial Threshold for Slope|None|None|16
 ParameterNumber|T_PCTL_V|Threshold for Elevation Percentile (Lowness)|None|None|0.4
 ParameterNumber|T_PCTL_R|Threshold for Elevation Percentile (Upness)|None|None|0.35

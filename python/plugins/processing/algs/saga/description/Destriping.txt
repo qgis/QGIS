@@ -1,6 +1,6 @@
 Destriping
 contrib_perego
-ParameterRaster|INPUT|Input|False
+QgsProcessingParameterRasterLayer|INPUT|Input|None|False
 OutputRaster|RESULT3|Destriped Grid
 OutputRaster|RESULT1|Low-pass 1
 OutputRaster|RESULT2|Low-pass 2

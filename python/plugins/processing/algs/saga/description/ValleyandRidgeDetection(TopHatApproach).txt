@@ -1,6 +1,6 @@
 Valley and Ridge Detection (Top Hat Approach)
 ta_morphometry
-ParameterRaster|DEM|Elevation|False
+QgsProcessingParameterRasterLayer|DEM|Elevation|None|False
 OutputRaster|VALLEY|Valley Depth
 OutputRaster|HILL|Hill Height
 OutputRaster|VALLEY_IDX|Valley Index

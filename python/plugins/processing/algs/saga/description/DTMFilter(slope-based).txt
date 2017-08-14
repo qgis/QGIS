@@ -1,6 +1,6 @@
 DTM Filter (slope-based)
 grid_filter
-ParameterRaster|INPUT|Grid to filter|False
+QgsProcessingParameterRasterLayer|INPUT|Grid to filter|None|False
 ParameterNumber|RADIUS|Search Radius|1.0|None|2
 ParameterNumber|TERRAINSLOPE|Approx. Terrain Slope|None|None|30.0
 ParameterBoolean|STDDEV            |Use Confidence Interval|True

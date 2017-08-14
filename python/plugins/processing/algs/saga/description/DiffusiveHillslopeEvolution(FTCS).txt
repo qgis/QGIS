@@ -1,6 +1,6 @@
 Diffusive Hillslope Evolution (FTCS)
 sim_qm_of_esp
-ParameterRaster|DEM|Elevation|False
+QgsProcessingParameterRasterLayer|DEM|Elevation|None|False
 ParameterBoolean|UPDATE|Update|True
 ParameterNumber|KAPPA|Diffusivity [m2/kyr]|0.0|None|1.0
 ParameterNumber|DURATION|Simulation Time [kyr]|0.0|None|100.0

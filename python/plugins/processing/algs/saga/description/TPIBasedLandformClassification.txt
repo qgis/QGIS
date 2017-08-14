@@ -1,6 +1,6 @@
 TPI Based Landform Classification
 ta_morphometry
-ParameterRaster|DEM|Elevation|False
+QgsProcessingParameterRasterLayer|DEM|Elevation|None|False
 ParameterNumber|RADIUS_A_MIN|Min Radius A|None|None|0
 ParameterNumber|RADIUS_A_MAX|Max Radius A|None|None|100
 ParameterNumber|RADIUS_B_MIN|Min Radius B|None|None|0

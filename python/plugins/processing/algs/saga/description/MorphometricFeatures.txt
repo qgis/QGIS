@@ -1,6 +1,6 @@
 Morphometric Features
 ta_morphometry
-ParameterRaster|DEM|Elevation|False
+QgsProcessingParameterRasterLayer|DEM|Elevation|None|False
 OutputRaster|FEATURES|Morphometric Features
 OutputRaster|ELEVATION|Generalized Surface
 OutputRaster|SLOPE|Slope

@@ -1,6 +1,6 @@
 Upslope and Downslope Curvature
 ta_morphometry
-ParameterRaster|DEM|Elevation|False
+QgsProcessingParameterRasterLayer|DEM|Elevation|None|False
 OutputRaster|C_LOCAL|Local Curvature
 OutputRaster|C_UP|Upslope Curvature
 OutputRaster|C_UP_LOCAL|Local Upslope Curvature

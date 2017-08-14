@@ -1,7 +1,7 @@
 Fragmentation Classes from Density and Connectivity
 grid_analysis
-ParameterRaster|DENSITY|Density [Percent]|False
-ParameterRaster|CONNECTIVITY|Connectivity [Percent]|False
+QgsProcessingParameterRasterLayer|DENSITY|Density [Percent]|None|False
+QgsProcessingParameterRasterLayer|CONNECTIVITY|Connectivity [Percent]|None|False
 ParameterBoolean|BORDER|Add Border|True
 ParameterNumber|WEIGHT|Connectivity Weighting|None|None|0
 ParameterNumber|DENSITY_MIN|Minimum Density [Percent]|0.0|100.0|10

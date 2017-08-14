@@ -1,6 +1,6 @@
 Topographic Openness
 ta_lighting
-ParameterRaster|DEM|Elevation|False
+QgsProcessingParameterRasterLayer|DEM|Elevation|None|False
 OutputRaster|POS|Positive Openness
 OutputRaster|NEG|Negative Openness
 ParameterNumber|RADIUS|Radial Limit| 0.000000|None| 10000.000000

@@ -1,6 +1,6 @@
 GWR for Single Predictor Grid
 statistics_regression
-ParameterRaster|PREDICTOR|Predictor|False
+QgsProcessingParameterRasterLayer|PREDICTOR|Predictor|None|False
 ParameterVector|POINTS|Points|0|False
 ParameterTableField|DEPENDENT|Dependent Variable|POINTS|-1|False
 ParameterSelection|DW_WEIGHTING|Weighting Function|[0] no distance weighting;[1] inverse distance to a power;[2] exponential;[3] gaussian weighting

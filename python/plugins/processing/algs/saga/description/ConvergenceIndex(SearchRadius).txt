@@ -1,6 +1,6 @@
 Convergence Index (Search Radius)
 ta_morphometry
-ParameterRaster|ELEVATION|Elevation|False
+QgsProcessingParameterRasterLayer|ELEVATION|Elevation|None|False
 ParameterNumber|RADIUS|Radius [Cells]|1.0|None|10.0
 ParameterSelection|DISTANCE_WEIGHTING_DW_WEIGHTING|Weighting Function|[0] no distance weighting;[1] inverse distance to a power;[2] exponential;[3] gaussian weighting
 ParameterNumber|DISTANCE_WEIGHTING_DW_IDW_POWER|Inverse Distance Weighting Power|0.0|None|1.0

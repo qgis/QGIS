@@ -1,6 +1,6 @@
 Multi Direction Lee Filter
 grid_filter
-ParameterRaster|INPUT|Grid|False
+QgsProcessingParameterRasterLayer|INPUT|Grid|None|False
 ParameterNumber|NOISE_ABS|Estimated Noise (absolute)|None|None|1.0
 ParameterNumber|NOISE_REL|Estimated Noise (relative)|None|None|1.0
 ParameterBoolean|WEIGHTED       |Weighted|True

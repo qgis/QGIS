@@ -1,6 +1,6 @@
 Relative Heights and Slope Positions
 ta_morphometry
-ParameterRaster|DEM|Elevation|False
+QgsProcessingParameterRasterLayer|DEM|Elevation|None|False
 ParameterNumber|W|w|None|None|0.5
 ParameterNumber|T|t|None|None|10.0
 ParameterNumber|E|e|None|None|2.0

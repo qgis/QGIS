@@ -1,6 +1,6 @@
 Confusion Matrix (Polygons / Grid)
 imagery_classification
-ParameterRaster|GRID|Classification|False
+QgsProcessingParameterRasterLayer|GRID|Classification|None|False
 ParameterTable|GRID_LUT|Look-up Table|True
 ParameterTable|GRID_LUT_MIN|Value|False
 ParameterTable|GRID_LUT_MAX|Value (Maximum)|False

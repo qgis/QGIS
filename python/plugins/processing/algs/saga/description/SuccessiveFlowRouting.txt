@@ -1,6 +1,6 @@
 Successive Flow Routing
 sim_qm_of_esp
-ParameterRaster|DEM|DEM|False
+QgsProcessingParameterRasterLayer|DEM|DEM|None|False
 ParameterNumber|ITERATIONS|Iterations|1|None|100
 ParameterNumber|RUNOFF|Runoff|None|None|1.00
 ParameterNumber|MANNING|Manning's Roughness|None|None|0.20

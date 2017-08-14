@@ -1,6 +1,6 @@
 Fourier Filter (ViGrA)
 imagery_vigra
-ParameterRaster|INPUT|Input|False
+QgsProcessingParameterRasterLayer|INPUT|Input|None|False
 OutputRaster|OUTPUT|Output
 ParameterNumber|SCALE|Size of smoothing filter| 0.000000|None| 2.000000
 ParameterNumber|POWER|Power|None|None| 0.500000

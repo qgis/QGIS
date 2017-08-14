@@ -1,5 +1,5 @@
 Mirror Grid
 grid_tools
-ParameterRaster|GRID|Grid|False
+QgsProcessingParameterRasterLayer|GRID|Grid|None|False
 OutputRaster|MIRROR|Mirror Grid
 ParameterSelection|METHOD|Method|[0] horizontally;[1] vertically;[2] both| 0

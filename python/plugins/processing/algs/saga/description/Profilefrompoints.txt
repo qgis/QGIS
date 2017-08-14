@@ -1,6 +1,6 @@
 Profile from points table|Profile from points
 ta_profiles
-ParameterRaster|GRID|Grid|False
+QgsProcessingParameterRasterLayer|GRID|Grid|None|False
 ParameterTable|TABLE|Input|False
 ParameterTableField|X|X|TABLE|-1|False
 ParameterTableField|Y|Y|TABLE|-1|False

@@ -1,10 +1,10 @@
 Fuzzy Landform Element Classification
 ta_morphometry
-ParameterRaster|SLOPE|Slope|False
-ParameterRaster|MINCURV|Minimum Curvature|False
-ParameterRaster|MAXCURV|Maximum Curvature|False
-ParameterRaster|PCURV|Profile Curvature|False
-ParameterRaster|TCURV|Tangential Curvature|False
+QgsProcessingParameterRasterLayer|SLOPE|Slope|None|False
+QgsProcessingParameterRasterLayer|MINCURV|Minimum Curvature|None|False
+QgsProcessingParameterRasterLayer|MAXCURV|Maximum Curvature|None|False
+QgsProcessingParameterRasterLayer|PCURV|Profile Curvature|None|False
+QgsProcessingParameterRasterLayer|TCURV|Tangential Curvature|None|False
 OutputRaster|PLAIN|Plain
 OutputRaster|PIT|Pit
 OutputRaster|PEAK|Peak

@@ -1,6 +1,6 @@
 RiverGridGeneration
 sim_rivflow
-ParameterRaster|INPUT|Geländemodell (DTM)|False
+QgsProcessingParameterRasterLayer|INPUT|Geländemodell (DTM)|None|False
 OutputRaster|OUTPUT|HG Raster
 ParameterNumber|SX|Abflusspfad-Quelle, x-Wert| 0|None| 0
 ParameterNumber|SY|Abflusspfad-Quelle, y-Wert| 0|None| 0

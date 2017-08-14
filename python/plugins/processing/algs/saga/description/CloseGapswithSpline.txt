@@ -1,7 +1,7 @@
 Close Gaps with Spline
 grid_tools
-ParameterRaster|GRID|Grid|False
-ParameterRaster|MASK|Mask|True
+QgsProcessingParameterRasterLayer|GRID|Grid|None|False
+QgsProcessingParameterRasterLayer|MASK|Mask|None|True
 ParameterNumber|MAXGAPCELLS|Only Process Gaps with Less Cells|None|None|0
 ParameterNumber|MAXPOINTS|Maximum Points|None|None|1000
 ParameterNumber|LOCALPOINTS|Number of Points for Local Interpolation|None|None|10
