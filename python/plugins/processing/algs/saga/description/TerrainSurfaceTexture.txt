@@ -2,10 +2,10 @@ Terrain Surface Texture
 ta_morphometry
 QgsProcessingParameterRasterLayer|DEM|Elevation|None|False
 OutputRaster|TEXTURE|Texture
-ParameterNumber|EPSILON|Flat Area Threshold| 0.000000|None| 1.000000
-ParameterNumber|SCALE|Scale (Cells)| 1|None| 10
+QgsProcessingParameterNumber|EPSILON|Flat Area Threshold|QgsProcessingParameterNumber.Double|1.000000|False| 0.000000|None
+QgsProcessingParameterNumber|SCALE|Scale (Cells)|QgsProcessingParameterNumber.Integer|10|False| 1|None
 ParameterSelection|METHOD|Method|[0] counting cells;[1] resampling| 1
 ParameterSelection|DW_WEIGHTING|Weighting Function|[0] no distance weighting;[1] inverse distance to a power;[2] exponential;[3] gaussian weighting| 3
-ParameterNumber|DW_IDW_POWER|Inverse Distance Weighting Power| 0.000000|None| 1.000000
+QgsProcessingParameterNumber|DW_IDW_POWER|Inverse Distance Weighting Power|QgsProcessingParameterNumber.Double|1.000000|False| 0.000000|None
 ParameterBoolean|DW_IDW_OFFSET|Inverse Distance Offset|True
-ParameterNumber|DW_BANDWIDTH|Gaussian and Exponential Weighting Bandwidth| 0.000000|None| 0.700000
+QgsProcessingParameterNumber|DW_BANDWIDTH|Gaussian and Exponential Weighting Bandwidth|QgsProcessingParameterNumber.Double|0.700000|False| 0.000000|None

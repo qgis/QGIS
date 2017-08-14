@@ -1,6 +1,6 @@
 Fill Sinks (QM of ESP)
 sim_qm_of_esp
 QgsProcessingParameterRasterLayer|DEM|DEM|None|False
-ParameterNumber|DZFILL|Fill Increment|0.0|None|0.01
+QgsProcessingParameterNumber|DZFILL|Fill Increment|QgsProcessingParameterNumber.Double|0.01|False|0.0|None
 OutputRaster|FILLED|DEM Without Sinks
 OutputRaster|SINKS|Sinks

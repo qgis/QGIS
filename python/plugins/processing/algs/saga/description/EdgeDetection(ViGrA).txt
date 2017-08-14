@@ -3,5 +3,5 @@ imagery_vigra
 QgsProcessingParameterRasterLayer|INPUT|Input|None|False
 OutputRaster|OUTPUT|Edges
 ParameterSelection|TYPE|Detector type|[0] Canny;[1] Shen-Castan| 0
-ParameterNumber|SCALE|Operator scale| 0.000000|None| 1.000000
-ParameterNumber|THRESHOLD|Gradient threshold| 0.000000|None| 1.000000
+QgsProcessingParameterNumber|SCALE|Operator scale|QgsProcessingParameterNumber.Double|1.000000|False| 0.000000|None
+QgsProcessingParameterNumber|THRESHOLD|Gradient threshold|QgsProcessingParameterNumber.Double|1.000000|False| 0.000000|None

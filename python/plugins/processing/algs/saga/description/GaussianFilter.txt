@@ -1,7 +1,7 @@
 Gaussian Filter
 grid_filter
 QgsProcessingParameterRasterLayer|INPUT|Grid|None|False
-ParameterNumber|SIGMA|Standard Deviation|None|None|1
+QgsProcessingParameterNumber|SIGMA|Standard Deviation|QgsProcessingParameterNumber.Integer|1|False|None|None
 ParameterSelection|MODE|Search Mode|[0] Square;[1] Circle
-ParameterNumber|RADIUS|Search Radius|None|None|3
+QgsProcessingParameterNumber|RADIUS|Search Radius|QgsProcessingParameterNumber.Integer|3|False|None|None
 OutputRaster|RESULT|Filtered Grid

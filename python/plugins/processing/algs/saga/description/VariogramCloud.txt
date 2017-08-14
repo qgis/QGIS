@@ -2,6 +2,6 @@ Variogram Cloud
 statistics_points
 ParameterVector|POINTS|Points|0|False
 ParameterTableField|FIELD|Attribute|POINTS|-1|False
-ParameterNumber|DISTMAX|Maximum Distance|None|None|0.0
-ParameterNumber|NSKIP|Skip Number|None|None|1
+QgsProcessingParameterNumber|DISTMAX|Maximum Distance|QgsProcessingParameterNumber.Double|0.0|False|None|None
+QgsProcessingParameterNumber|NSKIP|Skip Number|QgsProcessingParameterNumber.Integer|1|False|None|None
 OutputTable|RESULT|Variogram Cloud

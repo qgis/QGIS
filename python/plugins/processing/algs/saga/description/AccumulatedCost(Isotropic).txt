@@ -2,6 +2,6 @@ Accumulated Cost (Isotropic)
 grid_analysis
 QgsProcessingParameterRasterLayer|COST|Cost Grid|None|False
 QgsProcessingParameterRasterLayer|POINTS|Destination Points|None|False
-ParameterNumber|THRESHOLD|Threshold for different route|None|None|0.0
+QgsProcessingParameterNumber|THRESHOLD|Threshold for different route|QgsProcessingParameterNumber.Double|0.0|False|None|None
 OutputRaster|ACCCOST|Accumulated Cost
 OutputRaster|CLOSESTPT|Closest Point

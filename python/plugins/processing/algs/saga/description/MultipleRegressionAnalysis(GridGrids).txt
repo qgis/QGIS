@@ -6,8 +6,8 @@ ParameterSelection|INTERPOL|Grid Interpolation|[0] Nearest Neighbor;[1] Bilinear
 ParameterBoolean|COORD_X         |Include X Coordinate|True
 ParameterBoolean|COORD_Y         |Include Y Coordinate|True
 ParameterSelection|METHOD|Method|[0] include all;[1] forward;[2] backward;[3] stepwise
-ParameterNumber|P_IN|P in|None|None|5
-ParameterNumber|P_OUT|P out|None|None|5
+QgsProcessingParameterNumber|P_IN|P in|QgsProcessingParameterNumber.Integer|5|False|None|None
+QgsProcessingParameterNumber|P_OUT|P out|QgsProcessingParameterNumber.Integer|5|False|None|None
 OutputRaster|REGRESSION|Regression
 OutputRaster|RESIDUALS|Residuals
 OutputTable|INFO_COEFF|Details: Coefficients

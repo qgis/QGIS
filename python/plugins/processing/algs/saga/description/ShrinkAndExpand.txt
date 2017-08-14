@@ -3,6 +3,6 @@ grid_tools
 QgsProcessingParameterRasterLayer|INPUT|Grid|None|False
 ParameterSelection|OPERATION|Operation|[0] Shrink;[1] Expand;[2] shrink and expand;[3] expand and shrink|3
 ParameterSelection|CIRCLE|Search Mode|[0] Square;[1] Circle
-ParameterNumber|RADIUS|Radius|1|None|1
+QgsProcessingParameterNumber|RADIUS|Radius|QgsProcessingParameterNumber.Integer|1|False|1|None
 ParameterSelection|EXPAND|Method|[0] min;[1] max;[2] mean;[3] majority|3
 OutputRaster|RESULT|Result Grid

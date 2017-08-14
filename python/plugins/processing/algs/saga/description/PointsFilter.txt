@@ -2,11 +2,11 @@ Points Filter
 shapes_points
 ParameterVector|POINTS|Points|0|False
 ParameterTableField|FIELD|Attribute|POINTS|-1|False
-ParameterNumber|RADIUS|Radius|None|None|1
-ParameterNumber|MINNUM|Minimum Number of Points|None|None|0
-ParameterNumber|MAXNUM|Maximum Number of Points|None|None|0
+QgsProcessingParameterNumber|RADIUS|Radius|QgsProcessingParameterNumber.Integer|1|False|None|None
+QgsProcessingParameterNumber|MINNUM|Minimum Number of Points|QgsProcessingParameterNumber.Integer|0|False|None|None
+QgsProcessingParameterNumber|MAXNUM|Maximum Number of Points|QgsProcessingParameterNumber.Integer|0|False|None|None
 ParameterBoolean|QUADRANTS      |Quadrants|True
 ParameterSelection|METHOD|Filter Criterion|[0] keep maxima (with tolerance);[1] keep minima (with tolerance);[2] remove maxima (with tolerance);[3] remove minima (with tolerance);[4] remove below percentile;[5] remove above percentile
-ParameterNumber|TOLERANCE|Tolerance|None|None|0.0
-ParameterNumber|PERCENT|Percentile|None|None|50
+QgsProcessingParameterNumber|TOLERANCE|Tolerance|QgsProcessingParameterNumber.Double|0.0|False|None|None
+QgsProcessingParameterNumber|PERCENT|Percentile|QgsProcessingParameterNumber.Integer|50|False|None|None
 OutputVector|FILTER|Filtered Points

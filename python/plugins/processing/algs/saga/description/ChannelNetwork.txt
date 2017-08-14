@@ -4,11 +4,11 @@ QgsProcessingParameterRasterLayer|ELEVATION|Elevation|None|False
 QgsProcessingParameterRasterLayer|SINKROUTE|Flow Direction|None|True
 QgsProcessingParameterRasterLayer|INIT_GRID|Initiation Grid|None|False
 ParameterSelection|INIT_METHOD|Initiation Type|[0] Less than;[1] Equals;[2] Greater than
-ParameterNumber|INIT_VALUE|Initiation Threshold|None|None|0.0
+QgsProcessingParameterNumber|INIT_VALUE|Initiation Threshold|QgsProcessingParameterNumber.Double|0.0|False|None|None
 QgsProcessingParameterRasterLayer|DIV_GRID|Divergence|None|True
-ParameterNumber|DIV_CELLS|Tracing: Max. Divergence|None|None|10
+QgsProcessingParameterNumber|DIV_CELLS|Tracing: Max. Divergence|QgsProcessingParameterNumber.Integer|10|False|None|None
 QgsProcessingParameterRasterLayer|TRACE_WEIGHT|Tracing: Weight|None|True
-ParameterNumber|MINLEN|Min. Segment Length|0.0|None|10
+QgsProcessingParameterNumber|MINLEN|Min. Segment Length|QgsProcessingParameterNumber.Integer|10|False|0.0|None
 OutputRaster|CHNLNTWRK|Channel Network
 OutputRaster|CHNLROUTE|Channel Direction
 OutputVector|SHAPES|Channel Network

@@ -2,6 +2,6 @@ Rank Filter
 grid_filter
 QgsProcessingParameterRasterLayer|INPUT|Grid|None|False
 ParameterSelection|MODE|Search Mode|[0] Square;[1] Circle
-ParameterNumber|RADIUS|Radius|1.0|None|1
-ParameterNumber|RANK|Rank [Percent]|None|None|50
+QgsProcessingParameterNumber|RADIUS|Radius|QgsProcessingParameterNumber.Integer|1|False|1.0|None
+QgsProcessingParameterNumber|RANK|Rank [Percent]|QgsProcessingParameterNumber.Integer|50|False|None|None
 OutputRaster|RESULT|Filtered Grid

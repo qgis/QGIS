@@ -3,7 +3,7 @@ grid_filter
 QgsProcessingParameterRasterLayer|INPUT_GRID|Input Binary Grid|None|False
 OutputRaster|FILTERED_MASK|Filtered Image
 ParameterBoolean|FILTER|Apply Filter?|True
-ParameterNumber|SIZE|Filter Size (Radius)|None|None| 3
+QgsProcessingParameterNumber|SIZE|Filter Size (Radius)|QgsProcessingParameterNumber.Integer|3|False|None|None
 OutputRaster|SYMBOLIC_IMAGE|Symbolic Image
 OutputVector|OUTLINES|Outlines
 ParameterBoolean|BORDER_PIXEL_CENTERS|Pixel Centers?|False

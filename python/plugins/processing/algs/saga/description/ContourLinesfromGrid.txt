@@ -2,7 +2,7 @@ Contour Lines from Grid
 shapes_grid
 QgsProcessingParameterRasterLayer|GRID|Grid|None|False
 ParameterSelection|VERTEX|Vertex type|[0] x,y;[1] x,y,z
-ParameterNumber|ZMIN|Minimum Contour Value|None|None|0.0
-ParameterNumber|ZMAX|Maximum Contour Value|None|None|10000.0
-ParameterNumber|ZSTEP|Equidistance|None|None|100.0
+QgsProcessingParameterNumber|ZMIN|Minimum Contour Value|QgsProcessingParameterNumber.Double|0.0|False|None|None
+QgsProcessingParameterNumber|ZMAX|Maximum Contour Value|QgsProcessingParameterNumber.Double|10000.0|False|None|None
+QgsProcessingParameterNumber|ZSTEP|Equidistance|QgsProcessingParameterNumber.Double|100.0|False|None|None
 OutputVector|CONTOUR|Contour Lines

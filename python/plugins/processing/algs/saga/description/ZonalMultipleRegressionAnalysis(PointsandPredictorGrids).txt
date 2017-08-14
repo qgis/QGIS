@@ -11,4 +11,4 @@ ParameterBoolean|COORD_X|Include X Coordinate|False
 ParameterBoolean|COORD_Y|Include Y Coordinate|False
 ParameterBoolean|INTERCEPT|Intercept|True
 ParameterSelection|METHOD|Method|[0] include all;[1] forward;[2] backward;[3] stepwise| 3
-ParameterNumber|P_VALUE|Significance Level| 0.000000| 100.000000| 5.000000
+QgsProcessingParameterNumber|P_VALUE|Significance Level|QgsProcessingParameterNumber.Double|5.000000|False| 0.000000| 100.000000

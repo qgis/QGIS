@@ -3,8 +3,8 @@ grid_spline
 ParameterVector|SHAPES|Points|0|False
 ParameterTableField|FIELD|Attribute|SHAPES|-1|False
 Hardcoded|-TARGET_DEFINITION 0
-ParameterNumber|LEVEL|Resolution|0.001|None|1.0
+QgsProcessingParameterNumber|LEVEL|Resolution|QgsProcessingParameterNumber.Double|1.0|False|0.001|None
 Extent TARGET_USER_XMIN TARGET_USER_XMAX TARGET_USER_YMIN TARGET_USER_YMAX
-ParameterNumber|TARGET_USER_SIZE|Cellsize|None|None|100.0
+QgsProcessingParameterNumber|TARGET_USER_SIZE|Cellsize|QgsProcessingParameterNumber.Double|100.0|False|None|None
 ParameterSelection|TARGET_USER_FITS|Fit|[0] nodes;[1] cells
 OutputRaster|TARGET_OUT_GRID|Grid

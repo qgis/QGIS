@@ -2,6 +2,6 @@ Cross-Classification and Tabulation
 grid_analysis
 QgsProcessingParameterRasterLayer|INPUT|Input Grid 1|None|False
 QgsProcessingParameterRasterLayer|INPUT2|Input Grid 2|None|False
-ParameterNumber|MAXNUMCLASS|Max. Number of Classes|None|None|5
+QgsProcessingParameterNumber|MAXNUMCLASS|Max. Number of Classes|QgsProcessingParameterNumber.Integer|5|False|None|None
 OutputRaster|RESULTGRID|Cross-Classification Grid
 OutputTable|RESULTTABLE|Cross-Tabulation Table

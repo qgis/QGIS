@@ -1,15 +1,15 @@
 Fragmentation (Alternative)
 grid_analysis
 QgsProcessingParameterRasterLayer|CLASSES|Classification|None|False
-ParameterNumber|CLASS|Class Identifier|None|None|1
-ParameterNumber|NEIGHBORHOOD_MIN|Neighborhood Min|1.0|None|1
-ParameterNumber|NEIGHBORHOOD_MAX|Neighborhood Max|1.0|None|1
+QgsProcessingParameterNumber|CLASS|Class Identifier|QgsProcessingParameterNumber.Integer|1|False|None|None
+QgsProcessingParameterNumber|NEIGHBORHOOD_MIN|Neighborhood Min|QgsProcessingParameterNumber.Integer|1|False|1.0|None
+QgsProcessingParameterNumber|NEIGHBORHOOD_MAX|Neighborhood Max|QgsProcessingParameterNumber.Integer|1|False|1.0|None
 ParameterSelection|AGGREGATION|Level Aggregation|[0] average;[1] multiplicative
 ParameterBoolean|BORDER                |Add Border|True
-ParameterNumber|WEIGHT|Connectivity Weighting|None|None|1.1
-ParameterNumber|DENSITY_MIN|Minimum Density [Percent]|None|None|10
-ParameterNumber|DENSITY_INT|Minimum Density for Interior Forest [Percent]|None|None|99
-ParameterNumber|LEVEL_GROW|Search Distance Increment|None|None|0.0
+QgsProcessingParameterNumber|WEIGHT|Connectivity Weighting|QgsProcessingParameterNumber.Double|1.1|False|None|None
+QgsProcessingParameterNumber|DENSITY_MIN|Minimum Density [Percent]|QgsProcessingParameterNumber.Integer|10|False|None|None
+QgsProcessingParameterNumber|DENSITY_INT|Minimum Density for Interior Forest [Percent]|QgsProcessingParameterNumber.Integer|99|False|None|None
+QgsProcessingParameterNumber|LEVEL_GROW|Search Distance Increment|QgsProcessingParameterNumber.Double|0.0|False|None|None
 ParameterBoolean|DENSITY_MEAN          |Density from Neighbourhood|True
 OutputRaster|DENSITY|Density [Percent]
 OutputRaster|CONNECTIVITY|Connectivity [Percent]

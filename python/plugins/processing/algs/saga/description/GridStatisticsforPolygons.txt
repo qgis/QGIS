@@ -12,5 +12,5 @@ ParameterBoolean|SUM|Sum|True
 ParameterBoolean|MEAN|Mean|True
 ParameterBoolean|VAR|Variance|True
 ParameterBoolean|STDDEV|Standard Deviation|True
-ParameterNumber|QUANTILE|Quantiles|None|None|0
+QgsProcessingParameterNumber|QUANTILE|Quantiles|QgsProcessingParameterNumber.Integer|0|False|None|None
 OutputVector|RESULT|Statistics

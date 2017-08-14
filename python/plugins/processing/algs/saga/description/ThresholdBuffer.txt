@@ -3,6 +3,6 @@ grid_tools
 QgsProcessingParameterRasterLayer|FEATURES|Features Grid|None|False
 QgsProcessingParameterRasterLayer|VALUE|Value Grid|None|False
 QgsProcessingParameterRasterLayer|THRESHOLDGRID|Threshold Grid|None|True
-ParameterNumber|THRESHOLD|Threshold|None|None|0.0
+QgsProcessingParameterNumber|THRESHOLD|Threshold|QgsProcessingParameterNumber.Double|0.0|False|None|None
 ParameterSelection|THRESHOLDTYPE|Threshold Type|[0] Absolute;[1] Relative from cell value
 OutputRaster|BUFFER|Buffer Grid

@@ -3,8 +3,8 @@ ta_slope_stability
 QgsProcessingParameterRasterLayer|DEM|Elevation|None|False
 QgsProcessingParameterRasterLayer|C|Dip grid (degrees)|None|True
 QgsProcessingParameterRasterLayer|D|Dip direction grid (degrees)|None|True
-ParameterNumber|fB|Global structure dip (degrees)|None|None| 45.000000
-ParameterNumber|fC|Global structure dip direction (degrees)|None|None| 90.000000
+QgsProcessingParameterNumber|fB|Global structure dip (degrees)|QgsProcessingParameterNumber.Double|45.000000|False|None|None
+QgsProcessingParameterNumber|fC|Global structure dip direction (degrees)|QgsProcessingParameterNumber.Double|90.000000|False|None|None
 OutputRaster|E|Angle
 OutputRaster|F|CL dipdir
 OutputRaster|G|CL dip

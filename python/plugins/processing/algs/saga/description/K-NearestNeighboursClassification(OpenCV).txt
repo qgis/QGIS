@@ -5,7 +5,7 @@ ParameterBoolean|NORMALIZE|Normalize|False
 ParameterVector|TRAIN_AREAS|Training Areas|-1|False
 ParameterTable|TRAIN_CLASS|Class Identifier|False
 OutputRaster|CLASSES|Classification
-ParameterNumber|NEIGHBOURS|Default Number of Neighbours| 1|None| 3
+QgsProcessingParameterNumber|NEIGHBOURS|Default Number of Neighbours|QgsProcessingParameterNumber.Integer|3|False| 1|None
 ParameterSelection|TRAINING|Training Method|[0] classification;[1] regression model| 0
 ParameterSelection|ALGORITHM|Algorithm Type|[0] brute force;[1] KD Tree| 0
-ParameterNumber|EMAX|Parameter for KD Tree implementation| 1|None| 1000
+QgsProcessingParameterNumber|EMAX|Parameter for KD Tree implementation|QgsProcessingParameterNumber.Integer|1000|False| 1|None

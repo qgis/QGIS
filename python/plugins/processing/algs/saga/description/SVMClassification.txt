@@ -11,14 +11,14 @@ ParameterTable|ROI_ID|Class Identifier|False
 ParameterFile|MODEL_SAVE|Store Model to File|False|False
 ParameterSelection|SVM_TYPE|SVM Type|[0] C-SVC;[1] nu-SVC;[2] one-class SVM;[3] epsilon-SVR;[4] nu-SVR| 0
 ParameterSelection|KERNEL_TYPE|Kernel Type|[0] linear;[1] polynomial;[2] radial basis function;[3] sigmoid| 2
-ParameterNumber|DEGREE|Degree|None|None| 3
-ParameterNumber|GAMMA|Gamma|None|None| 0.000000
-ParameterNumber|COEF0|coef0|None|None| 0.000000
-ParameterNumber|COST|C|None|None| 1.000000
-ParameterNumber|NU|nu-SVR|None|None| 0.500000
-ParameterNumber|EPS_SVR|SVR Epsilon|None|None| 0.100000
-ParameterNumber|CACHE_SIZE|Cache Size|None|None| 100.000000
-ParameterNumber|EPS|Epsilon|None|None| 0.001000
+QgsProcessingParameterNumber|DEGREE|Degree|QgsProcessingParameterNumber.Integer|3|False|None|None
+QgsProcessingParameterNumber|GAMMA|Gamma|QgsProcessingParameterNumber.Double|0.000000|False|None|None
+QgsProcessingParameterNumber|COEF0|coef0|QgsProcessingParameterNumber.Double|0.000000|False|None|None
+QgsProcessingParameterNumber|COST|C|QgsProcessingParameterNumber.Double|1.000000|False|None|None
+QgsProcessingParameterNumber|NU|nu-SVR|QgsProcessingParameterNumber.Double|0.500000|False|None|None
+QgsProcessingParameterNumber|EPS_SVR|SVR Epsilon|QgsProcessingParameterNumber.Double|0.100000|False|None|None
+QgsProcessingParameterNumber|CACHE_SIZE|Cache Size|QgsProcessingParameterNumber.Double|100.000000|False|None|None
+QgsProcessingParameterNumber|EPS|Epsilon|QgsProcessingParameterNumber.Double|0.001000|False|None|None
 ParameterBoolean|SHRINKING|Shrinking|False
 ParameterBoolean|PROBABILITY|Probability Estimates|False
-ParameterNumber|CROSSVAL|Cross Validation| 1|None| 1
+QgsProcessingParameterNumber|CROSSVAL|Cross Validation|QgsProcessingParameterNumber.Integer|1|False| 1|None

@@ -3,4 +3,4 @@ grid_filter
 QgsProcessingParameterRasterLayer|GRID|Grid|None|False
 OutputRaster|LOPASS|Low Pass Filter
 OutputRaster|HIPASS|High Pass Filter
-ParameterNumber|SCALE|Scale Factor| 1.000000|None| 10.000000
+QgsProcessingParameterNumber|SCALE|Scale Factor|QgsProcessingParameterNumber.Double|10.000000|False| 1.000000|None

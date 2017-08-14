@@ -1,6 +1,6 @@
 Grid Normalisation
 grid_calculus
 QgsProcessingParameterRasterLayer|INPUT|Grid|None|False
-ParameterNumber|RANGE_MIN|Target Range (min)|None|None|0
-ParameterNumber|RANGE_MAX|Target Range (max)|None|None|1
+QgsProcessingParameterNumber|RANGE_MIN|Target Range (min)|QgsProcessingParameterNumber.Integer|0|False|None|None
+QgsProcessingParameterNumber|RANGE_MAX|Target Range (max)|QgsProcessingParameterNumber.Integer|1|False|None|None
 OutputRaster|OUTPUT|Normalised Grid
