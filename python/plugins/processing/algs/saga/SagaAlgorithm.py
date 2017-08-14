@@ -28,11 +28,8 @@ __revision__ = '$Format:%H$'
 
 import os
 import importlib
-from qgis.PyQt.QtCore import QCoreApplication
-from qgis.PyQt.QtGui import QIcon
 from qgis.core import (QgsProcessingUtils,
                        QgsMessageLog)
-from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.ProcessingConfig import ProcessingConfig
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from processing.core.parameters import (getParameterFromString,
@@ -53,6 +50,7 @@ from processing.algs.help import shortHelp
 from processing.tools.system import getTempFilename
 from processing.algs.saga.SagaNameDecorator import decoratedAlgorithmName, decoratedGroupName
 from . import SagaUtils
+from .SagaAlgorithmBase import SagaAlgorithmBase
 
 pluginPath = os.path.normpath(os.path.join(
     os.path.split(os.path.dirname(__file__))[0], os.pardir))
@@ -60,25 +58,29 @@ pluginPath = os.path.normpath(os.path.join(
 sessionExportedLayers = {}
 
 
-class SagaAlgorithm(GeoAlgorithm):
+class SagaAlgorithm(SagaAlgorithmBase):
 
     OUTPUT_EXTENT = 'OUTPUT_EXTENT'
 
     def __init__(self, descriptionfile):
-        GeoAlgorithm.__init__(self)
-        self.hardcodedStrings = []
-        self.allowUnmatchingGridExtents = False
-        self.descriptionFile = descriptionfile
-        self.defineCharacteristicsFromFile()
-        self._icon = None
+        super().__init__()
+        self.hardcoded_strings = []
+        self.allow_nonmatching_grid_extents = False
+        self.description_file = descriptionfile
+        self.undecorated_group = None
         self._name = ''
         self._display_name = ''
         self._group = ''
+        self.params = []
+        self.defineCharacteristicsFromFile()
 
-    def icon(self):
-        if self._icon is None:
-            self._icon = QIcon(os.path.join(pluginPath, 'images', 'saga.png'))
-        return self._icon
+    def createInstance(self):
+        return SagaAlgorithm(self.description_file)
+
+    def initAlgorithm(self, config=None):
+        #for p in self.params:
+        #    self.addParameter(p)
+        pass
 
     def name(self):
         return self._name
@@ -93,7 +95,7 @@ class SagaAlgorithm(GeoAlgorithm):
         return shortHelp.get(self.id(), None)
 
     def defineCharacteristicsFromFile(self):
-        with open(self.descriptionFile) as lines:
+        with open(self.description_file) as lines:
             line = lines.readline().strip('\n').strip()
             self._name = line
             if '|' in self._name:
@@ -104,9 +106,9 @@ class SagaAlgorithm(GeoAlgorithm):
 
             else:
                 self.cmdname = self._name
-                self._display_name = QCoreApplication.translate("SAGAAlgorithm", str(self._name))
+                self._display_name = self.tr(str(self._name))
             self._name = decoratedAlgorithmName(self._name)
-            self._display_name = QCoreApplication.translate("SAGAAlgorithm", str(self._name))
+            self._display_name = self.tr(str(self._name))
 
             self._name = self._name.lower()
             validChars = \
@@ -114,23 +116,24 @@ class SagaAlgorithm(GeoAlgorithm):
             self._name = ''.join(c for c in self._name if c in validChars)
 
             line = lines.readline().strip('\n').strip()
-            self.undecoratedGroup = line
-            self._group = QCoreApplication.translate("SAGAAlgorithm", decoratedGroupName(self.undecoratedGroup))
+            self.undecorated_group = line
+            self._group = self.tr(decoratedGroupName(self.undecorated_group))
             line = lines.readline().strip('\n').strip()
             while line != '':
                 if line.startswith('Hardcoded'):
-                    self.hardcodedStrings.append(line[len('Hardcoded|'):])
+                    self.hardcoded_strings.append(line[len('Hardcoded|'):])
                 elif line.startswith('Parameter'):
-                    self.addParameter(getParameterFromString(line))
+                    self.params.append(getParameterFromString(line))
                 elif line.startswith('AllowUnmatching'):
-                    self.allowUnmatchingGridExtents = True
+                    self.allow_nonmatching_grid_extents = True
                 elif line.startswith('Extent'):
                     # An extent parameter that wraps 4 SAGA numerical parameters
                     self.extentParamNames = line[6:].strip().split(' ')
-                    self.addParameter(ParameterExtent(self.OUTPUT_EXTENT,
-                                                      'Output extent'))
+                    self.params.append(ParameterExtent(self.OUTPUT_EXTENT,
+                                                       'Output extent'))
                 else:
-                    self.addOutput(getOutputFromString(line))
+                    pass # TODO
+                    #self.addOutput(getOutputFromString(line))
                 line = lines.readline().strip('\n').strip()
 
     def processAlgorithm(self, parameters, context, feedback):
@@ -206,8 +209,8 @@ class SagaAlgorithm(GeoAlgorithm):
             extent = QgsProcessingUtils.combineLayerExtents([layer])
 
         # 2: Set parameters and outputs
-        command = self.undecoratedGroup + ' "' + self.cmdname + '"'
-        command += ' ' + ' '.join(self.hardcodedStrings)
+        command = self.undecorated_group + ' "' + self.cmdname + '"'
+        command += ' ' + ' '.join(self.hardcoded_strings)
 
         for param in self.parameterDefinitions():
             if not param.name() in parameters or parameters[param.name()] is None:
@@ -365,7 +368,7 @@ class SagaAlgorithm(GeoAlgorithm):
                 if layer.bandCount() > 1:
                     return False, self.tr('Input layer {0} has more than one band.\n'
                                           'Multiband layers are not supported by SAGA').format(layer.name())
-                if not self.allowUnmatchingGridExtents:
+                if not self.allow_nonmatching_grid_extents:
                     if extent is None:
                         extent = (layer.extent(), layer.height(), layer.width())
                     else:
