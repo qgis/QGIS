@@ -35,15 +35,15 @@ class CORE_EXPORT QgsGeometryEngine
 
     /**
      * Success or failure of a geometry operation.
-     * This gived details about cause of failure.
+     * This gives details about cause of failure.
      */
     enum EngineOperationResult
     {
       Success = 0, //!< Operation succeeded
       NothingHappened = 1000, //!< Nothing happened, without any error
       MethodNotImplemented, //!< Method not implemented in geometry engine
-      EngineError, //!< Error occured in the geometry engine
-      NodedGeometryError, //!< Error occured while creating a noded geometry
+      EngineError, //!< Error occurred in the geometry engine
+      NodedGeometryError, //!< Error occurred while creating a noded geometry
       InvalidBaseGeometry, //!< The geometry on which the operation occurs is not valid
       InvalidInput, //!< The input is not valid
       /* split */
