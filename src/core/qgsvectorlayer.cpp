@@ -2191,12 +2191,18 @@ bool QgsVectorLayer::readSld( const QDomNode &node, QString &errorMessage )
   {
     QgsFeatureRenderer *r = QgsFeatureRenderer::loadSld( node, geometryType(), errorMessage );
     if ( !r )
+    {
+      errorMessage = QStringLiteral( "Error: QgsFeatureRenderer::loadSld failed." );
       return false;
+    }
+    QgsDebugMsg( QString( "-I----> QgsFeatureRenderer is valid, calling setRenderer" ) );
 
     setRenderer( r );
+    QgsDebugMsg( QString( "-I----> After setRenderer, calling readSldLabeling" ) );
 
     // labeling
     readSldLabeling( node );
+    QgsDebugMsg( QString( "-I----> After  readSldLabeling" ) );
   }
   return true;
 }

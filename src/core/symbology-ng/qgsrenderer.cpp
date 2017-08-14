@@ -211,14 +211,21 @@ QgsFeatureRenderer *QgsFeatureRenderer::loadSld( const QDomNode &node, QgsWkbTyp
       needRuleRenderer = true;
       break;
     }
-
+    QString sNodeName;
     QDomElement ruleChildElem = ruleElem.firstChildElement();
     while ( !ruleChildElem.isNull() )
     {
+      sNodeName = ruleChildElem.localName();
+      if ( sNodeName.isEmpty() )
+      {
+        // Note: an external source may not be using the 'se:' prefix, thus localName() will be empty.
+        sNodeName = ruleChildElem.tagName();
+      }
+      qDebug() << QString( "-I-> QgsFeatureRenderer::loadSld: ruleChildElem tagName[%1] localName[%2] sNodeName[%3]" ).arg( ruleChildElem.tagName() ).arg( ruleChildElem.localName() ).arg( sNodeName );
       // rule has filter or min/max scale denominator, use the RuleRenderer
-      if ( ruleChildElem.localName() == QLatin1String( "Filter" ) ||
-           ruleChildElem.localName() == QLatin1String( "MinScaleDenominator" ) ||
-           ruleChildElem.localName() == QLatin1String( "MaxScaleDenominator" ) )
+      if ( sNodeName == QLatin1String( "Filter" ) ||
+           sNodeName == QLatin1String( "MinScaleDenominator" ) ||
+           sNodeName == QLatin1String( "MaxScaleDenominator" ) )
       {
         QgsDebugMsg( "Filter or Min/MaxScaleDenominator element found: need a RuleRenderer" );
         needRuleRenderer = true;
@@ -256,6 +263,12 @@ QgsFeatureRenderer *QgsFeatureRenderer::loadSld( const QDomNode &node, QgsWkbTyp
   }
 
   QgsFeatureRenderer *r = m->createRendererFromSld( featTypeStyleElem, geomType );
+  if ( !r )
+  {
+    errorMessage = QStringLiteral( "Error: createRendererFromSldr '%1' renderer." ).arg( rendererType );
+    return r;
+  }
+  QgsDebugMsg( QString( "returning a '%1' renderer..." ).arg( rendererType ) );
   return r;
 }
 

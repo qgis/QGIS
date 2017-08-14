@@ -127,24 +127,87 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
     QString getDatabaseFileName() const { return getSpatialiteDbInfo()->getDatabaseFileName(); }
     //! The Spatialite internal Database structure being read
     SpatialiteDbInfo::SpatialMetadata dbSpatialMetadata() const { return getSpatialiteDbInfo()->dbSpatialMetadata(); }
-    //! The Spatialite Version as returned by spatialite_version()
+
+    /** The Spatialite Version Driver being used
+     * \note
+     *  - returned from spatialite_version()
+     * \see getSniffDatabaseType
+    * \since QGIS 3.0
+    */
     QString dbSpatialiteVersionInfo() const { return getSpatialiteDbInfo()->dbSpatialiteVersionInfo(); }
-    //! The major Spatialite Version being used
+
+    /** The major Spatialite Version being used
+     * \note
+     *  - extracted from spatialite_version()
+     * \see getSniffDatabaseType
+    * \since QGIS 3.0
+    */
     int dbSpatialiteVersionMajor() const { return getSpatialiteDbInfo()->dbSpatialiteVersionMajor(); }
-    //! The minor Spatialite Version being used
+
+    /** The minor Spatialite Version being used
+     * \note
+     *  - extracted from spatialite_version()
+     * \see getSniffDatabaseType
+    * \since QGIS 3.0
+    */
     int dbSpatialiteVersionMinor() const { return getSpatialiteDbInfo()->dbSpatialiteVersionMinor(); }
-    //! The revision Spatialite Version being used
+
+    /** The revision Spatialite Version being used
+     * \note
+     *  - extracted from spatialite_version()
+     * \see getSniffDatabaseType
+    * \since QGIS 3.0
+    */
     int dbSpatialiteVersionRevision() const { return getSpatialiteDbInfo()->dbSpatialiteVersionRevision(); }
-    //! Does the read Database contain SpatialTables [ 0=none, otherwise amount]
+
+    /** Amount of SpatialTables  found in the Database
+     * - from the vector_layers View
+     * \note
+     * - this does not reflect the amount of SpatialTables that have been loaded
+     * \since QGIS 3.0
+     */
     int dbSpatialTablesLayersCount() const { return getSpatialiteDbInfo()->dbSpatialTablesLayersCount(); }
-    //! Does the read Database contain SpatialViews views [ 0=none, otherwise amount]
+
+    /** Amount of SpatialViews  found in the Database
+     * - from the vector_layers View
+     * \note
+     * - this does not reflect the amount of SpatialViews that have been loaded
+     * \since QGIS 3.0
+     */
     int dbSpatialViewsLayersCount() const { return getSpatialiteDbInfo()->dbSpatialViewsLayersCount(); }
-    //! Does the read Database contain VirtualShapes tables [0=none, otherwise amount]
+
+    /** Amount of VirtualShapes found in the Database
+     * - from the vector_layers View
+     * \note
+     * - this does not reflect the amount of VirtualShapes that have been loaded
+     * \since QGIS 3.0
+     */
     int dbVirtualShapesLayersCount() const { return getSpatialiteDbInfo()->dbVirtualShapesLayersCount(); }
-    //! Does the read Database contain RasterLite1 coverages [-1=no rasterlit1 logic found, otherwise amount (0 being empty)]
+
+    /** Amount of RasterLite1-Rasters found in the Database
+     * - only the count of valid Layers are returned
+     * \note
+     * - the Gdal-RasterLite1-Driver is needed to Determineeee this
+     * - this does not reflect the amount of RasterLite1-Rasters that have been loaded
+     * \since QGIS 3.0
+     */
     int dbRasterLite1LayersCount() const { return getSpatialiteDbInfo()->dbRasterLite1LayersCount(); }
-    //! Does the read Database contain RasterLite2 coverages [-1=no raster_coverages table, otherwise amount (0 being empty)]
-    int dbRasterLite2LayersCount() const { return getSpatialiteDbInfo()->dbRasterLite2LayersCount(); }
+
+    /** Amount of RasterLite2 Vector-Coverages found in the Database
+     * - from the vector_coverages table Table [-1 if Table not found]
+     * \note
+     * - this does not reflect the amount of RasterLite2 Vector-Coverages that have been loaded
+     * \since QGIS 3.0
+     */
+    int dbVectorCoveragesLayersCount() const { return getSpatialiteDbInfo()->dbVectorCoveragesLayersCount(); }
+
+    /** Amount of RasterLite2 Raster-Coverages found in the Database
+     * - from the raster_coverages table Table [-1 if Table not found]
+     * \note
+     * - this does not reflect the amount of RasterLite2 Raster-Coverages that have been loaded
+     * \since QGIS 3.0
+     */
+    int dbRasterCoveragesLayersCount() const { return getSpatialiteDbInfo()->dbRasterCoveragesLayersCount(); }
     //! Does the read Database contain Topology tables [-1=no topologies table, otherwise amount (0 being empty)]
     int dbTopologyExportLayersCount() const { return getSpatialiteDbInfo()->dbTopologyExportLayersCount(); }
     //! Is the used Spatialite compiled with Spatialite-Gcp support
@@ -205,7 +268,7 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
     //! The active Layer
     SpatialiteDbLayer *getDbLayer() const { return mDbLayer; }
     //! The sqlite handler
-    sqlite3 *getSqliteHandle() const { return getDbLayer()->getSqliteHandle(); }
+    sqlite3 *dbSqliteHandle() const { return getDbLayer()->dbSqliteHandle(); }
     //! Name of the table with no schema
     QString getTableName() const { return getDbLayer()->getTableName(); }
     //! Name of the geometry column in the table
@@ -429,8 +492,6 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
      * Search all the layers using the given table.
      */
     static QList<QgsVectorLayer *> searchLayers( const QList<QgsVectorLayer *> &layers, const QString &connectionInfo, const QString &tableName );
-
-    QgsFields mAttributeFields;
 
     //! Flag indicating if the layer data source is a valid SpatiaLite layer
     bool mValid;

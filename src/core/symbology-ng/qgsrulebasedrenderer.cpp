@@ -667,7 +667,13 @@ QgsRuleBasedRenderer::Rule *QgsRuleBasedRenderer::Rule::create( QDomElement &rul
 
 QgsRuleBasedRenderer::Rule *QgsRuleBasedRenderer::Rule::createFromSld( QDomElement &ruleElem, QgsWkbTypes::GeometryType geomType )
 {
-  if ( ruleElem.localName() != QLatin1String( "Rule" ) )
+  QString sNodeName = ruleElem.localName();
+  if ( sNodeName.isEmpty() )
+  {
+    // Note: an external source may not be using the 'se:' prefix, thus localName() will be empty.
+    sNodeName = ruleElem.tagName();
+  }
+  if ( sNodeName != QLatin1String( "Rule" ) )
   {
     QgsDebugMsg( QString( "invalid element: Rule element expected, %1 found!" ).arg( ruleElem.tagName() ) );
     return nullptr;
@@ -679,16 +685,23 @@ QgsRuleBasedRenderer::Rule *QgsRuleBasedRenderer::Rule::createFromSld( QDomEleme
 
   // retrieve the Rule element child nodes
   QDomElement childElem = ruleElem.firstChildElement();
+  sNodeName = childElem.localName();
+  if ( sNodeName.isEmpty() )
+  {
+    // Note: an external source may not be using the 'se:' prefix, thus localName() will be empty.
+    sNodeName = childElem.tagName();
+  }
+  qDebug() << QString( "-I-> QgsRuleBasedRenderer::Rule::createFromSld tagName[%1] localName[%2] sNode[%3]" ).arg( childElem.tagName() ).arg( childElem.localName() ).arg( sNodeName );
   while ( !childElem.isNull() )
   {
-    if ( childElem.localName() == QLatin1String( "Name" ) )
+    if ( sNodeName == QLatin1String( "Name" ) )
     {
       // <se:Name> tag contains the rule identifier,
       // so prefer title tag for the label property value
       if ( label.isEmpty() )
         label = childElem.firstChild().nodeValue();
     }
-    else if ( childElem.localName() == QLatin1String( "Description" ) )
+    else if ( sNodeName == QLatin1String( "Description" ) )
     {
       // <se:Description> can contains a title and an abstract
       QDomElement titleElem = childElem.firstChildElement( QStringLiteral( "Title" ) );
@@ -703,17 +716,17 @@ QgsRuleBasedRenderer::Rule *QgsRuleBasedRenderer::Rule::createFromSld( QDomEleme
         description = abstractElem.firstChild().nodeValue();
       }
     }
-    else if ( childElem.localName() == QLatin1String( "Abstract" ) )
+    else if ( sNodeName == QLatin1String( "Abstract" ) )
     {
       // <sld:Abstract> (v1.0)
       description = childElem.firstChild().nodeValue();
     }
-    else if ( childElem.localName() == QLatin1String( "Title" ) )
+    else if ( sNodeName == QLatin1String( "Title" ) )
     {
       // <sld:Title> (v1.0)
       label = childElem.firstChild().nodeValue();
     }
-    else if ( childElem.localName() == QLatin1String( "Filter" ) )
+    else if ( sNodeName == QLatin1String( "Filter" ) )
     {
       QgsExpression *filter = QgsOgcUtils::expressionFromOgcFilter( childElem );
       if ( filter )
@@ -729,21 +742,21 @@ QgsRuleBasedRenderer::Rule *QgsRuleBasedRenderer::Rule::createFromSld( QDomEleme
         delete filter;
       }
     }
-    else if ( childElem.localName() == QLatin1String( "MinScaleDenominator" ) )
+    else if ( sNodeName == QLatin1String( "MinScaleDenominator" ) )
     {
       bool ok;
       int v = childElem.firstChild().nodeValue().toInt( &ok );
       if ( ok )
         scaleMinDenom = v;
     }
-    else if ( childElem.localName() == QLatin1String( "MaxScaleDenominator" ) )
+    else if ( sNodeName == QLatin1String( "MaxScaleDenominator" ) )
     {
       bool ok;
       int v = childElem.firstChild().nodeValue().toInt( &ok );
       if ( ok )
         scaleMaxDenom = v;
     }
-    else if ( childElem.localName().endsWith( QLatin1String( "Symbolizer" ) ) )
+    else if ( sNodeName.endsWith( QLatin1String( "Symbolizer" ) ) )
     {
       // create symbol layers for this symbolizer
       QgsSymbolLayerUtils::createSymbolLayerListFromSld( childElem, geomType, layers );

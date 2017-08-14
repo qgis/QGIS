@@ -1026,7 +1026,12 @@ bool QgsSymbolLayerUtils::createSymbolLayerListFromSld( QDomElement &element,
   QgsSymbolLayer *l = nullptr;
 
   QString symbolizerName = element.localName();
-
+  if ( symbolizerName.isEmpty() )
+  {
+    // Note: an external source may not be using the 'se:' prefix, thus localName() will be empty.
+    symbolizerName = element.tagName();
+  }
+  qDebug() << QString( "-I-> QgsSymbolLayerUtils::createSymbolLayerListFromSld TagName[%1] LocalName[%2] element[%3]" ).arg( element.tagName() ).arg( element.localName() ).arg( symbolizerName );
   if ( symbolizerName == QLatin1String( "PointSymbolizer" ) )
   {
     // first check for Graphic element, nothing will be rendered if not found
@@ -1484,7 +1489,7 @@ bool QgsSymbolLayerUtils::convertPolygonSymbolizerToPointMarker( QDomElement &el
     QColor fillColor, strokeColor;
     double strokeWidth = 1.0, size = 0.0, angle = 0.0;
     QPointF anchor, offset;
-
+    QString sNodeName;
     // Fill element can contain a GraphicFill element
     QDomElement graphicFillElem = fillElem.firstChildElement( QStringLiteral( "GraphicFill" ) );
     if ( !graphicFillElem.isNull() )
@@ -1500,7 +1505,13 @@ bool QgsSymbolLayerUtils::convertPolygonSymbolizerToPointMarker( QDomElement &el
         QDomElement graphicChildElem = graphicElem.firstChildElement();
         while ( !graphicChildElem.isNull() )
         {
-          if ( graphicChildElem.localName() == QLatin1String( "Mark" ) )
+          sNodeName = graphicChildElem.localName();
+          if ( sNodeName.isEmpty() )
+          {
+            // Note: an external source may not be using the 'se:' prefix, thus localName() will be empty.
+            sNodeName = graphicChildElem.tagName();
+          }
+          if ( sNodeName == QLatin1String( "Mark" ) )
           {
             // check for a well known name
             QDomElement wellKnownNameElem = graphicChildElem.firstChildElement( QStringLiteral( "WellKnownName" ) );
@@ -1512,7 +1523,7 @@ bool QgsSymbolLayerUtils::convertPolygonSymbolizerToPointMarker( QDomElement &el
             }
           }
 
-          if ( graphicChildElem.localName() == QLatin1String( "ExternalGraphic" ) || graphicChildElem.localName() == QLatin1String( "Mark" ) )
+          if ( sNodeName == QLatin1String( "ExternalGraphic" ) || sNodeName == QLatin1String( "Mark" ) )
           {
             // check for external graphic format
             QDomElement formatElem = graphicChildElem.firstChildElement( QStringLiteral( "Format" ) );
@@ -1523,12 +1534,12 @@ bool QgsSymbolLayerUtils::convertPolygonSymbolizerToPointMarker( QDomElement &el
 
             // TODO: remove this check when more formats will be supported
             // only SVG external graphics are supported in this moment
-            if ( graphicChildElem.localName() == QLatin1String( "ExternalGraphic" ) && format != QLatin1String( "image/svg+xml" ) )
+            if ( sNodeName == QLatin1String( "ExternalGraphic" ) && format != QLatin1String( "image/svg+xml" ) )
               continue;
 
             // TODO: remove this check when more formats will be supported
             // only ttf marks are supported in this moment
-            if ( graphicChildElem.localName() == QLatin1String( "Mark" ) && format != QLatin1String( "ttf" ) )
+            if ( sNodeName == QLatin1String( "Mark" ) && format != QLatin1String( "ttf" ) )
               continue;
 
             // check for a valid content
@@ -1539,7 +1550,7 @@ bool QgsSymbolLayerUtils::convertPolygonSymbolizerToPointMarker( QDomElement &el
             {
               name = onlineResourceElem.attributeNS( QStringLiteral( "http://www.w3.org/1999/xlink" ), QStringLiteral( "href" ) );
 
-              if ( graphicChildElem.localName() == QLatin1String( "Mark" ) && format == QLatin1String( "ttf" ) )
+              if ( sNodeName == QLatin1String( "Mark" ) && format == QLatin1String( "ttf" ) )
               {
                 // mark with ttf format may have a name like ttf://fontFamily
                 if ( name.startsWith( QLatin1String( "ttf://" ) ) )
@@ -1572,7 +1583,7 @@ bool QgsSymbolLayerUtils::convertPolygonSymbolizerToPointMarker( QDomElement &el
           // if Mark element is present but it doesn't contains neither
           // WellKnownName nor OnlineResource nor InlineContent,
           // use the default mark (square)
-          if ( graphicChildElem.localName() == QLatin1String( "Mark" ) )
+          if ( sNodeName == QLatin1String( "Mark" ) )
           {
             name = QStringLiteral( "square" );
             found = true;
@@ -1581,7 +1592,7 @@ bool QgsSymbolLayerUtils::convertPolygonSymbolizerToPointMarker( QDomElement &el
         }
 
         // if found a valid Mark, check for its Fill and Stroke element
-        if ( found && graphicChildElem.localName() == QLatin1String( "Mark" ) )
+        if ( found && sNodeName == QLatin1String( "Mark" ) )
         {
           // XXX: recursive definition!?! couldn't be dangerous???
           // to avoid recursion we handle only simple fill and simple stroke
@@ -2619,11 +2630,17 @@ QgsStringMap QgsSymbolLayerUtils::getSvgParameterList( QDomElement &element )
 {
   QgsStringMap params;
   QString value;
-
+  QString sNodeName;
   QDomElement paramElem = element.firstChildElement();
   while ( !paramElem.isNull() )
   {
-    if ( paramElem.localName() == QLatin1String( "SvgParameter" ) || paramElem.localName() == QLatin1String( "CssParameter" ) )
+    sNodeName = paramElem.localName();
+    if ( sNodeName.isEmpty() )
+    {
+      // Note: an external source may not be using the 'se:' prefix, thus localName() will be empty.
+      sNodeName = paramElem.tagName();
+    }
+    if ( sNodeName == QLatin1String( "SvgParameter" ) || sNodeName == QLatin1String( "CssParameter" ) )
     {
       QString name = paramElem.attribute( QStringLiteral( "name" ) );
       if ( paramElem.firstChild().nodeType() == QDomNode::TextNode )
@@ -2632,6 +2649,7 @@ QgsStringMap QgsSymbolLayerUtils::getSvgParameterList( QDomElement &element )
       }
       else
       {
+        // firstChild() == QDomNode: has no tagName()
         if ( paramElem.firstChild().nodeType() == QDomNode::ElementNode &&
              paramElem.firstChild().localName() == QLatin1String( "Literal" ) )
         {
@@ -2640,7 +2658,7 @@ QgsStringMap QgsSymbolLayerUtils::getSvgParameterList( QDomElement &element )
         }
         else
         {
-          QgsDebugMsg( QString( "unexpected child of %1" ).arg( paramElem.localName() ) );
+          QgsDebugMsg( QString( "unexpected child of %1" ).arg( sNodeName ) );
         }
       }
 

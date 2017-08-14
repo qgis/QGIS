@@ -184,19 +184,27 @@ QgsFeatureRenderer *QgsSingleSymbolRenderer::createFromSld( QDomElement &element
 
   QString label, description;
   QgsSymbolLayerList layers;
+  QString sNodeName;
 
   // retrieve the Rule element child nodes
   QDomElement childElem = ruleElem.firstChildElement();
   while ( !childElem.isNull() )
   {
-    if ( childElem.localName() == QLatin1String( "Name" ) )
+    sNodeName = childElem.localName();
+    if ( sNodeName.isEmpty() )
+    {
+      // Note: an external source may not be using the 'se:' prefix, thus localName() will be empty.
+      sNodeName = childElem.tagName();
+    }
+    qDebug() << QString( "-I-> QgsSingleSymbolRenderer::createFromSld  tagName[%1] localName[%2] sNodeName[%3]" ).arg( childElem.tagName() ).arg( childElem.localName() ).arg( sNodeName );
+    if ( sNodeName == QLatin1String( "Name" ) )
     {
       // <se:Name> tag contains the rule identifier,
       // so prefer title tag for the label property value
       if ( label.isEmpty() )
         label = childElem.firstChild().nodeValue();
     }
-    else if ( childElem.localName() == QLatin1String( "Description" ) )
+    else if ( sNodeName == QLatin1String( "Description" ) )
     {
       // <se:Description> can contains a title and an abstract
       QDomElement titleElem = childElem.firstChildElement( QStringLiteral( "Title" ) );
@@ -211,17 +219,17 @@ QgsFeatureRenderer *QgsSingleSymbolRenderer::createFromSld( QDomElement &element
         description = abstractElem.firstChild().nodeValue();
       }
     }
-    else if ( childElem.localName() == QLatin1String( "Abstract" ) )
+    else if ( sNodeName == QLatin1String( "Abstract" ) )
     {
       // <sld:Abstract> (v1.0)
       description = childElem.firstChild().nodeValue();
     }
-    else if ( childElem.localName() == QLatin1String( "Title" ) )
+    else if ( sNodeName == QLatin1String( "Title" ) )
     {
       // <sld:Title> (v1.0)
       label = childElem.firstChild().nodeValue();
     }
-    else if ( childElem.localName().endsWith( QLatin1String( "Symbolizer" ) ) )
+    else if ( sNodeName.endsWith( QLatin1String( "Symbolizer" ) ) )
     {
       // create symbol layers for this symbolizer
       QgsSymbolLayerUtils::createSymbolLayerListFromSld( childElem, geomType, layers );
@@ -230,6 +238,7 @@ QgsFeatureRenderer *QgsSingleSymbolRenderer::createFromSld( QDomElement &element
     childElem = childElem.nextSiblingElement();
   }
 
+  qDebug() << QString( "-I-> QgsSingleSymbolRenderer::createFromSld layers[%1]" ).arg( layers.count() );
   if ( layers.isEmpty() )
     return nullptr;
 
@@ -253,7 +262,7 @@ QgsFeatureRenderer *QgsSingleSymbolRenderer::createFromSld( QDomElement &element
       QgsDebugMsg( QString( "invalid geometry type: found %1" ).arg( geomType ) );
       return nullptr;
   }
-
+  qDebug() << QString( "-I----> QgsSingleSymbolRenderer::createFromSld and finally return the new renderer" );
   // and finally return the new renderer
   return new QgsSingleSymbolRenderer( symbol );
 }

@@ -115,6 +115,7 @@ QgsSpatiaLiteSourceSelect::QgsSpatiaLiteSourceSelect( QWidget *parent, Qt::Windo
   mSearchTableEdit->setVisible( false );
 
   cbxAllowGeometrylessTables->setDisabled( true );
+  cbxAllowGeometrylessTables->setText( QString( "%1 and Administration Tables" ).arg( cbxAllowGeometrylessTables->text() ) );
 }
 
 QgsSpatiaLiteSourceSelect::~QgsSpatiaLiteSourceSelect()

@@ -134,16 +134,17 @@ class SpatialiteDbInfo : public QObject
       SpatialView = 2,
       VirtualShape = 3,
       RasterLite1 = 4, // Gdal
-      RasterLite2 = 5,
-      SpatialiteTopology = 6,
-      TopologyExport = 7,
-      VectorStyle = 8,
-      RasterStyle = 9,
-      GdalFdoOgr = 10, // Ogr
-      GeoPackageVector = 11, // Ogr
-      GeoPackageRaster = 12, // Gdal
-      MBTilesTable = 13, // Gdal
-      MBTilesView = 14, // Gdal
+      RasterLite2Vector = 5,
+      RasterLite2Raster = 6,
+      SpatialiteTopology = 7,
+      TopologyExport = 8,
+      StyleVector = 9,
+      StyleRaster = 20,
+      GdalFdoOgr = 21, // Ogr
+      GeoPackageVector = 22, // Ogr
+      GeoPackageRaster = 23, // Gdal
+      MBTilesTable = 24, // Gdal
+      MBTilesView = 25, // Gdal
       Metadata = 1000,
       AllSpatialLayers = 1500,
       NonSpatialTables = 1501,
@@ -166,7 +167,8 @@ class SpatialiteDbInfo : public QObject
       , mHasVirtualShapes( 0 )
       , mHasRasterLite1Tables( -1 )
       , mHasGdalRasterLite1Driver( false )
-      , mHasRasterLite2Tables( -1 )
+      , mHasVectorCoveragesTables( -1 )
+      , mHasRasterCoveragesTables( -1 )
       , mHasGdalRasterLite2Driver( false )
       , mHasTopologyExportTables( -1 )
       , mHasMBTilesTables( -1 )
@@ -177,6 +179,8 @@ class SpatialiteDbInfo : public QObject
       , mHasGdalGeoPackageDriver( false )
       , mHasFdoOgrTables( -1 )
       , mHasFdoOgrDriver( false )
+      , mHasVectorStylesView( -1 )
+      , mHasRasterStylesView( -1 )
       , mHasGcp( false )
       , mHasTopology( false )
       , mIsVersion45( false )
@@ -262,9 +266,9 @@ class SpatialiteDbInfo : public QObject
       {
         sSummary = QString( "%1 ; %2 VirtualShapes" ).arg( sSummary ).arg( dbVirtualShapesLayersCount() );
       }
-      if ( dbRasterLite2LayersCount() > 0 )
+      if ( dbRasterCoveragesLayersCount() > 0 )
       {
-        sSummary = QString( "%1 ; %2 RL2 Coverages" ).arg( sSummary ).arg( dbRasterLite2LayersCount() );
+        sSummary = QString( "%1 ; %2 RL2 Coverages" ).arg( sSummary ).arg( dbRasterCoveragesLayersCount() );
       }
       if ( dbRasterLite1LayersCount() > 0 )
       {
@@ -279,15 +283,39 @@ class SpatialiteDbInfo : public QObject
     }
     //! The Spatialite internal Database structure being read
     SpatialiteDbInfo::SpatialMetadata dbSpatialMetadata() const { return mSpatialMetadata; }
-
+    //! The Spatialite internal Database structure being read (as String)
     QString dbSpatialMetadataString() const { return mSpatialMetadataString; }
-    //! The Spatialite Version as returned by spatialite_version()
+
+    /** The Spatialite Version Driver being used
+     * \note
+     *  - returned from spatialite_version()
+     * \see getSniffDatabaseType
+    * \since QGIS 3.0
+    */
     QString dbSpatialiteVersionInfo() const { return mSpatialiteVersionInfo; }
-    //! The major Spatialite Version being used
+
+    /** The major Spatialite Version being used
+     * \note
+     *  - extracted from spatialite_version()
+     * \see getSniffDatabaseType
+    * \since QGIS 3.0
+    */
     int dbSpatialiteVersionMajor() const { return mSpatialiteVersionMajor; }
-    //! The minor Spatialite Version being used
+
+    /** The minor Spatialite Version being used
+     * \note
+     *  - extracted from spatialite_version()
+     * \see getSniffDatabaseType
+    * \since QGIS 3.0
+    */
     int dbSpatialiteVersionMinor() const { return mSpatialiteVersionMinor; }
-    //! The revision Spatialite Version being used
+
+    /** The revision Spatialite Version being used
+     * \note
+     *  - extracted from spatialite_version()
+     * \see getSniffDatabaseType
+    * \since QGIS 3.0
+    */
     int dbSpatialiteVersionRevision() const { return mSpatialiteVersionRevision; }
 
     /** Amount of SpatialTables  found in the Database
@@ -330,13 +358,21 @@ class SpatialiteDbInfo : public QObject
      */
     bool hasDbGdalRasterLite1Driver() const { return mHasGdalRasterLite1Driver; }
 
-    /** Amount of RasterLite2-Coverages found in the Database
-     * - from the raster_coverages table Table [-1 if Table not found]
+    /** Amount of RasterLite2 Vector-Coverages found in the Database
+     * - from the vector_coverages table Table [-1 if Table not found]
      * \note
-     * - this does not reflect the amount of RasterLite2-Coverages that have been loaded
+     * - this does not reflect the amount of RasterLite2 Vector-Coverages that have been loaded
      * \since QGIS 3.0
      */
-    int dbRasterLite2LayersCount() const { return mHasRasterLite2Tables; }
+    int dbVectorCoveragesLayersCount() const { return mHasVectorCoveragesTables; }
+
+    /** Amount of RasterLite2 Raster-Coverages found in the Database
+     * - from the raster_coverages table Table [-1 if Table not found]
+     * \note
+     * - this does not reflect the amount of RasterLite2 -Raster-Coverages that have been loaded
+     * \since QGIS 3.0
+     */
+    int dbRasterCoveragesLayersCount() const { return mHasRasterCoveragesTables; }
 
     /** Is the Gdal-RasterLite2-Driver available ?
      * \note
@@ -344,6 +380,30 @@ class SpatialiteDbInfo : public QObject
      * \since QGIS 3.0
      */
     bool hasDbGdalRasterLite2Driver() const { return mHasGdalRasterLite2Driver; }
+
+    /** Does the read Database contain RasterLite2 SE_vector_styles_view
+     * \note
+     *   -1=no SE_vector_styles table, otherwise amount (0 being empty)
+     * \since QGIS 3.0
+     */
+    int dbVectorStylesViewsCount() const { return mHasVectorStylesView; }
+
+    /** Does the read Database contain RasterLite2 SE_raster_styles_view
+     * \note
+     *   -1=no SE_raster_styles table, otherwise amount (0 being empty)
+     * \since QGIS 3.0
+     */
+    int dbRasterStylesViewCount() const { return mHasRasterStylesView; }
+
+    /** Does the read Database contain any Styles (Bector or Raster)
+     * \note
+     *   - information about the Styles are stored in mStyleLayersInfo
+     * \see readVectorRasterStyles
+     * \see mStyleLayersInfo
+     * \see getDbCoveragesStylesInfo
+     * \since QGIS 3.0
+     */
+    int dbStylesCount() const { return mStyleLayersInfo.count(); }
 
     /** Amount of Topologies found in the Database
      * - from the topologies table Table [-1 if Table not found]
@@ -552,7 +612,7 @@ class SpatialiteDbInfo : public QObject
      * - Key: LayerName formatted as 'table_name(geometry_name)' or 'table_name'
      * - Value: GeometryType and Srid formatted as 'geometry_type:srid:provider'
      * \see getDbVectorLayers()
-     * \see getDbRasterLite2Layers()
+     * \see getDbRasterCoveragesLayers()
      * \see getDbRasterLite1Layers()
      * \see getDbTopologyExportLayers
      * \see getDbMBTilesLayers()
@@ -573,16 +633,49 @@ class SpatialiteDbInfo : public QObject
      */
     QMap<QString, QString> getDbVectorLayers() const { return mVectorLayers; }
 
-    /** Map of coverage_name that are contained in the RasterLite2Layers
+    /** Map of coverage_name that are contained in the RasterLite2 Vector-Layers
+     * - short list of the Layers retrieved from vector_coverages
+     *  - ordered by coverage_name
+     * \note
+     * - Key: LayerName formatted as 'table_name(geometry_name)' or 'table_name'
+     * - Value: GeometryType and Srid formatted as 'geometry_type:srid:provider'
+     * \see readVectorRasterCoverages()
+     * \since QGIS 3.0
+     */
+    QMap<QString, QString> getDbVectorCoveragesLayers() const { return mVectorCoveragesLayers; }
+
+    /** Map of coverage_name that are contained in the RasterLite2 Raster-Layers
      * - short list of the Layers retrieved from raster_coverages
      *  - ordered by coverage_name
      * \note
      * - Key: LayerName formatted as 'table_name(geometry_name)' or 'table_name'
      * - Value: GeometryType and Srid formatted as 'geometry_type:srid:provider'
-     * \see readRL2Layers()
+     * \see readVectorRasterCoverages()
      * \since QGIS 3.0
      */
-    QMap<QString, QString> getDbRasterLite2Layers() const { return mRasterLite2Layers; }
+    QMap<QString, QString> getDbRasterCoveragesLayers() const { return mRasterCoveragesLayers; }
+
+    /** Map of style_name and XML-Document
+     * \note
+     * - Key: StyleName as retrieved from SE_raster_styles
+     * - Value: Style XML-Document
+     * -> style_type: StyleRaster/StyleVector
+     * - SELECT style_name, XB_GetDocument(style,1) FROM SE_vector/raster_styles;
+     * \see
+     * \see readVectorRasterStyles
+     * \since QGIS 3.0
+     */
+    QMap<QString, QString> getDbCoveragesStylesData() const { return mStyleLayersData; }
+
+    /** Map of style_name and Metadata
+     * \note
+     * - Key: StyleName as retrieved from SE_vector_styles or SE_raster_styles
+     * - Value: StyleType, StyleTitle, StyleAbstract
+     * -> style_type: StyleVector,StyleRaster
+     * \see readVectorRasterStyles
+     * \since QGIS 3.0
+     */
+    QMap<QString, QString> getDbCoveragesStylesInfo() const { return mStyleLayersInfo; }
 
     /** Map of table_name that are contained in the RasterLite1Layers
      * - short list of the Layers retrieved from layer_statistics
@@ -823,7 +916,6 @@ class SpatialiteDbInfo : public QObject
      */
     static QIcon SpatialiteLayerTypeIcon( SpatialiteDbInfo::SpatialiteLayerType layerType );
 
-
     /** Returns the QIcon representation  of non-Spatialial or Spatial-Admin TABLEs in a Sqlite3 Container
      * - SpatialiteDbInfo::SpatialiteLayerType
      * \note
@@ -937,11 +1029,87 @@ class SpatialiteDbInfo : public QObject
      */
     bool attachQSqliteHandle( QgsSqliteHandle *qSqliteHandle );
     //! Collection of warnings for the Layer being invalid
-    QStringList getVectorLayersMissing() const { return mVectorLayersMissing; }
-    //! Collection of warnings for the Layer being invalid
-    QStringList getWarnings() const { return mWarnings; }
-    //! Collection of reasons for the Database being invalid
-    QStringList getErrors() const { return mErrors; }
+    QMap<QString, QString> getVectorLayersMissing() const { return mVectorLayersMissing; }
+
+    /** Collection of warnings for the Database being invalid
+     * \note
+     *  -> format: 'table_name(geometry_name)', Error text
+     * \since QGIS 3.0
+     */
+    QMap<QString, QString> getWarnings() const { return mWarnings; }
+
+    /** Collection of reasons for the Database being invalid
+     * \note
+     *  -> format: 'table_name(geometry_name)', Error text
+     * \since QGIS 3.0
+     */
+    QMap<QString, QString> getErrors() const { return mErrors; }
+
+    /** The internal Parse Separator
+     * - for general usage
+     * \note
+     *  - where it may be assumed that ':' is not used
+     *  \see ParseSeparatorCoverage
+     * \since QGIS 3.0
+     */
+    static const QString ParseSeparatorGeneral;
+
+    /** The internal Parse Separator
+     * - for general usage in Uril
+     * \note
+     *  - where it may be assumed that ':' is not used
+     *  \see ParseSeparatorCoverage
+     * \since QGIS 3.0
+     */
+    static const QString ParseSeparatorUris;
+
+    /** The internal Parse Separator
+     * - used for the Coverage/Style-Type/Title/Abstract/Copyright
+     * \note
+     *  - hoping that '€' will not be found in the Title/Abstract/Copyright Text
+     *  \see readVectorRasterCoverages
+     *  \see readVectorRasterStyles
+     *  \see SpatialiteDbLayer::checkLayerStyles
+     *  \see SpatialiteDbLayer::setLayerStyleSelected
+     * \since QGIS 3.0
+     */
+    static const QString ParseSeparatorCoverage;
+
+    /** Retrieve the selected Style
+     * - by default: the first entry of mStyleLayersData.value
+     * \note
+     *  - only one Style can be rendered
+     * \param sStyleName to retrieve
+     * \returns xml QString of Xml-Document
+     * \see setLayerStyleSelected
+     * \since QGIS 3.0
+     */
+    QString getDbStyleXml( QString sStyleName = QString::null )
+    {
+      if ( !mStyleLayersData.isEmpty() )
+      {
+        if ( mStyleLayersData.contains( sStyleName ) )
+        {
+          return mStyleLayersData.value( sStyleName );
+        }
+      }
+      return QString();
+    }
+
+    /** Retrieve the selected Style
+     * - by default: the first entry of mStyleLayersData.value
+     * \note
+     *  - return QDomElement to be used with QgsVectorLayer::readSld
+     *   - called while loading Layers
+     * \param sStyleName to retrieve
+     * \param errorMessage for messages when testing
+     * \param iDebug to call test when set to 1, returning return code
+     * \param sSaveXmlFileName filename to save xlm, when not null - for testing
+     * \returns xlm QDomElement containing 'NamedLayer'
+     * \see setLayerStyleSelected
+     * \since QGIS 3.0
+     */
+    QDomElement getDbStyleNamedLayerElement( QString sStyleName, QString &errorMessage, int *iDebug = nullptr, QString sSaveXmlFileName = QString::null );
   protected:
   signals:
     //! Add a list of database layers to the map
@@ -1092,25 +1260,38 @@ class SpatialiteDbInfo : public QObject
      */
     bool mHasGdalRasterLite1Driver;
 
-    /** Does the read Database contain RasterLite2 coverages
+    /** Does the read Database contain RasterLite2 Vector coverages
      * - determine through Sql-Queries, without usage of any Drivers
      * \note
      *   -1=no raster_coverages table, otherwise amount (0 being empty)
      * \see getSniffSniffMinimal
      * \see getSniffLayerMetadata
      * \see getSniffReadLayers
-     * \see readRL2Layers()
-     * \see GetRasterLite2LayersInfo
+     * \see readVectorRasterCoverages()
+     * \see GetRasterLite2RasterLayersInfo
      * \since QGIS 3.0
      */
-    int mHasRasterLite2Tables;
+    int mHasVectorCoveragesTables;
+
+    /** Does the read Database contain RasterLite2 Raster coverages
+     * - determine through Sql-Queries, without usage of any Drivers
+     * \note
+     *   -1=no raster_coverages table, otherwise amount (0 being empty)
+     * \see getSniffSniffMinimal
+     * \see getSniffLayerMetadata
+     * \see getSniffReadLayers
+     * \see readVectorRasterCoverages()
+     * \see GetRasterLite2RasterLayersInfo
+     * \since QGIS 3.0
+     */
+    int mHasRasterCoveragesTables;
 
     /** Is the Gdal-RasterLite2-Driver available ?
      * - GDALGetDriverByName( 'SQLite' )
      * \note
      *  - QgsGdalProvider:  RasterLite2
      *  - assuming Gdal has been compiled with Rasterite2 support
-     * \see readRL2Layers()
+     * \see readVectorRasterCoverages()
      * \since QGIS 3.0
      */
     bool mHasGdalRasterLite2Driver;
@@ -1210,6 +1391,31 @@ class SpatialiteDbInfo : public QObject
      * \since QGIS 3.0
      */
     bool mHasFdoOgrDriver;
+
+    /** Does the read Database contain RasterLite2 SE_vector_styles_view
+     * \note
+     *   -1=no SE_vector_styles table, otherwise amount (0 being empty)
+     * \see getSniffSniffMinimal
+     * \see getSniffLayerMetadata
+     * \see getSniffReadLayers
+     * \see readVectorRasterCoverages()
+     * \see dbVectorStylesViewCount
+     * \since QGIS 3.0
+     */
+    int mHasVectorStylesView;
+
+    /** Does the read Database contain RasterLite2 SE_raster_styles_view
+     * - determine through Sql-Queries, without usage of any Drivers
+     * \note
+     *   -1=no SE_raster_styles, otherwise amount (0 being empty)
+     * \see getSniffSniffMinimal
+     * \see getSniffLayerMetadata
+     * \see getSniffReadLayers
+     * \see readVectorRasterCoverages
+     * \see dbRasterStylesViewCount
+     * \since QGIS 3.0
+     */
+    int mHasRasterStylesView;
 
     /** Has the used Spatialite compiled with Spatialite-Gcp support
      * - ./configure --enable-gcp=yes
@@ -1322,10 +1528,12 @@ class SpatialiteDbInfo : public QObject
     bool mIsSqlite3;
 
     /** Set the Database as invalid
-     * - Uwith possible Message, returns amount of Errors collected
+     * - With possible Message, returns amount of Errors collected
+     * \note
+     *  -> format: 'table_name(geometry_name)', Error text
      * \since QGIS 3.0
      */
-    int setDatabaseInvalid( QString errCause = QString::null );
+    int setDatabaseInvalid( QString sLayerName = QString::null, QString errCause = QString::null );
 
     /**
       * SniffType
@@ -1485,16 +1693,27 @@ class SpatialiteDbInfo : public QObject
      */
     QMap<QString, QString> mVectorLayersTypes;
 
-    /** Map of coverage_name that are contained in the RasterLite2Layers
+    /** Map of coverage_name that are contained in the RasterLite2 Vector-Layers
      * - short list of the Layers retrieved from raster_coverages
      *  - ordered by coverage_name
      * \note
      * - Key: LayerName formatted as 'table_name(geometry_name)' or 'table_name'
      * - Value: GeometryType and Srid formatted as 'geometry_type:srid:provider'
-     * \see readRL2Layers()
+     * \see readVectorRasterCoverages()
      * \since QGIS 3.0
      */
-    QMap<QString, QString> mRasterLite2Layers;
+    QMap<QString, QString> mVectorCoveragesLayers;
+
+    /** Map of coverage_name that are contained in the RasterLite2 Raster-Layers
+     * - short list of the Layers retrieved from raster_coverages
+     *  - ordered by coverage_name
+     * \note
+     * - Key: LayerName formatted as 'table_name(geometry_name)' or 'table_name'
+     * - Value: GeometryType and Srid formatted as 'geometry_type:srid:provider'
+     * \see readVectorRasterCoverages()
+     * \since QGIS 3.0
+     */
+    QMap<QString, QString> mRasterCoveragesLayers;
 
     /** Map of table_name that are contained in the RasterLite1Layers
      * - short list of the Layers retrieved from layer_statistics
@@ -1590,20 +1809,61 @@ class SpatialiteDbInfo : public QObject
      */
     QMap<QString, QString> mDbLayersDataSourceUris;
 
+    /** Map of style_name and XML-Document
+     * \note
+     * - Key: StyleName as retrieved from SE_raster_styles
+     * - Value: Style XML-Document
+     * -> style_type: StyleRaster/StyleVector
+     * - SELECT style_name, XB_GetDocument(style,1) FROM SE_vector/raster_styles;
+     * \see
+     * \see readVectorRasterStyles
+     * \since QGIS 3.0
+     */
+    QMap<QString, QString> mStyleLayersData;
+
+    /** Map of style_name and Metadata
+     * \note
+     * - Key: StyleName as retrieved from SE_vector_styles or SE_raster_styles
+     * - Value: StyleType, StyleTitle, StyleAbstract
+     * -> style_type: StyleVector,StyleRaster
+     * \see readVectorRasterStyles
+     * \since QGIS 3.0
+     */
+    QMap<QString, QString> mStyleLayersInfo;
+
+    /** Test NamedLayer-Element
+     * - will emulate the testing done to validate the Xml for rendering in Qgis
+     * - called from getDbStyleNamedLayerElement
+     * \note
+     *  Based on code found in
+     * - QgsMapLayer::loadSldStyle
+     * - QgsVectorLayer::readSld
+     * - QgsFeatureRenderer::writeSld
+     *  - [singleSymbol] QgsSingleSymbolRenderer::createFromSld
+     *  - [singleSymbol] QgsSymbolLayerUtils::createSymbolLayerListFromSld
+     *  - [RuleRenderer] QgsRuleBasedRenderer::createFromSld
+     *  - [RuleRenderer] QgsRuleBasedRenderer::Rule::createFromSld
+     * \param sStyleName to retrieve
+     * \returns xlm QDomElement containing 'NamedLayer'
+     * \see setLayerStyleSelected
+     * \since QGIS 3.0
+     */
+    int testNamedLayerElement( QDomElement namedLayerElement,  QString &errorMessage );
+
     /** Retrieve Layers-Information of spatialite connection
      * - used to fill list in  SpatialiteDbInfo
      * \note
      * Spatial* : QString( "%1,table=%2 (%3)" ).arg( getDatabaseFileName() ).arg( sTableName ).arg(sGeometryColumn);
      * - gathers all information from gaiaGetVectorLayersList
      * -> complementary information will be retrieved from SpatialiteGetLayerSettingsWrapper
-     * -> RasterLite2 information will be retrieved from SpatialiteGetRasterLite2LayersInfoWrapper
-     * -> Topology information will be retrieved from SpatialiteGetRasterLite2LayersInfoWrapper
-     * -> RasterLite1 information will be retrieved from SpatialiteGetRasterLite2LayersInfoWrapper
+     * -> RasterLite2 information will be retrieved from SpatialiteGetRasterLite2RasterLayersInfoWrapper
+     * -> Topology information will be retrieved from SpatialiteGetRasterLite2RasterLayersInfoWrapper
+     * -> RasterLite1 information will be retrieved from SpatialiteGetRasterLite2RasterLayersInfoWrapper
      * \param sLayerName Name of the Layer to search for format: 'table_name(geometry_name)'
      * \returns true or false
      * \see GetDbConnectionInfo
      * \see SpatialiteGetLayerSettingsWrapper
-     * \see SpatialiteGetRasterLite2LayersInfoWrapper
+     * \see SpatialiteGetRasterLite2RasterLayersInfoWrapper
      * \see SpatialiteGetTopologyLayersInfoWrapper
      * \see SpatialiteGetRasterLite1LayersInfoWrapper
      * \since QGIS 3.0
@@ -1620,7 +1880,7 @@ class SpatialiteDbInfo : public QObject
      */
     bool readVectorLayers();
 
-    /** Retrieve RasterLite2 Layers-Information of spatialite connection
+    /** Retrieve RasterLite2 Vector/Raster Layers-Information of spatialite connection
      * - used to fill list in  SpatialiteDbInfo
      * \note
      * - results are stored in mVectorLayers
@@ -1631,7 +1891,22 @@ class SpatialiteDbInfo : public QObject
      * \see GetDbLayersInfo
      * \since QGIS 3.0
      */
-    bool readRL2Layers();
+    bool readVectorRasterCoverages();
+
+    /** Retrieve RasterLite2 Vector/Raster Styles-Information
+     * - used to fill list in SpatialiteDbLayer
+     * \note
+     * - As default: only load Styles that are used by the Layers [true]
+     * - false=Retrieve all the Styles contained in the Database [may, one day, be needed]
+     * \param bSelectUsedStylesOnly true=Retrieve only those Styles being used  (ignore the others)
+     * \param bTestStylesForQgis true=call testNamedLayerElement from getDbStyleNamedLayerElement to test if valid for Qgis
+     * \returns mStyleLayersData.count() amount of VectorRaster-Styles loaded
+     * \see GetDbLayersInfo
+     * \see mStyleLayersData
+     * \see mStyleLayersInfo
+     * \since QGIS 3.0
+     */
+    int readVectorRasterStyles( bool bSelectUsedStylesOnly = true, bool bTestStylesForQgis = false );
 
     /** Determine if valid RasterLite1 Layers exist
      * - called only when mHasRasterLite1Tables > 0 during GetSpatialiteDbInfo
@@ -1703,7 +1978,7 @@ class SpatialiteDbInfo : public QObject
      */
     bool readFdoOgrLayers();
 
-    /** Retrieve RasterLite2 Layers-Information of spatialite connection
+    /** Retrieve RasterLite2 Vector-Layers-Information of spatialite connection
      * - used to fill list in  SpatialiteDbInfo
      * \note
      *  RasterLite2 [gdal]: QString( "%3:%1:%2" ).arg( getDatabaseFileName() ).arg( sTableName ).arg( "RASTERLITE2" )
@@ -1715,7 +1990,21 @@ class SpatialiteDbInfo : public QObject
      * \see GetDbLayersInfo
      * \since QGIS 3.0
      */
-    bool GetRasterLite2LayersInfo( const QString sLayerName = QString::null );
+    bool GetRasterLite2VectorLayersInfo( const QString sLayerName = QString::null );
+
+    /** Retrieve RasterLite2 Raster-Layers-Information of spatialite connection
+     * - used to fill list in  SpatialiteDbInfo
+     * \note
+     *  RasterLite2 [gdal]: QString( "%3:%1:%2" ).arg( getDatabaseFileName() ).arg( sTableName ).arg( "RASTERLITE2" )
+     * - there is no direct RasterLite2 support needed during this function
+     * - at present (2017-07-31) QGdalProvider cannot read RasterLite2 created with the development version
+     * \param dbConnectionInfo SpatialiteDbInfo
+     * \param sLayerName Name of the Layer to search for format: 'table_name(geometry_name)'
+     * \returns true or false
+     * \see GetDbLayersInfo
+     * \since QGIS 3.0
+     */
+    bool GetRasterLite2RasterLayersInfo( const QString sLayerName = QString::null );
 
     /** Retrieve Topology Layers-Information of spatialite connection
      * - used to fill list in  SpatialiteDbInfo
@@ -1815,24 +2104,24 @@ class SpatialiteDbInfo : public QObject
 
     /** List of tables or views that could not be resolved
      * \note
-     * set but otherwised not used
+     *  -> format: 'table_name(geometry_name)', value
      * \since QGIS 3.0
      */
-    QStringList mVectorLayersMissing;
+    QMap<QString, QString> mVectorLayersMissing;
 
     /** Collection of warnings for the Database being invalid
      * \note
-     * set but otherwised not used
+     *  -> format: 'table_name(geometry_name)', Warning text
      * \since QGIS 3.0
      */
-    QStringList mWarnings;
+    QMap<QString, QString> mWarnings;
 
     /** Collection of reasons for the Database being invalid
      * \note
-     * set but otherwised not used
+     *  -> format: 'table_name(geometry_name)', Error text
      * \since QGIS 3.0
      */
-    QStringList mErrors;
+    QMap<QString, QString> mErrors;
 };
 
 /** Structure to contain everything needed for a Spatialite/Rasterlite2 source
@@ -1849,6 +2138,7 @@ class SpatialiteDbLayer : public QObject
       , mTableName( QString::null )
       , mGeometryColumn( QString::null )
       , mLayerName( QString::null )
+      , mCoverageName( QString::null )
       , mViewTableName( QString::null )
       , mViewTableGeometryColumn( QString::null )
       , mLayerViewTableName( QString::null )
@@ -1866,6 +2156,13 @@ class SpatialiteDbLayer : public QObject
       , mGeometryTypeString( QString::null )
       , mCoordDimensions( GAIA_XY )
       , mLayerExtent( QgsRectangle( 0.0, 0.0, 0.0, 0.0 ) )
+      , mLayerExtentEWKT( QString::null )
+      , mLayerExtentWsg84( QgsRectangle( 0.0, 0.0, 0.0, 0.0 ) )
+      , mLayerExtentWsg84EWKT( QString::null )
+      , mLayerStyleSelected( QString::null )
+      , mLayerStyleSelectedType( QString::null )
+      , mLayerStyleSelectedTitle( QString::null )
+      , mLayerStyleSelectedAbstract( QString::null )
       , mNumberFeatures( 0 )
       , mLayerReadOnly( 1 )
       , mLayerIsHidden( 0 )
@@ -1877,12 +2174,13 @@ class SpatialiteDbLayer : public QObject
       , mQuery( QString::null )
       , mPrimaryKey( QString::null )
       , mIsValid( false )
+      , mHasStyle( false )
     {}
     ~SpatialiteDbLayer();
     //! The Database Info-Structure being read
     SpatialiteDbInfo *getDbConnectionInfo() const { return mDbConnectionInfo; }
     //! The sqlite handler
-    sqlite3 *getSqliteHandle() const { return getDbConnectionInfo()->dbSqliteHandle(); }
+    sqlite3 *dbSqliteHandle() const { return getDbConnectionInfo()->dbSqliteHandle(); }
     //! The Database filename being read
     QString getDatabaseFileName() const { return mDatabaseFileName; }
 
@@ -1941,10 +2239,29 @@ class SpatialiteDbLayer : public QObject
     }
     //! Name of the table with no schema
     QString getTableName() const { return mTableName; }
-    //! Name of the geometry column in the table
+
+    /** Name of the geometry column in the table
+     * \note
+     *  Vector: should always be filled
+     *  Raster: may be empty
+     * \since QGIS 3.0
+     */
     QString getGeometryColumn() const { return mGeometryColumn; }
-    //! Name of the Layer format: 'table_name(geometry_name)'
+
+    /** Layer-Name
+     * \note
+     *  Vector: Layer format: 'table_name(geometry_name)'
+     *  Raster: Layer format: 'coverage_name'
+     * \since QGIS 3.0
+     */
     QString getLayerName() const { return mLayerName; }
+
+    /** Coverage-Name [internal]
+     * \note
+     *  retrieved from vector_coverages, which may be different from the Layer-Name
+     * \since QGIS 3.0
+     */
+    QString getCoverageName() const { return mCoverageName; }
     //! Name of the table which contains the SpatialView-Geometry (underlining table)
     QString getViewTableName() const { return mViewTableName; }
     //! Name of the table-geometry which contains the SpatialView-Geometry (underlining table)
@@ -2052,11 +2369,141 @@ class SpatialiteDbLayer : public QObject
       return mLayerExtentEWKT;
     }
 
+    /** Set the Wsg84 Rectangle that contains the extent (bounding box) of the layer
+     *  - will also set the EWKT
+     * \note
+     *  This is a part of the vector_coverages logic
+     * \see mLayerExtentWsg84
+     * \see mLayerExtentWsg84EWKT
+     * \since QGIS 3.0
+     */
+    QString setLayerExtentWsg84( QgsRectangle layerExtent )
+    {
+      mLayerExtentWsg84 = layerExtent;
+      mLayerExtentWsg84EWKT = QString( "'SRID=%1;%2'" ).arg( 4326 ).arg( mLayerExtent.asWktPolygon() );
+      return mLayerExtentWsg84EWKT;
+    }
+
     /** Rectangle that contains the extent (bounding box) of the layer, with Srid
      * \note
      * \since QGIS 3.0
      */
     QString getLayerExtentEWKT() const { return mLayerExtentEWKT; }
+
+    /** Rectangle that contains the extent (bounding box) of the layer, with Srid
+     * \note
+     * \since QGIS 3.0
+     */
+    QString getLayerExtentWsg84EWKT() const { return mLayerExtentWsg84EWKT; }
+
+    /** The selected Style
+     * - by default: the first entry of mStyleLayersData.value
+     * \note
+     *  - only one Style can be rendered
+     *  \see setLayerStyleSelected
+     * \since QGIS 3.0
+     */
+    QString getLayerStyleSelected() const { return mLayerStyleSelected; }
+
+    /** The selected Style
+     * - by default: the first entry of mStyleLayersData.value
+     * \note
+     *  - will set the StyleType, Title and Abstract
+     *  \see setLayerStyleSelected
+     *  \see  getLayerStyleSelectedType
+     *  \see  getLayerStyleSelectedTitle
+     *  \see  getLayerStyleSelectedAbstract
+     * \since QGIS 3.0
+     */
+    QString setLayerStyleSelected( QString sStyle = QString::null );
+
+    /** Retrieve the selected Style as Xml-String
+     * - by default: the first entry of mStyleLayersData.value
+     * \note
+     *  - only convenience function for outside use
+     *  - getLayerStyleNamedLayerElement  will be used in most cases
+     * \param sStyleName to retrieve
+     * \returns xml QString of Xml-Document
+     * \see setLayerStyleSelected
+     * \see SpatialiteDbInfo::getDbStyleXml
+     * \see getLayerStyleNamedLayerElement
+     * \since QGIS 3.0
+     */
+    QString getLayerStyleXml( QString sStyleName = QString::null )
+    {
+      if ( !mStyleLayersInfo.isEmpty() )
+      {
+        if ( sStyleName == QString::null )
+        {
+          sStyleName = mLayerStyleSelected;
+        }
+        return getDbConnectionInfo()->getDbStyleXml( sStyleName );
+      }
+      return QString();
+    }
+
+    /** Retrieve the selected Style
+     * - by default: the first entry of mStyleLayersData.value
+     * \note
+     *  - return QDomElement to be used with QgsVectorLayer::readSld
+     *   - called while loading Layers
+     * \param sStyleName to retrieve
+     * \returns xlm QDomElement containing 'NamedLayer' stored in SpatialiteDbInfo
+     * \see setLayerStyleSelected
+     * \see SpatialiteDbInfo::getDbStyleNamedLayerElement
+     * \see SpatialiteDbInfo::
+     * \since QGIS 3.0
+     */
+    QDomElement getLayerStyleNamedLayerElement( QString sStyleName = QString::null )
+    {
+      if ( !mStyleLayersInfo.isEmpty() )
+      {
+        if ( sStyleName == QString::null )
+        {
+          sStyleName = mLayerStyleSelected;
+        }
+        QString errorMessage;
+        return getDbConnectionInfo()->getDbStyleNamedLayerElement( sStyleName, errorMessage, nullptr, QString::null );
+      }
+      return QDomElement();
+    }
+
+    /** Does this Layer contain a Style
+     * \note
+     *  -  which can be retrieved with getLayerStyle
+     * \see mLayerStyleSelected
+     * \see getLayerStyle
+     * \see setLayerStyleSelected
+     * \since QGIS 3.0
+     */
+    bool hasLayerStyle() const { return mHasStyle; }
+
+    /** The selected Style: Type
+     * - by default: the first entry of mStyleLayersData.value
+     * \note
+     *  - StyleVector or StyleRaster
+     *  \see setLayerStyleSelected
+     * \since QGIS 3.0
+     */
+    QString getLayerStyleSelectedType() const { return mLayerStyleSelectedType; }
+
+    /** The selected Style: Title
+     * - by default: the first entry of mStyleLayersData.value
+     * \note
+     *  - only one Style can be rendered
+     *  \see setLayerStyleSelected
+     * \since QGIS 3.0
+     */
+    QString getLayerStyleSelectedTitle() const { return mLayerStyleSelectedTitle; }
+
+    /** The selected Style: Abstract
+     * - by default: the first entry of mStyleLayersData.value
+     * \note
+     *  - only one Style can be rendered
+     *  \see setLayerStyleSelected
+     * \since QGIS 3.0
+     */
+    QString getLayerStyleSelectedAbstract() const { return mLayerStyleSelectedAbstract; }
 
     /** Number of features in the layer
      * \note
@@ -2090,6 +2537,34 @@ class SpatialiteDbLayer : public QObject
      * \see GetDbLayersInfo
      * \since QGIS 3.0
      */
+    bool checkLayerStyles( );
+
+    /** Map of style_name and Metadata
+     * \note
+     * - Key: StyleName as retrieved from SE_vector_styles or SE_raster_styles
+     * - Value: StyleType, StyleTitle, StyleAbstract
+     * -> style_type: StyleVector,StyleRaster
+     * \see readVectorRasterStyles
+     * \since QGIS 3.0
+     */
+    QMap<QString, QString> getLayerCoverageStylesInfo() const { return mStyleLayersInfo; }
+
+    /** Based on Layer-Type, set QgsVectorDataProvider::Capabilities
+     * - Writable Spatialview: based on found TRIGGERs
+     * \note
+     * - this should be called after the LayerType and PrimaryKeys have been set
+     * \note
+     * The following receive: QgsVectorDataProvider::NoCapabilities
+     * - SpatialiteTopology: will serve only TopologyExport, which ate SpatialTables
+     * - VectorStyle: nothing as yet
+     * - RasterStyle: nothing as yet
+     * \note
+     * - this should be called with Update, after alterations of the TABLE have been made
+     * -> will call GetDbLayersInfo to re-read field data
+     * \param bUpdate force reading from Database
+     * \see GetDbLayersInfo
+     * \since QGIS 3.0
+     */
     QgsVectorDataProvider::Capabilities getCapabilities( bool bUpdate = false );
     //! A possible Query from QgsDataSourceUri
     QString getLayerQuery() const { return mQuery; }
@@ -2103,16 +2578,28 @@ class SpatialiteDbLayer : public QObject
     QgsFields getAttributeFields() const { return mAttributeFields; }
     //! Map of field index to default value [for Topology, the Topology-Layers]
     QMap<int, QVariant> getDefaultValues() const { return mDefaultValues; }
-    //! Collection of warnings for the Layer being invalid
-    QStringList getWarnings() const { return mWarnings; }
-    //! Collection of reasons for the Layer being invalid
-    QStringList getErrors() const { return mErrors; }
+
+    /** Collection of warnings for the Database being invalid
+     * \note
+     *  -> format: 'table_name(geometry_name)', Error text
+     * \since QGIS 3.0
+     */
+    QMap<QString, QString> getWarnings() const { return mWarnings; }
+
+    /** Collection of reasons for the Database being invalid
+     * \note
+     *  -> format: 'table_name(geometry_name)', Error text
+     * \since QGIS 3.0
+     */
+    QMap<QString, QString> getErrors() const { return mErrors; }
     //! Is the Layer valid
     bool isLayerValid() const { return mIsValid; }
 
     /** Resolve unset settings
      * Goal: to (semi) Automate unresolved settings when needed
      * \see prepareCapabilities
+     * \see checkLayerStyles
+     * \returns mIsValid if the Layer is considered valid
      * \since QGIS 3.0
      */
     bool prepare();
@@ -2123,10 +2610,30 @@ class SpatialiteDbLayer : public QObject
     QString mDatabaseFileName;
     //! Name of the table with no schema
     QString mTableName;
-    //! Name of the geometry column in the table
+
+    /** Name of the geometry column in the table
+     * \note
+     *  Vector: should always be filled
+     *  Raster: may be empty
+     * \since QGIS 3.0
+     */
     QString mGeometryColumn;
-    //! Name of the Layer format: 'table_name(geometry_name)'
+
+    /** Layer-Name
+     * \note
+     *  Vector: Layer format: 'table_name(geometry_name)'
+     *  Raster: Layer format: 'coverage_name'
+     * \since QGIS 3.0
+     */
     QString mLayerName;
+
+    /** Coverage-Name [internal]
+     * \note
+     *   retrieved from vector_coverages, which may be different from the Layer-Name
+     + - this can be empty
+     * \since QGIS 3.0
+     */
+    QString mCoverageName;
     //! Name of the table which contains the SpatialView-Geometry (underlining table)
     QString mViewTableName;
     //! Name of the table-geometry which contains the SpatialView-Geometry (underlining table)
@@ -2265,12 +2772,91 @@ class SpatialiteDbLayer : public QObject
      * \since QGIS 3.0
      */
     void setGeometryType( int iGeomType );
-    //! The Spatialite Coord-Dimensions
+
+    /** The Spatialite Coord-Dimensions of the Layer
+     * - based on the Srid of the Layer
+     * \note
+     *  - QgsWkbTypes::displayString(mGeometryType)
+     *  \see mGeometryTypeString
+     * \since QGIS 3.0
+     */
     int mCoordDimensions;
-    //! Rectangle that contains the extent (bounding box) of the layer
+
+    /** Rectangle that contains the extent (bounding box) of the layer
+     * - based on the Srid of the Layer
+     * \note
+     *  - QgsWkbTypes::displayString(mGeometryType)
+     *  \see mGeometryTypeString
+     * \since QGIS 3.0
+     */
     QgsRectangle mLayerExtent;
-    //! The extent (bounding box) of the layer AS Extended Well Known Text
+
+    /** The extent (bounding box) of the layer AS Extended Well Known Text
+     * - based on the Srid of the Layer
+     * \note
+     *  - QgsWkbTypes::displayString(mGeometryType)
+     *  \see mGeometryTypeString
+     * \since QGIS 3.0
+     */
     QString mLayerExtentEWKT;
+
+    /** Rectangle that contains the extent (bounding box) of the layer
+     * - based on the Wsg84 value of the Layer found in vector_coverages
+     * \note
+     *  - part of the vector_coverages logic
+     *  \see mGeometryTypeString
+     * \since QGIS 3.0
+     */
+    QgsRectangle mLayerExtentWsg84;
+
+    /** The extent (bounding box) of the layer AS Extended Well Known Text
+     * - based on the Wsg84 value of the Layer found in vector_coverages
+     * \note
+     *  - part of the vector_coverages logic
+     *  \see mGeometryTypeString
+     * \since QGIS 3.0
+     */
+    QString mLayerExtentWsg84EWKT;
+
+    /** The selected Style
+     * - by default: the first entry of mStyleLayersData.value
+     * \note
+     *  - only one Style can be rendered
+     *  \see setLayerStyleSelected
+     *  \see getLayerStyleSelected
+     * \since QGIS 3.0
+     */
+    QString mLayerStyleSelected;
+
+    /** The selected Style: Type
+     * - by default: the first entry of mStyleLayersData.value
+     * \note
+     *  - StyleVector or StyleRaster
+     *  \see setLayerStyleSelected
+     * \since QGIS 3.0
+     */
+    QString mLayerStyleSelectedType;
+
+    /** The selected Style: Title
+     * - by default: the first entry of mStyleLayersData.value
+     * \note
+     *  - only one Style can be rendered
+     *  \see setLayerStyleSelected
+     *  \see getLayerStyleSelected
+     * \since QGIS 3.0
+     */
+    QString mLayerStyleSelectedTitle;
+
+    /** The selected Style: Abstract
+     * - by default: the first entry of mStyleLayersData.value
+     * \note
+     *  - only one Style can be rendered
+     *  \see setLayerStyleSelected
+     *  \see getLayerStyleSelected
+     * \since QGIS 3.0
+     */
+    QString mLayerStyleSelectedAbstract;
+
     //! Number of features in the layer
     long mNumberFeatures;
     //! The Spatialite Layer-Readonly status [true or false]
@@ -2294,7 +2880,7 @@ class SpatialiteDbLayer : public QObject
     //! Is the Layer valid
     bool mIsValid;
     //! Set the Layer as invalid, with possible Message, returns amount of Errors collected
-    int setLayerInvalid( QString errCause = QString::null );
+    int setLayerInvalid( QString sLayerName = QString::null, QString errCause = QString::null );
     //! List of primary key columns in the table
     QgsAttributeList mPrimaryKeyAttrs;
     //! List of layer fields in the table
@@ -2395,10 +2981,41 @@ class SpatialiteDbLayer : public QObject
      * \since QGIS 3.0
      */
     bool GetLayerSettings();
-    //! Collection of warnings for the Layer being invalid
-    QStringList mWarnings;
-    //! Collection of reasons for the Layer being invalid
-    QStringList mErrors;
+
+    /** Collection of warnings for the Database being invalid
+     * \note
+     *  -> format: 'table_name(geometry_name)', Error text
+     * \since QGIS 3.0
+     */
+    QMap<QString, QString> mWarnings;
+
+    /** Collection of reasons for the Database being invalid
+     * \note
+     *  -> format: 'table_name(geometry_name)', Error text
+     * \since QGIS 3.0
+     */
+    QMap<QString, QString> mErrors;
+
+    /** Map of style_name and Metadata
+     * \note
+     * - Key: StyleName as retrieved from SE_vector_styles or SE_raster_styles
+     * - Value: StyleType, StyleTitle, StyleAbstract
+     * -> style_type: StyleVector,StyleRaster
+     * \see readVectorRasterStyles
+     * \since QGIS 3.0
+     */
+    QMap<QString, QString> mStyleLayersInfo;
+
+    /** Does this Layer contain a Style
+     * \note
+     *  -  which can be retrieved with getLayerStyle
+     * \see mLayerStyleSelected
+     * \see getLayerStyle
+     * \see setLayerStyleSelected
+     * \see hasLayerStyle
+     * \since QGIS 3.0
+     */
+    bool mHasStyle;
 
     friend class SpatialiteDbInfo;
 };
