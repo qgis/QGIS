@@ -47,7 +47,7 @@ QgsDataSourceUri QgsGeoPackageConnection::uri()
   return uri;
 }
 
-void QgsGeoPackageConnection::setPath( QString &path )
+void QgsGeoPackageConnection::setPath( const QString &path )
 {
   mPath = path;
 }

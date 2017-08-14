@@ -76,7 +76,7 @@ class QgsGeoPackageConnectionItem : public QgsDataCollectionItem
 #ifdef HAVE_GUI
     void editConnection();
     void deleteConnection();
-
+    void addTable();
 #endif
 
   protected:
@@ -102,8 +102,11 @@ class QgsGeoPackageRootItem : public QgsDataCollectionItem
 #ifdef HAVE_GUI
     void newConnection();
     void connectionsChanged();
-#endif
     void createDatabase();
+#endif
+
+  private:
+    bool storeConnection( const QString &path );
 
 };
 
