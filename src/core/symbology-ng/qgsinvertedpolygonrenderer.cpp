@@ -507,6 +507,14 @@ bool QgsInvertedPolygonRenderer::willRenderFeature( QgsFeature& feat, QgsRenderC
   return mSubRenderer->willRenderFeature( feat, context );
 }
 
+QgsLegendSymbolListV2 QgsInvertedPolygonRenderer::legendSymbolItemsV2() const
+{
+  if ( !mSubRenderer )
+    return QgsFeatureRendererV2::legendSymbolItemsV2();
+
+  return mSubRenderer->legendSymbolItemsV2();
+}
+
 QgsInvertedPolygonRenderer* QgsInvertedPolygonRenderer::convertFromRenderer( const QgsFeatureRendererV2 *renderer )
 {
   if ( renderer->type() == "invertedPolygonRenderer" )
