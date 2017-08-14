@@ -196,7 +196,6 @@ QgsFeatureRenderer *QgsSingleSymbolRenderer::createFromSld( QDomElement &element
       // Note: an external source may not be using the 'se:' prefix, thus localName() will be empty.
       sNodeName = childElem.tagName();
     }
-    qDebug() << QString( "-I-> QgsSingleSymbolRenderer::createFromSld  tagName[%1] localName[%2] sNodeName[%3]" ).arg( childElem.tagName() ).arg( childElem.localName() ).arg( sNodeName );
     if ( sNodeName == QLatin1String( "Name" ) )
     {
       // <se:Name> tag contains the rule identifier,
@@ -238,7 +237,6 @@ QgsFeatureRenderer *QgsSingleSymbolRenderer::createFromSld( QDomElement &element
     childElem = childElem.nextSiblingElement();
   }
 
-  qDebug() << QString( "-I-> QgsSingleSymbolRenderer::createFromSld layers[%1]" ).arg( layers.count() );
   if ( layers.isEmpty() )
     return nullptr;
 
@@ -262,7 +260,6 @@ QgsFeatureRenderer *QgsSingleSymbolRenderer::createFromSld( QDomElement &element
       QgsDebugMsg( QString( "invalid geometry type: found %1" ).arg( geomType ) );
       return nullptr;
   }
-  qDebug() << QString( "-I----> QgsSingleSymbolRenderer::createFromSld and finally return the new renderer" );
   // and finally return the new renderer
   return new QgsSingleSymbolRenderer( symbol );
 }

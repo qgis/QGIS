@@ -221,7 +221,6 @@ QgsFeatureRenderer *QgsFeatureRenderer::loadSld( const QDomNode &node, QgsWkbTyp
         // Note: an external source may not be using the 'se:' prefix, thus localName() will be empty.
         sNodeName = ruleChildElem.tagName();
       }
-      qDebug() << QString( "-I-> QgsFeatureRenderer::loadSld: ruleChildElem tagName[%1] localName[%2] sNodeName[%3]" ).arg( ruleChildElem.tagName() ).arg( ruleChildElem.localName() ).arg( sNodeName );
       // rule has filter or min/max scale denominator, use the RuleRenderer
       if ( sNodeName == QLatin1String( "Filter" ) ||
            sNodeName == QLatin1String( "MinScaleDenominator" ) ||

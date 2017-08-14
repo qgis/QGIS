@@ -691,7 +691,6 @@ QgsRuleBasedRenderer::Rule *QgsRuleBasedRenderer::Rule::createFromSld( QDomEleme
     // Note: an external source may not be using the 'se:' prefix, thus localName() will be empty.
     sNodeName = childElem.tagName();
   }
-  qDebug() << QString( "-I-> QgsRuleBasedRenderer::Rule::createFromSld tagName[%1] localName[%2] sNode[%3]" ).arg( childElem.tagName() ).arg( childElem.localName() ).arg( sNodeName );
   while ( !childElem.isNull() )
   {
     if ( sNodeName == QLatin1String( "Name" ) )

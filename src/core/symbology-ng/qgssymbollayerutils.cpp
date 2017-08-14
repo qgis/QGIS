@@ -1031,7 +1031,6 @@ bool QgsSymbolLayerUtils::createSymbolLayerListFromSld( QDomElement &element,
     // Note: an external source may not be using the 'se:' prefix, thus localName() will be empty.
     symbolizerName = element.tagName();
   }
-  qDebug() << QString( "-I-> QgsSymbolLayerUtils::createSymbolLayerListFromSld TagName[%1] LocalName[%2] element[%3]" ).arg( element.tagName() ).arg( element.localName() ).arg( symbolizerName );
   if ( symbolizerName == QLatin1String( "PointSymbolizer" ) )
   {
     // first check for Graphic element, nothing will be rendered if not found
