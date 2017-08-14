@@ -3,8 +3,8 @@ imagery_maxent
 ParameterVector|PRESENCE|Presence Data|-1|False
 ParameterMultipleInput|FEATURES_NUM|Numerical Features|3|True
 ParameterMultipleInput|FEATURES_CAT|Categorical Features|3|True
-OutputRaster|PREDICTION|Presence Prediction
-OutputRaster|PROBABILITY|Presence Probability
+QgsProcessingParameterRasterDestination|PREDICTION|Presence Prediction
+QgsProcessingParameterRasterDestination|PROBABILITY|Presence Probability
 QgsProcessingParameterNumber|BACKGROUND|Background Sample Density [Percent]|QgsProcessingParameterNumber.Double|1.000000|False| 0.000000| 100.000000
 ParameterSelection|METHOD|Method|[0] Yoshimasa Tsuruoka;[1] Dekang Lin| 0
 ParameterFile|YT_FILE_LOAD|Load from File...|False|False

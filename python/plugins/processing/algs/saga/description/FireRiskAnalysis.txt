@@ -13,6 +13,6 @@ QgsProcessingParameterRasterLayer|VALUE|Value|None|True
 QgsProcessingParameterRasterLayer|BASEPROB|Base Probability|None|True
 QgsProcessingParameterNumber|MONTECARLO|Number of Events|QgsProcessingParameterNumber.Integer|1000|False|None|None
 QgsProcessingParameterNumber|INTERVAL|Fire Length|QgsProcessingParameterNumber.Integer|100|False|None|None
-OutputRaster|DANGER|Danger
-OutputRaster|COMPPROB|Compound Probability
-OutputRaster|PRIORITY|Priority Index
+QgsProcessingParameterRasterDestination|DANGER|Danger
+QgsProcessingParameterRasterDestination|COMPPROB|Compound Probability
+QgsProcessingParameterRasterDestination|PRIORITY|Priority Index

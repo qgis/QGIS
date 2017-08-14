@@ -6,8 +6,8 @@ QgsProcessingParameterRasterLayer|WEIGHT|Land Cover Weights|None|True
 QgsProcessingParameterNumber|WEIGHT_DEFAULT|Default|QgsProcessingParameterNumber.Double|1.000000|False| 0.000000|None
 QgsProcessingParameterRasterLayer|RAIN|Rainfall|None|True
 QgsProcessingParameterNumber|RAIN_DEFAULT|Default|QgsProcessingParameterNumber.Double|500.000000|False| 0.000000|None
-OutputRaster|DELIVERY|Delivery Index
-OutputRaster|RISK_POINT|Locational Risk
-OutputRaster|RISK_DIFFUSE|Diffuse Pollution Risk
+QgsProcessingParameterRasterDestination|DELIVERY|Delivery Index
+QgsProcessingParameterRasterDestination|RISK_POINT|Locational Risk
+QgsProcessingParameterRasterDestination|RISK_DIFFUSE|Diffuse Pollution Risk
 ParameterSelection|METHOD|Flow Direction Algorithm|[0] single;[1] multiple| 1
 QgsProcessingParameterNumber|CHANNEL_START|Channel Initiation Threshold|QgsProcessingParameterNumber.Integer|150|False| 1|None

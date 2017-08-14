@@ -18,6 +18,6 @@ Extent TARGET_USER_XMIN TARGET_USER_XMAX TARGET_USER_YMIN TARGET_USER_YMAX
 QgsProcessingParameterNumber|TARGET_USER_SIZE|Cellsize|QgsProcessingParameterNumber.Double|100.0|False|None|None
 ParameterSelection|TARGET_USER_FITS|Fit|[0] nodes;[1] cells
 OutputVector|REGRESSION|Regression
-OutputRaster|SLOPES|Slopes
-OutputRaster|TARGET_INTERCEPT|Intercept
-OutputRaster|TARGET_QUALITY|Quality
+QgsProcessingParameterRasterDestination|SLOPES|Slopes
+QgsProcessingParameterRasterDestination|TARGET_INTERCEPT|Intercept
+QgsProcessingParameterRasterDestination|TARGET_QUALITY|Quality

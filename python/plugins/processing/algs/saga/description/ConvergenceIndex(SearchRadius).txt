@@ -8,4 +8,4 @@ ParameterBoolean|DISTANCE_WEIGHTING_DW_IDW_OFFSET|Inverse Distance Offset|True
 QgsProcessingParameterNumber|DISTANCE_WEIGHTING_DW_BANDWIDTH|Gaussian and Exponential Weighting Bandwidth|QgsProcessingParameterNumber.Double|1.0|False|0.0|None
 ParameterBoolean|SLOPE|Gradient|True
 ParameterSelection|DIFFERENCE|Weighting Function|[0] direction to the center cell;[1] center cell's aspect direction
-OutputRaster|CONVERGENCE|Convergence Index
+QgsProcessingParameterRasterDestination|CONVERGENCE|Convergence Index

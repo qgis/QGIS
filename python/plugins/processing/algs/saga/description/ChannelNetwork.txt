@@ -9,6 +9,6 @@ QgsProcessingParameterRasterLayer|DIV_GRID|Divergence|None|True
 QgsProcessingParameterNumber|DIV_CELLS|Tracing: Max. Divergence|QgsProcessingParameterNumber.Integer|10|False|None|None
 QgsProcessingParameterRasterLayer|TRACE_WEIGHT|Tracing: Weight|None|True
 QgsProcessingParameterNumber|MINLEN|Min. Segment Length|QgsProcessingParameterNumber.Integer|10|False|0.0|None
-OutputRaster|CHNLNTWRK|Channel Network
-OutputRaster|CHNLROUTE|Channel Direction
+QgsProcessingParameterRasterDestination|CHNLNTWRK|Channel Network
+QgsProcessingParameterRasterDestination|CHNLROUTE|Channel Direction
 OutputVector|SHAPES|Channel Network

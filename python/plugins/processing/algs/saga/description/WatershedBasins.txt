@@ -4,4 +4,4 @@ QgsProcessingParameterRasterLayer|ELEVATION|Elevation|None|False
 QgsProcessingParameterRasterLayer|CHANNELS|Channel Network|None|False
 QgsProcessingParameterRasterLayer|SINKROUTE|Sink Route|None|True
 QgsProcessingParameterNumber|MINSIZE|Min. Size|QgsProcessingParameterNumber.Integer|0|False|None|None
-OutputRaster|BASINS|Watershed Basins
+QgsProcessingParameterRasterDestination|BASINS|Watershed Basins

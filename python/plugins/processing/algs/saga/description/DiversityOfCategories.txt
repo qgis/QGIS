@@ -8,8 +8,8 @@ ParameterSelection|DW_WEIGHTING|Weighting Function|[0] no distance weighting;[1]
 QgsProcessingParameterNumber|DW_IDW_POWER|Inverse Distance Weighting Power|QgsProcessingParameterNumber.Integer|1|False|0.0|None
 ParameterBoolean|DW_IDW_OFFSET|Inverse Distance Offset|True
 QgsProcessingParameterNumber|DW_BANDWIDTH|Gaussian and Exponential Weighting Bandwidth|QgsProcessingParameterNumber.Double|0.7|False|0.0|None
-OutputRaster|COUNT|Number of Categories
-OutputRaster|DIVERSITY|Diversity
-OutputRaster|SIZE_MEAN|Average Size
-OutputRaster|SIZE_SKEW|Skewness
-OutputRaster|CONNECTIVITY|Connectivity
+QgsProcessingParameterRasterDestination|COUNT|Number of Categories
+QgsProcessingParameterRasterDestination|DIVERSITY|Diversity
+QgsProcessingParameterRasterDestination|SIZE_MEAN|Average Size
+QgsProcessingParameterRasterDestination|SIZE_SKEW|Skewness
+QgsProcessingParameterRasterDestination|CONNECTIVITY|Connectivity

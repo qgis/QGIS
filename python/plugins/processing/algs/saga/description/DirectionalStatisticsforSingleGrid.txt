@@ -9,15 +9,15 @@ ParameterSelection|DISTANCE_WEIGHTING_DW_WEIGHTING|Distance Weighting|[0] no dis
 QgsProcessingParameterNumber|DISTANCE_WEIGHTING_DW_IDW_POWER|Inverse Distance Weighting Power|QgsProcessingParameterNumber.Integer|1|False|None|None
 ParameterBoolean|DISTANCE_WEIGHTING_DW_IDW_OFFSET|Inverse Distance Offset|True
 QgsProcessingParameterNumber|DISTANCE_WEIGHTING_DW_BANDWIDTH|Gaussian and Exponential Weighting Bandwidth|QgsProcessingParameterNumber.Double|1.0|False|None|None
-OutputRaster|MEAN|Arithmetic Mean
-OutputRaster|DIFMEAN|Difference from Arithmetic Mean
-OutputRaster|MIN|Minimum
-OutputRaster|MAX|Maximum
-OutputRaster|RANGE|Range
-OutputRaster|VAR|Variance
-OutputRaster|STDDEV|Standard Deviation
-OutputRaster|STDDEVLO|Mean less Standard Deviation
-OutputRaster|STDDEVHI|Mean plus Standard Deviation
-OutputRaster|DEVMEAN|Deviation from Arithmetic Mean
-OutputRaster|PERCENT|Percentile
+QgsProcessingParameterRasterDestination|MEAN|Arithmetic Mean
+QgsProcessingParameterRasterDestination|DIFMEAN|Difference from Arithmetic Mean
+QgsProcessingParameterRasterDestination|MIN|Minimum
+QgsProcessingParameterRasterDestination|MAX|Maximum
+QgsProcessingParameterRasterDestination|RANGE|Range
+QgsProcessingParameterRasterDestination|VAR|Variance
+QgsProcessingParameterRasterDestination|STDDEV|Standard Deviation
+QgsProcessingParameterRasterDestination|STDDEVLO|Mean less Standard Deviation
+QgsProcessingParameterRasterDestination|STDDEVHI|Mean plus Standard Deviation
+QgsProcessingParameterRasterDestination|DEVMEAN|Deviation from Arithmetic Mean
+QgsProcessingParameterRasterDestination|PERCENT|Percentile
 OutputVector|POINTS_OUT|Directional Statistics for Points

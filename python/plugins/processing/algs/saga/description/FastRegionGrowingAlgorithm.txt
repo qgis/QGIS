@@ -3,5 +3,5 @@ imagery_rga
 ParameterMultipleInput|INPUT|Input Grids|3|False
 QgsProcessingParameterRasterLayer|START|Seeds Grid|None|False
 QgsProcessingParameterRasterLayer|REP|Smooth Rep|None|True
-OutputRaster|RESULT|Segmente
-OutputRaster|MEAN|Mean
+QgsProcessingParameterRasterDestination|RESULT|Segmente
+QgsProcessingParameterRasterDestination|MEAN|Mean

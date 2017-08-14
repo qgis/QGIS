@@ -7,5 +7,5 @@ QgsProcessingParameterNumber|KAPPA|Diffusivity [m2/kyr]|QgsProcessingParameterNu
 QgsProcessingParameterNumber|DURATION|Simulation Time [kyr]|QgsProcessingParameterNumber.Double|10000.0|False|0.0|None
 ParameterSelection|TIMESTEP|Time Step|[0] user defined;[1] automatically|1
 QgsProcessingParameterNumber|DTIME|Time Step [kyr]|QgsProcessingParameterNumber.Double|1000.0|False|0.0|None
-OutputRaster|MODEL|Modelled Elevation
-OutputRaster|DIFF|Elevation Difference
+QgsProcessingParameterRasterDestination|MODEL|Modelled Elevation
+QgsProcessingParameterRasterDestination|DIFF|Elevation Difference

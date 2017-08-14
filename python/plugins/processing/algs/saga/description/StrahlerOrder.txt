@@ -1,4 +1,4 @@
 Strahler Order
 ta_channels
 QgsProcessingParameterRasterLayer|DEM|Elevation|None|False
-OutputRaster|STRAHLER|Strahler Order
+QgsProcessingParameterRasterDestination|STRAHLER|Strahler Order

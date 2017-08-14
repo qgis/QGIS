@@ -1,8 +1,8 @@
 Topographic Openness
 ta_lighting
 QgsProcessingParameterRasterLayer|DEM|Elevation|None|False
-OutputRaster|POS|Positive Openness
-OutputRaster|NEG|Negative Openness
+QgsProcessingParameterRasterDestination|POS|Positive Openness
+QgsProcessingParameterRasterDestination|NEG|Negative Openness
 QgsProcessingParameterNumber|RADIUS|Radial Limit|QgsProcessingParameterNumber.Double|10000.000000|False| 0.000000|None
 ParameterSelection|METHOD|Method|[0] multi scale;[1] sectors| 1
 QgsProcessingParameterNumber|DLEVEL|Multi Scale Factor|QgsProcessingParameterNumber.Double|3.000000|False| 1.250000|None

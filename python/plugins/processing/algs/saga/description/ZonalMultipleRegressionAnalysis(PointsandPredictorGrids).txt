@@ -5,7 +5,7 @@ ParameterVector|ZONES|Zones|-1|False
 ParameterVector|POINTS|Points|-1|False
 ParameterTable|ATTRIBUTE|Dependent Variable|False
 OutputVector|RESIDUALS|Residuals
-OutputRaster|REGRESSION|Regression
+QgsProcessingParameterRasterDestination|REGRESSION|Regression
 ParameterSelection|RESAMPLING|Resampling|[0] Nearest Neighbour;[1] Bilinear Interpolation;[2] Bicubic Spline Interpolation;[3] B-Spline Interpolation| 3
 ParameterBoolean|COORD_X|Include X Coordinate|False
 ParameterBoolean|COORD_Y|Include Y Coordinate|False

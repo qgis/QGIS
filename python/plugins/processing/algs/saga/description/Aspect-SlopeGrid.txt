@@ -2,5 +2,5 @@ Aspect-Slope Grid
 grid_visualisation
 QgsProcessingParameterRasterLayer|ASPECT|Aspect|None|False
 QgsProcessingParameterRasterLayer|SLOPE|Slope|None|False
-OutputRaster|ASPECT_SLOPE|Aspect-Slope
+QgsProcessingParameterRasterDestination|ASPECT_SLOPE|Aspect-Slope
 ParameterTable|LUT|Lookup Table|True

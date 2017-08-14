@@ -7,4 +7,4 @@ QgsProcessingParameterRasterLayer|ELEVATION|Elevation|None|False
 QgsProcessingParameterRasterLayer|SINKROUTE|Sink Routes|None|True
 ParameterSelection|METHOD|Method|[0] Deterministic 8;[1] Deterministic Infinity;[2] Multiple Flow Direction
 QgsProcessingParameterNumber|CONVERGE|Convergence|QgsProcessingParameterNumber.Double|1.1|False|None|None
-OutputRaster|AREA|Upslope Area
+QgsProcessingParameterRasterDestination|AREA|Upslope Area

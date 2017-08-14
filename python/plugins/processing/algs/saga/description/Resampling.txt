@@ -9,4 +9,4 @@ Extent TARGET_USER_XMIN TARGET_USER_XMAX TARGET_USER_YMIN TARGET_USER_YMAX
 QgsProcessingParameterNumber|TARGET_USER_SIZE|Cellsize|QgsProcessingParameterNumber.Double|100.0|False|None|None
 ParameterSelection|TARGET_USER_FITS|Fit|[0] nodes;[1] cells
 QgsProcessingParameterRasterLayer|TARGET_TEMPLATE|Target system|None|True
-OutputRaster|OUTPUT|Grid
+QgsProcessingParameterRasterDestination|OUTPUT|Grid

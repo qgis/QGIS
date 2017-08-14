@@ -6,4 +6,4 @@ ParameterSelection|TARGET_TYPE|Target Dimensions|[0] User defined
 QgsProcessingParameterNumber|USER_CELL_SIZE|Grid Size|QgsProcessingParameterNumber.Double|1.0|False|0.0|None
 QgsProcessingParameterNumber|USER_COLS|Cols|QgsProcessingParameterNumber.Integer|100|False|1.0|None
 QgsProcessingParameterNumber|USER_ROWS|Rows|QgsProcessingParameterNumber.Integer|100|False|1.0|None
-OutputRaster|TARGET_GRID|Grid
+QgsProcessingParameterRasterDestination|TARGET_GRID|Grid

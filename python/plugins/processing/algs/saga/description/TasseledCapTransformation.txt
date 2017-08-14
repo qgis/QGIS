@@ -6,6 +6,6 @@ QgsProcessingParameterRasterLayer|GREEN|Green (TM 3)|None|False
 QgsProcessingParameterRasterLayer|NIR|Near Infrared (TM 4)|None|False
 QgsProcessingParameterRasterLayer|MIR1|Mid Infrared (TM 5)|None|False
 QgsProcessingParameterRasterLayer|MIR2|Mid Infrared (TM 7)|None|False
-OutputRaster|BRIGHTNESS|Brightness
-OutputRaster|GREENNESS|Greenness
-OutputRaster|WETNESS|Wetness
+QgsProcessingParameterRasterDestination|BRIGHTNESS|Brightness
+QgsProcessingParameterRasterDestination|GREENNESS|Greenness
+QgsProcessingParameterRasterDestination|WETNESS|Wetness

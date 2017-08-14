@@ -4,4 +4,4 @@ QgsProcessingParameterRasterLayer|INPUT|Grid|None|False
 QgsProcessingParameterNumber|SIGMA|Standard Deviation|QgsProcessingParameterNumber.Integer|1|False|None|None
 ParameterSelection|MODE|Search Mode|[0] Square;[1] Circle
 QgsProcessingParameterNumber|RADIUS|Search Radius|QgsProcessingParameterNumber.Integer|3|False|None|None
-OutputRaster|RESULT|Filtered Grid
+QgsProcessingParameterRasterDestination|RESULT|Filtered Grid

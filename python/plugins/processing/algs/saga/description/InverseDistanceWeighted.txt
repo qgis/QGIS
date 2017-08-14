@@ -19,4 +19,4 @@ QgsProcessingParameterNumber|TARGET_USER_SIZE|Cellsize|QgsProcessingParameterNum
 ParameterSelection|TARGET_DEFINITION|Target Grid System|[0] user defined;[1] grid or grid system
 ParameterSelection|TARGET_USER_FITS|Fit|[0] nodes;[1] cells
 QgsProcessingParameterRasterLayer|TARGET_TEMPLATE|Target System|None|True
-OutputRaster|TARGET_OUT_GRID|Grid
+QgsProcessingParameterRasterDestination|TARGET_OUT_GRID|Grid

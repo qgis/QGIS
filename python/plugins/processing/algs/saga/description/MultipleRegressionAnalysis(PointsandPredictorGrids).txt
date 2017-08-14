@@ -7,8 +7,8 @@ ParameterTable|INFO_COEFF|Details: Coefficients|True
 ParameterTable|INFO_MODEL|Details: Model|True
 ParameterTable|INFO_STEPS|Details: Steps|True
 OutputVector|RESIDUALS|Residuals
-OutputRaster|REGRESSION|Regression
-OutputRaster|REGRESCORR|Regression with Residual Correction
+QgsProcessingParameterRasterDestination|REGRESSION|Regression
+QgsProcessingParameterRasterDestination|REGRESCORR|Regression with Residual Correction
 ParameterSelection|RESAMPLING|Resampling|[0] Nearest Neighbour;[1] Bilinear Interpolation;[2] Bicubic Spline Interpolation;[3] B-Spline Interpolation| 3
 ParameterBoolean|COORD_X|Include X Coordinate|False
 ParameterBoolean|COORD_Y|Include Y Coordinate|False

@@ -15,6 +15,6 @@ ParameterSelection|SEARCH_POINTS_ALL|Number of Points|[0] maximum number of near
 QgsProcessingParameterNumber|SEARCH_POINTS_MIN|Minimum|QgsProcessingParameterNumber.Integer|4|False|1|None
 QgsProcessingParameterNumber|SEARCH_POINTS_MAX|Maximum|QgsProcessingParameterNumber.Integer|20|False|1|None
 ParameterSelection|SEARCH_DIRECTION|Search Direction|[0] all directions;[1] quadrants
-OutputRaster|REGRESSION|Regression
-OutputRaster|QUALITY|Coefficient of Determination
+QgsProcessingParameterRasterDestination|REGRESSION|Regression
+QgsProcessingParameterRasterDestination|QUALITY|Coefficient of Determination
 OutputVector|RESIDUALS|Residuals

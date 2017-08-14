@@ -6,7 +6,7 @@ QgsProcessingParameterRasterLayer|CONVEXITY|Convexity|None|True
 ParameterBoolean|CONV_RECALC|Recalculate|False
 QgsProcessingParameterRasterLayer|TEXTURE|Texture|None|True
 ParameterBoolean|TEXT_RECALC|Recalculate|False
-OutputRaster|LANDFORMS|Landforms
+QgsProcessingParameterRasterDestination|LANDFORMS|Landforms
 ParameterSelection|TYPE|Number of Classes|[0] 8;[1] 12;[2] 16| 2
 QgsProcessingParameterNumber|CONV_SCALE|Scale (Cells)|QgsProcessingParameterNumber.Integer|10|False| 1|None
 ParameterSelection|CONV_KERNEL|Laplacian Filter Kernel|[0] four-neighbourhood;[1] eight-neihbourhood;[2] eight-neihbourhood (distance based weighting)| 0

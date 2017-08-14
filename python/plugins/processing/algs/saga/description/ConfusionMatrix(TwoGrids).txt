@@ -10,7 +10,7 @@ ParameterTable|TWO_LUT|Look-up Table|True
 ParameterTable|TWO_LUT_MIN|Value|False
 ParameterTable|TWO_LUT_MAX|Value (Maximum)|False
 ParameterTable|TWO_LUT_NAM|Name|False
-OutputRaster|COMBINED|Combined Classes
+QgsProcessingParameterRasterDestination|COMBINED|Combined Classes
 ParameterBoolean|NOCHANGE|Report Unchanged Classes|True
 ParameterTable|CONFUSION|Confusion Matrix|False
 ParameterSelection|OUTPUT|Output as...|[0] cells;[1] percent;[2] area| 0

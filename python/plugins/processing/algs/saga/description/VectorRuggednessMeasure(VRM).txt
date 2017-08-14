@@ -6,4 +6,4 @@ ParameterSelection|DISTANCE_WEIGHTING_DW_WEIGHTING|Distance Weighting|[0] no dis
 QgsProcessingParameterNumber|DISTANCE_WEIGHTING_DW_IDW_POWER|Inverse Distance Weighting Power|QgsProcessingParameterNumber.Integer|1|False|0.0|None
 ParameterBoolean|DISTANCE_WEIGHTING_DW_IDW_OFFSET     |Inverse Distance Offset|True
 QgsProcessingParameterNumber|DISTANCE_WEIGHTING_DW_BANDWIDTH|Gaussian and Exponential Weighting Bandwidth|QgsProcessingParameterNumber.Integer|1|False|0.0|None
-OutputRaster|VRM|Vector Terrain Ruggedness (VRM)
+QgsProcessingParameterRasterDestination|VRM|Vector Terrain Ruggedness (VRM)

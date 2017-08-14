@@ -1,4 +1,4 @@
 Invert Grid
 grid_tools
 QgsProcessingParameterRasterLayer|GRID|Grid|None|False
-OutputRaster|INVERSE|Inverse Grid
+QgsProcessingParameterRasterDestination|INVERSE|Inverse Grid

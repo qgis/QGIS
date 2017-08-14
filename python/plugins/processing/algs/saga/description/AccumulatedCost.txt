@@ -7,6 +7,6 @@ QgsProcessingParameterRasterLayer|COST|Local Cost|None|False
 QgsProcessingParameterRasterLayer|DIR_MAXCOST|Direction of Maximum Cost|None|True
 ParameterSelection|DIR_UNIT|Units of Direction|[0] radians;[1] degree| 0
 QgsProcessingParameterNumber|DIR_K|K Factor|QgsProcessingParameterNumber.Double|2.000000|False|None|None
-OutputRaster|ACCUMULATED|Accumulated Cost
-OutputRaster|ALLOCATION|Allocation
+QgsProcessingParameterRasterDestination|ACCUMULATED|Accumulated Cost
+QgsProcessingParameterRasterDestination|ALLOCATION|Allocation
 QgsProcessingParameterNumber|THRESHOLD|Threshold for different route|QgsProcessingParameterNumber.Double|0.000000|False| 0.000000|None

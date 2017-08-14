@@ -3,4 +3,4 @@ statistics_grid
 QgsProcessingParameterRasterLayer|INPUT|Grid|None|False
 QgsProcessingParameterNumber|RADIUS|Radius (Cells)|QgsProcessingParameterNumber.Integer|10|False|1.0|None
 QgsProcessingParameterNumber|EXPONENT|Exponent|QgsProcessingParameterNumber.Integer|1|False|None|None
-OutputRaster|RESULT|Representativeness
+QgsProcessingParameterRasterDestination|RESULT|Representativeness

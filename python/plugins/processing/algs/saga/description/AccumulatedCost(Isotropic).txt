@@ -3,5 +3,5 @@ grid_analysis
 QgsProcessingParameterRasterLayer|COST|Cost Grid|None|False
 QgsProcessingParameterRasterLayer|POINTS|Destination Points|None|False
 QgsProcessingParameterNumber|THRESHOLD|Threshold for different route|QgsProcessingParameterNumber.Double|0.0|False|None|None
-OutputRaster|ACCCOST|Accumulated Cost
-OutputRaster|CLOSESTPT|Closest Point
+QgsProcessingParameterRasterDestination|ACCCOST|Accumulated Cost
+QgsProcessingParameterRasterDestination|CLOSESTPT|Closest Point

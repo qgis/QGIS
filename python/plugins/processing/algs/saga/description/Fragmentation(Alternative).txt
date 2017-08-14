@@ -11,7 +11,7 @@ QgsProcessingParameterNumber|DENSITY_MIN|Minimum Density [Percent]|QgsProcessing
 QgsProcessingParameterNumber|DENSITY_INT|Minimum Density for Interior Forest [Percent]|QgsProcessingParameterNumber.Integer|99|False|None|None
 QgsProcessingParameterNumber|LEVEL_GROW|Search Distance Increment|QgsProcessingParameterNumber.Double|0.0|False|None|None
 ParameterBoolean|DENSITY_MEAN          |Density from Neighbourhood|True
-OutputRaster|DENSITY|Density [Percent]
-OutputRaster|CONNECTIVITY|Connectivity [Percent]
-OutputRaster|FRAGMENTATION|Fragmentation
+QgsProcessingParameterRasterDestination|DENSITY|Density [Percent]
+QgsProcessingParameterRasterDestination|CONNECTIVITY|Connectivity [Percent]
+QgsProcessingParameterRasterDestination|FRAGMENTATION|Fragmentation
 OutputTable|FRAGSTATS|Summary

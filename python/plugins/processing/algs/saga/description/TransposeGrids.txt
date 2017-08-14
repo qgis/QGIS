@@ -3,4 +3,4 @@ grid_tools
 QgsProcessingParameterRasterLayer|GRIDS|Input Grid|None|False
 ParameterBoolean|MIRROR_X|Mirror Horizontally|False
 ParameterBoolean|MIRROR_Y|Mirror Vertically|False
-OutputRaster|TRANSPOSED|Transposed Grid
+QgsProcessingParameterRasterDestination|TRANSPOSED|Transposed Grid

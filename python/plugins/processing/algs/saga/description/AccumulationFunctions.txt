@@ -5,8 +5,8 @@ QgsProcessingParameterRasterLayer|INPUT|Input|None|False
 QgsProcessingParameterRasterLayer|STATE_IN|State t|None|True
 QgsProcessingParameterRasterLayer|CONTROL|Operation Control|None|True
 QgsProcessingParameterRasterLayer|CTRL_LINEAR|Linear Flow Control Grid|None|True
-OutputRaster|FLUX|Flux
-OutputRaster|STATE_OUT|State t + 1
+QgsProcessingParameterRasterDestination|FLUX|Flux
+QgsProcessingParameterRasterDestination|STATE_OUT|State t + 1
 ParameterSelection|OPERATION|Operation|[0] accuflux;[1] accucapacityflux / state;[2] accufractionflux / state;[3] accuthresholdflux / state;[4] accutriggerflux / state| 0
 ParameterBoolean|LINEAR|Switch to Linear Flow|True
 QgsProcessingParameterNumber|THRES_LINEAR|Threshold Linear Flow|QgsProcessingParameterNumber.Double|0.000000|False|None|None

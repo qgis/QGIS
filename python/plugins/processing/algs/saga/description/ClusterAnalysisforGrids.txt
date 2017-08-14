@@ -7,5 +7,5 @@ QgsProcessingParameterNumber|MAXITER|Maximum Iterations|QgsProcessingParameterNu
 ParameterBoolean|NORMALISE|Normalise|True
 ParameterBoolean|OLDVERSION|Old Version|False
 ParameterBoolean|UPDATEVIEW|Update View|False
-OutputRaster|CLUSTER|Clusters
+QgsProcessingParameterRasterDestination|CLUSTER|Clusters
 OutputTable|STATISTICS|Statistics

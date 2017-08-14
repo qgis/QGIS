@@ -2,4 +2,4 @@ Grid Cell Index
 grid_tools
 QgsProcessingParameterRasterLayer|GRID|Input Grid|None|False
 ParameterSelection|ORDER|Index|[0] ascending;[1] descending|0
-OutputRaster|INDEX|Sorted Grid
+QgsProcessingParameterRasterDestination|INDEX|Sorted Grid

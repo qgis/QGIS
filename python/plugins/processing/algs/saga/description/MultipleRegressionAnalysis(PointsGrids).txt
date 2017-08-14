@@ -13,4 +13,4 @@ OutputTable|INFO_COEFF|Details: Coefficients
 OutputTable|INFO_MODEL|Details: Model
 OutputTable|INFO_STEPS|Details: Steps
 OutputVector|RESIDUALS|Residuals
-OutputRaster|REGRESSION|Regression
+QgsProcessingParameterRasterDestination|REGRESSION|Regression

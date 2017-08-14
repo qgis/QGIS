@@ -3,4 +3,4 @@ ta_hydrology
 QgsProcessingParameterRasterLayer|SLOPE|Slope|None|False
 QgsProcessingParameterRasterLayer|AREA|Catchment Area|None|False
 ParameterSelection|CONV|Area Conversion|[0] no conversion (areas already given as specific catchment area);[1] 1 / cell size (pseudo specific catchment area)
-OutputRaster|SPI|Stream Power Index
+QgsProcessingParameterRasterDestination|SPI|Stream Power Index

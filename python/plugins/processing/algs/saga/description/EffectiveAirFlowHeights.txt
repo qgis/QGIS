@@ -12,4 +12,4 @@ QgsProcessingParameterNumber|LEEFACT|Lee Factor|QgsProcessingParameterNumber.Dou
 QgsProcessingParameterNumber|LUVFACT|Luv Factor|QgsProcessingParameterNumber.Double|1.0|False|None|None
 ParameterSelection|DIR_UNITS|Wind Direction Units|[0] radians;[1] degree
 QgsProcessingParameterNumber|LEN_SCALE|Wind Speed Scale Factor|QgsProcessingParameterNumber.Double|1.0|False|None|None
-OutputRaster|AFH|Effective Air Flow Heights
+QgsProcessingParameterRasterDestination|AFH|Effective Air Flow Heights

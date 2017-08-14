@@ -3,5 +3,5 @@ ta_hydrology
 QgsProcessingParameterRasterLayer|ELEV|DEM|None|False
 QgsProcessingParameterRasterLayer|SEEDS|Seeds|None|False
 ParameterBoolean|LEVEL         |Absolute Water Levels|True
-OutputRaster|OUTDEPTH|Lake
-OutputRaster|OUTLEVEL|Surface
+QgsProcessingParameterRasterDestination|OUTDEPTH|Lake
+QgsProcessingParameterRasterDestination|OUTLEVEL|Surface

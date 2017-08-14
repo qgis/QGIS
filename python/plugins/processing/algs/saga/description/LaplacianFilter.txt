@@ -5,4 +5,4 @@ ParameterSelection|METHOD|Method|[0] standard kernel 1;[1] standard kernel 2;[2]
 QgsProcessingParameterNumber|SIGMA|Standard Deviation (Percent of Radius)|QgsProcessingParameterNumber.Integer|0|False|None|None
 QgsProcessingParameterNumber|RADIUS|Radius|QgsProcessingParameterNumber.Integer|1|False|None|None
 ParameterSelection|MODE|Search Mode|[0] square;[1] circle
-OutputRaster|RESULT|Filtered Grid
+QgsProcessingParameterRasterDestination|RESULT|Filtered Grid

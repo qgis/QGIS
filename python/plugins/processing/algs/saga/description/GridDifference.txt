@@ -2,4 +2,4 @@ Grid Difference
 grid_calculus
 QgsProcessingParameterRasterLayer|A|A|None|False
 QgsProcessingParameterRasterLayer|B|B|None|False
-OutputRaster|C|Difference (A - B)
+QgsProcessingParameterRasterDestination|C|Difference (A - B)
