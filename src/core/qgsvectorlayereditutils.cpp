@@ -277,7 +277,6 @@ QgsGeometry::OperationResult QgsVectorLayerEditUtils::splitFeatures( const QList
   if ( !mLayer->isSpatial() )
     return QgsGeometry::InvalidBaseGeometry;
 
-  QgsFeatureList newFeatures; //store all the newly created features
   double xMin, yMin, xMax, yMax;
   QgsRectangle bBox; //bounding box of the split line
   QgsGeometry::OperationResult returnCode = QgsGeometry::Success;
@@ -293,7 +292,7 @@ QgsGeometry::OperationResult QgsVectorLayerEditUtils::splitFeatures( const QList
   }
   else //else consider all the feature that intersect the bounding box of the split line
   {
-    if ( boundingBoxFromPointList( splitLine, xMin, yMin, xMax, yMax ) == 0 )
+    if ( boundingBoxFromPointList( splitLine, xMin, yMin, xMax, yMax ) )
     {
       bBox.setXMinimum( xMin );
       bBox.setYMinimum( yMin );
@@ -402,7 +401,7 @@ QgsGeometry::OperationResult QgsVectorLayerEditUtils::splitParts( const QList<Qg
   }
   else //else consider all the feature that intersect the bounding box of the split line
   {
-    if ( boundingBoxFromPointList( splitLine, xMin, yMin, xMax, yMax ) == 0 )
+    if ( boundingBoxFromPointList( splitLine, xMin, yMin, xMax, yMax ) )
     {
       bBox.setXMinimum( xMin );
       bBox.setYMinimum( yMin );
