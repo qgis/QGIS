@@ -705,7 +705,7 @@ QgsGeometry::OperationResult QgsGeometry::addPart( const QgsGeometry &newPart )
   {
     return QgsGeometry::InvalidBaseGeometry;
   }
-  if ( !newPart.d || !newPart.d->geometry )
+  if ( !newPart || !newPart.d->geometry )
   {
     return QgsGeometry::AddPartNotMultiGeometry;
   }
