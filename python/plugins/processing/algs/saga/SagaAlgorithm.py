@@ -78,9 +78,11 @@ class SagaAlgorithm(SagaAlgorithmBase):
         return SagaAlgorithm(self.description_file)
 
     def initAlgorithm(self, config=None):
-        #for p in self.params:
-        #    self.addParameter(p)
-        pass
+        for p in self.params:
+            try:
+                self.addParameter(p)
+            except:
+                pass # todo - remove
 
     def name(self):
         return self._name
@@ -122,7 +124,7 @@ class SagaAlgorithm(SagaAlgorithmBase):
             while line != '':
                 if line.startswith('Hardcoded'):
                     self.hardcoded_strings.append(line[len('Hardcoded|'):])
-                elif line.startswith('Parameter'):
+                elif line.startswith('QgsProcessingParameter') or line.startswith('Parameter'):
                     self.params.append(getParameterFromString(line))
                 elif line.startswith('AllowUnmatching'):
                     self.allow_nonmatching_grid_extents = True
