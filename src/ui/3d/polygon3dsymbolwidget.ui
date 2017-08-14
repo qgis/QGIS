@@ -24,7 +24,14 @@
       </widget>
      </item>
      <item row="0" column="1">
-      <widget class="QDoubleSpinBox" name="spinHeight"/>
+      <widget class="QDoubleSpinBox" name="spinHeight">
+       <property name="minimum">
+        <double>-99999.000000000000000</double>
+       </property>
+       <property name="maximum">
+        <double>99999.000000000000000</double>
+       </property>
+      </widget>
      </item>
      <item row="1" column="0">
       <widget class="QLabel" name="label_2">
@@ -34,7 +41,11 @@
       </widget>
      </item>
      <item row="1" column="1">
-      <widget class="QDoubleSpinBox" name="spinExtrusion"/>
+      <widget class="QDoubleSpinBox" name="spinExtrusion">
+       <property name="maximum">
+        <double>99999.000000000000000</double>
+       </property>
+      </widget>
      </item>
      <item row="2" column="0">
       <widget class="QLabel" name="label_3">
