@@ -299,7 +299,7 @@ class ProcessingToolbox(BASE, WIDGET):
                 context = dataobjects.createContext(feedback)
                 parameters = {}
                 ret, results = execute(alg, parameters, context, feedback)
-                handleAlgorithmResults(alg, parameters, context, feedback)
+                handleAlgorithmResults(alg, context, feedback)
                 feedback.close()
         if isinstance(item, TreeActionItem):
             action = item.action
