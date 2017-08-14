@@ -102,6 +102,13 @@ Qt3DRender::QGeometryRenderer *PolygonEntityNode::renderer( const Map3D &map, co
     if ( QgsWkbTypes::isCurvedType( geom.geometry()->wkbType() ) )
       geom = QgsGeometry( geom.geometry()->segmentize() );
 
+    if ( !geom.isGeosValid() )
+    {
+      // invalid geometries break tessellation
+      qDebug() << "skipping invalid geometry" << f.id();
+      continue;
+    }
+
     QgsAbstractGeometry *g = geom.geometry();
 
     if ( QgsWkbTypes::flatType( g->wkbType() ) == QgsWkbTypes::Polygon )
