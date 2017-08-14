@@ -21,32 +21,32 @@ class QgsVectorLayerEditUtils
     bool insertVertex( double x, double y, QgsFeatureId atFeatureId, int beforeVertex );
 %Docstring
  Insert a new vertex before the given vertex number,
-  in the given ring, item (first number is index 0), and feature
-  Not meaningful for Point geometries
+ in the given ring, item (first number is index 0), and feature
+ Not meaningful for Point geometries
  :rtype: bool
 %End
 
     bool insertVertex( const QgsPoint &point, QgsFeatureId atFeatureId, int beforeVertex );
 %Docstring
- Insert a new vertex before the given vertex number,
-  in the given ring, item (first number is index 0), and feature
-  Not meaningful for Point geometries
+ Inserts a new vertex before the given vertex number,
+ in the given ring, item (first number is index 0), and feature
+ Not meaningful for Point geometries
  :rtype: bool
 %End
 
     bool moveVertex( double x, double y, QgsFeatureId atFeatureId, int atVertex );
 %Docstring
  Moves the vertex at the given position number,
-  ring and item (first number is index 0), and feature
-  to the given coordinates
+ ring and item (first number is index 0), and feature
+ to the given coordinates
  :rtype: bool
 %End
 
     bool moveVertex( const QgsPoint &p, QgsFeatureId atFeatureId, int atVertex ) /PyName=moveVertexV2/;
 %Docstring
  Moves the vertex at the given position number,
-  ring and item (first number is index 0), and feature
-  to the given coordinates
+ ring and item (first number is index 0), and feature
+ to the given coordinates
 .. note::
 
    available in Python bindings as moveVertexV2
@@ -117,7 +117,7 @@ class QgsVectorLayerEditUtils
 
     QgsGeometry::OperationResult addPart( QgsCurve *ring, QgsFeatureId featureId ) /PyName=addCurvedPart/;
 %Docstring
- Add a new part polygon to a multipart feature
+ Adds a new part polygon to a multipart feature
 
  :return:
  - QgsGeometry.Success
@@ -144,7 +144,7 @@ class QgsVectorLayerEditUtils
 
     QgsGeometry::OperationResult splitParts( const QList<QgsPointXY> &splitLine, bool topologicalEditing = false );
 %Docstring
- Split parts cut by the given line
+ Splits parts cut by the given line
  \param splitLine line that splits the layer feature parts
  \param topologicalEditing true if topological editing is enabled
  :return:

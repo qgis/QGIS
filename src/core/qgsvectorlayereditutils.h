@@ -32,39 +32,45 @@ class CORE_EXPORT QgsVectorLayerEditUtils
   public:
     QgsVectorLayerEditUtils( QgsVectorLayer *layer );
 
-    /** Insert a new vertex before the given vertex number,
-     *  in the given ring, item (first number is index 0), and feature
-     *  Not meaningful for Point geometries
+    /**
+     * Insert a new vertex before the given vertex number,
+     * in the given ring, item (first number is index 0), and feature
+     * Not meaningful for Point geometries
      */
     bool insertVertex( double x, double y, QgsFeatureId atFeatureId, int beforeVertex );
 
-    /** Insert a new vertex before the given vertex number,
-     *  in the given ring, item (first number is index 0), and feature
-     *  Not meaningful for Point geometries
+    /**
+     * Inserts a new vertex before the given vertex number,
+     * in the given ring, item (first number is index 0), and feature
+     * Not meaningful for Point geometries
      */
     bool insertVertex( const QgsPoint &point, QgsFeatureId atFeatureId, int beforeVertex );
 
-    /** Moves the vertex at the given position number,
-     *  ring and item (first number is index 0), and feature
-     *  to the given coordinates
+    /**
+     * Moves the vertex at the given position number,
+     * ring and item (first number is index 0), and feature
+     * to the given coordinates
      */
     bool moveVertex( double x, double y, QgsFeatureId atFeatureId, int atVertex );
 
-    /** Moves the vertex at the given position number,
-     *  ring and item (first number is index 0), and feature
-     *  to the given coordinates
-     *  \note available in Python bindings as moveVertexV2
+    /**
+     * Moves the vertex at the given position number,
+     * ring and item (first number is index 0), and feature
+     * to the given coordinates
+     * \note available in Python bindings as moveVertexV2
      */
     bool moveVertex( const QgsPoint &p, QgsFeatureId atFeatureId, int atVertex ) SIP_PYNAME( moveVertexV2 );
 
-    /** Deletes a vertex from a feature.
+    /**
+     * Deletes a vertex from a feature.
      * \param featureId ID of feature to remove vertex from
      * \param vertex index of vertex to delete
      * \since QGIS 2.14
      */
     QgsVectorLayer::EditResult deleteVertex( QgsFeatureId featureId, int vertex );
 
-    /** Adds a ring to polygon/multipolygon features
+    /**
+     * Adds a ring to polygon/multipolygon features
      * \param ring ring to add
      * \param targetFeatureIds if specified, only these features will be the candidates for adding a ring. Otherwise
      * all intersecting features are tested and the ring is added to the first valid feature.
@@ -109,7 +115,7 @@ class CORE_EXPORT QgsVectorLayerEditUtils
     QgsGeometry::OperationResult addPart( const QgsPointSequence &ring, QgsFeatureId featureId );
 
     /**
-     * Add a new part polygon to a multipart feature
+     * Adds a new part polygon to a multipart feature
      *
      * \return
      * - QgsGeometry::Success
@@ -132,7 +138,7 @@ class CORE_EXPORT QgsVectorLayerEditUtils
     int translateFeature( QgsFeatureId featureId, double dx, double dy );
 
     /**
-     * Split parts cut by the given line
+     * Splits parts cut by the given line
      * \param splitLine line that splits the layer feature parts
      * \param topologicalEditing true if topological editing is enabled
      * \return
@@ -156,14 +162,16 @@ class CORE_EXPORT QgsVectorLayerEditUtils
      */
     QgsGeometry::OperationResult splitFeatures( const QList<QgsPointXY> &splitLine, bool topologicalEditing = false );
 
-    /** Adds topological points for every vertex of the geometry.
+    /**
+     * Adds topological points for every vertex of the geometry.
      * \param geom the geometry where each vertex is added to segments of other features
      * \note geom is not going to be modified by the function
      * \returns 0 in case of success
      */
     int addTopologicalPoints( const QgsGeometry &geom );
 
-    /** Adds a vertex to segments which intersect point p but don't
+    /**
+     * Adds a vertex to segments which intersect point p but don't
      * already have a vertex there. If a feature already has a vertex at position p,
      * no additional vertex is inserted. This method is useful for topological
      * editing.
