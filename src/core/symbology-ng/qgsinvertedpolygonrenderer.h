@@ -109,6 +109,8 @@ class CORE_EXPORT QgsInvertedPolygonRenderer : public QgsFeatureRendererV2
      */
     virtual bool willRenderFeature( QgsFeature& feat, QgsRenderContext& context ) override;
 
+    virtual QgsLegendSymbolListV2 legendSymbolItemsV2() const override;
+
     /** Creates a renderer out of an XML, for loading*/
     static QgsFeatureRendererV2* create( QDomElement& element );
 
