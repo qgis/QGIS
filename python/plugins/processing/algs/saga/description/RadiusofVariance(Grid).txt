@@ -1,6 +1,6 @@
 Radius of Variance (Grid)
 statistics_grid
-ParameterRaster|INPUT|Grid|False
+QgsProcessingParameterRasterLayer|INPUT|Grid|None|False
 ParameterNumber|VARIANCE|Standard Deviation|0.0|None|1.0
 ParameterNumber|RADIUS|Maximum Search Radius (cells)|0.0|None|20
 ParameterSelection|OUTPUT|Type of Output|[0] Cells;[1] Map Units

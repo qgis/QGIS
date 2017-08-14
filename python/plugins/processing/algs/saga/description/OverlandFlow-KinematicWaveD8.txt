@@ -1,6 +1,6 @@
 Overland Flow - Kinematic Wave D8
 sim_hydrology
-ParameterRaster|DEM|Elevation|False
+QgsProcessingParameterRasterLayer|DEM|Elevation|None|False
 ParameterVector|GAUGES|Gauges|-1|True
 ParameterNumber|TIME_SPAN|Simulation Time [h]|None|None|24
 ParameterNumber|TIME_STEP|Simulation Time Step [h]|None|None|0.1

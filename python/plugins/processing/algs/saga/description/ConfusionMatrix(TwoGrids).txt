@@ -1,11 +1,11 @@
 Confusion Matrix (Two Grids)
 imagery_classification
-ParameterRaster|ONE|Classification 1|False
+QgsProcessingParameterRasterLayer|ONE|Classification 1|None|False
 ParameterTable|ONE_LUT|Look-up Table|True
 ParameterTable|ONE_LUT_MIN|Value|False
 ParameterTable|ONE_LUT_MAX|Value (Maximum)|False
 ParameterTable|ONE_LUT_NAM|Name|False
-ParameterRaster|TWO|Classification 2|False
+QgsProcessingParameterRasterLayer|TWO|Classification 2|None|False
 ParameterTable|TWO_LUT|Look-up Table|True
 ParameterTable|TWO_LUT_MIN|Value|False
 ParameterTable|TWO_LUT_MAX|Value (Maximum)|False

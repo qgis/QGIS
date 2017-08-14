@@ -10,7 +10,7 @@ ParameterNumber|TARGET_USER_XMAX|Right|None|None| 100.000000
 ParameterNumber|TARGET_USER_YMIN|Bottom|None|None| 0.000000
 ParameterNumber|TARGET_USER_YMAX|Top|None|None| 100.000000
 ParameterSelection|TARGET_USER_FITS|Fit|[0] nodes;[1] cells| 0
-ParameterRaster|TARGET_TEMPLATE|Target System|True
+QgsProcessingParameterRasterLayer|TARGET_TEMPLATE|Target System|None|True
 OutputRaster|TARGET_OUT_GRID|Target Grid
 OutputRaster|INTERCEPT|Intercept
 OutputRaster|SLOPE|Slope

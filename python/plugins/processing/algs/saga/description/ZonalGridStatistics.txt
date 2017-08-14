@@ -1,8 +1,8 @@
 Zonal Grid Statistics
 statistics_grid
-ParameterRaster|ZONES|Zone Grid|False
+QgsProcessingParameterRasterLayer|ZONES|Zone Grid|None|False
 ParameterMultipleInput|CATLIST|Categorial Grids|3|True
 ParameterMultipleInput|STATLIST|Grids to analyze|3|True
-ParameterRaster|ASPECT|Aspect|True
+QgsProcessingParameterRasterLayer|ASPECT|Aspect|None|True
 ParameterBoolean|SHORTNAMES|Short Field Names|True
 OutputTable|OUTTAB|Zonal Statistics

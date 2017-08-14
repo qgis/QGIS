@@ -1,6 +1,6 @@
 Surface, Gradient and Concentration
 sim_hydrology
-ParameterRaster|MASK|Mask|False
+QgsProcessingParameterRasterLayer|MASK|Mask|None|False
 OutputRaster|SURF|Surface
 OutputRaster|GRAD|Gradient
 OutputRaster|CONC|Concentration

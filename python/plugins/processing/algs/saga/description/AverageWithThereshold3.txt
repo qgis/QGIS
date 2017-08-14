@@ -1,6 +1,6 @@
 Average With Thereshold 3
 contrib_perego
-ParameterRaster|INPUT|Input|False
+QgsProcessingParameterRasterLayer|INPUT|Input|None|False
 OutputRaster|RESULT|AWT Grid
 ParameterNumber|RX|Radius X| 1|None| 1
 ParameterNumber|RY|Radius Y| 1|None| 1

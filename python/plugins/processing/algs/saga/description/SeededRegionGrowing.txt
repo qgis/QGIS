@@ -1,6 +1,6 @@
 Seeded Region Growing
 imagery_segmentation
-ParameterRaster|SEEDS|Seeds|False
+QgsProcessingParameterRasterLayer|SEEDS|Seeds|None|False
 ParameterMultipleInput|FEATURES|Features|3|False
 OutputRaster|SEGMENTS|Segments
 OutputRaster|SIMILARITY|Similarity

@@ -1,7 +1,7 @@
 Vegetation Index (Slope Based)
 imagery_tools
-ParameterRaster|NIR|Near Infrared Reflectance|False
-ParameterRaster|RED|Red Reflectance|False
+QgsProcessingParameterRasterLayer|NIR|Near Infrared Reflectance|None|False
+QgsProcessingParameterRasterLayer|RED|Red Reflectance|None|False
 ParameterNumber|SOIL|Soil Adjustment Factor|0.0|1.0|0.5
 OutputRaster|DVI|Difference Vegetation Index
 OutputRaster|NDVI|Normalized Difference Vegetation Index

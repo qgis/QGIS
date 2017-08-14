@@ -10,5 +10,5 @@ ParameterNumber|USER_XMAX|Right|None|None| 100.000000
 ParameterNumber|USER_YMIN|Bottom|None|None| 0.000000
 ParameterNumber|USER_YMAX|Top|None|None| 100.000000
 ParameterSelection|USER_FITS|Fit|[0] nodes;[1] cells| 0
-ParameterRaster|TEMPLATE|Target System|True
+QgsProcessingParameterRasterLayer|TEMPLATE|Target System|None|True
 OutputRaster|OUT_GRID|Target Grid

@@ -1,6 +1,6 @@
 Fuzzify
 grid_calculus
-ParameterRaster|INPUT|Grid|False
+QgsProcessingParameterRasterLayer|INPUT|Grid|None|False
 ParameterNumber|A|A|None|None|0.0
 ParameterNumber|B|B|None|None|0.0
 ParameterNumber|C|C|None|None|0.0

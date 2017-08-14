@@ -1,7 +1,7 @@
 Fast Region Growing Algorithm
 imagery_rga
 ParameterMultipleInput|INPUT|Input Grids|3|False
-ParameterRaster|START|Seeds Grid|False
-ParameterRaster|REP|Smooth Rep|True
+QgsProcessingParameterRasterLayer|START|Seeds Grid|None|False
+QgsProcessingParameterRasterLayer|REP|Smooth Rep|None|True
 OutputRaster|RESULT|Segmente
 OutputRaster|MEAN|Mean

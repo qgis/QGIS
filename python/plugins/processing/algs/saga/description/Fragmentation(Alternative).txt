@@ -1,6 +1,6 @@
 Fragmentation (Alternative)
 grid_analysis
-ParameterRaster|CLASSES|Classification|False
+QgsProcessingParameterRasterLayer|CLASSES|Classification|None|False
 ParameterNumber|CLASS|Class Identifier|None|None|1
 ParameterNumber|NEIGHBORHOOD_MIN|Neighborhood Min|1.0|None|1
 ParameterNumber|NEIGHBORHOOD_MAX|Neighborhood Max|1.0|None|1

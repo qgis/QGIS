@@ -1,5 +1,5 @@
 Geographic Coordinate Grids
 pj_proj4
-ParameterRaster|GRID|Grid|False
+QgsProcessingParameterRasterLayer|GRID|Grid|None|False
 OutputRaster|LON|Longitude
 OutputRaster|LAT|Latitude

@@ -1,6 +1,6 @@
 Wind Exposition Index
 ta_morphometry
-ParameterRaster|DEM|Elevation|False
+QgsProcessingParameterRasterLayer|DEM|Elevation|None|False
 OutputRaster|EXPOSITION|Wind Exposition
 ParameterNumber|MAXDIST|Search Distance [km]| 0.000000|None| 300.000000
 ParameterNumber|STEP|Angular Step Size (Degree)| 1.000000| 45.000000| 15.000000

@@ -1,6 +1,6 @@
 Watershed Segmentation
 imagery_segmentation
-ParameterRaster|GRID|Grid|False
+QgsProcessingParameterRasterLayer|GRID|Grid|None|False
 ParameterSelection|OUTPUT|Output|[0] Seed Value;[1] Segment ID
 ParameterSelection|DOWN|Method|[0] Minima;[1] Maxima
 ParameterSelection|JOIN|Join Segments based on Threshold Value|[0] do not join;[1] seed to saddle difference;[2] seeds difference

@@ -1,6 +1,6 @@
 Fast Representativeness
 statistics_grid
-ParameterRaster|INPUT|Input|False
+QgsProcessingParameterRasterLayer|INPUT|Input|None|False
 ParameterNumber|LOD|Level of Generalisation|None|None|16
 OutputRaster|RESULT|Output
 OutputRaster|RESULT_LOD|Output Lod

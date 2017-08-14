@@ -1,7 +1,7 @@
 Raster calculator|Grid Calculator
 grid_calculus
 AllowUnmatching
-ParameterRaster|GRIDS|Main input layer|False
+QgsProcessingParameterRasterLayer|GRIDS|Main input layer|None|False
 ParameterMultipleInput|XGRIDS|Additional layers|3|True
 ParameterString|FORMULA|Formula|
 ParameterSelection|RESAMPLING|Resampling Method|[0] Nearest Neighbour;[1] Bilinear Interpolation;[2] Bicubic Spline Interpolation;[3] B-Spline Interpolation|3

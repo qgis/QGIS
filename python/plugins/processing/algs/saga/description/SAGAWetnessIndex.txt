@@ -1,6 +1,6 @@
 SAGA Wetness Index
 ta_hydrology
-ParameterRaster|DEM|Elevation|False
+QgsProcessingParameterRasterLayer|DEM|Elevation|None|False
 ParameterNumber|SUCTION|Suction|0.0|None|10.0
 ParameterSelection|AREA_TYPE|Type of Area|[0] absolute catchment area;[1] square root of catchment area;[2] specific catchment area
 ParameterSelection|SLOPE_TYPE|Type of Slope|[0] local slope;[1] catchment slope

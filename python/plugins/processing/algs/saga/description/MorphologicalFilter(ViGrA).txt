@@ -1,6 +1,6 @@
 Morphological Filter (ViGrA)
 imagery_vigra
-ParameterRaster|INPUT|Input|False
+QgsProcessingParameterRasterLayer|INPUT|Input|None|False
 OutputRaster|OUTPUT|Output
 ParameterSelection|TYPE|Operation|[0] Dilation;[1] Erosion;[2] Median;[3] User defined rank| 0
 ParameterNumber|RADIUS|Radius (cells)| 0|None| 1

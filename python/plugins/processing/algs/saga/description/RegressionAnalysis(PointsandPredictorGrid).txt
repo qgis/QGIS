@@ -1,6 +1,6 @@
 Regression Analysis (Points and Predictor Grid)
 statistics_regression
-ParameterRaster|PREDICTOR|Predictor|False
+QgsProcessingParameterRasterLayer|PREDICTOR|Predictor|None|False
 ParameterVector|POINTS|Points|-1|False
 ParameterTable|ATTRIBUTE|Dependent Variable|False
 OutputRaster|REGRESSION|Regression

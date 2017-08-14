@@ -1,6 +1,6 @@
 Mesh Denoise
 grid_filter
-ParameterRaster|INPUT|Grid|False
+QgsProcessingParameterRasterLayer|INPUT|Grid|None|False
 OutputRaster|OUTPUT|Denoised Grid
 ParameterNumber|SIGMA|Threshold| 0.000000| 1.000000| 0.900000
 ParameterNumber|ITER|Number of Iterations for Normal Updating| 1|None| 5

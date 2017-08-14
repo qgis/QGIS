@@ -1,6 +1,6 @@
 Contour Lines from Grid
 shapes_grid
-ParameterRaster|GRID|Grid|False
+QgsProcessingParameterRasterLayer|GRID|Grid|None|False
 ParameterSelection|VERTEX|Vertex type|[0] x,y;[1] x,y,z
 ParameterNumber|ZMIN|Minimum Contour Value|None|None|0.0
 ParameterNumber|ZMAX|Maximum Contour Value|None|None|10000.0

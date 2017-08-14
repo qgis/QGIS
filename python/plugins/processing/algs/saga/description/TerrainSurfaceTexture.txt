@@ -1,6 +1,6 @@
 Terrain Surface Texture
 ta_morphometry
-ParameterRaster|DEM|Elevation|False
+QgsProcessingParameterRasterLayer|DEM|Elevation|None|False
 OutputRaster|TEXTURE|Texture
 ParameterNumber|EPSILON|Flat Area Threshold| 0.000000|None| 1.000000
 ParameterNumber|SCALE|Scale (Cells)| 1|None| 10

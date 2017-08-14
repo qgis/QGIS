@@ -1,6 +1,6 @@
 Geodesic Morphological Reconstruction
 grid_filter
-ParameterRaster|INPUT_GRID|Input Grid|False
+QgsProcessingParameterRasterLayer|INPUT_GRID|Input Grid|None|False
 OutputRaster|OBJECT_GRID|Object Grid
 OutputRaster|DIFFERENCE_GRID|Difference Input - Reconstruction
 ParameterNumber|SHIFT_VALUE|Shift value|None|None| 5.000000

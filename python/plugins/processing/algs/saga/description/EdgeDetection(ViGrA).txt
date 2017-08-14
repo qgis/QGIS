@@ -1,6 +1,6 @@
 Edge Detection (ViGrA)
 imagery_vigra
-ParameterRaster|INPUT|Input|False
+QgsProcessingParameterRasterLayer|INPUT|Input|None|False
 OutputRaster|OUTPUT|Edges
 ParameterSelection|TYPE|Detector type|[0] Canny;[1] Shen-Castan| 0
 ParameterNumber|SCALE|Operator scale| 0.000000|None| 1.000000

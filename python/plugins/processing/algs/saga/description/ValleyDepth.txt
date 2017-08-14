@@ -1,6 +1,6 @@
 Valley Depth
 ta_channels
-ParameterRaster|ELEVATION|Elevation|False
+QgsProcessingParameterRasterLayer|ELEVATION|Elevation|None|False
 OutputRaster|VALLEY_DEPTH|Valley Depth
 OutputRaster|RIDGE_LEVEL|Ridge Level
 ParameterNumber|THRESHOLD|Tension Threshold [Percentage of Cell Size]| 0.000000|None| 1.000000

@@ -1,6 +1,6 @@
 Reclassify Grid Values
 grid_tools
-ParameterRaster|INPUT|Grid|False
+QgsProcessingParameterRasterLayer|INPUT|Grid|None|False
 ParameterSelection|METHOD|Method|[0] single;[1] range;[2] simple table
 ParameterNumber|OLD|old value (for single value change)|None|None|0.0
 ParameterNumber|NEW|new value (for single value change)|None|None|1.0

@@ -3,7 +3,7 @@ statistics_regression
 ParameterVector|POINTS|Points|0|False
 ParameterTable|DEPENDENT|Dependent Variable|False
 OutputVector|RESIDUALS|Residuals
-ParameterRaster|PREDICTOR|Predictor|False
+QgsProcessingParameterRasterLayer|PREDICTOR|Predictor|None|False
 OutputRaster|REGRESSION|Regression
 OutputRaster|QUALITY|Coefficient of Determination
 OutputRaster|INTERCEPT|Intercept
