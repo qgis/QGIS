@@ -8,5 +8,5 @@ OutputRaster|PVI2|Perpendicular Vegetation Index (Walther and Shabaani)
 OutputRaster|PVI3|Perpendicular Vegetation Index (Qi, et al., 1994)
 OutputRaster|TSAVI|Transformed Soil Adjusted Vegetation Index (Baret et al. 1989)
 OutputRaster|ATSAVI|Transformed Soil Adjusted Vegetation Index (Baret and Guyot, 1991)
-ParameterNumber|INTERCEPT|Intercept of Soil Line|None|None| 0.000000
-ParameterNumber|SLOPE|Slope of Soil Line|None|None| 0.500000
+QgsProcessingParameterNumber|INTERCEPT|Intercept of Soil Line|QgsProcessingParameterNumber.Double|0.000000|False|None|None
+QgsProcessingParameterNumber|SLOPE|Slope of Soil Line|QgsProcessingParameterNumber.Double|0.500000|False|None|None

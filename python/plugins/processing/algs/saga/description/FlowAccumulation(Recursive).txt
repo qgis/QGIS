@@ -7,10 +7,10 @@ QgsProcessingParameterRasterLayer|WEIGHTS|Weights|None|True
 QgsProcessingParameterRasterLayer|ACCU_MATERIAL|Material for Accumulation|None|True
 QgsProcessingParameterRasterLayer|VAL_INPUT|Input for Mean over Catchment|None|True
 QgsProcessingParameterRasterLayer|ACCU_TARGET|Accumulation Target|None|True
-ParameterNumber|STEP|Step|None|None|1
+QgsProcessingParameterNumber|STEP|Step|QgsProcessingParameterNumber.Integer|1|False|None|None
 QgsProcessingParameterRasterLayer|TARGETS|Target Areas|None|True
 ParameterSelection|METHOD|Method|[0] Deterministic 8;[1] Rho 8;[2] Deterministic Infinity;[3] Multiple Flow Direction
-ParameterNumber|CONVERGENCE|Convergence|None|None|1.1
+QgsProcessingParameterNumber|CONVERGENCE|Convergence|QgsProcessingParameterNumber.Double|1.1|False|None|None
 ParameterBoolean|NO_NEGATIVES|Prevent Negative Flow Accumulation|True
 OutputRaster|FLOW|Catchment Area
 OutputRaster|VAL_MEAN|Mean over Catchment

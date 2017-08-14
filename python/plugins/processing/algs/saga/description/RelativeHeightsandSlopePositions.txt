@@ -1,9 +1,9 @@
 Relative Heights and Slope Positions
 ta_morphometry
 QgsProcessingParameterRasterLayer|DEM|Elevation|None|False
-ParameterNumber|W|w|None|None|0.5
-ParameterNumber|T|t|None|None|10.0
-ParameterNumber|E|e|None|None|2.0
+QgsProcessingParameterNumber|W|w|QgsProcessingParameterNumber.Double|0.5|False|None|None
+QgsProcessingParameterNumber|T|t|QgsProcessingParameterNumber.Double|10.0|False|None|None
+QgsProcessingParameterNumber|E|e|QgsProcessingParameterNumber.Double|2.0|False|None|None
 OutputRaster|HO|Slope Height
 OutputRaster|HU|Valley Depth
 OutputRaster|NH|Normalized Height

@@ -2,8 +2,8 @@ Variogram Surface
 statistics_points
 ParameterVector|POINTS|Points|0|False
 ParameterTableField|FIELD|Attribute|POINTS|-1|False
-ParameterNumber|DISTCOUNT|Number of Distance Classes|1.0|None|10
-ParameterNumber|NSKIP|Skip Number|None|None|1
+QgsProcessingParameterNumber|DISTCOUNT|Number of Distance Classes|QgsProcessingParameterNumber.Integer|10|False|1.0|None
+QgsProcessingParameterNumber|NSKIP|Skip Number|QgsProcessingParameterNumber.Integer|1|False|None|None
 OutputRaster|COUNT|Number of Pairs
 OutputRaster|VARIANCE|Variogram Surface
 OutputRaster|COVARIANCE|Covariance Surface

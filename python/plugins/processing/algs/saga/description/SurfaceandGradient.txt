@@ -3,4 +3,4 @@ sim_hydrology
 QgsProcessingParameterRasterLayer|MASK|Mask|None|False
 OutputRaster|SURF|Surface
 OutputRaster|GRAD|Gradient
-ParameterNumber|SURF_E|Surface Approximation Threshold| 0.000000|None| 0.001000
+QgsProcessingParameterNumber|SURF_E|Surface Approximation Threshold|QgsProcessingParameterNumber.Double|0.001000|False| 0.000000|None

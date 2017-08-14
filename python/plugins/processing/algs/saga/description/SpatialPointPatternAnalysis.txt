@@ -1,7 +1,7 @@
 Spatial Point Pattern Analysis
 statistics_points
 ParameterVector|POINTS|Points|0|False
-ParameterNumber|STEP|Vertex Distance [Degree]|None|None|5
+QgsProcessingParameterNumber|STEP|Vertex Distance [Degree]|QgsProcessingParameterNumber.Integer|5|False|None|None
 OutputVector|CENTRE|Mean Centre
 OutputVector|STDDIST|Standard Distance
 OutputVector|BBOX|Bounding Box

@@ -1,10 +1,10 @@
 Upslope Area|4
 ta_hydrology
 QgsProcessingParameterRasterLayer|TARGET|Target Area|None|True
-ParameterNumber|TARGET_PT_X|Target X coordinate|None|None|0.0
-ParameterNumber|TARGET_PT_Y|Target Y coordinate|None|None|0.0
+QgsProcessingParameterNumber|TARGET_PT_X|Target X coordinate|QgsProcessingParameterNumber.Double|0.0|False|None|None
+QgsProcessingParameterNumber|TARGET_PT_Y|Target Y coordinate|QgsProcessingParameterNumber.Double|0.0|False|None|None
 QgsProcessingParameterRasterLayer|ELEVATION|Elevation|None|False
 QgsProcessingParameterRasterLayer|SINKROUTE|Sink Routes|None|True
 ParameterSelection|METHOD|Method|[0] Deterministic 8;[1] Deterministic Infinity;[2] Multiple Flow Direction
-ParameterNumber|CONVERGE|Convergence|None|None|1.1
+QgsProcessingParameterNumber|CONVERGE|Convergence|QgsProcessingParameterNumber.Double|1.1|False|None|None
 OutputRaster|AREA|Upslope Area

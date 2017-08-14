@@ -5,4 +5,4 @@ ParameterTable|JD|Julian Day|False
 ParameterTable|T|Mean Temperature|False
 ParameterTable|T_MIN|Minimum Temperature|False
 ParameterTable|T_MAX|Maximum Temperature|False
-ParameterNumber|LAT|Latitude| -90.000000| 90.000000| 53.000000
+QgsProcessingParameterNumber|LAT|Latitude|QgsProcessingParameterNumber.Double|53.000000|False| -90.000000| 90.000000

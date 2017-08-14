@@ -2,8 +2,8 @@ GridCombination
 sim_rivflow
 QgsProcessingParameterRasterLayer|INPUT|Gelaendemodell (DTM)|None|False
 ParameterFile|Folder1|Pfad WaterGap Raster|False|False
-ParameterNumber|sY|Start-Jahr| 1906| 2000| 1990
-ParameterNumber|eY|End-Jahr| 1906| 2000| 1990
+QgsProcessingParameterNumber|sY|Start-Jahr|QgsProcessingParameterNumber.Integer|1990|False| 1906| 2000
+QgsProcessingParameterNumber|eY|End-Jahr|QgsProcessingParameterNumber.Integer|1990|False| 1906| 2000
 ParameterBoolean|DomW|Domestic Water|True
 ParameterBoolean|ElecW|Electricity Water|True
 ParameterBoolean|LiveW|Livestock Water|True

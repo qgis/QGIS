@@ -2,6 +2,6 @@ Majority Filter
 grid_filter
 QgsProcessingParameterRasterLayer|INPUT|Grid|None|False
 ParameterSelection|MODE|Search Mode|[0] Square;[1] Circle
-ParameterNumber|RADIUS|Radius|1.0|None|1
-ParameterNumber|THRESHOLD|Threshold [Percent]|0.0|None|0
+QgsProcessingParameterNumber|RADIUS|Radius|QgsProcessingParameterNumber.Integer|1|False|1.0|None
+QgsProcessingParameterNumber|THRESHOLD|Threshold [Percent]|QgsProcessingParameterNumber.Integer|0|False|0.0|None
 OutputRaster|RESULT|Filtered Grid

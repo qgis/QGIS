@@ -1,5 +1,5 @@
 Aggregate
 grid_tools
 QgsProcessingParameterRasterLayer|INPUT|Grid|None|False
-ParameterNumber|SIZE|Aggregation Size|None|None|3
+QgsProcessingParameterNumber|SIZE|Aggregation Size|QgsProcessingParameterNumber.Integer|3|False|None|None
 ParameterSelection|METHOD|Method|[0] Sum;[1] Min;[2] Max

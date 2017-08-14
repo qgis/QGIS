@@ -6,4 +6,4 @@ OutputRaster|C_UP|Upslope Curvature
 OutputRaster|C_UP_LOCAL|Local Upslope Curvature
 OutputRaster|C_DOWN|Downslope Curvature
 OutputRaster|C_DOWN_LOCAL|Local Downslope Curvature
-ParameterNumber|WEIGHTING|Upslope Weighting| 0.000000| 1.000000| 0.500000
+QgsProcessingParameterNumber|WEIGHTING|Upslope Weighting|QgsProcessingParameterNumber.Double|0.500000|False| 0.000000| 1.000000

@@ -25,7 +25,7 @@ OutputRaster|MEM|Maximum Membership
 OutputRaster|ENTROPY|Entropy
 OutputRaster|CI|Confusion Index
 ParameterSelection|SLOPETODEG|Slope Grid Units|[0] degree;[1] radians| 0
-ParameterNumber|T_SLOPE_MIN|Slope Thresholds [Degree] (Min)|None|None|None
-ParameterNumber|T_SLOPE_MAX|Slope Thresholds [Degree] (Max)|None|None|None
-ParameterNumber|T_CURVE_MIN|Curvature Thresholds [1 / m] (Min)|None|None|None
-ParameterNumber|T_CURVE_MAX|Curvature Thresholds [1 / m] (Max)|None|None|None
+QgsProcessingParameterNumber|T_SLOPE_MIN|Slope Thresholds [Degree] (Min)|QgsProcessingParameterNumber.Integer|None|False|None|None
+QgsProcessingParameterNumber|T_SLOPE_MAX|Slope Thresholds [Degree] (Max)|QgsProcessingParameterNumber.Integer|None|False|None|None
+QgsProcessingParameterNumber|T_CURVE_MIN|Curvature Thresholds [1 / m] (Min)|QgsProcessingParameterNumber.Integer|None|False|None|None
+QgsProcessingParameterNumber|T_CURVE_MAX|Curvature Thresholds [1 / m] (Max)|QgsProcessingParameterNumber.Integer|None|False|None|None

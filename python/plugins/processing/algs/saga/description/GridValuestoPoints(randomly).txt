@@ -1,5 +1,5 @@
 Grid Values to Points (randomly)
 shapes_grid
 QgsProcessingParameterRasterLayer|GRID|Grid|None|False
-ParameterNumber|FREQ|Frequency|None|None|100
+QgsProcessingParameterNumber|FREQ|Frequency|QgsProcessingParameterNumber.Integer|100|False|None|None
 OutputVector|POINTS|Points

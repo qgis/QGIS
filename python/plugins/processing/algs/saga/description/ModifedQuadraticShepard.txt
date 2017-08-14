@@ -4,9 +4,9 @@ ParameterVector|SHAPES|Points|-1|False
 ParameterTable|FIELD|Attribute|False
 Hardcoded|-TARGET_DEFINITION 0
 Extent TARGET_USER_XMIN TARGET_USER_XMAX TARGET_USER_YMIN TARGET_USER_YMAX
-ParameterNumber|TARGET_USER_SIZE|Cellsize|0.000000|None|1.000000
+QgsProcessingParameterNumber|TARGET_USER_SIZE|Cellsize|QgsProcessingParameterNumber.Double|1.000000|False|0.000000|None
 ParameterSelection|TARGET_USER_FITS|Fit|[0] nodes;[1] cells| 0
 QgsProcessingParameterRasterLayer|TARGET_TEMPLATE|Target System|None|True
 OutputRaster|TARGET_OUT_GRID|Target Grid
-ParameterNumber|QUADRATIC_NEIGHBORS|Quadratic Neighbors| 5|None| 13
-ParameterNumber|WEIGHTING_NEIGHBORS|Weighting Neighbors| 3|None| 19
+QgsProcessingParameterNumber|QUADRATIC_NEIGHBORS|Quadratic Neighbors|QgsProcessingParameterNumber.Integer|13|False| 5|None
+QgsProcessingParameterNumber|WEIGHTING_NEIGHBORS|Weighting Neighbors|QgsProcessingParameterNumber.Integer|19|False| 3|None

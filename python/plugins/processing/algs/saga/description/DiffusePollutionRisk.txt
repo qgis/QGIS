@@ -3,11 +3,11 @@ sim_hydrology
 QgsProcessingParameterRasterLayer|DEM|Elevation|None|False
 QgsProcessingParameterRasterLayer|CHANNEL|Channel Network|None|True
 QgsProcessingParameterRasterLayer|WEIGHT|Land Cover Weights|None|True
-ParameterNumber|WEIGHT_DEFAULT|Default| 0.000000|None| 1.000000
+QgsProcessingParameterNumber|WEIGHT_DEFAULT|Default|QgsProcessingParameterNumber.Double|1.000000|False| 0.000000|None
 QgsProcessingParameterRasterLayer|RAIN|Rainfall|None|True
-ParameterNumber|RAIN_DEFAULT|Default| 0.000000|None| 500.000000
+QgsProcessingParameterNumber|RAIN_DEFAULT|Default|QgsProcessingParameterNumber.Double|500.000000|False| 0.000000|None
 OutputRaster|DELIVERY|Delivery Index
 OutputRaster|RISK_POINT|Locational Risk
 OutputRaster|RISK_DIFFUSE|Diffuse Pollution Risk
 ParameterSelection|METHOD|Flow Direction Algorithm|[0] single;[1] multiple| 1
-ParameterNumber|CHANNEL_START|Channel Initiation Threshold| 1|None| 150
+QgsProcessingParameterNumber|CHANNEL_START|Channel Initiation Threshold|QgsProcessingParameterNumber.Integer|150|False| 1|None

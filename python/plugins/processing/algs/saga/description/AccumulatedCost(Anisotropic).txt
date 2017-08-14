@@ -3,6 +3,6 @@ grid_analysis
 QgsProcessingParameterRasterLayer|COST|Cost Grid|None|False
 QgsProcessingParameterRasterLayer|DIRECTION|Direction of max cost|None|False
 QgsProcessingParameterRasterLayer|POINTS|Destination Points|None|False
-ParameterNumber|K|k factor|None|None|1
-ParameterNumber|THRESHOLD|Threshold for different route|None|None|0
+QgsProcessingParameterNumber|K|k factor|QgsProcessingParameterNumber.Integer|1|False|None|None
+QgsProcessingParameterNumber|THRESHOLD|Threshold for different route|QgsProcessingParameterNumber.Integer|0|False|None|None
 OutputRaster|ACCCOST|Accumulated Cost

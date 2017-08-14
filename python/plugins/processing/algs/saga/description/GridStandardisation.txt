@@ -1,5 +1,5 @@
 Grid Standardisation
 grid_calculus
 QgsProcessingParameterRasterLayer|INPUT|Grid|None|False
-ParameterNumber|STRETCH|Stretch Factor|0.0|None|1.0
+QgsProcessingParameterNumber|STRETCH|Stretch Factor|QgsProcessingParameterNumber.Double|1.0|False|0.0|None
 OutputRaster|OUTPUT|Standardised Grid

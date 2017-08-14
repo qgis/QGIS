@@ -2,5 +2,5 @@ Flow Accumulation (QM of ESP)
 sim_qm_of_esp
 QgsProcessingParameterRasterLayer|DEM|DEM|None|False
 ParameterSelection|PREPROC|Preprocessing|[0] none;[1] fill sinks temporarily;[2] fill sinks permanently|1
-ParameterNumber|DZFILL|Fill Increment|0.00|None|0.01
+QgsProcessingParameterNumber|DZFILL|Fill Increment|QgsProcessingParameterNumber.Double|0.01|False|0.00|None
 OutputRaster|FLOW|Contributing Area

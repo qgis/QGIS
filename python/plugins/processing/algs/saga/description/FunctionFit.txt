@@ -5,5 +5,5 @@ ParameterTable|YFIELD|y - Values|False
 ParameterSelection|USE_X|Use x -Values|[0] No;[1] Yes| 0
 ParameterTable|XFIELD|x - Values|False
 ParameterString|FORMEL|Formula
-ParameterNumber|ITER|Iterationen| 1|None| 1000
-ParameterNumber|LAMDA|Max Lamda| 1.000000|None| 10000.000000
+QgsProcessingParameterNumber|ITER|Iterationen|QgsProcessingParameterNumber.Integer|1000|False| 1|None
+QgsProcessingParameterNumber|LAMDA|Max Lamda|QgsProcessingParameterNumber.Double|10000.000000|False| 1.000000|None

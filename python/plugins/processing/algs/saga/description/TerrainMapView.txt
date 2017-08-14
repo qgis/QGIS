@@ -6,6 +6,6 @@ OutputRaster|OPENNESS|Openness
 OutputRaster|SLOPE|Slope
 OutputVector|CONTOURS|Contours
 ParameterSelection|METHOD|Method|[0] Topography;[1] Morphology| 0
-ParameterNumber|RADIUS|Radial Limit| 0.000000|None| 1000.000000
+QgsProcessingParameterNumber|RADIUS|Radial Limit|QgsProcessingParameterNumber.Double|1000.000000|False| 0.000000|None
 ParameterBoolean|CONTOUR_LINES|Contour Lines|True
-ParameterNumber|EQUIDISTANCE|Equidistance| 0.000000|None| 50.000000
+QgsProcessingParameterNumber|EQUIDISTANCE|Equidistance|QgsProcessingParameterNumber.Double|50.000000|False| 0.000000|None

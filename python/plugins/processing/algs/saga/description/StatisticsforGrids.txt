@@ -1,7 +1,7 @@
 Statistics for Grids
 statistics_grid
 ParameterMultipleInput|GRIDS|Grids|3|False
-ParameterNumber|PCTL_VAL|Percentile|0.0|100.0|50.0
+QgsProcessingParameterNumber|PCTL_VAL|Percentile|QgsProcessingParameterNumber.Double|50.0|False|0.0|100.0
 OutputRaster|MEAN|Arithmetic Mean
 OutputRaster|MIN|Minimum
 OutputRaster|MAX|Maximum

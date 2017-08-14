@@ -3,7 +3,7 @@ grid_analysis
 QgsProcessingParameterRasterLayer|DENSITY|Density [Percent]|None|False
 QgsProcessingParameterRasterLayer|CONNECTIVITY|Connectivity [Percent]|None|False
 ParameterBoolean|BORDER|Add Border|True
-ParameterNumber|WEIGHT|Connectivity Weighting|None|None|0
-ParameterNumber|DENSITY_MIN|Minimum Density [Percent]|0.0|100.0|10
-ParameterNumber|DENSITY_INT|Minimum Density for Interior Forest [Percent]|0.0|100.0|99
+QgsProcessingParameterNumber|WEIGHT|Connectivity Weighting|QgsProcessingParameterNumber.Integer|0|False|None|None
+QgsProcessingParameterNumber|DENSITY_MIN|Minimum Density [Percent]|QgsProcessingParameterNumber.Integer|10|False|0.0|100.0
+QgsProcessingParameterNumber|DENSITY_INT|Minimum Density for Interior Forest [Percent]|QgsProcessingParameterNumber.Integer|99|False|0.0|100.0
 OutputRaster|FRAGMENTATION|Fragmentation

@@ -3,6 +3,6 @@ grid_filter
 QgsProcessingParameterRasterLayer|INPUT|Classes|None|False
 OutputRaster|OUTPUT|Sieved Classes
 ParameterSelection|MODE|Neighbourhood|[0] Neumann;[1] Moore| 1
-ParameterNumber|THRESHOLD|Minimum Threshold| 2|None| 4
+QgsProcessingParameterNumber|THRESHOLD|Minimum Threshold|QgsProcessingParameterNumber.Integer|4|False| 2|None
 ParameterSelection|ALL|Class Selection|[0] single class;[1] all classes| 1
-ParameterNumber|CLASS|Class Identifier|None|None| 1.000000
+QgsProcessingParameterNumber|CLASS|Class Identifier|QgsProcessingParameterNumber.Double|1.000000|False|None|None

@@ -12,5 +12,5 @@ ParameterSelection|METHOD|LS Calculation|[0] Moore & Nieber 1989;[1] Desmet & Go
 ParameterSelection|METHOD_SLOPE|Type of Slope|[0] local slope;[1] distance weighted average catchment slope| 0
 ParameterSelection|METHOD_AREA|Specific Catchment Area|[0] specific catchment area (contour length simply as cell size);[1] specific catchment area (contour length dependent on aspect);[2] catchment length (square root of catchment area);[3] effective flow length| 1
 ParameterBoolean|STOP_AT_EDGE|Stop at Edge|True
-ParameterNumber|EROSIVITY|Rill/Interrill Erosivity| 0.000000|None| 1.000000
+QgsProcessingParameterNumber|EROSIVITY|Rill/Interrill Erosivity|QgsProcessingParameterNumber.Double|1.000000|False| 0.000000|None
 ParameterSelection|STABILITY|Stability|[0] stable;[1] instable (thawing)| 0

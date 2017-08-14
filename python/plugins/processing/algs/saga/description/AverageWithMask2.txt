@@ -3,6 +3,6 @@ contrib_perego
 QgsProcessingParameterRasterLayer|INPUT|Input|None|False
 QgsProcessingParameterRasterLayer|MASK|Mask Grid|None|False
 OutputRaster|RESULT|AWM2 Grid
-ParameterNumber|V|Mask value|None|None| 1.000000
-ParameterNumber|RX|Radius X| 1|None| 1
-ParameterNumber|RY|Radius Y| 1|None| 1
+QgsProcessingParameterNumber|V|Mask value|QgsProcessingParameterNumber.Double|1.000000|False|None|None
+QgsProcessingParameterNumber|RX|Radius X|QgsProcessingParameterNumber.Integer|1|False| 1|None
+QgsProcessingParameterNumber|RY|Radius Y|QgsProcessingParameterNumber.Integer|1|False| 1|None

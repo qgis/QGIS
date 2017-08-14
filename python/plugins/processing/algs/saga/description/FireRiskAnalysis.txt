@@ -11,8 +11,8 @@ QgsProcessingParameterRasterLayer|MHERB|Herbaceous Fuel Moisture|None|False
 QgsProcessingParameterRasterLayer|MWOOD|Wood Fuel Moisture|None|False
 QgsProcessingParameterRasterLayer|VALUE|Value|None|True
 QgsProcessingParameterRasterLayer|BASEPROB|Base Probability|None|True
-ParameterNumber|MONTECARLO|Number of Events|None|None|1000
-ParameterNumber|INTERVAL|Fire Length|None|None|100
+QgsProcessingParameterNumber|MONTECARLO|Number of Events|QgsProcessingParameterNumber.Integer|1000|False|None|None
+QgsProcessingParameterNumber|INTERVAL|Fire Length|QgsProcessingParameterNumber.Integer|100|False|None|None
 OutputRaster|DANGER|Danger
 OutputRaster|COMPPROB|Compound Probability
 OutputRaster|PRIORITY|Priority Index
