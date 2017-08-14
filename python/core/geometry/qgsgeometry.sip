@@ -44,6 +44,23 @@ class QgsGeometry
 #include "qgsgeometry.h"
 %End
   public:
+
+    enum OperationResult
+    {
+      Success,
+      NothingHappened,
+      InvalidBaseGeometry,
+      InvalidInput,
+      GeometryEngineError,
+      AddPartSelectedGeometryNotFound,
+      AddPartNotMultiGeometry,
+      AddRingNotClosed,
+      AddRingNotValid,
+      AddRingCrossesExistingRings,
+      AddRingNotInExistingFeature,
+      SplitCannotSplitPoint,
+    };
+
     QgsGeometry();
 %Docstring
 Constructor
@@ -295,50 +312,50 @@ Returns true if WKB of the geometry is of WKBMulti* type
     bool moveVertex( double x, double y, int atVertex );
 %Docstring
  Moves the vertex at the given position number
-  and item (first number is index 0)
-  to the given coordinates.
-  Returns false if atVertex does not correspond to a valid vertex
-  on this geometry
+ and item (first number is index 0)
+ to the given coordinates.
+ Returns false if atVertex does not correspond to a valid vertex
+ on this geometry
  :rtype: bool
 %End
 
     bool moveVertex( const QgsPoint &p, int atVertex );
 %Docstring
  Moves the vertex at the given position number
-  and item (first number is index 0)
-  to the given coordinates.
-  Returns false if atVertex does not correspond to a valid vertex
-  on this geometry
+ and item (first number is index 0)
+ to the given coordinates.
+ Returns false if atVertex does not correspond to a valid vertex
+ on this geometry
  :rtype: bool
 %End
 
     bool deleteVertex( int atVertex );
 %Docstring
  Deletes the vertex at the given position number and item
-  (first number is index 0)
-  Returns false if atVertex does not correspond to a valid vertex
-  on this geometry (including if this geometry is a Point),
-  or if the number of remaining vertices in the linestring
-  would be less than two.
-  It is up to the caller to distinguish between
-  these error conditions.  (Or maybe we add another method to this
-  object to help make the distinction?)
+ (first number is index 0)
+ :return: false if atVertex does not correspond to a valid vertex
+ on this geometry (including if this geometry is a Point),
+ or if the number of remaining vertices in the linestring
+ would be less than two.
+ It is up to the caller to distinguish between
+ these error conditions.  (Or maybe we add another method to this
+ object to help make the distinction?)
  :rtype: bool
 %End
 
     QgsPoint vertexAt( int atVertex ) const;
 %Docstring
-  Returns coordinates of a vertex.
-  \param atVertex index of the vertex
-  :return: Coordinates of the vertex or QgsPoint(0,0) on error
+ Returns coordinates of a vertex.
+ \param atVertex index of the vertex
+ :return: Coordinates of the vertex or QgsPoint(0,0) on error
  :rtype: QgsPoint
 %End
 
     double sqrDistToVertexAt( QgsPointXY &point /In/, int atVertex ) const;
 %Docstring
-  Returns the squared Cartesian distance between the given point
-  to the given vertex index (vertex at the given position number,
-  ring and item (first number is index 0))
+ Returns the squared Cartesian distance between the given point
+ to the given vertex index (vertex at the given position number,
+ ring and item (first number is index 0))
  :rtype: float
 %End
 
@@ -380,63 +397,58 @@ Returns true if WKB of the geometry is of WKBMulti* type
  :rtype: float
 %End
 
-    int addRing( const QList<QgsPointXY> &ring );
+    OperationResult addRing( const QList<QgsPointXY> &ring );
 %Docstring
  Adds a new ring to this geometry. This makes only sense for polygon and multipolygons.
-:return: 0 in case of success (ring added), 1 problem with geometry type, 2 ring not closed,
-3 ring is not valid geometry, 4 ring not disjoint with existing rings, 5 no polygon found which contained the ring*
- :rtype: int
+ \param ring The ring to be added
+ :return: OperationResult a result code: success or reason of failure
+ :rtype: OperationResult
 %End
 
-    int addRing( QgsCurve *ring /Transfer/ );
+    OperationResult addRing( QgsCurve *ring /Transfer/ );
 %Docstring
  Adds a new ring to this geometry. This makes only sense for polygon and multipolygons.
-:return: 0 in case of success (ring added), 1 problem with geometry type, 2 ring not closed,
-3 ring is not valid geometry, 4 ring not disjoint with existing rings, 5 no polygon found which contained the ring*
- :rtype: int
+ \param ring The ring to be added
+ :return: OperationResult a result code: success or reason of failure
+ :rtype: OperationResult
 %End
 
-    int addPart( const QList<QgsPointXY> &points, QgsWkbTypes::GeometryType geomType = QgsWkbTypes::UnknownGeometry ) /PyName=addPoints/;
+    OperationResult addPart( const QList<QgsPointXY> &points, QgsWkbTypes::GeometryType geomType = QgsWkbTypes::UnknownGeometry ) /PyName=addPoints/;
 %Docstring
  Adds a new part to a the geometry.
  \param points points describing part to add
  \param geomType default geometry type to create if no existing geometry
- :return: 0 in case of success, 1 if not a multipolygon, 2 if ring is not a valid geometry, 3 if new polygon ring
- not disjoint with existing polygons of the feature
- :rtype: int
+ :return: OperationResult a result code: success or reason of failure
+ :rtype: OperationResult
 %End
 
-    int addPart( const QgsPointSequence &points, QgsWkbTypes::GeometryType geomType = QgsWkbTypes::UnknownGeometry ) /PyName=addPointsV2/;
+    OperationResult addPart( const QgsPointSequence &points, QgsWkbTypes::GeometryType geomType = QgsWkbTypes::UnknownGeometry ) /PyName=addPointsV2/;
 %Docstring
  Adds a new part to a the geometry.
  \param points points describing part to add
  \param geomType default geometry type to create if no existing geometry
- :return: 0 in case of success, 1 if not a multipolygon, 2 if ring is not a valid geometry, 3 if new polygon ring
- not disjoint with existing polygons of the feature
- :rtype: int
+ :return: OperationResult a result code: success or reason of failure
+ :rtype: OperationResult
 %End
 
-    int addPart( QgsAbstractGeometry *part /Transfer/, QgsWkbTypes::GeometryType geomType = QgsWkbTypes::UnknownGeometry );
+    OperationResult addPart( QgsAbstractGeometry *part /Transfer/, QgsWkbTypes::GeometryType geomType = QgsWkbTypes::UnknownGeometry );
 %Docstring
  Adds a new part to this geometry.
  \param part part to add (ownership is transferred)
  \param geomType default geometry type to create if no existing geometry
- :return: 0 in case of success, 1 if not a multipolygon, 2 if ring is not a valid geometry, 3 if new polygon ring
- not disjoint with existing polygons of the feature
- :rtype: int
+ :return: OperationResult a result code: success or reason of failure
+ :rtype: OperationResult
 %End
 
 
-    int addPart( const QgsGeometry &newPart ) /PyName=addPartGeometry/;
+    OperationResult addPart( const QgsGeometry &newPart ) /PyName=addPartGeometry/;
 %Docstring
  Adds a new island polygon to a multipolygon feature
-:return: 0 in case of success, 1 if not a multipolygon, 2 if ring is not a valid geometry, 3 if new polygon ring
-not disjoint with existing polygons of the feature
+ :return: OperationResult a result code: success or reason of failure
 .. note::
 
-   available in Python bindings as addPartGeometry
-.. versionadded:: 2.2
- :rtype: int
+   available in python bindings as addPartGeometry
+ :rtype: OperationResult
 %End
 
     QgsGeometry removeInteriorRings( double minimumAllowedArea = -1 ) const;
@@ -448,52 +460,52 @@ not disjoint with existing polygons of the feature
  :rtype: QgsGeometry
 %End
 
-    int translate( double dx, double dy );
+    OperationResult translate( double dx, double dy );
 %Docstring
- Translate this geometry by dx, dy
-:return: 0 in case of success*
- :rtype: int
+ Translates this geometry by dx, dy
+ :return: OperationResult a result code: success or reason of failure
+ :rtype: OperationResult
 %End
 
-    int transform( const QgsCoordinateTransform &ct );
+    OperationResult transform( const QgsCoordinateTransform &ct );
 %Docstring
- Transform this geometry as described by CoordinateTransform ct
-:return: 0 in case of success*
- :rtype: int
+ Transforms this geometry as described by CoordinateTransform ct
+ :return: OperationResult a result code: success or reason of failure
+ :rtype: OperationResult
 %End
 
-    int transform( const QTransform &ct );
+    OperationResult transform( const QTransform &ct );
 %Docstring
- Transform this geometry as described by QTransform ct
-.. versionadded:: 2.8
-:return: 0 in case of success*
- :rtype: int
+ Transforms this geometry as described by QTransform ct
+ :return: OperationResult a result code: success or reason of failure
+ :rtype: OperationResult
 %End
 
-    int rotate( double rotation, const QgsPointXY &center );
+    OperationResult rotate( double rotation, const QgsPointXY &center );
 %Docstring
  Rotate this geometry around the Z axis
-.. versionadded:: 2.8
-\param rotation clockwise rotation in degrees
-\param center rotation center
-:return: 0 in case of success*
- :rtype: int
+ \param rotation clockwise rotation in degrees
+ \param center rotation center
+ :return: OperationResult a result code: success or reason of failure
+ :rtype: OperationResult
 %End
 
-    int splitGeometry( const QList<QgsPointXY> &splitLine,
-                       QList<QgsGeometry> &newGeometries /Out/,
-                       bool topological,
-                       QList<QgsPointXY> &topologyTestPoints /Out/ );
+    OperationResult splitGeometry( const QList<QgsPointXY> &splitLine, QList<QgsGeometry> &newGeometries /Out/, bool topological, QList<QgsPointXY> &topologyTestPoints /Out/ );
 %Docstring
- :rtype: int
+ Splits this geometry according to a given line.
+ \param splitLine the line that splits the geometry
+ \param[out] newGeometries list of new geometries that have been created with the split
+ \param topological true if topological editing is enabled
+ \param[out] topologyTestPoints points that need to be tested for topological completeness in the dataset
+ :return: OperationResult a result code: success or reason of failure
+ :rtype: OperationResult
 %End
 
-    int reshapeGeometry( const QgsLineString &reshapeLineString );
+    OperationResult reshapeGeometry( const QgsLineString &reshapeLineString );
 %Docstring
  Replaces a part of this geometry with another line
- :return: 0 in case of success
-.. versionadded:: 1.3
- :rtype: int
+ :return: OperationResult a result code: success or reason of failure
+ :rtype: OperationResult
 %End
 
 
@@ -537,32 +549,32 @@ not disjoint with existing polygons of the feature
 
     bool intersects( const QgsRectangle &r ) const;
 %Docstring
-Test for intersection with a rectangle (uses GEOS)
+Tests for intersection with a rectangle (uses GEOS)
  :rtype: bool
 %End
 
     bool intersects( const QgsGeometry &geometry ) const;
 %Docstring
-Test for intersection with a geometry (uses GEOS)
+Tests for intersection with a geometry (uses GEOS)
  :rtype: bool
 %End
 
     bool contains( const QgsPointXY *p ) const;
 %Docstring
-Test for containment of a point (uses GEOS)
+Tests for containment of a point (uses GEOS)
  :rtype: bool
 %End
 
     bool contains( const QgsGeometry &geometry ) const;
 %Docstring
- Test for if geometry is contained in another (uses GEOS)
+ Tests for if geometry is contained in another (uses GEOS)
 .. versionadded:: 1.5
  :rtype: bool
 %End
 
     bool disjoint( const QgsGeometry &geometry ) const;
 %Docstring
- Test for if geometry is disjoint of another (uses GEOS)
+ Tests for if geometry is disjoint of another (uses GEOS)
 .. versionadded:: 1.5
  :rtype: bool
 %End
@@ -625,7 +637,7 @@ Test for containment of a point (uses GEOS)
     QgsGeometry buffer( double distance, int segments ) const;
 %Docstring
  Returns a buffer region around this geometry having the given width and with a specified number
-of segments used to approximate curves *
+ of segments used to approximate curves
  :rtype: QgsGeometry
 %End
 
@@ -827,7 +839,7 @@ Returns a simplified version of this geometry using a specified tolerance value
 
     QgsGeometry interpolate( double distance ) const;
 %Docstring
- Return interpolated point on line at distance.
+ Returns interpolated point on line at distance.
 
  If the input is a NULL geometry, the output will also be a NULL geometry.
 
@@ -956,14 +968,14 @@ Returns an extruded version of this geometry.
 .. note::
 
    precision parameter added in QGIS 2.4
-  :return: true in case of success and false else
+ :return: true in case of success and false else
  :rtype: str
 %End
 
     QString exportToGeoJSON( int precision = 17 ) const;
 %Docstring
  Exports the geometry to GeoJSON
-  :return: a QString representing the geometry as GeoJSON
+ :return: a QString representing the geometry as GeoJSON
 .. versionadded:: 1.8
 .. note::
 
@@ -987,43 +999,43 @@ Returns an extruded version of this geometry.
 
     QgsPointXY asPoint() const;
 %Docstring
- Return contents of the geometry as a point
+ Returns contents of the geometry as a point
  if wkbType is WKBPoint, otherwise returns [0,0]
  :rtype: QgsPointXY
 %End
 
     QgsPolyline asPolyline() const;
 %Docstring
- Return contents of the geometry as a polyline
+ Returns contents of the geometry as a polyline
  if wkbType is WKBLineString, otherwise an empty list
  :rtype: QgsPolyline
 %End
 
     QgsPolygon asPolygon() const;
 %Docstring
- Return contents of the geometry as a polygon
+ Returns contents of the geometry as a polygon
  if wkbType is WKBPolygon, otherwise an empty list
  :rtype: QgsPolygon
 %End
 
     QgsMultiPoint asMultiPoint() const;
 %Docstring
- Return contents of the geometry as a multi point
-if wkbType is WKBMultiPoint, otherwise an empty list *
+ Returns contents of the geometry as a multi point
+ if wkbType is WKBMultiPoint, otherwise an empty list
  :rtype: QgsMultiPoint
 %End
 
     QgsMultiPolyline asMultiPolyline() const;
 %Docstring
- Return contents of the geometry as a multi linestring
-if wkbType is WKBMultiLineString, otherwise an empty list *
+ Returns contents of the geometry as a multi linestring
+ if wkbType is WKBMultiLineString, otherwise an empty list
  :rtype: QgsMultiPolyline
 %End
 
     QgsMultiPolygon asMultiPolygon() const;
 %Docstring
- Return contents of the geometry as a multi polygon
-if wkbType is WKBMultiPolygon, otherwise an empty list *
+ Returns contents of the geometry as a multi polygon
+ if wkbType is WKBMultiPolygon, otherwise an empty list
  :rtype: QgsMultiPolygon
 %End
 
@@ -1036,7 +1048,7 @@ if wkbType is WKBMultiPolygon, otherwise an empty list *
 
     QPointF asQPointF() const;
 %Docstring
- Return contents of the geometry as a QPointF if wkbType is WKBPoint,
+ Returns contents of the geometry as a QPointF if wkbType is WKBPoint,
  otherwise returns a null QPointF.
 .. versionadded:: 2.7
  :rtype: QPointF
@@ -1044,7 +1056,7 @@ if wkbType is WKBMultiPolygon, otherwise an empty list *
 
     QPolygonF asQPolygonF() const;
 %Docstring
- Return contents of the geometry as a QPolygonF. If geometry is a linestring,
+ Returns contents of the geometry as a QPolygonF. If geometry is a linestring,
  then the result will be an open QPolygonF. If the geometry is a polygon,
  then the result will be a closed QPolygonF of the geometry's exterior ring.
 .. versionadded:: 2.7
@@ -1053,17 +1065,17 @@ if wkbType is WKBMultiPolygon, otherwise an empty list *
 
     bool deleteRing( int ringNum, int partNum = 0 );
 %Docstring
- Delete a ring in polygon or multipolygon.
-Ring 0 is outer ring and can't be deleted.
-:return: true on success
+ Deletes a ring in polygon or multipolygon.
+ Ring 0 is outer ring and can't be deleted.
+ :return: true on success
 .. versionadded:: 1.2
  :rtype: bool
 %End
 
     bool deletePart( int partNum );
 %Docstring
- Delete part identified by the part number
-:return: true on success
+ Deletes part identified by the part number
+ :return: true on success
 .. versionadded:: 1.2
  :rtype: bool
 %End
@@ -1095,12 +1107,12 @@ Ring 0 is outer ring and can't be deleted.
 
 %Docstring
  Modifies geometry to avoid intersections with the layers specified in project properties
-  :return: 0 in case of success,
-          1 if geometry is not of polygon type,
-          2 if avoid intersection would change the geometry type,
-          3 other error during intersection removal
-  \param avoidIntersectionsLayers list of layers to check for intersections
-  \param ignoreFeatures possibility to give a list of features where intersections should be ignored (not available in Python bindings)
+ :return: 0 in case of success,
+         1 if geometry is not of polygon type,
+         2 if avoid intersection would change the geometry type,
+         3 other error during intersection removal
+ \param avoidIntersectionsLayers list of layers to check for intersections
+ \param ignoreFeatures possibility to give a list of features where intersections should be ignored (not available in Python bindings)
 .. versionadded:: 1.5
  :rtype: int
 %End
@@ -1160,7 +1172,7 @@ Ring 0 is outer ring and can't be deleted.
 
     void validateGeometry( QList<QgsGeometry::Error> &errors /Out/, ValidationMethod method = ValidatorQgisInternal );
 %Docstring
- Validate geometry and produce a list of geometry errors.
+ Validates geometry and produces a list of geometry errors.
  The ``method`` argument dictates which validator to utilize.
 .. versionadded:: 1.5
 .. note::

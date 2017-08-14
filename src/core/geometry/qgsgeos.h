@@ -20,6 +20,7 @@ email                : marco.hugentobler at sourcepole dot com
 
 #include "qgis_core.h"
 #include "qgsgeometryengine.h"
+#include "qgsgeometry.h"
 #include <geos_c.h>
 
 class QgsLineString;
@@ -106,11 +107,11 @@ class CORE_EXPORT QgsGeos: public QgsGeometryEngine
     \param[out] topologyTestPoints points that need to be tested for topological completeness in the dataset
     \param[out] errorMsg error messages emitted, if any
     \returns 0 in case of success, 1 if geometry has not been split, error else*/
-    int splitGeometry( const QgsLineString &splitLine,
-                       QList<QgsAbstractGeometry *> &newGeometries,
-                       bool topological,
-                       QgsPointSequence &topologyTestPoints,
-                       QString *errorMsg = nullptr ) const override;
+    EngineOperationResult splitGeometry( const QgsLineString &splitLine,
+                                         QList<QgsAbstractGeometry *> &newGeometries,
+                                         bool topological,
+                                         QgsPointSequence &topologyTestPoints,
+                                         QString *errorMsg = nullptr ) const override;
 
     QgsAbstractGeometry *offsetCurve( double distance, int segments, int joinStyle, double miterLimit, QString *errorMsg = nullptr ) const override;
 
@@ -131,8 +132,14 @@ class CORE_EXPORT QgsGeos: public QgsGeometryEngine
                                             int joinStyle, double miterLimit,
                                             QString *errorMsg = nullptr ) const;
 
-
-    QgsAbstractGeometry *reshapeGeometry( const QgsLineString &reshapeWithLine, int *errorCode, QString *errorMsg = nullptr ) const;
+    /**
+     * Reshapes the geometry using a line
+     * @param reshapeWithLine the line used to reshape lines or polygons
+     * @param errorCode if specified, provides result of operation (success or reason of failure)
+     * @param errorMsg if specified, provides more details about failure
+     * @return the reshaped geometry
+     */
+    QgsAbstractGeometry *reshapeGeometry( const QgsLineString &reshapeWithLine, EngineOperationResult *errorCode, QString *errorMsg = nullptr ) const;
 
     /** Merges any connected lines in a LineString/MultiLineString geometry and
      * converts them to single line strings.
@@ -261,10 +268,10 @@ class CORE_EXPORT QgsGeos: public QgsGeometryEngine
     static GEOSGeometry *createGeosPolygon( const QgsAbstractGeometry *poly, double precision );
 
     //utils for geometry split
-    int topologicalTestPointsSplit( const GEOSGeometry *splitLine, QgsPointSequence &testPoints, QString *errorMsg = nullptr ) const;
+    bool topologicalTestPointsSplit( const GEOSGeometry *splitLine, QgsPointSequence &testPoints, QString *errorMsg = nullptr ) const;
     GEOSGeometry *linePointDifference( GEOSGeometry *GEOSsplitPoint ) const;
-    int splitLinearGeometry( GEOSGeometry *splitLine, QList<QgsAbstractGeometry *> &newGeometries ) const;
-    int splitPolygonGeometry( GEOSGeometry *splitLine, QList<QgsAbstractGeometry *> &newGeometries ) const;
+    EngineOperationResult splitLinearGeometry( GEOSGeometry *splitLine, QList<QgsAbstractGeometry *> &newGeometries ) const;
+    EngineOperationResult splitPolygonGeometry( GEOSGeometry *splitLine, QList<QgsAbstractGeometry *> &newGeometries ) const;
 
     //utils for reshape
     static GEOSGeometry *reshapeLine( const GEOSGeometry *line, const GEOSGeometry *reshapeLineGeos, double precision );

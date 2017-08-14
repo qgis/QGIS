@@ -9,7 +9,6 @@
 
 
 
-
 class QgsVectorLayerEditUtils
 {
 
@@ -22,32 +21,32 @@ class QgsVectorLayerEditUtils
     bool insertVertex( double x, double y, QgsFeatureId atFeatureId, int beforeVertex );
 %Docstring
  Insert a new vertex before the given vertex number,
-  in the given ring, item (first number is index 0), and feature
-  Not meaningful for Point geometries
+ in the given ring, item (first number is index 0), and feature
+ Not meaningful for Point geometries
  :rtype: bool
 %End
 
     bool insertVertex( const QgsPoint &point, QgsFeatureId atFeatureId, int beforeVertex );
 %Docstring
- Insert a new vertex before the given vertex number,
-  in the given ring, item (first number is index 0), and feature
-  Not meaningful for Point geometries
+ Inserts a new vertex before the given vertex number,
+ in the given ring, item (first number is index 0), and feature
+ Not meaningful for Point geometries
  :rtype: bool
 %End
 
     bool moveVertex( double x, double y, QgsFeatureId atFeatureId, int atVertex );
 %Docstring
  Moves the vertex at the given position number,
-  ring and item (first number is index 0), and feature
-  to the given coordinates
+ ring and item (first number is index 0), and feature
+ to the given coordinates
  :rtype: bool
 %End
 
     bool moveVertex( const QgsPoint &p, QgsFeatureId atFeatureId, int atVertex ) /PyName=moveVertexV2/;
 %Docstring
  Moves the vertex at the given position number,
-  ring and item (first number is index 0), and feature
-  to the given coordinates
+ ring and item (first number is index 0), and feature
+ to the given coordinates
 .. note::
 
    available in Python bindings as moveVertexV2
@@ -63,29 +62,74 @@ class QgsVectorLayerEditUtils
  :rtype: QgsVectorLayer.EditResult
 %End
 
-    int addRing( const QList<QgsPointXY> &ring, const QgsFeatureIds &targetFeatureIds = QgsFeatureIds(), QgsFeatureId *modifiedFeatureId = 0 );
+    QgsGeometry::OperationResult addRing( const QList<QgsPointXY> &ring, const QgsFeatureIds &targetFeatureIds = QgsFeatureIds(), QgsFeatureId *modifiedFeatureId = 0 );
 %Docstring
- :rtype: int
+ Adds a ring to polygon/multipolygon features
+ \param ring ring to add
+ \param targetFeatureIds if specified, only these features will be the candidates for adding a ring. Otherwise
+ all intersecting features are tested and the ring is added to the first valid feature.
+ \param modifiedFeatureId if specified, feature ID for feature that ring was added to will be stored in this parameter
+ :return: OperationResult result code: success or reason of failure
+ :rtype: QgsGeometry.OperationResult
 %End
 
-    int addRing( QgsCurve *ring, const QgsFeatureIds &targetFeatureIds = QgsFeatureIds(), QgsFeatureId *modifiedFeatureId = 0 ) /PyName=addCurvedRing/;
+    QgsGeometry::OperationResult addRing( QgsCurve *ring, const QgsFeatureIds &targetFeatureIds = QgsFeatureIds(), QgsFeatureId *modifiedFeatureId = 0 ) /PyName=addCurvedRing/;
 %Docstring
- :rtype: int
+ Adds a ring to polygon/multipolygon features
+ \param ring ring to add
+ \param targetFeatureIds if specified, only these features will be the candidates for adding a ring. Otherwise
+ all intersecting features are tested and the ring is added to the first valid feature.
+ \param modifiedFeatureId if specified, feature ID for feature that ring was added to will be stored in this parameter
+ :return: OperationResult result code: success or reason of failure
+.. note::
+
+   available in python bindings as addCurvedRing
+ :rtype: QgsGeometry.OperationResult
 %End
 
-    int addPart( const QList<QgsPointXY> &ring, QgsFeatureId featureId );
+    QgsGeometry::OperationResult addPart( const QList<QgsPointXY> &ring, QgsFeatureId featureId );
 %Docstring
- :rtype: int
+ Adds a new part polygon to a multipart feature
+ :return:
+ - QgsGeometry.Success
+ - QgsGeometry.AddPartSelectedGeometryNotFound
+ - QgsGeometry.AddPartNotMultiGeometry
+ - QgsGeometry.InvalidBaseGeometry
+ - QgsGeometry.InvalidInput
+ :rtype: QgsGeometry.OperationResult
 %End
 
-    int addPart( const QgsPointSequence &ring, QgsFeatureId featureId );
+    QgsGeometry::OperationResult addPart( const QgsPointSequence &ring, QgsFeatureId featureId );
 %Docstring
- :rtype: int
+ Adds a new part polygon to a multipart feature
+
+ :return:
+ - QgsGeometry.Success
+ - QgsGeometry.AddPartSelectedGeometryNotFound
+ - QgsGeometry.AddPartNotMultiGeometry
+ - QgsGeometry.InvalidBaseGeometry
+ - QgsGeometry.InvalidInput
+.. note::
+
+   available in python bindings as addPartV2
+ :rtype: QgsGeometry.OperationResult
 %End
 
-    int addPart( QgsCurve *ring, QgsFeatureId featureId ) /PyName=addCurvedPart/;
+    QgsGeometry::OperationResult addPart( QgsCurve *ring, QgsFeatureId featureId ) /PyName=addCurvedPart/;
 %Docstring
- :rtype: int
+ Adds a new part polygon to a multipart feature
+
+ :return:
+ - QgsGeometry.Success
+ - QgsGeometry.AddPartSelectedGeometryNotFound
+ - QgsGeometry.AddPartNotMultiGeometry
+ - QgsGeometry.InvalidBaseGeometry
+ - QgsGeometry.InvalidInput
+
+.. note::
+
+   available in python bindings as addCurvedPart
+ :rtype: QgsGeometry.OperationResult
 %End
 
     int translateFeature( QgsFeatureId featureId, double dx, double dy );
@@ -98,14 +142,31 @@ class QgsVectorLayerEditUtils
  :rtype: int
 %End
 
-    int splitParts( const QList<QgsPointXY> &splitLine, bool topologicalEditing = false );
+    QgsGeometry::OperationResult splitParts( const QList<QgsPointXY> &splitLine, bool topologicalEditing = false );
 %Docstring
- :rtype: int
+ Splits parts cut by the given line
+ \param splitLine line that splits the layer feature parts
+ \param topologicalEditing true if topological editing is enabled
+ :return:
+  - QgsGeometry.InvalidBaseGeometry
+  - QgsGeometry.Success
+  - QgsGeometry.InvalidInput
+  - QgsGeometry.NothingHappened if a selection is present but no feature has been split
+  - QgsGeometry.InvalidBaseGeometry
+  - QgsGeometry.GeometryEngineError
+  - QgsGeometry.SplitCannotSplitPoint
+ :rtype: QgsGeometry.OperationResult
 %End
 
-    int splitFeatures( const QList<QgsPointXY> &splitLine, bool topologicalEditing = false );
+    QgsGeometry::OperationResult splitFeatures( const QList<QgsPointXY> &splitLine, bool topologicalEditing = false );
 %Docstring
- :rtype: int
+ Splits features cut by the given line
+ \param splitLine line that splits the layer features
+ \param topologicalEditing true if topological editing is enabled
+ :return:
+  0 in case of success,
+  4 if there is a selection but no feature split
+ :rtype: QgsGeometry.OperationResult
 %End
 
     int addTopologicalPoints( const QgsGeometry &geom );
@@ -127,15 +188,6 @@ class QgsVectorLayerEditUtils
  editing.
  \param p position of the vertex
  :return: 0 in case of success
- :rtype: int
-%End
-
-  protected:
-
-    int boundingBoxFromPointList( const QList<QgsPointXY> &list, double &xmin, double &ymin, double &xmax, double &ymax ) const;
-%Docstring
- Little helper function that gives bounding box from a list of points.
-:return: 0 in case of success *
  :rtype: int
 %End
 
