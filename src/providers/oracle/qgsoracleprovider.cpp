@@ -3004,11 +3004,10 @@ QString QgsOracleProvider::getTableName()
   return mTableName;
 }
 
-size_t QgsOracleProvider::layerCount() const
+uint QgsOracleProvider::subLayerCount() const
 {
   return 1;                   // XXX need to return actual number of layers
-} // QgsOracleProvider::layerCount()
-
+}
 
 QString  QgsOracleProvider::name() const
 {

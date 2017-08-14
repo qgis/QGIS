@@ -66,6 +66,8 @@ SET_TARGET_PROPERTIES(qgis_wcsprovidertest PROPERTIES
 
 ADD_QGIS_TEST(gdalprovidertest testqgsgdalprovider.cpp)
 
+ADD_QGIS_TEST(ogrprovidertest testqgsogrprovider.cpp)
+
 ADD_QGIS_TEST(wmscapabilititestest
               testqgswmscapabilities.cpp)
 TARGET_LINK_LIBRARIES(qgis_wmscapabilititestest wmsprovider_a)

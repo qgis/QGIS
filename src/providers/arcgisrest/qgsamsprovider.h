@@ -61,7 +61,7 @@ class QgsAmsProvider : public QgsRasterDataProvider
     QString name() const override { return QStringLiteral( "mapserver" ); }
     QString description() const override { return QStringLiteral( "ArcGIS MapServer data provider" ); }
     QgsCoordinateReferenceSystem crs() const override { return mCrs; }
-    uint subLayerCount() const override { return mSubLayers.size(); }
+    virtual uint subLayerCount() const override { return mSubLayers.size(); }
     QStringList subLayers() const override { return mSubLayers; }
     QStringList subLayerStyles() const override;
     void setLayerOrder( const QStringList &layers ) override;

@@ -105,6 +105,7 @@ class QgsGdalProvider : public QgsRasterDataProvider, QgsGdalProviderBase
     QList<QgsColorRampShader::ColorRampItem> colorTable( int bandNo )const override;
     QString metadata() override;
     QStringList subLayers() const override;
+    virtual uint subLayerCount() const override { return mSubLayers.size(); }
     static QStringList subLayers( GDALDatasetH dataset );
 
     bool hasStatistics( int bandNo,

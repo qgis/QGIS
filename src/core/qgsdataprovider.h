@@ -237,7 +237,7 @@ class CORE_EXPORT QgsDataProvider : public QObject
 
 
     /**
-     * return the number of layers for the current data source
+     * Return the number of layers for the current data source
      */
     virtual uint subLayerCount() const
     {

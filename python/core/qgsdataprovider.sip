@@ -183,7 +183,7 @@ class QgsDataProvider : QObject
 
     virtual uint subLayerCount() const;
 %Docstring
- return the number of layers for the current data source
+ Return the number of layers for the current data source
  :rtype: uint
 %End
 

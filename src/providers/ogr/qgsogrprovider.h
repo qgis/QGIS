@@ -72,7 +72,7 @@ class QgsOgrProvider : public QgsVectorDataProvider
     virtual bool supportsSubsetString() const override { return true; }
     virtual bool setSubsetString( const QString &theSQL, bool updateFeatureCount = true ) override;
     virtual QgsWkbTypes::Type wkbType() const override;
-    virtual size_t layerCount() const;
+    virtual uint subLayerCount() const override;
     virtual long featureCount() const override;
     virtual QgsFields fields() const override;
     virtual QgsRectangle extent() const override;

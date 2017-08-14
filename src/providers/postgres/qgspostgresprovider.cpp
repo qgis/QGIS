@@ -3981,11 +3981,10 @@ QString QgsPostgresProvider::getTableName()
   return mTableName;
 }
 
-size_t QgsPostgresProvider::layerCount() const
+uint QgsPostgresProvider::subLayerCount() const
 {
   return 1;                   // XXX need to return actual number of layers
-} // QgsPostgresProvider::layerCount()
-
+}
 
 QString  QgsPostgresProvider::name() const
 {
