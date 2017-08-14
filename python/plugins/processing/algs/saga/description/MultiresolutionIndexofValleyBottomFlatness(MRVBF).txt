@@ -9,5 +9,5 @@ QgsProcessingParameterNumber|P_PCTL|Shape Parameter for Elevation Percentile|Qgs
 ParameterBoolean|UPDATE        |Update Views|True
 ParameterBoolean|CLASSIFY      |Classify|True
 QgsProcessingParameterNumber|MAX_RES|Maximum Resolution (Percentage)|QgsProcessingParameterNumber.Integer|100|False|None|None
-OutputRaster|MRVBF|MRVBF
-OutputRaster|MRRTF|MRRTF
+QgsProcessingParameterRasterDestination|MRVBF|MRVBF
+QgsProcessingParameterRasterDestination|MRRTF|MRRTF

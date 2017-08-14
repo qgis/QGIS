@@ -2,4 +2,4 @@ Fill Sinks|Fill Sinks (Planchon/Darboux, 2001)
 ta_preprocessor
 QgsProcessingParameterRasterLayer|DEM|DEM|None|False
 QgsProcessingParameterNumber|MINSLOPE|Minimum Slope [Degree]|QgsProcessingParameterNumber.Double|0.01|False|0.0|None
-OutputRaster|RESULT|Filled DEM
+QgsProcessingParameterRasterDestination|RESULT|Filled DEM

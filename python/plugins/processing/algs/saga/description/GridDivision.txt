@@ -2,4 +2,4 @@ Grid Division
 grid_calculus
 QgsProcessingParameterRasterLayer|A|Dividend|None|False
 QgsProcessingParameterRasterLayer|B|Divisor|None|False
-OutputRaster|C|Quotient
+QgsProcessingParameterRasterDestination|C|Quotient

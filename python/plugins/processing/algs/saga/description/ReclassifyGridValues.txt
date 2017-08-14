@@ -15,4 +15,4 @@ ParameterBoolean|NODATAOPT      |replace no data values|True
 QgsProcessingParameterNumber|NODATA|new value for no data values|QgsProcessingParameterNumber.Double|0.0|False|None|None
 ParameterBoolean|OTHEROPT       |replace other values|True
 QgsProcessingParameterNumber|OTHERS|new value for other values|QgsProcessingParameterNumber.Double|0.0|False|None|None
-OutputRaster|RESULT|Reclassified Grid
+QgsProcessingParameterRasterDestination|RESULT|Reclassified Grid

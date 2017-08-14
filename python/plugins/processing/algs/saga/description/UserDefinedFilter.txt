@@ -3,4 +3,4 @@ grid_filter
 QgsProcessingParameterRasterLayer|INPUT|Grid|None|False
 ParameterTable|FILTER|Filter Matrix|True
 ParameterFixedTable|FILTER_3X3|Default Filter Matrix (3x3)|3|1;2;3|True
-OutputRaster|RESULT|Filtered Grid
+QgsProcessingParameterRasterDestination|RESULT|Filtered Grid

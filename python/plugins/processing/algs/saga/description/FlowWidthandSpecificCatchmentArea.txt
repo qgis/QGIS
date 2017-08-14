@@ -3,5 +3,5 @@ ta_hydrology
 QgsProcessingParameterRasterLayer|DEM|Elevation|None|False
 QgsProcessingParameterRasterLayer|TCA|Total Catchment Area (TCA)|None|True
 ParameterSelection|METHOD|Method|[0] Deterministic 8;[1] Multiple Flow Direction (Quinn et al. 1991);[2] Aspect
-OutputRaster|WIDTH|Flow Width
-OutputRaster|SCA|Specific Catchment Area (SCA)
+QgsProcessingParameterRasterDestination|WIDTH|Flow Width
+QgsProcessingParameterRasterDestination|SCA|Specific Catchment Area (SCA)

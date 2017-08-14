@@ -18,5 +18,5 @@ ParameterBoolean|WTA_3|Mahalanobis Distance|False
 ParameterBoolean|WTA_4|Maximum Likelihood|False
 ParameterBoolean|WTA_5|Spectral Angle Mapping|False
 OutputTable|CLASS_INFO|Class Information
-OutputRaster|CLASSES|Classification
-OutputRaster|QUALITY|Quality
+QgsProcessingParameterRasterDestination|CLASSES|Classification
+QgsProcessingParameterRasterDestination|QUALITY|Quality

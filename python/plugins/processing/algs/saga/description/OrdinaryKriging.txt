@@ -14,8 +14,8 @@ Hardcoded|-TARGET_DEFINITION 0
 Extent TARGET_USER_XMIN TARGET_USER_XMAX TARGET_USER_YMIN TARGET_USER_YMAX
 QgsProcessingParameterNumber|TARGET_USER_SIZE|Cellsize|QgsProcessingParameterNumber.Double|100.0|False|None|None
 ParameterSelection|TARGET_USER_FITS|Fit|[0] nodes;[1] cells
-OutputRaster|PREDICTION|Prediction
-OutputRaster|VARIANCE|Quality Measure
+QgsProcessingParameterRasterDestination|PREDICTION|Prediction
+QgsProcessingParameterRasterDestination|VARIANCE|Quality Measure
 ParameterSelection|SEARCH_RANGE|Search Range|[0] local;[1] global
 QgsProcessingParameterNumber|SEARCH_RADIUS|Maximum Search Distance|QgsProcessingParameterNumber.Integer|1000|False|0|None
 ParameterSelection|SEARCH_POINTS_ALL|Number of Points|[0] maximum number of nearest points;[1] all points within search distance

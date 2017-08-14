@@ -5,6 +5,6 @@ QgsProcessingParameterRasterLayer|C|Dip grid (degrees)|None|True
 QgsProcessingParameterRasterLayer|D|Dip direction grid (degrees)|None|True
 QgsProcessingParameterNumber|fB|Global structure dip (degrees)|QgsProcessingParameterNumber.Double|45.000000|False|None|None
 QgsProcessingParameterNumber|fC|Global structure dip direction (degrees)|QgsProcessingParameterNumber.Double|90.000000|False|None|None
-OutputRaster|E|Angle
-OutputRaster|F|CL dipdir
-OutputRaster|G|CL dip
+QgsProcessingParameterRasterDestination|E|Angle
+QgsProcessingParameterRasterDestination|F|CL dipdir
+QgsProcessingParameterRasterDestination|G|CL dip

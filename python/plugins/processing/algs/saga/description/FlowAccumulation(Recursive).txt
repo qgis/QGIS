@@ -12,10 +12,10 @@ QgsProcessingParameterRasterLayer|TARGETS|Target Areas|None|True
 ParameterSelection|METHOD|Method|[0] Deterministic 8;[1] Rho 8;[2] Deterministic Infinity;[3] Multiple Flow Direction
 QgsProcessingParameterNumber|CONVERGENCE|Convergence|QgsProcessingParameterNumber.Double|1.1|False|None|None
 ParameterBoolean|NO_NEGATIVES|Prevent Negative Flow Accumulation|True
-OutputRaster|FLOW|Catchment Area
-OutputRaster|VAL_MEAN|Mean over Catchment
-OutputRaster|ACCU_TOTAL|Accumulated Material
-OutputRaster|ACCU_LEFT|Accumulated Material from left side
-OutputRaster|ACCU_RIGHT|Accumulated Material from right side
-OutputRaster|FLOW_LENGTH|Flow Path Length
-OutputRaster|WEIGHT_LOSS|Loss through Negative Weights
+QgsProcessingParameterRasterDestination|FLOW|Catchment Area
+QgsProcessingParameterRasterDestination|VAL_MEAN|Mean over Catchment
+QgsProcessingParameterRasterDestination|ACCU_TOTAL|Accumulated Material
+QgsProcessingParameterRasterDestination|ACCU_LEFT|Accumulated Material from left side
+QgsProcessingParameterRasterDestination|ACCU_RIGHT|Accumulated Material from right side
+QgsProcessingParameterRasterDestination|FLOW_LENGTH|Flow Path Length
+QgsProcessingParameterRasterDestination|WEIGHT_LOSS|Loss through Negative Weights

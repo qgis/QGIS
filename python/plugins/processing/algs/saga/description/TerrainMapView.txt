@@ -1,9 +1,9 @@
 Terrain Map View
 grid_visualisation
 QgsProcessingParameterRasterLayer|DEM|DEM|None|False
-OutputRaster|SHADE|Shade
-OutputRaster|OPENNESS|Openness
-OutputRaster|SLOPE|Slope
+QgsProcessingParameterRasterDestination|SHADE|Shade
+QgsProcessingParameterRasterDestination|OPENNESS|Openness
+QgsProcessingParameterRasterDestination|SLOPE|Slope
 OutputVector|CONTOURS|Contours
 ParameterSelection|METHOD|Method|[0] Topography;[1] Morphology| 0
 QgsProcessingParameterNumber|RADIUS|Radial Limit|QgsProcessingParameterNumber.Double|1000.000000|False| 0.000000|None

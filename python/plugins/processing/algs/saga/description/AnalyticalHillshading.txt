@@ -5,4 +5,4 @@ ParameterSelection|METHOD|Shading Method|[0] Standard;[1] Standard (max. 90Degre
 QgsProcessingParameterNumber|AZIMUTH|Azimuth [Degree]|QgsProcessingParameterNumber.Double|315.0|False|None|None
 QgsProcessingParameterNumber|DECLINATION|Declination [Degree]|QgsProcessingParameterNumber.Double|45.0|False|None|None
 QgsProcessingParameterNumber|EXAGGERATION|Exaggeration|QgsProcessingParameterNumber.Double|4.0|False|None|None
-OutputRaster|SHADE|Analytical Hillshading
+QgsProcessingParameterRasterDestination|SHADE|Analytical Hillshading

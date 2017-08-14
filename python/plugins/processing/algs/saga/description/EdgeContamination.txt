@@ -1,4 +1,4 @@
 Edge Contamination
 ta_hydrology
 QgsProcessingParameterRasterLayer|DEM|Elevation|None|False
-OutputRaster|CONTAMINATION|Edge Contamination
+QgsProcessingParameterRasterDestination|CONTAMINATION|Edge Contamination

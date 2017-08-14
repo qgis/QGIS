@@ -10,6 +10,6 @@ QgsProcessingParameterNumber|ACCEL|Acceleration|QgsProcessingParameterNumber.Dou
 ParameterBoolean|PYRAMIDS       |Use Pyramids|True
 ParameterSelection|DIR_UNITS|Wind Direction Units|[0] radians;[1] degree
 QgsProcessingParameterNumber|LEN_SCALE|Wind Speed Scale Factor|QgsProcessingParameterNumber.Double|1.0|False|0.0|None
-OutputRaster|EFFECT|Wind Effect
-OutputRaster|LUV|Windward Effect
-OutputRaster|LEE|Leeward Effect
+QgsProcessingParameterRasterDestination|EFFECT|Wind Effect
+QgsProcessingParameterRasterDestination|LUV|Windward Effect
+QgsProcessingParameterRasterDestination|LEE|Leeward Effect

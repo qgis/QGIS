@@ -9,4 +9,4 @@ QgsProcessingParameterNumber|STDDEV|Standard Deviation|QgsProcessingParameterNum
 Extent USER_XMIN USER_XMAX USER_YMIN USER_YMAX
 QgsProcessingParameterNumber|USER_SIZE|Cellsize|QgsProcessingParameterNumber.Double|100.0|False|None|None
 ParameterSelection|USER_FITS|Method|[0] nodes;[1] cells
-OutputRaster|OUT_GRID|Random Field
+QgsProcessingParameterRasterDestination|OUT_GRID|Random Field

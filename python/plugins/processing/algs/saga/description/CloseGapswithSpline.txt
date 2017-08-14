@@ -9,4 +9,4 @@ ParameterBoolean|EXTENDED         |Extended Neighourhood|True
 ParameterSelection|NEIGHBOURS|Neighbourhood|[0] Neumann;[1] Moore
 QgsProcessingParameterNumber|RADIUS|Radius (Cells)|QgsProcessingParameterNumber.Integer|0|False|None|None
 QgsProcessingParameterNumber|RELAXATION|Relaxation|QgsProcessingParameterNumber.Double|0.0|False|None|None
-OutputRaster|CLOSED|Closed Gaps Grid
+QgsProcessingParameterRasterDestination|CLOSED|Closed Gaps Grid

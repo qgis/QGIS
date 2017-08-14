@@ -9,6 +9,6 @@ QgsProcessingParameterNumber|SIG_2|Variance in Position Space|QgsProcessingParam
 QgsProcessingParameterNumber|THRESHOLD|Threshold - Similarity|QgsProcessingParameterNumber.Double|0.0|False|None|None
 ParameterBoolean|REFRESH         |Refresh|True
 QgsProcessingParameterNumber|LEAFSIZE|Leaf Size (for Speed Optimisation)|QgsProcessingParameterNumber.Integer|256|False|None|None
-OutputRaster|SEGMENTS|Segments
-OutputRaster|SIMILARITY|Similarity
+QgsProcessingParameterRasterDestination|SEGMENTS|Segments
+QgsProcessingParameterRasterDestination|SIMILARITY|Similarity
 OutputTable|TABLE|Seeds

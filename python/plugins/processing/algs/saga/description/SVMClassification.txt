@@ -1,7 +1,7 @@
 SVM Classification
 imagery_svm
 ParameterMultipleInput|GRIDS|Grids|3|False
-OutputRaster|CLASSES|Classification
+QgsProcessingParameterRasterDestination|CLASSES|Classification
 ParameterSelection|SCALING|Scaling|[0] none;[1] normalize (0-1);[2] standardize| 2
 ParameterBoolean|MESSAGE|Verbose Messages|False
 ParameterSelection|MODEL_SRC|Model Source|[0] create from training areas;[1] restore from file| 0

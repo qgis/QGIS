@@ -4,5 +4,5 @@ QgsProcessingParameterRasterLayer|ELEVATION|Elevation|None|False
 QgsProcessingParameterRasterLayer|CHANNELS|Channel Network|None|False
 QgsProcessingParameterNumber|THRESHOLD|Tension Threshold [Percentage of Cell Size]|QgsProcessingParameterNumber.Integer|1|False|None|None
 ParameterBoolean|NOUNDERGROUND  |Keep Base Level below Surface|True
-OutputRaster|DISTANCE|Vertical Distance to Channel Network
-OutputRaster|BASELEVEL|Channel Network Base Level
+QgsProcessingParameterRasterDestination|DISTANCE|Vertical Distance to Channel Network
+QgsProcessingParameterRasterDestination|BASELEVEL|Channel Network Base Level

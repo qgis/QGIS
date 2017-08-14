@@ -3,10 +3,10 @@ statistics_kriging
 ParameterVector|POINTS|Points|-1|False
 ParameterTable|FIELD|Attribute|False
 ParameterMultipleInput|PREDICTORS|Predictors|3|False
-OutputRaster|REGRESSION|Regression
-OutputRaster|PREDICTION|Prediction
-OutputRaster|RESIDUALS|Residuals
-OutputRaster|VARIANCE|Quality Measure
+QgsProcessingParameterRasterDestination|REGRESSION|Regression
+QgsProcessingParameterRasterDestination|PREDICTION|Prediction
+QgsProcessingParameterRasterDestination|RESIDUALS|Residuals
+QgsProcessingParameterRasterDestination|VARIANCE|Quality Measure
 ParameterSelection|TQUALITY|Type of Quality Measure|[0] standard deviation;[1] variance| 0
 ParameterBoolean|LOG|Logarithmic Transformation|False
 ParameterBoolean|BLOCK|Block Kriging|False

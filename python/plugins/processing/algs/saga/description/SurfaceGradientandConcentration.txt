@@ -1,9 +1,9 @@
 Surface, Gradient and Concentration
 sim_hydrology
 QgsProcessingParameterRasterLayer|MASK|Mask|None|False
-OutputRaster|SURF|Surface
-OutputRaster|GRAD|Gradient
-OutputRaster|CONC|Concentration
+QgsProcessingParameterRasterDestination|SURF|Surface
+QgsProcessingParameterRasterDestination|GRAD|Gradient
+QgsProcessingParameterRasterDestination|CONC|Concentration
 QgsProcessingParameterNumber|SURF_E|Surface Approximation Threshold|QgsProcessingParameterNumber.Double|0.001000|False| 0.000000|None
 QgsProcessingParameterNumber|CONC_IN|Inlet Concentration|QgsProcessingParameterNumber.Double|5.000000|False| 0.000000|None
 QgsProcessingParameterNumber|CONC_OUT|Outlet Concentration|QgsProcessingParameterNumber.Double|3.000000|False| 0.000000|None

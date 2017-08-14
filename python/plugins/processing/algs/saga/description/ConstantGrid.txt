@@ -11,4 +11,4 @@ QgsProcessingParameterNumber|USER_YMIN|Bottom|QgsProcessingParameterNumber.Doubl
 QgsProcessingParameterNumber|USER_YMAX|Top|QgsProcessingParameterNumber.Double|100.000000|False|None|None
 ParameterSelection|USER_FITS|Fit|[0] nodes;[1] cells| 0
 QgsProcessingParameterRasterLayer|TEMPLATE|Target System|None|True
-OutputRaster|OUT_GRID|Target Grid
+QgsProcessingParameterRasterDestination|OUT_GRID|Target Grid

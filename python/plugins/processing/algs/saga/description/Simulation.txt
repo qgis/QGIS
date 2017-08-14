@@ -11,6 +11,6 @@ QgsProcessingParameterRasterLayer|MHERB|Herbaceous Fuel Moisture|None|False
 QgsProcessingParameterRasterLayer|MWOOD|Wood Fuel Moisture|None|False
 QgsProcessingParameterRasterLayer|IGNITION|Ignition Points|None|False
 ParameterBoolean|UPDATEVIEW     |Update View|True
-OutputRaster|TIME|Time
-OutputRaster|FLAME|Flame Length
-OutputRaster|INTENSITY|Intensity
+QgsProcessingParameterRasterDestination|TIME|Time
+QgsProcessingParameterRasterDestination|FLAME|Flame Length
+QgsProcessingParameterRasterDestination|INTENSITY|Intensity

@@ -1,7 +1,7 @@
 Mesh Denoise
 grid_filter
 QgsProcessingParameterRasterLayer|INPUT|Grid|None|False
-OutputRaster|OUTPUT|Denoised Grid
+QgsProcessingParameterRasterDestination|OUTPUT|Denoised Grid
 QgsProcessingParameterNumber|SIGMA|Threshold|QgsProcessingParameterNumber.Double|0.900000|False| 0.000000| 1.000000
 QgsProcessingParameterNumber|ITER|Number of Iterations for Normal Updating|QgsProcessingParameterNumber.Integer|5|False| 1|None
 QgsProcessingParameterNumber|VITER|Number of Iterations for Vertex Updating|QgsProcessingParameterNumber.Integer|50|False| 1|None

@@ -5,4 +5,4 @@ QgsProcessingParameterRasterLayer|AREA|Catchment Area|None|False
 QgsProcessingParameterRasterLayer|TRANS|Transmissivity|None|True
 ParameterSelection|CONV|Area Conversion|[0] no conversion (areas already given as specific catchment area);[1] 1 / cell size (pseudo specific catchment area)|1
 ParameterSelection|METHOD|Method (TWI)|[0] Standard;[1] TOPMODEL
-OutputRaster|TWI|Topographic Wetness Index
+QgsProcessingParameterRasterDestination|TWI|Topographic Wetness Index

@@ -3,4 +3,4 @@ grid_tools
 QgsProcessingParameterRasterLayer|ORIGINAL|Grid|None|False
 QgsProcessingParameterRasterLayer|ADDITIONAL|Patch Grid|None|False
 ParameterSelection|INTERPOLATION|Interpolation Method|[0] Nearest Neighbor;[1] Bilinear Interpolation;[2] Inverse Distance Interpolation;[3] Bicubic Spline Interpolation;[4] B-Spline Interpolation
-OutputRaster|COMPLETED|Completed Grid
+QgsProcessingParameterRasterDestination|COMPLETED|Completed Grid

@@ -6,6 +6,6 @@ ParameterSelection|DISTANCE_WEIGHTING_WEIGHTING|Distance Weighting|[0] no distan
 QgsProcessingParameterNumber|DISTANCE_WEIGHTING_IDW_POWER|Inverse Distance Weighting Power|QgsProcessingParameterNumber.Integer|1|False|None|None
 ParameterBoolean|DISTANCE_WEIGHTING_IDW_OFFSET     |Inverse Distance Offset|True
 QgsProcessingParameterNumber|DISTANCE_WEIGHTING_BANDWIDTH|Gaussian and Exponential Weighting Bandwidth|QgsProcessingParameterNumber.Double|1.0|False|None|None
-OutputRaster|MEAN|Mean Distance
-OutputRaster|STDDEV|Standard Deviation
-OutputRaster|DIFF|Distance
+QgsProcessingParameterRasterDestination|MEAN|Mean Distance
+QgsProcessingParameterRasterDestination|STDDEV|Standard Deviation
+QgsProcessingParameterRasterDestination|DIFF|Distance

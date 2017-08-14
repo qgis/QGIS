@@ -1,10 +1,10 @@
 Connectivity Analysis
 grid_filter
 QgsProcessingParameterRasterLayer|INPUT_GRID|Input Binary Grid|None|False
-OutputRaster|FILTERED_MASK|Filtered Image
+QgsProcessingParameterRasterDestination|FILTERED_MASK|Filtered Image
 ParameterBoolean|FILTER|Apply Filter?|True
 QgsProcessingParameterNumber|SIZE|Filter Size (Radius)|QgsProcessingParameterNumber.Integer|3|False|None|None
-OutputRaster|SYMBOLIC_IMAGE|Symbolic Image
+QgsProcessingParameterRasterDestination|SYMBOLIC_IMAGE|Symbolic Image
 OutputVector|OUTLINES|Outlines
 ParameterBoolean|BORDER_PIXEL_CENTERS|Pixel Centers?|False
 ParameterBoolean|REMOVE_MARGINAL_REGIONS|Remove Border Regions?|False

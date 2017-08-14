@@ -9,4 +9,4 @@ ParameterSelection|DW_WEIGHTING|Distance Weighting|[0] no distance weighting;[1]
 QgsProcessingParameterNumber|DW_IDW_POWER|Inverse Distance Weighting Power|QgsProcessingParameterNumber.Integer|1|False|0.0|None
 ParameterBoolean|DW_IDW_OFFSET     |Inverse Distance Offset|True
 QgsProcessingParameterNumber|DW_BANDWIDTH|Gaussian and Exponential Weighting Bandwidth|QgsProcessingParameterNumber.Double|75.0|False|None|None
-OutputRaster|LANDFORMS|Landforms
+QgsProcessingParameterRasterDestination|LANDFORMS|Landforms

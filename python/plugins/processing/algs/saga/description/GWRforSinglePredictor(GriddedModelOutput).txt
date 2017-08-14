@@ -11,10 +11,10 @@ QgsProcessingParameterNumber|TARGET_USER_YMIN|Bottom|QgsProcessingParameterNumbe
 QgsProcessingParameterNumber|TARGET_USER_YMAX|Top|QgsProcessingParameterNumber.Double|100.000000|False|None|None
 ParameterSelection|TARGET_USER_FITS|Fit|[0] nodes;[1] cells| 0
 QgsProcessingParameterRasterLayer|TARGET_TEMPLATE|Target System|None|True
-OutputRaster|TARGET_OUT_GRID|Target Grid
-OutputRaster|INTERCEPT|Intercept
-OutputRaster|SLOPE|Slope
-OutputRaster|QUALITY|Quality
+QgsProcessingParameterRasterDestination|TARGET_OUT_GRID|Target Grid
+QgsProcessingParameterRasterDestination|INTERCEPT|Intercept
+QgsProcessingParameterRasterDestination|SLOPE|Slope
+QgsProcessingParameterRasterDestination|QUALITY|Quality
 ParameterSelection|DW_WEIGHTING|Weighting Function|[0] no distance weighting;[1] inverse distance to a power;[2] exponential;[3] gaussian weighting| 3
 QgsProcessingParameterNumber|DW_IDW_POWER|Inverse Distance Weighting Power|QgsProcessingParameterNumber.Double|1.000000|False| 0.000000|None
 ParameterBoolean|DW_IDW_OFFSET|Inverse Distance Offset|True

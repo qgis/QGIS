@@ -2,4 +2,4 @@ Diurnal Anisotropic Heating
 ta_morphometry
 QgsProcessingParameterRasterLayer|DEM|Elevation|None|False
 QgsProcessingParameterNumber|ALPHA_MAX|Alpha Max (Degree)|QgsProcessingParameterNumber.Double|202.5|False|None|None
-OutputRaster|DAH|Diurnal Anisotropic Heating
+QgsProcessingParameterRasterDestination|DAH|Diurnal Anisotropic Heating

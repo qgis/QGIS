@@ -8,11 +8,11 @@ ParameterSelection|DISTANCE_WEIGHTING_DW_WEIGHTING|Distance Weighting|[0] no dis
 QgsProcessingParameterNumber|DISTANCE_WEIGHTING_DW_IDW_POWER|Inverse Distance Weighting Power|QgsProcessingParameterNumber.Integer|1|False|0.0|None
 ParameterBoolean|DISTANCE_WEIGHTING_DW_IDW_OFFSET|Inverse Distance Offset|True
 QgsProcessingParameterNumber|DISTANCE_WEIGHTING_DW_BANDWIDTH|Gaussian and Exponential Weighting Bandwidth|QgsProcessingParameterNumber.Double|1.0|False|0.0|None
-OutputRaster|MEAN|Mean Value
-OutputRaster|DIFF|Difference from Mean Value
-OutputRaster|STDDEV|Standard Deviation
-OutputRaster|RANGE|Value Range
-OutputRaster|MIN|Minimum Value
-OutputRaster|MAX|Maximum Value
-OutputRaster|DEVMEAN|Deviation from Mean Value
-OutputRaster|PERCENT|Percentile
+QgsProcessingParameterRasterDestination|MEAN|Mean Value
+QgsProcessingParameterRasterDestination|DIFF|Difference from Mean Value
+QgsProcessingParameterRasterDestination|STDDEV|Standard Deviation
+QgsProcessingParameterRasterDestination|RANGE|Value Range
+QgsProcessingParameterRasterDestination|MIN|Minimum Value
+QgsProcessingParameterRasterDestination|MAX|Maximum Value
+QgsProcessingParameterRasterDestination|DEVMEAN|Deviation from Mean Value
+QgsProcessingParameterRasterDestination|PERCENT|Percentile

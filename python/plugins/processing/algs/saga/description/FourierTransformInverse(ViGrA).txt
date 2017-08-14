@@ -2,5 +2,5 @@ Fourier Transform Inverse (ViGrA)
 imagery_vigra
 QgsProcessingParameterRasterLayer|REAL|Real|None|False
 QgsProcessingParameterRasterLayer|IMAG|Imaginary|None|False
-OutputRaster|OUTPUT|Output
+QgsProcessingParameterRasterDestination|OUTPUT|Output
 ParameterBoolean|CENTER|Centered|True

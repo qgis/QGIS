@@ -3,6 +3,6 @@ ta_channels
 QgsProcessingParameterRasterLayer|ELEVATION|Elevation|None|False
 QgsProcessingParameterRasterLayer|CHANNELS|Channel Network|None|False
 ParameterSelection|METHOD|Flow Algorithm|[0] D8;[1] MFD
-OutputRaster|DISTANCE|Overland Flow Distance
-OutputRaster|DISTVERT|Vertical Overland Flow Distance
-OutputRaster|DISTHORZ|Horizontal Overland Flow Distance
+QgsProcessingParameterRasterDestination|DISTANCE|Overland Flow Distance
+QgsProcessingParameterRasterDestination|DISTVERT|Vertical Overland Flow Distance
+QgsProcessingParameterRasterDestination|DISTHORZ|Horizontal Overland Flow Distance

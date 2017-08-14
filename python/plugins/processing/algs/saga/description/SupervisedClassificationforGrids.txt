@@ -2,8 +2,8 @@ Supervised Classification for Grids
 imagery_classification
 ParameterMultipleInput|GRIDS|Features|3|False
 ParameterBoolean|NORMALISE|Normalise|False
-OutputRaster|CLASSES|Classification
-OutputRaster|QUALITY|Quality
+QgsProcessingParameterRasterDestination|CLASSES|Classification
+QgsProcessingParameterRasterDestination|QUALITY|Quality
 ParameterVector|TRAINING|Training Areas|-1|True
 ParameterTable|TRAINING_CLASS|Class Identifier|False
 ParameterFile|FILE_LOAD|Load Statistics from File...|False|False

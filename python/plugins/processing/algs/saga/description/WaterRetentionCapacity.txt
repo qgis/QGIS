@@ -3,4 +3,4 @@ sim_hydrology
 ParameterVector|SHAPES|Plot Holes|-1|False
 QgsProcessingParameterRasterLayer|DEM|DEM|None|False
 OutputVector|OUTPUT|Final Parameters
-OutputRaster|RETENTION|Water Retention Capacity
+QgsProcessingParameterRasterDestination|RETENTION|Water Retention Capacity

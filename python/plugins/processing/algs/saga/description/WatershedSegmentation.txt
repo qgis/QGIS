@@ -7,6 +7,6 @@ ParameterSelection|JOIN|Join Segments based on Threshold Value|[0] do not join;[
 QgsProcessingParameterNumber|THRESHOLD|Threshold|QgsProcessingParameterNumber.Integer|0|False|None|None
 ParameterBoolean|EDGE           |Allow Edge Pixels to be Seeds|True
 ParameterBoolean|BBORDERS       |Borders|True
-OutputRaster|SEGMENTS|Segments
+QgsProcessingParameterRasterDestination|SEGMENTS|Segments
 OutputVector|SEEDS|Seed Points
-OutputRaster|BORDERS|Borders
+QgsProcessingParameterRasterDestination|BORDERS|Borders

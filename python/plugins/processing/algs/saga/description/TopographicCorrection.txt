@@ -8,4 +8,4 @@ ParameterSelection|METHOD|Method|[0] Cosine Correction (Teillet et al. 1982);[1]
 QgsProcessingParameterNumber|MINNAERT|Minnaert Correction|QgsProcessingParameterNumber.Double|0.5|False|None|None
 QgsProcessingParameterNumber|MAXCELLS|Maximum Cells (C Correction Analysis)|QgsProcessingParameterNumber.Integer|1000|False|None|None
 ParameterSelection|MAXVALUE|Value Range|[0] 1 byte (0-255);[1] 2 byte (0-65535)
-OutputRaster|CORRECTED|Corrected Image
+QgsProcessingParameterRasterDestination|CORRECTED|Corrected Image

@@ -3,4 +3,4 @@ ta_preprocessor
 QgsProcessingParameterRasterLayer|ELEVATION|Elevation|None|False
 ParameterBoolean|THRESHOLD       |Threshold|True
 QgsProcessingParameterNumber|THRSHEIGHT|Threshold Height|QgsProcessingParameterNumber.Double|100.0|False|None|None
-OutputRaster|SINKROUTE|Sink Route
+QgsProcessingParameterRasterDestination|SINKROUTE|Sink Route
