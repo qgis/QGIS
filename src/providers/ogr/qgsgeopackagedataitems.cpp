@@ -154,27 +154,28 @@ QVector<QgsDataItem *> QgsGeoPackageConnectionItem::createChildren()
       QString geometryType = pieces[3];
       QgsLayerItem::LayerType layerType;
       layerType = layerTypeFromDb( geometryType );
-      if ( layerType != QgsLayerItem::LayerType::NoType )
+      if ( geometryType.contains( QStringLiteral( "Collection" ), Qt::CaseInsensitive ) )
       {
-        if ( geometryType.contains( QStringLiteral( "Collection" ), Qt::CaseInsensitive ) )
-        {
-          QgsDebugMsgLevel( QStringLiteral( "Layer %1 is a geometry collection: skipping %2" ).arg( name, mPath ), 3 );
-        }
-        else
-        {
-          // example URI:    '/path/gdal_sample_v1.2_no_extensions.gpkg|layerid=7|geometrytype=Point'
-          QString uri = QStringLiteral( "%1|layerid=%2|geometrytype=%3" ).arg( mPath, layerId, geometryType );
-          // TODO?: not sure, but if it's a collection, an expandable node would be better?
-          QgsGeoPackageVectorLayerItem *item = new QgsGeoPackageVectorLayerItem( this, name, mPath, uri, layerType );
-          QgsDebugMsgLevel( QStringLiteral( "Adding GPKG Vector item %1 %2 %3" ).arg( name, uri, geometryType ), 3 );
-          children.append( item );
-        }
+        QgsDebugMsgLevel( QStringLiteral( "Layer %1 is a geometry collection: skipping %2" ).arg( name, mPath ), 3 );
       }
       else
       {
-        QgsDebugMsgLevel( QStringLiteral( "Layer type is not a supported GeoPackage Vector layer %1" ).arg( mPath ), 3 );
+        // example URI:    '/path/gdal_sample_v1.2_no_extensions.gpkg|layerid=7|geometrytype=Point'
+        QString uri;
+        // We do not need to add a geometry type for table layers
+        if ( layerType != QgsLayerItem::LayerType::TableLayer )
+        {
+          uri = QStringLiteral( "%1|layerid=%2|geometrytype=%3" ).arg( mPath, layerId, geometryType );
+        }
+        else
+        {
+          uri = QStringLiteral( "%1|layerid=%2" ).arg( mPath, layerId );
+        }
+        // TODO?: not sure, but if it's a collection, an expandable node would be better?
+        QgsGeoPackageVectorLayerItem *item = new QgsGeoPackageVectorLayerItem( this, name, mPath, uri, layerType );
+        QgsDebugMsgLevel( QStringLiteral( "Adding GPKG Vector item %1 %2 %3" ).arg( name, uri, geometryType ), 3 );
+        children.append( item );
       }
-
     }
   }
   // Raster layers
@@ -235,16 +236,12 @@ QgsLayerItem::LayerType QgsGeoPackageConnectionItem::layerTypeFromDb( const QStr
   {
     return QgsLayerItem::LayerType::Vector;
   }
-  else if ( geometryType.contains( QStringLiteral( "Table" ), Qt::CaseInsensitive ) )
-  {
-    return QgsLayerItem::LayerType::Table;
-  }
   // To be moved in a parent class that would also work for gdal and rasters
   else if ( geometryType.contains( QStringLiteral( "Raster" ), Qt::CaseInsensitive ) )
   {
     return QgsLayerItem::LayerType::Raster;
   }
-  return QgsLayerItem::LayerType::NoType;
+  return QgsLayerItem::LayerType::TableLayer;
 }
 
 void QgsGeoPackageConnectionItem::deleteConnection()
