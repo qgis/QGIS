@@ -29,11 +29,6 @@ Constructor
   public slots:
     virtual void accept();
 
-
-    void helpRequest();
-%Docstring
- Open the help in a browser
-%End
     void on_txtName_textChanged( const QString & );
     void on_txtUrl_textChanged( const QString & );
 

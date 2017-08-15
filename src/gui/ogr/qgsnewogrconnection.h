@@ -41,10 +41,10 @@ class GUI_EXPORT QgsNewOgrConnection : public QDialog, private Ui::QgsNewOgrConn
     ~QgsNewOgrConnection();
     //! Tests the connection using the parameters supplied
     void testConnection();
+    void showHelp();
   public slots:
     void accept() override;
     void on_btnConnect_clicked();
-    void helpRequest();
 
   private:
     QString mOriginalConnName;

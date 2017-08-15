@@ -32,6 +32,7 @@ QgsQueryBuilder::QgsQueryBuilder( QgsVectorLayer *layer,
   , mLayer( layer )
 {
   setupUi( this );
+  connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsQueryBuilder::showHelp );
 
   QgsSettings settings;
   restoreGeometry( settings.value( QStringLiteral( "Windows/QueryBuilder/geometry" ) ).toByteArray() );
@@ -395,4 +396,9 @@ void QgsQueryBuilder::on_btnILike_clicked()
 void QgsQueryBuilder::setDatasourceDescription( const QString &uri )
 {
   lblDataUri->setText( uri );
+}
+
+void QgsQueryBuilder::showHelp()
+{
+  QgsHelp::openHelp( QStringLiteral( "working_with_vector/vector_properties.html#query-builder" ) );
 }

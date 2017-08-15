@@ -49,6 +49,7 @@ eVisDatabaseConnectionGui::eVisDatabaseConnectionGui( QList<QTemporaryFile *> *t
   : QDialog( parent, fl )
 {
   setupUi( this );
+  connect( buttonBox, &QDialogButtonBox::helpRequested, this, &eVisDatabaseConnectionGui::showHelp );
 
   QSettings settings;
   restoreGeometry( settings.value( QStringLiteral( "eVis/db-geometry" ) ).toByteArray() );
@@ -533,4 +534,9 @@ void eVisDatabaseConnectionGui::on_pbtnRunQuery_clicked()
       teditConsole->append( tr( "Error: A database connection is not currently established" ) );
     }
   }
+}
+
+void eVisDatabaseConnectionGui::showHelp()
+{
+  QgsHelp::openHelp( QStringLiteral( "plugins/plugins_evis.html#database-connection" ) );
 }

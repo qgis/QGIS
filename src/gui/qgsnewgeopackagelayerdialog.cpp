@@ -49,7 +49,7 @@ QgsNewGeoPackageLayerDialog::QgsNewGeoPackageLayerDialog( QWidget *parent, Qt::W
   , mLayerIdentifierEdited( false )
 {
   setupUi( this );
-  connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsNewGeoPackageLayerDialog::helpRequest );
+  connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsNewGeoPackageLayerDialog::showHelp );
 
   QgsSettings settings;
   restoreGeometry( settings.value( QStringLiteral( "Windows/NewGeoPackageLayer/geometry" ) ).toByteArray() );
@@ -475,7 +475,7 @@ bool QgsNewGeoPackageLayerDialog::apply()
   return false;
 }
 
-void QgsNewGeoPackageLayerDialog::helpRequest()
+void QgsNewGeoPackageLayerDialog::showHelp()
 {
-  QgsHelp::openHelp( "managing_data_source/create_layers.html#creating-a-new-geopackage-layer" );
+  QgsHelp::openHelp( QStringLiteral( "managing_data_source/create_layers.html#creating-a-new-geopackage-layer" ) );
 }

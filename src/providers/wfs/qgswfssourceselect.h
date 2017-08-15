@@ -77,6 +77,8 @@ class QgsWFSSourceSelect: public QgsAbstractDataSourceWidget, private Ui::QgsWFS
     \returns the authority id of the crs or an empty string in case of error*/
     QString getPreferredCrs( const QSet<QString> &crsSet ) const;
 
+    void showHelp();
+
   public slots:
 
     //! Triggered when the provider's connections need to be refreshed
@@ -102,9 +104,6 @@ class QgsWFSSourceSelect: public QgsAbstractDataSourceWidget, private Ui::QgsWFS
     void updateSql();
 
     void populateConnectionList();
-
-    void on_buttonBox_helpRequested() { QgsHelp::openHelp( QStringLiteral( "working_with_ogc/ogc_client_support.html" ) ); }
-
 
 };
 

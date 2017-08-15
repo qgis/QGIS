@@ -35,7 +35,7 @@
 #include <QFileDialog>
 #include <QRadioButton>
 #include <QImageReader>
-#include <qgshelp.h>
+#include "qgshelp.h"
 
 /**
  * Item delegate with tweaked sizeHint.
@@ -58,7 +58,7 @@ QgsArcGisServiceSourceSelect::QgsArcGisServiceSourceSelect( const QString &servi
 {
   setupUi( this );
   setupButtons( buttonBox );
-  connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsArcGisServiceSourceSelect::helpRequest );
+  connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsArcGisServiceSourceSelect::showHelp );
   setWindowTitle( QStringLiteral( "Add %1 Layer from a Server" ).arg( mServiceName ) );
 
   if ( mServiceType == FeatureService )
@@ -469,7 +469,7 @@ QSize QgsAbstractDataSourceWidgetItemDelegate::sizeHint( const QStyleOptionViewI
   return size;
 }
 
-void QgsArcGisServiceSourceSelect::helpRequest()
+void QgsArcGisServiceSourceSelect::showHelp()
 {
-  QgsHelp::openHelp( "managing_data_source/index.html" );
+  QgsHelp::openHelp( QStringLiteral( "managing_data_source/index.html" ) );
 }

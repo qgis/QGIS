@@ -161,7 +161,7 @@ class GUI_EXPORT QgsSQLComposerDialog : public QDialog, private Ui::QgsSQLCompos
     void on_mAddJoinButton_clicked();
     void on_mRemoveJoinButton_clicked();
     void on_mTableJoins_itemSelectionChanged();
-    void helpRequest();
+    void showHelp();
     void reset();
     void buildSQLFromFields();
     void splitSQLIntoFields();

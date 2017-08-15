@@ -92,6 +92,8 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer *lyr, QgsMapCanv
   // and connecting QDialogButtonBox's accepted/rejected signals to dialog's accept/reject slots
   initOptionsBase( false );
 
+  connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsRasterLayerProperties::showHelp );
+
   QPushButton *b = new QPushButton( tr( "Style" ) );
   QMenu *m = new QMenu( this );
   m->addAction( tr( "Load Style..." ), this, SLOT( loadStyle_clicked() ) );
@@ -1843,4 +1845,9 @@ void QgsRasterLayerProperties::onCancel()
     mRasterLayer->importNamedStyle( doc, myMessage );
     syncToLayer();
   }
+}
+
+void QgsRasterLayerProperties::showHelp()
+{
+  QgsHelp::openHelp( QStringLiteral( "working_with_raster/raster_properties.html" ) );
 }

@@ -54,7 +54,7 @@ class GUI_EXPORT QgsNewGeoPackageLayerDialog: public QDialog, private Ui::QgsNew
     void selectionChanged();
     void checkOk();
 
-    void helpRequest();
+    void showHelp();
     void on_buttonBox_accepted();
     void on_buttonBox_rejected();
 

@@ -29,6 +29,7 @@ QgsOracleNewConnection::QgsOracleNewConnection( QWidget *parent, const QString &
   : QDialog( parent, fl ), mOriginalConnName( connName )
 {
   setupUi( this );
+  connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsOracleNewConnection::showHelp );
 
   if ( !connName.isEmpty() )
   {
@@ -167,4 +168,10 @@ void QgsOracleNewConnection::on_btnConnect_clicked()
 
 QgsOracleNewConnection::~QgsOracleNewConnection()
 {
+}
+
+
+void QgsOracleNewConnection::showHelp()
+{
+  QgsHelp::openHelp( QStringLiteral( "managing_data_source/opening_data.html#connecting-to-oracle-spatial" ) );
 }

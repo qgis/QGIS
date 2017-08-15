@@ -126,11 +126,6 @@ class APP_EXPORT QgsProjectProperties : public QgsOptionsDialogBase, private Ui:
     void on_pbtnStyleColorRamp_clicked();
 
     /**
-     * Slot to show the context help for this dialog
-     */
-    void on_buttonBox_helpRequested() { QgsHelp::openHelp( QStringLiteral( "introduction/qgis_configuration.html#project-properties" ) ); }
-
-    /**
      * Slot to link WFS checkboxes
      */
     void cbxWFSPubliedStateChanged( int aIdx );
@@ -220,4 +215,6 @@ class APP_EXPORT QgsProjectProperties : public QgsOptionsDialogBase, private Ui:
     static const char *GEO_NONE_DESC;
 
     void updateGuiForMapUnits( QgsUnitTypes::DistanceUnit units );
+
+    void showHelp();
 };

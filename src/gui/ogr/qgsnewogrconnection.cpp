@@ -26,14 +26,14 @@
 
 #include <ogr_api.h>
 #include <cpl_error.h>
-#include <qgshelp.h>
+#include "qgshelp.h"
 
 QgsNewOgrConnection::QgsNewOgrConnection( QWidget *parent, const QString &connType, const QString &connName, Qt::WindowFlags fl )
   : QDialog( parent, fl )
   , mOriginalConnName( connName )
 {
   setupUi( this );
-  connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsNewOgrConnection::helpRequest );
+  connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsNewOgrConnection::showHelp );
 
   QgsSettings settings;
   restoreGeometry( settings.value( QStringLiteral( "Windows/OGRDatabaseConnection/geometry" ) ).toByteArray() );
@@ -99,6 +99,11 @@ void QgsNewOgrConnection::testConnection()
   }
 }
 
+void QgsNewOgrConnection::showHelp()
+{
+  QgsHelp::openHelp( QStringLiteral( "managing_data_source/opening_data.html#creating-a-stored-connection" ) );
+}
+
 //! Autoconnected SLOTS *
 void QgsNewOgrConnection::accept()
 {
@@ -137,11 +142,6 @@ void QgsNewOgrConnection::accept()
 void QgsNewOgrConnection::on_btnConnect_clicked()
 {
   testConnection();
-}
-
-void QgsNewOgrConnection::helpRequest()
-{
-  QgsHelp::openHelp( "managing_data_source/opening_data.html#creating-a-stored-connection" );
 }
 
 //! End  Autoconnected SLOTS *

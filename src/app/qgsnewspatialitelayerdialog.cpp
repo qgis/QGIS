@@ -83,6 +83,8 @@ QgsNewSpatialiteLayerDialog::QgsNewSpatialiteLayerDialog( QWidget *parent, Qt::W
   connect( leLayerName, &QLineEdit::textChanged, this, &QgsNewSpatialiteLayerDialog::checkOk );
   connect( checkBoxPrimaryKey, &QAbstractButton::clicked, this, &QgsNewSpatialiteLayerDialog::checkOk );
 
+  connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsNewSpatialiteLayerDialog::showHelp );
+
   mAddAttributeButton->setEnabled( false );
   mRemoveAttributeButton->setEnabled( false );
 
@@ -456,4 +458,8 @@ QString QgsNewSpatialiteLayerDialog::quotedValue( QString value )
   return value.prepend( '\'' ).append( '\'' );
 }
 
+void QgsNewSpatialiteLayerDialog::showHelp()
+{
+  QgsHelp::openHelp( QStringLiteral( "managing_data_source/create_layers.html#creating-a-new-spatialite-layer" ) );
+}
 

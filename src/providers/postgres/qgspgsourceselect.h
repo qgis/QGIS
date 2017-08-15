@@ -118,8 +118,6 @@ class QgsPgSourceSelect : public QgsAbstractDataSourceWidget, private Ui::QgsDbS
     //!Sets a new regular expression to the model
     void setSearchExpression( const QString &regexp );
 
-    void on_buttonBox_helpRequested() { QgsHelp::openHelp( QStringLiteral( "managing_data_source/opening_data.html#loading-a-database-layer" ) ); }
-
     void columnThreadFinished();
 
   private:
@@ -152,6 +150,8 @@ class QgsPgSourceSelect : public QgsAbstractDataSourceWidget, private Ui::QgsDbS
     QPushButton *mBuildQueryButton = nullptr;
 
     void finishList();
+
+    void showHelp();
 };
 
 #endif // QGSPGSOURCESELECT_H

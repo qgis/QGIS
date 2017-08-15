@@ -63,7 +63,7 @@ QgsSQLComposerDialog::QgsSQLComposerDialog( QWidget *parent, Qt::WindowFlags fl 
   connect( mTableJoins, &QTableWidget::cellChanged,
            this, &QgsSQLComposerDialog::buildSQLFromFields );
   connect( mButtonBox, &QDialogButtonBox::helpRequested,
-           this, &QgsSQLComposerDialog::helpRequest );
+           this, &QgsSQLComposerDialog::showHelp );
 
   QStringList baseList;
   baseList << QStringLiteral( "SELECT" );
@@ -777,7 +777,7 @@ void QgsSQLComposerDialog::setSupportMultipleTables( bool on, const QString &mai
                               "and only the geometry column of the main typename can be used as the geometry column of the resulting layer." ).arg( mainTypenameFormatted ) );
 }
 
-void QgsSQLComposerDialog::helpRequest()
+void QgsSQLComposerDialog::showHelp()
 {
-  QgsHelp::openHelp( "working_with_ogc/ogc_client_support.html#ogc-wfs" );
+  QgsHelp::openHelp( QStringLiteral( "working_with_ogc/ogc_client_support.html#ogc-wfs" ) );
 }

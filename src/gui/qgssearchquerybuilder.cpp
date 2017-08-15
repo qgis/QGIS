@@ -40,7 +40,7 @@ QgsSearchQueryBuilder::QgsSearchQueryBuilder( QgsVectorLayer *layer,
 {
   setupUi( this );
   setupListViews();
-  connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsSearchQueryBuilder::helpRequest );
+  connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsSearchQueryBuilder::showHelp );
 
   setWindowTitle( tr( "Search Query Builder" ) );
 
@@ -490,7 +490,7 @@ void QgsSearchQueryBuilder::loadQuery()
   txtSQL->insertText( newQueryText );
 }
 
-void QgsSearchQueryBuilder::helpRequest()
+void QgsSearchQueryBuilder::showHelp()
 {
-  QgsHelp::openHelp( "working_with_vector/vector_properties.html#query-builder" );
+  QgsHelp::openHelp( QStringLiteral( "working_with_vector/vector_properties.html#query-builder" ) );
 }

@@ -47,7 +47,8 @@ adds symbols of some type to list
 called when the dialog is going to be closed
 %End
 
-    void on_buttonBox_helpRequested();
+    void onClose();
+    void showHelp();
 
     void itemChanged( QStandardItem *item );
 

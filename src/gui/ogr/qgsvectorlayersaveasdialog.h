@@ -122,7 +122,7 @@ class GUI_EXPORT QgsVectorLayerSaveAsDialog : public QDialog, private Ui::QgsVec
     void on_leFilename_textChanged( const QString &text );
     void on_browseFilename_clicked();
     void on_mCrsSelector_crsChanged( const QgsCoordinateReferenceSystem &crs );
-    void on_buttonBox_helpRequested() { QgsHelp::openHelp( QStringLiteral( "managing_data_source/create_layers.html#save-layer-from-an-existing-file" ) ); }
+    void showHelp();
     void on_mSymbologyExportComboBox_currentIndexChanged( const QString &text );
     void on_mGeometryTypeComboBox_currentIndexChanged( int index );
     void accept() override;

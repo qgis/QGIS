@@ -27,7 +27,7 @@ QgsProjectionSelectionDialog::QgsProjectionSelectionDialog( QWidget *parent,
   : QDialog( parent, fl )
 {
   setupUi( this );
-  connect( mButtonBox, &QDialogButtonBox::helpRequested, this, &QgsProjectionSelectionDialog::helpRequest );
+  connect( mButtonBox, &QDialogButtonBox::helpRequested, this, &QgsProjectionSelectionDialog::showHelp );
 
   QgsSettings settings;
   restoreGeometry( settings.value( QStringLiteral( "Windows/ProjectionSelector/geometry" ) ).toByteArray() );
@@ -92,7 +92,7 @@ void QgsProjectionSelectionDialog::setOgcWmsCrsFilter( const QSet<QString> &crsF
   projectionSelector->setOgcWmsCrsFilter( crsFilter );
 }
 
-void QgsProjectionSelectionDialog::helpRequest()
+void QgsProjectionSelectionDialog::showHelp()
 {
-  QgsHelp::openHelp( "working_with_projections/working_with_projections.html" );
+  QgsHelp::openHelp( QStringLiteral( "working_with_projections/working_with_projections.html" ) );
 }

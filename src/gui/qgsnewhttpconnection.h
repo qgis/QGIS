@@ -40,11 +40,6 @@ class GUI_EXPORT QgsNewHttpConnection : public QDialog, private Ui::QgsNewHttpCo
   public slots:
     // Saves the connection to ~/.qt/qgisrc
     void accept() override;
-
-    /**
-     * Open the help in a browser
-     */
-    void helpRequest();
     void on_txtName_textChanged( const QString & );
     void on_txtUrl_textChanged( const QString & );
 
@@ -53,6 +48,8 @@ class GUI_EXPORT QgsNewHttpConnection : public QDialog, private Ui::QgsNewHttpCo
     QString mCredentialsBaseKey;
     QString mOriginalConnName; //store initial name to delete entry in case of rename
     QgsAuthConfigSelect *mAuthConfigSelect = nullptr;
+    void showHelp();
+
 };
 
 #endif //  QGSNEWHTTPCONNECTION_H

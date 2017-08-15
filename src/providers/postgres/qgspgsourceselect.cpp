@@ -199,6 +199,7 @@ QgsPgSourceSelect::QgsPgSourceSelect( QWidget *parent, Qt::WindowFlags fl, QgsPr
 {
   setupUi( this );
   setupButtons( buttonBox );
+  connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsPgSourceSelect::showHelp );
 
   if ( widgetMode() != QgsProviderRegistry::WidgetMode::None )
   {
@@ -654,4 +655,9 @@ void QgsPgSourceSelect::treeWidgetSelectionChanged( const QItemSelection &select
   Q_UNUSED( deselected )
   Q_UNUSED( selected )
   emit enableButtons( !mTablesTreeView->selectionModel()->selection().isEmpty() );
+}
+
+void QgsPgSourceSelect::showHelp()
+{
+  QgsHelp::openHelp( QStringLiteral( "managing_data_source/opening_data.html#loading-a-database-layer" ) );
 }

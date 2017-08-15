@@ -33,7 +33,7 @@ QgsNewHttpConnection::QgsNewHttpConnection(
   , mAuthConfigSelect( nullptr )
 {
   setupUi( this );
-  connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsNewHttpConnection::helpRequest );
+  connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsNewHttpConnection::showHelp );
 
   QRegExp rx( "/connections-([^/]+)/" );
   rx.indexIn( baseKey );
@@ -332,7 +332,7 @@ void QgsNewHttpConnection::accept()
   QDialog::accept();
 }
 
-void QgsNewHttpConnection::helpRequest()
+void QgsNewHttpConnection::showHelp()
 {
-  QgsHelp::openHelp( "working_with_ogc/index.html" );
+  QgsHelp::openHelp( QStringLiteral( "working_with_ogc/index.html" ) );
 }

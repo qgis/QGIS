@@ -147,8 +147,6 @@ class QgsDb2SourceSelect : public QgsAbstractDataSourceWidget, private Ui::QgsDb
     //!Sets a new regular expression to the model
     void setSearchExpression( const QString &regexp );
 
-    void on_buttonBox_helpRequested() { QgsHelp::openHelp( QStringLiteral( "managing_data_source/opening_data.html#loading-a-database-layer" ) ); }
-
     void columnThreadFinished();
 
   private:
@@ -181,6 +179,9 @@ class QgsDb2SourceSelect : public QgsAbstractDataSourceWidget, private Ui::QgsDb
     QPushButton *mBuildQueryButton = nullptr;
 
     void finishList();
+
+    void showHelp();
+
 };
 
 #endif // QGSDb2SOURCESELECT_H

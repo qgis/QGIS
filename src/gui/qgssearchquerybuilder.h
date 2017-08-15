@@ -87,11 +87,6 @@ class GUI_EXPORT QgsSearchQueryBuilder : public QDialog, private Ui::QgsQueryBui
      */
     void on_btnSampleValues_clicked();
 
-    /**
-     * Open the help in a browser
-     */
-    void helpRequest();
-
     void saveQuery();
     void loadQuery();
 
@@ -117,6 +112,11 @@ class GUI_EXPORT QgsSearchQueryBuilder : public QDialog, private Ui::QgsQueryBui
      * \param limit if not zero, inserts only this count of values
      */
     void getFieldValues( int limit );
+
+    /**
+     * Open the help in a browser
+     */
+    void showHelp();
 
   private:
 

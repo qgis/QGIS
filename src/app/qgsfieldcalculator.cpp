@@ -53,7 +53,7 @@ QgsFieldCalculator::QgsFieldCalculator( QgsVectorLayer *vl, QWidget *parent )
 
   connect( builder, &QgsExpressionBuilderWidget::expressionParsed, this, &QgsFieldCalculator::setOkButtonState );
   connect( mOutputFieldWidthSpinBox, &QAbstractSpinBox::editingFinished, this, &QgsFieldCalculator::setPrecisionMinMax );
-  connect( mButtonBox, &QDialogButtonBox::helpRequested, this, &QgsFieldCalculator::helpRequest );
+  connect( mButtonBox, &QDialogButtonBox::helpRequested, this, &QgsFieldCalculator::showHelp );
 
   QgsDistanceArea myDa;
   myDa.setSourceCrs( vl->crs() );
@@ -484,7 +484,7 @@ void QgsFieldCalculator::setPrecisionMinMax()
   mOutputFieldPrecisionSpinBox->setMaximum( qMax( minPrecType, qMin( maxPrecType, mOutputFieldWidthSpinBox->value() ) ) );
 }
 
-void QgsFieldCalculator::helpRequest()
+void QgsFieldCalculator::showHelp()
 {
-  QgsHelp::openHelp( "working_with_vector/attribute_table.html#editing-attribute-values" );
+  QgsHelp::openHelp( QStringLiteral( "working_with_vector/attribute_table.html#editing-attribute-values" ) );
 }

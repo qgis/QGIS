@@ -44,6 +44,7 @@ QgsSpatiaLiteSourceSelect::QgsSpatiaLiteSourceSelect( QWidget *parent, Qt::Windo
 {
   setupUi( this );
   setupButtons( buttonBox );
+  connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsSpatiaLiteSourceSelect::showHelp );
 
   QgsSettings settings;
   restoreGeometry( settings.value( QStringLiteral( "Windows/SpatiaLiteSourceSelect/geometry" ) ).toByteArray() );
@@ -575,4 +576,9 @@ void QgsSpatiaLiteSourceSelect::treeWidgetSelectionChanged( const QItemSelection
 {
   Q_UNUSED( deselected )
   emit enableButtons( !selected.isEmpty() );
+}
+
+void QgsSpatiaLiteSourceSelect::showHelp()
+{
+  QgsHelp::openHelp( QStringLiteral( "managing_data_source/opening_data.html#spatialite-layers" ) );
 }

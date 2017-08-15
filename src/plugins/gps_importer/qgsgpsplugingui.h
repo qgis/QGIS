@@ -66,6 +66,7 @@ class QgsGPSPluginGui : public QDialog, private Ui::QgsGPSPluginGuiBase
 
     void saveState();
     void restoreState();
+    void showHelp();
 
 #if 0
     void populateLoadDialog();
@@ -79,7 +80,6 @@ class QgsGPSPluginGui : public QDialog, private Ui::QgsGPSPluginGuiBase
     void on_pbnRefresh_clicked();
     void on_buttonBox_accepted();
     void on_buttonBox_rejected();
-    void on_buttonBox_helpRequested() { QgsHelp::openHelp( QStringLiteral( "working_with_gps/plugins_gps.html" ) ); }
 
   signals:
     void drawRasterLayer( const QString & );

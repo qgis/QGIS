@@ -124,6 +124,7 @@ QgsMssqlSourceSelect::QgsMssqlSourceSelect( QWidget *parent, Qt::WindowFlags fl,
 {
   setupUi( this );
   setupButtons( buttonBox );
+  connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsMssqlSourceSelect::showHelp );
 
   if ( widgetMode() != QgsProviderRegistry::WidgetMode::None )
   {
@@ -740,4 +741,9 @@ void QgsMssqlSourceSelect::treeWidgetSelectionChanged( const QItemSelection &sel
 {
   Q_UNUSED( deselected )
   emit enableButtons( !selected.isEmpty() );
+}
+
+void QgsMssqlSourceSelect::showHelp()
+{
+  QgsHelp::openHelp( QStringLiteral( "managing_data_source/opening_data.html#loading-a-database-layer" ) );
 }

@@ -36,6 +36,7 @@ QgsMeasureDialog::QgsMeasureDialog( QgsMeasureTool *tool, Qt::WindowFlags f )
   , mTool( tool )
 {
   setupUi( this );
+  connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsMeasureDialog::showHelp );
 
   QPushButton *nb = new QPushButton( tr( "&New" ) );
   buttonBox->addButton( nb, QDialogButtonBox::ActionRole );
@@ -563,4 +564,9 @@ void QgsMeasureDialog::reject()
   saveWindowLocation();
   restart();
   QDialog::close();
+}
+
+void QgsMeasureDialog::showHelp()
+{
+  QgsHelp::openHelp( QStringLiteral( "introduction/general_tools.html#measuring" ) );
 }

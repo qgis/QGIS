@@ -139,7 +139,7 @@ SET(QGIS_CORE_SRCS
   qgscolorscheme.cpp
   qgscolorschemeregistry.cpp
   qgsconditionalstyle.cpp
-        qgscoordinatereferencesystem.cpp
+  qgscoordinatereferencesystem.cpp
   qgscoordinatetransform.cpp
   qgscoordinatetransform_p.cpp
   qgscoordinateutils.cpp
@@ -544,7 +544,7 @@ SET(QGIS_CORE_MOC_HDRS
   qgsactionscoperegistry.h
   qgsanimatedicon.h
   qgsbrowsermodel.h
-        qgscoordinatereferencesystem.h
+  qgscoordinatereferencesystem.h
   qgscredentials.h
   qgsdataitem.h
   qgsdataprovider.h
@@ -759,7 +759,7 @@ SET(QGIS_CORE_HDRS
   qgscolorscheme.h
   qgscolorschemeregistry.h
   qgsconnectionpool.h
-        qgsconditionalstyle.h
+  qgsconditionalstyle.h
   qgscoordinatetransform.h
   qgscoordinateutils.h
   qgscrscache.h

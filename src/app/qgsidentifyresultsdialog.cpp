@@ -402,7 +402,7 @@ QgsIdentifyResultsDialog::QgsIdentifyResultsDialog( QgsMapCanvas *canvas, QWidge
   connect( mActionPrint, &QAction::triggered, this, &QgsIdentifyResultsDialog::printCurrentItem );
   connect( mOpenFormAction, &QAction::triggered, this, &QgsIdentifyResultsDialog::featureForm );
   connect( mClearResultsAction, &QAction::triggered, this, &QgsIdentifyResultsDialog::clear );
-  connect( mHelpToolButton, &QAbstractButton::clicked, this, &QgsIdentifyResultsDialog::helpRequested );
+  connect( mHelpToolButton, &QAbstractButton::clicked, this, &QgsIdentifyResultsDialog::showHelp );
 }
 
 QgsIdentifyResultsDialog::~QgsIdentifyResultsDialog()
@@ -1967,4 +1967,9 @@ void QgsIdentifyResultsDialog::formatChanged( int index )
 void QgsIdentifyResultsDialogMapLayerAction::execute()
 {
   mAction->triggerForFeature( mLayer, mFeature );
+}
+
+void QgsIdentifyResultsDialog::showHelp()
+{
+  QgsHelp::openHelp( QStringLiteral( "introduction/general_tools.html#identify" ) );
 }

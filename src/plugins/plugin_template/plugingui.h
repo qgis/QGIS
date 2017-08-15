@@ -31,7 +31,7 @@ class [pluginname]Gui : public QDialog, private Ui::[pluginname]GuiBase
   private slots:
     void on_buttonBox_accepted();
     void on_buttonBox_rejected();
-    void on_buttonBox_helpRequested();
+    void showHelp();
 
 };
 

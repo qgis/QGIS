@@ -48,10 +48,10 @@ class QgsDb2NewConnection : public QDialog, private Ui::QgsDb2NewConnectionBase
     void on_btnListDatabase_clicked();
     void on_btnConnect_clicked();
     void on_cb_trustedConnection_clicked();
-    void on_buttonBox_helpRequested() { QgsHelp::openHelp( QStringLiteral( "managing_data_source/opening_data.html#connecting-to-db2-spatial" ) ); }
   private:
     QString mOriginalConnName; //store initial name to delete entry in case of rename
     QgsAuthConfigSelect *mAuthConfigSelect = nullptr;
+    void showHelp();
 };
 
 #endif //  QGSDB2NEWCONNECTION_H

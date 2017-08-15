@@ -30,6 +30,7 @@ QgsMssqlNewConnection::QgsMssqlNewConnection( QWidget *parent, const QString &co
   , mOriginalConnName( connName )
 {
   setupUi( this );
+  connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsMssqlNewConnection::showHelp );
 
   lblWarning->hide();
 
@@ -232,3 +233,7 @@ void QgsMssqlNewConnection::listDatabases()
   }
 }
 
+void QgsMssqlNewConnection::showHelp()
+{
+  QgsHelp::openHelp( QStringLiteral( "managing_data_source/opening_data.html#connecting-to-mssql-spatial" ) );
+}

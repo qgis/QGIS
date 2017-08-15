@@ -59,6 +59,7 @@ QgsWMSSourceSelect::QgsWMSSourceSelect( QWidget *parent, Qt::WindowFlags fl, Qgs
   , mCurrentTileset( nullptr )
 {
   setupUi( this );
+  connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsWMSSourceSelect::showHelp );
 
   // Creates and connects standard ok/apply buttons
   setupButtons( buttonBox );
@@ -1342,4 +1343,9 @@ void QgsWMSSourceSelect::updateLayerOrderTab( const QStringList &newLayerList, c
   }
 
   tabServers->setTabEnabled( tabServers->indexOf( tabLayerOrder ), mLayerOrderTreeWidget->topLevelItemCount() > 0 );
+}
+
+void QgsWMSSourceSelect::showHelp()
+{
+  QgsHelp::openHelp( QStringLiteral( "working_with_ogc/ogc_client_support.html" ) );
 }

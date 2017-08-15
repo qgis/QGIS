@@ -73,6 +73,8 @@ QgsVectorLayerSaveAsDialog::QgsVectorLayerSaveAsDialog( QgsVectorLayer *layer, i
 void QgsVectorLayerSaveAsDialog::setup()
 {
   setupUi( this );
+  connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsVectorLayerSaveAsDialog::showHelp );
+
   QgsSettings settings;
   restoreGeometry( settings.value( QStringLiteral( "Windows/VectorLayerSaveAs/geometry" ) ).toByteArray() );
 
@@ -967,4 +969,9 @@ void QgsVectorLayerSaveAsDialog::on_mDeselectAllAttributes_clicked()
   }
   mAttributeTableItemChangedSlotEnabled = true;
   mReplaceRawFieldValuesStateChangedSlotEnabled = true;
+}
+
+void QgsVectorLayerSaveAsDialog::showHelp()
+{
+  QgsHelp::openHelp( QStringLiteral( "managing_data_source/create_layers.html#save-layer-from-an-existing-file" ) );
 }

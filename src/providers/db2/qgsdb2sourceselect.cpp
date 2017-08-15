@@ -122,6 +122,8 @@ QgsDb2SourceSelect::QgsDb2SourceSelect( QWidget *parent, Qt::WindowFlags fl, Qgs
 {
   setupUi( this );
   setupButtons( buttonBox );
+  connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsDb2SourceSelect::showHelp );
+
   setWindowTitle( tr( "Add Db2 Table(s)" ) );
 
   if ( widgetMode() != QgsProviderRegistry::WidgetMode::None )
@@ -758,4 +760,9 @@ void QgsDb2GeomColumnTypeThread::run()
     // Now tell the layer list dialog box...
     emit setLayerType( layerProperty );
   }
+}
+
+void QgsDb2SourceSelect::showHelp()
+{
+  QgsHelp::openHelp( QStringLiteral( "managing_data_source/opening_data.html#loading-a-database-layer" ) );
 }

@@ -67,6 +67,7 @@ QgsPluginManager::QgsPluginManager( QWidget *parent, bool pluginsAreEnabled, Qt:
   mPythonUtils = nullptr;
 
   setupUi( this );
+  connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsPluginManager::showHelp );
 
   // QgsOptionsDialogBase handles saving/restoring of geometry, splitter and current tab states,
   // switching vertical tabs between icon/text to icon-only modes (splitter collapsed to left),
@@ -1576,4 +1577,7 @@ void QgsPluginManager::pushMessage( const QString &text, QgsMessageBar::MessageL
   msgBar->pushMessage( text, level, duration );
 }
 
-
+void QgsPluginManager::showHelp()
+{
+  QgsHelp::openHelp( QStringLiteral( "plugins/plugins.html" ) );
+}
