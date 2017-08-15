@@ -96,7 +96,7 @@ class GdalParametersPanel(ParametersPanel):
         for wrapper in list(self.wrappers.values()):
             w = wrapper.widget
             self.connectWidgetChangedSignals(w)
-            for c in w.children():
+            for c in w.findChildren(QWidget):
                 self.connectWidgetChangedSignals(c)
 
     def connectWidgetChangedSignals(self, w):
