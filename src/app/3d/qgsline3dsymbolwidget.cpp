@@ -20,22 +20,22 @@ QgsLine3DSymbolWidget::QgsLine3DSymbolWidget( QWidget *parent )
 
 void QgsLine3DSymbolWidget::setSymbol( const QgsLine3DSymbol &symbol )
 {
-  spinWidth->setValue( symbol.width );
-  spinHeight->setValue( symbol.height );
-  spinExtrusion->setValue( symbol.extrusionHeight );
-  cboAltClamping->setCurrentIndex( ( int ) symbol.altClamping );
-  cboAltBinding->setCurrentIndex( ( int ) symbol.altBinding );
-  widgetMaterial->setMaterial( symbol.material );
+  spinWidth->setValue( symbol.width() );
+  spinHeight->setValue( symbol.height() );
+  spinExtrusion->setValue( symbol.extrusionHeight() );
+  cboAltClamping->setCurrentIndex( ( int ) symbol.altitudeClamping() );
+  cboAltBinding->setCurrentIndex( ( int ) symbol.altitudeBinding() );
+  widgetMaterial->setMaterial( symbol.material() );
 }
 
 QgsLine3DSymbol QgsLine3DSymbolWidget::symbol() const
 {
   QgsLine3DSymbol sym;
-  sym.width = spinWidth->value();
-  sym.height = spinHeight->value();
-  sym.extrusionHeight = spinExtrusion->value();
-  sym.altClamping = ( AltitudeClamping ) cboAltClamping->currentIndex();
-  sym.altBinding = ( AltitudeBinding ) cboAltBinding->currentIndex();
-  sym.material = widgetMaterial->material();
+  sym.setWidth( spinWidth->value() );
+  sym.setHeight( spinHeight->value() );
+  sym.setExtrusionHeight( spinExtrusion->value() );
+  sym.setAltitudeClamping( ( AltitudeClamping ) cboAltClamping->currentIndex() );
+  sym.setAltitudeBinding( ( AltitudeBinding ) cboAltBinding->currentIndex() );
+  sym.setMaterial( widgetMaterial->material() );
   return sym;
 }

@@ -22,10 +22,10 @@ Qt3DExtras::QPhongMaterial *LineEntity::material( const QgsLine3DSymbol &symbol 
 {
   Qt3DExtras::QPhongMaterial *material = new Qt3DExtras::QPhongMaterial;
 
-  material->setAmbient( symbol.material.ambient() );
-  material->setDiffuse( symbol.material.diffuse() );
-  material->setSpecular( symbol.material.specular() );
-  material->setShininess( symbol.material.shininess() );
+  material->setAmbient( symbol.material().ambient() );
+  material->setDiffuse( symbol.material().diffuse() );
+  material->setSpecular( symbol.material().specular() );
+  material->setShininess( symbol.material().shininess() );
 
   return material;
 }
@@ -102,12 +102,12 @@ Qt3DRender::QGeometryRenderer *LineEntityNode::renderer( const Map3D &map, const
     QgsAbstractGeometry *g = geom.geometry();
 
     QgsGeos engine( g );
-    QgsAbstractGeometry *buffered = engine.buffer( symbol.width / 2., nSegments, endCapStyle, joinStyle, mitreLimit ); // factory
+    QgsAbstractGeometry *buffered = engine.buffer( symbol.width() / 2., nSegments, endCapStyle, joinStyle, mitreLimit ); // factory
 
     if ( QgsWkbTypes::flatType( buffered->wkbType() ) == QgsWkbTypes::Polygon )
     {
       QgsPolygonV2 *polyBuffered = static_cast<QgsPolygonV2 *>( buffered );
-      Utils::clampAltitudes( polyBuffered, symbol.altClamping, symbol.altBinding, symbol.height, map );
+      Utils::clampAltitudes( polyBuffered, symbol.altitudeClamping(), symbol.altitudeBinding(), symbol.height(), map );
       polygons.append( polyBuffered );
     }
     else if ( QgsWkbTypes::flatType( buffered->wkbType() ) == QgsWkbTypes::MultiPolygon )
@@ -118,7 +118,7 @@ Qt3DRender::QGeometryRenderer *LineEntityNode::renderer( const Map3D &map, const
         QgsAbstractGeometry *partBuffered = mpolyBuffered->geometryN( i );
         Q_ASSERT( QgsWkbTypes::flatType( partBuffered->wkbType() ) == QgsWkbTypes::Polygon );
         QgsPolygonV2 *polyBuffered = static_cast<QgsPolygonV2 *>( partBuffered )->clone(); // need to clone individual geometry parts
-        Utils::clampAltitudes( polyBuffered, symbol.altClamping, symbol.altBinding, symbol.height, map );
+        Utils::clampAltitudes( polyBuffered, symbol.altitudeClamping(), symbol.altitudeBinding(), symbol.height(), map );
         polygons.append( polyBuffered );
       }
       delete buffered;
@@ -126,7 +126,7 @@ Qt3DRender::QGeometryRenderer *LineEntityNode::renderer( const Map3D &map, const
   }
 
   mGeometry = new PolygonGeometry;
-  mGeometry->setPolygons( polygons, origin, /*symbol.height,*/ symbol.extrusionHeight );
+  mGeometry->setPolygons( polygons, origin, symbol.extrusionHeight() );
 
   Qt3DRender::QGeometryRenderer *renderer = new Qt3DRender::QGeometryRenderer;
   renderer->setGeometry( mGeometry );

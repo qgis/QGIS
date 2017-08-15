@@ -1,10 +1,10 @@
 #include "qgspolygon3dsymbol.h"
 
 QgsPolygon3DSymbol::QgsPolygon3DSymbol()
-  : altClamping( AltClampRelative )
-  , altBinding( AltBindCentroid )
-  , height( 0 )
-  , extrusionHeight( 0 )
+  : mAltClamping( AltClampRelative )
+  , mAltBinding( AltBindCentroid )
+  , mHeight( 0 )
+  , mExtrusionHeight( 0 )
 {
 }
 
@@ -20,14 +20,14 @@ void QgsPolygon3DSymbol::writeXml( QDomElement &elem, const QgsReadWriteContext 
   QDomDocument doc = elem.ownerDocument();
 
   QDomElement elemDataProperties = doc.createElement( "data" );
-  elemDataProperties.setAttribute( "alt-clamping", Utils::altClampingToString( altClamping ) );
-  elemDataProperties.setAttribute( "alt-binding", Utils::altBindingToString( altBinding ) );
-  elemDataProperties.setAttribute( "height", height );
-  elemDataProperties.setAttribute( "extrusion-height", extrusionHeight );
+  elemDataProperties.setAttribute( "alt-clamping", Utils::altClampingToString( mAltClamping ) );
+  elemDataProperties.setAttribute( "alt-binding", Utils::altBindingToString( mAltBinding ) );
+  elemDataProperties.setAttribute( "height", mHeight );
+  elemDataProperties.setAttribute( "extrusion-height", mExtrusionHeight );
   elem.appendChild( elemDataProperties );
 
   QDomElement elemMaterial = doc.createElement( "material" );
-  material.writeXml( elemMaterial );
+  mMaterial.writeXml( elemMaterial );
   elem.appendChild( elemMaterial );
 }
 
@@ -36,11 +36,11 @@ void QgsPolygon3DSymbol::readXml( const QDomElement &elem, const QgsReadWriteCon
   Q_UNUSED( context );
 
   QDomElement elemDataProperties = elem.firstChildElement( "data" );
-  altClamping = Utils::altClampingFromString( elemDataProperties.attribute( "alt-clamping" ) );
-  altBinding = Utils::altBindingFromString( elemDataProperties.attribute( "alt-binding" ) );
-  height = elemDataProperties.attribute( "height" ).toFloat();
-  extrusionHeight = elemDataProperties.attribute( "extrusion-height" ).toFloat();
+  mAltClamping = Utils::altClampingFromString( elemDataProperties.attribute( "alt-clamping" ) );
+  mAltBinding = Utils::altBindingFromString( elemDataProperties.attribute( "alt-binding" ) );
+  mHeight = elemDataProperties.attribute( "height" ).toFloat();
+  mExtrusionHeight = elemDataProperties.attribute( "extrusion-height" ).toFloat();
 
   QDomElement elemMaterial = elem.firstChildElement( "material" );
-  material.readXml( elemMaterial );
+  mMaterial.readXml( elemMaterial );
 }

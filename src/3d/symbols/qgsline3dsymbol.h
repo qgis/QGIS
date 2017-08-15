@@ -20,14 +20,32 @@ class _3D_EXPORT QgsLine3DSymbol : public QgsAbstract3DSymbol
     void writeXml( QDomElement &elem, const QgsReadWriteContext &context ) const override;
     void readXml( const QDomElement &elem, const QgsReadWriteContext &context ) override;
 
-    AltitudeClamping altClamping;  //! how to handle altitude of vector features
-    AltitudeBinding altBinding;    //! how to handle clamping of vertices of individual features
+    AltitudeClamping altitudeClamping() const { return mAltClamping; }
+    void setAltitudeClamping( AltitudeClamping altClamping ) { mAltClamping = altClamping; }
 
-    float height;           //!< Base height of polygons
-    float extrusionHeight;  //!< How much to extrude (0 means no walls)
-    PhongMaterialSettings material;  //!< Defines appearance of objects
+    AltitudeBinding altitudeBinding() const { return mAltBinding; }
+    void setAltitudeBinding( AltitudeBinding altBinding ) { mAltBinding = altBinding; }
 
-    float width;  //!< Line width (horizontally)
+    float width() const { return mWidth; }
+    void setWidth( float width ) { mWidth = width; }
+
+    float height() const { return mHeight; }
+    void setHeight( float height ) { mHeight = height; }
+
+    float extrusionHeight() const { return mExtrusionHeight; }
+    void setExtrusionHeight( float extrusionHeight ) { mExtrusionHeight = extrusionHeight; }
+
+    PhongMaterialSettings material() const { return mMaterial; }
+    void setMaterial( const PhongMaterialSettings &material ) { mMaterial = material; }
+
+  private:
+    AltitudeClamping mAltClamping;  //! how to handle altitude of vector features
+    AltitudeBinding mAltBinding;    //! how to handle clamping of vertices of individual features
+
+    float mWidth;            //!< Line width (horizontally)
+    float mHeight;           //!< Base height of polygons
+    float mExtrusionHeight;  //!< How much to extrude (0 means no walls)
+    PhongMaterialSettings mMaterial;  //!< Defines appearance of objects
 };
 
 

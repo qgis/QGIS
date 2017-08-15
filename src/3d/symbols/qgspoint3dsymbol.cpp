@@ -18,10 +18,10 @@ void QgsPoint3DSymbol::writeXml( QDomElement &elem, const QgsReadWriteContext &c
   QDomDocument doc = elem.ownerDocument();
 
   QDomElement elemMaterial = doc.createElement( "material" );
-  material.writeXml( elemMaterial );
+  mMaterial.writeXml( elemMaterial );
   elem.appendChild( elemMaterial );
 
-  QVariantMap shapePropertiesCopy( shapeProperties );
+  QVariantMap shapePropertiesCopy( mShapeProperties );
   shapePropertiesCopy["model"] = QVariant( context.pathResolver().writePath( shapePropertiesCopy["model"].toString() ) );
 
   QDomElement elemShapeProperties = doc.createElement( "shape-properties" );
@@ -29,19 +29,19 @@ void QgsPoint3DSymbol::writeXml( QDomElement &elem, const QgsReadWriteContext &c
   elem.appendChild( elemShapeProperties );
 
   QDomElement elemTransform = doc.createElement( "transform" );
-  elemTransform.setAttribute( "matrix", Utils::matrix4x4toString( transform ) );
+  elemTransform.setAttribute( "matrix", Utils::matrix4x4toString( mTransform ) );
   elem.appendChild( elemTransform );
 }
 
 void QgsPoint3DSymbol::readXml( const QDomElement &elem, const QgsReadWriteContext &context )
 {
   QDomElement elemMaterial = elem.firstChildElement( "material" );
-  material.readXml( elemMaterial );
+  mMaterial.readXml( elemMaterial );
 
   QDomElement elemShapeProperties = elem.firstChildElement( "shape-properties" );
-  shapeProperties = QgsXmlUtils::readVariant( elemShapeProperties.firstChildElement() ).toMap();
-  shapeProperties["model"] = QVariant( context.pathResolver().readPath( shapeProperties["model"].toString() ) );
+  mShapeProperties = QgsXmlUtils::readVariant( elemShapeProperties.firstChildElement() ).toMap();
+  mShapeProperties["model"] = QVariant( context.pathResolver().readPath( mShapeProperties["model"].toString() ) );
 
   QDomElement elemTransform = elem.firstChildElement( "transform" );
-  transform = Utils::stringToMatrix4x4( elemTransform.attribute( "matrix" ) );
+  mTransform = Utils::stringToMatrix4x4( elemTransform.attribute( "matrix" ) );
 }

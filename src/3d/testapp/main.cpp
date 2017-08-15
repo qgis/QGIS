@@ -128,41 +128,58 @@ int main( int argc, char *argv[] )
 
   // polygons
 
+  PhongMaterialSettings polygonMaterial;
+  polygonMaterial.setAmbient( Qt::gray );
+  polygonMaterial.setDiffuse( Qt::lightGray );
+  polygonMaterial.setShininess( 0 );
+
   QgsPolygon3DSymbol *polygonSymbol = new QgsPolygon3DSymbol;
-  polygonSymbol->material.setAmbient( Qt::gray );
-  polygonSymbol->material.setDiffuse( Qt::lightGray );
-  polygonSymbol->material.setShininess( 0 );
-  polygonSymbol->height = 0;
-  polygonSymbol->extrusionHeight = 10;
+  polygonSymbol->setMaterial( polygonMaterial );
+  polygonSymbol->setHeight( 0 );
+  polygonSymbol->setExtrusionHeight( 10 );
   VectorLayer3DRenderer *pr = new VectorLayer3DRenderer( polygonSymbol );
   pr->setLayer( vlPolygons );
   map.renderers << pr;
 
   // points
 
-  QgsPoint3DSymbol *pointSymbol = new QgsPoint3DSymbol;
-  pointSymbol->material.setDiffuse( QColor( 222, 184, 135 ) );
-  pointSymbol->material.setAmbient( pointSymbol->material.diffuse().darker() );
-  pointSymbol->material.setShininess( 0 );
-  pointSymbol->shapeProperties["shape"] = "cylinder";
-  pointSymbol->shapeProperties["radius"] = 1;
-  pointSymbol->shapeProperties["length"] = 5;
+  PhongMaterialSettings pointMaterial;
+  pointMaterial.setDiffuse( QColor( 222, 184, 135 ) );
+  pointMaterial.setAmbient( pointMaterial.diffuse().darker() );
+  pointMaterial.setShininess( 0 );
+
+  QVariantMap pointShapeProperties;
+  pointShapeProperties["shape"] = "cylinder";
+  pointShapeProperties["radius"] = 1;
+  pointShapeProperties["length"] = 5;
+
   Qt3DCore::QTransform tr;
   tr.setTranslation( QVector3D( 0, 2.5, 0 ) );
-  pointSymbol->transform = tr.matrix();
+
+  QgsPoint3DSymbol *pointSymbol = new QgsPoint3DSymbol;
+  pointSymbol->setMaterial( pointMaterial );
+  pointSymbol->setShapeProperties( pointShapeProperties );
+  pointSymbol->setTransform( tr.matrix() );
   VectorLayer3DRenderer *ptr = new VectorLayer3DRenderer( pointSymbol );
   ptr->setLayer( vlPoints );
   map.renderers << ptr;
 
-  QgsPoint3DSymbol *pointSymbol2 = new QgsPoint3DSymbol;
-  pointSymbol2->material.setDiffuse( QColor( 60, 179, 113 ) );
-  pointSymbol2->material.setAmbient( pointSymbol2->material.diffuse().darker() );
-  pointSymbol2->material.setShininess( 0 );
-  pointSymbol2->shapeProperties["shape"] = "sphere";
-  pointSymbol2->shapeProperties["radius"] = 3.5;
+  PhongMaterialSettings pointMaterial2;
+  pointMaterial2.setDiffuse( QColor( 60, 179, 113 ) );
+  pointMaterial2.setAmbient( pointMaterial2.diffuse().darker() );
+  pointMaterial2.setShininess( 0 );
+
+  QVariantMap pointShapeProperties2;
+  pointShapeProperties2["shape"] = "sphere";
+  pointShapeProperties2["radius"] = 3.5;
+
   Qt3DCore::QTransform tr2;
   tr2.setTranslation( QVector3D( 0, 7.5, 0 ) );
-  pointSymbol2->transform = tr2.matrix();
+
+  QgsPoint3DSymbol *pointSymbol2 = new QgsPoint3DSymbol;
+  pointSymbol2->setMaterial( pointMaterial2 );
+  pointSymbol2->setShapeProperties( pointShapeProperties2 );
+  pointSymbol2->setTransform( tr2.matrix() );
   VectorLayer3DRenderer *ptr2 = new VectorLayer3DRenderer( pointSymbol2 );
   ptr2->setLayer( vlPoints );
   map.renderers << ptr2;
@@ -185,12 +202,15 @@ int main( int argc, char *argv[] )
 
   // lines
 
+  PhongMaterialSettings lineMaterial;
+  lineMaterial.setAmbient( Qt::yellow );
+  lineMaterial.setShininess( 0 );
+
   QgsLine3DSymbol *lineSymbol = new QgsLine3DSymbol;
-  lineSymbol->material.setAmbient( Qt::yellow );
-  lineSymbol->material.setShininess( 0 );
-  lineSymbol->altBinding = AltBindVertex;  // follow terrain
-  lineSymbol->height = 1.5;
-  lineSymbol->width = 5;
+  lineSymbol->setMaterial( lineMaterial );
+  lineSymbol->setAltitudeBinding( AltBindVertex );  // follow terrain
+  lineSymbol->setHeight( 1.5 );
+  lineSymbol->setWidth( 5 );
   VectorLayer3DRenderer *lr = new VectorLayer3DRenderer( lineSymbol );
   lr->setLayer( vlLines );
   map.renderers << lr;

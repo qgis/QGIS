@@ -37,7 +37,7 @@
 PointEntity::PointEntity( const Map3D &map, QgsVectorLayer *layer, const QgsPoint3DSymbol &symbol, Qt3DCore::QNode *parent )
   : Qt3DCore::QEntity( parent )
 {
-  if ( symbol.shapeProperties["shape"].toString() == "model" )
+  if ( symbol.shapeProperties()["shape"].toString() == "model" )
   {
     Model3DPointEntityFactory::addEntitiesForSelectedPoints( map, layer, symbol, this );
     Model3DPointEntityFactory::addEntitiesForNotSelectedPoints( map, layer, symbol, this );
@@ -80,12 +80,12 @@ Qt3DRender::QMaterial *InstancedPointEntityFactory::material( const QgsPoint3DSy
   Qt3DRender::QParameter *specularParameter = new Qt3DRender::QParameter( QStringLiteral( "ks" ), QColor::fromRgbF( 0.01f, 0.01f, 0.01f, 1.0f ) );
   Qt3DRender::QParameter *shininessParameter = new Qt3DRender::QParameter( QStringLiteral( "shininess" ), 150.0f );
 
-  diffuseParameter->setValue( symbol.material.diffuse() );
-  ambientParameter->setValue( symbol.material.ambient() );
-  specularParameter->setValue( symbol.material.specular() );
-  shininessParameter->setValue( symbol.material.shininess() );
+  diffuseParameter->setValue( symbol.material().diffuse() );
+  ambientParameter->setValue( symbol.material().ambient() );
+  specularParameter->setValue( symbol.material().specular() );
+  shininessParameter->setValue( symbol.material().shininess() );
 
-  QMatrix4x4 transformMatrix = symbol.transform;
+  QMatrix4x4 transformMatrix = symbol.transform();
   QMatrix3x3 normalMatrix = transformMatrix.normalMatrix();  // transponed inverse of 3x3 sub-matrix
 
   // QMatrix3x3 is not supported for passing to shaders, so we pass QMatrix4x4
@@ -198,19 +198,20 @@ Qt3DRender::QGeometryRenderer *InstancedPointEntityNode::renderer( const QgsPoin
   instanceDataAttribute->setByteStride( 3 * sizeof( float ) );
 
   Qt3DRender::QGeometry *geometry = nullptr;
-  QString shape = symbol.shapeProperties["shape"].toString();
+  QVariantMap shapeProperties = symbol.shapeProperties();
+  QString shape = shapeProperties["shape"].toString();
   if ( shape == "sphere" )
   {
-    float radius = symbol.shapeProperties["radius"].toFloat();
+    float radius = shapeProperties["radius"].toFloat();
     Qt3DExtras::QSphereGeometry *g = new Qt3DExtras::QSphereGeometry;
     g->setRadius( radius ? radius : 10 );
     geometry = g;
   }
   else if ( shape == "cone" )
   {
-    float length = symbol.shapeProperties["length"].toFloat();
-    float bottomRadius = symbol.shapeProperties["bottomRadius"].toFloat();
-    float topRadius = symbol.shapeProperties["topRadius"].toFloat();
+    float length = shapeProperties["length"].toFloat();
+    float bottomRadius = shapeProperties["bottomRadius"].toFloat();
+    float topRadius = shapeProperties["topRadius"].toFloat();
     Qt3DExtras::QConeGeometry *g = new Qt3DExtras::QConeGeometry;
     g->setLength( length ? length : 10 );
     g->setBottomRadius( bottomRadius );
@@ -221,7 +222,7 @@ Qt3DRender::QGeometryRenderer *InstancedPointEntityNode::renderer( const QgsPoin
   }
   else if ( shape == "cube" )
   {
-    float size = symbol.shapeProperties["size"].toFloat();
+    float size = shapeProperties["size"].toFloat();
     Qt3DExtras::QCuboidGeometry *g = new Qt3DExtras::QCuboidGeometry;
     g->setXExtent( size ? size : 10 );
     g->setYExtent( size ? size : 10 );
@@ -230,8 +231,8 @@ Qt3DRender::QGeometryRenderer *InstancedPointEntityNode::renderer( const QgsPoin
   }
   else if ( shape == "torus" )
   {
-    float radius = symbol.shapeProperties["radius"].toFloat();
-    float minorRadius = symbol.shapeProperties["minorRadius"].toFloat();
+    float radius = shapeProperties["radius"].toFloat();
+    float minorRadius = shapeProperties["minorRadius"].toFloat();
     Qt3DExtras::QTorusGeometry *g = new Qt3DExtras::QTorusGeometry;
     g->setRadius( radius ? radius : 10 );
     g->setMinorRadius( minorRadius ? minorRadius : 5 );
@@ -239,7 +240,7 @@ Qt3DRender::QGeometryRenderer *InstancedPointEntityNode::renderer( const QgsPoin
   }
   else if ( shape == "plane" )
   {
-    float size = symbol.shapeProperties["size"].toFloat();
+    float size = shapeProperties["size"].toFloat();
     Qt3DExtras::QPlaneGeometry *g = new Qt3DExtras::QPlaneGeometry;
     g->setWidth( size ? size : 10 );
     g->setHeight( size ? size : 10 );
@@ -248,8 +249,8 @@ Qt3DRender::QGeometryRenderer *InstancedPointEntityNode::renderer( const QgsPoin
 #if QT_VERSION >= 0x050900
   else if ( shape == "extrudedText" )
   {
-    float depth = symbol.shapeProperties["depth"].toFloat();
-    QString text = symbol.shapeProperties["text"].toString();
+    float depth = shapeProperties["depth"].toFloat();
+    QString text = shapeProperties["text"].toString();
     Qt3DExtras::QExtrudedTextGeometry *g = new Qt3DExtras::QExtrudedTextGeometry;
     g->setDepth( depth ? depth : 1 );
     g->setText( text );
@@ -258,8 +259,8 @@ Qt3DRender::QGeometryRenderer *InstancedPointEntityNode::renderer( const QgsPoin
 #endif
   else  // shape == "cylinder" or anything else
   {
-    float radius = symbol.shapeProperties["radius"].toFloat();
-    float length = symbol.shapeProperties["length"].toFloat();
+    float radius = shapeProperties["radius"].toFloat();
+    float length = shapeProperties["length"].toFloat();
     Qt3DExtras::QCylinderGeometry *g = new Qt3DExtras::QCylinderGeometry;
     //g->setRings(2);  // how many vertices vertically
     //g->setSlices(8); // how many vertices on circumference
@@ -284,10 +285,10 @@ static Qt3DExtras::QPhongMaterial *phongMaterial( const QgsPoint3DSymbol &symbol
 {
   Qt3DExtras::QPhongMaterial *phong = new Qt3DExtras::QPhongMaterial;
 
-  phong->setAmbient( symbol.material.ambient() );
-  phong->setDiffuse( symbol.material.diffuse() );
-  phong->setSpecular( symbol.material.specular() );
-  phong->setShininess( symbol.material.shininess() );
+  phong->setAmbient( symbol.material().ambient() );
+  phong->setDiffuse( symbol.material().diffuse() );
+  phong->setSpecular( symbol.material().specular() );
+  phong->setShininess( symbol.material().shininess() );
 
   return phong;
 }
@@ -312,7 +313,7 @@ void Model3DPointEntityFactory::addEntitiesForNotSelectedPoints( const Map3D &ma
   notSelected.subtract( layer->selectedFeatureIds() );
   req.setFilterFids( notSelected );
 
-  if ( symbol.shapeProperties["overwriteMaterial"].toBool() )
+  if ( symbol.shapeProperties()["overwriteMaterial"].toBool() )
   {
     addMeshEntities( map, layer, req, symbol, parent, false );
   }
@@ -330,7 +331,7 @@ void Model3DPointEntityFactory::addSceneEntities( const Map3D &map, QgsVectorLay
     // build the entity
     Qt3DCore::QEntity *entity = new Qt3DCore::QEntity;
 
-    QUrl url = QUrl::fromLocalFile( symbol.shapeProperties["model"].toString() );
+    QUrl url = QUrl::fromLocalFile( symbol.shapeProperties()["model"].toString() );
     Qt3DRender::QSceneLoader *modelLoader = new Qt3DRender::QSceneLoader;
     modelLoader->setSource( url );
 
@@ -358,7 +359,7 @@ void Model3DPointEntityFactory::addMeshEntities( const Map3D &map, QgsVectorLaye
     // build the entity
     Qt3DCore::QEntity *entity = new Qt3DCore::QEntity;
 
-    QUrl url = QUrl::fromLocalFile( symbol.shapeProperties["model"].toString() );
+    QUrl url = QUrl::fromLocalFile( symbol.shapeProperties()["model"].toString() );
     Qt3DRender::QMesh *mesh = new Qt3DRender::QMesh;
     mesh->setSource( url );
 
@@ -372,7 +373,7 @@ void Model3DPointEntityFactory::addMeshEntities( const Map3D &map, QgsVectorLaye
 Qt3DCore::QTransform *Model3DPointEntityFactory::transform( const QVector3D &position, const QgsPoint3DSymbol &symbol )
 {
   Qt3DCore::QTransform *tr = new Qt3DCore::QTransform;
-  tr->setMatrix( symbol.transform );
+  tr->setMatrix( symbol.transform() );
   tr->setTranslation( position + tr->translation() );
   return tr;
 }

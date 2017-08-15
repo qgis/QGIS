@@ -19,20 +19,20 @@ QgsPolygon3DSymbolWidget::QgsPolygon3DSymbolWidget( QWidget *parent )
 
 void QgsPolygon3DSymbolWidget::setSymbol( const QgsPolygon3DSymbol &symbol )
 {
-  spinHeight->setValue( symbol.height );
-  spinExtrusion->setValue( symbol.extrusionHeight );
-  cboAltClamping->setCurrentIndex( ( int ) symbol.altClamping );
-  cboAltBinding->setCurrentIndex( ( int ) symbol.altBinding );
-  widgetMaterial->setMaterial( symbol.material );
+  spinHeight->setValue( symbol.height() );
+  spinExtrusion->setValue( symbol.extrusionHeight() );
+  cboAltClamping->setCurrentIndex( ( int ) symbol.altitudeClamping() );
+  cboAltBinding->setCurrentIndex( ( int ) symbol.altitudeBinding() );
+  widgetMaterial->setMaterial( symbol.material() );
 }
 
 QgsPolygon3DSymbol QgsPolygon3DSymbolWidget::symbol() const
 {
   QgsPolygon3DSymbol sym;
-  sym.height = spinHeight->value();
-  sym.extrusionHeight = spinExtrusion->value();
-  sym.altClamping = ( AltitudeClamping ) cboAltClamping->currentIndex();
-  sym.altBinding = ( AltitudeBinding ) cboAltBinding->currentIndex();
-  sym.material = widgetMaterial->material();
+  sym.setHeight( spinHeight->value() );
+  sym.setExtrusionHeight( spinExtrusion->value() );
+  sym.setAltitudeClamping( ( AltitudeClamping ) cboAltClamping->currentIndex() );
+  sym.setAltitudeBinding( ( AltitudeBinding ) cboAltBinding->currentIndex() );
+  sym.setMaterial( widgetMaterial->material() );
   return sym;
 }

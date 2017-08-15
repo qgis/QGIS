@@ -20,9 +20,19 @@ class _3D_EXPORT QgsPoint3DSymbol : public QgsAbstract3DSymbol
     void writeXml( QDomElement &elem, const QgsReadWriteContext &context ) const override;
     void readXml( const QDomElement &elem, const QgsReadWriteContext &context ) override;
 
-    PhongMaterialSettings material;  //!< Defines appearance of objects
-    QVariantMap shapeProperties;  //!< What kind of shape to use and what
-    QMatrix4x4 transform;  //!< Transform of individual instanced models
+    PhongMaterialSettings material() const { return mMaterial; }
+    void setMaterial( const PhongMaterialSettings &material ) { mMaterial = material; }
+
+    QVariantMap shapeProperties() const { return mShapeProperties; }
+    void setShapeProperties( const QVariantMap &properties ) { mShapeProperties = properties; }
+
+    QMatrix4x4 transform() const { return mTransform; }
+    void setTransform( const QMatrix4x4 &transform ) { mTransform = transform; }
+
+  private:
+    PhongMaterialSettings mMaterial;  //!< Defines appearance of objects
+    QVariantMap mShapeProperties;  //!< What kind of shape to use and what
+    QMatrix4x4 mTransform;  //!< Transform of individual instanced models
 };
 
 

@@ -71,7 +71,7 @@ void QgsPoint3DSymbolWidget::onOverwriteMaterialChecked( int state )
 
 void QgsPoint3DSymbolWidget::setSymbol( const QgsPoint3DSymbol &symbol )
 {
-  QVariantMap vm = symbol.shapeProperties;
+  QVariantMap vm = symbol.shapeProperties();
   int index = cboShape->findData( vm["shape"] );
   cboShape->setCurrentIndex( index != -1 ? index : 1 );  // use cylinder by default if shape is not set
 
@@ -108,12 +108,12 @@ void QgsPoint3DSymbolWidget::setSymbol( const QgsPoint3DSymbol &symbol )
       break;
   }
 
-  widgetMaterial->setMaterial( symbol.material );
+  widgetMaterial->setMaterial( symbol.material() );
 
   // decompose the transform matrix
   // assuming the last row has values [0 0 0 1]
   // see https://math.stackexchange.com/questions/237369/given-this-transformation-matrix-how-do-i-decompose-it-into-translation-rotati
-  QMatrix4x4 m = symbol.transform;
+  QMatrix4x4 m = symbol.transform();
   float *md = m.data();  // returns data in column-major order
   float sx = QVector3D( md[0], md[1], md[2] ).length();
   float sy = QVector3D( md[4], md[5], md[6] ).length();
@@ -183,9 +183,9 @@ QgsPoint3DSymbol QgsPoint3DSymbolWidget::symbol() const
   tr.rotate( rot );
 
   QgsPoint3DSymbol sym;
-  sym.shapeProperties = vm;
-  sym.material = widgetMaterial->material();
-  sym.transform = tr;
+  sym.setShapeProperties( vm );
+  sym.setMaterial( widgetMaterial->material() );
+  sym.setTransform( tr );
   return sym;
 }
 

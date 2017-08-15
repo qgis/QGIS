@@ -72,10 +72,10 @@ void PolygonEntity::addEntityForNotSelectedPolygons( const Map3D &map, QgsVector
 Qt3DExtras::QPhongMaterial *PolygonEntity::material( const QgsPolygon3DSymbol &symbol ) const
 {
   Qt3DExtras::QPhongMaterial *material = new Qt3DExtras::QPhongMaterial;
-  material->setAmbient( symbol.material.ambient() );
-  material->setDiffuse( symbol.material.diffuse() );
-  material->setSpecular( symbol.material.specular() );
-  material->setShininess( symbol.material.shininess() );
+  material->setAmbient( symbol.material().ambient() );
+  material->setDiffuse( symbol.material().diffuse() );
+  material->setSpecular( symbol.material().specular() );
+  material->setShininess( symbol.material().shininess() );
   return material;
 }
 
@@ -115,7 +115,7 @@ Qt3DRender::QGeometryRenderer *PolygonEntityNode::renderer( const Map3D &map, co
     {
       QgsPolygonV2 *poly = static_cast<QgsPolygonV2 *>( g );
       QgsPolygonV2 *polyClone = poly->clone();
-      Utils::clampAltitudes( polyClone, symbol.altClamping, symbol.altBinding, symbol.height, map );
+      Utils::clampAltitudes( polyClone, symbol.altitudeClamping(), symbol.altitudeBinding(), symbol.height(), map );
       polygons.append( polyClone );
     }
     else if ( QgsWkbTypes::flatType( g->wkbType() ) == QgsWkbTypes::MultiPolygon )
@@ -126,7 +126,7 @@ Qt3DRender::QGeometryRenderer *PolygonEntityNode::renderer( const Map3D &map, co
         QgsAbstractGeometry *g2 = mpoly->geometryN( i );
         Q_ASSERT( QgsWkbTypes::flatType( g2->wkbType() ) == QgsWkbTypes::Polygon );
         QgsPolygonV2 *polyClone = static_cast<QgsPolygonV2 *>( g2 )->clone();
-        Utils::clampAltitudes( polyClone, symbol.altClamping, symbol.altBinding, symbol.height, map );
+        Utils::clampAltitudes( polyClone, symbol.altitudeClamping(), symbol.altitudeBinding(), symbol.height(), map );
         polygons.append( polyClone );
       }
     }
@@ -135,7 +135,7 @@ Qt3DRender::QGeometryRenderer *PolygonEntityNode::renderer( const Map3D &map, co
   }
 
   mGeometry = new PolygonGeometry;
-  mGeometry->setPolygons( polygons, origin, symbol.extrusionHeight );
+  mGeometry->setPolygons( polygons, origin, symbol.extrusionHeight() );
 
   Qt3DRender::QGeometryRenderer *renderer = new Qt3DRender::QGeometryRenderer;
   renderer->setGeometry( mGeometry );
