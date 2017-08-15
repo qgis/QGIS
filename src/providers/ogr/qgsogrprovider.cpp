@@ -4297,3 +4297,76 @@ QGISEXTERN void cleanupProvider()
   // NOTE: QgsApplication takes care of
   // calling OGRCleanupAll();
 }
+
+
+
+QGISEXTERN bool deleteLayer( const QString &uri, QString &errCause )
+{
+  bool isSubLayer;
+  int layerIndex;
+  QString layerName;
+  QString subsetString;
+  OGRwkbGeometryType ogrGeometryType;
+  QString filePath = AnalyzeURI( uri,
+                                 isSubLayer,
+                                 layerIndex,
+                                 layerName,
+                                 subsetString,
+                                 ogrGeometryType );
+
+  OGRDataSourceH hDS = GDALOpenEx( filePath.toLocal8Bit().data(), GDAL_OF_RASTER | GDAL_OF_VECTOR | GDAL_OF_UPDATE, NULL, NULL, NULL );
+  if ( hDS  && ( ! layerName.isEmpty() || layerIndex != -1 ) )
+  {
+    if ( layerIndex == -1 )
+    {
+      for ( int i = 0; i < GDALDatasetGetLayerCount( hDS ); i++ )
+      {
+        OGRLayerH hL = GDALDatasetGetLayer( hDS, i );
+        if ( layerName == QString( OGR_L_GetName( hL ) ) )
+        {
+          layerIndex = i;
+        }
+      }
+    }
+    OGRErr error = GDALDatasetDeleteLayer( hDS, layerIndex );
+    switch ( error )
+    {
+      case OGRERR_NOT_ENOUGH_DATA:
+        errCause = QStringLiteral( "Not enough data to deserialize" );
+        break;
+      case OGRERR_NOT_ENOUGH_MEMORY:
+        errCause = QStringLiteral( "Not enough memory" );
+        break;
+      case OGRERR_UNSUPPORTED_GEOMETRY_TYPE:
+        errCause = QStringLiteral( "Unsupported geometry type" );
+        break;
+      case OGRERR_UNSUPPORTED_OPERATION:
+        errCause = QStringLiteral( "Unsupported operation" );
+        break;
+      case OGRERR_CORRUPT_DATA:
+        errCause = QStringLiteral( "Corrupt data" );
+        break;
+      case OGRERR_FAILURE:
+        errCause = QStringLiteral( "Failure" );
+        break;
+      case OGRERR_UNSUPPORTED_SRS:
+        errCause = QStringLiteral( "Unsupported SRS" );
+        break;
+      case OGRERR_INVALID_HANDLE:
+        errCause = QStringLiteral( "Invalid handle" );
+        break;
+      case OGRERR_NON_EXISTING_FEATURE:
+        errCause = QStringLiteral( "Non existing feature" );
+        break;
+      default:
+      case OGRERR_NONE:
+        errCause = QStringLiteral( "Success" );
+        break;
+    }
+    errCause = QStringLiteral( "OGR result code: %s" ).arg( errCause );
+    return error == OGRERR_NONE;
+  }
+  // This should never happen:
+  errCause = QStringLiteral( "Layer not found: %s" ).arg( uri );
+  return false;
+}

@@ -29,6 +29,12 @@ class QgsOgrLayerItem : public QgsLayerItem
     bool setCrs( const QgsCoordinateReferenceSystem &crs ) override;
 
     QString layerName() const override;
+
+#ifdef HAVE_GUI
+    QList<QAction *> actions() override;
+  public slots:
+    void deleteLayer();
+#endif
 };
 
 

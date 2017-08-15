@@ -22,6 +22,7 @@
 #include <QFileInfo>
 #include <QTextStream>
 #include <QAction>
+#include <QMessageBox>
 
 #include <ogr_srs_api.h>
 #include <cpl_error.h>
@@ -30,6 +31,8 @@
 // these are defined in qgsogrprovider.cpp
 QGISEXTERN QStringList fileExtensions();
 QGISEXTERN QStringList wildcards();
+
+QGISEXTERN bool deleteLayer( const QString &uri, const QString &errCause );
 
 
 QgsOgrLayerItem::QgsOgrLayerItem( QgsDataItem *parent,
@@ -55,6 +58,7 @@ QgsOgrLayerItem::QgsOgrLayerItem( QgsDataItem *parent,
     // No OGR_L_SetSpatialRef : http://trac.osgeo.org/gdal/ticket/4032
   }
 }
+
 
 bool QgsOgrLayerItem::setCrs( const QgsCoordinateReferenceSystem &crs )
 {
@@ -109,6 +113,38 @@ QString QgsOgrLayerItem::layerName() const
   else
     return info.completeBaseName();
 }
+
+#ifdef HAVE_GUI
+QList<QAction *> QgsOgrLayerItem::actions()
+{
+  QList<QAction *> lst;
+  QAction *actionDeleteLayer = new QAction( tr( "Delete %1" ).arg( mName ), this );
+  connect( actionDeleteLayer, &QAction::triggered, this, &QgsOgrLayerItem::deleteLayer );
+  lst.append( actionDeleteLayer );
+  return lst;
+}
+
+void QgsOgrLayerItem::deleteLayer()
+{
+  if ( QMessageBox::question( nullptr, QObject::tr( "Delete Layer" ),
+                              QObject::tr( "Are you sure you want to delete %1?" ).arg( mName ),
+                              QMessageBox::Yes | QMessageBox::No, QMessageBox::No ) != QMessageBox::Yes )
+    return;
+
+  QString errCause;
+  bool res = ::deleteLayer( mUri, errCause );
+  if ( !res )
+  {
+    QMessageBox::warning( nullptr, tr( "Delete Layer" ), errCause );
+  }
+  else
+  {
+    QMessageBox::information( nullptr, tr( "Delete Layer" ), tr( "Layer deleted successfully." ) );
+    if ( mParent )
+      mParent->refresh();
+  }
+}
+#endif
 
 // -------
 
