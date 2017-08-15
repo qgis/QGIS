@@ -33,15 +33,15 @@ from qgis.core import (QgsProcessingUtils,
                        QgsMessageLog,
                        QgsProcessingParameterRasterLayer,
                        QgsProcessingParameterBoolean,
-                       QgsProcessingParameterNumber)
+                       QgsProcessingParameterNumber,
+                       QgsProcessingParameterEnum)
 from processing.core.ProcessingConfig import ProcessingConfig
 from processing.core.parameters import (getParameterFromString,
                                         ParameterExtent,
                                         ParameterVector,
                                         ParameterTable,
                                         ParameterMultipleInput,
-                                        ParameterFixedTable,
-                                        ParameterSelection)
+                                        ParameterFixedTable)
 from processing.core.outputs import (getOutputFromString,
                                      OutputVector,
                                      OutputRaster)
@@ -249,7 +249,7 @@ class SagaAlgorithm(SagaAlgorithmBase):
                 for i in range(4):
                     command += ' -' + self.extentParamNames[i] + ' ' \
                         + str(float(values[i]) + offset[i])
-            elif isinstance(param, (QgsProcessingParameterNumber, ParameterSelection)):
+            elif isinstance(param, (QgsProcessingParameterNumber, QgsProcessingParameterEnum)):
                 command += ' -' + param.name() + ' ' + str(param.value)
             else:
                 command += ' -' + param.name() + ' "' + str(param.value) + '"'

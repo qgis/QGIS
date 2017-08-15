@@ -2,7 +2,7 @@ Function Fit
 table_calculus
 ParameterTable|SOURCE|Source|False
 ParameterTable|YFIELD|y - Values|False
-ParameterSelection|USE_X|Use x -Values|[0] No;[1] Yes| 0
+QgsProcessingParameterEnum|USE_X|Use x -Values|[0] No;[1] Yes|False|0
 ParameterTable|XFIELD|x - Values|False
 ParameterString|FORMEL|Formula
 QgsProcessingParameterNumber|ITER|Iterationen|QgsProcessingParameterNumber.Integer|1000|False| 1|None

@@ -9,4 +9,4 @@ QgsProcessingParameterRasterDestination|SLOPE_IDX|Hillslope Index
 QgsProcessingParameterNumber|RADIUS_VALLEY|Valley Radius|QgsProcessingParameterNumber.Double|1000.000000|False| 0.000000|None
 QgsProcessingParameterNumber|RADIUS_HILL|Hill Radius|QgsProcessingParameterNumber.Double|1000.000000|False| 0.000000|None
 QgsProcessingParameterNumber|THRESHOLD|Elevation Threshold|QgsProcessingParameterNumber.Double|100.000000|False| 0.000000|None
-ParameterSelection|METHOD|Slope Index|[0] default;[1] alternative| 0
+QgsProcessingParameterEnum|METHOD|Slope Index|[0] default;[1] alternative|False|0

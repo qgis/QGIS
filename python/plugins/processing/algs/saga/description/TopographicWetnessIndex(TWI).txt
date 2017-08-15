@@ -3,6 +3,6 @@ ta_hydrology
 QgsProcessingParameterRasterLayer|SLOPE|Slope|None|False
 QgsProcessingParameterRasterLayer|AREA|Catchment Area|None|False
 QgsProcessingParameterRasterLayer|TRANS|Transmissivity|None|True
-ParameterSelection|CONV|Area Conversion|[0] no conversion (areas already given as specific catchment area);[1] 1 / cell size (pseudo specific catchment area)|1
-ParameterSelection|METHOD|Method (TWI)|[0] Standard;[1] TOPMODEL
+QgsProcessingParameterEnum|CONV|Area Conversion|[0] no conversion (areas already given as specific catchment area);[1] 1 / cell size (pseudo specific catchment area)|False|1
+QgsProcessingParameterEnum|METHOD|Method (TWI)|[0] Standard;[1] TOPMODEL
 QgsProcessingParameterRasterDestination|TWI|Topographic Wetness Index

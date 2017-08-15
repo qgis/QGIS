@@ -13,4 +13,4 @@ QgsProcessingParameterBoolean|TRUNC_PRUNED|Truncate Pruned Trees|True
 QgsProcessingParameterNumber|REG_ACCURACY|Regression Accuracy|QgsProcessingParameterNumber.Double|0.010000|False| 0.000000|None
 QgsProcessingParameterNumber|WEAK_COUNT|Weak Count|QgsProcessingParameterNumber.Integer|100|False| 0|None
 QgsProcessingParameterNumber|WGT_TRIM_RATE|Weight Trim Rate|QgsProcessingParameterNumber.Double|0.950000|False| 0.000000| 1.000000
-ParameterSelection|BOOST_TYPE|Boost Type|[0] Discrete AdaBoost;[1] Real AdaBoost;[2] LogitBoost;[3] Gentle AdaBoost| 1
+QgsProcessingParameterEnum|BOOST_TYPE|Boost Type|[0] Discrete AdaBoost;[1] Real AdaBoost;[2] LogitBoost;[3] Gentle AdaBoost|False|1

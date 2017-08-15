@@ -4,7 +4,7 @@ ParameterVector|REF_SOURCE|Reference Points (Origin)|-1|False
 ParameterVector|REF_TARGET|Reference Points (Projection)|-1|True
 ParameterTable|XFIELD|x Position|False
 ParameterTable|YFIELD|y Position|False
-ParameterSelection|METHOD|Method|[0] Automatic;[1] Triangulation;[2] Spline;[3] Affine;[4] 1st Order Polynomial;[5] 2nd Order Polynomial;[6] 3rd Order Polynomial;[7] Polynomial, Order| 0
+QgsProcessingParameterEnum|METHOD|Method|[0] Automatic;[1] Triangulation;[2] Spline;[3] Affine;[4] 1st Order Polynomial;[5] 2nd Order Polynomial;[6] 3rd Order Polynomial;[7] Polynomial, Order|False|0
 QgsProcessingParameterNumber|ORDER|Polynomial Order|QgsProcessingParameterNumber.Integer|3|False| 1|None
 ParameterVector|INPUT|Input|-1|False
 OutputVector|OUTPUT|Output

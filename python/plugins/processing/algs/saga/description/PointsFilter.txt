@@ -6,7 +6,7 @@ QgsProcessingParameterNumber|RADIUS|Radius|QgsProcessingParameterNumber.Integer|
 QgsProcessingParameterNumber|MINNUM|Minimum Number of Points|QgsProcessingParameterNumber.Integer|0|False|None|None
 QgsProcessingParameterNumber|MAXNUM|Maximum Number of Points|QgsProcessingParameterNumber.Integer|0|False|None|None
 QgsProcessingParameterBoolean|QUADRANTS      |Quadrants|True
-ParameterSelection|METHOD|Filter Criterion|[0] keep maxima (with tolerance);[1] keep minima (with tolerance);[2] remove maxima (with tolerance);[3] remove minima (with tolerance);[4] remove below percentile;[5] remove above percentile
+QgsProcessingParameterEnum|METHOD|Filter Criterion|[0] keep maxima (with tolerance);[1] keep minima (with tolerance);[2] remove maxima (with tolerance);[3] remove minima (with tolerance);[4] remove below percentile;[5] remove above percentile
 QgsProcessingParameterNumber|TOLERANCE|Tolerance|QgsProcessingParameterNumber.Double|0.0|False|None|None
 QgsProcessingParameterNumber|PERCENT|Percentile|QgsProcessingParameterNumber.Integer|50|False|None|None
 OutputVector|FILTER|Filtered Points

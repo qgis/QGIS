@@ -3,4 +3,4 @@ shapes_lines
 ParameterVector|LINES|Lines|1|False
 ParameterVector|SPLIT|Split Features|1|False
 OutputVector|INTERSECT|Intersection
-ParameterSelection|OUTPUT|Output|[0] polylines;[1] separate lines| 1
+QgsProcessingParameterEnum|OUTPUT|Output|[0] polylines;[1] separate lines|False|1

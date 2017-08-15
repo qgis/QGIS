@@ -5,5 +5,5 @@ QgsProcessingParameterRasterLayer|GRID|Grid|None|False
 OutputVector|OUTPUT|Result
 OutputVector|MOVES|Moves
 QgsProcessingParameterNumber|DISTANCE|Search Distance (Map Units)|QgsProcessingParameterNumber.Double|0.000000|False| 0.000000|None
-ParameterSelection|SHAPE|Search Shape|[0] circle;[1] square| 0
-ParameterSelection|EXTREME|Extreme|[0] minimum;[1] maximum| 1
+QgsProcessingParameterEnum|SHAPE|Search Shape|[0] circle;[1] square|False|0
+QgsProcessingParameterEnum|EXTREME|Extreme|[0] minimum;[1] maximum|False|1

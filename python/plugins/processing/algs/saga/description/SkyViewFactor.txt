@@ -2,7 +2,7 @@ Sky View Factor
 ta_lighting
 QgsProcessingParameterRasterLayer|DEM|Elevation|None|False
 QgsProcessingParameterNumber|RADIUS|Maximum Search Radius|QgsProcessingParameterNumber.Integer|10000|False|0.0|None
-ParameterSelection|METHOD|Method|[0] multi scale;[1] sectors
+QgsProcessingParameterEnum|METHOD|Method|[0] multi scale;[1] sectors
 QgsProcessingParameterNumber|DLEVEL|Multi Scale Factor|QgsProcessingParameterNumber.Double|3.00|False|1.25|None
 QgsProcessingParameterNumber|NDIRS|Number of Sectors|QgsProcessingParameterNumber.Integer|8|False|3|None
 QgsProcessingParameterRasterDestination|VISIBLE|Visible Sky

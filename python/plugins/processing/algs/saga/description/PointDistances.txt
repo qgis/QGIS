@@ -5,5 +5,5 @@ ParameterTable|ID_POINTS|Identifier|False
 ParameterVector|NEAR|Near Points|-1|True
 ParameterTable|ID_NEAR|Identifier|False
 ParameterTable|DISTANCES|Distances|False
-ParameterSelection|FORMAT|Output Format|[0] complete input times near points matrix;[1] each pair with a single record| 1
+QgsProcessingParameterEnum|FORMAT|Output Format|[0] complete input times near points matrix;[1] each pair with a single record|False|1
 QgsProcessingParameterNumber|MAX_DIST|Maximum Distance|QgsProcessingParameterNumber.Double|0.000000|False| 0.000000|None

@@ -2,6 +2,6 @@ Smoothing (ViGrA)
 imagery_vigra
 QgsProcessingParameterRasterLayer|INPUT|Input|None|False
 QgsProcessingParameterRasterDestination|OUTPUT|Output
-ParameterSelection|TYPE|Type of smoothing|[0] exponential;[1] nonlinear;[2] gaussian| 0
+QgsProcessingParameterEnum|TYPE|Type of smoothing|[0] exponential;[1] nonlinear;[2] gaussian|False|0
 QgsProcessingParameterNumber|SCALE|Size of smoothing filter|QgsProcessingParameterNumber.Double|2.000000|False| 0.000000|None
 QgsProcessingParameterNumber|EDGE|Edge threshold for nonlinear smoothing|QgsProcessingParameterNumber.Double|1.000000|False| 0.000000|None
