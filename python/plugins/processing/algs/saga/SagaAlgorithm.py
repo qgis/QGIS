@@ -79,10 +79,7 @@ class SagaAlgorithm(SagaAlgorithmBase):
 
     def initAlgorithm(self, config=None):
         for p in self.params:
-            try:
-                self.addParameter(p)
-            except:
-                pass # todo - remove
+            self.addParameter(p)
 
     def name(self):
         return self._name
@@ -164,7 +161,7 @@ class SagaAlgorithm(SagaAlgorithmBase):
                 if layer:
                     filename = dataobjects.exportVectorLayer(layer)
                     self.exportedLayers[param.value] = filename
-                elif not parameteres[param.name()].endswith('shp'):
+                elif not parameters[param.name()].endswith('shp'):
                     raise GeoAlgorithmExecutionException(
                         self.tr('Unsupported file format'))
             if isinstance(param, ParameterTable):
