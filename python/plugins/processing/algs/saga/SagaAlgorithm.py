@@ -29,9 +29,9 @@ __revision__ = '$Format:%H$'
 import os
 import importlib
 from qgis.core import (QgsProcessingUtils,
+                       QgsProcessingException,
                        QgsMessageLog)
 from processing.core.ProcessingConfig import ProcessingConfig
-from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from processing.core.parameters import (getParameterFromString,
                                         ParameterExtent,
                                         ParameterRaster,
@@ -161,7 +161,7 @@ class SagaAlgorithm(SagaAlgorithmBase):
                     filename = dataobjects.exportVectorLayer(layer)
                     self.exportedLayers[param.value] = filename
                 elif not parameters[param.name()].endswith('shp'):
-                    raise GeoAlgorithmExecutionException(
+                    raise QgsProcessingException(
                         self.tr('Unsupported file format'))
             if isinstance(param, ParameterTable):
                 if param.name() not in parameters or parameters[param.name()] is None:
@@ -171,7 +171,7 @@ class SagaAlgorithm(SagaAlgorithmBase):
                     filename = dataobjects.exportTable(table)
                     self.exportedLayers[parameters[param.name()]] = filename
                 elif not parameters[param.name()].endswith('shp'):
-                    raise GeoAlgorithmExecutionException(
+                    raise QgsProcessingException(
                         self.tr('Unsupported file format'))
             if isinstance(param, ParameterMultipleInput):
                 if param.name() not in parameters or parameters[param.name()] is None:
@@ -199,7 +199,7 @@ class SagaAlgorithm(SagaAlgorithmBase):
                             filename = dataobjects.exportVectorLayer(layer)
                             self.exportedLayers[layerfile] = filename
                         elif not layerfile.endswith('shp'):
-                            raise GeoAlgorithmExecutionException(
+                            raise QgsProcessingException(
                                 self.tr('Unsupported file format'))
 
         # TODO - set minimum extent

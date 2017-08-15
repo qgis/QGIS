@@ -18,7 +18,7 @@ qgis_sipify
 qgis_sip_include
 qgis_sip_uptodate
 
-# flacky
+# flakey
 qgis_filedownloader
 qgis_openstreetmaptest
 qgis_wcsprovidertest
