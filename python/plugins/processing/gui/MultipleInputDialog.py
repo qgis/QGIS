@@ -87,6 +87,7 @@ class MultipleInputDialog(BASE, WIDGET):
         self.settings = QgsSettings()
         self.restoreGeometry(self.settings.value("/Processing/multipleInputDialogGeometry", QByteArray()))
 
+        self.lstLayers.setSelectionMode(QAbstractItemView.ExtendedSelection)
         self.populateList()
         self.finished.connect(self.saveWindowGeometry)
 
@@ -125,16 +126,22 @@ class MultipleInputDialog(BASE, WIDGET):
         self.selectedoptions = None
         QDialog.reject(self)
 
+    def getItemsToModify(self):
+        items = []
+        if len(self.lstLayers.selectedIndexes()) > 1:
+            for i in self.lstLayers.selectedIndexes():
+                items.append(self.model.itemFromIndex(i))
+        else:
+            for i in range(self.model.rowCount()):
+                items.append(self.model.item(i))
+        return items
+
     def selectAll(self, value):
-        model = self.lstLayers.model()
-        for i in range(model.rowCount()):
-            item = model.item(i)
+        for item in self.getItemsToModify():
             item.setCheckState(Qt.Checked if value else Qt.Unchecked)
 
     def toggleSelection(self):
-        model = self.lstLayers.model()
-        for i in range(model.rowCount()):
-            item = model.item(i)
+        for item in self.getItemsToModify():
             checked = item.checkState() == Qt.Checked
             item.setCheckState(Qt.Unchecked if checked else Qt.Checked)
 
