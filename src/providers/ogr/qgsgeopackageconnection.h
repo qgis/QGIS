@@ -47,11 +47,11 @@ class QgsGeoPackageConnection : public QObject
     //! \see QgsDataSourceUri
     QgsDataSourceUri uri();
     //! Return the path
-    QString path( ) { return mPath; }
+    QString path( ) const { return mPath; }
     //! Returns the connection name
-    QString name() { return mConnName; }
+    QString name() const { return mConnName; }
     //! Set the \a path fo the connection
-    void setPath( QString &path );
+    void setPath( const QString &path );
     //! Store the connection data in the settings
     void save();
     const static QString SETTINGS_PREFIX;

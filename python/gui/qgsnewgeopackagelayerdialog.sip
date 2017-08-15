@@ -31,6 +31,19 @@ Constructor
 .. versionadded:: 3.0
 %End
 
+    QString databasePath() const;
+%Docstring
+ Returns the database path
+.. versionadded:: 3.0
+ :rtype: str
+%End
+
+    void setDatabasePath( const QString &path );
+%Docstring
+ Sets the the database ``path``
+.. versionadded:: 3.0
+%End
+
 };
 
 /************************************************************************

@@ -94,8 +94,25 @@ void QgsGeoPackageRootItem::newConnection()
 {
   // TODO use QgsFileWidget
   QString path = QFileDialog::getOpenFileName( nullptr, tr( "Open GeoPackage" ), "", tr( "GeoPackage Database (*.gpkg)" ) );
+  storeConnection( path );
+}
+
+
+#ifdef HAVE_GUI
+void QgsGeoPackageRootItem::createDatabase()
+{
+  QgsNewGeoPackageLayerDialog dialog( nullptr );
+  dialog.setCrs( QgsProject::instance()->defaultCrsForNewLayers() );
+  if ( dialog.exec() == QDialog::Accepted )
+  {
+    storeConnection( dialog.databasePath() );
+  }
+}
+#endif
+
+bool QgsGeoPackageRootItem::storeConnection( const QString &path )
+{
   QFileInfo fileInfo( path );
-  QString folder = fileInfo.path();
   QString connName = fileInfo.fileName();
   if ( ! path.isEmpty() )
   {
@@ -113,16 +130,10 @@ void QgsGeoPackageRootItem::newConnection()
       connection.setPath( path );
       connection.save();
       refreshConnections();
+      return true;
     }
   }
-}
-
-
-void QgsGeoPackageRootItem::createDatabase()
-{
-  QgsNewGeoPackageLayerDialog dialog( nullptr );
-  dialog.setCrs( QgsProject::instance()->defaultCrsForNewLayers() );
-  dialog.exec();
+  return false;
 }
 
 
@@ -145,36 +156,69 @@ QVector<QgsDataItem *> QgsGeoPackageConnectionItem::createChildren()
   }
   else
   {
+    // Collect mixed-geom layers
+    QMultiMap<int, QStringList> subLayers;
     Q_FOREACH ( const QString &descriptor, layer.dataProvider()->subLayers( ) )
     {
       QStringList pieces = descriptor.split( ':' );
-      QString layerId = pieces[0];
-      QString name = pieces[1];
-      QString featuresCount = pieces[2];
-      QString geometryType = pieces[3];
-      QgsLayerItem::LayerType layerType;
-      layerType = layerTypeFromDb( geometryType );
-      if ( geometryType.contains( QStringLiteral( "Collection" ), Qt::CaseInsensitive ) )
+      subLayers.insert( pieces[0].toInt(), pieces );
+    }
+    int prevIdx = -1;
+    Q_FOREACH ( const int &idx, subLayers.keys( ) )
+    {
+      if ( idx == prevIdx )
       {
-        QgsDebugMsgLevel( QStringLiteral( "Layer %1 is a geometry collection: skipping %2" ).arg( name, mPath ), 3 );
+        continue;
       }
-      else
+      prevIdx = idx;
+      QList<QStringList> values = subLayers.values( idx );
+      for ( int i = 0; i < values.size(); ++i )
       {
-        // example URI:    '/path/gdal_sample_v1.2_no_extensions.gpkg|layerid=7|geometrytype=Point'
+        QStringList pieces = values.at( i );
+        QString layerId = pieces[0];
+        QString name = pieces[1];
+        // QString featuresCount = pieces[2]; // Not used
+        QString geometryType = pieces[3];
+        QgsLayerItem::LayerType layerType;
+        layerType = layerTypeFromDb( geometryType );
+        // example URI for mixed-geoms geoms:    '/path/gdal_sample_v1.2_no_extensions.gpkg|layerid=7|geometrytype=Point'
+        // example URI for mixed-geoms attr table:    '/path/gdal_sample_v1.2_no_extensions.gpkg|layername=MyLayer|layerid=7'
+        // example URI for single geoms:    '/path/gdal_sample_v1.2_no_extensions.gpkg|layerid=6'
         QString uri;
-        // We do not need to add a geometry type for table layers
-        if ( layerType != QgsLayerItem::LayerType::TableLayer )
+        // Check if it's a mixed geometry type
+        if ( i == 0 && values.size() > 1 )
         {
-          uri = QStringLiteral( "%1|layerid=%2|geometrytype=%3" ).arg( mPath, layerId, geometryType );
+          uri = QStringLiteral( "%1|layerid=%2|layername=%3" ).arg( mPath, layerId, name );
+          QgsGeoPackageVectorLayerItem *item = new QgsGeoPackageVectorLayerItem( this, name, mPath, uri, QgsLayerItem::LayerType::TableLayer );
+          children.append( item );
+        }
+        if ( layerType != QgsLayerItem::LayerType::NoType )
+        {
+          if ( geometryType.contains( QStringLiteral( "Collection" ), Qt::CaseInsensitive ) )
+          {
+            QgsDebugMsgLevel( QStringLiteral( "Layer %1 is a geometry collection: skipping %2" ).arg( name, mPath ), 3 );
+          }
+          else
+          {
+            if ( values.size() > 1 )
+            {
+              uri = QStringLiteral( "%1|layerid=%2|geometrytype=%3" ).arg( mPath, layerId, geometryType );
+            }
+            else
+            {
+              uri = QStringLiteral( "%1|layerid=%2" ).arg( mPath, layerId );
+            }
+            QgsGeoPackageVectorLayerItem *item = new QgsGeoPackageVectorLayerItem( this, name, mPath, uri, layerType );
+            QgsDebugMsgLevel( QStringLiteral( "Adding GPKG Vector item %1 %2 %3" ).arg( name, uri, geometryType ), 3 );
+            children.append( item );
+          }
         }
         else
         {
-          uri = QStringLiteral( "%1|layerid=%2" ).arg( mPath, layerId );
+          QgsDebugMsgLevel( QStringLiteral( "Layer type is not a supported GeoPackage Vector layer %1" ).arg( mPath ), 3 );
         }
-        // TODO?: not sure, but if it's a collection, an expandable node would be better?
-        QgsGeoPackageVectorLayerItem *item = new QgsGeoPackageVectorLayerItem( this, name, mPath, uri, layerType );
         QgsDebugMsgLevel( QStringLiteral( "Adding GPKG Vector item %1 %2 %3" ).arg( name, uri, geometryType ), 3 );
-        children.append( item );
+        qDebug() << QStringLiteral( "Adding GPKG Vector item %1 %2 %3" ).arg( name, uri, geometryType );
       }
     }
   }
@@ -210,10 +254,16 @@ QList<QAction *> QgsGeoPackageConnectionItem::actions()
 {
   QList<QAction *> lst;
 
+  QAction *actionDeleteConnection = new QAction( tr( "Remove connection" ), this );
+  connect( actionDeleteConnection, &QAction::triggered, this, &QgsGeoPackageConnectionItem::deleteConnection );
+  lst.append( actionDeleteConnection );
 
-  QAction *actiondeleteConnection = new QAction( tr( "Remove connection" ), this );
-  connect( actiondeleteConnection, &QAction::triggered, this, &QgsGeoPackageConnectionItem::deleteConnection );
-  lst.append( actiondeleteConnection );
+  // Add table to existing DB
+  QAction *actionAddTable = new QAction( tr( "Create a new layer or table..." ), this );
+  connect( actionAddTable, &QAction::triggered, this, &QgsGeoPackageConnectionItem::addTable );
+  lst.append( actionAddTable );
+
+
   return lst;
 }
 #endif
@@ -249,6 +299,29 @@ void QgsGeoPackageConnectionItem::deleteConnection()
   QgsGeoPackageConnection::deleteConnection( name() );
   mParent->refreshConnections();
 }
+
+#ifdef HAVE_GUI
+void QgsGeoPackageConnectionItem::addTable()
+{
+  QgsNewGeoPackageLayerDialog dialog( nullptr );
+  QFileInfo fileInfo( mPath );
+  QString connName = fileInfo.fileName();
+  QgsGeoPackageConnection connection( connName );
+  if ( ! connection.path().isEmpty() )
+  {
+    dialog.setDatabasePath( connection.path() );
+    dialog.setCrs( QgsProject::instance()->defaultCrsForNewLayers() );
+    if ( dialog.exec() == QMessageBox::Ok )
+    {
+      mParent->refreshConnections();
+    }
+  }
+  else
+  {
+    QgsDebugMsg( QStringLiteral( "Cannot add Table: connection %1 does not exists or the path is empy!" ).arg( connName ) );
+  }
+}
+#endif
 
 #ifdef HAVE_GUI
 QList<QAction *> QgsGeoPackageAbstractLayerItem::actions()

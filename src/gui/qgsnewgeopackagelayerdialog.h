@@ -41,6 +41,18 @@ class GUI_EXPORT QgsNewGeoPackageLayerDialog: public QDialog, private Ui::QgsNew
      */
     void setCrs( const QgsCoordinateReferenceSystem &crs );
 
+    /**
+     * Returns the database path
+     * \since QGIS 3.0
+     */
+    QString databasePath() const { return mDatabaseEdit->text(); }
+
+    /**
+     * Sets the the database \a path
+     * \since QGIS 3.0
+     */
+    void setDatabasePath( const QString &path ) { mDatabaseEdit->setText( path ); }
+
   private slots:
     void on_mAddAttributeButton_clicked();
     void on_mRemoveAttributeButton_clicked();
