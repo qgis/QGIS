@@ -5,7 +5,7 @@
 
 #include <ui_phongmaterialwidget.h>
 
-class PhongMaterialSettings;
+class QgsPhongMaterialSettings;
 
 
 //! Widget for configuration of Phong material settings
@@ -15,8 +15,8 @@ class QgsPhongMaterialWidget : public QWidget, private Ui::PhongMaterialWidget
   public:
     explicit QgsPhongMaterialWidget( QWidget *parent = nullptr );
 
-    void setMaterial( const PhongMaterialSettings &material );
-    PhongMaterialSettings material() const;
+    void setMaterial( const QgsPhongMaterialSettings &material );
+    QgsPhongMaterialSettings material() const;
 
   signals:
     void changed();

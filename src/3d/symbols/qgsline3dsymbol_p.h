@@ -16,7 +16,7 @@
 #include <Qt3DExtras/QPhongMaterial>
 #include <Qt3DRender/QGeometryRenderer>
 
-class Map3D;
+class Qgs3DMapSettings;
 class PolygonGeometry;
 class QgsLine3DSymbol;
 
@@ -28,11 +28,11 @@ class QgsFeatureRequest;
 class QgsLine3DSymbolEntity : public Qt3DCore::QEntity
 {
   public:
-    QgsLine3DSymbolEntity( const Map3D &map, QgsVectorLayer *layer, const QgsLine3DSymbol &symbol, Qt3DCore::QNode *parent = nullptr );
+    QgsLine3DSymbolEntity( const Qgs3DMapSettings &map, QgsVectorLayer *layer, const QgsLine3DSymbol &symbol, Qt3DCore::QNode *parent = nullptr );
 
   private:
-    void addEntityForSelectedLines( const Map3D &map, QgsVectorLayer *layer, const QgsLine3DSymbol &symbol );
-    void addEntityForNotSelectedLines( const Map3D &map, QgsVectorLayer *layer, const QgsLine3DSymbol &symbol );
+    void addEntityForSelectedLines( const Qgs3DMapSettings &map, QgsVectorLayer *layer, const QgsLine3DSymbol &symbol );
+    void addEntityForNotSelectedLines( const Qgs3DMapSettings &map, QgsVectorLayer *layer, const QgsLine3DSymbol &symbol );
 
     Qt3DExtras::QPhongMaterial *material( const QgsLine3DSymbol &symbol ) const;
 };
@@ -40,10 +40,10 @@ class QgsLine3DSymbolEntity : public Qt3DCore::QEntity
 class QgsLine3DSymbolEntityNode : public Qt3DCore::QEntity
 {
   public:
-    QgsLine3DSymbolEntityNode( const Map3D &map, QgsVectorLayer *layer, const QgsLine3DSymbol &symbol, const QgsFeatureRequest &req, Qt3DCore::QNode *parent = nullptr );
+    QgsLine3DSymbolEntityNode( const Qgs3DMapSettings &map, QgsVectorLayer *layer, const QgsLine3DSymbol &symbol, const QgsFeatureRequest &req, Qt3DCore::QNode *parent = nullptr );
 
   private:
-    Qt3DRender::QGeometryRenderer *renderer( const Map3D &map, const QgsLine3DSymbol &symbol, const QgsVectorLayer *layer, const QgsFeatureRequest &req );
+    Qt3DRender::QGeometryRenderer *renderer( const Qgs3DMapSettings &map, const QgsLine3DSymbol &symbol, const QgsVectorLayer *layer, const QgsFeatureRequest &req );
 
     PolygonGeometry *mGeometry;
 };

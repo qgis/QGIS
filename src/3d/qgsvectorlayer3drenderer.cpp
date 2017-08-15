@@ -1,4 +1,4 @@
-#include "vectorlayer3drenderer.h"
+#include "qgsvectorlayer3drenderer.h"
 
 #include "qgsline3dsymbol.h"
 #include "qgspoint3dsymbol.h"
@@ -11,14 +11,14 @@
 #include "qgsxmlutils.h"
 
 
-VectorLayer3DRendererMetadata::VectorLayer3DRendererMetadata()
+QgsVectorLayer3DRendererMetadata::QgsVectorLayer3DRendererMetadata()
   : Qgs3DRendererAbstractMetadata( "vector" )
 {
 }
 
-QgsAbstract3DRenderer *VectorLayer3DRendererMetadata::createRenderer( QDomElement &elem, const QgsReadWriteContext &context )
+QgsAbstract3DRenderer *QgsVectorLayer3DRendererMetadata::createRenderer( QDomElement &elem, const QgsReadWriteContext &context )
 {
-  VectorLayer3DRenderer *r = new VectorLayer3DRenderer;
+  QgsVectorLayer3DRenderer *r = new QgsVectorLayer3DRenderer;
   r->readXml( elem, context );
   return r;
 }
@@ -27,43 +27,43 @@ QgsAbstract3DRenderer *VectorLayer3DRendererMetadata::createRenderer( QDomElemen
 // ---------
 
 
-VectorLayer3DRenderer::VectorLayer3DRenderer( QgsAbstract3DSymbol *s )
+QgsVectorLayer3DRenderer::QgsVectorLayer3DRenderer( QgsAbstract3DSymbol *s )
   : mSymbol( s )
 {
 }
 
-VectorLayer3DRenderer::~VectorLayer3DRenderer()
+QgsVectorLayer3DRenderer::~QgsVectorLayer3DRenderer()
 {
 }
 
-VectorLayer3DRenderer *VectorLayer3DRenderer::clone() const
+QgsVectorLayer3DRenderer *QgsVectorLayer3DRenderer::clone() const
 {
-  VectorLayer3DRenderer *r = new VectorLayer3DRenderer( mSymbol ? mSymbol->clone() : nullptr );
+  QgsVectorLayer3DRenderer *r = new QgsVectorLayer3DRenderer( mSymbol ? mSymbol->clone() : nullptr );
   r->layerRef = layerRef;
   return r;
 }
 
-void VectorLayer3DRenderer::setLayer( QgsVectorLayer *layer )
+void QgsVectorLayer3DRenderer::setLayer( QgsVectorLayer *layer )
 {
   layerRef = QgsMapLayerRef( layer );
 }
 
-QgsVectorLayer *VectorLayer3DRenderer::layer() const
+QgsVectorLayer *QgsVectorLayer3DRenderer::layer() const
 {
   return qobject_cast<QgsVectorLayer *>( layerRef.layer );
 }
 
-void VectorLayer3DRenderer::setSymbol( QgsAbstract3DSymbol *symbol )
+void QgsVectorLayer3DRenderer::setSymbol( QgsAbstract3DSymbol *symbol )
 {
   mSymbol.reset( symbol );
 }
 
-const QgsAbstract3DSymbol *VectorLayer3DRenderer::symbol() const
+const QgsAbstract3DSymbol *QgsVectorLayer3DRenderer::symbol() const
 {
   return mSymbol.get();
 }
 
-Qt3DCore::QEntity *VectorLayer3DRenderer::createEntity( const Map3D &map ) const
+Qt3DCore::QEntity *QgsVectorLayer3DRenderer::createEntity( const Qgs3DMapSettings &map ) const
 {
   QgsVectorLayer *vl = layer();
 
@@ -80,7 +80,7 @@ Qt3DCore::QEntity *VectorLayer3DRenderer::createEntity( const Map3D &map ) const
     return nullptr;
 }
 
-void VectorLayer3DRenderer::writeXml( QDomElement &elem, const QgsReadWriteContext &context ) const
+void QgsVectorLayer3DRenderer::writeXml( QDomElement &elem, const QgsReadWriteContext &context ) const
 {
   QDomDocument doc = elem.ownerDocument();
 
@@ -95,7 +95,7 @@ void VectorLayer3DRenderer::writeXml( QDomElement &elem, const QgsReadWriteConte
   elem.appendChild( elemSymbol );
 }
 
-void VectorLayer3DRenderer::readXml( const QDomElement &elem, const QgsReadWriteContext &context )
+void QgsVectorLayer3DRenderer::readXml( const QDomElement &elem, const QgsReadWriteContext &context )
 {
   layerRef = QgsMapLayerRef( elem.attribute( "layer" ) );
 
@@ -114,7 +114,7 @@ void VectorLayer3DRenderer::readXml( const QDomElement &elem, const QgsReadWrite
   mSymbol.reset( symbol );
 }
 
-void VectorLayer3DRenderer::resolveReferences( const QgsProject &project )
+void QgsVectorLayer3DRenderer::resolveReferences( const QgsProject &project )
 {
   layerRef.setLayer( project.mapLayer( layerRef.layerId ) );
 }

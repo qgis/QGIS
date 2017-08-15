@@ -3,14 +3,15 @@
 
 SET(QGIS_3D_SRCS
   cameracontroller.cpp
-  map3d.cpp
-  phongmaterialsettings.cpp
   polygongeometry.cpp
-  scene.cpp
   tessellator.cpp
   tilingscheme.cpp
   utils.cpp
-  vectorlayer3drenderer.cpp
+
+  qgs3dmapscene.cpp
+  qgs3dmapsettings.cpp
+  qgsphongmaterialsettings.cpp
+  qgsvectorlayer3drenderer.cpp
 
   chunks/chunkboundsentity.cpp
   chunks/chunkedentity.cpp
@@ -46,8 +47,9 @@ SET(QGIS_3D_SRCS
 
 SET(QGIS_3D_MOC_HDRS
   cameracontroller.h
-  map3d.h
-  scene.h
+
+  qgs3dmapscene.h
+  qgs3dmapsettings.h
 
   chunks/chunkedentity.h
   chunks/chunkloader.h
@@ -69,14 +71,15 @@ QT5_ADD_RESOURCES(QGIS_3D_RCC_SRCS shaders.qrc)
 SET(QGIS_3D_HDRS
   aabb.h
   cameracontroller.h
-  map3d.h
-  phongmaterialsettings.h
   polygongeometry.h
-  scene.h
   tessellator.h
   tilingscheme.h
   utils.h
-  vectorlayer3drenderer.h
+
+  qgs3dmapscene.h
+  qgs3dmapsettings.h
+  qgsphongmaterialsettings.h
+  qgsvectorlayer3drenderer.h
 
   chunks/chunkboundsentity.h
   chunks/chunkedentity.h

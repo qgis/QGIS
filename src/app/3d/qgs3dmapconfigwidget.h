@@ -5,7 +5,7 @@
 
 #include <ui_map3dconfigwidget.h>
 
-class Map3D;
+class Qgs3DMapSettings;
 
 class QgsMapCanvas;
 
@@ -15,7 +15,7 @@ class Qgs3DMapConfigWidget : public QWidget, private Ui::Map3DConfigWidget
     Q_OBJECT
   public:
     //! construct widget. does not take ownership of the passed map.
-    explicit Qgs3DMapConfigWidget( Map3D *map, QgsMapCanvas *mainCanvas, QWidget *parent = nullptr );
+    explicit Qgs3DMapConfigWidget( Qgs3DMapSettings *map, QgsMapCanvas *mainCanvas, QWidget *parent = nullptr );
     ~Qgs3DMapConfigWidget();
 
     void apply();
@@ -27,7 +27,7 @@ class Qgs3DMapConfigWidget : public QWidget, private Ui::Map3DConfigWidget
     void updateMaxZoomLevel();
 
   private:
-    Map3D *mMap;
+    Qgs3DMapSettings *mMap;
     QgsMapCanvas *mMainCanvas;
 };
 

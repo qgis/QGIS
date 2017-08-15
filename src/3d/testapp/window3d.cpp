@@ -1,21 +1,21 @@
 #include "window3d.h"
 
 #include "cameracontroller.h"
-#include "map3d.h"
-#include "scene.h"
+#include "qgs3dmapsettings.h"
+#include "qgs3dmapscene.h"
 #include "sidepanel.h"
 #include "terrain.h"
 
 #include <Qt3DLogic/QFrameAction>
 
 
-Window3D::Window3D( SidePanel *p, Map3D &map )
+Window3D::Window3D( SidePanel *p, Qgs3DMapSettings &map )
   : panel( p )
   , map( map )
   , scene( nullptr )
 {
   QRect viewportRect( QPoint( 0, 0 ), size() );
-  scene = new Scene( map, defaultFrameGraph(), renderSettings(), camera(), viewportRect );
+  scene = new Qgs3DMapScene( map, defaultFrameGraph(), renderSettings(), camera(), viewportRect );
 
   mFrameAction = new Qt3DLogic::QFrameAction();
   connect( mFrameAction, &Qt3DLogic::QFrameAction::triggered,

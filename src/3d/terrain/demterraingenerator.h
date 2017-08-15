@@ -33,7 +33,7 @@ class _3D_EXPORT DemTerrainGenerator : public TerrainGenerator
     virtual TerrainGenerator *clone() const override;
     Type type() const override;
     QgsRectangle extent() const override;
-    float heightAt( double x, double y, const Map3D &map ) const override;
+    float heightAt( double x, double y, const Qgs3DMapSettings &map ) const override;
     virtual void writeXml( QDomElement &elem ) const override;
     virtual void readXml( const QDomElement &elem ) override;
     virtual void resolveReferences( const QgsProject &project ) override;

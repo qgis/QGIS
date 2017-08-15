@@ -3,7 +3,7 @@
 #include <Qt3DRender/QGeometryRenderer>
 #include <Qt3DExtras/QPlaneGeometry>
 
-#include "map3d.h"
+#include "qgs3dmapsettings.h"
 #include "terrain.h"
 
 #include "chunknode.h"

@@ -1,5 +1,5 @@
-#ifndef SCENE_H
-#define SCENE_H
+#ifndef QGS3DMAPSCENE_H
+#define QGS3DMAPSCENE_H
 
 #include "qgis_3d.h"
 
@@ -23,18 +23,18 @@ namespace Qt3DExtras
 
 class QgsMapLayer;
 class CameraController;
-class Map3D;
+class Qgs3DMapSettings;
 class Terrain;
 class ChunkedEntity;
 
 /**
  * Entity that encapsulates our 3D scene - contains all other entities (such as terrain) as children.
  */
-class _3D_EXPORT Scene : public Qt3DCore::QEntity
+class _3D_EXPORT Qgs3DMapScene : public Qt3DCore::QEntity
 {
     Q_OBJECT
   public:
-    Scene( const Map3D &map, Qt3DExtras::QForwardRenderer *defaultFrameGraph, Qt3DRender::QRenderSettings *renderSettings, Qt3DRender::QCamera *camera, const QRect &viewportRect, Qt3DCore::QNode *parent = nullptr );
+    Qgs3DMapScene( const Qgs3DMapSettings &map, Qt3DExtras::QForwardRenderer *defaultFrameGraph, Qt3DRender::QRenderSettings *renderSettings, Qt3DRender::QCamera *camera, const QRect &viewportRect, Qt3DCore::QNode *parent = nullptr );
 
     CameraController *cameraController() { return mCameraController; }
     Terrain *terrain() { return mTerrain; }
@@ -55,7 +55,7 @@ class _3D_EXPORT Scene : public Qt3DCore::QEntity
     void removeLayerEntity( QgsMapLayer *layer );
 
   private:
-    const Map3D &mMap;
+    const Qgs3DMapSettings &mMap;
     //! Provides a way to have a synchronous function executed each frame
     Qt3DLogic::QFrameAction *mFrameAction;
     CameraController *mCameraController;
@@ -68,4 +68,4 @@ class _3D_EXPORT Scene : public Qt3DCore::QEntity
     bool mTerrainUpdateScheduled = false;
 };
 
-#endif // SCENE_H
+#endif // QGS3DMAPSCENE_H

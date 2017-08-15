@@ -10,7 +10,7 @@ namespace Qt3DRender
   class QObjectPicker;
 }
 
-class Map3D;
+class Qgs3DMapSettings;
 class MapTextureGenerator;
 class QgsCoordinateTransform;
 class QgsMapLayer;
@@ -26,11 +26,11 @@ class Terrain : public ChunkedEntity
 {
     Q_OBJECT
   public:
-    explicit Terrain( int maxLevel, const Map3D &map, Qt3DCore::QNode *parent = nullptr );
+    explicit Terrain( int maxLevel, const Qgs3DMapSettings &map, Qt3DCore::QNode *parent = nullptr );
 
     ~Terrain();
 
-    const Map3D &map3D() const { return map; }
+    const Qgs3DMapSettings &map3D() const { return map; }
     MapTextureGenerator *mapTextureGenerator() { return mMapTextureGenerator; }
     const QgsCoordinateTransform &terrainToMapTransform() const { return *mTerrainToMapTransform; }
 
@@ -45,7 +45,7 @@ class Terrain : public ChunkedEntity
 
     void connectToLayersRepaintRequest();
 
-    const Map3D &map;
+    const Qgs3DMapSettings &map;
     //! picker of terrain to know height of terrain when dragging
     Qt3DRender::QObjectPicker *mTerrainPicker;
     MapTextureGenerator *mMapTextureGenerator;

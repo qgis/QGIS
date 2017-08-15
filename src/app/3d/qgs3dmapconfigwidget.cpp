@@ -1,6 +1,6 @@
 #include "qgs3dmapconfigwidget.h"
 
-#include "map3d.h"
+#include "qgs3dmapsettings.h"
 #include "demterraingenerator.h"
 #include "flatterraingenerator.h"
 #include "utils.h"
@@ -9,7 +9,7 @@
 #include "qgsrasterlayer.h"
 //#include "qgsproject.h"
 
-Qgs3DMapConfigWidget::Qgs3DMapConfigWidget( Map3D *map, QgsMapCanvas *mainCanvas, QWidget *parent )
+Qgs3DMapConfigWidget::Qgs3DMapConfigWidget( Qgs3DMapSettings *map, QgsMapCanvas *mainCanvas, QWidget *parent )
   : QWidget( parent )
   , mMap( map )
   , mMainCanvas( mainCanvas )

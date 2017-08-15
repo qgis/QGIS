@@ -68,7 +68,7 @@ AltitudeBinding Utils::altBindingFromString( const QString &str )
 }
 
 
-void Utils::clampAltitudes( QgsLineString *lineString, AltitudeClamping altClamp, AltitudeBinding altBind, const QgsPoint &centroid, float height, const Map3D &map )
+void Utils::clampAltitudes( QgsLineString *lineString, AltitudeClamping altClamp, AltitudeBinding altBind, const QgsPoint &centroid, float height, const Qgs3DMapSettings &map )
 {
   for ( int i = 0; i < lineString->nCoordinates(); ++i )
   {
@@ -98,7 +98,7 @@ void Utils::clampAltitudes( QgsLineString *lineString, AltitudeClamping altClamp
 }
 
 
-bool Utils::clampAltitudes( QgsPolygonV2 *polygon, AltitudeClamping altClamp, AltitudeBinding altBind, float height, const Map3D &map )
+bool Utils::clampAltitudes( QgsPolygonV2 *polygon, AltitudeClamping altClamp, AltitudeBinding altBind, float height, const Qgs3DMapSettings &map )
 {
   if ( !polygon->is3D() )
     polygon->addZValue( 0 );
@@ -146,26 +146,52 @@ QMatrix4x4 Utils::stringToMatrix4x4( const QString &str )
   return m;
 }
 
+QList<QVector3D> Utils::positions( const Qgs3DMapSettings &map, QgsVectorLayer *layer, const QgsFeatureRequest &request )
+{
+  QList<QVector3D> positions;
+  QgsFeature f;
+  QgsFeatureIterator fi = layer->getFeatures( request );
+  while ( fi.nextFeature( f ) )
+  {
+    if ( f.geometry().isNull() )
+      continue;
+
+    QgsAbstractGeometry *g = f.geometry().geometry();
+    if ( QgsWkbTypes::flatType( g->wkbType() ) == QgsWkbTypes::Point )
+    {
+      QgsPoint *pt = static_cast<QgsPoint *>( g );
+      // TODO: use Z coordinates if the point is 3D
+      float h = map.terrainGenerator()->heightAt( pt->x(), pt->y(), map ) * map.terrainVerticalScale();
+      positions.append( QVector3D( pt->x() - map.originX, h, -( pt->y() - map.originY ) ) );
+      //qDebug() << positions.last();
+    }
+    else
+      qDebug() << "not a point";
+  }
+
+  return positions;
+}
+
 //! copied from https://searchcode.com/codesearch/view/35195518/
 //! qt3d /src/threed/painting/qglpainter.cpp
 //! no changes in the code
-static inline uint outcode(const QVector4D &v)
+static inline uint outcode( const QVector4D &v )
 {
-    // For a discussion of outcodes see pg 388 Dunn & Parberry.
-    // For why you can't just test if the point is in a bounding box
-    // consider the case where a view frustum with view-size 1.5 x 1.5
-    // is tested against a 2x2 box which encloses the near-plane, while
-    // all the points in the box are outside the frustum.
-    // TODO: optimise this with assembler - according to D&P this can
-    // be done in one line of assembler on some platforms
-    uint code = 0;
-    if (v.x() < -v.w()) code |= 0x01;
-    if (v.x() > v.w())  code |= 0x02;
-    if (v.y() < -v.w()) code |= 0x04;
-    if (v.y() > v.w())  code |= 0x08;
-    if (v.z() < -v.w()) code |= 0x10;
-    if (v.z() > v.w())  code |= 0x20;
-    return code;
+  // For a discussion of outcodes see pg 388 Dunn & Parberry.
+  // For why you can't just test if the point is in a bounding box
+  // consider the case where a view frustum with view-size 1.5 x 1.5
+  // is tested against a 2x2 box which encloses the near-plane, while
+  // all the points in the box are outside the frustum.
+  // TODO: optimise this with assembler - according to D&P this can
+  // be done in one line of assembler on some platforms
+  uint code = 0;
+  if ( v.x() < -v.w() ) code |= 0x01;
+  if ( v.x() > v.w() )  code |= 0x02;
+  if ( v.y() < -v.w() ) code |= 0x04;
+  if ( v.y() > v.w() )  code |= 0x08;
+  if ( v.z() < -v.w() ) code |= 0x10;
+  if ( v.z() > v.w() )  code |= 0x20;
+  return code;
 }
 
 
@@ -190,32 +216,8 @@ bool Utils::isCullable( const AABB &bbox, const QMatrix4x4 &viewProjectionMatrix
 
     // if the logical AND of all the outcodes is non-zero then the BB is
     // definitely outside the view frustum.
-    out = out & outcode(pc);
+    out = out & outcode( pc );
   }
   return out;
 }
 
-QList<QVector3D> Utils::positions(const Map3D &map, QgsVectorLayer *layer, const QgsFeatureRequest &request) {
-    QList<QVector3D> positions;
-    QgsFeature f;
-    QgsFeatureIterator fi = layer->getFeatures( request );
-    while ( fi.nextFeature( f ) )
-    {
-      if ( f.geometry().isNull() )
-        continue;
-
-      QgsAbstractGeometry *g = f.geometry().geometry();
-      if ( QgsWkbTypes::flatType( g->wkbType() ) == QgsWkbTypes::Point )
-      {
-        QgsPoint *pt = static_cast<QgsPoint *>( g );
-        // TODO: use Z coordinates if the point is 3D
-        float h = map.terrainGenerator()->heightAt( pt->x(), pt->y(), map ) * map.terrainVerticalScale();
-        positions.append( QVector3D( pt->x() - map.originX, h, -( pt->y() - map.originY ) ) );
-        //qDebug() << positions.last();
-      }
-      else
-        qDebug() << "not a point";
-    }
-
-    return positions;
-}

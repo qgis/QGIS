@@ -4,7 +4,7 @@
 class QgsLineString;
 class QgsPolygonV2;
 
-#include "map3d.h"
+#include "qgs3dmapsettings.h"
 #include "aabb.h"
 
 //! how to handle altitude of vector features
@@ -40,17 +40,22 @@ class _3D_EXPORT Utils
     static QString altBindingToString( AltitudeBinding altBind );
     static AltitudeBinding altBindingFromString( const QString &str );
 
-    static void clampAltitudes( QgsLineString *lineString, AltitudeClamping altClamp, AltitudeBinding altBind, const QgsPoint &centroid, float height, const Map3D &map );
-    static bool clampAltitudes( QgsPolygonV2 *polygon, AltitudeClamping altClamp, AltitudeBinding altBind, float height, const Map3D &map );
+    static void clampAltitudes( QgsLineString *lineString, AltitudeClamping altClamp, AltitudeBinding altBind, const QgsPoint &centroid, float height, const Qgs3DMapSettings &map );
+    static bool clampAltitudes( QgsPolygonV2 *polygon, AltitudeClamping altClamp, AltitudeBinding altBind, float height, const Qgs3DMapSettings &map );
 
     static QString matrix4x4toString( const QMatrix4x4 &m );
     static QMatrix4x4 stringToMatrix4x4( const QString &str );
 
     /**
+     * Calculates (x,y,z) position of point in the Point vector layers
+     */
+    static QList<QVector3D> positions( const Qgs3DMapSettings &map, QgsVectorLayer *layer, const QgsFeatureRequest &req );
+
+    /**
         Returns true if bbox is completely outside the current viewing volume.
         This is used to perform object culling checks.
     */
-    static bool isCullable(const AABB &bbox, const QMatrix4x4 &viewProjectionMatrix );
+    static bool isCullable( const AABB &bbox, const QMatrix4x4 &viewProjectionMatrix );
 
     /*
      * Calculates (x,y,z) position of point in the Point vector layers

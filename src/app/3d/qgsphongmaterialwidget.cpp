@@ -1,6 +1,6 @@
 #include "qgsphongmaterialwidget.h"
 
-#include "phongmaterialsettings.h"
+#include "qgsphongmaterialsettings.h"
 
 
 QgsPhongMaterialWidget::QgsPhongMaterialWidget( QWidget *parent )
@@ -8,7 +8,7 @@ QgsPhongMaterialWidget::QgsPhongMaterialWidget( QWidget *parent )
 {
   setupUi( this );
 
-  setMaterial( PhongMaterialSettings() );
+  setMaterial( QgsPhongMaterialSettings() );
 
   connect( btnDiffuse, &QgsColorButton::colorChanged, this, &QgsPhongMaterialWidget::changed );
   connect( btnAmbient, &QgsColorButton::colorChanged, this, &QgsPhongMaterialWidget::changed );
@@ -16,7 +16,7 @@ QgsPhongMaterialWidget::QgsPhongMaterialWidget( QWidget *parent )
   connect( spinShininess, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, &QgsPhongMaterialWidget::changed );
 }
 
-void QgsPhongMaterialWidget::setMaterial( const PhongMaterialSettings &material )
+void QgsPhongMaterialWidget::setMaterial( const QgsPhongMaterialSettings &material )
 {
   btnDiffuse->setColor( material.diffuse() );
   btnAmbient->setColor( material.ambient() );
@@ -24,9 +24,9 @@ void QgsPhongMaterialWidget::setMaterial( const PhongMaterialSettings &material 
   spinShininess->setValue( material.shininess() );
 }
 
-PhongMaterialSettings QgsPhongMaterialWidget::material() const
+QgsPhongMaterialSettings QgsPhongMaterialWidget::material() const
 {
-  PhongMaterialSettings m;
+  QgsPhongMaterialSettings m;
   m.setDiffuse( btnDiffuse->color() );
   m.setAmbient( btnAmbient->color() );
   m.setSpecular( btnSpecular->color() );

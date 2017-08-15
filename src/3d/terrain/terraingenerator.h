@@ -5,7 +5,7 @@
 #include "chunkloader.h"
 
 class AABB;
-class Map3D;
+class Qgs3DMapSettings;
 class QgsRectangle;
 class Terrain;
 
@@ -63,16 +63,16 @@ class TerrainGenerator : public ChunkLoaderFactory
     virtual QgsRectangle extent() const = 0;
 
     //! Returns bounding box of the root chunk
-    virtual AABB rootChunkBbox( const Map3D &map ) const;
+    virtual AABB rootChunkBbox( const Qgs3DMapSettings &map ) const;
 
     //! Returns error of the root chunk in world coordinates
-    virtual float rootChunkError( const Map3D &map ) const;
+    virtual float rootChunkError( const Qgs3DMapSettings &map ) const;
 
     //! Returns height range of the root chunk in world coordinates
     virtual void rootChunkHeightRange( float &hMin, float &hMax ) const;
 
     //! Returns height at (x,y) in terrain's CRS
-    virtual float heightAt( double x, double y, const Map3D &map ) const;
+    virtual float heightAt( double x, double y, const Qgs3DMapSettings &map ) const;
 
     //! Write terrain generator's configuration to XML
     virtual void writeXml( QDomElement &elem ) const = 0;

@@ -8,8 +8,8 @@ namespace Qt3DExtras
   class Qt3DWindow;
 }
 
-class Map3D;
-class Scene;
+class Qgs3DMapSettings;
+class Qgs3DMapScene;
 
 
 class Qgs3DMapCanvas : public QWidget
@@ -20,9 +20,9 @@ class Qgs3DMapCanvas : public QWidget
     ~Qgs3DMapCanvas();
 
     //! Configure map scene being displayed. Takes ownership.
-    void setMap( Map3D *map );
+    void setMap( Qgs3DMapSettings *map );
 
-    Map3D *map() { return mMap; }
+    Qgs3DMapSettings *map() { return mMap; }
 
     //! Resets camera position to the default: looking down at the origin of world coordinates
     void resetView();
@@ -36,9 +36,9 @@ class Qgs3DMapCanvas : public QWidget
     //! Container QWidget that encapsulates mWindow3D so we can use it embedded in ordinary widgets app
     QWidget *mContainer;
     //! Description of the 3D scene
-    Map3D *mMap;
+    Qgs3DMapSettings *mMap;
     //! Root entity of the 3D scene
-    Scene *mScene;
+    Qgs3DMapScene *mScene;
 };
 
 #endif // QGS3DMAPWIDGET_H

@@ -4,7 +4,7 @@
 #include "qgis_3d.h"
 
 #include "qgsabstract3dsymbol.h"
-#include "phongmaterialsettings.h"
+#include "qgsphongmaterialsettings.h"
 #include "utils.h"
 
 
@@ -20,8 +20,8 @@ class _3D_EXPORT QgsPoint3DSymbol : public QgsAbstract3DSymbol
     void writeXml( QDomElement &elem, const QgsReadWriteContext &context ) const override;
     void readXml( const QDomElement &elem, const QgsReadWriteContext &context ) override;
 
-    PhongMaterialSettings material() const { return mMaterial; }
-    void setMaterial( const PhongMaterialSettings &material ) { mMaterial = material; }
+    QgsPhongMaterialSettings material() const { return mMaterial; }
+    void setMaterial( const QgsPhongMaterialSettings &material ) { mMaterial = material; }
 
     QVariantMap shapeProperties() const { return mShapeProperties; }
     void setShapeProperties( const QVariantMap &properties ) { mShapeProperties = properties; }
@@ -30,7 +30,7 @@ class _3D_EXPORT QgsPoint3DSymbol : public QgsAbstract3DSymbol
     void setTransform( const QMatrix4x4 &transform ) { mTransform = transform; }
 
   private:
-    PhongMaterialSettings mMaterial;  //!< Defines appearance of objects
+    QgsPhongMaterialSettings mMaterial;  //!< Defines appearance of objects
     QVariantMap mShapeProperties;  //!< What kind of shape to use and what
     QMatrix4x4 mTransform;  //!< Transform of individual instanced models
 };

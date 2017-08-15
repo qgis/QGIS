@@ -1,5 +1,5 @@
-#ifndef PHONGMATERIALSETTINGS_H
-#define PHONGMATERIALSETTINGS_H
+#ifndef QGSPHONGMATERIALSETTINGS_H
+#define QGSPHONGMATERIALSETTINGS_H
 
 #include "qgis_3d.h"
 
@@ -8,10 +8,10 @@
 class QDomElement;
 
 //! Basic shading material used for rendering
-class _3D_EXPORT PhongMaterialSettings
+class _3D_EXPORT QgsPhongMaterialSettings
 {
   public:
-    PhongMaterialSettings()
+    QgsPhongMaterialSettings()
       : mAmbient( QColor::fromRgbF( 0.1f, 0.1f, 0.1f, 1.0f ) )
       , mDiffuse( QColor::fromRgbF( 0.7f, 0.7f, 0.7f, 1.0f ) )
       , mSpecular( QColor::fromRgbF( 1.0f, 1.0f, 1.0f, 1.0f ) )
@@ -40,4 +40,4 @@ class _3D_EXPORT PhongMaterialSettings
 };
 
 
-#endif // PHONGMATERIALSETTINGS_H
+#endif // QGSPHONGMATERIALSETTINGS_H

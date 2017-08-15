@@ -10,9 +10,9 @@
 #include "qgspolygon3dsymbol.h"
 #include "maptexturegenerator.h"
 #include "sidepanel.h"
-#include "vectorlayer3drenderer.h"
+#include "qgsvectorlayer3drenderer.h"
 #include "window3d.h"
-#include "map3d.h"
+#include "qgs3dmapsettings.h"
 #include "flatterraingenerator.h"
 #include "demterraingenerator.h"
 //#include "quantizedmeshterraingenerator.h"
@@ -66,7 +66,7 @@ int main( int argc, char *argv[] )
   QgsProject project;
   project.addMapLayers( layers );
 
-  Map3D map;
+  Qgs3DMapSettings map;
   map.setLayers( QList<QgsMapLayer *>() << rlSat );
   map.crs = rlSat->crs();
   map.setTerrainVerticalScale( 3 );
@@ -128,7 +128,7 @@ int main( int argc, char *argv[] )
 
   // polygons
 
-  PhongMaterialSettings polygonMaterial;
+  QgsPhongMaterialSettings polygonMaterial;
   polygonMaterial.setAmbient( Qt::gray );
   polygonMaterial.setDiffuse( Qt::lightGray );
   polygonMaterial.setShininess( 0 );
@@ -137,13 +137,13 @@ int main( int argc, char *argv[] )
   polygonSymbol->setMaterial( polygonMaterial );
   polygonSymbol->setHeight( 0 );
   polygonSymbol->setExtrusionHeight( 10 );
-  VectorLayer3DRenderer *pr = new VectorLayer3DRenderer( polygonSymbol );
+  QgsVectorLayer3DRenderer *pr = new QgsVectorLayer3DRenderer( polygonSymbol );
   pr->setLayer( vlPolygons );
   map.renderers << pr;
 
   // points
 
-  PhongMaterialSettings pointMaterial;
+  QgsPhongMaterialSettings pointMaterial;
   pointMaterial.setDiffuse( QColor( 222, 184, 135 ) );
   pointMaterial.setAmbient( pointMaterial.diffuse().darker() );
   pointMaterial.setShininess( 0 );
@@ -160,11 +160,11 @@ int main( int argc, char *argv[] )
   pointSymbol->setMaterial( pointMaterial );
   pointSymbol->setShapeProperties( pointShapeProperties );
   pointSymbol->setTransform( tr.matrix() );
-  VectorLayer3DRenderer *ptr = new VectorLayer3DRenderer( pointSymbol );
+  QgsVectorLayer3DRenderer *ptr = new QgsVectorLayer3DRenderer( pointSymbol );
   ptr->setLayer( vlPoints );
   map.renderers << ptr;
 
-  PhongMaterialSettings pointMaterial2;
+  QgsPhongMaterialSettings pointMaterial2;
   pointMaterial2.setDiffuse( QColor( 60, 179, 113 ) );
   pointMaterial2.setAmbient( pointMaterial2.diffuse().darker() );
   pointMaterial2.setShininess( 0 );
@@ -180,7 +180,7 @@ int main( int argc, char *argv[] )
   pointSymbol2->setMaterial( pointMaterial2 );
   pointSymbol2->setShapeProperties( pointShapeProperties2 );
   pointSymbol2->setTransform( tr2.matrix() );
-  VectorLayer3DRenderer *ptr2 = new VectorLayer3DRenderer( pointSymbol2 );
+  QgsVectorLayer3DRenderer *ptr2 = new QgsVectorLayer3DRenderer( pointSymbol2 );
   ptr2->setLayer( vlPoints );
   map.renderers << ptr2;
 
@@ -202,7 +202,7 @@ int main( int argc, char *argv[] )
 
   // lines
 
-  PhongMaterialSettings lineMaterial;
+  QgsPhongMaterialSettings lineMaterial;
   lineMaterial.setAmbient( Qt::yellow );
   lineMaterial.setShininess( 0 );
 
@@ -211,7 +211,7 @@ int main( int argc, char *argv[] )
   lineSymbol->setAltitudeBinding( AltBindVertex );  // follow terrain
   lineSymbol->setHeight( 1.5 );
   lineSymbol->setWidth( 5 );
-  VectorLayer3DRenderer *lr = new VectorLayer3DRenderer( lineSymbol );
+  QgsVectorLayer3DRenderer *lr = new QgsVectorLayer3DRenderer( lineSymbol );
   lr->setLayer( vlLines );
   map.renderers << lr;
 
@@ -233,7 +233,7 @@ int main( int argc, char *argv[] )
   project.write( "/tmp/3d.qgs" );
 
   QgsProject project2;
-  Map3D map2;
+  Qgs3DMapSettings map2;
   QObject::connect( &project2, &QgsProject::readProject, [&map2]( const QDomDocument & doc )
   {
     QDomElement elem = doc.documentElement().firstChildElement( "qgis3d" );

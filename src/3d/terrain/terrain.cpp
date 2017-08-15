@@ -2,7 +2,7 @@
 
 #include "aabb.h"
 #include "chunknode.h"
-#include "map3d.h"
+#include "qgs3dmapsettings.h"
 #include "maptexturegenerator.h"
 #include "maptextureimage.h"
 #include "terraingenerator.h"
@@ -34,7 +34,7 @@ class TerrainMapUpdateJobFactory : public ChunkQueueJobFactory
 
 
 
-Terrain::Terrain( int maxLevel, const Map3D &map, Qt3DCore::QNode *parent )
+Terrain::Terrain( int maxLevel, const Qgs3DMapSettings &map, Qt3DCore::QNode *parent )
   : ChunkedEntity( map.terrainGenerator()->rootChunkBbox( map ),
                    map.terrainGenerator()->rootChunkError( map ),
                    map.maxTerrainScreenError(), maxLevel, map.terrainGenerator(), parent )
@@ -43,10 +43,10 @@ Terrain::Terrain( int maxLevel, const Map3D &map, Qt3DCore::QNode *parent )
 {
   map.terrainGenerator()->setTerrain( this );
 
-  connect( &map, &Map3D::showTerrainBoundingBoxesChanged, this, &Terrain::onShowBoundingBoxesChanged );
-  connect( &map, &Map3D::showTerrainTilesInfoChanged, this, &Terrain::invalidateMapImages );
-  connect( &map, &Map3D::layersChanged, this, &Terrain::onLayersChanged );
-  connect( &map, &Map3D::backgroundColorChanged, this, &Terrain::invalidateMapImages );
+  connect( &map, &Qgs3DMapSettings::showTerrainBoundingBoxesChanged, this, &Terrain::onShowBoundingBoxesChanged );
+  connect( &map, &Qgs3DMapSettings::showTerrainTilesInfoChanged, this, &Terrain::invalidateMapImages );
+  connect( &map, &Qgs3DMapSettings::layersChanged, this, &Terrain::onLayersChanged );
+  connect( &map, &Qgs3DMapSettings::backgroundColorChanged, this, &Terrain::invalidateMapImages );
 
   connectToLayersRepaintRequest();
 

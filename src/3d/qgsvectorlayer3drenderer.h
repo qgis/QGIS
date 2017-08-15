@@ -1,12 +1,12 @@
-#ifndef VECTORLAYER3DRENDERER_H
-#define VECTORLAYER3DRENDERER_H
+#ifndef QGSVECTORLAYER3DRENDERER_H
+#define QGSVECTORLAYER3DRENDERER_H
 
 #include "qgis_3d.h"
 
 #include "qgs3drendererregistry.h"
 #include "qgsabstract3drenderer.h"
 
-#include "phongmaterialsettings.h"
+#include "qgsphongmaterialsettings.h"
 #include "utils.h"
 
 #include "qgsmaplayerref.h"
@@ -19,10 +19,10 @@ class QgsAbstract3DSymbol;
 
 
 //! Metadata for vector layer 3D renderer to allow creation of its instances from XML
-class _3D_EXPORT VectorLayer3DRendererMetadata : public Qgs3DRendererAbstractMetadata
+class _3D_EXPORT QgsVectorLayer3DRendererMetadata : public Qgs3DRendererAbstractMetadata
 {
   public:
-    VectorLayer3DRendererMetadata();
+    QgsVectorLayer3DRendererMetadata();
 
     virtual QgsAbstract3DRenderer *createRenderer( QDomElement &elem, const QgsReadWriteContext &context ) override;
 };
@@ -31,12 +31,12 @@ class _3D_EXPORT VectorLayer3DRendererMetadata : public Qgs3DRendererAbstractMet
 /** 3D renderer that renders all features of a vector layer with the same 3D symbol.
  * The appearance is completely defined by the symbol.
  */
-class _3D_EXPORT VectorLayer3DRenderer : public QgsAbstract3DRenderer
+class _3D_EXPORT QgsVectorLayer3DRenderer : public QgsAbstract3DRenderer
 {
   public:
     //! Takes ownership of the symbol object
-    explicit VectorLayer3DRenderer( QgsAbstract3DSymbol *s = nullptr );
-    ~VectorLayer3DRenderer();
+    explicit QgsVectorLayer3DRenderer( QgsAbstract3DSymbol *s = nullptr );
+    ~QgsVectorLayer3DRenderer();
 
     void setLayer( QgsVectorLayer *layer );
     QgsVectorLayer *layer() const;
@@ -46,8 +46,8 @@ class _3D_EXPORT VectorLayer3DRenderer : public QgsAbstract3DRenderer
     const QgsAbstract3DSymbol *symbol() const;
 
     QString type() const override { return "vector"; }
-    VectorLayer3DRenderer *clone() const override;
-    Qt3DCore::QEntity *createEntity( const Map3D &map ) const override;
+    QgsVectorLayer3DRenderer *clone() const override;
+    Qt3DCore::QEntity *createEntity( const Qgs3DMapSettings &map ) const override;
 
     void writeXml( QDomElement &elem, const QgsReadWriteContext &context ) const override;
     void readXml( const QDomElement &elem, const QgsReadWriteContext &context ) override;
@@ -59,4 +59,4 @@ class _3D_EXPORT VectorLayer3DRenderer : public QgsAbstract3DRenderer
 };
 
 
-#endif // VECTORLAYER3DRENDERER_H
+#endif // QGSVECTORLAYER3DRENDERER_H

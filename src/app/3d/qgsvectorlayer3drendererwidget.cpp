@@ -7,7 +7,7 @@
 #include "qgsline3dsymbolwidget.h"
 #include "qgspoint3dsymbolwidget.h"
 #include "qgspolygon3dsymbolwidget.h"
-#include "vectorlayer3drenderer.h"
+#include "qgsvectorlayer3drenderer.h"
 
 #include "qgsvectorlayer.h"
 
@@ -53,7 +53,7 @@ void QgsVectorLayer3DRendererWidget::setLayer( QgsVectorLayer *layer )
   QgsAbstract3DRenderer *r = layer->renderer3D();
   if ( r && r->type() == "vector" )
   {
-    VectorLayer3DRenderer *vectorRenderer = static_cast<VectorLayer3DRenderer *>( r );
+    QgsVectorLayer3DRenderer *vectorRenderer = static_cast<QgsVectorLayer3DRenderer *>( r );
     setRenderer( vectorRenderer );
   }
   else
@@ -62,7 +62,7 @@ void QgsVectorLayer3DRendererWidget::setLayer( QgsVectorLayer *layer )
   }
 }
 
-void QgsVectorLayer3DRendererWidget::setRenderer( const VectorLayer3DRenderer *renderer )
+void QgsVectorLayer3DRendererWidget::setRenderer( const QgsVectorLayer3DRenderer *renderer )
 {
   mRenderer.reset( renderer ? renderer->clone() : nullptr );
 
@@ -118,7 +118,7 @@ void QgsVectorLayer3DRendererWidget::setRenderer( const VectorLayer3DRenderer *r
   widgetStack->setCurrentIndex( pageIndex );
 }
 
-VectorLayer3DRenderer *QgsVectorLayer3DRendererWidget::renderer()
+QgsVectorLayer3DRenderer *QgsVectorLayer3DRendererWidget::renderer()
 {
   if ( chkEnabled->isChecked() )
   {
@@ -132,7 +132,7 @@ VectorLayer3DRenderer *QgsVectorLayer3DRendererWidget::renderer()
         sym = new QgsPoint3DSymbol( widgetPoint->symbol() );
       else
         sym = new QgsPolygon3DSymbol( widgetPolygon->symbol() );
-      VectorLayer3DRenderer *r = new VectorLayer3DRenderer( sym );
+      QgsVectorLayer3DRenderer *r = new QgsVectorLayer3DRenderer( sym );
       r->setLayer( qobject_cast<QgsVectorLayer *>( mLayer ) );
       mRenderer.reset( r );
     }
@@ -151,7 +151,7 @@ VectorLayer3DRenderer *QgsVectorLayer3DRendererWidget::renderer()
 
 void QgsVectorLayer3DRendererWidget::apply()
 {
-  VectorLayer3DRenderer *r = renderer();
+  QgsVectorLayer3DRenderer *r = renderer();
   mLayer->setRenderer3D( r ? r->clone() : nullptr );
 }
 

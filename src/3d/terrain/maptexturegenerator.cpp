@@ -5,9 +5,9 @@
 #include <qgsmapsettings.h>
 #include <qgsproject.h>
 
-#include "map3d.h"
+#include "qgs3dmapsettings.h"
 
-MapTextureGenerator::MapTextureGenerator( const Map3D &map )
+MapTextureGenerator::MapTextureGenerator( const Qgs3DMapSettings &map )
   : map( map )
   , lastJobId( 0 )
 {

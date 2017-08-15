@@ -1,9 +1,9 @@
-#include "phongmaterialsettings.h"
+#include "qgsphongmaterialsettings.h"
 
 #include "qgssymbollayerutils.h"
 
 
-void PhongMaterialSettings::readXml( const QDomElement &elem )
+void QgsPhongMaterialSettings::readXml( const QDomElement &elem )
 {
   mAmbient = QgsSymbolLayerUtils::decodeColor( elem.attribute( "ambient" ) );
   mDiffuse = QgsSymbolLayerUtils::decodeColor( elem.attribute( "diffuse" ) );
@@ -11,7 +11,7 @@ void PhongMaterialSettings::readXml( const QDomElement &elem )
   mShininess = elem.attribute( "shininess" ).toFloat();
 }
 
-void PhongMaterialSettings::writeXml( QDomElement &elem ) const
+void QgsPhongMaterialSettings::writeXml( QDomElement &elem ) const
 {
   elem.setAttribute( "ambient", QgsSymbolLayerUtils::encodeColor( mAmbient ) );
   elem.setAttribute( "diffuse", QgsSymbolLayerUtils::encodeColor( mDiffuse ) );

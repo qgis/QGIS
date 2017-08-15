@@ -6,7 +6,7 @@
 class Qgs3DMapCanvas;
 class QgsMapCanvas;
 
-class Map3D;
+class Qgs3DMapSettings;
 
 
 class Qgs3DMapCanvasDockWidget : public QgsDockWidget
@@ -16,7 +16,7 @@ class Qgs3DMapCanvasDockWidget : public QgsDockWidget
     Qgs3DMapCanvasDockWidget( QWidget *parent = nullptr );
 
     //! takes ownership
-    void setMap( Map3D *map );
+    void setMap( Qgs3DMapSettings *map );
 
     void setMainCanvas( QgsMapCanvas *canvas );
 

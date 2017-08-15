@@ -8,7 +8,7 @@
 class QDomElement;
 class QgsProject;
 class QgsReadWriteContext;
-class Map3D;
+class Qgs3DMapSettings;
 
 namespace Qt3DCore
 {
@@ -24,7 +24,7 @@ class CORE_EXPORT QgsAbstract3DRenderer //: public QObject
 
     virtual QString type() const = 0;
     virtual QgsAbstract3DRenderer *clone() const = 0;
-    virtual Qt3DCore::QEntity *createEntity( const Map3D &map ) const = 0;
+    virtual Qt3DCore::QEntity *createEntity( const Qgs3DMapSettings &map ) const = 0;
 
     virtual void writeXml( QDomElement &elem, const QgsReadWriteContext &context ) const = 0;
     virtual void readXml( const QDomElement &elem, const QgsReadWriteContext &context ) = 0;

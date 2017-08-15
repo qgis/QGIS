@@ -84,9 +84,9 @@
 #include "qgsabstract3drenderer.h"
 #include "qgs3dmapcanvasdockwidget.h"
 #include "qgs3drendererregistry.h"
-#include "map3d.h"
+#include "qgs3dmapsettings.h"
 #include "flatterraingenerator.h"
-#include "vectorlayer3drenderer.h"
+#include "qgsvectorlayer3drenderer.h"
 #endif
 
 #include <QNetworkReply>
@@ -9893,7 +9893,7 @@ void QgisApp::init3D()
 {
 #ifdef HAVE_3D
   // register 3D renderers
-  QgsApplication::instance()->renderer3DRegistry()->addRenderer( new VectorLayer3DRendererMetadata );
+  QgsApplication::instance()->renderer3DRegistry()->addRenderer( new QgsVectorLayer3DRendererMetadata );
 #else
   mActionNew3DMapCanvas->setVisible( false );
 #endif
@@ -9915,7 +9915,7 @@ void QgisApp::new3DMapCanvas()
     return;
   }
 
-  Map3D *map = new Map3D;
+  Qgs3DMapSettings *map = new Qgs3DMapSettings;
   map->crs = prj->crs();
   map->originX = fullExtent.center().x();
   map->originY = fullExtent.center().y();

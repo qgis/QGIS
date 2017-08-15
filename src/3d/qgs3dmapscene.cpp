@@ -1,4 +1,4 @@
-#include "scene.h"
+#include "qgs3dmapscene.h"
 
 #include <Qt3DRender/QCamera>
 #include <Qt3DRender/QPickingSettings>
@@ -14,7 +14,7 @@
 #include "cameracontroller.h"
 #include "chunknode.h"
 #include "qgsvectorlayer.h"
-#include "map3d.h"
+#include "qgs3dmapsettings.h"
 #include "terrain.h"
 #include "terraingenerator.h"
 //#include "testchunkloader.h"
@@ -26,14 +26,14 @@
 #include <Qt3DExtras/QPhongMaterial>
 
 
-Scene::Scene( const Map3D &map, Qt3DExtras::QForwardRenderer *defaultFrameGraph, Qt3DRender::QRenderSettings *renderSettings, Qt3DRender::QCamera *camera, const QRect &viewportRect, Qt3DCore::QNode *parent )
+Qgs3DMapScene::Qgs3DMapScene( const Qgs3DMapSettings &map, Qt3DExtras::QForwardRenderer *defaultFrameGraph, Qt3DRender::QRenderSettings *renderSettings, Qt3DRender::QCamera *camera, const QRect &viewportRect, Qt3DCore::QNode *parent )
   : Qt3DCore::QEntity( parent )
   , mMap( map )
   , mTerrain( nullptr )
   , mForwardRenderer( defaultFrameGraph )
 {
 
-  connect( &map, &Map3D::backgroundColorChanged, this, &Scene::onBackgroundColorChanged );
+  connect( &map, &Qgs3DMapSettings::backgroundColorChanged, this, &Qgs3DMapScene::onBackgroundColorChanged );
   onBackgroundColorChanged();
 
   // TODO: strange - setting OnDemand render policy still keeps QGIS busy (Qt 5.9.0)
@@ -51,7 +51,7 @@ Scene::Scene( const Map3D &map, Qt3DExtras::QForwardRenderer *defaultFrameGraph,
 
   mFrameAction = new Qt3DLogic::QFrameAction();
   connect( mFrameAction, &Qt3DLogic::QFrameAction::triggered,
-           this, &Scene::onFrameTriggered );
+           this, &Qgs3DMapScene::onFrameTriggered );
   addComponent( mFrameAction ); // takes ownership
 
   // Camera controlling
@@ -63,11 +63,11 @@ Scene::Scene( const Map3D &map, Qt3DExtras::QForwardRenderer *defaultFrameGraph,
   // create terrain entity
 
   createTerrain();
-  connect( &map, &Map3D::terrainGeneratorChanged, this, &Scene::createTerrain );
-  connect( &map, &Map3D::terrainVerticalScaleChanged, this, &Scene::createTerrain );
-  connect( &map, &Map3D::mapTileResolutionChanged, this, &Scene::createTerrain );
-  connect( &map, &Map3D::maxTerrainScreenErrorChanged, this, &Scene::createTerrain );
-  connect( &map, &Map3D::maxTerrainGroundErrorChanged, this, &Scene::createTerrain );
+  connect( &map, &Qgs3DMapSettings::terrainGeneratorChanged, this, &Qgs3DMapScene::createTerrain );
+  connect( &map, &Qgs3DMapSettings::terrainVerticalScaleChanged, this, &Qgs3DMapScene::createTerrain );
+  connect( &map, &Qgs3DMapSettings::mapTileResolutionChanged, this, &Qgs3DMapScene::createTerrain );
+  connect( &map, &Qgs3DMapSettings::maxTerrainScreenErrorChanged, this, &Qgs3DMapScene::createTerrain );
+  connect( &map, &Qgs3DMapSettings::maxTerrainGroundErrorChanged, this, &Qgs3DMapScene::createTerrain );
 
   // create entities of renderers
 
@@ -78,7 +78,7 @@ Scene::Scene( const Map3D &map, Qt3DExtras::QForwardRenderer *defaultFrameGraph,
   }
 
   // listen to changes of layers in order to add/remove 3D renderer entities
-  connect( &map, &Map3D::layersChanged, this, &Scene::onLayersChanged );
+  connect( &map, &Qgs3DMapSettings::layersChanged, this, &Qgs3DMapScene::onLayersChanged );
 
   Qt3DCore::QEntity *lightEntity = new Qt3DCore::QEntity;
   Qt3DCore::QTransform *lightTransform = new Qt3DCore::QTransform;
@@ -101,8 +101,8 @@ Scene::Scene( const Map3D &map, Qt3DExtras::QForwardRenderer *defaultFrameGraph,
   chunkEntities << testChunkEntity;
 #endif
 
-  connect( mCameraController, &CameraController::cameraChanged, this, &Scene::onCameraChanged );
-  connect( mCameraController, &CameraController::viewportChanged, this, &Scene::onCameraChanged );
+  connect( mCameraController, &CameraController::cameraChanged, this, &Qgs3DMapScene::onCameraChanged );
+  connect( mCameraController, &CameraController::viewportChanged, this, &Qgs3DMapScene::onCameraChanged );
 
 #if 0
   // experiments with loading of existing 3D models.
@@ -147,7 +147,7 @@ Scene::Scene( const Map3D &map, Qt3DExtras::QForwardRenderer *defaultFrameGraph,
   onCameraChanged();
 }
 
-void Scene::viewZoomFull()
+void Qgs3DMapScene::viewZoomFull()
 {
   QgsRectangle extent = mMap.terrainGenerator()->extent();
   float side = qMax( extent.width(), extent.height() );
@@ -166,7 +166,7 @@ SceneState _sceneState( CameraController *cameraController )
   return state;
 }
 
-void Scene::onCameraChanged()
+void Qgs3DMapScene::onCameraChanged()
 {
   Q_FOREACH ( ChunkedEntity *entity, chunkEntities )
   {
@@ -242,7 +242,7 @@ void Scene::onCameraChanged()
   //qDebug() << "camera near/far" << mCameraController->camera()->nearPlane() << mCameraController->camera()->farPlane();
 }
 
-void Scene::onFrameTriggered( float dt )
+void Qgs3DMapScene::onFrameTriggered( float dt )
 {
   mCameraController->frameTriggered( dt );
 
@@ -256,7 +256,7 @@ void Scene::onFrameTriggered( float dt )
   }
 }
 
-void Scene::createTerrain()
+void Qgs3DMapScene::createTerrain()
 {
   if ( mTerrain )
   {
@@ -269,12 +269,12 @@ void Scene::createTerrain()
   if ( !mTerrainUpdateScheduled )
   {
     // defer re-creation of terrain: there may be multiple invocations of this slot, so create the new entity just once
-    QTimer::singleShot( 0, this, &Scene::createTerrainDeferred );
+    QTimer::singleShot( 0, this, &Qgs3DMapScene::createTerrainDeferred );
     mTerrainUpdateScheduled = true;
   }
 }
 
-void Scene::createTerrainDeferred()
+void Qgs3DMapScene::createTerrainDeferred()
 {
   double tile0width = mMap.terrainGenerator()->extent().width();
   int maxZoomLevel = Utils::maxZoomLevel( tile0width, mMap.mapTileResolution(), mMap.maxTerrainGroundError() );
@@ -305,12 +305,12 @@ void Scene::createTerrainDeferred()
   mTerrainUpdateScheduled = false;
 }
 
-void Scene::onBackgroundColorChanged()
+void Qgs3DMapScene::onBackgroundColorChanged()
 {
   mForwardRenderer->setClearColor( mMap.backgroundColor() );
 }
 
-void Scene::onLayerRenderer3DChanged()
+void Qgs3DMapScene::onLayerRenderer3DChanged()
 {
   QgsMapLayer *layer = qobject_cast<QgsMapLayer *>( sender() );
   Q_ASSERT( layer );
@@ -322,7 +322,7 @@ void Scene::onLayerRenderer3DChanged()
   addLayerEntity( layer );
 }
 
-void Scene::onLayersChanged()
+void Qgs3DMapScene::onLayersChanged()
 {
   QSet<QgsMapLayer *> layersBefore = QSet<QgsMapLayer *>::fromList( mLayerEntities.keys() );
   QList<QgsMapLayer *> layersAdded;
@@ -350,7 +350,7 @@ void Scene::onLayersChanged()
   }
 }
 
-void Scene::addLayerEntity( QgsMapLayer *layer )
+void Qgs3DMapScene::addLayerEntity( QgsMapLayer *layer )
 {
   QgsAbstract3DRenderer *renderer = layer->renderer3D();
   if ( renderer )
@@ -360,26 +360,26 @@ void Scene::addLayerEntity( QgsMapLayer *layer )
     mLayerEntities.insert( layer, newEntity );
   }
 
-  connect( layer, &QgsMapLayer::renderer3DChanged, this, &Scene::onLayerRenderer3DChanged );
+  connect( layer, &QgsMapLayer::renderer3DChanged, this, &Qgs3DMapScene::onLayerRenderer3DChanged );
 
   if ( layer->type() == QgsMapLayer::VectorLayer )
   {
     QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer );
-    connect( vlayer, &QgsVectorLayer::selectionChanged, this, &Scene::onLayerRenderer3DChanged );
+    connect( vlayer, &QgsVectorLayer::selectionChanged, this, &Qgs3DMapScene::onLayerRenderer3DChanged );
   }
 }
 
-void Scene::removeLayerEntity( QgsMapLayer *layer )
+void Qgs3DMapScene::removeLayerEntity( QgsMapLayer *layer )
 {
   Qt3DCore::QEntity *entity = mLayerEntities.take( layer );
   if ( entity )
     entity->deleteLater();
 
-  disconnect( layer, &QgsMapLayer::renderer3DChanged, this, &Scene::onLayerRenderer3DChanged );
+  disconnect( layer, &QgsMapLayer::renderer3DChanged, this, &Qgs3DMapScene::onLayerRenderer3DChanged );
 
   if ( layer->type() == QgsMapLayer::VectorLayer )
   {
     QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer );
-    disconnect( vlayer, &QgsVectorLayer::selectionChanged, this, &Scene::onLayerRenderer3DChanged );
+    disconnect( vlayer, &QgsVectorLayer::selectionChanged, this, &Qgs3DMapScene::onLayerRenderer3DChanged );
   }
 }

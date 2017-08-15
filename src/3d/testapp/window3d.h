@@ -10,15 +10,15 @@ namespace Qt3DLogic
 
 #include <QTimer>
 
-class Map3D;
-class Scene;
+class Qgs3DMapSettings;
+class Qgs3DMapScene;
 class SidePanel;
 
 //! window with 3D content
 class Window3D : public Qt3DExtras::Qt3DWindow
 {
   public:
-    Window3D( SidePanel *p, Map3D &map );
+    Window3D( SidePanel *p, Qgs3DMapSettings &map );
 
   protected:
     void resizeEvent( QResizeEvent *ev ) override;
@@ -30,8 +30,8 @@ class Window3D : public Qt3DExtras::Qt3DWindow
   private:
 
     SidePanel *panel;
-    Map3D &map;
-    Scene *scene;
+    Qgs3DMapSettings &map;
+    Qgs3DMapScene *scene;
 
     QTimer timer;
     int frames = 0;

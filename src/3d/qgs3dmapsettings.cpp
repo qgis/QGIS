@@ -1,9 +1,9 @@
-#include "map3d.h"
+#include "qgs3dmapsettings.h"
 
 #include "flatterraingenerator.h"
 #include "demterraingenerator.h"
 //#include "quantizedmeshterraingenerator.h"
-#include "vectorlayer3drenderer.h"
+#include "qgsvectorlayer3drenderer.h"
 
 #include <QDomDocument>
 #include <QDomElement>
@@ -12,7 +12,7 @@
 #include "qgsrasterlayer.h"
 
 
-Map3D::Map3D()
+Qgs3DMapSettings::Qgs3DMapSettings()
   : originX( 0 )
   , originY( 0 )
   , originZ( 0 )
@@ -27,7 +27,7 @@ Map3D::Map3D()
 {
 }
 
-Map3D::Map3D( const Map3D &other )
+Qgs3DMapSettings::Qgs3DMapSettings( const Qgs3DMapSettings &other )
   : QObject()
   , originX( other.originX )
   , originY( other.originY )
@@ -52,12 +52,12 @@ Map3D::Map3D( const Map3D &other )
   }
 }
 
-Map3D::~Map3D()
+Qgs3DMapSettings::~Qgs3DMapSettings()
 {
   qDeleteAll( renderers );
 }
 
-void Map3D::readXml( const QDomElement &elem, const QgsReadWriteContext &context )
+void Qgs3DMapSettings::readXml( const QDomElement &elem, const QgsReadWriteContext &context )
 {
   QDomElement elemOrigin = elem.firstChildElement( "origin" );
   originX = elemOrigin.attribute( "x" ).toDouble();
@@ -113,7 +113,7 @@ void Map3D::readXml( const QDomElement &elem, const QgsReadWriteContext &context
     QString type = elemRenderer.attribute( "type" );
     if ( type == "vector" )
     {
-      renderer = new VectorLayer3DRenderer;
+      renderer = new QgsVectorLayer3DRenderer;
     }
 
     if ( renderer )
@@ -134,7 +134,7 @@ void Map3D::readXml( const QDomElement &elem, const QgsReadWriteContext &context
   mShowTerrainTileInfo = elemDebug.attribute( "terrain-tile-info", "0" ).toInt();
 }
 
-QDomElement Map3D::writeXml( QDomDocument &doc, const QgsReadWriteContext &context ) const
+QDomElement Qgs3DMapSettings::writeXml( QDomDocument &doc, const QgsReadWriteContext &context ) const
 {
   QDomElement elem = doc.createElement( "qgis3d" );
 
@@ -192,7 +192,7 @@ QDomElement Map3D::writeXml( QDomDocument &doc, const QgsReadWriteContext &conte
   return elem;
 }
 
-void Map3D::resolveReferences( const QgsProject &project )
+void Qgs3DMapSettings::resolveReferences( const QgsProject &project )
 {
   for ( int i = 0; i < mLayers.count(); ++i )
   {
@@ -209,7 +209,7 @@ void Map3D::resolveReferences( const QgsProject &project )
   }
 }
 
-void Map3D::setBackgroundColor( const QColor &color )
+void Qgs3DMapSettings::setBackgroundColor( const QColor &color )
 {
   if ( color == mBackgroundColor )
     return;
@@ -218,12 +218,12 @@ void Map3D::setBackgroundColor( const QColor &color )
   emit backgroundColorChanged();
 }
 
-QColor Map3D::backgroundColor() const
+QColor Qgs3DMapSettings::backgroundColor() const
 {
   return mBackgroundColor;
 }
 
-void Map3D::setSelectionColor( const QColor &color )
+void Qgs3DMapSettings::setSelectionColor( const QColor &color )
 {
   if ( color == mSelectionColor )
     return;
@@ -232,12 +232,12 @@ void Map3D::setSelectionColor( const QColor &color )
   emit selectionColorChanged();
 }
 
-QColor Map3D::selectionColor() const
+QColor Qgs3DMapSettings::selectionColor() const
 {
   return mSelectionColor;
 }
 
-void Map3D::setTerrainVerticalScale( double zScale )
+void Qgs3DMapSettings::setTerrainVerticalScale( double zScale )
 {
   if ( zScale == mTerrainVerticalScale )
     return;
@@ -246,12 +246,12 @@ void Map3D::setTerrainVerticalScale( double zScale )
   emit terrainVerticalScaleChanged();
 }
 
-double Map3D::terrainVerticalScale() const
+double Qgs3DMapSettings::terrainVerticalScale() const
 {
   return mTerrainVerticalScale;
 }
 
-void Map3D::setLayers( const QList<QgsMapLayer *> &layers )
+void Qgs3DMapSettings::setLayers( const QList<QgsMapLayer *> &layers )
 {
   QList<QgsMapLayerRef> lst;
   lst.reserve( layers.count() );
@@ -267,7 +267,7 @@ void Map3D::setLayers( const QList<QgsMapLayer *> &layers )
   emit layersChanged();
 }
 
-QList<QgsMapLayer *> Map3D::layers() const
+QList<QgsMapLayer *> Qgs3DMapSettings::layers() const
 {
   QList<QgsMapLayer *> lst;
   lst.reserve( mLayers.count() );
@@ -279,7 +279,7 @@ QList<QgsMapLayer *> Map3D::layers() const
   return lst;
 }
 
-void Map3D::setMapTileResolution( int res )
+void Qgs3DMapSettings::setMapTileResolution( int res )
 {
   if ( mMapTileResolution == res )
     return;
@@ -288,12 +288,12 @@ void Map3D::setMapTileResolution( int res )
   emit mapTileResolutionChanged();
 }
 
-int Map3D::mapTileResolution() const
+int Qgs3DMapSettings::mapTileResolution() const
 {
   return mMapTileResolution;
 }
 
-void Map3D::setMaxTerrainScreenError( float error )
+void Qgs3DMapSettings::setMaxTerrainScreenError( float error )
 {
   if ( mMaxTerrainScreenError == error )
     return;
@@ -302,12 +302,12 @@ void Map3D::setMaxTerrainScreenError( float error )
   emit maxTerrainScreenErrorChanged();
 }
 
-float Map3D::maxTerrainScreenError() const
+float Qgs3DMapSettings::maxTerrainScreenError() const
 {
   return mMaxTerrainScreenError;
 }
 
-void Map3D::setMaxTerrainGroundError( float error )
+void Qgs3DMapSettings::setMaxTerrainGroundError( float error )
 {
   if ( mMaxTerrainGroundError == error )
     return;
@@ -316,18 +316,18 @@ void Map3D::setMaxTerrainGroundError( float error )
   emit maxTerrainGroundErrorChanged();
 }
 
-float Map3D::maxTerrainGroundError() const
+float Qgs3DMapSettings::maxTerrainGroundError() const
 {
   return mMaxTerrainGroundError;
 }
 
-void Map3D::setTerrainGenerator( TerrainGenerator *gen )
+void Qgs3DMapSettings::setTerrainGenerator( TerrainGenerator *gen )
 {
   mTerrainGenerator.reset( gen );
   emit terrainGeneratorChanged();
 }
 
-void Map3D::setShowTerrainBoundingBoxes( bool enabled )
+void Qgs3DMapSettings::setShowTerrainBoundingBoxes( bool enabled )
 {
   if ( mShowTerrainBoundingBoxes == enabled )
     return;
@@ -336,7 +336,7 @@ void Map3D::setShowTerrainBoundingBoxes( bool enabled )
   emit showTerrainBoundingBoxesChanged();
 }
 
-void Map3D::setShowTerrainTilesInfo( bool enabled )
+void Qgs3DMapSettings::setShowTerrainTilesInfo( bool enabled )
 {
   if ( mShowTerrainTileInfo == enabled )
     return;

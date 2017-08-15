@@ -4,7 +4,7 @@
 #include "qgis_3d.h"
 
 #include "qgsabstract3dsymbol.h"
-#include "phongmaterialsettings.h"
+#include "qgsphongmaterialsettings.h"
 #include "utils.h"
 
 
@@ -35,8 +35,8 @@ class _3D_EXPORT QgsLine3DSymbol : public QgsAbstract3DSymbol
     float extrusionHeight() const { return mExtrusionHeight; }
     void setExtrusionHeight( float extrusionHeight ) { mExtrusionHeight = extrusionHeight; }
 
-    PhongMaterialSettings material() const { return mMaterial; }
-    void setMaterial( const PhongMaterialSettings &material ) { mMaterial = material; }
+    QgsPhongMaterialSettings material() const { return mMaterial; }
+    void setMaterial( const QgsPhongMaterialSettings &material ) { mMaterial = material; }
 
   private:
     AltitudeClamping mAltClamping;  //! how to handle altitude of vector features
@@ -45,7 +45,7 @@ class _3D_EXPORT QgsLine3DSymbol : public QgsAbstract3DSymbol
     float mWidth;            //!< Line width (horizontally)
     float mHeight;           //!< Base height of polygons
     float mExtrusionHeight;  //!< How much to extrude (0 means no walls)
-    PhongMaterialSettings mMaterial;  //!< Defines appearance of objects
+    QgsPhongMaterialSettings mMaterial;  //!< Defines appearance of objects
 };
 
 

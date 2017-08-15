@@ -1,6 +1,6 @@
 #include "demterraingenerator.h"
 
-#include "map3d.h"
+#include "qgs3dmapsettings.h"
 #include "demterraintilegeometry.h"
 #include "maptexturegenerator.h"
 #include "terrain.h"
@@ -78,7 +78,7 @@ QgsRectangle DemTerrainGenerator::extent() const
   return terrainTilingScheme.tileToExtent( 0, 0, 0 );
 }
 
-float DemTerrainGenerator::heightAt( double x, double y, const Map3D &map ) const
+float DemTerrainGenerator::heightAt( double x, double y, const Qgs3DMapSettings &map ) const
 {
   Q_UNUSED( map );
   return mHeightMapGenerator->heightAt( x, y );
@@ -131,7 +131,7 @@ DemTerrainChunkLoader::DemTerrainChunkLoader( Terrain *terrain, ChunkNode *node 
   , resolution( 0 )
 {
 
-  const Map3D &map = mTerrain->map3D();
+  const Qgs3DMapSettings &map = mTerrain->map3D();
   DemTerrainGenerator *generator = static_cast<DemTerrainGenerator *>( map.terrainGenerator() );
 
   // get heightmap asynchronously
@@ -168,7 +168,7 @@ Qt3DCore::QEntity *DemTerrainChunkLoader::createEntity( Qt3DCore::QEntity *paren
   float zMin, zMax;
   _heightMapMinMax( heightMap, zMin, zMax );
 
-  const Map3D &map = mTerrain->map3D();
+  const Qgs3DMapSettings &map = mTerrain->map3D();
   QgsRectangle extent = map.terrainGenerator()->terrainTilingScheme.tileToExtent( node->x, node->y, node->z ); //node->extent;
   double x0 = extent.xMinimum() - map.originX;
   double y0 = extent.yMinimum() - map.originY;

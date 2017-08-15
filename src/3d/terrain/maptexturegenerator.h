@@ -10,7 +10,7 @@ class QgsRasterLayer;
 
 #include "qgsrectangle.h"
 
-class Map3D;
+class Qgs3DMapSettings;
 
 /**
  * Responsible for:
@@ -21,7 +21,7 @@ class MapTextureGenerator : public QObject
 {
     Q_OBJECT
   public:
-    MapTextureGenerator( const Map3D &map );
+    MapTextureGenerator( const Qgs3DMapSettings &map );
 
     //! Start async rendering of a map for the given extent (must be a square!)
     //! Returns job ID
@@ -42,7 +42,7 @@ class MapTextureGenerator : public QObject
   private:
     QgsMapSettings baseMapSettings();
 
-    const Map3D &map;
+    const Qgs3DMapSettings &map;
 
     struct JobData
     {

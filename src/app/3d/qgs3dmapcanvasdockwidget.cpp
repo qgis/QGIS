@@ -4,7 +4,7 @@
 #include "qgs3dmapconfigwidget.h"
 #include "qgsmapcanvas.h"
 
-#include "map3d.h"
+#include "qgs3dmapsettings.h"
 
 #include <QBoxLayout>
 #include <QDialog>
@@ -35,7 +35,7 @@ Qgs3DMapCanvasDockWidget::Qgs3DMapCanvasDockWidget( QWidget *parent )
   setWidget( contentsWidget );
 }
 
-void Qgs3DMapCanvasDockWidget::setMap( Map3D *map )
+void Qgs3DMapCanvasDockWidget::setMap( Qgs3DMapSettings *map )
 {
   mCanvas->setMap( map );
 }

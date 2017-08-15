@@ -2,7 +2,7 @@
 
 #include "qgspolygon3dsymbol.h"
 #include "polygongeometry.h"
-#include "map3d.h"
+#include "qgs3dmapsettings.h"
 #include "terraingenerator.h"
 #include "utils.h"
 
@@ -13,14 +13,14 @@
 
 
 
-QgsPolygon3DSymbolEntity::QgsPolygon3DSymbolEntity( const Map3D &map, QgsVectorLayer *layer, const QgsPolygon3DSymbol &symbol, Qt3DCore::QNode *parent )
+QgsPolygon3DSymbolEntity::QgsPolygon3DSymbolEntity( const Qgs3DMapSettings &map, QgsVectorLayer *layer, const QgsPolygon3DSymbol &symbol, Qt3DCore::QNode *parent )
   : Qt3DCore::QEntity( parent )
 {
   addEntityForSelectedPolygons( map, layer, symbol );
   addEntityForNotSelectedPolygons( map, layer, symbol );
 }
 
-void QgsPolygon3DSymbolEntity::addEntityForSelectedPolygons( const Map3D &map, QgsVectorLayer *layer, const QgsPolygon3DSymbol &symbol )
+void QgsPolygon3DSymbolEntity::addEntityForSelectedPolygons( const Qgs3DMapSettings &map, QgsVectorLayer *layer, const QgsPolygon3DSymbol &symbol )
 {
   // build the default material
   Qt3DExtras::QPhongMaterial *mat = material( symbol );
@@ -45,7 +45,7 @@ void QgsPolygon3DSymbolEntity::addEntityForSelectedPolygons( const Map3D &map, Q
   entity->setParent( this );
 }
 
-void QgsPolygon3DSymbolEntity::addEntityForNotSelectedPolygons( const Map3D &map, QgsVectorLayer *layer, const QgsPolygon3DSymbol &symbol )
+void QgsPolygon3DSymbolEntity::addEntityForNotSelectedPolygons( const Qgs3DMapSettings &map, QgsVectorLayer *layer, const QgsPolygon3DSymbol &symbol )
 {
   // build the default material
   Qt3DExtras::QPhongMaterial *mat = material( symbol );
@@ -79,13 +79,13 @@ Qt3DExtras::QPhongMaterial *QgsPolygon3DSymbolEntity::material( const QgsPolygon
   return material;
 }
 
-QgsPolygon3DSymbolEntityNode::QgsPolygon3DSymbolEntityNode( const Map3D &map, QgsVectorLayer *layer, const QgsPolygon3DSymbol &symbol, const QgsFeatureRequest &req, Qt3DCore::QNode *parent )
+QgsPolygon3DSymbolEntityNode::QgsPolygon3DSymbolEntityNode( const Qgs3DMapSettings &map, QgsVectorLayer *layer, const QgsPolygon3DSymbol &symbol, const QgsFeatureRequest &req, Qt3DCore::QNode *parent )
   : Qt3DCore::QEntity( parent )
 {
   addComponent( renderer( map, symbol, layer, req ) );
 }
 
-Qt3DRender::QGeometryRenderer *QgsPolygon3DSymbolEntityNode::renderer( const Map3D &map, const QgsPolygon3DSymbol &symbol, const QgsVectorLayer *layer, const QgsFeatureRequest &request )
+Qt3DRender::QGeometryRenderer *QgsPolygon3DSymbolEntityNode::renderer( const Qgs3DMapSettings &map, const QgsPolygon3DSymbol &symbol, const QgsVectorLayer *layer, const QgsFeatureRequest &request )
 {
   QgsPointXY origin( map.originX, map.originY );
   QList<QgsPolygonV2 *> polygons;

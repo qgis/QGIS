@@ -3,7 +3,7 @@
 #include "chunknode.h"
 #include "maptextureimage.h"
 #include "maptexturegenerator.h"
-#include "map3d.h"
+#include "qgs3dmapsettings.h"
 #include "terrain.h"
 #include "terraingenerator.h"
 
@@ -22,7 +22,7 @@ TerrainChunkLoader::TerrainChunkLoader( Terrain *terrain, ChunkNode *node )
   : ChunkLoader( node )
   , mTerrain( terrain )
 {
-  const Map3D &map = mTerrain->map3D();
+  const Qgs3DMapSettings &map = mTerrain->map3D();
   int tx, ty, tz;
 #if 0
   if ( map.terrainGenerator->type() == TerrainGenerator::QuantizedMesh )

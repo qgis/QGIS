@@ -1,5 +1,5 @@
-#ifndef MAP3D_H
-#define MAP3D_H
+#ifndef QGS3DMAPSETTINGS_H
+#define QGS3DMAPSETTINGS_H
 
 #include "qgis_3d.h"
 
@@ -23,13 +23,13 @@ class QgsProject;
 class QDomElement;
 
 //! Definition of the world
-class _3D_EXPORT Map3D : public QObject
+class _3D_EXPORT Qgs3DMapSettings : public QObject
 {
     Q_OBJECT
   public:
-    Map3D();
-    Map3D( const Map3D &other );
-    ~Map3D();
+    Qgs3DMapSettings();
+    Qgs3DMapSettings( const Qgs3DMapSettings &other );
+    ~Qgs3DMapSettings();
 
     void readXml( const QDomElement &elem, const QgsReadWriteContext &context );
 
@@ -110,4 +110,4 @@ class _3D_EXPORT Map3D : public QObject
 };
 
 
-#endif // MAP3D_H
+#endif // QGS3DMAPSETTINGS_H
