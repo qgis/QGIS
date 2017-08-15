@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-set -e
+#set -e
 
 # locale-gen en_US.UTF-8
 # export LANG=en_US.UTF-8
@@ -14,7 +14,7 @@ ccache -z
 
 cd /root/QGIS
 
-sleep 20
+#sleep 20
 
 printf "[qgis_test]\nhost=postgres\nport=5432\ndbname=qgis_test\nuser=docker\npassword=docker" > ~/.pg_service.conf
 export PGUSER=docker
@@ -49,9 +49,15 @@ cmake \
 export LD_PRELOAD=/lib/x86_64-linux-gnu/libSegFault.so
 export CTEST_BUILD_COMMAND="/usr/bin/ninja"
 
+ls -la --full-time python/plugins/processing/tests/testdata/expected/polys_centroid.*
+
 ninja
 
-python3 /root/QGIS/.ci/travis/scripts/ctest2travis.py xvfb-run ctest -V -E "$(cat /root/QGIS/.ci/travis/linux/blacklist.txt | sed -r '/^(#.*?)?$/d' | paste -sd '|' -)" -S /root/QGIS/.ci/travis/travis.ctest --output-on-failure
+python3 /root/QGIS/.ci/travis/scripts/ctest2travis.py xvfb-run ctest -V -R ProcessingQgisAlgorithmsTest -S /root/QGIS/.ci/travis/travis.ctest --output-on-failure
+
+find / -iname "*.shp"
+
+#python3 /root/QGIS/.ci/travis/scripts/ctest2travis.py xvfb-run ctest -V -E "$(cat /root/QGIS/.ci/travis/linux/blacklist.txt | sed -r '/^(#.*?)?$/d' | paste -sd '|' -)" -S /root/QGIS/.ci/travis/travis.ctest --output-on-failure
 
 ccache -s
 

@@ -12,3 +12,6 @@
 #   (at your option) any later version.                                   #
 #                                                                         #
 ###########################################################################
+
+shopt -s expand_aliases
+alias python=python3
