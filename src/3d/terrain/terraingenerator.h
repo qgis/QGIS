@@ -1,7 +1,7 @@
 #ifndef FLATTERRAINTILE_H
 #define FLATTERRAINTILE_H
 
-#include "tilingscheme.h"
+#include "qgstilingscheme.h"
 #include "chunkloader.h"
 
 class AABB;
@@ -87,7 +87,7 @@ class TerrainGenerator : public ChunkLoaderFactory
 
     QgsCoordinateReferenceSystem crs() const { return terrainTilingScheme.crs; }
 
-    TilingScheme terrainTilingScheme;   //!< Tiling scheme of the terrain
+    QgsTilingScheme terrainTilingScheme;   //!< Tiling scheme of the terrain
 
     Terrain *mTerrain = nullptr;
 };

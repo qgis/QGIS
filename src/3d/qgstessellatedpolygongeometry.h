@@ -1,5 +1,5 @@
-#ifndef POLYGONGEOMETRY_H
-#define POLYGONGEOMETRY_H
+#ifndef QGSTESSELLATEDPOLYGONGEOMETRY_H
+#define QGSTESSELLATEDPOLYGONGEOMETRY_H
 
 #include "qgspolygon.h"
 
@@ -10,11 +10,12 @@ namespace Qt3DRender
   class QBuffer;
 }
 
-class PolygonGeometry : public Qt3DRender::QGeometry
+//! Class that represents polygons tessellated into 3D geometry
+class QgsTessellatedPolygonGeometry : public Qt3DRender::QGeometry
 {
   public:
-    PolygonGeometry( QNode *parent = nullptr );
-    ~PolygonGeometry();
+    QgsTessellatedPolygonGeometry( QNode *parent = nullptr );
+    ~QgsTessellatedPolygonGeometry();
 
     // takes ownership of passed polygon geometries
     void setPolygons( const QList<QgsPolygonV2 *> &polygons, const QgsPointXY &origin, float extrusionHeight );
@@ -29,4 +30,4 @@ class PolygonGeometry : public Qt3DRender::QGeometry
     bool m_withNormals;
 };
 
-#endif // POLYGONGEOMETRY_H
+#endif // QGSTESSELLATEDPOLYGONGEOMETRY_H

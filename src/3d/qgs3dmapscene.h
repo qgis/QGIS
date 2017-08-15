@@ -22,7 +22,7 @@ namespace Qt3DExtras
 }
 
 class QgsMapLayer;
-class CameraController;
+class QgsCameraController;
 class Qgs3DMapSettings;
 class Terrain;
 class ChunkedEntity;
@@ -36,7 +36,7 @@ class _3D_EXPORT Qgs3DMapScene : public Qt3DCore::QEntity
   public:
     Qgs3DMapScene( const Qgs3DMapSettings &map, Qt3DExtras::QForwardRenderer *defaultFrameGraph, Qt3DRender::QRenderSettings *renderSettings, Qt3DRender::QCamera *camera, const QRect &viewportRect, Qt3DCore::QNode *parent = nullptr );
 
-    CameraController *cameraController() { return mCameraController; }
+    QgsCameraController *cameraController() { return mCameraController; }
     Terrain *terrain() { return mTerrain; }
 
     void viewZoomFull();
@@ -58,7 +58,7 @@ class _3D_EXPORT Qgs3DMapScene : public Qt3DCore::QEntity
     const Qgs3DMapSettings &mMap;
     //! Provides a way to have a synchronous function executed each frame
     Qt3DLogic::QFrameAction *mFrameAction;
-    CameraController *mCameraController;
+    QgsCameraController *mCameraController;
     Terrain *mTerrain;
     //! Forward renderer provided by 3D window
     Qt3DExtras::QForwardRenderer *mForwardRenderer;

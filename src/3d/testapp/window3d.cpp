@@ -1,6 +1,6 @@
 #include "window3d.h"
 
-#include "cameracontroller.h"
+#include "qgscameracontroller.h"
 #include "qgs3dmapsettings.h"
 #include "qgs3dmapscene.h"
 #include "sidepanel.h"

@@ -1,5 +1,5 @@
-#ifndef UTILS_H
-#define UTILS_H
+#ifndef QGS3DUTILS_H
+#define QGS3DUTILS_H
 
 class QgsLineString;
 class QgsPolygonV2;
@@ -24,7 +24,7 @@ enum AltitudeBinding
 };
 
 
-class _3D_EXPORT Utils
+class _3D_EXPORT Qgs3DUtils
 {
   public:
 
@@ -63,4 +63,4 @@ class _3D_EXPORT Utils
     static QList<QVector3D> positions(const Map3D &map, QgsVectorLayer *layer, const QgsFeatureRequest &req);
 };
 
-#endif // UTILS_H
+#endif // QGS3DUTILS_H

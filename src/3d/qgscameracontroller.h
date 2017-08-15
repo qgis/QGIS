@@ -1,5 +1,5 @@
-#ifndef CAMERACONTROLLER_H
-#define CAMERACONTROLLER_H
+#ifndef QGSCAMERACONTROLLER_H
+#define QGSCAMERACONTROLLER_H
 
 #include "qgis_3d.h"
 
@@ -8,13 +8,14 @@
 #include <Qt3DRender>
 
 
-class _3D_EXPORT CameraController : public Qt3DCore::QEntity
+//! Object that controls camera movement based on user input
+class _3D_EXPORT QgsCameraController : public Qt3DCore::QEntity
 {
     Q_OBJECT
     Q_PROPERTY( Qt3DRender::QCamera *camera READ camera WRITE setCamera NOTIFY cameraChanged )
     Q_PROPERTY( QRect viewport READ viewport WRITE setViewport NOTIFY viewportChanged )
   public:
-    CameraController( Qt3DCore::QNode *parent = nullptr );
+    QgsCameraController( Qt3DCore::QNode *parent = nullptr );
 
     Qt3DRender::QCamera *camera() const { return mCamera; }
     QRect viewport() const { return mViewport; }
@@ -119,4 +120,4 @@ class _3D_EXPORT CameraController : public Qt3DCore::QEntity
     Qt3DInput::QButtonAxisInput *mKeyboardTyNegInput;
 };
 
-#endif // CAMERACONTROLLER_H
+#endif // QGSCAMERACONTROLLER_H

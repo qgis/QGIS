@@ -1,5 +1,5 @@
-#ifndef TILINGSCHEME_H
-#define TILINGSCHEME_H
+#ifndef QGSTILINGSCHEME_H
+#define QGSTILINGSCHEME_H
 
 #include <qgscoordinatereferencesystem.h>
 #include <qgspointxy.h>
@@ -8,14 +8,14 @@ class QgsRectangle;
 
 //! The class encapsulates tiling scheme (just like with WMTS / TMS / XYZ layers).
 //! The origin (tile [0,0]) is in bottom-left corner.
-class TilingScheme
+class QgsTilingScheme
 {
   public:
     //! Creates invalid tiling scheme
-    TilingScheme();
+    QgsTilingScheme();
 
     //! Creates tiling scheme where level 0 tile is centered at the full extent and the full extent completely fits into the level 0 tile
-    TilingScheme( const QgsRectangle &fullExtent, const QgsCoordinateReferenceSystem &crs );
+    QgsTilingScheme( const QgsRectangle &fullExtent, const QgsCoordinateReferenceSystem &crs );
 
     //! Returns map coordinates at tile coordinates (for lower-left corner of the tile)
     QgsPointXY tileToMap( int x, int y, int z ) const;
@@ -34,4 +34,4 @@ class TilingScheme
 
 };
 
-#endif // TILINGSCHEME_H
+#endif // QGSTILINGSCHEME_H

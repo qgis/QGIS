@@ -1,14 +1,14 @@
-#ifndef TESSELLATOR_H
-#define TESSELLATOR_H
+#ifndef QGSTESSELLATOR_H
+#define QGSTESSELLATOR_H
 
 class QgsPolygonV2;
 
 #include <QVector>
 
-class Tessellator
+class QgsTessellator
 {
   public:
-    Tessellator( double originX, double originY, bool addNormals );
+    QgsTessellator( double originX, double originY, bool addNormals );
 
     void addPolygon( const QgsPolygonV2 &polygon, float extrusionHeight );
 
@@ -26,4 +26,4 @@ class Tessellator
     int stride;  //!< Size of one vertex entry in bytes
 };
 
-#endif // TESSELLATOR_H
+#endif // QGSTESSELLATOR_H

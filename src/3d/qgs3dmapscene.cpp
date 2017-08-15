@@ -11,7 +11,7 @@
 
 #include "aabb.h"
 #include "qgsabstract3drenderer.h"
-#include "cameracontroller.h"
+#include "qgscameracontroller.h"
 #include "chunknode.h"
 #include "qgsvectorlayer.h"
 #include "qgs3dmapsettings.h"
@@ -19,7 +19,7 @@
 #include "terraingenerator.h"
 //#include "testchunkloader.h"
 #include "chunkedentity.h"
-#include "utils.h"
+#include "qgs3dutils.h"
 
 #include <Qt3DRender/QMesh>
 #include <Qt3DRender/QSceneLoader>
@@ -55,7 +55,7 @@ Qgs3DMapScene::Qgs3DMapScene( const Qgs3DMapSettings &map, Qt3DExtras::QForwardR
   addComponent( mFrameAction ); // takes ownership
 
   // Camera controlling
-  mCameraController = new CameraController( this ); // attaches to the scene
+  mCameraController = new QgsCameraController( this ); // attaches to the scene
   mCameraController->setViewport( viewportRect );
   mCameraController->setCamera( camera );
   mCameraController->resetView( 1000 );
@@ -101,8 +101,8 @@ Qgs3DMapScene::Qgs3DMapScene( const Qgs3DMapSettings &map, Qt3DExtras::QForwardR
   chunkEntities << testChunkEntity;
 #endif
 
-  connect( mCameraController, &CameraController::cameraChanged, this, &Qgs3DMapScene::onCameraChanged );
-  connect( mCameraController, &CameraController::viewportChanged, this, &Qgs3DMapScene::onCameraChanged );
+  connect( mCameraController, &QgsCameraController::cameraChanged, this, &Qgs3DMapScene::onCameraChanged );
+  connect( mCameraController, &QgsCameraController::viewportChanged, this, &Qgs3DMapScene::onCameraChanged );
 
 #if 0
   // experiments with loading of existing 3D models.
@@ -154,7 +154,7 @@ void Qgs3DMapScene::viewZoomFull()
   mCameraController->resetView( side );  // assuming FOV being 45 degrees
 }
 
-SceneState _sceneState( CameraController *cameraController )
+SceneState _sceneState( QgsCameraController *cameraController )
 {
   Qt3DRender::QCamera *camera = cameraController->camera();
   SceneState state;
@@ -277,7 +277,7 @@ void Qgs3DMapScene::createTerrain()
 void Qgs3DMapScene::createTerrainDeferred()
 {
   double tile0width = mMap.terrainGenerator()->extent().width();
-  int maxZoomLevel = Utils::maxZoomLevel( tile0width, mMap.mapTileResolution(), mMap.maxTerrainGroundError() );
+  int maxZoomLevel = Qgs3DUtils::maxZoomLevel( tile0width, mMap.mapTileResolution(), mMap.maxTerrainGroundError() );
 
   mTerrain = new Terrain( maxZoomLevel, mMap );
   //mTerrain->setEnabled(false);

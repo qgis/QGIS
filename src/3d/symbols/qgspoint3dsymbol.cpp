@@ -29,7 +29,7 @@ void QgsPoint3DSymbol::writeXml( QDomElement &elem, const QgsReadWriteContext &c
   elem.appendChild( elemShapeProperties );
 
   QDomElement elemTransform = doc.createElement( "transform" );
-  elemTransform.setAttribute( "matrix", Utils::matrix4x4toString( mTransform ) );
+  elemTransform.setAttribute( "matrix", Qgs3DUtils::matrix4x4toString( mTransform ) );
   elem.appendChild( elemTransform );
 }
 
@@ -43,5 +43,5 @@ void QgsPoint3DSymbol::readXml( const QDomElement &elem, const QgsReadWriteConte
   mShapeProperties["model"] = QVariant( context.pathResolver().readPath( mShapeProperties["model"].toString() ) );
 
   QDomElement elemTransform = elem.firstChildElement( "transform" );
-  mTransform = Utils::stringToMatrix4x4( elemTransform.attribute( "matrix" ) );
+  mTransform = Qgs3DUtils::stringToMatrix4x4( elemTransform.attribute( "matrix" ) );
 }

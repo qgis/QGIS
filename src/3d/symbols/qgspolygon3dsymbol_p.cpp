@@ -1,10 +1,10 @@
 #include "qgspolygon3dsymbol_p.h"
 
 #include "qgspolygon3dsymbol.h"
-#include "polygongeometry.h"
+#include "qgstessellatedpolygongeometry.h"
 #include "qgs3dmapsettings.h"
 #include "terraingenerator.h"
-#include "utils.h"
+#include "qgs3dutils.h"
 
 #include <Qt3DCore/QTransform>
 
@@ -115,7 +115,7 @@ Qt3DRender::QGeometryRenderer *QgsPolygon3DSymbolEntityNode::renderer( const Qgs
     {
       QgsPolygonV2 *poly = static_cast<QgsPolygonV2 *>( g );
       QgsPolygonV2 *polyClone = poly->clone();
-      Utils::clampAltitudes( polyClone, symbol.altitudeClamping(), symbol.altitudeBinding(), symbol.height(), map );
+      Qgs3DUtils::clampAltitudes( polyClone, symbol.altitudeClamping(), symbol.altitudeBinding(), symbol.height(), map );
       polygons.append( polyClone );
     }
     else if ( QgsWkbTypes::flatType( g->wkbType() ) == QgsWkbTypes::MultiPolygon )
@@ -126,7 +126,7 @@ Qt3DRender::QGeometryRenderer *QgsPolygon3DSymbolEntityNode::renderer( const Qgs
         QgsAbstractGeometry *g2 = mpoly->geometryN( i );
         Q_ASSERT( QgsWkbTypes::flatType( g2->wkbType() ) == QgsWkbTypes::Polygon );
         QgsPolygonV2 *polyClone = static_cast<QgsPolygonV2 *>( g2 )->clone();
-        Utils::clampAltitudes( polyClone, symbol.altitudeClamping(), symbol.altitudeBinding(), symbol.height(), map );
+        Qgs3DUtils::clampAltitudes( polyClone, symbol.altitudeClamping(), symbol.altitudeBinding(), symbol.height(), map );
         polygons.append( polyClone );
       }
     }
@@ -134,7 +134,7 @@ Qt3DRender::QGeometryRenderer *QgsPolygon3DSymbolEntityNode::renderer( const Qgs
       qDebug() << "not a polygon";
   }
 
-  mGeometry = new PolygonGeometry;
+  mGeometry = new QgsTessellatedPolygonGeometry;
   mGeometry->setPolygons( polygons, origin, symbol.extrusionHeight() );
 
   Qt3DRender::QGeometryRenderer *renderer = new Qt3DRender::QGeometryRenderer;

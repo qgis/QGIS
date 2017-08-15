@@ -20,8 +20,8 @@ void QgsPolygon3DSymbol::writeXml( QDomElement &elem, const QgsReadWriteContext 
   QDomDocument doc = elem.ownerDocument();
 
   QDomElement elemDataProperties = doc.createElement( "data" );
-  elemDataProperties.setAttribute( "alt-clamping", Utils::altClampingToString( mAltClamping ) );
-  elemDataProperties.setAttribute( "alt-binding", Utils::altBindingToString( mAltBinding ) );
+  elemDataProperties.setAttribute( "alt-clamping", Qgs3DUtils::altClampingToString( mAltClamping ) );
+  elemDataProperties.setAttribute( "alt-binding", Qgs3DUtils::altBindingToString( mAltBinding ) );
   elemDataProperties.setAttribute( "height", mHeight );
   elemDataProperties.setAttribute( "extrusion-height", mExtrusionHeight );
   elem.appendChild( elemDataProperties );
@@ -36,8 +36,8 @@ void QgsPolygon3DSymbol::readXml( const QDomElement &elem, const QgsReadWriteCon
   Q_UNUSED( context );
 
   QDomElement elemDataProperties = elem.firstChildElement( "data" );
-  mAltClamping = Utils::altClampingFromString( elemDataProperties.attribute( "alt-clamping" ) );
-  mAltBinding = Utils::altBindingFromString( elemDataProperties.attribute( "alt-binding" ) );
+  mAltClamping = Qgs3DUtils::altClampingFromString( elemDataProperties.attribute( "alt-clamping" ) );
+  mAltBinding = Qgs3DUtils::altBindingFromString( elemDataProperties.attribute( "alt-binding" ) );
   mHeight = elemDataProperties.attribute( "height" ).toFloat();
   mExtrusionHeight = elemDataProperties.attribute( "extrusion-height" ).toFloat();
 

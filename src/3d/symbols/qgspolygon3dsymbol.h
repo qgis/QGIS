@@ -5,7 +5,7 @@
 
 #include "qgsabstract3dsymbol.h"
 #include "qgsphongmaterialsettings.h"
-#include "utils.h"
+#include "qgs3dutils.h"
 
 
 //! 3D symbol that draws polygon geometries as planar polygons, optionally extruded (with added walls).

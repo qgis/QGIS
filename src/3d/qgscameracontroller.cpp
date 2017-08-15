@@ -1,10 +1,10 @@
-#include "cameracontroller.h"
+#include "qgscameracontroller.h"
 
 #include <Qt3DRender/QObjectPicker>
 #include <Qt3DRender/QPickEvent>
 
 
-CameraController::CameraController( Qt3DCore::QNode *parent )
+QgsCameraController::QgsCameraController( Qt3DCore::QNode *parent )
   : Qt3DCore::QEntity( parent )
   , mLastPressedHeight( 0 )
   , mMouseDevice( new Qt3DInput::QMouseDevice() )
@@ -33,7 +33,7 @@ CameraController::CameraController( Qt3DCore::QNode *parent )
   // it is only in action when a mouse button is pressed.
   mMouseHandler->setSourceDevice( mMouseDevice );
   connect( mMouseHandler, &Qt3DInput::QMouseHandler::positionChanged,
-           this, &CameraController::onPositionChanged );
+           this, &QgsCameraController::onPositionChanged );
   addComponent( mMouseHandler );
 
   // TODO: keep using QAxis and QAction approach or just switch to using QMouseHandler / QKeyboardHandler?
@@ -106,13 +106,13 @@ CameraController::CameraController( Qt3DCore::QNode *parent )
   addComponent( mLogicalDevice );
 }
 
-void CameraController::addTerrainPicker( Qt3DRender::QObjectPicker *picker )
+void QgsCameraController::addTerrainPicker( Qt3DRender::QObjectPicker *picker )
 {
   // object picker for terrain for correct map panning
-  connect( picker, &Qt3DRender::QObjectPicker::pressed, this, &CameraController::onPickerMousePressed );
+  connect( picker, &Qt3DRender::QObjectPicker::pressed, this, &QgsCameraController::onPickerMousePressed );
 }
 
-void CameraController::setCamera( Qt3DRender::QCamera *camera )
+void QgsCameraController::setCamera( Qt3DRender::QCamera *camera )
 {
   if ( mCamera == camera )
     return;
@@ -125,7 +125,7 @@ void CameraController::setCamera( Qt3DRender::QCamera *camera )
   emit cameraChanged();
 }
 
-void CameraController::setViewport( const QRect &viewport )
+void QgsCameraController::setViewport( const QRect &viewport )
 {
   if ( mViewport == viewport )
     return;
@@ -134,7 +134,7 @@ void CameraController::setViewport( const QRect &viewport )
   emit viewportChanged();
 }
 
-void CameraController::setCameraData( float x, float y, float dist, float pitch, float yaw )
+void QgsCameraController::setCameraData( float x, float y, float dist, float pitch, float yaw )
 {
   cd.x = x;
   cd.y = y;
@@ -173,7 +173,7 @@ QPointF screen_point_to_point_on_plane( const QPointF &pt, const QRect &viewport
 }
 
 
-void CameraController::frameTriggered( float dt )
+void QgsCameraController::frameTriggered( float dt )
 {
   if ( mCamera == nullptr )
     return;
@@ -245,7 +245,7 @@ void CameraController::frameTriggered( float dt )
   }
 }
 
-void CameraController::resetView( float distance )
+void QgsCameraController::resetView( float distance )
 {
   setCameraData( 0, 0, distance );
   // a basic setup to make frustum depth range long enough that it does not cull everything
@@ -255,12 +255,12 @@ void CameraController::resetView( float distance )
   emit cameraChanged();
 }
 
-void CameraController::onPositionChanged( Qt3DInput::QMouseEvent *mouse )
+void QgsCameraController::onPositionChanged( Qt3DInput::QMouseEvent *mouse )
 {
   mMousePos = QPoint( mouse->x(), mouse->y() );
 }
 
-void CameraController::onPickerMousePressed( Qt3DRender::QPickEvent *pick )
+void QgsCameraController::onPickerMousePressed( Qt3DRender::QPickEvent *pick )
 {
   mLastPressedHeight = pick->worldIntersection().y();
 }

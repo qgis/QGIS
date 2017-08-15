@@ -112,12 +112,12 @@ void DemTerrainGenerator::updateGenerator()
   QgsRasterLayer *dem = layer();
   if ( dem )
   {
-    terrainTilingScheme = TilingScheme( dem->extent(), dem->crs() );
+    terrainTilingScheme = QgsTilingScheme( dem->extent(), dem->crs() );
     mHeightMapGenerator.reset( new DemHeightMapGenerator( dem, terrainTilingScheme, mResolution ) );
   }
   else
   {
-    terrainTilingScheme = TilingScheme();
+    terrainTilingScheme = QgsTilingScheme();
     mHeightMapGenerator.reset();
   }
 }
@@ -204,7 +204,7 @@ void DemTerrainChunkLoader::onHeightMapReady( int jobId, const QByteArray &heigh
 #include <QtConcurrent/QtConcurrentRun>
 #include <QFutureWatcher>
 
-DemHeightMapGenerator::DemHeightMapGenerator( QgsRasterLayer *dtm, const TilingScheme &tilingScheme, int resolution )
+DemHeightMapGenerator::DemHeightMapGenerator( QgsRasterLayer *dtm, const QgsTilingScheme &tilingScheme, int resolution )
   : dtm( dtm )
   , clonedProvider( ( QgsRasterDataProvider * )dtm->dataProvider()->clone() )
   , tilingScheme( tilingScheme )

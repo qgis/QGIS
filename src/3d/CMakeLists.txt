@@ -2,15 +2,15 @@
 # sources
 
 SET(QGIS_3D_SRCS
-  cameracontroller.cpp
-  polygongeometry.cpp
-  tessellator.cpp
-  tilingscheme.cpp
-  utils.cpp
 
   qgs3dmapscene.cpp
   qgs3dmapsettings.cpp
+  qgs3dutils.cpp
+  qgscameracontroller.cpp
   qgsphongmaterialsettings.cpp
+  qgstessellatedpolygongeometry.cpp
+  qgstessellator.cpp
+  qgstilingscheme.cpp
   qgsvectorlayer3drenderer.cpp
 
   chunks/chunkboundsentity.cpp
@@ -46,10 +46,10 @@ SET(QGIS_3D_SRCS
 )
 
 SET(QGIS_3D_MOC_HDRS
-  cameracontroller.h
 
   qgs3dmapscene.h
   qgs3dmapsettings.h
+  qgscameracontroller.h
 
   chunks/chunkedentity.h
   chunks/chunkloader.h
@@ -70,15 +70,15 @@ QT5_ADD_RESOURCES(QGIS_3D_RCC_SRCS shaders.qrc)
 
 SET(QGIS_3D_HDRS
   aabb.h
-  cameracontroller.h
-  polygongeometry.h
-  tessellator.h
-  tilingscheme.h
-  utils.h
 
   qgs3dmapscene.h
   qgs3dmapsettings.h
+  qgs3dutils.h
+  qgscameracontroller.h
   qgsphongmaterialsettings.h
+  qgstessellatedpolygongeometry.h
+  qgstessellator.h
+  qgstilingscheme.h
   qgsvectorlayer3drenderer.h
 
   chunks/chunkboundsentity.h

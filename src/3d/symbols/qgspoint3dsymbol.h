@@ -5,7 +5,7 @@
 
 #include "qgsabstract3dsymbol.h"
 #include "qgsphongmaterialsettings.h"
-#include "utils.h"
+#include "qgs3dutils.h"
 
 
 //! 3D symbol that draws point geometries as 3D objects using one of the predefined shapes.

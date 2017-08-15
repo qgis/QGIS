@@ -4,7 +4,7 @@
 #include "chunklist.h"
 #include "chunkloader.h"
 #include "chunknode.h"
-#include "utils.h"
+#include "qgs3dutils.h"
 
 static float screenSpaceError( float epsilon, float distance, float screenSize, float fov )
 {
@@ -200,7 +200,7 @@ void ChunkedEntity::updateNodes( const QList<ChunkNode *> &nodes, ChunkQueueJobF
 
 void ChunkedEntity::update( ChunkNode *node, const SceneState &state )
 {
-  if (Utils::isCullable(node->bbox, state.viewProjectionMatrix ) )
+  if ( Qgs3DUtils::isCullable( node->bbox, state.viewProjectionMatrix ) )
   {
     ++frustumCulled;
     return;

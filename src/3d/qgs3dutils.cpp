@@ -1,4 +1,4 @@
-#include "utils.h"
+#include "qgs3dutils.h"
 
 #include "qgslinestring.h"
 #include "qgspolygon.h"
@@ -12,7 +12,7 @@
 
 
 
-int Utils::maxZoomLevel( double tile0width, double tileResolution, double maxError )
+int Qgs3DUtils::maxZoomLevel( double tile0width, double tileResolution, double maxError )
 {
   if ( maxError <= 0 || tileResolution <= 0 || tile0width <= 0 )
     return 0;  // invalid input
@@ -25,7 +25,7 @@ int Utils::maxZoomLevel( double tile0width, double tileResolution, double maxErr
   return round( zoomLevel );  // we could use ceil() here if we wanted to always get to the desired error
 }
 
-QString Utils::altClampingToString( AltitudeClamping altClamp )
+QString Qgs3DUtils::altClampingToString( AltitudeClamping altClamp )
 {
   switch ( altClamp )
   {
@@ -37,7 +37,7 @@ QString Utils::altClampingToString( AltitudeClamping altClamp )
 }
 
 
-AltitudeClamping Utils::altClampingFromString( const QString &str )
+AltitudeClamping Qgs3DUtils::altClampingFromString( const QString &str )
 {
   if ( str == "absolute" )
     return AltClampAbsolute;
@@ -48,7 +48,7 @@ AltitudeClamping Utils::altClampingFromString( const QString &str )
 }
 
 
-QString Utils::altBindingToString( AltitudeBinding altBind )
+QString Qgs3DUtils::altBindingToString( AltitudeBinding altBind )
 {
   switch ( altBind )
   {
@@ -59,7 +59,7 @@ QString Utils::altBindingToString( AltitudeBinding altBind )
 }
 
 
-AltitudeBinding Utils::altBindingFromString( const QString &str )
+AltitudeBinding Qgs3DUtils::altBindingFromString( const QString &str )
 {
   if ( str == "vertex" )
     return AltBindVertex;
@@ -68,7 +68,7 @@ AltitudeBinding Utils::altBindingFromString( const QString &str )
 }
 
 
-void Utils::clampAltitudes( QgsLineString *lineString, AltitudeClamping altClamp, AltitudeBinding altBind, const QgsPoint &centroid, float height, const Qgs3DMapSettings &map )
+void Qgs3DUtils::clampAltitudes( QgsLineString *lineString, AltitudeClamping altClamp, AltitudeBinding altBind, const QgsPoint &centroid, float height, const Qgs3DMapSettings &map )
 {
   for ( int i = 0; i < lineString->nCoordinates(); ++i )
   {
@@ -98,7 +98,7 @@ void Utils::clampAltitudes( QgsLineString *lineString, AltitudeClamping altClamp
 }
 
 
-bool Utils::clampAltitudes( QgsPolygonV2 *polygon, AltitudeClamping altClamp, AltitudeBinding altBind, float height, const Qgs3DMapSettings &map )
+bool Qgs3DUtils::clampAltitudes( QgsPolygonV2 *polygon, AltitudeClamping altClamp, AltitudeBinding altBind, float height, const Qgs3DMapSettings &map )
 {
   if ( !polygon->is3D() )
     polygon->addZValue( 0 );
@@ -127,7 +127,7 @@ bool Utils::clampAltitudes( QgsPolygonV2 *polygon, AltitudeClamping altClamp, Al
 }
 
 
-QString Utils::matrix4x4toString( const QMatrix4x4 &m )
+QString Qgs3DUtils::matrix4x4toString( const QMatrix4x4 &m )
 {
   const float *d = m.constData();
   QStringList elems;
@@ -136,7 +136,7 @@ QString Utils::matrix4x4toString( const QMatrix4x4 &m )
   return elems.join( ' ' );
 }
 
-QMatrix4x4 Utils::stringToMatrix4x4( const QString &str )
+QMatrix4x4 Qgs3DUtils::stringToMatrix4x4( const QString &str )
 {
   QMatrix4x4 m;
   float *d = m.data();
@@ -146,7 +146,7 @@ QMatrix4x4 Utils::stringToMatrix4x4( const QString &str )
   return m;
 }
 
-QList<QVector3D> Utils::positions( const Qgs3DMapSettings &map, QgsVectorLayer *layer, const QgsFeatureRequest &request )
+QList<QVector3D> Qgs3DUtils::positions( const Qgs3DMapSettings &map, QgsVectorLayer *layer, const QgsFeatureRequest &request )
 {
   QList<QVector3D> positions;
   QgsFeature f;
@@ -203,7 +203,7 @@ static inline uint outcode( const QVector4D &v )
 //! should be equivalent to https://searchcode.com/codesearch/view/35195518/
 //! qt3d /src/threed/painting/qglpainter.cpp
 //! bool QGLPainter::isCullable(const QBox3D& box) const
-bool Utils::isCullable( const AABB &bbox, const QMatrix4x4 &viewProjectionMatrix )
+bool Qgs3DUtils::isCullable( const AABB &bbox, const QMatrix4x4 &viewProjectionMatrix )
 {
   uint out = 0xff;
 

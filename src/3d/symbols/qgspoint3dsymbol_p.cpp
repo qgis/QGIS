@@ -31,7 +31,7 @@
 
 #include "qgsvectorlayer.h"
 #include "qgspoint.h"
-#include "utils.h"
+#include "qgs3dutils.h"
 
 
 QgsPoint3DSymbolEntity::QgsPoint3DSymbolEntity( const Qgs3DMapSettings &map, QgsVectorLayer *layer, const QgsPoint3DSymbol &symbol, Qt3DCore::QNode *parent )
@@ -167,7 +167,7 @@ void QgsPoint3DSymbolInstancedEntityFactory::addEntityForNotSelectedPoints( cons
 QgsPoint3DSymbolInstancedEntityNode::QgsPoint3DSymbolInstancedEntityNode( const Qgs3DMapSettings &map, QgsVectorLayer *layer, const QgsPoint3DSymbol &symbol, const QgsFeatureRequest &req, Qt3DCore::QNode *parent )
   : Qt3DCore::QEntity( parent )
 {
-  QList<QVector3D> pos = Utils::positions( map, layer, req );
+  QList<QVector3D> pos = Qgs3DUtils::positions( map, layer, req );
   addComponent( renderer( symbol, pos ) );
 }
 
@@ -325,7 +325,7 @@ void QgsPoint3DSymbolModelEntityFactory::addEntitiesForNotSelectedPoints( const 
 
 void QgsPoint3DSymbolModelEntityFactory::addSceneEntities( const Qgs3DMapSettings &map, QgsVectorLayer *layer, const QgsFeatureRequest &req, const QgsPoint3DSymbol &symbol, QgsPoint3DSymbolEntity *parent )
 {
-  QList<QVector3D> positions = Utils::positions( map, layer, req );
+  QList<QVector3D> positions = Qgs3DUtils::positions( map, layer, req );
   Q_FOREACH ( const QVector3D &position, positions )
   {
     // build the entity
@@ -353,7 +353,7 @@ void QgsPoint3DSymbolModelEntityFactory::addMeshEntities( const Qgs3DMapSettings
   }
 
   // get nodes
-  QList<QVector3D> positions = Utils::positions( map, layer, req );
+  QList<QVector3D> positions = Qgs3DUtils::positions( map, layer, req );
   Q_FOREACH ( const QVector3D &position, positions )
   {
     // build the entity

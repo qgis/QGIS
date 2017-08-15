@@ -88,7 +88,7 @@ class DemHeightMapGenerator : public QObject
 {
     Q_OBJECT
   public:
-    DemHeightMapGenerator( QgsRasterLayer *dtm, const TilingScheme &tilingScheme, int resolution );
+    DemHeightMapGenerator( QgsRasterLayer *dtm, const QgsTilingScheme &tilingScheme, int resolution );
     ~DemHeightMapGenerator();
 
     //! asynchronous terrain read for a tile (array of floats)
@@ -116,7 +116,7 @@ class DemHeightMapGenerator : public QObject
     //! cloned provider to be used in worker thread
     QgsRasterDataProvider *clonedProvider;
 
-    TilingScheme tilingScheme;
+    QgsTilingScheme tilingScheme;
 
     int res;
 

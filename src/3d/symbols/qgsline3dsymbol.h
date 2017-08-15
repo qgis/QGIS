@@ -5,7 +5,7 @@
 
 #include "qgsabstract3dsymbol.h"
 #include "qgsphongmaterialsettings.h"
-#include "utils.h"
+#include "qgs3dutils.h"
 
 
 //! 3D symbol that draws linestring geometries as planar polygons (created from lines using a buffer with given thickness).

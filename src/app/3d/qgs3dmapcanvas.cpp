@@ -3,7 +3,7 @@
 #include <QBoxLayout>
 #include <Qt3DExtras/Qt3DWindow>
 
-#include "cameracontroller.h"
+#include "qgscameracontroller.h"
 #include "qgs3dmapsettings.h"
 #include "qgs3dmapscene.h"
 

@@ -3,7 +3,7 @@
 #include "qgs3dmapsettings.h"
 #include "demterraingenerator.h"
 #include "flatterraingenerator.h"
-#include "utils.h"
+#include "qgs3dutils.h"
 
 #include "qgsmapcanvas.h"
 #include "qgsrasterlayer.h"
@@ -108,6 +108,6 @@ void Qgs3DMapConfigWidget::updateMaxZoomLevel()
   }
 
   double tile0width = tGen->extent().width();
-  int zoomLevel = Utils::maxZoomLevel( tile0width, spinMapResolution->value(), spinGroundError->value() );
+  int zoomLevel = Qgs3DUtils::maxZoomLevel( tile0width, spinMapResolution->value(), spinGroundError->value() );
   labelZoomLevels->setText( QString( "0 - %1" ).arg( zoomLevel ) );
 }

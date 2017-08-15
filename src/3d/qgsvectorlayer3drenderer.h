@@ -7,7 +7,7 @@
 #include "qgsabstract3drenderer.h"
 
 #include "qgsphongmaterialsettings.h"
-#include "utils.h"
+#include "qgs3dutils.h"
 
 #include "qgsmaplayerref.h"
 

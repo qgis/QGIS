@@ -17,7 +17,7 @@
 #include <Qt3DRender/QGeometryRenderer>
 
 class Qgs3DMapSettings;
-class PolygonGeometry;
+class QgsTessellatedPolygonGeometry;
 class QgsPolygon3DSymbol;
 
 class QgsPointXY;
@@ -46,7 +46,7 @@ class QgsPolygon3DSymbolEntityNode : public Qt3DCore::QEntity
   private:
     Qt3DRender::QGeometryRenderer *renderer( const Qgs3DMapSettings &map, const QgsPolygon3DSymbol &symbol, const QgsVectorLayer *layer, const QgsFeatureRequest &request );
 
-    PolygonGeometry *mGeometry;
+    QgsTessellatedPolygonGeometry *mGeometry;
 };
 
 /// @endcond

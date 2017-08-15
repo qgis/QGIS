@@ -1,4 +1,4 @@
-#include "tessellator.h"
+#include "qgstessellator.h"
 
 #include "qgscurve.h"
 #include "qgspoint.h"
@@ -43,7 +43,7 @@ static void make_quad( float x0, float y0, float x1, float y1, float zLow, float
 }
 
 
-Tessellator::Tessellator( double originX, double originY, bool addNormals )
+QgsTessellator::QgsTessellator( double originX, double originY, bool addNormals )
   : originX( originX )
   , originY( originY )
   , addNormals( addNormals )
@@ -94,7 +94,7 @@ static void _makeWalls( const QgsCurve &ring, bool ccw, float extrusionHeight, Q
   }
 }
 
-void Tessellator::addPolygon( const QgsPolygonV2 &polygon, float extrusionHeight )
+void QgsTessellator::addPolygon( const QgsPolygonV2 &polygon, float extrusionHeight )
 {
   const QgsCurve *exterior = polygon.exteriorRing();
 

@@ -149,11 +149,11 @@ void FlatTerrainGenerator::updateTilingScheme()
 {
   if ( mExtent.isNull() )
   {
-    terrainTilingScheme = TilingScheme();
+    terrainTilingScheme = QgsTilingScheme();
   }
   else
   {
     // the real extent will be a square where the given extent fully fits
-    terrainTilingScheme = TilingScheme( mExtent, mCrs );
+    terrainTilingScheme = QgsTilingScheme( mExtent, mCrs );
   }
 }
