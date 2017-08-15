@@ -74,6 +74,7 @@ class Ogr2OgrPointsOnLines(GdalAlgorithm):
         return self.tr('Vector geoprocessing')
 
     def getConsoleCommands(self, parameters, context, feedback):
+        fields = self.parameterAsSource(parameters, self.INPUT, context).fields()
         ogrLayer, layername = self.getOgrCompatibleSource(self.INPUT, parameters, context, feedback)
 
         distance = str(self.parameterAsDouble(parameters, self.DISTANCE, context))
@@ -83,6 +84,13 @@ class Ogr2OgrPointsOnLines(GdalAlgorithm):
 
         output, format = GdalUtils.ogrConnectionStringAndFormat(outFile, context)
         options = self.parameterAsString(parameters, self.OPTIONS, context)
+
+        other_fields = []
+        for f in fields:
+            if f.name() == geometry:
+                continue
+
+            other_fields.append(f.name())
 
         arguments = []
         if format:
@@ -94,7 +102,11 @@ class Ogr2OgrPointsOnLines(GdalAlgorithm):
         arguments.append(geometry)
         arguments.append(',')
         arguments.append(distance)
-        arguments.append('),*')
+        arguments.append(')')
+        arguments.append('AS')
+        arguments.append(geometry)
+        arguments.append(',')
+        arguments.append(','.join(other_fields))
         arguments.append('FROM')
         arguments.append(layername)
         arguments.append('"')

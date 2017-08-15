@@ -102,6 +102,7 @@ tests:
       OUTPUT:
         name: expected/gdal/points_along_lines.gml
         type: vector
+        pk: fid
         compare:
           ignore_crs_check: true
 
