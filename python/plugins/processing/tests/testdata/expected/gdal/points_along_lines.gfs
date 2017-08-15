@@ -1,12 +1,12 @@
 <GMLFeatureClassList>
   <GMLFeatureClass>
-    <Name>points_along_lines</Name>
-    <ElementPath>points_along_lines</ElementPath>
+    <Name>SELECT</Name>
+    <ElementPath>SELECT</ElementPath>
     <!--POINT-->
     <GeometryType>1</GeometryType>
     <SRSName>EPSG:4326</SRSName>
     <DatasetSpecificInfo>
-      <FeatureCount>7</FeatureCount>
+      <FeatureCount>6</FeatureCount>
       <ExtentXMin>-0.50000</ExtentXMin>
       <ExtentXMax>7.75000</ExtentXMax>
       <ExtentYMin>-3.00000</ExtentYMin>
