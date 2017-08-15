@@ -52,7 +52,8 @@ brew install \
     spatialindex \
     fastcgi \
     qtkeychain \
-    gnu-sed
+    gnu-sed \
+    libzip
 
 
 mkdir -p ${HOME}/Library/Python/3.6/lib/python/site-packages
