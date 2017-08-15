@@ -5,7 +5,7 @@
 
 #include "ui_point3dsymbolwidget.h"
 
-class Point3DSymbol;
+class QgsPoint3DSymbol;
 
 //! A widget for configuration of 3D symbol for points
 class QgsPoint3DSymbolWidget : public QWidget, private Ui::Point3DSymbolWidget
@@ -14,16 +14,16 @@ class QgsPoint3DSymbolWidget : public QWidget, private Ui::Point3DSymbolWidget
   public:
     explicit QgsPoint3DSymbolWidget( QWidget *parent = nullptr );
 
-    void setSymbol( const Point3DSymbol &symbol );
-    Point3DSymbol symbol() const;
+    void setSymbol( const QgsPoint3DSymbol &symbol );
+    QgsPoint3DSymbol symbol() const;
 
   signals:
     void changed();
 
   private slots:
     void onShapeChanged();
-    void onChooseModelClicked(bool checked=false);
-    void onOverwriteMaterialChecked(int state);
+    void onChooseModelClicked( bool checked = false );
+    void onOverwriteMaterialChecked( int state );
 };
 
 #endif // QGSPOINT3DSYMBOLWIDGET_H

@@ -1,6 +1,8 @@
 #include "vectorlayer3drenderer.h"
 
-#include "abstract3dsymbol.h"
+#include "qgsline3dsymbol.h"
+#include "qgspoint3dsymbol.h"
+#include "qgspolygon3dsymbol.h"
 #include "lineentity.h"
 #include "pointentity.h"
 #include "polygonentity.h"
@@ -25,7 +27,7 @@ QgsAbstract3DRenderer *VectorLayer3DRendererMetadata::createRenderer( QDomElemen
 // ---------
 
 
-VectorLayer3DRenderer::VectorLayer3DRenderer( Abstract3DSymbol *s )
+VectorLayer3DRenderer::VectorLayer3DRenderer( QgsAbstract3DSymbol *s )
   : mSymbol( s )
 {
 }
@@ -51,12 +53,12 @@ QgsVectorLayer *VectorLayer3DRenderer::layer() const
   return qobject_cast<QgsVectorLayer *>( layerRef.layer );
 }
 
-void VectorLayer3DRenderer::setSymbol( Abstract3DSymbol *symbol )
+void VectorLayer3DRenderer::setSymbol( QgsAbstract3DSymbol *symbol )
 {
   mSymbol.reset( symbol );
 }
 
-const Abstract3DSymbol *VectorLayer3DRenderer::symbol() const
+const QgsAbstract3DSymbol *VectorLayer3DRenderer::symbol() const
 {
   return mSymbol.get();
 }
@@ -69,11 +71,11 @@ Qt3DCore::QEntity *VectorLayer3DRenderer::createEntity( const Map3D &map ) const
     return nullptr;
 
   if ( mSymbol->type() == "polygon" )
-    return new PolygonEntity( map, vl, *static_cast<Polygon3DSymbol *>( mSymbol.get() ) );
+    return new PolygonEntity( map, vl, *static_cast<QgsPolygon3DSymbol *>( mSymbol.get() ) );
   else if ( mSymbol->type() == "point" )
-    return new PointEntity( map, vl, *static_cast<Point3DSymbol *>( mSymbol.get() ) );
+    return new PointEntity( map, vl, *static_cast<QgsPoint3DSymbol *>( mSymbol.get() ) );
   else if ( mSymbol->type() == "line" )
-    return new LineEntity( map, vl, *static_cast<Line3DSymbol *>( mSymbol.get() ) );
+    return new LineEntity( map, vl, *static_cast<QgsLine3DSymbol *>( mSymbol.get() ) );
   else
     return nullptr;
 }
@@ -99,13 +101,13 @@ void VectorLayer3DRenderer::readXml( const QDomElement &elem, const QgsReadWrite
 
   QDomElement elemSymbol = elem.firstChildElement( "symbol" );
   QString symbolType = elemSymbol.attribute( "type" );
-  Abstract3DSymbol *symbol = nullptr;
+  QgsAbstract3DSymbol *symbol = nullptr;
   if ( symbolType == "polygon" )
-    symbol = new Polygon3DSymbol;
+    symbol = new QgsPolygon3DSymbol;
   else if ( symbolType == "point" )
-    symbol = new Point3DSymbol;
+    symbol = new QgsPoint3DSymbol;
   else if ( symbolType == "line" )
-    symbol = new Line3DSymbol;
+    symbol = new QgsLine3DSymbol;
 
   if ( symbol )
     symbol->readXml( elemSymbol, context );

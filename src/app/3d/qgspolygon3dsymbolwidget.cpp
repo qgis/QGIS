@@ -1,6 +1,6 @@
 #include "qgspolygon3dsymbolwidget.h"
 
-#include "abstract3dsymbol.h"
+#include "qgspolygon3dsymbol.h"
 
 
 QgsPolygon3DSymbolWidget::QgsPolygon3DSymbolWidget( QWidget *parent )
@@ -8,7 +8,7 @@ QgsPolygon3DSymbolWidget::QgsPolygon3DSymbolWidget( QWidget *parent )
 {
   setupUi( this );
 
-  setSymbol( Polygon3DSymbol() );
+  setSymbol( QgsPolygon3DSymbol() );
 
   connect( spinHeight, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, &QgsPolygon3DSymbolWidget::changed );
   connect( spinExtrusion, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, &QgsPolygon3DSymbolWidget::changed );
@@ -17,7 +17,7 @@ QgsPolygon3DSymbolWidget::QgsPolygon3DSymbolWidget( QWidget *parent )
   connect( widgetMaterial, &QgsPhongMaterialWidget::changed, this, &QgsPolygon3DSymbolWidget::changed );
 }
 
-void QgsPolygon3DSymbolWidget::setSymbol( const Polygon3DSymbol &symbol )
+void QgsPolygon3DSymbolWidget::setSymbol( const QgsPolygon3DSymbol &symbol )
 {
   spinHeight->setValue( symbol.height );
   spinExtrusion->setValue( symbol.extrusionHeight );
@@ -26,9 +26,9 @@ void QgsPolygon3DSymbolWidget::setSymbol( const Polygon3DSymbol &symbol )
   widgetMaterial->setMaterial( symbol.material );
 }
 
-Polygon3DSymbol QgsPolygon3DSymbolWidget::symbol() const
+QgsPolygon3DSymbol QgsPolygon3DSymbolWidget::symbol() const
 {
-  Polygon3DSymbol sym;
+  QgsPolygon3DSymbol sym;
   sym.height = spinHeight->value();
   sym.extrusionHeight = spinExtrusion->value();
   sym.altClamping = ( AltitudeClamping ) cboAltClamping->currentIndex();

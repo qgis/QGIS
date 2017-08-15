@@ -2,7 +2,6 @@
 # sources
 
 SET(QGIS_3D_SRCS
-  abstract3dsymbol.cpp
   cameracontroller.cpp
   lineentity.cpp
   map3d.cpp
@@ -21,6 +20,11 @@ SET(QGIS_3D_SRCS
   chunks/chunklist.cpp
   chunks/chunkloader.cpp
   chunks/chunknode.cpp
+
+  symbols/qgsabstract3dsymbol.cpp
+  symbols/qgsline3dsymbol.cpp
+  symbols/qgspoint3dsymbol.cpp
+  symbols/qgspolygon3dsymbol.cpp
 
   terrain/demterraingenerator.cpp
   terrain/demterraintilegeometry.cpp
@@ -64,7 +68,6 @@ QT5_ADD_RESOURCES(QGIS_3D_RCC_SRCS shaders.qrc)
 
 SET(QGIS_3D_HDRS
   aabb.h
-  abstract3dsymbol.h
   cameracontroller.h
   lineentity.h
   map3d.h
@@ -84,6 +87,11 @@ SET(QGIS_3D_HDRS
   chunks/chunkloader.h
   chunks/chunknode.h
 
+  symbols/qgsabstract3dsymbol.h
+  symbols/qgsline3dsymbol.h
+  symbols/qgspoint3dsymbol.h
+  symbols/qgspolygon3dsymbol.h
+
   terrain/demterraingenerator.h
   terrain/demterraintilegeometry.h
   terrain/flatterraingenerator.h
@@ -99,6 +107,7 @@ SET(QGIS_3D_HDRS
 INCLUDE_DIRECTORIES(
   ${CMAKE_CURRENT_SOURCE_DIR}
   ${CMAKE_CURRENT_SOURCE_DIR}/chunks
+  ${CMAKE_CURRENT_SOURCE_DIR}/symbols
   ${CMAKE_CURRENT_SOURCE_DIR}/terrain
   ${CMAKE_SOURCE_DIR}/src/core/
   ${CMAKE_SOURCE_DIR}/src/core/geometry

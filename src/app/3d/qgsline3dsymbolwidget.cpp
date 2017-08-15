@@ -1,6 +1,6 @@
 #include "qgsline3dsymbolwidget.h"
 
-#include "abstract3dsymbol.h"
+#include "qgsline3dsymbol.h"
 
 
 QgsLine3DSymbolWidget::QgsLine3DSymbolWidget( QWidget *parent )
@@ -8,7 +8,7 @@ QgsLine3DSymbolWidget::QgsLine3DSymbolWidget( QWidget *parent )
 {
   setupUi( this );
 
-  setSymbol( Line3DSymbol() );
+  setSymbol( QgsLine3DSymbol() );
 
   connect( spinWidth, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, &QgsLine3DSymbolWidget::changed );
   connect( spinHeight, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, &QgsLine3DSymbolWidget::changed );
@@ -18,7 +18,7 @@ QgsLine3DSymbolWidget::QgsLine3DSymbolWidget( QWidget *parent )
   connect( widgetMaterial, &QgsPhongMaterialWidget::changed, this, &QgsLine3DSymbolWidget::changed );
 }
 
-void QgsLine3DSymbolWidget::setSymbol( const Line3DSymbol &symbol )
+void QgsLine3DSymbolWidget::setSymbol( const QgsLine3DSymbol &symbol )
 {
   spinWidth->setValue( symbol.width );
   spinHeight->setValue( symbol.height );
@@ -28,9 +28,9 @@ void QgsLine3DSymbolWidget::setSymbol( const Line3DSymbol &symbol )
   widgetMaterial->setMaterial( symbol.material );
 }
 
-Line3DSymbol QgsLine3DSymbolWidget::symbol() const
+QgsLine3DSymbol QgsLine3DSymbolWidget::symbol() const
 {
-  Line3DSymbol sym;
+  QgsLine3DSymbol sym;
   sym.width = spinWidth->value();
   sym.height = spinHeight->value();
   sym.extrusionHeight = spinExtrusion->value();

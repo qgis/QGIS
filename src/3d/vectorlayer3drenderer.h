@@ -15,7 +15,7 @@
 
 class QgsVectorLayer;
 
-class Abstract3DSymbol;
+class QgsAbstract3DSymbol;
 
 
 //! Metadata for vector layer 3D renderer to allow creation of its instances from XML
@@ -35,15 +35,15 @@ class _3D_EXPORT VectorLayer3DRenderer : public QgsAbstract3DRenderer
 {
   public:
     //! Takes ownership of the symbol object
-    explicit VectorLayer3DRenderer( Abstract3DSymbol *s = nullptr );
+    explicit VectorLayer3DRenderer( QgsAbstract3DSymbol *s = nullptr );
     ~VectorLayer3DRenderer();
 
     void setLayer( QgsVectorLayer *layer );
     QgsVectorLayer *layer() const;
 
     //! takes ownership of the symbol
-    void setSymbol( Abstract3DSymbol *symbol );
-    const Abstract3DSymbol *symbol() const;
+    void setSymbol( QgsAbstract3DSymbol *symbol );
+    const QgsAbstract3DSymbol *symbol() const;
 
     QString type() const override { return "vector"; }
     VectorLayer3DRenderer *clone() const override;
@@ -55,7 +55,7 @@ class _3D_EXPORT VectorLayer3DRenderer : public QgsAbstract3DRenderer
 
   private:
     QgsMapLayerRef layerRef; //!< Layer used to extract polygons from
-    std::unique_ptr<Abstract3DSymbol> mSymbol;  //!< 3D symbol that defines appearance
+    std::unique_ptr<QgsAbstract3DSymbol> mSymbol;  //!< 3D symbol that defines appearance
 };
 
 

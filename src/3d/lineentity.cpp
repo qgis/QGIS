@@ -1,6 +1,6 @@
 #include "lineentity.h"
 
-#include "abstract3dsymbol.h"
+#include "qgsline3dsymbol.h"
 #include "polygongeometry.h"
 #include "map3d.h"
 #include "terraingenerator.h"
@@ -11,14 +11,14 @@
 #include "qgsgeos.h"
 
 
-LineEntity::LineEntity( const Map3D &map, QgsVectorLayer *layer, const Line3DSymbol &symbol, Qt3DCore::QNode *parent )
+LineEntity::LineEntity( const Map3D &map, QgsVectorLayer *layer, const QgsLine3DSymbol &symbol, Qt3DCore::QNode *parent )
   : Qt3DCore::QEntity( parent )
 {
   addEntityForSelectedLines( map, layer, symbol );
   addEntityForNotSelectedLines( map, layer, symbol );
 }
 
-Qt3DExtras::QPhongMaterial *LineEntity::material( const Line3DSymbol &symbol ) const
+Qt3DExtras::QPhongMaterial *LineEntity::material( const QgsLine3DSymbol &symbol ) const
 {
   Qt3DExtras::QPhongMaterial *material = new Qt3DExtras::QPhongMaterial;
 
@@ -30,7 +30,7 @@ Qt3DExtras::QPhongMaterial *LineEntity::material( const Line3DSymbol &symbol ) c
   return material;
 }
 
-void LineEntity::addEntityForSelectedLines( const Map3D &map, QgsVectorLayer *layer, const Line3DSymbol &symbol )
+void LineEntity::addEntityForSelectedLines( const Map3D &map, QgsVectorLayer *layer, const QgsLine3DSymbol &symbol )
 {
   // build the default material
   Qt3DExtras::QPhongMaterial *mat = material( symbol );
@@ -50,7 +50,7 @@ void LineEntity::addEntityForSelectedLines( const Map3D &map, QgsVectorLayer *la
   entity->setParent( this );
 }
 
-void LineEntity::addEntityForNotSelectedLines( const Map3D &map, QgsVectorLayer *layer, const Line3DSymbol &symbol )
+void LineEntity::addEntityForNotSelectedLines( const Map3D &map, QgsVectorLayer *layer, const QgsLine3DSymbol &symbol )
 {
   // build the default material
   Qt3DExtras::QPhongMaterial *mat = material( symbol );
@@ -69,13 +69,13 @@ void LineEntity::addEntityForNotSelectedLines( const Map3D &map, QgsVectorLayer 
   entity->setParent( this );
 }
 
-LineEntityNode::LineEntityNode( const Map3D &map, QgsVectorLayer *layer, const Line3DSymbol &symbol, const QgsFeatureRequest &req, Qt3DCore::QNode *parent )
+LineEntityNode::LineEntityNode( const Map3D &map, QgsVectorLayer *layer, const QgsLine3DSymbol &symbol, const QgsFeatureRequest &req, Qt3DCore::QNode *parent )
   : Qt3DCore::QEntity( parent )
 {
   addComponent( renderer( map, symbol, layer, req ) );
 }
 
-Qt3DRender::QGeometryRenderer *LineEntityNode::renderer( const Map3D &map, const Line3DSymbol &symbol, const QgsVectorLayer *layer, const QgsFeatureRequest &request )
+Qt3DRender::QGeometryRenderer *LineEntityNode::renderer( const Map3D &map, const QgsLine3DSymbol &symbol, const QgsVectorLayer *layer, const QgsFeatureRequest &request )
 {
   QgsPointXY origin( map.originX, map.originY );
 

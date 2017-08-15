@@ -5,7 +5,9 @@
 #include <Qt3DRender>
 #include <Qt3DExtras>
 
-#include "abstract3dsymbol.h"
+#include "qgsline3dsymbol.h"
+#include "qgspoint3dsymbol.h"
+#include "qgspolygon3dsymbol.h"
 #include "maptexturegenerator.h"
 #include "sidepanel.h"
 #include "vectorlayer3drenderer.h"
@@ -126,7 +128,7 @@ int main( int argc, char *argv[] )
 
   // polygons
 
-  Polygon3DSymbol *polygonSymbol = new Polygon3DSymbol;
+  QgsPolygon3DSymbol *polygonSymbol = new QgsPolygon3DSymbol;
   polygonSymbol->material.setAmbient( Qt::gray );
   polygonSymbol->material.setDiffuse( Qt::lightGray );
   polygonSymbol->material.setShininess( 0 );
@@ -138,7 +140,7 @@ int main( int argc, char *argv[] )
 
   // points
 
-  Point3DSymbol *pointSymbol = new Point3DSymbol;
+  QgsPoint3DSymbol *pointSymbol = new QgsPoint3DSymbol;
   pointSymbol->material.setDiffuse( QColor( 222, 184, 135 ) );
   pointSymbol->material.setAmbient( pointSymbol->material.diffuse().darker() );
   pointSymbol->material.setShininess( 0 );
@@ -152,7 +154,7 @@ int main( int argc, char *argv[] )
   ptr->setLayer( vlPoints );
   map.renderers << ptr;
 
-  Point3DSymbol *pointSymbol2 = new Point3DSymbol;
+  QgsPoint3DSymbol *pointSymbol2 = new QgsPoint3DSymbol;
   pointSymbol2->material.setDiffuse( QColor( 60, 179, 113 ) );
   pointSymbol2->material.setAmbient( pointSymbol2->material.diffuse().darker() );
   pointSymbol2->material.setShininess( 0 );
@@ -183,7 +185,7 @@ int main( int argc, char *argv[] )
 
   // lines
 
-  Line3DSymbol *lineSymbol = new Line3DSymbol;
+  QgsLine3DSymbol *lineSymbol = new QgsLine3DSymbol;
   lineSymbol->material.setAmbient( Qt::yellow );
   lineSymbol->material.setShininess( 0 );
   lineSymbol->altBinding = AltBindVertex;  // follow terrain

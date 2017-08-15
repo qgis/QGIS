@@ -7,7 +7,7 @@
 
 class Map3D;
 class PolygonGeometry;
-class Polygon3DSymbol;
+class QgsPolygon3DSymbol;
 
 class QgsPointXY;
 class QgsVectorLayer;
@@ -18,22 +18,22 @@ class QgsFeatureRequest;
 class PolygonEntity : public Qt3DCore::QEntity
 {
   public:
-    PolygonEntity( const Map3D &map, QgsVectorLayer *layer, const Polygon3DSymbol &symbol, Qt3DCore::QNode *parent = nullptr );
+    PolygonEntity( const Map3D &map, QgsVectorLayer *layer, const QgsPolygon3DSymbol &symbol, Qt3DCore::QNode *parent = nullptr );
 
   private:
-    void addEntityForSelectedPolygons( const Map3D &map, QgsVectorLayer *layer, const Polygon3DSymbol &symbol );
-    void addEntityForNotSelectedPolygons( const Map3D &map, QgsVectorLayer *layer, const Polygon3DSymbol &symbol );
+    void addEntityForSelectedPolygons( const Map3D &map, QgsVectorLayer *layer, const QgsPolygon3DSymbol &symbol );
+    void addEntityForNotSelectedPolygons( const Map3D &map, QgsVectorLayer *layer, const QgsPolygon3DSymbol &symbol );
 
-    Qt3DExtras::QPhongMaterial *material( const Polygon3DSymbol &symbol ) const;
+    Qt3DExtras::QPhongMaterial *material( const QgsPolygon3DSymbol &symbol ) const;
 };
 
 class PolygonEntityNode : public Qt3DCore::QEntity
 {
   public:
-    PolygonEntityNode( const Map3D &map, QgsVectorLayer *layer, const Polygon3DSymbol &symbol, const QgsFeatureRequest &req, Qt3DCore::QNode *parent = nullptr );
+    PolygonEntityNode( const Map3D &map, QgsVectorLayer *layer, const QgsPolygon3DSymbol &symbol, const QgsFeatureRequest &req, Qt3DCore::QNode *parent = nullptr );
 
   private:
-    Qt3DRender::QGeometryRenderer *renderer( const Map3D &map, const Polygon3DSymbol &symbol, const QgsVectorLayer *layer, const QgsFeatureRequest &request );
+    Qt3DRender::QGeometryRenderer *renderer( const Map3D &map, const QgsPolygon3DSymbol &symbol, const QgsVectorLayer *layer, const QgsFeatureRequest &request );
 
     PolygonGeometry *mGeometry;
 };

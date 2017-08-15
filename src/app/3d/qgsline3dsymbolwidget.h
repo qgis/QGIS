@@ -5,7 +5,7 @@
 
 #include "ui_line3dsymbolwidget.h"
 
-class Line3DSymbol;
+class QgsLine3DSymbol;
 
 //! A widget for configuration of 3D symbol for polygons
 class QgsLine3DSymbolWidget : public QWidget, private Ui::Line3DSymbolWidget
@@ -14,8 +14,8 @@ class QgsLine3DSymbolWidget : public QWidget, private Ui::Line3DSymbolWidget
   public:
     explicit QgsLine3DSymbolWidget( QWidget *parent = nullptr );
 
-    void setSymbol( const Line3DSymbol &symbol );
-    Line3DSymbol symbol() const;
+    void setSymbol( const QgsLine3DSymbol &symbol );
+    QgsLine3DSymbol symbol() const;
 
   signals:
     void changed();

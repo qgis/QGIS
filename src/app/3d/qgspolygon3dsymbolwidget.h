@@ -5,7 +5,7 @@
 
 #include "ui_polygon3dsymbolwidget.h"
 
-class Polygon3DSymbol;
+class QgsPolygon3DSymbol;
 
 //! A widget for configuration of 3D symbol for polygons
 class QgsPolygon3DSymbolWidget : public QWidget, private Ui::Polygon3DSymbolWidget
@@ -14,8 +14,8 @@ class QgsPolygon3DSymbolWidget : public QWidget, private Ui::Polygon3DSymbolWidg
   public:
     explicit QgsPolygon3DSymbolWidget( QWidget *parent = nullptr );
 
-    void setSymbol( const Polygon3DSymbol &symbol );
-    Polygon3DSymbol symbol() const;
+    void setSymbol( const QgsPolygon3DSymbol &symbol );
+    QgsPolygon3DSymbol symbol() const;
 
   signals:
     void changed();

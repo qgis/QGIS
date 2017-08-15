@@ -3,7 +3,7 @@
 #include <QMessageBox>
 #include "qgssettings.h"
 
-#include "abstract3dsymbol.h"
+#include "qgspoint3dsymbol.h"
 
 QgsPoint3DSymbolWidget::QgsPoint3DSymbolWidget( QWidget *parent )
   : QWidget( parent )
@@ -18,7 +18,7 @@ QgsPoint3DSymbolWidget::QgsPoint3DSymbolWidget( QWidget *parent )
   cboShape->addItem( tr( "Torus" ), "torus" );
   cboShape->addItem( tr( "3D Model" ), "model" );
 
-  setSymbol( Point3DSymbol() );
+  setSymbol( QgsPoint3DSymbol() );
   onShapeChanged();
 
   connect( cboShape, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsPoint3DSymbolWidget::onShapeChanged );
@@ -27,50 +27,55 @@ QgsPoint3DSymbolWidget::QgsPoint3DSymbolWidget( QWidget *parent )
   spinWidgets << spinTX << spinTY << spinTZ << spinSX << spinSY << spinSZ << spinRX << spinRY << spinRZ;
   Q_FOREACH ( QDoubleSpinBox *spinBox, spinWidgets )
     connect( spinBox, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, &QgsPoint3DSymbolWidget::changed );
-  connect( lineEditModel, static_cast<void ( QLineEdit::* )( const QString& )>( &QLineEdit::textChanged ), this, &QgsPoint3DSymbolWidget::changed );
+  connect( lineEditModel, static_cast<void ( QLineEdit::* )( const QString & )>( &QLineEdit::textChanged ), this, &QgsPoint3DSymbolWidget::changed );
   connect( btnModel, static_cast<void ( QToolButton::* )( bool )>( &QToolButton::clicked ), this, &QgsPoint3DSymbolWidget::onChooseModelClicked );
   connect( cbOverwriteMaterial, static_cast<void ( QCheckBox::* )( int )>( &QCheckBox::stateChanged ), this, &QgsPoint3DSymbolWidget::onOverwriteMaterialChecked );
   connect( widgetMaterial, &QgsPhongMaterialWidget::changed, this, &QgsPoint3DSymbolWidget::changed );
 }
 
-void QgsPoint3DSymbolWidget::onChooseModelClicked(bool) {
-    QgsSettings s;
-    QString lastDir = s.value( QStringLiteral( "/UI/lastModel3dDir" ), QDir::homePath() ).toString();
+void QgsPoint3DSymbolWidget::onChooseModelClicked( bool )
+{
+  QgsSettings s;
+  QString lastDir = s.value( QStringLiteral( "/UI/lastModel3dDir" ), QDir::homePath() ).toString();
 
-    QString filePath = QFileDialog::getOpenFileName( this, tr("Open 3d Model File") , lastDir, QStringLiteral( "3D models (*.*)" ) );
-    if ( filePath.isEmpty() )
-    {
-      return;
-    }
+  QString filePath = QFileDialog::getOpenFileName( this, tr( "Open 3d Model File" ), lastDir, QStringLiteral( "3D models (*.*)" ) );
+  if ( filePath.isEmpty() )
+  {
+    return;
+  }
 
-    //check if file exists
-    QFileInfo fileInfo( filePath );
-    if ( !fileInfo.exists() || !fileInfo.isReadable() )
-    {
-      QMessageBox::critical( nullptr, tr( "Invalid file" ), tr( "Error, file does not exist or is not readable" ) );
-      return;
-    }
+  //check if file exists
+  QFileInfo fileInfo( filePath );
+  if ( !fileInfo.exists() || !fileInfo.isReadable() )
+  {
+    QMessageBox::critical( nullptr, tr( "Invalid file" ), tr( "Error, file does not exist or is not readable" ) );
+    return;
+  }
 
-    s.setValue( QStringLiteral( "/UI/lastModel3dDir" ), fileInfo.absolutePath() );
-    lineEditModel->setText(filePath);
+  s.setValue( QStringLiteral( "/UI/lastModel3dDir" ), fileInfo.absolutePath() );
+  lineEditModel->setText( filePath );
 }
 
-void QgsPoint3DSymbolWidget::onOverwriteMaterialChecked(int state) {
-    if (state == Qt::Checked) {
-        widgetMaterial->setEnabled(true);
-    } else {
-        widgetMaterial->setEnabled(false);
-    }
-    emit changed();
+void QgsPoint3DSymbolWidget::onOverwriteMaterialChecked( int state )
+{
+  if ( state == Qt::Checked )
+  {
+    widgetMaterial->setEnabled( true );
+  }
+  else
+  {
+    widgetMaterial->setEnabled( false );
+  }
+  emit changed();
 }
 
-void QgsPoint3DSymbolWidget::setSymbol( const Point3DSymbol &symbol )
+void QgsPoint3DSymbolWidget::setSymbol( const QgsPoint3DSymbol &symbol )
 {
   QVariantMap vm = symbol.shapeProperties;
   int index = cboShape->findData( vm["shape"] );
   cboShape->setCurrentIndex( index != -1 ? index : 1 );  // use cylinder by default if shape is not set
 
-  widgetMaterial->setEnabled(true);
+  widgetMaterial->setEnabled( true );
   switch ( cboShape->currentIndex() )
   {
     case 0:  // sphere
@@ -98,8 +103,8 @@ void QgsPoint3DSymbolWidget::setSymbol( const Point3DSymbol &symbol )
     case 6:  // 3d model
       lineEditModel->setText( vm["model"].toString() );
       bool overwriteMaterial = vm["overwriteMaterial"].toBool();
-      widgetMaterial->setEnabled(overwriteMaterial);
-      cbOverwriteMaterial->setChecked(overwriteMaterial);
+      widgetMaterial->setEnabled( overwriteMaterial );
+      cbOverwriteMaterial->setChecked( overwriteMaterial );
       break;
   }
 
@@ -133,7 +138,7 @@ void QgsPoint3DSymbolWidget::setSymbol( const Point3DSymbol &symbol )
   spinRZ->setValue( rot.z() );
 }
 
-Point3DSymbol QgsPoint3DSymbolWidget::symbol() const
+QgsPoint3DSymbol QgsPoint3DSymbolWidget::symbol() const
 {
   QVariantMap vm;
   vm["shape"] = cboShape->itemData( cboShape->currentIndex() );
@@ -177,7 +182,7 @@ Point3DSymbol QgsPoint3DSymbolWidget::symbol() const
   tr.scale( sca );
   tr.rotate( rot );
 
-  Point3DSymbol sym;
+  QgsPoint3DSymbol sym;
   sym.shapeProperties = vm;
   sym.material = widgetMaterial->material();
   sym.transform = tr;
