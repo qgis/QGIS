@@ -546,7 +546,7 @@ class MultipleInputWidgetWrapper(WidgetWrapper):
     def createWidget(self):
         if self.dialogType == DIALOG_STANDARD:
             if self.param.layerType() == QgsProcessing.TypeFile:
-                return MultipleInputPanel(datatype=dataobjects.TYPE_FILE)
+                return MultipleInputPanel(datatype=QgsProcessing.TypeFile)
             else:
                 if self.param.layerType() == QgsProcessing.TypeRaster:
                     options = QgsProcessingUtils.compatibleRasterLayers(QgsProject.instance(), False)
@@ -555,7 +555,7 @@ class MultipleInputWidgetWrapper(WidgetWrapper):
                 else:
                     options = QgsProcessingUtils.compatibleVectorLayers(QgsProject.instance(), [self.param.layerType()], False)
                 opts = [getExtendedLayerName(opt) for opt in options]
-                return MultipleInputPanel(opts)
+                return MultipleInputPanel(opts, datatype=self.param.layerType())
         elif self.dialogType == DIALOG_BATCH:
             widget = BatchInputSelectionPanel(self.param, self.row, self.col, self.dialog)
             widget.valueChanged.connect(lambda: self.widgetValueHasChanged.emit(self))
@@ -599,7 +599,7 @@ class MultipleInputWidgetWrapper(WidgetWrapper):
                     options = QgsProcessingUtils.compatibleVectorLayers(QgsProject.instance(), [], False)
                 else:
                     options = QgsProcessingUtils.compatibleVectorLayers(QgsProject.instance(), [self.param.layerType()], False)
-                return [options[i] for i in self.widget.selectedoptions]
+                return [options[i] if isinstance(i, int) else i for i in self.widget.selectedoptions]
         elif self.dialogType == DIALOG_BATCH:
             return self.widget.getText()
         else:
