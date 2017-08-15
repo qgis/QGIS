@@ -35,6 +35,7 @@ from .GdalUtils import GdalUtils
 
 from .AssignProjection import AssignProjection
 from .aspect import aspect
+from .buildvrt import buildvrt
 from .ColorRelief import ColorRelief
 from .tri import tri
 from .warp import warp
@@ -44,7 +45,6 @@ from .nearblack import nearblack
 # from .translate import translate
 # from .pct2rgb import pct2rgb
 # from .merge import merge
-# from .buildvrt import buildvrt
 # from .polygonize import polygonize
 # from .gdaladdo import gdaladdo
 # from .ClipByExtent import ClipByExtent
@@ -144,6 +144,7 @@ class GdalAlgorithmProvider(QgsProcessingProvider):
             # information(),
             AssignProjection(),
             aspect(),
+            buildvrt(),
             ColorRelief(),
             tri(),
             warp(),
@@ -151,7 +152,6 @@ class GdalAlgorithmProvider(QgsProcessingProvider):
             # rgb2pct(),
             # pct2rgb(),
             # merge(),
-            # buildvrt(),
             # polygonize(),
             # gdaladdo(),
             # ClipByExtent(),
