@@ -3,7 +3,7 @@ imagery_classification
 ParameterVector|SHAPES|Shapes|-1|False
 OutputVector|CLASSES|Classification
 ParameterTable|FEATURES|Features|False
-ParameterBoolean|NORMALISE|Normalise|False
+QgsProcessingParameterBoolean|NORMALISE|Normalise|False
 ParameterTable|TRAINING|Training Classes|False
 ParameterFile|FILE_LOAD|Load Statistics from File...|False|False
 ParameterFile|FILE_SAVE|Save Statistics to File...|False|False
@@ -12,9 +12,9 @@ QgsProcessingParameterNumber|THRESHOLD_DIST|Distance Threshold|QgsProcessingPara
 QgsProcessingParameterNumber|THRESHOLD_ANGLE|Spectral Angle Threshold (Degree)|QgsProcessingParameterNumber.Double|0.000000|False| 0.000000| 90.000000
 QgsProcessingParameterNumber|THRESHOLD_PROB|Probability Threshold|QgsProcessingParameterNumber.Double|0.000000|False| 0.000000| 100.000000
 ParameterSelection|RELATIVE_PROB|Probability Reference|[0] absolute;[1] relative| 1
-ParameterBoolean|WTA_0|Binary Encoding|False
-ParameterBoolean|WTA_1|Parallelepiped|False
-ParameterBoolean|WTA_2|Minimum Distance|False
-ParameterBoolean|WTA_3|Mahalanobis Distance|False
-ParameterBoolean|WTA_4|Maximum Likelihood|False
-ParameterBoolean|WTA_5|Spectral Angle Mapping|False
+QgsProcessingParameterBoolean|WTA_0|Binary Encoding|False
+QgsProcessingParameterBoolean|WTA_1|Parallelepiped|False
+QgsProcessingParameterBoolean|WTA_2|Minimum Distance|False
+QgsProcessingParameterBoolean|WTA_3|Mahalanobis Distance|False
+QgsProcessingParameterBoolean|WTA_4|Maximum Likelihood|False
+QgsProcessingParameterBoolean|WTA_5|Spectral Angle Mapping|False

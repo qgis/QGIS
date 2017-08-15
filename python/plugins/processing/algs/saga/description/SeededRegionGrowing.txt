@@ -5,11 +5,11 @@ ParameterMultipleInput|FEATURES|Features|3|False
 QgsProcessingParameterRasterDestination|SEGMENTS|Segments
 QgsProcessingParameterRasterDestination|SIMILARITY|Similarity
 ParameterTable|TABLE|Seeds|False
-ParameterBoolean|NORMALIZE|Normalize|False
+QgsProcessingParameterBoolean|NORMALIZE|Normalize|False
 ParameterSelection|NEIGHBOUR|Neighbourhood|[0] 4 (von Neumann);[1] 8 (Moore)| 0
 ParameterSelection|METHOD|Method|[0] feature space and position;[1] feature space| 0
 QgsProcessingParameterNumber|SIG_1|Variance in Feature Space|QgsProcessingParameterNumber.Double|1.000000|False| 0.000000|None
 QgsProcessingParameterNumber|SIG_2|Variance in Position Space|QgsProcessingParameterNumber.Double|1.000000|False| 0.000000|None
 QgsProcessingParameterNumber|THRESHOLD|Similarity Threshold|QgsProcessingParameterNumber.Double|0.000000|False| 0.000000|None
-ParameterBoolean|REFRESH|Refresh|False
+QgsProcessingParameterBoolean|REFRESH|Refresh|False
 QgsProcessingParameterNumber|LEAFSIZE|Leaf Size (for Speed Optimisation)|QgsProcessingParameterNumber.Integer|256|False| 2|None

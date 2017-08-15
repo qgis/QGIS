@@ -3,8 +3,8 @@ statistics_kriging
 ParameterVector|POINTS|Points|0|False
 ParameterTableField|FIELD|Attribute|POINTS|-1|False
 ParameterSelection|TQUALITY|Type of Quality Measure|[0] standard deviation;[1] variance
-ParameterBoolean|LOG|Logarithmic Transformation|True
-ParameterBoolean|BLOCK|Block Kriging|True
+QgsProcessingParameterBoolean|LOG|Logarithmic Transformation|True
+QgsProcessingParameterBoolean|BLOCK|Block Kriging|True
 QgsProcessingParameterNumber|DBLOCK|Block Size|QgsProcessingParameterNumber.Integer|100|False|0|None
 QgsProcessingParameterNumber|VAR_MAXDIST|Maximum Distance|QgsProcessingParameterNumber.Integer|-1.0|False|None|None
 QgsProcessingParameterNumber|VAR_NCLASSES|Lag Distance Classes|QgsProcessingParameterNumber.Integer|100|False|1|None

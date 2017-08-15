@@ -6,4 +6,4 @@ QgsProcessingParameterNumber|SIGMA|Threshold|QgsProcessingParameterNumber.Double
 QgsProcessingParameterNumber|ITER|Number of Iterations for Normal Updating|QgsProcessingParameterNumber.Integer|5|False| 1|None
 QgsProcessingParameterNumber|VITER|Number of Iterations for Vertex Updating|QgsProcessingParameterNumber.Integer|50|False| 1|None
 ParameterSelection|NB_CV|Common Edge Type of Face Neighbourhood|[0] Common Vertex;[1] Common Edge| 0
-ParameterBoolean|ZONLY|Only Z-Direction Position is Updated|False
+QgsProcessingParameterBoolean|ZONLY|Only Z-Direction Position is Updated|False

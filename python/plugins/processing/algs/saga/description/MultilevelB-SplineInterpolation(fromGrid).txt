@@ -5,7 +5,7 @@ Hardcoded|-TARGET_DEFINITION 0
 ParameterSelection|METHOD|Method|[0] without B-spline refinement;[1] with B-spline refinement
 QgsProcessingParameterNumber|EPSILON|Threshold Error|QgsProcessingParameterNumber.Double|0.0001|False|0|None
 QgsProcessingParameterNumber|LEVEL_MAX|Maximum Level|QgsProcessingParameterNumber.Double|11.0|False|1|14
-ParameterBoolean|UPDATE|Update View|False
+QgsProcessingParameterBoolean|UPDATE|Update View|False
 ParameterSelection|DATATYPE|Data Type|[0] same as input grid;[1] floating point
 Extent TARGET_USER_XMIN TARGET_USER_XMAX TARGET_USER_YMIN TARGET_USER_YMAX
 QgsProcessingParameterNumber|TARGET_USER_SIZE|Cellsize|QgsProcessingParameterNumber.Double|100.0|False|None|None

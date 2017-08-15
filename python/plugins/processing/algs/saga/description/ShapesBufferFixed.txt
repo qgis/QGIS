@@ -4,6 +4,6 @@ ParameterVector|SHAPES|Shapes|-1|False
 QgsProcessingParameterNumber|DIST_FIELD_DEFAULT|Buffer distance|QgsProcessingParameterNumber.Double|100.0|False|0.0|None
 QgsProcessingParameterNumber|NZONES|Number of Buffer Zones|QgsProcessingParameterNumber.Double|1.0|False|1.0|None
 QgsProcessingParameterNumber|DARC|Arc Vertex Distance [Degree]|QgsProcessingParameterNumber.Double|5.0|False|0.01|45.0
-ParameterBoolean|DISSOLVE       |Dissolve Buffers|True
-ParameterBoolean|POLY_INNER       |Inner Buffer|False
+QgsProcessingParameterBoolean|DISSOLVE       |Dissolve Buffers|True
+QgsProcessingParameterBoolean|POLY_INNER       |Inner Buffer|False
 OutputVector|BUFFER|Buffer

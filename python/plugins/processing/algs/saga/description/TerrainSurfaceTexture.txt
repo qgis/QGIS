@@ -7,5 +7,5 @@ QgsProcessingParameterNumber|SCALE|Scale (Cells)|QgsProcessingParameterNumber.In
 ParameterSelection|METHOD|Method|[0] counting cells;[1] resampling| 1
 ParameterSelection|DW_WEIGHTING|Weighting Function|[0] no distance weighting;[1] inverse distance to a power;[2] exponential;[3] gaussian weighting| 3
 QgsProcessingParameterNumber|DW_IDW_POWER|Inverse Distance Weighting Power|QgsProcessingParameterNumber.Double|1.000000|False| 0.000000|None
-ParameterBoolean|DW_IDW_OFFSET|Inverse Distance Offset|True
+QgsProcessingParameterBoolean|DW_IDW_OFFSET|Inverse Distance Offset|True
 QgsProcessingParameterNumber|DW_BANDWIDTH|Gaussian and Exponential Weighting Bandwidth|QgsProcessingParameterNumber.Double|0.700000|False| 0.000000|None

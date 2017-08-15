@@ -7,7 +7,7 @@ ParameterSelection|NEIGHBOUR|Neighbourhood|[0] 4 (von Neumann);[1] 8 (Moore)
 QgsProcessingParameterNumber|SIG_1|Variance in Feature Space|QgsProcessingParameterNumber.Double|1.0|False|None|None
 QgsProcessingParameterNumber|SIG_2|Variance in Position Space|QgsProcessingParameterNumber.Double|1.0|False|None|None
 QgsProcessingParameterNumber|THRESHOLD|Threshold - Similarity|QgsProcessingParameterNumber.Double|0.0|False|None|None
-ParameterBoolean|REFRESH         |Refresh|True
+QgsProcessingParameterBoolean|REFRESH         |Refresh|True
 QgsProcessingParameterNumber|LEAFSIZE|Leaf Size (for Speed Optimisation)|QgsProcessingParameterNumber.Integer|256|False|None|None
 QgsProcessingParameterRasterDestination|SEGMENTS|Segments
 QgsProcessingParameterRasterDestination|SIMILARITY|Similarity

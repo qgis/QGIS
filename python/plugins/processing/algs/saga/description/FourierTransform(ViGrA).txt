@@ -3,4 +3,4 @@ imagery_vigra
 QgsProcessingParameterRasterLayer|INPUT|Input|None|False
 QgsProcessingParameterRasterDestination|REAL|Real
 QgsProcessingParameterRasterDestination|IMAG|Imaginary
-ParameterBoolean|CENTER|Centered|True
+QgsProcessingParameterBoolean|CENTER|Centered|True

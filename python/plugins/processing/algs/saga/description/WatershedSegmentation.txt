@@ -5,8 +5,8 @@ ParameterSelection|OUTPUT|Output|[0] Seed Value;[1] Segment ID
 ParameterSelection|DOWN|Method|[0] Minima;[1] Maxima
 ParameterSelection|JOIN|Join Segments based on Threshold Value|[0] do not join;[1] seed to saddle difference;[2] seeds difference
 QgsProcessingParameterNumber|THRESHOLD|Threshold|QgsProcessingParameterNumber.Integer|0|False|None|None
-ParameterBoolean|EDGE           |Allow Edge Pixels to be Seeds|True
-ParameterBoolean|BBORDERS       |Borders|True
+QgsProcessingParameterBoolean|EDGE           |Allow Edge Pixels to be Seeds|True
+QgsProcessingParameterBoolean|BBORDERS       |Borders|True
 QgsProcessingParameterRasterDestination|SEGMENTS|Segments
 OutputVector|SEEDS|Seed Points
 QgsProcessingParameterRasterDestination|BORDERS|Borders

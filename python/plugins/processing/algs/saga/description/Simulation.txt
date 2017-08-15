@@ -10,7 +10,7 @@ QgsProcessingParameterRasterLayer|M100H|Dead Fuel Moisture 100H|None|False
 QgsProcessingParameterRasterLayer|MHERB|Herbaceous Fuel Moisture|None|False
 QgsProcessingParameterRasterLayer|MWOOD|Wood Fuel Moisture|None|False
 QgsProcessingParameterRasterLayer|IGNITION|Ignition Points|None|False
-ParameterBoolean|UPDATEVIEW     |Update View|True
+QgsProcessingParameterBoolean|UPDATEVIEW     |Update View|True
 QgsProcessingParameterRasterDestination|TIME|Time
 QgsProcessingParameterRasterDestination|FLAME|Flame Length
 QgsProcessingParameterRasterDestination|INTENSITY|Intensity

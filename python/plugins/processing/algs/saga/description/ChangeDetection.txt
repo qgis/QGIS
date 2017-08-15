@@ -10,7 +10,7 @@ ParameterTable|FIN_LUT|Look-up Table|True
 ParameterTableField|FIN_LUT_MIN|Value|FIN_LUT|-1|False
 ParameterTableField|FIN_LUT_MAX|Value (Maximum)|FIN_LUT|-1|False
 ParameterTableField|FIN_LUT_NAM|Name|FIN_LUT|-1|False
-ParameterBoolean|NOCHANGE         |Report Unchanged Classes|True
+QgsProcessingParameterBoolean|NOCHANGE         |Report Unchanged Classes|True
 ParameterSelection|OUTPUT|Output as...|[0] cells;[1] percent;[2] area
 QgsProcessingParameterRasterDestination|CHANGE|Changes
 OutputTable|CHANGES|Changes

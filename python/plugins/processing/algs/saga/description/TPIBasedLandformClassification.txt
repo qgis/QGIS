@@ -7,6 +7,6 @@ QgsProcessingParameterNumber|RADIUS_B_MIN|Min Radius B|QgsProcessingParameterNum
 QgsProcessingParameterNumber|RADIUS_B_MAX|Max Radius B|QgsProcessingParameterNumber.Integer|1000|False|None|None
 ParameterSelection|DW_WEIGHTING|Distance Weighting|[0] no distance weighting;[1] inverse distance to a power;[2] exponential;[3] gaussian weighting
 QgsProcessingParameterNumber|DW_IDW_POWER|Inverse Distance Weighting Power|QgsProcessingParameterNumber.Integer|1|False|0.0|None
-ParameterBoolean|DW_IDW_OFFSET     |Inverse Distance Offset|True
+QgsProcessingParameterBoolean|DW_IDW_OFFSET     |Inverse Distance Offset|True
 QgsProcessingParameterNumber|DW_BANDWIDTH|Gaussian and Exponential Weighting Bandwidth|QgsProcessingParameterNumber.Double|75.0|False|None|None
 QgsProcessingParameterRasterDestination|LANDFORMS|Landforms

@@ -4,5 +4,5 @@ ParameterVector|POLAR|Polar Coordinates|-1|False
 ParameterTableField|F_EXAGG|Exaggeration|POLAR|-1|False
 QgsProcessingParameterNumber|D_EXAGG|Exaggeration Factor|QgsProcessingParameterNumber.Integer|1|False|None|None
 QgsProcessingParameterNumber|RADIUS|Radius|QgsProcessingParameterNumber.Double|6371000.0|False|None|None
-ParameterBoolean|DEGREE       |Degree|True
+QgsProcessingParameterBoolean|DEGREE       |Degree|True
 OutputVector|CARTES|Cartesian Coordinates

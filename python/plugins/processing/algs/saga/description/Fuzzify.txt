@@ -6,5 +6,5 @@ QgsProcessingParameterNumber|B|B|QgsProcessingParameterNumber.Double|0.0|False|N
 QgsProcessingParameterNumber|C|C|QgsProcessingParameterNumber.Double|0.0|False|None|None
 QgsProcessingParameterNumber|D|D|QgsProcessingParameterNumber.Double|0.0|False|None|None
 ParameterSelection|TYPE|Membership Function Type|[0] linear;[1] sigmoidal;[2] j-shaped
-ParameterBoolean|AUTOFIT     |Adjust to Grid|True
+QgsProcessingParameterBoolean|AUTOFIT     |Adjust to Grid|True
 QgsProcessingParameterRasterDestination|OUTPUT|Fuzzified Grid

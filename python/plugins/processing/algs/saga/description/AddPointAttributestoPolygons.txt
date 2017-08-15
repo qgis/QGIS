@@ -3,5 +3,5 @@ shapes_polygons
 ParameterVector|INPUT|Polygons|2|False
 ParameterVector|POINTS|Points|0|False
 ParameterTableField|FIELDS|Attributes|POINTS|-1|False
-ParameterBoolean|ADD_LOCATION_INFO|Add location info|False
+QgsProcessingParameterBoolean|ADD_LOCATION_INFO|Add location info|False
 OutputVector|OUTPUT|Result

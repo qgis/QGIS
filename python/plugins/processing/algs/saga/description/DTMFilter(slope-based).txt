@@ -3,6 +3,6 @@ grid_filter
 QgsProcessingParameterRasterLayer|INPUT|Grid to filter|None|False
 QgsProcessingParameterNumber|RADIUS|Search Radius|QgsProcessingParameterNumber.Integer|2|False|1.0|None
 QgsProcessingParameterNumber|TERRAINSLOPE|Approx. Terrain Slope|QgsProcessingParameterNumber.Double|30.0|False|None|None
-ParameterBoolean|STDDEV            |Use Confidence Interval|True
+QgsProcessingParameterBoolean|STDDEV            |Use Confidence Interval|True
 QgsProcessingParameterRasterDestination|GROUND|Bare Earth
 QgsProcessingParameterRasterDestination|NONGROUND|Removed Objects

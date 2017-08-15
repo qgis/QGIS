@@ -3,6 +3,6 @@ ta_preprocessor
 QgsProcessingParameterRasterLayer|DEM|DEM|None|False
 QgsProcessingParameterRasterLayer|SINKROUTE|Sink Route|None|True
 ParameterSelection|METHOD|Method|[0] Deepen Drainage Routes;[1] Fill Sinks
-ParameterBoolean|THRESHOLD        |Threshold|True
+QgsProcessingParameterBoolean|THRESHOLD        |Threshold|True
 QgsProcessingParameterNumber|THRSHEIGHT|Threshold Height|QgsProcessingParameterNumber.Double|100.0|False|None|None
 QgsProcessingParameterRasterDestination|DEM_PREPROC|Preprocessed DEM

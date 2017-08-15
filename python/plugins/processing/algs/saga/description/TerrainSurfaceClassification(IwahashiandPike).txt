@@ -3,9 +3,9 @@ ta_morphometry
 QgsProcessingParameterRasterLayer|DEM|Elevation|None|False
 QgsProcessingParameterRasterLayer|SLOPE|Slope|None|True
 QgsProcessingParameterRasterLayer|CONVEXITY|Convexity|None|True
-ParameterBoolean|CONV_RECALC|Recalculate|False
+QgsProcessingParameterBoolean|CONV_RECALC|Recalculate|False
 QgsProcessingParameterRasterLayer|TEXTURE|Texture|None|True
-ParameterBoolean|TEXT_RECALC|Recalculate|False
+QgsProcessingParameterBoolean|TEXT_RECALC|Recalculate|False
 QgsProcessingParameterRasterDestination|LANDFORMS|Landforms
 ParameterSelection|TYPE|Number of Classes|[0] 8;[1] 12;[2] 16| 2
 QgsProcessingParameterNumber|CONV_SCALE|Scale (Cells)|QgsProcessingParameterNumber.Integer|10|False| 1|None

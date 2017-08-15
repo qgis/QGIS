@@ -6,4 +6,4 @@ QgsProcessingParameterNumber|SX|Abflusspfad-Quelle, x-Wert|QgsProcessingParamete
 QgsProcessingParameterNumber|SY|Abflusspfad-Quelle, y-Wert|QgsProcessingParameterNumber.Integer|0|False| 0|None
 QgsProcessingParameterNumber|MX|Abflusspfad-Mündung, x-Wert|QgsProcessingParameterNumber.Integer|0|False| 0|None
 QgsProcessingParameterNumber|MY|Abflusspfad-Mündung, y-Wert|QgsProcessingParameterNumber.Integer|0|False| 0|None
-ParameterBoolean|Owrite|Overwrite RiverGridCells|False
+QgsProcessingParameterBoolean|Owrite|Overwrite RiverGridCells|False
