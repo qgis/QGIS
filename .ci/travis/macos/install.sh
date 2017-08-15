@@ -37,7 +37,8 @@ fcgi
 expat
 sqlite
 flex
-bison"
+bison
+libzip"
 
 full_prefixes=""
 for p in ${prefixes}; do
