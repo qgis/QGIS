@@ -231,8 +231,15 @@ void QgsMetadataWidget::fillComboBox()
   // Set default values in language combobox
   // It is advised to use the ISO 639.2 or ISO 3166 specifications, e.g. 'ENG' or 'SPA',
   comboLanguage->setEditable( true );
-  types.clear();
-  comboLanguage->addItems( parseLanguages() );
+  comboLanguage->clear();
+  QMap<QString, QString> countries = parseLanguages();
+  int i = 0;
+  for ( QString countryCode : countries.keys() )
+  {
+    comboLanguage->insertItem( i, countryCode );
+    comboLanguage->setItemData( i, countries.value( countryCode ), Qt::ToolTipRole );
+    i++;
+  }
 }
 
 void QgsMetadataWidget::setPropertiesFromLayer()
@@ -412,7 +419,7 @@ bool QgsMetadataWidget::checkMetadata()
   return results;
 }
 
-QStringList QgsMetadataWidget::parseLanguages()
+QMap<QString, QString> QgsMetadataWidget::parseLanguages()
 {
   QString path = QDir( QgsApplication::metadataPath() ).absoluteFilePath( QString( "country_code_ISO_3166.csv" ) );
   QFile file( path );
@@ -421,16 +428,17 @@ QStringList QgsMetadataWidget::parseLanguages()
     QgsDebugMsg( QString( "Error while opening the CSV file: %1, %2 " ).arg( path, file.errorString() ) );
   }
 
-  QStringList wordList;
-  wordList.append( "" );
+  QMap<QString, QString> countries;
+  countries.insert( "", "" ); // We add an empty line, because it's not compulsory.
   // Skip the first line of the CSV
   file.readLine();
   while ( !file.atEnd() )
   {
     QByteArray line = file.readLine();
-    wordList.append( line.split( ',' ).at( 2 ) );
+    QList<QByteArray> items = line.split( ',' );
+    countries.insert( items.at( 2 ).constData(), items.at( 0 ).constData() );
   }
-  return wordList;
+  return countries;
 }
 
 QStringList QgsMetadataWidget::parseLicenses()

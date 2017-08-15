@@ -123,7 +123,7 @@ class GUI_EXPORT QgsMetadataWidget : public QWidget, private Ui::QgsMetadataWidg
     /**
      * Returns a list of languages by default available in the wizard.
      */
-    static QStringList parseLanguages();
+    static QMap<QString, QString> parseLanguages();
 
     /**
      * Returns a list of licences by default available in the wizard.
