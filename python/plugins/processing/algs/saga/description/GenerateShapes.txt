@@ -4,5 +4,5 @@ ParameterTable|INPUT|Input|False
 ParameterTable|FIELD_ID|ID|False
 ParameterTable|FIELD_X|X|False
 ParameterTable|FIELD_Y|Y|False
-ParameterSelection|SHAPE_TYPE|Shape Type|[0] Point(s);[1] Line(s);[2] Polygon(s)| 0
+QgsProcessingParameterEnum|SHAPE_TYPE|Shape Type|[0] Point(s);[1] Line(s);[2] Polygon(s)|False|0
 OutputVector|OUTPUT|Output

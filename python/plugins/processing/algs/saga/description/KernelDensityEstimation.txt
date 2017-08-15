@@ -3,9 +3,9 @@ grid_gridding
 ParameterVector|POINTS|Points|0|False
 ParameterTableField|POPULATION|Weight|POINTS|-1|False
 QgsProcessingParameterNumber|RADIUS|Radius|QgsProcessingParameterNumber.Integer|10|False|None|None
-ParameterSelection|KERNEL|Kernel|[0] quartic kernel;[1] gaussian kernel
+QgsProcessingParameterEnum|KERNEL|Kernel|[0] quartic kernel;[1] gaussian kernel
 Hardcoded|-TARGET_DEFINITION 0
 Extent TARGET_USER_XMIN TARGET_USER_XMAX TARGET_USER_YMIN TARGET_USER_YMAX
 QgsProcessingParameterNumber|TARGET_USER_SIZE|Cellsize|QgsProcessingParameterNumber.Double|100.0|False|None|None
-ParameterSelection|TARGET_USER_FITS|Fit|[0] nodes;[1] cells
+QgsProcessingParameterEnum|TARGET_USER_FITS|Fit|[0] nodes;[1] cells
 QgsProcessingParameterRasterDestination|TARGET_OUT_GRID|Kernel

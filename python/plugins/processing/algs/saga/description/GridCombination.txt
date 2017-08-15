@@ -9,4 +9,4 @@ QgsProcessingParameterBoolean|ElecW|Electricity Water|True
 QgsProcessingParameterBoolean|LiveW|Livestock Water|True
 QgsProcessingParameterBoolean|ManW|Manufacturing Water|True
 QgsProcessingParameterBoolean|IrrW|Irrigation Water|True
-ParameterSelection|FvA|Flaechenverbrauch-Auswahl (FvA)|[0] Resultierendes Raster ueber WasserENTNAHME erstellen;[1] Resultierendes Raster ueber WasserNUTZUNG erstellen| 0
+QgsProcessingParameterEnum|FvA|Flaechenverbrauch-Auswahl (FvA)|[0] Resultierendes Raster ueber WasserENTNAHME erstellen;[1] Resultierendes Raster ueber WasserNUTZUNG erstellen|False|0

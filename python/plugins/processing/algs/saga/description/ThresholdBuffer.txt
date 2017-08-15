@@ -4,5 +4,5 @@ QgsProcessingParameterRasterLayer|FEATURES|Features Grid|None|False
 QgsProcessingParameterRasterLayer|VALUE|Value Grid|None|False
 QgsProcessingParameterRasterLayer|THRESHOLDGRID|Threshold Grid|None|True
 QgsProcessingParameterNumber|THRESHOLD|Threshold|QgsProcessingParameterNumber.Double|0.0|False|None|None
-ParameterSelection|THRESHOLDTYPE|Threshold Type|[0] Absolute;[1] Relative from cell value
+QgsProcessingParameterEnum|THRESHOLDTYPE|Threshold Type|[0] Absolute;[1] Relative from cell value
 QgsProcessingParameterRasterDestination|BUFFER|Buffer Grid

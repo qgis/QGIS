@@ -4,7 +4,7 @@ QgsProcessingParameterRasterLayer|INPUT|DTM|None|False
 QgsProcessingParameterRasterLayer|INPUT2|HGGrid|None|False
 QgsProcessingParameterRasterLayer|INPUT3|statisches Entnahmeraster|None|True
 QgsProcessingParameterBoolean|WCons|Anteilige Flaechenwasserentnahme|False
-ParameterSelection|WCons2|Dynamische Flaechenwassernutzung...|[0] ...anteilig aus den Flussrasterzellen;[1] ...anteilig aus Rasterzellen der Teileinzugegebiete| 0
+QgsProcessingParameterEnum|WCons2|Dynamische Flaechenwassernutzung...|[0] ...anteilig aus den Flussrasterzellen;[1] ...anteilig aus Rasterzellen der Teileinzugegebiete|False|0
 QgsProcessingParameterRasterDestination|OUTPUT2|Grad
 QgsProcessingParameterRasterDestination|OUTPUT3|Direc
 QgsProcessingParameterRasterDestination|OUTPUT4|HGGrad

@@ -6,8 +6,8 @@ QgsProcessingParameterRasterDestination|SEGMENTS|Segments
 QgsProcessingParameterRasterDestination|SIMILARITY|Similarity
 ParameterTable|TABLE|Seeds|False
 QgsProcessingParameterBoolean|NORMALIZE|Normalize|False
-ParameterSelection|NEIGHBOUR|Neighbourhood|[0] 4 (von Neumann);[1] 8 (Moore)| 0
-ParameterSelection|METHOD|Method|[0] feature space and position;[1] feature space| 0
+QgsProcessingParameterEnum|NEIGHBOUR|Neighbourhood|[0] 4 (von Neumann);[1] 8 (Moore)|False|0
+QgsProcessingParameterEnum|METHOD|Method|[0] feature space and position;[1] feature space|False|0
 QgsProcessingParameterNumber|SIG_1|Variance in Feature Space|QgsProcessingParameterNumber.Double|1.000000|False| 0.000000|None
 QgsProcessingParameterNumber|SIG_2|Variance in Position Space|QgsProcessingParameterNumber.Double|1.000000|False| 0.000000|None
 QgsProcessingParameterNumber|THRESHOLD|Similarity Threshold|QgsProcessingParameterNumber.Double|0.000000|False| 0.000000|None

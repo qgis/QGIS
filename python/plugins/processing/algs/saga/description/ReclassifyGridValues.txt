@@ -1,16 +1,16 @@
 Reclassify Grid Values
 grid_tools
 QgsProcessingParameterRasterLayer|INPUT|Grid|None|False
-ParameterSelection|METHOD|Method|[0] single;[1] range;[2] simple table
+QgsProcessingParameterEnum|METHOD|Method|[0] single;[1] range;[2] simple table
 QgsProcessingParameterNumber|OLD|old value (for single value change)|QgsProcessingParameterNumber.Double|0.0|False|None|None
 QgsProcessingParameterNumber|NEW|new value (for single value change)|QgsProcessingParameterNumber.Double|1.0|False|None|None
-ParameterSelection|SOPERATOR|operator (for single value change)|[0] =;[1] <;[2] <=;[3] >=;[4] >
+QgsProcessingParameterEnum|SOPERATOR|operator (for single value change)|[0] =;[1] <;[2] <=;[3] >=;[4] >
 QgsProcessingParameterNumber|MIN|minimum value (for range)|QgsProcessingParameterNumber.Double|0.0|False|None|None
 QgsProcessingParameterNumber|MAX|maximum value (for range)|QgsProcessingParameterNumber.Double|1.0|False|None|None
 QgsProcessingParameterNumber|RNEW|new value(for range)|QgsProcessingParameterNumber.Double|2.0|False|None|None
-ParameterSelection|ROPERATOR|operator (for range)|[0] <=;[1] <
+QgsProcessingParameterEnum|ROPERATOR|operator (for range)|[0] <=;[1] <
 ParameterFixedTable|RETAB|Lookup Table|3|minimum;maximum;new|False
-ParameterSelection|TOPERATOR|operator (for table)|[0] min <= value < max;[1] min <= value <= max;[2] min < value <= max;[3] min < value < max
+QgsProcessingParameterEnum|TOPERATOR|operator (for table)|[0] min <= value < max;[1] min <= value <= max;[2] min < value <= max;[3] min < value < max
 QgsProcessingParameterBoolean|NODATAOPT      |replace no data values|True
 QgsProcessingParameterNumber|NODATA|new value for no data values|QgsProcessingParameterNumber.Double|0.0|False|None|None
 QgsProcessingParameterBoolean|OTHEROPT       |replace other values|True

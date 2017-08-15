@@ -2,4 +2,4 @@ Mirror Grid
 grid_tools
 QgsProcessingParameterRasterLayer|GRID|Grid|None|False
 QgsProcessingParameterRasterDestination|MIRROR|Mirror Grid
-ParameterSelection|METHOD|Method|[0] horizontally;[1] vertically;[2] both| 0
+QgsProcessingParameterEnum|METHOD|Method|[0] horizontally;[1] vertically;[2] both|False|0

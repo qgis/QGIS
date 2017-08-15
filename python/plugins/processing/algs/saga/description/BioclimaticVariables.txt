@@ -23,4 +23,4 @@ QgsProcessingParameterRasterDestination|BIO_16|Precipitation of Wettest Quarter
 QgsProcessingParameterRasterDestination|BIO_17|Precipitation of Driest Quarter
 QgsProcessingParameterRasterDestination|BIO_18|Precipitation of Warmest Quarter
 QgsProcessingParameterRasterDestination|BIO_19|Precipitation of Coldest Quarter
-ParameterSelection|SEASONALITY|Temperature Seasonality|[0] Coefficient of Variation;[1] Standard Deviation| 1
+QgsProcessingParameterEnum|SEASONALITY|Temperature Seasonality|[0] Coefficient of Variation;[1] Standard Deviation|False|1

@@ -6,10 +6,10 @@ ParameterMultipleInput|FEATURES_CAT|Categorical Features|3|True
 QgsProcessingParameterRasterDestination|PREDICTION|Presence Prediction
 QgsProcessingParameterRasterDestination|PROBABILITY|Presence Probability
 QgsProcessingParameterNumber|BACKGROUND|Background Sample Density [Percent]|QgsProcessingParameterNumber.Double|1.000000|False| 0.000000| 100.000000
-ParameterSelection|METHOD|Method|[0] Yoshimasa Tsuruoka;[1] Dekang Lin| 0
+QgsProcessingParameterEnum|METHOD|Method|[0] Yoshimasa Tsuruoka;[1] Dekang Lin|False|0
 ParameterFile|YT_FILE_LOAD|Load from File...|False|False
 ParameterFile|YT_FILE_SAVE|Save to File...|False|False
-ParameterSelection|YT_REGUL|Regularization|[0] none;[1] L1;[2] L2| 1
+QgsProcessingParameterEnum|YT_REGUL|Regularization|[0] none;[1] L1;[2] L2|False|1
 QgsProcessingParameterNumber|YT_REGUL_VAL|Regularization Factor|QgsProcessingParameterNumber.Double|1.000000|False| 0.000000|None
 QgsProcessingParameterBoolean|YT_NUMASREAL|Real-valued Numerical Features|True
 QgsProcessingParameterNumber|DL_ALPHA|Alpha|QgsProcessingParameterNumber.Double|0.100000|False|None|None

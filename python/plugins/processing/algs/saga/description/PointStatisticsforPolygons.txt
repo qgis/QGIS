@@ -3,7 +3,7 @@ shapes_polygons
 ParameterVector|POINTS|Points|0|False
 ParameterVector|POLYGONS|Polygons|2|False
 ParameterTableField|FIELDS|Attribute Table field|POINTS|-1|False
-ParameterSelection|FIELD_NAME|Field Naming Choice|[0] variable type + original name;[1] original name + variable type;[2] original name;[3] variable type
+QgsProcessingParameterEnum|FIELD_NAME|Field Naming Choice|[0] variable type + original name;[1] original name + variable type;[2] original name;[3] variable type
 QgsProcessingParameterBoolean|SUM             |Sum|True
 QgsProcessingParameterBoolean|AVG             |Mean|True
 QgsProcessingParameterBoolean|VAR             |Variance|True

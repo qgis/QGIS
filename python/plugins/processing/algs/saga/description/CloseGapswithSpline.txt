@@ -6,7 +6,7 @@ QgsProcessingParameterNumber|MAXGAPCELLS|Only Process Gaps with Less Cells|QgsPr
 QgsProcessingParameterNumber|MAXPOINTS|Maximum Points|QgsProcessingParameterNumber.Integer|1000|False|None|None
 QgsProcessingParameterNumber|LOCALPOINTS|Number of Points for Local Interpolation|QgsProcessingParameterNumber.Integer|10|False|None|None
 QgsProcessingParameterBoolean|EXTENDED         |Extended Neighourhood|True
-ParameterSelection|NEIGHBOURS|Neighbourhood|[0] Neumann;[1] Moore
+QgsProcessingParameterEnum|NEIGHBOURS|Neighbourhood|[0] Neumann;[1] Moore
 QgsProcessingParameterNumber|RADIUS|Radius (Cells)|QgsProcessingParameterNumber.Integer|0|False|None|None
 QgsProcessingParameterNumber|RELAXATION|Relaxation|QgsProcessingParameterNumber.Double|0.0|False|None|None
 QgsProcessingParameterRasterDestination|CLOSED|Closed Gaps Grid

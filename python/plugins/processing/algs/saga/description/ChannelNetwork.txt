@@ -3,7 +3,7 @@ ta_channels
 QgsProcessingParameterRasterLayer|ELEVATION|Elevation|None|False
 QgsProcessingParameterRasterLayer|SINKROUTE|Flow Direction|None|True
 QgsProcessingParameterRasterLayer|INIT_GRID|Initiation Grid|None|False
-ParameterSelection|INIT_METHOD|Initiation Type|[0] Less than;[1] Equals;[2] Greater than
+QgsProcessingParameterEnum|INIT_METHOD|Initiation Type|[0] Less than;[1] Equals;[2] Greater than
 QgsProcessingParameterNumber|INIT_VALUE|Initiation Threshold|QgsProcessingParameterNumber.Double|0.0|False|None|None
 QgsProcessingParameterRasterLayer|DIV_GRID|Divergence|None|True
 QgsProcessingParameterNumber|DIV_CELLS|Tracing: Max. Divergence|QgsProcessingParameterNumber.Integer|10|False|None|None

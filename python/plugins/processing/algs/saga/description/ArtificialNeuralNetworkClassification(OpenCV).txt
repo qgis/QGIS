@@ -9,10 +9,10 @@ QgsProcessingParameterNumber|ANN_LAYERS|Number of Layers|QgsProcessingParameterN
 QgsProcessingParameterNumber|ANN_NEURONS|Number of Neurons|QgsProcessingParameterNumber.Integer|3|False|1|None
 QgsProcessingParameterNumber|ANN_MAXITER|Maximum Number of Iterations|QgsProcessingParameterNumber.Integer|300|False|1|None
 QgsProcessingParameterNumber|ANN_EPSILON|Error Change (Epsilon)|QgsProcessingParameterNumber.Double|0.000000|False|0.000000|None
-ParameterSelection|ANN_ACTIVATION|Activation Function|[0] Identity;[1] Sigmoid;[2] Gaussian| 1
+QgsProcessingParameterEnum|ANN_ACTIVATION|Activation Function|[0] Identity;[1] Sigmoid;[2] Gaussian|False|1
 QgsProcessingParameterNumber|ANN_ACT_ALPHA|Function's Alpha|QgsProcessingParameterNumber.Double|1.000000|False|None|None
 QgsProcessingParameterNumber|ANN_ACT_BETA|Function's Beta|QgsProcessingParameterNumber.Double|1.000000|False|None|None
-ParameterSelection|ANN_PROPAGATION|Training Method|[0] resilient propagation;[1] back propagation| 1
+QgsProcessingParameterEnum|ANN_PROPAGATION|Training Method|[0] resilient propagation;[1] back propagation|False|1
 QgsProcessingParameterNumber|ANN_RP_DW0|Initial Update Value|QgsProcessingParameterNumber.Double|0.000000|False|None|None
 QgsProcessingParameterNumber|ANN_RP_DW_PLUS|Increase Factor|QgsProcessingParameterNumber.Double|1.200000|False|1.010000|None
 QgsProcessingParameterNumber|ANN_RP_DW_MINUS|Decrease Factor|QgsProcessingParameterNumber.Double|0.500000|False|0.010000|0.990000

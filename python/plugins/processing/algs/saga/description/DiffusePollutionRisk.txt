@@ -9,5 +9,5 @@ QgsProcessingParameterNumber|RAIN_DEFAULT|Default|QgsProcessingParameterNumber.D
 QgsProcessingParameterRasterDestination|DELIVERY|Delivery Index
 QgsProcessingParameterRasterDestination|RISK_POINT|Locational Risk
 QgsProcessingParameterRasterDestination|RISK_DIFFUSE|Diffuse Pollution Risk
-ParameterSelection|METHOD|Flow Direction Algorithm|[0] single;[1] multiple| 1
+QgsProcessingParameterEnum|METHOD|Flow Direction Algorithm|[0] single;[1] multiple|False|1
 QgsProcessingParameterNumber|CHANNEL_START|Channel Initiation Threshold|QgsProcessingParameterNumber.Integer|150|False| 1|None

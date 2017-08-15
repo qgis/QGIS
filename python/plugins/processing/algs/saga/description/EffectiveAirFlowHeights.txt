@@ -10,6 +10,6 @@ QgsProcessingParameterNumber|ACCEL|Acceleration|QgsProcessingParameterNumber.Dou
 QgsProcessingParameterBoolean|PYRAMIDS       |Use Pyramids with New Version|True
 QgsProcessingParameterNumber|LEEFACT|Lee Factor|QgsProcessingParameterNumber.Double|0.5|False|None|None
 QgsProcessingParameterNumber|LUVFACT|Luv Factor|QgsProcessingParameterNumber.Double|1.0|False|None|None
-ParameterSelection|DIR_UNITS|Wind Direction Units|[0] radians;[1] degree
+QgsProcessingParameterEnum|DIR_UNITS|Wind Direction Units|[0] radians;[1] degree
 QgsProcessingParameterNumber|LEN_SCALE|Wind Speed Scale Factor|QgsProcessingParameterNumber.Double|1.0|False|None|None
 QgsProcessingParameterRasterDestination|AFH|Effective Air Flow Heights

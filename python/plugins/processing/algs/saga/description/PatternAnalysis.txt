@@ -1,7 +1,7 @@
 Pattern Analysis
 grid_analysis
 QgsProcessingParameterRasterLayer|INPUT|Input Grid|None|False
-ParameterSelection|WINSIZE|Size of Analysis Window|[0] 3 X 3;[1] 5 X 5;[2] 7 X 7
+QgsProcessingParameterEnum|WINSIZE|Size of Analysis Window|[0] 3 X 3;[1] 5 X 5;[2] 7 X 7
 QgsProcessingParameterNumber|MAXNUMCLASS|Max. Number of Classes|QgsProcessingParameterNumber.Integer|0|False|None|None
 QgsProcessingParameterRasterDestination|RELATIVE|Relative Richness
 QgsProcessingParameterRasterDestination|DIVERSITY|Diversity

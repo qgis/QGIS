@@ -4,7 +4,7 @@ QgsProcessingParameterRasterLayer|CLASSES|Classification|None|False
 QgsProcessingParameterNumber|CLASS|Class Identifier|QgsProcessingParameterNumber.Integer|1|False|None|None
 QgsProcessingParameterNumber|NEIGHBORHOOD_MIN|Neighborhood Min|QgsProcessingParameterNumber.Integer|1|False|1.0|None
 QgsProcessingParameterNumber|NEIGHBORHOOD_MAX|Neighborhood Max|QgsProcessingParameterNumber.Integer|1|False|1.0|None
-ParameterSelection|AGGREGATION|Level Aggregation|[0] average;[1] multiplicative
+QgsProcessingParameterEnum|AGGREGATION|Level Aggregation|[0] average;[1] multiplicative
 QgsProcessingParameterBoolean|BORDER                |Add Border|True
 QgsProcessingParameterNumber|WEIGHT|Connectivity Weighting|QgsProcessingParameterNumber.Double|1.1|False|None|None
 QgsProcessingParameterNumber|DENSITY_MIN|Minimum Density [Percent]|QgsProcessingParameterNumber.Integer|10|False|None|None

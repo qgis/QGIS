@@ -24,7 +24,7 @@ QgsProcessingParameterRasterDestination|FORM|Landform
 QgsProcessingParameterRasterDestination|MEM|Maximum Membership
 QgsProcessingParameterRasterDestination|ENTROPY|Entropy
 QgsProcessingParameterRasterDestination|CI|Confusion Index
-ParameterSelection|SLOPETODEG|Slope Grid Units|[0] degree;[1] radians| 0
+QgsProcessingParameterEnum|SLOPETODEG|Slope Grid Units|[0] degree;[1] radians|False|0
 QgsProcessingParameterNumber|T_SLOPE_MIN|Slope Thresholds [Degree] (Min)|QgsProcessingParameterNumber.Integer|None|False|None|None
 QgsProcessingParameterNumber|T_SLOPE_MAX|Slope Thresholds [Degree] (Max)|QgsProcessingParameterNumber.Integer|None|False|None|None
 QgsProcessingParameterNumber|T_CURVE_MIN|Curvature Thresholds [1 / m] (Min)|QgsProcessingParameterNumber.Integer|None|False|None|None
