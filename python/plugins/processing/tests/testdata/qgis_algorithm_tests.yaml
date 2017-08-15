@@ -2485,7 +2485,7 @@ tests:
         type: vector
 
   - algorithm: qgis:pointsalonglines
-    name: standard points alog lines
+    name: standard points along lines
     params:
       DISTANCE: 1.0
       END_OFFSET: 0.0
@@ -2495,7 +2495,7 @@ tests:
       START_OFFSET: 0.0
     results:
       OUTPUT:
-        name: expected/points_alog_lines.gml
+        name: expected/points_along_lines.gml
         type: vector
 
   - algorithm: qgis:meancoordinates

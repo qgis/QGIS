@@ -1,7 +1,7 @@
 <GMLFeatureClassList>
   <GMLFeatureClass>
-    <Name>points_alog_lines</Name>
-    <ElementPath>points_alog_lines</ElementPath>
+    <Name>points_along_lines</Name>
+    <ElementPath>points_along_lines</ElementPath>
     <!--POINT-->
     <GeometryType>1</GeometryType>
     <SRSName>EPSG:4326</SRSName>
