@@ -30,17 +30,17 @@ import os
 import importlib
 from qgis.core import (QgsProcessingUtils,
                        QgsProcessingException,
-                       QgsMessageLog)
+                       QgsMessageLog,
+                       QgsProcessingParameterRasterLayer,
+                       QgsProcessingParameterNumber)
 from processing.core.ProcessingConfig import ProcessingConfig
 from processing.core.parameters import (getParameterFromString,
                                         ParameterExtent,
-                                        ParameterRaster,
                                         ParameterVector,
                                         ParameterTable,
                                         ParameterMultipleInput,
                                         ParameterBoolean,
                                         ParameterFixedTable,
-                                        ParameterNumber,
                                         ParameterSelection)
 from processing.core.outputs import (getOutputFromString,
                                      OutputVector,
@@ -145,13 +145,13 @@ class SagaAlgorithm(SagaAlgorithmBase):
         # 1: Export rasters to sgrd and vectors to shp
         # Tables must be in dbf format. We check that.
         for param in self.parameterDefinitions():
-            if isinstance(param, ParameterRaster):
+            if isinstance(param, QgsProcessingParameterRasterLayer):
                 if param.name() not in parameters or parameters[param.name()] is None:
                     continue
                 if parameters[param.name()].endswith('sdat'):
                     parameters[param.name()] = parameters[param.name()][:-4] + "sgrd"
                 elif not parameters[param.name()].endswith('sgrd'):
-                    exportCommand = self.exportRasterLayer(parameters[param.name()])
+                    exportCommand = self.exportRasterLayer(parameters[param.name()], context)
                     if exportCommand is not None:
                         commands.append(exportCommand)
             if isinstance(param, ParameterVector):
@@ -214,7 +214,7 @@ class SagaAlgorithm(SagaAlgorithmBase):
         for param in self.parameterDefinitions():
             if not param.name() in parameters or parameters[param.name()] is None:
                 continue
-            if isinstance(param, (ParameterRaster, ParameterVector, ParameterTable)):
+            if isinstance(param, (QgsProcessingParameterRasterLayer, ParameterVector, ParameterTable)):
                 value = parameters[param.name()]
                 if value in list(self.exportedLayers.keys()):
                     command += ' -' + param.name() + ' "' \
@@ -249,7 +249,7 @@ class SagaAlgorithm(SagaAlgorithmBase):
                 for i in range(4):
                     command += ' -' + self.extentParamNames[i] + ' ' \
                         + str(float(values[i]) + offset[i])
-            elif isinstance(param, (ParameterNumber, ParameterSelection)):
+            elif isinstance(param, (QgsProcessingParameterNumber, ParameterSelection)):
                 command += ' -' + param.name() + ' ' + str(param.value)
             else:
                 command += ' -' + param.name() + ' "' + str(param.value) + '"'
@@ -322,9 +322,8 @@ class SagaAlgorithm(SagaAlgorithmBase):
                 break
         return cellsize
 
-    def exportRasterLayer(self, source):
+    def exportRasterLayer(self, source, context):
         global sessionExportedLayers
-        context = dataobjects.createContext()
         if source in sessionExportedLayers:
             exportedLayer = sessionExportedLayers[source]
             if os.path.exists(exportedLayer):
@@ -354,7 +353,7 @@ class SagaAlgorithm(SagaAlgorithmBase):
         extent = None
         for param in self.parameterDefinitions():
             files = []
-            if isinstance(param, ParameterRaster):
+            if isinstance(param, QgsProcessingParameterRasterLayer):
                 files = [parameters[param.name()]]
             elif (isinstance(param, ParameterMultipleInput) and
                     param.datatype == ParameterMultipleInput.TYPE_RASTER):
