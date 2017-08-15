@@ -5,12 +5,12 @@ QgsProcessingParameterNumber|CLASS|Class Identifier|QgsProcessingParameterNumber
 QgsProcessingParameterNumber|NEIGHBORHOOD_MIN|Neighborhood Min|QgsProcessingParameterNumber.Integer|1|False|1.0|None
 QgsProcessingParameterNumber|NEIGHBORHOOD_MAX|Neighborhood Max|QgsProcessingParameterNumber.Integer|3|False|1.0|None
 ParameterSelection|AGGREGATION|Level Aggregation|[0] average;[1] multiplicative
-ParameterBoolean|BORDER|Add Border|True
+QgsProcessingParameterBoolean|BORDER|Add Border|True
 QgsProcessingParameterNumber|WEIGHT|Connectivity Weighting|QgsProcessingParameterNumber.Double|1.1|False|None|None
 QgsProcessingParameterNumber|DENSITY_MIN|Minimum Density [Percent]|QgsProcessingParameterNumber.Integer|10|False|None|None
 QgsProcessingParameterNumber|DENSITY_INT|Minimum Density for Interior Forest [Percent]|QgsProcessingParameterNumber.Integer|99|False|None|None
 ParameterSelection|CIRCULAR|Neighborhood Type|[0] square;[1] circle
-ParameterBoolean|DIAGONAL|Include diagonal neighbour relations|True
+QgsProcessingParameterBoolean|DIAGONAL|Include diagonal neighbour relations|True
 QgsProcessingParameterRasterDestination|DENSITY|Density [Percent]
 QgsProcessingParameterRasterDestination|CONNECTIVITY|Connectivity [Percent]
 QgsProcessingParameterRasterDestination|FRAGMENTATION|Fragmentation

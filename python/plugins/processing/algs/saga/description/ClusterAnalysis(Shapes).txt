@@ -7,4 +7,4 @@ ParameterTable|CLUSTER|Cluster|False
 ParameterTable|STATISTICS|Statistics|False
 ParameterSelection|METHOD|Method|[0] Iterative Minimum Distance (Forgy 1965);[1] Hill-Climbing (Rubin 1967);[2] Combined Minimum Distance / Hillclimbing| 1
 QgsProcessingParameterNumber|NCLUSTER|Clusters|QgsProcessingParameterNumber.Integer|10|False| 2|None
-ParameterBoolean|NORMALISE|Normalise|False
+QgsProcessingParameterBoolean|NORMALISE|Normalise|False

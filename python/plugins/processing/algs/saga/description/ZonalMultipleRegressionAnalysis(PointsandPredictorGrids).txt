@@ -7,8 +7,8 @@ ParameterTable|ATTRIBUTE|Dependent Variable|False
 OutputVector|RESIDUALS|Residuals
 QgsProcessingParameterRasterDestination|REGRESSION|Regression
 ParameterSelection|RESAMPLING|Resampling|[0] Nearest Neighbour;[1] Bilinear Interpolation;[2] Bicubic Spline Interpolation;[3] B-Spline Interpolation| 3
-ParameterBoolean|COORD_X|Include X Coordinate|False
-ParameterBoolean|COORD_Y|Include Y Coordinate|False
-ParameterBoolean|INTERCEPT|Intercept|True
+QgsProcessingParameterBoolean|COORD_X|Include X Coordinate|False
+QgsProcessingParameterBoolean|COORD_Y|Include Y Coordinate|False
+QgsProcessingParameterBoolean|INTERCEPT|Intercept|True
 ParameterSelection|METHOD|Method|[0] include all;[1] forward;[2] backward;[3] stepwise| 3
 QgsProcessingParameterNumber|P_VALUE|Significance Level|QgsProcessingParameterNumber.Double|5.000000|False| 0.000000| 100.000000

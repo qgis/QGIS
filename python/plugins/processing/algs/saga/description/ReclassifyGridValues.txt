@@ -11,8 +11,8 @@ QgsProcessingParameterNumber|RNEW|new value(for range)|QgsProcessingParameterNum
 ParameterSelection|ROPERATOR|operator (for range)|[0] <=;[1] <
 ParameterFixedTable|RETAB|Lookup Table|3|minimum;maximum;new|False
 ParameterSelection|TOPERATOR|operator (for table)|[0] min <= value < max;[1] min <= value <= max;[2] min < value <= max;[3] min < value < max
-ParameterBoolean|NODATAOPT      |replace no data values|True
+QgsProcessingParameterBoolean|NODATAOPT      |replace no data values|True
 QgsProcessingParameterNumber|NODATA|new value for no data values|QgsProcessingParameterNumber.Double|0.0|False|None|None
-ParameterBoolean|OTHEROPT       |replace other values|True
+QgsProcessingParameterBoolean|OTHEROPT       |replace other values|True
 QgsProcessingParameterNumber|OTHERS|new value for other values|QgsProcessingParameterNumber.Double|0.0|False|None|None
 QgsProcessingParameterRasterDestination|RESULT|Reclassified Grid

@@ -4,10 +4,10 @@ QgsProcessingParameterRasterLayer|DEM|Elevation|None|False
 QgsProcessingParameterRasterLayer|DIR|Wind Direction|None|True
 QgsProcessingParameterRasterLayer|LEN|Wind Speed|None|True
 QgsProcessingParameterNumber|DIR_CONST|Constant Wind Direction [Degree]|QgsProcessingParameterNumber.Integer|135|False|None|None
-ParameterBoolean|OLDVER         |Old Version|True
+QgsProcessingParameterBoolean|OLDVER         |Old Version|True
 QgsProcessingParameterNumber|MAXDIST|Search Distance [km]|QgsProcessingParameterNumber.Integer|300|False|0.0|None
 QgsProcessingParameterNumber|ACCEL|Acceleration|QgsProcessingParameterNumber.Double|1.5|False|None|None
-ParameterBoolean|PYRAMIDS       |Use Pyramids with New Version|True
+QgsProcessingParameterBoolean|PYRAMIDS       |Use Pyramids with New Version|True
 QgsProcessingParameterNumber|LEEFACT|Lee Factor|QgsProcessingParameterNumber.Double|0.5|False|None|None
 QgsProcessingParameterNumber|LUVFACT|Luv Factor|QgsProcessingParameterNumber.Double|1.0|False|None|None
 ParameterSelection|DIR_UNITS|Wind Direction Units|[0] radians;[1] degree

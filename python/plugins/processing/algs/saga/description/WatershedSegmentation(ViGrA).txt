@@ -3,5 +3,5 @@ imagery_vigra
 QgsProcessingParameterRasterLayer|INPUT|Input|None|False
 QgsProcessingParameterRasterDestination|OUTPUT|Segmentation
 QgsProcessingParameterNumber|SCALE|Width of gradient filter|QgsProcessingParameterNumber.Double|1.000000|False| 0.000000|None
-ParameterBoolean|RGB|RGB coded data|False
-ParameterBoolean|EDGES|Edges|False
+QgsProcessingParameterBoolean|RGB|RGB coded data|False
+QgsProcessingParameterBoolean|EDGES|Edges|False

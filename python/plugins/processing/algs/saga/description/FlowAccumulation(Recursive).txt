@@ -11,7 +11,7 @@ QgsProcessingParameterNumber|STEP|Step|QgsProcessingParameterNumber.Integer|1|Fa
 QgsProcessingParameterRasterLayer|TARGETS|Target Areas|None|True
 ParameterSelection|METHOD|Method|[0] Deterministic 8;[1] Rho 8;[2] Deterministic Infinity;[3] Multiple Flow Direction
 QgsProcessingParameterNumber|CONVERGENCE|Convergence|QgsProcessingParameterNumber.Double|1.1|False|None|None
-ParameterBoolean|NO_NEGATIVES|Prevent Negative Flow Accumulation|True
+QgsProcessingParameterBoolean|NO_NEGATIVES|Prevent Negative Flow Accumulation|True
 QgsProcessingParameterRasterDestination|FLOW|Catchment Area
 QgsProcessingParameterRasterDestination|VAL_MEAN|Mean over Catchment
 QgsProcessingParameterRasterDestination|ACCU_TOTAL|Accumulated Material

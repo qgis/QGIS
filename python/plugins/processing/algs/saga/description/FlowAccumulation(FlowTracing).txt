@@ -10,7 +10,7 @@ QgsProcessingParameterRasterLayer|ACCU_TARGET|Accumulation Target|None|True
 QgsProcessingParameterNumber|STEP|Step|QgsProcessingParameterNumber.Integer|1|False|None|None
 ParameterSelection|METHOD|Method|[0] Rho 8;[1] Kinematic Routing Algorithm;[2] DEMON
 QgsProcessingParameterNumber|MINDQV|DEMON - Min. DQV|QgsProcessingParameterNumber.Double|0.0|False|None|None
-ParameterBoolean|CORRECT|Flow Correction|False
+QgsProcessingParameterBoolean|CORRECT|Flow Correction|False
 QgsProcessingParameterRasterDestination|FLOW|Flow Accumulation
 QgsProcessingParameterRasterDestination|VAL_MEAN|Mean over Catchment
 QgsProcessingParameterRasterDestination|ACCU_TOTAL|Accumulated Material

@@ -3,7 +3,7 @@ sim_rivflow
 QgsProcessingParameterRasterLayer|INPUT|DTM|None|False
 QgsProcessingParameterRasterLayer|INPUT2|HGGrid|None|False
 QgsProcessingParameterRasterLayer|INPUT3|statisches Entnahmeraster|None|True
-ParameterBoolean|WCons|Anteilige Flaechenwasserentnahme|False
+QgsProcessingParameterBoolean|WCons|Anteilige Flaechenwasserentnahme|False
 ParameterSelection|WCons2|Dynamische Flaechenwassernutzung...|[0] ...anteilig aus den Flussrasterzellen;[1] ...anteilig aus Rasterzellen der Teileinzugegebiete| 0
 QgsProcessingParameterRasterDestination|OUTPUT2|Grad
 QgsProcessingParameterRasterDestination|OUTPUT3|Direc
@@ -15,5 +15,5 @@ QgsProcessingParameterRasterDestination|OUTPUT8|statWUse
 QgsProcessingParameterRasterDestination|OUTPUT9|NumInFlowCells
 QgsProcessingParameterNumber|pCr|Hauptgerinne-Parameter pHG|QgsProcessingParameterNumber.Double|0.003500|False| 0.000000|None
 QgsProcessingParameterNumber|nCr|Hauptgerinne-Speicherkaskade nHG|QgsProcessingParameterNumber.Integer|1|False| 1|None
-ParameterBoolean|EnfVmax|Maximal Geschwindigkeit des Hauptgerinnes beruecksichtigen|True
+QgsProcessingParameterBoolean|EnfVmax|Maximal Geschwindigkeit des Hauptgerinnes beruecksichtigen|True
 QgsProcessingParameterNumber|VTresh|Maximalgeschwindigkeit im Hauptgerinne in km/h|QgsProcessingParameterNumber.Double|4.000000|False| 0.000000| 10.000000

@@ -3,8 +3,8 @@ statistics_regression
 QgsProcessingParameterRasterLayer|DEPENDENT|Dependent|None|False
 ParameterMultipleInput|GRIDS|Grids|3|False
 ParameterSelection|INTERPOL|Grid Interpolation|[0] Nearest Neighbor;[1] Bilinear Interpolation;[2] Inverse Distance Interpolation;[3] Bicubic Spline Interpolation;[4] B-Spline Interpolation
-ParameterBoolean|COORD_X         |Include X Coordinate|True
-ParameterBoolean|COORD_Y         |Include Y Coordinate|True
+QgsProcessingParameterBoolean|COORD_X         |Include X Coordinate|True
+QgsProcessingParameterBoolean|COORD_Y         |Include Y Coordinate|True
 ParameterSelection|METHOD|Method|[0] include all;[1] forward;[2] backward;[3] stepwise
 QgsProcessingParameterNumber|P_IN|P in|QgsProcessingParameterNumber.Integer|5|False|None|None
 QgsProcessingParameterNumber|P_OUT|P out|QgsProcessingParameterNumber.Integer|5|False|None|None

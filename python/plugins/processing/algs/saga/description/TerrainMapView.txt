@@ -7,5 +7,5 @@ QgsProcessingParameterRasterDestination|SLOPE|Slope
 OutputVector|CONTOURS|Contours
 ParameterSelection|METHOD|Method|[0] Topography;[1] Morphology| 0
 QgsProcessingParameterNumber|RADIUS|Radial Limit|QgsProcessingParameterNumber.Double|1000.000000|False| 0.000000|None
-ParameterBoolean|CONTOUR_LINES|Contour Lines|True
+QgsProcessingParameterBoolean|CONTOUR_LINES|Contour Lines|True
 QgsProcessingParameterNumber|EQUIDISTANCE|Equidistance|QgsProcessingParameterNumber.Double|50.000000|False| 0.000000|None

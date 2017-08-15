@@ -11,7 +11,7 @@ ParameterFile|YT_FILE_LOAD|Load from File...|False|False
 ParameterFile|YT_FILE_SAVE|Save to File...|False|False
 ParameterSelection|YT_REGUL|Regularization|[0] none;[1] L1;[2] L2| 1
 QgsProcessingParameterNumber|YT_REGUL_VAL|Regularization Factor|QgsProcessingParameterNumber.Double|1.000000|False| 0.000000|None
-ParameterBoolean|YT_NUMASREAL|Real-valued Numerical Features|True
+QgsProcessingParameterBoolean|YT_NUMASREAL|Real-valued Numerical Features|True
 QgsProcessingParameterNumber|DL_ALPHA|Alpha|QgsProcessingParameterNumber.Double|0.100000|False|None|None
 QgsProcessingParameterNumber|DL_THRESHOLD|Threshold|QgsProcessingParameterNumber.Double|0.000000|False| 0.000000|None
 QgsProcessingParameterNumber|DL_ITERATIONS|Maximum Iterations|QgsProcessingParameterNumber.Integer|100|False| 1|None

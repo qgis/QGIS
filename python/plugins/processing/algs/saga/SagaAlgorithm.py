@@ -32,6 +32,7 @@ from qgis.core import (QgsProcessingUtils,
                        QgsProcessingException,
                        QgsMessageLog,
                        QgsProcessingParameterRasterLayer,
+                       QgsProcessingParameterBoolean,
                        QgsProcessingParameterNumber)
 from processing.core.ProcessingConfig import ProcessingConfig
 from processing.core.parameters import (getParameterFromString,
@@ -39,7 +40,6 @@ from processing.core.parameters import (getParameterFromString,
                                         ParameterVector,
                                         ParameterTable,
                                         ParameterMultipleInput,
-                                        ParameterBoolean,
                                         ParameterFixedTable,
                                         ParameterSelection)
 from processing.core.outputs import (getOutputFromString,
@@ -226,7 +226,7 @@ class SagaAlgorithm(SagaAlgorithmBase):
                 for layer in list(self.exportedLayers.keys()):
                     s = s.replace(layer, self.exportedLayers[layer])
                 command += ' -' + param.name() + ' "' + s + '"'
-            elif isinstance(param, ParameterBoolean):
+            elif isinstance(param, QgsProcessingParameterBoolean):
                 if parameters[param.name()]:
                     command += ' -' + param.name().strip() + " true"
                 else:
