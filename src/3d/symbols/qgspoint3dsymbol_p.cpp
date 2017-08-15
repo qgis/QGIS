@@ -1,4 +1,4 @@
-#include "pointentity.h"
+#include "qgspoint3dsymbol_p.h"
 
 #include <Qt3DRender/QAttribute>
 #include <Qt3DRender/QBuffer>
@@ -34,24 +34,24 @@
 #include "utils.h"
 
 
-PointEntity::PointEntity( const Map3D &map, QgsVectorLayer *layer, const QgsPoint3DSymbol &symbol, Qt3DCore::QNode *parent )
+QgsPoint3DSymbolEntity::QgsPoint3DSymbolEntity( const Map3D &map, QgsVectorLayer *layer, const QgsPoint3DSymbol &symbol, Qt3DCore::QNode *parent )
   : Qt3DCore::QEntity( parent )
 {
   if ( symbol.shapeProperties()["shape"].toString() == "model" )
   {
-    Model3DPointEntityFactory::addEntitiesForSelectedPoints( map, layer, symbol, this );
-    Model3DPointEntityFactory::addEntitiesForNotSelectedPoints( map, layer, symbol, this );
+    QgsPoint3DSymbolModelEntityFactory::addEntitiesForSelectedPoints( map, layer, symbol, this );
+    QgsPoint3DSymbolModelEntityFactory::addEntitiesForNotSelectedPoints( map, layer, symbol, this );
   }
   else
   {
-    InstancedPointEntityFactory::addEntityForNotSelectedPoints( map, layer, symbol, this );
-    InstancedPointEntityFactory::addEntityForSelectedPoints( map, layer, symbol, this );
+    QgsPoint3DSymbolInstancedEntityFactory::addEntityForNotSelectedPoints( map, layer, symbol, this );
+    QgsPoint3DSymbolInstancedEntityFactory::addEntityForSelectedPoints( map, layer, symbol, this );
   }
 }
 
 //* INSTANCED RENDERING *//
 
-Qt3DRender::QMaterial *InstancedPointEntityFactory::material( const QgsPoint3DSymbol &symbol )
+Qt3DRender::QMaterial *QgsPoint3DSymbolInstancedEntityFactory::material( const QgsPoint3DSymbol &symbol )
 {
   Qt3DRender::QFilterKey *filterKey = new Qt3DRender::QFilterKey;
   filterKey->setName( "renderingStyle" );
@@ -120,7 +120,7 @@ Qt3DRender::QMaterial *InstancedPointEntityFactory::material( const QgsPoint3DSy
   return material;
 }
 
-void InstancedPointEntityFactory::addEntityForSelectedPoints( const Map3D &map, QgsVectorLayer *layer, const QgsPoint3DSymbol &symbol, PointEntity *parent )
+void QgsPoint3DSymbolInstancedEntityFactory::addEntityForSelectedPoints( const Map3D &map, QgsVectorLayer *layer, const QgsPoint3DSymbol &symbol, QgsPoint3DSymbolEntity *parent )
 {
   // build the default material
   Qt3DRender::QMaterial *mat = material( symbol );
@@ -140,12 +140,12 @@ void InstancedPointEntityFactory::addEntityForSelectedPoints( const Map3D &map, 
   req.setFilterFids( layer->selectedFeatureIds() );
 
   // build the entity
-  InstancedPointEntityNode *entity = new InstancedPointEntityNode( map, layer, symbol, req );
+  QgsPoint3DSymbolInstancedEntityNode *entity = new QgsPoint3DSymbolInstancedEntityNode( map, layer, symbol, req );
   entity->addComponent( mat );
   entity->setParent( parent );
 }
 
-void InstancedPointEntityFactory::addEntityForNotSelectedPoints( const Map3D &map, QgsVectorLayer *layer, const QgsPoint3DSymbol &symbol, PointEntity *parent )
+void QgsPoint3DSymbolInstancedEntityFactory::addEntityForNotSelectedPoints( const Map3D &map, QgsVectorLayer *layer, const QgsPoint3DSymbol &symbol, QgsPoint3DSymbolEntity *parent )
 {
   // build the default material
   Qt3DRender::QMaterial *mat = material( symbol );
@@ -159,19 +159,19 @@ void InstancedPointEntityFactory::addEntityForNotSelectedPoints( const Map3D &ma
   req.setFilterFids( notSelected );
 
   // build the entity
-  InstancedPointEntityNode *entity = new InstancedPointEntityNode( map, layer, symbol, req );
+  QgsPoint3DSymbolInstancedEntityNode *entity = new QgsPoint3DSymbolInstancedEntityNode( map, layer, symbol, req );
   entity->addComponent( mat );
   entity->setParent( parent );
 }
 
-InstancedPointEntityNode::InstancedPointEntityNode( const Map3D &map, QgsVectorLayer *layer, const QgsPoint3DSymbol &symbol, const QgsFeatureRequest &req, Qt3DCore::QNode *parent )
+QgsPoint3DSymbolInstancedEntityNode::QgsPoint3DSymbolInstancedEntityNode( const Map3D &map, QgsVectorLayer *layer, const QgsPoint3DSymbol &symbol, const QgsFeatureRequest &req, Qt3DCore::QNode *parent )
   : Qt3DCore::QEntity( parent )
 {
   QList<QVector3D> pos = Utils::positions( map, layer, req );
   addComponent( renderer( symbol, pos ) );
 }
 
-Qt3DRender::QGeometryRenderer *InstancedPointEntityNode::renderer( const QgsPoint3DSymbol &symbol, const QList<QVector3D> &positions ) const
+Qt3DRender::QGeometryRenderer *QgsPoint3DSymbolInstancedEntityNode::renderer( const QgsPoint3DSymbol &symbol, const QList<QVector3D> &positions ) const
 {
   int count = positions.count();
 
@@ -293,7 +293,7 @@ static Qt3DExtras::QPhongMaterial *phongMaterial( const QgsPoint3DSymbol &symbol
   return phong;
 }
 
-void Model3DPointEntityFactory::addEntitiesForSelectedPoints( const Map3D &map, QgsVectorLayer *layer, const QgsPoint3DSymbol &symbol, PointEntity *parent )
+void QgsPoint3DSymbolModelEntityFactory::addEntitiesForSelectedPoints( const Map3D &map, QgsVectorLayer *layer, const QgsPoint3DSymbol &symbol, QgsPoint3DSymbolEntity *parent )
 {
   QgsFeatureRequest req;
   req.setDestinationCrs( map.crs );
@@ -304,7 +304,7 @@ void Model3DPointEntityFactory::addEntitiesForSelectedPoints( const Map3D &map, 
 
 
 
-void Model3DPointEntityFactory::addEntitiesForNotSelectedPoints( const Map3D &map, QgsVectorLayer *layer, const QgsPoint3DSymbol &symbol, PointEntity *parent )
+void QgsPoint3DSymbolModelEntityFactory::addEntitiesForNotSelectedPoints( const Map3D &map, QgsVectorLayer *layer, const QgsPoint3DSymbol &symbol, QgsPoint3DSymbolEntity *parent )
 {
   // build the feature request to select features
   QgsFeatureRequest req;
@@ -323,7 +323,7 @@ void Model3DPointEntityFactory::addEntitiesForNotSelectedPoints( const Map3D &ma
   }
 }
 
-void Model3DPointEntityFactory::addSceneEntities( const Map3D &map, QgsVectorLayer *layer, const QgsFeatureRequest &req, const QgsPoint3DSymbol &symbol, PointEntity *parent )
+void QgsPoint3DSymbolModelEntityFactory::addSceneEntities( const Map3D &map, QgsVectorLayer *layer, const QgsFeatureRequest &req, const QgsPoint3DSymbol &symbol, QgsPoint3DSymbolEntity *parent )
 {
   QList<QVector3D> positions = Utils::positions( map, layer, req );
   Q_FOREACH ( const QVector3D &position, positions )
@@ -341,7 +341,7 @@ void Model3DPointEntityFactory::addSceneEntities( const Map3D &map, QgsVectorLay
   }
 }
 
-void Model3DPointEntityFactory::addMeshEntities( const Map3D &map, QgsVectorLayer *layer, const QgsFeatureRequest &req, const QgsPoint3DSymbol &symbol, PointEntity *parent, bool are_selected )
+void QgsPoint3DSymbolModelEntityFactory::addMeshEntities( const Map3D &map, QgsVectorLayer *layer, const QgsFeatureRequest &req, const QgsPoint3DSymbol &symbol, QgsPoint3DSymbolEntity *parent, bool are_selected )
 {
   // build the default material
   Qt3DExtras::QPhongMaterial *mat = phongMaterial( symbol );
@@ -370,7 +370,7 @@ void Model3DPointEntityFactory::addMeshEntities( const Map3D &map, QgsVectorLaye
   }
 }
 
-Qt3DCore::QTransform *Model3DPointEntityFactory::transform( const QVector3D &position, const QgsPoint3DSymbol &symbol )
+Qt3DCore::QTransform *QgsPoint3DSymbolModelEntityFactory::transform( const QVector3D &position, const QgsPoint3DSymbol &symbol )
 {
   Qt3DCore::QTransform *tr = new Qt3DCore::QTransform;
   tr->setMatrix( symbol.transform() );

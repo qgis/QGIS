@@ -3,9 +3,9 @@
 #include "qgsline3dsymbol.h"
 #include "qgspoint3dsymbol.h"
 #include "qgspolygon3dsymbol.h"
-#include "lineentity.h"
-#include "pointentity.h"
-#include "polygonentity.h"
+#include "qgsline3dsymbol_p.h"
+#include "qgspoint3dsymbol_p.h"
+#include "qgspolygon3dsymbol_p.h"
 
 #include "qgsvectorlayer.h"
 #include "qgsxmlutils.h"
@@ -71,11 +71,11 @@ Qt3DCore::QEntity *VectorLayer3DRenderer::createEntity( const Map3D &map ) const
     return nullptr;
 
   if ( mSymbol->type() == "polygon" )
-    return new PolygonEntity( map, vl, *static_cast<QgsPolygon3DSymbol *>( mSymbol.get() ) );
+    return new QgsPolygon3DSymbolEntity( map, vl, *static_cast<QgsPolygon3DSymbol *>( mSymbol.get() ) );
   else if ( mSymbol->type() == "point" )
-    return new PointEntity( map, vl, *static_cast<QgsPoint3DSymbol *>( mSymbol.get() ) );
+    return new QgsPoint3DSymbolEntity( map, vl, *static_cast<QgsPoint3DSymbol *>( mSymbol.get() ) );
   else if ( mSymbol->type() == "line" )
-    return new LineEntity( map, vl, *static_cast<QgsLine3DSymbol *>( mSymbol.get() ) );
+    return new QgsLine3DSymbolEntity( map, vl, *static_cast<QgsLine3DSymbol *>( mSymbol.get() ) );
   else
     return nullptr;
 }

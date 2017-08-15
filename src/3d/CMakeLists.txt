@@ -3,11 +3,8 @@
 
 SET(QGIS_3D_SRCS
   cameracontroller.cpp
-  lineentity.cpp
   map3d.cpp
   phongmaterialsettings.cpp
-  pointentity.cpp
-  polygonentity.cpp
   polygongeometry.cpp
   scene.cpp
   tessellator.cpp
@@ -23,8 +20,11 @@ SET(QGIS_3D_SRCS
 
   symbols/qgsabstract3dsymbol.cpp
   symbols/qgsline3dsymbol.cpp
+  symbols/qgsline3dsymbol_p.cpp
   symbols/qgspoint3dsymbol.cpp
+  symbols/qgspoint3dsymbol_p.cpp
   symbols/qgspolygon3dsymbol.cpp
+  symbols/qgspolygon3dsymbol_p.cpp
 
   terrain/demterraingenerator.cpp
   terrain/demterraintilegeometry.cpp
@@ -69,11 +69,8 @@ QT5_ADD_RESOURCES(QGIS_3D_RCC_SRCS shaders.qrc)
 SET(QGIS_3D_HDRS
   aabb.h
   cameracontroller.h
-  lineentity.h
   map3d.h
   phongmaterialsettings.h
-  pointentity.h
-  polygonentity.h
   polygongeometry.h
   scene.h
   tessellator.h
@@ -89,8 +86,11 @@ SET(QGIS_3D_HDRS
 
   symbols/qgsabstract3dsymbol.h
   symbols/qgsline3dsymbol.h
+  symbols/qgsline3dsymbol_p.h
   symbols/qgspoint3dsymbol.h
+  symbols/qgspoint3dsymbol_p.h
   symbols/qgspolygon3dsymbol.h
+  symbols/qgspolygon3dsymbol_p.h
 
   terrain/demterraingenerator.h
   terrain/demterraintilegeometry.h

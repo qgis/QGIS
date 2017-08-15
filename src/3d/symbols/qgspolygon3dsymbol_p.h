@@ -1,5 +1,16 @@
-#ifndef POLYGONENTITY_H
-#define POLYGONENTITY_H
+#ifndef QGSPOLYGON3DSYMBOL_P_H
+#define QGSPOLYGON3DSYMBOL_P_H
+
+/// @cond PRIVATE
+
+//
+//  W A R N I N G
+//  -------------
+//
+// This file is not part of the QGIS API.  It exists purely as an
+// implementation detail.  This header file may change from version to
+// version without notice, or even be removed.
+//
 
 #include <Qt3DCore/QEntity>
 #include <Qt3DExtras/QPhongMaterial>
@@ -15,10 +26,10 @@ class QgsFeatureRequest;
 
 
 //! Entity that handles rendering of polygons
-class PolygonEntity : public Qt3DCore::QEntity
+class QgsPolygon3DSymbolEntity : public Qt3DCore::QEntity
 {
   public:
-    PolygonEntity( const Map3D &map, QgsVectorLayer *layer, const QgsPolygon3DSymbol &symbol, Qt3DCore::QNode *parent = nullptr );
+    QgsPolygon3DSymbolEntity( const Map3D &map, QgsVectorLayer *layer, const QgsPolygon3DSymbol &symbol, Qt3DCore::QNode *parent = nullptr );
 
   private:
     void addEntityForSelectedPolygons( const Map3D &map, QgsVectorLayer *layer, const QgsPolygon3DSymbol &symbol );
@@ -27,10 +38,10 @@ class PolygonEntity : public Qt3DCore::QEntity
     Qt3DExtras::QPhongMaterial *material( const QgsPolygon3DSymbol &symbol ) const;
 };
 
-class PolygonEntityNode : public Qt3DCore::QEntity
+class QgsPolygon3DSymbolEntityNode : public Qt3DCore::QEntity
 {
   public:
-    PolygonEntityNode( const Map3D &map, QgsVectorLayer *layer, const QgsPolygon3DSymbol &symbol, const QgsFeatureRequest &req, Qt3DCore::QNode *parent = nullptr );
+    QgsPolygon3DSymbolEntityNode( const Map3D &map, QgsVectorLayer *layer, const QgsPolygon3DSymbol &symbol, const QgsFeatureRequest &req, Qt3DCore::QNode *parent = nullptr );
 
   private:
     Qt3DRender::QGeometryRenderer *renderer( const Map3D &map, const QgsPolygon3DSymbol &symbol, const QgsVectorLayer *layer, const QgsFeatureRequest &request );
@@ -38,4 +49,6 @@ class PolygonEntityNode : public Qt3DCore::QEntity
     PolygonGeometry *mGeometry;
 };
 
-#endif // POLYGONENTITY_H
+/// @endcond
+
+#endif // QGSPOLYGON3DSYMBOL_P_H
