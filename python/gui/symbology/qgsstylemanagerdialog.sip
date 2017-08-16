@@ -48,7 +48,14 @@ called when the dialog is going to be closed
 %End
 
     void onClose();
+%Docstring
+Close the dialog
+%End
+
     void showHelp();
+%Docstring
+Open the associated help
+%End
 
     void itemChanged( QStandardItem *item );
 
