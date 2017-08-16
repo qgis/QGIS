@@ -50,12 +50,6 @@ QgsMapToolCapture::QgsMapToolCapture( QgsMapCanvas *canvas, QgsAdvancedDigitizin
 {
   mCaptureMode = mode;
 
-  // enable the snapping on mouse move / release
-  mSnapOnMove = true;
-  mSnapOnRelease = true;
-  mSnapOnDoubleClick = false;
-  mSnapOnPress = false;
-
   mCaptureModeFromLayer = mode == CaptureNone;
   mCapturing = false;
 
