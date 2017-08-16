@@ -19,7 +19,6 @@
 
 #include "ui_qgsnewgeopackagelayerdialogbase.h"
 #include "qgsguiutils.h"
-#include "qgscontexthelp.h"
 
 #include "qgis.h"
 #include "qgis_gui.h"
@@ -67,7 +66,7 @@ class GUI_EXPORT QgsNewGeoPackageLayerDialog: public QDialog, private Ui::QgsNew
     void selectionChanged();
     void checkOk();
 
-    void on_buttonBox_helpRequested() { QgsContextHelp::run( metaObject()->className() ); }
+    void showHelp();
     void on_buttonBox_accepted();
     void on_buttonBox_rejected();
 

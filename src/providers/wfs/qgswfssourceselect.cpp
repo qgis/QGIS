@@ -24,7 +24,6 @@
 #include "qgswfsutils.h"
 #include "qgsnewhttpconnection.h"
 #include "qgsprojectionselectiondialog.h"
-#include "qgscontexthelp.h"
 #include "qgsproject.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgscoordinatetransform.h"
@@ -55,6 +54,7 @@ QgsWFSSourceSelect::QgsWFSSourceSelect( QWidget *parent, Qt::WindowFlags fl, Qgs
 {
   setupUi( this );
   setupButtons( buttonBox );
+  connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsWFSSourceSelect::showHelp );
 
   if ( widgetMode() != QgsProviderRegistry::WidgetMode::None )
   {
@@ -791,4 +791,9 @@ QSize QgsWFSItemDelegate::sizeHint( const QStyleOptionViewItem &option, const QM
   QSize size = option.fontMetrics.boundingRect( data ).size();
   size.setHeight( size.height() + 2 );
   return size;
+}
+
+void QgsWFSSourceSelect::showHelp()
+{
+  QgsHelp::openHelp( QStringLiteral( "working_with_ogc/ogc_client_support.html" ) );
 }

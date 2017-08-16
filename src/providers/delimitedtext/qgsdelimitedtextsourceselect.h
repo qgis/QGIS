@@ -58,12 +58,9 @@ class QgsDelimitedTextSourceSelect : public QgsAbstractDataSourceWidget, private
     QString mLastFileType;
     QButtonGroup *bgFileFormat = nullptr;
     QButtonGroup *bgGeomType = nullptr;
+    void showHelp();
 
   private slots:
-    void on_buttonBox_helpRequested()
-    {
-      QgsHelp::openHelp( QStringLiteral( "managing_data_source/opening_data.html#importing-a-delimited-text-file" ) );
-    }
     void on_btnBrowseForFile_clicked();
 
   public slots:

@@ -29,7 +29,6 @@
 #include "qgsproviderregistry.h"
 #include "ogr/qgsnewogrconnection.h"
 #include "ogr/qgsogrhelperfunctions.h"
-#include "qgscontexthelp.h"
 #include "qgsapplication.h"
 
 QgsOgrSourceSelect::QgsOgrSourceSelect( QWidget *parent, Qt::WindowFlags fl, QgsProviderRegistry::WidgetMode widgetMode )
@@ -37,6 +36,7 @@ QgsOgrSourceSelect::QgsOgrSourceSelect( QWidget *parent, Qt::WindowFlags fl, Qgs
 {
   setupUi( this );
   setupButtons( buttonBox );
+  connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsOgrSourceSelect::showHelp );
 
   if ( mWidgetMode != QgsProviderRegistry::WidgetMode::None )
   {
@@ -478,6 +478,10 @@ void QgsOgrSourceSelect::on_cmbConnections_currentIndexChanged( const QString &t
 }
 //********************end auto connected slots *****************/
 
+void QgsOgrSourceSelect::showHelp()
+{
+  QgsHelp::openHelp( QStringLiteral( "managing_data_source/opening_data.html#loading-a-layer-from-a-file" ) );
+}
 
 QGISEXTERN QgsOgrSourceSelect *selectWidget( QWidget *parent, Qt::WindowFlags fl, QgsProviderRegistry::WidgetMode widgetMode )
 {

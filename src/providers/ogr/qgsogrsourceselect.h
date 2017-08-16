@@ -101,7 +101,7 @@ class QgsOgrSourceSelect : public QgsAbstractDataSourceWidget, private Ui::QgsOg
     void on_btnDelete_clicked();
     void on_cmbDatabaseTypes_currentIndexChanged( const QString &text );
     void on_cmbConnections_currentIndexChanged( const QString &text );
-    void on_buttonBox_helpRequested() { QgsHelp::openHelp( QStringLiteral( "managing_data_source/opening_data.html#loading-a-layer-from-a-file" ) ); }
+    void showHelp();
 };
 
 #endif // QGSOGRSOURCESELECT_H

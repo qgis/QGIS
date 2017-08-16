@@ -57,7 +57,6 @@
 #include "qgsproject.h"
 #include "qgsmapcanvas.h"
 #include "qgsmessageviewer.h"
-#include "qgscontexthelp.h"
 #include "qgscursors.h"
 #include "qgsmaplayeractionregistry.h"
 #include "qgsgeometry.h"

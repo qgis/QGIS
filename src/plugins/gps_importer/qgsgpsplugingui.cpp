@@ -13,7 +13,6 @@
 #include "qgsgpsdevicedialog.h"
 #include "qgsmaplayer.h"
 #include "qgsdataprovider.h"
-#include "qgscontexthelp.h"
 #include "qgslogger.h"
 #include "qgsgpsdetector.h"
 #include "qgssettings.h"
@@ -35,6 +34,7 @@ QgsGPSPluginGui::QgsGPSPluginGui( const BabelMap &importers,
   , mDevices( devices )
 {
   setupUi( this );
+  connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsGPSPluginGui::showHelp );
 
   // restore size, position and active tab
   restoreState();
@@ -449,4 +449,9 @@ void QgsGPSPluginGui::restoreState()
   QgsSettings settings;
   restoreGeometry( settings.value( QStringLiteral( "Plugin-GPS/geometry" ) ).toByteArray() );
   tabWidget->setCurrentIndex( settings.value( QStringLiteral( "Plugin-GPS/lastTab" ), 4 ).toInt() );
+}
+
+void QgsGPSPluginGui::showHelp()
+{
+  QgsHelp::openHelp( QStringLiteral( "working_with_gps/plugins_gps.html" ) );
 }

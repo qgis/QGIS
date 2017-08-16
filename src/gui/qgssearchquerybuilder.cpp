@@ -31,6 +31,7 @@
 #include "qgsexpression.h"
 #include "qgsvectorlayer.h"
 #include "qgslogger.h"
+#include "qgshelp.h"
 
 QgsSearchQueryBuilder::QgsSearchQueryBuilder( QgsVectorLayer *layer,
     QWidget *parent, Qt::WindowFlags fl )
@@ -39,6 +40,7 @@ QgsSearchQueryBuilder::QgsSearchQueryBuilder( QgsVectorLayer *layer,
 {
   setupUi( this );
   setupListViews();
+  connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsSearchQueryBuilder::showHelp );
 
   setWindowTitle( tr( "Search Query Builder" ) );
 
@@ -488,3 +490,7 @@ void QgsSearchQueryBuilder::loadQuery()
   txtSQL->insertText( newQueryText );
 }
 
+void QgsSearchQueryBuilder::showHelp()
+{
+  QgsHelp::openHelp( QStringLiteral( "working_with_vector/vector_properties.html#query-builder" ) );
+}

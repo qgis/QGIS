@@ -68,8 +68,6 @@ class QgsQueryBuilder : QDialog
     void on_btnNot_clicked();
     void on_btnOr_clicked();
 
-    void on_buttonBox_helpRequested();
-
     void test();
 %Docstring
  Test the constructed sql statement to see if the vector layer data provider likes it.

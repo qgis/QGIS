@@ -58,7 +58,11 @@ class GUI_EXPORT QgsStyleManagerDialog : public QDialog, private Ui::QgsStyleMan
     //! called when the dialog is going to be closed
     void onFinished();
 
-    void on_buttonBox_helpRequested() { QgsHelp::openHelp( QStringLiteral( "working_with_vector/style_library.html#id2" ) ); }
+    //! Close the dialog
+    void onClose();
+
+    //! Open the associated help
+    void showHelp();
 
     void itemChanged( QStandardItem *item );
 

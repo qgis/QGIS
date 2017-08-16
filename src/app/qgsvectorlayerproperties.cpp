@@ -25,7 +25,6 @@
 #include "qgsapplication.h"
 #include "qgsattributeactiondialog.h"
 #include "qgsapplydialog.h"
-#include "qgscontexthelp.h"
 #include "qgscoordinatetransform.h"
 #include "qgsdiagramproperties.h"
 #include "qgsdiagramrenderer.h"
@@ -91,6 +90,8 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
   , mFieldsPropertiesDialog( nullptr )
 {
   setupUi( this );
+  connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsVectorLayerProperties::showHelp );
+
   // QgsOptionsDialogBase handles saving/restoring of geometry, splitter and current tab states,
   // switching vertical tabs between icon/text to icon-only modes (splitter collapsed to left),
   // and connecting QDialogButtonBox's accepted/rejected signals to dialog's accept/reject slots
@@ -1396,4 +1397,9 @@ void QgsVectorLayerProperties::updateFieldsPropertiesDialog()
 {
   QgsEditFormConfig cfg = mLayer->editFormConfig();
   mFieldsPropertiesDialog->setEditFormInit( cfg.uiForm(), cfg.initFunction(), cfg.initCode(), cfg.initFilePath(), cfg.initCodeSource() );
+}
+
+void QgsVectorLayerProperties::showHelp()
+{
+  QgsHelp::openHelp( QStringLiteral( "working_with_vector/vector_properties.html" ) );
 }

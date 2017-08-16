@@ -14,7 +14,6 @@
 #include "qgsdelimitedtextsourceselect.h"
 
 #include "qgisinterface.h"
-#include "qgscontexthelp.h"
 #include "qgslogger.h"
 #include "qgsvectordataprovider.h"
 #include "qgsdelimitedtextprovider.h"
@@ -45,6 +44,7 @@ QgsDelimitedTextSourceSelect::QgsDelimitedTextSourceSelect( QWidget *parent, Qt:
 
   setupUi( this );
   setupButtons( buttonBox );
+  connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsDelimitedTextSourceSelect::showHelp );
 
   QgsSettings settings;
   restoreGeometry( settings.value( mPluginKey + "/geometry" ).toByteArray() );
@@ -737,4 +737,9 @@ bool QgsDelimitedTextSourceSelect::validate()
 void QgsDelimitedTextSourceSelect::enableAccept()
 {
   emit enableButtons( validate() );
+}
+
+void QgsDelimitedTextSourceSelect::showHelp()
+{
+  QgsHelp::openHelp( QStringLiteral( "managing_data_source/opening_data.html#importing-a-delimited-text-file" ) );
 }
