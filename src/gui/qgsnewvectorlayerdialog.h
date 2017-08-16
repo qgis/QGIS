@@ -68,6 +68,8 @@ class GUI_EXPORT QgsNewVectorLayerDialog: public QDialog, private Ui::QgsNewVect
     void on_mRemoveAttributeButton_clicked();
     void on_mFileFormatComboBox_currentIndexChanged( int index );
     void on_mTypeBox_currentIndexChanged( int index );
+
+    //! Open the associated help
     void showHelp();
     void nameChanged( const QString & );
     void selectionChanged();

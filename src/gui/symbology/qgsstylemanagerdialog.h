@@ -58,7 +58,10 @@ class GUI_EXPORT QgsStyleManagerDialog : public QDialog, private Ui::QgsStyleMan
     //! called when the dialog is going to be closed
     void onFinished();
 
+    //! Close the dialog
     void onClose();
+
+    //! Open the associated help
     void showHelp();
 
     void itemChanged( QStandardItem *item );
