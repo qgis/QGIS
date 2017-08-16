@@ -49,6 +49,10 @@ QgsMetadataWidget::QgsMetadataWidget( QWidget *parent, QgsMapLayer *layer )
   mCategoriesModel = new QStringListModel();
   listCategories->setModel( mCategoriesModel );
 
+  // Rights
+  mRightsModel = new QStringListModel();
+  listRights->setModel( mRightsModel );
+
   tabWidget->setCurrentIndex( 0 );
 
   // Setup the link view
@@ -64,6 +68,8 @@ QgsMetadataWidget::QgsMetadataWidget( QWidget *parent, QgsMapLayer *layer )
   connect( btnAutoSource, &QPushButton::clicked, this, &QgsMetadataWidget::setAutoSource );
   connect( btnAddVocabulary, &QPushButton::clicked, this, &QgsMetadataWidget::addVocabulary );
   connect( btnRemoveVocabulary, &QPushButton::clicked, this, &QgsMetadataWidget::removeVocabulary );
+  connect( btnAddRight, &QPushButton::clicked, this, &QgsMetadataWidget::addRight );
+  connect( btnRemoveRight, &QPushButton::clicked, this, &QgsMetadataWidget::removeRight );
   connect( btnAddLicence, &QPushButton::clicked, this, &QgsMetadataWidget::addLicence );
   connect( btnRemoveLicence, &QPushButton::clicked, this, &QgsMetadataWidget::removeLicence );
   connect( btnAutoCrs, &QPushButton::clicked, this, &QgsMetadataWidget::setAutoCrs );
@@ -143,6 +149,31 @@ void QgsMetadataWidget::removeLicence()
   for ( int i = 0 ; i < selectedRows.size() ; i++ )
   {
     tabLicenses->model()->removeRow( selectedRows[i].row() );
+  }
+}
+
+void QgsMetadataWidget::addRight()
+{
+  QString newRight = QInputDialog::getText( this, tr( "New Right" ), tr( "New Right" ) );
+  QStringList existingRights = mRightsModel->stringList();
+  if ( ! existingRights.contains( newRight ) )
+  {
+    existingRights.append( newRight );
+    mRightsModel->setStringList( existingRights );
+  }
+}
+
+void QgsMetadataWidget::removeRight()
+{
+  QItemSelectionModel *selection = listRights->selectionModel();
+  if ( selection->hasSelection() )
+  {
+    QModelIndex indexElementSelectionne = selection->currentIndex();
+
+    QVariant item = mRightsModel->data( indexElementSelectionne, Qt::DisplayRole );
+    QStringList list = mRightsModel->stringList();
+    list.removeOne( item.toString() );
+    mRightsModel->setStringList( list );
   }
 }
 
@@ -324,6 +355,9 @@ void QgsMetadataWidget::setPropertiesFromLayer()
     pCell->setText( licence );
   }
 
+  // Rights
+  mRightsModel->setStringList( mMetadata.rights() );
+
   // CRS
   if ( mMetadata.crs().isValid() )
   {
@@ -371,6 +405,9 @@ void QgsMetadataWidget::saveMetadata( QgsLayerMetadata &layerMetadata )
     licenses.append( tabLicenses->item( i, 0 )->text() );
   }
   layerMetadata.setLicenses( licenses );
+
+  // Rights
+  layerMetadata.setRights( mRightsModel->stringList() );
 
   // CRS
   if ( selectionCrs->crs().isValid() )

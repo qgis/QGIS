@@ -71,6 +71,16 @@ class GUI_EXPORT QgsMetadataWidget : public QWidget, private Ui::QgsMetadataWidg
     void removeLicence();
 
     /**
+     * Add a new right.
+     */
+    void addRight();
+
+    /**
+     * Remove a selected right.
+     */
+    void removeRight();
+
+    /**
      * Set the CRS field from the layer.
      */
     void setAutoCrs();
@@ -160,6 +170,7 @@ class GUI_EXPORT QgsMetadataWidget : public QWidget, private Ui::QgsMetadataWidg
     QStandardItemModel *mLinksModel = nullptr;
     QStringListModel *mCategoriesModel = nullptr;
     QStringListModel *mDefaultCategoriesModel = nullptr;
+    QStringListModel *mRightsModel = nullptr;
     void syncFromCategoriesTabToKeywordsTab();
 };
 
