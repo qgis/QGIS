@@ -67,7 +67,7 @@ class QgsGeoPackageConnectionItem : public QgsDataCollectionItem
 #endif
 
     virtual bool acceptDrop() override { return true; }
-    //virtual bool handleDrop( const QMimeData *data, Qt::DropAction action ) override;
+    virtual bool handleDrop( const QMimeData *data, Qt::DropAction action ) override;
 
     //! Return the layer type from \a geometryType
     static QgsLayerItem::LayerType layerTypeFromDb( const QString &geometryType );
