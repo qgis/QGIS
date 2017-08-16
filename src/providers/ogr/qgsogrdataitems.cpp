@@ -18,10 +18,12 @@
 #include "qgslogger.h"
 #include "qgsmessagelog.h"
 #include "qgssettings.h"
+#include "qgsproject.h"
 
 #include <QFileInfo>
 #include <QTextStream>
 #include <QAction>
+#include <QMessageBox>
 
 #include <ogr_srs_api.h>
 #include <cpl_error.h>
@@ -31,11 +33,14 @@
 QGISEXTERN QStringList fileExtensions();
 QGISEXTERN QStringList wildcards();
 
+QGISEXTERN bool deleteLayer( const QString &uri, const QString &errCause );
+
 
 QgsOgrLayerItem::QgsOgrLayerItem( QgsDataItem *parent,
-                                  QString name, QString path, QString uri, LayerType layerType )
+                                  QString name, QString path, QString uri, LayerType layerType, bool isSubLayer )
   : QgsLayerItem( parent, name, path, uri, layerType, QStringLiteral( "ogr" ) )
 {
+  mIsSubLayer = isSubLayer;
   mToolTip = uri;
   setState( Populated ); // children are not expected
 
@@ -55,6 +60,7 @@ QgsOgrLayerItem::QgsOgrLayerItem( QgsDataItem *parent,
     // No OGR_L_SetSpatialRef : http://trac.osgeo.org/gdal/ticket/4032
   }
 }
+
 
 bool QgsOgrLayerItem::setCrs( const QgsCoordinateReferenceSystem &crs )
 {
@@ -110,9 +116,71 @@ QString QgsOgrLayerItem::layerName() const
     return info.completeBaseName();
 }
 
+#ifdef HAVE_GUI
+QList<QAction *> QgsOgrLayerItem::actions()
+{
+  QList<QAction *> lst;
+  // Messages are different for files and tables
+  QString message = mIsSubLayer ? QObject::tr( "Delete layer '%1'..." ).arg( mName ) : QObject::tr( "Delete file '%1'..." ).arg( mUri );
+  QAction *actionDeleteLayer = new QAction( message, this );
+  connect( actionDeleteLayer, &QAction::triggered, this, &QgsOgrLayerItem::deleteLayer );
+  lst.append( actionDeleteLayer );
+  return lst;
+}
+
+void QgsOgrLayerItem::deleteLayer()
+{
+  // Messages are different for files and tables
+  QString title = mIsSubLayer ? QObject::tr( "Delete Layer" ) : QObject::tr( "Delete File" );
+  // Check if the layer is in the registry
+  const QgsMapLayer *projectLayer = nullptr;
+  Q_FOREACH ( const QgsMapLayer *layer, QgsProject::instance()->mapLayers() )
+  {
+    if ( layer->publicSource() == mUri )
+    {
+      projectLayer = layer;
+    }
+  }
+  if ( ! projectLayer )
+  {
+    QString confirmMessage;
+    if ( mIsSubLayer )
+    {
+      confirmMessage = QObject::tr( "Are you sure you want to delete layer '%1' from datasource?" ).arg( mName );
+    }
+    else
+    {
+      confirmMessage = QObject::tr( "Are you sure you want to delete file '%1'?" ).arg( mUri );
+    }
+    if ( QMessageBox::question( nullptr, title,
+                                confirmMessage,
+                                QMessageBox::Yes | QMessageBox::No, QMessageBox::No ) != QMessageBox::Yes )
+      return;
+
+    QString errCause;
+    bool res = ::deleteLayer( mUri, errCause );
+    if ( !res )
+    {
+      QMessageBox::warning( nullptr, title, errCause );
+    }
+    else
+    {
+      QMessageBox::information( nullptr, title, mIsSubLayer ? tr( "Layer deleted successfully." ) :  tr( "File deleted successfully." ) );
+      if ( mParent )
+        mParent->refresh();
+    }
+  }
+  else
+  {
+    QMessageBox::warning( nullptr, title, QObject::tr( "The layer '%1' cannot be deleted because it is in the current project as '%2',"
+                          " remove it from the project and retry." ).arg( mName, projectLayer->name() ) );
+  }
+}
+#endif
+
 // -------
 
-static QgsOgrLayerItem *dataItemForLayer( QgsDataItem *parentItem, QString name, QString path, OGRDataSourceH hDataSource, int layerId )
+static QgsOgrLayerItem *dataItemForLayer( QgsDataItem *parentItem, QString name, QString path, OGRDataSourceH hDataSource, int layerId, bool isSubLayer = false )
 {
   OGRLayerH hLayer = OGR_DS_GetLayer( hDataSource, layerId );
   OGRFeatureDefnH hDef = OGR_L_GetLayerDefn( hLayer );
@@ -166,7 +234,7 @@ static QgsOgrLayerItem *dataItemForLayer( QgsDataItem *parentItem, QString name,
 
   QgsDebugMsgLevel( "OGR layer uri : " + layerUri, 2 );
 
-  return new QgsOgrLayerItem( parentItem, name, path, layerUri, layerType );
+  return new QgsOgrLayerItem( parentItem, name, path, layerUri, layerType, isSubLayer );
 }
 
 // ----
@@ -189,7 +257,7 @@ QVector<QgsDataItem *> QgsOgrDataCollectionItem::createChildren()
   children.reserve( numLayers );
   for ( int i = 0; i < numLayers; ++i )
   {
-    QgsOgrLayerItem *item = dataItemForLayer( this, QString(), mPath, hDataSource, i );
+    QgsOgrLayerItem *item = dataItemForLayer( this, QString(), mPath, hDataSource, i, true );
     children.append( item );
   }
 

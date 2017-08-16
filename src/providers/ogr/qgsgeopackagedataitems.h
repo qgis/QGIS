@@ -49,7 +49,11 @@ class QgsGeoPackageVectorLayerItem : public QgsGeoPackageAbstractLayerItem
     Q_OBJECT
   public:
     QgsGeoPackageVectorLayerItem( QgsDataItem *parent, QString name, QString path, QString uri, LayerType layerType );
-
+#ifdef HAVE_GUI
+    QList<QAction *> actions() override;
+  public slots:
+    void deleteLayer();
+#endif
 };
 
 

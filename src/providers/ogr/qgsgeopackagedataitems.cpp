@@ -20,12 +20,15 @@
 #include "qgsproject.h"
 #include "qgsvectorlayer.h"
 #include "qgsrasterlayer.h"
+#include "qgsogrprovider.h"
 #include "qgsnewgeopackagelayerdialog.h"
 
 #include <QAction>
 #include <QMessageBox>
 #include <QFileDialog>
 #include <QInputDialog>
+
+QGISEXTERN bool deleteLayer( const QString &uri, const QString &errCause );
 
 QgsDataItem *QgsGeoPackageDataItemProvider::createDataItem( const QString &path, QgsDataItem *parentItem )
 {
@@ -327,7 +330,6 @@ void QgsGeoPackageConnectionItem::addTable()
 QList<QAction *> QgsGeoPackageAbstractLayerItem::actions()
 {
   QList<QAction *> lst;
-
   // TODO: delete layer when the provider supports it (not currently implemented)
   return lst;
 }
@@ -352,3 +354,55 @@ QgsGeoPackageRasterLayerItem::QgsGeoPackageRasterLayerItem( QgsDataItem *parent,
 {
 
 }
+
+
+#ifdef HAVE_GUI
+QList<QAction *> QgsGeoPackageVectorLayerItem::actions()
+{
+  QList<QAction *> lst = QgsGeoPackageAbstractLayerItem::actions();
+  QAction *actionDeleteLayer = new QAction( tr( "Delete layer '%1'..." ).arg( mName ), this );
+  connect( actionDeleteLayer, &QAction::triggered, this, &QgsGeoPackageVectorLayerItem::deleteLayer );
+  lst.append( actionDeleteLayer );
+  return lst;
+}
+
+
+void QgsGeoPackageVectorLayerItem::deleteLayer()
+{
+  // Check if the layer is in the registry
+  const QgsMapLayer *projectLayer = nullptr;
+  Q_FOREACH ( const QgsMapLayer *layer, QgsProject::instance()->mapLayers() )
+  {
+    if ( layer->publicSource() == mUri )
+    {
+      projectLayer = layer;
+    }
+  }
+  if ( ! projectLayer )
+  {
+    if ( QMessageBox::question( nullptr, QObject::tr( "Delete Layer" ),
+                                QObject::tr( "Are you sure you want to delete layer '%1' from GeoPackage?" ).arg( mName ),
+                                QMessageBox::Yes | QMessageBox::No, QMessageBox::No ) != QMessageBox::Yes )
+      return;
+
+    QString errCause;
+    bool res = ::deleteLayer( mUri, errCause );
+    if ( !res )
+    {
+      QMessageBox::warning( nullptr, tr( "Delete Layer" ), errCause );
+    }
+    else
+    {
+      QMessageBox::information( nullptr, tr( "Delete Layer" ), tr( "Layer deleted successfully." ) );
+      if ( mParent )
+        mParent->refresh();
+    }
+  }
+  else
+  {
+    QMessageBox::warning( nullptr, QObject::tr( "Delete Layer" ), QObject::tr( "The layer '%1' cannot be deleted because it is in the current project as '%2',"
+                          " remove it from the project and retry." ).arg( mName, projectLayer->name() ) );
+  }
+}
+#endif
+
