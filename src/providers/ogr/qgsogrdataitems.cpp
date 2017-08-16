@@ -36,9 +36,10 @@ QGISEXTERN bool deleteLayer( const QString &uri, const QString &errCause );
 
 
 QgsOgrLayerItem::QgsOgrLayerItem( QgsDataItem *parent,
-                                  QString name, QString path, QString uri, LayerType layerType )
+                                  QString name, QString path, QString uri, LayerType layerType, bool isSubLayer )
   : QgsLayerItem( parent, name, path, uri, layerType, QStringLiteral( "ogr" ) )
 {
+  mIsSubLayer = isSubLayer;
   mToolTip = uri;
   setState( Populated ); // children are not expected
 
@@ -118,7 +119,9 @@ QString QgsOgrLayerItem::layerName() const
 QList<QAction *> QgsOgrLayerItem::actions()
 {
   QList<QAction *> lst;
-  QAction *actionDeleteLayer = new QAction( tr( "Delete %1" ).arg( mName ), this );
+  // Messages are different for files and tables
+  QString message = mIsSubLayer ? QObject::tr( "Delete layer '%1'..." ).arg( mName ) : QObject::tr( "Delete file '%1'..." ).arg( mUri );
+  QAction *actionDeleteLayer = new QAction( message, this );
   connect( actionDeleteLayer, &QAction::triggered, this, &QgsOgrLayerItem::deleteLayer );
   lst.append( actionDeleteLayer );
   return lst;
@@ -126,8 +129,19 @@ QList<QAction *> QgsOgrLayerItem::actions()
 
 void QgsOgrLayerItem::deleteLayer()
 {
-  if ( QMessageBox::question( nullptr, QObject::tr( "Delete Layer" ),
-                              QObject::tr( "Are you sure you want to delete %1?" ).arg( mName ),
+  // Messages are different for files and tables
+  QString title = mIsSubLayer ? QObject::tr( "Delete Layer" ) : QObject::tr( "Delete File" );
+  QString confirmMessage;
+  if ( mIsSubLayer )
+  {
+    confirmMessage = QObject::tr( "Are you sure you want to delete layer '%1'?" ).arg( mName );
+  }
+  else
+  {
+    confirmMessage = QObject::tr( "Are you sure you want to delete file '%1'?" ).arg( mUri );
+  }
+  if ( QMessageBox::question( nullptr, title,
+                              confirmMessage,
                               QMessageBox::Yes | QMessageBox::No, QMessageBox::No ) != QMessageBox::Yes )
     return;
 
@@ -135,11 +149,11 @@ void QgsOgrLayerItem::deleteLayer()
   bool res = ::deleteLayer( mUri, errCause );
   if ( !res )
   {
-    QMessageBox::warning( nullptr, tr( "Delete Layer" ), errCause );
+    QMessageBox::warning( nullptr, title, errCause );
   }
   else
   {
-    QMessageBox::information( nullptr, tr( "Delete Layer" ), tr( "Layer deleted successfully." ) );
+    QMessageBox::information( nullptr, title, mIsSubLayer ? tr( "Layer deleted successfully." ) :  tr( "File deleted successfully." ) );
     if ( mParent )
       mParent->refresh();
   }
@@ -148,7 +162,7 @@ void QgsOgrLayerItem::deleteLayer()
 
 // -------
 
-static QgsOgrLayerItem *dataItemForLayer( QgsDataItem *parentItem, QString name, QString path, OGRDataSourceH hDataSource, int layerId )
+static QgsOgrLayerItem *dataItemForLayer( QgsDataItem *parentItem, QString name, QString path, OGRDataSourceH hDataSource, int layerId, bool isSubLayer = false )
 {
   OGRLayerH hLayer = OGR_DS_GetLayer( hDataSource, layerId );
   OGRFeatureDefnH hDef = OGR_L_GetLayerDefn( hLayer );
@@ -202,7 +216,7 @@ static QgsOgrLayerItem *dataItemForLayer( QgsDataItem *parentItem, QString name,
 
   QgsDebugMsgLevel( "OGR layer uri : " + layerUri, 2 );
 
-  return new QgsOgrLayerItem( parentItem, name, path, layerUri, layerType );
+  return new QgsOgrLayerItem( parentItem, name, path, layerUri, layerType, isSubLayer );
 }
 
 // ----
@@ -225,7 +239,7 @@ QVector<QgsDataItem *> QgsOgrDataCollectionItem::createChildren()
   children.reserve( numLayers );
   for ( int i = 0; i < numLayers; ++i )
   {
-    QgsOgrLayerItem *item = dataItemForLayer( this, QString(), mPath, hDataSource, i );
+    QgsOgrLayerItem *item = dataItemForLayer( this, QString(), mPath, hDataSource, i, true );
     children.append( item );
   }
 

@@ -24,7 +24,7 @@ class QgsOgrLayerItem : public QgsLayerItem
 {
     Q_OBJECT
   public:
-    QgsOgrLayerItem( QgsDataItem *parent, QString name, QString path, QString uri, LayerType layerType );
+    QgsOgrLayerItem( QgsDataItem *parent, QString name, QString path, QString uri, LayerType layerType, bool isSubLayer = false );
 
     bool setCrs( const QgsCoordinateReferenceSystem &crs ) override;
 
@@ -35,6 +35,8 @@ class QgsOgrLayerItem : public QgsLayerItem
   public slots:
     void deleteLayer();
 #endif
+  private:
+    bool mIsSubLayer;
 };
 
 

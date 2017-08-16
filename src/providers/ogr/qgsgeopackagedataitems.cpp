@@ -361,7 +361,7 @@ QgsGeoPackageRasterLayerItem::QgsGeoPackageRasterLayerItem( QgsDataItem *parent,
 QList<QAction *> QgsGeoPackageVectorLayerItem::actions()
 {
   QList<QAction *> lst = QgsGeoPackageAbstractLayerItem::actions();
-  QAction *actionDeleteLayer = new QAction( tr( "Delete %1" ).arg( mName ), this );
+  QAction *actionDeleteLayer = new QAction( tr( "Delete layer '%1'..." ).arg( mName ), this );
   connect( actionDeleteLayer, &QAction::triggered, this, &QgsGeoPackageVectorLayerItem::deleteLayer );
   lst.append( actionDeleteLayer );
   return lst;
@@ -371,7 +371,7 @@ QList<QAction *> QgsGeoPackageVectorLayerItem::actions()
 void QgsGeoPackageVectorLayerItem::deleteLayer()
 {
   if ( QMessageBox::question( nullptr, QObject::tr( "Delete Layer" ),
-                              QObject::tr( "Are you sure you want to delete %1?" ).arg( mName ),
+                              QObject::tr( "Are you sure you want to delete layer '%1'?" ).arg( mName ),
                               QMessageBox::Yes | QMessageBox::No, QMessageBox::No ) != QMessageBox::Yes )
     return;
 
