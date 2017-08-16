@@ -4332,41 +4332,41 @@ QGISEXTERN bool deleteLayer( const QString &uri, QString &errCause )
     switch ( error )
     {
       case OGRERR_NOT_ENOUGH_DATA:
-        errCause = QStringLiteral( "Not enough data to deserialize" );
+        errCause = QObject::tr( "Not enough data to deserialize" );
         break;
       case OGRERR_NOT_ENOUGH_MEMORY:
-        errCause = QStringLiteral( "Not enough memory" );
+        errCause = QObject::tr( "Not enough memory" );
         break;
       case OGRERR_UNSUPPORTED_GEOMETRY_TYPE:
-        errCause = QStringLiteral( "Unsupported geometry type" );
+        errCause = QObject::tr( "Unsupported geometry type" );
         break;
       case OGRERR_UNSUPPORTED_OPERATION:
-        errCause = QStringLiteral( "Unsupported operation" );
+        errCause = QObject::tr( "Unsupported operation" );
         break;
       case OGRERR_CORRUPT_DATA:
-        errCause = QStringLiteral( "Corrupt data" );
+        errCause = QObject::tr( "Corrupt data" );
         break;
       case OGRERR_FAILURE:
-        errCause = QStringLiteral( "Failure" );
+        errCause = QObject::tr( "Failure" );
         break;
       case OGRERR_UNSUPPORTED_SRS:
-        errCause = QStringLiteral( "Unsupported SRS" );
+        errCause = QObject::tr( "Unsupported SRS" );
         break;
       case OGRERR_INVALID_HANDLE:
-        errCause = QStringLiteral( "Invalid handle" );
+        errCause = QObject::tr( "Invalid handle" );
         break;
       case OGRERR_NON_EXISTING_FEATURE:
-        errCause = QStringLiteral( "Non existing feature" );
+        errCause = QObject::tr( "Non existing feature" );
         break;
       default:
       case OGRERR_NONE:
-        errCause = QStringLiteral( "Success" );
+        errCause = QObject::tr( "Success" );
         break;
     }
-    errCause = QStringLiteral( "OGR result code: %s" ).arg( errCause );
+    errCause = QObject::tr( "GDAL result code: %s" ).arg( errCause );
     return error == OGRERR_NONE;
   }
   // This should never happen:
-  errCause = QStringLiteral( "Layer not found: %s" ).arg( uri );
+  errCause = QObject::tr( "Layer not found: %s" ).arg( uri );
   return false;
 }
