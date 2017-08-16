@@ -524,20 +524,20 @@ class MultipleInputWidgetWrapper(WidgetWrapper):
 
     def _getOptions(self):
         if self.param.layerType() == QgsProcessing.TypeVectorAny:
-            options = self.dialog.getAvailableValuesOfType(QgsProcessingParameterFeatureSource, QgsProcessingOutputVectorLayer)
+            options = self.dialog.getAvailableValuesOfType((QgsProcessingParameterFeatureSource, QgsProcessingParameterVectorLayer, QgsProcessingParameterMultipleLayers), QgsProcessingOutputVectorLayer)
         elif self.param.layerType() == QgsProcessing.TypeVectorPoint:
-            options = self.dialog.getAvailableValuesOfType(QgsProcessingParameterFeatureSource, QgsProcessingOutputVectorLayer,
+            options = self.dialog.getAvailableValuesOfType((QgsProcessingParameterFeatureSource, QgsProcessingParameterVectorLayer, QgsProcessingParameterMultipleLayers), QgsProcessingOutputVectorLayer,
                                                            [QgsProcessing.TypeVectorPoint, QgsProcessing.TypeVectorAny])
         elif self.param.layerType() == QgsProcessing.TypeVectorLine:
-            options = self.dialog.getAvailableValuesOfType(QgsProcessingParameterFeatureSource, QgsProcessingOutputVectorLayer,
+            options = self.dialog.getAvailableValuesOfType((QgsProcessingParameterFeatureSource, QgsProcessingParameterVectorLayer, QgsProcessingParameterMultipleLayers), QgsProcessingOutputVectorLayer,
                                                            [QgsProcessing.TypeVectorLine, QgsProcessing.TypeVectorAny])
         elif self.param.layerType() == QgsProcessing.TypeVectorPolygon:
-            options = self.dialog.getAvailableValuesOfType(QgsProcessingParameterFeatureSource, QgsProcessingOutputVectorLayer,
+            options = self.dialog.getAvailableValuesOfType((QgsProcessingParameterFeatureSource, QgsProcessingParameterVectorLayer, QgsProcessingParameterMultipleLayers), QgsProcessingOutputVectorLayer,
                                                            [QgsProcessing.TypeVectorPolygon, QgsProcessing.TypeVectorAny])
         elif self.param.layerType() == QgsProcessing.TypeRaster:
-            options = self.dialog.getAvailableValuesOfType(QgsProcessingParameterRasterLayer, QgsProcessingOutputRasterLayer)
+            options = self.dialog.getAvailableValuesOfType((QgsProcessingParameterRasterLayer, QgsProcessingParameterMultipleLayers), QgsProcessingOutputRasterLayer)
         elif self.param.layerType() == QgsProcessing.TypeTable:
-            options = self.dialog.getAvailableValuesOfType(QgsProcessingParameterVectorLayer, OutputTable)
+            options = self.dialog.getAvailableValuesOfType((QgsProcessingParameterFeatureSource, QgsProcessingParameterVectorLayer, QgsProcessingParameterMultipleLayers), OutputTable)
         else:
             options = self.dialog.getAvailableValuesOfType(QgsProcessingParameterFile, OutputFile)
         options = sorted(options, key=lambda opt: self.dialog.resolveValueDescription(opt))

@@ -44,6 +44,7 @@ from qgis.core import (QgsProcessingParameterDefinition,
                        QgsProcessingModelChildAlgorithm,
                        QgsProcessingModelChildParameterSource,
                        QgsProcessingParameterFeatureSink,
+                       QgsProcessingParameterMultipleLayers,
                        QgsProcessingParameterRasterDestination,
                        QgsProcessingParameterFileDestination,
                        QgsProcessingParameterFolderDestination,
@@ -236,11 +237,11 @@ class ModelerParametersDialog(QDialog):
         # upgrade paramType to list
         if paramType is None:
             paramType = []
-        elif not isinstance(paramType, list):
+        elif not isinstance(paramType, (tuple, list)):
             paramType = [paramType]
         if outTypes is None:
             outTypes = []
-        elif not isinstance(outTypes, list):
+        elif not isinstance(outTypes, (tuple, list)):
             outTypes = [outTypes]
 
         return self.model.availableSourcesForChild(self.childId, [p.typeName() for p in paramType if issubclass(p, QgsProcessingParameterDefinition)],
