@@ -86,5 +86,5 @@ void QgsMapToolAdvancedDigitizing::cadPointChanged( const QgsPointXY &point )
 void QgsMapToolAdvancedDigitizing::snap( QgsMapMouseEvent *e )
 {
   if ( !mCadDockWidget->cadEnabled() )
-    e->snapPoint( QgsMapMouseEvent::SnapProjectConfig );
+    e->snapPoint();
 }
