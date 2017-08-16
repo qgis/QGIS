@@ -339,61 +339,61 @@ tests:
 #      OUTPUT:
 #        hash: 8f69431c6ff7db5174c1ca8e879ae39582fd4ce86f9b53edae0f38ce
 #        type: rasterhash
-#
-#  - algorithm: gdal:hillshade
-#    name: Hillshade
-#    params:
-#      ALTITUDE: 45.0
-#      AZIMUTH: 315.0
-#      BAND: 1
-#      COMPUTE_EDGES: false
-#      INPUT:
-#        name: dem.tif
-#        type: raster
-#      SCALE: 1.0
-#      ZEVENBERGEN: false
-#      Z_FACTOR: 1.0
-#    results:
-#      OUTPUT:
-#        hash: e5cf91b875b918682e456463165eddc4af4ae8855b143068e198ce2a
-#        type: rasterhash
-#
-#  - algorithm: gdal:hillshade
-#    name: Hillshade with edges calculation
-#    params:
-#      ALTITUDE: 45.0
-#      AZIMUTH: 315.0
-#      BAND: 1
-#      COMPUTE_EDGES: true
-#      INPUT:
-#        name: dem.tif
-#        type: raster
-#      SCALE: 1.0
-#      ZEVENBERGEN: false
-#      Z_FACTOR: 1.0
-#    results:
-#      OUTPUT:
-#        hash: 570671408b020c9cc817e876f0e8081e0b11920c7d297abfe1cb3368
-#        type: rasterhash
-#
-#  - algorithm: gdal:hillshade
-#    name: Hillshade with Zevenbergen formula
-#    params:
-#      ALTITUDE: 45.0
-#      AZIMUTH: 315.0
-#      BAND: 1
-#      COMPUTE_EDGES: false
-#      INPUT:
-#        name: dem.tif
-#        type: raster
-#      SCALE: 1.0
-#      ZEVENBERGEN: true
-#      Z_FACTOR: 1.0
-#    results:
-#      OUTPUT:
-#        hash: ce2174ab155023367d38785fb867456c6a1ae3535ea0ec5ad7a694d5
-#        type: rasterhash
-#
+
+  - algorithm: gdal:hillshade
+    name: Hillshade
+    params:
+      ALTITUDE: 45.0
+      AZIMUTH: 315.0
+      BAND: 1
+      COMPUTE_EDGES: false
+      INPUT:
+        name: dem.tif
+        type: raster
+      SCALE: 1.0
+      ZEVENBERGEN: false
+      Z_FACTOR: 1.0
+    results:
+      OUTPUT:
+        hash: e5cf91b875b918682e456463165eddc4af4ae8855b143068e198ce2a
+        type: rasterhash
+
+  - algorithm: gdal:hillshade
+    name: Hillshade with edges calculation
+    params:
+      ALTITUDE: 45.0
+      AZIMUTH: 315.0
+      BAND: 1
+      COMPUTE_EDGES: true
+      INPUT:
+        name: dem.tif
+        type: raster
+      SCALE: 1.0
+      ZEVENBERGEN: false
+      Z_FACTOR: 1.0
+    results:
+      OUTPUT:
+        hash: 570671408b020c9cc817e876f0e8081e0b11920c7d297abfe1cb3368
+        type: rasterhash
+
+  - algorithm: gdal:hillshade
+    name: Hillshade with Zevenbergen formula
+    params:
+      ALTITUDE: 45.0
+      AZIMUTH: 315.0
+      BAND: 1
+      COMPUTE_EDGES: false
+      INPUT:
+        name: dem.tif
+        type: raster
+      SCALE: 1.0
+      ZEVENBERGEN: true
+      Z_FACTOR: 1.0
+    results:
+      OUTPUT:
+        hash: ce2174ab155023367d38785fb867456c6a1ae3535ea0ec5ad7a694d5
+        type: rasterhash
+
 #  - algorithm: gdal:slope
 #    name: Slope
 #    params:
@@ -510,19 +510,19 @@ tests:
         hash: 07376c74de869323125ceacbb5e34438655ff73f63d4b3ff3e268f7f
         type: rasterhash
 
-#  - algorithm: gdal:nearblack
-#    name: standard near black
-#    params:
-#      INPUT:
-#        name: dem.tif
-#        type: raster
-#      NEAR: 15
-#      WHITE: false
-#    results:
-#      OUTPUT:
-#        hash: fff4a08498e93494f3f2cf1a9074451e6fd68341849aedc9e2c45e6a
-#        type: rasterhash
-#
+  - algorithm: gdal:nearblack
+    name: standard near black
+    params:
+      INPUT:
+        name: dem.tif
+        type: raster
+      NEAR: 15
+      WHITE: false
+    results:
+      OUTPUT:
+        hash: fff4a08498e93494f3f2cf1a9074451e6fd68341849aedc9e2c45e6a
+        type: rasterhash
+
 #  - algorithm: gdal:tpitopographicpositionindex
 #    name: standard TPI
 #    params:
