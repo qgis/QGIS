@@ -38,7 +38,7 @@ from .aspect import aspect
 from .ColorRelief import ColorRelief
 from .tri import tri
 from .warp import warp
-# from .nearblack import nearblack
+from .nearblack import nearblack
 # from .information import information
 # from .rgb2pct import rgb2pct
 # from .translate import translate
@@ -56,7 +56,7 @@ from .warp import warp
 # from .fillnodata import fillnodata
 # from .extractprojection import ExtractProjection
 # from .gdal2xyz import gdal2xyz
-# from .hillshade import hillshade
+from .hillshade import hillshade
 # from .slope import slope
 # from .tpi import tpi
 # from .roughness import roughness
@@ -140,7 +140,7 @@ class GdalAlgorithmProvider(QgsProcessingProvider):
 
     def loadAlgorithms(self):
         self.algs = [
-            # nearblack(),
+            nearblack(),
             # information(),
             AssignProjection(),
             aspect(),
@@ -163,7 +163,7 @@ class GdalAlgorithmProvider(QgsProcessingProvider):
             # fillnodata(),
             # ExtractProjection(),
             # gdal2xyz(),
-            # hillshade(),
+            hillshade(),
             # slope(),
             # tpi(),
             # roughness(),
