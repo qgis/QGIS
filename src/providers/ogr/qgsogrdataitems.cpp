@@ -134,7 +134,7 @@ void QgsOgrLayerItem::deleteLayer()
   QString confirmMessage;
   if ( mIsSubLayer )
   {
-    confirmMessage = QObject::tr( "Are you sure you want to delete layer '%1'?" ).arg( mName );
+    confirmMessage = QObject::tr( "Are you sure you want to delete layer '%1' from datasource?" ).arg( mName );
   }
   else
   {

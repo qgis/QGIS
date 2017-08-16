@@ -371,7 +371,7 @@ QList<QAction *> QgsGeoPackageVectorLayerItem::actions()
 void QgsGeoPackageVectorLayerItem::deleteLayer()
 {
   if ( QMessageBox::question( nullptr, QObject::tr( "Delete Layer" ),
-                              QObject::tr( "Are you sure you want to delete layer '%1'?" ).arg( mName ),
+                              QObject::tr( "Are you sure you want to delete layer '%1' from GeoPackage?" ).arg( mName ),
                               QMessageBox::Yes | QMessageBox::No, QMessageBox::No ) != QMessageBox::Yes )
     return;
 
