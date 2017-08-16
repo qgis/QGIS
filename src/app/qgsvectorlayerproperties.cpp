@@ -498,7 +498,7 @@ void QgsVectorLayerProperties::apply()
   mLegendConfigEmbeddedWidget->applyToLayer();
 
   // save metadata
-  mMetadataWidget->saveMetadata();
+  mMetadataWidget->acceptMetadata();
 
   //
   // Set up sql subset query if applicable

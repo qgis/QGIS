@@ -836,7 +836,7 @@ void QgsRasterLayerProperties::apply()
     mRasterLayer->setRenderer( rendererWidget->renderer() );
   }
 
-  mMetadataWidget->saveMetadata();
+  mMetadataWidget->acceptMetadata();
 
   //transparency settings
   QgsRasterRenderer *rasterRenderer = mRasterLayer->renderer();

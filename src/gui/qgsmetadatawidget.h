@@ -147,7 +147,7 @@ class GUI_EXPORT QgsMetadataWidget : public QWidget, private Ui::QgsMetadataWidg
      */
     static QMap<QString, QString> parseTypes();
 
-    void saveMetadata();
+    void acceptMetadata();
 
   private:
     void updatePanel();

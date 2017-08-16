@@ -306,6 +306,9 @@ void QgsMetadataWidget::setPropertiesFromLayer()
     tabKeywords->item( currentRow, 1 )->setText( i.value().join( "," ) );
   }
 
+  // Fees
+  lineEditFees->setText( mMetadata.fees() );
+
   // Licenses
   tabLicenses->setRowCount( 0 );
   for ( QString licence : mMetadata.licenses() )
@@ -357,6 +360,9 @@ void QgsMetadataWidget::saveMetadata( QgsLayerMetadata &layerMetadata )
     keywords.insert( tabKeywords->item( i, 0 )->text(), tabKeywords->item( i, 1 )->text().split( "," ) );
   }
   layerMetadata.setKeywords( keywords );
+
+  // Fees
+  layerMetadata.setFees( lineEditFees->text() );
 
   // Licenses
   QStringList licenses;
@@ -525,7 +531,7 @@ QMap<QString, QString> QgsMetadataWidget::parseTypes()
   return types;
 }
 
-void QgsMetadataWidget::saveMetadata()
+void QgsMetadataWidget::acceptMetadata()
 {
   // OLD API (to remove later)
   mLayer->setName( lineEditTitle->text() );
