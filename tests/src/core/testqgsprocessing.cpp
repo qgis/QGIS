@@ -2183,7 +2183,8 @@ void TestQgsProcessing::parameterLayerList()
   QFileInfo fi1( raster1 );
   QgsRasterLayer *r1 = new QgsRasterLayer( fi1.filePath(), "R1" );
   QgsVectorLayer *v1 = new QgsVectorLayer( "Polygon?crs=EPSG:3111", "V4", "memory" );
-  p.addMapLayers( QList<QgsMapLayer *>() << v1 << r1 );
+  QgsVectorLayer *v2 = new QgsVectorLayer( "Polygon?crs=EPSG:3111", "V5", "memory" );
+  p.addMapLayers( QList<QgsMapLayer *>() << v1 << v2 << r1 );
   QgsProcessingContext context;
   context.setProject( &p );
 
@@ -2224,6 +2225,14 @@ void TestQgsProcessing::parameterLayerList()
   // using two existing map layers
   params.insert( "non_optional",  QVariantList() << QVariant::fromValue( v1 ) << QVariant::fromValue( r1 ) );
   QCOMPARE( QgsProcessingParameters::parameterAsLayerList( def.get(), params, context ), QList< QgsMapLayer *>() << v1 << r1 );
+
+  // mix of list and single layers (happens from models)
+  params.insert( "non_optional",  QVariantList() << QVariant( QVariantList() << QVariant::fromValue( v1 ) << QVariant::fromValue( v2 ) ) << QVariant::fromValue( r1 ) );
+  QCOMPARE( QgsProcessingParameters::parameterAsLayerList( def.get(), params, context ), QList< QgsMapLayer *>() << v1 << v2 << r1 );
+
+  // mix of two lists (happens from models)
+  params.insert( "non_optional",  QVariantList() << QVariant( QVariantList() << QVariant::fromValue( v1 ) << QVariant::fromValue( v2 ) ) << QVariant( QVariantList() << QVariant::fromValue( r1 ) ) );
+  QCOMPARE( QgsProcessingParameters::parameterAsLayerList( def.get(), params, context ), QList< QgsMapLayer *>() << v1 << v2 << r1 );
 
   // mix of existing layers and non project layer string
   params.insert( "non_optional",  QVariantList() << v1->id() << raster2 );
