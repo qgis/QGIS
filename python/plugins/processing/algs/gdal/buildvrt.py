@@ -57,6 +57,18 @@ class buildvrt(GdalAlgorithm):
         super().__init__()
 
     def initAlgorithm(self, config=None):
+
+        class ParameterVrtDestination(QgsProcessingParameterRasterDestination):
+
+            def __init__(self, name, description):
+                super().__init__(name, description)
+
+            def type(self):
+                return 'vrt_destination'
+
+            def defaultFileExtension(self):
+                return 'vrt'
+
         self.addParameter(QgsProcessingParameterMultipleLayers(self.INPUT,
                                                                self.tr('Input layers'), QgsProcessing.TypeRaster))
         self.addParameter(QgsProcessingParameterEnum(self.RESOLUTION,
@@ -65,7 +77,7 @@ class buildvrt(GdalAlgorithm):
                                                         self.tr('Layer stack'), defaultValue=True))
         self.addParameter(QgsProcessingParameterBoolean(self.PROJ_DIFFERENCE,
                                                         self.tr('Allow projection difference'), defaultValue=False))
-        self.addParameter(QgsProcessingParameterRasterDestination(self.OUTPUT, self.tr('Virtual')))
+        self.addParameter(ParameterVrtDestination(self.OUTPUT, self.tr('Virtual')))
 
     def name(self):
         return 'buildvirtualraster'
