@@ -32,7 +32,8 @@ import os
 from qgis.core import (QgsSettings,
                        QgsProcessing,
                        QgsVectorFileWriter,
-                       QgsProviderRegistry)
+                       QgsProviderRegistry,
+                       QgsProcessingModelChildParameterSource)
 from qgis.PyQt import uic
 from qgis.PyQt.QtCore import Qt
 from qgis.PyQt.QtCore import QByteArray
@@ -105,8 +106,11 @@ class MultipleInputDialog(BASE, WIDGET):
 
         # add extra options (e.g. manually added layers)
         for t in [o for o in self.selectedoptions if not isinstance(o, int)]:
-            item = QStandardItem(t)
-            item.setData(t, Qt.UserRole)
+            if isinstance(t, QgsProcessingModelChildParameterSource):
+                item = QStandardItem(t.staticValue())
+            else:
+                item = QStandardItem(t)
+            item.setData(item.text(), Qt.UserRole)
             item.setCheckState(Qt.Checked)
             item.setCheckable(True)
             self.model.appendRow(item)

@@ -69,6 +69,7 @@ from qgis.core import (
     QgsProcessingOutputVectorLayer,
     QgsProcessingOutputString,
     QgsProcessingOutputNumber,
+    QgsProcessingModelChildParameterSource,
     QgsProcessingModelAlgorithm)
 
 from qgis.PyQt.QtWidgets import (
@@ -562,7 +563,7 @@ class MultipleInputWidgetWrapper(WidgetWrapper):
             return widget
         else:
             options = [self.dialog.resolveValueDescription(opt) for opt in self._getOptions()]
-            return MultipleInputPanel(options)
+            return MultipleInputPanel(options, datatype=self.param.layerType())
 
     def refresh(self):
         if self.param.layerType() != QgsProcessing.TypeFile:
@@ -582,15 +583,20 @@ class MultipleInputWidgetWrapper(WidgetWrapper):
             return self.widget.setText(value)
         else:
             options = self._getOptions()
-            selected = []
-            for i, opt in enumerate(options):
-                try:
-                    if opt in value:
-                        selected.append(i)
-                except TypeError:
-                    if opt == value:
-                        selected.append(i)
-            self.widget.setSelectedItems(selected)
+
+            if not isinstance(value, (tuple, list)):
+                value = [value]
+
+            selected_options = []
+            for sel in value:
+                if sel in options:
+                    selected_options.append(options.index(sel))
+                elif isinstance(sel, QgsProcessingModelChildParameterSource):
+                    selected_options.append(sel.staticValue())
+                else:
+                    selected_options.append(sel)
+
+            self.widget.setSelectedItems(selected_options)
 
     def value(self):
         if self.dialogType == DIALOG_STANDARD:
@@ -608,7 +614,7 @@ class MultipleInputWidgetWrapper(WidgetWrapper):
             return self.widget.getText()
         else:
             options = self._getOptions()
-            values = [options[i] for i in self.widget.selectedoptions]
+            values = [options[i] if isinstance(i, int) else QgsProcessingModelChildParameterSource.fromStaticValue(i) for i in self.widget.selectedoptions]
             if len(values) == 0 and not self.param.flags() & QgsProcessing.FlagOptional:
                 raise InvalidParameterValue()
             return values
