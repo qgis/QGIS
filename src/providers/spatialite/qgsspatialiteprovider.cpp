@@ -432,6 +432,7 @@ bool QgsSpatiaLiteProvider::setSqliteHandle( QgsSqliteHandle *sqliteHandle )
 {
   bool bRc = false;
   mHandle = sqliteHandle;
+  bool bLoadLayer = true;
   if ( !mHandle )
   {
     return bRc;
@@ -439,7 +440,6 @@ bool QgsSpatiaLiteProvider::setSqliteHandle( QgsSqliteHandle *sqliteHandle )
   if ( mHandle )
   {
     mSpatialiteDbInfo = mHandle->getSpatialiteDbInfo();
-    qDebug() << QString( "QgsSpatiaLiteProvider::setSqliteHandle -a- DbValid[%1] DbSpatialite[%2] isDbGdalOgr[%3]" ).arg( isDbValid() ).arg( isDbSpatialite() ).arg( isDbGdalOgr() );
     if ( ( mSpatialiteDbInfo ) && ( isDbValid() )  && ( isDbSpatialite() ) )
     {
       // -- ---------------------------------- --
@@ -456,8 +456,7 @@ bool QgsSpatiaLiteProvider::setSqliteHandle( QgsSqliteHandle *sqliteHandle )
       {
         sLayerName = QString( "%1(%2)" ).arg( mUriTableName ).arg( mUriGeometryColumn );
       }
-      qDebug() << QString( "QgsSpatiaLiteProvider::setSqliteHandle(%1) -z- LayersLoaded[%2] LayersFound[%3]" ).arg( sLayerName ).arg( dbLayersCount() ).arg( dbVectorLayersCount() );
-      bRc = setDbLayer( mSpatialiteDbInfo->getSpatialiteDbLayer( sLayerName ) );
+      bRc = setDbLayer( mSpatialiteDbInfo->getSpatialiteDbLayer( sLayerName, bLoadLayer ) );
     }
   }
   return bRc;
@@ -465,7 +464,6 @@ bool QgsSpatiaLiteProvider::setSqliteHandle( QgsSqliteHandle *sqliteHandle )
 bool QgsSpatiaLiteProvider::setDbLayer( SpatialiteDbLayer *dbLayer )
 {
   bool bRc = false;
-  qDebug() << QString( "QgsSpatiaLiteProvider::setDbLayer LayeValid[%1] LayerSpatialite[%2] " ).arg( dbLayer->isLayerValid() ).arg( dbLayer->isLayerSpatialite() );
   if ( ( dbLayer ) && ( dbLayer->isLayerValid() ) && ( dbLayer->isLayerSpatialite() ) )
   {
     mDbLayer = dbLayer;
@@ -510,7 +508,6 @@ bool QgsSpatiaLiteProvider::setDbLayer( SpatialiteDbLayer *dbLayer )
                     << QgsVectorDataProvider::NativeType( tr( "Array of whole numbers (integer)" ), SpatialiteDbInfo::SPATIALITE_ARRAY_PREFIX.toUpper() + "INTEGER" + SpatialiteDbInfo::SPATIALITE_ARRAY_SUFFIX.toUpper(), QVariant::List, 0, 0, 0, 0, QVariant::LongLong )
                   );
     // bRc = checkQuery();
-    qDebug() << QString( "QgsSpatiaLiteProvider::setDbLayer(%1) -z- DataSourceUri[%2]" ).arg( getLayerName() ).arg( layerConnectionInfo() );
   }
   return bRc;
 }
@@ -536,11 +533,9 @@ QgsSpatiaLiteProvider::QgsSpatiaLiteProvider( QString const &uri )
   mSubsetString = anUri.sql(); // \"id_admin\"  < 2
   mUriPrimaryKey = anUri.keyColumn();
   mQuery = mUriTableName;
-  qDebug() << QString( "QgsSpatiaLiteProvider::QgsSpatiaLiteProvider -1- driver[%1] schema[%2] mSubsetString[%3]" ).arg( anUri.driver() ).arg( anUri.schema() ).arg( mSubsetString );
-  qDebug() << QString( "QgsSpatiaLiteProvider::QgsSpatiaLiteProvider -0- QgsDataSourceUri[%1] " ).arg( uri );
   // trying to open the SQLite DB
   bool bShared = true;
-  bool bLoadLayers = false;
+  bool bLoadLayers = true;
 #if 1
   mUriLayerName = mUriTableName;
   if ( !mUriGeometryColumn.isEmpty() )
@@ -563,7 +558,6 @@ QgsSpatiaLiteProvider::QgsSpatiaLiteProvider( QString const &uri )
       sqlite3_free( errMsg );
     }
     mValid = true;
-    qDebug() << QString( "QgsSpatiaLiteProvider::QgsSpatiaLiteProvider(%1)  -z- DataSourceUri[%2] " ).arg( dbLayersCount() ).arg( dbConnectionInfo() );
   }
   else
   {

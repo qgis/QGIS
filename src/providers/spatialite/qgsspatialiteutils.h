@@ -244,17 +244,23 @@ class SpatialiteDbInfo : public QObject
     QgsSqliteHandle *getQSqliteHandle() const { return mQSqliteHandle; }
 
     /** Connection info (DB-path) without table and geometry
-     * - this will be called from the SpatialiteDbLayer::layerConnectionInfo()
+     * - this will be called from classes using SpatialiteDbInfo
      * \note
-     *  - to call for Database and Table/Geometry portion use: SpatialiteDbLayer::dbConnectionInfo()
+     *  - to call for Database and Table/Geometry portion use: SpatialiteDbLayer::getLayerDataSourceUri()
     * \returns uri with Database only
-     * \see SpatialiteDbLayer::layerConnectionInfo()
+     * \see SpatialiteDbLayer::getLayerDataSourceUri()
     * \since QGIS 3.0
     */
     QString dbConnectionInfo( ) const
     {
       return QString( "dbname='%1'" ).arg( QString( mDatabaseFileName ).replace( '\'', QLatin1String( "\\'" ) ) );
     }
+
+    /** The Summary of Layer-Types contained in the Database
+     * \note
+     *  - at the moment not used
+    * \since QGIS 3.0
+    */
     QString getSummary() const
     {
       QString sSummary = QString( "%1 SpatialTables" ).arg( dbSpatialTablesLayersCount() );
@@ -268,17 +274,16 @@ class SpatialiteDbInfo : public QObject
       }
       if ( dbRasterCoveragesLayersCount() > 0 )
       {
-        sSummary = QString( "%1 ; %2 RL2 Coverages" ).arg( sSummary ).arg( dbRasterCoveragesLayersCount() );
+        sSummary = QString( "%1 ; %2 Rasterlite2 Coverages" ).arg( sSummary ).arg( dbRasterCoveragesLayersCount() );
       }
       if ( dbRasterLite1LayersCount() > 0 )
       {
-        sSummary = QString( "%1 ; %2 RL1 Coverages" ).arg( sSummary ).arg( dbRasterLite1LayersCount() );
+        sSummary = QString( "%1 ; %2 Rasterlite1 Coverages" ).arg( sSummary ).arg( dbRasterLite1LayersCount() );
       }
       if ( dbTopologyExportLayersCount() > 0 )
       {
         sSummary = QString( "%1 ; %2 Topologies" ).arg( sSummary ).arg( dbTopologyExportLayersCount() );
       }
-
       return sSummary;
     }
     //! The Spatialite internal Database structure being read
@@ -687,7 +692,7 @@ class SpatialiteDbInfo : public QObject
      * \note
      * - Key: LayerName formatted as 'table_name(geometry_name)' or 'table_name'
      * - Value: GeometryType and Srid formatted as 'geometry_type:srid:provider'
-     * \see readRL1Layers
+     * \see readRasterLite1Layers
      * \since QGIS 3.0
      */
     QMap<QString, QString> getDbRasterLite1Layers() const { return mRasterLite1Layers; }
@@ -1110,6 +1115,51 @@ class SpatialiteDbInfo : public QObject
      * \since QGIS 3.0
      */
     QDomElement getDbStyleNamedLayerElement( QString sStyleName, QString &errorMessage, int *iDebug = nullptr, QString sSaveXmlFileName = QString::null );
+
+    /** Create LayerInfo String and Uri
+     * - intended a a central point where these setting should be made
+     * - any changes in the Provirder Names or Uri-Syntax must bedone here
+     * \note
+     *  LayerInfo
+     *  - field 0=Geometry-Type [for Raster-Types: LayerType]
+     *  - field 1=Srid of the Layer
+     *  - field 2=The Proverder Name
+     *  DataSourceUri
+     *  - Provider dependent
+     * \param sLayerInfo String to return the result of the LayerInfo
+     * \param DataSourceUri String to return the result of the DataSourceUri
+     * \param sLayerName Name of the Layer to to use format: 'table_name(geometry_name)'
+     * \param layerType the Layer-Type being formatted
+     * \param sGeometryType the Layer Geometry-Type to use
+     * \param iSrid the Layer Geometry-Type to use
+     * \returns sLayerInfo
+     * \see prepareDataSourceUris
+     * \see SpatialiteDbLayer::prepare
+     * \see readVectorLayers
+     * \see readVectorRasterCoverages
+     * \see GetTopologyLayersInfo
+     * \see readRasterLite1Layers
+     * \see readFdoOgrLayers
+     * \see readGeoPackageLayers
+     * \see readMBTilesLayers
+     * \since QGIS 3.0
+     */
+    QString createDbLayerInfoUri( QString &sLayerInfo, QString &sDataSourceUri, QString sLayerName, SpatialiteDbInfo::SpatialiteLayerType layerType, QString sGeometryType, int iSrid );
+
+    /** Parse the LayerInfo String
+     * - intended a a central point where this task should be done
+     * \note
+     *  - the LayerInfo String is created in createDbLayerInfoUri
+     *  - SpatialiteDbInfo::ParseSeparatorGeneral (';') is used a separator
+     * \param sLayerInfo the input to parse
+     * \param sGeometryType the returned result from field 0 of sLayerInfo
+     * \param iSrid the returned result from field 1 of sLayerInfo
+     * \param sProvider the returned result from field 2 of sLayerInfo
+     * \returns xlm QDomElement containing 'NamedLayer'
+     * \see setLayerStyleSelected
+     * \since QGIS 3.0
+     */
+    bool parseLayerInfo( QString sLayerInfo, QString &sGeometryType, int &iSrid, QString &sProvider );
   protected:
   signals:
     //! Add a list of database layers to the map
@@ -1246,7 +1296,7 @@ class SpatialiteDbInfo : public QObject
      * \see getSniffSniffMinimal
      * \see getSniffLayerMetadata
      * \see getSniffReadLayers
-     * \see readRL1Layers
+     * \see readRasterLite1Layers
      * \see GetRasterLite1LayersInfo
      * \since QGIS 3.0
      */
@@ -1651,6 +1701,26 @@ class SpatialiteDbInfo : public QObject
      */
     QMap<QString, SpatialiteDbLayer *> mDbLayers;
 
+    /** Function to remove known Admin-Tables from the Layers-List
+     * - these TABLEs/VIEWs should NOT show up as User-Layer
+     * \note
+     * - Key: LayerName formatted as 'table_name(geometry_name)' or 'table_name'
+     * - Value:    Group-Name to be displayed in QgsSpatiaLiteTableModel as NonSpatialTables
+     * - the found entries will be 'moved' to the mNonSpatialTables
+     * - this is a helper function to simplify the task in the same way, everywhere where it is needed
+     * \param layerTypes Layer and Group-Names to search for
+     * \returns i_removed_count returns amount of entries deleted
+     * \see mDbLayers
+     * \see mNonSpatialTables
+     * \see mVectorLayers
+     * \see mVectorLayersTypes
+     * \see GetRasterLite2RasterLayersInfo
+     * \see GetRasterLite1LayersInfo
+     * \see GetTopologyLayersInfo
+     * \since QGIS 3.0
+     */
+    int removeAdminTables( QMap<QString, QString> layerTypes );
+
     /** Map of valid Selected Layers requested by the User
      * - only Uris that created a valid QgsVectorLayer/QgsRasterLayer
      * \note
@@ -1725,7 +1795,7 @@ class SpatialiteDbInfo : public QObject
      * \note
      * - Key: LayerName formatted as 'table_name(geometry_name)' or 'table_name'
      * - Value: GeometryType and Srid formatted as 'geometry_type:srid:provider'
-     * \see readRL1Layers
+     * \see readRasterLite1Layers
      * \since QGIS 3.0
      */
     QMap<QString, QString> mRasterLite1Layers;
@@ -1815,7 +1885,6 @@ class SpatialiteDbInfo : public QObject
      * - Value: Style XML-Document
      * -> style_type: StyleRaster/StyleVector
      * - SELECT style_name, XB_GetDocument(style,1) FROM SE_vector/raster_styles;
-     * \see
      * \see readVectorRasterStyles
      * \since QGIS 3.0
      */
@@ -1917,7 +1986,7 @@ class SpatialiteDbInfo : public QObject
      * \see GetSpatialiteDbInfo
      * \since QGIS 3.0
      */
-    bool readRL1Layers();
+    bool readRasterLite1Layers();
 
     /** Determine if valid Topology Layers exist
      * - called only when mHasTopologyExportTables > 0 during GetSpatialiteDbInfo
@@ -2151,6 +2220,8 @@ class SpatialiteDbLayer : public QObject
       , mSpatialIndexType( SpatialiteDbInfo::SpatialIndexNone )
       , mLayerType( SpatialiteDbInfo::SpatialiteUnknown )
       , mLayerTypeString( QString::null )
+      , mLayerInfo( QString::null )
+      , mDataSourceUri( QString::null )
       , mIsSpatialite( false )
       , mGeometryType( QgsWkbTypes::Unknown )
       , mGeometryTypeString( QString::null )
@@ -2184,59 +2255,6 @@ class SpatialiteDbLayer : public QObject
     //! The Database filename being read
     QString getDatabaseFileName() const { return mDatabaseFileName; }
 
-    /** Connection info (DB-path) with table and geometry
-     *  -> this should be the only function that deals with connection-String formatting
-     * \note
-     *  - to call for Database portion only, use: SpatialiteDbInfo::dbConnectionInfo()
-     *  - For RasterLite1: GDAL-Syntax will be used
-    * \returns uri with Database and Table/Geometry Information
-     * \see SpatialiteDbInfo::dbConnectionInfo()
-    * \since QGIS 3.0
-    */
-    QString layerConnectionInfo() const
-    {
-      if ( mLayerType == SpatialiteDbInfo::RasterLite1 )
-      {
-        // RASTERLITE:/home/mj10777/000_links/qgis_git/QGIS_3/git_commands/master3.spatialite_utils/test.projects/db/rasterlite1/ItalyRail.atlas,table=srtm
-        return QString( "RASTERLITE:%1,table=%2" ).arg( mDatabaseFileName ).arg( mTableName );
-      }
-      if ( ( mLayerType == SpatialiteDbInfo::MBTilesTable ) || ( mLayerType == SpatialiteDbInfo::MBTilesView ) )
-      {
-        return QString( "%1" ).arg( mDatabaseFileName );
-      }
-      if ( ( mLayerType == SpatialiteDbInfo::GeoPackageVector ) || ( mLayerType == SpatialiteDbInfo::GeoPackageRaster ) )
-      {
-        return QString( "%1|layername=%2" ).arg( mDatabaseFileName ).arg( mTableName );
-      }
-      if ( mLayerType == SpatialiteDbInfo::GdalFdoOgr )
-      {
-        return QString( "%1|layername=%2" ).arg( mDatabaseFileName ).arg( mLayerName );
-      }
-      if ( !mGeometryColumn.isEmpty() )
-      {
-        return QString( "%1 table=\"%2\" (%3)" ).arg( getDbConnectionInfo()->dbConnectionInfo() ).arg( mTableName ).arg( mGeometryColumn );
-      }
-      return QString( "%1 table=\"%2\"" ).arg( getDbConnectionInfo()->dbConnectionInfo() ).arg( mTableName );
-    }
-
-    /** Ogr/Gdal Connection info (DB-path) with table and geometry
-     * \note
-     *  - For RasterLite1: GDAL-Syntax will be used
-    * \returns uri with Database and Table/Geometry Information
-    * \since QGIS 3.0
-    */
-    QString dbConnectionInfoOgr() const
-    {
-      if ( mLayerType == SpatialiteDbInfo::RasterLite1 )
-      {
-        return QString( "RASTERLITE:%1,table=%2" ).arg( mDatabaseFileName ).arg( "RASTERLITE" ).arg( mTableName );
-      }
-      if ( !mGeometryColumn.isEmpty() )
-      {
-        return QString( "%1|%2:%3:%4:%5" ).arg( mDatabaseFileName ).arg( mLayerName ).arg( getGeometryTypeString() ).arg( mNumberFeatures ).arg( getLayerTypeString() );
-      }
-      return QString( "%1|%2" ).arg( mDatabaseFileName ).arg( mLayerName );
-    }
     //! Name of the table with no schema
     QString getTableName() const { return mTableName; }
 
@@ -2310,6 +2328,25 @@ class SpatialiteDbLayer : public QObject
     SpatialiteDbInfo::SpatialiteLayerType getLayerType() const { return mLayerType; }
     //! The Spatialite Layer-Type being read (as String)
     QString getLayerTypeString() const { return mLayerTypeString; }
+
+    /** Set the Layer-InfoString
+     * \note
+     *  - field 0=Geometry-Type [for Raster-Types: LayerType]
+     *  - field 1=Srid of the Layer
+     *  - field 2=The Proverder Name
+     * \see prepare
+     * \see SpatialiteDbInfo::createDbLayerInfoUri
+     * \since QGIS 3.0
+     */
+    QString getLayerInfo() const { return mLayerInfo; }
+
+    /** Set the  Layer-DataSourceUri String
+     * - Proverder dependent
+     * \see prepare
+     * \see SpatialiteDbInfo::createDbLayerInfoUri
+     * \since QGIS 3.0
+     */
+    QString getLayerDataSourceUri() const { return mDataSourceUri; }
 
     /** Is the Layer supported by QgsSpatiaLiteProvider
      * - QgsSpatiaLiteProvider should never accept a Layer when this is not true
@@ -2597,6 +2634,7 @@ class SpatialiteDbLayer : public QObject
 
     /** Resolve unset settings
      * Goal: to (semi) Automate unresolved settings when needed
+     * \see SpatialiteDbInfo::createDbLayerInfoUri
      * \see prepareCapabilities
      * \see checkLayerStyles
      * \returns mIsValid if the Layer is considered valid
@@ -2725,6 +2763,25 @@ class SpatialiteDbLayer : public QObject
      * \since QGIS 3.0
      */
     QString mLayerTypeString;
+
+    /** Set the Layer-InfoString
+     * \note
+     *  - field 0=Geometry-Type [for Raster-Types: LayerType]
+     *  - field 1=Srid of the Layer
+     *  - field 2=The Proverder Name
+     * \see prepare
+     * \see SpatialiteDbInfo::createDbLayerInfoUri
+     * \since QGIS 3.0
+     */
+    QString mLayerInfo;
+
+    /** Set the  Layer-DataSourceUri String
+     * - Proverder dependent
+     * \see prepare
+     * \see SpatialiteDbInfo::createDbLayerInfoUri
+     * \since QGIS 3.0
+     */
+    QString mDataSourceUri;
 
     /** Set the Spatialite Layer-Type
      * - will also set the String version of the Layer-Type

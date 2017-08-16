@@ -44,6 +44,8 @@ class QgsSpatiaLiteTableModel: public QStandardItemModel
     {
       return itemFromIndex( index.sibling( index.row(), i_field_table ) )->text();
     }
+    //! Returns NonSpatialItemIndex  Item-Inxex
+    QModelIndex getNonSpatialItemIndex() const { return mNonSpatialItem->index(); }
     //! Returns the Column 'Geometry column' from the selected Item
     int getGeometryNameIndex() const { return i_field_geometry_name; }
     QString getGeometryName( const QModelIndex &index ) const
@@ -225,6 +227,7 @@ class QgsSpatiaLiteTableModel: public QStandardItemModel
     int i_field_geometry_type;
     int i_field_geometry_name;
     int i_field_sql;
+    QStringList headerLabels;
 
     /** Retrieve the Table Entries based on a list of Layer-Types
      * \see addTableEntryType
@@ -290,26 +293,7 @@ class QgsSpatiaLiteTableModel: public QStandardItemModel
      */
     QMap<QString, QString> mDbLayersDataSourceUris;
 
-    /** Dump routines
-     * - general function to call dump routines
-     * \note
-     * - testing for valid Uris
-     * \see dumpDataSourceUris
-     * \since QGIS 3.0
-     */
-    int dumpTests( int iDump );
-
-    /** Dump retrieved DataSourceUris
-     * - testing for valid Uris
-     * \since QGIS 3.0
-     */
-    int dumpDataSourceUris( int iDump );
-
-    /** Dump retrieved NonSpatialTables
-     * - testing for valid NonSpatialTables
-     * \since QGIS 3.0
-     */
-    int dumpNonSpatialTables( int iDump );
     QStandardItem *mDbRootItem = nullptr;
+    QStandardItem *mNonSpatialItem = nullptr;
     bool mLoadGeometrylessTables = true;
 };

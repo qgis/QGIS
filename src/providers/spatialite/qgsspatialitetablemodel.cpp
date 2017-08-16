@@ -19,9 +19,8 @@
 #include "qgsapplication.h"
 #include "qgsdataitem.h" // for icons
 
-QgsSpatiaLiteTableModel::QgsSpatiaLiteTableModel(): QStandardItemModel(), mTableCount( 0 ), mDbRootItem( nullptr ), mLoadGeometrylessTables( false )
+QgsSpatiaLiteTableModel::QgsSpatiaLiteTableModel(): QStandardItemModel(), mTableCount( 0 ), mDbRootItem( nullptr ), mLoadGeometrylessTables( true )
 {
-  QStringList headerLabels;
   headerLabels << tr( "Table" );
   i_field_table = 0;
   headerLabels << tr( "Geometry column" );
@@ -53,69 +52,17 @@ void QgsSpatiaLiteTableModel::setSqliteDb( SpatialiteDbInfo *spatialiteDbInfo, b
       mTableCount = 0;
       if ( mDbRootItem )
       {
-        delete mDbRootItem;
+        QModelIndex rootItemIndex = indexFromItem( invisibleRootItem() );
+        removeRows( 0, rowCount( rootItemIndex ), rootItemIndex );
         mDbRootItem = nullptr;
       }
     }
-    int iDump = 0;
     mSpatialiteDbInfo = spatialiteDbInfo;
     mDbLayersDataSourceUris = getDataSourceUris();
-    if ( iDump > 0 )
-    {
-      dumpTests( iDump );
-    }
     mTableCounter = 0;
     mLoadGeometrylessTables = loadGeometrylessTables;
     addTableEntryTypes( );
   }
-}
-int QgsSpatiaLiteTableModel::dumpTests( int iDump )
-{
-  int i_counter = 0;
-  if ( iDump == 1 )
-  {
-    // -- ---------------------------------- --
-    qDebug() << QString( "-I-> QgsSpatiaLiteTableModel::dumpTests(%1) -Has- VectorLayers[%2] SpatialTables[%3] SpatialViews[%4] VirtualShapes[%5]  RasterLite2[%6] RasterLite1[%7] TopologyExport[%8]  FdoOgr[%9] GeoPackage[%10] MBTiles[%11] NonSpatial[%12] IsValid[%13] IsSpatialite[%14] IsGdalOgr[%15] DbLayersCount[%16]" ).arg( mSpatialiteDbInfo->dbSpatialMetadataString() ).arg( mSpatialiteDbInfo->dbVectorLayersCount() ).arg( mSpatialiteDbInfo->dbSpatialTablesLayersCount() ).arg( mSpatialiteDbInfo->dbSpatialViewsLayersCount() ).arg( mSpatialiteDbInfo->dbVirtualShapesLayersCount() ).arg( mSpatialiteDbInfo->dbRasterCoveragesLayersCount() ).arg( mSpatialiteDbInfo->dbRasterLite1LayersCount() ).arg( mSpatialiteDbInfo->dbTopologyExportLayersCount() ).arg( mSpatialiteDbInfo->dbFdoOgrLayersCount() ).arg( mSpatialiteDbInfo->dbGeoPackageLayersCount() ).arg( mSpatialiteDbInfo->dbMBTilesLayersCount() ).arg( mSpatialiteDbInfo->dbNonSpatialTablesCount() ).arg( mSpatialiteDbInfo->isDbValid() ).arg( mSpatialiteDbInfo->isDbSpatialite() ).arg( mSpatialiteDbInfo->isDbGdalOgr() ).arg( mSpatialiteDbInfo->getDbLayers().count() );
-    // -- ---------------------------------- --
-    dumpDataSourceUris( iDump );
-    dumpNonSpatialTables( iDump );
-    // -- ---------------------------------- --
-    i_counter++;
-  }
-  return i_counter;
-}
-int QgsSpatiaLiteTableModel::dumpDataSourceUris( int iDump )
-{
-  int i_valid = 0;
-  if ( iDump > 0 )
-  {
-    qDebug() << QString( "-I.> QgsSpatiaLiteTableModel::dump: mDbLayersDataSourceUris(%1): " ).arg( mDbLayersDataSourceUris.count() );
-    for ( QMap<QString, QString>::iterator itLayers = mDbLayersDataSourceUris.begin(); itLayers != mDbLayersDataSourceUris.end(); ++itLayers )
-    {
-      i_valid++;
-      QString sKey = itLayers.key();
-      QString sValue = itLayers.value();
-      qDebug() << QString( "-I.> QgsSpatiaLiteTableModel::dump: mDbLayersDataSourceUris(%1): Layer-Name: Key[%2] ; Layer-Uris: Value[%3]" ).arg( i_valid ).arg( sKey ).arg( sValue );
-    }
-  }
-  return i_valid;
-}
-int QgsSpatiaLiteTableModel::dumpNonSpatialTables( int iDump )
-{
-  int i_valid = 0;
-  if ( iDump > 0 )
-  {
-    qDebug() << QString( "-I.> QgsSpatiaLiteTableModel::dump: DbNonSpatialTables(%1): " ).arg( mSpatialiteDbInfo->dbNonSpatialTablesCount() );
-    QMap<QString, QString> dbNonSpatialTables = mSpatialiteDbInfo->getDbNonSpatialTables();
-    for ( QMap<QString, QString>::iterator itLayers = dbNonSpatialTables.begin(); itLayers != dbNonSpatialTables.end(); ++itLayers )
-    {
-      i_valid++;
-      QString sKey = itLayers.key();
-      QString sValue = itLayers.value();
-      qDebug() << QString( "-I.> QgsSpatiaLiteTableModel::dump: DbNonSpatialTables(%1): Layer-Name: Key[%2] ; NonSpatialTable-Type: Value[%3]" ).arg( i_valid ).arg( sKey ).arg( sValue );
-    }
-  }
-  return i_valid;
 }
 QList < QStandardItem * > QgsSpatiaLiteTableModel::createLayerTypeEntry( SpatialiteDbInfo::SpatialiteLayerType layerType, int amountLayers )
 {
@@ -227,10 +174,11 @@ void QgsSpatiaLiteTableModel::addRootEntry( )
     {
       mTableCounter += mSpatialiteDbInfo->dbTopologyExportLayersCount();
     }
+    QList < QStandardItem * >dbItems;
     //is there already a root item ?
     QStandardItem *dbItem = nullptr;
     // Only searches top level items
-    QList < QStandardItem * >dbItems = findItems( mSpatialiteDbInfo->getFileName(), Qt::MatchExactly, 0 );
+    dbItems = findItems( mSpatialiteDbInfo->getFileName(), Qt::MatchExactly, 0 );
     //there is already an item
     if ( !dbItems.isEmpty() )
     {
@@ -306,7 +254,7 @@ void QgsSpatiaLiteTableModel::addRootEntry( )
       dbItem->setFlags( Qt::ItemIsEnabled );
       if ( invisibleRootItem()->hasChildren() )
       {
-        invisibleRootItem()->removeRow( 0 );
+        invisibleRootItem()->removeRows( 0, invisibleRootItem()->rowCount() );
       }
       invisibleRootItem()->setChild( invisibleRootItem()->rowCount(), dbItem );
       dbItems = findItems( mSpatialiteDbInfo->getFileName(), Qt::MatchExactly, 0 );
@@ -354,42 +302,42 @@ void QgsSpatiaLiteTableModel::addRootEntry( )
         if ( mSpatialiteDbInfo->dbVirtualShapesLayersCount() > 0 )
         {
           QList < QStandardItem *> tbItemList = createLayerTypeEntry( SpatialiteDbInfo::VirtualShape, mSpatialiteDbInfo->dbSpatialViewsLayersCount() );
-          mDbRootItem->insertRow( dbItem->rowCount(), tbItemList );
+          mDbRootItem->appendRow( tbItemList );
         }
         if ( mSpatialiteDbInfo->dbRasterCoveragesLayersCount() > 0 )
         {
           QList < QStandardItem *> tbItemList = createLayerTypeEntry( SpatialiteDbInfo::RasterLite2Raster, mSpatialiteDbInfo->dbRasterCoveragesLayersCount() );
-          mDbRootItem->insertRow( dbItem->rowCount(), tbItemList );
+          mDbRootItem->appendRow( tbItemList );
         }
         if ( mSpatialiteDbInfo->dbRasterLite1LayersCount() > 0 )
         {
           QList < QStandardItem *> tbItemList = createLayerTypeEntry( SpatialiteDbInfo::RasterLite1, mSpatialiteDbInfo->dbRasterLite1LayersCount() );
-          mDbRootItem->insertRow( dbItem->rowCount(), tbItemList );
+          mDbRootItem->appendRow( tbItemList );
         }
         if ( mSpatialiteDbInfo->dbMBTilesLayersCount() > 0 )
         {
           QList < QStandardItem *> tbItemList = createLayerTypeEntry( SpatialiteDbInfo::MBTilesTable, mSpatialiteDbInfo->dbMBTilesLayersCount() );
-          mDbRootItem->insertRow( dbItem->rowCount(), tbItemList );
+          mDbRootItem->appendRow( tbItemList );
         }
         if ( mSpatialiteDbInfo->dbGeoPackageVectorsCount() > 0 )
         {
           QList < QStandardItem *> tbItemList = createLayerTypeEntry( SpatialiteDbInfo::GeoPackageVector, mSpatialiteDbInfo->dbGeoPackageVectorsCount() );
-          mDbRootItem->insertRow( dbItem->rowCount(), tbItemList );
+          mDbRootItem->appendRow( tbItemList );
         }
         if ( mSpatialiteDbInfo->dbGeoPackageRastersCount() > 0 )
         {
           QList < QStandardItem *> tbItemList = createLayerTypeEntry( SpatialiteDbInfo::GeoPackageRaster, mSpatialiteDbInfo->dbGeoPackageRastersCount() );
-          mDbRootItem->insertRow( dbItem->rowCount(), tbItemList );
+          mDbRootItem->appendRow( tbItemList );
         }
         if ( mSpatialiteDbInfo->dbTopologyExportLayersCount() > 0 )
         {
           QList < QStandardItem *> tbItemList = createLayerTypeEntry( SpatialiteDbInfo::SpatialiteTopology, mSpatialiteDbInfo->dbTopologyExportLayersCount() );
-          mDbRootItem->insertRow( dbItem->rowCount(), tbItemList );
+          mDbRootItem->appendRow( tbItemList );
         }
         if ( mSpatialiteDbInfo->dbFdoOgrLayersCount() > 0 )
         {
           QList < QStandardItem *> tbItemList = createLayerTypeEntry( SpatialiteDbInfo::GdalFdoOgr, mSpatialiteDbInfo->dbFdoOgrLayersCount() );
-          mDbRootItem->insertRow( dbItem->rowCount(), tbItemList );
+          mDbRootItem->appendRow( tbItemList );
         }
         if ( mSpatialiteDbInfo->dbNonSpatialTablesCount() > 0 )
         {
@@ -449,15 +397,16 @@ void QgsSpatiaLiteTableModel::addTableEntryTypes( )
   if ( ( mLoadGeometrylessTables ) && ( mSpatialiteDbInfo->dbNonSpatialTablesCount() > 0 ) )
   {
     addTableEntryType( mSpatialiteDbInfo->getDbNonSpatialTables(), QgsSpatiaLiteTableModel::EntryTypeMap, SpatialiteDbInfo::NonSpatialTables );
-  }
-  if ( mSpatialiteDbInfo->dbStylesCount() > 0 )
-  {
-    addTableEntryType( mSpatialiteDbInfo->getDbCoveragesStylesInfo(), QgsSpatiaLiteTableModel::EntryTypeMap, SpatialiteDbInfo::StyleVector );
+    if ( mSpatialiteDbInfo->dbStylesCount() > 0 )
+    {
+      addTableEntryType( mSpatialiteDbInfo->getDbCoveragesStylesInfo(), QgsSpatiaLiteTableModel::EntryTypeMap, SpatialiteDbInfo::StyleVector );
+    }
   }
 }
 void QgsSpatiaLiteTableModel::addTableEntryType( QMap<QString, QString> mapLayers, QgsSpatiaLiteTableModel::EntryType entryType, SpatialiteDbInfo::SpatialiteLayerType layerType )
 {
   QString sGroupLayerType = SpatialiteDbInfo::SpatialiteLayerTypeName( layerType );
+  bool bLoadLayer = true;
   for ( QMap<QString, QString>::iterator itLayers = mapLayers.begin(); itLayers != mapLayers.end(); ++itLayers )
   {
     if ( !itLayers.key().isEmpty() )
@@ -472,11 +421,9 @@ void QgsSpatiaLiteTableModel::addTableEntryType( QMap<QString, QString> mapLayer
         case QgsSpatiaLiteTableModel::EntryTypeLayer:
         default:
         {
-          SpatialiteDbLayer *dbLayer = mSpatialiteDbInfo->getSpatialiteDbLayer( itLayers.key(), true );
-          // qDebug() << QString( "QgsSpatiaLiteTableModel::addTableEntryType(%1): Key[%2] Value[%3]" ).arg( sGroupLayerType ).arg( itLayers.key() ).arg( itLayers.value() );
+          SpatialiteDbLayer *dbLayer = mSpatialiteDbInfo->getSpatialiteDbLayer( itLayers.key(), bLoadLayer );
           if ( ( dbLayer ) && ( dbLayer->isLayerValid() ) )
           {
-            // qDebug() << QString( "QgsSpatiaLiteTableModel::addTableEntryType: Key[%1] IsValid[%2] Value[%3]" ).arg( itLayers.key() ).arg( dbLayer->isLayerValid() ).arg( itLayers.value() );
             addTableEntryLayer( dbLayer, mapLayers.count() );
           }
         }
@@ -494,15 +441,13 @@ void QgsSpatiaLiteTableModel::addTableEntryMap( QString sKey, QString sValue, Sp
     {
       QString sSeSldStylesGroup = "Se/Sld-Styles";
       QString sGroupNonSpatialTables = SpatialiteDbInfo::SpatialiteLayerTypeName( SpatialiteDbInfo::NonSpatialTables );
-      QStandardItem *nonSpatialItem = nullptr;
       QList < QStandardItem * >dbItems = findItems( sGroupNonSpatialTables, Qt::MatchExactly | Qt::MatchRecursive, 0 );
       if ( !dbItems.isEmpty() )
       {
-        nonSpatialItem = dbItems.at( 0 );
+        mNonSpatialItem = dbItems.at( 0 );
       }
       else
       {
-        qDebug() << QString( "-E-.> QgsSpatiaLiteTableModel::addTableEntryMap: GroupNonSpatialTablesType(%1): not found" ).arg( sGroupNonSpatialTables );
         return;
       }
       // Key[fromosm_tiles] Value[GeoPackageRaster;3857]
@@ -521,7 +466,6 @@ void QgsSpatiaLiteTableModel::addTableEntryMap( QString sKey, QString sValue, Sp
       }
       else
       {
-        qDebug() << QString( "-E-.> QgsSpatiaLiteTableModel::addTableEntryMap[%1]: does not contain the expected amount of fields ; sValue[%2]" ).arg( sa_style_info.size() ).arg( sValue );
         return;
       }
       QString sSortTag;
@@ -554,7 +498,7 @@ void QgsSpatiaLiteTableModel::addTableEntryMap( QString sKey, QString sValue, Sp
         tbItemList.push_back( emptyItem_02 );
         tbItemList.push_back( emptyItem_03 );
         tbItemList.push_back( sortHiddenItem );
-        nonSpatialItem->appendRow( tbItemList );
+        mNonSpatialItem->appendRow( tbItemList );
         dbItems = findItems( sSeSldStylesGroup, Qt::MatchExactly | Qt::MatchRecursive, 0 );
         if ( !dbItems.isEmpty() )
         {
@@ -628,15 +572,13 @@ void QgsSpatiaLiteTableModel::addTableEntryMap( QString sKey, QString sValue, Sp
     case SpatialiteDbInfo::NonSpatialTables:
     default:
     {
-      QStandardItem *nonSpatialItem = nullptr;
       QList < QStandardItem * >dbItems = findItems( sGroupLayerType, Qt::MatchExactly | Qt::MatchRecursive, 0 );
       if ( !dbItems.isEmpty() )
       {
-        nonSpatialItem = dbItems.at( 0 );
+        mNonSpatialItem = dbItems.at( 0 );
       }
       else
       {
-        qDebug() << QString( "-E-.> QgsSpatiaLiteTableModel::addTableEntryMap: sGroupLayerType(%1): not found" ).arg( sGroupLayerType );
         return;
       }
       QStandardItem *nonSpatialGroupItem = nullptr;
@@ -665,7 +607,7 @@ void QgsSpatiaLiteTableModel::addTableEntryMap( QString sKey, QString sValue, Sp
         sGroup = QString( "%1-Data" ).arg( sGroup );
         sSortTag = QString( "ZZBA_%1" ).arg( sGroup );
       }
-      if ( ( sGroup.startsWith( "SpatialTable" ) ) || ( sGroup.startsWith( "SpatialView" ) )  || ( sGroup.startsWith( "VirtualShapes" )  || ( sValue.startsWith( "RasterLite2-I" ) ) ) )
+      if ( sValue.startsWith( "RasterLite2-I" ) )
       {
         // Spatial-Admin-Tables and Views should come first
         sGroup = QString( "%1-Admin" ).arg( sGroup );
@@ -676,20 +618,65 @@ void QgsSpatiaLiteTableModel::addTableEntryMap( QString sKey, QString sValue, Sp
         sGroup = QString( "%1-Admin" ).arg( sGroup );
         sSortTag = QString( "ZZBB_%1" ).arg( sGroup );
       }
+      if ( sGroup.startsWith( "Topology" ) )
+      {
+        QString sTopologyAdmin = "Topology-Admin";
+        if ( sValue == QString( "%1-Internal" ).arg( "Topology" ) )
+        {
+          sGroup = sTopologyAdmin;
+          sSortTag = QString( "ZZBCA_%1" ).arg( sGroup );
+        }
+        else
+        {
+          dbItems = findItems( sTopologyAdmin, Qt::MatchExactly | Qt::MatchRecursive, 0 );
+          if ( !dbItems.isEmpty() )
+          {
+            nonSpatialGroupItem = dbItems.at( 0 );
+          }
+          if ( sValue.startsWith( "Topology-View-" ) )
+          {
+            sGroup = QString( "Topology-Views" );
+            sSortTag = QString( "ZZBCZ_%1" ).arg( sGroup );
+            sSubGroup.remove( "Topology-View-" );
+          }
+          else
+          {
+            if ( sValue.startsWith( "Topology-Export" ) )
+            {
+              sGroup = QString( "Topology-Export-Data" );
+              sSortTag = QString( "ZZBCA_%1" ).arg( sGroup );
+              sSubGroup.remove( "Topology-" );
+            }
+            sGroup = QString( "%1-Tables" ).arg( sGroup );
+            sSortTag = QString( "ZZBCY_%1" ).arg( sGroup );
+          }
+        }
+      }
+      if ( ( sGroup.startsWith( "SpatialTable" ) ) || ( sGroup.startsWith( "SpatialView" ) )  || ( sGroup.startsWith( "VirtualShapes" ) ) )
+      {
+        // Spatial-Admin-Tables and Views should come first
+        sGroup = QString( "%1-Admin" ).arg( sGroup );
+        sSortTag = QString( "ZZMA_%1" ).arg( sGroup );
+      }
+      if ( sGroup.startsWith( "Styles" ) )
+      {
+        sGroup = QString( "%1-Admin" ).arg( sGroup );
+        sSortTag = QString( "ZZMB_%1" ).arg( sGroup );
+      }
       if ( sGroup.startsWith( "Geometries" ) )
       {
         sGroup = QString( "%1-Admin" ).arg( sGroup );
-        sSortTag = QString( "ZZBC_%1" ).arg( sGroup );
+        sSortTag = QString( "ZZMC_%1" ).arg( sGroup );
       }
       if ( sGroup.startsWith( "EPSG" ) )
       {
         sGroup = QString( "%1-Admin" ).arg( sGroup );
-        sSortTag = QString( "ZZBD_%1" ).arg( sGroup );
+        sSortTag = QString( "ZZMD_%1" ).arg( sGroup );
       }
       if ( ( sGroup.startsWith( "Virtual" ) ) && ( !sGroup.startsWith( "VirtualShapes" ) ) )
       {
         sGroup = QString( "%1-Interfaces" ).arg( sGroup );
-        sSortTag = QString( "ZZBE_%1" ).arg( sGroup );
+        sSortTag = QString( "ZZME_%1" ).arg( sGroup );
       }
       dbItems = findItems( sGroup, Qt::MatchExactly | Qt::MatchRecursive, 0 );
       if ( !dbItems.isEmpty() )
@@ -718,7 +705,7 @@ void QgsSpatiaLiteTableModel::addTableEntryMap( QString sKey, QString sValue, Sp
         tbItemList.push_back( emptyItem_02 );
         tbItemList.push_back( emptyItem_03 );
         tbItemList.push_back( sortHiddenItem );
-        nonSpatialItem->appendRow( tbItemList );
+        mNonSpatialItem->appendRow( tbItemList );
         dbItems = findItems( sGroup, Qt::MatchExactly | Qt::MatchRecursive, 0 );
         if ( !dbItems.isEmpty() )
         {
@@ -780,7 +767,6 @@ void QgsSpatiaLiteTableModel::addTableEntryLayer( SpatialiteDbLayer *dbLayer, in
     }
     else  //create a new toplevel item
     {
-      qDebug() << QString( "-W-.> QgsSpatiaLiteTableModel::addTableEntryLayer: LayerTypeString(%1): not found" ).arg( dbLayer->getLayerTypeString() );
       if ( ( dbLayer->getLayerTypeString() == "TopologyExport" ) || ( dbLayer->getLayerTypeString() == "GeoPackageRaster" ) )
       {
         QString sSearchGroupName = dbLayer->getLayerTypeString();
@@ -802,7 +788,6 @@ void QgsSpatiaLiteTableModel::addTableEntryLayer( SpatialiteDbLayer *dbLayer, in
         else
         {
           // For 'TopologyExport' the extra query is possibly needed
-          qDebug() << QString( "-II-.> QgsSpatiaLiteTableModel::addTableEntryLayer: LayerTypeString(%1): adding[%2]" ).arg( dbLayer->getLayerTypeString() ).arg( sSearchGroupName );
           sSortTag = QString( "AAFA_%1" ).arg( sSearchGroupName );
           QStandardItem *tbTypeItem = new QStandardItem( iconType, sSearchGroupName );
           tbTypeItem->setFlags( Qt::ItemIsEnabled );
@@ -830,7 +815,6 @@ void QgsSpatiaLiteTableModel::addTableEntryLayer( SpatialiteDbLayer *dbLayer, in
           }
           else
           {
-            qDebug() << QString( "-E-.> QgsSpatiaLiteTableModel::addTableEntryLayer: LayerTypeString(%1): not found" ).arg( dbLayer->getLayerTypeString() );
             return;
           }
         }
@@ -881,6 +865,11 @@ void QgsSpatiaLiteTableModel::addTableEntryLayer( SpatialiteDbLayer *dbLayer, in
         sGroup = "GeoPackage-Tiles";
         sGeometryTypeString = sGroup;
       }
+      if ( sGroup == "GeoPackageVector" )
+      {
+        sGroup = "GeoPackage-Vector";
+        sGeometryTypeString = sGroup;
+      }
       iconType = SpatialiteDbInfo::NonSpatialTablesTypeIcon( sGroup );
     }
     QStandardItem *geomTypeItem = nullptr;
@@ -897,7 +886,6 @@ void QgsSpatiaLiteTableModel::addTableEntryLayer( SpatialiteDbLayer *dbLayer, in
       sqlItem = new QStandardItem( dbLayer->getLayerQuery() );
       sqlItem->setFlags( Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsEditable );
     }
-
     QStandardItem *sortHiddenItem = new QStandardItem( sSortTag );
     sortHiddenItem->setFlags( Qt::NoItemFlags );
     // this must be done in the same order as the Header
@@ -906,7 +894,7 @@ void QgsSpatiaLiteTableModel::addTableEntryLayer( SpatialiteDbLayer *dbLayer, in
     childItemList.push_back( geomTypeItem );
     childItemList.push_back( sqlItem );
     childItemList.push_back( sortHiddenItem );
-    dbItem->insertRow( dbItem->rowCount(), childItemList );
+    dbItem->appendRow( childItemList );
     ++mTableCount;
   }
 }

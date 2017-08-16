@@ -108,7 +108,9 @@ class QgsSpatiaLiteSourceSelect: public QDialog, private Ui::QgsDbSourceSelectBa
     void on_mSearchTableEdit_textChanged( const QString &text );
     void on_mSearchColumnComboBox_currentIndexChanged( const QString &text );
     void on_mSearchModeComboBox_currentIndexChanged( const QString &text );
+#if 0
     void on_cbxAllowGeometrylessTables_stateChanged( int );
+#endif
     void setSql( const QModelIndex &index );
     void on_cmbConnections_activated( int );
     void on_mTablesTreeView_clicked( const QModelIndex &index );
@@ -117,7 +119,7 @@ class QgsSpatiaLiteSourceSelect: public QDialog, private Ui::QgsDbSourceSelectBa
     //!Sets a new regular expression to the model
     void setSearchExpression( const QString &regexp );
 
-    void on_buttonBox_helpRequested() { QgsHelp::openHelp( QStringLiteral( "working_with_vector/supported_data.html#spatialite-layers" ) ); }
+    void on_buttonBox_helpRequested() { QgsHelp::openHelp( QStringLiteral( "managing_data_source/opening_data.html#spatialite-layers" ) ); }
   signals:
     void connectionsChanged();
     void addDatabaseLayers( QStringList const &paths, QString const &providerKey );

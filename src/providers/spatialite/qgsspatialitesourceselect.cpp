@@ -113,9 +113,12 @@ QgsSpatiaLiteSourceSelect::QgsSpatiaLiteSourceSelect( QWidget *parent, Qt::Windo
   mSearchModeComboBox->setVisible( false );
   mSearchModeLabel->setVisible( false );
   mSearchTableEdit->setVisible( false );
-
+#if 0
   cbxAllowGeometrylessTables->setDisabled( true );
   cbxAllowGeometrylessTables->setText( QString( "%1 and Administration Tables" ).arg( cbxAllowGeometrylessTables->text() ) );
+  cbxAllowGeometrylessTables->setChecked( true );
+#endif
+  cbxAllowGeometrylessTables->setVisible( false );
 }
 
 QgsSpatiaLiteSourceSelect::~QgsSpatiaLiteSourceSelect()
@@ -178,11 +181,15 @@ void QgsSpatiaLiteSourceSelect::updateStatistics()
                            tr( "Error while updating internal statistics for: %1" ).arg( subKey ) );
   }
 }
-
+#if 0
 void QgsSpatiaLiteSourceSelect::on_cbxAllowGeometrylessTables_stateChanged( int )
 {
-  on_btnConnect_clicked();
+  if ( cbxAllowGeometrylessTables->isEnabled() )
+  {
+    on_btnConnect_clicked()
+  }
 }
+#endif
 
 void QgsSpatiaLiteSourceSelect::on_mTablesTreeView_clicked( const QModelIndex &index )
 {
@@ -429,11 +436,10 @@ void QgsSpatiaLiteSourceSelect::addTables()
 
 void QgsSpatiaLiteSourceSelect::on_btnConnect_clicked()
 {
-  cbxAllowGeometrylessTables->setEnabled( false );
+  // cbxAllowGeometrylessTables->setEnabled( false );
   // trying to connect to SpatiaLite DB
   QgsSpatiaLiteConnection connectionInfo( cmbConnections->currentText() );
   mSqlitePath = connectionInfo.dbPath();
-  qDebug() << QString( "QgsSpatiaLiteSourceSelect::on_btnConnect_clicked -01- currentText[%1]\n\t subkey[%2] mSqlitePath[%3] " ).arg( cmbConnections->currentText() ).arg( connectionInfo.getSubKey() ).arg( connectionInfo.dbPath() );
 
   QApplication::setOverrideCursor( Qt::WaitCursor );
   QString sLayerName = QString::null;
@@ -466,8 +472,7 @@ void QgsSpatiaLiteSourceSelect::on_btnConnect_clicked()
     }
     // populate the table list
     // get the list of suitable tables and columns and populate the UI
-    cbxAllowGeometrylessTables->setChecked( true );
-    mTableModel.setSqliteDb( spatialiteDbInfo, cbxAllowGeometrylessTables->isChecked() );
+    mTableModel.setSqliteDb( spatialiteDbInfo, true );
   }
   if ( mTableModel.isSpatialite() )
   {
@@ -480,7 +485,7 @@ void QgsSpatiaLiteSourceSelect::on_btnConnect_clicked()
   // mTablesTreeView->resizeColumnToContents( 0 );
   // mTablesTreeView->resizeColumnToContents( 1 );
 
-  cbxAllowGeometrylessTables->setEnabled( true );
+  // cbxAllowGeometrylessTables->setEnabled( true );
 }
 
 void QgsSpatiaLiteSourceSelect::setSql( const QModelIndex &index )

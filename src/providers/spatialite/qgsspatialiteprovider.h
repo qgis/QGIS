@@ -378,7 +378,7 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
     * \returns uri with Database and Table/Geometry Information
     * \since QGIS 3.0
     */
-    QString layerConnectionInfo() const { return getDbLayer()->layerConnectionInfo(); }
+    QString getLayerDataSourceUri() const { return getDbLayer()->getLayerDataSourceUri(); }
     //! Is the Layer valid
     bool isLayerValid() const { if ( getDbLayer() ) return getDbLayer()->isLayerValid(); else return false;}
 
