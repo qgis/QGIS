@@ -584,8 +584,12 @@ class MultipleInputWidgetWrapper(WidgetWrapper):
             options = self._getOptions()
             selected = []
             for i, opt in enumerate(options):
-                if opt in value:
-                    selected.append(i)
+                try:
+                    if opt in value:
+                        selected.append(i)
+                except TypeError:
+                    if opt == value:
+                        selected.append(i)
             self.widget.setSelectedItems(selected)
 
     def value(self):
