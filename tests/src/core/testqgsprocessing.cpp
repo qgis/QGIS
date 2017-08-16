@@ -2310,6 +2310,9 @@ void TestQgsProcessing::parameterLayerList()
   params.insert( "optional",  QVariant() );
   QCOMPARE( QgsProcessingParameters::parameterAsLayerList( def.get(), params, context ), QList< QgsMapLayer *>() << v1 );
 
+  params.insert( "optional",  QVariantList() << QVariant::fromValue( r1 ) );
+  QCOMPARE( QgsProcessingParameters::parameterAsLayerList( def.get(), params, context ), QList< QgsMapLayer *>() << r1 );
+
   code = def->asScriptCode();
   QCOMPARE( code, QStringLiteral( "##optional=optional multiple vector " ) + v1->id() );
   fromCode.reset( dynamic_cast< QgsProcessingParameterMultipleLayers * >( QgsProcessingParameters::parameterFromScriptCode( code ) ) );

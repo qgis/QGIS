@@ -622,7 +622,7 @@ QList<QgsMapLayer *> QgsProcessingParameters::parameterAsLayerList( const QgsPro
   else
     resultStringList << val.toString();
 
-  if ( ( resultStringList.isEmpty() || resultStringList.at( 0 ).isEmpty() ) )
+  if ( layers.isEmpty() && ( resultStringList.isEmpty() || resultStringList.at( 0 ).isEmpty() ) )
   {
     resultStringList.clear();
     // check default
