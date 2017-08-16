@@ -123,7 +123,6 @@ Catch the mouse move event, filters it, transforms it to map coordinates and sen
 %End
 
 
-
 };
 
 /************************************************************************
