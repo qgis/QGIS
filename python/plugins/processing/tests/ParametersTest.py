@@ -32,7 +32,6 @@ from qgis.testing import start_app, unittest
 from processing.core.parameters import (Parameter,
                                         ParameterBoolean,
                                         ParameterCrs,
-                                        ParameterDataObject,
                                         ParameterExtent,
                                         ParameterFile,
                                         ParameterFixedTable,
