@@ -45,13 +45,6 @@ class GUI_EXPORT QgsMapMouseEvent : public QMouseEvent
 
   public:
 
-    enum SnappingMode
-    {
-      NoSnapping,
-      SnapProjectConfig,  //!< Snap according to the configuration set in the snapping settings
-      SnapAllLayers,      //!< Snap to all rendered layers (tolerance and type from defaultSettings())
-    };
-
     /**
      * Creates a new QgsMapMouseEvent. Should only be required to be called from the QgsMapCanvas.
      *
@@ -77,17 +70,16 @@ class GUI_EXPORT QgsMapMouseEvent : public QMouseEvent
      * \brief snapPoint will snap the points using the map canvas snapping utils configuration
      * \note if snapping did not succeeded, the map point will be reset to its original position
      */
-    QgsPointXY snapPoint( SnappingMode snappingMode );
+    QgsPointXY snapPoint();
 
     /**
      * Returns the first snapped segment. If the cached snapped match is a segment, it will simply return it.
      * Otherwise it will try to snap a segment according to the event's snapping mode. In this case the cache
      * will not be overwritten.
-     * \param snappingMode Specify if the default project settings or all layers should be used for snapping
      * \param snapped if given, determines if a segment has been snapped
      * \param allLayers if true, override snapping mode
      */
-    QList<QgsPointXY> snapSegment( SnappingMode snappingMode, bool *snapped = nullptr, bool allLayers = false ) const;
+    QList<QgsPointXY> snapSegment( bool *snapped = nullptr, bool allLayers = false ) const;
 
     /**
      * Returns true if there is a snapped point cached.
@@ -144,7 +136,8 @@ class GUI_EXPORT QgsMapMouseEvent : public QMouseEvent
 
     QPoint mapToPixelCoordinates( const QgsPointXY &point );
 
-    SnappingMode mSnappingMode;
+    //! Whether snapPoint() was already called
+    bool mHasCachedSnapResult;
 
     //! Unsnapped point in map coordinates.
     QgsPointXY mOriginalMapPoint;

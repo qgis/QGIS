@@ -94,7 +94,6 @@ QgsAdvancedDigitizingDockWidget::QgsAdvancedDigitizingDockWidget( QgsMapCanvas *
   , mCurrentMapToolSupportsCad( false )
   , mCadEnabled( false )
   , mConstructionMode( false )
-  , mSnappingMode( ( QgsMapMouseEvent::SnappingMode ) QgsSettings().value( QStringLiteral( "/Cad/SnappingMode" ), QgsMapMouseEvent::SnapProjectConfig ).toInt() )
   , mCommonAngleConstraint( QgsSettings().value( QStringLiteral( "/Cad/CommonAngle" ), 90 ).toInt() )
   , mSnappedToVertex( false )
   , mSessionActive( false )
@@ -176,23 +175,6 @@ QgsAdvancedDigitizingDockWidget::QgsAdvancedDigitizingDockWidget( QgsMapCanvas *
     menu->addAction( action );
     angleButtonGroup->addAction( action );
     mCommonAngleActions.insert( action, it->first );
-  }
-  // snapping on layers
-  menu->addSeparator();
-  QActionGroup *snapButtonGroup = new QActionGroup( menu ); // actions are exclusive for snapping modes
-  mSnappingActions = QMap<QAction *, QgsMapMouseEvent::SnappingMode>();
-  QList< QPair< QgsMapMouseEvent::SnappingMode, QString > > snappingModes;
-  snappingModes << QPair<QgsMapMouseEvent::SnappingMode, QString>( QgsMapMouseEvent::NoSnapping, tr( "Do not snap to vertices or segment" ) );
-  snappingModes << QPair<QgsMapMouseEvent::SnappingMode, QString>( QgsMapMouseEvent::SnapProjectConfig, tr( "Snap according to project configuration" ) );
-  snappingModes << QPair<QgsMapMouseEvent::SnappingMode, QString>( QgsMapMouseEvent::SnapAllLayers, tr( "Snap to all layers" ) );
-  for ( QList< QPair< QgsMapMouseEvent::SnappingMode, QString > >::const_iterator it = snappingModes.begin(); it != snappingModes.end(); ++it )
-  {
-    QAction *action = new QAction( it->second, menu );
-    action->setCheckable( true );
-    action->setChecked( it->first == mSnappingMode );
-    menu->addAction( action );
-    snapButtonGroup->addAction( action );
-    mSnappingActions.insert( action, it->first );
   }
 
   mSettingsButton->setMenu( menu );
@@ -319,16 +301,6 @@ void QgsAdvancedDigitizingDockWidget::setConstructionMode( bool enabled )
 
 void QgsAdvancedDigitizingDockWidget::settingsButtonTriggered( QAction *action )
 {
-  // snapping
-  QMap<QAction *, QgsMapMouseEvent::SnappingMode>::const_iterator isn = mSnappingActions.constFind( action );
-  if ( isn != mSnappingActions.constEnd() )
-  {
-    isn.key()->setChecked( true );
-    mSnappingMode = isn.value();
-    QgsSettings().setValue( QStringLiteral( "/Cad/SnappingMode" ), ( int )isn.value() );
-    return;
-  }
-
   // common angles
   QMap<QAction *, int>::const_iterator ica = mCommonAngleActions.constFind( action );
   if ( ica != mCommonAngleActions.constEnd() )
@@ -598,9 +570,9 @@ bool QgsAdvancedDigitizingDockWidget::applyConstraints( QgsMapMouseEvent *e )
   QgsDebugMsgLevel( QString( "X:        %1 %2 %3" ).arg( mXConstraint->isLocked() ).arg( mXConstraint->relative() ).arg( mXConstraint->value() ), 4 );
   QgsDebugMsgLevel( QString( "Y:        %1 %2 %3" ).arg( mYConstraint->isLocked() ).arg( mYConstraint->relative() ).arg( mYConstraint->value() ), 4 );
 
-  QgsPointXY point = e->snapPoint( mSnappingMode );
+  QgsPointXY point = e->snapPoint();
 
-  mSnappedSegment = e->snapSegment( mSnappingMode );
+  mSnappedSegment = e->snapSegment();
 
   bool previousPointExist, penulPointExist;
   QgsPointXY previousPt = previousPoint( &previousPointExist );
@@ -903,7 +875,7 @@ bool QgsAdvancedDigitizingDockWidget::alignToSegment( QgsMapMouseEvent *e, CadCo
   bool previousPointExist, penulPointExist, mSnappedSegmentExist;
   QgsPointXY previousPt = previousPoint( &previousPointExist );
   QgsPointXY penultimatePt = penultimatePoint( &penulPointExist );
-  QList<QgsPointXY> mSnappedSegment = e->snapSegment( mSnappingMode, &mSnappedSegmentExist, true );
+  QList<QgsPointXY> mSnappedSegment = e->snapSegment( &mSnappedSegmentExist, true );
 
   if ( !previousPointExist || !mSnappedSegmentExist )
   {

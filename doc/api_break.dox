@@ -460,6 +460,7 @@ QgsAdvancedDigitizingDockWidget        {#qgis_api_break_3_0_QgsAdvancedDigitizin
 -------------------------------
 
 - canvasReleaseEvent takes now QgsAdvancedDigitizingDockWidget::CaptureMode as second argument.
+- snappingMode() was removed. Advanced digitizing now always uses project's snapping configuration.
 
 
 QgsApplication        {#qgis_api_break_3_0_QgsApplication}
@@ -1548,6 +1549,13 @@ QgsMapLayerLegend        {#qgis_api_break_3_0_QgsMapLayerLegend}
 -----------------
 
 - defaultPluginLegend() was removed. Plugin layers have to provide their legend implementation.
+
+
+QgsMapMouseEvent        {#qgis_api_break_3_0_QgsMapMouseEvent}
+----------------
+
+- SnappingMode enum was removed.
+- snapPoint() and snapSegment() do not take SnappingMode argument anymore. Snapping is done according to project's snapping configuration.
 
 
 QgsMapOverviewCanvas        {#qgis_api_break_3_0_QgsMapOverviewCanvas}

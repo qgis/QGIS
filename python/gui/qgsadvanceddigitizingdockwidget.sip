@@ -227,13 +227,6 @@ class QgsAdvancedDigitizingDockWidget : QgsDockWidget
  Clear any cached previous clicks and helper lines
 %End
 
-    QgsMapMouseEvent::SnappingMode snappingMode();
-%Docstring
- The snapping mode
- :return: Snapping mode
- :rtype: QgsMapMouseEvent.SnappingMode
-%End
-
     virtual void keyPressEvent( QKeyEvent *e );
 
 
