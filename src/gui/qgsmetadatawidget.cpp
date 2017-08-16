@@ -487,6 +487,24 @@ QStringList QgsMetadataWidget::parseLinkTypes()
   return wordList;
 }
 
+QStringList QgsMetadataWidget::parseMimeTypes()
+{
+  QString path = QDir( QgsApplication::metadataPath() ).absoluteFilePath( QString( "mime.csv" ) );
+  QFile file( path );
+  if ( !file.open( QIODevice::ReadOnly ) )
+  {
+    QgsDebugMsg( QString( "Error while opening the CSV file: %1, %2 " ).arg( path, file.errorString() ) );
+  }
+
+  QStringList wordList;
+  while ( !file.atEnd() )
+  {
+    QByteArray line = file.readLine();
+    wordList.append( line.split( ',' ).at( 0 ) );
+  }
+  return wordList;
+}
+
 QMap<QString, QString> QgsMetadataWidget::parseTypes()
 {
   QString path = QDir( QgsApplication::metadataPath() ).absoluteFilePath( QString( "md_scope_codes.csv" ) );
@@ -651,6 +669,7 @@ QWidget *LinkItemDelegate::createEditor( QWidget *parent, const QStyleOptionView
 {
   if ( index.column() == 1 )
   {
+    // Link type
     QComboBox *typeEditor = new QComboBox( parent );
     typeEditor->setEditable( true );
     QStringListModel *model = new QStringListModel( parent );
@@ -660,13 +679,11 @@ QWidget *LinkItemDelegate::createEditor( QWidget *parent, const QStyleOptionView
   }
   else if ( index.column() == 5 )
   {
-    // See https://fr.wikipedia.org/wiki/Type_MIME
+    // MIME
     QComboBox *mimeEditor = new QComboBox( parent );
     mimeEditor->setEditable( true );
     QStringListModel *model = new QStringListModel( parent );
-    QStringList mime;
-    mime << "" << "image/png" << "image/tiff" << "application/pdf";
-    model->setStringList( mime );
+    model->setStringList( QgsMetadataWidget::parseMimeTypes() );
     mimeEditor->setModel( model );
     return mimeEditor;
   }

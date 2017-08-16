@@ -121,23 +121,29 @@ class GUI_EXPORT QgsMetadataWidget : public QWidget, private Ui::QgsMetadataWidg
     bool checkMetadata();
 
     /**
-     * Returns a list of languages by default available in the wizard.
+     * Returns a list of languages available by default in the wizard.
      */
     static QMap<QString, QString> parseLanguages();
 
     /**
-     * Returns a list of licences by default available in the wizard.
+     * Returns a list of licences available by default in the wizard.
      */
     static QStringList parseLicenses();
 
     /**
-     * Returns a list of link types by default available in the wizard.
+     * Returns a list of link types available by default in the wizard.
      * \see https://github.com/OSGeo/Cat-Interop/blob/master/LinkPropertyLookupTable.csv
      */
     static QStringList parseLinkTypes();
 
     /**
-     * Returns a list of types by default available in the wizard.
+     * Returns a list of MIME types available by default in the wizard.
+     * \see https://fr.wikipedia.org/wiki/Type_MIME
+     */
+    static QStringList parseMimeTypes();
+
+    /**
+     * Returns a list of types available by default in the wizard.
      */
     static QMap<QString, QString> parseTypes();
 
