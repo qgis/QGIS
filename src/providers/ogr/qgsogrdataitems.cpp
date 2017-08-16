@@ -18,6 +18,7 @@
 #include "qgslogger.h"
 #include "qgsmessagelog.h"
 #include "qgssettings.h"
+#include "qgsproject.h"
 
 #include <QFileInfo>
 #include <QTextStream>
@@ -131,31 +132,48 @@ void QgsOgrLayerItem::deleteLayer()
 {
   // Messages are different for files and tables
   QString title = mIsSubLayer ? QObject::tr( "Delete Layer" ) : QObject::tr( "Delete File" );
-  QString confirmMessage;
-  if ( mIsSubLayer )
+  // Check if the layer is in the registry
+  const QgsMapLayer *projectLayer = nullptr;
+  Q_FOREACH ( const QgsMapLayer *layer, QgsProject::instance()->mapLayers() )
   {
-    confirmMessage = QObject::tr( "Are you sure you want to delete layer '%1' from datasource?" ).arg( mName );
+    if ( layer->publicSource() == mUri )
+    {
+      projectLayer = layer;
+    }
   }
-  else
+  if ( ! projectLayer )
   {
-    confirmMessage = QObject::tr( "Are you sure you want to delete file '%1'?" ).arg( mUri );
-  }
-  if ( QMessageBox::question( nullptr, title,
-                              confirmMessage,
-                              QMessageBox::Yes | QMessageBox::No, QMessageBox::No ) != QMessageBox::Yes )
-    return;
+    QString confirmMessage;
+    if ( mIsSubLayer )
+    {
+      confirmMessage = QObject::tr( "Are you sure you want to delete layer '%1' from datasource?" ).arg( mName );
+    }
+    else
+    {
+      confirmMessage = QObject::tr( "Are you sure you want to delete file '%1'?" ).arg( mUri );
+    }
+    if ( QMessageBox::question( nullptr, title,
+                                confirmMessage,
+                                QMessageBox::Yes | QMessageBox::No, QMessageBox::No ) != QMessageBox::Yes )
+      return;
 
-  QString errCause;
-  bool res = ::deleteLayer( mUri, errCause );
-  if ( !res )
-  {
-    QMessageBox::warning( nullptr, title, errCause );
+    QString errCause;
+    bool res = ::deleteLayer( mUri, errCause );
+    if ( !res )
+    {
+      QMessageBox::warning( nullptr, title, errCause );
+    }
+    else
+    {
+      QMessageBox::information( nullptr, title, mIsSubLayer ? tr( "Layer deleted successfully." ) :  tr( "File deleted successfully." ) );
+      if ( mParent )
+        mParent->refresh();
+    }
   }
   else
   {
-    QMessageBox::information( nullptr, title, mIsSubLayer ? tr( "Layer deleted successfully." ) :  tr( "File deleted successfully." ) );
-    if ( mParent )
-      mParent->refresh();
+    QMessageBox::warning( nullptr, title, QObject::tr( "The layer '%1' cannot be deleted because it is in the current project as '%2',"
+                          " remove it from the project and retry." ).arg( mName, projectLayer->name() ) );
   }
 }
 #endif

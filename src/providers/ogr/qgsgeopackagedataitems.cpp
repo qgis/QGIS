@@ -356,7 +356,6 @@ QgsGeoPackageRasterLayerItem::QgsGeoPackageRasterLayerItem( QgsDataItem *parent,
 }
 
 
-
 #ifdef HAVE_GUI
 QList<QAction *> QgsGeoPackageVectorLayerItem::actions()
 {
@@ -370,22 +369,39 @@ QList<QAction *> QgsGeoPackageVectorLayerItem::actions()
 
 void QgsGeoPackageVectorLayerItem::deleteLayer()
 {
-  if ( QMessageBox::question( nullptr, QObject::tr( "Delete Layer" ),
-                              QObject::tr( "Are you sure you want to delete layer '%1' from GeoPackage?" ).arg( mName ),
-                              QMessageBox::Yes | QMessageBox::No, QMessageBox::No ) != QMessageBox::Yes )
-    return;
-
-  QString errCause;
-  bool res = ::deleteLayer( mUri, errCause );
-  if ( !res )
+  // Check if the layer is in the registry
+  const QgsMapLayer *projectLayer = nullptr;
+  Q_FOREACH ( const QgsMapLayer *layer, QgsProject::instance()->mapLayers() )
   {
-    QMessageBox::warning( nullptr, tr( "Delete Layer" ), errCause );
+    if ( layer->publicSource() == mUri )
+    {
+      projectLayer = layer;
+    }
+  }
+  if ( ! projectLayer )
+  {
+    if ( QMessageBox::question( nullptr, QObject::tr( "Delete Layer" ),
+                                QObject::tr( "Are you sure you want to delete layer '%1' from GeoPackage?" ).arg( mName ),
+                                QMessageBox::Yes | QMessageBox::No, QMessageBox::No ) != QMessageBox::Yes )
+      return;
+
+    QString errCause;
+    bool res = ::deleteLayer( mUri, errCause );
+    if ( !res )
+    {
+      QMessageBox::warning( nullptr, tr( "Delete Layer" ), errCause );
+    }
+    else
+    {
+      QMessageBox::information( nullptr, tr( "Delete Layer" ), tr( "Layer deleted successfully." ) );
+      if ( mParent )
+        mParent->refresh();
+    }
   }
   else
   {
-    QMessageBox::information( nullptr, tr( "Delete Layer" ), tr( "Layer deleted successfully." ) );
-    if ( mParent )
-      mParent->refresh();
+    QMessageBox::warning( nullptr, QObject::tr( "Delete Layer" ), QObject::tr( "The layer '%1' cannot be deleted because it is in the current project as '%2',"
+                          " remove it from the project and retry." ).arg( mName, projectLayer->name() ) );
   }
 }
 #endif
