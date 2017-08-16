@@ -224,16 +224,22 @@ void QgsMetadataWidget::fillComboBox()
   // It is advised to use the ISO 19115 MD_ScopeCode values. E.g. 'dataset' or 'series'.
   // http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml
   comboType->setEditable( true );
-  QStringList types;
-  types << "" << "attribute" << "attributeType" << "dataset" << "nonGeographicDataset" << "series" << "document";
-  comboType->addItems( types );
+  comboType->clear();
+  QMap<QString, QString> types = parseTypes();
+  int i = 0;
+  for ( QString type : types.keys() )
+  {
+    comboType->insertItem( i, type );
+    comboType->setItemData( i, types.value( type ), Qt::ToolTipRole );
+    i++;
+  }
 
   // Set default values in language combobox
   // It is advised to use the ISO 639.2 or ISO 3166 specifications, e.g. 'ENG' or 'SPA',
   comboLanguage->setEditable( true );
   comboLanguage->clear();
   QMap<QString, QString> countries = parseLanguages();
-  int i = 0;
+  i = 0;
   for ( QString countryCode : countries.keys() )
   {
     comboLanguage->insertItem( i, countryCode );
@@ -479,6 +485,26 @@ QStringList QgsMetadataWidget::parseLinkTypes()
     wordList.append( line.split( ',' ).at( 0 ) );
   }
   return wordList;
+}
+
+QMap<QString, QString> QgsMetadataWidget::parseTypes()
+{
+  QString path = QDir( QgsApplication::metadataPath() ).absoluteFilePath( QString( "md_scope_codes.csv" ) );
+  QFile file( path );
+  if ( !file.open( QIODevice::ReadOnly ) )
+  {
+    QgsDebugMsg( QString( "Error while opening the CSV file: %1, %2 " ).arg( path, file.errorString() ) );
+  }
+
+  QMap<QString, QString> types;
+  types.insert( "", "" ); // We add an empty line, because it's not compulsory.
+  while ( !file.atEnd() )
+  {
+    QByteArray line = file.readLine();
+    QList<QByteArray> items = line.split( ';' );
+    types.insert( items.at( 0 ).constData(), items.at( 1 ).constData() );
+  }
+  return types;
 }
 
 void QgsMetadataWidget::saveMetadata()

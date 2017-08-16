@@ -136,6 +136,11 @@ class GUI_EXPORT QgsMetadataWidget : public QWidget, private Ui::QgsMetadataWidg
      */
     static QStringList parseLinkTypes();
 
+    /**
+     * Returns a list of types by default available in the wizard.
+     */
+    static QMap<QString, QString> parseTypes();
+
     void saveMetadata();
 
   private:
