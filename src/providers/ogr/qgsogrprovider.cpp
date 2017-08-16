@@ -30,6 +30,9 @@ email                : sherman at mrcc.com
 #include "qgsgeometry.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgsvectorlayerexporter.h"
+#include "qgsdataitemprovider.h"
+#include "qgsogrdataitems.h"
+#include "qgsgeopackagedataitems.h"
 #include "qgswkbtypes.h"
 #include "qgis.h"
 
@@ -2922,6 +2925,14 @@ QGISEXTERN bool createEmptyDataSource( const QString &uri,
     OSRRelease( reference );
   }
   return true;
+}
+
+
+QGISEXTERN QList< QgsDataItemProvider * > *dataItemProviders()
+{
+  QList< QgsDataItemProvider * > *providers = new QList< QgsDataItemProvider * >();
+  *providers << new QgsGeoPackageDataItemProvider;
+  return providers;
 }
 
 QgsCoordinateReferenceSystem QgsOgrProvider::crs() const

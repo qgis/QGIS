@@ -34,6 +34,8 @@ QgsGdalLayerItem::QgsGdalLayerItem( QgsDataItem *parent,
   if ( sublayers && !sublayers->isEmpty() )
   {
     mSublayers = *sublayers;
+    // We have sublayers: we are able to create children!
+    mCapabilities |= Fertile;
     setState( NotPopulated );
   }
   else
@@ -48,6 +50,7 @@ QgsGdalLayerItem::QgsGdalLayerItem( QgsDataItem *parent,
     GDALClose( hDS );
   }
 }
+
 
 bool QgsGdalLayerItem::setCrs( const QgsCoordinateReferenceSystem &crs )
 {
@@ -69,14 +72,14 @@ bool QgsGdalLayerItem::setCrs( const QgsCoordinateReferenceSystem &crs )
 
 QVector<QgsDataItem *> QgsGdalLayerItem::createChildren()
 {
-  QgsDebugMsg( "Entered, path=" + path() );
+  QgsDebugMsgLevel( "Entered, path=" + path(), 3 );
   QVector<QgsDataItem *> children;
 
   // get children from sublayers
   if ( !mSublayers.isEmpty() )
   {
     QgsDataItem *childItem = nullptr;
-    QgsDebugMsg( QString( "got %1 sublayers" ).arg( mSublayers.count() ) );
+    QgsDebugMsgLevel( QString( "got %1 sublayers" ).arg( mSublayers.count() ), 3 );
     for ( int i = 0; i < mSublayers.count(); i++ )
     {
       QString name = mSublayers[i];
@@ -87,8 +90,8 @@ QVector<QgsDataItem *> QgsGdalLayerItem::createChildren()
         name = name.mid( name.indexOf( mPath ) + mPath.length() + 1 );
       else
       {
-        // remove driver name and file name
-        name.remove( name.split( ':' )[0] );
+        // remove driver name and file name and initial ':'
+        name.remove( name.split( ':' )[0] + ':' );
         name.remove( mPath );
       }
       // remove any : or " left over
@@ -99,7 +102,9 @@ QVector<QgsDataItem *> QgsGdalLayerItem::createChildren()
 
       childItem = new QgsGdalLayerItem( this, name, mSublayers[i], mSublayers[i] );
       if ( childItem )
-        this->addChildItem( childItem );
+      {
+        children.append( childItem );
+      }
     }
   }
 
@@ -168,7 +173,7 @@ QGISEXTERN QgsDataItem *dataItem( QString path, QgsDataItem *parentItem )
   info.setFile( path );
   QString name = info.fileName();
 
-  QgsDebugMsgLevel( "thePath= " + path + " tmpPath= " + tmpPath + " name= " + name
+  QgsDebugMsgLevel( "path= " + path + " tmpPath= " + tmpPath + " name= " + name
                     + " suffix= " + suffix + " vsiPrefix= " + vsiPrefix, 3 );
 
   // allow only normal files or VSIFILE items to continue

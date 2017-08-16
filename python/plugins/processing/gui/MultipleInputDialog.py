@@ -29,8 +29,10 @@ __revision__ = '$Format:%H$'
 
 import os
 
+from qgis.core import QgsSettings
 from qgis.PyQt import uic
 from qgis.PyQt.QtCore import Qt
+from qgis.PyQt.QtCore import QByteArray
 from qgis.PyQt.QtWidgets import QDialog, QAbstractItemView, QPushButton, QDialogButtonBox
 from qgis.PyQt.QtGui import QStandardItemModel, QStandardItem
 
@@ -71,7 +73,14 @@ class MultipleInputDialog(BASE, WIDGET):
         self.btnClearSelection.clicked.connect(lambda: self.selectAll(False))
         self.btnToggleSelection.clicked.connect(self.toggleSelection)
 
+        self.settings = QgsSettings()
+        self.restoreGeometry(self.settings.value("/Processing/multipleInputDialogGeometry", QByteArray()))
+
         self.populateList()
+        self.finished.connect(self.saveWindowGeometry)
+
+    def saveWindowGeometry(self):
+        self.settings.setValue("/Processing/multipleInputDialogGeometry", self.saveGeometry())
 
     def populateList(self):
         model = QStandardItemModel()

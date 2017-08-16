@@ -39,8 +39,8 @@
 #include <qgsproject.h>
 #include <qgspoint.h>
 #include <qgsdistancearea.h>
-#include <symbology-ng/qgsrenderer.h>
-#include <symbology-ng/qgssymbol.h>
+#include <symbology/qgsrenderer.h>
+#include <symbology/qgssymbol.h>
 #include <qgspallabeling.h>
 
 #include <QAction>

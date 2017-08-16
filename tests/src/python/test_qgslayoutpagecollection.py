@@ -25,7 +25,9 @@ from qgis.core import (QgsUnitTypes,
                        QgsLayoutPageCollection,
                        QgsSimpleFillSymbolLayer,
                        QgsFillSymbol)
-from qgis.PyQt.QtCore import Qt, QCoreApplication, QEvent, QPointF
+from qgis.PyQt.QtCore import Qt, QCoreApplication, QEvent, QPointF, QRectF
+from qgis.PyQt.QtTest import QSignalSpy
+
 from qgis.testing import start_app, unittest
 
 start_app()
@@ -76,6 +78,8 @@ class TestQgsLayoutPageCollection(unittest.TestCase):
         # add a page
         page = QgsLayoutItemPage(l)
         page.setPageSize('A4')
+        self.assertEqual(collection.pageNumber(page), -1)
+
         collection.addPage(page)
 
         self.assertTrue(page in l.items())
@@ -85,6 +89,7 @@ class TestQgsLayoutPageCollection(unittest.TestCase):
         self.assertFalse(collection.page(-1))
         self.assertEqual(collection.page(0), page)
         self.assertFalse(collection.page(1))
+        self.assertEqual(collection.pageNumber(page), 0)
 
         # add a second page
         page2 = QgsLayoutItemPage(l)
@@ -96,6 +101,7 @@ class TestQgsLayoutPageCollection(unittest.TestCase):
         self.assertFalse(collection.page(-1))
         self.assertEqual(collection.page(0), page)
         self.assertEqual(collection.page(1), page2)
+        self.assertEqual(collection.pageNumber(page2), 1)
 
         # insert a page
         page3 = QgsLayoutItemPage(l)
@@ -108,6 +114,7 @@ class TestQgsLayoutPageCollection(unittest.TestCase):
         self.assertEqual(collection.page(0), page)
         self.assertEqual(collection.page(1), page3)
         self.assertEqual(collection.page(2), page2)
+        self.assertEqual(collection.pageNumber(page3), 1)
 
         # delete page
         collection.deletePage(-1)
@@ -146,9 +153,12 @@ class TestQgsLayoutPageCollection(unittest.TestCase):
         page2.setPageSize('A5')
         collection.addPage(page2)
 
+        page_about_to_be_removed_spy = QSignalSpy(collection.pageAboutToBeRemoved)
+
         # delete page
         collection.deletePage(None)
         self.assertEqual(collection.pageCount(), 2)
+        self.assertEqual(len(page_about_to_be_removed_spy), 0)
 
         page3 = QgsLayoutItemPage(l)
         # try deleting a page not in collection
@@ -156,18 +166,23 @@ class TestQgsLayoutPageCollection(unittest.TestCase):
         QCoreApplication.sendPostedEvents(None, QEvent.DeferredDelete)
         self.assertFalse(sip.isdeleted(page3))
         self.assertEqual(collection.pageCount(), 2)
+        self.assertEqual(len(page_about_to_be_removed_spy), 0)
 
         collection.deletePage(page)
         self.assertEqual(collection.pageCount(), 1)
         self.assertFalse(page in collection.pages())
         QCoreApplication.sendPostedEvents(None, QEvent.DeferredDelete)
         self.assertTrue(sip.isdeleted(page))
+        self.assertEqual(len(page_about_to_be_removed_spy), 1)
+        self.assertEqual(page_about_to_be_removed_spy[-1][0], 0)
 
         collection.deletePage(page2)
         self.assertEqual(collection.pageCount(), 0)
         self.assertFalse(collection.pages())
         QCoreApplication.sendPostedEvents(None, QEvent.DeferredDelete)
         self.assertTrue(sip.isdeleted(page2))
+        self.assertEqual(len(page_about_to_be_removed_spy), 2)
+        self.assertEqual(page_about_to_be_removed_spy[-1][0], 0)
 
     def testMaxPageWidth(self):
         """
@@ -372,6 +387,44 @@ class TestQgsLayoutPageCollection(unittest.TestCase):
         self.assertEqual(collection.pageAtPoint(QPointF(10, 330)), page2)
         self.assertEqual(collection.pageAtPoint(QPointF(10, 500)), page2)
         self.assertFalse(collection.pageAtPoint(QPointF(10, 600)))
+
+    def testVisiblePages(self):
+        p = QgsProject()
+        l = QgsLayout(p)
+        collection = l.pageCollection()
+
+        self.assertFalse(collection.visiblePages(QRectF(0, 0, 10, 10)))
+        self.assertFalse(collection.visiblePageNumbers(QRectF(0, 0, 10, 10)))
+
+        # add a page
+        page = QgsLayoutItemPage(l)
+        page.setPageSize('A4')
+        collection.addPage(page)
+
+        self.assertFalse(collection.visiblePages(QRectF(-10, -10, 5, 5)))
+        self.assertFalse(collection.visiblePageNumbers(QRectF(-10, -10, 5, 5)))
+        self.assertEqual(collection.visiblePages(QRectF(-10, -10, 15, 15)), [page])
+        self.assertEqual(collection.visiblePageNumbers(QRectF(-10, -10, 15, 15)), [0])
+        self.assertEqual(collection.visiblePages(QRectF(200, 200, 115, 115)), [page])
+        self.assertEqual(collection.visiblePageNumbers(QRectF(200, 200, 115, 115)), [0])
+
+        page2 = QgsLayoutItemPage(l)
+        page2.setPageSize('A5')
+        collection.addPage(page2)
+
+        self.assertFalse(collection.visiblePages(QRectF(-10, -10, 5, 5)))
+        self.assertFalse(collection.visiblePageNumbers(QRectF(-10, -10, 5, 5)))
+        self.assertEqual(collection.visiblePages(QRectF(-10, -10, 15, 15)), [page])
+        self.assertEqual(collection.visiblePageNumbers(QRectF(-10, -10, 15, 15)), [0])
+        self.assertEqual(collection.visiblePages(QRectF(200, 200, 115, 115)), [page])
+        self.assertEqual(collection.visiblePageNumbers(QRectF(200, 200, 115, 115)), [0])
+
+        self.assertEqual(collection.visiblePages(QRectF(200, 200, 115, 615)), [page])
+        self.assertEqual(collection.visiblePageNumbers(QRectF(200, 200, 115, 115)), [0])
+        self.assertEqual(collection.visiblePages(QRectF(100, 200, 115, 615)), [page, page2])
+        self.assertEqual(collection.visiblePageNumbers(QRectF(100, 200, 115, 115)), [0, 1])
+        self.assertEqual(collection.visiblePages(QRectF(100, 310, 115, 615)), [page2])
+        self.assertEqual(collection.visiblePageNumbers(QRectF(100, 310, 115, 115)), [1])
 
 
 if __name__ == '__main__':

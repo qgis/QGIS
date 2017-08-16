@@ -55,6 +55,10 @@ QgsLayoutPagePropertiesWidget::QgsLayoutPagePropertiesWidget( QWidget *parent, Q
   connect( mWidthSpin, static_cast< void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, &QgsLayoutPagePropertiesWidget::setToCustomSize );
   connect( mHeightSpin, static_cast< void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, &QgsLayoutPagePropertiesWidget::setToCustomSize );
 
+  registerDataDefinedButton( mPaperSizeDDBtn, QgsLayoutObject::PresetPaperSize );
+  registerDataDefinedButton( mWidthDDBtn, QgsLayoutObject::ItemWidth );
+  registerDataDefinedButton( mHeightDDBtn, QgsLayoutObject::ItemHeight );
+
   showCurrentPageSize();
 }
 

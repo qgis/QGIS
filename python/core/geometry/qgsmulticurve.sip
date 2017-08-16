@@ -49,6 +49,7 @@ Adds a geometry and takes ownership. Returns true in case of success
 
     virtual QgsAbstractGeometry *boundary() const /Factory/;
 
+
 };
 
 /************************************************************************

@@ -53,6 +53,8 @@ class buildvrt(GdalAlgorithm):
 
     def __init__(self):
         super().__init__()
+
+    def initAlgorithm(self, config=None):
         self.addParameter(ParameterMultipleInput(self.INPUT,
                                                  self.tr('Input layers'), dataobjects.TYPE_RASTER))
         self.addParameter(ParameterSelection(self.RESOLUTION,
@@ -75,7 +77,7 @@ class buildvrt(GdalAlgorithm):
     def group(self):
         return self.tr('Raster miscellaneous')
 
-    def getConsoleCommands(self, parameters):
+    def getConsoleCommands(self, parameters, context, feedback):
         arguments = []
         arguments.append('-resolution')
         arguments.append(self.RESOLUTION_OPTIONS[self.getParameterValue(self.RESOLUTION)])

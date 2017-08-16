@@ -133,7 +133,7 @@ double QgsDistanceArea::measure( const QgsAbstractGeometry *geomV2, MeasureType 
   else
   {
     //multigeom is sum of measured parts
-    const QgsGeometryCollection *collection = dynamic_cast<const QgsGeometryCollection *>( geomV2 );
+    const QgsGeometryCollection *collection = qgsgeometry_cast<const QgsGeometryCollection *>( geomV2 );
     if ( collection )
     {
       double sum = 0;
@@ -146,7 +146,7 @@ double QgsDistanceArea::measure( const QgsAbstractGeometry *geomV2, MeasureType 
 
     if ( measureType == Length )
     {
-      const QgsCurve *curve = dynamic_cast<const QgsCurve *>( geomV2 );
+      const QgsCurve *curve = qgsgeometry_cast<const QgsCurve *>( geomV2 );
       if ( !curve )
       {
         return 0.0;
@@ -159,7 +159,7 @@ double QgsDistanceArea::measure( const QgsAbstractGeometry *geomV2, MeasureType 
     }
     else
     {
-      const QgsSurface *surface = dynamic_cast<const QgsSurface *>( geomV2 );
+      const QgsSurface *surface = qgsgeometry_cast<const QgsSurface *>( geomV2 );
       if ( !surface )
         return 0.0;
 
@@ -216,12 +216,12 @@ double QgsDistanceArea::measurePerimeter( const QgsGeometry &geometry ) const
 
   //create list with (single) surfaces
   QList< const QgsSurface * > surfaces;
-  const QgsSurface *surf = dynamic_cast<const QgsSurface *>( geomV2 );
+  const QgsSurface *surf = qgsgeometry_cast<const QgsSurface *>( geomV2 );
   if ( surf )
   {
     surfaces.append( surf );
   }
-  const QgsMultiSurface *multiSurf = dynamic_cast<const QgsMultiSurface *>( geomV2 );
+  const QgsMultiSurface *multiSurf = qgsgeometry_cast<const QgsMultiSurface *>( geomV2 );
   if ( multiSurf )
   {
     surfaces.reserve( ( surf ? 1 : 0 ) + multiSurf->numGeometries() );

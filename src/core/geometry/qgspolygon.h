@@ -69,5 +69,27 @@ class CORE_EXPORT QgsPolygonV2: public QgsCurvePolygon
      */
     double pointDistanceToBoundary( double x, double y ) const;
 
+#ifndef SIP_RUN
+
+    /**
+     * Cast the \a geom to a QgsPolygonV2.
+     * Should be used by qgsgeometry_cast<QgsPolygonV2 *>( geometry ).
+     *
+     * \note Not available in Python. Objects will be automatically be converted to the appropriate target type.
+     * \since QGIS 3.0
+     */
+    inline const QgsPolygonV2 *cast( const QgsAbstractGeometry *geom ) const
+    {
+      if ( !geom )
+        return nullptr;
+
+      QgsWkbTypes::Type flatType = QgsWkbTypes::flatType( geom->wkbType() );
+
+      if ( flatType == QgsWkbTypes::Polygon
+           || flatType == QgsWkbTypes::Triangle )
+        return static_cast<const QgsPolygonV2 *>( geom );
+      return nullptr;
+    }
+#endif
 };
 #endif // QGSPOLYGONV2_H

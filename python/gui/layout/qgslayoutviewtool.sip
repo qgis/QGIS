@@ -34,7 +34,21 @@ class QgsLayoutViewTool : QObject
 %End
   public:
 
+    enum Flag
+    {
+      FlagSnaps,
+    };
+    typedef QFlags<QgsLayoutViewTool::Flag> Flags;
+
+
     virtual ~QgsLayoutViewTool();
+
+    QgsLayoutViewTool::Flags flags() const;
+%Docstring
+ Returns the current combination of flags set for the tool.
+.. seealso:: setFlags()
+ :rtype: QgsLayoutViewTool.Flags
+%End
 
     virtual void layoutMoveEvent( QgsLayoutViewMouseEvent *event );
 %Docstring
@@ -146,6 +160,12 @@ class QgsLayoutViewTool : QObject
 %End
 
   protected:
+
+    void setFlags( const QgsLayoutViewTool::Flags flags );
+%Docstring
+ Sets the combination of ``flags`` that will be used for the tool.
+.. seealso:: flags()
+%End
 
     QgsLayoutViewTool( QgsLayoutView *view /TransferThis/, const QString &name );
 %Docstring

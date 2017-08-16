@@ -25,6 +25,9 @@
 #include "qgsfeatureiterator.h"
 #include "qgsvectorlayer.h"
 #include "qgssettings.h"
+#include "qgsproject.h"
+#include "qgsrelationmanager.h"
+#include "qgsrelation.h"
 
 #include <QMenu>
 #include <QFile>
@@ -42,6 +45,7 @@ QgsExpressionBuilderWidget::QgsExpressionBuilderWidget( QWidget *parent )
   , mLayer( nullptr )
   , highlighter( nullptr )
   , mExpressionValid( false )
+  , mProject( QgsProject::instance() )
 {
   setupUi( this );
 
@@ -440,6 +444,32 @@ void QgsExpressionBuilderWidget::loadRecent( const QString &collection )
   }
 }
 
+void QgsExpressionBuilderWidget::loadLayers()
+{
+  if ( !mProject )
+    return;
+
+  QMap<QString, QgsMapLayer *> layers = mProject->mapLayers();
+  QMap<QString, QgsMapLayer *>::const_iterator layerIt = layers.constBegin();
+  for ( ; layerIt != layers.constEnd(); ++layerIt )
+  {
+    registerItemForAllGroups( QStringList() << tr( "Map Layers" ), layerIt.value()->name(), QStringLiteral( "'%1'" ).arg( layerIt.key() ), formatLayerHelp( layerIt.value() ) );
+  }
+}
+
+void QgsExpressionBuilderWidget::loadRelations()
+{
+  if ( !mProject )
+    return;
+
+  QMap<QString, QgsRelation> relations = mProject->relationManager()->relations();
+  QMap<QString, QgsRelation>::const_iterator relIt = relations.constBegin();
+  for ( ; relIt != relations.constEnd(); ++relIt )
+  {
+    registerItemForAllGroups( QStringList() << tr( "Relations" ), relIt->name(), QStringLiteral( "'%1'" ).arg( relIt->id() ), formatRelationHelp( relIt.value() ) );
+  }
+}
+
 void QgsExpressionBuilderWidget::updateFunctionTree()
 {
   mModel->clear();
@@ -494,6 +524,12 @@ void QgsExpressionBuilderWidget::updateFunctionTree()
       name += QLatin1String( "()" );
     registerItemForAllGroups( func->groups(), func->name(), ' ' + name + ' ', func->helpText() );
   }
+
+  // load relation names
+  loadRelations();
+
+  // load layer IDs
+  loadLayers();
 
   loadExpressionContext();
 }
@@ -612,6 +648,36 @@ void QgsExpressionBuilderWidget::registerItemForAllGroups( const QStringList &gr
   {
     registerItem( group, label, expressionText, helpText, type, highlightedItem, sortOrder );
   }
+}
+
+QString QgsExpressionBuilderWidget::formatRelationHelp( const QgsRelation &relation ) const
+{
+  QString text = QStringLiteral( "<p>%1</p>" ).arg( tr( "Inserts the relation ID for the relation named '%1'." ).arg( relation.name() ) );
+  text.append( QStringLiteral( "<p>%1</p>" ).arg( tr( "Current value: '%1'" ).arg( relation.id() ) ) );
+  return text;
+}
+
+QString QgsExpressionBuilderWidget::formatLayerHelp( const QgsMapLayer *layer ) const
+{
+  QString text = QStringLiteral( "<p>%1</p>" ).arg( tr( "Inserts the layer ID for the layer named '%1'." ).arg( layer->name() ) );
+  text.append( QStringLiteral( "<p>%1</p>" ).arg( tr( "Current value: '%1'" ).arg( layer->id() ) ) );
+  return text;
+}
+
+QStandardItemModel *QgsExpressionBuilderWidget::model()
+{
+  return mModel;
+}
+
+QgsProject *QgsExpressionBuilderWidget::project()
+{
+  return mProject;
+}
+
+void QgsExpressionBuilderWidget::setProject( QgsProject *project )
+{
+  mProject = project;
+  updateFunctionTree();
 }
 
 void QgsExpressionBuilderWidget::showEvent( QShowEvent *e )

@@ -34,6 +34,7 @@ QgsDecorationNorthArrowDialog::QgsDecorationNorthArrowDialog( QgsDecorationNorth
 
   QPushButton *applyButton = buttonBox->button( QDialogButtonBox::Apply );
   connect( applyButton, &QAbstractButton::clicked, this, &QgsDecorationNorthArrowDialog::apply );
+  connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsDecorationNorthArrowDialog::showHelp );
 
   // signal/slot connection defined in 'designer' causes the slider to
   // be moved to reflect the change in the spinbox.
@@ -78,7 +79,7 @@ QgsDecorationNorthArrowDialog::~QgsDecorationNorthArrowDialog()
   settings.setValue( QStringLiteral( "Windows/DecorationNorthArrow/geometry" ), saveGeometry() );
 }
 
-void QgsDecorationNorthArrowDialog::on_buttonBox_helpRequested()
+void QgsDecorationNorthArrowDialog::showHelp()
 {
   QgsHelp::openHelp( QStringLiteral( "introduction/general_tools.html#north-arrow" ) );
 }

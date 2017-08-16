@@ -3810,6 +3810,7 @@ void QgsVectorLayer::setEditFormConfig( const QgsEditFormConfig &editFormConfig 
     return;
 
   mEditFormConfig = editFormConfig;
+  mEditFormConfig.onRelationsLoaded();
   emit editFormConfigChanged();
 }
 

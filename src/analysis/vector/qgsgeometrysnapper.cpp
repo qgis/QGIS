@@ -332,9 +332,9 @@ void QgsSnapIndex::addGeometry( const QgsAbstractGeometry *geom )
     {
       int nVerts = geom->vertexCount( iPart, iRing );
 
-      if ( dynamic_cast< const QgsSurface * >( geom ) )
+      if ( qgsgeometry_cast< const QgsSurface * >( geom ) )
         nVerts--;
-      else if ( const QgsCurve *curve = dynamic_cast< const QgsCurve * >( geom ) )
+      else if ( const QgsCurve *curve = qgsgeometry_cast< const QgsCurve * >( geom ) )
       {
         if ( curve->isClosed() )
           nVerts--;
@@ -510,7 +510,7 @@ QgsGeometry QgsGeometrySnapper::snapGeometry( const QgsGeometry &geometry, doubl
        ( mode == EndPointPreferClosest || mode == EndPointPreferNodes || mode == EndPointToEndPoint ) )
     return geometry;
 
-  QgsPoint center = dynamic_cast< const QgsPoint * >( geometry.geometry() ) ? *static_cast< const QgsPoint * >( geometry.geometry() ) :
+  QgsPoint center = qgsgeometry_cast< const QgsPoint * >( geometry.geometry() ) ? *static_cast< const QgsPoint * >( geometry.geometry() ) :
                     QgsPoint( geometry.geometry()->boundingBox().center() );
 
   QgsSnapIndex refSnapIndex( center, 10 * snapTolerance );
@@ -607,7 +607,7 @@ QgsGeometry QgsGeometrySnapper::snapGeometry( const QgsGeometry &geometry, doubl
   }
 
   //nothing more to do for points
-  if ( dynamic_cast< const QgsPoint * >( subjGeom ) )
+  if ( qgsgeometry_cast< const QgsPoint * >( subjGeom ) )
     return QgsGeometry( subjGeom );
   //or for end point snapping
   if ( mode == EndPointPreferClosest || mode == EndPointPreferNodes || mode == EndPointToEndPoint )
@@ -715,7 +715,7 @@ int QgsGeometrySnapper::polyLineSize( const QgsAbstractGeometry *geom, int iPart
 {
   int nVerts = geom->vertexCount( iPart, iRing );
 
-  if ( dynamic_cast< const QgsSurface * >( geom ) )
+  if ( qgsgeometry_cast< const QgsSurface * >( geom ) )
   {
     QgsPoint front = geom->vertexAt( QgsVertexId( iPart, iRing, 0 ) );
     QgsPoint back = geom->vertexAt( QgsVertexId( iPart, iRing, nVerts - 1 ) );

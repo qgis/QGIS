@@ -77,7 +77,6 @@ class QgsSublayersDialog : QDialog
 %End
 
   public slots:
-    void on_buttonBox_helpRequested();
     int exec();
 %Docstring
  :rtype: int

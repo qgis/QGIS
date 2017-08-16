@@ -17,6 +17,7 @@
 #include "qgstest.h"
 
 #include "qgsfilewidget.h"
+#include <memory>
 
 class TestQgsFileWidget: public QObject
 {
@@ -29,6 +30,7 @@ class TestQgsFileWidget: public QObject
 
     void relativePath();
     void toUrl();
+    void testDroppedFiles();
 
 };
 
@@ -81,7 +83,62 @@ void TestQgsFileWidget::toUrl()
   QCOMPARE( w->toUrl( "../test2/file6.ext" ), QString( "<a href=\"file:///home/test2/file6.ext\">file6.ext</a>" ) );
 }
 
+void TestQgsFileWidget::testDroppedFiles()
+{
+  QgsFileWidget *w = new QgsFileWidget();
+  w->setStorageMode( QgsFileWidget::GetFile );
 
+  // should not accept dropped folders
+  std::unique_ptr< QMimeData > mime( new QMimeData() );
+  mime->setUrls( QList<QUrl>() << QUrl::fromLocalFile( TEST_DATA_DIR ) );
+  std::unique_ptr< QDropEvent > event( new QDropEvent( QPointF( 1, 1 ), Qt::CopyAction, mime.get(), Qt::LeftButton, Qt::NoModifier ) );
+
+  qobject_cast< QgsFileDropEdit * >( w->lineEdit() )->dropEvent( event.get() );
+  QVERIFY( w->lineEdit()->text().isEmpty() );
+
+  // but dropped files should be fine
+  mime->setUrls( QList<QUrl>() << QUrl::fromLocalFile( TEST_DATA_DIR + QStringLiteral( "/bug5598.shp" ) ) );
+  event.reset( new QDropEvent( QPointF( 1, 1 ), Qt::CopyAction, mime.get(), Qt::LeftButton,  Qt::NoModifier ) );
+  qobject_cast< QgsFileDropEdit * >( w->lineEdit() )->dropEvent( event.get() );
+  QCOMPARE( w->lineEdit()->text(), TEST_DATA_DIR + QStringLiteral( "/bug5598.shp" ) );
+
+  // with file filter
+  w->setFilter( QStringLiteral( "Data (*.shp)" ) );
+  w->setFilePath( QString() );
+  qobject_cast< QgsFileDropEdit * >( w->lineEdit() )->dropEvent( event.get() );
+  QCOMPARE( w->lineEdit()->text(), TEST_DATA_DIR + QStringLiteral( "/bug5598.shp" ) );
+  w->setFilePath( QString() );
+  // should be rejected, not compatible with filter
+  mime->setUrls( QList<QUrl>() << QUrl::fromLocalFile( TEST_DATA_DIR + QStringLiteral( "/encoded_html.html" ) ) );
+  event.reset( new QDropEvent( QPointF( 1, 1 ), Qt::CopyAction, mime.get(), Qt::LeftButton,  Qt::NoModifier ) );
+  qobject_cast< QgsFileDropEdit * >( w->lineEdit() )->dropEvent( event.get() );
+  QVERIFY( w->lineEdit()->text().isEmpty() );
+  // new filter, should be allowed now
+  w->setFilter( QStringLiteral( "Data (*.shp);;HTML (*.HTML)" ) );
+  qobject_cast< QgsFileDropEdit * >( w->lineEdit() )->dropEvent( event.get() );
+  QCOMPARE( w->lineEdit()->text(), TEST_DATA_DIR + QStringLiteral( "/encoded_html.html" ) );
+
+  //try with wildcard filter
+  w->setFilter( QStringLiteral( "All files (*.*);;Data (*.shp);;HTML (*.HTML)" ) );
+  mime->setUrls( QList<QUrl>() << QUrl::fromLocalFile( TEST_DATA_DIR + QStringLiteral( "/bug5598.prj" ) ) );
+  event.reset( new QDropEvent( QPointF( 1, 1 ), Qt::CopyAction, mime.get(), Qt::LeftButton,  Qt::NoModifier ) );
+  qobject_cast< QgsFileDropEdit * >( w->lineEdit() )->dropEvent( event.get() );
+  QCOMPARE( w->lineEdit()->text(), TEST_DATA_DIR + QStringLiteral( "/bug5598.prj" ) );
+
+  // try with folders
+  w->setStorageMode( QgsFileWidget::GetDirectory );
+  w->setFilePath( QString() );
+  // should be rejected
+  qobject_cast< QgsFileDropEdit * >( w->lineEdit() )->dropEvent( event.get() );
+  QVERIFY( w->lineEdit()->text().isEmpty() );
+
+  // but dropping a folder should work
+  mime->setUrls( QList<QUrl>() << QUrl::fromLocalFile( TEST_DATA_DIR ) );
+  event.reset( new QDropEvent( QPointF( 1, 1 ), Qt::CopyAction, mime.get(), Qt::LeftButton, Qt::NoModifier ) );
+  qobject_cast< QgsFileDropEdit * >( w->lineEdit() )->dropEvent( event.get() );
+  QCOMPARE( w->lineEdit()->text(), QString( TEST_DATA_DIR ) );
+
+}
 
 QGSTEST_MAIN( TestQgsFileWidget )
 #include "testqgsfilewidget.moc"

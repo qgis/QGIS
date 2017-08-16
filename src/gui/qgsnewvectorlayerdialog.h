@@ -68,7 +68,9 @@ class GUI_EXPORT QgsNewVectorLayerDialog: public QDialog, private Ui::QgsNewVect
     void on_mRemoveAttributeButton_clicked();
     void on_mFileFormatComboBox_currentIndexChanged( int index );
     void on_mTypeBox_currentIndexChanged( int index );
-    void on_buttonBox_helpRequested() { QgsHelp::openHelp( QStringLiteral( "working_with_vector/editing_geometry_attributes.html#creating-a-new-shapefile-layer" ) ); }
+
+    //! Open the associated help
+    void showHelp();
     void nameChanged( const QString & );
     void selectionChanged();
 

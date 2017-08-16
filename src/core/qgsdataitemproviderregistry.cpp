@@ -21,7 +21,7 @@
 #include "qgslogger.h"
 #include "qgsproviderregistry.h"
 
-typedef QList<QgsDataItemProvider *> dataItemProviders_t();
+typedef QList<QgsDataItemProvider *> *dataItemProviders_t();
 
 
 /**
@@ -71,8 +71,10 @@ QgsDataItemProviderRegistry::QgsDataItemProviderRegistry()
     dataItemProviders_t *dataItemProvidersFn = reinterpret_cast< dataItemProviders_t * >( cast_to_fptr( library->resolve( "dataItemProviders" ) ) );
     if ( dataItemProvidersFn )
     {
+      QList<QgsDataItemProvider *> *providerList = dataItemProvidersFn();
       // the function is a factory - we keep ownership of the returned providers
-      mProviders << dataItemProvidersFn();
+      mProviders << *providerList;
+      delete providerList;
     }
 
     // legacy support - using dataItem() and dataCapabilities() methods

@@ -312,7 +312,7 @@ void Problem::init_sol_falp()
 
   while ( list->getSize() > 0 ) // O (log size)
   {
-    if ( pal->isCancelled() )
+    if ( pal->isCanceled() )
     {
       delete context;
       delete list;

@@ -232,7 +232,7 @@ QString qgsVsiPrefix( const QString &path )
 uint qHash( const QVariant &variant )
 {
   if ( !variant.isValid() || variant.isNull() )
-    return -1;
+    return std::numeric_limits<uint>::max();
 
   switch ( variant.type() )
   {
@@ -290,8 +290,8 @@ uint qHash( const QVariant &variant )
     case QVariant::RegExp:
       return qHash( variant.toString() );
     default:
-      return -1;
+      break;
   }
 
-  return -1;
+  return std::numeric_limits<uint>::max();
 }

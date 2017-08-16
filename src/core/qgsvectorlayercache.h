@@ -383,8 +383,8 @@ class CORE_EXPORT QgsVectorLayerCache : public QObject
     QgsVectorLayer *mLayer = nullptr;
     QCache< QgsFeatureId, QgsCachedFeature > mCache;
 
-    bool mCacheGeometry;
-    bool mFullCache;
+    bool mCacheGeometry = true;
+    bool mFullCache = false;
     QList<QgsAbstractCacheIndex *> mCacheIndices;
 
     QgsAttributeList mCachedAttributes;

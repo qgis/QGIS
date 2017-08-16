@@ -43,23 +43,23 @@ extern "C"
 #include "qgsgrass.h"
 #include "qgsgrassdatafile.h"
 
-static struct line_pnts *line = Vect_new_line_struct();
+static struct line_pnts *gLine = Vect_new_line_struct();
 
 void writePoint( struct Map_info *map, int type, const QgsPointXY &point, struct line_cats *cats )
 {
-  Vect_reset_line( line );
-  Vect_append_point( line, point.x(), point.y(), 0 );
-  Vect_write_line( map, type, line, cats );
+  Vect_reset_line( gLine );
+  Vect_append_point( gLine, point.x(), point.y(), 0 );
+  Vect_write_line( map, type, gLine, cats );
 }
 
 void writePolyline( struct Map_info *map, int type, const QgsPolyline &polyline, struct line_cats *cats )
 {
-  Vect_reset_line( line );
+  Vect_reset_line( gLine );
   Q_FOREACH ( const QgsPointXY &point, polyline )
   {
-    Vect_append_point( line, point.x(), point.y(), 0 );
+    Vect_append_point( gLine, point.x(), point.y(), 0 );
   }
-  Vect_write_line( map, type, line, cats );
+  Vect_write_line( map, type, gLine, cats );
 }
 
 static struct Map_info *finalMap = 0;

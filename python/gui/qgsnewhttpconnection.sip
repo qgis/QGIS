@@ -8,6 +8,8 @@
 
 
 
+
+
 class QgsNewHttpConnection : QDialog
 {
 %Docstring
@@ -27,12 +29,8 @@ Constructor
   public slots:
     virtual void accept();
 
-
     void on_txtName_textChanged( const QString & );
-
     void on_txtUrl_textChanged( const QString & );
-
-    void on_buttonBox_helpRequested();
 
 };
 

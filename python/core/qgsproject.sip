@@ -612,6 +612,12 @@ Returns the number of registered layers.
  :rtype: QMap<str, QgsMapLayer *>
 %End
 
+    bool isZipped() const;
+%Docstring
+ Returns true if the project comes from a zip archive, false otherwise.
+ :rtype: bool
+%End
+
 
     QList<QgsMapLayer *> addMapLayers( const QList<QgsMapLayer *> &mapLayers /Transfer/,
                                        bool addToLegend = true);
@@ -771,6 +777,14 @@ Returns the number of registered layers.
  with any changes in the datasource.
 .. seealso:: QgsMapLayer.reload()
 %End
+
+    QgsCoordinateReferenceSystem defaultCrsForNewLayers() const;
+%Docstring
+ Returns the default CRS for new layers based on the settings and
+ the current project CRS
+ :rtype: QgsCoordinateReferenceSystem
+%End
+
 
   signals:
     void readProject( const QDomDocument & );
@@ -1003,6 +1017,8 @@ emitted whenever the configuration for snapping has changed
 
  \param layers List of QgsMapLayer which were added to the legend.
 %End
+
+
 
   public slots:
 

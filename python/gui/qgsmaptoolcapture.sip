@@ -121,11 +121,6 @@ Removes the last vertex from mRubberBand and mCaptureList
  :rtype: bool
 %End
 
-    void stopCapturing();
-%Docstring
- Stop capturing
-%End
-
     int size();
 %Docstring
  Number of points digitized
@@ -151,6 +146,13 @@ Removes the last vertex from mRubberBand and mCaptureList
     void closePolygon();
 %Docstring
  Close an open polygon
+%End
+
+  protected slots:
+
+    void stopCapturing();
+%Docstring
+ Stop capturing
 %End
 
 };

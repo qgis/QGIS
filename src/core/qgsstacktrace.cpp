@@ -49,7 +49,7 @@ QVector<QgsStackTrace::StackLine> QgsStackTrace::trace( _EXCEPTION_POINTERS *Exc
     paths = QgsStackTrace::mSymbolPaths.toStdString().c_str();
   }
 
-  BOOL success = SymInitialize( process, paths, TRUE );
+  SymInitialize( process, paths, TRUE );
 
   // StackWalk64() may modify context record passed to it, so we will
   // use a copy.

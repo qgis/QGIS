@@ -182,7 +182,7 @@ void QgsMapToolAnnotation::canvasMoveEvent( QgsMapMouseEvent *e )
   {
     if ( mCurrentMoveAction == QgsMapCanvasAnnotationItem::MoveMapPosition )
     {
-      QgsPointXY mapPos = transformCanvasToAnnotation( e->snapPoint( QgsMapMouseEvent::SnapProjectConfig ), annotation );
+      QgsPointXY mapPos = transformCanvasToAnnotation( e->snapPoint(), annotation );
       annotation->setMapPosition( mapPos );
       annotation->setRelativePosition( QPointF( e->posF().x() / mCanvas->width(),
                                        e->posF().y() / mCanvas->height() ) );

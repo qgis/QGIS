@@ -28,13 +28,14 @@ __revision__ = '$Format:%H$'
 
 import os
 
+from qgis.core import (QgsProcessingParameterRasterLayer,
+                       QgsProcessingParameterBoolean,
+                       QgsProcessingParameterNumber,
+                       QgsProcessingParameterRasterDestination)
+
 from qgis.PyQt.QtGui import QIcon
 
 from processing.algs.gdal.GdalAlgorithm import GdalAlgorithm
-from processing.core.parameters import ParameterRaster
-from processing.core.parameters import ParameterNumber
-from processing.core.parameters import ParameterBoolean
-from processing.core.outputs import OutputRaster
 from processing.algs.gdal.GdalUtils import GdalUtils
 
 pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
@@ -52,14 +53,16 @@ class nearblack(GdalAlgorithm):
 
     def __init__(self):
         super().__init__()
-        self.addParameter(ParameterRaster(self.INPUT,
-                                          self.tr('Input layer'), False))
-        self.addParameter(ParameterNumber(self.NEAR,
-                                          self.tr('How far from black (white)'), 0, None, 15))
-        self.addParameter(ParameterBoolean(self.WHITE,
-                                           self.tr('Search for nearly white pixels instead of nearly black'),
-                                           False))
-        self.addOutput(OutputRaster(self.OUTPUT, self.tr('Nearblack')))
+
+    def initAlgorithm(self, config=None):
+        self.addParameter(QgsProcessingParameterRasterLayer(self.INPUT, self.tr('Input layer'), False))
+        self.addParameter(QgsProcessingParameterNumber(self.NEAR,
+                                                       self.tr('How far from black (white)'),
+                                                       type=QgsProcessingParameterNumber.Integer, minValue=0, maxValue=15, defaultValue=None))
+        self.addParameter(QgsProcessingParameterBoolean(self.WHITE,
+                                                        self.tr('Search for nearly white pixels instead of nearly black'),
+                                                        defaultValue=False))
+        self.addParameter(QgsProcessingParameterRasterDestination(self.OUTPUT, self.tr('Nearblack')))
 
     def name(self):
         return 'nearblack'
@@ -70,16 +73,18 @@ class nearblack(GdalAlgorithm):
     def group(self):
         return self.tr('Raster analysis')
 
-    def getConsoleCommands(self, parameters):
+    def getConsoleCommands(self, parameters, context, feedback):
+        out = str(self.parameterAsOutputLayer(parameters, self.OUTPUT, context))
+
         arguments = []
         arguments.append('-o')
-        output = str(self.getOutputValue(self.OUTPUT))
-        arguments.append(output)
+        arguments.append(out)
         arguments.append('-of')
-        arguments.append(GdalUtils.getFormatShortNameFromFilename(output))
+        arguments.append(GdalUtils.getFormatShortNameFromFilename(out))
         arguments.append('-near')
-        arguments.append(str(self.getParameterValue(self.NEAR)))
-        if self.getParameterValue(self.WHITE):
+        arguments.append(str(self.parameterAsInt(parameters, self.NEAR, context)))
+        if self.parameterAsBool(parameters, self.WHITE, context):
             arguments.append('-white')
-        arguments.append(self.getParameterValue(self.INPUT))
+        arguments.append(self.parameterAsRasterLayer(parameters, self.INPUT, context).source())
+
         return ['nearblack', GdalUtils.escapeAndJoin(arguments)]

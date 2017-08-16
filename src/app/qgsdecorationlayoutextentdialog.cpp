@@ -40,10 +40,6 @@ QgsDecorationLayoutExtentDialog::QgsDecorationLayoutExtentDialog( QgsDecorationL
   QgsSettings settings;
   restoreGeometry( settings.value( "/Windows/DecorationLayoutExtent/geometry" ).toByteArray() );
 
-  connect( mCheckBoxLabelExtents, &QCheckBox::toggled, mButtonFontStyle, &QPushButton::setEnabled );
-  mCheckBoxLabelExtents->setChecked( false );
-  mButtonFontStyle->setEnabled( false );
-
   updateGuiElements();
   connect( buttonBox->button( QDialogButtonBox::Apply ), &QAbstractButton::clicked, this, &QgsDecorationLayoutExtentDialog::apply );
 

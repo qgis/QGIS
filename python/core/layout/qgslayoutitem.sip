@@ -228,6 +228,11 @@ class QgsLayoutItem : QgsLayoutObject, QGraphicsRectItem
  recalculation of its position and size.
 %End
 
+    virtual void redraw();
+%Docstring
+ Triggers a redraw (update) of the item.
+%End
+
     virtual void refreshDataDefinedProperty( const QgsLayoutObject::DataDefinedProperty property = QgsLayoutObject::AllProperties );
 %Docstring
  Refreshes a data defined ``property`` for the item by reevaluating the property's value

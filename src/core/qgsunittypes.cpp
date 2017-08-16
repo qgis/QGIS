@@ -1485,6 +1485,8 @@ QgsUnitTypes::DistanceValue QgsUnitTypes::scaledDistance( double distance, QgsUn
 QgsUnitTypes::AreaValue QgsUnitTypes::scaledArea( double area, QgsUnitTypes::AreaUnit unit, int decimals, bool keepBaseUnit )
 {
   AreaValue result;
+  result.value = -1.0;
+  result.unit = AreaUnknownUnit;
 
   // If we are not forced to keep the base units, switch to meter calculation
   if ( unit == AreaSquareMillimeters )

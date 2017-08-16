@@ -54,7 +54,7 @@ class FixedDistanceBuffer(QgisAlgorithm):
     DISSOLVE = 'DISSOLVE'
     END_CAP_STYLE = 'END_CAP_STYLE'
     JOIN_STYLE = 'JOIN_STYLE'
-    MITRE_LIMIT = 'MITRE_LIMIT'
+    MITER_LIMIT = 'MITER_LIMIT'
 
     def icon(self):
         return QIcon(os.path.join(pluginPath, 'images', 'ftools', 'buffer.png'))
@@ -83,14 +83,14 @@ class FixedDistanceBuffer(QgisAlgorithm):
             self.tr('End cap style'),
             options=self.end_cap_styles, defaultValue=0))
         self.join_styles = [self.tr('Round'),
-                            'Mitre',
+                            'Miter',
                             'Bevel']
         self.addParameter(QgsProcessingParameterEnum(
             self.JOIN_STYLE,
             self.tr('Join style'),
             options=self.join_styles, defaultValue=0))
-        self.addParameter(QgsProcessingParameterNumber(self.MITRE_LIMIT,
-                                                       self.tr('Mitre limit'), minValue=0, defaultValue=2))
+        self.addParameter(QgsProcessingParameterNumber(self.MITER_LIMIT,
+                                                       self.tr('Miter limit'), minValue=0, defaultValue=2))
 
         self.addParameter(QgsProcessingParameterFeatureSink(self.OUTPUT, self.tr('Buffer'), QgsProcessing.TypeVectorPolygon))
 
@@ -108,7 +108,7 @@ class FixedDistanceBuffer(QgisAlgorithm):
         segments = self.parameterAsInt(parameters, self.SEGMENTS, context)
         end_cap_style = self.parameterAsEnum(parameters, self.END_CAP_STYLE, context) + 1
         join_style = self.parameterAsEnum(parameters, self.JOIN_STYLE, context) + 1
-        miter_limit = self.parameterAsDouble(parameters, self.MITRE_LIMIT, context)
+        miter_limit = self.parameterAsDouble(parameters, self.MITER_LIMIT, context)
 
         (sink, dest_id) = self.parameterAsSink(parameters, self.OUTPUT, context,
                                                source.fields(), QgsWkbTypes.Polygon, source.sourceCrs())

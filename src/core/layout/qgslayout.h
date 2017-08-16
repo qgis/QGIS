@@ -19,8 +19,11 @@
 #include "qgis_core.h"
 #include <QGraphicsScene>
 #include "qgslayoutcontext.h"
+#include "qgslayoutsnapper.h"
 #include "qgsexpressioncontextgenerator.h"
 #include "qgslayoutpagecollection.h"
+#include "qgslayoutgridsettings.h"
+#include "qgslayoutguidecollection.h"
 
 class QgsLayoutItemMap;
 
@@ -40,7 +43,11 @@ class CORE_EXPORT QgsLayout : public QGraphicsScene, public QgsExpressionContext
     enum ZValues
     {
       ZPage = 0, //!< Z-value for page (paper) items
+      ZItem = 1, //!< Minimum z value for items
+      ZGrid = 9998, //!< Z-value for page grids
+      ZGuide = 9999, //!< Z-value for page guides
       ZMapTool = 10000, //!< Z-value for temporary map tool items
+      ZSnapIndicator = 10001, //!< Z-value for snapping indicator
     };
 
     /**
@@ -51,6 +58,8 @@ class CORE_EXPORT QgsLayout : public QGraphicsScene, public QgsExpressionContext
      * called on the new layout.
      */
     QgsLayout( QgsProject *project );
+
+    ~QgsLayout();
 
     /**
      * Initializes an empty layout, e.g. by adding a default page to the layout. This should be called after creating
@@ -153,6 +162,40 @@ class CORE_EXPORT QgsLayout : public QGraphicsScene, public QgsExpressionContext
     SIP_SKIP const QgsLayoutContext &context() const { return mContext; }
 
     /**
+     * Returns a reference to the layout's snapper, which stores handles layout snap grids and lines
+     * and snapping points to the nearest matching point.
+     */
+    QgsLayoutSnapper &snapper() { return mSnapper; }
+
+    /**
+     * Returns a reference to the layout's snapper, which stores handles layout snap grids and lines
+     * and snapping points to the nearest matching point.
+     */
+    SIP_SKIP const QgsLayoutSnapper &snapper() const { return mSnapper; }
+
+    /**
+     * Returns a reference to the layout's grid settings, which stores settings relating
+     * to grid appearance, spacing and offsets.
+     */
+    QgsLayoutGridSettings &gridSettings() { return mGridSettings; }
+
+    /**
+     * Returns a reference to the layout's grid settings, which stores settings relating
+     * to grid appearance, spacing and offsets.
+     */
+    SIP_SKIP const QgsLayoutGridSettings &gridSettings() const { return mGridSettings; }
+
+    /**
+     * Returns a reference to the layout's guide collection, which manages page snap guides.
+     */
+    QgsLayoutGuideCollection &guides();
+
+    /**
+     * Returns a reference to the layout's guide collection, which manages page snap guides.
+     */
+    SIP_SKIP const QgsLayoutGuideCollection &guides() const;
+
+    /**
      * Creates an expression context relating to the layout's current state. The context includes
      * scopes for global, project, layout and layout context properties.
      */
@@ -222,6 +265,12 @@ class CORE_EXPORT QgsLayout : public QGraphicsScene, public QgsExpressionContext
     QgsLayoutPageCollection *pageCollection();
 
     /**
+     * Returns a pointer to the layout's page collection, which stores and manages
+     * page items in the layout.
+     */
+    SIP_SKIP const QgsLayoutPageCollection *pageCollection() const;
+
+    /**
      * Calculates the bounds of all non-gui items in the layout. Ignores snap lines, mouse handles
      * and other cosmetic items.
      * \param ignorePages set to true to ignore page items
@@ -260,8 +309,12 @@ class CORE_EXPORT QgsLayout : public QGraphicsScene, public QgsExpressionContext
 
     QgsUnitTypes::LayoutUnit mUnits = QgsUnitTypes::LayoutMillimeters;
     QgsLayoutContext mContext;
+    QgsLayoutSnapper mSnapper;
+    QgsLayoutGridSettings mGridSettings;
 
     std::unique_ptr< QgsLayoutPageCollection > mPageCollection;
+
+    std::unique_ptr< QgsLayoutGuideCollection > mGuideCollection;
 
 };
 

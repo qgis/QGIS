@@ -30,10 +30,10 @@ from qgis.core import QgsSettings
 
 
 class optionsDialog(QDialog, Ui_SettingsDialogPythonConsole):
-
     def __init__(self, parent):
         QDialog.__init__(self, parent)
-        self.setWindowTitle(QCoreApplication.translate("SettingsDialogPythonConsole", "Settings Python Console"))
+        self.setWindowTitle(QCoreApplication.translate(
+            "SettingsDialogPythonConsole", "Python Console Settings"))
         self.parent = parent
         self.setupUi(self)
 
@@ -79,19 +79,19 @@ class optionsDialog(QDialog, Ui_SettingsDialogPythonConsole):
             self, "Open API File", lastDirPath, "API file (*.api)")
         if fileAPI:
             self.addAPI(fileAPI)
-
-            lastDirPath = QFileInfo(fileAPI).path()
             settings.setValue("pythonConsole/lastDirAPIPath", fileAPI)
 
     def _prepareAPI(self):
         if self.tableWidget.rowCount() != 0:
-            pap_file, filter = QFileDialog().getSaveFileName(self,
-                                                             "",
-                                                             '*.pap',
-                                                             "Prepared APIs file (*.pap)")
+            pap_file, filter = QFileDialog().getSaveFileName(
+                self,
+                "",
+                '*.pap',
+                "Prepared APIs file (*.pap)")
         else:
-            QMessageBox.information(self, self.tr("Warning!"),
-                                    self.tr('You need to add some APIs file in order to compile'))
+            QMessageBox.information(
+                self, self.tr("Warning!"),
+                self.tr('You need to add some APIs file in order to compile'))
             return
         if pap_file:
             api_lexer = 'QsciLexerPython'
@@ -108,15 +108,17 @@ class optionsDialog(QDialog, Ui_SettingsDialogPythonConsole):
 
     def accept(self):
         if not self.preloadAPI.isChecked() and \
-           not self.groupBoxPreparedAPI.isChecked():
+                not self.groupBoxPreparedAPI.isChecked():
             if self.tableWidget.rowCount() == 0:
-                QMessageBox.information(self, self.tr("Warning!"),
-                                        self.tr('Please specify API file or check "Use preloaded API files"'))
+                QMessageBox.information(
+                    self, self.tr("Warning!"),
+                    self.tr('Please specify API file or check "Use preloaded API files"'))
                 return
         if self.groupBoxPreparedAPI.isChecked() and \
-           not self.lineEdit.text():
-            QMessageBox.information(self, self.tr("Warning!"),
-                                    self.tr('The APIs file was not compiled, click on "Compile APIs..."'))
+                not self.lineEdit.text():
+            QMessageBox.information(
+                self, self.tr("Warning!"),
+                self.tr('The APIs file was not compiled, click on "Compile APIs..."'))
             return
         self.saveSettings()
         self.listPath = []
@@ -214,9 +216,11 @@ class optionsDialog(QDialog, Ui_SettingsDialogPythonConsole):
         settings.setValue("pythonConsole/doubleQuoteFontColor", self.doubleQuoteFontColor.color())
         settings.setValue("pythonConsole/doubleQuoteFontColorEditor", self.doubleQuoteFontColorEditor.color())
         settings.setValue("pythonConsole/tripleSingleQuoteFontColor", self.tripleSingleQuoteFontColor.color())
-        settings.setValue("pythonConsole/tripleSingleQuoteFontColorEditor", self.tripleSingleQuoteFontColorEditor.color())
+        settings.setValue("pythonConsole/tripleSingleQuoteFontColorEditor",
+                          self.tripleSingleQuoteFontColorEditor.color())
         settings.setValue("pythonConsole/tripleDoubleQuoteFontColor", self.tripleDoubleQuoteFontColor.color())
-        settings.setValue("pythonConsole/tripleDoubleQuoteFontColorEditor", self.tripleDoubleQuoteFontColorEditor.color())
+        settings.setValue("pythonConsole/tripleDoubleQuoteFontColorEditor",
+                          self.tripleDoubleQuoteFontColorEditor.color())
 
     def restoreSettings(self):
         settings = QgsSettings()
@@ -243,13 +247,15 @@ class optionsDialog(QDialog, Ui_SettingsDialogPythonConsole):
 
         self.autoCompThreshold.setValue(settings.value("pythonConsole/autoCompThreshold", 2, type=int))
         self.autoCompThresholdEditor.setValue(settings.value("pythonConsole/autoCompThresholdEditor", 2, type=int))
-        self.groupBoxAutoCompletionEditor.setChecked(settings.value("pythonConsole/autoCompleteEnabledEditor", True, type=bool))
+        self.groupBoxAutoCompletionEditor.setChecked(
+            settings.value("pythonConsole/autoCompleteEnabledEditor", True, type=bool))
         self.groupBoxAutoCompletion.setChecked(settings.value("pythonConsole/autoCompleteEnabled", True, type=bool))
 
         self.enableObjectInspector.setChecked(settings.value("pythonConsole/enableObjectInsp", False, type=bool))
         self.autoCloseBracketEditor.setChecked(settings.value("pythonConsole/autoCloseBracketEditor", False, type=bool))
         self.autoCloseBracket.setChecked(settings.value("pythonConsole/autoCloseBracket", False, type=bool))
-        self.autoInsertionImportEditor.setChecked(settings.value("pythonConsole/autoInsertionImportEditor", True, type=bool))
+        self.autoInsertionImportEditor.setChecked(
+            settings.value("pythonConsole/autoInsertionImportEditor", True, type=bool))
         self.autoInsertionImport.setChecked(settings.value("pythonConsole/autoInsertionImport", True, type=bool))
 
         if settings.value("pythonConsole/autoCompleteSource") == 'fromDoc':
@@ -268,35 +274,52 @@ class optionsDialog(QDialog, Ui_SettingsDialogPythonConsole):
 
         # Setting font lexer color
         self.defaultFontColor.setColor(QColor(settings.value("pythonConsole/defaultFontColor", QColor(Qt.black))))
-        self.defaultFontColorEditor.setColor(QColor(settings.value("pythonConsole/defaultFontColorEditor", QColor(Qt.black))))
+        self.defaultFontColorEditor.setColor(
+            QColor(settings.value("pythonConsole/defaultFontColorEditor", QColor(Qt.black))))
         self.keywordFontColor.setColor(QColor(settings.value("pythonConsole/keywordFontColor", QColor(Qt.darkGreen))))
-        self.keywordFontColorEditor.setColor(QColor(settings.value("pythonConsole/keywordFontColorEditor", QColor(Qt.darkGreen))))
+        self.keywordFontColorEditor.setColor(
+            QColor(settings.value("pythonConsole/keywordFontColorEditor", QColor(Qt.darkGreen))))
         self.classFontColor.setColor(QColor(settings.value("pythonConsole/classFontColor", QColor(Qt.blue))))
-        self.classFontColorEditor.setColor(QColor(settings.value("pythonConsole/classFontColorEditor", QColor(Qt.blue))))
+        self.classFontColorEditor.setColor(
+            QColor(settings.value("pythonConsole/classFontColorEditor", QColor(Qt.blue))))
         self.methodFontColor.setColor(QColor(settings.value("pythonConsole/methodFontColor", QColor(Qt.darkGray))))
-        self.methodFontColorEditor.setColor(QColor(settings.value("pythonConsole/methodFontColorEditor", QColor(Qt.darkGray))))
+        self.methodFontColorEditor.setColor(
+            QColor(settings.value("pythonConsole/methodFontColorEditor", QColor(Qt.darkGray))))
         self.decorFontColor.setColor(QColor(settings.value("pythonConsole/decorFontColor", QColor(Qt.darkBlue))))
-        self.decorFontColorEditor.setColor(QColor(settings.value("pythonConsole/decorFontColorEditor", QColor(Qt.darkBlue))))
+        self.decorFontColorEditor.setColor(
+            QColor(settings.value("pythonConsole/decorFontColorEditor", QColor(Qt.darkBlue))))
         self.commentFontColor.setColor(QColor(settings.value("pythonConsole/commentFontColor", QColor(Qt.gray))))
-        self.commentFontColorEditor.setColor(QColor(settings.value("pythonConsole/commentFontColorEditor", QColor(Qt.gray))))
-        self.commentBlockFontColor.setColor(QColor(settings.value("pythonConsole/commentBlockFontColor", QColor(Qt.gray))))
-        self.commentBlockFontColorEditor.setColor(QColor(settings.value("pythonConsole/commentBlockFontColorEditor", QColor(Qt.gray))))
-        self.paperBackgroundColor.setColor(QColor(settings.value("pythonConsole/paperBackgroundColor", QColor(Qt.white))))
-        self.paperBackgroundColorEditor.setColor(QColor(settings.value("pythonConsole/paperBackgroundColorEditor", QColor(Qt.white))))
+        self.commentFontColorEditor.setColor(
+            QColor(settings.value("pythonConsole/commentFontColorEditor", QColor(Qt.gray))))
+        self.commentBlockFontColor.setColor(
+            QColor(settings.value("pythonConsole/commentBlockFontColor", QColor(Qt.gray))))
+        self.commentBlockFontColorEditor.setColor(
+            QColor(settings.value("pythonConsole/commentBlockFontColorEditor", QColor(Qt.gray))))
+        self.paperBackgroundColor.setColor(
+            QColor(settings.value("pythonConsole/paperBackgroundColor", QColor(Qt.white))))
+        self.paperBackgroundColorEditor.setColor(
+            QColor(settings.value("pythonConsole/paperBackgroundColorEditor", QColor(Qt.white))))
         self.caretLineColor.setColor(QColor(settings.value("pythonConsole/caretLineColor", QColor("#fcf3ed"))))
-        self.caretLineColorEditor.setColor(QColor(settings.value("pythonConsole/caretLineColorEditor", QColor("#fcf3ed"))))
+        self.caretLineColorEditor.setColor(
+            QColor(settings.value("pythonConsole/caretLineColorEditor", QColor("#fcf3ed"))))
         self.cursorColor.setColor(QColor(settings.value("pythonConsole/cursorColor", QColor(Qt.black))))
         self.cursorColorEditor.setColor(QColor(settings.value("pythonConsole/cursorColorEditor", QColor(Qt.black))))
         self.stderrFontColor.setColor(QColor(settings.value("pythonConsole/stderrFontColor", QColor(Qt.red))))
 
         self.singleQuoteFontColor.setColor(settings.value("pythonConsole/singleQuoteFontColor", QColor(Qt.blue)))
-        self.singleQuoteFontColorEditor.setColor(settings.value("pythonConsole/singleQuoteFontColorEditor", QColor(Qt.blue)))
+        self.singleQuoteFontColorEditor.setColor(
+            settings.value("pythonConsole/singleQuoteFontColorEditor", QColor(Qt.blue)))
         self.doubleQuoteFontColor.setColor(settings.value("pythonConsole/doubleQuoteFontColor", QColor(Qt.blue)))
-        self.doubleQuoteFontColorEditor.setColor(settings.value("pythonConsole/doubleQuoteFontColorEditor", QColor(Qt.blue)))
-        self.tripleSingleQuoteFontColor.setColor(settings.value("pythonConsole/tripleSingleQuoteFontColor", QColor(Qt.blue)))
-        self.tripleSingleQuoteFontColorEditor.setColor(settings.value("pythonConsole/tripleSingleQuoteFontColorEditor", QColor(Qt.blue)))
-        self.tripleDoubleQuoteFontColor.setColor(settings.value("pythonConsole/tripleDoubleQuoteFontColor", QColor(Qt.blue)))
-        self.tripleDoubleQuoteFontColorEditor.setColor(settings.value("pythonConsole/tripleDoubleQuoteFontColorEditor", QColor(Qt.blue)))
+        self.doubleQuoteFontColorEditor.setColor(
+            settings.value("pythonConsole/doubleQuoteFontColorEditor", QColor(Qt.blue)))
+        self.tripleSingleQuoteFontColor.setColor(
+            settings.value("pythonConsole/tripleSingleQuoteFontColor", QColor(Qt.blue)))
+        self.tripleSingleQuoteFontColorEditor.setColor(
+            settings.value("pythonConsole/tripleSingleQuoteFontColorEditor", QColor(Qt.blue)))
+        self.tripleDoubleQuoteFontColor.setColor(
+            settings.value("pythonConsole/tripleDoubleQuoteFontColor", QColor(Qt.blue)))
+        self.tripleDoubleQuoteFontColorEditor.setColor(
+            settings.value("pythonConsole/tripleDoubleQuoteFontColorEditor", QColor(Qt.blue)))
 
     def _resetFontColor(self):
         self.defaultFontColor.setColor(QColor(Qt.black))

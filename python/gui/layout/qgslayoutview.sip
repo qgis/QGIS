@@ -37,6 +37,7 @@ class QgsLayoutView: QGraphicsView
  :rtype: QgsLayout
 %End
 
+
     void setCurrentLayout( QgsLayout *layout /KeepReference/ );
 %Docstring
  Sets the current ``layout`` to edit in the view.
@@ -103,6 +104,29 @@ class QgsLayoutView: QGraphicsView
  :rtype: QgsLayoutViewMenuProvider
 %End
 
+    int currentPage() const;
+%Docstring
+ Returns the page visible in the view. This method
+ considers the page at the center of the view as the current visible
+ page.
+.. seealso:: pageChanged()
+ :rtype: int
+%End
+
+    QList< QgsLayoutItemPage * > visiblePages() const;
+%Docstring
+ Returns a list of page items which are currently visible in the view.
+.. seealso:: visiblePageNumbers()
+ :rtype: list of QgsLayoutItemPage
+%End
+
+    QList< int > visiblePageNumbers() const;
+%Docstring
+ Returns a list of page numbers for pages which are currently visible in the view.
+.. seealso:: visiblePages()
+ :rtype: list of int
+%End
+
   public slots:
 
     void zoomFull();
@@ -147,9 +171,9 @@ class QgsLayoutView: QGraphicsView
 
     void emitZoomLevelChanged();
 
-    void updateRulers();
+    void viewChanged();
 %Docstring
- Updates associated rulers after view extent or zoom has changed.
+ Updates associated rulers and other widgets after view extent or zoom has changed.
  This should be called after calling any of the QGraphicsView
  base class methods which alter the view's zoom level or extent,
  i.e. QGraphicsView.fitInView().
@@ -180,6 +204,14 @@ class QgsLayoutView: QGraphicsView
  Is emitted when the mouse cursor coordinates change within the view.
  The ``layoutPoint`` argument indicates the cursor position within
  the layout coordinate system.
+%End
+
+    void pageChanged( int page );
+%Docstring
+ Emitted when the page visible in the view is changed. This signal
+ considers the page at the center of the view as the current visible
+ page.
+.. seealso:: currentPage()
 %End
 
   protected:
@@ -230,6 +262,8 @@ Return a newly created menu instance (or null pointer on error)
  :rtype: QMenu
 %End
 };
+
+
 
 /************************************************************************
  * This file has been generated automatically from                      *

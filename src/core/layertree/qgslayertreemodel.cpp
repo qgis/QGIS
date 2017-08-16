@@ -1138,24 +1138,27 @@ QList<QgsLayerTreeModelLegendNode *> QgsLayerTreeModel::filterLegendNodes( const
   }
   else if ( mLegendFilterMapSettings )
   {
-    Q_FOREACH ( QgsLayerTreeModelLegendNode *node, nodes )
+    if ( !nodes.isEmpty() && mLegendFilterMapSettings->layers().contains( nodes.at( 0 )->layerNode()->layer() ) )
     {
-      QString ruleKey = node->data( QgsSymbolLegendNode::RuleKeyRole ).toString();
-      bool checked = mLegendFilterUsesExtent || node->data( Qt::CheckStateRole ).toInt() == Qt::Checked;
-      if ( checked )
+      Q_FOREACH ( QgsLayerTreeModelLegendNode *node, nodes )
       {
-        if ( QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( node->layerNode()->layer() ) )
+        QString ruleKey = node->data( QgsSymbolLegendNode::RuleKeyRole ).toString();
+        bool checked = mLegendFilterUsesExtent || node->data( Qt::CheckStateRole ).toInt() == Qt::Checked;
+        if ( checked )
         {
-          if ( mLegendFilterHitTest->legendKeyVisible( ruleKey, vl ) )
+          if ( QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( node->layerNode()->layer() ) )
+          {
+            if ( mLegendFilterHitTest->legendKeyVisible( ruleKey, vl ) )
+              filtered << node;
+          }
+          else
+          {
             filtered << node;
+          }
         }
-        else
-        {
+        else  // unknown node type or unchecked
           filtered << node;
-        }
       }
-      else  // unknown node type or unchecked
-        filtered << node;
     }
   }
   else

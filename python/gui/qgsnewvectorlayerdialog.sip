@@ -65,7 +65,11 @@ Returns the file format for storage
     void on_mRemoveAttributeButton_clicked();
     void on_mFileFormatComboBox_currentIndexChanged( int index );
     void on_mTypeBox_currentIndexChanged( int index );
-    void on_buttonBox_helpRequested();
+
+    void showHelp();
+%Docstring
+Open the associated help
+%End
     void nameChanged( const QString & );
     void selectionChanged();
 

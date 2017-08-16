@@ -83,14 +83,16 @@
      <x>0</x>
      <y>0</y>
      <width>1083</width>
-     <height>42</height>
+     <height>25</height>
     </rect>
    </property>
    <widget class="QMenu" name="mLayoutMenu">
     <property name="title">
      <string>&amp;Layout</string>
     </property>
+    <addaction name="mActionLayoutProperties"/>
     <addaction name="mActionAddPages"/>
+    <addaction name="separator"/>
     <addaction name="mActionClose"/>
    </widget>
    <widget class="QMenu" name="mItemMenu">
@@ -117,6 +119,14 @@
     <addaction name="mActionZoomActual"/>
     <addaction name="mActionZoomAll"/>
     <addaction name="mActionZoomToWidth"/>
+    <addaction name="separator"/>
+    <addaction name="mActionShowGrid"/>
+    <addaction name="mActionSnapGrid"/>
+    <addaction name="separator"/>
+    <addaction name="mActionShowGuides"/>
+    <addaction name="mActionSnapGuides"/>
+    <addaction name="mActionManageGuides"/>
+    <addaction name="mActionClearGuides"/>
     <addaction name="separator"/>
     <addaction name="mActionShowRulers"/>
     <addaction name="separator"/>
@@ -307,8 +317,113 @@
     <string>Add Pages…</string>
    </property>
   </action>
+  <action name="mActionShowGrid">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="../../../images/images.qrc">
+     <normaloff>:/images/themes/default/vector_grid.png</normaloff>:/images/themes/default/vector_grid.png</iconset>
+   </property>
+   <property name="text">
+    <string>Show &amp;Grid</string>
+   </property>
+   <property name="toolTip">
+    <string>Show grid</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+'</string>
+   </property>
+  </action>
+  <action name="mActionSnapGrid">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>S&amp;nap to Grid</string>
+   </property>
+   <property name="toolTip">
+    <string>Snap to grid</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Shift+'</string>
+   </property>
+  </action>
+  <action name="mActionManageGuides">
+   <property name="text">
+    <string>Manage Guides…</string>
+   </property>
+  </action>
+  <action name="mActionShowGuides">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Show G&amp;uides</string>
+   </property>
+   <property name="toolTip">
+    <string>Show guides</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+;</string>
+   </property>
+  </action>
+  <action name="mActionSnapGuides">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>&amp;Snap to Guides</string>
+   </property>
+   <property name="toolTip">
+    <string>Snap to guides</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Shift+;</string>
+   </property>
+  </action>
+  <action name="mActionClearGuides">
+   <property name="text">
+    <string>&amp;Clear Guides</string>
+   </property>
+   <property name="toolTip">
+    <string>Clear guides</string>
+   </property>
+  </action>
+  <action name="mActionLayoutProperties">
+   <property name="text">
+    <string>Layout Properties…</string>
+   </property>
+  </action>
  </widget>
  <resources>
+  <include location="../../../images/images.qrc"/>
+  <include location="../../../images/images.qrc"/>
+  <include location="../../../images/images.qrc"/>
+  <include location="../../../images/images.qrc"/>
+  <include location="../../../images/images.qrc"/>
+  <include location="../../../images/images.qrc"/>
+  <include location="../../../images/images.qrc"/>
+  <include location="../../../images/images.qrc"/>
+  <include location="../../../images/images.qrc"/>
+  <include location="../../../images/images.qrc"/>
+  <include location="../../../images/images.qrc"/>
+  <include location="../../../images/images.qrc"/>
+  <include location="../../../images/images.qrc"/>
+  <include location="../../../images/images.qrc"/>
+  <include location="../../../images/images.qrc"/>
+  <include location="../../../images/images.qrc"/>
+  <include location="../../../images/images.qrc"/>
+  <include location="../../../images/images.qrc"/>
+  <include location="../../../images/images.qrc"/>
+  <include location="../../../images/images.qrc"/>
+  <include location="../../../images/images.qrc"/>
+  <include location="../../../images/images.qrc"/>
+  <include location="../../../images/images.qrc"/>
+  <include location="../../../images/images.qrc"/>
+  <include location="../../../images/images.qrc"/>
+  <include location="../../../images/images.qrc"/>
+  <include location="../../../images/images.qrc"/>
   <include location="../../../images/images.qrc"/>
   <include location="../../../images/images.qrc"/>
   <include location="../../../images/images.qrc"/>

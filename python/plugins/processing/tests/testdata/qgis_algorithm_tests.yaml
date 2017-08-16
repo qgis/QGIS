@@ -645,7 +645,7 @@ tests:
         name: lines.gml
         type: vector
       JOIN_STYLE: '0'
-      MITRE_LIMIT: 2
+      MITER_LIMIT: 2
       SEGMENTS: 8
     results:
       OUTPUT:
@@ -663,7 +663,7 @@ tests:
         name: lines.gml
         type: vector
       JOIN_STYLE: '0'
-      MITRE_LIMIT: 2
+      MITER_LIMIT: 2
       SEGMENTS: 8
     results:
       OUTPUT:
@@ -674,18 +674,18 @@ tests:
             precision: 7
 
   - algorithm: qgis:offsetline
-    name: Offset line mitre
+    name: Offset line miter
     params:
       DISTANCE: 1.0
       INPUT:
         name: lines.gml
         type: vector
       JOIN_STYLE: '1'
-      MITRE_LIMIT: 2
+      MITER_LIMIT: 2
       SEGMENTS: 4
     results:
       OUTPUT:
-        name: expected/line_offset_mitre.gml
+        name: expected/line_offset_miter.gml
         type: vector
         compare:
           geometry:
@@ -699,7 +699,7 @@ tests:
         name: lines.gml
         type: vector
       JOIN_STYLE: '2'
-      MITRE_LIMIT: 2
+      MITER_LIMIT: 2
       SEGMENTS: 8
     results:
       OUTPUT:
@@ -717,7 +717,7 @@ tests:
         name: multilines.gml
         type: vector
       JOIN_STYLE: '0'
-      MITRE_LIMIT: 2
+      MITER_LIMIT: 2
       SEGMENTS: 8
     results:
       OUTPUT:
@@ -737,7 +737,7 @@ tests:
         name: polys.gml
         type: vector
       JOIN_STYLE: '2'
-      MITRE_LIMIT: 2
+      MITER_LIMIT: 2
       SEGMENTS: 5
     results:
       OUTPUT:
@@ -745,7 +745,7 @@ tests:
         type: vector
 
   - algorithm: qgis:fixeddistancebuffer
-    name: Buffer polygons using mitre
+    name: Buffer polygons using miter
     params:
       DISSOLVE: false
       DISTANCE: 1.0
@@ -754,11 +754,11 @@ tests:
         name: polys.gml
         type: vector
       JOIN_STYLE: '1'
-      MITRE_LIMIT: 2
+      MITER_LIMIT: 2
       SEGMENTS: 5
     results:
       OUTPUT:
-        name: expected/buffer_polys_mitre.gml
+        name: expected/buffer_polys_miter.gml
         type: vector
 
   - algorithm: qgis:fixeddistancebuffer
@@ -771,7 +771,7 @@ tests:
         name: lines.gml
         type: vector
       JOIN_STYLE: '0'
-      MITRE_LIMIT: 2
+      MITER_LIMIT: 2
       SEGMENTS: 5
     results:
       OUTPUT:
@@ -791,7 +791,7 @@ tests:
         name: lines.gml
         type: vector
       JOIN_STYLE: '0'
-      MITRE_LIMIT: 2
+      MITER_LIMIT: 2
       SEGMENTS: 5
     results:
       OUTPUT:
@@ -811,7 +811,7 @@ tests:
         name: lines.gml
         type: vector
       JOIN_STYLE: '0'
-      MITRE_LIMIT: 2
+      MITER_LIMIT: 2
       SEGMENTS: 5
     results:
       OUTPUT:
@@ -926,7 +926,7 @@ tests:
         name: lines.gml
         type: vector
       JOIN_STYLE: '0'
-      MITRE_LIMIT: 2
+      MITER_LIMIT: 2
       SEGMENTS: 8
       SIDE: '0'
     results:
@@ -938,19 +938,19 @@ tests:
             precision: 7
 
   - algorithm: qgis:singlesidedbuffer
-    name: Single sided buffer lines (Right, mitre)
+    name: Single sided buffer lines (Right, miter)
     params:
       DISTANCE: 1.0
       INPUT:
         name: lines.gml
         type: vector
       JOIN_STYLE: '1'
-      MITRE_LIMIT: 2
+      MITER_LIMIT: 2
       SEGMENTS: 8
       SIDE: '1'
     results:
       OUTPUT:
-        name: expected/single_sided_buffer_line_mitre.gml
+        name: expected/single_sided_buffer_line_miter.gml
         type: vector
         compare:
           geometry:
@@ -964,7 +964,7 @@ tests:
         name: multilines.gml
         type: vector
       JOIN_STYLE: '2'
-      MITRE_LIMIT: 2
+      MITER_LIMIT: 2
       SEGMENTS: 8
       SIDE: '0'
     results:
@@ -1148,7 +1148,9 @@ tests:
       Z_FACTOR: 1.0
     results:
       OUTPUT:
-        hash: 762865ee485a6736d188402aa10e6fd38a812a9e45a7dd2d4885a63a
+        hash:
+        - 762865ee485a6736d188402aa10e6fd38a812a9e45a7dd2d4885a63a
+        - f6a8e64647ae93a94f2a4945add8986526a7a07bc85849f3690d15b2
         type: rasterhash
 
   - algorithm: qgis:slope
@@ -1160,7 +1162,9 @@ tests:
       Z_FACTOR: 1.0
     results:
       OUTPUT:
-        hash: 151ea76a21b286c16567eb6b4b692925a84145b65561a0017effb1a1
+        hash:
+        - 151ea76a21b286c16567eb6b4b692925a84145b65561a0017effb1a1
+        - 177475642c57428b395bc0a1e7e86fc1cfd4d86ffc19f31ff8bc964d
         type: rasterhash
 
   - algorithm: qgis:ruggednessindex
@@ -1186,7 +1190,9 @@ tests:
       Z_FACTOR: 1.0
     results:
       OUTPUT:
-        hash: 58365b3715b925d6286e7f082ebd9c2a20f09fa1c922176d3f238002
+        hash:
+        - 58365b3715b925d6286e7f082ebd9c2a20f09fa1c922176d3f238002
+        - 75cca4c1a870a1e21185a2d85b33b6d9958a69fc6ebb04e4d6ceb8a3
         type: rasterhash
 
 #  - algorithm: qgis:relief
@@ -1223,15 +1229,14 @@ tests:
   - algorithm: qgis:createconstantrasterlayer
     name: Create constant raster
     params:
-      INPUT:
-        name: raster.tif
-        type: raster
+      EXTENT: 270736.0673250682,270899.8544675339,4458899.000550019,4459029.574521748
+      TARGET_CRS: EPSG:23030
+      PIXEL_SIZE: 10.0
       NUMBER: 3.0
     results:
       OUTPUT:
-        hash: 4cb3e82e8512cdbb75d9c39a10adc818dd6842c5dc6361fbc43dd9aa
+        hash: e453e9e36ce314d5197963ac27872a0cc3dfe43764ed586a334c66f0
         type: rasterhash
-
 
   # Case 1: Keep all fields
   - algorithm: qgis:lineintersections
@@ -1796,21 +1801,21 @@ tests:
         name: expected/dropped_geometry.csv
         type: vector
 
-#  - algorithm: qgis:creategridlines
-#    name: Create grid (lines)
-#    params:
-#      CRS: EPSG:4326
-#      EXTENT: -1,11.2,-4,6.5
-#      HSPACING: 5.0
-#      VSPACING: 3.0
-#    results:
-#      OUTPUT:
-#        name: expected/grid_lines.gml
-#        type: vector
-#        compare:
-#          geometry:
-#            precision: 7
-#
+  - algorithm: qgis:creategridlines
+    name: Create grid (lines)
+    params:
+      CRS: EPSG:4326
+      EXTENT: -1,11.2,-4,6.5
+      HSPACING: 5.0
+      VSPACING: 3.0
+    results:
+      OUTPUT:
+        name: expected/grid_lines.gml
+        type: vector
+        compare:
+          geometry:
+            precision: 7
+
   - algorithm: qgis:creategridpolygon
     name: Create grid (rectangles)
     params:
@@ -1859,20 +1864,20 @@ tests:
           geometry:
             precision: 7
 
-#  - algorithm: qgis:creategridlines
-#    name: Create grid (lines with overlay)
-#    params:
-#      CRS: EPSG:4326
-#      EXTENT: -1,11.2,-4,6.5
-#      HOVERLAY: 2.0
-#      HSPACING: 5.0
-#      VOVERLAY: 1.0
-#      VSPACING: 3.0
-#    results:
-#      OUTPUT:
-#        name: expected/grid_lines_overlay.gml
-#        type: vector
-#
+  - algorithm: qgis:creategridlines
+    name: Create grid (lines with overlay)
+    params:
+      CRS: EPSG:4326
+      EXTENT: -1,11.2,-4,6.5
+      HOVERLAY: 2.0
+      HSPACING: 5.0
+      VOVERLAY: 1.0
+      VSPACING: 3.0
+    results:
+      OUTPUT:
+        name: expected/grid_lines_overlay.gml
+        type: vector
+
   - algorithm: qgis:creategridpolygon
     name: Create grid (rectangle with overlay)
     params:
@@ -2081,6 +2086,38 @@ tests:
           geometry:
             precision: 7
 
+  - algorithm: qgis:refactorfields
+    name: refactor fields
+    params:
+      INPUT:
+        name: multipolys.gml
+        type: vector
+      FIELDS_MAPPING:
+        - expression: '@row_number'
+          name: 'row_number'
+          type: 2
+          length: 0
+          precision: 0
+        - expression: >
+            "fid" || ' - ' || "Bname"
+          name: 'Bname'
+          type: 10
+          length: 30
+          precision: 0
+        - expression: '"Bintval" + 1'
+          name: 'Bintval'
+          type: 2
+          length: 0
+          precision: 0
+        - expression: '"Bfloatval" * 2'
+          name: 'Bfloatval'
+          type: 6
+          length: 0
+          precision: 0
+    results:
+      OUTPUT:
+        name: expected/refactorfields.gml
+        type: vector
 
   - algorithm: native:reprojectlayer
     name: reproject vector layer
@@ -2159,21 +2196,122 @@ tests:
         name: expected/lines_to_polygon.gml
         type: vector
 
-#  - algorithm: qgis:joinattributestable
-#    name: join the attribute table by common field
-#    params:
-#      INPUT_LAYER:
-#        name: points.gml
-#        type: vector
-#      INPUT_LAYER_2:
-#        name: table.dbf
-#        type: table
-#      TABLE_FIELD: id
-#      TABLE_FIELD_2: ID
-#    results:
-#      OUTPUT_LAYER:
-#        name: expected/join_attribute_table.gml
-#        type: vector
+  - algorithm: qgis:snappointstogrid
+    name: Gridify polys
+    params:
+      INPUT:
+        name: polys.gml
+        type: vector
+      HSPACING: 2
+      VSPACING: 2
+    results:
+      OUTPUT:
+        name: expected/gridify_polys.gml
+        type: vector
+
+  - algorithm: qgis:snappointstogrid
+    name: Gridify lines
+    params:
+      INPUT:
+        name: lines.gml
+        type: vector
+      HSPACING: 2
+      VSPACING: 2
+    results:
+      OUTPUT:
+        name: expected/gridify_lines.gml
+        type: vector
+
+  - algorithm: qgis:distancetonearesthubpoints
+    name: Hub distance points
+    params:
+      INPUT:
+        name: points.gml
+        type: vector
+      HUBS:
+        name: custom/hub_points.gml
+        type: vector
+      FIELD: name
+      UNIT: 0
+    results:
+      OUTPUT:
+        name: expected/hub_distance_points.gml
+        type: vector
+
+  - algorithm: qgis:distancetonearesthublinetohub
+    name: Hub distance lines
+    params:
+      INPUT:
+        name: points.gml
+        type: vector
+      HUBS:
+        name: custom/hub_points.gml
+        type: vector
+      FIELD: name
+      UNIT: 0
+    results:
+      OUTPUT:
+        name: expected/hub_distance_lines.gml
+        type: vector
+
+  - algorithm: qgis:hublines
+    name: Hub lines
+    params:
+      HUBS:
+        name: points.gml
+        type: vector
+      SPOKES:
+        name: custom/spoke_points.gml
+        type: vector
+      HUB_FIELD: id
+      SPOKE_FIELD: id
+    results:
+      OUTPUT:
+        name: expected/hub_lines.gml
+        type: vector
+
+  - algorithm: qgis:pointstopath
+    name: Points to path (non grouped)
+    params:
+      INPUT:
+        name: points.gml
+        type: vector
+      ORDER_FIELD: id
+    results:
+      OUTPUT:
+        name: expected/points_to_path.gml
+        type: vector
+
+  - algorithm: qgis:pointstopath
+    name: Points to path (grouped)
+    params:
+      INPUT:
+        name: points.gml
+        type: vector
+      ORDER_FIELD: id
+      GROUP_FIELD: id2
+    results:
+      OUTPUT:
+        name:
+        - expected/points_to_path_grouped.gml
+        - expected/points_to_path_grouped2.gml
+        type: vector
+
+  - algorithm: qgis:joinattributestable
+    name: join the attribute table by common field
+    params:
+      INPUT:
+        name: points.gml
+        type: vector
+      INPUT_2:
+        name: table.dbf
+        type: table
+      FIELD: id
+      FIELD_2: ID
+    results:
+      OUTPUT:
+        name: expected/join_attribute_table.gml
+        type: vector
 
   - algorithm: qgis:convexhull
     name: Simple convex hull
@@ -2347,7 +2485,7 @@ tests:
         type: vector
 
   - algorithm: qgis:pointsalonglines
-    name: standard points alog lines
+    name: standard points along lines
     params:
       DISTANCE: 1.0
       END_OFFSET: 0.0
@@ -2357,7 +2495,7 @@ tests:
       START_OFFSET: 0.0
     results:
       OUTPUT:
-        name: expected/points_alog_lines.gml
+        name: expected/points_along_lines.gml
         type: vector
 
   - algorithm: qgis:meancoordinates
@@ -2382,6 +2520,23 @@ tests:
       OUTPUT:
         name: expected/single_to_multi.gml
         type: vector
+
+  - algorithm: qgis:statisticsbycategories
+    name: stats by category
+    params:
+      VALUES_FIELD_NAME: id
+      CATEGORIES_FIELD_NAME: id2
+      INPUT:
+        name: points.gml
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/stats_by_category.gml
+        type: vector
+        pk: id2
+        compare:
+          fields:
+            fid: skip
 
 #  - algorithm: qgis:zonalstatistics
 #    name: simple zonal statistics
@@ -2500,32 +2655,35 @@ tests:
         name: expected/polygon_from_extent.gml
         type: vector
 
-#  - algorithm: qgis:topologicalcoloring
-#    name: Topological coloring
-#    params:
-#      INPUT_LAYER:
-#        name: custom/adjacent_polys.gml
-#        type: vector
-#      MIN_COLORS: 4
-#    results:
-#      OUTPUT_LAYER:
-#        name: expected/topocolor_polys.gml
-#        type: vector
-#
-#  - algorithm: qgis:topologicalcoloring
-#    name: Topological coloring w/ min distance
-#    params:
-#      BALANCE: '0'
-#      INPUT_LAYER:
-#        name: custom/adjacent_polys.gml
-#        type: vector
-#      MIN_COLORS: 4
-#      MIN_DISTANCE: 4.0
-#    results:
-#      OUTPUT_LAYER:
-#        name: expected/topocolor_polys_min_dist.gml
-#        type: vector
-#
+  - algorithm: qgis:topologicalcoloring
+    name: Topological coloring
+    params:
+      BALANCE: 0
+      INPUT:
+        name: custom/adjacent_polys.gml
+        type: vector
+      MIN_COLORS: 4
+    results:
+      OUTPUT:
+        type: vector
+        name:
+        - expected/topocolor_polys.gml
+        - expected/topocolor_polys2.gml
+
+  - algorithm: qgis:topologicalcoloring
+    name: Topological coloring w/ min distance
+    params:
+      BALANCE: 0
+      INPUT:
+        name: custom/adjacent_polys.gml
+        type: vector
+      MIN_COLORS: 4
+      MIN_DISTANCE: 4.0
+    results:
+      OUTPUT:
+        name: expected/topocolor_polys_min_dist.gml
+        type: vector
+
   - algorithm: qgis:regularpoints
     name: Regular point with standard extent
     params:
@@ -2587,21 +2745,21 @@ tests:
 #      OUTPUT_LAYER:
 #        name: expected/buffer_ovals.gml
 #        type: vector
-#
-#  - algorithm: qgis:creategridlines
-#    name: Lines grid 0.1 degree spacing
-#    params:
-#      CRS: EPSG:4326
-#      EXTENT: -0.10453905405405395,8.808021567567568,-2.5010055337837844,4.058021763513514
-#      HOVERLAY: 0.0
-#      HSPACING: 0.1
-#      VOVERLAY: 0.0
-#      VSPACING: 0.1
-#    results:
-#      OUTPUT:
-#        name: expected/create_grid_lines.gml
-#        type: vector
-#
+
+  - algorithm: qgis:creategridlines
+    name: Lines grid 0.1 degree spacing
+    params:
+      CRS: EPSG:4326
+      EXTENT: -0.10453905405405395,8.808021567567568,-2.5010055337837844,4.058021763513514
+      HOVERLAY: 0.0
+      HSPACING: 0.1
+      VOVERLAY: 0.0
+      VSPACING: 0.1
+    results:
+      OUTPUT:
+        name: expected/create_grid_lines.gml
+        type: vector
+
 #  - algorithm: qgis:convertgeometrytype
 #    name: polygon to centroid
 #    params:
@@ -2759,3 +2917,65 @@ tests:
       OUTPUT:
         hash: f09384c64f56286ec4146a7b9a679cea7c6711ec4c7d77eec054e364
         type: rasterhash
+
+  - algorithm: qgis:rasterlayerstatistics
+    name: Raster layer statistics
+    params:
+      INPUT:
+        name: dem.tif
+        type: raster
+      BAND: 1
+    results:
+      OUTPUT_HTML_FILE:
+        name: raster_statistics.html
+        type: regex
+        rules:
+          - 'Minimum value: 85.0'
+          - 'Maximum value: 243.0'
+          - 'Range: 158.0'
+          - 'Sum: 19213301.982429504'
+          - 'Mean value: 147.17197994967066'
+          - 'Standard deviation: 43.9618116337985'
+          - 'Sum of the squares: 252304334.52061242'
+
+  - algorithm: qgis:pointsdisplacement
+    name: Point displacement
+    params:
+      DISTANCE: 1.0
+      HORIZONTAL: false
+      INPUT:
+        name: custom/displace_points.gml
+        type: vector
+      PROXIMITY: 2.0
+    results:
+      OUTPUT:
+        name: expected/displaced_points.gml
+        type: vector
+
+  - algorithm: qgis:generatepointspixelcentroidsinsidepolygons
+    name: Pixel centroids inside polygon
+    params:
+      INPUT_RASTER:
+        name: dem.tif
+        type: raster
+      INPUT_VECTOR:
+        name: custom/pixel_polygons.gml
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/pixel_centroids_polygon.gml
+        type: vector
+
+  - algorithm: qgis:generatepointspixelcentroidsalongline
+    name: Pixel centroids along line
+    params:
+      INPUT_RASTER:
+        name: dem.tif
+        type: raster
+      INPUT_VECTOR:
+        name: custom/pixel_lines.gml
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/pixel_centroids_lines.gml
+        type: vector

@@ -3,6 +3,6 @@
   "type": "function",
   "description": "Returns an array with all the entries of the given value removed.",
   "arguments": [ {"arg":"array","description":"an array"},
-                 {"arg":"value","description":"the value to add"}],
+                 {"arg":"value","description":"the values to remove"}],
   "examples": [ { "expression":"array_remove_all(array('a','b','c','b'),'b')", "returns":"array: 'a','c'"}]
 }

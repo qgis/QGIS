@@ -356,20 +356,35 @@ typedef unsigned long long qgssize;
 
 #ifndef SIP_RUN
 #if (__GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 6)) || defined(__clang__)
+
 #define Q_NOWARN_DEPRECATED_PUSH \
   _Pragma("GCC diagnostic push") \
   _Pragma("GCC diagnostic ignored \"-Wdeprecated-declarations\"");
 #define Q_NOWARN_DEPRECATED_POP \
   _Pragma("GCC diagnostic pop");
+#define Q_NOWARN_UNREACHABLE_PUSH
+#define Q_NOWARN_UNREACHABLE_POP
+
 #elif defined(_MSC_VER)
+
 #define Q_NOWARN_DEPRECATED_PUSH \
   __pragma(warning(push)) \
   __pragma(warning(disable:4996))
 #define Q_NOWARN_DEPRECATED_POP \
   __pragma(warning(pop))
+#define Q_NOWARN_UNREACHABLE_PUSH \
+  __pragma(warning(push)) \
+  __pragma(warning(disable:4702))
+#define Q_NOWARN_UNREACHABLE_POP \
+  __pragma(warning(pop))
+
 #else
+
 #define Q_NOWARN_DEPRECATED_PUSH
 #define Q_NOWARN_DEPRECATED_POP
+#define Q_NOWARN_UNREACHABLE_PUSH
+#define Q_NOWARN_UNREACHABLE_POP
+
 #endif
 #endif
 
@@ -390,9 +405,11 @@ typedef unsigned long long qgssize;
 #endif
 #endif
 
-#if defined(__clang__)
+#if __cplusplus >= 201500
+#define FALLTHROUGH [[fallthrough]];
+#elif defined(__clang__)
 #define FALLTHROUGH //[[clang::fallthrough]]
-#elif defined(__GNUC__)
+#elif defined(__GNUC__) && __GNUC__ >= 7
 #define FALLTHROUGH [[gnu::fallthrough]];
 #else
 #define FALLTHROUGH

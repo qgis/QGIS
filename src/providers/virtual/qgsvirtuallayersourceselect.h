@@ -41,9 +41,9 @@ class QgsVirtualLayerSourceSelect : public QgsAbstractDataSourceWidget, private 
   public slots:
     //! Triggered when the provider's connections need to be refreshed
     void refresh() override;
+    void addButtonClicked() override;
 
   private slots:
-    void on_buttonBox_accepted();
     void onTestQuery();
     void onBrowseCRS();
     void onLayerComboChanged( int );
@@ -54,8 +54,6 @@ class QgsVirtualLayerSourceSelect : public QgsAbstractDataSourceWidget, private 
     void updateLayersList();
 
   signals:
-    //! Source, name, provider
-    void addVectorLayer( QString, QString, QString );
     //! Old_id, source, name, provider
     void replaceVectorLayer( QString, QString, QString, QString );
 

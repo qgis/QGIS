@@ -33,6 +33,7 @@ class QgisApp;
  * plugin.
  */
 
+Q_NOWARN_DEPRECATED_PUSH
 class APP_EXPORT QgisAppInterface : public QgisInterface
 {
     Q_OBJECT
@@ -182,6 +183,8 @@ class APP_EXPORT QgisAppInterface : public QgisInterface
     QList< QgsMapCanvas * > mapCanvases() override;
     QgsMapCanvas *createNewMapCanvas( const QString &name ) override;
     virtual void closeMapCanvas( const QString &name ) override;
+
+    virtual QSize iconSize( bool dockedToolbar = false ) const override;
 
     /**
      * Returns a pointer to the layer tree canvas bridge
@@ -517,5 +520,6 @@ class APP_EXPORT QgisAppInterface : public QgisInterface
     //! Pointer to the PluginManagerInterface object
     QgsAppPluginManagerInterface pluginManagerIface;
 };
+Q_NOWARN_DEPRECATED_POP
 
 #endif //#define QGISAPPINTERFACE_H

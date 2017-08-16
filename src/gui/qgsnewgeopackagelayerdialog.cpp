@@ -28,6 +28,7 @@
 #include "qgsprojectionselectiondialog.h"
 #include "qgslogger.h"
 #include "qgssettings.h"
+#include "qgshelp.h"
 
 #include <QPushButton>
 #include <QLineEdit>
@@ -48,6 +49,7 @@ QgsNewGeoPackageLayerDialog::QgsNewGeoPackageLayerDialog( QWidget *parent, Qt::W
   , mLayerIdentifierEdited( false )
 {
   setupUi( this );
+  connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsNewGeoPackageLayerDialog::showHelp );
 
   QgsSettings settings;
   restoreGeometry( settings.value( QStringLiteral( "Windows/NewGeoPackageLayer/geometry" ) ).toByteArray() );
@@ -473,3 +475,7 @@ bool QgsNewGeoPackageLayerDialog::apply()
   return false;
 }
 
+void QgsNewGeoPackageLayerDialog::showHelp()
+{
+  QgsHelp::openHelp( QStringLiteral( "managing_data_source/create_layers.html#creating-a-new-geopackage-layer" ) );
+}

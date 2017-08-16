@@ -81,10 +81,6 @@ QgsMapLayerStyleManagerWidget::QgsMapLayerStyleManagerWidget( QgsMapLayer *layer
   Q_FOREACH ( const QString name, mLayer->styleManager()->styles() )
   {
     QString stylename = name;
-
-    if ( stylename.isEmpty() )
-      stylename = QStringLiteral( "(default)" );
-
     QStandardItem *item = new QStandardItem( stylename );
     mModel->appendRow( item );
   }
@@ -99,9 +95,6 @@ void QgsMapLayerStyleManagerWidget::styleClicked( const QModelIndex &index )
     return;
 
   QString name = index.data().toString();
-  if ( name == QLatin1String( "(default)" ) )
-    name = QLatin1String( "" );
-
   mLayer->styleManager()->setCurrentStyle( name );
 }
 

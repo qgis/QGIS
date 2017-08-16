@@ -51,6 +51,8 @@ class polygonize(GdalAlgorithm):
 
     def __init__(self):
         super().__init__()
+
+    def initAlgorithm(self, config=None):
         self.addParameter(ParameterRaster(polygonize.INPUT,
                                           self.tr('Input layer'), False))
         self.addParameter(ParameterString(polygonize.FIELD,
@@ -66,7 +68,7 @@ class polygonize(GdalAlgorithm):
     def group(self):
         return self.tr('Raster conversion')
 
-    def getConsoleCommands(self, parameters):
+    def getConsoleCommands(self, parameters, context, feedback):
         output = self.getOutputValue(polygonize.OUTPUT)
 
         arguments = []

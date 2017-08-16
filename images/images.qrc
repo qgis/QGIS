@@ -563,6 +563,7 @@
         <file>themes/default/mActionMapSettings.svg</file>
         <file>themes/default/mActionLockExtent.svg</file>
         <file>icons/qgis_icon.svg</file>
+        <file>themes/default/mGeoPackage.svg</file>
         <file>themes/default/mActionCircle2Points.svg</file>
         <file>themes/default/mActionCircle3Points.svg</file>
         <file>themes/default/mActionCircleCenterPoint.svg</file>

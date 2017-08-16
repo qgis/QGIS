@@ -17,6 +17,7 @@
 #include "qgslayoutitem.h"
 #include "qgslayout.h"
 #include "qgslayoututils.h"
+#include "qgspagesizeregistry.h"
 #include <QPainter>
 #include <QStyleOptionGraphicsItem>
 #include <QUuid>
@@ -28,6 +29,8 @@ QgsLayoutItem::QgsLayoutItem( QgsLayout *layout )
   , QGraphicsRectItem( 0 )
   , mUuid( QUuid::createUuid().toString() )
 {
+  setZValue( QgsLayout::ZItem );
+
   // needed to access current view transform during paint operations
   setFlags( flags() | QGraphicsItem::ItemUsesExtendedStyleOption );
   setCacheMode( QGraphicsItem::DeviceCoordinateCache );
@@ -278,8 +281,22 @@ QgsLayoutSize QgsLayoutItem::applyDataDefinedSize( const QgsLayoutSize &size )
   }
 
   QgsExpressionContext context = createExpressionContext();
-  double evaluatedWidth = mDataDefinedProperties.valueAsDouble( QgsLayoutObject::ItemWidth, context, size.width() );
-  double evaluatedHeight = mDataDefinedProperties.valueAsDouble( QgsLayoutObject::ItemHeight, context, size.height() );
+
+  // lowest priority is page size
+  QString pageSize = mDataDefinedProperties.valueAsString( QgsLayoutObject::PresetPaperSize, context );
+  QgsPageSize matchedSize;
+  double evaluatedWidth = size.width();
+  double evaluatedHeight = size.height();
+  if ( QgsApplication::pageSizeRegistry()->decodePageSize( pageSize, matchedSize ) )
+  {
+    QgsLayoutSize convertedSize = mLayout->context().measurementConverter().convert( matchedSize.size, size.units() );
+    evaluatedWidth = convertedSize.width();
+    evaluatedHeight = convertedSize.height();
+  }
+
+  // highest priority is dd width/height
+  evaluatedWidth = mDataDefinedProperties.valueAsDouble( QgsLayoutObject::ItemWidth, context, evaluatedWidth );
+  evaluatedHeight = mDataDefinedProperties.valueAsDouble( QgsLayoutObject::ItemHeight, context, evaluatedHeight );
   return QgsLayoutSize( evaluatedWidth, evaluatedHeight, size.units() );
 }
 
@@ -357,6 +374,11 @@ void QgsLayoutItem::refresh()
   refreshItemSize();
 
   refreshDataDefinedProperty();
+}
+
+void QgsLayoutItem::redraw()
+{
+  update();
 }
 
 void QgsLayoutItem::drawDebugRect( QPainter *painter )

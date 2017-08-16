@@ -363,8 +363,10 @@ bool GeomFunction::containsCandidate( const GEOSPreparedGeometry *geom, double x
   }
   catch ( GEOSException &e )
   {
+    Q_NOWARN_UNREACHABLE_PUSH
     QgsMessageLog::logMessage( QObject::tr( "Exception: %1" ).arg( e.what() ), QObject::tr( "GEOS" ) );
     return false;
+    Q_NOWARN_UNREACHABLE_POP
   }
 }
 

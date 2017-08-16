@@ -174,8 +174,10 @@ SET(QGIS_APP_SRCS
 
   layout/qgslayoutaddpagesdialog.cpp
   layout/qgslayoutdesignerdialog.cpp
+  layout/qgslayoutguidewidget.cpp
   layout/qgslayoutappmenuprovider.cpp
   layout/qgslayoutpagepropertieswidget.cpp
+  layout/qgslayoutpropertieswidget.cpp
 
   locator/qgsinbuiltlocatorfilters.cpp
   locator/qgslocatoroptionswidget.cpp
@@ -372,7 +374,9 @@ SET (QGIS_APP_MOC_HDRS
   layout/qgslayoutaddpagesdialog.h
   layout/qgslayoutappmenuprovider.h
   layout/qgslayoutdesignerdialog.h
+  layout/qgslayoutguidewidget.h
   layout/qgslayoutpagepropertieswidget.h
+  layout/qgslayoutpropertieswidget.h
 
   locator/qgsinbuiltlocatorfilters.h
   locator/qgslocatoroptionswidget.h
@@ -539,9 +543,9 @@ INCLUDE_DIRECTORIES(
   ${CMAKE_SOURCE_DIR}/src/core/providers/memory
   ${CMAKE_SOURCE_DIR}/src/core/raster
   ${CMAKE_SOURCE_DIR}/src/core/scalebar
-  ${CMAKE_SOURCE_DIR}/src/core/symbology-ng
+  ${CMAKE_SOURCE_DIR}/src/core/symbology
   ${CMAKE_SOURCE_DIR}/src/gui
-  ${CMAKE_SOURCE_DIR}/src/gui/symbology-ng
+  ${CMAKE_SOURCE_DIR}/src/gui/symbology
   ${CMAKE_SOURCE_DIR}/src/gui/attributetable
   ${CMAKE_SOURCE_DIR}/src/gui/auth
   ${CMAKE_SOURCE_DIR}/src/gui/ogr
@@ -585,9 +589,9 @@ INCLUDE_DIRECTORIES(
   ../core/providers/memory
   ../core/raster
   ../core/scalebar
-  ../core/symbology-ng
+  ../core/symbology
   ../gui
-  ../gui/symbology-ng
+  ../gui/symbology
   ../gui/attributetable
   ../gui/auth
   ../gui/ogr

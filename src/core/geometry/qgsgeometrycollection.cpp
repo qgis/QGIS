@@ -598,7 +598,7 @@ bool QgsGeometryCollection::hasCurvedSegments() const
 QgsAbstractGeometry *QgsGeometryCollection::segmentize( double tolerance, SegmentationToleranceType toleranceType ) const
 {
   QgsAbstractGeometry *geom = QgsGeometryFactory::geomFromWkbType( mWkbType );
-  QgsGeometryCollection *geomCollection = dynamic_cast<QgsGeometryCollection *>( geom );
+  QgsGeometryCollection *geomCollection = qgsgeometry_cast<QgsGeometryCollection *>( geom );
   if ( !geomCollection )
   {
     delete geom;

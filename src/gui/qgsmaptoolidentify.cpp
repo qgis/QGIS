@@ -396,7 +396,7 @@ QMap< QString, QString > QgsMapToolIdentify::featureDerivedAttributes( QgsFeatur
     QString str = formatDistance( dist );
     derivedAttributes.insert( tr( "Length" ), str );
 
-    const QgsCurve *curve = dynamic_cast< const QgsCurve * >( feature->geometry().geometry() );
+    const QgsCurve *curve = qgsgeometry_cast< const QgsCurve * >( feature->geometry().geometry() );
     if ( curve )
     {
       str = QLocale::system().toString( curve->nCoordinates() );
