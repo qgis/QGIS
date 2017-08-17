@@ -598,7 +598,6 @@ bool QgsGeoPackageRasterLayerItem::executeDeleteLayer( QString &errCause )
         // Remove from optional tables, may silently fail
         for ( const auto tableName : QStringList()
               << QStringLiteral( "gpkg_extensions" )
-              << QStringLiteral( "gpkg_metadata" )
               << QStringLiteral( "gpkg_metadata_reference" ) )
         {
           char *sql = sqlite3_mprintf( "DELETE FROM table %w WHERE table_name = '%q",
