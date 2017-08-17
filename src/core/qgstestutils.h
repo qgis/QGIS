@@ -55,4 +55,9 @@
     QGSCOMPARENEAR( rectangle1.yMaximum(), rectangle2.yMaximum(), epsilon ); \
   }
 
+//sometimes GML attributes are in a different order - but that's ok
+#define QGSCOMPAREGML(result,expected) { \
+    QCOMPARE( result.replace( QStringLiteral("ts=\" \" cs=\",\""), QStringLiteral("cs=\",\" ts=\" \"") ), expected ); \
+  }
+
 #endif // QGSTESTUTILS_H

@@ -23,6 +23,7 @@
 #include <QLibrary>
 #include <QMap>
 #include <QString>
+#include <memory>
 
 #include "qgis_core.h"
 
@@ -67,7 +68,7 @@ class CORE_EXPORT QgsAuthMethodRegistry
         \param authMethodKey identificator of the auth method
         \returns instance of auth method or nullptr on error
      */
-    QgsAuthMethod *authMethod( const QString &authMethodKey );
+    std::unique_ptr< QgsAuthMethod > authMethod( const QString &authMethodKey );
 
     /** Return the auth method capabilities
         \param authMethodKey identificator of the auth method
@@ -89,7 +90,7 @@ class CORE_EXPORT QgsAuthMethodRegistry
                                const QString &functionName );
 
     //! Return the library object associated with an auth method key
-    QLibrary *authMethodLibrary( const QString &authMethodKey ) const;
+    std::unique_ptr< QLibrary > authMethodLibrary( const QString &authMethodKey ) const;
 
     //! Return list of available auth methods by their keys
     QStringList authMethodList() const;
