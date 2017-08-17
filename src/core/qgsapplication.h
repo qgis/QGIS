@@ -234,9 +234,6 @@ class CORE_EXPORT QgsApplication : public QApplication
      */
     static QString licenceFilePath();
 
-    //! Returns the path to the help application.
-    static QString helpAppPath();
-
     //! Returns the path to the translation directory.
     static QString i18nPath();
 

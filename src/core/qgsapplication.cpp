@@ -614,21 +614,6 @@ QString QgsApplication::licenceFilePath()
   return ABISYM( mPkgDataPath ) + QStringLiteral( "/doc/LICENSE" );
 }
 
-QString QgsApplication::helpAppPath()
-{
-  QString helpAppPath;
-#ifdef Q_OS_MACX
-  helpAppPath = applicationDirPath() + "/bin/qgis_help.app/Contents/MacOS";
-#else
-  helpAppPath = libexecPath();
-#endif
-  helpAppPath += QLatin1String( "/qgis_help" );
-#ifdef Q_OS_WIN
-  helpAppPath += ".exe";
-#endif
-  return helpAppPath;
-}
-
 QString QgsApplication::i18nPath()
 {
   if ( ABISYM( mRunningFromBuildDir ) )
