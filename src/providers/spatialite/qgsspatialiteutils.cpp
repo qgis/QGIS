@@ -176,7 +176,8 @@ bool SpatialiteDbInfo::attachQSqliteHandle( QgsSqliteHandle *qSqliteHandle )
         if ( mSqliteHandle != mQSqliteHandle->handle() )
         {
           int i_rc = 0;
-          i_rc = sqlite3_db_readonly( mQSqliteHandle->handle(), "main" );
+          // Note: travis reports: error: use of undeclared identifier 'sqlite3_db_readonly'
+          // i_rc = sqlite3_db_readonly( mQSqliteHandle->handle(), "main" );
           switch ( i_rc )
           {
             case 0:
@@ -1392,6 +1393,7 @@ bool SpatialiteDbInfo::getSniffDatabaseType( )
   {
     sqlite3_stmt *stmt = nullptr;
     int i_rc = 0;
+    // Note: travis reports: error: use of undeclared identifier 'sqlite3_db_readonly'
     i_rc = sqlite3_db_readonly( dbSqliteHandle(), "main" );
     switch ( i_rc )
     {
