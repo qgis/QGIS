@@ -16,12 +16,14 @@
 #define QGSSPATIALITEDATAITEMS_H
 
 #include "qgsdataitem.h"
+class SpatialiteDbInfo;
 
 class QgsSLLayerItem : public QgsLayerItem
 {
     Q_OBJECT
   public:
     QgsSLLayerItem( QgsDataItem *parent, QString name, QString path, QString uri, LayerType layerType );
+    QgsSLLayerItem( QgsDataItem *parent, QString path, QString sLayerName, QString sLayerInfo, SpatialiteDbInfo *spatialiteDbInfo );
 
 #ifdef HAVE_GUI
     QList<QAction *> actions() override;
@@ -31,6 +33,8 @@ class QgsSLLayerItem : public QgsLayerItem
 #ifdef HAVE_GUI
     void deleteLayer();
 #endif
+  private:
+    SpatialiteDbInfo *mSpatialiteDbInfo = nullptr;
 };
 
 class QgsSLConnectionItem : public QgsDataCollectionItem

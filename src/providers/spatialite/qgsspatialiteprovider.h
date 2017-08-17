@@ -41,6 +41,7 @@ class QgsSqliteHandle;
 class QgsSpatiaLiteFeatureIterator;
 
 #include "qgsdatasourceuri.h"
+#include "qgsspatialiteconnection.h"
 
 /**
   \class QgsSpatiaLiteProvider
@@ -111,6 +112,284 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
     QgsVectorDataProvider::Capabilities capabilities() const override;
     QVariant defaultValue( int fieldId ) const override;
     bool createAttributeIndex( int field ) override;
+    QgsSqliteHandle *getQSqliteHandle() const { return mHandle; }
+
+    /** Retrieve SpatialiteDbInfo
+     * - containing all Information about Database file
+     * \note
+     * - isDbValid() return if the connection contains layers that are supported by
+     * -- QgsSpatiaLiteProvider, QgsGdalProvider and QgsOgrProvider
+     * \see SpatialiteDbInfo::isDbValid()
+     * \since QGIS 3.0
+     */
+    SpatialiteDbInfo *getSpatialiteDbInfo() const { return mSpatialiteDbInfo; }
+    //! The Database filename being read
+    QString getDatabaseFileName() const { return getSpatialiteDbInfo()->getDatabaseFileName(); }
+    //! The Spatialite internal Database structure being read
+    SpatialiteDbInfo::SpatialMetadata dbSpatialMetadata() const { return getSpatialiteDbInfo()->dbSpatialMetadata(); }
+
+    /** The Spatialite Version Driver being used
+     * \note
+     *  - returned from spatialite_version()
+     * \see getSniffDatabaseType
+    * \since QGIS 3.0
+    */
+    QString dbSpatialiteVersionInfo() const { return getSpatialiteDbInfo()->dbSpatialiteVersionInfo(); }
+
+    /** The major Spatialite Version being used
+     * \note
+     *  - extracted from spatialite_version()
+     * \see getSniffDatabaseType
+    * \since QGIS 3.0
+    */
+    int dbSpatialiteVersionMajor() const { return getSpatialiteDbInfo()->dbSpatialiteVersionMajor(); }
+
+    /** The minor Spatialite Version being used
+     * \note
+     *  - extracted from spatialite_version()
+     * \see getSniffDatabaseType
+    * \since QGIS 3.0
+    */
+    int dbSpatialiteVersionMinor() const { return getSpatialiteDbInfo()->dbSpatialiteVersionMinor(); }
+
+    /** The revision Spatialite Version being used
+     * \note
+     *  - extracted from spatialite_version()
+     * \see getSniffDatabaseType
+    * \since QGIS 3.0
+    */
+    int dbSpatialiteVersionRevision() const { return getSpatialiteDbInfo()->dbSpatialiteVersionRevision(); }
+
+    /** Amount of SpatialTables  found in the Database
+     * - from the vector_layers View
+     * \note
+     * - this does not reflect the amount of SpatialTables that have been loaded
+     * \since QGIS 3.0
+     */
+    int dbSpatialTablesLayersCount() const { return getSpatialiteDbInfo()->dbSpatialTablesLayersCount(); }
+
+    /** Amount of SpatialViews  found in the Database
+     * - from the vector_layers View
+     * \note
+     * - this does not reflect the amount of SpatialViews that have been loaded
+     * \since QGIS 3.0
+     */
+    int dbSpatialViewsLayersCount() const { return getSpatialiteDbInfo()->dbSpatialViewsLayersCount(); }
+
+    /** Amount of VirtualShapes found in the Database
+     * - from the vector_layers View
+     * \note
+     * - this does not reflect the amount of VirtualShapes that have been loaded
+     * \since QGIS 3.0
+     */
+    int dbVirtualShapesLayersCount() const { return getSpatialiteDbInfo()->dbVirtualShapesLayersCount(); }
+
+    /** Amount of RasterLite1-Rasters found in the Database
+     * - only the count of valid Layers are returned
+     * \note
+     * - the Gdal-RasterLite1-Driver is needed to Determineeee this
+     * - this does not reflect the amount of RasterLite1-Rasters that have been loaded
+     * \since QGIS 3.0
+     */
+    int dbRasterLite1LayersCount() const { return getSpatialiteDbInfo()->dbRasterLite1LayersCount(); }
+
+    /** Amount of RasterLite2 Vector-Coverages found in the Database
+     * - from the vector_coverages table Table [-1 if Table not found]
+     * \note
+     * - this does not reflect the amount of RasterLite2 Vector-Coverages that have been loaded
+     * \since QGIS 3.0
+     */
+    int dbVectorCoveragesLayersCount() const { return getSpatialiteDbInfo()->dbVectorCoveragesLayersCount(); }
+
+    /** Amount of RasterLite2 Raster-Coverages found in the Database
+     * - from the raster_coverages table Table [-1 if Table not found]
+     * \note
+     * - this does not reflect the amount of RasterLite2 Raster-Coverages that have been loaded
+     * \since QGIS 3.0
+     */
+    int dbRasterCoveragesLayersCount() const { return getSpatialiteDbInfo()->dbRasterCoveragesLayersCount(); }
+    //! Does the read Database contain Topology tables [-1=no topologies table, otherwise amount (0 being empty)]
+    int dbTopologyExportLayersCount() const { return getSpatialiteDbInfo()->dbTopologyExportLayersCount(); }
+    //! Is the used Spatialite compiled with Spatialite-Gcp support
+    bool hasDbGcpSupport() const { return getSpatialiteDbInfo()->hasDbGcpSupport(); }
+    //! Is the used Spatialite compiled with Topology (and thus RtTopo) support
+    bool hasDbTopologySupport() const { return getSpatialiteDbInfo()->hasDbTopologySupport(); }
+    //! Is the used Spatialite 4.5.0 or greater
+    bool isDbVersion45() const { return getSpatialiteDbInfo()-> isDbVersion45(); }
+
+    /** Loaded Layers-Counter
+     * - contained in mDbLayers
+     * \note
+     * - only when GetSpatialiteDbInfoWrapper is called with LoadLayers=true
+     * -- will all the Layers be loaded
+     * \see GetSpatialiteDbInfo
+     * \since QGIS 3.0
+     */
+    int dbLayersCount() const { return getSpatialiteDbInfo()->dbLayersCount(); }
+
+    /** Amount of Vector-Layers found
+     * - SpatialTables, SpatialViews and virtualShapes [from the vector_layers View]
+     * \note
+     * - this amount may differ from dbLayersCount()
+     * -- which only returns the amount of Loaded-Vector-Layers
+     * \see dbLayersCount()
+     * \since QGIS 3.0
+     */
+    int dbVectorLayersCount() const { return getSpatialiteDbInfo()->dbVectorLayersCount(); }
+    //! Flag indicating if the layer data source has ReadOnly restrictions
+    bool isDbReadOnly() const { return getSpatialiteDbInfo()->isDbReadOnly(); }
+
+    /** Is the read Database supported by QgsSpatiaLiteProvider or
+     * a format only supported by the QgsOgrProvider or QgsGdalProvider
+     * \note
+     *  when false: the file is either a non-supported sqlite3 container
+     *  or not a sqlite3 file (a fossil file would be a sqlite3 container not supported)
+     * \since QGIS 3.0
+     */
+    bool isDbValid() const { return getSpatialiteDbInfo()->isDbValid(); }
+
+    /** Is the read Database a Spatialite Database
+     * - supported by QgsSpatiaLiteProvider
+     * \note
+     *  - Spatialite specific functions should not be called when false
+     *  -> UpdateLayerStatistics()
+     * \since QGIS 3.0
+     */
+    bool isDbSpatialite() const { return getSpatialiteDbInfo()->isDbSpatialite(); }
+
+    /** The read Database only supported by the QgsOgrProvider or QgsGdalProvider Drivers
+     * \note
+     *  - QgsOgrProvider: GeoPackage-Vector
+     *  - QgsGdalProvider: GeoPackage-Raster, MbTiles
+     *  - QgsGdalProvider: RasterLite1 [when Gdal-RasterLite Driver is active]
+     * \since QGIS 3.0
+     */
+    bool isDbGdalOgr() const { return getSpatialiteDbInfo()->isDbGdalOgr(); }
+    //! The active Layer
+    SpatialiteDbLayer *getDbLayer() const { return mDbLayer; }
+    //! The sqlite handler
+    sqlite3 *dbSqliteHandle() const { return getDbLayer()->dbSqliteHandle(); }
+    //! Name of the table with no schema
+    QString getTableName() const { return getDbLayer()->getTableName(); }
+    //! Name of the geometry column in the table
+    QString getGeometryColumn() const { return getDbLayer()->getGeometryColumn(); }
+    //! Name of the table which contains the SpatialView-Geometry (underlining table)
+    QString getViewTableName() const { return getDbLayer()->getViewTableName(); }
+    QString getIndexTable() const { if ( getLayerType() == SpatialiteDbInfo::SpatialView ) return getViewTableName(); else return getTableName(); }
+    //! Name of the table-geometry which contains the SpatialView-Geometry (underlining table)
+    QString getViewTableGeometryColumn() const { return getDbLayer()->getViewTableGeometryColumn(); }
+    QString getIndexGeometry() const { if ( getLayerType() == SpatialiteDbInfo::SpatialView ) return getViewTableGeometryColumn(); else return getGeometryColumn(); }
+    //! Name of the Layer format: 'table_name(geometry_name)'
+    QString getLayerName() const { return getDbLayer()->getLayerName(); }
+    //! Title [RasterLite2]
+    QString getTitle() const { return getDbLayer()->getTitle(); }
+    //! Title [RasterLite2]
+    QString getAbstract() const { return getDbLayer()->getAbstract(); }
+    //! Copyright [RasterLite2]
+    QString getCopyright() const { return getDbLayer()->getCopyright(); }
+    //! The Srid of the Geometry
+    int getSrid() const { return getDbLayer()->getSrid(); }
+    //! AuthId [auth_name||':'||auth_srid]
+    QString getAuthId() const { return getDbLayer()->getAuthId(); }
+    //! Proj4text [from mSrid]
+    QString getProj4text() const { return getDbLayer()->getProj4text(); }
+    //! The SpatialiIndex used for the Geometry
+    int getSpatialIndexType() const { return getDbLayer()->getSpatialIndexType(); }
+    //! The Spatialite Layer-Type being read
+    SpatialiteDbInfo::SpatialiteLayerType getLayerType() const { return getDbLayer()->getLayerType(); }
+    //! The Spatialite Geometry-Type being read
+    QgsWkbTypes::Type getGeometryType() const { return getDbLayer()->getGeometryType(); }
+    //! The Spatialite Geometry-Type being read (as String)
+    QString getGeometryTypeString() const { return getDbLayer()->getGeometryTypeString(); }
+    //! The Spatialite Coord-Dimensions
+    int getCoordDimensions() const { return getDbLayer()->getCoordDimensions(); }
+
+    /** Rectangle that contains the extent (bounding box) of the layer
+     * \note
+     *  With UpdateLayerStatistics the Number of features will also be updated and retrieved
+     * \param bUpdate force reading from Database
+     * \param bUpdateStatistics UpdateLayerStatistics before reading
+     * \see mLayerExtent
+     * \see mNumberFeatures
+     * \since QGIS 3.0
+     */
+    QgsRectangle getLayerExtent( bool bUpdate = false, bool bUpdateStatistics = false ) const { return getDbLayer()->getLayerExtent( bUpdate, bUpdateStatistics ); }
+
+    /** Number of features in the layer
+     * \note
+     *  With UpdateLayerStatistics the Extent will also be updated and retrieved
+     * \param bUpdateStatistics UpdateLayerStatistics before reading
+     * \see getLayerExtent
+     * \see getNumberFeatures
+     * \since QGIS 3.0
+     */
+    long getNumberFeatures( bool bUpdateStatistics = false ) const { return getDbLayer()->getNumberFeatures( bUpdateStatistics ); }
+    //! The Spatialite Layer-Readonly status [true or false]
+    int isLayerReadOnly() const { return getDbLayer()->isLayerReadOnly(); }
+    //! The Spatialite Layer-Hidden status [true or false]
+    int isLayerHidden() const { return getDbLayer()->isLayerHidden(); }
+    //! The Spatialite Layer-Id being created
+    int getLayerId() const { return getDbLayer()->getLayerId(); }
+
+    /** Based on Layer-Type, set QgsVectorDataProvider::Capabilities
+     * - Writable Spatialview: based on found TRIGGERs
+     * \note
+     * - this should be called after the LayerType and PrimaryKeys have been set
+     * \note
+     * The following receive: QgsVectorDataProvider::NoCapabilities
+     * - SpatialiteTopology: will serve only TopopogyLayer, which ate SpatialTables
+     * - VectorStyle: nothing as yet
+     * - RasterStyle: nothing as yet
+     * \note
+     * - this should be called with Update, after alterations of the TABLE have been made
+     * -> will call GetDbLayersInfo to re-read field data
+     * \param bUpdate force reading from Database
+     * \see SpatialiteDbLayer::GetDbLayersInfo
+     * \since QGIS 3.0
+     */
+    QgsVectorDataProvider::Capabilities getCapabilities( bool bUpdate = false ) const { return getDbLayer()->getCapabilities( bUpdate ); }
+    //! A possible Query from QgsDataSourceUri
+    QString getLayerQuery() const { return getDbLayer()->getLayerQuery(); }
+    //! A possible Query from QgsDataSourceUri
+    void setLayerQuery( QString sQuery ) { return getDbLayer()->setLayerQuery( sQuery ); }
+    //! Is the read Database supported by QgsSpatiaLiteProvider
+    //! Name of the primary key column in the table
+    QString getPrimaryKey() const { return getDbLayer()->getPrimaryKey(); }
+    //! List of primary key columns in the table
+    QgsAttributeList getPrimaryKeyAttrs() const { return getDbLayer()->getPrimaryKeyAttrs(); }
+    //! List of layer fields in the table
+    QgsFields getAttributeFields() const { return getDbLayer()->getAttributeFields(); }
+    //! Map of field index to default value [for Topology, the Topology-Layers]
+    QMap<int, QVariant> getDefaultValues() const { return getDbLayer()->getDefaultValues(); }
+
+    /** Connection info (DB-path) without table and geometry
+     * - this will be called from the SpatialiteDbLayer::dbConnectionInfo()
+     * \note
+     *  - to call for Database and Table/Geometry portion use: SpatialiteDbLayer::dbConnectionInfo()
+    * \returns uri with Database only
+    * \since QGIS 3.0
+    */
+    QString dbConnectionInfo() const { return getSpatialiteDbInfo()->dbConnectionInfo(); }
+
+    /** Connection info (DB-path) with table and geometry
+     * \note
+     *  - to call for Database portion only, use: SpatialiteDbInfo::dbConnectionInfo()
+     *  - For RasterLite1: GDAL-Syntax will be used
+    * \returns uri with Database and Table/Geometry Information
+    * \since QGIS 3.0
+    */
+    QString getLayerDataSourceUri() const { return getDbLayer()->getLayerDataSourceUri(); }
+    //! Is the Layer valid
+    bool isLayerValid() const { if ( getDbLayer() ) return getDbLayer()->isLayerValid(); else return false;}
+
+    /** Is the Layer
+     * - supported by QgsSpatiaLiteProvider
+     * \note
+     *  - Spatialite specific functions should not be called when false
+     *  -> UpdateLayerStatistics()
+     * \since QGIS 3.0
+     */
+    bool isLayerSpatialite() const { if ( getDbLayer() ) return getDbLayer()->isLayerSpatialite(); else return false;}
 
     /** The SpatiaLite provider does its own transforms so we return
      * true for the following three functions to indicate that transforms
@@ -130,11 +409,6 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
     void invalidateConnections( const QString &connection ) override;
     QList<QgsRelation> discoverRelations( const QgsVectorLayer *self, const QList<QgsVectorLayer *> &layers ) const override;
 
-    // static functions
-    static void convertToGeosWKB( const unsigned char *blob, int blob_size,
-                                  unsigned char **wkb, int *geom_size );
-    static int computeMultiWKB3Dsize( const unsigned char *p_in, int little_endian,
-                                      int endian_arch );
     static QString quotedIdentifier( QString id );
     static QString quotedValue( QString value );
 
@@ -168,11 +442,6 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
 
     };
 
-    /**
-     * sqlite3 handles pointer
-     */
-    QgsSqliteHandle *mHandle = nullptr;
-
   signals:
 
     /**
@@ -196,32 +465,33 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
 
   private:
 
-    //! Loads fields from input file to member mAttributeFields
-    void loadFields();
+    /**
+     * sqlite3 handles pointer
+     */
+    QgsSqliteHandle *mHandle = nullptr;
+    bool setSqliteHandle( QgsSqliteHandle *sqliteHandle );
 
-    //! For views, try to get primary key from a dedicated meta table
-    void determineViewPrimaryKey();
-
-    //! Check if a table/view has any triggers.  Triggers can be used on views to make them editable.
-    bool hasTriggers();
-
-    //! Check if a table has a row id (internal primary key)
-    bool hasRowid();
+    /** SpatialiteDbInfo Object
+     * - containing all Information about Database file
+     * \note
+     * - isDbValid() return if the connection contains layers that are supported by
+     * -- QgsSpatiaLiteProvider, QgsGdalProvider and QgsOgrProvider
+     * \see SpatialiteDbInfo::isDbValid()
+     * \since QGIS 3.0
+     */
+    SpatialiteDbInfo *mSpatialiteDbInfo = nullptr;
+    bool setDbLayer( SpatialiteDbLayer *dbLayer );
+    SpatialiteDbLayer *mDbLayer = nullptr;
 
     //! Convert a QgsField to work with SL
     static bool convertField( QgsField &field );
 
     QString geomParam() const;
 
-    //! get SpatiaLite version string
-    QString spatialiteVersion();
-
     /**
      * Search all the layers using the given table.
      */
     static QList<QgsVectorLayer *> searchLayers( const QList<QgsVectorLayer *> &layers, const QString &connectionInfo, const QString &tableName );
-
-    QgsFields mAttributeFields;
 
     //! Flag indicating if the layer data source is a valid SpatiaLite layer
     bool mValid;
@@ -231,69 +501,37 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
 
     //! Flag indicating if the layer data source is based on a plain Table
     bool mTableBased;
-
     //! Flag indicating if the layer data source is based on a View
     bool mViewBased;
-
     //! Flag indicating if the layer data source is based on a VirtualShape
     bool mVShapeBased;
-
     //! Flag indicating if the layer data source has ReadOnly restrictions
     bool mReadOnly;
-
     //! DB full path
     QString mSqlitePath;
 
     //! Name of the table with no schema
-    QString mTableName;
+    QString mUriTableName;
 
     //! Name of the table or subquery
     QString mQuery;
 
-    //! Name of the primary key column in the table
-    QString mPrimaryKey;
-
-    //! List of primary key columns in the table
-    QgsAttributeList mPrimaryKeyAttrs;
+    //! Name of the primary key column in the table from QgsDataSourceUri
+    QString mUriPrimaryKey;
 
     //! Name of the geometry column in the table
-    QString mGeometryColumn;
-
-    //! Map of field index to default value
-    QMap<int, QVariant> mDefaultValues;
-
-    //! Name of the SpatialIndex table
-    QString mIndexTable;
-
-    //! Name of the SpatialIndex geometry column
-    QString mIndexGeometry;
+    QString mUriGeometryColumn;
+    //!  Name of the Layer to search for format: 'table_name(geometry_name)'
+    QString mUriLayerName;
 
     //! Geometry type
-    QgsWkbTypes::Type mGeomType;
-
-    //! SQLite handle
-    sqlite3 *mSqliteHandle = nullptr;
+    QgsWkbTypes::Type mGeometryType;
 
     //! String used to define a subset of the layer
     QString mSubsetString;
 
-    //! CoordDimensions of the layer
-    int nDims;
-
     //! Spatial reference id of the layer
     int mSrid;
-
-    //! auth id
-    QString mAuthId;
-
-    //! proj4text
-    QString mProj4text;
-
-    //! Rectangle that contains the extent (bounding box) of the layer
-    QgsRectangle mLayerExtent;
-
-    //! Number of features in the layer
-    long mNumberFeatures;
 
     //! this Geometry is supported by an R*Tree spatial index
     bool mSpatialIndexRTree;
@@ -301,42 +539,17 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
     //! this Geometry is supported by an MBR cache spatial index
     bool mSpatialIndexMbrCache;
 
-    QgsVectorDataProvider::Capabilities mEnabledCapabilities;
-
     QgsField field( int index ) const;
-
-    //! SpatiaLite version string
-    QString mSpatialiteVersionInfo;
-
-    //! Are mSpatialiteVersionMajor, mSpatialiteVersionMinor valid?
-    bool mGotSpatialiteVersion;
-
-    //! SpatiaLite major version
-    int mSpatialiteVersionMajor;
-
-    //! SpatiaLite minor version
-    int mSpatialiteVersionMinor;
 
     /**
      * internal utility functions used to handle common SQLite tasks
      */
     //void sqliteOpen();
     void closeDb();
-    bool checkLayerType();
-    bool getGeometryDetails();
-    bool getTableGeometryDetails();
-    bool getViewGeometryDetails();
-    bool getVShapeGeometryDetails();
+    bool checkQuery();
+#if 0
+    // TODO: Remove after replacing with SpatialiteDbInfo
     bool getQueryGeometryDetails();
-    bool getSridDetails();
-    bool getTableSummary();
-#ifdef SPATIALITE_VERSION_GE_4_0_0
-    // only if libspatialite version is >= 4.0.0
-    bool checkLayerTypeAbstractInterface( gaiaVectorLayerPtr lyr );
-    bool getGeometryDetailsAbstractInterface( gaiaVectorLayerPtr lyr );
-    bool getTableSummaryAbstractInterface( gaiaVectorLayerPtr lyr );
-    void loadFieldsAbstractInterface( gaiaVectorLayerPtr lyr );
-    void getViewSpatialIndexName();
 #endif
     bool prepareStatement( sqlite3_stmt *&stmt,
                            const QgsAttributeList &fetchAttributes,
@@ -346,44 +559,12 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
                      QgsFeature &feature,
                      const QgsAttributeList &fetchAttributes );
 
-    void updatePrimaryKeyCapabilities();
+    // Note 20170523: not sure if this is still needed.
+    // void updatePrimaryKeyCapabilities();
 
-    int computeSizeFromMultiWKB2D( const unsigned char *p_in, int nDims,
-                                   int little_endian,
-                                   int endian_arch );
-    int computeSizeFromMultiWKB3D( const unsigned char *p_in, int nDims,
-                                   int little_endian,
-                                   int endian_arch );
-    void convertFromGeosWKB2D( const unsigned char *blob, int blob_size,
-                               unsigned char *wkb, int geom_size,
-                               int nDims, int little_endian, int endian_arch );
-    void convertFromGeosWKB3D( const unsigned char *blob, int blob_size,
-                               unsigned char *wkb, int geom_size,
-                               int nDims, int little_endian, int endian_arch );
-    void convertFromGeosWKB( const unsigned char *blob, int blob_size,
-                             unsigned char **wkb, int *geom_size,
-                             int dims );
-    int computeSizeFromGeosWKB3D( const unsigned char *blob, int size,
-                                  int type, int nDims, int little_endian,
-                                  int endian_arch );
-    int computeSizeFromGeosWKB2D( const unsigned char *blob, int size,
-                                  int type, int nDims, int little_endian,
-                                  int endian_arch );
 
-    void fetchConstraints();
 
-    void insertDefaultValue( int fieldIndex, QString defaultVal );
 
-    enum GEOS_3D
-    {
-      GEOS_3D_POINT              = -2147483647,
-      GEOS_3D_LINESTRING         = -2147483646,
-      GEOS_3D_POLYGON            = -2147483645,
-      GEOS_3D_MULTIPOINT         = -2147483644,
-      GEOS_3D_MULTILINESTRING    = -2147483643,
-      GEOS_3D_MULTIPOLYGON       = -2147483642,
-      GEOS_3D_GEOMETRYCOLLECTION = -2147483641,
-    };
 
     /**
      * Handles an error encountered while executing an sql statement.
