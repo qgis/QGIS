@@ -76,7 +76,7 @@ class QgsGeoPackageConnectionItem : public QgsDataCollectionItem
 #ifdef HAVE_GUI
     virtual bool acceptDrop() override { return true; }
     virtual bool handleDrop( const QMimeData *data, Qt::DropAction action ) override;
-    QList<QAction *> actions();
+    QList<QAction *> actions() override;
 #endif
 
     //! Return the layer type from \a geometryType
@@ -106,7 +106,7 @@ class QgsGeoPackageRootItem : public QgsDataCollectionItem
 
 #ifdef HAVE_GUI
     virtual QWidget *paramWidget() override;
-    QList<QAction *> actions();
+    QList<QAction *> actions() override;
 
   public slots:
     void newConnection();
