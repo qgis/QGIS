@@ -41,6 +41,7 @@ from processing.script.ScriptUtils import ScriptUtils
 from .QgisAlgorithm import QgisAlgorithm
 
 from .AddTableField import AddTableField
+from .Aggregate import Aggregate
 from .Aspect import Aspect
 from .AutoincrementalField import AutoincrementalField
 from .BasicStatistics import BasicStatisticsForField
@@ -204,6 +205,7 @@ class QGISAlgorithmProvider(QgsProcessingProvider):
         #          ExecuteSQL(), FindProjection(),
         #         ]
         algs = [AddTableField(),
+                Aggregate(),
                 Aspect(),
                 AutoincrementalField(),
                 BasicStatisticsForField(),
