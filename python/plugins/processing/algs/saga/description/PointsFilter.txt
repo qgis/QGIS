@@ -1,7 +1,7 @@
 Points Filter
 shapes_points
 QgsProcessingParameterFeatureSource|POINTS|Points|0|None|False
-ParameterTableField|FIELD|Attribute|POINTS|-1|False
+QgsProcessingParameterField|FIELD|Attribute|None|POINTS|-1|False|False
 QgsProcessingParameterNumber|RADIUS|Radius|QgsProcessingParameterNumber.Integer|1|False|None|None
 QgsProcessingParameterNumber|MINNUM|Minimum Number of Points|QgsProcessingParameterNumber.Integer|0|False|None|None
 QgsProcessingParameterNumber|MAXNUM|Maximum Number of Points|QgsProcessingParameterNumber.Integer|0|False|None|None

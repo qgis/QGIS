@@ -9,7 +9,7 @@ QgsProcessingParameterNumber|MIN|minimum value (for range)|QgsProcessingParamete
 QgsProcessingParameterNumber|MAX|maximum value (for range)|QgsProcessingParameterNumber.Double|1.0|False|None|None
 QgsProcessingParameterNumber|RNEW|new value(for range)|QgsProcessingParameterNumber.Double|2.0|False|None|None
 QgsProcessingParameterEnum|ROPERATOR|operator (for range)|[0] <=;[1] <
-ParameterFixedTable|RETAB|Lookup Table|3|minimum;maximum;new|False
+QgsProcessingParameterMatrix|RETAB|Lookup Table|3|False|minimum;maximum;new
 QgsProcessingParameterEnum|TOPERATOR|operator (for table)|[0] min <= value < max;[1] min <= value <= max;[2] min < value <= max;[3] min < value < max
 QgsProcessingParameterBoolean|NODATAOPT      |replace no data values|True
 QgsProcessingParameterNumber|NODATA|new value for no data values|QgsProcessingParameterNumber.Double|0.0|False|None|None

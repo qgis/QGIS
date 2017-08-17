@@ -9,7 +9,7 @@ QgsProcessingParameterNumber|DBLOCK|Block Size|QgsProcessingParameterNumber.Doub
 QgsProcessingParameterNumber|VAR_MAXDIST|Maximum Distance|QgsProcessingParameterNumber.Integer|-1.000000|False|None|None
 QgsProcessingParameterNumber|VAR_NCLASSES|Lag Distance Classes|QgsProcessingParameterNumber.Integer|100|False| 1|None
 QgsProcessingParameterNumber|VAR_NSKIP|Skip|QgsProcessingParameterNumber.Integer|1|False| 1|None
-ParameterString|VAR_MODEL|Model
+QgsProcessingParameterString|VAR_MODEL|Model
 Hardcoded|-TARGET_DEFINITION 0
 Extent TARGET_USER_XMIN TARGET_USER_XMAX TARGET_USER_YMIN TARGET_USER_YMAX
 QgsProcessingParameterNumber|TARGET_USER_SIZE|Cellsize|QgsProcessingParameterNumber.Double|100.0|False|None|None

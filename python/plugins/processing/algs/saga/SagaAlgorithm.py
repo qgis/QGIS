@@ -38,11 +38,13 @@ from qgis.core import (QgsProcessingUtils,
                        QgsProcessingParameterBoolean,
                        QgsProcessingParameterNumber,
                        QgsProcessingParameterEnum,
-                       QgsProcessingParameterMultipleLayers)
+                       QgsProcessingParameterMultipleLayers,
+                       QgsProcessingParameterMatrix,
+                       QgsProcessingParameterString,
+                       QgsProcessingParameterField)
 from processing.core.ProcessingConfig import ProcessingConfig
 from processing.core.parameters import (getParameterFromString,
-                                        ParameterExtent,
-                                        ParameterFixedTable)
+                                        ParameterExtent)
 from processing.core.outputs import (getOutputFromString,
                                      OutputVector,
                                      OutputRaster)
@@ -223,11 +225,11 @@ class SagaAlgorithm(SagaAlgorithmBase):
                     command += ' -' + param.name().strip() + " true"
                 else:
                     command += ' -' + param.name().strip() + " false"
-            elif isinstance(param, ParameterFixedTable):
+            elif isinstance(param, QgsProcessingParameterMatrix):
                 tempTableFile = getTempFilename('txt')
                 with open(tempTableFile, 'w') as f:
-                    f.write('\t'.join([col for col in param.cols]) + '\n')
-                    values = parameters[param.name()].split(',')
+                    f.write('\t'.join([col for col in param.headers()]) + '\n')
+                    values = self.parameterAsMatrix(parameters, param.name(), context)
                     for i in range(0, len(values), 3):
                         s = values[i] + '\t' + values[i + 1] + '\t' + values[i + 2] + '\n'
                         f.write(s)
@@ -241,10 +243,12 @@ class SagaAlgorithm(SagaAlgorithmBase):
                 for i in range(4):
                     command += ' -' + self.extentParamNames[i] + ' ' \
                         + str(float(values[i]) + offset[i])
-            elif isinstance(param, (QgsProcessingParameterNumber, QgsProcessingParameterEnum)):
-                command += ' -' + param.name() + ' ' + str(param.value)
-            else:
-                command += ' -' + param.name() + ' "' + str(param.value) + '"'
+            elif isinstance(param, QgsProcessingParameterNumber):
+                command += ' -' + param.name() + ' ' + str(self.parameterAsDouble(parameters, param.name(), context))
+            elif isinstance(param, QgsProcessingParameterEnum):
+                command += ' -' + param.name() + ' ' + str(self.parameterAsEnum(parameters, param.name(), context))
+            elif isinstance(param, QgsProcessingParameterString, QgsProcessingParameterField):
+                command += ' -' + param.name() + ' "' + self.parameterAsString(parameters, param.name(), context) + '"'
 
         for out in self.outputs:
             command += ' -' + out.name + ' "' + out.getCompatibleFileName(self) + '"'
