@@ -1,4 +1,4 @@
-Melton Ruggedness Number
+ParameMelton Ruggedness Number
 ta_hydrology
 QgsProcessingParameterRasterLayer|DEM|Elevation|None|False
 QgsProcessingParameterRasterDestination|AREA|Catchment Area

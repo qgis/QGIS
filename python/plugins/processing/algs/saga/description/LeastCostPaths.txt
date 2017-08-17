@@ -3,5 +3,5 @@ grid_analysis
 QgsProcessingParameterFeatureSource|SOURCE|Source Point(s)|0|None|False
 QgsProcessingParameterRasterLayer|DEM|Accumulated cost|None|False
 ParameterMultipleInput|VALUES|Values|3|True
-OutputVector|POINTS|Profile (points)
-OutputVector|LINE|Profile (lines)
+QgsProcessingParameterVectorDestination|POINTS|Profile (points)
+QgsProcessingParameterVectorDestination|LINE|Profile (lines)

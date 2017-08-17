@@ -5,6 +5,6 @@ QgsProcessingParameterRasterDestination|FILTERED_MASK|Filtered Image
 QgsProcessingParameterBoolean|FILTER|Apply Filter?|True
 QgsProcessingParameterNumber|SIZE|Filter Size (Radius)|QgsProcessingParameterNumber.Integer|3|False|None|None
 QgsProcessingParameterRasterDestination|SYMBOLIC_IMAGE|Symbolic Image
-OutputVector|OUTLINES|Outlines
+QgsProcessingParameterVectorDestination|OUTLINES|Outlines
 QgsProcessingParameterBoolean|BORDER_PIXEL_CENTERS|Pixel Centers?|False
 QgsProcessingParameterBoolean|REMOVE_MARGINAL_REGIONS|Remove Border Regions?|False

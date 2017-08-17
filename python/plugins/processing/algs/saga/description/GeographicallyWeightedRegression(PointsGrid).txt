@@ -17,4 +17,4 @@ QgsProcessingParameterRasterDestination|REGRESSION|Regression
 QgsProcessingParameterRasterDestination|QUALITY|Coefficient of Determination
 QgsProcessingParameterRasterDestination|INTERCEPT|Intercept
 QgsProcessingParameterRasterDestination|SLOPE|Slope
-OutputVector|RESIDUALS|Residuals
+QgsProcessingParameterVectorDestination|RESIDUALS|Residuals

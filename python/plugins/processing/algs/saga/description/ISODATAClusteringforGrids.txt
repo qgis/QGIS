@@ -2,7 +2,7 @@ ISODATA Clustering for Grids
 imagery_classification
 ParameterMultipleInput|FEATURES|Features|3|False
 QgsProcessingParameterRasterDestination|CLUSTER|Clusters
-ParameterTable|STATISTICS|Statistics|False
+QgsProcessingParameterFeatureSource|STATISTICS|Statistics|5|None|False
 QgsProcessingParameterBoolean|NORMALIZE|Normalize|False
 QgsProcessingParameterNumber|ITERATIONS|Maximum Number of Iterations|QgsProcessingParameterNumber.Integer|20|False| 3|None
 QgsProcessingParameterNumber|CLUSTER_INI|Initial Number of Clusters|QgsProcessingParameterNumber.Integer|5|False| 0|None

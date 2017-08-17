@@ -6,4 +6,4 @@ Extent EXTENT_X_MIN EXTENT_X_MAX EXTENT_Y_MIN EXTENT_Y_MAX
 QgsProcessingParameterNumber|DIVISION_X|Division Width|QgsProcessingParameterNumber.Double|1.0|False|None|None
 QgsProcessingParameterNumber|DIVISION_Y|Division Height|QgsProcessingParameterNumber.Double|1.0|False|None|None
 QgsProcessingParameterEnum|ALIGNMENT|Alignment|[0] Bottom left;[1] Top left;[2] Bottom right;[3] Top right;[4] Centered|False|0
-OutputVector|GRATICULE_LINE|Lines Graticule
+QgsProcessingParameterVectorDestination|GRATICULE_LINE|Lines Graticule

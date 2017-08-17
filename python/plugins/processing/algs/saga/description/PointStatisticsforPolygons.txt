@@ -11,4 +11,4 @@ QgsProcessingParameterBoolean|DEV             |Deviation|True
 QgsProcessingParameterBoolean|MIN             |Minimum|True
 QgsProcessingParameterBoolean|MAX             |Maximum|True
 QgsProcessingParameterBoolean|NUM             |Count|True
-OutputVector|STATISTICS|Statistics
+QgsProcessingParameterVectorDestination|STATISTICS|Statistics

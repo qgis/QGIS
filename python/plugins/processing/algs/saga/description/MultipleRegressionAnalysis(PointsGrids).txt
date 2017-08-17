@@ -12,5 +12,5 @@ QgsProcessingParameterNumber|P_OUT|P out|QgsProcessingParameterNumber.Integer|5|
 OutputTable|INFO_COEFF|Details: Coefficients
 OutputTable|INFO_MODEL|Details: Model
 OutputTable|INFO_STEPS|Details: Steps
-OutputVector|RESIDUALS|Residuals
+QgsProcessingParameterVectorDestination|RESIDUALS|Residuals
 QgsProcessingParameterRasterDestination|REGRESSION|Regression

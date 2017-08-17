@@ -3,4 +3,4 @@ shapes_lines
 QgsProcessingParameterFeatureSource|POINTS|Points|0|None|False
 ParameterTableField|ORDER|Order by...|POINTS|-1|False
 ParameterTableField|SEPARATE|Separate by...|POINTS|-1|False
-OutputVector|LINES|Lines
+QgsProcessingParameterVectorDestination|LINES|Lines

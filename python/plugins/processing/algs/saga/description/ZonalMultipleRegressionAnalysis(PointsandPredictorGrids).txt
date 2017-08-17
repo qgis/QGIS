@@ -3,8 +3,8 @@ statistics_regression
 ParameterMultipleInput|PREDICTORS|Predictors|3|False
 QgsProcessingParameterFeatureSource|ZONES|Zones|-1|None|False
 QgsProcessingParameterFeatureSource|POINTS|Points|-1|None|False
-ParameterTable|ATTRIBUTE|Dependent Variable|False
-OutputVector|RESIDUALS|Residuals
+QgsProcessingParameterFeatureSource|ATTRIBUTE|Dependent Variable|5|None|False
+QgsProcessingParameterVectorDestination|RESIDUALS|Residuals
 QgsProcessingParameterRasterDestination|REGRESSION|Regression
 QgsProcessingParameterEnum|RESAMPLING|Resampling|[0] Nearest Neighbour;[1] Bilinear Interpolation;[2] Bicubic Spline Interpolation;[3] B-Spline Interpolation|False|3
 QgsProcessingParameterBoolean|COORD_X|Include X Coordinate|False

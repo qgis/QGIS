@@ -8,4 +8,4 @@ QgsProcessingParameterNumber|SCALEX|Scale Factor X|QgsProcessingParameterNumber.
 QgsProcessingParameterNumber|SCALEY|Scale Factor Y|QgsProcessingParameterNumber.Double|1.0|False|None|None
 QgsProcessingParameterNumber|ANCHORX|X|QgsProcessingParameterNumber.Double|0.0|False|None|None
 QgsProcessingParameterNumber|ANCHORY|Y|QgsProcessingParameterNumber.Double|0.0|False|None|None
-OutputVector|OUT|Transformed
+QgsProcessingParameterVectorDestination|OUT|Transformed

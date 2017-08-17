@@ -5,5 +5,5 @@ ParameterMultipleInput|VALUES|Values|3|True
 QgsProcessingParameterFeatureSource|LINES|Lines|1|None|False
 ParameterTableField|NAME|Name|LINES|-1|False
 QgsProcessingParameterBoolean|SPLIT         |Each Line as new Profile|True
-OutputVector|PROFILE|Profiles
-OutputVector|PROFILES|Profiles
+QgsProcessingParameterVectorDestination|PROFILE|Profiles
+QgsProcessingParameterVectorDestination|PROFILES|Profiles

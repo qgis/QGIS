@@ -1,5 +1,5 @@
 Local Minima and Maxima
 shapes_grid
 QgsProcessingParameterRasterLayer|GRID|Grid|None|False
-OutputVector|MINIMA|Minima
-OutputVector|MAXIMA|Maxima
+QgsProcessingParameterVectorDestination|MINIMA|Minima
+QgsProcessingParameterVectorDestination|MAXIMA|Maxima

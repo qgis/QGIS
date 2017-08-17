@@ -3,4 +3,4 @@ shapes_points
 QgsProcessingParameterFeatureSource|POINTS|Points|0|None|False
 ParameterTableField|FIELD|Attribute|POINTS|-1|False
 QgsProcessingParameterNumber|RESOLUTION|Resolution|QgsProcessingParameterNumber.Double|1.0|False|0.0|None
-OutputVector|THINNED|Thinned Points
+QgsProcessingParameterVectorDestination|THINNED|Thinned Points

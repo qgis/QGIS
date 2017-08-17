@@ -1,7 +1,7 @@
 Regression Kriging
 statistics_kriging
 QgsProcessingParameterFeatureSource|POINTS|Points|-1|None|False
-ParameterTable|FIELD|Attribute|False
+QgsProcessingParameterFeatureSource|FIELD|Attribute|5|None|False
 ParameterMultipleInput|PREDICTORS|Predictors|3|False
 QgsProcessingParameterRasterDestination|REGRESSION|Regression
 QgsProcessingParameterRasterDestination|PREDICTION|Prediction
@@ -15,9 +15,9 @@ QgsProcessingParameterNumber|VAR_MAXDIST|Maximum Distance|QgsProcessingParameter
 QgsProcessingParameterNumber|VAR_NCLASSES|Lag Distance Classes|QgsProcessingParameterNumber.Integer|100|False| 1|None
 QgsProcessingParameterNumber|VAR_NSKIP|Skip|QgsProcessingParameterNumber.Integer|1|False| 1|None
 ParameterString|VAR_MODEL|Variogram Model
-ParameterTable|INFO_COEFF|Regression: Coefficients|True
-ParameterTable|INFO_MODEL|Regression: Model|True
-ParameterTable|INFO_STEPS|Regression: Steps|True
+QgsProcessingParameterFeatureSource|INFO_COEFF|Regression: Coefficients|5|None|True
+QgsProcessingParameterFeatureSource|INFO_MODEL|Regression: Model|5|None|True
+QgsProcessingParameterFeatureSource|INFO_STEPS|Regression: Steps|5|None|True
 QgsProcessingParameterBoolean|COORD_X|Include X Coordinate|False
 QgsProcessingParameterBoolean|COORD_Y|Include Y Coordinate|False
 QgsProcessingParameterBoolean|INTERCEPT|Intercept|True

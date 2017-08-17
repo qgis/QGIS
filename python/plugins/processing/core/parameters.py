@@ -49,7 +49,8 @@ from qgis.core import (QgsRasterLayer, QgsVectorLayer, QgsMapLayer, QgsCoordinat
                        QgsProcessingParameterRasterLayer,
                        QgsProcessingParameterBoolean,
                        QgsProcessingParameterEnum,
-                       QgsProcessingParameterRasterDestination,
+                       QgsProcessingParameterRasterDestination,  # NOQA
+                       QgsProcessingParameterVectorDestination,  # NOQA
                        QgsProcessingParameterFeatureSource,
                        QgsProcessingParameterNumber)
 

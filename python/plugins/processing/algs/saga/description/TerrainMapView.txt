@@ -4,7 +4,7 @@ QgsProcessingParameterRasterLayer|DEM|DEM|None|False
 QgsProcessingParameterRasterDestination|SHADE|Shade
 QgsProcessingParameterRasterDestination|OPENNESS|Openness
 QgsProcessingParameterRasterDestination|SLOPE|Slope
-OutputVector|CONTOURS|Contours
+QgsProcessingParameterVectorDestination|CONTOURS|Contours
 QgsProcessingParameterEnum|METHOD|Method|[0] Topography;[1] Morphology|False|0
 QgsProcessingParameterNumber|RADIUS|Radial Limit|QgsProcessingParameterNumber.Double|1000.000000|False| 0.000000|None
 QgsProcessingParameterBoolean|CONTOUR_LINES|Contour Lines|True

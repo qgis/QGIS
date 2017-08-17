@@ -13,4 +13,4 @@ QgsProcessingParameterBoolean|MEAN|Mean|True
 QgsProcessingParameterBoolean|VAR|Variance|True
 QgsProcessingParameterBoolean|STDDEV|Standard Deviation|True
 QgsProcessingParameterNumber|QUANTILE|Quantiles|QgsProcessingParameterNumber.Integer|0|False|None|None
-OutputVector|RESULT|Statistics
+QgsProcessingParameterVectorDestination|RESULT|Statistics

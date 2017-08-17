@@ -6,6 +6,6 @@ QgsProcessingParameterRasterDestination|DIRECTION|Flow Direction
 QgsProcessingParameterRasterDestination|CONNECTION|Flow Connectivity
 QgsProcessingParameterRasterDestination|ORDER|Strahler Order
 QgsProcessingParameterRasterDestination|BASIN|Drainage Basins
-OutputVector|SEGMENTS|Channels
-OutputVector|BASINS|Drainage Basins
-OutputVector|NODES|Junctions
+QgsProcessingParameterVectorDestination|SEGMENTS|Channels
+QgsProcessingParameterVectorDestination|BASINS|Drainage Basins
+QgsProcessingParameterVectorDestination|NODES|Junctions

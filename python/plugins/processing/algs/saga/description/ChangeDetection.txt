@@ -1,12 +1,12 @@
 Change Detection
 imagery_classification
 QgsProcessingParameterRasterLayer|INITIAL|Initial State|None|False
-ParameterTable|INI_LUT|Look-up Table|True
+QgsProcessingParameterFeatureSource|INI_LUT|Look-up Table|5|None|True
 ParameterTableField|INI_LUT_MIN|Value|INI_LUT|-1|False
 ParameterTableField|INI_LUT_MAX|Value (Maximum)|INI_LUT|-1|False
 ParameterTableField|INI_LUT_NAM|Name|INI_LUT|-1|False
 QgsProcessingParameterRasterLayer|FINAL|Final State|None|False
-ParameterTable|FIN_LUT|Look-up Table|True
+QgsProcessingParameterFeatureSource|FIN_LUT|Look-up Table|5|None|True
 ParameterTableField|FIN_LUT_MIN|Value|FIN_LUT|-1|False
 ParameterTableField|FIN_LUT_MAX|Value (Maximum)|FIN_LUT|-1|False
 ParameterTableField|FIN_LUT_NAM|Name|FIN_LUT|-1|False

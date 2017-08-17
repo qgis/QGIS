@@ -5,7 +5,7 @@ QgsProcessingParameterFeatureSource|POINTS|Points|0|None|False
 QgsProcessingParameterEnum|KERNEL_TYPE|Kernel Type|[0] square;[1] circle|False|0
 QgsProcessingParameterNumber|KERNEL_SIZE|Kernel Size|QgsProcessingParameterNumber.Integer|1|False| 1|None
 QgsProcessingParameterEnum|NAMING|Field Naming|[0] grid number;[1] grid name|False|1
-OutputVector|RESULT|Statistics
+QgsProcessingParameterVectorDestination|RESULT|Statistics
 QgsProcessingParameterBoolean|COUNT|Number of Cells|True
 QgsProcessingParameterBoolean|MIN|Minimum|True
 QgsProcessingParameterBoolean|MAX|Maximum|True

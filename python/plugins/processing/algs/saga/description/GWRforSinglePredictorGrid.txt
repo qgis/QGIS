@@ -1,8 +1,8 @@
 GWR for Single Predictor Grid
 statistics_regression
 QgsProcessingParameterFeatureSource|POINTS|Points|0|None|False
-ParameterTable|DEPENDENT|Dependent Variable|False
-OutputVector|RESIDUALS|Residuals
+QgsProcessingParameterFeatureSource|DEPENDENT|Dependent Variable|5|None|False
+QgsProcessingParameterVectorDestination|RESIDUALS|Residuals
 QgsProcessingParameterRasterLayer|PREDICTOR|Predictor|None|False
 QgsProcessingParameterRasterDestination|REGRESSION|Regression
 QgsProcessingParameterRasterDestination|QUALITY|Coefficient of Determination

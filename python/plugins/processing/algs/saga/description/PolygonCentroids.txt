@@ -2,4 +2,4 @@ Polygon Centroids
 shapes_polygons
 QgsProcessingParameterFeatureSource|POLYGONS|Polygons|2|None|False
 QgsProcessingParameterBoolean|METHOD         |Centroids for each part|True
-OutputVector|CENTROIDS|Centroids
+QgsProcessingParameterVectorDestination|CENTROIDS|Centroids

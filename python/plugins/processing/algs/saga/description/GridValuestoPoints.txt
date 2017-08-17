@@ -4,4 +4,4 @@ ParameterMultipleInput|GRIDS|Grids|3|False
 QgsProcessingParameterFeatureSource|POLYGONS|Polygons|-1|None|True
 QgsProcessingParameterBoolean|NODATA        |Exclude NoData Cells|True
 QgsProcessingParameterEnum|TYPE|Type|[0] nodes;[1] cells
-OutputVector|SHAPES|Shapes
+QgsProcessingParameterVectorDestination|SHAPES|Shapes

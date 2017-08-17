@@ -6,4 +6,4 @@ QgsProcessingParameterNumber|SIZE_MIN|Size Range Min|QgsProcessingParameterNumbe
 QgsProcessingParameterNumber|SIZE_MAX|Size Range Max|QgsProcessingParameterNumber.Double|100.0|False|None|None
 QgsProcessingParameterEnum|AGGR|Aggregation|[0] nearest neighbour;[1] mean value
 QgsProcessingParameterEnum|STYLE|Style|[0] simple line;[1] arrow;[2] arrow (centered to cell)
-OutputVector|VECTORS|Gradient Vectors
+QgsProcessingParameterVectorDestination|VECTORS|Gradient Vectors

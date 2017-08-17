@@ -2,7 +2,7 @@ Aggregate Point Observations
 shapes_points
 QgsProcessingParameterFeatureSource|REFERENCE|Reference Points|-1|None|False
 ParameterTableField|REFERENCE_ID|ID|REFERENCE|-1|False
-ParameterTable|OBSERVATIONS|Observations|False
+QgsProcessingParameterFeatureSource|OBSERVATIONS|Observations|5|None|False
 ParameterTableField|X|X|OBSERVATIONS|-1|False
 ParameterTableField|Y|Y|OBSERVATIONS|-1|False
 ParameterTableField|TRACK|Track|OBSERVATIONS|-1|False

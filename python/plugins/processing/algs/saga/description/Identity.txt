@@ -2,5 +2,5 @@ Identity
 shapes_polygons
 QgsProcessingParameterFeatureSource|A|Layer A|-1|None|False
 QgsProcessingParameterFeatureSource|B|Layer B|-1|None|False
-OutputVector|RESULT|Identity
+QgsProcessingParameterVectorDestination|RESULT|Identity
 QgsProcessingParameterBoolean|SPLIT|Split Parts|True
