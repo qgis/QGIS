@@ -116,8 +116,6 @@ void QgsMetadataWidget::removeVocabulary()
 {
   QItemSelectionModel *selectionModel = tabKeywords->selectionModel();
   QModelIndexList selectedRows = selectionModel->selectedRows();
-  QgsDebugMsg( QString( "Remove: %1 " ).arg( selectedRows.count() ) );
-
   for ( int i = 0 ; i < selectedRows.size() ; i++ )
   {
     tabKeywords->model()->removeRow( selectedRows[i].row() );
@@ -133,11 +131,6 @@ void QgsMetadataWidget::addLicence()
     tabLicenses->setRowCount( row + 1 );
     QTableWidgetItem *pCell = new QTableWidgetItem( newLicence );
     tabLicenses->setItem( row, 0, pCell );
-    QgsDebugMsg( QString( "Adding" ) );
-  }
-  else
-  {
-    QgsDebugMsg( QString( "Cant add" ) );
   }
 }
 
@@ -145,8 +138,6 @@ void QgsMetadataWidget::removeLicence()
 {
   QItemSelectionModel *selectionModel = tabLicenses->selectionModel();
   QModelIndexList selectedRows = selectionModel->selectedRows();
-  QgsDebugMsg( QString( "Remove: %1 " ).arg( selectedRows.count() ) );
-
   for ( int i = 0 ; i < selectedRows.size() ; i++ )
   {
     tabLicenses->model()->removeRow( selectedRows[i].row() );
@@ -205,8 +196,6 @@ void QgsMetadataWidget::removeContact()
 {
   QItemSelectionModel *selectionModel = tabContacts->selectionModel();
   QModelIndexList selectedRows = selectionModel->selectedRows();
-  QgsDebugMsg( QString( "Remove: %1 " ).arg( selectedRows.count() ) );
-
   for ( int i = 0 ; i < selectedRows.size() ; i++ )
   {
     tabContacts->model()->removeRow( selectedRows[i].row() );
@@ -590,15 +579,6 @@ void QgsMetadataWidget::acceptMetadata()
   validator.validate( mMetadata, validationResults );
 
   hide();
-
-//  if ( results )
-//  {
-//    QgisApp::instance()->messageBar()->pushInfo( tr( "Save metadata" ), tr( "Saving metadata successfull into the project" ) );
-//  }
-//  else
-//  {
-//    QgisApp::instance()->messageBar()->pushWarning( tr( "Save metadata" ), tr( "Saving metadata successfull but some fields were missing" ) );
-//  }
 }
 
 void QgsMetadataWidget::syncFromCategoriesTabToKeywordsTab()
