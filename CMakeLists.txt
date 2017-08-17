@@ -21,7 +21,7 @@ MESSAGE(STATUS "QGIS version: ${COMPLETE_VERSION} ${RELEASE_NAME} (${QGIS_VERSIO
 #############################################################
 # CMake settings
 
-CMAKE_MINIMUM_REQUIRED(VERSION 2.8.6)
+CMAKE_MINIMUM_REQUIRED(VERSION 3.0.0)
 
 SET(CMAKE_COLOR_MAKEFILE ON)
 
@@ -38,19 +38,16 @@ SET (WITH_CORE TRUE CACHE BOOL "Determines whether QGIS core should be built.")
 MARK_AS_ADVANCED(WITH_CORE)
 
 IF(WITH_CORE)
-  # try to configure and build GRASS plugin by default
-  FOREACH (GRASS_SEARCH_VERSION 6 7)
-    # For GRASS 6 are used cached variables without version suffix so that existing caches don't have to be reconfigured.
-    # Cached variables: WITH_GRASS, WITH_GRASS7, GRASS_PREFIX, GRASS_PREFIX7, GRASS_INCLUDE_DIR, GRASS_INCLUDE_DIR7
+  # Only GRASS 7 is currently supported but we keep dual version support in cmake for possible future switch to GRASS 8.
+  # Try to configure and build GRASS plugin by default
+  FOREACH (GRASS_SEARCH_VERSION 7)
+    # Legacy note:
+    # For GRASS 6 there were used cached variables without version suffix so that existing caches didn't have to be reconfigured.
+    # Cached variables were: WITH_GRASS, WITH_GRASS7, GRASS_PREFIX, GRASS_PREFIX7, GRASS_INCLUDE_DIR, GRASS_INCLUDE_DIR7
     # Everywhere else each variable has version major appended.
-    # Normal variables: GRASS_FOUND6, GRASS_FOUND7, GRASS_MAJOR_VERSION6, GRASS_MAJOR_VERSION7, etc.
+    # Normal variables were: GRASS_FOUND6, GRASS_FOUND7, GRASS_MAJOR_VERSION6, GRASS_MAJOR_VERSION7, etc.
     # In addition there is also GRASS_FOUND, which is TRUE if at least one version of GRASS was found
-    IF (GRASS_SEARCH_VERSION EQUAL 6)
-      SET (GRASS_CACHE_VERSION "")
-    ELSE (GRASS_SEARCH_VERSION EQUAL 6)
-      SET (GRASS_CACHE_VERSION ${GRASS_SEARCH_VERSION})
-    ENDIF (GRASS_SEARCH_VERSION EQUAL 6)
-
+    SET (GRASS_CACHE_VERSION ${GRASS_SEARCH_VERSION})
     SET (WITH_GRASS${GRASS_CACHE_VERSION} TRUE CACHE BOOL "Determines whether GRASS ${GRASS_SEARCH_VERSION} plugin should be built")
     IF (WITH_GRASS${GRASS_CACHE_VERSION})
       FIND_PACKAGE(GRASS ${GRASS_SEARCH_VERSION})
@@ -95,7 +92,7 @@ IF(WITH_CORE)
   SET (WITH_INTERNAL_QEXTSERIALPORT TRUE CACHE BOOL "Use internal build of Qextserialport")
 
   SET (WITH_QSPATIALITE FALSE CACHE BOOL "Determines whether QSPATIALITE sql driver should be built")
-SET (WITH_RASTERLITE2 FALSE CACHE BOOL "Determines whether RasterLite2 support should be built")
+  SET (WITH_RASTERLITE2 FALSE CACHE BOOL "Determines whether RasterLite2 support should be built")
 
   SET (WITH_ORACLE FALSE CACHE BOOL "Determines whether Oracle support should be built")
   IF(WITH_ORACLE)
@@ -214,6 +211,7 @@ SET (WITH_RASTERLITE2 FALSE CACHE BOOL "Determines whether RasterLite2 support s
   IF (WITH_GUI)
     FIND_PACKAGE(Qwt REQUIRED)
   ENDIF (WITH_GUI)
+  FIND_PACKAGE(LibZip REQUIRED)
 
   IF (WITH_INTERNAL_QEXTSERIALPORT)
     SET(QEXTSERIALPORT_INCLUDE_DIR ${CMAKE_SOURCE_DIR}/src/core/gps/qextserialport)
@@ -383,11 +381,15 @@ IF (PEDANTIC)
     SET(_warnings "${_warnings} /wd4244 ")  # conversion from '...' to '...' possible loss of data
     SET(_warnings "${_warnings} /wd4251 ")  # needs to have dll-interface to be used by clients of class (occurs in Qt template classes)
     SET(_warnings "${_warnings} /wd4275 ")  # non dll-interface class '...' used as base for dll-interface class '...'
+    SET(_warnings "${_warnings} /wd4456 ")  # declaration of '...' hides previous local declaration
+    SET(_warnings "${_warnings} /wd4457 ")  # declaration of '...' hides a function parameter
+    SET(_warnings "${_warnings} /wd4458 ")  # declaration of '...' hides class member
     SET(_warnings "${_warnings} /wd4505 ")  # unreferenced local function has been removed (QgsRasterDataProvider::extent)
     SET(_warnings "${_warnings} /wd4510 ")  # default constructor could not be generated (sqlite3_index_info, QMap)
     SET(_warnings "${_warnings} /wd4512 ")  # assignment operator could not be generated (sqlite3_index_info)
     SET(_warnings "${_warnings} /wd4610 ")  # user defined constructor required (sqlite3_index_info)
     SET(_warnings "${_warnings} /wd4706 ")  # assignment within conditional expression (pal)
+    SET(_warnings "${_warnings} /wd4714 ")  # function '...' marked as __forceinline not inlined (QString::toLower/toUpper/trimmed)
     SET(_warnings "${_warnings} /wd4800 ")  # 'int' : forcing value to bool 'true' or 'false' (performance warning)
     SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${_warnings}")
     SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${_warnings}")

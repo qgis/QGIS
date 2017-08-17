@@ -410,7 +410,9 @@ class QgsSqliteHandle
      * \see initRasterlite2
      * \since QGIS 3.0
      */
+#ifdef RASTERLITE2_VERSION_GE_1_1_0
     void *rl2PrivateData = nullptr;  // pointer to RL2 Private Data
+#endif
 
     /**
      * Map of cached connections
