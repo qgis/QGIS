@@ -1,6 +1,6 @@
 Modified Quadratic Shepard
 grid_gridding
-ParameterVector|SHAPES|Points|0|False
+QgsProcessingParameterFeatureSource|SHAPES|Points|0|None|False
 ParameterTableField|FIELD|Attribute|SHAPES|-1|False
 Hardcoded|-TARGET_DEFINITION 0
 QgsProcessingParameterNumber|QUADRATIC_NEIGHBORS|Quadratic Neighbors|QgsProcessingParameterNumber.Integer|13|False|5.0|None

@@ -1,6 +1,6 @@
 Universal Kriging
 statistics_kriging
-ParameterVector|POINTS|Points|0|False
+QgsProcessingParameterFeatureSource|POINTS|Points|0|None|False
 ParameterTableField|FIELD|Attribute|POINTS|-1|False
 QgsProcessingParameterEnum|TQUALITY|Type of Quality Measure|[0] standard deviation;[1] variance
 QgsProcessingParameterBoolean|LOG|Logarithmic Transformation|True

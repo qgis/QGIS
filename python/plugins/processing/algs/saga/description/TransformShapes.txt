@@ -1,6 +1,6 @@
 Transform Shapes
 shapes_tools
-ParameterVector|IN|Shapes|-1|False
+QgsProcessingParameterFeatureSource|IN|Shapes|-1|None|False
 QgsProcessingParameterNumber|DX|dX|QgsProcessingParameterNumber.Double|0.0|False|None|None
 QgsProcessingParameterNumber|DY|dY|QgsProcessingParameterNumber.Double|0.0|False|None|None
 QgsProcessingParameterNumber|ANGLE|Angle|QgsProcessingParameterNumber.Double|0.0|False|None|None

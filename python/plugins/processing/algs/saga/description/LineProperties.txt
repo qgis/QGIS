@@ -1,6 +1,6 @@
 Line Properties
 shapes_lines
-ParameterVector|LINES|Lines|1|False
+QgsProcessingParameterFeatureSource|LINES|Lines|1|None|False
 QgsProcessingParameterBoolean|BPARTS      |Number of Parts|True
 QgsProcessingParameterBoolean|BPOINTS     |Number of Vertices|True
 QgsProcessingParameterBoolean|BLENGTH     |Length|True

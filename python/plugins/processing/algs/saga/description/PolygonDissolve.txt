@@ -1,6 +1,6 @@
 Polygon dissolve (by attribute)|Polygon Dissolve
 shapes_polygons
-ParameterVector|POLYGONS|Polygons|2|False
+QgsProcessingParameterFeatureSource|POLYGONS|Polygons|2|None|False
 ParameterTableField|FIELD_1|1. Attribute|POLYGONS|-1|True
 ParameterTableField|FIELD_2|2. Attribute|POLYGONS|-1|True
 ParameterTableField|FIELD_3|3. Attribute|POLYGONS|-1|True

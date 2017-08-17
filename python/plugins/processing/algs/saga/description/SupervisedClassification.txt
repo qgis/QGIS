@@ -1,7 +1,7 @@
 Supervised Classification
 imagery_classification
 ParameterMultipleInput|GRIDS|Grids|3.0|False
-ParameterVector|ROI|Training Areas|2|False
+QgsProcessingParameterFeatureSource|ROI|Training Areas|2|None|False
 ParameterTableField|ROI_ID|Class Identifier|ROI|-1|False
 ParameterTable|STATS|Class Statistics|False
 QgsProcessingParameterEnum|STATS_SRC|Get Class Statistics from...|[0] training areas;[1] table

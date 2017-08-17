@@ -1,6 +1,6 @@
 Supervised Classification for Shapes
 imagery_classification
-ParameterVector|SHAPES|Shapes|-1|False
+QgsProcessingParameterFeatureSource|SHAPES|Shapes|-1|None|False
 OutputVector|CLASSES|Classification
 ParameterTable|FEATURES|Features|False
 QgsProcessingParameterBoolean|NORMALISE|Normalise|False

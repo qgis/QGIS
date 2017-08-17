@@ -1,6 +1,6 @@
 Polar to Cartesian Coordinates
 shapes_tools
-ParameterVector|POLAR|Polar Coordinates|-1|False
+QgsProcessingParameterFeatureSource|POLAR|Polar Coordinates|-1|None|False
 ParameterTableField|F_EXAGG|Exaggeration|POLAR|-1|False
 QgsProcessingParameterNumber|D_EXAGG|Exaggeration Factor|QgsProcessingParameterNumber.Integer|1|False|None|None
 QgsProcessingParameterNumber|RADIUS|Radius|QgsProcessingParameterNumber.Double|6371000.0|False|None|None

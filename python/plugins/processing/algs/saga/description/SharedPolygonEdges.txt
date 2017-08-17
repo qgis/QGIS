@@ -1,6 +1,6 @@
 Shared Polygon Edges
 shapes_polygons
-ParameterVector|POLYGONS|Polygons|2|False
+QgsProcessingParameterFeatureSource|POLYGONS|Polygons|2|None|False
 ParameterTableField|ATTRIBUTE|Attribute|POLYGONS|-1|False
 QgsProcessingParameterNumber|EPSILON|Tolerance|QgsProcessingParameterNumber.Double|0.000|False|0|None
 QgsProcessingParameterBoolean|VERTICES|Check vertices|False

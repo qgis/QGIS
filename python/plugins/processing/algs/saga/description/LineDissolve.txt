@@ -1,6 +1,6 @@
 Line Dissolve
 shapes_lines
-ParameterVector|LINES|Lines|-1|False
+QgsProcessingParameterFeatureSource|LINES|Lines|-1|None|False
 ParameterTableField|FIELD_1|1. Attribute|LINES|-1|False
 ParameterTableField|FIELD_2|2. Attribute|LINES|-1|False
 ParameterTableField|FIELD_3|3. Attribute|LINES|-1|False

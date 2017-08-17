@@ -1,7 +1,7 @@
 LS-Factor, Field Based
 ta_hydrology
 QgsProcessingParameterRasterLayer|DEM|Elevation|None|False
-ParameterVector|FIELDS|Fields|-1|True
+QgsProcessingParameterFeatureSource|FIELDS|Fields|-1|None|True
 OutputVector|STATISTICS|Field Statistics
 QgsProcessingParameterRasterDestination|UPSLOPE_AREA|Upslope Length Factor
 QgsProcessingParameterRasterDestination|UPSLOPE_LENGTH|Effective Flow Length

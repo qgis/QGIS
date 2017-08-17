@@ -1,6 +1,6 @@
 Maximum Entropy Presence Prediction
 imagery_maxent
-ParameterVector|PRESENCE|Presence Data|-1|False
+QgsProcessingParameterFeatureSource|PRESENCE|Presence Data|-1|None|False
 ParameterMultipleInput|FEATURES_NUM|Numerical Features|3|True
 ParameterMultipleInput|FEATURES_CAT|Categorical Features|3|True
 QgsProcessingParameterRasterDestination|PREDICTION|Presence Prediction

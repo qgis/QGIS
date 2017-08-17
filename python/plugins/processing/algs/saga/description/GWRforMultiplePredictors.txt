@@ -1,6 +1,6 @@
 GWR for Multiple Predictors
 statistics_regression
-ParameterVector|POINTS|Points|0|False
+QgsProcessingParameterFeatureSource|POINTS|Points|0|None|False
 ParameterTable|DEPENDENT|Dependent Variable|False
 ParameterTable|PREDICTORS|Predictors|False
 OutputVector|REGRESSION|Regression

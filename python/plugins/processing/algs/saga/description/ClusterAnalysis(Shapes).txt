@@ -1,6 +1,6 @@
 Cluster Analysis (Shapes)
 table_calculus
-ParameterVector|INPUT|Shapes|-1|False
+QgsProcessingParameterFeatureSource|INPUT|Shapes|-1|None|False
 OutputVector|RESULT|Result
 ParameterTable|FIELDS|Attributes|False
 ParameterTable|CLUSTER|Cluster|False

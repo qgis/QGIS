@@ -1,7 +1,7 @@
 Snap Points to Lines
 shapes_points
-ParameterVector|INPUT|Points|1|False
-ParameterVector|SNAP|Snap Features|-1|False
+QgsProcessingParameterFeatureSource|INPUT|Points|1|None|False
+QgsProcessingParameterFeatureSource|SNAP|Snap Features|-1|None|False
 OutputVector|OUTPUT|Result
 OutputVector|MOVES|Moves
 QgsProcessingParameterNumber|DISTANCE|Search Distance|QgsProcessingParameterNumber.Double|0.000000|False| 0.000000|None

@@ -1,6 +1,6 @@
 Least Cost Paths
 grid_analysis
-ParameterVector|SOURCE|Source Point(s)|0|False
+QgsProcessingParameterFeatureSource|SOURCE|Source Point(s)|0|None|False
 QgsProcessingParameterRasterLayer|DEM|Accumulated cost|None|False
 ParameterMultipleInput|VALUES|Values|3|True
 OutputVector|POINTS|Profile (points)

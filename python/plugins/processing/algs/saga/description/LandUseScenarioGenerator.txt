@@ -1,6 +1,6 @@
 Land Use Scenario Generator
 shapes_tools
-ParameterVector|FIELDS|Fields|-1|False
+QgsProcessingParameterFeatureSource|FIELDS|Fields|-1|None|False
 ParameterTable|FIELD_ID|Field Identifier|False
 OutputVector|SCENARIO|Land Use Scenario
 QgsProcessingParameterEnum|OUTPUT|Output of...|[0] Identifier;[1] Name|False|0

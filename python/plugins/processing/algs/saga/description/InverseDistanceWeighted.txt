@@ -1,6 +1,6 @@
 Inverse Distance Weighted
 grid_gridding
-ParameterVector|SHAPES|Points|0|False
+QgsProcessingParameterFeatureSource|SHAPES|Points|0|None|False
 ParameterTableField|FIELD|Attribute|SHAPES|-1|False
 QgsProcessingParameterEnum|DW_WEIGHTING|Distance Weighting|[0] no distance weighting;[1] inverse distance to a power;[2] exponential;[3] gaussian weighting scheme
 QgsProcessingParameterNumber|DW_IDW_POWER|Inverse Distance Power|QgsProcessingParameterNumber.Integer|2|False|0.0|None

@@ -32,13 +32,13 @@ from qgis.core import (QgsProcessingUtils,
                        QgsProcessingException,
                        QgsMessageLog,
                        QgsProcessingParameterRasterLayer,
+                       QgsProcessingParameterFeatureSource,
                        QgsProcessingParameterBoolean,
                        QgsProcessingParameterNumber,
                        QgsProcessingParameterEnum)
 from processing.core.ProcessingConfig import ProcessingConfig
 from processing.core.parameters import (getParameterFromString,
                                         ParameterExtent,
-                                        ParameterVector,
                                         ParameterTable,
                                         ParameterMultipleInput,
                                         ParameterFixedTable)
@@ -154,17 +154,16 @@ class SagaAlgorithm(SagaAlgorithmBase):
                     exportCommand = self.exportRasterLayer(parameters[param.name()], context)
                     if exportCommand is not None:
                         commands.append(exportCommand)
-            if isinstance(param, ParameterVector):
+            elif isinstance(param, QgsProcessingParameterFeatureSource):
                 if param.name() not in parameters or parameters[param.name()] is None:
                     continue
-                layer = QgsProcessingUtils.mapLayerFromString(parameters[param.name()], context, False)
-                if layer:
-                    filename = dataobjects.exportVectorLayer(layer)
-                    self.exportedLayers[param.value] = filename
-                elif not parameters[param.name()].endswith('shp'):
+                layer_path = self.parameterAsCompatibleSourceLayerPath(parameters, param.name(), context, 'shp', feedback=feedback)
+                if layer_path:
+                    self.exportedLayers[parameters[param.name()]] = layer_path
+                else:
                     raise QgsProcessingException(
                         self.tr('Unsupported file format'))
-            if isinstance(param, ParameterTable):
+            elif isinstance(param, ParameterTable):
                 if param.name() not in parameters or parameters[param.name()] is None:
                     continue
                 table = QgsProcessingUtils.mapLayerFromString(parameters[param.name()], context, False)
@@ -174,7 +173,7 @@ class SagaAlgorithm(SagaAlgorithmBase):
                 elif not parameters[param.name()].endswith('shp'):
                     raise QgsProcessingException(
                         self.tr('Unsupported file format'))
-            if isinstance(param, ParameterMultipleInput):
+            elif isinstance(param, ParameterMultipleInput):
                 if param.name() not in parameters or parameters[param.name()] is None:
                     continue
                 layers = param.value.split(';')
@@ -214,7 +213,7 @@ class SagaAlgorithm(SagaAlgorithmBase):
         for param in self.parameterDefinitions():
             if not param.name() in parameters or parameters[param.name()] is None:
                 continue
-            if isinstance(param, (QgsProcessingParameterRasterLayer, ParameterVector, ParameterTable)):
+            if isinstance(param, (QgsProcessingParameterRasterLayer, QgsProcessingParameterFeatureSource, ParameterTable)):
                 value = parameters[param.name()]
                 if value in list(self.exportedLayers.keys()):
                     command += ' -' + param.name() + ' "' \
