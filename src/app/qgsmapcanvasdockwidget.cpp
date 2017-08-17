@@ -44,6 +44,8 @@ QgsMapCanvasDockWidget::QgsMapCanvasDockWidget( const QString &name, QWidget *pa
   static_cast< QVBoxLayout * >( mContents->layout() )->setSpacing( 0 );
 
   setWindowTitle( name );
+  mToolbar->setIconSize( QgisApp::instance()->iconSize( true ) );
+
   mMapCanvas = new QgsMapCanvas( this );
   mXyMarker = new QgsVertexMarker( mMapCanvas );
   mXyMarker->setIconType( QgsVertexMarker::ICON_CIRCLE );
