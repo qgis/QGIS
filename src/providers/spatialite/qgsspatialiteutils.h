@@ -2059,7 +2059,9 @@ class SpatialiteDbInfo : public QObject
      * \see GetDbLayersInfo
      * \since QGIS 3.0
      */
+#if 0
     bool GetRasterLite2VectorLayersInfo( const QString sLayerName = QString::null );
+#endif
 
     /** Retrieve RasterLite2 Raster-Layers-Information of spatialite connection
      * - used to fill list in  SpatialiteDbInfo
