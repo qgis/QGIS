@@ -1,6 +1,6 @@
 Random Forest Presence Prediction (ViGrA)
 imagery_vigra
-ParameterMultipleInput|FEATURES|Features|3|False
+QgsProcessingParameterMultipleLayers|FEATURES|Features|3|None|False
 QgsProcessingParameterRasterDestination|PREDICTION|Presence Prediction
 QgsProcessingParameterRasterDestination|PROBABILITY|Presence Probability
 QgsProcessingParameterFeatureSource|PRESENCE|Presence Data|-1|None|False

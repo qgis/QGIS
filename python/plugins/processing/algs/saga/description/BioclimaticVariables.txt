@@ -1,9 +1,9 @@
 Bioclimatic Variables
 climate_tools
-ParameterMultipleInput|TMEAN|Mean Temperature|3|False
-ParameterMultipleInput|TMIN|Minimum Temperature|3|False
-ParameterMultipleInput|TMAX|Maximum Temperature|3|False
-ParameterMultipleInput|P|Precipitation|3|False
+QgsProcessingParameterMultipleLayers|TMEAN|Mean Temperature|3|None|False
+QgsProcessingParameterMultipleLayers|TMIN|Minimum Temperature|3|None|False
+QgsProcessingParameterMultipleLayers|TMAX|Maximum Temperature|3|None|False
+QgsProcessingParameterMultipleLayers|P|Precipitation|3|None|False
 QgsProcessingParameterRasterDestination|BIO_01|Annual Mean Temperature
 QgsProcessingParameterRasterDestination|BIO_02|Mean Diurnal Range
 QgsProcessingParameterRasterDestination|BIO_03|Isothermality

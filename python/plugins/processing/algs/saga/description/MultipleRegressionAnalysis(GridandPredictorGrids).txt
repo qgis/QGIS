@@ -1,7 +1,7 @@
 Multiple Regression Analysis (Grid and Predictor Grids)
 statistics_regression
 QgsProcessingParameterRasterLayer|DEPENDENT|Dependent Variable|None|False
-ParameterMultipleInput|PREDICTORS|Predictors|3|False
+QgsProcessingParameterMultipleLayers|PREDICTORS|Predictors|3|None|False
 QgsProcessingParameterRasterDestination|REGRESSION|Regression
 QgsProcessingParameterRasterDestination|RESIDUALS|Residuals
 QgsProcessingParameterFeatureSource|INFO_COEFF|Details: Coefficients|5|None|True
