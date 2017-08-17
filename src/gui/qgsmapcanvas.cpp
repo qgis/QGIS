@@ -629,7 +629,8 @@ void QgsMapCanvas::rendererJobFinished()
     p.end();
 
     mMap->setContent( img, imageRect( img, mSettings ) );
-    startPreviewJobs();
+    if ( mUsePreviewJobs )
+      startPreviewJobs();
   }
 
   // now we are in a slot called from mJob - do not delete it immediately
@@ -662,6 +663,16 @@ QgsRectangle QgsMapCanvas::imageRect( const QImage &img, const QgsMapSettings &m
   double res = m2p.mapUnitsPerPixel();
   QgsRectangle rect( topLeft.x(), topLeft.y(), topLeft.x() + img.width()*res, topLeft.y() - img.height()*res );
   return rect;
+}
+
+bool QgsMapCanvas::previewJobsEnabled() const
+{
+  return mUsePreviewJobs;
+}
+
+void QgsMapCanvas::setPreviewJobsEnabled( bool enabled )
+{
+  mUsePreviewJobs = enabled;
 }
 
 void QgsMapCanvas::mapUpdateTimeout()
