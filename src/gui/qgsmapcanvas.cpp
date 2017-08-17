@@ -629,7 +629,8 @@ void QgsMapCanvas::rendererJobFinished()
     p.end();
 
     mMap->setContent( img, imageRect( img, mSettings ) );
-    startPreviewJobs();
+    if ( mUsePreviewJobs )
+      startPreviewJobs();
   }
 
   // now we are in a slot called from mJob - do not delete it immediately
@@ -662,6 +663,16 @@ QgsRectangle QgsMapCanvas::imageRect( const QImage &img, const QgsMapSettings &m
   double res = m2p.mapUnitsPerPixel();
   QgsRectangle rect( topLeft.x(), topLeft.y(), topLeft.x() + img.width()*res, topLeft.y() - img.height()*res );
   return rect;
+}
+
+bool QgsMapCanvas::previewJobsEnabled() const
+{
+  return mUsePreviewJobs;
+}
+
+void QgsMapCanvas::setPreviewJobsEnabled( bool enabled )
+{
+  mUsePreviewJobs = enabled;
 }
 
 void QgsMapCanvas::mapUpdateTimeout()
@@ -2132,7 +2143,7 @@ const QgsLabelingEngineSettings &QgsMapCanvas::labelingEngineSettings() const
 void QgsMapCanvas::startPreviewJobs()
 {
   stopPreviewJobs(); //just in case still running
-  startPreviewJob( 0 );
+  schedulePreviewJob( 0 );
 }
 
 void QgsMapCanvas::startPreviewJob( int number )
@@ -2160,22 +2171,14 @@ void QgsMapCanvas::startPreviewJob( int number )
   jobSettings.setExtent( jobExtent );
   jobSettings.setFlag( QgsMapSettings::DrawLabeling, false );
 
-  QgsMapRendererQImageJob *job = new QgsMapRendererParallelJob( jobSettings );
+  QgsMapRendererQImageJob *job = new QgsMapRendererSequentialJob( jobSettings );
   mPreviewJobs.append( job );
   connect( job, &QgsMapRendererJob::finished, this, &QgsMapCanvas::previewJobFinished );
   job->start();
 
   if ( number < 8 )
   {
-    mPreviewTimer.setSingleShot( true );
-    mPreviewTimer.setInterval( 250 );
-    disconnect( mPreviewTimerConnection );
-    mPreviewTimerConnection = connect( &mPreviewTimer, &QTimer::timeout, [ = ]()
-    {
-      startPreviewJob( number + 1 );
-    }
-                                     );
-    mPreviewTimer.start();
+    schedulePreviewJob( number + 1 );
   }
 }
 
@@ -2193,4 +2196,17 @@ void QgsMapCanvas::stopPreviewJobs()
     }
   }
   mPreviewJobs.clear();
+}
+
+void QgsMapCanvas::schedulePreviewJob( int number )
+{
+  mPreviewTimer.setSingleShot( true );
+  mPreviewTimer.setInterval( 250 );
+  disconnect( mPreviewTimerConnection );
+  mPreviewTimerConnection = connect( &mPreviewTimer, &QTimer::timeout, [ = ]()
+  {
+    startPreviewJob( number );
+  }
+                                   );
+  mPreviewTimer.start();
 }
