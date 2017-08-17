@@ -17,7 +17,7 @@ QgsProcessingParameterEnum|SEARCH_DIRECTION|Search Direction|[0] all directions;
 Extent TARGET_USER_XMIN TARGET_USER_XMAX TARGET_USER_YMIN TARGET_USER_YMAX
 QgsProcessingParameterNumber|TARGET_USER_SIZE|Cellsize|QgsProcessingParameterNumber.Double|100.0|False|None|None
 QgsProcessingParameterEnum|TARGET_USER_FITS|Fit|[0] nodes;[1] cells
-OutputVector|REGRESSION|Regression
+QgsProcessingParameterVectorDestination|REGRESSION|Regression
 QgsProcessingParameterRasterDestination|SLOPES|Slopes
 QgsProcessingParameterRasterDestination|TARGET_INTERCEPT|Intercept
 QgsProcessingParameterRasterDestination|TARGET_QUALITY|Quality

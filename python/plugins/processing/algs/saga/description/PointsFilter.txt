@@ -9,4 +9,4 @@ QgsProcessingParameterBoolean|QUADRANTS      |Quadrants|True
 QgsProcessingParameterEnum|METHOD|Filter Criterion|[0] keep maxima (with tolerance);[1] keep minima (with tolerance);[2] remove maxima (with tolerance);[3] remove minima (with tolerance);[4] remove below percentile;[5] remove above percentile
 QgsProcessingParameterNumber|TOLERANCE|Tolerance|QgsProcessingParameterNumber.Double|0.0|False|None|None
 QgsProcessingParameterNumber|PERCENT|Percentile|QgsProcessingParameterNumber.Integer|50|False|None|None
-OutputVector|FILTER|Filtered Points
+QgsProcessingParameterVectorDestination|FILTER|Filtered Points

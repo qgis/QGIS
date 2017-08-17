@@ -11,4 +11,4 @@ QgsProcessingParameterRasterLayer|TRACE_WEIGHT|Tracing: Weight|None|True
 QgsProcessingParameterNumber|MINLEN|Min. Segment Length|QgsProcessingParameterNumber.Integer|10|False|0.0|None
 QgsProcessingParameterRasterDestination|CHNLNTWRK|Channel Network
 QgsProcessingParameterRasterDestination|CHNLROUTE|Channel Direction
-OutputVector|SHAPES|Channel Network
+QgsProcessingParameterVectorDestination|SHAPES|Channel Network

@@ -6,4 +6,4 @@ QgsProcessingParameterEnum|INIT_METHOD|Initialisation|[0] Less than;[1] Greater 
 QgsProcessingParameterNumber|INIT_THRESHOLD|Threshold (Init.)|QgsProcessingParameterNumber.Double|0.0|False|None|None
 QgsProcessingParameterNumber|CONVERGENCE|Convergence|QgsProcessingParameterNumber.Double|3.0|False|None|None
 QgsProcessingParameterRasterDestination|RESULT|Skeleton
-OutputVector|VECTOR|Skeleton
+QgsProcessingParameterVectorDestination|VECTOR|Skeleton

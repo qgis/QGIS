@@ -2,6 +2,6 @@ QuadTree Structure to Shapes
 shapes_tools
 QgsProcessingParameterFeatureSource|SHAPES|Shapes|-1|None|False
 ParameterTableField|ATTRIBUTE|Attribute|SHAPES|-1|False
-OutputVector|POLYGONS|Polygons
-OutputVector|LINES|Lines
-OutputVector|POINTS|Duplicated Points
+QgsProcessingParameterVectorDestination|POLYGONS|Polygons
+QgsProcessingParameterVectorDestination|LINES|Lines
+QgsProcessingParameterVectorDestination|POINTS|Duplicated Points

@@ -4,4 +4,4 @@ QgsProcessingParameterFeatureSource|POINTS|Points|0|None|False
 QgsProcessingParameterFeatureSource|POLYGONS|Polygons|2|None|False
 ParameterTableField|FIELD|Add Attribute to Clipped Points|POLYGONS|-1|False
 QgsProcessingParameterEnum|METHOD|Clipping Options|[0] one layer for all points;[1] separate layer for each polygon
-OutputVector|CLIPS|Clipped Points
+QgsProcessingParameterVectorDestination|CLIPS|Clipped Points

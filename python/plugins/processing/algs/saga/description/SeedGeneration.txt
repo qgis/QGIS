@@ -8,4 +8,4 @@ QgsProcessingParameterEnum|TYPE_MERGE|Feature Aggregation|[0] additive;[1] multi
 QgsProcessingParameterBoolean|NORMALIZE         |Normalized|True
 QgsProcessingParameterRasterDestination|SURFACE|Surface
 QgsProcessingParameterRasterDestination|SEEDS_GRID|Seeds Grid
-OutputVector|SEEDS|Seeds
+QgsProcessingParameterVectorDestination|SEEDS|Seeds

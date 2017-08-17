@@ -2,4 +2,4 @@ Polygon Self-Intersection
 shapes_polygons
 QgsProcessingParameterFeatureSource|POLYGONS|Polygons|2|None|False
 ParameterTableField|ID|Identifier|POLYGONS|-1|False
-OutputVector|INTERSECT|Intersection
+QgsProcessingParameterVectorDestination|INTERSECT|Intersection

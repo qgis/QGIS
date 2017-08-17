@@ -5,7 +5,7 @@ QgsProcessingParameterBoolean|NORMALISE|Normalise|False
 QgsProcessingParameterRasterDestination|CLASSES|Classification
 QgsProcessingParameterRasterDestination|QUALITY|Quality
 QgsProcessingParameterFeatureSource|TRAINING|Training Areas|-1|None|True
-ParameterTable|TRAINING_CLASS|Class Identifier|False
+QgsProcessingParameterFeatureSource|TRAINING_CLASS|Class Identifier|5|None|False
 ParameterFile|FILE_LOAD|Load Statistics from File...|False|False
 ParameterFile|FILE_SAVE|Save Statistics to File...|False|False
 QgsProcessingParameterEnum|METHOD|Method|[0] Binary Encoding;[1] Parallelepiped;[2] Minimum Distance;[3] Mahalanobis Distance;[4] Maximum Likelihood;[5] Spectral Angle Mapping;[6] Winner Takes All|False|2

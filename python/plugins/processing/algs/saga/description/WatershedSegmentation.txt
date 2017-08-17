@@ -8,5 +8,5 @@ QgsProcessingParameterNumber|THRESHOLD|Threshold|QgsProcessingParameterNumber.In
 QgsProcessingParameterBoolean|EDGE           |Allow Edge Pixels to be Seeds|True
 QgsProcessingParameterBoolean|BBORDERS       |Borders|True
 QgsProcessingParameterRasterDestination|SEGMENTS|Segments
-OutputVector|SEEDS|Seed Points
+QgsProcessingParameterVectorDestination|SEEDS|Seed Points
 QgsProcessingParameterRasterDestination|BORDERS|Borders

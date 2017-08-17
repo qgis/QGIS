@@ -2,11 +2,11 @@ Multiple Regression Analysis (Points and Predictor Grids)
 statistics_regression
 ParameterMultipleInput|PREDICTORS|Predictors|3|False
 QgsProcessingParameterFeatureSource|POINTS|Points|-1|None|False
-ParameterTable|ATTRIBUTE|Dependent Variable|False
-ParameterTable|INFO_COEFF|Details: Coefficients|True
-ParameterTable|INFO_MODEL|Details: Model|True
-ParameterTable|INFO_STEPS|Details: Steps|True
-OutputVector|RESIDUALS|Residuals
+QgsProcessingParameterFeatureSource|ATTRIBUTE|Dependent Variable|5|None|False
+QgsProcessingParameterFeatureSource|INFO_COEFF|Details: Coefficients|5|None|True
+QgsProcessingParameterFeatureSource|INFO_MODEL|Details: Model|5|None|True
+QgsProcessingParameterFeatureSource|INFO_STEPS|Details: Steps|5|None|True
+QgsProcessingParameterVectorDestination|RESIDUALS|Residuals
 QgsProcessingParameterRasterDestination|REGRESSION|Regression
 QgsProcessingParameterRasterDestination|REGRESCORR|Regression with Residual Correction
 QgsProcessingParameterEnum|RESAMPLING|Resampling|[0] Nearest Neighbour;[1] Bilinear Interpolation;[2] Bicubic Spline Interpolation;[3] B-Spline Interpolation|False|3

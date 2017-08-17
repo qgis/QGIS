@@ -4,4 +4,4 @@ QgsProcessingParameterFeatureSource|LINES|Lines|1|None|False
 QgsProcessingParameterBoolean|BPARTS      |Number of Parts|True
 QgsProcessingParameterBoolean|BPOINTS     |Number of Vertices|True
 QgsProcessingParameterBoolean|BLENGTH     |Length|True
-OutputVector|OUTPUT|Lines with Property Attributes
+QgsProcessingParameterVectorDestination|OUTPUT|Lines with Property Attributes

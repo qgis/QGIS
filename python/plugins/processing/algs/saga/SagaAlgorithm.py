@@ -39,7 +39,6 @@ from qgis.core import (QgsProcessingUtils,
 from processing.core.ProcessingConfig import ProcessingConfig
 from processing.core.parameters import (getParameterFromString,
                                         ParameterExtent,
-                                        ParameterTable,
                                         ParameterMultipleInput,
                                         ParameterFixedTable)
 from processing.core.outputs import (getOutputFromString,
@@ -163,16 +162,6 @@ class SagaAlgorithm(SagaAlgorithmBase):
                 else:
                     raise QgsProcessingException(
                         self.tr('Unsupported file format'))
-            elif isinstance(param, ParameterTable):
-                if param.name() not in parameters or parameters[param.name()] is None:
-                    continue
-                table = QgsProcessingUtils.mapLayerFromString(parameters[param.name()], context, False)
-                if table:
-                    filename = dataobjects.exportTable(table)
-                    self.exportedLayers[parameters[param.name()]] = filename
-                elif not parameters[param.name()].endswith('shp'):
-                    raise QgsProcessingException(
-                        self.tr('Unsupported file format'))
             elif isinstance(param, ParameterMultipleInput):
                 if param.name() not in parameters or parameters[param.name()] is None:
                     continue
@@ -213,7 +202,7 @@ class SagaAlgorithm(SagaAlgorithmBase):
         for param in self.parameterDefinitions():
             if not param.name() in parameters or parameters[param.name()] is None:
                 continue
-            if isinstance(param, (QgsProcessingParameterRasterLayer, QgsProcessingParameterFeatureSource, ParameterTable)):
+            if isinstance(param, (QgsProcessingParameterRasterLayer, QgsProcessingParameterFeatureSource)):
                 value = parameters[param.name()]
                 if value in list(self.exportedLayers.keys()):
                     command += ' -' + param.name() + ' "' \

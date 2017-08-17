@@ -20,4 +20,4 @@ QgsProcessingParameterRasterDestination|STDDEVLO|Mean less Standard Deviation
 QgsProcessingParameterRasterDestination|STDDEVHI|Mean plus Standard Deviation
 QgsProcessingParameterRasterDestination|DEVMEAN|Deviation from Arithmetic Mean
 QgsProcessingParameterRasterDestination|PERCENT|Percentile
-OutputVector|POINTS_OUT|Directional Statistics for Points
+QgsProcessingParameterVectorDestination|POINTS_OUT|Directional Statistics for Points

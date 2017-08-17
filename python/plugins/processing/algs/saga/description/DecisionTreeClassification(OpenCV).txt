@@ -3,7 +3,7 @@ imagery_opencv
 ParameterMultipleInput|FEATURES|Features|3|False
 QgsProcessingParameterBoolean|NORMALIZE|Normalize|False
 QgsProcessingParameterFeatureSource|TRAIN_AREAS|Training Areas|-1|None|False
-ParameterTable|TRAIN_CLASS|Class Identifier|False
+QgsProcessingParameterFeatureSource|TRAIN_CLASS|Class Identifier|5|None|False
 QgsProcessingParameterRasterDestination|CLASSES|Classification
 QgsProcessingParameterNumber|MAX_DEPTH|Maximum Tree Depth|QgsProcessingParameterNumber.Integer|10|False| 1|None
 QgsProcessingParameterNumber|MIN_SAMPLES|Minimum Sample Count|QgsProcessingParameterNumber.Integer|2|False| 2|None

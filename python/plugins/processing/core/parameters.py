@@ -58,7 +58,6 @@ from qgis.core import (QgsRasterLayer, QgsVectorLayer, QgsMapLayer, QgsCoordinat
                        QgsProcessingParameterMatrix,
                        QgsProcessingParameterFile,
                        QgsProcessingParameterField,
-                       QgsProcessingParameterRasterDestination,
                        QgsProcessingParameterVectorDestination,
                        QgsProcessingParameterFileDestination,
                        QgsProcessingParameterFolderDestination,

@@ -4,4 +4,4 @@ QgsProcessingParameterFeatureSource|INPUT|Polygons|2|None|False
 QgsProcessingParameterFeatureSource|POINTS|Points|0|None|False
 ParameterTableField|FIELDS|Attributes|POINTS|-1|False
 QgsProcessingParameterBoolean|ADD_LOCATION_INFO|Add location info|False
-OutputVector|OUTPUT|Result
+QgsProcessingParameterVectorDestination|OUTPUT|Result

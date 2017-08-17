@@ -5,4 +5,4 @@ ParameterTableField|ATTRIBUTE|Attribute|POLYGONS|-1|False
 QgsProcessingParameterNumber|EPSILON|Tolerance|QgsProcessingParameterNumber.Double|0.000|False|0|None
 QgsProcessingParameterBoolean|VERTICES|Check vertices|False
 QgsProcessingParameterBoolean|DOUBLE|Double edges|False
-OutputVector|EDGES|Edges
+QgsProcessingParameterVectorDestination|EDGES|Edges

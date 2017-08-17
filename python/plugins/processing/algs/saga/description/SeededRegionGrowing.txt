@@ -4,7 +4,7 @@ QgsProcessingParameterRasterLayer|SEEDS|Seeds|None|False
 ParameterMultipleInput|FEATURES|Features|3|False
 QgsProcessingParameterRasterDestination|SEGMENTS|Segments
 QgsProcessingParameterRasterDestination|SIMILARITY|Similarity
-ParameterTable|TABLE|Seeds|False
+QgsProcessingParameterFeatureSource|TABLE|Seeds|5|None|False
 QgsProcessingParameterBoolean|NORMALIZE|Normalize|False
 QgsProcessingParameterEnum|NEIGHBOUR|Neighbourhood|[0] 4 (von Neumann);[1] 8 (Moore)|False|0
 QgsProcessingParameterEnum|METHOD|Method|[0] feature space and position;[1] feature space|False|0

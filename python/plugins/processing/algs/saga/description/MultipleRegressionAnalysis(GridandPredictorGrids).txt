@@ -4,9 +4,9 @@ QgsProcessingParameterRasterLayer|DEPENDENT|Dependent Variable|None|False
 ParameterMultipleInput|PREDICTORS|Predictors|3|False
 QgsProcessingParameterRasterDestination|REGRESSION|Regression
 QgsProcessingParameterRasterDestination|RESIDUALS|Residuals
-ParameterTable|INFO_COEFF|Details: Coefficients|True
-ParameterTable|INFO_MODEL|Details: Model|True
-ParameterTable|INFO_STEPS|Details: Steps|True
+QgsProcessingParameterFeatureSource|INFO_COEFF|Details: Coefficients|5|None|True
+QgsProcessingParameterFeatureSource|INFO_MODEL|Details: Model|5|None|True
+QgsProcessingParameterFeatureSource|INFO_STEPS|Details: Steps|5|None|True
 QgsProcessingParameterEnum|RESAMPLING|Resampling|[0] Nearest Neighbour;[1] Bilinear Interpolation;[2] Bicubic Spline Interpolation;[3] B-Spline Interpolation|False|3
 QgsProcessingParameterBoolean|COORD_X|Include X Coordinate|False
 QgsProcessingParameterBoolean|COORD_Y|Include Y Coordinate|False

@@ -13,4 +13,4 @@ QgsProcessingParameterEnum|SEARCH_POINTS_ALL|Number of Points|[0] maximum number
 QgsProcessingParameterNumber|SEARCH_POINTS_MIN|Minimum|QgsProcessingParameterNumber.Integer|4|False|1|None
 QgsProcessingParameterNumber|SEARCH_POINTS_MAX|Maximum|QgsProcessingParameterNumber.Integer|20|False|1|None
 QgsProcessingParameterEnum|SEARCH_DIRECTION|Search Direction|[0] all directions;[1] quadrants
-OutputVector|REGRESSION|Regression
+QgsProcessingParameterVectorDestination|REGRESSION|Regression

@@ -3,4 +3,4 @@ grid_visualisation
 QgsProcessingParameterRasterLayer|ASPECT|Aspect|None|False
 QgsProcessingParameterRasterLayer|SLOPE|Slope|None|False
 QgsProcessingParameterRasterDestination|ASPECT_SLOPE|Aspect-Slope
-ParameterTable|LUT|Lookup Table|True
+QgsProcessingParameterFeatureSource|LUT|Lookup Table|5|None|True

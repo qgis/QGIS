@@ -17,4 +17,4 @@ QgsProcessingParameterNumber|SEARCH_POINTS_MAX|Maximum|QgsProcessingParameterNum
 QgsProcessingParameterEnum|SEARCH_DIRECTION|Search Direction|[0] all directions;[1] quadrants
 QgsProcessingParameterRasterDestination|REGRESSION|Regression
 QgsProcessingParameterRasterDestination|QUALITY|Coefficient of Determination
-OutputVector|RESIDUALS|Residuals
+QgsProcessingParameterVectorDestination|RESIDUALS|Residuals
