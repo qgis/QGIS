@@ -1,5 +1,6 @@
 Reclassify Grid Values
 grid_tools
+NoResamplingChoice
 ParameterRaster|INPUT|Grid|False
 ParameterSelection|METHOD|Method|[0] single;[1] range;[2] simple table
 ParameterNumber|OLD|old value (for single value change)|None|None|0.0

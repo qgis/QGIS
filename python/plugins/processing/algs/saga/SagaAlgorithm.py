@@ -65,11 +65,13 @@ sessionExportedLayers = {}
 class SagaAlgorithm(GeoAlgorithm):
 
     OUTPUT_EXTENT = 'OUTPUT_EXTENT'
+    RESAMPLING = "_RESAMPLING"
 
     def __init__(self, descriptionfile):
         GeoAlgorithm.__init__(self)
         self.hardcodedStrings = []
         self.allowUnmatchingGridExtents = False
+        self.noResamplingChoice = False
         self.descriptionFile = descriptionfile
         self.defineCharacteristicsFromFile()
         self._icon = None
@@ -115,6 +117,8 @@ class SagaAlgorithm(GeoAlgorithm):
                     self.addParameter(getParameterFromString(line))
                 elif line.startswith('AllowUnmatching'):
                     self.allowUnmatchingGridExtents = True
+                elif line.startswith('NoResamplingChoice'):
+                    self.noResamplingChoice = True
                 elif line.startswith('Extent'):
                     # An extent parameter that wraps 4 SAGA numerical parameters
                     self.extentParamNames = line[6:].strip().split(' ')
@@ -123,6 +127,21 @@ class SagaAlgorithm(GeoAlgorithm):
                 else:
                     self.addOutput(getOutputFromString(line))
                 line = lines.readline().strip('\n').strip()
+            hasRaster = False
+            hasHardcodedResampling = False
+            for param in self.parameters:
+                if isinstance(param, ParameterRaster) or 
+                    (isinstance(param, ParameterMultipleInput) 
+                        and param.type == ParameterMultipleInput.TYPE_RASTER):
+                    hasRaster = True
+                    break;
+
+            if (not self.noResamplingChoice and 
+                not self.forceNearestNeighbour and hasRaster):
+                param = ParameterSelection(self.RESAMPLING, "Resampling method", ["Nearest Neighbour", "Bilinear Interpolation", "Bicubic Spline Interpolation", "B-Spline Interpolation"], 3)
+                param.isAdvanced = True
+                self.addParameter(param)
+
 
     def processAlgorithm(self, progress):
         commands = list()
@@ -196,7 +215,7 @@ class SagaAlgorithm(GeoAlgorithm):
         command += ' ' + ' '.join(self.hardcodedStrings)
 
         for param in self.parameters:
-            if param.value is None:
+            if param.value is None or param.name == self.RESAMPLING:
                 continue
             if isinstance(param, (ParameterRaster, ParameterVector, ParameterTable)):
                 value = param.value
@@ -327,7 +346,9 @@ class SagaAlgorithm(GeoAlgorithm):
         destFilename = getTempFilenameInTempFolder(filename + '.sgrd')
         self.exportedLayers[source] = destFilename
         sessionExportedLayers[source] = destFilename
-        return 'io_gdal 0 -TRANSFORM 1 -RESAMPLING 3 -GRIDS "' + destFilename + '" -FILES "' + source + '"'
+        resampling = self.getParameterValue(self.RESAMPLING)
+        resampling = str(resampling) if resampling is not None else "0"
+        return 'io_gdal 0 -TRANSFORM 1 -RESAMPLING ' + resampling + ' -GRIDS "' + destFilename + '" -FILES "' + source + '"'
 
     def checkParameterValuesBeforeExecuting(self):
         """

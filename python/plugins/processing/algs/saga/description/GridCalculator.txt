@@ -1,6 +1,7 @@
 Raster calculator|Grid Calculator
 grid_calculus
 AllowUnmatching
+NoResamplingChoice
 ParameterRaster|GRIDS|Main input layer|False
 ParameterMultipleInput|XGRIDS|Additional layers|3|True
 ParameterString|FORMULA|Formula|
