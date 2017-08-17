@@ -36,6 +36,7 @@ QgsMetadataWidget::QgsMetadataWidget( QWidget *parent, QgsMapLayer *layer )
 
   // Disable the encoding
   encodingFrame->setHidden( true );
+  tabWidget->removeTab( 5 );
 
   // Default categories
   mDefaultCategories << tr( "Farming" ) << tr( "Climatology Meteorology Atmosphere" ) << tr( "Location" ) << tr( "Intelligence Military" ) << tr( "Transportation" ) << tr( "Structure" ) << tr( "Boundaries" );
@@ -288,6 +289,9 @@ void QgsMetadataWidget::setPropertiesFromLayer()
   // Set all properties USING THE NEW API
   // It will overwrite existing settings
 
+  // Parent ID
+  lineEditParentId->setText( mMetadata.parentIdentifier() );
+
   // Identifier
   if ( ! mMetadata.identifier().isEmpty() )
   {
@@ -380,6 +384,7 @@ void QgsMetadataWidget::setPropertiesFromLayer()
 
 void QgsMetadataWidget::saveMetadata( QgsLayerMetadata &layerMetadata )
 {
+  layerMetadata.setParentIdentifier( lineEditParentId->text() );
   layerMetadata.setIdentifier( lineEditIdentifier->text() );
   layerMetadata.setTitle( lineEditTitle->text() );
   layerMetadata.setType( comboType->currentText() );

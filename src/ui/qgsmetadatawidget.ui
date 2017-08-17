@@ -23,7 +23,7 @@
       <enum>QTabWidget::Rounded</enum>
      </property>
      <property name="currentIndex">
-      <number>3</number>
+      <number>0</number>
      </property>
      <widget class="QWidget" name="tabIdentificationDialog">
       <attribute name="title">
@@ -39,6 +39,16 @@
           <bool>true</bool>
          </property>
         </widget>
+       </item>
+       <item>
+        <widget class="QLabel" name="label_27">
+         <property name="text">
+          <string>Parent Identifier</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLineEdit" name="lineEditParentId"/>
        </item>
        <item>
         <widget class="QLabel" name="label_3">
@@ -580,7 +590,7 @@
        <item>
         <widget class="QgsCollapsibleGroupBox" name="groupBox">
          <property name="title">
-          <string>Spatial Extent</string>
+          <string>Coordinate Reference System</string>
          </property>
          <layout class="QVBoxLayout" name="verticalLayout_8">
           <item>
@@ -604,13 +614,6 @@
            </layout>
           </item>
          </layout>
-        </widget>
-       </item>
-       <item>
-        <widget class="QgsCollapsibleGroupBox" name="groupBox_2">
-         <property name="title">
-          <string>Temporal Extent</string>
-         </property>
         </widget>
        </item>
        <item>
