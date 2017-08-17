@@ -1,7 +1,7 @@
 Directional Statistics for Single Grid
 statistics_grid
 QgsProcessingParameterRasterLayer|GRID|Grid|None|False
-ParameterVector|POINTS|Points|-1|True
+QgsProcessingParameterFeatureSource|POINTS|Points|-1|None|True
 QgsProcessingParameterNumber|DIRECTION|Direction [Degree]|QgsProcessingParameterNumber.Double|0.0|False|None|None
 QgsProcessingParameterNumber|TOLERANCE|Tolerance [Degree]|QgsProcessingParameterNumber.Double|0.0|False|None|None
 QgsProcessingParameterNumber|MAXDISTANCE|Maximum Distance [Cells]|QgsProcessingParameterNumber.Integer|0|False|None|None

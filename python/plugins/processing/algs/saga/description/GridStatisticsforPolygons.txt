@@ -1,7 +1,7 @@
 Grid Statistics for Polygons
 shapes_grid
 ParameterMultipleInput|GRIDS|Grids|3|False
-ParameterVector|POLYGONS|Polygons|2|False
+QgsProcessingParameterFeatureSource|POLYGONS|Polygons|2|None|False
 QgsProcessingParameterEnum|METHOD|Method|[0] Standard;[1] Shape wise, supports overlapping polygons|False|1
 QgsProcessingParameterEnum|NAMING|Grid Naming|[0] Grid number;[1] Grid name|False|1
 QgsProcessingParameterBoolean|COUNT|Number of Cells|True

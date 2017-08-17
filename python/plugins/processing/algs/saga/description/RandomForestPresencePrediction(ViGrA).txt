@@ -3,7 +3,7 @@ imagery_vigra
 ParameterMultipleInput|FEATURES|Features|3|False
 QgsProcessingParameterRasterDestination|PREDICTION|Presence Prediction
 QgsProcessingParameterRasterDestination|PROBABILITY|Presence Probability
-ParameterVector|PRESENCE|Presence Data|-1|False
+QgsProcessingParameterFeatureSource|PRESENCE|Presence Data|-1|None|False
 QgsProcessingParameterNumber|BACKGROUND|Background Sample Density [Percent]|QgsProcessingParameterNumber.Double|1.000000|False| 0.000000| 100.000000
 QgsProcessingParameterBoolean|DO_MRMR|Minimum Redundancy Feature Selection|False
 QgsProcessingParameterNumber|mRMR_NFEATURES|Number of Features|QgsProcessingParameterNumber.Integer|50|False| 1|None

@@ -1,7 +1,7 @@
 Create Polygons Graticule|Create Graticule
 shapes_tools
 Hardcoded|-TYPE 1
-ParameterVector|EXTENT|Extent|-1|True
+QgsProcessingParameterFeatureSource|EXTENT|Extent|-1|None|True
 Extent EXTENT_X_MIN EXTENT_X_MAX EXTENT_Y_MIN EXTENT_Y_MAX
 QgsProcessingParameterNumber|DIVISION_X|Division Width|QgsProcessingParameterNumber.Double|1.0|False|None|None
 QgsProcessingParameterNumber|DIVISION_Y|Division Height|QgsProcessingParameterNumber.Double|1.0|False|None|None

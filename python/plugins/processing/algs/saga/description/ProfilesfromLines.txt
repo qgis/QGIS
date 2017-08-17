@@ -2,7 +2,7 @@ Profiles from Lines
 ta_profiles
 QgsProcessingParameterRasterLayer|DEM|DEM|None|False
 ParameterMultipleInput|VALUES|Values|3|True
-ParameterVector|LINES|Lines|1|False
+QgsProcessingParameterFeatureSource|LINES|Lines|1|None|False
 ParameterTableField|NAME|Name|LINES|-1|False
 QgsProcessingParameterBoolean|SPLIT         |Each Line as new Profile|True
 OutputVector|PROFILE|Profiles

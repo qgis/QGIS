@@ -1,6 +1,6 @@
 Modifed Quadratic Shepard
 grid_gridding
-ParameterVector|SHAPES|Points|-1|False
+QgsProcessingParameterFeatureSource|SHAPES|Points|-1|None|False
 ParameterTable|FIELD|Attribute|False
 Hardcoded|-TARGET_DEFINITION 0
 Extent TARGET_USER_XMIN TARGET_USER_XMAX TARGET_USER_YMIN TARGET_USER_YMAX

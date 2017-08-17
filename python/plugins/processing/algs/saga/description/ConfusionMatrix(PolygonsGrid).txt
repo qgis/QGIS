@@ -5,7 +5,7 @@ ParameterTable|GRID_LUT|Look-up Table|True
 ParameterTable|GRID_LUT_MIN|Value|False
 ParameterTable|GRID_LUT_MAX|Value (Maximum)|False
 ParameterTable|GRID_LUT_NAM|Name|False
-ParameterVector|POLYGONS|Polygons|-1|False
+QgsProcessingParameterFeatureSource|POLYGONS|Polygons|-1|None|False
 ParameterTable|FIELD|Classes|False
 ParameterTable|CONFUSION|Confusion Matrix|False
 ParameterTable|CLASSES|Class Values|False

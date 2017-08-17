@@ -1,8 +1,8 @@
 Point Distances
 shapes_points
-ParameterVector|POINTS|Points|0|False
+QgsProcessingParameterFeatureSource|POINTS|Points|0|None|False
 ParameterTable|ID_POINTS|Identifier|False
-ParameterVector|NEAR|Near Points|-1|True
+QgsProcessingParameterFeatureSource|NEAR|Near Points|-1|None|True
 ParameterTable|ID_NEAR|Identifier|False
 ParameterTable|DISTANCES|Distances|False
 QgsProcessingParameterEnum|FORMAT|Output Format|[0] complete input times near points matrix;[1] each pair with a single record|False|1

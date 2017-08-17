@@ -1,6 +1,6 @@
 Shapes Buffer (Attribute distance)|Shapes Buffer
 shapes_tools
-ParameterVector|SHAPES|Shapes|-1|False
+QgsProcessingParameterFeatureSource|SHAPES|Shapes|-1|None|False
 ParameterTableField|DIST_FIELD|Buffer Distance|SHAPES|-1|False
 QgsProcessingParameterNumber|DIST_SCALE|Scaling Factor for Attribute Value|QgsProcessingParameterNumber.Double|1.0|False|None|None
 QgsProcessingParameterNumber|NZONES|Number of Buffer Zones|QgsProcessingParameterNumber.Double|1.0|False|1.0|None

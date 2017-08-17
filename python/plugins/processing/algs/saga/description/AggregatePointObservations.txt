@@ -1,6 +1,6 @@
 Aggregate Point Observations
 shapes_points
-ParameterVector|REFERENCE|Reference Points|-1|False
+QgsProcessingParameterFeatureSource|REFERENCE|Reference Points|-1|None|False
 ParameterTableField|REFERENCE_ID|ID|REFERENCE|-1|False
 ParameterTable|OBSERVATIONS|Observations|False
 ParameterTableField|X|X|OBSERVATIONS|-1|False

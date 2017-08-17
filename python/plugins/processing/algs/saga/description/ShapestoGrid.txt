@@ -1,7 +1,7 @@
 Shapes to Grid
 grid_gridding
 Hardcoded|-TARGET_DEFINITION 0
-ParameterVector|INPUT|Shapes|-1|False
+QgsProcessingParameterFeatureSource|INPUT|Shapes|-1|None|False
 ParameterTableField|FIELD|Attribute|INPUT|-1|False
 QgsProcessingParameterEnum|OUTPUT|Output Values|[0] data / no-data;[1] index number;[2] attribute|False|2
 QgsProcessingParameterEnum|MULTIPLE|Method for Multiple Values|[0] first;[1] last;[2] minimum;[3] maximum;[4] mean|False|4

@@ -1,5 +1,5 @@
 Fit N Points to shape
 shapes_points
-ParameterVector|SHAPES|Shapes|2|False
+QgsProcessingParameterFeatureSource|SHAPES|Shapes|2|None|False
 QgsProcessingParameterNumber|NUMPOINTS|Number of points|QgsProcessingParameterNumber.Integer|10|False|1.0|None
 OutputVector|POINTS|Points

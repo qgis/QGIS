@@ -1,6 +1,6 @@
 Multiple Linear Regression Analysis (Shapes)
 statistics_regression
-ParameterVector|TABLE|Shapes|-1|False
+QgsProcessingParameterFeatureSource|TABLE|Shapes|-1|None|False
 OutputVector|RESULTS|Results
 ParameterTable|DEPENDENT|Dependent Variable|False
 ParameterTable|INFO_COEFF|Details: Coefficients|True

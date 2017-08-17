@@ -1,5 +1,5 @@
 Line Simplification
 shapes_lines
-ParameterVector|LINES|Lines|1|False
+QgsProcessingParameterFeatureSource|LINES|Lines|1|None|False
 QgsProcessingParameterNumber|TOLERANCE|Tolerance|QgsProcessingParameterNumber.Double|1.0|False|None|None
 OutputVector|OUTPUT|Simplified Lines

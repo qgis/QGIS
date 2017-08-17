@@ -3,6 +3,6 @@ imagery_opencv
 ParameterMultipleInput|FEATURES|Features|3|False
 QgsProcessingParameterBoolean|NORMALIZE|Normalize|False
 QgsProcessingParameterRasterDestination|PROBABILITY|Probability
-ParameterVector|TRAIN_AREAS|Training Areas|-1|False
+QgsProcessingParameterFeatureSource|TRAIN_AREAS|Training Areas|-1|None|False
 ParameterTable|TRAIN_CLASS|Class Identifier|False
 QgsProcessingParameterRasterDestination|CLASSES|Classification

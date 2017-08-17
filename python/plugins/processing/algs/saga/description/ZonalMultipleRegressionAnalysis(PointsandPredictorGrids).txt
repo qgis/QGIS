@@ -1,8 +1,8 @@
 Zonal Multiple Regression Analysis (Points and Predictor Grids)
 statistics_regression
 ParameterMultipleInput|PREDICTORS|Predictors|3|False
-ParameterVector|ZONES|Zones|-1|False
-ParameterVector|POINTS|Points|-1|False
+QgsProcessingParameterFeatureSource|ZONES|Zones|-1|None|False
+QgsProcessingParameterFeatureSource|POINTS|Points|-1|None|False
 ParameterTable|ATTRIBUTE|Dependent Variable|False
 OutputVector|RESIDUALS|Residuals
 QgsProcessingParameterRasterDestination|REGRESSION|Regression

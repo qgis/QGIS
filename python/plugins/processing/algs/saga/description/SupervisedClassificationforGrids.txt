@@ -4,7 +4,7 @@ ParameterMultipleInput|GRIDS|Features|3|False
 QgsProcessingParameterBoolean|NORMALISE|Normalise|False
 QgsProcessingParameterRasterDestination|CLASSES|Classification
 QgsProcessingParameterRasterDestination|QUALITY|Quality
-ParameterVector|TRAINING|Training Areas|-1|True
+QgsProcessingParameterFeatureSource|TRAINING|Training Areas|-1|None|True
 ParameterTable|TRAINING_CLASS|Class Identifier|False
 ParameterFile|FILE_LOAD|Load Statistics from File...|False|False
 ParameterFile|FILE_SAVE|Save Statistics to File...|False|False

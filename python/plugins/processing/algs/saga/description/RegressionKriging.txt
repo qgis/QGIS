@@ -1,6 +1,6 @@
 Regression Kriging
 statistics_kriging
-ParameterVector|POINTS|Points|-1|False
+QgsProcessingParameterFeatureSource|POINTS|Points|-1|None|False
 ParameterTable|FIELD|Attribute|False
 ParameterMultipleInput|PREDICTORS|Predictors|3|False
 QgsProcessingParameterRasterDestination|REGRESSION|Regression

@@ -1,6 +1,6 @@
 Natural Neighbour
 grid_gridding
-ParameterVector|SHAPES|Points|0|False
+QgsProcessingParameterFeatureSource|SHAPES|Points|0|None|False
 ParameterTableField|FIELD|Attribute|SHAPES|-1|False
 Hardcoded|-TARGET_DEFINITION 0
 QgsProcessingParameterBoolean|SIBSON|Sibson|True
