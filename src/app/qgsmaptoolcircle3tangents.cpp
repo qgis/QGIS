@@ -35,7 +35,7 @@ QgsMapToolCircle3Tangents::~QgsMapToolCircle3Tangents()
 void QgsMapToolCircle3Tangents::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
 {
 
-  QList<QgsPointXY> segment = e->snapSegment( QgsMapMouseEvent::SnapProjectConfig );
+  QList<QgsPointXY> segment = e->snapSegment( );
 
   if ( e->button() == Qt::LeftButton )
   {
