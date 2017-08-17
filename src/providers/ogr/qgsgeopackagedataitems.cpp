@@ -322,13 +322,13 @@ bool QgsGeoPackageConnectionItem::handleDrop( const QMimeData *data, Qt::DropAct
                                                 tr( "Destination layer <b>%1</b> already exists. Do you want to overwrite it?" ).arg( u.name ), QMessageBox::Yes |  QMessageBox::No ) == QMessageBox::Yes )
         {
 
-          std::unique_ptr< QMap<QString, QVariant> > options( new QMap<QString, QVariant> );
-          options->insert( QStringLiteral( "driverName" ), QStringLiteral( "GPKG" ) );
-          options->insert( QStringLiteral( "update" ), true );
-          options->insert( QStringLiteral( "overwrite" ), true );
-          options->insert( QStringLiteral( "layerName" ), u.name );
+          QVariantMap options;
+          options.insert( QStringLiteral( "driverName" ), QStringLiteral( "GPKG" ) );
+          options.insert( QStringLiteral( "update" ), true );
+          options.insert( QStringLiteral( "overwrite" ), true );
+          options.insert( QStringLiteral( "layerName" ), u.name );
 
-          std::unique_ptr< QgsVectorLayerExporterTask > exportTask( new QgsVectorLayerExporterTask( srcLayer, uri, QStringLiteral( "ogr" ), srcLayer->crs(), options.get(), owner ) );
+          std::unique_ptr< QgsVectorLayerExporterTask > exportTask( new QgsVectorLayerExporterTask( srcLayer, uri, QStringLiteral( "ogr" ), srcLayer->crs(), options, owner ) );
 
           // when export is successful:
           connect( exportTask.get(), &QgsVectorLayerExporterTask::exportComplete, this, [ = ]()
