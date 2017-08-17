@@ -130,9 +130,9 @@ class SagaAlgorithm(GeoAlgorithm):
             hasRaster = False
             hasHardcodedResampling = False
             for param in self.parameters:
-                if isinstance(param, ParameterRaster) or 
+                if (isinstance(param, ParameterRaster) or 
                     (isinstance(param, ParameterMultipleInput) 
-                        and param.type == ParameterMultipleInput.TYPE_RASTER):
+                        and param.type == ParameterMultipleInput.TYPE_RASTER)):
                     hasRaster = True
                     break;
 
