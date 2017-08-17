@@ -514,7 +514,7 @@ void QgsGeoPackageAbstractLayerItem::deleteLayer()
     }
     else
     {
-      QMessageBox::information( nullptr, tr( "Delete Layer" ), tr( "Layer deleted successfully." ) );
+      QMessageBox::information( nullptr, tr( "Delete Layer" ), tr( "Layer <b>%1</b> deleted successfully." ).arg( mName ) );
       if ( mParent )
         mParent->refresh();
     }
@@ -577,19 +577,24 @@ bool QgsGeoPackageRasterLayerItem::executeDeleteLayer( QString &errCause )
       else
       {
         // Remove table
-        QString sql;
         char *errmsg = NULL;
-        sql = QStringLiteral( "DROP table %1;"
-                              "DELETE FROM gpkg_contents WHERE table_name = '%1';"
-                              "DELETE FROM gpkg_tile_matrix WHERE table_name = '%1';"
-                              "DELETE FROM gpkg_tile_matrix_set WHERE table_name = '%1';" ).arg( layerName );
+        char *sql = sqlite3_mprintf(
+                      "DROP table %w;"
+                      "DELETE FROM gpkg_contents WHERE table_name = '%q';"
+                      "DELETE FROM gpkg_tile_matrix WHERE table_name = '%q';"
+                      "DELETE FROM gpkg_tile_matrix_set WHERE table_name = '%q';",
+                      layerName.toUtf8().constData(),
+                      layerName.toUtf8().constData(),
+                      layerName.toUtf8().constData(),
+                      layerName.toUtf8().constData() );
         status = sqlite3_exec(
                    handle,                              /* An open database */
-                   sql.toUtf8().constData(),            /* SQL to be evaluated */
+                   sql,                                 /* SQL to be evaluated */
                    NULL,                                /* Callback function */
                    NULL,                                /* 1st argument to callback */
                    &errmsg                              /* Error msg written here */
                  );
+        sqlite3_free( sql );
         if ( status == SQLITE_OK )
         {
           result = true;
