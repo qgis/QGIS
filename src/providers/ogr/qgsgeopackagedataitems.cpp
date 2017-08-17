@@ -13,6 +13,8 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "sqlite3.h"
+
 #include "qgsgeopackagedataitems.h"
 #include "qgsgeopackageconnection.h"
 #include "qgslogger.h"
@@ -69,6 +71,7 @@ QVector<QgsDataItem *> QgsGeoPackageRootItem::createChildren()
   return connections;
 }
 
+#ifdef HAVE_GUI
 QList<QAction *> QgsGeoPackageRootItem::actions()
 {
   QList<QAction *> lst;
@@ -88,7 +91,7 @@ QWidget *QgsGeoPackageRootItem::paramWidget()
 {
   return nullptr;
 }
-
+#endif
 
 void QgsGeoPackageRootItem::connectionsChanged()
 {
@@ -214,7 +217,7 @@ QVector<QgsDataItem *> QgsGeoPackageConnectionItem::createChildren()
               uri = QStringLiteral( "%1|layerid=%2" ).arg( mPath, layerId );
             }
             QgsGeoPackageVectorLayerItem *item = new QgsGeoPackageVectorLayerItem( this, name, mPath, uri, layerType );
-            QgsDebugMsgLevel( QStringLiteral( "Adding GPKG Vector item %1 %2 %3" ).arg( name, uri, geometryType ), 3 );
+            QgsDebugMsgLevel( QStringLiteral( "Adding GeoPackage Vector item %1 %2 %3" ).arg( name, uri, geometryType ), 3 );
             children.append( item );
           }
         }
@@ -222,8 +225,7 @@ QVector<QgsDataItem *> QgsGeoPackageConnectionItem::createChildren()
         {
           QgsDebugMsgLevel( QStringLiteral( "Layer type is not a supported GeoPackage Vector layer %1" ).arg( mPath ), 3 );
         }
-        QgsDebugMsgLevel( QStringLiteral( "Adding GPKG Vector item %1 %2 %3" ).arg( name, uri, geometryType ), 3 );
-        qDebug() << QStringLiteral( "Adding GPKG Vector item %1 %2 %3" ).arg( name, uri, geometryType );
+        QgsDebugMsgLevel( QStringLiteral( "Adding GeoPackage Vector item %1 %2 %3" ).arg( name, uri, geometryType ), 3 );
       }
     }
   }
@@ -233,7 +235,7 @@ QVector<QgsDataItem *> QgsGeoPackageConnectionItem::createChildren()
   {
     QStringList pieces = uri.split( ':' );
     QString name = pieces.value( pieces.length() - 1 );
-    QgsDebugMsg( QStringLiteral( "Adding GPKG Raster item %1 %2 %3" ).arg( name, uri ) );
+    QgsDebugMsgLevel( QStringLiteral( "Adding GeoPackage Raster item %1 %2 %3" ).arg( name, uri ), 3 );
     QgsGeoPackageRasterLayerItem *item = new QgsGeoPackageRasterLayerItem( this, name, mPath, uri );
     children.append( item );
 
@@ -361,7 +363,7 @@ bool QgsGeoPackageConnectionItem::handleDrop( const QMimeData *data, Qt::DropAct
     }
     else
     {
-      // TODO: implemnent raster import
+      // TODO: implement raster import
       QgsMessageOutput *output = QgsMessageOutput::createMessageOutput();
       output->setTitle( tr( "Import to GeoPackage database faile" ) );
       output->setMessage( tr( "Failed to import some layers!\n\n" ) + QStringLiteral( "Raster import is not yet implemented!\n" ), QgsMessageOutput::MessageText );
@@ -441,15 +443,62 @@ void QgsGeoPackageConnectionItem::addTable()
 QList<QAction *> QgsGeoPackageAbstractLayerItem::actions()
 {
   QList<QAction *> lst;
-  // TODO: delete layer when the provider supports it (not currently implemented)
+  QAction *actionDeleteLayer = new QAction( tr( "Delete layer '%1'..." ).arg( mName ), this );
+  connect( actionDeleteLayer, &QAction::triggered, this, &QgsGeoPackageAbstractLayerItem::deleteLayer );
+  lst.append( actionDeleteLayer );
   return lst;
 }
 #endif
+
+void QgsGeoPackageAbstractLayerItem::deleteLayer()
+{
+  // Check if the layer is in the registry
+  const QgsMapLayer *projectLayer = nullptr;
+  Q_FOREACH ( const QgsMapLayer *layer, QgsProject::instance()->mapLayers() )
+  {
+    if ( layer->publicSource() == mUri )
+    {
+      projectLayer = layer;
+    }
+  }
+  if ( ! projectLayer )
+  {
+    if ( QMessageBox::question( nullptr, QObject::tr( "Delete Layer" ),
+                                QObject::tr( "Are you sure you want to delete layer <b>%1</b> from GeoPackage?" ).arg( mName ),
+                                QMessageBox::Yes | QMessageBox::No, QMessageBox::No ) != QMessageBox::Yes )
+      return;
+
+    QString errCause;
+    bool res = executeDeleteLayer( errCause );
+    if ( !res )
+    {
+      QMessageBox::warning( nullptr, tr( "Delete Layer" ), errCause );
+    }
+    else
+    {
+      QMessageBox::information( nullptr, tr( "Delete Layer" ), tr( "Layer deleted successfully." ) );
+      if ( mParent )
+        mParent->refresh();
+    }
+  }
+  else
+  {
+    QMessageBox::warning( nullptr, QObject::tr( "Delete Layer" ), QObject::tr( "The layer <b>%1</b> cannot be deleted because it is in the current project as <b>%2</b>,"
+                          " remove it from the project and retry." ).arg( mName, projectLayer->name() ) );
+  }
+
+}
 
 QgsGeoPackageAbstractLayerItem::QgsGeoPackageAbstractLayerItem( QgsDataItem *parent, QString name, QString path, QString uri, QgsLayerItem::LayerType layerType, QString providerKey )
   : QgsLayerItem( parent, name, path, uri, layerType, providerKey )
 {
   setState( Populated ); // no children are expected
+}
+
+bool QgsGeoPackageAbstractLayerItem::executeDeleteLayer( QString &errCause )
+{
+  errCause = QObject::tr( "The layer <b>%1</b> cannot be deleted because the this feature is not yet implemented for this kind of layers." ).arg( mName );
+  return false;
 }
 
 
@@ -466,54 +515,67 @@ QgsGeoPackageRasterLayerItem::QgsGeoPackageRasterLayerItem( QgsDataItem *parent,
 
 }
 
-
-#ifdef HAVE_GUI
-QList<QAction *> QgsGeoPackageVectorLayerItem::actions()
+bool QgsGeoPackageRasterLayerItem::executeDeleteLayer( QString &errCause )
 {
-  QList<QAction *> lst = QgsGeoPackageAbstractLayerItem::actions();
-  QAction *actionDeleteLayer = new QAction( tr( "Delete layer '%1'..." ).arg( mName ), this );
-  connect( actionDeleteLayer, &QAction::triggered, this, &QgsGeoPackageVectorLayerItem::deleteLayer );
-  lst.append( actionDeleteLayer );
-  return lst;
-}
-
-
-void QgsGeoPackageVectorLayerItem::deleteLayer()
-{
-  // Check if the layer is in the registry
-  const QgsMapLayer *projectLayer = nullptr;
-  Q_FOREACH ( const QgsMapLayer *layer, QgsProject::instance()->mapLayers() )
+  bool result = false;
+  // Better safe than sorry
+  if ( ! mUri.isEmpty( ) )
   {
-    if ( layer->publicSource() == mUri )
+    QStringList pieces( mUri.split( ':' ) );
+    if ( pieces.size() != 3 )
     {
-      projectLayer = layer;
-    }
-  }
-  if ( ! projectLayer )
-  {
-    if ( QMessageBox::question( nullptr, QObject::tr( "Delete Layer" ),
-                                QObject::tr( "Are you sure you want to delete layer '%1' from GeoPackage?" ).arg( mName ),
-                                QMessageBox::Yes | QMessageBox::No, QMessageBox::No ) != QMessageBox::Yes )
-      return;
-
-    QString errCause;
-    bool res = ::deleteLayer( mUri, errCause );
-    if ( !res )
-    {
-      QMessageBox::warning( nullptr, tr( "Delete Layer" ), errCause );
+      errCause = QStringLiteral( "Layer URI is malformed: layer <b>%1</b> cannot be deleted!" ).arg( mName );
     }
     else
     {
-      QMessageBox::information( nullptr, tr( "Delete Layer" ), tr( "Layer deleted successfully." ) );
-      if ( mParent )
-        mParent->refresh();
+      QString baseUri = pieces.at( 1 );
+      QString layerName = pieces.at( 2 );
+      sqlite3 *handle;
+      int status = sqlite3_open_v2( baseUri.toLocal8Bit().data(), &handle, SQLITE_OPEN_READWRITE, NULL );
+      if ( status != SQLITE_OK )
+      {
+        errCause = sqlite3_errmsg( handle );
+      }
+      else
+      {
+        // Remove table
+        QString sql;
+        char *errmsg = NULL;
+        sql = QStringLiteral( "DROP table %1;"
+                              "DELETE FROM gpkg_contents WHERE table_name = '%1';"
+                              "DELETE FROM gpkg_tile_matrix WHERE table_name = '%1';"
+                              "DELETE FROM gpkg_tile_matrix_set WHERE table_name = '%1';" ).arg( layerName );
+        status = sqlite3_exec(
+                   handle,                              /* An open database */
+                   sql.toLocal8Bit().data(),            /* SQL to be evaluated */
+                   NULL,                                /* Callback function */
+                   NULL,                                /* 1st argument to callback */
+                   &errmsg                              /* Error msg written here */
+                 );
+        if ( status == SQLITE_OK )
+        {
+          result = true;
+        }
+        else
+        {
+          errCause = tr( "There was an error deleting the layer: %1" ).arg( errmsg );
+          sqlite3_free( errmsg );
+        }
+      }
+      sqlite3_close_v2( handle );
     }
   }
   else
   {
-    QMessageBox::warning( nullptr, QObject::tr( "Delete Layer" ), QObject::tr( "The layer '%1' cannot be deleted because it is in the current project as '%2',"
-                          " remove it from the project and retry." ).arg( mName, projectLayer->name() ) );
+    // This should never happen!
+    errCause = QStringLiteral( "Layer URI is empty: layer <b>%1</b> cannot be deleted!" ).arg( mName );
   }
+  return result;
 }
-#endif
+
+
+bool QgsGeoPackageVectorLayerItem::executeDeleteLayer( QString &errCause )
+{
+  return ::deleteLayer( mUri, errCause );
+}
 
