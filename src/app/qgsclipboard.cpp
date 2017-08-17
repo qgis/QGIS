@@ -205,7 +205,7 @@ QgsFeatureList QgsClipboard::stringToFeatureList( const QString& string, const Q
     if ( !fields.isEmpty() )
       feature.setFields( fields, true );
 
-    feature.setGeometry( *geometry );
+    feature.setGeometry( geometry );
     features.append( feature );
   }
 
