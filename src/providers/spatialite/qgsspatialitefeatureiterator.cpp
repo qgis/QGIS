@@ -474,7 +474,7 @@ bool QgsSpatiaLiteFeatureIterator::getFeature( sqlite3_stmt *stmt, QgsFeature &f
   if ( ret != SQLITE_ROW )
   {
     // some unexpected error occurred
-    QgsMessageLog::logMessage( QString::tr( "SQLite error getting feature: LayerName[%1] GeomType[%2] -  %3" ).arg( mSource->getLayerName() ).arg( mSource->getGeometryTypeString() ).arg( QString::fromUtf8( sqlite3_errmsg( mHandle->handle() ) ) ) );
+    QgsMessageLog::logMessage( QObject::tr( "SQLite error getting feature: LayerName[%1] GeomType[%2] -  %3" ).arg( mSource->getLayerName() ).arg( mSource->getGeometryTypeString() ).arg( QString::fromUtf8( sqlite3_errmsg( mHandle->handle() ) ) ) );
     return false;
   }
   // one valid row has been fetched from the result set
