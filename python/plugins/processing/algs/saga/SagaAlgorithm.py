@@ -41,14 +41,13 @@ from qgis.core import (QgsProcessingUtils,
                        QgsProcessingParameterMultipleLayers,
                        QgsProcessingParameterMatrix,
                        QgsProcessingParameterString,
-                       QgsProcessingParameterField)
+                       QgsProcessingParameterField,
+                       QgsProcessingParameterFile,
+                       QgsProcessingParameterExtent,
+                       QgsProcessingParameterRasterDestination,
+                       QgsProcessingParameterVectorDestination)
 from processing.core.ProcessingConfig import ProcessingConfig
-from processing.core.parameters import (getParameterFromString,
-                                        ParameterExtent)
-from processing.core.outputs import (getOutputFromString,
-                                     OutputVector,
-                                     OutputRaster)
-from processing.tools import dataobjects
+from processing.core.parameters import getParameterFromString
 from processing.algs.help import shortHelp
 from processing.tools.system import getTempFilename
 from processing.algs.saga.SagaNameDecorator import decoratedAlgorithmName, decoratedGroupName
@@ -131,8 +130,8 @@ class SagaAlgorithm(SagaAlgorithmBase):
                 elif line.startswith('Extent'):
                     # An extent parameter that wraps 4 SAGA numerical parameters
                     self.extentParamNames = line[6:].strip().split(' ')
-                    self.params.append(ParameterExtent(self.OUTPUT_EXTENT,
-                                                       'Output extent'))
+                    self.params.append(QgsProcessingParameterExtent(self.OUTPUT_EXTENT,
+                                                                    'Output extent'))
                 else:
                     pass # TODO
                     #self.addOutput(getOutputFromString(line))
@@ -160,9 +159,14 @@ class SagaAlgorithm(SagaAlgorithmBase):
             elif isinstance(param, QgsProcessingParameterFeatureSource):
                 if param.name() not in parameters or parameters[param.name()] is None:
                     continue
-                layer_path = self.parameterAsCompatibleSourceLayerPath(parameters, param.name(), context, 'shp', feedback=feedback)
+
+                if not crs:
+                    source = self.parameterAsSource(parameters, param.name(), context)
+                    crs = source.sourceCrs()
+
+                layer_path = self.parameterAsCompatibleSourceLayerPath(parameters, param.name(), context, ['shp'], 'shp', feedback=feedback)
                 if layer_path:
-                    self.exportedLayers[parameters[param.name()]] = layer_path
+                    self.exportedLayers[param.name()] = layer_path
                 else:
                     raise QgsProcessingException(
                         self.tr('Unsupported file format'))
@@ -186,6 +190,11 @@ class SagaAlgorithm(SagaAlgorithmBase):
                     temp_params = deepcopy(parameters)
                     for layer in layers:
                         temp_params[param.name()] = layer
+
+                        if not crs:
+                            source = self.parameterAsSource(temp_params, param.name(), context)
+                            crs = source.sourceCrs()
+
                         layer_path = self.parameterAsCompatibleSourceLayerPath(temp_params, param.name(), context, 'shp',
                                                                                feedback=feedback)
                         if layer_path:
@@ -197,10 +206,6 @@ class SagaAlgorithm(SagaAlgorithmBase):
                             raise QgsProcessingException(
                                 self.tr('Unsupported file format'))
 
-        # TODO - set minimum extent
-        if not extent:
-            extent = QgsProcessingUtils.combineLayerExtents([layer])
-
         # 2: Set parameters and outputs
         command = self.undecorated_group + ' "' + self.cmdname + '"'
         command += ' ' + ' '.join(self.hardcoded_strings)
@@ -208,20 +213,19 @@ class SagaAlgorithm(SagaAlgorithmBase):
         for param in self.parameterDefinitions():
             if not param.name() in parameters or parameters[param.name()] is None:
                 continue
+            if param.isDestination():
+                continue
+
             if isinstance(param, (QgsProcessingParameterRasterLayer, QgsProcessingParameterFeatureSource)):
-                value = parameters[param.name()]
-                if value in list(self.exportedLayers.keys()):
-                    command += ' -' + param.name() + ' "' \
-                        + self.exportedLayers[value] + '"'
-                else:
-                    command += ' -' + param.name() + ' "' + value + '"'
+                command += ' -' + param.name() + ' "' \
+                    + self.exportedLayers[param.name()] + '"'
             elif isinstance(param, QgsProcessingParameterMultipleLayers):
                 s = parameters[param.name()]
                 for layer in list(self.exportedLayers.keys()):
                     s = s.replace(layer, self.exportedLayers[layer])
                 command += ' -' + ';'.join(self.exportedLayers[param.name()]) + ' "' + s + '"'
             elif isinstance(param, QgsProcessingParameterBoolean):
-                if parameters[param.name()]:
+                if self.parameterAsBool(parameters, param.name(), context):
                     command += ' -' + param.name().strip() + " true"
                 else:
                     command += ' -' + param.name().strip() + " false"
@@ -234,12 +238,19 @@ class SagaAlgorithm(SagaAlgorithmBase):
                         s = values[i] + '\t' + values[i + 1] + '\t' + values[i + 2] + '\n'
                         f.write(s)
                 command += ' -' + param.name() + ' "' + tempTableFile + '"'
-            elif isinstance(param, ParameterExtent):
+            elif isinstance(param, QgsProcessingParameterExtent):
                 # 'We have to substract/add half cell size, since SAGA is
                 # center based, not corner based
-                halfcell = self.getOutputCellsize(parameters) / 2
+                halfcell = self.getOutputCellsize(parameters, context) / 2
                 offset = [halfcell, -halfcell, halfcell, -halfcell]
-                values = parameters[param.name()].split(',')
+                rect = self.parameterAsExtent(parameters, param.name(), context)
+
+                values = []
+                values.append(rect.xMinimum())
+                values.append(rect.yMinimum())
+                values.append(rect.xMaximum())
+                values.append(rect.yMaximum())
+
                 for i in range(4):
                     command += ' -' + self.extentParamNames[i] + ' ' \
                         + str(float(values[i]) + offset[i])
@@ -247,18 +258,28 @@ class SagaAlgorithm(SagaAlgorithmBase):
                 command += ' -' + param.name() + ' ' + str(self.parameterAsDouble(parameters, param.name(), context))
             elif isinstance(param, QgsProcessingParameterEnum):
                 command += ' -' + param.name() + ' ' + str(self.parameterAsEnum(parameters, param.name(), context))
-            elif isinstance(param, QgsProcessingParameterString, QgsProcessingParameterField):
+            elif isinstance(param, (QgsProcessingParameterString, QgsProcessingParameterFile)):
+                command += ' -' + param.name() + ' "' + self.parameterAsFile(parameters, param.name(), context) + '"'
+            elif isinstance(param, (QgsProcessingParameterString, QgsProcessingParameterField)):
                 command += ' -' + param.name() + ' "' + self.parameterAsString(parameters, param.name(), context) + '"'
 
-        for out in self.outputs:
-            command += ' -' + out.name + ' "' + out.getCompatibleFileName(self) + '"'
+        output_layers = []
+        output_files = {}
+        for out in self.destinationParameterDefinitions():
+            # TODO
+            # command += ' -' + out.name() + ' "' + out.getCompatibleFileName(self) + '"'
+            file = self.parameterAsOutputLayer(parameters, out.name(), context)
+            if isinstance(out, (QgsProcessingParameterRasterDestination, QgsProcessingParameterVectorDestination)):
+                output_layers.append(file)
+            output_files[out.name()] = file
+            command += ' -' + out.name() + ' "' + file + '"'
 
         commands.append(command)
 
         # special treatment for RGB algorithm
         # TODO: improve this and put this code somewhere else
-        for out in self.outputs:
-            if isinstance(out, OutputRaster):
+        for out in self.destinationParameterDefinitions():
+            if isinstance(out, QgsProcessingParameterRasterDestination):
                 filename = out.getCompatibleFileName(self)
                 filename2 = filename + '.sgrd'
                 if self.cmdname == 'RGB Composite':
@@ -277,12 +298,17 @@ class SagaAlgorithm(SagaAlgorithmBase):
             QgsMessageLog.logMessage('\n'.join(loglines), self.tr('Processing'), QgsMessageLog.INFO)
         SagaUtils.executeSaga(feedback)
 
-        if self.crs is not None:
-            for out in self.outputs:
-                if isinstance(out, (OutputVector, OutputRaster)):
-                    prjFile = os.path.splitext(out.getCompatibleFileName(self))[0] + ".prj"
-                    with open(prjFile, "w") as f:
-                        f.write(self.crs.toWkt())
+        if crs is not None:
+            for out in output_layers:
+                prjFile = os.path.splitext(out)[0] + ".prj"
+                with open(prjFile, "w") as f:
+                    f.write(crs.toWkt())
+
+        result = {}
+        for o in self.outputDefinitions():
+            if o.name() in output_files:
+                result[o.name()] = output_files[o.name()]
+        return result
 
     def preProcessInputs(self):
         name = self.name().replace('.', '_')
@@ -305,7 +331,7 @@ class SagaAlgorithm(SagaAlgorithmBase):
         else:
             return commands
 
-    def getOutputCellsize(self, parameters):
+    def getOutputCellsize(self, parameters, context):
         """Tries to guess the cell size of the output, searching for
         a parameter with an appropriate name for it.
         :param parameters:
@@ -314,7 +340,7 @@ class SagaAlgorithm(SagaAlgorithmBase):
         cellsize = 0
         for param in self.parameterDefinitions():
             if param.name() in parameters and param.name() == 'USER_SIZE':
-                cellsize = float(parameters[param.name()])
+                cellsize = self.parameterAsDouble(parameters, param.name(), context)
                 break
         return cellsize
 

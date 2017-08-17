@@ -1,6 +1,6 @@
 GWR for Multiple Predictor Grids
 statistics_regression
-QgsProcessingParameterMultipleLayers|PREDICTORS|Predictors|3.0|None|False
+QgsProcessingParameterMultipleLayers|PREDICTORS|Predictors|3|None|False
 QgsProcessingParameterFeatureSource|POINTS|Points|0|None|False
 QgsProcessingParameterField|DEPENDENT|Dependent Variable|None|POINTS|-1|False|False
 QgsProcessingParameterEnum|RESOLUTION|Model Resolution|[0] same as predictors;[1] user defined|False|1
