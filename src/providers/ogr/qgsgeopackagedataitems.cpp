@@ -623,7 +623,7 @@ bool QgsGeoPackageRasterLayerItem::executeDeleteLayer( QString &errCause )
           sqlite3_free( errmsg );
         }
       }
-      sqlite3_close_v2( handle );
+      sqlite3_close( handle );
     }
   }
   else
