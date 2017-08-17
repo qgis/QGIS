@@ -49,7 +49,11 @@ class QgsGeoPackageVectorLayerItem : public QgsGeoPackageAbstractLayerItem
     Q_OBJECT
   public:
     QgsGeoPackageVectorLayerItem( QgsDataItem *parent, QString name, QString path, QString uri, LayerType layerType );
-
+#ifdef HAVE_GUI
+    QList<QAction *> actions() override;
+  public slots:
+    void deleteLayer();
+#endif
 };
 
 
@@ -67,7 +71,7 @@ class QgsGeoPackageConnectionItem : public QgsDataCollectionItem
 #endif
 
     virtual bool acceptDrop() override { return true; }
-    //virtual bool handleDrop( const QMimeData *data, Qt::DropAction action ) override;
+    virtual bool handleDrop( const QMimeData *data, Qt::DropAction action ) override;
 
     //! Return the layer type from \a geometryType
     static QgsLayerItem::LayerType layerTypeFromDb( const QString &geometryType );

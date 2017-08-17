@@ -69,6 +69,7 @@ from qgis.core import (
     QgsProcessingOutputVectorLayer,
     QgsProcessingOutputString,
     QgsProcessingOutputNumber,
+    QgsProcessingModelChildParameterSource,
     QgsProcessingModelAlgorithm)
 
 from qgis.PyQt.QtWidgets import (
@@ -524,20 +525,20 @@ class MultipleInputWidgetWrapper(WidgetWrapper):
 
     def _getOptions(self):
         if self.param.layerType() == QgsProcessing.TypeVectorAny:
-            options = self.dialog.getAvailableValuesOfType(QgsProcessingParameterFeatureSource, QgsProcessingOutputVectorLayer)
+            options = self.dialog.getAvailableValuesOfType((QgsProcessingParameterFeatureSource, QgsProcessingParameterVectorLayer, QgsProcessingParameterMultipleLayers), QgsProcessingOutputVectorLayer)
         elif self.param.layerType() == QgsProcessing.TypeVectorPoint:
-            options = self.dialog.getAvailableValuesOfType(QgsProcessingParameterFeatureSource, QgsProcessingOutputVectorLayer,
+            options = self.dialog.getAvailableValuesOfType((QgsProcessingParameterFeatureSource, QgsProcessingParameterVectorLayer, QgsProcessingParameterMultipleLayers), QgsProcessingOutputVectorLayer,
                                                            [QgsProcessing.TypeVectorPoint, QgsProcessing.TypeVectorAny])
         elif self.param.layerType() == QgsProcessing.TypeVectorLine:
-            options = self.dialog.getAvailableValuesOfType(QgsProcessingParameterFeatureSource, QgsProcessingOutputVectorLayer,
+            options = self.dialog.getAvailableValuesOfType((QgsProcessingParameterFeatureSource, QgsProcessingParameterVectorLayer, QgsProcessingParameterMultipleLayers), QgsProcessingOutputVectorLayer,
                                                            [QgsProcessing.TypeVectorLine, QgsProcessing.TypeVectorAny])
         elif self.param.layerType() == QgsProcessing.TypeVectorPolygon:
-            options = self.dialog.getAvailableValuesOfType(QgsProcessingParameterFeatureSource, QgsProcessingOutputVectorLayer,
+            options = self.dialog.getAvailableValuesOfType((QgsProcessingParameterFeatureSource, QgsProcessingParameterVectorLayer, QgsProcessingParameterMultipleLayers), QgsProcessingOutputVectorLayer,
                                                            [QgsProcessing.TypeVectorPolygon, QgsProcessing.TypeVectorAny])
         elif self.param.layerType() == QgsProcessing.TypeRaster:
-            options = self.dialog.getAvailableValuesOfType(QgsProcessingParameterRasterLayer, QgsProcessingOutputRasterLayer)
+            options = self.dialog.getAvailableValuesOfType((QgsProcessingParameterRasterLayer, QgsProcessingParameterMultipleLayers), QgsProcessingOutputRasterLayer)
         elif self.param.layerType() == QgsProcessing.TypeTable:
-            options = self.dialog.getAvailableValuesOfType(QgsProcessingParameterVectorLayer, OutputTable)
+            options = self.dialog.getAvailableValuesOfType((QgsProcessingParameterFeatureSource, QgsProcessingParameterVectorLayer, QgsProcessingParameterMultipleLayers), OutputTable)
         else:
             options = self.dialog.getAvailableValuesOfType(QgsProcessingParameterFile, OutputFile)
         options = sorted(options, key=lambda opt: self.dialog.resolveValueDescription(opt))
@@ -546,7 +547,7 @@ class MultipleInputWidgetWrapper(WidgetWrapper):
     def createWidget(self):
         if self.dialogType == DIALOG_STANDARD:
             if self.param.layerType() == QgsProcessing.TypeFile:
-                return MultipleInputPanel(datatype=dataobjects.TYPE_FILE)
+                return MultipleInputPanel(datatype=QgsProcessing.TypeFile)
             else:
                 if self.param.layerType() == QgsProcessing.TypeRaster:
                     options = QgsProcessingUtils.compatibleRasterLayers(QgsProject.instance(), False)
@@ -555,14 +556,14 @@ class MultipleInputWidgetWrapper(WidgetWrapper):
                 else:
                     options = QgsProcessingUtils.compatibleVectorLayers(QgsProject.instance(), [self.param.layerType()], False)
                 opts = [getExtendedLayerName(opt) for opt in options]
-                return MultipleInputPanel(opts)
+                return MultipleInputPanel(opts, datatype=self.param.layerType())
         elif self.dialogType == DIALOG_BATCH:
             widget = BatchInputSelectionPanel(self.param, self.row, self.col, self.dialog)
             widget.valueChanged.connect(lambda: self.widgetValueHasChanged.emit(self))
             return widget
         else:
             options = [self.dialog.resolveValueDescription(opt) for opt in self._getOptions()]
-            return MultipleInputPanel(options)
+            return MultipleInputPanel(options, datatype=self.param.layerType())
 
     def refresh(self):
         if self.param.layerType() != QgsProcessing.TypeFile:
@@ -582,11 +583,20 @@ class MultipleInputWidgetWrapper(WidgetWrapper):
             return self.widget.setText(value)
         else:
             options = self._getOptions()
-            selected = []
-            for i, opt in enumerate(options):
-                if opt in value:
-                    selected.append(i)
-            self.widget.setSelectedItems(selected)
+
+            if not isinstance(value, (tuple, list)):
+                value = [value]
+
+            selected_options = []
+            for sel in value:
+                if sel in options:
+                    selected_options.append(options.index(sel))
+                elif isinstance(sel, QgsProcessingModelChildParameterSource):
+                    selected_options.append(sel.staticValue())
+                else:
+                    selected_options.append(sel)
+
+            self.widget.setSelectedItems(selected_options)
 
     def value(self):
         if self.dialogType == DIALOG_STANDARD:
@@ -599,12 +609,12 @@ class MultipleInputWidgetWrapper(WidgetWrapper):
                     options = QgsProcessingUtils.compatibleVectorLayers(QgsProject.instance(), [], False)
                 else:
                     options = QgsProcessingUtils.compatibleVectorLayers(QgsProject.instance(), [self.param.layerType()], False)
-                return [options[i] for i in self.widget.selectedoptions]
+                return [options[i] if isinstance(i, int) else i for i in self.widget.selectedoptions]
         elif self.dialogType == DIALOG_BATCH:
             return self.widget.getText()
         else:
             options = self._getOptions()
-            values = [options[i] for i in self.widget.selectedoptions]
+            values = [options[i] if isinstance(i, int) else QgsProcessingModelChildParameterSource.fromStaticValue(i) for i in self.widget.selectedoptions]
             if len(values) == 0 and not self.param.flags() & QgsProcessing.FlagOptional:
                 raise InvalidParameterValue()
             return values

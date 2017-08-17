@@ -20,12 +20,17 @@
 #include "qgsproject.h"
 #include "qgsvectorlayer.h"
 #include "qgsrasterlayer.h"
+#include "qgsogrprovider.h"
 #include "qgsnewgeopackagelayerdialog.h"
+#include "qgsmessageoutput.h"
+#include "qgsvectorlayerexporter.h"
 
 #include <QAction>
 #include <QMessageBox>
 #include <QFileDialog>
 #include <QInputDialog>
+
+QGISEXTERN bool deleteLayer( const QString &uri, const QString &errCause );
 
 QgsDataItem *QgsGeoPackageDataItemProvider::createDataItem( const QString &path, QgsDataItem *parentItem )
 {
@@ -268,6 +273,115 @@ QList<QAction *> QgsGeoPackageConnectionItem::actions()
 }
 #endif
 
+
+
+bool QgsGeoPackageConnectionItem::handleDrop( const QMimeData *data, Qt::DropAction )
+{
+
+  if ( !QgsMimeDataUtils::isUriList( data ) )
+    return false;
+
+  // TODO: probably should show a GUI with settings etc
+  QString uri;
+
+  QStringList importResults;
+  bool hasError = false;
+
+  QgsMimeDataUtils::UriList lst = QgsMimeDataUtils::decodeUriList( data );
+  Q_FOREACH ( const QgsMimeDataUtils::Uri &u, lst )
+  {
+    if ( u.layerType == QStringLiteral( "vector" ) )
+    {
+      // open the source layer
+      bool owner;
+      QString error;
+      QgsVectorLayer *srcLayer = u.vectorLayer( owner, error );
+      if ( !srcLayer )
+      {
+        importResults.append( tr( "%1: %2" ).arg( u.name ).arg( error ) );
+        hasError = true;
+        continue;
+      }
+
+      if ( srcLayer->isValid() )
+      {
+        uri = mPath;
+        QgsDebugMsgLevel( "URI " + uri, 3 );
+
+        // check if the destination layer already exists
+        bool exists = false;
+        // Q_FOREACH won't detach ...
+        for ( const auto child : children() )
+        {
+          if ( child->name() == u.name )
+          {
+            exists = true;
+          }
+        }
+        if ( ! exists || QMessageBox::question( nullptr, tr( "Overwrite Layer" ),
+                                                tr( "Destination layer <b>%1</b> already exists. Do you want to overwrite it?" ).arg( u.name ), QMessageBox::Yes |  QMessageBox::No ) == QMessageBox::Yes )
+        {
+
+          std::unique_ptr< QMap<QString, QVariant> > options( new QMap<QString, QVariant> );
+          options->insert( QStringLiteral( "driverName" ), QStringLiteral( "GPKG" ) );
+          options->insert( QStringLiteral( "update" ), true );
+          options->insert( QStringLiteral( "overwrite" ), true );
+          options->insert( QStringLiteral( "layerName" ), u.name );
+
+          std::unique_ptr< QgsVectorLayerExporterTask > exportTask( new QgsVectorLayerExporterTask( srcLayer, uri, QStringLiteral( "ogr" ), srcLayer->crs(), options.get(), owner ) );
+
+          // when export is successful:
+          connect( exportTask.get(), &QgsVectorLayerExporterTask::exportComplete, this, [ = ]()
+          {
+            // this is gross - TODO - find a way to get access to messageBar from data items
+            QMessageBox::information( nullptr, tr( "Import to GeoPackage database" ), tr( "Import was successful." ) );
+            refreshConnections();
+          } );
+
+          // when an error occurs:
+          connect( exportTask.get(), &QgsVectorLayerExporterTask::errorOccurred, this, [ = ]( int error, const QString & errorMessage )
+          {
+            if ( error != QgsVectorLayerExporter::ErrUserCanceled )
+            {
+              QgsMessageOutput *output = QgsMessageOutput::createMessageOutput();
+              output->setTitle( tr( "Import to GeoPackage database" ) );
+              output->setMessage( tr( "Failed to import some layers!\n\n" ) + errorMessage, QgsMessageOutput::MessageText );
+              output->showMessage();
+            }
+          } );
+
+          QgsApplication::taskManager()->addTask( exportTask.release() );
+        }
+      }
+      else
+      {
+        importResults.append( tr( "%1: Not a valid layer!" ).arg( u.name ) );
+        hasError = true;
+      }
+    }
+    else
+    {
+      // TODO: implemnent raster import
+      QgsMessageOutput *output = QgsMessageOutput::createMessageOutput();
+      output->setTitle( tr( "Import to GeoPackage database faile" ) );
+      output->setMessage( tr( "Failed to import some layers!\n\n" ) + QStringLiteral( "Raster import is not yet implemented!\n" ), QgsMessageOutput::MessageText );
+      output->showMessage();
+    }
+
+  }
+
+  if ( hasError )
+  {
+    QgsMessageOutput *output = QgsMessageOutput::createMessageOutput();
+    output->setTitle( tr( "Import to GeoPackage database" ) );
+    output->setMessage( tr( "Failed to import some layers!\n\n" ) + importResults.join( QStringLiteral( "\n" ) ), QgsMessageOutput::MessageText );
+    output->showMessage();
+  }
+
+  return true;
+}
+
+
 QgsLayerItem::LayerType QgsGeoPackageConnectionItem::layerTypeFromDb( const QString &geometryType )
 {
   if ( geometryType.contains( QStringLiteral( "Point" ), Qt::CaseInsensitive ) )
@@ -327,7 +441,6 @@ void QgsGeoPackageConnectionItem::addTable()
 QList<QAction *> QgsGeoPackageAbstractLayerItem::actions()
 {
   QList<QAction *> lst;
-
   // TODO: delete layer when the provider supports it (not currently implemented)
   return lst;
 }
@@ -352,3 +465,55 @@ QgsGeoPackageRasterLayerItem::QgsGeoPackageRasterLayerItem( QgsDataItem *parent,
 {
 
 }
+
+
+#ifdef HAVE_GUI
+QList<QAction *> QgsGeoPackageVectorLayerItem::actions()
+{
+  QList<QAction *> lst = QgsGeoPackageAbstractLayerItem::actions();
+  QAction *actionDeleteLayer = new QAction( tr( "Delete layer '%1'..." ).arg( mName ), this );
+  connect( actionDeleteLayer, &QAction::triggered, this, &QgsGeoPackageVectorLayerItem::deleteLayer );
+  lst.append( actionDeleteLayer );
+  return lst;
+}
+
+
+void QgsGeoPackageVectorLayerItem::deleteLayer()
+{
+  // Check if the layer is in the registry
+  const QgsMapLayer *projectLayer = nullptr;
+  Q_FOREACH ( const QgsMapLayer *layer, QgsProject::instance()->mapLayers() )
+  {
+    if ( layer->publicSource() == mUri )
+    {
+      projectLayer = layer;
+    }
+  }
+  if ( ! projectLayer )
+  {
+    if ( QMessageBox::question( nullptr, QObject::tr( "Delete Layer" ),
+                                QObject::tr( "Are you sure you want to delete layer '%1' from GeoPackage?" ).arg( mName ),
+                                QMessageBox::Yes | QMessageBox::No, QMessageBox::No ) != QMessageBox::Yes )
+      return;
+
+    QString errCause;
+    bool res = ::deleteLayer( mUri, errCause );
+    if ( !res )
+    {
+      QMessageBox::warning( nullptr, tr( "Delete Layer" ), errCause );
+    }
+    else
+    {
+      QMessageBox::information( nullptr, tr( "Delete Layer" ), tr( "Layer deleted successfully." ) );
+      if ( mParent )
+        mParent->refresh();
+    }
+  }
+  else
+  {
+    QMessageBox::warning( nullptr, QObject::tr( "Delete Layer" ), QObject::tr( "The layer '%1' cannot be deleted because it is in the current project as '%2',"
+                          " remove it from the project and retry." ).arg( mName, projectLayer->name() ) );
+  }
+}
+#endif
+

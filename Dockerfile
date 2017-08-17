@@ -1,4 +1,7 @@
 
+# CACHE_TAG is provided by Docker cloud
+# see https://docs.docker.com/docker-cloud/builds/advanced/
+# using ARG in FROM requires min v17.05.0-ce
 ARG  CACHE_TAG=latest
 
 FROM  qgis/qgis3-build-deps:${CACHE_TAG}

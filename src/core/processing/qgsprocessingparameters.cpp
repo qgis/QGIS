@@ -22,6 +22,7 @@
 #include "qgsprocessingoutputs.h"
 #include "qgssettings.h"
 #include "qgsvectorfilewriter.h"
+#include <functional>
 
 bool QgsProcessingParameters::isDynamic( const QVariantMap &parameters, const QString &name )
 {
@@ -596,33 +597,38 @@ QList<QgsMapLayer *> QgsProcessingParameters::parameterAsLayerList( const QgsPro
 
   QStringList resultStringList;
 
-  if ( val.canConvert<QgsProperty>() )
-    resultStringList << val.value< QgsProperty >().valueAsString( context.expressionContext(), definition->defaultValue().toString() );
-  else if ( val.type() == QVariant::List )
+  std::function< void( const QVariant &var ) > processVariant;
+  processVariant = [ &resultStringList, &layers, &context, &definition, &processVariant ]( const QVariant & var )
   {
-    Q_FOREACH ( const QVariant &var, val.toList() )
+    if ( var.type() == QVariant::List )
     {
-      if ( QgsMapLayer *layer = qobject_cast< QgsMapLayer * >( qvariant_cast<QObject *>( var ) ) )
+      Q_FOREACH ( const QVariant &listVar, var.toList() )
       {
-        layers << layer;
-      }
-      else
-      {
-        resultStringList << var.toString();
+        processVariant( listVar );
       }
     }
-  }
-  else if ( val.type() == QVariant::StringList )
-  {
-    Q_FOREACH ( const QString &s, val.toStringList() )
+    else if ( var.type() == QVariant::StringList )
     {
-      resultStringList << s;
+      Q_FOREACH ( const QString &s, var.toStringList() )
+      {
+        resultStringList << s;
+      }
     }
-  }
-  else
-    resultStringList << val.toString();
+    else if ( var.canConvert<QgsProperty>() )
+      resultStringList << var.value< QgsProperty >().valueAsString( context.expressionContext(), definition->defaultValue().toString() );
+    else if ( QgsMapLayer *layer = qobject_cast< QgsMapLayer * >( qvariant_cast<QObject *>( var ) ) )
+    {
+      layers << layer;
+    }
+    else
+    {
+      resultStringList << var.toString();
+    }
+  };
 
-  if ( ( resultStringList.isEmpty() || resultStringList.at( 0 ).isEmpty() ) )
+  processVariant( val );
+
+  if ( layers.isEmpty() && ( resultStringList.isEmpty() || resultStringList.at( 0 ).isEmpty() ) )
   {
     resultStringList.clear();
     // check default
