@@ -29,6 +29,10 @@ class QgsLineString;
 class QgsConstWkbPtr;
 class QgsRectangle;
 class QgsGeometryCollection;
+class QgsMultiPointV2;
+class QgsMultiLineString;
+class QgsPolygonV2;
+class QgsMultiPolygonV2;
 
 //compatibility with old classes
 #include "qgspointxy.h"
@@ -60,17 +64,17 @@ class CORE_EXPORT QgsGeometryFactory
     //! Construct geometry from a point
     static std::unique_ptr< QgsAbstractGeometry > fromPoint( const QgsPointXY &point );
     //! Construct geometry from a multipoint
-    static std::unique_ptr< QgsAbstractGeometry > fromMultiPoint( const QgsMultiPoint &multipoint );
+    static std::unique_ptr<QgsMultiPointV2> fromMultiPoint( const QgsMultiPoint &multipoint );
     //! Construct geometry from a polyline
     static std::unique_ptr< QgsAbstractGeometry > fromPolyline( const QgsPolyline &polyline );
     //! Construct geometry from a multipolyline
-    static std::unique_ptr< QgsAbstractGeometry > fromMultiPolyline( const QgsMultiPolyline &multiline );
+    static std::unique_ptr<QgsMultiLineString> fromMultiPolyline( const QgsMultiPolyline &multiline );
     //! Construct geometry from a polygon
-    static std::unique_ptr< QgsAbstractGeometry > fromPolygon( const QgsPolygon &polygon );
+    static std::unique_ptr<QgsPolygonV2> fromPolygon( const QgsPolygon &polygon );
     //! Construct geometry from a multipolygon
-    static std::unique_ptr< QgsAbstractGeometry > fromMultiPolygon( const QgsMultiPolygon &multipoly );
+    static std::unique_ptr<QgsMultiPolygonV2> fromMultiPolygon( const QgsMultiPolygon &multipoly );
     //! Construct geometry from a rectangle
-    static std::unique_ptr< QgsAbstractGeometry > fromRect( const QgsRectangle &rect );
+    static std::unique_ptr<QgsPolygonV2> fromRect( const QgsRectangle &rect );
     //! Return empty geometry from wkb type
     static std::unique_ptr< QgsAbstractGeometry > geomFromWkbType( QgsWkbTypes::Type t );
 

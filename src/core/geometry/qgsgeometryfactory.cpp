@@ -135,7 +135,7 @@ std::unique_ptr< QgsAbstractGeometry > QgsGeometryFactory::fromPoint( const QgsP
   return std::unique_ptr< QgsAbstractGeometry >( new QgsPoint( point.x(), point.y() ) );
 }
 
-std::unique_ptr<QgsAbstractGeometry> QgsGeometryFactory::fromMultiPoint( const QgsMultiPoint &multipoint )
+std::unique_ptr<QgsMultiPointV2> QgsGeometryFactory::fromMultiPoint( const QgsMultiPoint &multipoint )
 {
   std::unique_ptr< QgsMultiPointV2 > mp( new QgsMultiPointV2() );
   QgsMultiPoint::const_iterator ptIt = multipoint.constBegin();
@@ -152,7 +152,7 @@ std::unique_ptr<QgsAbstractGeometry> QgsGeometryFactory::fromPolyline( const Qgs
   return linestringFromPolyline( polyline );
 }
 
-std::unique_ptr<QgsAbstractGeometry> QgsGeometryFactory::fromMultiPolyline( const QgsMultiPolyline &multiline )
+std::unique_ptr<QgsMultiLineString> QgsGeometryFactory::fromMultiPolyline( const QgsMultiPolyline &multiline )
 {
   std::unique_ptr< QgsMultiLineString > mLine( new QgsMultiLineString() );
   for ( int i = 0; i < multiline.size(); ++i )
@@ -162,7 +162,7 @@ std::unique_ptr<QgsAbstractGeometry> QgsGeometryFactory::fromMultiPolyline( cons
   return mLine;
 }
 
-std::unique_ptr<QgsAbstractGeometry> QgsGeometryFactory::fromPolygon( const QgsPolygon &polygon )
+std::unique_ptr<QgsPolygonV2> QgsGeometryFactory::fromPolygon( const QgsPolygon &polygon )
 {
   std::unique_ptr< QgsPolygonV2 > poly( new QgsPolygonV2() );
 
@@ -185,7 +185,7 @@ std::unique_ptr<QgsAbstractGeometry> QgsGeometryFactory::fromPolygon( const QgsP
   return poly;
 }
 
-std::unique_ptr< QgsAbstractGeometry > QgsGeometryFactory::fromMultiPolygon( const QgsMultiPolygon &multipoly )
+std::unique_ptr< QgsMultiPolygonV2 > QgsGeometryFactory::fromMultiPolygon( const QgsMultiPolygon &multipoly )
 {
   std::unique_ptr< QgsMultiPolygonV2 > mp( new QgsMultiPolygonV2() );
   for ( int i = 0; i < multipoly.size(); ++i )
@@ -195,7 +195,7 @@ std::unique_ptr< QgsAbstractGeometry > QgsGeometryFactory::fromMultiPolygon( con
   return mp;
 }
 
-std::unique_ptr<QgsAbstractGeometry> QgsGeometryFactory::fromRect( const QgsRectangle &rect )
+std::unique_ptr<QgsPolygonV2> QgsGeometryFactory::fromRect( const QgsRectangle &rect )
 {
   QgsPolyline ring;
   ring.append( QgsPointXY( rect.xMinimum(), rect.yMinimum() ) );

@@ -164,7 +164,7 @@ QgsGeometry QgsGeometry::fromPolyline( const QgsPolyline &polyline )
 
 QgsGeometry QgsGeometry::fromPolygon( const QgsPolygon &polygon )
 {
-  std::unique_ptr< QgsAbstractGeometry > geom = QgsGeometryFactory::fromPolygon( polygon );
+  std::unique_ptr< QgsPolygonV2 > geom = QgsGeometryFactory::fromPolygon( polygon );
   if ( geom )
   {
     return QgsGeometry( geom.release() );
@@ -174,7 +174,7 @@ QgsGeometry QgsGeometry::fromPolygon( const QgsPolygon &polygon )
 
 QgsGeometry QgsGeometry::fromMultiPoint( const QgsMultiPoint &multipoint )
 {
-  std::unique_ptr< QgsAbstractGeometry > geom = QgsGeometryFactory::fromMultiPoint( multipoint );
+  std::unique_ptr< QgsMultiPointV2 > geom = QgsGeometryFactory::fromMultiPoint( multipoint );
   if ( geom )
   {
     return QgsGeometry( geom.release() );
@@ -184,7 +184,7 @@ QgsGeometry QgsGeometry::fromMultiPoint( const QgsMultiPoint &multipoint )
 
 QgsGeometry QgsGeometry::fromMultiPolyline( const QgsMultiPolyline &multiline )
 {
-  std::unique_ptr< QgsAbstractGeometry > geom = QgsGeometryFactory::fromMultiPolyline( multiline );
+  std::unique_ptr< QgsMultiLineString > geom = QgsGeometryFactory::fromMultiPolyline( multiline );
   if ( geom )
   {
     return QgsGeometry( geom.release() );
@@ -194,7 +194,7 @@ QgsGeometry QgsGeometry::fromMultiPolyline( const QgsMultiPolyline &multiline )
 
 QgsGeometry QgsGeometry::fromMultiPolygon( const QgsMultiPolygon &multipoly )
 {
-  std::unique_ptr< QgsAbstractGeometry > geom = QgsGeometryFactory::fromMultiPolygon( multipoly );
+  std::unique_ptr< QgsMultiPolygonV2 > geom = QgsGeometryFactory::fromMultiPolygon( multipoly );
   if ( geom )
   {
     return QgsGeometry( geom.release() );
