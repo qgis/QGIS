@@ -2,7 +2,7 @@ Regression Kriging
 statistics_kriging
 QgsProcessingParameterFeatureSource|POINTS|Points|0|None|False
 ParameterTableField|FIELD|Attribute|POINTS|-1|False
-ParameterMultipleInput|PREDICTORS|Predictors|3|False
+QgsProcessingParameterMultipleLayers|PREDICTORS|Predictors|3|None|False
 QgsProcessingParameterRasterDestination|REGRESSION|Regression
 QgsProcessingParameterRasterDestination|PREDICTION|Prediction
 QgsProcessingParameterRasterDestination|RESIDUALS|Residuals

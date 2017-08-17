@@ -1,6 +1,6 @@
 Artificial Neural Network Classification (OpenCV)
 imagery_opencv
-ParameterMultipleInput|FEATURES|Features|3|False
+QgsProcessingParameterMultipleLayers|FEATURES|Features|3|None|False
 QgsProcessingParameterBoolean|NORMALIZE|Normalize|False
 QgsProcessingParameterFeatureSource|TRAIN_AREAS|Training Areas|2|None|False
 QgsProcessingParameterFeatureSource|TRAIN_CLASS|Class Identifier|5|None|False

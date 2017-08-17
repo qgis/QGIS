@@ -1,6 +1,6 @@
 Multiple Regression Analysis (Points and Predictor Grids)
 statistics_regression
-ParameterMultipleInput|PREDICTORS|Predictors|3|False
+QgsProcessingParameterMultipleLayers|PREDICTORS|Predictors|3|None|False
 QgsProcessingParameterFeatureSource|POINTS|Points|-1|None|False
 QgsProcessingParameterFeatureSource|ATTRIBUTE|Dependent Variable|5|None|False
 QgsProcessingParameterFeatureSource|INFO_COEFF|Details: Coefficients|5|None|True

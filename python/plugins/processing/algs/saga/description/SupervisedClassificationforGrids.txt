@@ -1,6 +1,6 @@
 Supervised Classification for Grids
 imagery_classification
-ParameterMultipleInput|GRIDS|Features|3|False
+QgsProcessingParameterMultipleLayers|GRIDS|Features|3|None|False
 QgsProcessingParameterBoolean|NORMALISE|Normalise|False
 QgsProcessingParameterRasterDestination|CLASSES|Classification
 QgsProcessingParameterRasterDestination|QUALITY|Quality

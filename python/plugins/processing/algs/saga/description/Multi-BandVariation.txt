@@ -1,6 +1,6 @@
 Multi-Band Variation
 statistics_grid
-ParameterMultipleInput|BANDS|Grids|3|False
+QgsProcessingParameterMultipleLayers|BANDS|Grids|3|None|False
 QgsProcessingParameterNumber|RADIUS|Radius [Cells]|QgsProcessingParameterNumber.Integer|1|False|None|None
 QgsProcessingParameterEnum|DISTANCE_WEIGHTING_WEIGHTING|Distance Weighting|[0] no distance weighting;[1] inverse distance to a power;[2] exponential;[3] gaussian weighting
 QgsProcessingParameterNumber|DISTANCE_WEIGHTING_IDW_POWER|Inverse Distance Weighting Power|QgsProcessingParameterNumber.Integer|1|False|None|None

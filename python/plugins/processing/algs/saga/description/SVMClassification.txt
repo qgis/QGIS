@@ -1,6 +1,6 @@
 SVM Classification
 imagery_svm
-ParameterMultipleInput|GRIDS|Grids|3|False
+QgsProcessingParameterMultipleLayers|GRIDS|Grids|3|None|False
 QgsProcessingParameterRasterDestination|CLASSES|Classification
 QgsProcessingParameterEnum|SCALING|Scaling|[0] none;[1] normalize (0-1);[2] standardize|False|2
 QgsProcessingParameterBoolean|MESSAGE|Verbose Messages|False

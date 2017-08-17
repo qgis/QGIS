@@ -1,6 +1,6 @@
 Categorical Coincidence
 statistics_grid
-ParameterMultipleInput|GRIDS|Grids|3|False
+QgsProcessingParameterMultipleLayers|GRIDS|Grids|3|None|False
 QgsProcessingParameterRasterDestination|CATEGORIES|Number of Categories
 QgsProcessingParameterRasterDestination|COINCIDENCE|Coincidence
 QgsProcessingParameterRasterDestination|MAJ_COUNT|Dominance of Majority

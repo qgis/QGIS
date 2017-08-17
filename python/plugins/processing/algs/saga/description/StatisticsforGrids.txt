@@ -1,6 +1,6 @@
 Statistics for Grids
 statistics_grid
-ParameterMultipleInput|GRIDS|Grids|3|False
+QgsProcessingParameterMultipleLayers|GRIDS|Grids|3|None|False
 QgsProcessingParameterNumber|PCTL_VAL|Percentile|QgsProcessingParameterNumber.Double|50.0|False|0.0|100.0
 QgsProcessingParameterRasterDestination|MEAN|Arithmetic Mean
 QgsProcessingParameterRasterDestination|MIN|Minimum

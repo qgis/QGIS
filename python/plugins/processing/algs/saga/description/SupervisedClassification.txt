@@ -1,6 +1,6 @@
 Supervised Classification
 imagery_classification
-ParameterMultipleInput|GRIDS|Grids|3.0|False
+QgsProcessingParameterMultipleLayers|GRIDS|Grids|3.0|None|False
 QgsProcessingParameterFeatureSource|ROI|Training Areas|2|None|False
 ParameterTableField|ROI_ID|Class Identifier|ROI|-1|False
 QgsProcessingParameterFeatureSource|STATS|Class Statistics|5|None|False
