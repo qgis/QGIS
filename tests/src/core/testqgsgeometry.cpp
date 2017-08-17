@@ -617,9 +617,9 @@ void TestQgsGeometry::point()
   QgsPoint exportPointFloat( 1 / 3.0, 2 / 3.0 );
   QDomDocument doc( QStringLiteral( "gml" ) );
   QString expectedGML2( QStringLiteral( "<Point xmlns=\"gml\"><coordinates xmlns=\"gml\" cs=\",\" ts=\" \">1,2</coordinates></Point>" ) );
-  QCOMPARE( elemToString( exportPoint.asGML2( doc ) ), expectedGML2 );
+  QGSCOMPAREGML( elemToString( exportPoint.asGML2( doc ) ), expectedGML2 );
   QString expectedGML2prec3( QStringLiteral( "<Point xmlns=\"gml\"><coordinates xmlns=\"gml\" cs=\",\" ts=\" \">0.333,0.667</coordinates></Point>" ) );
-  QCOMPARE( elemToString( exportPointFloat.asGML2( doc, 3 ) ), expectedGML2prec3 );
+  QGSCOMPAREGML( elemToString( exportPointFloat.asGML2( doc, 3 ) ), expectedGML2prec3 );
 
   //asGML3
   QString expectedGML3( QStringLiteral( "<Point xmlns=\"gml\"><pos xmlns=\"gml\" srsDimension=\"2\">1 2</pos></Point>" ) );
@@ -1739,9 +1739,9 @@ void TestQgsGeometry::lineString()
                              << QgsPoint( 2 + 1 / 3.0, 2 + 2 / 3.0 ) );
   QDomDocument doc( QStringLiteral( "gml" ) );
   QString expectedGML2( QStringLiteral( "<LineString xmlns=\"gml\"><coordinates xmlns=\"gml\" cs=\",\" ts=\" \">31,32 41,42 51,52</coordinates></LineString>" ) );
-  QCOMPARE( elemToString( exportLine.asGML2( doc ) ), expectedGML2 );
+  QGSCOMPAREGML( elemToString( exportLine.asGML2( doc ) ), expectedGML2 );
   QString expectedGML2prec3( QStringLiteral( "<LineString xmlns=\"gml\"><coordinates xmlns=\"gml\" cs=\",\" ts=\" \">0.333,0.667 1.333,1.667 2.333,2.667</coordinates></LineString>" ) );
-  QCOMPARE( elemToString( exportLineFloat.asGML2( doc, 3 ) ), expectedGML2prec3 );
+  QGSCOMPAREGML( elemToString( exportLineFloat.asGML2( doc, 3 ) ), expectedGML2prec3 );
 
   //asGML3
   QString expectedGML3( QStringLiteral( "<LineString xmlns=\"gml\"><posList xmlns=\"gml\" srsDimension=\"2\">31 32 41 42 51 52</posList></LineString>" ) );
@@ -3203,7 +3203,7 @@ void TestQgsGeometry::polygon()
 
   // as GML2
   QString expectedSimpleGML2( QStringLiteral( "<Polygon xmlns=\"gml\"><outerBoundaryIs xmlns=\"gml\"><LinearRing xmlns=\"gml\"><coordinates xmlns=\"gml\" cs=\",\" ts=\" \">0,0 0,10 10,10 10,0 0,0</coordinates></LinearRing></outerBoundaryIs></Polygon>" ) );
-  QCOMPARE( elemToString( exportPolygon.asGML2( doc ) ), expectedSimpleGML2 );
+  QGSCOMPAREGML( elemToString( exportPolygon.asGML2( doc ) ), expectedSimpleGML2 );
 
   //as GML3
   QString expectedSimpleGML3( QStringLiteral( "<Polygon xmlns=\"gml\"><exterior xmlns=\"gml\"><LinearRing xmlns=\"gml\"><posList xmlns=\"gml\" srsDimension=\"2\">0 0 0 10 10 10 10 0 0 0</posList></LinearRing></exterior></Polygon>" ) );
@@ -3240,10 +3240,10 @@ void TestQgsGeometry::polygon()
   // as GML2
   QString expectedGML2( QStringLiteral( "<Polygon xmlns=\"gml\"><outerBoundaryIs xmlns=\"gml\"><LinearRing xmlns=\"gml\"><coordinates xmlns=\"gml\" cs=\",\" ts=\" \">0,0 0,10 10,10 10,0 0,0</coordinates></LinearRing></outerBoundaryIs>" ) );
   expectedGML2 += QStringLiteral( "<innerBoundaryIs xmlns=\"gml\"><LinearRing xmlns=\"gml\"><coordinates xmlns=\"gml\" cs=\",\" ts=\" \">1,1 1,9 9,9 9,1 1,1</coordinates></LinearRing></innerBoundaryIs></Polygon>" );
-  QCOMPARE( elemToString( exportPolygon.asGML2( doc ) ), expectedGML2 );
+  QGSCOMPAREGML( elemToString( exportPolygon.asGML2( doc ) ), expectedGML2 );
   QString expectedGML2prec3( QStringLiteral( "<Polygon xmlns=\"gml\"><outerBoundaryIs xmlns=\"gml\"><LinearRing xmlns=\"gml\"><coordinates xmlns=\"gml\" cs=\",\" ts=\" \">1.111,1.111 1.111,11.111 11.111,11.111 11.111,1.111 1.111,1.111</coordinates></LinearRing></outerBoundaryIs>" ) );
   expectedGML2prec3 += QStringLiteral( "<innerBoundaryIs xmlns=\"gml\"><LinearRing xmlns=\"gml\"><coordinates xmlns=\"gml\" cs=\",\" ts=\" \">0.667,0.667 0.667,1.333 1.333,1.333 1.333,0.667 0.667,0.667</coordinates></LinearRing></innerBoundaryIs></Polygon>" );
-  QCOMPARE( elemToString( exportPolygonFloat.asGML2( doc, 3 ) ), expectedGML2prec3 );
+  QGSCOMPAREGML( elemToString( exportPolygonFloat.asGML2( doc, 3 ) ), expectedGML2prec3 );
 
   //as GML3
   QString expectedGML3( QStringLiteral( "<Polygon xmlns=\"gml\"><exterior xmlns=\"gml\"><LinearRing xmlns=\"gml\"><posList xmlns=\"gml\" srsDimension=\"2\">0 0 0 10 10 10 10 0 0 0</posList></LinearRing></exterior>" ) );
