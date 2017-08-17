@@ -61,6 +61,7 @@ std::unique_ptr<QgsAbstractGeometry> QgsGeometryFactory::geomFromWkb( QgsConstWk
     {
       Q_UNUSED( e );
       QgsDebugMsg( "WKB exception: " + e.what() );
+      geom.reset();
     }
   }
 
