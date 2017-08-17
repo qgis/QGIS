@@ -175,7 +175,6 @@ bool SpatialiteDbInfo::attachQSqliteHandle( QgsSqliteHandle *qSqliteHandle )
       {
         if ( mSqliteHandle != mQSqliteHandle->handle() )
         {
-          //     QString testfilename=QString::fromUtf8(( const char * ) sqlite3_db_filename(mQSqliteHandle->handle(, "main"));
           int i_rc = sqlite3_db_readonly( mQSqliteHandle->handle(), "main" );
           switch ( i_rc )
           {

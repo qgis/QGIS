@@ -104,12 +104,10 @@ SpatialiteDbInfo *QgsSpatiaLiteConnection::CreateSpatialiteConnection( QString s
 QMap < QString, QgsSqliteHandle * > QgsSqliteHandle::sHandles;
 QgsSqliteHandle *QgsSqliteHandle::openDb( const QString &dbPath, bool shared,  QString sLayerName, bool bLoadLayers )
 {
-  //QMap < QString, QgsSqliteHandle* >&handles = QgsSqliteHandle::handles;
   if ( shared && sHandles.contains( dbPath ) )
   {
-    QgsDebugMsg( QString( "Using cached connection for %1" ).arg( dbPath ) );
+    QgsDebugMsg( QString( "Using cached connection(%1) for dbPath[%2] shared[%3] connection_count[%4]" ).arg( sHandles[dbPath]->ref ).arg( dbPath ).arg( shared ).arg( sHandles[dbPath]->ref ) );
     sHandles[dbPath]->ref++;
-    qDebug() << QString( "QgsSqliteHandle::openDb(%1) -1- dbPath[%2] shared[%3] connection_count[%4]" ).arg( sHandles[dbPath]->ref ).arg( dbPath ).arg( shared ).arg( sHandles[dbPath]->ref );
     return sHandles[dbPath];
   }
   QgsDebugMsg( QString( "New sqlite connection for " ) + dbPath );
