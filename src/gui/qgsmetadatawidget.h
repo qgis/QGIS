@@ -157,6 +157,9 @@ class GUI_EXPORT QgsMetadataWidget : public QWidget, private Ui::QgsMetadataWidg
      */
     static QMap<QString, QString> parseTypes();
 
+    /**
+     * Saves the metadata to the layer.
+     */
     void acceptMetadata();
 
   private:
@@ -174,13 +177,28 @@ class GUI_EXPORT QgsMetadataWidget : public QWidget, private Ui::QgsMetadataWidg
     void syncFromCategoriesTabToKeywordsTab();
 };
 
+#ifndef SIP_RUN
+
+/**
+ * \ingroup gui
+ * \class LinkItemDelegate
+ * \brief Special delegate for the link view in the metadata wizard.
+ *
+ * \since QGIS 3.0
+ */
+
 class LinkItemDelegate : public QStyledItemDelegate
 {
 
     Q_OBJECT
 
   public:
+
+    /**
+     * Create a special editor with a QCombobox in the link view.
+     */
     QWidget *createEditor( QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index ) const;
 };
 
+#endif
 #endif
