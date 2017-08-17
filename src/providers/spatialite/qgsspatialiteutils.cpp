@@ -1315,27 +1315,7 @@ int SpatialiteDbInfo::addDbMapLayers( QStringList saSelectedLayers, QStringList 
     mapLayersRaster.clear();
   }
   //----------------------------------------------------------
-  //  first the Points
-  // - everything should now be seen
-  // --> the last appended, is rendered first
-  //----------------------------------------------------------
-  if ( mapLayersPoints.count() > 0 )
-  {
-    mapLayersVector.append( mapLayersPoints );
-    mapLayersPoints.clear();
-  }
-  //----------------------------------------------------------
-  // and then the Linestrings
-  // - so that they are under the Points
-  // --> the last appended, is rendered first
-  //----------------------------------------------------------
-  if ( mapLayersLinestrings.count() > 0 )
-  {
-    mapLayersVector.append( mapLayersLinestrings );
-    mapLayersLinestrings.clear();
-  }
-  //----------------------------------------------------------
-  // and finally the Polygons
+  // and add any Polygons
   // - so that any Linestrings / Points are over the Polygons
   // --> the last appended, is rendered first
   //----------------------------------------------------------
@@ -1346,10 +1326,37 @@ int SpatialiteDbInfo::addDbMapLayers( QStringList saSelectedLayers, QStringList 
   }
   //----------------------------------------------------------
   // Send the MapLayers to Qgis
-  // --> the order for Vectors-Types does not always work
+  // -> the order for Vectors-Types does not always work
+  // --> so will send this piecemeal, any Rasters will be rendered first
   //----------------------------------------------------------
   if ( mapLayersVector.count() > 0 )
   {
+    // so that layer is added to legend [first boolean parm]
+    QgsProject::instance()->addMapLayers( mapLayersVector, true, false );
+    mapLayersVector.clear();
+  }
+  //----------------------------------------------------------
+  // and then any Linestrings
+  // - so that they are under the Points
+  // --> the last appended, is rendered first
+  //----------------------------------------------------------
+  if ( mapLayersLinestrings.count() > 0 )
+  {
+    mapLayersVector.append( mapLayersLinestrings );
+    mapLayersLinestrings.clear();
+    // so that layer is added to legend [first boolean parm]
+    QgsProject::instance()->addMapLayers( mapLayersVector, true, false );
+    mapLayersVector.clear();
+  }
+  //----------------------------------------------------------
+  //  and as last the Points
+  // - everything should now be seen
+  // --> everything selected should now be viewable
+  //----------------------------------------------------------
+  if ( mapLayersPoints.count() > 0 )
+  {
+    mapLayersVector.append( mapLayersPoints );
+    mapLayersPoints.clear();
     // so that layer is added to legend [first boolean parm]
     QgsProject::instance()->addMapLayers( mapLayersVector, true, false );
     mapLayersVector.clear();
@@ -2725,7 +2732,6 @@ int SpatialiteDbInfo::checkLayerSanity( QString sLayerName )
 bool SpatialiteDbInfo::GetDbLayersInfo( QString sLayerName )
 {
   bool bRc = false;
-  bool bLoadLayer = false; // =true would cause loop
   if ( mIsValid )
   {
     if ( !sLayerName.isEmpty() )
@@ -2768,8 +2774,8 @@ bool SpatialiteDbInfo::GetDbLayersInfo( QString sLayerName )
         for ( int i = 0; i < saSearchTables.size(); i++ )
         {
           QString sSearchLayer = saSearchTables.at( i );
-          // Add only if it does not already exist
-          if ( !getSpatialiteDbLayer( sSearchLayer, bLoadLayer ) )
+          // Add only if it does not already exist [using true here, would cause loop]
+          if ( !getSpatialiteDbLayer( sSearchLayer, false ) )
           {
             QString sTableName  = sSearchLayer;
             QString sGeometryColumn = QString::null;
@@ -3093,7 +3099,6 @@ bool SpatialiteDbInfo::GetDbLayersInfo( QString sLayerName )
 bool SpatialiteDbInfo::GetRasterLite2VectorLayersInfo( const QString sLayerName )
 {
   bool bRc = false;
-  bool bLoadLayer = false; // =true would cause loop
   // corrections may be needed, deactivate [function may no longer be needed]
   return bRc;
   int i_check_count_rl2 = mHasVectorCoveragesTables;
@@ -3133,7 +3138,6 @@ bool SpatialiteDbInfo::GetRasterLite2VectorLayersInfo( const QString sLayerName 
       }
       sqlite3_finalize( stmt );
     }
-    // SELECT coverage_name,title,abstract,copyright,extent_minx,extent_miny,extent_maxx,extent_maxy,geo_minx,geo_miny,geo_maxx,geo_maxy,f_table_name, f_geometry_column, view_name,view_geometry, virt_name, virt_geometry, topology_name,network_name,is_queryable,is_editable, license FROM vector_coverages
     QString sFields = QString( "coverage_name,title,abstract,%1,extent_minx,extent_miny,extent_maxx,extent_maxy" ).arg( sCopyright );
     sFields += QString( ",geo_minx,geo_miny,geo_maxx,geo_maxy" );
     sFields += QString( ",f_table_name, f_geometry_column, view_name,view_geometry, virt_name, virt_geometry, topology_name,network_name" );
@@ -3159,8 +3163,8 @@ bool SpatialiteDbInfo::GetRasterLite2VectorLayersInfo( const QString sLayerName 
             bFoundLayerName = true;
           }
           bool bNewLayer = false;
-          SpatialiteDbLayer *dbLayer = getSpatialiteDbLayer( sTableName, bLoadLayer );
-          // Add only if it does not already exist
+          // Add only if it does not already exist [using true here, would cause loop]
+          SpatialiteDbLayer *dbLayer = getSpatialiteDbLayer( sTableName, false );
           if ( !dbLayer )
           {
             dbLayer = new SpatialiteDbLayer( this );
@@ -3343,9 +3347,7 @@ bool SpatialiteDbInfo::GetRasterLite2VectorLayersInfo( const QString sLayerName 
 }
 bool SpatialiteDbInfo::GetRasterLite2RasterLayersInfo( const QString sLayerName )
 {
-  // PRAGMA table_info(vector_layers)
   bool bRc = false;
-  bool bLoadLayer = false; // =true would cause loop
   int i_check_count_rl2 = mHasRasterCoveragesTables;
   mHasRasterCoveragesTables = 0;
   if ( mIsValid )
@@ -3403,8 +3405,8 @@ bool SpatialiteDbInfo::GetRasterLite2RasterLayersInfo( const QString sLayerName 
             // We have found what we are looking for, prevent RL1/2 and Topology search
             bFoundLayerName = true;
           }
-          // Add only if it does not already exist
-          if ( !getSpatialiteDbLayer( sTableName, bLoadLayer ) )
+          // Add only if it does not already exist [using true here, would cause loop]
+          if ( !getSpatialiteDbLayer( sTableName, false ) )
           {
             SpatialiteDbLayer *dbLayer = new SpatialiteDbLayer( this );
             if ( dbLayer )
@@ -3630,7 +3632,6 @@ bool SpatialiteDbInfo::GetTopologyLayersInfo( QString sLayerName )
 {
   // This is still in a experiental phase
   bool bRc = false;
-  bool bLoadLayer = false; // =true would cause loop
   int i_check_count_topology = mHasTopologyExportTables;
   mHasTopologyExportTables = 0;
   if ( mIsValid )
@@ -3673,8 +3674,8 @@ bool SpatialiteDbInfo::GetTopologyLayersInfo( QString sLayerName )
             // We have found what we are looking for, prevent RL1/2 and Topology search
             bFoundLayerName = true;
           }
-          // Add only if it does not already exist
-          if ( !getSpatialiteDbLayer( sTableName, bLoadLayer ) )
+          // Add only if it does not already exist [using true here, would cause loop]
+          if ( !getSpatialiteDbLayer( sTableName, false ) )
           {
             SpatialiteDbLayer *dbLayer = new SpatialiteDbLayer( this );
             if ( dbLayer )
@@ -3826,7 +3827,6 @@ bool SpatialiteDbInfo::GetTopologyLayersInfo( QString sLayerName )
 bool SpatialiteDbInfo::GetRasterLite1LayersInfo( QString sLayerName )
 {
   bool bRc = false;
-  bool bLoadLayer = false; // =true would cause loop
   int i_check_count_rl1 = mHasRasterLite1Tables;
   mHasRasterLite1Tables = 0;
   if ( mIsValid )
@@ -3875,8 +3875,8 @@ bool SpatialiteDbInfo::GetRasterLite1LayersInfo( QString sLayerName )
             // We have found what we are looking for, prevent RL1/2 and Topology search
             bFoundLayerName = true;
           }
-          // Add only if it does not already exist
-          if ( !getSpatialiteDbLayer( sTableName, bLoadLayer ) )
+          // Add only if it does not already exist [using true here, would cause loop]
+          if ( !getSpatialiteDbLayer( sTableName, false ) )
           {
             SpatialiteDbLayer *dbLayer = new SpatialiteDbLayer( this );
             if ( dbLayer )
@@ -4049,7 +4049,6 @@ bool SpatialiteDbInfo::GetRasterLite1LayersInfo( QString sLayerName )
 bool SpatialiteDbInfo::GetMBTilesLayersInfo( QString sLayerName )
 {
   bool bRc = false;
-  bool bLoadLayer = false; // =true would cause loop
   int i_check_count_mbtiles = mHasMBTilesTables;
   mHasMBTilesTables = 0;
   if ( mIsValid )
@@ -4093,8 +4092,8 @@ bool SpatialiteDbInfo::GetMBTilesLayersInfo( QString sLayerName )
             // We have found what we are looking for, prevent RL1/2 and Topology search
             bFoundLayerName = true;
           }
-          // Add only if it does not already exist
-          if ( !getSpatialiteDbLayer( sTableName, bLoadLayer ) )
+          // Add only if it does not already exist [using true here, would cause loop]
+          if ( !getSpatialiteDbLayer( sTableName, false ) )
           {
             SpatialiteDbLayer *dbLayer = new SpatialiteDbLayer( this );
             if ( dbLayer )
@@ -4187,7 +4186,6 @@ bool SpatialiteDbInfo::GetMBTilesLayersInfo( QString sLayerName )
 bool SpatialiteDbInfo::GetGeoPackageLayersInfo( QString sLayerName )
 {
   bool bRc = false;
-  bool bLoadLayer = false; // =true would cause loop
   int i_check_count_geopackage = mHasGeoPackageTables;
   mHasGeoPackageTables = 0;
   mHasGeoPackageVectors = 0;
@@ -4288,8 +4286,8 @@ bool SpatialiteDbInfo::GetGeoPackageLayersInfo( QString sLayerName )
               sqlite3_finalize( stmtSubquery );
             }
           }
-          // Add only if it does not already exist
-          if ( !getSpatialiteDbLayer( sLayer_Name, bLoadLayer ) )
+          // Add only if it does not already exist [using true here, would cause loop]
+          if ( !getSpatialiteDbLayer( sLayer_Name, false ) )
           {
             SpatialiteDbLayer *dbLayer = new SpatialiteDbLayer( this );
             if ( dbLayer )
@@ -4369,7 +4367,6 @@ bool SpatialiteDbInfo::GetGeoPackageLayersInfo( QString sLayerName )
 bool SpatialiteDbInfo::GetFdoOgrLayersInfo( QString sLayerName )
 {
   bool bRc = false;
-  bool bLoadLayer = false; // =true would cause loop
   int i_check_count_fdoogr = mHasFdoOgrTables;
   mHasFdoOgrTables = 0;
   if ( mIsValid )
@@ -4437,8 +4434,8 @@ bool SpatialiteDbInfo::GetFdoOgrLayersInfo( QString sLayerName )
                 }
               }
               sqlite3_finalize( stmtSubquery );
-              // Add only if it does not already exist
-              if ( !getSpatialiteDbLayer( sLayer_Name, bLoadLayer ) )
+              // Add only if it does not already exist [using true here, would cause loop]
+              if ( !getSpatialiteDbLayer( sLayer_Name, false ) )
               {
                 SpatialiteDbLayer *dbLayer = new SpatialiteDbLayer( this );
                 if ( dbLayer )
