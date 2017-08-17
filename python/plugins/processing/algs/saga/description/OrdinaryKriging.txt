@@ -1,7 +1,7 @@
 Ordinary Kriging
 statistics_kriging
 QgsProcessingParameterFeatureSource|POINTS|Points|0|None|False
-ParameterTableField|FIELD|Attribute|POINTS|-1|False
+QgsProcessingParameterField|FIELD|Attribute|None|POINTS|-1|False|False
 QgsProcessingParameterEnum|TQUALITY|Type of Quality Measure|[0] standard deviation;[1] variance
 QgsProcessingParameterBoolean|LOG|Logarithmic Transformation|True
 QgsProcessingParameterBoolean|BLOCK|Block Kriging|True
@@ -9,7 +9,7 @@ QgsProcessingParameterNumber|DBLOCK|Block Size|QgsProcessingParameterNumber.Inte
 QgsProcessingParameterNumber|VAR_MAXDIST|Maximum Distance|QgsProcessingParameterNumber.Integer|-1.0|False|None|None
 QgsProcessingParameterNumber|VAR_NCLASSES|Lag Distance Classes|QgsProcessingParameterNumber.Integer|100|False|1|None
 QgsProcessingParameterNumber|VAR_NSKIP|Skip|QgsProcessingParameterNumber.Integer|1|False|1|None
-ParameterString|VAR_MODEL|Variogram Model|a + b * x
+QgsProcessingParameterString|VAR_MODEL|Variogram Model|a + b * x
 Hardcoded|-TARGET_DEFINITION 0
 Extent TARGET_USER_XMIN TARGET_USER_XMAX TARGET_USER_YMIN TARGET_USER_YMAX
 QgsProcessingParameterNumber|TARGET_USER_SIZE|Cellsize|QgsProcessingParameterNumber.Double|100.0|False|None|None

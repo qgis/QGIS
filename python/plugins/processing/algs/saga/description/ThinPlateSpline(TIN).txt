@@ -1,7 +1,7 @@
 Thin Plate Spline (TIN)
 grid_spline
 QgsProcessingParameterFeatureSource|SHAPES|Points|0|None|False
-ParameterTableField|FIELD|Attribute|SHAPES|-1|False
+QgsProcessingParameterField|FIELD|Attribute|None|SHAPES|-1|False|False
 Hardcoded|-TARGET_DEFINITION 0
 QgsProcessingParameterNumber|REGULARISATION|Regularisation|QgsProcessingParameterNumber.Double|0.0001|False|0.0000|None
 QgsProcessingParameterEnum|LEVEL|Neighbourhood|[0] immediate;[1] level 1;[2] level 2

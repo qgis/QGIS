@@ -14,7 +14,7 @@ QgsProcessingParameterNumber|DBLOCK|Block Size|QgsProcessingParameterNumber.Doub
 QgsProcessingParameterNumber|VAR_MAXDIST|Maximum Distance|QgsProcessingParameterNumber.Integer|-1.000000|False|None|None
 QgsProcessingParameterNumber|VAR_NCLASSES|Lag Distance Classes|QgsProcessingParameterNumber.Integer|100|False| 1|None
 QgsProcessingParameterNumber|VAR_NSKIP|Skip|QgsProcessingParameterNumber.Integer|1|False| 1|None
-ParameterString|VAR_MODEL|Variogram Model
+QgsProcessingParameterString|VAR_MODEL|Variogram Model
 QgsProcessingParameterFeatureSource|INFO_COEFF|Regression: Coefficients|5|None|True
 QgsProcessingParameterFeatureSource|INFO_MODEL|Regression: Model|5|None|True
 QgsProcessingParameterFeatureSource|INFO_STEPS|Regression: Steps|5|None|True

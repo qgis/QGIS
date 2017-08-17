@@ -2,7 +2,7 @@ Multiple Regression Analysis (Points/Grids)
 statistics_regression
 QgsProcessingParameterMultipleLayers|GRIDS|Grids|3|None|False
 QgsProcessingParameterFeatureSource|SHAPES|Shapes|-1|None|False
-ParameterTableField|ATTRIBUTE|Attribute|SHAPES|-1|False
+QgsProcessingParameterField|ATTRIBUTE|Attribute|None|SHAPES|-1|False|False
 QgsProcessingParameterEnum|INTERPOL|Grid Interpolation|[0] Nearest Neighbor;[1] Bilinear Interpolation;[2] Inverse Distance Interpolation;[3] Bicubic Spline Interpolation;[4] B-Spline Interpolation
 QgsProcessingParameterBoolean|COORD_X         |Include X Coordinate|True
 QgsProcessingParameterBoolean|COORD_Y         |Include Y Coordinate|True

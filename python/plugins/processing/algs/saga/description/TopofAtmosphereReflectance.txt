@@ -50,8 +50,8 @@ QgsProcessingParameterRasterLayer|DN_PAN08|DN Band 8|None|True
 QgsProcessingParameterRasterDestination|RF_PAN08|Reflectance Band 8
 ParameterFile|METAFILE|Metadata File|False|False
 QgsProcessingParameterEnum|SENSOR|Spacecraft Sensor|[0] Landsat-1 MSS;[1] Landsat-2 MSS;[2] Landsat-3 MSS;[3] Landsat-4 MSS;[4] Landsat-5 MSS;[5] Landsat-4 TM;[6] Landsat-5 TM;[7] Landsat-7 ETM+;[8] Landsat-8 OLI/TIRS|False|7
-ParameterString|DATE_ACQU|Image Acquisition Date
-ParameterString|DATE_PROD|Image Creation Date
+QgsProcessingParameterString|DATE_ACQU|Image Acquisition Date
+QgsProcessingParameterString|DATE_PROD|Image Creation Date
 QgsProcessingParameterNumber|SUN_HGT|Suns's Height|QgsProcessingParameterNumber.Double|45.000000|False| 0.000000| 90.000000
 QgsProcessingParameterBoolean|AS_RAD|At-Sensor Radiance|False
 QgsProcessingParameterEnum|AC_METHOD|Atmospheric Correction|[0] uncorrected;[1] corrected;[2] dark object subtraction 1;[3] dark object subtraction 2;[4] dark object subtraction 2b;[5] dark object subtraction 3;[6] dark object subtraction 4|False|0

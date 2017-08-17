@@ -1,6 +1,6 @@
 Convert Points to Line(s)
 shapes_lines
 QgsProcessingParameterFeatureSource|POINTS|Points|0|None|False
-ParameterTableField|ORDER|Order by...|POINTS|-1|False
-ParameterTableField|SEPARATE|Separate by...|POINTS|-1|False
+QgsProcessingParameterField|ORDER|Order by...|None|POINTS|-1|False|False
+QgsProcessingParameterField|SEPARATE|Separate by...|None|POINTS|-1|False|False
 QgsProcessingParameterVectorDestination|LINES|Lines
