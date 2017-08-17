@@ -26,6 +26,7 @@
 #include "qgsnewgeopackagelayerdialog.h"
 #include "qgsmessageoutput.h"
 #include "qgsvectorlayerexporter.h"
+#include "gdal.h"
 
 #include <QAction>
 #include <QMessageBox>
@@ -231,14 +232,51 @@ QVector<QgsDataItem *> QgsGeoPackageConnectionItem::createChildren()
   }
   // Raster layers
   QgsRasterLayer rlayer( mPath, QStringLiteral( "gdal_tmp" ), QStringLiteral( "gdal" ), false );
-  Q_FOREACH ( const QString &uri, rlayer.dataProvider()->subLayers( ) )
+  if ( rlayer.dataProvider()->subLayers( ).size() > 0 )
   {
-    QStringList pieces = uri.split( ':' );
-    QString name = pieces.value( pieces.length() - 1 );
-    QgsDebugMsgLevel( QStringLiteral( "Adding GeoPackage Raster item %1 %2 %3" ).arg( name, uri ), 3 );
-    QgsGeoPackageRasterLayerItem *item = new QgsGeoPackageRasterLayerItem( this, name, mPath, uri );
-    children.append( item );
+    Q_FOREACH ( const QString &uri, rlayer.dataProvider()->subLayers( ) )
+    {
+      QStringList pieces = uri.split( ':' );
+      QString name = pieces.value( pieces.length() - 1 );
+      QgsDebugMsgLevel( QStringLiteral( "Adding GeoPackage Raster item %1 %2 %3" ).arg( name, uri ), 3 );
+      QgsGeoPackageRasterLayerItem *item = new QgsGeoPackageRasterLayerItem( this, name, mPath, uri );
+      children.append( item );
+    }
+  }
+  else if ( rlayer.isValid( ) )
+  {
+    // Get the identifier
+    GDALAllRegister();
+    // do not print errors, but write to debug
+    CPLPushErrorHandler( CPLQuietErrorHandler );
+    CPLErrorReset();
+    GDALDatasetH hDS = GDALOpen( mPath.toUtf8().constData(), GA_ReadOnly );
+    CPLPopErrorHandler();
 
+    if ( ! hDS )
+    {
+      QgsDebugMsg( QString( "GDALOpen error # %1 : %2 " ).arg( CPLGetLastErrorNo() ).arg( CPLGetLastErrorMsg() ) );
+
+    }
+    else
+    {
+      QString uri( QStringLiteral( "GPKG:%1" ).arg( mPath ) );
+      QString name = GDALGetMetadataItem( hDS, "IDENTIFIER", NULL );
+      GDALClose( hDS );
+      // Fallback: will not be able to delete the table
+      if ( name.isEmpty() )
+      {
+        name = QFileInfo( mPath ).fileName();
+      }
+      else
+      {
+        uri += QStringLiteral( ":%1" ).arg( name );
+      }
+
+      QgsDebugMsgLevel( QStringLiteral( "Adding GeoPackage Raster item %1 %2 %3" ).arg( name, mPath ), 3 );
+      QgsGeoPackageRasterLayerItem *item = new QgsGeoPackageRasterLayerItem( this, name, mPath, uri );
+      children.append( item );
+    }
   }
   return children;
 
@@ -531,7 +569,7 @@ bool QgsGeoPackageRasterLayerItem::executeDeleteLayer( QString &errCause )
       QString baseUri = pieces.at( 1 );
       QString layerName = pieces.at( 2 );
       sqlite3 *handle;
-      int status = sqlite3_open_v2( baseUri.toLocal8Bit().data(), &handle, SQLITE_OPEN_READWRITE, NULL );
+      int status = sqlite3_open_v2( baseUri.toUtf8().constData(), &handle, SQLITE_OPEN_READWRITE, NULL );
       if ( status != SQLITE_OK )
       {
         errCause = sqlite3_errmsg( handle );
@@ -547,7 +585,7 @@ bool QgsGeoPackageRasterLayerItem::executeDeleteLayer( QString &errCause )
                               "DELETE FROM gpkg_tile_matrix_set WHERE table_name = '%1';" ).arg( layerName );
         status = sqlite3_exec(
                    handle,                              /* An open database */
-                   sql.toLocal8Bit().data(),            /* SQL to be evaluated */
+                   sql.toUtf8().constData(),            /* SQL to be evaluated */
                    NULL,                                /* Callback function */
                    NULL,                                /* 1st argument to callback */
                    &errmsg                              /* Error msg written here */
