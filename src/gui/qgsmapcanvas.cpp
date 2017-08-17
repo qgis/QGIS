@@ -2160,7 +2160,7 @@ void QgsMapCanvas::startPreviewJob( int number )
   jobSettings.setExtent( jobExtent );
   jobSettings.setFlag( QgsMapSettings::DrawLabeling, false );
 
-  QgsMapRendererQImageJob *job = new QgsMapRendererParallelJob( jobSettings );
+  QgsMapRendererQImageJob *job = new QgsMapRendererSequentialJob( jobSettings );
   mPreviewJobs.append( job );
   connect( job, &QgsMapRendererJob::finished, this, &QgsMapCanvas::previewJobFinished );
   job->start();
