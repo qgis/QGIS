@@ -882,6 +882,7 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
 
     void startPreviewJobs();
     void stopPreviewJobs();
+    void schedulePreviewJob( int number );
 
     friend class TestQgsMapCanvas;
 

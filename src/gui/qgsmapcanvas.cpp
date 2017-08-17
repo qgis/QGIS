@@ -2132,7 +2132,7 @@ const QgsLabelingEngineSettings &QgsMapCanvas::labelingEngineSettings() const
 void QgsMapCanvas::startPreviewJobs()
 {
   stopPreviewJobs(); //just in case still running
-  startPreviewJob( 0 );
+  schedulePreviewJob( 0 );
 }
 
 void QgsMapCanvas::startPreviewJob( int number )
@@ -2167,15 +2167,7 @@ void QgsMapCanvas::startPreviewJob( int number )
 
   if ( number < 8 )
   {
-    mPreviewTimer.setSingleShot( true );
-    mPreviewTimer.setInterval( 250 );
-    disconnect( mPreviewTimerConnection );
-    mPreviewTimerConnection = connect( &mPreviewTimer, &QTimer::timeout, [ = ]()
-    {
-      startPreviewJob( number + 1 );
-    }
-                                     );
-    mPreviewTimer.start();
+    schedulePreviewJob( number + 1 );
   }
 }
 
@@ -2193,4 +2185,17 @@ void QgsMapCanvas::stopPreviewJobs()
     }
   }
   mPreviewJobs.clear();
+}
+
+void QgsMapCanvas::schedulePreviewJob( int number )
+{
+  mPreviewTimer.setSingleShot( true );
+  mPreviewTimer.setInterval( 250 );
+  disconnect( mPreviewTimerConnection );
+  mPreviewTimerConnection = connect( &mPreviewTimer, &QTimer::timeout, [ = ]()
+  {
+    startPreviewJob( number );
+  }
+                                   );
+  mPreviewTimer.start();
 }
