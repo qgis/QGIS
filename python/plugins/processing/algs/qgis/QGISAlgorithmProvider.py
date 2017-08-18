@@ -119,6 +119,7 @@ from .RandomSelectionWithinSubsets import RandomSelectionWithinSubsets
 from .Rasterize import RasterizeAlgorithm
 from .RasterLayerStatistics import RasterLayerStatistics
 from .RegularPoints import RegularPoints
+from .Relief import Relief
 from .ReverseLineDirection import ReverseLineDirection
 from .Ruggedness import Ruggedness
 from .SaveSelectedFeatures import SaveSelectedFeatures
@@ -167,7 +168,6 @@ from .ZonalStatistics import ZonalStatistics
 # from .DefineProjection import DefineProjection
 # from .RectanglesOvalsDiamondsVariable import RectanglesOvalsDiamondsVariable
 # from .RectanglesOvalsDiamondsFixed import RectanglesOvalsDiamondsFixed
-# from .Relief import Relief
 # from .IdwInterpolation import IdwInterpolation
 # from .TinInterpolation import TinInterpolation
 # from .RasterCalculator import RasterCalculator
@@ -197,7 +197,6 @@ class QGISAlgorithmProvider(QgsProcessingProvider):
         #         DefineProjection(),
         #         RectanglesOvalsDiamondsVariable(),
         #         RectanglesOvalsDiamondsFixed(),
-        #         Relief(),
         #         IdwInterpolation(), TinInterpolation(),
         #         RasterCalculator(),
         #          ExecuteSQL(), FindProjection(),
@@ -281,6 +280,7 @@ class QGISAlgorithmProvider(QgsProcessingProvider):
                 RasterizeAlgorithm(),
                 RasterLayerStatistics(),
                 RegularPoints(),
+                Relief(),
                 ReverseLineDirection(),
                 Ruggedness(),
                 SaveSelectedFeatures(),

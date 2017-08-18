@@ -1388,36 +1388,40 @@ tests:
         - 75cca4c1a870a1e21185a2d85b33b6d9958a69fc6ebb04e4d6ceb8a3
         type: rasterhash
 
-#  - algorithm: qgis:relief
-#    name: Relief (automatic colors generation)
-#    params:
-#      AUTO_COLORS: true
-#      INPUT_LAYER:
-#        name: dem.tif
-#        type: raster
-#      Z_FACTOR: 1.0
-#    results:
-#      OUTPUT_LAYER:
-#        hash: 7fe0e0174185fd743e23760f33615adf10f771b4275f320db6f7f4f8
-#        type: rasterhash
-#
-#  - algorithm: qgis:relief
-#    name: Relief (custom colors)
-#    params:
-#      AUTO_COLORS: false
-#      COLORS: 85.000000, 104.436508, 7, 165, 144;104.436508, 104.436508, 12, 221, 162;104.436508,
-#        104.436508, 33, 252, 183;104.436508, 104.436508, 247, 252, 152;104.436508, 104.436508,
-#        252, 196, 8;104.436508, 190.333333, 252, 166, 15;190.333333, 226.698413, 175,
-#        101, 15;226.698413, 226.698413, 255, 133, 92;226.698413, 243.000000, 204, 204,
-#        204
-#      INPUT_LAYER:
-#        name: dem.tif
-#        type: raster
-#      Z_FACTOR: 1.0
-#    results:
-#      OUTPUT_LAYER:
-#        hash: 7fe0e0174185fd743e23760f33615adf10f771b4275f320db6f7f4f8
-#        type: rasterhash
+  - algorithm: qgis:relief
+    name: Relief (automatic colors generation)
+    params:
+      AUTO_COLORS: true
+      INPUT:
+        name: dem.tif
+        type: raster
+      Z_FACTOR: 1.0
+    results:
+      OUTPUT:
+        hash:
+        - 7fe0e0174185fd743e23760f33615adf10f771b4275f320db6f7f4f8
+        - 094a2d0dea250690084e0812bf1e8f8666043d17d6a71de278810bb9
+        type: rasterhash
+
+  - algorithm: qgis:relief
+    name: Relief (custom colors)
+    params:
+      AUTO_COLORS: false
+      COLORS: 85.000000, 104.436508, 7, 165, 144;104.436508, 104.436508, 12, 221, 162;104.436508,
+        104.436508, 33, 252, 183;104.436508, 104.436508, 247, 252, 152;104.436508, 104.436508,
+        252, 196, 8;104.436508, 190.333333, 252, 166, 15;190.333333, 226.698413, 175,
+        101, 15;226.698413, 226.698413, 255, 133, 92;226.698413, 243.000000, 204, 204,
+        204
+      INPUT:
+        name: dem.tif
+        type: raster
+      Z_FACTOR: 1.0
+    results:
+      OUTPUT:
+        hash:
+        - 7fe0e0174185fd743e23760f33615adf10f771b4275f320db6f7f4f8
+        - 094a2d0dea250690084e0812bf1e8f8666043d17d6a71de278810bb9
+        type: rasterhash
 
   - algorithm: qgis:createconstantrasterlayer
     name: Create constant raster
