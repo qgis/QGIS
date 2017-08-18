@@ -29,8 +29,14 @@ class QgsGeoPackageAbstractLayerItem : public QgsLayerItem
   protected:
     QgsGeoPackageAbstractLayerItem( QgsDataItem *parent, QString name, QString path, QString uri, LayerType layerType, QString providerKey );
 
+    /** Subclasses need to implement this function with
+     * the real deletion implementation
+     */
+    virtual bool executeDeleteLayer( QString &errCause );
 #ifdef HAVE_GUI
-    QList<QAction *> actions() override;
+    QList<QAction *> actions();
+  public slots:
+    virtual void deleteLayer();
 #endif
 };
 
@@ -38,28 +44,29 @@ class QgsGeoPackageAbstractLayerItem : public QgsLayerItem
 class QgsGeoPackageRasterLayerItem : public QgsGeoPackageAbstractLayerItem
 {
     Q_OBJECT
+
   public:
     QgsGeoPackageRasterLayerItem( QgsDataItem *parent, QString name, QString path, QString uri );
-
+  protected:
+    virtual bool executeDeleteLayer( QString &errCause ) override;
 };
 
 
 class QgsGeoPackageVectorLayerItem : public QgsGeoPackageAbstractLayerItem
 {
     Q_OBJECT
+
   public:
     QgsGeoPackageVectorLayerItem( QgsDataItem *parent, QString name, QString path, QString uri, LayerType layerType );
-#ifdef HAVE_GUI
-    QList<QAction *> actions() override;
-  public slots:
-    void deleteLayer();
-#endif
+  protected:
+    virtual bool executeDeleteLayer( QString &errCause ) override;
 };
 
 
 class QgsGeoPackageConnectionItem : public QgsDataCollectionItem
 {
     Q_OBJECT
+
   public:
     QgsGeoPackageConnectionItem( QgsDataItem *parent, QString name, QString path );
 
@@ -67,11 +74,10 @@ class QgsGeoPackageConnectionItem : public QgsDataCollectionItem
     virtual bool equal( const QgsDataItem *other ) override;
 
 #ifdef HAVE_GUI
-    virtual QList<QAction *> actions() override;
-#endif
-
     virtual bool acceptDrop() override { return true; }
     virtual bool handleDrop( const QMimeData *data, Qt::DropAction action ) override;
+    QList<QAction *> actions() override;
+#endif
 
     //! Return the layer type from \a geometryType
     static QgsLayerItem::LayerType layerTypeFromDb( const QString &geometryType );
@@ -91,6 +97,7 @@ class QgsGeoPackageConnectionItem : public QgsDataCollectionItem
 class QgsGeoPackageRootItem : public QgsDataCollectionItem
 {
     Q_OBJECT
+
   public:
     QgsGeoPackageRootItem( QgsDataItem *parent, QString name, QString path );
     ~QgsGeoPackageRootItem();
@@ -98,12 +105,10 @@ class QgsGeoPackageRootItem : public QgsDataCollectionItem
     QVector<QgsDataItem *> createChildren() override;
 
 #ifdef HAVE_GUI
-    virtual QList<QAction *> actions() override;
     virtual QWidget *paramWidget() override;
-#endif
+    QList<QAction *> actions() override;
 
   public slots:
-#ifdef HAVE_GUI
     void newConnection();
     void connectionsChanged();
     void createDatabase();
@@ -120,9 +125,7 @@ class QgsGeoPackageDataItemProvider : public QgsDataItemProvider
 {
   public:
     virtual QString name() override { return QStringLiteral( "GPKG" ); }
-
     virtual int capabilities() override { return QgsDataProvider::Database; }
-
     virtual QgsDataItem *createDataItem( const QString &path, QgsDataItem *parentItem ) override;
 };
 
