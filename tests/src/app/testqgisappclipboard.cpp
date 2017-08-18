@@ -218,7 +218,7 @@ void TestQgisAppClipboard::pasteWkt()
 
   // be sure parsing does not consider attached parameters that
   // can change geometryType as in https://issues.qgis.org/issues/16870
-  mQgisApp->clipboard()->setText( QStringLiteral( "POINT (111 30)\t GoodFieldValue\nPOINT (125 10)\t(WrongFieldValue)" ) );
+  mQgisApp->clipboard()->setText( "POINT (111 30)\t GoodFieldValue\nPOINT (125 10)\t(WrongFieldValue)" );
 
   features = mQgisApp->clipboard()->copyOf();
   QCOMPARE( features.length(), 2 );
@@ -237,7 +237,7 @@ void TestQgisAppClipboard::pasteWkt()
   QCOMPARE( point->y(), 10.0 );
 
   // only fields => no geom so no feature list is returned
-  mQgisApp->clipboard()->setText( QStringLiteral( "MNL\t11\t282\tkm\t\nMNL\t11\t347.80000000000001\tkm\t" ) );
+  mQgisApp->clipboard()->setText( "MNL\t11\t282\tkm\t\nMNL\t11\t347.80000000000001\tkm\t" );
   features = mQgisApp->clipboard()->copyOf();
   QCOMPARE( features.length(), 0 );
 }
