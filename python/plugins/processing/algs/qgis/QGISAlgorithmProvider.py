@@ -92,6 +92,7 @@ from .Merge import Merge
 from .MergeLines import MergeLines
 from .NearestNeighbourAnalysis import NearestNeighbourAnalysis
 from .OffsetLine import OffsetLine
+from .OrientedMinimumBoundingBox import OrientedMinimumBoundingBox
 from .Orthogonalize import Orthogonalize
 from .PointDistance import PointDistance
 from .PointOnSurface import PointOnSurface
@@ -163,7 +164,6 @@ from .ZonalStatistics import ZonalStatistics
 # from .SelectByAttributeSum import SelectByAttributeSum
 # from .HypsometricCurves import HypsometricCurves
 # from .Datasources2Vrt import Datasources2Vrt
-# from .OrientedMinimumBoundingBox import OrientedMinimumBoundingBox
 # from .DefineProjection import DefineProjection
 # from .RectanglesOvalsDiamondsVariable import RectanglesOvalsDiamondsVariable
 # from .RectanglesOvalsDiamondsFixed import RectanglesOvalsDiamondsFixed
@@ -195,7 +195,7 @@ class QGISAlgorithmProvider(QgsProcessingProvider):
         #         SetVectorStyle(), SetRasterStyle(),
         #          HypsometricCurves(),
         #         FieldsMapper(), SelectByAttributeSum(), Datasources2Vrt(),
-        #         OrientedMinimumBoundingBox(),
+        #
         #         DefineProjection(),
         #         RectanglesOvalsDiamondsVariable(),
         #         RectanglesOvalsDiamondsFixed(),
@@ -256,6 +256,7 @@ class QGISAlgorithmProvider(QgsProcessingProvider):
                 MergeLines(),
                 NearestNeighbourAnalysis(),
                 OffsetLine(),
+                OrientedMinimumBoundingBox(),
                 Orthogonalize(),
                 PointDistance(),
                 PointOnSurface(),
