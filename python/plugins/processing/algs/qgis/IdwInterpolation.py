@@ -180,5 +180,5 @@ class IdwInterpolation(QgisAlgorithm):
                                    cellsizeX,
                                    cellsizeY)
 
-        writer.writeFile()
+        writer.writeFile(feedback)
         return {self.OUTPUT: output}

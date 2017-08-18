@@ -1348,6 +1348,13 @@ QgsGraduatedRenderer        {#qgis_api_break_3_0_QgsGraduatedRenderer}
 - setInvertedColorRamp() and invertedColorRamp() functions are gone, QgsColorRamp now responsible for invert
 - createRenderer() and updateColorRamp()'s inverted parameter is gone
 
+
+QgsGridFileWriter       {#qgis_api_break_3_0_QgsGridFileWriter}
+-----------------
+
+- writeFile() now takes an optional QgsFeedback argument instead of using a QProgressDialog
+
+
 QgsGroupWMSDataDialog        {#qgis_api_break_3_0_QgsGroupWMSDataDialog}
 ---------------------
 
