@@ -119,6 +119,8 @@ from .RandomSelection import RandomSelection
 from .RandomSelectionWithinSubsets import RandomSelectionWithinSubsets
 from .Rasterize import RasterizeAlgorithm
 from .RasterLayerStatistics import RasterLayerStatistics
+from .RectanglesOvalsDiamondsFixed import RectanglesOvalsDiamondsFixed
+from .RectanglesOvalsDiamondsVariable import RectanglesOvalsDiamondsVariable
 from .RegularPoints import RegularPoints
 from .Relief import Relief
 from .ReverseLineDirection import ReverseLineDirection
@@ -166,8 +168,6 @@ from .ZonalStatistics import ZonalStatistics
 # from .FieldPyculator import FieldsPyculator
 # from .SelectByAttributeSum import SelectByAttributeSum
 # from .DefineProjection import DefineProjection
-# from .RectanglesOvalsDiamondsVariable import RectanglesOvalsDiamondsVariable
-# from .RectanglesOvalsDiamondsFixed import RectanglesOvalsDiamondsFixed
 # from .IdwInterpolation import IdwInterpolation
 # from .TinInterpolation import TinInterpolation
 # from .RasterCalculator import RasterCalculator
@@ -194,8 +194,6 @@ class QGISAlgorithmProvider(QgsProcessingProvider):
         #         FieldsPyculator(),
         #         FieldsMapper(), SelectByAttributeSum()
         #         DefineProjection(),
-        #         RectanglesOvalsDiamondsVariable(),
-        #         RectanglesOvalsDiamondsFixed(),
         #         IdwInterpolation(), TinInterpolation(),
         #         RasterCalculator(),
         #          ExecuteSQL(), FindProjection(),
@@ -279,6 +277,8 @@ class QGISAlgorithmProvider(QgsProcessingProvider):
                 RandomSelectionWithinSubsets(),
                 RasterizeAlgorithm(),
                 RasterLayerStatistics(),
+                RectanglesOvalsDiamondsFixed(),
+                RectanglesOvalsDiamondsVariable(),
                 RegularPoints(),
                 Relief(),
                 ReverseLineDirection(),

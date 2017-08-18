@@ -569,24 +569,24 @@ tests:
             intval: skip
             floatval: skip
 
-#  - algorithm: qgis:rectanglesovalsdiamondsfixed
-#    name: Create fixed distance rectange buffers around points
-#    params:
-#      HEIGHT: 0.25
-#      INPUT_LAYER:
-#        name: points.gml
-#        type: vector
-#      ROTATION: 45
-#      SEGMENTS: 36
-#      SHAPE: 0
-#      WIDTH: 0.5
-#    results:
-#      OUTPUT_LAYER:
-#        name: expected/rectanglesovalsdiamondsfixed.gml
-#        type: vector
-#        compare:
-#          geometry:
-#            precision: 7
+  - algorithm: qgis:rectanglesovalsdiamondsfixed
+    name: Create fixed distance rectange buffers around points
+    params:
+      HEIGHT: 0.25
+      INPUT:
+        name: points.gml
+        type: vector
+      ROTATION: 45
+      SEGMENTS: 36
+      SHAPE: 0
+      WIDTH: 0.5
+    results:
+      OUTPUT:
+        name: expected/rectanglesovalsdiamondsfixed.gml
+        type: vector
+        compare:
+          geometry:
+            precision: 7
 
   - algorithm: qgis:mergelines
     name: Merge lines algorithm
@@ -2898,50 +2898,50 @@ tests:
           geometry:
             precision: 5
 
-#  - algorithm: qgis:rectanglesovalsdiamondsvariable
-#    name: Rectangular buffer shape
-#    params:
-#      HEIGHT: id
-#      INPUT_LAYER:
-#        name: custom/points_weighted.gml
-#        type: vector
-#      SEGMENTS: 36
-#      SHAPE: '0'
-#      WIDTH: id
-#    results:
-#      OUTPUT_LAYER:
-#        name: expected/buffer_rect.gml
-#        type: vector
-#
-#  - algorithm: qgis:rectanglesovalsdiamondsvariable
-#    name: Diamond buffer shape
-#    params:
-#      HEIGHT: id
-#      INPUT_LAYER:
-#        name: custom/points_weighted.gml
-#        type: vector
-#      SEGMENTS: 36
-#      SHAPE: '1'
-#      WIDTH: id
-#    results:
-#      OUTPUT_LAYER:
-#        name: expected/buffer_diamond.gml
-#        type: vector
-#
-#  - algorithm: qgis:rectanglesovalsdiamondsvariable
-#    name: Oval buffer shape
-#    params:
-#      HEIGHT: id
-#      INPUT_LAYER:
-#        name: custom/points_weighted.gml
-#        type: vector
-#      SEGMENTS: 36
-#      SHAPE: '2'
-#      WIDTH: id
-#    results:
-#      OUTPUT_LAYER:
-#        name: expected/buffer_ovals.gml
-#        type: vector
+  - algorithm: qgis:rectanglesovalsdiamondsvariable
+    name: Rectangular buffer shape
+    params:
+      HEIGHT: id
+      INPUT:
+        name: custom/points_weighted.gml
+        type: vector
+      SEGMENTS: 36
+      SHAPE: '0'
+      WIDTH: id
+    results:
+      OUTPUT:
+        name: expected/buffer_rect.gml
+        type: vector
+
+  - algorithm: qgis:rectanglesovalsdiamondsvariable
+    name: Diamond buffer shape
+    params:
+      HEIGHT: id
+      INPUT:
+        name: custom/points_weighted.gml
+        type: vector
+      SEGMENTS: 36
+      SHAPE: '1'
+      WIDTH: id
+    results:
+      OUTPUT:
+        name: expected/buffer_diamond.gml
+        type: vector
+
+  - algorithm: qgis:rectanglesovalsdiamondsvariable
+    name: Oval buffer shape
+    params:
+      HEIGHT: id
+      INPUT:
+        name: custom/points_weighted.gml
+        type: vector
+      SEGMENTS: 36
+      SHAPE: '2'
+      WIDTH: id
+    results:
+      OUTPUT:
+        name: expected/buffer_ovals.gml
+        type: vector
 
   - algorithm: qgis:creategridlines
     name: Lines grid 0.1 degree spacing
