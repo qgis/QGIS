@@ -1494,40 +1494,40 @@ tests:
         name: expected/multipoint_delaunay.gml
         type: vector
 
-#  - algorithm: qgis:idwinterpolation
-#    name: IDW interpolation using attribute
-#    params:
-#      CELLSIZE_X: 0.02667
-#      CELLSIZE_Y: 0.02667
-#      COLUMNS: 300
-#      DISTANCE_COEFFICIENT: 2.0
-#      EXTENT: 0, 8, -5, 3
-#      INTERPOLATION_DATA:
-#        name: pointsz.gml,False,1,0
-#        type: interpolation
-#      ROWS: 300
-#    results:
-#      OUTPUT_LAYER:
-#        hash: 56d2671d50444f8571affba3f9e585830b82af5e380394178f521065
-#        type: rasterhash
-#
-#  - algorithm: qgis:idwinterpolation
-#    name: IDW interpolation using Z value
-#    params:
-#      CELLSIZE_X: 0.02667
-#      CELLSIZE_Y: 0.02667
-#      COLUMNS: 300
-#      DISTANCE_COEFFICIENT: 2.0
-#      EXTENT: 0, 8, -5, 3
-#      INTERPOLATION_DATA:
-#        name: pointsz.gml,True,-1,0
-#        type: interpolation
-#      ROWS: 300
-#    results:
-#      OUTPUT_LAYER:
-#        hash: 56d2671d50444f8571affba3f9e585830b82af5e380394178f521065
-#        type: rasterhash
-#
+  - algorithm: qgis:idwinterpolation
+    name: IDW interpolation using attribute
+    params:
+      CELLSIZE_X: 0.02667
+      CELLSIZE_Y: 0.02667
+      COLUMNS: 300
+      DISTANCE_COEFFICIENT: 2.0
+      EXTENT: 0, 8, -5, 3
+      INTERPOLATION_DATA:
+        name: pointsz.gml,False,1,0
+        type: interpolation
+      ROWS: 300
+    results:
+      OUTPUT:
+        hash: 56d2671d50444f8571affba3f9e585830b82af5e380394178f521065
+        type: rasterhash
+
+  - algorithm: qgis:idwinterpolation
+    name: IDW interpolation using Z value
+    params:
+      CELLSIZE_X: 0.02667
+      CELLSIZE_Y: 0.02667
+      COLUMNS: 300
+      DISTANCE_COEFFICIENT: 2.0
+      EXTENT: 0, 8, -5, 3
+      INTERPOLATION_DATA:
+        name: pointsz.gml,True,-1,0
+        type: interpolation
+      ROWS: 300
+    results:
+      OUTPUT:
+        hash: 56d2671d50444f8571affba3f9e585830b82af5e380394178f521065
+        type: rasterhash
+
 #  - algorithm: qgis:tininterpolation
 #    name: TIN interpolation using attribute
 #    params:

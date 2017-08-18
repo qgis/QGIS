@@ -83,6 +83,7 @@ from .HubDistanceLines import HubDistanceLines
 from .HubDistancePoints import HubDistancePoints
 from .HubLines import HubLines
 from .HypsometricCurves import HypsometricCurves
+from .IdwInterpolation import IdwInterpolation
 from .ImportIntoPostGIS import ImportIntoPostGIS
 from .ImportIntoSpatialite import ImportIntoSpatialite
 from .Intersection import Intersection
@@ -168,7 +169,6 @@ from .ZonalStatistics import ZonalStatistics
 # from .FieldPyculator import FieldsPyculator
 # from .SelectByAttributeSum import SelectByAttributeSum
 # from .DefineProjection import DefineProjection
-# from .IdwInterpolation import IdwInterpolation
 # from .TinInterpolation import TinInterpolation
 # from .RasterCalculator import RasterCalculator
 # from .ExecuteSQL import ExecuteSQL
@@ -194,7 +194,7 @@ class QGISAlgorithmProvider(QgsProcessingProvider):
         #         FieldsPyculator(),
         #         FieldsMapper(), SelectByAttributeSum()
         #         DefineProjection(),
-        #         IdwInterpolation(), TinInterpolation(),
+        #         TinInterpolation(),
         #         RasterCalculator(),
         #          ExecuteSQL(), FindProjection(),
         #         ]
@@ -241,6 +241,7 @@ class QGISAlgorithmProvider(QgsProcessingProvider):
                 HubDistancePoints(),
                 HubLines(),
                 HypsometricCurves(),
+                IdwInterpolation(),
                 ImportIntoPostGIS(),
                 ImportIntoSpatialite(),
                 Intersection(),
