@@ -297,15 +297,15 @@ class ModelerParameterDefinitionDialog(QDialog):
         self.buttonBox.setStandardButtons(QDialogButtonBox.Cancel |
                                           QDialogButtonBox.Ok)
         self.buttonBox.setObjectName('buttonBox')
-        self.buttonBox.accepted.connect(self.okPressed)
-        self.buttonBox.rejected.connect(self.cancelPressed)
+        self.buttonBox.accepted.connect(self.accept)
+        self.buttonBox.rejected.connect(self.reject)
 
         self.verticalLayout.addStretch()
         self.verticalLayout.addWidget(self.buttonBox)
 
         self.setLayout(self.verticalLayout)
 
-    def okPressed(self):
+    def accept(self):
         description = str(self.nameTextBox.text())
         if description.strip() == '':
             QMessageBox.warning(self, self.tr('Unable to define parameter'),
@@ -401,8 +401,16 @@ class ModelerParameterDefinitionDialog(QDialog):
             self.param = QgsProcessingParameterCrs(name, description, self.selector.crs().authid())
         if not self.requiredCheck.isChecked():
             self.param.setFlags(self.param.flags() | QgsProcessingParameterDefinition.FlagOptional)
-        self.close()
 
-    def cancelPressed(self):
+        settings = QgsSettings()
+        settings.setValue("/Processing/modelParametersDefinitionDialogGeometry", self.saveGeometry())
+
+        QDialog.accept(self)
+
+    def reject(self):
         self.param = None
-        self.close()
+
+        settings = QgsSettings()
+        settings.setValue("/Processing/modelParametersDefinitionDialogGeometry", self.saveGeometry())
+
+        QDialog.reject(self)
