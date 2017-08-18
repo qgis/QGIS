@@ -154,7 +154,8 @@ class Relief(QgisAlgorithm):
 
         relief.setReliefColors(reliefColors)
         relief.setZFactor(zFactor)
-        relief.exportFrequencyDistributionToCsv(frequencyDistribution)
-        relief.processRaster(None)
+        if frequencyDistribution:
+            relief.exportFrequencyDistributionToCsv(frequencyDistribution)
+        relief.processRaster(feedback)
 
         return {self.OUTPUT: outputFile, self.FREQUENCY_DISTRIBUTION: frequencyDistribution}
