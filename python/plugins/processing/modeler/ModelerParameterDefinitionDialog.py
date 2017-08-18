@@ -78,7 +78,8 @@ class ModelerParameterDefinitionDialog(QDialog):
     PARAMETER_POINT = 'Point'
     PARAMETER_CRS = 'CRS'
     PARAMETER_MULTIPLE = 'Multiple Input'
-    PARAMETER_BAND = 'Raster band'
+    PARAMETER_BAND = 'Raster Band'
+    PARAMETER_MAP_LAYER = 'Map Layer'
 
     paramTypes = [
         PARAMETER_BOOLEAN,
@@ -88,6 +89,7 @@ class ModelerParameterDefinitionDialog(QDialog):
         PARAMETER_RASTER,
         PARAMETER_STRING,
         PARAMETER_EXPRESSION,
+        PARAMETER_MAP_LAYER,
         PARAMETER_TABLE,
         PARAMETER_TABLE_FIELD,
         PARAMETER_VECTOR,
@@ -346,6 +348,10 @@ class ModelerParameterDefinitionDialog(QDialog):
                 return
             parent = self.parentCombo.currentData()
             self.param = QgsProcessingParameterBand(name, description, None, parent)
+        elif (self.paramType == ModelerParameterDefinitionDialog.PARAMETER_MAP_LAYER or
+                isinstance(self.param, QgsProcessingParameterMapLayer)):
+            self.param = QgsProcessingParameterMapLayer(
+                name, description)
         elif (self.paramType == ModelerParameterDefinitionDialog.PARAMETER_RASTER or
                 isinstance(self.param, QgsProcessingParameterRasterLayer)):
             self.param = QgsProcessingParameterRasterLayer(
