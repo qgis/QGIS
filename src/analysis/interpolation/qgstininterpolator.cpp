@@ -27,14 +27,15 @@
 #include "qgsgeometry.h"
 #include "qgsvectorlayer.h"
 #include "qgswkbptr.h"
+#include "qgsfeedback.h"
 #include <QProgressDialog>
 
-QgsTINInterpolator::QgsTINInterpolator( const QList<LayerData> &inputData, TINInterpolation interpolation, bool showProgressDialog )
+QgsTINInterpolator::QgsTINInterpolator( const QList<LayerData> &inputData, TINInterpolation interpolation, QgsFeedback *feedback )
   : QgsInterpolator( inputData )
   , mTriangulation( nullptr )
   , mTriangleInterpolator( nullptr )
   , mIsInitialized( false )
-  , mShowProgressDialog( showProgressDialog )
+  , mFeedback( feedback )
   , mExportTriangulationToFile( false )
   , mInterpolation( interpolation )
 {
@@ -84,7 +85,7 @@ void QgsTINInterpolator::initialize()
   //get number of features if we use a progress bar
   int nFeatures = 0;
   int nProcessedFeatures = 0;
-  if ( mShowProgressDialog )
+  if ( mFeedback )
   {
     Q_FOREACH ( const LayerData &layer, mLayerData )
     {
@@ -94,14 +95,6 @@ void QgsTINInterpolator::initialize()
       }
     }
   }
-
-  QProgressDialog *progressDialog = nullptr;
-  if ( mShowProgressDialog )
-  {
-    progressDialog = new QProgressDialog( QObject::tr( "Building triangulation..." ), QObject::tr( "Abort" ), 0, nFeatures, nullptr );
-    progressDialog->setWindowModality( Qt::WindowModal );
-  }
-
 
   QgsFeature f;
   Q_FOREACH ( const LayerData &layer, mLayerData )
@@ -118,13 +111,13 @@ void QgsTINInterpolator::initialize()
 
       while ( fit.nextFeature( f ) )
       {
-        if ( mShowProgressDialog )
+        if ( mFeedback )
         {
-          if ( progressDialog->wasCanceled() )
+          if ( mFeedback->isCanceled() )
           {
             break;
           }
-          progressDialog->setValue( nProcessedFeatures );
+          mFeedback->setProgress( 100.0 * static_cast< double >( nProcessedFeatures ) / nFeatures );
         }
         insertData( &f, layer.zCoordInterpolation, layer.interpolationAttribute, layer.mInputType );
         ++nProcessedFeatures;
@@ -132,22 +125,13 @@ void QgsTINInterpolator::initialize()
     }
   }
 
-  delete progressDialog;
-
   if ( mInterpolation == CloughTocher )
   {
     CloughTocherInterpolator *ctInterpolator = new CloughTocherInterpolator();
     NormVecDecorator *dec = dynamic_cast<NormVecDecorator *>( mTriangulation );
     if ( dec )
     {
-      QProgressDialog *progressDialog = nullptr;
-      if ( mShowProgressDialog ) //show a progress dialog because it can take a long time...
-      {
-        progressDialog = new QProgressDialog();
-        progressDialog->setLabelText( QObject::tr( "Estimating normal derivatives..." ) );
-      }
-      dec->estimateFirstDerivatives( progressDialog );
-      delete progressDialog;
+      dec->estimateFirstDerivatives( mFeedback );
       ctInterpolator->setTriangulation( dec );
       dec->setTriangleInterpolator( ctInterpolator );
       mTriangleInterpolator = ctInterpolator;

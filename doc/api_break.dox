@@ -2321,6 +2321,11 @@ QgsSymbolsListWidget        {#qgis_api_break_3_0_QgsSymbolsListWidget}
 - expressionContext(), setExpressionContext(), setMapCanvas() and mapCanvas() have been removed in favor of setContext()/context()
 
 
+QgsTINInterpolator        {#qgis_api_break_3_0_QgsTINInterpolator}
+------------------
+
+- The constructor takes a QgsFeedback argument instead of using a QProgressDialog.
+
 QgsTolerance        {#qgis_api_break_3_0_QgsTolerance}
 ------------
 

@@ -190,7 +190,7 @@ class TinInterpolation(QgisAlgorithm):
         else:
             interpolationMethod = QgsTINInterpolator.CloughTocher
 
-        interpolator = QgsTINInterpolator(layerData, interpolationMethod)
+        interpolator = QgsTINInterpolator(layerData, interpolationMethod, feedback)
         if triangulation is not None and triangulation != '':
             interpolator.setExportTriangulationToFile(True)
             interpolator.setTriangulationFilePath(triangulation)

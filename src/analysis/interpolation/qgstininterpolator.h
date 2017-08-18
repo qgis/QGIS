@@ -25,6 +25,7 @@
 class Triangulation;
 class TriangleInterpolator;
 class QgsFeature;
+class QgsFeedback;
 
 /** \ingroup analysis
  *  Interpolation in a triangular irregular network*/
@@ -37,7 +38,13 @@ class ANALYSIS_EXPORT QgsTINInterpolator: public QgsInterpolator
       Linear,
       CloughTocher
     };
-    QgsTINInterpolator( const QList<QgsInterpolator::LayerData> &inputData, TINInterpolation interpolation = Linear, bool showProgressDialog = false );
+
+    /**
+     * Constructor for QgsTINInterpolator.
+     * The \a feedback object specifies an optional QgsFeedback object for progress reports and cancelation support.
+     * Ownership of \a feedback is not transferred and callers must ensure that it exists for the lifetime of this object.
+     */
+    QgsTINInterpolator( const QList<QgsInterpolator::LayerData> &inputData, TINInterpolation interpolation = Linear, QgsFeedback *feedback = nullptr );
     ~QgsTINInterpolator();
 
     /** Calculates interpolation value for map coordinates x, y
@@ -54,7 +61,7 @@ class ANALYSIS_EXPORT QgsTINInterpolator: public QgsInterpolator
     Triangulation *mTriangulation = nullptr;
     TriangleInterpolator *mTriangleInterpolator = nullptr;
     bool mIsInitialized;
-    bool mShowProgressDialog;
+    QgsFeedback *mFeedback = nullptr;
     //! If true: export triangulation to shapefile after initialization
     bool mExportTriangulationToFile;
     //! File path to export the triangulation
