@@ -134,10 +134,12 @@ class TinInterpolation(QgisAlgorithm):
         self.addParameter(QgsProcessingParameterRasterDestination(self.OUTPUT,
                                                                   self.tr('Interpolated')))
 
-        self.addParameter(QgsProcessingParameterFileDestination(self.TRIANGULATION_FILE,
-                                                                self.tr('Triangulation'),
-                                                                self.tr('SHP files (*.shp)'),
-                                                                optional=True))
+        triangulation_file_param = QgsProcessingParameterFileDestination(self.TRIANGULATION_FILE,
+                                                                         self.tr('Triangulation'),
+                                                                         self.tr('SHP files (*.shp)'),
+                                                                         optional=True)
+        triangulation_file_param.setCreateByDefault(False)
+        self.addParameter(triangulation_file_param)
 
     def name(self):
         return 'tininterpolation'

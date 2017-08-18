@@ -29,7 +29,6 @@ bool MathUtils::calcBarycentricCoordinates( double x, double y, QgsPoint *p1, Qg
     double area = triArea( p1, p2, p3 );
     if ( area == 0 )//p1, p2, p3 are in a line
     {
-      QgsDebugMsg( "warning, triangle area should not be 0" );
       return false;
     }
     double area1 = triArea( &p, p2, p3 );
