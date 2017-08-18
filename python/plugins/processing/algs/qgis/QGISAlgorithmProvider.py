@@ -151,6 +151,7 @@ from .StatisticsByCategories import StatisticsByCategories
 from .SumLines import SumLines
 from .SymmetricalDifference import SymmetricalDifference
 from .TextToFloat import TextToFloat
+from .TinInterpolation import TinInterpolation
 from .TopoColors import TopoColor
 from .Translate import Translate
 from .TruncateTable import TruncateTable
@@ -169,7 +170,6 @@ from .ZonalStatistics import ZonalStatistics
 # from .FieldPyculator import FieldsPyculator
 # from .SelectByAttributeSum import SelectByAttributeSum
 # from .DefineProjection import DefineProjection
-# from .TinInterpolation import TinInterpolation
 # from .RasterCalculator import RasterCalculator
 # from .ExecuteSQL import ExecuteSQL
 # from .FindProjection import FindProjection
@@ -194,7 +194,6 @@ class QGISAlgorithmProvider(QgsProcessingProvider):
         #         FieldsPyculator(),
         #         FieldsMapper(), SelectByAttributeSum()
         #         DefineProjection(),
-        #         TinInterpolation(),
         #         RasterCalculator(),
         #          ExecuteSQL(), FindProjection(),
         #         ]
@@ -309,6 +308,7 @@ class QGISAlgorithmProvider(QgsProcessingProvider):
                 SumLines(),
                 SymmetricalDifference(),
                 TextToFloat(),
+                TinInterpolation(),
                 TopoColor(),
                 Translate(),
                 TruncateTable(),

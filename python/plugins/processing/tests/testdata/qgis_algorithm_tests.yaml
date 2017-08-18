@@ -1528,45 +1528,45 @@ tests:
         hash: 56d2671d50444f8571affba3f9e585830b82af5e380394178f521065
         type: rasterhash
 
-#  - algorithm: qgis:tininterpolation
-#    name: TIN interpolation using attribute
-#    params:
-#      CELLSIZE_X: 0.02667
-#      CELLSIZE_Y: 0.02667
-#      COLUMNS: 300
-#      EXTENT: 0, 8, -5, 3
-#      INTERPOLATION_DATA:
-#        name: pointsz.gml,False,1,0
-#        type: interpolation
-#      METHOD: '0'
-#      ROWS: 300
-#    results:
-#      OUTPUT_LAYER:
-#        hash: 87f40be6ec08f3fcbb5707762de71f6be35bb265c61f594335562a26
-#        type: rasterhash
-#      #TRIANULATION_FILE:
-#      #  name: expected/triangulation.gml
-#      #  type: vector
-#
-#  - algorithm: qgis:tininterpolation
-#    name: TIN interpolation using Z value
-#    params:
-#      CELLSIZE_X: 0.02667
-#      CELLSIZE_Y: 0.02667
-#      COLUMNS: 300
-#      EXTENT: 0, 8, -5, 3
-#      INTERPOLATION_DATA:
-#        name: pointsz.gml,True,-1,0
-#        type: interpolation
-#      METHOD: '1'
-#      ROWS: 300
-#    results:
-#      OUTPUT_LAYER:
-#        hash: 5e14dd0b879884b8b8da56c082947dad681feb4e9f1137f5cda126f8
-#        type: rasterhash
-#      #TRIANULATION_FILE:
-#      #  name: expected/triangulation.gml
-#      #  type: vector
+  - algorithm: qgis:tininterpolation
+    name: TIN interpolation using attribute
+    params:
+      CELLSIZE_X: 0.02667
+      CELLSIZE_Y: 0.02667
+      COLUMNS: 300
+      EXTENT: 0, 8, -5, 3
+      INTERPOLATION_DATA:
+        name: pointsz.gml,False,1,0
+        type: interpolation
+      METHOD: '0'
+      ROWS: 300
+    results:
+      OUTPUT:
+        hash: 87f40be6ec08f3fcbb5707762de71f6be35bb265c61f594335562a26
+        type: rasterhash
+      #TRIANGULATION_FILE:
+      #  name: expected/triangulation.gml
+      #  type: vector
+
+  - algorithm: qgis:tininterpolation
+    name: TIN interpolation using Z value
+    params:
+      CELLSIZE_X: 0.02667
+      CELLSIZE_Y: 0.02667
+      COLUMNS: 300
+      EXTENT: 0, 8, -5, 3
+      INTERPOLATION_DATA:
+        name: pointsz.gml,True,-1,0
+        type: interpolation
+      METHOD: '1'
+      ROWS: 300
+    results:
+      OUTPUT:
+        hash: 5e14dd0b879884b8b8da56c082947dad681feb4e9f1137f5cda126f8
+        type: rasterhash
+      #TRIANULATION_FILE:
+      #  name: expected/triangulation.gml
+      #  type: vector
 
   - algorithm: native:removenullgeometries
     name: Remove null geometries
