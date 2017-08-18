@@ -41,7 +41,6 @@
       <property name="floatable">
        <bool>false</bool>
       </property>
-      <addaction name="mActionSyncView"/>
       <addaction name="mActionZoomFullExtent"/>
       <addaction name="mActionZoomToSelected"/>
       <addaction name="mActionZoomToLayer"/>
@@ -80,21 +79,6 @@
    </property>
    <property name="toolTip">
     <string>Set Map CRS</string>
-   </property>
-  </action>
-  <action name="mActionSyncView">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="icon">
-    <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/themes/default/mActionLockExtent.svg</normaloff>:/images/themes/default/mActionLockExtent.svg</iconset>
-   </property>
-   <property name="text">
-    <string>Synchronize View</string>
-   </property>
-   <property name="toolTip">
-    <string>Synchronize View Center with Main Map</string>
    </property>
   </action>
   <action name="mActionRename">
@@ -177,6 +161,32 @@
   </customwidget>
  </customwidgets>
  <resources>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
   <include location="../../images/images.qrc"/>
  </resources>
  <connections/>
