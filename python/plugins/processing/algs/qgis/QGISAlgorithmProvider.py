@@ -128,6 +128,7 @@ from .SelectByExpression import SelectByExpression
 from .ServiceAreaFromLayer import ServiceAreaFromLayer
 from .ServiceAreaFromPoint import ServiceAreaFromPoint
 from .SetMValue import SetMValue
+from .SetVectorStyle import SetVectorStyle
 from .SetZValue import SetZValue
 from .ShortestPathLayerToPoint import ShortestPathLayerToPoint
 from .ShortestPathPointToLayer import ShortestPathPointToLayer
@@ -161,7 +162,6 @@ from .ZonalStatistics import ZonalStatistics
 # from .GeometryConvert import GeometryConvert
 # from .FieldsCalculator import FieldsCalculator
 # from .FieldPyculator import FieldsPyculator
-# from .SetVectorStyle import SetVectorStyle
 # from .SetRasterStyle import SetRasterStyle
 # from .SelectByAttributeSum import SelectByAttributeSum
 # from .Datasources2Vrt import Datasources2Vrt
@@ -192,7 +192,7 @@ class QGISAlgorithmProvider(QgsProcessingProvider):
         #         SpatialJoin(),
         #         GeometryConvert(), FieldsCalculator(),
         #         FieldsPyculator(),
-        #         SetVectorStyle(), SetRasterStyle(),
+        #         SetRasterStyle(),
         #         FieldsMapper(), SelectByAttributeSum(), Datasources2Vrt(),
         #         DefineProjection(),
         #         RectanglesOvalsDiamondsVariable(),
@@ -289,6 +289,7 @@ class QGISAlgorithmProvider(QgsProcessingProvider):
                 ServiceAreaFromLayer(),
                 ServiceAreaFromPoint(),
                 SetMValue(),
+                SetVectorStyle(),
                 SetZValue(),
                 ShortestPathLayerToPoint(),
                 ShortestPathPointToLayer(),
