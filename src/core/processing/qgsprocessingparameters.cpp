@@ -265,7 +265,10 @@ QgsFeatureSink *QgsProcessingParameters::parameterAsSink( const QgsProcessingPar
     {
       destName = definition->description();
     }
-    context.addLayerToLoadOnCompletion( destinationIdentifier, QgsProcessingContext::LayerDetails( destName, destinationProject ) );
+    QString outputName;
+    if ( definition )
+      outputName = definition->name();
+    context.addLayerToLoadOnCompletion( destinationIdentifier, QgsProcessingContext::LayerDetails( destName, destinationProject, outputName ) );
   }
 
   return sink.release();
@@ -404,11 +407,14 @@ QString QgsProcessingParameters::parameterAsOutputLayer( const QgsProcessingPara
 
   if ( destinationProject )
   {
+    QString outputName;
     if ( destName.isEmpty() && definition )
     {
       destName = definition->description();
     }
-    context.addLayerToLoadOnCompletion( dest, QgsProcessingContext::LayerDetails( destName, destinationProject ) );
+    if ( definition )
+      outputName = definition->name();
+    context.addLayerToLoadOnCompletion( dest, QgsProcessingContext::LayerDetails( destName, destinationProject, outputName ) );
   }
 
   return dest;

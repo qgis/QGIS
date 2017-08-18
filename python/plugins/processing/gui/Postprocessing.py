@@ -60,7 +60,9 @@ def handleAlgorithmResults(alg, context, feedback=None, showResults=True):
             if layer is not None:
                 layer.setName(details.name)
 
-                style = RenderingStyles.getStyle(alg.id(), layer.name())
+                style = None
+                if details.outputName:
+                    style = RenderingStyles.getStyle(alg.id(), details.outputName)
                 if style is None:
                     if layer.type() == QgsMapLayer.RasterLayer:
                         style = ProcessingConfig.getSetting(ProcessingConfig.RASTER_STYLE)

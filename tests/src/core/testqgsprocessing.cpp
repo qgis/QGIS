@@ -1382,6 +1382,7 @@ void TestQgsProcessing::parameters()
   QCOMPARE( context2.layersToLoadOnCompletion().size(), 1 );
   QCOMPARE( context2.layersToLoadOnCompletion().keys().at( 0 ), destId );
   QCOMPARE( context2.layersToLoadOnCompletion().values().at( 0 ).name, QStringLiteral( "my_dest" ) );
+  QCOMPARE( context2.layersToLoadOnCompletion().values().at( 0 ).outputName, QStringLiteral( "fs" ) );
 }
 
 void TestQgsProcessing::algorithmParameters()
@@ -3820,6 +3821,7 @@ void TestQgsProcessing::parameterRasterOut()
   QCOMPARE( context2.layersToLoadOnCompletion().size(), 1 );
   QCOMPARE( context2.layersToLoadOnCompletion().keys().at( 0 ), QStringLiteral( "test.tif" ) );
   QCOMPARE( context2.layersToLoadOnCompletion().values().at( 0 ).name, QStringLiteral( "my_dest" ) );
+  QCOMPARE( context2.layersToLoadOnCompletion().values().at( 0 ).outputName, QStringLiteral( "x" ) );
 }
 
 void TestQgsProcessing::parameterFileOut()
