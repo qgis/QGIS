@@ -64,7 +64,7 @@ class PointsLayerFromTable(QgisAlgorithm):
         super().__init__()
 
     def initAlgorithm(self, config=None):
-        self.addParameter(QgsProcessingParameterFeatureSource(self.INPUT, self.tr('Input layer'), types=[QgsProcessing.TypeTable]))
+        self.addParameter(QgsProcessingParameterFeatureSource(self.INPUT, self.tr('Input layer'), types=[QgsProcessing.TypeVector]))
 
         self.addParameter(QgsProcessingParameterField(self.XFIELD,
                                                       self.tr('X field'), parentLayerParameterName=self.INPUT, type=QgsProcessingParameterField.Any))

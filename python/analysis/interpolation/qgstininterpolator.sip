@@ -25,7 +25,13 @@ class QgsTINInterpolator: QgsInterpolator
       Linear,
       CloughTocher
     };
-    QgsTINInterpolator( const QList<QgsInterpolator::LayerData> &inputData, TINInterpolation interpolation = Linear, bool showProgressDialog = false );
+
+    QgsTINInterpolator( const QList<QgsInterpolator::LayerData> &inputData, TINInterpolation interpolation = Linear, QgsFeedback *feedback = 0 );
+%Docstring
+ Constructor for QgsTINInterpolator.
+ The ``feedback`` object specifies an optional QgsFeedback object for progress reports and cancelation support.
+ Ownership of ``feedback`` is not transferred and callers must ensure that it exists for the lifetime of this object.
+%End
     ~QgsTINInterpolator();
 
     virtual int interpolatePoint( double x, double y, double &result );

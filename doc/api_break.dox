@@ -1348,6 +1348,13 @@ QgsGraduatedRenderer        {#qgis_api_break_3_0_QgsGraduatedRenderer}
 - setInvertedColorRamp() and invertedColorRamp() functions are gone, QgsColorRamp now responsible for invert
 - createRenderer() and updateColorRamp()'s inverted parameter is gone
 
+
+QgsGridFileWriter       {#qgis_api_break_3_0_QgsGridFileWriter}
+-----------------
+
+- writeFile() now takes an optional QgsFeedback argument instead of using a QProgressDialog
+
+
 QgsGroupWMSDataDialog        {#qgis_api_break_3_0_QgsGroupWMSDataDialog}
 ---------------------
 
@@ -1973,6 +1980,11 @@ QgsRelation        {#qgis_api_break_3_0_QgsRelation}
 - `setRelationName()` has been renamed to `QgsRelation::setName()`
 - `setRelationId()` has been renamed to `QgsRelation::setId()`
 
+QgsRelief        {#qgis_api_break_3_0_QgsRelief}
+---------
+
+- processRaster() now uses a QgsFeedback object instead of a QProgressDialog
+
 
 QgsRenderChecker        {#qgis_api_break_3_0_QgsRenderChecker}
 ----------------
@@ -2308,6 +2320,11 @@ QgsSymbolsListWidget        {#qgis_api_break_3_0_QgsSymbolsListWidget}
 
 - expressionContext(), setExpressionContext(), setMapCanvas() and mapCanvas() have been removed in favor of setContext()/context()
 
+
+QgsTINInterpolator        {#qgis_api_break_3_0_QgsTINInterpolator}
+------------------
+
+- The constructor takes a QgsFeedback argument instead of using a QProgressDialog.
 
 QgsTolerance        {#qgis_api_break_3_0_QgsTolerance}
 ------------

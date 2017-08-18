@@ -52,6 +52,7 @@ from .ConcaveHull import ConcaveHull
 from .ConvexHull import ConvexHull
 from .CreateAttributeIndex import CreateAttributeIndex
 from .CreateConstantRaster import CreateConstantRaster
+from .Datasources2Vrt import Datasources2Vrt
 from .Delaunay import Delaunay
 from .DeleteColumn import DeleteColumn
 from .DeleteDuplicateGeometries import DeleteDuplicateGeometries
@@ -81,6 +82,8 @@ from .Hillshade import Hillshade
 from .HubDistanceLines import HubDistanceLines
 from .HubDistancePoints import HubDistancePoints
 from .HubLines import HubLines
+from .HypsometricCurves import HypsometricCurves
+from .IdwInterpolation import IdwInterpolation
 from .ImportIntoPostGIS import ImportIntoPostGIS
 from .ImportIntoSpatialite import ImportIntoSpatialite
 from .Intersection import Intersection
@@ -92,6 +95,7 @@ from .Merge import Merge
 from .MergeLines import MergeLines
 from .NearestNeighbourAnalysis import NearestNeighbourAnalysis
 from .OffsetLine import OffsetLine
+from .OrientedMinimumBoundingBox import OrientedMinimumBoundingBox
 from .Orthogonalize import Orthogonalize
 from .PointDistance import PointDistance
 from .PointOnSurface import PointOnSurface
@@ -116,7 +120,10 @@ from .RandomSelection import RandomSelection
 from .RandomSelectionWithinSubsets import RandomSelectionWithinSubsets
 from .Rasterize import RasterizeAlgorithm
 from .RasterLayerStatistics import RasterLayerStatistics
+from .RectanglesOvalsDiamondsFixed import RectanglesOvalsDiamondsFixed
+from .RectanglesOvalsDiamondsVariable import RectanglesOvalsDiamondsVariable
 from .RegularPoints import RegularPoints
+from .Relief import Relief
 from .ReverseLineDirection import ReverseLineDirection
 from .Ruggedness import Ruggedness
 from .SaveSelectedFeatures import SaveSelectedFeatures
@@ -125,6 +132,8 @@ from .SelectByExpression import SelectByExpression
 from .ServiceAreaFromLayer import ServiceAreaFromLayer
 from .ServiceAreaFromPoint import ServiceAreaFromPoint
 from .SetMValue import SetMValue
+from .SetRasterStyle import SetRasterStyle
+from .SetVectorStyle import SetVectorStyle
 from .SetZValue import SetZValue
 from .ShortestPathLayerToPoint import ShortestPathLayerToPoint
 from .ShortestPathPointToLayer import ShortestPathPointToLayer
@@ -142,6 +151,7 @@ from .StatisticsByCategories import StatisticsByCategories
 from .SumLines import SumLines
 from .SymmetricalDifference import SymmetricalDifference
 from .TextToFloat import TextToFloat
+from .TinInterpolation import TinInterpolation
 from .TopoColors import TopoColor
 from .Translate import Translate
 from .TruncateTable import TruncateTable
@@ -158,18 +168,8 @@ from .ZonalStatistics import ZonalStatistics
 # from .GeometryConvert import GeometryConvert
 # from .FieldsCalculator import FieldsCalculator
 # from .FieldPyculator import FieldsPyculator
-# from .SetVectorStyle import SetVectorStyle
-# from .SetRasterStyle import SetRasterStyle
 # from .SelectByAttributeSum import SelectByAttributeSum
-# from .HypsometricCurves import HypsometricCurves
-# from .Datasources2Vrt import Datasources2Vrt
-# from .OrientedMinimumBoundingBox import OrientedMinimumBoundingBox
 # from .DefineProjection import DefineProjection
-# from .RectanglesOvalsDiamondsVariable import RectanglesOvalsDiamondsVariable
-# from .RectanglesOvalsDiamondsFixed import RectanglesOvalsDiamondsFixed
-# from .Relief import Relief
-# from .IdwInterpolation import IdwInterpolation
-# from .TinInterpolation import TinInterpolation
 # from .RasterCalculator import RasterCalculator
 # from .ExecuteSQL import ExecuteSQL
 # from .FindProjection import FindProjection
@@ -192,15 +192,8 @@ class QGISAlgorithmProvider(QgsProcessingProvider):
         #         SpatialJoin(),
         #         GeometryConvert(), FieldsCalculator(),
         #         FieldsPyculator(),
-        #         SetVectorStyle(), SetRasterStyle(),
-        #          HypsometricCurves(),
-        #         FieldsMapper(), SelectByAttributeSum(), Datasources2Vrt(),
-        #         OrientedMinimumBoundingBox(),
+        #         FieldsMapper(), SelectByAttributeSum()
         #         DefineProjection(),
-        #         RectanglesOvalsDiamondsVariable(),
-        #         RectanglesOvalsDiamondsFixed(),
-        #         Relief(),
-        #         IdwInterpolation(), TinInterpolation(),
         #         RasterCalculator(),
         #          ExecuteSQL(), FindProjection(),
         #         ]
@@ -216,6 +209,7 @@ class QGISAlgorithmProvider(QgsProcessingProvider):
                 ConvexHull(),
                 CreateAttributeIndex(),
                 CreateConstantRaster(),
+                Datasources2Vrt(),
                 Delaunay(),
                 DeleteColumn(),
                 DeleteDuplicateGeometries(),
@@ -245,6 +239,8 @@ class QGISAlgorithmProvider(QgsProcessingProvider):
                 HubDistanceLines(),
                 HubDistancePoints(),
                 HubLines(),
+                HypsometricCurves(),
+                IdwInterpolation(),
                 ImportIntoPostGIS(),
                 ImportIntoSpatialite(),
                 Intersection(),
@@ -256,6 +252,7 @@ class QGISAlgorithmProvider(QgsProcessingProvider):
                 MergeLines(),
                 NearestNeighbourAnalysis(),
                 OffsetLine(),
+                OrientedMinimumBoundingBox(),
                 Orthogonalize(),
                 PointDistance(),
                 PointOnSurface(),
@@ -280,7 +277,10 @@ class QGISAlgorithmProvider(QgsProcessingProvider):
                 RandomSelectionWithinSubsets(),
                 RasterizeAlgorithm(),
                 RasterLayerStatistics(),
+                RectanglesOvalsDiamondsFixed(),
+                RectanglesOvalsDiamondsVariable(),
                 RegularPoints(),
+                Relief(),
                 ReverseLineDirection(),
                 Ruggedness(),
                 SaveSelectedFeatures(),
@@ -289,6 +289,8 @@ class QGISAlgorithmProvider(QgsProcessingProvider):
                 ServiceAreaFromLayer(),
                 ServiceAreaFromPoint(),
                 SetMValue(),
+                SetRasterStyle(),
+                SetVectorStyle(),
                 SetZValue(),
                 ShortestPathLayerToPoint(),
                 ShortestPathPointToLayer(),
@@ -306,6 +308,7 @@ class QGISAlgorithmProvider(QgsProcessingProvider):
                 SumLines(),
                 SymmetricalDifference(),
                 TextToFloat(),
+                TinInterpolation(),
                 TopoColor(),
                 Translate(),
                 TruncateTable(),

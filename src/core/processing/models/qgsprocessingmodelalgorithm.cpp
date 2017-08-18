@@ -596,7 +596,7 @@ QgsProcessingModelChildParameterSources QgsProcessingModelAlgorithm::availableSo
           bool ok = !sourceDef->dataTypes().isEmpty();
           Q_FOREACH ( int type, sourceDef->dataTypes() )
           {
-            if ( dataTypes.contains( type ) || type == QgsProcessing::TypeAny )
+            if ( dataTypes.contains( type ) || type == QgsProcessing::TypeMapLayer )
             {
               ok = true;
               break;
@@ -636,7 +636,7 @@ QgsProcessingModelChildParameterSources QgsProcessingModelAlgorithm::availableSo
           if ( out->type() == QgsProcessingOutputVectorLayer::typeName() )
           {
             const QgsProcessingOutputVectorLayer *vectorOut = static_cast< const QgsProcessingOutputVectorLayer *>( out );
-            if ( !( dataTypes.contains( vectorOut->dataType() ) || vectorOut->dataType() == QgsProcessing::TypeAny ) )
+            if ( !( dataTypes.contains( vectorOut->dataType() ) || vectorOut->dataType() == QgsProcessing::TypeMapLayer ) )
             {
               continue;
             }

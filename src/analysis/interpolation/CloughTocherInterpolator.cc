@@ -164,7 +164,6 @@ bool CloughTocherInterpolator::calcNormVec( double x, double y, Vector3D *result
       return true;
     }
 
-    QgsDebugMsg( "warning, point outside the triangle" );
     result->setX( 0 );//return a vertical normal if failed
     result->setY( 0 );
     result->setZ( 1 );
@@ -240,7 +239,6 @@ bool CloughTocherInterpolator::calcPoint( double x, double y, QgsPoint *result )
     }
     else
     {
-      QgsDebugMsg( "warning, point outside the triangle" );
       result->setX( x );
       result->setY( y );
       result->setZ( 0 );

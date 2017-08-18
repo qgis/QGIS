@@ -20,11 +20,13 @@
 #include "qgsaspectfilter.h"
 #include "qgshillshadefilter.h"
 #include "qgsslopefilter.h"
+#include "qgsfeedback.h"
 #include "qgis.h"
 #include "cpl_string.h"
-#include <QProgressDialog>
 #include <cfloat>
 
+#include <QVector>
+#include <QColor>
 #include <QFile>
 #include <QTextStream>
 
@@ -78,7 +80,7 @@ void QgsRelief::setDefaultReliefColors()
   addReliefColorClass( ReliefColor( QColor( 255, 255, 255 ), 4000, 9000 ) );
 }
 
-int QgsRelief::processRaster( QProgressDialog *p )
+int QgsRelief::processRaster( QgsFeedback *feedback )
 {
   //open input file
   int xSize, ySize;
@@ -170,22 +172,17 @@ int QgsRelief::processRaster( QProgressDialog *p )
   unsigned char *resultGreenLine = ( unsigned char * ) CPLMalloc( sizeof( unsigned char ) * xSize );
   unsigned char *resultBlueLine = ( unsigned char * ) CPLMalloc( sizeof( unsigned char ) * xSize );
 
-  if ( p )
-  {
-    p->setMaximum( ySize );
-  }
-
   bool resultOk;
 
   //values outside the layer extent (if the 3x3 window is on the border) are sent to the processing method as (input) nodata values
   for ( int i = 0; i < ySize; ++i )
   {
-    if ( p )
+    if ( feedback )
     {
-      p->setValue( i );
+      feedback->setProgress( 100.0 * i / static_cast< double >( ySize ) );
     }
 
-    if ( p && p->wasCanceled() )
+    if ( feedback && feedback->isCanceled() )
     {
       break;
     }
@@ -269,9 +266,9 @@ int QgsRelief::processRaster( QProgressDialog *p )
     }
   }
 
-  if ( p )
+  if ( feedback )
   {
-    p->setValue( ySize );
+    feedback->setProgress( 100 );
   }
 
   CPLFree( resultRedLine );
@@ -283,7 +280,7 @@ int QgsRelief::processRaster( QProgressDialog *p )
 
   GDALClose( inputDataset );
 
-  if ( p && p->wasCanceled() )
+  if ( feedback && feedback->isCanceled() )
   {
     //delete the dataset without closing (because it is faster)
     GDALDeleteDataset( outputDriver, mOutputFile.toUtf8().constData() );

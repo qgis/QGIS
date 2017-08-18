@@ -524,20 +524,20 @@ class FixedTableWidgetWrapper(WidgetWrapper):
 class MultipleInputWidgetWrapper(WidgetWrapper):
 
     def _getOptions(self):
-        if self.param.layerType() == QgsProcessing.TypeVectorAny:
+        if self.param.layerType() == QgsProcessing.TypeVectorAnyGeometry:
             options = self.dialog.getAvailableValuesOfType((QgsProcessingParameterFeatureSource, QgsProcessingParameterVectorLayer, QgsProcessingParameterMultipleLayers), QgsProcessingOutputVectorLayer)
         elif self.param.layerType() == QgsProcessing.TypeVectorPoint:
             options = self.dialog.getAvailableValuesOfType((QgsProcessingParameterFeatureSource, QgsProcessingParameterVectorLayer, QgsProcessingParameterMultipleLayers), QgsProcessingOutputVectorLayer,
-                                                           [QgsProcessing.TypeVectorPoint, QgsProcessing.TypeVectorAny])
+                                                           [QgsProcessing.TypeVectorPoint, QgsProcessing.TypeVectorAnyGeometry])
         elif self.param.layerType() == QgsProcessing.TypeVectorLine:
             options = self.dialog.getAvailableValuesOfType((QgsProcessingParameterFeatureSource, QgsProcessingParameterVectorLayer, QgsProcessingParameterMultipleLayers), QgsProcessingOutputVectorLayer,
-                                                           [QgsProcessing.TypeVectorLine, QgsProcessing.TypeVectorAny])
+                                                           [QgsProcessing.TypeVectorLine, QgsProcessing.TypeVectorAnyGeometry])
         elif self.param.layerType() == QgsProcessing.TypeVectorPolygon:
             options = self.dialog.getAvailableValuesOfType((QgsProcessingParameterFeatureSource, QgsProcessingParameterVectorLayer, QgsProcessingParameterMultipleLayers), QgsProcessingOutputVectorLayer,
-                                                           [QgsProcessing.TypeVectorPolygon, QgsProcessing.TypeVectorAny])
+                                                           [QgsProcessing.TypeVectorPolygon, QgsProcessing.TypeVectorAnyGeometry])
         elif self.param.layerType() == QgsProcessing.TypeRaster:
             options = self.dialog.getAvailableValuesOfType((QgsProcessingParameterRasterLayer, QgsProcessingParameterMultipleLayers), QgsProcessingOutputRasterLayer)
-        elif self.param.layerType() == QgsProcessing.TypeTable:
+        elif self.param.layerType() == QgsProcessing.TypeVector:
             options = self.dialog.getAvailableValuesOfType((QgsProcessingParameterFeatureSource, QgsProcessingParameterVectorLayer, QgsProcessingParameterMultipleLayers), OutputTable)
         else:
             options = self.dialog.getAvailableValuesOfType(QgsProcessingParameterFile, OutputFile)
@@ -551,7 +551,7 @@ class MultipleInputWidgetWrapper(WidgetWrapper):
             else:
                 if self.param.layerType() == QgsProcessing.TypeRaster:
                     options = QgsProcessingUtils.compatibleRasterLayers(QgsProject.instance(), False)
-                elif self.param.layerType() in (QgsProcessing.TypeVectorAny, QgsProcessing.TypeTable):
+                elif self.param.layerType() in (QgsProcessing.TypeVectorAnyGeometry, QgsProcessing.TypeVector):
                     options = QgsProcessingUtils.compatibleVectorLayers(QgsProject.instance(), [], False)
                 else:
                     options = QgsProcessingUtils.compatibleVectorLayers(QgsProject.instance(), [self.param.layerType()], False)
@@ -569,7 +569,7 @@ class MultipleInputWidgetWrapper(WidgetWrapper):
         if self.param.layerType() != QgsProcessing.TypeFile:
             if self.param.layerType() == QgsProcessing.TypeRaster:
                 options = QgsProcessingUtils.compatibleRasterLayers(QgsProject.instance(), False)
-            elif self.param.layerType() in (QgsProcessing.TypeVectorAny, QgsProcessing.TypeTable):
+            elif self.param.layerType() in (QgsProcessing.TypeVectorAnyGeometry, QgsProcessing.TypeVector):
                 options = QgsProcessingUtils.compatibleVectorLayers(QgsProject.instance(), [], False)
             else:
                 options = QgsProcessingUtils.compatibleVectorLayers(QgsProject.instance(), [self.param.layerType()], False)
@@ -605,7 +605,7 @@ class MultipleInputWidgetWrapper(WidgetWrapper):
             else:
                 if self.param.layerType() == QgsProcessing.TypeRaster:
                     options = QgsProcessingUtils.compatibleRasterLayers(QgsProject.instance(), False)
-                elif self.param.layerType() in (QgsProcessing.TypeVectorAny, QgsProcessing.TypeTable):
+                elif self.param.layerType() in (QgsProcessing.TypeVectorAnyGeometry, QgsProcessing.TypeVector):
                     options = QgsProcessingUtils.compatibleVectorLayers(QgsProject.instance(), [], False)
                 else:
                     options = QgsProcessingUtils.compatibleVectorLayers(QgsProject.instance(), [self.param.layerType()], False)
@@ -827,7 +827,7 @@ class VectorWidgetWrapper(WidgetWrapper):
             widget.setLayout(vl)
 
             filters = QgsMapLayerProxyModel.Filters()
-            if QgsProcessing.TypeVectorAny in self.param.dataTypes() or len(self.param.dataTypes()) == 0:
+            if QgsProcessing.TypeVectorAnyGeometry in self.param.dataTypes() or len(self.param.dataTypes()) == 0:
                 filters = QgsMapLayerProxyModel.HasGeometry
             if QgsProcessing.TypeVectorPoint in self.param.dataTypes():
                 filters |= QgsMapLayerProxyModel.PointLayer
@@ -862,7 +862,7 @@ class VectorWidgetWrapper(WidgetWrapper):
             return widget
         else:
             self.combo = QComboBox()
-            layers = self.dialog.getAvailableValuesOfType(QgsProcessingParameterFeatureSource, QgsProcessingOutputVectorLayer)
+            layers = self.dialog.getAvailableValuesOfType((QgsProcessingParameterFeatureSource, QgsProcessingParameterVectorLayer), QgsProcessingOutputVectorLayer)
             self.combo.setEditable(True)
             for layer in layers:
                 self.combo.addItem(self.dialog.resolveValueDescription(layer), layer)
@@ -1107,7 +1107,7 @@ class TableWidgetWrapper(WidgetWrapper):
                 self.combo.setAllowEmptyLayer(True)
 
             filters = QgsMapLayerProxyModel.Filters()
-            if QgsProcessing.TypeVectorAny in self.param.dataTypes() or len(self.param.dataTypes()) == 0:
+            if QgsProcessing.TypeVectorAnyGeometry in self.param.dataTypes() or len(self.param.dataTypes()) == 0:
                 filters = QgsMapLayerProxyModel.VectorLayer
             if QgsProcessing.TypeVectorPoint in self.param.dataTypes():
                 filters |= QgsMapLayerProxyModel.PointLayer

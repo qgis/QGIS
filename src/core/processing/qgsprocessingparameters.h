@@ -952,7 +952,7 @@ class CORE_EXPORT QgsProcessingParameterMultipleLayers : public QgsProcessingPar
     /**
      * Constructor for QgsProcessingParameterMultipleLayers.
      */
-    QgsProcessingParameterMultipleLayers( const QString &name, const QString &description = QString(), QgsProcessing::LayerType layerType = QgsProcessing::TypeVectorAny,
+    QgsProcessingParameterMultipleLayers( const QString &name, const QString &description = QString(), QgsProcessing::SourceType layerType = QgsProcessing::TypeVectorAnyGeometry,
                                           const QVariant &defaultValue = QVariant(),
                                           bool optional = false );
 
@@ -970,13 +970,13 @@ class CORE_EXPORT QgsProcessingParameterMultipleLayers : public QgsProcessingPar
      * Returns the layer type for layers acceptable by the parameter.
      * \see setLayerType()
      */
-    QgsProcessing::LayerType layerType() const;
+    QgsProcessing::SourceType layerType() const;
 
     /**
      * Sets the layer \a type for layers acceptable by the parameter.
      * \see layerType()
      */
-    void setLayerType( QgsProcessing::LayerType type );
+    void setLayerType( QgsProcessing::SourceType type );
 
     /**
      * Returns the minimum number of layers required for the parameter. If the return value is < 1
@@ -1002,7 +1002,7 @@ class CORE_EXPORT QgsProcessingParameterMultipleLayers : public QgsProcessingPar
 
   private:
 
-    QgsProcessing::LayerType mLayerType = QgsProcessing::TypeVectorAny;
+    QgsProcessing::SourceType mLayerType = QgsProcessing::TypeVectorAnyGeometry;
     int mMinimumNumberInputs = 0;
 
 };
@@ -1401,7 +1401,7 @@ class CORE_EXPORT QgsProcessingParameterVectorLayer : public QgsProcessingParame
 
   private:
 
-    QList< int > mDataTypes = QList< int >() << QgsProcessing::TypeVectorAny;
+    QList< int > mDataTypes = QList< int >() << QgsProcessing::TypeVectorAnyGeometry;
 
 
 };
@@ -1546,7 +1546,7 @@ class CORE_EXPORT QgsProcessingParameterFeatureSource : public QgsProcessingPara
 
   private:
 
-    QList< int > mDataTypes = QList< int >() << QgsProcessing::TypeVectorAny;
+    QList< int > mDataTypes = QList< int >() << QgsProcessing::TypeVectorAnyGeometry;
 
 };
 
@@ -1641,7 +1641,7 @@ class CORE_EXPORT QgsProcessingParameterFeatureSink : public QgsProcessingDestin
     /**
      * Constructor for QgsProcessingParameterFeatureSink.
      */
-    QgsProcessingParameterFeatureSink( const QString &name, const QString &description = QString(), QgsProcessing::LayerType type = QgsProcessing::TypeVectorAny, const QVariant &defaultValue = QVariant(),
+    QgsProcessingParameterFeatureSink( const QString &name, const QString &description = QString(), QgsProcessing::SourceType type = QgsProcessing::TypeVectorAnyGeometry, const QVariant &defaultValue = QVariant(),
                                        bool optional = false );
 
     /**
@@ -1660,7 +1660,7 @@ class CORE_EXPORT QgsProcessingParameterFeatureSink : public QgsProcessingDestin
      * Returns the layer type for sinks associated with the parameter.
      * \see setDataType()
      */
-    QgsProcessing::LayerType dataType() const;
+    QgsProcessing::SourceType dataType() const;
 
     /**
      * Returns true if sink is likely to include geometries. In cases were presence of geometry
@@ -1672,7 +1672,7 @@ class CORE_EXPORT QgsProcessingParameterFeatureSink : public QgsProcessingDestin
      * Sets the layer \a type for the sinks associated with the parameter.
      * \see dataType()
      */
-    void setDataType( QgsProcessing::LayerType type );
+    void setDataType( QgsProcessing::SourceType type );
 
     QVariantMap toVariantMap() const override;
     bool fromVariantMap( const QVariantMap &map ) override;
@@ -1685,7 +1685,7 @@ class CORE_EXPORT QgsProcessingParameterFeatureSink : public QgsProcessingDestin
 
   private:
 
-    QgsProcessing::LayerType mDataType = QgsProcessing::TypeVectorAny;
+    QgsProcessing::SourceType mDataType = QgsProcessing::TypeVectorAnyGeometry;
 };
 
 
@@ -1706,7 +1706,7 @@ class CORE_EXPORT QgsProcessingParameterVectorDestination : public QgsProcessing
     /**
      * Constructor for QgsProcessingParameterVectorDestination.
      */
-    QgsProcessingParameterVectorDestination( const QString &name, const QString &description = QString(), QgsProcessing::LayerType type = QgsProcessing::TypeVectorAny, const QVariant &defaultValue = QVariant(),
+    QgsProcessingParameterVectorDestination( const QString &name, const QString &description = QString(), QgsProcessing::SourceType type = QgsProcessing::TypeVectorAnyGeometry, const QVariant &defaultValue = QVariant(),
         bool optional = false );
 
     /**
@@ -1725,7 +1725,7 @@ class CORE_EXPORT QgsProcessingParameterVectorDestination : public QgsProcessing
      * Returns the layer type for this created vector layer.
      * \see setDataType()
      */
-    QgsProcessing::LayerType dataType() const;
+    QgsProcessing::SourceType dataType() const;
 
     /**
      * Returns true if the created layer is likely to include geometries. In cases were presence of geometry
@@ -1737,7 +1737,7 @@ class CORE_EXPORT QgsProcessingParameterVectorDestination : public QgsProcessing
      * Sets the layer \a type for the created vector layer.
      * \see dataType()
      */
-    void setDataType( QgsProcessing::LayerType type );
+    void setDataType( QgsProcessing::SourceType type );
 
     QVariantMap toVariantMap() const override;
     bool fromVariantMap( const QVariantMap &map ) override;
@@ -1750,7 +1750,7 @@ class CORE_EXPORT QgsProcessingParameterVectorDestination : public QgsProcessing
 
   private:
 
-    QgsProcessing::LayerType mDataType = QgsProcessing::TypeVectorAny;
+    QgsProcessing::SourceType mDataType = QgsProcessing::TypeVectorAnyGeometry;
 };
 
 /**

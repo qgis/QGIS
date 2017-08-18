@@ -18,9 +18,9 @@
 #include "qgsgridfilewriter.h"
 #include "qgsinterpolator.h"
 #include "qgsvectorlayer.h"
+#include "qgsfeedback.h"
 #include <QFile>
 #include <QFileInfo>
-#include <QProgressDialog>
 
 QgsGridFileWriter::QgsGridFileWriter( QgsInterpolator *i, const QString &outputPath, const QgsRectangle &extent, int nCols, int nRows, double cellSizeX, double cellSizeY )
   : mInterpolator( i )
@@ -44,7 +44,7 @@ QgsGridFileWriter::QgsGridFileWriter()
 
 }
 
-int QgsGridFileWriter::writeFile( bool showProgressDialog )
+int QgsGridFileWriter::writeFile( QgsFeedback *feedback )
 {
   QFile outputFile( mOutputFilePath );
 
@@ -67,13 +67,6 @@ int QgsGridFileWriter::writeFile( bool showProgressDialog )
   double currentXValue;
   double interpolatedValue;
 
-  QProgressDialog *progressDialog = nullptr;
-  if ( showProgressDialog )
-  {
-    progressDialog = new QProgressDialog( QObject::tr( "Interpolating..." ), QObject::tr( "Abort" ), 0, mNumRows, nullptr );
-    progressDialog->setWindowModality( Qt::WindowModal );
-  }
-
   for ( int i = 0; i < mNumRows; ++i )
   {
     currentXValue = mInterpolationExtent.xMinimum() + mCellSizeX / 2.0; //calculate value in the center of the cell
@@ -92,14 +85,14 @@ int QgsGridFileWriter::writeFile( bool showProgressDialog )
     outStream << endl;
     currentYValue -= mCellSizeY;
 
-    if ( showProgressDialog )
+    if ( feedback )
     {
-      if ( progressDialog->wasCanceled() )
+      if ( feedback->isCanceled() )
       {
         outputFile.remove();
         return 3;
       }
-      progressDialog->setValue( i );
+      feedback->setProgress( 100.0 * i / static_cast< double >( mNumRows ) );
     }
   }
 
@@ -120,7 +113,6 @@ int QgsGridFileWriter::writeFile( bool showProgressDialog )
   prjStream << endl;
   prjFile.close();
 
-  delete progressDialog;
   return 0;
 }
 
