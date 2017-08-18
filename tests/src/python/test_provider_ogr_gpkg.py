@@ -324,6 +324,68 @@ class TestPyQgsOGRProviderGpkg(unittest.TestCase):
         self.assertEqual(f['f1'], 3)
         features = None
 
+    def testGeopackageTwoLayerEdition(self):
+        ''' test https://issues.qgis.org/issues/17034 '''
+        tmpfile = os.path.join(self.basetestpath, 'testGeopackageTwoLayerEdition.gpkg')
+        ds = ogr.GetDriverByName('GPKG').CreateDataSource(tmpfile)
+        lyr = ds.CreateLayer('layer1', geom_type=ogr.wkbPoint)
+        lyr.CreateField(ogr.FieldDefn('attr', ogr.OFTInteger))
+        f = ogr.Feature(lyr.GetLayerDefn())
+        f.SetGeometry(ogr.CreateGeometryFromWkt('POINT(0 0)'))
+        lyr.CreateFeature(f)
+        f = None
+        lyr = ds.CreateLayer('layer2', geom_type=ogr.wkbPoint)
+        lyr.CreateField(ogr.FieldDefn('attr', ogr.OFTInteger))
+        f = ogr.Feature(lyr.GetLayerDefn())
+        f.SetGeometry(ogr.CreateGeometryFromWkt('POINT(1 1)'))
+        lyr.CreateFeature(f)
+        f = None
+        ds = None
+
+        vl1 = QgsVectorLayer(u'{}'.format(tmpfile) + "|layername=layer1", u'layer1', u'ogr')
+        vl2 = QgsVectorLayer(u'{}'.format(tmpfile) + "|layername=layer2", u'layer2', u'ogr')
+
+        # Edit vl1, vl2 multiple times
+        self.assertTrue(vl1.startEditing())
+        self.assertTrue(vl2.startEditing())
+        self.assertTrue(vl1.changeGeometry(1, QgsGeometry.fromWkt('Point (2 2)')))
+        self.assertTrue(vl2.changeGeometry(1, QgsGeometry.fromWkt('Point (3 3)')))
+        self.assertTrue(vl1.commitChanges())
+        self.assertTrue(vl2.commitChanges())
+
+        self.assertTrue(vl1.startEditing())
+        self.assertTrue(vl2.startEditing())
+        self.assertTrue(vl1.changeAttributeValue(1, 1, 100))
+        self.assertTrue(vl2.changeAttributeValue(1, 1, 101))
+        self.assertTrue(vl1.commitChanges())
+        self.assertTrue(vl2.commitChanges())
+
+        self.assertTrue(vl1.startEditing())
+        self.assertTrue(vl2.startEditing())
+        self.assertTrue(vl1.changeGeometry(1, QgsGeometry.fromWkt('Point (4 4)')))
+        self.assertTrue(vl2.changeGeometry(1, QgsGeometry.fromWkt('Point (5 5)')))
+        self.assertTrue(vl1.commitChanges())
+        self.assertTrue(vl2.commitChanges())
+
+        vl1 = None
+        vl2 = None
+
+        # Check everything is as expected after re-opening
+        vl1 = QgsVectorLayer(u'{}'.format(tmpfile) + "|layername=layer1", u'layer1', u'ogr')
+        vl2 = QgsVectorLayer(u'{}'.format(tmpfile) + "|layername=layer2", u'layer2', u'ogr')
+
+        got = [feat for feat in vl1.getFeatures()][0]
+        got_geom = got.geometry()
+        self.assertEqual(got['attr'], 100)
+        reference = QgsGeometry.fromWkt('Point (4 4)')
+        self.assertEqual(got_geom.asWkb(), reference.asWkb(), 'Expected {}, got {}'.format(reference.exportToWkt(), got_geom.exportToWkt()))
+
+        got = [feat for feat in vl2.getFeatures()][0]
+        got_geom = got.geometry()
+        self.assertEqual(got['attr'], 101)
+        reference = QgsGeometry.fromWkt('Point (5 5)')
+        self.assertEqual(got_geom.asWkb(), reference.asWkb(), 'Expected {}, got {}'.format(reference.exportToWkt(), got_geom.exportToWkt()))
+
 
 if __name__ == '__main__':
     unittest.main()

@@ -1661,6 +1661,7 @@ bool QgsOgrProvider::changeAttributeValues( const QgsChangedAttributesMap &attr_
       pushError( tr( "Feature %1 for attribute update not found." ).arg( fid ) );
       continue;
     }
+    OGR_L_ResetReading( ogrLayer ); // needed for SQLite-based to clear iterator
 
     QgsLocaleNumC l;
 
@@ -1803,6 +1804,7 @@ bool QgsOgrProvider::changeGeometryValues( const QgsGeometryMap &geometry_map )
       pushError( tr( "OGR error changing geometry: feature %1 not found" ).arg( it.key() ) );
       continue;
     }
+    OGR_L_ResetReading( ogrLayer ); // needed for SQLite-based to clear iterator
 
     OGRGeometryH theNewGeometry = nullptr;
     // We might receive null geometries. It is ok, but don't go through the
