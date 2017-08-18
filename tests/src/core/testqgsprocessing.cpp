@@ -684,12 +684,15 @@ void TestQgsProcessing::mapLayers()
   QgsMapLayer *l = QgsProcessingUtils::loadMapLayerFromString( raster );
   QVERIFY( l->isValid() );
   QCOMPARE( l->type(), QgsMapLayer::RasterLayer );
+  QCOMPARE( l->name(), QStringLiteral( "landsat" ) );
+
   delete l;
 
   //test with vector
   l = QgsProcessingUtils::loadMapLayerFromString( vector );
   QVERIFY( l->isValid() );
   QCOMPARE( l->type(), QgsMapLayer::VectorLayer );
+  QCOMPARE( l->name(), QStringLiteral( "points" ) );
   delete l;
 
   l = QgsProcessingUtils::loadMapLayerFromString( QString() );
@@ -699,6 +702,7 @@ void TestQgsProcessing::mapLayers()
   l = QgsProcessingUtils::loadMapLayerFromString( testDataDir + "multipoint.shp" );
   QVERIFY( l->isValid() );
   QCOMPARE( l->type(), QgsMapLayer::VectorLayer );
+  QCOMPARE( l->name(), QStringLiteral( "multipoint" ) );
   delete l;
 }
 

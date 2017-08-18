@@ -58,7 +58,8 @@ def handleAlgorithmResults(alg, context, feedback=None, showResults=True):
         try:
             layer = QgsProcessingUtils.mapLayerFromString(l, context)
             if layer is not None:
-                layer.setName(details.name)
+                if not ProcessingConfig.getSetting(ProcessingConfig.USE_FILENAME_AS_LAYER_NAME):
+                    layer.setName(details.name)
 
                 style = None
                 if details.outputName:
