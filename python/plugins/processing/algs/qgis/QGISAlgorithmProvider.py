@@ -52,6 +52,7 @@ from .ConcaveHull import ConcaveHull
 from .ConvexHull import ConvexHull
 from .CreateAttributeIndex import CreateAttributeIndex
 from .CreateConstantRaster import CreateConstantRaster
+from .Datasources2Vrt import Datasources2Vrt
 from .Delaunay import Delaunay
 from .DeleteColumn import DeleteColumn
 from .DeleteDuplicateGeometries import DeleteDuplicateGeometries
@@ -164,7 +165,6 @@ from .ZonalStatistics import ZonalStatistics
 # from .FieldsCalculator import FieldsCalculator
 # from .FieldPyculator import FieldsPyculator
 # from .SelectByAttributeSum import SelectByAttributeSum
-# from .Datasources2Vrt import Datasources2Vrt
 # from .DefineProjection import DefineProjection
 # from .RectanglesOvalsDiamondsVariable import RectanglesOvalsDiamondsVariable
 # from .RectanglesOvalsDiamondsFixed import RectanglesOvalsDiamondsFixed
@@ -192,7 +192,7 @@ class QGISAlgorithmProvider(QgsProcessingProvider):
         #         SpatialJoin(),
         #         GeometryConvert(), FieldsCalculator(),
         #         FieldsPyculator(),
-        #         FieldsMapper(), SelectByAttributeSum(), Datasources2Vrt(),
+        #         FieldsMapper(), SelectByAttributeSum()
         #         DefineProjection(),
         #         RectanglesOvalsDiamondsVariable(),
         #         RectanglesOvalsDiamondsFixed(),
@@ -212,6 +212,7 @@ class QGISAlgorithmProvider(QgsProcessingProvider):
                 ConvexHull(),
                 CreateAttributeIndex(),
                 CreateConstantRaster(),
+                Datasources2Vrt(),
                 Delaunay(),
                 DeleteColumn(),
                 DeleteDuplicateGeometries(),
