@@ -729,19 +729,19 @@ void QgsProcessingModelAlgorithm::updateDestinationParameters()
       if ( !source )
         continue;
 
-      QgsProcessingParameterDefinition *param = QgsProcessingParameters::parameterFromVariantMap( source->toVariantMap() );
+      std::unique_ptr< QgsProcessingParameterDefinition > param( source->clone() );
       param->setName( outputIt->childId() + ':' + outputIt->name() );
       param->setDescription( outputIt->description() );
-      addParameter( param );
 
-      if ( const QgsProcessingDestinationParameter *destParam = dynamic_cast< const QgsProcessingDestinationParameter *>( param ) )
+      if ( const QgsProcessingDestinationParameter *destParam = dynamic_cast< const QgsProcessingDestinationParameter *>( param.get() ) )
       {
-        QgsProcessingOutputDefinition *output = destParam->toOutputDefinition();
+        std::unique_ptr< QgsProcessingOutputDefinition > output( destParam->toOutputDefinition() );
         if ( output )
         {
-          addOutput( output );
+          addOutput( output.release() );
         }
       }
+      addParameter( param.release() );
     }
   }
 }
@@ -793,8 +793,11 @@ bool QgsProcessingModelAlgorithm::loadVariant( const QVariant &model )
   for ( ; childIt != childMap.constEnd(); ++childIt )
   {
     QgsProcessingModelChildAlgorithm child;
+    // we be leniant here - even if we couldn't load a parameter, don't interrupt the model loading
+    // otherwise models may become unusable (e.g. due to removed plugins providing algs/parameters)
+    // with no way for users to repair them
     if ( !child.loadVariant( childIt.value() ) )
-      return false;
+      continue;
 
     mChildAlgorithms.insert( child.childId(), child );
   }
@@ -817,11 +820,12 @@ bool QgsProcessingModelAlgorithm::loadVariant( const QVariant &model )
   QVariantMap::const_iterator paramDefIt = paramDefMap.constBegin();
   for ( ; paramDefIt != paramDefMap.constEnd(); ++paramDefIt )
   {
-    QgsProcessingParameterDefinition *param = QgsProcessingParameters::parameterFromVariantMap( paramDefIt.value().toMap() );
-    if ( !param )
-      return false;
-
-    addParameter( param );
+    std::unique_ptr< QgsProcessingParameterDefinition > param( QgsProcessingParameters::parameterFromVariantMap( paramDefIt.value().toMap() ) );
+    // we be leniant here - even if we couldn't load a parameter, don't interrupt the model loading
+    // otherwise models may become unusable (e.g. due to removed plugins providing algs/parameters)
+    // with no way for users to repair them
+    if ( param )
+      addParameter( param.release() );
   }
 
   updateDestinationParameters();

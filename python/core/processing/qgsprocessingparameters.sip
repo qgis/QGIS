@@ -213,6 +213,12 @@ class QgsProcessingParameterDefinition
 
     virtual ~QgsProcessingParameterDefinition();
 
+    virtual QgsProcessingParameterDefinition *clone() const = 0 /Factory/;
+%Docstring
+ Creates a clone of the parameter definition.
+ :rtype: QgsProcessingParameterDefinition
+%End
+
     virtual QString type() const = 0;
 %Docstring
  Unique parameter type name.
@@ -620,6 +626,8 @@ class QgsProcessingParameterBoolean : QgsProcessingParameterDefinition
  Returns the type name for the parameter class.
  :rtype: str
 %End
+    virtual QgsProcessingParameterDefinition *clone() const /Factory/;
+
     virtual QString type() const;
     virtual QString valueAsPythonString( const QVariant &value, QgsProcessingContext &context ) const;
 
@@ -656,6 +664,8 @@ class QgsProcessingParameterCrs : QgsProcessingParameterDefinition
  Returns the type name for the parameter class.
  :rtype: str
 %End
+    virtual QgsProcessingParameterDefinition *clone() const /Factory/;
+
     virtual QString type() const;
     virtual bool checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context = 0 ) const;
 
@@ -693,6 +703,8 @@ class QgsProcessingParameterMapLayer : QgsProcessingParameterDefinition
  Returns the type name for the parameter class.
  :rtype: str
 %End
+    virtual QgsProcessingParameterDefinition *clone() const /Factory/;
+
     virtual QString type() const;
     virtual bool checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context = 0 ) const;
 
@@ -730,6 +742,8 @@ class QgsProcessingParameterExtent : QgsProcessingParameterDefinition
  Returns the type name for the parameter class.
  :rtype: str
 %End
+    virtual QgsProcessingParameterDefinition *clone() const /Factory/;
+
     virtual QString type() const;
     virtual bool checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context = 0 ) const;
 
@@ -768,6 +782,8 @@ class QgsProcessingParameterPoint : QgsProcessingParameterDefinition
  Returns the type name for the parameter class.
  :rtype: str
 %End
+    virtual QgsProcessingParameterDefinition *clone() const /Factory/;
+
     virtual QString type() const;
     virtual bool checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context = 0 ) const;
 
@@ -809,6 +825,8 @@ class QgsProcessingParameterFile : QgsProcessingParameterDefinition
  Returns the type name for the parameter class.
  :rtype: str
 %End
+    virtual QgsProcessingParameterDefinition *clone() const /Factory/;
+
     virtual QString type() const;
     virtual bool checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context = 0 ) const;
 
@@ -879,6 +897,8 @@ class QgsProcessingParameterMatrix : QgsProcessingParameterDefinition
  Returns the type name for the parameter class.
  :rtype: str
 %End
+    virtual QgsProcessingParameterDefinition *clone() const /Factory/;
+
     virtual QString type() const;
     virtual bool checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context = 0 ) const;
 
@@ -967,6 +987,8 @@ class QgsProcessingParameterMultipleLayers : QgsProcessingParameterDefinition
  Returns the type name for the parameter class.
  :rtype: str
 %End
+    virtual QgsProcessingParameterDefinition *clone() const /Factory/;
+
     virtual QString type() const;
     virtual bool checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context = 0 ) const;
 
@@ -1050,6 +1072,8 @@ class QgsProcessingParameterNumber : QgsProcessingParameterDefinition
  Returns the type name for the parameter class.
  :rtype: str
 %End
+    virtual QgsProcessingParameterDefinition *clone() const /Factory/;
+
     virtual QString type() const;
     virtual bool checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context = 0 ) const;
 
@@ -1133,6 +1157,8 @@ class QgsProcessingParameterRange : QgsProcessingParameterDefinition
  Returns the type name for the parameter class.
  :rtype: str
 %End
+    virtual QgsProcessingParameterDefinition *clone() const /Factory/;
+
     virtual QString type() const;
     virtual bool checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context = 0 ) const;
 
@@ -1188,6 +1214,8 @@ class QgsProcessingParameterRasterLayer : QgsProcessingParameterDefinition
  Returns the type name for the parameter class.
  :rtype: str
 %End
+    virtual QgsProcessingParameterDefinition *clone() const /Factory/;
+
     virtual QString type() const;
     virtual bool checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context = 0 ) const;
 
@@ -1227,6 +1255,8 @@ class QgsProcessingParameterEnum : QgsProcessingParameterDefinition
  Returns the type name for the parameter class.
  :rtype: str
 %End
+    virtual QgsProcessingParameterDefinition *clone() const /Factory/;
+
     virtual QString type() const;
     virtual bool checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context = 0 ) const;
 
@@ -1298,6 +1328,8 @@ class QgsProcessingParameterString : QgsProcessingParameterDefinition
  Returns the type name for the parameter class.
  :rtype: str
 %End
+    virtual QgsProcessingParameterDefinition *clone() const /Factory/;
+
     virtual QString type() const;
     virtual QString valueAsPythonString( const QVariant &value, QgsProcessingContext &context ) const;
 
@@ -1354,6 +1386,8 @@ class QgsProcessingParameterExpression : QgsProcessingParameterDefinition
  Returns the type name for the parameter class.
  :rtype: str
 %End
+    virtual QgsProcessingParameterDefinition *clone() const /Factory/;
+
     virtual QString type() const;
     virtual QString valueAsPythonString( const QVariant &value, QgsProcessingContext &context ) const;
 
@@ -1413,6 +1447,8 @@ class QgsProcessingParameterVectorLayer : QgsProcessingParameterDefinition
  Returns the type name for the parameter class.
  :rtype: str
 %End
+    virtual QgsProcessingParameterDefinition *clone() const /Factory/;
+
     virtual QString type() const;
     virtual bool checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context = 0 ) const;
 
@@ -1479,6 +1515,8 @@ class QgsProcessingParameterField : QgsProcessingParameterDefinition
  Returns the type name for the parameter class.
  :rtype: str
 %End
+    virtual QgsProcessingParameterDefinition *clone() const /Factory/;
+
     virtual QString type() const;
     virtual bool checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context = 0 ) const;
 
@@ -1565,6 +1603,8 @@ class QgsProcessingParameterFeatureSource : QgsProcessingParameterDefinition
  Returns the type name for the parameter class.
  :rtype: str
 %End
+    virtual QgsProcessingParameterDefinition *clone() const /Factory/;
+
     virtual QString type() const;
     virtual bool checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context = 0 ) const;
 
@@ -1704,6 +1744,8 @@ class QgsProcessingParameterFeatureSink : QgsProcessingDestinationParameter
  Returns the type name for the parameter class.
  :rtype: str
 %End
+    virtual QgsProcessingParameterDefinition *clone() const /Factory/;
+
     virtual QString type() const;
     virtual bool checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context = 0 ) const;
 
@@ -1781,6 +1823,8 @@ class QgsProcessingParameterVectorDestination : QgsProcessingDestinationParamete
  Returns the type name for the parameter class.
  :rtype: str
 %End
+    virtual QgsProcessingParameterDefinition *clone() const /Factory/;
+
     virtual QString type() const;
     virtual bool checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context = 0 ) const;
 
@@ -1852,6 +1896,8 @@ class QgsProcessingParameterRasterDestination : QgsProcessingDestinationParamete
  Returns the type name for the parameter class.
  :rtype: str
 %End
+    virtual QgsProcessingParameterDefinition *clone() const /Factory/;
+
     virtual QString type() const;
     virtual bool checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context = 0 ) const;
 
@@ -1895,6 +1941,8 @@ class QgsProcessingParameterFileDestination : QgsProcessingDestinationParameter
  Returns the type name for the parameter class.
  :rtype: str
 %End
+    virtual QgsProcessingParameterDefinition *clone() const /Factory/;
+
     virtual QString type() const;
     virtual bool checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context = 0 ) const;
 
@@ -1958,6 +2006,8 @@ class QgsProcessingParameterFolderDestination : QgsProcessingDestinationParamete
  Returns the type name for the parameter class.
  :rtype: str
 %End
+    virtual QgsProcessingParameterDefinition *clone() const /Factory/;
+
     virtual QString type() const;
     virtual bool checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context = 0 ) const;
 
@@ -1998,6 +2048,8 @@ class QgsProcessingParameterBand : QgsProcessingParameterDefinition
  Returns the type name for the parameter class.
  :rtype: str
 %End
+    virtual QgsProcessingParameterDefinition *clone() const /Factory/;
+
     virtual QString type() const;
     virtual bool checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context = 0 ) const;
 

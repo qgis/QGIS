@@ -975,6 +975,11 @@ QgsProcessingParameterBoolean::QgsProcessingParameterBoolean( const QString &nam
   : QgsProcessingParameterDefinition( name, description, defaultValue, optional )
 {}
 
+QgsProcessingParameterDefinition *QgsProcessingParameterBoolean::clone() const
+{
+  return new QgsProcessingParameterBoolean( *this );
+}
+
 QString QgsProcessingParameterBoolean::valueAsPythonString( const QVariant &val, QgsProcessingContext & ) const
 {
   if ( val.canConvert<QgsProperty>() )
@@ -1001,6 +1006,11 @@ QgsProcessingParameterCrs::QgsProcessingParameterCrs( const QString &name, const
   : QgsProcessingParameterDefinition( name, description, defaultValue, optional )
 {
 
+}
+
+QgsProcessingParameterDefinition *QgsProcessingParameterCrs::clone() const
+{
+  return new QgsProcessingParameterCrs( *this );
 }
 
 bool QgsProcessingParameterCrs::checkValueIsAcceptable( const QVariant &input, QgsProcessingContext * ) const
@@ -1042,6 +1052,11 @@ QgsProcessingParameterMapLayer::QgsProcessingParameterMapLayer( const QString &n
   : QgsProcessingParameterDefinition( name, description, defaultValue, optional )
 {
 
+}
+
+QgsProcessingParameterDefinition *QgsProcessingParameterMapLayer::clone() const
+{
+  return new QgsProcessingParameterMapLayer( *this );
 }
 
 bool QgsProcessingParameterMapLayer::checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context ) const
@@ -1095,6 +1110,11 @@ QgsProcessingParameterExtent::QgsProcessingParameterExtent( const QString &name,
   : QgsProcessingParameterDefinition( name, description, defaultValue, optional )
 {
 
+}
+
+QgsProcessingParameterDefinition *QgsProcessingParameterExtent::clone() const
+{
+  return new QgsProcessingParameterExtent( *this );
 }
 
 bool QgsProcessingParameterExtent::checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context ) const
@@ -1163,6 +1183,11 @@ QgsProcessingParameterPoint::QgsProcessingParameterPoint( const QString &name, c
 
 }
 
+QgsProcessingParameterDefinition *QgsProcessingParameterPoint::clone() const
+{
+  return new QgsProcessingParameterPoint( *this );
+}
+
 bool QgsProcessingParameterPoint::checkValueIsAcceptable( const QVariant &input, QgsProcessingContext * ) const
 {
   if ( !input.isValid() )
@@ -1203,6 +1228,11 @@ QgsProcessingParameterFile::QgsProcessingParameterFile( const QString &name, con
   , mExtension( extension )
 {
 
+}
+
+QgsProcessingParameterDefinition *QgsProcessingParameterFile::clone() const
+{
+  return new QgsProcessingParameterFile( *this );
 }
 
 bool QgsProcessingParameterFile::checkValueIsAcceptable( const QVariant &input, QgsProcessingContext * ) const
@@ -1273,6 +1303,11 @@ QgsProcessingParameterMatrix::QgsProcessingParameterMatrix( const QString &name,
   , mFixedNumberRows( fixedNumberRows )
 {
 
+}
+
+QgsProcessingParameterDefinition *QgsProcessingParameterMatrix::clone() const
+{
+  return new QgsProcessingParameterMatrix( *this );
 }
 
 bool QgsProcessingParameterMatrix::checkValueIsAcceptable( const QVariant &input, QgsProcessingContext * ) const
@@ -1388,6 +1423,11 @@ QgsProcessingParameterMultipleLayers::QgsProcessingParameterMultipleLayers( cons
   , mLayerType( layerType )
 {
 
+}
+
+QgsProcessingParameterDefinition *QgsProcessingParameterMultipleLayers::clone() const
+{
+  return new QgsProcessingParameterMultipleLayers( *this );
 }
 
 bool QgsProcessingParameterMultipleLayers::checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context ) const
@@ -1583,6 +1623,11 @@ QgsProcessingParameterNumber::QgsProcessingParameterNumber( const QString &name,
 
 }
 
+QgsProcessingParameterDefinition *QgsProcessingParameterNumber::clone() const
+{
+  return new QgsProcessingParameterNumber( *this );
+}
+
 bool QgsProcessingParameterNumber::checkValueIsAcceptable( const QVariant &input, QgsProcessingContext * ) const
 {
   if ( !input.isValid() )
@@ -1671,6 +1716,11 @@ QgsProcessingParameterRange::QgsProcessingParameterRange( const QString &name, c
   , mDataType( type )
 {
 
+}
+
+QgsProcessingParameterDefinition *QgsProcessingParameterRange::clone() const
+{
+  return new QgsProcessingParameterRange( *this );
 }
 
 bool QgsProcessingParameterRange::checkValueIsAcceptable( const QVariant &input, QgsProcessingContext * ) const
@@ -1765,6 +1815,11 @@ QgsProcessingParameterRasterLayer::QgsProcessingParameterRasterLayer( const QStr
 
 }
 
+QgsProcessingParameterDefinition *QgsProcessingParameterRasterLayer::clone() const
+{
+  return new QgsProcessingParameterRasterLayer( *this );
+}
+
 bool QgsProcessingParameterRasterLayer::checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context ) const
 {
   if ( !input.isValid() )
@@ -1816,6 +1871,11 @@ QgsProcessingParameterEnum::QgsProcessingParameterEnum( const QString &name, con
   , mAllowMultiple( allowMultiple )
 {
 
+}
+
+QgsProcessingParameterDefinition *QgsProcessingParameterEnum::clone() const
+{
+  return new QgsProcessingParameterEnum( *this );
 }
 
 bool QgsProcessingParameterEnum::checkValueIsAcceptable( const QVariant &input, QgsProcessingContext * ) const
@@ -1982,6 +2042,11 @@ QgsProcessingParameterString::QgsProcessingParameterString( const QString &name,
 
 }
 
+QgsProcessingParameterDefinition *QgsProcessingParameterString::clone() const
+{
+  return new QgsProcessingParameterString( *this );
+}
+
 QString QgsProcessingParameterString::valueAsPythonString( const QVariant &value, QgsProcessingContext & ) const
 {
   if ( value.canConvert<QgsProperty>() )
@@ -2059,6 +2124,11 @@ QgsProcessingParameterExpression::QgsProcessingParameterExpression( const QStrin
 
 }
 
+QgsProcessingParameterDefinition *QgsProcessingParameterExpression::clone() const
+{
+  return new QgsProcessingParameterExpression( *this );
+}
+
 QString QgsProcessingParameterExpression::valueAsPythonString( const QVariant &value, QgsProcessingContext & ) const
 {
   if ( value.canConvert<QgsProperty>() )
@@ -2111,6 +2181,11 @@ QgsProcessingParameterVectorLayer::QgsProcessingParameterVectorLayer( const QStr
   , mDataTypes( types )
 {
 
+}
+
+QgsProcessingParameterDefinition *QgsProcessingParameterVectorLayer::clone() const
+{
+  return new QgsProcessingParameterVectorLayer( *this );
 }
 
 bool QgsProcessingParameterVectorLayer::checkValueIsAcceptable( const QVariant &var, QgsProcessingContext *context ) const
@@ -2199,6 +2274,11 @@ QgsProcessingParameterField::QgsProcessingParameterField( const QString &name, c
   , mAllowMultiple( allowMultiple )
 {
 
+}
+
+QgsProcessingParameterDefinition *QgsProcessingParameterField::clone() const
+{
+  return new QgsProcessingParameterField( *this );
 }
 
 bool QgsProcessingParameterField::checkValueIsAcceptable( const QVariant &input, QgsProcessingContext * ) const
@@ -2402,6 +2482,11 @@ QgsProcessingParameterFeatureSource::QgsProcessingParameterFeatureSource( const 
 
 }
 
+QgsProcessingParameterDefinition *QgsProcessingParameterFeatureSource::clone() const
+{
+  return new QgsProcessingParameterFeatureSource( *this );
+}
+
 bool QgsProcessingParameterFeatureSource::checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context ) const
 {
   QVariant var = input;
@@ -2577,6 +2662,11 @@ QgsProcessingParameterFeatureSink::QgsProcessingParameterFeatureSink( const QStr
   , mDataType( type )
 {
 
+}
+
+QgsProcessingParameterDefinition *QgsProcessingParameterFeatureSink::clone() const
+{
+  return new QgsProcessingParameterFeatureSink( *this );
 }
 
 bool QgsProcessingParameterFeatureSink::checkValueIsAcceptable( const QVariant &input, QgsProcessingContext * ) const
@@ -2760,6 +2850,11 @@ QgsProcessingParameterRasterDestination::QgsProcessingParameterRasterDestination
   : QgsProcessingDestinationParameter( name, description, defaultValue, optional )
 {}
 
+QgsProcessingParameterDefinition *QgsProcessingParameterRasterDestination::clone() const
+{
+  return new QgsProcessingParameterRasterDestination( *this );
+}
+
 bool QgsProcessingParameterRasterDestination::checkValueIsAcceptable( const QVariant &input, QgsProcessingContext * ) const
 {
   QVariant var = input;
@@ -2829,6 +2924,11 @@ QgsProcessingParameterFileDestination::QgsProcessingParameterFileDestination( co
   , mFileFilter( fileFilter.isEmpty() ? QObject::tr( "All files (*.*)" ) : fileFilter )
 {
 
+}
+
+QgsProcessingParameterDefinition *QgsProcessingParameterFileDestination::clone() const
+{
+  return new QgsProcessingParameterFileDestination( *this );
 }
 
 bool QgsProcessingParameterFileDestination::checkValueIsAcceptable( const QVariant &input, QgsProcessingContext * ) const
@@ -2933,6 +3033,11 @@ QgsProcessingParameterFolderDestination::QgsProcessingParameterFolderDestination
   : QgsProcessingDestinationParameter( name, description, defaultValue, optional )
 {}
 
+QgsProcessingParameterDefinition *QgsProcessingParameterFolderDestination::clone() const
+{
+  return new QgsProcessingParameterFolderDestination( *this );
+}
+
 bool QgsProcessingParameterFolderDestination::checkValueIsAcceptable( const QVariant &input, QgsProcessingContext * ) const
 {
   QVariant var = input;
@@ -3010,6 +3115,11 @@ QgsProcessingParameterVectorDestination::QgsProcessingParameterVectorDestination
   , mDataType( type )
 {
 
+}
+
+QgsProcessingParameterDefinition *QgsProcessingParameterVectorDestination::clone() const
+{
+  return new QgsProcessingParameterVectorDestination( *this );
 }
 
 bool QgsProcessingParameterVectorDestination::checkValueIsAcceptable( const QVariant &input, QgsProcessingContext * ) const
@@ -3177,6 +3287,11 @@ QgsProcessingParameterBand::QgsProcessingParameterBand( const QString &name, con
   , mParentLayerParameterName( parentLayerParameterName )
 {
 
+}
+
+QgsProcessingParameterDefinition *QgsProcessingParameterBand::clone() const
+{
+  return new QgsProcessingParameterBand( *this );
 }
 
 bool QgsProcessingParameterBand::checkValueIsAcceptable( const QVariant &input, QgsProcessingContext * ) const

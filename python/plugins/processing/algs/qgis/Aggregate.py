@@ -78,6 +78,10 @@ class Aggregate(QgisAlgorithm):
                 super().__init__(name, description)
                 self._parentLayerParameter = parentLayerParameterName
 
+            def clone(self):
+                copy = ParameterAggregates(self.name(), self.description(), self._parentLayerParameter)
+                return copy
+
             def type(self):
                 return 'aggregates'
 
