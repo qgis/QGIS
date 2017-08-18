@@ -350,7 +350,6 @@ bool NormVecDecorator::getTriangle( double x, double y, QgsPoint *p1, int *ptn1,
     }
     else
     {
-      QgsDebugMsg( "warning, getTriangle returned false" );
       return false;
     }
 

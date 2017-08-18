@@ -58,7 +58,7 @@ int QgsTINInterpolator::interpolatePoint( double x, double y, double &result )
     return 1;
   }
 
-  QgsPoint r;
+  QgsPoint r( 0, 0, 0 );
   if ( !mTriangleInterpolator->calcPoint( x, y, &r ) )
   {
     return 2;
