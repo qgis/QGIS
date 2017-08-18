@@ -56,7 +56,7 @@ class Datasources2Vrt(QgisAlgorithm):
     def initAlgorithm(self, config=None):
         self.addParameter(QgsProcessingParameterMultipleLayers(self.INPUT,
                                                                self.tr('Input datasources'),
-                                                               QgsProcessing.TypeTable))
+                                                               QgsProcessing.TypeVector))
         self.addParameter(QgsProcessingParameterBoolean(self.UNIONED,
                                                         self.tr('Create "unioned" VRT'),
                                                         defaultValue=False))

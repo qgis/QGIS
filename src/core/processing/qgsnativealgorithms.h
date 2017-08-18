@@ -65,7 +65,7 @@ class QgsCentroidAlgorithm : public QgsProcessingFeatureBasedAlgorithm
   protected:
 
     QString outputName() const override { return QObject::tr( "Centroids" ); }
-    QgsProcessing::LayerType outputLayerType() const override { return QgsProcessing::TypeVectorPoint; }
+    QgsProcessing::SourceType outputLayerType() const override { return QgsProcessing::TypeVectorPoint; }
     QgsWkbTypes::Type outputWkbType( QgsWkbTypes::Type inputWkbType ) const override { Q_UNUSED( inputWkbType ); return QgsWkbTypes::Point; }
 
     QgsFeature processFeature( const QgsFeature &feature, QgsProcessingFeedback *feedback ) override;

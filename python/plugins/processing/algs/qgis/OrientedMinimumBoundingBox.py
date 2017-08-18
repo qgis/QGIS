@@ -56,7 +56,7 @@ class OrientedMinimumBoundingBox(QgisAlgorithm):
 
     def initAlgorithm(self, config=None):
         self.addParameter(QgsProcessingParameterFeatureSource(self.INPUT,
-                                                              self.tr('Input layer'), [QgsProcessing.TypeVectorAny]))
+                                                              self.tr('Input layer'), [QgsProcessing.TypeVectorAnyGeometry]))
         self.addParameter(QgsProcessingParameterBoolean(self.BY_FEATURE,
                                                         self.tr('Calculate bounds for each feature separately'), defaultValue=True))
 

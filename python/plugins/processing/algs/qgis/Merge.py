@@ -60,7 +60,7 @@ class Merge(QgisAlgorithm):
     def initAlgorithm(self, config=None):
         self.addParameter(QgsProcessingParameterMultipleLayers(self.LAYERS,
                                                                self.tr('Layers to merge'),
-                                                               QgsProcessing.TypeVectorAny))
+                                                               QgsProcessing.TypeVectorAnyGeometry))
 
         self.addParameter(QgsProcessingParameterFeatureSink(self.OUTPUT, self.tr('Merged')))
 

@@ -2194,7 +2194,7 @@ void TestQgsProcessing::parameterLayerList()
   context.setProject( &p );
 
   // not optional!
-  std::unique_ptr< QgsProcessingParameterMultipleLayers > def( new QgsProcessingParameterMultipleLayers( "non_optional", QString(), QgsProcessing::TypeAny, QString(), false ) );
+  std::unique_ptr< QgsProcessingParameterMultipleLayers > def( new QgsProcessingParameterMultipleLayers( "non_optional", QString(), QgsProcessing::TypeMapLayer, QString(), false ) );
   QVERIFY( !def->checkValueIsAcceptable( false ) );
   QVERIFY( !def->checkValueIsAcceptable( true ) );
   QVERIFY( !def->checkValueIsAcceptable( 5 ) );
@@ -2288,7 +2288,7 @@ void TestQgsProcessing::parameterLayerList()
   QCOMPARE( fromCode->description(), QStringLiteral( "non optional" ) );
   QCOMPARE( fromCode->flags(), def->flags() );
   QVERIFY( !fromCode->defaultValue().isValid() );
-  QCOMPARE( fromCode->layerType(), QgsProcessing::TypeVectorAny );
+  QCOMPARE( fromCode->layerType(), QgsProcessing::TypeVectorAnyGeometry );
 
   QVariantMap map = def->toVariantMap();
   QgsProcessingParameterMultipleLayers fromMap( "x" );
@@ -2303,7 +2303,7 @@ void TestQgsProcessing::parameterLayerList()
   QVERIFY( dynamic_cast< QgsProcessingParameterMultipleLayers *>( def.get() ) );
 
   // optional with one default layer
-  def.reset( new QgsProcessingParameterMultipleLayers( "optional", QString(), QgsProcessing::TypeAny, v1->id(), true ) );
+  def.reset( new QgsProcessingParameterMultipleLayers( "optional", QString(), QgsProcessing::TypeMapLayer, v1->id(), true ) );
   QVERIFY( !def->checkValueIsAcceptable( false ) );
   QVERIFY( !def->checkValueIsAcceptable( true ) );
   QVERIFY( !def->checkValueIsAcceptable( 5 ) );
@@ -2335,10 +2335,10 @@ void TestQgsProcessing::parameterLayerList()
   QCOMPARE( fromCode->description(), QStringLiteral( "optional" ) );
   QCOMPARE( fromCode->flags(), def->flags() );
   QCOMPARE( fromCode->defaultValue(), def->defaultValue() );
-  QCOMPARE( fromCode->layerType(), QgsProcessing::TypeVectorAny );
+  QCOMPARE( fromCode->layerType(), QgsProcessing::TypeVectorAnyGeometry );
 
   // optional with two default layers
-  def.reset( new QgsProcessingParameterMultipleLayers( "optional", QString(), QgsProcessing::TypeAny, QVariantList() << v1->id() << r1->publicSource(), true ) );
+  def.reset( new QgsProcessingParameterMultipleLayers( "optional", QString(), QgsProcessing::TypeMapLayer, QVariantList() << v1->id() << r1->publicSource(), true ) );
   params.insert( "optional",  QVariant() );
   QCOMPARE( QgsProcessingParameters::parameterAsLayerList( def.get(), params, context ), QList< QgsMapLayer *>() << v1 << r1 );
 
@@ -2350,14 +2350,14 @@ void TestQgsProcessing::parameterLayerList()
   QCOMPARE( fromCode->description(), QStringLiteral( "optional" ) );
   QCOMPARE( fromCode->flags(), def->flags() );
   QCOMPARE( fromCode->defaultValue().toString(), v1->id() + "," + r1->publicSource() );
-  QCOMPARE( fromCode->layerType(), QgsProcessing::TypeVectorAny );
+  QCOMPARE( fromCode->layerType(), QgsProcessing::TypeVectorAnyGeometry );
 
   // optional with one default direct layer
-  def.reset( new QgsProcessingParameterMultipleLayers( "optional", QString(), QgsProcessing::TypeAny, QVariant::fromValue( v1 ), true ) );
+  def.reset( new QgsProcessingParameterMultipleLayers( "optional", QString(), QgsProcessing::TypeMapLayer, QVariant::fromValue( v1 ), true ) );
   QCOMPARE( QgsProcessingParameters::parameterAsLayerList( def.get(), params, context ), QList< QgsMapLayer *>() << v1 );
 
   // optional with two default direct layers
-  def.reset( new QgsProcessingParameterMultipleLayers( "optional", QString(), QgsProcessing::TypeAny, QVariantList() << QVariant::fromValue( v1 ) << QVariant::fromValue( r1 ), true ) );
+  def.reset( new QgsProcessingParameterMultipleLayers( "optional", QString(), QgsProcessing::TypeMapLayer, QVariantList() << QVariant::fromValue( v1 ) << QVariant::fromValue( r1 ), true ) );
   QCOMPARE( QgsProcessingParameters::parameterAsLayerList( def.get(), params, context ), QList< QgsMapLayer *>() << v1 << r1 );
 
   def.reset( new QgsProcessingParameterMultipleLayers( "type", QString(), QgsProcessing::TypeRaster ) );
@@ -3395,7 +3395,7 @@ void TestQgsProcessing::parameterFeatureSource()
   context.setProject( &p );
 
   // not optional!
-  std::unique_ptr< QgsProcessingParameterFeatureSource > def( new QgsProcessingParameterFeatureSource( "non_optional", QString(), QList< int >() << QgsProcessing::TypeVectorAny, QString(), false ) );
+  std::unique_ptr< QgsProcessingParameterFeatureSource > def( new QgsProcessingParameterFeatureSource( "non_optional", QString(), QList< int >() << QgsProcessing::TypeVectorAnyGeometry, QString(), false ) );
   QVERIFY( !def->checkValueIsAcceptable( false ) );
   QVERIFY( !def->checkValueIsAcceptable( true ) );
   QVERIFY( !def->checkValueIsAcceptable( 5 ) );
@@ -3482,7 +3482,7 @@ void TestQgsProcessing::parameterFeatureSource()
 
 
   // optional
-  def.reset( new QgsProcessingParameterFeatureSource( "optional", QString(), QList< int >() << QgsProcessing::TypeVectorAny, v1->id(), true ) );
+  def.reset( new QgsProcessingParameterFeatureSource( "optional", QString(), QList< int >() << QgsProcessing::TypeVectorAnyGeometry, v1->id(), true ) );
   params.insert( "optional",  QVariant() );
   QCOMPARE( QgsProcessingParameters::parameterAsVectorLayer( def.get(), params,  context )->id(), v1->id() );
   QVERIFY( def->checkValueIsAcceptable( false ) );
@@ -3505,7 +3505,7 @@ void TestQgsProcessing::parameterFeatureSource()
 
 
   //optional with direct layer default
-  def.reset( new QgsProcessingParameterFeatureSource( "optional", QString(), QList< int >() << QgsProcessing::TypeVectorAny, QVariant::fromValue( v1 ), true ) );
+  def.reset( new QgsProcessingParameterFeatureSource( "optional", QString(), QList< int >() << QgsProcessing::TypeVectorAnyGeometry, QVariant::fromValue( v1 ), true ) );
   QCOMPARE( QgsProcessingParameters::parameterAsVectorLayer( def.get(), params,  context )->id(), v1->id() );
 }
 
@@ -3518,7 +3518,7 @@ void TestQgsProcessing::parameterFeatureSink()
   context.setProject( &p );
 
   // not optional!
-  std::unique_ptr< QgsProcessingParameterFeatureSink > def( new QgsProcessingParameterFeatureSink( "non_optional", QString(), QgsProcessing::TypeVectorAny, QString(), false ) );
+  std::unique_ptr< QgsProcessingParameterFeatureSink > def( new QgsProcessingParameterFeatureSink( "non_optional", QString(), QgsProcessing::TypeVectorAnyGeometry, QString(), false ) );
   QVERIFY( !def->checkValueIsAcceptable( false ) );
   QVERIFY( !def->checkValueIsAcceptable( true ) );
   QVERIFY( !def->checkValueIsAcceptable( 5 ) );
@@ -3580,14 +3580,14 @@ void TestQgsProcessing::parameterFeatureSink()
   QCOMPARE( code, QStringLiteral( "##non_optional=sink polygon" ) );
   fromCode.reset( dynamic_cast< QgsProcessingParameterFeatureSink * >( QgsProcessingParameters::parameterFromScriptCode( code ) ) );
   QCOMPARE( fromCode->dataType(), def->dataType() );
-  def->setDataType( QgsProcessing::TypeTable );
+  def->setDataType( QgsProcessing::TypeVector );
   code = def->asScriptCode();
   QCOMPARE( code, QStringLiteral( "##non_optional=sink table" ) );
   fromCode.reset( dynamic_cast< QgsProcessingParameterFeatureSink * >( QgsProcessingParameters::parameterFromScriptCode( code ) ) );
   QCOMPARE( fromCode->dataType(), def->dataType() );
 
   // optional
-  def.reset( new QgsProcessingParameterFeatureSink( "optional", QString(), QgsProcessing::TypeVectorAny, QString(), true ) );
+  def.reset( new QgsProcessingParameterFeatureSink( "optional", QString(), QgsProcessing::TypeVectorAnyGeometry, QString(), true ) );
   QVERIFY( !def->checkValueIsAcceptable( false ) );
   QVERIFY( !def->checkValueIsAcceptable( true ) );
   QVERIFY( !def->checkValueIsAcceptable( 5 ) );
@@ -3610,14 +3610,14 @@ void TestQgsProcessing::parameterFeatureSink()
   QVERIFY( !def->createByDefault() );
 
   // test hasGeometry
-  QVERIFY( QgsProcessingParameterFeatureSink( "test", QString(), QgsProcessing::TypeAny ).hasGeometry() );
-  QVERIFY( QgsProcessingParameterFeatureSink( "test", QString(), QgsProcessing::TypeVectorAny ).hasGeometry() );
+  QVERIFY( QgsProcessingParameterFeatureSink( "test", QString(), QgsProcessing::TypeMapLayer ).hasGeometry() );
+  QVERIFY( QgsProcessingParameterFeatureSink( "test", QString(), QgsProcessing::TypeVectorAnyGeometry ).hasGeometry() );
   QVERIFY( QgsProcessingParameterFeatureSink( "test", QString(), QgsProcessing::TypeVectorPoint ).hasGeometry() );
   QVERIFY( QgsProcessingParameterFeatureSink( "test", QString(), QgsProcessing::TypeVectorLine ).hasGeometry() );
   QVERIFY( QgsProcessingParameterFeatureSink( "test", QString(), QgsProcessing::TypeVectorPolygon ).hasGeometry() );
   QVERIFY( !QgsProcessingParameterFeatureSink( "test", QString(), QgsProcessing::TypeRaster ).hasGeometry() );
   QVERIFY( !QgsProcessingParameterFeatureSink( "test", QString(), QgsProcessing::TypeFile ).hasGeometry() );
-  QVERIFY( QgsProcessingParameterFeatureSink( "test", QString(), QgsProcessing::TypeTable ).hasGeometry() );
+  QVERIFY( QgsProcessingParameterFeatureSink( "test", QString(), QgsProcessing::TypeVector ).hasGeometry() );
 
 }
 
@@ -3630,7 +3630,7 @@ void TestQgsProcessing::parameterVectorOut()
   context.setProject( &p );
 
   // not optional!
-  std::unique_ptr< QgsProcessingParameterVectorDestination > def( new QgsProcessingParameterVectorDestination( "non_optional", QString(), QgsProcessing::TypeVectorAny, QString(), false ) );
+  std::unique_ptr< QgsProcessingParameterVectorDestination > def( new QgsProcessingParameterVectorDestination( "non_optional", QString(), QgsProcessing::TypeVectorAnyGeometry, QString(), false ) );
   QVERIFY( !def->checkValueIsAcceptable( false ) );
   QVERIFY( !def->checkValueIsAcceptable( true ) );
   QVERIFY( !def->checkValueIsAcceptable( 5 ) );
@@ -3691,7 +3691,7 @@ void TestQgsProcessing::parameterVectorOut()
   QCOMPARE( fromCode->dataType(), def->dataType() );
 
   // optional
-  def.reset( new QgsProcessingParameterVectorDestination( "optional", QString(), QgsProcessing::TypeVectorAny, QString(), true ) );
+  def.reset( new QgsProcessingParameterVectorDestination( "optional", QString(), QgsProcessing::TypeVectorAnyGeometry, QString(), true ) );
   QVERIFY( !def->checkValueIsAcceptable( false ) );
   QVERIFY( !def->checkValueIsAcceptable( true ) );
   QVERIFY( !def->checkValueIsAcceptable( 5 ) );
@@ -3711,14 +3711,14 @@ void TestQgsProcessing::parameterVectorOut()
   QCOMPARE( fromCode->dataType(), def->dataType() );
 
   // test hasGeometry
-  QVERIFY( QgsProcessingParameterVectorDestination( "test", QString(), QgsProcessing::TypeAny ).hasGeometry() );
-  QVERIFY( QgsProcessingParameterVectorDestination( "test", QString(), QgsProcessing::TypeVectorAny ).hasGeometry() );
+  QVERIFY( QgsProcessingParameterVectorDestination( "test", QString(), QgsProcessing::TypeMapLayer ).hasGeometry() );
+  QVERIFY( QgsProcessingParameterVectorDestination( "test", QString(), QgsProcessing::TypeVectorAnyGeometry ).hasGeometry() );
   QVERIFY( QgsProcessingParameterVectorDestination( "test", QString(), QgsProcessing::TypeVectorPoint ).hasGeometry() );
   QVERIFY( QgsProcessingParameterVectorDestination( "test", QString(), QgsProcessing::TypeVectorLine ).hasGeometry() );
   QVERIFY( QgsProcessingParameterVectorDestination( "test", QString(), QgsProcessing::TypeVectorPolygon ).hasGeometry() );
   QVERIFY( !QgsProcessingParameterVectorDestination( "test", QString(), QgsProcessing::TypeRaster ).hasGeometry() );
   QVERIFY( !QgsProcessingParameterVectorDestination( "test", QString(), QgsProcessing::TypeFile ).hasGeometry() );
-  QVERIFY( QgsProcessingParameterVectorDestination( "test", QString(), QgsProcessing::TypeTable ).hasGeometry() );
+  QVERIFY( QgsProcessingParameterVectorDestination( "test", QString(), QgsProcessing::TypeVector ).hasGeometry() );
 
 }
 
@@ -4200,7 +4200,7 @@ void TestQgsProcessing::processingFeatureSink()
 
 
   // non optional sink
-  def.reset( new QgsProcessingParameterFeatureSink( QStringLiteral( "layer" ), QString(), QgsProcessing::TypeAny, QVariant(), false ) );
+  def.reset( new QgsProcessingParameterFeatureSink( QStringLiteral( "layer" ), QString(), QgsProcessing::TypeMapLayer, QVariant(), false ) );
   QVERIFY( def->checkValueIsAcceptable( QStringLiteral( "memory:test" ) ) );
   QVERIFY( def->checkValueIsAcceptable( QgsProcessingOutputLayerDefinition( "memory:test" ) ) );
   QVERIFY( def->checkValueIsAcceptable( QgsProperty::fromValue( "memory:test" ) ) );
@@ -4212,7 +4212,7 @@ void TestQgsProcessing::processingFeatureSink()
   QVERIFY( sink.get() );
 
   // optional sink
-  def.reset( new QgsProcessingParameterFeatureSink( QStringLiteral( "layer" ), QString(), QgsProcessing::TypeAny, QVariant(), true ) );
+  def.reset( new QgsProcessingParameterFeatureSink( QStringLiteral( "layer" ), QString(), QgsProcessing::TypeMapLayer, QVariant(), true ) );
   QVERIFY( def->checkValueIsAcceptable( QStringLiteral( "memory:test" ) ) );
   QVERIFY( def->checkValueIsAcceptable( QgsProcessingOutputLayerDefinition( "memory:test" ) ) );
   QVERIFY( def->checkValueIsAcceptable( QgsProperty::fromValue( "memory:test" ) ) );
@@ -4228,7 +4228,7 @@ void TestQgsProcessing::processingFeatureSink()
   QVERIFY( !sink.get() );
 
   //.... unless there's a default set
-  def.reset( new QgsProcessingParameterFeatureSink( QStringLiteral( "layer" ), QString(), QgsProcessing::TypeAny, QStringLiteral( "memory:defaultlayer" ), true ) );
+  def.reset( new QgsProcessingParameterFeatureSink( QStringLiteral( "layer" ), QString(), QgsProcessing::TypeMapLayer, QStringLiteral( "memory:defaultlayer" ), true ) );
   params.insert( QStringLiteral( "layer" ), QVariant() );
   sink.reset( QgsProcessingParameters::parameterAsSink( def.get(), params, QgsFields(), QgsWkbTypes::Point, QgsCoordinateReferenceSystem( "EPSG:3113" ), context, dest ) );
   QVERIFY( sink.get() );

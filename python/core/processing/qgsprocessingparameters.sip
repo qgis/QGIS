@@ -975,7 +975,7 @@ class QgsProcessingParameterMultipleLayers : QgsProcessingParameterDefinition
 %End
   public:
 
-    QgsProcessingParameterMultipleLayers( const QString &name, const QString &description = QString(), QgsProcessing::LayerType layerType = QgsProcessing::TypeVectorAny,
+    QgsProcessingParameterMultipleLayers( const QString &name, const QString &description = QString(), QgsProcessing::SourceType layerType = QgsProcessing::TypeVectorAnyGeometry,
                                           const QVariant &defaultValue = QVariant(),
                                           bool optional = false );
 %Docstring
@@ -997,14 +997,14 @@ class QgsProcessingParameterMultipleLayers : QgsProcessingParameterDefinition
     virtual QString asScriptCode() const;
 
 
-    QgsProcessing::LayerType layerType() const;
+    QgsProcessing::SourceType layerType() const;
 %Docstring
  Returns the layer type for layers acceptable by the parameter.
 .. seealso:: setLayerType()
- :rtype: QgsProcessing.LayerType
+ :rtype: QgsProcessing.SourceType
 %End
 
-    void setLayerType( QgsProcessing::LayerType type );
+    void setLayerType( QgsProcessing::SourceType type );
 %Docstring
  Sets the layer ``type`` for layers acceptable by the parameter.
 .. seealso:: layerType()
@@ -1733,7 +1733,7 @@ class QgsProcessingParameterFeatureSink : QgsProcessingDestinationParameter
 %End
   public:
 
-    QgsProcessingParameterFeatureSink( const QString &name, const QString &description = QString(), QgsProcessing::LayerType type = QgsProcessing::TypeVectorAny, const QVariant &defaultValue = QVariant(),
+    QgsProcessingParameterFeatureSink( const QString &name, const QString &description = QString(), QgsProcessing::SourceType type = QgsProcessing::TypeVectorAnyGeometry, const QVariant &defaultValue = QVariant(),
                                        bool optional = false );
 %Docstring
  Constructor for QgsProcessingParameterFeatureSink.
@@ -1758,11 +1758,11 @@ class QgsProcessingParameterFeatureSink : QgsProcessingDestinationParameter
     virtual QString defaultFileExtension() const;
 
 
-    QgsProcessing::LayerType dataType() const;
+    QgsProcessing::SourceType dataType() const;
 %Docstring
  Returns the layer type for sinks associated with the parameter.
 .. seealso:: setDataType()
- :rtype: QgsProcessing.LayerType
+ :rtype: QgsProcessing.SourceType
 %End
 
     bool hasGeometry() const;
@@ -1772,7 +1772,7 @@ class QgsProcessingParameterFeatureSink : QgsProcessingDestinationParameter
  :rtype: bool
 %End
 
-    void setDataType( QgsProcessing::LayerType type );
+    void setDataType( QgsProcessing::SourceType type );
 %Docstring
  Sets the layer ``type`` for the sinks associated with the parameter.
 .. seealso:: dataType()
@@ -1812,7 +1812,7 @@ class QgsProcessingParameterVectorDestination : QgsProcessingDestinationParamete
 %End
   public:
 
-    QgsProcessingParameterVectorDestination( const QString &name, const QString &description = QString(), QgsProcessing::LayerType type = QgsProcessing::TypeVectorAny, const QVariant &defaultValue = QVariant(),
+    QgsProcessingParameterVectorDestination( const QString &name, const QString &description = QString(), QgsProcessing::SourceType type = QgsProcessing::TypeVectorAnyGeometry, const QVariant &defaultValue = QVariant(),
         bool optional = false );
 %Docstring
  Constructor for QgsProcessingParameterVectorDestination.
@@ -1837,11 +1837,11 @@ class QgsProcessingParameterVectorDestination : QgsProcessingDestinationParamete
     virtual QString defaultFileExtension() const;
 
 
-    QgsProcessing::LayerType dataType() const;
+    QgsProcessing::SourceType dataType() const;
 %Docstring
  Returns the layer type for this created vector layer.
 .. seealso:: setDataType()
- :rtype: QgsProcessing.LayerType
+ :rtype: QgsProcessing.SourceType
 %End
 
     bool hasGeometry() const;
@@ -1851,7 +1851,7 @@ class QgsProcessingParameterVectorDestination : QgsProcessingDestinationParamete
  :rtype: bool
 %End
 
-    void setDataType( QgsProcessing::LayerType type );
+    void setDataType( QgsProcessing::SourceType type );
 %Docstring
  Sets the layer ``type`` for the created vector layer.
 .. seealso:: dataType()

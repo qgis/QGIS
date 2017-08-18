@@ -184,7 +184,7 @@ def createTest(text):
 
             # Handle datatype detection
             dataType = param.layerType()
-            if dataType in [QgsProcessing.TypeVectorAny, QgsProcessing.TypeVectorPoint, QgsProcessing.TypeVectorLine, QgsProcessing.TypeVectorPolygon, QgsProcessing.TypeTable]:
+            if dataType in [QgsProcessing.TypeVectorAnyGeometry, QgsProcessing.TypeVectorPoint, QgsProcessing.TypeVectorLine, QgsProcessing.TypeVectorPolygon, QgsProcessing.TypeVector]:
                 dataType = 'vector'
             else:
                 dataType = 'raster'
