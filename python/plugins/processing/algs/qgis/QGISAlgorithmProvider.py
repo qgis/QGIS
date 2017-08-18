@@ -81,6 +81,7 @@ from .Hillshade import Hillshade
 from .HubDistanceLines import HubDistanceLines
 from .HubDistancePoints import HubDistancePoints
 from .HubLines import HubLines
+from .HypsometricCurves import HypsometricCurves
 from .ImportIntoPostGIS import ImportIntoPostGIS
 from .ImportIntoSpatialite import ImportIntoSpatialite
 from .Intersection import Intersection
@@ -162,7 +163,6 @@ from .ZonalStatistics import ZonalStatistics
 # from .SetVectorStyle import SetVectorStyle
 # from .SetRasterStyle import SetRasterStyle
 # from .SelectByAttributeSum import SelectByAttributeSum
-# from .HypsometricCurves import HypsometricCurves
 # from .Datasources2Vrt import Datasources2Vrt
 # from .DefineProjection import DefineProjection
 # from .RectanglesOvalsDiamondsVariable import RectanglesOvalsDiamondsVariable
@@ -193,9 +193,7 @@ class QGISAlgorithmProvider(QgsProcessingProvider):
         #         GeometryConvert(), FieldsCalculator(),
         #         FieldsPyculator(),
         #         SetVectorStyle(), SetRasterStyle(),
-        #          HypsometricCurves(),
         #         FieldsMapper(), SelectByAttributeSum(), Datasources2Vrt(),
-        #
         #         DefineProjection(),
         #         RectanglesOvalsDiamondsVariable(),
         #         RectanglesOvalsDiamondsFixed(),
@@ -245,6 +243,7 @@ class QGISAlgorithmProvider(QgsProcessingProvider):
                 HubDistanceLines(),
                 HubDistancePoints(),
                 HubLines(),
+                HypsometricCurves(),
                 ImportIntoPostGIS(),
                 ImportIntoSpatialite(),
                 Intersection(),
