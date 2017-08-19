@@ -3176,3 +3176,20 @@ tests:
       OUTPUT:
         name: expected/pixel_centroids_lines.gml
         type: vector
+
+  - algorithm: qgis:fieldcalculator
+    name: Test field calculator points
+    params:
+      FIELD_LENGTH: 10
+      FIELD_NAME: test
+      FIELD_PRECISION: 3
+      FIELD_TYPE: 1
+      FORMULA: ' "id2" *2'
+      INPUT:
+        name: points.gml
+        type: vector
+      NEW_FIELD: true
+    results:
+      OUTPUT:
+        name: expected/field_calculator_points.gml
+        type: vector
