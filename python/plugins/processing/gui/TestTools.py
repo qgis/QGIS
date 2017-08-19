@@ -153,6 +153,9 @@ def createTest(text):
         if param.flags() & QgsProcessingParameterDefinition.FlagHidden or param.isDestination():
             continue
 
+        if not param.name() in parameters:
+            continue
+
         i += 1
         token = parameters[param.name()]
         # Handle empty parameters that are optionals
@@ -180,7 +183,7 @@ def createTest(text):
 
             params[param.name()] = p
         elif isinstance(param, QgsProcessingParameterMultipleLayers):
-            multiparams = token.split(';')
+            multiparams = token
             newparam = []
 
             # Handle datatype detection
