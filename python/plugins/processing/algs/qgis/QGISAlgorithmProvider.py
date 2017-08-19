@@ -65,6 +65,7 @@ from .DropGeometry import DropGeometry
 from .DropMZValues import DropMZValues
 from .EliminateSelection import EliminateSelection
 from .EquivalentNumField import EquivalentNumField
+from .ExecuteSQL import ExecuteSQL
 from .Explode import Explode
 from .ExportGeometryInfo import ExportGeometryInfo
 from .ExtendLines import ExtendLines
@@ -172,7 +173,6 @@ from .ZonalStatistics import ZonalStatistics
 # from .GeometryConvert import GeometryConvert
 # from .SelectByAttributeSum import SelectByAttributeSum
 # from .RasterCalculator import RasterCalculator
-# from .ExecuteSQL import ExecuteSQL
 
 pluginPath = os.path.normpath(os.path.join(
     os.path.split(os.path.dirname(__file__))[0], os.pardir))
@@ -193,7 +193,7 @@ class QGISAlgorithmProvider(QgsProcessingProvider):
         #         GeometryConvert(),
         #         SelectByAttributeSum()
         #         RasterCalculator(),
-        #          ExecuteSQL(),
+        #
         #         ]
         algs = [AddTableField(),
                 Aggregate(),
@@ -220,6 +220,7 @@ class QGISAlgorithmProvider(QgsProcessingProvider):
                 DropMZValues(),
                 EliminateSelection(),
                 EquivalentNumField(),
+                ExecuteSQL(),
                 Explode(),
                 ExportGeometryInfo(),
                 ExtendLines(),

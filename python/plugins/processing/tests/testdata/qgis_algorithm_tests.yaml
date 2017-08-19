@@ -3210,3 +3210,20 @@ tests:
       OUTPUT:
         name: expected/pycalculator_points.gml
         type: vector
+
+  - algorithm: qgis:executesql
+    name: Test execute SQL
+    params:
+      INPUT_DATASOURCES:
+        params:
+        - name: points.gml
+          type: vector
+        type: multi
+      INPUT_GEOMETRY_FIELD: ''
+      INPUT_GEOMETRY_TYPE: 0
+      INPUT_QUERY: select * from input1 where id2=2
+      INPUT_UID_FIELD: ''
+    results:
+      OUTPUT:
+        name: expected/execute_sql.gml
+        type: vector
