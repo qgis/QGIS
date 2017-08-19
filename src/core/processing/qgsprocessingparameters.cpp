@@ -2565,6 +2565,10 @@ QString QgsProcessingParameterFeatureSource::valueAsPythonString( const QVariant
       }
     }
   }
+  else if ( QgsVectorLayer *layer = qobject_cast< QgsVectorLayer * >( qvariant_cast<QObject *>( value ) ) )
+  {
+    return layer->source().prepend( '\'' ).append( '\'' );
+  }
 
   return value.toString().prepend( '\'' ).append( '\'' );
 }
