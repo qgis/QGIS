@@ -124,6 +124,7 @@ from .RandomPointsPolygons import RandomPointsPolygons
 from .RandomSelection import RandomSelection
 from .RandomSelectionWithinSubsets import RandomSelectionWithinSubsets
 from .Rasterize import RasterizeAlgorithm
+from .RasterCalculator import RasterCalculator
 from .RasterLayerStatistics import RasterLayerStatistics
 from .RectanglesOvalsDiamondsFixed import RectanglesOvalsDiamondsFixed
 from .RectanglesOvalsDiamondsVariable import RectanglesOvalsDiamondsVariable
@@ -172,7 +173,6 @@ from .ZonalStatistics import ZonalStatistics
 # from .SpatialJoin import SpatialJoin
 # from .GeometryConvert import GeometryConvert
 # from .SelectByAttributeSum import SelectByAttributeSum
-# from .RasterCalculator import RasterCalculator
 
 pluginPath = os.path.normpath(os.path.join(
     os.path.split(os.path.dirname(__file__))[0], os.pardir))
@@ -192,8 +192,6 @@ class QGISAlgorithmProvider(QgsProcessingProvider):
         #         SpatialJoin(),
         #         GeometryConvert(),
         #         SelectByAttributeSum()
-        #         RasterCalculator(),
-        #
         #         ]
         algs = [AddTableField(),
                 Aggregate(),
@@ -278,6 +276,7 @@ class QGISAlgorithmProvider(QgsProcessingProvider):
                 RandomPointsPolygons(),
                 RandomSelection(),
                 RandomSelectionWithinSubsets(),
+                RasterCalculator(),
                 RasterizeAlgorithm(),
                 RasterLayerStatistics(),
                 RectanglesOvalsDiamondsFixed(),
