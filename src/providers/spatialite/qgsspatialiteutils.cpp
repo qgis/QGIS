@@ -1210,7 +1210,6 @@ int SpatialiteDbInfo::addDbMapLayers( QStringList saSelectedLayers, QStringList 
         QgsVectorLayer *vectorLayer = nullptr;
         QgsRasterLayer *rasterLayer = nullptr;
         QString sLayerDataSourceUri = dbLayer->getLayerDataSourceUri();
-        //qDebug() << QString( "-II-> addDbMapLayers  Layer-Name[%1] Layer-Type[%5] Provider[%3] LayerInfo[%4] LayerDataSourceUri[%2]" ).arg( sLayerName ).arg( sLayerDataSourceUri ).arg(sProvider).arg(dbLayer->getLayerInfo()).arg(dbLayer->getLayerTypeString());
         if ( sProvider == sSpatialte )
         {
           if ( !sLayerNameSql.isEmpty() )
@@ -1220,17 +1219,33 @@ int SpatialiteDbInfo::addDbMapLayers( QStringList saSelectedLayers, QStringList 
           vectorLayer = new QgsVectorLayer( sLayerDataSourceUri, sLayerName, sProvider );
           if ( vectorLayer->isValid() )
           {
+            //qDebug() << QString( "-II-> addDbMapLayers  Layer-Name[%1] Layer-Type[%3]  LayerInfo[%2] LayerStyleSelected[%4]" ).arg( sLayerName ).arg( dbLayer->getLayerInfo() ).arg( dbLayer->getLayerTypeString() ).arg( dbLayer->getLayerStyleSelected() );
             if ( ( dbLayer ) && ( dbLayer->isLayerValid() ) && ( dbLayer->hasLayerStyle() ) )
             {
-              QDomElement namedLayerElement = dbLayer->getLayerStyleNamedLayerElement();
-              QDomElement nameElement = namedLayerElement.firstChildElement( QStringLiteral( "Name" ) );
-              if ( !nameElement.isNull() )
+              QString errorMessage;
+              QDomElement namedLayerElement = dbLayer->getLayerStyleNamedLayerElement( dbLayer->getLayerStyleSelected(), errorMessage );
+              if ( !namedLayerElement.isNull() )
               {
-                QString errorMessage;
-                if ( !vectorLayer->readSld( namedLayerElement, errorMessage ) )
+                QDomElement nameElement = namedLayerElement.firstChildElement( QStringLiteral( "Name" ) );
+                if ( !nameElement.isNull() )
                 {
-                  QgsDebugMsg( QString( "[Style cannot be rendered]  LayerName[%1]: StyleName[%2] error[%3]" ).arg( sLayerName ).arg( dbLayer->getLayerStyleSelected() ).arg( errorMessage ) );
+                  if ( !vectorLayer->readSld( namedLayerElement, errorMessage ) )
+                  {
+                    QgsDebugMsg( QString( "[Style cannot be rendered]  LayerName[%1]: StyleName[%2] error[%3]" ).arg( sLayerName ).arg( dbLayer->getLayerStyleSelected() ).arg( errorMessage ) );
+                  }
+                  else
+                  {
+                    QgsDebugMsg( QString( "[Style will be rendered]  LayerName[%1]: StyleName[%2] " ).arg( sLayerName ).arg( dbLayer->getLayerStyleSelected() ) );
+                  }
                 }
+                else
+                {
+                  QgsDebugMsg( QString( "[Style missing Name Element]  LayerName[%1]: StyleName[%2] " ).arg( sLayerName ).arg( dbLayer->getLayerStyleSelected() ) );
+                }
+              }
+              else
+              {
+                QgsDebugMsg( QString( "[Style retrieving NamedLayerElement failed]  LayerName[%1]: StyleName[%2] error[%3]" ).arg( sLayerName ).arg( dbLayer->getLayerStyleSelected() ).arg( errorMessage ) );
               }
             }
           }
@@ -2201,12 +2216,9 @@ int SpatialiteDbInfo::readVectorRasterStyles( bool bSelectUsedStylesOnly, bool b
 #endif
               if ( i_rc_test != 0 )
               {
-#if 0
-                qDebug() << QString( "-E-> SpatialiteDbInfo::readVectorRasterStyles test for [%1] failed rc=%2 error[%3]" ).arg( sStyleName ).arg( i_rc_test ).arg( sTestStylesForQgis );
-#endif
+                qDebug() << QString( "[Style] TestStylesForQgis for [%1] failed rc=%2 error[%3]" ).arg( sStyleName ).arg( i_rc_test ).arg( sTestStylesForQgis );
                 sTestStylesForQgis = QString( "validation_not_checked" );
                 mStyleLayersData.remove( sStyleName );
-                // QgsDebugMsg( QString( "creation of data source %1 failed. %2" ).arg( tableName,e.errorMessage() ));
               }
               else
               {
@@ -4995,6 +5007,10 @@ QDomElement SpatialiteDbInfo::getDbStyleNamedLayerElement( QString sStyleName, Q
             }
             return namedLayerElement;
           }
+          else
+          {
+            errorMessage = QString( " NamedLayer[%1]: not found in StyledLayerDescriptor" ).arg( styledLayerDescriptor.tagName() );
+          }
         }
         else
         {
@@ -5054,7 +5070,7 @@ QDomElement SpatialiteDbInfo::getDbStyleNamedLayerElement( QString sStyleName, Q
       }
       else
       {
-        errorMsg = tr( "%1: %2 at line %3 column %4" ).arg( sStyleName ).arg( errorMsg ).arg( line ).arg( column );
+        errorMessage = tr( "%1: %2 at line %3 column %4" ).arg( sStyleName ).arg( errorMsg ).arg( line ).arg( column );
       }
     }
   }
@@ -5147,6 +5163,11 @@ int SpatialiteDbInfo::testNamedLayerElement( QDomElement namedLayerElement,  QSt
                         // Note: an external source may not be using the 'se:' prefix, thus localName() will be empty.
                         symbolizerName = ruleChildElement.nextSiblingElement().tagName();
                       }
+                      if ( symbolizerName.isEmpty() )
+                      {
+                        // Note: not sure why this is so, otherwise when only one exist it fails.
+                        symbolizerName = sNodeName;
+                      }
                       if ( symbolizerName == QLatin1String( "PointSymbolizer" ) )
                       {
                         // first check for Graphic element, nothing will be rendered if not found
@@ -5218,6 +5239,7 @@ int SpatialiteDbInfo::testNamedLayerElement( QDomElement namedLayerElement,  QSt
                     {
                       i_rc = 108;
                       errorMessage = QStringLiteral( "-E-> [singleSymbol] 'Symbolizer-Layers' in [%1] were expected. ; rc=%2" ).arg( featTypeStyleElement.tagName() ).arg( i_rc );
+                    qDebug() << QString("-EE-> looking for Symbolizer in NodeName[%1] size[%2]").arg(sNodeName).arg(saLayers.size());
                     }
                   }
                 }

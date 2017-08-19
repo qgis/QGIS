@@ -22,6 +22,7 @@
 #include "qgsspatialitetablemodel.h"
 #include "qgshelp.h"
 #include "qgsproviderregistry.h"
+#include "qgsabstractdatasourcewidget.h"
 
 #include <QThread>
 #include <QMap>
@@ -41,7 +42,8 @@ class QPushButton;
  * for SpatiaLite/SQLite databases. The user can then connect and add
  * tables from the database to the map canvas.
  */
-class QgsSpatiaLiteSourceSelect: public QDialog, private Ui::QgsDbSourceSelectBase
+// class QgsSpatiaLiteSourceSelect: public QDialog, private Ui::QgsDbSourceSelectBase
+class QgsSpatiaLiteSourceSelect: public QgsAbstractDataSourceWidget, private Ui::QgsDbSourceSelectBase
 {
     Q_OBJECT
 

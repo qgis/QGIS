@@ -1107,7 +1107,7 @@ class SpatialiteDbInfo : public QObject
      *  - return QDomElement to be used with QgsVectorLayer::readSld
      *   - called while loading Layers
      * \param sStyleName to retrieve
-     * \param errorMessage for messages when testing
+     * \param errorMessage for messages returning any caus of error
      * \param iDebug to call test when set to 1, returning return code
      * \param sSaveXmlFileName filename to save xlm, when not null - for testing
      * \returns xlm QDomElement containing 'NamedLayer'
@@ -2487,13 +2487,14 @@ class SpatialiteDbLayer : public QObject
      *  - return QDomElement to be used with QgsVectorLayer::readSld
      *   - called while loading Layers
      * \param sStyleName to retrieve
+     * \param errorMessage for messages returning any caus of error
      * \returns xlm QDomElement containing 'NamedLayer' stored in SpatialiteDbInfo
      * \see setLayerStyleSelected
      * \see SpatialiteDbInfo::getDbStyleNamedLayerElement
      * \see SpatialiteDbInfo::
      * \since QGIS 3.0
      */
-    QDomElement getLayerStyleNamedLayerElement( QString sStyleName = QString::null )
+    QDomElement getLayerStyleNamedLayerElement( QString sStyleName = QString::null, QString errorMessage = QString::null )
     {
       if ( !mStyleLayersInfo.isEmpty() )
       {
@@ -2501,7 +2502,6 @@ class SpatialiteDbLayer : public QObject
         {
           sStyleName = mLayerStyleSelected;
         }
-        QString errorMessage;
         return getDbConnectionInfo()->getDbStyleNamedLayerElement( sStyleName, errorMessage, nullptr, QString::null );
       }
       return QDomElement();
