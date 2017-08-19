@@ -205,6 +205,12 @@
     </ogr:convert_poly_nodes>
   </gml:featureMember>
   <gml:featureMember>
+    <ogr:convert_poly_nodes fid="polys.4">
+      <ogr:intval>120</ogr:intval>
+      <ogr:floatval>-100291.43213</ogr:floatval>
+    </ogr:convert_poly_nodes>
+  </gml:featureMember>
+  <gml:featureMember>
     <ogr:convert_poly_nodes fid="polys.5">
       <ogr:geometryProperty><gml:Point srsName="EPSG:4326"><gml:coordinates>3,2</gml:coordinates></gml:Point></ogr:geometryProperty>
       <ogr:name>elim</ogr:name>

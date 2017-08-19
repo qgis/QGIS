@@ -78,6 +78,7 @@ from .FieldsMapper import FieldsMapper
 from .FindProjection import FindProjection
 from .FixedDistanceBuffer import FixedDistanceBuffer
 from .FixGeometry import FixGeometry
+from .GeometryConvert import GeometryConvert
 from .GeometryByExpression import GeometryByExpression
 from .Gridify import Gridify
 from .GridLine import GridLine
@@ -171,7 +172,6 @@ from .ZonalStatistics import ZonalStatistics
 # from .ExtractByLocation import ExtractByLocation
 # from .SelectByLocation import SelectByLocation
 # from .SpatialJoin import SpatialJoin
-# from .GeometryConvert import GeometryConvert
 # from .SelectByAttributeSum import SelectByAttributeSum
 
 pluginPath = os.path.normpath(os.path.join(
@@ -190,7 +190,6 @@ class QGISAlgorithmProvider(QgsProcessingProvider):
         #         SelectByLocation(),
         #         ExtractByLocation(),
         #         SpatialJoin(),
-        #         GeometryConvert(),
         #         SelectByAttributeSum()
         #         ]
         algs = [AddTableField(),
@@ -232,6 +231,7 @@ class QGISAlgorithmProvider(QgsProcessingProvider):
                 FixedDistanceBuffer(),
                 FixGeometry(),
                 GeometryByExpression(),
+                GeometryConvert(),
                 Gridify(),
                 GridLine(),
                 GridPolygon(),
