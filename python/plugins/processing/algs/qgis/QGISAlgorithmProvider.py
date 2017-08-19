@@ -70,6 +70,7 @@ from .ExtendLines import ExtendLines
 from .ExtentFromLayer import ExtentFromLayer
 from .ExtractNodes import ExtractNodes
 from .ExtractSpecificNodes import ExtractSpecificNodes
+from .FieldPyculator import FieldsPyculator
 from .FieldsCalculator import FieldsCalculator
 from .FieldsMapper import FieldsMapper
 from .FixedDistanceBuffer import FixedDistanceBuffer
@@ -167,7 +168,6 @@ from .ZonalStatistics import ZonalStatistics
 # from .SelectByLocation import SelectByLocation
 # from .SpatialJoin import SpatialJoin
 # from .GeometryConvert import GeometryConvert
-# from .FieldPyculator import FieldsPyculator
 # from .SelectByAttributeSum import SelectByAttributeSum
 # from .DefineProjection import DefineProjection
 # from .RasterCalculator import RasterCalculator
@@ -191,8 +191,7 @@ class QGISAlgorithmProvider(QgsProcessingProvider):
         #         ExtractByLocation(),
         #         SpatialJoin(),
         #         GeometryConvert(),
-        #         FieldsPyculator(),
-        #         FieldsMapper(), SelectByAttributeSum()
+        #         SelectByAttributeSum()
         #         DefineProjection(),
         #         RasterCalculator(),
         #          ExecuteSQL(), FindProjection(),
@@ -229,6 +228,7 @@ class QGISAlgorithmProvider(QgsProcessingProvider):
                 ExtractSpecificNodes(),
                 FieldsCalculator(),
                 FieldsMapper(),
+                FieldsPyculator(),
                 FixedDistanceBuffer(),
                 FixGeometry(),
                 GeometryByExpression(),

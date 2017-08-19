@@ -3193,3 +3193,20 @@ tests:
       OUTPUT:
         name: expected/field_calculator_points.gml
         type: vector
+
+  - algorithm: qgis:advancedpythonfieldcalculator
+    name: Test advanced python calculator
+    params:
+      FIELD_LENGTH: 10
+      FIELD_NAME: new_field
+      FIELD_PRECISION: 3
+      FIELD_TYPE: 0
+      FORMULA: value = __attr[2]*2
+      GLOBAL: ''
+      INPUT:
+        name: points.gml
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/pycalculator_points.gml
+        type: vector
