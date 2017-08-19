@@ -73,6 +73,7 @@ from .ExtractSpecificNodes import ExtractSpecificNodes
 from .FieldPyculator import FieldsPyculator
 from .FieldsCalculator import FieldsCalculator
 from .FieldsMapper import FieldsMapper
+from .FindProjection import FindProjection
 from .FixedDistanceBuffer import FixedDistanceBuffer
 from .FixGeometry import FixGeometry
 from .GeometryByExpression import GeometryByExpression
@@ -172,7 +173,6 @@ from .ZonalStatistics import ZonalStatistics
 # from .DefineProjection import DefineProjection
 # from .RasterCalculator import RasterCalculator
 # from .ExecuteSQL import ExecuteSQL
-# from .FindProjection import FindProjection
 
 pluginPath = os.path.normpath(os.path.join(
     os.path.split(os.path.dirname(__file__))[0], os.pardir))
@@ -194,7 +194,7 @@ class QGISAlgorithmProvider(QgsProcessingProvider):
         #         SelectByAttributeSum()
         #         DefineProjection(),
         #         RasterCalculator(),
-        #          ExecuteSQL(), FindProjection(),
+        #          ExecuteSQL(),
         #         ]
         algs = [AddTableField(),
                 Aggregate(),
@@ -229,6 +229,7 @@ class QGISAlgorithmProvider(QgsProcessingProvider):
                 FieldsCalculator(),
                 FieldsMapper(),
                 FieldsPyculator(),
+                FindProjection(),
                 FixedDistanceBuffer(),
                 FixGeometry(),
                 GeometryByExpression(),
