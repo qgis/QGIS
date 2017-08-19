@@ -403,7 +403,7 @@ bool QgsGeoPackageConnectionItem::handleDrop( const QMimeData *data, Qt::DropAct
     {
       // TODO: implement raster import
       QgsMessageOutput *output = QgsMessageOutput::createMessageOutput();
-      output->setTitle( tr( "Import to GeoPackage database faile" ) );
+      output->setTitle( tr( "Import to GeoPackage database failed" ) );
       output->setMessage( tr( "Failed to import some layers!\n\n" ) + QStringLiteral( "Raster import is not yet implemented!\n" ), QgsMessageOutput::MessageText );
       output->showMessage();
     }
