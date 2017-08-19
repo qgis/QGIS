@@ -53,6 +53,7 @@ from .ConvexHull import ConvexHull
 from .CreateAttributeIndex import CreateAttributeIndex
 from .CreateConstantRaster import CreateConstantRaster
 from .Datasources2Vrt import Datasources2Vrt
+from .DefineProjection import DefineProjection
 from .Delaunay import Delaunay
 from .DeleteColumn import DeleteColumn
 from .DeleteDuplicateGeometries import DeleteDuplicateGeometries
@@ -170,7 +171,6 @@ from .ZonalStatistics import ZonalStatistics
 # from .SpatialJoin import SpatialJoin
 # from .GeometryConvert import GeometryConvert
 # from .SelectByAttributeSum import SelectByAttributeSum
-# from .DefineProjection import DefineProjection
 # from .RasterCalculator import RasterCalculator
 # from .ExecuteSQL import ExecuteSQL
 
@@ -192,7 +192,6 @@ class QGISAlgorithmProvider(QgsProcessingProvider):
         #         SpatialJoin(),
         #         GeometryConvert(),
         #         SelectByAttributeSum()
-        #         DefineProjection(),
         #         RasterCalculator(),
         #          ExecuteSQL(),
         #         ]
@@ -209,6 +208,7 @@ class QGISAlgorithmProvider(QgsProcessingProvider):
                 CreateAttributeIndex(),
                 CreateConstantRaster(),
                 Datasources2Vrt(),
+                DefineProjection(),
                 Delaunay(),
                 DeleteColumn(),
                 DeleteDuplicateGeometries(),
