@@ -109,6 +109,7 @@ the parameters 'fill-color', 'pen-color', 'outline-width', 'stroke-width'. E.g. 
  \param strokeWidth width of stroke
  \param widthScaleFactor width scale factor
  \param fitsInCache
+ \param fixedAspectRatio fixed aspect ratio (optional)
  :rtype: QImage
 %End
 
@@ -123,6 +124,7 @@ the parameters 'fill-color', 'pen-color', 'outline-width', 'stroke-width'. E.g. 
  \param strokeWidth width of stroke
  \param widthScaleFactor width scale factor
  \param forceVectorOutput
+ \param fixedAspectRatio fixed aspect ratio (optional)
  :rtype: QPicture
 %End
 
@@ -136,6 +138,7 @@ the parameters 'fill-color', 'pen-color', 'outline-width', 'stroke-width'. E.g. 
  \param stroke color of stroke
  \param strokeWidth width of stroke
  \param widthScaleFactor width scale factor
+ \param fixedAspectRatio fixed aspect ratio (optional)
  :return: viewbox size set in SVG file
 .. versionadded:: 2.14
  :rtype: QSizeF
@@ -209,6 +212,7 @@ Emit a signal to be caught by qgisapp and display a msg on status bar
  \param stroke color of stroke
  \param strokeWidth width of stroke
  \param widthScaleFactor width scale factor
+ \param fixedAspectRatio fixed aspect ratio (optional)
  :rtype: QgsSvgCacheEntry
 %End
 
