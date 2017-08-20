@@ -120,7 +120,7 @@ void TestQgsRelationReferenceWidget::testChainFilter()
   vl2.commitChanges();
 
   // init a relation reference widget
-  QStringList filterFields = { "material", "diameter", "raccord" };
+  QStringList filterFields = QStringList() << "material" << "diameter" << "raccord";
 
   QgsRelationReferenceWidget w( new QWidget() );
   w.setChainFilters( true );
