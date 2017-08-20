@@ -13,6 +13,12 @@
 # Download OSGeo4W packages
 #
 
+BEGIN {
+	# ignore requireAdministrator execution level while producing the
+	# uninstaller
+	$ENV{"__COMPAT_LAYER"} = 'RUNASINVOKER';
+}
+
 use strict;
 use warnings;
 use Getopt::Long;
@@ -448,15 +454,17 @@ my $installerbase = "$packagename-OSGeo4W-$version-$binary-Setup$archpostfix";
 
 my $run;
 my $instdest;
-unless($^O =~ /win/i) {
+
+if($^O eq "cygwin") {
+	$run = "cygstart ";
+	$instdest = `cygpath -w \$PWD`;
+} else {
 	$run = "wine ";
 	$instdest = `winepath -w \$PWD`;
-	$instdest =~ s/\s+$//;
-	$instdest =~ s/\\/\\\\/g;
-} else {
-	$run = "";
-	$instdest = ".";
 }
+
+$instdest =~ s/\s+$//;
+$instdest =~ s/\\/\\\\/g;
 
 
 my $args = "";
@@ -498,7 +506,9 @@ die "running makensis failed [$cmd]" if $?;
 die "makeuinst.exe not created" unless -f "makeuinst.exe";
 
 unlink "uninstall.exe";
+chmod 0755, "makeuinst.exe";
 system "${run}makeuinst.exe";
+sleep 5;
 die "uninstall.exe not created" unless -f "uninstall.exe";
 unlink "makeuinst.exe";
 
