@@ -321,7 +321,6 @@ bool QgsGeoPackageConnectionItem::handleDrop( const QMimeData *data, Qt::DropAct
   if ( !QgsMimeDataUtils::isUriList( data ) )
     return false;
 
-  // TODO: probably should show a GUI with settings etc
   QString uri;
 
   QStringList importResults;
@@ -332,71 +331,81 @@ bool QgsGeoPackageConnectionItem::handleDrop( const QMimeData *data, Qt::DropAct
   {
     if ( u.layerType == QStringLiteral( "vector" ) )
     {
-      // open the source layer
-      bool owner;
-      QString error;
-      QgsVectorLayer *srcLayer = u.vectorLayer( owner, error );
-      if ( !srcLayer )
+      // Check that we are not copying over self
+      if ( u.uri.startsWith( mPath ) )
       {
-        importResults.append( tr( "%1: %2" ).arg( u.name ).arg( error ) );
+        importResults.append( tr( "You cannot import layer %1 over itself!" ).arg( u.name ) );
         hasError = true;
-        continue;
-      }
 
-      if ( srcLayer->isValid() )
-      {
-        uri = mPath;
-        QgsDebugMsgLevel( "URI " + uri, 3 );
-
-        // check if the destination layer already exists
-        bool exists = false;
-        // Q_FOREACH won't detach ...
-        for ( const auto child : children() )
-        {
-          if ( child->name() == u.name )
-          {
-            exists = true;
-          }
-        }
-        if ( ! exists || QMessageBox::question( nullptr, tr( "Overwrite Layer" ),
-                                                tr( "Destination layer <b>%1</b> already exists. Do you want to overwrite it?" ).arg( u.name ), QMessageBox::Yes |  QMessageBox::No ) == QMessageBox::Yes )
-        {
-
-          QVariantMap options;
-          options.insert( QStringLiteral( "driverName" ), QStringLiteral( "GPKG" ) );
-          options.insert( QStringLiteral( "update" ), true );
-          options.insert( QStringLiteral( "overwrite" ), true );
-          options.insert( QStringLiteral( "layerName" ), u.name );
-
-          std::unique_ptr< QgsVectorLayerExporterTask > exportTask( new QgsVectorLayerExporterTask( srcLayer, uri, QStringLiteral( "ogr" ), srcLayer->crs(), options, owner ) );
-
-          // when export is successful:
-          connect( exportTask.get(), &QgsVectorLayerExporterTask::exportComplete, this, [ = ]()
-          {
-            // this is gross - TODO - find a way to get access to messageBar from data items
-            QMessageBox::information( nullptr, tr( "Import to GeoPackage database" ), tr( "Import was successful." ) );
-            refreshConnections();
-          } );
-
-          // when an error occurs:
-          connect( exportTask.get(), &QgsVectorLayerExporterTask::errorOccurred, this, [ = ]( int error, const QString & errorMessage )
-          {
-            if ( error != QgsVectorLayerExporter::ErrUserCanceled )
-            {
-              QgsMessageOutput *output = QgsMessageOutput::createMessageOutput();
-              output->setTitle( tr( "Import to GeoPackage database" ) );
-              output->setMessage( tr( "Failed to import some layers!\n\n" ) + errorMessage, QgsMessageOutput::MessageText );
-              output->showMessage();
-            }
-          } );
-
-          QgsApplication::taskManager()->addTask( exportTask.release() );
-        }
       }
       else
       {
-        importResults.append( tr( "%1: Not a valid layer!" ).arg( u.name ) );
-        hasError = true;
+        // open the source layer
+        bool owner;
+        QString error;
+        QgsVectorLayer *srcLayer = u.vectorLayer( owner, error );
+        if ( !srcLayer )
+        {
+          importResults.append( tr( "%1: %2" ).arg( u.name ).arg( error ) );
+          hasError = true;
+          continue;
+        }
+
+        if ( srcLayer->isValid() )
+        {
+          uri = mPath;
+          QgsDebugMsgLevel( "URI " + uri, 3 );
+
+          // check if the destination layer already exists
+          bool exists = false;
+          // Q_FOREACH won't detach ...
+          for ( const auto child : children() )
+          {
+            if ( child->name() == u.name )
+            {
+              exists = true;
+            }
+          }
+          if ( ! exists || QMessageBox::question( nullptr, tr( "Overwrite Layer" ),
+                                                  tr( "Destination layer <b>%1</b> already exists. Do you want to overwrite it?" ).arg( u.name ), QMessageBox::Yes |  QMessageBox::No ) == QMessageBox::Yes )
+          {
+
+            QVariantMap options;
+            options.insert( QStringLiteral( "driverName" ), QStringLiteral( "GPKG" ) );
+            options.insert( QStringLiteral( "update" ), true );
+            options.insert( QStringLiteral( "overwrite" ), true );
+            options.insert( QStringLiteral( "layerName" ), u.name );
+
+            std::unique_ptr< QgsVectorLayerExporterTask > exportTask( new QgsVectorLayerExporterTask( srcLayer, uri, QStringLiteral( "ogr" ), srcLayer->crs(), options, owner ) );
+
+            // when export is successful:
+            connect( exportTask.get(), &QgsVectorLayerExporterTask::exportComplete, this, [ = ]()
+            {
+              // this is gross - TODO - find a way to get access to messageBar from data items
+              QMessageBox::information( nullptr, tr( "Import to GeoPackage database" ), tr( "Import was successful." ) );
+              refreshConnections();
+            } );
+
+            // when an error occurs:
+            connect( exportTask.get(), &QgsVectorLayerExporterTask::errorOccurred, this, [ = ]( int error, const QString & errorMessage )
+            {
+              if ( error != QgsVectorLayerExporter::ErrUserCanceled )
+              {
+                QgsMessageOutput *output = QgsMessageOutput::createMessageOutput();
+                output->setTitle( tr( "Import to GeoPackage database" ) );
+                output->setMessage( tr( "Failed to import some layers!\n\n" ) + errorMessage, QgsMessageOutput::MessageText );
+                output->showMessage();
+              }
+            } );
+
+            QgsApplication::taskManager()->addTask( exportTask.release() );
+          }
+        }
+        else
+        {
+          importResults.append( tr( "%1: Not a valid layer!" ).arg( u.name ) );
+          hasError = true;
+        }
       }
     }
     else
