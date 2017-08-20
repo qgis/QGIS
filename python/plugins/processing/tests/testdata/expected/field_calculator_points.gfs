@@ -23,8 +23,8 @@
       <Type>Integer</Type>
     </PropertyDefn>
     <PropertyDefn>
-      <Name>calc</Name>
-      <ElementPath>calc</ElementPath>
+      <Name>test</Name>
+      <ElementPath>test</ElementPath>
       <Type>Integer</Type>
     </PropertyDefn>
   </GMLFeatureClass>
