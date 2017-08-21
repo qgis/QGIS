@@ -569,7 +569,7 @@ bool QgsMapLayer::writeLayerXml( QDomElement &layerElement, QDomDocument &docume
   layerElement.setAttribute( QStringLiteral( "maxScale" ), QString::number( maximumScale() ) );
   layerElement.setAttribute( QStringLiteral( "minScale" ), QString::number( minimumScale() ) );
 
-  if ( !mExtent.isNull() )
+  if ( !extent().isNull() )
   {
     layerElement.appendChild( QgsXmlUtils::writeRectangle( mExtent, document ) );
   }
