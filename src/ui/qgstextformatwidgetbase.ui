@@ -651,7 +651,7 @@
               <item>
                <widget class="QStackedWidget" name="mLabelStackedWidget">
                 <property name="currentIndex">
-                 <number>0</number>
+                 <number>6</number>
                 </property>
                 <widget class="QWidget" name="mLabelPage_Text">
                  <layout class="QVBoxLayout" name="verticalLayout_6">
@@ -5467,39 +5467,6 @@ font-style: italic;</string>
                            <property name="verticalSpacing">
                             <number>6</number>
                            </property>
-                           <item row="0" column="0">
-                            <widget class="QCheckBox" name="mFontLimitPixelChkBox">
-                             <property name="sizePolicy">
-                              <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
-                               <horstretch>0</horstretch>
-                               <verstretch>0</verstretch>
-                              </sizepolicy>
-                             </property>
-                             <property name="text">
-                              <string>Pixel size-based visibility (labels in map units)</string>
-                             </property>
-                            </widget>
-                           </item>
-                           <item row="0" column="1">
-                            <widget class="QgsPropertyOverrideButton" name="mFontLimitPixelDDBtn">
-                             <property name="text">
-                              <string>…</string>
-                             </property>
-                            </widget>
-                           </item>
-                           <item row="0" column="2">
-                            <spacer name="horizontalSpacer_6">
-                             <property name="orientation">
-                              <enum>Qt::Horizontal</enum>
-                             </property>
-                             <property name="sizeHint" stdset="0">
-                              <size>
-                               <width>0</width>
-                               <height>20</height>
-                              </size>
-                             </property>
-                            </spacer>
-                           </item>
                            <item row="1" column="0" colspan="3">
                             <widget class="QFrame" name="mFontLimitPixelFrame">
                              <property name="frameShape">
@@ -5598,6 +5565,26 @@ font-style: italic;</string>
                                </widget>
                               </item>
                              </layout>
+                            </widget>
+                           </item>
+                           <item row="0" column="2">
+                            <widget class="QgsPropertyOverrideButton" name="mFontLimitPixelDDBtn">
+                             <property name="text">
+                              <string>…</string>
+                             </property>
+                            </widget>
+                           </item>
+                           <item row="0" column="0" colspan="2">
+                            <widget class="QCheckBox" name="mFontLimitPixelChkBox">
+                             <property name="sizePolicy">
+                              <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
+                               <horstretch>0</horstretch>
+                               <verstretch>0</verstretch>
+                              </sizepolicy>
+                             </property>
+                             <property name="text">
+                              <string>Pixel size-based visibility (labels in map units)</string>
+                             </property>
                             </widget>
                            </item>
                           </layout>
@@ -6066,19 +6053,6 @@ font-style: italic;</string>
                               <string>…</string>
                              </property>
                             </widget>
-                           </item>
-                           <item>
-                            <spacer name="horizontalSpacer_24">
-                             <property name="orientation">
-                              <enum>Qt::Horizontal</enum>
-                             </property>
-                             <property name="sizeHint" stdset="0">
-                              <size>
-                               <width>40</width>
-                               <height>20</height>
-                              </size>
-                             </property>
-                            </spacer>
                            </item>
                           </layout>
                          </item>
