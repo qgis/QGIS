@@ -133,7 +133,8 @@ typedef bool deleteStyleById_t(
 QgsVectorLayer::QgsVectorLayer( const QString &vectorLayerPath,
                                 const QString &baseName,
                                 const QString &providerKey,
-                                bool loadDefaultStyleFlag )
+                                bool loadDefaultStyleFlag,
+                                bool readExtent )
   : QgsMapLayer( VectorLayer, baseName, vectorLayerPath )
   , mDataProvider( nullptr )
   , mProviderKey( providerKey )
@@ -153,6 +154,7 @@ QgsVectorLayer::QgsVectorLayer( const QString &vectorLayerPath,
   , mLazyExtent( true )
   , mSymbolFeatureCounted( false )
   , mEditCommandActive( false )
+  , mReadExtent( readExtent )
 
 {
   mActions = new QgsActionManager( this );
@@ -222,6 +224,7 @@ QgsVectorLayer *QgsVectorLayer::clone() const
   layer->setAttributeTableConfig( attributeTableConfig() );
   layer->setFeatureBlendMode( featureBlendMode() );
   layer->setOpacity( opacity() );
+  layer->setReadExtent( readExtent() );
 
   Q_FOREACH ( const QgsAction &action, actions()->actions() )
   {
@@ -800,8 +803,19 @@ QgsRectangle QgsVectorLayer::extent() const
 
   if ( !mValidExtent && mLazyExtent && mDataProvider )
   {
-    // get the extent
-    QgsRectangle mbr = mDataProvider->extent();
+    QgsRectangle mbr;
+
+    // get the extent from xml
+    if ( mReadExtent && !mXmlExtent.isNull() && !mDataProvider->hasMetadata() )
+    {
+      mbr = mXmlExtent;
+    }
+
+    // get the extent data provider if not yet defined
+    if ( mbr.isNull() )
+    {
+      mbr = mDataProvider->extent();
+    }
 
     // show the extent
     QgsDebugMsg( "Extent of layer: " + mbr.toString() );
@@ -1427,6 +1441,16 @@ bool QgsVectorLayer::readXml( const QDomNode &layer_node, const QgsReadWriteCont
   setDependencies( sources );
 
   setLegend( QgsMapLayerLegend::defaultVectorLegend( this ) );
+
+  // read extent
+  if ( mReadExtent )
+  {
+    QDomNode extentNode = layer_node.namedItem( QStringLiteral( "extent" ) );
+    if ( !extentNode.isNull() )
+    {
+      mXmlExtent = QgsXmlUtils::readRectangle( extentNode.toElement() );
+    }
+  }
 
   return mValid;               // should be true if read successfully
 
@@ -4417,4 +4441,14 @@ QgsAbstractVectorLayerLabeling *QgsVectorLayer::readLabelingFromCustomProperties
   }
 
   return labeling;
+}
+
+void QgsVectorLayer::setReadExtent( bool readExtent )
+{
+  mReadExtent = readExtent;
+}
+
+bool QgsVectorLayer::readExtent() const
+{
+  return mReadExtent;
 }

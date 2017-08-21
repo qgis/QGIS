@@ -389,10 +389,12 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * \param  baseName The name used to represent the layer in the legend
      * \param  providerLib  The name of the data provider, e.g., "memory", "postgres"
      * \param  loadDefaultStyleFlag whether to load the default style
+     * \param  readExtent Read extent from XML if true or let provider determine it if false
      *
      */
     QgsVectorLayer( const QString &path = QString(), const QString &baseName = QString(),
-                    const QString &providerLib = "ogr", bool loadDefaultStyleFlag = true );
+                    const QString &providerLib = "ogr", bool loadDefaultStyleFlag = true,
+                    bool readExtent = false );
 
 
     virtual ~QgsVectorLayer();
@@ -1604,6 +1606,24 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      */
     void setEditFormConfig( const QgsEditFormConfig &editFormConfig );
 
+    /**
+     * Flag allowing to indicate if the extent has be read from the XML
+     * document when data source has no metadata or if the data provider has
+     * to determine it.
+     *
+     * \since QGIS 3.0
+     */
+    void setReadExtent( bool readExtent );
+
+    /**
+     * Returns true if the extent is read from the XML document when data
+     * source has no metadata, false if it's the data provider which determines
+     * it.
+     *
+     * \since QGIS 3.0
+     */
+    bool readExtent() const;
+
   public slots:
 
     /**
@@ -2040,6 +2060,9 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
 
     //! True while an undo command is active
     bool mEditCommandActive;
+
+    bool mReadExtent;
+    QgsRectangle mXmlExtent;
 
     QgsFeatureIds mDeletedFids;
 

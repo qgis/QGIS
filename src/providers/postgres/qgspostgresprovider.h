@@ -197,6 +197,17 @@ class QgsPostgresProvider : public QgsVectorDataProvider
     virtual QList<QgsRelation> discoverRelations( const QgsVectorLayer *self, const QList<QgsVectorLayer *> &layers ) const override;
     virtual QgsAttrPalIndexNameHash palAttributeIndexNames() const override;
 
+    /** Returns true if the data source has metadata, false otherwise. For
+     * example, if the kind of relation for the layer is a view or a
+     * materialized view, then no metadata are associated with the data
+     * source.
+     *
+     * \returns true if data source has metadata, false otherwise.
+     *
+     * \since QGIS 3.0
+     */
+    virtual bool hasMetadata() const override;
+
   signals:
 
     /**

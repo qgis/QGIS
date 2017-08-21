@@ -4291,6 +4291,19 @@ QgsPostgresProvider::Relkind QgsPostgresProvider::relkind() const
   return kind;
 }
 
+bool QgsPostgresProvider::hasMetadata() const
+{
+  bool hasMetadata = true;
+  QgsPostgresProvider::Relkind kind = relkind();
+
+  if ( kind == Relkind::View || kind == Relkind::MaterializedView )
+  {
+    hasMetadata = false;
+  }
+
+  return hasMetadata;
+}
+
 /**
  * Class factory to return a pointer to a newly created
  * QgsPostgresProvider object
