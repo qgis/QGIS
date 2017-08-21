@@ -640,6 +640,13 @@ void TestQgsAttributeForm::testUpsertOnEdit()
   QString defC = QStringLiteral( "Point?field=id_c:integer&field=col0:integer" );
   QgsVectorLayer *layerC = new QgsVectorLayer( defC, QStringLiteral( "layerC" ), QStringLiteral( "memory" ) );
 
+  // add a feature in layer A
+  QgsFeature ft0A( layerA->fields() );
+  ft0A.setAttribute( QStringLiteral( "id_a" ), 34 );
+  layerA->startEditing();
+  layerA->addFeature( ft0A );
+  layerA->commitChanges();
+
   // join configuration
   QgsVectorLayerJoinInfo infoJoinAB;
   infoJoinAB.setTargetFieldName( "id_a" );
@@ -662,10 +669,10 @@ void TestQgsAttributeForm::testUpsertOnEdit()
   layerA->addJoin( infoJoinAC );
 
   // add features for main layer
-  QgsFeature ftA( layerA->fields() );
-  ftA.setAttribute( QStringLiteral( "id_a" ), 31 );
+  QgsFeature ft1A( layerA->fields() );
+  ft1A.setAttribute( QStringLiteral( "id_a" ), 31 );
   layerA->startEditing();
-  layerA->addFeature( ftA );
+  layerA->addFeature( ft1A );
   layerA->commitChanges();
 
   // add features for joined layers
@@ -689,14 +696,14 @@ void TestQgsAttributeForm::testUpsertOnEdit()
   layerC->startEditing();
 
   // build a form with feature A
-  ftA = layerA->getFeature( 1 );
+  ft1A = layerA->getFeature( 2 );
 
   QgsAttributeForm form( layerA );
   form.setMode( QgsAttributeForm::AddFeatureMode );
-  form.setFeature( ftA );
+  form.setFeature( ft1A );
 
   // count features
-  QCOMPARE( ( int )layerA->featureCount(), 1 );
+  QCOMPARE( ( int )layerA->featureCount(), 2 );
   QCOMPARE( ( int )layerB->featureCount(), 1 );
   QCOMPARE( ( int )layerC->featureCount(), 1 );
 
@@ -707,7 +714,7 @@ void TestQgsAttributeForm::testUpsertOnEdit()
   form.save();
 
   // count features
-  QCOMPARE( ( int )layerA->featureCount(), 2 );
+  QCOMPARE( ( int )layerA->featureCount(), 3 );
   QCOMPARE( ( int )layerB->featureCount(), 2 );
   QCOMPARE( ( int )layerC->featureCount(), 1 );
 
@@ -729,14 +736,14 @@ void TestQgsAttributeForm::testUpsertOnEdit()
   // create a target feature but update a joined feature
   QgsAttributeForm formUpdate( layerA );
   formUpdate.setMode( QgsAttributeForm::AddFeatureMode );
-  formUpdate.setFeature( ftA );
+  formUpdate.setFeature( ft1A );
   formUpdate.changeAttribute( "id_a", QVariant( 33 ) );
   formUpdate.changeAttribute( "layerB_col0", QVariant( 3333 ) );
   formUpdate.changeAttribute( "layerC_col0", QVariant( 323232 ) );
   formUpdate.save();
 
   // count features
-  QCOMPARE( ( int )layerA->featureCount(), 3 );
+  QCOMPARE( ( int )layerA->featureCount(), 4 );
   QCOMPARE( ( int )layerB->featureCount(), 2 );
   QCOMPARE( ( int )layerC->featureCount(), 1 );
 
@@ -749,6 +756,36 @@ void TestQgsAttributeForm::testUpsertOnEdit()
   ft0B = layerB->getFeature( 1 );
   QCOMPARE( ft0B.attribute( "id_b" ), QVariant( 33 ) );
   QCOMPARE( ft0B.attribute( "col0" ), QVariant( 3333 ) );
+
+  // start editing
+  layerA->startEditing();
+  layerB->startEditing();
+  layerC->startEditing();
+
+  // build a form with feature A
+  ft0A = layerA->getFeature( 1 );
+
+  QgsAttributeForm formUpsert( layerA );
+  formUpsert.setMode( QgsAttributeForm::SingleEditMode );
+  formUpsert.setFeature( ft0A );
+
+  // count features
+  QCOMPARE( ( int )layerA->featureCount(), 4 );
+  QCOMPARE( ( int )layerB->featureCount(), 2 );
+  QCOMPARE( ( int )layerC->featureCount(), 1 );
+
+  // update feature which does not exist in joined layer
+  formUpsert.changeAttribute( "layerB_col0", QVariant( 77777 ) );
+  formUpsert.save();
+
+  // count features
+  QCOMPARE( ( int )layerA->featureCount(), 4 );
+  QCOMPARE( ( int )layerB->featureCount(), 3 );
+  QCOMPARE( ( int )layerC->featureCount(), 1 );
+
+  // get new feature
+  ft0B = layerB->getFeature( 3 );
+  QCOMPARE( ft0B.attribute( "id_b" ), QVariant() );
 
   // clean
   delete layerA;
