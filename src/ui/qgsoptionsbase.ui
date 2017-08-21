@@ -320,7 +320,7 @@
        <item>
         <widget class="QStackedWidget" name="mOptionsStackedWidget">
          <property name="currentIndex">
-          <number>0</number>
+          <number>2</number>
          </property>
          <widget class="QWidget" name="mOptionsPageGeneral">
           <layout class="QVBoxLayout" name="verticalLayout_3">
@@ -350,7 +350,7 @@
                 <x>0</x>
                 <y>0</y>
                 <width>857</width>
-                <height>678</height>
+                <height>680</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_28">
@@ -998,8 +998,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>561</width>
-                <height>1079</height>
+                <width>843</width>
+                <height>1065</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_22">
@@ -1340,10 +1340,10 @@
                     <property name="title">
                      <string>Current environment variables (read-only - bold indicates modified at startup)</string>
                     </property>
-                    <property name="collapsed" stdset="0">
+                    <property name="collapsed">
                      <bool>false</bool>
                     </property>
-                    <property name="saveCollapsedState" stdset="0">
+                    <property name="saveCollapsedState">
                      <bool>true</bool>
                     </property>
                     <layout class="QVBoxLayout" name="verticalLayout_8">
@@ -1528,8 +1528,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>511</width>
-                <height>719</height>
+                <width>843</width>
+                <height>710</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_27">
@@ -1791,6 +1791,16 @@
                     </property>
                    </widget>
                   </item>
+                  <item>
+                   <widget class="QCheckBox" name="cbxTrustProject">
+                    <property name="toolTip">
+                     <string>Speed up project loading by skipping data checks. Useful in qgis server context or project with huge database views or materialized view</string>
+                    </property>
+                    <property name="text">
+                     <string>Trust project when data source has no metadata</string>
+                    </property>
+                   </widget>
+                  </item>
                  </layout>
                 </widget>
                </item>
@@ -1896,8 +1906,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>692</width>
-                <height>994</height>
+                <width>843</width>
+                <height>928</height>
                </rect>
               </property>
               <layout class="QGridLayout" name="gridLayout_22">
@@ -2005,7 +2015,7 @@
                   <item>
                    <widget class="QgsCollapsibleGroupBox" name="mSimplifyDrawingGroupBox">
                     <property name="title">
-                     <string>Enable feature si&amp;mplification by default for newly added layers</string>
+                     <string>Enable fea&amp;ture simplification by default for newly added layers</string>
                     </property>
                     <property name="flat">
                      <bool>true</bool>
@@ -2647,8 +2657,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>146</width>
-                <height>241</height>
+                <width>857</width>
+                <height>680</height>
                </rect>
               </property>
               <layout class="QHBoxLayout" name="horizontalLayout_46">
@@ -2798,8 +2808,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>514</width>
-                <height>334</height>
+                <width>857</width>
+                <height>680</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_25">
@@ -3141,8 +3151,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>625</width>
-                <height>612</height>
+                <width>857</width>
+                <height>680</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_30">
@@ -3432,7 +3442,7 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
                     <property name="value">
                      <number>200</number>
                     </property>
-                    <property name="showClearButton" stdset="0">
+                    <property name="showClearButton">
                      <bool>true</bool>
                     </property>
                    </widget>
@@ -3585,8 +3595,8 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>487</width>
-                <height>588</height>
+                <width>857</width>
+                <height>680</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_39">
@@ -3854,8 +3864,8 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>556</width>
-                <height>740</height>
+                <width>843</width>
+                <height>695</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_31">
@@ -4432,8 +4442,8 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>427</width>
-                <height>380</height>
+                <width>857</width>
+                <height>680</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_6">
@@ -4571,8 +4581,8 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>429</width>
-                <height>549</height>
+                <width>857</width>
+                <height>680</height>
                </rect>
               </property>
               <layout class="QGridLayout" name="gridLayout_15">
@@ -4668,7 +4678,7 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
                   </widget>
                  </item>
                  <item>
-                  <widget class="QgsProjectionSelectionWidget" name="leProjectGlobalCrs" native="true">
+                  <widget class="QgsProjectionSelectionWidget" name="leProjectGlobalCrs">
                    <property name="minimumSize">
                     <size>
                      <width>0</width>
@@ -4707,7 +4717,7 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
                   <item row="1" column="0">
                    <widget class="QRadioButton" name="radPromptForProjection">
                     <property name="text">
-                     <string>Pro&amp;mpt for CRS</string>
+                     <string>Promp&amp;t for CRS</string>
                     </property>
                    </widget>
                   </item>
@@ -4721,12 +4731,12 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
                   <item row="3" column="0">
                    <widget class="QRadioButton" name="radUseGlobalProjection">
                     <property name="text">
-                     <string>Use a default CRS</string>
+                     <string>&amp;Use a default CRS</string>
                     </property>
                    </widget>
                   </item>
                   <item row="3" column="1">
-                   <widget class="QgsProjectionSelectionWidget" name="leLayerGlobalCrs" native="true">
+                   <widget class="QgsProjectionSelectionWidget" name="leLayerGlobalCrs">
                     <property name="enabled">
                      <bool>false</bool>
                     </property>
@@ -4784,15 +4794,15 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>282</width>
-                <height>234</height>
+                <width>857</width>
+                <height>680</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_32">
                <item>
                 <widget class="QGroupBox" name="grpLocale">
                  <property name="title">
-                  <string>O&amp;verride system locale</string>
+                  <string>Override s&amp;ystem locale</string>
                  </property>
                  <property name="checkable">
                   <bool>true</bool>
@@ -4893,8 +4903,8 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>509</width>
-                <height>723</height>
+                <width>843</width>
+                <height>689</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_33">
@@ -5075,10 +5085,10 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
                  <property name="checkable">
                   <bool>true</bool>
                  </property>
-                 <property name="collapsed" stdset="0">
+                 <property name="collapsed">
                   <bool>false</bool>
                  </property>
-                 <property name="saveCollapsedState" stdset="0">
+                 <property name="saveCollapsedState">
                   <bool>true</bool>
                  </property>
                  <layout class="QGridLayout" name="gridLayout_1">
@@ -5419,21 +5429,42 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
  <layoutdefault spacing="6" margin="11"/>
  <customwidgets>
   <customwidget>
-   <class>QgsScrollArea</class>
-   <extends>QScrollArea</extends>
-   <header>qgsscrollarea.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
    <class>QgsCollapsibleGroupBox</class>
    <extends>QGroupBox</extends>
    <header>qgscollapsiblegroupbox.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
+   <class>QgsColorButton</class>
+   <extends>QToolButton</extends>
+   <header>qgscolorbutton.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsFilterLineEdit</class>
+   <extends>QLineEdit</extends>
+   <header>qgsfilterlineedit.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsPasswordLineEdit</class>
+   <extends>QLineEdit</extends>
+   <header>qgspasswordlineedit.h</header>
+  </customwidget>
+  <customwidget>
    <class>QgsProjectionSelectionWidget</class>
    <extends>QWidget</extends>
    <header>qgsprojectionselectionwidget.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsSpinBox</class>
+   <extends>QSpinBox</extends>
+   <header>qgsspinbox.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsScrollArea</class>
+   <extends>QScrollArea</extends>
+   <header>qgsscrollarea.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
@@ -5446,27 +5477,6 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
    <class>QgsScaleComboBox</class>
    <extends>QComboBox</extends>
    <header>qgsscalecombobox.h</header>
-  </customwidget>
-  <customwidget>
-   <class>QgsFilterLineEdit</class>
-   <extends>QLineEdit</extends>
-   <header>qgsfilterlineedit.h</header>
-  </customwidget>
-  <customwidget>
-   <class>QgsColorButton</class>
-   <extends>QToolButton</extends>
-   <header>qgscolorbutton.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>QgsSpinBox</class>
-   <extends>QSpinBox</extends>
-   <header>qgsspinbox.h</header>
-  </customwidget>
-  <customwidget>
-   <class>QgsPasswordLineEdit</class>
-   <extends>QLineEdit</extends>
-   <header>qgspasswordlineedit.h</header>
   </customwidget>
   <customwidget>
    <class>QgsColorSchemeList</class>
