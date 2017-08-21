@@ -276,6 +276,20 @@ void QgsRelationReferenceWidget::setForeignKey( const QVariant& value )
   }
   else
   {
+    QString nullValue = QSettings().value( "qgis/nullValue", "NULL" ).toString();
+
+    if ( mChainFilters && mFeature.isValid() && mFilterComboBoxes.count() >= mFilterFields.count() )
+    {
+      QgsFeature feature = mFeature;
+
+      for ( int i = 0; i < mFilterFields.size(); i++ )
+      {
+        QVariant v = feature.attribute( mFilterFields[i] );
+        QString f = v.isNull() ? nullValue : v.toString();
+        mFilterComboBoxes.at( i )->setCurrentIndex( mFilterComboBoxes.at( i )->findText( f ) );
+      }
+    }
+
     int i = mComboBox->findData( mFeature.id(), QgsAttributeTableModel::FeatureIdRole );
     if ( i == -1 && mAllowNull )
     {
@@ -951,12 +965,12 @@ void QgsRelationReferenceWidget::disableChainedComboBoxes( const QComboBox *scb 
       continue;
     }
 
+    cb->setCurrentIndex( 0 );
     if ( ccb->currentIndex() == 0 )
     {
-      cb->setCurrentIndex( 0 );
       cb->setEnabled( false );
     }
-    else
-      ccb = cb;
+
+    ccb = cb;
   }
 }
