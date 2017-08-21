@@ -1234,7 +1234,7 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
   }
 #endif
 
-  connect( qApp, SIGNAL( focusChanged( QWidget*, QWidget* ) ), this, SLOT( onFocusChanged( QWidget*, QWidget* ) ) );
+  connect( qApp, &QApplication::focusChanged, this, &QgisApp::onFocusChanged );
 } // QgisApp ctor
 
 QgisApp::QgisApp()
@@ -8792,10 +8792,11 @@ void QgisApp::userRotation()
   mMapCanvas->refresh();
 }
 
-void QgisApp::onFocusChanged( QWidget* /*old*/, QWidget* now )
+void QgisApp::onFocusChanged( QWidget *oldWidget, QWidget *newWidget )
 {
-  // If nothing has focus even though the window is active, ensure map canvas receives it
-  if ( !now && isActiveWindow() )
+  Q_UNUSED( oldWidget );
+  // If nothing has focus even though this window is active, ensure map canvas receives it
+  if ( !newWidget && isActiveWindow() )
   {
     mapCanvas()->setFocus();
   }
