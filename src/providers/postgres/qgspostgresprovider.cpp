@@ -37,6 +37,7 @@
 #include "qgspostgrestransaction.h"
 #include "qgslogger.h"
 #include "qgsfeedback.h"
+#include "qgssettings.h"
 
 #ifdef HAVE_GUI
 #include "qgspgsourceselect.h"
@@ -1324,7 +1325,9 @@ bool QgsPostgresProvider::determinePrimaryKey()
       }
       else if ( type == Relkind::View || type == Relkind::MaterializedView )
       {
-        determinePrimaryKeyFromUriKeyColumn();
+        QgsSettings settings;
+        bool checkPrimaryKeyUnicity = !settings.value( QStringLiteral( "/qgis/trustProject" ), false ).toBool();
+        determinePrimaryKeyFromUriKeyColumn( checkPrimaryKeyUnicity );
       }
       else
       {
@@ -1453,7 +1456,7 @@ QStringList QgsPostgresProvider::parseUriKey( const QString &key )
   return cols;
 }
 
-void QgsPostgresProvider::determinePrimaryKeyFromUriKeyColumn()
+void QgsPostgresProvider::determinePrimaryKeyFromUriKeyColumn( bool checkPrimaryKeyUnicity )
 {
   QString primaryKey = mUri.keyColumn();
   mPrimaryKeyType = PktUnknown;
@@ -1485,7 +1488,11 @@ void QgsPostgresProvider::determinePrimaryKeyFromUriKeyColumn()
 
     if ( !mPrimaryKeyAttrs.isEmpty() )
     {
-      if ( mUseEstimatedMetadata || uniqueData( primaryKey ) )
+      bool unique = true;
+      if ( checkPrimaryKeyUnicity )
+        unique = uniqueData( primaryKey );
+
+      if ( mUseEstimatedMetadata || unique )
       {
         mPrimaryKeyType = PktFidMap; // Map by default
         if ( mPrimaryKeyAttrs.size() == 1 )
