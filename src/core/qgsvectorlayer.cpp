@@ -2279,7 +2279,10 @@ bool QgsVectorLayer::changeAttributeValue( QgsFeatureId fid, int field, const QV
       if ( joinFeature.isValid() )
         return info->joinLayer()->changeAttributeValue( joinFeature.id(), srcFieldIndex, newValue, oldValue );
       else
-        return false;
+      {
+        feature.setAttribute( field, newValue );
+        return addFeaturesToJoinedLayers( QgsFeatureList() << feature );
+      }
     }
     else
       return false;
