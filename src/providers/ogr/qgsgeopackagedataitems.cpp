@@ -577,7 +577,7 @@ bool QgsGeoPackageRasterLayerItem::executeDeleteLayer( QString &errCause )
       else
       {
         // Remove table
-        char *errmsg = NULL;
+        char *errmsg = nullptr;
         char *sql = sqlite3_mprintf(
                       "DROP table %w;"
                       "DELETE FROM gpkg_contents WHERE table_name = '%q';"
@@ -596,20 +596,21 @@ bool QgsGeoPackageRasterLayerItem::executeDeleteLayer( QString &errCause )
                  );
         sqlite3_free( sql );
         // Remove from optional tables, may silently fail
-        for ( const auto tableName : QStringList()
-              << QStringLiteral( "gpkg_extensions" )
-              << QStringLiteral( "gpkg_metadata_reference" ) )
+        QStringList optionalTables;
+        optionalTables << QStringLiteral( "gpkg_extensions" )
+                       << QStringLiteral( "gpkg_metadata_reference" );
+        for ( const auto tableName : optionalTables )
         {
           char *sql = sqlite3_mprintf( "DELETE FROM table %w WHERE table_name = '%q",
                                        tableName.toUtf8().constData(),
                                        layerName.toUtf8().constData() );
-          status = sqlite3_exec(
-                     handle,                              /* An open database */
-                     sql,                                 /* SQL to be evaluated */
-                     NULL,                                /* Callback function */
-                     NULL,                                /* 1st argument to callback */
-                     NULL                                 /* Error msg written here */
-                   );
+          sqlite3_exec(
+            handle,                              /* An open database */
+            sql,                                 /* SQL to be evaluated */
+            NULL,                                /* Callback function */
+            NULL,                                /* 1st argument to callback */
+            NULL                                 /* Error msg written here */
+          );
           sqlite3_free( sql );
         }
         if ( status == SQLITE_OK )
@@ -618,9 +619,9 @@ bool QgsGeoPackageRasterLayerItem::executeDeleteLayer( QString &errCause )
         }
         else
         {
-          errCause = tr( "There was an error deleting the layer: %1" ).arg( errmsg );
-          sqlite3_free( errmsg );
+          errCause = tr( "There was an error deleting the layer: %1" ).arg( QString::fromUtf8( errmsg ) );
         }
+        sqlite3_free( errmsg );
       }
       sqlite3_close( handle );
     }
