@@ -1285,11 +1285,9 @@ bool QgsPostgresProvider::determinePrimaryKey()
       // If the relation is a view try to find a suitable column to use as
       // the primary key.
 
-      sql = QStringLiteral( "SELECT relkind FROM pg_class WHERE oid=regclass(%1)::oid" ).arg( quotedValue( mQuery ) );
-      res = connectionRO()->PQexec( sql );
-      QString type = res.PQgetvalue( 0, 0 );
+      QgsPostgresProvider::Relkind type = relkind();
 
-      if ( type == QLatin1String( "r" ) ) // the relation is a table
+      if ( type == Relkind::OrdinaryTable )
       {
         QgsDebugMsg( "Relation is a table. Checking to see if it has an oid column." );
 
@@ -1324,13 +1322,15 @@ bool QgsPostgresProvider::determinePrimaryKey()
           }
         }
       }
-      else if ( type == QLatin1String( "v" ) || type == QLatin1String( "m" ) ) // the relation is a view
+      else if ( type == Relkind::View || type == Relkind::MaterializedView )
       {
         determinePrimaryKeyFromUriKeyColumn();
       }
       else
       {
-        QgsMessageLog::logMessage( tr( "Unexpected relation type '%1'." ).arg( type ), tr( "PostGIS" ) );
+        const QMetaEnum metaEnum( QMetaEnum::fromType<Relkind>() );
+        QString typeName = metaEnum.valueToKey( type );
+        QgsMessageLog::logMessage( tr( "Unexpected relation type '%1'." ).arg( typeName ), tr( "PostGIS" ) );
       }
     }
     else
@@ -4245,6 +4245,50 @@ QList<QgsRelation> QgsPostgresProvider::discoverRelations( const QgsVectorLayer 
 QgsAttrPalIndexNameHash QgsPostgresProvider::palAttributeIndexNames() const
 {
   return mAttrPalIndexName;
+}
+
+QgsPostgresProvider::Relkind QgsPostgresProvider::relkind() const
+{
+  QString sql = QStringLiteral( "SELECT relkind FROM pg_class WHERE oid=regclass(%1)::oid" ).arg( quotedValue( mQuery ) );
+  QgsPostgresResult res( connectionRO()->PQexec( sql ) );
+  QString type = res.PQgetvalue( 0, 0 );
+
+  QgsPostgresProvider::Relkind kind = Relkind::Unknown;
+
+  if ( type == QLatin1String( "r" ) )
+  {
+    kind = Relkind::OrdinaryTable;
+  }
+  else if ( type == QLatin1String( "i" ) )
+  {
+    kind = Relkind::Index;
+  }
+  else if ( type == QLatin1String( "s" ) )
+  {
+    kind = Relkind::Sequence;
+  }
+  else if ( type == QLatin1String( "v" ) )
+  {
+    kind = Relkind::View;
+  }
+  else if ( type == QLatin1String( "m" ) )
+  {
+    kind = Relkind::MaterializedView;
+  }
+  else if ( type == QLatin1String( "c" ) )
+  {
+    kind = Relkind::CompositeType;
+  }
+  else if ( type == QLatin1String( "t" ) )
+  {
+    kind = Relkind::ToastTable;
+  }
+  else if ( type == QLatin1String( "f" ) )
+  {
+    kind = Relkind::ForeignTable;
+  }
+
+  return kind;
 }
 
 /**
