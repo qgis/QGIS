@@ -27,6 +27,8 @@
 #include <qgsapplication.h>
 #include <qgsproviderregistry.h>
 #include <qgsproject.h>
+#include "qgsrenderer.h"
+
 //qgis test includes
 #include "qgsmultirenderchecker.h"
 
@@ -48,6 +50,7 @@ class TestQgsInvertedPolygon : public QObject
 
     void singleSubRenderer();
     void graduatedSubRenderer();
+    void checkSymbolItem();
     void preprocess();
     void projectionTest();
 #if defined(GDAL_VERSION_NUM) && GDAL_VERSION_MAJOR >= 2
@@ -126,6 +129,15 @@ void TestQgsInvertedPolygon::graduatedSubRenderer()
   mReport += QLatin1String( "<h2>Inverted polygon renderer, graduated sub renderer test</h2>\n" );
   QVERIFY( setQml( mpPolysLayer, "inverted_polys_graduated.qml" ) );
   QVERIFY( imageCheck( "inverted_polys_graduated" ) );
+}
+
+void TestQgsInvertedPolygon::checkSymbolItem()
+{
+  QVERIFY( setQml( mpPolysLayer, "inverted_polys_rule.qml" ) );
+  QString firstRuleKey = mpPolysLayer->renderer()->legendSymbolItems().first().ruleKey();
+  QVERIFY( mpPolysLayer->renderer()->legendSymbolItemChecked( firstRuleKey ) );
+  mpPolysLayer->renderer()->checkLegendSymbolItem( firstRuleKey, false );
+  QVERIFY( !mpPolysLayer->renderer()->legendSymbolItemChecked( firstRuleKey ) );
 }
 
 void TestQgsInvertedPolygon::preprocess()
