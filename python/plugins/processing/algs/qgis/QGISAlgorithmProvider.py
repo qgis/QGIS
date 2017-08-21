@@ -53,6 +53,7 @@ from .ConvexHull import ConvexHull
 from .CreateAttributeIndex import CreateAttributeIndex
 from .CreateConstantRaster import CreateConstantRaster
 from .Datasources2Vrt import Datasources2Vrt
+from .DefineProjection import DefineProjection
 from .Delaunay import Delaunay
 from .DeleteColumn import DeleteColumn
 from .DeleteDuplicateGeometries import DeleteDuplicateGeometries
@@ -64,15 +65,20 @@ from .DropGeometry import DropGeometry
 from .DropMZValues import DropMZValues
 from .EliminateSelection import EliminateSelection
 from .EquivalentNumField import EquivalentNumField
+from .ExecuteSQL import ExecuteSQL
 from .Explode import Explode
 from .ExportGeometryInfo import ExportGeometryInfo
 from .ExtendLines import ExtendLines
 from .ExtentFromLayer import ExtentFromLayer
 from .ExtractNodes import ExtractNodes
 from .ExtractSpecificNodes import ExtractSpecificNodes
+from .FieldPyculator import FieldsPyculator
+from .FieldsCalculator import FieldsCalculator
 from .FieldsMapper import FieldsMapper
+from .FindProjection import FindProjection
 from .FixedDistanceBuffer import FixedDistanceBuffer
 from .FixGeometry import FixGeometry
+from .GeometryConvert import GeometryConvert
 from .GeometryByExpression import GeometryByExpression
 from .Gridify import Gridify
 from .GridLine import GridLine
@@ -119,6 +125,7 @@ from .RandomPointsPolygons import RandomPointsPolygons
 from .RandomSelection import RandomSelection
 from .RandomSelectionWithinSubsets import RandomSelectionWithinSubsets
 from .Rasterize import RasterizeAlgorithm
+from .RasterCalculator import RasterCalculator
 from .RasterLayerStatistics import RasterLayerStatistics
 from .RectanglesOvalsDiamondsFixed import RectanglesOvalsDiamondsFixed
 from .RectanglesOvalsDiamondsVariable import RectanglesOvalsDiamondsVariable
@@ -165,14 +172,7 @@ from .ZonalStatistics import ZonalStatistics
 # from .ExtractByLocation import ExtractByLocation
 # from .SelectByLocation import SelectByLocation
 # from .SpatialJoin import SpatialJoin
-# from .GeometryConvert import GeometryConvert
-# from .FieldsCalculator import FieldsCalculator
-# from .FieldPyculator import FieldsPyculator
 # from .SelectByAttributeSum import SelectByAttributeSum
-# from .DefineProjection import DefineProjection
-# from .RasterCalculator import RasterCalculator
-# from .ExecuteSQL import ExecuteSQL
-# from .FindProjection import FindProjection
 
 pluginPath = os.path.normpath(os.path.join(
     os.path.split(os.path.dirname(__file__))[0], os.pardir))
@@ -190,12 +190,7 @@ class QGISAlgorithmProvider(QgsProcessingProvider):
         #         SelectByLocation(),
         #         ExtractByLocation(),
         #         SpatialJoin(),
-        #         GeometryConvert(), FieldsCalculator(),
-        #         FieldsPyculator(),
-        #         FieldsMapper(), SelectByAttributeSum()
-        #         DefineProjection(),
-        #         RasterCalculator(),
-        #          ExecuteSQL(), FindProjection(),
+        #         SelectByAttributeSum()
         #         ]
         algs = [AddTableField(),
                 Aggregate(),
@@ -210,6 +205,7 @@ class QGISAlgorithmProvider(QgsProcessingProvider):
                 CreateAttributeIndex(),
                 CreateConstantRaster(),
                 Datasources2Vrt(),
+                DefineProjection(),
                 Delaunay(),
                 DeleteColumn(),
                 DeleteDuplicateGeometries(),
@@ -221,16 +217,21 @@ class QGISAlgorithmProvider(QgsProcessingProvider):
                 DropMZValues(),
                 EliminateSelection(),
                 EquivalentNumField(),
+                ExecuteSQL(),
                 Explode(),
                 ExportGeometryInfo(),
                 ExtendLines(),
                 ExtentFromLayer(),
                 ExtractNodes(),
                 ExtractSpecificNodes(),
+                FieldsCalculator(),
                 FieldsMapper(),
+                FieldsPyculator(),
+                FindProjection(),
                 FixedDistanceBuffer(),
                 FixGeometry(),
                 GeometryByExpression(),
+                GeometryConvert(),
                 Gridify(),
                 GridLine(),
                 GridPolygon(),
@@ -275,6 +276,7 @@ class QGISAlgorithmProvider(QgsProcessingProvider):
                 RandomPointsPolygons(),
                 RandomSelection(),
                 RandomSelectionWithinSubsets(),
+                RasterCalculator(),
                 RasterizeAlgorithm(),
                 RasterLayerStatistics(),
                 RectanglesOvalsDiamondsFixed(),

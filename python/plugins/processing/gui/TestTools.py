@@ -51,7 +51,8 @@ from qgis.core import (QgsApplication,
                        QgsProcessingParameterRasterDestination,
                        QgsProcessingParameterFeatureSink,
                        QgsProcessingParameterVectorDestination,
-                       QgsProcessingParameterFileDestination)
+                       QgsProcessingParameterFileDestination,
+                       QgsProcessingParameterEnum)
 from qgis.PyQt.QtCore import QCoreApplication, QMetaObject
 from qgis.PyQt.QtWidgets import QDialog, QVBoxLayout, QTextEdit, QMessageBox
 
@@ -152,6 +153,9 @@ def createTest(text):
         if param.flags() & QgsProcessingParameterDefinition.FlagHidden or param.isDestination():
             continue
 
+        if not param.name() in parameters:
+            continue
+
         i += 1
         token = parameters[param.name()]
         # Handle empty parameters that are optionals
@@ -179,7 +183,7 @@ def createTest(text):
 
             params[param.name()] = p
         elif isinstance(param, QgsProcessingParameterMultipleLayers):
-            multiparams = token.split(';')
+            multiparams = token
             newparam = []
 
             # Handle datatype detection
@@ -223,6 +227,8 @@ def createTest(text):
                 params[param.name()] = int(token)
             else:
                 params[param.name()] = float(token)
+        elif isinstance(param, QgsProcessingParameterEnum):
+            params[param.name()] = int(token)
         else:
             if token[0] == '"':
                 token = token[1:]
