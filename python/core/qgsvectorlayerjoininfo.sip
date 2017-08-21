@@ -113,7 +113,7 @@ Returns whether values from the joined layer should be cached in memory to speed
 
     void setEditable( bool enabled );
 %Docstring
- Sets whether the form of the target layer allows to edit joined fields.
+ Sets whether the form of the target layer allows editing joined fields.
 .. versionadded:: 3.0
 %End
 

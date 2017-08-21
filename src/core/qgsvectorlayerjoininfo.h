@@ -87,7 +87,7 @@ class CORE_EXPORT QgsVectorLayerJoinInfo
      */
     bool isEditable() const { return mEditable; }
 
-    /** Sets whether the form of the target layer allows to edit joined fields.
+    /** Sets whether the form of the target layer allows editing joined fields.
      * \since QGIS 3.0
      */
     void setEditable( bool enabled );
