@@ -474,12 +474,6 @@ bool QgsMapLayer::readLayerXml( const QDomElement &layerElement, const QgsReadWr
   setAutoRefreshInterval( layerElement.attribute( QStringLiteral( "autoRefreshTime" ), 0 ).toInt() );
   setAutoRefreshEnabled( layerElement.attribute( QStringLiteral( "autoRefreshEnabled" ), QStringLiteral( "0" ) ).toInt() );
 
-  QDomNode extentNode = layerElement.namedItem( QStringLiteral( "extent" ) );
-  if ( !extentNode.isNull() )
-  {
-    setExtent( QgsXmlUtils::readRectangle( extentNode.toElement() ) );
-  }
-
   // set name
   mnl = layerElement.namedItem( QStringLiteral( "layername" ) );
   mne = mnl.toElement();
