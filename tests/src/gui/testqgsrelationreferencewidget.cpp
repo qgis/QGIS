@@ -37,6 +37,12 @@ class TestQgsRelationReferenceWidget : public QObject
     void cleanup(); // will be called after every testfunction.
 
     void testChainFilter();
+    void testChainFilterRefreshed();
+
+  private:
+    QgsVectorLayer* mLayer1;
+    QgsVectorLayer* mLayer2;
+    std::unique_ptr<QgsRelation> mRelation;
 };
 
 void TestQgsRelationReferenceWidget::initTestCase()
@@ -53,6 +59,64 @@ void TestQgsRelationReferenceWidget::cleanupTestCase()
 
 void TestQgsRelationReferenceWidget::init()
 {
+  // create layer
+  mLayer1 = new QgsVectorLayer( QString( "LineString?crs=epsg:3111&field=pk:int&field=fk:int" ), QString( "vl1" ), QString( "memory" ) );
+  QgsMapLayerRegistry::instance()->addMapLayer( mLayer1 );
+
+  mLayer2 = new QgsVectorLayer( QString( "LineString?field=pk:int&field=material:string&field=diameter:int&field=raccord:string" ), QString( "vl2" ), QString( "memory" ) );
+  QgsMapLayerRegistry::instance()->addMapLayer( mLayer2 );
+
+  // create relation
+  mRelation.reset( new QgsRelation() );
+  mRelation->setRelationId( QString( "vl1.vl2" ) );
+  mRelation->setRelationName( QString( "vl1.vl2" ) );
+  mRelation->setReferencingLayer( mLayer1->id() );
+  mRelation->setReferencedLayer( mLayer2->id() );
+  mRelation->addFieldPair( "fk", "pk" );
+  QVERIFY( mRelation->isValid() );
+  QgsProject::instance()->relationManager()->addRelation( *mRelation.get() );
+
+  // add features
+  QgsFeature ft0( mLayer1->fields() );
+  ft0.setAttribute( QString( "pk" ), 0 );
+  ft0.setAttribute( QString( "fk" ), 0 );
+  mLayer1->startEditing();
+  mLayer1->addFeature( ft0 );
+  mLayer1->commitChanges();
+
+  QgsFeature ft1( mLayer1->fields() );
+  ft1.setAttribute( QString( "pk" ), 1 );
+  ft1.setAttribute( QString( "fk" ), 1 );
+  mLayer1->startEditing();
+  mLayer1->addFeature( ft1 );
+  mLayer1->commitChanges();
+
+  QgsFeature ft2( mLayer2->fields() );
+  ft2.setAttribute( QString( "pk" ), 10 );
+  ft2.setAttribute( QString( "material" ), "iron" );
+  ft2.setAttribute( QString( "diameter" ), 120 );
+  ft2.setAttribute( QString( "raccord" ), "brides" );
+  mLayer2->startEditing();
+  mLayer2->addFeature( ft2 );
+  mLayer2->commitChanges();
+
+  QgsFeature ft3( mLayer2->fields() );
+  ft3.setAttribute( QString( "pk" ), 11 );
+  ft3.setAttribute( QString( "material" ), "iron" );
+  ft3.setAttribute( QString( "diameter" ), 120 );
+  ft3.setAttribute( QString( "raccord" ), "sleeve" );
+  mLayer2->startEditing();
+  mLayer2->addFeature( ft3 );
+  mLayer2->commitChanges();
+
+  QgsFeature ft4( mLayer2->fields() );
+  ft4.setAttribute( QString( "pk" ), 12 );
+  ft4.setAttribute( QString( "material" ), "steel" );
+  ft4.setAttribute( QString( "diameter" ), 120 );
+  ft4.setAttribute( QString( "raccord" ), "collar" );
+  mLayer2->startEditing();
+  mLayer2->addFeature( ft4 );
+  mLayer2->commitChanges();
 }
 
 void TestQgsRelationReferenceWidget::cleanup()
@@ -61,71 +125,13 @@ void TestQgsRelationReferenceWidget::cleanup()
 
 void TestQgsRelationReferenceWidget::testChainFilter()
 {
-  // create layers
-  QgsVectorLayer vl1( QString( "LineString?crs=epsg:3111&field=pk:int&field=fk:int" ), QString( "vl1" ), QString( "memory" ) );
-  QgsMapLayerRegistry::instance()->addMapLayer( &vl1 );
-  QgsVectorLayer vl2( QString( "LineString?field=pk:int&field=material:string&field=diameter:int&field=raccord:string" ), QString( "vl2" ), QString( "memory" ) );
-  QgsMapLayerRegistry::instance()->addMapLayer( &vl2 );
-
-  // create a relation between them
-  QgsRelation relation;
-  relation.setRelationId( QString( "vl1.vl2" ) );
-  relation.setRelationName( QString( "vl1.vl2" ) );
-  relation.setReferencingLayer( vl1.id() );
-  relation.setReferencedLayer( vl2.id() );
-  relation.addFieldPair( "fk", "pk" );
-  QVERIFY( relation.isValid() );
-  QgsProject::instance()->relationManager()->addRelation( relation );
-
-  // add features
-  QgsFeature ft0( vl1.fields() );
-  ft0.setAttribute( QString( "pk" ), 0 );
-  ft0.setAttribute( QString( "fk" ), 0 );
-  vl1.startEditing();
-  vl1.addFeature( ft0 );
-  vl1.commitChanges();
-
-  QgsFeature ft1( vl1.fields() );
-  ft1.setAttribute( QString( "pk" ), 1 );
-  ft1.setAttribute( QString( "fk" ), 1 );
-  vl1.startEditing();
-  vl1.addFeature( ft1 );
-  vl1.commitChanges();
-
-  QgsFeature ft2( vl2.fields() );
-  ft2.setAttribute( QString( "pk" ), 10 );
-  ft2.setAttribute( QString( "material" ), "iron" );
-  ft2.setAttribute( QString( "diameter" ), 120 );
-  ft2.setAttribute( QString( "raccord" ), "brides" );
-  vl2.startEditing();
-  vl2.addFeature( ft2 );
-  vl2.commitChanges();
-
-  QgsFeature ft3( vl2.fields() );
-  ft3.setAttribute( QString( "pk" ), 11 );
-  ft3.setAttribute( QString( "material" ), "iron" );
-  ft3.setAttribute( QString( "diameter" ), 120 );
-  ft3.setAttribute( QString( "raccord" ), "sleeve" );
-  vl2.startEditing();
-  vl2.addFeature( ft3 );
-  vl2.commitChanges();
-
-  QgsFeature ft4( vl2.fields() );
-  ft4.setAttribute( QString( "pk" ), 12 );
-  ft4.setAttribute( QString( "material" ), "steel" );
-  ft4.setAttribute( QString( "diameter" ), 120 );
-  ft4.setAttribute( QString( "raccord" ), "collar" );
-  vl2.startEditing();
-  vl2.addFeature( ft4 );
-  vl2.commitChanges();
-
   // init a relation reference widget
   QStringList filterFields = { "material", "diameter", "raccord" };
 
   QgsRelationReferenceWidget w( new QWidget() );
   w.setChainFilters( true );
   w.setFilterFields( filterFields );
-  w.setRelation( relation, true );
+  w.setRelation( *mRelation, true );
   w.init();
 
   // check default status for comboboxes
@@ -177,6 +183,41 @@ void TestQgsRelationReferenceWidget::testChainFilter()
   // if there's no filter at all, all features' id should be proposed
   cbs[0]->setCurrentIndex( cbs[0]->findText( "material" ) );
   QCOMPARE( w.mComboBox->count(), 4 );
+}
+
+void TestQgsRelationReferenceWidget::testChainFilterRefreshed()
+{
+  // init a relation reference widget
+  QStringList filterFields = { "material", "diameter", "raccord" };
+
+  QgsRelationReferenceWidget w( new QWidget() );
+  w.setChainFilters( true );
+  w.setFilterFields( filterFields );
+  w.setRelation( *mRelation, true );
+  w.init();
+
+  // check default status for comboboxes
+  QList<QComboBox *> cbs = w.mFilterComboBoxes;
+  QCOMPARE( cbs.count(), 3 );
+  QCOMPARE( cbs[0]->currentText(), QString( "material" ) );
+  QCOMPARE( cbs[1]->currentText(), QString( "diameter" ) );
+  QCOMPARE( cbs[2]->currentText(), QString( "raccord" ) );
+
+  // update foreign key
+  w.setForeignKey( QVariant( 12 ) );
+  QCOMPARE( cbs[0]->currentText(), QString( "steel" ) );
+  QCOMPARE( cbs[1]->currentText(), QString( "120" ) );
+  QCOMPARE( cbs[2]->currentText(), QString( "collar" ) );
+
+  w.setForeignKey( QVariant( 10 ) );
+  QCOMPARE( cbs[0]->currentText(), QString( "iron" ) );
+  QCOMPARE( cbs[1]->currentText(), QString( "120" ) );
+  QCOMPARE( cbs[2]->currentText(), QString( "brides" ) );
+
+  w.setForeignKey( QVariant( 11 ) );
+  QCOMPARE( cbs[0]->currentText(), QString( "iron" ) );
+  QCOMPARE( cbs[1]->currentText(), QString( "120" ) );
+  QCOMPARE( cbs[2]->currentText(), QString( "sleeve" ) );
 }
 
 QTEST_MAIN( TestQgsRelationReferenceWidget )
