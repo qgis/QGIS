@@ -39,9 +39,10 @@ class TestQgsGlobalSettings(unittest.TestCase):
 
     def test_global_settings_exist(self):
         qDebug('QgsApplication.pkgDataPath(): {0}'.format(QgsApplication.pkgDataPath()))
-        # Path after deployment: QgsApplication.pkgDataPath() + '/qgis_global_settings.ini'
-        # QgsSettings.setGlobalSettingsPath(QgsApplication.pkgDataPath() + '/resources/qgis_global_settings.ini')
-        QgsSettings.setGlobalSettingsPath(QgsApplication.pkgDataPath() + '/qgis_global_settings.ini')
+        # Path after deployment
+        # QgsSettings.setGlobalSettingsPath(QgsApplication.pkgDataPath() + '/qgis_global_settings.ini')
+        # Path before deployment
+        QgsSettings.setGlobalSettingsPath(QgsApplication.pkgDataPath() + '/resources/qgis_global_settings.ini')
         self.settings = QgsSettings('testqgissettings', 'testqgissettings')
         settings = QgsSettings()
         # qDebug('settings.allKeys(): {0}'.format(settings.allKeys()))
