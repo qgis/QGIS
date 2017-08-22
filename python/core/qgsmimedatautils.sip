@@ -48,6 +48,14 @@ Returns encoded representation of the object
  :rtype: QgsVectorLayer
 %End
 
+      QgsRasterLayer *rasterLayer( bool &owner, QString &error ) const;
+%Docstring
+ Get raster layer from uri if possible, otherwise returns 0 and error is set
+ \param owner set to true if caller becomes owner
+ \param error set to error message if cannot get raster
+ :rtype: QgsRasterLayer
+%End
+
       QString layerType;
 %Docstring
 Type of URI. Recognized types: "vector" / "raster" / "plugin" / "custom"
