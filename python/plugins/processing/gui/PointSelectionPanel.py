@@ -49,11 +49,15 @@ class PointSelectionPanel(BASE, WIDGET):
 
         self.dialog = dialog
 
-        canvas = iface.mapCanvas()
-        self.prevMapTool = canvas.mapTool()
+        if iface is not None:
+            canvas = iface.mapCanvas()
+            self.prevMapTool = canvas.mapTool()
 
-        self.tool = PointMapTool(canvas)
-        self.tool.canvasClicked.connect(self.updatePoint)
+            self.tool = PointMapTool(canvas)
+            self.tool.canvasClicked.connect(self.updatePoint)
+        else:
+            self.prevMapTool = None
+            self.tool = None
 
         if default:
             tokens = str(default).split(',')
