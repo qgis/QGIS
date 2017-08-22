@@ -303,7 +303,13 @@ class ModelerParametersDialog(QDialog):
         for param in self._alg.parameterDefinitions():
             if param.isDestination() or param.flags() & QgsProcessingParameterDefinition.FlagHidden:
                 continue
-            val = self.wrappers[param.name()].value()
+            try:
+                val = self.wrappers[param.name()].value()
+            except InvalidParameterValue:
+                self.bar.pushMessage(self.tr("Error"), self.tr("Wrong or missing value for parameter '{}'").format(param.description()),
+                                     level=QgsMessageBar.WARNING)
+                return None
+
             if isinstance(val, QgsProcessingModelChildParameterSource):
                 val = [val]
             elif not (isinstance(val, list) and all([isinstance(subval, QgsProcessingModelChildParameterSource) for subval in val])):
@@ -313,7 +319,7 @@ class ModelerParametersDialog(QDialog):
                     subval.source() == QgsProcessingModelChildParameterSource.StaticValue and
                     not param.checkValueIsAcceptable(subval.staticValue())) \
                         or (subval is None and not param.flags() & QgsProcessingParameterDefinition.FlagOptional):
-                    self.bar.pushMessage("Error", "Wrong or missing value for parameter '%s'" % param.description(),
+                    self.bar.pushMessage(self.tr("Error"), self.tr("Wrong or missing value for parameter '{}'").format(param.description()),
                                          level=QgsMessageBar.WARNING)
                     return None
             alg.addParameterSources(param.name(), val)
