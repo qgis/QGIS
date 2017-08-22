@@ -423,15 +423,29 @@ bool QgsGeoPackageConnectionItem::handleDrop( const QMimeData *data, Qt::DropAct
             const char *args[] = { "-of", "gpkg", "-co", QStringLiteral( "RASTER_TABLE=%1" ).arg( u.name ).toUtf8().constData(), "-co", "APPEND_SUBDATASET=YES", nullptr };
             GDALTranslateOptions *psOptions = GDALTranslateOptionsNew( ( char ** )args, nullptr );
             GDALDatasetH hSrcDS = GDALOpen( u.uri.toUtf8().constData(), GA_ReadOnly );
-            CPLErrorReset();
-            GDALDatasetH hOutDS = GDALTranslate( mPath.toUtf8().constData(), hSrcDS, psOptions, NULL );
-            if ( ! hOutDS )
+            if ( ! hSrcDS )
             {
-              importResults.append( tr( "Failed to import layer %1! See the message logs for details.\n\n" ).arg( u.name ) );
+              importResults.append( tr( "Failed to open source layer %1! See the message logs for details.\n\n" ).arg( u.name ) );
               hasError = true;
-
             }
-            GDALClose( hSrcDS );
+            else
+            {
+              CPLErrorReset();
+              GDALDatasetH hOutDS = GDALTranslate( mPath.toUtf8().constData(), hSrcDS, psOptions, NULL );
+              if ( ! hOutDS )
+              {
+                importResults.append( tr( "Failed to import layer %1! See the message logs for details.\n\n" ).arg( u.name ) );
+                hasError = true;
+              }
+              else // All good!
+              {
+                GDALClose( hOutDS );
+                // this is gross - TODO - find a way to get access to messageBar from data items
+                QMessageBox::information( nullptr, tr( "Import to GeoPackage database" ), tr( "Import was successful." ) );
+                refreshConnections();
+              }
+              GDALClose( hSrcDS );
+            }
             GDALTranslateOptionsFree( psOptions );
           }
         } // do not overwrite
