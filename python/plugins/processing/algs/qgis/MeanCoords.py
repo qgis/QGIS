@@ -124,14 +124,14 @@ class MeanCoords(GeoAlgorithm):
         current = 0
         total = 100.0 / len(means)
         for (clazz, values) in means.iteritems():
-            outFeat = QgsFeature()
-            cx = values[0] / values[2]
-            cy = values[1] / values[2]
-            meanPoint = QgsPoint(cx, cy)
-
-            outFeat.setGeometry(QgsGeometry.fromPoint(meanPoint))
-            outFeat.setAttributes([cx, cy, clazz])
-            writer.addFeature(outFeat)
+            if values[2]:
+                outFeat = QgsFeature()
+                cx = values[0] / values[2]
+                cy = values[1] / values[2]
+                meanPoint = QgsPoint(cx, cy)
+                outFeat.setGeometry(QgsGeometry.fromPoint(meanPoint))
+                outFeat.setAttributes([cx, cy, clazz])
+                writer.addFeature(outFeat)
             current += 1
             progress.setPercentage(int(current * total))
 
