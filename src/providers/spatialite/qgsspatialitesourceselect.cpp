@@ -111,11 +111,6 @@ QgsSpatiaLiteSourceSelect::QgsSpatiaLiteSourceSelect( QWidget *parent, Qt::Windo
   mSearchModeComboBox->setVisible( false );
   mSearchModeLabel->setVisible( false );
   mSearchTableEdit->setVisible( false );
-#if 0
-  cbxAllowGeometrylessTables->setDisabled( true );
-  cbxAllowGeometrylessTables->setText( QString( "%1 and Administration Tables" ).arg( cbxAllowGeometrylessTables->text() ) );
-  cbxAllowGeometrylessTables->setChecked( true );
-#endif
   cbxAllowGeometrylessTables->setVisible( false );
 }
 
@@ -191,12 +186,28 @@ void QgsSpatiaLiteSourceSelect::on_cbxAllowGeometrylessTables_stateChanged( int 
 
 void QgsSpatiaLiteSourceSelect::on_mTablesTreeView_clicked( const QModelIndex &index )
 {
-  mBuildQueryButton->setEnabled( index.parent().isValid() );
+  QModelIndex idx = mProxyModel.mapToSource( index );
+  bool bValidSelection = false;
+  if ( !mTableModel.getLayerName( idx ).isEmpty() )
+  {
+    bValidSelection = index.parent().isValid();
+  }
+  // Only known and valid layers will be enabled [directories, Non-Spatial will not]
+  mBuildQueryButton->setEnabled( bValidSelection );
+  if ( mTableModel.isSpatialite() )
+  {
+    mStatsButton->setEnabled( bValidSelection );
+  }
 }
 
 void QgsSpatiaLiteSourceSelect::on_mTablesTreeView_doubleClicked( const QModelIndex &index )
 {
-  setSql( index );
+  QModelIndex idx = mProxyModel.mapToSource( index );
+  if ( !mTableModel.getLayerName( idx ).isEmpty() )
+  {
+    // Only known and valid layers will be enabled [directories, Non-Spatial will not]
+    setSql( index );
+  }
 }
 
 void QgsSpatiaLiteSourceSelect::on_mSearchGroupBox_toggled( bool checked )
@@ -398,7 +409,7 @@ int QgsSpatiaLiteSourceSelect::collectSelectedTables()
       continue;
     }
     currentItem = mTableModel.itemFromIndex( mProxyModel.mapToSource( *selected_it ) );
-    if ( !currentItem )
+    if ( ( !currentItem ) || ( !currentItem->isSelectable() ) )
     {
       continue;
     }
@@ -471,10 +482,6 @@ void QgsSpatiaLiteSourceSelect::on_btnConnect_clicked()
     // populate the table list
     // get the list of suitable tables and columns and populate the UI
     mTableModel.setSqliteDb( spatialiteDbInfo, true );
-  }
-  if ( mTableModel.isSpatialite() )
-  {
-    mStatsButton->setEnabled( true );
   }
   mTablesTreeView->setColumnHidden( mTableModel.getColumnSortHidden(), true );
   mTablesTreeView->sortByColumn( mTableModel.getColumnSortHidden(), Qt::AscendingOrder );
@@ -554,6 +561,27 @@ void QgsSpatiaLiteSourceSelect::setSearchExpression( const QString &regexp )
 
 void QgsSpatiaLiteSourceSelect::treeWidgetSelectionChanged( const QItemSelection &selected, const QItemSelection &deselected )
 {
+  Q_UNUSED( selected )
   Q_UNUSED( deselected )
-  mAddButton->setEnabled( !selected.isEmpty() );
+  bool bValidSelection = false;
+  QItemSelection selection = mTablesTreeView->selectionModel()->selection();
+  QModelIndexList selectedIndices = selection.indexes();
+  QStandardItem *currentItem = nullptr;
+  QModelIndexList::const_iterator selected_it = selectedIndices.constBegin();
+  for ( ; selected_it != selectedIndices.constEnd(); ++selected_it )
+  {
+    if ( !selected_it->parent().isValid() )
+    {
+      //top level items only contain the schema names
+      continue;
+    }
+    currentItem = mTableModel.itemFromIndex( mProxyModel.mapToSource( *selected_it ) );
+    if ( ( !currentItem ) || ( !currentItem->isSelectable() ) )
+    {
+      continue;
+    }
+    bValidSelection = true;
+    break;
+  }
+  mAddButton->setEnabled( bValidSelection );
 }

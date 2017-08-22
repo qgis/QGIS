@@ -60,13 +60,17 @@ class QgsSpatiaLiteTableModel: public QStandardItemModel
       {
         sLayerName = QString( "%1(%2)" ).arg( sLayerName ).arg( sGeometryName );
       }
-      return sLayerName;
+      if ( mDbLayersDataSourceUris.contains( sLayerName ) )
+      {
+         return sLayerName;
+      }
+      return QString();
     }
     QString getLayerNameUris( const QModelIndex &index ) const
     {
       QString sLayerUris = QString();
       QString sLayerName = getLayerName( index );
-      if ( mDbLayersDataSourceUris.contains( sLayerName ) )
+      if ( !sLayerName.isEmpty() )
       {
         sLayerUris = mDbLayersDataSourceUris.value( sLayerName );
       }

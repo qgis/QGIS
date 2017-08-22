@@ -547,10 +547,6 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
     //void sqliteOpen();
     void closeDb();
     bool checkQuery();
-#if 0
-    // TODO: Remove after replacing with SpatialiteDbInfo
-    bool getQueryGeometryDetails();
-#endif
     bool prepareStatement( sqlite3_stmt *&stmt,
                            const QgsAttributeList &fetchAttributes,
                            bool fetchGeometry,

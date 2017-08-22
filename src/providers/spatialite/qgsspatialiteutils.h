@@ -803,6 +803,16 @@ class SpatialiteDbInfo : public QObject
      */
     QMap<QString, SpatialiteDbLayer *> getDbLayers() const { return mDbLayers; }
 
+    /** Collection list of unique (lower case) Group Layers
+     * - with the amount of Layer for each Group
+     * \note
+     *  When: 'table_name' contains at least 2 '_' (such as 'berlin_streets_1650')
+     *  - assume it belongs to a group of 'berlin_streets' for QgsSpatiaLiteTableModel
+     *  - for SpatialViews only
+     * \since QGIS 3.0
+     */
+    QMap<QString, int> getListGroupNames() const { return mMapGroupNames; }
+
     /** Map of valid Selected Layers requested by the User
      * - only Uris that created a valid QgsVectorLayer/QgsRasterLayer
      * -> corresponding QgsMapLayer contained in  getSelectedDb??????Layers
@@ -2193,6 +2203,32 @@ class SpatialiteDbInfo : public QObject
      * \since QGIS 3.0
      */
     QMap<QString, QString> mErrors;
+
+    /** Collection list of unique (lower case) Group Layers [for external use]
+     * - with the amount of Layer for each Group
+     * \note
+     *  When: 'table_name' contains at least 2 '_' (such as 'berlin_streets_1650')
+     *  - assume it belongs to a group of 'berlin_streets' for QgsSpatiaLiteTableModel
+     *  - for SpatialViews only
+     * \since QGIS 3.0
+     */
+    QMap<QString, int> mMapGroupNames;
+
+    /** Collection list of unique (lower case) Group Layers [for internal use]
+     * \note
+     *  When: 'table_name' contains at least 2 '_' (such as 'berlin_streets_1650')
+     *  - assume it belongs to a group of 'berlin_streets' for QgsSpatiaLiteTableModel
+     *  - for SpatialViews only
+     * \since QGIS 3.0
+     */
+    QStringList mListGroupNames;
+
+    /** Builds list of unique Group Layers [lower case entries]
+     * removes single entries
+     * \see createDbLayerInfoUri
+     * \since QGIS 3.0
+     */
+    int prepareGroupLayers();
 };
 
 /** Structure to contain everything needed for a Spatialite/Rasterlite2 source
@@ -2209,6 +2245,7 @@ class SpatialiteDbLayer : public QObject
       , mTableName( QString::null )
       , mGeometryColumn( QString::null )
       , mLayerName( QString::null )
+      , mListGroupName( QString::null )
       , mCoverageName( QString::null )
       , mViewTableName( QString::null )
       , mViewTableGeometryColumn( QString::null )
@@ -2275,6 +2312,22 @@ class SpatialiteDbLayer : public QObject
      * \since QGIS 3.0
      */
     QString getLayerName() const { return mLayerName; }
+
+    /** List-Group-Name (lower case)
+     * \note
+     *  When: 'table_name' contains at least 2 '_' (such as 'berlin_streets_1650')
+     *  - assume it belongs to a group of 'berlin_streets' for QgsSpatiaLiteTableModel
+     *  - for SpatialViews only
+     * \since QGIS 3.0
+     */
+    QString getLayerGroupName() const
+    {
+      if ( getDbConnectionInfo()->getListGroupNames().contains( mListGroupName ) )
+      {
+        return mListGroupName;
+      }
+      return QString();
+    }
 
     /** Coverage-Name [internal]
      * \note
@@ -2666,6 +2719,15 @@ class SpatialiteDbLayer : public QObject
      * \since QGIS 3.0
      */
     QString mLayerName;
+
+    /** List-Group-Name (lower case)
+     * \note
+     *  When: 'table_name' contains at least 2 '_' (such as 'berlin_streets_1650')
+     *  - assume it belongs to a group of 'berlin_streets' for QgsSpatiaLiteTableModel
+     *  - for SpatialViews
+     * \since QGIS 3.0
+     */
+    QString mListGroupName;
 
     /** Coverage-Name [internal]
      * \note
