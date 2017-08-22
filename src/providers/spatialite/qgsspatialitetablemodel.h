@@ -62,7 +62,7 @@ class QgsSpatiaLiteTableModel: public QStandardItemModel
       }
       if ( mDbLayersDataSourceUris.contains( sLayerName ) )
       {
-         return sLayerName;
+        return sLayerName;
       }
       return QString();
     }

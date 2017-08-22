@@ -2073,11 +2073,11 @@ bool SpatialiteDbInfo::readVectorLayers()
     if ( mHasVectorLayers > 0 )
     {
       bRc = true;
-      if (mListGroupNames.size() > 0)
+      if ( mListGroupNames.size() > 0 )
       {
-       // mListGroupNames:will be filled filled with (possible) non-unique values
-       // mListGroupNames: all single entries are removed ; List contains unique values.
-       prepareGroupLayers();
+        // mListGroupNames:will be filled filled with (possible) non-unique values
+        // mListGroupNames: all single entries are removed ; List contains unique values.
+        prepareGroupLayers();
       }
     }
   }
