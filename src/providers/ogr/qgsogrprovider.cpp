@@ -16,6 +16,7 @@ email                : sherman at mrcc.com
  ***************************************************************************/
 
 #include "qgsogrprovider.h"
+#include "qgscplerrorhandler.h"
 #include "qgsogrfeatureiterator.h"
 #include "qgslogger.h"
 #include "qgsmessagelog.h"
@@ -79,31 +80,6 @@ static const QString TEXT_PROVIDER_DESCRIPTION =
   + ')';
 
 static OGRwkbGeometryType ogrWkbGeometryTypeFromName( const QString &typeName );
-
-class QgsCPLErrorHandler
-{
-    static void CPL_STDCALL showError( CPLErr errClass, int errNo, const char *msg )
-    {
-      if ( errNo != OGRERR_NONE )
-        QgsMessageLog::logMessage( QObject::tr( "OGR[%1] error %2: %3" ).arg( errClass ).arg( errNo ).arg( msg ), QObject::tr( "OGR" ) );
-    }
-
-  public:
-    QgsCPLErrorHandler()
-    {
-      CPLPushErrorHandler( showError );
-    }
-
-    ~QgsCPLErrorHandler()
-    {
-      CPLPopErrorHandler();
-    }
-
-  private:
-    QgsCPLErrorHandler( const QgsCPLErrorHandler &other );
-    QgsCPLErrorHandler &operator=( const QgsCPLErrorHandler &other );
-
-};
 
 
 bool QgsOgrProvider::convertField( QgsField &field, const QTextCodec &encoding )
