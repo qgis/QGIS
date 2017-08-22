@@ -52,7 +52,7 @@ class SetMValue(QgisFeatureBasedAlgorithm):
         return 'setmvalue'
 
     def displayName(self):
-        return self.tr('Set M Value')
+        return self.tr('Set M value')
 
     def outputName(self):
         return self.tr('M Added')

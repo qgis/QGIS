@@ -54,7 +54,7 @@ class DropMZValues(QgisFeatureBasedAlgorithm):
         return 'dropmzvalues'
 
     def displayName(self):
-        return self.tr('Drop M/Z Values')
+        return self.tr('Drop M/Z values')
 
     def outputName(self):
         return self.tr('Z/M Dropped')

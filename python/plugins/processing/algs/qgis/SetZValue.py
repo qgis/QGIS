@@ -52,7 +52,7 @@ class SetZValue(QgisFeatureBasedAlgorithm):
         return 'setzvalue'
 
     def displayName(self):
-        return self.tr('Set Z Value')
+        return self.tr('Set Z value')
 
     def outputName(self):
         return self.tr('Z Added')

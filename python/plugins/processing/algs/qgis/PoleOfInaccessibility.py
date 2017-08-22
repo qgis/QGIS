@@ -78,7 +78,7 @@ class PoleOfInaccessibility(QgisAlgorithm):
         return 'poleofinaccessibility'
 
     def displayName(self):
-        return self.tr('Pole of Inaccessibility')
+        return self.tr('Pole of inaccessibility')
 
     def processAlgorithm(self, parameters, context, feedback):
         source = self.parameterAsSource(parameters, self.INPUT, context)

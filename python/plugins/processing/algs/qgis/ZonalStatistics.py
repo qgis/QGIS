@@ -106,7 +106,7 @@ class ZonalStatistics(QgisAlgorithm):
         return 'zonalstatistics'
 
     def displayName(self):
-        return self.tr('Zonal Statistics')
+        return self.tr('Zonal statistics')
 
     def prepareAlgorithm(self, parameters, context, feedback):
         self.bandNumber = self.parameterAsInt(parameters, self.RASTER_BAND, context)
