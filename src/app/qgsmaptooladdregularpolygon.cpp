@@ -126,4 +126,5 @@ void QgsMapToolAddRegularPolygon::clean()
   {
     deleteNumberSidesSpinBox();
   }
+  mRegularPolygon = QgsRegularPolygon();
 }

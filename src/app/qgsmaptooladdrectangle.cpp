@@ -109,9 +109,7 @@ void QgsMapToolAddRectangle::deactivate()
 
   mParentTool->clearCurve( );
   mParentTool->addCurve( rectangleToLinestring() );
-  delete mTempRubberBand;
-  mTempRubberBand = nullptr;
-  mPoints.clear();
+  clean();
 
   QgsMapToolCapture::deactivate();
 }
@@ -134,4 +132,5 @@ void QgsMapToolAddRectangle::clean()
   {
     mParentTool->deleteTempRubberBand();
   }
+  mRectangle = QgsRectangle();
 }

@@ -78,14 +78,13 @@ void QgsMapToolAddEllipse::deactivate()
 
   mParentTool->clearCurve();
   mParentTool->addCurve( mEllipse.toLineString() );
-
   clean();
+
   QgsMapToolCapture::deactivate();
 }
 
 void QgsMapToolAddEllipse::activate()
 {
-
   clean();
   QgsMapToolCapture::activate();
 }
@@ -102,4 +101,5 @@ void QgsMapToolAddEllipse::clean()
   {
     mParentTool->deleteTempRubberBand();
   }
+  mEllipse = QgsEllipse();
 }
