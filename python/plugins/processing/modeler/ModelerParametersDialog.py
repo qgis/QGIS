@@ -244,8 +244,10 @@ class ModelerParametersDialog(QDialog):
         elif not isinstance(outTypes, (tuple, list)):
             outTypes = [outTypes]
 
-        return self.model.availableSourcesForChild(self.childId, [p.typeName() for p in paramType if issubclass(p, QgsProcessingParameterDefinition)],
-                                                   [o.typeName() for o in outTypes if issubclass(o, QgsProcessingOutputDefinition)], dataTypes)
+        return self.model.availableSourcesForChild(self.childId, [p.typeName() for p in paramType if
+                                                                  issubclass(p, QgsProcessingParameterDefinition)],
+                                                   [o.typeName() for o in outTypes if
+                                                    issubclass(o, QgsProcessingOutputDefinition)], dataTypes)
 
     def resolveValueDescription(self, value):
         if isinstance(value, QgsProcessingModelChildParameterSource):
@@ -277,7 +279,8 @@ class ModelerParametersDialog(QDialog):
                 if value is None:
                     value = param.defaultValue()
 
-                if isinstance(value, QgsProcessingModelChildParameterSource) and value.source() == QgsProcessingModelChildParameterSource.StaticValue:
+                if isinstance(value,
+                              QgsProcessingModelChildParameterSource) and value.source() == QgsProcessingModelChildParameterSource.StaticValue:
                     value = value.staticValue()
 
                 self.wrappers[param.name()].setValue(value)
@@ -306,21 +309,24 @@ class ModelerParametersDialog(QDialog):
             try:
                 val = self.wrappers[param.name()].value()
             except InvalidParameterValue:
-                self.bar.pushMessage(self.tr("Error"), self.tr("Wrong or missing value for parameter '{}'").format(param.description()),
+                self.bar.pushMessage(self.tr("Error"),
+                                     self.tr("Wrong or missing value for parameter '{}'").format(param.description()),
                                      level=QgsMessageBar.WARNING)
                 return None
 
             if isinstance(val, QgsProcessingModelChildParameterSource):
                 val = [val]
-            elif not (isinstance(val, list) and all([isinstance(subval, QgsProcessingModelChildParameterSource) for subval in val])):
+            elif not (isinstance(val, list) and all(
+                    [isinstance(subval, QgsProcessingModelChildParameterSource) for subval in val])):
                 val = [QgsProcessingModelChildParameterSource.fromStaticValue(val)]
             for subval in val:
                 if (isinstance(subval, QgsProcessingModelChildParameterSource) and
                     subval.source() == QgsProcessingModelChildParameterSource.StaticValue and
-                    not param.checkValueIsAcceptable(subval.staticValue())) \
+                        not param.checkValueIsAcceptable(subval.staticValue())) \
                         or (subval is None and not param.flags() & QgsProcessingParameterDefinition.FlagOptional):
-                    self.bar.pushMessage(self.tr("Error"), self.tr("Wrong or missing value for parameter '{}'").format(param.description()),
-                                         level=QgsMessageBar.WARNING)
+                    self.bar.pushMessage(self.tr("Error"), self.tr("Wrong or missing value for parameter '{}'").format(
+                        param.description()),
+                        level=QgsMessageBar.WARNING)
                     return None
             alg.addParameterSources(param.name(), val)
 
