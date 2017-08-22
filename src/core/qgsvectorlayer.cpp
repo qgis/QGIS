@@ -2718,7 +2718,24 @@ bool QgsVectorLayer::addFeaturesToJoinedLayers( QgsFeatureList &features, Flags 
           joinLayer->updateFeature( existingFeature );
         }
         else
-          joinFeatures << joinFeature;
+        {
+          // joined feature is added only if one of its field is not null
+          bool notNullFields = false;
+          Q_FOREACH ( const QgsField &field, joinFeature.fields() )
+          {
+            if ( field.name() == info.joinFieldName() )
+              continue;
+
+            if ( !joinFeature.attribute( field.name() ).isNull() )
+            {
+              notNullFields = true;
+              break;
+            }
+          }
+
+          if ( notNullFields )
+            joinFeatures << joinFeature;
+        }
       }
 
       joinLayer->addFeatures( joinFeatures );
