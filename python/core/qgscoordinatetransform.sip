@@ -15,6 +15,9 @@
 class QgsCoordinateTransform : QObject
 {
 %TypeHeaderCode
+#if (SIP_VERSION >= 0x041300 && SIP_VERSION < 0x041303)
+extern PyObject *sipExportedExceptions__core[2];  // workaround: sipExportedExceptions__core is only defined in the first sip part
+#endif
 #include <qgscoordinatetransform.h>
 %End
 
