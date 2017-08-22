@@ -94,6 +94,12 @@ class Grass7AlgorithmProvider(AlgorithmProvider):
         self.preloadedAlgs.append(nviz7())
 
     def _loadAlgorithms(self):
+        version = Grass7Utils.installedVersion(True)
+        if version is None:
+            ProcessingLog.addToLog(ProcessingLog.LOG_ERROR,
+                                   self.tr('Problem with GRASS 7 installation: GRASS 7 was not found or is not correctly installed'))
+            return
+
         self.algs = self.preloadedAlgs
 
     def getDescription(self):
@@ -111,5 +117,5 @@ class Grass7AlgorithmProvider(AlgorithmProvider):
     def getSupportedOutputRasterLayerExtensions(self):
         return ['tif']
 
-    def canBeActivated(self):
-        return not bool(Grass7Utils.checkGrass7IsInstalled())
+    #~ def canBeActivated(self):
+        #~ return not bool(Grass7Utils.checkGrass7IsInstalled())

@@ -27,14 +27,18 @@ __copyright__ = '(C) 2012, Victor Olaya'
 __revision__ = '$Format:%H$'
 
 import os
+import io
 import time
 import sys
 import uuid
+import locale
+import subprocess
 
 from qgis.PyQt.QtCore import QDir
 from qgis.core import QgsApplication
 
 numExported = 1
+cmdEncoding = None
 
 
 def userFolder():
@@ -148,3 +152,37 @@ def escapeAndJoin(strList):
             escaped = s
         joined += escaped + ' '
     return joined.strip()
+
+
+def commandlineEncoding():
+    global cmdEncoding
+    if cmdEncoding is not None:
+        return cmdEncoding
+
+    fName = getTempFilename(".py")
+    with io.open(fName, 'w', encoding='utf-8') as f:
+        f.write(u'# -*- coding: utf-8 -*-\n\nimport sys\nprint(sys.stdin.encoding)')
+
+    env = os.environ.copy()
+    if isWindows:
+        cmd = ['cmd.exe', '/C', 'python.exe', fName]
+    else:
+        cmd = ['python', fName]
+
+    proc = subprocess.Popen(
+        cmd,
+        shell=True,
+        stdout=subprocess.PIPE,
+        stdin=open(os.devnull),
+        stderr=subprocess.STDOUT,
+        universal_newlines=True,
+        env=env
+    )
+    output = proc.communicate()[0]
+
+    # non-zero return code, return encoding based on locale
+    if proc.returncode:
+        output = locale.getpreferredencoding()
+
+    cmdEncoding = output
+    return output
