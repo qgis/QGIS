@@ -779,7 +779,7 @@ void QgsGeometryUtils::segmentizeArc( const QgsPoint &p1, const QgsPoint &p2, co
       {
         if ( clockwise )
         {
-          if ( *stringPoints.begin() != circlePoint2 )
+          if ( stringPoints.empty() || stringPoints.front() != circlePoint2 )
           {
             QgsDebugMsg( QString( "Adding control point, with angle %1 (%2)" ) . arg( a2 ) .arg( a2 * 180 / M_PI ) );
             stringPoints.insert( 0, circlePoint2 );
@@ -787,7 +787,7 @@ void QgsGeometryUtils::segmentizeArc( const QgsPoint &p1, const QgsPoint &p2, co
         }
         else
         {
-          if ( *stringPoints.rbegin() != circlePoint2 )
+          if ( stringPoints.empty() || stringPoints.back() != circlePoint2 )
           {
             QgsDebugMsg( QString( "Adding control point, with angle %1 (%2)" ) . arg( a2 ) .arg( a2 * 180 / M_PI ) );
             stringPoints.insert( stringPoints.size(), circlePoint2 );
@@ -822,6 +822,7 @@ void QgsGeometryUtils::segmentizeArc( const QgsPoint &p1, const QgsPoint &p2, co
   {
     std::reverse( stringPoints.begin(), stringPoints.end() );
   }
+  if ( ! points.empty() && stringPoints.front() == points.back() ) stringPoints.pop_front();
   points.append( stringPoints );
 }
 

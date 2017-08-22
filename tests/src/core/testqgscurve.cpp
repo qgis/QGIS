@@ -67,7 +67,7 @@ class TestQgsCurve : public QObject
                     ); \
     std::unique_ptr< QgsLineString > expgeom( \
         dynamic_cast<QgsLineString *>( \
-                                       QgsGeometryFactory::geomFromWkt( exp ) \
+                                       QgsGeometryFactory::geomFromWkt( exp ).release() \
                                      ) \
                                             ); \
     expgeom.reset( expgeom->reversed() ); \
@@ -80,10 +80,11 @@ void TestQgsCurve::curveToLine()
   std::unique_ptr< QgsCircularString > circularString;
 
   /* input: 2 quadrants arc (180 degrees, PI radians) */
-  circularString.reset( dynamic_cast<QgsCircularString *>(
+  circularString.reset( dynamic_cast< QgsCircularString *>(
                           QgsGeometryFactory::geomFromWkt( QString(
                                 "CIRCULARSTRING(0 0,100 100,200 0)"
-                              ) )
+                              )
+                                                         ).release()
                         ) );
   QVERIFY( circularString.get() );
 
@@ -105,13 +106,13 @@ void TestQgsCurve::curveToLine()
   circularString.reset( dynamic_cast<QgsCircularString *>(
                           QgsGeometryFactory::geomFromWkt( QString(
                                 "CIRCULARSTRING(0 0,100 100,200 0,300 -100,400 0)"
-                              ) )
+                              ) ).release()
                         ) );
   QVERIFY( circularString.get() );
 
   /* op: Maximum of M_PI / 3 degrees of angle */
   TEST_C2L( circularString, M_PI / 3, QgsAbstractGeometry::MaximumAngle,
-            "LineString (0 0, 50 86.6, 150 86.6, 200 0, 200 0, 250 -86.6, 350 -86.6, 400 0)", 2 );
+            "LineString (0 0, 50 86.6, 150 86.6, 200 0, 250 -86.6, 350 -86.6, 400 0)", 2 );
 }
 
 
