@@ -149,6 +149,15 @@ QStringList QgsSettings::childGroups() const
   }
   return keys;
 }
+QStringList QgsSettings::globalChildGroups() const
+{
+  QStringList keys;
+  if ( mGlobalSettings )
+  {
+    QStringList keys = mGlobalSettings->childGroups();
+  }
+  return keys;
+}
 
 QVariant QgsSettings::value( const QString &key, const QVariant &defaultValue, const QgsSettings::Section section ) const
 {

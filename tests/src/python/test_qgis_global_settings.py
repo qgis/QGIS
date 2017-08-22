@@ -28,22 +28,14 @@ from qgis.core import QgsApplication, QgsRasterLayer, QgsSettings
 
 start_app()
 
+
 def createXYZLayerFromURL(url):
     typeandurl = "type=xyz&url=" + url
     osm = QgsRasterLayer(typeandurl, "OpenStreetMap", "wms")
     return osm
 
+
 class TestQgsGlobalSettings(unittest.TestCase):
-
-    def setUp(self):
-        """Run before each test."""
-        qDebug('setUp')
-        pass
-
-    def tearDown(self):
-        """Run after each test."""
-        qDebug('tearDown')
-    pass
 
     def test_global_settings_exist(self):
         qDebug('QgsApplication.pkgDataPath(): {0}'.format(QgsApplication.pkgDataPath()))
@@ -52,18 +44,12 @@ class TestQgsGlobalSettings(unittest.TestCase):
         QgsSettings.setGlobalSettingsPath(QgsApplication.pkgDataPath() + '/qgis_global_settings.ini')
         self.settings = QgsSettings('testqgissettings', 'testqgissettings')
         settings = QgsSettings()
-        qDebug('settings.allKeys(): {0}'.format(settings.allKeys()))
+        # qDebug('settings.allKeys(): {0}'.format(settings.allKeys()))
         defaulturl = settings.value('qgis/connections-xyz/OpenStreetMap/url')
+        self.assertEqual(defaulturl, 'http://a.tile.openstreetmap.org/{z}/{x}/{y}.png')
+        layer = createXYZLayerFromURL(defaulturl)
+        self.assertEqual(layer.name(), 'OpenStreetMap')
 
-        def testKey():
-            self.assertEqual(defaulturl, 'http://a.tile.openstreetmap.org/{z}/{x}/{y}.png')
-
-        def testLayer():
-            layer = createXYZLayerFromURL(defaulturl)
-            self.assertEqual(layer.name(), 'OpenStreetMap')
-
-        testKey()
-        testLayer()
 
 if __name__ == '__main__':
     unittest.main()
