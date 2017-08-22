@@ -4341,10 +4341,10 @@ QGISEXTERN bool deleteLayer( const QString &uri, QString &errCause )
         errCause = QObject::tr( "Success" );
         break;
     }
-    errCause = QObject::tr( "GDAL result code: %s" ).arg( errCause );
+    errCause = QObject::tr( "GDAL result code: %1" ).arg( errCause );
     return error == OGRERR_NONE;
   }
   // This should never happen:
-  errCause = QObject::tr( "Layer not found: %s" ).arg( uri );
+  errCause = QObject::tr( "Layer not found: %1" ).arg( uri );
   return false;
 }
