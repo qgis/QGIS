@@ -63,7 +63,7 @@ class GUI_EXPORT QgsRendererRasterPropertiesWidget : public QgsMapLayerConfigWid
     void rendererChanged();
 
     //! Apply the changes from the dialog to the layer.
-    void apply();
+    void apply() override;
 
     /**
      * \brief Sync the widget to the given layer.
