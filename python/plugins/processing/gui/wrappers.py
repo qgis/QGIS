@@ -483,24 +483,59 @@ class FileWidgetWrapper(WidgetWrapper):
         if self.dialogType in (DIALOG_STANDARD, DIALOG_BATCH):
             return FileSelectionPanel(self.param.behavior() == QgsProcessingParameterFile.Folder, self.param.extension())
         else:
-            widget = QComboBox()
-            widget.setEditable(True)
+            self.combo = QComboBox()
+            self.combo.setEditable(True)
             files = self.dialog.getAvailableValuesOfType(QgsProcessingParameterFile, OutputFile)
             for f in files:
-                widget.addItem(self.dialog.resolveValueDescription(f), f)
+                self.combo.addItem(self.dialog.resolveValueDescription(f), f)
+            if self.param.flags() & QgsProcessingParameterDefinition.FlagOptional:
+                self.combo.setEditText("")
+            widget = QWidget()
+            layout = QHBoxLayout()
+            layout.setMargin(0)
+            layout.setContentsMargins(0, 0, 0, 0)
+            layout.setSpacing(2)
+            layout.addWidget(self.combo)
+            btn = QToolButton()
+            btn.setText('…')
+            btn.setToolTip(self.tr("Select file"))
+            btn.clicked.connect(self.selectFile)
+            layout.addWidget(btn)
+            widget.setLayout(layout)
             return widget
+
+    def selectFile(self):
+        settings = QgsSettings()
+        if os.path.isdir(os.path.dirname(self.combo.currentText())):
+            path = os.path.dirname(self.combo.currentText())
+        if settings.contains('/Processing/LastInputPath'):
+            path = settings.value('/Processing/LastInputPath')
+        else:
+            path = ''
+
+        if self.param.extension():
+            filter = self.tr('{} files').format(self.param.extension().upper()) + ' (*.' + self.param.extension() + self.tr(
+                ');;All files (*.*)')
+        else:
+            filter = self.tr('All files (*.*)')
+
+        filename, selected_filter = QFileDialog.getOpenFileName(self.widget,
+                                                                self.tr('Select file'), path,
+                                                                filter)
+        if filename:
+            self.combo.setEditText(filename)
 
     def setValue(self, value):
         if self.dialogType in (DIALOG_STANDARD, DIALOG_BATCH):
             self.widget.setText(value)
         else:
-            self.setComboValue(value)
+            self.setComboValue(value, combobox=self.combo)
 
     def value(self):
         if self.dialogType in (DIALOG_STANDARD, DIALOG_BATCH):
             return self.widget.getValue()
         else:
-            return self.comboValue()
+            return self.comboValue(combobox=self.combo)
 
 
 class FixedTableWidgetWrapper(WidgetWrapper):
