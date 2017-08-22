@@ -309,8 +309,11 @@ QGISEXTERN QgsDataItem *dataItem( QString path, QgsDataItem *parentItem )
   return nullptr;
 }
 
-QGISEXTERN QList<QgsDataItemProvider *> dataItemProviders()
+QGISEXTERN QList<QgsDataItemProvider *> *dataItemProviders()
 {
-  return QList<QgsDataItemProvider *>()
-         << new QgsWfsDataItemProvider;
+  QList<QgsDataItemProvider *> *providers = new QList<QgsDataItemProvider *>();
+
+  *providers << new QgsWfsDataItemProvider;
+
+  return providers;
 }
