@@ -3168,11 +3168,11 @@ QString QgsProcessingParameterVectorDestination::valueAsPythonString( const QVar
     QgsProcessingOutputLayerDefinition fromVar = qvariant_cast<QgsProcessingOutputLayerDefinition>( value );
     if ( fromVar.sink.propertyType() == QgsProperty::StaticProperty )
     {
-      return QStringLiteral( "QgsProcessingOutputLayerDefinition('%1')" ).arg( fromVar.sink.staticValue().toString() );
+      return QStringLiteral( "'%1'" ).arg( fromVar.sink.staticValue().toString() );
     }
     else
     {
-      return QStringLiteral( "QgsProcessingOutputLayerDefinition(QgsProperty.fromExpression('%1'))" ).arg( fromVar.sink.asExpression() );
+      return QStringLiteral( "QgsProperty.fromExpression('%1')" ).arg( fromVar.sink.asExpression() );
     }
   }
 
