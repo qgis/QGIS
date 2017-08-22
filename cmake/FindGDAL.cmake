@@ -104,7 +104,7 @@ ELSE(WIN32)
   
         # check for gdal version
         # version 1.2.5 is known NOT to be supported (missing CPL_STDCALL macro)
-        # According to INSTALL, 2.0+ is required
+        # According to INSTALL, 2.1+ is required
         IF (GDAL_VERSION_MAJOR LESS 2)
           MESSAGE (FATAL_ERROR "GDAL version is too old (${GDAL_VERSION}). Use 2.1 or higher.")
         ENDIF (GDAL_VERSION_MAJOR LESS 2)
