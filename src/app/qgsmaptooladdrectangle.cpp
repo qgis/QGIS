@@ -31,10 +31,6 @@ QgsMapToolAddRectangle::QgsMapToolAddRectangle( QgsMapToolCapture *parentTool, Q
   , mRectangle( QgsRectangle() )
 {
   clean();
-  if ( mCanvas )
-  {
-    connect( mCanvas, &QgsMapCanvas::mapToolSet, this, &QgsMapToolAddRectangle::setParentTool );
-  }
 }
 
 QgsMapToolAddRectangle::QgsMapToolAddRectangle( QgsMapCanvas *canvas )
@@ -44,30 +40,11 @@ QgsMapToolAddRectangle::QgsMapToolAddRectangle( QgsMapCanvas *canvas )
   , mRectangle( QgsRectangle() )
 {
   clean();
-  if ( mCanvas )
-  {
-    connect( mCanvas, &QgsMapCanvas::mapToolSet, this, &QgsMapToolAddRectangle::setParentTool );
-  }
 }
 
 QgsMapToolAddRectangle::~QgsMapToolAddRectangle()
 {
   clean();
-}
-
-void QgsMapToolAddRectangle::setParentTool( QgsMapTool *newTool, QgsMapTool *oldTool )
-{
-
-  QgsMapToolCapture *tool = dynamic_cast<QgsMapToolCapture *>( oldTool );
-  QgsMapToolAddRectangle *csTool = dynamic_cast<QgsMapToolAddRectangle *>( oldTool );
-  if ( csTool && newTool == this )
-  {
-    mParentTool = csTool->mParentTool;
-  }
-  else if ( tool && newTool == this )
-  {
-    mParentTool = tool;
-  }
 }
 
 void QgsMapToolAddRectangle::keyPressEvent( QKeyEvent *e )

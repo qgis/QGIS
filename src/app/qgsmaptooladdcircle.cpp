@@ -30,10 +30,6 @@ QgsMapToolAddCircle::QgsMapToolAddCircle( QgsMapToolCapture *parentTool, QgsMapC
   , mCircle( QgsCircle() )
 {
   clean();
-  if ( mCanvas )
-  {
-    connect( mCanvas, &QgsMapCanvas::mapToolSet, this, &QgsMapToolAddCircle::setParentTool );
-  }
 }
 
 QgsMapToolAddCircle::QgsMapToolAddCircle( QgsMapCanvas *canvas )
@@ -43,29 +39,11 @@ QgsMapToolAddCircle::QgsMapToolAddCircle( QgsMapCanvas *canvas )
   , mCircle( QgsCircle() )
 {
   clean();
-  if ( mCanvas )
-  {
-    connect( mCanvas, &QgsMapCanvas::mapToolSet, this, &QgsMapToolAddCircle::setParentTool );
-  }
 }
 
 QgsMapToolAddCircle::~QgsMapToolAddCircle()
 {
   clean();
-}
-
-void QgsMapToolAddCircle::setParentTool( QgsMapTool *newTool, QgsMapTool *oldTool )
-{
-  QgsMapToolCapture *tool = dynamic_cast<QgsMapToolCapture *>( oldTool );
-  QgsMapToolAddCircle *csTool = dynamic_cast<QgsMapToolAddCircle *>( oldTool );
-  if ( csTool && newTool == this )
-  {
-    mParentTool = csTool->mParentTool;
-  }
-  else if ( tool && newTool == this )
-  {
-    mParentTool = tool;
-  }
 }
 
 void QgsMapToolAddCircle::keyPressEvent( QKeyEvent *e )

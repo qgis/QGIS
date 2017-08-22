@@ -30,10 +30,6 @@ QgsMapToolAddRegularPolygon::QgsMapToolAddRegularPolygon( QgsMapToolCapture *par
   , mRegularPolygon( QgsRegularPolygon() )
 {
   clean();
-  if ( mCanvas )
-  {
-    connect( mCanvas, &QgsMapCanvas::mapToolSet, this, &QgsMapToolAddRegularPolygon::setParentTool );
-  }
 }
 
 QgsMapToolAddRegularPolygon::QgsMapToolAddRegularPolygon( QgsMapCanvas *canvas )
@@ -43,30 +39,11 @@ QgsMapToolAddRegularPolygon::QgsMapToolAddRegularPolygon( QgsMapCanvas *canvas )
   , mRegularPolygon( QgsRegularPolygon() )
 {
   clean();
-  if ( mCanvas )
-  {
-    connect( mCanvas, &QgsMapCanvas::mapToolSet, this, &QgsMapToolAddRegularPolygon::setParentTool );
-  }
 }
 
 QgsMapToolAddRegularPolygon::~QgsMapToolAddRegularPolygon()
 {
   clean();
-}
-
-void QgsMapToolAddRegularPolygon::setParentTool( QgsMapTool *newTool, QgsMapTool *oldTool )
-{
-  clean();
-  QgsMapToolCapture *tool = dynamic_cast<QgsMapToolCapture *>( oldTool );
-  QgsMapToolAddRegularPolygon *csTool = dynamic_cast<QgsMapToolAddRegularPolygon *>( oldTool );
-  if ( csTool && newTool == this )
-  {
-    mParentTool = csTool->mParentTool;
-  }
-  else if ( tool && newTool == this )
-  {
-    mParentTool = tool;
-  }
 }
 
 void QgsMapToolAddRegularPolygon::createNumberSidesSpinBox()

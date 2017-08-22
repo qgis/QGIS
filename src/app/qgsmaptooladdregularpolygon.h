@@ -22,9 +22,6 @@ class QgsMapToolAddRegularPolygon: public QgsMapToolCapture
 
     void activate() override;
 
-  private slots:
-    void setParentTool( QgsMapTool *newTool, QgsMapTool *oldTool );
-
   protected:
     explicit QgsMapToolAddRegularPolygon( QgsMapCanvas *canvas ); //forbidden
 

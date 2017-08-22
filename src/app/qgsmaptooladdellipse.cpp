@@ -30,10 +30,6 @@ QgsMapToolAddEllipse::QgsMapToolAddEllipse( QgsMapToolCapture *parentTool, QgsMa
   , mEllipse( QgsEllipse() )
 {
   clean();
-  if ( mCanvas )
-  {
-    connect( mCanvas, &QgsMapCanvas::mapToolSet, this, &QgsMapToolAddEllipse::setParentTool );
-  }
 }
 
 QgsMapToolAddEllipse::QgsMapToolAddEllipse( QgsMapCanvas *canvas )
@@ -43,29 +39,11 @@ QgsMapToolAddEllipse::QgsMapToolAddEllipse( QgsMapCanvas *canvas )
   , mEllipse( QgsEllipse() )
 {
   clean();
-  if ( mCanvas )
-  {
-    connect( mCanvas, &QgsMapCanvas::mapToolSet, this, &QgsMapToolAddEllipse::setParentTool );
-  }
 }
 
 QgsMapToolAddEllipse::~QgsMapToolAddEllipse()
 {
   clean();
-}
-
-void QgsMapToolAddEllipse::setParentTool( QgsMapTool *newTool, QgsMapTool *oldTool )
-{
-  QgsMapToolCapture *tool = dynamic_cast<QgsMapToolCapture *>( oldTool );
-  QgsMapToolAddEllipse *csTool = dynamic_cast<QgsMapToolAddEllipse *>( oldTool );
-  if ( csTool && newTool == this )
-  {
-    mParentTool = csTool->mParentTool;
-  }
-  else if ( tool && newTool == this )
-  {
-    mParentTool = tool;
-  }
 }
 
 void QgsMapToolAddEllipse::keyPressEvent( QKeyEvent *e )
