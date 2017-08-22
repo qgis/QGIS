@@ -21,7 +21,7 @@
 #include "qgsgeonodenewconnection.h"
 #include "qgsgeonoderequest.h"
 
-typedef QList<QgsDataItemProvider *> dataItemProviders_t();
+typedef QList<QgsDataItemProvider *> *dataItemProviders_t();
 
 QgsGeoNodeConnectionItem::QgsGeoNodeConnectionItem( QgsDataItem *parent, QString name, QString path, QgsGeoNodeConnection *conn )
   : QgsDataCollectionItem( parent, name, path )
@@ -137,7 +137,8 @@ QVector<QgsDataItem *> QgsGeoNodeServiceItem::createChildren()
     QString path =  pathPrefix + mName;
 
     QVector<QgsDataItem *> items;
-    Q_FOREACH ( QgsDataItemProvider *pr, dataItemProvidersFn() )
+    QList<QgsDataItemProvider *> *providerList = dataItemProvidersFn();
+    Q_FOREACH ( QgsDataItemProvider *pr, *providerList )
     {
       items = pr->name().startsWith( mServiceName ) ? pr->createDataItems( path, this ) : items;
       if ( !items.isEmpty() )
