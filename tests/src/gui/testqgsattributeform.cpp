@@ -640,13 +640,6 @@ void TestQgsAttributeForm::testUpsertOnEdit()
   QString defC = QStringLiteral( "Point?field=id_c:integer&field=col0:integer" );
   QgsVectorLayer *layerC = new QgsVectorLayer( defC, QStringLiteral( "layerC" ), QStringLiteral( "memory" ) );
 
-  // add a feature in layer A
-  QgsFeature ft0A( layerA->fields() );
-  ft0A.setAttribute( QStringLiteral( "id_a" ), 34 );
-  layerA->startEditing();
-  layerA->addFeature( ft0A );
-  layerA->commitChanges();
-
   // join configuration
   QgsVectorLayerJoinInfo infoJoinAB;
   infoJoinAB.setTargetFieldName( "id_a" );
@@ -669,10 +662,10 @@ void TestQgsAttributeForm::testUpsertOnEdit()
   layerA->addJoin( infoJoinAC );
 
   // add features for main layer
-  QgsFeature ft1A( layerA->fields() );
-  ft1A.setAttribute( QStringLiteral( "id_a" ), 31 );
+  QgsFeature ft0A( layerA->fields() );
+  ft0A.setAttribute( QStringLiteral( "id_a" ), 31 );
   layerA->startEditing();
-  layerA->addFeature( ft1A );
+  layerA->addFeature( ft0A );
   layerA->commitChanges();
 
   // add features for joined layers
@@ -690,102 +683,174 @@ void TestQgsAttributeForm::testUpsertOnEdit()
   layerC->addFeature( ft0C );
   layerC->commitChanges();
 
+  // get committed feature from layerA
+  QgsFeature feature;
+  QString filter = QgsExpression::createFieldEqualityExpression( "id_a", 31 );
+
+  QgsFeatureRequest request;
+  request.setFilterExpression( filter );
+  request.setLimit( 1 );
+  layerA->getFeatures( request ).nextFeature( ft0A );
+
   // start editing layers
   layerA->startEditing();
   layerB->startEditing();
   layerC->startEditing();
 
   // build a form with feature A
-  ft1A = layerA->getFeature( 2 );
-
   QgsAttributeForm form( layerA );
   form.setMode( QgsAttributeForm::AddFeatureMode );
-  form.setFeature( ft1A );
+  form.setFeature( ft0A );
+
+  // count features
+  QCOMPARE( ( int )layerA->featureCount(), 1 );
+  QCOMPARE( ( int )layerB->featureCount(), 1 );
+  QCOMPARE( ( int )layerC->featureCount(), 1 );
+
+  // add a new feature with null joined fields. Joined feature should not be
+  // added
+  form.changeAttribute( "id_a", QVariant( 32 ) );
+  form.changeAttribute( "layerB_col0", QVariant() );
+  form.changeAttribute( "layerC_col0", QVariant() );
+  form.save();
+
+  // commit
+  layerA->commitChanges();
+  layerB->commitChanges();
+  layerC->commitChanges();
 
   // count features
   QCOMPARE( ( int )layerA->featureCount(), 2 );
   QCOMPARE( ( int )layerB->featureCount(), 1 );
   QCOMPARE( ( int )layerC->featureCount(), 1 );
 
-  // add a new feature
-  form.changeAttribute( "id_a", QVariant( 32 ) );
-  form.changeAttribute( "layerB_col0", QVariant( 3232 ) );
-  form.changeAttribute( "layerC_col0", QVariant( 323232 ) );
-  form.save();
+  // start editing layers
+  layerA->startEditing();
+  layerB->startEditing();
+  layerC->startEditing();
+
+  // add a new feature with not null joined fields. Joined feature should be
+  // added
+  QgsAttributeForm form1( layerA );
+  form1.setMode( QgsAttributeForm::AddFeatureMode );
+  form1.setFeature( ft0A );
+
+  form1.changeAttribute( "id_a", QVariant( 34 ) );
+  form1.changeAttribute( "layerB_col0", QVariant( 3434 ) );
+  form1.changeAttribute( "layerC_col0", QVariant( 343434 ) );
+  form1.save();
+
+  // commit
+  layerA->commitChanges();
+  layerB->commitChanges();
+  layerC->commitChanges();
 
   // count features
   QCOMPARE( ( int )layerA->featureCount(), 3 );
   QCOMPARE( ( int )layerB->featureCount(), 2 );
   QCOMPARE( ( int )layerC->featureCount(), 1 );
 
-  // commit changes
-  layerA->commitChanges();
-  layerB->commitChanges();
-  layerC->commitChanges();
+  // check joined feature value
+  filter = QgsExpression::createFieldEqualityExpression( "id_a", 34 );
 
-  // check attributes
-  ft0B = layerB->getFeature( 2 );
-  QCOMPARE( ft0B.attribute( "id_b" ), QVariant( 32 ) );
-  QCOMPARE( ft0B.attribute( "col0" ), QVariant( 3232 ) );
+  request.setFilterExpression( filter );
+  request.setLimit( 1 );
+  layerA->getFeatures( request ).nextFeature( feature );
+
+  QCOMPARE( feature.attribute( "layerB_col0" ), QVariant( 3434 ) );
 
   // start editing layers
   layerA->startEditing();
   layerB->startEditing();
   layerC->startEditing();
 
-  // create a target feature but update a joined feature
-  QgsAttributeForm formUpdate( layerA );
-  formUpdate.setMode( QgsAttributeForm::AddFeatureMode );
-  formUpdate.setFeature( ft1A );
-  formUpdate.changeAttribute( "id_a", QVariant( 33 ) );
-  formUpdate.changeAttribute( "layerB_col0", QVariant( 3333 ) );
-  formUpdate.changeAttribute( "layerC_col0", QVariant( 323232 ) );
-  formUpdate.save();
+  // create a target feature but update a joined feature. A new feature should
+  // be added in layerA and values in layerB should be updated
+  QgsAttributeForm form2( layerA );
+  form2.setMode( QgsAttributeForm::AddFeatureMode );
+  form2.setFeature( ft0A );
+  form2.changeAttribute( "id_a", QVariant( 33 ) );
+  form2.changeAttribute( "layerB_col0", QVariant( 3333 ) );
+  form2.changeAttribute( "layerC_col0", QVariant( 323232 ) );
+  form2.save();
 
-  // count features
-  QCOMPARE( ( int )layerA->featureCount(), 4 );
-  QCOMPARE( ( int )layerB->featureCount(), 2 );
-  QCOMPARE( ( int )layerC->featureCount(), 1 );
-
-  // commit changes
+  // commit
   layerA->commitChanges();
   layerB->commitChanges();
   layerC->commitChanges();
 
-  // check attributes
-  ft0B = layerB->getFeature( 1 );
-  QCOMPARE( ft0B.attribute( "id_b" ), QVariant( 33 ) );
-  QCOMPARE( ft0B.attribute( "col0" ), QVariant( 3333 ) );
+  // count features
+  QCOMPARE( ( int )layerA->featureCount(), 4 );
+  QCOMPARE( ( int )layerB->featureCount(), 2 );
+  QCOMPARE( ( int )layerC->featureCount(), 1 );
 
-  // start editing
+  // check joined feature value
+  filter = QgsExpression::createFieldEqualityExpression( "id_a", 33 );
+
+  request.setFilterExpression( filter );
+  request.setLimit( 1 );
+  layerA->getFeatures( request ).nextFeature( feature );
+
+  QCOMPARE( feature.attribute( "layerB_col0" ), QVariant( 3333 ) );
+
+  // start editing layers
   layerA->startEditing();
   layerB->startEditing();
   layerC->startEditing();
 
-  // build a form with feature A
-  ft0A = layerA->getFeature( 1 );
+  // update feature which does not exist in joined layer but with null joined
+  // fields. A new feature should NOT be added in joined layer
+  QgsAttributeForm form3( layerA );
+  form3.setMode( QgsAttributeForm::SingleEditMode );
+  form3.setFeature( ft0A );
+  form3.changeAttribute( "id_a", QVariant( 31 ) );
+  form3.changeAttribute( "layerB_col0", QVariant() );
+  form3.changeAttribute( "layerC_col0", QVariant() );
+  form3.save();
 
-  QgsAttributeForm formUpsert( layerA );
-  formUpsert.setMode( QgsAttributeForm::SingleEditMode );
-  formUpsert.setFeature( ft0A );
+  // commit
+  layerA->commitChanges();
+  layerB->commitChanges();
+  layerC->commitChanges();
 
   // count features
   QCOMPARE( ( int )layerA->featureCount(), 4 );
   QCOMPARE( ( int )layerB->featureCount(), 2 );
   QCOMPARE( ( int )layerC->featureCount(), 1 );
 
-  // update feature which does not exist in joined layer
-  formUpsert.changeAttribute( "layerB_col0", QVariant( 77777 ) );
-  formUpsert.save();
+  // start editing layers
+  layerA->startEditing();
+  layerB->startEditing();
+  layerC->startEditing();
+
+  // update feature which does not exist in joined layer with NOT null joined
+  // fields. A new feature should be added in joined layer
+  QgsAttributeForm form4( layerA );
+  form4.setMode( QgsAttributeForm::SingleEditMode );
+  form4.setFeature( ft0A );
+  form4.changeAttribute( "id_a", QVariant( 31 ) );
+  form4.changeAttribute( "layerB_col0", QVariant( 1111 ) );
+  form4.changeAttribute( "layerC_col0", QVariant( 3131 ) );
+  form4.save();
+
+  // commit
+  layerA->commitChanges();
+  layerB->commitChanges();
+  layerC->commitChanges();
 
   // count features
   QCOMPARE( ( int )layerA->featureCount(), 4 );
   QCOMPARE( ( int )layerB->featureCount(), 3 );
   QCOMPARE( ( int )layerC->featureCount(), 1 );
 
-  // get new feature
-  ft0B = layerB->getFeature( 3 );
-  QCOMPARE( ft0B.attribute( "id_b" ), QVariant() );
+  // check joined feature value
+  filter = QgsExpression::createFieldEqualityExpression( "id_a", 31 );
+
+  request.setFilterExpression( filter );
+  request.setLimit( 1 );
+  layerA->getFeatures( request ).nextFeature( feature );
+
+  QCOMPARE( feature.attribute( "layerB_col0" ), QVariant( 1111 ) );
 
   // clean
   delete layerA;
