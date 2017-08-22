@@ -262,11 +262,15 @@ void QgsOWSRootItem::newConnection()
 static QStringList extensions = QStringList();
 static QStringList wildcards = QStringList();
 
-QGISEXTERN QList<QgsDataItemProvider *> dataItemProviders()
+QGISEXTERN QList<QgsDataItemProvider *> *dataItemProviders()
 {
-  return QList<QgsDataItemProvider *>()
+  QList<QgsDataItemProvider *> *providers = new QList<QgsDataItemProvider *>();
+
+  *providers
          << new QgsOwsDataItemProvider
          << new QgsGeoNodeDataItemProvider;
+
+  return providers;
 }
 
 QgsDataItem *QgsOwsDataItemProvider::createDataItem( const QString &path, QgsDataItem *parentItem )
