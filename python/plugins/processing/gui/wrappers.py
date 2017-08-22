@@ -521,7 +521,7 @@ class FixedTableWidgetWrapper(WidgetWrapper):
             return self.widget.table
 
 
-class MultipleInputWidgetWrapper(WidgetWrapper):
+class MultipleLayerWidgetWrapper(WidgetWrapper):
 
     def _getOptions(self):
         if self.param.layerType() == QgsProcessing.TypeVectorAnyGeometry:
@@ -766,7 +766,7 @@ class RasterWidgetWrapper(MapLayerWidgetWrapper):
                 self.combo.setEditText(filename)
 
 
-class SelectionWidgetWrapper(WidgetWrapper):
+class EnumWidgetWrapper(WidgetWrapper):
 
     def createWidget(self):
         if self.param.allowMultiple():
@@ -792,7 +792,7 @@ class SelectionWidgetWrapper(WidgetWrapper):
             return self.widget.currentData()
 
 
-class VectorWidgetWrapper(WidgetWrapper):
+class FeatureSourceWidgetWrapper(WidgetWrapper):
 
     NOT_SELECTED = '[Not selected]'
 
@@ -1082,7 +1082,7 @@ class ExpressionWidgetWrapper(WidgetWrapper):
             return self.comboValue(validator)
 
 
-class TableWidgetWrapper(WidgetWrapper):
+class VectorLayerWidgetWrapper(WidgetWrapper):
 
     NOT_SELECTED = '[Not selected]'
 
@@ -1407,23 +1407,23 @@ class WidgetWrapperFactory:
         elif param.type() == 'file':
             wrapper = FileWidgetWrapper
         elif param.type() == 'multilayer':
-            wrapper = MultipleInputWidgetWrapper
+            wrapper = MultipleLayerWidgetWrapper
         elif param.type() == 'number':
             wrapper = NumberWidgetWrapper
         elif param.type() == 'raster':
             wrapper = RasterWidgetWrapper
         elif param.type() == 'enum':
-            wrapper = SelectionWidgetWrapper
+            wrapper = EnumWidgetWrapper
         elif param.type() == 'string':
             wrapper = StringWidgetWrapper
         elif param.type() == 'expression':
             wrapper = ExpressionWidgetWrapper
         elif param.type() == 'vector':
-            wrapper = TableWidgetWrapper
+            wrapper = VectorLayerWidgetWrapper
         elif param.type() == 'field':
             wrapper = TableFieldWidgetWrapper
         elif param.type() == 'source':
-            wrapper = VectorWidgetWrapper
+            wrapper = FeatureSourceWidgetWrapper
         elif param.type() == 'band':
             wrapper = BandWidgetWrapper
         elif param.type() == 'layer':

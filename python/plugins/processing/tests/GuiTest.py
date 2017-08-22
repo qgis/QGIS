@@ -90,13 +90,13 @@ class WrappersTest(unittest.TestCase):
         self.checkConstructWrapper(QgsProcessingParameterFile('test'), FileWidgetWrapper)
 
     def testMultiInput(self):
-        self.checkConstructWrapper(QgsProcessingParameterMultipleLayers('test'), MultipleInputWidgetWrapper)
+        self.checkConstructWrapper(QgsProcessingParameterMultipleLayers('test'), MultipleLayerWidgetWrapper)
 
     def testRasterInput(self):
         self.checkConstructWrapper(QgsProcessingParameterRasterLayer('test'), RasterWidgetWrapper)
 
     def testEnum(self):
-        self.checkConstructWrapper(QgsProcessingParameterEnum('test'), SelectionWidgetWrapper)
+        self.checkConstructWrapper(QgsProcessingParameterEnum('test'), EnumWidgetWrapper)
 
     def testString(self):
         self.checkConstructWrapper(QgsProcessingParameterString('test'), StringWidgetWrapper)
@@ -105,13 +105,13 @@ class WrappersTest(unittest.TestCase):
         self.checkConstructWrapper(QgsProcessingParameterExpression('test'), ExpressionWidgetWrapper)
 
     def testVector(self):
-        self.checkConstructWrapper(QgsProcessingParameterVectorLayer('test'), TableWidgetWrapper)
+        self.checkConstructWrapper(QgsProcessingParameterVectorLayer('test'), VectorLayerWidgetWrapper)
 
     def testField(self):
         self.checkConstructWrapper(QgsProcessingParameterField('test'), TableFieldWidgetWrapper)
 
     def testSource(self):
-        self.checkConstructWrapper(QgsProcessingParameterFeatureSource('test'), VectorWidgetWrapper)
+        self.checkConstructWrapper(QgsProcessingParameterFeatureSource('test'), FeatureSourceWidgetWrapper)
 
     def testSource(self):
         self.checkConstructWrapper(QgsProcessingParameterBand('test'), BandWidgetWrapper)
