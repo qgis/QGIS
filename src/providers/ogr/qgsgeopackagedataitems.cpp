@@ -23,10 +23,12 @@
 #include "qgsvectorlayer.h"
 #include "qgsrasterlayer.h"
 #include "qgsogrprovider.h"
+#include "qgscplerrorhandler.h"
 #include "qgsnewgeopackagelayerdialog.h"
 #include "qgsmessageoutput.h"
 #include "qgsvectorlayerexporter.h"
 #include "gdal.h"
+#include "gdal_utils.h"
 
 #include <QAction>
 #include <QMessageBox>
@@ -322,6 +324,8 @@ bool QgsGeoPackageConnectionItem::handleDrop( const QMimeData *data, Qt::DropAct
     return false;
 
   QString uri;
+  // This sends OGR/GDAL errors to the message log
+  QgsCPLErrorHandler handler;
 
   QStringList importResults;
   bool hasError = false;
@@ -329,55 +333,66 @@ bool QgsGeoPackageConnectionItem::handleDrop( const QMimeData *data, Qt::DropAct
   QgsMimeDataUtils::UriList lst = QgsMimeDataUtils::decodeUriList( data );
   Q_FOREACH ( const QgsMimeDataUtils::Uri &u, lst )
   {
-    if ( u.layerType == QStringLiteral( "vector" ) )
+    // Check that we are not copying over self
+    if ( u.uri.startsWith( mPath ) )
     {
-      // Check that we are not copying over self
-      if ( u.uri.startsWith( mPath ) )
-      {
-        importResults.append( tr( "You cannot import layer %1 over itself!" ).arg( u.name ) );
-        hasError = true;
+      importResults.append( tr( "You cannot import layer %1 over itself!" ).arg( u.name ) );
+      hasError = true;
 
+    }
+    else
+    {
+      QgsMapLayer *srcLayer;
+      bool owner;
+      bool isVector = false;
+      QString error;
+      // Common checks for raster and vector
+      // aspatial is treated like vector
+      if ( u.layerType == QStringLiteral( "vector" ) )
+      {
+        // open the source layer
+        srcLayer = u.vectorLayer( owner, error );
+        isVector = true;
       }
       else
       {
-        // open the source layer
-        bool owner;
-        QString error;
-        QgsVectorLayer *srcLayer = u.vectorLayer( owner, error );
-        if ( !srcLayer )
-        {
-          importResults.append( tr( "%1: %2" ).arg( u.name ).arg( error ) );
-          hasError = true;
-          continue;
-        }
+        srcLayer = u.rasterLayer( owner, error );
+      }
+      if ( !srcLayer )
+      {
+        importResults.append( tr( "%1: %2" ).arg( u.name ).arg( error ) );
+        hasError = true;
+        continue;
+      }
 
-        if ( srcLayer->isValid() )
-        {
-          uri = mPath;
-          QgsDebugMsgLevel( "URI " + uri, 3 );
+      if ( srcLayer->isValid() )
+      {
+        uri = mPath;
+        QgsDebugMsgLevel( "URI " + uri, 3 );
 
-          // check if the destination layer already exists
-          bool exists = false;
-          // Q_FOREACH won't detach ...
-          for ( const auto child : children() )
+        // check if the destination layer already exists
+        bool exists = false;
+        // Q_FOREACH won't detach ...
+        for ( const auto child : children() )
+        {
+          if ( child->name() == u.name )
           {
-            if ( child->name() == u.name )
-            {
-              exists = true;
-            }
+            exists = true;
           }
-          if ( ! exists || QMessageBox::question( nullptr, tr( "Overwrite Layer" ),
-                                                  tr( "Destination layer <b>%1</b> already exists. Do you want to overwrite it?" ).arg( u.name ), QMessageBox::Yes |  QMessageBox::No ) == QMessageBox::Yes )
+        }
+        if ( ! exists || QMessageBox::question( nullptr, tr( "Overwrite Layer" ),
+                                                tr( "Destination layer <b>%1</b> already exists. Do you want to overwrite it?" ).arg( u.name ), QMessageBox::Yes |  QMessageBox::No ) == QMessageBox::Yes )
+        {
+          if ( isVector )
           {
-
+            QgsVectorLayer *vectorSrcLayer = dynamic_cast < QgsVectorLayer * >( srcLayer );
             QVariantMap options;
             options.insert( QStringLiteral( "driverName" ), QStringLiteral( "GPKG" ) );
             options.insert( QStringLiteral( "update" ), true );
             options.insert( QStringLiteral( "overwrite" ), true );
             options.insert( QStringLiteral( "layerName" ), u.name );
 
-            std::unique_ptr< QgsVectorLayerExporterTask > exportTask( new QgsVectorLayerExporterTask( srcLayer, uri, QStringLiteral( "ogr" ), srcLayer->crs(), options, owner ) );
-
+            std::unique_ptr< QgsVectorLayerExporterTask > exportTask( new QgsVectorLayerExporterTask( vectorSrcLayer, uri, QStringLiteral( "ogr" ), vectorSrcLayer->crs(), options, owner ) );
             // when export is successful:
             connect( exportTask.get(), &QgsVectorLayerExporterTask::exportComplete, this, [ = ]()
             {
@@ -400,24 +415,34 @@ bool QgsGeoPackageConnectionItem::handleDrop( const QMimeData *data, Qt::DropAct
 
             QgsApplication::taskManager()->addTask( exportTask.release() );
           }
-        }
-        else
-        {
-          importResults.append( tr( "%1: Not a valid layer!" ).arg( u.name ) );
-          hasError = true;
-        }
-      }
-    }
-    else
-    {
-      // TODO: implement raster import
-      QgsMessageOutput *output = QgsMessageOutput::createMessageOutput();
-      output->setTitle( tr( "Import to GeoPackage database failed" ) );
-      output->setMessage( tr( "Failed to import some layers!\n\n" ) + QStringLiteral( "Raster import is not yet implemented!\n" ), QgsMessageOutput::MessageText );
-      output->showMessage();
-    }
+          else  // Import raster
+          {
+            // In case we need it
+            // QgsRasterLayer* rasterSrcLayer = dynamic_cast < QgsRasterLayer* > ( srcLayer );
 
-  }
+            const char *args[] = { "-of", "gpkg", "-co", QStringLiteral( "RASTER_TABLE=%1" ).arg( u.name ).toUtf8().constData(), "-co", "APPEND_SUBDATASET=YES", nullptr };
+            GDALTranslateOptions *psOptions = GDALTranslateOptionsNew( ( char ** )args, nullptr );
+            GDALDatasetH hSrcDS = GDALOpen( u.uri.toUtf8().constData(), GA_ReadOnly );
+            CPLErrorReset();
+            GDALDatasetH hOutDS = GDALTranslate( mPath.toUtf8().constData(), hSrcDS, psOptions, NULL );
+            if ( ! hOutDS )
+            {
+              importResults.append( tr( "Failed to import layer %1! See the message logs for details.\n\n" ).arg( u.name ) );
+              hasError = true;
+
+            }
+            GDALClose( hSrcDS );
+            GDALTranslateOptionsFree( psOptions );
+          }
+        } // do not overwrite
+      }
+      else
+      {
+        importResults.append( tr( "%1: Not a valid layer!" ).arg( u.name ) );
+        hasError = true;
+      }
+    } // check for self copy
+  } // for each
 
   if ( hasError )
   {
@@ -426,7 +451,6 @@ bool QgsGeoPackageConnectionItem::handleDrop( const QMimeData *data, Qt::DropAct
     output->setMessage( tr( "Failed to import some layers!\n\n" ) + importResults.join( QStringLiteral( "\n" ) ), QgsMessageOutput::MessageText );
     output->showMessage();
   }
-
   return true;
 }
 
