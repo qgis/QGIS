@@ -55,7 +55,7 @@ class RandomSelection(QgisAlgorithm):
         return QIcon(os.path.join(pluginPath, 'images', 'ftools', 'random_selection.png'))
 
     def group(self):
-        return self.tr('Vector selection tools')
+        return self.tr('Vector selection')
 
     def __init__(self):
         super().__init__()

@@ -54,7 +54,7 @@ class SelectByLocation(QgisAlgorithm):
         return QIcon(os.path.join(pluginPath, 'images', 'ftools', 'select_location.png'))
 
     def group(self):
-        return self.tr('Vector selection tools')
+        return self.tr('Vector selection')
 
     def __init__(self):
         super().__init__()

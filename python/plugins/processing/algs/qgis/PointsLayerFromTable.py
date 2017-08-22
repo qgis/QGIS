@@ -52,7 +52,7 @@ class PointsLayerFromTable(QgisAlgorithm):
         return self.tr('points,create,values,attributes').split(',')
 
     def group(self):
-        return self.tr('Vector creation tools')
+        return self.tr('Vector creation')
 
     def __init__(self):
         super().__init__()

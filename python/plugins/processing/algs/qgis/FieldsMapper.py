@@ -43,7 +43,7 @@ class FieldsMapper(QgisFeatureBasedAlgorithm):
     OUTPUT_LAYER = 'OUTPUT_LAYER'
 
     def group(self):
-        return self.tr('Vector table tools')
+        return self.tr('Vector table')
 
     def initParameters(self, config=None):
 

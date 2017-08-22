@@ -58,7 +58,7 @@ class FieldsCalculator(QgisAlgorithm):
     TYPES = [QVariant.Double, QVariant.Int, QVariant.String, QVariant.Date]
 
     def group(self):
-        return self.tr('Vector table tools')
+        return self.tr('Vector table')
 
     def __init__(self):
         super().__init__()

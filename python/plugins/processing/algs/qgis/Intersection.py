@@ -68,7 +68,7 @@ class Intersection(QgisAlgorithm):
         return QIcon(os.path.join(pluginPath, 'images', 'ftools', 'intersect.png'))
 
     def group(self):
-        return self.tr('Vector overlay tools')
+        return self.tr('Vector overlay')
 
     def __init__(self):
         super().__init__()

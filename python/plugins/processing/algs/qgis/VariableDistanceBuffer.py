@@ -59,7 +59,7 @@ class VariableDistanceBuffer(QgisAlgorithm):
         return QIcon(os.path.join(pluginPath, 'images', 'ftools', 'buffer.png'))
 
     def group(self):
-        return self.tr('Vector geometry tools')
+        return self.tr('Vector geometry')
 
     def __init__(self):
         super().__init__()

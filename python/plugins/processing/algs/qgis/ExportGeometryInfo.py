@@ -58,7 +58,7 @@ class ExportGeometryInfo(QgisAlgorithm):
         return self.tr('export,measurements,areas,lengths,perimeters,latitudes,longitudes,x,y,z,extract,points,lines,polygons').split(',')
 
     def group(self):
-        return self.tr('Vector table tools')
+        return self.tr('Vector geometry')
 
     def __init__(self):
         super().__init__()

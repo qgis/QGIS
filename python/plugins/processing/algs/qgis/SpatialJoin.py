@@ -60,7 +60,7 @@ class SpatialJoin(QgisAlgorithm):
         return QIcon(os.path.join(pluginPath, 'images', 'ftools', 'join_location.png'))
 
     def group(self):
-        return self.tr('Vector general tools')
+        return self.tr('Vector general')
 
     def __init__(self):
         super().__init__()

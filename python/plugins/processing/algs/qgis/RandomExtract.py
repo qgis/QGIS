@@ -45,7 +45,7 @@ class RandomExtract(QgisAlgorithm):
     NUMBER = 'NUMBER'
 
     def group(self):
-        return self.tr('Vector selection tools')
+        return self.tr('Vector selection')
 
     def __init__(self):
         super().__init__()

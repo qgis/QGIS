@@ -42,7 +42,7 @@ class SetRasterStyle(QgisAlgorithm):
     OUTPUT = 'OUTPUT'
 
     def group(self):
-        return self.tr('Raster general tools')
+        return self.tr('Raster tools')
 
     def __init__(self):
         super().__init__()

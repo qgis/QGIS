@@ -56,7 +56,7 @@ class ZonalStatistics(QgisAlgorithm):
         return QIcon(os.path.join(pluginPath, 'images', 'zonalstats.png'))
 
     def group(self):
-        return self.tr('Raster tools')
+        return self.tr('Raster analysis')
 
     def __init__(self):
         super().__init__()

@@ -55,7 +55,7 @@ class SymmetricalDifference(QgisAlgorithm):
         return QIcon(os.path.join(pluginPath, 'images', 'ftools', 'sym_difference.png'))
 
     def group(self):
-        return self.tr('Vector overlay tools')
+        return self.tr('Vector overlay')
 
     def __init__(self):
         super().__init__()
