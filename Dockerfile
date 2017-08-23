@@ -33,3 +33,5 @@ RUN cmake \
  .. \
  && ninja install \
  && rm -rf /usr/src/QGIS
+
+WORKDIR /
