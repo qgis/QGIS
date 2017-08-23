@@ -897,7 +897,7 @@ class FeatureSourceWidgetWrapper(WidgetWrapper):
             return widget
         else:
             self.combo = QComboBox()
-            layers = self.dialog.getAvailableValuesOfType((QgsProcessingParameterFeatureSource, QgsProcessingParameterVectorLayer), QgsProcessingOutputVectorLayer)
+            layers = self.dialog.getAvailableValuesOfType((QgsProcessingParameterFeatureSource, QgsProcessingParameterVectorLayer), QgsProcessingOutputVectorLayer, self.param.dataTypes())
             self.combo.setEditable(True)
             for layer in layers:
                 self.combo.addItem(self.dialog.resolveValueDescription(layer), layer)

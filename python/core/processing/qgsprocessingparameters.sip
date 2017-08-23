@@ -1420,7 +1420,42 @@ class QgsProcessingParameterExpression : QgsProcessingParameterDefinition
 
 };
 
-class QgsProcessingParameterVectorLayer : QgsProcessingParameterDefinition
+
+class QgsProcessingParameterLimitedDataTypes
+{
+%Docstring
+ Can be inherited by parameters which require limits to their acceptable data types.
+.. versionadded:: 3.0
+%End
+
+%TypeHeaderCode
+#include "qgsprocessingparameters.h"
+%End
+  public:
+
+    QgsProcessingParameterLimitedDataTypes( const QList< int > &types = QList< int >() );
+%Docstring
+ Constructor for QgsProcessingParameterLimitedDataTypes, with a list of acceptable data ``types``.
+%End
+
+    QList< int > dataTypes() const;
+%Docstring
+ Returns the geometry types for sources acceptable by the parameter.
+.. seealso:: setDataTypes()
+ :rtype: list of int
+%End
+
+    void setDataTypes( const QList< int > &types );
+%Docstring
+ Sets the geometry ``types`` for sources acceptable by the parameter.
+.. seealso:: dataTypes()
+%End
+
+  protected:
+
+};
+
+class QgsProcessingParameterVectorLayer : QgsProcessingParameterDefinition, QgsProcessingParameterLimitedDataTypes
 {
 %Docstring
  A vector layer (with or without geometry) parameter for processing algorithms. Consider using
@@ -1454,19 +1489,6 @@ class QgsProcessingParameterVectorLayer : QgsProcessingParameterDefinition
 
     virtual QString valueAsPythonString( const QVariant &value, QgsProcessingContext &context ) const;
 
-
-    QList< int > dataTypes() const;
-%Docstring
- Returns the geometry types for sources acceptable by the parameter.
-.. seealso:: setDataTypes()
- :rtype: list of int
-%End
-
-    void setDataTypes( const QList< int > &types );
-%Docstring
- Sets the geometry ``types`` for sources acceptable by the parameter.
-.. seealso:: dataTypes()
-%End
 
     virtual QVariantMap toVariantMap() const;
 
@@ -1579,7 +1601,8 @@ class QgsProcessingParameterField : QgsProcessingParameterDefinition
 
 };
 
-class QgsProcessingParameterFeatureSource : QgsProcessingParameterDefinition
+
+class QgsProcessingParameterFeatureSource : QgsProcessingParameterDefinition, QgsProcessingParameterLimitedDataTypes
 {
 %Docstring
  An input feature source (such as vector layers) parameter for processing algorithms.
@@ -1612,19 +1635,6 @@ class QgsProcessingParameterFeatureSource : QgsProcessingParameterDefinition
 
     virtual QString asScriptCode() const;
 
-
-    QList< int > dataTypes() const;
-%Docstring
- Returns the geometry types for sources acceptable by the parameter.
-.. seealso:: setDataTypes()
- :rtype: list of int
-%End
-
-    void setDataTypes( const QList< int > &types );
-%Docstring
- Sets the geometry ``types`` for sources acceptable by the parameter.
-.. seealso:: dataTypes()
-%End
 
     virtual QVariantMap toVariantMap() const;
 

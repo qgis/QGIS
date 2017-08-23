@@ -2184,7 +2184,7 @@ QgsProcessingParameterExpression *QgsProcessingParameterExpression::fromScriptCo
 
 QgsProcessingParameterVectorLayer::QgsProcessingParameterVectorLayer( const QString &name, const QString &description, const QList<int> &types, const QVariant &defaultValue, bool optional )
   : QgsProcessingParameterDefinition( name, description, defaultValue, optional )
-  , mDataTypes( types )
+  , QgsProcessingParameterLimitedDataTypes( types )
 {
 
 }
@@ -2234,12 +2234,12 @@ QString QgsProcessingParameterVectorLayer::valueAsPythonString( const QVariant &
   return layer ? QgsProcessingUtils::normalizeLayerSource( layer->source() ).prepend( '\'' ).append( '\'' ) : QString();
 }
 
-QList<int> QgsProcessingParameterVectorLayer::dataTypes() const
+QList<int> QgsProcessingParameterLimitedDataTypes::dataTypes() const
 {
   return mDataTypes;
 }
 
-void QgsProcessingParameterVectorLayer::setDataTypes( const QList<int> &types )
+void QgsProcessingParameterLimitedDataTypes::setDataTypes( const QList<int> &types )
 {
   mDataTypes = types;
 }
@@ -2483,7 +2483,7 @@ QgsProcessingParameterField *QgsProcessingParameterField::fromScriptCode( const 
 
 QgsProcessingParameterFeatureSource::QgsProcessingParameterFeatureSource( const QString &name, const QString &description, const QList<int> &types, const QVariant &defaultValue, bool optional )
   : QgsProcessingParameterDefinition( name, description, defaultValue, optional )
-  , mDataTypes( types )
+  , QgsProcessingParameterLimitedDataTypes( types )
 {
 
 }
@@ -2603,14 +2603,10 @@ QString QgsProcessingParameterFeatureSource::asScriptCode() const
   return code.trimmed();
 }
 
-QList< int > QgsProcessingParameterFeatureSource::dataTypes() const
+QgsProcessingParameterLimitedDataTypes::QgsProcessingParameterLimitedDataTypes( const QList<int> &types )
+  : mDataTypes( types )
 {
-  return mDataTypes;
-}
 
-void QgsProcessingParameterFeatureSource::setDataTypes( const QList<int> &types )
-{
-  mDataTypes = types;
 }
 
 QVariantMap QgsProcessingParameterFeatureSource::toVariantMap() const

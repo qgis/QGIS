@@ -1350,6 +1350,40 @@ class CORE_EXPORT QgsProcessingParameterExpression : public QgsProcessingParamet
 
 };
 
+
+/**
+ * \class QgsProcessingParameterLimitedDataTypes
+ * \ingroup core
+ * Can be inherited by parameters which require limits to their acceptable data types.
+  * \since QGIS 3.0
+ */
+class CORE_EXPORT QgsProcessingParameterLimitedDataTypes
+{
+  public:
+
+    /**
+     * Constructor for QgsProcessingParameterLimitedDataTypes, with a list of acceptable data \a types.
+     */
+    QgsProcessingParameterLimitedDataTypes( const QList< int > &types = QList< int >() );
+
+    /**
+     * Returns the geometry types for sources acceptable by the parameter.
+     * \see setDataTypes()
+     */
+    QList< int > dataTypes() const;
+
+    /**
+     * Sets the geometry \a types for sources acceptable by the parameter.
+     * \see dataTypes()
+     */
+    void setDataTypes( const QList< int > &types );
+
+  protected:
+
+    //! List of acceptable data types for the parameter
+    QList< int > mDataTypes;
+};
+
 /**
  * \class QgsProcessingParameterVectorLayer
  * \ingroup core
@@ -1357,7 +1391,7 @@ class CORE_EXPORT QgsProcessingParameterExpression : public QgsProcessingParamet
  * the more versatile QgsProcessingParameterFeatureSource wherever possible.
   * \since QGIS 3.0
  */
-class CORE_EXPORT QgsProcessingParameterVectorLayer : public QgsProcessingParameterDefinition
+class CORE_EXPORT QgsProcessingParameterVectorLayer : public QgsProcessingParameterDefinition, public QgsProcessingParameterLimitedDataTypes
 {
   public:
 
@@ -1379,18 +1413,6 @@ class CORE_EXPORT QgsProcessingParameterVectorLayer : public QgsProcessingParame
     bool checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context = nullptr ) const override;
     QString valueAsPythonString( const QVariant &value, QgsProcessingContext &context ) const override;
 
-    /**
-     * Returns the geometry types for sources acceptable by the parameter.
-     * \see setDataTypes()
-     */
-    QList< int > dataTypes() const;
-
-    /**
-     * Sets the geometry \a types for sources acceptable by the parameter.
-     * \see dataTypes()
-     */
-    void setDataTypes( const QList< int > &types );
-
     QVariantMap toVariantMap() const override;
     bool fromVariantMap( const QVariantMap &map ) override;
 
@@ -1398,11 +1420,6 @@ class CORE_EXPORT QgsProcessingParameterVectorLayer : public QgsProcessingParame
      * Creates a new parameter using the definition from a script code.
      */
     static QgsProcessingParameterVectorLayer *fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition ) SIP_FACTORY;
-
-  private:
-
-    QList< int > mDataTypes = QList< int >() << QgsProcessing::TypeVectorAnyGeometry;
-
 
 };
 
@@ -1497,13 +1514,14 @@ class CORE_EXPORT QgsProcessingParameterField : public QgsProcessingParameterDef
 
 };
 
+
 /**
  * \class QgsProcessingParameterFeatureSource
  * \ingroup core
  * An input feature source (such as vector layers) parameter for processing algorithms.
   * \since QGIS 3.0
  */
-class CORE_EXPORT QgsProcessingParameterFeatureSource : public QgsProcessingParameterDefinition
+class CORE_EXPORT QgsProcessingParameterFeatureSource : public QgsProcessingParameterDefinition, public QgsProcessingParameterLimitedDataTypes
 {
   public:
 
@@ -1524,18 +1542,6 @@ class CORE_EXPORT QgsProcessingParameterFeatureSource : public QgsProcessingPara
     QString valueAsPythonString( const QVariant &value, QgsProcessingContext &context ) const override;
     QString asScriptCode() const override;
 
-    /**
-     * Returns the geometry types for sources acceptable by the parameter.
-     * \see setDataTypes()
-     */
-    QList< int > dataTypes() const;
-
-    /**
-     * Sets the geometry \a types for sources acceptable by the parameter.
-     * \see dataTypes()
-     */
-    void setDataTypes( const QList< int > &types );
-
     QVariantMap toVariantMap() const override;
     bool fromVariantMap( const QVariantMap &map ) override;
 
@@ -1543,10 +1549,6 @@ class CORE_EXPORT QgsProcessingParameterFeatureSource : public QgsProcessingPara
      * Creates a new parameter using the definition from a script code.
      */
     static QgsProcessingParameterFeatureSource *fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition ) SIP_FACTORY;
-
-  private:
-
-    QList< int > mDataTypes = QList< int >() << QgsProcessing::TypeVectorAnyGeometry;
 
 };
 
