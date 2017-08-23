@@ -32,4 +32,4 @@ RUN cmake \
  -DDISABLE_DEPRECATED=ON \
  .. \
  && ninja install \
- && rm -rf /usr/src/QGIS/build/*
+ && rm -rf /usr/src/QGIS
