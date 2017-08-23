@@ -1,5 +1,5 @@
 /***************************************************************************
-    testqgsdoublespinbox.cpp
+    testqgsfilewidget.cpp
      --------------------------------------
     Date                 : December 2014
     Copyright            : (C) 2014 Nyall Dawson
@@ -27,10 +27,10 @@ class TestQgsFileWidget: public QObject
     void cleanupTestCase(); // will be called after the last testfunction was executed.
     void init(); // will be called before each testfunction is executed.
     void cleanup(); // will be called after every testfunction.
-
     void relativePath();
     void toUrl();
     void testDroppedFiles();
+    void testMultipleFiles();
 
 };
 
@@ -139,6 +139,21 @@ void TestQgsFileWidget::testDroppedFiles()
   QCOMPARE( w->lineEdit()->text(), QString( TEST_DATA_DIR ) );
 
 }
+
+void TestQgsFileWidget::testMultipleFiles()
+{
+  QgsFileWidget *w = new QgsFileWidget();
+  w->setStorageMode( QgsFileWidget::GetFile );
+
+  std::unique_ptr< QMimeData > mime( new QMimeData() );
+  mime->setUrls( QList<QUrl>() << QUrl::fromLocalFile( TEST_DATA_DIR + QStringLiteral( "/bug5598.shp" ) )
+                 << QUrl::fromLocalFile( TEST_DATA_DIR + QStringLiteral( "/bug5598.shp" ) ) );
+  std::unique_ptr< QDropEvent > event( new QDropEvent( QPointF( 1, 1 ), Qt::CopyAction, mime.get(), Qt::LeftButton, Qt::NoModifier ) );
+
+  qobject_cast< QgsFileDropEdit * >( w->lineEdit() )->dropEvent( event.get() );
+  QCOMPARE( w->lineEdit()->text(), QStringLiteral( "\"%1\" \"%1\"" ).arg( TEST_DATA_DIR + QStringLiteral( "/bug5598.shp" ) ) );
+}
+
 
 QGSTEST_MAIN( TestQgsFileWidget )
 #include "testqgsfilewidget.moc"

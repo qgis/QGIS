@@ -61,8 +61,9 @@ class GUI_EXPORT QgsFileWidget : public QWidget
      */
     enum StorageMode
     {
-      GetFile,
-      GetDirectory
+      GetFile, //! Select a single file
+      GetDirectory, //! Select a directory
+      GetMultipleFiles, //! Select multiple files
     };
 
     /**
@@ -94,7 +95,7 @@ class GUI_EXPORT QgsFileWidget : public QWidget
 
     /**
      * \brief setDialogTitle defines the open file dialog title
-     * \note if not defined, the title is "Select a file" or "Select a directory" depending on the configuration.
+     * \note if not defined, the title is "Select a file" or "Select a directory" or "Select one or more files" depending on the configuration.
      */
     void setDialogTitle( const QString &title );
 

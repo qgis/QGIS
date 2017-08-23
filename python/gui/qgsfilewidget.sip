@@ -30,7 +30,8 @@ class QgsFileWidget : QWidget
     enum StorageMode
     {
       GetFile,
-      GetDirectory
+      GetDirectory,
+      GetMultipleFiles,
     };
 
     enum RelativeStorage
@@ -72,7 +73,7 @@ returns the open file dialog title
  setDialogTitle defines the open file dialog title
 .. note::
 
-   if not defined, the title is "Select a file" or "Select a directory" depending on the configuration.
+   if not defined, the title is "Select a file" or "Select a directory" or "Select one or more files" depending on the configuration.
 %End
 
     QString filter() const;
