@@ -93,7 +93,7 @@ void QgsOracleNewConnection::accept()
   if ( chkStorePassword->isChecked() &&
        QMessageBox::question( this,
                               tr( "Saving passwords" ),
-                              tr( "WARNING: You have opted to save your password. It will be stored in plain text in your project files and in your home directory on Unix-like systems, or in your user profile on Windows. If you do not want this to happen, please press the Cancel button.\n" ),
+                              tr( "WARNING: You have opted to save your password. It will be stored in plain text in your project files and in your home directory (Unix-like systems) or user profile (Windows). If you want to avoid this, please uncheck the option.\n" ),
                               QMessageBox::Ok | QMessageBox::Cancel ) == QMessageBox::Cancel )
   {
     return;
