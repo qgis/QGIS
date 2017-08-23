@@ -42,6 +42,8 @@ class QgsSpatiaLiteFeatureSource : public QgsAbstractFeatureSource
     SpatialiteDbLayer *mDbLayer = nullptr;
     //! The active Layer
     SpatialiteDbLayer *getDbLayer() const { return mDbLayer; }
+    //! The sqlite handler
+    sqlite3 *dbSqliteHandle() const { return getDbLayer()->dbSqliteHandle(); }
     QgsSqliteHandle *getQSqliteHandle() const { return mHandle; }
     //! Name of the geometry column in the table
     QString getGeometryColumn() const { return getDbLayer()->getGeometryColumn(); }

@@ -91,27 +91,195 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
      */
     size_t layerCount() const;
 
+    /** Amount of features
+     *  - implementation of Provider function 'featureCount'
+     * \note
+     *  - implemented in SpatialiteDbLayer
+     *  \returns amount of features of the Layer
+     * \see getNumberFeatures
+     * \since QGIS 3.0
+     */
     long featureCount() const override;
+
+    /** Extent of the Layer
+     *  - implementation of Provider function 'extent'
+     * \note
+     *  - implemented in SpatialiteDbLayer
+     *  \returns QgsRectangle extent of the Layer
+     *  - getLayerExtent is called retrieving the extent without calling UpdateLayerStatistics
+     * \see getLayerExtent
+     * \since QGIS 3.0
+     */
     virtual QgsRectangle extent() const override;
+
+    /** Extent of the Layer
+     *  - implementation of Provider function 'updateExtents'
+     * \note
+     *  - implemented in SpatialiteDbLayer
+     *  - getLayerExtent is called retrieving the extent after a UpdateLayerStatistics
+     * \see getLayerExtent
+     * \since QGIS 3.0
+     */
     virtual void updateExtents() override;
+
+    /** List of fields
+     *  - implementation of Provider function 'fields'
+     * \note
+     *  - implemented in SpatialiteDbLayer
+     *  \returns QgsFields of the Layer
+     * \see getAttributeFields
+     * \since QGIS 3.0
+     */
     QgsFields fields() const override;
+
+    /** Returns the minimum value of an attribute
+     *  - implementation of Provider function 'minimumValue'
+     * \note
+     *  - must remain in QgsSpatiaLiteProvider, since the results (mQuery, mSubsetString) could effect Layers that are being used elsewhere
+     * \param field number of attribute to rfetrieve the value from
+     * \returns result as a QVariant
+     * \see QgsVectorDataProvider::convertValue
+     * \see mQuery
+     * \see mSubsetString
+     * \since QGIS 3.0
+     */
     QVariant minimumValue( int index ) const override;
+
+    /** Returns the maximum value of an attribute
+     *  - implementation of Provider function 'minimumValue'
+     * \note
+     *  - must remain in QgsSpatiaLiteProvider, since the results (mQuery, mSubsetString) could effect Layers that are being used elsewhere
+     * \param field number of attribute to rfetrieve the value from
+     * \returns result as a QVariant
+     * \see QgsVectorDataProvider::convertValue
+     * \see mQuery
+     * \see mSubsetString
+     * \since QGIS 3.0
+     */
     QVariant maximumValue( int index ) const override;
+
+    /** Returns a list of unique values
+     *  - implementation of Provider function 'uniqueValues'
+     * \note
+     *  - must remain in QgsSpatiaLiteProvider, since the results (mQuery, mSubsetString) could effect Layers that are being used elsewhere
+     * \param field number of attribute to rfetrieve the value from
+     * \returns result as a QSet of QVariant
+     * \see mQuery
+     * \see mSubsetString
+     * \since QGIS 3.0
+     */
     virtual QSet<QVariant> uniqueValues( int index, int limit = -1 ) const override;
+
+    /** UniqueStringsMatching
+     * \note
+     *  - must remain in QgsSpatiaLiteProvider, since the results (mQuery, mSubsetString) could effect Layers that are being used elsewhere
+     * \see mQuery
+     * \see mSubsetString
+    * \since QGIS 3.0
+    */
     virtual QStringList uniqueStringsMatching( int index, const QString &substring, int limit = -1,
         QgsFeedback *feedback = nullptr ) const override;
 
     bool isValid() const override;
     virtual bool isSaveAndLoadStyleToDatabaseSupported() const override { return true; }
+
+    /** Adds features
+     *  - implementation of Provider function 'addFeatures'
+     * \note
+     *  - implemented in SpatialiteDbLayer
+     * \param flist feature to add
+     *  \returns True in case of success and False in case of error or container not supported
+     * \see SpatialiteDbLayer::addLayerFeatures
+     * \since QGIS 3.0
+     */
     bool addFeatures( QgsFeatureList &flist, QgsFeatureSink::Flags flags = 0 ) override;
+
+    /** Deletes features
+     *  - implementation of Provider function 'deleteFeatures'
+     * \note
+     *  - implemented in SpatialiteDbLayer
+     * \param id QgsFeatureIds to delete
+     *  \returns True in case of success and False in case of error or container not supported
+     * \see SpatialiteDbLayer::deleteLayerFeatures
+     * \since QGIS 3.0
+     */
     bool deleteFeatures( const QgsFeatureIds &id ) override;
+
+    /** Deletes all records of Layer-Table
+     *  - implementation of Provider function 'truncate'
+     * \note
+     *  - implemented in SpatialiteDbLayer
+     * \param id QgsFeatureIds to delete
+     * \returns True in case of success and False in case of error or container not supported
+     * \see getNumberFeatures
+     * \see SpatialiteDbLayer::truncateLayerTableRows
+     * \since QGIS 3.0
+     */
     bool truncate() override;
+
+    /** Adds attributes
+     *  - implementation of Provider function 'addAttributes'
+     * \note
+     *  - implemented in SpatialiteDbLayer
+     * \param attributes List of QgsField
+     *  \returns True in case of success and False in case of error
+     * \see SpatialiteDbLayer::addLayerAttributes
+     * \since QGIS 3.0
+     */
     bool addAttributes( const QList<QgsField> &attributes ) override;
+
+    /** Updates attributes
+     *  - implementation of Provider function 'changeAttributeValues'
+     * \note
+     *  - Spatialite specific [GeoPackage could be implemented, but not forseen]
+     * \param attr_map collection of attributes to change
+     *   \returns True in case of success and False in case of error
+     * \see SpatialiteDbLayer::changeAttributeValues
+     * \since QGIS 3.0
+     */
     bool changeAttributeValues( const QgsChangedAttributesMap &attr_map ) override;
+
+    /** Updates features
+     *  - implementation of Provider function 'changeGeometryValues'
+     * \note
+     *  - implemented in SpatialiteDbLayer
+     * \param geometry_map collection of geometries to change
+     *  \returns True in case of success and False in case of error
+     * \see SpatialiteDbLayer::changeLayerGeometryValues
+     * \since QGIS 3.0
+     */
     bool changeGeometryValues( const QgsGeometryMap &geometry_map ) override;
+
+    /** Based on Layer-Type, set QgsVectorDataProvider::Capabilities
+     *  - implementation of Provider function 'capabilities'
+     * \note
+     *  - implemented in SpatialiteDbLayer
+     * \see getCapabilities
+     * \since QGIS 3.0
+    */
     QgsVectorDataProvider::Capabilities capabilities() const override;
+
+    /** Based on Layer-Type, set QgsVectorDataProvider::Capabilities
+     *  - implementation of Provider function 'defaultValue'
+     * \note
+     *  - implemented in SpatialiteDbLayer
+     * \see getDefaultValues()
+     * \returns value from Map of field index of the default values
+     * \since QGIS 3.0
+    */
     QVariant defaultValue( int fieldId ) const override;
+
+    /** Creates attributes Index
+     *  - implementation of Provider function 'createAttributeIndex'
+     * \note
+     *  - implemented in SpatialiteDbLayer
+     * \param field number of attribute to created the index for
+     * \returns True in case of success and False in case of error
+     * \see QgsSpatiaLiteProvider::createLayerAttributeIndex
+     * \since QGIS 3.0
+     */
     bool createAttributeIndex( int field ) override;
+    //! The class allowing to reuse the same sqlite handle for more layers
     QgsSqliteHandle *getQSqliteHandle() const { return mHandle; }
 
     /** Retrieve SpatialiteDbInfo
@@ -140,7 +308,7 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
      * \note
      *  - extracted from spatialite_version()
      * \see getSniffDatabaseType
-    * \since QGIS 3.0
+     * \since QGIS 3.0
     */
     int dbSpatialiteVersionMajor() const { return getSpatialiteDbInfo()->dbSpatialiteVersionMajor(); }
 
@@ -148,7 +316,7 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
      * \note
      *  - extracted from spatialite_version()
      * \see getSniffDatabaseType
-    * \since QGIS 3.0
+     * \since QGIS 3.0
     */
     int dbSpatialiteVersionMinor() const { return getSpatialiteDbInfo()->dbSpatialiteVersionMinor(); }
 
@@ -409,39 +577,6 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
     void invalidateConnections( const QString &connection ) override;
     QList<QgsRelation> discoverRelations( const QgsVectorLayer *self, const QList<QgsVectorLayer *> &layers ) const override;
 
-    static QString quotedIdentifier( QString id );
-    static QString quotedValue( QString value );
-
-    struct SLFieldNotFound {}; //! Exception to throw
-
-    struct SLException
-    {
-        explicit SLException( char *msg ) : errMsg( msg )
-        {
-        }
-
-        SLException( const SLException &e ) : errMsg( e.errMsg )
-        {
-        }
-
-        ~SLException()
-        {
-          if ( errMsg )
-            sqlite3_free( errMsg );
-        }
-
-        SLException &operator=( const SLException &other ) = delete;
-
-        QString errorMessage() const
-        {
-          return errMsg ? QString::fromUtf8( errMsg ) : QStringLiteral( "unknown cause" );
-        }
-
-      private:
-        char *errMsg = nullptr;
-
-    };
-
   signals:
 
     /**
@@ -538,7 +673,7 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
 
     //! this Geometry is supported by an MBR cache spatial index
     bool mSpatialIndexMbrCache;
-
+    //! Retrieve a specific of layer fields of the table
     QgsField field( int index ) const;
 
     /**
@@ -554,18 +689,6 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
     bool getFeature( sqlite3_stmt *stmt, bool fetchGeometry,
                      QgsFeature &feature,
                      const QgsAttributeList &fetchAttributes );
-
-    // Note 20170523: not sure if this is still needed.
-    // void updatePrimaryKeyCapabilities();
-
-
-
-
-
-    /**
-     * Handles an error encountered while executing an sql statement.
-     */
-    void handleError( const QString &sql, char *errorMessage, bool rollback = false );
 
     friend class QgsSpatiaLiteFeatureSource;
 

@@ -30,6 +30,7 @@
 #include "qgsvectordataprovider.h"
 #include "qgsvectorlayer.h"
 #include "qgsrasterlayer.h"
+#include "qgsfeaturesink.h"
 
 class SpatialiteDbLayer;
 class QgsSqliteHandle;
@@ -2289,6 +2290,30 @@ class SpatialiteDbLayer : public QObject
     ~SpatialiteDbLayer();
     //! The Database Info-Structure being read
     SpatialiteDbInfo *getDbConnectionInfo() const { return mDbConnectionInfo; }
+
+    /** The major Spatialite Version being used
+     * \note
+     *  - extracted from spatialite_version()
+     * \see getSniffDatabaseType
+    * \since QGIS 3.0
+    */
+    int dbSpatialiteVersionMajor() const { return getDbConnectionInfo()->dbSpatialiteVersionMajor(); }
+
+    /** The minor Spatialite Version being used
+     * \note
+     *  - extracted from spatialite_version()
+     * \see getSniffDatabaseType
+    * \since QGIS 3.0
+    */
+    int dbSpatialiteVersionMinor() const { return getDbConnectionInfo()->dbSpatialiteVersionMinor(); }
+
+    /** The revision Spatialite Version being used
+     * \note
+     *  - extracted from spatialite_version()
+     * \see getSniffDatabaseType
+    * \since QGIS 3.0
+    */
+    int dbSpatialiteVersionRevision() const { return getDbConnectionInfo()->dbSpatialiteVersionRevision(); }
     //! The sqlite handler
     sqlite3 *dbSqliteHandle() const { return getDbConnectionInfo()->dbSqliteHandle(); }
     //! The Database filename being read
@@ -2668,6 +2693,8 @@ class SpatialiteDbLayer : public QObject
     QgsAttributeList getPrimaryKeyAttrs() const { return mPrimaryKeyAttrs; }
     //! List of layer fields in the table
     QgsFields getAttributeFields() const { return mAttributeFields; }
+    //! Retrieve a specific of layer fields of the table
+    QgsField getAttributeField( int index ) const;
     //! Map of field index to default value [for Topology, the Topology-Layers]
     QMap<int, QVariant> getDefaultValues() const { return mDefaultValues; }
 
@@ -2696,6 +2723,87 @@ class SpatialiteDbLayer : public QObject
      * \since QGIS 3.0
      */
     bool prepare();
+
+    /** Adds features
+     *  - implementation of Provider function 'addFeatures'
+     * \note
+     *  - updating internal layer-data, such as NumberFeatures
+     *  - Spatialite specific [GeoPackage could be implemented, but not forseen]
+     * \param flist feature to add
+     * \returns True in case of success and False in case of error or container not supported
+     * \see getNumberFeatures
+     * \see QgsSpatiaLiteProvider::addFeatures
+     * \since QGIS 3.0
+     */
+    bool addLayerFeatures( QgsFeatureList &flist, QgsFeatureSink::Flags flags, QString &errorMessage );
+
+    /** Deletes features
+     *  - implementation of Provider function 'deleteFeatures'
+     * \note
+     *  - updating internal layer-data, such as NumberFeatures
+     * \param id QgsFeatureIds to delete
+     * \returns True in case of success and False in case of error or container not supported
+     * \see getNumberFeatures
+     * \see QgsSpatiaLiteProvider::deleteFeatures
+     * \since QGIS 3.0
+     */
+    bool deleteLayerFeatures( const QgsFeatureIds &id, QString &errorMessage );
+
+    /** Deletes all records of Layer-Table
+     *  - implementation of Provider function 'truncate'
+     * \note
+     *  - updating internal layer-data, such as NumberFeatures and Extent
+     * \param id QgsFeatureIds to delete
+     * \returns True in case of success and False in case of error or container not supported
+     * \see getNumberFeatures
+     * \see QgsSpatiaLiteProvider::truncate
+     * \since QGIS 3.0
+     */
+    bool truncateLayerTableRows();
+
+    /** Updates features
+     *  - implementation of Provider function 'changeGeometryValues'
+     * \note
+     *  - Spatialite specific [GeoPackage could be implemented, but not forseen]
+     * \param geometry_map collection of geometries to change
+     * \returns True in case of success and False in case of error
+     * \see QgsSpatiaLiteProvider::changeGeometryValues
+     * \since QGIS 3.0
+     */
+    bool changeLayerGeometryValues( const QgsGeometryMap &geometry_map );
+
+    /** Adds attributes
+     *  - implementation of Provider function 'addAttributes'
+     * \note
+     *  - Spatialite specific [GeoPackage could be implemented, but not forseen]
+     * \param attributes List of QgsField
+     *  \returns True in case of success and False in case of error
+     * \see QgsSpatiaLiteProvider::addAttributes
+     * \since QGIS 3.0
+     */
+    bool addLayerAttributes( const QList<QgsField> &attributes );
+
+    /** Updates attributes
+     *  - implementation of Provider function 'changeAttributeValues'
+     * \note
+     *  - Spatialite specific [GeoPackage could be implemented, but not forseen]
+     * \param attr_map collection of attributes to change
+     * \returns True in case of success and False in case of error
+     * \see QgsSpatiaLiteProvider::changeAttributeValues
+     * \since QGIS 3.0
+     */
+    bool changeLayerAttributeValues( const QgsChangedAttributesMap &attr_map );
+
+    /** Creates attributes Index
+     *  - implementation of Provider function 'createAttributeIndex'
+     * \note
+     *  - Possibly Spatialite specific [GeoPackage could be implemented, but not forseen]
+     * \param field number of attribute to created the index for
+     * \returns True in case of success and False in case of error
+     * \see QgsSpatiaLiteProvider::changeAttributeValues
+     * \since QGIS 3.0
+     */
+    bool createLayerAttributeIndex( int field );
   private:
     //! The Database Info-Structure being read
     SpatialiteDbInfo *mDbConnectionInfo = nullptr;;
@@ -3138,6 +3246,27 @@ class SpatialiteDbLayer : public QObject
      */
     bool mHasStyle;
 
+    /** Prepares sql statement for geometry field.
+     *  - using ST_Mult when needed and supported (spatialite version > 2.4)
+     * \note
+     *  - original QgsSpatiaLiteProvider function
+     * \see addLayerFeatures;
+     * \since QGIS 3.0
+     */
+    QString geomParam() const;
+
+    /** Handles an error encountered while executing an sql statement.
+     *  - implementation of Provider function 'addFeatures'
+     * \note
+     *  - original QgsSpatiaLiteProvider function
+     * \param sql used sql
+     * \param errorMessage returned by the driver when using sqlite3_exec
+     * \param rollback execute ROLLBACK [default=false]
+     * \see getNumberFeatures();
+     * \since QGIS 3.0
+     */
+    void handleError( const QString &sql, char *errorMessage, bool rollback = false );
+
     friend class SpatialiteDbInfo;
 };
 
@@ -3162,7 +3291,39 @@ class QgsSpatiaLiteUtils
       GEOS_3D_MULTIPOLYGON       = -2147483642,
       GEOS_3D_GEOMETRYCOLLECTION = -2147483641,
     };
+    struct SLFieldNotFound {}; //! Exception to throw
+
+    struct SLException
+    {
+        explicit SLException( char *msg ) : errMsg( msg )
+        {
+        }
+
+        SLException( const SLException &e ) : errMsg( e.errMsg )
+        {
+        }
+
+        ~SLException()
+        {
+          if ( errMsg )
+            sqlite3_free( errMsg );
+        }
+
+        SLException &operator=( const SLException &other ) = delete;
+
+        QString errorMessage() const
+        {
+          return errMsg ? QString::fromUtf8( errMsg ) : QStringLiteral( "unknown cause" );
+        }
+      private:
+        char *errMsg = nullptr;
+
+    };
     // static functions
+    static QString createIndexName( QString tableName, QString field );
+    static QString quotedIdentifier( QString id );
+    static QString quotedValue( QString value );
+    static void deleteWkbBlob( void *wkbBlob );
     static void convertToGeosWKB( const unsigned char *blob, int blob_size,
                                   unsigned char **wkb, int *geom_size );
     static int computeMultiWKB3Dsize( const unsigned char *p_in, int little_endian,

@@ -332,7 +332,7 @@ bool QgsSpatiaLiteFeatureIterator::prepareStatement( const QString &whereClause,
 
     if ( mFetchGeometry )
     {
-      sql += QStringLiteral( ", AsBinary(%1)" ).arg( QgsSpatiaLiteProvider::quotedIdentifier( mSource->getGeometryColumn() ) );
+      sql += QStringLiteral( ", AsBinary(%1)" ).arg( QgsSpatiaLiteUtils::quotedIdentifier( mSource->getGeometryColumn() ) );
       mGeomColIdx = colIdx;
     }
     sql += QStringLiteral( " FROM %1" ).arg( mSource->mQuery );
@@ -345,14 +345,14 @@ bool QgsSpatiaLiteFeatureIterator::prepareStatement( const QString &whereClause,
 
     if ( limit >= 0 )
       sql += QStringLiteral( " LIMIT %1" ).arg( limit );
-    if ( sqlite3_prepare_v2( mHandle->handle(), sql.toUtf8().constData(), -1, &sqliteStatement, nullptr ) != SQLITE_OK )
+    if ( sqlite3_prepare_v2( mSource->dbSqliteHandle(), sql.toUtf8().constData(), -1, &sqliteStatement, nullptr ) != SQLITE_OK )
     {
       // some error occurred
-      QgsMessageLog::logMessage( QObject::tr( "SQLite error: %2\nSQL: %1" ).arg( sql, sqlite3_errmsg( mHandle->handle() ) ), QObject::tr( "SpatiaLite" ) );
+      QgsMessageLog::logMessage( QObject::tr( "SQLite error: %2\nSQL: %1" ).arg( sql, sqlite3_errmsg( mSource->dbSqliteHandle() ) ), QObject::tr( "SpatiaLite" ) );
       return false;
     }
   }
-  catch ( QgsSpatiaLiteProvider::SLFieldNotFound )
+  catch ( QgsSpatiaLiteUtils::SLFieldNotFound )
   {
     rewind();
     return false;
@@ -363,7 +363,7 @@ bool QgsSpatiaLiteFeatureIterator::prepareStatement( const QString &whereClause,
 
 QString QgsSpatiaLiteFeatureIterator::quotedPrimaryKey()
 {
-  return mSource->getPrimaryKey().isEmpty() ? QStringLiteral( "ROWID" ) : QgsSpatiaLiteProvider::quotedIdentifier( mSource->getPrimaryKey() );
+  return mSource->getPrimaryKey().isEmpty() ? QStringLiteral( "ROWID" ) : QgsSpatiaLiteUtils::quotedIdentifier( mSource->getPrimaryKey() );
 }
 
 QString QgsSpatiaLiteFeatureIterator::whereClauseFid()
@@ -393,12 +393,12 @@ QString QgsSpatiaLiteFeatureIterator::whereClauseRect()
   if ( mRequest.flags() & QgsFeatureRequest::ExactIntersect )
   {
     // we are requested to evaluate a true INTERSECT relationship
-    whereClause += QStringLiteral( "Intersects(%1, BuildMbr(%2)) AND " ).arg( QgsSpatiaLiteProvider::quotedIdentifier( mSource->getGeometryColumn() ), mbr( mFilterRect ) );
+    whereClause += QStringLiteral( "Intersects(%1, BuildMbr(%2)) AND " ).arg( QgsSpatiaLiteUtils::quotedIdentifier( mSource->getGeometryColumn() ), mbr( mFilterRect ) );
   }
   if ( mSource->mVShapeBased )
   {
     // handling a VirtualShape layer
-    whereClause += QStringLiteral( "MbrIntersects(%1, BuildMbr(%2))" ).arg( QgsSpatiaLiteProvider::quotedIdentifier( mSource->getGeometryColumn() ), mbr( mFilterRect ) );
+    whereClause += QStringLiteral( "MbrIntersects(%1, BuildMbr(%2))" ).arg( QgsSpatiaLiteUtils::quotedIdentifier( mSource->getGeometryColumn() ), mbr( mFilterRect ) );
   }
   else if ( mFilterRect.isFinite() )
   {
@@ -412,7 +412,7 @@ QString QgsSpatiaLiteFeatureIterator::whereClauseRect()
       QString idxName = QStringLiteral( "idx_%1_%2" ).arg( mSource->mIndexTable, mSource->mIndexGeometry );
       whereClause += QStringLiteral( "%1 IN (SELECT pkid FROM %2 WHERE %3)" )
                      .arg( quotedPrimaryKey(),
-                           QgsSpatiaLiteProvider::quotedIdentifier( idxName ),
+                           QgsSpatiaLiteUtils::quotedIdentifier( idxName ),
                            mbrFilter );
     }
     else if ( mSource->mSpatialIndexMbrCache )
@@ -421,13 +421,13 @@ QString QgsSpatiaLiteFeatureIterator::whereClauseRect()
       QString idxName = QStringLiteral( "cache_%1_%2" ).arg( mSource->mIndexTable, mSource->mIndexGeometry );
       whereClause += QStringLiteral( "%1 IN (SELECT rowid FROM %2 WHERE mbr = FilterMbrIntersects(%3))" )
                      .arg( quotedPrimaryKey(),
-                           QgsSpatiaLiteProvider::quotedIdentifier( idxName ),
+                           QgsSpatiaLiteUtils::quotedIdentifier( idxName ),
                            mbr( mFilterRect ) );
     }
     else
     {
       // using simple MBR filtering
-      whereClause += QStringLiteral( "MbrIntersects(%1, BuildMbr(%2))" ).arg( QgsSpatiaLiteProvider::quotedIdentifier( mSource->getGeometryColumn() ), mbr( mFilterRect ) );
+      whereClause += QStringLiteral( "MbrIntersects(%1, BuildMbr(%2))" ).arg( QgsSpatiaLiteUtils::quotedIdentifier( mSource->getGeometryColumn() ), mbr( mFilterRect ) );
     }
   }
   else
@@ -450,7 +450,7 @@ QString QgsSpatiaLiteFeatureIterator::mbr( const QgsRectangle &rect )
 
 QString QgsSpatiaLiteFeatureIterator::fieldName( const QgsField &fld )
 {
-  QString fieldname = QgsSpatiaLiteProvider::quotedIdentifier( fld.name() );
+  QString fieldname = QgsSpatiaLiteUtils::quotedIdentifier( fld.name() );
   const QString type = fld.typeName().toLower();
   if ( type.contains( QLatin1String( "geometry" ) ) || type.contains( QLatin1String( "point" ) ) ||
        type.contains( QLatin1String( "line" ) ) || type.contains( QLatin1String( "polygon" ) ) )
@@ -474,7 +474,7 @@ bool QgsSpatiaLiteFeatureIterator::getFeature( sqlite3_stmt *stmt, QgsFeature &f
   if ( ret != SQLITE_ROW )
   {
     // some unexpected error occurred
-    QgsMessageLog::logMessage( QObject::tr( "SQLite error getting feature: LayerName[%1] GeomType[%2] -  %3" ).arg( mSource->getLayerName() ).arg( mSource->getGeometryTypeString() ).arg( QString::fromUtf8( sqlite3_errmsg( mHandle->handle() ) ) ) );
+    QgsMessageLog::logMessage( QObject::tr( "SQLite error getting feature: LayerName[%1] GeomType[%2] -  %3" ).arg( mSource->getLayerName() ).arg( mSource->getGeometryTypeString() ).arg( QString::fromUtf8( sqlite3_errmsg( mSource->dbSqliteHandle() ) ) ) );
     return false;
   }
   // one valid row has been fetched from the result set
