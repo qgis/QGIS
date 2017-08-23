@@ -1121,6 +1121,7 @@ QgsProcessingAlgorithm *QgsProcessingModelAlgorithm::createInstance() const
   QgsProcessingModelAlgorithm *alg = new QgsProcessingModelAlgorithm();
   alg->loadVariant( toVariant() );
   alg->setProvider( provider() );
+  alg->setSourceFilePath( sourceFilePath() );
   return alg;
 }
 
