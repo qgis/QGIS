@@ -52,7 +52,7 @@ class RasterCalculator(QgisAlgorithm):
     OUTPUT = 'OUTPUT'
 
     def group(self):
-        return self.tr('Raster')
+        return self.tr('Raster analysis')
 
     def __init__(self):
         super().__init__()

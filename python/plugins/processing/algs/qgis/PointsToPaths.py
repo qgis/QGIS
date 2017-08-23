@@ -59,7 +59,7 @@ class PointsToPaths(QgisAlgorithm):
     OUTPUT_TEXT_DIR = 'OUTPUT_TEXT_DIR'
 
     def group(self):
-        return self.tr('Vector creation tools')
+        return self.tr('Vector creation')
 
     def __init__(self):
         super().__init__()

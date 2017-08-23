@@ -56,7 +56,7 @@ class HypsometricCurves(QgisAlgorithm):
     OUTPUT_DIRECTORY = 'OUTPUT_DIRECTORY'
 
     def group(self):
-        return self.tr('Raster tools')
+        return self.tr('Raster terrain analysis')
 
     def __init__(self):
         super().__init__()

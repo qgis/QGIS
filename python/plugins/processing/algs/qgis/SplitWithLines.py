@@ -47,7 +47,7 @@ class SplitWithLines(QgisAlgorithm):
     OUTPUT = 'OUTPUT'
 
     def group(self):
-        return self.tr('Vector overlay tools')
+        return self.tr('Vector overlay')
 
     def __init__(self):
         super().__init__()

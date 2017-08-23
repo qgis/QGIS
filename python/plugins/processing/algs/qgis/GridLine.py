@@ -68,7 +68,7 @@ class GridLine(QgisAlgorithm):
         return self.tr('grid,lines,vector,create,fishnet').split(',')
 
     def group(self):
-        return self.tr('Vector creation tools')
+        return self.tr('Vector creation')
 
     def __init__(self):
         super().__init__()

@@ -483,24 +483,59 @@ class FileWidgetWrapper(WidgetWrapper):
         if self.dialogType in (DIALOG_STANDARD, DIALOG_BATCH):
             return FileSelectionPanel(self.param.behavior() == QgsProcessingParameterFile.Folder, self.param.extension())
         else:
-            widget = QComboBox()
-            widget.setEditable(True)
+            self.combo = QComboBox()
+            self.combo.setEditable(True)
             files = self.dialog.getAvailableValuesOfType(QgsProcessingParameterFile, OutputFile)
             for f in files:
-                widget.addItem(self.dialog.resolveValueDescription(f), f)
+                self.combo.addItem(self.dialog.resolveValueDescription(f), f)
+            if self.param.flags() & QgsProcessingParameterDefinition.FlagOptional:
+                self.combo.setEditText("")
+            widget = QWidget()
+            layout = QHBoxLayout()
+            layout.setMargin(0)
+            layout.setContentsMargins(0, 0, 0, 0)
+            layout.setSpacing(2)
+            layout.addWidget(self.combo)
+            btn = QToolButton()
+            btn.setText('…')
+            btn.setToolTip(self.tr("Select file"))
+            btn.clicked.connect(self.selectFile)
+            layout.addWidget(btn)
+            widget.setLayout(layout)
             return widget
+
+    def selectFile(self):
+        settings = QgsSettings()
+        if os.path.isdir(os.path.dirname(self.combo.currentText())):
+            path = os.path.dirname(self.combo.currentText())
+        if settings.contains('/Processing/LastInputPath'):
+            path = settings.value('/Processing/LastInputPath')
+        else:
+            path = ''
+
+        if self.param.extension():
+            filter = self.tr('{} files').format(self.param.extension().upper()) + ' (*.' + self.param.extension() + self.tr(
+                ');;All files (*.*)')
+        else:
+            filter = self.tr('All files (*.*)')
+
+        filename, selected_filter = QFileDialog.getOpenFileName(self.widget,
+                                                                self.tr('Select file'), path,
+                                                                filter)
+        if filename:
+            self.combo.setEditText(filename)
 
     def setValue(self, value):
         if self.dialogType in (DIALOG_STANDARD, DIALOG_BATCH):
             self.widget.setText(value)
         else:
-            self.setComboValue(value)
+            self.setComboValue(value, combobox=self.combo)
 
     def value(self):
         if self.dialogType in (DIALOG_STANDARD, DIALOG_BATCH):
             return self.widget.getValue()
         else:
-            return self.comboValue()
+            return self.comboValue(combobox=self.combo)
 
 
 class FixedTableWidgetWrapper(WidgetWrapper):
@@ -521,7 +556,7 @@ class FixedTableWidgetWrapper(WidgetWrapper):
             return self.widget.table
 
 
-class MultipleInputWidgetWrapper(WidgetWrapper):
+class MultipleLayerWidgetWrapper(WidgetWrapper):
 
     def _getOptions(self):
         if self.param.layerType() == QgsProcessing.TypeVectorAnyGeometry:
@@ -766,7 +801,7 @@ class RasterWidgetWrapper(MapLayerWidgetWrapper):
                 self.combo.setEditText(filename)
 
 
-class SelectionWidgetWrapper(WidgetWrapper):
+class EnumWidgetWrapper(WidgetWrapper):
 
     def createWidget(self):
         if self.param.allowMultiple():
@@ -792,7 +827,7 @@ class SelectionWidgetWrapper(WidgetWrapper):
             return self.widget.currentData()
 
 
-class VectorWidgetWrapper(WidgetWrapper):
+class FeatureSourceWidgetWrapper(WidgetWrapper):
 
     NOT_SELECTED = '[Not selected]'
 
@@ -862,7 +897,7 @@ class VectorWidgetWrapper(WidgetWrapper):
             return widget
         else:
             self.combo = QComboBox()
-            layers = self.dialog.getAvailableValuesOfType((QgsProcessingParameterFeatureSource, QgsProcessingParameterVectorLayer), QgsProcessingOutputVectorLayer)
+            layers = self.dialog.getAvailableValuesOfType((QgsProcessingParameterFeatureSource, QgsProcessingParameterVectorLayer), QgsProcessingOutputVectorLayer, self.param.dataTypes())
             self.combo.setEditable(True)
             for layer in layers:
                 self.combo.addItem(self.dialog.resolveValueDescription(layer), layer)
@@ -1082,7 +1117,7 @@ class ExpressionWidgetWrapper(WidgetWrapper):
             return self.comboValue(validator)
 
 
-class TableWidgetWrapper(WidgetWrapper):
+class VectorLayerWidgetWrapper(WidgetWrapper):
 
     NOT_SELECTED = '[Not selected]'
 
@@ -1407,23 +1442,23 @@ class WidgetWrapperFactory:
         elif param.type() == 'file':
             wrapper = FileWidgetWrapper
         elif param.type() == 'multilayer':
-            wrapper = MultipleInputWidgetWrapper
+            wrapper = MultipleLayerWidgetWrapper
         elif param.type() == 'number':
             wrapper = NumberWidgetWrapper
         elif param.type() == 'raster':
             wrapper = RasterWidgetWrapper
         elif param.type() == 'enum':
-            wrapper = SelectionWidgetWrapper
+            wrapper = EnumWidgetWrapper
         elif param.type() == 'string':
             wrapper = StringWidgetWrapper
         elif param.type() == 'expression':
             wrapper = ExpressionWidgetWrapper
         elif param.type() == 'vector':
-            wrapper = TableWidgetWrapper
+            wrapper = VectorLayerWidgetWrapper
         elif param.type() == 'field':
             wrapper = TableFieldWidgetWrapper
         elif param.type() == 'source':
-            wrapper = VectorWidgetWrapper
+            wrapper = FeatureSourceWidgetWrapper
         elif param.type() == 'band':
             wrapper = BandWidgetWrapper
         elif param.type() == 'layer':

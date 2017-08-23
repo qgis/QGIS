@@ -1,4 +1,4 @@
-##Vector table tools=group
+##Vector analysis=group
 
 # inputs
 

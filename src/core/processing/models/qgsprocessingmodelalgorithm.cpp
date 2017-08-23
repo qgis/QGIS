@@ -590,18 +590,24 @@ QgsProcessingModelChildParameterSources QgsProcessingModelAlgorithm::availableSo
             continue;
           }
         }
-        else if ( def->type() == QgsProcessingParameterFeatureSource::typeName() )
+        else if ( def->type() == QgsProcessingParameterFeatureSource::typeName() || def->type() == QgsProcessingParameterVectorLayer::typeName() )
         {
-          const QgsProcessingParameterFeatureSource *sourceDef = static_cast< const QgsProcessingParameterFeatureSource *>( def );
-          bool ok = !sourceDef->dataTypes().isEmpty();
+          const QgsProcessingParameterLimitedDataTypes *sourceDef = dynamic_cast< const QgsProcessingParameterLimitedDataTypes *>( def );
+          if ( !sourceDef )
+            continue;
+
+          bool ok = sourceDef->dataTypes().isEmpty();
           Q_FOREACH ( int type, sourceDef->dataTypes() )
           {
-            if ( dataTypes.contains( type ) || type == QgsProcessing::TypeMapLayer )
+            if ( dataTypes.contains( type ) || type == QgsProcessing::TypeMapLayer || type == QgsProcessing::TypeVector || type == QgsProcessing::TypeVectorAnyGeometry )
             {
               ok = true;
               break;
             }
           }
+          if ( dataTypes.contains( QgsProcessing::TypeMapLayer ) || dataTypes.contains( QgsProcessing::TypeVector ) || dataTypes.contains( QgsProcessing::TypeVectorAnyGeometry ) )
+            ok = true;
+
           if ( !ok )
             continue;
         }
@@ -636,7 +642,9 @@ QgsProcessingModelChildParameterSources QgsProcessingModelAlgorithm::availableSo
           if ( out->type() == QgsProcessingOutputVectorLayer::typeName() )
           {
             const QgsProcessingOutputVectorLayer *vectorOut = static_cast< const QgsProcessingOutputVectorLayer *>( out );
-            if ( !( dataTypes.contains( vectorOut->dataType() ) || vectorOut->dataType() == QgsProcessing::TypeMapLayer ) )
+
+            if ( !( dataTypes.contains( vectorOut->dataType() ) || vectorOut->dataType() == QgsProcessing::TypeMapLayer || vectorOut->dataType() == QgsProcessing::TypeVector
+                    || vectorOut->dataType() == QgsProcessing::TypeVectorAnyGeometry ) )
             {
               continue;
             }
@@ -1113,6 +1121,7 @@ QgsProcessingAlgorithm *QgsProcessingModelAlgorithm::createInstance() const
   QgsProcessingModelAlgorithm *alg = new QgsProcessingModelAlgorithm();
   alg->loadVariant( toVariant() );
   alg->setProvider( provider() );
+  alg->setSourceFilePath( sourceFilePath() );
   return alg;
 }
 

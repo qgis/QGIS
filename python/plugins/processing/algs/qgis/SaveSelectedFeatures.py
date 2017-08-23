@@ -37,7 +37,7 @@ class SaveSelectedFeatures(QgisAlgorithm):
     INPUT = 'INPUT'
 
     def group(self):
-        return self.tr('Vector general tools')
+        return self.tr('Vector general')
 
     def __init__(self):
         super().__init__()

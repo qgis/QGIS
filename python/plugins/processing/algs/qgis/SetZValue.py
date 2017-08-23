@@ -42,7 +42,7 @@ class SetZValue(QgisFeatureBasedAlgorithm):
     Z_VALUE = 'Z_VALUE'
 
     def group(self):
-        return self.tr('Vector geometry tools')
+        return self.tr('Vector geometry')
 
     def __init__(self):
         super().__init__()
@@ -52,7 +52,7 @@ class SetZValue(QgisFeatureBasedAlgorithm):
         return 'setzvalue'
 
     def displayName(self):
-        return self.tr('Set Z Value')
+        return self.tr('Set Z value')
 
     def outputName(self):
         return self.tr('Z Added')

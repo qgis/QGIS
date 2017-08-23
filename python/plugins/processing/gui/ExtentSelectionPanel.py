@@ -61,10 +61,14 @@ class ExtentSelectionPanel(BASE, WIDGET):
 
         self.btnSelect.clicked.connect(self.selectExtent)
 
-        canvas = iface.mapCanvas()
-        self.prevMapTool = canvas.mapTool()
-        self.tool = RectangleMapTool(canvas)
-        self.tool.rectangleCreated.connect(self.updateExtent)
+        if iface is not None:
+            canvas = iface.mapCanvas()
+            self.prevMapTool = canvas.mapTool()
+            self.tool = RectangleMapTool(canvas)
+            self.tool.rectangleCreated.connect(self.updateExtent)
+        else:
+            self.prevMapTool = None
+            self.tool = None
 
         if param.defaultValue() is not None:
             context = createContext()

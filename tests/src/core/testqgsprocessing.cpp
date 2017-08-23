@@ -5154,6 +5154,117 @@ void TestQgsProcessing::modelAcceptableValues()
   res.clear();
   res << sources.at( 0 ).outputChildId() + ':' + sources.at( 0 ).outputName();
   QCOMPARE( res, QSet< QString >() << "cx1:OUTPUT" );
+
+  // test limiting by data types
+  QgsProcessingModelAlgorithm m2;
+  QgsProcessingModelParameter vlInput( "vl" );
+  // with no limit on data types
+  m2.addModelParameter( new QgsProcessingParameterVectorLayer( "vl" ), vlInput );
+  QgsProcessingModelParameter fsInput( "fs" );
+  m2.addModelParameter( new QgsProcessingParameterFeatureSource( "fs" ), fsInput );
+
+  sources = m2.availableSourcesForChild( QString(), QStringList() << "vector" << "source" );
+  QCOMPARE( sources.count(), 2 );
+  QCOMPARE( sources.at( 0 ).parameterName(), QStringLiteral( "fs" ) );
+  QCOMPARE( sources.at( 1 ).parameterName(), QStringLiteral( "vl" ) );
+  sources = m2.availableSourcesForChild( QString(), QStringList() << "vector" << "source", QStringList(), QList<int>() << QgsProcessing::TypeVectorPoint );
+  QCOMPARE( sources.count(), 2 );
+  QCOMPARE( sources.at( 0 ).parameterName(), QStringLiteral( "fs" ) );
+  QCOMPARE( sources.at( 1 ).parameterName(), QStringLiteral( "vl" ) );
+  sources = m2.availableSourcesForChild( QString(), QStringList() << "vector" << "source", QStringList(), QList<int>() << QgsProcessing::TypeVector );
+  QCOMPARE( sources.count(), 2 );
+  QCOMPARE( sources.at( 0 ).parameterName(), QStringLiteral( "fs" ) );
+  QCOMPARE( sources.at( 1 ).parameterName(), QStringLiteral( "vl" ) );
+  sources = m2.availableSourcesForChild( QString(), QStringList() << "vector" << "source", QStringList(), QList<int>() << QgsProcessing::TypeVectorAnyGeometry );
+  QCOMPARE( sources.count(), 2 );
+  QCOMPARE( sources.at( 0 ).parameterName(), QStringLiteral( "fs" ) );
+  QCOMPARE( sources.at( 1 ).parameterName(), QStringLiteral( "vl" ) );
+  sources = m2.availableSourcesForChild( QString(), QStringList() << "vector" << "source", QStringList(), QList<int>() << QgsProcessing::TypeMapLayer );
+  QCOMPARE( sources.count(), 2 );
+  QCOMPARE( sources.at( 0 ).parameterName(), QStringLiteral( "fs" ) );
+  QCOMPARE( sources.at( 1 ).parameterName(), QStringLiteral( "vl" ) );
+
+  // inputs are limited to vector layers
+  m2.removeModelParameter( vlInput.parameterName() );
+  m2.removeModelParameter( fsInput.parameterName() );
+  m2.addModelParameter( new QgsProcessingParameterVectorLayer( "vl", QString(), QList<int>() << QgsProcessing::TypeVector ), vlInput );
+  m2.addModelParameter( new QgsProcessingParameterFeatureSource( "fs", QString(), QList<int>() << QgsProcessing::TypeVector ), fsInput );
+  sources = m2.availableSourcesForChild( QString(), QStringList() << "vector" << "source" );
+  QCOMPARE( sources.count(), 2 );
+  QCOMPARE( sources.at( 0 ).parameterName(), QStringLiteral( "fs" ) );
+  QCOMPARE( sources.at( 1 ).parameterName(), QStringLiteral( "vl" ) );
+  sources = m2.availableSourcesForChild( QString(), QStringList() << "vector" << "source", QStringList(), QList<int>() << QgsProcessing::TypeVectorPoint );
+  QCOMPARE( sources.count(), 2 );
+  QCOMPARE( sources.at( 0 ).parameterName(), QStringLiteral( "fs" ) );
+  QCOMPARE( sources.at( 1 ).parameterName(), QStringLiteral( "vl" ) );
+  sources = m2.availableSourcesForChild( QString(), QStringList() << "vector" << "source", QStringList(), QList<int>() << QgsProcessing::TypeVector );
+  QCOMPARE( sources.count(), 2 );
+  QCOMPARE( sources.at( 0 ).parameterName(), QStringLiteral( "fs" ) );
+  QCOMPARE( sources.at( 1 ).parameterName(), QStringLiteral( "vl" ) );
+  sources = m2.availableSourcesForChild( QString(), QStringList() << "vector" << "source", QStringList(), QList<int>() << QgsProcessing::TypeVectorAnyGeometry );
+  QCOMPARE( sources.count(), 2 );
+  QCOMPARE( sources.at( 0 ).parameterName(), QStringLiteral( "fs" ) );
+  QCOMPARE( sources.at( 1 ).parameterName(), QStringLiteral( "vl" ) );
+  sources = m2.availableSourcesForChild( QString(), QStringList() << "vector" << "source", QStringList(), QList<int>() << QgsProcessing::TypeMapLayer );
+  QCOMPARE( sources.count(), 2 );
+  QCOMPARE( sources.at( 0 ).parameterName(), QStringLiteral( "fs" ) );
+  QCOMPARE( sources.at( 1 ).parameterName(), QStringLiteral( "vl" ) );
+
+  // inputs are limited to vector layers with geometries
+  m2.removeModelParameter( vlInput.parameterName() );
+  m2.removeModelParameter( fsInput.parameterName() );
+  m2.addModelParameter( new QgsProcessingParameterVectorLayer( "vl", QString(), QList<int>() << QgsProcessing::TypeVectorAnyGeometry ), vlInput );
+  m2.addModelParameter( new QgsProcessingParameterFeatureSource( "fs", QString(), QList<int>() << QgsProcessing::TypeVectorAnyGeometry ), fsInput );
+  sources = m2.availableSourcesForChild( QString(), QStringList() << "vector" << "source" );
+  QCOMPARE( sources.count(), 2 );
+  QCOMPARE( sources.at( 0 ).parameterName(), QStringLiteral( "fs" ) );
+  QCOMPARE( sources.at( 1 ).parameterName(), QStringLiteral( "vl" ) );
+  sources = m2.availableSourcesForChild( QString(), QStringList() << "vector" << "source", QStringList(), QList<int>() << QgsProcessing::TypeVectorPoint );
+  QCOMPARE( sources.count(), 2 );
+  QCOMPARE( sources.at( 0 ).parameterName(), QStringLiteral( "fs" ) );
+  QCOMPARE( sources.at( 1 ).parameterName(), QStringLiteral( "vl" ) );
+  sources = m2.availableSourcesForChild( QString(), QStringList() << "vector" << "source", QStringList(), QList<int>() << QgsProcessing::TypeVector );
+  QCOMPARE( sources.count(), 2 );
+  QCOMPARE( sources.at( 0 ).parameterName(), QStringLiteral( "fs" ) );
+  QCOMPARE( sources.at( 1 ).parameterName(), QStringLiteral( "vl" ) );
+  sources = m2.availableSourcesForChild( QString(), QStringList() << "vector" << "source", QStringList(), QList<int>() << QgsProcessing::TypeVectorAnyGeometry );
+  QCOMPARE( sources.count(), 2 );
+  QCOMPARE( sources.at( 0 ).parameterName(), QStringLiteral( "fs" ) );
+  QCOMPARE( sources.at( 1 ).parameterName(), QStringLiteral( "vl" ) );
+  sources = m2.availableSourcesForChild( QString(), QStringList() << "vector" << "source", QStringList(), QList<int>() << QgsProcessing::TypeMapLayer );
+  QCOMPARE( sources.count(), 2 );
+  QCOMPARE( sources.at( 0 ).parameterName(), QStringLiteral( "fs" ) );
+  QCOMPARE( sources.at( 1 ).parameterName(), QStringLiteral( "vl" ) );
+
+  // inputs are limited to vector layers with lines
+  m2.removeModelParameter( vlInput.parameterName() );
+  m2.removeModelParameter( fsInput.parameterName() );
+  m2.addModelParameter( new QgsProcessingParameterVectorLayer( "vl", QString(), QList<int>() << QgsProcessing::TypeVectorLine ), vlInput );
+  m2.addModelParameter( new QgsProcessingParameterFeatureSource( "fs", QString(), QList<int>() << QgsProcessing::TypeVectorLine ), fsInput );
+  sources = m2.availableSourcesForChild( QString(), QStringList() << "vector" << "source" );
+  QCOMPARE( sources.count(), 2 );
+  QCOMPARE( sources.at( 0 ).parameterName(), QStringLiteral( "fs" ) );
+  QCOMPARE( sources.at( 1 ).parameterName(), QStringLiteral( "vl" ) );
+  sources = m2.availableSourcesForChild( QString(), QStringList() << "vector" << "source", QStringList(), QList<int>() << QgsProcessing::TypeVectorPoint );
+  QCOMPARE( sources.count(), 0 );
+  sources = m2.availableSourcesForChild( QString(), QStringList() << "vector" << "source", QStringList(), QList<int>() << QgsProcessing::TypeVectorPolygon );
+  QCOMPARE( sources.count(), 0 );
+  sources = m2.availableSourcesForChild( QString(), QStringList() << "vector" << "source", QStringList(), QList<int>() << QgsProcessing::TypeVectorLine );
+  QCOMPARE( sources.count(), 2 );
+  QCOMPARE( sources.at( 0 ).parameterName(), QStringLiteral( "fs" ) );
+  QCOMPARE( sources.at( 1 ).parameterName(), QStringLiteral( "vl" ) );
+  sources = m2.availableSourcesForChild( QString(), QStringList() << "vector" << "source", QStringList(), QList<int>() << QgsProcessing::TypeVector );
+  QCOMPARE( sources.count(), 2 );
+  QCOMPARE( sources.at( 0 ).parameterName(), QStringLiteral( "fs" ) );
+  QCOMPARE( sources.at( 1 ).parameterName(), QStringLiteral( "vl" ) );
+  sources = m2.availableSourcesForChild( QString(), QStringList() << "vector" << "source", QStringList(), QList<int>() << QgsProcessing::TypeVectorAnyGeometry );
+  QCOMPARE( sources.count(), 2 );
+  QCOMPARE( sources.at( 0 ).parameterName(), QStringLiteral( "fs" ) );
+  QCOMPARE( sources.at( 1 ).parameterName(), QStringLiteral( "vl" ) );
+  sources = m2.availableSourcesForChild( QString(), QStringList() << "vector" << "source", QStringList(), QList<int>() << QgsProcessing::TypeMapLayer );
+  QCOMPARE( sources.count(), 2 );
+  QCOMPARE( sources.at( 0 ).parameterName(), QStringLiteral( "fs" ) );
+  QCOMPARE( sources.at( 1 ).parameterName(), QStringLiteral( "vl" ) );
 }
 
 void TestQgsProcessing::tempUtils()

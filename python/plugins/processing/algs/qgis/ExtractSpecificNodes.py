@@ -47,7 +47,7 @@ class ExtractSpecificNodes(QgisAlgorithm):
     NODES = 'NODES'
 
     def group(self):
-        return self.tr('Vector geometry tools')
+        return self.tr('Vector geometry')
 
     def __init__(self):
         super().__init__()

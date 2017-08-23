@@ -55,7 +55,7 @@ class FieldsPyculator(QgisAlgorithm):
     TYPES = [QVariant.Int, QVariant.Double, QVariant.String]
 
     def group(self):
-        return self.tr('Vector table tools')
+        return self.tr('Vector table')
 
     def __init__(self):
         super().__init__()

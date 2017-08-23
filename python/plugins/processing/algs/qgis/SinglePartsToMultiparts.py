@@ -55,7 +55,7 @@ class SinglePartsToMultiparts(QgisAlgorithm):
         return QIcon(os.path.join(pluginPath, 'images', 'ftools', 'single_to_multi.png'))
 
     def group(self):
-        return self.tr('Vector geometry tools')
+        return self.tr('Vector geometry')
 
     def __init__(self):
         super().__init__()

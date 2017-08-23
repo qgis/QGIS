@@ -50,7 +50,7 @@ class PolygonsToLines(QgisFeatureBasedAlgorithm):
         return self.tr('line,polygon,convert').split(',')
 
     def group(self):
-        return self.tr('Vector geometry tools')
+        return self.tr('Vector geometry')
 
     def __init__(self):
         super().__init__()

@@ -48,17 +48,11 @@ class PointsLayerFromTable(QgisAlgorithm):
     OUTPUT = 'OUTPUT'
     TARGET_CRS = 'TARGET_CRS'
 
-    def icon(self):
-        return QgsApplication.getThemeIcon("/providerQgis.svg")
-
-    def svgIconPath(self):
-        return QgsApplication.iconPath("providerQgis.svg")
-
     def tags(self):
         return self.tr('points,create,values,attributes').split(',')
 
     def group(self):
-        return self.tr('Vector creation tools')
+        return self.tr('Vector creation')
 
     def __init__(self):
         super().__init__()
