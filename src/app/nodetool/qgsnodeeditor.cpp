@@ -47,20 +47,19 @@ QgsNodeEditorModel::QgsNodeEditorModel( QgsVectorLayer *layer, QgsSelectedFeatur
   , mRCol( -1 )
 {
 
-  if ( !mSelectedFeature->vertexMap().isEmpty() )
-  {
-    mHasZ = mSelectedFeature->vertexMap().at( 0 )->point().is3D();
-    mHasM = mSelectedFeature->vertexMap().at( 0 )->point().isMeasure();
+  QgsWkbTypes::Type layerWKBType = mLayer->wkbType();
 
-    if ( mHasZ )
-      mZCol = 2;
+  mHasZ = QgsWkbTypes::hasZ(layerWKBType);
+  mHasM = QgsWkbTypes::hasM(layerWKBType);
 
-    if ( mHasM )
-      mMCol = 2 + ( mHasZ ? 1 : 0 );
+  if ( mHasZ )
+    mZCol = 2;
 
-    if ( mHasR )
-      mRCol = 2 + ( mHasZ ? 1 : 0 ) + ( mHasM ? 1 : 0 );
-  }
+  if ( mHasM )
+    mMCol = 2 + ( mHasZ ? 1 : 0 );
+
+  if ( mHasR )
+    mRCol = 2 + ( mHasZ ? 1 : 0 ) + ( mHasM ? 1 : 0 );
 
   QWidget *parentWidget = dynamic_cast< QWidget * >( parent );
   if ( parentWidget )
