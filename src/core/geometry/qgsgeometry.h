@@ -112,7 +112,7 @@ class CORE_EXPORT QgsGeometry
       AddPartSelectedGeometryNotFound, //!< The selected geometry cannot be found
       AddPartNotMultiGeometry, //!< The source geometry is not multi
       /* Add ring issues*/
-      AddRingNotClosed, //!< The imput ring is not closed
+      AddRingNotClosed, //!< The input ring is not closed
       AddRingNotValid, //!< The input ring is not valid
       AddRingCrossesExistingRings, //!< The input ring crosses existing rings (it is not disjoint)
       AddRingNotInExistingFeature, //!< The input ring doesn't have any existing ring to fit into
