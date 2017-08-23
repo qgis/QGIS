@@ -119,6 +119,7 @@ QgsMapSaveDialog::QgsMapSaveDialog( QWidget *parent, QgsMapCanvas *mapCanvas, QL
   }
 
   connect( buttonBox, &QDialogButtonBox::accepted, this, &QgsMapSaveDialog::accepted );
+  connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsMapSaveDialog::showHelp );
 }
 
 void QgsMapSaveDialog::updateDpi( int dpi )
@@ -458,4 +459,10 @@ void QgsMapSaveDialog::accepted()
       QgsApplication::taskManager()->addTask( mapRendererTask );
     }
   }
+}
+
+void QgsMapSaveDialog::showHelp()
+{
+  // description needs to be written and i'm not sure of the place yet
+  QgsHelp::openHelp( QStringLiteral( "introduction/getting_started.html#output" ) ); //to be precised
 }

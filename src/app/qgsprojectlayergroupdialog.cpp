@@ -47,6 +47,7 @@ QgsProjectLayerGroupDialog::QgsProjectLayerGroupDialog( QWidget *parent, const Q
   }
 
   connect( mButtonBox, &QDialogButtonBox::rejected, this, &QDialog::reject );
+  connect( mButtonBox, &QDialogButtonBox::helpRequested, this, &QgsProjectLayerGroupDialog::showHelp );
 }
 
 QgsProjectLayerGroupDialog::~QgsProjectLayerGroupDialog()
@@ -232,4 +233,10 @@ void QgsProjectLayerGroupDialog::on_mButtonBox_accepted()
     s.setValue( QStringLiteral( "/qgis/last_embedded_project_path" ), fi.absolutePath() );
   }
   accept();
+}
+
+void QgsProjectLayerGroupDialog::showHelp()
+{
+  QgsHelp::openHelp( QStringLiteral( "introduction/general_tools.html#nesting-projects" ) );
+
 }

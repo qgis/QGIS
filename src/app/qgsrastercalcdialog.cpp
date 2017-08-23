@@ -30,6 +30,7 @@
 QgsRasterCalcDialog::QgsRasterCalcDialog( QWidget *parent, Qt::WindowFlags f ): QDialog( parent, f )
 {
   setupUi( this );
+  connect( mButtonBox, &QDialogButtonBox::helpRequested, this, &QgsRasterCalcDialog::showHelp );
 
   QgsSettings settings;
   restoreGeometry( settings.value( QStringLiteral( "Windows/RasterCalc/geometry" ) ).toByteArray() );
@@ -222,6 +223,11 @@ void QgsRasterCalcDialog::on_mButtonBox_accepted()
   QgsSettings s;
   s.setValue( QStringLiteral( "/RasterCalculator/lastOutputFormat" ), QVariant( mOutputFormatComboBox->currentText() ) );
   s.setValue( QStringLiteral( "/RasterCalculator/lastOutputDir" ), QVariant( QFileInfo( mOutputLayerLineEdit->text() ).absolutePath() ) );
+}
+
+void QgsRasterCalcDialog::showHelp()
+{
+  QgsHelp::openHelp( QStringLiteral( "working_with_raster/raster_analysis.html#raster-calculator" ) );
 }
 
 void QgsRasterCalcDialog::on_mOutputLayerPushButton_clicked()

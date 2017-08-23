@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>293</width>
-    <height>143</height>
+    <width>377</width>
+    <height>148</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -32,28 +32,21 @@
       <bool>false</bool>
      </property>
      <layout class="QGridLayout" name="gridLayout">
-      <item row="1" column="0">
-       <widget class="QCheckBox" name="mCheckBoxLabelExtents">
+      <item row="1" column="1">
+       <widget class="QgsFontButton" name="mButtonFontStyle">
         <property name="enabled">
          <bool>true</bool>
         </property>
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
         <property name="text">
-         <string>Label extents</string>
+         <string>Font</string>
         </property>
        </widget>
-      </item>
-      <item row="2" column="1">
-       <spacer name="verticalSpacer">
-        <property name="orientation">
-         <enum>Qt::Vertical</enum>
-        </property>
-        <property name="sizeHint" stdset="0">
-         <size>
-          <width>20</width>
-          <height>40</height>
-         </size>
-        </property>
-       </spacer>
       </item>
       <item row="0" column="0">
        <widget class="QLabel" name="mLineSymbolLabel">
@@ -68,32 +61,13 @@
         </property>
        </widget>
       </item>
-      <item row="0" column="2">
-       <spacer name="horizontalSpacer">
-        <property name="orientation">
-         <enum>Qt::Horizontal</enum>
-        </property>
-        <property name="sizeHint" stdset="0">
-         <size>
-          <width>40</width>
-          <height>20</height>
-         </size>
-        </property>
-       </spacer>
-      </item>
-      <item row="1" column="1">
-       <widget class="QgsFontButton" name="mButtonFontStyle">
+      <item row="1" column="0">
+       <widget class="QCheckBox" name="mCheckBoxLabelExtents">
         <property name="enabled">
          <bool>true</bool>
         </property>
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
         <property name="text">
-         <string>Font</string>
+         <string>Label extents</string>
         </property>
        </widget>
       </item>
@@ -119,6 +93,19 @@
         </property>
        </widget>
       </item>
+      <item row="2" column="1">
+       <spacer name="verticalSpacer">
+        <property name="orientation">
+         <enum>Qt::Vertical</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>20</width>
+          <height>40</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
      </layout>
     </widget>
    </item>
@@ -128,7 +115,7 @@
       <enum>Qt::Horizontal</enum>
      </property>
      <property name="standardButtons">
-      <set>QDialogButtonBox::Apply|QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
+      <set>QDialogButtonBox::Apply|QDialogButtonBox::Cancel|QDialogButtonBox::Help|QDialogButtonBox::Ok</set>
      </property>
     </widget>
    </item>
