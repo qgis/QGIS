@@ -233,20 +233,21 @@ void QgsFileWidget::openFileDialog()
   QString fileName;
   QStringList fileNames;
   QString title;
-  if ( mStorageMode == GetFile )
+
+  switch ( mStorageMode )
   {
-    title = !mDialogTitle.isEmpty() ? mDialogTitle : tr( "Select a file" );
-    fileName = QFileDialog::getOpenFileName( this, title, QFileInfo( oldPath ).absoluteFilePath(), mFilter );
-  }
-  else if ( mStorageMode == GetMultipleFiles )
-  {
-    title = !mDialogTitle.isEmpty() ? mDialogTitle : tr( "Select one ore more files" );
-    fileNames = QFileDialog::getOpenFileNames( this, title, QFileInfo( oldPath ).absoluteFilePath(), mFilter );
-  }
-  else if ( mStorageMode == GetDirectory )
-  {
-    title = !mDialogTitle.isEmpty() ? mDialogTitle : tr( "Select a directory" );
-    fileName = QFileDialog::getExistingDirectory( this, title, QFileInfo( oldPath ).absoluteFilePath(),  QFileDialog::ShowDirsOnly );
+    case GetFile:
+      title = !mDialogTitle.isEmpty() ? mDialogTitle : tr( "Select a file" );
+      fileName = QFileDialog::getOpenFileName( this, title, QFileInfo( oldPath ).absoluteFilePath(), mFilter );
+      break;
+    case GetMultipleFiles:
+      title = !mDialogTitle.isEmpty() ? mDialogTitle : tr( "Select one ore more files" );
+      fileNames = QFileDialog::getOpenFileNames( this, title, QFileInfo( oldPath ).absoluteFilePath(), mFilter );
+      break;
+    case GetDirectory:
+      title = !mDialogTitle.isEmpty() ? mDialogTitle : tr( "Select a directory" );
+      fileName = QFileDialog::getExistingDirectory( this, title, QFileInfo( oldPath ).absoluteFilePath(),  QFileDialog::ShowDirsOnly );
+      break;
   }
 
   if ( fileName.isEmpty() && fileNames.isEmpty( ) )
@@ -260,22 +261,22 @@ void QgsFileWidget::openFileDialog()
   {
     for ( int i = 0; i < fileNames.length(); i++ )
     {
-      fileNames.replace( i, QDir::cleanPath( QFileInfo( fileNames.at( i ) ).absoluteFilePath() ) ) ;
+      fileNames.replace( i, QDir::toNativeSeparators( QDir::cleanPath( QFileInfo( fileNames.at( i ) ).absoluteFilePath() ) ) ) ;
     }
   }
 
   // Store the last used path:
-  if ( mStorageMode == GetFile )
+  switch ( mStorageMode )
   {
-    settings.setValue( QStringLiteral( "UI/lastFileNameWidgetDir" ), QFileInfo( fileName ).absolutePath() );
-  }
-  else if ( mStorageMode == GetDirectory )
-  {
-    settings.setValue( QStringLiteral( "UI/lastFileNameWidgetDir" ), fileName );
-  }
-  else if ( mStorageMode == GetMultipleFiles )
-  {
-    settings.setValue( QStringLiteral( "UI/lastFileNameWidgetDir" ), fileNames.first( ) );
+    case GetFile:
+      settings.setValue( QStringLiteral( "UI/lastFileNameWidgetDir" ), QFileInfo( fileName ).absolutePath() );
+      break;
+    case GetDirectory:
+      settings.setValue( QStringLiteral( "UI/lastFileNameWidgetDir" ), fileName );
+      break;
+    case GetMultipleFiles:
+      settings.setValue( QStringLiteral( "UI/lastFileNameWidgetDir" ), QFileInfo( fileNames.first( ) ).absolutePath() );
+      break;
   }
 
   // Handle relative Path storage
@@ -356,7 +357,6 @@ QString QgsFileWidget::toUrl( const QString &path ) const
 
 
 
-
 ///@cond PRIVATE
 
 
@@ -391,7 +391,7 @@ QString QgsFileDropEdit::acceptableFilePath( QDropEvent *event ) const
   QStringList paths;
   if ( event->mimeData()->hasUrls() )
   {
-    for ( const auto url : event->mimeData()->urls() )
+    Q_FOREACH ( const QUrl &url, event->mimeData()->urls() )
     {
       QFileInfo file( url.toLocalFile() );
       if ( ( mStorageMode != QgsFileWidget::GetDirectory && file.isFile() &&
