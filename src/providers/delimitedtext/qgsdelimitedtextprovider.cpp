@@ -529,7 +529,7 @@ void QgsDelimitedTextProvider::scanFile( bool buildIndexes )
             foundFirstGeometry = true;
           }
           mNumberFeatures++;
-          if ( buildSpatialIndex && qIsFinite( pt.x() ) && qIsFinite( pt.y() ) )
+          if ( buildSpatialIndex && std::isfinite( pt.x() ) && std::isfinite( pt.y() ) )
           {
             QgsFeature f;
             f.setId( mFile->recordId() );

@@ -410,7 +410,7 @@ QgsRectangle QgsCoordinateTransform::transformBoundingBox( const QgsRectangle &r
 
   for ( int i = 0; i < nXPoints * nYPoints; i++ )
   {
-    if ( !qIsFinite( x[i] ) || !qIsFinite( y[i] ) )
+    if ( !std::isfinite( x[i] ) || !std::isfinite( y[i] ) )
     {
       continue;
     }

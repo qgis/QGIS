@@ -377,11 +377,11 @@ QgsRectangle &QgsRectangle::operator=( const QgsRectangle &r )
 
 bool QgsRectangle::isFinite() const
 {
-  if ( qIsInf( mXmin ) || qIsInf( mYmin ) || qIsInf( mXmax ) || qIsInf( mYmax ) )
+  if ( std::isinf( mXmin ) || std::isinf( mYmin ) || std::isinf( mXmax ) || std::isinf( mYmax ) )
   {
     return false;
   }
-  if ( qIsNaN( mXmin ) || qIsNaN( mYmin ) || qIsNaN( mXmax ) || qIsNaN( mYmax ) )
+  if ( std::isnan( mXmin ) || std::isnan( mYmin ) || std::isnan( mXmax ) || std::isnan( mYmax ) )
   {
     return false;
   }

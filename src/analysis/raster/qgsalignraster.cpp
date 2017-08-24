@@ -390,7 +390,7 @@ void QgsAlignRaster::dump() const
 int QgsAlignRaster::suggestedReferenceLayer() const
 {
   int bestIndex = -1;
-  double bestCellArea = qInf();
+  double bestCellArea = INFINITY;
   QSizeF cs;
   int i = 0;
 

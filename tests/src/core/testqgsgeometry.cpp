@@ -814,12 +814,12 @@ void TestQgsGeometry::point()
   p29.setM( 9.0 );
   QVERIFY( p29.convertTo( QgsWkbTypes::PointM ) );
   QCOMPARE( p29.wkbType(), QgsWkbTypes::PointM );
-  QVERIFY( qIsNaN( p29.z() ) );
+  QVERIFY( std::isnan( p29.z() ) );
   QCOMPARE( p29.m(), 9.0 );
   QVERIFY( p29.convertTo( QgsWkbTypes::Point ) );
   QCOMPARE( p29.wkbType(), QgsWkbTypes::Point );
-  QVERIFY( qIsNaN( p29.z() ) );
-  QVERIFY( qIsNaN( p29.m() ) );
+  QVERIFY( std::isnan( p29.z() ) );
+  QVERIFY( std::isnan( p29.m() ) );
   QVERIFY( !p29.convertTo( QgsWkbTypes::Polygon ) );
 
   //boundary
@@ -851,12 +851,12 @@ void TestQgsGeometry::point()
 
   // distance 3D
   QCOMPARE( QgsPoint( 0, 0 ).distanceSquared3D( QgsPoint( 1, 1 ) ), 2.0 );
-  QVERIFY( qIsNaN( QgsPoint( 0, 0 ).distanceSquared3D( 1, 1, 0 ) ) );
-  QVERIFY( qIsNaN( QgsPoint( 0, 0 ).distanceSquared3D( QgsPoint( QgsWkbTypes::PointZ, 2, 2, 2, 0 ) ) ) );
-  QVERIFY( qIsNaN( QgsPoint( 0, 0 ).distanceSquared3D( 2, 2, 2 ) ) );
-  QVERIFY( qIsNaN( QgsPoint( QgsWkbTypes::PointZ, 2, 2, 2, 0 ).distanceSquared3D( QgsPoint( 1, 1 ) ) ) );
+  QVERIFY( std::isnan( QgsPoint( 0, 0 ).distanceSquared3D( 1, 1, 0 ) ) );
+  QVERIFY( std::isnan( QgsPoint( 0, 0 ).distanceSquared3D( QgsPoint( QgsWkbTypes::PointZ, 2, 2, 2, 0 ) ) ) );
+  QVERIFY( std::isnan( QgsPoint( 0, 0 ).distanceSquared3D( 2, 2, 2 ) ) );
+  QVERIFY( std::isnan( QgsPoint( QgsWkbTypes::PointZ, 2, 2, 2, 0 ).distanceSquared3D( QgsPoint( 1, 1 ) ) ) );
   QCOMPARE( QgsPoint( QgsWkbTypes::PointZ, 2, 2, 2, 0 ).distanceSquared3D( 1, 1, 0 ), 6.0 );
-  QVERIFY( qIsNaN( QgsPoint( QgsWkbTypes::PointZ, -2, -2, -2, 0 ).distanceSquared3D( QgsPoint( 0, 0 ) ) ) );
+  QVERIFY( std::isnan( QgsPoint( QgsWkbTypes::PointZ, -2, -2, -2, 0 ).distanceSquared3D( QgsPoint( 0, 0 ) ) ) );
   QCOMPARE( QgsPoint( QgsWkbTypes::PointZ, -2, -2, -2, 0 ).distanceSquared3D( 0, 0, 0 ), 12.0 );
   QCOMPARE( QgsPoint( QgsWkbTypes::PointZ, -2, -2, -2, 0 ).distanceSquared3D( QgsPoint( QgsWkbTypes::PointZ, 2, 2, 2, 0 ) ), 48.0 );
   QCOMPARE( QgsPoint( QgsWkbTypes::PointZ, -2, -2, -2, 0 ).distanceSquared3D( 2, 2, 2 ), 48.0 );
@@ -1317,8 +1317,8 @@ void TestQgsGeometry::lineString()
   QCOMPARE( l9.zAt( 0 ), 3.0 );
   QCOMPARE( l9.zAt( 1 ), 13.0 );
   QCOMPARE( l9.zAt( 2 ), 23.0 );
-  QVERIFY( qIsNaN( l9.zAt( -1 ) ) ); //out of range
-  QVERIFY( qIsNaN( l9.zAt( 11 ) ) ); //out of range
+  QVERIFY( std::isnan( l9.zAt( -1 ) ) ); //out of range
+  QVERIFY( std::isnan( l9.zAt( 11 ) ) ); //out of range
 
   l9.setZAt( 0, 53.0 );
   QCOMPARE( l9.zAt( 0 ), 53.0 );
@@ -1330,8 +1330,8 @@ void TestQgsGeometry::lineString()
   QCOMPARE( l9.mAt( 0 ), 4.0 );
   QCOMPARE( l9.mAt( 1 ), 14.0 );
   QCOMPARE( l9.mAt( 2 ), 24.0 );
-  QVERIFY( qIsNaN( l9.mAt( -1 ) ) ); //out of range
-  QVERIFY( qIsNaN( l9.mAt( 11 ) ) ); //out of range
+  QVERIFY( std::isnan( l9.mAt( -1 ) ) ); //out of range
+  QVERIFY( std::isnan( l9.mAt( 11 ) ) ); //out of range
 
   l9.setMAt( 0, 54.0 );
   QCOMPARE( l9.mAt( 0 ), 54.0 );
@@ -1346,8 +1346,8 @@ void TestQgsGeometry::lineString()
                 << QgsPoint( QgsWkbTypes::PointM, 21, 22, 0, 24 ) );
 
   //basically we just don't want these to crash
-  QVERIFY( qIsNaN( l9.zAt( 0 ) ) );
-  QVERIFY( qIsNaN( l9.zAt( 1 ) ) );
+  QVERIFY( std::isnan( l9.zAt( 0 ) ) );
+  QVERIFY( std::isnan( l9.zAt( 1 ) ) );
   l9.setZAt( 0, 53.0 );
   l9.setZAt( 1, 63.0 );
 
@@ -1357,8 +1357,8 @@ void TestQgsGeometry::lineString()
                 << QgsPoint( 21, 22 ) );
 
   //basically we just don't want these to crash
-  QVERIFY( qIsNaN( l9.mAt( 0 ) ) );
-  QVERIFY( qIsNaN( l9.mAt( 1 ) ) );
+  QVERIFY( std::isnan( l9.mAt( 0 ) ) );
+  QVERIFY( std::isnan( l9.mAt( 1 ) ) );
   l9.setMAt( 0, 53.0 );
   l9.setMAt( 1, 63.0 );
 

@@ -260,7 +260,7 @@ void QgsRasterInterface::initHistogram( QgsRasterHistogram &histogram,
 
   int mySrcDataType = sourceDataType( bandNo );
 
-  if ( qIsNaN( histogram.minimum ) )
+  if ( std::isnan( histogram.minimum ) )
   {
     // TODO: this was OK when stats/histogram were calced in provider,
     // but what TODO in other interfaces? Check for mInput for now.
@@ -277,7 +277,7 @@ void QgsRasterInterface::initHistogram( QgsRasterHistogram &histogram,
       histogram.minimum = stats.minimumValue;
     }
   }
-  if ( qIsNaN( histogram.maximum ) )
+  if ( std::isnan( histogram.maximum ) )
   {
     if ( !mInput && mySrcDataType == Qgis::Byte )
     {

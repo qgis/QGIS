@@ -53,8 +53,8 @@ QString QgsPointXY::toString() const
 
 QString QgsPointXY::toString( int precision ) const
 {
-  QString x = qIsFinite( mX ) ? QString::number( mX, 'f', precision ) : QObject::tr( "infinite" );
-  QString y = qIsFinite( mY ) ? QString::number( mY, 'f', precision ) : QObject::tr( "infinite" );
+  QString x = std::isfinite( mX ) ? QString::number( mX, 'f', precision ) : QObject::tr( "infinite" );
+  QString y = std::isfinite( mY ) ? QString::number( mY, 'f', precision ) : QObject::tr( "infinite" );
   return QStringLiteral( "%1,%2" ).arg( x, y );
 }
 

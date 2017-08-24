@@ -29,7 +29,7 @@
 
 static QColor _interpolate( const QColor &c1, const QColor &c2, const double value )
 {
-  if ( qIsNaN( value ) ) return c2;
+  if ( std::isnan( value ) ) return c2;
 
   qreal r = ( c1.redF() + value * ( c2.redF() - c1.redF() ) );
   qreal g = ( c1.greenF() + value * ( c2.greenF() - c1.greenF() ) );
@@ -433,7 +433,7 @@ QColor QgsRandomColorRamp::color( double value ) const
   int maxVal = 255;
 
   //if value is nan, then use last precalculated color
-  int colorIndex = ( !qIsNaN( value ) ? value : 1 ) * ( mTotalColorCount - 1 );
+  int colorIndex = ( !std::isnan( value ) ? value : 1 ) * ( mTotalColorCount - 1 );
   if ( mTotalColorCount >= 1 && mPrecalculatedColors.length() > colorIndex )
   {
     //use precalculated hue

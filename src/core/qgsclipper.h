@@ -234,8 +234,8 @@ inline void QgsClipper::trimFeatureToBoundary(
     // look at each edge of the polygon in turn
 
     //ignore segments with nan or inf coordinates
-    if ( qIsNaN( inX[i2] ) || qIsNaN( inY[i2] ) || qIsInf( inX[i2] ) || qIsInf( inY[i2] )
-         || qIsNaN( inX[i1] ) || qIsNaN( inY[i1] ) || qIsInf( inX[i1] ) || qIsInf( inY[i1] ) )
+    if ( std::isnan( inX[i2] ) || std::isnan( inY[i2] ) || std::isinf( inX[i2] ) || std::isinf( inY[i2] )
+         || std::isnan( inX[i1] ) || std::isnan( inY[i1] ) || std::isinf( inX[i1] ) || std::isinf( inY[i1] ) )
     {
       i1 = i2;
       continue;

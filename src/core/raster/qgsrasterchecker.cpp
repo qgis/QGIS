@@ -224,7 +224,7 @@ void QgsRasterChecker::compare( const QString &paramName, int verifiedVal, int e
 bool QgsRasterChecker::compare( double verifiedVal, double expectedVal, double tolerance )
 {
   // values may be nan
-  return ( qIsNaN( verifiedVal ) && qIsNaN( expectedVal ) ) || ( std::fabs( verifiedVal - expectedVal ) <= tolerance );
+  return ( std::isnan( verifiedVal ) && std::isnan( expectedVal ) ) || ( std::fabs( verifiedVal - expectedVal ) <= tolerance );
 }
 
 void QgsRasterChecker::compare( const QString &paramName, double verifiedVal, double expectedVal, QString &report, bool &ok, double tolerance )

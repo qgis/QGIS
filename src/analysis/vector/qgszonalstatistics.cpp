@@ -497,7 +497,7 @@ void QgsZonalStatistics::statisticsFromPreciseIntersection( const QgsGeometry &p
 
 bool QgsZonalStatistics::validPixel( float value ) const
 {
-  if ( value == mInputNodataValue || qIsNaN( value ) )
+  if ( value == mInputNodataValue || std::isnan( value ) )
   {
     return false;
   }

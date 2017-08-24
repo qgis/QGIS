@@ -313,7 +313,7 @@ bool QgsColorRampShader::shade( double value, int *returnRedValue, int *returnGr
   {
     return false;
   }
-  if ( qIsNaN( value ) || qIsInf( value ) )
+  if ( std::isnan( value ) || std::isinf( value ) )
     return false;
 
   int colorRampItemListCount = mColorRampItemList.count();

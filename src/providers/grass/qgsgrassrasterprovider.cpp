@@ -445,7 +445,7 @@ QgsRasterIdentifyResult QgsGrassRasterProvider::identify( const QgsPointXY &poin
   }
 
   // no data?
-  if ( qIsNaN( value ) || qgsDoubleNear( value, mNoDataValue ) )
+  if ( std::isnan( value ) || qgsDoubleNear( value, mNoDataValue ) )
   {
     return noDataResult;
   }

@@ -532,7 +532,7 @@ inline double QgsRasterBlock::value( qgssize index ) const SIP_SKIP
 
 inline bool QgsRasterBlock::isNoDataValue( double value ) const SIP_SKIP
 {
-  return qIsNaN( value ) || qgsDoubleNear( value, mNoDataValue );
+  return std::isnan( value ) || qgsDoubleNear( value, mNoDataValue );
 }
 
 #endif

@@ -43,14 +43,14 @@ QgsPoint::QgsPoint( double x, double y, double z, double m, QgsWkbTypes::Type wk
     Q_ASSERT( QgsWkbTypes::flatType( wkbType ) == QgsWkbTypes::Point );
     mWkbType = wkbType;
   }
-  else if ( qIsNaN( z ) )
+  else if ( std::isnan( z ) )
   {
-    if ( qIsNaN( m ) )
+    if ( std::isnan( m ) )
       mWkbType = QgsWkbTypes::Point;
     else
       mWkbType = QgsWkbTypes::PointM;
   }
-  else if ( qIsNaN( m ) )
+  else if ( std::isnan( m ) )
     mWkbType = QgsWkbTypes::PointZ;
   else
     mWkbType = QgsWkbTypes::PointZM;
@@ -101,9 +101,9 @@ bool QgsPoint::operator==( const QgsPoint &pt ) const
   equal &= qgsDoubleNear( pt.x(), mX, 1E-8 );
   equal &= qgsDoubleNear( pt.y(), mY, 1E-8 );
   if ( QgsWkbTypes::hasZ( type ) )
-    equal &= qgsDoubleNear( pt.z(), mZ, 1E-8 ) || ( qIsNaN( pt.z() ) && qIsNaN( mZ ) );
+    equal &= qgsDoubleNear( pt.z(), mZ, 1E-8 ) || ( std::isnan( pt.z() ) && std::isnan( mZ ) );
   if ( QgsWkbTypes::hasM( type ) )
-    equal &= qgsDoubleNear( pt.m(), mM, 1E-8 ) || ( qIsNaN( pt.m() ) && qIsNaN( mM ) );
+    equal &= qgsDoubleNear( pt.m(), mM, 1E-8 ) || ( std::isnan( pt.m() ) && std::isnan( mM ) );
 
   return equal;
 }
@@ -501,7 +501,7 @@ double QgsPoint::distanceSquared( const QgsPoint &other ) const
 double QgsPoint::distance3D( double x, double y, double z ) const
 {
   double zDistSquared = 0.0;
-  if ( is3D() || !qIsNaN( z ) )
+  if ( is3D() || !std::isnan( z ) )
     zDistSquared = ( mZ - z ) * ( mZ - z );
 
   return sqrt( ( mX - x ) * ( mX - x ) + ( mY - y ) * ( mY - y ) + zDistSquared );
@@ -519,7 +519,7 @@ double QgsPoint::distance3D( const QgsPoint &other ) const
 double QgsPoint::distanceSquared3D( double x, double y, double z ) const
 {
   double zDistSquared = 0.0;
-  if ( is3D() || !qIsNaN( z ) )
+  if ( is3D() || !std::isnan( z ) )
     zDistSquared = ( mZ - z ) * ( mZ - z );
 
   return ( mX - x ) * ( mX - x ) + ( mY - y ) * ( mY - y ) + zDistSquared;

@@ -329,7 +329,7 @@ void QgsSingleBandPseudoColorRendererWidget::on_mDeleteEntryButton_clicked()
 void QgsSingleBandPseudoColorRendererWidget::classify()
 {
   std::unique_ptr< QgsColorRamp > ramp( btnColorRamp->colorRamp() );
-  if ( !ramp || qIsNaN( lineEditValue( mMinLineEdit ) ) || qIsNaN( lineEditValue( mMaxLineEdit ) ) )
+  if ( !ramp || std::isnan( lineEditValue( mMinLineEdit ) ) || std::isnan( lineEditValue( mMaxLineEdit ) ) )
   {
     return;
   }
@@ -745,7 +745,7 @@ void QgsSingleBandPseudoColorRendererWidget::loadMinMax( int bandNo, double min,
   QgsDebugMsg( QString( "theBandNo = %1 min = %2 max = %3" ).arg( bandNo ).arg( min ).arg( max ) );
 
   mDisableMinMaxWidgetRefresh = true;
-  if ( qIsNaN( min ) )
+  if ( std::isnan( min ) )
   {
     mMinLineEdit->clear();
   }
@@ -754,7 +754,7 @@ void QgsSingleBandPseudoColorRendererWidget::loadMinMax( int bandNo, double min,
     mMinLineEdit->setText( QString::number( min ) );
   }
 
-  if ( qIsNaN( max ) )
+  if ( std::isnan( max ) )
   {
     mMaxLineEdit->clear();
   }
@@ -769,7 +769,7 @@ void QgsSingleBandPseudoColorRendererWidget::loadMinMax( int bandNo, double min,
 void QgsSingleBandPseudoColorRendererWidget::setLineEditValue( QLineEdit *lineEdit, double value )
 {
   QString s;
-  if ( !qIsNaN( value ) )
+  if ( !std::isnan( value ) )
   {
     s = QString::number( value );
   }
@@ -791,7 +791,7 @@ void QgsSingleBandPseudoColorRendererWidget::resetClassifyButton()
   mClassifyButton->setEnabled( true );
   double min = lineEditValue( mMinLineEdit );
   double max = lineEditValue( mMaxLineEdit );
-  if ( qIsNaN( min ) || qIsNaN( max ) || min >= max )
+  if ( std::isnan( min ) || std::isnan( max ) || min >= max )
   {
     mClassifyButton->setEnabled( false );
   }

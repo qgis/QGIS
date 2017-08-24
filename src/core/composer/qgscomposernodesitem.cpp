@@ -76,7 +76,7 @@ bool QgsComposerNodesItem::addNode( QPointF pt,
     const double b = pt1.y() - coef * pt1.x();
 
     double distance = std::numeric_limits<double>::max();
-    if ( qIsInf( coef ) )
+    if ( std::isinf( coef ) )
       distance = std::fabs( pt1.x() - start.x() );
     else
     {
@@ -84,7 +84,7 @@ bool QgsComposerNodesItem::addNode( QPointF pt,
       const double b2 = start.y() - coef2 * start.x();
 
       QPointF inter;
-      if ( qIsInf( coef2 ) )
+      if ( std::isinf( coef2 ) )
       {
         distance = std::fabs( pt1.y() - start.y() );
         inter.setX( start.x() );
