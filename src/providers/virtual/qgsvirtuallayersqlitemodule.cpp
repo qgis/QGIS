@@ -16,7 +16,7 @@ email                : hugo dot mercier at oslandia dot com
 
 #include <string.h>
 #include <iostream>
-#include <stdint.h>
+#include <cstdint>
 #include <stdexcept>
 
 #include <QCoreApplication>
@@ -31,7 +31,7 @@ email                : hugo dot mercier at oslandia dot com
 #include "qgsinterval.h"
 #include <sqlite3.h>
 #include <spatialite.h>
-#include <stdio.h>
+#include <cstdio>
 #include "qgsvirtuallayersqlitemodule.h"
 #include "qgsvirtuallayerblob.h"
 #include "qgsslottofunction.h"

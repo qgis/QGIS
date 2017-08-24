@@ -28,7 +28,7 @@
 #include <QDate>
 #include <QTime>
 #include <QHash>
-#include <stdlib.h>
+#include <cstdlib>
 #include <cfloat>
 #include <cmath>
 #include <qnumeric.h>
