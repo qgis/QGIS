@@ -203,7 +203,7 @@ double QgsRasterChecker::tolerance( double val, int places )
 {
   // float precision is about 7 decimal digits, double about 16
   // default places = 6
-  return 1. * qPow( 10, std::round( log10( fabs( val ) ) - places ) );
+  return 1. * qPow( 10, std::round( log10( std::fabs( val ) ) - places ) );
 }
 
 QString QgsRasterChecker::compareHead()
@@ -224,7 +224,7 @@ void QgsRasterChecker::compare( const QString &paramName, int verifiedVal, int e
 bool QgsRasterChecker::compare( double verifiedVal, double expectedVal, double tolerance )
 {
   // values may be nan
-  return ( qIsNaN( verifiedVal ) && qIsNaN( expectedVal ) ) || ( fabs( verifiedVal - expectedVal ) <= tolerance );
+  return ( qIsNaN( verifiedVal ) && qIsNaN( expectedVal ) ) || ( std::fabs( verifiedVal - expectedVal ) <= tolerance );
 }
 
 void QgsRasterChecker::compare( const QString &paramName, double verifiedVal, double expectedVal, QString &report, bool &ok, double tolerance )

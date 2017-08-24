@@ -241,7 +241,7 @@ static QVariant fcnSqrt( const QVariantList &values, const QgsExpressionContext 
 static QVariant fcnAbs( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent )
 {
   double val = QgsExpressionUtils::getDoubleValue( values.at( 0 ), parent );
-  return QVariant( fabs( val ) );
+  return QVariant( std::fabs( val ) );
 }
 
 static QVariant fcnRadians( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent )
@@ -1007,13 +1007,13 @@ static QVariant fcnWordwrap( const QVariantList &values, const QgsExpressionCont
             if ( strhit == lasthit || strhit == -1 )
             {
               //if no new backward delimiter found, try to locate forward
-              strhit = lines[i].indexOf( rx, strcurrent + labs( wrap ) );
+              strhit = lines[i].indexOf( rx, strcurrent + std::labs( wrap ) );
             }
             lasthit = strhit;
           }
           else
           {
-            strhit = lines[i].indexOf( rx, strcurrent + labs( wrap ) );
+            strhit = lines[i].indexOf( rx, strcurrent + std::labs( wrap ) );
           }
           if ( strhit > -1 )
           {
@@ -2656,11 +2656,11 @@ static QVariant fcnAzimuth( const QVariantList &values, const QgsExpressionConte
   {
     if ( pt1->y() < pt2->y() )
     {
-      return atan( fabs( pt1->x() - pt2->x() ) / fabs( pt1->y() - pt2->y() ) );
+      return atan( std::fabs( pt1->x() - pt2->x() ) / std::fabs( pt1->y() - pt2->y() ) );
     }
     else /* ( pt1->y() > pt2->y() )  - equality case handled above */
     {
-      return atan( fabs( pt1->y() - pt2->y() ) / fabs( pt1->x() - pt2->x() ) )
+      return atan( std::fabs( pt1->y() - pt2->y() ) / std::fabs( pt1->x() - pt2->x() ) )
              + ( M_PI / 2 );
     }
   }
@@ -2669,12 +2669,12 @@ static QVariant fcnAzimuth( const QVariantList &values, const QgsExpressionConte
   {
     if ( pt1->y() > pt2->y() )
     {
-      return atan( fabs( pt1->x() - pt2->x() ) / fabs( pt1->y() - pt2->y() ) )
+      return atan( std::fabs( pt1->x() - pt2->x() ) / std::fabs( pt1->y() - pt2->y() ) )
              + M_PI;
     }
     else /* ( pt1->y() < pt2->y() )  - equality case handled above */
     {
-      return atan( fabs( pt1->y() - pt2->y() ) / fabs( pt1->x() - pt2->x() ) )
+      return atan( std::fabs( pt1->y() - pt2->y() ) / std::fabs( pt1->x() - pt2->x() ) )
              + ( M_PI + ( M_PI / 2 ) );
     }
   }

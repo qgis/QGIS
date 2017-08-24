@@ -409,7 +409,7 @@ void QgsComposerArrow::adaptItemSceneRect()
 {
   //rectangle containing start and end point
   QRectF rect = QRectF( qMin( mStartPoint.x(), mStopPoint.x() ), qMin( mStartPoint.y(), mStopPoint.y() ),
-                        fabs( mStopPoint.x() - mStartPoint.x() ), fabs( mStopPoint.y() - mStartPoint.y() ) );
+                        std::fabs( mStopPoint.x() - mStartPoint.x() ), std::fabs( mStopPoint.y() - mStartPoint.y() ) );
   double enlarge = computeMarkerMargin();
   rect.adjust( -enlarge, -enlarge, enlarge, enlarge );
   QgsComposerItem::setSceneRect( rect );

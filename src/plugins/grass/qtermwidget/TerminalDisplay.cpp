@@ -817,7 +817,7 @@ void TerminalDisplay::scrollImage( int lines, const QRect &screenWindowRegion )
   if ( lines == 0
        || _image == 0
        || !region.isValid()
-       || ( region.top() + abs( lines ) ) >= region.bottom()
+       || ( region.top() + std::abs( lines ) ) >= region.bottom()
        || this->_lines <= region.height() ) return;
 
   // hide terminal size label to prevent it being scrolled
@@ -848,10 +848,10 @@ void TerminalDisplay::scrollImage( int lines, const QRect &screenWindowRegion )
     scrollRect.setRight( width() - scrollBarWidth - SCROLLBAR_CONTENT_GAP );
   }
   void *firstCharPos = &_image[ region.top() * this->_columns ];
-  void *lastCharPos = &_image[( region.top() + abs( lines ) ) * this->_columns ];
+  void *lastCharPos = &_image[( region.top() + std::abs( lines ) ) * this->_columns ];
 
   int top = _topMargin + ( region.top() * _fontHeight );
-  int linesToMove = region.height() - abs( lines );
+  int linesToMove = region.height() - std::abs( lines );
   int bytesToMove = linesToMove *
                     this->_columns *
                     sizeof( Character );
@@ -884,7 +884,7 @@ void TerminalDisplay::scrollImage( int lines, const QRect &screenWindowRegion )
     memmove( lastCharPos, firstCharPos, bytesToMove );
 
     //set region of the display to scroll
-    scrollRect.setTop( top + abs( lines ) * _fontHeight );
+    scrollRect.setTop( top + std::abs( lines ) * _fontHeight );
   }
   scrollRect.setHeight( linesToMove * _fontHeight );
 
@@ -2392,7 +2392,7 @@ void TerminalDisplay::wheelEvent( QWheelEvent *ev )
 
       // QWheelEvent::delta() gives rotation in eighths of a degree
       int wheelDegrees = ev->delta() / 8;
-      int linesToScroll = abs( wheelDegrees ) / 5;
+      int linesToScroll = std::abs( wheelDegrees ) / 5;
 
       QKeyEvent keyScrollEvent( QEvent::KeyPress, key, Qt::NoModifier );
 

@@ -285,7 +285,7 @@ void QgsColorRampShader::classifyColorRamp( const int classes, const int band, c
   QVector<QColor>::const_iterator color_it = entryColors.begin();
 
   // calculate a reasonable number of decimals to display
-  double maxabs = log10( qMax( fabs( max ), fabs( min ) ) );
+  double maxabs = log10( qMax( std::fabs( max ), std::fabs( min ) ) );
   int nDecimals = std::round( qMax( 3.0 + maxabs - log10( max - min ), maxabs <= 15.0 ? maxabs + 0.49 : 0.0 ) );
 
   QList<QgsColorRampShader::ColorRampItem> colorRampItems;

@@ -468,7 +468,7 @@ void QgsGeometryUtils::circleCenterRadius( const QgsPoint &pt1, const QgsPoint &
   d = 2 * ( dx21 * dy31 - dx31 * dy21 );
 
   // Check colinearity, Cross product = 0
-  if ( qgsDoubleNear( fabs( d ), 0.0, 0.00000000001 ) )
+  if ( qgsDoubleNear( std::fabs( d ), 0.0, 0.00000000001 ) )
   {
     radius = -1.0;
     return;

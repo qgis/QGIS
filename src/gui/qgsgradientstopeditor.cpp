@@ -285,7 +285,7 @@ int QgsGradientStopEditor::findClosestStop( int x, int threshold ) const
   int i = 1;
   Q_FOREACH ( const QgsGradientStop &stop, mGradient.stops() )
   {
-    currentDiff = abs( relativePositionToPoint( stop.offset ) + 1 - x );
+    currentDiff = std::abs( relativePositionToPoint( stop.offset ) + 1 - x );
     if ( ( threshold < 0 || currentDiff < threshold ) && currentDiff < closestDiff )
     {
       closestStop = i;
@@ -295,7 +295,7 @@ int QgsGradientStopEditor::findClosestStop( int x, int threshold ) const
   }
 
   //first stop
-  currentDiff = abs( relativePositionToPoint( 0.0 ) + 1 - x );
+  currentDiff = std::abs( relativePositionToPoint( 0.0 ) + 1 - x );
   if ( ( threshold < 0 || currentDiff < threshold ) && currentDiff < closestDiff )
   {
     closestStop = 0;
@@ -303,7 +303,7 @@ int QgsGradientStopEditor::findClosestStop( int x, int threshold ) const
   }
 
   //last stop
-  currentDiff = abs( relativePositionToPoint( 1.0 ) + 1 - x );
+  currentDiff = std::abs( relativePositionToPoint( 1.0 ) + 1 - x );
   if ( ( threshold < 0 || currentDiff < threshold ) && currentDiff < closestDiff )
   {
     closestStop = mGradient.count() - 1;

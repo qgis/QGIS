@@ -89,7 +89,7 @@ QPointF QgsLayoutSnapper::snapPointToGrid( QPointF point, double scaleFactor, bo
   //convert snap tolerance from pixels to layout units
   double alignThreshold = mTolerance / scaleFactor;
 
-  if ( fabs( xSnapped - point.x() ) > alignThreshold )
+  if ( std::fabs( xSnapped - point.x() ) > alignThreshold )
   {
     //snap distance is outside of tolerance
     xSnapped = point.x();
@@ -98,7 +98,7 @@ QPointF QgsLayoutSnapper::snapPointToGrid( QPointF point, double scaleFactor, bo
   {
     snappedX = true;
   }
-  if ( fabs( ySnapped - point.y() ) > alignThreshold )
+  if ( std::fabs( ySnapped - point.y() ) > alignThreshold )
   {
     //snap distance is outside of tolerance
     ySnapped = point.y();
@@ -128,7 +128,7 @@ double QgsLayoutSnapper::snapPointToGuides( double original, QgsLayoutGuide::Ori
   Q_FOREACH ( QgsLayoutGuide *guide, mLayout->guides().guides( orientation ) )
   {
     double guidePos = guide->layoutPosition();
-    double diff = fabs( original - guidePos );
+    double diff = std::fabs( original - guidePos );
     if ( diff < smallestDiff )
     {
       smallestDiff = diff;

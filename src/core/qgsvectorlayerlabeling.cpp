@@ -465,7 +465,7 @@ void QgsVectorLayerSimpleLabeling::toSld( QDomNode &parent, const QgsStringMap &
       if ( mSettings->maxCurvedCharAngleIn > 0 || mSettings->maxCurvedCharAngleOut > 0 )
       {
         // SLD has no notion for this, the GeoTools ecosystem can only do a single angle
-        double angle = qMin( fabs( mSettings->maxCurvedCharAngleIn ), fabs( mSettings->maxCurvedCharAngleOut ) );
+        double angle = qMin( std::fabs( mSettings->maxCurvedCharAngleIn ), std::fabs( mSettings->maxCurvedCharAngleOut ) );
         QDomElement vo =  QgsSymbolLayerUtils::createVendorOptionElement( doc, QStringLiteral( "maxAngleDelta" ), qgsDoubleToString( angle ) );
         textSymbolizerElement.appendChild( vo );
       }

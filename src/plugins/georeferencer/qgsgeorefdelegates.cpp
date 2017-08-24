@@ -77,7 +77,7 @@ double QgsDmsAndDdDelegate::dmsToDD( const QString &dms ) const
 {
   QStringList list = dms.split( ' ' );
   QString tmpStr = list.at( 0 );
-  double res = fabs( tmpStr.toDouble() );
+  double res = std::fabs( tmpStr.toDouble() );
 
   tmpStr = list.value( 1 );
   if ( !tmpStr.isEmpty() )

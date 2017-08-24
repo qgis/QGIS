@@ -54,7 +54,7 @@ namespace QgsGeometryCheckerUtils
 
   static inline double pointLineDist( const QgsPoint &p1, const QgsPoint &p2, const QgsPoint &q )
   {
-    double nom = fabs( ( p2.y() - p1.y() ) * q.x() - ( p2.x() - p1.x() ) * q.y() + p2.x() * p1.y() - p2.y() * p1.x() );
+    double nom = std::fabs( ( p2.y() - p1.y() ) * q.x() - ( p2.x() - p1.x() ) * q.y() + p2.x() * p1.y() - p2.y() * p1.x() );
     double dx = p2.x() - p1.x();
     double dy = p2.y() - p1.y();
     return nom / qSqrt( dx * dx + dy * dy );

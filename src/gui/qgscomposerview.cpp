@@ -753,7 +753,7 @@ void QgsComposerView::mouseReleaseEvent( QMouseEvent *e )
 
   //was this just a click? or a click and drag?
   bool clickOnly = false;
-  if ( fabs( diffX ) < 2 && fabs( diffY ) < 2 )
+  if ( std::fabs( diffX ) < 2 && std::fabs( diffY ) < 2 )
   {
     clickOnly = true;
   }
@@ -1315,14 +1315,14 @@ void QgsComposerView::updateRubberBandRect( QPointF &pos, const bool constrainSq
 
   if ( constrainSquare )
   {
-    if ( fabs( dx ) > fabs( dy ) )
+    if ( std::fabs( dx ) > std::fabs( dy ) )
     {
-      width = fabs( dx );
+      width = std::fabs( dx );
       height = width;
     }
     else
     {
-      height = fabs( dy );
+      height = std::fabs( dy );
       width = height;
     }
 
@@ -2015,7 +2015,7 @@ void QgsComposerView::wheelZoom( QWheelEvent *event )
   double zoomFactor = mySettings.value( QStringLiteral( "qgis/zoom_factor" ), 2 ).toDouble();
 
   // "Normal" mouse have an angle delta of 120, precision mouses provide data faster, in smaller steps
-  zoomFactor = 1.0 + ( zoomFactor - 1.0 ) / 120.0 * fabs( event->angleDelta().y() );
+  zoomFactor = 1.0 + ( zoomFactor - 1.0 ) / 120.0 * std::fabs( event->angleDelta().y() );
 
   if ( event->modifiers() & Qt::ControlModifier )
   {

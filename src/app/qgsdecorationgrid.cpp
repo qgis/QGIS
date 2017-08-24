@@ -582,7 +582,7 @@ int QgsDecorationGrid::xGridLines( const QgsMapSettings &mapSettings, QList< QPa
   QLineF lineWest( mapPolygon[3], mapPolygon[0] );
 
   double len = lineEast.length();
-  Q_ASSERT( fabs( len - lineWest.length() ) < 1e-6 ); // no shear
+  Q_ASSERT( std::fabs( len - lineWest.length() ) < 1e-6 ); // no shear
 
   double roundCorrection = mapBoundingRect.top() > 0 ? 1.0 : 0.0;
   double dist = static_cast< int >( ( mapBoundingRect.top() - mGridOffsetY ) / mGridIntervalY + roundCorrection ) * mGridIntervalY + mGridOffsetY;
@@ -626,7 +626,7 @@ int QgsDecorationGrid::yGridLines( const QgsMapSettings &mapSettings, QList< QPa
   QLineF lineNorth( mapPolygon[0], mapPolygon[1] );
 
   double len = lineSouth.length();
-  Q_ASSERT( fabs( len - lineNorth.length() ) < 1e-6 ); // no shear
+  Q_ASSERT( std::fabs( len - lineNorth.length() ) < 1e-6 ); // no shear
 
   const QRectF &mapBoundingRect = mapPolygon.boundingRect();
   double roundCorrection = mapBoundingRect.left() > 0 ? 1.0 : 0.0;
@@ -836,8 +836,8 @@ bool QgsDecorationGrid::getIntervalFromCurrentLayer( double *values )
   // TODO add a function in QgsRasterLayer to get x/y resolution from provider,
   // because this might not be 100% accurate
   QgsRectangle extent = rlayer->extent();
-  values[0] = fabs( extent.xMaximum() - extent.xMinimum() ) / rlayer->width();
-  values[1] = fabs( extent.yMaximum() - extent.yMinimum() ) / rlayer->height();
+  values[0] = std::fabs( extent.xMaximum() - extent.xMinimum() ) / rlayer->width();
+  values[1] = std::fabs( extent.yMaximum() - extent.yMinimum() ) / rlayer->height();
 
   // calculate offset - when using very high resolution rasters in geographic CRS
   // there seems to be a small shift, but this may be due to rendering issues and depends on zoom

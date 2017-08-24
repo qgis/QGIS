@@ -264,7 +264,7 @@ int point2vertex( const QgsTracerGraph &g, const QgsPointXY &pt, double epsilon 
   for ( int i = 0; i < g.v.count(); ++i )
   {
     const QgsTracerGraph::V &v = g.v.at( i );
-    if ( v.pt == pt || ( fabs( v.pt.x() - pt.x() ) < epsilon && fabs( v.pt.y() - pt.y() ) < epsilon ) )
+    if ( v.pt == pt || ( std::fabs( v.pt.x() - pt.x() ) < epsilon && std::fabs( v.pt.y() - pt.y() ) < epsilon ) )
       return i;
   }
 

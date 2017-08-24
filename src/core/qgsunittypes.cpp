@@ -1383,17 +1383,17 @@ QgsUnitTypes::DistanceValue QgsUnitTypes::scaledDistance( double distance, QgsUn
         result.value = qgsRound( distance, decimals );
         result.unit = QgsUnitTypes::DistanceMeters;
       }
-      else if ( fabs( distance ) > 1000.0 )
+      else if ( std::fabs( distance ) > 1000.0 )
       {
         result.value = qgsRound( distance / 1000, decimals );
         result.unit = QgsUnitTypes::DistanceKilometers;
       }
-      else if ( fabs( distance ) < 0.01 )
+      else if ( std::fabs( distance ) < 0.01 )
       {
         result.value = qgsRound( distance * 1000, decimals );
         result.unit = QgsUnitTypes::DistanceMillimeters;
       }
-      else if ( fabs( distance ) < 0.1 )
+      else if ( std::fabs( distance ) < 0.1 )
       {
 
         result.value = qgsRound( distance * 100, decimals );
@@ -1407,7 +1407,7 @@ QgsUnitTypes::DistanceValue QgsUnitTypes::scaledDistance( double distance, QgsUn
       break;
 
     case DistanceKilometers:
-      if ( keepBaseUnit || fabs( distance ) >= 1.0 )
+      if ( keepBaseUnit || std::fabs( distance ) >= 1.0 )
       {
         result.value = qgsRound( distance, decimals );
         result.unit = QgsUnitTypes::DistanceKilometers;
@@ -1420,7 +1420,7 @@ QgsUnitTypes::DistanceValue QgsUnitTypes::scaledDistance( double distance, QgsUn
       break;
 
     case DistanceFeet:
-      if ( fabs( distance ) <= 5280.0 || keepBaseUnit )
+      if ( std::fabs( distance ) <= 5280.0 || keepBaseUnit )
       {
         result.value = qgsRound( distance, decimals );
         result.unit = QgsUnitTypes::DistanceFeet;
@@ -1433,7 +1433,7 @@ QgsUnitTypes::DistanceValue QgsUnitTypes::scaledDistance( double distance, QgsUn
       break;
 
     case DistanceYards:
-      if ( fabs( distance ) <= 1760.0 || keepBaseUnit )
+      if ( std::fabs( distance ) <= 1760.0 || keepBaseUnit )
       {
         result.value = qgsRound( distance, decimals );
         result.unit = QgsUnitTypes::DistanceYards;
@@ -1446,7 +1446,7 @@ QgsUnitTypes::DistanceValue QgsUnitTypes::scaledDistance( double distance, QgsUn
       break;
 
     case DistanceMiles:
-      if ( fabs( distance ) >= 1.0 || keepBaseUnit )
+      if ( std::fabs( distance ) >= 1.0 || keepBaseUnit )
       {
         result.value = qgsRound( distance, decimals );
         result.unit = QgsUnitTypes::DistanceMiles;
@@ -1531,12 +1531,12 @@ QgsUnitTypes::AreaValue QgsUnitTypes::scaledArea( double area, QgsUnitTypes::Are
         result.value = qgsRound( area, decimals );
         result.unit = QgsUnitTypes::AreaSquareMeters;
       }
-      else if ( fabs( area ) > QgsUnitTypes::fromUnitToUnitFactor( QgsUnitTypes::AreaSquareKilometers, QgsUnitTypes::AreaSquareMeters ) )
+      else if ( std::fabs( area ) > QgsUnitTypes::fromUnitToUnitFactor( QgsUnitTypes::AreaSquareKilometers, QgsUnitTypes::AreaSquareMeters ) )
       {
         result.value = qgsRound( area * QgsUnitTypes::fromUnitToUnitFactor( QgsUnitTypes::AreaSquareMeters, QgsUnitTypes::AreaSquareKilometers ), decimals );
         result.unit = QgsUnitTypes::AreaSquareKilometers;
       }
-      else if ( fabs( area ) > QgsUnitTypes::fromUnitToUnitFactor( QgsUnitTypes::AreaHectares, QgsUnitTypes::AreaSquareMeters ) )
+      else if ( std::fabs( area ) > QgsUnitTypes::fromUnitToUnitFactor( QgsUnitTypes::AreaHectares, QgsUnitTypes::AreaSquareMeters ) )
       {
         result.value = qgsRound( area * QgsUnitTypes::fromUnitToUnitFactor( QgsUnitTypes::AreaSquareMeters, QgsUnitTypes::AreaHectares ), decimals );
         result.unit = QgsUnitTypes::AreaHectares;
@@ -1563,7 +1563,7 @@ QgsUnitTypes::AreaValue QgsUnitTypes::scaledArea( double area, QgsUnitTypes::Are
         result.value = qgsRound( area, decimals );
         result.unit = QgsUnitTypes::AreaSquareFeet;
       }
-      else if ( fabs( area ) > QgsUnitTypes::fromUnitToUnitFactor( QgsUnitTypes::AreaSquareMiles, QgsUnitTypes::AreaSquareFeet ) )
+      else if ( std::fabs( area ) > QgsUnitTypes::fromUnitToUnitFactor( QgsUnitTypes::AreaSquareMiles, QgsUnitTypes::AreaSquareFeet ) )
       {
         result.value = qgsRound( area * QgsUnitTypes::fromUnitToUnitFactor( QgsUnitTypes::AreaSquareFeet, QgsUnitTypes::AreaSquareMiles ), decimals );
         result.unit = QgsUnitTypes::AreaSquareMiles;
@@ -1583,7 +1583,7 @@ QgsUnitTypes::AreaValue QgsUnitTypes::scaledArea( double area, QgsUnitTypes::Are
         result.value = qgsRound( area, decimals );
         result.unit = QgsUnitTypes::AreaSquareYards;
       }
-      else if ( fabs( area ) > QgsUnitTypes::fromUnitToUnitFactor( QgsUnitTypes::AreaSquareMiles, QgsUnitTypes::AreaSquareYards ) )
+      else if ( std::fabs( area ) > QgsUnitTypes::fromUnitToUnitFactor( QgsUnitTypes::AreaSquareMiles, QgsUnitTypes::AreaSquareYards ) )
       {
         result.value = qgsRound( area * QgsUnitTypes::fromUnitToUnitFactor( QgsUnitTypes::AreaSquareYards, QgsUnitTypes::AreaSquareMiles ), decimals );
         result.unit = QgsUnitTypes::AreaSquareMiles;
@@ -1610,7 +1610,7 @@ QgsUnitTypes::AreaValue QgsUnitTypes::scaledArea( double area, QgsUnitTypes::Are
         result.value = qgsRound( area, decimals );
         result.unit = QgsUnitTypes::AreaHectares;
       }
-      else if ( fabs( area ) > QgsUnitTypes::fromUnitToUnitFactor( QgsUnitTypes::AreaSquareKilometers, QgsUnitTypes::AreaHectares ) )
+      else if ( std::fabs( area ) > QgsUnitTypes::fromUnitToUnitFactor( QgsUnitTypes::AreaSquareKilometers, QgsUnitTypes::AreaHectares ) )
       {
         result.value = qgsRound( area * QgsUnitTypes::fromUnitToUnitFactor( QgsUnitTypes::AreaHectares, QgsUnitTypes::AreaSquareKilometers ), decimals );
         result.unit = QgsUnitTypes::AreaSquareKilometers;
@@ -1630,7 +1630,7 @@ QgsUnitTypes::AreaValue QgsUnitTypes::scaledArea( double area, QgsUnitTypes::Are
         result.value = qgsRound( area, decimals );
         result.unit = QgsUnitTypes::AreaAcres;
       }
-      else if ( fabs( area ) > QgsUnitTypes::fromUnitToUnitFactor( QgsUnitTypes::AreaSquareMiles, QgsUnitTypes::AreaAcres ) )
+      else if ( std::fabs( area ) > QgsUnitTypes::fromUnitToUnitFactor( QgsUnitTypes::AreaSquareMiles, QgsUnitTypes::AreaAcres ) )
       {
         result.value = qgsRound( area * QgsUnitTypes::fromUnitToUnitFactor( QgsUnitTypes::AreaAcres, QgsUnitTypes::AreaSquareMiles ), decimals );
         result.unit = QgsUnitTypes::AreaSquareMiles;

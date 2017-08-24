@@ -442,7 +442,7 @@ QgsPointXY QgsDistanceArea::computeSpheroidProject(
     sigma = ( distance / ( b * A ) ) + delta_sigma;
     i++;
   }
-  while ( i < 999 && fabs( ( last_sigma - sigma ) / sigma ) > 1.0e-9 );
+  while ( i < 999 && std::fabs( ( last_sigma - sigma ) / sigma ) > 1.0e-9 );
 
   lat2 = atan2( ( sin( u1 ) * cos( sigma ) + cos( u1 ) * sin( sigma ) *
                   cos( azimuth ) ), ( omf * sqrt( POW2( sin_alpha ) +
@@ -571,7 +571,7 @@ double QgsDistanceArea::computeDistanceBearing(
   double tu2 = 0;
 
   int iterLimit = 20;
-  while ( fabs( lambda - lambdaP ) > 1e-12 && --iterLimit > 0 )
+  while ( std::fabs( lambda - lambdaP ) > 1e-12 && --iterLimit > 0 )
   {
     sinLambda = sin( lambda );
     cosLambda = cos( lambda );
@@ -741,7 +741,7 @@ double QgsDistanceArea::computePolygonArea( const QList<QgsPointXY> &points ) co
 
     dx = x2 - x1;
     dy = y2 - y1;
-    if ( fabs( dy ) > thresh )
+    if ( std::fabs( dy ) > thresh )
     {
       /* account for different latitudes y1, y2 */
       area += dx * ( m_Qp - ( Qbar2 - Qbar1 ) / dy );

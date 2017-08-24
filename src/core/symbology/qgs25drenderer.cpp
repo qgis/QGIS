@@ -53,7 +53,7 @@
   "set_color_part( " \
   "  @symbol_color," \
   " 'value'," \
-  "  40 + 19 * abs( $pi - azimuth( " \
+  "  40 + 19 * std::abs( $pi - azimuth( " \
   "    point_n( geometry_n($geometry, @geometry_part_num) , 1 ), " \
   "    point_n( geometry_n($geometry, @geometry_part_num) , 2 )" \
   "  ) ) " \

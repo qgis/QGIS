@@ -464,7 +464,7 @@ void QgsColorWheel::paintEvent( QPaintEvent *event )
   double mx = ( sx + vx ) / 2.0;
   double  my = ( sy + vy ) / 2.0;
 
-  double a = ( 1 - 2.0 * fabs( lightness - 0.5 ) ) * mCurrentColor.hslSaturationF();
+  double a = ( 1 - 2.0 * std::fabs( lightness - 0.5 ) ) * mCurrentColor.hslSaturationF();
   double x = sx + ( vx - sx ) * lightness + ( hx - mx ) * a;
   double y = sy + ( vy - sy ) * lightness + ( hy - my ) * a;
 
@@ -564,7 +564,7 @@ void QgsColorWheel::setColorFromPos( const QPointF pos )
 
     double triangleSideLength = sqrt( 3.0 ) * triangleLength;
     double newL = ( ( -sin( rad0 ) * r ) / triangleSideLength ) + 0.5;
-    double widthShare = 1.0 - ( fabs( newL - 0.5 ) * 2.0 );
+    double widthShare = 1.0 - ( std::fabs( newL - 0.5 ) * 2.0 );
     double newS = ( ( ( cos( rad0 ) * r ) + ( triangleLength / 2.0 ) ) / ( 1.5 * triangleLength ) ) / widthShare;
     s = qMin( static_cast< int >( std::round( qMax( 0.0, newS ) * 255.0 ) ), 255 );
     l = qMin( static_cast< int >( std::round( qMax( 0.0, newL ) * 255.0 ) ), 255 );

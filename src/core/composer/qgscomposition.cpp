@@ -2047,12 +2047,12 @@ QPointF QgsComposition::snapPointToGrid( QPointF scenePoint ) const
   double viewScaleFactor = graphicsView()->transform().m11();
   double alignThreshold = mSnapTolerance / viewScaleFactor;
 
-  if ( fabs( xSnapped - scenePoint.x() ) > alignThreshold )
+  if ( std::fabs( xSnapped - scenePoint.x() ) > alignThreshold )
   {
     //snap distance is outside of tolerance
     xSnapped = scenePoint.x();
   }
-  if ( fabs( ySnapped - scenePoint.y() ) > alignThreshold )
+  if ( std::fabs( ySnapped - scenePoint.y() ) > alignThreshold )
   {
     //snap distance is outside of tolerance
     ySnapped = scenePoint.y();

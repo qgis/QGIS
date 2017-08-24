@@ -29,7 +29,7 @@
     bool _xxxresult = qgsDoubleNear( value, expected, epsilon ); \
     if ( !_xxxresult  ) \
     { \
-      qDebug( "Expecting %f got %f (diff %f > %f)", static_cast< double >( expected ), static_cast< double >( value ), fabs( static_cast< double >( expected ) - value ), static_cast< double >( epsilon ) ); \
+      qDebug( "Expecting %f got %f (diff %f > %f)", static_cast< double >( expected ), static_cast< double >( value ), std::fabs( static_cast< double >( expected ) - value ), static_cast< double >( epsilon ) ); \
     } \
     QVERIFY( qgsDoubleNear( value, expected, epsilon ) ); \
   }
@@ -38,7 +38,7 @@
     bool _xxxresult = qgsDoubleNear( value, not_expected, epsilon ); \
     if ( _xxxresult  ) \
     { \
-      qDebug( "Expecting %f to be differerent from %f (diff %f > %f)", static_cast< double >( value ), static_cast< double >( not_expected ), fabs( static_cast< double >( not_expected ) - value ), static_cast< double >( epsilon ) ); \
+      qDebug( "Expecting %f to be differerent from %f (diff %f > %f)", static_cast< double >( value ), static_cast< double >( not_expected ), std::fabs( static_cast< double >( not_expected ) - value ), static_cast< double >( epsilon ) ); \
     } \
     QVERIFY( !qgsDoubleNear( value, not_expected, epsilon ) ); \
   }

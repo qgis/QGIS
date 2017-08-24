@@ -158,11 +158,11 @@ void QgsGraduatedHistogramWidget::findClosestRange( double value, int &closestRa
   int pressedPixel = mPlot->canvasMap( QwtPlot::xBottom ).transform( value );
   for ( int i = 0; i < ranges.count() - 1; ++i )
   {
-    if ( fabs( mPressedValue - ranges.at( i ).upperValue() ) < minDistance )
+    if ( std::fabs( mPressedValue - ranges.at( i ).upperValue() ) < minDistance )
     {
       closestRangeIndex = i;
-      minDistance = fabs( mPressedValue - ranges.at( i ).upperValue() );
-      pixelDistance = fabs( pressedPixel - mPlot->canvasMap( QwtPlot::xBottom ).transform( ranges.at( i ).upperValue() ) );
+      minDistance = std::fabs( mPressedValue - ranges.at( i ).upperValue() );
+      pixelDistance = std::fabs( pressedPixel - mPlot->canvasMap( QwtPlot::xBottom ).transform( ranges.at( i ).upperValue() ) );
     }
   }
 }

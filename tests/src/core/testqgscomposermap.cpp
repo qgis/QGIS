@@ -216,14 +216,14 @@ void TestQgsComposerMap::mapPolygonVertices()
   QPolygonF visibleExtent = mComposerMap->visibleExtentPolygon();
 
   //vertices should be returned in clockwise order starting at the top-left point
-  QVERIFY( fabs( visibleExtent[0].x() - 781662.375 ) < 0.001 );
-  QVERIFY( fabs( visibleExtent[0].y() - 3345223.125 ) < 0.001 );
-  QVERIFY( fabs( visibleExtent[1].x() - 793062.375 ) < 0.001 );
-  QVERIFY( fabs( visibleExtent[1].y() - 3345223.125 ) < 0.001 );
-  QVERIFY( fabs( visibleExtent[2].x() - 793062.375 ) < 0.001 );
-  QVERIFY( fabs( visibleExtent[2].y() - 3339523.125 ) < 0.001 );
-  QVERIFY( fabs( visibleExtent[3].x() - 781662.375 ) < 0.001 );
-  QVERIFY( fabs( visibleExtent[3].y() - 3339523.125 ) < 0.001 );
+  QVERIFY( std::fabs( visibleExtent[0].x() - 781662.375 ) < 0.001 );
+  QVERIFY( std::fabs( visibleExtent[0].y() - 3345223.125 ) < 0.001 );
+  QVERIFY( std::fabs( visibleExtent[1].x() - 793062.375 ) < 0.001 );
+  QVERIFY( std::fabs( visibleExtent[1].y() - 3345223.125 ) < 0.001 );
+  QVERIFY( std::fabs( visibleExtent[2].x() - 793062.375 ) < 0.001 );
+  QVERIFY( std::fabs( visibleExtent[2].y() - 3339523.125 ) < 0.001 );
+  QVERIFY( std::fabs( visibleExtent[3].x() - 781662.375 ) < 0.001 );
+  QVERIFY( std::fabs( visibleExtent[3].y() - 3339523.125 ) < 0.001 );
 
   //polygon should be closed
   QVERIFY( visibleExtent.isClosed() );
@@ -233,14 +233,14 @@ void TestQgsComposerMap::mapPolygonVertices()
   visibleExtent = mComposerMap->visibleExtentPolygon();
 
   //vertices should be returned in clockwise order starting at the top-left point
-  QVERIFY( fabs( visibleExtent[0].x() - 781254.0735015 ) < 0.001 );
-  QVERIFY( fabs( visibleExtent[0].y() - 3344190.0324834 ) < 0.001 );
-  QVERIFY( fabs( visibleExtent[1].x() - 792480.881886 ) < 0.001 );
-  QVERIFY( fabs( visibleExtent[1].y() - 3346169.62171 ) < 0.001 );
-  QVERIFY( fabs( visibleExtent[2].x() - 793470.676499 ) < 0.001 );
-  QVERIFY( fabs( visibleExtent[2].y() - 3340556.21752 ) < 0.001 );
-  QVERIFY( fabs( visibleExtent[3].x() - 782243.868114 ) < 0.001 );
-  QVERIFY( fabs( visibleExtent[3].y() - 3338576.62829 ) < 0.001 );
+  QVERIFY( std::fabs( visibleExtent[0].x() - 781254.0735015 ) < 0.001 );
+  QVERIFY( std::fabs( visibleExtent[0].y() - 3344190.0324834 ) < 0.001 );
+  QVERIFY( std::fabs( visibleExtent[1].x() - 792480.881886 ) < 0.001 );
+  QVERIFY( std::fabs( visibleExtent[1].y() - 3346169.62171 ) < 0.001 );
+  QVERIFY( std::fabs( visibleExtent[2].x() - 793470.676499 ) < 0.001 );
+  QVERIFY( std::fabs( visibleExtent[2].y() - 3340556.21752 ) < 0.001 );
+  QVERIFY( std::fabs( visibleExtent[3].x() - 782243.868114 ) < 0.001 );
+  QVERIFY( std::fabs( visibleExtent[3].y() - 3338576.62829 ) < 0.001 );
 
   //polygon should be closed
   QVERIFY( visibleExtent.isClosed() );

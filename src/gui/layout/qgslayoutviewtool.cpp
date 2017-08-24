@@ -31,7 +31,7 @@ bool QgsLayoutViewTool::isClickAndDrag( QPoint startViewPoint, QPoint endViewPoi
 {
   int diffX = endViewPoint.x() - startViewPoint.x();
   int diffY = endViewPoint.y() - startViewPoint.y();
-  if ( abs( diffX ) >= 2 || abs( diffY ) >= 2 )
+  if ( std::abs( diffX ) >= 2 || std::abs( diffY ) >= 2 )
   {
     return true;
   }

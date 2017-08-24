@@ -370,7 +370,7 @@ double QgsCurvePolygon::area() const
   {
     double area = 0.0;
     mExteriorRing->sumUpArea( area );
-    totalArea += fabs( area );
+    totalArea += std::fabs( area );
   }
 
   QList<QgsCurve *>::const_iterator ringIt = mInteriorRings.constBegin();
@@ -380,7 +380,7 @@ double QgsCurvePolygon::area() const
     if ( ( *ringIt )->isRing() )
     {
       ( *ringIt )->sumUpArea( area );
-      totalArea -= fabs( area );
+      totalArea -= std::fabs( area );
     }
   }
   return totalArea;

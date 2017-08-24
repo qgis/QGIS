@@ -381,8 +381,8 @@ bool QgsRenderChecker::compareImages( const QString &testName,
   {
     qDebug( "Test image and result image for %s are different dimensions", testName.toLocal8Bit().constData() );
 
-    if ( abs( myExpectedImage.width() - myResultImage.width() ) > mMaxSizeDifferenceX ||
-         abs( myExpectedImage.height() - myResultImage.height() ) > mMaxSizeDifferenceY )
+    if ( std::abs( myExpectedImage.width() - myResultImage.width() ) > mMaxSizeDifferenceX ||
+         std::abs( myExpectedImage.height() - myResultImage.height() ) > mMaxSizeDifferenceY )
     {
       mReport += QLatin1String( "<tr><td colspan=3>" );
       mReport += "<font color=red>Expected image and result image for " + testName + " are different dimensions - FAILING!</font>";
@@ -438,10 +438,10 @@ bool QgsRenderChecker::compareImages( const QString &testName,
       }
       else
       {
-        if ( abs( qRed( myExpectedPixel ) - qRed( myActualPixel ) ) > pixelTolerance ||
-             abs( qGreen( myExpectedPixel ) - qGreen( myActualPixel ) ) > pixelTolerance ||
-             abs( qBlue( myExpectedPixel ) - qBlue( myActualPixel ) ) > pixelTolerance ||
-             abs( qAlpha( myExpectedPixel ) - qAlpha( myActualPixel ) ) > pixelTolerance )
+        if ( std::abs( qRed( myExpectedPixel ) - qRed( myActualPixel ) ) > pixelTolerance ||
+             std::abs( qGreen( myExpectedPixel ) - qGreen( myActualPixel ) ) > pixelTolerance ||
+             std::abs( qBlue( myExpectedPixel ) - qBlue( myActualPixel ) ) > pixelTolerance ||
+             std::abs( qAlpha( myExpectedPixel ) - qAlpha( myActualPixel ) ) > pixelTolerance )
         {
           ++mMismatchCount;
           diffScanline[ x ] = qRgb( 255, 0, 0 );

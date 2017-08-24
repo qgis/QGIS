@@ -98,7 +98,7 @@ void QgsScaleComboBox::showPopup()
   {
     parts = itemText( i ).split( ':' );
     nextScale = parts.at( 1 ).toLong( &ok );
-    delta = labs( currScale - nextScale );
+    delta = std::labs( currScale - nextScale );
     if ( delta < min )
     {
       min = delta;

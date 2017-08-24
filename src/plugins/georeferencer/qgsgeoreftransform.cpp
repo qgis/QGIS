@@ -379,8 +379,8 @@ int QgsLinearGeorefTransform::linear_transform( void *pTransformerArg, int bDstT
   else
   {
     // Guard against division by zero
-    if ( fabs( t->scaleX ) < std::numeric_limits<double>::epsilon() ||
-         fabs( t->scaleY ) < std::numeric_limits<double>::epsilon() )
+    if ( std::fabs( t->scaleX ) < std::numeric_limits<double>::epsilon() ||
+         std::fabs( t->scaleY ) < std::numeric_limits<double>::epsilon() )
     {
       for ( int i = 0; i < nPointCount; ++i )
       {
@@ -460,7 +460,7 @@ int QgsHelmertGeorefTransform::helmert_transform( void *pTransformerArg, int bDs
   else
   {
     // Guard against division by zero
-    if ( fabs( s ) < std::numeric_limits<double>::epsilon() )
+    if ( std::fabs( s ) < std::numeric_limits<double>::epsilon() )
     {
       for ( int i = 0; i < nPointCount; ++i )
       {
@@ -602,7 +602,7 @@ bool QgsProjectiveGeorefTransform::updateParametersFromGCPs( const QVector<QgsPo
 
   double det = H[0] * adjoint[0] + H[3] * adjoint[1] + H[6] * adjoint[2];
 
-  if ( fabs( det ) < 1024.0 * std::numeric_limits<double>::epsilon() )
+  if ( std::fabs( det ) < 1024.0 * std::numeric_limits<double>::epsilon() )
   {
     mParameters.hasInverse = false;
   }
@@ -654,7 +654,7 @@ int QgsProjectiveGeorefTransform::projective_transform( void *pTransformerArg, i
   {
     double Z = x[i] * H[6] + y[i] * H[7] + H[8];
     // Projects to infinity?
-    if ( fabs( Z ) < 1024.0 * std::numeric_limits<double>::epsilon() )
+    if ( std::fabs( Z ) < 1024.0 * std::numeric_limits<double>::epsilon() )
     {
       panSuccess[i] = false;
       continue;

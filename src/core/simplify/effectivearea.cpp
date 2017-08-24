@@ -65,7 +65,7 @@ static double triarea3d( const QgsPoint &P1, const QgsPoint &P2, const QgsPoint 
   cy = az * bx - ax * bz;
   cz = ax * by - ay * bx;
 
-  area = fabs( 0.5 * ( sqrt( cx * cx + cy * cy + cz * cz ) ) );
+  area = std::fabs( 0.5 * ( sqrt( cx * cx + cy * cy + cz * cz ) ) );
   return area;
 }
 

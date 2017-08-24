@@ -89,8 +89,8 @@ struct LessThanTileRequest
     QPointF p1 = req1.rect.center();
     QPointF p2 = req2.rect.center();
     // using chessboard distance (loading order more natural than euclidean/manhattan distance)
-    double d1 = qMax( fabs( center.x() - p1.x() ), fabs( center.y() - p1.y() ) );
-    double d2 = qMax( fabs( center.x() - p2.x() ), fabs( center.y() - p2.y() ) );
+    double d1 = qMax( std::fabs( center.x() - p1.x() ), std::fabs( center.y() - p1.y() ) );
+    double d2 = qMax( std::fabs( center.x() - p2.x() ), std::fabs( center.y() - p2.y() ) );
     return d1 < d2;
   }
 };
@@ -4044,7 +4044,7 @@ static QString formatDouble( double x )
 {
   if ( x == 0.0 )
     return QStringLiteral( "0" );
-  const int numberOfDecimals = qMax( 0, 19 - static_cast<int>( ceil( log10( fabs( x ) ) ) ) );
+  const int numberOfDecimals = qMax( 0, 19 - static_cast<int>( ceil( log10( std::fabs( x ) ) ) ) );
   return qgsDoubleToString( x, numberOfDecimals );
 }
 

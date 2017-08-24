@@ -395,7 +395,7 @@ inline QgsPointXY QgsClipper::intersect( const double x1, const double y1,
 
   QgsPointXY p;
 
-  if ( fabs( r_d ) > SMALL_NUM && fabs( r_n ) > SMALL_NUM )
+  if ( std::fabs( r_d ) > SMALL_NUM && std::fabs( r_n ) > SMALL_NUM )
   {
     // they cross
     double r = r_n / r_d;
@@ -405,7 +405,7 @@ inline QgsPointXY QgsClipper::intersect( const double x1, const double y1,
   {
     // Should never get here, but if we do for some reason, cause a
     // clunk because something else is wrong if we do.
-    Q_ASSERT( fabs( r_d ) > SMALL_NUM && fabs( r_n ) > SMALL_NUM );
+    Q_ASSERT( std::fabs( r_d ) > SMALL_NUM && std::fabs( r_n ) > SMALL_NUM );
   }
 
   return p;

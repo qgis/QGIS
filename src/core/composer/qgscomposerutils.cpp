@@ -189,8 +189,8 @@ QRectF QgsComposerUtils::largestRotatedRectWithinBounds( const QRectF &originalR
   double sinAngle = sin( angleRad );
 
   //calculate size of bounds of rotated rectangle
-  double widthBoundsRotatedRect = originalWidth * fabs( cosAngle ) + originalHeight * fabs( sinAngle );
-  double heightBoundsRotatedRect = originalHeight * fabs( cosAngle ) + originalWidth * fabs( sinAngle );
+  double widthBoundsRotatedRect = originalWidth * std::fabs( cosAngle ) + originalHeight * std::fabs( sinAngle );
+  double heightBoundsRotatedRect = originalHeight * std::fabs( cosAngle ) + originalWidth * std::fabs( sinAngle );
 
   //compare ratio of rotated rect with bounds rect and calculate scaling of rotated
   //rect to fit within bounds
@@ -221,9 +221,9 @@ QRectF QgsComposerUtils::largestRotatedRectWithinBounds( const QRectF &originalR
 
   //now calculate offset position of rotated rectangle
   double offsetX = ratioBoundsRotatedRect > ratioBoundsRect ? 0 : ( boundsWidth - rectScale * widthBoundsRotatedRect ) / 2.0;
-  offsetX += fabs( minX );
+  offsetX += std::fabs( minX );
   double offsetY = ratioBoundsRotatedRect > ratioBoundsRect ? ( boundsHeight - rectScale * heightBoundsRotatedRect ) / 2.0 : 0;
-  offsetY += fabs( minY );
+  offsetY += std::fabs( minY );
 
   return QRectF( offsetX, offsetY, rectScaledWidth, rectScaledHeight );
 }

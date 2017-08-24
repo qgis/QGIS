@@ -84,13 +84,13 @@ QString QgsPointXY::toDegreesMinutesSeconds( int precision, const bool useSuffix
     myWrappedY = myWrappedY + 180.0;
   }
 
-  int myDegreesX = int( fabs( myWrappedX ) );
-  double myFloatMinutesX = double( ( fabs( myWrappedX ) - myDegreesX ) * 60 );
+  int myDegreesX = int( std::fabs( myWrappedX ) );
+  double myFloatMinutesX = double( ( std::fabs( myWrappedX ) - myDegreesX ) * 60 );
   int myIntMinutesX = int( myFloatMinutesX );
   double mySecondsX = double( myFloatMinutesX - myIntMinutesX ) * 60;
 
-  int myDegreesY = int( fabs( myWrappedY ) );
-  double myFloatMinutesY = double( ( fabs( myWrappedY ) - myDegreesY ) * 60 );
+  int myDegreesY = int( std::fabs( myWrappedY ) );
+  double myFloatMinutesY = double( ( std::fabs( myWrappedY ) - myDegreesY ) * 60 );
   int myIntMinutesY = int( myFloatMinutesY );
   double mySecondsY = double( myFloatMinutesY - myIntMinutesY ) * 60;
 
@@ -186,11 +186,11 @@ QString QgsPointXY::toDegreesMinutes( int precision, const bool useSuffix, const
     myWrappedX = myWrappedX + 360.0;
   }
 
-  int myDegreesX = int( fabs( myWrappedX ) );
-  double myFloatMinutesX = double( ( fabs( myWrappedX ) - myDegreesX ) * 60 );
+  int myDegreesX = int( std::fabs( myWrappedX ) );
+  double myFloatMinutesX = double( ( std::fabs( myWrappedX ) - myDegreesX ) * 60 );
 
-  int myDegreesY = int( fabs( mY ) );
-  double myFloatMinutesY = double( ( fabs( mY ) - myDegreesY ) * 60 );
+  int myDegreesY = int( std::fabs( mY ) );
+  double myFloatMinutesY = double( ( std::fabs( mY ) - myDegreesY ) * 60 );
 
   //make sure rounding to specified precision doesn't create minutes >= 60
   if ( std::round( myFloatMinutesX * pow( 10.0, precision ) ) >= 60 * pow( 10.0, precision ) )

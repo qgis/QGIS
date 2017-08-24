@@ -36,7 +36,7 @@
 void DRW_Entity::calculateAxis( DRW_Coord extPoint )
 {
   //Follow the arbitrary DXF definitions for extrusion axes.
-  if ( fabs( extPoint.x ) < 0.015625 && fabs( extPoint.y ) < 0.015625 )
+  if ( std::fabs( extPoint.x ) < 0.015625 && std::fabs( extPoint.y ) < 0.015625 )
   {
     //If we get here, implement Ax = Wy x N where Wy is [0,1,0] per the DXF spec.
     //The cross product works out to Wy.y*N.z-Wy.z*N.y, Wy.z*N.x-Wy.x*N.z, Wy.x*N.y-Wy.y*N.x
@@ -797,7 +797,7 @@ void DRW_Arc::applyExtrusion()
     // Note that the following code only handles the special case where there is a 2D
     // drawing with the z axis heading into the paper (or rather screen). An arbitrary
     // extrusion axis (with x and y values greater than 1/64) may still have issues.
-    if ( fabs( extPoint.x ) < 0.015625 && fabs( extPoint.y ) < 0.015625 && extPoint.z < 0.0 )
+    if ( std::fabs( extPoint.x ) < 0.015625 && std::fabs( extPoint.y ) < 0.015625 && extPoint.z < 0.0 )
     {
       staangle = M_PI - staangle;
       endangle = M_PI - endangle;
@@ -902,7 +902,7 @@ void DRW_Ellipse::correctAxis()
   }
   if ( ratio > 1 )
   {
-    if ( fabs( endparam - staparam - M_PIx2 ) < 1.0e-10 )
+    if ( std::fabs( endparam - staparam - M_PIx2 ) < 1.0e-10 )
       complete = true;
     double incX = secPoint.x;
     secPoint.x = -( secPoint.y * ratio );
@@ -977,7 +977,7 @@ void DRW_Ellipse::toPolyline( DRW_Polyline *pol, int parts ) const
     curAngle += incAngle;
   }
 
-  if ( fabs( endAngle - staparam - M_PIx2 ) < 1.0e-10 )
+  if ( std::fabs( endAngle - staparam - M_PIx2 ) < 1.0e-10 )
   {
     pol->flags = 1;
   }
@@ -2065,7 +2065,7 @@ bool DRW_Vertex::parseDwg( DRW::Version version, dwgBuffer *buf, duint32 bs, dou
 
     stawidth = buf->getBitDouble();
     if ( stawidth < 0 )
-      endwidth = stawidth = fabs( stawidth );
+      endwidth = stawidth = std::fabs( stawidth );
     else
       endwidth = buf->getBitDouble();
     bulge = buf->getBitDouble();

@@ -528,7 +528,7 @@ void QgsGdalProvider::readBlock( int bandNo, QgsRectangle  const &extent, int pi
   int srcBottom = ySize() - 1;
   int srcRight = xSize() - 1;
 
-  // Note: original approach for xRes < srcXRes || yRes < fabs( srcYRes ) was to avoid
+  // Note: original approach for xRes < srcXRes || yRes < std::fabs( srcYRes ) was to avoid
   // second resampling and read with GDALRasterIO to another temporary data block
   // extended to fit src grid. The problem was that with src resolution much bigger
   // than dst res, the target could become very large
@@ -587,7 +587,7 @@ void QgsGdalProvider::readBlock( int bandNo, QgsRectangle  const &extent, int pi
   {
     tmpWidth = static_cast<int>( std::round( srcWidth * srcXRes / xRes ) );
   }
-  if ( yRes > fabs( srcYRes ) )
+  if ( yRes > std::fabs( srcYRes ) )
   {
     tmpHeight = static_cast<int>( std::round( -1.*srcHeight * srcYRes / yRes ) );
   }
@@ -1291,8 +1291,8 @@ bool QgsGdalProvider::hasHistogram( int bandNo,
 
   // min/max are stored as text in aux file => use threshold
   if ( myBinCount != myHistogram.binCount ||
-       fabs( myMinVal - myExpectedMinVal ) > fabs( myExpectedMinVal ) / 10e6 ||
-       fabs( myMaxVal - myExpectedMaxVal ) > fabs( myExpectedMaxVal ) / 10e6 )
+       std::fabs( myMinVal - myExpectedMinVal ) > std::fabs( myExpectedMinVal ) / 10e6 ||
+       std::fabs( myMaxVal - myExpectedMaxVal ) > std::fabs( myExpectedMaxVal ) / 10e6 )
   {
     QgsDebugMsg( QString( "Params do not match binCount: %1 x %2, minVal: %3 x %4, maxVal: %5 x %6" ).arg( myBinCount ).arg( myHistogram.binCount ).arg( myMinVal ).arg( myExpectedMinVal ).arg( myMaxVal ).arg( myExpectedMaxVal ) );
     return false;
