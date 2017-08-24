@@ -88,5 +88,5 @@ void QgsDecorationLayoutExtentDialog::on_buttonBox_rejected()
 
 void QgsDecorationLayoutExtentDialog::showHelp()
 {
-  QgsHelp::openHelp( QStringLiteral( "introduction/general_tools.html#decorations" ) ); //to be precised
+  QgsHelp::openHelp( QStringLiteral( "introduction/general_tools.html#decorations" ) );
 }
