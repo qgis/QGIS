@@ -18,7 +18,7 @@ extern "C"
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
-#include <cmath>
+#include <math.h>
 #ifdef WIN32
 #include <fcntl.h>
 #include <io.h>
