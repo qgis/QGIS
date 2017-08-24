@@ -388,7 +388,7 @@ void QgsImageOperation::distanceTransform( QImage &image, const DistanceTransfor
   double spread;
   if ( properties.useMaxDistance )
   {
-    spread = sqrt( maxValueInDistanceTransformArray( array, image.width() * image.height() ) );
+    spread = std::sqrt( maxValueInDistanceTransformArray( array, image.width() * image.height() ) );
   }
   else
   {
@@ -541,7 +541,7 @@ void QgsImageOperation::ShadeFromArrayOperation::operator()( QRgb &rgb, const in
     return;
   }
 
-  double distance = sqrt( squaredVal );
+  double distance = std::sqrt( squaredVal );
   double val = distance / mSpread;
   QColor rampColor = mProperties.ramp->color( val );
 
@@ -764,7 +764,7 @@ double *QgsImageOperation::createGaussianKernel( const int radius )
   double *kernel = new double[ radius * 2 + 1 ];
   double sigma = radius / 3.0;
   double twoSigmaSquared = 2 * sigma * sigma;
-  double coefficient = 1.0 / sqrt( M_PI * twoSigmaSquared );
+  double coefficient = 1.0 / std::sqrt( M_PI * twoSigmaSquared );
   double expCoefficient = -1.0 / twoSigmaSquared;
 
   double sum = 0;

@@ -625,7 +625,7 @@ double QgsSimpleMarkerSymbolLayerBase::calculateSize( QgsSymbolRenderContext &co
     switch ( mScaleMethod )
     {
       case QgsSymbol::ScaleArea:
-        scaledSize = sqrt( scaledSize );
+        scaledSize = std::sqrt( scaledSize );
         break;
       case QgsSymbol::ScaleDiameter:
         break;
@@ -1242,7 +1242,7 @@ bool QgsSimpleMarkerSymbolLayer::writeDxf( QgsDxfExport &e, double mmMapUnitScal
       switch ( mScaleMethod )
       {
         case QgsSymbol::ScaleArea:
-          size = sqrt( size );
+          size = std::sqrt( size );
           break;
         case QgsSymbol::ScaleDiameter:
           break;
@@ -2055,7 +2055,7 @@ double QgsSvgMarkerSymbolLayer::calculateSize( QgsSymbolRenderContext &context, 
     switch ( mScaleMethod )
     {
       case QgsSymbol::ScaleArea:
-        scaledSize = sqrt( scaledSize );
+        scaledSize = std::sqrt( scaledSize );
         break;
       case QgsSymbol::ScaleDiameter:
         break;
@@ -2274,7 +2274,7 @@ bool QgsSvgMarkerSymbolLayer::writeDxf( QgsDxfExport &e, double mmMapUnitScaleFa
     switch ( mScaleMethod )
     {
       case QgsSymbol::ScaleArea:
-        size = sqrt( size );
+        size = std::sqrt( size );
         break;
       case QgsSymbol::ScaleDiameter:
         break;
@@ -2642,7 +2642,7 @@ double QgsFontMarkerSymbolLayer::calculateSize( QgsSymbolRenderContext &context 
     switch ( mScaleMethod )
     {
       case QgsSymbol::ScaleArea:
-        scaledSize = sqrt( scaledSize );
+        scaledSize = std::sqrt( scaledSize );
         break;
       case QgsSymbol::ScaleDiameter:
         break;

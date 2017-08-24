@@ -3604,7 +3604,7 @@ QPointF QgsSymbolLayerUtils::pointOnLineWithDistance( QPointF startPoint, QPoint
 {
   double dx = directionPoint.x() - startPoint.x();
   double dy = directionPoint.y() - startPoint.y();
-  double length = sqrt( dx * dx + dy * dy );
+  double length = std::sqrt( dx * dx + dy * dy );
   double scaleFactor = distance / length;
   return QPointF( startPoint.x() + dx * scaleFactor, startPoint.y() + dy * scaleFactor );
 }

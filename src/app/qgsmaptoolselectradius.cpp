@@ -102,7 +102,7 @@ void QgsMapToolSelectRadius::canvasReleaseEvent( QgsMapMouseEvent *e )
 
 void QgsMapToolSelectRadius::setRadiusRubberBand( QgsPointXY &radiusEdge )
 {
-  double r = sqrt( mRadiusCenter.sqrDist( radiusEdge ) );
+  double r = std::sqrt( mRadiusCenter.sqrDist( radiusEdge ) );
   mRubberBand->reset( QgsWkbTypes::PolygonGeometry );
   for ( int i = 0; i <= RADIUS_SEGMENTS; ++i )
   {

@@ -1001,7 +1001,7 @@ namespace QgsWms
             if ( version == QLatin1String( "1.1.1" ) )
             {
               double OGC_PX_M = 0.00028; // OGC reference pixel size in meter, also used by qgis
-              double SCALE_TO_SCALEHINT = OGC_PX_M * sqrt( 2.0 );
+              double SCALE_TO_SCALEHINT = OGC_PX_M * std::sqrt( 2.0 );
 
               QDomElement scaleHintElem = doc.createElement( QStringLiteral( "ScaleHint" ) );
               scaleHintElem.setAttribute( QStringLiteral( "min" ), QString::number( l->maximumScale() * SCALE_TO_SCALEHINT ) );

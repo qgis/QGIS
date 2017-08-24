@@ -490,7 +490,7 @@ void QgsMeasureDialog::updateUi()
         if ( forceCartesian )
         {
           //Cartesian calculation forced
-          d = sqrt( p2.sqrDist( p1 ) );
+          d = std::sqrt( p2.sqrDist( p1 ) );
           mTotal += d;
         }
         else

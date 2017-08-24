@@ -70,7 +70,7 @@ double QgsComposerUtils::angle( QPointF p1, QPointF p2 )
 {
   double xDiff = p2.x() - p1.x();
   double yDiff = p2.y() - p1.y();
-  double length = sqrt( xDiff * xDiff + yDiff * yDiff );
+  double length = std::sqrt( xDiff * xDiff + yDiff * yDiff );
   if ( length <= 0 )
   {
     return 0;

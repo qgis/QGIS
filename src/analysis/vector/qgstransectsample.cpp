@@ -440,28 +440,28 @@ bool QgsTransectSample::closestSegmentPoints( const QgsGeometry &g1, const QgsGe
 
     if ( d1 <= d2 && d1 <= d3 && d1 <= d4 )
     {
-      dist = sqrt( d1 );
+      dist = std::sqrt( d1 );
       pt1 = p11;
       pt2 = minDistPoint1;
       return true;
     }
     else if ( d2 <= d1 && d2 <= d3 && d2 <= d4 )
     {
-      dist = sqrt( d2 );
+      dist = std::sqrt( d2 );
       pt1 = p12;
       pt2 = minDistPoint2;
       return true;
     }
     else if ( d3 <= d1 && d3 <= d2 && d3 <= d4 )
     {
-      dist = sqrt( d3 );
+      dist = std::sqrt( d3 );
       pt1 = p21;
       pt2 = minDistPoint3;
       return true;
     }
     else
     {
-      dist = sqrt( d4 );
+      dist = std::sqrt( d4 );
       pt1 = p21;
       pt2 = minDistPoint4;
       return true;
@@ -512,7 +512,7 @@ bool QgsTransectSample::closestSegmentPoints( const QgsGeometry &g1, const QgsGe
     pt1.sqrDistToSegment( p21.x(), p21.y(), p22.x(), p22.y(), pt2 );
   }
 
-  dist = sqrt( pt1.sqrDist( pt2 ) );
+  dist = std::sqrt( pt1.sqrDist( pt2 ) );
   return true;
 }
 

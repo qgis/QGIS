@@ -485,7 +485,7 @@ void TestQgsGeometryUtils::testCircleCenterRadius_data()
   QTest::addColumn<double>( "expectedCenterX" );
   QTest::addColumn<double>( "expectedCenterY" );
 
-  QTest::newRow( "circleCenterRadius1" ) << 1.0 << 1.0 << 5.0 << 7.0 << 1.0 << 1.0 << sqrt( 13.0 ) << 3.0 << 4.0;
+  QTest::newRow( "circleCenterRadius1" ) << 1.0 << 1.0 << 5.0 << 7.0 << 1.0 << 1.0 << std::sqrt( 13.0 ) << 3.0 << 4.0;
   QTest::newRow( "circleCenterRadius1" ) << 0.0 << 2.0 << 2.0 << 2.0 << 0.0 << 2.0 << 1.0 << 1.0 << 2.0;
 }
 

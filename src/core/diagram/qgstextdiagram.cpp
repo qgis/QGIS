@@ -243,7 +243,7 @@ void QgsTextDiagram::lineEllipseIntersection( QPointF lineStart, QPointF lineEnd
   double d = b * b - a * ( c - 1 );
   if ( d > 0 )
   {
-    double e = sqrt( d );
+    double e = std::sqrt( d );
     double u1 = ( -b - e ) / a;
     double u2 = ( -b + e ) / a;
     //work with a tolerance of 0.00001 because of limited numerical precision

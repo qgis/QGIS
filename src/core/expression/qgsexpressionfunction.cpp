@@ -235,7 +235,7 @@ static QVariant fcnEval( const QVariantList &values, const QgsExpressionContext 
 static QVariant fcnSqrt( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent )
 {
   double x = QgsExpressionUtils::getDoubleValue( values.at( 0 ), parent );
-  return QVariant( sqrt( x ) );
+  return QVariant( std::sqrt( x ) );
 }
 
 static QVariant fcnAbs( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent )

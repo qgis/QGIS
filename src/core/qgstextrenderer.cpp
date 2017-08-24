@@ -2192,14 +2192,14 @@ void QgsTextRenderer::drawBackground( QgsRenderContext &context, QgsTextRenderer
       else if ( background.type() == QgsTextBackgroundSettings::ShapeCircle )
       {
         // start with label bound by circle
-        h = sqrt( std::pow( w, 2 ) + std::pow( h, 2 ) );
+        h = std::sqrt( std::pow( w, 2 ) + std::pow( h, 2 ) );
         w = h;
       }
       else if ( background.type() == QgsTextBackgroundSettings::ShapeEllipse )
       {
         // start with label bound by ellipse
-        h = h / sqrt( 2.0 ) * 2;
-        w = w / sqrt( 2.0 ) * 2;
+        h = h / std::sqrt( 2.0 ) * 2;
+        w = w / std::sqrt( 2.0 ) * 2;
       }
 
       double bufferWidth = context.convertToPainterUnits( background.size().width(), background.sizeUnit(),

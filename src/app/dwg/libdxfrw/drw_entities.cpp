@@ -954,7 +954,7 @@ bool DRW_Ellipse::parseDwg( DRW::Version version, dwgBuffer *buf, duint32 bs )
 //parts are the number of vertices to split the polyline, default 128
 void DRW_Ellipse::toPolyline( DRW_Polyline *pol, int parts ) const
 {
-  double radMajor = sqrt( secPoint.x * secPoint.x + secPoint.y * secPoint.y );
+  double radMajor = std::sqrt( secPoint.x * secPoint.x + secPoint.y * secPoint.y );
   double radMinor = radMajor * ratio;
   //calculate sin & std::cos of included angle
   double incAngle = std::atan2( secPoint.y, secPoint.x );

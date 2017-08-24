@@ -64,7 +64,7 @@ QgsEllipse QgsEllipse::fromFoci( const QgsPoint &pt1, const QgsPoint &pt2, const
   QgsPoint center = QgsGeometryUtils::midpoint( pt1, pt2 );
 
   double axis_a = dist / 2.0;
-  double axis_b = sqrt( std::pow( axis_a, 2.0 ) - std::pow( dist_p1p2 / 2.0, 2.0 ) );
+  double axis_b = std::sqrt( std::pow( axis_a, 2.0 ) - std::pow( dist_p1p2 / 2.0, 2.0 ) );
 
   return QgsEllipse( center, axis_a, axis_b, azimuth );
 }
@@ -170,7 +170,7 @@ double QgsEllipse::perimeter() const
 {
   double a = mSemiMajorAxis;
   double b = mSemiMinorAxis;
-  return M_PI * ( 3 * ( a + b ) - sqrt( 10 * a * b + 3 * ( a * a + b * b ) ) );
+  return M_PI * ( 3 * ( a + b ) - std::sqrt( 10 * a * b + 3 * ( a * a + b * b ) ) );
 }
 
 QVector<QgsPoint> QgsEllipse::quadrant() const
@@ -262,8 +262,8 @@ QgsRectangle QgsEllipse::boundingBox() const
   double vx = mSemiMajorAxis * std::sin( angle );
   double vy = mSemiMinorAxis * std::cos( angle );
 
-  double halfHeight = sqrt( ux * ux + uy * uy );
-  double halfWidth = sqrt( vx * vx + vy * vy );
+  double halfHeight = std::sqrt( ux * ux + uy * uy );
+  double halfWidth = std::sqrt( vx * vx + vy * vy );
 
   QgsPointXY p1( mCenter.x() - halfWidth, mCenter.y() - halfHeight );
   QgsPointXY p2( mCenter.x() + halfWidth, mCenter.y() + halfHeight );

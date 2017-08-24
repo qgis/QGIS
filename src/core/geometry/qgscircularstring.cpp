@@ -760,7 +760,7 @@ void QgsCircularString::sumUpArea( double &sum ) const
     double radius, centerX, centerY;
     QgsGeometryUtils::circleCenterRadius( p1, p2, p3, radius, centerX, centerY );
 
-    double d = sqrt( QgsGeometryUtils::sqrDistance2D( QgsPoint( centerX, centerY ), QgsPoint( midPointX, midPointY ) ) );
+    double d = std::sqrt( QgsGeometryUtils::sqrDistance2D( QgsPoint( centerX, centerY ), QgsPoint( midPointX, midPointY ) ) );
     double r2 = radius * radius;
 
     if ( d > radius )
@@ -772,7 +772,7 @@ void QgsCircularString::sumUpArea( double &sum ) const
     bool circlePointLeftOfLine = QgsGeometryUtils::leftOfLine( p2.x(), p2.y(), p1.x(), p1.y(), p3.x(), p3.y() ) < 0;
     bool centerPointLeftOfLine = QgsGeometryUtils::leftOfLine( centerX, centerY, p1.x(), p1.y(), p3.x(), p3.y() ) < 0;
 
-    double cov = 0.5 - d * sqrt( r2 - d * d ) / ( M_PI * r2 ) - 1 / M_PI * asin( d / radius );
+    double cov = 0.5 - d * std::sqrt( r2 - d * d ) / ( M_PI * r2 ) - 1 / M_PI * asin( d / radius );
     double circleChordArea = 0;
     if ( circlePointLeftOfLine == centerPointLeftOfLine )
     {

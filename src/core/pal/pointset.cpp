@@ -416,7 +416,7 @@ void PointSet::splitPolygons( QLinkedList<PointSet *> &shapes_toProcess,
     // holeE = hole ending point
     // retainedPt = deppest point in hole
     // bestArea = area of triangle HoleS->holeE->retainedPoint
-    bestArea = sqrt( bestArea );
+    bestArea = std::sqrt( bestArea );
     double cx, cy, dx, dy, ex, ey, fx, fy, seg_length, ptx = 0, pty = 0, fptx = 0, fpty = 0;
     int ps = -1, pe = -1, fps = -1, fpe = -1;
     if ( retainedPt >= 0 && bestArea > labelArea ) // there is a hole so we'll cut the shape in two new shape (only if hole area is bigger than twice labelArea)
@@ -827,7 +827,7 @@ void PointSet::getPointByDistance( double *d, double *ad, double dl, double *px,
     {
       dx = x[nbPoints - 1] - x[0];
       dy = y[nbPoints - 1] - y[0];
-      di = sqrt( dx * dx + dy * dy );
+      di = std::sqrt( dx * dx + dy * dy );
     }
     else
     {

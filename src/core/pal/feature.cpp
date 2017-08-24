@@ -728,7 +728,7 @@ int FeaturePart::createCandidatesAlongLineNearStraightSegments( QList<LabelPosit
       line->getPointByDistance( segmentLengths, distanceToSegment, currentDistanceAlongLine, &candidateStartX, &candidateStartY );
       line->getPointByDistance( segmentLengths, distanceToSegment, currentDistanceAlongLine + labelWidth, &candidateEndX, &candidateEndY );
 
-      candidateLength = sqrt( ( candidateEndX - candidateStartX ) * ( candidateEndX - candidateStartX ) + ( candidateEndY - candidateStartY ) * ( candidateEndY - candidateStartY ) );
+      candidateLength = std::sqrt( ( candidateEndX - candidateStartX ) * ( candidateEndX - candidateStartX ) + ( candidateEndY - candidateStartY ) * ( candidateEndY - candidateStartY ) );
 
 
       // LOTS OF DIFFERENT COSTS TO BALANCE HERE - feel free to tweak these, but please add a unit test
@@ -883,12 +883,12 @@ int FeaturePart::createCandidatesAlongLineNearMidpoint( QList<LabelPosition *> &
     if ( currentDistanceAlongLine < 0 )
     {
       // label is bigger than line, use whole available line
-      candidateLength = sqrt( ( x[nbPoints - 1] - x[0] ) * ( x[nbPoints - 1] - x[0] )
-                              + ( y[nbPoints - 1] - y[0] ) * ( y[nbPoints - 1] - y[0] ) );
+      candidateLength = std::sqrt( ( x[nbPoints - 1] - x[0] ) * ( x[nbPoints - 1] - x[0] )
+                                   + ( y[nbPoints - 1] - y[0] ) * ( y[nbPoints - 1] - y[0] ) );
     }
     else
     {
-      candidateLength = sqrt( ( candidateEndX - candidateStartX ) * ( candidateEndX - candidateStartX ) + ( candidateEndY - candidateStartY ) * ( candidateEndY - candidateStartY ) );
+      candidateLength = std::sqrt( ( candidateEndX - candidateStartX ) * ( candidateEndX - candidateStartX ) + ( candidateEndY - candidateStartY ) * ( candidateEndY - candidateStartY ) );
     }
 
     cost = candidateLength / labelWidth;
@@ -1161,7 +1161,7 @@ int FeaturePart::createCurvedCandidatesAlongLine( QList< LabelPosition * > &lPos
     if ( i == 0 )
       path_distances[i] = 0;
     else
-      path_distances[i] = sqrt( std::pow( old_x - mapShape->x[i], 2 ) + std::pow( old_y - mapShape->y[i], 2 ) );
+      path_distances[i] = std::sqrt( std::pow( old_x - mapShape->x[i], 2 ) + std::pow( old_y - mapShape->y[i], 2 ) );
     old_x = mapShape->x[i];
     old_y = mapShape->y[i];
 
@@ -1343,7 +1343,7 @@ int FeaturePart::createCandidatesForPolygon( QList< LabelPosition *> &lPos, Poin
     double dy;
     int bbid;
     double beta;
-    double diago = sqrt( labelWidth * labelWidth / 4.0 + labelHeight * labelHeight / 4 );
+    double diago = std::sqrt( labelWidth * labelWidth / 4.0 + labelHeight * labelHeight / 4 );
     double rx, ry;
     CHullBox **boxes = new CHullBox*[shapes_final.size()];
     j = 0;
@@ -1808,13 +1808,13 @@ bool FeaturePart::nextCharPosition( double charWidth, double segment_length, Poi
       dx = new_x - old_x;
       dy = new_y - old_y;
     }
-    while ( sqrt( std::pow( start_x - new_x, 2 ) + std::pow( start_y - new_y, 2 ) ) < charWidth ); // Distance from start_ to new_
+    while ( std::sqrt( std::pow( start_x - new_x, 2 ) + std::pow( start_y - new_y, 2 ) ) < charWidth ); // Distance from start_ to new_
 
     // Calculate the position to place the end of the character on
     GeomFunction::findLineCircleIntersection( start_x, start_y, charWidth, old_x, old_y, new_x, new_y, end_x, end_y );
 
     // Need to calculate distance on the new segment
-    distance = sqrt( std::pow( old_x - end_x, 2 ) + std::pow( old_y - end_y, 2 ) );
+    distance = std::sqrt( std::pow( old_x - end_x, 2 ) + std::pow( old_y - end_y, 2 ) );
   }
   return true;
 }

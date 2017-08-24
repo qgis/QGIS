@@ -1418,7 +1418,7 @@ void QgsShapeburstFillSymbolLayer::dtArrayToQImage( double *array, QImage *im, Q
     }
 
     //values in distance transform are squared
-    maxDistanceValue = sqrt( dtMaxValue );
+    maxDistanceValue = std::sqrt( dtMaxValue );
   }
   else
   {
@@ -1444,7 +1444,7 @@ void QgsShapeburstFillSymbolLayer::dtArrayToQImage( double *array, QImage *im, Q
       //scale result to fit in the range [0, 1]
       if ( maxDistanceValue > 0 )
       {
-        pixVal = squaredVal > 0 ? qMin( ( sqrt( squaredVal ) / maxDistanceValue ), 1.0 ) : 0;
+        pixVal = squaredVal > 0 ? qMin( ( std::sqrt( squaredVal ) / maxDistanceValue ), 1.0 ) : 0;
       }
       else
       {
@@ -2964,7 +2964,7 @@ QgsSymbolLayer *QgsLinePatternFillSymbolLayer::createFromSld( QDomElement &eleme
   QPointF vectOffset;
   if ( QgsSymbolLayerUtils::displacementFromSldElement( graphicElem, vectOffset ) )
   {
-    offset = sqrt( std::pow( vectOffset.x(), 2 ) + std::pow( vectOffset.y(), 2 ) );
+    offset = std::sqrt( std::pow( vectOffset.x(), 2 ) + std::pow( vectOffset.y(), 2 ) );
   }
 
   QString uom = element.attribute( QStringLiteral( "uom" ), "" );

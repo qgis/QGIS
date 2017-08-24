@@ -377,7 +377,7 @@ bool pointsToCircle( QPointF a, QPointF b, QPointF c, QPointF &center, qreal &ra
     cy = bc2.y() - ( cx - bc2.x() ) * bc.x() / bc.y();
   }
   // Radius
-  radius = sqrt( ( a.x() - cx ) * ( a.x() - cx ) + ( a.y() - cy ) * ( a.y() - cy ) );
+  radius = std::sqrt( ( a.x() - cx ) * ( a.x() - cx ) + ( a.y() - cy ) * ( a.y() - cy ) );
   // Center
   center.setX( cx );
   center.setY( cy );

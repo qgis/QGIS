@@ -445,7 +445,7 @@ QgsPointXY QgsDistanceArea::computeSpheroidProject(
   while ( i < 999 && std::fabs( ( last_sigma - sigma ) / sigma ) > 1.0e-9 );
 
   lat2 = std::atan2( ( std::sin( u1 ) * std::cos( sigma ) + std::cos( u1 ) * std::sin( sigma ) *
-                       std::cos( azimuth ) ), ( omf * sqrt( POW2( sin_alpha ) +
+                       std::cos( azimuth ) ), ( omf * std::sqrt( POW2( sin_alpha ) +
                            POW2( std::sin( u1 ) * std::sin( sigma ) - std::cos( u1 ) * std::cos( sigma ) *
                                  std::cos( azimuth ) ) ) ) );
   lambda = std::atan2( ( std::sin( sigma ) * std::sin( azimuth ) ), ( std::cos( u1 ) * std::cos( sigma ) -
@@ -577,7 +577,7 @@ double QgsDistanceArea::computeDistanceBearing(
     cosLambda = std::cos( lambda );
     tu1 = ( cosU2 * sinLambda );
     tu2 = ( cosU1 * sinU2 - sinU1 * cosU2 * cosLambda );
-    sinSigma = sqrt( tu1 * tu1 + tu2 * tu2 );
+    sinSigma = std::sqrt( tu1 * tu1 + tu2 * tu2 );
     cosSigma = sinU1 * sinU2 + cosU1 * cosU2 * cosLambda;
     sigma = std::atan2( sinSigma, cosSigma );
     alpha = asin( cosU1 * cosU2 * sinLambda / sinSigma );

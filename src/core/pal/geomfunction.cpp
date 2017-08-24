@@ -398,7 +398,7 @@ void GeomFunction::findLineCircleIntersection( double cx, double cy, double radi
     // Two solutions.
     // Always use the 1st one
     // We only really have one solution here, as we know the line segment will start in the circle and end outside
-    double t = ( -B + sqrt( det ) ) / ( 2 * A );
+    double t = ( -B + std::sqrt( det ) ) / ( 2 * A );
     xRes = x1 + t * dx;
     yRes = y1 + t * dy;
   }

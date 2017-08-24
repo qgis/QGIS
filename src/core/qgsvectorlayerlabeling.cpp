@@ -333,7 +333,7 @@ void QgsVectorLayerSimpleLabeling::toSld( QDomNode &parent, const QgsStringMap &
         QgsSymbolLayerUtils::createAnchorPointElement( doc, pointPlacement, QPointF( 0, 0.5 ) );
         QgsUnitTypes::RenderUnit distUnit = mSettings->distUnits;
         double radius = QgsSymbolLayerUtils::rescaleUom( mSettings->dist, distUnit, props );
-        double offset = sqrt( radius * radius / 2 ); // make it start top/right
+        double offset = std::sqrt( radius * radius / 2 ); // make it start top/right
         maxDisplacement = radius + 1; // lock the distance
         QgsSymbolLayerUtils::createDisplacementElement( doc, pointPlacement, QPointF( offset, offset ) );
       }

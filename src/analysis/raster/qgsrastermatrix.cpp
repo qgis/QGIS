@@ -216,7 +216,7 @@ bool QgsRasterMatrix::oneArgumentOperation( OneArgOperator op )
           }
           else
           {
-            mData[i] = sqrt( value );
+            mData[i] = std::sqrt( value );
           }
           break;
         case opSIN:

@@ -327,11 +327,11 @@ void ProjectorData::calcSrcRowsCols()
         QgsPointXY myPointC = mCPMatrix[i + 1][j];
         if ( mCPLegalMatrix[i][j] && mCPLegalMatrix[i][j + 1] && mCPLegalMatrix[i + 1][j] )
         {
-          double mySize = sqrt( myPointA.sqrDist( myPointB ) ) / myDestColsPerMatrixCell;
+          double mySize = std::sqrt( myPointA.sqrDist( myPointB ) ) / myDestColsPerMatrixCell;
           if ( mySize < myMinSize )
             myMinSize = mySize;
 
-          mySize = sqrt( myPointA.sqrDist( myPointC ) ) / myDestRowsPerMatrixCell;
+          mySize = std::sqrt( myPointA.sqrDist( myPointC ) ) / myDestRowsPerMatrixCell;
           if ( mySize < myMinSize )
             myMinSize = mySize;
         }

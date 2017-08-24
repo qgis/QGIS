@@ -292,7 +292,7 @@ double QgsPolygonV2::pointDistanceToBoundary( double x, double y ) const
     }
   }
 
-  return ( inside ? 1 : -1 ) * sqrt( minimumDistance );
+  return ( inside ? 1 : -1 ) * std::sqrt( minimumDistance );
 }
 
 QgsPolygonV2 *QgsPolygonV2::surfaceToPolygon() const

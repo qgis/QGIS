@@ -199,7 +199,7 @@ double QgsResidualPlotItem::maxMMToPixelRatioForGCP( const QgsGeorefDataPoint *p
     }
   }
 
-  double resTot = sqrt( residual.x() * residual.x() + residual.y() * residual.y() );
+  double resTot = std::sqrt( residual.x() * residual.x() + residual.y() * residual.y() );
   if ( leftRightDist <= upDownDist )
   {
     return leftRightDist / resTot;

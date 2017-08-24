@@ -268,7 +268,7 @@ bool QgsNodeEditorModel::calcR( int row, double &r, double &minRadius ) const
   QgsGeometryUtils::circleCenterRadius( p1, p2, p3, r, cx, cy );
 
   double x13 = p3.x() - p1.x(), y13 = p3.y() - p1.y();
-  minRadius = 0.5 * qSqrt( x13 * x13 + y13 * y13 );
+  minRadius = 0.5 * std::sqrt( x13 * x13 + y13 * y13 );
 
   return true;
 }

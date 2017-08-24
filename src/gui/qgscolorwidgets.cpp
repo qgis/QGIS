@@ -546,8 +546,8 @@ void QgsColorWheel::setColorFromPos( const QPointF pos )
 
     double a = 0.5 * triangleLength;
     double b = tan( rad1 ) * a;
-    double r = sqrt( x * x + y * y );
-    double maxR = sqrt( a * a + b * b );
+    double r = std::sqrt( x * x + y * y );
+    double maxR = std::sqrt( a * a + b * b );
 
     if ( r > maxR )
     {
@@ -559,10 +559,10 @@ void QgsColorWheel::setColorFromPos( const QPointF pos )
       rad0 = fmod( eventAngleRadians + 2.0 * M_PI - hueRadians, 2.0 * M_PI );
       rad1 = fmod( rad0, ( ( 2.0 / 3.0 ) * M_PI ) ) - ( M_PI / 3.0 );
       b = tan( rad1 ) * a;
-      r = sqrt( a * a + b * b );
+      r = std::sqrt( a * a + b * b );
     }
 
-    double triangleSideLength = sqrt( 3.0 ) * triangleLength;
+    double triangleSideLength = std::sqrt( 3.0 ) * triangleLength;
     double newL = ( ( -sin( rad0 ) * r ) / triangleSideLength ) + 0.5;
     double widthShare = 1.0 - ( std::fabs( newL - 0.5 ) * 2.0 );
     double newS = ( ( ( std::cos( rad0 ) * r ) + ( triangleLength / 2.0 ) ) / ( 1.5 * triangleLength ) ) / widthShare;

@@ -82,7 +82,7 @@ bool LinTriangleInterpolator::calcNormVec( double x, double y, Vector3D *vec )
     if ( !calcFirstDerY( x, y, &vec2 ) )
     {return false;}
     Vector3D vec3( vec1.getY()*vec2.getZ() - vec1.getZ()*vec2.getY(), vec1.getZ()*vec2.getX() - vec1.getX()*vec2.getZ(), vec1.getX()*vec2.getY() - vec1.getY()*vec2.getX() );//calculate vector product
-    double absvec3 = sqrt( vec3.getX() * vec3.getX() + vec3.getY() * vec3.getY() + vec3.getZ() * vec3.getZ() );//length of vec3
+    double absvec3 = std::sqrt( vec3.getX() * vec3.getX() + vec3.getY() * vec3.getY() + vec3.getZ() * vec3.getZ() );//length of vec3
     vec->setX( vec3.getX() / absvec3 );//standardize vec3 and assign it to vec
     vec->setY( vec3.getY() / absvec3 );
     vec->setZ( vec3.getZ() / absvec3 );

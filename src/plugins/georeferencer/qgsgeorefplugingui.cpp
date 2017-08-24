@@ -1494,7 +1494,7 @@ bool QgsGeorefPluginGui::calculateMeanError( double &error ) const
 
   // Calculate the root mean square error, adjusted for degrees of freedom of the transform
   // Caveat: The number of DoFs is assumed to be even (as each control point fixes two degrees of freedom).
-  error = sqrt( ( sumVxSquare + sumVySquare ) / ( nPointsEnabled - mGeorefTransform.getMinimumGCPCount() ) );
+  error = std::sqrt( ( sumVxSquare + sumVySquare ) / ( nPointsEnabled - mGeorefTransform.getMinimumGCPCount() ) );
   return true;
 }
 
@@ -1745,7 +1745,7 @@ bool QgsGeorefPluginGui::writePDFReportFile( const QString &fileName, const QgsG
   {
     QStringList currentGCPStrings;
     QPointF residual = ( *gcpIt )->residual();
-    double residualTot = sqrt( residual.x() * residual.x() +  residual.y() * residual.y() );
+    double residualTot = std::sqrt( residual.x() * residual.x() +  residual.y() * residual.y() );
 
     currentGCPStrings << QString::number( ( *gcpIt )->id() );
     if ( ( *gcpIt )->isEnabled() )

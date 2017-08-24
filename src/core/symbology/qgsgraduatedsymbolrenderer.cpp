@@ -640,7 +640,7 @@ static QList<double> _calcStdDevBreaks( QList<double> values, int classes, QList
     sd = values[i] - mean;
     stdDev += sd * sd;
   }
-  stdDev = sqrt( stdDev / n );
+  stdDev = std::sqrt( stdDev / n );
 
   QList<double> breaks = QgsSymbolLayerUtils::prettyBreaks( ( minimum - mean ) / stdDev, ( maximum - mean ) / stdDev, classes );
   for ( int i = 0; i < breaks.count(); i++ )

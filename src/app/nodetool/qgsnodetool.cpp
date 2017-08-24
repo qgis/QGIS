@@ -647,13 +647,13 @@ bool QgsNodeTool::isNearEndpointMarker( const QgsPointXY &mapPoint )
   if ( !mEndpointMarkerCenter )
     return false;
 
-  double distMarker = sqrt( mEndpointMarkerCenter->sqrDist( mapPoint ) );
+  double distMarker = std::sqrt( mEndpointMarkerCenter->sqrDist( mapPoint ) );
   double tol = QgsTolerance::vertexSearchRadius( canvas()->mapSettings() );
 
   QgsGeometry geom = cachedGeometryForVertex( *mMouseAtEndpoint );
   QgsPointXY vertexPointV2 = geom.vertexAt( mMouseAtEndpoint->vertexId );
   QgsPointXY vertexPoint = QgsPointXY( vertexPointV2.x(), vertexPointV2.y() );
-  double distVertex = sqrt( vertexPoint.sqrDist( mapPoint ) );
+  double distVertex = std::sqrt( vertexPoint.sqrDist( mapPoint ) );
 
   return distMarker < tol && distMarker < distVertex;
 }
@@ -1756,7 +1756,7 @@ bool QgsNodeTool::matchEdgeCenterTest( const QgsPointLocator::Match &m, const Qg
   if ( edgeCenterPtr )
     *edgeCenterPtr = edgeCenter;
 
-  double distFromEdgeCenter = sqrt( mapPoint.sqrDist( edgeCenter ) );
+  double distFromEdgeCenter = std::sqrt( mapPoint.sqrDist( edgeCenter ) );
   double tol = QgsTolerance::vertexSearchRadius( canvas()->mapSettings() );
   bool isNearCenter = distFromEdgeCenter < tol;
   return isNearCenter;

@@ -197,11 +197,11 @@ void normalizeCoordinates( const QVector<QgsPointXY> &coords, QVector<QgsPointXY
   {
     double X = ( coords[i].x() - cogX );
     double Y = ( coords[i].y() - cogY );
-    meanDist += sqrt( X * X + Y * Y );
+    meanDist += std::sqrt( X * X + Y * Y );
   }
   meanDist *= 1.0 / coords.size();
 
-  double OOD = meanDist / sqrt( 2.0 );
+  double OOD = meanDist / std::sqrt( 2.0 );
   double D   = 1.0 / OOD;
   normalizedCoords.resize( coords.size() );
   for ( int i = 0; i < coords.size(); i++ )

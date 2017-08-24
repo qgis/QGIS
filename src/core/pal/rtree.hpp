@@ -1167,7 +1167,7 @@ namespace pal
       sumOfSquares += halfExtent * halfExtent;
     }
 
-    radius = static_cast< ELEMTYPEREAL >( sqrt( sumOfSquares ) );
+    radius = static_cast< ELEMTYPEREAL >( std::sqrt( sumOfSquares ) );
 
     // Pow maybe slow, so test for common dims like 2,3 and just use x*x, x*x*x.
     if ( NUMDIMS == 3 )

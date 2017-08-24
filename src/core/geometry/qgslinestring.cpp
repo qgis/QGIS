@@ -330,7 +330,7 @@ double QgsLineString::length() const
   {
     dx = mX.at( i ) - mX.at( i - 1 );
     dy = mY.at( i ) - mY.at( i - 1 );
-    length += sqrt( dx * dx + dy * dy );
+    length += std::sqrt( dx * dx + dy * dy );
   }
   return length;
 }
@@ -679,8 +679,8 @@ void QgsLineString::extend( double startDistance, double endDistance )
   // start of line
   if ( startDistance > 0 )
   {
-    double currentLen = sqrt( std::pow( mX.at( 0 ) - mX.at( 1 ), 2 ) +
-                              std::pow( mY.at( 0 ) - mY.at( 1 ), 2 ) );
+    double currentLen = std::sqrt( std::pow( mX.at( 0 ) - mX.at( 1 ), 2 ) +
+                                   std::pow( mY.at( 0 ) - mY.at( 1 ), 2 ) );
     double newLen = currentLen + startDistance;
     mX[ 0 ] = mX.at( 1 ) + ( mX.at( 0 ) - mX.at( 1 ) ) / currentLen * newLen;
     mY[ 0 ] = mY.at( 1 ) + ( mY.at( 0 ) - mY.at( 1 ) ) / currentLen * newLen;
@@ -689,8 +689,8 @@ void QgsLineString::extend( double startDistance, double endDistance )
   if ( endDistance > 0 )
   {
     int last = mX.size() - 1;
-    double currentLen = sqrt( std::pow( mX.at( last ) - mX.at( last - 1 ), 2 ) +
-                              std::pow( mY.at( last ) - mY.at( last - 1 ), 2 ) );
+    double currentLen = std::sqrt( std::pow( mX.at( last ) - mX.at( last - 1 ), 2 ) +
+                                   std::pow( mY.at( last ) - mY.at( last - 1 ), 2 ) );
     double newLen = currentLen + endDistance;
     mX[ last ] = mX.at( last - 1 ) + ( mX.at( last ) - mX.at( last - 1 ) ) / currentLen * newLen;
     mY[ last ] = mY.at( last - 1 ) + ( mY.at( last ) - mY.at( last - 1 ) ) / currentLen * newLen;
@@ -916,8 +916,8 @@ QgsPoint QgsLineString::centroid() const
   {
     double currentX = mX.at( i );
     double currentY = mY.at( i );
-    double segmentLength = sqrt( std::pow( currentX - prevX, 2.0 ) +
-                                 std::pow( currentY - prevY, 2.0 ) );
+    double segmentLength = std::sqrt( std::pow( currentX - prevX, 2.0 ) +
+                                      std::pow( currentY - prevY, 2.0 ) );
     if ( qgsDoubleNear( segmentLength, 0.0 ) )
       continue;
 

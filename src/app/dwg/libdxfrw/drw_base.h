@@ -175,7 +175,7 @@ class DRW_Coord
     void unitize()
     {
       double dist;
-      dist = sqrt( x * x + y * y + z * z );
+      dist = std::sqrt( x * x + y * y + z * z );
       if ( dist > 0.0 )
       {
         x = x / dist;

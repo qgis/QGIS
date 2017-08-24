@@ -453,7 +453,7 @@ double LabelPosition::getDistanceToPoint( double xp, double yp ) const
 {
   //first check if inside, if so then distance is -1
   double distance = ( containsPoint( xp, yp ) ? -1
-                      : sqrt( minDistanceToPoint( xp, yp ) ) );
+                      : std::sqrt( minDistanceToPoint( xp, yp ) ) );
 
   if ( nextPart && distance > 0 )
     return qMin( distance, nextPart->getDistanceToPoint( xp, yp ) );

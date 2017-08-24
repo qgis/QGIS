@@ -44,7 +44,7 @@ int QgsIDWInterpolator::interpolatePoint( double x, double y, double &result )
 
   Q_FOREACH ( const vertexData &vertex_it, mCachedBaseData )
   {
-    distance = sqrt( ( vertex_it.x - x ) * ( vertex_it.x - x ) + ( vertex_it.y - y ) * ( vertex_it.y - y ) );
+    distance = std::sqrt( ( vertex_it.x - x ) * ( vertex_it.x - x ) + ( vertex_it.y - y ) * ( vertex_it.y - y ) );
     if ( ( distance - 0 ) < std::numeric_limits<double>::min() )
     {
       result = vertex_it.z;

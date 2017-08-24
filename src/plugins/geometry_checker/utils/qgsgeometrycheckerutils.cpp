@@ -57,7 +57,7 @@ namespace QgsGeometryCheckerUtils
     double nom = std::fabs( ( p2.y() - p1.y() ) * q.x() - ( p2.x() - p1.x() ) * q.y() + p2.x() * p1.y() - p2.y() * p1.x() );
     double dx = p2.x() - p1.x();
     double dy = p2.y() - p1.y();
-    return nom / qSqrt( dx * dx + dy * dy );
+    return nom / std::sqrt( dx * dx + dy * dy );
   }
 
   double sharedEdgeLength( const QgsAbstractGeometry *geom1, const QgsAbstractGeometry *geom2, double tol )
@@ -74,7 +74,7 @@ namespace QgsGeometryCheckerUtils
           QgsPoint p1 = geom1->vertexAt( QgsVertexId( iPart1, iRing1, iVert1 ) );
           QgsPoint p2 = geom1->vertexAt( QgsVertexId( iPart1, iRing1, jVert1 ) );
           double lambdap1 = 0.;
-          double lambdap2 = qSqrt( QgsGeometryUtils::sqrDistance2D( p1, p2 ) );
+          double lambdap2 = std::sqrt( QgsGeometryUtils::sqrDistance2D( p1, p2 ) );
           QgsVector d;
           try
           {

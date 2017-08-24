@@ -666,7 +666,7 @@ class MyLine
       // length
       double x = ( p2.x() - p1.x() );
       double y = ( p2.y() - p1.y() );
-      mLength = sqrt( x * x + y * y );
+      mLength = std::sqrt( x * x + y * y );
     }
 
     // return angle in radians
@@ -1278,8 +1278,8 @@ void QgsMarkerLineSymbolLayer::renderPolylineCentral( const QPolygonF &points, Q
     QPointF last = *it;
     for ( ++it; it != points.constEnd(); ++it )
     {
-      length += sqrt( ( last.x() - it->x() ) * ( last.x() - it->x() ) +
-                      ( last.y() - it->y() ) * ( last.y() - it->y() ) );
+      length += std::sqrt( ( last.x() - it->x() ) * ( last.x() - it->x() ) +
+                           ( last.y() - it->y() ) * ( last.y() - it->y() ) );
       last = *it;
     }
 
@@ -1292,8 +1292,8 @@ void QgsMarkerLineSymbolLayer::renderPolylineCentral( const QPolygonF &points, Q
     for ( ++it; it != points.constEnd(); ++it )
     {
       next = *it;
-      next_at += sqrt( ( last.x() - it->x() ) * ( last.x() - it->x() ) +
-                       ( last.y() - it->y() ) * ( last.y() - it->y() ) );
+      next_at += std::sqrt( ( last.x() - it->x() ) * ( last.x() - it->x() ) +
+                            ( last.y() - it->y() ) * ( last.y() - it->y() ) );
       if ( next_at >= length / 2 )
         break; // we have reached the center
       last = *it;

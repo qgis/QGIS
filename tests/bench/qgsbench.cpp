@@ -248,7 +248,7 @@ void QgsBench::render()
         if ( i == 0 || d > maxdev[t] ) maxdev[t] = d;
       }
 
-      stdev[t] = sqrt( stdev[t] / mTimes.size() );
+      stdev[t] = std::sqrt( stdev[t] / mTimes.size() );
     }
 
     QMap<QString, QVariant> map;

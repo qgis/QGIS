@@ -139,7 +139,7 @@ double QgsGeometryUtils::distanceToVertex( const QgsAbstractGeometry &geom, QgsV
   {
     if ( !first )
     {
-      currentDist += sqrt( QgsGeometryUtils::sqrDistance2D( previousVertex, vertex ) );
+      currentDist += std::sqrt( QgsGeometryUtils::sqrDistance2D( previousVertex, vertex ) );
     }
 
     previousVertex = vertex;
@@ -177,7 +177,7 @@ bool QgsGeometryUtils::verticesAtDistance( const QgsAbstractGeometry &geometry, 
   {
     if ( !first )
     {
-      currentDist += sqrt( QgsGeometryUtils::sqrDistance2D( previousPoint, point ) );
+      currentDist += std::sqrt( QgsGeometryUtils::sqrDistance2D( previousPoint, point ) );
     }
 
     if ( qgsDoubleNear( currentDist, distance ) )
@@ -417,7 +417,7 @@ QgsPoint QgsGeometryUtils::pointOnLineWithDistance( const QgsPoint &startPoint, 
 {
   double dx = directionPoint.x() - startPoint.x();
   double dy = directionPoint.y() - startPoint.y();
-  double length = sqrt( dx * dx + dy * dy );
+  double length = std::sqrt( dx * dx + dy * dy );
 
   if ( qgsDoubleNear( length, 0.0 ) )
   {
@@ -451,7 +451,7 @@ void QgsGeometryUtils::circleCenterRadius( const QgsPoint &pt1, const QgsPoint &
   {
     centerX = ( pt1.x() + pt2.x() ) / 2.0;
     centerY = ( pt1.y() + pt2.y() ) / 2.0;
-    radius = sqrt( std::pow( centerX - pt1.x(), 2.0 ) + std::pow( centerY - pt1.y(), 2.0 ) );
+    radius = std::sqrt( std::pow( centerX - pt1.x(), 2.0 ) + std::pow( centerY - pt1.y(), 2.0 ) );
     return;
   }
 
@@ -477,7 +477,7 @@ void QgsGeometryUtils::circleCenterRadius( const QgsPoint &pt1, const QgsPoint &
   // Calculate centroid coordinates and radius
   centerX = pt1.x() + ( h21 * dy31 - h31 * dy21 ) / d;
   centerY = pt1.y() - ( h21 * dx31 - h31 * dx21 ) / d;
-  radius = sqrt( std::pow( centerX - pt1.x(), 2.0 ) + std::pow( centerY - pt1.y(), 2.0 ) );
+  radius = std::sqrt( std::pow( centerX - pt1.x(), 2.0 ) + std::pow( centerY - pt1.y(), 2.0 ) );
 }
 
 bool QgsGeometryUtils::circleClockwise( double angle1, double angle2, double angle3 )
@@ -569,12 +569,12 @@ double QgsGeometryUtils::sweepAngle( double centerX, double centerY, double x1, 
 bool QgsGeometryUtils::segmentMidPoint( const QgsPoint &p1, const QgsPoint &p2, QgsPoint &result, double radius, const QgsPoint &mousePos )
 {
   QgsPoint midPoint( ( p1.x() + p2.x() ) / 2.0, ( p1.y() + p2.y() ) / 2.0 );
-  double midDist = sqrt( sqrDistance2D( p1, midPoint ) );
+  double midDist = std::sqrt( sqrDistance2D( p1, midPoint ) );
   if ( radius < midDist )
   {
     return false;
   }
-  double centerMidDist = sqrt( radius * radius - midDist * midDist );
+  double centerMidDist = std::sqrt( radius * radius - midDist * midDist );
   double dist = radius - centerMidDist;
 
   double midDx = midPoint.x() - p1.x();

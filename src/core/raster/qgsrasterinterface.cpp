@@ -62,7 +62,7 @@ void QgsRasterInterface::initStatistics( QgsRasterBandStats &statistics,
   {
     // Calc resolution from theSampleSize
     double xRes, yRes;
-    xRes = yRes = sqrt( ( finalExtent.width() * finalExtent.height() ) / sampleSize );
+    xRes = yRes = std::sqrt( ( finalExtent.width() * finalExtent.height() ) / sampleSize );
 
     // But limit by physical resolution
     if ( capabilities() & Size )
@@ -230,7 +230,7 @@ QgsRasterBandStats QgsRasterInterface::bandStatistics( int bandNo,
   // stdDev may differ  from GDAL stats, because GDAL is using naive single pass
   // algorithm which is more error prone (because of rounding errors)
   // Divide result by sample size - 1 and get square root to get stdev
-  myRasterBandStats.stdDev = sqrt( mySumOfSquares / ( myRasterBandStats.elementCount - 1 ) );
+  myRasterBandStats.stdDev = std::sqrt( mySumOfSquares / ( myRasterBandStats.elementCount - 1 ) );
 
   QgsDebugMsgLevel( "************ STATS **************", 4 );
   QgsDebugMsgLevel( QString( "MIN %1" ).arg( myRasterBandStats.minimumValue ), 4 );
@@ -305,7 +305,7 @@ void QgsRasterInterface::initHistogram( QgsRasterHistogram &histogram,
   {
     // Calc resolution from theSampleSize
     double xRes, yRes;
-    xRes = yRes = sqrt( ( finalExtent.width() * finalExtent.height() ) / sampleSize );
+    xRes = yRes = std::sqrt( ( finalExtent.width() * finalExtent.height() ) / sampleSize );
 
     // But limit by physical resolution
     if ( capabilities() & Size )

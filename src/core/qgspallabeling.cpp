@@ -2989,7 +2989,7 @@ bool QgsPalLabeling::checkMinimumSizeMM( const QgsRenderContext &context, const 
     double area = geom.area();
     if ( area >= 0.0 )
     {
-      return ( sqrt( area ) >= ( minSize * mapUnitsPerMM ) );
+      return ( std::sqrt( area ) >= ( minSize * mapUnitsPerMM ) );
     }
   }
   return true; //should never be reached. Return true in this case to label such geometries anyway.
