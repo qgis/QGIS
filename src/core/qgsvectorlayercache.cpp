@@ -244,7 +244,7 @@ void QgsVectorLayerCache::onJoinAttributeValueChanged( QgsFeatureId fid, int fie
   {
     if ( joinLayer == info.joinLayer() )
     {
-      QgsFeature feature = mLayer->joinBuffer()->targetedFeatureOf( &info, joinLayer->getFeature( fid ) );
+      const QgsFeature feature = mLayer->joinBuffer()->targetedFeatureOf( &info, joinLayer->getFeature( fid ) );
 
       const QString fieldName = info.prefixedFieldName( joinLayer->fields().field( field ) );
       const int fieldIndex = mLayer->fields().indexFromName( fieldName );

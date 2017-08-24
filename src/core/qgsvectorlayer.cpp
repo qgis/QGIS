@@ -2274,7 +2274,7 @@ bool QgsVectorLayer::changeAttributeValue( QgsFeatureId fid, int field, const QV
       if ( !feature.isValid() )
         return false;
 
-      QgsFeature joinFeature = mJoinBuffer->joinedFeatureOf( info, feature );
+      const QgsFeature joinFeature = mJoinBuffer->joinedFeatureOf( info, feature );
 
       if ( joinFeature.isValid() )
         return info->joinLayer()->changeAttributeValue( joinFeature.id(), srcFieldIndex, newValue, oldValue );
@@ -2486,7 +2486,7 @@ bool QgsVectorLayer::deleteFeaturesFromJoinedLayers( QgsFeatureIds fids )
     {
       if ( info.isEditable() && info.hasCascadedDelete() )
       {
-        QgsFeature joinFeature = mJoinBuffer->joinedFeatureOf( &info, getFeature( fid ) );
+        const QgsFeature joinFeature = mJoinBuffer->joinedFeatureOf( &info, getFeature( fid ) );
         if ( joinFeature.isValid() )
           info.joinLayer()->deleteFeature( joinFeature.id() );
       }

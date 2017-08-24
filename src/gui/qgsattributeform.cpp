@@ -2070,20 +2070,20 @@ void QgsAttributeForm::updateIcon( QgsEditorWidgetWrapper *eww )
 
       if ( !info->isEditable() )
       {
-        QString file = QStringLiteral( "/mIconJoinNotEditable.svg" );
-        QString tooltip = tr( "Join settings do not allow editing" );
+        const QString file = QStringLiteral( "/mIconJoinNotEditable.svg" );
+        const QString tooltip = tr( "Join settings do not allow editing" );
         reloadIcon( file, tooltip, mIconMap[eww->widget()] );
       }
       else if ( mMode == QgsAttributeForm::AddFeatureMode && !info->hasUpsertOnEdit() )
       {
-        QString file = QStringLiteral( "mIconJoinHasNotUpsertOnEdit.svg" );
-        QString tooltip = tr( "Join settings do not allow upsert on edit" );
+        const QString file = QStringLiteral( "mIconJoinHasNotUpsertOnEdit.svg" );
+        const QString tooltip = tr( "Join settings do not allow upsert on edit" );
         reloadIcon( file, tooltip, mIconMap[eww->widget()] );
       }
       else if ( !info->joinLayer()->isEditable() )
       {
-        QString file = QStringLiteral( "/mIconJoinedLayerNotEditable.svg" );
-        QString tooltip = tr( "Joined layer is not toggled editable" );
+        const QString file = QStringLiteral( "/mIconJoinedLayerNotEditable.svg" );
+        const QString tooltip = tr( "Joined layer is not toggled editable" );
         reloadIcon( file, tooltip, mIconMap[eww->widget()] );
       }
     }
