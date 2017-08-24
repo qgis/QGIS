@@ -24,6 +24,7 @@ QgsGdalSourceSelect::QgsGdalSourceSelect( QWidget *parent, Qt::WindowFlags fl, Q
   setupUi( this );
   setupButtons( buttonBox );
   mQgsFileWidget->setFilter( QgsProviderRegistry::instance()->fileRasterFilters() );
+  mQgsFileWidget->setStorageMode( QgsFileWidget::GetMultipleFiles );
   connect( mQgsFileWidget, &QgsFileWidget::fileChanged, this, [ = ]( const QString & path )
   {
     mRasterPath = path;
@@ -38,8 +39,10 @@ QgsGdalSourceSelect::~QgsGdalSourceSelect()
 
 void QgsGdalSourceSelect::addButtonClicked()
 {
-  QFileInfo baseName( mRasterPath );
-  emit addRasterLayer( mRasterPath, baseName.baseName(), QStringLiteral( "gdal" ) );
+  Q_FOREACH ( const QString &path, QgsFileWidget::splitFilePaths( mRasterPath ) )
+  {
+    emit addRasterLayer( path, QFileInfo( path ).baseName(), QStringLiteral( "gdal" ) );
+  }
 }
 
 QGISEXTERN QgsGdalSourceSelect *selectWidget( QWidget *parent, Qt::WindowFlags fl, QgsProviderRegistry::WidgetMode widgetMode )
