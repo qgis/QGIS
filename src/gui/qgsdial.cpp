@@ -90,14 +90,14 @@ void QgsDial::update()
     if ( minimum() != 0 )
       QDial::setMinimum( 0 );
 
-    int max = qCeil( ( mMax.toDouble() - mMin.toDouble() ) / mStep.toDouble() );
+    int max = std::ceil( ( mMax.toDouble() - mMin.toDouble() ) / mStep.toDouble() );
     if ( maximum() != max )
       QDial::setMaximum( max );
 
     if ( singleStep() != 1 )
       QDial::setSingleStep( 1 );
 
-    QDial::setValue( qCeil( ( mValue.toDouble() - mMin.toDouble() ) / mStep.toDouble() ) );
+    QDial::setValue( std::ceil( ( mValue.toDouble() - mMin.toDouble() ) / mStep.toDouble() ) );
   }
 
   connect( this, static_cast < void ( QDial::* )( int ) > ( &QDial::valueChanged ), this, &QgsDial::onValueChanged );

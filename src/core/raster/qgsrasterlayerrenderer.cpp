@@ -134,8 +134,8 @@ QgsRasterLayerRenderer::QgsRasterLayerRenderer( QgsRasterLayer *layer, QgsRender
   // the provider anyway
   mRasterViewPort->mTopLeftPoint.setX( floor( mRasterViewPort->mTopLeftPoint.x() ) );
   mRasterViewPort->mTopLeftPoint.setY( floor( mRasterViewPort->mTopLeftPoint.y() ) );
-  mRasterViewPort->mBottomRightPoint.setX( ceil( mRasterViewPort->mBottomRightPoint.x() ) );
-  mRasterViewPort->mBottomRightPoint.setY( ceil( mRasterViewPort->mBottomRightPoint.y() ) );
+  mRasterViewPort->mBottomRightPoint.setX( std::ceil( mRasterViewPort->mBottomRightPoint.x() ) );
+  mRasterViewPort->mBottomRightPoint.setY( std::ceil( mRasterViewPort->mBottomRightPoint.y() ) );
   // recalc myRasterExtent to aligned values
   myRasterExtent.set(
     mapToPixel.toMapCoordinatesF( mRasterViewPort->mTopLeftPoint.x(),

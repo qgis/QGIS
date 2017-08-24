@@ -865,7 +865,7 @@ static QVariant fcnFloor( const QVariantList &values, const QgsExpressionContext
 static QVariant fcnCeil( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent )
 {
   double x = QgsExpressionUtils::getDoubleValue( values.at( 0 ), parent );
-  return QVariant( ceil( x ) );
+  return QVariant( std::ceil( x ) );
 }
 
 static QVariant fcnToInt( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent )

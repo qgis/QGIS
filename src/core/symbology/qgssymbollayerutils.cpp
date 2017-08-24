@@ -3948,7 +3948,7 @@ QList<double> QgsSymbolLayerUtils::prettyBreaks( double minimum, double maximum,
   }
   // Maybe used to correct for the epsilon here??
   int start = floor( minimum / unit + 1e-07 );
-  int end = ceil( maximum / unit - 1e-07 );
+  int end = std::ceil( maximum / unit - 1e-07 );
 
   // Extend the range out beyond the data. Does this ever happen??
   while ( start * unit > minimum + ( 1e-07 * unit ) )

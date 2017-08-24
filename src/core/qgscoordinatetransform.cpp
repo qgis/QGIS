@@ -353,8 +353,8 @@ QgsRectangle QgsCoordinateTransform::transformBoundingBox( const QgsRectangle &r
   // TODO: how to effectively and precisely reproject bounding box?
   const int nPoints = 1000;
   double d = sqrt( ( rect.width() * rect.height() ) / std::pow( sqrt( static_cast< double >( nPoints ) ) - 1, 2.0 ) );
-  int nXPoints = static_cast< int >( ceil( rect.width() / d ) ) + 1;
-  int nYPoints = static_cast< int >( ceil( rect.height() / d ) ) + 1;
+  int nXPoints = static_cast< int >( std::ceil( rect.width() / d ) ) + 1;
+  int nYPoints = static_cast< int >( std::ceil( rect.height() / d ) ) + 1;
 
   QgsRectangle bb_rect;
   bb_rect.setMinimal();

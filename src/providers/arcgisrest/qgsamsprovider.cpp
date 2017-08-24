@@ -289,8 +289,8 @@ void QgsAmsProvider::draw( const QgsRectangle &viewExtent, int pixelWidth, int p
     // tile_y = oy - j * (resolution * tileHeight)
     int ixStart = qFloor( ( viewExtent.xMinimum() - ox ) / ( tileWidth * resolution ) );
     int iyStart = qFloor( ( oy - viewExtent.yMaximum() ) / ( tileHeight * resolution ) );
-    int ixEnd = qCeil( ( viewExtent.xMaximum() - ox ) / ( tileWidth * resolution ) );
-    int iyEnd = qCeil( ( oy - viewExtent.yMinimum() ) / ( tileHeight * resolution ) );
+    int ixEnd = std::ceil( ( viewExtent.xMaximum() - ox ) / ( tileWidth * resolution ) );
+    int iyEnd = std::ceil( ( oy - viewExtent.yMinimum() ) / ( tileHeight * resolution ) );
     double imX = ( viewExtent.xMinimum() - ox ) / resolution;
     double imY = ( oy - viewExtent.yMaximum() ) / resolution;
 

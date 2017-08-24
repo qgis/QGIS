@@ -357,7 +357,7 @@ void QgsRasterInterface::initHistogram( QgsRasterHistogram &histogram,
              mySrcDataType == Qgis::UInt16 || mySrcDataType == Qgis::UInt32 ) )
       {
         if ( myBinCount > histogram.maximum - histogram.minimum + 1 )
-          myBinCount = int( ceil( histogram.maximum - histogram.minimum + 1 ) );
+          myBinCount = int( std::ceil( histogram.maximum - histogram.minimum + 1 ) );
       }
     }
   }
@@ -530,7 +530,7 @@ void QgsRasterInterface::cumulativeCut( int bandNo,
     return;
 
   // for byte bands make sure bin count == actual range
-  int myBinCount = ( mySrcDataType == Qgis::Byte ) ? int( ceil( stats.maximumValue - stats.minimumValue + 1 ) ) : 0;
+  int myBinCount = ( mySrcDataType == Qgis::Byte ) ? int( std::ceil( stats.maximumValue - stats.minimumValue + 1 ) ) : 0;
   QgsRasterHistogram myHistogram = histogram( bandNo, myBinCount, stats.minimumValue, stats.maximumValue, extent, sampleSize );
   //QgsRasterHistogram myHistogram = histogram( bandNo, 0, std::numeric_limits<double>::quiet_NaN(), std::numeric_limits<double>::quiet_NaN(), extent, sampleSize );
 
@@ -568,7 +568,7 @@ void QgsRasterInterface::cumulativeCut( int bandNo,
     if ( lowerValue != std::numeric_limits<double>::quiet_NaN() )
       lowerValue = floor( lowerValue );
     if ( upperValue != std::numeric_limits<double>::quiet_NaN() )
-      upperValue = ceil( upperValue );
+      upperValue = std::ceil( upperValue );
   }
 }
 

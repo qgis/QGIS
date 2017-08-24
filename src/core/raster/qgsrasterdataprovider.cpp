@@ -123,14 +123,14 @@ QgsRasterBlock *QgsRasterDataProvider::block( int bandNo, QgsRectangle  const &b
     {
       int col = floor( ( tmpExtent.xMinimum() - extent().xMinimum() ) / providerXRes );
       tmpExtent.setXMinimum( extent().xMinimum() + col * providerXRes );
-      col = ceil( ( tmpExtent.xMaximum() - extent().xMinimum() ) / providerXRes );
+      col = std::ceil( ( tmpExtent.xMaximum() - extent().xMinimum() ) / providerXRes );
       tmpExtent.setXMaximum( extent().xMinimum() + col * providerXRes );
     }
     if ( tmpYRes > yRes )
     {
       int row = floor( ( extent().yMaximum() - tmpExtent.yMaximum() ) / providerYRes );
       tmpExtent.setYMaximum( extent().yMaximum() - row * providerYRes );
-      row = ceil( ( extent().yMaximum() - tmpExtent.yMinimum() ) / providerYRes );
+      row = std::ceil( ( extent().yMaximum() - tmpExtent.yMinimum() ) / providerYRes );
       tmpExtent.setYMinimum( extent().yMaximum() - row * providerYRes );
     }
     int tmpWidth = std::round( tmpExtent.width() / tmpXRes );

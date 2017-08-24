@@ -1565,7 +1565,7 @@ void QgsColorPreviewWidget::drawColor( const QColor &color, QRect rect, QPainter
     opaqueColor.setAlpha( 255 );
     QBrush opaqueBrush = QBrush( opaqueColor );
     painter.setBrush( opaqueBrush );
-    painter.drawRect( rect.left(), rect.top(), ceil( rect.width() / 2.0 ), rect.height() );
+    painter.drawRect( rect.left(), rect.top(), std::ceil( rect.width() / 2.0 ), rect.height() );
   }
   else
   {

@@ -259,7 +259,7 @@ void ProjectorData::calcSrcExtent()
       double x = mExtent.xMinimum() + col * mMaxSrcXRes;
       mSrcExtent.setXMinimum( x );
 
-      col = ceil( ( mSrcExtent.xMaximum() - mExtent.xMinimum() ) / mMaxSrcXRes );
+      col = std::ceil( ( mSrcExtent.xMaximum() - mExtent.xMinimum() ) / mMaxSrcXRes );
       x = mExtent.xMinimum() + col * mMaxSrcXRes;
       mSrcExtent.setXMaximum( x );
     }
@@ -269,7 +269,7 @@ void ProjectorData::calcSrcExtent()
       double y = mExtent.yMaximum() - row * mMaxSrcYRes;
       mSrcExtent.setYMaximum( y );
 
-      row = ceil( ( mExtent.yMaximum() - mSrcExtent.yMinimum() ) / mMaxSrcYRes );
+      row = std::ceil( ( mExtent.yMaximum() - mSrcExtent.yMinimum() ) / mMaxSrcYRes );
       y = mExtent.yMaximum() - row * mMaxSrcYRes;
       mSrcExtent.setYMinimum( y );
     }

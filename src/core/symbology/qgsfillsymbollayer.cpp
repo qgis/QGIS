@@ -2617,7 +2617,7 @@ void QgsLinePatternFillSymbolLayer::applyPattern( const QgsSymbolRenderContext &
 
   // Add buffer based on bleed but keep precisely the height/width ratio (angle)
   // thus we add integer multiplications of width and height covering the bleed
-  int bufferMulti = qMax( qCeil( outputPixelBleed / width ), qCeil( outputPixelBleed / width ) );
+  int bufferMulti = qMax( std::ceil( outputPixelBleed / width ), std::ceil( outputPixelBleed / width ) );
 
   // Always buffer at least once so that center of line marker in upper right corner
   // does not fall outside due to representation error

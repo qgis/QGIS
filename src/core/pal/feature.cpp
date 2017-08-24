@@ -1460,8 +1460,8 @@ int FeaturePart::createCandidatesForPolygon( QList< LabelPosition *> &lPos, Poin
         px0 = box->width / 2.0;
         py0 = box->length / 2.0;
 
-        px0 -= ceil( px0 / dx ) * dx;
-        py0 -= ceil( py0 / dy ) * dy;
+        px0 -= std::ceil( px0 / dx ) * dx;
+        py0 -= std::ceil( py0 / dy ) * dy;
 
         for ( px = px0; px <= box->width; px += dx )
         {
