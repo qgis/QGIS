@@ -18,8 +18,8 @@
 
 #include <QDialog>
 #include <QCheckBox>
-#include <ui_qgssublayersdialogbase.h>
-#include <qgis_sip.h>
+#include "ui_qgssublayersdialogbase.h"
+#include "qgis_sip.h"
 #include "qgis_gui.h"
 
 /** \ingroup gui

@@ -20,9 +20,9 @@ email                : hugo dot mercier at oslandia dot com
 #define QGSVIRTUAL_LAYER_SOURCE_SELECT_H
 
 #include "ui_qgsvirtuallayersourceselectbase.h"
-#include <qgis.h>
+#include "qgis.h"
 #include "qgsguiutils.h"
-#include <qgsvirtuallayerdefinition.h>
+#include "qgsvirtuallayerdefinition.h"
 #include "qgsproviderregistry.h"
 #include "qgsabstractdatasourcewidget.h"
 

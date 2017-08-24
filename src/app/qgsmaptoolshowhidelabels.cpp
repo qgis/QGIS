@@ -25,7 +25,7 @@
 
 #include "qgsmaptoolselectutils.h"
 #include "qgsrubberband.h"
-#include <qgslogger.h>
+#include "qgslogger.h"
 
 #include <QMouseEvent>
 

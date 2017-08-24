@@ -19,7 +19,7 @@
 #define QGSDB2TABLEMODEL_H
 
 #include <QStandardItemModel>
-#include <qgsdataitem.h>
+#include "qgsdataitem.h"
 #include "qgis.h"
 
 //! Layer Property structure

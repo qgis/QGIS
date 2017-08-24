@@ -20,8 +20,8 @@
 #include <QEvent>
 #include <QStringList>
 
-#include <qgis.h>
-#include <qgsconfig.h>
+#include "qgis.h"
+#include "qgsconfig.h"
 
 class QgsActionScopeRegistry;
 class QgsRuntimeProfiler;

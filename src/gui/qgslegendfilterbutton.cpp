@@ -18,8 +18,8 @@
 #include <QMenu>
 #include <QAction>
 
-#include <qgsapplication.h>
-#include <qgsexpressionbuilderdialog.h>
+#include "qgsapplication.h"
+#include "qgsexpressionbuilderdialog.h"
 
 QgsLegendFilterButton::QgsLegendFilterButton( QWidget *parent )
   : QToolButton( parent )

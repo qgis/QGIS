@@ -17,7 +17,7 @@
  ***************************************************************************/
 #ifndef QGSGENERICPROJECTIONSELECTOR_H
 #define QGSGENERICPROJECTIONSELECTOR_H
-#include <ui_qgsgenericprojectionselectorbase.h>
+#include "ui_qgsgenericprojectionselectorbase.h"
 #include "qgis.h"
 #include "qgsguiutils.h"
 

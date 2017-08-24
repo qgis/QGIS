@@ -22,12 +22,12 @@ email                : hugo dot mercier at oslandia dot com
 #include <QCoreApplication>
 #include <QBuffer>
 
-#include <qgsapplication.h>
-#include <qgsvectorlayer.h>
-#include <qgsvectordataprovider.h>
-#include <qgsgeometry.h>
-#include <qgsproject.h>
-#include <qgsproviderregistry.h>
+#include "qgsapplication.h"
+#include "qgsvectorlayer.h"
+#include "qgsvectordataprovider.h"
+#include "qgsgeometry.h"
+#include "qgsproject.h"
+#include "qgsproviderregistry.h"
 #include "qgsinterval.h"
 #include <sqlite3.h>
 #include <spatialite.h>

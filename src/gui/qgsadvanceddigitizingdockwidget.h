@@ -20,7 +20,7 @@
 #include "qgsmapmouseevent.h"
 #include "qgsmessagebaritem.h"
 
-#include <ui_qgsadvanceddigitizingdockwidgetbase.h>
+#include "ui_qgsadvanceddigitizingdockwidgetbase.h"
 #include "qgis_gui.h"
 #include "qgis.h"
 #include <memory>

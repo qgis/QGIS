@@ -17,16 +17,16 @@
 
 #include "topolTest.h"
 
-#include <qgsvectorlayer.h>
+#include "qgsvectorlayer.h"
 #include "qgsfeatureiterator.h"
-#include <qgsmaplayer.h>
-#include <qgsmapcanvas.h>
-#include <qgsgeometry.h>
-#include <qgsfeature.h>
-#include <qgsspatialindex.h>
-#include <qgisinterface.h>
-#include <qgslogger.h>
-#include <qgsmessagelog.h>
+#include "qgsmaplayer.h"
+#include "qgsmapcanvas.h"
+#include "qgsgeometry.h"
+#include "qgsfeature.h"
+#include "qgsspatialindex.h"
+#include "qgisinterface.h"
+#include "qgslogger.h"
+#include "qgsmessagelog.h"
 #include <cmath>
 #include <set>
 #include <map>

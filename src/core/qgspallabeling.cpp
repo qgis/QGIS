@@ -22,12 +22,12 @@
 
 #include <list>
 
-#include <pal/pal.h>
-#include <pal/feature.h>
-#include <pal/layer.h>
-#include <pal/palexception.h>
-#include <pal/problem.h>
-#include <pal/labelposition.h>
+#include "pal/pal.h"
+#include "pal/feature.h"
+#include "pal/layer.h"
+#include "pal/palexception.h"
+#include "pal/problem.h"
+#include "pal/labelposition.h"
 
 #include <cmath>
 
@@ -46,15 +46,15 @@
 #include "qgslabelingengine.h"
 #include "qgsvectorlayerlabeling.h"
 
-#include <qgslogger.h>
-#include <qgsvectorlayer.h>
-#include <qgsvectordataprovider.h>
-#include <qgsvectorlayerdiagramprovider.h>
-#include <qgsvectorlayerlabelprovider.h>
-#include <qgsgeometry.h>
-#include <qgsmarkersymbollayer.h>
-#include <qgspainting.h>
-#include <qgsproject.h>
+#include "qgslogger.h"
+#include "qgsvectorlayer.h"
+#include "qgsvectordataprovider.h"
+#include "qgsvectorlayerdiagramprovider.h"
+#include "qgsvectorlayerlabelprovider.h"
+#include "qgsgeometry.h"
+#include "qgsmarkersymbollayer.h"
+#include "qgspainting.h"
+#include "qgsproject.h"
 #include "qgsproperty.h"
 #include "qgssymbollayerutils.h"
 #include "qgsmaptopixelgeometrysimplifier.h"

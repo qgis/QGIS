@@ -20,9 +20,9 @@
 #include "qgsdb2dataitems.h"
 #include "qgsdb2featureiterator.h"
 #include "qgsdb2geometrycolumns.h"
-#include <qgscoordinatereferencesystem.h>
-#include <qgsdataitem.h>
-#include <qgslogger.h>
+#include "qgscoordinatereferencesystem.h"
+#include "qgsdataitem.h"
+#include "qgslogger.h"
 #include "qgscredentials.h"
 
 #ifdef HAVE_GUI

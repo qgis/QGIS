@@ -42,8 +42,8 @@
 //QGIS includes
 #include "../qgisplugin.h"
 #include "coordinatecapturemaptool.h"
-#include <qgscoordinatereferencesystem.h>
-#include <qgscoordinatetransform.h>
+#include "qgscoordinatereferencesystem.h"
+#include "qgscoordinatetransform.h"
 
 //forward declarations
 class QAction;

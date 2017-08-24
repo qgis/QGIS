@@ -71,11 +71,11 @@
 #include <QWhatsThis>
 #include <QWidgetAction>
 
-#include <qgssettings.h>
-#include <qgsnetworkaccessmanager.h>
-#include <qgsapplication.h>
-#include <qgscomposition.h>
-#include <qgslayerstylingwidget.h>
+#include "qgssettings.h"
+#include "qgsnetworkaccessmanager.h"
+#include "qgsapplication.h"
+#include "qgscomposition.h"
+#include "qgslayerstylingwidget.h"
 #include "qgstaskmanager.h"
 #include "qgsziputils.h"
 

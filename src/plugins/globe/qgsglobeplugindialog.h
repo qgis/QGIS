@@ -15,7 +15,7 @@
 #ifndef QGSGLOBEPLUGINDIALOG_H
 #define QGSGLOBEPLUGINDIALOG_H
 
-#include <ui_qgsglobeplugindialog.h>
+#include "ui_qgsglobeplugindialog.h"
 #include <QDialog>
 
 class GlobePlugin;

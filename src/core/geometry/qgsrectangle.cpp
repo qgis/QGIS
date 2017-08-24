@@ -23,7 +23,6 @@
 #include <QTextStream>
 #include <QTransform>
 #include <QRegExp>
-#include <qnumeric.h>
 
 #include "qgspointxy.h"
 #include "qgsrectangle.h"

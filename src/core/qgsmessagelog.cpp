@@ -15,7 +15,7 @@
 
 #include "qgsmessagelog.h"
 #include "qgsapplication.h"
-#include <qgslogger.h>
+#include "qgslogger.h"
 #include <QDateTime>
 #include <QMetaType>
 #include <iostream>
