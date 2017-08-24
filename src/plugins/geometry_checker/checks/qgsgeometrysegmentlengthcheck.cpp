@@ -13,8 +13,6 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <qmath.h>
-
 #include "qgsgeometrysegmentlengthcheck.h"
 #include "qgsgeometryutils.h"
 #include "../utils/qgsfeaturepool.h"

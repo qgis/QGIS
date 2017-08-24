@@ -15,7 +15,6 @@
 
 #include "qgsstatisticalsummary.h"
 #include <limits>
-#include <qmath.h>
 #include <QString>
 #include <QObject>
 

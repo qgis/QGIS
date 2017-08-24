@@ -18,7 +18,6 @@
 #include "qgsrasterdataprovider.h"
 #include "qgsrasterlayer.h"
 
-#include <qmath.h>
 #include <QColor>
 #include <QPainter>
 #include <QImage>

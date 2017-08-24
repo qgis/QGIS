@@ -15,7 +15,6 @@
  ***************************************************************************/
 
 #include "qgsgeometryutils.h"
-#include <qmath.h>
 #include "qgsgeos.h"
 #include "qgsgeometrycollection.h"
 #include "qgssurface.h"

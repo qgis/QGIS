@@ -16,7 +16,6 @@
 
 #include "qgscurveeditorwidget.h"
 
-#include <qmath.h>
 #include <QPainter>
 #include <QVBoxLayout>
 #include <QMouseEvent>

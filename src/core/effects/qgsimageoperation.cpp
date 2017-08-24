@@ -22,7 +22,6 @@
 #include <QtConcurrentMap>
 #include <QColor>
 #include <QPainter>
-#include <qmath.h>
 
 //determined via trial-and-error. Could possibly be optimised, or varied
 //depending on the image size.

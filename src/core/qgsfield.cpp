@@ -21,7 +21,6 @@
 #include "qgssettings.h"
 
 #include <QDataStream>
-#include <QtCore/qmath.h>
 #include <QIcon>
 
 /***************************************************************************

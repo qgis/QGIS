@@ -21,7 +21,6 @@
 #include "qgscptcityarchive.h"
 #include "qgssettings.h"
 
-#include <qmath.h>
 #include <QColorDialog>
 #include <QInputDialog>
 #include <QPainter>

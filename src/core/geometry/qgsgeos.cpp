@@ -27,7 +27,6 @@ email                : marco.hugentobler at sourcepole dot com
 #include "qgspolygon.h"
 #include <limits>
 #include <cstdio>
-#include <QtCore/qmath.h>
 
 #define DEFAULT_QUADRANT_SEGMENTS 8
 

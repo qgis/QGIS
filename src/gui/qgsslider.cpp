@@ -21,7 +21,6 @@
 #include <QPaintEvent>
 #include <QPainter>
 #include <QRect>
-#include <qmath.h>
 
 QgsSlider::QgsSlider( QWidget *parent ) : QSlider( parent )
 {

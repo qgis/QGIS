@@ -17,7 +17,6 @@
 
 #include "qgscubicrasterresampler.h"
 #include <QImage>
-#include <qmath.h>
 
 QgsCubicRasterResampler::QgsCubicRasterResampler()
 // red

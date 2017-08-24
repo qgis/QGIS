@@ -26,8 +26,6 @@
 #include "qgsrasterblock.h"
 #include "qgslogger.h"
 
-#include "qmath.h"
-
 #include <QFile>
 
 QgsZonalStatistics::QgsZonalStatistics( QgsVectorLayer *polygonLayer, QgsRasterLayer *rasterLayer, const QString &attributePrefix, int rasterBand, QgsZonalStatistics::Statistics stats )

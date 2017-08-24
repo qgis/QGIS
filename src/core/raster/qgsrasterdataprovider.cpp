@@ -27,8 +27,6 @@
 #include <QByteArray>
 #include <QVariant>
 
-#include <qmath.h>
-
 #define ERR(message) QgsError(message, "Raster provider")
 
 void QgsRasterDataProvider::setUseSourceNoDataValue( int bandNo, bool use )

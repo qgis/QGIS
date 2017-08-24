@@ -22,8 +22,6 @@
 #include <QTime>
 #include <QStringList>
 
-#include <qmath.h>
-
 #include "qgslogger.h"
 #include "qgsrasterbandstats.h"
 #include "qgsrasterhistogram.h"

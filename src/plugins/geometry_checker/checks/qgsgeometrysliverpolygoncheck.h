@@ -17,7 +17,6 @@
 #define QGS_GEOMETRY_SLIVERPOLYGON_CHECK_H
 
 #include "qgsgeometryareacheck.h"
-#include <qmath.h>
 
 class QgsGeometrySliverPolygonCheck : public QgsGeometryAreaCheck
 {

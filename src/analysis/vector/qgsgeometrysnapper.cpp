@@ -15,8 +15,6 @@
  ***************************************************************************/
 
 #include <QtConcurrentMap>
-#include <qmath.h>
-
 #include "qgsfeatureiterator.h"
 #include "qgsgeometry.h"
 #include "qgsvectorlayer.h"

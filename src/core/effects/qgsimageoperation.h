@@ -21,7 +21,6 @@
 #include <QImage>
 #include "qgis.h"
 #include <QColor>
-#include <QtCore/qmath.h>
 
 #include "qgis_core.h"
 

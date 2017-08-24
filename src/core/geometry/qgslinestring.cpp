@@ -26,7 +26,6 @@
 #include <QPainter>
 #include <limits>
 #include <QDomDocument>
-#include <QtCore/qmath.h>
 
 
 /***************************************************************************

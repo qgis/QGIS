@@ -18,7 +18,6 @@
 #include "qgslogger.h"
 #include "MathUtils.h"
 #include "NormVecDecorator.h"
-#include <qmath.h>
 
 CloughTocherInterpolator::CloughTocherInterpolator()
   : mTIN( nullptr )

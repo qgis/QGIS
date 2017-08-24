@@ -20,7 +20,6 @@
 #include <cpl_conv.h>
 #include <limits>
 
-#include <qmath.h>
 #include <QPair>
 #include <QString>
 

@@ -30,7 +30,6 @@
 #include <QNetworkRequest>
 #include <QNetworkReply>
 #include <QPainter>
-#include <qmath.h>
 
 QgsAmsLegendFetcher::QgsAmsLegendFetcher( QgsAmsProvider *provider )
   : QgsImageFetcher( provider ), mProvider( provider )

@@ -19,8 +19,6 @@
 #include "qgspoint.h"
 #include "Vector3D.h"
 
-#include <qmath.h>
-
 bool MathUtils::calcBarycentricCoordinates( double x, double y, QgsPoint *p1, QgsPoint *p2, QgsPoint *p3, QgsPoint *result )
 {
   if ( p1 && p2 && p3 && result )

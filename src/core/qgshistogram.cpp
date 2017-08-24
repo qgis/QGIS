@@ -19,7 +19,6 @@
 
 #include "qgsstatisticalsummary.h"
 #include "qgsvectorlayer.h"
-#include <qmath.h>
 
 QgsHistogram::QgsHistogram()
   : mMax( 0 )
