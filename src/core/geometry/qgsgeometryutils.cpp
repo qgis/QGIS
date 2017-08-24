@@ -430,7 +430,7 @@ QgsPoint QgsGeometryUtils::pointOnLineWithDistance( const QgsPoint &startPoint, 
 
 double QgsGeometryUtils::ccwAngle( double dy, double dx )
 {
-  double angle = atan2( dy, dx ) * 180 / M_PI;
+  double angle = std::atan2( dy, dx ) * 180 / M_PI;
   if ( angle < 0 )
   {
     return 360 + angle;
@@ -664,9 +664,9 @@ void QgsGeometryUtils::segmentizeArc( const QgsPoint &p1, const QgsPoint &p2, co
   }
 
   //angles of pt1, pt2, pt3
-  double a1 = atan2( circlePoint1.y() - centerY, circlePoint1.x() - centerX );
-  double a2 = atan2( circlePoint2.y() - centerY, circlePoint2.x() - centerX );
-  double a3 = atan2( circlePoint3.y() - centerY, circlePoint3.x() - centerX );
+  double a1 = std::atan2( circlePoint1.y() - centerY, circlePoint1.x() - centerX );
+  double a2 = std::atan2( circlePoint2.y() - centerY, circlePoint2.x() - centerX );
+  double a3 = std::atan2( circlePoint3.y() - centerY, circlePoint3.x() - centerX );
 
   /* Adjust a3 up so we can increment from a1 to a3 cleanly */
   if ( a3 <= a1 )
@@ -1092,15 +1092,15 @@ QgsLineString QgsGeometryUtils::perpendicularSegment( const QgsPoint &p, const Q
 
 double QgsGeometryUtils::lineAngle( double x1, double y1, double x2, double y2 )
 {
-  double at = atan2( y2 - y1, x2 - x1 );
+  double at = std::atan2( y2 - y1, x2 - x1 );
   double a = -at + M_PI / 2.0;
   return normalizedAngle( a );
 }
 
 double QgsGeometryUtils::angleBetweenThreePoints( double x1, double y1, double x2, double y2, double x3, double y3 )
 {
-  double angle1 = atan2( y1 - y2, x1 - x2 );
-  double angle2 = atan2( y3 - y2, x3 - x2 );
+  double angle1 = std::atan2( y1 - y2, x1 - x2 );
+  double angle2 = std::atan2( y3 - y2, x3 - x2 );
   return normalizedAngle( angle1 - angle2 );
 }
 

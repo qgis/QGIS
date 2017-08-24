@@ -1004,7 +1004,7 @@ static double _averageAngle( QPointF prevPt, QPointF pt, QPointF nextPt )
   double a2 = MyLine( pt, nextPt ).angle();
   double unitX = cos( a1 ) + cos( a2 ), unitY = sin( a1 ) + sin( a2 );
 
-  return atan2( unitY, unitX );
+  return std::atan2( unitY, unitX );
 }
 
 void QgsMarkerLineSymbolLayer::renderPolylineVertex( const QPolygonF &points, QgsSymbolRenderContext &context, Placement placement )

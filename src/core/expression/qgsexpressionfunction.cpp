@@ -288,7 +288,7 @@ static QVariant fcnAtan2( const QVariantList &values, const QgsExpressionContext
 {
   double y = QgsExpressionUtils::getDoubleValue( values.at( 0 ), parent );
   double x = QgsExpressionUtils::getDoubleValue( values.at( 1 ), parent );
-  return QVariant( atan2( y, x ) );
+  return QVariant( std::atan2( y, x ) );
 }
 static QVariant fcnExp( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent )
 {

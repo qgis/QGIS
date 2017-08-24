@@ -645,14 +645,14 @@ bool QgsAdvancedDigitizingDockWidget::applyConstraints( QgsMapMouseEvent *e )
     double commonAngle = mCommonAngleConstraint * M_PI / 180;
     // see if soft common angle constraint should be performed
     // only if not in HardLock mode
-    double softAngle = qAtan2( point.y() - previousPt.y(),
-                               point.x() - previousPt.x() );
+    double softAngle = std::atan2( point.y() - previousPt.y(),
+                                   point.x() - previousPt.x() );
     double deltaAngle = 0;
     if ( mAngleConstraint->relative() && mCapacities.testFlag( RelativeAngle ) )
     {
       // compute the angle relative to the last segment (0° is aligned with last segment)
-      deltaAngle = qAtan2( previousPt.y() - penultimatePt.y(),
-                           previousPt.x() - penultimatePt.x() );
+      deltaAngle = std::atan2( previousPt.y() - penultimatePt.y(),
+                               previousPt.x() - penultimatePt.x() );
       softAngle -= deltaAngle;
     }
     int quo = std::round( softAngle / commonAngle );
@@ -677,8 +677,8 @@ bool QgsAdvancedDigitizingDockWidget::applyConstraints( QgsMapMouseEvent *e )
     if ( mAngleConstraint->relative() && mCapacities.testFlag( RelativeAngle ) )
     {
       // compute the angle relative to the last segment (0° is aligned with last segment)
-      angleValue += qAtan2( previousPt.y() - penultimatePt.y(),
-                            previousPt.x() - penultimatePt.x() );
+      angleValue += std::atan2( previousPt.y() - penultimatePt.y(),
+                                previousPt.x() - penultimatePt.x() );
     }
 
     double cosa = qCos( angleValue );
@@ -821,12 +821,12 @@ bool QgsAdvancedDigitizingDockWidget::applyConstraints( QgsMapMouseEvent *e )
     if ( penulPointExist && mAngleConstraint->relative() )
     {
       // previous angle
-      angle = qAtan2( previousPt.y() - penultimatePt.y(),
-                      previousPt.x() - penultimatePt.x() );
+      angle = std::atan2( previousPt.y() - penultimatePt.y(),
+                          previousPt.x() - penultimatePt.x() );
     }
-    angle = ( qAtan2( point.y() - previousPt.y(),
-                      point.x() - previousPt.x()
-                    ) - angle ) * 180 / M_PI;
+    angle = ( std::atan2( point.y() - previousPt.y(),
+                          point.x() - previousPt.x()
+                        ) - angle ) * 180 / M_PI;
     // modulus
     angle = fmod( angle, 360.0 );
     mAngleConstraint->setValue( angle );
@@ -882,11 +882,11 @@ bool QgsAdvancedDigitizingDockWidget::alignToSegment( QgsMapMouseEvent *e, CadCo
     return false;
   }
 
-  double angle = qAtan2( mSnappedSegment[0].y() - mSnappedSegment[1].y(), mSnappedSegment[0].x() - mSnappedSegment[1].x() );
+  double angle = std::atan2( mSnappedSegment[0].y() - mSnappedSegment[1].y(), mSnappedSegment[0].x() - mSnappedSegment[1].x() );
 
   if ( mAngleConstraint->relative() && penulPointExist )
   {
-    angle -= qAtan2( previousPt.y() - penultimatePt.y(), previousPt.x() - penultimatePt.x() );
+    angle -= std::atan2( previousPt.y() - penultimatePt.y(), previousPt.x() - penultimatePt.x() );
   }
 
   if ( mAdditionalConstraint == Perpendicular )

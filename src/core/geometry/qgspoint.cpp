@@ -538,7 +538,7 @@ double QgsPoint::azimuth( const QgsPoint &other ) const
 {
   double dx = other.x() - mX;
   double dy = other.y() - mY;
-  return ( atan2( dx, dy ) * 180.0 / M_PI );
+  return ( std::atan2( dx, dy ) * 180.0 / M_PI );
 }
 
 double QgsPoint::inclination( const QgsPoint &other ) const

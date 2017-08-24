@@ -122,7 +122,7 @@ void QgsAdvancedDigitizingCanvasItem::paint( QPainter *painter )
     double a0, a;
     if ( mAdvancedDigitizingDockWidget->constraintAngle()->relative() && nPoints > 2 )
     {
-      a0 = qAtan2( -( prevPoint.y() - penulPoint.y() ), prevPoint.x() - penulPoint.x() );
+      a0 = std::atan2( -( prevPoint.y() - penulPoint.y() ), prevPoint.x() - penulPoint.x() );
     }
     else
     {
@@ -134,7 +134,7 @@ void QgsAdvancedDigitizingCanvasItem::paint( QPainter *painter )
     }
     else
     {
-      a = qAtan2( -( curPoint.y() - prevPoint.y() ), curPoint.x() - prevPoint.x() );
+      a = std::atan2( -( curPoint.y() - prevPoint.y() ), curPoint.x() - prevPoint.x() );
     }
     painter->setPen( mConstruction2Pen );
     painter->drawArc( prevPointPix.x() - 20,

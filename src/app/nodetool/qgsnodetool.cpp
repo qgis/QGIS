@@ -681,7 +681,7 @@ QgsPointXY QgsNodeTool::positionForEndpointMarker( const QgsPointLocator::Match 
   double dx = pt1.x() - pt0.x();
   double dy = pt1.y() - pt0.y();
   double dist = 15 * canvas()->mapSettings().mapUnitsPerPixel();
-  double angle = atan2( dy, dx );  // to the top: angle=0, to the right: angle=90, to the left: angle=-90
+  double angle = std::atan2( dy, dx );  // to the top: angle=0, to the right: angle=90, to the left: angle=-90
   double x = pt1.x() + cos( angle ) * dist;
   double y = pt1.y() + sin( angle ) * dist;
   return QgsPointXY( x, y );

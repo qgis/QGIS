@@ -39,7 +39,7 @@ float QgsAspectFilter::processNineCellWindow(
   }
   else
   {
-    return 180.0 + atan2( derX, derY ) * 180.0 / M_PI;
+    return 180.0 + std::atan2( derX, derY ) * 180.0 / M_PI;
   }
 }
 

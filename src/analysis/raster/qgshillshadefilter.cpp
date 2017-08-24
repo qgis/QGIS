@@ -47,7 +47,7 @@ float QgsHillshadeFilter::processNineCellWindow( float *x11, float *x21, float *
   }
   else
   {
-    aspect_rad = M_PI + atan2( derX, derY );
+    aspect_rad = M_PI + std::atan2( derX, derY );
   }
   return qMax( 0.0, 255.0 * ( ( cos( zenith_rad ) * cos( slope_rad ) ) + ( sin( zenith_rad ) * sin( slope_rad ) * cos( azimuth_rad - aspect_rad ) ) ) );
 }

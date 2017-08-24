@@ -211,7 +211,7 @@ QgsRasterBlock *QgsHillshadeRenderer::block( int bandNo, const QgsRectangle &ext
       double derY = calcFirstDerY( x11, x21, x31, x12, x22, x32, x13, x23, x33, cellYSize );
 
       double slopeRad = atan( mZFactor * sqrt( derX * derX + derY * derY ) );
-      double aspectRad = atan2( derX, -derY );
+      double aspectRad = std::atan2( derX, -derY );
 
 
       double grayValue;

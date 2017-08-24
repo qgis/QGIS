@@ -2594,7 +2594,7 @@ void QgsLinePatternFillSymbolLayer::applyPattern( const QgsSymbolRenderContext &
     width = outputPixelDist / sin( lineAngle * M_PI / 180 );
 
     // recalculate real angle and distance after rounding to pixels
-    lineAngle = 180 * atan2( static_cast< double >( height ), static_cast< double >( width ) ) / M_PI;
+    lineAngle = 180 * std::atan2( static_cast< double >( height ), static_cast< double >( width ) ) / M_PI;
     if ( lineAngle < 0 )
     {
       lineAngle += 360.;

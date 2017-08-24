@@ -456,8 +456,8 @@ int FeaturePart::createCandidatesAroundPoint( double x, double y, QList< LabelPo
 
   if ( distanceToLabel > 0 )
   {
-    gamma1 = atan2( labelHeight / 2, distanceToLabel + labelWidth / 2 );
-    gamma2 = atan2( labelWidth / 2, distanceToLabel + labelHeight / 2 );
+    gamma1 = std::atan2( labelHeight / 2, distanceToLabel + labelWidth / 2 );
+    gamma2 = std::atan2( labelWidth / 2, distanceToLabel + labelHeight / 2 );
   }
   else
   {
@@ -629,7 +629,7 @@ int FeaturePart::createCandidatesAlongLineNearStraightSegments( QList<LabelPosit
       continue;
     if ( qgsDoubleNear( y1, y2 ) && qgsDoubleNear( x1, x2 ) )
       continue;
-    double vertexAngle = M_PI - ( atan2( y3 - y2, x3 - x2 ) - atan2( y2 - y1, x2 - x1 ) );
+    double vertexAngle = M_PI - ( std::atan2( y3 - y2, x3 - x2 ) - std::atan2( y2 - y1, x2 - x1 ) );
     vertexAngle = QgsGeometryUtils::normalizedAngle( vertexAngle );
 
     // extreme angles form more than 45 degree angle at a node - these are the ones we don't want labels to cross
@@ -670,7 +670,7 @@ int FeaturePart::createCandidatesAlongLineNearStraightSegments( QList<LabelPosit
     {
       // at an extreme angle node, so reset counters
       straightSegmentLengths << currentStraightSegmentLength;
-      straightSegmentAngles << QgsGeometryUtils::normalizedAngle( atan2( y[i] - segmentStartY, x[i] - segmentStartX ) );
+      straightSegmentAngles << QgsGeometryUtils::normalizedAngle( std::atan2( y[i] - segmentStartY, x[i] - segmentStartX ) );
       longestSegmentLength = qMax( longestSegmentLength, currentStraightSegmentLength );
       segmentIndex++;
       currentStraightSegmentLength = 0;
@@ -681,7 +681,7 @@ int FeaturePart::createCandidatesAlongLineNearStraightSegments( QList<LabelPosit
   }
   distanceToSegment[line->nbPoints - 1] = totalLineLength;
   straightSegmentLengths << currentStraightSegmentLength;
-  straightSegmentAngles << QgsGeometryUtils::normalizedAngle( atan2( y[numberNodes - 1] - segmentStartY, x[numberNodes - 1] - segmentStartX ) );
+  straightSegmentAngles << QgsGeometryUtils::normalizedAngle( std::atan2( y[numberNodes - 1] - segmentStartY, x[numberNodes - 1] - segmentStartX ) );
   longestSegmentLength = qMax( longestSegmentLength, currentStraightSegmentLength );
   double middleOfLine = totalLineLength / 2.0;
 
@@ -765,7 +765,7 @@ int FeaturePart::createCandidatesAlongLineNearStraightSegments( QList<LabelPosit
         angle = 0.0;
       }
       else
-        angle = atan2( candidateEndY - candidateStartY, candidateEndX - candidateStartX );
+        angle = std::atan2( candidateEndY - candidateStartY, candidateEndX - candidateStartX );
 
       beta = angle + M_PI / 2;
 
@@ -910,7 +910,7 @@ int FeaturePart::createCandidatesAlongLineNearMidpoint( QList<LabelPosition *> &
       angle = 0.0;
     }
     else
-      angle = atan2( candidateEndY - candidateStartY, candidateEndX - candidateStartX );
+      angle = std::atan2( candidateEndY - candidateStartY, candidateEndX - candidateStartX );
 
     beta = angle + M_PI / 2;
 
@@ -1022,7 +1022,7 @@ LabelPosition *FeaturePart::curvedPlacementAtOffset( PointSet *path_positions, d
     // Determine the angle of the path segment under consideration
     double dx = path_positions->x[endindex] - path_positions->x[index];
     double dy = path_positions->y[endindex] - path_positions->y[index];
-    double line_angle = atan2( -dy, dx );
+    double line_angle = std::atan2( -dy, dx );
 
     bool isRightToLeft = ( line_angle > 0.55 * M_PI || line_angle < -0.45 * M_PI );
     reversed = isRightToLeft;
@@ -1051,7 +1051,7 @@ LabelPosition *FeaturePart::curvedPlacementAtOffset( PointSet *path_positions, d
   double dx = new_x - old_x;
   double dy = new_y - old_y;
 
-  double angle = atan2( -dy, dx );
+  double angle = std::atan2( -dy, dx );
 
   for ( int i = 0; i < li->char_num; i++ )
   {
@@ -1071,7 +1071,7 @@ LabelPosition *FeaturePart::curvedPlacementAtOffset( PointSet *path_positions, d
     }
 
     // Calculate angle from the start of the character to the end based on start_/end_ position
-    angle = atan2( start_y - end_y, end_x - start_x );
+    angle = std::atan2( start_y - end_y, end_x - start_x );
 
     // Test last_character_angle vs angle
     // since our rendering angle has changed then check against our
@@ -1246,7 +1246,7 @@ int FeaturePart::createCurvedCandidatesAlongLine( QList< LabelPosition * > &lPos
     slp->setCost( cost );
 
     // average angle is calculated with respect to periodicity of angles
-    double angle_avg = atan2( sin_avg / li->char_num, cos_avg / li->char_num );
+    double angle_avg = std::atan2( sin_avg / li->char_num, cos_avg / li->char_num );
     bool localreversed = flip ? !reversed : reversed;
     // displacement - we loop through 3 times, generating above, online then below line placements successively
     for ( int i = 0; i <= 2; ++i )
@@ -1446,7 +1446,7 @@ int FeaturePart::createCandidatesForPolygon( QList< LabelPosition *> &lPos, Poin
           alpha = box->alpha;
         }
 
-        beta  = atan2( labelHeight, labelWidth ) + alpha;
+        beta  = std::atan2( labelHeight, labelWidth ) + alpha;
 
 
         //alpha = box->alpha;

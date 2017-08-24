@@ -957,7 +957,7 @@ void DRW_Ellipse::toPolyline( DRW_Polyline *pol, int parts ) const
   double radMajor = sqrt( secPoint.x * secPoint.x + secPoint.y * secPoint.y );
   double radMinor = radMajor * ratio;
   //calculate sin & cos of included angle
-  double incAngle = atan2( secPoint.y, secPoint.x );
+  double incAngle = std::atan2( secPoint.y, secPoint.x );
   double cosRot = cos( incAngle );
   double sinRot = sin( incAngle );
 
@@ -1860,7 +1860,7 @@ void DRW_MText::updateAngle()
 {
   if ( haveXAxis )
   {
-    angle = atan2( secPoint.y, secPoint.x ) * 180 / M_PI;
+    angle = std::atan2( secPoint.y, secPoint.x ) * 180 / M_PI;
   }
 }
 

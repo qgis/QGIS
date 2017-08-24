@@ -285,7 +285,7 @@ double QgsPointXY::azimuth( const QgsPointXY &other ) const
 {
   double dx = other.x() - mX;
   double dy = other.y() - mY;
-  return ( atan2( dx, dy ) * 180.0 / M_PI );
+  return ( std::atan2( dx, dy ) * 180.0 / M_PI );
 }
 
 QgsPointXY QgsPointXY::project( double distance, double bearing ) const

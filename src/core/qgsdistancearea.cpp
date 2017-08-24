@@ -426,7 +426,7 @@ QgsPointXY QgsDistanceArea::computeSpheroidProject(
   {
     azimuth = azimuth - M_PI * 2.0;
   }
-  sigma1 = atan2( tan_u1, cos( azimuth ) );
+  sigma1 = std::atan2( tan_u1, cos( azimuth ) );
   sin_alpha = cos( u1 ) * sin( azimuth );
   alpha = asin( sin_alpha );
   cos_alphasq = 1.0 - POW2( sin_alpha );
@@ -444,12 +444,12 @@ QgsPointXY QgsDistanceArea::computeSpheroidProject(
   }
   while ( i < 999 && std::fabs( ( last_sigma - sigma ) / sigma ) > 1.0e-9 );
 
-  lat2 = atan2( ( sin( u1 ) * cos( sigma ) + cos( u1 ) * sin( sigma ) *
-                  cos( azimuth ) ), ( omf * sqrt( POW2( sin_alpha ) +
-                                      POW2( sin( u1 ) * sin( sigma ) - cos( u1 ) * cos( sigma ) *
-                                          cos( azimuth ) ) ) ) );
-  lambda = atan2( ( sin( sigma ) * sin( azimuth ) ), ( cos( u1 ) * cos( sigma ) -
-                  sin( u1 ) * sin( sigma ) * cos( azimuth ) ) );
+  lat2 = std::atan2( ( sin( u1 ) * cos( sigma ) + cos( u1 ) * sin( sigma ) *
+                       cos( azimuth ) ), ( omf * sqrt( POW2( sin_alpha ) +
+                           POW2( sin( u1 ) * sin( sigma ) - cos( u1 ) * cos( sigma ) *
+                                 cos( azimuth ) ) ) ) );
+  lambda = std::atan2( ( sin( sigma ) * sin( azimuth ) ), ( cos( u1 ) * cos( sigma ) -
+                       sin( u1 ) * sin( sigma ) * cos( azimuth ) ) );
   C = ( f / 16.0 ) * cos_alphasq * ( 4.0 + f * ( 4.0 - 3.0 * cos_alphasq ) );
   omega = lambda - ( 1.0 - C ) * f * sin_alpha * ( sigma + C * sin( sigma ) *
           ( cos( two_sigma_m ) + C * cos( sigma ) * ( -1.0 + 2.0 * POW2( cos( two_sigma_m ) ) ) ) );
@@ -525,7 +525,7 @@ double QgsDistanceArea::bearing( const QgsPointXY &p1, const QgsPointXY &p2 ) co
   {
     double dx = p2.x() - p1.x();
     double dy = p2.y() - p1.y();
-    bearing = atan2( dx, dy );
+    bearing = std::atan2( dx, dy );
   }
 
   return bearing;
@@ -579,7 +579,7 @@ double QgsDistanceArea::computeDistanceBearing(
     tu2 = ( cosU1 * sinU2 - sinU1 * cosU2 * cosLambda );
     sinSigma = sqrt( tu1 * tu1 + tu2 * tu2 );
     cosSigma = sinU1 * sinU2 + cosU1 * cosU2 * cosLambda;
-    sigma = atan2( sinSigma, cosSigma );
+    sigma = std::atan2( sinSigma, cosSigma );
     alpha = asin( cosU1 * cosU2 * sinLambda / sinSigma );
     cosSqAlpha = cos( alpha ) * cos( alpha );
     cos2SigmaM = cosSigma - 2 * sinU1 * sinU2 / cosSqAlpha;
@@ -601,12 +601,12 @@ double QgsDistanceArea::computeDistanceBearing(
 
   if ( course1 )
   {
-    *course1 = atan2( tu1, tu2 );
+    *course1 = std::atan2( tu1, tu2 );
   }
   if ( course2 )
   {
     // PI is added to return azimuth from P2 to P1
-    *course2 = atan2( cosU1 * sinLambda, -sinU1 * cosU2 + cosU1 * sinU2 * cosLambda ) + M_PI;
+    *course2 = std::atan2( cosU1 * sinLambda, -sinU1 * cosU2 + cosU1 * sinU2 * cosLambda ) + M_PI;
   }
 
   return s;
