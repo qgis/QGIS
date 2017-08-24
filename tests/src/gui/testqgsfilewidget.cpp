@@ -31,6 +31,7 @@ class TestQgsFileWidget: public QObject
     void toUrl();
     void testDroppedFiles();
     void testMultipleFiles();
+    void testSplitFilePaths();
 
 };
 
@@ -143,7 +144,7 @@ void TestQgsFileWidget::testDroppedFiles()
 void TestQgsFileWidget::testMultipleFiles()
 {
   QgsFileWidget *w = new QgsFileWidget();
-  w->setStorageMode( QgsFileWidget::GetFile );
+  w->setStorageMode( QgsFileWidget::GetMultipleFiles );
 
   std::unique_ptr< QMimeData > mime( new QMimeData() );
   mime->setUrls( QList<QUrl>() << QUrl::fromLocalFile( TEST_DATA_DIR + QStringLiteral( "/bug5598.shp" ) )
@@ -153,6 +154,21 @@ void TestQgsFileWidget::testMultipleFiles()
   qobject_cast< QgsFileDropEdit * >( w->lineEdit() )->dropEvent( event.get() );
   QCOMPARE( w->lineEdit()->text(), QStringLiteral( "\"%1\" \"%1\"" ).arg( TEST_DATA_DIR + QStringLiteral( "/bug5598.shp" ) ) );
 }
+
+
+
+void TestQgsFileWidget::testSplitFilePaths()
+{
+  const QString path = QString( TEST_DATA_DIR + QStringLiteral( "/bug5598.shp" ) );
+  QCOMPARE( QgsFileWidget::splitFilePaths( QStringLiteral( "\"%1\" \"%1\"" ).arg( path ) ), QStringList() << path << path );
+  QCOMPARE( QgsFileWidget::splitFilePaths( QStringLiteral( "\"%1\"   \"%1\"" ).arg( path ) ), QStringList() << path << path );
+  QCOMPARE( QgsFileWidget::splitFilePaths( QStringLiteral( " \"%1\"   \"%1\"" ).arg( path ) ), QStringList() << path << path );
+  QCOMPARE( QgsFileWidget::splitFilePaths( QStringLiteral( " \"%1\"   \"%1\" " ).arg( path ) ), QStringList() << path << path );
+  QCOMPARE( QgsFileWidget::splitFilePaths( QStringLiteral( "\"%1\"   \"%1\" " ).arg( path ) ), QStringList() << path << path );
+  QCOMPARE( QgsFileWidget::splitFilePaths( path ), QStringList() << path );
+}
+
+
 
 
 QGSTEST_MAIN( TestQgsFileWidget )

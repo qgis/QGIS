@@ -48,8 +48,18 @@ class QgsFileWidget : QWidget
 
     QString filePath();
 %Docstring
-Returns the current file path
+ Returns the current file path(s)
+ when multiple files are selected, they are quoted and separated
+ by a single space (for example: '"/path/foo" "path/bar"')
+.. seealso:: filePaths
  :rtype: str
+%End
+
+    static QStringList splitFilePaths( const QString &path );
+%Docstring
+ Split the the quoted and space separated ``path`` and returns a QString list
+.. seealso:: filePath
+ :rtype: list of str
 %End
 
     void setFilePath( QString path );

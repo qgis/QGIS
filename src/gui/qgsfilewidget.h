@@ -81,8 +81,19 @@ class GUI_EXPORT QgsFileWidget : public QWidget
      */
     explicit QgsFileWidget( QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
-    //! Returns the current file path
+    /**
+     * \brief Returns the current file path(s)
+     * when multiple files are selected, they are quoted and separated
+     * by a single space (for example: '"/path/foo" "path/bar"')
+     * \see filePaths
+     */
     QString filePath();
+
+    /**
+     * \brief Split the the quoted and space separated \a path and returns a QString list
+     * \see filePath
+     */
+    static QStringList splitFilePaths( const QString &path );
 
     //! Sets the file path
     void setFilePath( QString path );
@@ -212,9 +223,7 @@ class GUI_EXPORT QgsFileDropEdit: public QgsFilterLineEdit
 
   private:
 
-    /**
-      Return file name if object meets drop criteria.
-    */
+    //! Return file name if object meets drop criteria.
     QString acceptableFilePath( QDropEvent *event ) const;
 
     QStringList mAcceptableExtensions;

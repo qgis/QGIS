@@ -39,18 +39,9 @@ QgsGdalSourceSelect::~QgsGdalSourceSelect()
 
 void QgsGdalSourceSelect::addButtonClicked()
 {
-  // Check if multiple files where selected
-  if ( mRasterPath.startsWith( '"' ) )
+  Q_FOREACH ( const QString &path, QgsFileWidget::splitFilePaths( mRasterPath ) )
   {
-    for ( QString path : mRasterPath.split( QRegExp( "\"\\s+\"" ), QString::SkipEmptyParts ) )
-    {
-      QString cleanPath( path.remove( '"' ) );
-      emit addRasterLayer( cleanPath, QFileInfo( cleanPath ).baseName(), QStringLiteral( "gdal" ) );
-    }
-  }
-  else
-  {
-    emit addRasterLayer( mRasterPath, QFileInfo( mRasterPath ).baseName(), QStringLiteral( "gdal" ) );
+    emit addRasterLayer( path, QFileInfo( path ).baseName(), QStringLiteral( "gdal" ) );
   }
 }
 

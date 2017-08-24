@@ -77,6 +77,16 @@ QString QgsFileWidget::filePath()
   return mFilePath;
 }
 
+QStringList QgsFileWidget::splitFilePaths( const QString &path )
+{
+  QStringList paths;
+  for ( auto pathsPart : path.split( QRegExp( "\"\\s+\"" ), QString::SkipEmptyParts ) )
+  {
+    paths.append( pathsPart.remove( QRegExp( "(^\\s*\")|(\"\\s*)" ) ) );
+  }
+  return paths;
+}
+
 void QgsFileWidget::setFilePath( QString path )
 {
   if ( path == QgsApplication::nullRepresentation() )
@@ -86,6 +96,7 @@ void QgsFileWidget::setFilePath( QString path )
 
   //will trigger textEdited slot
   mLineEdit->setValue( path );
+
 }
 
 void QgsFileWidget::setReadOnly( bool readOnly )
@@ -130,6 +141,15 @@ void QgsFileWidget::textEdited( const QString &path )
 {
   mFilePath = path;
   mLinkLabel->setText( toUrl( path ) );
+  // Show tooltip if multiple files are selected
+  if ( path.contains( QStringLiteral( "\" \"" ) ) )
+  {
+    mLineEdit->setToolTip( tr( "Selected files:<br><ul><li>%1</li></ul><br>" ).arg( splitFilePaths( path ).join( QStringLiteral( "</li><li>" ) ) ) );
+  }
+  else
+  {
+    mLineEdit->setToolTip( QString() );
+  }
   emit fileChanged( mFilePath );
 }
 
