@@ -283,7 +283,6 @@ void QgsFileWidget::openFileDialog()
   if ( mStorageMode != GetMultipleFiles )
   {
     fileName = relativePath( fileName, true );
-    // Keep the new value
     setFilePath( fileName );
   }
   else
@@ -292,7 +291,14 @@ void QgsFileWidget::openFileDialog()
     {
       fileNames.replace( i, relativePath( fileNames.at( i ), true ) );
     }
-    setFilePath( QStringLiteral( "\"%1\"" ).arg( fileNames.join( "\" \"" ) ) );
+    if ( fileNames.length() > 1 )
+    {
+      setFilePath( QStringLiteral( "\"%1\"" ).arg( fileNames.join( "\" \"" ) ) );
+    }
+    else
+    {
+      setFilePath( fileNames.first( ) );
+    }
   }
 }
 
