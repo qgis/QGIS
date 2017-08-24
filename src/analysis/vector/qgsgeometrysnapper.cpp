@@ -58,7 +58,7 @@ bool QgsSnapIndex::SegmentSnapItem::getIntersection( const QgsPoint &p1, const Q
   double vl = v.length();
   double wl = w.length();
 
-  if ( qFuzzyIsNull( vl ) || qFuzzyIsNull( wl ) )
+  if ( qgsDoubleNear( vl, 0, 0.000000000001 ) || qgsDoubleNear( wl, 0, 0.000000000001 ) )
   {
     return false;
   }
