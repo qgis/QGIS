@@ -66,11 +66,11 @@ bool QgsAdvancedDigitizingDockWidget::lineCircleIntersection( const QgsPointXY &
     const int sgnDy = dy < 0 ? -1 : 1;
 
     const double ax = center.x() + ( d * dy + sgnDy * dx * sqrt( pow( radius, 2 ) * pow( dr, 2 ) - pow( d, 2 ) ) ) / ( pow( dr, 2 ) );
-    const double ay = center.y() + ( -d * dx + qAbs( dy ) * sqrt( pow( radius, 2 ) * pow( dr, 2 ) - pow( d, 2 ) ) ) / ( pow( dr, 2 ) );
+    const double ay = center.y() + ( -d * dx + fabs( dy ) * sqrt( pow( radius, 2 ) * pow( dr, 2 ) - pow( d, 2 ) ) ) / ( pow( dr, 2 ) );
     const QgsPointXY p1( ax, ay );
 
     const double bx = center.x() + ( d * dy - sgnDy * dx * sqrt( pow( radius, 2 ) * pow( dr, 2 ) - pow( d, 2 ) ) ) / ( pow( dr, 2 ) );
-    const double by = center.y() + ( -d * dx - qAbs( dy ) * sqrt( pow( radius, 2 ) * pow( dr, 2 ) - pow( d, 2 ) ) ) / ( pow( dr, 2 ) );
+    const double by = center.y() + ( -d * dx - fabs( dy ) * sqrt( pow( radius, 2 ) * pow( dr, 2 ) - pow( d, 2 ) ) ) / ( pow( dr, 2 ) );
     const QgsPointXY p2( bx, by );
 
     // snap to nearest intersection
@@ -656,13 +656,13 @@ bool QgsAdvancedDigitizingDockWidget::applyConstraints( QgsMapMouseEvent *e )
       softAngle -= deltaAngle;
     }
     int quo = std::round( softAngle / commonAngle );
-    if ( qAbs( softAngle - quo * commonAngle ) * 180.0 * M_1_PI <= SOFT_CONSTRAINT_TOLERANCE_DEGREES )
+    if ( fabs( softAngle - quo * commonAngle ) * 180.0 * M_1_PI <= SOFT_CONSTRAINT_TOLERANCE_DEGREES )
     {
       // also check the distance in pixel to the line, otherwise it's too sticky at long ranges
       softAngle = quo * commonAngle ;
       // http://mathworld.wolfram.com/Point-LineDistance2-Dimensional.html
       // use the direction vector (cos(a),sin(a)) from previous point. |x2-x1|=1 since sin2+cos2=1
-      const double dist = qAbs( qCos( softAngle + deltaAngle ) * ( previousPt.y() - point.y() )
+      const double dist = fabs( qCos( softAngle + deltaAngle ) * ( previousPt.y() - point.y() )
                                 - qSin( softAngle + deltaAngle ) * ( previousPt.x() - point.x() ) );
       if ( dist / mMapCanvas->mapSettings().mapUnitsPerPixel() < SOFT_CONSTRAINT_TOLERANCE_PIXEL )
       {
@@ -745,7 +745,7 @@ bool QgsAdvancedDigitizingDockWidget::applyConstraints( QgsMapMouseEvent *e )
 
       // do not compute intersection if lines are almost parallel
       // this threshold might be adapted
-      if ( qAbs( d ) > 0.01 )
+      if ( fabs( d ) > 0.01 )
       {
         point.setX( ( ( x3 - x4 ) * ( x1 * y2 - y1 * x2 ) - ( x1 - x2 ) * ( x3 * y4 - y3 * x4 ) ) / d );
         point.setY( ( ( y3 - y4 ) * ( x1 * y2 - y1 * x2 ) - ( y1 - y2 ) * ( x3 * y4 - y3 * x4 ) ) / d );

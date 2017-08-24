@@ -371,7 +371,7 @@ void PointSet::splitPolygons( QLinkedList<PointSet *> &shapes_toProcess,
         // lookup for the deepest point in the hole
         for ( i = ips; i != cHull[ihn]; i = ( i + 1 ) % nbp )
         {
-          cp = qAbs( GeomFunction::cross_product( x[cHull[ihs]], y[cHull[ihs]],
+          cp = fabs( GeomFunction::cross_product( x[cHull[ihs]], y[cHull[ihs]],
                                                   x[cHull[ihn]], y[cHull[ihn]],
                                                   x[i], y[i] ) );
           if ( cp - bestcp > EPSILON )
@@ -444,7 +444,7 @@ void PointSet::splitPolygons( QLinkedList<PointSet *> &shapes_toProcess,
         fx = cx + dx;
         fy = cy - dy;
 
-        if ( seg_length < EPSILON || qAbs( ( b = GeomFunction::cross_product( ex, ey, fx, fy, x[retainedPt], y[retainedPt] ) / ( seg_length ) ) ) > ( seg_length / 2 ) )   // retainedPt is not fronting i->j
+        if ( seg_length < EPSILON || fabs( ( b = GeomFunction::cross_product( ex, ey, fx, fy, x[retainedPt], y[retainedPt] ) / ( seg_length ) ) ) > ( seg_length / 2 ) )   // retainedPt is not fronting i->j
         {
           if ( ( ex = GeomFunction::dist_euc2d_sq( x[i], y[i], x[retainedPt], y[retainedPt] ) ) < ( ey = GeomFunction::dist_euc2d_sq( x[j], y[j], x[retainedPt], y[retainedPt] ) ) )
           {

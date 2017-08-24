@@ -889,8 +889,8 @@ QRect QgsImageOperation::nonTransparentImageRect( const QImage &image, QSize min
   if ( center )
   {
     // recompute min and max to center image
-    const int dx = qMax( qAbs( xmax - width / 2 ), qAbs( xmin - width / 2 ) );
-    const int dy = qMax( qAbs( ymax - height / 2 ), qAbs( ymin - height / 2 ) );
+    const int dx = qMax( abs( xmax - width / 2 ), abs( xmin - width / 2 ) );
+    const int dy = qMax( abs( ymax - height / 2 ), abs( ymin - height / 2 ) );
     xmin = qMax( 0, width / 2 - dx );
     xmax = qMin( width, width / 2 + dx );
     ymin = qMax( 0, height / 2 - dy );

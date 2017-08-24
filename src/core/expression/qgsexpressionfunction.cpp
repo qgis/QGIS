@@ -1007,13 +1007,13 @@ static QVariant fcnWordwrap( const QVariantList &values, const QgsExpressionCont
             if ( strhit == lasthit || strhit == -1 )
             {
               //if no new backward delimiter found, try to locate forward
-              strhit = lines[i].indexOf( rx, strcurrent + qAbs( wrap ) );
+              strhit = lines[i].indexOf( rx, strcurrent + labs( wrap ) );
             }
             lasthit = strhit;
           }
           else
           {
-            strhit = lines[i].indexOf( rx, strcurrent + qAbs( wrap ) );
+            strhit = lines[i].indexOf( rx, strcurrent + labs( wrap ) );
           }
           if ( strhit > -1 )
           {

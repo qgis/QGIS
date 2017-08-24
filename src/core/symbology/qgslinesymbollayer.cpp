@@ -581,7 +581,7 @@ double QgsSimpleLineSymbolLayer::estimateMaxBleed( const QgsRenderContext &conte
   else
   {
     return context.convertToPainterUnits( ( mWidth / 2.0 ), mWidthUnit, mWidthMapUnitScale ) +
-           context.convertToPainterUnits( qAbs( mOffset ), mOffsetUnit, mOffsetMapUnitScale );
+           context.convertToPainterUnits( fabs( mOffset ), mOffsetUnit, mOffsetMapUnitScale );
   }
 }
 
@@ -1236,7 +1236,7 @@ void QgsMarkerLineSymbolLayer::renderOffsetVertexAlongLine( const QPolygonF &poi
   QPointF previousPoint = points[vertex];
   int startPoint = distance > 0 ? qMin( vertex + 1, points.count() - 1 ) : qMax( vertex - 1, 0 );
   int endPoint = distance > 0 ? points.count() - 1 : 0;
-  double distanceLeft = qAbs( distance );
+  double distanceLeft = fabs( distance );
 
   for ( int i = startPoint; pointIncrement > 0 ? i <= endPoint : i >= endPoint; i += pointIncrement )
   {
@@ -1604,7 +1604,7 @@ QSet<QString> QgsMarkerLineSymbolLayer::usedAttributes( const QgsRenderContext &
 double QgsMarkerLineSymbolLayer::estimateMaxBleed( const QgsRenderContext &context ) const
 {
   return context.convertToPainterUnits( ( mMarker->size() / 2.0 ), mMarker->sizeUnit(), mMarker->sizeMapUnitScale() ) +
-         context.convertToPainterUnits( qAbs( mOffset ), mOffsetUnit, mOffsetMapUnitScale );
+         context.convertToPainterUnits( fabs( mOffset ), mOffsetUnit, mOffsetMapUnitScale );
 }
 
 

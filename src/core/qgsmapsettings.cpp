@@ -143,8 +143,8 @@ void QgsMapSettings::updateDerived()
   {
     // Use abs() on the extent to avoid the case where the extent is
     // symmetrical about 0.
-    double xMean = ( qAbs( extent.xMinimum() ) + qAbs( extent.xMaximum() ) ) * 0.5;
-    double yMean = ( qAbs( extent.yMinimum() ) + qAbs( extent.yMaximum() ) ) * 0.5;
+    double xMean = ( fabs( extent.xMinimum() ) + fabs( extent.xMaximum() ) ) * 0.5;
+    double yMean = ( fabs( extent.yMinimum() ) + fabs( extent.yMaximum() ) ) * 0.5;
 
     double xRange = extent.width() / xMean;
     double yRange = extent.height() / yMean;

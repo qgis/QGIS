@@ -353,7 +353,7 @@ bool QgsRelief::processNineCellWindow( float *x1, float *x2, float *x3, float *x
   float aspect = mAspectFilter->processNineCellWindow( x1, x2, x3, x4, x5, x6, x7, x8, x9 );
   if ( hillShadeValue285 != mOutputNodataValue && aspect != mOutputNodataValue )
   {
-    double angle_diff = qAbs( 285 - aspect );
+    double angle_diff = fabs( 285 - aspect );
     if ( angle_diff > 180 )
     {
       angle_diff -= 180;

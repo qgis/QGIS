@@ -46,13 +46,13 @@ QgsRegularPolygon::QgsRegularPolygon( const QgsPoint &center, const double radiu
     {
       case InscribedCircle:
       {
-        mRadius = qAbs( radius );
+        mRadius = fabs( radius );
         mFirstVertex = mCenter.project( mRadius, azimuth );
         break;
       }
       case CircumscribedCircle:
       {
-        mRadius = apothemToRadius( qAbs( radius ), numSides );
+        mRadius = apothemToRadius( fabs( radius ), numSides );
         mFirstVertex = mCenter.project( mRadius, azimuth - centralAngle( numSides ) / 2 );
         break;
       }
@@ -118,7 +118,7 @@ QgsRegularPolygon::QgsRegularPolygon( const QgsPoint &pt1, const QgsPoint &pt2, 
 
     mCenter = pt1.project( hypothenuse, azimuth + angle );
     mFirstVertex = pt1;
-    mRadius = qAbs( hypothenuse );
+    mRadius = fabs( hypothenuse );
   }
 }
 
@@ -152,7 +152,7 @@ void QgsRegularPolygon::setCenter( const QgsPoint &center )
 
 void QgsRegularPolygon::setRadius( const double radius )
 {
-  mRadius = qAbs( radius );
+  mRadius = fabs( radius );
   double azimuth = mCenter.azimuth( mFirstVertex );
   // TODO: double inclination = mCenter.inclination(mFirstVertex);
   mFirstVertex = mCenter.project( mRadius, azimuth );

@@ -593,7 +593,7 @@ void QgsComposerMouseHandles::mouseReleaseEvent( QGraphicsSceneMouseEvent *event
   double diffY = mouseMoveStopPoint.y() - mMouseMoveStartPos.y();
 
   //it was only a click
-  if ( qAbs( diffX ) < std::numeric_limits<double>::min() && qAbs( diffY ) < std::numeric_limits<double>::min() )
+  if ( fabs( diffX ) < std::numeric_limits<double>::min() && fabs( diffY ) < std::numeric_limits<double>::min() )
   {
     mIsDragging = false;
     mIsResizing = false;
@@ -824,7 +824,7 @@ void QgsComposerMouseHandles::dragMouseMove( QPointF currentPosition, bool lockM
   {
     //constrained (shift) moving should lock to horizontal/vertical movement
     //reset the smaller of the x/y movements
-    if ( qAbs( moveRectX ) <= qAbs( moveRectY ) )
+    if ( fabs( moveRectX ) <= fabs( moveRectY ) )
     {
       moveRectX = 0;
     }

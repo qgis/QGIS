@@ -206,7 +206,7 @@ void TestQgsDistanceArea::test_distances()
       // QgsDebugMsg( QString( "Distance from %1 to %2 is %3" ).arg( p1.toString( 15 ) ).arg( p2.toString( 15 ) ).arg( result, 0, 'g', 15 ) );
       // QgsDebugMsg( QString( "Distance should be %1" ).arg( myLineList[6] ) );
       // Check result is less than 0.5mm from expected.
-      QVERIFY( qAbs( result -  myLineList[6].toDouble() ) < 0.0005 );
+      QGSCOMPARENEAR( result, myLineList[6].toDouble(), 0.0005 );
     }
   }
 

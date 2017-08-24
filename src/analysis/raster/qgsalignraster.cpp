@@ -30,7 +30,7 @@
 
 static double ceil_with_tolerance( double value )
 {
-  if ( qAbs( value - std::round( value ) ) < 1e-6 )
+  if ( fabs( value - std::round( value ) ) < 1e-6 )
     return std::round( value );
   else
     return qCeil( value );
@@ -38,7 +38,7 @@ static double ceil_with_tolerance( double value )
 
 static double floor_with_tolerance( double value )
 {
-  if ( qAbs( value - std::round( value ) ) < 1e-6 )
+  if ( fabs( value - std::round( value ) ) < 1e-6 )
     return std::round( value );
   else
     return qFloor( value );
@@ -538,7 +538,7 @@ bool QgsAlignRaster::suggestedWarpOutput( const QgsAlignRaster::RasterInfo &info
   if ( eErr != CE_None )
     return false;
 
-  QSizeF cs( qAbs( adfDstGeoTransform[1] ), qAbs( adfDstGeoTransform[5] ) );
+  QSizeF cs( fabs( adfDstGeoTransform[1] ), fabs( adfDstGeoTransform[5] ) );
 
   if ( rect )
     *rect = QgsRectangle( extents[0], extents[1], extents[2], extents[3] );
@@ -582,7 +582,7 @@ QgsAlignRaster::RasterInfo::~RasterInfo()
 
 QSizeF QgsAlignRaster::RasterInfo::cellSize() const
 {
-  return QSizeF( qAbs( mGeoTransform[1] ), qAbs( mGeoTransform[5] ) );
+  return QSizeF( fabs( mGeoTransform[1] ), fabs( mGeoTransform[5] ) );
 }
 
 QPointF QgsAlignRaster::RasterInfo::gridOffset() const

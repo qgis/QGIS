@@ -1171,8 +1171,8 @@ void QgsPalLayerSettings::calculateLabelSize( const QFontMetricsF *fm, QString t
 
 #if 0 // XXX strk
   QgsPointXY ptSize = xform->toMapCoordinatesF( w, h );
-  labelX = qAbs( ptSize.x() - ptZero.x() );
-  labelY = qAbs( ptSize.y() - ptZero.y() );
+  labelX = fabs( ptSize.x() - ptZero.x() );
+  labelY = fabs( ptSize.y() - ptZero.y() );
 #else
   double uPP = xform->mapUnitsPerPixel();
   labelX = w * uPP;
@@ -1224,7 +1224,7 @@ void QgsPalLayerSettings::registerFeature( QgsFeature &f, QgsRenderContext &cont
     // scales closer than 1:1
     if ( maxScale < 0 )
     {
-      maxScale = 1 / qAbs( maxScale );
+      maxScale = 1 / fabs( maxScale );
     }
 
     if ( !qgsDoubleNear( maxScale, 0.0 ) && context.rendererScale() < maxScale )
@@ -1239,7 +1239,7 @@ void QgsPalLayerSettings::registerFeature( QgsFeature &f, QgsRenderContext &cont
     // scales closer than 1:1
     if ( minScale < 0 )
     {
-      minScale = 1 / qAbs( minScale );
+      minScale = 1 / fabs( minScale );
     }
 
     if ( !qgsDoubleNear( minScale, 0.0 ) && context.rendererScale() > minScale )
@@ -1436,7 +1436,7 @@ void QgsPalLayerSettings::registerFeature( QgsFeature &f, QgsRenderContext &cont
       }
     }
     // make sure maxcharangleout is always negative
-    maxcharangleout = -( qAbs( maxcharangleout ) );
+    maxcharangleout = -( fabs( maxcharangleout ) );
   }
 
   // data defined centroid whole or clipped?

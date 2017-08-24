@@ -290,7 +290,7 @@ QgsGeometry QgsInternalGeometryEngine::poleOfInaccessibility( double precision, 
 
 bool dotProductWithinAngleTolerance( double dotProduct, double lowerThreshold, double upperThreshold )
 {
-  return lowerThreshold > qAbs( dotProduct ) || qAbs( dotProduct ) > upperThreshold;
+  return lowerThreshold > fabs( dotProduct ) || fabs( dotProduct ) > upperThreshold;
 }
 
 double normalizedDotProduct( const QgsPoint &a, const QgsPoint &b, const QgsPoint &c )
@@ -341,7 +341,7 @@ double squareness( QgsLineString *ring, double lowerThreshold, double upperThres
       if ( !dotProductWithinAngleTolerance( dotProduct, lowerThreshold, upperThreshold ) )
         continue;
 
-      sum += 2.0 * qMin( qAbs( dotProduct - 1.0 ), qMin( qAbs( dotProduct ), qAbs( dotProduct + 1 ) ) );
+      sum += 2.0 * qMin( fabs( dotProduct - 1.0 ), qMin( fabs( dotProduct ), fabs( dotProduct + 1 ) ) );
     }
     a = b;
     b = c;

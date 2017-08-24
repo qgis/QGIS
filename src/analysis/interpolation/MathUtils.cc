@@ -210,7 +210,7 @@ double MathUtils::distPointFromLine( QgsPoint *thepoint, QgsPoint *p1, QgsPoint 
     double a = normal.getX();
     double b = normal.getY();
     double c = -( normal.getX() * p2->x() + normal.getY() * p2->y() );
-    double distance = qAbs( ( a * thepoint->x() + b * thepoint->y() + c ) / ( sqrt( a * a + b * b ) ) );
+    double distance = fabs( ( a * thepoint->x() + b * thepoint->y() + c ) / ( sqrt( a * a + b * b ) ) );
     return distance;
   }
   else
@@ -471,7 +471,7 @@ double MathUtils::power( double a, int b )
     return 1;
   }
   double tmp = a;
-  for ( int i = 2; i <= qAbs( ( double )b ); i++ )
+  for ( int i = 2; i <= abs( b ); i++ )
   {
 
     a *= tmp;

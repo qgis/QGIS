@@ -128,7 +128,7 @@ double QgsLayoutSnapper::snapPointToGuides( double original, QgsLayoutGuide::Ori
   Q_FOREACH ( QgsLayoutGuide *guide, mLayout->guides().guides( orientation ) )
   {
     double guidePos = guide->layoutPosition();
-    double diff = qAbs( original - guidePos );
+    double diff = fabs( original - guidePos );
     if ( diff < smallestDiff )
     {
       smallestDiff = diff;

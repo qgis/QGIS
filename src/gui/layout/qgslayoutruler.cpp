@@ -376,11 +376,11 @@ QgsLayoutGuide *QgsLayoutRuler::guideAtPoint( QPoint localPoint ) const
       switch ( mOrientation )
       {
         case Qt::Horizontal:
-          currentDelta = qAbs( layoutPoint.x() - guide->layoutPosition() );
+          currentDelta = fabs( layoutPoint.x() - guide->layoutPosition() );
           break;
 
         case Qt::Vertical:
-          currentDelta = qAbs( layoutPoint.y() - guide->layoutPosition() );
+          currentDelta = fabs( layoutPoint.y() - guide->layoutPosition() );
           break;
       }
       if ( currentDelta < minDelta )

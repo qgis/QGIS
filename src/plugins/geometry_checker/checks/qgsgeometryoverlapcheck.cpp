@@ -111,7 +111,7 @@ void QgsGeometryOverlapCheck::fixError( QgsGeometryCheckError *error, int method
   for ( int iPart = 0, nParts = interGeom->partCount(); iPart < nParts; ++iPart )
   {
     QgsAbstractGeometry *part = QgsGeometryCheckerUtils::getGeomPart( interGeom, iPart );
-    if ( qAbs( part->area() - overlapError->value().toDouble() ) < QgsGeometryCheckPrecision::reducedTolerance() &&
+    if ( fabs( part->area() - overlapError->value().toDouble() ) < QgsGeometryCheckPrecision::reducedTolerance() &&
          QgsGeometryCheckerUtils::pointsFuzzyEqual( part->centroid(), overlapError->location(), QgsGeometryCheckPrecision::reducedTolerance() ) )
     {
       interPart = part;

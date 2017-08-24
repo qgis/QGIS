@@ -89,8 +89,8 @@ struct LessThanTileRequest
     QPointF p1 = req1.rect.center();
     QPointF p2 = req2.rect.center();
     // using chessboard distance (loading order more natural than euclidean/manhattan distance)
-    double d1 = qMax( qAbs( center.x() - p1.x() ), qAbs( center.y() - p1.y() ) );
-    double d2 = qMax( qAbs( center.x() - p2.x() ), qAbs( center.y() - p2.y() ) );
+    double d1 = qMax( fabs( center.x() - p1.x() ), fabs( center.y() - p1.y() ) );
+    double d2 = qMax( fabs( center.x() - p2.x() ), fabs( center.y() - p2.y() ) );
     return d1 < d2;
   }
 };

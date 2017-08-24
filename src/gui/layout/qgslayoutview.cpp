@@ -456,7 +456,7 @@ void QgsLayoutView::wheelZoom( QWheelEvent *event )
   double zoomFactor = settings.value( QStringLiteral( "qgis/zoom_factor" ), 2 ).toDouble();
 
   // "Normal" mouse have an angle delta of 120, precision mouses provide data faster, in smaller steps
-  zoomFactor = 1.0 + ( zoomFactor - 1.0 ) / 120.0 * qAbs( event->angleDelta().y() );
+  zoomFactor = 1.0 + ( zoomFactor - 1.0 ) / 120.0 * fabs( event->angleDelta().y() );
 
   if ( event->modifiers() & Qt::ControlModifier )
   {

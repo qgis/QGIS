@@ -25,8 +25,8 @@
 
 void QgsEllipse::normalizeAxis()
 {
-  mSemiMajorAxis = qAbs( mSemiMajorAxis );
-  mSemiMinorAxis = qAbs( mSemiMinorAxis );
+  mSemiMajorAxis = fabs( mSemiMajorAxis );
+  mSemiMinorAxis = fabs( mSemiMinorAxis );
   if ( mSemiMajorAxis < mSemiMinorAxis )
   {
     std::swap( mSemiMajorAxis, mSemiMinorAxis );
@@ -72,8 +72,8 @@ QgsEllipse QgsEllipse::fromFoci( const QgsPoint &pt1, const QgsPoint &pt2, const
 QgsEllipse QgsEllipse::fromExtent( const QgsPoint &pt1, const QgsPoint &pt2 )
 {
   QgsPoint center = QgsGeometryUtils::midpoint( pt1, pt2 );
-  double axis_a = qAbs( pt2.x() - pt1.x() ) / 2.0;
-  double axis_b = qAbs( pt2.y() - pt1.y() ) / 2.0;
+  double axis_a = fabs( pt2.x() - pt1.x() ) / 2.0;
+  double axis_b = fabs( pt2.y() - pt1.y() ) / 2.0;
   double azimuth = 90.0;
 
   return QgsEllipse( center, axis_a, axis_b, azimuth );
@@ -81,8 +81,8 @@ QgsEllipse QgsEllipse::fromExtent( const QgsPoint &pt1, const QgsPoint &pt2 )
 
 QgsEllipse QgsEllipse::fromCenterPoint( const QgsPoint &center, const QgsPoint &pt1 )
 {
-  double axis_a = qAbs( pt1.x() - center.x() );
-  double axis_b = qAbs( pt1.y() - center.y() );
+  double axis_a = fabs( pt1.x() - center.x() );
+  double axis_b = fabs( pt1.y() - center.y() );
   double azimuth = 90.0;
 
   return QgsEllipse( center, axis_a, axis_b, azimuth );

@@ -110,8 +110,8 @@ class Raytracer
     // See http://playtechs.blogspot.ch/2007/03/raytracing-on-grid.html
   public:
     Raytracer( float x0, float y0, float x1, float y1 )
-      : m_dx( qAbs( x1 - x0 ) )
-      , m_dy( qAbs( y1 - y0 ) )
+      : m_dx( fabs( x1 - x0 ) )
+      , m_dy( fabs( y1 - y0 ) )
       , m_x( qFloor( x0 ) )
       , m_y( qFloor( y0 ) )
       , m_n( 1 )

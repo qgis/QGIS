@@ -2558,7 +2558,7 @@ QgsLineString *smoothCurve( const QgsLineString &line, const unsigned int iterat
       QgsPoint p3 = result->pointN( 1 );
       double angle = QgsGeometryUtils::angleBetweenThreePoints( p1.x(), p1.y(), p2.x(), p2.y(),
                      p3.x(), p3.y() );
-      angle = qAbs( M_PI - angle );
+      angle = fabs( M_PI - angle );
       skipFirst = angle > maxAngleRads;
     }
     for ( int i = 0; i < result->numPoints() - 1; i++ )

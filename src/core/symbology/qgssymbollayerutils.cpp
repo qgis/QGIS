@@ -3895,7 +3895,7 @@ QList<double> QgsSymbolLayerUtils::prettyBreaks( double minimum, double maximum,
   else
   {
     int U = 1;
-    cell = qMax( qAbs( minimum ), qAbs( maximum ) );
+    cell = qMax( fabs( minimum ), fabs( maximum ) );
     if ( adjustBias >= 1.5 * h + 0.5 )
     {
       U = 1 + ( 1.0 / ( 1 + h ) );

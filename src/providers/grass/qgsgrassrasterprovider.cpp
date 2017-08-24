@@ -123,7 +123,7 @@ QgsGrassRasterProvider::QgsGrassRasterProvider( QString const &uri )
   else if ( mGrassDataType == DCELL_TYPE )
   {
     // Don't use numeric limits, raster layer is using
-    //    qAbs( myValue - mNoDataValue ) <= TINY_VALUE
+    //    fabs( myValue - mNoDataValue ) <= TINY_VALUE
     // if the mNoDataValue would be a limit, the subtraction could overflow.
     // No data value is shown in GUI, use some nice number.
     // Choose values with small representation error.

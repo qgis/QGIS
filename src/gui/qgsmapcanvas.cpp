@@ -1091,8 +1091,8 @@ void QgsMapCanvas::keyPressEvent( QKeyEvent *e )
     // Don't want to interfer with mouse events
 
     QgsRectangle currentExtent = mapSettings().visibleExtent();
-    double dx = qAbs( currentExtent.width() / 4 );
-    double dy = qAbs( currentExtent.height() / 4 );
+    double dx = fabs( currentExtent.width() / 4 );
+    double dy = fabs( currentExtent.height() / 4 );
 
     switch ( e->key() )
     {
@@ -1420,7 +1420,7 @@ void QgsMapCanvas::wheelEvent( QWheelEvent *e )
   double zoomFactor = mWheelZoomFactor;
 
   // "Normal" mouse have an angle delta of 120, precision mouses provide data faster, in smaller steps
-  zoomFactor = 1.0 + ( zoomFactor - 1.0 ) / 120.0 * qAbs( e->angleDelta().y() );
+  zoomFactor = 1.0 + ( zoomFactor - 1.0 ) / 120.0 * fabs( e->angleDelta().y() );
 
   if ( e->modifiers() & Qt::ControlModifier )
   {

@@ -187,7 +187,7 @@ QgsMapCanvasAnnotationItem::MouseMoveAction QgsMapCanvasAnnotationItem::moveActi
   int cursorSensitivity = 7;
 
   if ( mAnnotation && mAnnotation->hasFixedMapPosition() &&
-       qAbs( itemPos.x() ) < cursorSensitivity && qAbs( itemPos.y() ) < cursorSensitivity ) //move map point if position is close to the origin
+       fabs( itemPos.x() ) < cursorSensitivity && fabs( itemPos.y() ) < cursorSensitivity ) //move map point if position is close to the origin
   {
     return MoveMapPosition;
   }
@@ -196,10 +196,10 @@ QgsMapCanvasAnnotationItem::MouseMoveAction QgsMapCanvasAnnotationItem::moveActi
   QSizeF frameSize = mAnnotation ? mAnnotation->frameSize() : QSizeF( 0, 0 );
 
   bool left, right, up, down;
-  left = qAbs( itemPos.x() - offset.x() ) < cursorSensitivity;
-  right = qAbs( itemPos.x() - ( offset.x() + frameSize.width() ) ) < cursorSensitivity;
-  up = qAbs( itemPos.y() - offset.y() ) < cursorSensitivity;
-  down = qAbs( itemPos.y() - ( offset.y() + frameSize.height() ) ) < cursorSensitivity;
+  left = fabs( itemPos.x() - offset.x() ) < cursorSensitivity;
+  right = fabs( itemPos.x() - ( offset.x() + frameSize.width() ) ) < cursorSensitivity;
+  up = fabs( itemPos.y() - offset.y() ) < cursorSensitivity;
+  down = fabs( itemPos.y() - ( offset.y() + frameSize.height() ) ) < cursorSensitivity;
 
   if ( left && up )
   {

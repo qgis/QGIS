@@ -395,7 +395,7 @@ QgsSymbolLayer *QgsSimpleFillSymbolLayer::createFromSld( QDomElement &element )
 double QgsSimpleFillSymbolLayer::estimateMaxBleed( const QgsRenderContext &context ) const
 {
   double penBleed = context.convertToPainterUnits( mStrokeStyle == Qt::NoPen ? 0 : ( mStrokeWidth / 2.0 ), mStrokeWidthUnit, mStrokeWidthMapUnitScale );
-  double offsetBleed = context.convertToPainterUnits( qMax( qAbs( mOffset.x() ), qAbs( mOffset.y() ) ), mOffsetUnit, mOffsetMapUnitScale );
+  double offsetBleed = context.convertToPainterUnits( qMax( fabs( mOffset.x() ), fabs( mOffset.y() ) ), mOffsetUnit, mOffsetMapUnitScale );
   return penBleed + offsetBleed;
 }
 
@@ -916,7 +916,7 @@ QgsGradientFillSymbolLayer *QgsGradientFillSymbolLayer::clone() const
 
 double QgsGradientFillSymbolLayer::estimateMaxBleed( const QgsRenderContext &context ) const
 {
-  double offsetBleed = context.convertToPainterUnits( qMax( qAbs( mOffset.x() ), qAbs( mOffset.y() ) ), mOffsetUnit, mOffsetMapUnitScale );
+  double offsetBleed = context.convertToPainterUnits( qMax( fabs( mOffset.x() ), fabs( mOffset.y() ) ), mOffsetUnit, mOffsetMapUnitScale );
   return offsetBleed;
 }
 
@@ -1512,7 +1512,7 @@ QgsShapeburstFillSymbolLayer *QgsShapeburstFillSymbolLayer::clone() const
 
 double QgsShapeburstFillSymbolLayer::estimateMaxBleed( const QgsRenderContext &context ) const
 {
-  double offsetBleed = context.convertToPainterUnits( qMax( qAbs( mOffset.x() ), qAbs( mOffset.y() ) ), mOffsetUnit, mOffsetMapUnitScale );
+  double offsetBleed = context.convertToPainterUnits( qMax( fabs( mOffset.x() ), fabs( mOffset.y() ) ), mOffsetUnit, mOffsetMapUnitScale );
   return offsetBleed;
 }
 
@@ -2600,14 +2600,14 @@ void QgsLinePatternFillSymbolLayer::applyPattern( const QgsSymbolRenderContext &
       lineAngle += 360.;
     }
 
-    height = qAbs( height );
-    width = qAbs( width );
+    height = abs( height );
+    width = abs( width );
 
     outputPixelDist = height * cos( lineAngle * M_PI / 180 );
 
     // Round offset to correspond to one pixel height, otherwise lines may
     // be shifted on tile border if offset falls close to pixel center
-    int offsetHeight = std::round( qAbs( outputPixelOffset / cos( lineAngle * M_PI / 180 ) ) );
+    int offsetHeight = std::round( fabs( outputPixelOffset / cos( lineAngle * M_PI / 180 ) ) );
     outputPixelOffset = offsetHeight * cos( lineAngle * M_PI / 180 );
   }
 
@@ -3749,7 +3749,7 @@ QgsRasterFillSymbolLayer *QgsRasterFillSymbolLayer::clone() const
 
 double QgsRasterFillSymbolLayer::estimateMaxBleed( const QgsRenderContext &context ) const
 {
-  return context.convertToPainterUnits( qMax( qAbs( mOffset.x() ), qAbs( mOffset.y() ) ), mOffsetUnit, mOffsetMapUnitScale );
+  return context.convertToPainterUnits( qMax( fabs( mOffset.x() ), fabs( mOffset.y() ) ), mOffsetUnit, mOffsetMapUnitScale );
 }
 
 void QgsRasterFillSymbolLayer::setImageFilePath( const QString &imagePath )

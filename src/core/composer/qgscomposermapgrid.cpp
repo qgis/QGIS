@@ -1465,11 +1465,11 @@ QString QgsComposerMapGrid::gridAnnotationString( double value, QgsComposerMapGr
     if ( geographic )
     {
       //insert degree symbol for geographic coordinates
-      return QString::number( qAbs( value ), 'f', mGridAnnotationPrecision ) + QChar( 176 ) + hemisphere;
+      return QString::number( fabs( value ), 'f', mGridAnnotationPrecision ) + QChar( 176 ) + hemisphere;
     }
     else
     {
-      return QString::number( qAbs( value ), 'f', mGridAnnotationPrecision ) + hemisphere;
+      return QString::number( fabs( value ), 'f', mGridAnnotationPrecision ) + hemisphere;
     }
   }
   else if ( mGridAnnotationFormat == CustomFormat )

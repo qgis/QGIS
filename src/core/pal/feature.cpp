@@ -720,7 +720,7 @@ int FeaturePart::createCandidatesAlongLineNearStraightSegments( QList<LabelPosit
 
     //calculate some cost penalties
     double segmentCost = 1.0 - ( distanceToEndOfSegment - distanceToStartOfSegment ) / longestSegmentLength; // 0 -> 1 (lower for longer segments)
-    double segmentAngleCost = 1 - qAbs( fmod( currentSegmentAngle, M_PI ) - M_PI_2 ) / M_PI_2; // 0 -> 1, lower for more horizontal segments
+    double segmentAngleCost = 1 - fabs( fmod( currentSegmentAngle, M_PI ) - M_PI_2 ) / M_PI_2; // 0 -> 1, lower for more horizontal segments
 
     while ( currentDistanceAlongLine + labelWidth < distanceToEndOfSegment )
     {
@@ -745,7 +745,7 @@ int FeaturePart::createCandidatesAlongLineNearStraightSegments( QList<LabelPosit
 
       // penalize positions which are further from the straight segments's midpoint
       double labelCenter = currentDistanceAlongLine + labelWidth / 2.0;
-      double costCenter = 2 * qAbs( labelCenter - distanceToCenterOfSegment ) / ( distanceToEndOfSegment - distanceToStartOfSegment ); // 0 -> 1
+      double costCenter = 2 * fabs( labelCenter - distanceToCenterOfSegment ) / ( distanceToEndOfSegment - distanceToStartOfSegment ); // 0 -> 1
       cost += costCenter * 0.0005;  // < 0, 0.0005 >
 
       if ( !closedLine )
@@ -753,7 +753,7 @@ int FeaturePart::createCandidatesAlongLineNearStraightSegments( QList<LabelPosit
         // penalize positions which are further from absolute center of whole linestring
         // this only applies to non closed linestrings, since the middle of a closed linestring is effectively arbitrary
         // and irrelevant to labeling
-        double costLineCenter = 2 * qAbs( labelCenter - middleOfLine ) / totalLineLength; // 0 -> 1
+        double costLineCenter = 2 * fabs( labelCenter - middleOfLine ) / totalLineLength; // 0 -> 1
         cost += costLineCenter * 0.0005;  // < 0, 0.0005 >
       }
 
@@ -901,7 +901,7 @@ int FeaturePart::createCandidatesAlongLineNearMidpoint( QList<LabelPosition *> &
     }
 
     // penalize positions which are further from the line's midpoint
-    double costCenter = qAbs( totalLineLength / 2 - ( currentDistanceAlongLine + labelWidth / 2 ) ) / totalLineLength; // <0, 0.5>
+    double costCenter = fabs( totalLineLength / 2 - ( currentDistanceAlongLine + labelWidth / 2 ) ) / totalLineLength; // <0, 0.5>
     cost += costCenter / 1000;  // < 0, 0.0005 >
     cost += initialCost;
 
@@ -1241,7 +1241,7 @@ int FeaturePart::createCurvedCandidatesAlongLine( QList< LabelPosition * > &lPos
 
     // penalize positions which are further from the line's midpoint
     double labelCenter = i + getLabelWidth() / 2;
-    double costCenter = qAbs( total_distance / 2 - labelCenter ) / total_distance; // <0, 0.5>
+    double costCenter = fabs( total_distance / 2 - labelCenter ) / total_distance; // <0, 0.5>
     cost += costCenter / 1000;  // < 0, 0.0005 >
     slp->setCost( cost );
 
