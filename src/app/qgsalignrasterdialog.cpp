@@ -108,6 +108,7 @@ QgsAlignRasterDialog::QgsAlignRasterDialog( QWidget *parent )
   // TODO: auto-detect reference layer
 
   connect( buttonBox, &QDialogButtonBox::accepted, this, &QgsAlignRasterDialog::runAlign );
+  connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsAlignRasterDialog::showHelp );
 
   populateLayersView();
 
@@ -119,6 +120,12 @@ QgsAlignRasterDialog::QgsAlignRasterDialog( QWidget *parent )
 QgsAlignRasterDialog::~QgsAlignRasterDialog()
 {
   delete mAlign;
+}
+
+
+void QgsAlignRasterDialog::showHelp()
+{
+  QgsHelp::openHelp( QStringLiteral( "working_with_raster/raster_analysis.html#raster-alignment" ) );
 }
 
 
