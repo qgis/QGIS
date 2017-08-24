@@ -463,6 +463,5 @@ void QgsMapSaveDialog::accepted()
 
 void QgsMapSaveDialog::showHelp()
 {
-  // description needs to be written and i'm not sure of the place yet
-  QgsHelp::openHelp( QStringLiteral( "introduction/getting_started.html#output" ) ); //to be precised
+  QgsHelp::openHelp( QStringLiteral( "introduction/getting_started.html#output" ) );
 }
