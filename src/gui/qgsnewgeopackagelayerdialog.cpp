@@ -350,11 +350,11 @@ bool QgsNewGeoPackageLayerDialog::apply()
                                ( mGeometryTypeBox->currentData( Qt::UserRole ).toInt() );
 
   // z-coordinate & m-value.
-  if (mGeometryWithZCheckBox->isChecked())
-  {
-      wkbType = OGR_GT_SetZ(wkbType);
-      wkbType = OGR_GT_SetM(wkbType);
-  }
+  if ( mGeometryWithZCheckBox->isChecked() )
+    wkbType = OGR_GT_SetZ( wkbType );
+
+  if ( mGeometryWithMCheckBox->isChecked() )
+    wkbType = OGR_GT_SetM( wkbType );
 
   OGRSpatialReferenceH hSRS = nullptr;
   // consider spatial reference system of the layer
