@@ -521,6 +521,20 @@ class CORE_EXPORT QgsExpressionContextUtils
 {
   public:
 
+    /** Creates a new scope which contains variables and functions relating to the position context.
+     * For instance, click position.
+     * @see setPositionVariable()
+     */
+    static QgsExpressionContextScope *positionScope();
+
+    /** Sets a position context variable. This variable will be contained within scopes retrieved via
+     * positionScope().
+     * @param name variable name
+     * @param value variable value
+     * @see positionScope()
+     */
+    static void setPositionVariable( const QString& name, const QVariant& value );
+
     /** Creates a new scope which contains variables and functions relating to the global QGIS context.
      * For instance, QGIS version numbers and variables specified through QGIS options.
      * @see setGlobalVariable()
