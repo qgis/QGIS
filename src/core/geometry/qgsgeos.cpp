@@ -2704,12 +2704,12 @@ int QgsGeos::geomDigits( const GEOSGeometry *geom )
     GEOSCoordSeq_getX_r( geosinit.ctxt, bBoxCoordSeq, i, &t );
 
     int digits;
-    digits = std::ceil( log10( std::fabs( t ) ) );
+    digits = std::ceil( std::log10( std::fabs( t ) ) );
     if ( digits > maxDigits )
       maxDigits = digits;
 
     GEOSCoordSeq_getY_r( geosinit.ctxt, bBoxCoordSeq, i, &t );
-    digits = std::ceil( log10( std::fabs( t ) ) );
+    digits = std::ceil( std::log10( std::fabs( t ) ) );
     if ( digits > maxDigits )
       maxDigits = digits;
   }

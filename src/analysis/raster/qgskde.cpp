@@ -330,7 +330,7 @@ double QgsKernelDensityEstimation::quarticKernel( const double distance, const d
       return k * ( 15. / 16. ) * std::pow( 1. - std::pow( distance / bandwidth, 2 ), 2 );
     }
     case OutputRaw:
-      return pow( 1. - std::pow( distance / bandwidth, 2 ), 2 );
+      return std::pow( 1. - std::pow( distance / bandwidth, 2 ), 2 );
   }
   return 0.0; //no, seriously, I told you NO WARNINGS!
 }
@@ -348,7 +348,7 @@ double QgsKernelDensityEstimation::triweightKernel( const double distance, const
       return k * ( 35. / 32. ) * std::pow( 1. - std::pow( distance / bandwidth, 2 ), 3 );
     }
     case OutputRaw:
-      return pow( 1. - std::pow( distance / bandwidth, 2 ), 3 );
+      return std::pow( 1. - std::pow( distance / bandwidth, 2 ), 3 );
   }
   return 0.0; // this is getting ridiculous... don't you ever listen to a word I say?
 }

@@ -76,7 +76,7 @@ QgsVector &QgsVector::operator-=( QgsVector other )
 
 double QgsVector::length() const
 {
-  return sqrt( mX * mX + mY * mY );
+  return std::sqrt( mX * mX + mY * mY );
 }
 
 double QgsVector::x() const

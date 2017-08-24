@@ -828,7 +828,7 @@ bool QgsAdvancedDigitizingDockWidget::applyConstraints( QgsMapMouseEvent *e )
                           point.x() - previousPt.x()
                         ) - angle ) * 180 / M_PI;
     // modulus
-    angle = fmod( angle, 360.0 );
+    angle = std::fmod( angle, 360.0 );
     mAngleConstraint->setValue( angle );
   }
   // --- distance

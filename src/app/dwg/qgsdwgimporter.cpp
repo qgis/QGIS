@@ -1441,7 +1441,7 @@ bool QgsDwgImporter::curveFromLWPolyline( const DRW_LWPolyline &data, QgsCompoun
     {
       size_t i1 = ( i + 1 ) % vertexnum;
 
-      double a = 2.0 * atan( data.vertlist[i]->bulge );
+      double a = 2.0 * std::atan( data.vertlist[i]->bulge );
       double dx = data.vertlist[i1]->x - data.vertlist[i0]->x;
       double dy = data.vertlist[i1]->y - data.vertlist[i0]->y;
       double c = std::sqrt( dx * dx + dy * dy );
@@ -1552,7 +1552,7 @@ void QgsDwgImporter::addLWPolyline( const DRW_LWPolyline &data )
 
       if ( hasBulge )
       {
-        double a = 2.0 * atan( data.vertlist[i]->bulge );
+        double a = 2.0 * std::atan( data.vertlist[i]->bulge );
         double dx = p1.x() - p0.x();
         double dy = p1.y() - p0.y();
         double c = std::sqrt( dx * dx + dy * dy );
@@ -1753,7 +1753,7 @@ void QgsDwgImporter::addPolyline( const DRW_Polyline &data )
 
       if ( hasBulge )
       {
-        double a = 2.0 * atan( data.vertlist[i]->bulge );
+        double a = 2.0 * std::atan( data.vertlist[i]->bulge );
         double dx = p1.x() - p0.x();
         double dy = p1.y() - p0.y();
         double dz = p1.z() - p0.z();

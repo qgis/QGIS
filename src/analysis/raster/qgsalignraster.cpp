@@ -40,7 +40,7 @@ static double floor_with_tolerance( double value )
   if ( std::fabs( value - std::round( value ) ) < 1e-6 )
     return std::round( value );
   else
-    return floor( value );
+    return std::floor( value );
 }
 
 static double fmod_with_tolerance( double num, double denom )

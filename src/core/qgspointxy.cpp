@@ -61,7 +61,7 @@ QString QgsPointXY::toString( int precision ) const
 QString QgsPointXY::toDegreesMinutesSeconds( int precision, const bool useSuffix, const bool padded ) const
 {
   //first, limit longitude to -360 to 360 degree range
-  double myWrappedX = fmod( mX, 360.0 );
+  double myWrappedX = std::fmod( mX, 360.0 );
   //next, wrap around longitudes > 180 or < -180 degrees, so that, e.g., "190E" -> "170W"
   if ( myWrappedX > 180.0 )
   {
@@ -73,7 +73,7 @@ QString QgsPointXY::toDegreesMinutesSeconds( int precision, const bool useSuffix
   }
 
   //first, limit latitude to -180 to 180 degree range
-  double myWrappedY = fmod( mY, 180.0 );
+  double myWrappedY = std::fmod( mY, 180.0 );
   //next, wrap around latitudes > 90 or < -90 degrees, so that, e.g., "110S" -> "70N"
   if ( myWrappedY > 90.0 )
   {
@@ -175,7 +175,7 @@ QString QgsPointXY::toDegreesMinutesSeconds( int precision, const bool useSuffix
 QString QgsPointXY::toDegreesMinutes( int precision, const bool useSuffix, const bool padded ) const
 {
   //first, limit longitude to -360 to 360 degree range
-  double myWrappedX = fmod( mX, 360.0 );
+  double myWrappedX = std::fmod( mX, 360.0 );
   //next, wrap around longitudes > 180 or < -180 degrees, so that, e.g., "190E" -> "170W"
   if ( myWrappedX > 180.0 )
   {
@@ -273,12 +273,12 @@ double QgsPointXY::sqrDist( const QgsPointXY &other ) const
 
 double QgsPointXY::distance( double x, double y ) const
 {
-  return sqrt( sqrDist( x, y ) );
+  return std::sqrt( sqrDist( x, y ) );
 }
 
 double QgsPointXY::distance( const QgsPointXY &other ) const
 {
-  return sqrt( sqrDist( other ) );
+  return std::sqrt( sqrDist( other ) );
 }
 
 double QgsPointXY::azimuth( const QgsPointXY &other ) const

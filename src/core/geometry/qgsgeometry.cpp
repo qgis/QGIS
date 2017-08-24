@@ -989,7 +989,7 @@ QgsGeometry QgsGeometry::orientedMinimumBoundingBox( double &area, double &angle
 
   // constrain angle to 0 - 180
   if ( angle > 180.0 )
-    angle = fmod( angle, 180.0 );
+    angle = std::fmod( angle, 180.0 );
 
   return minBounds;
 }

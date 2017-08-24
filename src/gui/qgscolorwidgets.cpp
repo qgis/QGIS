@@ -456,10 +456,10 @@ void QgsColorWheel::paintEvent( QPaintEvent *event )
   double lightness = mCurrentColor.lightnessF();
   double hueRadians = ( h * M_PI / 180.0 );
   double hx = std::cos( hueRadians ) * triangleRadius;
-  double hy = -sin( hueRadians ) * triangleRadius;
-  double sx = -cos( -hueRadians + ( M_PI / 3.0 ) ) * triangleRadius;
-  double sy = -sin( -hueRadians + ( M_PI / 3.0 ) ) * triangleRadius;
-  double vx = -cos( hueRadians + ( M_PI / 3.0 ) ) * triangleRadius;
+  double hy = -std::sin( hueRadians ) * triangleRadius;
+  double sx = -std::cos( -hueRadians + ( M_PI / 3.0 ) ) * triangleRadius;
+  double sy = -std::sin( -hueRadians + ( M_PI / 3.0 ) ) * triangleRadius;
+  double vx = -std::cos( hueRadians + ( M_PI / 3.0 ) ) * triangleRadius;
   double vy = std::sin( hueRadians + ( M_PI / 3.0 ) ) * triangleRadius;
   double mx = ( sx + vx ) / 2.0;
   double  my = ( sy + vy ) / 2.0;
@@ -539,31 +539,31 @@ void QgsColorWheel::setColorFromPos( const QPointF pos )
 
     double eventAngleRadians = line.angle() * M_PI / 180.0;
     double hueRadians = h * M_PI / 180.0;
-    double rad0 = fmod( eventAngleRadians + 2.0 * M_PI - hueRadians, 2.0 * M_PI );
-    double rad1 = fmod( rad0, ( ( 2.0 / 3.0 ) * M_PI ) ) - ( M_PI / 3.0 );
+    double rad0 = std::fmod( eventAngleRadians + 2.0 * M_PI - hueRadians, 2.0 * M_PI );
+    double rad1 = std::fmod( rad0, ( ( 2.0 / 3.0 ) * M_PI ) ) - ( M_PI / 3.0 );
     double length = mWheelImage->width() / 2.0;
     double triangleLength = length - mWheelThickness - 1;
 
     double a = 0.5 * triangleLength;
-    double b = tan( rad1 ) * a;
+    double b = std::tan( rad1 ) * a;
     double r = std::sqrt( x * x + y * y );
     double maxR = std::sqrt( a * a + b * b );
 
     if ( r > maxR )
     {
-      double dx = tan( rad1 ) * r;
-      double rad2 = atan( dx / maxR );
+      double dx = std::tan( rad1 ) * r;
+      double rad2 = std::atan( dx / maxR );
       rad2 = qMin( rad2, M_PI / 3.0 );
       rad2 = qMax( rad2, -M_PI / 3.0 );
       eventAngleRadians += rad2 - rad1;
-      rad0 = fmod( eventAngleRadians + 2.0 * M_PI - hueRadians, 2.0 * M_PI );
-      rad1 = fmod( rad0, ( ( 2.0 / 3.0 ) * M_PI ) ) - ( M_PI / 3.0 );
-      b = tan( rad1 ) * a;
+      rad0 = std::fmod( eventAngleRadians + 2.0 * M_PI - hueRadians, 2.0 * M_PI );
+      rad1 = std::fmod( rad0, ( ( 2.0 / 3.0 ) * M_PI ) ) - ( M_PI / 3.0 );
+      b = std::tan( rad1 ) * a;
       r = std::sqrt( a * a + b * b );
     }
 
     double triangleSideLength = std::sqrt( 3.0 ) * triangleLength;
-    double newL = ( ( -sin( rad0 ) * r ) / triangleSideLength ) + 0.5;
+    double newL = ( ( -std::sin( rad0 ) * r ) / triangleSideLength ) + 0.5;
     double widthShare = 1.0 - ( std::fabs( newL - 0.5 ) * 2.0 );
     double newS = ( ( ( std::cos( rad0 ) * r ) + ( triangleLength / 2.0 ) ) / ( 1.5 * triangleLength ) ) / widthShare;
     s = qMin( static_cast< int >( std::round( qMax( 0.0, newS ) * 255.0 ) ), 255 );

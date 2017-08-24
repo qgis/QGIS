@@ -577,7 +577,7 @@ double QgsExpressionNodeBinaryOperator::computeDouble( double x, double y )
     case boDiv:
       return x / y;
     case boMod:
-      return fmod( x, y );
+      return std::fmod( x, y );
     default:
       Q_ASSERT( false );
       return 0;

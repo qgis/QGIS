@@ -565,7 +565,7 @@ QPointF QgsComposition::positionOnPage( QPointF position ) const
   else
   {
     //y coordinate is less then the end of the last page
-    y = fmod( position.y(), ( paperHeight() + spaceBetweenPages() ) );
+    y = std::fmod( position.y(), ( paperHeight() + spaceBetweenPages() ) );
   }
   return QPointF( position.x(), y );
 }
@@ -1170,7 +1170,7 @@ void QgsComposition::addItemsFromXml( const QDomElement &elem, const QDomDocumen
     {
       if ( pasteInPlacePt )
       {
-        newLabel->setItemPosition( newLabel->pos().x(), fmod( newLabel->pos().y(), ( paperHeight() + spaceBetweenPages() ) ) );
+        newLabel->setItemPosition( newLabel->pos().x(), std::fmod( newLabel->pos().y(), ( paperHeight() + spaceBetweenPages() ) ) );
         newLabel->move( pasteInPlacePt->x(), pasteInPlacePt->y() );
       }
       else
@@ -1203,7 +1203,7 @@ void QgsComposition::addItemsFromXml( const QDomElement &elem, const QDomDocumen
     {
       if ( pasteInPlace )
       {
-        newMap->setItemPosition( newMap->pos().x(), fmod( newMap->pos().y(), ( paperHeight() + spaceBetweenPages() ) ) );
+        newMap->setItemPosition( newMap->pos().x(), std::fmod( newMap->pos().y(), ( paperHeight() + spaceBetweenPages() ) ) );
         newMap->move( pasteInPlacePt->x(), pasteInPlacePt->y() );
       }
       else
@@ -1247,7 +1247,7 @@ void QgsComposition::addItemsFromXml( const QDomElement &elem, const QDomDocumen
     {
       if ( pasteInPlace )
       {
-        newArrow->setItemPosition( newArrow->pos().x(), fmod( newArrow->pos().y(), ( paperHeight() + spaceBetweenPages() ) ) );
+        newArrow->setItemPosition( newArrow->pos().x(), std::fmod( newArrow->pos().y(), ( paperHeight() + spaceBetweenPages() ) ) );
         newArrow->move( pasteInPlacePt->x(), pasteInPlacePt->y() );
       }
       else
@@ -1275,7 +1275,7 @@ void QgsComposition::addItemsFromXml( const QDomElement &elem, const QDomDocumen
     {
       if ( pasteInPlace )
       {
-        newScaleBar->setItemPosition( newScaleBar->pos().x(), fmod( newScaleBar->pos().y(), ( paperHeight() + spaceBetweenPages() ) ) );
+        newScaleBar->setItemPosition( newScaleBar->pos().x(), std::fmod( newScaleBar->pos().y(), ( paperHeight() + spaceBetweenPages() ) ) );
         newScaleBar->move( pasteInPlacePt->x(), pasteInPlacePt->y() );
       }
       else
@@ -1305,7 +1305,7 @@ void QgsComposition::addItemsFromXml( const QDomElement &elem, const QDomDocumen
     {
       if ( pasteInPlace )
       {
-        newShape->setItemPosition( newShape->pos().x(), fmod( newShape->pos().y(), ( paperHeight() + spaceBetweenPages() ) ) );
+        newShape->setItemPosition( newShape->pos().x(), std::fmod( newShape->pos().y(), ( paperHeight() + spaceBetweenPages() ) ) );
         newShape->move( pasteInPlacePt->x(), pasteInPlacePt->y() );
       }
       else
@@ -1335,7 +1335,7 @@ void QgsComposition::addItemsFromXml( const QDomElement &elem, const QDomDocumen
     {
       if ( pasteInPlace )
       {
-        newPolygon->setItemPosition( newPolygon->pos().x(), fmod( newPolygon->pos().y(), ( paperHeight() + spaceBetweenPages() ) ) );
+        newPolygon->setItemPosition( newPolygon->pos().x(), std::fmod( newPolygon->pos().y(), ( paperHeight() + spaceBetweenPages() ) ) );
         newPolygon->move( pasteInPlacePt->x(), pasteInPlacePt->y() );
       }
       else
@@ -1366,7 +1366,7 @@ void QgsComposition::addItemsFromXml( const QDomElement &elem, const QDomDocumen
     {
       if ( pasteInPlace )
       {
-        newPolyline->setItemPosition( newPolyline->pos().x(), fmod( newPolyline->pos().y(), ( paperHeight() + spaceBetweenPages() ) ) );
+        newPolyline->setItemPosition( newPolyline->pos().x(), std::fmod( newPolyline->pos().y(), ( paperHeight() + spaceBetweenPages() ) ) );
         newPolyline->move( pasteInPlacePt->x(), pasteInPlacePt->y() );
       }
       else
@@ -1396,7 +1396,7 @@ void QgsComposition::addItemsFromXml( const QDomElement &elem, const QDomDocumen
     {
       if ( pasteInPlace )
       {
-        newPicture->setItemPosition( newPicture->pos().x(), fmod( newPicture->pos().y(), ( paperHeight() + spaceBetweenPages() ) ) );
+        newPicture->setItemPosition( newPicture->pos().x(), std::fmod( newPicture->pos().y(), ( paperHeight() + spaceBetweenPages() ) ) );
         newPicture->move( pasteInPlacePt->x(), pasteInPlacePt->y() );
       }
       else
@@ -1424,7 +1424,7 @@ void QgsComposition::addItemsFromXml( const QDomElement &elem, const QDomDocumen
     {
       if ( pasteInPlace )
       {
-        newLegend->setItemPosition( newLegend->pos().x(), fmod( newLegend->pos().y(), ( paperHeight() + spaceBetweenPages() ) ) );
+        newLegend->setItemPosition( newLegend->pos().x(), std::fmod( newLegend->pos().y(), ( paperHeight() + spaceBetweenPages() ) ) );
         newLegend->move( pasteInPlacePt->x(), pasteInPlacePt->y() );
       }
       else
@@ -3152,7 +3152,7 @@ void QgsComposition::computeWorldFileParameters( const QRectF &exportRegion, dou
   // rotation matrix
   double r[6];
   r[0] = std::cos( alpha );
-  r[1] = -sin( alpha );
+  r[1] = -std::sin( alpha );
   r[2] = xCenter * ( 1 - std::cos( alpha ) ) + yCenter * std::sin( alpha );
   r[3] = std::sin( alpha );
   r[4] = std::cos( alpha );

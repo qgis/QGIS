@@ -560,7 +560,7 @@ bool QgsRelief::exportFrequencyDistributionToCsv( const QString &file )
   //log10 transformation for all frequency values
   for ( int i = 0; i < 252; ++i )
   {
-    frequency[i] = log10( frequency[i] );
+    frequency[i] = std::log10( frequency[i] );
   }
 
   //write out frequency values to csv file for debugging
@@ -651,7 +651,7 @@ QList< QgsRelief::ReliefColor > QgsRelief::calculateOptimizedReliefClasses()
   //log10 transformation for all frequency values
   for ( int i = 0; i < 252; ++i )
   {
-    frequency[i] = log10( frequency[i] );
+    frequency[i] = std::log10( frequency[i] );
   }
 
   //start with 9 uniformly distributed classes

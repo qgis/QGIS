@@ -111,14 +111,14 @@ void QgsResidualPlotItem::paint( QPainter *painter, const QStyleOptionGraphicsIt
   int nDecPlaces;
   if ( scaleBarWidthUnits < 1 )
   {
-    nDecPlaces = -floor( log10( scaleBarWidthUnits ) );
+    nDecPlaces = -std::floor( std::log10( scaleBarWidthUnits ) );
     scaleBarWidthUnits *= std::pow( 10.0, nDecPlaces );
     scaleBarWidthUnits = ( int )( scaleBarWidthUnits + 0.5 );
     scaleBarWidthUnits /= std::pow( 10.0, nDecPlaces );
   }
   else
   {
-    nDecPlaces = ( int )log10( scaleBarWidthUnits );
+    nDecPlaces = ( int )std::log10( scaleBarWidthUnits );
     scaleBarWidthUnits /= std::pow( 10.0, nDecPlaces );
     scaleBarWidthUnits = ( int )( scaleBarWidthUnits + 0.5 );
     scaleBarWidthUnits *= std::pow( 10.0, nDecPlaces );
@@ -228,5 +228,5 @@ double QgsResidualPlotItem::dist( QPointF p1, QPointF p2 ) const
 {
   double dx = p2.x() - p1.x();
   double dy = p2.y() - p1.y();
-  return sqrt( dx * dx + dy * dy );
+  return std::sqrt( dx * dx + dy * dy );
 }

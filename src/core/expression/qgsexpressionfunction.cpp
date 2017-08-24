@@ -267,22 +267,22 @@ static QVariant fcnCos( const QVariantList &values, const QgsExpressionContext *
 static QVariant fcnTan( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent )
 {
   double x = QgsExpressionUtils::getDoubleValue( values.at( 0 ), parent );
-  return QVariant( tan( x ) );
+  return QVariant( std::tan( x ) );
 }
 static QVariant fcnAsin( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent )
 {
   double x = QgsExpressionUtils::getDoubleValue( values.at( 0 ), parent );
-  return QVariant( asin( x ) );
+  return QVariant( std::asin( x ) );
 }
 static QVariant fcnAcos( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent )
 {
   double x = QgsExpressionUtils::getDoubleValue( values.at( 0 ), parent );
-  return QVariant( acos( x ) );
+  return QVariant( std::acos( x ) );
 }
 static QVariant fcnAtan( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent )
 {
   double x = QgsExpressionUtils::getDoubleValue( values.at( 0 ), parent );
-  return QVariant( atan( x ) );
+  return QVariant( std::atan( x ) );
 }
 static QVariant fcnAtan2( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent )
 {
@@ -293,14 +293,14 @@ static QVariant fcnAtan2( const QVariantList &values, const QgsExpressionContext
 static QVariant fcnExp( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent )
 {
   double x = QgsExpressionUtils::getDoubleValue( values.at( 0 ), parent );
-  return QVariant( exp( x ) );
+  return QVariant( std::exp( x ) );
 }
 static QVariant fcnLn( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent )
 {
   double x = QgsExpressionUtils::getDoubleValue( values.at( 0 ), parent );
   if ( x <= 0 )
     return QVariant();
-  return QVariant( log( x ) );
+  return QVariant( std::log( x ) );
 }
 static QVariant fcnLog10( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent )
 {
@@ -315,7 +315,7 @@ static QVariant fcnLog( const QVariantList &values, const QgsExpressionContext *
   double x = QgsExpressionUtils::getDoubleValue( values.at( 1 ), parent );
   if ( x <= 0 || b <= 0 )
     return QVariant();
-  return QVariant( log( x ) / log( b ) );
+  return QVariant( std::log( x ) / std::log( b ) );
 }
 static QVariant fcnRndF( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent )
 {
@@ -2656,11 +2656,11 @@ static QVariant fcnAzimuth( const QVariantList &values, const QgsExpressionConte
   {
     if ( pt1->y() < pt2->y() )
     {
-      return atan( std::fabs( pt1->x() - pt2->x() ) / std::fabs( pt1->y() - pt2->y() ) );
+      return std::atan( std::fabs( pt1->x() - pt2->x() ) / std::fabs( pt1->y() - pt2->y() ) );
     }
     else /* ( pt1->y() > pt2->y() )  - equality case handled above */
     {
-      return atan( std::fabs( pt1->y() - pt2->y() ) / std::fabs( pt1->x() - pt2->x() ) )
+      return std::atan( std::fabs( pt1->y() - pt2->y() ) / std::fabs( pt1->x() - pt2->x() ) )
              + ( M_PI / 2 );
     }
   }
@@ -2669,12 +2669,12 @@ static QVariant fcnAzimuth( const QVariantList &values, const QgsExpressionConte
   {
     if ( pt1->y() > pt2->y() )
     {
-      return atan( std::fabs( pt1->x() - pt2->x() ) / std::fabs( pt1->y() - pt2->y() ) )
+      return std::atan( std::fabs( pt1->x() - pt2->x() ) / std::fabs( pt1->y() - pt2->y() ) )
              + M_PI;
     }
     else /* ( pt1->y() < pt2->y() )  - equality case handled above */
     {
-      return atan( std::fabs( pt1->y() - pt2->y() ) / std::fabs( pt1->x() - pt2->x() ) )
+      return std::atan( std::fabs( pt1->y() - pt2->y() ) / std::fabs( pt1->x() - pt2->x() ) )
              + ( M_PI + ( M_PI / 2 ) );
     }
   }

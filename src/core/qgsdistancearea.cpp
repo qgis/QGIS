@@ -411,8 +411,8 @@ QgsPointXY QgsDistanceArea::computeSpheroidProject(
   double radians_long = DEG2RAD( p1.x() );
   double b2 = POW2( b ); // spheroid_mu2
   double omf = 1 - f;
-  double tan_u1 = omf * tan( radians_lat );
-  double u1 = atan( tan_u1 );
+  double tan_u1 = omf * std::tan( radians_lat );
+  double u1 = std::atan( tan_u1 );
   double sigma, last_sigma, delta_sigma, two_sigma_m;
   double sigma1, sin_alpha, alpha, cos_alphasq;
   double u2, A, B;
@@ -428,7 +428,7 @@ QgsPointXY QgsDistanceArea::computeSpheroidProject(
   }
   sigma1 = std::atan2( tan_u1, std::cos( azimuth ) );
   sin_alpha = std::cos( u1 ) * std::sin( azimuth );
-  alpha = asin( sin_alpha );
+  alpha = std::asin( sin_alpha );
   cos_alphasq = 1.0 - POW2( sin_alpha );
   u2 = POW2( std::cos( alpha ) ) * ( POW2( a ) - b2 ) / b2; // spheroid_mu2
   A = 1.0 + ( u2 / 16384.0 ) * ( 4096.0 + u2 * ( -768.0 + u2 * ( 320.0 - 175.0 * u2 ) ) );
@@ -551,8 +551,8 @@ double QgsDistanceArea::computeDistanceBearing(
   double p2_lat = DEG2RAD( p2.y() ), p2_lon = DEG2RAD( p2.x() );
 
   double L = p2_lon - p1_lon;
-  double U1 = atan( ( 1 - f ) * tan( p1_lat ) );
-  double U2 = atan( ( 1 - f ) * tan( p2_lat ) );
+  double U1 = std::atan( ( 1 - f ) * std::tan( p1_lat ) );
+  double U2 = std::atan( ( 1 - f ) * std::tan( p2_lat ) );
   double sinU1 = std::sin( U1 ), cosU1 = std::cos( U1 );
   double sinU2 = std::sin( U2 ), cosU2 = std::cos( U2 );
   double lambda = L;
@@ -580,7 +580,7 @@ double QgsDistanceArea::computeDistanceBearing(
     sinSigma = std::sqrt( tu1 * tu1 + tu2 * tu2 );
     cosSigma = sinU1 * sinU2 + cosU1 * cosU2 * cosLambda;
     sigma = std::atan2( sinSigma, cosSigma );
-    alpha = asin( cosU1 * cosU2 * sinLambda / sinSigma );
+    alpha = std::asin( cosU1 * cosU2 * sinLambda / sinSigma );
     cosSqAlpha = std::cos( alpha ) * std::cos( alpha );
     cos2SigmaM = cosSigma - 2 * sinU1 * sinU2 / cosSqAlpha;
     C = f / 16 * cosSqAlpha * ( 4 + f * ( 4 - 3 * cosSqAlpha ) );
@@ -797,7 +797,7 @@ double QgsDistanceArea::computePolygonFlatArea( const QList<QgsPointXY> &points 
   }
   // QgsDebugMsg("Area from point: " + (points[i % size]).toString(2));
   area = area / 2.0;
-  return fabs( area ); // All areas are positive!
+  return std::fabs( area ); // All areas are positive!
 }
 
 QString QgsDistanceArea::formatDistance( double distance, int decimals, QgsUnitTypes::DistanceUnit unit, bool keepBaseUnit )

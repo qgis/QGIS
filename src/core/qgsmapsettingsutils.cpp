@@ -93,7 +93,7 @@ QString QgsMapSettingsUtils::worldFileContent( const QgsMapSettings &mapSettings
   // rotation matrix
   double r[6];
   r[0] = std::cos( alpha );
-  r[1] = -sin( alpha );
+  r[1] = -std::sin( alpha );
   r[2] = xCenter * ( 1 - std::cos( alpha ) ) + yCenter * std::sin( alpha );
   r[3] = std::sin( alpha );
   r[4] = std::cos( alpha );

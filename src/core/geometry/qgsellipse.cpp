@@ -139,7 +139,7 @@ void QgsEllipse::setAzimuth( const double azimuth )
 
 double QgsEllipse::focusDistance() const
 {
-  return sqrt( mSemiMajorAxis * mSemiMajorAxis - mSemiMinorAxis * mSemiMinorAxis );
+  return std::sqrt( mSemiMajorAxis * mSemiMajorAxis - mSemiMinorAxis * mSemiMinorAxis );
 }
 
 QVector<QgsPoint> QgsEllipse::foci() const

@@ -720,7 +720,7 @@ int FeaturePart::createCandidatesAlongLineNearStraightSegments( QList<LabelPosit
 
     //calculate some cost penalties
     double segmentCost = 1.0 - ( distanceToEndOfSegment - distanceToStartOfSegment ) / longestSegmentLength; // 0 -> 1 (lower for longer segments)
-    double segmentAngleCost = 1 - std::fabs( fmod( currentSegmentAngle, M_PI ) - M_PI_2 ) / M_PI_2; // 0 -> 1, lower for more horizontal segments
+    double segmentAngleCost = 1 - std::fabs( std::fmod( currentSegmentAngle, M_PI ) - M_PI_2 ) / M_PI_2; // 0 -> 1, lower for more horizontal segments
 
     while ( currentDistanceAlongLine + labelWidth < distanceToEndOfSegment )
     {

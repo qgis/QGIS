@@ -787,7 +787,7 @@ bool QgsDecorationGrid::getIntervalFromExtent( double *values, bool useXAxis )
   if ( !qgsDoubleNear( interval, 0.0 ) )
   {
     double interval2 = 0;
-    int factor =  std::pow( 10, std::floor( log10( interval ) ) );
+    int factor =  std::pow( 10, std::floor( std::log10( interval ) ) );
     if ( factor != 0 )
     {
       interval2 = std::round( interval / factor ) * factor;

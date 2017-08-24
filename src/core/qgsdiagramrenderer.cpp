@@ -258,7 +258,7 @@ void QgsDiagramSettings::readXml( const QDomElement &elem )
   barWidth = elem.attribute( QStringLiteral( "barWidth" ) ).toDouble();
 
   if ( elem.hasAttribute( QStringLiteral( "angleOffset" ) ) )
-    rotationOffset = fmod( 360.0 - elem.attribute( QStringLiteral( "angleOffset" ) ).toInt() / 16.0, 360.0 );
+    rotationOffset = std::fmod( 360.0 - elem.attribute( QStringLiteral( "angleOffset" ) ).toInt() / 16.0, 360.0 );
   else
     rotationOffset = elem.attribute( QStringLiteral( "rotationOffset" ) ).toDouble();
 

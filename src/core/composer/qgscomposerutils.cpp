@@ -42,9 +42,9 @@ void QgsComposerUtils::drawArrowHead( QPainter *p, const double x, const double 
   QPointF p2 = QPointF( arrowHeadWidth / 2.0, arrowHeadWidth );
 
   QPointF p1Rotated, p2Rotated;
-  p1Rotated.setX( p1.x() * std::cos( angleRad ) + p1.y() * -sin( angleRad ) );
+  p1Rotated.setX( p1.x() * std::cos( angleRad ) + p1.y() * -std::sin( angleRad ) );
   p1Rotated.setY( p1.x() * std::sin( angleRad ) + p1.y() * std::cos( angleRad ) );
-  p2Rotated.setX( p2.x() * std::cos( angleRad ) + p2.y() * -sin( angleRad ) );
+  p2Rotated.setX( p2.x() * std::cos( angleRad ) + p2.y() * -std::sin( angleRad ) );
   p2Rotated.setY( p2.x() * std::sin( angleRad ) + p2.y() * std::cos( angleRad ) );
 
   QPolygonF arrowHeadPoly;
@@ -76,7 +76,7 @@ double QgsComposerUtils::angle( QPointF p1, QPointF p2 )
     return 0;
   }
 
-  double angle = acos( ( -yDiff * length ) / ( length * length ) ) * 180 / M_PI;
+  double angle = std::acos( ( -yDiff * length ) / ( length * length ) ) * 180 / M_PI;
   if ( xDiff < 0 )
   {
     return ( 360 - angle );
@@ -99,7 +99,7 @@ double QgsComposerUtils::normalizedAngle( const double angle )
   double clippedAngle = angle;
   if ( clippedAngle >= 360.0 || clippedAngle <= -360.0 )
   {
-    clippedAngle = fmod( clippedAngle, 360.0 );
+    clippedAngle = std::fmod( clippedAngle, 360.0 );
   }
   if ( clippedAngle < 0.0 )
   {

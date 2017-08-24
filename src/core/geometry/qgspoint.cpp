@@ -480,12 +480,12 @@ QPointF QgsPoint::toQPointF() const
 
 double QgsPoint::distance( double x, double y ) const
 {
-  return sqrt( ( mX - x ) * ( mX - x ) + ( mY - y ) * ( mY - y ) );
+  return std::sqrt( ( mX - x ) * ( mX - x ) + ( mY - y ) * ( mY - y ) );
 }
 
 double QgsPoint::distance( const QgsPoint &other ) const
 {
-  return sqrt( ( mX - other.x() ) * ( mX - other.x() ) + ( mY - other.y() ) * ( mY - other.y() ) );
+  return std::sqrt( ( mX - other.x() ) * ( mX - other.x() ) + ( mY - other.y() ) * ( mY - other.y() ) );
 }
 
 double QgsPoint::distanceSquared( double x, double y ) const
@@ -504,7 +504,7 @@ double QgsPoint::distance3D( double x, double y, double z ) const
   if ( is3D() || !std::isnan( z ) )
     zDistSquared = ( mZ - z ) * ( mZ - z );
 
-  return sqrt( ( mX - x ) * ( mX - x ) + ( mY - y ) * ( mY - y ) + zDistSquared );
+  return std::sqrt( ( mX - x ) * ( mX - x ) + ( mY - y ) * ( mY - y ) + zDistSquared );
 }
 
 double QgsPoint::distance3D( const QgsPoint &other ) const
@@ -513,7 +513,7 @@ double QgsPoint::distance3D( const QgsPoint &other ) const
   if ( is3D() || other.is3D() )
     zDistSquared = ( mZ - other.z() ) * ( mZ - other.z() );
 
-  return sqrt( ( mX - other.x() ) * ( mX - other.x() ) + ( mY - other.y() ) * ( mY - other.y() ) + zDistSquared );
+  return std::sqrt( ( mX - other.x() ) * ( mX - other.x() ) + ( mY - other.y() ) * ( mY - other.y() ) + zDistSquared );
 }
 
 double QgsPoint::distanceSquared3D( double x, double y, double z ) const
@@ -550,7 +550,7 @@ double QgsPoint::inclination( const QgsPoint &other ) const
   }
   double dz = other.z() - mZ;
 
-  return ( acos( dz / distance ) * 180.0 / M_PI );
+  return ( std::acos( dz / distance ) * 180.0 / M_PI );
 }
 
 QgsPoint QgsPoint::project( double distance, double azimuth, double inclination ) const
@@ -559,7 +559,7 @@ QgsPoint QgsPoint::project( double distance, double azimuth, double inclination 
   double radsXy = azimuth * M_PI / 180.0;
   double dx = 0.0, dy = 0.0, dz = 0.0;
 
-  inclination = fmod( inclination, 360.0 );
+  inclination = std::fmod( inclination, 360.0 );
 
   if ( !qgsDoubleNear( inclination, 90.0 ) )
     pType = QgsWkbTypes::addZ( pType );

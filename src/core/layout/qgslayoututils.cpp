@@ -27,7 +27,7 @@ double QgsLayoutUtils::normalizedAngle( const double angle, const bool allowNega
   double clippedAngle = angle;
   if ( clippedAngle >= 360.0 || clippedAngle <= -360.0 )
   {
-    clippedAngle = fmod( clippedAngle, 360.0 );
+    clippedAngle = std::fmod( clippedAngle, 360.0 );
   }
   if ( !allowNegative && clippedAngle < 0.0 )
   {

@@ -1426,7 +1426,7 @@ QString QgsComposerMapGrid::gridAnnotationString( double value, QgsComposerMapGr
        ( mGridAnnotationFormat == QgsComposerMapGrid::Decimal || mGridAnnotationFormat == QgsComposerMapGrid::DecimalWithSuffix ) )
   {
     // wrap around longitudes > 180 or < -180 degrees, so that, e.g., "190E" -> "170W"
-    double wrappedX = fmod( value, 360.0 );
+    double wrappedX = std::fmod( value, 360.0 );
     if ( wrappedX > 180.0 )
     {
       value = wrappedX - 360.0;

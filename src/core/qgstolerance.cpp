@@ -109,11 +109,11 @@ double QgsTolerance::computeMapUnitPerPixel( QgsMapLayer *layer, const QgsMapSet
   double y = p3.sqrDist( p4 );
   if ( x > y )
   {
-    return sqrt( x );
+    return std::sqrt( x );
   }
   else
   {
-    return sqrt( y );
+    return std::sqrt( y );
   }
 }
 

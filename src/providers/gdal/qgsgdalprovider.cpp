@@ -959,7 +959,7 @@ QString QgsGdalProvider::generateBandName( int bandNumber ) const
         }
 
         if ( !bandNameValues.isEmpty() )
-          return tr( "Band" ) + QStringLiteral( " %1 / %2" ) .arg( bandNumber, 1 + ( int ) log10( ( float ) bandCount() ), 10, QChar( '0' ) ).arg( bandNameValues.join( QStringLiteral( " / " ) ) );
+          return tr( "Band" ) + QStringLiteral( " %1 / %2" ) .arg( bandNumber, 1 + ( int ) std::log10( ( float ) bandCount() ), 10, QChar( '0' ) ).arg( bandNameValues.join( QStringLiteral( " / " ) ) );
       }
     }
   }

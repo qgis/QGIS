@@ -50,7 +50,7 @@ QgsComposerNodesItem::QgsComposerNodesItem( const QString &tagName,
 double QgsComposerNodesItem::computeDistance( QPointF pt1,
     QPointF pt2 ) const
 {
-  return sqrt( std::pow( pt1.x() - pt2.x(), 2 ) + std::pow( pt1.y() - pt2.y(), 2 ) );
+  return std::sqrt( std::pow( pt1.x() - pt2.x(), 2 ) + std::pow( pt1.y() - pt2.y(), 2 ) );
 }
 
 bool QgsComposerNodesItem::addNode( QPointF pt,

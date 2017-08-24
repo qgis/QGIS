@@ -500,7 +500,7 @@ void QgsWmsProvider::setFormatQueryItem( QUrl &url )
 
 static bool _fuzzyContainsRect( const QRectF &r1, const QRectF &r2 )
 {
-  double significantDigits = log10( qMax( r1.width(), r1.height() ) );
+  double significantDigits = std::log10( qMax( r1.width(), r1.height() ) );
   double epsilon = std::pow( 10.0, significantDigits - 5 ); // floats have 6-9 significant digits
   return r1.contains( r2.adjusted( epsilon, epsilon, -epsilon, -epsilon ) );
 }
@@ -1189,8 +1189,8 @@ void QgsWmsProvider::setupXyzCapabilities( const QString &uri )
   // the whole world is projected to a square:
   // X going from 180 W to 180 E
   // Y going from ~85 N to ~85 S  (=atan(sinh(pi)) ... to get a square)
-  QgsPointXY topLeftLonLat( -180, 180.0 / M_PI * atan( sinh( M_PI ) ) );
-  QgsPointXY bottomRightLonLat( 180, 180.0 / M_PI * atan( sinh( -M_PI ) ) );
+  QgsPointXY topLeftLonLat( -180, 180.0 / M_PI * std::atan( std::sinh( M_PI ) ) );
+  QgsPointXY bottomRightLonLat( 180, 180.0 / M_PI * std::atan( std::sinh( -M_PI ) ) );
   QgsPointXY topLeft = ct.transform( topLeftLonLat );
   QgsPointXY bottomRight = ct.transform( bottomRightLonLat );
   double xspan = ( bottomRight.x() - topLeft.x() );
@@ -4044,7 +4044,7 @@ static QString formatDouble( double x )
 {
   if ( x == 0.0 )
     return QStringLiteral( "0" );
-  const int numberOfDecimals = qMax( 0, 19 - static_cast<int>( std::ceil( log10( std::fabs( x ) ) ) ) );
+  const int numberOfDecimals = qMax( 0, 19 - static_cast<int>( std::ceil( std::log10( std::fabs( x ) ) ) ) );
   return qgsDoubleToString( x, numberOfDecimals );
 }
 

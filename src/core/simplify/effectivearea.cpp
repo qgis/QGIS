@@ -43,7 +43,7 @@ static void destroy_minheap( MINHEAP tree )
  */
 static double triarea2d( const QgsPoint &P1, const QgsPoint &P2, const QgsPoint &P3 )
 {
-  return fabs( 0.5 * ( ( P1.x() - P2.x() ) * ( P3.y() - P2.y() ) - ( P1.y() - P2.y() ) * ( P3.x() - P2.x() ) ) );
+  return std::fabs( 0.5 * ( ( P1.x() - P2.x() ) * ( P3.y() - P2.y() ) - ( P1.y() - P2.y() ) * ( P3.x() - P2.x() ) ) );
 }
 
 /**

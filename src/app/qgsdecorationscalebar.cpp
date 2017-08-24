@@ -158,7 +158,7 @@ void QgsDecorationScaleBar::render( const QgsMapSettings &mapSettings, QgsRender
 
     // Work out the exponent for the number - e.g, 1234 will give 3,
     // and .001234 will give -3
-    double myPowerOf10 = std::floor( log10( myActualSize ) );
+    double myPowerOf10 = std::floor( std::log10( myActualSize ) );
 
     // snap to integer < 10 times power of 10
     if ( mSnapping )

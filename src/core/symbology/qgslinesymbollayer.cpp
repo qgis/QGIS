@@ -672,7 +672,7 @@ class MyLine
     // return angle in radians
     double angle()
     {
-      double a = ( mVertical ? M_PI / 2 : atan( mT ) );
+      double a = ( mVertical ? M_PI / 2 : std::atan( mT ) );
 
       if ( !mIncreasing )
         a += M_PI;
@@ -685,7 +685,7 @@ class MyLine
       if ( mVertical )
         return ( mIncreasing ? QPointF( 0, interval ) : QPointF( 0, -interval ) );
 
-      double alpha = atan( mT );
+      double alpha = std::atan( mT );
       double dx = std::cos( alpha ) * interval;
       double dy = std::sin( alpha ) * interval;
       return ( mIncreasing ? QPointF( dx, dy ) : QPointF( -dx, -dy ) );

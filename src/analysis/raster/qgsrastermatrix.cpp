@@ -226,16 +226,16 @@ bool QgsRasterMatrix::oneArgumentOperation( OneArgOperator op )
           mData[i] = std::cos( value );
           break;
         case opTAN:
-          mData[i] = tan( value );
+          mData[i] = std::tan( value );
           break;
         case opASIN:
-          mData[i] = asin( value );
+          mData[i] = std::asin( value );
           break;
         case opACOS:
-          mData[i] = acos( value );
+          mData[i] = std::acos( value );
           break;
         case opATAN:
-          mData[i] = atan( value );
+          mData[i] = std::atan( value );
           break;
         case opSIGN:
           mData[i] = -value;
@@ -292,7 +292,7 @@ double QgsRasterMatrix::calculateTwoArgumentOp( TwoArgOperator op, double arg1, 
       }
       else
       {
-        return pow( arg1, arg2 );
+        return std::pow( arg1, arg2 );
       }
     case opEQ:
       return ( arg1 == arg2 ? 1.0 : 0.0 );

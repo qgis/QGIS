@@ -201,7 +201,7 @@ void QgsArrowSymbolLayer::stopRender( QgsSymbolRenderContext &context )
 
 inline qreal euclidian_distance( QPointF po, QPointF pd )
 {
-  return sqrt( ( po.x() - pd.x() ) * ( po.x() - pd.x() ) + ( po.y() - pd.y() ) * ( po.y() - pd.y() ) );
+  return std::sqrt( ( po.x() - pd.x() ) * ( po.x() - pd.x() ) + ( po.y() - pd.y() ) * ( po.y() - pd.y() ) );
 }
 
 QPolygonF straightArrow( QPointF po, QPointF pd,
@@ -506,7 +506,7 @@ QPolygonF curvedArrow( QPointF po, QPointF pm, QPointF pd,
   pm = circlePoint( circleCenter, circleRadius, angle_m );
   pd = circlePoint( circleCenter, circleRadius, angle_d );
 
-  qreal headAngle = direction * atan( headWidth / circleRadius );
+  qreal headAngle = direction * std::atan( headWidth / circleRadius );
 
   QPainterPath path;
 

@@ -50,7 +50,7 @@ class QgsPointCompare
       double tx1 = std::ceil( p1.x() / mTolerance );
       double tx2 = std::ceil( p2.x() / mTolerance );
       if ( tx1 == tx2 )
-        return ceil( p1.y() / mTolerance ) < std::ceil( p2.y() / mTolerance );
+        return std::ceil( p1.y() / mTolerance ) < std::ceil( p2.y() / mTolerance );
       return tx1 < tx2;
     }
 

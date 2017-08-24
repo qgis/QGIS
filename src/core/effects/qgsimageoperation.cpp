@@ -770,7 +770,7 @@ double *QgsImageOperation::createGaussianKernel( const int radius )
   double result;
   for ( int i = 0; i <= radius; ++i )
   {
-    result = coefficient * exp( i * i * expCoefficient );
+    result = coefficient * std::exp( i * i * expCoefficient );
     kernel[ radius - i ] = result;
     sum += result;
     if ( i > 0 )

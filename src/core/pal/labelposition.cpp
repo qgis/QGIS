@@ -525,7 +525,7 @@ int LabelPosition::polygonIntersectionCost( PointSet *polygon ) const
   //effectively take the average polygon intersection cost for all label parts
   double totalCost = polygonIntersectionCostForParts( polygon );
   int n = partCount();
-  return ceil( totalCost / n );
+  return std::ceil( totalCost / n );
 }
 
 bool LabelPosition::intersectsWithPolygon( PointSet *polygon ) const

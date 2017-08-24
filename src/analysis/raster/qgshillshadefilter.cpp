@@ -38,7 +38,7 @@ float QgsHillshadeFilter::processNineCellWindow( float *x11, float *x21, float *
   }
 
   float zenith_rad = mLightAngle * M_PI / 180.0;
-  float slope_rad = atan( std::sqrt( derX * derX + derY * derY ) );
+  float slope_rad = std::atan( std::sqrt( derX * derX + derY * derY ) );
   float azimuth_rad = mLightAzimuth * M_PI / 180.0;
   float aspect_rad = 0;
   if ( derX == 0 && derY == 0 ) //aspect undefined, take a neutral value. Better solutions?

@@ -659,7 +659,7 @@ void QgsGeometryUtils::segmentizeArc( const QgsPoint &p1, const QgsPoint &p2, co
   double increment = tolerance; //one segment per degree
   if ( toleranceType == QgsAbstractGeometry::MaximumDifference )
   {
-    double halfAngle = acos( -tolerance / radius + 1 );
+    double halfAngle = std::acos( -tolerance / radius + 1 );
     increment = 2 * halfAngle;
   }
 
@@ -936,7 +936,7 @@ double QgsGeometryUtils::normalizedAngle( double angle )
   double clippedAngle = angle;
   if ( clippedAngle >= M_PI * 2 || clippedAngle <= -2 * M_PI )
   {
-    clippedAngle = fmod( clippedAngle, 2 * M_PI );
+    clippedAngle = std::fmod( clippedAngle, 2 * M_PI );
   }
   if ( clippedAngle < 0.0 )
   {

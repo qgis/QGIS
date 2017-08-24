@@ -604,7 +604,7 @@ void QgsPalLayerSettings::readFromLayerCustomProperties( QgsVectorLayer *layer )
   if ( tempAngle.isValid() )
   {
     double oldAngle = layer->customProperty( QStringLiteral( "labeling/angleOffset" ), QVariant( 0.0 ) ).toDouble();
-    angleOffset = fmod( 360 - oldAngle, 360.0 );
+    angleOffset = std::fmod( 360 - oldAngle, 360.0 );
   }
   else
   {
@@ -824,7 +824,7 @@ void QgsPalLayerSettings::readXml( QDomElement &elem, const QgsReadWriteContext 
   if ( placementElem.hasAttribute( QStringLiteral( "angleOffset" ) ) )
   {
     double oldAngle = placementElem.attribute( QStringLiteral( "angleOffset" ), QStringLiteral( "0" ) ).toDouble();
-    angleOffset = fmod( 360 - oldAngle, 360.0 );
+    angleOffset = std::fmod( 360 - oldAngle, 360.0 );
   }
   else
   {

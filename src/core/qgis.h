@@ -232,8 +232,8 @@ inline bool qgsDoubleNearSig( double a, double b, int significantDigits = 10 )
   // has to be considered (maybe TODO)
   // Is there a better way?
   int aexp, bexp;
-  double ar = frexp( a, &aexp );
-  double br = frexp( b, &bexp );
+  double ar = std::frexp( a, &aexp );
+  double br = std::frexp( b, &bexp );
 
   return aexp == bexp &&
          std::round( ar * std::pow( 10.0, significantDigits ) ) == std::round( br * std::pow( 10.0, significantDigits ) );

@@ -203,12 +203,12 @@ double QgsHeatmapRenderer::uniformKernel( const double distance, const int bandw
 
 double QgsHeatmapRenderer::quarticKernel( const double distance, const int bandwidth ) const
 {
-  return pow( 1. - std::pow( distance / static_cast< double >( bandwidth ), 2 ), 2 );
+  return std::pow( 1. - std::pow( distance / static_cast< double >( bandwidth ), 2 ), 2 );
 }
 
 double QgsHeatmapRenderer::triweightKernel( const double distance, const int bandwidth ) const
 {
-  return pow( 1. - std::pow( distance / static_cast< double >( bandwidth ), 2 ), 3 );
+  return std::pow( 1. - std::pow( distance / static_cast< double >( bandwidth ), 2 ), 3 );
 }
 
 double QgsHeatmapRenderer::epanechnikovKernel( const double distance, const int bandwidth ) const
