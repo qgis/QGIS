@@ -572,7 +572,7 @@ QPointF QgsComposition::positionOnPage( QPointF position ) const
 
 int QgsComposition::pageNumberForPoint( QPointF position ) const
 {
-  int pageNumber = qFloor( position.y() / ( paperHeight() + spaceBetweenPages() ) ) + 1;
+  int pageNumber = std::floor( position.y() / ( paperHeight() + spaceBetweenPages() ) ) + 1;
   pageNumber = pageNumber < 1 ? 1 : pageNumber;
   pageNumber = pageNumber > mPages.size() ? mPages.size() : pageNumber;
   return pageNumber;

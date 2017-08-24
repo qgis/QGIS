@@ -105,7 +105,7 @@ void QgsCubicRasterResampler::resample( const QImage &srcImage, QImage &dstImage
 
   for ( int y = 0; y < dstImage.height(); ++y )
   {
-    currentSrcRowInt = floor( currentSrcRow );
+    currentSrcRowInt = std::floor( currentSrcRow );
     v = currentSrcRow - currentSrcRowInt;
 
     currentSrcCol = nSrcPerDstX / 2.0 - 0.5;
@@ -113,7 +113,7 @@ void QgsCubicRasterResampler::resample( const QImage &srcImage, QImage &dstImage
     QRgb *scanLine = ( QRgb * )dstImage.scanLine( y );
     for ( int x = 0; x < dstImage.width(); ++x )
     {
-      currentSrcColInt = floor( currentSrcCol );
+      currentSrcColInt = std::floor( currentSrcCol );
       u = currentSrcCol - currentSrcColInt;
 
       //handle eight edge-cases

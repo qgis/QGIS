@@ -699,7 +699,7 @@ static QList<double> _calcJenksBreaks( QList<double> values, int classes,
     {
       // pick a random integer from 0 to n
       double r = qrand();
-      int j = floor( r / RAND_MAX * ( values.size() - 1 ) );
+      int j = std::floor( r / RAND_MAX * ( values.size() - 1 ) );
       sample[ i ] = values[ j ];
     }
   }

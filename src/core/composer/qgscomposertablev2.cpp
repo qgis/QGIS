@@ -278,7 +278,7 @@ int QgsComposerTableV2::rowsVisible( double frameHeight, int firstRow, bool incl
   if ( includeEmptyRows && contentHeight > 0 )
   {
     double rowHeight = ( mShowGrid && mHorizontalGrid ? mGridStrokeWidth : 0 ) + 2 * mCellMargin + QgsComposerUtils::fontAscentMM( mContentFont );
-    currentRow += qMax( floor( contentHeight / rowHeight ), 0.0 );
+    currentRow += qMax( std::floor( contentHeight / rowHeight ), 0.0 );
   }
 
   return currentRow - firstRow - 1;

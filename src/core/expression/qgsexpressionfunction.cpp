@@ -859,7 +859,7 @@ static QVariant fcnClamp( const QVariantList &values, const QgsExpressionContext
 static QVariant fcnFloor( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent )
 {
   double x = QgsExpressionUtils::getDoubleValue( values.at( 0 ), parent );
-  return QVariant( floor( x ) );
+  return QVariant( std::floor( x ) );
 }
 
 static QVariant fcnCeil( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent )

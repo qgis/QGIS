@@ -279,7 +279,7 @@ double QgsRasterBlock::value( int row, int column ) const
 
 QRgb QgsRasterBlock::color( qgssize index ) const
 {
-  int row = floor( static_cast< double >( index ) / mWidth );
+  int row = std::floor( static_cast< double >( index ) / mWidth );
   int column = index % mWidth;
   return color( row, column );
 }

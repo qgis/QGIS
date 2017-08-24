@@ -479,7 +479,7 @@ QgsRasterHistogram QgsRasterInterface::histogram( int bandNo,
         }
         double myValue = blk->value( i );
 
-        int myBinIndex = static_cast <int>( qFloor( ( myValue - myMinimum ) /  myBinSize ) );
+        int myBinIndex = static_cast <int>( std::floor( ( myValue - myMinimum ) /  myBinSize ) );
 
         if ( ( myBinIndex < 0 || myBinIndex > ( myBinCount - 1 ) ) && !includeOutOfRange )
         {
@@ -566,7 +566,7 @@ void QgsRasterInterface::cumulativeCut( int bandNo,
        mySrcDataType == Qgis::UInt16 || mySrcDataType == Qgis::UInt32 )
   {
     if ( lowerValue != std::numeric_limits<double>::quiet_NaN() )
-      lowerValue = floor( lowerValue );
+      lowerValue = std::floor( lowerValue );
     if ( upperValue != std::numeric_limits<double>::quiet_NaN() )
       upperValue = std::ceil( upperValue );
   }

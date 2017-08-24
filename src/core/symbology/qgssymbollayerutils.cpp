@@ -3932,7 +3932,7 @@ QList<double> QgsSymbolLayerUtils::prettyBreaks( double minimum, double maximum,
     cell = 20 * 1e-07;
   }
 
-  double base = std::pow( 10.0, floor( log10( cell ) ) );
+  double base = std::pow( 10.0, std::floor( log10( cell ) ) );
   double unit = base;
   if ( ( 2 * base ) - cell < h * ( cell - unit ) )
   {
@@ -3947,7 +3947,7 @@ QList<double> QgsSymbolLayerUtils::prettyBreaks( double minimum, double maximum,
     }
   }
   // Maybe used to correct for the epsilon here??
-  int start = floor( minimum / unit + 1e-07 );
+  int start = std::floor( minimum / unit + 1e-07 );
   int end = std::ceil( maximum / unit - 1e-07 );
 
   // Extend the range out beyond the data. Does this ever happen??
@@ -3963,7 +3963,7 @@ QList<double> QgsSymbolLayerUtils::prettyBreaks( double minimum, double maximum,
 
   // If we don't have quite enough labels, extend the range out
   // to make more (these labels are beyond the data :()
-  int k = floor( 0.5 + end - start );
+  int k = std::floor( 0.5 + end - start );
   if ( k < minimumCount )
   {
     k = minimumCount - k;

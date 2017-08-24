@@ -85,7 +85,7 @@ int CPL_STDCALL progressCallback( double dfComplete,
       sDfLastComplete = dfComplete;
   }
 
-  if ( floor( sDfLastComplete * 10 ) != floor( dfComplete * 10 ) )
+  if ( std::floor( sDfLastComplete * 10 ) != std::floor( dfComplete * 10 ) )
   {
     if ( prog->feedback )
       prog->feedback->setProgress( dfComplete * 100 );
@@ -556,21 +556,21 @@ void QgsGdalProvider::readBlock( int bandNo, QgsRectangle  const &extent, int pi
   // Get necessary src extent aligned to src resolution
   if ( mExtent.xMinimum() < myRasterExtent.xMinimum() )
   {
-    srcLeft = static_cast<int>( floor( ( myRasterExtent.xMinimum() - mExtent.xMinimum() ) / srcXRes ) );
+    srcLeft = static_cast<int>( std::floor( ( myRasterExtent.xMinimum() - mExtent.xMinimum() ) / srcXRes ) );
   }
   if ( mExtent.xMaximum() > myRasterExtent.xMaximum() )
   {
-    srcRight = static_cast<int>( floor( ( myRasterExtent.xMaximum() - mExtent.xMinimum() ) / srcXRes ) );
+    srcRight = static_cast<int>( std::floor( ( myRasterExtent.xMaximum() - mExtent.xMinimum() ) / srcXRes ) );
   }
 
   // GDAL states that mGeoTransform[3] is top, may it also be bottom and mGeoTransform[5] positive?
   if ( mExtent.yMaximum() > myRasterExtent.yMaximum() )
   {
-    srcTop = static_cast<int>( floor( -1. * ( mExtent.yMaximum() - myRasterExtent.yMaximum() ) / srcYRes ) );
+    srcTop = static_cast<int>( std::floor( -1. * ( mExtent.yMaximum() - myRasterExtent.yMaximum() ) / srcYRes ) );
   }
   if ( mExtent.yMinimum() < myRasterExtent.yMinimum() )
   {
-    srcBottom = static_cast<int>( floor( -1. * ( mExtent.yMaximum() - myRasterExtent.yMinimum() ) / srcYRes ) );
+    srcBottom = static_cast<int>( std::floor( -1. * ( mExtent.yMaximum() - myRasterExtent.yMinimum() ) / srcYRes ) );
   }
 
   QgsDebugMsg( QString( "srcTop = %1 srcBottom = %2 srcLeft = %3 srcRight = %4" ).arg( srcTop ).arg( srcBottom ).arg( srcLeft ).arg( srcRight ) );
@@ -626,7 +626,7 @@ void QgsGdalProvider::readBlock( int bandNo, QgsRectangle  const &extent, int pi
   double y = myRasterExtent.yMaximum() - 0.5 * yRes;
   for ( int row = 0; row < height; row++ )
   {
-    int tmpRow = static_cast<int>( floor( -1. * ( tmpYMax - y ) / tmpYRes ) );
+    int tmpRow = static_cast<int>( std::floor( -1. * ( tmpYMax - y ) / tmpYRes ) );
 
     char *srcRowBlock = tmpBlock + dataSize * tmpRow * tmpWidth;
     char *dstRowBlock = ( char * )block + dataSize * ( top + row ) * pixelWidth;
@@ -640,7 +640,7 @@ void QgsGdalProvider::readBlock( int bandNo, QgsRectangle  const &extent, int pi
     int lastCol = 0;
     for ( int col = 0; col < width; ++col )
     {
-      // floor() is quite slow! Use just cast to int.
+      // std::floor() is quite slow! Use just cast to int.
       tmpCol = static_cast<int>( x );
       if ( tmpCol > lastCol )
       {
@@ -1002,9 +1002,9 @@ QgsRasterIdentifyResult QgsGdalProvider::identify( const QgsPointXY &point, QgsR
   double xres = ( finalExtent.width() ) / width;
   double yres = ( finalExtent.height() ) / height;
 
-  // Offset, not the cell index -> floor
-  int col = ( int ) floor( ( point.x() - finalExtent.xMinimum() ) / xres );
-  int row = ( int ) floor( ( finalExtent.yMaximum() - point.y() ) / yres );
+  // Offset, not the cell index -> std::floor
+  int col = ( int ) std::floor( ( point.x() - finalExtent.xMinimum() ) / xres );
+  int row = ( int ) std::floor( ( finalExtent.yMaximum() - point.y() ) / yres );
 
   QgsDebugMsg( QString( "row = %1 col = %2" ).arg( row ).arg( col ) );
 

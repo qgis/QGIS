@@ -1559,7 +1559,7 @@ void QgsColorPreviewWidget::drawColor( const QColor &color, QRect rect, QPainter
     //ensure at least a 1px overlap to avoid artifacts
     QBrush colorBrush = QBrush( color );
     painter.setBrush( colorBrush );
-    painter.drawRect( floor( rect.width() / 2.0 ) + rect.left(), rect.top(), rect.width() - floor( rect.width() / 2.0 ), rect.height() );
+    painter.drawRect( std::floor( rect.width() / 2.0 ) + rect.left(), rect.top(), rect.width() - std::floor( rect.width() / 2.0 ), rect.height() );
 
     QColor opaqueColor = QColor( color );
     opaqueColor.setAlpha( 255 );

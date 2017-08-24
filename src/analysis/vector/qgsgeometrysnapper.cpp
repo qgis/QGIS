@@ -112,8 +112,8 @@ class Raytracer
     Raytracer( float x0, float y0, float x1, float y1 )
       : m_dx( std::fabs( x1 - x0 ) )
       , m_dy( std::fabs( y1 - y0 ) )
-      , m_x( qFloor( x0 ) )
-      , m_y( qFloor( y0 ) )
+      , m_x( std::floor( x0 ) )
+      , m_y( std::floor( y0 ) )
       , m_n( 1 )
     {
       if ( m_dx == 0. )
@@ -124,14 +124,14 @@ class Raytracer
       else if ( x1 > x0 )
       {
         m_xInc = 1;
-        m_n += int( qFloor( x1 ) ) - m_x;
-        m_error = ( qFloor( x0 ) + 1 - x0 ) * m_dy;
+        m_n += int( std::floor( x1 ) ) - m_x;
+        m_error = ( std::floor( x0 ) + 1 - x0 ) * m_dy;
       }
       else
       {
         m_xInc = -1;
-        m_n += m_x - int( qFloor( x1 ) );
-        m_error = ( x0 - qFloor( x0 ) ) * m_dy;
+        m_n += m_x - int( std::floor( x1 ) );
+        m_error = ( x0 - std::floor( x0 ) ) * m_dy;
       }
       if ( m_dy == 0. )
       {
@@ -141,14 +141,14 @@ class Raytracer
       else if ( y1 > y0 )
       {
         m_yInc = 1;
-        m_n += int( qFloor( y1 ) ) - m_y;
-        m_error -= ( qFloor( y0 ) + 1 - y0 ) * m_dx;
+        m_n += int( std::floor( y1 ) ) - m_y;
+        m_error -= ( std::floor( y0 ) + 1 - y0 ) * m_dx;
       }
       else
       {
         m_yInc = -1;
-        m_n += m_y - int( qFloor( y1 ) );
-        m_error -= ( y0 - qFloor( y0 ) ) * m_dx;
+        m_n += m_y - int( std::floor( y1 ) );
+        m_error -= ( y0 - std::floor( y0 ) ) * m_dx;
       }
     }
     int curCol() const { return m_x; }
@@ -302,8 +302,8 @@ QgsSnapIndex::Cell &QgsSnapIndex::getCreateCell( int col, int row )
 void QgsSnapIndex::addPoint( const CoordIdx *idx, bool isEndPoint )
 {
   QgsPoint p = idx->point();
-  int col = qFloor( ( p.x() - mOrigin.x() ) / mCellSize );
-  int row = qFloor( ( p.y() - mOrigin.y() ) / mCellSize );
+  int col = std::floor( ( p.x() - mOrigin.x() ) / mCellSize );
+  int row = std::floor( ( p.y() - mOrigin.y() ) / mCellSize );
   getCreateCell( col, row ).append( new PointSnapItem( idx, isEndPoint ) );
 }
 
@@ -400,10 +400,10 @@ QgsPoint QgsSnapIndex::getClosestSnapToPoint( const QgsPoint &p, const QgsPoint 
 
 QgsSnapIndex::SnapItem *QgsSnapIndex::getSnapItem( const QgsPoint &pos, double tol, QgsSnapIndex::PointSnapItem **pSnapPoint, QgsSnapIndex::SegmentSnapItem **pSnapSegment, bool endPointOnly ) const
 {
-  int colStart = qFloor( ( pos.x() - tol - mOrigin.x() ) / mCellSize );
-  int rowStart = qFloor( ( pos.y() - tol - mOrigin.y() ) / mCellSize );
-  int colEnd = qFloor( ( pos.x() + tol - mOrigin.x() ) / mCellSize );
-  int rowEnd = qFloor( ( pos.y() + tol - mOrigin.y() ) / mCellSize );
+  int colStart = std::floor( ( pos.x() - tol - mOrigin.x() ) / mCellSize );
+  int rowStart = std::floor( ( pos.y() - tol - mOrigin.y() ) / mCellSize );
+  int colEnd = std::floor( ( pos.x() + tol - mOrigin.x() ) / mCellSize );
+  int rowEnd = std::floor( ( pos.y() + tol - mOrigin.y() ) / mCellSize );
 
   rowStart = qMax( rowStart, mRowsStartIdx );
   rowEnd = qMin( rowEnd, mRowsStartIdx + mGridRows.size() - 1 );

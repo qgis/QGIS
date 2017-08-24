@@ -268,7 +268,7 @@ QVariant QgsExpressionNodeBinaryOperator::evalNode( QgsExpression *parent, const
       ENSURE_NO_EVAL_ERROR;
       if ( fR == 0. )
         return QVariant(); // silently handle division by zero and return NULL
-      return QVariant( qFloor( fL / fR ) );
+      return QVariant( qlonglong( std::floor( fL / fR ) ) );
     }
     case boPow:
       if ( QgsExpressionUtils::isNull( vL ) || QgsExpressionUtils::isNull( vR ) )

@@ -279,7 +279,7 @@ void QgsPointDisplacementRenderer::calculateSymbolAndLabelPositions( QgsSymbolRe
       while ( pointsRemaining > 0 )
       {
         double radiusCurrentRing = qMax( firstRingRadius + ( ringNumber - 1 ) * symbolDiagonal + ringNumber * circleAdditionPainterUnits, 0.0 );
-        int maxPointsCurrentRing = qMax( floor( 2 * M_PI * radiusCurrentRing / symbolDiagonal ), 1.0 );
+        int maxPointsCurrentRing = qMax( std::floor( 2 * M_PI * radiusCurrentRing / symbolDiagonal ), 1.0 );
         int actualPointsCurrentRing = qMin( maxPointsCurrentRing, pointsRemaining );
 
         double angleStep = 2 * M_PI / actualPointsCurrentRing;

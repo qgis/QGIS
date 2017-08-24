@@ -787,7 +787,7 @@ bool QgsDecorationGrid::getIntervalFromExtent( double *values, bool useXAxis )
   if ( !qgsDoubleNear( interval, 0.0 ) )
   {
     double interval2 = 0;
-    int factor =  std::pow( 10, floor( log10( interval ) ) );
+    int factor =  std::pow( 10, std::floor( log10( interval ) ) );
     if ( factor != 0 )
     {
       interval2 = std::round( interval / factor ) * factor;
@@ -842,9 +842,9 @@ bool QgsDecorationGrid::getIntervalFromCurrentLayer( double *values )
   // calculate offset - when using very high resolution rasters in geographic CRS
   // there seems to be a small shift, but this may be due to rendering issues and depends on zoom
   double ratio = extent.xMinimum() / values[0];
-  values[2] = ( ratio - floor( ratio ) ) * values[0];
+  values[2] = ( ratio - std::floor( ratio ) ) * values[0];
   ratio = extent.yMinimum() / values[1];
-  values[3] = ( ratio - floor( ratio ) ) * values[1];
+  values[3] = ( ratio - std::floor( ratio ) ) * values[1];
 
   QgsDebugMsg( QString( "xmax: %1 xmin: %2 width: %3 xInterval: %4 xOffset: %5" ).arg(
                  extent.xMaximum() ).arg( extent.xMinimum() ).arg( rlayer->width() ).arg( values[0] ).arg( values[2] ) );
