@@ -805,7 +805,7 @@ bool QgsEllipseSymbolLayer::writeDxf( QgsDxfExport &e, double mmMapUnitScaleFact
       for ( int i = 0; i < 39; ++i )
       {
         double angle = stepsize * i;
-        double x = halfWidth * cos( angle );
+        double x = halfWidth * std::cos( angle );
         double y = halfHeight * sin( angle );
         line << QgsPoint( t.map( QPointF( x, y ) ) );
       }

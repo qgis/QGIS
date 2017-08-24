@@ -113,7 +113,7 @@ QgsRegularPolygon::QgsRegularPolygon( const QgsPoint &pt1, const QgsPoint &pt2, 
     double length = pt1.distance( pm );
 
     double angle = ( 180 - ( 360 / numSides ) ) / 2.0;
-    double hypothenuse = length / cos( angle * M_PI / 180 );
+    double hypothenuse = length / std::cos( angle * M_PI / 180 );
     // TODO: inclination
 
     mCenter = pt1.project( hypothenuse, azimuth + angle );
@@ -327,7 +327,7 @@ double QgsRegularPolygon::length() const
 
 double QgsRegularPolygon::apothemToRadius( const double apothem, const unsigned int numSides ) const
 {
-  return apothem / cos( M_PI / numSides );
+  return apothem / std::cos( M_PI / numSides );
 }
 
 double QgsRegularPolygon::interiorAngle( const unsigned int nbSides ) const

@@ -126,7 +126,7 @@ QgsRasterBlock *QgsHillshadeRenderer::block( int bandNo, const QgsRectangle &ext
   double cellYSize = extent.height() / double( height );
   double zenithRad = qMax( 0.0, 90 - mLightAngle ) * M_PI / 180.0;
   double azimuthRad = -1 * mLightAzimuth * M_PI / 180.0;
-  double cosZenithRad = cos( zenithRad );
+  double cosZenithRad = std::cos( zenithRad );
   double sinZenithRad = sin( zenithRad );
 
   // Multi direction hillshade: http://pubs.usgs.gov/of/1992/of92-422/of92-422.pdf
@@ -218,9 +218,9 @@ QgsRasterBlock *QgsHillshadeRenderer::block( int bandNo, const QgsRectangle &ext
       if ( !mMultiDirectional )
       {
         // Standard single direction hillshade
-        grayValue = qBound( 0.0, 255.0 * ( cosZenithRad * cos( slopeRad )
+        grayValue = qBound( 0.0, 255.0 * ( cosZenithRad * std::cos( slopeRad )
                                            + sinZenithRad * sin( slopeRad )
-                                           * cos( azimuthRad - aspectRad ) ), 255.0 );
+                                           * std::cos( azimuthRad - aspectRad ) ), 255.0 );
       }
       else
       {
@@ -234,12 +234,12 @@ QgsRasterBlock *QgsHillshadeRenderer::block( int bandNo, const QgsRectangle &ext
         weight2 = weight2 * weight2;
         weight3 = weight3 * weight3;
 
-        double cosSlope = cosZenithRad * cos( slopeRad );
+        double cosSlope = cosZenithRad * std::cos( slopeRad );
         double sinSlope = sinZenithRad * sin( slopeRad );
-        double color0 = cosSlope + sinSlope * cos( angle0Rad - aspectRad ) ;
-        double color1 = cosSlope + sinSlope * cos( angle1Rad - aspectRad ) ;
-        double color2 = cosSlope + sinSlope * cos( angle2Rad - aspectRad ) ;
-        double color3 = cosSlope + sinSlope * cos( angle3Rad - aspectRad ) ;
+        double color0 = cosSlope + sinSlope * std::cos( angle0Rad - aspectRad ) ;
+        double color1 = cosSlope + sinSlope * std::cos( angle1Rad - aspectRad ) ;
+        double color2 = cosSlope + sinSlope * std::cos( angle2Rad - aspectRad ) ;
+        double color3 = cosSlope + sinSlope * std::cos( angle3Rad - aspectRad ) ;
         grayValue = qBound( 0.0, 255 * ( weight0 * color0 + weight1 * color1 + weight2 * color2 + weight3 * color3 ) * 0.5, 255.0 );
       }
 

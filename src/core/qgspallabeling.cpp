@@ -1782,8 +1782,8 @@ void QgsPalLayerSettings::registerFeature( QgsFeature &f, QgsRenderContext &cont
         if ( dataDefinedRotation )
         {
           //adjust xdiff and ydiff because the hali/vali point needs to be the rotation center
-          double xd = xdiff * cos( angle ) - ydiff * sin( angle );
-          double yd = xdiff * sin( angle ) + ydiff * cos( angle );
+          double xd = xdiff * std::cos( angle ) - ydiff * sin( angle );
+          double yd = xdiff * sin( angle ) + ydiff * std::cos( angle );
           xdiff = xd;
           ydiff = yd;
         }

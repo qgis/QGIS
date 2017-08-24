@@ -255,8 +255,8 @@ int FeaturePart::createCandidatesOverPoint( double x, double y, QList< LabelPosi
   {
     if ( !qgsDoubleNear( angle, 0.0 ) )
     {
-      double xd = xdiff * cos( angle ) - ydiff * sin( angle );
-      double yd = xdiff * sin( angle ) + ydiff * cos( angle );
+      double xd = xdiff * std::cos( angle ) - ydiff * sin( angle );
+      double yd = xdiff * sin( angle ) + ydiff * std::cos( angle );
       xdiff = xd;
       ydiff = yd;
     }
@@ -414,7 +414,7 @@ int FeaturePart::createCandidatesAtOrderedPositionsOverPoint( double x, double y
     }
 
     //have bearing, distance - calculate reference point
-    double referenceX = cos( alpha ) * distanceToLabel + x;
+    double referenceX = std::cos( alpha ) * distanceToLabel + x;
     double referenceY = sin( alpha ) * distanceToLabel + y;
 
     double labelX = referenceX + deltaX;
@@ -498,7 +498,7 @@ int FeaturePart::createCandidatesAroundPoint( double x, double y, QList< LabelPo
     }
     else if ( angleToCandidate < a90 - gamma2 )  // top-right
     {
-      labelX += distanceToLabel * cos( angleToCandidate );
+      labelX += distanceToLabel * std::cos( angleToCandidate );
       labelY += distanceToLabel * sin( angleToCandidate );
       quadrant = LabelPosition::QuadrantAboveRight;
     }
@@ -511,7 +511,7 @@ int FeaturePart::createCandidatesAroundPoint( double x, double y, QList< LabelPo
     }
     else if ( angleToCandidate < a180 - gamma1 )  // top left
     {
-      labelX += distanceToLabel * cos( angleToCandidate ) - labelWidth;
+      labelX += distanceToLabel * std::cos( angleToCandidate ) - labelWidth;
       labelY += distanceToLabel * sin( angleToCandidate );
       quadrant = LabelPosition::QuadrantAboveLeft;
     }
@@ -524,7 +524,7 @@ int FeaturePart::createCandidatesAroundPoint( double x, double y, QList< LabelPo
     }
     else if ( angleToCandidate < a270 - gamma2 ) // down - left
     {
-      labelX += distanceToLabel * cos( angleToCandidate ) - labelWidth;
+      labelX += distanceToLabel * std::cos( angleToCandidate ) - labelWidth;
       labelY += distanceToLabel * sin( angleToCandidate ) - labelHeight;
       quadrant = LabelPosition::QuadrantBelowLeft;
     }
@@ -537,7 +537,7 @@ int FeaturePart::createCandidatesAroundPoint( double x, double y, QList< LabelPo
     }
     else if ( angleToCandidate < a360 ) // down - right
     {
-      labelX += distanceToLabel * cos( angleToCandidate );
+      labelX += distanceToLabel * std::cos( angleToCandidate );
       labelY += distanceToLabel * sin( angleToCandidate ) - labelHeight;
       quadrant = LabelPosition::QuadrantBelowRight;
     }
@@ -781,24 +781,24 @@ int FeaturePart::createCandidatesAlongLineNearStraightSegments( QList<LabelPosit
         double placementCost = 0.0;
         if ( belowLine )
         {
-          if ( !mLF->permissibleZonePrepared() || GeomFunction::containsCandidate( mLF->permissibleZonePrepared(), candidateStartX - cos( beta ) * ( distanceLineToLabel + labelHeight ), candidateStartY - sin( beta ) * ( distanceLineToLabel + labelHeight ), labelWidth, labelHeight, angle ) )
+          if ( !mLF->permissibleZonePrepared() || GeomFunction::containsCandidate( mLF->permissibleZonePrepared(), candidateStartX - std::cos( beta ) * ( distanceLineToLabel + labelHeight ), candidateStartY - sin( beta ) * ( distanceLineToLabel + labelHeight ), labelWidth, labelHeight, angle ) )
           {
-            lPos.append( new LabelPosition( i, candidateStartX - cos( beta ) * ( distanceLineToLabel + labelHeight ), candidateStartY - sin( beta ) * ( distanceLineToLabel + labelHeight ), labelWidth, labelHeight, angle, cost + placementCost, this, isRightToLeft ) ); // Line
+            lPos.append( new LabelPosition( i, candidateStartX - std::cos( beta ) * ( distanceLineToLabel + labelHeight ), candidateStartY - sin( beta ) * ( distanceLineToLabel + labelHeight ), labelWidth, labelHeight, angle, cost + placementCost, this, isRightToLeft ) ); // Line
             placementCost += 0.001;
           }
         }
         if ( aboveLine )
         {
-          if ( !mLF->permissibleZonePrepared() || GeomFunction::containsCandidate( mLF->permissibleZonePrepared(), candidateStartX + cos( beta ) *distanceLineToLabel, candidateStartY + sin( beta ) *distanceLineToLabel, labelWidth, labelHeight, angle ) )
+          if ( !mLF->permissibleZonePrepared() || GeomFunction::containsCandidate( mLF->permissibleZonePrepared(), candidateStartX + std::cos( beta ) *distanceLineToLabel, candidateStartY + sin( beta ) *distanceLineToLabel, labelWidth, labelHeight, angle ) )
           {
-            lPos.append( new LabelPosition( i, candidateStartX + cos( beta ) *distanceLineToLabel, candidateStartY + sin( beta ) *distanceLineToLabel, labelWidth, labelHeight, angle, cost + placementCost, this, isRightToLeft ) ); // Line
+            lPos.append( new LabelPosition( i, candidateStartX + std::cos( beta ) *distanceLineToLabel, candidateStartY + sin( beta ) *distanceLineToLabel, labelWidth, labelHeight, angle, cost + placementCost, this, isRightToLeft ) ); // Line
             placementCost += 0.001;
           }
         }
         if ( flags & FLAG_ON_LINE )
         {
-          if ( !mLF->permissibleZonePrepared() || GeomFunction::containsCandidate( mLF->permissibleZonePrepared(), candidateStartX - labelHeight * cos( beta ) / 2, candidateStartY - labelHeight * sin( beta ) / 2, labelWidth, labelHeight, angle ) )
-            lPos.append( new LabelPosition( i, candidateStartX - labelHeight * cos( beta ) / 2, candidateStartY - labelHeight * sin( beta ) / 2, labelWidth, labelHeight, angle, cost + placementCost, this, isRightToLeft ) ); // Line
+          if ( !mLF->permissibleZonePrepared() || GeomFunction::containsCandidate( mLF->permissibleZonePrepared(), candidateStartX - labelHeight * std::cos( beta ) / 2, candidateStartY - labelHeight * sin( beta ) / 2, labelWidth, labelHeight, angle ) )
+            lPos.append( new LabelPosition( i, candidateStartX - labelHeight * std::cos( beta ) / 2, candidateStartY - labelHeight * sin( beta ) / 2, labelWidth, labelHeight, angle, cost + placementCost, this, isRightToLeft ) ); // Line
         }
       }
       else if ( mLF->layer()->arrangement() == QgsPalLayerSettings::Horizontal )
@@ -925,18 +925,18 @@ int FeaturePart::createCandidatesAlongLineNearMidpoint( QList<LabelPosition *> &
 
       if ( aboveLine )
       {
-        if ( !mLF->permissibleZonePrepared() || GeomFunction::containsCandidate( mLF->permissibleZonePrepared(), candidateStartX + cos( beta ) *distanceLineToLabel, candidateStartY + sin( beta ) *distanceLineToLabel, labelWidth, labelHeight, angle ) )
-          positions.append( new LabelPosition( i, candidateStartX + cos( beta ) *distanceLineToLabel, candidateStartY + sin( beta ) *distanceLineToLabel, labelWidth, labelHeight, angle, cost, this, isRightToLeft ) ); // Line
+        if ( !mLF->permissibleZonePrepared() || GeomFunction::containsCandidate( mLF->permissibleZonePrepared(), candidateStartX + std::cos( beta ) *distanceLineToLabel, candidateStartY + sin( beta ) *distanceLineToLabel, labelWidth, labelHeight, angle ) )
+          positions.append( new LabelPosition( i, candidateStartX + std::cos( beta ) *distanceLineToLabel, candidateStartY + sin( beta ) *distanceLineToLabel, labelWidth, labelHeight, angle, cost, this, isRightToLeft ) ); // Line
       }
       if ( belowLine )
       {
-        if ( !mLF->permissibleZonePrepared() || GeomFunction::containsCandidate( mLF->permissibleZonePrepared(), candidateStartX - cos( beta ) * ( distanceLineToLabel + labelHeight ), candidateStartY - sin( beta ) * ( distanceLineToLabel + labelHeight ), labelWidth, labelHeight, angle ) )
-          positions.append( new LabelPosition( i, candidateStartX - cos( beta ) * ( distanceLineToLabel + labelHeight ), candidateStartY - sin( beta ) * ( distanceLineToLabel + labelHeight ), labelWidth, labelHeight, angle, cost, this, isRightToLeft ) ); // Line
+        if ( !mLF->permissibleZonePrepared() || GeomFunction::containsCandidate( mLF->permissibleZonePrepared(), candidateStartX - std::cos( beta ) * ( distanceLineToLabel + labelHeight ), candidateStartY - sin( beta ) * ( distanceLineToLabel + labelHeight ), labelWidth, labelHeight, angle ) )
+          positions.append( new LabelPosition( i, candidateStartX - std::cos( beta ) * ( distanceLineToLabel + labelHeight ), candidateStartY - sin( beta ) * ( distanceLineToLabel + labelHeight ), labelWidth, labelHeight, angle, cost, this, isRightToLeft ) ); // Line
       }
       if ( flags & FLAG_ON_LINE )
       {
-        if ( !mLF->permissibleZonePrepared() || GeomFunction::containsCandidate( mLF->permissibleZonePrepared(), candidateStartX - labelHeight * cos( beta ) / 2, candidateStartY - labelHeight * sin( beta ) / 2, labelWidth, labelHeight, angle ) )
-          positions.append( new LabelPosition( i, candidateStartX - labelHeight * cos( beta ) / 2, candidateStartY - labelHeight * sin( beta ) / 2, labelWidth, labelHeight, angle, cost, this, isRightToLeft ) ); // Line
+        if ( !mLF->permissibleZonePrepared() || GeomFunction::containsCandidate( mLF->permissibleZonePrepared(), candidateStartX - labelHeight * std::cos( beta ) / 2, candidateStartY - labelHeight * sin( beta ) / 2, labelWidth, labelHeight, angle ) )
+          positions.append( new LabelPosition( i, candidateStartX - labelHeight * std::cos( beta ) / 2, candidateStartY - labelHeight * sin( beta ) / 2, labelWidth, labelHeight, angle, cost, this, isRightToLeft ) ); // Line
       }
     }
     else if ( mLF->layer()->arrangement() == QgsPalLayerSettings::Horizontal )
@@ -1097,7 +1097,7 @@ LabelPosition *FeaturePart::curvedPlacementAtOffset( PointSet *path_positions, d
       dist = -dist;
       flip = true;
     }
-    start_x += dist * cos( angle + M_PI_2 );
+    start_x += dist * std::cos( angle + M_PI_2 );
     start_y -= dist * sin( angle + M_PI_2 );
 
     double render_angle = angle;
@@ -1112,7 +1112,7 @@ LabelPosition *FeaturePart::curvedPlacementAtOffset( PointSet *path_positions, d
     if ( orientation < 0 )
     {
       // rotate in place
-      render_x += ci.width * cos( render_angle ); //- (string_height-2)*sin(render_angle);
+      render_x += ci.width * std::cos( render_angle ); //- (string_height-2)*sin(render_angle);
       render_y -= ci.width * sin( render_angle ); //+ (string_height-2)*cos(render_angle);
       render_angle += M_PI;
     }
@@ -1140,7 +1140,7 @@ LabelPosition *FeaturePart::curvedPlacementAtOffset( PointSet *path_positions, d
 static LabelPosition *_createCurvedCandidate( LabelPosition *lp, double angle, double dist )
 {
   LabelPosition *newLp = new LabelPosition( *lp );
-  newLp->offsetPosition( dist * cos( angle + M_PI / 2 ), dist * sin( angle + M_PI / 2 ) );
+  newLp->offsetPosition( dist * std::cos( angle + M_PI / 2 ), dist * sin( angle + M_PI / 2 ) );
   return newLp;
 }
 
@@ -1230,7 +1230,7 @@ int FeaturePart::createCurvedCandidatesAlongLine( QList< LabelPosition * > &lPos
       }
 
       sin_avg += sin( tmp->getAlpha() );
-      cos_avg += cos( tmp->getAlpha() );
+      cos_avg += std::cos( tmp->getAlpha() );
       angle_last = tmp->getAlpha();
       tmp = tmp->getNextPart();
     }
@@ -1452,7 +1452,7 @@ int FeaturePart::createCandidatesForPolygon( QList< LabelPosition *> &lPos, Poin
         //alpha = box->alpha;
 
         // delta from label center and down-left corner
-        dlx = cos( beta ) * diago;
+        dlx = std::cos( beta ) * diago;
         dly = sin( beta ) * diago;
 
         double px0, py0;
@@ -1468,7 +1468,7 @@ int FeaturePart::createCandidatesForPolygon( QList< LabelPosition *> &lPos, Poin
           for ( py = py0; py <= box->length; py += dy )
           {
 
-            rx = cos( box->alpha ) * px + cos( box->alpha - M_PI / 2 ) * py;
+            rx = std::cos( box->alpha ) * px + std::cos( box->alpha - M_PI / 2 ) * py;
             ry = sin( box->alpha ) * px + sin( box->alpha - M_PI / 2 ) * py;
 
             rx += box->x[0];

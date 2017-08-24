@@ -387,7 +387,7 @@ bool pointsToCircle( QPointF a, QPointF b, QPointF c, QPointF &center, qreal &ra
 QPointF circlePoint( QPointF center, qreal radius, qreal angle )
 {
   // Y is oriented downward
-  return QPointF( cos( -angle ) * radius + center.x(), sin( -angle ) * radius + center.y() );
+  return QPointF( std::cos( -angle ) * radius + center.x(), sin( -angle ) * radius + center.y() );
 }
 
 void pathArcTo( QPainterPath &path, QPointF circleCenter, qreal circleRadius, qreal angle_o, qreal angle_d, int direction )

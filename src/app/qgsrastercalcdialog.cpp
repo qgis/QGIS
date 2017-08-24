@@ -355,7 +355,7 @@ void QgsRasterCalcDialog::on_mSqrtButton_clicked()
 
 void QgsRasterCalcDialog::on_mCosButton_clicked()
 {
-  mExpressionTextEdit->insertPlainText( QStringLiteral( " cos ( " ) );
+  mExpressionTextEdit->insertPlainText( QStringLiteral( " std::cos ( " ) );
 }
 
 void QgsRasterCalcDialog::on_mSinButton_clicked()

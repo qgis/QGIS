@@ -508,7 +508,7 @@ void QgsMarkerSymbolLayer::markerOffset( QgsSymbolRenderContext &context, double
 QPointF QgsMarkerSymbolLayer::_rotatedOffset( QPointF offset, double angle )
 {
   angle = DEG2RAD( angle );
-  double c = cos( angle ), s = sin( angle );
+  double c = std::cos( angle ), s = sin( angle );
   return QPointF( offset.x() * c - offset.y() * s, offset.x() * s + offset.y() * c );
 }
 

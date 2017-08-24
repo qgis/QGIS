@@ -376,8 +376,8 @@ bool QgsMapToolLabel::currentLabelRotationPoint( QgsPointXY &pos, bool ignoreUps
   }
 
   double angle = mCurrentLabel.pos.rotation;
-  double xd = xdiff * cos( angle ) - ydiff * sin( angle );
-  double yd = xdiff * sin( angle ) + ydiff * cos( angle );
+  double xd = xdiff * std::cos( angle ) - ydiff * sin( angle );
+  double yd = xdiff * sin( angle ) + ydiff * std::cos( angle );
   if ( mCurrentLabel.pos.upsideDown && !ignoreUpsideDown )
   {
     pos.setX( pos.x() - xd );

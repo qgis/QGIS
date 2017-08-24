@@ -627,7 +627,7 @@ CHullBox *PointSet::compute_chull_bbox()
   for ( alpha_d = 0; alpha_d < 90; alpha_d++ )
   {
     alpha = alpha_d *  M_PI / 180.0;
-    d1 = cos( alpha ) * dref;
+    d1 = std::cos( alpha ) * dref;
     d2 = sin( alpha ) * dref;
 
     bb[0]  = bbox[0];
@@ -670,7 +670,7 @@ CHullBox *PointSet::compute_chull_bbox()
 
       distNearestPoint = best_cp / dref;
 
-      d1 = cos( alpha_seg ) * distNearestPoint;
+      d1 = std::cos( alpha_seg ) * distNearestPoint;
       d2 = sin( alpha_seg ) * distNearestPoint;
 
       bb[i]   += d1; // x

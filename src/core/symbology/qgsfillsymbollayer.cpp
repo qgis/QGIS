@@ -2590,7 +2590,7 @@ void QgsLinePatternFillSymbolLayer::applyPattern( const QgsSymbolRenderContext &
   }
   else
   {
-    height = outputPixelDist / cos( lineAngle * M_PI / 180 ); //keep perpendicular distance between lines constant
+    height = outputPixelDist / std::cos( lineAngle * M_PI / 180 ); //keep perpendicular distance between lines constant
     width = outputPixelDist / sin( lineAngle * M_PI / 180 );
 
     // recalculate real angle and distance after rounding to pixels
@@ -2603,12 +2603,12 @@ void QgsLinePatternFillSymbolLayer::applyPattern( const QgsSymbolRenderContext &
     height = std::abs( height );
     width = std::abs( width );
 
-    outputPixelDist = height * cos( lineAngle * M_PI / 180 );
+    outputPixelDist = height * std::cos( lineAngle * M_PI / 180 );
 
     // Round offset to correspond to one pixel height, otherwise lines may
     // be shifted on tile border if offset falls close to pixel center
-    int offsetHeight = std::round( std::fabs( outputPixelOffset / cos( lineAngle * M_PI / 180 ) ) );
-    outputPixelOffset = offsetHeight * cos( lineAngle * M_PI / 180 );
+    int offsetHeight = std::round( std::fabs( outputPixelOffset / std::cos( lineAngle * M_PI / 180 ) ) );
+    outputPixelOffset = offsetHeight * std::cos( lineAngle * M_PI / 180 );
   }
 
   //depending on the angle, we might need to render into a larger image and use a subset of it
@@ -2656,7 +2656,7 @@ void QgsLinePatternFillSymbolLayer::applyPattern( const QgsSymbolRenderContext &
   }
   else if ( lineAngle > 0 && lineAngle < 90 )
   {
-    dx = outputPixelDist * cos( ( 90 - lineAngle ) * M_PI / 180.0 );
+    dx = outputPixelDist * std::cos( ( 90 - lineAngle ) * M_PI / 180.0 );
     dy = outputPixelDist * sin( ( 90 - lineAngle ) * M_PI / 180.0 );
     p1 = QPointF( 0, height );
     p2 = QPointF( width, 0 );
@@ -2667,7 +2667,7 @@ void QgsLinePatternFillSymbolLayer::applyPattern( const QgsSymbolRenderContext &
   }
   else if ( lineAngle > 180 && lineAngle < 270 )
   {
-    dx = outputPixelDist * cos( ( 90 - lineAngle ) * M_PI / 180.0 );
+    dx = outputPixelDist * std::cos( ( 90 - lineAngle ) * M_PI / 180.0 );
     dy = outputPixelDist * sin( ( 90 - lineAngle ) * M_PI / 180.0 );
     p1 = QPointF( width, 0 );
     p2 = QPointF( 0, height );
@@ -2678,7 +2678,7 @@ void QgsLinePatternFillSymbolLayer::applyPattern( const QgsSymbolRenderContext &
   }
   else if ( lineAngle > 90 && lineAngle < 180 )
   {
-    dy = outputPixelDist * cos( ( 180 - lineAngle ) * M_PI / 180 );
+    dy = outputPixelDist * std::cos( ( 180 - lineAngle ) * M_PI / 180 );
     dx = outputPixelDist * sin( ( 180 - lineAngle ) * M_PI / 180 );
     p1 = QPointF( 0, 0 );
     p2 = QPointF( width, height );
@@ -2689,7 +2689,7 @@ void QgsLinePatternFillSymbolLayer::applyPattern( const QgsSymbolRenderContext &
   }
   else if ( lineAngle > 270 && lineAngle < 360 )
   {
-    dy = outputPixelDist * cos( ( 180 - lineAngle ) * M_PI / 180 );
+    dy = outputPixelDist * std::cos( ( 180 - lineAngle ) * M_PI / 180 );
     dx = outputPixelDist * sin( ( 180 - lineAngle ) * M_PI / 180 );
     p1 = QPointF( width, height );
     p2 = QPointF( 0, 0 );
@@ -2880,7 +2880,7 @@ void QgsLinePatternFillSymbolLayer::toSld( QDomDocument &doc, QDomElement &eleme
   QgsSymbolLayerUtils::createRotationElement( doc, graphicElem, angleFunc );
 
   // <se:Displacement>
-  QPointF lineOffset( sin( mLineAngle ) * mOffset, cos( mLineAngle ) * mOffset );
+  QPointF lineOffset( sin( mLineAngle ) * mOffset, std::cos( mLineAngle ) * mOffset );
   lineOffset = QgsSymbolLayerUtils::rescaleUom( lineOffset, mOffsetUnit, props );
   QgsSymbolLayerUtils::createDisplacementElement( doc, graphicElem, lineOffset );
 }

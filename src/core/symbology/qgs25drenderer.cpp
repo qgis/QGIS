@@ -24,7 +24,7 @@
 #define ROOF_EXPRESSION \
   "translate(" \
   "  $geometry," \
-  "  cos( radians( eval( @qgis_25d_angle ) ) ) * eval( @qgis_25d_height )," \
+  "  std::cos( radians( eval( @qgis_25d_angle ) ) ) * eval( @qgis_25d_height )," \
   "  sin( radians( eval( @qgis_25d_angle ) ) ) * eval( @qgis_25d_height )" \
   ")"
 
@@ -32,10 +32,10 @@
   "order_parts( "\
   "  extrude(" \
   "    segments_to_lines( $geometry )," \
-  "    cos( radians( eval( @qgis_25d_angle ) ) ) * eval( @qgis_25d_height )," \
+  "    std::cos( radians( eval( @qgis_25d_angle ) ) ) * eval( @qgis_25d_height )," \
   "    sin( radians( eval( @qgis_25d_angle ) ) ) * eval( @qgis_25d_height )" \
   "  )," \
-  "  'distance(  $geometry,  translate(    @map_extent_center,    1000 * @map_extent_width * cos( radians( @qgis_25d_angle + 180 ) ),    1000 * @map_extent_width * sin( radians( @qgis_25d_angle + 180 ) )  ))'," \
+  "  'distance(  $geometry,  translate(    @map_extent_center,    1000 * @map_extent_width * std::cos( radians( @qgis_25d_angle + 180 ) ),    1000 * @map_extent_width * sin( radians( @qgis_25d_angle + 180 ) )  ))'," \
   "  False" \
   ")"
 
@@ -44,7 +44,7 @@
   "  $geometry," \
   "  translate(" \
   "    @map_extent_center," \
-  "    1000 * @map_extent_width * cos( radians( @qgis_25d_angle + 180 ) )," \
+  "    1000 * @map_extent_width * std::cos( radians( @qgis_25d_angle + 180 ) )," \
   "    1000 * @map_extent_width * sin( radians( @qgis_25d_angle + 180 ) )" \
   "  )" \
   ")"

@@ -1745,8 +1745,8 @@ void QgsTextRenderer::drawPart( const QRectF &rect, double rotation, HAlignment 
         double yc = rect.height() / 2.0;
 
         double angle = -rotation;
-        double xd = xc * cos( angle ) - yc * sin( angle );
-        double yd = xc * sin( angle ) + yc * cos( angle );
+        double xd = xc * std::cos( angle ) - yc * sin( angle );
+        double yd = xc * sin( angle ) + yc * std::cos( angle );
 
         component.center = QPointF( component.origin.x() + xd, component.origin.y() + yd );
       }
@@ -2388,7 +2388,7 @@ void QgsTextRenderer::drawShadow( QgsRenderContext &context, const QgsTextRender
     angleRad -= ( component.rotation * M_PI / 180 + component.rotationOffset * M_PI / 180 );
   }
 
-  QPointF transPt( -offsetDist * cos( angleRad + M_PI / 2 ),
+  QPointF transPt( -offsetDist * std::cos( angleRad + M_PI / 2 ),
                    -offsetDist * sin( angleRad + M_PI / 2 ) );
 
   p->save();

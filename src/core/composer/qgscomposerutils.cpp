@@ -42,10 +42,10 @@ void QgsComposerUtils::drawArrowHead( QPainter *p, const double x, const double 
   QPointF p2 = QPointF( arrowHeadWidth / 2.0, arrowHeadWidth );
 
   QPointF p1Rotated, p2Rotated;
-  p1Rotated.setX( p1.x() * cos( angleRad ) + p1.y() * -sin( angleRad ) );
-  p1Rotated.setY( p1.x() * sin( angleRad ) + p1.y() * cos( angleRad ) );
-  p2Rotated.setX( p2.x() * cos( angleRad ) + p2.y() * -sin( angleRad ) );
-  p2Rotated.setY( p2.x() * sin( angleRad ) + p2.y() * cos( angleRad ) );
+  p1Rotated.setX( p1.x() * std::cos( angleRad ) + p1.y() * -sin( angleRad ) );
+  p1Rotated.setY( p1.x() * sin( angleRad ) + p1.y() * std::cos( angleRad ) );
+  p2Rotated.setX( p2.x() * std::cos( angleRad ) + p2.y() * -sin( angleRad ) );
+  p2Rotated.setY( p2.x() * sin( angleRad ) + p2.y() * std::cos( angleRad ) );
 
   QPolygonF arrowHeadPoly;
   arrowHeadPoly << middlePoint;
@@ -88,8 +88,8 @@ void QgsComposerUtils::rotate( const double angle, double &x, double &y )
 {
   double rotToRad = angle * M_PI / 180.0;
   double xRot, yRot;
-  xRot = x * cos( rotToRad ) - y * sin( rotToRad );
-  yRot = x * sin( rotToRad ) + y * cos( rotToRad );
+  xRot = x * std::cos( rotToRad ) - y * sin( rotToRad );
+  yRot = x * sin( rotToRad ) + y * std::cos( rotToRad );
   x = xRot;
   y = yRot;
 }
@@ -185,7 +185,7 @@ QRectF QgsComposerUtils::largestRotatedRectWithinBounds( const QRectF &originalR
 
   //convert angle to radians and flip
   double angleRad = -clippedRotation * M_DEG2RAD;
-  double cosAngle = cos( angleRad );
+  double cosAngle = std::cos( angleRad );
   double sinAngle = sin( angleRad );
 
   //calculate size of bounds of rotated rectangle

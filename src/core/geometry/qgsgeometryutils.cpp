@@ -703,7 +703,7 @@ void QgsGeometryUtils::segmentizeArc( const QgsPoint &p1, const QgsPoint &p2, co
         addP2 = false;
       }
 
-      x = centerX + radius * cos( angle );
+      x = centerX + radius * std::cos( angle );
       y = centerY + radius * sin( angle );
 
       if ( !hasZ && !hasM )

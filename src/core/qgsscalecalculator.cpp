@@ -116,7 +116,7 @@ double QgsScaleCalculator::calculateGeographicDistance( const QgsRectangle &mapE
   // For a longitude change of 180 degrees
   double lat = ( mapExtent.yMaximum() + mapExtent.yMinimum() ) * 0.5;
   static const double RADS = ( 4.0 * atan( 1.0 ) ) / 180.0;
-  double a = std::pow( cos( lat * RADS ), 2 );
+  double a = std::pow( std::cos( lat * RADS ), 2 );
   double c = 2.0 * std::atan2( sqrt( a ), sqrt( 1.0 - a ) );
   static const double RA = 6378000; // [m]
   // The eccentricity. This comes from sqrt(1.0 - rb*rb/(ra*ra)) with rb set

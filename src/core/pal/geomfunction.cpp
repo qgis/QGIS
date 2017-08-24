@@ -330,9 +330,9 @@ bool GeomFunction::containsCandidate( const GEOSPreparedGeometry *geom, double x
   if ( !qgsDoubleNear( alpha, 0.0 ) )
   {
     double beta = alpha + ( M_PI / 2 );
-    double dx1 = cos( alpha ) * width;
+    double dx1 = std::cos( alpha ) * width;
     double dy1 = sin( alpha ) * width;
-    double dx2 = cos( beta ) * height;
+    double dx2 = std::cos( beta ) * height;
     double dy2 = sin( beta ) * height;
     GEOSCoordSeq_setX_r( geosctxt, coord, 1, x  + dx1 );
     GEOSCoordSeq_setY_r( geosctxt, coord, 1, y + dy1 );

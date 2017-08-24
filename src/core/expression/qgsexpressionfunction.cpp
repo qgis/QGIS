@@ -262,7 +262,7 @@ static QVariant fcnSin( const QVariantList &values, const QgsExpressionContext *
 static QVariant fcnCos( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent )
 {
   double x = QgsExpressionUtils::getDoubleValue( values.at( 0 ), parent );
-  return QVariant( cos( x ) );
+  return QVariant( std::cos( x ) );
 }
 static QVariant fcnTan( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent )
 {

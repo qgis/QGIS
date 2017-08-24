@@ -280,8 +280,8 @@ void QgsComposerArrow::drawSVGMarker( QPainter *p, MarkerType type, const QStrin
     }
     QPointF rotatedFixPoint;
     double angleRad = angle / 180 * M_PI;
-    rotatedFixPoint.setX( fixPoint.x() * cos( angleRad ) + fixPoint.y() * -sin( angleRad ) );
-    rotatedFixPoint.setY( fixPoint.x() * sin( angleRad ) + fixPoint.y() * cos( angleRad ) );
+    rotatedFixPoint.setX( fixPoint.x() * std::cos( angleRad ) + fixPoint.y() * -sin( angleRad ) );
+    rotatedFixPoint.setY( fixPoint.x() * sin( angleRad ) + fixPoint.y() * std::cos( angleRad ) );
     p->translate( canvasPoint.x() - rotatedFixPoint.x(), canvasPoint.y() - rotatedFixPoint.y() );
   }
   else

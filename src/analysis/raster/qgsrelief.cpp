@@ -362,7 +362,7 @@ bool QgsRelief::processNineCellWindow( float *x1, float *x2, float *x3, float *x
     int r3, g3, b3;
     if ( angle_diff < 90 )
     {
-      int aspectVal = ( 1 - cos( angle_diff * M_PI / 180 ) ) * 255;
+      int aspectVal = ( 1 - std::cos( angle_diff * M_PI / 180 ) ) * 255;
       r3 = 0.5 * 255 + hillShadeValue315 * 0.5;
       g3 = 0.5 * 255 + hillShadeValue315 * 0.5;
       b3 = 0.5 * aspectVal + hillShadeValue315 * 0.5;

@@ -223,7 +223,7 @@ bool QgsRasterMatrix::oneArgumentOperation( OneArgOperator op )
           mData[i] = sin( value );
           break;
         case opCOS:
-          mData[i] = cos( value );
+          mData[i] = std::cos( value );
           break;
         case opTAN:
           mData[i] = tan( value );

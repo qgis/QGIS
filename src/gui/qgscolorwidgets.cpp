@@ -455,7 +455,7 @@ void QgsColorWheel::paintEvent( QPaintEvent *event )
   //adapted from equations at https://github.com/timjb/colortriangle/blob/master/colortriangle.js by Tim Baumann
   double lightness = mCurrentColor.lightnessF();
   double hueRadians = ( h * M_PI / 180.0 );
-  double hx = cos( hueRadians ) * triangleRadius;
+  double hx = std::cos( hueRadians ) * triangleRadius;
   double hy = -sin( hueRadians ) * triangleRadius;
   double sx = -cos( -hueRadians + ( M_PI / 3.0 ) ) * triangleRadius;
   double sy = -sin( -hueRadians + ( M_PI / 3.0 ) ) * triangleRadius;
@@ -565,7 +565,7 @@ void QgsColorWheel::setColorFromPos( const QPointF pos )
     double triangleSideLength = sqrt( 3.0 ) * triangleLength;
     double newL = ( ( -sin( rad0 ) * r ) / triangleSideLength ) + 0.5;
     double widthShare = 1.0 - ( std::fabs( newL - 0.5 ) * 2.0 );
-    double newS = ( ( ( cos( rad0 ) * r ) + ( triangleLength / 2.0 ) ) / ( 1.5 * triangleLength ) ) / widthShare;
+    double newS = ( ( ( std::cos( rad0 ) * r ) + ( triangleLength / 2.0 ) ) / ( 1.5 * triangleLength ) ) / widthShare;
     s = qMin( static_cast< int >( std::round( qMax( 0.0, newS ) * 255.0 ) ), 255 );
     l = qMin( static_cast< int >( std::round( qMax( 0.0, newL ) * 255.0 ) ), 255 );
     newColor = QColor::fromHsl( h, s, l );
@@ -683,10 +683,10 @@ void QgsColorWheel::createTriangle()
   alphaColor.setAlpha( 0 );
 
   //some rather ugly shortcuts to obtain corners and midpoints of triangle
-  QLineF line1 = QLineF( center.x(), center.y(), center.x() - triangleRadius * cos( M_PI / 3.0 ), center.y() - triangleRadius * sin( M_PI / 3.0 ) );
+  QLineF line1 = QLineF( center.x(), center.y(), center.x() - triangleRadius * std::cos( M_PI / 3.0 ), center.y() - triangleRadius * sin( M_PI / 3.0 ) );
   QLineF line2 = QLineF( center.x(), center.y(), center.x() + triangleRadius, center.y() );
-  QLineF line3 = QLineF( center.x(), center.y(), center.x() - triangleRadius * cos( M_PI / 3.0 ), center.y() + triangleRadius * sin( M_PI / 3.0 ) );
-  QLineF line4 = QLineF( center.x(), center.y(), center.x() - triangleRadius * cos( M_PI / 3.0 ), center.y() );
+  QLineF line3 = QLineF( center.x(), center.y(), center.x() - triangleRadius * std::cos( M_PI / 3.0 ), center.y() + triangleRadius * sin( M_PI / 3.0 ) );
+  QLineF line4 = QLineF( center.x(), center.y(), center.x() - triangleRadius * std::cos( M_PI / 3.0 ), center.y() );
   QLineF line5 = QLineF( center.x(), center.y(), ( line2.p2().x() + line1.p2().x() ) / 2.0, ( line2.p2().y() + line1.p2().y() ) / 2.0 );
   line1.setAngle( line1.angle() + angle );
   line2.setAngle( line2.angle() + angle );

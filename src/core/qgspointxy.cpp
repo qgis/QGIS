@@ -292,7 +292,7 @@ QgsPointXY QgsPointXY::project( double distance, double bearing ) const
 {
   double rads = bearing * M_PI / 180.0;
   double dx = distance * sin( rads );
-  double dy = distance * cos( rads );
+  double dy = distance * std::cos( rads );
   return QgsPointXY( mX + dx, mY + dy );
 }
 

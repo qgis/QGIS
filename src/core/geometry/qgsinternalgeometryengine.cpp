@@ -491,8 +491,8 @@ QgsGeometry QgsInternalGeometryEngine::orthogonalize( double tolerance, int maxI
     return QgsGeometry();
   }
 
-  double lowerThreshold = cos( ( 90 - angleThreshold ) * M_PI / 180.00 );
-  double upperThreshold = cos( angleThreshold * M_PI / 180.0 );
+  double lowerThreshold = std::cos( ( 90 - angleThreshold ) * M_PI / 180.00 );
+  double upperThreshold = std::cos( angleThreshold * M_PI / 180.0 );
 
   if ( const QgsGeometryCollection *gc = qgsgeometry_cast< const QgsGeometryCollection *>( mGeometry ) )
   {

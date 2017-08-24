@@ -956,9 +956,9 @@ void DRW_Ellipse::toPolyline( DRW_Polyline *pol, int parts ) const
 {
   double radMajor = sqrt( secPoint.x * secPoint.x + secPoint.y * secPoint.y );
   double radMinor = radMajor * ratio;
-  //calculate sin & cos of included angle
+  //calculate sin & std::cos of included angle
   double incAngle = std::atan2( secPoint.y, secPoint.x );
-  double cosRot = cos( incAngle );
+  double cosRot = std::cos( incAngle );
   double sinRot = sin( incAngle );
 
   incAngle = M_PIx2 / parts;
@@ -969,7 +969,7 @@ void DRW_Ellipse::toPolyline( DRW_Polyline *pol, int parts ) const
 
   while ( curAngle < endAngle )
   {
-    double cosCurr = cos( curAngle );
+    double cosCurr = std::cos( curAngle );
     double sinCurr = sin( curAngle );
     double x = basePoint.x + cosCurr * cosRot * radMajor - sinCurr * sinRot * radMinor;
     double y = basePoint.y + cosCurr * sinRot * radMajor + sinCurr * cosRot * radMinor;

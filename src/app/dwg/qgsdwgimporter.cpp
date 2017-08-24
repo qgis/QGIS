@@ -1341,9 +1341,9 @@ void QgsDwgImporter::addArc( const DRW_Arc &data )
 
   QgsCircularString c;
   c.setPoints( QgsPointSequence()
-               << QgsPoint( QgsWkbTypes::PointZ, data.basePoint.x + cos( a0 ) * data.mRadius, data.basePoint.y + sin( a0 ) * data.mRadius )
-               << QgsPoint( QgsWkbTypes::PointZ, data.basePoint.x + cos( a1 ) * data.mRadius, data.basePoint.y + sin( a1 ) * data.mRadius )
-               << QgsPoint( QgsWkbTypes::PointZ, data.basePoint.x + cos( a2 ) * data.mRadius, data.basePoint.y + sin( a2 ) * data.mRadius )
+               << QgsPoint( QgsWkbTypes::PointZ, data.basePoint.x + std::cos( a0 ) * data.mRadius, data.basePoint.y + sin( a0 ) * data.mRadius )
+               << QgsPoint( QgsWkbTypes::PointZ, data.basePoint.x + std::cos( a1 ) * data.mRadius, data.basePoint.y + sin( a1 ) * data.mRadius )
+               << QgsPoint( QgsWkbTypes::PointZ, data.basePoint.x + std::cos( a2 ) * data.mRadius, data.basePoint.y + sin( a2 ) * data.mRadius )
              );
 
   if ( !createFeature( layer, f, c ) )
@@ -1446,7 +1446,7 @@ bool QgsDwgImporter::curveFromLWPolyline( const DRW_LWPolyline &data, QgsCompoun
       double dy = data.vertlist[i1]->y - data.vertlist[i0]->y;
       double c = sqrt( dx * dx + dy * dy );
       double r = c / 2.0 / sin( a );
-      double h = r * ( 1 - cos( a ) );
+      double h = r * ( 1 - std::cos( a ) );
 
       s << QgsPoint( QgsWkbTypes::PointZ,
                      data.vertlist[i0]->x + 0.5 * dx + h * dy / c,
@@ -1557,7 +1557,7 @@ void QgsDwgImporter::addLWPolyline( const DRW_LWPolyline &data )
         double dy = p1.y() - p0.y();
         double c = sqrt( dx * dx + dy * dy );
         double r = c / 2.0 / sin( a );
-        double h = r * ( 1 - cos( a ) );
+        double h = r * ( 1 - std::cos( a ) );
 
         s << QgsPoint( QgsWkbTypes::PointZ,
                        p0.x() + 0.5 * dx + h * dy / c,
@@ -1759,7 +1759,7 @@ void QgsDwgImporter::addPolyline( const DRW_Polyline &data )
         double dz = p1.z() - p0.z();
         double c = sqrt( dx * dx + dy * dy );
         double r = c / 2.0 / sin( a );
-        double h = r * ( 1 - cos( a ) );
+        double h = r * ( 1 - std::cos( a ) );
 
         s << QgsPoint( QgsWkbTypes::PointZ,
                        p0.x() + 0.5 * dx + h * dy / c,

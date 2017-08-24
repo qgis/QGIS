@@ -208,11 +208,11 @@ QgsPointSequence QgsEllipse::points( unsigned int segments ) const
   for ( QVector<double>::const_iterator it = t.constBegin(); it != t.constEnd(); ++it )
   {
     double x = mCenter.x() +
-               mSemiMajorAxis * cos( *it ) * cos( azimuth ) -
+               mSemiMajorAxis * std::cos( *it ) * std::cos( azimuth ) -
                mSemiMinorAxis * sin( *it ) * sin( azimuth );
     double y = mCenter.y() +
-               mSemiMajorAxis * cos( *it ) * sin( azimuth ) +
-               mSemiMinorAxis * sin( *it ) * cos( azimuth );
+               mSemiMajorAxis * std::cos( *it ) * sin( azimuth ) +
+               mSemiMinorAxis * sin( *it ) * std::cos( azimuth );
     pts.push_back( QgsPoint( pType, x, y, z, m ) );
   }
 
@@ -257,10 +257,10 @@ QgsRectangle QgsEllipse::boundingBox() const
 
   double angle = mAzimuth * M_PI / 180.0;
 
-  double ux = mSemiMajorAxis * cos( angle );
+  double ux = mSemiMajorAxis * std::cos( angle );
   double uy = mSemiMinorAxis * sin( angle );
   double vx = mSemiMajorAxis * sin( angle );
-  double vy = mSemiMinorAxis * cos( angle );
+  double vy = mSemiMinorAxis * std::cos( angle );
 
   double halfHeight = sqrt( ux * ux + uy * uy );
   double halfWidth = sqrt( vx * vx + vy * vy );
