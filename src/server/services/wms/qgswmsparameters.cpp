@@ -362,7 +362,7 @@ namespace QgsWms
                                QVariant( "" ),
                                QVariant()
                              };
-    save( pLayers );
+    save( pStyle );
 
     const Parameter pStyles = { ParameterName::STYLES,
                                 QVariant::String,

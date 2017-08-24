@@ -702,7 +702,7 @@ class TestQgsServerWMS(QgsServerTestBase):
         r, h = self._result(self._execute_request(qs))
         self._img_diff_error(r, h, "WMS_GetMap_StyleDefault")
 
-        # custom style
+        # custom style with STYLES parameter
         qs = "?" + "&".join(["%s=%s" % i for i in list({
             "MAP": urllib.parse.quote(self.projectPath),
             "SERVICE": "WMS",
@@ -710,6 +710,24 @@ class TestQgsServerWMS(QgsServerTestBase):
             "REQUEST": "GetMap",
             "LAYERS": "Country_Labels",
             "STYLES": "custom",
+            "FORMAT": "image/png",
+            "BBOX": "-16817707,-4710778,5696513,14587125",
+            "HEIGHT": "500",
+            "WIDTH": "500",
+            "CRS": "EPSG:3857"
+        }.items())])
+
+        r, h = self._result(self._execute_request(qs))
+        self._img_diff_error(r, h, "WMS_GetMap_StyleCustom")
+
+        # custom style with STYLE parameter
+        qs = "?" + "&".join(["%s=%s" % i for i in list({
+            "MAP": urllib.parse.quote(self.projectPath),
+            "SERVICE": "WMS",
+            "VERSION": "1.1.1",
+            "REQUEST": "GetMap",
+            "LAYERS": "Country_Labels",
+            "STYLE": "custom",
             "FORMAT": "image/png",
             "BBOX": "-16817707,-4710778,5696513,14587125",
             "HEIGHT": "500",
