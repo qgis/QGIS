@@ -244,7 +244,7 @@ void QgsBench::render()
       for ( int i = 0; i < mTimes.size(); i++ )
       {
         double d = std::fabs( avg[t] - mTimes.at( i )[t] );
-        stdev[t] += pow( d, 2 );
+        stdev[t] += std::pow( d, 2 );
         if ( i == 0 || d > maxdev[t] ) maxdev[t] = d;
       }
 

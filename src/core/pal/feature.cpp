@@ -1161,7 +1161,7 @@ int FeaturePart::createCurvedCandidatesAlongLine( QList< LabelPosition * > &lPos
     if ( i == 0 )
       path_distances[i] = 0;
     else
-      path_distances[i] = sqrt( pow( old_x - mapShape->x[i], 2 ) + pow( old_y - mapShape->y[i], 2 ) );
+      path_distances[i] = sqrt( std::pow( old_x - mapShape->x[i], 2 ) + std::pow( old_y - mapShape->y[i], 2 ) );
     old_x = mapShape->x[i];
     old_y = mapShape->y[i];
 
@@ -1808,13 +1808,13 @@ bool FeaturePart::nextCharPosition( double charWidth, double segment_length, Poi
       dx = new_x - old_x;
       dy = new_y - old_y;
     }
-    while ( sqrt( pow( start_x - new_x, 2 ) + pow( start_y - new_y, 2 ) ) < charWidth ); // Distance from start_ to new_
+    while ( sqrt( std::pow( start_x - new_x, 2 ) + std::pow( start_y - new_y, 2 ) ) < charWidth ); // Distance from start_ to new_
 
     // Calculate the position to place the end of the character on
     GeomFunction::findLineCircleIntersection( start_x, start_y, charWidth, old_x, old_y, new_x, new_y, end_x, end_y );
 
     // Need to calculate distance on the new segment
-    distance = sqrt( pow( old_x - end_x, 2 ) + pow( old_y - end_y, 2 ) );
+    distance = sqrt( std::pow( old_x - end_x, 2 ) + std::pow( old_y - end_y, 2 ) );
   }
   return true;
 }

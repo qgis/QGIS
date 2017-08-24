@@ -268,7 +268,7 @@ bool QgsField::convertCompatible( QVariant &v ) const
 
   if ( d->type == QVariant::Double && d->precision > 0 )
   {
-    double s = qPow( 10, d->precision );
+    double s = std::pow( 10, d->precision );
     double d = v.toDouble() * s;
     v = QVariant( ( d < 0 ? ceil( d - 0.5 ) : floor( d + 0.5 ) ) / s );
     return true;

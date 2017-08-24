@@ -2192,7 +2192,7 @@ void QgsTextRenderer::drawBackground( QgsRenderContext &context, QgsTextRenderer
       else if ( background.type() == QgsTextBackgroundSettings::ShapeCircle )
       {
         // start with label bound by circle
-        h = sqrt( pow( w, 2 ) + pow( h, 2 ) );
+        h = sqrt( std::pow( w, 2 ) + std::pow( h, 2 ) );
         w = h;
       }
       else if ( background.type() == QgsTextBackgroundSettings::ShapeEllipse )

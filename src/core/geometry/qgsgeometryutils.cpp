@@ -451,7 +451,7 @@ void QgsGeometryUtils::circleCenterRadius( const QgsPoint &pt1, const QgsPoint &
   {
     centerX = ( pt1.x() + pt2.x() ) / 2.0;
     centerY = ( pt1.y() + pt2.y() ) / 2.0;
-    radius = sqrt( pow( centerX - pt1.x(), 2.0 ) + pow( centerY - pt1.y(), 2.0 ) );
+    radius = sqrt( std::pow( centerX - pt1.x(), 2.0 ) + std::pow( centerY - pt1.y(), 2.0 ) );
     return;
   }
 
@@ -461,8 +461,8 @@ void QgsGeometryUtils::circleCenterRadius( const QgsPoint &pt1, const QgsPoint &
   dx31 = pt3.x() - pt1.x();
   dy31 = pt3.y() - pt1.y();
 
-  h21 = pow( dx21, 2.0 ) + pow( dy21, 2.0 );
-  h31 = pow( dx31, 2.0 ) + pow( dy31, 2.0 );
+  h21 = std::pow( dx21, 2.0 ) + std::pow( dy21, 2.0 );
+  h31 = std::pow( dx31, 2.0 ) + std::pow( dy31, 2.0 );
 
   // 2*Cross product, d<0 means clockwise and d>0 counterclockwise sweeping angle
   d = 2 * ( dx21 * dy31 - dx31 * dy21 );
@@ -477,7 +477,7 @@ void QgsGeometryUtils::circleCenterRadius( const QgsPoint &pt1, const QgsPoint &
   // Calculate centroid coordinates and radius
   centerX = pt1.x() + ( h21 * dy31 - h31 * dy21 ) / d;
   centerY = pt1.y() - ( h21 * dx31 - h31 * dx21 ) / d;
-  radius = sqrt( pow( centerX - pt1.x(), 2.0 ) + pow( centerY - pt1.y(), 2.0 ) );
+  radius = sqrt( std::pow( centerX - pt1.x(), 2.0 ) + std::pow( centerY - pt1.y(), 2.0 ) );
 }
 
 bool QgsGeometryUtils::circleClockwise( double angle1, double angle2, double angle3 )

@@ -290,7 +290,7 @@ void QgsImageOperation::HueSaturationPixelOperation::operator()( QRgb &rgb, cons
   {
     // Raising the saturation. Use a saturation curve to prevent
     // clipping at maximum saturation with ugly results.
-    s = qMin( static_cast< int >( 255. * ( 1 - qPow( 1 - ( s / 255. ), qPow( mSaturation, 2 ) ) ) ), 255 );
+    s = qMin( static_cast< int >( 255. * ( 1 - std::pow( 1 - ( s / 255. ), std::pow( mSaturation, 2 ) ) ) ), 255 );
   }
 
   if ( mColorize )

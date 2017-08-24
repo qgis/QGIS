@@ -190,7 +190,7 @@ int QgsCurveEditorWidget::findNearestControlPoint( QPointF point ) const
   {
     QgsPointXY currentPoint = controlPoints.at( i );
     double currentDist;
-    currentDist = qPow( point.x() - currentPoint.x(), 2.0 ) + qPow( point.y() - currentPoint.y(), 2.0 );
+    currentDist = std::pow( point.x() - currentPoint.x(), 2.0 ) + std::pow( point.y() - currentPoint.y(), 2.0 );
     if ( currentDist < minDist )
     {
       minDist = currentDist;

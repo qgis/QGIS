@@ -71,7 +71,7 @@ void QgsDoubleSpinBox::wheelEvent( QWheelEvent *event )
     double newStep = step / 10;
     // but don't ever use an increment smaller than would be visible in the widget
     // i.e. if showing 2 decimals, smallest increment will be 0.01
-    newStep = qMax( newStep, pow( 10.0, 0.0 - decimals() ) );
+    newStep = qMax( newStep, std::pow( 10.0, 0.0 - decimals() ) );
 
     setSingleStep( newStep );
 

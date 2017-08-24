@@ -2964,7 +2964,7 @@ QgsSymbolLayer *QgsLinePatternFillSymbolLayer::createFromSld( QDomElement &eleme
   QPointF vectOffset;
   if ( QgsSymbolLayerUtils::displacementFromSldElement( graphicElem, vectOffset ) )
   {
-    offset = sqrt( pow( vectOffset.x(), 2 ) + pow( vectOffset.y(), 2 ) );
+    offset = sqrt( std::pow( vectOffset.x(), 2 ) + std::pow( vectOffset.y(), 2 ) );
   }
 
   QString uom = element.attribute( QStringLiteral( "uom" ), "" );

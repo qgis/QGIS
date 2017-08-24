@@ -107,7 +107,7 @@ double MathUtils::calcBernsteinPoly( int n, int i, double t )
     return 0;
   }
 
-  return lower( n, i ) * qPow( t, i ) * qPow( ( 1 - t ), ( n - i ) );
+  return lower( n, i ) * std::pow( t, i ) * std::pow( ( 1 - t ), ( n - i ) );
 }
 
 double MathUtils::cFDerBernsteinPoly( int n, int i, double t )

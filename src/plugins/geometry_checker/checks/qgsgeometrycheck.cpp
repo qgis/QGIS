@@ -48,12 +48,12 @@ int QgsGeometryCheckPrecision::reducedPrecision()
 
 double QgsGeometryCheckPrecision::tolerance()
 {
-  return qPow( 10, -get()->mPrecision );
+  return pow( 10, -get()->mPrecision );
 }
 
 double QgsGeometryCheckPrecision::reducedTolerance()
 {
-  return qPow( 10, -get()->mReducedPrecision );
+  return pow( 10, -get()->mReducedPrecision );
 }
 
 QgsGeometryCheckError::QgsGeometryCheckError( const QgsGeometryCheck *check,

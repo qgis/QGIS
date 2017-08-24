@@ -50,7 +50,7 @@ int QgsIDWInterpolator::interpolatePoint( double x, double y, double &result )
       result = vertex_it.z;
       return 0;
     }
-    currentWeight = 1 / ( pow( distance, mDistanceCoefficient ) );
+    currentWeight = 1 / ( std::pow( distance, mDistanceCoefficient ) );
     sumCounter += ( currentWeight * vertex_it.z );
     sumDenominator += currentWeight;
   }

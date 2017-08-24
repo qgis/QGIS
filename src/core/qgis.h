@@ -236,7 +236,7 @@ inline bool qgsDoubleNearSig( double a, double b, int significantDigits = 10 )
   double br = frexp( b, &bexp );
 
   return aexp == bexp &&
-         std::round( ar * pow( 10.0, significantDigits ) ) == std::round( br * pow( 10.0, significantDigits ) );
+         std::round( ar * std::pow( 10.0, significantDigits ) ) == std::round( br * std::pow( 10.0, significantDigits ) );
 }
 
 /**
@@ -246,7 +246,7 @@ inline bool qgsDoubleNearSig( double a, double b, int significantDigits = 10 )
  */
 inline double qgsRound( double number, double places )
 {
-  int scaleFactor = pow( 10, places );
+  int scaleFactor = std::pow( 10, places );
   return static_cast<double>( static_cast<qlonglong>( number * scaleFactor + 0.5 ) ) / scaleFactor;
 }
 

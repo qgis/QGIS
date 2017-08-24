@@ -279,7 +279,7 @@ QVariant QgsExpressionNodeBinaryOperator::evalNode( QgsExpression *parent, const
         ENSURE_NO_EVAL_ERROR;
         double fR = QgsExpressionUtils::getDoubleValue( vR, parent );
         ENSURE_NO_EVAL_ERROR;
-        return QVariant( pow( fL, fR ) );
+        return QVariant( std::pow( fL, fR ) );
       }
 
     case boAnd:

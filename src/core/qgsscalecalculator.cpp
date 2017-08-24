@@ -116,14 +116,14 @@ double QgsScaleCalculator::calculateGeographicDistance( const QgsRectangle &mapE
   // For a longitude change of 180 degrees
   double lat = ( mapExtent.yMaximum() + mapExtent.yMinimum() ) * 0.5;
   static const double RADS = ( 4.0 * atan( 1.0 ) ) / 180.0;
-  double a = pow( cos( lat * RADS ), 2 );
+  double a = std::pow( cos( lat * RADS ), 2 );
   double c = 2.0 * atan2( sqrt( a ), sqrt( 1.0 - a ) );
   static const double RA = 6378000; // [m]
   // The eccentricity. This comes from sqrt(1.0 - rb*rb/(ra*ra)) with rb set
   // to 6357000 m.
   static const double E = 0.0810820288;
   double radius = RA * ( 1.0 - E * E ) /
-                  pow( 1.0 - E * E * sin( lat * RADS ) * sin( lat * RADS ), 1.5 );
+                  std::pow( 1.0 - E * E * sin( lat * RADS ) * sin( lat * RADS ), 1.5 );
   double meters = ( mapExtent.xMaximum() - mapExtent.xMinimum() ) / 180.0 * radius * c;
 
   QgsDebugMsgLevel( "Distance across map extent (m): " + QString::number( meters ), 4 );

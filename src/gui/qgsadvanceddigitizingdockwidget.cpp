@@ -50,10 +50,10 @@ bool QgsAdvancedDigitizingDockWidget::lineCircleIntersection( const QgsPointXY &
   const double dx = x2 - x1;
   const double dy = y2 - y1;
 
-  const double dr = sqrt( pow( dx, 2 ) + pow( dy, 2 ) );
+  const double dr = sqrt( std::pow( dx, 2 ) + std::pow( dy, 2 ) );
   const double d = x1 * y2 - x2 * y1;
 
-  const double disc = pow( radius, 2 ) * pow( dr, 2 ) - pow( d, 2 );
+  const double disc = std::pow( radius, 2 ) * std::pow( dr, 2 ) - std::pow( d, 2 );
 
   if ( disc < 0 )
   {
@@ -65,12 +65,12 @@ bool QgsAdvancedDigitizingDockWidget::lineCircleIntersection( const QgsPointXY &
     // two solutions
     const int sgnDy = dy < 0 ? -1 : 1;
 
-    const double ax = center.x() + ( d * dy + sgnDy * dx * sqrt( pow( radius, 2 ) * pow( dr, 2 ) - pow( d, 2 ) ) ) / ( pow( dr, 2 ) );
-    const double ay = center.y() + ( -d * dx + std::fabs( dy ) * sqrt( pow( radius, 2 ) * pow( dr, 2 ) - pow( d, 2 ) ) ) / ( pow( dr, 2 ) );
+    const double ax = center.x() + ( d * dy + sgnDy * dx * sqrt( std::pow( radius, 2 ) * std::pow( dr, 2 ) - std::pow( d, 2 ) ) ) / ( std::pow( dr, 2 ) );
+    const double ay = center.y() + ( -d * dx + std::fabs( dy ) * sqrt( std::pow( radius, 2 ) * std::pow( dr, 2 ) - std::pow( d, 2 ) ) ) / ( std::pow( dr, 2 ) );
     const QgsPointXY p1( ax, ay );
 
-    const double bx = center.x() + ( d * dy - sgnDy * dx * sqrt( pow( radius, 2 ) * pow( dr, 2 ) - pow( d, 2 ) ) ) / ( pow( dr, 2 ) );
-    const double by = center.y() + ( -d * dx - std::fabs( dy ) * sqrt( pow( radius, 2 ) * pow( dr, 2 ) - pow( d, 2 ) ) ) / ( pow( dr, 2 ) );
+    const double bx = center.x() + ( d * dy - sgnDy * dx * sqrt( std::pow( radius, 2 ) * std::pow( dr, 2 ) - std::pow( d, 2 ) ) ) / ( std::pow( dr, 2 ) );
+    const double by = center.y() + ( -d * dx - std::fabs( dy ) * sqrt( std::pow( radius, 2 ) * std::pow( dr, 2 ) - std::pow( d, 2 ) ) ) / ( std::pow( dr, 2 ) );
     const QgsPointXY p2( bx, by );
 
     // snap to nearest intersection

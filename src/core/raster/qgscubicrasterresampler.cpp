@@ -472,7 +472,7 @@ double QgsCubicRasterResampler::calcBernsteinPolyN3( int i, double t )
     return 0;
   }
 
-  return lowerN3( i ) * qPow( t, i ) * qPow( ( 1 - t ), ( 3 - i ) );
+  return lowerN3( i ) * std::pow( t, i ) * std::pow( ( 1 - t ), ( 3 - i ) );
 }
 
 inline int QgsCubicRasterResampler::lowerN3( int i )

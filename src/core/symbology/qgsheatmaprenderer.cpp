@@ -165,7 +165,7 @@ bool QgsHeatmapRenderer::renderFeature( QgsFeature &feature, QgsRenderContext &c
         {
           continue;
         }
-        double distanceSquared = pow( pointX - x, 2.0 ) + pow( pointY - y, 2.0 );
+        double distanceSquared = std::pow( pointX - x, 2.0 ) + std::pow( pointY - y, 2.0 );
         if ( distanceSquared > mRadiusSquared )
         {
           continue;
@@ -203,17 +203,17 @@ double QgsHeatmapRenderer::uniformKernel( const double distance, const int bandw
 
 double QgsHeatmapRenderer::quarticKernel( const double distance, const int bandwidth ) const
 {
-  return pow( 1. - pow( distance / static_cast< double >( bandwidth ), 2 ), 2 );
+  return pow( 1. - std::pow( distance / static_cast< double >( bandwidth ), 2 ), 2 );
 }
 
 double QgsHeatmapRenderer::triweightKernel( const double distance, const int bandwidth ) const
 {
-  return pow( 1. - pow( distance / static_cast< double >( bandwidth ), 2 ), 3 );
+  return pow( 1. - std::pow( distance / static_cast< double >( bandwidth ), 2 ), 3 );
 }
 
 double QgsHeatmapRenderer::epanechnikovKernel( const double distance, const int bandwidth ) const
 {
-  return ( 1. - pow( distance / static_cast< double >( bandwidth ), 2 ) );
+  return ( 1. - std::pow( distance / static_cast< double >( bandwidth ), 2 ) );
 }
 
 double QgsHeatmapRenderer::triangularKernel( const double distance, const int bandwidth ) const

@@ -402,7 +402,7 @@ static QVariant fcnExpScale( const QVariantList &values, const QgsExpressionCont
   }
 
   // Return exponentially scaled value
-  return QVariant( ( ( rangeMax - rangeMin ) / pow( domainMax - domainMin, exponent ) ) * pow( val - domainMin, exponent ) + rangeMin );
+  return QVariant( ( ( rangeMax - rangeMin ) / std::pow( domainMax - domainMin, exponent ) ) * std::pow( val - domainMin, exponent ) + rangeMin );
 }
 
 static QVariant fcnMax( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent )
@@ -2883,7 +2883,7 @@ static QVariant fcnRound( const QVariantList &values, const QgsExpressionContext
   if ( values.length() == 2 && values.at( 1 ).toInt() != 0 )
   {
     double number = QgsExpressionUtils::getDoubleValue( values.at( 0 ), parent );
-    double scaler = pow( 10.0, QgsExpressionUtils::getIntValue( values.at( 1 ), parent ) );
+    double scaler = std::pow( 10.0, QgsExpressionUtils::getIntValue( values.at( 1 ), parent ) );
     return QVariant( std::round( number * scaler ) / scaler );
   }
 

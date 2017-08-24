@@ -3932,7 +3932,7 @@ QList<double> QgsSymbolLayerUtils::prettyBreaks( double minimum, double maximum,
     cell = 20 * 1e-07;
   }
 
-  double base = pow( 10.0, floor( log10( cell ) ) );
+  double base = std::pow( 10.0, floor( log10( cell ) ) );
   double unit = base;
   if ( ( 2 * base ) - cell < h * ( cell - unit ) )
   {

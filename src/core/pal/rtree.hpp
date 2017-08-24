@@ -1180,7 +1180,7 @@ namespace pal
     }
     else
     {
-      return static_cast< ELEMTYPEREAL >( pow( radius, NUMDIMS ) * m_unitSphereVolume );
+      return static_cast< ELEMTYPEREAL >( std::pow( radius, NUMDIMS ) * m_unitSphereVolume );
     }
   }
 

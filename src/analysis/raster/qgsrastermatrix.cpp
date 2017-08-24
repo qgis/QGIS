@@ -292,7 +292,7 @@ double QgsRasterMatrix::calculateTwoArgumentOp( TwoArgOperator op, double arg1, 
       }
       else
       {
-        return qPow( arg1, arg2 );
+        return pow( arg1, arg2 );
       }
     case opEQ:
       return ( arg1 == arg2 ? 1.0 : 0.0 );

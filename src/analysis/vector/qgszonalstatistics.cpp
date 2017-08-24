@@ -309,7 +309,7 @@ int QgsZonalStatistics::calculateStatistics( QgsFeedback *feedback )
         double variance = sumSquared / featureStats.values.count();
         if ( mStatistics & QgsZonalStatistics::StDev )
         {
-          double stdev = qPow( variance, 0.5 );
+          double stdev = std::pow( variance, 0.5 );
           changeAttributeMap.insert( stdevIndex, QVariant( stdev ) );
         }
         if ( mStatistics & QgsZonalStatistics::Variance )
