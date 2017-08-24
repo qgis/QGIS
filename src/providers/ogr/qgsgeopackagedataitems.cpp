@@ -23,12 +23,11 @@
 #include "qgsvectorlayer.h"
 #include "qgsrasterlayer.h"
 #include "qgsogrprovider.h"
-#include "qgscplerrorhandler.h"
 #include "qgsnewgeopackagelayerdialog.h"
 #include "qgsmessageoutput.h"
 #include "qgsvectorlayerexporter.h"
+#include "qgsgeopackagerasterwritertask.h"
 #include "gdal.h"
-#include "gdal_utils.h"
 
 #include <QAction>
 #include <QMessageBox>
@@ -324,19 +323,17 @@ bool QgsGeoPackageConnectionItem::handleDrop( const QMimeData *data, Qt::DropAct
     return false;
 
   QString uri;
-  // This sends OGR/GDAL errors to the message log
-  QgsCPLErrorHandler handler;
 
   QStringList importResults;
   bool hasError = false;
 
   QgsMimeDataUtils::UriList lst = QgsMimeDataUtils::decodeUriList( data );
-  Q_FOREACH ( const QgsMimeDataUtils::Uri &u, lst )
+  Q_FOREACH ( const QgsMimeDataUtils::Uri &dropUri, lst )
   {
     // Check that we are not copying over self
-    if ( u.uri.startsWith( mPath ) )
+    if ( dropUri.uri.startsWith( mPath ) )
     {
-      importResults.append( tr( "You cannot import layer %1 over itself!" ).arg( u.name ) );
+      importResults.append( tr( "You cannot import layer %1 over itself!" ).arg( dropUri.name ) );
       hasError = true;
 
     }
@@ -348,19 +345,19 @@ bool QgsGeoPackageConnectionItem::handleDrop( const QMimeData *data, Qt::DropAct
       QString error;
       // Common checks for raster and vector
       // aspatial is treated like vector
-      if ( u.layerType == QStringLiteral( "vector" ) )
+      if ( dropUri.layerType == QStringLiteral( "vector" ) )
       {
         // open the source layer
-        srcLayer = u.vectorLayer( owner, error );
+        srcLayer = dropUri.vectorLayer( owner, error );
         isVector = true;
       }
       else
       {
-        srcLayer = u.rasterLayer( owner, error );
+        srcLayer = dropUri.rasterLayer( owner, error );
       }
       if ( !srcLayer )
       {
-        importResults.append( tr( "%1: %2" ).arg( u.name ).arg( error ) );
+        importResults.append( tr( "%1: %2" ).arg( dropUri.name ).arg( error ) );
         hasError = true;
         continue;
       }
@@ -375,22 +372,22 @@ bool QgsGeoPackageConnectionItem::handleDrop( const QMimeData *data, Qt::DropAct
         // Q_FOREACH won't detach ...
         for ( const auto child : children() )
         {
-          if ( child->name() == u.name )
+          if ( child->name() == dropUri.name )
           {
             exists = true;
           }
         }
         if ( ! exists || QMessageBox::question( nullptr, tr( "Overwrite Layer" ),
-                                                tr( "Destination layer <b>%1</b> already exists. Do you want to overwrite it?" ).arg( u.name ), QMessageBox::Yes |  QMessageBox::No ) == QMessageBox::Yes )
+                                                tr( "Destination layer <b>%1</b> already exists. Do you want to overwrite it?" ).arg( dropUri.name ), QMessageBox::Yes |  QMessageBox::No ) == QMessageBox::Yes )
         {
-          if ( isVector )
+          if ( isVector ) // Import vectors and aspatial
           {
             QgsVectorLayer *vectorSrcLayer = dynamic_cast < QgsVectorLayer * >( srcLayer );
             QVariantMap options;
             options.insert( QStringLiteral( "driverName" ), QStringLiteral( "GPKG" ) );
             options.insert( QStringLiteral( "update" ), true );
             options.insert( QStringLiteral( "overwrite" ), true );
-            options.insert( QStringLiteral( "layerName" ), u.name );
+            options.insert( QStringLiteral( "layerName" ), dropUri.name );
 
             std::unique_ptr< QgsVectorLayerExporterTask > exportTask( new QgsVectorLayerExporterTask( vectorSrcLayer, uri, QStringLiteral( "ogr" ), vectorSrcLayer->crs(), options, owner ) );
             // when export is successful:
@@ -408,7 +405,7 @@ bool QgsGeoPackageConnectionItem::handleDrop( const QMimeData *data, Qt::DropAct
               {
                 QgsMessageOutput *output = QgsMessageOutput::createMessageOutput();
                 output->setTitle( tr( "Import to GeoPackage database" ) );
-                output->setMessage( tr( "Failed to import some layers!\n\n" ) + errorMessage, QgsMessageOutput::MessageText );
+                output->setMessage( tr( "Failed to import some vector layers!\n\n" ) + errorMessage, QgsMessageOutput::MessageText );
                 output->showMessage();
               }
             } );
@@ -417,42 +414,39 @@ bool QgsGeoPackageConnectionItem::handleDrop( const QMimeData *data, Qt::DropAct
           }
           else  // Import raster
           {
-            // In case we need it
-            // QgsRasterLayer* rasterSrcLayer = dynamic_cast < QgsRasterLayer* > ( srcLayer );
 
-            const char *args[] = { "-of", "gpkg", "-co", QStringLiteral( "RASTER_TABLE=%1" ).arg( u.name ).toUtf8().constData(), "-co", "APPEND_SUBDATASET=YES", nullptr };
-            GDALTranslateOptions *psOptions = GDALTranslateOptionsNew( ( char ** )args, nullptr );
-            GDALDatasetH hSrcDS = GDALOpen( u.uri.toUtf8().constData(), GA_ReadOnly );
-            if ( ! hSrcDS )
+            std::unique_ptr< QgsGeoPackageRasterWriterTask > exportTask( new QgsGeoPackageRasterWriterTask( dropUri, mPath ) );
+            // when export is successful:
+            connect( exportTask.get(), &QgsGeoPackageRasterWriterTask::writeComplete, this, [ = ]()
             {
-              importResults.append( tr( "Failed to open source layer %1! See the message logs for details.\n\n" ).arg( u.name ) );
-              hasError = true;
-            }
-            else
+              // this is gross - TODO - find a way to get access to messageBar from data items
+              QMessageBox::information( nullptr, tr( "Import to GeoPackage database" ), tr( "Import was successful." ) );
+              refreshConnections();
+            } );
+
+            // when an error occurs:
+            connect( exportTask.get(), &QgsGeoPackageRasterWriterTask::errorOccurred, this, [ = ]( QgsGeoPackageRasterWriter::WriterError error, const QString & errorMessage )
             {
-              CPLErrorReset();
-              GDALDatasetH hOutDS = GDALTranslate( mPath.toUtf8().constData(), hSrcDS, psOptions, NULL );
-              if ( ! hOutDS )
+              if ( error != QgsGeoPackageRasterWriter::WriterError::ErrUserCanceled )
               {
-                importResults.append( tr( "Failed to import layer %1! See the message logs for details.\n\n" ).arg( u.name ) );
-                hasError = true;
+                QgsMessageOutput *output = QgsMessageOutput::createMessageOutput();
+                output->setTitle( tr( "Import to GeoPackage database" ) );
+                output->setMessage( tr( "Failed to import some raster layers!\n\n" ) + errorMessage, QgsMessageOutput::MessageText );
+                output->showMessage();
               }
-              else // All good!
-              {
-                GDALClose( hOutDS );
-                // this is gross - TODO - find a way to get access to messageBar from data items
-                QMessageBox::information( nullptr, tr( "Import to GeoPackage database" ), tr( "Import was successful." ) );
-                refreshConnections();
-              }
-              GDALClose( hSrcDS );
-            }
-            GDALTranslateOptionsFree( psOptions );
+              // Always try to delete the imported raster, in case the gpkg has been left
+              // in an inconsistent status. Ignore delete errors.
+              QString deleteErr;
+              deleteGeoPackageRasterLayer( QStringLiteral( "GPKG:%1:%2" ).arg( mPath, dropUri.name ), deleteErr );
+            } );
+
+            QgsApplication::taskManager()->addTask( exportTask.release() );
           }
         } // do not overwrite
       }
       else
       {
-        importResults.append( tr( "%1: Not a valid layer!" ).arg( u.name ) );
+        importResults.append( tr( "%1: Not a valid layer!" ).arg( dropUri.name ) );
         hasError = true;
       }
     } // check for self copy
@@ -494,6 +488,124 @@ QgsLayerItem::LayerType QgsGeoPackageConnectionItem::layerTypeFromDb( const QStr
   }
   return QgsLayerItem::LayerType::TableLayer;
 }
+
+bool QgsGeoPackageConnectionItem::deleteGeoPackageRasterLayer( const QString uri, QString &errCause )
+{
+  bool result = false;
+  // Better safe than sorry
+  if ( ! uri.isEmpty( ) )
+  {
+    QStringList pieces( uri.split( ':' ) );
+    if ( pieces.size() != 3 )
+    {
+      errCause = QStringLiteral( "Layer URI is malformed: layer <b>%1</b> cannot be deleted!" ).arg( uri );
+    }
+    else
+    {
+      QString baseUri = pieces.at( 1 );
+      QString layerName = pieces.at( 2 );
+      sqlite3 *handle;
+      int status = sqlite3_open_v2( baseUri.toUtf8().constData(), &handle, SQLITE_OPEN_READWRITE, NULL );
+      if ( status != SQLITE_OK )
+      {
+        errCause = sqlite3_errmsg( handle );
+      }
+      else
+      {
+        // Remove table
+        char *errmsg = nullptr;
+        char *sql = sqlite3_mprintf(
+                      "DROP table IF EXISTS \"%w\";"
+                      "DELETE FROM gpkg_contents WHERE table_name = '%q';"
+                      "DELETE FROM gpkg_tile_matrix WHERE table_name = '%q';"
+                      "DELETE FROM gpkg_tile_matrix_set WHERE table_name = '%q';",
+                      layerName.toUtf8().constData(),
+                      layerName.toUtf8().constData(),
+                      layerName.toUtf8().constData(),
+                      layerName.toUtf8().constData() );
+        status = sqlite3_exec(
+                   handle,                              /* An open database */
+                   sql,                                 /* SQL to be evaluated */
+                   NULL,                                /* Callback function */
+                   NULL,                                /* 1st argument to callback */
+                   &errmsg                              /* Error msg written here */
+                 );
+        sqlite3_free( sql );
+        // Remove from optional tables, may silently fail
+        QStringList optionalTables;
+        optionalTables << QStringLiteral( "gpkg_extensions" )
+                       << QStringLiteral( "gpkg_metadata_reference" );
+        Q_FOREACH ( const QString &tableName, optionalTables )
+        {
+          char *sql = sqlite3_mprintf( "DELETE FROM %w WHERE table_name = '%q'",
+                                       tableName.toUtf8().constData(),
+                                       layerName.toUtf8().constData() );
+          sqlite3_exec(
+            handle,                              /* An open database */
+            sql,                                 /* SQL to be evaluated */
+            NULL,                                /* Callback function */
+            NULL,                                /* 1st argument to callback */
+            NULL                                 /* Error msg written here */
+          );
+          sqlite3_free( sql );
+        }
+        // Other tables, ignore errors
+        {
+          char *sql = sqlite3_mprintf( "DELETE FROM gpkg_2d_gridded_coverage_ancillary WHERE tile_matrix_set_name = '%q'",
+                                       layerName.toUtf8().constData() );
+          sqlite3_exec(
+            handle,                              /* An open database */
+            sql,                                 /* SQL to be evaluated */
+            NULL,                                /* Callback function */
+            NULL,                                /* 1st argument to callback */
+            NULL                                 /* Error msg written here */
+          );
+          sqlite3_free( sql );
+        }
+        {
+          char *sql = sqlite3_mprintf( "DELETE FROM gpkg_2d_gridded_tile_ancillary WHERE tpudt_name = '%q'",
+                                       layerName.toUtf8().constData() );
+          sqlite3_exec(
+            handle,                              /* An open database */
+            sql,                                 /* SQL to be evaluated */
+            NULL,                                /* Callback function */
+            NULL,                                /* 1st argument to callback */
+            NULL                                 /* Error msg written here */
+          );
+          sqlite3_free( sql );
+        }
+        // Vacuum
+        {
+          sqlite3_exec(
+            handle,                              /* An open database */
+            "VACUUM",                            /* SQL to be evaluated */
+            NULL,                                /* Callback function */
+            NULL,                                /* 1st argument to callback */
+            NULL                                 /* Error msg written here */
+          );
+        }
+
+        if ( status == SQLITE_OK )
+        {
+          result = true;
+        }
+        else
+        {
+          errCause = tr( "There was an error deleting the layer %1: %2" ).arg( layerName, QString::fromUtf8( errmsg ) );
+        }
+        sqlite3_free( errmsg );
+      }
+      sqlite3_close( handle );
+    }
+  }
+  else
+  {
+    // This should never happen!
+    errCause = tr( "Layer URI is empty: layer cannot be deleted!" );
+  }
+  return result;
+}
+
 
 void QgsGeoPackageConnectionItem::deleteConnection()
 {
@@ -563,7 +675,7 @@ void QgsGeoPackageAbstractLayerItem::deleteLayer()
     {
       QMessageBox::information( nullptr, tr( "Delete Layer" ), tr( "Layer <b>%1</b> deleted successfully." ).arg( mName ) );
       if ( mParent )
-        mParent->refresh();
+        mParent->refreshConnections();
     }
   }
   else
@@ -602,83 +714,7 @@ QgsGeoPackageRasterLayerItem::QgsGeoPackageRasterLayerItem( QgsDataItem *parent,
 
 bool QgsGeoPackageRasterLayerItem::executeDeleteLayer( QString &errCause )
 {
-  bool result = false;
-  // Better safe than sorry
-  if ( ! mUri.isEmpty( ) )
-  {
-    QStringList pieces( mUri.split( ':' ) );
-    if ( pieces.size() != 3 )
-    {
-      errCause = QStringLiteral( "Layer URI is malformed: layer <b>%1</b> cannot be deleted!" ).arg( mName );
-    }
-    else
-    {
-      QString baseUri = pieces.at( 1 );
-      QString layerName = pieces.at( 2 );
-      sqlite3 *handle;
-      int status = sqlite3_open_v2( baseUri.toUtf8().constData(), &handle, SQLITE_OPEN_READWRITE, NULL );
-      if ( status != SQLITE_OK )
-      {
-        errCause = sqlite3_errmsg( handle );
-      }
-      else
-      {
-        // Remove table
-        char *errmsg = nullptr;
-        char *sql = sqlite3_mprintf(
-                      "DROP table %w;"
-                      "DELETE FROM gpkg_contents WHERE table_name = '%q';"
-                      "DELETE FROM gpkg_tile_matrix WHERE table_name = '%q';"
-                      "DELETE FROM gpkg_tile_matrix_set WHERE table_name = '%q';",
-                      layerName.toUtf8().constData(),
-                      layerName.toUtf8().constData(),
-                      layerName.toUtf8().constData(),
-                      layerName.toUtf8().constData() );
-        status = sqlite3_exec(
-                   handle,                              /* An open database */
-                   sql,                                 /* SQL to be evaluated */
-                   NULL,                                /* Callback function */
-                   NULL,                                /* 1st argument to callback */
-                   &errmsg                              /* Error msg written here */
-                 );
-        sqlite3_free( sql );
-        // Remove from optional tables, may silently fail
-        QStringList optionalTables;
-        optionalTables << QStringLiteral( "gpkg_extensions" )
-                       << QStringLiteral( "gpkg_metadata_reference" );
-        for ( const auto tableName : optionalTables )
-        {
-          char *sql = sqlite3_mprintf( "DELETE FROM table %w WHERE table_name = '%q",
-                                       tableName.toUtf8().constData(),
-                                       layerName.toUtf8().constData() );
-          sqlite3_exec(
-            handle,                              /* An open database */
-            sql,                                 /* SQL to be evaluated */
-            NULL,                                /* Callback function */
-            NULL,                                /* 1st argument to callback */
-            NULL                                 /* Error msg written here */
-          );
-          sqlite3_free( sql );
-        }
-        if ( status == SQLITE_OK )
-        {
-          result = true;
-        }
-        else
-        {
-          errCause = tr( "There was an error deleting the layer: %1" ).arg( QString::fromUtf8( errmsg ) );
-        }
-        sqlite3_free( errmsg );
-      }
-      sqlite3_close( handle );
-    }
-  }
-  else
-  {
-    // This should never happen!
-    errCause = QStringLiteral( "Layer URI is empty: layer <b>%1</b> cannot be deleted!" ).arg( mName );
-  }
-  return result;
+  return QgsGeoPackageConnectionItem::deleteGeoPackageRasterLayer( mUri, errCause );
 }
 
 
