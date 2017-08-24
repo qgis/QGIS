@@ -291,7 +291,7 @@ double QgsPointXY::azimuth( const QgsPointXY &other ) const
 QgsPointXY QgsPointXY::project( double distance, double bearing ) const
 {
   double rads = bearing * M_PI / 180.0;
-  double dx = distance * sin( rads );
+  double dx = distance * std::sin( rads );
   double dy = distance * std::cos( rads );
   return QgsPointXY( mX + dx, mY + dy );
 }

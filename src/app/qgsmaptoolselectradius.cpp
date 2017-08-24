@@ -108,7 +108,7 @@ void QgsMapToolSelectRadius::setRadiusRubberBand( QgsPointXY &radiusEdge )
   {
     double theta = i * ( 2.0 * M_PI / RADIUS_SEGMENTS );
     QgsPointXY radiusPoint( mRadiusCenter.x() + r * std::cos( theta ),
-                            mRadiusCenter.y() + r * sin( theta ) );
+                            mRadiusCenter.y() + r * std::sin( theta ) );
     mRubberBand->addPoint( radiusPoint, false );
   }
   mRubberBand->closePoints( true );

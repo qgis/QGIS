@@ -127,7 +127,7 @@ QgsRasterBlock *QgsHillshadeRenderer::block( int bandNo, const QgsRectangle &ext
   double zenithRad = qMax( 0.0, 90 - mLightAngle ) * M_PI / 180.0;
   double azimuthRad = -1 * mLightAzimuth * M_PI / 180.0;
   double cosZenithRad = std::cos( zenithRad );
-  double sinZenithRad = sin( zenithRad );
+  double sinZenithRad = std::sin( zenithRad );
 
   // Multi direction hillshade: http://pubs.usgs.gov/of/1992/of92-422/of92-422.pdf
   double angle0Rad = ( -1 * mLightAzimuth - 45 - 45 * 0.5 ) * M_PI / 180.0;
@@ -219,23 +219,23 @@ QgsRasterBlock *QgsHillshadeRenderer::block( int bandNo, const QgsRectangle &ext
       {
         // Standard single direction hillshade
         grayValue = qBound( 0.0, 255.0 * ( cosZenithRad * std::cos( slopeRad )
-                                           + sinZenithRad * sin( slopeRad )
+                                           + sinZenithRad * std::sin( slopeRad )
                                            * std::cos( azimuthRad - aspectRad ) ), 255.0 );
       }
       else
       {
         // Weighted multi direction as in http://pubs.usgs.gov/of/1992/of92-422/of92-422.pdf
-        double weight0 = sin( aspectRad - angle0Rad );
-        double weight1 = sin( aspectRad - angle1Rad );
-        double weight2 = sin( aspectRad - angle2Rad );
-        double weight3 = sin( aspectRad - angle3Rad );
+        double weight0 = std::sin( aspectRad - angle0Rad );
+        double weight1 = std::sin( aspectRad - angle1Rad );
+        double weight2 = std::sin( aspectRad - angle2Rad );
+        double weight3 = std::sin( aspectRad - angle3Rad );
         weight0 = weight0 * weight0;
         weight1 = weight1 * weight1;
         weight2 = weight2 * weight2;
         weight3 = weight3 * weight3;
 
         double cosSlope = cosZenithRad * std::cos( slopeRad );
-        double sinSlope = sinZenithRad * sin( slopeRad );
+        double sinSlope = sinZenithRad * std::sin( slopeRad );
         double color0 = cosSlope + sinSlope * std::cos( angle0Rad - aspectRad ) ;
         double color1 = cosSlope + sinSlope * std::cos( angle1Rad - aspectRad ) ;
         double color2 = cosSlope + sinSlope * std::cos( angle2Rad - aspectRad ) ;

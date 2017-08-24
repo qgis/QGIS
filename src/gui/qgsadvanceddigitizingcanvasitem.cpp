@@ -145,16 +145,16 @@ void QgsAdvancedDigitizingCanvasItem::paint( QPainter *painter )
     painter->drawLine( prevPointPix.x(),
                        prevPointPix.y(),
                        prevPointPix.x() + 60 * std::cos( a0 ),
-                       prevPointPix.y() + 60 * qSin( a0 ) );
+                       prevPointPix.y() + 60 * std::sin( a0 ) );
 
     if ( mAdvancedDigitizingDockWidget->constraintAngle()->isLocked() )
     {
       painter->setPen( mLockedPen );
       double d = std::max( boundingRect().width(), boundingRect().height() );
       painter->drawLine( prevPointPix.x() - d * std::cos( a ),
-                         prevPointPix.y() - d * qSin( a ),
+                         prevPointPix.y() - d * std::sin( a ),
                          prevPointPix.x() + d * std::cos( a ),
-                         prevPointPix.y() + d * qSin( a ) );
+                         prevPointPix.y() + d * std::sin( a ) );
     }
   }
 

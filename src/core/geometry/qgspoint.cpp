@@ -566,14 +566,14 @@ QgsPoint QgsPoint::project( double distance, double azimuth, double inclination 
 
   if ( !is3D() && qgsDoubleNear( inclination, 90.0 ) )
   {
-    dx = distance * sin( radsXy );
+    dx = distance * std::sin( radsXy );
     dy = distance * std::cos( radsXy );
   }
   else
   {
     double radsZ = inclination * M_PI / 180.0;
-    dx = distance * sin( radsZ ) * sin( radsXy );
-    dy = distance * sin( radsZ ) * std::cos( radsXy );
+    dx = distance * std::sin( radsZ ) * std::sin( radsXy );
+    dy = distance * std::sin( radsZ ) * std::cos( radsXy );
     dz = distance * std::cos( radsZ );
   }
 

@@ -138,10 +138,10 @@ void QgsDecorationNorthArrow::render( const QgsMapSettings &mapSettings, QgsRend
       double myRadiansDouble = mRotationInt * M_PI / 180.0;
       int xShift = static_cast<int>( (
                                        ( centerXDouble * std::cos( myRadiansDouble ) ) +
-                                       ( centerYDouble * sin( myRadiansDouble ) )
+                                       ( centerYDouble * std::sin( myRadiansDouble ) )
                                      ) - centerXDouble );
       int yShift = static_cast<int>( (
-                                       ( -centerXDouble * sin( myRadiansDouble ) ) +
+                                       ( -centerXDouble * std::sin( myRadiansDouble ) ) +
                                        ( centerYDouble * std::cos( myRadiansDouble ) )
                                      ) - centerYDouble );
 

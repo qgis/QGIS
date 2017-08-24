@@ -440,7 +440,7 @@ int QgsHelmertGeorefTransform::helmert_transform( void *pTransformerArg, int bDs
   if ( !t )
     return false;
 
-  double a = std::cos( t->angle ), b = sin( t->angle ), x0 = t->origin.x(), y0 = t->origin.y(), s = t->scale;
+  double a = std::cos( t->angle ), b = std::sin( t->angle ), x0 = t->origin.x(), y0 = t->origin.y(), s = t->scale;
   if ( !bDstToSrc )
   {
     a *= s;
@@ -450,8 +450,8 @@ int QgsHelmertGeorefTransform::helmert_transform( void *pTransformerArg, int bDs
       double xT = x[i], yT = y[i];
       // Because rotation parameters where estimated in a CS with negative y-axis ^= down.
       // we need to apply the rotation matrix and a change of base:
-      // |cos a,-sin a| |1, 0|   | std::cos a,  sin a|
-      // |sin a, std::cos a| |0,-1| = | sin a, -cos a|
+      // |cos a,-sin a| |1, 0|   | std::cos a,  std::sin a|
+      // |sin a, std::cos a| |0,-1| = | std::sin a, -cos a|
       x[i] = x0 + ( a * xT + b * yT );
       y[i] = y0 + ( b * xT - a * yT );
       panSuccess[i] = true;
@@ -475,8 +475,8 @@ int QgsHelmertGeorefTransform::helmert_transform( void *pTransformerArg, int bDs
       double xT = x[i], yT = y[i];
       xT -= x0;
       yT -= y0;
-      // | std::cos a,  sin a |^-1   |cos a,  sin a|
-      // | sin a, -cos a |    = |sin a, -cos a|
+      // | std::cos a,  std::sin a |^-1   |cos a,  std::sin a|
+      // | std::sin a, -cos a |    = |sin a, -cos a|
       x[i] =  a * xT + b * yT;
       y[i] =  b * xT - a * yT;
       panSuccess[i] = true;

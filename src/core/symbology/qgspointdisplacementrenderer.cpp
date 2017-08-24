@@ -257,7 +257,7 @@ void QgsPointDisplacementRenderer::calculateSymbolAndLabelPositions( QgsSymbolRe
       double angleStep = fullPerimeter / nPosition;
       for ( double currentAngle = 0.0; currentAngle < fullPerimeter; currentAngle += angleStep )
       {
-        double sinusCurrentAngle = sin( currentAngle );
+        double sinusCurrentAngle = std::sin( currentAngle );
         double cosinusCurrentAngle = std::cos( currentAngle );
         QPointF positionShift( radius * sinusCurrentAngle, radius * cosinusCurrentAngle );
         QPointF labelShift( ( radius + symbolDiagonal / 2 ) * sinusCurrentAngle, ( radius + symbolDiagonal / 2 ) * cosinusCurrentAngle );
@@ -286,7 +286,7 @@ void QgsPointDisplacementRenderer::calculateSymbolAndLabelPositions( QgsSymbolRe
         double currentAngle = 0.0;
         for ( int i = 0; i < actualPointsCurrentRing; ++i )
         {
-          double sinusCurrentAngle = sin( currentAngle );
+          double sinusCurrentAngle = std::sin( currentAngle );
           double cosinusCurrentAngle = std::cos( currentAngle );
           QPointF positionShift( radiusCurrentRing * sinusCurrentAngle, radiusCurrentRing * cosinusCurrentAngle );
           QPointF labelShift( ( radiusCurrentRing + symbolDiagonal / 2 ) * sinusCurrentAngle, ( radiusCurrentRing + symbolDiagonal / 2 ) * cosinusCurrentAngle );

@@ -313,7 +313,7 @@ void QgsVectorFieldSymbolLayer::convertPolarToCartesian( double length, double a
     angle = angle * M_PI / 180.0;
   }
 
-  x = length * sin( angle );
+  x = length * std::sin( angle );
   y = length * std::cos( angle );
 }
 

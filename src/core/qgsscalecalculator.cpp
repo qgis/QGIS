@@ -123,7 +123,7 @@ double QgsScaleCalculator::calculateGeographicDistance( const QgsRectangle &mapE
   // to 6357000 m.
   static const double E = 0.0810820288;
   double radius = RA * ( 1.0 - E * E ) /
-                  std::pow( 1.0 - E * E * sin( lat * RADS ) * sin( lat * RADS ), 1.5 );
+                  std::pow( 1.0 - E * E * std::sin( lat * RADS ) * std::sin( lat * RADS ), 1.5 );
   double meters = ( mapExtent.xMaximum() - mapExtent.xMinimum() ) / 180.0 * radius * c;
 
   QgsDebugMsgLevel( "Distance across map extent (m): " + QString::number( meters ), 4 );

@@ -331,9 +331,9 @@ bool GeomFunction::containsCandidate( const GEOSPreparedGeometry *geom, double x
   {
     double beta = alpha + ( M_PI / 2 );
     double dx1 = std::cos( alpha ) * width;
-    double dy1 = sin( alpha ) * width;
+    double dy1 = std::sin( alpha ) * width;
     double dx2 = std::cos( beta ) * height;
-    double dy2 = sin( beta ) * height;
+    double dy2 = std::sin( beta ) * height;
     GEOSCoordSeq_setX_r( geosctxt, coord, 1, x  + dx1 );
     GEOSCoordSeq_setY_r( geosctxt, coord, 1, y + dy1 );
     GEOSCoordSeq_setX_r( geosctxt, coord, 2, x + dx1 + dx2 );

@@ -663,7 +663,7 @@ bool QgsAdvancedDigitizingDockWidget::applyConstraints( QgsMapMouseEvent *e )
       // http://mathworld.wolfram.com/Point-LineDistance2-Dimensional.html
       // use the direction vector (cos(a),sin(a)) from previous point. |x2-x1|=1 since sin2+cos2=1
       const double dist = std::fabs( std::cos( softAngle + deltaAngle ) * ( previousPt.y() - point.y() )
-                                     - qSin( softAngle + deltaAngle ) * ( previousPt.x() - point.x() ) );
+                                     - std::sin( softAngle + deltaAngle ) * ( previousPt.x() - point.x() ) );
       if ( dist / mMapCanvas->mapSettings().mapUnitsPerPixel() < SOFT_CONSTRAINT_TOLERANCE_PIXEL )
       {
         mAngleConstraint->setLockMode( CadConstraint::SoftLock );
@@ -682,7 +682,7 @@ bool QgsAdvancedDigitizingDockWidget::applyConstraints( QgsMapMouseEvent *e )
     }
 
     double cosa = std::cos( angleValue );
-    double sina = qSin( angleValue );
+    double sina = std::sin( angleValue );
     double v = ( point.x() - previousPt.x() ) * cosa + ( point.y() - previousPt.y() ) * sina ;
     if ( mXConstraint->isLocked() && mYConstraint->isLocked() )
     {

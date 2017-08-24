@@ -352,11 +352,11 @@ void QgsMapToolRotateFeature::applyRotation( double rotation )
   double angle = -1 * mRotation * ( PI / 180 );
   QgsPointXY anchorPoint = toLayerCoordinates( vlayer, mStartPointMapCoords );
   double a = std::cos( angle );
-  double b = -1 * sin( angle );
-  double c = anchorPoint.x() - std::cos( angle ) * anchorPoint.x() + sin( angle ) * anchorPoint.y();
-  double d = sin( angle );
+  double b = -1 * std::sin( angle );
+  double c = anchorPoint.x() - std::cos( angle ) * anchorPoint.x() + std::sin( angle ) * anchorPoint.y();
+  double d = std::sin( angle );
   double ee = std::cos( angle );
-  double f = anchorPoint.y() - sin( angle ) * anchorPoint.x() - std::cos( angle ) * anchorPoint.y();
+  double f = anchorPoint.y() - std::sin( angle ) * anchorPoint.x() - std::cos( angle ) * anchorPoint.y();
 
   vlayer->beginEditCommand( tr( "Features Rotated" ) );
 

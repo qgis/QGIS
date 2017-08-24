@@ -220,7 +220,7 @@ bool QgsRasterMatrix::oneArgumentOperation( OneArgOperator op )
           }
           break;
         case opSIN:
-          mData[i] = sin( value );
+          mData[i] = std::sin( value );
           break;
         case opCOS:
           mData[i] = std::cos( value );

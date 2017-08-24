@@ -302,7 +302,7 @@ double QgsRegularPolygon::area() const
     return 0.0;
   }
 
-  return ( mRadius * mRadius * mNumberSides * sin( centralAngle() * M_PI / 180.0 ) ) / 2 ;
+  return ( mRadius * mRadius * mNumberSides * std::sin( centralAngle() * M_PI / 180.0 ) ) / 2 ;
 }
 
 double QgsRegularPolygon::perimeter() const
@@ -322,7 +322,7 @@ double QgsRegularPolygon::length() const
     return 0.0;
   }
 
-  return mRadius * 2 * sin( M_PI / mNumberSides );
+  return mRadius * 2 * std::sin( M_PI / mNumberSides );
 }
 
 double QgsRegularPolygon::apothemToRadius( const double apothem, const unsigned int numSides ) const

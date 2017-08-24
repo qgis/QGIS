@@ -427,7 +427,7 @@ QgsPointXY QgsDistanceArea::computeSpheroidProject(
     azimuth = azimuth - M_PI * 2.0;
   }
   sigma1 = std::atan2( tan_u1, std::cos( azimuth ) );
-  sin_alpha = std::cos( u1 ) * sin( azimuth );
+  sin_alpha = std::cos( u1 ) * std::sin( azimuth );
   alpha = asin( sin_alpha );
   cos_alphasq = 1.0 - POW2( sin_alpha );
   u2 = POW2( std::cos( alpha ) ) * ( POW2( a ) - b2 ) / b2; // spheroid_mu2
@@ -437,21 +437,21 @@ QgsPointXY QgsDistanceArea::computeSpheroidProject(
   do
   {
     two_sigma_m = 2.0 * sigma1 + sigma;
-    delta_sigma = B * sin( sigma ) * ( std::cos( two_sigma_m ) + ( B / 4.0 ) * ( std::cos( sigma ) * ( -1.0 + 2.0 * POW2( std::cos( two_sigma_m ) ) - ( B / 6.0 ) * std::cos( two_sigma_m ) * ( -3.0 + 4.0 * POW2( sin( sigma ) ) ) * ( -3.0 + 4.0 * POW2( std::cos( two_sigma_m ) ) ) ) ) );
+    delta_sigma = B * std::sin( sigma ) * ( std::cos( two_sigma_m ) + ( B / 4.0 ) * ( std::cos( sigma ) * ( -1.0 + 2.0 * POW2( std::cos( two_sigma_m ) ) - ( B / 6.0 ) * std::cos( two_sigma_m ) * ( -3.0 + 4.0 * POW2( std::sin( sigma ) ) ) * ( -3.0 + 4.0 * POW2( std::cos( two_sigma_m ) ) ) ) ) );
     last_sigma = sigma;
     sigma = ( distance / ( b * A ) ) + delta_sigma;
     i++;
   }
   while ( i < 999 && std::fabs( ( last_sigma - sigma ) / sigma ) > 1.0e-9 );
 
-  lat2 = std::atan2( ( sin( u1 ) * std::cos( sigma ) + std::cos( u1 ) * sin( sigma ) *
+  lat2 = std::atan2( ( std::sin( u1 ) * std::cos( sigma ) + std::cos( u1 ) * std::sin( sigma ) *
                        std::cos( azimuth ) ), ( omf * sqrt( POW2( sin_alpha ) +
-                           POW2( sin( u1 ) * sin( sigma ) - std::cos( u1 ) * std::cos( sigma ) *
+                           POW2( std::sin( u1 ) * std::sin( sigma ) - std::cos( u1 ) * std::cos( sigma ) *
                                  std::cos( azimuth ) ) ) ) );
-  lambda = std::atan2( ( sin( sigma ) * sin( azimuth ) ), ( std::cos( u1 ) * std::cos( sigma ) -
-                       sin( u1 ) * sin( sigma ) * std::cos( azimuth ) ) );
+  lambda = std::atan2( ( std::sin( sigma ) * std::sin( azimuth ) ), ( std::cos( u1 ) * std::cos( sigma ) -
+                       std::sin( u1 ) * std::sin( sigma ) * std::cos( azimuth ) ) );
   C = ( f / 16.0 ) * cos_alphasq * ( 4.0 + f * ( 4.0 - 3.0 * cos_alphasq ) );
-  omega = lambda - ( 1.0 - C ) * f * sin_alpha * ( sigma + C * sin( sigma ) *
+  omega = lambda - ( 1.0 - C ) * f * sin_alpha * ( sigma + C * std::sin( sigma ) *
           ( std::cos( two_sigma_m ) + C * std::cos( sigma ) * ( -1.0 + 2.0 * POW2( std::cos( two_sigma_m ) ) ) ) );
   lambda2 = radians_long + omega;
   return QgsPointXY( RAD2DEG( lambda2 ), RAD2DEG( lat2 ) );
@@ -553,8 +553,8 @@ double QgsDistanceArea::computeDistanceBearing(
   double L = p2_lon - p1_lon;
   double U1 = atan( ( 1 - f ) * tan( p1_lat ) );
   double U2 = atan( ( 1 - f ) * tan( p2_lat ) );
-  double sinU1 = sin( U1 ), cosU1 = std::cos( U1 );
-  double sinU2 = sin( U2 ), cosU2 = std::cos( U2 );
+  double sinU1 = std::sin( U1 ), cosU1 = std::cos( U1 );
+  double sinU2 = std::sin( U2 ), cosU2 = std::cos( U2 );
   double lambda = L;
   double lambdaP = 2 * M_PI;
 
@@ -573,7 +573,7 @@ double QgsDistanceArea::computeDistanceBearing(
   int iterLimit = 20;
   while ( std::fabs( lambda - lambdaP ) > 1e-12 && --iterLimit > 0 )
   {
-    sinLambda = sin( lambda );
+    sinLambda = std::sin( lambda );
     cosLambda = std::cos( lambda );
     tu1 = ( cosU2 * sinLambda );
     tu2 = ( cosU1 * sinU2 - sinU1 * cosU2 * cosLambda );
@@ -585,7 +585,7 @@ double QgsDistanceArea::computeDistanceBearing(
     cos2SigmaM = cosSigma - 2 * sinU1 * sinU2 / cosSqAlpha;
     C = f / 16 * cosSqAlpha * ( 4 + f * ( 4 - 3 * cosSqAlpha ) );
     lambdaP = lambda;
-    lambda = L + ( 1 - C ) * f * sin( alpha ) *
+    lambda = L + ( 1 - C ) * f * std::sin( alpha ) *
              ( sigma + C * sinSigma * ( cos2SigmaM + C * cosSigma * ( -1 + 2 * cos2SigmaM * cos2SigmaM ) ) );
   }
 
@@ -621,7 +621,7 @@ double QgsDistanceArea::getQ( double x ) const
 {
   double sinx, sinx2;
 
-  sinx = sin( x );
+  sinx = std::sin( x );
   sinx2 = sinx * sinx;
 
   return sinx * ( 1 + sinx2 * ( m_QA + sinx2 * ( m_QB + sinx2 * m_QC ) ) );

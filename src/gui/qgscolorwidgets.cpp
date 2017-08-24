@@ -460,7 +460,7 @@ void QgsColorWheel::paintEvent( QPaintEvent *event )
   double sx = -cos( -hueRadians + ( M_PI / 3.0 ) ) * triangleRadius;
   double sy = -sin( -hueRadians + ( M_PI / 3.0 ) ) * triangleRadius;
   double vx = -cos( hueRadians + ( M_PI / 3.0 ) ) * triangleRadius;
-  double vy = sin( hueRadians + ( M_PI / 3.0 ) ) * triangleRadius;
+  double vy = std::sin( hueRadians + ( M_PI / 3.0 ) ) * triangleRadius;
   double mx = ( sx + vx ) / 2.0;
   double  my = ( sy + vy ) / 2.0;
 
@@ -683,9 +683,9 @@ void QgsColorWheel::createTriangle()
   alphaColor.setAlpha( 0 );
 
   //some rather ugly shortcuts to obtain corners and midpoints of triangle
-  QLineF line1 = QLineF( center.x(), center.y(), center.x() - triangleRadius * std::cos( M_PI / 3.0 ), center.y() - triangleRadius * sin( M_PI / 3.0 ) );
+  QLineF line1 = QLineF( center.x(), center.y(), center.x() - triangleRadius * std::cos( M_PI / 3.0 ), center.y() - triangleRadius * std::sin( M_PI / 3.0 ) );
   QLineF line2 = QLineF( center.x(), center.y(), center.x() + triangleRadius, center.y() );
-  QLineF line3 = QLineF( center.x(), center.y(), center.x() - triangleRadius * std::cos( M_PI / 3.0 ), center.y() + triangleRadius * sin( M_PI / 3.0 ) );
+  QLineF line3 = QLineF( center.x(), center.y(), center.x() - triangleRadius * std::cos( M_PI / 3.0 ), center.y() + triangleRadius * std::sin( M_PI / 3.0 ) );
   QLineF line4 = QLineF( center.x(), center.y(), center.x() - triangleRadius * std::cos( M_PI / 3.0 ), center.y() );
   QLineF line5 = QLineF( center.x(), center.y(), ( line2.p2().x() + line1.p2().x() ) / 2.0, ( line2.p2().y() + line1.p2().y() ) / 2.0 );
   line1.setAngle( line1.angle() + angle );

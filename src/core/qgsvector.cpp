@@ -109,7 +109,7 @@ QgsVector QgsVector::rotateBy( double rot ) const
 {
   double angle = std::atan2( mY, mX ) + rot;
   double len = length();
-  return QgsVector( len * std::cos( angle ), len * sin( angle ) );
+  return QgsVector( len * std::cos( angle ), len * std::sin( angle ) );
 }
 
 QgsVector QgsVector::normalized() const

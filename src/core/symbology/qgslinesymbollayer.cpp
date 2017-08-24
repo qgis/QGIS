@@ -687,7 +687,7 @@ class MyLine
 
       double alpha = atan( mT );
       double dx = std::cos( alpha ) * interval;
-      double dy = sin( alpha ) * interval;
+      double dy = std::sin( alpha ) * interval;
       return ( mIncreasing ? QPointF( dx, dy ) : QPointF( -dx, -dy ) );
     }
 
@@ -1002,7 +1002,7 @@ static double _averageAngle( QPointF prevPt, QPointF pt, QPointF nextPt )
   // calc average angle between the previous and next point
   double a1 = MyLine( prevPt, pt ).angle();
   double a2 = MyLine( pt, nextPt ).angle();
-  double unitX = std::cos( a1 ) + std::cos( a2 ), unitY = sin( a1 ) + sin( a2 );
+  double unitX = std::cos( a1 ) + std::cos( a2 ), unitY = std::sin( a1 ) + std::sin( a2 );
 
   return std::atan2( unitY, unitX );
 }

@@ -1745,8 +1745,8 @@ void QgsTextRenderer::drawPart( const QRectF &rect, double rotation, HAlignment 
         double yc = rect.height() / 2.0;
 
         double angle = -rotation;
-        double xd = xc * std::cos( angle ) - yc * sin( angle );
-        double yd = xc * sin( angle ) + yc * std::cos( angle );
+        double xd = xc * std::cos( angle ) - yc * std::sin( angle );
+        double yd = xc * std::sin( angle ) + yc * std::cos( angle );
 
         component.center = QPointF( component.origin.x() + xd, component.origin.y() + yd );
       }
@@ -2389,7 +2389,7 @@ void QgsTextRenderer::drawShadow( QgsRenderContext &context, const QgsTextRender
   }
 
   QPointF transPt( -offsetDist * std::cos( angleRad + M_PI / 2 ),
-                   -offsetDist * sin( angleRad + M_PI / 2 ) );
+                   -offsetDist * std::sin( angleRad + M_PI / 2 ) );
 
   p->save();
   p->setRenderHint( QPainter::SmoothPixmapTransform );

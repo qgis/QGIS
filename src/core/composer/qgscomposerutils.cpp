@@ -43,9 +43,9 @@ void QgsComposerUtils::drawArrowHead( QPainter *p, const double x, const double 
 
   QPointF p1Rotated, p2Rotated;
   p1Rotated.setX( p1.x() * std::cos( angleRad ) + p1.y() * -sin( angleRad ) );
-  p1Rotated.setY( p1.x() * sin( angleRad ) + p1.y() * std::cos( angleRad ) );
+  p1Rotated.setY( p1.x() * std::sin( angleRad ) + p1.y() * std::cos( angleRad ) );
   p2Rotated.setX( p2.x() * std::cos( angleRad ) + p2.y() * -sin( angleRad ) );
-  p2Rotated.setY( p2.x() * sin( angleRad ) + p2.y() * std::cos( angleRad ) );
+  p2Rotated.setY( p2.x() * std::sin( angleRad ) + p2.y() * std::cos( angleRad ) );
 
   QPolygonF arrowHeadPoly;
   arrowHeadPoly << middlePoint;
@@ -88,8 +88,8 @@ void QgsComposerUtils::rotate( const double angle, double &x, double &y )
 {
   double rotToRad = angle * M_PI / 180.0;
   double xRot, yRot;
-  xRot = x * std::cos( rotToRad ) - y * sin( rotToRad );
-  yRot = x * sin( rotToRad ) + y * std::cos( rotToRad );
+  xRot = x * std::cos( rotToRad ) - y * std::sin( rotToRad );
+  yRot = x * std::sin( rotToRad ) + y * std::cos( rotToRad );
   x = xRot;
   y = yRot;
 }
@@ -186,7 +186,7 @@ QRectF QgsComposerUtils::largestRotatedRectWithinBounds( const QRectF &originalR
   //convert angle to radians and flip
   double angleRad = -clippedRotation * M_DEG2RAD;
   double cosAngle = std::cos( angleRad );
-  double sinAngle = sin( angleRad );
+  double sinAngle = std::sin( angleRad );
 
   //calculate size of bounds of rotated rectangle
   double widthBoundsRotatedRect = originalWidth * std::fabs( cosAngle ) + originalHeight * std::fabs( sinAngle );

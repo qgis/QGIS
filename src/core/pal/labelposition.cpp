@@ -79,10 +79,10 @@ LabelPosition::LabelPosition( int id, double x1, double y1, double w, double h, 
   double dx1, dx2, dy1, dy2;
 
   dx1 = std::cos( this->alpha ) * w;
-  dy1 = sin( this->alpha ) * w;
+  dy1 = std::sin( this->alpha ) * w;
 
   dx2 = std::cos( beta ) * h;
-  dy2 = sin( beta ) * h;
+  dy2 = std::sin( beta ) * h;
 
   x[0] = x1;
   y[0] = y1;
