@@ -19,7 +19,6 @@ SET(OGR_MOC_HDRS
     qgsogrsourceselect.h
     qgsgeopackagedataitems.h
     qgsgeopackageconnection.h
-    qgsgeopackagerasterwriter.h
     qgsgeopackagerasterwritertask.h
 )
 
