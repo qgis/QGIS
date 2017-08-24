@@ -34,7 +34,7 @@
 #include <QLabel>
 
 #include <limits>
-#include <math.h>
+#include <cmath>
 
 #define PI 3.14159265
 

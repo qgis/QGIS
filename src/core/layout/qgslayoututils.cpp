@@ -20,7 +20,7 @@
 #include "qgsrendercontext.h"
 #include "qgslayoutitemmap.h"
 #include <QPainter>
-#include <math.h>
+#include <cmath>
 
 double QgsLayoutUtils::normalizedAngle( const double angle, const bool allowNegative )
 {

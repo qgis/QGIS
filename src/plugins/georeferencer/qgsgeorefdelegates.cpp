@@ -19,7 +19,7 @@
 
 #include "qgsgeorefvalidators.h"
 #include "qgsgeorefdelegates.h"
-#include <math.h>
+#include <cmath>
 
 // ------------------------ QgsNonEditableDelegate ------------------------- //
 QgsNonEditableDelegate::QgsNonEditableDelegate( QWidget *parent )

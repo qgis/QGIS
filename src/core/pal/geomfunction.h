@@ -34,7 +34,7 @@
 
 
 #include "qgis_core.h"
-#include "math.h"
+#include <cmath>
 #include "qgsgeos.h"
 
 namespace pal
