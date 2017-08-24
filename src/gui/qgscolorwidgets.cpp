@@ -566,8 +566,8 @@ void QgsColorWheel::setColorFromPos( const QPointF pos )
     double newL = ( ( -sin( rad0 ) * r ) / triangleSideLength ) + 0.5;
     double widthShare = 1.0 - ( fabs( newL - 0.5 ) * 2.0 );
     double newS = ( ( ( cos( rad0 ) * r ) + ( triangleLength / 2.0 ) ) / ( 1.5 * triangleLength ) ) / widthShare;
-    s = qMin( qRound( qMax( 0.0, newS ) * 255.0 ), 255 );
-    l = qMin( qRound( qMax( 0.0, newL ) * 255.0 ), 255 );
+    s = qMin( static_cast< int >( std::round( qMax( 0.0, newS ) * 255.0 ) ), 255 );
+    l = qMin( static_cast< int >( std::round( qMax( 0.0, newL ) * 255.0 ) ), 255 );
     newColor = QColor::fromHsl( h, s, l );
     //explicitly set the hue again, so that it's exact
     newColor.setHsv( h, newColor.hsvSaturation(), newColor.value(), alpha );
@@ -1375,7 +1375,7 @@ int QgsColorSliderWidget::convertRealToDisplay( const int realValue ) const
   //for whom "255" is a totally arbitrary value!
   if ( mComponent == QgsColorWidget::Saturation || mComponent == QgsColorWidget::Value || mComponent == QgsColorWidget::Alpha )
   {
-    return qRound( 100.0 * realValue / 255.0 );
+    return std::round( 100.0 * realValue / 255.0 );
   }
 
   //leave all other values intact
@@ -1387,7 +1387,7 @@ int QgsColorSliderWidget::convertDisplayToReal( const int displayValue ) const
   //scale saturation, value or alpha from 0->100 range (see note in convertRealToDisplay)
   if ( mComponent == QgsColorWidget::Saturation || mComponent == QgsColorWidget::Value || mComponent == QgsColorWidget::Alpha )
   {
-    return qRound( 255.0 * displayValue / 100.0 );
+    return std::round( 255.0 * displayValue / 100.0 );
   }
 
   //leave all other values intact
@@ -1584,7 +1584,7 @@ void QgsColorPreviewWidget::paintEvent( QPaintEvent *event )
   if ( mColor2.isValid() )
   {
     //drawing with two color sections
-    int verticalSplit = qRound( height() / 2.0 );
+    int verticalSplit = std::round( height() / 2.0 );
     drawColor( mCurrentColor, QRect( 0, 0, width(), verticalSplit ), painter );
     drawColor( mColor2, QRect( 0, verticalSplit, width(), height() - verticalSplit ), painter );
   }
@@ -1634,7 +1634,7 @@ void QgsColorPreviewWidget::mouseReleaseEvent( QMouseEvent *e )
   if ( mColor2.isValid() )
   {
     //two color sections, check if dragged color was the second color
-    int verticalSplit = qRound( height() / 2.0 );
+    int verticalSplit = std::round( height() / 2.0 );
     if ( mDragStartPosition.y() >= verticalSplit )
     {
       clickedColor = mColor2;
@@ -1669,7 +1669,7 @@ void QgsColorPreviewWidget::mouseMoveEvent( QMouseEvent *e )
   if ( mColor2.isValid() )
   {
     //two color sections, check if dragged color was the second color
-    int verticalSplit = qRound( height() / 2.0 );
+    int verticalSplit = std::round( height() / 2.0 );
     if ( mDragStartPosition.y() >= verticalSplit )
     {
       dragColor = mColor2;

@@ -536,8 +536,8 @@ void QgsRasterInterface::cumulativeCut( int bandNo,
 
   double myBinXStep = ( myHistogram.maximum - myHistogram.minimum ) / myHistogram.binCount;
   int myCount = 0;
-  int myMinCount = static_cast< int >( qRound( lowerCount * myHistogram.nonNullCount ) );
-  int myMaxCount = static_cast< int >( qRound( upperCount * myHistogram.nonNullCount ) );
+  int myMinCount = static_cast< int >( std::round( lowerCount * myHistogram.nonNullCount ) );
+  int myMaxCount = static_cast< int >( std::round( upperCount * myHistogram.nonNullCount ) );
   bool myLowerFound = false;
   QgsDebugMsgLevel( QString( "binCount = %1 minimum = %2 maximum = %3 myBinXStep = %4" ).arg( myHistogram.binCount ).arg( myHistogram.minimum ).arg( myHistogram.maximum ).arg( myBinXStep ), 4 );
   QgsDebugMsgLevel( QString( "myMinCount = %1 myMaxCount = %2" ).arg( myMinCount ).arg( myMaxCount ), 4 );

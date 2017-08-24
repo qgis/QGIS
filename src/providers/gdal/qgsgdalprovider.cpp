@@ -485,20 +485,20 @@ void QgsGdalProvider::readBlock( int bandNo, QgsRectangle  const &extent, int pi
 
   if ( myRasterExtent.yMaximum() < extent.yMaximum() )
   {
-    top = qRound( ( extent.yMaximum() - myRasterExtent.yMaximum() ) / yRes );
+    top = std::round( ( extent.yMaximum() - myRasterExtent.yMaximum() ) / yRes );
   }
   if ( myRasterExtent.yMinimum() > extent.yMinimum() )
   {
-    bottom = qRound( ( extent.yMaximum() - myRasterExtent.yMinimum() ) / yRes ) - 1;
+    bottom = std::round( ( extent.yMaximum() - myRasterExtent.yMinimum() ) / yRes ) - 1;
   }
 
   if ( myRasterExtent.xMinimum() > extent.xMinimum() )
   {
-    left = qRound( ( myRasterExtent.xMinimum() - extent.xMinimum() ) / xRes );
+    left = std::round( ( myRasterExtent.xMinimum() - extent.xMinimum() ) / xRes );
   }
   if ( myRasterExtent.xMaximum() < extent.xMaximum() )
   {
-    right = qRound( ( myRasterExtent.xMaximum() - extent.xMinimum() ) / xRes ) - 1;
+    right = std::round( ( myRasterExtent.xMaximum() - extent.xMinimum() ) / xRes ) - 1;
   }
 #endif
   QRect subRect = QgsRasterBlock::subRect( extent, pixelWidth, pixelHeight, myRasterExtent );
@@ -585,11 +585,11 @@ void QgsGdalProvider::readBlock( int bandNo, QgsRectangle  const &extent, int pi
 
   if ( xRes > srcXRes )
   {
-    tmpWidth = static_cast<int>( qRound( srcWidth * srcXRes / xRes ) );
+    tmpWidth = static_cast<int>( std::round( srcWidth * srcXRes / xRes ) );
   }
   if ( yRes > fabs( srcYRes ) )
   {
-    tmpHeight = static_cast<int>( qRound( -1.*srcHeight * srcYRes / yRes ) );
+    tmpHeight = static_cast<int>( std::round( -1.*srcHeight * srcYRes / yRes ) );
   }
 
   double tmpXMin = mExtent.xMinimum() + srcLeft * srcXRes;

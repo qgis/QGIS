@@ -605,7 +605,7 @@ int QgsProperty::valueAsInt( const QgsExpressionContext &context, int defaultVal
     {
       if ( ok )
         *ok = true;
-      return qRound( dbl );
+      return std::round( dbl );
     }
     else
     {

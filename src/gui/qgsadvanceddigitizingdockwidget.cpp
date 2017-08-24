@@ -655,7 +655,7 @@ bool QgsAdvancedDigitizingDockWidget::applyConstraints( QgsMapMouseEvent *e )
                            previousPt.x() - penultimatePt.x() );
       softAngle -= deltaAngle;
     }
-    int quo = qRound( softAngle / commonAngle );
+    int quo = std::round( softAngle / commonAngle );
     if ( qAbs( softAngle - quo * commonAngle ) * 180.0 * M_1_PI <= SOFT_CONSTRAINT_TOLERANCE_DEGREES )
     {
       // also check the distance in pixel to the line, otherwise it's too sticky at long ranges

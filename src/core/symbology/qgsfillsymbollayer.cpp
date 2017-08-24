@@ -2561,8 +2561,8 @@ void QgsLinePatternFillSymbolLayer::applyPattern( const QgsSymbolRenderContext &
   {
     // We have to adjust marker intervals to integer pixel size to get
     // repeatable pattern.
-    double intervalScale = qRound( outputPixelInterval ) / outputPixelInterval;
-    outputPixelInterval = qRound( outputPixelInterval );
+    double intervalScale = std::round( outputPixelInterval ) / outputPixelInterval;
+    outputPixelInterval = std::round( outputPixelInterval );
 
     for ( int i = 0; i < fillLineSymbol->symbolLayerCount(); i++ )
     {
@@ -2607,7 +2607,7 @@ void QgsLinePatternFillSymbolLayer::applyPattern( const QgsSymbolRenderContext &
 
     // Round offset to correspond to one pixel height, otherwise lines may
     // be shifted on tile border if offset falls close to pixel center
-    int offsetHeight = qRound( qAbs( outputPixelOffset / cos( lineAngle * M_PI / 180 ) ) );
+    int offsetHeight = std::round( qAbs( outputPixelOffset / cos( lineAngle * M_PI / 180 ) ) );
     outputPixelOffset = offsetHeight * cos( lineAngle * M_PI / 180 );
   }
 

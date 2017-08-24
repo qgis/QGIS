@@ -960,20 +960,20 @@ QRect QgsRasterBlock::subRect( const QgsRectangle &extent, int width, int height
 
   if ( subExtent.yMaximum() < extent.yMaximum() )
   {
-    top = qRound( ( extent.yMaximum() - subExtent.yMaximum() ) / yRes );
+    top = std::round( ( extent.yMaximum() - subExtent.yMaximum() ) / yRes );
   }
   if ( subExtent.yMinimum() > extent.yMinimum() )
   {
-    bottom = qRound( ( extent.yMaximum() - subExtent.yMinimum() ) / yRes ) - 1;
+    bottom = std::round( ( extent.yMaximum() - subExtent.yMinimum() ) / yRes ) - 1;
   }
 
   if ( subExtent.xMinimum() > extent.xMinimum() )
   {
-    left = qRound( ( subExtent.xMinimum() - extent.xMinimum() ) / xRes );
+    left = std::round( ( subExtent.xMinimum() - extent.xMinimum() ) / xRes );
   }
   if ( subExtent.xMaximum() < extent.xMaximum() )
   {
-    right = qRound( ( subExtent.xMaximum() - extent.xMinimum() ) / xRes ) - 1;
+    right = std::round( ( subExtent.xMaximum() - extent.xMinimum() ) / xRes ) - 1;
   }
   QRect subRect = QRect( left, top, right - left + 1, bottom - top + 1 );
   QgsDebugMsgLevel( QString( "subRect: %1 %2 %3 %4" ).arg( subRect.x() ).arg( subRect.y() ).arg( subRect.width() ).arg( subRect.height() ), 4 );

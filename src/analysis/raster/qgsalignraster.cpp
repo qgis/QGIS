@@ -30,16 +30,16 @@
 
 static double ceil_with_tolerance( double value )
 {
-  if ( qAbs( value - qRound( value ) ) < 1e-6 )
-    return qRound( value );
+  if ( qAbs( value - std::round( value ) ) < 1e-6 )
+    return std::round( value );
   else
     return qCeil( value );
 }
 
 static double floor_with_tolerance( double value )
 {
-  if ( qAbs( value - qRound( value ) ) < 1e-6 )
-    return qRound( value );
+  if ( qAbs( value - std::round( value ) ) < 1e-6 )
+    return std::round( value );
   else
     return qFloor( value );
 }

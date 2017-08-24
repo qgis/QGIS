@@ -401,7 +401,7 @@ void TestQgsWcsPublicServers::test()
         int myHeight = 100;
         if ( myCoverage.hasSize )
         {
-          myHeight = static_cast<int>( qRound( 1.0 * myWidth * myCoverage.height / myCoverage.width ) );
+          myHeight = static_cast<int>( std::round( 1.0 * myWidth * myCoverage.height / myCoverage.width ) );
         }
         myLog << QStringLiteral( "hasSize:%1" ).arg( myCoverage.hasSize );
 

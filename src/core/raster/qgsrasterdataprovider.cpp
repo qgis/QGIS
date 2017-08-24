@@ -102,10 +102,10 @@ QgsRasterBlock *QgsRasterDataProvider::block( int bandNo, QgsRectangle  const &b
     }
 
     // Calculate row/col limits (before tmpExtent is aligned)
-    int fromRow = qRound( ( boundingBox.yMaximum() - tmpExtent.yMaximum() ) / yRes );
-    int toRow = qRound( ( boundingBox.yMaximum() - tmpExtent.yMinimum() ) / yRes ) - 1;
-    int fromCol = qRound( ( tmpExtent.xMinimum() - boundingBox.xMinimum() ) / xRes );
-    int toCol = qRound( ( tmpExtent.xMaximum() - boundingBox.xMinimum() ) / xRes ) - 1;
+    int fromRow = std::round( ( boundingBox.yMaximum() - tmpExtent.yMaximum() ) / yRes );
+    int toRow = std::round( ( boundingBox.yMaximum() - tmpExtent.yMinimum() ) / yRes ) - 1;
+    int fromCol = std::round( ( tmpExtent.xMinimum() - boundingBox.xMinimum() ) / xRes );
+    int toCol = std::round( ( tmpExtent.xMaximum() - boundingBox.xMinimum() ) / xRes ) - 1;
 
     QgsDebugMsgLevel( QString( "fromRow = %1 toRow = %2 fromCol = %3 toCol = %4" ).arg( fromRow ).arg( toRow ).arg( fromCol ).arg( toCol ), 4 );
 
@@ -133,8 +133,8 @@ QgsRasterBlock *QgsRasterDataProvider::block( int bandNo, QgsRectangle  const &b
       row = ceil( ( extent().yMaximum() - tmpExtent.yMinimum() ) / providerYRes );
       tmpExtent.setYMinimum( extent().yMaximum() - row * providerYRes );
     }
-    int tmpWidth = qRound( tmpExtent.width() / tmpXRes );
-    int tmpHeight = qRound( tmpExtent.height() / tmpYRes );
+    int tmpWidth = std::round( tmpExtent.width() / tmpXRes );
+    int tmpHeight = std::round( tmpExtent.height() / tmpYRes );
     tmpXRes = tmpExtent.width() / tmpWidth;
     tmpYRes = tmpExtent.height() / tmpHeight;
 

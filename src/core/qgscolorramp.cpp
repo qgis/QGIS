@@ -396,7 +396,7 @@ QList<QColor> QgsLimitedRandomColorRamp::randomColors( int count,
     //see http://basecase.org/env/on-rainbows for more details
     currentHueAngle += 137.50776;
     //scale hue to between hueMax and hueMin
-    h = qBound( 0, qRound( ( fmod( currentHueAngle, 360.0 ) / 360.0 ) * ( safeHueMax - safeHueMin ) + safeHueMin ), 359 );
+    h = qBound( 0.0, std::round( ( fmod( currentHueAngle, 360.0 ) / 360.0 ) * ( safeHueMax - safeHueMin ) + safeHueMin ), 359.0 );
     s = qBound( 0, ( qrand() % ( safeSatMax - safeSatMin + 1 ) ) + safeSatMin, 255 );
     v = qBound( 0, ( qrand() % ( safeValMax - safeValMin + 1 ) ) + safeValMin, 255 );
     colors.append( QColor::fromHsv( h, s, v ) );
@@ -468,7 +468,7 @@ void QgsRandomColorRamp::setTotalColorCount( const int colorCount )
   //build up a list of colors
   for ( int idx = 0; idx < colorCount; ++ idx )
   {
-    int h = qRound( currentHue ) % 360;
+    int h = static_cast< int >( std::round( currentHue ) ) % 360;
     int s = ( qrand() % ( DEFAULT_RANDOM_SAT_MAX - DEFAULT_RANDOM_SAT_MIN + 1 ) ) + DEFAULT_RANDOM_SAT_MIN;
     int v = ( qrand() % ( DEFAULT_RANDOM_VAL_MAX - DEFAULT_RANDOM_VAL_MIN + 1 ) ) + DEFAULT_RANDOM_VAL_MIN;
     mPrecalculatedColors << QColor::fromHsv( h, s, v );

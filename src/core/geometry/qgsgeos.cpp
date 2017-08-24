@@ -1701,11 +1701,11 @@ GEOSCoordSequence *QgsGeos::createCoordinateSequence( const QgsCurve *curve, dou
     {
       for ( int i = 0; i < numOutPoints; ++i )
       {
-        GEOSCoordSeq_setX_r( geosinit.ctxt, coordSeq, i, qgsRound( line->xAt( i % numPoints ) / precision ) * precision );
-        GEOSCoordSeq_setY_r( geosinit.ctxt, coordSeq, i, qgsRound( line->yAt( i % numPoints ) / precision ) * precision );
+        GEOSCoordSeq_setX_r( geosinit.ctxt, coordSeq, i, std::round( line->xAt( i % numPoints ) / precision ) * precision );
+        GEOSCoordSeq_setY_r( geosinit.ctxt, coordSeq, i, std::round( line->yAt( i % numPoints ) / precision ) * precision );
         if ( hasZ )
         {
-          GEOSCoordSeq_setOrdinate_r( geosinit.ctxt, coordSeq, i, 2, qgsRound( line->zAt( i % numPoints ) / precision ) * precision );
+          GEOSCoordSeq_setOrdinate_r( geosinit.ctxt, coordSeq, i, 2, std::round( line->zAt( i % numPoints ) / precision ) * precision );
         }
         if ( hasM )
         {
@@ -1765,11 +1765,11 @@ GEOSGeometry *QgsGeos::createGeosPointXY( double x, double y, bool hasZ, double 
     }
     if ( precision > 0. )
     {
-      GEOSCoordSeq_setX_r( geosinit.ctxt, coordSeq, 0, qgsRound( x / precision ) * precision );
-      GEOSCoordSeq_setY_r( geosinit.ctxt, coordSeq, 0, qgsRound( y / precision ) * precision );
+      GEOSCoordSeq_setX_r( geosinit.ctxt, coordSeq, 0, std::round( x / precision ) * precision );
+      GEOSCoordSeq_setY_r( geosinit.ctxt, coordSeq, 0, std::round( y / precision ) * precision );
       if ( hasZ )
       {
-        GEOSCoordSeq_setOrdinate_r( geosinit.ctxt, coordSeq, 0, 2, qgsRound( z / precision ) * precision );
+        GEOSCoordSeq_setOrdinate_r( geosinit.ctxt, coordSeq, 0, 2, std::round( z / precision ) * precision );
       }
     }
     else

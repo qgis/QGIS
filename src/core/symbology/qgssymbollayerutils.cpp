@@ -3412,9 +3412,9 @@ QColor QgsSymbolLayerUtils::parseColorWithAlpha( const QString &colorStr, bool &
   QRegExp rgbPercentFormatRx( "^\\s*(?:rgb)?\\(?\\s*(100|0*\\d{1,2})\\s*%\\s*,\\s*(100|0*\\d{1,2})\\s*%\\s*,\\s*(100|0*\\d{1,2})\\s*%\\s*\\)?\\s*;?\\s*$" );
   if ( rgbPercentFormatRx.indexIn( colorStr ) != -1 )
   {
-    int r = qRound( rgbPercentFormatRx.cap( 1 ).toDouble() * 2.55 );
-    int g = qRound( rgbPercentFormatRx.cap( 2 ).toDouble() * 2.55 );
-    int b = qRound( rgbPercentFormatRx.cap( 3 ).toDouble() * 2.55 );
+    int r = std::round( rgbPercentFormatRx.cap( 1 ).toDouble() * 2.55 );
+    int g = std::round( rgbPercentFormatRx.cap( 2 ).toDouble() * 2.55 );
+    int b = std::round( rgbPercentFormatRx.cap( 3 ).toDouble() * 2.55 );
     parsedColor.setRgb( r, g, b );
     if ( parsedColor.isValid() )
     {
@@ -3430,7 +3430,7 @@ QColor QgsSymbolLayerUtils::parseColorWithAlpha( const QString &colorStr, bool &
     int r = rgbaFormatRx.cap( 1 ).toInt();
     int g = rgbaFormatRx.cap( 2 ).toInt();
     int b = rgbaFormatRx.cap( 3 ).toInt();
-    int a = qRound( rgbaFormatRx.cap( 4 ).toDouble() * 255.0 );
+    int a = std::round( rgbaFormatRx.cap( 4 ).toDouble() * 255.0 );
     parsedColor.setRgb( r, g, b, a );
     if ( parsedColor.isValid() )
     {
@@ -3443,10 +3443,10 @@ QColor QgsSymbolLayerUtils::parseColorWithAlpha( const QString &colorStr, bool &
   QRegExp rgbaPercentFormatRx( "^\\s*(?:rgba)?\\(?\\s*(100|0*\\d{1,2})\\s*%\\s*,\\s*(100|0*\\d{1,2})\\s*%\\s*,\\s*(100|0*\\d{1,2})\\s*%\\s*,\\s*(0|0?\\.\\d*|1(?:\\.0*)?)\\s*\\)?\\s*;?\\s*$" );
   if ( rgbaPercentFormatRx.indexIn( colorStr ) != -1 )
   {
-    int r = qRound( rgbaPercentFormatRx.cap( 1 ).toDouble() * 2.55 );
-    int g = qRound( rgbaPercentFormatRx.cap( 2 ).toDouble() * 2.55 );
-    int b = qRound( rgbaPercentFormatRx.cap( 3 ).toDouble() * 2.55 );
-    int a = qRound( rgbaPercentFormatRx.cap( 4 ).toDouble() * 255.0 );
+    int r = std::round( rgbaPercentFormatRx.cap( 1 ).toDouble() * 2.55 );
+    int g = std::round( rgbaPercentFormatRx.cap( 2 ).toDouble() * 2.55 );
+    int b = std::round( rgbaPercentFormatRx.cap( 3 ).toDouble() * 2.55 );
+    int a = std::round( rgbaPercentFormatRx.cap( 4 ).toDouble() * 255.0 );
     parsedColor.setRgb( r, g, b, a );
     if ( parsedColor.isValid() )
     {
@@ -4075,7 +4075,7 @@ double QgsSymbolLayerUtils::rescaleUom( double size, QgsUnitTypes::RenderUnit un
   // of pixels as integers, even if SLD allows for float values in there
   if ( roundToUnit )
   {
-    rescaled = qRound( rescaled );
+    rescaled = std::round( rescaled );
   }
   return rescaled;
 }

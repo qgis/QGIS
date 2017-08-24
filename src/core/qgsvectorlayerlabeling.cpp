@@ -203,7 +203,7 @@ std::unique_ptr<QgsMarkerSymbolLayer> backgroundToMarkerLayer( const QgsTextBack
   QColor strokeColor = settings.strokeColor();
   if ( settings.opacity() < 1 )
   {
-    int alpha = qRound( settings.opacity() * 255 );
+    int alpha = std::round( settings.opacity() * 255 );
     fillColor.setAlpha( alpha );
     strokeColor.setAlpha( alpha );
   }

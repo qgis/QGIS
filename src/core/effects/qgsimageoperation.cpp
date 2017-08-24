@@ -349,7 +349,7 @@ void QgsImageOperation::MultiplyOpacityPixelOperation::operator()( QRgb &rgb, co
 {
   Q_UNUSED( x );
   Q_UNUSED( y );
-  rgb = qRgba( qRed( rgb ), qGreen( rgb ), qBlue( rgb ), qBound( 0, qRound( mFactor * qAlpha( rgb ) ), 255 ) );
+  rgb = qRgba( qRed( rgb ), qGreen( rgb ), qBlue( rgb ), qBound( 0.0, std::round( mFactor * qAlpha( rgb ) ), 255.0 ) );
 }
 
 // overlay color

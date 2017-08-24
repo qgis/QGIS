@@ -249,14 +249,14 @@ bool QgsField::convertCompatible( QVariant &v ) const
       return false;
     }
 
-    double round = qgsRound( dbl );
+    double round = std::round( dbl );
     if ( round  > INT_MAX || round < -INT_MAX )
     {
       //double too large to fit in int
       v = QVariant( d->type );
       return false;
     }
-    v = QVariant( qRound( dbl ) );
+    v = QVariant( static_cast< int >( std::round( dbl ) ) );
     return true;
   }
 

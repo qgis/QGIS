@@ -150,7 +150,7 @@ int QgsSpinBox::valueFromText( const QString &text ) const
     return mShowClearButton ? clearValue() : value();
   }
 
-  return qRound( QgsExpression::evaluateToDouble( trimmedText, value() ) );
+  return std::round( QgsExpression::evaluateToDouble( trimmedText, value() ) );
 }
 
 QValidator::State QgsSpinBox::validate( QString &input, int &pos ) const

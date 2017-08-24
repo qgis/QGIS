@@ -164,7 +164,7 @@ void QgsDecorationScaleBar::render( const QgsMapSettings &mapSettings, QgsRender
     if ( mSnapping )
     {
       double scaler = pow( 10.0, myPowerOf10 );
-      myActualSize = qRound( myActualSize / scaler ) * scaler;
+      myActualSize = std::round( myActualSize / scaler ) * scaler;
       myScaleBarWidth = myActualSize / myMapUnitsPerPixelDouble;
     }
 

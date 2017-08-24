@@ -2884,13 +2884,13 @@ static QVariant fcnRound( const QVariantList &values, const QgsExpressionContext
   {
     double number = QgsExpressionUtils::getDoubleValue( values.at( 0 ), parent );
     double scaler = pow( 10.0, QgsExpressionUtils::getIntValue( values.at( 1 ), parent ) );
-    return QVariant( qRound( number * scaler ) / scaler );
+    return QVariant( std::round( number * scaler ) / scaler );
   }
 
   if ( values.length() >= 1 )
   {
     double number = QgsExpressionUtils::getIntValue( values.at( 0 ), parent );
-    return QVariant( qRound( number ) );
+    return QVariant( qlonglong( std::round( number ) ) );
   }
 
   return QVariant();

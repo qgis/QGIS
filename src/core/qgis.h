@@ -236,13 +236,7 @@ inline bool qgsDoubleNearSig( double a, double b, int significantDigits = 10 )
   double br = frexp( b, &bexp );
 
   return aexp == bexp &&
-         qRound( ar * pow( 10.0, significantDigits ) ) == qRound( br * pow( 10.0, significantDigits ) );
-}
-
-//! A round function which returns a double to guard against overflows
-inline double qgsRound( double x )
-{
-  return x < 0.0 ? std::ceil( x - 0.5 ) : std::floor( x + 0.5 );
+         std::round( ar * pow( 10.0, significantDigits ) ) == std::round( br * pow( 10.0, significantDigits ) );
 }
 
 /**

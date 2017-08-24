@@ -89,7 +89,7 @@ void QgsAngleMagnetWidget::setAngle( double angle )
   const int magnet = mMagnetSpinBox->value();
   if ( magnet )
   {
-    mAngleSpinBox->setValue( qRound( angle / magnet ) * magnet );
+    mAngleSpinBox->setValue( std::round( angle / magnet ) * magnet );
   }
   else
   {

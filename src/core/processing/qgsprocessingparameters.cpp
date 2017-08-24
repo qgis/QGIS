@@ -112,13 +112,13 @@ int QgsProcessingParameters::parameterAsInt( const QgsProcessingParameterDefinit
   //work around this by first converting to double, and then checking whether the double is convertible to int
   if ( ok )
   {
-    double round = qgsRound( dbl );
+    double round = std::round( dbl );
     if ( round  > INT_MAX || round < -INT_MAX )
     {
       //double too large to fit in int
       return 0;
     }
-    return qRound( dbl );
+    return std::round( dbl );
   }
 
   return val.toInt();

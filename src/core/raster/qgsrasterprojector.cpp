@@ -369,8 +369,8 @@ void ProjectorData::calcSrcRowsCols()
   QgsDebugMsgLevel( QString( "mSrcExtent.width = %1 mSrcExtent.height = %2" ).arg( mSrcExtent.width() ).arg( mSrcExtent.height() ), 4 );
 
   // we have to round to keep alignment set in calcSrcExtent
-  mSrcRows = static_cast< int >( qRound( mSrcExtent.height() / myMinYSize ) );
-  mSrcCols = static_cast< int >( qRound( mSrcExtent.width() / myMinXSize ) );
+  mSrcRows = static_cast< int >( std::round( mSrcExtent.height() / myMinYSize ) );
+  mSrcCols = static_cast< int >( std::round( mSrcExtent.width() / myMinXSize ) );
 
   QgsDebugMsgLevel( QString( "mSrcRows = %1 mSrcCols = %2" ).arg( mSrcRows ).arg( mSrcCols ), 4 );
 }
