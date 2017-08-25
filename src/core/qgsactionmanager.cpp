@@ -169,9 +169,6 @@ QgsExpressionContext QgsActionManager::createExpressionContext() const
   if ( mLayer )
     context << QgsExpressionContextUtils::layerScope( mLayer );
 
-  // Read clicked longitude & latitude from position context scope.
-  context << QgsExpressionContextUtils::positionScope();
-
   return context;
 }
 
