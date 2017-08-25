@@ -762,7 +762,6 @@ void QgsGeometryUtils::segmentizeArc( const QgsPoint &p1, const QgsPoint &p2, co
     {
       addP2 = false;
     }
-    addP2 = false;
 
     // As we're adding the last point in any case, we'll avoid
     // including a point which is at less than 1% increment distance
