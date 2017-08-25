@@ -250,6 +250,31 @@ inline double qgsRound( double number, double places )
   return static_cast<double>( static_cast<qlonglong>( number * scaleFactor + 0.5 ) ) / scaleFactor;
 }
 
+
+#ifndef SIP_RUN
+
+///@cond PRIVATE
+
+/**
+ * Adds const to non-const objects.
+ *
+ * To be used as a proxy for std::as_const until we target c++17 minimum.
+ *
+ * \since QGIS 3.0
+ * \note not available in Python bindings
+ */
+// TODO - remove when we target c++17 minimum and can use std::as_const
+template <typename T> struct QgsAddConst { typedef const T Type; };
+
+template <typename T>
+constexpr typename QgsAddConst<T>::Type &qgsAsConst( T &t ) noexcept { return t; }
+
+template <typename T>
+void qgsAsConst( const T && ) = delete;
+
+///@endcond
+#endif
+
 /** Converts a string to a double in a permissive way, e.g., allowing for incorrect
  * numbers of digits between thousand separators
  * \param string string to convert

@@ -161,6 +161,8 @@ double qgsRound( double number, double places );
  :rtype: float
 %End
 
+
+
 double qgsPermissiveToDouble( QString string, bool &ok );
 %Docstring
  Converts a string to a double in a permissive way, e.g., allowing for incorrect
