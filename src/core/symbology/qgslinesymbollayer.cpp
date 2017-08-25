@@ -672,7 +672,7 @@ class MyLine
     // return angle in radians
     double angle()
     {
-      double a = ( mVertical ? M_PI / 2 : std::atan( mT ) );
+      double a = ( mVertical ? M_PI_2 : std::atan( mT ) );
 
       if ( !mIncreasing )
         a += M_PI;

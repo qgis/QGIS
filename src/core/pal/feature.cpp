@@ -443,7 +443,7 @@ int FeaturePart::createCandidatesAroundPoint( double x, double y, QList< LabelPo
   double candidateAngleIncrement = 2 * M_PI / numberCandidates; /* angle bw 2 pos */
 
   /* various angles */
-  double a90  = M_PI / 2;
+  double a90  = M_PI_2;
   double a180 = M_PI;
   double a270 = a180 + a90;
   double a360 = 2 * M_PI;
@@ -470,7 +470,7 @@ int FeaturePart::createCandidatesAroundPoint( double x, double y, QList< LabelPo
 
   int i;
   double angleToCandidate;
-  for ( i = 0, angleToCandidate = M_PI / 4; i < numberCandidates; i++, angleToCandidate += candidateAngleIncrement )
+  for ( i = 0, angleToCandidate = M_PI_4; i < numberCandidates; i++, angleToCandidate += candidateAngleIncrement )
   {
     double labelX = x;
     double labelY = y;
@@ -763,12 +763,12 @@ int FeaturePart::createCandidatesAlongLineNearStraightSegments( QList<LabelPosit
       else
         angle = std::atan2( candidateEndY - candidateStartY, candidateEndX - candidateStartX );
 
-      beta = angle + M_PI / 2;
+      beta = angle + M_PI_2;
 
       if ( mLF->layer()->arrangement() == QgsPalLayerSettings::Line )
       {
         // find out whether the line direction for this candidate is from right to left
-        bool isRightToLeft = ( angle > M_PI / 2 || angle <= -M_PI / 2 );
+        bool isRightToLeft = ( angle > M_PI_2 || angle <= -M_PI_2 );
         // meaning of above/below may be reversed if using map orientation and the line has right-to-left direction
         bool reversed = ( ( flags & FLAG_MAP_ORIENTATION ) ? isRightToLeft : false );
         bool aboveLine = ( !reversed && ( flags & FLAG_ABOVE_LINE ) ) || ( reversed && ( flags & FLAG_BELOW_LINE ) );
@@ -908,12 +908,12 @@ int FeaturePart::createCandidatesAlongLineNearMidpoint( QList<LabelPosition *> &
     else
       angle = std::atan2( candidateEndY - candidateStartY, candidateEndX - candidateStartX );
 
-    beta = angle + M_PI / 2;
+    beta = angle + M_PI_2;
 
     if ( mLF->layer()->arrangement() == QgsPalLayerSettings::Line )
     {
       // find out whether the line direction for this candidate is from right to left
-      bool isRightToLeft = ( angle > M_PI / 2 || angle <= -M_PI / 2 );
+      bool isRightToLeft = ( angle > M_PI_2 || angle <= -M_PI_2 );
       // meaning of above/below may be reversed if using map orientation and the line has right-to-left direction
       bool reversed = ( ( flags & FLAG_MAP_ORIENTATION ) ? isRightToLeft : false );
       bool aboveLine = ( !reversed && ( flags & FLAG_ABOVE_LINE ) ) || ( reversed && ( flags & FLAG_BELOW_LINE ) );
@@ -1125,7 +1125,7 @@ LabelPosition *FeaturePart::curvedPlacementAtOffset( PointSet *path_positions, d
     while ( render_angle >= 2 * M_PI ) render_angle -= 2 * M_PI;
     while ( render_angle < 0 ) render_angle += 2 * M_PI;
 
-    if ( render_angle > M_PI / 2 && render_angle < 1.5 * M_PI )
+    if ( render_angle > M_PI_2 && render_angle < 1.5 * M_PI )
       slp->incrementUpsideDownCharCount();
   }
   // END FOR
@@ -1136,7 +1136,7 @@ LabelPosition *FeaturePart::curvedPlacementAtOffset( PointSet *path_positions, d
 static LabelPosition *_createCurvedCandidate( LabelPosition *lp, double angle, double dist )
 {
   LabelPosition *newLp = new LabelPosition( *lp );
-  newLp->offsetPosition( dist * std::cos( angle + M_PI / 2 ), dist * std::sin( angle + M_PI / 2 ) );
+  newLp->offsetPosition( dist * std::cos( angle + M_PI_2 ), dist * std::sin( angle + M_PI_2 ) );
   return newLp;
 }
 
@@ -1424,18 +1424,18 @@ int FeaturePart::createCandidatesForPolygon( QList< LabelPosition *> &lPos, Poin
         }
         else if ( box->length > 1.5 * labelWidth && box->width > 1.5 * labelWidth )
         {
-          if ( box->alpha <= M_PI / 4 )
+          if ( box->alpha <= M_PI_4 )
           {
             alpha = box->alpha;
           }
           else
           {
-            alpha = box->alpha - M_PI / 2;
+            alpha = box->alpha - M_PI_2;
           }
         }
         else if ( box->length > box->width )
         {
-          alpha = box->alpha - M_PI / 2;
+          alpha = box->alpha - M_PI_2;
         }
         else
         {
@@ -1464,8 +1464,8 @@ int FeaturePart::createCandidatesForPolygon( QList< LabelPosition *> &lPos, Poin
           for ( py = py0; py <= box->length; py += dy )
           {
 
-            rx = std::cos( box->alpha ) * px + std::cos( box->alpha - M_PI / 2 ) * py;
-            ry = std::sin( box->alpha ) * px + std::sin( box->alpha - M_PI / 2 ) * py;
+            rx = std::cos( box->alpha ) * px + std::cos( box->alpha - M_PI_2 ) * py;
+            ry = std::sin( box->alpha ) * px + std::sin( box->alpha - M_PI_2 ) * py;
 
             rx += box->x[0];
             ry += box->y[0];

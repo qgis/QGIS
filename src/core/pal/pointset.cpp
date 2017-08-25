@@ -656,7 +656,7 @@ CHullBox *PointSet::compute_chull_bbox()
     for ( i = 0; i < 16; i += 4 )
     {
 
-      alpha_seg = ( ( i / 4 > 0 ? ( i / 4 ) - 1 : 3 ) ) * M_PI / 2 + alpha;
+      alpha_seg = ( ( i / 4 > 0 ? ( i / 4 ) - 1 : 3 ) ) * M_PI_2 + alpha;
 
       best_cp = DBL_MAX;
       for ( j = 0; j < nbPoints; j++ )
