@@ -31,7 +31,7 @@ typedef QList< QgsVectorLayerJoinInfo > QgsVectorJoinList;
 
 /** \ingroup core
  * Manages joined fields for a vector layer*/
-class CORE_EXPORT QgsVectorLayerJoinBuffer : public QObject
+class CORE_EXPORT QgsVectorLayerJoinBuffer : public QObject, public QgsFeatureSink
 {
     Q_OBJECT
   public:
@@ -110,21 +110,6 @@ class CORE_EXPORT QgsVectorLayerJoinBuffer : public QObject
     QgsVectorLayerJoinBuffer *clone() const SIP_FACTORY;
 
     /**
-     * Adds a feature in joined layers. The feature given in parameter is the
-     * one added in target layer. If a corresponding joined feature yet exists
-     * in a joined layer, then this feature is just updated. Note that if a
-     * corresponding joined feature has only empty fields, then it's not
-     * created nor added.
-     *
-     * \param feature The feature added in the target layer.
-     *
-     * \returns false if an error happened, true otherwise
-     *
-     * \since QGIS 3.0
-     */
-    bool addFeature( const QgsFeature &feature ) const;
-
-    /**
      * Adds a list of features in joined layers. Features given in parameter
      * are those added in target layer. If a corresponding joined feature yet
      * exists in a joined layer, then this feature is just updated. Note that
@@ -132,12 +117,13 @@ class CORE_EXPORT QgsVectorLayerJoinBuffer : public QObject
      * created nor added.
      *
      * \param features The list of features added in the target layer
+     * \param flags Unused parameter
      *
      * \returns false if an error happened, true otherwise
      *
      * \since QGIS 3.0
      */
-    bool addFeatures( const QgsFeatureList &features ) const;
+    bool addFeatures( QgsFeatureList &features, QgsFeatureSink::Flags flags = 0 ) override;
 
     /**
      * Changes attribute value in joined layers. The feature id given in
@@ -154,7 +140,7 @@ class CORE_EXPORT QgsVectorLayerJoinBuffer : public QObject
      *
      * \since QGIS 3.0
      */
-    bool changeAttributeValue( QgsFeatureId fid, int field, const QVariant &newValue, const QVariant &oldValue = QVariant() ) const;
+    bool changeAttributeValue( QgsFeatureId fid, int field, const QVariant &newValue, const QVariant &oldValue = QVariant() );
 
     /**
      * Deletes a feature from joined layers. The feature id given in

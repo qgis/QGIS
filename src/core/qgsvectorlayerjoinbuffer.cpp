@@ -135,7 +135,6 @@ void QgsVectorLayerJoinBuffer::cacheJoinLayer( QgsVectorLayerJoinInfo &joinInfo 
 
     QgsFeatureRequest request;
     request.setFlags( QgsFeatureRequest::NoGeometry );
-
     // maybe user requested just a subset of layer's attributes
     // so we do not have to cache everything
     bool hasSubset = joinInfo.joinFieldNamesSubset();
@@ -518,12 +517,7 @@ void QgsVectorLayerJoinBuffer::connectJoinedLayer( QgsVectorLayer *vl )
   connect( vl, &QgsVectorLayer::willBeDeleted, this, &QgsVectorLayerJoinBuffer::joinedLayerWillBeDeleted, Qt::UniqueConnection );
 }
 
-bool QgsVectorLayerJoinBuffer::addFeature( const QgsFeature &feature ) const
-{
-  return addFeatures( QgsFeatureList() << feature );
-}
-
-bool QgsVectorLayerJoinBuffer::addFeatures( const QgsFeatureList &features ) const
+bool QgsVectorLayerJoinBuffer::addFeatures( QgsFeatureList &features, QgsFeatureSink::Flags )
 {
   if ( !containsJoins() )
     return false;
@@ -598,7 +592,7 @@ bool QgsVectorLayerJoinBuffer::addFeatures( const QgsFeatureList &features ) con
   return true;
 }
 
-bool QgsVectorLayerJoinBuffer::changeAttributeValue( QgsFeatureId fid, int field, const QVariant &newValue, const QVariant &oldValue ) const
+bool QgsVectorLayerJoinBuffer::changeAttributeValue( QgsFeatureId fid, int field, const QVariant &newValue, const QVariant &oldValue )
 {
   if ( mLayer->fields().fieldOrigin( field ) != QgsFields::OriginJoin )
     return false;
