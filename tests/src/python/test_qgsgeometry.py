@@ -3498,7 +3498,7 @@ class TestQgsGeometry(unittest.TestCase):
         # circular string
         geom = QgsGeometry.fromWkt('CircularString (1 5, 6 2, 7 3)')
         point = QgsGeometry.fromWkt('Point(9 -2)')
-        self.assertAlmostEqual(geom.lineLocatePoint(point), 7.372, places=3)
+        self.assertAlmostEqual(geom.lineLocatePoint(point), 7.377, places=3)
 
     def testInterpolateAngle(self):
         """ test QgsGeometry.interpolateAngle() """
@@ -3542,7 +3542,7 @@ class TestQgsGeometry(unittest.TestCase):
 
         # circular string
         geom = QgsGeometry.fromWkt('CircularString (1 5, 6 2, 7 3)')
-        self.assertAlmostEqual(geom.interpolateAngle(5), 1.69120, places=3)
+        self.assertAlmostEqual(geom.interpolateAngle(5), 1.6919, places=3)
 
     def testInterpolate(self):
         """ test QgsGeometry.interpolate() """
