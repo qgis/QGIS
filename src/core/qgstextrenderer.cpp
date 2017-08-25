@@ -1911,7 +1911,7 @@ double QgsTextRenderer::textWidth( const QgsRenderContext &context, const QgsTex
   double maxWidth = 0;
   Q_FOREACH ( const QString &line, textLines )
   {
-    maxWidth = qMax( maxWidth, fm->width( line ) );
+    maxWidth = std::max( maxWidth, fm->width( line ) );
   }
   return maxWidth;
 }
@@ -2051,7 +2051,7 @@ void QgsTextRenderer::drawBackground( QgsRenderContext &context, QgsTextRenderer
     }
     else if ( background.sizeType() == QgsTextBackgroundSettings::SizeBuffer )
     {
-      sizeOut = qMax( component.size.width(), component.size.height() );
+      sizeOut = std::max( component.size.width(), component.size.height() );
       double bufferSize = context.convertToPainterUnits( background.size().width(), background.sizeUnit(), background.sizeMapUnitScale() );
 
       // add buffer

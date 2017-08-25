@@ -42,7 +42,7 @@ QgsColorSwatchGrid::QgsColorSwatchGrid( QgsColorScheme *scheme, const QString &c
   mLabelMargin = Qgis::UI_SCALE_FACTOR * fontMetrics().width( QStringLiteral( "." ) );
 
   mSwatchSize = Qgis::UI_SCALE_FACTOR * fontMetrics().width( QStringLiteral( "X" ) ) * 1.75;
-  mSwatchOutlineSize = qMax( fontMetrics().width( QStringLiteral( "." ) ) * 0.4, 1.0 );
+  mSwatchOutlineSize = std::max( fontMetrics().width( QStringLiteral( "." ) ) * 0.4, 1.0 );
 
   mSwatchSpacing = mSwatchSize * 0.3;
   mSwatchMargin = mLabelMargin;
@@ -170,11 +170,11 @@ void QgsColorSwatchGrid::keyPressEvent( QKeyEvent *event )
   //handle keyboard navigation
   if ( event->key() == Qt::Key_Right )
   {
-    mCurrentFocusBox = qMin( mCurrentFocusBox + 1, mColors.length() - 1 );
+    mCurrentFocusBox = std::min( mCurrentFocusBox + 1, mColors.length() - 1 );
   }
   else if ( event->key() == Qt::Key_Left )
   {
-    mCurrentFocusBox = qMax( mCurrentFocusBox - 1, 0 );
+    mCurrentFocusBox = std::max( mCurrentFocusBox - 1, 0 );
   }
   else if ( event->key() == Qt::Key_Up )
   {

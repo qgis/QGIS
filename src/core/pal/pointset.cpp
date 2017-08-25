@@ -508,7 +508,7 @@ void PointSet::splitPolygons( QLinkedList<PointSet *> &shapes_toProcess,
 
       // we will cut the shapeu in two new shapes, one from [retainedPoint] to [newPoint] and one form [newPoint] to [retainedPoint]
       int imin = retainedPt;
-      int imax = ( ( ( fps < retainedPt && fpe < retainedPt ) || ( fps > retainedPt && fpe > retainedPt ) ) ? qMin( fps, fpe ) : qMax( fps, fpe ) );
+      int imax = ( ( ( fps < retainedPt && fpe < retainedPt ) || ( fps > retainedPt && fpe > retainedPt ) ) ? std::min( fps, fpe ) : std::max( fps, fpe ) );
 
       int nbPtSh1, nbPtSh2; // how many points in new shapes ?
       if ( imax > imin )

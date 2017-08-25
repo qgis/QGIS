@@ -196,7 +196,7 @@ std::unique_ptr<QgsMarkerSymbolLayer> backgroundToMarkerLayer( const QgsTextBack
   layer->setEnabled( true );
   // a marker does not have a size x and y, just a size (and it should be at least one)
   QSizeF size = settings.size();
-  layer->setSize( qMax( 1., qMax( size.width(), size.height() ) ) );
+  layer->setSize( std::max( 1., std::max( size.width(), size.height() ) ) );
   layer->setSizeUnit( settings.sizeUnit() );
   // fill and stroke
   QColor fillColor = settings.fillColor();
@@ -465,7 +465,7 @@ void QgsVectorLayerSimpleLabeling::toSld( QDomNode &parent, const QgsStringMap &
       if ( mSettings->maxCurvedCharAngleIn > 0 || mSettings->maxCurvedCharAngleOut > 0 )
       {
         // SLD has no notion for this, the GeoTools ecosystem can only do a single angle
-        double angle = qMin( std::fabs( mSettings->maxCurvedCharAngleIn ), std::fabs( mSettings->maxCurvedCharAngleOut ) );
+        double angle = std::min( std::fabs( mSettings->maxCurvedCharAngleIn ), std::fabs( mSettings->maxCurvedCharAngleOut ) );
         QDomElement vo =  QgsSymbolLayerUtils::createVendorOptionElement( doc, QStringLiteral( "maxAngleDelta" ), qgsDoubleToString( angle ) );
         textSymbolizerElement.appendChild( vo );
       }

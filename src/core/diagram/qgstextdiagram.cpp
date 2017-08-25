@@ -63,7 +63,7 @@ QSizeF QgsTextDiagram::diagramSize( const QgsFeature &feature, const QgsRenderCo
 double QgsTextDiagram::legendSize( double value, const QgsDiagramSettings &s, const QgsDiagramInterpolationSettings &is ) const
 {
   QSizeF size = sizeForValue( value, s, is );
-  return qMax( size.width(), size.height() );
+  return std::max( size.width(), size.height() );
 }
 
 QSizeF QgsTextDiagram::diagramSize( const QgsAttributes &attributes, const QgsRenderContext &c, const QgsDiagramSettings &s )

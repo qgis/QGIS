@@ -1875,7 +1875,7 @@ static QVariant fcnSmooth( const QVariantList &values, const QgsExpressionContex
   if ( geom.isNull() )
     return QVariant();
 
-  int iterations = qMin( QgsExpressionUtils::getNativeIntValue( values.at( 1 ), parent ), 10 );
+  int iterations = std::min( QgsExpressionUtils::getNativeIntValue( values.at( 1 ), parent ), 10 );
   double offset = qBound( 0.0, QgsExpressionUtils::getDoubleValue( values.at( 2 ), parent ), 0.5 );
   double minLength = QgsExpressionUtils::getDoubleValue( values.at( 3 ), parent );
   double maxAngle = qBound( 0.0, QgsExpressionUtils::getDoubleValue( values.at( 4 ), parent ), 180.0 );

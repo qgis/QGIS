@@ -486,7 +486,7 @@ int QgsHelmertGeorefTransform::helmert_transform( void *pTransformerArg, int bDs
 }
 
 QgsGDALGeorefTransform::QgsGDALGeorefTransform( bool useTPS, unsigned int polynomialOrder )
-  : mPolynomialOrder( qMin( 3u, polynomialOrder ) )
+  : mPolynomialOrder( std::min( 3u, polynomialOrder ) )
   , mIsTPSTransform( useTPS )
 {
   mGDALTransformer     = nullptr;

@@ -2017,10 +2017,10 @@ QgsRectangle QgsGeorefPluginGui::transformViewportBoundingBox( const QgsRectangl
           break;
       }
       t.transform( src, raster, rasterToWorld );
-      minX = qMin( raster.x(), minX );
-      maxX = qMax( raster.x(), maxX );
-      minY = qMin( raster.y(), minY );
-      maxY = qMax( raster.y(), maxY );
+      minX = std::min( raster.x(), minX );
+      maxX = std::max( raster.x(), maxX );
+      minY = std::min( raster.y(), minY );
+      maxY = std::max( raster.y(), maxY );
     }
   }
   return QgsRectangle( minX, minY, maxX, maxY );

@@ -647,7 +647,7 @@ void TerminalDisplay::drawCursor( QPainter &painter,
     {
       // draw the cursor outline, adjusting the area so that
       // it is draw entirely inside 'rect'
-      int penWidth = qMax( 1, painter.pen().width() );
+      int penWidth = std::max( 1, painter.pen().width() );
 
       painter.drawRect( cursorRect.adjusted( penWidth / 2,
                                              penWidth / 2,
@@ -811,7 +811,7 @@ void TerminalDisplay::scrollImage( int lines, const QRect &screenWindowRegion )
   // internal image - 2, so that the height of 'region' is strictly less
   // than the height of the internal image.
   QRect region = screenWindowRegion;
-  region.setBottom( qMin( region.bottom(), this->_lines - 2 ) );
+  region.setBottom( std::min( region.bottom(), this->_lines - 2 ) );
 
   // return if there is nothing to do
   if ( lines == 0
@@ -995,8 +995,8 @@ void TerminalDisplay::updateImage()
   CharacterColor _clipboard;       // undefined
   int cr  = -1;   // undefined
 
-  const int linesToUpdate = qMin( this->_lines, qMax( 0, lines ) );
-  const int columnsToUpdate = qMin( this->_columns, qMax( 0, columns ) );
+  const int linesToUpdate = std::min( this->_lines, std::max( 0, lines ) );
+  const int columnsToUpdate = std::min( this->_columns, std::max( 0, columns ) );
 
   QChar *disstrU = new QChar[columnsToUpdate];
   char *dirtyMask = new char[columnsToUpdate + 2];
@@ -1440,10 +1440,10 @@ void TerminalDisplay::drawContents( QPainter &paint, const QRect &rect )
   int    tLx = tL.x();
   int    tLy = tL.y();
 
-  int lux = qMin( _usedColumns - 1, qMax( 0, ( rect.left()   - tLx - _leftMargin ) / _fontWidth ) );
-  int luy = qMin( _usedLines - 1,   qMax( 0, ( rect.top()    - tLy - _topMargin ) / _fontHeight ) );
-  int rlx = qMin( _usedColumns - 1, qMax( 0, ( rect.right()  - tLx - _leftMargin ) / _fontWidth ) );
-  int rly = qMin( _usedLines - 1,   qMax( 0, ( rect.bottom() - tLy - _topMargin ) / _fontHeight ) );
+  int lux = std::min( _usedColumns - 1, std::max( 0, ( rect.left()   - tLx - _leftMargin ) / _fontWidth ) );
+  int luy = std::min( _usedLines - 1,   std::max( 0, ( rect.top()    - tLy - _topMargin ) / _fontHeight ) );
+  int rlx = std::min( _usedColumns - 1, std::max( 0, ( rect.right()  - tLx - _leftMargin ) / _fontWidth ) );
+  int rly = std::min( _usedLines - 1,   std::max( 0, ( rect.bottom() - tLy - _topMargin ) / _fontHeight ) );
 
   const int bufferSize = _usedColumns;
   QString unistr;
@@ -1488,7 +1488,7 @@ void TerminalDisplay::drawContents( QPainter &paint, const QRect &rect )
       }
 
       bool lineDraw = isLineChar( c );
-      bool doubleWidth = ( _image[ qMin( loc( x, y ) + 1, _imageSize ) ].character == 0 );
+      bool doubleWidth = ( _image[ std::min( loc( x, y ) + 1, _imageSize ) ].character == 0 );
       CharacterColor currentForeground = _image[loc( x, y )].foregroundColor;
       CharacterColor currentBackground = _image[loc( x, y )].backgroundColor;
       quint8 currentRendition = _image[loc( x, y )].rendition;
@@ -1497,7 +1497,7 @@ void TerminalDisplay::drawContents( QPainter &paint, const QRect &rect )
               _image[loc( x + len, y )].foregroundColor == currentForeground &&
               _image[loc( x + len, y )].backgroundColor == currentBackground &&
               _image[loc( x + len, y )].rendition == currentRendition &&
-              ( _image[ qMin( loc( x + len, y ) + 1, _imageSize ) ].character == 0 ) == doubleWidth &&
+              ( _image[ std::min( loc( x + len, y ) + 1, _imageSize ) ].character == 0 ) == doubleWidth &&
               isLineChar( c = _image[loc( x + len, y )].character ) == lineDraw ) // Assignment!
       {
         if ( c )
@@ -1641,8 +1641,8 @@ void TerminalDisplay::updateImageSize()
   makeImage();
 
   // copy the old image to reduce flicker
-  int lines = qMin( oldlin, _lines );
-  int columns = qMin( oldcol, _columns );
+  int lines = std::min( oldlin, _lines );
+  int columns = std::min( oldcol, _columns );
 
   if ( oldimg )
   {
@@ -2896,12 +2896,12 @@ void TerminalDisplay::calcGeometry()
   if ( !_isFixedSize )
   {
     // ensure that display is always at least one column wide
-    _columns = qMax( 1, _contentWidth / _fontWidth );
-    _usedColumns = qMin( _usedColumns, _columns );
+    _columns = std::max( 1, _contentWidth / _fontWidth );
+    _usedColumns = std::min( _usedColumns, _columns );
 
     // ensure that display is always at least one line high
-    _lines = qMax( 1, _contentHeight / _fontHeight );
-    _usedLines = qMin( _usedLines, _lines );
+    _lines = std::max( 1, _contentHeight / _fontHeight );
+    _usedLines = std::min( _usedLines, _lines );
   }
 }
 
@@ -2945,10 +2945,10 @@ void TerminalDisplay::setFixedSize( int cols, int lins )
   _isFixedSize = true;
 
   //ensure that display is at least one line by one column in size
-  _columns = qMax( 1, cols );
-  _lines = qMax( 1, lins );
-  _usedColumns = qMin( _usedColumns, _columns );
-  _usedLines = qMin( _usedLines, _lines );
+  _columns = std::max( 1, cols );
+  _lines = std::max( 1, lins );
+  _usedColumns = std::min( _usedColumns, _columns );
+  _usedLines = std::min( _usedLines, _lines );
 
   if ( _image )
   {

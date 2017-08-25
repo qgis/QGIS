@@ -233,8 +233,8 @@ const QgsSnapIndex::Cell *QgsSnapIndex::GridRow::getCell( int col ) const
 
 QList<QgsSnapIndex::SnapItem *> QgsSnapIndex::GridRow::getSnapItems( int colStart, int colEnd ) const
 {
-  colStart = qMax( colStart, mColStartIdx );
-  colEnd = qMin( colEnd, mColStartIdx + mCells.size() - 1 );
+  colStart = std::max( colStart, mColStartIdx );
+  colEnd = std::min( colEnd, mColStartIdx + mCells.size() - 1 );
 
   QList<SnapItem *> items;
 
@@ -403,8 +403,8 @@ QgsSnapIndex::SnapItem *QgsSnapIndex::getSnapItem( const QgsPoint &pos, double t
   int colEnd = std::floor( ( pos.x() + tol - mOrigin.x() ) / mCellSize );
   int rowEnd = std::floor( ( pos.y() + tol - mOrigin.y() ) / mCellSize );
 
-  rowStart = qMax( rowStart, mRowsStartIdx );
-  rowEnd = qMin( rowEnd, mRowsStartIdx + mGridRows.size() - 1 );
+  rowStart = std::max( rowStart, mRowsStartIdx );
+  rowEnd = std::min( rowEnd, mRowsStartIdx + mGridRows.size() - 1 );
 
   QList<SnapItem *> items;
   for ( int row = rowStart; row <= rowEnd; ++row )

@@ -1234,7 +1234,7 @@ void QgsMarkerLineSymbolLayer::renderOffsetVertexAlongLine( const QPolygonF &poi
 
   int pointIncrement = distance > 0 ? 1 : -1;
   QPointF previousPoint = points[vertex];
-  int startPoint = distance > 0 ? qMin( vertex + 1, points.count() - 1 ) : qMax( vertex - 1, 0 );
+  int startPoint = distance > 0 ? std::min( vertex + 1, points.count() - 1 ) : std::max( vertex - 1, 0 );
   int endPoint = distance > 0 ? points.count() - 1 : 0;
   double distanceLeft = std::fabs( distance );
 

@@ -1251,7 +1251,7 @@ void QgsMapCanvas::endZoomRect( QPoint pos )
   const QSize &canvasSize = mSettings.outputSize();
   double sfx = ( double )zoomRectSize.width() / canvasSize.width();
   double sfy = ( double )zoomRectSize.height() / canvasSize.height();
-  double sf = qMax( sfx, sfy );
+  double sf = std::max( sfx, sfy );
 
   QgsPointXY c = mSettings.mapToPixel().toMapCoordinates( mZoomRect.center() );
 
@@ -1745,7 +1745,7 @@ void QgsMapCanvas::updateAutoRefreshTimer()
   Q_FOREACH ( QgsMapLayer *layer, mSettings.layers() )
   {
     if ( layer->hasAutoRefreshEnabled() && layer->autoRefreshInterval() > 0 )
-      minAutoRefreshInterval = minAutoRefreshInterval > 0 ? qMin( layer->autoRefreshInterval(), minAutoRefreshInterval ) : layer->autoRefreshInterval();
+      minAutoRefreshInterval = minAutoRefreshInterval > 0 ? std::min( layer->autoRefreshInterval(), minAutoRefreshInterval ) : layer->autoRefreshInterval();
   }
 
   if ( minAutoRefreshInterval > 0 )

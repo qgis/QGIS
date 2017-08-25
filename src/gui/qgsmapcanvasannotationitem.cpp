@@ -110,10 +110,10 @@ void QgsMapCanvasAnnotationItem::updateBoundingRect()
 
     QSizeF frameSize = mAnnotation ? mAnnotation->frameSize() : QSizeF( 0.0, 0.0 );
 
-    double xMinPos = qMin( -halfSymbolSize, offset.x() - fillSymbolBleed );
-    double xMaxPos = qMax( halfSymbolSize, offset.x() + frameSize.width() + fillSymbolBleed );
-    double yMinPos = qMin( -halfSymbolSize, offset.y() - fillSymbolBleed );
-    double yMaxPos = qMax( halfSymbolSize, offset.y() + frameSize.height() + fillSymbolBleed );
+    double xMinPos = std::min( -halfSymbolSize, offset.x() - fillSymbolBleed );
+    double xMaxPos = std::max( halfSymbolSize, offset.x() + frameSize.width() + fillSymbolBleed );
+    double yMinPos = std::min( -halfSymbolSize, offset.y() - fillSymbolBleed );
+    double yMaxPos = std::max( halfSymbolSize, offset.y() + frameSize.height() + fillSymbolBleed );
     mBoundingRect = QRectF( xMinPos, yMinPos, xMaxPos - xMinPos, yMaxPos - yMinPos );
   }
 }

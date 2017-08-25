@@ -315,7 +315,7 @@ QgsAbstractGeometry *QgsGeos::subdivide( int maxNodes, QString *errorMsg ) const
   }
 
   // minimum allowed max is 8
-  maxNodes = qMax( maxNodes, 8 );
+  maxNodes = std::max( maxNodes, 8 );
 
   std::unique_ptr< QgsGeometryCollection > parts = QgsGeometryFactory::createCollectionOfType( mGeometry->wkbType() );
   try

@@ -1049,8 +1049,8 @@ void QgsComposerView::mouseReleaseEvent( QMouseEvent *e )
         newLabelItem->adjustSizeToText();
 
         //make sure label size is sufficient to fit text
-        double labelWidth = qMax( mRubberBandItem->rect().width(), newLabelItem->rect().width() );
-        double labelHeight = qMax( mRubberBandItem->rect().height(), newLabelItem->rect().height() );
+        double labelWidth = std::max( mRubberBandItem->rect().width(), newLabelItem->rect().width() );
+        double labelHeight = std::max( mRubberBandItem->rect().height(), newLabelItem->rect().height() );
         newLabelItem->setSceneRect( QRectF( mRubberBandItem->transform().dx(), mRubberBandItem->transform().dy(), labelWidth, labelHeight ) );
 
         composition()->addComposerLabel( newLabelItem );

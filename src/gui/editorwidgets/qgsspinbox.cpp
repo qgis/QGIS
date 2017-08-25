@@ -39,7 +39,7 @@ QgsSpinBox::QgsSpinBox( QWidget *parent )
 
   QSize msz = minimumSizeHint();
   setMinimumSize( msz.width() + CLEAR_ICON_SIZE + 9 + frameWidth() * 2 + 2,
-                  qMax( msz.height(), CLEAR_ICON_SIZE + frameWidth() * 2 + 2 ) );
+                  std::max( msz.height(), CLEAR_ICON_SIZE + frameWidth() * 2 + 2 ) );
 
   connect( mLineEdit, &QgsFilterLineEdit::cleared, this, &QgsSpinBox::clear );
   connect( this, static_cast < void ( QSpinBox::* )( int ) > ( &QSpinBox::valueChanged ), this, &QgsSpinBox::changed );
@@ -76,7 +76,7 @@ void QgsSpinBox::wheelEvent( QWheelEvent *event )
     // ctrl modifier results in finer increments - 10% of usual step
     int newStep = step / 10;
     // step should be at least 1
-    newStep = qMax( newStep, 1 );
+    newStep = std::max( newStep, 1 );
 
     setSingleStep( newStep );
 

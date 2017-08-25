@@ -253,8 +253,8 @@ bool MathUtils::inCircle( QgsPoint *testp, QgsPoint *p1, QgsPoint *p2, QgsPoint 
     double px = testp->x();
     double py = testp->y();
 
-    double xmin = qMin( qMin( ax, px ), qMin( bx, cx ) );
-    double ymin = qMin( qMin( ay, py ), qMin( by, cy ) );
+    double xmin = std::min( std::min( ax, px ), std::min( bx, cx ) );
+    double ymin = std::min( std::min( ay, py ), std::min( by, cy ) );
     ax -= xmin;
     bx -= xmin;
     cx -= xmin;

@@ -79,7 +79,7 @@ QgsLineString::QgsLineString( const QVector<QgsPoint> &points )
 QgsLineString::QgsLineString( const QVector<double> &x, const QVector<double> &y, const QVector<double> &z, const QVector<double> &m )
 {
   mWkbType = QgsWkbTypes::LineString;
-  int pointCount = qMin( x.size(), y.size() );
+  int pointCount = std::min( x.size(), y.size() );
   if ( x.size() == pointCount )
   {
     mX = x;

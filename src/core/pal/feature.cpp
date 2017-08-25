@@ -671,7 +671,7 @@ int FeaturePart::createCandidatesAlongLineNearStraightSegments( QList<LabelPosit
       // at an extreme angle node, so reset counters
       straightSegmentLengths << currentStraightSegmentLength;
       straightSegmentAngles << QgsGeometryUtils::normalizedAngle( std::atan2( y[i] - segmentStartY, x[i] - segmentStartX ) );
-      longestSegmentLength = qMax( longestSegmentLength, currentStraightSegmentLength );
+      longestSegmentLength = std::max( longestSegmentLength, currentStraightSegmentLength );
       segmentIndex++;
       currentStraightSegmentLength = 0;
       segmentStartX = x[i];
@@ -682,7 +682,7 @@ int FeaturePart::createCandidatesAlongLineNearStraightSegments( QList<LabelPosit
   distanceToSegment[line->nbPoints - 1] = totalLineLength;
   straightSegmentLengths << currentStraightSegmentLength;
   straightSegmentAngles << QgsGeometryUtils::normalizedAngle( std::atan2( y[numberNodes - 1] - segmentStartY, x[numberNodes - 1] - segmentStartX ) );
-  longestSegmentLength = qMax( longestSegmentLength, currentStraightSegmentLength );
+  longestSegmentLength = std::max( longestSegmentLength, currentStraightSegmentLength );
   double middleOfLine = totalLineLength / 2.0;
 
   if ( totalLineLength < labelWidth )
@@ -693,7 +693,7 @@ int FeaturePart::createCandidatesAlongLineNearStraightSegments( QList<LabelPosit
   }
 
   double lineStepDistance = ( totalLineLength - labelWidth ); // distance to move along line with each candidate
-  lineStepDistance = qMin( qMin( labelHeight, labelWidth ), lineStepDistance / mLF->layer()->pal->line_p );
+  lineStepDistance = std::min( std::min( labelHeight, labelWidth ), lineStepDistance / mLF->layer()->pal->line_p );
 
   double distanceToEndOfSegment = 0.0;
   int lastNodeInSegment = 0;
@@ -861,7 +861,7 @@ int FeaturePart::createCandidatesAlongLineNearMidpoint( QList<LabelPosition *> &
 
   if ( totalLineLength > labelWidth )
   {
-    lineStepDistance = qMin( qMin( labelHeight, labelWidth ), lineStepDistance / mLF->layer()->pal->line_p );
+    lineStepDistance = std::min( std::min( labelHeight, labelWidth ), lineStepDistance / mLF->layer()->pal->line_p );
   }
   else // line length < label width => centering label position
   {
@@ -1175,7 +1175,7 @@ int FeaturePart::createCurvedCandidatesAlongLine( QList< LabelPosition * > &lPos
   }
 
   QLinkedList<LabelPosition *> positions;
-  double delta = qMax( li->label_height, total_distance / mLF->layer()->pal->line_p );
+  double delta = std::max( li->label_height, total_distance / mLF->layer()->pal->line_p );
 
   unsigned long flags = mLF->layer()->arrangementFlags();
   if ( flags == 0 )
@@ -1225,7 +1225,7 @@ int FeaturePart::createCurvedCandidatesAlongLine( QList< LabelPosition * > &lPos
       {
         diff = std::fabs( tmp->getAlpha() - angle_last );
         if ( diff > 2 * M_PI ) diff -= 2 * M_PI;
-        diff = qMin( diff, 2 * M_PI - diff ); // difference 350 deg is actually just 10 deg...
+        diff = std::min( diff, 2 * M_PI - diff ); // difference 350 deg is actually just 10 deg...
         angle_diff += diff;
       }
 
@@ -1627,7 +1627,7 @@ void FeaturePart::addSizePenalty( int nbp, QList< LabelPosition * > &lPos, doubl
       QgsMessageLog::logMessage( QObject::tr( "Exception: %1" ).arg( e.what() ), QObject::tr( "GEOS" ) );
       return;
     }
-    double bbox_length = qMax( bbx[2] - bbx[0], bby[2] - bby[0] );
+    double bbox_length = std::max( bbx[2] - bbx[0], bby[2] - bby[0] );
     if ( length >= bbox_length / 4 )
       return; // the line is longer than quarter of height or width - don't penalize it
 

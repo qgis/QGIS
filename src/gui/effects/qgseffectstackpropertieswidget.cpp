@@ -297,7 +297,7 @@ void QgsEffectStackPropertiesWidget::removeEffect()
 
   mModel->invisibleRootItem()->removeRow( row );
 
-  int newSelection = qMin( row, root->rowCount() - 1 );
+  int newSelection = std::min( row, root->rowCount() - 1 );
   QModelIndex newIdx = root->child( newSelection )->index();
   mEffectsList->setCurrentIndex( newIdx );
 

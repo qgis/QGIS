@@ -197,8 +197,8 @@ ColorEntry ColorScheme::colorEntry( int index, uint randomSeed ) const
     QColor &color = entry.color;
 
     int newHue = std::abs( ( color.hue() + hueDifference ) % MAX_HUE );
-    int newValue = qMin( std::abs( color.value() + valueDifference ), 255 );
-    int newSaturation = qMin( std::abs( color.saturation() + saturationDifference ), 255 );
+    int newValue = std::min( std::abs( color.value() + valueDifference ), 255 );
+    int newSaturation = std::min( std::abs( color.saturation() + saturationDifference ), 255 );
 
     color.setHsv( newHue, newSaturation, newValue );
   }

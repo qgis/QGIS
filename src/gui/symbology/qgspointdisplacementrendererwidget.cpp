@@ -124,7 +124,7 @@ QgsPointDisplacementRendererWidget::QgsPointDisplacementRendererWidget( QgsVecto
   mPlacementComboBox->setCurrentIndex( mPlacementComboBox->findData( mRenderer->placement() ) );
 
   //scale dependent labeling
-  mMinLabelScaleWidget->setScale( qMax( mRenderer->minimumLabelScale(), 0.0 ) );
+  mMinLabelScaleWidget->setScale( std::max( mRenderer->minimumLabelScale(), 0.0 ) );
   if ( mRenderer->minimumLabelScale() > 0 )
   {
     mScaleDependentLabelsCheckBox->setCheckState( Qt::Checked );

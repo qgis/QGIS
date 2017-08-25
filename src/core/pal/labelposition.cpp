@@ -136,10 +136,10 @@ LabelPosition::LabelPosition( int id, double x1, double y1, double w, double h, 
 
   for ( int i = 0; i < nbPoints; ++i )
   {
-    xmin = qMin( xmin, x[i] );
-    xmax = qMax( xmax, x[i] );
-    ymin = qMin( ymin, y[i] );
-    ymax = qMax( ymax, y[i] );
+    xmin = std::min( xmin, x[i] );
+    xmax = std::max( xmax, x[i] );
+    ymin = std::min( ymin, y[i] );
+    ymax = std::max( ymax, y[i] );
   }
 }
 
@@ -456,7 +456,7 @@ double LabelPosition::getDistanceToPoint( double xp, double yp ) const
                       : std::sqrt( minDistanceToPoint( xp, yp ) ) );
 
   if ( nextPart && distance > 0 )
-    return qMin( distance, nextPart->getDistanceToPoint( xp, yp ) );
+    return std::min( distance, nextPart->getDistanceToPoint( xp, yp ) );
 
   return distance;
 }

@@ -156,9 +156,9 @@ bool QgsHeatmapRenderer::renderFeature( QgsFeature &feature, QgsRenderContext &c
     QgsPointXY pixel = context.mapToPixel().transform( *pointIt );
     int pointX = pixel.x() / mRenderQuality;
     int pointY = pixel.y() / mRenderQuality;
-    for ( int x = qMax( pointX - mRadiusPixels, 0 ); x < qMin( pointX + mRadiusPixels, width ); ++x )
+    for ( int x = std::max( pointX - mRadiusPixels, 0 ); x < std::min( pointX + mRadiusPixels, width ); ++x )
     {
-      for ( int y = qMax( pointY - mRadiusPixels, 0 ); y < qMin( pointY + mRadiusPixels, height ); ++y )
+      for ( int y = std::max( pointY - mRadiusPixels, 0 ); y < std::min( pointY + mRadiusPixels, height ); ++y )
       {
         int index = y * width + x;
         if ( index >= mValues.count() )
@@ -250,7 +250,7 @@ void QgsHeatmapRenderer::renderImage( QgsRenderContext &context )
     for ( int widthIndex = 0; widthIndex < image.width(); ++widthIndex )
     {
       //scale result to fit in the range [0, 1]
-      pixVal = mValues.at( idx ) > 0 ? qMin( ( mValues.at( idx ) / scaleMax ), 1.0 ) : 0;
+      pixVal = mValues.at( idx ) > 0 ? std::min( ( mValues.at( idx ) / scaleMax ), 1.0 ) : 0;
 
       //convert value to color from ramp
       pixColor = mGradientRamp->color( pixVal );

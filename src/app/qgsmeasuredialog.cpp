@@ -281,7 +281,7 @@ QString QgsMeasureDialog::formatDistance( double distance, bool convertUnits ) c
     // special handling for degrees - because we can't use smaller units (eg m->mm), we need to make sure there's
     // enough decimal places to show a usable measurement value
     int minPlaces = std::round( std::log10( 1.0 / distance ) ) + 1;
-    decimals = qMax( decimals, minPlaces );
+    decimals = std::max( decimals, minPlaces );
   }
   return QgsDistanceArea::formatDistance( distance, decimals, mDistanceUnits, baseUnit );
 }

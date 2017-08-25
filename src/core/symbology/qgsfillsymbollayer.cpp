@@ -395,7 +395,7 @@ QgsSymbolLayer *QgsSimpleFillSymbolLayer::createFromSld( QDomElement &element )
 double QgsSimpleFillSymbolLayer::estimateMaxBleed( const QgsRenderContext &context ) const
 {
   double penBleed = context.convertToPainterUnits( mStrokeStyle == Qt::NoPen ? 0 : ( mStrokeWidth / 2.0 ), mStrokeWidthUnit, mStrokeWidthMapUnitScale );
-  double offsetBleed = context.convertToPainterUnits( qMax( std::fabs( mOffset.x() ), std::fabs( mOffset.y() ) ), mOffsetUnit, mOffsetMapUnitScale );
+  double offsetBleed = context.convertToPainterUnits( std::max( std::fabs( mOffset.x() ), std::fabs( mOffset.y() ) ), mOffsetUnit, mOffsetMapUnitScale );
   return penBleed + offsetBleed;
 }
 
@@ -916,7 +916,7 @@ QgsGradientFillSymbolLayer *QgsGradientFillSymbolLayer::clone() const
 
 double QgsGradientFillSymbolLayer::estimateMaxBleed( const QgsRenderContext &context ) const
 {
-  double offsetBleed = context.convertToPainterUnits( qMax( std::fabs( mOffset.x() ), std::fabs( mOffset.y() ) ), mOffsetUnit, mOffsetMapUnitScale );
+  double offsetBleed = context.convertToPainterUnits( std::max( std::fabs( mOffset.x() ), std::fabs( mOffset.y() ) ), mOffsetUnit, mOffsetMapUnitScale );
   return offsetBleed;
 }
 
@@ -1320,7 +1320,7 @@ void QgsShapeburstFillSymbolLayer::distanceTransform1d( double *f, int n, int *v
 /* distance transform of 2d function using squared distance */
 void QgsShapeburstFillSymbolLayer::distanceTransform2d( double *im, int width, int height )
 {
-  int maxDimension = qMax( width, height );
+  int maxDimension = std::max( width, height );
   double *f = new double[ maxDimension ];
   int *v = new int[ maxDimension ];
   double *z = new double[ maxDimension + 1 ];
@@ -1444,7 +1444,7 @@ void QgsShapeburstFillSymbolLayer::dtArrayToQImage( double *array, QImage *im, Q
       //scale result to fit in the range [0, 1]
       if ( maxDistanceValue > 0 )
       {
-        pixVal = squaredVal > 0 ? qMin( ( std::sqrt( squaredVal ) / maxDistanceValue ), 1.0 ) : 0;
+        pixVal = squaredVal > 0 ? std::min( ( std::sqrt( squaredVal ) / maxDistanceValue ), 1.0 ) : 0;
       }
       else
       {
@@ -1512,7 +1512,7 @@ QgsShapeburstFillSymbolLayer *QgsShapeburstFillSymbolLayer::clone() const
 
 double QgsShapeburstFillSymbolLayer::estimateMaxBleed( const QgsRenderContext &context ) const
 {
-  double offsetBleed = context.convertToPainterUnits( qMax( std::fabs( mOffset.x() ), std::fabs( mOffset.y() ) ), mOffsetUnit, mOffsetMapUnitScale );
+  double offsetBleed = context.convertToPainterUnits( std::max( std::fabs( mOffset.x() ), std::fabs( mOffset.y() ) ), mOffsetUnit, mOffsetMapUnitScale );
   return offsetBleed;
 }
 
@@ -2541,7 +2541,7 @@ void QgsLinePatternFillSymbolLayer::applyPattern( const QgsSymbolRenderContext &
   {
     QgsSymbolLayer *layer = fillLineSymbol->symbolLayer( i );
     double outputPixelLayerBleed = layer->estimateMaxBleed( context.renderContext() );
-    outputPixelBleed = qMax( outputPixelBleed, outputPixelLayerBleed );
+    outputPixelBleed = std::max( outputPixelBleed, outputPixelLayerBleed );
 
     QgsMarkerLineSymbolLayer *markerLineLayer = dynamic_cast<QgsMarkerLineSymbolLayer *>( layer );
     if ( markerLineLayer )
@@ -2553,7 +2553,7 @@ void QgsLinePatternFillSymbolLayer::applyPattern( const QgsSymbolRenderContext &
       // big (multiplication of intervals in the worst case).
       // Because patterns without small common interval would look strange, we
       // believe that the longest interval should usually be sufficient.
-      outputPixelInterval = qMax( outputPixelInterval, outputPixelLayerInterval );
+      outputPixelInterval = std::max( outputPixelInterval, outputPixelLayerInterval );
     }
   }
 
@@ -2617,11 +2617,11 @@ void QgsLinePatternFillSymbolLayer::applyPattern( const QgsSymbolRenderContext &
 
   // Add buffer based on bleed but keep precisely the height/width ratio (angle)
   // thus we add integer multiplications of width and height covering the bleed
-  int bufferMulti = qMax( std::ceil( outputPixelBleed / width ), std::ceil( outputPixelBleed / width ) );
+  int bufferMulti = std::max( std::ceil( outputPixelBleed / width ), std::ceil( outputPixelBleed / width ) );
 
   // Always buffer at least once so that center of line marker in upper right corner
   // does not fall outside due to representation error
-  bufferMulti = qMax( bufferMulti, 1 );
+  bufferMulti = std::max( bufferMulti, 1 );
 
   int xBuffer = width * bufferMulti;
   int yBuffer = height * bufferMulti;
@@ -3749,7 +3749,7 @@ QgsRasterFillSymbolLayer *QgsRasterFillSymbolLayer::clone() const
 
 double QgsRasterFillSymbolLayer::estimateMaxBleed( const QgsRenderContext &context ) const
 {
-  return context.convertToPainterUnits( qMax( std::fabs( mOffset.x() ), std::fabs( mOffset.y() ) ), mOffsetUnit, mOffsetMapUnitScale );
+  return context.convertToPainterUnits( std::max( std::fabs( mOffset.x() ), std::fabs( mOffset.y() ) ), mOffsetUnit, mOffsetMapUnitScale );
 }
 
 void QgsRasterFillSymbolLayer::setImageFilePath( const QString &imagePath )

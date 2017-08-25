@@ -51,7 +51,7 @@ QgsEllipseSymbolLayerWidget::QgsEllipseSymbolLayerWidget( const QgsVectorLayer *
   names << QStringLiteral( "circle" ) << QStringLiteral( "rectangle" ) << QStringLiteral( "diamond" ) << QStringLiteral( "cross" ) << QStringLiteral( "triangle" ) << QStringLiteral( "right_half_triangle" ) << QStringLiteral( "left_half_triangle" ) << QStringLiteral( "semi_circle" );
 
   int size = mShapeListWidget->iconSize().width();
-  size = qMax( 30, static_cast< int >( std::round( Qgis::UI_SCALE_FACTOR * fontMetrics().width( QStringLiteral( "XXX" ) ) ) ) );
+  size = std::max( 30, static_cast< int >( std::round( Qgis::UI_SCALE_FACTOR * fontMetrics().width( QStringLiteral( "XXX" ) ) ) ) );
   mShapeListWidget->setGridSize( QSize( size * 1.2, size * 1.2 ) );
   mShapeListWidget->setIconSize( QSize( size, size ) );
 

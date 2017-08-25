@@ -393,8 +393,8 @@ void QgsAttributeTableView::selectRow( int row, bool anchor )
         command |= QItemSelectionModel::Current;
     }
 
-    QModelIndex tl = model()->index( qMin( mRowSectionAnchor, row ), 0 );
-    QModelIndex br = model()->index( qMax( mRowSectionAnchor, row ), model()->columnCount() - 1 );
+    QModelIndex tl = model()->index( std::min( mRowSectionAnchor, row ), 0 );
+    QModelIndex br = model()->index( std::max( mRowSectionAnchor, row ), model()->columnCount() - 1 );
     if ( verticalHeader()->sectionsMoved() && tl.row() != br.row() )
       setSelection( visualRect( tl ) | visualRect( br ), command );
     else

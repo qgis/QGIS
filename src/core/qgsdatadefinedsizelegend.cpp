@@ -222,7 +222,7 @@ void QgsDataDefinedSizeLegend::drawCollapsedLegend( QgsRenderContext &context, Q
   int totalTextHeight = textBottomY - textTopY;
 
   int fullWidth = outputLargestSize + hLengthLine + hSpaceLineText + maxTextWidth;
-  int fullHeight = qMax( static_cast< int >( std::round( outputLargestSize ) ) - textTopY, totalTextHeight );
+  int fullHeight = std::max( static_cast< int >( std::round( outputLargestSize ) ) - textTopY, totalTextHeight );
 
   if ( outputSize )
     *outputSize = QSize( fullWidth, fullHeight );

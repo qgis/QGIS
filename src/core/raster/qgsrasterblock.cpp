@@ -462,10 +462,10 @@ bool QgsRasterBlock::setIsNoDataExcept( QRect exceptRect )
   int bottom = exceptRect.bottom();
   int left = exceptRect.left();
   int right = exceptRect.right();
-  top = qMin( qMax( top, 0 ), mHeight - 1 );
-  left = qMin( qMax( left, 0 ), mWidth - 1 );
-  bottom = qMax( 0, qMin( bottom, mHeight - 1 ) );
-  right = qMax( 0, qMin( right, mWidth - 1 ) );
+  top = std::min( std::max( top, 0 ), mHeight - 1 );
+  left = std::min( std::max( left, 0 ), mWidth - 1 );
+  bottom = std::max( 0, std::min( bottom, mHeight - 1 ) );
+  right = std::max( 0, std::min( right, mWidth - 1 ) );
 
   QgsDebugMsgLevel( "Entered", 4 );
   if ( typeIsNumeric( mDataType ) )
@@ -660,12 +660,12 @@ void QgsRasterBlock::setData( const QByteArray &data, int offset )
 
   if ( mData )
   {
-    int len = qMin( data.size(), typeSize( mDataType ) * mWidth * mHeight - offset );
+    int len = std::min( data.size(), typeSize( mDataType ) * mWidth * mHeight - offset );
     ::memcpy( static_cast<char *>( mData ) + offset, data.constData(), len );
   }
   else if ( mImage && mImage->constBits() )
   {
-    int len = qMin( data.size(), mImage->byteCount() - offset );
+    int len = std::min( data.size(), mImage->byteCount() - offset );
     ::memcpy( mImage->bits() + offset, data.constData(), len );
   }
 }

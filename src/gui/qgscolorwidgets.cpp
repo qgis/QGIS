@@ -142,7 +142,7 @@ void QgsColorWidget::alterColor( QColor &color, const QgsColorWidget::ColorCompo
   color.getHsv( &h, &s, &v, &a );
 
   //clip value to sensible range
-  int clippedValue = qMin( qMax( 0, newValue ), componentRange( component ) );
+  int clippedValue = std::min( std::max( 0, newValue ), componentRange( component ) );
 
   switch ( component )
   {
@@ -262,8 +262,8 @@ void QgsColorWidget::setComponentValue( const int value )
   }
 
   //clip value to valid range
-  int valueClipped = qMin( value, componentRange() );
-  valueClipped = qMax( valueClipped, 0 );
+  int valueClipped = std::min( value, componentRange() );
+  valueClipped = std::max( valueClipped, 0 );
 
   int r, g, b, a;
   mCurrentColor.getRgb( &r, &g, &b, &a );
@@ -493,7 +493,7 @@ void QgsColorWheel::setColor( const QColor &color, const bool emitSignals )
 
 void QgsColorWheel::createImages( const QSizeF size )
 {
-  double wheelSize = qMin( size.width(), size.height() ) - mMargin * 2.0;
+  double wheelSize = std::min( size.width(), size.height() ) - mMargin * 2.0;
   mWheelThickness = wheelSize / 15.0;
 
   //recreate cache images at correct size
@@ -553,8 +553,8 @@ void QgsColorWheel::setColorFromPos( const QPointF pos )
     {
       double dx = std::tan( rad1 ) * r;
       double rad2 = std::atan( dx / maxR );
-      rad2 = qMin( rad2, M_PI / 3.0 );
-      rad2 = qMax( rad2, -M_PI / 3.0 );
+      rad2 = std::min( rad2, M_PI / 3.0 );
+      rad2 = std::max( rad2, -M_PI / 3.0 );
       eventAngleRadians += rad2 - rad1;
       rad0 = std::fmod( eventAngleRadians + 2.0 * M_PI - hueRadians, 2.0 * M_PI );
       rad1 = std::fmod( rad0, ( ( 2.0 / 3.0 ) * M_PI ) ) - ( M_PI / 3.0 );
@@ -566,8 +566,8 @@ void QgsColorWheel::setColorFromPos( const QPointF pos )
     double newL = ( ( -std::sin( rad0 ) * r ) / triangleSideLength ) + 0.5;
     double widthShare = 1.0 - ( std::fabs( newL - 0.5 ) * 2.0 );
     double newS = ( ( ( std::cos( rad0 ) * r ) + ( triangleLength / 2.0 ) ) / ( 1.5 * triangleLength ) ) / widthShare;
-    s = qMin( static_cast< int >( std::round( qMax( 0.0, newS ) * 255.0 ) ), 255 );
-    l = qMin( static_cast< int >( std::round( qMax( 0.0, newL ) * 255.0 ) ), 255 );
+    s = std::min( static_cast< int >( std::round( std::max( 0.0, newS ) * 255.0 ) ), 255 );
+    l = std::min( static_cast< int >( std::round( std::max( 0.0, newL ) * 255.0 ) ), 255 );
     newColor = QColor::fromHsl( h, s, l );
     //explicitly set the hue again, so that it's exact
     newColor.setHsv( h, newColor.hsvSaturation(), newColor.value(), alpha );
@@ -637,7 +637,7 @@ void QgsColorWheel::createWheel()
     return;
   }
 
-  int maxSize = qMin( mWheelImage->width(),  mWheelImage->height() );
+  int maxSize = std::min( mWheelImage->width(),  mWheelImage->height() );
   double wheelRadius = maxSize / 2.0;
 
   mWheelImage->fill( Qt::transparent );
@@ -943,10 +943,10 @@ int QgsColorBox::xComponentValue() const
 void QgsColorBox::setColorFromPoint( QPoint point )
 {
   int valX = valueRangeX() * ( point.x() - mMargin ) / ( width() - 2 * mMargin - 1 );
-  valX = qMin( qMax( valX, 0 ), valueRangeX() );
+  valX = std::min( std::max( valX, 0 ), valueRangeX() );
 
   int valY = valueRangeY() - valueRangeY() * ( point.y() - mMargin ) / ( height() - 2 * mMargin - 1 );
-  valY = qMin( qMax( valY, 0 ), valueRangeY() );
+  valY = std::min( std::max( valY, 0 ), valueRangeY() );
 
   QColor color = QColor( mCurrentColor );
   alterColor( color, xComponent(), valX );
@@ -1254,7 +1254,7 @@ void QgsColorRampWidget::setColorFromPoint( QPointF point )
   {
     val = componentRange() - componentRange() * ( point.y() - mMargin ) / ( height() - 2 * mMargin );
   }
-  val = qMax( 0, qMin( val, componentRange() ) );
+  val = std::max( 0, std::min( val, componentRange() ) );
   setComponentValue( val );
 
   if ( componentValue() != oldValue )

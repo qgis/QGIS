@@ -1218,7 +1218,7 @@ QString QgsWcsProvider::coverageMetadata( const QgsWcsCoverageSummary &coverage 
   // TODO(?): supportedCrs and supportedFormat are not available in 1.0
   // until coverage is described - it would be confusing to show it only if available
 #if 0
-  for ( int j = 0; j < qMin( coverage.supportedCrs.size(), 10 ); j++ )
+  for ( int j = 0; j < std::min( coverage.supportedCrs.size(), 10 ); j++ )
   {
     metadata += htmlRow( tr( "Available in CRS" ), coverage.supportedCrs.value( j ) );
   }
@@ -1228,7 +1228,7 @@ QString QgsWcsProvider::coverageMetadata( const QgsWcsCoverageSummary &coverage 
     metadata += htmlRow( tr( "Available in CRS" ), tr( "(and %n more)", "crs", coverage.supportedCrs.size() - 10 ) );
   }
 
-  for ( int j = 0; j < qMin( coverage.supportedFormat.size(), 10 ); j++ )
+  for ( int j = 0; j < std::min( coverage.supportedFormat.size(), 10 ); j++ )
   {
     metadata += htmlRow( tr( "Available in format" ), coverage.supportedFormat.value( j ) );
   }

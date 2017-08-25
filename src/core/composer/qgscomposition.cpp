@@ -1117,8 +1117,8 @@ QPointF QgsComposition::minPointFromXml( const QDomElement &elem ) const
     {
       continue;
     }
-    minX = qMin( minX, x );
-    minY = qMin( minY, y );
+    minX = std::min( minX, x );
+    minY = std::min( minY, y );
   }
   if ( minX < std::numeric_limits<double>::max() )
   {
@@ -3238,13 +3238,13 @@ void QgsComposition::refreshPageSize( const QgsExpressionContext *context )
       double heightD, widthD;
       if ( orientation == QgsComposition::Portrait )
       {
-        heightD = qMax( pageHeight, pageWidth );
-        widthD = qMin( pageHeight, pageWidth );
+        heightD = std::max( pageHeight, pageWidth );
+        widthD = std::min( pageHeight, pageWidth );
       }
       else
       {
-        heightD = qMin( pageHeight, pageWidth );
-        widthD = qMax( pageHeight, pageWidth );
+        heightD = std::min( pageHeight, pageWidth );
+        widthD = std::max( pageHeight, pageWidth );
       }
       pageWidth = widthD;
       pageHeight = heightD;

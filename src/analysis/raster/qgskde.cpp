@@ -87,8 +87,8 @@ QgsKernelDensityEstimation::Result QgsKernelDensityEstimation::prepare()
   if ( mBounds.isNull() )
     return InvalidParameters;
 
-  int rows = qMax( std::ceil( mBounds.height() / mPixelSize ) + 1, 1.0 );
-  int cols = qMax( std::ceil( mBounds.width() / mPixelSize ) + 1, 1.0 );
+  int rows = std::max( std::ceil( mBounds.height() / mPixelSize ) + 1, 1.0 );
+  int cols = std::max( std::ceil( mBounds.width() / mPixelSize ) + 1, 1.0 );
 
   if ( !createEmptyLayer( driver, mBounds, rows, cols ) )
     return FileCreationError;

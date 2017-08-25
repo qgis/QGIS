@@ -976,7 +976,7 @@ void QgsNodeTool::deleteNodeEditorSelection()
     if ( mSelectedFeature->geometry()->type() == QgsWkbTypes::LineGeometry )
     {
       // for lines we don't wrap around vertex selection when deleting nodes from end of line
-      nextVertexToSelect = qMin( nextVertexToSelect, mSelectedFeature->geometry()->geometry()->nCoordinates() - 1 );
+      nextVertexToSelect = std::min( nextVertexToSelect, mSelectedFeature->geometry()->geometry()->nCoordinates() - 1 );
     }
 
     _safeSelectVertex( *mSelectedFeature, nextVertexToSelect );

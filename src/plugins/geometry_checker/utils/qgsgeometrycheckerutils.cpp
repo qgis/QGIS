@@ -104,9 +104,9 @@ namespace QgsGeometryCheckerUtils
                   {
                     std::swap( lambdaq1, lambdaq2 );
                   }
-                  double lambda1 = qMax( lambdaq1, lambdap1 );
-                  double lambda2 = qMin( lambdaq2, lambdap2 );
-                  len += qMax( 0., lambda2 - lambda1 );
+                  double lambda1 = std::max( lambdaq1, lambdap1 );
+                  double lambda2 = std::min( lambdaq2, lambdap2 );
+                  len += std::max( 0., lambda2 - lambda1 );
                 }
               }
             }

@@ -2472,7 +2472,7 @@ QgsVectorFileWriter::writeAsVectorFormat( QgsVectorLayer *layer,
       {
         QVariant min = layer->minimumValue( i );
         QVariant max = layer->maximumValue( i );
-        if ( qMax( std::llabs( min.toLongLong() ), std::llabs( max.toLongLong() ) ) < INT_MAX )
+        if ( std::max( std::llabs( min.toLongLong() ), std::llabs( max.toLongLong() ) ) < INT_MAX )
         {
           fields[i].setType( QVariant::Int );
         }

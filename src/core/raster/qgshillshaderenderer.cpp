@@ -124,7 +124,7 @@ QgsRasterBlock *QgsHillshadeRenderer::block( int bandNo, const QgsRectangle &ext
 
   double cellXSize = extent.width() / double( width );
   double cellYSize = extent.height() / double( height );
-  double zenithRad = qMax( 0.0, 90 - mLightAngle ) * M_PI / 180.0;
+  double zenithRad = std::max( 0.0, 90 - mLightAngle ) * M_PI / 180.0;
   double azimuthRad = -1 * mLightAzimuth * M_PI / 180.0;
   double cosZenithRad = std::cos( zenithRad );
   double sinZenithRad = std::sin( zenithRad );

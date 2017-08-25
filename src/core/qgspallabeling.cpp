@@ -1876,7 +1876,7 @@ void QgsPalLayerSettings::registerFeature( QgsFeature &f, QgsRenderContext &cont
 
   //set label's visual margin so that top visual margin is the leading, and bottom margin is the font's descent
   //this makes labels align to the font's baseline or highest character
-  double topMargin = qMax( 0.25 * labelFontMetrics->ascent(), 0.0 );
+  double topMargin = std::max( 0.25 * labelFontMetrics->ascent(), 0.0 );
   double bottomMargin = 1.0 + labelFontMetrics->descent();
   QgsMargins vm( 0.0, topMargin, 0.0, bottomMargin );
   vm *= xform->mapUnitsPerPixel();
@@ -1921,7 +1921,7 @@ void QgsPalLayerSettings::registerFeature( QgsFeature &f, QgsRenderContext &cont
   // candidates are created just offset from a border and avoids candidates being incorrectly flagged as colliding with neighbours
   if ( placement == QgsPalLayerSettings::Line || placement == QgsPalLayerSettings::Curved || placement == QgsPalLayerSettings::PerimeterCurved )
   {
-    distance = qMax( distance, 1.0 );
+    distance = std::max( distance, 1.0 );
   }
 
   if ( !qgsDoubleNear( distance, 0.0 ) )

@@ -89,8 +89,8 @@ struct LessThanTileRequest
     QPointF p1 = req1.rect.center();
     QPointF p2 = req2.rect.center();
     // using chessboard distance (loading order more natural than euclidean/manhattan distance)
-    double d1 = qMax( std::fabs( center.x() - p1.x() ), std::fabs( center.y() - p1.y() ) );
-    double d2 = qMax( std::fabs( center.x() - p2.x() ), std::fabs( center.y() - p2.y() ) );
+    double d1 = std::max( std::fabs( center.x() - p1.x() ), std::fabs( center.y() - p1.y() ) );
+    double d2 = std::max( std::fabs( center.x() - p2.x() ), std::fabs( center.y() - p2.y() ) );
     return d1 < d2;
   }
 };
@@ -500,7 +500,7 @@ void QgsWmsProvider::setFormatQueryItem( QUrl &url )
 
 static bool _fuzzyContainsRect( const QRectF &r1, const QRectF &r2 )
 {
-  double significantDigits = std::log10( qMax( r1.width(), r1.height() ) );
+  double significantDigits = std::log10( std::max( r1.width(), r1.height() ) );
   double epsilon = std::pow( 10.0, significantDigits - 5 ); // floats have 6-9 significant digits
   return r1.contains( r2.adjusted( epsilon, epsilon, -epsilon, -epsilon ) );
 }
@@ -1760,7 +1760,7 @@ QString QgsWmsProvider::layerMetadata( QgsWmsLayerProperty &layer )
   metadata += QLatin1String( "</td></tr>" );
 
   // Layer Coordinate Reference Systems
-  for ( int j = 0; j < qMin( layer.crs.size(), 10 ); j++ )
+  for ( int j = 0; j < std::min( layer.crs.size(), 10 ); j++ )
   {
     metadata += QLatin1String( "<tr><td>" );
     metadata += tr( "Available in CRS" );
@@ -4044,7 +4044,7 @@ static QString formatDouble( double x )
 {
   if ( x == 0.0 )
     return QStringLiteral( "0" );
-  const int numberOfDecimals = qMax( 0, 19 - static_cast<int>( std::ceil( std::log10( std::fabs( x ) ) ) ) );
+  const int numberOfDecimals = std::max( 0, 19 - static_cast<int>( std::ceil( std::log10( std::fabs( x ) ) ) ) );
   return qgsDoubleToString( x, numberOfDecimals );
 }
 

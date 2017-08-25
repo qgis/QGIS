@@ -153,8 +153,8 @@ void QgsLayoutItemPage::draw( QgsRenderContext &context, const QStyleOptionGraph
     //shadow
     painter->setBrush( QBrush( QColor( 150, 150, 150 ) ) );
     painter->setPen( Qt::NoPen );
-    painter->drawRect( pageRect.translated( qMin( scale * mLayout->pageCollection()->pageShadowWidth(), mMaximumShadowWidth ),
-                                            qMin( scale * mLayout->pageCollection()->pageShadowWidth(), mMaximumShadowWidth ) ) );
+    painter->drawRect( pageRect.translated( std::min( scale * mLayout->pageCollection()->pageShadowWidth(), mMaximumShadowWidth ),
+                                            std::min( scale * mLayout->pageCollection()->pageShadowWidth(), mMaximumShadowWidth ) ) );
 
     //page area
     painter->setBrush( QColor( 215, 215, 215 ) );

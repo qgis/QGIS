@@ -3895,7 +3895,7 @@ QList<double> QgsSymbolLayerUtils::prettyBreaks( double minimum, double maximum,
   else
   {
     int U = 1;
-    cell = qMax( std::fabs( minimum ), std::fabs( maximum ) );
+    cell = std::max( std::fabs( minimum ), std::fabs( maximum ) );
     if ( adjustBias >= 1.5 * h + 0.5 )
     {
       U = 1 + ( 1.0 / ( 1 + h ) );
@@ -3904,7 +3904,7 @@ QList<double> QgsSymbolLayerUtils::prettyBreaks( double minimum, double maximum,
     {
       U = 1 + ( 1.5 / ( 1 + adjustBias ) );
     }
-    small = dx < ( cell * U * qMax( 1, divisions ) * 1e-07 * 3.0 );
+    small = dx < ( cell * U * std::max( 1, divisions ) * 1e-07 * 3.0 );
   }
 
   if ( small )
@@ -4124,7 +4124,7 @@ void QgsSymbolLayerUtils::mergeScaleDependencies( int mScaleMinDenom, int mScale
     if ( !ok || parentScaleMinDenom <= 0 )
       props[ QStringLiteral( "scaleMinDenom" )] = QString::number( mScaleMinDenom );
     else
-      props[ QStringLiteral( "scaleMinDenom" )] = QString::number( qMax( parentScaleMinDenom, mScaleMinDenom ) );
+      props[ QStringLiteral( "scaleMinDenom" )] = QString::number( std::max( parentScaleMinDenom, mScaleMinDenom ) );
   }
 
   if ( mScaleMaxDenom != 0 )
@@ -4134,7 +4134,7 @@ void QgsSymbolLayerUtils::mergeScaleDependencies( int mScaleMinDenom, int mScale
     if ( !ok || parentScaleMaxDenom <= 0 )
       props[ QStringLiteral( "scaleMaxDenom" )] = QString::number( mScaleMaxDenom );
     else
-      props[ QStringLiteral( "scaleMaxDenom" )] = QString::number( qMin( parentScaleMaxDenom, mScaleMaxDenom ) );
+      props[ QStringLiteral( "scaleMaxDenom" )] = QString::number( std::min( parentScaleMaxDenom, mScaleMaxDenom ) );
   }
 }
 

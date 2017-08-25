@@ -265,7 +265,7 @@ QgsPointLocator::Match QgsSnappingUtils::snapToMap( const QgsPointXY &pointMap, 
         if ( mSnappingConfig.intersectionSnapping() )
         {
           edges << loc->edgesInRect( pointMap, tolerance );
-          maxSnapIntTolerance = qMax( maxSnapIntTolerance, tolerance );
+          maxSnapIntTolerance = std::max( maxSnapIntTolerance, tolerance );
         }
       }
     }

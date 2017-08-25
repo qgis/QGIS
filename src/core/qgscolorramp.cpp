@@ -344,7 +344,7 @@ QColor QgsLimitedRandomColorRamp::color( double value ) const
     return QColor();
 
   int colorCnt = mColors.count();
-  int colorIdx = qMin( static_cast< int >( value * colorCnt ), colorCnt - 1 );
+  int colorIdx = std::min( static_cast< int >( value * colorCnt ), colorCnt - 1 );
 
   if ( colorIdx >= 0 && colorIdx < colorCnt )
     return mColors.at( colorIdx );
@@ -378,12 +378,12 @@ QList<QColor> QgsLimitedRandomColorRamp::randomColors( int count,
   QList<QColor> colors;
 
   //normalize values
-  int safeHueMax = qMax( hueMin, hueMax );
-  int safeHueMin = qMin( hueMin, hueMax );
-  int safeSatMax = qMax( satMin, satMax );
-  int safeSatMin = qMin( satMin, satMax );
-  int safeValMax = qMax( valMin, valMax );
-  int safeValMin = qMin( valMin, valMax );
+  int safeHueMax = std::max( hueMin, hueMax );
+  int safeHueMin = std::min( hueMin, hueMax );
+  int safeSatMax = std::max( satMin, satMax );
+  int safeSatMin = std::min( satMin, satMax );
+  int safeValMax = std::max( valMin, valMax );
+  int safeValMin = std::min( valMin, valMax );
 
   //start hue at random angle
   double currentHueAngle = 360.0 * static_cast< double >( qrand() ) / RAND_MAX;
@@ -876,7 +876,7 @@ QColor QgsPresetSchemeColorRamp::color( double value ) const
     return QColor();
 
   int colorCnt = mColors.count();
-  int colorIdx = qMin( static_cast< int >( value * colorCnt ), colorCnt - 1 );
+  int colorIdx = std::min( static_cast< int >( value * colorCnt ), colorCnt - 1 );
 
   if ( colorIdx >= 0 && colorIdx < colorCnt )
     return mColors.at( colorIdx ).first;

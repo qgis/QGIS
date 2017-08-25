@@ -96,11 +96,11 @@ void QgsAmsLegendFetcher::handleFinished()
     QSize maxImageSize( 0, 0 );
     foreach ( const LegendEntry_t &legendEntry, legendEntries )
     {
-      maxImageSize.setWidth( qMax( maxImageSize.width(), legendEntry.second.width() ) );
-      maxImageSize.setHeight( qMax( maxImageSize.height(), legendEntry.second.height() ) );
+      maxImageSize.setWidth( std::max( maxImageSize.width(), legendEntry.second.width() ) );
+      maxImageSize.setHeight( std::max( maxImageSize.height(), legendEntry.second.height() ) );
     }
     double scaleFactor = maxImageSize.width() == 0 || maxImageSize.height() == 0 ? 1.0 :
-                         qMin( 1., qMin( double( imageSize ) / maxImageSize.width(), double( imageSize ) / maxImageSize.height() ) );
+                         std::min( 1., std::min( double( imageSize ) / maxImageSize.width(), double( imageSize ) / maxImageSize.height() ) );
 
     mLegendImage = QImage( imageSize + padding + textWidth, vpadding + legendEntries.size() * ( imageSize + vpadding ), QImage::Format_ARGB32 );
     mLegendImage.fill( Qt::transparent );

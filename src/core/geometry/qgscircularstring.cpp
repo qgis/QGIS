@@ -364,12 +364,12 @@ QgsLineString *QgsCircularString::curveToLine( double tolerance, SegmentationTol
 
 int QgsCircularString::numPoints() const
 {
-  return qMin( mX.size(), mY.size() );
+  return std::min( mX.size(), mY.size() );
 }
 
 QgsPoint QgsCircularString::pointN( int i ) const
 {
-  if ( qMin( mX.size(), mY.size() ) <= i )
+  if ( std::min( mX.size(), mY.size() ) <= i )
   {
     return QgsPoint();
   }

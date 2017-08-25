@@ -71,8 +71,8 @@ void QgsStatisticalSummary::addValue( double value )
 {
   mCount++;
   mSum += value;
-  mMin = qMin( mMin, value );
-  mMax = qMax( mMax, value );
+  mMin = std::min( mMin, value );
+  mMax = std::max( mMax, value );
 
   if ( mStatistics & QgsStatisticalSummary::Majority || mStatistics & QgsStatisticalSummary::Minority || mStatistics & QgsStatisticalSummary::Variety )
     mValueCount.insert( value, mValueCount.value( value, 0 ) + 1 );

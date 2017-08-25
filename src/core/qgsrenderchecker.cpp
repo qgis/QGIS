@@ -338,7 +338,7 @@ bool QgsRenderChecker::compareImages( const QString &testName,
   int imgHeight = 280;
   if ( ! myExpectedImage.isNull() )
   {
-    imgWidth = qMin( myExpectedImage.width(), imgWidth );
+    imgWidth = std::min( myExpectedImage.width(), imgWidth );
     imgHeight = myExpectedImage.height() * imgWidth / myExpectedImage.width();
   }
 
@@ -404,8 +404,8 @@ bool QgsRenderChecker::compareImages( const QString &testName,
   // dissimilar pixel values there are
   //
 
-  int maxHeight = qMin( myExpectedImage.height(), myResultImage.height() );
-  int maxWidth = qMin( myExpectedImage.width(), myResultImage.width() );
+  int maxHeight = std::min( myExpectedImage.height(), myResultImage.height() );
+  int maxWidth = std::min( myExpectedImage.width(), myResultImage.width() );
 
   mMismatchCount = 0;
   int colorTolerance = static_cast< int >( mColorTolerance );
@@ -419,7 +419,7 @@ bool QgsRenderChecker::compareImages( const QString &testName,
     for ( int x = 0; x < maxWidth; ++x )
     {
       int maskTolerance = hasMask ? qRed( maskScanline[ x ] ) : 0;
-      int pixelTolerance = qMax( colorTolerance, maskTolerance );
+      int pixelTolerance = std::max( colorTolerance, maskTolerance );
       if ( pixelTolerance == 255 )
       {
         //skip pixel

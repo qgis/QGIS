@@ -381,7 +381,7 @@ void QgsDiagramSettings::writeXml( QDomElement &rendererElem, QDomDocument &doc 
   categoryElem.setAttribute( QStringLiteral( "minimumSize" ), QString::number( minimumSize ) );
   categoryElem.setAttribute( QStringLiteral( "rotationOffset" ), QString::number( rotationOffset ) );
 
-  int nCats = qMin( categoryColors.size(), categoryAttributes.size() );
+  int nCats = std::min( categoryColors.size(), categoryAttributes.size() );
   for ( int i = 0; i < nCats; ++i )
   {
     QDomElement attributeElem = doc.createElement( QStringLiteral( "attribute" ) );

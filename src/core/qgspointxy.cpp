@@ -97,7 +97,7 @@ QString QgsPointXY::toDegreesMinutesSeconds( int precision, const bool useSuffix
   //make sure rounding to specified precision doesn't create seconds >= 60
   if ( std::round( mySecondsX * std::pow( 10.0, precision ) ) >= 60 * std::pow( 10.0, precision ) )
   {
-    mySecondsX = qMax( mySecondsX - 60, 0.0 );
+    mySecondsX = std::max( mySecondsX - 60, 0.0 );
     myIntMinutesX++;
     if ( myIntMinutesX >= 60 )
     {
@@ -107,7 +107,7 @@ QString QgsPointXY::toDegreesMinutesSeconds( int precision, const bool useSuffix
   }
   if ( std::round( mySecondsY * std::pow( 10.0, precision ) ) >= 60 * std::pow( 10.0, precision ) )
   {
-    mySecondsY = qMax( mySecondsY - 60, 0.0 );
+    mySecondsY = std::max( mySecondsY - 60, 0.0 );
     myIntMinutesY++;
     if ( myIntMinutesY >= 60 )
     {
@@ -195,12 +195,12 @@ QString QgsPointXY::toDegreesMinutes( int precision, const bool useSuffix, const
   //make sure rounding to specified precision doesn't create minutes >= 60
   if ( std::round( myFloatMinutesX * std::pow( 10.0, precision ) ) >= 60 * std::pow( 10.0, precision ) )
   {
-    myFloatMinutesX = qMax( myFloatMinutesX - 60, 0.0 );
+    myFloatMinutesX = std::max( myFloatMinutesX - 60, 0.0 );
     myDegreesX++;
   }
   if ( std::round( myFloatMinutesY * std::pow( 10.0, precision ) ) >= 60 * std::pow( 10.0, precision ) )
   {
-    myFloatMinutesY = qMax( myFloatMinutesY - 60, 0.0 );
+    myFloatMinutesY = std::max( myFloatMinutesY - 60, 0.0 );
     myDegreesY++;
   }
 

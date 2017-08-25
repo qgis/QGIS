@@ -169,7 +169,7 @@ QgsPoint surfacePoleOfInaccessibility( const QgsSurface *surface, double precisi
   QgsRectangle bounds = polygon->boundingBox();
 
   // initial parameters
-  double cellSize = qMin( bounds.width(), bounds.height() );
+  double cellSize = std::min( bounds.width(), bounds.height() );
 
   if ( qgsDoubleNear( cellSize, 0.0 ) )
     return QgsPoint( bounds.xMinimum(), bounds.yMinimum() );
@@ -341,7 +341,7 @@ double squareness( QgsLineString *ring, double lowerThreshold, double upperThres
       if ( !dotProductWithinAngleTolerance( dotProduct, lowerThreshold, upperThreshold ) )
         continue;
 
-      sum += 2.0 * qMin( std::fabs( dotProduct - 1.0 ), qMin( std::fabs( dotProduct ), std::fabs( dotProduct + 1 ) ) );
+      sum += 2.0 * std::min( std::fabs( dotProduct - 1.0 ), std::min( std::fabs( dotProduct ), std::fabs( dotProduct + 1 ) ) );
     }
     a = b;
     b = c;
@@ -360,7 +360,7 @@ QgsVector calcMotion( const QgsPoint &a, const QgsPoint &b, const QgsPoint &c,
     return QgsVector( 0, 0 );
 
   // 2.0 is a magic number from the original JOSM source code
-  double scale = 2.0 * qMin( p.length(), q.length() );
+  double scale = 2.0 * std::min( p.length(), q.length() );
 
   p = p.normalized();
   q = q.normalized();

@@ -1108,10 +1108,10 @@ QgsRectangle QgsOgrProvider::extent() const
           OGREnvelope env;
           OGR_G_GetEnvelope( g, &env );
 
-          mExtent->MinX = qMin( mExtent->MinX, env.MinX );
-          mExtent->MinY = qMin( mExtent->MinY, env.MinY );
-          mExtent->MaxX = qMax( mExtent->MaxX, env.MaxX );
-          mExtent->MaxY = qMax( mExtent->MaxY, env.MaxY );
+          mExtent->MinX = std::min( mExtent->MinX, env.MinX );
+          mExtent->MinY = std::min( mExtent->MinY, env.MinY );
+          mExtent->MaxX = std::max( mExtent->MaxX, env.MaxX );
+          mExtent->MaxY = std::max( mExtent->MaxY, env.MaxY );
         }
 
         OGR_F_Destroy( f );

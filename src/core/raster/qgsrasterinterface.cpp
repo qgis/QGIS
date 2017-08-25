@@ -171,8 +171,8 @@ QgsRasterBandStats QgsRasterInterface::bandStatistics( int bandNo,
         return myRasterBandStats;
 
       QgsDebugMsgLevel( QString( "myYBlock = %1 myXBlock = %2" ).arg( myYBlock ).arg( myXBlock ), 4 );
-      int myBlockWidth = qMin( myXBlockSize, myWidth - myXBlock * myXBlockSize );
-      int myBlockHeight = qMin( myYBlockSize, myHeight - myYBlock * myYBlockSize );
+      int myBlockWidth = std::min( myXBlockSize, myWidth - myXBlock * myXBlockSize );
+      int myBlockHeight = std::min( myYBlockSize, myHeight - myYBlock * myYBlockSize );
 
       double xmin = myExtent.xMinimum() + myXBlock * myXBlockSize * myXRes;
       double xmax = xmin + myBlockWidth * myXRes;
@@ -456,8 +456,8 @@ QgsRasterHistogram QgsRasterInterface::histogram( int bandNo,
       if ( feedback && feedback->isCanceled() )
         return myHistogram;
 
-      int myBlockWidth = qMin( myXBlockSize, myWidth - myXBlock * myXBlockSize );
-      int myBlockHeight = qMin( myYBlockSize, myHeight - myYBlock * myYBlockSize );
+      int myBlockWidth = std::min( myXBlockSize, myWidth - myXBlock * myXBlockSize );
+      int myBlockHeight = std::min( myYBlockSize, myHeight - myYBlock * myYBlockSize );
 
       double xmin = myExtent.xMinimum() + myXBlock * myXBlockSize * myXRes;
       double xmax = xmin + myBlockWidth * myXRes;
@@ -498,7 +498,7 @@ QgsRasterHistogram QgsRasterInterface::histogram( int bandNo,
 
 #ifdef QGISDEBUG
   QString hist;
-  for ( int i = 0; i < qMin( myHistogram.histogramVector.size(), 500 ); i++ )
+  for ( int i = 0; i < std::min( myHistogram.histogramVector.size(), 500 ); i++ )
   {
     hist += QString::number( myHistogram.histogramVector.value( i ) ) + ' ';
   }

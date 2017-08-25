@@ -104,7 +104,7 @@ void QgsStringStatisticalSummary::testString( const QString &string )
   {
     if ( !mMin.isEmpty() && !string.isEmpty() )
     {
-      mMin = qMin( mMin, string );
+      mMin = std::min( mMin, string );
     }
     else if ( mMin.isEmpty() && !string.isEmpty() )
     {
@@ -115,7 +115,7 @@ void QgsStringStatisticalSummary::testString( const QString &string )
   {
     if ( !mMax.isEmpty() && !string.isEmpty() )
     {
-      mMax = qMax( mMax, string );
+      mMax = std::max( mMax, string );
     }
     else if ( mMax.isEmpty() && !string.isEmpty() )
     {
@@ -124,8 +124,8 @@ void QgsStringStatisticalSummary::testString( const QString &string )
   }
   if ( mStatistics & MeanLength )
     mSumLengths += string.length();
-  mMinLength = qMin( mMinLength, string.length() );
-  mMaxLength = qMax( mMaxLength, string.length() );
+  mMinLength = std::min( mMinLength, string.length() );
+  mMaxLength = std::max( mMaxLength, string.length() );
 }
 
 QVariant QgsStringStatisticalSummary::statistic( QgsStringStatisticalSummary::Statistic stat ) const

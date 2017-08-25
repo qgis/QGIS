@@ -682,8 +682,8 @@ void QgsRasterLayerSaveAsDialog::adjustNoDataCellWidth( int row, int column )
   QLineEdit *lineEdit = dynamic_cast<QLineEdit *>( mNoDataTableWidget->cellWidget( row, column ) );
   if ( !lineEdit ) return;
 
-  int width = qMax( lineEdit->fontMetrics().width( lineEdit->text() ) + 10, 100 );
-  width = qMax( width, mNoDataTableWidget->columnWidth( column ) );
+  int width = std::max( lineEdit->fontMetrics().width( lineEdit->text() ) + 10, 100 );
+  width = std::max( width, mNoDataTableWidget->columnWidth( column ) );
 
   lineEdit->setFixedWidth( width );
 }

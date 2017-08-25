@@ -213,7 +213,7 @@ void QgsCurveEditorWidget::plotMouseMove( QPointF point )
   bool removePoint = false;
   if ( mCurrentPlotMarkerIndex == 0 )
   {
-    point.setX( qMin( point.x(), cp.at( 1 ).x() - 0.01 ) );
+    point.setX( std::min( point.x(), cp.at( 1 ).x() - 0.01 ) );
   }
   else
   {
@@ -221,7 +221,7 @@ void QgsCurveEditorWidget::plotMouseMove( QPointF point )
   }
   if ( mCurrentPlotMarkerIndex == cp.count() - 1 )
   {
-    point.setX( qMax( point.x(), cp.at( mCurrentPlotMarkerIndex - 1 ).x() + 0.01 ) );
+    point.setX( std::max( point.x(), cp.at( mCurrentPlotMarkerIndex - 1 ).x() + 0.01 ) );
     removePoint = false;
   }
   else
