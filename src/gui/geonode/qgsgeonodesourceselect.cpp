@@ -194,10 +194,10 @@ void QgsGeoNodeSourceSelect::connectToGeonodeConnection()
   QgsGeoNodeRequest geonodeRequest( url, true );
 
   QApplication::setOverrideCursor( Qt::WaitCursor );
-  bool success = geonodeRequest.getLayers();
+  QList<QgsServiceLayerDetail> layers = geonodeRequest.getLayers();
   QApplication::restoreOverrideCursor();
 
-  if ( success )
+  if ( !layers.empty() )
   {
     QgsMessageLog::logMessage( QStringLiteral( "Success" ), tr( "GeoNode" ) );
   }
@@ -205,10 +205,6 @@ void QgsGeoNodeSourceSelect::connectToGeonodeConnection()
   {
     QgsMessageLog::logMessage( QStringLiteral( "Failed" ), tr( "GeoNode" ) );
   }
-
-  QByteArray ba = geonodeRequest.response();
-
-  QList<QgsServiceLayerDetail> layers = geonodeRequest.parseLayers( ba );
 
   if ( mModel )
   {
