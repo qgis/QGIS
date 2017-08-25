@@ -23,9 +23,10 @@ QgsGdalSourceSelect::QgsGdalSourceSelect( QWidget *parent, Qt::WindowFlags fl, Q
 {
   setupUi( this );
   setupButtons( buttonBox );
-  mQgsFileWidget->setFilter( QgsProviderRegistry::instance()->fileRasterFilters() );
-  mQgsFileWidget->setStorageMode( QgsFileWidget::GetMultipleFiles );
-  connect( mQgsFileWidget, &QgsFileWidget::fileChanged, this, [ = ]( const QString & path )
+  mFileWidget->setDialogTitle( tr( "Open GDAL Supported Raster Dataset(s)" ) );
+  mFileWidget->setFilter( QgsProviderRegistry::instance()->fileRasterFilters() );
+  mFileWidget->setStorageMode( QgsFileWidget::GetMultipleFiles );
+  connect( mFileWidget, &QgsFileWidget::fileChanged, this, [ = ]( const QString & path )
   {
     mRasterPath = path;
     emit enableButtons( ! mRasterPath.isEmpty() );

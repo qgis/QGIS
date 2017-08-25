@@ -39,12 +39,12 @@
       <item>
        <widget class="QLabel" name="label">
         <property name="text">
-         <string>Dataset</string>
+         <string>Raster Dataset(s)</string>
         </property>
        </widget>
       </item>
       <item>
-       <widget class="QgsFileWidget" name="mQgsFileWidget"/>
+       <widget class="QgsFileWidget" name="mFileWidget"/>
       </item>
      </layout>
     </widget>
