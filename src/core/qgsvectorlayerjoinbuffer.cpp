@@ -541,6 +541,7 @@ bool QgsVectorLayerJoinBuffer::addFeatures( QgsFeatureList &features, QgsFeature
         const QString filter = QgsExpression::createFieldEqualityExpression( info.joinFieldName(), idFieldValue.toString() );
 
         QgsFeatureRequest request;
+        request.setFlags( QgsFeatureRequest::NoGeometry );
         request.setFilterExpression( filter );
         request.setLimit( 1 );
 
@@ -554,15 +555,21 @@ bool QgsVectorLayerJoinBuffer::addFeatures( QgsFeatureList &features, QgsFeature
           if ( subsetFields )
           {
             Q_FOREACH ( const QString &field, *subsetFields )
-              existingFeature.setAttribute( field, joinFeature.attribute( field ) );
+            {
+              QVariant newValue = joinFeature.attribute( field );
+              int fieldIndex = joinLayer->fields().indexOf( field );
+              joinLayer->changeAttributeValue( existingFeature.id(), fieldIndex, newValue );
+            }
           }
           else
           {
             Q_FOREACH ( const QgsField &field, joinFeature.fields() )
-              existingFeature.setAttribute( field.name(), joinFeature.attribute( field.name() ) );
+            {
+              QVariant newValue = joinFeature.attribute( field.name() );
+              int fieldIndex = joinLayer->fields().indexOf( field.name() );
+              joinLayer->changeAttributeValue( existingFeature.id(), fieldIndex, newValue );
+            }
           }
-
-          joinLayer->updateFeature( existingFeature );
         }
         else
         {
