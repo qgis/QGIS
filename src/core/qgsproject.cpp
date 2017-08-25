@@ -503,6 +503,8 @@ void QgsProject::clear()
   writeEntry( QStringLiteral( "Measurement" ), QStringLiteral( "/AreaUnits" ), s.value( QStringLiteral( "/qgis/measure/areaunits" ) ).toString() );
 
   removeAllMapLayers();
+  mRootGroup->clear();
+
   setDirty( false );
 }
 
