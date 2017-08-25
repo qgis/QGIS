@@ -232,6 +232,7 @@ namespace QgsWms
       painter->end();
     }
 
+    rootGroup.clear();
     return image.release();
   }
 
