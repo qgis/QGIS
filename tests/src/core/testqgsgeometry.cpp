@@ -118,7 +118,6 @@ class TestQgsGeometry : public QObject
 
     void wkbInOut();
 
-    void segmentizeCircularString();
     void directionNeutralSegmentation();
     void poleOfInaccessibility();
 
@@ -5288,23 +5287,6 @@ void TestQgsGeometry::wkbInOut()
   badHeader.fromWkb( wkb, size );
   QVERIFY( badHeader.isNull() );
   QCOMPARE( badHeader.wkbType(), QgsWkbTypes::Unknown );
-}
-
-void TestQgsGeometry::segmentizeCircularString()
-{
-  QString wkt( QStringLiteral( "CIRCULARSTRING( 0 0, 0.5 0.5, 2 0 )" ) );
-  QgsCircularString *circularString = dynamic_cast<QgsCircularString *>( QgsGeometryFactory::geomFromWkt( wkt ).release() );
-  QVERIFY( circularString );
-  QgsLineString *lineString = circularString->curveToLine();
-  QVERIFY( lineString );
-  QgsPointSequence points;
-  lineString->points( points );
-
-  delete circularString;
-  delete lineString;
-
-  //make sure the curve point is part of the segmentized result
-  QVERIFY( points.contains( QgsPoint( 0.5, 0.5 ) ) );
 }
 
 void TestQgsGeometry::directionNeutralSegmentation()
