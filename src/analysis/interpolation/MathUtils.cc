@@ -220,22 +220,7 @@ double MathUtils::distPointFromLine( QgsPoint *thepoint, QgsPoint *p1, QgsPoint 
 
 int MathUtils::faculty( int n )
 {
-  if ( n < 0 )//Is faculty also defined for negative integers?
-  {
-    QgsDebugMsg( "Error, faculty of a negative integer requested!" );
-    return 0;
-  }
-  int i;
-  int result = n;
-
-  if ( n == 0 || n == 1 )
-  {return 1;}//faculty of 0 is 1!
-
-  for ( i = n - 1; i >= 2; i-- )
-  {
-    result *= i;
-  }
-  return result;
+  return std::tgamma( n + 1 );
 }
 
 bool MathUtils::inCircle( QgsPoint *testp, QgsPoint *p1, QgsPoint *p2, QgsPoint *p3 )
@@ -428,59 +413,6 @@ int MathUtils::lower( int n, int i )
   else
   {
     return 0;
-  }
-}
-
-double MathUtils::max( double x, double y )
-{
-  if ( x > y )
-  {
-    return x;
-  }
-  else if ( y > x )
-  {
-    return y;
-  }
-  else//if both are equal
-  {
-    return x;
-  }
-}
-double MathUtils::min( double x, double y )
-{
-  if ( x < y )
-  {
-    return x;
-  }
-  else if ( y < x )
-  {
-    return y;
-  }
-  else//if both are equal
-  {
-    return x;
-  }
-}
-
-double MathUtils::power( double a, int b )
-{
-  if ( b == 0 )
-  {
-    return 1;
-  }
-  double tmp = a;
-  for ( int i = 2; i <= std::abs( b ); i++ )
-  {
-
-    a *= tmp;
-  }
-  if ( b > 0 )
-  {
-    return a;
-  }
-  else
-  {
-    return ( 1.0 / a );
   }
 }
 
