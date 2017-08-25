@@ -100,7 +100,7 @@ void TestQgsCurve::curveToLine()
   /* op: Maximum of 70 degrees of angle, symmetric */
   /* See https://issues.qgis.org/issues/16722 */
   TEST_C2L( circularString, 70 * M_PI / 180, QgsAbstractGeometry::MaximumAngle,
-            "LineString (0 0, 50 86.6, 150 86.6, 200 0)", 2 );
+            "LineString (0 0, 50 86.6, 100 100, 150 86.6, 200 0)", 2 );
 
   /* input: 2 arcs of 2 quadrants each (180 degrees + 180 degrees other direction) */
   circularString.reset( dynamic_cast<QgsCircularString *>(
@@ -112,7 +112,7 @@ void TestQgsCurve::curveToLine()
 
   /* op: Maximum of M_PI / 3 degrees of angle */
   TEST_C2L( circularString, M_PI / 3, QgsAbstractGeometry::MaximumAngle,
-            "LineString (0 0, 50 86.6, 150 86.6, 200 0, 250 -86.6, 350 -86.6, 400 0)", 2 );
+            "LineString (0 0, 50 86.6, 100 100, 150 86.6, 200 0, 250 -86.6, 300 -100, 350 -86.6, 400 0)", 2 );
 }
 
 
