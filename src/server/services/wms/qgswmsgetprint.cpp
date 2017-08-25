@@ -32,7 +32,7 @@ namespace QgsWms
 
     Q_UNUSED( version );
 
-    QgsRenderer renderer( serverIface, project, params, getConfigParser( serverIface ) );
+    QgsRenderer renderer( serverIface, project, params );
 
     QString format = params.value( "FORMAT" );
     QString contentType;

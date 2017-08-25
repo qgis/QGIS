@@ -81,10 +81,7 @@ namespace QgsWms
           QgsConfigParser and QgsCapabilitiesCache*/
       QgsRenderer( QgsServerInterface *serverIface,
                    const QgsProject *project,
-                   const QgsServerRequest::Parameters &parameters,
-                   QgsWmsConfigParser *parser );
-
-      ~QgsRenderer();
+                   const QgsServerRequest::Parameters &parameters );
 
       /** Returns the map legend as an image (or a null pointer in case of error). The caller takes ownership
       of the image object*/
@@ -182,15 +179,6 @@ namespace QgsWms
       // Returns default dots per mm
       qreal dotsPerMm() const;
 
-      /** Initializes WMS layers and configures rendering.
-       * \param layersList out: list with WMS layer names
-       * \param stylesList out: list with WMS style names
-       * \param layerIdList out: list with QGIS layer ids
-       * \returns image configured. The calling function takes ownership of the image
-       * may throw an exception
-       */
-      QImage *initializeRendering( QStringList &layersList, QStringList &stylesList, QStringList &layerIdList, QgsMapSettings &mapSettings );
-
       /** Creates a QImage from the HEIGHT and WIDTH parameters
        * \param width image width (or -1 if width should be taken from WIDTH wms parameter)
        * \param height image height (or -1 if height should be taken from HEIGHT wms parameter)
@@ -206,13 +194,6 @@ namespace QgsWms
        * may throw an exception
        */
       void configureMapSettings( const QPaintDevice *paintDevice, QgsMapSettings &mapSettings ) const;
-
-      /**
-       * If the parameter SLD exists, mSLDParser is configured appropriately. The lists are
-       * set to the layer and style names according to the SLD
-       * may throw an exception
-       */
-      void initializeSLDParser( QStringList &layersList, QStringList &stylesList );
 
       QDomDocument featureInfoDocument( QList<QgsMapLayer *> &layers, const QgsMapSettings &mapSettings,
                                         const QImage *outputImage, const QString &version ) const;
@@ -238,23 +219,10 @@ namespace QgsWms
                                        QDomElement &layerElement,
                                        const QString &version ) const;
 
-      /** Creates a layer set and returns a stringlist with layer ids that can be passed to a renderer. Usually used in conjunction with readLayersAndStyles
-         \param scaleDenominator Filter out layer if scale based visibility does not match (or use -1 if no scale restriction)*/
-      QStringList layerSet( const QStringList &layersList, const QStringList &stylesList, const QgsCoordinateReferenceSystem &destCRS, double scaleDenominator = -1 ) const;
-
       //! Record which symbols would be used if the map was in the current configuration of renderer. This is useful for content-based legend
       void runHitTest( const QgsMapSettings &mapSettings, HitTest &hitTest ) const;
       //! Record which symbols within one layer would be rendered with the given renderer context
       void runHitTestLayer( QgsVectorLayer *vl, SymbolSet &usedSymbols, QgsRenderContext &context ) const;
-
-      /** Apply filter (subset) strings from the request to the layers. Example: '&FILTER=<layer1>:"AND property > 100",<layer2>:"AND bla = 'hallo!'" '
-       * \param layerList list of layer IDs to filter
-       * \param originalFilters hash of layer ID to original filter string
-       * \note It is strongly recommended that this method be called alongside use of QgsOWSServerFilterRestorer
-       * to ensure that the original filters are always correctly restored, regardless of whether exceptions
-       * are thrown or functions are terminated early.
-       */
-      void applyRequestedLayerFilters( const QStringList &layerList, QgsMapSettings &mapSettings, QHash<QgsMapLayer *, QString> &originalFilters ) const;
 
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
 
@@ -270,25 +238,6 @@ namespace QgsWms
       bool testFilterStringSafety( const QString &filter ) const;
       //! Helper function for filter safety test. Groups stringlist to merge entries starting/ending with quotes
       static void groupStringList( QStringList &list, const QString &groupString );
-
-      /** Select vector features with ids specified in parameter SELECTED, e.g. ...&SELECTED=layer1:1,2,9;layer2:3,5,10&...
-        \returns list with layer ids where selections have been created*/
-      QStringList applyFeatureSelections( const QStringList &layerList ) const;
-      //! Clear all feature selections in the given layers
-      void clearFeatureSelections( const QStringList &layerIds ) const;
-
-      //! Applies opacity on layer/group level
-      void applyOpacities( const QStringList &layerList, QList< QPair< QgsVectorLayer *, QgsFeatureRenderer *> > &vectorRenderers,
-                           QList< QPair< QgsRasterLayer *, QgsRasterRenderer * > > &rasterRenderers,
-                           QList< QPair< QgsVectorLayer *, double > > &labelTransparencies,
-                           QList< QPair< QgsVectorLayer *, double > > &labelBufferTransparencies
-                         );
-
-      //! Restore original opacities
-      void restoreOpacities( QList< QPair <QgsVectorLayer *, QgsFeatureRenderer *> > &vectorRenderers,
-                             QList< QPair < QgsRasterLayer *, QgsRasterRenderer * > > &rasterRenderers,
-                             QList< QPair< QgsVectorLayer *, double > > &labelTransparencies,
-                             QList< QPair< QgsVectorLayer *, double > > &labelBufferTransparencies );
 
       /** Checks WIDTH/HEIGHT values against MaxWidth and MaxHeight
         \returns true if width/height values are okay*/
@@ -325,11 +274,6 @@ namespace QgsWms
     private:
 
       const QgsServerRequest::Parameters &mParameters;
-
-      bool mOwnsConfigParser; //delete config parser after request (e.g. sent SLD)
-
-      //! Map containing the WMS parameters
-      QgsWmsConfigParser    *mConfigParser = nullptr;
 
       //! The access control helper
       QgsAccessControl *mAccessControl = nullptr;

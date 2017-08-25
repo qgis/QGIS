@@ -67,8 +67,6 @@ namespace QgsWms
   {
     Q_UNUSED( version );
 
-    //QgsWmsConfigParser  *configParser = getConfigParser( serverIface );
-
     QDomDocument doc;
     QDomProcessingInstruction xmlDeclaration = doc.createProcessingInstruction( QStringLiteral( "xml" ),
         QStringLiteral( "version=\"1.0\" encoding=\"utf-8\"" ) );

@@ -56,14 +56,6 @@ namespace QgsWms
    */
   QUrl serviceUrl( const QgsServerRequest &request, const QgsProject *project );
 
-  /**
-   * Return the wms config parser (Transitional)
-   *
-   * XXX This is needed in the current implementation.
-   * This should disappear as soon we get rid of singleton.
-   */
-  QgsWmsConfigParser *getConfigParser( QgsServerInterface *serverIface );
-
   /** Parse image format parameter
    *  \returns OutputFormat
    */

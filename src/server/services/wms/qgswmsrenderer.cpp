@@ -119,11 +119,8 @@ namespace QgsWms
 
   QgsRenderer::QgsRenderer( QgsServerInterface *serverIface,
                             const QgsProject *project,
-                            const QgsServerRequest::Parameters &parameters,
-                            QgsWmsConfigParser *parser )
+                            const QgsServerRequest::Parameters &parameters )
     : mParameters( parameters )
-    , mOwnsConfigParser( false )
-    , mConfigParser( parser )
     , mAccessControl( serverIface->accessControls() )
     , mSettings( *serverIface->serverSettings() )
     , mProject( project )
@@ -133,16 +130,6 @@ namespace QgsWms
 
     initRestrictedLayers();
     initNicknameLayers();
-  }
-
-
-  QgsRenderer::~QgsRenderer()
-  {
-    if ( mOwnsConfigParser )
-    {
-      delete mConfigParser;
-      mConfigParser = nullptr;
-    }
   }
 
 
@@ -357,7 +344,6 @@ namespace QgsWms
     std::reverse( layers.begin(), layers.end() );
     mapSettings.setLayers( layers );
 
-    //QgsComposition *c = mConfigParser->createPrintComposition( mParameters[ QStringLiteral( "TEMPLATE" )], mapSettings, QMap<QString, QString>( mParameters ), highlightLayers );
     const QgsLayoutManager *lManager = mProject->layoutManager();
     QDomDocument cDocument;
     if ( !lManager->saveAsTemplate( templateName, cDocument ) )
@@ -1022,64 +1008,6 @@ namespace QgsWms
     return ba;
   }
 
-  QImage *QgsRenderer::initializeRendering( QStringList &layersList, QStringList &stylesList, QStringList &layerIdList, QgsMapSettings &mapSettings )
-  {
-    if ( !mConfigParser )
-    {
-      throw QgsException( QStringLiteral( "initializeRendering(): No config parser" ) );
-    }
-
-    readLayersAndStyles( mParameters, layersList, stylesList );
-    initializeSLDParser( layersList, stylesList );
-
-    //pass external GML to the SLD parser.
-    QString gml = mParameters.value( QStringLiteral( "GML" ) );
-    if ( !gml.isEmpty() )
-    {
-      if ( !mConfigParser->allowRequestDefinedDatasources() )
-      {
-        throw QgsException( QStringLiteral( "initializeRendering: The project configuration does not allow datasources defined in the request" ) );
-      }
-      std::unique_ptr<QDomDocument> gmlDoc( new QDomDocument() );
-      if ( gmlDoc->setContent( gml, true ) )
-      {
-        QString layerName = gmlDoc->documentElement().attribute( QStringLiteral( "layerName" ) );
-        QgsMessageLog::logMessage( "Adding entry with key: " + layerName + " to external GML data" );
-        mConfigParser->addExternalGMLData( layerName, gmlDoc.release() );
-      }
-      else
-      {
-        throw QgsException( QStringLiteral( "initializeRendering: Error, could not add external GML to QgsSLDParser" ) );
-      }
-    }
-
-    std::unique_ptr<QImage> image( createImage() );
-
-    configureMapSettings( image.get(), mapSettings );
-
-    //find out the current scale denominater and set it to the SLD parser
-    QgsScaleCalculator scaleCalc( ( image->logicalDpiX() + image->logicalDpiY() ) / 2, mapSettings.destinationCrs().mapUnits() );
-    QgsRectangle mapExtent = mapSettings.extent();
-    mConfigParser->setScaleDenominator( scaleCalc.calculate( mapExtent, image->width() ) );
-
-    layerIdList = layerSet( layersList, stylesList, mapSettings.destinationCrs() );
-#ifdef QGISDEBUG
-    QgsMessageLog::logMessage( QStringLiteral( "Number of layers to be rendered. %1" ).arg( layerIdList.count() ) );
-#endif
-
-    QList<QgsMapLayer *>  layers;
-    Q_FOREACH ( QString layerId, layerIdList )
-    {
-      layers.append( QgsProject::instance()->mapLayer( layerId ) );
-    }
-    mapSettings.setLayers( layers );
-
-    // load label settings
-    mConfigParser->loadLabelSettings();
-
-    return image.release();
-  }
-
   QImage *QgsRenderer::createImage( int width, int height, bool useBbox ) const
   {
     if ( width < 0 )
@@ -1219,44 +1147,6 @@ namespace QgsWms
     else if ( backgroundColor.isValid() )
     {
       mapSettings.setBackgroundColor( backgroundColor );
-    }
-  }
-
-  void QgsRenderer::initializeSLDParser( QStringList &layersList, QStringList &stylesList )
-  {
-    QString xml = mParameters.value( QStringLiteral( "SLD" ) );
-    if ( !xml.isEmpty() )
-    {
-      //ignore LAYERS and STYLES and take those information from the SLD
-      std::unique_ptr<QDomDocument> document( new QDomDocument( QStringLiteral( "user.sld" ) ) );
-      QString errorMsg;
-      int errorLine, errorColumn;
-
-      if ( !document->setContent( xml, true, &errorMsg, &errorLine, &errorColumn ) )
-      {
-        throw QgsException( QStringLiteral( "SLDParser: Could not create DomDocument from SLD: %1" ).arg( errorMsg ) );
-      }
-
-      QgsSLDConfigParser *userSLDParser = new QgsSLDConfigParser( document.release(), mParameters );
-      userSLDParser->setFallbackParser( mConfigParser );
-      mConfigParser = userSLDParser;
-      mOwnsConfigParser = true;
-      //now replace the content of layersList and stylesList (if present)
-      layersList.clear();
-      stylesList.clear();
-      QStringList layersSTDList;
-      QStringList stylesSTDList;
-      if ( mConfigParser->layersAndStyles( layersSTDList, stylesSTDList ) != 0 )
-      {
-        throw QgsException( QStringLiteral( "SLDParser: no layers and styles found in SLD" ) );
-      }
-      QStringList::const_iterator layersIt;
-      QStringList::const_iterator stylesIt;
-      for ( layersIt = layersSTDList.constBegin(), stylesIt = stylesSTDList.constBegin(); layersIt != layersSTDList.constEnd(); ++layersIt, ++stylesIt )
-      {
-        layersList << *layersIt;
-        stylesList << *stylesIt;
-      }
     }
   }
 
@@ -1796,166 +1686,6 @@ namespace QgsWms
     return true;
   }
 
-  QStringList QgsRenderer::layerSet( const QStringList &layersList,
-                                     const QStringList &stylesList,
-                                     const QgsCoordinateReferenceSystem &destCRS, double scaleDenominator ) const
-  {
-    Q_UNUSED( destCRS );
-    QStringList layerKeys;
-    QStringList::const_iterator llstIt;
-    QStringList::const_iterator slstIt;
-    QgsMapLayer *mapLayer = nullptr;
-    QgsMessageLog::logMessage( QStringLiteral( "Calculating layerset using %1 layers, %2 styles and CRS %3" ).arg( layersList.count() ).arg( stylesList.count() ).arg( destCRS.description() ) );
-    for ( llstIt = layersList.begin(), slstIt = stylesList.begin(); llstIt != layersList.end(); ++llstIt )
-    {
-      QString styleName;
-      if ( slstIt != stylesList.end() )
-      {
-        styleName = *slstIt;
-      }
-      QgsMessageLog::logMessage( "Trying to get layer " + *llstIt + "//" + styleName );
-
-      //does the layer name appear several times in the layer list?
-      //if yes, layer caching must be disabled because several named layers could have
-      //several user styles
-      bool allowCaching = true;
-      if ( layersList.count( *llstIt ) > 1 )
-      {
-        allowCaching = false;
-      }
-
-      QList<QgsMapLayer *> layerList = mConfigParser->mapLayerFromStyle( *llstIt, styleName, allowCaching );
-      int listIndex;
-
-      for ( listIndex = layerList.size() - 1; listIndex >= 0; listIndex-- )
-      {
-        mapLayer = layerList.at( listIndex );
-        if ( mapLayer )
-        {
-          QString lName =  mapLayer->name();
-          if ( mConfigParser->useLayerIds() )
-            lName = mapLayer->id();
-          else if ( !mapLayer->shortName().isEmpty() )
-            lName = mapLayer->shortName();
-          QgsMessageLog::logMessage( QStringLiteral( "Checking layer: %1" ).arg( lName ) );
-          //test if layer is visible in requested scale
-          if ( scaleDenominator == 0 || mapLayer->isInScaleRange( scaleDenominator ) )
-          {
-            layerKeys.push_front( mapLayer->id() );
-            QgsProject::instance()->addMapLayers(
-              QList<QgsMapLayer *>() << mapLayer, false, false );
-          }
-        }
-        else
-        {
-          QgsMessageLog::logMessage( QStringLiteral( "Layer or style not defined, aborting" ) );
-          throw QgsBadRequestException( QStringLiteral( "LayerNotDefined" ),
-                                        QStringLiteral( "Layer '%1' and/or style '%2' not defined" ).arg( *llstIt, styleName ) );
-        }
-      }
-
-      if ( slstIt != stylesList.end() )
-      {
-        ++slstIt;
-      }
-    }
-    return layerKeys;
-  }
-
-  void QgsRenderer::applyRequestedLayerFilters( const QStringList &layerList, QgsMapSettings &mapSettings, QHash<QgsMapLayer *, QString> &originalFilters ) const
-  {
-    if ( layerList.isEmpty() )
-    {
-      return;
-    }
-
-    QString filterParameter = mParameters.value( QStringLiteral( "FILTER" ) );
-    if ( !filterParameter.isEmpty() )
-    {
-      QStringList layerSplit = filterParameter.split( ';' );
-      for ( auto layerIt = layerSplit.constBegin(); layerIt != layerSplit.constEnd(); ++layerIt )
-      {
-        QStringList eqSplit = layerIt->split( ':' );
-        if ( eqSplit.size() < 2 )
-        {
-          continue;
-        }
-
-        //filter string could be unsafe (danger of sql injection)
-        if ( !testFilterStringSafety( eqSplit.at( 1 ) ) )
-        {
-          throw QgsBadRequestException( QStringLiteral( "Filter string rejected" ),
-                                        QStringLiteral( "The filter string %1"
-                                            " has been rejected because of security reasons."
-                                            " Note: Text strings have to be enclosed in single or double quotes."
-                                            " A space between each word / special character is mandatory."
-                                            " Allowed Keywords and special characters are "
-                                            " AND,OR,IN,<,>=,>,>=,!=,',',(,),DMETAPHONE,SOUNDEX."
-                                            " Not allowed are semicolons in the filter expression." ).arg( eqSplit.at( 1 ) ) );
-        }
-
-        //we need to find the maplayer objects matching the layer name
-        QList<QgsMapLayer *> layersToFilter;
-
-        Q_FOREACH ( QgsMapLayer *layer, QgsProject::instance()->mapLayers() )
-        {
-          if ( layer )
-          {
-            QString lName =  layer->name();
-            if ( mConfigParser && mConfigParser->useLayerIds() )
-              lName = layer->id();
-            else if ( !layer->shortName().isEmpty() )
-              lName = layer->shortName();
-            if ( lName == eqSplit.at( 0 ) )
-              layersToFilter.push_back( layer );
-          }
-        }
-
-        Q_FOREACH ( QgsMapLayer *filter, layersToFilter )
-        {
-          QgsVectorLayer *filteredLayer = qobject_cast<QgsVectorLayer *>( filter );
-          if ( filteredLayer )
-          {
-            originalFilters.insert( filteredLayer, filteredLayer->subsetString() );
-            QString newSubsetString = eqSplit.at( 1 );
-            if ( !filteredLayer->subsetString().isEmpty() )
-            {
-              newSubsetString.prepend( " AND " );
-              newSubsetString.prepend( filteredLayer->subsetString() );
-            }
-            filteredLayer->setSubsetString( newSubsetString );
-          }
-        }
-      }
-
-      //No BBOX parameter in request. We use the union of the filtered layer
-      //to provide the functionality of zooming to selected records via (enhanced) WMS.
-      if ( mapSettings.extent().isEmpty() )
-      {
-        QgsRectangle filterExtent;
-        for ( auto filterIt = originalFilters.constBegin() ; filterIt != originalFilters.constEnd(); ++filterIt )
-        {
-          QgsMapLayer *mapLayer = filterIt.key();
-          if ( !mapLayer )
-          {
-            continue;
-          }
-
-          QgsRectangle layerExtent = mapSettings.layerToMapCoordinates( mapLayer, mapLayer->extent() );
-          if ( filterExtent.isEmpty() )
-          {
-            filterExtent = layerExtent;
-          }
-          else
-          {
-            filterExtent.combineExtentWith( layerExtent );
-          }
-        }
-        mapSettings.setExtent( filterExtent );
-      }
-    }
-  }
-
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
   void QgsRenderer::applyAccessControlLayersFilters( const QStringList &layerList, QHash<QgsMapLayer *, QString> &originalLayerFilters ) const
   {
@@ -2092,207 +1822,6 @@ namespace QgsWms
         concatString.clear();
         startGroup = -1;
       }
-    }
-  }
-
-  QStringList QgsRenderer::applyFeatureSelections( const QStringList &layerList ) const
-  {
-    QStringList layersWithSelections;
-    if ( layerList.isEmpty() )
-    {
-      return layersWithSelections;
-    }
-
-    QString selectionString = mParameters.value( QStringLiteral( "SELECTION" ) );
-    if ( selectionString.isEmpty() )
-    {
-      return layersWithSelections;
-    }
-
-    Q_FOREACH ( const QString &selectionLayer, selectionString.split( ";" ) )
-    {
-      //separate layer name from id list
-      QStringList layerIdSplit = selectionLayer.split( ':' );
-      if ( layerIdSplit.size() < 2 )
-      {
-        continue;
-      }
-
-      //find layerId for layer name
-      QString layerName = layerIdSplit.at( 0 );
-      QgsVectorLayer *vLayer = nullptr;
-
-      Q_FOREACH ( QgsMapLayer *layer, QgsProject::instance()->mapLayers() )
-      {
-        if ( layer )
-        {
-          QString lName =  layer->name();
-          if ( mConfigParser && mConfigParser->useLayerIds() )
-            lName = layer->id();
-          else if ( !layer->shortName().isEmpty() )
-            lName = layer->shortName();
-          if ( lName == layerName )
-          {
-            vLayer = qobject_cast<QgsVectorLayer *>( layer );
-            layersWithSelections.push_back( vLayer->id() );
-            break;
-          }
-        }
-      }
-
-      if ( !vLayer )
-      {
-        continue;
-      }
-
-      QStringList idList = layerIdSplit.at( 1 ).split( ',' );
-      QgsFeatureIds selectedIds;
-
-      Q_FOREACH ( const QString &id, idList )
-      {
-        selectedIds.insert( STRING_TO_FID( id ) );
-      }
-
-      vLayer->selectByIds( selectedIds );
-    }
-
-
-    return layersWithSelections;
-  }
-
-  void QgsRenderer::clearFeatureSelections( const QStringList &layerIds ) const
-  {
-    const QMap<QString, QgsMapLayer *> &layerMap = QgsProject::instance()->mapLayers();
-
-    Q_FOREACH ( const QString &id, layerIds )
-    {
-      QgsVectorLayer *layer = qobject_cast< QgsVectorLayer * >( layerMap.value( id, nullptr ) );
-      if ( !layer )
-        continue;
-
-      layer->selectByIds( QgsFeatureIds() );
-    }
-
-    return;
-  }
-
-  void QgsRenderer::applyOpacities( const QStringList &layerList, QList< QPair< QgsVectorLayer *, QgsFeatureRenderer *> > &vectorRenderers,
-                                    QList< QPair< QgsRasterLayer *, QgsRasterRenderer * > > &rasterRenderers,
-                                    QList< QPair< QgsVectorLayer *, double > > &labelTransparencies,
-                                    QList< QPair< QgsVectorLayer *, double > > &labelBufferTransparencies )
-  {
-    //get opacity list
-    QMap<QString, QString>::const_iterator opIt = mParameters.constFind( QStringLiteral( "OPACITIES" ) );
-    if ( opIt == mParameters.constEnd() )
-    {
-      return;
-    }
-    QStringList opacityList = opIt.value().split( ',' );
-
-    //collect leaf layers and their opacity
-    QVector< QPair< QgsMapLayer *, int > > layerOpacityList;
-    QStringList::const_iterator oIt = opacityList.constBegin();
-    QStringList::const_iterator lIt = layerList.constBegin();
-    for ( ; oIt != opacityList.constEnd() && lIt != layerList.constEnd(); ++oIt, ++lIt )
-    {
-      //get layer list for
-      int opacity = oIt->toInt();
-      if ( opacity < 0 || opacity > 255 )
-      {
-        continue;
-      }
-      QList<QgsMapLayer *> llist = mConfigParser->mapLayerFromStyle( *lIt, QLatin1String( "" ) );
-      for ( auto lListIt = llist.constBegin(); lListIt != llist.constEnd(); ++lListIt )
-      {
-        layerOpacityList.push_back( qMakePair( *lListIt, opacity ) );
-      }
-    }
-
-    for ( auto lOpIt = layerOpacityList.constBegin() ; lOpIt != layerOpacityList.constEnd(); ++lOpIt )
-    {
-      //vector or raster?
-      QgsMapLayer *ml = lOpIt->first;
-      int opacity = lOpIt->second;
-      double opacityRatio = opacity / 255.0; //opacity value between 0 and 1
-
-      if ( !ml || opacity == 255 )
-      {
-        continue;
-      }
-
-      if ( ml->type() == QgsMapLayer::VectorLayer )
-      {
-        QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( ml );
-
-        QgsFeatureRenderer *renderer = vl->renderer();
-        //backup old renderer
-        vectorRenderers.push_back( qMakePair( vl, renderer->clone() ) );
-        //modify symbols of current renderer
-        QgsRenderContext context;
-        context.expressionContext().appendScopes( QgsExpressionContextUtils::globalProjectLayerScopes( vl ) );
-
-        QgsSymbolList symbolList = renderer->symbols( context );
-        for ( auto symbolIt = symbolList.begin(); symbolIt != symbolList.end(); ++symbolIt )
-        {
-          ( *symbolIt )->setOpacity( ( *symbolIt )->opacity() * opacityRatio );
-        }
-
-        //labeling
-        if ( vl->labeling() )
-        {
-          // TODO: this need a complete re-work: there may be simple or rule-based labeling. we need to temporarily replace labeling instance.
-          double labelTransparency = vl->customProperty( QStringLiteral( "labeling/textTransp" ) ).toDouble();
-          labelTransparencies.push_back( qMakePair( vl, labelTransparency ) );
-          vl->setCustomProperty( QStringLiteral( "labeling/textTransp" ), labelTransparency + ( 100 - labelTransparency ) * ( 1.0 - opacityRatio ) );
-          double bufferTransparency = vl->customProperty( QStringLiteral( "labeling/bufferTransp" ) ).toDouble();
-          labelBufferTransparencies.push_back( qMakePair( vl, bufferTransparency ) );
-          vl->setCustomProperty( QStringLiteral( "labeling/bufferTransp" ), bufferTransparency + ( 100 - bufferTransparency ) * ( 1.0 - opacityRatio ) );
-        }
-      }
-      else if ( ml->type() == QgsMapLayer::RasterLayer )
-      {
-        QgsRasterLayer *rl = qobject_cast<QgsRasterLayer *>( ml );
-        if ( rl )
-        {
-          QgsRasterRenderer *rasterRenderer = rl->renderer();
-          if ( rasterRenderer )
-          {
-            rasterRenderers.push_back( qMakePair( rl, rasterRenderer->clone() ) );
-            rasterRenderer->setOpacity( rasterRenderer->opacity() * opacityRatio );
-          }
-        }
-      }
-    }
-  }
-
-  void QgsRenderer::restoreOpacities( QList< QPair< QgsVectorLayer *, QgsFeatureRenderer *> > &vectorRenderers,
-                                      QList < QPair< QgsRasterLayer *, QgsRasterRenderer * > > &rasterRenderers,
-                                      QList< QPair< QgsVectorLayer *, double > > &labelOpacities,
-                                      QList< QPair< QgsVectorLayer *, double > > &labelBufferOpacities )
-  {
-    if ( vectorRenderers.isEmpty() && rasterRenderers.isEmpty() )
-    {
-      return;
-    }
-
-    for ( auto vIt = vectorRenderers.begin(); vIt != vectorRenderers.end(); ++vIt )
-    {
-      ( *vIt ).first->setRenderer( ( *vIt ).second );
-    }
-
-    for ( auto rIt = rasterRenderers.begin() ; rIt != rasterRenderers.end(); ++rIt )
-    {
-      ( *rIt ).first->setRenderer( ( *rIt ).second );
-    }
-
-    for ( auto loIt = labelOpacities.begin() ; loIt != labelOpacities.end(); ++loIt )
-    {
-      ( *loIt ).first->setCustomProperty( QStringLiteral( "labeling/textTransp" ), ( *loIt ).second );
-    }
-
-    for ( auto lboIt = labelBufferOpacities.begin() ; lboIt != labelBufferOpacities.end(); ++lboIt )
-    {
-      ( *lboIt ).first->setCustomProperty( QStringLiteral( "labeling/bufferTransp" ), ( *lboIt ).second );
     }
   }
 
@@ -2715,7 +2244,7 @@ namespace QgsWms
   {
 
     // First taken from QGIS project
-    int imageQuality = mConfigParser->imageQuality();
+    int imageQuality = QgsServerProjectUtils::wmsImageQuality( *mProject );
 
     // Then checks if a parameter is given, if so use it instead
     if ( mParameters.contains( QStringLiteral( "IMAGE_QUALITY" ) ) )
