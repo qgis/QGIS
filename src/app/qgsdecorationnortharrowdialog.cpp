@@ -152,8 +152,7 @@ void QgsDecorationNorthArrowDialog::drawNorthArrow()
     myQPainter.rotate( rotation );
     //work out how to shift the image so that it appears in the center of the canvas
     //(x cos a + y sin a - x, -x sin a + y cos a - y)
-    const double PI = 3.14159265358979323846;
-    double myRadiansDouble = ( PI / 180 ) * rotation;
+    double myRadiansDouble = ( M_PI / 180 ) * rotation;
     int xShift = static_cast<int>( (
                                      ( centerXDouble * std::cos( myRadiansDouble ) ) +
                                      ( centerYDouble * std::sin( myRadiansDouble ) )

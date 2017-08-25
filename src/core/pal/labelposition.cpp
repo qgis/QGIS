@@ -38,10 +38,6 @@
 #include <cmath>
 #include <cfloat>
 
-#ifndef M_PI
-#define M_PI 3.1415926535897931159979634685
-#endif
-
 using namespace pal;
 
 LabelPosition::LabelPosition( int id, double x1, double y1, double w, double h, double alpha, double cost, FeaturePart *feature, bool isReversed, Quadrant quadrant )

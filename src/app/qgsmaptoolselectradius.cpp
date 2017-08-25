@@ -24,10 +24,6 @@ email                : jpalmer at linz dot govt dot nz
 #include <cmath>
 #include <QMouseEvent>
 
-#ifndef M_PI
-#define M_PI 3.1415926535897931159979634685
-#endif
-
 const int RADIUS_SEGMENTS = 40;
 
 QgsMapToolSelectRadius::QgsMapToolSelectRadius( QgsMapCanvas *canvas )

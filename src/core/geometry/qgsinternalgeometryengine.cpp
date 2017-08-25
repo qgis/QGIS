@@ -373,7 +373,7 @@ QgsVector calcMotion( const QgsPoint &a, const QgsPoint &b, const QgsPoint &c,
 
   // wonderful nasty hack which has survived through JOSM -> id -> QGIS
   // to deal with almost-straight segments (angle is closer to 180 than to 90/270).
-  if ( dotProduct < -0.707106781186547 )
+  if ( dotProduct < -M_SQRT1_2 )
     dotProduct += 1.0;
 
   QgsVector new_v = p + q;

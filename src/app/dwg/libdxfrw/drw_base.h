@@ -38,12 +38,6 @@
 #  define DRW_POSIX
 #endif
 
-#ifndef M_PI
-#define M_PI   3.141592653589793238462643
-#endif
-#ifndef M_PI_2
-#define M_PI_2 1.57079632679489661923
-#endif
 #define M_PIx2 6.283185307179586 // 2*PI
 #define ARAD 57.29577951308232
 
