@@ -1905,7 +1905,7 @@ void QgisApp::createActions()
   connect( mActionEmbedLayers, &QAction::triggered, this, &QgisApp::embedLayers );
   connect( mActionAddLayerDefinition, &QAction::triggered, this, &QgisApp::addLayerDefinition );
   connect( mActionAddOgrLayer, &QAction::triggered, this, [ = ] { dataSourceManager( QStringLiteral( "ogr" ) ); } );
-  connect( mActionAddRasterLayer, &QAction::triggered, this, [ = ] { dataSourceManager( QStringLiteral( "raster" ) ); } );
+  connect( mActionAddRasterLayer, &QAction::triggered, this, [ = ] { dataSourceManager( QStringLiteral( "gdal" ) ); } );
   connect( mActionAddPgLayer, &QAction::triggered, this, [ = ] { dataSourceManager( QStringLiteral( "postgres" ) ); } );
   connect( mActionAddSpatiaLiteLayer, &QAction::triggered, [ = ] { dataSourceManager( QStringLiteral( "spatialite" ) ); } );
   connect( mActionAddMssqlLayer, &QAction::triggered, this, [ = ] { dataSourceManager( QStringLiteral( "mssql" ) ); } );
