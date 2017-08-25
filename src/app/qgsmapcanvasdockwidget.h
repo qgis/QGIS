@@ -15,7 +15,7 @@
 #ifndef QGSMAPCANVASDOCKWIDGET_H
 #define QGSMAPCANVASDOCKWIDGET_H
 
-#include <ui_qgsmapcanvasdockwidgetbase.h>
+#include "ui_qgsmapcanvasdockwidgetbase.h"
 
 #include "qgsdockwidget.h"
 #include "qgspointxy.h"

@@ -239,7 +239,7 @@ void QgsMapToolOffsetCurve::canvasMoveEvent( QgsMapMouseEvent *e )
   QgsPointXY minDistPoint;
   int beforeVertex;
   double leftOf;
-  double offset = sqrt( mOriginalGeometry.closestSegmentWithContext( layerCoords, minDistPoint, beforeVertex, &leftOf ) );
+  double offset = std::sqrt( mOriginalGeometry.closestSegmentWithContext( layerCoords, minDistPoint, beforeVertex, &leftOf ) );
   if ( offset == 0.0 )
   {
     return;

@@ -169,7 +169,7 @@ QgsPoint surfacePoleOfInaccessibility( const QgsSurface *surface, double precisi
   QgsRectangle bounds = polygon->boundingBox();
 
   // initial parameters
-  double cellSize = qMin( bounds.width(), bounds.height() );
+  double cellSize = std::min( bounds.width(), bounds.height() );
 
   if ( qgsDoubleNear( cellSize, 0.0 ) )
     return QgsPoint( bounds.xMinimum(), bounds.yMinimum() );
@@ -290,7 +290,7 @@ QgsGeometry QgsInternalGeometryEngine::poleOfInaccessibility( double precision, 
 
 bool dotProductWithinAngleTolerance( double dotProduct, double lowerThreshold, double upperThreshold )
 {
-  return lowerThreshold > qAbs( dotProduct ) || qAbs( dotProduct ) > upperThreshold;
+  return lowerThreshold > std::fabs( dotProduct ) || std::fabs( dotProduct ) > upperThreshold;
 }
 
 double normalizedDotProduct( const QgsPoint &a, const QgsPoint &b, const QgsPoint &c )
@@ -341,7 +341,7 @@ double squareness( QgsLineString *ring, double lowerThreshold, double upperThres
       if ( !dotProductWithinAngleTolerance( dotProduct, lowerThreshold, upperThreshold ) )
         continue;
 
-      sum += 2.0 * qMin( qAbs( dotProduct - 1.0 ), qMin( qAbs( dotProduct ), qAbs( dotProduct + 1 ) ) );
+      sum += 2.0 * std::min( std::fabs( dotProduct - 1.0 ), std::min( std::fabs( dotProduct ), std::fabs( dotProduct + 1 ) ) );
     }
     a = b;
     b = c;
@@ -360,7 +360,7 @@ QgsVector calcMotion( const QgsPoint &a, const QgsPoint &b, const QgsPoint &c,
     return QgsVector( 0, 0 );
 
   // 2.0 is a magic number from the original JOSM source code
-  double scale = 2.0 * qMin( p.length(), q.length() );
+  double scale = 2.0 * std::min( p.length(), q.length() );
 
   p = p.normalized();
   q = q.normalized();
@@ -491,8 +491,8 @@ QgsGeometry QgsInternalGeometryEngine::orthogonalize( double tolerance, int maxI
     return QgsGeometry();
   }
 
-  double lowerThreshold = cos( ( 90 - angleThreshold ) * M_PI / 180.00 );
-  double upperThreshold = cos( angleThreshold * M_PI / 180.0 );
+  double lowerThreshold = std::cos( ( 90 - angleThreshold ) * M_PI / 180.00 );
+  double upperThreshold = std::cos( angleThreshold * M_PI / 180.0 );
 
   if ( const QgsGeometryCollection *gc = qgsgeometry_cast< const QgsGeometryCollection *>( mGeometry ) )
   {
@@ -575,7 +575,7 @@ QgsLineString *doDensify( QgsLineString *ring, int extraNodesPerSegment = -1, do
     if ( extraNodesPerSegment < 0 )
     {
       // distance mode
-      extraNodesThisSegment = floor( sqrt( ( x2 - x1 ) * ( x2 - x1 ) + ( y2 - y1 ) * ( y2 - y1 ) ) / distance );
+      extraNodesThisSegment = std::floor( std::sqrt( ( x2 - x1 ) * ( x2 - x1 ) + ( y2 - y1 ) * ( y2 - y1 ) ) / distance );
       if ( extraNodesThisSegment >= 1 )
         multiplier = 1.0 / ( extraNodesThisSegment + 1 );
     }

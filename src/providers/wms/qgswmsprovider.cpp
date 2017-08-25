@@ -89,8 +89,8 @@ struct LessThanTileRequest
     QPointF p1 = req1.rect.center();
     QPointF p2 = req2.rect.center();
     // using chessboard distance (loading order more natural than euclidean/manhattan distance)
-    double d1 = qMax( qAbs( center.x() - p1.x() ), qAbs( center.y() - p1.y() ) );
-    double d2 = qMax( qAbs( center.x() - p2.x() ), qAbs( center.y() - p2.y() ) );
+    double d1 = std::max( std::fabs( center.x() - p1.x() ), std::fabs( center.y() - p1.y() ) );
+    double d2 = std::max( std::fabs( center.x() - p2.x() ), std::fabs( center.y() - p2.y() ) );
     return d1 < d2;
   }
 };
@@ -500,8 +500,8 @@ void QgsWmsProvider::setFormatQueryItem( QUrl &url )
 
 static bool _fuzzyContainsRect( const QRectF &r1, const QRectF &r2 )
 {
-  double significantDigits = log10( qMax( r1.width(), r1.height() ) );
-  double epsilon = pow( 10.0, significantDigits - 5 ); // floats have 6-9 significant digits
+  double significantDigits = std::log10( std::max( r1.width(), r1.height() ) );
+  double epsilon = std::pow( 10.0, significantDigits - 5 ); // floats have 6-9 significant digits
   return r1.contains( r2.adjusted( epsilon, epsilon, -epsilon, -epsilon ) );
 }
 
@@ -659,8 +659,8 @@ QImage *QgsWmsProvider::draw( QgsRectangle const &viewExtent, int pixelWidth, in
       tempTm->topLeft      = QgsPointXY( mLayerExtent.xMinimum(), mLayerExtent.yMaximum() );
       tempTm->tileWidth    = mSettings.mMaxWidth;
       tempTm->tileHeight   = mSettings.mMaxHeight;
-      tempTm->matrixWidth  = ceil( mLayerExtent.width() / mSettings.mMaxWidth / vres );
-      tempTm->matrixHeight = ceil( mLayerExtent.height() / mSettings.mMaxHeight / vres );
+      tempTm->matrixWidth  = std::ceil( mLayerExtent.width() / mSettings.mMaxWidth / vres );
+      tempTm->matrixHeight = std::ceil( mLayerExtent.height() / mSettings.mMaxHeight / vres );
       tempTm->tres = vres;
       tm = tempTm.get();
 
@@ -1189,8 +1189,8 @@ void QgsWmsProvider::setupXyzCapabilities( const QString &uri )
   // the whole world is projected to a square:
   // X going from 180 W to 180 E
   // Y going from ~85 N to ~85 S  (=atan(sinh(pi)) ... to get a square)
-  QgsPointXY topLeftLonLat( -180, 180.0 / M_PI * atan( sinh( M_PI ) ) );
-  QgsPointXY bottomRightLonLat( 180, 180.0 / M_PI * atan( sinh( -M_PI ) ) );
+  QgsPointXY topLeftLonLat( -180, 180.0 / M_PI * std::atan( std::sinh( M_PI ) ) );
+  QgsPointXY bottomRightLonLat( 180, 180.0 / M_PI * std::atan( std::sinh( -M_PI ) ) );
   QgsPointXY topLeft = ct.transform( topLeftLonLat );
   QgsPointXY bottomRight = ct.transform( bottomRightLonLat );
   double xspan = ( bottomRight.x() - topLeft.x() );
@@ -1521,7 +1521,7 @@ QStringList QgsWmsProvider::subLayerStyles() const
 
 bool QgsWmsProvider::calculateExtent() const
 {
-  //! \todo Make this handle non-geographic CRSs (e.g. floor plans) as per WMS spec
+  //! \todo Make this handle non-geographic CRSs (e.g. std::floor plans) as per WMS spec
 
 
   if ( mSettings.mTiled )
@@ -1760,7 +1760,7 @@ QString QgsWmsProvider::layerMetadata( QgsWmsLayerProperty &layer )
   metadata += QLatin1String( "</td></tr>" );
 
   // Layer Coordinate Reference Systems
-  for ( int j = 0; j < qMin( layer.crs.size(), 10 ); j++ )
+  for ( int j = 0; j < std::min( layer.crs.size(), 10 ); j++ )
   {
     metadata += QLatin1String( "<tr><td>" );
     metadata += tr( "Available in CRS" );
@@ -2275,7 +2275,7 @@ QString QgsWmsProvider::metadata()
         if ( mLayerExtent.yMaximum() > r.yMaximum() )
         {
           metadata += QStringLiteral( "<td title=\"%1<br>%2\"><font color=\"red\">%3</font></td>" )
-                      .arg( tr( "%n missing row(s)", nullptr, ( int ) ceil( ( mLayerExtent.yMaximum() - r.yMaximum() ) / th ) ),
+                      .arg( tr( "%n missing row(s)", nullptr, ( int ) std::ceil( ( mLayerExtent.yMaximum() - r.yMaximum() ) / th ) ),
                             tr( "Layer's upper bound: %1" ).arg( mLayerExtent.yMaximum(), 0, 'f' ) )
                       .arg( r.yMaximum(), 0, 'f' );
         }
@@ -2288,7 +2288,7 @@ QString QgsWmsProvider::metadata()
         if ( mLayerExtent.xMinimum() < r.xMinimum() )
         {
           metadata += QStringLiteral( "<td title=\"%1<br>%2\"><font color=\"red\">%3</font></td>" )
-                      .arg( tr( "%n missing column(s)", nullptr, ( int ) ceil( ( r.xMinimum() - mLayerExtent.xMinimum() ) / tw ) ),
+                      .arg( tr( "%n missing column(s)", nullptr, ( int ) std::ceil( ( r.xMinimum() - mLayerExtent.xMinimum() ) / tw ) ),
                             tr( "Layer's left bound: %1" ).arg( mLayerExtent.xMinimum(), 0, 'f' ) )
                       .arg( r.xMinimum(), 0, 'f' );
         }
@@ -2301,7 +2301,7 @@ QString QgsWmsProvider::metadata()
         if ( mLayerExtent.yMaximum() > r.yMaximum() )
         {
           metadata += QStringLiteral( "<td title=\"%1<br>%2\"><font color=\"red\">%3</font></td>" )
-                      .arg( tr( "%n missing row(s)", nullptr, ( int ) ceil( ( mLayerExtent.yMaximum() - r.yMaximum() ) / th ) ),
+                      .arg( tr( "%n missing row(s)", nullptr, ( int ) std::ceil( ( mLayerExtent.yMaximum() - r.yMaximum() ) / th ) ),
                             tr( "Layer's lower bound: %1" ).arg( mLayerExtent.yMaximum(), 0, 'f' ) )
                       .arg( r.yMaximum(), 0, 'f' );
         }
@@ -2314,7 +2314,7 @@ QString QgsWmsProvider::metadata()
         if ( mLayerExtent.xMaximum() > r.xMaximum() )
         {
           metadata += QStringLiteral( "<td title=\"%1<br>%2\"><font color=\"red\">%3</font></td>" )
-                      .arg( tr( "%n missing column(s)", nullptr, ( int ) ceil( ( mLayerExtent.xMaximum() - r.xMaximum() ) / tw ) ),
+                      .arg( tr( "%n missing column(s)", nullptr, ( int ) std::ceil( ( mLayerExtent.xMaximum() - r.xMaximum() ) / tw ) ),
                             tr( "Layer's right bound: %1" ).arg( mLayerExtent.xMaximum(), 0, 'f' ) )
                       .arg( r.xMaximum(), 0, 'f' );
         }
@@ -2471,8 +2471,8 @@ QgsRasterIdentifyResult QgsWmsProvider::identify( const QgsPointXY &point, QgsRa
   QgsDebugMsg( QString( "xRes = %1 yRes = %2" ).arg( xRes ).arg( yRes ) );
 
   QgsPointXY finalPoint;
-  finalPoint.setX( floor( ( finalPoint.x() - myExtent.xMinimum() ) / xRes ) );
-  finalPoint.setY( floor( ( myExtent.yMaximum() - finalPoint.y() ) / yRes ) );
+  finalPoint.setX( std::floor( ( finalPoint.x() - myExtent.xMinimum() ) / xRes ) );
+  finalPoint.setY( std::floor( ( myExtent.yMaximum() - finalPoint.y() ) / yRes ) );
 
   QgsDebugMsg( QString( "point = %1 %2" ).arg( finalPoint.x() ).arg( finalPoint.y() ) );
 
@@ -2622,8 +2622,8 @@ QgsRasterIdentifyResult QgsWmsProvider::identify( const QgsPointXY &point, QgsRa
     double thMap = tm->tileHeight * tres;
     QgsDebugMsg( QString( "tile map size: %1,%2" ).arg( qgsDoubleToString( twMap ), qgsDoubleToString( thMap ) ) );
 
-    int col = ( int ) floor( ( point.x() - tm->topLeft.x() ) / twMap );
-    int row = ( int ) floor( ( tm->topLeft.y() - point.y() ) / thMap );
+    int col = ( int ) std::floor( ( point.x() - tm->topLeft.x() ) / twMap );
+    int row = ( int ) std::floor( ( tm->topLeft.y() - point.y() ) / thMap );
     double tx = tm->topLeft.x() + col * twMap;
     double ty = tm->topLeft.y() - row * thMap;
     int i   = ( point.x() - tx ) / tres;
@@ -4044,7 +4044,7 @@ static QString formatDouble( double x )
 {
   if ( x == 0.0 )
     return QStringLiteral( "0" );
-  const int numberOfDecimals = qMax( 0, 19 - static_cast<int>( ceil( log10( fabs( x ) ) ) ) );
+  const int numberOfDecimals = std::max( 0, 19 - static_cast<int>( std::ceil( std::log10( std::fabs( x ) ) ) ) );
   return qgsDoubleToString( x, numberOfDecimals );
 }
 

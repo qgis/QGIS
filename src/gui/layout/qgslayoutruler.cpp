@@ -125,7 +125,7 @@ void QgsLayoutRuler::paintEvent( QPaintEvent *event )
       double endX = t.map( QPointF( width(), 0 ) ).x();
 
       //start marker position in mm
-      double markerPos = ( floor( startX / mmDisplay ) + 1 ) * mmDisplay;
+      double markerPos = ( std::floor( startX / mmDisplay ) + 1 ) * mmDisplay;
 
       //draw minor ticks marks which occur before first major tick
       drawSmallDivisions( &p, markerPos, numSmallDivisions, -mmDisplay );
@@ -376,11 +376,11 @@ QgsLayoutGuide *QgsLayoutRuler::guideAtPoint( QPoint localPoint ) const
       switch ( mOrientation )
       {
         case Qt::Horizontal:
-          currentDelta = qAbs( layoutPoint.x() - guide->layoutPosition() );
+          currentDelta = std::fabs( layoutPoint.x() - guide->layoutPosition() );
           break;
 
         case Qt::Vertical:
-          currentDelta = qAbs( layoutPoint.y() - guide->layoutPosition() );
+          currentDelta = std::fabs( layoutPoint.y() - guide->layoutPosition() );
           break;
       }
       if ( currentDelta < minDelta )

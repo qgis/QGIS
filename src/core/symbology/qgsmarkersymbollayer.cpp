@@ -419,10 +419,10 @@ bool QgsSimpleMarkerSymbolLayerBase::shapeToPolygon( QgsSimpleMarkerSymbolLayerB
 
     case Pentagon:
       /* angular-representation of hardcoded values used
-      polygon << QPointF( sin( DEG2RAD( 288.0 ) ), - cos( DEG2RAD( 288.0 ) ) )
-      << QPointF( sin( DEG2RAD( 216.0 ) ), - cos( DEG2RAD( 216.0 ) ) )
-      << QPointF( sin( DEG2RAD( 144.0 ) ), - cos( DEG2RAD( 144.0 ) ) )
-      << QPointF( sin( DEG2RAD( 72.0 ) ), - cos( DEG2RAD( 72.0 ) ) )
+      polygon << QPointF( std::sin( DEG2RAD( 288.0 ) ), - std::cos( DEG2RAD( 288.0 ) ) )
+      << QPointF( std::sin( DEG2RAD( 216.0 ) ), - std::cos( DEG2RAD( 216.0 ) ) )
+      << QPointF( std::sin( DEG2RAD( 144.0 ) ), - std::cos( DEG2RAD( 144.0 ) ) )
+      << QPointF( std::sin( DEG2RAD( 72.0 ) ), - std::cos( DEG2RAD( 72.0 ) ) )
       << QPointF( 0, -1 ); */
       polygon << QPointF( -0.9511, -0.3090 )
               << QPointF( -0.5878, 0.8090 )
@@ -434,11 +434,11 @@ bool QgsSimpleMarkerSymbolLayerBase::shapeToPolygon( QgsSimpleMarkerSymbolLayerB
 
     case Hexagon:
       /* angular-representation of hardcoded values used
-      polygon << QPointF( sin( DEG2RAD( 300.0 ) ), - cos( DEG2RAD( 300.0 ) ) )
-      << QPointF( sin( DEG2RAD( 240.0 ) ), - cos( DEG2RAD( 240.0 ) ) )
-      << QPointF( sin( DEG2RAD( 180.0 ) ), - cos( DEG2RAD( 180.0 ) ) )
-      << QPointF( sin( DEG2RAD( 120.0 ) ), - cos( DEG2RAD( 120.0 ) ) )
-      << QPointF( sin( DEG2RAD( 60.0 ) ), - cos( DEG2RAD( 60.0 ) ) )
+      polygon << QPointF( std::sin( DEG2RAD( 300.0 ) ), - std::cos( DEG2RAD( 300.0 ) ) )
+      << QPointF( std::sin( DEG2RAD( 240.0 ) ), - std::cos( DEG2RAD( 240.0 ) ) )
+      << QPointF( std::sin( DEG2RAD( 180.0 ) ), - std::cos( DEG2RAD( 180.0 ) ) )
+      << QPointF( std::sin( DEG2RAD( 120.0 ) ), - std::cos( DEG2RAD( 120.0 ) ) )
+      << QPointF( std::sin( DEG2RAD( 60.0 ) ), - std::cos( DEG2RAD( 60.0 ) ) )
       << QPointF( 0, -1 ); */
       polygon << QPointF( -0.8660, -0.5 )
               << QPointF( -0.8660, 0.5 )
@@ -455,8 +455,8 @@ bool QgsSimpleMarkerSymbolLayerBase::shapeToPolygon( QgsSimpleMarkerSymbolLayerB
 
     case EquilateralTriangle:
       /* angular-representation of hardcoded values used
-      polygon << QPointF( sin( DEG2RAD( 240.0 ) ), - cos( DEG2RAD( 240.0 ) ) )
-      << QPointF( sin( DEG2RAD( 120.0 ) ), - cos( DEG2RAD( 120.0 ) ) )
+      polygon << QPointF( std::sin( DEG2RAD( 240.0 ) ), - std::cos( DEG2RAD( 240.0 ) ) )
+      << QPointF( std::sin( DEG2RAD( 120.0 ) ), - std::cos( DEG2RAD( 120.0 ) ) )
       << QPointF( 0, -1 ); */
       polygon << QPointF( -0.8660, 0.5 )
               << QPointF( 0.8660, 0.5 )
@@ -474,19 +474,19 @@ bool QgsSimpleMarkerSymbolLayerBase::shapeToPolygon( QgsSimpleMarkerSymbolLayerB
 
     case Star:
     {
-      double inner_r = cos( DEG2RAD( 72.0 ) ) / cos( DEG2RAD( 36.0 ) );
+      double inner_r = std::cos( DEG2RAD( 72.0 ) ) / std::cos( DEG2RAD( 36.0 ) );
 
-      polygon << QPointF( inner_r * sin( DEG2RAD( 324.0 ) ), - inner_r * cos( DEG2RAD( 324.0 ) ) )  // 324
-              << QPointF( sin( DEG2RAD( 288.0 ) ), - cos( DEG2RAD( 288 ) ) )    // 288
-              << QPointF( inner_r * sin( DEG2RAD( 252.0 ) ), - inner_r * cos( DEG2RAD( 252.0 ) ) )   // 252
-              << QPointF( sin( DEG2RAD( 216.0 ) ), - cos( DEG2RAD( 216.0 ) ) )   // 216
+      polygon << QPointF( inner_r * std::sin( DEG2RAD( 324.0 ) ), - inner_r * std::cos( DEG2RAD( 324.0 ) ) )  // 324
+              << QPointF( std::sin( DEG2RAD( 288.0 ) ), - std::cos( DEG2RAD( 288 ) ) )    // 288
+              << QPointF( inner_r * std::sin( DEG2RAD( 252.0 ) ), - inner_r * std::cos( DEG2RAD( 252.0 ) ) )   // 252
+              << QPointF( std::sin( DEG2RAD( 216.0 ) ), - std::cos( DEG2RAD( 216.0 ) ) )   // 216
               << QPointF( 0, inner_r )         // 180
-              << QPointF( sin( DEG2RAD( 144.0 ) ), - cos( DEG2RAD( 144.0 ) ) )   // 144
-              << QPointF( inner_r * sin( DEG2RAD( 108.0 ) ), - inner_r * cos( DEG2RAD( 108.0 ) ) )   // 108
-              << QPointF( sin( DEG2RAD( 72.0 ) ), - cos( DEG2RAD( 72.0 ) ) )    //  72
-              << QPointF( inner_r * sin( DEG2RAD( 36.0 ) ), - inner_r * cos( DEG2RAD( 36.0 ) ) )   //  36
+              << QPointF( std::sin( DEG2RAD( 144.0 ) ), - std::cos( DEG2RAD( 144.0 ) ) )   // 144
+              << QPointF( inner_r * std::sin( DEG2RAD( 108.0 ) ), - inner_r * std::cos( DEG2RAD( 108.0 ) ) )   // 108
+              << QPointF( std::sin( DEG2RAD( 72.0 ) ), - std::cos( DEG2RAD( 72.0 ) ) )    //  72
+              << QPointF( inner_r * std::sin( DEG2RAD( 36.0 ) ), - inner_r * std::cos( DEG2RAD( 36.0 ) ) )   //  36
               << QPointF( 0, -1 )
-              << QPointF( inner_r * sin( DEG2RAD( 324.0 ) ), - inner_r * cos( DEG2RAD( 324.0 ) ) );  // 324;          //   0
+              << QPointF( inner_r * std::sin( DEG2RAD( 324.0 ) ), - inner_r * std::cos( DEG2RAD( 324.0 ) ) );  // 324;          //   0
       return true;
     }
 
@@ -625,7 +625,7 @@ double QgsSimpleMarkerSymbolLayerBase::calculateSize( QgsSymbolRenderContext &co
     switch ( mScaleMethod )
     {
       case QgsSymbol::ScaleArea:
-        scaledSize = sqrt( scaledSize );
+        scaledSize = std::sqrt( scaledSize );
         break;
       case QgsSymbol::ScaleDiameter:
         break;
@@ -862,7 +862,7 @@ bool QgsSimpleMarkerSymbolLayer::prepareCache( QgsSymbolRenderContext &context )
   double scaledSize = context.renderContext().convertToPainterUnits( mSize, mSizeUnit, mSizeMapUnitScale );
 
   // calculate necessary image size for the cache
-  double pw = qRound( ( ( qgsDoubleNear( mPen.widthF(), 0.0 ) ? 1 : mPen.widthF() * 4 ) + 1 ) ) / 2 * 2; // make even (round up); handle cosmetic pen
+  double pw = static_cast< int >( std::round( ( ( qgsDoubleNear( mPen.widthF(), 0.0 ) ? 1 : mPen.widthF() * 4 ) + 1 ) ) ) / 2 * 2; // make even (round up); handle cosmetic pen
   int imageSize = ( static_cast< int >( scaledSize ) + pw ) / 2 * 2 + 1; //  make image width, height odd; account for pen width
   double center = imageSize / 2.0;
 
@@ -1242,7 +1242,7 @@ bool QgsSimpleMarkerSymbolLayer::writeDxf( QgsDxfExport &e, double mmMapUnitScal
       switch ( mScaleMethod )
       {
         case QgsSymbol::ScaleArea:
-          size = sqrt( size );
+          size = std::sqrt( size );
           break;
         case QgsSymbol::ScaleDiameter:
           break;
@@ -2055,7 +2055,7 @@ double QgsSvgMarkerSymbolLayer::calculateSize( QgsSymbolRenderContext &context, 
     switch ( mScaleMethod )
     {
       case QgsSymbol::ScaleArea:
-        scaledSize = sqrt( scaledSize );
+        scaledSize = std::sqrt( scaledSize );
         break;
       case QgsSymbol::ScaleDiameter:
         break;
@@ -2274,7 +2274,7 @@ bool QgsSvgMarkerSymbolLayer::writeDxf( QgsDxfExport &e, double mmMapUnitScaleFa
     switch ( mScaleMethod )
     {
       case QgsSymbol::ScaleArea:
-        size = sqrt( size );
+        size = std::sqrt( size );
         break;
       case QgsSymbol::ScaleDiameter:
         break;
@@ -2642,7 +2642,7 @@ double QgsFontMarkerSymbolLayer::calculateSize( QgsSymbolRenderContext &context 
     switch ( mScaleMethod )
     {
       case QgsSymbol::ScaleArea:
-        scaledSize = sqrt( scaledSize );
+        scaledSize = std::sqrt( scaledSize );
         break;
       case QgsSymbol::ScaleDiameter:
         break;

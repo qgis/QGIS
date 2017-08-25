@@ -135,5 +135,5 @@ QPoint QgsMapMouseEvent::mapToPixelCoordinates( const QgsPointXY &point )
 
   mMapCanvas->mapSettings().mapToPixel().transformInPlace( x, y );
 
-  return QPoint( qRound( x ), qRound( y ) );
+  return QPoint( std::round( x ), std::round( y ) );
 }

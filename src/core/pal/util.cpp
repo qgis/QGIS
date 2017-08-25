@@ -34,7 +34,7 @@
 #include "feature.h"
 #include "geomfunction.h"
 
-#include <qgslogger.h>
+#include "qgslogger.h"
 #include <cfloat>
 
 #ifndef M_PI

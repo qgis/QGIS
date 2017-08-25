@@ -46,7 +46,7 @@ QgsSymbolButton::QgsSymbolButton( QWidget *parent, const QString &dialogTitle )
   //make sure height of button looks good under different platforms
   QSize size = QToolButton::minimumSizeHint();
   int fontHeight = fontMetrics().height() * 1.4;
-  mSizeHint = QSize( size.width(), qMax( size.height(), fontHeight ) );
+  mSizeHint = QSize( size.width(), std::max( size.height(), fontHeight ) );
 }
 
 QSize QgsSymbolButton::minimumSizeHint() const

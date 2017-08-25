@@ -193,8 +193,8 @@ bool QgsVectorLayerRenderer::render()
           QgsPointXY minimumDstPoint( targetRect.xMinimum(), targetRect.yMinimum() );
           QgsPointXY maximumDstPoint( targetRect.xMaximum(), targetRect.yMaximum() );
 
-          double sourceHypothenuse = sqrt( minimumSrcPoint.sqrDist( maximumSrcPoint ) );
-          double targetHypothenuse = sqrt( minimumDstPoint.sqrDist( maximumDstPoint ) );
+          double sourceHypothenuse = std::sqrt( minimumSrcPoint.sqrDist( maximumSrcPoint ) );
+          double targetHypothenuse = std::sqrt( minimumDstPoint.sqrDist( maximumDstPoint ) );
 
           QgsDebugMsgLevel( QString( "Simplify - SourceHypothenuse=%1" ).arg( sourceHypothenuse ), 4 );
           QgsDebugMsgLevel( QString( "Simplify - TargetHypothenuse=%1" ).arg( targetHypothenuse ), 4 );

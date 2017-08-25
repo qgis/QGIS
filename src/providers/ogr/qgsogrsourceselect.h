@@ -27,7 +27,7 @@
 #ifndef QGSOGRSOURCESELECT_H
 #define QGSOGRSOURCESELECT_H
 
-#include <ui_qgsogrsourceselectbase.h>
+#include "ui_qgsogrsourceselectbase.h"
 #include <QDialog>
 #include "qgshelp.h"
 #include "qgsproviderregistry.h"

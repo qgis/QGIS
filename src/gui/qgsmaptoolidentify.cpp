@@ -540,8 +540,8 @@ bool QgsMapToolIdentify::identifyRasterLayer( QList<IdentifyResult> *results, Qg
     // are similar to source width and height used to reproject layer for drawing.
     // TODO: may be very dangerous, because it may result in different resolutions
     // in source CRS, and WMS server (QGIS server) calcs wrong coor using average resolution.
-    int width = qRound( viewExtent.width() / mapUnitsPerPixel );
-    int height = qRound( viewExtent.height() / mapUnitsPerPixel );
+    int width = std::round( viewExtent.width() / mapUnitsPerPixel );
+    int height = std::round( viewExtent.height() / mapUnitsPerPixel );
 
     QgsDebugMsg( QString( "viewExtent.width = %1 viewExtent.height = %2" ).arg( viewExtent.width() ).arg( viewExtent.height() ) );
     QgsDebugMsg( QString( "width = %1 height = %2" ).arg( width ).arg( height ) );

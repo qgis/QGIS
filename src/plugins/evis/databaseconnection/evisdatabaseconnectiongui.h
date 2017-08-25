@@ -27,7 +27,7 @@
 #ifndef eVisDatabaseConnectionGUI_H
 #define eVisDatabaseConnectionGUI_H
 
-#include <ui_evisdatabaseconnectionguibase.h>
+#include "ui_evisdatabaseconnectionguibase.h"
 #include "evisdatabaseconnection.h"
 #include "evisdatabaselayerfieldselectiongui.h"
 #include "evisquerydefinition.h"

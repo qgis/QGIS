@@ -366,8 +366,8 @@ void QgsRasterLayerSaveAsDialog::setResolution( double xRes, double yRes, const 
 void QgsRasterLayerSaveAsDialog::recalcSize()
 {
   QgsRectangle extent = outputRectangle();
-  int xSize =  xResolution() != 0 ? static_cast<int>( qRound( extent.width() / xResolution() ) ) : 0;
-  int ySize =  yResolution() != 0 ? static_cast<int>( qRound( extent.height() / yResolution() ) ) : 0;
+  int xSize =  xResolution() != 0 ? static_cast<int>( std::round( extent.width() / xResolution() ) ) : 0;
+  int ySize =  yResolution() != 0 ? static_cast<int>( std::round( extent.height() / yResolution() ) ) : 0;
   mColumnsLineEdit->setText( QString::number( xSize ) );
   mRowsLineEdit->setText( QString::number( ySize ) );
   updateResolutionStateMsg();
@@ -527,14 +527,14 @@ void QgsRasterLayerSaveAsDialog::addNoDataRow( double min, double max )
       case Qgis::Float32:
       case Qgis::Float64:
         lineEdit->setValidator( new QDoubleValidator( nullptr ) );
-        if ( !qIsNaN( value ) )
+        if ( !std::isnan( value ) )
         {
           valueString = QgsRasterBlock::printValue( value );
         }
         break;
       default:
         lineEdit->setValidator( new QIntValidator( nullptr ) );
-        if ( !qIsNaN( value ) )
+        if ( !std::isnan( value ) )
         {
           valueString = QString::number( static_cast<int>( value ) );
         }
@@ -682,8 +682,8 @@ void QgsRasterLayerSaveAsDialog::adjustNoDataCellWidth( int row, int column )
   QLineEdit *lineEdit = dynamic_cast<QLineEdit *>( mNoDataTableWidget->cellWidget( row, column ) );
   if ( !lineEdit ) return;
 
-  int width = qMax( lineEdit->fontMetrics().width( lineEdit->text() ) + 10, 100 );
-  width = qMax( width, mNoDataTableWidget->columnWidth( column ) );
+  int width = std::max( lineEdit->fontMetrics().width( lineEdit->text() ) + 10, 100 );
+  width = std::max( width, mNoDataTableWidget->columnWidth( column ) );
 
   lineEdit->setFixedWidth( width );
 }

@@ -18,7 +18,6 @@
 #include "qgslogger.h"
 #include "MathUtils.h"
 #include "NormVecDecorator.h"
-#include <qmath.h>
 
 CloughTocherInterpolator::CloughTocherInterpolator()
   : mTIN( nullptr )
@@ -64,7 +63,7 @@ double CloughTocherInterpolator::calcBernsteinPoly( int n, int i, int j, int k, 
     return 0;
   }
 
-  double result = MathUtils::faculty( n ) * qPow( u, i ) * qPow( v, j ) * qPow( w, k ) / ( MathUtils::faculty( i ) * MathUtils::faculty( j ) * MathUtils::faculty( k ) );
+  double result = MathUtils::faculty( n ) * std::pow( u, i ) * std::pow( v, j ) * std::pow( w, k ) / ( MathUtils::faculty( i ) * MathUtils::faculty( j ) * MathUtils::faculty( k ) );
   return result;
 }
 

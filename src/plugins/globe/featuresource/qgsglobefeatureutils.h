@@ -19,14 +19,14 @@
 #include <osgEarthFeatures/Feature>
 #include <osg/ValueObject>
 
-#include <qgsfield.h>
-#include <qgsgeometry.h>
-#include <qgsmultipoint.h>
-#include <qgsmultilinestring.h>
-#include <qgsmultipolygon.h>
-#include <qgspolygon.h>
-#include <qgslinestring.h>
-#include <qgsvectorlayer.h>
+#include "qgsfield.h"
+#include "qgsgeometry.h"
+#include "qgsmultipoint.h"
+#include "qgsmultilinestring.h"
+#include "qgsmultipolygon.h"
+#include "qgspolygon.h"
+#include "qgslinestring.h"
+#include "qgsvectorlayer.h"
 
 class QgsGlobeFeatureUtils
 {

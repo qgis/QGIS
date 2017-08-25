@@ -21,7 +21,7 @@
 #include "qgis.h"
 #include <QWidget>
 #include <QStandardItemModel>
-#include <qgspanelwidget.h>
+#include "qgspanelwidget.h"
 
 #include "ui_qgseffectstackpropertieswidgetbase.h"
 #include "qgis_gui.h"

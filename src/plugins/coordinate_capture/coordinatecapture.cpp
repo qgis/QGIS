@@ -19,15 +19,15 @@
 // QGIS Specific includes
 //
 
-#include <qgisinterface.h>
+#include "qgisinterface.h"
 #include "qgsguiutils.h"
 #include "qgsapplication.h"
-#include <qgspoint.h>
-#include <qgsmapcanvas.h>
-#include <qgis.h>
-#include <qgscoordinatereferencesystem.h>
-#include <qgscoordinatetransform.h>
-#include <qgsprojectionselectiondialog.h>
+#include "qgspoint.h"
+#include "qgsmapcanvas.h"
+#include "qgis.h"
+#include "qgscoordinatereferencesystem.h"
+#include "qgscoordinatetransform.h"
+#include "qgsprojectionselectiondialog.h"
 #include "qgsdockwidget.h"
 
 #include "coordinatecapture.h"

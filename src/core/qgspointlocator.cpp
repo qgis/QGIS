@@ -109,7 +109,7 @@ class QgsPointLocator_VisitorNearestVertex : public IVisitor
       if ( sqrDist < 0 )
         return;  // probably empty geometry
 
-      QgsPointLocator::Match m( QgsPointLocator::Vertex, mLocator->mLayer, id, sqrt( sqrDist ), pt, vertexIndex );
+      QgsPointLocator::Match m( QgsPointLocator::Vertex, mLocator->mLayer, id, std::sqrt( sqrDist ), pt, vertexIndex );
       // in range queries the filter may reject some matches
       if ( mFilter && !mFilter->acceptMatch( m ) )
         return;
@@ -159,7 +159,7 @@ class QgsPointLocator_VisitorNearestEdge : public IVisitor
       QgsPointXY edgePoints[2];
       edgePoints[0] = geom->vertexAt( afterVertex - 1 );
       edgePoints[1] = geom->vertexAt( afterVertex );
-      QgsPointLocator::Match m( QgsPointLocator::Edge, mLocator->mLayer, id, sqrt( sqrDist ), pt, afterVertex - 1, edgePoints );
+      QgsPointLocator::Match m( QgsPointLocator::Edge, mLocator->mLayer, id, std::sqrt( sqrDist ), pt, afterVertex - 1, edgePoints );
       // in range queries the filter may reject some matches
       if ( mFilter && !mFilter->acceptMatch( m ) )
         return;

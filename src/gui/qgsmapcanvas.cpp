@@ -1091,8 +1091,8 @@ void QgsMapCanvas::keyPressEvent( QKeyEvent *e )
     // Don't want to interfer with mouse events
 
     QgsRectangle currentExtent = mapSettings().visibleExtent();
-    double dx = qAbs( currentExtent.width() / 4 );
-    double dy = qAbs( currentExtent.height() / 4 );
+    double dx = std::fabs( currentExtent.width() / 4 );
+    double dy = std::fabs( currentExtent.height() / 4 );
 
     switch ( e->key() )
     {
@@ -1251,7 +1251,7 @@ void QgsMapCanvas::endZoomRect( QPoint pos )
   const QSize &canvasSize = mSettings.outputSize();
   double sfx = ( double )zoomRectSize.width() / canvasSize.width();
   double sfy = ( double )zoomRectSize.height() / canvasSize.height();
-  double sf = qMax( sfx, sfy );
+  double sf = std::max( sfx, sfy );
 
   QgsPointXY c = mSettings.mapToPixel().toMapCoordinates( mZoomRect.center() );
 
@@ -1420,7 +1420,7 @@ void QgsMapCanvas::wheelEvent( QWheelEvent *e )
   double zoomFactor = mWheelZoomFactor;
 
   // "Normal" mouse have an angle delta of 120, precision mouses provide data faster, in smaller steps
-  zoomFactor = 1.0 + ( zoomFactor - 1.0 ) / 120.0 * qAbs( e->angleDelta().y() );
+  zoomFactor = 1.0 + ( zoomFactor - 1.0 ) / 120.0 * std::fabs( e->angleDelta().y() );
 
   if ( e->modifiers() & Qt::ControlModifier )
   {
@@ -1745,7 +1745,7 @@ void QgsMapCanvas::updateAutoRefreshTimer()
   Q_FOREACH ( QgsMapLayer *layer, mSettings.layers() )
   {
     if ( layer->hasAutoRefreshEnabled() && layer->autoRefreshInterval() > 0 )
-      minAutoRefreshInterval = minAutoRefreshInterval > 0 ? qMin( layer->autoRefreshInterval(), minAutoRefreshInterval ) : layer->autoRefreshInterval();
+      minAutoRefreshInterval = minAutoRefreshInterval > 0 ? std::min( layer->autoRefreshInterval(), minAutoRefreshInterval ) : layer->autoRefreshInterval();
   }
 
   if ( minAutoRefreshInterval > 0 )

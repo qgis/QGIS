@@ -395,7 +395,7 @@ QgsSymbolLayer *QgsSimpleFillSymbolLayer::createFromSld( QDomElement &element )
 double QgsSimpleFillSymbolLayer::estimateMaxBleed( const QgsRenderContext &context ) const
 {
   double penBleed = context.convertToPainterUnits( mStrokeStyle == Qt::NoPen ? 0 : ( mStrokeWidth / 2.0 ), mStrokeWidthUnit, mStrokeWidthMapUnitScale );
-  double offsetBleed = context.convertToPainterUnits( qMax( qAbs( mOffset.x() ), qAbs( mOffset.y() ) ), mOffsetUnit, mOffsetMapUnitScale );
+  double offsetBleed = context.convertToPainterUnits( std::max( std::fabs( mOffset.x() ), std::fabs( mOffset.y() ) ), mOffsetUnit, mOffsetMapUnitScale );
   return penBleed + offsetBleed;
 }
 
@@ -916,7 +916,7 @@ QgsGradientFillSymbolLayer *QgsGradientFillSymbolLayer::clone() const
 
 double QgsGradientFillSymbolLayer::estimateMaxBleed( const QgsRenderContext &context ) const
 {
-  double offsetBleed = context.convertToPainterUnits( qMax( qAbs( mOffset.x() ), qAbs( mOffset.y() ) ), mOffsetUnit, mOffsetMapUnitScale );
+  double offsetBleed = context.convertToPainterUnits( std::max( std::fabs( mOffset.x() ), std::fabs( mOffset.y() ) ), mOffsetUnit, mOffsetMapUnitScale );
   return offsetBleed;
 }
 
@@ -1320,7 +1320,7 @@ void QgsShapeburstFillSymbolLayer::distanceTransform1d( double *f, int n, int *v
 /* distance transform of 2d function using squared distance */
 void QgsShapeburstFillSymbolLayer::distanceTransform2d( double *im, int width, int height )
 {
-  int maxDimension = qMax( width, height );
+  int maxDimension = std::max( width, height );
   double *f = new double[ maxDimension ];
   int *v = new int[ maxDimension ];
   double *z = new double[ maxDimension + 1 ];
@@ -1418,7 +1418,7 @@ void QgsShapeburstFillSymbolLayer::dtArrayToQImage( double *array, QImage *im, Q
     }
 
     //values in distance transform are squared
-    maxDistanceValue = sqrt( dtMaxValue );
+    maxDistanceValue = std::sqrt( dtMaxValue );
   }
   else
   {
@@ -1444,7 +1444,7 @@ void QgsShapeburstFillSymbolLayer::dtArrayToQImage( double *array, QImage *im, Q
       //scale result to fit in the range [0, 1]
       if ( maxDistanceValue > 0 )
       {
-        pixVal = squaredVal > 0 ? qMin( ( sqrt( squaredVal ) / maxDistanceValue ), 1.0 ) : 0;
+        pixVal = squaredVal > 0 ? std::min( ( std::sqrt( squaredVal ) / maxDistanceValue ), 1.0 ) : 0;
       }
       else
       {
@@ -1512,7 +1512,7 @@ QgsShapeburstFillSymbolLayer *QgsShapeburstFillSymbolLayer::clone() const
 
 double QgsShapeburstFillSymbolLayer::estimateMaxBleed( const QgsRenderContext &context ) const
 {
-  double offsetBleed = context.convertToPainterUnits( qMax( qAbs( mOffset.x() ), qAbs( mOffset.y() ) ), mOffsetUnit, mOffsetMapUnitScale );
+  double offsetBleed = context.convertToPainterUnits( std::max( std::fabs( mOffset.x() ), std::fabs( mOffset.y() ) ), mOffsetUnit, mOffsetMapUnitScale );
   return offsetBleed;
 }
 
@@ -2541,7 +2541,7 @@ void QgsLinePatternFillSymbolLayer::applyPattern( const QgsSymbolRenderContext &
   {
     QgsSymbolLayer *layer = fillLineSymbol->symbolLayer( i );
     double outputPixelLayerBleed = layer->estimateMaxBleed( context.renderContext() );
-    outputPixelBleed = qMax( outputPixelBleed, outputPixelLayerBleed );
+    outputPixelBleed = std::max( outputPixelBleed, outputPixelLayerBleed );
 
     QgsMarkerLineSymbolLayer *markerLineLayer = dynamic_cast<QgsMarkerLineSymbolLayer *>( layer );
     if ( markerLineLayer )
@@ -2553,7 +2553,7 @@ void QgsLinePatternFillSymbolLayer::applyPattern( const QgsSymbolRenderContext &
       // big (multiplication of intervals in the worst case).
       // Because patterns without small common interval would look strange, we
       // believe that the longest interval should usually be sufficient.
-      outputPixelInterval = qMax( outputPixelInterval, outputPixelLayerInterval );
+      outputPixelInterval = std::max( outputPixelInterval, outputPixelLayerInterval );
     }
   }
 
@@ -2561,8 +2561,8 @@ void QgsLinePatternFillSymbolLayer::applyPattern( const QgsSymbolRenderContext &
   {
     // We have to adjust marker intervals to integer pixel size to get
     // repeatable pattern.
-    double intervalScale = qRound( outputPixelInterval ) / outputPixelInterval;
-    outputPixelInterval = qRound( outputPixelInterval );
+    double intervalScale = std::round( outputPixelInterval ) / outputPixelInterval;
+    outputPixelInterval = std::round( outputPixelInterval );
 
     for ( int i = 0; i < fillLineSymbol->symbolLayerCount(); i++ )
     {
@@ -2590,25 +2590,25 @@ void QgsLinePatternFillSymbolLayer::applyPattern( const QgsSymbolRenderContext &
   }
   else
   {
-    height = outputPixelDist / cos( lineAngle * M_PI / 180 ); //keep perpendicular distance between lines constant
-    width = outputPixelDist / sin( lineAngle * M_PI / 180 );
+    height = outputPixelDist / std::cos( lineAngle * M_PI / 180 ); //keep perpendicular distance between lines constant
+    width = outputPixelDist / std::sin( lineAngle * M_PI / 180 );
 
     // recalculate real angle and distance after rounding to pixels
-    lineAngle = 180 * atan2( static_cast< double >( height ), static_cast< double >( width ) ) / M_PI;
+    lineAngle = 180 * std::atan2( static_cast< double >( height ), static_cast< double >( width ) ) / M_PI;
     if ( lineAngle < 0 )
     {
       lineAngle += 360.;
     }
 
-    height = qAbs( height );
-    width = qAbs( width );
+    height = std::abs( height );
+    width = std::abs( width );
 
-    outputPixelDist = height * cos( lineAngle * M_PI / 180 );
+    outputPixelDist = height * std::cos( lineAngle * M_PI / 180 );
 
     // Round offset to correspond to one pixel height, otherwise lines may
     // be shifted on tile border if offset falls close to pixel center
-    int offsetHeight = qRound( qAbs( outputPixelOffset / cos( lineAngle * M_PI / 180 ) ) );
-    outputPixelOffset = offsetHeight * cos( lineAngle * M_PI / 180 );
+    int offsetHeight = std::round( std::fabs( outputPixelOffset / std::cos( lineAngle * M_PI / 180 ) ) );
+    outputPixelOffset = offsetHeight * std::cos( lineAngle * M_PI / 180 );
   }
 
   //depending on the angle, we might need to render into a larger image and use a subset of it
@@ -2617,11 +2617,11 @@ void QgsLinePatternFillSymbolLayer::applyPattern( const QgsSymbolRenderContext &
 
   // Add buffer based on bleed but keep precisely the height/width ratio (angle)
   // thus we add integer multiplications of width and height covering the bleed
-  int bufferMulti = qMax( qCeil( outputPixelBleed / width ), qCeil( outputPixelBleed / width ) );
+  int bufferMulti = std::max( std::ceil( outputPixelBleed / width ), std::ceil( outputPixelBleed / width ) );
 
   // Always buffer at least once so that center of line marker in upper right corner
   // does not fall outside due to representation error
-  bufferMulti = qMax( bufferMulti, 1 );
+  bufferMulti = std::max( bufferMulti, 1 );
 
   int xBuffer = width * bufferMulti;
   int yBuffer = height * bufferMulti;
@@ -2656,8 +2656,8 @@ void QgsLinePatternFillSymbolLayer::applyPattern( const QgsSymbolRenderContext &
   }
   else if ( lineAngle > 0 && lineAngle < 90 )
   {
-    dx = outputPixelDist * cos( ( 90 - lineAngle ) * M_PI / 180.0 );
-    dy = outputPixelDist * sin( ( 90 - lineAngle ) * M_PI / 180.0 );
+    dx = outputPixelDist * std::cos( ( 90 - lineAngle ) * M_PI / 180.0 );
+    dy = outputPixelDist * std::sin( ( 90 - lineAngle ) * M_PI / 180.0 );
     p1 = QPointF( 0, height );
     p2 = QPointF( width, 0 );
     p3 = QPointF( -dx, height - dy );
@@ -2667,8 +2667,8 @@ void QgsLinePatternFillSymbolLayer::applyPattern( const QgsSymbolRenderContext &
   }
   else if ( lineAngle > 180 && lineAngle < 270 )
   {
-    dx = outputPixelDist * cos( ( 90 - lineAngle ) * M_PI / 180.0 );
-    dy = outputPixelDist * sin( ( 90 - lineAngle ) * M_PI / 180.0 );
+    dx = outputPixelDist * std::cos( ( 90 - lineAngle ) * M_PI / 180.0 );
+    dy = outputPixelDist * std::sin( ( 90 - lineAngle ) * M_PI / 180.0 );
     p1 = QPointF( width, 0 );
     p2 = QPointF( 0, height );
     p3 = QPointF( width - dx, -dy );
@@ -2678,8 +2678,8 @@ void QgsLinePatternFillSymbolLayer::applyPattern( const QgsSymbolRenderContext &
   }
   else if ( lineAngle > 90 && lineAngle < 180 )
   {
-    dy = outputPixelDist * cos( ( 180 - lineAngle ) * M_PI / 180 );
-    dx = outputPixelDist * sin( ( 180 - lineAngle ) * M_PI / 180 );
+    dy = outputPixelDist * std::cos( ( 180 - lineAngle ) * M_PI / 180 );
+    dx = outputPixelDist * std::sin( ( 180 - lineAngle ) * M_PI / 180 );
     p1 = QPointF( 0, 0 );
     p2 = QPointF( width, height );
     p5 = QPointF( dx, -dy );
@@ -2689,8 +2689,8 @@ void QgsLinePatternFillSymbolLayer::applyPattern( const QgsSymbolRenderContext &
   }
   else if ( lineAngle > 270 && lineAngle < 360 )
   {
-    dy = outputPixelDist * cos( ( 180 - lineAngle ) * M_PI / 180 );
-    dx = outputPixelDist * sin( ( 180 - lineAngle ) * M_PI / 180 );
+    dy = outputPixelDist * std::cos( ( 180 - lineAngle ) * M_PI / 180 );
+    dx = outputPixelDist * std::sin( ( 180 - lineAngle ) * M_PI / 180 );
     p1 = QPointF( width, height );
     p2 = QPointF( 0, 0 );
     p5 = QPointF( width + dx, height - dy );
@@ -2880,7 +2880,7 @@ void QgsLinePatternFillSymbolLayer::toSld( QDomDocument &doc, QDomElement &eleme
   QgsSymbolLayerUtils::createRotationElement( doc, graphicElem, angleFunc );
 
   // <se:Displacement>
-  QPointF lineOffset( sin( mLineAngle ) * mOffset, cos( mLineAngle ) * mOffset );
+  QPointF lineOffset( std::sin( mLineAngle ) * mOffset, std::cos( mLineAngle ) * mOffset );
   lineOffset = QgsSymbolLayerUtils::rescaleUom( lineOffset, mOffsetUnit, props );
   QgsSymbolLayerUtils::createDisplacementElement( doc, graphicElem, lineOffset );
 }
@@ -2964,7 +2964,7 @@ QgsSymbolLayer *QgsLinePatternFillSymbolLayer::createFromSld( QDomElement &eleme
   QPointF vectOffset;
   if ( QgsSymbolLayerUtils::displacementFromSldElement( graphicElem, vectOffset ) )
   {
-    offset = sqrt( pow( vectOffset.x(), 2 ) + pow( vectOffset.y(), 2 ) );
+    offset = std::sqrt( std::pow( vectOffset.x(), 2 ) + std::pow( vectOffset.y(), 2 ) );
   }
 
   QString uom = element.attribute( QStringLiteral( "uom" ), "" );
@@ -3749,7 +3749,7 @@ QgsRasterFillSymbolLayer *QgsRasterFillSymbolLayer::clone() const
 
 double QgsRasterFillSymbolLayer::estimateMaxBleed( const QgsRenderContext &context ) const
 {
-  return context.convertToPainterUnits( qMax( qAbs( mOffset.x() ), qAbs( mOffset.y() ) ), mOffsetUnit, mOffsetMapUnitScale );
+  return context.convertToPainterUnits( std::max( std::fabs( mOffset.x() ), std::fabs( mOffset.y() ) ), mOffsetUnit, mOffsetMapUnitScale );
 }
 
 void QgsRasterFillSymbolLayer::setImageFilePath( const QString &imagePath )

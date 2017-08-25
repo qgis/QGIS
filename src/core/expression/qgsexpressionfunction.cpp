@@ -235,13 +235,13 @@ static QVariant fcnEval( const QVariantList &values, const QgsExpressionContext 
 static QVariant fcnSqrt( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent )
 {
   double x = QgsExpressionUtils::getDoubleValue( values.at( 0 ), parent );
-  return QVariant( sqrt( x ) );
+  return QVariant( std::sqrt( x ) );
 }
 
 static QVariant fcnAbs( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent )
 {
   double val = QgsExpressionUtils::getDoubleValue( values.at( 0 ), parent );
-  return QVariant( fabs( val ) );
+  return QVariant( std::fabs( val ) );
 }
 
 static QVariant fcnRadians( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent )
@@ -257,50 +257,50 @@ static QVariant fcnDegrees( const QVariantList &values, const QgsExpressionConte
 static QVariant fcnSin( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent )
 {
   double x = QgsExpressionUtils::getDoubleValue( values.at( 0 ), parent );
-  return QVariant( sin( x ) );
+  return QVariant( std::sin( x ) );
 }
 static QVariant fcnCos( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent )
 {
   double x = QgsExpressionUtils::getDoubleValue( values.at( 0 ), parent );
-  return QVariant( cos( x ) );
+  return QVariant( std::cos( x ) );
 }
 static QVariant fcnTan( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent )
 {
   double x = QgsExpressionUtils::getDoubleValue( values.at( 0 ), parent );
-  return QVariant( tan( x ) );
+  return QVariant( std::tan( x ) );
 }
 static QVariant fcnAsin( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent )
 {
   double x = QgsExpressionUtils::getDoubleValue( values.at( 0 ), parent );
-  return QVariant( asin( x ) );
+  return QVariant( std::asin( x ) );
 }
 static QVariant fcnAcos( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent )
 {
   double x = QgsExpressionUtils::getDoubleValue( values.at( 0 ), parent );
-  return QVariant( acos( x ) );
+  return QVariant( std::acos( x ) );
 }
 static QVariant fcnAtan( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent )
 {
   double x = QgsExpressionUtils::getDoubleValue( values.at( 0 ), parent );
-  return QVariant( atan( x ) );
+  return QVariant( std::atan( x ) );
 }
 static QVariant fcnAtan2( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent )
 {
   double y = QgsExpressionUtils::getDoubleValue( values.at( 0 ), parent );
   double x = QgsExpressionUtils::getDoubleValue( values.at( 1 ), parent );
-  return QVariant( atan2( y, x ) );
+  return QVariant( std::atan2( y, x ) );
 }
 static QVariant fcnExp( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent )
 {
   double x = QgsExpressionUtils::getDoubleValue( values.at( 0 ), parent );
-  return QVariant( exp( x ) );
+  return QVariant( std::exp( x ) );
 }
 static QVariant fcnLn( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent )
 {
   double x = QgsExpressionUtils::getDoubleValue( values.at( 0 ), parent );
   if ( x <= 0 )
     return QVariant();
-  return QVariant( log( x ) );
+  return QVariant( std::log( x ) );
 }
 static QVariant fcnLog10( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent )
 {
@@ -315,7 +315,7 @@ static QVariant fcnLog( const QVariantList &values, const QgsExpressionContext *
   double x = QgsExpressionUtils::getDoubleValue( values.at( 1 ), parent );
   if ( x <= 0 || b <= 0 )
     return QVariant();
-  return QVariant( log( x ) / log( b ) );
+  return QVariant( std::log( x ) / std::log( b ) );
 }
 static QVariant fcnRndF( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent )
 {
@@ -402,7 +402,7 @@ static QVariant fcnExpScale( const QVariantList &values, const QgsExpressionCont
   }
 
   // Return exponentially scaled value
-  return QVariant( ( ( rangeMax - rangeMin ) / pow( domainMax - domainMin, exponent ) ) * pow( val - domainMin, exponent ) + rangeMin );
+  return QVariant( ( ( rangeMax - rangeMin ) / std::pow( domainMax - domainMin, exponent ) ) * std::pow( val - domainMin, exponent ) + rangeMin );
 }
 
 static QVariant fcnMax( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent )
@@ -859,13 +859,13 @@ static QVariant fcnClamp( const QVariantList &values, const QgsExpressionContext
 static QVariant fcnFloor( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent )
 {
   double x = QgsExpressionUtils::getDoubleValue( values.at( 0 ), parent );
-  return QVariant( floor( x ) );
+  return QVariant( std::floor( x ) );
 }
 
 static QVariant fcnCeil( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent )
 {
   double x = QgsExpressionUtils::getDoubleValue( values.at( 0 ), parent );
-  return QVariant( ceil( x ) );
+  return QVariant( std::ceil( x ) );
 }
 
 static QVariant fcnToInt( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent )
@@ -1007,13 +1007,13 @@ static QVariant fcnWordwrap( const QVariantList &values, const QgsExpressionCont
             if ( strhit == lasthit || strhit == -1 )
             {
               //if no new backward delimiter found, try to locate forward
-              strhit = lines[i].indexOf( rx, strcurrent + qAbs( wrap ) );
+              strhit = lines[i].indexOf( rx, strcurrent + std::labs( wrap ) );
             }
             lasthit = strhit;
           }
           else
           {
-            strhit = lines[i].indexOf( rx, strcurrent + qAbs( wrap ) );
+            strhit = lines[i].indexOf( rx, strcurrent + std::labs( wrap ) );
           }
           if ( strhit > -1 )
           {
@@ -1875,7 +1875,7 @@ static QVariant fcnSmooth( const QVariantList &values, const QgsExpressionContex
   if ( geom.isNull() )
     return QVariant();
 
-  int iterations = qMin( QgsExpressionUtils::getNativeIntValue( values.at( 1 ), parent ), 10 );
+  int iterations = std::min( QgsExpressionUtils::getNativeIntValue( values.at( 1 ), parent ), 10 );
   double offset = qBound( 0.0, QgsExpressionUtils::getDoubleValue( values.at( 2 ), parent ), 0.5 );
   double minLength = QgsExpressionUtils::getDoubleValue( values.at( 3 ), parent );
   double maxAngle = qBound( 0.0, QgsExpressionUtils::getDoubleValue( values.at( 4 ), parent ), 180.0 );
@@ -2656,11 +2656,11 @@ static QVariant fcnAzimuth( const QVariantList &values, const QgsExpressionConte
   {
     if ( pt1->y() < pt2->y() )
     {
-      return atan( fabs( pt1->x() - pt2->x() ) / fabs( pt1->y() - pt2->y() ) );
+      return std::atan( std::fabs( pt1->x() - pt2->x() ) / std::fabs( pt1->y() - pt2->y() ) );
     }
     else /* ( pt1->y() > pt2->y() )  - equality case handled above */
     {
-      return atan( fabs( pt1->y() - pt2->y() ) / fabs( pt1->x() - pt2->x() ) )
+      return std::atan( std::fabs( pt1->y() - pt2->y() ) / std::fabs( pt1->x() - pt2->x() ) )
              + ( M_PI / 2 );
     }
   }
@@ -2669,12 +2669,12 @@ static QVariant fcnAzimuth( const QVariantList &values, const QgsExpressionConte
   {
     if ( pt1->y() > pt2->y() )
     {
-      return atan( fabs( pt1->x() - pt2->x() ) / fabs( pt1->y() - pt2->y() ) )
+      return std::atan( std::fabs( pt1->x() - pt2->x() ) / std::fabs( pt1->y() - pt2->y() ) )
              + M_PI;
     }
     else /* ( pt1->y() < pt2->y() )  - equality case handled above */
     {
-      return atan( fabs( pt1->y() - pt2->y() ) / fabs( pt1->x() - pt2->x() ) )
+      return std::atan( std::fabs( pt1->y() - pt2->y() ) / std::fabs( pt1->x() - pt2->x() ) )
              + ( M_PI + ( M_PI / 2 ) );
     }
   }
@@ -2883,14 +2883,14 @@ static QVariant fcnRound( const QVariantList &values, const QgsExpressionContext
   if ( values.length() == 2 && values.at( 1 ).toInt() != 0 )
   {
     double number = QgsExpressionUtils::getDoubleValue( values.at( 0 ), parent );
-    double scaler = pow( 10.0, QgsExpressionUtils::getIntValue( values.at( 1 ), parent ) );
-    return QVariant( qRound( number * scaler ) / scaler );
+    double scaler = std::pow( 10.0, QgsExpressionUtils::getIntValue( values.at( 1 ), parent ) );
+    return QVariant( std::round( number * scaler ) / scaler );
   }
 
   if ( values.length() >= 1 )
   {
     double number = QgsExpressionUtils::getIntValue( values.at( 0 ), parent );
-    return QVariant( qRound( number ) );
+    return QVariant( qlonglong( std::round( number ) ) );
   }
 
   return QVariant();

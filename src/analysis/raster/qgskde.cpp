@@ -87,8 +87,8 @@ QgsKernelDensityEstimation::Result QgsKernelDensityEstimation::prepare()
   if ( mBounds.isNull() )
     return InvalidParameters;
 
-  int rows = qMax( ceil( mBounds.height() / mPixelSize ) + 1, 1.0 );
-  int cols = qMax( ceil( mBounds.width() / mPixelSize ) + 1, 1.0 );
+  int rows = std::max( std::ceil( mBounds.height() / mPixelSize ) + 1, 1.0 );
+  int cols = std::max( std::ceil( mBounds.width() / mPixelSize ) + 1, 1.0 );
 
   if ( !createEmptyLayer( driver, mBounds, rows, cols ) )
     return FileCreationError;
@@ -181,7 +181,7 @@ QgsKernelDensityEstimation::Result QgsKernelDensityEstimation::addFeature( const
         double pixelCentroidX = ( xPosition + xp + 0.5 ) * mPixelSize + mBounds.xMinimum();
         double pixelCentroidY = ( yPosition + yp + 0.5 ) * mPixelSize + mBounds.yMinimum();
 
-        double distance = sqrt( pow( pixelCentroidX - ( *pointIt ).x(), 2.0 ) + pow( pixelCentroidY - ( *pointIt ).y(), 2.0 ) );
+        double distance = std::sqrt( std::pow( pixelCentroidX - ( *pointIt ).x(), 2.0 ) + std::pow( pixelCentroidY - ( *pointIt ).y(), 2.0 ) );
 
         // is pixel outside search bandwidth of feature?
         if ( distance > radius )
@@ -324,13 +324,13 @@ double QgsKernelDensityEstimation::quarticKernel( const double distance, const d
     case OutputScaled:
     {
       // Normalizing constant
-      double k = 116. / ( 5. * M_PI * pow( bandwidth, 2 ) );
+      double k = 116. / ( 5. * M_PI * std::pow( bandwidth, 2 ) );
 
       // Derived from Wand and Jones (1995), p. 175
-      return k * ( 15. / 16. ) * pow( 1. - pow( distance / bandwidth, 2 ), 2 );
+      return k * ( 15. / 16. ) * std::pow( 1. - std::pow( distance / bandwidth, 2 ), 2 );
     }
     case OutputRaw:
-      return pow( 1. - pow( distance / bandwidth, 2 ), 2 );
+      return std::pow( 1. - std::pow( distance / bandwidth, 2 ), 2 );
   }
   return 0.0; //no, seriously, I told you NO WARNINGS!
 }
@@ -342,13 +342,13 @@ double QgsKernelDensityEstimation::triweightKernel( const double distance, const
     case OutputScaled:
     {
       // Normalizing constant
-      double k = 128. / ( 35. * M_PI * pow( bandwidth, 2 ) );
+      double k = 128. / ( 35. * M_PI * std::pow( bandwidth, 2 ) );
 
       // Derived from Wand and Jones (1995), p. 175
-      return k * ( 35. / 32. ) * pow( 1. - pow( distance / bandwidth, 2 ), 3 );
+      return k * ( 35. / 32. ) * std::pow( 1. - std::pow( distance / bandwidth, 2 ), 3 );
     }
     case OutputRaw:
-      return pow( 1. - pow( distance / bandwidth, 2 ), 3 );
+      return std::pow( 1. - std::pow( distance / bandwidth, 2 ), 3 );
   }
   return 0.0; // this is getting ridiculous... don't you ever listen to a word I say?
 }
@@ -360,13 +360,13 @@ double QgsKernelDensityEstimation::epanechnikovKernel( const double distance, co
     case OutputScaled:
     {
       // Normalizing constant
-      double k = 8. / ( 3. * M_PI * pow( bandwidth, 2 ) );
+      double k = 8. / ( 3. * M_PI * std::pow( bandwidth, 2 ) );
 
       // Derived from Wand and Jones (1995), p. 175
-      return k * ( 3. / 4. ) * ( 1. - pow( distance / bandwidth, 2 ) );
+      return k * ( 3. / 4. ) * ( 1. - std::pow( distance / bandwidth, 2 ) );
     }
     case OutputRaw:
-      return ( 1. - pow( distance / bandwidth, 2 ) );
+      return ( 1. - std::pow( distance / bandwidth, 2 ) );
   }
 
   return 0.0; // la la la i'm not listening
@@ -383,7 +383,7 @@ double QgsKernelDensityEstimation::triangularKernel( const double distance, cons
 
       if ( mDecay >= 0 )
       {
-        double k = 3. / ( ( 1. + 2. * mDecay ) * M_PI * pow( bandwidth, 2 ) );
+        double k = 3. / ( ( 1. + 2. * mDecay ) * M_PI * std::pow( bandwidth, 2 ) );
 
         // Derived from Wand and Jones (1995), p. 175 (with addition of decay parameter)
         return k * ( 1. - ( 1. - mDecay ) * ( distance / bandwidth ) );

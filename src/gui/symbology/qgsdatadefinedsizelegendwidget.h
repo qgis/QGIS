@@ -20,7 +20,7 @@
 #include "qgis_gui.h"
 
 #include <memory>
-#include <ui_qgsdatadefinedsizelegendwidget.h>
+#include "ui_qgsdatadefinedsizelegendwidget.h"
 
 #include "qgspanelwidget.h"
 #include "qgsproperty.h"

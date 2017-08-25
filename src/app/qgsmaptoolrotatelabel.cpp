@@ -230,8 +230,8 @@ QgsPointXY QgsMapToolRotateLabel::rotatePointCounterClockwise( const QgsPointXY 
   double v1x = input.x() - centerPoint.x();
   double v1y = input.y() - centerPoint.y();
 
-  double v2x = cos( rad ) * v1x - sin( rad ) * v1y;
-  double v2y = sin( rad ) * v1x + cos( rad ) * v1y;
+  double v2x = std::cos( rad ) * v1x - std::sin( rad ) * v1y;
+  double v2y = std::sin( rad ) * v1x + std::cos( rad ) * v1y;
 
   return QgsPointXY( centerPoint.x() + v2x, centerPoint.y() + v2y );
 }

@@ -27,7 +27,6 @@ email                : marco.hugentobler at sourcepole dot com
 #include "qgspolygon.h"
 #include <limits>
 #include <cstdio>
-#include <QtCore/qmath.h>
 
 #define DEFAULT_QUADRANT_SEGMENTS 8
 
@@ -316,7 +315,7 @@ QgsAbstractGeometry *QgsGeos::subdivide( int maxNodes, QString *errorMsg ) const
   }
 
   // minimum allowed max is 8
-  maxNodes = qMax( maxNodes, 8 );
+  maxNodes = std::max( maxNodes, 8 );
 
   std::unique_ptr< QgsGeometryCollection > parts = QgsGeometryFactory::createCollectionOfType( mGeometry->wkbType() );
   try
@@ -1701,11 +1700,11 @@ GEOSCoordSequence *QgsGeos::createCoordinateSequence( const QgsCurve *curve, dou
     {
       for ( int i = 0; i < numOutPoints; ++i )
       {
-        GEOSCoordSeq_setX_r( geosinit.ctxt, coordSeq, i, qgsRound( line->xAt( i % numPoints ) / precision ) * precision );
-        GEOSCoordSeq_setY_r( geosinit.ctxt, coordSeq, i, qgsRound( line->yAt( i % numPoints ) / precision ) * precision );
+        GEOSCoordSeq_setX_r( geosinit.ctxt, coordSeq, i, std::round( line->xAt( i % numPoints ) / precision ) * precision );
+        GEOSCoordSeq_setY_r( geosinit.ctxt, coordSeq, i, std::round( line->yAt( i % numPoints ) / precision ) * precision );
         if ( hasZ )
         {
-          GEOSCoordSeq_setOrdinate_r( geosinit.ctxt, coordSeq, i, 2, qgsRound( line->zAt( i % numPoints ) / precision ) * precision );
+          GEOSCoordSeq_setOrdinate_r( geosinit.ctxt, coordSeq, i, 2, std::round( line->zAt( i % numPoints ) / precision ) * precision );
         }
         if ( hasM )
         {
@@ -1765,11 +1764,11 @@ GEOSGeometry *QgsGeos::createGeosPointXY( double x, double y, bool hasZ, double 
     }
     if ( precision > 0. )
     {
-      GEOSCoordSeq_setX_r( geosinit.ctxt, coordSeq, 0, qgsRound( x / precision ) * precision );
-      GEOSCoordSeq_setY_r( geosinit.ctxt, coordSeq, 0, qgsRound( y / precision ) * precision );
+      GEOSCoordSeq_setX_r( geosinit.ctxt, coordSeq, 0, std::round( x / precision ) * precision );
+      GEOSCoordSeq_setY_r( geosinit.ctxt, coordSeq, 0, std::round( y / precision ) * precision );
       if ( hasZ )
       {
-        GEOSCoordSeq_setOrdinate_r( geosinit.ctxt, coordSeq, 0, 2, qgsRound( z / precision ) * precision );
+        GEOSCoordSeq_setOrdinate_r( geosinit.ctxt, coordSeq, 0, 2, std::round( z / precision ) * precision );
       }
     }
     else
@@ -2635,7 +2634,7 @@ int QgsGeos::lineContainedInLine( const GEOSGeometry *line1, const GEOSGeometry 
     return -1;
   }
 
-  double bufferDistance = pow( 10.0L, geomDigits( line2 ) - 11 );
+  double bufferDistance = std::pow( 10.0L, geomDigits( line2 ) - 11 );
 
   GEOSGeometry *bufferGeom = GEOSBuffer_r( geosinit.ctxt, line2, bufferDistance, DEFAULT_QUADRANT_SEGMENTS );
   if ( !bufferGeom )
@@ -2665,7 +2664,7 @@ int QgsGeos::pointContainedInLine( const GEOSGeometry *point, const GEOSGeometry
   if ( !point || !line )
     return -1;
 
-  double bufferDistance = pow( 10.0L, geomDigits( line ) - 11 );
+  double bufferDistance = std::pow( 10.0L, geomDigits( line ) - 11 );
 
   GEOSGeometry *lineBuffer = GEOSBuffer_r( geosinit.ctxt, line, bufferDistance, 8 );
   if ( !lineBuffer )
@@ -2705,12 +2704,12 @@ int QgsGeos::geomDigits( const GEOSGeometry *geom )
     GEOSCoordSeq_getX_r( geosinit.ctxt, bBoxCoordSeq, i, &t );
 
     int digits;
-    digits = ceil( log10( fabs( t ) ) );
+    digits = std::ceil( std::log10( std::fabs( t ) ) );
     if ( digits > maxDigits )
       maxDigits = digits;
 
     GEOSCoordSeq_getY_r( geosinit.ctxt, bBoxCoordSeq, i, &t );
-    digits = ceil( log10( fabs( t ) ) );
+    digits = std::ceil( std::log10( std::fabs( t ) ) );
     if ( digits > maxDigits )
       maxDigits = digits;
   }

@@ -47,12 +47,12 @@ float QgsMapToPixelSimplifier::calculateLengthSquared2D( double x1, double y1, d
 
 bool QgsMapToPixelSimplifier::equalSnapToGrid( double x1, double y1, double x2, double y2, double gridOriginX, double gridOriginY, float gridInverseSizeXY )
 {
-  int grid_x1 = qRound( ( x1 - gridOriginX ) * gridInverseSizeXY );
-  int grid_x2 = qRound( ( x2 - gridOriginX ) * gridInverseSizeXY );
+  int grid_x1 = std::round( ( x1 - gridOriginX ) * gridInverseSizeXY );
+  int grid_x2 = std::round( ( x2 - gridOriginX ) * gridInverseSizeXY );
   if ( grid_x1 != grid_x2 ) return false;
 
-  int grid_y1 = qRound( ( y1 - gridOriginY ) * gridInverseSizeXY );
-  int grid_y2 = qRound( ( y2 - gridOriginY ) * gridInverseSizeXY );
+  int grid_y1 = std::round( ( y1 - gridOriginY ) * gridInverseSizeXY );
+  int grid_y2 = std::round( ( y2 - gridOriginY ) * gridInverseSizeXY );
   if ( grid_y1 != grid_y2 ) return false;
 
   return true;
@@ -329,7 +329,7 @@ QgsGeometry QgsMapToPixelSimplifier::simplify( const QgsGeometry &geometry ) con
   }
 
   const QgsRectangle envelope = geometry.boundingBox();
-  if ( qMax( envelope.width(), envelope.height() ) / numPoints > mTolerance * 2.0 )
+  if ( std::max( envelope.width(), envelope.height() ) / numPoints > mTolerance * 2.0 )
   {
     //points are in average too far apart to lead to any significant simplification
     return geometry;

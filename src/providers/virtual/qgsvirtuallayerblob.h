@@ -19,7 +19,7 @@ email                : hugo dot mercier at oslandia dot com
 
 #include <stdint.h>
 
-#include <qgsgeometry.h>
+#include "qgsgeometry.h"
 
 // BLOB header
 // name    size    value

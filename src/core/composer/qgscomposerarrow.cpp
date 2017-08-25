@@ -280,8 +280,8 @@ void QgsComposerArrow::drawSVGMarker( QPainter *p, MarkerType type, const QStrin
     }
     QPointF rotatedFixPoint;
     double angleRad = angle / 180 * M_PI;
-    rotatedFixPoint.setX( fixPoint.x() * cos( angleRad ) + fixPoint.y() * -sin( angleRad ) );
-    rotatedFixPoint.setY( fixPoint.x() * sin( angleRad ) + fixPoint.y() * cos( angleRad ) );
+    rotatedFixPoint.setX( fixPoint.x() * std::cos( angleRad ) + fixPoint.y() * -sin( angleRad ) );
+    rotatedFixPoint.setY( fixPoint.x() * std::sin( angleRad ) + fixPoint.y() * std::cos( angleRad ) );
     p->translate( canvasPoint.x() - rotatedFixPoint.x(), canvasPoint.y() - rotatedFixPoint.y() );
   }
   else
@@ -380,8 +380,8 @@ double QgsComposerArrow::computeMarkerMargin() const
     }
     else if ( mMarkerMode == SVGMarker )
     {
-      double maxArrowHeight = qMax( mStartArrowHeadHeight, mStopArrowHeadHeight );
-      margin = mPen.widthF() / 2 + qMax( mArrowHeadWidth / 2.0, maxArrowHeight / 2.0 );
+      double maxArrowHeight = std::max( mStartArrowHeadHeight, mStopArrowHeadHeight );
+      margin = mPen.widthF() / 2 + std::max( mArrowHeadWidth / 2.0, maxArrowHeight / 2.0 );
     }
   }
   else
@@ -398,8 +398,8 @@ double QgsComposerArrow::computeMarkerMargin() const
     {
       double startMarkerMargin = std::sqrt( 0.25 * ( mStartArrowHeadHeight * mStartArrowHeadHeight + mArrowHeadWidth * mArrowHeadWidth ) );
       double stopMarkerMargin = std::sqrt( 0.25 * ( mStopArrowHeadHeight * mStopArrowHeadHeight + mArrowHeadWidth * mArrowHeadWidth ) );
-      double markerMargin = qMax( startMarkerMargin, stopMarkerMargin );
-      margin = qMax( mPen.widthF() / std::sqrt( 2.0 ), markerMargin );
+      double markerMargin = std::max( startMarkerMargin, stopMarkerMargin );
+      margin = std::max( mPen.widthF() / std::sqrt( 2.0 ), markerMargin );
     }
   }
   return margin;
@@ -408,8 +408,8 @@ double QgsComposerArrow::computeMarkerMargin() const
 void QgsComposerArrow::adaptItemSceneRect()
 {
   //rectangle containing start and end point
-  QRectF rect = QRectF( qMin( mStartPoint.x(), mStopPoint.x() ), qMin( mStartPoint.y(), mStopPoint.y() ),
-                        qAbs( mStopPoint.x() - mStartPoint.x() ), qAbs( mStopPoint.y() - mStartPoint.y() ) );
+  QRectF rect = QRectF( std::min( mStartPoint.x(), mStopPoint.x() ), std::min( mStartPoint.y(), mStopPoint.y() ),
+                        std::fabs( mStopPoint.x() - mStartPoint.x() ), std::fabs( mStopPoint.y() - mStartPoint.y() ) );
   double enlarge = computeMarkerMargin();
   rect.adjust( -enlarge, -enlarge, enlarge, enlarge );
   QgsComposerItem::setSceneRect( rect );

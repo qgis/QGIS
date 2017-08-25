@@ -134,12 +134,12 @@ bool QgsMapRendererJob::reprojectToLayerExtent( const QgsMapLayer *ml, const Qgs
         QgsDebugMsgLevel( QString( "\n0:%1 %2x%3\n1:%4\n2:%5 %6x%7 (w:%8 h:%9)" )
                           .arg( extent.toString() ).arg( extent.width() ).arg( extent.height() )
                           .arg( extent1.toString(), extent2.toString() ).arg( extent2.width() ).arg( extent2.height() )
-                          .arg( fabs( 1.0 - extent2.width() / extent.width() ) )
-                          .arg( fabs( 1.0 - extent2.height() / extent.height() ) )
+                          .arg( std::fabs( 1.0 - extent2.width() / extent.width() ) )
+                          .arg( std::fabs( 1.0 - extent2.height() / extent.height() ) )
                           , 3 );
 
-        if ( fabs( 1.0 - extent2.width() / extent.width() ) < 0.5 &&
-             fabs( 1.0 - extent2.height() / extent.height() ) < 0.5 )
+        if ( std::fabs( 1.0 - extent2.width() / extent.width() ) < 0.5 &&
+             std::fabs( 1.0 - extent2.height() / extent.height() ) < 0.5 )
         {
           extent = extent1;
         }

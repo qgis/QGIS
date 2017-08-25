@@ -196,14 +196,14 @@ std::unique_ptr<QgsMarkerSymbolLayer> backgroundToMarkerLayer( const QgsTextBack
   layer->setEnabled( true );
   // a marker does not have a size x and y, just a size (and it should be at least one)
   QSizeF size = settings.size();
-  layer->setSize( qMax( 1., qMax( size.width(), size.height() ) ) );
+  layer->setSize( std::max( 1., std::max( size.width(), size.height() ) ) );
   layer->setSizeUnit( settings.sizeUnit() );
   // fill and stroke
   QColor fillColor = settings.fillColor();
   QColor strokeColor = settings.strokeColor();
   if ( settings.opacity() < 1 )
   {
-    int alpha = qRound( settings.opacity() * 255 );
+    int alpha = std::round( settings.opacity() * 255 );
     fillColor.setAlpha( alpha );
     strokeColor.setAlpha( alpha );
   }
@@ -333,7 +333,7 @@ void QgsVectorLayerSimpleLabeling::toSld( QDomNode &parent, const QgsStringMap &
         QgsSymbolLayerUtils::createAnchorPointElement( doc, pointPlacement, QPointF( 0, 0.5 ) );
         QgsUnitTypes::RenderUnit distUnit = mSettings->distUnits;
         double radius = QgsSymbolLayerUtils::rescaleUom( mSettings->dist, distUnit, props );
-        double offset = sqrt( radius * radius / 2 ); // make it start top/right
+        double offset = std::sqrt( radius * radius / 2 ); // make it start top/right
         maxDisplacement = radius + 1; // lock the distance
         QgsSymbolLayerUtils::createDisplacementElement( doc, pointPlacement, QPointF( offset, offset ) );
       }
@@ -465,7 +465,7 @@ void QgsVectorLayerSimpleLabeling::toSld( QDomNode &parent, const QgsStringMap &
       if ( mSettings->maxCurvedCharAngleIn > 0 || mSettings->maxCurvedCharAngleOut > 0 )
       {
         // SLD has no notion for this, the GeoTools ecosystem can only do a single angle
-        double angle = qMin( qAbs( mSettings->maxCurvedCharAngleIn ), qAbs( mSettings->maxCurvedCharAngleOut ) );
+        double angle = std::min( std::fabs( mSettings->maxCurvedCharAngleIn ), std::fabs( mSettings->maxCurvedCharAngleOut ) );
         QDomElement vo =  QgsSymbolLayerUtils::createVendorOptionElement( doc, QStringLiteral( "maxAngleDelta" ), qgsDoubleToString( angle ) );
         textSymbolizerElement.appendChild( vo );
       }

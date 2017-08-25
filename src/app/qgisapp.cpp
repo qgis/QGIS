@@ -71,11 +71,11 @@
 #include <QWhatsThis>
 #include <QWidgetAction>
 
-#include <qgssettings.h>
-#include <qgsnetworkaccessmanager.h>
-#include <qgsapplication.h>
-#include <qgscomposition.h>
-#include <qgslayerstylingwidget.h>
+#include "qgssettings.h"
+#include "qgsnetworkaccessmanager.h"
+#include "qgsapplication.h"
+#include "qgscomposition.h"
+#include "qgslayerstylingwidget.h"
 #include "qgstaskmanager.h"
 #include "qgsziputils.h"
 
@@ -3763,7 +3763,7 @@ void QgisApp::saveRecentProjectPath( const QString &projectPath, bool savePrevie
     QDir().mkdir( previewDir );
 
     // Render the map canvas
-    QSize previewSize( 250, 177 ); // h = w / sqrt(2)
+    QSize previewSize( 250, 177 ); // h = w / std::sqrt(2)
     QRect previewRect( QPoint( ( mMapCanvas->width() - previewSize.width() ) / 2
                                , ( mMapCanvas->height() - previewSize.height() ) / 2 )
                        , previewSize );
@@ -9145,8 +9145,8 @@ void QgisApp::legendLayerZoomNative()
     QgsCoordinateTransform ct( mMapCanvas->mapSettings().destinationCrs(), layer->crs() );
     p1 = ct.transform( p1 );
     p2 = ct.transform( p2 );
-    double width = sqrt( p1.sqrDist( p2 ) ); // width (actually the diagonal) of reprojected pixel
-    mMapCanvas->zoomByFactor( sqrt( layer->rasterUnitsPerPixelX() * layer->rasterUnitsPerPixelX() + layer->rasterUnitsPerPixelY() * layer->rasterUnitsPerPixelY() ) / width );
+    double width = std::sqrt( p1.sqrDist( p2 ) ); // width (actually the diagonal) of reprojected pixel
+    mMapCanvas->zoomByFactor( std::sqrt( layer->rasterUnitsPerPixelX() * layer->rasterUnitsPerPixelX() + layer->rasterUnitsPerPixelY() * layer->rasterUnitsPerPixelY() ) / width );
 
     mMapCanvas->refresh();
     QgsDebugMsg( "MapUnitsPerPixel after  : " + QString::number( mMapCanvas->mapUnitsPerPixel() ) );

@@ -338,7 +338,7 @@ bool QgsRenderChecker::compareImages( const QString &testName,
   int imgHeight = 280;
   if ( ! myExpectedImage.isNull() )
   {
-    imgWidth = qMin( myExpectedImage.width(), imgWidth );
+    imgWidth = std::min( myExpectedImage.width(), imgWidth );
     imgHeight = myExpectedImage.height() * imgWidth / myExpectedImage.width();
   }
 
@@ -381,8 +381,8 @@ bool QgsRenderChecker::compareImages( const QString &testName,
   {
     qDebug( "Test image and result image for %s are different dimensions", testName.toLocal8Bit().constData() );
 
-    if ( qAbs( myExpectedImage.width() - myResultImage.width() ) > mMaxSizeDifferenceX ||
-         qAbs( myExpectedImage.height() - myResultImage.height() ) > mMaxSizeDifferenceY )
+    if ( std::abs( myExpectedImage.width() - myResultImage.width() ) > mMaxSizeDifferenceX ||
+         std::abs( myExpectedImage.height() - myResultImage.height() ) > mMaxSizeDifferenceY )
     {
       mReport += QLatin1String( "<tr><td colspan=3>" );
       mReport += "<font color=red>Expected image and result image for " + testName + " are different dimensions - FAILING!</font>";
@@ -404,8 +404,8 @@ bool QgsRenderChecker::compareImages( const QString &testName,
   // dissimilar pixel values there are
   //
 
-  int maxHeight = qMin( myExpectedImage.height(), myResultImage.height() );
-  int maxWidth = qMin( myExpectedImage.width(), myResultImage.width() );
+  int maxHeight = std::min( myExpectedImage.height(), myResultImage.height() );
+  int maxWidth = std::min( myExpectedImage.width(), myResultImage.width() );
 
   mMismatchCount = 0;
   int colorTolerance = static_cast< int >( mColorTolerance );
@@ -419,7 +419,7 @@ bool QgsRenderChecker::compareImages( const QString &testName,
     for ( int x = 0; x < maxWidth; ++x )
     {
       int maskTolerance = hasMask ? qRed( maskScanline[ x ] ) : 0;
-      int pixelTolerance = qMax( colorTolerance, maskTolerance );
+      int pixelTolerance = std::max( colorTolerance, maskTolerance );
       if ( pixelTolerance == 255 )
       {
         //skip pixel
@@ -438,10 +438,10 @@ bool QgsRenderChecker::compareImages( const QString &testName,
       }
       else
       {
-        if ( qAbs( qRed( myExpectedPixel ) - qRed( myActualPixel ) ) > pixelTolerance ||
-             qAbs( qGreen( myExpectedPixel ) - qGreen( myActualPixel ) ) > pixelTolerance ||
-             qAbs( qBlue( myExpectedPixel ) - qBlue( myActualPixel ) ) > pixelTolerance ||
-             qAbs( qAlpha( myExpectedPixel ) - qAlpha( myActualPixel ) ) > pixelTolerance )
+        if ( std::abs( qRed( myExpectedPixel ) - qRed( myActualPixel ) ) > pixelTolerance ||
+             std::abs( qGreen( myExpectedPixel ) - qGreen( myActualPixel ) ) > pixelTolerance ||
+             std::abs( qBlue( myExpectedPixel ) - qBlue( myActualPixel ) ) > pixelTolerance ||
+             std::abs( qAlpha( myExpectedPixel ) - qAlpha( myActualPixel ) ) > pixelTolerance )
         {
           ++mMismatchCount;
           diffScanline[ x ] = qRgb( 255, 0, 0 );

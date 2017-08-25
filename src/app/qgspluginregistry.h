@@ -104,7 +104,7 @@ class APP_EXPORT QgsPluginRegistry
     bool checkPythonPlugin( const QString &packageName );
 
     //! Check current QGIS version against requested minimal and optionally maximal QGIS version
-    //! if maxVersion not specified, the default value is assumed: floor(minVersion) + 0.99.99
+    //! if maxVersion not specified, the default value is assumed: std::floor(minVersion) + 0.99.99
     bool checkQgisVersion( const QString &minVersion, const QString &maxVersion = "" ) const;
 
   private:

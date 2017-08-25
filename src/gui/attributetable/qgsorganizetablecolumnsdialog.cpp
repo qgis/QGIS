@@ -22,10 +22,10 @@
 #include "qgsattributetableview.h"
 #include "qgsdockwidget.h"
 
-#include <qgsapplication.h>
-#include <qgsvectordataprovider.h>
-#include <qgsvectorlayer.h>
-#include <qgsexpression.h>
+#include "qgsapplication.h"
+#include "qgsvectordataprovider.h"
+#include "qgsvectorlayer.h"
+#include "qgsexpression.h"
 
 #include "qgssearchquerybuilder.h"
 #include "qgslogger.h"

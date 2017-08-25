@@ -86,7 +86,7 @@ void QgsAddAttrDialog::setPrecisionMinMax()
   mPrec->setVisible( minPrecType < maxPrecType );
   mPrecLabel->setVisible( minPrecType < maxPrecType );
   mPrec->setMinimum( minPrecType );
-  mPrec->setMaximum( qMax( minPrecType, qMin( maxPrecType, mLength->value() ) ) );
+  mPrec->setMaximum( std::max( minPrecType, std::min( maxPrecType, mLength->value() ) ) );
 }
 
 void QgsAddAttrDialog::accept()

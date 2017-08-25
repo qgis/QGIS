@@ -21,7 +21,6 @@
 #include "qgsfeature.h"
 #include "qgssymbollayerutils.h"
 #include "qgscolorramp.h"
-#include <qmath.h>
 
 
 //
@@ -198,7 +197,7 @@ double QgsGenericNumericTransformer::value( double input ) const
   if ( qgsDoubleNear( mExponent, 1.0 ) )
     return mMinOutput + ( qBound( mMinValue, input, mMaxValue ) - mMinValue ) * ( mMaxOutput - mMinOutput ) / ( mMaxValue - mMinValue );
   else
-    return mMinOutput + qPow( qBound( mMinValue, input, mMaxValue ) - mMinValue, mExponent ) * ( mMaxOutput - mMinOutput ) / qPow( mMaxValue - mMinValue, mExponent );
+    return mMinOutput + std::pow( qBound( mMinValue, input, mMaxValue ) - mMinValue, mExponent ) * ( mMaxOutput - mMinOutput ) / std::pow( mMaxValue - mMinValue, mExponent );
 }
 
 QVariant QgsGenericNumericTransformer::transform( const QgsExpressionContext &context, const QVariant &v ) const
@@ -400,7 +399,7 @@ double QgsSizeScaleTransformer::size( double value ) const
     case Area:
     case Flannery:
     case Exponential:
-      return mMinSize + qPow( qBound( mMinValue, value, mMaxValue ) - mMinValue, mExponent ) * ( mMaxSize - mMinSize ) / qPow( mMaxValue - mMinValue, mExponent );
+      return mMinSize + std::pow( qBound( mMinValue, value, mMaxValue ) - mMinValue, mExponent ) * ( mMaxSize - mMinSize ) / std::pow( mMaxValue - mMinValue, mExponent );
 
   }
   return 0;

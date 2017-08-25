@@ -443,7 +443,7 @@ void QgsDxfExport::writeGroup( int code, const QgsPoint &p )
 {
   writeGroup( code + 10, p.x() );
   writeGroup( code + 20, p.y() );
-  if ( p.is3D() && qIsFinite( p.z() ) )
+  if ( p.is3D() && std::isfinite( p.z() ) )
     writeGroup( code + 30, p.z() );
 }
 

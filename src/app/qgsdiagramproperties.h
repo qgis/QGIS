@@ -20,7 +20,7 @@
 
 #include <QDialog>
 #include "qgsdiagramrenderer.h"
-#include <ui_qgsdiagrampropertiesbase.h>
+#include "ui_qgsdiagrampropertiesbase.h"
 #include <QStyledItemDelegate>
 #include "qgis_app.h"
 

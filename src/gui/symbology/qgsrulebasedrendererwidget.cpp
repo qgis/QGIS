@@ -619,8 +619,8 @@ QgsRendererRulePropsWidget::QgsRendererRulePropsWidget( QgsRuleBasedRenderer::Ru
   if ( mRule->dependsOnScale() )
   {
     groupScale->setChecked( true );
-    mScaleRangeWidget->setMaximumScale( qMax( rule->maximumScale(), 0.0 ) );
-    mScaleRangeWidget->setMinimumScale( qMax( rule->minimumScale(), 0.0 ) );
+    mScaleRangeWidget->setMaximumScale( std::max( rule->maximumScale(), 0.0 ) );
+    mScaleRangeWidget->setMinimumScale( std::max( rule->minimumScale(), 0.0 ) );
   }
   mScaleRangeWidget->setMapCanvas( mContext.mapCanvas() );
 

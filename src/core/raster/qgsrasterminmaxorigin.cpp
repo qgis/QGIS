@@ -40,9 +40,9 @@ bool QgsRasterMinMaxOrigin::operator ==( const QgsRasterMinMaxOrigin &other ) co
   return mLimits == other.mLimits &&
          mExtent == other.mExtent &&
          mAccuracy == other.mAccuracy &&
-         qAbs( mCumulativeCutLower - other.mCumulativeCutLower ) < 1e-5 &&
-         qAbs( mCumulativeCutUpper - other.mCumulativeCutUpper ) < 1e-5 &&
-         qAbs( mStdDevFactor - other.mStdDevFactor ) < 1e-5;
+         std::fabs( mCumulativeCutLower - other.mCumulativeCutLower ) < 1e-5 &&
+         std::fabs( mCumulativeCutUpper - other.mCumulativeCutUpper ) < 1e-5 &&
+         std::fabs( mStdDevFactor - other.mStdDevFactor ) < 1e-5;
 }
 
 QString QgsRasterMinMaxOrigin::limitsString( Limits limits )

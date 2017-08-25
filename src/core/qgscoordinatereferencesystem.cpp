@@ -1164,7 +1164,7 @@ void QgsCoordinateReferenceSystem::setMapUnits()
     static const double FEET_TO_METER = 0.3048;
     static const double SMALL_NUM = 1e-3;
 
-    if ( qAbs( toMeter - FEET_TO_METER ) < SMALL_NUM )
+    if ( std::fabs( toMeter - FEET_TO_METER ) < SMALL_NUM )
       unit = QStringLiteral( "Foot" );
 
     if ( qgsDoubleNear( toMeter, 1.0 ) ) //Unit name for meters would be "metre"

@@ -421,8 +421,8 @@ void QgsGrassMapcalc::mouseReleaseEvent( QMouseEvent *e )
       if ( mToolStep == 1 )
       {
         QPoint p0 = mConnector->point( 0 );
-        double d = sqrt( pow( ( double )( p.x() - p0.x() ), 2.0 )
-                         + pow( ( double )( p.y() - p0.y() ), 2.0 ) );
+        double d = std::sqrt( std::pow( ( double )( p.x() - p0.x() ), 2.0 )
+                              + std::pow( ( double )( p.y() - p0.y() ), 2.0 ) );
         QgsDebugMsg( QString( "d = %1" ).arg( d ) );
         if ( d <  5 ) // filter 'single' clicks
         {
@@ -1697,8 +1697,8 @@ bool QgsGrassMapcalcObject::tryConnect( QgsGrassMapcalcConnector *connector,
       if ( mInputConnectors[i] )
         continue; // used
 
-      double d = sqrt( pow( ( double )( mInputPoints[i].x() + pos().x() - p.x() ), 2.0 )
-                       + pow( ( double )( mInputPoints[i].y() + pos().y() - p.y() ), 2.0 ) );
+      double d = std::sqrt( std::pow( ( double )( mInputPoints[i].x() + pos().x() - p.x() ), 2.0 )
+                            + std::pow( ( double )( mInputPoints[i].y() + pos().y() - p.y() ), 2.0 ) );
 
       if ( d <= mSocketHalf )
       {
@@ -1713,8 +1713,8 @@ bool QgsGrassMapcalcObject::tryConnect( QgsGrassMapcalcConnector *connector,
   // Output
   if ( !connector->connected( Out ) && !mOutputConnector )
   {
-    double d = sqrt( pow( ( double )( mOutputPoint.x() + pos().x() - p.x() ), 2.0 )
-                     + pow( ( double )( mOutputPoint.y() + pos().y() - p.y() ), 2.0 ) );
+    double d = std::sqrt( std::pow( ( double )( mOutputPoint.x() + pos().x() - p.x() ), 2.0 )
+                          + std::pow( ( double )( mOutputPoint.y() + pos().y() - p.y() ), 2.0 ) );
 
     if ( d <= mSocketHalf )
     {
@@ -1899,11 +1899,11 @@ void QgsGrassMapcalcConnector::selectEnd( QPoint point )
 {
   mSelectedEnd = -1;
 
-  double d0 = sqrt( pow( ( double )( point.x() - mPoints[0].x() ), 2.0 )
-                    + pow( ( double )( point.y() - mPoints[0].y() ), 2.0 ) );
+  double d0 = std::sqrt( std::pow( ( double )( point.x() - mPoints[0].x() ), 2.0 )
+                         + std::pow( ( double )( point.y() - mPoints[0].y() ), 2.0 ) );
 
-  double d1 = sqrt( pow( ( double )( point.x() - mPoints[1].x() ), 2.0 )
-                    + pow( ( double )( point.y() - mPoints[1].y() ), 2.0 ) );
+  double d1 = std::sqrt( std::pow( ( double )( point.x() - mPoints[1].x() ), 2.0 )
+                         + std::pow( ( double )( point.y() - mPoints[1].y() ), 2.0 ) );
 
 
   if ( d0 < 15 || d1 < 15 )

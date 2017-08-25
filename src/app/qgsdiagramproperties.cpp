@@ -593,7 +593,7 @@ void QgsDiagramProperties::on_mFindMaximumValueButton_clicked()
       while ( features.nextFeature( *&feature ) )
       {
         context.setFeature( feature );
-        maxValue = qMax( maxValue, exp.evaluate( &context ).toFloat() );
+        maxValue = std::max( maxValue, exp.evaluate( &context ).toFloat() );
       }
     }
     else
@@ -689,7 +689,7 @@ void QgsDiagramProperties::apply()
             bool ok = false;
             double val = provider->maximumValue( fld ).toDouble( &ok );
             if ( ok )
-              maxVal = qMax( maxVal, val );
+              maxVal = std::max( maxVal, val );
           }
         }
       }

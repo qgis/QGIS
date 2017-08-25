@@ -814,12 +814,12 @@ void TestQgsGeometry::point()
   p29.setM( 9.0 );
   QVERIFY( p29.convertTo( QgsWkbTypes::PointM ) );
   QCOMPARE( p29.wkbType(), QgsWkbTypes::PointM );
-  QVERIFY( qIsNaN( p29.z() ) );
+  QVERIFY( std::isnan( p29.z() ) );
   QCOMPARE( p29.m(), 9.0 );
   QVERIFY( p29.convertTo( QgsWkbTypes::Point ) );
   QCOMPARE( p29.wkbType(), QgsWkbTypes::Point );
-  QVERIFY( qIsNaN( p29.z() ) );
-  QVERIFY( qIsNaN( p29.m() ) );
+  QVERIFY( std::isnan( p29.z() ) );
+  QVERIFY( std::isnan( p29.m() ) );
   QVERIFY( !p29.convertTo( QgsWkbTypes::Polygon ) );
 
   //boundary
@@ -851,12 +851,12 @@ void TestQgsGeometry::point()
 
   // distance 3D
   QCOMPARE( QgsPoint( 0, 0 ).distanceSquared3D( QgsPoint( 1, 1 ) ), 2.0 );
-  QVERIFY( qIsNaN( QgsPoint( 0, 0 ).distanceSquared3D( 1, 1, 0 ) ) );
-  QVERIFY( qIsNaN( QgsPoint( 0, 0 ).distanceSquared3D( QgsPoint( QgsWkbTypes::PointZ, 2, 2, 2, 0 ) ) ) );
-  QVERIFY( qIsNaN( QgsPoint( 0, 0 ).distanceSquared3D( 2, 2, 2 ) ) );
-  QVERIFY( qIsNaN( QgsPoint( QgsWkbTypes::PointZ, 2, 2, 2, 0 ).distanceSquared3D( QgsPoint( 1, 1 ) ) ) );
+  QVERIFY( std::isnan( QgsPoint( 0, 0 ).distanceSquared3D( 1, 1, 0 ) ) );
+  QVERIFY( std::isnan( QgsPoint( 0, 0 ).distanceSquared3D( QgsPoint( QgsWkbTypes::PointZ, 2, 2, 2, 0 ) ) ) );
+  QVERIFY( std::isnan( QgsPoint( 0, 0 ).distanceSquared3D( 2, 2, 2 ) ) );
+  QVERIFY( std::isnan( QgsPoint( QgsWkbTypes::PointZ, 2, 2, 2, 0 ).distanceSquared3D( QgsPoint( 1, 1 ) ) ) );
   QCOMPARE( QgsPoint( QgsWkbTypes::PointZ, 2, 2, 2, 0 ).distanceSquared3D( 1, 1, 0 ), 6.0 );
-  QVERIFY( qIsNaN( QgsPoint( QgsWkbTypes::PointZ, -2, -2, -2, 0 ).distanceSquared3D( QgsPoint( 0, 0 ) ) ) );
+  QVERIFY( std::isnan( QgsPoint( QgsWkbTypes::PointZ, -2, -2, -2, 0 ).distanceSquared3D( QgsPoint( 0, 0 ) ) ) );
   QCOMPARE( QgsPoint( QgsWkbTypes::PointZ, -2, -2, -2, 0 ).distanceSquared3D( 0, 0, 0 ), 12.0 );
   QCOMPARE( QgsPoint( QgsWkbTypes::PointZ, -2, -2, -2, 0 ).distanceSquared3D( QgsPoint( QgsWkbTypes::PointZ, 2, 2, 2, 0 ) ), 48.0 );
   QCOMPARE( QgsPoint( QgsWkbTypes::PointZ, -2, -2, -2, 0 ).distanceSquared3D( 2, 2, 2 ), 48.0 );
@@ -1317,8 +1317,8 @@ void TestQgsGeometry::lineString()
   QCOMPARE( l9.zAt( 0 ), 3.0 );
   QCOMPARE( l9.zAt( 1 ), 13.0 );
   QCOMPARE( l9.zAt( 2 ), 23.0 );
-  QVERIFY( qIsNaN( l9.zAt( -1 ) ) ); //out of range
-  QVERIFY( qIsNaN( l9.zAt( 11 ) ) ); //out of range
+  QVERIFY( std::isnan( l9.zAt( -1 ) ) ); //out of range
+  QVERIFY( std::isnan( l9.zAt( 11 ) ) ); //out of range
 
   l9.setZAt( 0, 53.0 );
   QCOMPARE( l9.zAt( 0 ), 53.0 );
@@ -1330,8 +1330,8 @@ void TestQgsGeometry::lineString()
   QCOMPARE( l9.mAt( 0 ), 4.0 );
   QCOMPARE( l9.mAt( 1 ), 14.0 );
   QCOMPARE( l9.mAt( 2 ), 24.0 );
-  QVERIFY( qIsNaN( l9.mAt( -1 ) ) ); //out of range
-  QVERIFY( qIsNaN( l9.mAt( 11 ) ) ); //out of range
+  QVERIFY( std::isnan( l9.mAt( -1 ) ) ); //out of range
+  QVERIFY( std::isnan( l9.mAt( 11 ) ) ); //out of range
 
   l9.setMAt( 0, 54.0 );
   QCOMPARE( l9.mAt( 0 ), 54.0 );
@@ -1346,8 +1346,8 @@ void TestQgsGeometry::lineString()
                 << QgsPoint( QgsWkbTypes::PointM, 21, 22, 0, 24 ) );
 
   //basically we just don't want these to crash
-  QVERIFY( qIsNaN( l9.zAt( 0 ) ) );
-  QVERIFY( qIsNaN( l9.zAt( 1 ) ) );
+  QVERIFY( std::isnan( l9.zAt( 0 ) ) );
+  QVERIFY( std::isnan( l9.zAt( 1 ) ) );
   l9.setZAt( 0, 53.0 );
   l9.setZAt( 1, 63.0 );
 
@@ -1357,8 +1357,8 @@ void TestQgsGeometry::lineString()
                 << QgsPoint( 21, 22 ) );
 
   //basically we just don't want these to crash
-  QVERIFY( qIsNaN( l9.mAt( 0 ) ) );
-  QVERIFY( qIsNaN( l9.mAt( 1 ) ) );
+  QVERIFY( std::isnan( l9.mAt( 0 ) ) );
+  QVERIFY( std::isnan( l9.mAt( 1 ) ) );
   l9.setMAt( 0, 53.0 );
   l9.setMAt( 1, 63.0 );
 
@@ -3655,7 +3655,7 @@ void TestQgsGeometry::triangle()
   QVector<double> l_tested, l_t7 = t7.lengths();
   l_tested.append( 5 );
   l_tested.append( 5 );
-  l_tested.append( sqrt( 5 * 5 + 5 * 5 ) );
+  l_tested.append( std::sqrt( 5 * 5 + 5 * 5 ) );
   QGSCOMPARENEAR( l_tested.at( 0 ), l_t7.at( 0 ), 0.0001 );
   QGSCOMPARENEAR( l_tested.at( 1 ), l_t7.at( 1 ), 0.0001 );
   QGSCOMPARENEAR( l_tested.at( 2 ), l_t7.at( 2 ), 0.0001 );
@@ -3923,11 +3923,11 @@ void TestQgsGeometry::ellipse()
   // fromFoci
   // horizontal
   QgsEllipse elp_hor = QgsEllipse().fromFoci( QgsPoint( -4, 0 ), QgsPoint( 4, 0 ), QgsPoint( 0, 4 ) );
-  QVERIFY( QgsEllipse( QgsPoint( 0, 0 ), sqrt( 32.0 ), sqrt( 16.0 ), 90.0 ) == elp_hor );
+  QVERIFY( QgsEllipse( QgsPoint( 0, 0 ), std::sqrt( 32.0 ), std::sqrt( 16.0 ), 90.0 ) == elp_hor );
   QGSCOMPARENEARPOINT( QgsPoint( 4, 0 ), elp_hor.foci().at( 0 ), 1e-8 );
   QGSCOMPARENEARPOINT( QgsPoint( -4, 0 ), elp_hor.foci().at( 1 ), 1e-8 );
   elp_hor = QgsEllipse().fromFoci( QgsPoint( 4, 0 ), QgsPoint( -4, 0 ), QgsPoint( 0, 4 ) );
-  QVERIFY( QgsEllipse( QgsPoint( 0, 0 ), sqrt( 32.0 ), sqrt( 16.0 ), 270.0 ) == elp_hor );
+  QVERIFY( QgsEllipse( QgsPoint( 0, 0 ), std::sqrt( 32.0 ), std::sqrt( 16.0 ), 270.0 ) == elp_hor );
   QGSCOMPARENEARPOINT( QgsPoint( -4, 0 ), elp_hor.foci().at( 0 ), 1e-8 );
   QGSCOMPARENEARPOINT( QgsPoint( 4, 0 ), elp_hor.foci().at( 1 ), 1e-8 );
 
@@ -4177,7 +4177,7 @@ void TestQgsGeometry::circle()
 // byCenterPoint
   QVERIFY( QgsCircle().fromCenterPoint( QgsPoint( 0, 0 ), QgsPoint( 5, 0 ) ) == QgsCircle( QgsPoint( 0, 0 ), 5, 90 ) );
   QVERIFY( QgsCircle().fromCenterPoint( QgsPoint( 0, 0 ), QgsPoint( 0, 5 ) ) == QgsCircle( QgsPoint( 0, 0 ), 5, 0 ) );
-  QVERIFY( QgsCircle().fromCenterPoint( QgsPoint( 0, 0 ), QgsPoint( 5 * cos( 45 * M_PI / 180.0 ), 5 * sin( 45 * M_PI / 180.0 ) ) ) == QgsCircle( QgsPoint( 0, 0 ), 5, 45 ) );
+  QVERIFY( QgsCircle().fromCenterPoint( QgsPoint( 0, 0 ), QgsPoint( 5 * std::cos( 45 * M_PI / 180.0 ), 5 * std::sin( 45 * M_PI / 180.0 ) ) ) == QgsCircle( QgsPoint( 0, 0 ), 5, 45 ) );
 // by3Tangents
 // Tangents from triangle tri1( 0,0 ; 0,5 ), tri2( 0,0 ; 5,0 ), tri3( 5,0 ; 0,5 )
   QgsCircle circ_tgt = QgsCircle().from3Tangents( QgsPoint( 0, 0 ), QgsPoint( 0, 1 ), QgsPoint( 2, 0 ), QgsPoint( 3, 0 ), QgsPoint( 5, 0 ), QgsPoint( 0, 5 ) );
@@ -4228,7 +4228,7 @@ void TestQgsGeometry::circle()
 
 // oriented
 //45
-  double val = 5 * sin( M_PI / 4 );
+  double val = 5 * std::sin( M_PI / 4 );
   pol.reset( QgsCircle( QgsPoint( 0, 0 ), 5, 45 ).toPolygon( 4 ) );
   QCOMPARE( pol->numInteriorRings(), 0 );
   QCOMPARE( pol->exteriorRing()->numPoints(), 5 );

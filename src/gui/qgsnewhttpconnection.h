@@ -18,7 +18,7 @@
 #ifndef QGSNEWHTTPCONNECTION_H
 #define QGSNEWHTTPCONNECTION_H
 
-#include <qgis_sip.h>
+#include "qgis_sip.h"
 #include "ui_qgsnewhttpconnectionbase.h"
 #include "qgsguiutils.h"
 #include "qgis_gui.h"

@@ -1541,7 +1541,7 @@ void QgsLayerTreeModel::invalidateLegendMapBasedData()
       {
         const QSize sz( n->minimumIconSize( context.get() ) );
         const QString parentKey( n->data( QgsLayerTreeModelLegendNode::ParentRuleKeyRole ).toString() );
-        widthMax[parentKey] = qMax( sz.width(), widthMax.contains( parentKey ) ? widthMax[parentKey] : 0 );
+        widthMax[parentKey] = std::max( sz.width(), widthMax.contains( parentKey ) ? widthMax[parentKey] : 0 );
         n->setIconSize( sz );
         symbolNodes.append( n );
       }

@@ -156,9 +156,9 @@ void QgsDataDefinedSizeLegend::drawCollapsedLegend( QgsRenderContext &context, Q
   // make sure we draw bigger symbols first
   std::sort( classes.begin(), classes.end(), []( const SizeClass & a, const SizeClass & b ) { return a.size > b.size; } );
 
-  int hLengthLine = qRound( context.convertToPainterUnits( hLengthLineMM, QgsUnitTypes::RenderMillimeters ) );
-  int hSpaceLineText = qRound( context.convertToPainterUnits( hSpaceLineTextMM, QgsUnitTypes::RenderMillimeters ) );
-  int dpm = qRound( context.scaleFactor() * 1000 );  // scale factor = dots per millimeter
+  int hLengthLine = std::round( context.convertToPainterUnits( hLengthLineMM, QgsUnitTypes::RenderMillimeters ) );
+  int hSpaceLineText = std::round( context.convertToPainterUnits( hSpaceLineTextMM, QgsUnitTypes::RenderMillimeters ) );
+  int dpm = std::round( context.scaleFactor() * 1000 );  // scale factor = dots per millimeter
 
   // get font metrics - we need a temporary image just to get the metrics right for the given DPI
   QImage tmpImg( QSize( 1, 1 ), QImage::Format_ARGB32_Premultiplied );
@@ -194,10 +194,10 @@ void QgsDataDefinedSizeLegend::drawCollapsedLegend( QgsRenderContext &context, Q
     switch ( mVAlign )
     {
       case AlignCenter:
-        symbolTopY << qRound( outputLargestSize / 2 - outputSymbolSize / 2 );
+        symbolTopY << std::round( outputLargestSize / 2 - outputSymbolSize / 2 );
         break;
       case AlignBottom:
-        symbolTopY << qRound( outputLargestSize - outputSymbolSize );
+        symbolTopY << std::round( outputLargestSize - outputSymbolSize );
         break;
     }
   }
@@ -222,7 +222,7 @@ void QgsDataDefinedSizeLegend::drawCollapsedLegend( QgsRenderContext &context, Q
   int totalTextHeight = textBottomY - textTopY;
 
   int fullWidth = outputLargestSize + hLengthLine + hSpaceLineText + maxTextWidth;
-  int fullHeight = qMax( qRound( outputLargestSize ) - textTopY, totalTextHeight );
+  int fullHeight = std::max( static_cast< int >( std::round( outputLargestSize ) ) - textTopY, totalTextHeight );
 
   if ( outputSize )
     *outputSize = QSize( fullWidth, fullHeight );
@@ -292,8 +292,8 @@ QImage QgsDataDefinedSizeLegend::collapsedLegendImage( QgsRenderContext &context
   QSize contentSize;
   drawCollapsedLegend( context, &contentSize );
 
-  int padding = qRound( context.convertToPainterUnits( paddingMM, QgsUnitTypes::RenderMillimeters ) );
-  int dpm = qRound( context.scaleFactor() * 1000 );  // scale factor = dots per millimeter
+  int padding = std::round( context.convertToPainterUnits( paddingMM, QgsUnitTypes::RenderMillimeters ) );
+  int dpm = std::round( context.scaleFactor() * 1000 );  // scale factor = dots per millimeter
 
   QImage img( contentSize.width() + padding * 2, contentSize.height() + padding * 2, QImage::Format_ARGB32_Premultiplied );
   img.setDotsPerMeterX( dpm );

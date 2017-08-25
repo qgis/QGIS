@@ -280,8 +280,8 @@ QString QgsMeasureDialog::formatDistance( double distance, bool convertUnits ) c
   {
     // special handling for degrees - because we can't use smaller units (eg m->mm), we need to make sure there's
     // enough decimal places to show a usable measurement value
-    int minPlaces = qRound( log10( 1.0 / distance ) ) + 1;
-    decimals = qMax( decimals, minPlaces );
+    int minPlaces = std::round( std::log10( 1.0 / distance ) ) + 1;
+    decimals = std::max( decimals, minPlaces );
   }
   return QgsDistanceArea::formatDistance( distance, decimals, mDistanceUnits, baseUnit );
 }
@@ -490,7 +490,7 @@ void QgsMeasureDialog::updateUi()
         if ( forceCartesian )
         {
           //Cartesian calculation forced
-          d = sqrt( p2.sqrDist( p1 ) );
+          d = std::sqrt( p2.sqrDist( p1 ) );
           mTotal += d;
         }
         else

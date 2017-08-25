@@ -353,7 +353,7 @@ bool QgsRelief::processNineCellWindow( float *x1, float *x2, float *x3, float *x
   float aspect = mAspectFilter->processNineCellWindow( x1, x2, x3, x4, x5, x6, x7, x8, x9 );
   if ( hillShadeValue285 != mOutputNodataValue && aspect != mOutputNodataValue )
   {
-    double angle_diff = qAbs( 285 - aspect );
+    double angle_diff = std::fabs( 285 - aspect );
     if ( angle_diff > 180 )
     {
       angle_diff -= 180;
@@ -362,7 +362,7 @@ bool QgsRelief::processNineCellWindow( float *x1, float *x2, float *x3, float *x
     int r3, g3, b3;
     if ( angle_diff < 90 )
     {
-      int aspectVal = ( 1 - cos( angle_diff * M_PI / 180 ) ) * 255;
+      int aspectVal = ( 1 - std::cos( angle_diff * M_PI / 180 ) ) * 255;
       r3 = 0.5 * 255 + hillShadeValue315 * 0.5;
       g3 = 0.5 * 255 + hillShadeValue315 * 0.5;
       b3 = 0.5 * aspectVal + hillShadeValue315 * 0.5;
@@ -560,7 +560,7 @@ bool QgsRelief::exportFrequencyDistributionToCsv( const QString &file )
   //log10 transformation for all frequency values
   for ( int i = 0; i < 252; ++i )
   {
-    frequency[i] = log10( frequency[i] );
+    frequency[i] = std::log10( frequency[i] );
   }
 
   //write out frequency values to csv file for debugging
@@ -651,7 +651,7 @@ QList< QgsRelief::ReliefColor > QgsRelief::calculateOptimizedReliefClasses()
   //log10 transformation for all frequency values
   for ( int i = 0; i < 252; ++i )
   {
-    frequency[i] = log10( frequency[i] );
+    frequency[i] = std::log10( frequency[i] );
   }
 
   //start with 9 uniformly distributed classes

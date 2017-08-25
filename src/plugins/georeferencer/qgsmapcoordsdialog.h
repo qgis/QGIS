@@ -21,7 +21,7 @@
 #include "qgsvertexmarker.h"
 #include "qgsmapcanvas.h"
 
-#include <ui_qgsmapcoordsdialogbase.h>
+#include "ui_qgsmapcoordsdialogbase.h"
 
 class QPushButton;
 

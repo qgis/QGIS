@@ -139,7 +139,7 @@ double QgsGeometryUtils::distanceToVertex( const QgsAbstractGeometry &geom, QgsV
   {
     if ( !first )
     {
-      currentDist += sqrt( QgsGeometryUtils::sqrDistance2D( previousVertex, vertex ) );
+      currentDist += std::sqrt( QgsGeometryUtils::sqrDistance2D( previousVertex, vertex ) );
     }
 
     previousVertex = vertex;
@@ -177,7 +177,7 @@ bool QgsGeometryUtils::verticesAtDistance( const QgsAbstractGeometry &geometry, 
   {
     if ( !first )
     {
-      currentDist += sqrt( QgsGeometryUtils::sqrDistance2D( previousPoint, point ) );
+      currentDist += std::sqrt( QgsGeometryUtils::sqrDistance2D( previousPoint, point ) );
     }
 
     if ( qgsDoubleNear( currentDist, distance ) )
@@ -344,7 +344,7 @@ bool QgsGeometryUtils::segmentIntersection( const QgsPoint &p1, const QgsPoint &
   double vl = v.length();
   double wl = w.length();
 
-  if ( qFuzzyIsNull( vl ) || qFuzzyIsNull( wl ) )
+  if ( qgsDoubleNear( vl, 0, 0.000000000001 ) || qgsDoubleNear( wl, 0, 0.000000000001 ) )
   {
     return false;
   }
@@ -417,7 +417,7 @@ QgsPoint QgsGeometryUtils::pointOnLineWithDistance( const QgsPoint &startPoint, 
 {
   double dx = directionPoint.x() - startPoint.x();
   double dy = directionPoint.y() - startPoint.y();
-  double length = sqrt( dx * dx + dy * dy );
+  double length = std::sqrt( dx * dx + dy * dy );
 
   if ( qgsDoubleNear( length, 0.0 ) )
   {
@@ -430,7 +430,7 @@ QgsPoint QgsGeometryUtils::pointOnLineWithDistance( const QgsPoint &startPoint, 
 
 double QgsGeometryUtils::ccwAngle( double dy, double dx )
 {
-  double angle = atan2( dy, dx ) * 180 / M_PI;
+  double angle = std::atan2( dy, dx ) * 180 / M_PI;
   if ( angle < 0 )
   {
     return 360 + angle;
@@ -451,7 +451,7 @@ void QgsGeometryUtils::circleCenterRadius( const QgsPoint &pt1, const QgsPoint &
   {
     centerX = ( pt1.x() + pt2.x() ) / 2.0;
     centerY = ( pt1.y() + pt2.y() ) / 2.0;
-    radius = sqrt( pow( centerX - pt1.x(), 2.0 ) + pow( centerY - pt1.y(), 2.0 ) );
+    radius = std::sqrt( std::pow( centerX - pt1.x(), 2.0 ) + std::pow( centerY - pt1.y(), 2.0 ) );
     return;
   }
 
@@ -461,14 +461,14 @@ void QgsGeometryUtils::circleCenterRadius( const QgsPoint &pt1, const QgsPoint &
   dx31 = pt3.x() - pt1.x();
   dy31 = pt3.y() - pt1.y();
 
-  h21 = pow( dx21, 2.0 ) + pow( dy21, 2.0 );
-  h31 = pow( dx31, 2.0 ) + pow( dy31, 2.0 );
+  h21 = std::pow( dx21, 2.0 ) + std::pow( dy21, 2.0 );
+  h31 = std::pow( dx31, 2.0 ) + std::pow( dy31, 2.0 );
 
   // 2*Cross product, d<0 means clockwise and d>0 counterclockwise sweeping angle
   d = 2 * ( dx21 * dy31 - dx31 * dy21 );
 
   // Check colinearity, Cross product = 0
-  if ( qgsDoubleNear( fabs( d ), 0.0, 0.00000000001 ) )
+  if ( qgsDoubleNear( std::fabs( d ), 0.0, 0.00000000001 ) )
   {
     radius = -1.0;
     return;
@@ -477,7 +477,7 @@ void QgsGeometryUtils::circleCenterRadius( const QgsPoint &pt1, const QgsPoint &
   // Calculate centroid coordinates and radius
   centerX = pt1.x() + ( h21 * dy31 - h31 * dy21 ) / d;
   centerY = pt1.y() - ( h21 * dx31 - h31 * dx21 ) / d;
-  radius = sqrt( pow( centerX - pt1.x(), 2.0 ) + pow( centerY - pt1.y(), 2.0 ) );
+  radius = std::sqrt( std::pow( centerX - pt1.x(), 2.0 ) + std::pow( centerY - pt1.y(), 2.0 ) );
 }
 
 bool QgsGeometryUtils::circleClockwise( double angle1, double angle2, double angle3 )
@@ -569,12 +569,12 @@ double QgsGeometryUtils::sweepAngle( double centerX, double centerY, double x1, 
 bool QgsGeometryUtils::segmentMidPoint( const QgsPoint &p1, const QgsPoint &p2, QgsPoint &result, double radius, const QgsPoint &mousePos )
 {
   QgsPoint midPoint( ( p1.x() + p2.x() ) / 2.0, ( p1.y() + p2.y() ) / 2.0 );
-  double midDist = sqrt( sqrDistance2D( p1, midPoint ) );
+  double midDist = std::sqrt( sqrDistance2D( p1, midPoint ) );
   if ( radius < midDist )
   {
     return false;
   }
-  double centerMidDist = sqrt( radius * radius - midDist * midDist );
+  double centerMidDist = std::sqrt( radius * radius - midDist * midDist );
   double dist = radius - centerMidDist;
 
   double midDx = midPoint.x() - p1.x();
@@ -659,14 +659,14 @@ void QgsGeometryUtils::segmentizeArc( const QgsPoint &p1, const QgsPoint &p2, co
   double increment = tolerance; //one segment per degree
   if ( toleranceType == QgsAbstractGeometry::MaximumDifference )
   {
-    double halfAngle = acos( -tolerance / radius + 1 );
+    double halfAngle = std::acos( -tolerance / radius + 1 );
     increment = 2 * halfAngle;
   }
 
   //angles of pt1, pt2, pt3
-  double a1 = atan2( circlePoint1.y() - centerY, circlePoint1.x() - centerX );
-  double a2 = atan2( circlePoint2.y() - centerY, circlePoint2.x() - centerX );
-  double a3 = atan2( circlePoint3.y() - centerY, circlePoint3.x() - centerX );
+  double a1 = std::atan2( circlePoint1.y() - centerY, circlePoint1.x() - centerX );
+  double a2 = std::atan2( circlePoint2.y() - centerY, circlePoint2.x() - centerX );
+  double a3 = std::atan2( circlePoint3.y() - centerY, circlePoint3.x() - centerX );
 
   /* Adjust a3 up so we can increment from a1 to a3 cleanly */
   if ( a3 <= a1 )
@@ -703,8 +703,8 @@ void QgsGeometryUtils::segmentizeArc( const QgsPoint &p1, const QgsPoint &p2, co
         addP2 = false;
       }
 
-      x = centerX + radius * cos( angle );
-      y = centerY + radius * sin( angle );
+      x = centerX + radius * std::cos( angle );
+      y = centerY + radius * std::sin( angle );
 
       if ( !hasZ && !hasM )
       {
@@ -936,7 +936,7 @@ double QgsGeometryUtils::normalizedAngle( double angle )
   double clippedAngle = angle;
   if ( clippedAngle >= M_PI * 2 || clippedAngle <= -2 * M_PI )
   {
-    clippedAngle = fmod( clippedAngle, 2 * M_PI );
+    clippedAngle = std::fmod( clippedAngle, 2 * M_PI );
   }
   if ( clippedAngle < 0.0 )
   {
@@ -1092,15 +1092,15 @@ QgsLineString QgsGeometryUtils::perpendicularSegment( const QgsPoint &p, const Q
 
 double QgsGeometryUtils::lineAngle( double x1, double y1, double x2, double y2 )
 {
-  double at = atan2( y2 - y1, x2 - x1 );
+  double at = std::atan2( y2 - y1, x2 - x1 );
   double a = -at + M_PI / 2.0;
   return normalizedAngle( a );
 }
 
 double QgsGeometryUtils::angleBetweenThreePoints( double x1, double y1, double x2, double y2, double x3, double y3 )
 {
-  double angle1 = atan2( y1 - y2, x1 - x2 );
-  double angle2 = atan2( y3 - y2, x3 - x2 );
+  double angle1 = std::atan2( y1 - y2, x1 - x2 );
+  double angle2 = std::atan2( y3 - y2, x3 - x2 );
   return normalizedAngle( angle1 - angle2 );
 }
 

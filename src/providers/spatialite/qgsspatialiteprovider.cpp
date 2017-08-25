@@ -31,8 +31,8 @@ email                : a.furieri@lqt.it
 #include "qgsspatialitefeatureiterator.h"
 #include "qgsfeedback.h"
 
-#include <qgsjsonutils.h>
-#include <qgsvectorlayer.h>
+#include "qgsjsonutils.h"
+#include "qgsvectorlayer.h"
 
 #include <QMessageBox>
 #include <QFileInfo>

@@ -24,7 +24,7 @@
 #include "qgisapp.h"
 #include "qgshelp.h"
 
-#include <qgscoordinatereferencesystem.h>
+#include "qgscoordinatereferencesystem.h"
 
 #include <QList>
 #include "qgis_app.h"

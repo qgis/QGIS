@@ -68,7 +68,7 @@ class TestQgsNodeTool : public QObject
     QPoint mapToScreen( double mapX, double mapY )
     {
       QgsPointXY pt = mCanvas->mapSettings().mapToPixel().transform( mapX, mapY );
-      return QPoint( qRound( pt.x() ), qRound( pt.y() ) );
+      return QPoint( std::round( pt.x() ), std::round( pt.y() ) );
     }
 
     void mouseMove( double mapX, double mapY )

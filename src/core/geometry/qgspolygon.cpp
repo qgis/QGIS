@@ -288,11 +288,11 @@ double QgsPolygonV2::pointDistanceToBoundary( double x, double y ) const
            ( x < ( bX - aX ) * ( y - aY ) / ( bY - aY ) + aX ) )
         inside = !inside;
 
-      minimumDistance = qMin( minimumDistance, QgsGeometryUtils::sqrDistToLine( x, y, aX, aY, bX, bY, minDistX, minDistY, 4 * DBL_EPSILON ) );
+      minimumDistance = std::min( minimumDistance, QgsGeometryUtils::sqrDistToLine( x, y, aX, aY, bX, bY, minDistX, minDistY, 4 * DBL_EPSILON ) );
     }
   }
 
-  return ( inside ? 1 : -1 ) * sqrt( minimumDistance );
+  return ( inside ? 1 : -1 ) * std::sqrt( minimumDistance );
 }
 
 QgsPolygonV2 *QgsPolygonV2::surfaceToPolygon() const

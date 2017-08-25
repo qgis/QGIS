@@ -28,7 +28,7 @@
 #include <QDate>
 #include <QTime>
 #include <QHash>
-#include <stdlib.h>
+#include <cstdlib>
 #include <cfloat>
 #include <cmath>
 #include <qnumeric.h>
@@ -232,17 +232,11 @@ inline bool qgsDoubleNearSig( double a, double b, int significantDigits = 10 )
   // has to be considered (maybe TODO)
   // Is there a better way?
   int aexp, bexp;
-  double ar = frexp( a, &aexp );
-  double br = frexp( b, &bexp );
+  double ar = std::frexp( a, &aexp );
+  double br = std::frexp( b, &bexp );
 
   return aexp == bexp &&
-         qRound( ar * pow( 10.0, significantDigits ) ) == qRound( br * pow( 10.0, significantDigits ) );
-}
-
-//! A round function which returns a double to guard against overflows
-inline double qgsRound( double x )
-{
-  return x < 0.0 ? std::ceil( x - 0.5 ) : std::floor( x + 0.5 );
+         std::round( ar * std::pow( 10.0, significantDigits ) ) == std::round( br * std::pow( 10.0, significantDigits ) );
 }
 
 /**
@@ -252,7 +246,7 @@ inline double qgsRound( double x )
  */
 inline double qgsRound( double number, double places )
 {
-  int scaleFactor = pow( 10, places );
+  int scaleFactor = std::pow( 10, places );
   return static_cast<double>( static_cast<qlonglong>( number * scaleFactor + 0.5 ) ) / scaleFactor;
 }
 

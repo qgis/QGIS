@@ -15,7 +15,7 @@
 #ifndef QGSATTRIBUTEEDITORMODEL_H
 #define QGSATTRIBUTEEDITORMODEL_H
 
-#include <qgsexpression.h>
+#include "qgsexpression.h"
 #include "qgis.h"
 
 #include <QAbstractProxyModel>

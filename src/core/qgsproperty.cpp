@@ -20,7 +20,6 @@
 #include "qgsfeature.h"
 #include "qgssymbollayerutils.h"
 #include "qgscolorramp.h"
-#include <qmath.h>
 
 
 QgsPropertyDefinition::QgsPropertyDefinition()
@@ -605,7 +604,7 @@ int QgsProperty::valueAsInt( const QgsExpressionContext &context, int defaultVal
     {
       if ( ok )
         *ok = true;
-      return qRound( dbl );
+      return std::round( dbl );
     }
     else
     {

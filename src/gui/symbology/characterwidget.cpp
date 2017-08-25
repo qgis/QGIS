@@ -62,7 +62,7 @@ CharacterWidget::CharacterWidget( QWidget *parent )
 void CharacterWidget::setFont( const QFont &font )
 {
   mDisplayFont.setFamily( font.family() );
-  mSquareSize = qMax( 24, QFontMetrics( mDisplayFont ).xHeight() * 3 );
+  mSquareSize = std::max( 24, QFontMetrics( mDisplayFont ).xHeight() * 3 );
   adjustSize();
   update();
 }
@@ -70,7 +70,7 @@ void CharacterWidget::setFont( const QFont &font )
 void CharacterWidget::setFontSize( double fontSize )
 {
   mDisplayFont.setPointSizeF( fontSize );
-  mSquareSize = qMax( 24, QFontMetrics( mDisplayFont ).xHeight() * 3 );
+  mSquareSize = std::max( 24, QFontMetrics( mDisplayFont ).xHeight() * 3 );
   adjustSize();
   update();
 }
@@ -81,7 +81,7 @@ void CharacterWidget::setFontStyle( const QString &fontStyle )
   const QFont::StyleStrategy oldStrategy = mDisplayFont.styleStrategy();
   mDisplayFont = fontDatabase.font( mDisplayFont.family(), fontStyle, mDisplayFont.pointSize() );
   mDisplayFont.setStyleStrategy( oldStrategy );
-  mSquareSize = qMax( 24, QFontMetrics( mDisplayFont ).xHeight() * 3 );
+  mSquareSize = std::max( 24, QFontMetrics( mDisplayFont ).xHeight() * 3 );
   adjustSize();
   update();
 }

@@ -481,7 +481,7 @@ void QgsFieldCalculator::setPrecisionMinMax()
   int maxPrecType = mOutputFieldTypeComboBox->itemData( idx, Qt::UserRole + 5 ).toInt();
   mOutputFieldPrecisionSpinBox->setEnabled( minPrecType < maxPrecType );
   mOutputFieldPrecisionSpinBox->setMinimum( minPrecType );
-  mOutputFieldPrecisionSpinBox->setMaximum( qMax( minPrecType, qMin( maxPrecType, mOutputFieldWidthSpinBox->value() ) ) );
+  mOutputFieldPrecisionSpinBox->setMaximum( std::max( minPrecType, std::min( maxPrecType, mOutputFieldWidthSpinBox->value() ) ) );
 }
 
 void QgsFieldCalculator::showHelp()

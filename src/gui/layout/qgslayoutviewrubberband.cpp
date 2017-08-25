@@ -49,14 +49,14 @@ QRectF QgsLayoutViewRubberBand::updateRect( QPointF start, QPointF position, boo
 
   if ( constrainSquare )
   {
-    if ( fabs( dx ) > fabs( dy ) )
+    if ( std::fabs( dx ) > std::fabs( dy ) )
     {
-      width = fabs( dx );
+      width = std::fabs( dx );
       height = width;
     }
     else
     {
-      height = fabs( dy );
+      height = std::fabs( dy );
       width = height;
     }
 

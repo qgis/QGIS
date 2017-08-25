@@ -34,7 +34,7 @@
 
 #define LWDEBUG //
 #define LWDEBUGF //
-#define FP_MAX qMax
+#define FP_MAX std::max
 #define FLAGS_GET_Z( flags ) ( ( flags ) & 0x01 )
 #define LW_MSG_MAXLEN 256
 #define lwalloc qgsMalloc

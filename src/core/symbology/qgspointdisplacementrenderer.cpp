@@ -72,8 +72,8 @@ void QgsPointDisplacementRenderer::drawGroup( QPointF centerPoint, QgsRenderCont
   {
     if ( QgsMarkerSymbol *symbol = feature.symbol() )
     {
-      diagonal = qMax( diagonal, context.convertToPainterUnits( M_SQRT2 * symbol->size(),
-                       symbol->sizeUnit(), symbol->sizeMapUnitScale() ) );
+      diagonal = std::max( diagonal, context.convertToPainterUnits( M_SQRT2 * symbol->size(),
+                           symbol->sizeUnit(), symbol->sizeMapUnitScale() ) );
     }
   }
 
@@ -251,14 +251,14 @@ void QgsPointDisplacementRenderer::calculateSymbolAndLabelPositions( QgsSymbolRe
     case Ring:
     {
       double minDiameterToFitSymbols = nPosition * symbolDiagonal / ( 2.0 * M_PI );
-      double radius = qMax( symbolDiagonal / 2, minDiameterToFitSymbols ) + circleAdditionPainterUnits;
+      double radius = std::max( symbolDiagonal / 2, minDiameterToFitSymbols ) + circleAdditionPainterUnits;
 
       double fullPerimeter = 2 * M_PI;
       double angleStep = fullPerimeter / nPosition;
       for ( double currentAngle = 0.0; currentAngle < fullPerimeter; currentAngle += angleStep )
       {
-        double sinusCurrentAngle = sin( currentAngle );
-        double cosinusCurrentAngle = cos( currentAngle );
+        double sinusCurrentAngle = std::sin( currentAngle );
+        double cosinusCurrentAngle = std::cos( currentAngle );
         QPointF positionShift( radius * sinusCurrentAngle, radius * cosinusCurrentAngle );
         QPointF labelShift( ( radius + symbolDiagonal / 2 ) * sinusCurrentAngle, ( radius + symbolDiagonal / 2 ) * cosinusCurrentAngle );
         symbolPositions.append( centerPoint + positionShift );
@@ -278,16 +278,16 @@ void QgsPointDisplacementRenderer::calculateSymbolAndLabelPositions( QgsSymbolRe
       double firstRingRadius = centerDiagonal / 2.0 + symbolDiagonal / 2.0;
       while ( pointsRemaining > 0 )
       {
-        double radiusCurrentRing = qMax( firstRingRadius + ( ringNumber - 1 ) * symbolDiagonal + ringNumber * circleAdditionPainterUnits, 0.0 );
-        int maxPointsCurrentRing = qMax( floor( 2 * M_PI * radiusCurrentRing / symbolDiagonal ), 1.0 );
-        int actualPointsCurrentRing = qMin( maxPointsCurrentRing, pointsRemaining );
+        double radiusCurrentRing = std::max( firstRingRadius + ( ringNumber - 1 ) * symbolDiagonal + ringNumber * circleAdditionPainterUnits, 0.0 );
+        int maxPointsCurrentRing = std::max( std::floor( 2 * M_PI * radiusCurrentRing / symbolDiagonal ), 1.0 );
+        int actualPointsCurrentRing = std::min( maxPointsCurrentRing, pointsRemaining );
 
         double angleStep = 2 * M_PI / actualPointsCurrentRing;
         double currentAngle = 0.0;
         for ( int i = 0; i < actualPointsCurrentRing; ++i )
         {
-          double sinusCurrentAngle = sin( currentAngle );
-          double cosinusCurrentAngle = cos( currentAngle );
+          double sinusCurrentAngle = std::sin( currentAngle );
+          double cosinusCurrentAngle = std::cos( currentAngle );
           QPointF positionShift( radiusCurrentRing * sinusCurrentAngle, radiusCurrentRing * cosinusCurrentAngle );
           QPointF labelShift( ( radiusCurrentRing + symbolDiagonal / 2 ) * sinusCurrentAngle, ( radiusCurrentRing + symbolDiagonal / 2 ) * cosinusCurrentAngle );
           symbolPositions.append( centerPoint + positionShift );

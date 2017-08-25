@@ -356,12 +356,12 @@ void QgsRasterCalcDialog::on_mDividePushButton_clicked()
 
 void QgsRasterCalcDialog::on_mSqrtButton_clicked()
 {
-  mExpressionTextEdit->insertPlainText( QStringLiteral( " sqrt ( " ) );
+  mExpressionTextEdit->insertPlainText( QStringLiteral( " std::sqrt ( " ) );
 }
 
 void QgsRasterCalcDialog::on_mCosButton_clicked()
 {
-  mExpressionTextEdit->insertPlainText( QStringLiteral( " cos ( " ) );
+  mExpressionTextEdit->insertPlainText( QStringLiteral( " std::cos ( " ) );
 }
 
 void QgsRasterCalcDialog::on_mSinButton_clicked()

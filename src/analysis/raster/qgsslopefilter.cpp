@@ -34,6 +34,6 @@ float QgsSlopeFilter::processNineCellWindow( float *x11, float *x21, float *x31,
     return mOutputNodataValue;
   }
 
-  return atan( sqrt( derX * derX + derY * derY ) ) * 180.0 / M_PI;
+  return std::atan( std::sqrt( derX * derX + derY * derY ) ) * 180.0 / M_PI;
 }
 

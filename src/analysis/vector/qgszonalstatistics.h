@@ -98,8 +98,8 @@ class ANALYSIS_EXPORT QgsZonalStatistics
             sum += value;
             ++count;
           }
-          min = qMin( min, value );
-          max = qMax( max, value );
+          min = std::min( min, value );
+          max = std::max( max, value );
           if ( mStoreValueCounts )
             valueCount.insert( value, valueCount.value( value, 0 ) + 1 );
           if ( mStoreValues )
