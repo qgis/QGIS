@@ -307,7 +307,7 @@ class AlgorithmsTest(object):
                 strhash = hashlib.sha224(dataArray.data).hexdigest()
 
                 if not isinstance(expected_result['hash'], str):
-                    self.assertTrue(strhash in expected_result['hash'])
+                    self.assertIn(strhash, expected_result['hash'])
                 else:
                     self.assertEqual(strhash, expected_result['hash'])
             elif 'file' == expected_result['type']:
