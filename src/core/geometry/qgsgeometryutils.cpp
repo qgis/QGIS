@@ -633,23 +633,17 @@ double QgsGeometryUtils::circleTangentDirection( const QgsPoint &tangentPoint, c
 void QgsGeometryUtils::segmentizeArc( const QgsPoint &p1, const QgsPoint &p2, const QgsPoint &p3, QgsPointSequence &points, double tolerance, QgsAbstractGeometry::SegmentationToleranceType toleranceType, bool hasZ, bool hasM )
 {
   bool reversed = false;
-  bool clockwise = false;
   int segSide = segmentSide( p1, p3, p2 );
-  if ( segSide == -1 )
-  {
-    clockwise = true;
-  }
 
   QgsPoint circlePoint1;
   const QgsPoint circlePoint2 = p2;
   QgsPoint circlePoint3;
 
-  if ( clockwise )
+  if ( segSide == -1 )
   {
     // Reverse !
     circlePoint1 = p3;
     circlePoint3 = p1;
-    clockwise = false;
     reversed = true;
   }
   else
@@ -664,8 +658,8 @@ void QgsGeometryUtils::segmentizeArc( const QgsPoint &p1, const QgsPoint &p2, co
   double centerY = 0;
   circleCenterRadius( circlePoint1, circlePoint2, circlePoint3, radius, centerX, centerY );
 
-  QgsDebugMsg( QString( "Center: POINT(%1 %2) - Radius: %3 - Clockwise: %4" )
-               .arg( centerX ) .arg( centerY ) .arg( radius ) .arg( clockwise ) );
+  QgsDebugMsg( QString( "Center: POINT(%1 %2) - Radius: %3 - Reversed: %4" )
+               .arg( centerX ) .arg( centerY ) .arg( radius ) .arg( reversed ) );
 
   if ( circlePoint1 != circlePoint3 && ( radius < 0 || qgsDoubleNear( segSide, 0.0 ) ) ) //points are colinear
   {
@@ -698,7 +692,7 @@ void QgsGeometryUtils::segmentizeArc( const QgsPoint &p1, const QgsPoint &p2, co
   const bool symmetric = true;
   if ( symmetric )
   {
-    double angle = clockwise ? a1 - a3 : a3 - a1;
+    double angle = a3 - a1;
     if ( angle < 0 ) angle += M_PI * 2;
     QgsDebugMsg( QString( "total angle: %1 (%2)" )
                  .arg( angle ) .arg( angle * 180 / M_PI )
@@ -712,23 +706,11 @@ void QgsGeometryUtils::segmentizeArc( const QgsPoint &p1, const QgsPoint &p2, co
     QgsDebugMsg( QString( "symmetric adjusted increment:%1" ) .arg( increment ) );
   }
 
-  if ( clockwise )
-  {
-    increment *= -1;
-    /* Adjust a3 down so we can increment from a1 to a3 cleanly */
-    if ( a3 > a1 )
-      a3 -= 2.0 * M_PI;
-    if ( a2 > a1 )
-      a2 -= 2.0 * M_PI;
-  }
-  else
-  {
-    /* Adjust a3 up so we can increment from a1 to a3 cleanly */
-    if ( a3 < a1 )
-      a3 += 2.0 * M_PI;
-    if ( a2 < a1 )
-      a2 += 2.0 * M_PI;
-  }
+  /* Adjust a3 up so we can increment from a1 to a3 cleanly */
+  if ( a3 < a1 )
+    a3 += 2.0 * M_PI;
+  if ( a2 < a1 )
+    a2 += 2.0 * M_PI;
 
   QgsDebugMsg( QString( "ADJUSTED - a1:%1 (%4) a2:%2 (%5) a3:%3 (%6)" )
                .arg( a1 ).arg( a2 ).arg( a3 )
@@ -749,10 +731,10 @@ void QgsGeometryUtils::segmentizeArc( const QgsPoint &p1, const QgsPoint &p2, co
     if ( hasM )
       pointWkbType = QgsWkbTypes::addM( pointWkbType );
 
-    QgsDebugMsg( QString( "a1:%1 (%2), a3:%3 (%4), inc:%5, shi:?, cw:%6" )
+    QgsDebugMsg( QString( "a1:%1 (%2), a3:%3 (%4), inc:%5" )
                  . arg( a1 ).  arg( a1 * 180 / M_PI )
                  . arg( a3 ).  arg( a3 * 180 / M_PI )
-                 . arg( increment ).  arg( clockwise )
+                 . arg( increment )
                );
 
     //make sure the curve point p2 is part of the segmentized vertices. But only if p1 != p3
@@ -771,27 +753,16 @@ void QgsGeometryUtils::segmentizeArc( const QgsPoint &p1, const QgsPoint &p2, co
     //      are more distant than requested. This is at most 1% off
     //      from requested MaxAngle and less for MaxError.
     double tolError = increment / 100;
-    double stopAngle = clockwise ? a3 - tolError : a3 - tolError;
+    double stopAngle = a3 - tolError;
     QgsDebugMsg( QString( "stopAngle: %1 (%2)" ) . arg( stopAngle ) .arg( stopAngle * 180 / M_PI ) );
-    for ( double angle = a1 + increment; clockwise ? angle > stopAngle : angle < stopAngle; angle += increment )
+    for ( double angle = a1 + increment; angle < stopAngle; angle += increment )
     {
       if ( addP2 && angle > a2 )
       {
-        if ( clockwise )
+        if ( stringPoints.empty() || stringPoints.back() != circlePoint2 )
         {
-          if ( stringPoints.empty() || stringPoints.front() != circlePoint2 )
-          {
-            QgsDebugMsg( QString( "Adding control point, with angle %1 (%2)" ) . arg( a2 ) .arg( a2 * 180 / M_PI ) );
-            stringPoints.insert( 0, circlePoint2 );
-          }
-        }
-        else
-        {
-          if ( stringPoints.empty() || stringPoints.back() != circlePoint2 )
-          {
-            QgsDebugMsg( QString( "Adding control point, with angle %1 (%2)" ) . arg( a2 ) .arg( a2 * 180 / M_PI ) );
-            stringPoints.insert( stringPoints.size(), circlePoint2 );
-          }
+          QgsDebugMsg( QString( "Adding control point, with angle %1 (%2)" ) . arg( a2 ) .arg( a2 * 180 / M_PI ) );
+          stringPoints.insert( stringPoints.size(), circlePoint2 );
         }
         addP2 = false;
       }
