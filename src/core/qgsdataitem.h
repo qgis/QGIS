@@ -141,7 +141,7 @@ class CORE_EXPORT QgsDataItem : public QObject
     /** Returns the list of actions available for this item. This is usually used for the popup menu on right-clicking
      * the item. Subclasses should override this to provide actions.
      */
-    virtual QList<QAction *> actions() { return QList<QAction *>(); }
+    virtual QList<QAction *> actions() { return mActions; }
 
     /** Returns whether the item accepts drag and dropped layers - e.g. for importing a dataset to a provider.
      * Subclasses should override this and handleDrop() to accept dropped layers.
@@ -228,6 +228,8 @@ class CORE_EXPORT QgsDataItem : public QObject
     void setToolTip( const QString &msg ) { mToolTip = msg; }
     QString toolTip() const { return mToolTip; }
 
+    void setActions( QList<QAction *> actions ) { mActions = actions; }
+
     // deleteLater() items anc clear the vector
     static void deleteLater( QVector<QgsDataItem *> &items );
 
@@ -265,6 +267,7 @@ class CORE_EXPORT QgsDataItem : public QObject
     QString mIconName;
     QIcon mIcon;
     QMap<QString, QIcon> mIconMap;
+    QList<QAction *> mActions;
 
   public slots:
 

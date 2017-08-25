@@ -176,6 +176,12 @@ QVector<QgsDataItem *> QgsGeoNodeServiceItem::createChildren()
     skipProvider = true;
   }
 
+  // add new action menus to the layer item
+  QAction *actionCopyStyle = new QAction( tr( "Copy Style" ), this );
+  QAction *actionPasteStyle = new QAction( tr( "Paste Style" ), this );
+  QList<QAction *> actions;
+  actions << actionCopyStyle << actionPasteStyle;
+
   Q_FOREACH ( QgsDataItem *item, serviceItems.keys() )
   {
     QString providerKey = serviceItems.value( item );
@@ -190,6 +196,7 @@ QVector<QgsDataItem *> QgsGeoNodeServiceItem::createChildren()
       item->removeChildItem( subItem );
       subItem->setParent( this );
       replacePath( subItem, providerKey.toLower() + ":/", pathPrefix );
+      subItem->setActions( actions );
       children.append( subItem );
     }
 
