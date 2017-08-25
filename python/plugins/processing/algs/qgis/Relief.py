@@ -106,7 +106,7 @@ class Relief(QgisAlgorithm):
                                                             self.tr('Elevation layer')))
         self.addParameter(QgsProcessingParameterNumber(self.Z_FACTOR,
                                                        self.tr('Z factor'), type=QgsProcessingParameterNumber.Double,
-                                                       minValue=1.0, maxValue=999999.99, defaultValue=1.0))
+                                                       minValue=0.00, maxValue=999999.99, defaultValue=1.0))
         self.addParameter(QgsProcessingParameterBoolean(self.AUTO_COLORS,
                                                         self.tr('Generate relief classes automatically'),
                                                         defaultValue=False))

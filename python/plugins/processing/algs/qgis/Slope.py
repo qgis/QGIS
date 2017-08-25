@@ -61,7 +61,7 @@ class Slope(QgisAlgorithm):
                                                             self.tr('Elevation layer')))
         self.addParameter(QgsProcessingParameterNumber(self.Z_FACTOR,
                                                        self.tr('Z factor'), QgsProcessingParameterNumber.Double,
-                                                       1, False, 1, 999999.99))
+                                                       1, False, 0.00, 999999.99))
         self.addParameter(QgsProcessingParameterRasterDestination(self.OUTPUT, self.tr('Slope')))
 
     def name(self):
