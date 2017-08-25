@@ -216,6 +216,20 @@ class QgsSpatiaLiteTableModel: public QStandardItemModel
      */
     int addDbMapLayers( QStringList saSelectedLayers, QStringList saSelectedLayersSql ) const {  return mSpatialiteDbInfo->addDbMapLayers( saSelectedLayers, saSelectedLayersSql );  }
 
+    /** Create a new Database
+     *  - for use with SpatialiteDbInfo::createDatabase
+     * \note
+     * - SpatialMetadata::Spatialite40: InitSpatialMetadata only
+     * - SpatialMetadata::Spatialite45: also with Styles/Raster/VectorCoveragesTable's
+     * - SpatialMetadata::SpatialiteGpkg: using spatialite 'gpkgCreateBaseTables' function
+     * - SpatialMetadata::SpatialiteMBTiles: creating a view-base MbTiles file with grid tables
+     * \returns true if the created Database is valid and of the Container-Type requested
+     * \see SpatialiteDbInfo::createDatabase
+     * \since QGIS 3.0
+     */
+    bool createDatabase( QString sDatabaseFileName, SpatialiteDbInfo::SpatialMetadata dbCreateOption = SpatialiteDbInfo::Spatialite40 );
+
+
   private:
     enum EntryType
     {

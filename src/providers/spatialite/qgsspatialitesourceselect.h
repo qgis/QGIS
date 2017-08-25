@@ -102,6 +102,19 @@ class QgsSpatiaLiteSourceSelect: public QgsAbstractDataSourceWidget, private Ui:
      * \since QGIS 3.0
      */
     void updateStatistics();
+
+    /** Select File-name for new Database
+     *  - for use with SpatialiteDbInfo::createDatabase
+     * \note
+     * - SpatialMetadata::Spatialite40: InitSpatialMetadata only
+     * - SpatialMetadata::Spatialite45: also with Styles/Raster/VectorCoveragesTable's
+     * - SpatialMetadata::SpatialiteGpkg: using spatialite 'gpkgCreateBaseTables' function
+     * - SpatialMetadata::SpatialiteMBTiles: creating a view-base MbTiles file with grid tables
+     * \see SpatialiteDbInfo::createDatabase
+     * \see cmbDbCreateOption
+     * \since QGIS 3.0
+     */
+    void on_btnSave_clicked();
     //! Opens the create connection dialog to build a new connection
     void on_btnNew_clicked();
     //! Deletes the selected connection
@@ -283,6 +296,20 @@ class QgsSpatiaLiteSourceSelect: public QgsAbstractDataSourceWidget, private Ui:
      * \since QGIS 1.8
      */
     QPushButton *mStatsButton = nullptr;
+
+    /** Will contain values to represent option to create a new Database
+     *  - for use with SpatialiteDbInfo::createDatabase
+     * \note
+     * - SpatialMetadata::Spatialite40: InitSpatialMetadata only
+     * - SpatialMetadata::Spatialite45: also with Styles/Raster/VectorCoveragesTable's
+     * - SpatialMetadata::SpatialiteGpkg: using spatialite 'gpkgCreateBaseTables' function
+     * - SpatialMetadata::SpatialiteMBTiles: creating a view-base MbTiles file with grid tables
+     * \returns true if the Database was created
+     * \see mDbCreateOption
+     * \see SpatialiteDbInfo::createDatabase
+     * \since QGIS 3.0
+     */
+    QComboBox *cmbDbCreateOption = nullptr;
 
     /** QgsProviderRegistry::WidgetMode
      * \note

@@ -50,8 +50,16 @@ QgsSpatiaLiteSourceSelect::QgsSpatiaLiteSourceSelect( QWidget *parent, Qt::Windo
 
   setWindowTitle( tr( "Add SpatiaLite Layer(s)" ) );
   btnEdit->hide();  // hide the edit button
-  btnSave->hide();
+  // btnSave->hide();
   btnLoad->hide();
+  btnSave->setText( tr( "Create empty Database" ) );
+  cmbDbCreateOption = new QComboBox( connectionsGroupBox );
+  cmbDbCreateOption->setObjectName( QStringLiteral( "cmbDbCreateOption" ) );
+  horizontalLayout->addWidget( cmbDbCreateOption );
+  cmbDbCreateOption->addItem( tr( "Spatialite (basic)" ), SpatialiteDbInfo::Spatialite40 );
+  cmbDbCreateOption->addItem( tr( "Spatialite (with Styles, Raster and VectorCoverages Table's)" ), SpatialiteDbInfo::Spatialite45 );
+  cmbDbCreateOption->addItem( "GeoPackage", SpatialiteDbInfo::SpatialiteGpkg );
+  cmbDbCreateOption->addItem( "MBTiles", SpatialiteDbInfo::SpatialiteMBTiles );
 
   mStatsButton = new QPushButton( tr( "&Update Statistics" ) );
   connect( mStatsButton, &QAbstractButton::clicked, this, &QgsSpatiaLiteSourceSelect::updateStatistics );
@@ -119,6 +127,50 @@ QgsSpatiaLiteSourceSelect::~QgsSpatiaLiteSourceSelect()
   QgsSettings settings;
   settings.setValue( QStringLiteral( "Windows/SpatiaLiteSourceSelect/geometry" ), saveGeometry() );
   settings.setValue( QStringLiteral( "Windows/SpatiaLiteSourceSelect/HoldDialogOpen" ), mHoldDialogOpen->isChecked() );
+}
+
+void QgsSpatiaLiteSourceSelect::on_btnSave_clicked()
+{
+  QString sDbCreateOption = cmbDbCreateOption->currentText();
+  SpatialiteDbInfo::SpatialMetadata dbCreateOption = ( SpatialiteDbInfo::SpatialMetadata )cmbDbCreateOption->currentData().toInt();
+  QString sFileName = QString( "empty_Spatialite40.db" );
+  QString sDbType = "Spatialite";
+  QString sFileTypes = QString( "%1 (*.sqlite *.db *.sqlite3 *.db3 *.s3db *.atlas *.mbtiles *.gpkg);;%2 (*)" ).arg( sDbType ).arg( tr( "All files" ) );
+  switch ( dbCreateOption )
+  {
+    case SpatialiteDbInfo::Spatialite45:
+      sFileName = QString( "empty_Spatialite45.db" );
+      break;
+    case SpatialiteDbInfo::SpatialiteGpkg:
+      sFileName = QString( "empty_GeoPackage.gpkg" );
+      sDbType = "GeoPackage";
+      break;
+    case SpatialiteDbInfo::SpatialiteMBTiles:
+      sFileName = QString( "empty_MBTiles.mbtiles" );
+      sDbType = "MBTiles";
+      break;
+    case SpatialiteDbInfo::Spatialite40:
+    default:
+      sFileName = QString( "empty_Spatialite40.db" );
+      break;
+  }
+
+  QgsSettings settings;
+  QString lastUsedDir = settings.value( QStringLiteral( "UI/lastSpatiaLiteDir" ), QDir::currentPath() ).toString();
+  lastUsedDir = QString( "%1/%2" ).arg( lastUsedDir ).arg( sFileName );
+  QString sTitle = QString( tr( "Choose a Database to create [%1]" ) ).arg( sDbCreateOption );
+  QString fileSelect = QFileDialog::getSaveFileName( this, sTitle, lastUsedDir, sFileTypes );
+
+  if ( fileSelect.isEmpty() )
+  {
+    return;
+  }
+  if ( mTableModel.createDatabase( fileSelect, dbCreateOption ) )
+  {
+    mTablesTreeView->setColumnHidden( mTableModel.getColumnSortHidden(), true );
+    mTablesTreeView->sortByColumn( mTableModel.getColumnSortHidden(), Qt::AscendingOrder );
+    mTablesTreeView->expandToDepth( 1 );
+  }
 }
 
 // Slot for performing action when the Add button is clicked
@@ -289,7 +341,7 @@ bool QgsSpatiaLiteSourceSelect::newConnection( QWidget *parent )
 {
   // Retrieve last used project dir from persistent settings
   QgsSettings settings;
-  QString lastUsedDir = settings.value( QStringLiteral( "UI/lastSpatiaLiteDir" ), QDir::homePath() ).toString();
+  QString lastUsedDir = settings.value( QStringLiteral( "UI/lastSpatiaLiteDir" ), QDir::currentPath() ).toString();
   // RasterLite1 : sometimes used the '.atlas' extension for [Vector and Rasters]
   QString fileSelect = QFileDialog::getOpenFileName( parent,
                        tr( "Choose a SpatiaLite/SQLite DB to open" ),
@@ -485,12 +537,7 @@ void QgsSpatiaLiteSourceSelect::on_btnConnect_clicked()
   }
   mTablesTreeView->setColumnHidden( mTableModel.getColumnSortHidden(), true );
   mTablesTreeView->sortByColumn( mTableModel.getColumnSortHidden(), Qt::AscendingOrder );
-
   mTablesTreeView->expandToDepth( 1 );
-  // mTablesTreeView->resizeColumnToContents( 0 );
-  // mTablesTreeView->resizeColumnToContents( 1 );
-
-  // cbxAllowGeometrylessTables->setEnabled( true );
 }
 
 void QgsSpatiaLiteSourceSelect::setSql( const QModelIndex &index )

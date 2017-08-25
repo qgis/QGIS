@@ -74,11 +74,18 @@ QgsSpatiaLiteConnection::QgsSpatiaLiteConnection( const QString &name )
     mSubKey = "";
     mDbPath = name; // not found in settings - probably it's a path
   }
+  QFileInfo file_info( mDbPath );
+  // for canonicalFilePath, the file must exist
+  if ( file_info.exists() )
+  {
+    // SpatialiteDbInfo uses the actual absolute path [with resolved soft-links]
+    mDbPath = file_info.canonicalFilePath();
+  }
 }
-SpatialiteDbInfo *QgsSpatiaLiteConnection::CreateSpatialiteConnection( QString sLayerName,  bool bLoadLayers,  bool bShared )
+SpatialiteDbInfo *QgsSpatiaLiteConnection::CreateSpatialiteConnection( QString sLayerName,  bool bLoadLayers,  bool bShared, SpatialiteDbInfo::SpatialMetadata dbCreateOption )
 {
   SpatialiteDbInfo *spatialiteDbInfo = nullptr;
-  QgsSqliteHandle *qSqliteHandle = QgsSqliteHandle::openDb( mDbPath, bShared, sLayerName, bLoadLayers );
+  QgsSqliteHandle *qSqliteHandle = QgsSqliteHandle::openDb( mDbPath, bShared, sLayerName, bLoadLayers, dbCreateOption );
   if ( ( qSqliteHandle ) && ( qSqliteHandle->getSpatialiteDbInfo() ) )
   {
     spatialiteDbInfo = qSqliteHandle->getSpatialiteDbInfo();
@@ -102,23 +109,36 @@ SpatialiteDbInfo *QgsSpatiaLiteConnection::CreateSpatialiteConnection( QString s
 // QgsSqliteHandle
 // -- ---------------------------------- --
 QMap < QString, QgsSqliteHandle * > QgsSqliteHandle::sHandles;
-QgsSqliteHandle *QgsSqliteHandle::openDb( const QString &dbPath, bool shared,  QString sLayerName, bool bLoadLayers )
+QgsSqliteHandle *QgsSqliteHandle::openDb( const QString &dbPath, bool shared,  QString sLayerName, bool bLoadLayers, SpatialiteDbInfo::SpatialMetadata dbCreateOption )
 {
-  if ( shared && sHandles.contains( dbPath ) )
+  QString sDbPath = dbPath;
+  QFileInfo file_info( dbPath );
+  // for canonicalFilePath, the file must exist
+  if ( file_info.exists() )
   {
-    QgsDebugMsg( QString( "Using cached connection(%1) for dbPath[%2] shared[%3] connection_count[%4]" ).arg( sHandles[dbPath]->ref ).arg( dbPath ).arg( shared ).arg( sHandles[dbPath]->ref ) );
-    sHandles[dbPath]->ref++;
-    return sHandles[dbPath];
+    // SpatialiteDbInfo uses the actual absolute path [with resolved soft-links]
+    sDbPath = file_info.canonicalFilePath();
   }
-  QgsDebugMsg( QString( "New sqlite connection for " ) + dbPath );
-  SpatialiteDbInfo *spatialiteDbInfo = SpatialiteDbInfo::CreateSpatialiteConnection( dbPath, shared, sLayerName, bLoadLayers );
+  SpatialiteDbInfo::SpatialSniff sniffType = SpatialiteDbInfo::SniffUnknown;
+  if ( shared && sHandles.contains( sDbPath ) )
+  {
+    QgsDebugMsg( QString( "Using cached connection(%1) for sDbPath[%2] shared[%3] connection_count[%4]" ).arg( sHandles[sDbPath]->ref ).arg( sDbPath ).arg( shared ).arg( sHandles[sDbPath]->ref ) );
+    sHandles[sDbPath]->ref++;
+    return sHandles[sDbPath];
+  }
+  QgsDebugMsg( QString( "New sqlite connection for [%1]" ).arg( sDbPath ) );
+  // [will be created if a valid create-option is given and the file does not exist]
+  SpatialiteDbInfo *spatialiteDbInfo = SpatialiteDbInfo::CreateSpatialiteConnection( sDbPath, shared, sLayerName, bLoadLayers, dbCreateOption, sniffType );
   if ( spatialiteDbInfo )
   {
     // The file exists, is a Sqlite3-File and a connection has been made.
     if ( spatialiteDbInfo->isDbValid() )
     {
       if ( spatialiteDbInfo->isConnectionShared() )
+      {
+        // SpatialiteDbInfo will return the actual absolute path [with resolved soft-links]
         sHandles.insert( spatialiteDbInfo->getDatabaseFileName(), spatialiteDbInfo->getQSqliteHandle() );
+      }
       // The file Sqlite3-Container is supported by QgsSpatiaLiteProvider,QgsOgrProvider or QgsGdalProvider
       if ( !spatialiteDbInfo->isDbGdalOgr() )
       {

@@ -111,40 +111,9 @@ class QgsSpatiaLiteConnection : public QObject
     * \returns true if file is a sqlite3 Database
     * \since QGIS 3.0
     */
-    SpatialiteDbInfo *CreateSpatialiteConnection( QString sLayerName = QString::null, bool bLoadLayers = true, bool bShared = true );
+    SpatialiteDbInfo *CreateSpatialiteConnection( QString sLayerName = QString::null, bool bLoadLayers = true, bool bShared = true, SpatialiteDbInfo::SpatialMetadata dbCreateOption = SpatialiteDbInfo::SpatialUnknown );
 
-#if 0
-    typedef struct TableEntry
-    {
-      TableEntry( const QString &_tableName, const QString &_column, const QString &_type )
-        : tableName( _tableName )
-        , column( _column )
-        , type( _type )
-      {}
-      QString tableName;
-      QString column;
-      QString type;
-    } TableEntry;
-    enum Error
-    {
-      NoError,
-      NotExists,
-      FailedToOpen,
-      FailedToCheckMetadata,
-      FailedToGetTables,
-    };
-    enum DbLayoutVersion
-    {
-      LayoutUnknown,
-      LayoutLegacy,
-      LayoutCurrent,
-    };
-#endif
   protected:
-#if 0
-    QString mErrorMsg;
-    QList<TableEntry> mTables;
-#endif
 
     /** Key of the Connection
      * - 'SpatiaLite/connections'
@@ -236,6 +205,8 @@ class QgsSqliteHandle
       {
         mDbValid = getSpatialiteDbInfo()->isDbValid();
         mIsGdalOgr = getSpatialiteDbInfo()->isDbGdalOgr();
+        // If the Database was created, then there may be a mismatch between the canonicalFilePath and the given file-name
+        mDbPath = mSpatialiteDbInfo->getDatabaseFileName();
       }
       else
       {
@@ -319,7 +290,7 @@ class QgsSqliteHandle
      * \see QgsSLConnect
      * \since QGIS 1.8
      */
-    static QgsSqliteHandle *openDb( const QString &dbPath, bool shared = true, QString sLayerName = QString::null, bool bLoadLayers = true );
+    static QgsSqliteHandle *openDb( const QString &dbPath, bool shared = true, QString sLayerName = QString::null, bool bLoadLayers = true, SpatialiteDbInfo::SpatialMetadata dbCreateOption = SpatialiteDbInfo::SpatialUnknown );
 
     /** Close a (possibly cached) Spatialite Database
      * - checking will be none if the Connection is cached

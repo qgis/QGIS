@@ -600,44 +600,33 @@ bool QgsSpatiaLiteProvider::setSubsetString( const QString &theSQL, bool updateF
 {
   QString prevSubsetString = mSubsetString;
   mSubsetString = theSQL;
-
   // update URI
   QgsDataSourceUri uri = QgsDataSourceUri( dataSourceUri() );
   uri.setSql( mSubsetString );
   setDataSourceUri( uri.uri() );
-
   // update feature count and extents
   if ( updateFeatureCount )
   {
     getLayerExtent( true, true );
     return true;
   }
-
   mSubsetString = prevSubsetString;
-
   // restore URI
   uri = QgsDataSourceUri( dataSourceUri() );
   uri.setSql( mSubsetString );
   setDataSourceUri( uri.uri() );
-
   getLayerExtent( true, true );
-
   emit dataChanged();
-
   return false;
 }
-
-
 QgsRectangle QgsSpatiaLiteProvider::extent() const
 {
   return getLayerExtent( false, false );
 }
-
 void QgsSpatiaLiteProvider::updateExtents()
 {
   getLayerExtent( true, true );
 }
-
 size_t QgsSpatiaLiteProvider::layerCount() const
 {
   return 1;
@@ -658,7 +647,6 @@ long QgsSpatiaLiteProvider::featureCount() const
 {
   return getNumberFeatures();
 }
-
 QgsCoordinateReferenceSystem QgsSpatiaLiteProvider::crs() const
 {
   QgsCoordinateReferenceSystem srs = QgsCoordinateReferenceSystem::fromOgcWmsCrs( getAuthId() );
@@ -676,7 +664,6 @@ QgsCoordinateReferenceSystem QgsSpatiaLiteProvider::crs() const
                              srs.toProj4() );
       srs.saveAsUserCrs( myName );
     }
-
   }
   return srs;
 }
@@ -719,19 +706,15 @@ QVariant QgsSpatiaLiteProvider::minimumValue( int index ) const
   char *errMsg = nullptr;
   QString minValue;
   QString sql;
-
   try
   {
     // get the field name
     QgsField fld = field( index );
-
     sql = QStringLiteral( "SELECT Min(%1) FROM %2" ).arg( QgsSpatiaLiteUtils::quotedIdentifier( fld.name() ), mQuery );
-
     if ( !mSubsetString.isEmpty() )
     {
       sql += " WHERE ( " + mSubsetString + ')';
     }
-
     ret = sqlite3_get_table( dbSqliteHandle(), sql.toUtf8().constData(), &results, &rows, &columns, &errMsg );
     if ( ret != SQLITE_OK )
     {
@@ -762,7 +745,6 @@ QVariant QgsSpatiaLiteProvider::minimumValue( int index ) const
         minValue = QString();
       }
     }
-
     return convertValue( fld.type(), minValue );
   }
   catch ( QgsSpatiaLiteUtils::SLFieldNotFound )
@@ -784,19 +766,15 @@ QVariant QgsSpatiaLiteProvider::maximumValue( int index ) const
   char *errMsg = nullptr;
   QString maxValue;
   QString sql;
-
   try
   {
     // get the field name
     QgsField fld = field( index );
-
     sql = QStringLiteral( "SELECT Max(%1) FROM %2" ).arg( QgsSpatiaLiteUtils::quotedIdentifier( fld.name() ), mQuery );
-
     if ( !mSubsetString.isEmpty() )
     {
       sql += " WHERE ( " + mSubsetString + ')';
     }
-
     ret = sqlite3_get_table( dbSqliteHandle(), sql.toUtf8().constData(), &results, &rows, &columns, &errMsg );
     if ( ret != SQLITE_OK )
     {
@@ -810,7 +788,6 @@ QVariant QgsSpatiaLiteProvider::maximumValue( int index ) const
     }
     else
     {
-
       if ( rows < 1 )
         ;
       else
@@ -821,14 +798,12 @@ QVariant QgsSpatiaLiteProvider::maximumValue( int index ) const
         }
       }
       sqlite3_free_table( results );
-
       if ( maxValue.isEmpty() )
       {
         // NULL or not found
         maxValue = QString();
       }
     }
-
     return convertValue( fld.type(), maxValue );
   }
   catch ( QgsSpatiaLiteUtils::SLFieldNotFound )
@@ -844,30 +819,23 @@ QSet<QVariant> QgsSpatiaLiteProvider::uniqueValues( int index, int limit ) const
 {
   sqlite3_stmt *stmt = nullptr;
   QString sql;
-
   QSet<QVariant> uniqueValues;
-
   // get the field name
   if ( index < 0 || index >= getAttributeFields().count() )
   {
     return uniqueValues; //invalid field
   }
   QgsField fld = getAttributeFields().at( index );
-
   sql = QStringLiteral( "SELECT DISTINCT %1 FROM %2" ).arg( QgsSpatiaLiteUtils::quotedIdentifier( fld.name() ), mQuery );
-
   if ( !mSubsetString.isEmpty() )
   {
     sql += " WHERE ( " + mSubsetString + ')';
   }
-
   sql += QStringLiteral( " ORDER BY %1" ).arg( QgsSpatiaLiteUtils::quotedIdentifier( fld.name() ) );
-
   if ( limit >= 0 )
   {
     sql += QStringLiteral( " LIMIT %1" ).arg( limit );
   }
-
   // SQLite prepared statement
   if ( sqlite3_prepare_v2( dbSqliteHandle(), sql.toUtf8().constData(), -1, &stmt, nullptr ) != SQLITE_OK )
   {
@@ -875,18 +843,15 @@ QSet<QVariant> QgsSpatiaLiteProvider::uniqueValues( int index, int limit ) const
     QgsMessageLog::logMessage( tr( "SQLite error: %2\nSQL: %1" ).arg( sql, sqlite3_errmsg( dbSqliteHandle() ) ), tr( "SpatiaLite" ) );
     return uniqueValues;
   }
-
   while ( 1 )
   {
     // this one is an infinitive loop, intended to fetch any row
     int ret = sqlite3_step( stmt );
-
     if ( ret == SQLITE_DONE )
     {
       // there are no more rows to fetch - we can stop looping
       break;
     }
-
     if ( ret == SQLITE_ROW )
     {
       // fetching one column value
@@ -913,7 +878,6 @@ QSet<QVariant> QgsSpatiaLiteProvider::uniqueValues( int index, int limit ) const
       return uniqueValues;
     }
   }
-
   sqlite3_finalize( stmt );
 
   return uniqueValues;
@@ -925,32 +889,25 @@ QSet<QVariant> QgsSpatiaLiteProvider::uniqueValues( int index, int limit ) const
 QStringList QgsSpatiaLiteProvider::uniqueStringsMatching( int index, const QString &substring, int limit, QgsFeedback *feedback ) const
 {
   QStringList results;
-
   sqlite3_stmt *stmt = nullptr;
   QString sql;
-
   // get the field name
   if ( index < 0 || index >= getAttributeFields().count() )
   {
     return results; //invalid field
   }
   QgsField fld = getAttributeFields().at( index );
-
   sql = QStringLiteral( "SELECT DISTINCT %1 FROM %2 " ).arg( QgsSpatiaLiteUtils::quotedIdentifier( fld.name() ), mQuery );
   sql += QStringLiteral( " WHERE " ) + QgsSpatiaLiteUtils::quotedIdentifier( fld.name() ) + QStringLiteral( " LIKE '%" ) + substring + QStringLiteral( "%'" );
-
   if ( !mSubsetString.isEmpty() )
   {
     sql += QStringLiteral( " AND ( " ) + mSubsetString + ')';
   }
-
   sql += QStringLiteral( " ORDER BY %1" ).arg( QgsSpatiaLiteUtils::quotedIdentifier( fld.name() ) );
-
   if ( limit >= 0 )
   {
     sql += QStringLiteral( " LIMIT %1" ).arg( limit );
   }
-
   // SQLite prepared statement
   if ( sqlite3_prepare_v2( dbSqliteHandle(), sql.toUtf8().constData(), -1, &stmt, nullptr ) != SQLITE_OK )
   {
@@ -958,18 +915,15 @@ QStringList QgsSpatiaLiteProvider::uniqueStringsMatching( int index, const QStri
     QgsMessageLog::logMessage( tr( "SQLite error: %2\nSQL: %1" ).arg( sql, sqlite3_errmsg( dbSqliteHandle() ) ), tr( "SpatiaLite" ) );
     return results;
   }
-
   while ( ( limit < 0 || results.size() < limit ) && ( !feedback || !feedback->isCanceled() ) )
   {
     // this one is an infinitive loop, intended to fetch any row
     int ret = sqlite3_step( stmt );
-
     if ( ret == SQLITE_DONE )
     {
       // there are no more rows to fetch - we can stop looping
       break;
     }
-
     if ( ret == SQLITE_ROW )
     {
       // fetching one column value
@@ -989,9 +943,7 @@ QStringList QgsSpatiaLiteProvider::uniqueStringsMatching( int index, const QStri
       return results;
     }
   }
-
   sqlite3_finalize( stmt );
-
   return results;
 }
 
@@ -1167,35 +1119,41 @@ QGISEXTERN QgsVectorLayerExporter::ExportError createEmptyLayer(
          );
 }
 
+#if 0
 //-----------------------------------------------------------
 // TODO: determine if these functions should be moved to QgsSpatiaLiteUtils
-// - not documented, may be used elsewhere
+// - not documented: used only for  'QGISEXTERN bool createDb'
+//-----------------------------------------------------------
+// this functionality is now done: QgsSpatiaLiteUtils::createSpatialDatabase
 //-----------------------------------------------------------
 static bool initializeSpatialMetadata( sqlite3 *sqlite_handle, QString &errCause )
 {
   // attempting to perform self-initialization for a newly created DB
   if ( !sqlite_handle )
+  {
     return false;
-
+  }
   // checking if this DB is really empty
   char **results = nullptr;
   int rows, columns;
   int ret = sqlite3_get_table( sqlite_handle, "select count(*) from sqlite_master", &results, &rows, &columns, nullptr );
   if ( ret != SQLITE_OK )
+  {
     return false;
-
+  }
   int count = 0;
   if ( rows >= 1 )
   {
     for ( int i = 1; i <= rows; i++ )
+    {
       count = atoi( results[( i * columns ) + 0] );
+    }
   }
-
   sqlite3_free_table( results );
-
   if ( count > 0 )
+  {
     return false;
-
+  }
   bool above41 = false;
   ret = sqlite3_get_table( sqlite_handle, "select spatialite_version()", &results, &rows, &columns, nullptr );
   if ( ret == SQLITE_OK && rows == 1 && columns == 1 )
@@ -1208,9 +1166,7 @@ static bool initializeSpatialMetadata( sqlite3 *sqlite_handle, QString &errCause
       above41 = verparts.size() >= 2 && ( verparts[0].toInt() > 4 || ( verparts[0].toInt() == 4 && verparts[1].toInt() >= 1 ) );
     }
   }
-
   sqlite3_free_table( results );
-
   // all right, it's empty: proceeding to initialize
   char *errMsg = nullptr;
   ret = sqlite3_exec( sqlite_handle, above41 ? "SELECT InitSpatialMetadata(1)" : "SELECT InitSpatialMetadata()", nullptr, nullptr, &errMsg );
@@ -1224,9 +1180,18 @@ static bool initializeSpatialMetadata( sqlite3 *sqlite_handle, QString &errCause
   spatial_ref_sys_init( sqlite_handle, 0 );
   return true;
 }
-
+#endif
+//-----------------------------------------------------------
+// TODO: determine if these functions should be moved to QgsSpatiaLiteUtils
+// - not documented:
+// used  for 'QgsSLRootItem::createDatabase()' and
+// and for 'QgsNewSpatialiteLayerDialog::createDb'
+//-----------------------------------------------------------
+// this function now calls: QgsSpatiaLiteUtils::createSpatialDatabase
+//-----------------------------------------------------------
 QGISEXTERN bool createDb( const QString &dbPath, QString &errCause )
 {
+  bool bRc = false;
   QgsDebugMsg( "creating a new db" );
 
   QFileInfo fullPath = QFileInfo( dbPath );
@@ -1235,7 +1200,9 @@ QGISEXTERN bool createDb( const QString &dbPath, QString &errCause )
 
   // Must be sure there is destination directory ~/.qgis
   QDir().mkpath( path.absolutePath() );
+  QString sDatabaseFileName = dbPath;
 
+#if 0
   // creating/opening the new database
   sqlite3 *sqlite_handle = nullptr;
   int ret = QgsSLConnect::sqlite3_open_v2( dbPath.toUtf8().constData(), &sqlite_handle, SQLITE_OPEN_READWRITE | SQLITE_OPEN_CREATE, nullptr );
@@ -1257,12 +1224,15 @@ QGISEXTERN bool createDb( const QString &dbPath, QString &errCause )
     QgsSLConnect::sqlite3_close( sqlite_handle );
     return false;
   }
-  bool init_res = ::initializeSpatialMetadata( sqlite_handle, errCause );
+  bRc = ::initializeSpatialMetadata( sqlite_handle, errCause );
 
   // all done: closing the DB connection
   QgsSLConnect::sqlite3_close( sqlite_handle );
+#endif
+  SpatialiteDbInfo::SpatialMetadata dbCreateOption = SpatialiteDbInfo::Spatialite45;
+  bRc = QgsSpatiaLiteUtils::createSpatialDatabase( sDatabaseFileName, errCause, dbCreateOption );
 
-  return init_res;
+  return bRc;
 }
 
 // -------------

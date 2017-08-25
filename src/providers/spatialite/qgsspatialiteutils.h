@@ -151,12 +151,13 @@ class SpatialiteDbInfo : public QObject
       NonSpatialTables = 1501,
       AllLayers = 1502
     };
-    SpatialiteDbInfo( QString sDatabaseFilename, sqlite3 *sqlite_handle  = nullptr )
+    SpatialiteDbInfo( QString sDatabaseFilename, sqlite3 *sqlite_handle  = nullptr, SpatialiteDbInfo::SpatialMetadata dbCreateOption = SpatialiteDbInfo::SpatialUnknown )
       : mDatabaseFileName( sDatabaseFilename )
       , mFileName( QString::null )
       , mSqliteHandle( sqlite_handle )
       , mQSqliteHandle( nullptr )
       , mSpatialMetadata( SpatialiteDbInfo::SpatialUnknown )
+      , mDbCreateOption( dbCreateOption )
       , mSpatialiteVersionInfo( QString::null )
       , mSpatialiteVersionMajor( -1 )
       , mSpatialiteVersionMinor( -1 )
@@ -197,15 +198,45 @@ class SpatialiteDbInfo : public QObject
       , mIsSqlite3( false )
       , mSniffType( SpatialiteDbInfo::SniffUnknown )
     {
+      switch ( mDbCreateOption )
+      {
+        case SpatialMetadata::SpatialiteGpkg:
+        case SpatialMetadata::SpatialiteMBTiles:
+        case SpatialMetadata::Spatialite40:
+        case SpatialMetadata::Spatialite45:
+          break;
+        case SpatialMetadata::SpatialiteLegacy:
+          mDbCreateOption = SpatialMetadata::Spatialite40;
+          break;
+        case SpatialMetadata::SpatialUnknown:
+        case SpatialMetadata::SpatialiteFdoOgr:
+        default:
+          mDbCreateOption = SpatialMetadata::SpatialUnknown;
+          break;
+      }
+      QFileInfo file_info( mDatabaseFileName );
+      // for canonicalFilePath, the file must exist
       if ( SpatialiteDbInfo::readSqlite3MagicHeaderString( mDatabaseFileName ) )
       {
-        // The File exists and is a Sqlite3 container
-        mIsSqlite3 = true;
-        QFileInfo file_info( mDatabaseFileName );
         mDatabaseFileName = file_info.canonicalFilePath();
         mFileName = file_info.fileName();
+        // The File exists and is a Sqlite3 container
+        mDbCreateOption = SpatialMetadata::SpatialUnknown;
+        mIsSqlite3 = true;
       }
-      // else Either the File does not exists or is not a Sqlite3 container
+      else
+      {
+        // either the File does not exist or is not a Sqlite3 container
+        if ( ( !file_info.exists() ) && ( mDbCreateOption != SpatialMetadata::SpatialUnknown ) )
+        {
+          // The File does not exist and the user desires a creation for a format that we support
+          if ( createDatabase() )
+          {
+            // The created Database exists and is valid and of the Container-Type requested
+            // The canonicalFilePath is set during createDatabase when a valid sqlite3 has been determined
+          }
+        }
+      }
     }
     ~SpatialiteDbInfo();
 
@@ -221,12 +252,13 @@ class SpatialiteDbInfo : public QObject
     * \param bShared if this connection should be shared
     * \param sLayerName Name of the Layer to search for format: 'table_name(geometry_name)'
     * \param bLoadLayers load Layer details
+    * \param dbCreateOption  the Container-Type to create [default=SpatialiteUnknown - i.e. File exists]
     * \param sniffType based on the Task, restrict unneeded activities
     * \returns true if file is a sqlite3 Database
     * \since QGIS 3.0
     */
     static SpatialiteDbInfo *CreateSpatialiteConnection( const QString sDatabaseFileName, bool bShared = false,
-        QString sLayerName = QString::null, bool bLoadLayers = false, SpatialSniff sniffType = SpatialiteDbInfo::SniffUnknown );
+        QString sLayerName = QString::null, bool bLoadLayers = false, SpatialiteDbInfo::SpatialMetadata dbCreateOption = SpatialiteDbInfo::SpatialUnknown, SpatialSniff sniffType = SpatialiteDbInfo::SniffUnknown );
 
     /** The Database filename (with Path)
     * \returns mDatabaseFileName complete Path (without without symbolic links)
@@ -883,7 +915,7 @@ class SpatialiteDbInfo : public QObject
      * \note
      * - created in prepareDataSourceUris
      * \param sLayerName Name of the Layer to search for format: 'table_name(geometry_name)'
-     * \returns true if the the count of valid-layers > 0
+     * \returns true if the count of valid-layers > 0
      * \see GetSpatialiteDbInfo
      * \since QGIS 3.0
      */
@@ -1202,6 +1234,18 @@ class SpatialiteDbInfo : public QObject
     QgsSqliteHandle *mQSqliteHandle = nullptr;
     //! The Spatialite internal Database structure being read
     SpatialiteDbInfo::SpatialMetadata mSpatialMetadata;
+
+    /** Database create pption
+      * - when empty (or does not exist) create valid SpatialDatabase based on this option
+     * \note
+     * - SpatialUnknown,: [default]: assume Database exist and is valid (do not create)
+     * - SpatialiteLegacy, 40, 45: a valid (empty) SpatialLite Database, if empty
+     * - SpatialiteGpkg: a valid (empty) GeoPackage Database, if empty
+     * - SpatialiteMBTiles: a valid (empty) Mbtiles Database, if empty
+     * - SpatialiteFdoOgr: not supported (treat as if SpatialUnknown)
+    * \since QGIS 3.0
+    */
+    SpatialiteDbInfo::SpatialMetadata mDbCreateOption;
     //! The Spatialite internal Database structure being read (as String)
     QString mSpatialMetadataString;
 
@@ -1954,7 +1998,7 @@ class SpatialiteDbInfo : public QObject
      * - called only when mHasVectorLayers > 0 during GetSpatialiteDbInfo
      * \note
      * - results are stored in mVectorLayers
-     * \returns true if the the count of valid-layers > 0
+     * \returns true if the count of valid-layers > 0
      * \see GetSpatialiteDbInfo
      * \since QGIS 3.0
      */
@@ -1993,7 +2037,7 @@ class SpatialiteDbInfo : public QObject
      * \note
      * - results are stored in mRasterLite1Layers
      * - checking is done if the Gdal-Driver for RasterLite1 can be used
-     * \returns true if the the count of valid-layers > 0
+     * \returns true if the count of valid-layers > 0
      * \see GetSpatialiteDbInfo
      * \since QGIS 3.0
      */
@@ -2003,7 +2047,7 @@ class SpatialiteDbInfo : public QObject
      * - called only when mHasTopologyExportTables > 0 during GetSpatialiteDbInfo
      * \note
      * - results are stored in mTopologyExportLayers
-     * \returns true if the the count of valid-layers > 0
+     * \returns true if the count of valid-layers > 0
      * \see GetSpatialiteDbInfo
      * \since QGIS 3.0
      */
@@ -2017,6 +2061,53 @@ class SpatialiteDbInfo : public QObject
      */
     static bool readSqlite3MagicHeaderString( QString sDatabaseFileName );
 
+    /** Create a new Database
+     * - called from constructor with a supported option
+     * \note
+     * - supported containers: Spatialite, GeoPackage and MBTiles
+     * \returns true if the created Database is valid and of the Container-Type requested
+     * \see mDbCreateOption
+     * \see createDatabaseSpatialite
+     * \see createDatabaseGeoPackage
+     * \see createDatabaseMBtiles
+     * \since QGIS 3.0
+     */
+    bool createDatabase();
+
+    /** Create a new Spatialite Database
+     * - called from constructor with a supported option
+     * \note
+     * - SpatialMetadata::Spatialite40: InitSpatialMetadata only
+     * - SpatialMetadata::Spatialite45: also with Styles/Raster/VectorCoveragesTable's
+     * \returns true if the Database was created and considered valid
+     * \see mDbCreateOption
+     * \see createDatabase
+     * \since QGIS 3.0
+     */
+    bool createDatabaseSpatialite();
+
+    /** Create a new GeoPackage Database
+     * - called from constructor with a supported option
+     * \note
+     * - SpatialMetadata::SpatialiteGpkg: using spatialite 'gpkgCreateBaseTables' function
+     * \returns true if the Database was created
+     * \see mDbCreateOption
+     * \see createDatabase
+     * \since QGIS 3.0
+     */
+    bool createDatabaseGeoPackage();
+
+    /** Create a new Spatialite Database
+     * - called from constructor with a supported option
+     * \note
+     * - SpatialMetadata::SpatialiteMBTiles: creating a view-base MbTiles file with grid tables
+     * \returns true if the Database was created
+     * \see mDbCreateOption
+     * \see createDatabase
+     * \since QGIS 3.0
+     */
+    bool createDatabaseMBTiles();
+
     /** Check if Database contains possible MbTiles-Tables
      * - sets mHasMBTilesTables
      * \note
@@ -2029,7 +2120,7 @@ class SpatialiteDbInfo : public QObject
      * - called only when mHasMBTilesTables > 0 during GetSpatialiteDbInfo
      * \note
      * - results are stored in mMBTilesLayers
-     * \returns true if the the count of valid-layers > 0
+     * \returns true if the count of valid-layers > 0
      * \see GetSpatialiteDbInfo
      * \since QGIS 3.0
      */
@@ -2039,7 +2130,7 @@ class SpatialiteDbInfo : public QObject
      * - called only when mHasGeoPackageTables > 0 during GetSpatialiteDbInfo
      * \note
      * - results are stored in mMBTilesLayers
-     * \returns true if the the count of valid-layers > 0
+     * \returns true if the count of valid-layers > 0
      * \see GetSpatialiteDbInfo
      * \since QGIS 3.0
      */
@@ -2052,7 +2143,7 @@ class SpatialiteDbInfo : public QObject
      * \note
      * - results are stored in mFdoOgrLayers
      * - Checking is done if the SQLite' Gdal/Ogr Driver is active
-     * \returns true if the the count of valid-layers > 0
+     * \returns true if the count of valid-layers > 0
      * \see GetSpatialiteDbInfo
      * \since QGIS 3.0
      */
@@ -2463,13 +2554,13 @@ class SpatialiteDbLayer : public QObject
     /** Rectangle that contains the extent (bounding box) of the layer
      * \note
      *  With UpdateLayerStatistics the Number of features will also be updated and retrieved
-     * \param bUpdate force reading from Database
-     * \param bUpdateStatistics UpdateLayerStatistics before reading
+     * \param bUpdateExtent force reading from Database [Extent, NumFeatures]
+     * \param bUpdateStatistics UpdateLayerStatistics before reading Extent and NumFeatures
      * \see mLayerExtent
      * \see mNumberFeatures
      * \since QGIS 3.0
      */
-    QgsRectangle getLayerExtent( bool bUpdate = false, bool bUpdateStatistics = false );
+    QgsRectangle getLayerExtent( bool bUpdateExtent = false, bool bUpdateStatistics = false );
 
     /** Set the Rectangle that contains the extent (bounding box) of the layer
      *  - will also set the EWKT
@@ -3320,6 +3411,22 @@ class QgsSpatiaLiteUtils
 
     };
     // static functions
+
+    /** Create a new Database
+     * - for use with SpatialiteDbInfo
+     * \note
+     * - supported containers: Spatialite, GeoPackage and MBTiles
+     * \returns true if the created Database is valid and of the Container-Type requested
+     * \param sDatabaseFileName name of the Database to be created
+     * \param errCause error Text
+     * \param dbCreateOption the Container-Type to create [default=Spatialite45]
+     * \see mDbCreateOption
+     * \see createDatabaseSpatialite
+     * \see createDatabaseGeoPackage
+     * \see createDatabaseMBtiles
+     * \since QGIS 3.0
+     */
+    static bool createSpatialDatabase( QString sDatabaseFileName, QString &errCause, SpatialiteDbInfo::SpatialMetadata dbCreateOption = SpatialiteDbInfo::Spatialite45 );
     static QString createIndexName( QString tableName, QString field );
     static QString quotedIdentifier( QString id );
     static QString quotedValue( QString value );

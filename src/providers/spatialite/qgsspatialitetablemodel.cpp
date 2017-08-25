@@ -33,6 +33,73 @@ QgsSpatiaLiteTableModel::QgsSpatiaLiteTableModel(): QStandardItemModel(), mTable
   i_field_sort_hidden = i_field_sql + 1;
   setHorizontalHeaderLabels( headerLabels );
 }
+bool QgsSpatiaLiteTableModel::createDatabase( QString sDatabaseFileName, SpatialiteDbInfo::SpatialMetadata dbCreateOption )
+{
+  bool bRc = false;
+  bool bLoadLayers = false;
+  bool bShared = false;
+  //----------------------------------------------------------
+  QgsSpatiaLiteConnection connectionInfo( sDatabaseFileName );
+  SpatialiteDbInfo *spatialiteDbInfo = connectionInfo.CreateSpatialiteConnection( QString(), bLoadLayers, bShared, dbCreateOption );
+  if ( spatialiteDbInfo )
+  {
+    if ( spatialiteDbInfo->isDbSqlite3() )
+    {
+      switch ( dbCreateOption )
+      {
+        case SpatialiteDbInfo::Spatialite40:
+        case SpatialiteDbInfo::Spatialite45:
+          switch ( spatialiteDbInfo->dbSpatialMetadata() )
+          {
+            case SpatialiteDbInfo::SpatialiteLegacy:
+            case SpatialiteDbInfo::Spatialite40:
+            case SpatialiteDbInfo::Spatialite45:
+              // this is a Database that can be used for QgsSpatiaLiteProvider
+              bRc = true;
+              break;
+            default:
+              break;
+          }
+          break;
+        case SpatialiteDbInfo::SpatialiteGpkg:
+          switch ( spatialiteDbInfo->dbSpatialMetadata() )
+          {
+            case SpatialiteDbInfo::SpatialiteGpkg:
+              // this is a Database that can be used for QgsOgrProvider or QgsGdalProvider
+              bRc = true;
+              break;
+            default:
+              break;
+          }
+          break;
+        case SpatialiteDbInfo::SpatialiteMBTiles:
+          switch ( spatialiteDbInfo->dbSpatialMetadata() )
+          {
+            case SpatialiteDbInfo::SpatialiteMBTiles:
+              // this is a Database that can be used for QgsGdalProvider
+              bRc = true;
+              break;
+            default:
+              break;
+          }
+          break;
+        default:
+          break;
+      }
+    }
+    if ( bRc )
+    {
+      setSqliteDb( spatialiteDbInfo, true );
+    }
+    else
+    {
+      delete spatialiteDbInfo;
+      spatialiteDbInfo = nullptr;
+    }
+  }
+  //----------------------------------------------------------
+  return bRc;
+}
 void QgsSpatiaLiteTableModel::setSqliteDb( SpatialiteDbInfo *spatialiteDbInfo, bool loadGeometrylessTables )
 {
   if ( ( spatialiteDbInfo ) && ( spatialiteDbInfo->isDbValid() ) )

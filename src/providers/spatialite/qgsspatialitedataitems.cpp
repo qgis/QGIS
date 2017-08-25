@@ -361,7 +361,13 @@ void QgsSLRootItem::newConnection()
   }
 }
 #endif
-
+//-----------------------------------------------------------
+// TODO: clean this up
+// - not documented:
+// used  for 'QgsSLRootItem::createDatabase()' and
+// possibly for 'QgsNewSpatialiteLayerDialog::createDb'
+// implemented in qgsspatialiteprovider.cpp
+//-----------------------------------------------------------
 QGISEXTERN bool createDb( const QString &dbPath, QString &errCause );
 
 void QgsSLRootItem::createDatabase()
