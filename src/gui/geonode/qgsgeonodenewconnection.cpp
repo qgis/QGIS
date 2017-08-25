@@ -248,10 +248,11 @@ void QgsGeoNodeNewConnection::testConnection()
   QApplication::setOverrideCursor( Qt::BusyCursor );
   QString url = txtUrl->text();
   QgsGeoNodeRequest geonodeRequest( url, true );
-  bool success = geonodeRequest.getLayers();
+
+  QList<QgsServiceLayerDetail> layers = geonodeRequest.getLayers();
   QApplication::restoreOverrideCursor();
 
-  if ( success )
+  if ( !layers.empty() )
   {
     QMessageBox::information( this,
                               tr( "Test connection" ),

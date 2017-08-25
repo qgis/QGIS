@@ -39,12 +39,7 @@ class QgsGeoNodeRequest : QObject
  :rtype: bool
 %End
 
-    bool getLayers();
-%Docstring
- :rtype: bool
-%End
-
-    QList<QgsServiceLayerDetail> parseLayers( QByteArray layerResponse );
+    QList<QgsServiceLayerDetail> getLayers();
 %Docstring
  :rtype: list of QgsServiceLayerDetail
 %End

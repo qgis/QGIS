@@ -59,9 +59,15 @@ void QgsGeoNodeRequest::abort()
   }
 }
 
-bool QgsGeoNodeRequest::getLayers()
+QList<QgsServiceLayerDetail> QgsGeoNodeRequest::getLayers()
 {
-  return request( QStringLiteral( "/api/layers/" ) );
+  QList<QgsServiceLayerDetail> layers;
+  bool success = request( QStringLiteral( "/api/layers/" ) );
+  if ( !success )
+  {
+    return layers;
+  }
+  return parseLayers( this->response() );
 }
 
 void QgsGeoNodeRequest::replyProgress( qint64 bytesReceived, qint64 bytesTotal )
@@ -82,7 +88,6 @@ void QgsGeoNodeRequest::setProtocol( const QString &protocol )
 {
   mProtocol = protocol;
 }
-
 
 void QgsGeoNodeRequest::replyFinished()
 {
@@ -293,18 +298,16 @@ QList<QgsServiceLayerDetail> QgsGeoNodeRequest::parseLayers( QByteArray layerRes
   return layers;
 }
 
-
 QStringList QgsGeoNodeRequest::serviceUrls( QString serviceType )
 {
   QStringList urls;
-  bool success = getLayers();
 
-  if ( !success )
+  QList<QgsServiceLayerDetail> layers = getLayers();
+
+  if ( layers.empty() )
   {
     return urls;
   }
-
-  QList<QgsServiceLayerDetail> layers = parseLayers( this->response() );
 
   Q_FOREACH ( QgsServiceLayerDetail layer, layers )
   {
@@ -339,17 +342,16 @@ QStringList QgsGeoNodeRequest::serviceUrls( QString serviceType )
   return urls;
 }
 
-
 QgsStringMap QgsGeoNodeRequest::serviceUrlData( QString serviceType )
 {
   QgsStringMap urls;
-  bool success = getLayers();
 
-  if ( !success )
+  QList<QgsServiceLayerDetail> layers = getLayers();
+
+  if ( layers.empty() )
   {
     return urls;
   }
-  QList<QgsServiceLayerDetail> layers = parseLayers( this->response() );
 
   Q_FOREACH ( QgsServiceLayerDetail layer, layers )
   {
@@ -385,7 +387,6 @@ QgsStringMap QgsGeoNodeRequest::serviceUrlData( QString serviceType )
 
   return urls;
 }
-
 
 bool QgsGeoNodeRequest::request( QString endPoint )
 {

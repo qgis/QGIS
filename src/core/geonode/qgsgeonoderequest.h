@@ -49,9 +49,7 @@ class CORE_EXPORT QgsGeoNodeRequest : public QObject
 
     bool request( QString endPoint );
 
-    bool getLayers();
-
-    QList<QgsServiceLayerDetail> parseLayers( QByteArray layerResponse );
+    QList<QgsServiceLayerDetail> getLayers();
 
     // Obtain list of unique URL in the geonode
     QStringList serviceUrls( QString serviceType );
@@ -70,6 +68,9 @@ class CORE_EXPORT QgsGeoNodeRequest : public QObject
 
     QString getProtocol() const;
     void setProtocol( const QString &protocol );
+
+  private:
+    QList<QgsServiceLayerDetail> parseLayers( QByteArray layerResponse );
 
   signals:
     //! \brief emit a signal to be caught by qgisapp and display a statusQString on status bar
