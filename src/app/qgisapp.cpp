@@ -5127,7 +5127,11 @@ void QgisApp::showRasterCalculator()
 
     QProgressDialog p( tr( "Calculating..." ), tr( "Abort..." ), 0, 0 );
     p.setWindowModality( Qt::WindowModal );
-    QgsRasterCalculator::Result res = static_cast< QgsRasterCalculator::Result >( rc.processCalculation( &p ) );
+    p.setMaximum( 100.0 );
+    QgsFeedback feedback;
+    connect( &feedback, &QgsFeedback::progressChanged, &p, &QProgressDialog::setValue );
+    connect( &feedback, &QgsFeedback::canceled, &p, &QProgressDialog::cancel );
+    QgsRasterCalculator::Result res = static_cast< QgsRasterCalculator::Result >( rc.processCalculation( &feedback ) );
     switch ( res )
     {
       case QgsRasterCalculator::Success:
