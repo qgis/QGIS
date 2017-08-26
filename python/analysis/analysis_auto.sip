@@ -12,6 +12,7 @@
 %Include raster/qgsrastermatrix.sip
 %Include raster/qgsrastercalcnode.sip
 %Include raster/qgstotalcurvaturefilter.sip
+%Include vector/qgsgeometrysnapper.sip
 %Include vector/qgstransectsample.sip
 %Include vector/qgszonalstatistics.sip
 %Include interpolation/qgsinterpolator.sip
@@ -20,6 +21,8 @@
 %Include interpolation/qgstininterpolator.sip
 %Include openstreetmap/qgsosmbase.sip
 %Include openstreetmap/qgsosmdatabase.sip
+%Include openstreetmap/qgsosmdownload.sip
+%Include openstreetmap/qgsosmimport.sip
 %Include network/qgsgraph.sip
 %Include network/qgsgraphbuilderinterface.sip
 %Include network/qgsgraphbuilder.sip
@@ -27,8 +30,5 @@
 %Include network/qgsnetworkspeedstrategy.sip
 %Include network/qgsnetworkdistancestrategy.sip
 %Include network/qgsgraphanalyzer.sip
-%Include openstreetmap/qgsosmdownload.sip
-%Include openstreetmap/qgsosmimport.sip
-%Include vector/qgsgeometrysnapper.sip
-%Include network/qgsgraphdirector.sip
 %Include network/qgsvectorlayerdirector.sip
+%Include network/qgsgraphdirector.sip
