@@ -66,7 +66,8 @@ class ConcaveHull(GeoAlgorithm):
 
         # Delaunay triangulation from input point layer
         progress.setText(self.tr('Creating Delaunay triangles...'))
-        delone_triangles = processing.runalg("qgis:delaunaytriangulation", layer, None)['OUTPUT']
+        delone_triangles = processing.runalg("qgis:delaunaytriangulation",
+                                             layer, None, progress=progress)['OUTPUT']
         delaunay_layer = processing.getObject(delone_triangles)
 
         # Get max edge length from Delaunay triangles
@@ -103,7 +104,7 @@ class ConcaveHull(GeoAlgorithm):
         # Dissolve all Delaunay triangles
         progress.setText(self.tr('Dissolving Delaunay triangles...'))
         dissolved = processing.runalg("qgis:dissolve", delaunay_layer,
-                                      True, None, None)['OUTPUT']
+                                      True, None, None, progress=progress)['OUTPUT']
         dissolved_layer = processing.getObject(dissolved)
 
         # Save result
