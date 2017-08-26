@@ -35,7 +35,6 @@ QgsTINInterpolator::QgsTINInterpolator( const QList<LayerData> &inputData, TINIn
   , mTriangleInterpolator( nullptr )
   , mIsInitialized( false )
   , mFeedback( feedback )
-  , mExportTriangulationToFile( false )
   , mInterpolation( interpolation )
 {
 }
@@ -65,6 +64,16 @@ int QgsTINInterpolator::interpolatePoint( double x, double y, double &result )
   }
   result = r.z();
   return 0;
+}
+
+QgsFields QgsTINInterpolator::triangulationFields()
+{
+  return Triangulation::triangulationFields();
+}
+
+void QgsTINInterpolator::setTriangulationSink( QgsFeatureSink *sink )
+{
+  mTriangulationSink = sink;
 }
 
 void QgsTINInterpolator::initialize()
@@ -143,9 +152,9 @@ void QgsTINInterpolator::initialize()
   mIsInitialized = true;
 
   //debug
-  if ( mExportTriangulationToFile )
+  if ( mTriangulationSink )
   {
-    dualEdgeTriangulation->saveAsShapefile( mTriangulationFilePath );
+    dualEdgeTriangulation->saveTriangulation( mTriangulationSink, mFeedback );
   }
 }
 

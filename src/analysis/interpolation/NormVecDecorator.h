@@ -68,9 +68,7 @@ class ANALYSIS_EXPORT NormVecDecorator: public TriDecorator
     //! Swaps the edge which is closest to the point with x and y coordinates (if this is possible) and forces recalculation of the concerned normals (if alreadyestimated is true)
     virtual bool swapEdge( double x, double y ) override;
 
-    /** Saves the triangulation as a (line) shapefile
-      \returns true in case of success*/
-    virtual bool saveAsShapefile( const QString &fileName ) const override;
+    virtual bool saveTriangulation( QgsFeatureSink *sink, QgsFeedback *feedback = nullptr ) const override;
 
   protected:
     //! Is true, if the normals already have been estimated

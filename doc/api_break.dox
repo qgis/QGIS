@@ -2338,6 +2338,7 @@ QgsTINInterpolator        {#qgis_api_break_3_0_QgsTINInterpolator}
 ------------------
 
 - The constructor takes a QgsFeedback argument instead of using a QProgressDialog.
+- setExportTriangulationToFile() and setTriangulationFilePath() were removed. Use setTriangulationSink() instead.
 
 QgsTolerance        {#qgis_api_break_3_0_QgsTolerance}
 ------------

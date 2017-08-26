@@ -45,8 +45,26 @@ class QgsTINInterpolator: QgsInterpolator
  :rtype: int
 %End
 
-    void setExportTriangulationToFile( bool e );
-    void setTriangulationFilePath( const QString &filepath );
+    static QgsFields triangulationFields();
+%Docstring
+ Returns the fields output by features when saving the triangulation.
+ These fields should be used when creating
+ a suitable feature sink for setTriangulationSink()
+.. seealso:: setTriangulationSink()
+.. versionadded:: 3.0
+ :rtype: QgsFields
+%End
+
+    void setTriangulationSink( QgsFeatureSink *sink );
+%Docstring
+ Sets the optional ``sink`` for saving the triangulation features.
+
+ The sink must be setup to accept LineString features, with fields matching
+ those returned by triangulationFields().
+
+.. seealso:: triangulationFields()
+.. versionadded:: 3.0
+%End
 
 };
 

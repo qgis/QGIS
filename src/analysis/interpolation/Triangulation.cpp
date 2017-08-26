@@ -13,5 +13,11 @@
  *                                                                         *
  ***************************************************************************/
 #include "Triangulation.h"
+#include "qgsfields.h"
 
-//empty file (abstract class)
+QgsFields Triangulation::triangulationFields()
+{
+  QgsFields fields;
+  fields.append( QgsField( QStringLiteral( "type" ), QVariant::String, QStringLiteral( "String" ) ) );
+  return fields;
+}
