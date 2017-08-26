@@ -25,8 +25,12 @@
 
 class Line3D;
 
+#define SIP_NO_FILE
+
 /** \ingroup analysis
- * Interface for Triangulation classes*/
+ * Interface for Triangulation classes.
+ * \note Not available in Python bindings.
+*/
 class ANALYSIS_EXPORT Triangulation
 {
   public:

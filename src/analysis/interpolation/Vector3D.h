@@ -20,10 +20,13 @@
 #include <cmath>
 #include "qgis_analysis.h"
 
+#define SIP_NO_FILE
+
 /** \ingroup analysis
  * Class Vector3D represents a 3D-Vector, capable to store x-,y- and
  * z-coordinates in double values. In fact, the class is the same as QgsPoint.
  * The name 'vector' makes it easier to understand the programs.
+ * \note Not available in Python bindings
  */
 
 class ANALYSIS_EXPORT Vector3D

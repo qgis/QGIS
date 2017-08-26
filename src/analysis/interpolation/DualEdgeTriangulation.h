@@ -34,8 +34,12 @@
 #include <QCursor>
 #include "qgis_analysis.h"
 
+#define SIP_NO_FILE
+
 /** \ingroup analysis
- * DualEdgeTriangulation is an implementation of a triangulation class based on the dual edge data structure*/
+ * DualEdgeTriangulation is an implementation of a triangulation class based on the dual edge data structure.
+ * \note Not available in Python bindings.
+*/
 class ANALYSIS_EXPORT DualEdgeTriangulation: public Triangulation
 {
   public:

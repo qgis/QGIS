@@ -25,10 +25,14 @@
 #include "qgslogger.h"
 #include "qgis_analysis.h"
 
+#define SIP_NO_FILE
+
 class QgsFeedback;
 
 /** \ingroup analysis
- * Decorator class which adds the functionality of estimating normals at the data points*/
+ * Decorator class which adds the functionality of estimating normals at the data points.
+ * \note Not available in Python bindings.
+*/
 class ANALYSIS_EXPORT NormVecDecorator: public TriDecorator
 {
   public:
