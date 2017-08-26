@@ -1,6 +1,6 @@
 /***************************************************************************
-    Triangulation.cc
-    ---------------------
+    Triangulation.cpp
+    -----------------
     begin                : September 2009
     copyright            : (C) 2009 by Marco Hugentobler
     email                : marco dot hugentobler at sourcepole dot ch

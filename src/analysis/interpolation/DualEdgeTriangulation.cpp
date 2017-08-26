@@ -1,6 +1,6 @@
 /***************************************************************************
-                          DualEdgeTriangulation.cc  -  description
-                             -------------------
+                          DualEdgeTriangulation.cpp
+                          -------------------------
     copyright            : (C) 2004 by Marco Hugentobler
     email                : mhugent@geo.unizh.ch
  ***************************************************************************/
