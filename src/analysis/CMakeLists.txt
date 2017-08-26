@@ -113,6 +113,8 @@ SET(QGIS_ANALYSIS_HDRS
   raster/qgsrastercalcnode.h
   raster/qgstotalcurvaturefilter.h
 
+  vector/mersenne-twister.h
+  vector/qgsgeometrysnapper.h
   vector/qgstransectsample.h
   vector/qgszonalstatistics.h
 
@@ -126,6 +128,7 @@ SET(QGIS_ANALYSIS_HDRS
   interpolation/TriangleInterpolator.h
   interpolation/Vector3D.h
   interpolation/DualEdgeTriangulation.h
+  interpolation/MathUtils.h
   interpolation/Node.h
   interpolation/TriDecorator.h
   interpolation/Triangulation.h
@@ -136,6 +139,8 @@ SET(QGIS_ANALYSIS_HDRS
 
   openstreetmap/qgsosmbase.h
   openstreetmap/qgsosmdatabase.h
+  openstreetmap/qgsosmdownload.h
+  openstreetmap/qgsosmimport.h
 
   network/qgsgraph.h
   network/qgsgraphbuilderinterface.h
@@ -144,6 +149,7 @@ SET(QGIS_ANALYSIS_HDRS
   network/qgsnetworkspeedstrategy.h
   network/qgsnetworkdistancestrategy.h
   network/qgsgraphanalyzer.h
+  network/qgsvectorlayerdirector.h
 )
 
 INCLUDE_DIRECTORIES(
