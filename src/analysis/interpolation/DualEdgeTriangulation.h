@@ -30,7 +30,6 @@
 #include <cfloat>
 #include <QBuffer>
 #include <QStringList>
-#include <QProgressDialog>
 #include <QCursor>
 #include "qgis_analysis.h"
 

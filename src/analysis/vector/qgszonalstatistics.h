@@ -31,7 +31,6 @@ class QgsGeometry;
 class QgsVectorLayer;
 class QgsRasterLayer;
 class QgsRasterDataProvider;
-class QProgressDialog;
 class QgsRectangle;
 class QgsField;
 

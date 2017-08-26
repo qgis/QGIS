@@ -28,7 +28,6 @@
 #include "qgsvectorlayer.h"
 #include "qgswkbptr.h"
 #include "qgsfeedback.h"
-#include <QProgressDialog>
 
 QgsTINInterpolator::QgsTINInterpolator( const QList<LayerData> &inputData, TINInterpolation interpolation, QgsFeedback *feedback )
   : QgsInterpolator( inputData )
