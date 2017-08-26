@@ -6,20 +6,20 @@ SET(QGIS_ANALYSIS_SRCS
   interpolation/qgsidwinterpolator.cpp
   interpolation/qgsinterpolator.cpp
   interpolation/qgstininterpolator.cpp
-  interpolation/Bezier3D.cc
-  interpolation/CloughTocherInterpolator.cc
-  interpolation/DualEdgeTriangulation.cc
-  interpolation/HalfEdge.cc
-  interpolation/Line3D.cc
-  interpolation/LinTriangleInterpolator.cc
-  interpolation/MathUtils.cc
-  interpolation/NormVecDecorator.cc
-  interpolation/Node.cc
-  interpolation/ParametricLine.cc
-  interpolation/TriangleInterpolator.cc
-  interpolation/Triangulation.cc
-  interpolation/TriDecorator.cc
-  interpolation/Vector3D.cc
+  interpolation/Bezier3D.cpp
+  interpolation/CloughTocherInterpolator.cpp
+  interpolation/DualEdgeTriangulation.cpp
+  interpolation/HalfEdge.cpp
+  interpolation/Line3D.cpp
+  interpolation/LinTriangleInterpolator.cpp
+  interpolation/MathUtils.cpp
+  interpolation/NormVecDecorator.cpp
+  interpolation/Node.cpp
+  interpolation/ParametricLine.cpp
+  interpolation/TriangleInterpolator.cpp
+  interpolation/Triangulation.cpp
+  interpolation/TriDecorator.cpp
+  interpolation/Vector3D.cpp
 
   raster/qgsalignraster.cpp
   raster/qgsninecellfilter.cpp
@@ -88,8 +88,8 @@ ENDIF(NOT MSVC)
 IF (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
   SET_SOURCE_FILES_PROPERTIES(
     interpolation/qgstininterpolator.cpp
-    interpolation/NormVecDecorator.cc
-    interpolation/CloughTocherInterpolator.cc
+    interpolation/NormVecDecorator.cpp
+    interpolation/CloughTocherInterpolator.cpp
     PROPERTIES COMPILE_FLAGS "-Wno-overloaded-virtual"
   )
 ENDIF (CMAKE_CXX_COMPILER_ID MATCHES "Clang")

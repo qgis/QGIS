@@ -45,3 +45,4 @@
 %Include vector/qgsgeometrysnapper.sip
 %Include network/qgsgraphdirector.sip
 %Include network/qgsvectorlayerdirector.sip
+%Include interpolation/MathUtils.sip
