@@ -30,13 +30,6 @@
        </property>
       </widget>
      </item>
-     <item>
-      <widget class="QgsPropertyOverrideButton" name="mAspectRatioDDBtn">
-       <property name="text">
-        <string>…</string>
-       </property>
-      </widget>
-     </item>
     </layout>
    </item>
    <item row="5" column="0">
@@ -86,32 +79,7 @@
      <item row="0" column="0">
       <widget class="QLabel" name="label_10">
        <property name="text">
-        <string>width</string>
-       </property>
-      </widget>
-     </item>
-     <item row="1" column="1">
-      <widget class="QgsDoubleSpinBox" name="spinHeight">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
-       <property name="decimals">
-        <number>6</number>
-       </property>
-       <property name="maximum">
-        <double>100000.000000000000000</double>
-       </property>
-       <property name="singleStep">
-        <double>0.200000000000000</double>
-       </property>
-       <property name="value">
-        <double>1.000000000000000</double>
-       </property>
-       <property name="showClearButton">
-        <bool>false</bool>
+        <string>Width</string>
        </property>
       </widget>
      </item>
@@ -143,27 +111,68 @@
      <item row="1" column="0">
       <widget class="QLabel" name="label_11">
        <property name="text">
-        <string>height</string>
+        <string>Height</string>
        </property>
       </widget>
      </item>
-     <item row="2" column="1">
-      <widget class="QCheckBox" name="checkBoxAspectRatio">
+     <item row="1" column="1">
+      <widget class="QgsDoubleSpinBox" name="spinHeight">
        <property name="sizePolicy">
-        <sizepolicy hsizetype="Ignored" vsizetype="Fixed">
+        <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
          <horstretch>0</horstretch>
          <verstretch>0</verstretch>
         </sizepolicy>
        </property>
-       <property name="text">
-        <string>Preserve aspect ratio</string>
+       <property name="decimals">
+        <number>6</number>
        </property>
-       <property name="checked">
-        <bool>true</bool>
+       <property name="maximum">
+        <double>100000.000000000000000</double>
+       </property>
+       <property name="singleStep">
+        <double>0.200000000000000</double>
+       </property>
+       <property name="value">
+        <double>1.000000000000000</double>
+       </property>
+       <property name="showClearButton">
+        <bool>false</bool>
        </property>
       </widget>
      </item>
      <item row="0" column="2" rowspan="2">
+      <layout class="QHBoxLayout" name="_2">
+       <property name="leftMargin">
+        <number>2</number>
+       </property>
+       <property name="topMargin">
+        <number>2</number>
+       </property>
+       <property name="rightMargin">
+        <number>0</number>
+       </property>
+       <property name="bottomMargin">
+        <number>2</number>
+       </property>
+       <item>
+        <widget class="QgsRatioLockButton" name="mLockAspectRatio">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Fixed" vsizetype="Expanding">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="toolTip">
+          <string>Lock aspect ratio (including while drawing extent onto canvas)</string>
+         </property>
+         <property name="leftMargin" stdset="0">
+          <number>13</number>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </item>
+     <item row="0" column="3" rowspan="2">
       <widget class="QgsUnitSelectionWidget" name="mSizeUnitWidget" native="true">
        <property name="minimumSize">
         <size>
@@ -608,11 +617,10 @@
  <tabstops>
   <tabstop>spinWidth</tabstop>
   <tabstop>spinHeight</tabstop>
-  <tabstop>checkBoxAspectRatio</tabstop>
+  <tabstop>mLockAspectRatio</tabstop>
   <tabstop>mSizeUnitWidget</tabstop>
   <tabstop>mWidthDDBtn</tabstop>
   <tabstop>mHeightDDBtn</tabstop>
-  <tabstop>mAspectRatioDDBtn</tabstop>
   <tabstop>mChangeColorButton</tabstop>
   <tabstop>mFillColorDDBtn</tabstop>
   <tabstop>mChangeStrokeColorButton</tabstop>

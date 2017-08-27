@@ -2111,12 +2111,11 @@ double QgsSvgMarkerSymbolLayer::calculateSize( QgsSymbolRenderContext &context, 
 
 double QgsSvgMarkerSymbolLayer::calculateAspectRatio( QgsSymbolRenderContext &context, double scaledSize, bool &hasDataDefinedAspectRatio ) const
 {
-  hasDataDefinedAspectRatio = mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyWidth ) || mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyPreserveAspectRatio ) || mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyHeight );
+  hasDataDefinedAspectRatio = mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyWidth ) || mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyHeight );
   if ( !hasDataDefinedAspectRatio )
     return mFixedAspectRatio;
 
-  context.setOriginalValueVariable( mFixedAspectRatio <= 0.0 );
-  if ( mDataDefinedProperties.valueAsBool( QgsSymbolLayer::PropertyPreserveAspectRatio, context.renderContext().expressionContext(), mFixedAspectRatio <= 0.0 ) )
+  if ( !mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyHeight ) && mFixedAspectRatio <= 0.0 )
     return 0.0;
 
   double scaledAspectRatio = mDefaultAspectRatio;
