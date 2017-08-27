@@ -492,8 +492,6 @@ void QgsProject::clear()
   mMapThemeCollection.reset( new QgsMapThemeCollection( this ) );
   emit mapThemeCollectionChanged();
 
-  mRootGroup->clear();
-
   mLabelingEngineSettings->clear();
 
   mArchive->clear();
@@ -512,6 +510,8 @@ void QgsProject::clear()
   writeEntry( QStringLiteral( "Measurement" ), QStringLiteral( "/AreaUnits" ), s.value( QStringLiteral( "/qgis/measure/areaunits" ) ).toString() );
 
   removeAllMapLayers();
+  mRootGroup->clear();
+
   setDirty( false );
 }
 
