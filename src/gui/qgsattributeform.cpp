@@ -2055,6 +2055,9 @@ bool QgsAttributeForm::fieldIsEditable( const QgsVectorLayer &layer, int fieldIn
 
 void QgsAttributeForm::updateIcon( QgsEditorWidgetWrapper *eww )
 {
+  if ( !eww->widget() || !mIconMap[eww->widget()] )
+    return;
+
   // no icon by default
   mIconMap[eww->widget()]->hide();
 
