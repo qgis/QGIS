@@ -135,7 +135,6 @@ void QgsVectorLayerJoinBuffer::cacheJoinLayer( QgsVectorLayerJoinInfo &joinInfo 
 
     QgsFeatureRequest request;
     request.setFlags( QgsFeatureRequest::NoGeometry );
-
     // maybe user requested just a subset of layer's attributes
     // so we do not have to cache everything
     bool hasSubset = joinInfo.joinFieldNamesSubset();
@@ -276,6 +275,9 @@ void QgsVectorLayerJoinBuffer::writeXml( QDomNode &layer_node, QDomDocument &doc
 
     joinElem.setAttribute( QStringLiteral( "memoryCache" ), joinIt->isUsingMemoryCache() );
     joinElem.setAttribute( QStringLiteral( "dynamicForm" ), joinIt->isDynamicFormEnabled() );
+    joinElem.setAttribute( QStringLiteral( "editable" ), joinIt->isEditable() );
+    joinElem.setAttribute( QStringLiteral( "upsertOnEdit" ), joinIt->hasUpsertOnEdit() );
+    joinElem.setAttribute( QStringLiteral( "cascadedDelete" ), joinIt->hasCascadedDelete() );
 
     if ( joinIt->joinFieldNamesSubset() )
     {
@@ -317,6 +319,9 @@ void QgsVectorLayerJoinBuffer::readXml( const QDomNode &layer_node )
       info.setTargetFieldName( infoElem.attribute( QStringLiteral( "targetFieldName" ) ) );
       info.setUsingMemoryCache( infoElem.attribute( QStringLiteral( "memoryCache" ) ).toInt() );
       info.setDynamicFormEnabled( infoElem.attribute( QStringLiteral( "dynamicForm" ) ).toInt() );
+      info.setEditable( infoElem.attribute( QStringLiteral( "editable" ) ).toInt() );
+      info.setUpsertOnEdit( infoElem.attribute( QStringLiteral( "upsertOnEdit" ) ).toInt() );
+      info.setCascadedDelete( infoElem.attribute( QStringLiteral( "cascadedDelete" ) ).toInt() );
 
       QDomElement subsetElem = infoElem.firstChildElement( QStringLiteral( "joinFieldsSubset" ) );
       if ( !subsetElem.isNull() )
@@ -416,6 +421,7 @@ QgsFeature QgsVectorLayerJoinBuffer::joinedFeatureOf( const QgsVectorLayerJoinIn
 
   if ( info->joinLayer() )
   {
+    joinedFeature.initAttributes( info->joinLayer()->fields().count() );
     joinedFeature.setFields( info->joinLayer()->fields() );
 
     QString joinFieldName = info->joinFieldName();
@@ -431,6 +437,26 @@ QgsFeature QgsVectorLayerJoinBuffer::joinedFeatureOf( const QgsVectorLayerJoinIn
   }
 
   return joinedFeature;
+}
+
+QgsFeature QgsVectorLayerJoinBuffer::targetedFeatureOf( const QgsVectorLayerJoinInfo *info, const QgsFeature &feature ) const
+{
+  QgsFeature targetedFeature;
+
+  if ( info->joinLayer() )
+  {
+    const QVariant targetValue = feature.attribute( info->joinFieldName() );
+    const QString filter = QgsExpression::createFieldEqualityExpression( info->targetFieldName(), targetValue );
+
+    QgsFeatureRequest request;
+    request.setFilterExpression( filter );
+    request.setLimit( 1 );
+
+    QgsFeatureIterator it = mLayer->getFeatures( request );
+    it.nextFeature( targetedFeature );
+  }
+
+  return targetedFeature;
 }
 
 QgsVectorLayerJoinBuffer *QgsVectorLayerJoinBuffer::clone() const
@@ -489,4 +515,141 @@ void QgsVectorLayerJoinBuffer::connectJoinedLayer( QgsVectorLayer *vl )
   connect( vl, &QgsVectorLayer::updatedFields, this, &QgsVectorLayerJoinBuffer::joinedLayerUpdatedFields, Qt::UniqueConnection );
   connect( vl, &QgsVectorLayer::layerModified, this, &QgsVectorLayerJoinBuffer::joinedLayerModified, Qt::UniqueConnection );
   connect( vl, &QgsVectorLayer::willBeDeleted, this, &QgsVectorLayerJoinBuffer::joinedLayerWillBeDeleted, Qt::UniqueConnection );
+}
+
+bool QgsVectorLayerJoinBuffer::addFeatures( QgsFeatureList &features, QgsFeatureSink::Flags )
+{
+  if ( !containsJoins() )
+    return false;
+
+  // try to add/update a feature in each joined layer
+  Q_FOREACH ( const QgsVectorLayerJoinInfo &info, vectorJoins() )
+  {
+    QgsVectorLayer *joinLayer = info.joinLayer();
+
+    if ( joinLayer && joinLayer->isEditable() && info.isEditable() && info.hasUpsertOnEdit() )
+    {
+      QgsFeatureList joinFeatures;
+
+      Q_FOREACH ( const QgsFeature &feature, features )
+      {
+        const QgsFeature joinFeature = info.extractJoinedFeature( feature );
+
+        // we don't want to add a new feature in joined layer when the id
+        // column value yet exist, we just want to update the existing one
+        const QVariant idFieldValue = feature.attribute( info.targetFieldName() );
+        const QString filter = QgsExpression::createFieldEqualityExpression( info.joinFieldName(), idFieldValue.toString() );
+
+        QgsFeatureRequest request;
+        request.setFlags( QgsFeatureRequest::NoGeometry );
+        request.setSubsetOfAttributes( QgsAttributeList() );
+        request.setFilterExpression( filter );
+        request.setLimit( 1 );
+
+        QgsFeatureIterator it = info.joinLayer()->getFeatures( request );
+        QgsFeature existingFeature;
+        it.nextFeature( existingFeature );
+
+        if ( existingFeature.isValid() )
+        {
+          const QStringList *subsetFields = info.joinFieldNamesSubset();
+          if ( subsetFields )
+          {
+            Q_FOREACH ( const QString &field, *subsetFields )
+            {
+              QVariant newValue = joinFeature.attribute( field );
+              int fieldIndex = joinLayer->fields().indexOf( field );
+              joinLayer->changeAttributeValue( existingFeature.id(), fieldIndex, newValue );
+            }
+          }
+          else
+          {
+            Q_FOREACH ( const QgsField &field, joinFeature.fields() )
+            {
+              QVariant newValue = joinFeature.attribute( field.name() );
+              int fieldIndex = joinLayer->fields().indexOf( field.name() );
+              joinLayer->changeAttributeValue( existingFeature.id(), fieldIndex, newValue );
+            }
+          }
+        }
+        else
+        {
+          // joined feature is added only if one of its field is not null
+          bool notNullFields = false;
+          Q_FOREACH ( const QgsField &field, joinFeature.fields() )
+          {
+            if ( field.name() == info.joinFieldName() )
+              continue;
+
+            if ( !joinFeature.attribute( field.name() ).isNull() )
+            {
+              notNullFields = true;
+              break;
+            }
+          }
+
+          if ( notNullFields )
+            joinFeatures << joinFeature;
+        }
+      }
+
+      joinLayer->addFeatures( joinFeatures );
+    }
+  }
+
+  return true;
+}
+
+bool QgsVectorLayerJoinBuffer::changeAttributeValue( QgsFeatureId fid, int field, const QVariant &newValue, const QVariant &oldValue )
+{
+  if ( mLayer->fields().fieldOrigin( field ) != QgsFields::OriginJoin )
+    return false;
+
+  int srcFieldIndex;
+  const QgsVectorLayerJoinInfo *info = joinForFieldIndex( field, mLayer->fields(), srcFieldIndex );
+  if ( info && info->joinLayer() && info->isEditable() )
+  {
+    QgsFeature feature = mLayer->getFeature( fid );
+
+    if ( !feature.isValid() )
+      return false;
+
+    const QgsFeature joinFeature = joinedFeatureOf( info, feature );
+
+    if ( joinFeature.isValid() )
+      return info->joinLayer()->changeAttributeValue( joinFeature.id(), srcFieldIndex, newValue, oldValue );
+    else
+    {
+      feature.setAttribute( field, newValue );
+      return addFeatures( QgsFeatureList() << feature );
+    }
+  }
+  else
+    return false;
+}
+
+bool QgsVectorLayerJoinBuffer::deleteFeature( QgsFeatureId fid ) const
+{
+  return deleteFeatures( QgsFeatureIds() << fid );
+}
+
+bool QgsVectorLayerJoinBuffer::deleteFeatures( const QgsFeatureIds &fids ) const
+{
+  if ( !containsJoins() )
+    return false;
+
+  Q_FOREACH ( const QgsFeatureId &fid, fids )
+  {
+    Q_FOREACH ( const QgsVectorLayerJoinInfo &info, vectorJoins() )
+    {
+      if ( info.isEditable() && info.hasCascadedDelete() )
+      {
+        const QgsFeature joinFeature = joinedFeatureOf( &info, mLayer->getFeature( fid ) );
+        if ( joinFeature.isValid() )
+          info.joinLayer()->deleteFeature( joinFeature.id() );
+      }
+    }
+  }
+
+  return true;
 }

@@ -947,7 +947,12 @@ bool QgsVectorLayer::addFeature( QgsFeature &feature, Flags )
   bool success = mEditBuffer->addFeature( feature );
 
   if ( success )
+  {
     updateExtents();
+
+    if ( mJoinBuffer->containsJoins() )
+      success = mJoinBuffer->addFeature( feature );
+  }
 
   return success;
 }
@@ -2258,10 +2263,26 @@ bool QgsVectorLayer::changeGeometry( QgsFeatureId fid, const QgsGeometry &geom )
 
 bool QgsVectorLayer::changeAttributeValue( QgsFeatureId fid, int field, const QVariant &newValue, const QVariant &oldValue )
 {
-  if ( !mEditBuffer || !mDataProvider )
-    return false;
+  switch ( fields().fieldOrigin( field ) )
+  {
+    case QgsFields::OriginJoin:
+      return mJoinBuffer->changeAttributeValue( fid, field, newValue, oldValue );
 
-  return mEditBuffer->changeAttributeValue( fid, field, newValue, oldValue );
+    case QgsFields::OriginProvider:
+    case QgsFields::OriginEdit:
+    case QgsFields::OriginExpression:
+    {
+      if ( !mEditBuffer || !mDataProvider )
+        return false;
+      else
+        return mEditBuffer->changeAttributeValue( fid, field, newValue, oldValue );
+    }
+
+    case QgsFields::OriginUnknown:
+      return false;
+  }
+
+  return false;
 }
 
 bool QgsVectorLayer::addAttribute( const QgsField &field )
@@ -2409,6 +2430,9 @@ bool QgsVectorLayer::deleteFeature( QgsFeatureId fid )
   if ( !mEditBuffer )
     return false;
 
+  if ( mJoinBuffer->containsJoins() )
+    mJoinBuffer->deleteFeature( fid );
+
   bool res = mEditBuffer->deleteFeature( fid );
   if ( res )
   {
@@ -2426,6 +2450,9 @@ bool QgsVectorLayer::deleteFeatures( const QgsFeatureIds &fids )
     QgsDebugMsg( "Cannot delete features (mEditBuffer==NULL)" );
     return false;
   }
+
+  if ( mJoinBuffer->containsJoins() )
+    mJoinBuffer->deleteFeatures( fids );
 
   bool res = mEditBuffer->deleteFeatures( fids );
 
@@ -2609,9 +2636,11 @@ bool QgsVectorLayer::addFeatures( QgsFeatureList &features, Flags )
   bool res = mEditBuffer->addFeatures( features );
   updateExtents();
 
+  if ( res && mJoinBuffer->containsJoins() )
+    res = mJoinBuffer->addFeatures( features );
+
   return res;
 }
-
 
 void QgsVectorLayer::setCoordinateSystem()
 {

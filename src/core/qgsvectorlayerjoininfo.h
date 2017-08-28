@@ -81,12 +81,55 @@ class CORE_EXPORT QgsVectorLayerJoinInfo
      */
     void setDynamicFormEnabled( bool enabled ) { mDynamicForm = enabled; }
 
+    /** Returns whether joined fields may be edited through the form of
+     *  the target layer.
+     * \since QGIS 3.0
+     */
+    bool isEditable() const { return mEditable; }
+
+    /** Sets whether the form of the target layer allows editing joined fields.
+     * \since QGIS 3.0
+     */
+    void setEditable( bool enabled );
+
+    /** Returns whether a feature created on the target layer has to impact
+     *  the joined layer by creating a new feature if necessary.
+     * \since QGIS 3.0
+     */
+    bool hasUpsertOnEdit() const { return mUpsertOnEdit; }
+
+    /** Sets whether a feature created on the target layer has to impact
+     *  the joined layer by creating a new feature if necessary.
+     * \since QGIS 3.0
+     */
+    void setUpsertOnEdit( bool enabled ) { mUpsertOnEdit = enabled; }
+
+    /** Returns whether a feature deleted on the target layer has to impact the
+     *  joined layer by deleting the corresponding joined feature.
+     * \since QGIS 3.0
+     */
+    bool hasCascadedDelete() const { return mCascadedDelete; }
+
+    /** Sets whether a feature deleted on the target layer has to impact the
+     *  joined layer by deleting the corresponding joined feature.
+     * \since QGIS 3.0
+     */
+    void setCascadedDelete( bool enabled ) { mCascadedDelete = enabled; }
+
     /** Returns the prefixed name of the field.
      * \param field the field
      * \returns the prefixed name of the field
      * \since QGIS 3.0
      */
     QString prefixedFieldName( const QgsField &field ) const;
+
+    /** Extract the join feature from the target feature for the current
+     *  join layer information.
+     * \param feature A feature from the target layer
+     * \returns the corresponding joined feature
+     * \since QGIS 3.0
+     */
+    QgsFeature extractJoinedFeature( const QgsFeature &feature ) const;
 
     bool operator==( const QgsVectorLayerJoinInfo &other ) const
     {
@@ -134,6 +177,12 @@ class CORE_EXPORT QgsVectorLayerJoinInfo
     bool cacheDirty = true;
 
     bool mDynamicForm = false;
+
+    bool mEditable = false;
+
+    bool mUpsertOnEdit = false;
+
+    bool mCascadedDelete = false;
 
     //! Cache for joined attributes to provide fast lookup (size is 0 if no memory caching)
     QHash< QString, QgsAttributes> cachedAttributes;

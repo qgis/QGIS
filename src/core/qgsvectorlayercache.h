@@ -364,6 +364,7 @@ class CORE_EXPORT QgsVectorLayerCache : public QObject
 
   private slots:
     void onAttributeValueChanged( QgsFeatureId fid, int field, const QVariant &value );
+    void onJoinAttributeValueChanged( QgsFeatureId fid, int field, const QVariant &value );
     void featureDeleted( QgsFeatureId fid );
     void onFeatureAdded( QgsFeatureId fid );
     void attributeAdded( int field );
@@ -373,6 +374,8 @@ class CORE_EXPORT QgsVectorLayerCache : public QObject
     void invalidate();
 
   private:
+
+    void connectJoinedLayers() const;
 
     inline void cacheFeature( QgsFeature &feat )
     {
