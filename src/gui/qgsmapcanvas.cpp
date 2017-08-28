@@ -1490,12 +1490,6 @@ void QgsMapCanvas::mouseReleaseEvent( QMouseEvent* e )
         return;
       }
 
-      // Store clicked x & y into current map tool.
-      QgsPoint point = getCoordinateTransform()->toMapCoordinates( e->x(), e->y() );
-
-      mMapTool->setProperty( "click_x", point.x() );
-      mMapTool->setProperty( "click_y", point.y() );
-
       QScopedPointer<QgsMapMouseEvent> me( new QgsMapMouseEvent( this, e ) );
       mMapTool->canvasReleaseEvent( me.data() );
     }

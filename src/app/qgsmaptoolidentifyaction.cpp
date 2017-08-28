@@ -117,8 +117,10 @@ void QgsMapToolIdentifyAction::canvasReleaseEvent( QgsMapMouseEvent* e )
   // Store clicked x & y into identify menu.
   if ( mIdentifyMenu )
   {
-    mIdentifyMenu->setProperty( "click_x", property( "click_x" ) );
-    mIdentifyMenu->setProperty( "click_y", property( "click_y" ) );
+    QgsPoint point = toMapCoordinates(e->pos());
+
+    mIdentifyMenu->setProperty( "click_x", point.x() );
+    mIdentifyMenu->setProperty( "click_y", point.y() );
   }
 
   resultsDialog()->clear();
