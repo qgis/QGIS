@@ -27,6 +27,7 @@ __revision__ = '$Format:%H$'
 
 from qgis.core import QGis, QgsFeatureRequest, QgsFeature, QgsGeometry
 from processing.core.GeoAlgorithm import GeoAlgorithm
+from processing.core.SilentProgress import SilentProgress
 from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterNumber
 from processing.core.parameters import ParameterBoolean
@@ -63,11 +64,14 @@ class ConcaveHull(GeoAlgorithm):
         alpha = self.getParameterValue(self.ALPHA)
         holes = self.getParameterValue(self.HOLES)
         no_multigeom = self.getParameterValue(self.NO_MULTIGEOMETRY)
+        runalg_kwargs = {}
+        if isinstance(progress, SilentProgress):
+            runalg_kwargs['progress'] = progress
 
         # Delaunay triangulation from input point layer
         progress.setText(self.tr('Creating Delaunay triangles...'))
         delone_triangles = processing.runalg("qgis:delaunaytriangulation",
-                                             layer, None, progress=progress)['OUTPUT']
+                                             layer, None, **runalg_kwargs)['OUTPUT']
         delaunay_layer = processing.getObject(delone_triangles)
 
         # Get max edge length from Delaunay triangles
@@ -104,7 +108,7 @@ class ConcaveHull(GeoAlgorithm):
         # Dissolve all Delaunay triangles
         progress.setText(self.tr('Dissolving Delaunay triangles...'))
         dissolved = processing.runalg("qgis:dissolve", delaunay_layer,
-                                      True, None, None, progress=progress)['OUTPUT']
+                                      True, None, None, **runalg_kwargs)['OUTPUT']
         dissolved_layer = processing.getObject(dissolved)
 
         # Save result
