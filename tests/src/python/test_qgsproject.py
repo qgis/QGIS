@@ -685,8 +685,21 @@ class TestQgsProject(unittest.TestCase):
         self.assertTrue(l1.isValid())
 
     def test_transactionsGroup(self):
-        # Test member existence.
-        QgsProject.instance().transactionGroup("provider-key", "database-connection-string")
+        # No transaction group.
+        QgsProject.instance().setAutoTransaction(False)
+        noTg = QgsProject.instance().transactionGroup("provider-key", "database-connection-string")
+        assert(noTg is None)
+        
+        # Undefined transaction group (wrong provider key).
+        QgsProject.instance().setAutoTransaction(True)
+        noTg = QgsProject.instance().transactionGroup("provider-key", "database-connection-string")
+        assert(noTg is None)
+        
+        # Existing transaction group.
+        vl = QgsVectorLayer('service=qwat port=5432 sslmode=disable', 'test', 'postgres')
+        QgsProject.instance().addMapLayer(vl)
+        tg = QgsProject.instance().transactionGroup("postgres", "service=qwat port=5432 sslmode=disable")
+        assert(noTg is not None)
 
 if __name__ == '__main__':
     unittest.main()
