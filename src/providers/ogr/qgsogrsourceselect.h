@@ -91,7 +91,6 @@ class QgsOgrSourceSelect : public QgsAbstractDataSourceWidget, private Ui::QgsOg
     //! Sets the selected connection
     void setSelectedConnection();
 
-    void on_buttonSelectSrc_clicked();
     void on_radioSrcFile_toggled( bool checked );
     void on_radioSrcDirectory_toggled( bool checked );
     void on_radioSrcDatabase_toggled( bool checked );
@@ -102,6 +101,11 @@ class QgsOgrSourceSelect : public QgsAbstractDataSourceWidget, private Ui::QgsOg
     void on_cmbDatabaseTypes_currentIndexChanged( const QString &text );
     void on_cmbConnections_currentIndexChanged( const QString &text );
     void showHelp();
+
+  private:
+
+    QString mVectorPath;
+
 };
 
 #endif // QGSOGRSOURCESELECT_H
