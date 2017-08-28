@@ -95,16 +95,14 @@ QgsKernelDensityEstimation::Result QgsKernelDensityEstimation::prepare()
   }
 
   int dataTypeSize = QgsRasterBlock::typeSize( Qgis::Float32 );
-  float *line = new float[ cols ];
-  memset( line, NO_DATA, dataTypeSize * cols );
+  std::vector<float> line( cols );
+  std::fill( line.begin(), line.end(), NO_DATA );
   QgsRasterBlock block( Qgis::Float32, cols, 1 );
-  block.setData( QByteArray::fromRawData( ( char * )line, dataTypeSize * cols ) );
+  block.setData( QByteArray::fromRawData( ( char * )&line[0], dataTypeSize * cols ) );
   for ( int i = 0; i < rows ; i++ )
   {
     mProvider->writeBlock( &block, 1, 0, i );
   }
-
-  delete [] line;
 
   mBufferSize = -1;
   if ( mRadiusField < 0 )
