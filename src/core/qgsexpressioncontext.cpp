@@ -479,7 +479,6 @@ void QgsExpressionContext::clearCachedValues() const
 // QgsExpressionContextUtils
 //
 
-
 QgsExpressionContextScope* QgsExpressionContextUtils::globalScope()
 {
   QgsExpressionContextScope* scope = new QgsExpressionContextScope( QObject::tr( "Global" ) );

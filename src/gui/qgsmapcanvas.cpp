@@ -1452,15 +1452,6 @@ void QgsMapCanvas::mousePressEvent( QMouseEvent* e )
 
 void QgsMapCanvas::mouseReleaseEvent( QMouseEvent* e )
 {
-  // Register clicked longitude & latitude to layer context scope.
-  if ( mCurrentLayer )
-  {
-    QgsPoint point = getCoordinateTransform()->toMapCoordinates( e->x(), e->y() );
-
-    QgsExpressionContextUtils::setLayerVariable( mCurrentLayer, "click_x", point.x() );
-    QgsExpressionContextUtils::setLayerVariable( mCurrentLayer, "click_y", point.y() );
-  }
-
   //use middle mouse button for panning, map tools won't receive any events in that case
   if ( e->button() == Qt::MidButton )
   {
@@ -1498,6 +1489,13 @@ void QgsMapCanvas::mouseReleaseEvent( QMouseEvent* e )
         }
         return;
       }
+
+      // Store clicked x & y into current map tool.
+      QgsPoint point = getCoordinateTransform()->toMapCoordinates( e->x(), e->y() );
+
+      mMapTool->setProperty( "click_x", point.x() );
+      mMapTool->setProperty( "click_y", point.y() );
+
       QScopedPointer<QgsMapMouseEvent> me( new QgsMapMouseEvent( this, e ) );
       mMapTool->canvasReleaseEvent( me.data() );
     }

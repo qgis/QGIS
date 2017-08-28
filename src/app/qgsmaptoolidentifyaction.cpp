@@ -114,6 +114,13 @@ void QgsMapToolIdentifyAction::canvasPressEvent( QgsMapMouseEvent* e )
 
 void QgsMapToolIdentifyAction::canvasReleaseEvent( QgsMapMouseEvent* e )
 {
+  // Store clicked x & y into identify menu.
+  if ( mIdentifyMenu )
+  {
+    mIdentifyMenu->setProperty( "click_x", property( "click_x" ) );
+    mIdentifyMenu->setProperty( "click_y", property( "click_y" ) );
+  }
+
   resultsDialog()->clear();
   connect( this, SIGNAL( identifyProgress( int, int ) ), QgisApp::instance(), SLOT( showProgress( int, int ) ) );
   connect( this, SIGNAL( identifyMessage( QString ) ), QgisApp::instance(), SLOT( showStatusMessage( QString ) ) );

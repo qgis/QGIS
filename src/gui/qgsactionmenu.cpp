@@ -106,7 +106,12 @@ void QgsActionMenu::triggerAction()
   }
   else if ( data.actionType == AttributeAction )
   {
-    mActions->doAction( data.actionId.id, *feature() );
+    // Add action context scope.
+    QgsExpressionContextScope* actionScope = new QgsExpressionContextScope();
+    actionScope->addVariable( QgsExpressionContextScope::StaticVariable( QString( "click_x" ), action->property( "click_x" ), true ) );
+    actionScope->addVariable( QgsExpressionContextScope::StaticVariable( QString( "click_y" ), action->property( "click_y" ), true ) );
+
+    mActions->doActionWithContext( data.actionId.id, *feature(), actionScope );
   }
 }
 
